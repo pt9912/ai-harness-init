@@ -37,7 +37,7 @@ Spezifikations-Datei). In dieser Reihenfolge:
 Jeder in AGENTS.md, harness/README.md oder im Makefile genannte Gate
 muss auf frischem Checkout laufen. Der Gate-Config wächst mit den
 Artefakten — `ids`/`codepaths` nur mit existierenden Targets/roots
-aktivieren (`LH-QA-01`).
+aktivieren ([`LH-QA-01`](spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 
 ### 3.2 Lint-Suppression-Verbot
 

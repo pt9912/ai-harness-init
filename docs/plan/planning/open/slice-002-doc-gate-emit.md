@@ -6,7 +6,7 @@ Verzeichnisse bewegt, siehe
 
 **Welle:** [welle-01-offline-kern](../welle-01-offline-kern.md).
 
-**Bezug:** `LH-FA-03`, `LH-QA-01`.
+**Bezug:** [`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7), [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6).
 
 **Autor:** Demo. **Datum:** 2026-06-13.
 
@@ -20,9 +20,9 @@ gepinnt) — `ids`/`codepaths` nur mit existierenden Targets/roots aktiviert.
 
 ## 2. Definition of Done
 
-- [ ] `LH-FA-03` erfüllt: `.d-check.yml` + `harness.mk` werden emittiert.
-- [ ] `LH-QA-01`: emittierter `make docs-check` läuft im Zielrepo grün — keine halluzinierten Gates; `ids`/`codepaths` nur mit vorhandenen Targets.
-- [ ] Digest des d-check-Image aus der kanonischen Pin-Quelle (`harness/conventions.md` §Baseline / `harness.mk`), nicht floating (`LH-QA-02`-Anschluss).
+- [ ] [`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) erfüllt: `.d-check.yml` + `harness.mk` werden emittiert.
+- [ ] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6): emittierter `make docs-check` läuft im Zielrepo grün — keine halluzinierten Gates; `ids`/`codepaths` nur mit vorhandenen Targets.
+- [ ] Digest des d-check-Image aus der kanonischen Pin-Quelle (`harness/conventions.md` §Baseline / `harness.mk`), nicht floating ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)-Anschluss).
 - [ ] bats-Test: nach Emit ist `docs-check` im tmp-Repo Exit 0.
 - [ ] `make gates` grün.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -46,9 +46,9 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 
 - Gate-Config wächst mit den Artefakten: `ids`/`codepaths` dürfen im
   emittierten Zielrepo nur aktiv sein, wo Targets existieren — sonst
-  bricht `docs-check` im frischen Repo (Anti-Ziel von `LH-QA-01`).
+  bricht `docs-check` im frischen Repo (Anti-Ziel von [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 - docker muss im Zielrepo-Kontext verfügbar sein — laut `architecture.md` §3
-  nicht-substituierbare Abhängigkeit für den Gate-Lauf (`LH-QA-03`).
+  nicht-substituierbare Abhängigkeit für den Gate-Lauf ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
 
 ## 7. Closure-Notiz (nach `done/`)
 

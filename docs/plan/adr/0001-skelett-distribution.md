@@ -6,7 +6,7 @@
 
 **Autor:** Demo
 
-**Bezug:** [`LH-FA-04`](../../../spec/lastenheft.md), [`LH-QA-02`](../../../spec/lastenheft.md)
+**Bezug:** [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)
 
 **Schärft:** [architecture.md §Komponenten](../../../spec/architecture.md) — Fetcher/Picker.
 
@@ -14,10 +14,10 @@
 
 ## Kontext
 
-`LH-FA-04` verlangt, dass das Tool sprachspezifische Code-Gates aus den
+[`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) verlangt, dass das Tool sprachspezifische Code-Gates aus den
 lab/example/<lang>-Skeletten verdrahtet. Diese Skelette liegen im
 Kurs-Repo, **nicht** im Templates-ZIP (das ist docs-only). Wie kommt der
-Picker reproduzierbar (`LH-QA-02`) an das richtige Skelett?
+Picker reproduzierbar ([`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) an das richtige Skelett?
 
 ## Entscheidung
 
@@ -62,4 +62,4 @@ Wenn Offline-Bootstrap (air-gapped) zur Pflicht wird → Option A/B neu bewerten
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-06-13 | Accepted | `LH-FA-04` |
+| 2026-06-13 | Accepted | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |

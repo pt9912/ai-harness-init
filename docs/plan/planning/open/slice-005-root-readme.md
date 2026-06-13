@@ -7,7 +7,7 @@ Verzeichnisse bewegt, siehe
 **Welle:** welle-02-fetch-und-readme (Welle-Plan folgt). Einordnung
 *(Kontext, nicht normativ)*: [roadmap](../in-progress/roadmap.md).
 
-**Bezug:** `LH-FA-05`, `LH-FA-01`.
+**Bezug:** [`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2), [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen).
 
 **Autor:** Demo. **Datum:** 2026-06-13.
 
@@ -21,9 +21,9 @@ project-readme-Vorlage; der Pointer-/Trust-Abschnitt steht als
 
 ## 2. Definition of Done
 
-- [ ] `LH-FA-05` erfüllt: Root-README aus Vorlage, Projektname gestempelt.
+- [ ] [`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2) erfüllt: Root-README aus Vorlage, Projektname gestempelt.
 - [ ] Vorwärts-Verweise gate-sicher: kein Markdown-Link auf noch fehlende Ziele (Inline-Code/Plain-Text), `make docs-check` im Zielrepo grün.
-- [ ] Happy-Path-Smoke (`LH-FA-01`/`LH-QA-01`): Bootstrap in tmp-Repo → `make gates` grün out-of-the-box.
+- [ ] Happy-Path-Smoke ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)/[`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)): Bootstrap in tmp-Repo → `make gates` grün out-of-the-box.
 - [ ] bats-Test: README vorhanden, gestempelt, `docs-check` grün.
 - [ ] `make gates` grün.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -42,13 +42,13 @@ welle-02 in-progress; nach slice-004 (gemeinsamer Emit-/Fetch-Pfad).
 ## 5. Closure-Trigger
 
 DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
-Schließt zusammen mit slice-004 die welle-02 (voller `LH-QA-01`-Smoke).
+Schließt zusammen mit slice-004 die welle-02 (voller [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Smoke).
 
 ## 6. Risiken und offene Punkte
 
 - Gate-Sicherheit der Vorwärts-Verweise ist der kritische Punkt: ein
   versehentlicher Link auf ein noch fehlendes Ziel bricht `docs-check`
-  im frischen Repo (Anti-Ziel `LH-QA-01`).
+  im frischen Repo (Anti-Ziel [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 
 ## 7. Closure-Notiz (nach `done/`)
 

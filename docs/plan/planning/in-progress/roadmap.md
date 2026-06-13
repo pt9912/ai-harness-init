@@ -23,7 +23,7 @@ kurz: slice-001..003 done, `make gates` grün inkl. promoteter `lint`/`test`.
 
 | Welle | Trigger | Wichtigste Slices | Geschätzter Aufwand |
 |---|---|---|---|
-| welle-02-fetch-und-readme | welle-01 done | slice-004 Picker (`LH-FA-04`, `ADR-0001`), slice-005 Root-README (`LH-FA-05`) | M |
+| welle-02-fetch-und-readme | welle-01 done | slice-004 Picker ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md)), slice-005 Root-README ([`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2)) | M |
 
 ## Meilensteine
 

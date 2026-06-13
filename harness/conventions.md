@@ -31,6 +31,25 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Begründung:** Initial-Setzung.
 - **Auflösungs-Trigger:** permanent.
 
+### MR-001 — Doc-Gate-Schärfung (matrix + Link-Pflicht + Anker-IDs)
+
+- **Datum:** 2026-06-13
+- **Geltungsbereich:** `.d-check.yml` (Doc-Referenz-Gate)
+- **Adaption:** Über die Baseline-Module (`links`, `anchors`, `ids`,
+  `codepaths`) hinaus aktiviert: `matrix` (mechanische Referenz-Richtung/SDP —
+  Spec-Straten verweisen nie abwärts auf ADR/Slice; Verweise auf
+  superseded/deprecated ADRs verboten; `exclude-sections` für
+  Historie/Geschichte), `spans` (Markdown-Span-Hygiene) sowie `ids` mit
+  `link-policy: always` (Kennungen sind klickbare Links zur Quelle, Requirement-IDs
+  mit Abschnitts-Anker; `exempt-paths`: `docs/reviews/**`, `CHANGELOG.md`) plus
+  ein `MR`-Pattern (→ diese Datei).
+- **Begründung:** Halb-erzwungene ID-Klammer und unbewachte Referenz-Richtung
+  geschlossen; „klickbar zur Quelle" als gemessenes Property. Gate-*Anheben* →
+  Steering-Loop, kein ADR nötig. Legitime ADR-Supersede-Lineage über Inline-Code
+  + `d-check:ignore` (deckt `ids`, nicht `matrix`).
+- **Auflösungs-Trigger:** permanent; `codepaths.roots` wachsen mit
+  `tools`/`cmd`/`internal` in Phase 2/3.
+
 ## Modus-Deklaration pro Sub-Area
 
 | Sub-Area | Modus | Begründung | Graduation |

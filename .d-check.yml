@@ -1,13 +1,39 @@
 # Doku-Referenz-Gate. Startgerüst-Quelle: `d-check --print-config`.
-# Wächst mit den Artefakten: ids/codepaths erst aktivieren, wenn
+# Wächst mit den Artefakten: ids/codepaths/matrix erst aktivieren, wenn
 # Targets/roots existieren (sonst Config-Fehler / halluzinierter Gate).
 scan:
   roots: ["."]
   ignore: ["**/*.template.md", ".tmp/**"]
-modules: [links, anchors, ids, codepaths]
+modules: [links, anchors, ids, matrix, codepaths, spans]
+# Kennungen sind linkpflichtig (auch in Inline-Code, link-policy: always) —
+# "klickbar zur Quelle" als gemessenes Property. Literal-schwere Artefakte
+# (Review-Reports, CHANGELOG) ausgenommen.
 ids:
   patterns:
-    - {regex: 'ADR-\d{4}', target: docs/plan/adr/}              # docs/plan/adr/ existiert (Schritt 3)
-    - {regex: 'LH-[A-Z]{2}-\d{2}', target: spec/lastenheft.md}  # spec/lastenheft.md existiert (Schritt 4)
+    - regex: 'ADR-\d{4}'
+      target: docs/plan/adr/
+      link-policy: always
+      exempt-paths: [CHANGELOG.md, "docs/reviews/**"]
+    - regex: 'LH-[A-Z]{2}-\d{2}'
+      target: spec/lastenheft.md
+      link-policy: always
+      exempt-paths: [CHANGELOG.md, "docs/reviews/**"]
+    - regex: 'MR-\d{3}'
+      target: harness/conventions.md
+      link-policy: always
+      exempt-paths: [CHANGELOG.md, "docs/reviews/**"]
+# Referenz-Richtung (SDP) mechanisch: Spec-Straten verweisen nie abwärts
+# auf ADRs/Slices; Verweise auf superseded/deprecated ADRs verboten.
+# Provenance nur in den Historie-/Geschichte-Tabellen (ausgenommen).
+matrix:
+  classes:
+    - {name: spec-straten, paths: [spec/lastenheft.md, spec/architecture.md]}
+    - {name: adr, paths: ["docs/plan/adr/[0-9]*.md"]}
+    - {name: slice, paths: ["docs/plan/planning/**/slice-*.md"]}
+  rules:
+    - {from: spec-straten, to: adr, allow: false}
+    - {from: spec-straten, to: slice, allow: false}
+  status: {forbidden: [superseded, deprecated]}
+  exclude-sections: [Historie, "7. Historie", Geschichte]
 codepaths:
-  roots: [spec, docs, harness]                                  # Verzeichnisse existieren (Schritt 3)
+  roots: [spec, docs, harness]                                  # tools/cmd/internal folgen in Phase 2/3

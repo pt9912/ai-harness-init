@@ -116,4 +116,4 @@ als gate-sichere Vorwärts-Verweise, bis die Ziele existieren.
 | Version | Datum | Änderung | Verweis |
 |---|---|---|---|
 | 0.1.0 | 2026-06-13 | Initial, abgeleitet aus attempt1 (F1–F7) | — |
-| 0.2.0 | 2026-06-13 | CR: Impl-Sprache Go + native Binaries (`ADR-0003`, supersedes `ADR-0002`); `LH-QA-03` Go-Toolchain/Docker-only; neue `LH-QA-04` Plattform-Matrix; `LH-FA-04` Zielsprache `cpp` | Plan-Review-Folge |
+| 0.2.0 | 2026-06-13 | CR: Impl-Sprache Go + native Binaries ([`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md), supersedes [`ADR-0002`](../docs/plan/adr/0002-test-tooling-grenze.md)); [`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) Go-Toolchain/Docker-only; neue [`LH-QA-04`](../spec/lastenheft.md#lh-qa-04--plattform-matrix) Plattform-Matrix; [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) Zielsprache `cpp` | Plan-Review-Folge |
