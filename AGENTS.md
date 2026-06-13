@@ -25,7 +25,7 @@ Spezifikations-Datei). In dieser Reihenfolge:
 1. [`spec/lastenheft.md`](spec/lastenheft.md) — vertraglich abnahmebindend.
 2. [`spec/architecture.md`](spec/architecture.md) — Komponenten- und Sequenzsicht.
 3. [`docs/plan/adr/`](docs/plan/adr/) — Architekturentscheidungen.
-4. docs/plan/planning/in-progress/roadmap.md — aktuelle Welle *(folgt)*.
+4. [`docs/plan/planning/in-progress/roadmap.md`](docs/plan/planning/in-progress/roadmap.md) — aktuelle Welle.
 5. [`README.md`](README.md) — Projekt-Überblick.
 6. **AGENTS.md (diese Datei).**
 7. [`harness/README.md`](harness/README.md) — Harness-Einstieg.

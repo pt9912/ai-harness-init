@@ -16,7 +16,7 @@ Strukturregeln und Adaptionen leben in [`conventions.md`](conventions.md).
 | 1 | [`spec/lastenheft.md`](../spec/lastenheft.md) | vertraglich abnahmebindend |
 | 2 | [`spec/architecture.md`](../spec/architecture.md) | Komponenten/Sequenzen, meilensteinfrei |
 | 3 | [`docs/plan/adr/`](../docs/plan/adr/) | Architekturentscheidungen |
-| 4 | docs/plan/planning/in-progress/roadmap.md | aktuelle Welle *(folgt)* |
+| 4 | [`docs/plan/planning/in-progress/roadmap.md`](../docs/plan/planning/in-progress/roadmap.md) | aktuelle Welle |
 | 5 | [`README.md`](../README.md) | Projekt-Überblick |
 | 6 | [`AGENTS.md`](../AGENTS.md) | Agent-Briefing |
 | 7 | diese Datei | Harness-Einstieg |
