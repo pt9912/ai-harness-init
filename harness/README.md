@@ -40,7 +40,7 @@ Nur existierende Targets (keine halluzinierten Gates):
 | `make docs-check` | Doku-Referenzen grün (links/anchors/ids/codepaths) | — |
 | `make gates` | alle aktuell lauffähigen Gates | — |
 
-**Nicht behauptet** (folgt mit dem Code): `lint` (shellcheck), `test` (bats).
+**Nicht behauptet** (folgt mit dem Go-Code): `build`/`lint`/`test` (Go-Toolchain im gepinnten Image — `go build` / `golangci-lint` / `go test`).
 
 ## Traceability
 

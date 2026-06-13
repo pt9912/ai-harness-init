@@ -39,10 +39,10 @@ muss auf frischem Checkout laufen. Der Gate-Config wächst mit den
 Artefakten — `ids`/`codepaths` nur mit existierenden Targets/roots
 aktivieren (`LH-QA-01`).
 
-### 3.2 shellcheck-Suppression-Verbot
+### 3.2 Lint-Suppression-Verbot
 
-Kein `# shellcheck disable` ohne begründeten, zentralen Eintrag.
-Inline-Suppression bricht den lint-Gate.
+Kein `//nolint` (golangci-lint) ohne begründeten, zentralen Eintrag in der
+zentralen Lint-Config. Inline-Suppression bricht den lint-Gate.
 
 ### 3.3 git mv + Inhaltsänderung = zwei Commits
 
@@ -66,7 +66,7 @@ PR-Kommentar.
 | `make docs-check` | Doku-Referenzen (links/anchors/ids/codepaths) via d-check |
 | `make gates` | alle aktuell lauffähigen Gates |
 
-**Nicht behauptet** (folgt mit dem Code): `lint` (shellcheck), `test` (bats).
+**Nicht behauptet** (folgt mit dem Go-Code): `build`/`lint`/`test` (Go-Toolchain im gepinnten Image — `go build` / `golangci-lint` / `go test`).
 
 ## 5. Dokumentations-Regeln
 

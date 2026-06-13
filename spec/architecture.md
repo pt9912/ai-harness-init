@@ -37,8 +37,12 @@ flowchart TB
 | System | Rolle | Substituierbar |
 |---|---|---|
 | git | Repo-Init/Checkout | nein |
-| docker | d-check-Image-Lauf (Gate) | nein |
-| Kurs-Release (gepinnt) | Templates + Sprachskelette | Tag wählbar |
+| docker | d-check-Image-Lauf (Gate) + Tool-Build-Image | nein |
+| Go-Toolchain (im gepinnten Build-Image) | Tool-Build / Cross-Compile, Docker-only | nein |
+| Kurs-Release (gepinnt) | Templates + Sprachskelette (`go`/`python`/`kotlin`/`java`/`csharp`/`cpp`) | Tag wählbar |
+
+> Implementierung: **Go**; Auslieferung als **native Binaries** je `GOOS`/`GOARCH`,
+> cross-kompiliert im gepinnten Build-Image (Docker-only, kein Host-`go`).
 
 ## 4. Ablauf (Sequenz)
 

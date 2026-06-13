@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.1.0
+**Version:** 0.2.0
 
 **Status:** Draft
 
@@ -58,6 +58,10 @@ aktivieren — der Gate-Config wächst mit den Artefakten.
 **Beschreibung:** Holt das Sprachskelett vom gepinnten Kurs-Tag, verdrahtet
 Code-Gates. Emittiert nur lauffähige Make-Targets (keine halluzinierten Gates).
 
+**Unterstützte Sprachen:** `go`, `python`, `kotlin`, `java`, `csharp`, `cpp`
+(je `lab/example/<lang>`). `cpp` (C++/CMake: cmake/ctest/clang-tidy) wird
+upstream im Kurs ergänzt; der Picker bleibt sprach-agnostisch.
+
 ### LH-FA-05 — Root-README emittieren (F1, F2)
 
 **Beschreibung:** Aus der project-readme-Vorlage; Pointer-/Trust-Abschnitt
@@ -72,18 +76,33 @@ als gate-sichere Vorwärts-Verweise, bis die Ziele existieren.
 
 ### LH-QA-02 — Reproduzierbarkeit
 
-- **Anforderung:** Templates, Sprachskelett und d-check-Image auf Tag/Digest gepinnt — kein floating main.
+- **Anforderung:** Templates, Sprachskelett, d-check-Image **und das Tool-Build-Image (Go-Toolchain)** auf Tag/Digest gepinnt — kein floating main.
 - **Messmethode:** zwei Läufe mit gleichem Tag erzeugen identische Ausgabe.
 
 ### LH-QA-03 — Minimale Abhängigkeiten
 
-- **Anforderung:** bash + git + docker; sonst nichts.
-- **Messmethode:** shellcheck-clean; Lauf im Minimal-Container.
+- **Anforderung:** Das Tool ist ein **natives Go-Binary**; die Laufzeit beim
+  Bootstrap braucht nur **git + docker** (keine Host-Sprachlaufzeit, kein
+  Paketmanager). Der **Tool-Build** läuft reproduzierbar im gepinnten Image
+  (Go-Toolchain, Cross-Compile) — **kein Host-`go`** (Docker-only). Emittierte
+  Ziel-Repos bleiben make/docker-getrieben.
+- **Messmethode:** `golangci-lint`-clean + `go test` grün (im Image); Smoke:
+  Binary auf frischem System mit nur git + docker → Bootstrap grün.
+
+### LH-QA-04 — Plattform-Matrix
+
+- **Anforderung:** Native Binaries für **linux · macos · windows** ×
+  **amd64 · arm64**, cross-kompiliert im gepinnten Image. Erstklassig auf
+  allen dreien ohne WSL2-Zwang — das Tool ruft Host-`docker` (Docker Desktop
+  liefert die docker-CLI auf macOS/Windows).
+- **Messmethode:** Release liefert ein Binary je `GOOS`/`GOARCH`;
+  Plattform-Smoke in der CI-Matrix.
 
 ## 5. Globale Out-of-Scope-Punkte
 
 - Inhaltliche Urteilsschritte (Spec/ADR/Modus) — bleiben Mensch/Agent.
-- Kein Generator aus dem Nichts — nur Picker über lab/example.
+- Kein Generator aus dem Nichts — nur Picker über lab/example. (C++/CMake wird
+  upstream im Kurs als `lab/example/cpp` ergänzt; das Picker-Modell bleibt.)
 
 ## 6. Glossar
 
@@ -97,3 +116,4 @@ als gate-sichere Vorwärts-Verweise, bis die Ziele existieren.
 | Version | Datum | Änderung | Verweis |
 |---|---|---|---|
 | 0.1.0 | 2026-06-13 | Initial, abgeleitet aus attempt1 (F1–F7) | — |
+| 0.2.0 | 2026-06-13 | CR: Impl-Sprache Go + native Binaries (`ADR-0003`, supersedes `ADR-0002`); `LH-QA-03` Go-Toolchain/Docker-only; neue `LH-QA-04` Plattform-Matrix; `LH-FA-04` Zielsprache `cpp` | Plan-Review-Folge |

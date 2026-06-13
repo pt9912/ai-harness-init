@@ -1,6 +1,6 @@
 # ADR-0002: Test-Tooling-Grenze (bats) gegenüber LH-QA-03
 
-**Status:** Accepted
+**Status:** Superseded by [ADR-0003](0003-go-native-binaries.md)
 
 **Datum:** 2026-06-13
 
@@ -88,3 +88,4 @@ emittieren soll (bats würde dann Ziel-Runtime-relevant) → Grenze neu bewerten
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-06-13 | Accepted | `slice-001` (F-4, Plan-Review 2026-06-13) |
+| 2026-06-13 | Superseded by [ADR-0003](0003-go-native-binaries.md) | Go-Pivot (bash→Go-Toolchain) |
