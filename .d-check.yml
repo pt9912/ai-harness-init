@@ -36,4 +36,4 @@ matrix:
   status: {forbidden: [superseded, deprecated]}
   exclude-sections: [Historie, "7. Historie", Geschichte]
 codepaths:
-  roots: [spec, docs, harness]                                  # tools/cmd/internal folgen in Phase 2/3
+  roots: [spec, docs, harness, tools]                           # cmd/internal folgen mit dem Go-Code (Phase 3)
