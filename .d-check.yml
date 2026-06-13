@@ -1,0 +1,13 @@
+# Doku-Referenz-Gate. Startgerüst-Quelle: `d-check --print-config`.
+# Wächst mit den Artefakten: ids/codepaths erst aktivieren, wenn
+# Targets/roots existieren (sonst Config-Fehler / halluzinierter Gate).
+scan:
+  roots: ["."]
+  ignore: ["**/*.template.md", ".tmp/**"]
+modules: [links, anchors, ids, codepaths]
+ids:
+  patterns:
+    - {regex: 'ADR-\d{4}', target: docs/plan/adr/}              # docs/plan/adr/ existiert (Schritt 3)
+    - {regex: 'LH-[A-Z]{2}-\d{2}', target: spec/lastenheft.md}  # spec/lastenheft.md existiert (Schritt 4)
+codepaths:
+  roots: [spec, docs, harness]                                  # Verzeichnisse existieren (Schritt 3)
