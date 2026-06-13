@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.2.0
+**Version:** 0.3.0
 
 **Status:** Draft
 
@@ -67,6 +67,25 @@ upstream im Kurs ergänzt; der Picker bleibt sprach-agnostisch.
 **Beschreibung:** Aus der project-readme-Vorlage; Pointer-/Trust-Abschnitt
 als gate-sichere Vorwärts-Verweise, bis die Ziele existieren.
 
+### LH-FA-06 — Durchsetzungsschicht emittieren
+
+**Beschreibung:** Der Bootstrap emittiert die Durchsetzungsschicht ins
+Zielrepo: Stop-Hook + Gate-Nachweis-Mechanik (`tools/harness/`,
+`record-gates`, `.claude/settings.json`), `CLAUDE.md`, Reviewer-Skill und
+Command-Guard. Quelle ist das gepinnte Kurs-Template-Set (Picker, kein
+Generator).
+
+**Akzeptanzkriterien:**
+
+- **Happy Path:** Given Bootstrap mit `--lang <X>`, then Stop-Hook,
+  Gate-Nachweis und `CLAUDE.md` liegen im Zielrepo; `make gates` schreibt
+  den Nachweis.
+- **Guard:** Der Command-Guard ist **bash + awk** (kein node/jq/OCI),
+  fail-closed bei Parse-Zweifel; sein BLOCKED-Set ist auf `--lang`/Build-Model
+  des Ziels abgestimmt.
+- **Minimal:** Das emittierte Repo braucht über `bash + git + docker` hinaus
+  nichts (awk ist POSIX-Basis).
+
 ## 4. Nichtfunktionale Anforderungen
 
 ### LH-QA-01 — Keine halluzinierten Gates (F4, F5, F6)
@@ -117,3 +136,4 @@ als gate-sichere Vorwärts-Verweise, bis die Ziele existieren.
 |---|---|---|---|
 | 0.1.0 | 2026-06-13 | Initial, abgeleitet aus attempt1 (F1–F7) | — |
 | 0.2.0 | 2026-06-13 | CR: Impl-Sprache Go + native Binaries ([`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md), supersedes [`ADR-0002`](../docs/plan/adr/0002-test-tooling-grenze.md)); [`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) Go-Toolchain/Docker-only; neue [`LH-QA-04`](../spec/lastenheft.md#lh-qa-04--plattform-matrix) Plattform-Matrix; [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) Zielsprache `cpp` | Plan-Review-Folge |
+| 0.3.0 | 2026-06-13 | CR: neue [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) Durchsetzungsschicht emittieren; Guard bash+awk (zero-dep), Quelle Kurs-Templates ([`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md)) | Phase-2-Folge |

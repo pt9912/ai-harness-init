@@ -16,10 +16,12 @@ flowchart TB
     Place[Zweiklassige Ablage]
     Gate[Gate-Baseline-Emitter]
     Pick[Sprachskelett-Picker]
+    Enforce[Durchsetzungs-Emitter]
     CLI --> Fetch
     Fetch --> Place
     Fetch --> Pick
     Place --> Gate
+    Fetch --> Enforce
 ```
 
 ## 2. Schichten und Constraints
@@ -31,6 +33,7 @@ flowchart TB
 | Placer | Templates zweiklassig ablegen | Set-Index-README kopieren |
 | Emitter | Gate-Baseline schreiben | Gate ohne existierendes Target aktivieren |
 | Picker | Sprachskelett verdrahten | nicht-laufende Targets emittieren |
+| Enforce-Emitter | Stop-Hook/Guard/Skill ins Ziel schreiben | node/jq/OCI als Guard-Dep verlangen |
 
 ## 3. Externe Abhängigkeiten
 
