@@ -6,7 +6,7 @@ Verzeichnisse bewegt, siehe
 
 **Welle:** [welle-01-offline-kern](../welle-01-offline-kern.md).
 
-**Bezug:** `LH-FA-02`.
+**Bezug:** `LH-FA-02`, `LH-FA-01` (Projektname-Stempelung, `--force`-Boundary).
 
 **Autor:** Demo. **Datum:** 2026-06-13.
 
@@ -24,7 +24,8 @@ wird nie mitkopiert.
 
 - [ ] `LH-FA-02` erfüllt: Singletons → `.md`, wiederkehrende → `.template.md`.
 - [ ] Set-Index-README des Template-Sets wird nicht emittiert.
-- [ ] Projektname wird in die Singleton-Ziele gestempelt.
+- [ ] Projektname wird in die Singleton-Ziele gestempelt (`LH-FA-01`-Detail).
+- [ ] `LH-FA-01` Boundary-AC: Lauf gegen Repo mit bereits vorhandener Datei **ohne** `--force` → kein Überschreiben (Exit≠0 + Hinweis); **mit** `--force` → Überschreiben. bats-Test deckt beide Fälle.
 - [ ] bats-Test: nach Lauf existieren die erwarteten `.md`/`.template.md`-Paare, keine Set-Index-README.
 - [ ] `make gates` grün.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.

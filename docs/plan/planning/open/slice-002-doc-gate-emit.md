@@ -22,7 +22,7 @@ gepinnt) — `ids`/`codepaths` nur mit existierenden Targets/roots aktiviert.
 
 - [ ] `LH-FA-03` erfüllt: `.d-check.yml` + `harness.mk` werden emittiert.
 - [ ] `LH-QA-01`: emittierter `make docs-check` läuft im Zielrepo grün — keine halluzinierten Gates; `ids`/`codepaths` nur mit vorhandenen Targets.
-- [ ] Digest des d-check-Image aus einer Pin-Quelle, nicht floating (`LH-QA-02`-Anschluss).
+- [ ] Digest des d-check-Image aus der kanonischen Pin-Quelle (`harness/conventions.md` §Baseline / `harness.mk`), nicht floating (`LH-QA-02`-Anschluss).
 - [ ] bats-Test: nach Emit ist `docs-check` im tmp-Repo Exit 0.
 - [ ] `make gates` grün.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -47,7 +47,8 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 - Gate-Config wächst mit den Artefakten: `ids`/`codepaths` dürfen im
   emittierten Zielrepo nur aktiv sein, wo Targets existieren — sonst
   bricht `docs-check` im frischen Repo (Anti-Ziel von `LH-QA-01`).
-- docker muss im Zielrepo-Kontext verfügbar sein (Annahme `LH-QA-03`).
+- docker muss im Zielrepo-Kontext verfügbar sein — laut `architecture.md` §3
+  nicht-substituierbare Abhängigkeit für den Gate-Lauf (`LH-QA-03`).
 
 ## 7. Closure-Notiz (nach `done/`)
 

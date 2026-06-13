@@ -4,8 +4,8 @@
 Verzeichnisse bewegt, siehe
 [Kurs Modul 5](https://github.com/pt9912/ai-harness-course/blob/templates-v4/kurs/de/02-planung/modul-05-planning-harness.md)).
 
-**Welle:** welle-02-fetch-und-readme (geplant, siehe
-[roadmap](../in-progress/roadmap.md)).
+**Welle:** welle-02-fetch-und-readme (Welle-Plan folgt). Einordnung
+*(Kontext, nicht normativ)*: [roadmap](../in-progress/roadmap.md).
 
 **Bezug:** `LH-FA-05`, `LH-FA-01`.
 

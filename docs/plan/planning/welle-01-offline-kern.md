@@ -47,6 +47,9 @@ und `LH-FA-03`.
 
 - Netz-Zugriff jeder Art (Sprachskelett-Fetch → welle-02, `LH-FA-04`).
 - Root-README-Emit (→ welle-02, `LH-FA-05`).
+- **Happy-Path-Voll-Smoke von `LH-FA-01`** (`make gates` grün end-to-end nach
+  Bootstrap) → welle-02/slice-005. welle-01 deckt von `LH-FA-01` nur die
+  Negative-/Boundary-AC und das Argument-Parsen ab.
 - Inhaltliche Urteilsschritte (Spec/ADR/Modus) — global out-of-scope.
 
 ## 7. Closure-Notiz

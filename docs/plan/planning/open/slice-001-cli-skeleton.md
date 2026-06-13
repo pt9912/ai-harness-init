@@ -6,7 +6,7 @@ Verzeichnisse bewegt, siehe
 
 **Welle:** [welle-01-offline-kern](../welle-01-offline-kern.md).
 
-**Bezug:** `LH-FA-01`, `LH-QA-03`.
+**Bezug:** `LH-FA-01`, `LH-QA-03`, `ADR-0002`.
 
 **Autor:** Demo. **Datum:** 2026-06-13.
 
@@ -26,7 +26,7 @@ Sensors-Tabellen promotet.
 - [ ] `--lang`, `--name`, `--force` werden geparst; unbekanntes Flag → Exit 2 + Usage. Bootstrap-Wirkung folgt in slice-002/003 (hier Stub: Exit 0 mit „noch nicht implementiert").
 - [ ] `LH-QA-03`: shellcheck-clean — `make lint` grün, keine Inline-Suppression (Hard Rule 3.2).
 - [ ] bats-Suite grün — `make test`.
-- [ ] `lint`/`test` ins `gates`-Target aufgenommen und in AGENTS.md §4 + harness/README.md §Sensors aus „Nicht behauptet" promotet (Promotion-Trigger).
+- [ ] `lint`/`test`-Targets im Makefile angelegt **und im selben Commit** ins `gates`-Target aufgenommen sowie in AGENTS.md §4 + harness/README.md §Sensors aus „Nicht behauptet" promotet — Promotion erst nach lauffähigem Target, nie davor (Hard Rule 3.1, kein halluziniertes Gate).
 - [ ] `make gates` grün auf frischem Checkout.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
@@ -49,10 +49,9 @@ DoD vollständig + Review konform + Closure-Notiz geschrieben → nach `done/`.
 
 ## 6. Risiken und offene Punkte
 
-- **bats-Verfügbarkeit:** `LH-QA-03` nennt als Tool-Set bash+git+docker.
-  bats ist Dev-/CI-Test-Tooling, nicht Runtime-Abhängigkeit des Tools.
-  Falls bats im Gate-Lauf nicht verfügbar: bats-in-docker oder vendored
-  bats erwägen — ggf. eigener ADR. Bis dahin als Annahme dokumentiert.
+- **bats-Verfügbarkeit:** Entschieden in `ADR-0002` — bats ist Dev-/CI-Test-Tooling,
+  nicht Teil des Runtime-Budgets von `LH-QA-03` (bash+git+docker) und wird nie
+  ins Ziel-Repo emittiert. Der Dev-/CI-Container stellt bats + shellcheck bereit.
 - shellcheck-Strenge kann frühe Refactors erzwingen (akzeptiert, Ziel von `LH-QA-03`).
 
 ## 7. Closure-Notiz (nach `done/`)

@@ -4,8 +4,8 @@
 Verzeichnisse bewegt, siehe
 [Kurs Modul 5](https://github.com/pt9912/ai-harness-course/blob/templates-v4/kurs/de/02-planung/modul-05-planning-harness.md)).
 
-**Welle:** welle-02-fetch-und-readme (geplant, siehe
-[roadmap](../in-progress/roadmap.md)).
+**Welle:** welle-02-fetch-und-readme (Welle-Plan folgt). Einordnung
+*(Kontext, nicht normativ)*: [roadmap](../in-progress/roadmap.md).
 
 **Bezug:** `LH-FA-04`, `LH-QA-02`, `ADR-0001`.
 
@@ -49,7 +49,7 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 - **Netz beim Bootstrap nötig** (`ADR-0001` Konsequenz). Air-gapped ist
   Re-Evaluierungs-Trigger von `ADR-0001`, nicht Scope hier.
 - Test ohne echtes Netz: Fetch mocken oder Fixture-Tag — sonst flakey/`LH-QA-02`-Verstoß.
-- bats-Verfügbarkeit (siehe slice-001 §6) gilt fort.
+- bats = Dev-/CI-Tooling, nicht Runtime-Budget von `LH-QA-03` (`ADR-0002`); gilt fort.
 
 ## 7. Closure-Notiz (nach `done/`)
 
