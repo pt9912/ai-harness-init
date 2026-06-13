@@ -38,3 +38,7 @@ of Truth bleibt der Kurs. Emittiert wird nur, was wirklich läuft.
 - **Verträge:** [`spec/lastenheft.md`](spec/lastenheft.md) (`LH-*`-IDs mit Akzeptanzkriterien).
 - **Entscheidungen:** [`docs/plan/adr/`](docs/plan/adr/) — z. B. [`ADR-0001`](docs/plan/adr/0001-skelett-distribution.md) (Skelett-Distribution).
 - **Gates:** `make docs-check` grün (links/anchors/ids/codepaths); `make gates`. (`lint`/`test` folgen mit dem Code.)
+
+## Lizenz
+
+[MIT](LICENSE) © 2026 pt9912.
