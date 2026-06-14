@@ -1,79 +1,111 @@
 #!/usr/bin/env bash
-# pretooluse-command-guard — verbietet Host-Paketmanager und die
-# Host-Go-Toolchain (ai-harness-init baut Docker-only, AGENTS.md §3.1,
-# ADR-0003; harness/conventions.md MR-002).
+# pretooluse-command-guard — blockt Host-Paketmanager und Host-Toolchains
+# (go/pip/npm/cargo/...); ai-harness-init baut make/Docker-only (AGENTS.md
+# Hard Rule 3.1, ADR-0003; Emission- und Guard-Modell ADR-0004; conventions
+# MR-002/MR-003).
 #
-# Geprüft wird die Befehlsposition jedes Kommando-Segments (Trennung
-# an ; && || | $( ` ( und Zeilenenden) — `git commit -m "docs: pip"`
-# oder `docker run img npm test` bleiben erlaubt; `/usr/bin/pip` und
-# `sudo pip` werden erkannt. Sub-Shell-Strings (`bash -c "…"`, auch in
-# Flag-Bündeln wie `-lc`/`-ec`/`-cx`) werden rekursiv geprüft (MR-003).
-# Bewusst NICHT geprüft: andere Interpreter (`python -c`, `perl -e`,
-# `node -e`, `find -exec`) — der Guard ist ein Stolperdraht gegen
-# versehentliche Host-Toolchain-Nutzung, keine Sandbox.
+# Reines bash + awk, KEIN node/jq/OCI (LH-QA-03, LH-FA-06): der awk-Extraktor
+# (tools/harness/extract-command.awk) zieht nur das eine Feld
+# tool_input.command aus der Hook-stdin-JSON; bei Parse-Zweifel (malformed,
+# abgeschnitten, \u-Escape im Befehl) -> fail-closed (block).
 #
-# Im Pass-Fall: KEINE Ausgabe — "approve" würde das Permission-System
-# überspringen; ohne Ausgabe läuft die normale Permission-Entscheidung.
+# Geprueft wird die Befehlsposition jedes Kommando-Segments (Trennung an
+# ; && || | $( ` ( und Zeilenenden) — `git commit -m "... pip ..."` bleibt
+# erlaubt, `/usr/bin/pip` und `sudo pip` werden erkannt. Zuweisungs- und
+# Wrapper-Praefixe (VAR=…, sudo/env/command/…) werden uebersprungen.
+# Sub-Shell-Strings (`bash -c "…"`, auch in Flag-Buendeln wie -lc/-ec/-cx)
+# werden rekursiv geprueft (Tiefe <= 3, darueber fail-closed; MR-003).
+# Bewusst NICHT geprueft: andere Interpreter (`python -c`, `find -exec`, …)
+# — der Guard ist ein Stolperdraht gegen versehentliche Host-Toolchain-
+# Nutzung, KEINE Sandbox; Vollstaendigkeit ist nicht das Ziel.
+#
+# Im Pass-Fall: KEINE Ausgabe — "approve" wuerde das Permission-System
+# ueberspringen; ohne Ausgabe laeuft die normale Permission-Entscheidung.
 set -euo pipefail
 
-# Fail-closed: ohne node keine Prüfung möglich → Tool-Call blockieren.
-if ! command -v node >/dev/null 2>&1; then
-  echo "pretooluse-command-guard: node not found on host — blocking (fail-closed)." >&2
-  exit 2
-fi
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+extractor="$here/../../tools/harness/extract-command.awk"
 
-input="$(cat)"
-
-verdict="$(printf '%s' "$input" | node -e '
-  const BLOCKED = new Set(["apt","apt-get","brew","pip","pip3","pipx",
-    "npm","pnpm","yarn","npx","corepack","cargo","rustup","gem","conda",
-    "go","gofmt","golangci-lint","staticcheck"]); // Host-Go: ADR-0003 + AGENTS §3.1
-  const PREFIXES = new Set(["sudo","env","command","exec","nice","time",
-    "xargs","eval"]);
-  const SHELLS = new Set(["bash","sh","zsh","dash","ksh"]);
-  const stripQuotes = t => t.replace(/^["'\'']+|["'\'']+$/g, "");
-
-  function scan(cmd, depth) {
-    if (depth > 3) return true; // zu tief verschachtelt → fail-closed
-    const segments = cmd.split(/(?:;|&&|\|\||\||\$\(|`|\(|\r?\n)/);
-    for (const seg of segments) {
-      const tokens = seg.trim().split(/\s+/).filter(Boolean).map(stripQuotes);
-      let i = 0;
-      while (i < tokens.length &&
-             (/^[A-Za-z_][A-Za-z0-9_]*=/.test(tokens[i]) || PREFIXES.has(tokens[i]))) i++;
-      if (i >= tokens.length) continue;
-      const head = tokens[i].replace(/^.*\//, ""); // /usr/bin/pip → pip
-      if (BLOCKED.has(head)) return true;
-      if (SHELLS.has(head)) {
-        // -c auch in Flag-Bündeln erkennen (-lc, -ec, -cx, …): bei
-        // sh/bash ist c das einzige Single-Letter-Flag mit
-        // Kommando-String-Semantik, das Bündel ist also eindeutig.
-        const cIdx = tokens.findIndex((t, k) => k > i && /^-[a-z]*c[a-z]*$/.test(t));
-        if (cIdx !== -1 && cIdx + 1 < tokens.length &&
-            scan(tokens.slice(cIdx + 1).join(" "), depth + 1)) return true;
-      }
-    }
-    return false;
-  }
-
-  let s = "";
-  process.stdin.on("data", d => s += d);
-  process.stdin.on("end", () => {
-    let cmd = "";
-    try {
-      const j = JSON.parse(s);
-      cmd = String((j.tool_input && j.tool_input.command) || "");
-    } catch { process.stdout.write("block"); return; } // unlesbar → fail-closed
-    process.stdout.write(scan(cmd, 0) ? "block" : "ok");
-  });
-')"
-
-if [ "$verdict" = "block" ]; then
+emit_block() {
   cat <<'JSON'
 {
   "decision": "block",
-  "reason": "ai-harness-init is make/Docker-only (AGENTS.md §3.1, ADR-0003). Use make targets; do not install or run host package managers or host go (apt/brew/pip/npm/cargo/go/...)."
+  "reason": "ai-harness-init is make/Docker-only (AGENTS.md Hard Rule 3.1, ADR-0003/ADR-0004). Use make targets; do not install or run host package managers or host toolchains (apt/brew/pip/npm/cargo/go/...). On parse doubt the guard fails closed."
 }
 JSON
-fi
-# Pass-Fall: keine Ausgabe — normale Permission-Prüfung übernimmt.
+}
+
+# Host-Go: ADR-0003 + AGENTS Hard Rule 3.1; Paketmanager: AGENTS Hard Rule 3.1.
+BLOCKED="apt apt-get brew pip pip3 pipx npm pnpm yarn npx corepack cargo rustup gem conda go gofmt golangci-lint staticcheck"
+PREFIXES="sudo env command exec nice time xargs eval"
+SHELLS="bash sh zsh dash ksh"
+
+in_set() {  # in_set <space-getrennte-menge> <wort>
+  local w
+  for w in $1; do [ "$w" = "$2" ] && return 0; done
+  return 1
+}
+
+# Ergebnis in der globalen STRIPPED (kein Subshell-Fork je Token; der Guard
+# laeuft vor JEDEM Bash-Call, Latenz zaehlt — ADR-0004).
+strip_quotes() {  # fuehrende/abschliessende " und ' entfernen (wie ^["']+|["']+$)
+  local s=$1
+  while [ -n "$s" ]; do case $s in \"*|\'*) s=${s#?};; *) break;; esac; done
+  while [ -n "$s" ]; do case $s in *\"|*\') s=${s%?};; *) break;; esac; done
+  STRIPPED=$s
+}
+
+scan() {  # scan <cmd> <tiefe>; return 0 = BLOCK, 1 = ok
+  local cmd=$1 depth=$2
+  [ "$depth" -gt 3 ] && return 0          # zu tief verschachtelt -> fail-closed
+  local s=$cmd
+  s=${s//'&&'/$'\n'}; s=${s//'||'/$'\n'}; s=${s//'|'/$'\n'}
+  s=${s//';'/$'\n'};  s=${s//\$\(/$'\n'};  s=${s//'`'/$'\n'}
+  s=${s//'('/$'\n'};  s=${s//$'\r'/$'\n'}
+  local seg head i j rest x
+  local -a toks stoks
+  while IFS= read -r seg; do
+    read -ra toks <<< "$seg"
+    [ "${#toks[@]}" -eq 0 ] && continue
+    stoks=()
+    for x in "${toks[@]}"; do strip_quotes "$x"; stoks+=("$STRIPPED"); done
+    i=0
+    while [ "$i" -lt "${#stoks[@]}" ]; do
+      if [[ "${stoks[$i]}" =~ ^[A-Za-z_][A-Za-z0-9_]*= ]]; then i=$((i+1)); continue; fi
+      in_set "$PREFIXES" "${stoks[$i]}" && { i=$((i+1)); continue; }
+      break
+    done
+    [ "$i" -ge "${#stoks[@]}" ] && continue
+    head=${stoks[$i]}; head=${head##*/}    # /usr/bin/pip -> pip
+    in_set "$BLOCKED" "$head" && return 0
+    if in_set "$SHELLS" "$head"; then
+      # -c auch in Flag-Buendeln (-lc, -ec, -cx, …): bei sh/bash ist c das
+      # einzige Single-Letter-Flag mit Kommando-String-Semantik.
+      j=$((i+1))
+      while [ "$j" -lt "${#stoks[@]}" ]; do
+        if [[ "${stoks[$j]}" =~ ^-[a-z]*c[a-z]*$ ]]; then
+          rest="${stoks[*]:$((j+1))}"
+          scan "$rest" "$((depth+1))" && return 0
+          break
+        fi
+        j=$((j+1))
+      done
+    fi
+  done <<< "$s"
+  return 1
+}
+
+input="$(cat)"
+
+# Ohne awk keine Pruefung -> fail-closed. (awk ist POSIX-Basis; ADR-0004.)
+command -v awk >/dev/null 2>&1 || { emit_block; exit 0; }
+
+set +e
+cmd="$(printf '%s' "$input" | awk -f "$extractor")"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] && { emit_block; exit 0; }   # Parse-Zweifel -> fail-closed
+
+scan "$cmd" 0 && emit_block
+# Pass-Fall: keine Ausgabe — normale Permission-Pruefung uebernimmt.
+exit 0

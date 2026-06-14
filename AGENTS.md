@@ -64,9 +64,10 @@ PR-Kommentar.
 | Target | Zweck |
 |---|---|
 | `make docs-check` | Doku-Referenzen (links/anchors/ids/codepaths) via d-check |
+| `make test` | Command-Guard-Tests (bash+awk) via bats im gepinnten Image |
 | `make gates` | alle aktuell lauffähigen Gates |
 
-**Nicht behauptet** (folgt mit dem Go-Code): `build`/`lint`/`test` (Go-Toolchain im gepinnten Image — `go build` / `golangci-lint` / `go test`).
+**Nicht behauptet** (folgt mit dem Go-Code): `build`/`lint` (Go-Toolchain im gepinnten Image — `go build` / `golangci-lint`); `make test` deckt aktuell die bash+awk-Guard-Suite (bats), die Go-Unit-Tests (`go test`) folgen mit dem Code.
 
 ## 5. Dokumentations-Regeln
 

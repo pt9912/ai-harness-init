@@ -38,9 +38,10 @@ Nur existierende Targets (keine halluzinierten Gates):
 | Target | Vertrag | Bindung |
 |---|---|---|
 | `make docs-check` | Doku-Referenzen grün (links/anchors/ids/codepaths) | — |
+| `make test` | Command-Guard-Tests (bash+awk) grün via bats | [`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md) |
 | `make gates` | alle aktuell lauffähigen Gates | — |
 
-**Nicht behauptet** (folgt mit dem Go-Code): `build`/`lint`/`test` (Go-Toolchain im gepinnten Image — `go build` / `golangci-lint` / `go test`).
+**Nicht behauptet** (folgt mit dem Go-Code): `build`/`lint` (Go-Toolchain im gepinnten Image — `go build` / `golangci-lint`); `make test` deckt aktuell die bash+awk-Guard-Suite (bats), die Go-Unit-Tests (`go test`) folgen mit dem Code.
 
 ## Traceability
 

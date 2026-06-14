@@ -23,24 +23,24 @@ self-contained (reines Shell, kein Go nötig).
 
 ## 2. Definition of Done
 
-- [ ] `.claude/hooks/pretooluse-command-guard.sh` läuft ohne `node`/`jq`:
+- [x] `.claude/hooks/pretooluse-command-guard.sh` läuft ohne `node`/`jq`:
       awk-Extraktor zieht `tool_input.command` aus der Hook-stdin-JSON;
       bei Parse-Zweifel → **fail-closed** (block). Erfüllt [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)/[`ADR-0004`](../../adr/0004-durchsetzungs-emission.md).
-- [ ] **Verhaltens-Parität** zum node-Guard: blockt Host-Toolchain
+- [x] **Verhaltens-Parität** zum node-Guard: blockt Host-Toolchain
       (`go`/`pip`/`npm`/`cargo`/`apt`/`brew`/…), passt `make`/`git`/`docker`;
       Sub-Shell (`bash -c "…"`) rekursiv (Tiefe ≤ 3, darüber fail-closed);
       Zuweisungs-/Wrapper-Präfixe (`sudo`/`env`/…) übersprungen.
-- [ ] `bats`-Suite deckt: gültige JSON → korrekter Befehl; malformed JSON →
+- [x] `bats`-Suite deckt: gültige JSON → korrekter Befehl; malformed JSON →
       block; blockierte vs. erlaubte Kommandos; `bash -c`-Verschachtelung;
       der Heredoc-/Commit-Message-Fall (bekannter False-Positive — dokumentiert).
-- [ ] Guard ist **shellcheck-clean**, keine Inline-Suppression (Hard Rule 3.2
+- [x] Guard ist **shellcheck-clean**, keine Inline-Suppression (Hard Rule 3.2
       sinngemäß für Shell).
-- [ ] `make test` (`bats`) real angelegt und **im selben Commit** ins
+- [x] `make test` (`bats`) real angelegt und **im selben Commit** ins
       `gates`-Target genommen + in AGENTS.md §4 / harness/README.md §Sensors
       aus „Nicht behauptet" promotet (Promotion-Trigger, Hard Rule 3.1).
-- [ ] `make gates` grün auf frischem Checkout (mit `node` *abwesend* probeweise
+- [x] `make gates` grün auf frischem Checkout (mit `node` *abwesend* probeweise
       verifiziert — der Guard darf node nicht mehr brauchen).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -73,7 +73,62 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Abschluss:** 2026-06-14. DoD vollständig; Gates grün.
+
+**Ergebnis:** Der node-Command-Guard ist durch eine **bash + awk**-Implementierung
+ersetzt. Der awk-Extraktor (`tools/harness/extract-command.awk`) ist ein
+zeichenweiser JSON-Scanner mit Tiefen-/Key-Stack — er zieht nur `tool_input.command`
+und unterscheidet Keys von Values (entschärft den „command-im-Value"-Fehlmatch).
+Parse-Zweifel (malformed, abgeschnitten, `\u`-Escape im Befehl) → **fail-closed**.
+23 `bats`-Tests (`test/guard.bats`) decken Extraktor- und Guard-Verhalten;
+`make test` läuft Docker-only im digest-gepinnten `bats`-Image und ist in `gates`
+sowie in [`AGENTS.md`](../../../../AGENTS.md) §4 / [`harness/README.md`](../../../../harness/README.md) §Sensors aus „Nicht behauptet" promotet.
+
+**Nachweise (zwei beobachtbare Closure-Kriterien + Lerneintrag):**
+
+- `make test` → 23/23 grün, im `bats`-Image **ohne `node`/`jq`** (verifiziert: beide
+  im Image abwesend) — der Guard braucht node nicht mehr ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
+- `make gates` grün (docs-check + test + Nachweis); Guard ist shellcheck-clean
+  (exit 0, koalaman/shellcheck:stable), **keine** Inline-Suppression.
+
+**Steering-Loop-Lerneintrag:**
+
+1. **`\u`-Selbstbeweis.** Beim Testen zeigte sich, dass selbst ein literales
+   `g` in der Agent-Tool-Eingabe zu `g` dekodiert wird — genau die
+   Umgehungsklasse, gegen die der Guard schützt. Bestätigt die Entscheidung,
+   bei `\u` im Befehl **fail-closed** zu blocken statt zu dekodieren
+   ([`ADR-0004`](../../adr/0004-durchsetzungs-emission.md): Stolperdraht, keine Sandbox). Test baut das Escape aus einer
+   Backslash-Variable, damit der Testtext es nicht selbst dekodiert.
+2. **Prozessabweichung (Guide → Sensor).** Das in [`AGENTS.md`](../../../../AGENTS.md) §1 verlangte
+   Betriebsregelwerk wurde erst nach Nutzer-Hinweis gelesen, nicht zu
+   Session-Beginn. Steering-Vorschlag: SessionStart-Hook, der das Regelwerk
+   injiziert (offen — siehe Folge-Punkte), damit die Vorbedingung erzwungen
+   statt erinnert wird.
+3. **Dokumentierter False-Positive.** Heredoc-Body mit blockiertem Wort am
+   Zeilenkopf (z. B. `pip` in einem `<<EOF`-Block) löst den Guard aus — als
+   Test festgehalten und als bewusste Stolperdraht-Eigenschaft akzeptiert.
+
+**Review (high-effort, Multi-Agent):** Ein 4-Winkel-Review (Korrektheit,
+node→bash-Parität, adversariale Bypass-Suche, Qualität) lief über den Diff.
+Ergebnis: **kein Parität-Regress** (kein Befehl, den der node-Guard blockte,
+passiert den neuen). Gefunden und **gefixt**: ein fail-OPEN — ein malformed
+`\u` (nicht 4 Hex) in einem String *vor* `command` desyncte den Scanner
+(`i+=4` über das schliessende `"`), der Befehl wurde leer extrahiert → Guard
+liess durch. Fix: der Extraktor verlangt jetzt genau 4 Hex nach `\u`, sonst
+`exit 3` (fail-closed); zwei Regressionstests. Zusätzlich `strip_quotes` ohne
+Subshell-Fork je Token (Hot-Path-Latenz, [`ADR-0004`](../../adr/0004-durchsetzungs-emission.md)). **Bewusste
+Tripwire-Grenzen** (Parität, kein Regress): einzelnes `&` (Hintergrund), `|&`,
+Ein-Befehl-`{ … }`-Gruppe gelten nicht als Segment-Grenze — Härtung optional.
+
+**Folge-Slices (offen):**
+
+- `shell-lint`-Gate (shellcheck im gepinnten Image) als eigener Slice — heute nur
+  als Verifikation gelaufen, nicht als Gate (siehe §6).
+- Optionale Guard-Härtung über die node-Parität hinaus: `&`/`|&`/Brace-Gruppe als
+  Segment-Grenzen (Review-Restbefund).
+- Durchsetzungsschicht-**Emission** im Picker (zweite Hälfte [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren),
+  [`ADR-0004`](../../adr/0004-durchsetzungs-emission.md) Folge-Slice 2) — Guard ins Zielrepo emittieren, BLOCKED-Set je `--lang`.
+- SessionStart-Hook fürs Regelwerk (Prozess-Härtung, siehe Lerneintrag 2).
 
 ## 8. Sub-Area-Modus-Begründung
 
