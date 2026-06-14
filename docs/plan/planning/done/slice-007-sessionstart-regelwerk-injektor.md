@@ -103,7 +103,49 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Abschluss:** 2026-06-14. DoD vollständig; Gates grün.
+
+**Ergebnis:** Ein agent-neutraler SessionStart-Injektor
+(`tools/harness/sessionstart-inject-regelwerk.sh`) gibt
+`hookSpecificOutput.additionalContext` aus und ist in `.claude/settings.json`
+**und** `.codex/hooks.json` registriert — ein Skript, zwei Agenten.
+JSON-Encoding via `tools/harness/json-encode.awk` (kein node/jq,
+[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)), byteweise → UTF-8-sicher. Quelle ist der
+gepinnte Cache `harness/agents-regelwerk.cache.md` (repo-authored
+Hard-Rules-Digest mit Quell-URL + Datum; kein Netz-Fetch,
+[`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Für Codex-Cloud/-IDE ohne Hook trägt die
+Hard-Rules-Kurzform inline in AGENTS.md §1. Mechanik:
+[`MR-004`](../../../../harness/conventions.md#mr-004--sessionstart-regelwerk-injektor).
+
+**Nachweise (zwei beobachtbare Closure-Kriterien + Lerneintrag):**
+
+- `make test` → 35/35 grün (28 Guard + 7 SessionStart) im busybox-awk-Image:
+  Encoder-Escapes (`"`/`\`/Tab/Newline/UTF-8) und Injektor-Round-Trip
+  verifiziert; fehlender Cache → leerer `additionalContext` + exit 0.
+- `make gates` grün (docs-check 26/0 + test + Nachweis); Injektor shellcheck-clean.
+
+**Steering-Loop-Lerneintrag:**
+
+1. **Geschlossener Loop aus slice-006.** Der dort notierte Vorschlag
+   (Regelwerk-Lektüre *erzwingen* statt *erinnern*) ist umgesetzt: aus dem
+   erinnerten Pointer wurde Computational Feedforward (SessionStart-Hook).
+2. **Verbatim-Copy abgelehnt → Digest.** Ein Versuch, das Upstream-Regelwerk
+   wörtlich zu spiegeln, wurde (zu Recht) als Reproduktion eines fremden Werks
+   verweigert. Der Cache ist daher ein **repo-authored Digest** (derivativ,
+   Quelle autoritativ) — sauberer als eine Voll-Kopie und kompakt genug fürs
+   32-KiB-AGENTS.md-Limit.
+3. **Codex-Mechanik recherchiert.** Kein `CODEX.md`; Codex folgt keinen Links
+   in AGENTS.md → Inline-Kurzform für Cloud/IDE, Hook nur im CLI. Der
+   Codex-Hook-Pfad ist cwd-relativ (Annahme Projekt-Root) — in der gepinnten
+   Codex-Version zu verifizieren.
+
+**Folge-Slices / offen:**
+
+- **Codex-Hook real verifizieren** in der eingesetzten Codex-Version (Hooks
+  versionsabhängig); ggf. Pfad-Auflösung härten.
+- **Cache-Refresh-Mechanik** (manuell/scheduled) bei Upstream-Änderung.
+- Emission des Injektors ins Zielrepo zusammen mit der Durchsetzungsschicht
+  ([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) Folge-Slice).
 
 ## 8. Sub-Area-Modus-Begründung
 

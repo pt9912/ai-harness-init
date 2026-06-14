@@ -79,9 +79,37 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   via `bash -c`.
 - **Auflösungs-Trigger:** permanent.
 
+### MR-004 — SessionStart-Regelwerk-Injektor
+
+- **Datum:** 2026-06-14
+- **Geltungsbereich:** [`tools/harness/`](../tools/harness/), [`.claude/`](../.claude/), [`.codex/`](../.codex/), `harness/agents-regelwerk.cache.md`, `.d-check.yml`
+- **Adaption:** Ein agent-neutraler **SessionStart-Hook**
+  (`tools/harness/sessionstart-inject-regelwerk.sh`) injiziert das gepinnte
+  Betriebsregelwerk (`harness/agents-regelwerk.cache.md`) beim Session-Start in
+  den Agenten-Kontext — registriert in `.claude/settings.json`
+  (`hooks.SessionStart`) **und** `.codex/hooks.json` (`SessionStart`,
+  `startup|resume`); beide Agenten teilen die
+  `hookSpecificOutput.additionalContext`-Form. JSON-String-Encoding via
+  `tools/harness/json-encode.awk` (**kein** node/jq,
+  [`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)); **kein**
+  Netz-Fetch (nur lokale Kopie,
+  [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Fehlender Cache
+  → leerer `additionalContext`, exit 0 (degradiert leise). Der Cache ist als
+  derivativer externer Inhalt vom Doc-Gate ausgenommen (`.d-check.yml`
+  `scan.ignore`); für Codex-Cloud/-IDE (kein Hook) trägt zusätzlich die
+  Hard-Rules-Kurzform inline in AGENTS.md §1.
+- **Begründung:** Die in AGENTS.md §1 verlangte Regelwerk-Lektüre war nur
+  *erinnert*, nicht *erzwungen* (Steering-Befund aus slice-006). Der Hook macht
+  sie zu Computational Feedforward; der awk-Encoder hält die node/jq-freie Linie
+  des Command-Guards. Codex hat kein eigenes Format (`CODEX.md`) und folgt keinen
+  Links in AGENTS.md → Inline-Kurzform für den Cloud/IDE-Pfad.
+- **Auflösungs-Trigger:** permanent; Cache-Refresh bei Upstream-Änderung manuell;
+  Codex-Hook-Verfügbarkeit ist versionsabhängig.
+
 ## Modus-Deklaration pro Sub-Area
 
 | Sub-Area | Modus | Begründung | Graduation |
 |---|---|---|---|
 | `*` (gesamtes Repo) | Greenfield | Neues Repo, Doc führt, Code folgt | n/a (GF) |
 | `tools/harness/` | Greenfield | adoptierte Harness-Mechanik (Adaptions-Block) | n/a (GF) |
+| `.codex/` | Greenfield | neue Pfad-Familie, adoptierte SessionStart-Hook-Mechanik | n/a (GF) |

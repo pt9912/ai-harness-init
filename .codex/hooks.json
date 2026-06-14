@@ -1,0 +1,13 @@
+{
+  "SessionStart": [
+    {
+      "matcher": "startup|resume",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash tools/harness/sessionstart-inject-regelwerk.sh"
+        }
+      ]
+    }
+  ]
+}
