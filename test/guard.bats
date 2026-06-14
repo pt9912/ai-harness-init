@@ -122,6 +122,23 @@ assert_passed() {
   run guard '{"tool_input":{"command":"echo $(go env GOPATH)"}}';       assert_blocked
 }
 
+# ---------- Härtung über node-Parität hinaus: & / |& als Segment-Grenze ----------
+
+@test "guard: go im Hintergrund (einzelnes &) blockt" {
+  run guard '{"tool_input":{"command":"sleep 1 & go run ./tool"}}'
+  assert_blocked
+}
+
+@test "guard: go nach |& blockt" {
+  run guard '{"tool_input":{"command":"make x |& go build > log"}}'
+  assert_blocked
+}
+
+@test "guard: Background-& vor forbidden tool trennt Segmente" {
+  run guard '{"tool_input":{"command":"make build & go test ./..."}}'
+  assert_blocked
+}
+
 # ---------- Guard: bash -c-Verschachtelung ----------
 
 @test "guard: bash -c \"go build\" blockt" {

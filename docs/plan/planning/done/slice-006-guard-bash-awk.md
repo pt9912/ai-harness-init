@@ -80,13 +80,13 @@ ersetzt. Der awk-Extraktor (`tools/harness/extract-command.awk`) ist ein
 zeichenweiser JSON-Scanner mit Tiefen-/Key-Stack — er zieht nur `tool_input.command`
 und unterscheidet Keys von Values (entschärft den „command-im-Value"-Fehlmatch).
 Parse-Zweifel (malformed, abgeschnitten, `\u`-Escape im Befehl) → **fail-closed**.
-23 `bats`-Tests (`test/guard.bats`) decken Extraktor- und Guard-Verhalten;
+26 `bats`-Tests (`test/guard.bats`) decken Extraktor- und Guard-Verhalten;
 `make test` läuft Docker-only im digest-gepinnten `bats`-Image und ist in `gates`
 sowie in [`AGENTS.md`](../../../../AGENTS.md) §4 / [`harness/README.md`](../../../../harness/README.md) §Sensors aus „Nicht behauptet" promotet.
 
 **Nachweise (zwei beobachtbare Closure-Kriterien + Lerneintrag):**
 
-- `make test` → 23/23 grün, im `bats`-Image **ohne `node`/`jq`** (verifiziert: beide
+- `make test` → 26/26 grün, im `bats`-Image **ohne `node`/`jq`** (verifiziert: beide
   im Image abwesend) — der Guard braucht node nicht mehr ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
 - `make gates` grün (docs-check + test + Nachweis); Guard ist shellcheck-clean
   (exit 0, koalaman/shellcheck:stable), **keine** Inline-Suppression.
@@ -116,16 +116,17 @@ passiert den neuen). Gefunden und **gefixt**: ein fail-OPEN — ein malformed
 (`i+=4` über das schliessende `"`), der Befehl wurde leer extrahiert → Guard
 liess durch. Fix: der Extraktor verlangt jetzt genau 4 Hex nach `\u`, sonst
 `exit 3` (fail-closed); zwei Regressionstests. Zusätzlich `strip_quotes` ohne
-Subshell-Fork je Token (Hot-Path-Latenz, [`ADR-0004`](../../adr/0004-durchsetzungs-emission.md)). **Bewusste
-Tripwire-Grenzen** (Parität, kein Regress): einzelnes `&` (Hintergrund), `|&`,
-Ein-Befehl-`{ … }`-Gruppe gelten nicht als Segment-Grenze — Härtung optional.
+Subshell-Fork je Token (Hot-Path-Latenz, [`ADR-0004`](../../adr/0004-durchsetzungs-emission.md)). **Härtung
+nachgezogen** (über node-Parität hinaus): einzelnes `&` (Hintergrund) und `|&`
+sind jetzt Segment-Grenzen (+3 Regressionstests); bewusste Tripwire-Grenze
+bleibt die Ein-Befehl-`{ … }`-Gruppe.
 
 **Folge-Slices (offen):**
 
 - `shell-lint`-Gate (shellcheck im gepinnten Image) als eigener Slice — heute nur
   als Verifikation gelaufen, nicht als Gate (siehe §6).
-- Optionale Guard-Härtung über die node-Parität hinaus: `&`/`|&`/Brace-Gruppe als
-  Segment-Grenzen (Review-Restbefund).
+- Optionale weitere Guard-Härtung: Ein-Befehl-`{ … }`-Gruppe als Segment-Grenze
+  (Review-Restbefund; `&`/`|&` bereits nachgezogen).
 - Durchsetzungsschicht-**Emission** im Picker (zweite Hälfte [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren),
   [`ADR-0004`](../../adr/0004-durchsetzungs-emission.md) Folge-Slice 2) — Guard ins Zielrepo emittieren, BLOCKED-Set je `--lang`.
 - SessionStart-Hook fürs Regelwerk (Prozess-Härtung, siehe Lerneintrag 2).

@@ -10,7 +10,7 @@
 # abgeschnitten, \u-Escape im Befehl) -> fail-closed (block).
 #
 # Geprueft wird die Befehlsposition jedes Kommando-Segments (Trennung an
-# ; && || | $( ` ( und Zeilenenden) — `git commit -m "... pip ..."` bleibt
+# ; & && || | $( ` ( und Zeilenenden) — `git commit -m "... pip ..."` bleibt
 # erlaubt, `/usr/bin/pip` und `sudo pip` werden erkannt. Zuweisungs- und
 # Wrapper-Praefixe (VAR=…, sudo/env/command/…) werden uebersprungen.
 # Sub-Shell-Strings (`bash -c "…"`, auch in Flag-Buendeln wie -lc/-ec/-cx)
@@ -59,7 +59,7 @@ scan() {  # scan <cmd> <tiefe>; return 0 = BLOCK, 1 = ok
   local cmd=$1 depth=$2
   [ "$depth" -gt 3 ] && return 0          # zu tief verschachtelt -> fail-closed
   local s=$cmd
-  s=${s//'&&'/$'\n'}; s=${s//'||'/$'\n'}; s=${s//'|'/$'\n'}
+  s=${s//'&&'/$'\n'}; s=${s//'&'/$'\n'}; s=${s//'||'/$'\n'}; s=${s//'|'/$'\n'}
   s=${s//';'/$'\n'};  s=${s//\$\(/$'\n'};  s=${s//'`'/$'\n'}
   s=${s//'('/$'\n'};  s=${s//$'\r'/$'\n'}
   local seg head i j rest x
