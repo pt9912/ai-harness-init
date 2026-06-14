@@ -14,26 +14,16 @@ einmal pro Session lesen, bevor der Workflow (§6) startet:
 <https://raw.githubusercontent.com/pt9912/ai-harness-course/main/kurs/de/agents-regelwerk.md>
 Derivativ; bei Konflikt gelten die kanonischen Quellen.
 
-**In-Repo-Cache + Auto-Injektion.** Das Regelwerk liegt gepinnt als
-`harness/agents-regelwerk.cache.md`; ein SessionStart-Hook injiziert es
-automatisch in Claude Code (`.claude/settings.json`) und Codex CLI
-(`.codex/hooks.json`) über `harness/tools/sessionstart-inject-regelwerk.sh`
-(Mechanik: [`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor)).
-Codex liest `AGENTS.md` nativ — für Codex-Cloud/-IDE ohne Hook trägt daher die
-folgende Kurzform (Codex folgt keinen Links → Inhalt inline):
-
-**Hard Rules (Kurzform — Volltext im Cache):**
-
-1. **Keine halluzinierten Gates** — nur real existierende Gates behaupten.
-2. **Source Precedence ist total** — höherrangige Quelle gewinnt, niedrigere wird korrigiert.
-3. **Spec → ADR im Bindungstext verboten** — nur Historie-Tabelle.
-4. **Traceability je Commit** — Requirement-/ADR-/Test-/Gate-/Doku-Bezug.
-5. **WIP = 1** — ein Slice je Implementierer in in-progress.
-6. **Closure braucht Lerneintrag** — Übergang nach done nur mit Steering-Eintrag.
-7. **Brownfield braucht Graduation-Plan** — keine getarnte Dauerausnahme.
-8. **Carveout braucht Trigger** — expliziter Auflösungs-Trigger oder als permanent dokumentiert.
-9. **Fail-closed Gates** — fehlende/unlesbare Eingabe → block.
-10. **Entropie-Management ist dauerhaft** — Drift, tote Constraints, Carveout-Wildwuchs aktiv jagen.
+**Lokaler Cache + SessionStart-Injektion.** `make regelwerk-fetch` zieht das
+**wortgleiche** Regelwerk (Raw-URL, sha256-gepinnt) nach
+`.harness/cache/agents-regelwerk.md` (gitignored, lokal — kein committeter
+Fremd-Blob, **keine** Kurzfassung/Paraphrase). Ein SessionStart-Hook
+(`harness/tools/sessionstart-inject-regelwerk.sh`, registriert in
+`.claude/settings.json` und `.codex/hooks.json`) injiziert diese Kopie **im
+Volltext** in den Session-Kontext; fehlt der Cache (vor dem Fetch), wird nichts
+injiziert — dann die Quelle direkt lesen. Mechanik + Verifikation (Titelzeile
+zitieren / Transcript greppen): [`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor). Codex-Cloud/-IDE haben keinen
+Hook → dort die Quelle direkt lesen.
 
 **Skelett-Vorlagen der Baseline** als ZIP zum Bootstrap:
 <https://github.com/pt9912/ai-harness-course/releases/latest/download/lab-templates.zip>

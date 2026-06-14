@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
-# sessionstart-inject-regelwerk — injiziert das gepinnte Betriebsregelwerk
-# (harness/agents-regelwerk.cache.md) beim Session-Start in den Agenten-Kontext.
+# sessionstart-inject-regelwerk — injiziert das wortgleiche Betriebsregelwerk
+# (.harness/cache/agents-regelwerk.md) beim Session-Start in den Agenten-Kontext.
 #
 # Agent-neutral: gibt dieselbe hookSpecificOutput.additionalContext-JSON-Form
 # fuer Claude Code (.claude/settings.json) und Codex CLI (.codex/hooks.json)
 # aus. KEIN node/jq (LH-QA-03): JSON-String-Encoding via json-encode.awk.
-# KEIN Netz-Fetch (LH-QA-02): nur die lokale, gepinnte Kopie.
+# KEIN Netz-Fetch (LH-QA-02): nur die lokale, sha256-gepinnte Kopie, die
+# `make regelwerk-fetch` (gitignored) befuellt.
 #
-# Fehlender Cache oder fehlendes awk -> leerer additionalContext + exit 0:
+# Fehlender Cache (vor dem Fetch) oder fehlendes awk -> leerer additionalContext + exit 0:
 # degradiert leise, blockt KEINE Session. Mechanik: conventions.md MR-004.
 set -euo pipefail
 
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cache="$here/../../harness/agents-regelwerk.cache.md"
+cache="$here/../../.harness/cache/agents-regelwerk.md"
 encoder="$here/json-encode.awk"
 
 emit() {  # emit <bereits-JSON-escapter-String-Inhalt>

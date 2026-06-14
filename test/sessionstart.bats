@@ -41,18 +41,19 @@ enc() { printf '%s' "$1" | awk -f "$ENCODER"; }
 
 # ---------- Injektor ----------
 
-@test "inject: Cache vorhanden -> SessionStart-Wrapper, additionalContext nicht leer" {
-  run bash "$INJECT"
+# Der echte Cache ist gitignored/gefetcht (in CI abwesend) — daher gegen einen
+# synthetischen Cache testen: vorhandener Cache -> Inhalt im Volltext injiziert.
+@test "inject: vorhandener Cache wird im Volltext in additionalContext injiziert" {
+  tmp="$(mktemp -d)"
+  mkdir -p "$tmp/harness/tools" "$tmp/.harness/cache"
+  cp "$INJECT" "$tmp/harness/tools/"
+  cp "$ENCODER" "$tmp/harness/tools/"
+  printf '# Titel REGELTEST-7f3a\nzweite Zeile\n' > "$tmp/.harness/cache/agents-regelwerk.md"
+  run bash "$tmp/harness/tools/sessionstart-inject-regelwerk.sh"
   [ "$status" -eq 0 ]
   printf '%s' "$output" | grep -q '"hookEventName":"SessionStart"'
-  printf '%s' "$output" | grep -q '"additionalContext":"'
+  printf '%s' "$output" | grep -q 'REGELTEST-7f3a'
   [[ "$output" != *'"additionalContext":""'* ]]
-}
-
-@test "inject: additionalContext enthält den Sentinel-Marker (Verifikation)" {
-  run bash "$INJECT"
-  [ "$status" -eq 0 ]
-  printf '%s' "$output" | grep -q 'AIHARNESS-REGELWERK-SENTINEL'
 }
 
 @test "inject: fehlender Cache -> leerer additionalContext, exit 0 (degradiert leise)" {

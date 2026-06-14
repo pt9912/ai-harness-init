@@ -82,38 +82,39 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ### MR-004 — SessionStart-Regelwerk-Injektor
 
 - **Datum:** 2026-06-14
-- **Geltungsbereich:** [`harness/tools/`](../harness/tools/), [`.claude/`](../.claude/), [`.codex/`](../.codex/), `harness/agents-regelwerk.cache.md`, `.d-check.yml`
+- **Geltungsbereich:** [`harness/tools/`](../harness/tools/), [`.claude/`](../.claude/), [`.codex/`](../.codex/), `.harness/cache/`, `Makefile`, `.d-check.yml`
 - **Adaption:** Ein agent-neutraler **SessionStart-Hook**
-  (`harness/tools/sessionstart-inject-regelwerk.sh`) injiziert das gepinnte
-  Betriebsregelwerk (`harness/agents-regelwerk.cache.md`) beim Session-Start in
-  den Agenten-Kontext — registriert in `.claude/settings.json`
-  (`hooks.SessionStart`) **und** `.codex/hooks.json` (`SessionStart`,
-  `startup|resume`); beide Agenten teilen die
-  `hookSpecificOutput.additionalContext`-Form. JSON-String-Encoding via
+  (`harness/tools/sessionstart-inject-regelwerk.sh`) injiziert das **wortgleiche**
+  Betriebsregelwerk **im Volltext** beim Session-Start in den Agenten-Kontext —
+  registriert in `.claude/settings.json` (`hooks.SessionStart`) **und**
+  `.codex/hooks.json` (`SessionStart`, `startup|resume`); beide Agenten teilen die
+  `hookSpecificOutput.additionalContext`-Form. Quelle ist ein **lokaler,
+  gitignorierter** Cache `.harness/cache/agents-regelwerk.md`, den
+  `make regelwerk-fetch` per `curl` (Raw-URL, **sha256-gepinnt**) befüllt — kein
+  committeter Fremd-Blob und **keine** Kurzfassung/Paraphrase (das war eine frühere
+  Harness-Lüge, siehe slice-007-Korrektur). JSON-String-Encoding via
   `harness/tools/json-encode.awk` (**kein** node/jq,
   [`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)); **kein**
-  Netz-Fetch (nur lokale Kopie,
+  Netz-Fetch im Hook (nur die lokale Kopie,
   [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Fehlender Cache
-  → leerer `additionalContext`, exit 0 (degradiert leise). Der Cache ist als
-  derivativer externer Inhalt vom Doc-Gate ausgenommen (`.d-check.yml`
-  `scan.ignore`); für Codex-Cloud/-IDE (kein Hook) trägt zusätzlich die
-  Hard-Rules-Kurzform inline in AGENTS.md §1.
+  (vor dem Fetch) → leerer `additionalContext`, exit 0 (degradiert leise). Der
+  Cache ist gitignored und vom Doc-Gate ausgenommen (`.d-check.yml` `scan.ignore`).
 - **Begründung:** Die in AGENTS.md §1 verlangte Regelwerk-Lektüre war nur
   *erinnert*, nicht *erzwungen* (Steering-Befund aus slice-006). Der Hook macht
-  sie zu Computational Feedforward; der awk-Encoder hält die node/jq-freie Linie
-  des Command-Guards. Codex hat kein eigenes Format (`CODEX.md`) und folgt keinen
-  Links in AGENTS.md → Inline-Kurzform für den Cloud/IDE-Pfad.
-- **Verifikation & Drift:** Injektion prüfbar über den Sentinel
-  `AIHARNESS-REGELWERK-SENTINEL` (Modell zitieren lassen bzw. im Transcript
-  greppen: Claude `~/.claude/projects/.../*.jsonl`, Codex
+  sie zu Computational Feedforward — mit dem **echten** Text, nicht einer
+  Eigenbau-Kurzfassung. Kosten: ~53K Token je Session (bewusst akzeptiert für
+  „Regeln garantiert im Kontext"). Der awk-Encoder hält die node/jq-freie Linie.
+- **Verifikation & Drift:** Injektion prüfbar, indem das Modell eine **echte
+  Zeile** zitiert (z. B. die Titelzeile `Agents-Regelwerk …`) bzw. im Transcript
+  danach gegreppt wird (Claude `~/.claude/projects/.../*.jsonl`, Codex
   `~/.codex/sessions/.../rollout-*.jsonl`); Hook-Lauf via Debug (`claude --debug`
   → `~/.claude/debug/<id>.txt`; Codex `RUST_LOG=codex_core=debug codex` →
-  `~/.codex/log/codex-tui.log`). **Kein** Upstream-Check/Auto-Pull (offline,
-  reproduzierbar) — Drift bleibt bis zum manuellen Refresh unentdeckt. Risiko:
-  repo-lokale Codex-Hook-Config feuert in manchen Versionen still nicht
-  (codex-Issue #17532) → ggf. nach `~/.codex/hooks.json` (User-scope) ausweichen.
-- **Auflösungs-Trigger:** permanent; Cache-Refresh bei Upstream-Änderung manuell;
-  Codex-Hook-Verfügbarkeit ist versionsabhängig.
+  `~/.codex/log/codex-tui.log`). **Kein** Auto-Check im Hook (offline); Drift
+  erkennt `make regelwerk-fetch` über den sha256-Pin. Risiko: repo-lokale
+  Codex-Hook-Config feuert in manchen Versionen still nicht (codex-Issue #17532)
+  → ggf. nach `~/.codex/hooks.json` (User-scope) ausweichen.
+- **Auflösungs-Trigger:** permanent; Cache-Refresh + Re-Pin (`REGELWERK_SHA256`)
+  bei Upstream-Änderung manuell; Codex-Hook-Verfügbarkeit ist versionsabhängig.
 
 ### MR-005 — Harness-Tools unter harness/tools/ (Layout-Adaption)
 
@@ -122,8 +123,9 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Adaption:** Die ausführbaren Harness-Tools (Gate-Nachweis, Working-Tree-Hash,
   Command-Guard-Extraktor, SessionStart-Injektor + awk-Encoder) liegen unter
   `harness/tools/` statt dem Baseline-Default `tools/harness/`. Damit liegt die
-  gesamte Harness — Docs (`harness/README.md`, `harness/conventions.md`,
-  `harness/agents-regelwerk.cache.md`) und Tooling — unter einem `harness/`-Dach.
+  gesamte Harness — Docs (`harness/README.md`, `harness/conventions.md`) und
+  Tooling — unter einem `harness/`-Dach (der Regelwerk-Cache liegt gitignored
+  unter `.harness/cache/`, siehe [`MR-004`](#mr-004--sessionstart-regelwerk-injektor)).
   Folge: `codepaths.roots` verliert das nicht mehr existierende `tools` (die
   Tools sind unter `harness` weiter abgedeckt); alle Hook-/Makefile-/Test-
   Referenzen und die vorherigen Tooling-MR-Geltungsbereiche sind angepasst.

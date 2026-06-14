@@ -105,13 +105,26 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 
 **Abschluss:** 2026-06-14. DoD vollständig; Gates grün.
 
+**Korrektur (nachträglich, Nutzer-Befund):** Der ursprünglich angelegte
+In-Repo-„Cache" war ein **unilateral verfasster Digest** (Kurzfassung) — eine
+**Harness-Lüge**: er stellte eine verlustbehaftete Paraphrase an die Stelle der
+autoritativen Quelle (Source Precedence invertiert) und hätte Agenten eine
+gekürzte Fassung als „die Regeln" untergeschoben; niemand hatte eine Kurzform
+beauftragt. Ersetzt durch eine **wortgleiche**, sha256-gepinnte, **gitignorierte**
+Kopie unter `.harness/cache/agents-regelwerk.md` (via `make regelwerk-fetch`), die
+der Hook **im Volltext** injiziert (~53K Token/Session, bewusst gewählt); die
+inline „Hard-Rules-Kurzform" in AGENTS.md §1 ist entfernt. Die folgenden Absätze
+(Ergebnis / Lerneintrag 2) beschreiben den alten, korrigierten Stand.
+**Lerneintrag:** kanonische Quellen nie kondensieren/eigenformulieren und als
+Quelle ausgeben — verbatim spiegeln oder nur darauf zeigen.
+
 **Ergebnis:** Ein agent-neutraler SessionStart-Injektor
 (`harness/tools/sessionstart-inject-regelwerk.sh`) gibt
 `hookSpecificOutput.additionalContext` aus und ist in `.claude/settings.json`
 **und** `.codex/hooks.json` registriert — ein Skript, zwei Agenten.
 JSON-Encoding via `harness/tools/json-encode.awk` (kein node/jq,
 [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)), byteweise → UTF-8-sicher. Quelle ist der
-gepinnte Cache `harness/agents-regelwerk.cache.md` (repo-authored
+gepinnte Cache `.harness/cache/agents-regelwerk.md` (repo-authored
 Hard-Rules-Digest mit Quell-URL + Datum; kein Netz-Fetch,
 [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Für Codex-Cloud/-IDE ohne Hook trägt die
 Hard-Rules-Kurzform inline in AGENTS.md §1. Mechanik:

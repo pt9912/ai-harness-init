@@ -3,10 +3,9 @@
 # Targets/roots existieren (sonst Config-Fehler / halluzinierter Gate).
 scan:
   roots: ["."]
-  # agents-regelwerk.cache.md: derivativer, extern gepflegter Regelwerk-Cache
-  # (MR-004) — literal-schwer, eigene generische IDs; nicht repo-autoritativ,
-  # daher vom Doc-Gate ausgenommen (wie Templates). Quelle ist autoritativ.
-  ignore: ["**/*.template.md", ".tmp/**", "harness/agents-regelwerk.cache.md"]
+  # .harness/cache/: lokaler, gefetchter Verbatim-Regelwerk-Cache (gitignored,
+  # MR-004) — externer Inhalt, nicht repo-autoritativ; vom Doc-Gate ausgenommen.
+  ignore: ["**/*.template.md", ".tmp/**", ".harness/cache/**"]
 modules: [links, anchors, ids, matrix, codepaths, spans]
 # Kennungen sind linkpflichtig (auch in Inline-Code, link-policy: always) —
 # "klickbar zur Quelle" als gemessenes Property. Literal-schwere Artefakte
