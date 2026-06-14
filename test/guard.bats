@@ -139,6 +139,18 @@ assert_passed() {
   assert_blocked
 }
 
+# ---------- Härtung: Ein-Befehl-Brace-Group { go …; } ----------
+
+@test "guard: { go build; } blockt (führendes { als Prefix übersprungen)" {
+  run guard '{"tool_input":{"command":"{ go build; }"}}'
+  assert_blocked
+}
+
+@test "guard: legitime Brace-Group { make build; } passt weiter" {
+  run guard '{"tool_input":{"command":"{ make build; }"}}'
+  assert_passed
+}
+
 # ---------- Guard: bash -c-Verschachtelung ----------
 
 @test "guard: bash -c \"go build\" blockt" {

@@ -12,7 +12,8 @@
 # Geprueft wird die Befehlsposition jedes Kommando-Segments (Trennung an
 # ; & && || | $( ` ( und Zeilenenden) — `git commit -m "... pip ..."` bleibt
 # erlaubt, `/usr/bin/pip` und `sudo pip` werden erkannt. Zuweisungs- und
-# Wrapper-Praefixe (VAR=…, sudo/env/command/…) werden uebersprungen.
+# Wrapper-Praefixe (VAR=…, sudo/env/command/…) sowie fuehrende Brace-Group-
+# Delimiter ({ … }) werden uebersprungen.
 # Sub-Shell-Strings (`bash -c "…"`, auch in Flag-Buendeln wie -lc/-ec/-cx)
 # werden rekursiv geprueft (Tiefe <= 3, darueber fail-closed; MR-003).
 # Bewusst NICHT geprueft: andere Interpreter (`python -c`, `find -exec`, …)
@@ -73,6 +74,9 @@ scan() {  # scan <cmd> <tiefe>; return 0 = BLOCK, 1 = ok
     while [ "$i" -lt "${#stoks[@]}" ]; do
       if [[ "${stoks[$i]}" =~ ^[A-Za-z_][A-Za-z0-9_]*= ]]; then i=$((i+1)); continue; fi
       in_set "$PREFIXES" "${stoks[$i]}" && { i=$((i+1)); continue; }
+      # fuehrende Brace-Group-Delimiter ueberspringen: `{ go build; }` ->
+      # Kopf waere sonst `{` und das Tool an Position 2 entkaeme der Pruefung.
+      case "${stoks[$i]}" in "{"|"}") i=$((i+1)); continue;; esac
       break
     done
     [ "$i" -ge "${#stoks[@]}" ] && continue
