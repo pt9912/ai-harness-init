@@ -12,7 +12,10 @@ die den Harness nicht von Hand zusammenkopieren wollen.
 **Ehrlicher Stand:** Doku-Harness kohärent (Phase 3–4); der Code ist noch
 ungebaut (Phase 0). Verfügbar:
 
-- `make docs-check` läuft grün (Doku-Referenz-Gate, d-check v0.8.0);
+- `make docs-check` (Doku-Referenz-Gate, d-check v0.8.0), `make test`
+  (Command-Guard via bats) und `make shell-lint` (shellcheck) laufen grün — Docker-only;
+- Durchsetzungsschicht adoptiert: Command-Guard (bash+awk), Gate-Nachweis,
+  Regelwerk-Injektion (Codex-Hook / Claude-Pointer);
 - Spec, Architektur, ADR und Harness-Einstieg sind adoptiert und lesbar;
 - ausführbare Bootstrap-Funktion (`bin/ai-harness-init`): **folgt** —
   Implementierung gegen `LH-FA-*`.
@@ -37,7 +40,7 @@ of Truth bleibt der Kurs. Emittiert wird nur, was wirklich läuft.
 - **Prozess:** [`AGENTS.md`](AGENTS.md) (Hard Rules), [`harness/README.md`](harness/README.md) (Source Precedence, Sensors).
 - **Verträge:** [`spec/lastenheft.md`](spec/lastenheft.md) (`LH-*`-IDs mit Akzeptanzkriterien).
 - **Entscheidungen:** [`docs/plan/adr/`](docs/plan/adr/) — z. B. [`ADR-0001`](docs/plan/adr/0001-skelett-distribution.md) (Skelett-Distribution).
-- **Gates:** `make docs-check` grün (links/anchors/ids/codepaths); `make gates`. (`lint`/`test` folgen mit dem Code.)
+- **Gates:** `make docs-check` (links/anchors/ids/codepaths), `make test` (Command-Guard, bats), `make shell-lint` (shellcheck) — grün; `make gates` bündelt sie. (Go-`lint`/`build`/`test` folgen mit dem Code.)
 
 ## Lizenz
 
