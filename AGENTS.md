@@ -62,8 +62,9 @@ aktivieren ([`LH-QA-01`](spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates
 
 ### 3.2 Lint-Suppression-Verbot
 
-Kein `//nolint` (golangci-lint) ohne begründeten, zentralen Eintrag in der
-zentralen Lint-Config. Inline-Suppression bricht den lint-Gate.
+Kein `//nolint` (golangci-lint) und kein `# shellcheck disable` ohne
+begründeten, zentralen Eintrag in der jeweiligen Lint-Config. Inline-Suppression
+bricht den `lint`- bzw. `shell-lint`-Gate.
 
 ### 3.3 git mv + Inhaltsänderung = zwei Commits
 
@@ -86,9 +87,10 @@ PR-Kommentar.
 |---|---|
 | `make docs-check` | Doku-Referenzen (links/anchors/ids/codepaths) via d-check |
 | `make test` | Command-Guard-Tests (bash+awk) via bats im gepinnten Image |
+| `make shell-lint` | Shell-Hooks/-Helfer lint-clean (shellcheck) im gepinnten Image |
 | `make gates` | alle aktuell lauffähigen Gates |
 
-**Nicht behauptet** (folgt mit dem Go-Code): `build`/`lint` (Go-Toolchain im gepinnten Image — `go build` / `golangci-lint`); `make test` deckt aktuell die bash+awk-Guard-Suite (bats), die Go-Unit-Tests (`go test`) folgen mit dem Code.
+**Nicht behauptet** (folgt mit dem Go-Code): `build`/`lint` (Go-Toolchain im gepinnten Image — `go build` / `golangci-lint`); `make test`/`make shell-lint` decken aktuell die bash+awk-Guard-Suite (bats) und die Shell-Hooks (shellcheck), die Go-Unit-Tests (`go test`) folgen mit dem Code.
 
 ## 5. Dokumentations-Regeln
 

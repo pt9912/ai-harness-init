@@ -70,7 +70,41 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Abschluss:** 2026-06-14. DoD vollständig; Gates grün.
+
+**Ergebnis:** `make shell-lint` lintet die fünf harness-eigenen
+Shell-Hooks/-Helfer (`.claude/hooks/*.sh`, `tools/harness/*.sh`) mit
+**shellcheck** im digest-gepinnten Image
+([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), Docker-only [`ADR-0003`](../../adr/0003-go-native-binaries.md)) und ist als Gate in
+`gates` (vor `record-gates`). In AGENTS.md §4 / harness/README.md §Sensors aus
+„Nicht behauptet" promotet; Hard Rule 3.2 deckt jetzt auch `# shellcheck
+disable`. `.bats` ist bewusst ausgenommen (shellcheck parst die `@test`-Syntax
+nicht), `.awk` ist kein Shell — im Makefile-Kommentar festgehalten.
+
+**Nachweise (zwei beobachtbare Closure-Kriterien + Lerneintrag):**
+
+- `make shell-lint` → exit 0 über 5 `.sh` im gepinnten shellcheck-Image; **keine**
+  Inline-Suppression.
+- `make gates` grün (docs-check 26/0 + test 35/35 + shell-lint + Nachweis).
+
+**Steering-Loop-Lerneintrag:**
+
+1. **Shell-Lint-Lücke aus slice-006 geschlossen.** Dort lief shellcheck nur als
+   einmalige Verifikation; jetzt ist es ein echtes, gepinntes Gate — Guard und
+   SessionStart-Injektor bleiben dauerhaft lint-clean erzwungen.
+2. **Kein Widerspruch zu [`ADR-0003`](../../adr/0003-go-native-binaries.md).** Dieser verlegte die *Tool*-Toolchain
+   auf Go/`golangci-lint`; shellcheck betrifft die harness-eigenen Shell-Hooks,
+   nicht die Tool-Implementierung — kein neuer ADR nötig (Gate-*Anheben* →
+   Steering-Loop, nicht -Lockern).
+3. **`.bats` ungelintet:** bewusste Grenze (shellcheck kann `@test` nicht
+   parsen) — Folge-Punkt, falls bats-Logik wächst.
+
+**Folge-Slices / offen:**
+
+- Go-`lint`/`build`/`test`-Gates (`golangci-lint`/`go build`/`go test`) mit dem
+  Go-Code.
+- Optionale `.bats`-Lint-Abdeckung (Vorverarbeitung + `shellcheck --shell=bash`),
+  falls die bats-Logik komplexer wird.
 
 ## 8. Sub-Area-Modus-Begründung
 

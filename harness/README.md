@@ -39,9 +39,10 @@ Nur existierende Targets (keine halluzinierten Gates):
 |---|---|---|
 | `make docs-check` | Doku-Referenzen grün (links/anchors/ids/codepaths) | — |
 | `make test` | Command-Guard-Tests (bash+awk) grün via bats | [`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md) |
+| `make shell-lint` | Shell-Hooks/-Helfer lint-clean (shellcheck) | [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
 | `make gates` | alle aktuell lauffähigen Gates | — |
 
-**Nicht behauptet** (folgt mit dem Go-Code): `build`/`lint` (Go-Toolchain im gepinnten Image — `go build` / `golangci-lint`); `make test` deckt aktuell die bash+awk-Guard-Suite (bats), die Go-Unit-Tests (`go test`) folgen mit dem Code.
+**Nicht behauptet** (folgt mit dem Go-Code): `build`/`lint` (Go-Toolchain im gepinnten Image — `go build` / `golangci-lint`); `make test`/`make shell-lint` decken aktuell die bash+awk-Guard-Suite (bats) und die Shell-Hooks (shellcheck), die Go-Unit-Tests (`go test`) folgen mit dem Code.
 
 ## Traceability
 
