@@ -110,9 +110,11 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   `~/.codex/sessions/.../rollout-*.jsonl`); Hook-Lauf via Debug (`claude --debug`
   → `~/.claude/debug/<id>.txt`; Codex `RUST_LOG=codex_core=debug codex` →
   `~/.codex/log/codex-tui.log`). **Kein** Auto-Check im Hook (offline); Drift
-  erkennt `make regelwerk-fetch` über den sha256-Pin. Risiko: repo-lokale
-  Codex-Hook-Config feuert in manchen Versionen still nicht (codex-Issue #17532)
-  → ggf. nach `~/.codex/hooks.json` (User-scope) ausweichen.
+  erkennt `make regelwerk-fetch` über den sha256-Pin. **Codex-Setup:**
+  `.codex/hooks.json` braucht das `{ "hooks": { "SessionStart": … } }`-Schema
+  (Wrapper) **und** der Projekt-`.codex/`-Layer muss in Codex via `/hooks`
+  **getrustet** sein — sonst zeigt `/hooks` `Installed 0` und der Hook feuert
+  nicht. (Claude: `.claude/settings.json`, eigener Trust-/Reload-Pfad.)
 - **Auflösungs-Trigger:** permanent; Cache-Refresh + Re-Pin (`REGELWERK_SHA256`)
   bei Upstream-Änderung manuell; Codex-Hook-Verfügbarkeit ist versionsabhängig.
 
