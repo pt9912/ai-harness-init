@@ -56,12 +56,13 @@ enc() { printf '%s' "$1" | awk -f "$ENCODER"; }
   [[ "$output" != *'"additionalContext":""'* ]]
 }
 
-@test "inject: fehlender Cache -> leerer additionalContext, exit 0 (degradiert leise)" {
+@test "inject: fehlender Cache -> Warnung mit Fetch-Befehl, exit 0 (degradiert sichtbar)" {
   tmp="$(mktemp -d)"
   mkdir -p "$tmp/harness/tools"
   cp "$INJECT" "$tmp/harness/tools/"
   cp "$ENCODER" "$tmp/harness/tools/"
   run bash "$tmp/harness/tools/sessionstart-inject-regelwerk.sh"
   [ "$status" -eq 0 ]
-  [ "$output" = '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":""}}' ]
+  printf '%s' "$output" | grep -q '"hookEventName":"SessionStart"'
+  printf '%s' "$output" | grep -q 'make regelwerk-fetch'
 }

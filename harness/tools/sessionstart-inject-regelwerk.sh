@@ -2,14 +2,16 @@
 # sessionstart-inject-regelwerk — injiziert das wortgleiche Betriebsregelwerk
 # (.harness/cache/agents-regelwerk.md) beim Session-Start in den Agenten-Kontext.
 #
-# Agent-neutral: gibt dieselbe hookSpecificOutput.additionalContext-JSON-Form
-# fuer Claude Code (.claude/settings.json) und Codex CLI (.codex/hooks.json)
-# aus. KEIN node/jq (LH-QA-03): JSON-String-Encoding via json-encode.awk.
+# Fuer den Codex-SessionStart-Hook (.codex/hooks.json): gibt die
+# hookSpecificOutput.additionalContext-JSON-Form aus. Claude nutzt KEINEN Hook,
+# sondern liest den Cache per Pointer (CLAUDE.md) — Claude kappt Hook-Ausgaben
+# bei 10k Zeichen. KEIN node/jq (LH-QA-03): JSON-String-Encoding via json-encode.awk.
 # KEIN Netz-Fetch (LH-QA-02): nur die lokale, sha256-gepinnte Kopie, die
 # `make regelwerk-fetch` (gitignored) befuellt.
 #
-# Fehlender Cache (vor dem Fetch) oder fehlendes awk -> leerer additionalContext + exit 0:
-# degradiert leise, blockt KEINE Session. Mechanik: conventions.md MR-004.
+# Fehlender Cache (vor dem Fetch) oder fehlendes awk -> SICHTBARE Warnung mit dem
+# Fetch-Befehl (statt leer) + exit 0: degradiert sichtbar, blockt KEINE Session.
+# Kein Netz im Hook. Mechanik: conventions.md MR-004.
 set -euo pipefail
 
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -20,8 +22,15 @@ emit() {  # emit <bereits-JSON-escapter-String-Inhalt>
   printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"%s"}}\n' "$1"
 }
 
-if [ ! -f "$cache" ] || [ ! -f "$encoder" ] || ! command -v awk >/dev/null 2>&1; then
-  emit ""
+# Fehlender Cache / fehlendes Tooling -> SICHTBARE Warnung (statt leer), exit 0:
+# degradiert sichtbar (kein stilles Schlucken), blockt KEINE Session. Kein
+# Netz-Fetch hier (LH-QA-03) — der Hinweis nennt nur den Maintenance-Befehl.
+if [ ! -f "$cache" ]; then
+  emit "WARN: Regelwerk-Cache fehlt (.harness/cache/agents-regelwerk.md). Fuehre 'make regelwerk-fetch' aus und starte die Session neu — bis dahin das Regelwerk NICHT als geladen voraussetzen."
+  exit 0
+fi
+if [ ! -f "$encoder" ] || ! command -v awk >/dev/null 2>&1; then
+  emit "WARN: Regelwerk-Injektor degradiert (awk oder json-encode.awk fehlt). Regelwerk NICHT als geladen voraussetzen."
   exit 0
 fi
 

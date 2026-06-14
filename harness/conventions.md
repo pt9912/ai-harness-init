@@ -102,8 +102,10 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   [`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)); **kein**
   Netz-Fetch im Hook (nur die lokale Kopie,
   [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Fehlender Cache
-  (vor dem Fetch) → leerer `additionalContext`, exit 0 (degradiert leise). Der
-  Cache ist gitignored und vom Doc-Gate ausgenommen (`.d-check.yml` `scan.ignore`).
+  (vor dem Fetch) → **sichtbare Warnung** mit `make regelwerk-fetch` (statt leer),
+  exit 0 (degradiert sichtbar, blockt nichts; kein Netz im Hook — der Hinweis
+  nennt nur den Maintenance-Befehl). Der Cache ist gitignored und vom Doc-Gate
+  ausgenommen (`.d-check.yml` `scan.ignore`).
 - **Begründung:** Die in AGENTS.md §1 verlangte Regelwerk-Lektüre war nur
   *erinnert*, nicht *erzwungen* (Steering-Befund aus slice-006). Der Hook macht
   sie zu Computational Feedforward — mit dem **echten** Text, nicht einer
