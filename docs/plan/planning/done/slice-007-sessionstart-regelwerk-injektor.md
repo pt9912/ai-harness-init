@@ -112,9 +112,8 @@ autoritativen Quelle (Source Precedence invertiert) und hätte Agenten eine
 gekürzte Fassung als „die Regeln" untergeschoben; niemand hatte eine Kurzform
 beauftragt. Ersetzt durch eine **wortgleiche**, sha256-gepinnte, **gitignorierte**
 Kopie unter `.harness/cache/agents-regelwerk.md` (via `make regelwerk-fetch`), die
-der Hook **im Volltext** injiziert (~53K Token/Session, bewusst gewählt); die
-inline „Hard-Rules-Kurzform" in AGENTS.md §1 ist entfernt. Die folgenden Absätze
-(Ergebnis / Lerneintrag 2) beschreiben den alten, korrigierten Stand.
+**Codex** injiziert sie voll via Hook, **Claude** liest sie bei Bedarf (Pointer,
+s. Nachtrag); die inline „Hard-Rules-Kurzform" in AGENTS.md §1 ist entfernt.
 **Lerneintrag:** kanonische Quellen nie kondensieren/eigenformulieren und als
 Quelle ausgeben — verbatim spiegeln oder nur darauf zeigen.
 
@@ -128,53 +127,54 @@ liest die Datei ohnehin). Der Claude-SessionStart-Hook ist entfernt.
 AGENTS.md §1 / [`MR-004`](../../../../harness/conventions.md#mr-004--sessionstart-regelwerk-injektor) sind entsprechend pro Agent korrigiert (das frühere
 „Volltext für beide via Hook" war falsch).
 
-**Ergebnis:** Ein agent-neutraler SessionStart-Injektor
+**End-Stand (maßgeblich):** Der Injektor
 (`harness/tools/sessionstart-inject-regelwerk.sh`) gibt
-`hookSpecificOutput.additionalContext` aus und ist in `.claude/settings.json`
-**und** `.codex/hooks.json` registriert — ein Skript, zwei Agenten.
-JSON-Encoding via `harness/tools/json-encode.awk` (kein node/jq,
-[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)), byteweise → UTF-8-sicher. Quelle ist der
-gepinnte Cache `.harness/cache/agents-regelwerk.md` (repo-authored
-Hard-Rules-Digest mit Quell-URL + Datum; kein Netz-Fetch,
-[`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Für Codex-Cloud/-IDE ohne Hook trägt die
-Hard-Rules-Kurzform inline in AGENTS.md §1. Mechanik:
-[`MR-004`](../../../../harness/conventions.md#mr-004--sessionstart-regelwerk-injektor).
+`hookSpecificOutput.additionalContext` aus; JSON-Encoding via
+`harness/tools/json-encode.awk` (kein node/jq, [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten); byteweise,
+UTF-8- + C0-sicher). Quelle ist der gepinnte, **wortgleiche** Cache
+`.harness/cache/agents-regelwerk.md` (sha256-Pin; kein Netz-Fetch im Hook,
+[`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). **Pro Agent:** **Codex** injiziert voll via Hook
+(`.codex/hooks.json`); **Claude** liest den Cache bei Bedarf (Pointer in
+`CLAUDE.md`, Hook entfernt — 10k/150k-Caps). Fehlender Cache → **sichtbare
+Warnung** (nicht still). Mechanik: [`MR-004`](../../../../harness/conventions.md#mr-004--sessionstart-regelwerk-injektor).
 
 **Nachweise (zwei beobachtbare Closure-Kriterien + Lerneintrag):**
 
-- `make test` → 35/35 grün (28 Guard + 7 SessionStart) im busybox-awk-Image:
-  Encoder-Escapes (`"`/`\`/Tab/Newline/UTF-8) und Injektor-Round-Trip
-  verifiziert; fehlender Cache → leerer `additionalContext` + exit 0.
-- `make gates` grün (docs-check 26/0 + test + Nachweis); Injektor shellcheck-clean.
+- `make test` deckt Encoder-Escapes (`"`/`\`/Tab/Newline/UTF-8/C0) + Injektor:
+  Volltext-Injektion gegen synthetischen Cache; fehlender Cache → **sichtbare
+  Warnung** mit `make regelwerk-fetch` (nicht leer/still).
+- `make gates` grün; Injektor shellcheck-clean.
 
 **Steering-Loop-Lerneintrag:**
 
 1. **Geschlossener Loop aus slice-006.** Der dort notierte Vorschlag
    (Regelwerk-Lektüre *erzwingen* statt *erinnern*) ist umgesetzt: aus dem
    erinnerten Pointer wurde Computational Feedforward (SessionStart-Hook).
-2. **Verbatim-Copy abgelehnt → Digest.** Ein Versuch, das Upstream-Regelwerk
-   wörtlich zu spiegeln, wurde (zu Recht) als Reproduktion eines fremden Werks
-   verweigert. Der Cache ist daher ein **repo-authored Digest** (derivativ,
-   Quelle autoritativ) — sauberer als eine Voll-Kopie und kompakt genug fürs
-   32-KiB-AGENTS.md-Limit.
-3. **Codex-Mechanik recherchiert.** Kein `CODEX.md`; Codex folgt keinen Links
-   in AGENTS.md → Inline-Kurzform für Cloud/IDE, Hook nur im CLI. Der
-   Codex-Hook-Pfad ist cwd-relativ (Annahme Projekt-Root) — in der gepinnten
-   Codex-Version zu verifizieren.
+2. **Digest war eine Harness-Lüge.** Der erste „Cache" war eine **unilateral
+   verfasste Kurzfassung** — verlustbehaftete Paraphrase an der Stelle der
+   autoritativen Quelle (vom Nutzer als Lüge erkannt; niemand hatte sie
+   beauftragt). Ein abgelehnter Auto-Fetch ist **kein** echter Block (es ist der
+   Inhalt des Nutzers; `curl` liefert die Bytes). **Lehre:** kanonische Quellen
+   nie kondensieren und als Quelle ausgeben — verbatim spiegeln oder nur zeigen.
+3. **Plattform-Limits empirisch.** Claude kappt Hook-Output bei 10k / Memory bei
+   150k → Volltext-Inject nur bei Codex, Claude bekommt Pointer/Read-on-demand.
+   Codex-Hook brauchte das korrekte `{ "hooks": {…} }`-Schema **und** den
+   getrusteten `.codex/`-Layer (sonst `Installed 0`). Jede Behauptung („wird
+   gelesen", „voll injiziert") wurde **nachgewiesen**, nicht angenommen.
 
-**Verifikation (nachgetragen):** Sentinel `AIHARNESS-REGELWERK-SENTINEL` oben im
-Cache (bats prüft die Injektion); Prüf-Rezepte (Modell-Zitat, Transcript-Grep,
-Debug-Logs je Agent) und das **Kein-Auto-Refresh/Drift**-Verhalten in
-[`MR-004`](../../../../harness/conventions.md#mr-004--sessionstart-regelwerk-injektor).
+**Verifikation (nachgetragen):** über eine **echte** Zeile (z. B. die Titelzeile
+`# Agents-Regelwerk …`) — Modell-Zitat / Transcript-Grep / Debug-Logs je Agent;
+Prüf-Rezepte + Drift-Verhalten in [`MR-004`](../../../../harness/conventions.md#mr-004--sessionstart-regelwerk-injektor). (Der frühere
+Eigenbau-Sentinel ist mit dem Digest entfallen.)
 
 **Folge-Slices / offen:**
 
 - **Codex-Hook real verifizieren** in der eingesetzten Codex-Version (Hooks
   versionsabhängig; repo-lokale Config feuert teils still nicht, codex-Issue
   #17532 → ggf. `~/.codex/hooks.json`); Pfad-Auflösung ggf. härten.
-- **Drift-Check + Cache-Refresh** als eigener Slice: Upstream-Vergleich
-  **außerhalb** des Hooks (Maintenance-Target/CI, nicht per Session) + manuelle
-  Digest-Aktualisierung — heute gibt es **kein** Auto-Check/Auto-Pull.
+- **Drift-Check** (slice-009): read-only `make regelwerk-check`; die
+  sha256-Pin-Verifikation beim `make regelwerk-fetch` deckt Drift bereits ab.
+  Kein Auto-Pull im Hook.
 - Emission des Injektors ins Zielrepo zusammen mit der Durchsetzungsschicht
   ([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) Folge-Slice).
 

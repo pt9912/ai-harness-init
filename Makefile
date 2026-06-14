@@ -31,10 +31,12 @@ shell-lint: ## Shell-Hooks/-Helfer linten (shellcheck) im gepinnten Image — Do
 # SessionStart-Hook injiziert (MR-004). sha256-Pin = Drift-Erkennung beim Fetch.
 regelwerk-fetch: ## Regelwerk verbatim in den lokalen Cache holen + sha256 prüfen — Maintenance, NICHT in gates
 	@mkdir -p "$(dir $(REGELWERK_CACHE))"
-	@curl -fsSL "$(REGELWERK_URL)" -o "$(REGELWERK_CACHE)"
-	@printf '%s  %s\n' "$(REGELWERK_SHA256)" "$(REGELWERK_CACHE)" | sha256sum -c - \
-		|| { echo "DRIFT: Upstream != gepinnter sha256 — Regelwerk prüfen, REGELWERK_SHA256 neu pinnen"; exit 1; }
-	@echo "Regelwerk-Cache aktuell: $(REGELWERK_CACHE)"
+	@tmp="$$(mktemp)"; \
+	curl -fsSL "$(REGELWERK_URL)" -o "$$tmp" \
+		&& printf '%s  %s\n' "$(REGELWERK_SHA256)" "$$tmp" | sha256sum -c - >/dev/null \
+		&& mv "$$tmp" "$(REGELWERK_CACHE)" \
+		&& echo "Regelwerk-Cache aktuell: $(REGELWERK_CACHE)" \
+		|| { rm -f "$$tmp"; echo "FEHLER/DRIFT: Fetch fehlgeschlagen oder Upstream != gepinnter sha256 — Cache UNVERAENDERT; REGELWERK_SHA256 ggf. neu pinnen"; exit 1; }
 
 record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh

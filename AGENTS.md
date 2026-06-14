@@ -9,7 +9,7 @@ Quelle gilt die kanonische Quelle (Source Precedence, §2).
 
 Strukturregeln und Adaptionen leben in [`harness/conventions.md`](harness/conventions.md).
 
-**Betriebsregelwerk der adoptierten Baseline** (Agenten-Kurzform) —
+**Betriebsregelwerk der adoptierten Baseline** (wortgleiches Kurs-Regelwerk) —
 einmal pro Session lesen, bevor der Workflow (§6) startet:
 <https://raw.githubusercontent.com/pt9912/ai-harness-course/main/kurs/de/agents-regelwerk.md>
 Derivativ; bei Konflikt gelten die kanonischen Quellen.

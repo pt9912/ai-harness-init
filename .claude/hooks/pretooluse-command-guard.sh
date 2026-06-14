@@ -14,6 +14,10 @@
 # erlaubt, `/usr/bin/pip` und `sudo pip` werden erkannt. Zuweisungs- und
 # Wrapper-Praefixe (VAR=…, sudo/env/command/…) sowie fuehrende Brace-Group-
 # Delimiter ({ … }) werden uebersprungen.
+# ACHTUNG quote-BLIND: ein Trenner (; & | …) IN einem Argument (z. B. einer
+# Commit-Message `… & gofmt …`) startet ein neues Segment — steht dort ein
+# blockiertes Wort am Kopf, blockt der Guard (False-Positive). Abhilfe:
+# Commit-Messages via `git commit -F <datei>` (Repo-Praxis ohnehin).
 # Sub-Shell-Strings (`bash -c "…"`, auch in Flag-Buendeln wie -lc/-ec/-cx)
 # werden rekursiv geprueft (Tiefe <= 3, darueber fail-closed; MR-003).
 # Bewusst NICHT geprueft: andere Interpreter (`python -c`, `find -exec`, …)

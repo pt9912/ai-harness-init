@@ -39,6 +39,13 @@ enc() { printf '%s' "$1" | awk -f "$ENCODER"; }
   [ "$output" = 'café über' ]
 }
 
+@test "encode: C0-Steuerzeichen werden uXXXX-escapt (valides JSON)" {
+  bs='\'
+  run enc "$(printf 'a\fb')"
+  [ "$output" = "a${bs}u000cb" ]
+}
+
+
 # ---------- Injektor ----------
 
 # Der echte Cache ist gitignored/gefetcht (in CI abwesend) — daher gegen einen

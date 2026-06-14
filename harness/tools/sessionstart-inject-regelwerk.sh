@@ -34,4 +34,10 @@ if [ ! -f "$encoder" ] || ! command -v awk >/dev/null 2>&1; then
   exit 0
 fi
 
-emit "$(awk -f "$encoder" < "$cache")"
+# awk-Output fangen + Exit pruefen: ein awk-Crash darf NICHT still leer emittieren
+# (set -e bricht in der Kommando-Substitution nicht ab) -> sichtbare WARN.
+if ! encoded="$(awk -f "$encoder" < "$cache")"; then
+  emit "WARN: Regelwerk-Encoding fehlgeschlagen (awk). Regelwerk NICHT als geladen voraussetzen."
+  exit 0
+fi
+emit "$encoded"

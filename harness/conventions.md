@@ -109,8 +109,10 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Begründung:** Die in AGENTS.md §1 verlangte Regelwerk-Lektüre war nur
   *erinnert*, nicht *erzwungen* (Steering-Befund aus slice-006). Der Hook macht
   sie zu Computational Feedforward — mit dem **echten** Text, nicht einer
-  Eigenbau-Kurzfassung. Kosten: ~53K Token je Session (bewusst akzeptiert für
-  „Regeln garantiert im Kontext"). Der awk-Encoder hält die node/jq-freie Linie.
+  Eigenbau-Kurzfassung. **Codex** lädt den Volltext je Session (Kosten bewusst
+  akzeptiert); **Claude** liest on-demand (kein Dauer-Aufschlag, aber **nicht**
+  garantiert im Kontext — 10k/150k-Caps). Der awk-Encoder hält die node/jq-freie
+  Linie.
 - **Verifikation & Drift:** Injektion prüfbar, indem das Modell eine **echte
   Zeile** zitiert (z. B. die Titelzeile `Agents-Regelwerk …`) bzw. im Transcript
   danach gegreppt wird (Claude `~/.claude/projects/.../*.jsonl`, Codex

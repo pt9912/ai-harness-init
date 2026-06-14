@@ -3,6 +3,9 @@
 # gawk-Spezifikum. Zweck: additionalContext-Encoding fuer den SessionStart-
 # Injektor ohne node/jq (LH-QA-03). Byteweise -> UTF-8-sicher (Mehrbyte-Zeichen
 # kollidieren nie mit ASCII " \ \t \r). Zeilenumbrueche werden zu \n.
+# Steuerzeichen U+0000-U+001F sind in JSON escape-pflichtig: \t und \r explizit,
+# alle uebrigen als \uXXXX (sonst entsteht ungueltiges JSON).
+BEGIN { for (k = 1; k < 32; k++) ctrl[sprintf("%c", k)] = k }
 { lines[NR] = $0 }
 
 END {
@@ -17,6 +20,7 @@ END {
       else if (c == "\"") out = out "\\\""
       else if (c == "\t") out = out "\\t"
       else if (c == "\r") out = out "\\r"
+      else if (c in ctrl) out = out sprintf("\\u%04x", ctrl[c])   # uebrige C0
       else                out = out c
     }
   }
