@@ -17,7 +17,7 @@ Derivativ; bei Konflikt gelten die kanonischen Quellen.
 **In-Repo-Cache + Auto-Injektion.** Das Regelwerk liegt gepinnt als
 `harness/agents-regelwerk.cache.md`; ein SessionStart-Hook injiziert es
 automatisch in Claude Code (`.claude/settings.json`) und Codex CLI
-(`.codex/hooks.json`) über `tools/harness/sessionstart-inject-regelwerk.sh`
+(`.codex/hooks.json`) über `harness/tools/sessionstart-inject-regelwerk.sh`
 (Mechanik: [`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor)).
 Codex liest `AGENTS.md` nativ — für Codex-Cloud/-IDE ohne Hook trägt daher die
 folgende Kurzform (Codex folgt keinen Links → Inhalt inline):

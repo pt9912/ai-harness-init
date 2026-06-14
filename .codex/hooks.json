@@ -5,7 +5,7 @@
       "hooks": [
         {
           "type": "command",
-          "command": "bash tools/harness/sessionstart-inject-regelwerk.sh"
+          "command": "bash harness/tools/sessionstart-inject-regelwerk.sh"
         }
       ]
     }

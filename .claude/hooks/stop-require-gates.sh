@@ -42,7 +42,7 @@ JSON
   exit 0
 fi
 
-current="$(bash tools/harness/working-tree-hash.sh)"
+current="$(bash harness/tools/working-tree-hash.sh)"
 recorded="$(cat "$state_file")"
 
 if [ "$current" != "$recorded" ]; then

@@ -39,4 +39,4 @@ matrix:
   status: {forbidden: [superseded, deprecated]}
   exclude-sections: [Historie, "7. Historie", Geschichte]
 codepaths:
-  roots: [spec, docs, harness, tools]                           # cmd/internal folgen mit dem Go-Code (Phase 3)
+  roots: [spec, docs, harness]                                  # tools/cmd/internal folgen mit dem Go-Code (Phase 3); Harness-Tools liegen unter harness/tools/ (MR-005)

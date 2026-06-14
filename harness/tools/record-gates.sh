@@ -7,4 +7,4 @@ set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
 mkdir -p .harness/state
-bash tools/harness/working-tree-hash.sh > .harness/state/gates-passed.diffsha
+bash harness/tools/working-tree-hash.sh > .harness/state/gates-passed.diffsha

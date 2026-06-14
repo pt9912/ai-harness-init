@@ -28,7 +28,7 @@ der Hard-Rules-Kurzform.
 
 ## 2. Definition of Done
 
-- [ ] Agent-neutrales Hook-Skript unter `tools/harness/` gibt valides JSON
+- [ ] Agent-neutrales Hook-Skript unter `harness/tools/` gibt valides JSON
       (`hookSpecificOutput.additionalContext`, passender `hookEventName`) aus,
       das den Regelwerk-Cache injiziert; **kein `node`/`jq`** — JSON-String-
       Encoding via awk-Helfer ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
@@ -56,8 +56,8 @@ der Hard-Rules-Kurzform.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `tools/harness/` (SessionStart-Injektor) | neu | ein Skript → `additionalContext`-JSON, beide Agenten |
-| `tools/harness/` (awk-Encoder) | neu | JSON-String-Encoder, isoliert testbar, kein jq |
+| `harness/tools/` (SessionStart-Injektor) | neu | ein Skript → `additionalContext`-JSON, beide Agenten |
+| `harness/tools/` (awk-Encoder) | neu | JSON-String-Encoder, isoliert testbar, kein jq |
 | `harness/` (Regelwerk-Cache) | neu | gepinnter Cache: Quell-URL + Datum im Kopf |
 | `.claude/settings.json` | update | `hooks.SessionStart` registrieren |
 | `.codex/hooks.json` | neu | `SessionStart` (`startup\|resume`) auf dasselbe Skript |
@@ -106,10 +106,10 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 **Abschluss:** 2026-06-14. DoD vollständig; Gates grün.
 
 **Ergebnis:** Ein agent-neutraler SessionStart-Injektor
-(`tools/harness/sessionstart-inject-regelwerk.sh`) gibt
+(`harness/tools/sessionstart-inject-regelwerk.sh`) gibt
 `hookSpecificOutput.additionalContext` aus und ist in `.claude/settings.json`
 **und** `.codex/hooks.json` registriert — ein Skript, zwei Agenten.
-JSON-Encoding via `tools/harness/json-encode.awk` (kein node/jq,
+JSON-Encoding via `harness/tools/json-encode.awk` (kein node/jq,
 [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)), byteweise → UTF-8-sicher. Quelle ist der
 gepinnte Cache `harness/agents-regelwerk.cache.md` (repo-authored
 Hard-Rules-Digest mit Quell-URL + Datum; kein Netz-Fetch,
@@ -158,6 +158,6 @@ Debug-Logs je Agent) und das **Kein-Auto-Refresh/Drift**-Verhalten in
 ## 8. Sub-Area-Modus-Begründung
 
 Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example):
-`.claude/`, `.codex/` und `tools/harness/` teilen die adoptierte
+`.claude/`, `.codex/` und `harness/tools/` teilen die adoptierte
 Harness-Mechanik ([`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)); `harness/` ist GF (Doc führt). `.codex/`
 ist eine neue, eigenständige Pfad-Familie (Inklusionskriterium erfüllt).

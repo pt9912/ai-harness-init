@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 # guard.bats — Verhaltens- und Parse-Tests fuer den Command-Guard
 # (.claude/hooks/pretooluse-command-guard.sh) und den awk-Extraktor
-# (tools/harness/extract-command.awk). Laeuft Docker-only im gepinnten
+# (harness/tools/extract-command.awk). Laeuft Docker-only im gepinnten
 # bats-Image (`make test`; ADR-0003, ADR-0004; LH-FA-06, LH-QA-03).
 #
 # Deckt laut Slice-DoD: gueltige JSON -> korrekter Befehl; malformed -> block;
@@ -11,7 +11,7 @@
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
   GUARD="$REPO/.claude/hooks/pretooluse-command-guard.sh"
-  EXTRACT="$REPO/tools/harness/extract-command.awk"
+  EXTRACT="$REPO/harness/tools/extract-command.awk"
 }
 
 guard()   { printf '%s' "$1" | bash "$GUARD"; }

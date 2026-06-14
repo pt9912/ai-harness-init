@@ -5,7 +5,7 @@
 # MR-002/MR-003).
 #
 # Reines bash + awk, KEIN node/jq/OCI (LH-QA-03, LH-FA-06): der awk-Extraktor
-# (tools/harness/extract-command.awk) zieht nur das eine Feld
+# (harness/tools/extract-command.awk) zieht nur das eine Feld
 # tool_input.command aus der Hook-stdin-JSON; bei Parse-Zweifel (malformed,
 # abgeschnitten, \u-Escape im Befehl) -> fail-closed (block).
 #
@@ -25,7 +25,7 @@
 set -euo pipefail
 
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-extractor="$here/../../tools/harness/extract-command.awk"
+extractor="$here/../../harness/tools/extract-command.awk"
 
 emit_block() {
   cat <<'JSON'

@@ -53,7 +53,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ### MR-002 — Gate-Nachweis-Mechanik und Claude-Hooks
 
 - **Datum:** 2026-06-13
-- **Geltungsbereich:** [`tools/harness/`](../tools/harness/), [`.claude/`](../.claude/), `make record-gates`
+- **Geltungsbereich:** [`harness/tools/`](../harness/tools/), [`.claude/`](../.claude/), `make record-gates`
 - **Adaption:** Übernahme der Working-Tree-Hash-Mechanik (`record-gates`
   als letzter `gates`-Prerequisite, der Stop-Hook vergleicht den Hash) und
   der `.claude`-Hooks (PreToolUse-Guard, Stop-Gate) aus d-check/b-cad. Der
@@ -67,7 +67,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ### MR-003 — Härtung: inhaltsbasierter Nachweis und Sub-Shell-Prüfung
 
 - **Datum:** 2026-06-13
-- **Geltungsbereich:** [`tools/harness/working-tree-hash.sh`](../tools/harness/working-tree-hash.sh), [`.claude/hooks/`](../.claude/hooks/)
+- **Geltungsbereich:** [`harness/tools/working-tree-hash.sh`](../harness/tools/working-tree-hash.sh), [`.claude/hooks/`](../.claude/hooks/)
 - **Adaption:** (a) Der Working-Tree-Hash ist **inhaltsbasiert** (sha256
   über getrackte + untracked Dateien) statt diff-basiert — der Gate-Nachweis
   gilt über Commits hinweg; ein Commit *ohne* Gate-Lauf macht den Stop-Hook
@@ -82,15 +82,15 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ### MR-004 — SessionStart-Regelwerk-Injektor
 
 - **Datum:** 2026-06-14
-- **Geltungsbereich:** [`tools/harness/`](../tools/harness/), [`.claude/`](../.claude/), [`.codex/`](../.codex/), `harness/agents-regelwerk.cache.md`, `.d-check.yml`
+- **Geltungsbereich:** [`harness/tools/`](../harness/tools/), [`.claude/`](../.claude/), [`.codex/`](../.codex/), `harness/agents-regelwerk.cache.md`, `.d-check.yml`
 - **Adaption:** Ein agent-neutraler **SessionStart-Hook**
-  (`tools/harness/sessionstart-inject-regelwerk.sh`) injiziert das gepinnte
+  (`harness/tools/sessionstart-inject-regelwerk.sh`) injiziert das gepinnte
   Betriebsregelwerk (`harness/agents-regelwerk.cache.md`) beim Session-Start in
   den Agenten-Kontext — registriert in `.claude/settings.json`
   (`hooks.SessionStart`) **und** `.codex/hooks.json` (`SessionStart`,
   `startup|resume`); beide Agenten teilen die
   `hookSpecificOutput.additionalContext`-Form. JSON-String-Encoding via
-  `tools/harness/json-encode.awk` (**kein** node/jq,
+  `harness/tools/json-encode.awk` (**kein** node/jq,
   [`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)); **kein**
   Netz-Fetch (nur lokale Kopie,
   [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Fehlender Cache
@@ -115,10 +115,29 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Auflösungs-Trigger:** permanent; Cache-Refresh bei Upstream-Änderung manuell;
   Codex-Hook-Verfügbarkeit ist versionsabhängig.
 
+### MR-005 — Harness-Tools unter harness/tools/ (Layout-Adaption)
+
+- **Datum:** 2026-06-14
+- **Geltungsbereich:** [`harness/tools/`](../harness/tools/), [`.claude/`](../.claude/), [`.codex/`](../.codex/), `Makefile`, `.d-check.yml`
+- **Adaption:** Die ausführbaren Harness-Tools (Gate-Nachweis, Working-Tree-Hash,
+  Command-Guard-Extraktor, SessionStart-Injektor + awk-Encoder) liegen unter
+  `harness/tools/` statt dem Baseline-Default `tools/harness/`. Damit liegt die
+  gesamte Harness — Docs (`harness/README.md`, `harness/conventions.md`,
+  `harness/agents-regelwerk.cache.md`) und Tooling — unter einem `harness/`-Dach.
+  Folge: `codepaths.roots` verliert das nicht mehr existierende `tools` (die
+  Tools sind unter `harness` weiter abgedeckt); alle Hook-/Makefile-/Test-
+  Referenzen und die vorherigen Tooling-MR-Geltungsbereiche sind angepasst.
+- **Begründung:** Kohäsion — eine Wurzel für die Harness (Nutzer-Entscheidung).
+- **Auflösungs-Trigger:** permanent. **Offen — Reconciliation:** Die in
+  [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) und [`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md) beschriebene **emittierte**/Template-Struktur nennt
+  weiterhin `tools/harness/`; ob die Emission der lokalen Konvention folgt, ist
+  ein CR-/ADR-Folgepunkt (hier bewusst nicht berührt — Lastenheft ist rank-1,
+  die Accepted-ADR immutable).
+
 ## Modus-Deklaration pro Sub-Area
 
 | Sub-Area | Modus | Begründung | Graduation |
 |---|---|---|---|
 | `*` (gesamtes Repo) | Greenfield | Neues Repo, Doc führt, Code folgt | n/a (GF) |
-| `tools/harness/` | Greenfield | adoptierte Harness-Mechanik (Adaptions-Block) | n/a (GF) |
+| `harness/tools/` | Greenfield | adoptierte Harness-Mechanik (Adaptions-Block) | n/a (GF) |
 | `.codex/` | Greenfield | neue Pfad-Familie, adoptierte SessionStart-Hook-Mechanik | n/a (GF) |

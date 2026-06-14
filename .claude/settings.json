@@ -26,7 +26,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "bash \"$CLAUDE_PROJECT_DIR\"/tools/harness/sessionstart-inject-regelwerk.sh"
+                        "command": "bash \"$CLAUDE_PROJECT_DIR\"/harness/tools/sessionstart-inject-regelwerk.sh"
                     }
                 ]
             }

@@ -1,13 +1,13 @@
 #!/usr/bin/env bats
 # sessionstart.bats — Tests für den SessionStart-Regelwerk-Injektor
-# (tools/harness/sessionstart-inject-regelwerk.sh) und den JSON-Encoder
-# (tools/harness/json-encode.awk). Docker-only im gepinnten bats-Image
+# (harness/tools/sessionstart-inject-regelwerk.sh) und den JSON-Encoder
+# (harness/tools/json-encode.awk). Docker-only im gepinnten bats-Image
 # (make test; slice-007 / MR-004 / LH-QA-03 / LH-QA-02).
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
-  INJECT="$REPO/tools/harness/sessionstart-inject-regelwerk.sh"
-  ENCODER="$REPO/tools/harness/json-encode.awk"
+  INJECT="$REPO/harness/tools/sessionstart-inject-regelwerk.sh"
+  ENCODER="$REPO/harness/tools/json-encode.awk"
 }
 
 enc() { printf '%s' "$1" | awk -f "$ENCODER"; }
@@ -57,10 +57,10 @@ enc() { printf '%s' "$1" | awk -f "$ENCODER"; }
 
 @test "inject: fehlender Cache -> leerer additionalContext, exit 0 (degradiert leise)" {
   tmp="$(mktemp -d)"
-  mkdir -p "$tmp/tools/harness"
-  cp "$INJECT" "$tmp/tools/harness/"
-  cp "$ENCODER" "$tmp/tools/harness/"
-  run bash "$tmp/tools/harness/sessionstart-inject-regelwerk.sh"
+  mkdir -p "$tmp/harness/tools"
+  cp "$INJECT" "$tmp/harness/tools/"
+  cp "$ENCODER" "$tmp/harness/tools/"
+  run bash "$tmp/harness/tools/sessionstart-inject-regelwerk.sh"
   [ "$status" -eq 0 ]
   [ "$output" = '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":""}}' ]
 }

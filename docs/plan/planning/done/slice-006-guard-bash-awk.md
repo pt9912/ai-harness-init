@@ -47,7 +47,7 @@ self-contained (reines Shell, kein Go nötig).
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `.claude/hooks/pretooluse-command-guard.sh` | rewrite | bash + awk statt node; Logik-Parität |
-| `tools/harness/` (ggf. awk-Helfer) | neu/update | JSON-Feld-Extraktor, testbar isoliert |
+| `harness/tools/` (ggf. awk-Helfer) | neu/update | JSON-Feld-Extraktor, testbar isoliert |
 | `test/guard.bats` | neu | Parität-, Parse- und fail-closed-Fälle |
 | `Makefile` | update | `test` (bats) anlegen, in `gates` |
 | AGENTS.md §4, harness/README.md §Sensors | update | Promotion `test` aus „Nicht behauptet" |
@@ -76,7 +76,7 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 **Abschluss:** 2026-06-14. DoD vollständig; Gates grün.
 
 **Ergebnis:** Der node-Command-Guard ist durch eine **bash + awk**-Implementierung
-ersetzt. Der awk-Extraktor (`tools/harness/extract-command.awk`) ist ein
+ersetzt. Der awk-Extraktor (`harness/tools/extract-command.awk`) ist ein
 zeichenweiser JSON-Scanner mit Tiefen-/Key-Stack — er zieht nur `tool_input.command`
 und unterscheidet Keys von Values (entschärft den „command-im-Value"-Fehlmatch).
 Parse-Zweifel (malformed, abgeschnitten, `\u`-Escape im Befehl) → **fail-closed**.
@@ -133,5 +133,5 @@ Regressionstests). **Kein offener Review-Bypass mehr.**
 ## 8. Sub-Area-Modus-Begründung
 
 Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example):
-`tools/harness/` ist als GF deklariert ([`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)); `.claude/hooks/`
+`harness/tools/` ist als GF deklariert ([`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)); `.claude/hooks/`
 teilt dieselbe adoptierte Harness-Mechanik.

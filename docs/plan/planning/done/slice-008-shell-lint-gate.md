@@ -25,7 +25,7 @@ die Shell-Domäne neben `golangci-lint`.
 
 - [ ] `make shell-lint` läuft shellcheck im **digest-gepinnten** Image
       (Docker-only, [`ADR-0003`](../../adr/0003-go-native-binaries.md); Pin → [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) über
-      `.claude/hooks/*.sh` und `tools/harness/*.sh`; exit 0 = clean.
+      `.claude/hooks/*.sh` und `harness/tools/*.sh`; exit 0 = clean.
 - [ ] In `gates` aufgenommen (vor `record-gates`) und in `AGENTS.md` §4 /
       `harness/README.md` §Sensors aus „Nicht behauptet" promotet
       (Promotion-Trigger, Hard Rule 3.1).
@@ -73,7 +73,7 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 **Abschluss:** 2026-06-14. DoD vollständig; Gates grün.
 
 **Ergebnis:** `make shell-lint` lintet die fünf harness-eigenen
-Shell-Hooks/-Helfer (`.claude/hooks/*.sh`, `tools/harness/*.sh`) mit
+Shell-Hooks/-Helfer (`.claude/hooks/*.sh`, `harness/tools/*.sh`) mit
 **shellcheck** im digest-gepinnten Image
 ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), Docker-only [`ADR-0003`](../../adr/0003-go-native-binaries.md)) und ist als Gate in
 `gates` (vor `record-gates`). In AGENTS.md §4 / harness/README.md §Sensors aus
@@ -109,5 +109,5 @@ nicht), `.awk` ist kein Shell — im Makefile-Kommentar festgehalten.
 ## 8. Sub-Area-Modus-Begründung
 
 Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example):
-`.claude/hooks/` und `tools/harness/` teilen die adoptierte Harness-Mechanik
+`.claude/hooks/` und `harness/tools/` teilen die adoptierte Harness-Mechanik
 ([`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)).

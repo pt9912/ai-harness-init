@@ -19,10 +19,10 @@ test: ## Command-Guard-Tests (bats) im gepinnten Image — Docker-only (ADR-0004
 # ausgenommen (shellcheck parst die @test-Syntax nicht); .awk ist kein Shell.
 shell-lint: ## Shell-Hooks/-Helfer linten (shellcheck) im gepinnten Image — Docker-only (ADR-0003)
 	docker run --rm -v "$(CURDIR)":/mnt:ro -w /mnt $(SHELLCHECK_IMAGE) \
-		.claude/hooks/*.sh tools/harness/*.sh
+		.claude/hooks/*.sh harness/tools/*.sh
 
 record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
-	@bash tools/harness/record-gates.sh
+	@bash harness/tools/record-gates.sh
 
 # record-gates läuft als LETZTER Prerequisite — der Nachweis entsteht nur
 # nach grünen Gates (harness/conventions.md MR-002).
