@@ -49,6 +49,12 @@ enc() { printf '%s' "$1" | awk -f "$ENCODER"; }
   [[ "$output" != *'"additionalContext":""'* ]]
 }
 
+@test "inject: additionalContext enthält den Sentinel-Marker (Verifikation)" {
+  run bash "$INJECT"
+  [ "$status" -eq 0 ]
+  printf '%s' "$output" | grep -q 'AIHARNESS-REGELWERK-SENTINEL'
+}
+
 @test "inject: fehlender Cache -> leerer additionalContext, exit 0 (degradiert leise)" {
   tmp="$(mktemp -d)"
   mkdir -p "$tmp/tools/harness"

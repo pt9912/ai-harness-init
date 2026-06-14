@@ -103,6 +103,15 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   sie zu Computational Feedforward; der awk-Encoder hält die node/jq-freie Linie
   des Command-Guards. Codex hat kein eigenes Format (`CODEX.md`) und folgt keinen
   Links in AGENTS.md → Inline-Kurzform für den Cloud/IDE-Pfad.
+- **Verifikation & Drift:** Injektion prüfbar über den Sentinel
+  `AIHARNESS-REGELWERK-SENTINEL` (Modell zitieren lassen bzw. im Transcript
+  greppen: Claude `~/.claude/projects/.../*.jsonl`, Codex
+  `~/.codex/sessions/.../rollout-*.jsonl`); Hook-Lauf via Debug (`claude --debug`
+  → `~/.claude/debug/<id>.txt`; Codex `RUST_LOG=codex_core=debug codex` →
+  `~/.codex/log/codex-tui.log`). **Kein** Upstream-Check/Auto-Pull (offline,
+  reproduzierbar) — Drift bleibt bis zum manuellen Refresh unentdeckt. Risiko:
+  repo-lokale Codex-Hook-Config feuert in manchen Versionen still nicht
+  (codex-Issue #17532) → ggf. nach `~/.codex/hooks.json` (User-scope) ausweichen.
 - **Auflösungs-Trigger:** permanent; Cache-Refresh bei Upstream-Änderung manuell;
   Codex-Hook-Verfügbarkeit ist versionsabhängig.
 

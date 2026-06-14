@@ -139,11 +139,19 @@ Hard-Rules-Kurzform inline in AGENTS.md §1. Mechanik:
    Codex-Hook-Pfad ist cwd-relativ (Annahme Projekt-Root) — in der gepinnten
    Codex-Version zu verifizieren.
 
+**Verifikation (nachgetragen):** Sentinel `AIHARNESS-REGELWERK-SENTINEL` oben im
+Cache (bats prüft die Injektion); Prüf-Rezepte (Modell-Zitat, Transcript-Grep,
+Debug-Logs je Agent) und das **Kein-Auto-Refresh/Drift**-Verhalten in
+[`MR-004`](../../../../harness/conventions.md#mr-004--sessionstart-regelwerk-injektor).
+
 **Folge-Slices / offen:**
 
 - **Codex-Hook real verifizieren** in der eingesetzten Codex-Version (Hooks
-  versionsabhängig); ggf. Pfad-Auflösung härten.
-- **Cache-Refresh-Mechanik** (manuell/scheduled) bei Upstream-Änderung.
+  versionsabhängig; repo-lokale Config feuert teils still nicht, codex-Issue
+  #17532 → ggf. `~/.codex/hooks.json`); Pfad-Auflösung ggf. härten.
+- **Drift-Check + Cache-Refresh** als eigener Slice: Upstream-Vergleich
+  **außerhalb** des Hooks (Maintenance-Target/CI, nicht per Session) + manuelle
+  Digest-Aktualisierung — heute gibt es **kein** Auto-Check/Auto-Pull.
 - Emission des Injektors ins Zielrepo zusammen mit der Durchsetzungsschicht
   ([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) Folge-Slice).
 

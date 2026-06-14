@@ -5,8 +5,12 @@
 > gelten die kanonischen Quellen dieses Repos (Source Precedence) und das
 > Upstream-Regelwerk.
 >
+> - **Sentinel (Injektions-Verifikation):** `AIHARNESS-REGELWERK-SENTINEL` —
+>   in einer neuen Session „zitiere die Zeile mit AIHARNESS-REGELWERK-SENTINEL";
+>   bzw. im Transcript danach greppen (Claude: `~/.claude/projects/.../*.jsonl`,
+>   Codex: `~/.codex/sessions/.../rollout-*.jsonl`).
 > - **Quelle:** <https://raw.githubusercontent.com/pt9912/ai-harness-course/main/kurs/de/agents-regelwerk.md>
-> - **Abgerufen/gepinnt:** 2026-06-14
+> - **Abgerufen/gepinnt:** 2026-06-14 (kein Auto-Check/Auto-Pull; Drift bleibt bis zum manuellen Refresh unentdeckt)
 > - **Zweck:** SessionStart-Injektion (Claude Code + Codex), damit die in
 >   AGENTS.md §1 verlangte Vorbedingung erzwungen statt nur erinnert wird.
 > - **Pflege:** manueller Refresh bei Upstream-Änderung (kein Netz-Fetch im Hook).
