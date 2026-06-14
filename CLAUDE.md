@@ -2,6 +2,14 @@
 
 Dieses Repo folgt dem AI-Harness-Prozess (Greenfield: Doc führt, Code folgt).
 
+**Betriebsregelwerk (wortgleich, lokaler Cache).** Der folgende `@`-Import lädt
+das **vollständige** Regelwerk in jede Claude-Session (idiomatischer Weg, da
+Claude Hook-Ausgaben bei 10.000 Zeichen kappt). Voraussetzung: `make
+regelwerk-fetch` lief (gitignored, sha256-gepinnt — [`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor)); sonst ist der
+Import leer und die Quelle ist direkt zu lesen.
+
+@.harness/cache/agents-regelwerk.md
+
 Vor jeder Änderung an Code oder Dokumentation lesen:
 
 1. `harness/README.md`

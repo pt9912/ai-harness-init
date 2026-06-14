@@ -118,6 +118,13 @@ inline „Hard-Rules-Kurzform" in AGENTS.md §1 ist entfernt. Die folgenden Abs�
 **Lerneintrag:** kanonische Quellen nie kondensieren/eigenformulieren und als
 Quelle ausgeben — verbatim spiegeln oder nur darauf zeigen.
 
+**Nachtrag (Claude-10k-Cap):** Claude kappt jede Hook-`additionalContext` bei
+10.000 Zeichen (212 KB → nur 2-KB-Preview + Datei) — der Volltext-Hook
+funktioniert daher nur für **Codex**. **Claude** lädt das Regelwerk stattdessen
+per `@`-Import in `CLAUDE.md`; der Claude-SessionStart-Hook ist entfernt.
+AGENTS.md §1 / [`MR-004`](../../../../harness/conventions.md#mr-004--sessionstart-regelwerk-injektor) sind entsprechend pro Agent korrigiert (das frühere
+„Volltext für beide via Hook" war falsch).
+
 **Ergebnis:** Ein agent-neutraler SessionStart-Injektor
 (`harness/tools/sessionstart-inject-regelwerk.sh`) gibt
 `hookSpecificOutput.additionalContext` aus und ist in `.claude/settings.json`

@@ -82,13 +82,15 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ### MR-004 — SessionStart-Regelwerk-Injektor
 
 - **Datum:** 2026-06-14
-- **Geltungsbereich:** [`harness/tools/`](../harness/tools/), [`.claude/`](../.claude/), [`.codex/`](../.codex/), `.harness/cache/`, `Makefile`, `.d-check.yml`
-- **Adaption:** Ein agent-neutraler **SessionStart-Hook**
-  (`harness/tools/sessionstart-inject-regelwerk.sh`) injiziert das **wortgleiche**
-  Betriebsregelwerk **im Volltext** beim Session-Start in den Agenten-Kontext —
-  registriert in `.claude/settings.json` (`hooks.SessionStart`) **und**
-  `.codex/hooks.json` (`SessionStart`, `startup|resume`); beide Agenten teilen die
-  `hookSpecificOutput.additionalContext`-Form. Quelle ist ein **lokaler,
+- **Geltungsbereich:** [`harness/tools/`](../harness/tools/), [`.claude/`](../.claude/), [`.codex/`](../.codex/), `.harness/cache/`, `CLAUDE.md`, `Makefile`, `.d-check.yml`
+- **Adaption:** Das **wortgleiche** Betriebsregelwerk wird **im Volltext** in den
+  Session-Kontext geladen — **pro Agent verschieden**, weil Claude jede
+  Hook-Ausgabe bei **10.000 Zeichen** kappt (212 KB → nur 2-KB-Preview + Datei,
+  daher für Claude **kein** Hook): **Codex** über den SessionStart-Hook
+  (`.codex/hooks.json`, Schema `{ "hooks": { … } }` + getrusteter `.codex/`-Layer)
+  → `harness/tools/sessionstart-inject-regelwerk.sh`
+  (`hookSpecificOutput.additionalContext`); **Claude** über den `@`-Import in
+  `CLAUDE.md` (`@.harness/cache/agents-regelwerk.md`). Quelle ist ein **lokaler,
   gitignorierter** Cache `.harness/cache/agents-regelwerk.md`, den
   `make regelwerk-fetch` per `curl` (Raw-URL, **sha256-gepinnt**) befüllt — kein
   committeter Fremd-Blob und **keine** Kurzfassung/Paraphrase (das war eine frühere
