@@ -120,8 +120,11 @@ Quelle ausgeben — verbatim spiegeln oder nur darauf zeigen.
 
 **Nachtrag (Claude-10k-Cap):** Claude kappt jede Hook-`additionalContext` bei
 10.000 Zeichen (212 KB → nur 2-KB-Preview + Datei) — der Volltext-Hook
-funktioniert daher nur für **Codex**. **Claude** lädt das Regelwerk stattdessen
-per `@`-Import in `CLAUDE.md`; der Claude-SessionStart-Hook ist entfernt.
+funktioniert daher nur für **Codex**. **Claude** liest den Cache stattdessen
+**bei Bedarf** (Pointer-Direktive in `CLAUDE.md`; Test bestätigte das ungefragte
+Lesen). Ein `@`-Auto-Import wurde verworfen — 212 KB sprengen Claudes
+150k-Memory-Limit (~108k Token + Warnung, und das Modell misstraut dem Embed und
+liest die Datei ohnehin). Der Claude-SessionStart-Hook ist entfernt.
 AGENTS.md §1 / [`MR-004`](../../../../harness/conventions.md#mr-004--sessionstart-regelwerk-injektor) sind entsprechend pro Agent korrigiert (das frühere
 „Volltext für beide via Hook" war falsch).
 

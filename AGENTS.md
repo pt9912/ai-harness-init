@@ -14,16 +14,16 @@ einmal pro Session lesen, bevor der Workflow (§6) startet:
 <https://raw.githubusercontent.com/pt9912/ai-harness-course/main/kurs/de/agents-regelwerk.md>
 Derivativ; bei Konflikt gelten die kanonischen Quellen.
 
-**Lokaler Cache + Voll-Laden (pro Agent verschieden).** `make regelwerk-fetch`
+**Lokaler Cache + Zugriff (pro Agent verschieden).** `make regelwerk-fetch`
 zieht das **wortgleiche** Regelwerk (Raw-URL, sha256-gepinnt) nach
 `.harness/cache/agents-regelwerk.md` (gitignored, lokal — kein committeter
-Fremd-Blob, **keine** Kurzfassung/Paraphrase). Geladen wird es **im Volltext**,
-aber je Agent anders (Claude kappt Hook-Ausgaben bei 10.000 Zeichen, daher dort
-**kein** Hook): **Claude** via `@`-Import in `CLAUDE.md`; **Codex** via
-SessionStart-Hook (`.codex/hooks.json` → `harness/tools/sessionstart-inject-regelwerk.sh`).
-Fehlt der Cache (vor dem Fetch), wird nichts geladen — dann die Quelle direkt
-lesen. Mechanik + Verifikation: [`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor). Codex-Cloud/-IDE haben keinen
-Hook → dort die Quelle direkt lesen.
+Fremd-Blob, **keine** Kurzfassung/Paraphrase). **Codex** injiziert es **im
+Volltext** via SessionStart-Hook (`.codex/hooks.json` →
+`harness/tools/sessionstart-inject-regelwerk.sh`). **Claude** liest den Cache
+**bei Bedarf** (Pointer: `CLAUDE.md`-Direktive + Source Precedence) — ein
+`@`-Auto-Import sprengt Claudes 150k-Zeichen-/108k-Token-Limit. Fehlt der Cache
+(vor dem Fetch), ist die Quelle direkt zu lesen. Mechanik: [`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor).
+Codex-Cloud/-IDE haben keinen Hook → dort die Quelle direkt lesen.
 
 **Skelett-Vorlagen der Baseline** als ZIP zum Bootstrap:
 <https://github.com/pt9912/ai-harness-course/releases/latest/download/lab-templates.zip>

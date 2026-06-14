@@ -83,14 +83,17 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 - **Datum:** 2026-06-14
 - **Geltungsbereich:** [`harness/tools/`](../harness/tools/), [`.claude/`](../.claude/), [`.codex/`](../.codex/), `.harness/cache/`, `CLAUDE.md`, `Makefile`, `.d-check.yml`
-- **Adaption:** Das **wortgleiche** Betriebsregelwerk wird **im Volltext** in den
-  Session-Kontext geladen — **pro Agent verschieden**, weil Claude jede
-  Hook-Ausgabe bei **10.000 Zeichen** kappt (212 KB → nur 2-KB-Preview + Datei,
-  daher für Claude **kein** Hook): **Codex** über den SessionStart-Hook
-  (`.codex/hooks.json`, Schema `{ "hooks": { … } }` + getrusteter `.codex/`-Layer)
-  → `harness/tools/sessionstart-inject-regelwerk.sh`
-  (`hookSpecificOutput.additionalContext`); **Claude** über den `@`-Import in
-  `CLAUDE.md` (`@.harness/cache/agents-regelwerk.md`). Quelle ist ein **lokaler,
+- **Adaption:** Das **wortgleiche** Betriebsregelwerk wird **pro Agent
+  verschieden** verfügbar gemacht — der 212-KB-Volltext passt in keinen Claude-
+  Auto-Kanal (Hook-Ausgaben gekappt bei **10.000 Zeichen**, Memory/`@`-Import
+  bei **150k Zeichen** → ~108k Token + Warnung): **Codex** injiziert ihn **im
+  Volltext** über den SessionStart-Hook (`.codex/hooks.json`, Schema
+  `{ "hooks": { … } }` + getrusteter `.codex/`-Layer) →
+  `harness/tools/sessionstart-inject-regelwerk.sh`
+  (`hookSpecificOutput.additionalContext`); **Claude** liest den Cache **bei
+  Bedarf** (Pointer-Direktive in `CLAUDE.md` + Source Precedence; Test bestätigte:
+  Claude las `.harness/cache/agents-regelwerk.md` bei einer Harness-Aufgabe
+  ungefragt — `Read` paginiert >2000 Zeilen). Quelle ist ein **lokaler,
   gitignorierter** Cache `.harness/cache/agents-regelwerk.md`, den
   `make regelwerk-fetch` per `curl` (Raw-URL, **sha256-gepinnt**) befüllt — kein
   committeter Fremd-Blob und **keine** Kurzfassung/Paraphrase (das war eine frühere
