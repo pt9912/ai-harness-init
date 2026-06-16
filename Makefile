@@ -14,7 +14,7 @@ REGELWERK_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/v
 REGELWERK_SHA256 ?= ef61f8a7386dcc3b967b7653962d558521b284eb33e481e26b98a32f2db97e43
 REGELWERK_CACHE ?= .harness/cache/agents-regelwerk
 
-.PHONY: help gates record-gates test shell-lint regelwerk-fetch
+.PHONY: help gates record-gates test shell-lint regelwerk-fetch regelwerk-check
 help: ## Targets anzeigen
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-14s %s\n", $$1, $$2}'
@@ -44,6 +44,28 @@ regelwerk-fetch: ## Regelwerk-ZIP verbatim holen + sha256 prüfen + entpacken �
 		&& rm -f "$$tmp" \
 		&& echo "Regelwerk-Cache aktuell: $(REGELWERK_CACHE)/ ($$(find "$(REGELWERK_CACHE)" -maxdepth 1 -type f | wc -l) Dateien)" \
 		|| { rm -rf "$$tmp" "$$tmpd"; echo "FEHLER/DRIFT: Fetch fehlgeschlagen oder Upstream != gepinnter sha256 — Cache UNVERAENDERT; REGELWERK_SHA256 ggf. neu pinnen"; exit 1; }
+
+# Read-only Drift-Monitor: holt das Upstream-ZIP in eine temp-Datei (Cache
+# UNBERUEHRT), vergleicht dessen sha256 mit dem Pin (REGELWERK_SHA256, MR-006).
+# Maintenance/CI (Netz, Host-curl wie regelwerk-fetch), NICHT in gates (LH-QA-01).
+# Recipe-Exit: 0 = kein Drift, 1 = DRIFT, 2 = Fetch-Fehler. Hinweis: `make`
+# kollabiert jeden Recipe-Fehler auf Exit 2 (Standard-Make) — fuer CI also
+# 0 = OK, !=0 = Alarm; ob Drift oder Fetch-Fehler sagt die echo-Meldung (kanonisch;
+# die make-"Fehler N"-Zeile spiegelt den Recipe-Exit, ist aber locale-/stderr-fragil).
+regelwerk-check: ## Upstream-Drift des Regelwerk-ZIP melden (read-only, Cache unberührt) — Maintenance/CI, NICHT in gates
+	@tmp="$$(mktemp)"; \
+	curl -fsSL "$(REGELWERK_URL)" -o "$$tmp" \
+		|| { rm -f "$$tmp"; echo "FETCH-FEHLER (kein Drift-Urteil): Upstream nicht erreichbar — $(REGELWERK_URL)"; exit 2; }; \
+	if printf '%s  %s\n' "$(REGELWERK_SHA256)" "$$tmp" | sha256sum -c - >/dev/null 2>&1; then \
+		rm -f "$$tmp"; echo "Kein Drift: Upstream-ZIP == gepinnter REGELWERK_SHA256."; \
+	else \
+		got="$$(sha256sum "$$tmp" | cut -d' ' -f1)"; rm -f "$$tmp"; \
+		echo "DRIFT: Upstream-ZIP != gepinnter REGELWERK_SHA256 (Cache UNVERAENDERT)."; \
+		echo "  gepinnt:  $(REGELWERK_SHA256)"; \
+		echo "  upstream: $$got"; \
+		echo "  -> manuell re-reviewen, dann 'make regelwerk-fetch' + REGELWERK_SHA256 neu pinnen."; \
+		exit 1; \
+	fi
 
 record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh

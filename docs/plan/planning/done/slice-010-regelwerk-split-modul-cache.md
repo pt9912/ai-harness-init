@@ -64,7 +64,7 @@ ist **nicht** Teil dieses Slices.
 | `AGENTS.md` (§1) | update | Cache-Beschreibung (Split-ZIP, ZIP-gepinnt, Index-Inject) |
 | `harness/conventions.md` | update | [`MR-006`](../../../../harness/conventions.md#mr-006--regelwerk-cache-als-split-modul-verzeichnis) (+ [`MR-004`](../../../../harness/conventions.md#mr-004--sessionstart-regelwerk-injektor)-Querverweis) |
 | `test/sessionstart.bats` | update | Index-Injektion + fehlendes Verzeichnis |
-| [slice-009](../open/slice-009-regelwerk-drift-check.md) | update | Folgepunkt: Drift-Invariante umstellen |
+| [slice-009](slice-009-regelwerk-drift-check.md) | update | Folgepunkt: Drift-Invariante umstellen |
 
 ## 4. Trigger
 
@@ -86,7 +86,7 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
   bei Konflikt gilt die Kurs-Quelle. Kein selbst erzeugter Digest
   (slice-007-Lehre, [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
 - **Drift/Pin-Pflege:** Re-Pin (`REGELWERK_SHA256`) + Tag-Bump bei
-  Upstream-Release manuell; Überwachung via [slice-009](../open/slice-009-regelwerk-drift-check.md) (Invariante nachzuziehen).
+  Upstream-Release manuell; Überwachung via [slice-009](slice-009-regelwerk-drift-check.md) (Invariante nachzuziehen).
 - **Stale Einzeldatei:** der alte `.harness/cache/agents-regelwerk.md` bleibt
   lokal liegen (gitignored, regenerierbar) — vom Injektor nicht mehr gelesen.
 

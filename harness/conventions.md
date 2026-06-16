@@ -188,8 +188,10 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Kurs-Quelle) — **kein** selbst erzeugter Digest/Kurzfassung (kein Rückfall in die
   slice-007-Harness-Lüge).
 - **Auflösungs-Trigger:** permanent; Re-Pin (`REGELWERK_SHA256`) + Tag-Bump bei
-  Upstream-Release manuell; Drift-Überwachung via slice-009 (dessen Invariante von
-  `sha256(Cache-Datei)` auf `sha256(Upstream-ZIP)` nachzuziehen ist).
+  Upstream-Release manuell. Read-only Drift-Überwachung: `make regelwerk-check`
+  (slice-009) vergleicht `sha256(Upstream-ZIP)` gegen `REGELWERK_SHA256` und
+  mutiert nichts — `regelwerk-fetch` *aktualisiert*, `regelwerk-check` *überwacht*
+  (beide Maintenance/Netz, nicht in `gates`).
 
 ## Modus-Deklaration pro Sub-Area
 
