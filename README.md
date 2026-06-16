@@ -12,7 +12,7 @@ die den Harness nicht von Hand zusammenkopieren wollen.
 **Ehrlicher Stand:** Doku-Harness kohärent (Phase 3–4); der Code ist noch
 ungebaut (Phase 0). Verfügbar:
 
-- `make docs-check` (Doku-Referenz-Gate, d-check v0.8.0), `make test`
+- `make docs-check` (Doku-Referenz-Gate, d-check v0.10.0), `make test`
   (Command-Guard via bats) und `make shell-lint` (shellcheck) laufen grün — Docker-only;
 - Durchsetzungsschicht adoptiert: Command-Guard (bash+awk), Gate-Nachweis,
   Regelwerk-Injektion (Codex-Hook / Claude-Pointer);

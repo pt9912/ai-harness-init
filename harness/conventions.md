@@ -9,7 +9,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 - **Konvention:** AI-Harness-Kurs
 - **Templates:** templates-v4
-- **d-check:** Image v0.8.0 (Digest in harness.mk)
+- **d-check:** Image v0.10.0 (Digest in harness.mk)
 - **Datum der Adoption:** 2026-06-13
 
 ## Adoptierte Konventions-Quellen

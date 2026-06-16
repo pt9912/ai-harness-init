@@ -108,9 +108,10 @@ das eine MEDIUM ist eine nicht-blockierende Doku-Falle. Alle vier Findings (MEDI
 `make gates` (grün) gegengeprüft. Damit erfüllt der Slice den Closure-Trigger §5
 „Review konform". Verifikation der DoD/Spec bleibt separat (Verifier, Modul 11).
 
-> **Config-Beobachtung (kein Finding):** Die `exempt-paths` in `.d-check.yml`
-> (`docs/reviews/**`) matchen direkte Dateien in `docs/reviews/` offenbar **nicht**
-> (nur Unterpfade) — daher sind IDs hier voll verlinkt statt ausgenommen. Falls
-> Review-Reports ID-link-frei sein sollen (so der dokumentierte Intent der
-> Doc-Gate-Schärfung), ist das Glob (`docs/reviews/*`) ein eigener kleiner
-> Folgepunkt.
+> **Config-Beobachtung (nachträglich aufgelöst):** Unter d-check **≤ v0.9.0**
+> unterdrückte `exempt-paths` (`docs/reviews/**`) den `id-unlinked`-Check für
+> `docs/reviews/`-Dateien **nicht** — ein **bestätigter d-check-Bug** (kein
+> Glob-Syntaxfehler: auch exakte Pfade matchten nicht; v0.8.0 ≡ v0.9.0). Deshalb
+> sind die IDs in diesem Report manuell verlinkt (Workaround). **Behoben in
+> d-check v0.10.0**: `docs/reviews/**` exemptet Review-Reports nun korrekt vom
+> Link-Zwang (empirisch verifiziert).
