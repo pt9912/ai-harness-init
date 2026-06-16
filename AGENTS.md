@@ -9,20 +9,25 @@ Quelle gilt die kanonische Quelle (Source Precedence, §2).
 
 Strukturregeln und Adaptionen leben in [`harness/conventions.md`](harness/conventions.md).
 
-**Betriebsregelwerk der adoptierten Baseline** (wortgleiches Kurs-Regelwerk) —
-einmal pro Session lesen, bevor der Workflow (§6) startet:
+**Betriebsregelwerk der adoptierten Baseline** (wortgleiches Kurs-Regelwerk).
+Kanonische Quelle (die derivative Sicht liegt als lokaler Split-Modul-Cache vor,
+s.u.):
 <https://raw.githubusercontent.com/pt9912/ai-harness-course/main/kurs/de/agents-regelwerk.md>
-Derivativ; bei Konflikt gelten die kanonischen Quellen.
+Derivativ; bei Konflikt gelten die kanonischen Quellen. **Lektüre vor dem Workflow
+(§6): Index + das relevante Modul on-demand aus dem Cache** (nächster Absatz),
+**nicht** der Volltext am Stück.
 
 **Lokaler Cache + Zugriff (pro Agent verschieden).** `make regelwerk-fetch`
-zieht das **wortgleiche** Regelwerk (Raw-URL, sha256-gepinnt) nach
-`.harness/cache/agents-regelwerk.md` (gitignored, lokal — kein committeter
-Fremd-Blob, **keine** Kurzfassung/Paraphrase). **Codex** injiziert es **im
-Volltext** via SessionStart-Hook (`.codex/hooks.json` →
-`harness/tools/sessionstart-inject-regelwerk.sh`). **Claude** liest den Cache
-**bei Bedarf** (Pointer: `CLAUDE.md`-Direktive + Source Precedence) — ein
-`@`-Auto-Import sprengt Claudes 150k-Zeichen-/108k-Token-Limit. Fehlt der Cache
-(vor dem Fetch), ist die Quelle direkt zu lesen. Mechanik: [`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor).
+zieht das **wortgleiche** Regelwerk als **Split-Modul-ZIP** (Release-Tag,
+ZIP-sha256-gepinnt) und entpackt es nach `.harness/cache/agents-regelwerk/`
+(gitignored, lokal — 21 Module + `README.md`-Index; kein committeter Fremd-Blob,
+**keine** Kurzfassung/Paraphrase). **Codex** injiziert via SessionStart-Hook nur
+den **Index** (`.codex/hooks.json` → `harness/tools/sessionstart-inject-regelwerk.sh`);
+**Claude** liest **bei Bedarf** (Pointer: `CLAUDE.md`-Direktive + Source
+Precedence). **Beide** lesen das relevante Modul **on-demand** aus dem
+Verzeichnis — der Volltext sprengt Claudes 150k-Zeichen-/108k-Token-Limit (kein
+`@`-Auto-Import). Fehlt der Cache (vor dem Fetch), ist die Quelle direkt zu lesen.
+Mechanik: [`MR-006`](harness/conventions.md#mr-006--regelwerk-cache-als-split-modul-verzeichnis), ergänzt [`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor).
 Codex-Cloud/-IDE haben keinen Hook → dort die Quelle direkt lesen.
 
 **Skelett-Vorlagen der Baseline** als ZIP zum Bootstrap:

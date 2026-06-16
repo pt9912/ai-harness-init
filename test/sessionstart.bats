@@ -48,26 +48,49 @@ enc() { printf '%s' "$1" | awk -f "$ENCODER"; }
 
 # ---------- Injektor ----------
 
-# Der echte Cache ist gitignored/gefetcht (in CI abwesend) — daher gegen einen
-# synthetischen Cache testen: vorhandener Cache -> Inhalt im Volltext injiziert.
-@test "inject: vorhandener Cache wird im Volltext in additionalContext injiziert" {
+# Der echte Cache ist gitignored/gefetcht (in CI abwesend) — daher gegen ein
+# synthetisches Cache-Verzeichnis testen: vorhandener Index (README.md) wird
+# injiziert; der Modul-Inhalt NICHT (Index-only, MR-006 — Module on-demand).
+@test "inject: vorhandener Index (README.md) wird injiziert; Modul-Inhalt bleibt on-demand" {
   tmp="$(mktemp -d)"
-  mkdir -p "$tmp/harness/tools" "$tmp/.harness/cache"
+  mkdir -p "$tmp/harness/tools" "$tmp/.harness/cache/agents-regelwerk"
   cp "$INJECT" "$tmp/harness/tools/"
   cp "$ENCODER" "$tmp/harness/tools/"
-  printf '# Titel REGELTEST-7f3a\nzweite Zeile\n' > "$tmp/.harness/cache/agents-regelwerk.md"
+  printf '# Modul-Index INDEXTEST-7f3a\n- [Konventionen](grundlagen-konventionen.md)\n' \
+    > "$tmp/.harness/cache/agents-regelwerk/README.md"
+  printf '# Konventionen MODULTEST-9c2b\n' \
+    > "$tmp/.harness/cache/agents-regelwerk/grundlagen-konventionen.md"
   run bash "$tmp/harness/tools/sessionstart-inject-regelwerk.sh"
   [ "$status" -eq 0 ]
   printf '%s' "$output" | grep -q '"hookEventName":"SessionStart"'
-  printf '%s' "$output" | grep -q 'REGELTEST-7f3a'
+  printf '%s' "$output" | grep -q 'INDEXTEST-7f3a'
+  # Index-only: der Modul-Inhalt selbst wird NICHT injiziert (nur on-demand lesbar)
+  ! printf '%s' "$output" | grep -q 'MODULTEST-9c2b'
   [[ "$output" != *'"additionalContext":""'* ]]
 }
 
-@test "inject: fehlender Cache -> Warnung mit Fetch-Befehl, exit 0 (degradiert sichtbar)" {
+@test "inject: fehlendes Cache-Verzeichnis -> Warnung mit Fetch-Befehl, exit 0 (degradiert sichtbar)" {
   tmp="$(mktemp -d)"
   mkdir -p "$tmp/harness/tools"
   cp "$INJECT" "$tmp/harness/tools/"
   cp "$ENCODER" "$tmp/harness/tools/"
+  run bash "$tmp/harness/tools/sessionstart-inject-regelwerk.sh"
+  [ "$status" -eq 0 ]
+  printf '%s' "$output" | grep -q '"hookEventName":"SessionStart"'
+  printf '%s' "$output" | grep -q 'make regelwerk-fetch'
+}
+
+# Teil-Fetch/Korruption: Verzeichnis existiert, aber der Index (README.md) fehlt.
+# Derselbe Codepfad wie "kein Verzeichnis" ([ ! -f "$index" ]) -> sichtbare Warnung;
+# als eigener Test fixiert, damit ein Lockern des Checks auf "Verzeichnis existiert"
+# nicht still durchrutscht.
+@test "inject: Verzeichnis ohne README.md -> Warnung mit Fetch-Befehl, exit 0 (Index fehlt)" {
+  tmp="$(mktemp -d)"
+  mkdir -p "$tmp/harness/tools" "$tmp/.harness/cache/agents-regelwerk"
+  cp "$INJECT" "$tmp/harness/tools/"
+  cp "$ENCODER" "$tmp/harness/tools/"
+  printf '# nur ein Modul, kein Index\n' \
+    > "$tmp/.harness/cache/agents-regelwerk/grundlagen-konventionen.md"
   run bash "$tmp/harness/tools/sessionstart-inject-regelwerk.sh"
   [ "$status" -eq 0 ]
   printf '%s' "$output" | grep -q '"hookEventName":"SessionStart"'

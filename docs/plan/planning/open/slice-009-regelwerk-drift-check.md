@@ -76,6 +76,12 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
   Dauer-Drift-Alarm) — in [`MR-004`](../../../../harness/conventions.md#mr-004--sessionstart-regelwerk-injektor) verankert.
 - **Upstream-Verfügbarkeit/Rate-Limit** (`raw.githubusercontent.com`): tolerant —
   Fetch-Fehler klar von „Drift" trennen.
+- **Invariante nach slice-010 ([`MR-006`](../../../../harness/conventions.md#mr-006--regelwerk-cache-als-split-modul-verzeichnis)):** Der Cache ist seit slice-010 ein
+  **Split-Modul-Verzeichnis** und der Pin liegt auf dem **ZIP**, nicht auf einer
+  Einzeldatei. Der Check vergleicht daher `sha256(Upstream-ZIP)` gegen
+  `REGELWERK_SHA256` (das entpackte Verzeichnis ist ein **abgeleitetes Artefakt**);
+  die obige DoD-Formulierung „`sha256(Cache)==REGELWERK_SHA256`" ist beim Start
+  dieses Slices entsprechend nachzuziehen.
 
 ## 7. Closure-Notiz (nach `done/`)
 

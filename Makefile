@@ -7,11 +7,12 @@ include harness.mk
 BATS_IMAGE ?= bats/bats@sha256:e8f18e0acd4ea933bf019130b85033be75e8ce081db299e93578de83d7874e33
 SHELLCHECK_IMAGE ?= koalaman/shellcheck@sha256:bb596a0d169b85ddd81d8b6d3a2ff6d5baf5fca10b97f575ebc647c3dff62b3d
 
-# Regelwerk-Quelle, sha256-gepinnt (Reproduzierbarkeit, LH-QA-02). regelwerk-fetch
-# ist Maintenance (Netz) und NICHT in gates (LH-QA-01 / offline-grün).
-REGELWERK_URL ?= https://raw.githubusercontent.com/pt9912/ai-harness-course/main/kurs/de/agents-regelwerk.md
-REGELWERK_SHA256 ?= 682aef782dd90d90668c1cad3f6390555ca828576908f86a2782c4fa5da6113e
-REGELWERK_CACHE ?= .harness/cache/agents-regelwerk.md
+# Regelwerk-Quelle: Split-Modul-ZIP vom Release-Tag, ZIP-sha256-gepinnt
+# (Reproduzierbarkeit, LH-QA-02; MR-006). regelwerk-fetch ist Maintenance (Netz,
+# curl+unzip) und NICHT in gates (LH-QA-01 / offline-grün). Cache = Verzeichnis.
+REGELWERK_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/v1.2.0/lab-regelwerk.zip
+REGELWERK_SHA256 ?= ef61f8a7386dcc3b967b7653962d558521b284eb33e481e26b98a32f2db97e43
+REGELWERK_CACHE ?= .harness/cache/agents-regelwerk
 
 .PHONY: help gates record-gates test shell-lint regelwerk-fetch
 help: ## Targets anzeigen
@@ -27,16 +28,22 @@ shell-lint: ## Shell-Hooks/-Helfer linten (shellcheck) im gepinnten Image — Do
 	docker run --rm -v "$(CURDIR)":/mnt:ro -w /mnt $(SHELLCHECK_IMAGE) \
 		.claude/hooks/*.sh harness/tools/*.sh
 
-# Holt das WORTGLEICHE Regelwerk in den lokalen, gitignorierten Cache, den der
-# SessionStart-Hook injiziert (MR-004). sha256-Pin = Drift-Erkennung beim Fetch.
-regelwerk-fetch: ## Regelwerk verbatim in den lokalen Cache holen + sha256 prüfen — Maintenance, NICHT in gates
+# Holt das WORTGLEICHE Regelwerk (Split-Modul-ZIP) in den lokalen, gitignorierten
+# Cache (Verzeichnis), dessen Index der SessionStart-Hook injiziert (MR-006,
+# ergänzt MR-004). ZIP-sha256-Pin VOR jeder Cache-Mutation = Drift-Erkennung;
+# Replace via temp -> mv (mv atomar, Gesamt-Replace nicht), Cache bei
+# Fehler/Drift UNVERAENDERT.
+regelwerk-fetch: ## Regelwerk-ZIP verbatim holen + sha256 prüfen + entpacken — Maintenance, NICHT in gates
 	@mkdir -p "$(dir $(REGELWERK_CACHE))"
-	@tmp="$$(mktemp)"; \
+	@tmp="$$(mktemp)"; tmpd="$$(mktemp -d "$(dir $(REGELWERK_CACHE)).fetch.XXXXXX")"; \
 	curl -fsSL "$(REGELWERK_URL)" -o "$$tmp" \
 		&& printf '%s  %s\n' "$(REGELWERK_SHA256)" "$$tmp" | sha256sum -c - >/dev/null \
-		&& mv "$$tmp" "$(REGELWERK_CACHE)" \
-		&& echo "Regelwerk-Cache aktuell: $(REGELWERK_CACHE)" \
-		|| { rm -f "$$tmp"; echo "FEHLER/DRIFT: Fetch fehlgeschlagen oder Upstream != gepinnter sha256 — Cache UNVERAENDERT; REGELWERK_SHA256 ggf. neu pinnen"; exit 1; }
+		&& unzip -oq "$$tmp" -d "$$tmpd" \
+		&& rm -rf "$(REGELWERK_CACHE)" \
+		&& mv "$$tmpd" "$(REGELWERK_CACHE)" \
+		&& rm -f "$$tmp" \
+		&& echo "Regelwerk-Cache aktuell: $(REGELWERK_CACHE)/ ($$(find "$(REGELWERK_CACHE)" -maxdepth 1 -type f | wc -l) Dateien)" \
+		|| { rm -rf "$$tmp" "$$tmpd"; echo "FEHLER/DRIFT: Fetch fehlgeschlagen oder Upstream != gepinnter sha256 — Cache UNVERAENDERT; REGELWERK_SHA256 ggf. neu pinnen"; exit 1; }
 
 record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh

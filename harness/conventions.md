@@ -81,6 +81,11 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 ### MR-004 — SessionStart-Regelwerk-Injektor
 
+> **Teilweise überholt seit slice-010 → siehe [`MR-006`](#mr-006--regelwerk-cache-als-split-modul-verzeichnis).** Der folgende Body
+> beschreibt den Stand **vor** dem Split-Modul-Cache (Einzeldatei, Codex
+> injiziert im Volltext) und steht hier als **Historie**. Aktuelle Mechanik
+> (Split-Modul-Verzeichnis, Codex injiziert nur den Index): [`MR-006`](#mr-006--regelwerk-cache-als-split-modul-verzeichnis).
+
 - **Datum:** 2026-06-14
 - **Geltungsbereich:** [`harness/tools/`](../harness/tools/), [`.claude/`](../.claude/), [`.codex/`](../.codex/), `.harness/cache/`, `CLAUDE.md`, `Makefile`, `.d-check.yml`
 - **Adaption:** Das **wortgleiche** Betriebsregelwerk wird **pro Agent
@@ -126,6 +131,10 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   nicht. (Claude: `.claude/settings.json`, eigener Trust-/Reload-Pfad.)
 - **Auflösungs-Trigger:** permanent; Cache-Refresh + Re-Pin (`REGELWERK_SHA256`)
   bei Upstream-Änderung manuell; Codex-Hook-Verfügbarkeit ist versionsabhängig.
+- **Aktualisierung ([`MR-006`](#mr-006--regelwerk-cache-als-split-modul-verzeichnis)):** Seit slice-010 ist der Cache ein
+  **Split-Modul-Verzeichnis** (`.harness/cache/agents-regelwerk/`,
+  ZIP-sha256-gepinnt); der Codex-Hook injiziert nur den **Index** (`README.md`),
+  Module werden on-demand gelesen.
 
 ### MR-005 — Harness-Tools unter harness/tools/ (Layout-Adaption)
 
@@ -146,6 +155,41 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   weiterhin `tools/harness/`; ob die Emission der lokalen Konvention folgt, ist
   ein CR-/ADR-Folgepunkt (hier bewusst nicht berührt — Lastenheft ist rank-1,
   die Accepted-ADR immutable).
+
+### MR-006 — Regelwerk-Cache als Split-Modul-Verzeichnis
+
+- **Datum:** 2026-06-16
+- **Geltungsbereich:** `Makefile`, [`harness/tools/`](../harness/tools/), `.harness/cache/`, `CLAUDE.md`, `AGENTS.md`, [`test/`](../test/); ergänzt [`MR-004`](#mr-004--sessionstart-regelwerk-injektor).
+- **Adaption:** Der Regelwerk-Cache ist ein **Split-Modul-Verzeichnis**
+  `.harness/cache/agents-regelwerk/` (21 Dateien: `grundlagen-*`, `modul-00`…`modul-16`,
+  `README.md`-Index) statt der bisherigen Einzeldatei. `make regelwerk-fetch` zieht
+  `lab-regelwerk.zip` vom Release-Tag (`REGELWERK_URL`), **ZIP-sha256-gepinnt**
+  (`REGELWERK_SHA256`), verifiziert **vor** jeder Cache-Mutation und ersetzt den
+  Cache via temp→`mv` (bei Fehler/Drift unverändert,
+  [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit); das `mv` ist
+  atomar, das Replace als Ganzes nicht — der Cache ist gitignored/regenerierbar). Der
+  Codex-SessionStart-Hook injiziert künftig **nur den Index** (`README.md`, ~3,7 KB)
+  mit Pointer-Präfix aufs Cache-Verzeichnis; **beide Agenten** lesen das relevante
+  Modul **on-demand**. awk-Encoder bleibt (kein node/jq,
+  [`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)); **kein** Netz
+  im Hook. Neue Maintenance-Abhängigkeit: `unzip` (host, wie `curl` bei
+  `regelwerk-fetch`; nicht in `gates`, nicht im emittierten Zielrepo).
+- **Tradeoff (bewusst):** Der Index-only-Inject **schwächt die Presence-Garantie**
+  ggü. dem Codex-Volltext-Inject aus slice-007 (Lopopolo: „was nicht im Kontext
+  ist, existiert nicht"). Gewinn: kein 212-KB-Aufschlag je Codex-Session,
+  einheitliches read-on-demand für beide Agenten, kohärent zum Split-Cache. Die
+  Bewegung bleibt im **inferential-feedforward**-Quadranten (Context Engineering)
+  — die fail-closed-Gates (PreToolUse-Guard, Stop-Gate) sind **unberührt**, kein
+  Durchsetzungs-Verlust.
+- **Begründung:** Der 212-KB-Volltext war für Claude ohnehin nie geladen
+  (10k/150k-Caps, [`MR-004`](#mr-004--sessionstart-regelwerk-injektor)-Nachtrag) und
+  für Codex ein Per-Session-Kostenblock; das Split-ZIP serviert pro Modul. Quelle
+  bleibt **wortgleich** (ZIP-`README.md`: derivative Sicht, bei Konflikt gilt die
+  Kurs-Quelle) — **kein** selbst erzeugter Digest/Kurzfassung (kein Rückfall in die
+  slice-007-Harness-Lüge).
+- **Auflösungs-Trigger:** permanent; Re-Pin (`REGELWERK_SHA256`) + Tag-Bump bei
+  Upstream-Release manuell; Drift-Überwachung via slice-009 (dessen Invariante von
+  `sha256(Cache-Datei)` auf `sha256(Upstream-ZIP)` nachzuziehen ist).
 
 ## Modus-Deklaration pro Sub-Area
 
