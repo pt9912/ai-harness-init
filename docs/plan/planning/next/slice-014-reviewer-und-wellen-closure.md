@@ -1,0 +1,109 @@
+# Slice slice-014: Reviewer-Pflichtkontext und Wellen-Closure-Prozedur
+
+**Status:** next
+
+**Welle:** ohne Welle (Harness-Wartung). Einordnung *(Kontext, nicht normativ)*:
+[roadmap](../in-progress/roadmap.md).
+
+**Bezug:** [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage).
+
+**Autor:** Claude (Pair-Session). **Datum:** 2026-07-17.
+
+---
+
+## 1. Ziel
+
+Die zwei Stellen, an denen v3.1.0 inhaltlich **mehr** verlangt als der adoptierte
+Stand — im Unterschied zu slice-013 keine Textersetzung, sondern zwei fehlende
+Inhalte. Beide gegen v3.1.0 verifiziert (2026-07-17).
+
+1. **Reviewer-Kontext-Eingang.** v3.1.0 führt ihn als „Operativen Pflichtteil"
+   (`regelwerk/modul-10-review-harness.md:54-57`, wortgleich): „**Kontext-Eingang
+   (Pflicht):** Diff · `spec/lastenheft.md` · ADRs, deren ID im PR/Commit vorkommt ·
+   `AGENTS.md` §Hard Rules · vorherige Findings am gleichen Modul. Ohne den Block
+   sieht der Reviewer Code, aber nicht die Verträge, gegen die er prüft."
+   **Vorherige Findings am gleichen Modul** ist der einzige der fünf Punkte, den
+   `.harness/skills/reviewer.md` heute nicht führt.
+2. **Wellen-Closure-Prozedur.** Modul 6 schreibt fünf Schritte mit Beleg vor
+   (`regelwerk/modul-06-roadmap.md:53-84`): Trigger prüfen · **Carveout-Audit** ·
+   Closure-Notiz · **Wave-Self-Close-Commit** · **Roadmap-Fortschreibung**. „Erst
+   wenn alle fünf Belege vorliegen, ist die Welle *auditierbar* geschlossen."
+   `welle-01-offline-kern.md` §3 deckt Schritt 1 und 3; die anderen drei fehlen.
+   Der Begriff *Wave-Self-Close-Commit* kommt im **adoptierten** v1.2.0-Stand
+   (`.harness/cache/agents-regelwerk/modul-06-roadmap.md`) **null Mal** vor —
+   gemessen 2026-07-17. Referenz-Hinweis: gemeint ist der `lab-regelwerk`-Baum, den
+   das Repo tatsächlich fährt, **nicht** die didaktische `kurs/de/`-Fassung; dort
+   taucht der Begriff in v1.2.0 sehr wohl auf (zweimal, im Selbstcheck-Kontext). Die
+   beiden Bäume sind nicht deckungsgleich — wer hier gegen `kurs/de/` misst, misst
+   am falschen Artefakt.
+
+**Abgrenzung.** Mechanik/Vendoring: slice-011. Tote Quellen-Pointer und
+§Baseline-Stand: slice-012. Die **mechanischen** Nachzüge (Link-Pins,
+ADR-Platzhalter, Status-Feld → Lifecycle-Notiz): slice-013 — inhaltlich disjunkt,
+aber **nicht datei-disjunkt**: slice-013s Status-Sweep fasst den Kopf *dieser* Datei
+an, solange sie aktiv ist (eine Zeile, s. slice-013 §4). Nicht parallel fahren. Der
+d-check-Pin-Sprung (v0.10.0 → 0.43.1) ist ein eigener Slice mit eigenem Risiko.
+
+## 2. Definition of Done
+
+- [ ] `.harness/skills/reviewer.md` §Eingangs-Kontext führt „vorherige Findings am
+      gleichen Modul"; Skill-Version gehoben (versioniert, **nicht** überschrieben —
+      Modul 10). Die übrigen vier Pflicht-Punkte sind als vorhanden belegt (Grep),
+      nicht angenommen.
+- [ ] `welle-01-offline-kern.md` §3 trägt die drei fehlenden Closure-Schritte
+      (Carveout-Audit · Wave-Self-Close-Commit · Roadmap-Fortschreibung) und nennt
+      die Closure-Notiz unter `done/` (heute ohne Präfix, `:29`) — konsistent mit
+      `docs/plan/planning/README.md:26`.
+- [ ] `make gates` grün; Closure-Notiz mit Steering-Loop-Lerneintrag.
+
+## 3. Plan (vor Code)
+
+| Datei / Komponente | Änderungs-Art | Begründung |
+|---|---|---|
+| `.harness/skills/reviewer.md` | update | Pflicht-Kontext-Eingang (Modul 10), Version-Bump |
+| `docs/plan/planning/welle-01-offline-kern.md` | update | Closure-Prozedur Schritte 2/4/5 + `done/`-Pfad |
+
+## 4. Trigger
+
+Inhaltlich unabhängig von slice-013 startbar, aber **nicht parallel** dazu (eine
+Zeile Überschneidung im Kopf dieser Datei, s. §Abgrenzung). Sinnvoll nach slice-012,
+weil der Reviewer-Skill dann auf eine erreichbare Quelle zeigt.
+
+## 5. Closure-Trigger
+
+DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
+
+## 6. Risiken und offene Punkte
+
+- **Der Skill wird versioniert, nicht überschrieben.** Modul 10 verlangt das
+  ausdrücklich. Ein überschriebener Skill macht die Frage „gegen welche Fassung
+  wurde damals geprüft?" unbeantwortbar — genau die Auditierbarkeit, die der
+  Review-Harness herstellen soll.
+- **Die Welle-Datei ist `in-progress`, nicht Archiv.** `welle-01-offline-kern.md`
+  beschreibt eine **laufende** Welle; die Closure-Prozedur nachzutragen ändert die
+  Regeln, nach denen sie schließt, *bevor* sie schließt. Das ist zulässig (die Welle
+  hat noch keinen Closure-Trigger ausgelöst), aber es ist eine Änderung an einem
+  aktiven Artefakt — im Review explizit zu prüfen, nicht als Doku-Kosmetik
+  durchzuwinken.
+- **Offen: `lastenheft_refs` vs. Klartext-`**Bezug:**`-Zeile.** Modul 15 streicht die
+  Notiz, die die Klartext-Variante ausdrücklich erlaubte; Modul 16 fordert unverändert
+  „Slices tragen `lastenheft_refs`" mit Beleg „Frontmatter-Grep". Das Repo fährt
+  durchgehend Klartext und hat kein Frontmatter — entlastend liefert das
+  v3.1.0-`slice.template.md` **selbst** die Klartext-Form. Nicht akut (keine Welle in
+  Freigabe, kein Release-Verzeichnis im Repo), aber die Wahl gehört als eigener
+  MR-Eintrag festgeschrieben, bevor sie an einer gestrichenen Kurs-Notiz hängt.
+- **Zur DoD-Länge.** Dieser Slice liegt bei 3 Häkchen und zwei Dateien in zwei
+  Sub-Areas — unter jeder Lesart der „≤ 3 DoD-Punkte"-Regel unauffällig. Die
+  Einheiten-Frage selbst ist in v3.1.0 nicht entscheidbar und in slice-013 §6
+  dokumentiert; sie blockiert diesen Slice nicht.
+
+## 7. Closure-Notiz (nach `done/`)
+
+<!-- Erst nach Abschluss füllen. -->
+
+## 8. Sub-Area-Modus-Begründung
+
+Alle berührten Sub-Areas GF (siehe
+[Kurs Modul 5](https://github.com/pt9912/ai-harness-course/blob/v3.1.0/kurs/de/02-planung/modul-05-planning-harness.md)):
+`.harness/skills/` und die Planning-Doku teilen die adoptierte Harness-Mechanik
+([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)); GF (Doc führt).
