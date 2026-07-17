@@ -1,6 +1,5 @@
-# Harness-Laufzustand (lokal — NUR state/ und cache/;
-# .harness/skills/ ist versionierte Harness-Mechanik)
+# Harness-Laufzustand (lokal — NUR state/;
+# .harness/skills/ ist versionierte Harness-Mechanik,
+# .harness/baseline/ ist die committet vendored Baseline (MR-007) —
+# beide gehören ins Repo, nicht hierher)
 .harness/state/
-# Lokaler, gefetchter Verbatim-Regelwerk-Cache (nicht committet; via
-# `make regelwerk-fetch`, sha256-gepinnt — MR-004)
-.harness/cache/

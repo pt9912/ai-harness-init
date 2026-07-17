@@ -3,9 +3,12 @@
 # Targets/roots existieren (sonst Config-Fehler / halluzinierter Gate).
 scan:
   roots: ["."]
-  # .harness/cache/: lokaler, gefetchter Verbatim-Regelwerk-Cache (gitignored,
-  # MR-004) — externer Inhalt, nicht repo-autoritativ; vom Doc-Gate ausgenommen.
-  ignore: ["**/*.template.md", ".tmp/**", ".harness/cache/**"]
+  # .harness/baseline/: committet vendored Baseline (MR-007) — externer,
+  # derivativer Inhalt, nicht repo-autoritativ; vom Doc-Gate ausgenommen. Sie
+  # trägt kurs-eigene MR-/ADR-Kennungen (Beispiele, nicht die des Repos), die
+  # sonst die ids-Link-Pflicht träfen. Glob ohne <tag>: der Tag-String lebt
+  # allein in BASELINE_TAG (Makefile).
+  ignore: ["**/*.template.md", ".tmp/**", ".harness/baseline/**"]
 modules: [links, anchors, ids, matrix, codepaths, spans]
 # Kennungen sind linkpflichtig (auch in Inline-Code, link-policy: always) —
 # "klickbar zur Quelle" als gemessenes Property. Literal-schwere Artefakte

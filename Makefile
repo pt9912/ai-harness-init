@@ -7,14 +7,24 @@ include harness.mk
 BATS_IMAGE ?= bats/bats@sha256:e8f18e0acd4ea933bf019130b85033be75e8ce081db299e93578de83d7874e33
 SHELLCHECK_IMAGE ?= koalaman/shellcheck@sha256:bb596a0d169b85ddd81d8b6d3a2ff6d5baf5fca10b97f575ebc647c3dff62b3d
 
-# Regelwerk-Quelle: Split-Modul-ZIP vom Release-Tag, ZIP-sha256-gepinnt
-# (Reproduzierbarkeit, LH-QA-02; MR-006). regelwerk-fetch ist Maintenance (Netz,
-# curl+unzip) und NICHT in gates (LH-QA-01 / offline-grün). Cache = Verzeichnis.
-REGELWERK_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/v1.2.0/lab-regelwerk.zip
-REGELWERK_SHA256 ?= ef61f8a7386dcc3b967b7653962d558521b284eb33e481e26b98a32f2db97e43
-REGELWERK_CACHE ?= .harness/cache/agents-regelwerk
+# Vendored Baseline (MR-007): Regelwerk UND Templates liegen committet unter
+# .harness/baseline/$(BASELINE_TAG)/{regelwerk,templates}/ + SHA256SUMS —
+# netzlos auf jedem Checkout präsent, kein Fetch pro Lauf.
+#
+# BASELINE_TAG ist die EINZIGE Quelle des Tag-Strings in der Mechanik: der
+# Injektor und baseline-verify ENTDECKEN das Verzeichnis (Setzung: ein Tag zur
+# Zeit), .d-check.yml nutzt einen Glob. Ein Tag-Bump ändert damit diese Zeile,
+# BASELINE_ZIP_SHA256 und den Baum — keinen repo-weiten Grep (LH-QA-02).
+BASELINE_TAG ?= v3.1.0
+BASELINE_DIR ?= .harness/baseline/$(BASELINE_TAG)
+# Upstream-PROVENIENZ (nicht lokale Integrität — die trägt SHA256SUMS im Baum):
+# sha256 des Release-Assets, aus dem der Baum stammt. SHA256SUMS ist selbst
+# erzeugt und beweist die Herkunft NICHT; diese Kette hängt allein hier.
+# regelwerk-check vergleicht Upstream gegen diesen Pin (MR-007).
+BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
+BASELINE_ZIP_SHA256 ?= bd90c721e7583b218d097def8abac42fb0544c7a140e2e649d71e772f7a90220
 
-.PHONY: help gates record-gates test shell-lint regelwerk-fetch regelwerk-check
+.PHONY: help gates record-gates test shell-lint baseline-verify regelwerk-check
 help: ## Targets anzeigen
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-14s %s\n", $$1, $$2}'
@@ -28,48 +38,44 @@ shell-lint: ## Shell-Hooks/-Helfer linten (shellcheck) im gepinnten Image — Do
 	docker run --rm -v "$(CURDIR)":/mnt:ro -w /mnt $(SHELLCHECK_IMAGE) \
 		.claude/hooks/*.sh harness/tools/*.sh
 
-# Holt das WORTGLEICHE Regelwerk (Split-Modul-ZIP) in den lokalen, gitignorierten
-# Cache (Verzeichnis), dessen Index der SessionStart-Hook injiziert (MR-006,
-# ergänzt MR-004). ZIP-sha256-Pin VOR jeder Cache-Mutation = Drift-Erkennung;
-# Replace via temp -> mv (mv atomar, Gesamt-Replace nicht), Cache bei
-# Fehler/Drift UNVERAENDERT.
-regelwerk-fetch: ## Regelwerk-ZIP verbatim holen + sha256 prüfen + entpacken — Maintenance, NICHT in gates
-	@mkdir -p "$(dir $(REGELWERK_CACHE))"
-	@tmp="$$(mktemp)"; tmpd="$$(mktemp -d "$(dir $(REGELWERK_CACHE)).fetch.XXXXXX")"; \
-	curl -fsSL "$(REGELWERK_URL)" -o "$$tmp" \
-		&& printf '%s  %s\n' "$(REGELWERK_SHA256)" "$$tmp" | sha256sum -c - >/dev/null \
-		&& unzip -oq "$$tmp" -d "$$tmpd" \
-		&& rm -rf "$(REGELWERK_CACHE)" \
-		&& mv "$$tmpd" "$(REGELWERK_CACHE)" \
-		&& rm -f "$$tmp" \
-		&& echo "Regelwerk-Cache aktuell: $(REGELWERK_CACHE)/ ($$(find "$(REGELWERK_CACHE)" -maxdepth 1 -type f | wc -l) Dateien)" \
-		|| { rm -rf "$$tmp" "$$tmpd"; echo "FEHLER/DRIFT: Fetch fehlgeschlagen oder Upstream != gepinnter sha256 — Cache UNVERAENDERT; REGELWERK_SHA256 ggf. neu pinnen"; exit 1; }
+# Verifiziert die vendored Baseline NETZLOS: sha256sum -c über SHA256SUMS
+# (fängt geänderte/gelöschte Dateien) PLUS Vollständigkeits-Check (fängt
+# zusätzlich eingelegte — dafür ist sha256sum -c blind, es prüft nur Gelistetes).
+# Ohne den zweiten Schritt wäre "prüft die Integrität der Arbeitskopie"
+# überdehnt. Läuft IN gates: kein curl/unzip, kein Netz -> offline-grün bleibt
+# (LH-QA-01/02/03; MR-007). Logik in harness/tools/, damit shell-lint sie deckt.
+baseline-verify: ## Vendored Baseline netzlos verifizieren (Integrität + Vollständigkeit) — IN gates
+	@bash harness/tools/baseline-verify.sh
 
-# Read-only Drift-Monitor: holt das Upstream-ZIP in eine temp-Datei (Cache
-# UNBERUEHRT), vergleicht dessen sha256 mit dem Pin (REGELWERK_SHA256, MR-006).
-# Maintenance/CI (Netz, Host-curl wie regelwerk-fetch), NICHT in gates (LH-QA-01).
+# Read-only Drift-Monitor: holt das Upstream-ZIP in eine temp-Datei (der
+# vendored Baum bleibt UNBERUEHRT) und vergleicht dessen sha256 mit dem
+# Provenienz-Pin (BASELINE_ZIP_SHA256, MR-007). Der einzige Upstream-Sensor —
+# baseline-verify prüft nur die eigene Arbeitskopie, nie den Upstream.
+# Maintenance/CI (Netz, Host-curl), NICHT in gates (LH-QA-01).
 # Recipe-Exit: 0 = kein Drift, 1 = DRIFT, 2 = Fetch-Fehler. Hinweis: `make`
 # kollabiert jeden Recipe-Fehler auf Exit 2 (Standard-Make) — fuer CI also
 # 0 = OK, !=0 = Alarm; ob Drift oder Fetch-Fehler sagt die echo-Meldung (kanonisch;
 # die make-"Fehler N"-Zeile spiegelt den Recipe-Exit, ist aber locale-/stderr-fragil).
-regelwerk-check: ## Upstream-Drift des Regelwerk-ZIP melden (read-only, Cache unberührt) — Maintenance/CI, NICHT in gates
+regelwerk-check: ## Upstream-Drift des Baseline-ZIP melden (read-only, Baum unberührt) — Maintenance/CI, NICHT in gates
 	@tmp="$$(mktemp)"; \
-	curl -fsSL "$(REGELWERK_URL)" -o "$$tmp" \
-		|| { rm -f "$$tmp"; echo "FETCH-FEHLER (kein Drift-Urteil): Upstream nicht erreichbar — $(REGELWERK_URL)"; exit 2; }; \
-	if printf '%s  %s\n' "$(REGELWERK_SHA256)" "$$tmp" | sha256sum -c - >/dev/null 2>&1; then \
-		rm -f "$$tmp"; echo "Kein Drift: Upstream-ZIP == gepinnter REGELWERK_SHA256."; \
+	curl -fsSL "$(BASELINE_URL)" -o "$$tmp" \
+		|| { rm -f "$$tmp"; echo "FETCH-FEHLER (kein Drift-Urteil): Upstream nicht erreichbar — $(BASELINE_URL)"; exit 2; }; \
+	if printf '%s  %s\n' "$(BASELINE_ZIP_SHA256)" "$$tmp" | sha256sum -c - >/dev/null 2>&1; then \
+		rm -f "$$tmp"; echo "Kein Drift: Upstream-ZIP ($(BASELINE_TAG)) == gepinnter BASELINE_ZIP_SHA256."; \
 	else \
 		got="$$(sha256sum "$$tmp" | cut -d' ' -f1)"; rm -f "$$tmp"; \
-		echo "DRIFT: Upstream-ZIP != gepinnter REGELWERK_SHA256 (Cache UNVERAENDERT)."; \
-		echo "  gepinnt:  $(REGELWERK_SHA256)"; \
+		echo "DRIFT: Upstream-ZIP ($(BASELINE_TAG)) != gepinnter BASELINE_ZIP_SHA256 (vendored Baum UNVERAENDERT)."; \
+		echo "  gepinnt:  $(BASELINE_ZIP_SHA256)"; \
 		echo "  upstream: $$got"; \
-		echo "  -> manuell re-reviewen, dann 'make regelwerk-fetch' + REGELWERK_SHA256 neu pinnen."; \
+		echo "  -> manuell re-reviewen, dann Baum neu vendoren + BASELINE_TAG/BASELINE_ZIP_SHA256 neu setzen."; \
 		exit 1; \
 	fi
+	@echo "Hinweis: prüft NUR das Asset von $(BASELINE_TAG). Ein NEUER Tag upstream bleibt hier unsichtbar — Release-Liste separat prüfen (MR-007, Auflösungs-Trigger)."
 
 record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh
 
-# record-gates läuft als LETZTER Prerequisite — der Nachweis entsteht nur
-# nach grünen Gates (harness/conventions.md MR-002).
-gates: docs-check test shell-lint record-gates ## alle aktuell lauffähigen Gates + Nachweis
+# baseline-verify läuft als ERSTER Prerequisite: steht die vendored Baseline
+# nicht, ist jede Aussage der Folge-Gates über sie wertlos. record-gates läuft
+# als LETZTER — der Nachweis entsteht nur nach grünen Gates (MR-002).
+gates: baseline-verify docs-check test shell-lint record-gates ## alle aktuell lauffähigen Gates + Nachweis

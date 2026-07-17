@@ -2,16 +2,20 @@
 
 Dieses Repo folgt dem AI-Harness-Prozess (Greenfield: Doc führt, Code folgt).
 
-**Betriebsregelwerk (wortgleich, Split-Modul-Cache).** Das Regelwerk liegt als
-**Modul-Verzeichnis** unter `.harness/cache/agents-regelwerk/` (21 Dateien:
-`grundlagen-*` + `modul-00`…`modul-16` + `README.md` als Index; via `make
-regelwerk-fetch`, gitignored, ZIP-sha256-gepinnt — [`MR-006`](harness/conventions.md#mr-006--regelwerk-cache-als-split-modul-verzeichnis), ergänzt
-[`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor)). **Lies zu Beginn jeder Harness-Arbeit den Index** (`README.md`)
-**und das für die Aufgabe relevante Modul on-demand** (Source Precedence aus
-`AGENTS.md` §1) — der Volltext (~4000 Zeilen / ~108k Token) wird bewusst **nicht**
-als Ganzes geladen (sprengt Claudes 150k-Zeichen-Memory-Limit; kein
-`@`-Auto-Import). Fehlt das Verzeichnis, zuerst `make regelwerk-fetch` ausführen —
-sonst ist das Regelwerk nicht verfügbar (dann **nicht** als geladen voraussetzen).
+**Betriebsregelwerk (committet vendored, netzlos).** Das Regelwerk liegt als
+**Modul-Verzeichnis** unter `.harness/baseline/<tag>/regelwerk/` (21 Dateien:
+`grundlagen-*` + `modul-00`…`modul-16` + `README.md` als Index), die Ziel-Form-Templates
+als Geschwister unter `.harness/baseline/<tag>/templates/` — beide **committet**,
+also auf jedem Checkout da ([`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache), löst den gefetchten Cache aus
+[`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor)/[`MR-006`](harness/conventions.md#mr-006--regelwerk-cache-als-split-modul-verzeichnis) ab). **Lies zu Beginn jeder Harness-Arbeit den Index**
+(`regelwerk/README.md`) **und das für die Aufgabe relevante Modul on-demand**
+(Source Precedence aus `AGENTS.md` §1) — der Volltext (~4000 Zeilen / ~108k Token)
+wird bewusst **nicht** als Ganzes geladen (sprengt Claudes 150k-Zeichen-Memory-Limit;
+kein `@`-Auto-Import). Der Baum ist **derivativ**: bei Konflikt gilt der Kurs (die
+kanonische Quelle, die `regelwerk/README.md` selbst nennt) — er ist **nicht**
+deckungsgleich mit der didaktischen `kurs/de/`-Fassung. Fehlt das Verzeichnis, ist
+der Checkout kaputt (`make baseline-verify` meldet Details) — dann das Regelwerk
+**nicht** als geladen voraussetzen.
 
 Vor jeder Änderung an Code oder Dokumentation lesen:
 

@@ -4,7 +4,7 @@
 und das Betriebsregelwerk v3.1.0 (Modul 5 Slice-Schnitt, Modul 6 Wellen-Closure,
 Modul 10 Reviewer-Skill).
 
-**Gegenstand:** `docs/plan/planning/next/slice-011-baseline-vendoring.md`,
+**Gegenstand:** `docs/plan/planning/next/slice-011-baseline-vendoring.md`, <!-- d-check:ignore (Zeitdokument: Lifecycle-Pfade galten beim Lauf; slice-011 ist seither nach in-progress/ gewandert — das Verzeichnis IST der Zustand, der Pfad wandert per Definition mit) -->
 `slice-012-quellen-wahrheit.md`, `slice-013-vorlagen-und-slice-koepfe.md`,
 `slice-014-reviewer-und-wellen-closure.md` (Arbeitsbaum, uncommitted).
 
@@ -50,7 +50,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: HIGH
 - `quelle`: Regelwerk v3.1.0 `modul-05:71-73` (Größen-Regel)
-- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §2, §3
+- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §2, §3 <!-- d-check:ignore (Zeitdokument, s.o. — Lifecycle-git-mv) -->
 - `befund`: Der Slice trägt 9 DoD-Häkchen und berührt Daten, Build, Tooling, Test, Gate-Config und Doku. Er reißt damit „mehr als drei DoD-Punkte" **und** „mehrere Schichten betroffen" — letzteres unabhängig von der in slice-013 §6 dokumentierten Zähl-Ambiguität, die nur die Zahl 3 betrifft.
 - `verifizierbar`: ja — Auszählen der Checkbox-Zeilen und der Plan-Tabellenzeilen.
 
@@ -66,7 +66,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: MEDIUM
 - `quelle`: LH-QA-01 (Nachbarschaft) / Maintainability
-- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §3 vs. `harness/README.md` §Sensors und `AGENTS.md` §4
+- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §3 vs. `harness/README.md` §Sensors und `AGENTS.md` §4 <!-- d-check:ignore (Zeitdokument, s.o. — Lifecycle-git-mv) -->
 - `befund`: `baseline-verify` wird laut DoD Prerequisite von `gates`, aber die Plan-Tabelle listet weder `harness/README.md` §Sensors noch `AGENTS.md` §4 — die beiden einzigen kanonischen „welche Gates laufen"-Tabellen des Repos. Nach dem Merge liefe ein Gate, das die Doku nicht führt.
 - `verifizierbar`: ja — Abgleich des `gates`-Targets im `Makefile` gegen beide Tabellen nach Umsetzung.
 
@@ -74,7 +74,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: MEDIUM
 - `quelle`: LH-QA-02 (Reproduzierbarkeit) / Maintainability
-- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §6 (`<tag>`-Politik)
+- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §6 (`<tag>`-Politik) <!-- d-check:ignore (Zeitdokument: Pfad galt zum Zeitpunkt des Laufs; der Slice ist seither per Lifecycle-git-mv gewandert — das Verzeichnis IST der Zustand) -->
 - `befund`: „193 geänderte Zeilen, fast alle `blob/v3.0.0/` → `blob/v3.1.0/`" — gemessen sind 150 von 193 (77 %) reine Tag-Bumps; 43 Zeilen (22 %) sind inhaltlich, u. a. ein neuer Absatz „**Vendored gelesen?**" in `regelwerk/README.md`. Die Aussage stützt eine Risiko-Einschätzung („nur Link-Churn") und trägt sie in dieser Form nicht.
 - `verifizierbar`: ja — `diff -r x-v3.0.0 x-v3.1.0` gegen die entpackten ZIPs, Tag-normalisiert paarweise gezählt.
 
@@ -90,7 +90,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: MEDIUM
 - `quelle`: LH-QA-02 (Reproduzierbarkeit)
-- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §1
+- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §1 <!-- d-check:ignore (Zeitdokument, s.o. — Lifecycle-git-mv) -->
 - `befund`: „15 `../templates/…`-Verweise in 13 der 21 Modul-Dateien, 12 eindeutige Ziele" ist mit keiner einzelnen Zählmethode reproduzierbar — je nach Muster liefert `grep` 15, 16 oder 19 Treffer und 12 oder 13 Dateien, weil Fließtext-Erwähnungen (`modul-02:185`) und echte Markdown-Links nicht getrennt werden.
 - `verifizierbar`: ja — `grep -rhoP '\.\./templates/\S*?\.md' regelwerk/ | sort -u | wc -l` versus `grep -rn '\.\./templates/' regelwerk/`.
 
@@ -106,7 +106,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: LOW
 - `quelle`: Maintainability (DoD-Prüfbarkeit)
-- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §2 (DoD 6)
+- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §2 (DoD 6) <!-- d-check:ignore (Zeitdokument, s.o. — Lifecycle-git-mv) -->
 - `befund`: Die DoD verlangt, der MR-Eintrag trage „alle vier Setzungen **wörtlich** (Formulierung siehe §6)"; §6 liefert sie als mehrsätzige Prosa über vier Absätze, nicht als einen zitierfähigen Blocktext. Zwei Reviewer könnten unterschiedlich urteilen, ob eine paraphrasierte Fassung „wörtlich" genug ist.
 - `verifizierbar`: nur bedingt — kein Diff-Ziel.
 

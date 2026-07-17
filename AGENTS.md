@@ -9,29 +9,28 @@ Quelle gilt die kanonische Quelle (Source Precedence, §2).
 
 Strukturregeln und Adaptionen leben in [`harness/conventions.md`](harness/conventions.md).
 
-**Betriebsregelwerk der adoptierten Baseline** (wortgleiches Kurs-Regelwerk).
-Kanonische Quelle (die derivative Sicht liegt als lokaler Split-Modul-Cache vor,
-s.u.):
-<https://raw.githubusercontent.com/pt9912/ai-harness-course/main/kurs/de/agents-regelwerk.md>
-Derivativ; bei Konflikt gelten die kanonischen Quellen. **Lektüre vor dem Workflow
-(§6): Index + das relevante Modul on-demand aus dem Cache** (nächster Absatz),
-**nicht** der Volltext am Stück.
+**Betriebsregelwerk der adoptierten Baseline — committet vendored, netzlos.**
+Regelwerk **und** Templates liegen unter `.harness/baseline/<tag>/{regelwerk,templates}/`
+(+ `SHA256SUMS`), auf **jedem Checkout präsent** — kein Fetch pro Lauf, kein
+Netz. Der Baum ist eine **derivative Sicht** auf den Kurs; bei Konflikt gilt die
+kanonische Quelle (§2 und der Kurs selbst, den `regelwerk/README.md` nennt).
+**Lektüre vor dem Workflow (§6): der Index** (`.harness/baseline/<tag>/regelwerk/README.md`)
+**+ das relevante Modul on-demand**, **nicht** der Volltext am Stück (er sprengt
+Claudes 150k-Zeichen-/108k-Token-Limit; kein `@`-Auto-Import).
 
-**Lokaler Cache + Zugriff (pro Agent verschieden).** `make regelwerk-fetch`
-zieht das **wortgleiche** Regelwerk als **Split-Modul-ZIP** (Release-Tag,
-ZIP-sha256-gepinnt) und entpackt es nach `.harness/cache/agents-regelwerk/`
-(gitignored, lokal — 21 Module + `README.md`-Index; kein committeter Fremd-Blob,
-**keine** Kurzfassung/Paraphrase). **Codex** injiziert via SessionStart-Hook nur
+**Zugriff (pro Agent verschieden).** **Codex** injiziert via SessionStart-Hook nur
 den **Index** (`.codex/hooks.json` → `harness/tools/sessionstart-inject-regelwerk.sh`);
 **Claude** liest **bei Bedarf** (Pointer: `CLAUDE.md`-Direktive + Source
-Precedence). **Beide** lesen das relevante Modul **on-demand** aus dem
-Verzeichnis — der Volltext sprengt Claudes 150k-Zeichen-/108k-Token-Limit (kein
-`@`-Auto-Import). Fehlt der Cache (vor dem Fetch), ist die Quelle direkt zu lesen.
-Mechanik: [`MR-006`](harness/conventions.md#mr-006--regelwerk-cache-als-split-modul-verzeichnis), ergänzt [`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor).
-Codex-Cloud/-IDE haben keinen Hook → dort die Quelle direkt lesen.
+Precedence). **Beide** lesen das relevante Modul **on-demand** aus dem Verzeichnis.
+Die 15 `../templates/…`-Ziel-Form-Verweise des Regelwerks lösen netzlos lokal auf,
+weil beide Bäume Geschwister sind. Fehlt die Baseline, ist der **Checkout kaputt**
+(sie ist committet) — `make baseline-verify` meldet Details; sie **nicht** als
+geladen voraussetzen. Mechanik: [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) (löst den gefetchten Cache aus
+[`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor)/[`MR-006`](harness/conventions.md#mr-006--regelwerk-cache-als-split-modul-verzeichnis) ab).
 
-**Skelett-Vorlagen der Baseline** als ZIP zum Bootstrap:
-<https://github.com/pt9912/ai-harness-course/releases/latest/download/lab-templates.zip>
+**Skelett-Vorlagen der Baseline** liegen im selben vendored Baum
+(`.harness/baseline/<tag>/templates/`) — sie kommen **nicht** aus einem zweiten
+Asset.
 
 ## 2. Kanonische Quellen (Source Precedence)
 
@@ -80,6 +79,7 @@ PR-Kommentar.
 
 | Target | Zweck |
 |---|---|
+| `make baseline-verify` | Vendored Baseline netzlos verifizieren (Integrität + Vollständigkeit, [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) |
 | `make docs-check` | Doku-Referenzen (links/anchors/ids/codepaths) via d-check |
 | `make test` | Command-Guard-Tests (bash+awk) via bats im gepinnten Image |
 | `make shell-lint` | Shell-Hooks/-Helfer lint-clean (shellcheck) im gepinnten Image |

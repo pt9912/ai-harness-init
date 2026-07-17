@@ -81,10 +81,16 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 ### MR-004 — SessionStart-Regelwerk-Injektor
 
-> **Teilweise überholt seit slice-010 → siehe [`MR-006`](#mr-006--regelwerk-cache-als-split-modul-verzeichnis).** Der folgende Body
-> beschreibt den Stand **vor** dem Split-Modul-Cache (Einzeldatei, Codex
-> injiziert im Volltext) und steht hier als **Historie**. Aktuelle Mechanik
-> (Split-Modul-Verzeichnis, Codex injiziert nur den Index): [`MR-006`](#mr-006--regelwerk-cache-als-split-modul-verzeichnis).
+> **HISTORIE — der Cache-Teil ist seit slice-011 überholt → [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache).**
+> Der folgende Body beschreibt den Stand **vor** dem Split-Modul-Cache
+> (Einzeldatei, Codex injiziert im Volltext); der Zwischenstand steht in
+> [`MR-006`](#mr-006--regelwerk-cache-als-split-modul-verzeichnis). **Beide sind
+> als Cache-Mechanik abgelöst:** es gibt weder `.harness/cache/` noch
+> `make regelwerk-fetch` — die Baseline ist committet vendored
+> ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)).
+> Unverändert gültig bleibt hier die **Injektor-Mechanik** (Codex-Hook-Schema,
+> awk-Encoder, kein Netz im Hook, sichtbare Degradation) — nur ihre Quelle ist
+> jetzt der vendored Baum. Historische Einträge werden **nicht** umgeschrieben.
 
 - **Datum:** 2026-06-14
 - **Geltungsbereich:** [`harness/tools/`](../harness/tools/), [`.claude/`](../.claude/), [`.codex/`](../.codex/), `.harness/cache/`, `CLAUDE.md`, `Makefile`, `.d-check.yml`
@@ -158,6 +164,18 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 ### MR-006 — Regelwerk-Cache als Split-Modul-Verzeichnis
 
+> **HISTORIE — überholt seit slice-011 → [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache).**
+> Der folgende Body beschreibt den **gefetchten, gitignorierten** Split-Modul-Cache
+> (`.harness/cache/agents-regelwerk/`, `make regelwerk-fetch`). Beides existiert
+> nicht mehr: die Baseline ist **committet vendored**
+> ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)).
+> Übernommen wurden von hier: die Split-Modul-Form, das **Index-only-Inject** und
+> das read-on-demand (samt des unten benannten Presence-Tradeoffs), sowie
+> `regelwerk-check` als Drift-Monitor — dessen **Grenze** (er sieht nur das Asset
+> des gepinnten Tags, keinen neuen Tag) [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
+> ausdrücklich benennt. Der „wortgleich"-Wortlaut unten galt für v1.2.0 und wird
+> **nicht** umgeschrieben.
+
 - **Datum:** 2026-06-16
 - **Geltungsbereich:** `Makefile`, [`harness/tools/`](../harness/tools/), `.harness/cache/`, `CLAUDE.md`, `AGENTS.md`, [`test/`](../test/); ergänzt [`MR-004`](#mr-004--sessionstart-regelwerk-injektor).
 - **Adaption:** Der Regelwerk-Cache ist ein **Split-Modul-Verzeichnis**
@@ -192,6 +210,69 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   (slice-009) vergleicht `sha256(Upstream-ZIP)` gegen `REGELWERK_SHA256` und
   mutiert nichts — `regelwerk-fetch` *aktualisiert*, `regelwerk-check` *überwacht*
   (beide Maintenance/Netz, nicht in `gates`).
+
+### MR-007 — Baseline committet vendored statt gefetchter Cache
+
+- **Datum:** 2026-07-17
+- **Geltungsbereich:** `.harness/baseline/`, `Makefile`, [`harness/tools/`](../harness/tools/), `.gitignore`, `.d-check.yml`, `AGENTS.md`, `CLAUDE.md`, [`harness/README.md`](README.md), [`test/`](../test/); löst den Cache-Teil von [`MR-004`](#mr-004--sessionstart-regelwerk-injektor)/[`MR-006`](#mr-006--regelwerk-cache-als-split-modul-verzeichnis) ab.
+- **Adaption:** Regelwerk **und** Templates liegen **committet vendored** unter
+  `.harness/baseline/<tag>/{regelwerk,templates}/` + `SHA256SUMS` (42 Dateien:
+  21 + 21), netzlos auf jedem Checkout präsent — Baseline-Vorgabe aus Modul 2
+  („nicht pro Lauf extern gefetcht"). `make regelwerk-fetch` entfällt; an seine
+  Stelle tritt das **netzlose** `make baseline-verify` (in `gates` — anders als
+  ein Netz-Fetch verletzt es offline-grün nicht,
+  [`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Die
+  Geschwister-Lage ist funktional: die `../templates/…`-Ziel-Form-Verweise des
+  Regelwerks lösen dadurch lokal auf (12 eindeutige Ziele, 0 tot — gemessen).
+- **Setzung 1 — Provenienz ≠ Integrität (beide nötig).** `SHA256SUMS` ist
+  **selbst erzeugt**: es beweist, dass der Baum sich seit dem Vendoring nicht
+  bewegt hat, **nicht**, dass er vom offiziellen Release stammt. Die
+  Upstream-Kette hängt allein an `BASELINE_ZIP_SHA256` (`Makefile`) — dem sha256
+  des Release-Assets, gegen das **vor** dem Entpacken verifiziert wird. Beide
+  Anker sind zu führen; wer nur `SHA256SUMS` hat, hat Integrität ohne Herkunft.
+- **Setzung 2 — `SHA256SUMS`-Umfang.** Die Baseline schreibt nur *dass* die Datei
+  existiert; Format, Umfang und Erzeugung sind unspezifiziert, und das ZIP liefert
+  **keine** mit. Setzung: `sha256sum` über **alle** Dateien beider Bäume, Pfade
+  relativ zu `<tag>/`, `LC_ALL=C`-sortiert, die Datei **selbst ausgenommen** (sie
+  kann sich nicht selbst hashen — ihre Integrität trägt git).
+- **Setzung 3 — Vollständigkeits-Check ist Pflicht, nicht Kür.** `sha256sum -c`
+  prüft **nur, was gelistet ist**, und bleibt bei einer **zusätzlich eingelegten**
+  Datei grün. `baseline-verify` vergleicht deshalb zusätzlich den Dateibestand
+  gegen die Liste. Real vorgeführt (slice-011): geänderte Datei → rot; eingelegte
+  Datei → `sha256sum -c` **grün**, `baseline-verify` **rot**. Ohne diesen Schritt
+  wäre „prüft die Integrität der Arbeitskopie" überdehnt — ein stilles Grün.
+- **Setzung 4 — `<tag>`-Politik.** Das Regelwerk sagt zu alten
+  `<tag>`-Verzeichnissen nichts (Koexistenz vs. Ersetzen). Setzung: **ein Tag zur
+  Zeit** (Ersetzen), Historie liegt in git. Der Tag-String hat **genau eine**
+  Quelle: `BASELINE_TAG` (`Makefile`). `baseline-verify` und der SessionStart-Injektor
+  **entdecken** das Verzeichnis (Glob) statt es zu kennen, `.d-check.yml` nutzt
+  `.harness/baseline/**` — so ist ein Tag-Bump eine Zeile + der Baum, kein
+  repo-weiter Grep ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
+  Beide Werkzeuge **erzwingen** die Setzung: mehr als ein `<tag>`-Verzeichnis ist
+  ein Fehler (Verify rot, Injektor warnt und injiziert **nichts** — er sucht sich
+  nicht still einen aus).
+- **Begründung:** Netzlose Präsenz auf jedem Checkout und Wegfall der
+  Host-`unzip`-Abhängigkeit zahlen auf
+  [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)/[`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
+  ein; der Preis ist ein ~241 KB großer committeter Fremd-Blob, den `AGENTS.md` §1
+  bisher ausdrücklich verbot (bewusst umgestellt). Der Baum ist **derivativ** und
+  trägt kurs-eigene MR-/ADR-Kennungen (Beispiele, nicht die des Repos) → vom
+  Doc-Gate ausgenommen (`scan.ignore`), sonst träfe ihn die `ids`-Link-Pflicht.
+- **Auflösungs-Trigger:** permanent. **Upstream-Überwachung — und ihre Grenze:**
+  `make regelwerk-check` (Maintenance/Netz, **nicht** in `gates`) vergleicht das
+  Upstream-Asset **des gepinnten Tags** gegen `BASELINE_ZIP_SHA256`. Es erkennt
+  damit ein **nachträglich verändertes Release-Asset** — **nicht** einen **neuen
+  Tag**. Ein Upstream-Release bleibt unsichtbar, bis jemand die Release-Liste
+  prüft; genau so entging dem Repo v3.0.0/v3.1.0, während sein Sensor auf v1.2.0
+  „kein Drift" meldete. Das ist eine **offene Lücke**, kein gelöstes Problem: ein
+  Sensor auf die Release-*Liste* (statt auf ein Asset) fehlt und ist Kandidat für
+  einen eigenen Slice. `baseline-verify` deckt sie **nicht** ab — es prüft nur die
+  eigene Arbeitskopie, nie den Upstream.
+- **Migration:** Ein bestehender `.harness/cache/`-Cache aus
+  [`MR-006`](#mr-006--regelwerk-cache-als-split-modul-verzeichnis) ist nach dem
+  Umstieg ein nicht mehr regenerierbares Überbleibsel (`regelwerk-fetch` existiert
+  nicht mehr) und **lokal zu löschen**. Frische Checkouts sind nicht betroffen —
+  der Cache war gitignored und daher nie im Repo.
 
 ## Modus-Deklaration pro Sub-Area
 

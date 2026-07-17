@@ -126,10 +126,22 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
   bemerkt, weil sein einziger Sensor auf v1.2.0 gepinnt ist. Die Reduktion wäre
   nicht theoretisch, sie hätte sich am Tag des Vendorings materialisiert.
   `regelwerk-check` läuft als Maintenance-Target **nicht in `gates`** und verletzt
-  offline-grün also nicht; ihn zu behalten kostet nichts und liefert genau den
-  **Auflösungs-Trigger**, den der MR-Eintrag ohnehin braucht. `baseline-verify`
+  offline-grün also nicht; ihn zu behalten kostet nichts. `baseline-verify`
   (Integrität, netzlos, in `gates`) und `regelwerk-check` (Drift, Netz,
   Maintenance) sind komplementär, nicht redundant.
+- **Plan-Defekt, beim Bauen gefunden (2026-07-17): `regelwerk-check` hätte v3.1.0
+  nie gemeldet.** Der Punkt oben argumentierte, das Repo habe den Release „nicht
+  bemerkt, weil sein einziger Sensor auf v1.2.0 gepinnt ist" — das legt nahe, ein
+  Re-Pin behebe es. Tut es nicht. Der Sensor vergleicht das Upstream-Asset **des
+  gepinnten Tags** gegen den Pin; er erkennt ein **nachträglich verändertes
+  Release-Asset**, aber **keinen neuen Tag**. Auf v1.2.0 gepinnt hätte er
+  wahrheitsgemäß „kein Drift" gemeldet, während v2.0.0, v3.0.0 und v3.1.0
+  erschienen — und auf v3.1.0 gepinnt schweigt er zu einem künftigen v3.2.0
+  genauso. Die Entscheidung, ihn zu behalten, bleibt richtig (Asset-Mutation ist
+  eine reale Bedrohung), aber sie liefert **nicht**, was hier behauptet wurde.
+  Die Lücke — kein Sensor auf die Release-*Liste* — ist im
+  [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)-Auflösungs-Trigger als **offen** benannt statt als gelöst
+  ausgegeben, und ist Kandidat für einen eigenen Slice.
 - **Doku-Gate gegen den committeten Baum.** Der vendored Baum trägt fremde
   MR-/ADR-Kennungen (Kurs-eigene Beispiele, nicht die des Repos — 18 Treffer in
   6 Dateien, gegen v3.1.0 verifiziert: u. a. `regelwerk/modul-02:153,216`,
