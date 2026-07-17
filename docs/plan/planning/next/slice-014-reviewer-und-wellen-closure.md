@@ -42,7 +42,8 @@ Inhalte. Beide gegen v3.1.0 verifiziert (2026-07-17).
 ADR-Platzhalter, Status-Feld → Lifecycle-Notiz): slice-013 — inhaltlich disjunkt,
 aber **nicht datei-disjunkt**: slice-013s Status-Sweep fasst den Kopf *dieser* Datei
 an, solange sie aktiv ist (eine Zeile, s. slice-013 §4). Nicht parallel fahren. Der
-d-check-Pin-Sprung (v0.10.0 → 0.43.1) ist ein eigener Slice mit eigenem Risiko.
+d-check-Pin-Sprung ist ein eigener Slice mit eigenem Risiko (Ziel-Version bewusst nicht
+genannt — s. slice-013 §Abgrenzung).
 
 ## 2. Definition of Done
 

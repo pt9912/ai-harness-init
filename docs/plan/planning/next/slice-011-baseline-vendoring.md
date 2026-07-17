@@ -46,8 +46,8 @@ Pointer) — sonst behauptet das Repo nach dem Merge weiter „gitignored, kein
 committeter Fremd-Blob" und wäre eine Harness-Lüge. **Nicht** hier: die toten
 externen Quellen-Pointer und `harness/conventions.md` §Baseline (slice-012), der
 Nachzug an Vorlagen und Slice-Köpfen (slice-013), die inhaltlichen Nachzüge an
-Reviewer-Skill und Wellen-Closure (slice-014) und der d-check-Pin-Sprung
-(v0.10.0 → 0.43.1; eigenes Risiko, eigener Slice).
+Reviewer-Skill und Wellen-Closure (slice-014) und der d-check-Pin-Sprung (eigenes
+Risiko, eigener Slice; Ziel-Version bewusst nicht genannt — s. slice-013 §Abgrenzung).
 
 ## 2. Definition of Done
 

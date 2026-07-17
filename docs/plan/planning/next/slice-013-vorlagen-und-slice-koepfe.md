@@ -47,8 +47,10 @@ vom 2026-07-16 wurden gegen v3.1.0 nachgemessen, s. §6).
 **Abgrenzung.** Mechanik/Vendoring: slice-011. Tote Quellen-Pointer und
 §Baseline-Stand: slice-012. Die **inhaltlichen** Nachzüge (Reviewer-Skill-Pflichtkontext,
 Wellen-Closure-Prozedur): slice-014 — sie fassen andere Dateien an und sind
-separat prüfbar. Der d-check-Pin-Sprung (v0.10.0 → 0.43.1, 33 Minors) ist ein
-eigener Slice mit eigenem Risiko. **`done/` bleibt Archiv** — die fünf
+separat prüfbar. Der d-check-Pin-Sprung ist ein eigener Slice mit eigenem Risiko
+(Ziel-Version bewusst **nicht** hier genannt — sie bewegte sich am 2026-07-17 viermal
+an *einem* Tag; maßgeblich ist `git tag` im d-check-Repo, der Pin steht in
+`harness/conventions.md` §Baseline). **`done/` bleibt Archiv** — die fünf
 abgeschlossenen Slices behalten Status-Feld und `templates-v4`-Pins (bewusste
 Entscheidung, siehe §6).
 

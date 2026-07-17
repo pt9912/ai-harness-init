@@ -146,8 +146,16 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
   wurde grün) — `ignore-refs` liegt 24 Minors jenseits des Pins. Was sich wie eine
   Werkzeug-Lücke anfühlte, ist ein 35 Minors alter Pin. **Folge:** Der Bedarf gehört
   **nicht** in einen d-check-CR, sondern in den ohnehin geplanten d-check-Pin-Sprung
-  (eigener Slice, eigenes Risiko — slice-013 §Abgrenzung). Dessen dort genannte Zahl
-  („v0.10.0 → 0.43.1, 33 Minors") ist ihrerseits überholt.
+  (eigener Slice, eigenes Risiko — slice-013 §Abgrenzung). **Die dort ursprünglich
+  genannte Ziel-Version war doppelt falsch** und ist inzwischen aus allen
+  Abgrenzungen entfernt: „v0.10.0 → 0.43.1, 33 Minors" war (a) überholt — 0.43.1
+  stammt vom 2026-07-15, allein am 2026-07-17 erschienen vier weitere Releases bis
+  0.45.1 — und (b) von Anfang an keine *Zählung*, sondern Arithmetik auf
+  Versionsnummern: tatsächlich veröffentlicht sind zwischen 0.10 und 0.45 nur **29**
+  Minors (0.13–0.16 und 0.20/0.21 gab es nie). **Lehre, allgemeiner als dieser Slice:**
+  Eine Fremd-Version in einer Abgrenzung ist eine Wartungsfalle — sie steht an einer
+  Stelle, die niemand pflegt, und beschreibt etwas, das sich viermal am Tag bewegt.
+  Maßgeblich ist die Quelle (`git tag`), nicht ihre Kopie im Plan.
   **Vor der Nutzung zu klären:** `ignore-refs` ist im CHANGELOG als *Tombstone-Register*
   für bewusst **entfernte** Artefakte eingeführt („Frozen-Doc-Refactoring-Falle"), nicht
   für **geplante**. Ob geplante Pfade eine legitime Anwendung sind oder ein
