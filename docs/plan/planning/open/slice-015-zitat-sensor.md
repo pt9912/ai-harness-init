@@ -121,20 +121,38 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
   für den CR („läuft seit N Wochen, hat X gefangen") statt eines spekulativen Antrags.
   Aber erst, wenn die Prämisse trägt — sonst wäre die Betriebserfahrung „hat nichts
   gefangen, weil es nichts zu fangen gab".
-- **Nebenbefund beim Anlegen dieses Slice: `codepaths` verbietet „Doc führt, Code
-  folgt" für neue Dateien.** `make docs-check` färbte rot, weil der Plan
+- **Nebenbefund beim Anlegen dieses Slice: der d-check-Pin ist die Ursache, nicht
+  d-check.** `make docs-check` färbte rot, weil der Plan
   `harness/tools/cite-check.sh` <!-- d-check:ignore (geplante Datei; diese Erwähnung im Befundtext loeste den Befund selbst aus) --> nennt — eine Datei, die per Definition erst nach der
-  Umsetzung existiert. `codepaths.roots` enthält `harness`, also wird jeder dort
-  genannte Pfad auf Existenz geprüft. Bisher fiel das nie auf: **alle zehn bisherigen
-  Slices fassten ausschließlich bestehende Dateien an** (rewrite/update); dies ist der
-  erste, der ein neues Harness-Tool ankündigt. Behelf hier: `<!-- d-check:ignore -->`
-  mit Begründung, analog zum vorbestehenden Muster im Review-Report-Template
-  („Pfad existiert im Ziel-Repo ggf. nicht"). **Offen und größer als dieser Slice:**
-  Ein Doc-führt-Repo, dessen Doku-Gate keine geplanten Pfade zulässt, zwingt jeden
-  künftigen Tool-Slice zum `ignore` — und ein Gate, das man routinemäßig ausschaltet,
-  erzieht zum Ausschalten. Sauberer wäre eine Unterscheidung „referenzierter Pfad"
-  vs. „geplanter Pfad" im Gate selbst. Kandidat für den d-check-CR (dort ein
-  konkreter, belegter Bedarf — anders als der Zitat-Check, s. erster Punkt).
+  Umsetzung existiert. `codepaths` prüft Pfade in **Inline-Code-Spans**, deren Präfix
+  auf `codepaths.roots` passt (hier `harness`); `test/cite-check.bats` blieb still,
+  weil `test` kein Root ist. Bisher fiel das nie auf: **alle zehn bisherigen Slices
+  fassten ausschließlich bestehende Dateien an** (rewrite/update); dies ist der erste,
+  der ein neues Harness-Tool ankündigt.
+- **Korrektur (2026-07-17, gegen den d-check-Quelltext geprüft): „`codepaths` verbietet
+  Doc-führt-Code-folgt" war falsch.** Die erste Fassung dieses Slice behauptete das und
+  leitete daraus einen d-check-CR-Bedarf ab („Unterscheidung referenzierter vs.
+  geplanter Pfad fehlt im Gate"). Beides trifft nicht zu. `codepaths` kennt **drei
+  Ventil-Achsen**: `d-check:ignore` (zeilen-weit), `exempt-paths` (datei-weit) und
+  `codepaths.ignore-refs` (**referenz-weit** — eine Glob-Liste aufgelöster Ziel-Pfade,
+  die von der Existenz-/Escape-/Anker-Prüfung ausgenommen sind). Die dritte ist exakt
+  die angeblich fehlende Unterscheidung; sie existiert seit d-check **0.34.0**
+  (dort `ADR-0025`) <!-- d-check:ignore (fremde ADR-Kennung: d-check-eigene, nicht die dieses Repos — vgl. slice-011 §6 zum vendored Baum) --> und ist im dortigen CHANGELOG als „dritte Ventil-Achse neben
+  `d-check:ignore` (Zeile) und `exempt-paths` (Datei)" eingeführt. Ein CR dafür wäre
+  ein Antrag auf ein ausgeliefertes Feature.
+  **Die eigentliche Ursache ist Pin-Lag:** Dieses Repo pinnt d-check **v0.10.0**
+  (`harness/conventions.md` §Baseline); upstream steht am 2026-07-17 bei **0.45.1**.
+  Bei v0.10.0 ist nachweislich nur `d-check:ignore` verfügbar (hier real benutzt, Gate
+  wurde grün) — `ignore-refs` liegt 24 Minors jenseits des Pins. Was sich wie eine
+  Werkzeug-Lücke anfühlte, ist ein 35 Minors alter Pin. **Folge:** Der Bedarf gehört
+  **nicht** in einen d-check-CR, sondern in den ohnehin geplanten d-check-Pin-Sprung
+  (eigener Slice, eigenes Risiko — slice-013 §Abgrenzung). Dessen dort genannte Zahl
+  („v0.10.0 → 0.43.1, 33 Minors") ist ihrerseits überholt.
+  **Vor der Nutzung zu klären:** `ignore-refs` ist im CHANGELOG als *Tombstone-Register*
+  für bewusst **entfernte** Artefakte eingeführt („Frozen-Doc-Refactoring-Falle"), nicht
+  für **geplante**. Ob geplante Pfade eine legitime Anwendung sind oder ein
+  Zweckentfremden — und ob dafür `d-check:ignore` pro Zeile die ehrlichere Form bleibt
+  (sichtbar am Ort, mit Begründung) — ist eine Entscheidung, kein Automatismus.
 - **Der Steering Loop ist ohne diesen Slice geschlossen.** `.harness/skills/reviewer.md`
   nennt drei gültige Lerneintrag-Formen: geschärfte Regel · neuer Sensor · **benannte
   Spec-Lücke**. Der Review-Report liefert die dritte mit Beleg. Dieser Slice wäre die
