@@ -1,13 +1,17 @@
 # Slice slice-011: Baseline committet vendoren
 
-**Status:** next
+**Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem die Datei liegt
+(`open/` · `next/` · `in-progress/` · `done/`), Wechsel nur per `git mv` — v3.1.0-Konvention
+(`modul-05`). Das frühere `**Status:**`-Feld ist bei der Closure entfernt (statt „next"
+ins Archiv zu schieben); slice-013 verallgemeinert das für die übrigen aktiven Slices und
+kann diese Datei auslassen.
 
 **Welle:** ohne Welle (Harness-Wartung). Einordnung *(Kontext, nicht normativ)*:
 [roadmap](../in-progress/roadmap.md).
 
-**Bezug:** [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten), [`MR-004`](../../../../harness/conventions.md#mr-004--sessionstart-regelwerk-injektor), [`MR-006`](../../../../harness/conventions.md#mr-006--regelwerk-cache-als-split-modul-verzeichnis).
+**Bezug:** [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten), [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) (dieser Slice erzeugt ihn; löst [`MR-004`](../../../../harness/conventions.md#mr-004--sessionstart-regelwerk-injektor)/[`MR-006`](../../../../harness/conventions.md#mr-006--regelwerk-cache-als-split-modul-verzeichnis) ab).
 
-**Autor:** Claude (Pair-Session). **Datum:** 2026-07-16.
+**Autor:** Claude (Pair-Session). **Datum:** 2026-07-16. **Umgesetzt:** 2026-07-17.
 
 ---
 
@@ -215,7 +219,49 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Abschluss 2026-07-17.** Commits: `440ca8b` (Move nach `in-progress/`, reiner
+`git mv`), `554cade` (Implementierung), `6201330` (Review-Findings behoben + Report).
+
+**Geliefert.** Regelwerk + Templates committet vendored unter
+`.harness/baseline/v3.1.0/{regelwerk,templates}/` (42 Dateien) + `SHA256SUMS`, netzlos
+auf jedem Checkout. `make regelwerk-fetch` entfällt; `baseline-verify` (netzlos,
+Integrität **+** Vollständigkeit) läuft als erstes `gates`-Prerequisite;
+`regelwerk-check` bleibt als Upstream-Sensor (Maintenance). [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) mit vier
+Setzungen; [`MR-004`](../../../../harness/conventions.md#mr-004--sessionstart-regelwerk-injektor)/[`MR-006`](../../../../harness/conventions.md#mr-006--regelwerk-cache-als-split-modul-verzeichnis) als Historie markiert. `BASELINE_TAG` ist die einzige
+Tag-Quelle.
+
+**Zwei beobachtbare Closure-Kriterien (Modul 5).**
+1. **`make gates` grün** mit echter Ausgabe: `baseline-verify: v3.1.0 OK — 42 Dateien`,
+   d-check 36 Dateien / 0 Befunde, bats **47/47**, shellcheck clean.
+2. **Kern-Eigenschaften als Test verlinkt** — `test/baseline-verify.bats` (9 Fälle)
+   bindet den Vollständigkeits-Check ans Gate, inkl. des expliziten Belegs, dass
+   `sha256sum -c` bei einer eingelegten Datei **blind grün** bleibt und erst der
+   Bestandsvergleich sie fängt. Zusätzlich der Frisch-Klon-Smoke-Test (netzlos,
+   `baseline-verify` grün, `regelwerk-fetch` weg) = [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Messmethode.
+
+**Steering-Loop-Lerneintrag — neuer Sensor + geschärfte Regel.**
+- **Neuer Sensor:** `baseline-verify` selbst — er macht die Baseline-Integrität von
+  einer Behauptung zu einem Gate. Sein Bau deckte auf, dass `sha256sum -c` allein
+  ein stilles Grün ist (blind für eingelegte Dateien); der Vollständigkeits-Check
+  schließt das und ist testgebunden.
+- **Geschärfte Regel (Reviews):** Reports zitieren Slices **per ID, nicht per
+  Lifecycle-Pfad.** Der Plan-Review dieses Zuges wurde durch den
+  `next→in-progress`-Move rückwirkend rot (Frozen-Doc-Falle: das Verzeichnis *ist*
+  der Zustand, der Pfad wandert mit). Der Impl-Review vermeidet das bereits.
+- **Benannte Spec-Lücke (weitergereicht, nicht hier gelöst):** `regelwerk-check`
+  sieht nur das Asset des **gepinnten** Tags, keinen **neuen** Tag — genau so entging
+  dem Repo v3.1.0. Ein Sensor auf die Release-*Liste* fehlt; in [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) als offener
+  Auflösungs-Trigger geführt, Kandidat für einen eigenen Slice. Ebenso offen: kein
+  Gate prüft Prosa-Zahlen (Sensor-Bedarf aus slice-015; der Review fand erneut zwei
+  Zahl-Fehler, die kein Gate gefangen hätte).
+
+**Restrisiken (im Impl-Review als LOW/offen geführt, bewusst getragen).**
+`find`-Permission-Fehler bricht vor der gezielten Diagnose ab (finaler Exit bleibt
+korrekt rot); die zwei benannten Spec-Lücken oben.
+
+**Nachgezogene Doku.** `AGENTS.md` §1 + §4, `CLAUDE.md`, `harness/README.md` §Sensors
+auf die vendored Form; `.gitignore`/`.d-check.yml` nachgezogen; der alte
+`.harness/cache/` lokal entfernt (Migration in [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)).
 
 ## 8. Sub-Area-Modus-Begründung
 
