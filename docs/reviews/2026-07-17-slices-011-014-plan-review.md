@@ -139,8 +139,31 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 **Systemischer Befund aus R-1/R-2:** Es existieren **zwei divergente Regelwerks-Bäume**
 (`kurs/de/` didaktisch, `lab/regelwerk/` adoptiert). Wer gegen den falschen misst,
-erzeugt falsche Refutationen — zwei von drei Linsen taten es. „Kanonisch" (`kurs/de/`,
-laut Selbstaussage des `lab`-README) und „deckungsgleich" sind hier nicht dasselbe.
+erzeugt falsche Refutationen. „Kanonisch" (`kurs/de/`, laut Selbstaussage des
+`lab`-README) und „deckungsgleich" sind hier nicht dasselbe.
+
+**Ursache — Eingangs-Kontext des Review-Laufs war unvollständig (Fehler des
+Orchestrators, nicht der Linse).** Betroffen war **eine** der drei Linsen
+(Faktentreue), dort zweimal; Linse (b) Konformität hat die Divergenz korrekt
+*gefunden* und als F-10 gemeldet, Linse (c) hatte keinen v1.2.0-Bezug. Der Linse (a)
+wurden als Grundwahrheit nur die Bäume v3.0.0 und v3.1.0 gegeben — die zu prüfenden
+Aussagen betrafen aber **v1.2.0**, dessen `lab`-Baum unter
+`.harness/cache/agents-regelwerk/` im Repo liegt und im Prompt nicht genannt wurde.
+Gleichzeitig war `curl` sanktioniert. Die Linse brauchte einen v1.2.0-Fakt, hatte
+keinen v1.2.0-Baum und holte das erreichbarste v1.2.0-Artefakt: `kurs/de/` unter
+stabiler Raw-URL. Der `lab`-Baum existiert dagegen nur *innerhalb* eines
+Release-ZIP-Assets — **das falsche Artefakt ist das leicht erreichbare**. Der
+Referent „im adoptierten v1.2.0-Stand" im Slice-Text löst nur auf, wenn man bereits
+weiß, dass „adoptiert" den `lab`-Baum meint.
+
+Das ist ein Beleg *für* den Befund, den dieser Zug ohnehin adressiert: Der
+Reviewer-Skill führt „Eingangs-Kontext (Pflicht — sonst nicht reproduzierbar)" als
+erste Sektion; v3.1.0 `modul-10:52-57` härtet ihn zum „Operativen Pflichtteil". Der
+Lauf verletzte die Vorbedingung des Skills, den er anwandte — und produzierte genau
+die nicht-reproduzierbaren Refutationen, die die Regel verhindern soll. **Konsequenz
+für künftige Läufe:** die Ground-Truth-Bäume *aller* im Prüfgegenstand genannten
+Stände vollständig übergeben und den `lab`-vs-`kurs/de`-Unterschied explizit
+benennen. Siehe slice-014 (Pflicht-Kontext-Eingang).
 
 ## Behandlung
 
@@ -204,6 +227,16 @@ dritte Wiederholung einer Klasse ein Signal, Guide oder Sensor nachzuziehen stat
 melden. Kein Gate deckt Faktentreue in Planungsdokumenten ab — `d-check` prüft Links,
 Anker und IDs, nicht ob eine Zahl im Fließtext stimmt. Als benannte Lücke an die Planung
 zurückgegeben (Kandidat für `open/`); dieser Report ist der Beleg.
+
+**Nachtrag 2026-07-17 — die Klasse traf diesen Report selbst.** Die erste Fassung
+behauptete unter R-1/R-2 „zwei von drei Linsen" hätten gegen den falschen Baum
+gemessen; nachgezählt war es **eine** Linse, zweimal. Es wurden Findings gezählt und
+Linsen geschrieben — dieselbe Fehlerklasse, im Absatz über diese Fehlerklasse,
+begangen vom Orchestrator des Laufs. Korrigiert oben. Das schärft den Befund eher, als
+es ihn entkräftet: Die Klasse überlebt bis in ein Dokument, dessen ausdrücklicher
+Zweck ihre Bekämpfung ist, weil **nichts sie mechanisch fängt**. Ein Prosa-Zähler
+(„zwei von drei") ist für jedes Gate dieses Repos unsichtbar. Das ist der stärkste
+verfügbare Beleg dafür, dass die Lücke einen Sensor braucht und nicht mehr Sorgfalt.
 
 **Übergabe:** Findings sind in den Plänen verarbeitet (Rückkante Review → Plan). Der
 Report ersetzt keine Verifikation — DoD-/Spec-Konformität prüft der Verifier separat
