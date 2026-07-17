@@ -1,13 +1,16 @@
 # Slice slice-012: Quellen-Wahrheit — tote Pointer und Baseline-Stand
 
-**Status:** next
+**Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem die Datei liegt
+(`open/` · `next/` · `in-progress/` · `done/`), Wechsel nur per `git mv` — v3.1.0-Konvention
+(`modul-05`). Das frühere `**Status:**`-Feld ist bei der Closure entfernt; slice-013
+verallgemeinert das und kann diese Datei auslassen.
 
 **Welle:** ohne Welle (Harness-Wartung). Einordnung *(Kontext, nicht normativ)*:
 [roadmap](../in-progress/roadmap.md).
 
 **Bezug:** [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage).
 
-**Autor:** Claude (Pair-Session). **Datum:** 2026-07-16.
+**Autor:** Claude (Pair-Session). **Datum:** 2026-07-16. **Umgesetzt:** 2026-07-17.
 
 ---
 
@@ -41,24 +44,27 @@ nicht umgeschrieben.
 
 ## 2. Definition of Done
 
-- [ ] `AGENTS.md` §1 und `harness/conventions.md` §Adoptierte Konventions-Quellen
-      nennen eine **erreichbare** kanonische Quelle (Kurs `/kurs/de/`, auf `v3.1.0`
-      gepinnt statt `main`-floating — [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) plus den Zeiger auf die
-      vendored Baseline; der 404-Link ist weg. Erreichbarkeit per `curl` belegt.
-- [ ] `AGENTS.md` §1: der `lab-templates.zip`-Verweis (404) entfällt — die
-      Skelette kommen aus der vendored Baseline (`…/templates/`), nicht aus einem
-      zweiten Asset.
-- [ ] `harness/conventions.md` §Baseline trägt Stand („Kurs-Welle 26 ·
-      2026-07-17") und Tag (`v3.1.0`); die Zeile „Templates: templates-v4" ist
-      auf den adoptierten Stand nachgezogen.
-- [ ] `make gates` grün; Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] **`AGENTS.md` §1 — bereits durch slice-011 erledigt** (beim §1-Umschreiben auf
+      die vendored Form): beide toten Pointer (`main`-Monolith-URL **und**
+      `lab-templates.zip`) sind entfernt; §1 verweist auf „den Kurs, den
+      `regelwerk/README.md` nennt", und diese Kette führt auf
+      `blob/v3.1.0/kurs/de/README.md` (curl HTTP 200 belegt). Hier daher **nichts mehr
+      zu tun** — der Punkt bleibt als Nachweis stehen, dass er abgedeckt ist.
+- [x] `harness/conventions.md` §Adoptierte Konventions-Quellen: die tote
+      `raw…/main/…/agents-regelwerk.md`-URL (curl **404**) ersetzt durch den auf
+      `v3.1.0` gepinnten Kurs `/kurs/de/` (curl **200**) + Zeiger auf die vendored
+      Baseline als verkörperte Form ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
+- [x] `harness/conventions.md` §Baseline trägt Stand („Kurs-Welle 26 · 2026-07-17")
+      und Tag (`v3.1.0`); „Templates: templates-v4" nachgezogen (als historisches
+      Adoptionsdatum erhalten, Re-Baseline-Zeile ergänzt).
+- [x] `make gates` grün; Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `AGENTS.md` (§1) | update | tote Quellen-URL + toter `lab-templates.zip`-Verweis |
-| `harness/conventions.md` (§Baseline, §Adoptierte Konventions-Quellen) | update | tote URL; Stand + Tag als Adoptions-Bezugspunkt |
+| ~~`AGENTS.md` (§1)~~ | — | **entfällt** — slice-011 hat die toten Pointer beim §1-Umschreiben schon entfernt (s. DoD) |
+| `harness/conventions.md` (§Baseline, §Adoptierte Konventions-Quellen) | update | tote URL → gepinnter Kurs; Stand + Tag als Adoptions-Bezugspunkt |
 
 ## 4. Trigger
 
@@ -88,7 +94,44 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Abschluss 2026-07-17.** Commits: Move nach `in-progress/` (reiner `git mv`),
+Implementierung + Closure (dieser), Move nach `done/`.
+
+**Geliefert.** `harness/conventions.md` §Adoptierte Konventions-Quellen: die tote
+`raw…/main/…/agents-regelwerk.md`-URL (curl **404**, der Monolith existiert upstream
+seit v2.0.0 nicht mehr) ersetzt durch den auf `v3.1.0` gepinnten Kurs `/kurs/de/`
+(curl **200**) + Zeiger auf die vendored Baseline als verkörperte Form. §Baseline:
+Regelwerks-Stand („Kurs-Welle 26 · 2026-07-17") + Tag `v3.1.0`; „templates-v4" als
+historisches Adoptionsdatum erhalten, Re-Baseline-Zeile ergänzt (Historie nicht
+überschrieben).
+
+**Kleiner als geplant — bewusst, kein übersehener Rest.** DoD 1 und 2 für `AGENTS.md`
+waren bei Slice-Start bereits erfüllt: slice-011 hatte beim §1-Umschreiben auf die
+vendored Form beide toten Pointer mitentfernt. Der Slice-Plan war dafür geschrieben,
+als `AGENTS.md` §1 noch die Cache-Ära beschrieb. Statt die Arbeit doppelt zu
+behaupten, sind die AGENTS-DoD-Punkte als „durch slice-011 abgedeckt" markiert und
+per curl gegenbelegt. Verbleibende reale Arbeit: nur `harness/conventions.md`.
+
+**Zwei beobachtbare Closure-Kriterien.**
+1. **`make gates` grün**: baseline-verify OK, d-check 36 / 0 Befunde, bats 47/47,
+   shellcheck clean.
+2. **Erreichbarkeit per `curl` belegt** (die DoD-eigene Messmethode): der Ersatz-Link
+   liefert HTTP 200, die entfernte URL 404 — beide am 2026-07-17 gemessen.
+
+**Steering-Loop-Lerneintrag — geschärfte Regel.** *Ein Slice-Plan altert zwischen
+Planung und Umsetzung, wenn ein vorheriger Slice denselben Bereich anfasst.* slice-011
+hat slice-012s AGENTS-Arbeit als Nebeneffekt vorweggenommen. Die Lehre ist **nicht**
+„enger abgrenzen" (die Abgrenzung war korrekt formuliert), sondern: **bei Slice-Start
+den Ist-Zustand gegen den Plan messen, nicht den Plan blind abarbeiten** — sonst
+behauptet die Closure Arbeit, die ein anderer Commit schon tat (eine Harness-Lüge in
+Zeitlupe). Hier gefangen, indem der erste Schritt ein Grep auf die toten Pointer war,
+nicht ein Edit.
+
+**Restrisiko.** Die neue gepinnte URL kann altern wie jede — genau die Klasse, die den
+404 erzeugte. Anders als vorher ist sie tag-gepinnt (nicht `main`-floating) und
+curl-belegt; das Re-Pinnen bei einem Baseline-Bump ist im selben Vorgang wie
+`BASELINE_TAG` fällig ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)), aber **nicht** mechanisch erzwungen — dieselbe offene
+Freshness-Lücke wie beim Regelwerk selbst.
 
 ## 8. Sub-Area-Modus-Begründung
 

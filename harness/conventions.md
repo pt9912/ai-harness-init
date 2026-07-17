@@ -8,15 +8,24 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ## Baseline
 
 - **Konvention:** AI-Harness-Kurs
-- **Templates:** templates-v4
+- **Regelwerk + Templates:** `v3.1.0` committet vendored
+  (`.harness/baseline/v3.1.0/`, [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
+  `regelwerk/README.md`: **Kurs-Welle 26 · 2026-07-17**.
 - **d-check:** Image v0.10.0 (Digest in harness.mk)
-- **Datum der Adoption:** 2026-06-13
+- **Datum der Adoption:** 2026-06-13 (Templates-Stand damals: `templates-v4`).
+  **Re-Baseline auf `v3.1.0`:** 2026-07-17 (slice-011/012).
 
 ## Adoptierte Konventions-Quellen
 
-- **Extern (Lehrmaterial):** <https://github.com/pt9912/ai-harness-course>
-- **Extern (Agenten-Regelwerk):** <https://raw.githubusercontent.com/pt9912/ai-harness-course/main/kurs/de/agents-regelwerk.md>
-- **In-Repo (verkörperte Form):** die adoptierten Templates (zweiklassig abgelegt)
+- **Extern (Kurs, kanonisch):** <https://github.com/pt9912/ai-harness-course/tree/v3.1.0/kurs/de>
+  — auf den Tag `v3.1.0` gepinnt, **nicht** `main`-floating
+  ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit); Erreichbarkeit
+  am 2026-07-17 per `curl` als HTTP 200 belegt). Ersetzt die frühere
+  `raw…/main/…/agents-regelwerk.md`-Monolith-URL, die **404** liefert (der Monolith
+  existiert upstream seit v2.0.0 nicht mehr — die Module leben unter `/kurs/de/`).
+- **In-Repo (verkörperte Form):** die committet vendored Baseline
+  `.harness/baseline/v3.1.0/{regelwerk,templates}/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — die
+  präsente, netzlose Sicht auf die kanonische Quelle; bei Konflikt gilt der Kurs.
 
 ## Adaptions-Block
 

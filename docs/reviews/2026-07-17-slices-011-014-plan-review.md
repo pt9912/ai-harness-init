@@ -114,7 +114,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: MEDIUM
 - `quelle`: LH-QA-02 / Source Precedence (`AGENTS.md` §1)
-- `pfad`: `docs/plan/planning/next/slice-012-quellen-wahrheit.md` §1, §2
+- `pfad`: `docs/plan/planning/next/slice-012-quellen-wahrheit.md` §1, §2 <!-- d-check:ignore (Zeitdokument: Lifecycle-Pfad galt beim Lauf; slice-012 ist seither nach in-progress/ gewandert) -->
 - `befund`: Der geplante Ersatz-Pointer nennt „Kurs unter `/kurs/de/`, gepinnt auf `v3.1.0`". Der tatsächlich vendorte Baum stammt aus `lab-regelwerk.zip` und weicht inhaltlich ab (Modul 5: `kurs/de/` 300 Zeilen mit `SL-014`, `lab/regelwerk/` 120 ohne). Ein `kurs/de/`-Pointer löst die „wortgleich"-Zusage aus `AGENTS.md` §1 gegenüber dem vendorten Baum nicht ein.
 - `verifizierbar`: ja — Diff zwischen dem in `AGENTS.md` §1 verlinkten Ziel und `.harness/baseline/<tag>/regelwerk/` nach Umsetzung; kein Gate deckt Inhaltsgleichheit ab (`docs-check` prüft Erreichbarkeit/Anker).
 
