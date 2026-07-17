@@ -301,6 +301,18 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Kopieren-und-Ausfüllen), streicht aber die **dauerhaft im Repo gehaltene
   Blank-Kopie**: die Vorlage wird pro Artefakt frisch aus dem vendored Baum kopiert,
   nicht als `docs/…/*.template.md`-Dublette gepflegt.
+- **Abgrenzung gegen [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) (emittierte Struktur) — kein Widerspruch.**
+  [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) (rank-1) verlangt für die vom Go-Tool **emittierte**
+  Zielstruktur weiterhin co-located `.template.md` für wiederkehrende Artefakte (ADR ·
+  slice · welle · carveout · review-report) — dieselbe Liste, die MR-008 hier löscht.
+  Das ist **keine** Kollision: MR-008 gilt **nur** für die eigenen Planungs-Artefakte
+  *dieses* Repos, das die **volle** Baseline vendored ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) und deshalb
+  referenzieren *kann*. Ein emittiertes Fremdrepo erhält nicht notwendig den ganzen
+  vendored Baum → dort **braucht** es die co-located Kopien, und
+  [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) bleibt
+  bindend. **MR-008 generalisiert ausdrücklich nicht** auf die Emissions-Logik
+  (slice-003): wer sie umsetzt, folgt
+  [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), nicht MR-008.
 - **Begründung (empirisch, 2026-07-17 gemessen):** Die fünf bisher kopierten
   Blank-Templates waren **verbatim/nachhinkend** (null Repo-Adaptionen — jeder Diff
   gegen den vendored Baum war reines Upstream-Lag), **von nichts Stabilem

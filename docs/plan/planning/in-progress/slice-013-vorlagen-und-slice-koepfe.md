@@ -167,7 +167,45 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Abschluss 2026-07-17.** Commits: Move nach `in-progress/` (reiner `git mv`),
+Implementierung (`1b2428d`), Review-Nachtrag + Closure (dieser), Move nach `done/`.
+
+**Geliefert.** (1) Die fünf Repo-Template-Kopien gelöscht; [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert) macht die
+vendored Baseline zur einzigen Quelle (Referenz statt Kopie), mit Abgrenzung gegen
+[`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
+(emittierte Struktur bleibt co-located — kein Widerspruch). (2) Status-Feld →
+Lifecycle-Notiz auf allen sechs aktiven Slice-Köpfen (`open/001…005`, `open/015`,
+`next/014`, dieser Slice). (3) Rest-Link-Pins `templates-v4` → `v3.1.0` auf echten
+Dateien (`open/001…005`, `roadmap.md`, `harness.mk`).
+
+**Zwei beobachtbare Closure-Kriterien.**
+1. **`make gates` grün**: baseline-verify OK, d-check 37 / 0 Befunde, bats 47/47,
+   shellcheck clean.
+2. **DoD 2 vorgeführt**: `cp .harness/baseline/$(BASELINE_TAG)/templates/…/slice.template.md`
+   liefert die v3.1.0-Ziel-Form (Lifecycle-Feld, `ADR-<NNNN>`) — das Referenz-Modell
+   ist nicht nur behauptet, sondern erzeugt ein korrektes Artefakt.
+
+**Steering-Loop-Lerneintrag — geschärfte Regel + benannte Spec-Lücke.**
+- **Geschärfte Regel (bestätigt slice-012):** *Bei Slice-Start den Ist-Zustand gegen
+  den Plan messen.* Der Diff der Template-Kopien gegen den vendorten Baum (statt
+  Blind-Patch) deckte auf, dass mein handabgeleiteter Plan zwei v3.1.0-Änderungen
+  übersah **und** dass die Kopien null Adaptionen tragen — woraus der Referenz-Wechsel
+  folgte. Ohne die Messung hätte der Slice throwaway-Arbeit patchen und beim nächsten
+  Bump wiederholen müssen.
+- **Zwei-Bäume-Falle, 3. Mal — jetzt mit Sensor-Kandidat.** Der Ursprungsplan wollte
+  zwei „tote Anker" umbiegen (verifiziert gegen den `lab`-Baum), die im **Kurs** (dem
+  echten Link-Ziel) quicklebendig sind. `d-check` prüft URL, nicht Fragment. Das ist
+  dieselbe Klasse, die schon zweimal zuschlug (Reviewer-Refutationen, Wave-Self-Close).
+  **Benannte Spec-Lücke:** kein Gate verifiziert externe Anker-Fragmente; ein
+  „anchor-check gegen die Ziel-Datei" wäre der Sensor. Kandidat für `open/`, verwandt
+  mit slice-015 (auch dort: kein Gate für eine Faktentreue-Klasse).
+- **Review-Wert:** Der Review fand die fehlende
+  [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)-Abgrenzung
+  (INFO) — im Closure-Nachtrag ergänzt, bevor slice-003 sie überträgt.
+
+**Restrisiken.** Tag im Referenzpfad (repinnt mit `BASELINE_TAG`, [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert));
+`docs/plan/carveouts/*` verschwand mit dem Template (benigne, kehrt beim ersten
+Carveout zurück — [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)).
 
 ## 8. Sub-Area-Modus-Begründung
 
