@@ -16,7 +16,9 @@ SHELLCHECK_IMAGE ?= koalaman/shellcheck@sha256:bb596a0d169b85ddd81d8b6d3a2ff6d5b
 # Zeit), .d-check.yml nutzt einen Glob. Ein Tag-Bump ändert damit diese Zeile,
 # BASELINE_ZIP_SHA256 und den Baum — keinen repo-weiten Grep (LH-QA-02).
 BASELINE_TAG ?= v3.1.0
-BASELINE_DIR ?= .harness/baseline/$(BASELINE_TAG)
+# Kein BASELINE_DIR: baseline-verify und der Injektor ENTDECKEN das <tag>-
+# Verzeichnis per Glob (Setzung "ein Tag zur Zeit"), lesen es also nicht aus
+# einer Variablen — ein solcher Pfad-Override wäre stiller No-op.
 # Upstream-PROVENIENZ (nicht lokale Integrität — die trägt SHA256SUMS im Baum):
 # sha256 des Release-Assets, aus dem der Baum stammt. SHA256SUMS ist selbst
 # erzeugt und beweist die Herkunft NICHT; diese Kette hängt allein hier.

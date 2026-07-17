@@ -55,8 +55,25 @@ if [ ! -f SHA256SUMS ]; then
   exit 1
 fi
 
-# 1) Integritaet der gelisteten Dateien (geaendert/geloescht).
-if ! sha256sum -c --quiet SHA256SUMS; then
+# 0) Format-Vorbedingung ZUERST: GNU sha256sum ESCAPT Dateinamen mit
+# Backslash/Newline (fuehrender Backslash am Zeilenanfang + verdoppelte im
+# Pfad). Der Vollstaendigkeits-Vergleich unten dekodiert das NICHT — er wuerde
+# eine solche Datei faelschlich als abweichend melden (Rot ohne Manipulation).
+# Statt still falsch-positiv zu werden, hier LAUT abbrechen, BEVOR irgendein
+# Urteil faellt: der aktuelle Baum enthaelt keinen solchen Namen (der Fall kann
+# nur durch ein neues Upstream-Release entstehen, das ohnehin Re-Vendoring +
+# Re-Review ausloest). Ehrlich "kann ich nicht" schlaegt still "alles gut".
+# Regex '^[\]' (Backslash in Bracket-Expression) statt '^\\' — Letzteres loest
+# die SC1003-Info des Linters aus.
+if grep -q '^[\]' SHA256SUMS; then
+  printf '%s\n' "FEHLER: SHA256SUMS enthaelt GNU-escapte Pfade (fuehrender Backslash) — der Vollstaendigkeits-Check dekodiert die nicht und wuerde falsch-positiv melden. Baum manuell pruefen (MR-007)." >&2
+  exit 1
+fi
+
+# 1) Integritaet der gelisteten Dateien (geaendert/geloescht). Kein --quiet
+# (GNU-only; busybox im bats-Testimage kennt es nicht) — stattdessen Output
+# unterdruecken, nur der Exit-Code zaehlt.
+if ! sha256sum -c SHA256SUMS >/dev/null 2>&1; then
   echo "FEHLER: Baseline $tag weicht von SHA256SUMS ab (geaenderte oder fehlende Datei)." >&2
   exit 1
 fi

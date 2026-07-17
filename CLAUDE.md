@@ -9,9 +9,9 @@ als Geschwister unter `.harness/baseline/<tag>/templates/` — beide **committet
 also auf jedem Checkout da ([`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache), löst den gefetchten Cache aus
 [`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor)/[`MR-006`](harness/conventions.md#mr-006--regelwerk-cache-als-split-modul-verzeichnis) ab). **Lies zu Beginn jeder Harness-Arbeit den Index**
 (`regelwerk/README.md`) **und das für die Aufgabe relevante Modul on-demand**
-(Source Precedence aus `AGENTS.md` §1) — der Volltext (~4000 Zeilen / ~108k Token)
-wird bewusst **nicht** als Ganzes geladen (sprengt Claudes 150k-Zeichen-Memory-Limit;
-kein `@`-Auto-Import). Der Baum ist **derivativ**: bei Konflikt gilt der Kurs (die
+(Source Precedence aus `AGENTS.md` §1) — der `regelwerk/`-Baum (~2800 Zeilen /
+~170 KB, gemessen) wird bewusst **nicht** als Ganzes geladen (sprengt Claudes
+150k-Zeichen-Memory-Limit; kein `@`-Auto-Import). Der Baum ist **derivativ**: bei Konflikt gilt der Kurs (die
 kanonische Quelle, die `regelwerk/README.md` selbst nennt) — er ist **nicht**
 deckungsgleich mit der didaktischen `kurs/de/`-Fassung. Fehlt das Verzeichnis, ist
 der Checkout kaputt (`make baseline-verify` meldet Details) — dann das Regelwerk

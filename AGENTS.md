@@ -15,15 +15,17 @@ Regelwerk **und** Templates liegen unter `.harness/baseline/<tag>/{regelwerk,tem
 Netz. Der Baum ist eine **derivative Sicht** auf den Kurs; bei Konflikt gilt die
 kanonische Quelle (§2 und der Kurs selbst, den `regelwerk/README.md` nennt).
 **Lektüre vor dem Workflow (§6): der Index** (`.harness/baseline/<tag>/regelwerk/README.md`)
-**+ das relevante Modul on-demand**, **nicht** der Volltext am Stück (er sprengt
-Claudes 150k-Zeichen-/108k-Token-Limit; kein `@`-Auto-Import).
+**+ das relevante Modul on-demand**, **nicht** der Volltext am Stück (der
+`regelwerk/`-Baum misst ~170 KB / ~2800 Zeilen und sprengt damit Claudes
+150k-Zeichen-Memory-Limit; kein `@`-Auto-Import).
 
 **Zugriff (pro Agent verschieden).** **Codex** injiziert via SessionStart-Hook nur
 den **Index** (`.codex/hooks.json` → `harness/tools/sessionstart-inject-regelwerk.sh`);
 **Claude** liest **bei Bedarf** (Pointer: `CLAUDE.md`-Direktive + Source
 Precedence). **Beide** lesen das relevante Modul **on-demand** aus dem Verzeichnis.
-Die 15 `../templates/…`-Ziel-Form-Verweise des Regelwerks lösen netzlos lokal auf,
-weil beide Bäume Geschwister sind. Fehlt die Baseline, ist der **Checkout kaputt**
+Die `../templates/…`-Ziel-Form-Verweise des Regelwerks lösen netzlos lokal auf,
+weil beide Bäume Geschwister sind (12 eindeutige Ziele, 0 tot — gemessen; roh-`grep`
+zählt je nach Muster mehr, s. [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)). Fehlt die Baseline, ist der **Checkout kaputt**
 (sie ist committet) — `make baseline-verify` meldet Details; sie **nicht** als
 geladen voraussetzen. Mechanik: [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) (löst den gefetchten Cache aus
 [`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor)/[`MR-006`](harness/conventions.md#mr-006--regelwerk-cache-als-split-modul-verzeichnis) ab).

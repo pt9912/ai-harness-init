@@ -25,6 +25,17 @@ emit() {  # emit <bereits-JSON-escapter-String-Inhalt>
   printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"%s"}}\n' "$1"
 }
 
+# warn_encoded <roher-String>: für Meldungen, die einen ENTDECKTEN Wert (z. B.
+# den Tag-Verzeichnisnamen) enthalten — dieser läuft wie der Erfolgspfad durch
+# json-encode.awk, damit ein Sonderzeichen im Namen das JSON nicht bricht.
+# Setzt awk + Encoder voraus (der Aufrufer prüft das vor dem ersten Einsatz).
+warn_encoded() {
+  local enc
+  if enc="$(printf '%s' "$1" | awk -f "$encoder")"; then emit "$enc"; else
+    emit "WARN: Regelwerk-Injektor degradiert (Encoding). Regelwerk NICHT als geladen voraussetzen."
+  fi
+}
+
 shopt -s nullglob
 dirs=("$base"/*/)
 shopt -u nullglob
@@ -45,12 +56,16 @@ dir="${dirs[0]%/}"
 tag="$(basename "$dir")"
 index="$dir/regelwerk/README.md"
 
-if [ ! -f "$index" ]; then
-  emit "WARN: Baseline-Index fehlt ($tag/regelwerk/README.md) — die Baseline ist unvollstaendig. 'make baseline-verify' meldet Details. Regelwerk NICHT als geladen voraussetzen."
-  exit 0
-fi
+# Encoder-Verfügbarkeit ZUERST prüfen (vor der Index-Meldung): fehlt awk, kann
+# keine Meldung, die den entdeckten $tag trägt, sicher escaped werden — dann
+# nur die statische Degradations-Warnung (kein $tag, raw emit unbedenklich).
 if [ ! -f "$encoder" ] || ! command -v awk >/dev/null 2>&1; then
   emit "WARN: Regelwerk-Injektor degradiert (awk oder json-encode.awk fehlt). Regelwerk NICHT als geladen voraussetzen."
+  exit 0
+fi
+# Ab hier ist awk garantiert -> $tag-tragende Meldungen laufen durch den Encoder.
+if [ ! -f "$index" ]; then
+  warn_encoded "WARN: Baseline-Index fehlt ($tag/regelwerk/README.md) — die Baseline ist unvollstaendig. 'make baseline-verify' meldet Details. Regelwerk NICHT als geladen voraussetzen."
   exit 0
 fi
 
