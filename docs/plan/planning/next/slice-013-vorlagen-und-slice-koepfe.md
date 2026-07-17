@@ -56,7 +56,7 @@ Entscheidung, siehe §6).
 
 - [ ] Kurs-Link-Pins `templates-v4` → `v3.1.0` in `docs/plan/planning/slice.template.md`,
       `welle.template.md`, `in-progress/roadmap.md`, `docs/reviews/review-report.template.md`
-      und den fünf `open/`-Slices; **beide** toten Anker ersetzt
+      und den `open/`-Slices; **beide** toten Anker ersetzt
       (`#ziel-form-reviewer-skill` und `#ziel-form-sub-area-modus-begründung`, s. §1);
       **jeder** geänderte Link per `curl` als erreichbar belegt **und jeder Anker
       zusätzlich gegen den Modul-Text** (`curl` sieht Fragmente nicht —
@@ -82,7 +82,7 @@ Entscheidung, siehe §6).
 | `docs/plan/adr/NNNN-titel.template.md` | update | ADR-Platzhalter vierstellig |
 | `docs/reviews/review-report.template.md` | update | Link-Pin + toter Anker |
 | `docs/plan/planning/in-progress/roadmap.md` | update | Link-Pins |
-| `docs/plan/planning/open/slice-001…005` | update | Link-Pins + Status-Feld raus |
+| `docs/plan/planning/open/slice-0*` | update | Link-Pins + Status-Feld raus (Glob, nicht Aufzählung — der Bestand wächst; Stand 2026-07-17: 001…005 + 015) |
 | `docs/plan/planning/next/slice-0*` | update | Status-Feld raus (aktive Slices, s. DoD 3) |
 
 ## 4. Trigger
