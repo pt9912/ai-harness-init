@@ -20,13 +20,32 @@ und [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittie
 
 - Harness-Bootstrap abgeschlossen ([`ADR-0001`](../../../docs/plan/adr/0001-skelett-distribution.md) accepted, `make docs-check` grün).
 
-## 3. Closure-Trigger (Welle schließt)
+## 3. Closure-Prozedur (Welle schließt) — fünf Schritte mit Beleg
 
-- slice-001, slice-002, slice-003 done.
-- `make gates` grün — inkl. der in slice-001 promoteten `lint`/`test`.
-- Smoke: Bootstrap in tmp-Repo offline → erwartete Dateien vorhanden
-  ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Vorstufe, voller Smoke erst nach welle-02).
-- Closure-Notiz in `welle-01-results.md`.
+Nach [Kurs Modul 6 §Wellen-Closure-Prozedur](https://github.com/pt9912/ai-harness-course/blob/v3.1.0/kurs/de/02-planung/modul-06-roadmap.md).
+Erst wenn alle fünf Belege vorliegen, ist die Welle *auditierbar* geschlossen — jeder
+Schritt hinterlässt einen Beleg, keiner ein Datum:
+
+1. **Trigger prüfen.** slice-001, slice-002, slice-003 liegen in `done/`; `make gates`
+   grün (inkl. der in slice-001 promoteten `lint`/`test`); Smoke: Bootstrap in tmp-Repo
+   offline → erwartete Dateien vorhanden ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Vorstufe, voller Smoke erst
+   nach welle-02). Beobachtbare Bedingung, kein Kalendertag.
+2. **Carveout-Audit der Welle** ([Modul 7](https://github.com/pt9912/ai-harness-course/blob/v3.1.0/kurs/de/02-planung/modul-07-carveouts.md)).
+   Jeder offene Carveout wird geprüft: aufgelöst, verlängert (mit Folge-Slice) oder als
+   permanent akzeptiert. Die Welle darf *mit* dokumentiertem Carveout schließen — nie
+   mit stillem rotem Gate. (welle-01 hat derzeit keine Carveouts; der Audit ist dann
+   eine belegte „0 offen"-Feststellung, kein Auslassen.)
+3. **Closure-Notiz `done/welle-01-results.md` schreiben.** Hält fest, *was gelernt
+   wurde*: geliefert · was funktionierte · was anders lief · **Steering-Loop-Einträge**
+   (geschärfte Regel / neuer Sensor / benannte Spec-Lücke) · Folge-Slices · Verifikation
+   (die Belege aus Schritt 1). Ohne Lerneintrag ist die Welle nicht „fertig", nur „weg".
+4. **Wave-Self-Close-Commit.** Ein einzelner, beobachtbarer Commit markiert den
+   Abschluss — der Audit sieht *einen* Punkt, an dem die Welle schloss, statt eines
+   verstreuten Verschwindens.
+5. **Roadmap fortschreiben.** welle-01 wandert in [`roadmap.md`](in-progress/roadmap.md)
+   aus *Aktuelle Welle* in *Abgeschlossene Wellen* (mit Zeiger auf die Closure-Notiz);
+   die erste Zeile aus *Nächste Wellen* wird zur neuen *Aktuellen Welle*. Löste ein
+   Trigger eine Umplanung aus, bekommt *Historische Trigger-Verschiebungen* ihren Eintrag.
 
 ## 4. Slices in dieser Welle
 
@@ -54,4 +73,4 @@ und [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittie
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Welle-Abschluss füllen. Verweis auf welle-01-results.md. -->
+<!-- Erst nach Welle-Abschluss füllen. Verweis auf done/welle-01-results.md (§3 Schritt 3). -->

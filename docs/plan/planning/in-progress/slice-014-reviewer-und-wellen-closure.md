@@ -26,26 +26,24 @@ Inhalte. Beide gegen v3.1.0 verifiziert (2026-07-17).
    sieht der Reviewer Code, aber nicht die Verträge, gegen die er prüft."
    **Vorherige Findings am gleichen Modul** ist der einzige der fünf Punkte, den
    `.harness/skills/reviewer.md` heute nicht führt.
-2. **Wellen-Closure-Prozedur.** Modul 6 schreibt fünf Schritte mit Beleg vor
-   (`regelwerk/modul-06-roadmap.md:53-84`): Trigger prüfen · **Carveout-Audit** ·
-   Closure-Notiz · **Wave-Self-Close-Commit** · **Roadmap-Fortschreibung**. „Erst
-   wenn alle fünf Belege vorliegen, ist die Welle *auditierbar* geschlossen."
-   `welle-01-offline-kern.md` §3 deckt Schritt 1 und 3; die anderen drei fehlen.
-   Der Begriff *Wave-Self-Close-Commit* kommt im **adoptierten** v1.2.0-Stand
-   (`.harness/cache/agents-regelwerk/modul-06-roadmap.md`) **null Mal** vor —
-   gemessen 2026-07-17. Referenz-Hinweis: gemeint ist der `lab-regelwerk`-Baum, den
-   das Repo tatsächlich fährt, **nicht** die didaktische `kurs/de/`-Fassung; dort
-   taucht der Begriff in v1.2.0 sehr wohl auf (zweimal, im Selbstcheck-Kontext). Die
-   beiden Bäume sind nicht deckungsgleich — wer hier gegen `kurs/de/` misst, misst
-   am falschen Artefakt.
+2. **Wellen-Closure-Prozedur.** Der adoptierte Stand (v3.1.0) schreibt fünf Schritte
+   mit Beleg vor (`.harness/baseline/v3.1.0/regelwerk/modul-06-roadmap.md:53-84`):
+   Trigger prüfen · **Carveout-Audit** · Closure-Notiz · **Wave-Self-Close-Commit** ·
+   **Roadmap-Fortschreibung**. „Erst wenn alle fünf Belege vorliegen, ist die Welle
+   *auditierbar* geschlossen." `welle-01-offline-kern.md` §3 (vor v3.1.0 geschrieben)
+   deckte nur Schritt 1 und 3; die anderen drei fehlten. **Historische Notiz:** Die
+   formalisierte Prozedur samt Begriff *Wave-Self-Close-Commit* ist v3.1.0-neu; der
+   frühere adoptierte v1.2.0-Stand führte sie nicht (der damalige Cache-Beleg ist seit
+   slice-011 entfernt — die Aussage steht als Historie, nicht mehr lokal nachmessbar).
+   Warnung fürs Nachmessen: den **lab-Baum** heranziehen (`.harness/baseline/…`), nicht
+   die didaktische `kurs/de/`-Fassung — die beiden divergieren.
 
-**Abgrenzung.** Mechanik/Vendoring: slice-011. Tote Quellen-Pointer und
-§Baseline-Stand: slice-012. Die **mechanischen** Nachzüge (Link-Pins,
-ADR-Platzhalter, Status-Feld → Lifecycle-Notiz): slice-013 — inhaltlich disjunkt,
-aber **nicht datei-disjunkt**: slice-013s Status-Sweep fasst den Kopf *dieser* Datei
-an, solange sie aktiv ist (eine Zeile, s. slice-013 §4). Nicht parallel fahren. Der
-d-check-Pin-Sprung ist ein eigener Slice mit eigenem Risiko (Ziel-Version bewusst nicht
-genannt — s. slice-013 §Abgrenzung).
+**Abgrenzung.** Mechanik/Vendoring: slice-011. Tote Quellen-Pointer und §Baseline-Stand:
+slice-012. Template-Referenzierung ([`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)) + Status→Lifecycle auf allen
+aktiven Slices: slice-013 — **bereits `done/`**; sein Status-Sweep hat den Kopf *dieser*
+Datei schon auf Lifecycle gezogen, die frühere Nicht-Parallelitäts-Auflage ist damit
+erledigt. Der d-check-Pin-Sprung ist ein eigener Slice mit eigenem Risiko (Ziel-Version
+bewusst nicht genannt — s. slice-013 §Abgrenzung).
 
 ## 2. Definition of Done
 
@@ -91,8 +89,9 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 - **Offen: `lastenheft_refs` vs. Klartext-`**Bezug:**`-Zeile.** Modul 15 streicht die
   Notiz, die die Klartext-Variante ausdrücklich erlaubte; Modul 16 fordert unverändert
   „Slices tragen `lastenheft_refs`" mit Beleg „Frontmatter-Grep". Das Repo fährt
-  durchgehend Klartext und hat kein Frontmatter — entlastend liefert das
-  v3.1.0-`slice.template.md` **selbst** die Klartext-Form. Nicht akut (keine Welle in
+  durchgehend Klartext und hat kein Frontmatter — entlastend liefert die vendored
+  v3.1.0-Vorlage (`.harness/baseline/v3.1.0/templates/docs/plan/planning/slice.template.md`,
+  [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)) **selbst** die Klartext-Form. Nicht akut (keine Welle in
   Freigabe, kein Release-Verzeichnis im Repo), aber die Wahl gehört als eigener
   MR-Eintrag festgeschrieben, bevor sie an einer gestrichenen Kurs-Notiz hängt.
 - **Zur DoD-Länge.** Dieser Slice liegt bei 3 Häkchen und zwei Dateien in zwei

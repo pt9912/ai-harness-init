@@ -1,16 +1,23 @@
 # Reviewer-Skill — ai-harness-init
 
-**Version:** 1.0.0 · **Datum:** 2026-06-13 ·
-**Baseline:** Agents-Regelwerk Kurs-Welle 18 §8 (Output-Schema,
-Kategorien-Semantik, Report-Pflicht).
+**Version:** 1.1.0 · **Datum:** 2026-07-17 ·
+**Baseline:** Agents-Regelwerk v3.1.0 (Kurs-Welle 26), Modul 10 §Ziel-Form: Reviewer-Skill
+(Output-Schema, Kategorien-Semantik, Report-Pflicht, Pflicht-Kontext-Eingang).
+
+<!-- Versionierung (Modul 10): Änderungen werden versioniert, nicht überschrieben;
+die alte Fassung liegt in der git-Historie. 1.1.0 (slice-014): „vorherige Findings
+am gleichen Modul" als fünften Pflicht-Kontext-Punkt ergänzt (v3.1.0-Konformität). -->
 
 ## Eingangs-Kontext (Pflicht — sonst nicht reproduzierbar)
 
-Der Reviewer erhält: Diff/Commit-Range, den Slice-Plan, die betroffenen
-`LH-*`-Anforderungen, die referenzierten aktiven ADRs und die Hard Rules
-([`AGENTS.md`](../../AGENTS.md) §3). **Nicht** erhalten: die DoD-Abhakung
-— Plan-/DoD-Konformität prüft die Verifikation (getrennter Kontext,
-anderes Prüf-Artefakt).
+Der Reviewer erhält (v3.1.0 Modul 10, fünf Pflicht-Punkte): den **Diff/Commit-Range**,
+die betroffenen `LH-*`-Anforderungen (in [`spec/lastenheft.md`](../../spec/lastenheft.md)),
+die **referenzierten aktiven ADRs** (deren ID im PR/Commit vorkommt), die **Hard Rules**
+([`AGENTS.md`](../../AGENTS.md) §3) und **vorherige Findings am gleichen Modul** (damit
+wiederkehrende Muster erkennbar sind und nicht jede Sitzung bei null beginnt). Ohne
+diesen Block sieht der Reviewer Code, aber nicht die Verträge, gegen die er prüft.
+**Nicht** erhalten: die DoD-Abhakung — Plan-/DoD-Konformität prüft die Verifikation
+(getrennter Kontext, anderes Prüf-Artefakt).
 
 ## Repo-spezifische Anker pro Kategorie
 
