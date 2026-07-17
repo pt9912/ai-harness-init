@@ -1,91 +1,95 @@
-# Slice slice-013: Vorlagen und Slice-Köpfe auf v3.1.0-Form
+# Slice slice-013: Ausfüll-Templates referenzieren + Slice-Köpfe auf v3.1.0-Form
 
-**Status:** next
+**Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem die Datei liegt
+(`open/` · `next/` · `in-progress/` · `done/`), Wechsel nur per `git mv` — v3.1.0-Konvention
+(`modul-05`).
 
 **Welle:** ohne Welle (Harness-Wartung). Einordnung *(Kontext, nicht normativ)*:
 [roadmap](../in-progress/roadmap.md).
 
-**Bezug:** [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage).
+**Bezug:** [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten), [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage), [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert) (dieser Slice erzeugt ihn).
 
-**Autor:** Claude (Pair-Session). **Datum:** 2026-07-16. **Überarbeitet:** 2026-07-17
-(Ziel-Tag v3.0.0 → v3.1.0; Status-Feld-Teil neu gefasst; Schnitt → slice-014).
+**Autor:** Claude (Pair-Session). **Datum:** 2026-07-16. **Umgesetzt:** 2026-07-17.
+
+**Kurs-Wechsel während der Umsetzung (2026-07-17):** Der Slice war als „Template-Kopien
+auf v3.1.0 patchen" geplant. Ein Diff der Repo-Kopien gegen den vendorten v3.1.0-Baum
+zeigte: alle fünf Kopien sind **verbatim/nachhinkend** (null Adaptionen), unreferenziert,
+d-check-exempt. Statt sie zu patchen (und beim nächsten Bump erneut) werden sie
+**gelöscht und referenziert** ([`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert), Nutzer-Entscheidung). Das
+löst die Wartungsklasse dauerhaft. Damit entfallen zwei ursprüngliche Teilaufgaben
+ganz (Template-Link-Pins und der `ADR-<NN>`-Platzhalter — beide lebten **nur** in den
+gelöschten Templates).
 
 ---
 
 ## 1. Ziel
 
-Die **mechanischen** Nachzüge an Vorlagen und Slice-Köpfen, die alle dieselben
-Dateien anfassen und in *einer* Review-Sitzung prüfbar sind. Grundlage ist der
-gegen **v3.1.0** verifizierte Stand (2026-07-17; die Befunde des v3.0.0-Modul-Reviews
-vom 2026-07-16 wurden gegen v3.1.0 nachgemessen, s. §6).
+Zwei zusammenhängende Nachzüge, beide in *einer* Review-Sitzung prüfbar:
 
-1. **Kurs-Link-Pins.** `templates-v4` → `v3.1.0`, repo-weit. Falle dabei: die
-   Entdidaktisierung hat Abschnitte umbenannt, auf die das Repo verlinkt — **zwei**
-   tote Anker, beide gegen v3.1.0 verifiziert:
-   - `#worked-example-eine-reviewer-skill-datei-schreiben` → der Abschnitt heißt
-     jetzt `### Ziel-Form: Reviewer-Skill` (`regelwerk/modul-10-review-harness.md:44`),
-     Anker also `#ziel-form-reviewer-skill`. Er ist auch im gelieferten Template noch
-     falsch, also nicht blind kopieren.
-   - `#worked-mini-example-bootstrap-modus-pro-sub-area-für-einen-slice-begründen`
-     in `docs/plan/planning/slice.template.md:99` → „Worked Mini-Example" kommt in
-     v3.1.0 `modul-05` **null Mal** vor; der Abschnitt heißt jetzt
-     `### Ziel-Form: Sub-Area-Modus-Begründung` (`modul-05:82`).
+1. **Ausfüll-Templates referenzieren statt kopieren ([`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)).** Die fünf
+   Repo-Kopien (`slice.template.md`, `welle.template.md` unter `docs/plan/planning/`,
+   `NNNN-titel.template.md` unter `docs/plan/adr/`, `carveout.template.md` (Carveouts),
+   `review-report.template.md` unter `docs/reviews/`) werden
+   **gelöscht**. Einzige Quelle wird
+   die committet vendored Baseline `.harness/baseline/<tag>/templates/…`; ein neues
+   Artefakt entsteht per `cp` von dort. **Empirische Grundlage (2026-07-17 gemessen):**
+   jeder Diff der Kopien gegen den vendorten Baum war reines Upstream-Lag (null
+   Adaptionen), nichts Stabiles referenziert sie (kein Makefile/Hook/Test/README),
+   sie sind ohnehin d-check-exempt. Das Kopier-Modell war hier reine Wartungskosten.
+   Damit **entfallen zwei ursprüngliche Teilaufgaben ganz:** die Template-Link-Pins
+   (`templates-v4` → `v3.1.0` in den Templates) und der `ADR-<NN>` → `ADR-<NNNN>`-Platzhalter
+   — beide lebten **nur** in den nun gelöschten Templates.
+2. **Slice-Köpfe: Status-Feld → Lifecycle-Notiz** auf den **echten** aktiven Slices.
+   Der Slice-Kopf verliert `**Status:**` ersatzlos; an seine Stelle tritt die v3.1.0-Notiz,
+   dass **das Verzeichnis der Zustand ist**. Reine Konformität. Betrifft `open/slice-001…005`,
+   `open/slice-015`, `next/slice-014` und diesen Slice selbst. **`welle.template.md`
+   ist gelöscht** (Punkt 1) — die Welle-Status-Frage stellt sich damit nicht mehr im
+   Repo; die vendored `welle.template.md` behält ihr Feld (v3.1.0 streicht nur den
+   *Slice*-Kopf).
 
-   **Anker sind mit `curl` nicht prüfbar** — eine GitHub-Blob-URL liefert HTTP 200
-   unabhängig vom Fragment. Der Erreichbarkeits-Beleg aus der DoD deckt also die
-   *URL*, nicht den *Anker*; letzterer wird gegen den vendored Baum geprüft (nach
-   slice-011 lokal vorhanden) oder gegen `x-v3.1.0/regelwerk/`.
-2. **ADR-Platzhalter.** `ADR-<NN>` → `ADR-<NNNN>` — genau der Platzhalter, der heute
-   dem Repo-Schema aus [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) und `.d-check.yml` widerspricht und nur wegen
-   der Template-Ignore-Regel gate-still bleibt. v3.1.0 führt ihn durchgehend
-   vierstillig (verifiziert: alle sieben Vorkommen in `templates/`).
-3. **Status-Feld → Lifecycle-Notiz.** Der Slice-Kopf verliert `**Status:**`
-   ersatzlos; an seine Stelle tritt die v3.1.0-Notiz, dass **das Verzeichnis der
-   Zustand ist**. Das ist reine **Konformität**, keine Abweichung — und damit
-   **ohne** Adaptions-Eintrag (s. §6).
+Ebenfalls hier (Reste der Link-Pin-Klasse auf **echten** Dateien, nicht Templates):
+`templates-v4` → `v3.1.0` in `open/slice-001…005`, `in-progress/roadmap.md` und dem
+`harness.mk`-Kopfkommentar.
 
 **Abgrenzung.** Mechanik/Vendoring: slice-011. Tote Quellen-Pointer und
 §Baseline-Stand: slice-012. Die **inhaltlichen** Nachzüge (Reviewer-Skill-Pflichtkontext,
-Wellen-Closure-Prozedur): slice-014 — sie fassen andere Dateien an und sind
-separat prüfbar. Der d-check-Pin-Sprung ist ein eigener Slice mit eigenem Risiko
-(Ziel-Version bewusst **nicht** hier genannt — sie bewegte sich am 2026-07-17 viermal
-an *einem* Tag; maßgeblich ist `git tag` im d-check-Repo, der Pin steht in
-`harness/conventions.md` §Baseline). **`done/` bleibt Archiv** — die fünf
+Wellen-Closure-Prozedur): slice-014. Der d-check-Pin-Sprung ist ein eigener Slice mit
+eigenem Risiko (Ziel-Version bewusst **nicht** hier genannt — sie bewegte sich am
+2026-07-17 viermal an *einem* Tag; maßgeblich ist `git tag` im d-check-Repo, der Pin
+steht in `harness/conventions.md` §Baseline). **`done/` bleibt Archiv** — die
 abgeschlossenen Slices behalten Status-Feld und `templates-v4`-Pins (bewusste
 Entscheidung, siehe §6).
 
 ## 2. Definition of Done
 
-- [ ] Kurs-Link-Pins `templates-v4` → `v3.1.0` in `docs/plan/planning/slice.template.md`,
-      `welle.template.md`, `in-progress/roadmap.md`, `docs/reviews/review-report.template.md`
-      und den `open/`-Slices; **beide** toten Anker ersetzt
-      (`#ziel-form-reviewer-skill` und `#ziel-form-sub-area-modus-begründung`, s. §1);
-      **jeder** geänderte Link per `curl` als erreichbar belegt **und jeder Anker
-      zusätzlich gegen den Modul-Text** (`curl` sieht Fragmente nicht —
-      [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
-- [ ] `ADR-<NN>` → `ADR-<NNNN>` in `docs/plan/adr/NNNN-titel.template.md`,
-      `docs/plan/planning/slice.template.md`, `welle.template.md` — Schema-Konsistenz
-      mit [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) und `.d-check.yml`.
-- [ ] `**Status:**` ist aus `slice.template.md` und **allen aktiven Slices**
-      (`open/` + `next/`, einschließlich dieses Slice selbst) entfernt und durch die
-      v3.1.0-`**Lifecycle:**`-Notiz ersetzt (Verzeichnis = Zustand, Wechsel nur per
-      `git mv`). **`welle.template.md` behält sein `**Status:**`** — v3.1.0 streicht
-      das Feld nur im *Slice*-Kopf (verifiziert: `welle.template.md:10` führt es
-      unverändert). `docs/plan/planning/README.md:20` bleibt damit die einzige
-      Lifecycle-Quelle; `done/` unberührt (Archiv, s. §6).
+- [ ] Die fünf Repo-Template-Kopien sind **gelöscht** (`slice.template.md`,
+      `welle.template.md`, `NNNN-titel.template.md`, `carveout.template.md`,
+      `review-report.template.md`); [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert) trägt die Adaption
+      (Referenz statt Kopie) mit dem empirischen Nutzen-Beleg. Vor dem Löschen belegt,
+      dass **nichts Mechanisches** sie referenziert (`grep` über
+      Makefile/Hooks/Tests/Codex/READMEs → 0).
+- [ ] Ein neues Artefakt lässt sich aus dem vendored Baum erzeugen — vorgeführt:
+      `cp .harness/baseline/$(BASELINE_TAG)/templates/docs/plan/planning/slice.template.md …`
+      liefert die v3.1.0-Ziel-Form (Lifecycle-Feld, `ADR-<NNNN>`, aktuelle Anker).
+- [ ] `**Status:**` → `**Lifecycle:**`-Notiz in `open/slice-001…005`, `open/slice-015`,
+      `next/slice-014` und diesem Slice (Verzeichnis = Zustand, Wechsel nur per `git mv`).
+      `done/` unberührt (Archiv, s. §6).
+- [ ] Rest-Link-Pins `templates-v4` → `v3.1.0` auf **echten** Dateien:
+      `open/slice-001…005`, `in-progress/roadmap.md`, `harness.mk`-Kopfkommentar;
+      jeder geänderte Link per `curl` erreichbar belegt
+      ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
 - [ ] `make gates` grün; Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `docs/plan/planning/slice.template.md` | update | Link-Pins + ADR-Platzhalter + Status → Lifecycle-Notiz |
-| `docs/plan/planning/welle.template.md` | update | Link-Pins + ADR-Platzhalter (Status-Feld **bleibt**) |
-| `docs/plan/adr/NNNN-titel.template.md` | update | ADR-Platzhalter vierstellig |
-| `docs/reviews/review-report.template.md` | update | Link-Pin + toter Anker |
-| `docs/plan/planning/in-progress/roadmap.md` | update | Link-Pins |
-| `docs/plan/planning/open/slice-0*` | update | Link-Pins + Status-Feld raus (Glob, nicht Aufzählung — der Bestand wächst; Stand 2026-07-17: 001…005 + 015) |
-| `docs/plan/planning/next/slice-0*` | update | Status-Feld raus (aktive Slices, s. DoD 3) |
+| `docs/plan/planning/*.template.md` (slice, welle) | **löschen** | referenziert statt kopiert ([`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)) |
+| `docs/plan/{adr,carveouts}/*.template.md`, `docs/reviews/*.template.md` | **löschen** | dito |
+| `harness/conventions.md` | update | neuer [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert) |
+| `docs/plan/planning/open/slice-001…005` | update | Link-Pins + Status → Lifecycle |
+| `open/slice-015-zitat-sensor.md`, `next/slice-014`, dieser Slice | update | Status → Lifecycle |
+| `docs/plan/planning/in-progress/roadmap.md`, `harness.mk` | update | Rest-Link-Pins |
 
 ## 4. Trigger
 
@@ -106,14 +110,23 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 
 ## 6. Risiken und offene Punkte
 
-- **Warum dieser Schnitt und nicht der ursprünglich markierte.** Der Vorgänger-Zuschnitt
-  trennte den Status-Feld-Teil ab, weil er einen eigenen Adaptions-Eintrag getragen
-  hätte und an keinem anderen Punkt hing. Beides ist mit v3.1.0 hinfällig: der
-  MR-Eintrag entfällt (Konformität statt Abweichung), und die Status-Änderung fasst
-  **dieselben sechs Dateien** an wie die Link-Pins (`slice.template.md`,
-  `open/slice-001…005`) — sie abzutrennen hieße, zweimal dieselben Dateien
-  anzufassen. Geschnitten ist jetzt nach **Prüfbarkeit und Datei-Lokalität**:
-  mechanisch (hier) vs. inhaltlich (slice-014).
+- **Kurs-Wechsel mitten in der Umsetzung — und warum er trotzdem *ein* Slice bleibt.**
+  Geplant war „Template-Kopien patchen". Der Ist-Zustand-Diff (die slice-012-Lehre,
+  angewandt) zeigte, dass die Kopien verbatim/nachhinkend und unreferenziert sind →
+  Referenz-Modell ([`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert), Nutzer-Entscheidung). Das ist kein Scope-Creep,
+  sondern eine **Vereinfachung**: zwei Teilaufgaben (Template-Link-Pins, ADR-Platzhalter)
+  entfallen ersatzlos, weil ihr Gegenstand gelöscht wird. Der Slice bleibt in *einer*
+  Review-Sitzung prüfbar (Modul-5-Kriterium 3). **Preis der Abweichung:** ein
+  Referenzpfad trägt den Tag und repinnt beim Bump — bewusst getragen, s.
+  [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert) (Auflösungs-Trigger: sobald ein Template eine echte Repo-Adaption
+  braucht, wird *es* wieder als Kopie geführt).
+- **Anker-Beinahe-Fehler bewahrt (Zwei-Bäume-Falle, 3. Mal).** Der ursprüngliche Plan
+  wollte zwei „tote Anker" auf `#ziel-form-…` umbiegen — verifiziert gegen den `lab`-Baum.
+  Die Template-Links zeigen aber auf den **Kurs**, der die `## Worked Example …`- und
+  `## Worked Mini-Example …`-Überschriften **behalten** hat (WebFetch gegen
+  `kurs/de/` @ v3.1.0). Die Anker waren nie tot; Umbiegen hätte sie gebrochen. Mit dem
+  Löschen der Templates ist der Punkt gegenstandslos — aber die Lehre bleibt: `d-check`
+  prüft URL, nicht Fragment; Kurs-Anker gegen die **Kurs-Datei** verifizieren.
 - **Offen — die „≤ 3 DoD-Punkte"-Regel ist in v3.1.0 nicht entscheidbar.** Modul 5
   hebt sie von der Faustregel zum **Regeltext**: „**Zu groß**, wenn eines zutrifft:
   mehr als drei DoD-Punkte · mehrere Schichten betroffen · nicht in *einer*

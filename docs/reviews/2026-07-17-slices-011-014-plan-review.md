@@ -42,7 +42,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: HIGH
 - `quelle`: Maintainability (Abgrenzungs-Kohärenz, Modul 6 §Trigger)
-- `pfad`: `docs/plan/planning/next/slice-013-vorlagen-und-slice-koepfe.md` §4 · `slice-014-reviewer-und-wellen-closure.md` §Abgrenzung, §4
+- `pfad`: `docs/plan/planning/next/slice-013-vorlagen-und-slice-koepfe.md` §4 · `slice-014-reviewer-und-wellen-closure.md` §Abgrenzung, §4 <!-- d-check:ignore (Zeitdokument: Lifecycle-Pfad galt beim Lauf; slice-013 ist seither nach in-progress/ gewandert) -->
 - `befund`: slice-013 DoD 3 entfernt `**Status:**` aus „allen aktiven Slices (`open/` + `next/`)" — das schließt `next/slice-014-…md:3` ein. Beide Slices behaupten gleichzeitig, datei-disjunkt und voneinander unabhängig startbar zu sein. Beides zusammen ist nicht haltbar.
 - `verifizierbar`: nein automatisiert (kein Gate prüft Cross-Slice-Dateiüberschneidung); ein realer Parallel-Versuch auf zwei Branches erzeugt den Merge-Konflikt in `slice-014-…md:3`.
 
@@ -58,7 +58,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: MEDIUM
 - `quelle`: LH-QA-02 (Reproduzierbarkeit)
-- `pfad`: `docs/plan/planning/slice.template.md:99` (im Scope von slice-013 DoD 1)
+- `pfad`: `docs/plan/planning/slice.template.md:99` (im Scope von slice-013 DoD 1) <!-- d-check:ignore (Zeitdokument: die Template-Kopie ist seit slice-013 geloescht — referenziert statt kopiert, MR-008) -->
 - `befund`: Der Anker `#worked-mini-example-bootstrap-modus-pro-sub-area-für-einen-slice-begründen` zeigt auf eine Sektion, die in v3.1.0 `modul-05` null Mal vorkommt; slice-013 benannte nur *einen* toten Anker. Der DoD-Beleg „jeder geänderte Link per `curl` erreichbar" kann das nicht aufdecken — eine GitHub-Blob-URL liefert HTTP 200 unabhängig vom Fragment.
 - `verifizierbar`: ja — `grep -c "Worked Mini-Example" modul-05-planning-harness.md` → 0; `grep -n worked-mini-example docs/plan/planning/slice.template.md` → 99.
 
@@ -98,7 +98,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: MEDIUM
 - `quelle`: LH-QA-02 (Reproduzierbarkeit)
-- `pfad`: `docs/plan/planning/next/slice-013-vorlagen-und-slice-koepfe.md` §6
+- `pfad`: `docs/plan/planning/next/slice-013-vorlagen-und-slice-koepfe.md` §6 <!-- d-check:ignore (Zeitdokument, s.o. — Lifecycle-git-mv) -->
 - `befund`: „Modul 5 schrumpfte von ~200 auf 120 Zeilen" — der adoptierte v1.2.0-`lab`-Stand hat 219 Zeilen. Die Angabe war geschätzt, nicht gemessen, in einem Absatz, der genau aus einer Messung argumentiert.
 - `verifizierbar`: ja — `wc -l .harness/cache/agents-regelwerk/modul-05-planning-harness.md` → 219.
 

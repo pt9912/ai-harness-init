@@ -283,6 +283,48 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   nicht mehr) und **lokal zu löschen**. Frische Checkouts sind nicht betroffen —
   der Cache war gitignored und daher nie im Repo.
 
+### MR-008 — Ausfüll-Templates referenziert statt kopiert
+
+- **Datum:** 2026-07-17
+- **Geltungsbereich:** die bisherigen Repo-Template-Kopien
+  `docs/plan/planning/*.template.md`, `docs/plan/adr/*.template.md`,
+  `docs/plan/carveouts/*.template.md`, `docs/reviews/*.template.md`; ergänzt [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache).
+- **Adaption:** Das Repo hält **keine eigenen Kopien** der Ausfüll-Templates mehr.
+  Einzige Quelle ist die committet vendored Baseline
+  `.harness/baseline/<tag>/templates/…` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)). Ein neues Artefakt
+  (Slice, ADR, Welle, Carveout, Review-Report) entsteht per **`cp` aus dem vendored
+  Baum** und wird dann ausgefüllt — z. B.
+  `cp .harness/baseline/$(BASELINE_TAG)/templates/docs/plan/planning/slice.template.md docs/plan/planning/open/slice-NNN-….md`.
+- **Abweichung von der Baseline (Modul 2):** Modul 2 beschreibt die Templates in
+  **zwei** Rollen — *vendored als Referenz-Form* **und** *kopiert-und-ausgefüllt als
+  eigene Artefakte*. MR-008 behält die zweite Rolle (Artefakte entstehen weiter durch
+  Kopieren-und-Ausfüllen), streicht aber die **dauerhaft im Repo gehaltene
+  Blank-Kopie**: die Vorlage wird pro Artefakt frisch aus dem vendored Baum kopiert,
+  nicht als `docs/…/*.template.md`-Dublette gepflegt.
+- **Begründung (empirisch, 2026-07-17 gemessen):** Die fünf bisher kopierten
+  Blank-Templates waren **verbatim/nachhinkend** (null Repo-Adaptionen — jeder Diff
+  gegen den vendored Baum war reines Upstream-Lag), **von nichts Stabilem
+  referenziert** (kein Makefile/Hook/Test/README, nur die Slices, die sie gerade
+  bearbeiteten) und ohnehin **d-check-exempt** (`**/*.template.md` in `scan.ignore`).
+  Das Kopier-Modell lieferte hier also **reine Wartungskosten** (jeder Baseline-Bump
+  erzwingt eine Reconciliation — slice-013 *war* diese Kosten) bei **null Nutzen**.
+  Referenzieren beseitigt die Drift-Klasse dauerhaft.
+- **Tag im Referenzpfad:** Verweise auf `.harness/baseline/<tag>/templates/…` tragen
+  den Tag; beim Bump repinnt er mit `BASELINE_TAG` (dieselbe Mechanik wie überall). Ein
+  tag-stabiler Zeiger (Symlink) ist bewusst **nicht** gebaut (YAGNI — aktuell verweist
+  **nichts** dauerhaft auf die Templates; [`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
+- **Nebeneffekt (benigne):** `carveout.template.md` war die einzige Datei unter
+  `docs/plan/carveouts/*`; mit ihrer Löschung verschwindet das (leere) Verzeichnis (git
+  trackt keine leeren Verzeichnisse). Kein aktives Artefakt braucht es — es kehrt
+  zurück, sobald der erste Carveout entsteht (`cp` aus dem vendored Baum + `mkdir -p`,
+  Modul 7). Konsistent damit, dass `open/`/`next/`/`done/` nur existieren, wenn sie
+  Inhalt tragen.
+- **Auflösungs-Trigger:** gilt, **solange das Repo seine Templates nicht adaptiert.**
+  Wird an *einem* Template eine echte Repo-Adaption nötig, wird **genau dieses** wieder
+  als Repo-Kopie geführt — mit MR-Eintrag, der die Adaption begründet — die übrigen
+  bleiben referenziert. Der Nutzen-Beleg (verbatim/unreferenziert) ist dann für dieses
+  eine Template neu zu prüfen.
+
 ## Modus-Deklaration pro Sub-Area
 
 | Sub-Area | Modus | Begründung | Graduation |

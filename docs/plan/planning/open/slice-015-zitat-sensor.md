@@ -1,6 +1,8 @@
 # Slice slice-015: Zitat-Sensor (`make cite-check`)
 
-**Status:** open
+**Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem die Datei liegt
+(`open/` · `next/` · `in-progress/` · `done/`), Wechsel nur per `git mv` —
+v3.1.0-Konvention (`modul-05`).
 
 **Welle:** ohne Welle (Harness-Wartung). Einordnung *(Kontext, nicht normativ)*:
 [roadmap](../in-progress/roadmap.md).

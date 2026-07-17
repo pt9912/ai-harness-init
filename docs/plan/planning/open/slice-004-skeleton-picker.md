@@ -1,8 +1,8 @@
 # Slice slice-004: Sprachskelett-Picker
 
-**Status:** open → next → in-progress → done (Datei wird durch die
-Verzeichnisse bewegt, siehe
-[Kurs Modul 5](https://github.com/pt9912/ai-harness-course/blob/templates-v4/kurs/de/02-planung/modul-05-planning-harness.md)).
+**Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem die Datei liegt
+(`open/` · `next/` · `in-progress/` · `done/`), Wechsel nur per `git mv` —
+v3.1.0-Konvention (`modul-05`).
 
 **Welle:** welle-02-fetch-und-readme (Welle-Plan folgt). Einordnung
 *(Kontext, nicht normativ)*: [roadmap](../in-progress/roadmap.md).
