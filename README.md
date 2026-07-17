@@ -17,7 +17,7 @@ ungebaut (Phase 0). Verfügbar:
 - Durchsetzungsschicht adoptiert: Command-Guard (bash+awk), Gate-Nachweis,
   Regelwerk-Injektion (Codex-Hook / Claude-Pointer);
 - Spec, Architektur, ADR und Harness-Einstieg sind adoptiert und lesbar;
-- ausführbare Bootstrap-Funktion (`bin/ai-harness-init`): **folgt** —
+- ausführbare Bootstrap-Funktion (`cmd/ai-harness-init`, Go-Binary): **folgt** —
   Implementierung gegen `LH-FA-*`.
 
 Keine Erfolgsmeldung ohne lauffähigen Beleg.

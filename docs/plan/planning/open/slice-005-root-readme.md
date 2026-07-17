@@ -15,7 +15,7 @@ v3.1.0-Konvention (`modul-05`).
 
 ## 1. Ziel
 
-`bin/ai-harness-init` emittiert die Root-`README.md` aus der
+`cmd/ai-harness-init` emittiert die Root-`README.md` aus der
 project-readme-Vorlage; der Pointer-/Trust-Abschnitt steht als
 **gate-sichere Vorwärts-Verweise**, bis die Ziele existieren.
 
@@ -24,7 +24,7 @@ project-readme-Vorlage; der Pointer-/Trust-Abschnitt steht als
 - [ ] [`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2) erfüllt: Root-README aus Vorlage, Projektname gestempelt.
 - [ ] Vorwärts-Verweise gate-sicher: kein Markdown-Link auf noch fehlende Ziele (Inline-Code/Plain-Text), `make docs-check` im Zielrepo grün.
 - [ ] Happy-Path-Smoke ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)/[`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)): Bootstrap in tmp-Repo → `make gates` grün out-of-the-box.
-- [ ] bats-Test: README vorhanden, gestempelt, `docs-check` grün.
+- [ ] Go-Test: README vorhanden, gestempelt, `docs-check` grün.
 - [ ] `make gates` grün.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
@@ -32,8 +32,8 @@ project-readme-Vorlage; der Pointer-/Trust-Abschnitt steht als
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `bin/ai-harness-init` | update | README-Emit-Schritt + Stempelung |
-| `test/readme-emit.bats` | neu | Existenz, Stempelung, gate-sichere Verweise |
+| `cmd/ai-harness-init` | update | README-Emit-Schritt + Stempelung |
+| `cmd/ai-harness-init/readme_test.go` | neu | Existenz, Stempelung, gate-sichere Verweise |
 
 ## 4. Trigger
 

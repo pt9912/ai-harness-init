@@ -29,7 +29,7 @@ kurz: slice-001..003 done, `make gates` grün inkl. promoteter `lint`/`test`.
 
 | Meilenstein | Welle(n) | Trigger | Status |
 |---|---|---|---|
-| M1 — lauffähiger Offline-Kern (`bin/ai-harness-init` parst + emittiert Gate-Baseline + legt Templates ab, ohne Netz) | welle-01 | slice-001..003 done | offen |
+| M1 — lauffähiger Offline-Kern (`cmd/ai-harness-init` parst + emittiert Gate-Baseline + legt Templates ab, ohne Netz) | welle-01 | slice-001..003 done | offen |
 | M2 — vollständiger Bootstrap (inkl. Sprachskelett-Picker + Root-README) | welle-02 | slice-004..005 done | offen |
 
 ## Abhängigkeitsgraph

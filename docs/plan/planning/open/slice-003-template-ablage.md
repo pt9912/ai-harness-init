@@ -14,7 +14,7 @@ v3.1.0-Konvention (`modul-05`).
 
 ## 1. Ziel
 
-`bin/ai-harness-init` legt die Templates zweiklassig ab: Singletons (z. B.
+`cmd/ai-harness-init` legt die Templates zweiklassig ab: Singletons (z. B.
 lastenheft, architecture, AGENTS, harness/README, conventions) werden zu
 `.md`-Zielen; wiederkehrende Templates (ADR, slice, welle, carveout,
 review-report) bleiben co-located als `.template.md`. Die Set-Index-README
@@ -25,8 +25,8 @@ wird nie mitkopiert.
 - [ ] [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) erfüllt: Singletons → `.md`, wiederkehrende → `.template.md`.
 - [ ] Set-Index-README des Template-Sets wird nicht emittiert.
 - [ ] Projektname wird in die Singleton-Ziele gestempelt ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)-Detail).
-- [ ] [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) Boundary-AC: Lauf gegen Repo mit bereits vorhandener Datei **ohne** `--force` → kein Überschreiben (Exit≠0 + Hinweis); **mit** `--force` → Überschreiben. bats-Test deckt beide Fälle.
-- [ ] bats-Test: nach Lauf existieren die erwarteten `.md`/`.template.md`-Paare, keine Set-Index-README.
+- [ ] [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) Boundary-AC: Lauf gegen Repo mit bereits vorhandener Datei **ohne** `--force` → kein Überschreiben (Exit≠0 + Hinweis); **mit** `--force` → Überschreiben. Go-Test deckt beide Fälle.
+- [ ] Go-Test: nach Lauf existieren die erwarteten `.md`/`.template.md`-Paare, keine Set-Index-README.
 - [ ] `make gates` grün.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
@@ -34,8 +34,8 @@ wird nie mitkopiert.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `bin/ai-harness-init` | update | Ablage-Schritt: Klassifizieren Singleton vs. wiederkehrend, stempeln |
-| `test/template-ablage.bats` | neu | Paar-Existenz + Set-Index-README-Ausschluss prüfen |
+| `cmd/ai-harness-init` | update | Ablage-Schritt: Klassifizieren Singleton vs. wiederkehrend, stempeln |
+| `cmd/ai-harness-init/ablage_test.go` | neu | Paar-Existenz + Set-Index-README-Ausschluss prüfen |
 
 ## 4. Trigger
 

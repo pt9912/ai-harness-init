@@ -15,7 +15,7 @@ v3.1.0-Konvention (`modul-05`).
 
 ## 1. Ziel
 
-`bin/ai-harness-init --lang <X>` holt das passende Sprachskelett vom
+`cmd/ai-harness-init --lang <X>` holt das passende Sprachskelett vom
 **gepinnten Kurs-Tag** ([`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md), Variante C) und verdrahtet dessen
 Code-Gates — emittiert nur lauffähige Make-Targets.
 
@@ -25,7 +25,7 @@ Code-Gates — emittiert nur lauffähige Make-Targets.
 - [ ] [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit): Tag/Pin aus `harness/conventions.md` §Baseline; zwei Läufe mit gleichem Tag → identische Ausgabe.
 - [ ] Nur lauffähige Targets emittiert (keine halluzinierten Gates, [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 - [ ] Unbekannte Sprache → Exit 2 + Liste verfügbarer Skelette.
-- [ ] bats-Test (Netz gemockt/fixiert): Verdrahtung + Reproduzierbarkeit.
+- [ ] Go-Test (Netz gemockt/fixiert): Verdrahtung + Reproduzierbarkeit.
 - [ ] `make gates` grün.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
@@ -33,12 +33,12 @@ Code-Gates — emittiert nur lauffähige Make-Targets.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `bin/ai-harness-init` | update | Fetch+Picker-Schritt gegen gepinnten Tag |
-| `test/picker.bats` | neu | Verdrahtung, Reproduzierbarkeit, Unknown-Lang-Fehlerpfad |
+| `cmd/ai-harness-init` | update | Fetch+Picker-Schritt gegen gepinnten Tag |
+| `cmd/ai-harness-init/picker_test.go` | neu | Verdrahtung, Reproduzierbarkeit, Unknown-Lang-Fehlerpfad |
 
 ## 4. Trigger
 
-welle-01 done; `bin/ai-harness-init` parst `--lang` und emittiert offline.
+welle-01 done; `cmd/ai-harness-init` parst `--lang` und emittiert offline.
 
 ## 5. Closure-Trigger
 
@@ -49,7 +49,11 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 - **Netz beim Bootstrap nötig** ([`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md) Konsequenz). Air-gapped ist
   Re-Evaluierungs-Trigger von [`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md), nicht Scope hier.
 - Test ohne echtes Netz: Fetch mocken oder Fixture-Tag — sonst flakey/[`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)-Verstoß.
-- bats = Dev-/CI-Tooling, nicht Runtime-Budget von [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) ([`ADR-0003`](../../../../docs/plan/adr/0003-go-native-binaries.md)); gilt fort.
+- CLI-Verhaltenstests laufen als **Go-Tests** (`go test`, ggf. via exec/testscript) —
+  [`ADR-0003`](../../../../docs/plan/adr/0003-go-native-binaries.md)-Fitness-Function. Die **bats**-Suite bleibt getrennt und nur fürs
+  **Harness-Shell-Tooling** (Guard, SessionStart-Injektor, baseline-verify —
+  [`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)/[`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)); beides ist Dev-/CI-Tooling, nicht Runtime-Budget von
+  [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) ([`ADR-0003`](../../../../docs/plan/adr/0003-go-native-binaries.md)).
 
 ## 7. Closure-Notiz (nach `done/`)
 

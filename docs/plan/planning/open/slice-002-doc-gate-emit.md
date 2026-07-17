@@ -14,7 +14,7 @@ v3.1.0-Konvention (`modul-05`).
 
 ## 1. Ziel
 
-`bin/ai-harness-init` schreibt die Doc-Gate-Baseline ins Zielrepo:
+`cmd/ai-harness-init` schreibt die Doc-Gate-Baseline ins Zielrepo:
 `.d-check.yml` (Suffix-Ignore) und `harness.mk` (d-check per Digest
 gepinnt) — `ids`/`codepaths` nur mit existierenden Targets/roots aktiviert.
 
@@ -23,7 +23,7 @@ gepinnt) — `ids`/`codepaths` nur mit existierenden Targets/roots aktiviert.
 - [ ] [`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) erfüllt: `.d-check.yml` + `harness.mk` werden emittiert.
 - [ ] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6): emittierter `make docs-check` läuft im Zielrepo grün — keine halluzinierten Gates; `ids`/`codepaths` nur mit vorhandenen Targets.
 - [ ] Digest des d-check-Image aus der kanonischen Pin-Quelle (`harness/conventions.md` §Baseline / `harness.mk`), nicht floating ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)-Anschluss).
-- [ ] bats-Test: nach Emit ist `docs-check` im tmp-Repo Exit 0.
+- [ ] Go-Test: nach Emit ist `docs-check` im tmp-Repo Exit 0.
 - [ ] `make gates` grün.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
@@ -31,8 +31,8 @@ gepinnt) — `ids`/`codepaths` nur mit existierenden Targets/roots aktiviert.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `bin/ai-harness-init` | update | Emit-Schritt für `.d-check.yml` + `harness.mk` (Stub aus slice-001 füllen) |
-| `test/emit-gate.bats` | neu | Emit + `docs-check`-Grünlauf im tmp-Repo prüfen |
+| `cmd/ai-harness-init` | update | Emit-Schritt für `.d-check.yml` + `harness.mk` (Stub aus slice-001 füllen) |
+| `cmd/ai-harness-init/emit_test.go` | neu | Emit + `docs-check`-Grünlauf im tmp-Repo prüfen |
 
 ## 4. Trigger
 
