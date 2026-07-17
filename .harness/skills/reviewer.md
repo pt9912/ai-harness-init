@@ -6,18 +6,22 @@
 
 <!-- Versionierung (Modul 10): Änderungen werden versioniert, nicht überschrieben;
 die alte Fassung liegt in der git-Historie. 1.1.0 (slice-014): „vorherige Findings
-am gleichen Modul" als fünften Pflicht-Kontext-Punkt ergänzt (v3.1.0-Konformität). -->
+am gleichen Modul" als fünften v3.1.0-Pflicht-Kontext-Punkt ergänzt. Der Slice-Plan
+(Repo-Ergänzung aus 1.0.0) BLEIBT erhalten — die Änderung ist rein additiv, nichts
+entfernt. -->
 
 ## Eingangs-Kontext (Pflicht — sonst nicht reproduzierbar)
 
-Der Reviewer erhält (v3.1.0 Modul 10, fünf Pflicht-Punkte): den **Diff/Commit-Range**,
-die betroffenen `LH-*`-Anforderungen (in [`spec/lastenheft.md`](../../spec/lastenheft.md)),
-die **referenzierten aktiven ADRs** (deren ID im PR/Commit vorkommt), die **Hard Rules**
-([`AGENTS.md`](../../AGENTS.md) §3) und **vorherige Findings am gleichen Modul** (damit
-wiederkehrende Muster erkennbar sind und nicht jede Sitzung bei null beginnt). Ohne
-diesen Block sieht der Reviewer Code, aber nicht die Verträge, gegen die er prüft.
-**Nicht** erhalten: die DoD-Abhakung — Plan-/DoD-Konformität prüft die Verifikation
-(getrennter Kontext, anderes Prüf-Artefakt).
+Der Reviewer erhält die **fünf v3.1.0-Pflicht-Punkte** (Modul 10): den
+**Diff/Commit-Range**, die betroffenen `LH-*`-Anforderungen (in
+[`spec/lastenheft.md`](../../spec/lastenheft.md)), die **referenzierten aktiven ADRs**
+(deren ID im PR/Commit vorkommt), die **Hard Rules** ([`AGENTS.md`](../../AGENTS.md) §3)
+und **vorherige Findings am gleichen Modul** (damit wiederkehrende Muster erkennbar sind
+und nicht jede Sitzung bei null beginnt) — **plus** den **Slice-Plan** (Repo-Ergänzung
+über die Baseline-Fünf hinaus: der Review prüft den Diff *gegen* den Plan). Ohne diesen
+Block sieht der Reviewer Code, aber nicht die Verträge, gegen die er prüft. **Nicht**
+erhalten: die DoD-Abhakung — Plan-/DoD-Konformität prüft die Verifikation (getrennter
+Kontext, anderes Prüf-Artefakt).
 
 ## Repo-spezifische Anker pro Kategorie
 
