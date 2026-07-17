@@ -17,7 +17,15 @@ gezeigt, nicht als Treiber.
 **Geplantes Ende:** offen (Schätzung folgt mit slice-001-Closure)
 
 **Closure-Trigger:** siehe [Welle-Datei](../welle-01-offline-kern.md) §3 —
-kurz: slice-001..003 done, `make gates` grün inkl. promoteter `lint`/`test`.
+kurz: slice-001..003 done, `make gates` grün inkl. der in slice-001 promoteten
+Go-Gates `build`/`lint`.
+
+> **Kontext (Stand 2026-07-17, nicht Teil der Wellen-Ordnung):** welle-01 hat noch
+> nicht begonnen — ihre Slices (001..003) sind gerade auf die **Go-Ära** geschnitten
+> (`cmd/`, Go-Gates; [`ADR-0003`](../../../../docs/plan/adr/0003-go-native-binaries.md)). Parallel lief der **Harness-Wartungs-Zug** slice-006..014
+> (`ohne Welle`, alle `done/`): Repo auf Baseline **v3.1.0** (vendored, [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)),
+> Templates referenziert ([`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)). Startbereit in `open/`: **slice-001** (CLI-Fundament)
+> und **slice-016** (d-check-Pin-Sprung, unabhängig). `slice-015` bleibt blockiert.
 
 ## Nächste Wellen
 

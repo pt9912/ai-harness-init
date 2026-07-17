@@ -12,13 +12,18 @@ die den Harness nicht von Hand zusammenkopieren wollen.
 **Ehrlicher Stand:** Doku-Harness kohärent (Phase 3–4); der Code ist noch
 ungebaut (Phase 0). Verfügbar:
 
-- `make docs-check` (Doku-Referenz-Gate, d-check v0.10.0), `make test`
-  (Command-Guard via bats) und `make shell-lint` (shellcheck) laufen grün — Docker-only;
+- `make baseline-verify` (vendored Baseline netzlos, Integrität + Vollständigkeit),
+  `make docs-check` (Doku-Referenz-Gate, d-check v0.10.0), `make test`
+  (Command-Guard + Harness-Tests via bats) und `make shell-lint` (shellcheck) laufen
+  grün — Docker-only;
+- **Betriebsregelwerk + Templates committet vendored** unter
+  `.harness/baseline/v3.1.0/` (netzlos auf jedem Checkout, [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — Baseline v3.1.0
+  adoptiert;
 - Durchsetzungsschicht adoptiert: Command-Guard (bash+awk), Gate-Nachweis,
-  Regelwerk-Injektion (Codex-Hook / Claude-Pointer);
+  Regelwerk-Injektion (Codex-Hook / Claude-Pointer aus der vendored Baseline);
 - Spec, Architektur, ADR und Harness-Einstieg sind adoptiert und lesbar;
 - ausführbare Bootstrap-Funktion (`cmd/ai-harness-init`, Go-Binary): **folgt** —
-  Implementierung gegen `LH-FA-*`.
+  slice-001..005 auf Go geschnitten (`cmd/`, Go-Gates), **startbereit**; Impl gegen `LH-FA-*`.
 
 Keine Erfolgsmeldung ohne lauffähigen Beleg.
 
