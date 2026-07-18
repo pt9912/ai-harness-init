@@ -39,7 +39,7 @@ Beobachtbare Bedingungen (kein Kalendertag); die Closure folgt den fünf Modul-6
 
 | Slice | Titel | Status | Bezug |
 |---|---|---|---|
-| [slice-004a](open/slice-004a-skeleton-fetch.md) | Sprachskelett-Fetch | open | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`ADR-0001`](../../../docs/plan/adr/0001-skelett-distribution.md) |
+| [slice-004a](in-progress/slice-004a-skeleton-fetch.md) | Sprachskelett-Fetch | in-progress | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`ADR-0001`](../../../docs/plan/adr/0001-skelett-distribution.md) |
 | [slice-004b](open/slice-004b-skeleton-wire.md) | Sprachskelett verdrahten (Merge) | open | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
 | [slice-005](open/slice-005-root-readme.md) | Root-README emittieren | open | [`LH-FA-05`](../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2), [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
 

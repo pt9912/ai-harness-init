@@ -15,7 +15,7 @@ wechselt nur durch `git mv`, siehe
 
 ## 1. Ziel
 
-Das von [slice-004a](slice-004a-skeleton-fetch.md) gefetchte Sprachskelett mit der Harness-Emit-Schicht
+Das von [slice-004a](../in-progress/slice-004a-skeleton-fetch.md) gefetchte Sprachskelett mit der Harness-Emit-Schicht
 (Doc-Gate, Templates) **verschmelzen**: eine Merge-Regel für die Konfliktdateien (`AGENTS.md`, `Makefile`),
 `d-check.mk`-Include ins Skelett-`Makefile`, sodass `make gates` im Zielrepo **bootstrap-aware grün** läuft
 (Voll-Smoke von [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)).
