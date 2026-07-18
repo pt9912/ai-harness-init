@@ -6,12 +6,16 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
+	"time"
 
 	"github.com/pt9912/ai-harness-init/internal/emit"
+	"github.com/pt9912/ai-harness-init/internal/fetch"
 )
 
 const usage = `ai-harness-init — bootstrappt ein Git-Repo mit dem AI-Harness-Prozess.
@@ -78,7 +82,23 @@ func run(args []string, targetDir string, stdout, stderr io.Writer) int {
 		return 1
 	}
 
-	fmt.Fprintf(stdout, "ai-harness-init: Bootstrap emittiert (Doc-Gate + Template-Baseline) — --lang=%s.\n", *lang)
+	// Sprachskelett vom gepinnten Kurs-Tag holen (slice-004a, ADR-0001 Variante C) und
+	// in den Staging-Bereich .harness/skeleton/ extrahieren; der Merge in den Root ist
+	// slice-004b. Braucht Netz (Bootstrap-Abhaengigkeit); unbekannte Sprache -> Exit 2.
+	tag := envOr("COURSE_TAG", fetch.DefaultTag)
+	skelDir := filepath.Join(targetDir, ".harness", "skeleton")
+	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
+	defer cancel()
+	if err := fetch.Skeleton(ctx, skelDir, *lang, tag, fetch.DownloadTarball); err != nil {
+		fmt.Fprintln(stderr, "Fehler:", err)
+		var ule *fetch.UnknownLangError
+		if errors.As(err, &ule) {
+			return 2 // unbekannte Sprache = Aufruf-Fehler (wie ein Argument-Fehler)
+		}
+		return 1 // Netz-/Extrakt-Fehler
+	}
+
+	fmt.Fprintf(stdout, "ai-harness-init: Bootstrap emittiert (Doc-Gate + Template-Baseline + Skelett %q gestaged) — --lang=%s.\n", *lang, *lang)
 	return 0
 }
 

@@ -16,9 +16,9 @@ wechselt nur durch `git mv`, siehe
 ## 1. Ziel
 
 `cmd/ai-harness-init --lang <X>` holt `lab/example/<X>/` vom **gepinnten Kurs-Tag**
-([`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md), Variante C) als Tag-Tarball und extrahiert den Teilbaum ins Zielrepo.
-Unbekannte Sprache → Exit 2 + Liste verfügbarer Skelette. **Nicht** das Verdrahten/Merge
-(→ [slice-004b](../open/slice-004b-skeleton-wire.md)).
+([`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md), Variante C) als Tag-Tarball und extrahiert den Teilbaum in den
+**Staging-Bereich** `.harness/skeleton/` (der Merge in den Root ist [slice-004b](../open/slice-004b-skeleton-wire.md)).
+Unbekannte Sprache → Exit 2 + Liste verfügbarer Skelette.
 
 ## 2. Definition of Done
 
@@ -59,6 +59,12 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 - Test ohne echtes Netz: Fetch **injizieren/mocken** oder Fixture-Tarball — sonst flakey / [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)-Verstoß.
 - Reproduzierbarkeit: der Tag ist der Pin ([`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md)); ein sha-Pin des Tarballs (wie
   `BASELINE_ZIP_SHA256`) wäre eine Härtung, ist aber von [`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md) nicht verlangt (offener Punkt für slice-004b/ADR).
+- **Surfaced (nicht von diesem Slice verursacht):** `--lang` emittiert seit slice-003 Templates
+  mit Vorwärts-Verweisen/Platzhaltern → das emittierte `docs-check` ist rot (5 `target-missing`,
+  u. a. auf die noch fehlende Root-README). `make smoke` prüft daher jetzt „Bootstrap läuft +
+  Skelett gestaged + Doc-Gate-Config valide"; der 0-Befunde-Voll-Green-Run ist [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)
+  Happy-Path = slice-005. Der emittierte `.d-check.yml` nimmt zusätzlich `.harness/**`
+  (Skelett-Staging) aus.
 
 ## 7. Closure-Notiz (nach `done/`)
 
