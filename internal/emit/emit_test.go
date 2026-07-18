@@ -28,12 +28,41 @@ func TestDCheckConfig_Minimal(t *testing.T) {
 // Tools ist identisch zur kanonischen Pin-Quelle des Repos (./d-check.mk). Faengt
 // Drift, wenn ./d-check.mk bei einem d-check-Bump neu gepinnt, das Tool aber vergessen wird.
 func TestDefaultDigest_MatchesCanonical(t *testing.T) {
-	canonical := dcheckDigest(t, filepath.Join("..", "..", "d-check.mk"))
+	canonical := mkVar(t, filepath.Join("..", "..", "d-check.mk"), "DCHECK_DIGEST")
 	if !strings.HasPrefix(emit.DefaultDigest, "sha256:") {
 		t.Errorf("emit.DefaultDigest nicht sha256-gepinnt: %q", emit.DefaultDigest)
 	}
 	if emit.DefaultDigest != canonical {
 		t.Errorf("emit.DefaultDigest %q != kanonische Pin-Quelle %q (Drift)", emit.DefaultDigest, canonical)
+	}
+}
+
+// TestDefaultImage_MatchesCanonical koppelt auch die Tag-Referenz an die kanonische
+// ./d-check.mk (nicht nur den Digest) — Tag-Drift bliebe sonst unbemerkt (Review-L3).
+func TestDefaultImage_MatchesCanonical(t *testing.T) {
+	canonical := mkVar(t, filepath.Join("..", "..", "d-check.mk"), "DCHECK_IMAGE")
+	if emit.DefaultImage != canonical {
+		t.Errorf("emit.DefaultImage %q != kanonische Quelle %q (Tag-Drift)", emit.DefaultImage, canonical)
+	}
+}
+
+// TestRunRef deckt die pure Referenz-Berechnung ab (die gepinnte repo@digest-Achse,
+// LH-QA-02) — ohne Docker, also Tier-1 statt nur make smoke (Review-M1).
+func TestRunRef(t *testing.T) {
+	tests := []struct {
+		name, image, digest, want string
+	}{
+		{"digest sticht tag", "ghcr.io/pt9912/d-check:v0.46.0", "sha256:abc", "ghcr.io/pt9912/d-check@sha256:abc"},
+		{"ohne digest -> tag-referenz", "ghcr.io/pt9912/d-check:v0.46.0", "", "ghcr.io/pt9912/d-check:v0.46.0"},
+		{"registry-port bleibt, nur tag entfernt", "reg.example:5000/d-check:v1", "sha256:xyz", "reg.example:5000/d-check@sha256:xyz"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := emit.Options{Image: tt.image, Digest: tt.digest}.RunRef()
+			if got != tt.want {
+				t.Errorf("RunRef() = %q, want %q", got, tt.want)
+			}
+		})
 	}
 }
 
@@ -84,19 +113,19 @@ func TestAdaptMK_MissingAnchor(t *testing.T) {
 	}
 }
 
-// dcheckDigest zieht den gepinnten DCHECK_DIGEST-Wert aus einem d-check.mk.
-func dcheckDigest(t *testing.T, mkPath string) string {
+// mkVar zieht den Wert einer `<name> ?= <wert>`-Zuweisung aus einem d-check.mk.
+func mkVar(t *testing.T, mkPath, name string) string {
 	t.Helper()
 	data, err := os.ReadFile(mkPath)
 	if err != nil {
-		t.Fatalf("d-check.mk lesen (%s): %v", mkPath, err)
+		t.Fatalf("mk lesen (%s): %v", mkPath, err)
 	}
-	const prefix = "DCHECK_DIGEST ?= "
+	prefix := name + " ?= "
 	for _, line := range strings.Split(string(data), "\n") {
 		if strings.HasPrefix(line, prefix) {
 			return strings.TrimSpace(strings.TrimPrefix(line, prefix))
 		}
 	}
-	t.Fatalf("DCHECK_DIGEST nicht gefunden in %s", mkPath)
+	t.Fatalf("%s nicht gefunden in %s", name, mkPath)
 	return ""
 }

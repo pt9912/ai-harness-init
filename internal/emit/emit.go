@@ -54,15 +54,16 @@ type Options struct {
 	Force  bool   // vorhandene Zieldateien ueberschreiben
 }
 
-// runRef ist die Referenz fuer den docker-Lauf: per Digest, wenn gesetzt (sticht
-// den Tag), sonst die Tag-Referenz.
-func (o Options) runRef() string {
+// RunRef ist die Referenz fuer den docker-Lauf: per Digest, wenn gesetzt (sticht
+// den Tag), sonst die Tag-Referenz. Rein (kein Docker) und exportiert, damit die
+// gepinnte repo@digest-Achse (LH-QA-02) einen Tier-1-Test hat.
+func (o Options) RunRef() string {
 	if o.Digest == "" {
 		return o.Image
 	}
 	repo := o.Image
 	if i := strings.LastIndex(repo, ":"); i > strings.LastIndex(repo, "/") {
-		repo = repo[:i] // Tag entfernen -> repo@digest
+		repo = repo[:i] // nur den Tag entfernen (Registry-Port bleibt) -> repo@digest
 	}
 	return repo + "@" + o.Digest
 }
@@ -83,7 +84,7 @@ func DocGate(ctx context.Context, targetDir string, opts Options) error {
 			}
 		}
 	}
-	raw, err := printMK(ctx, opts.runRef())
+	raw, err := printMK(ctx, opts.RunRef())
 	if err != nil {
 		return err
 	}
@@ -114,13 +115,22 @@ func AdaptMK(raw []byte, digest string) ([]byte, error) {
 		return nil, fmt.Errorf("unerwartete --print-mk-ausgabe: %q nicht gefunden", anchor)
 	}
 	body := s[i:]
-	body = strings.ReplaceAll(body, "doc-check", "docs-check")
+	// Rename NUR das Befund-Gate-Target doc-check, zeilen-verankert — ein kuenftiges
+	// doc-check-* Target wuerde von einem substring-ReplaceAll still mit-umbenannt.
+	body = strings.Replace(body, ".PHONY: doc-check\n", ".PHONY: docs-check\n", 1)
+	body = strings.Replace(body, "\ndoc-check:", "\ndocs-check:", 1)
+	// DCHECK_DIGEST pinnen (die leere --print-mk-Zeile fuellen).
 	body = strings.Replace(body, "DCHECK_DIGEST ?=\n", "DCHECK_DIGEST ?= "+digest+"\n", 1)
+	// doc-help-Grep auf docs?- weiten, damit das umbenannte docs-check gelistet wird.
 	body = strings.Replace(body, "'^doc-[a-z-]+:", "'^docs?-[a-z-]+:", 1)
-	if !strings.Contains(body, "docs-check:") {
+	// Jeder MR-010-Handgriff MUSS gegriffen haben — sonst hat sich das --print-mk-Format
+	// geaendert; hart abbrechen statt ein halb-adaptiertes Fragment zu emittieren.
+	switch {
+	case !strings.Contains(body, "\ndocs-check:"):
 		return nil, errors.New("rename doc-check -> docs-check schlug fehl (--print-mk-format geaendert?)")
-	}
-	if digest != "" && !strings.Contains(body, "DCHECK_DIGEST ?= "+digest) {
+	case !strings.Contains(body, "'^docs?-[a-z-]+:"):
+		return nil, errors.New("weitung des doc-help-grep schlug fehl (--print-mk-format geaendert?)")
+	case digest != "" && !strings.Contains(body, "DCHECK_DIGEST ?= "+digest):
 		return nil, errors.New("pinnen von DCHECK_DIGEST fehlgeschlagen (--print-mk-format geaendert?)")
 	}
 	return []byte(adopterHeader + body), nil
