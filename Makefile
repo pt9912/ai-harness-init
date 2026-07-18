@@ -1,7 +1,8 @@
-# ai-harness-init — Gates. Doc-Gate generisch (harness.mk); test (bats
+# ai-harness-init — Gates. Doc-Gate via d-check-Fragment (d-check.mk, aus
+# `d-check --print-mk`, MR-010); test (bats
 # Command-Guard) und shell-lint (shellcheck) sind da; Go-lint/build
 # (golangci-lint/go build) kommen mit dem Go-Code (keine halluzinierten Gates).
-include harness.mk
+include d-check.mk
 
 # Tool-Images digest-gepinnt (Reproduzierbarkeit, LH-QA-02; Docker-only, ADR-0003).
 BATS_IMAGE ?= bats/bats@sha256:e8f18e0acd4ea933bf019130b85033be75e8ce081db299e93578de83d7874e33
