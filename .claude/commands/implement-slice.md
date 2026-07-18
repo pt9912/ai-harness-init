@@ -14,6 +14,30 @@ Canonical sources (vendored Regelwerk, `.harness/baseline/<tag>/regelwerk/`): Mo
 (implementation), Modul 5 (lifecycle), Modul 8 (roles), Modul 10 (review), Modul 11
 (verification).
 
+## Repo-local adaptations you MUST respect (harness/conventions.md — MR-block)
+
+Beyond the Regelwerk, this repo carries local adaptations over the baseline. Read the
+Adaptions-Block ("MR-block") in `harness/conventions.md`; the workflow-affecting ones:
+
+- **Docker-only, no host toolchain.** Every gate and tool runs in a pinned Docker image; the
+  PreToolUse-guard blocks host `go`/`pip`/`npm`/`golangci-lint` (and scans sub-shell strings).
+  Never invoke a host toolchain — only the `make` targets.
+- **Gate-Nachweis + Stop-hook.** `make gates` ends with `record-gates`, which stamps a
+  content-hash of the working tree; the Stop-hook refuses completion unless the current tree
+  matches. **Any content change after a gates run — including each commit and each `git mv` —
+  invalidates the stamp: re-run `make gates`.** A commit/move without a fresh gates run leaves
+  the Stop-hook red.
+- **Strict doc-gate (d-check).** Every `LH-`/`ADR-`/`MR-` id in a scanned `.md` must be a
+  clickable anchor-link (link-policy: always) — a bare id token fails `docs-check`
+  (`id-unlinked`). `codepaths` requires paths in inline code to exist: a *planned* file needs an
+  inline `d-check:ignore` marker, a *deliberately-removed* one goes in `ignore-refs`. Spec never
+  references down to ADR/slice; a superseded-ADR ref only via inline-code + `d-check:ignore`.
+  `docs/reviews/**` is exempt (time-documents).
+- **New artifacts by `cp` from the vendored templates** (`.harness/baseline/<tag>/templates/…`),
+  then fill — no hand-written or repo-maintained template copies.
+- **Commit via a message file** (`git commit -F <file>`): the guard scans the command string, so
+  never inline a commit message containing a blocked tool token.
+
 ## Read context (Modul 9, Schritte 1–3)
 
 1. Read `CLAUDE.md`.
