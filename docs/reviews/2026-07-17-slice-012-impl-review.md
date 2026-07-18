@@ -7,7 +7,7 @@
 hatte `AGENTS.md` §1 bereits auf die vendored Form umgeschrieben und dabei die dortigen
 toten Pointer entfernt — slice-012 behandelt nur noch `harness/conventions.md`.
 
-**Skill:** `.harness/skills/reviewer.md` @ 1.0.0 · <!-- d-check:ignore (Adopter-spezifischer Skill-Pfad) -->
+**Skill:** `.harness/skills/reviewer.md` @ 1.0.0 ·
 **Modell:** claude-opus-4-8[1m] (Orchestrierung) + 1× claude-sonnet-5 (Faktentreue + Konformität) ·
 **Datum:** 2026-07-17
 

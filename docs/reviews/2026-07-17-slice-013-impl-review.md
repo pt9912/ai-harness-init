@@ -7,7 +7,7 @@ prüft den reshapten Stand.
 
 **Gegenstand:** Commit `1b2428d` + der Closure-Nachtrag (MR-008 `LH-FA-02`-Abgrenzung).
 
-**Skill:** `.harness/skills/reviewer.md` @ 1.0.0 · <!-- d-check:ignore (Adopter-spezifischer Skill-Pfad) -->
+**Skill:** `.harness/skills/reviewer.md` @ 1.0.0 ·
 **Modell:** claude-opus-4-8[1m] (Orchestrierung) + 2× claude-sonnet-5 (Linsen) ·
 **Datum:** 2026-07-17
 

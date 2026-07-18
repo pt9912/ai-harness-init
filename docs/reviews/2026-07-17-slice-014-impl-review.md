@@ -6,7 +6,7 @@ und Modul 6 (Wellen-Closure), LH-QA-02, Hard Rules. Besonderheit: der Review pr�
 
 **Gegenstand:** Commit `8d719c8` (Implementierung) + der Fix des Review-Findings.
 
-**Skill:** `.harness/skills/reviewer.md` @ **1.1.0** (die geänderte Fassung) · <!-- d-check:ignore (Adopter-spezifischer Skill-Pfad) -->
+**Skill:** `.harness/skills/reviewer.md` @ **1.1.0** (die geänderte Fassung) ·
 **Modell:** claude-opus-4-8[1m] (Orchestrierung) + 1× claude-sonnet-5 (Linse) ·
 **Datum:** 2026-07-17
 

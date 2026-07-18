@@ -9,7 +9,7 @@ sondern die Mechanik: `harness/tools/baseline-verify.sh`, `sessionstart-inject-r
 `Makefile`, `test/sessionstart.bats`, `.gitignore`, `.d-check.yml`, `AGENTS.md`,
 `CLAUDE.md`, `harness/README.md`, `harness/conventions.md`.
 
-**Skill:** `.harness/skills/reviewer.md` @ 1.0.0 · <!-- d-check:ignore (Adopter-spezifischer Skill-Pfad) -->
+**Skill:** `.harness/skills/reviewer.md` @ 1.0.0 ·
 **Modell:** claude-opus-4-8[1m] (Orchestrierung) + 3× claude-sonnet-5 (Linsen) ·
 **Datum:** 2026-07-17
 

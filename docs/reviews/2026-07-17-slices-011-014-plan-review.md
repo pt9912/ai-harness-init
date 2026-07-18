@@ -4,11 +4,11 @@
 und das Betriebsregelwerk v3.1.0 (Modul 5 Slice-Schnitt, Modul 6 Wellen-Closure,
 Modul 10 Reviewer-Skill).
 
-**Gegenstand:** `docs/plan/planning/next/slice-011-baseline-vendoring.md`, <!-- d-check:ignore (Zeitdokument: Lifecycle-Pfade galten beim Lauf; slice-011 ist seither nach in-progress/ gewandert — das Verzeichnis IST der Zustand, der Pfad wandert per Definition mit) -->
+**Gegenstand:** `docs/plan/planning/next/slice-011-baseline-vendoring.md`,
 `slice-012-quellen-wahrheit.md`, `slice-013-vorlagen-und-slice-koepfe.md`,
 `slice-014-reviewer-und-wellen-closure.md` (Arbeitsbaum, uncommitted).
 
-**Skill:** `.harness/skills/reviewer.md` @ 1.0.0 · <!-- d-check:ignore (Adopter-spezifischer Skill-Pfad, existiert im Ziel-Repo ggf. nicht) -->
+**Skill:** `.harness/skills/reviewer.md` @ 1.0.0 ·
 **Modell:** claude-opus-4-8[1m] (Orchestrierung) + 3× claude-sonnet-5 (Reviewer-Linsen) ·
 **Datum:** 2026-07-17
 
@@ -42,7 +42,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: HIGH
 - `quelle`: Maintainability (Abgrenzungs-Kohärenz, Modul 6 §Trigger)
-- `pfad`: `docs/plan/planning/next/slice-013-vorlagen-und-slice-koepfe.md` §4 · `slice-014-reviewer-und-wellen-closure.md` §Abgrenzung, §4 <!-- d-check:ignore (Zeitdokument: Lifecycle-Pfad galt beim Lauf; slice-013 ist seither nach in-progress/ gewandert) -->
+- `pfad`: `docs/plan/planning/next/slice-013-vorlagen-und-slice-koepfe.md` §4 · `slice-014-reviewer-und-wellen-closure.md` §Abgrenzung, §4
 - `befund`: slice-013 DoD 3 entfernt `**Status:**` aus „allen aktiven Slices (`open/` + `next/`)" — das schließt `next/slice-014-…md:3` ein. Beide Slices behaupten gleichzeitig, datei-disjunkt und voneinander unabhängig startbar zu sein. Beides zusammen ist nicht haltbar.
 - `verifizierbar`: nein automatisiert (kein Gate prüft Cross-Slice-Dateiüberschneidung); ein realer Parallel-Versuch auf zwei Branches erzeugt den Merge-Konflikt in `slice-014-…md:3`.
 
@@ -50,7 +50,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: HIGH
 - `quelle`: Regelwerk v3.1.0 `modul-05:71-73` (Größen-Regel)
-- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §2, §3 <!-- d-check:ignore (Zeitdokument, s.o. — Lifecycle-git-mv) -->
+- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §2, §3
 - `befund`: Der Slice trägt 9 DoD-Häkchen und berührt Daten, Build, Tooling, Test, Gate-Config und Doku. Er reißt damit „mehr als drei DoD-Punkte" **und** „mehrere Schichten betroffen" — letzteres unabhängig von der in slice-013 §6 dokumentierten Zähl-Ambiguität, die nur die Zahl 3 betrifft.
 - `verifizierbar`: ja — Auszählen der Checkbox-Zeilen und der Plan-Tabellenzeilen.
 
@@ -58,7 +58,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: MEDIUM
 - `quelle`: LH-QA-02 (Reproduzierbarkeit)
-- `pfad`: `docs/plan/planning/slice.template.md:99` (im Scope von slice-013 DoD 1) <!-- d-check:ignore (Zeitdokument: die Template-Kopie ist seit slice-013 geloescht — referenziert statt kopiert, MR-008) -->
+- `pfad`: `docs/plan/planning/slice.template.md:99` (im Scope von slice-013 DoD 1)
 - `befund`: Der Anker `#worked-mini-example-bootstrap-modus-pro-sub-area-für-einen-slice-begründen` zeigt auf eine Sektion, die in v3.1.0 `modul-05` null Mal vorkommt; slice-013 benannte nur *einen* toten Anker. Der DoD-Beleg „jeder geänderte Link per `curl` erreichbar" kann das nicht aufdecken — eine GitHub-Blob-URL liefert HTTP 200 unabhängig vom Fragment.
 - `verifizierbar`: ja — `grep -c "Worked Mini-Example" modul-05-planning-harness.md` → 0; `grep -n worked-mini-example docs/plan/planning/slice.template.md` → 99.
 
@@ -66,7 +66,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: MEDIUM
 - `quelle`: LH-QA-01 (Nachbarschaft) / Maintainability
-- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §3 vs. `harness/README.md` §Sensors und `AGENTS.md` §4 <!-- d-check:ignore (Zeitdokument, s.o. — Lifecycle-git-mv) -->
+- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §3 vs. `harness/README.md` §Sensors und `AGENTS.md` §4
 - `befund`: `baseline-verify` wird laut DoD Prerequisite von `gates`, aber die Plan-Tabelle listet weder `harness/README.md` §Sensors noch `AGENTS.md` §4 — die beiden einzigen kanonischen „welche Gates laufen"-Tabellen des Repos. Nach dem Merge liefe ein Gate, das die Doku nicht führt.
 - `verifizierbar`: ja — Abgleich des `gates`-Targets im `Makefile` gegen beide Tabellen nach Umsetzung.
 
@@ -74,7 +74,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: MEDIUM
 - `quelle`: LH-QA-02 (Reproduzierbarkeit) / Maintainability
-- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §6 (`<tag>`-Politik) <!-- d-check:ignore (Zeitdokument: Pfad galt zum Zeitpunkt des Laufs; der Slice ist seither per Lifecycle-git-mv gewandert — das Verzeichnis IST der Zustand) -->
+- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §6 (`<tag>`-Politik)
 - `befund`: „193 geänderte Zeilen, fast alle `blob/v3.0.0/` → `blob/v3.1.0/`" — gemessen sind 150 von 193 (77 %) reine Tag-Bumps; 43 Zeilen (22 %) sind inhaltlich, u. a. ein neuer Absatz „**Vendored gelesen?**" in `regelwerk/README.md`. Die Aussage stützt eine Risiko-Einschätzung („nur Link-Churn") und trägt sie in dieser Form nicht.
 - `verifizierbar`: ja — `diff -r x-v3.0.0 x-v3.1.0` gegen die entpackten ZIPs, Tag-normalisiert paarweise gezählt.
 
@@ -90,7 +90,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: MEDIUM
 - `quelle`: LH-QA-02 (Reproduzierbarkeit)
-- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §1 <!-- d-check:ignore (Zeitdokument, s.o. — Lifecycle-git-mv) -->
+- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §1
 - `befund`: „15 `../templates/…`-Verweise in 13 der 21 Modul-Dateien, 12 eindeutige Ziele" ist mit keiner einzelnen Zählmethode reproduzierbar — je nach Muster liefert `grep` 15, 16 oder 19 Treffer und 12 oder 13 Dateien, weil Fließtext-Erwähnungen (`modul-02:185`) und echte Markdown-Links nicht getrennt werden.
 - `verifizierbar`: ja — `grep -rhoP '\.\./templates/\S*?\.md' regelwerk/ | sort -u | wc -l` versus `grep -rn '\.\./templates/' regelwerk/`.
 
@@ -98,7 +98,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: MEDIUM
 - `quelle`: LH-QA-02 (Reproduzierbarkeit)
-- `pfad`: `docs/plan/planning/next/slice-013-vorlagen-und-slice-koepfe.md` §6 <!-- d-check:ignore (Zeitdokument, s.o. — Lifecycle-git-mv) -->
+- `pfad`: `docs/plan/planning/next/slice-013-vorlagen-und-slice-koepfe.md` §6
 - `befund`: „Modul 5 schrumpfte von ~200 auf 120 Zeilen" — der adoptierte v1.2.0-`lab`-Stand hat 219 Zeilen. Die Angabe war geschätzt, nicht gemessen, in einem Absatz, der genau aus einer Messung argumentiert.
 - `verifizierbar`: ja — `wc -l .harness/cache/agents-regelwerk/modul-05-planning-harness.md` → 219.
 
@@ -106,7 +106,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: LOW
 - `quelle`: Maintainability (DoD-Prüfbarkeit)
-- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §2 (DoD 6) <!-- d-check:ignore (Zeitdokument, s.o. — Lifecycle-git-mv) -->
+- `pfad`: `docs/plan/planning/next/slice-011-baseline-vendoring.md` §2 (DoD 6)
 - `befund`: Die DoD verlangt, der MR-Eintrag trage „alle vier Setzungen **wörtlich** (Formulierung siehe §6)"; §6 liefert sie als mehrsätzige Prosa über vier Absätze, nicht als einen zitierfähigen Blocktext. Zwei Reviewer könnten unterschiedlich urteilen, ob eine paraphrasierte Fassung „wörtlich" genug ist.
 - `verifizierbar`: nur bedingt — kein Diff-Ziel.
 
@@ -114,7 +114,7 @@ of Truth; die Felder hier sind gespiegelt, nicht neu definiert).
 
 - `kategorie`: MEDIUM
 - `quelle`: LH-QA-02 / Source Precedence (`AGENTS.md` §1)
-- `pfad`: `docs/plan/planning/next/slice-012-quellen-wahrheit.md` §1, §2 <!-- d-check:ignore (Zeitdokument: Lifecycle-Pfad galt beim Lauf; slice-012 ist seither nach in-progress/ gewandert) -->
+- `pfad`: `docs/plan/planning/next/slice-012-quellen-wahrheit.md` §1, §2
 - `befund`: Der geplante Ersatz-Pointer nennt „Kurs unter `/kurs/de/`, gepinnt auf `v3.1.0`". Der tatsächlich vendorte Baum stammt aus `lab-regelwerk.zip` und weicht inhaltlich ab (Modul 5: `kurs/de/` 300 Zeilen mit `SL-014`, `lab/regelwerk/` 120 ohne). Ein `kurs/de/`-Pointer löst die „wortgleich"-Zusage aus `AGENTS.md` §1 gegenüber dem vendorten Baum nicht ein.
 - `verifizierbar`: ja — Diff zwischen dem in `AGENTS.md` §1 verlinkten Ziel und `.harness/baseline/<tag>/regelwerk/` nach Umsetzung; kein Gate deckt Inhaltsgleichheit ab (`docs-check` prüft Erreichbarkeit/Anker).
 

@@ -11,7 +11,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Regelwerk + Templates:** `v3.1.0` committet vendored
   (`.harness/baseline/v3.1.0/`, [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
   `regelwerk/README.md`: **Kurs-Welle 26 · 2026-07-17**.
-- **d-check:** Image v0.10.0 (Digest in harness.mk)
+- **d-check:** Image v0.46.0 (Digest in harness.mk)
 - **Datum der Adoption:** 2026-06-13 (Templates-Stand damals: `templates-v4`).
   **Re-Baseline auf `v3.1.0`:** 2026-07-17 (slice-011/012).
 
@@ -286,9 +286,12 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ### MR-008 — Ausfüll-Templates referenziert statt kopiert
 
 - **Datum:** 2026-07-17
-- **Geltungsbereich:** die bisherigen Repo-Template-Kopien
-  `docs/plan/planning/*.template.md`, `docs/plan/adr/*.template.md`,
-  `docs/plan/carveouts/*.template.md`, `docs/reviews/*.template.md`; ergänzt [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache).
+- **Geltungsbereich:** die fünf in slice-013 gelöschten Repo-Template-Kopien
+  `docs/plan/planning/slice.template.md`, `docs/plan/planning/welle.template.md`,
+  `docs/plan/adr/NNNN-titel.template.md`, `docs/plan/carveouts/carveout.template.md`,
+  `docs/reviews/review-report.template.md` — seit slice-016 als Tombstones referenz-weit
+  über `codepaths.ignore-refs` deklariert ([`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile)), sodass hier die klaren
+  vollen Pfade statt der früheren Glob-Workarounds stehen; ergänzt [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache).
 - **Adaption:** Das Repo hält **keine eigenen Kopien** der Ausfüll-Templates mehr.
   Einzige Quelle ist die committet vendored Baseline
   `.harness/baseline/<tag>/templates/…` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)). Ein neues Artefakt
@@ -336,6 +339,48 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   als Repo-Kopie geführt — mit MR-Eintrag, der die Adaption begründet — die übrigen
   bleiben referenziert. Der Nutzen-Beleg (verbatim/unreferenziert) ist dann für dieses
   eine Template neu zu prüfen.
+
+### MR-009 — d-check-Pin-Sprung und Codepath-Ventile
+
+- **Datum:** 2026-07-18
+- **Geltungsbereich:** `harness.mk` (`D_CHECK_IMAGE`), `.d-check.yml`
+  (`codepaths.exempt-paths`, `codepaths.ignore-refs`), [`docs/reviews/`](../docs/reviews/)
+  (entfernte Zeilen-Marker), diese Datei (§Baseline-Version + MR-008-Geltungsbereich);
+  ergänzt [`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids).
+- **Adaption:** Das gepinnte d-check-Image springt von **v0.10.0** auf **v0.46.0**
+  (Digest in `harness.mk`, gegen den Release belegt,
+  [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Zwei seit d-check 0.34.0
+  verfügbare `codepaths`-Ventil-Achsen werden adoptiert:
+  **`exempt-paths`** nimmt `docs/reviews/**` **datei-weit** aus der Codepath-Prüfung (die
+  Zeitdokumente frieren den Stand ihres Review-Laufs ein; die Lifecycle-Pfade
+  `next/`→`in-progress/`→`done/` darin veralten per Definition). **`ignore-refs`** deklariert
+  die fünf in slice-013 gelöschten Ausfüll-Templates
+  ([`MR-008`](#mr-008--ausfüll-templates-referenziert-statt-kopiert)) **referenz-weit** als
+  Tombstones, sodass normative Doku ihre klaren vollen Pfade nennen darf statt der bisherigen
+  Glob-Workarounds.
+- **Belegter Bedarf (kein spekulativer).** Über den Regelwerk-Zug slice-011…014 musste
+  `` `d-check:ignore` `` **wiederholt von Hand** gesetzt werden, weil v0.10.0s `codepaths`
+  nur `scope`/`roots` kannte: fünf Lifecycle-Wanderungen in Review-Reports, mehrere
+  Template-Tombstones. Die beiden Ventil-Achsen ersetzen die verstreute Handarbeit durch
+  zwei zentrale, begründete Config-Zeilen — im Geist von
+  [`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) („Gate-*Anheben* →
+  Steering-Loop, kein ADR nötig").
+- **Trockenlauf vor dem Pin (Pflicht, belegt).** v0.46.0 gegen den unveränderten Baum mit
+  unveränderter Config: **40 Dateien, 0 Befunde, Exit 0** — trotz **29 real veröffentlichter
+  Minors** (0.11–0.46, ohne die nie existierten 0.13–0.16/0.20/0.21) kein Schema-Bruch und
+  kein neu feuerndes Pflicht-Modul (die `modules:`-Liste ist explizit). Die in dieser
+  d-check-Generation hinzugekommenen Module (`planning`, `commits`, `tracked`, `targets`, …)
+  bleiben **opt-in** und werden hier **nicht** aktiviert — kein existierendes Target/Bedarf
+  ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), kein
+  halluziniertes Gate).
+- **Kein Rückfall auf stilles Grün.** Jede Ventil-Zeile nennt, *was* sie ausnimmt und
+  *warum*: `exempt-paths` nur `docs/reviews/**` (Zeitdokumente), `ignore-refs` nur die fünf
+  konkret gelöschten Template-Pfade (bewusst **entfernt**, nicht *geplant* — die Abgrenzung
+  aus slice-015 §6 gilt; ein geplanter Pfad bleibt Doc-führt-Code-folgt und kein Tombstone).
+  Keine breite oder leere Liste.
+- **Auflösungs-Trigger:** permanent; Re-Pin (`D_CHECK_IMAGE`) bei d-check-Release manuell
+  (Trockenlauf wiederholen), `ignore-refs` wächst nur mit weiteren **bewusst entfernten**
+  Artefakten.
 
 ## Modus-Deklaration pro Sub-Area
 

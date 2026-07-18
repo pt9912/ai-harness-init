@@ -8,7 +8,7 @@
 harness/conventions.md, harness/tools/sessionstart-inject-regelwerk.sh,
 test/sessionstart.bats, docs/plan/planning/open/slice-009-…, neue Slice-Datei).
 
-**Reviewer:** unabhängiger `code-reviewer`-Agent (Agent-Tool, kein Selbst-Review). <!-- d-check:ignore (Agent-Lauf, kein versionierter Skill-Pfad) -->
+**Reviewer:** unabhängiger `code-reviewer`-Agent (Agent-Tool, kein Selbst-Review).
 **Datum:** 2026-06-16.
 
 **Eingangs-Kontext** (Verträge, gegen die geprüft wurde):

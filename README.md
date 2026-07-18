@@ -13,7 +13,7 @@ die den Harness nicht von Hand zusammenkopieren wollen.
 ungebaut (Phase 0). Verfügbar:
 
 - `make baseline-verify` (vendored Baseline netzlos, Integrität + Vollständigkeit),
-  `make docs-check` (Doku-Referenz-Gate, d-check v0.10.0), `make test`
+  `make docs-check` (Doku-Referenz-Gate, d-check v0.46.0), `make test`
   (Command-Guard + Harness-Tests via bats) und `make shell-lint` (shellcheck) laufen
   grün — Docker-only;
 - **Betriebsregelwerk + Templates committet vendored** unter
