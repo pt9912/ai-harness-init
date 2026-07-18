@@ -1,117 +1,118 @@
-# Implement Harness Slice
+# Slice implementieren (Harness)
 
 Argument: $ARGUMENTS
 
-This command drives the **Implementation** role (Modul 9) for one slice, inside the role
-sequence Planner → Architect → Implementation → Reviewer → Verifier → Validator →
-Planner-closure (Modul 8). **Role separation is context separation:** the downstream roles
-(Review, Verification, Validation, closure) run in a **fresh context** (subagent / cleared
-context), never the same context that wrote the code — otherwise the same blind spot
-repeats. No role jumps backward without a handoff artifact (Findings · Folge-ADR · Carveout,
-Modul 8).
+Dieser Command führt die **Implementation**-Rolle (Modul 9) für *einen* Slice — innerhalb der
+Rollen-Sequenz Planner → Architect → Implementation → Reviewer → Verifier → Validator →
+Planner-Closure (Modul 8). **Rollen-Trennung ist Kontext-Trennung:** die nachgelagerten Rollen
+(Review, Verifikation, Validation, Closure) laufen in **frischem Kontext** (Subagent / geleerter
+Kontext), nie im Kontext, der den Code schrieb — sonst wiederholt sich derselbe blinde Fleck.
+Keine Rolle springt rückwärts ohne Übergabe-Artefakt (Findings · Folge-ADR · Carveout, Modul 8).
 
-Canonical sources (vendored Regelwerk, `.harness/baseline/<tag>/regelwerk/`): Modul 9
-(implementation), Modul 5 (lifecycle), Modul 8 (roles), Modul 10 (review), Modul 11
-(verification).
+Kanonische Quellen (vendored Regelwerk, `.harness/baseline/<tag>/regelwerk/`): Modul 9
+(Implementierung), Modul 5 (Lifecycle), Modul 8 (Rollen), Modul 10 (Review), Modul 11
+(Verifikation).
 
-## Repo-local adaptations you MUST respect (harness/conventions.md — MR-block)
+## Repo-lokale Adaptionen, die du beachten MUSST (harness/conventions.md — MR-Block)
 
-Beyond the Regelwerk, this repo carries local adaptations over the baseline. Read the
-Adaptions-Block ("MR-block") in `harness/conventions.md`; the workflow-affecting ones:
+Über das Regelwerk hinaus trägt dieses Repo lokale Adaptionen gegenüber der Baseline. Lies den
+Adaptions-Block („MR-Block") in `harness/conventions.md`; die workflow-relevanten:
 
-- **Docker-only, no host toolchain.** Every gate and tool runs in a pinned Docker image; the
-  PreToolUse-guard blocks host `go`/`pip`/`npm`/`golangci-lint` (and scans sub-shell strings).
-  Never invoke a host toolchain — only the `make` targets.
-- **Gate-Nachweis + Stop-hook.** `make gates` ends with `record-gates`, which stamps a
-  content-hash of the working tree; the Stop-hook refuses completion unless the current tree
-  matches. **Any content change after a gates run — including each commit and each `git mv` —
-  invalidates the stamp: re-run `make gates`.** A commit/move without a fresh gates run leaves
-  the Stop-hook red.
-- **Strict doc-gate (d-check).** Every `LH-`/`ADR-`/`MR-` id in a scanned `.md` must be a
-  clickable anchor-link (link-policy: always) — a bare id token fails `docs-check`
-  (`id-unlinked`). `codepaths` requires paths in inline code to exist: a *planned* file needs an
-  inline `d-check:ignore` marker, a *deliberately-removed* one goes in `ignore-refs`. Spec never
-  references down to ADR/slice; a superseded-ADR ref only via inline-code + `d-check:ignore`.
-  `docs/reviews/**` is exempt (time-documents).
-- **New artifacts by `cp` from the vendored templates** (`.harness/baseline/<tag>/templates/…`),
-  then fill — no hand-written or repo-maintained template copies.
-- **Commit via a message file** (`git commit -F <file>`): the guard scans the command string, so
-  never inline a commit message containing a blocked tool token.
+- **Docker-only, kein Host-Toolchain.** Jeder Gate und jedes Tool läuft in einem gepinnten
+  Docker-Image; der PreToolUse-Guard blockt Host-`go`/`pip`/`npm`/`golangci-lint` (und prüft
+  Sub-Shell-Strings). Rufe nie einen Host-Toolchain auf — nur die `make`-Targets.
+- **Gate-Nachweis + Stop-Hook.** `make gates` endet mit `record-gates`, das einen Content-Hash des
+  Working Tree stempelt; der Stop-Hook verweigert den Abschluss, solange der aktuelle Tree nicht
+  passt. **Jede Inhaltsänderung nach einem Gate-Lauf — inklusive jedes Commits und jedes `git mv`
+  — macht den Stempel ungültig: `make gates` erneut laufen.** Ein Commit/Move ohne frischen
+  Gate-Lauf lässt den Stop-Hook rot.
+- **Strenges Doc-Gate (d-check).** Jede `LH-`/`ADR-`/`MR-`-Kennung in einer gescannten `.md` muss
+  ein klickbarer Anker-Link sein (link-policy: always) — ein bares Kennungs-Token bricht
+  `docs-check` (`id-unlinked`). `codepaths` verlangt, dass Pfade in Inline-Code existieren: eine
+  *geplante* Datei braucht einen Inline-`d-check:ignore`-Marker, eine *bewusst entfernte* gehört in
+  `ignore-refs`. Spec verweist nie abwärts auf ADR/Slice; ein Verweis auf eine superseded ADR nur
+  via Inline-Code + `d-check:ignore`. `docs/reviews/**` ist ausgenommen (Zeitdokumente).
+- **Neue Artefakte per `cp` aus den vendored Templates** (`.harness/baseline/<tag>/templates/…`),
+  dann ausfüllen — keine handgeschriebenen oder repo-gepflegten Template-Kopien.
+- **Commit via Message-Datei** (`git commit -F <datei>`): der Guard scannt den Command-String,
+  also nie eine Commit-Message inline, die ein geblocktes Tool-Token enthält.
 
-## Read context (Modul 9, Schritte 1–3)
+## Kontext lesen (Modul 9, Schritte 1–3)
 
-1. Read `CLAUDE.md`.
-2. Read `harness/README.md`.
-3. Read `AGENTS.md`.
-4. Read `harness/conventions.md`.
-5. Read the Regelwerk index (`.harness/baseline/<tag>/regelwerk/README.md`) and the
-   task-relevant module **on-demand** (Source Precedence, committed vendored baseline).
-   Do not load the whole tree.
-6. Read the slice file passed as argument.
-7. Read all referenced ADRs and requirements.
-8. Report: slice id · LH ids · ADR ids · affected components · gates to run.
+1. `CLAUDE.md` lesen.
+2. `harness/README.md` lesen.
+3. `AGENTS.md` lesen.
+4. `harness/conventions.md` lesen.
+5. Den Regelwerk-Index (`.harness/baseline/<tag>/regelwerk/README.md`) und das aufgabenrelevante
+   Modul **on-demand** lesen (Source Precedence, committet vendored Baseline). Nicht den ganzen
+   Baum laden.
+6. Die als Argument übergebene Slice-Datei lesen.
+7. Alle referenzierten ADRs und Anforderungen lesen.
+8. Berichten: Slice-ID · LH-IDs · ADR-IDs · betroffene Komponenten · zu laufende Gates.
 
-## Enter in-progress (Modul 5 lifecycle + Modul 8 handoff)
+## Nach in-progress eintreten (Modul 5 Lifecycle + Modul 8 Übergabe)
 
-9. Implementation receives the slice **in `in-progress/`** (Planner→Implementation handoff,
-   Modul 8; `next → in-progress` = "Implementer beginnt", Modul 5). If it is still in
-   `open/`, move it there first (`open → next → in-progress`). Each `git mv` is a **pure
-   move, committed separately from content** (Hard Rule 3.3).
-10. WIP limit = 1 per implementer (Modul 5): no parallel `in-progress/`.
-11. Lifecycle back-edges (Modul 5) if the slice proves wrong: too big → `in-progress → next`
-    (return to slicing); blocked → `in-progress → open` (Carveout, Modul 7). Returning is
-    discipline, not failure.
+9. Die Implementation erhält den Slice **in `in-progress/`** (Planner→Implementation-Übergabe,
+   Modul 8; `next → in-progress` = „Implementer beginnt", Modul 5). Liegt er noch in `open/`,
+   zuerst dorthin verschieben (`open → next → in-progress`). Jedes `git mv` ist ein **reiner Move,
+   getrennt vom Inhalt committet** (Hard Rule 3.3).
+10. WIP-Limit = 1 pro Implementer (Modul 5): kein paralleles `in-progress/`.
+11. Lifecycle-Rücksprungkanten (Modul 5), falls sich der Slice als falsch erweist: zu groß →
+    `in-progress → next` (zurück zur Zerlegung); blockiert → `in-progress → open` (Carveout,
+    Modul 7). Zurückführen ist Disziplin, kein Scheitern.
 
-## Plan before code (Modul 9, Schritt 4 — nicht optional)
+## Plan vor Code (Modul 9, Schritt 4 — nicht optional)
 
-12. **Measure the current state against the slice plan before editing** (`grep`/`diff`, not
-    `edit`) — sibling slices age plans (deleted paths, moved lifecycle files). Reconcile
-    drift first; do not blindly execute a stale plan.
-13. Plan the smallest viable diff against the DoD. Plan first, then code.
+12. **Den Ist-Zustand gegen den Slice-Plan messen, bevor du editierst** (`grep`/`diff`, nicht
+    `edit`) — Geschwister-Slices lassen Pläne altern (gelöschte Pfade, verschobene
+    Lifecycle-Dateien). Drift zuerst abgleichen; keinen veralteten Plan blind abarbeiten.
+13. Die kleinste sinnvolle Änderung gegen die DoD planen. Erst planen, dann coden.
 
-## Implement and gate (Modul 9, Schritte 5–6)
+## Implementieren und gaten (Modul 9, Schritte 5–6)
 
-14. Implement the smallest viable diff.
-15. Run the narrowest relevant gate first (e.g. one test file / one gate).
-16. Run `make gates`.
+14. Die kleinste sinnvolle Änderung implementieren.
+15. Zuerst den engsten nützlichen Gate laufen lassen (z. B. eine Testdatei / ein Gate).
+16. `make gates` laufen lassen.
 
-**Plan-defect back-edges (Modul 9):** a red sensor (15) or red gate (16) sends you back to
-the **plan** (13) — refine the plan, do not re-read context. Returning to step 1 signals a
-context defect. A structural mismatch (too big / blocked) is a lifecycle back-edge (11).
+**Plan-Defekt-Rücksprungkanten (Modul 9):** ein roter Sensor (15) oder rotes Gate (16) führt
+zurück zum **Plan** (13) — den Plan verfeinern, nicht den Kontext neu lesen. Ein Rücksprung zu
+Schritt 1 signalisiert einen Kontext-Defekt. Ein struktureller Fehlschnitt (zu groß / blockiert)
+ist eine Lifecycle-Rücksprungkante (11).
 
-## Pre-completion checklist (Modul 9 Schritt 8 — the Implementation role's last act)
+## Pre-completion-Checkliste (Modul 9, Schritt 8 — letzte Handlung der Implementation-Rolle)
 
-17. Update docs, ADR index, and README if a public contract is touched.
-18. Run the pre-completion checklist: **claim** the DoD point-by-point and attach the
-    **sensor evidence** (`make gates` output). This is the Implementation role's *claim*
-    and the Verifier's *input* — **not** the final DoD verdict (Modul 11: "Behauptung ohne
-    Bestätigung ist die häufigste Verifier-Lücke"; a DoD-violation is a Verifier-only class,
-    invisible to Review and to tests). Report sensors run + residual risks.
+17. Doku, ADR-Index und README aktualisieren, falls ein öffentlicher Vertrag berührt ist.
+18. Die Pre-completion-Checkliste laufen: die DoD Punkt für Punkt **behaupten** und die
+    **Sensor-Belege** anhängen (`make gates`-Ausgabe). Das ist die *Behauptung* der
+    Implementation-Rolle und die *Eingabe* des Verifiers — **nicht** das finale DoD-Urteil
+    (Modul 11: „Behauptung ohne Bestätigung ist die häufigste Verifier-Lücke"; eine DoD-Verletzung
+    ist eine Verifier-only-Klasse, unsichtbar für Review und Tests). Ausgeführte Sensors +
+    Restrisiken berichten.
 
-Implementation ends here. The remaining roles run in **separate contexts** (Modul 8).
+Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontexten** (Modul 8).
 
-## Handoffs to downstream roles (Modul 8 → 10 → 11)
+## Übergaben an nachgelagerte Rollen (Modul 8 → 10 → 11)
 
-19. **→ Reviewer (Code-Review, Modul 10):** hand the diff + plan reference to an
-    **independent** reviewer (`.harness/skills/reviewer.md`, fresh context — kein
-    Selbst-Review). It categorizes findings (HIGH/MEDIUM/LOW/INFO) into a report under
-    `docs/reviews/`, checking the diff against **Plan + ADR + Hard Rules** (not the DoD).
-    Resolve HIGH/MEDIUM; a HIGH with role-conflict follows Modul 8 §Konflikt-Pfad (sequence
-    with handoff artifacts, never "downgrade because the implementer disagrees").
-20. **→ Verifier (Modul 11):** in a separate context, **confirm** the DoD/Spec claim and the
-    plan-vs-code diff, plus ADR-conformance. This catches what tests miss and Review does not
-    see (DoD-Verletzung).
-21. **→ Validator (Modul 8):** if the slice delivers user-facing value, validate against real
-    need ("build the right thing"). Usually n/a for internal maintenance slices — then say so
-    explicitly rather than skipping silently.
+19. **→ Reviewer (Code-Review, Modul 10):** den Diff + Plan-Verweis an einen **unabhängigen**
+    Reviewer übergeben (`.harness/skills/reviewer.md`, frischer Kontext — kein Selbst-Review). Er
+    kategorisiert Findings (HIGH/MEDIUM/LOW/INFO) in einen Report unter `docs/reviews/` und prüft
+    den Diff gegen **Plan + ADR + Hard Rules** (nicht die DoD). HIGH/MEDIUM auflösen; ein HIGH mit
+    Rollen-Konflikt folgt Modul 8 §Konflikt-Pfad (Sequenz mit Übergabe-Artefakten, nie
+    „herabstufen, weil der Implementer widerspricht").
+20. **→ Verifier (Modul 11):** in getrenntem Kontext die DoD-/Spec-Behauptung und den
+    Plan-vs-Code-Diff **bestätigen**, dazu ADR-Konformität. Das fängt, was Tests übersehen und der
+    Reviewer nicht sieht (DoD-Verletzung).
+21. **→ Validator (Modul 8):** falls der Slice End-Nutzer-Wert liefert, gegen den realen Bedarf
+    validieren („das Richtige bauen"). Meist n/a bei interner Wartung — dann explizit sagen statt
+    still überspringen.
 
-## Closure — Planner role (Modul 8 + Modul 5)
+## Closure — Planner-Rolle (Modul 8 + Modul 5)
 
-22. Only once Review is conform **and** Verification confirms the DoD, the **Planner** closes:
-    write the Closure-Notiz with a **Steering-Loop entry** (geschärfte Regel · neuer Sensor ·
-    benannte Spec-Lücke — Modul 5: the `→ done` transition requires a learning entry, not just
-    green gates), then move the slice `in-progress → done` (`git mv`, its own commit, separate
-    from content — Hard Rule 3.3). A red gate reaches `done/` **only** with a documented
-    Carveout (Modul 7), never as a silent red.
+22. Erst wenn der Review konform **und** die Verifikation die DoD bestätigt hat, schließt der
+    **Planner**: die Closure-Notiz mit einem **Steering-Loop-Eintrag** schreiben (geschärfte Regel ·
+    neuer Sensor · benannte Spec-Lücke — Modul 5: der `→ done`-Übergang verlangt einen Lerneintrag,
+    nicht nur grüne Gates), dann den Slice `in-progress → done` verschieben (`git mv`, eigener
+    Commit, getrennt vom Inhalt — Hard Rule 3.3). Ein rotes Gate erreicht `done/` **nur** mit
+    dokumentiertem Carveout (Modul 7), nie als stilles Rot.
 
-Do not skip gates. Do not claim completion without command output.
+Gates nicht überspringen. Keine Erfolgsmeldung ohne Command-Ausgabe.
