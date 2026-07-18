@@ -9,21 +9,31 @@ die den Harness nicht von Hand zusammenkopieren wollen.
 
 ## Was kann ich heute tun?
 
-**Ehrlicher Stand:** Doku-Harness kohärent (Phase 3–4); der Code ist noch
-ungebaut (Phase 0). Verfügbar:
+**Ehrlicher Stand (2026-07-18):** Der **Offline-Kern ist gebaut** — Meilenstein M1
+erreicht, welle-01 geschlossen ([welle-01-results](docs/plan/planning/done/welle-01-results.md)).
+Das Go-Binary `cmd/ai-harness-init --lang <X> --name <Y>` leistet heute:
 
-- `make baseline-verify` (vendored Baseline netzlos, Integrität + Vollständigkeit),
-  `make docs-check` (Doku-Referenz-Gate, d-check v0.46.0), `make test`
-  (Command-Guard + Harness-Tests via bats **plus** Go-Unit-Tests) und `make shell-lint` (shellcheck) laufen
-  grün — Docker-only;
-- **Betriebsregelwerk + Templates committet vendored** unter
-  `.harness/baseline/v3.1.0/` (netzlos auf jedem Checkout, [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — Baseline v3.1.0
-  adoptiert;
-- Durchsetzungsschicht adoptiert: Command-Guard (bash+awk), Gate-Nachweis,
-  Regelwerk-Injektion (Codex-Hook / Claude-Pointer aus der vendored Baseline);
-- Spec, Architektur, ADR und Harness-Einstieg sind adoptiert und lesbar;
-- ausführbare Bootstrap-Funktion (`cmd/ai-harness-init`, Go-Binary): **folgt** —
-  slice-001..005 auf Go geschnitten (`cmd/`, Go-Gates), **startbereit**; Impl gegen `LH-FA-*`.
+- **Doc-Gate-Baseline emittieren** — `.d-check.yml` + `d-check.mk` (Runtime-Codegen aus
+  `d-check --print-mk`; slice-002);
+- **Template-Baseline zweiklassig ablegen** — Singletons → gestempelte `.md`,
+  Wiederkehrende → co-located `.template.md` (slice-003);
+- **Sprachskelett vom gepinnten Kurs-Tag fetchen** in einen Staging-Bereich (slice-004a);
+  unbekannte Sprache → Exit 2 + Liste.
+
+Der Gate-Stack läuft grün, Docker-only: `make baseline-verify` · `docs-check` (d-check
+v0.46.0) · `lint` · `build` · `test` (bats + Go-Unit) · `shell-lint`; `make gates` bündelt
+sie. `make smoke` (Nicht-Gate) fährt den echten Bootstrap host-orchestriert. Betriebsregelwerk
++ Templates liegen committet vendored unter `.harness/baseline/v3.1.0/` (netzlos, [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache));
+Durchsetzungsschicht (Command-Guard bash+awk, Gate-Nachweis, Regelwerk-Injektion) adoptiert.
+
+**Noch offen (welle-02, M2):** das gefetchte Skelett in den Repo-Root **verdrahten/mergen**
+(slice-004b — braucht eine Layering-ADR) und die **Root-README** emittieren (slice-005). Erst
+dann läuft `make gates` im *emittierten* Repo out-of-the-box grün ([`LH-FA-01`](spec/lastenheft.md#lh-fa-01--repo-bootstrappen) Happy-Path).
+
+**Nächster Schritt (Wiedereinstieg):** die **Layering-ADR** schreiben (Datei-Ownership
+Skelett-Schicht ↔ Harness-Emit-Schicht) — sie entsperrt slice-004b; alternativ slice-005. Siehe
+[roadmap](docs/plan/planning/in-progress/roadmap.md) (Aktuelle Welle) und
+[welle-02](docs/plan/planning/welle-02-fetch-und-readme.md) (§4 Slices).
 
 Keine Erfolgsmeldung ohne lauffähigen Beleg.
 

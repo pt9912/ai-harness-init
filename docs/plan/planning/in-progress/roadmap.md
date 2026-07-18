@@ -19,7 +19,13 @@ gezeigt, nicht als Treiber.
 **Closure-Trigger:** slice-004a/004b (Sprachskelett-Fetch + Verdrahten, [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) und slice-005
 (Root-README, [`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2)) in `done/`, `make gates` grün; slice-005 bringt den
 Voll-E2E-`make gates`-Smoke des Bootstraps ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) Happy-Path). Details in der
-welle-02-Plan-Datei (folgt).
+[welle-02-Plan-Datei](../welle-02-fetch-und-readme.md).
+
+> **Stand (2026-07-18, nicht Teil der Wellen-Ordnung):** slice-004a (Skelett-Fetch) in `done/`.
+> **slice-004b** (Merge/Verdrahten) `open/` — **blockiert, bis eine Layering-ADR** die Datei-Ownership
+> (Skelett-Schicht ↔ Harness-Emit-Schicht: wer besitzt `AGENTS.md`/`Makefile`) entscheidet.
+> **slice-005** (Root-README + der aufgeschobene Voll-Smoke) `open/`. **Nächster Schritt:** die
+> Layering-ADR schreiben (entsperrt slice-004b) — oder slice-005.
 
 ## Nächste Wellen
 
