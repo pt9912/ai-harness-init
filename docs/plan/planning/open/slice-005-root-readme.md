@@ -4,7 +4,7 @@
 (`open/` · `next/` · `in-progress/` · `done/`), Wechsel nur per `git mv` —
 v3.1.0-Konvention (`modul-05`).
 
-**Welle:** welle-02-fetch-und-readme (Welle-Plan folgt). Einordnung
+**Welle:** [welle-02-fetch-und-readme](../welle-02-fetch-und-readme.md). Einordnung
 *(Kontext, nicht normativ)*: [roadmap](../in-progress/roadmap.md).
 
 **Bezug:** [`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2), [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen).

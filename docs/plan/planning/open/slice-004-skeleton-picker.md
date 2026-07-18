@@ -4,7 +4,7 @@
 (`open/` · `next/` · `in-progress/` · `done/`), Wechsel nur per `git mv` —
 v3.1.0-Konvention (`modul-05`).
 
-**Welle:** welle-02-fetch-und-readme (Welle-Plan folgt). Einordnung
+**Welle:** [welle-02-fetch-und-readme](../welle-02-fetch-und-readme.md). Einordnung
 *(Kontext, nicht normativ)*: [roadmap](../in-progress/roadmap.md).
 
 **Bezug:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md).

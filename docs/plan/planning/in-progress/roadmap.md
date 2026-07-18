@@ -12,7 +12,7 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**Welle-ID:** welle-02-fetch-und-readme *(Plan-Datei folgt — nächster Planner-Akt)*
+**Welle-ID:** [welle-02-fetch-und-readme](../welle-02-fetch-und-readme.md)
 **Start:** 2026-07-18 (Trigger „welle-01 done" erfüllt)
 **Geplantes Ende:** offen
 
