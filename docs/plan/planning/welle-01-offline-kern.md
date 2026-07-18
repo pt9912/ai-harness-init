@@ -54,7 +54,7 @@ Schritt hinterlässt einen Beleg, keiner ein Datum:
 | [slice-001a](done/slice-001a-cli-skeleton.md) | CLI-Skeleton (Go) + go-test-Gate | done | [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
 | [slice-001b](done/slice-001b-go-gates.md) | Go-Gates build/lint + Promotion | done | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
 | [slice-002](done/slice-002-doc-gate-emit.md) | Doc-Gate-Baseline emittieren | done | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| [slice-003](in-progress/slice-003-template-ablage.md) | Zweiklassige Template-Ablage | in-progress | [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) |
+| [slice-003](done/slice-003-template-ablage.md) | Zweiklassige Template-Ablage | done | [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) |
 
 ## 5. Abhängigkeiten
 
