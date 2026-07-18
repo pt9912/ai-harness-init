@@ -38,7 +38,7 @@ Nur existierende Targets (keine halluzinierten Gates):
 | Target | Vertrag | Bindung |
 |---|---|---|
 | `make baseline-verify` | Vendored Baseline unverändert: Integrität **und** Vollständigkeit, netzlos | [`MR-007`](conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
-| `make docs-check` | Doku-Referenzen grün (links/anchors/ids/codepaths) | — |
+| `make docs-check` | Doku-Referenzen grün (links/anchors/ids/codepaths), netzlos (`--network none`) | [`MR-010`](conventions.md#mr-010--d-check-gate-fragment-tool-generiert) |
 | `make test` | Command-Guard-Tests (bash+awk) grün via bats | [`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md) |
 | `make shell-lint` | Shell-Hooks/-Helfer lint-clean (shellcheck) | [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
 | `make gates` | alle aktuell lauffähigen Gates | — |

@@ -11,7 +11,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Regelwerk + Templates:** `v3.1.0` committet vendored
   (`.harness/baseline/v3.1.0/`, [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
   `regelwerk/README.md`: **Kurs-Welle 26 · 2026-07-17**.
-- **d-check:** Image v0.46.0 (Digest in harness.mk)
+- **d-check:** Image v0.46.0 (Digest in d-check.mk, [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert))
 - **Datum der Adoption:** 2026-06-13 (Templates-Stand damals: `templates-v4`).
   **Re-Baseline auf `v3.1.0`:** 2026-07-17 (slice-011/012).
 
@@ -378,9 +378,53 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   konkret gelöschten Template-Pfade (bewusst **entfernt**, nicht *geplant* — die Abgrenzung
   aus slice-015 §6 gilt; ein geplanter Pfad bleibt Doc-führt-Code-folgt und kein Tombstone).
   Keine breite oder leere Liste.
-- **Auflösungs-Trigger:** permanent; Re-Pin (`D_CHECK_IMAGE`) bei d-check-Release manuell
-  (Trockenlauf wiederholen), `ignore-refs` wächst nur mit weiteren **bewusst entfernten**
-  Artefakten.
+- **Auflösungs-Trigger:** permanent; Re-Pin bei d-check-Release manuell (Trockenlauf
+  wiederholen — seit [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert) via `DCHECK_DIGEST`,
+  früher `D_CHECK_IMAGE`), `ignore-refs` wächst nur mit weiteren **bewusst entfernten** Artefakten.
+
+### MR-010 — d-check-Gate-Fragment tool-generiert
+
+- **Datum:** 2026-07-18
+- **Geltungsbereich:** `d-check.mk` (aus `harness.mk` umbenannt), `Makefile` (`include`), §Baseline,
+  [`harness/README.md`](README.md) §Sensors; ergänzt [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile).
+- **Adaption:** Das handgepflegte `harness.mk` wird durch das **tool-generierte** Fragment
+  `d-check.mk` (aus `d-check --print-mk`, v0.46.0) ersetzt — die Ziel-Form
+  (`.harness/baseline/<tag>/templates/Makefile`) segnet das ausdrücklich ab („Fragment frisch
+  erzeugen: `d-check --print-mk`"). Effekte: (a) **`--network none`** auf jedem Run (härtet die
+  Netzlosigkeit auf Container-Ebene, [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)/[`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten));
+  (b) **`DCHECK_IMAGE` (Tag) + `DCHECK_DIGEST` (Override, sticht den Tag)** statt des inline
+  gepinnten `D_CHECK_IMAGE` aus [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile) —
+  Re-Pin ist eine `DCHECK_DIGEST`-Zeile; (c) das **volle** Target-Set (elf Targets) lebt
+  tool-generiert im Repo, die Recipe-Form pflegt d-check.
+- **Setzung 1 — Namens-Adaption `doc-check` → `docs-check`.** Nur das Befund-Gate wird umbenannt:
+  Ziel-Form-`Makefile`, Regelwerk `modul-13` und der bestehende Repo-Stand nennen es `docs-check`
+  (mit „s"); `--print-mk` erzeugt `doc-check`. Bei jeder Neu-Erzeugung sind es vier kleine,
+  dokumentierte Handgriffe: `doc-check`→`docs-check` (Target **und** Hilfetext), `DCHECK_DIGEST`
+  pinnen, den adaptierten Kopfkommentar setzen und `doc-help`s Grep auf `docs?-` erweitern (damit
+  das umbenannte Haupt-Target gelistet wird). Die advisory-Targets bleiben sonst **verbatim**
+  (`doc-`-Präfix).
+- **Setzung 2 — nur `docs-check` ist ein *behaupteter* Gate ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).** `d-check.mk`
+  bringt zehn advisory/opt-in-Targets mit (`doc-trace`/`doc-complete`/`doc-doctor`/`doc-repair`/
+  `doc-immutable`/`doc-commits`/`doc-planning`/`doc-tracked`/`doc-targets`/`doc-help`). Nur
+  `docs-check` steht in `make gates`, [`AGENTS.md`](../AGENTS.md) §4 und [`harness/README.md`](README.md)
+  §Sensors — die übrigen sind **verfügbar, aber nicht als Gate behauptet**, exakt wie
+  `regelwerk-check` (Makefile-Target, nicht in `gates`). Kein halluziniertes Gate: „behauptet" ≠
+  „vorhanden".
+- **Setzung 3 — `d-check.mk` (tool-eigener Name) statt `harness.mk`.** Der Rename trägt den Namen,
+  den `--print-mk` selbst vergibt (Herkunft ist selbst-dokumentiert) und macht die Neu-Erzeugung
+  mechanisch (`d-check --print-mk` → `d-check.mk`). Er ist ein **reiner git-mv-Commit vor** dem
+  Inhalts-Rewrite (Hard Rule 3.3); `Makefile`-`include`/-Kommentar, §Baseline und der
+  [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile)-Verweis („Digest in …") sind
+  nachgezogen. Historische `harness.mk`-Nennungen (z. B. im [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile)-Body, in slice-016)
+  bleiben als Zeitbezug stehen — sie feuern kein `codepaths` (root-level Datei, nicht unter `harness/`).
+- **Begründung:** `--network none` schließt eine Netzlos-Lücke (das Gate erzwang es bisher nicht,
+  auch wenn die aktiven Module hermetisch sind); `DCHECK_DIGEST` beseitigt die manuelle
+  Digest-Chirurgie, die [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile) noch von Hand
+  machte; das tool-generierte Fragment beseitigt die Drift-Klasse „Hand-mk hinkt d-check nach" und
+  stellt das volle, aktuelle Target-Set bereit.
+- **Auflösungs-Trigger:** permanent; bei d-check-Release `d-check --print-mk` neu erzeugen,
+  `doc-check`→`docs-check` re-adaptieren, `DCHECK_DIGEST` neu pinnen. Maintenance-Override
+  (Dry-Run) via `DCHECK_DIGEST=…`/`DCHECK_IMAGE=…`, nicht mehr `D_CHECK_IMAGE=…`.
 
 ## Modus-Deklaration pro Sub-Area
 
