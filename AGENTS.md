@@ -83,11 +83,11 @@ PR-Kommentar.
 |---|---|
 | `make baseline-verify` | Vendored Baseline netzlos verifizieren (Integrität + Vollständigkeit, [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) |
 | `make docs-check` | Doku-Referenzen (links/anchors/ids/codepaths) via d-check |
-| `make test` | Command-Guard-Tests (bash+awk) via bats im gepinnten Image |
+| `make test` | Command-Guard-Tests (bats) + Go-Unit-Tests (Dockerfile-`test`-Stage) im gepinnten Image |
 | `make shell-lint` | Shell-Hooks/-Helfer lint-clean (shellcheck) im gepinnten Image |
 | `make gates` | alle aktuell lauffähigen Gates |
 
-**Nicht behauptet** (folgt mit dem Go-Code): `build`/`lint` (Go-Toolchain im gepinnten Image — `go build` / `golangci-lint`); `make test`/`make shell-lint` decken aktuell die bash+awk-Guard-Suite (bats) und die Shell-Hooks (shellcheck), die Go-Unit-Tests (`go test`) folgen mit dem Code.
+**Nicht behauptet** (folgt mit slice-001b): `build`/`lint` (Go-Toolchain im gepinnten Image — Cross-Compile / `golangci-lint`). `make test` deckt jetzt die bash+awk-Guard-Suite (bats) **und** die Go-Unit-Tests (Dockerfile-`test`-Stage, slice-001a); `make shell-lint` die Shell-Hooks (shellcheck).
 
 ## 5. Dokumentations-Regeln
 

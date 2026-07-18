@@ -39,11 +39,11 @@ Nur existierende Targets (keine halluzinierten Gates):
 |---|---|---|
 | `make baseline-verify` | Vendored Baseline unverändert: Integrität **und** Vollständigkeit, netzlos | [`MR-007`](conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
 | `make docs-check` | Doku-Referenzen grün (links/anchors/ids/codepaths), netzlos (`--network none`) | [`MR-010`](conventions.md#mr-010--d-check-gate-fragment-tool-generiert) |
-| `make test` | Command-Guard-Tests (bash+awk) grün via bats | [`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md) |
+| `make test` | Command-Guard-Tests (bats) + Go-Unit-Tests (Dockerfile-`test`-Stage) grün | [`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md), [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
 | `make shell-lint` | Shell-Hooks/-Helfer lint-clean (shellcheck) | [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
 | `make gates` | alle aktuell lauffähigen Gates | — |
 
-**Nicht behauptet** (folgt mit dem Go-Code): `build`/`lint` (Go-Toolchain im gepinnten Image — `go build` / `golangci-lint`); `make test`/`make shell-lint` decken aktuell die bash+awk-Guard-Suite (bats) und die Shell-Hooks (shellcheck), die Go-Unit-Tests (`go test`) folgen mit dem Code.
+**Nicht behauptet** (folgt mit slice-001b): `build`/`lint` (Go-Toolchain im gepinnten Image — Cross-Compile / `golangci-lint`). `make test` deckt jetzt die bash+awk-Guard-Suite (bats) **und** die Go-Unit-Tests (Dockerfile-`test`-Stage, slice-001a); `make shell-lint` die Shell-Hooks (shellcheck).
 
 ## Traceability
 

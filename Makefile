@@ -8,6 +8,11 @@ include d-check.mk
 BATS_IMAGE ?= bats/bats@sha256:e8f18e0acd4ea933bf019130b85033be75e8ce081db299e93578de83d7874e33
 SHELLCHECK_IMAGE ?= koalaman/shellcheck@sha256:bb596a0d169b85ddd81d8b6d3a2ff6d5baf5fca10b97f575ebc647c3dff62b3d
 
+# Go-Toolchain-Version (Dockerfile-Stages, a-check gespiegelt); der Base-Digest
+# steht digest-gepinnt im Dockerfile (LH-QA-02). Go-Gates leben im Makefile
+# (NICHT d-check.mk) und treiben Dockerfile-Stages via `docker build --target`.
+GO_VERSION ?= 1.26.4
+
 # Vendored Baseline (MR-007): Regelwerk UND Templates liegen committet unter
 # .harness/baseline/$(BASELINE_TAG)/{regelwerk,templates}/ + SHA256SUMS —
 # netzlos auf jedem Checkout präsent, kein Fetch pro Lauf.
@@ -32,8 +37,9 @@ help: ## Targets anzeigen
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-14s %s\n", $$1, $$2}'
 
-test: ## Harness-Tests (bats), netzlos, im gepinnten Image — Docker-only (ADR-0004)
+test: ## Harness-Tests (bats) + Go-Unit-Tests (go test in Docker) — Docker-only (ADR-0003/0004)
 	docker run --rm --network none -v "$(CURDIR)":/code:ro -w /code $(BATS_IMAGE) test/
+	docker build --no-cache-filter test --build-arg GO_VERSION=$(GO_VERSION) --target test -t ai-harness-init:test .
 
 # shellcheck über die harness-eigenen Shell-Hooks/-Helfer. .bats ist
 # ausgenommen (shellcheck parst die @test-Syntax nicht); .awk ist kein Shell.

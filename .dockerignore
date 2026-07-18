@@ -1,0 +1,5 @@
+# Build-Kontext schlank halten: der go-test-Build (Dockerfile test-Stage) braucht
+# nur go.mod + cmd/. .git (History) und .harness (vendored Baseline, ~240 KB)
+# gehören nicht in den Kontext.
+.git
+.harness

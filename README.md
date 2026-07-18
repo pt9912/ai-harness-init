@@ -14,7 +14,7 @@ ungebaut (Phase 0). Verfügbar:
 
 - `make baseline-verify` (vendored Baseline netzlos, Integrität + Vollständigkeit),
   `make docs-check` (Doku-Referenz-Gate, d-check v0.46.0), `make test`
-  (Command-Guard + Harness-Tests via bats) und `make shell-lint` (shellcheck) laufen
+  (Command-Guard + Harness-Tests via bats **plus** Go-Unit-Tests) und `make shell-lint` (shellcheck) laufen
   grün — Docker-only;
 - **Betriebsregelwerk + Templates committet vendored** unter
   `.harness/baseline/v3.1.0/` (netzlos auf jedem Checkout, [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — Baseline v3.1.0
@@ -45,7 +45,7 @@ of Truth bleibt der Kurs. Emittiert wird nur, was wirklich läuft.
 - **Prozess:** [`AGENTS.md`](AGENTS.md) (Hard Rules), [`harness/README.md`](harness/README.md) (Source Precedence, Sensors).
 - **Verträge:** [`spec/lastenheft.md`](spec/lastenheft.md) (`LH-*`-IDs mit Akzeptanzkriterien).
 - **Entscheidungen:** [`docs/plan/adr/`](docs/plan/adr/) — z. B. [`ADR-0001`](docs/plan/adr/0001-skelett-distribution.md) (Skelett-Distribution).
-- **Gates:** `make docs-check` (links/anchors/ids/codepaths), `make test` (Command-Guard, bats), `make shell-lint` (shellcheck) — grün; `make gates` bündelt sie. (Go-`lint`/`build`/`test` folgen mit dem Code.)
+- **Gates:** `make docs-check` (links/anchors/ids/codepaths), `make test` (Command-Guard bats + Go-Unit-Tests), `make shell-lint` (shellcheck) — grün; `make gates` bündelt sie. (Go-`lint`/`build` folgen mit slice-001b.)
 
 ## Lizenz
 
