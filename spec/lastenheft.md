@@ -89,6 +89,25 @@ Generator).
 - **Minimal:** Das emittierte Repo braucht über `bash + git + docker` hinaus
   nichts (awk ist POSIX-Basis).
 
+### LH-FA-07 — Arch-Gate-Baseline emittieren
+
+**Beschreibung:** Analog [`LH-FA-03`](../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) (per-Tool-Fragment) emittiert der Bootstrap das
+**Architektur-Gate**: `.a-check.yml` (Schicht-/Sprach-Config) + `a-check.mk` (a-checks
+`--print-mk`-Fragment, a-check-Image per Digest gepinnt). a-check prüft hexagonale Schichten
+(domain/ports/adapters) im emittierten Sprachskelett ([`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) — read-only, netzlos.
+
+**Akzeptanzkriterien:**
+
+- **Happy Path:** Given Bootstrap mit einem Sprachskelett, das hexagonale Schichten trägt,
+  then `.a-check.yml` + `a-check.mk` liegen im Zielrepo und `make a-check` ist Exit 0 (die
+  Config bildet die realen Schichten ab).
+- **Keine halluzinierten Gates ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):** a-check bricht bei fehlender/ungültiger
+  `.a-check.yml` mit Exit 2 ab. Trägt das Skelett **keine** hexagonalen Schichten, wird das
+  Gate begründet **nicht** emittiert — statt ein arch-Gate über einem leeren Prüfbereich leer
+  grün melden zu lassen.
+- **Minimal ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)):** a-check läuft Docker-only, netzlos, read-only — das emittierte
+  Repo braucht über `git + docker` hinaus nichts.
+
 ## 4. Nichtfunktionale Anforderungen
 
 ### LH-QA-01 — Keine halluzinierten Gates (F4, F5, F6)
@@ -141,3 +160,4 @@ Generator).
 | 0.2.0 | 2026-06-13 | CR: Impl-Sprache Go + native Binaries ([`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md), supersedes [`ADR-0002`](../docs/plan/adr/0002-test-tooling-grenze.md)); [`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) Go-Toolchain/Docker-only; neue [`LH-QA-04`](../spec/lastenheft.md#lh-qa-04--plattform-matrix) Plattform-Matrix; [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) Zielsprache `cpp` | Plan-Review-Folge |
 | 0.3.0 | 2026-06-13 | CR: neue [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) Durchsetzungsschicht emittieren; Guard bash+awk (zero-dep), Quelle Kurs-Templates ([`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md)) | Phase-2-Folge |
 | 0.4.0 | 2026-07-18 | CR: emittiertes Doc-Gate-Fragment `harness.mk` → `d-check.mk` ([`LH-FA-03`](../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7)) — per-Tool-Fragment aus `d-check --print-mk`, Sammelname obsolet, konsistent mit dem Dogfood ([`MR-010`](../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)); weitere Gate-Tools analog (arch-Gate a-check → `a-check.mk`, wenn integriert) | slice-017-Folge |
+| 0.5.0 | 2026-07-18 | CR: neue [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) Arch-Gate-Baseline emittieren (`.a-check.yml` + `a-check.mk`, per-Tool analog [`LH-FA-03`](../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7)) — a-check als Architektur-Gate (hexagonale Schichten); nur aktiviert, wo das Skelett Schichten trägt ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Implementierung folgt mit Emitter/Go-Code (Doc-führt) | a-check-Integration |
