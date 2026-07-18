@@ -37,12 +37,12 @@ project-readme-Vorlage; der Pointer-/Trust-Abschnitt steht als
 
 ## 4. Trigger
 
-welle-02 in-progress; nach slice-004 (gemeinsamer Emit-/Fetch-Pfad).
+welle-02 in-progress; nach slice-004a (gemeinsamer Emit-/Fetch-Pfad).
 
 ## 5. Closure-Trigger
 
 DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
-Schließt zusammen mit slice-004 die welle-02 (voller [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Smoke).
+Schließt zusammen mit slice-004a/004b die welle-02 (voller [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Smoke).
 
 ## 6. Risiken und offene Punkte
 

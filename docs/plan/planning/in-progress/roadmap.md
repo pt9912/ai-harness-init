@@ -16,7 +16,7 @@ gezeigt, nicht als Treiber.
 **Start:** 2026-07-18 (Trigger „welle-01 done" erfüllt)
 **Geplantes Ende:** offen
 
-**Closure-Trigger:** slice-004 (Sprachskelett-Picker, [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) und slice-005
+**Closure-Trigger:** slice-004a/004b (Sprachskelett-Fetch + Verdrahten, [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) und slice-005
 (Root-README, [`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2)) in `done/`, `make gates` grün; slice-005 bringt den
 Voll-E2E-`make gates`-Smoke des Bootstraps ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) Happy-Path). Details in der
 welle-02-Plan-Datei (folgt).
@@ -32,7 +32,7 @@ welle-02-Plan-Datei (folgt).
 | Meilenstein | Welle(n) | Trigger | Status |
 |---|---|---|---|
 | M1 — lauffähiger Offline-Kern (`cmd/ai-harness-init` parst + emittiert Gate-Baseline + legt Templates ab, ohne Netz) | welle-01 | slice-001a/001b/002/003 done | **erreicht (2026-07-18)** |
-| M2 — vollständiger Bootstrap (inkl. Sprachskelett-Picker + Root-README) | welle-02 | slice-004..005 done | offen |
+| M2 — vollständiger Bootstrap (inkl. Sprachskelett-Picker + Root-README) | welle-02 | slice-004a/004b/005 done | offen |
 
 ## Abhängigkeitsgraph
 

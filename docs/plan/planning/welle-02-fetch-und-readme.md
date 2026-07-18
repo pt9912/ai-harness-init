@@ -27,7 +27,7 @@ und [`LH-FA-05`](../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1
 
 Beobachtbare Bedingungen (kein Kalendertag); die Closure folgt den fünf Modul-6-Schritten:
 
-- slice-004 und slice-005 liegen in `done/`.
+- slice-004a, slice-004b und slice-005 liegen in `done/`.
 - `make gates` grün.
 - **Voll-E2E-Smoke:** Bootstrap in tmp-Repo → `make gates` grün **out-of-the-box** — der
   Happy-Path von [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6),
@@ -39,7 +39,8 @@ Beobachtbare Bedingungen (kein Kalendertag); die Closure folgt den fünf Modul-6
 
 | Slice | Titel | Status | Bezug |
 |---|---|---|---|
-| [slice-004](open/slice-004-skeleton-picker.md) | Sprachskelett-Picker | open | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`ADR-0001`](../../../docs/plan/adr/0001-skelett-distribution.md) |
+| [slice-004a](open/slice-004a-skeleton-fetch.md) | Sprachskelett-Fetch | open | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`ADR-0001`](../../../docs/plan/adr/0001-skelett-distribution.md) |
+| [slice-004b](open/slice-004b-skeleton-wire.md) | Sprachskelett verdrahten (Merge) | open | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
 | [slice-005](open/slice-005-root-readme.md) | Root-README emittieren | open | [`LH-FA-05`](../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2), [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
 
 ## 5. Abhängigkeiten
@@ -47,7 +48,7 @@ Beobachtbare Bedingungen (kein Kalendertag); die Closure folgt den fünf Modul-6
 - Wird blockiert von: welle-01 (Offline-Kern) — **done**.
 - Blockiert: keine geplante Folge-Welle (Durchsetzungsschicht- und Arch-Gate-Emit sind
   eigene, noch ungeplante Slices/Wellen — siehe §6).
-- Intern: slice-005 (Root-README) setzt auf dem gemeinsamen Emit-/Fetch-Pfad aus slice-004
+- Intern: slice-005 (Root-README) setzt auf dem gemeinsamen Emit-/Fetch-Pfad aus slice-004a
   auf; der Voll-Smoke wird erst grün, wenn 004/005 mit slice-002/003 zusammen emittieren.
 
 ## 6. Out-of-Scope für diese Welle
