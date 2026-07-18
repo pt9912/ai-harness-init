@@ -49,9 +49,12 @@ review-report) bleiben co-located als `.template.md`; Singletons werden zu
 
 ### LH-FA-03 — Doc-Gate-Baseline emittieren (F6, F7)
 
-**Beschreibung:** `.d-check.yml` (Suffix-Ignore) + `harness.mk` (d-check
-per Digest gepinnt). `ids`/`codepaths` nur mit existierenden Targets/roots
-aktivieren — der Gate-Config wächst mit den Artefakten.
+**Beschreibung:** `.d-check.yml` (Suffix-Ignore) + `d-check.mk` (d-checks
+`--print-mk`-Fragment, d-check-Image per Digest gepinnt). Das Gate-Fragment ist
+**per-Tool** und trägt den tool-eigenen Namen (`d-check` → `d-check.mk`), nicht den
+obsoleten Sammelnamen `harness.mk`; weitere Gate-Tools emittieren analog ihr eigenes
+`--print-mk`-Fragment. `ids`/`codepaths` nur mit existierenden Targets/roots aktivieren —
+der Gate-Config wächst mit den Artefakten.
 
 ### LH-FA-04 — Sprachskelett-Picker (F4)
 
@@ -137,3 +140,4 @@ Generator).
 | 0.1.0 | 2026-06-13 | Initial, abgeleitet aus attempt1 (F1–F7) | — |
 | 0.2.0 | 2026-06-13 | CR: Impl-Sprache Go + native Binaries ([`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md), supersedes [`ADR-0002`](../docs/plan/adr/0002-test-tooling-grenze.md)); [`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) Go-Toolchain/Docker-only; neue [`LH-QA-04`](../spec/lastenheft.md#lh-qa-04--plattform-matrix) Plattform-Matrix; [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) Zielsprache `cpp` | Plan-Review-Folge |
 | 0.3.0 | 2026-06-13 | CR: neue [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) Durchsetzungsschicht emittieren; Guard bash+awk (zero-dep), Quelle Kurs-Templates ([`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md)) | Phase-2-Folge |
+| 0.4.0 | 2026-07-18 | CR: emittiertes Doc-Gate-Fragment `harness.mk` → `d-check.mk` ([`LH-FA-03`](../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7)) — per-Tool-Fragment aus `d-check --print-mk`, Sammelname obsolet, konsistent mit dem Dogfood ([`MR-010`](../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)); weitere Gate-Tools analog (arch-Gate a-check → `a-check.mk`, wenn integriert) | slice-017-Folge |
