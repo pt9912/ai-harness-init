@@ -109,7 +109,10 @@ func stampName(s, name string) string {
 
 // StripHintBlock entfernt den `> **Template-Hinweis.** …`-Blockquote (samt einer
 // folgenden Leerzeile) aus einem Singleton — die Datei wird ein echtes Repo-File,
-// keine Vorlage mehr. Ohne Marker unveraendert.
+// keine Vorlage mehr. Ohne Marker unveraendert. Annahme (Review-L1): der Hinweis ist
+// ein eigenstaendiger, blank-getrennter Blockquote (so in allen 10 Singletons) — ein
+// ohne Leerzeile angeklebter Content-Blockquote waere markdown-semantisch derselbe
+// Block und wuerde mitentfernt; die vendored Vorlagen halten diese Trennung ein.
 func StripHintBlock(s string) string {
 	lines := strings.Split(s, "\n")
 	start := -1
