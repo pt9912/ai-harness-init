@@ -52,6 +52,10 @@ func stdFixture(t *testing.T) fetch.TarballFetch {
 		"ai-harness-course-3.1.0/lab/example/python/Makefile": "py-makefile",
 		"ai-harness-course-3.1.0/README.md":                   "top",
 		"ai-harness-course-3.1.0/lab/example/go/../evil.txt":  "traversal",
+		// stray file + Nicht-Skelett-Dir DIREKT unter lab/example/ (wie im echten Repo):
+		// duerfen NICHT in der Unknown-Lang-Liste erscheinen (Review-R1/L1).
+		"ai-harness-course-3.1.0/lab/example/AGENTS.md":      "stray",
+		"ai-harness-course-3.1.0/lab/example/docs/README.md": "nicht-Skelett",
 	})
 }
 
@@ -120,6 +124,32 @@ func TestSkeleton_FetchError(t *testing.T) {
 	if errors.As(err, &ule) {
 		t.Error("Fetch-Fehler faelschlich als UnknownLangError klassifiziert")
 	}
+}
+
+// TestDefaultTag_MatchesBaseline koppelt fetch.DefaultTag an BASELINE_TAG (Makefile),
+// die EINZIGE Tag-Quelle (MR-007) — sonst driftet der Skelett-Tag bei einem Re-Baseline
+// von der vendored Baseline (Review-M1, LH-QA-02).
+func TestDefaultTag_MatchesBaseline(t *testing.T) {
+	baseline := makeVar(t, filepath.Join("..", "..", "Makefile"), "BASELINE_TAG")
+	if fetch.DefaultTag != baseline {
+		t.Errorf("fetch.DefaultTag %q != Makefile BASELINE_TAG %q (Drift bei Re-Baseline)", fetch.DefaultTag, baseline)
+	}
+}
+
+func makeVar(t *testing.T, path, name string) string {
+	t.Helper()
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("lesen %s: %v", path, err)
+	}
+	prefix := name + " ?= "
+	for _, line := range strings.Split(string(data), "\n") {
+		if strings.HasPrefix(line, prefix) {
+			return strings.TrimSpace(strings.TrimPrefix(line, prefix))
+		}
+	}
+	t.Fatalf("%s nicht in %s gefunden", name, path)
+	return ""
 }
 
 func assertContent(t *testing.T, path, want string) {

@@ -77,6 +77,7 @@ func Skeleton(ctx context.Context, destDir, lang, tag string, fetch TarballFetch
 		return fmt.Errorf("gzip %s: %w", tag, err)
 	}
 	tr := tar.NewReader(gz)
+	supported := supportedLangs()
 	langs := map[string]bool{}
 	written := 0
 	for {
@@ -88,8 +89,8 @@ func Skeleton(ctx context.Context, destDir, lang, tag string, fetch TarballFetch
 			return fmt.Errorf("tar %s: %w", tag, err)
 		}
 		entryLang, rel := skeletonEntry(hdr.Name, lang)
-		if entryLang != "" {
-			langs[entryLang] = true
+		if _, ok := supported[entryLang]; ok {
+			langs[entryLang] = true // nur LH-FA-04-Sprachen; kein Rauschen (Review-R1/L1)
 		}
 		if rel == "" || hdr.Typeflag != tar.TypeReg || !filepath.IsLocal(rel) {
 			continue // Sprach-Dir selbst, Nicht-Datei oder unsicherer Pfad (../)
@@ -138,6 +139,15 @@ func writeFile(dst string, r io.Reader, mode os.FileMode) error {
 		return fmt.Errorf("%s schreiben: %w", dst, err)
 	}
 	return nil
+}
+
+// supportedLangs sind die von LH-FA-04 unterstützten Sprach-Skelette. Nur sie zählen
+// als „verfügbar" — so bleibt die Unknown-Lang-Liste frei von stray files und
+// Nicht-Skelett-Verzeichnissen, die direkt unter lab/example/ liegen (Review-R1/L1).
+func supportedLangs() map[string]struct{} {
+	return map[string]struct{}{
+		"go": {}, "python": {}, "kotlin": {}, "java": {}, "csharp": {}, "cpp": {},
+	}
 }
 
 func unknownLangError(lang string, langs map[string]bool) error {

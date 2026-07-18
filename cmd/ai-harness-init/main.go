@@ -34,7 +34,7 @@ Flags:
 // Zielverzeichnis sind injiziert, damit die Fehler- und Emit-Pfade ohne
 // Prozess-Exit und ohne CWD-Mutation testbar sind. Exit-Codes: 0 = Erfolg,
 // 2 = Aufruf-/Argument-Fehler (Usage), 1 = Emit-Fehler zur Laufzeit.
-func run(args []string, targetDir string, stdout, stderr io.Writer) int {
+func run(args []string, targetDir string, fetchTarball fetch.TarballFetch, stdout, stderr io.Writer) int {
 	fs := flag.NewFlagSet("ai-harness-init", flag.ContinueOnError)
 	fs.SetOutput(io.Discard) // Ausgabe/Streams steuern wir selbst
 
@@ -61,11 +61,23 @@ func run(args []string, targetDir string, stdout, stderr io.Writer) int {
 		return 2
 	}
 
-	// Erster Bootstrap-Schritt (slice-002): Doc-Gate-Baseline emittieren. d-check.mk
-	// wird zur Laufzeit via `docker run <d-check> --print-mk` erzeugt (Docker ist die
-	// geforderte Bootstrap-Abhaengigkeit); der Pin ist per Env ueberschreibbar (Opt-in).
-	// Emit-Fehler (vorhandene Datei ohne --force, docker/d-check nicht verfuegbar) →
-	// Exit 1 auf stderr, kein Usage-Dump (kein Aufruf-Fehler).
+	// Sprachskelett ZUERST holen (slice-004a, ADR-0001 Variante C): das validiert die
+	// Sprache fail-fast und vermeidet einen Doc-Gate-Teil-Emit, falls der Fetch scheitert
+	// (Review-L3). Staging nach .harness/skeleton/; der Merge in den Root ist slice-004b.
+	// Der Fetcher ist injiziert (netzlose Exit-Pfad-Tests, Review-M2). Braucht Netz
+	// (Bootstrap-Abhaengigkeit); unbekannte Sprache -> Exit 2, Netz-/Extrakt-Fehler -> Exit 1.
+	tag := envOr("COURSE_TAG", fetch.DefaultTag)
+	skelDir := filepath.Join(targetDir, ".harness", "skeleton")
+	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
+	defer cancel()
+	if err := fetch.Skeleton(ctx, skelDir, *lang, tag, fetchTarball); err != nil {
+		fmt.Fprintln(stderr, "Fehler:", err)
+		return fetchExitCode(err)
+	}
+
+	// Doc-Gate-Baseline emittieren (slice-002): d-check.mk zur Laufzeit via
+	// `docker run <d-check> --print-mk`; Pin per Env ueberschreibbar. Emit-Fehler
+	// (vorhandene Datei ohne --force, docker nicht verfuegbar) -> Exit 1.
 	opts := emit.Options{
 		Image:  envOr("DCHECK_IMAGE", emit.DefaultImage),
 		Digest: envOr("DCHECK_DIGEST", emit.DefaultDigest),
@@ -75,30 +87,13 @@ func run(args []string, targetDir string, stdout, stderr io.Writer) int {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
-	// Template-Baseline zweiklassig ablegen (slice-003): Singletons -> .md
-	// (gestempelt), Wiederkehrende -> co-located .template.md.
+	// Template-Baseline zweiklassig ablegen (slice-003).
 	if err := emit.Templates(targetDir, *name, *force); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
 
-	// Sprachskelett vom gepinnten Kurs-Tag holen (slice-004a, ADR-0001 Variante C) und
-	// in den Staging-Bereich .harness/skeleton/ extrahieren; der Merge in den Root ist
-	// slice-004b. Braucht Netz (Bootstrap-Abhaengigkeit); unbekannte Sprache -> Exit 2.
-	tag := envOr("COURSE_TAG", fetch.DefaultTag)
-	skelDir := filepath.Join(targetDir, ".harness", "skeleton")
-	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
-	defer cancel()
-	if err := fetch.Skeleton(ctx, skelDir, *lang, tag, fetch.DownloadTarball); err != nil {
-		fmt.Fprintln(stderr, "Fehler:", err)
-		var ule *fetch.UnknownLangError
-		if errors.As(err, &ule) {
-			return 2 // unbekannte Sprache = Aufruf-Fehler (wie ein Argument-Fehler)
-		}
-		return 1 // Netz-/Extrakt-Fehler
-	}
-
-	fmt.Fprintf(stdout, "ai-harness-init: Bootstrap emittiert (Doc-Gate + Template-Baseline + Skelett %q gestaged) — --lang=%s.\n", *lang, *lang)
+	fmt.Fprintf(stdout, "ai-harness-init: Bootstrap (Skelett %q gestaged + Doc-Gate + Template-Baseline) — --lang=%s.\n", *lang, *lang)
 	return 0
 }
 
@@ -110,11 +105,24 @@ func envOr(key, def string) string {
 	return def
 }
 
+// fetchExitCode bildet einen Fetch-Fehler auf den Exit-Code ab: unbekannte Sprache =
+// Aufruf-Fehler (2), sonst Netz-/Extrakt-Fehler (1). Rein/netzlos testbar (Review-M2).
+func fetchExitCode(err error) int {
+	if err == nil {
+		return 0
+	}
+	var ule *fetch.UnknownLangError
+	if errors.As(err, &ule) {
+		return 2
+	}
+	return 1
+}
+
 func main() {
 	wd, err := os.Getwd()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Fehler: Arbeitsverzeichnis nicht bestimmbar:", err)
 		os.Exit(1)
 	}
-	os.Exit(run(os.Args[1:], wd, os.Stdout, os.Stderr))
+	os.Exit(run(os.Args[1:], wd, fetch.DownloadTarball, os.Stdout, os.Stderr))
 }
