@@ -1,6 +1,6 @@
 # Welle welle-01: Offline-Kern
 
-**Status:** in-progress
+**Status:** done
 
 **Zielmeilenstein:** M1 (lauffähiger Offline-Kern)
 
@@ -74,4 +74,7 @@ Schritt hinterlässt einen Beleg, keiner ein Datum:
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Welle-Abschluss füllen. Verweis auf done/welle-01-results.md (§3 Schritt 3). -->
+welle-01 ist auditierbar geschlossen (2026-07-18) — der Lerneintrag mit Belegen (Trigger,
+Leicht-Smoke, Carveout-Audit „0 offen", Steering-Loop-Einträge) steht in
+[`done/welle-01-results.md`](done/welle-01-results.md). Roadmap: welle-01 unter
+*Abgeschlossene Wellen*, Meilenstein M1 erreicht.

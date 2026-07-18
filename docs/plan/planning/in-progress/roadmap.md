@@ -1,6 +1,6 @@
 # Roadmap
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-06-13.
+**Status:** Aktiv. **Letzte Änderung:** 2026-07-18.
 
 **Format-Regel:** Die Roadmap ist eine Reihenfolge von **Wellen**,
 keine Reihenfolge von Terminen (siehe
@@ -12,35 +12,26 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**Welle-ID:** [welle-01-offline-kern](../welle-01-offline-kern.md)
-**Start:** 2026-06-13
-**Geplantes Ende:** offen (Schätzung folgt mit slice-001a-Closure)
+**Welle-ID:** welle-02-fetch-und-readme *(Plan-Datei folgt — nächster Planner-Akt)*
+**Start:** 2026-07-18 (Trigger „welle-01 done" erfüllt)
+**Geplantes Ende:** offen
 
-**Closure-Trigger:** siehe [Welle-Datei](../welle-01-offline-kern.md) §3 —
-kurz: slice-001a/001b/002/003 done, `make gates` grün inkl. der in slice-001b promoteten
-Go-Gates `build`/`lint`.
-
-> **Kontext (Stand 2026-07-18, nicht Teil der Wellen-Ordnung):** welle-01 hat noch
-> nicht begonnen — ihre Slices (001..003) sind gerade auf die **Go-Ära** geschnitten
-> (`cmd/`, Go-Gates; [`ADR-0003`](../../../../docs/plan/adr/0003-go-native-binaries.md)). Parallel lief der **Harness-Wartungs-Zug** slice-006..014
-> (`ohne Welle`, alle `done/`): Repo auf Baseline **v3.1.0** (vendored, [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)),
-> Templates referenziert ([`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)). **slice-016** (d-check-Pin v0.46.0 +
-> `codepaths`-Ventile, [`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)) ist **`done/`**. Startbereit in `open/`: **slice-001a**
-> (CLI-Fundament, re-sliced aus slice-001) und **slice-001b** (Go-Gates build/lint, hängt an 001a).
-> slice-017 (`d-check.mk`) und slice-018 (Freshness-Sensor) sind seither `done/`; `slice-015`
-> bleibt blockiert.
+**Closure-Trigger:** slice-004 (Sprachskelett-Picker, [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) und slice-005
+(Root-README, [`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2)) in `done/`, `make gates` grün; slice-005 bringt den
+Voll-E2E-`make gates`-Smoke des Bootstraps ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) Happy-Path). Details in der
+welle-02-Plan-Datei (folgt).
 
 ## Nächste Wellen
 
 | Welle | Trigger | Wichtigste Slices | Geschätzter Aufwand |
 |---|---|---|---|
-| welle-02-fetch-und-readme | welle-01 done | slice-004 Picker ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md)), slice-005 Root-README ([`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2)) | M |
+| _(noch nicht geplant — welle-02 ist jetzt die Aktuelle Welle)_ | — | — | — |
 
 ## Meilensteine
 
 | Meilenstein | Welle(n) | Trigger | Status |
 |---|---|---|---|
-| M1 — lauffähiger Offline-Kern (`cmd/ai-harness-init` parst + emittiert Gate-Baseline + legt Templates ab, ohne Netz) | welle-01 | slice-001a/001b/002/003 done | offen |
+| M1 — lauffähiger Offline-Kern (`cmd/ai-harness-init` parst + emittiert Gate-Baseline + legt Templates ab, ohne Netz) | welle-01 | slice-001a/001b/002/003 done | **erreicht (2026-07-18)** |
 | M2 — vollständiger Bootstrap (inkl. Sprachskelett-Picker + Root-README) | welle-02 | slice-004..005 done | offen |
 
 ## Abhängigkeitsgraph
@@ -56,10 +47,11 @@ flowchart LR
 
 | Welle | Abschluss | Closure-Notiz |
 |---|---|---|
-| — | — | — |
+| [welle-01-offline-kern](../welle-01-offline-kern.md) | 2026-07-18 | [welle-01-results.md](../done/welle-01-results.md) |
 
 ## Historische Trigger-Verschiebungen
 
 | Datum | Was wurde geändert? | Warum? |
 |---|---|---|
-| — | — | — |
+| 2026-07-18 | welle-01 geschlossen; welle-02 aktiviert; M1 erreicht | Trigger „alle welle-01-Slices `done/` + `make gates` grün" erfüllt |
+| 2026-07 | welle-01-Slices auf die Go-Ära re-geschnitten (slice-001 → 001a/001b) | Impl-Sprache Go / native Binaries ([`ADR-0003`](../../../../docs/plan/adr/0003-go-native-binaries.md)); slice-001 zu groß (Modul-5-Rücksprung) |
