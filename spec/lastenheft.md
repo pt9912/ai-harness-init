@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.3.0
+**Version:** 0.6.0
 
 **Status:** Draft
 
@@ -108,6 +108,37 @@ Generator).
 - **Minimal ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)):** a-check läuft Docker-only, netzlos, read-only — das emittierte
   Repo braucht über `git + docker` hinaus nichts.
 
+### LH-FA-08 — Agenten-Workflow-Commands emittieren
+
+**Beschreibung:** Der Bootstrap emittiert die **Agenten-Workflow-Commands** ins Zielrepo
+(`.claude/commands/…`: `implement-slice`, `plan-welle`, `close-welle`) — die Slash-Command-
+*Anleitung*, mit der ein Agent die Harness-Rollen fährt (Slice implementieren, Welle
+planen/schließen, geerdet in den Regelwerk-Modulen zu Lifecycle/Rollen/Review/Verifikation).
+Damit erhält der Adopter den **Prozess**, nicht nur die Gerüste.
+
+**Quelle (Picker, nicht Generator — §5).** Die Commands kommen aus dem **gepinnten
+Kurs-Template-Satz** (Single Source of Truth, wie die Doc-Templates aus [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)),
+nicht tool-generiert aus dem Nichts. Vorbedingung ist daher eine **Kurs-Upstream-Ergänzung**:
+die Command-Vorlagen liegen im Template-Satz (der heute die Reviewer-/Closure-Skills trägt,
+noch **nicht** die Slash-Commands). Fehlen sie upstream, wird das Feature **begründet nicht
+emittiert** — kein halluziniertes Artefakt ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+
+**Abgrenzung zu [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren).** LH-FA-06 emittiert die **Durchsetzung** (Stop-Hook,
+Gate-Nachweis, Command-Guard, `CLAUDE.md`, Reviewer-Skill — was den Prozess *erzwingt*);
+LH-FA-08 die **Anleitung** (die Workflow-Slash-Commands — was den Prozess *beschreibt*). Beide
+sind `.claude/`-Inhalt, aber verschiedene Klassen.
+
+**Akzeptanzkriterien:**
+
+- **Happy Path:** Given Bootstrap mit verfügbarem Kurs-Command-Satz, then
+  `.claude/commands/{implement-slice,plan-welle,close-welle}.md` liegen im Zielrepo, aus den
+  gepinnten Kurs-Vorlagen.
+- **Adaptierbar (zweiklassig, [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)):** Command-Vorlagen tragen repo-spezifische
+  Stellen (Adaptions-/„MR-Block", Build-Modell) als **adaptierbare** Marker, nicht 1:1 hart —
+  der Adopter passt sie an sein Repo an.
+- **Picker ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):** kein aus dem Nichts generierter Command; fehlt die Quelle
+  upstream, wird nicht emittiert (begründet, statt ein erfundenes Command auszuliefern).
+
 ## 4. Nichtfunktionale Anforderungen
 
 ### LH-QA-01 — Keine halluzinierten Gates (F4, F5, F6)
@@ -161,3 +192,4 @@ Generator).
 | 0.3.0 | 2026-06-13 | CR: neue [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) Durchsetzungsschicht emittieren; Guard bash+awk (zero-dep), Quelle Kurs-Templates ([`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md)) | Phase-2-Folge |
 | 0.4.0 | 2026-07-18 | CR: emittiertes Doc-Gate-Fragment `harness.mk` → `d-check.mk` ([`LH-FA-03`](../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7)) — per-Tool-Fragment aus `d-check --print-mk`, Sammelname obsolet, konsistent mit dem Dogfood ([`MR-010`](../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)); weitere Gate-Tools analog (arch-Gate a-check → `a-check.mk`, wenn integriert) | slice-017-Folge |
 | 0.5.0 | 2026-07-18 | CR: neue [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) Arch-Gate-Baseline emittieren (`.a-check.yml` + `a-check.mk`, per-Tool analog [`LH-FA-03`](../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7)) — a-check als Architektur-Gate (hexagonale Schichten); nur aktiviert, wo das Skelett Schichten trägt ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Implementierung folgt mit Emitter/Go-Code (Doc-führt) | a-check-Integration |
+| 0.6.0 | 2026-07-18 | CR: neue [`LH-FA-08`](../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) Agenten-Workflow-Commands emittieren (`.claude/commands/` — Picker aus den Kurs-Templates, abgegrenzt von [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)-Durchsetzung; Vorbedingung Kurs-Upstream-Ergänzung). Header-Version mit der Historie reconciled (lag auf 0.3.0). Implementierung folgt als späterer Slice (Doc-führt) | Workflow-Command-Idee |
