@@ -26,8 +26,8 @@ Nach [Kurs Modul 6 §Wellen-Closure-Prozedur](https://github.com/pt9912/ai-harne
 Erst wenn alle fünf Belege vorliegen, ist die Welle *auditierbar* geschlossen — jeder
 Schritt hinterlässt einen Beleg, keiner ein Datum:
 
-1. **Trigger prüfen.** slice-001, slice-002, slice-003 liegen in `done/`; `make gates`
-   grün (inkl. der in slice-001 promoteten Go-Gates `build`/`lint`); Smoke: Bootstrap in tmp-Repo
+1. **Trigger prüfen.** slice-001a, slice-001b, slice-002, slice-003 liegen in `done/`; `make gates`
+   grün (inkl. der in slice-001b promoteten Go-Gates `build`/`lint`); Smoke: Bootstrap in tmp-Repo
    offline → erwartete Dateien vorhanden ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Vorstufe, voller Smoke erst
    nach welle-02). Beobachtbare Bedingung, kein Kalendertag.
 2. **Carveout-Audit der Welle** ([Modul 7](https://github.com/pt9912/ai-harness-course/blob/v3.1.0/kurs/de/02-planung/modul-07-carveouts.md)).
@@ -52,6 +52,7 @@ Schritt hinterlässt einen Beleg, keiner ein Datum:
 | Slice | Titel | Status | Bezug |
 |---|---|---|---|
 | [slice-001a](open/slice-001a-cli-skeleton.md) | CLI-Skeleton (Go) + go-test-Gate | open | [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
+| [slice-001b](open/slice-001b-go-gates.md) | Go-Gates build/lint + Promotion | open | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
 | [slice-002](open/slice-002-doc-gate-emit.md) | Doc-Gate-Baseline emittieren | open | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-003](open/slice-003-template-ablage.md) | Zweiklassige Template-Ablage | open | [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) |
 
@@ -60,7 +61,7 @@ Schritt hinterlässt einen Beleg, keiner ein Datum:
 - Blockiert: welle-02 (Picker/README setzen auf dem CLI-Skeleton auf).
 - Wird blockiert von: keine (erste Welle).
 - Intern: slice-002 und slice-003 setzen auf dem Arg-Parser/Skeleton aus
-  slice-001 auf.
+  slice-001a auf; slice-001b (build/lint-Gates) hängt an slice-001a.
 
 ## 6. Out-of-Scope für diese Welle
 
