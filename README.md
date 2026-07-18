@@ -45,7 +45,7 @@ of Truth bleibt der Kurs. Emittiert wird nur, was wirklich läuft.
 - **Prozess:** [`AGENTS.md`](AGENTS.md) (Hard Rules), [`harness/README.md`](harness/README.md) (Source Precedence, Sensors).
 - **Verträge:** [`spec/lastenheft.md`](spec/lastenheft.md) (`LH-*`-IDs mit Akzeptanzkriterien).
 - **Entscheidungen:** [`docs/plan/adr/`](docs/plan/adr/) — z. B. [`ADR-0001`](docs/plan/adr/0001-skelett-distribution.md) (Skelett-Distribution).
-- **Gates:** `make docs-check` (links/anchors/ids/codepaths), `make test` (Command-Guard bats + Go-Unit-Tests), `make shell-lint` (shellcheck) — grün; `make gates` bündelt sie. (Go-`lint`/`build` folgen mit slice-001b.)
+- **Gates:** `make docs-check` (links/anchors/ids/codepaths), `make test` (Command-Guard bats + Go-Unit-Tests), `make lint`/`make build` (Go via Dockerfile-Stages), `make shell-lint` (shellcheck) — grün; `make gates` bündelt sie. (Das arch-Gate a-check folgt mit dem Go-Code.)
 
 ## Lizenz
 

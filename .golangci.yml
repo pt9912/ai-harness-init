@@ -1,0 +1,174 @@
+# .golangci.yml — Lint-Profil von ai-harness-init (a-check gespiegelt).
+#
+# Hard Rule (AGENTS.md §3.2): //nolint-Direktiven im Code sind verboten;
+# Ausnahmen leben hier zentral unter `exclusions` mit Why:-Kommentar. Läuft
+# Docker-only im gepinnten golangci-lint-Image (Dockerfile lint-Stage).
+
+version: "2"
+
+linters:
+  default: none
+  enable:
+    # Default-Linter
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+
+    # SOLID-nahe Linter (Parität zum a-check-Stack)
+    - containedctx
+    - contextcheck
+    - cyclop
+    - dupl
+    - fatcontext
+    - forbidigo
+    - funlen
+    - gochecknoglobals
+    - gochecknoinits
+    - gocognit
+    - gocyclo
+    - gomodguard_v2
+    - iface
+    - inamedparam
+    - interfacebloat
+    - ireturn
+    - maintidx
+    - nestif
+    - noctx
+    - reassign
+    - revive
+    - testpackage
+    - unparam
+
+  settings:
+    errcheck:
+      # main.go schreibt Usage/Fehler über fmt.Fprint* auf injizierte Writer;
+      # deren Rückgabe-Fehler werden bewusst ignoriert (CLI-Ausgabe).
+      exclude-functions:
+        - fmt.Fprintln
+        - fmt.Fprintf
+        - fmt.Fprint
+
+    cyclop:
+      max-complexity: 15
+
+    dupl:
+      threshold: 150
+
+    forbidigo:
+      forbid:
+        - pattern: ^fmt\.Print.*$
+          msg: schreibe über injizierte io.Writer (CLI/Reporter), kein direktes Stdout
+
+    funlen:
+      lines: 100
+      statements: 60
+
+    gocognit:
+      min-complexity: 20
+
+    gocyclo:
+      min-complexity: 15
+
+    interfacebloat:
+      max: 10
+
+    ireturn:
+      allow:
+        - error
+        - empty
+        - anon
+        - stdlib
+        - generic
+
+    maintidx:
+      under: 20
+
+    nestif:
+      min-complexity: 5
+
+    revive:
+      rules:
+        - name: blank-imports
+        - name: context-as-argument
+        - name: context-keys-type
+        - name: dot-imports
+        - name: empty-block
+        - name: error-naming
+        - name: error-return
+        - name: error-strings
+        - name: errorf
+        - name: exported
+        - name: if-return
+        - name: increment-decrement
+        - name: indent-error-flow
+        - name: package-comments
+        - name: range
+        - name: receiver-naming
+        - name: redefines-builtin-id
+        - name: superfluous-else
+        - name: time-naming
+        - name: unexported-return
+        - name: unreachable-code
+        - name: unused-parameter
+        - name: var-declaration
+        - name: var-naming
+        - name: unused-receiver
+
+    gomodguard_v2:
+      # Anti-Module (LH-QA-03): die Dependency-Fläche bleibt minimal. Aktuell
+      # trägt ai-harness-init keine externen Deps; die Liste ist ein
+      # Vorwärts-Guard (dieselbe Linie wie a-check).
+      blocked:
+        - module: github.com/pkg/errors
+          recommendations:
+            - errors
+            - fmt
+          reason: "stdlib (errors.Is/As/Unwrap + fmt.Errorf %w) deckt alles ab."
+        - module: github.com/sirupsen/logrus
+          recommendations:
+            - log/slog
+          reason: "kein Logging-Bedarf jenseits stderr; falls später, dann slog."
+        - module: go.uber.org/zap
+          recommendations:
+            - log/slog
+          reason: "wie logrus — slog wäre der stdlib-Standard."
+
+  exclusions:
+    generated: lax
+    rules:
+      # Why: table-driven Tests haben legitim höhere Komplexität ohne Design-Smell.
+      - linters:
+          - cyclop
+          - gocognit
+          - gocyclo
+          - nestif
+          - funlen
+        path: _test\.go$
+
+      # Why: Tests brauchen weder ctx-Propagation noch ausgeschöpfte Parameter.
+      - linters:
+          - noctx
+          - unparam
+        path: _test\.go$
+
+      - linters:
+          - revive
+        path: _test\.go$
+        text: ^unused-parameter
+
+      # Why: Fakes/Mocks in _test.go tragen legitim ungenutzte Receiver
+      # (Interface-Erfüllung ohne Zustand) — a-check-Parität (Review-LOW-1).
+      - linters:
+          - revive
+        path: _test\.go$
+        text: ^unused-receiver
+
+      # Why: main_test.go testet die unexportierte run()-Funktion White-Box
+      # (package main) — testpackage (das ein separates _test-Paket verlangt)
+      # ist für den CLI-Einstieg nicht anwendbar; die Fehlerpfade sind nur
+      # paket-intern erreichbar.
+      - linters:
+          - testpackage
+        path: cmd/

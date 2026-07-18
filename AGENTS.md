@@ -84,10 +84,12 @@ PR-Kommentar.
 | `make baseline-verify` | Vendored Baseline netzlos verifizieren (Integrität + Vollständigkeit, [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) |
 | `make docs-check` | Doku-Referenzen (links/anchors/ids/codepaths) via d-check |
 | `make test` | Command-Guard-Tests (bats) + Go-Unit-Tests (Dockerfile-`test`-Stage) im gepinnten Image |
+| `make lint` | Go-Lint (golangci-lint, Dockerfile-`lint`-Stage) im gepinnten Image |
+| `make build` | Go-Binary cross-compilieren (Dockerfile-`build`-Stage) im gepinnten Image |
 | `make shell-lint` | Shell-Hooks/-Helfer lint-clean (shellcheck) im gepinnten Image |
 | `make gates` | alle aktuell lauffähigen Gates |
 
-**Nicht behauptet** (folgt mit slice-001b): `build`/`lint` (Go-Toolchain im gepinnten Image — Cross-Compile / `golangci-lint`). `make test` deckt jetzt die bash+awk-Guard-Suite (bats) **und** die Go-Unit-Tests (Dockerfile-`test`-Stage, slice-001a); `make shell-lint` die Shell-Hooks (shellcheck).
+Der Dogfood-Go-Gate-Stack ist **vollständig**: `make lint` / `make build` / `make test` (Go via Dockerfile-Stages, slice-001a/b) neben `docs-check` / `shell-lint` / `baseline-verify`. **Nicht behauptet**: das Architektur-Gate (a-check, [`LH-FA-07`](spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) — bewusst aufgeschoben, bis hexagonale Schichten existieren; sonst wäre es ein halluziniertes Gate über leerem Prüfbereich ([`LH-QA-01`](spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 
 ## 5. Dokumentations-Regeln
 

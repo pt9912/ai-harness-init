@@ -12,6 +12,7 @@ SHELLCHECK_IMAGE ?= koalaman/shellcheck@sha256:bb596a0d169b85ddd81d8b6d3a2ff6d5b
 # steht digest-gepinnt im Dockerfile (LH-QA-02). Go-Gates leben im Makefile
 # (NICHT d-check.mk) und treiben Dockerfile-Stages via `docker build --target`.
 GO_VERSION ?= 1.26.4
+GOLANGCI_LINT_VERSION ?= v2.12.2
 
 # Vendored Baseline (MR-007): Regelwerk UND Templates liegen committet unter
 # .harness/baseline/$(BASELINE_TAG)/{regelwerk,templates}/ + SHA256SUMS —
@@ -32,7 +33,7 @@ BASELINE_TAG ?= v3.1.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= bd90c721e7583b218d097def8abac42fb0544c7a140e2e649d71e772f7a90220
 
-.PHONY: help gates record-gates test shell-lint baseline-verify regelwerk-check baseline-freshness
+.PHONY: help gates record-gates test lint build compile shell-lint baseline-verify regelwerk-check baseline-freshness
 help: ## Targets anzeigen
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-14s %s\n", $$1, $$2}'
@@ -40,6 +41,15 @@ help: ## Targets anzeigen
 test: ## Harness-Tests (bats) + Go-Unit-Tests (go test in Docker) — Docker-only (ADR-0003/0004)
 	docker run --rm --network none -v "$(CURDIR)":/code:ro -w /code $(BATS_IMAGE) test/
 	docker build --no-cache-filter test --build-arg GO_VERSION=$(GO_VERSION) --target test -t ai-harness-init:test .
+
+lint: ## Go-Lint (golangci-lint, Dockerfile lint-Stage, gepinntes Image) — Docker-only (ADR-0003)
+	docker build --no-cache-filter lint --build-arg GO_VERSION=$(GO_VERSION) --build-arg GOLANGCI_LINT_VERSION=$(GOLANGCI_LINT_VERSION) --target lint -t ai-harness-init:lint .
+
+build: ## Go-Binary cross-compilieren (Dockerfile build-Stage, gepinntes Image) — Docker-only (ADR-0003)
+	docker build --build-arg GO_VERSION=$(GO_VERSION) --target build -t ai-harness-init:build .
+
+compile: ## Schnelles Compile-Feedback (Dockerfile compile-Stage, ohne Tests/Lint) — Docker-only; NICHT in gates
+	docker build --build-arg GO_VERSION=$(GO_VERSION) --target compile -t ai-harness-init:compile .
 
 # shellcheck über die harness-eigenen Shell-Hooks/-Helfer. .bats ist
 # ausgenommen (shellcheck parst die @test-Syntax nicht); .awk ist kein Shell.
@@ -99,4 +109,4 @@ record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
 # baseline-verify läuft als ERSTER Prerequisite: steht die vendored Baseline
 # nicht, ist jede Aussage der Folge-Gates über sie wertlos. record-gates läuft
 # als LETZTER — der Nachweis entsteht nur nach grünen Gates (MR-002).
-gates: baseline-verify docs-check test shell-lint record-gates ## alle aktuell lauffähigen Gates + Nachweis
+gates: baseline-verify docs-check lint build test shell-lint record-gates ## alle aktuell lauffähigen Gates + Nachweis

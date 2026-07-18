@@ -23,17 +23,17 @@ Vervollständigt die Fitness Function aus [`ADR-0003`](../../../../docs/plan/adr
 
 ## 2. Definition of Done
 
-- [ ] `make build` cross-compiliert `cmd/ai-harness-init` in der Dockerfile-`build`-Stage im
+- [x] `make build` cross-compiliert `cmd/ai-harness-init` in der Dockerfile-`build`-Stage im
       **digest-gepinnten** Go-Image ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)); **kein Host-`go`**.
-- [ ] `make lint` (golangci-lint in gepinntem Image, Dockerfile-`lint`-Stage) grün, **keine
+- [x] `make lint` (golangci-lint in gepinntem Image, Dockerfile-`lint`-Stage) grün, **keine
       Inline-Suppression** (Hard Rule 3.2); `.golangci.yml` trägt die zentrale Lint-Config
       (Suppressions nur dort, begründet).
-- [ ] `build`/`lint` sind im `Makefile` angelegt **und im selben Commit** ins `gates`-Target
+- [x] `build`/`lint` sind im `Makefile` angelegt **und im selben Commit** ins `gates`-Target
       aufgenommen sowie in [`AGENTS.md`](../../../../AGENTS.md) §4 + [`harness/README.md`](../../../../harness/README.md) §Sensors aus
       „Nicht behauptet" promotet — Promotion **erst nach lauffähigem, grünem Target**, nie davor
       ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), Hard Rule 3.1).
-- [ ] `make gates` grün auf frischem Checkout ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Smoke).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] `make gates` grün auf frischem Checkout ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Smoke).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -70,7 +70,43 @@ DoD vollständig + Review konform + Verifier bestätigt + Closure-Notiz → nach
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Geliefert.** Der volle **Dogfood-Go-Gate-Stack**: `make lint` (golangci-lint, Dockerfile-`lint`-Stage,
+a-check-Config gespiegelt) + `make build` (Cross-Compile, `build`-Stage) — beide digest-gepinnt, in
+`gates` und aus „Nicht behauptet" in AGENTS §4/README §Sensors promotet (erst **nach** grünem Target,
+Hard Rule 3.1). Dazu `make compile` (dev-Feedback, nicht in gates) + `.golangci.yml` (zentral, keine
+Inline-Suppression). Damit ist der re-slicte slice-001 komplett: 001a (Skeleton + go-test) + 001b
+(build/lint).
+
+**Was funktionierte.** Die a-check-Spiegelung trug 1:1: die golangci-Config lief **„0 issues"** ohne
+Iteration; das gebaute Binary läuft (Reviewer+Verifier: `--help`→Usage, fehlendes `--lang`→Exit 2).
+golangci-lint-Image byte-identisch zu a-check (`sha256:5cceeef0…`). Rollen-Trennung fing LOW-1
+(fehlende `unused-receiver`-Test-Ausnahme) + INFO-1 (ungenutzte compile-Stage → `make compile`).
+
+**Was anders lief.** Die golangci-Config ist a-check **adaptiert** (a-check-Port-`ireturn`/yaml-
+`gomodguard` raus; `testpackage` schließt `cmd/` aus — `main_test.go` testet `run()` White-Box). Der
+Go-Gate-Home ist das **Makefile** (nicht `d-check.mk`).
+
+**Steering-Loop-Einträge.**
+1. *Neuer Sensor:* `make lint` + `make build` sind jetzt behauptete Gates in `gates`; der
+   Go-Gate-Stack (lint/build/test) ist über Dockerfile-Stages vollständig. Das a-check-Muster
+   (`docker build --target`, digest-gepinnte Bases, `--no-cache-filter` für Gate-Stages, die
+   `go`/`golangci-lint`-Literale im Dockerfile → guard-sicher) ist der Repo-Standard für Go-Gates.
+2. *Geschärfte Praxis:* Die golangci-Config wird **aus a-check gespiegelt und adaptiert** (nicht neu
+   erfunden); Suppressions zentral in `.golangci.yml` mit `Why:` (Hard Rule 3.2, kein `//nolint`).
+3. *Meilenstein-Nähe:* welle-01/M1 verlangt slice-001a/001b/002/003 `done/`. 001a+001b sind jetzt
+   `done/`; **slice-002/003 (Emit)** bleiben — Skeleton (001a) + Gates (001b) sind ihre Basis.
+
+**Folge-Slices.** slice-002 (Doc-Gate-Emit) + slice-003 (Template-Ablage) — hängen am Skeleton (001a),
+jetzt entsperrt. Das arch-Gate a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) folgt mit hexagonaler Architektur.
+
+**Verifikation.**
+- `make gates`: grün (baseline-verify + docs-check 53/0 + **lint „0 issues"** + **build** + 50 bats +
+  go-test + shellcheck), Exit 0.
+- Unabhängiger **Reviewer** (Modul 10, frischer Kontext): merge-blockierend **nein** (0 HIGH/MEDIUM;
+  LOW-1+INFO-1 behoben, 2 INFO = a-check-Muster). Bericht: `docs/reviews/2026-07-18-slice-001b-impl-review.md`.
+- Unabhängiger **Verifier** (Modul 11, frischer Kontext): **4/5 DoD CONFIRMED, 0 VIOLATED** (DoD-5 =
+  dieser Schritt). Bericht: `docs/reviews/2026-07-18-slice-001b-verification.md`.
+- golangci-lint-Image + golang-Base digest-gepinnt, byte-identisch zu a-check (Verifier-gegenbelegt).
 
 ## 8. Sub-Area-Modus-Begründung
 
