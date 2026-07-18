@@ -27,13 +27,13 @@ BASELINE_TAG ?= v3.1.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= bd90c721e7583b218d097def8abac42fb0544c7a140e2e649d71e772f7a90220
 
-.PHONY: help gates record-gates test shell-lint baseline-verify regelwerk-check
+.PHONY: help gates record-gates test shell-lint baseline-verify regelwerk-check baseline-freshness
 help: ## Targets anzeigen
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-14s %s\n", $$1, $$2}'
 
-test: ## Command-Guard-Tests (bats) im gepinnten Image — Docker-only (ADR-0004)
-	docker run --rm -v "$(CURDIR)":/code:ro -w /code $(BATS_IMAGE) test/
+test: ## Harness-Tests (bats), netzlos, im gepinnten Image — Docker-only (ADR-0004)
+	docker run --rm --network none -v "$(CURDIR)":/code:ro -w /code $(BATS_IMAGE) test/
 
 # shellcheck über die harness-eigenen Shell-Hooks/-Helfer. .bats ist
 # ausgenommen (shellcheck parst die @test-Syntax nicht); .awk ist kein Shell.
@@ -73,7 +73,19 @@ regelwerk-check: ## Upstream-Drift des Baseline-ZIP melden (read-only, Baum unbe
 		echo "  -> manuell re-reviewen, dann Baum neu vendoren + BASELINE_TAG/BASELINE_ZIP_SHA256 neu setzen."; \
 		exit 1; \
 	fi
-	@echo "Hinweis: prüft NUR das Asset von $(BASELINE_TAG). Ein NEUER Tag upstream bleibt hier unsichtbar — Release-Liste separat prüfen (MR-007, Auflösungs-Trigger)."
+	@echo "Hinweis: prüft NUR das Asset von $(BASELINE_TAG). Ein NEUER Tag upstream bleibt hier unsichtbar — 'make baseline-freshness' prüft die Release-Liste (slice-018, MR-007)."
+
+# Read-only Freshness-Sensor: folgt dem releases/latest-Redirect und meldet einen
+# NEUEREN Upstream-Tag als BASELINE_TAG (Release-LISTEN-Achse) — ergaenzt
+# regelwerk-checks Asset-Achse (MR-007-Luecke). Maintenance/CI (Netz, Host-curl),
+# NICHT in gates (LH-QA-01: make gates bleibt offline-gruen). Skript-Exit: 0 =
+# aktuell, 1 = VERALTET, 2 = Fetch-Fehler — aber `make` kollabiert jeden
+# Nonzero-Recipe-Exit auf sein Exit 2 (fuer CI: 0 = aktuell, !=0 = Alarm; ob
+# veraltet oder Fetch-Fehler sagt die echo-Meldung, wie bei regelwerk-check).
+# Mutiert nichts; Logik in harness/tools/ (shell-lint deckt sie),
+# Fetch<->Vergleich getrennt (hermetisch testbar).
+baseline-freshness: ## Neueren Upstream-Tag als BASELINE_TAG melden (read-only) — Maintenance/CI, NICHT in gates
+	@BASELINE_TAG='$(BASELINE_TAG)' RELEASES_LATEST_URL='https://github.com/pt9912/ai-harness-course/releases/latest' bash harness/tools/baseline-freshness.sh
 
 record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh

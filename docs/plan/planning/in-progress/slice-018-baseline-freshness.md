@@ -41,32 +41,34 @@ in `regelwerk/README.md` nutzt ihn).
 
 ## 2. Definition of Done
 
-- [ ] `make baseline-freshness` löst `releases/latest` per Redirect-Follow auf, extrahiert
+- [x] `make baseline-freshness` löst `releases/latest` per Redirect-Follow auf, extrahiert
       den neuesten Tag, vergleicht mit `BASELINE_TAG`: gleich → exit 0 „aktuell"; neuerer Tag
       → nonzero + klare Meldung (`gepinnt: … / latest: …`); Fetch-Fehler **≠** veraltet
       (eigener Exit/Hinweis) — spiegelt die 0/1/2-Semantik von `regelwerk-check`.
-- [ ] Logik in `harness/tools/baseline-freshness.sh` <!-- d-check:ignore (geplante Datei — existiert erst nach Umsetzung dieses Slice; Doc führt, Code folgt) -->, **Fetch↔Vergleich getrennt** (hermetisch
+- [x] Logik in `harness/tools/baseline-freshness.sh`, **Fetch↔Vergleich getrennt** (hermetisch
       testbar); shellcheck-clean (von `shell-lint` gedeckt). Reuse `BASELINE_TAG` als einzige
       Tag-Quelle ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — kein neuer Pin-Speicher.
-- [ ] **Nicht in `gates`, keine Sensor-Promotion** (Netz bräche offline-grün,
+- [x] **Nicht in `gates`, keine Sensor-Promotion** (Netz bräche offline-grün,
       [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) — Maintenance/CI-Target. `make gates` bleibt netzlos (offline verifiziert).
-- [ ] **Hermetischer bats-Test** (Docker-only, [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)): der **Vergleicher** wird mit
+- [x] **Hermetischer bats-Test** (Docker-only, [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)): der **Vergleicher** wird mit
       Fixture-Strings getestet (`latest==pinned` → ok · `latest!=pinned` → Alarm · leer/Fehler
       → eigener Exit) — der Test trifft **nie** das Netz. **Gate-tragend (Plan-Review F-1):** die
       bats-Suite läuft über `make test` **in `gates`**; die Fetch↔Vergleich-Trennung muss daher
       garantieren, dass der Vergleicher-Test das Netz nicht trifft — sonst bräche `make gates`
-      offline-grün ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-- [ ] `regelwerk-check`s Schluss-`@echo` („Release-Liste separat prüfen") **und** der
+      offline-grün ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). **Strukturell erzwungen (Review INFO-1):** `make test` läuft mit
+      `--network none` — die Test-Hermetik hängt nicht mehr nur an Code-Pfad-Disziplin, sondern
+      am Container.
+- [x] `regelwerk-check`s Schluss-`@echo` („Release-Liste separat prüfen") **und** der
       [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)-Auflösungs-Trigger („offene Lücke … Kandidat für einen eigenen Slice")
       auf `make baseline-freshness` verweisen — Prosa-Hinweis wird ausführbarer Zeiger, Lücke
       als gelöst markiert.
-- [ ] `make gates` grün + Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] `make gates` grün + Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `harness/tools/baseline-freshness.sh` <!-- d-check:ignore (geplante Datei, s. DoD) --> | neu | Fetch↔Vergleich getrennt (hermetisch testbar), shell-lint-gedeckt |
+| `harness/tools/baseline-freshness.sh` | neu | Fetch↔Vergleich getrennt (hermetisch testbar), shell-lint-gedeckt |
 | `Makefile` | update | `baseline-freshness`-Target, **nicht** in `gates`; `regelwerk-check`-`@echo` auf das neue Target zeigen |
 | `test/baseline-freshness.bats` | neu | Vergleicher-Fixtures: aktuell / neuer Tag / Fetch-Fehler |
 | `harness/conventions.md` ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) | update | Auflösungs-Trigger: offene Lücke → gelöst (slice-018) |
@@ -108,7 +110,48 @@ Closure-Notiz → nach `done/`.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Geliefert.** `make baseline-freshness` (read-only) schließt die von [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
+benannte Lücke: es folgt dem `releases/latest`-Redirect und meldet einen neueren Upstream-Tag als
+`BASELINE_TAG` (die **Tag-Achse** neben `regelwerk-check`s Asset-Achse). Logik in
+`harness/tools/baseline-freshness.sh` (Fetch↔Vergleich getrennt, shellcheck-clean); hermetischer
+bats-Test (3 Fixture-Fälle); **nicht** in `gates` (Netz); `regelwerk-check`-`@echo` + der
+[`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)-Auflösungs-Trigger zeigen jetzt darauf.
+
+**Was funktionierte.** Der Smoke bewies die Lücke sofort **real**: `make baseline-freshness`
+alarmierte `gepinnt v3.1.0 / latest v3.2.0` — kein hypothetischer Bedarf, sondern ein aktueller
+Befund. Die Fetch↔Vergleich-Trennung machte den Test hermetisch (nur `--compare`, kein Netz). Die
+Rollen-Trennung fing beide Review-Befunde: LOW-1 (make kollabiert den Exit auf 2 — Caveat ergänzt)
+und INFO-1 (Härtung).
+
+**Was anders lief.** INFO-1 des Reviews führte zu einer **Bonus-Härtung über slice-018 hinaus:**
+`make test` läuft jetzt mit `--network none` — die Test-Hermetik (und damit die offline-grün-Zusage
+von `make gates`, [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) ist strukturell erzwungen, nicht mehr nur per
+Code-Pfad-Disziplin. Das deckt **alle** Tests, nicht nur slice-018.
+
+**Steering-Loop-Einträge.**
+1. *Neuer Sensor:* `make baseline-freshness` schließt die [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)-Tag-Achsen-Lücke —
+   beide Upstream-Achsen (Asset via `regelwerk-check`, Tag via `baseline-freshness`) sind jetzt
+   bewacht; `baseline-verify` bleibt die netzlose Arbeitskopie-Prüfung. Der ausgelagerte scheduled
+   CI-Job (§6, `.github/workflows/`) bleibt ein Folge-Slice.
+2. *Geschärfte Praxis (Härtung):* `make test --network none` — offline-grün ist jetzt am Container
+   erzwungen, nicht per Disziplin. Muster übertragbar (vgl. `docs-check --network none`, slice-017).
+3. *Realer Befund → Aktion:* Der erste Sensor-Lauf zeigt, dass das Baseline **veraltet** ist
+   (`v3.1.0` vendored, `v3.2.0` upstream). Ein Re-Baseline auf `v3.2.0` ist die bewusste
+   [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)-Operation — jetzt **sensor-belegt**, nicht mehr nur vermutet.
+
+**Folge-Slices.** (a) **Re-Baseline `v3.1.0` → `v3.2.0`** (sensor-belegt, eigene
+[`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)-Operation). (b) Optional der scheduled CI-Job (§6). Beides eigene Slices, nicht Teil
+von slice-018.
+
+**Verifikation.**
+- `make gates`: grün (baseline-verify + docs-check 48/0 + **50 bats mit `--network none`** +
+  shellcheck), Exit 0.
+- **Smoke** `make baseline-freshness` (echter Netz-Lauf, read-only): alarmiert `v3.1.0` vs `v3.2.0`;
+  mutiert nichts (Re-Baseline ist die separate Operation).
+- Unabhängiger **Reviewer** (Modul 10, frischer Kontext): merge-blockierend **nein** (0 HIGH/MEDIUM;
+  LOW-1 + INFO-1 beide behoben). Bericht: `docs/reviews/2026-07-18-slice-018-impl-review.md`.
+- Unabhängiger **Verifier** (Modul 11, frischer Kontext): **6/7 DoD CONFIRMED, 0 VIOLATED** (DoD-7
+  war dieser Closure-Schritt). Bericht: `docs/reviews/2026-07-18-slice-018-verification.md`.
 
 ## 8. Sub-Area-Modus-Begründung
 

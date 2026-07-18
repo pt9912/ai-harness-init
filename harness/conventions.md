@@ -273,10 +273,13 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   damit ein **nachträglich verändertes Release-Asset** — **nicht** einen **neuen
   Tag**. Ein Upstream-Release bleibt unsichtbar, bis jemand die Release-Liste
   prüft; genau so entging dem Repo v3.0.0/v3.1.0, während sein Sensor auf v1.2.0
-  „kein Drift" meldete. Das ist eine **offene Lücke**, kein gelöstes Problem: ein
-  Sensor auf die Release-*Liste* (statt auf ein Asset) fehlt und ist Kandidat für
-  einen eigenen Slice. `baseline-verify` deckt sie **nicht** ab — es prüft nur die
-  eigene Arbeitskopie, nie den Upstream.
+  „kein Drift" meldete. Diese Lücke schließt **`make baseline-freshness`** (slice-018):
+  ein read-only Sensor auf die Release-*Liste* — er folgt dem `releases/latest`-Redirect
+  und vergleicht den effektiven Tag gegen `BASELINE_TAG` (die **Tag-Achse** neben
+  `regelwerk-check`s Asset-Achse). Maintenance/Netz, **nicht** in `gates` (offline-grün
+  bleibt); der Sensor mutiert nichts (Re-Baseline bleibt die bewusste Operation oben).
+  `baseline-verify` deckt weiterhin **keine** der beiden Upstream-Achsen ab — es prüft nur
+  die eigene Arbeitskopie, nie den Upstream.
 - **Migration:** Ein bestehender `.harness/cache/`-Cache aus
   [`MR-006`](#mr-006--regelwerk-cache-als-split-modul-verzeichnis) ist nach dem
   Umstieg ein nicht mehr regenerierbares Überbleibsel (`regelwerk-fetch` existiert
