@@ -22,13 +22,13 @@ wird nie mitkopiert.
 
 ## 2. Definition of Done
 
-- [ ] [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) erfüllt: Singletons → `.md`, wiederkehrende → `.template.md`.
-- [ ] Set-Index-README des Template-Sets wird nicht emittiert.
-- [ ] Projektname wird in die Singleton-Ziele gestempelt ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)-Detail).
-- [ ] [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) Boundary-AC: Lauf gegen Repo mit bereits vorhandener Datei **ohne** `--force` → kein Überschreiben (Exit≠0 + Hinweis); **mit** `--force` → Überschreiben. Go-Test deckt beide Fälle.
-- [ ] Go-Test: nach Lauf existieren die erwarteten `.md`/`.template.md`-Paare, keine Set-Index-README.
-- [ ] `make gates` grün.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) erfüllt: Singletons → `.md`, wiederkehrende → `.template.md`.
+- [x] Set-Index-README des Template-Sets wird nicht emittiert.
+- [x] Projektname wird in die Singleton-Ziele gestempelt ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)-Detail).
+- [x] [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) Boundary-AC: Lauf gegen Repo mit bereits vorhandener Datei **ohne** `--force` → kein Überschreiben (Exit≠0 + Hinweis); **mit** `--force` → Überschreiben. Go-Test deckt beide Fälle.
+- [x] Go-Test: nach Lauf existieren die erwarteten `.md`/`.template.md`-Paare, keine Set-Index-README.
+- [x] `make gates` grün.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -76,7 +76,45 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Geliefert:** `internal/emit.Templates` legt die Template-Baseline zweiklassig ab —
+Singletons → gefüllte `.md` (`StripHintBlock` + `<Projektname>`-Stempel), Wiederkehrende
+→ verbatim co-located `.template.md`. Set-Index-README nie (nicht eingebettet). Embed unter
+`internal/emit/skel/` (15 in-scope-Templates). Commits: Eintritts-Move `bdb4655` · Inhalt
+`dfa31b1` · Review-Fix `733c97e` · Exit-Move.
+
+**Was funktionierte:** Zweiklassige Ablage + roadmap-Sonderfall (`in-progress/`) end-to-end
+verifiziert (echter Bootstrap: 10 Singletons gestempelt, 5 Wiederkehrende verbatim, keine
+Set-Index). Der bats-Drift-Wächter hält `skel/` == in-scope-Teilmenge der vendored Baseline
+über zwei Achsen (Gleichheit + Vollständigkeit).
+
+**Was anders lief:** Der Drift-Wächter musste nach **bats** statt go-test, weil der
+go-test-Build-Kontext `.harness` ausschließt (`.dockerignore`) — nur der bats-Mount sieht
+`skel/` und die vendored Baseline gleichzeitig.
+
+**Steering-Loop-Einträge:**
+
+1. **Geschärfte Test-Platzierungs-Regel:** Ein Test, der ein **dockerignoriertes** Artefakt
+   (`.harness/…`) braucht, kann NICHT in der go-test-Stage laufen (Build-Kontext schließt es aus)
+   — er gehört in den **bats-Mount** (`-v CURDIR:/code`, sieht den ganzen Repo). Gilt für jeden
+   künftigen Embed-gegen-vendored-Wächter.
+2. **Neue Sensor-Achse (Subset-Embed-Drift):** Ein Drift-Wächter über eine **Teilmenge** braucht
+   ZWEI Achsen — *Gleichheit* (jedes Embed == Quelle) UND *Vollständigkeit* (jede in-scope-Quelle
+   hat ein Embed-Twin) — sonst bleibt ein upstream neu hinzugekommenes Element still unentdeckt
+   (Review-L2). Wiederverwendbar für jeden Teilmengen-Embed.
+
+**Folge-Slices:** keine neuen. Forward: die emittierten Singletons tragen noch `<!-- -->`-
+Kommentare + Nicht-`<Projektname>`-Platzhalter (Human-Content); ob das emittierte Repo sein
+eigenes Doc-Gate grün lässt, ist der Voll-Smoke von [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)/slice-005 (Happy-Path
+[`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)).
+
+**Verifikation (Beleg):** Verifier (Modul 11, frischer Kontext): 6/6 DoD CONFIRMED, 0 VIOLATED,
+[`ADR-0003`](../../adr/0003-go-native-binaries.md) konform — echter Emit (10 `.md` + 5 `.template.md`, keine Set-Index, roadmap in
+`in-progress/`), Force-Boundary real, `make gates` Exit 0. Reviewer (Modul 10): nicht
+merge-blockierend (0 HIGH/MEDIUM); L1/L2 in `733c97e` behandelt, INFO I1–I3 als scope-konforme
+Grenzen akzeptiert.
+
+**welle-01:** mit slice-003 in `done/` sind alle M1-Slices (001a/001b/002/003) abgeschlossen →
+Wellen-Closure-Schritt 1 (Trigger) ist erfüllt; die Closure-Prozedur (Modul 6, fünf Schritte) steht an.
 
 ## 8. Sub-Area-Modus-Begründung
 
