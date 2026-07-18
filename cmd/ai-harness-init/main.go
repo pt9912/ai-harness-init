@@ -1,14 +1,17 @@
 // Command ai-harness-init bootstrappt ein bestehendes Git-Repo mit dem
-// AI-Harness-Prozess. Dieser Skeleton-Stand (slice-001a) implementiert den
-// Arg-Parser mit den korrekten Fehlerpfaden; die Bootstrap-Wirkung (Templates,
-// Doc-Gate, Sprachskelett) folgt in slice-002/003.
+// AI-Harness-Prozess. Der Arg-Parser (slice-001a) tragt die korrekten
+// Fehlerpfade; slice-002 verdrahtet den ersten Emit-Schritt (Doc-Gate-Baseline).
+// Weitere Bootstrap-Wirkung (Templates, Sprachskelett) folgt in slice-003 ff.
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"io"
 	"os"
+
+	"github.com/pt9912/ai-harness-init/internal/emit"
 )
 
 const usage = `ai-harness-init — bootstrappt ein Git-Repo mit dem AI-Harness-Prozess.
@@ -23,15 +26,17 @@ Flags:
   -h, --help    diese Hilfe anzeigen
 `
 
-// run parst die Argumente und liefert den Exit-Code. Ein-/Ausgabe sind
-// injiziert, damit die Fehlerpfade ohne Prozess-Exit testbar sind (slice-001a).
-func run(args []string, stdout, stderr io.Writer) int {
+// run parst die Argumente und liefert den Exit-Code. Ein-/Ausgabe und das
+// Zielverzeichnis sind injiziert, damit die Fehler- und Emit-Pfade ohne
+// Prozess-Exit und ohne CWD-Mutation testbar sind. Exit-Codes: 0 = Erfolg,
+// 2 = Aufruf-/Argument-Fehler (Usage), 1 = Emit-Fehler zur Laufzeit.
+func run(args []string, targetDir string, stdout, stderr io.Writer) int {
 	fs := flag.NewFlagSet("ai-harness-init", flag.ContinueOnError)
 	fs.SetOutput(io.Discard) // Ausgabe/Streams steuern wir selbst
 
 	lang := fs.String("lang", "", "Zielsprache (Pflicht)")
 	_ = fs.String("name", "", "Projektname")
-	_ = fs.Bool("force", false, "bestehende Dateien überschreiben")
+	force := fs.Bool("force", false, "bestehende Dateien überschreiben")
 
 	switch err := fs.Parse(args); {
 	case err == flag.ErrHelp:
@@ -52,11 +57,38 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return 2
 	}
 
-	// Stub: die Bootstrap-Wirkung folgt in slice-002/003.
-	fmt.Fprintf(stdout, "ai-harness-init: --lang=%s — Bootstrap noch nicht implementiert (slice-002/003).\n", *lang)
+	// Erster Bootstrap-Schritt (slice-002): Doc-Gate-Baseline emittieren. d-check.mk
+	// wird zur Laufzeit via `docker run <d-check> --print-mk` erzeugt (Docker ist die
+	// geforderte Bootstrap-Abhaengigkeit); der Pin ist per Env ueberschreibbar (Opt-in).
+	// Emit-Fehler (vorhandene Datei ohne --force, docker/d-check nicht verfuegbar) →
+	// Exit 1 auf stderr, kein Usage-Dump (kein Aufruf-Fehler).
+	opts := emit.Options{
+		Image:  envOr("DCHECK_IMAGE", emit.DefaultImage),
+		Digest: envOr("DCHECK_DIGEST", emit.DefaultDigest),
+		Force:  *force,
+	}
+	if err := emit.DocGate(context.Background(), targetDir, opts); err != nil {
+		fmt.Fprintln(stderr, "Fehler:", err)
+		return 1
+	}
+
+	fmt.Fprintf(stdout, "ai-harness-init: Doc-Gate-Baseline emittiert (.d-check.yml, d-check.mk) — --lang=%s.\n", *lang)
 	return 0
 }
 
+// envOr liefert den Wert der Umgebungsvariable key oder def, wenn sie leer/ungesetzt ist.
+func envOr(key, def string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return def
+}
+
 func main() {
-	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr))
+	wd, err := os.Getwd()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Fehler: Arbeitsverzeichnis nicht bestimmbar:", err)
+		os.Exit(1)
+	}
+	os.Exit(run(os.Args[1:], wd, os.Stdout, os.Stderr))
 }

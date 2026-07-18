@@ -33,7 +33,7 @@ BASELINE_TAG ?= v3.1.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= bd90c721e7583b218d097def8abac42fb0544c7a140e2e649d71e772f7a90220
 
-.PHONY: help gates record-gates test lint build compile shell-lint baseline-verify regelwerk-check baseline-freshness
+.PHONY: help gates record-gates test lint build compile smoke shell-lint baseline-verify regelwerk-check baseline-freshness
 help: ## Targets anzeigen
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-14s %s\n", $$1, $$2}'
@@ -50,6 +50,14 @@ build: ## Go-Binary cross-compilieren (Dockerfile build-Stage, gepinntes Image) 
 
 compile: ## Schnelles Compile-Feedback (Dockerfile compile-Stage, ohne Tests/Lint) — Docker-only; NICHT in gates
 	docker build --build-arg GO_VERSION=$(GO_VERSION) --target compile -t ai-harness-init:compile .
+
+# Tier-2 Emit-Smoke (slice-002): der ehrliche Green-Run des EMITTIERTEN Doc-Gates.
+# Extrahiert das Binary auf den Host (die Binary ruft selbst docker run d-check
+# --print-mk), emittiert in ein tmp-Repo und laesst dort docs-check real laufen.
+# Host-Docker + ggf. Netz-Pull -> NICHT in gates (make gates bleibt offline-schlank,
+# LH-QA-01); gehoert an DoD-Verify/CI/Wellen-Closure. Logik in harness/tools/ (shell-lint).
+smoke: ## Emit-Smoke: Doc-Gate in tmp-Repo emittieren + emittiertes docs-check real gruen (Host-Docker) — NICHT in gates
+	@GO_VERSION='$(GO_VERSION)' bash harness/tools/smoke.sh
 
 # shellcheck über die harness-eigenen Shell-Hooks/-Helfer. .bats ist
 # ausgenommen (shellcheck parst die @test-Syntax nicht); .awk ist kein Shell.
