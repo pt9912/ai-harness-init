@@ -22,12 +22,12 @@ frischen Repo inaktiv — kein halluziniertes bzw. brechendes Gate.
 
 ## 2. Definition of Done
 
-- [ ] [`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) erfüllt: `.d-check.yml` (embedded-minimal) + `d-check.mk` (Runtime-Codegen via `d-check --print-mk` + Adaption) werden emittiert.
-- [ ] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6): die emittierte `.d-check.yml` aktiviert nur `links`/`anchors` (Tier-1-Unit) **und** das emittierte `make docs-check` läuft im tmp-Repo real grün (Tier-2 `make smoke`) — kein halluziniertes Gate.
-- [ ] Digest aus der kanonischen Pin-Quelle (`d-check.mk` / `harness/conventions.md` §Baseline): `emit.DefaultDigest` == Pin in `d-check.mk`, nicht floating (Tier-1-Unit; [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
-- [ ] Green-Run (DoD-Präzisierung): `make smoke` emittiert in ein tmp-Repo und fährt `docs-check` real auf Exit 0 — host-orchestriert, weil der go-test-Gate kein Docker hat (Tier 2 statt Unit). Voller E2E-`make gates`-Smoke bleibt slice-005 ([welle-01 §6](../welle-01-offline-kern.md)).
-- [ ] `make gates` grün.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] [`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) erfüllt: `.d-check.yml` (embedded-minimal) + `d-check.mk` (Runtime-Codegen via `d-check --print-mk` + Adaption) werden emittiert.
+- [x] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6): die emittierte `.d-check.yml` aktiviert nur `links`/`anchors` (Tier-1-Unit) **und** das emittierte `make docs-check` läuft im tmp-Repo real grün (Tier-2 `make smoke`) — kein halluziniertes Gate.
+- [x] Digest aus der kanonischen Pin-Quelle (`d-check.mk` / `harness/conventions.md` §Baseline): `emit.DefaultDigest` == Pin in `d-check.mk`, nicht floating (Tier-1-Unit; [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
+- [x] Green-Run (DoD-Präzisierung): `make smoke` emittiert in ein tmp-Repo und fährt `docs-check` real auf Exit 0 — host-orchestriert, weil der go-test-Gate kein Docker hat (Tier 2 statt Unit). Voller E2E-`make gates`-Smoke bleibt slice-005 ([welle-01 §6](../welle-01-offline-kern.md)).
+- [x] `make gates` grün.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -70,7 +70,41 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Geliefert:** `internal/emit.DocGate` emittiert die Doc-Gate-Baseline. `.d-check.yml`
+embedded-minimal (`links`/`anchors`); `d-check.mk` per **Runtime-Codegen** (`docker run
+<d-check> --print-mk` zur Bootstrap-Zeit + `AdaptMK`-Transform), Pin per Env
+(`DCHECK_IMAGE`/`DCHECK_DIGEST`) Opt-in-überschreibbar. Commits: Eintritts-Move · Inhalt
+`5fd3e19` · Review-Fix `3ffdf3f` · Exit-Move.
+
+**Was funktionierte:** Runtime-Codegen eliminiert die Embed-Drift-Klasse — das Tool trägt
+kein Fragment, nur Pin + Transform; das emittierte `d-check.mk` ist stets das aktuelle
+d-check-Target-Set mit exakt dem erzeugenden Digest. Der Host-`make smoke` beweist den
+Green-Run ehrlich (emittiertes `docs-check` real: `0 Befund(e), Exit 0`).
+
+**Was anders lief:** DoD-4 („Go-Test: `docs-check` im tmp-Repo Exit 0") war im Docker-only-Build
+nicht als Unit lauffähig (kein Docker-in-Docker im go-test-Container) — reconciled zur
+3-Tier-Test-Architektur: der Green-Run ist Tier 2 (`make smoke`, Nicht-Gate), kein Skip, real belegt.
+
+**Steering-Loop-Einträge:**
+
+1. **Neues Test-/Sensor-Muster (wiederverwendbar):** Ein Slice, der ein Gate *emittiert*,
+   dessen Green-Run selbst Docker braucht, kann diesen Green-Run **nicht** als go-test-Unit
+   verifizieren (kein DinD im Build-Container). Muster: **3 Tiers** — Tier 1 (Unit: reine
+   Transform/Config, ohne Docker), Tier 2 (`make smoke`, Host-Docker, Nicht-Gate: echter
+   Emit→Gate-Lauf), Tier 3 (Voll-E2E, slice-005). Gilt direkt für slice-003 (Template-Ablage)
+   und [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) (arch-Gate a-check).
+2. **Geschärfte Design-Regel (Runtime-Codegen):** Tool-generierte Fragmente (`d-check.mk`,
+   künftig `a-check.mk`) **nicht** als eingebettete Kopie tragen (driftet), sondern zur
+   Bootstrap-Zeit vom autoritativen Tool erzeugen (`<tool> --print-mk`) + mechanisch adaptieren
+   — die Docker-Abhängigkeit ist zur Bootstrap-Zeit ohnehin gefordert ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
+   **Forward:** [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) (`a-check.mk`) sollte analog `a-check --print-mk` runtime-generieren, nicht einbetten.
+
+**Folge-Slices:** keine neuen; slice-003 erbt das Tier-2-Muster.
+
+**Verifikation (Beleg):** Verifier (Modul 11, frischer Kontext): 5/5 DoD CONFIRMED, 0 VIOLATED,
+[`ADR-0003`](../../adr/0003-go-native-binaries.md) konform — belegt über `make smoke` (`0 Befund(e), Exit 0`), `emit.DefaultDigest` ==
+kanonischer Pin, `make gates` grün. Reviewer (Modul 10): nicht merge-blockierend (0 HIGH);
+M1/L1/L2/L3 in `3ffdf3f` aufgelöst, INFO I1–I4 als dokumentierte Kanten akzeptiert.
 
 ## 8. Sub-Area-Modus-Begründung
 
