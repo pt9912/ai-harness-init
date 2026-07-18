@@ -32,10 +32,23 @@ wird nie mitkopiert.
 
 ## 3. Plan (vor Code)
 
+Scope (Nutzer-Entscheid): **[`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)-Kern**; fremd-besessene Dateien im Baum
+ausgeschlossen — Root-README ([`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2)/slice-005), Enforcement-Skills+CLAUDE
+([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)/[`ADR-0004`](../../adr/0004-durchsetzungs-emission.md)), Doc-Gate-Config (slice-002), Makefile
+(Gate/Enforcement-Baseline). Design: das Tool bettet den in-scope-Baum unter
+`internal/emit/skel/` ein (der Adopter hat den vendored Baum nicht); Singletons werden
+zu gefüllten `.md`-Zielen (Template-Hinweis-Block gestrippt, `<Projektname>` gestempelt),
+Wiederkehrende bleiben verbatim `.template.md`; die Roadmap landet unter in-progress/
+(sonst bräche der Link der emittierten planning-README). Die Set-Index-README des Sets
+ist gar nicht eingebettet → wird nie emittiert.
+
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `cmd/ai-harness-init` | update | Ablage-Schritt: Klassifizieren Singleton vs. wiederkehrend, stempeln |
-| `cmd/ai-harness-init/ablage_test.go` | neu | Paar-Existenz + Set-Index-README-Ausschluss prüfen |
+| `internal/emit/templates.go` | neu | `Templates` (Pre-Flight → klassifizieren → stempeln/strippen → schreiben) + `StripHintBlock` |
+| `internal/emit/skel/` | neu | eingebetteter in-scope Template-Baum (15 `.template.md`, aus der vendored Baseline) |
+| `cmd/ai-harness-init` | update | `emit.Templates` in den `--lang`-Erfolgspfad; `--name` erfasst |
+| `internal/emit/templates_test.go` | neu | Tier 1 (ohne `.harness`): Layout, Stempeln+Strippen, Verbatim, Force-Boundary |
+| `test/skel-drift.bats` | neu | Drift-Wächter `skel/` == vendored Baseline (bats sieht den ganzen Repo-Mount) |
 
 ## 4. Trigger
 
@@ -47,10 +60,19 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 
 ## 6. Risiken und offene Punkte
 
-- Klassifikations-Quelle: Welche Templates sind Singleton vs. wiederkehrend?
-  Aus dem Set ableitbar, aber muss eindeutig sein — sonst landet ein
-  wiederkehrendes Template als gefülltes `.md` (Drift). Liste fixieren.
-- `--force`-Semantik (Überschreiben) berührt diesen Slice ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) Boundary).
+- Klassifikations-Quelle **fixiert** (`isRecurring`): genau die fünf
+  [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)-Wiederkehrenden (`NNNN-titel`/`slice`/`welle`/`carveout`/`review-report`)
+  → `.template.md`; alles übrige Eingebettete → Singleton. Nicht aus dem Set „abgeleitet"
+  (fehleranfällig), sondern eine benannte Liste.
+- Drift-Wächter liegt in **bats**, nicht Go: der go-test-Build-Kontext schließt `.harness`
+  aus (`.dockerignore`), der bats-Lauf mountet aber den ganzen Repo — nur dort sind `skel/`
+  **und** die vendored Baseline gleichzeitig sichtbar. Die Go-Tests bleiben deshalb
+  self-contained (kein `.harness`-Zugriff).
+- `--force`-Semantik (Überschreiben) berührt diesen Slice ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) Boundary):
+  `Templates` prüft alle Ziele vor jedem Write (Pre-Flight) → bei Konflikt ohne `--force`
+  wird nichts geschrieben. **Rest-Kante:** über beide Emit-Schritte (Doc-Gate + Ablage)
+  hinweg gibt es keinen gemeinsamen Pre-Flight — ein Konflikt im zweiten Schritt lässt die
+  Dateien des ersten stehen (kein Überschreiben, aber Teil-Emit; wie slice-002 I1).
 
 ## 7. Closure-Notiz (nach `done/`)
 

@@ -35,7 +35,7 @@ func run(args []string, targetDir string, stdout, stderr io.Writer) int {
 	fs.SetOutput(io.Discard) // Ausgabe/Streams steuern wir selbst
 
 	lang := fs.String("lang", "", "Zielsprache (Pflicht)")
-	_ = fs.String("name", "", "Projektname")
+	name := fs.String("name", "", "Projektname")
 	force := fs.Bool("force", false, "bestehende Dateien überschreiben")
 
 	switch err := fs.Parse(args); {
@@ -71,8 +71,14 @@ func run(args []string, targetDir string, stdout, stderr io.Writer) int {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
+	// Template-Baseline zweiklassig ablegen (slice-003): Singletons -> .md
+	// (gestempelt), Wiederkehrende -> co-located .template.md.
+	if err := emit.Templates(targetDir, *name, *force); err != nil {
+		fmt.Fprintln(stderr, "Fehler:", err)
+		return 1
+	}
 
-	fmt.Fprintf(stdout, "ai-harness-init: Doc-Gate-Baseline emittiert (.d-check.yml, d-check.mk) — --lang=%s.\n", *lang)
+	fmt.Fprintf(stdout, "ai-harness-init: Bootstrap emittiert (Doc-Gate + Template-Baseline) — --lang=%s.\n", *lang)
 	return 0
 }
 
