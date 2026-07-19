@@ -11,7 +11,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Regelwerk + Templates:** `v3.5.0` committet vendored
   (`.harness/baseline/v3.5.0/`, [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
   `regelwerk/README.md`: **Kurs-Welle 32 · 2026-07-19**.
-- **d-check:** Image v0.50.0 (Digest in d-check.mk, [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert), [`MR-011`](#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines))
+- **d-check:** Image v0.51.1 (Digest in d-check.mk, [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert), [`MR-011`](#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines), [`MR-012`](#mr-012--d-check-pin-v0511-sources-verfügbar))
 - **Datum der Adoption:** 2026-06-13 (Templates-Stand damals: `templates-v4`).
   **Re-Baseline auf `v3.1.0`:** 2026-07-17 (slice-011/012); **auf `v3.5.0`:** 2026-07-19 (slice-019).
 
@@ -471,6 +471,29 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Auflösungs-Trigger:** permanent; Re-Pin bei d-check-Release manuell (Trockenlauf
   wiederholen, [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert) §Auflösungs-Trigger); die `citations`-Aktivierung ist ein eigener
   Slice, sobald der Direktiven-Korpus nicht-leer ist.
+
+### MR-012 — d-check-Pin v0.51.1 (sources verfügbar)
+
+- **Datum:** 2026-07-19
+- **Geltungsbereich:** `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`), `internal/emit/emit.go`
+  (emittierter Default-Pin), §Baseline-Version; setzt [`MR-011`](#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines) fort.
+- **Adaption:** Das gepinnte d-check-Image springt **v0.50.0 → v0.51.1** (Digest
+  `sha256:fede3d02…`, **dreifach belegt**: lokaler RepoDigest · `imagetools` · d-check-`version.md`/
+  Handbuch, [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). **Zweck:** das opt-in-Modul `sources`
+  (19., Netz, seit v0.51.0) **verfügbar** machen — Vorbedingung für die geplante `sources`-Adoption
+  (slice-020: ersetzt den Eigenbau `regelwerk-check` durch das tool-gelieferte Content-Pin-Modul).
+  **`sources` ist hier NICHT aktiviert** (leer aktiviert wäre ein Phantom-Gate,
+  [`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+- **Trockenlauf vor dem Pin (Pflicht, belegt — [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile)-Muster).** v0.51.1 gegen die
+  unveränderte Config, netzlos: **0-Befund-Differenz** zum v0.50.0-Stand (`sources` opt-in/Netz/nie
+  Default → inert; Handbuch v0.51.1: „ohne aktives `sources` byte-identisch" — hier gemessen bestätigt).
+  Einzige inhaltliche `--print-mk`-Fragment-Differenz zu v0.50.0: `--disable sources` in den fünf
+  fokussierten advisory-Recipes (verbatim vom Tool, wie damals `--disable citations`).
+- **Emitter-Pin gekoppelt (Tier-1-Drift).** `internal/emit`s `DefaultImage`/`DefaultDigest` zieht per
+  go-test mit (`TestDefault…_MatchesCanonical` liest `d-check.mk`); die emittierte Starter-Config bleibt
+  `modules: [links, anchors]` (Emitter ≠ Dogfood).
+- **Auflösungs-Trigger:** permanent; bei d-check-Release `d-check --print-mk` neu erzeugen + Digest neu
+  pinnen ([`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert) §Auflösungs-Trigger).
 
 ## Modus-Deklaration pro Sub-Area
 
