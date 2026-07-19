@@ -3,10 +3,11 @@
 Argument: $ARGUMENTS
 
 Dieser Command führt die **Planner**-Rolle für *eine* Welle (Modul 6 — Roadmap Engineering). Eine
-Welle ist ein **Bündel von Slices**, das gemeinsam geplant und geschlossen wird; ihr Status lebt in
-der **Roadmap** (`Status:`-Feld + Roadmap-Abschnitte), **nicht** im Verzeichnis — die Lifecycle-Ordner
-(`open/`·`next/`·`in-progress/`·`done/`) sind **slice-reserviert**. Der Welle-Plan liegt darum
-**flach** in `docs/plan/planning/<welle-id>.md`, nie in einem Lifecycle-Ordner.
+Welle ist ein **Bündel von Slices**, das gemeinsam geplant und geschlossen wird. Seit Regelwerk v3.5.0
+ist der Welle-Status die **Verzeichnis-Position**, **kein `Status:`-Feld**: die **aktive bzw. geplante**
+Welle liegt **flach** in `docs/plan/planning/<welle-id>.md`, bei Closure wandert sie per `git mv` nach
+`done/` (das schließt `/close-welle`). Ob eine flache Welle *aktuell* oder *geplant* ist, sagt die
+Roadmap (Sequenzierungs-Autorität).
 
 Kanonische Quellen (vendored Regelwerk, `.harness/baseline/<tag>/regelwerk/`): Modul 6 (Roadmap),
 Modul 5 (Planning-Lifecycle), Modul 7 (Carveouts). Bei Konflikt gilt der Kurs.
@@ -58,17 +59,19 @@ Lies den Adaptions-Block („MR-Block") in `harness/conventions.md`; die planung
    `docs/plan/planning/<welle-id>.md`** — flach in `planning/`, kein Lifecycle-Ordner. Provenienz mit
    `diff -q <template> <ziel>` belegen (byte-identisch, dann füllen).
 8. **In-place füllen** (Edits, **kein** Voll-Überschreiben): den `> **Template-Hinweis.**`-Block
-   strippen, alle Platzhalter ersetzen, die `<!-- -->`-Guidance-Kommentare entfernen. `Status:` auf
-   `open`/`in-progress` setzen (Verzeichnis-los), Zielmeilenstein und Verantwortlich/Datum. Die
-   Abschnitte mit den drei Pflichtteilen aus Schritt 4 füllen; Kennungen als Anker-Links.
+   strippen, alle Platzhalter ersetzen, die `<!-- -->`-Guidance-Kommentare entfernen. Die
+   **`Lifecycle:`-Note der Vorlage behalten** (Zustand = Verzeichnis-Position, **kein `Status:`-Feld**
+   — v3.5.0), Zielmeilenstein und Verantwortlich/Datum setzen. Die Abschnitte mit den drei
+   Pflichtteilen aus Schritt 4 füllen; Kennungen als Anker-Links.
 
 ## Roadmap verdrahten und gaten
 
 9. Roadmap fortschreiben: die Welle-Zeile in *Nächste Wellen* pflegen — **oder**, wenn ihr Trigger
    bereits erfüllt ist, sie in *Aktuelle Welle* heben (mit Slice-IDs · Trigger · Closure-Kriterien).
    Die Welle-Verweise der zugehörigen Slices auf die neue Plan-Datei ziehen.
-10. `make gates` laufen lassen (grün). Der Welle-Plan ist **Inhalt** → ein einzelner Commit, **kein
-    `git mv`** (Wellen bewegen sich nicht durch Ordner). Commit via `-F`.
+10. `make gates` laufen lassen (grün). Beim **Anlegen** ist der Welle-Plan **Inhalt** → ein einzelner
+    Commit, hier **kein `git mv`** (die neue Welle entsteht flach = aktiv/geplant). Der `git mv` nach
+    `done/` kommt erst bei der **Closure** (`/close-welle`). Commit via `-F`.
 
 **Merke (Modul 6):** Eine Welle endet durch **Closure-Kriterien**, nicht durch ein Datum
 (Welle ≠ Sprint). Ein Trigger ist eine beobachtbare Bedingung, kein Kalendertag. Die fertige Welle

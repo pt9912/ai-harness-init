@@ -7,9 +7,9 @@ Dieser Command führt die **Planner**-Rolle für die **Wellen-Closure** (Modul 6
 Slices bündelt — **fünf Schritte, jeder hinterlässt einen Beleg, keiner ein Datum.** Erst wenn alle
 fünf Belege vorliegen, ist die Welle *auditierbar* geschlossen.
 
-Die Welle-Plan-Datei bleibt dabei **flach in `planning/`** (`Status:` → `done`) — sie wandert **nie**
-nach `done/` wie ein Slice; die Lifecycle-Ordner sind slice-reserviert. Die Closure erzeugt stattdessen
-eine *separate* Results-Notiz.
+Seit Regelwerk v3.5.0 **wandert die Welle-Plan-Datei bei Closure per `git mv` nach `done/`** (neben
+ihre Results-Notiz) — der Zustand ist die **Verzeichnis-Position, kein `Status:`-Feld** (wie beim
+Slice). Die Closure erzeugt **zusätzlich** eine *separate* Results-Notiz (`done/<welle-id>-results.md`).
 
 Kanonische Quellen (vendored Regelwerk, `.harness/baseline/<tag>/regelwerk/`): Modul 6 (Roadmap /
 Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der Kurs.
@@ -45,11 +45,17 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
 4. **Schritt 3 — Closure-Notiz `done/<welle-id>-results.md` schreiben.** Hält fest, *was gelernt
    wurde*: geliefert · was funktionierte · was anders lief · **Steering-Loop-Einträge** (geschärfte
    Regel / neuer Sensor / benannte Spec-Lücke) · Folge-Slices · Verifikation (die Belege aus Schritt 1).
-   **Ohne Lerneintrag ist die Welle nicht „fertig", nur „weg".**
-5. **Schritt 4 — Wave-Self-Close-Commit.** Ein **einzelner, beobachtbarer** Commit markiert den
-   Abschluss. Sein Inhalt: die Results-Notiz + die Welle-Datei (`Status:` → `done`, §7 mit Verweis auf
-   die Results-Notiz) + die Roadmap-Fortschreibung (Schritt 5). **Kein `git mv`** — die Welle-Datei
-   bleibt flach in `planning/`. Commit via `-F`.
+   **Ohne Lerneintrag ist die Welle nicht „fertig", nur „weg".** **Zugleich (v3.5.0): die Welle-Plan-Datei
+   gehört per `git mv` nach `done/`** — wegen der repo-lokalen Hard Rule 3.3 (Move ≠ Inhalt) als **eigener
+   reiner Move-Commit** (s. Schritt 4). Der Move bricht die Inbound-Links (Roadmap + die Welle-Verweise
+   der Slices) **und** die eigenen `../`-Links der Datei (jetzt eine Ebene tiefer) → im selben Zug
+   reconcilen, bis `docs-check` grün ist.
+5. **Schritt 4 — Wave-Self-Close-Commit + Move.** Der **Self-Close-Commit** (Inhalt) trägt: die
+   Results-Notiz + die Welle-Datei §7 (Verweis auf die Results-Notiz; **kein `Status:`-Feld** — der
+   Zustand ist die Position) + die Roadmap-Fortschreibung (Schritt 5). **Danach** der reine
+   **`git mv`-Commit** der Welle-Plan-Datei nach `done/` und der **Link-Reconciliation-Commit** (Schritt 3):
+   Hard Rule 3.3 trennt Move und Inhalt, daher mehrere Commits statt des einen Baseline-Self-Close-Commits
+   — die Bewegung bleibt beobachtbar (ein zusammenhängender Zug). Commits via `-F`.
 6. **Schritt 5 — Roadmap fortschreiben** (`in-progress/roadmap.md`, im selben Commit): die Welle aus
    *Aktuelle Welle* in *Abgeschlossene Wellen* (mit Zeiger auf die Results-Notiz); die erste Zeile aus
    *Nächste Wellen* wird die neue *Aktuelle Welle*; den zugehörigen Meilenstein auf *erreicht* setzen,
