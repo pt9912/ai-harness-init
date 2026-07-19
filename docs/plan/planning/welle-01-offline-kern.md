@@ -1,6 +1,9 @@
 # Welle welle-01: Offline-Kern
 
-**Status:** done
+**Lifecycle:** Die aktive Welle liegt flach unter `docs/plan/planning/`; bei
+Closure wandert diese Datei per `git mv` nach `done/` (neben ihre
+`welle-<NN>-results.md`). Der Zustand ist die Verzeichnis-Position — kein
+Status-Feld. Ob eine flache Welle *aktuell* oder *geplant* ist, sagt die Roadmap.
 
 **Zielmeilenstein:** M1 (lauffähiger Offline-Kern)
 
