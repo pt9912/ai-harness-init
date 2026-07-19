@@ -62,7 +62,7 @@ bewusst nicht genannt — s. slice-013 §Abgrenzung).
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `.harness/skills/reviewer.md` | update | Pflicht-Kontext-Eingang (Modul 10), Version-Bump |
-| `docs/plan/planning/welle-01-offline-kern.md` | update | Closure-Prozedur Schritte 2/4/5 + `done/`-Pfad |
+| `docs/plan/planning/welle-01-offline-kern.md` <!-- d-check:ignore (Zeitbezug: Pfad-Stand zu slice-014; welle-01 wanderte erst mit der v3.5.0-Konformität nach done/) --> | update | Closure-Prozedur Schritte 2/4/5 + `done/`-Pfad |
 
 ## 4. Trigger
 

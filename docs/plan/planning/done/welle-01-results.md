@@ -1,6 +1,6 @@
 # welle-01 — Closure-Notiz (Ergebnisse)
 
-**Welle:** [welle-01-offline-kern](../welle-01-offline-kern.md). **Meilenstein:** M1 (lauffähiger Offline-Kern).
+**Welle:** [welle-01-offline-kern](welle-01-offline-kern.md). **Meilenstein:** M1 (lauffähiger Offline-Kern).
 **Abschluss:** 2026-07-18 (beobachtbarer Trigger, kein Kalendertag).
 
 Lerneintrag zur Wellen-Closure (Modul 6, Schritt 3): *was gelernt wurde*, nicht nur *dass sie weg ist*.

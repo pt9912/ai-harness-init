@@ -4,7 +4,7 @@
 (`open/` · `next/` · `in-progress/` · `done/`), Wechsel nur per `git mv` —
 v3.1.0-Konvention (`modul-05`).
 
-**Welle:** [welle-01-offline-kern](../welle-01-offline-kern.md).
+**Welle:** [welle-01-offline-kern](welle-01-offline-kern.md).
 
 **Bezug:** [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten), [`ADR-0003`](../../../../docs/plan/adr/0003-go-native-binaries.md).
 

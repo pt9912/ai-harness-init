@@ -4,7 +4,7 @@
 (`open/` · `next/` · `in-progress/` · `done/`), Wechsel nur per `git mv` —
 v3.1.0-Konvention (`modul-05`).
 
-**Welle:** [welle-01-offline-kern](../welle-01-offline-kern.md).
+**Welle:** [welle-01-offline-kern](welle-01-offline-kern.md).
 
 **Bezug:** [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) (Projektname-Stempelung, `--force`-Boundary).
 

@@ -4,7 +4,7 @@
 (`open/` · `next/` · `in-progress/` · `done/`), Wechsel nur per `git mv` —
 v3.1.0-Konvention (`modul-05`).
 
-**Welle:** [welle-01-offline-kern](../welle-01-offline-kern.md).
+**Welle:** [welle-01-offline-kern](welle-01-offline-kern.md).
 
 **Bezug:** [`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7), [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6).
 
@@ -25,7 +25,7 @@ frischen Repo inaktiv — kein halluziniertes bzw. brechendes Gate.
 - [x] [`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) erfüllt: `.d-check.yml` (embedded-minimal) + `d-check.mk` (Runtime-Codegen via `d-check --print-mk` + Adaption) werden emittiert.
 - [x] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6): die emittierte `.d-check.yml` aktiviert nur `links`/`anchors` (Tier-1-Unit) **und** das emittierte `make docs-check` läuft im tmp-Repo real grün (Tier-2 `make smoke`) — kein halluziniertes Gate.
 - [x] Digest aus der kanonischen Pin-Quelle (`d-check.mk` / `harness/conventions.md` §Baseline): `emit.DefaultDigest` == Pin in `d-check.mk`, nicht floating (Tier-1-Unit; [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
-- [x] Green-Run (DoD-Präzisierung): `make smoke` emittiert in ein tmp-Repo und fährt `docs-check` real auf Exit 0 — host-orchestriert, weil der go-test-Gate kein Docker hat (Tier 2 statt Unit). Voller E2E-`make gates`-Smoke bleibt slice-005 ([welle-01 §6](../welle-01-offline-kern.md)).
+- [x] Green-Run (DoD-Präzisierung): `make smoke` emittiert in ein tmp-Repo und fährt `docs-check` real auf Exit 0 — host-orchestriert, weil der go-test-Gate kein Docker hat (Tier 2 statt Unit). Voller E2E-`make gates`-Smoke bleibt slice-005 ([welle-01 §6](welle-01-offline-kern.md)).
 - [x] `make gates` grün.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 

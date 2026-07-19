@@ -53,7 +53,7 @@ flowchart LR
 
 | Welle | Abschluss | Closure-Notiz |
 |---|---|---|
-| [welle-01-offline-kern](../welle-01-offline-kern.md) | 2026-07-18 | [welle-01-results.md](../done/welle-01-results.md) |
+| [welle-01-offline-kern](../done/welle-01-offline-kern.md) | 2026-07-18 | [welle-01-results.md](../done/welle-01-results.md) |
 
 ## Historische Trigger-Verschiebungen
 
