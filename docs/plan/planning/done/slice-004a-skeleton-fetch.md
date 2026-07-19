@@ -7,7 +7,7 @@ wechselt nur durch `git mv`, siehe
 
 **Welle:** [welle-02-fetch-und-readme](../welle-02-fetch-und-readme.md).
 
-**Bezug:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md).
+**Bezug:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), `ADR-0001`. <!-- d-check:ignore (Verweis auf die superseded Skelett-Distributions-ADR; done/-Slice eingefroren) -->
 
 **Autor:** Demo. **Datum:** 2026-07-18.
 
@@ -16,7 +16,7 @@ wechselt nur durch `git mv`, siehe
 ## 1. Ziel
 
 `cmd/ai-harness-init --lang <X>` holt `lab/example/<X>/` vom **gepinnten Kurs-Tag**
-([`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md), Variante C) als Tag-Tarball und extrahiert den Teilbaum in den
+(`ADR-0001`, Variante C) als Tag-Tarball und extrahiert den Teilbaum in den <!-- d-check:ignore (Verweis auf die superseded Skelett-Distributions-ADR; done/-Slice eingefroren) -->
 **Staging-Bereich** `.harness/skeleton/` (der Merge in den Root ist [slice-004b](../open/slice-004b-skeleton-wire.md)).
 Unbekannte Sprache → Exit 2 + Liste verfügbarer Skelette.
 
@@ -45,7 +45,7 @@ Dependency ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhä
 ## 4. Trigger
 
 welle-02 in-progress; `cmd/ai-harness-init` parst `--lang` und emittiert offline (slice-001a/002/003 done).
-Rückführungen: zu groß → `in-progress → next`; blockiert (Kurs-Tag unerreichbar / air-gapped, [`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md)
+Rückführungen: zu groß → `in-progress → next`; blockiert (Kurs-Tag unerreichbar / air-gapped, `ADR-0001` <!-- d-check:ignore (Verweis auf die superseded Skelett-Distributions-ADR; done/-Slice eingefroren) -->
 Re-Eval) → `in-progress → open` (Carveout, Modul 7).
 
 ## 5. Closure-Trigger
@@ -54,11 +54,11 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 
 ## 6. Risiken und offene Punkte
 
-- **Netz beim Bootstrap nötig** ([`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md) Konsequenz). Air-gapped ist Re-Evaluierungs-Trigger von
-  [`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md), nicht Scope hier.
+- **Netz beim Bootstrap nötig** (`ADR-0001` Konsequenz). Air-gapped ist Re-Evaluierungs-Trigger von <!-- d-check:ignore (Verweis auf die superseded Skelett-Distributions-ADR; done/-Slice eingefroren) -->
+  `ADR-0001`, nicht Scope hier. <!-- d-check:ignore (Verweis auf die superseded Skelett-Distributions-ADR; done/-Slice eingefroren) -->
 - Test ohne echtes Netz: Fetch **injizieren/mocken** oder Fixture-Tarball — sonst flakey / [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)-Verstoß.
-- Reproduzierbarkeit: der Tag ist der Pin ([`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md)); ein sha-Pin des Tarballs (wie
-  `BASELINE_ZIP_SHA256`) wäre eine Härtung, ist aber von [`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md) nicht verlangt (offener Punkt für slice-004b/ADR).
+- Reproduzierbarkeit: der Tag ist der Pin (`ADR-0001`); ein sha-Pin des Tarballs (wie <!-- d-check:ignore (Verweis auf die superseded Skelett-Distributions-ADR; done/-Slice eingefroren) -->
+  `BASELINE_ZIP_SHA256`) wäre eine Härtung, ist aber von `ADR-0001` nicht verlangt (offener Punkt für slice-004b/ADR). <!-- d-check:ignore (Verweis auf die superseded Skelett-Distributions-ADR; done/-Slice eingefroren) -->
 - **Surfaced (nicht von diesem Slice verursacht):** `--lang` emittiert seit slice-003 Templates
   mit Vorwärts-Verweisen/Platzhaltern → das emittierte `docs-check` ist rot (5 `target-missing`,
   u. a. auf die noch fehlende Root-README). `make smoke` prüft daher jetzt „Bootstrap läuft +

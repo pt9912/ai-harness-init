@@ -29,7 +29,7 @@ ist fail-closed ohne `node` und widerspräche dem Minimal-Dep-Anspruch
 
 1. **Emission ins Zielrepo: ja.** Quelle ist das **gepinnte Kurs-Template-Set**
    (`lab/templates/.claude/`, `tools/harness/`, `CLAUDE.md`, `.harness/skills/`) —
-   Picker, kein Generator (konsistent mit [ADR-0001](0001-skelett-distribution.md)).
+   Picker, kein Generator (konsistent mit `ADR-0001`). <!-- d-check:ignore (Lineage-Verweis auf die superseded Skelett-Distributions-ADR; die Picker-Stanz dieser ADR gilt der Durchsetzungsschicht und bleibt unberührt) -->
 2. **Command-Guard in bash + awk.** `awk` ist POSIX-Basis (überall vorhanden, wo
    die bash-Hooks laufen) — **kein neuer Dep**, kein Per-Call-Container. Der
    awk-Extraktor zieht nur das eine Feld `tool_input.command`; bei Parse-Zweifel

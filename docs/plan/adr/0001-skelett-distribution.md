@@ -1,6 +1,6 @@
 # ADR-0001: Distribution der Sprachskelette
 
-**Status:** Accepted
+**Status:** Superseded by [ADR-0005](0005-ziel-repo-distribution.md)
 
 **Datum:** 2026-06-13
 
@@ -63,3 +63,4 @@ Wenn Offline-Bootstrap (air-gapped) zur Pflicht wird → Option A/B neu bewerten
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-06-13 | Accepted | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
+| 2026-07-19 | Superseded by [ADR-0005](0005-ziel-repo-distribution.md) — Skelett-Fetch → deterministischer Generator; Templates+Regelwerk-Fetch | Lastenheft v0.7.0 |

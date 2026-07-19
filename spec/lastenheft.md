@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.6.0
+**Version:** 0.7.0
 
 **Status:** Draft
 
@@ -14,10 +14,11 @@
 ## 1. Zweck und Geltungsbereich
 
 ai-harness-init ist eine CLI, die ein bestehendes Git-Repo mit dem
-AI-Harness-Kurs-Prozess bootstrappt: Templates vom gepinnten Kurs-Tag,
-die Doc-Gate-Baseline und sprachspezifische Code-Gates aus den
-lab/example-Skeletten. Nicht im Scope: das Füllen inhaltlicher
-Urteilsschritte (Spec, ADRs, Modus-Wahl) — das bleibt Mensch/Agent.
+AI-Harness-Kurs-Prozess bootstrappt: Templates **und Regelwerk** vom
+gepinnten Kurs-Stand (Fetch), die Doc-Gate-Baseline (generiert) und ein
+sprachspezifisches Code-Skelett (deterministisch generiert, Tool-als-Quelle).
+Nicht im Scope: das Füllen inhaltlicher Urteilsschritte (Spec, ADRs,
+Modus-Wahl, AGENTS.md) — das bleibt Mensch/Agent.
 
 ## 2. Stakeholder
 
@@ -25,7 +26,7 @@ Urteilsschritte (Spec, ADRs, Modus-Wahl) — das bleibt Mensch/Agent.
 |---|---|---|
 | Adopter-Team | Anwender | grünes Repo out-of-the-box, ohne Hand-Reparatur |
 | Code-Agent | Anwender | selbstbeschreibender Einstieg (AGENTS.md) |
-| Kurs-Maintainer | Quelle | Single Source of Truth bleibt lab/example + Templates |
+| Kurs-Maintainer | Quelle | Single Source of Truth für Templates + Regelwerk (das Sprachskelett generiert das Tool) |
 
 ## 3. Funktionale Anforderungen
 
@@ -58,12 +59,21 @@ der Gate-Config wächst mit den Artefakten.
 
 ### LH-FA-04 — Sprachskelett-Picker (F4)
 
-**Beschreibung:** Holt das Sprachskelett vom gepinnten Kurs-Tag, verdrahtet
-Code-Gates. Emittiert nur lauffähige Make-Targets (keine halluzinierten Gates).
+> **Titel historisch.** „Picker" benennt die ursprüngliche Fetch-Variante; die
+> Anforderung ist auf einen **deterministischen Generator** (Tool-als-Quelle)
+> umgestellt — siehe Historie (§7, v0.7.0). Der Heading-Anker bleibt bewusst
+> stabil, damit bestehende Verweise nicht rotten.
 
-**Unterstützte Sprachen:** `go`, `python`, `kotlin`, `java`, `csharp`, `cpp`
-(je `lab/example/<lang>`). `cpp` (C++/CMake: cmake/ctest/clang-tidy) wird
-upstream im Kurs ergänzt; der Picker bleibt sprach-agnostisch.
+**Beschreibung:** Das Tool **generiert** das Sprachskelett — Verzeichnis-Layout
+plus Skelett-Dateien (`Dockerfile`, `Makefile`, `go.mod`, `.golangci.yml` …) —
+**deterministisch aus tool-eigenem Sprach-/Architektur-Wissen** (Tool-als-Quelle,
+nachvollziehbar wie `d-check --print-mk`, **nicht aus dem Nichts**). Verdrahtet
+die Code-Gates; emittiert nur lauffähige Make-Targets (keine halluzinierten
+Gates, [`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Smoke).
+
+**Unterstützte Sprachen:** `go`, `python`, `kotlin`, `java`, `csharp`, `cpp`.
+`cpp` (C++/CMake: cmake/ctest/clang-tidy) folgt; der Generator bleibt
+sprach-agnostisch (ein Layout-Profil je Sprache).
 
 ### LH-FA-05 — Root-README emittieren (F1, F2)
 
@@ -139,6 +149,31 @@ sind `.claude/`-Inhalt, aber verschiedene Klassen.
 - **Picker ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):** kein aus dem Nichts generierter Command; fehlt die Quelle
   upstream, wird nicht emittiert (begründet, statt ein erfundenes Command auszuliefern).
 
+### LH-FA-09 — Regelwerk emittieren
+
+**Beschreibung:** Der Bootstrap legt das **Betriebsregelwerk** ins Zielrepo: Er
+holt es vom gepinnten Kurs-Stand (Fetch, dieselbe Kurs-Version wie die Templates
+aus [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3))
+und schreibt es als **committet-vendored Baseline** des Zielrepos
+(`.harness/baseline/<version>/regelwerk/` + Prüfsummen). Damit trägt das
+emittierte Repo die kanonischen Prozess-Module (Lifecycle/Rollen/Review/
+Verifikation), auf die seine `AGENTS.md` §1 (Source Precedence) zeigt — und läuft
+**nach** dem einmaligen Bootstrap-Fetch **netzlos** (Gates/Agenten offline).
+
+**Akzeptanzkriterien:**
+
+- **Happy Path:** Given Bootstrap mit einer Kurs-Version, then liegt das
+  Regelwerk als vendored Baseline im Zielrepo und ist netzlos verifizierbar
+  (Prüfsummen).
+- **Reproduzierbar ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)):**
+  dieselbe Kurs-Version → derselbe Baum (Content-Pin).
+- **Minimal/netzlos ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)):**
+  der Fetch läuft **einmal** beim Bootstrap; danach braucht das Zielrepo für
+  seine Gates kein Netz.
+- **Kein Halluzinat ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):**
+  fehlt das Kurs-Asset zur Version, wird begründet **nicht** emittiert (statt
+  ein erfundenes Regelwerk).
+
 ## 4. Nichtfunktionale Anforderungen
 
 ### LH-QA-01 — Keine halluzinierten Gates (F4, F5, F6)
@@ -172,9 +207,13 @@ sind `.claude/`-Inhalt, aber verschiedene Klassen.
 
 ## 5. Globale Out-of-Scope-Punkte
 
-- Inhaltliche Urteilsschritte (Spec/ADR/Modus) — bleiben Mensch/Agent.
-- Kein Generator aus dem Nichts — nur Picker über lab/example. (C++/CMake wird
-  upstream im Kurs als `lab/example/cpp` ergänzt; das Picker-Modell bleibt.)
+- Inhaltliche Urteilsschritte (Spec/ADR/Modus, AGENTS.md) — bleiben Mensch/Agent.
+- **Kein Artefakt aus dem Nichts (halluziniert)** — jede emittierte Klasse hat
+  eine nachvollziehbare Quelle: Templates + Regelwerk per **Fetch** (Kurs-SSoT,
+  [`LH-FA-09`](../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)); Durchsetzung
+  + Workflow-Commands per **Picker** (Kurs-Template-Satz); das Sprachskelett per
+  **deterministischem Generator** (Tool-als-Quelle). C++/CMake folgt
+  sprach-agnostisch.
 
 ## 6. Glossar
 
@@ -193,3 +232,4 @@ sind `.claude/`-Inhalt, aber verschiedene Klassen.
 | 0.4.0 | 2026-07-18 | CR: emittiertes Doc-Gate-Fragment `harness.mk` → `d-check.mk` ([`LH-FA-03`](../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7)) — per-Tool-Fragment aus `d-check --print-mk`, Sammelname obsolet, konsistent mit dem Dogfood ([`MR-010`](../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)); weitere Gate-Tools analog (arch-Gate a-check → `a-check.mk`, wenn integriert) | slice-017-Folge |
 | 0.5.0 | 2026-07-18 | CR: neue [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) Arch-Gate-Baseline emittieren (`.a-check.yml` + `a-check.mk`, per-Tool analog [`LH-FA-03`](../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7)) — a-check als Architektur-Gate (hexagonale Schichten); nur aktiviert, wo das Skelett Schichten trägt ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Implementierung folgt mit Emitter/Go-Code (Doc-führt) | a-check-Integration |
 | 0.6.0 | 2026-07-18 | CR: neue [`LH-FA-08`](../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) Agenten-Workflow-Commands emittieren (`.claude/commands/` — Picker aus den Kurs-Templates, abgegrenzt von [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)-Durchsetzung; Vorbedingung Kurs-Upstream-Ergänzung). Header-Version mit der Historie reconciled (lag auf 0.3.0). Implementierung folgt als späterer Slice (Doc-führt) | Workflow-Command-Idee |
+| 0.7.0 | 2026-07-19 | CR: [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) Picker (Fetch `lab/example`) → **deterministischer Generator** (Tool-als-Quelle); neue [`LH-FA-09`](../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) Regelwerk emittieren (Fetch Kurs @ version → Ziel-Baseline, danach netzlos); [`ADR-0005`](../docs/plan/adr/0005-ziel-repo-distribution.md) supersedes [`ADR-0001`](../docs/plan/adr/0001-skelett-distribution.md); §1/§2/§5 aufs Distributionsmodell nachgezogen | Distributionsmodell-CR |

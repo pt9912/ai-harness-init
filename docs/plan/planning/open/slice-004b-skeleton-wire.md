@@ -7,9 +7,15 @@ wechselt nur durch `git mv`, siehe
 
 **Welle:** [welle-02-fetch-und-readme](../welle-02-fetch-und-readme.md).
 
-**Bezug:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), [`ADR-0001`](../../../../docs/plan/adr/0001-skelett-distribution.md).
+**Bezug:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), `ADR-0001`. <!-- d-check:ignore (Verweis auf die superseded Skelett-Distributions-ADR; slice-004b wird mit der Umsetzungs-Welle re-skopt) -->
 
 **Autor:** Demo. **Datum:** 2026-07-18.
+
+> **Status 2026-07-19 (Re-Entry).** Die **Layering-ADR-Vorbedingung ist gelöst**:
+> [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md) entscheidet die Datei-Ownership (Generator besitzt
+> `Makefile`/`Dockerfile`/`go.mod`; die gefetchte Vorlage die `AGENTS.md`). Dieser Slice wird damit aus
+> dem neuen Distributionsmodell **re-skopt** (nicht mehr „Merge eines gefetchten Skeletts", sondern
+> Generator + Fetch) — der neue Schnitt entsteht in der Umsetzungs-Welle. Bis dahin bleibt er `open/`.
 
 ---
 

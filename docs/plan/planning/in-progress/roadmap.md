@@ -1,6 +1,6 @@
 # Roadmap
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-07-18.
+**Status:** Aktiv. **Letzte Änderung:** 2026-07-19.
 
 **Format-Regel:** Die Roadmap ist eine Reihenfolge von **Wellen**,
 keine Reihenfolge von Terminen (siehe
@@ -21,11 +21,18 @@ gezeigt, nicht als Treiber.
 Voll-E2E-`make gates`-Smoke des Bootstraps ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) Happy-Path). Details in der
 [welle-02-Plan-Datei](../welle-02-fetch-und-readme.md).
 
-> **Stand (2026-07-18, nicht Teil der Wellen-Ordnung):** slice-004a (Skelett-Fetch) in `done/`.
-> **slice-004b** (Merge/Verdrahten) `open/` — **blockiert, bis eine Layering-ADR** die Datei-Ownership
-> (Skelett-Schicht ↔ Harness-Emit-Schicht: wer besitzt `AGENTS.md`/`Makefile`) entscheidet.
-> **slice-005** (Root-README + der aufgeschobene Voll-Smoke) `open/`. **Nächster Schritt:** die
-> Layering-ADR schreiben (entsperrt slice-004b) — oder slice-005.
+> **Stand (2026-07-19, nicht Teil der Wellen-Ordnung):** **Distributionsmodell-Pivot** —
+> [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md) (Accepted, supersedes die frühere Skelett-Fetch-ADR),
+> CR [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) (Picker→deterministischer Generator) und neue
+> [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) (Regelwerk emittieren). Das **Doc-Fundament ist fertig +
+> gate-grün** (Lastenheft v0.7.0); der **Code** (embed→fetch, Skelett-Generatoren) folgt.
+> Damit ist die **Layering-Vorbedingung von slice-004b gelöst** — das ADR entscheidet die
+> Datei-Ownership (Generator besitzt `Makefile`/`Dockerfile`/`go.mod`, Fetch die `AGENTS.md`-Vorlage);
+> slice-004b wird daraus **re-skopt**. **slice-004a** (Skelett-Fetch) in `done/`, **slice-005**
+> (Root-README + Voll-Smoke) `open/`. **Nächster Schritt:** die **Umsetzungs-Welle aus dem ADR
+> schneiden** (Embed raus · Fetch Regelwerk+Templates · Skelett-Generatoren · Gerüst · Init-Flow ·
+> Emit-Smoke) und diese Roadmap/M2 danach nachziehen. Offene Aufräum-Punkte (kein Gate-Bruch):
+> stale Links auf die superseded Skelett-Fetch-ADR in welle-02/welle-01/Root-README.
 
 ## Nächste Wellen
 
@@ -38,7 +45,7 @@ Voll-E2E-`make gates`-Smoke des Bootstraps ([`LH-QA-01`](../../../../spec/lasten
 | Meilenstein | Welle(n) | Trigger | Status |
 |---|---|---|---|
 | M1 — lauffähiger Offline-Kern (`cmd/ai-harness-init` parst + emittiert Gate-Baseline + legt Templates ab, ohne Netz) | welle-01 | slice-001a/001b/002/003 done | **erreicht (2026-07-18)** |
-| M2 — vollständiger Bootstrap (inkl. Sprachskelett-Picker + Root-README) | welle-02 | slice-004a/004b/005 done | offen |
+| M2 — vollständiger Bootstrap (inkl. Sprachskelett-Generator + Root-README) | welle-02 | slice-004a/004b/005 done | offen |
 
 ## Abhängigkeitsgraph
 

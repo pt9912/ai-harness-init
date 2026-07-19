@@ -43,7 +43,7 @@ alarmiert hat.
       ist der Provenienz-Anker, `SHA256SUMS` trägt nur die Integrität — [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 1).
 - [x] **Kopplungspunkt Fetch.** `internal/fetch/fetch.go` `DefaultTag` → `v3.5.0` — per
       `TestDefaultTag_MatchesBaseline` an `BASELINE_TAG` gekoppelt (färbt sonst `make test` rot,
-      [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)/[`ADR-0001`](../../adr/0001-skelett-distribution.md)).
+      [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)/`ADR-0001`). <!-- d-check:ignore (Verweis auf die superseded Skelett-Distributions-ADR; done/-Slice eingefroren) -->
 - [x] **Kopplungspunkt Doku.** `harness/conventions.md` §Baseline: vendored Tag + kanonische
       Kurs-URL + „Regelwerks-Stand" (Welle 32 · 2026-07-19). Historische Einträge (MR-Bodies)
       bleiben eingefroren.
