@@ -1,4 +1,4 @@
-# Slice slice-019: Re-Baseline v3.1.0 → v3.4.0 (Kurs-Welle 31)
+# Slice slice-019: Re-Baseline v3.1.0 → v3.5.0 (Kurs-Welle 32)
 
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
 Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
@@ -15,11 +15,11 @@ wechselt nur durch `git mv`, siehe
 
 ## 1. Ziel
 
-Die committet vendored Baseline vom gepinnten Kurs-Tag **v3.1.0 auf v3.4.0** heben —
+Die committet vendored Baseline vom gepinnten Kurs-Tag **v3.1.0 auf v3.5.0** heben —
 eine bewusste [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)-Operation. Es ist ein **Content-Bump, kein reiner Pin-Bump**: der
 **Dateibestand bleibt bei 42** (regelwerk 21, templates 21 — `find -type f`, unverändert), aber
 nahezu jeder **Inhalt** ändert sich — alle 21 regelwerk-Module und 15 der 21 Templates differieren
-(Regelwerks-Stand **Kurs-Welle 26 · 2026-07-17 → Kurs-Welle 31 · 2026-07-19**, 5 Kurs-Wellen). Der
+(Regelwerks-Stand **Kurs-Welle 26 · 2026-07-17 → Kurs-Welle 32 · 2026-07-19**, 6 Kurs-Wellen). Der
 Baum bleibt netzlos auf jedem Checkout präsent; `make baseline-verify` und `make gates` bleiben grün
 ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)/[`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)/[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
 
@@ -28,41 +28,41 @@ alarmiert hat.
 
 ## 2. Definition of Done
 
-- [ ] **Vendored Baum ersetzt.** `.harness/baseline/v3.4.0/{regelwerk,templates}/` aus dem
-      v3.4.0-`lab-regelwerk.zip` entpackt (**42 Dateien**, gleicher Bestand wie v3.1.0), `SHA256SUMS` neu erzeugt
+- [ ] **Vendored Baum ersetzt.** `.harness/baseline/v3.5.0/{regelwerk,templates}/` aus dem
+      v3.5.0-`lab-regelwerk.zip` entpackt (**42 Dateien**, gleicher Bestand wie v3.1.0), `SHA256SUMS` neu erzeugt
       ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 2: `sha256sum` über **alle** Dateien, Pfade relativ zu `<tag>/`,
       `LC_ALL=C`-sortiert, Datei selbst ausgenommen). Das alte `.harness/baseline/v3.1.0/`
       **entfernt** (Setzung 4: ein Tag zur Zeit). Der ZIP-sha256 ist **vor** dem Entpacken
       gegen den Pin verifiziert.
 - [ ] **Provenienz + Integrität gepinnt** ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 1). `Makefile`
-      `BASELINE_TAG` → `v3.4.0`, `BASELINE_ZIP_SHA256` → `58fb40678ce0a507d893ac5c3f45e7c6449e1f3a6fa63badb532c19ed102378c`.
+      `BASELINE_TAG` → `v3.5.0`, `BASELINE_ZIP_SHA256` → `123e3383261102e6be6465e1f4bade08a474c00edc4fff89f5c4b11bd640f8ff`.
       **Herkunft des Werts (nicht zirkulär):** `sha256sum` des Assets, **frisch von der offiziellen
-      Release-URL** (`releases/download/v3.4.0/lab-regelwerk.zip`) gezogen — gemessen 2026-07-19
+      Release-URL** (`releases/download/v3.5.0/lab-regelwerk.zip`) gezogen — gemessen 2026-07-19
       (nicht aus dem Freshness-Alarm übernommen). Bei Vendoring **erneut gegen einen frischen
       Download gemessen**, bevor der Wert final gepinnt wird ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit); die offizielle URL
       ist der Provenienz-Anker, `SHA256SUMS` trägt nur die Integrität — [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 1).
-- [ ] **Kopplungspunkt Fetch.** `internal/fetch/fetch.go` `DefaultTag` → `v3.4.0` — per
+- [ ] **Kopplungspunkt Fetch.** `internal/fetch/fetch.go` `DefaultTag` → `v3.5.0` — per
       `TestDefaultTag_MatchesBaseline` an `BASELINE_TAG` gekoppelt (färbt sonst `make test` rot,
       [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)/[`ADR-0001`](../../adr/0001-skelett-distribution.md)).
 - [ ] **Kopplungspunkt Doku.** `harness/conventions.md` §Baseline: vendored Tag + kanonische
-      Kurs-URL + „Regelwerks-Stand" (Welle 31 · 2026-07-19). Historische Einträge (MR-Bodies)
+      Kurs-URL + „Regelwerks-Stand" (Welle 32 · 2026-07-19). Historische Einträge (MR-Bodies)
       bleiben eingefroren.
 - [ ] **Kopplungspunkt Emit-Embed (voraussichtlich fällig).** `internal/emit/skel/` bettet **15 der
       21** Templates ein (gemessen `find`; **nicht** dabei: `Makefile`, `.d-check.yml`,
-      `project-readme`, die Set-Index-READMEs); mehrere eingebettete gehören zu den in v3.4.0
+      `project-readme`, die Set-Index-READMEs); mehrere eingebettete gehören zu den in v3.5.0
       geänderten (`AGENTS`/`conventions`/`lastenheft`/`slice.template` u. a.) → `test/skel-drift.bats`
       feuert voraussichtlich auf der **Gleichheit**-Achse (die **Vollständigkeit**-Achse kann nicht
       feuern — der Dateibestand bleibt gleich, kein neues Template). Embed **drift-test-gesteuert**
       re-syncen (kein Blind-Sync; nur was der rote Test benennt).
-- [ ] **slice-019-Template-Reconciliation.** `slice.template.md` hat sich v3.1.0→v3.4.0 geändert;
+- [ ] **slice-019-Template-Reconciliation.** `slice.template.md` hat sich v3.1.0→v3.5.0 geändert;
       dieser Slice wurde per `cp` aus der **v3.1.0**-Vorlage erzeugt. Nach dem Vendoring gegen die
-      v3.4.0-Vorlage abgleichen (Struktur-Divergenz prüfen/übernehmen — dieselbe Reconciliation-Klasse
+      v3.5.0-Vorlage abgleichen (Struktur-Divergenz prüfen/übernehmen — dieselbe Reconciliation-Klasse
       wie slice-013).
 - [ ] **Kopplungspunkt reviewer.md (kein Gate fängt es — Stilles-Grün-Klasse).**
       `.harness/skills/reviewer.md` ist ein aus der Baseline **abgeleitetes** Artefakt, gepinnt auf
       „Agents-Regelwerk v3.1.0 (Kurs-Welle 26), Modul 10 §Ziel-Form" (`reviewer.md:4`) und zählt die
       „fünf v3.1.0-Pflicht-Punkte" auf (`reviewer.md:15`). Anders als das Emit-Embed prüft **kein Gate**
-      diese Prosa-Drift (`v3.1.0` ist kein ID-Muster). Modul 10 §Ziel-Form der v3.4.0/Welle-31-Fassung
+      diese Prosa-Drift (`v3.1.0` ist kein ID-Muster). Modul 10 §Ziel-Form der v3.5.0/Welle-32-Fassung
       gegen die fünf Punkte / das Output-Schema abgleichen; bei Änderung reviewer.md **versionieren**
       (→ 1.2.0, analog slice-014), sonst in der Closure-Notiz **explizit begründen**, warum unverändert.
 - [ ] `make gates` grün (inkl. `baseline-verify`: Integrität **und** Vollständigkeit netzlos).
@@ -72,14 +72,14 @@ alarmiert hat.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `.harness/baseline/v3.1.0/` → `…/v3.4.0/{regelwerk,templates}/` + `SHA256SUMS` | replace | Baum neu vendoren; alter Tag raus (Setzung 4) |
+| `.harness/baseline/v3.1.0/` → `…/v3.5.0/{regelwerk,templates}/` + `SHA256SUMS` | replace | Baum neu vendoren; alter Tag raus (Setzung 4) |
 | `Makefile` (`BASELINE_TAG`, `BASELINE_ZIP_SHA256`) | update | Tag + Provenienz-Pin |
 | `internal/fetch/fetch.go` (`DefaultTag`) | update | Fetch-Pin gekoppelt (Tier-1-Drift-Test) |
-| `harness/conventions.md` §Baseline | update | Tag + Kurs-URL + Regelwerks-Stand (Welle 31) |
+| `harness/conventions.md` §Baseline | update | Tag + Kurs-URL + Regelwerks-Stand (Welle 32) |
 | `internal/emit/skel/` | voraussichtlich update | Embed re-sync (breite Template-Änderung), drift-test-gesteuert (slice-003) |
 | `README.md` (Zeile 26) | update | harter Literal-Pfad `.harness/baseline/v3.1.0/` (kein generisches `<tag>`) → sonst tote Repo-Wurzel-Referenz |
-| `.harness/skills/reviewer.md` | ggf. update | Baseline-Pin v3.1.0/Welle 26 + „fünf Punkte" gegen Modul 10 §Ziel-Form v3.4.0 abgleichen (kein Gate fängt es) |
-| slice-019 selbst | reconcile | gegen die geänderte v3.4.0-`slice.template.md` abgleichen |
+| `.harness/skills/reviewer.md` | ggf. update | Baseline-Pin v3.1.0/Welle 26 + „fünf Punkte" gegen Modul 10 §Ziel-Form v3.5.0 abgleichen (kein Gate fängt es) |
+| slice-019 selbst | reconcile | gegen die geänderte v3.5.0-`slice.template.md` abgleichen |
 
 **Vollständigkeits-Analyse (Review-korrigiert — die Erstfassung war unter-inklusiv):**
 `AGENTS.md`/`CLAUDE.md` nutzen `<tag>` generisch (Glob/Variable) — kein Bump
@@ -90,7 +90,7 @@ Exclude-Zeile übersehen). Zu den repo-eigenen `blob/v3.1.0/kurs/…`-Prozess-Li
 
 ## 4. Trigger
 
-**Erfüllt:** v3.4.0 ist upstream publiziert (Asset `lab-regelwerk.zip` HTTP 200, kein
+**Erfüllt:** v3.5.0 ist upstream publiziert (Asset `lab-regelwerk.zip` HTTP 200, kein
 Draft/Prerelease; `make baseline-freshness` alarmierte den neueren Tag). Vorher (Asset 404)
 **blockiert** — ein Fetch gegen ein nicht existentes Release scheitert.
 
@@ -133,7 +133,7 @@ DoD vollständig + Review konform (Integrität/Provenienz bestätigt) + Verifika
   Reviewer/Verifier bestätigt Integrität (SHA256SUMS `-c` grün + Vollständigkeit) und Provenienz
   (ZIP-sha256 == Pin), nicht Zeile-für-Zeile-Inhalt.
 - **Kurs-Anker-Drift.** Regelwerk und Kurs sind zwei divergente Bäume; interne Verweise des
-  vendored Baums lösen lokal auf (Geschwister-Templates). Bei Welle-31-Umbau könnten Ziel-Form-Pfade
+  vendored Baums lösen lokal auf (Geschwister-Templates). Bei Welle-32-Umbau könnten Ziel-Form-Pfade
   gewandert sein — `baseline-verify` prüft Integrität/Vollständigkeit, **nicht** die internen Links
   des Fremd-Baums (der ist `scan.ignore`).
 
