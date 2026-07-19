@@ -59,6 +59,12 @@ Prosa-Quantoren — mechanisch nicht entscheidbar, bleibt Review-Territorium.
       `docs?-`). `DCHECK_DIGEST` **dreifach belegt** (lokaler RepoDigest ·
       d-check-Closure-Notiz/Release-Run · `imagetools`-Registry-Inspektion),
       [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit).
+- [ ] **Emitter-Pin nachgezogen (Tier-1-Drift-Kopplung).** `internal/emit`s `DefaultImage`
+      /`DefaultDigest` auf v0.50.0 — der go-test `TestDefaultImage/Digest_MatchesCanonical`
+      koppelt den *emittierten* Pin an `d-check.mk` und färbte sonst rot. Die **emittierte**
+      Starter-Config bleibt bewusst `modules: [links, anchors]` (codepaths dort auskommentiert
+      → **kein** `check-lines`; frische Zielrepos haben noch keine roots,
+      [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) — Emitter ≠ Dogfood.
 - [ ] **Pflicht-Trockenlauf belegt** ([`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)-Muster, beide Läufe netzlos
       `--network none`): (a) v0.50.0 gegen unveränderte Config → **0-Befund-Differenz** zum
       v0.46.0-Stand (Pin-Sprung inert); (b) v0.50.0 mit `check-lines: true` → grün über dem
@@ -81,6 +87,7 @@ Prosa-Quantoren — mechanisch nicht entscheidbar, bleibt Review-Territorium.
 |---|---|---|
 | `d-check.mk` | update (neu erzeugt) | v0.50.0-Fragment aus `--print-mk` + [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)-Adaption; `DCHECK_DIGEST` neu gepinnt. Einzige inhaltliche Fragment-Differenz zu v0.46.0: die fünf fokussierten advisory-Recipes gewinnen je `--disable citations` (18. Modul neu). |
 | `.d-check.yml` (`codepaths`) | update | `check-lines: true` — additive Härtung, kein neues Gate |
+| `internal/emit/emit.go` | update | `DefaultImage`/`DefaultDigest` → v0.50.0 (Tier-1-Drift-Test koppelt den emittierten Pin an `d-check.mk`) |
 | `harness/conventions.md` | update | §Baseline v0.50.0 + neuer [`MR-011`](../../../../harness/conventions.md#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines) |
 
 **Nicht** berührt: [`AGENTS.md`](../../../../AGENTS.md) §4 / [`harness/README.md`](../../../../harness/README.md) §Sensors (kein neuer Gate-Name);

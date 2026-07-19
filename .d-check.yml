@@ -42,6 +42,12 @@ matrix:
   exclude-sections: [Historie, "7. Historie", Geschichte]
 codepaths:
   roots: [spec, docs, harness]                                  # tools/cmd/internal folgen mit dem Go-Code (Phase 3); Harness-Tools liegen unter harness/tools/ (MR-005)
+  # check-lines (seit d-check v0.50.0): verifiziert die Zeilen-Referenz eines Inline-Code-Pfads
+  # `datei:<von>-<bis>` (Existenz + `bis <= Zeilenzahl` + `von <= bis`). ADDITIVE Härtung am
+  # bereits aktiven codepaths (nicht-leerer Prüfbereich) — KEIN eigenständiges Gate, kein neuer
+  # Gate-Name (LH-QA-01). Trockenlauf grün über dem realen Korpus (slice-015 / MR-011). Das
+  # verbatim-Modul citations bleibt opt-out (0 d-check:cite-Direktiven -> nie feuerndes Gate).
+  check-lines: true
   # exempt-paths (datei-weit): Zeitdokumente docs/reviews/** frieren den Stand ihres
   # Review-Laufs ein; Lifecycle-Pfade (next/->in-progress/->done/) darin veralten per
   # Definition. Ersetzt die verstreuten Zeilen-Marker (slice-016 / MR-009).

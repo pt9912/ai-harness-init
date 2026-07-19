@@ -11,7 +11,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Regelwerk + Templates:** `v3.1.0` committet vendored
   (`.harness/baseline/v3.1.0/`, [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
   `regelwerk/README.md`: **Kurs-Welle 26 · 2026-07-17**.
-- **d-check:** Image v0.46.0 (Digest in d-check.mk, [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert))
+- **d-check:** Image v0.50.0 (Digest in d-check.mk, [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert), [`MR-011`](#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines))
 - **Datum der Adoption:** 2026-06-13 (Templates-Stand damals: `templates-v4`).
   **Re-Baseline auf `v3.1.0`:** 2026-07-17 (slice-011/012).
 
@@ -428,6 +428,49 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Auflösungs-Trigger:** permanent; bei d-check-Release `d-check --print-mk` neu erzeugen,
   `doc-check`→`docs-check` re-adaptieren, `DCHECK_DIGEST` neu pinnen. Maintenance-Override
   (Dry-Run) via `DCHECK_DIGEST=…`/`DCHECK_IMAGE=…`, nicht mehr `D_CHECK_IMAGE=…`.
+
+### MR-011 — Zitat-Verifikation via d-check adoptiert (check-lines)
+
+- **Datum:** 2026-07-19
+- **Geltungsbereich:** `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`), `.d-check.yml`
+  (`codepaths.check-lines`), `internal/emit/emit.go` (emittierter Default-Pin), §Baseline-Version;
+  setzt [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile)/[`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert) fort.
+- **Adaption:** Das gepinnte d-check-Image springt **v0.46.0 → v0.50.0** (Digest in
+  `d-check.mk`, **dreifach belegt**: lokaler RepoDigest · d-check-Closure-Notiz/Release-Run ·
+  `imagetools`-Registry-Inspektion, [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Die seit v0.50.0 verfügbare
+  **Zeilenreferenz-Prüfung** `codepaths.check-lines: true` wird aktiviert: sie verifiziert je
+  Inline-Code-Pfad mit `datei:<von>-<bis>` die Existenz der Zieldatei sowie `bis ≤ Zeilenzahl`
+  und `von ≤ bis`. Das ist ein **additives Property am bereits aktiven `codepaths`-Modul**
+  (nicht-leerer Prüfbereich via `docs-check`) — **kein** eigenständiger Gate-Name in
+  [`AGENTS.md`](../AGENTS.md) §4 / [`harness/README.md`](README.md) §Sensors
+  ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+- **Emitter-Pin gekoppelt (Tier-1-Drift).** Der d-check-Default-Pin des Bootstrap-Tools
+  (`internal/emit`s `DefaultImage`/`DefaultDigest`) ist per go-test an `d-check.mk` gekoppelt
+  und zieht mit; die *emittierte* Starter-Config bleibt `modules: [links, anchors]` (codepaths
+  dort auskommentiert → **kein** `check-lines`) — Emitter ≠ Dogfood.
+- **Löst slice-015 auf.** Der Slice wollte ursprünglich einen lokalen bash-Sensor
+  `make cite-check` bauen; dieselbe Fähigkeit ist seit v0.50.0 (d-check-slice-079) nativ
+  ausgeliefert. Der Eigenbau entfällt — eine zweite Implementierung derselben Prüfung wäre
+  reine Wartungslast ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
+- **Trockenlauf vor dem Pin (Pflicht, belegt — [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile)-Muster).** Beide Läufe netzlos
+  (`--network none`): (a) v0.50.0 gegen unveränderte Config → **62 Dateien, 0 Befunde, Exit 0**
+  (Pin-Sprung inert; die explizite `modules:`-Liste immunisiert gegen neue Default-Module);
+  (b) v0.50.0 mit `check-lines: true` → **62 Dateien, 0 Befunde, Exit 0** über dem realen
+  Korpus. Die einzige inhaltliche `--print-mk`-Fragment-Differenz zu v0.46.0: die fünf
+  fokussierten advisory-Recipes gewinnen je `--disable citations` (18. Modul neu, opt-in) —
+  verbatim vom Tool übernommen.
+- **`citations`-Modul bewusst nicht aktiviert.** Das eigenständige verbatim-Modul feuert nur
+  auf `d-check:cite`-Direktiven; davon trägt das Repo null → es zu aktivieren wäre ein nie
+  feuerndes Gate ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Adoption erst mit einem realen Zitat-Direktiven-Korpus
+  (eigener Slice, eigenes False-Positive-Risiko).
+- **Kein Rückfall auf stilles Grün / keine spekulative Exemption.** Von den real vorhandenen
+  Inline-Code-Zeilenreferenzen (alle in eingefrorenen `done/`-Slices) werden nach
+  `codepaths.roots` zwei tatsächlich zeilen-geprüft und bestehen heute. Eine spekulative
+  `done/**`-Exemption gegen künftige Frozen-Doc-Drift wäre die breite, unbelegte Liste, vor der
+  [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile) warnt; sie unterbleibt — der konkrete Fall wird bei Eintritt belegt behandelt.
+- **Auflösungs-Trigger:** permanent; Re-Pin bei d-check-Release manuell (Trockenlauf
+  wiederholen, [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert) §Auflösungs-Trigger); die `citations`-Aktivierung ist ein eigener
+  Slice, sobald der Direktiven-Korpus nicht-leer ist.
 
 ## Modus-Deklaration pro Sub-Area
 
