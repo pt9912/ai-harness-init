@@ -21,23 +21,33 @@ sha256 einer http(s)-Quelle, `source-drift` bei Inhaltsabweichung) adoptieren, u
 der Eigenbau `make regelwerk-check` (curl + `sha256sum`). Es deckt die **Integritäts-Hälfte** ab und
 **ersetzt nicht** `make baseline-freshness` (die Release-Listen-/Tag-Achse, [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)).
 
-**Kandidat, nicht committed:** `regelwerk-check` funktioniert. Adoptiert wird nur, wenn (a) das
-`sources`-Modul im gepinnten d-check verfügbar ist und (b) ein klarer Vorteil gegenüber dem
-funktionierenden Eigenbau besteht (tool-gepflegt statt Bash) — sonst YAGNI ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
+**Motivation entschieden (2026-07-19):** „Tools verteilen statt Skripte pflegen" — `regelwerk-check`
+ist ein hand-gepflegtes Bash-Skript, `sources` das tool-gelieferte Äquivalent **derselben Achse**;
+nach der Adoption ist `regelwerk-check` **redundant und wird entfernt** (nicht ergänzt). **Verbleibende
+Vorbedingung: der Pin.** `sources` ist erst ab d-check **v0.51.0** verfügbar (gemessen; v0.50.0 hat es
+nicht) → dieser Slice hängt an **slice-021** (Pin-Sprung v0.50.0→v0.51.1). Kein YAGNI mehr, sondern
+pin-blockiert ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten): eine Achse, ein Sensor — keine Doppelung).
 
 ## 2. Definition of Done
 
-- [ ] **Vorbedingung — `sources`-Verfügbarkeit gemessen** (nicht aus dem Regelwerk-Text
-      angenommen): im gepinnten d-check (v0.50.0) via `d-check --print-config` / Modul-Liste belegt.
-      Fehlt es dort, ist der Slice blockiert (ein Pin-Sprung wäre ein eigener Zug).
-- [ ] `.d-check.yml` `sources` konfiguriert: `source-pin` auf das Baseline-Asset
-      (`BASELINE_URL` @ `BASELINE_ZIP_SHA256`), gegen das echte Release gemessen ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
+- [ ] **Vorbedingung erfüllt: d-check ⩾ v0.51.0 gepinnt.** `sources` ist **gemessen** erst ab
+      **v0.51.0** (d-check-slice-080, 19. Modul; v0.50.0 kennt es **nicht** — `--print-config` /
+      `ValidModules`). Diese Vorbedingung liefert **slice-021** (Pin-Sprung v0.50.0→v0.51.1); ohne sie
+      bleibt dieser Slice blockiert.
+- [ ] `.d-check.yml` `sources`-Block: Eintrag `{url: BASELINE_URL, sha256: …, unpack: …}` für das
+      Baseline-ZIP (Marker-Weg entfällt — die URL steht im `Makefile`, nicht als Markdown-Link).
+      **`unpack`-Gotcha (Handbuch v0.51.1):** `unpack: zip` hasht ein pfad-sortiertes **Content-Manifest**,
+      **nicht** die Roh-Bytes — `BASELINE_ZIP_SHA256` (Roh-Bytes) passt dort **nicht**. Entscheidung +
+      Messung: `unpack: none` (Roh-Bytes → matcht den bestehenden Pin) **oder** `unpack: zip` (Manifest →
+      robuster, **neuer** Hash frisch zu messen). Hash **pro Modus gegen das echte Release gemessen**
+      ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)), `BASELINE_ZIP_SHA256` nicht blind übernommen.
 - [ ] **Netz-Grenze geklärt** ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)): `source-drift` fetcht die Quelle → **Netz** →
       **nicht** in die netzlosen `make gates`; als Maintenance/CI-Target geführt (wie
       `regelwerk-check`/`baseline-freshness`). Offline-grün bleibt unberührt.
-- [ ] **Verhältnis zu `regelwerk-check` entschieden:** ersetzen (Eigenbau raus, weniger Bash) oder
-      ergänzen. `sources` deckt nur die **Asset-Achse**; `baseline-freshness` (Tag/Release-Liste)
-      bleibt unverändert nötig.
+- [ ] **`regelwerk-check` ersetzt (nicht ergänzt):** das Bash-Target wird **entfernt** (`Makefile` +
+      `.PHONY`/Doku-Nennungen), `sources` übernimmt dieselbe Asset-Content-Drift-Achse — ein Sensor pro
+      Achse, keine Doppelung. `baseline-freshness` (Tag/Release-Liste) und `baseline-verify` (lokale
+      Kopie, in `gates`) bleiben unverändert nötig (andere Achsen).
 - [ ] `make gates` grün; MR-Eintrag; Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
@@ -45,19 +55,19 @@ funktionierenden Eigenbau besteht (tool-gepflegt statt Bash) — sonst YAGNI ([`
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `.d-check.yml` | update | `sources`-Modul + `source-pin` auf das Baseline-Asset |
-| `Makefile` bzw. `d-check.mk` | update | Maintenance-Target (Netz) für die `sources`-Prüfung; ggf. `regelwerk-check` ersetzen |
+| `Makefile` | update | Maintenance-Target (Netz) für die `sources`-Prüfung **neu**; `regelwerk-check` **entfernen** (redundant) |
 | `harness/conventions.md` | update | MR-Eintrag (`sources`-Adoption); §Baseline ggf. |
 
 **Nicht** hier: ein neuer *Gate*-Name in [`AGENTS.md`](../../../../AGENTS.md) §4 / [`harness/README.md`](../../../../harness/README.md) §Sensors — `source-drift` ist Netz, gehört nie in `gates` ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 
 ## 4. Trigger
 
-`sources`-Modul im gepinnten d-check **verfügbar** (gemessen) **und** eine bewusste
-„lohnt-sich"-Entscheidung — der Eigenbau `regelwerk-check` funktioniert, Adoption nur bei klarem
-Vorteil. Bis dahin **Kandidat in `open/`**.
+**slice-021 done** (d-check-Pin ⩾ v0.51.0, `sources` verfügbar). Die „lohnt-sich"-Frage ist
+**entschieden** (Tools-statt-Skripte, `regelwerk-check` redundant) — der einzige verbleibende Blocker
+ist der Pin. Bis slice-021 done ist, **blockiert in `open/`**.
 
-- `in-progress → next`: falls die Adoption mehr Konfig/Migration erfordert als gedacht → zurück zur Zerlegung.
-- `in-progress → open`: `sources` im Pin nicht verfügbar **oder** kein Vorteil ggü. `regelwerk-check` → verworfen/blockiert.
+- `in-progress → next`: falls die `unpack`-/Config-Migration mehr ist als gedacht → zurück zur Zerlegung.
+- `in-progress → open`: falls slice-021 den Pin doch nicht liefert (Trockenlauf rot o. Ä.) → blockiert.
 
 ## 5. Closure-Trigger
 
@@ -68,9 +78,14 @@ DoD vollständig + Review konform + Verifikation + Closure-Notiz → nach `done/
 - **`regelwerk-check` funktioniert — YAGNI ist das Haupt-Risiko.** Einen funktionierenden
   Eigenbau-Sensor durch eine Tool-Abhängigkeit zu ersetzen braucht Rechtfertigung; deshalb
   `open/`-Kandidat, kein committed `next/`.
-- **Verfügbarkeit unbelegt (behauptet-statt-gemessen-Klasse).** Modul 2 (v3.5.0, **derivativ**) nennt
-  `sources`; ob es im gepinnten d-check **v0.50.0** ist, ist zu **messen**, nicht aus dem
-  Regelwerk-Text zu übernehmen.
+- **Verfügbarkeit GEMESSEN (Klasse gefangen).** Modul 2 (v3.5.0, **derivativ**) nennt `sources`, aber
+  der gepinnte d-check **v0.50.0** hat es **nicht** — es kam erst mit **v0.51.0** (gemessen an
+  `ValidModules`/`--print-config`/CHANGELOG). Genau die „Regelwerk-Uhr ≠ Tool-Uhr"-Lücke
+  ([`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)): eine Regelwerk-Erwähnung ist **kein** Beleg für den Pin. → Vorbedingung slice-021.
+- **`unpack`-Hash-Semantik (Handbuch v0.51.1).** `unpack: zip` = Content-Manifest-Hash (reihenfolge-
+  invariant), `unpack: none` = Roh-Byte-Hash. `BASELINE_ZIP_SHA256` ist ein Roh-Byte-Hash → nur mit
+  `unpack: none` ein Drop-in; für `unpack: zip` ist der Hash **neu** zu messen. „Pin wiederverwenden"
+  ohne Modus-Prüfung wäre wieder behauptet-statt-gemessen.
 - **Netz-Grenze:** `source-drift` braucht Netz → kann nicht in die netzlosen `gates`; bleibt
   Maintenance/CI. Der Gewinn ist **tool-gepflegt-statt-Bash**, keine neue Gate-Fähigkeit
   ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
