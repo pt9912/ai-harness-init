@@ -21,7 +21,7 @@ Das Go-Binary `cmd/ai-harness-init --lang <X> --name <Y>` leistet heute:
   unbekannte Sprache → Exit 2 + Liste.
 
 Der Gate-Stack läuft grün, Docker-only: `make baseline-verify` · `docs-check` (d-check
-v0.46.0) · `lint` · `build` · `test` (bats + Go-Unit) · `shell-lint`; `make gates` bündelt
+v0.50.0) · `lint` · `build` · `test` (bats + Go-Unit) · `shell-lint`; `make gates` bündelt
 sie. `make smoke` (Nicht-Gate) fährt den echten Bootstrap host-orchestriert. Betriebsregelwerk
 + Templates liegen committet vendored unter `.harness/baseline/v3.5.0/` (netzlos, [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache));
 Durchsetzungsschicht (Command-Guard bash+awk, Gate-Nachweis, Regelwerk-Injektion) adoptiert.
