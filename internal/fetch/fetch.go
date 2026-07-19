@@ -23,7 +23,7 @@ import (
 
 // DefaultTag ist der per Default gepinnte Kurs-Tag (harness/conventions.md §Baseline,
 // BASELINE_TAG; LH-QA-02). Per Env (COURSE_TAG) für bewussten Opt-in überschreibbar.
-const DefaultTag = "v3.1.0"
+const DefaultTag = "v3.5.0"
 
 const (
 	courseTarballBase = "https://codeload.github.com/pt9912/ai-harness-course/tar.gz/refs/tags/"

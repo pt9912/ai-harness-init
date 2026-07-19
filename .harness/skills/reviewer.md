@@ -1,18 +1,21 @@
 # Reviewer-Skill — ai-harness-init
 
-**Version:** 1.1.0 · **Datum:** 2026-07-17 ·
-**Baseline:** Agents-Regelwerk v3.1.0 (Kurs-Welle 26), Modul 10 §Ziel-Form: Reviewer-Skill
+**Version:** 1.2.0 · **Datum:** 2026-07-19 ·
+**Baseline:** Agents-Regelwerk v3.5.0 (Kurs-Welle 32), Modul 10 §Ziel-Form: Reviewer-Skill
 (Output-Schema, Kategorien-Semantik, Report-Pflicht, Pflicht-Kontext-Eingang).
 
 <!-- Versionierung (Modul 10): Änderungen werden versioniert, nicht überschrieben;
 die alte Fassung liegt in der git-Historie. 1.1.0 (slice-014): „vorherige Findings
 am gleichen Modul" als fünften v3.1.0-Pflicht-Kontext-Punkt ergänzt. Der Slice-Plan
 (Repo-Ergänzung aus 1.0.0) BLEIBT erhalten — die Änderung ist rein additiv, nichts
-entfernt. -->
+entfernt. 1.2.0 (slice-019): Baseline-Re-Pin v3.1.0→v3.5.0 (Welle 26→32); Modul 10
+§Ziel-Form substanziell unverändert (Überschriften identisch, nur ein Link-Label bekam
+ein `templates/`-Präfix) — reines Label-/Metadaten-Update, keine Änderung an den fünf
+Punkten / Output-Schema / Kategorien. -->
 
 ## Eingangs-Kontext (Pflicht — sonst nicht reproduzierbar)
 
-Der Reviewer erhält die **fünf v3.1.0-Pflicht-Punkte** (Modul 10): den
+Der Reviewer erhält die **fünf v3.5.0-Pflicht-Punkte** (Modul 10): den
 **Diff/Commit-Range**, die betroffenen `LH-*`-Anforderungen (in
 [`spec/lastenheft.md`](../../spec/lastenheft.md)), die **referenzierten aktiven ADRs**
 (deren ID im PR/Commit vorkommt), die **Hard Rules** ([`AGENTS.md`](../../AGENTS.md) §3)
