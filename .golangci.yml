@@ -16,7 +16,7 @@ linters:
     - staticcheck
     - unused
 
-    # SOLID-nahe Linter (Parität zum a-check-Stack)
+    # SOLID-nahe Linter
     - containedctx
     - contextcheck
     - cyclop
