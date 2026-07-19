@@ -31,25 +31,25 @@ pin-blockiert ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-ab
 
 ## 2. Definition of Done
 
-- [ ] **Vorbedingung erfüllt: d-check ⩾ v0.51.0 gepinnt.** `sources` ist **gemessen** erst ab
+- [x] **Vorbedingung erfüllt: d-check ⩾ v0.51.0 gepinnt.** `sources` ist **gemessen** erst ab
       **v0.51.0** (d-check-slice-080, 19. Modul; v0.50.0 kennt es **nicht** — `--print-config` /
       `ValidModules`). Diese Vorbedingung liefert **slice-021** (Pin-Sprung v0.50.0→v0.51.1); ohne sie
       bleibt dieser Slice blockiert.
-- [ ] `.d-check.yml` `sources`-Block: `{url: <Release-ZIP @ BASELINE_TAG>, sha256: BASELINE_ZIP_SHA256,
+- [x] `.d-check.yml` `sources`-Block: `{url: <Release-ZIP @ BASELINE_TAG>, sha256: BASELINE_ZIP_SHA256,
       unpack: none}`; **`unpack: none` entschieden + gemessen** (Roh-Byte-Hash → matcht den bestehenden
       `BASELINE_ZIP_SHA256`, **0 Drift**; Gegenprobe `unpack: zip` mit demselben Hash → `source-drift`,
       da Content-Manifest, [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). **NICHT** in `modules:` (sources ist Netz — bräche den
       netzlosen `docs-check`; nur via `make regelwerk-check` aktiviert).
-- [ ] **Netz-Grenze geklärt** ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)): `source-drift` fetcht die Quelle → **Netz** →
+- [x] **Netz-Grenze geklärt** ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)): `source-drift` fetcht die Quelle → **Netz** →
       **nicht** in die netzlosen `make gates`; als Maintenance/CI-Target geführt (wie
       `regelwerk-check`/`baseline-freshness`). Offline-grün bleibt unberührt.
-- [ ] **`regelwerk-check`-Körper ersetzt (Bash raus, Name/Interface bleiben):** `docker run …
+- [x] **`regelwerk-check`-Körper ersetzt (Bash raus, Name/Interface bleiben):** `docker run …
       --enable sources` (auf `sources` isoliert) statt `curl`+`sha256sum` — dieselbe
       Asset-Content-Drift-Achse, tool-geliefert. **Zwei-Pin-Kopplung:** `test/sources-pin.bats` koppelt
       den `.d-check.yml`-`sources`-Pin **fail-closed in `gates`** (netzlos) an `Makefile`
       `BASELINE_ZIP_SHA256`/`BASELINE_TAG` — Re-Baseline muss beide bewegen. `baseline-freshness`
       (Tag-Achse) und `baseline-verify` (lokale Kopie) bleiben unverändert (andere Achsen).
-- [ ] `make gates` grün (netzlos, inkl. Kopplungstest); `make regelwerk-check` (Netz) grün gegen das
+- [x] `make gates` grün (netzlos, inkl. Kopplungstest); `make regelwerk-check` (Netz) grün gegen das
       echte Asset; [`MR-013`](../../../../harness/conventions.md#mr-013--regelwerk-check-auf-d-check-sources-tool-statt-skript); Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
@@ -97,16 +97,31 @@ DoD vollständig + Review konform + Verifikation + Closure-Notiz → nach `done/
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!--
-Wird *nach* Abschluss ergänzt. Inhalt:
-- Was hat funktioniert?
-- Was ging anders als geplant?
-- Steering-Loop-Eintrag: welcher Guide/Sensor sollte verbessert werden?
-  (kanonische Definition: [`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.0/kurs/de/grundlagen/klassifikation.md#steering-loop))
-- Folge-Slices: welche neuen open/-Einträge?
--->
+**Geliefert (2026-07-19).** `make regelwerk-check` (Baseline-Asset-Content-Drift) vom Eigenbau-Bash
+(`curl`+`sha256sum`) auf das d-check-Modul `sources` umgestellt — „Tools verteilen statt Skripte pflegen".
+`.d-check.yml`-`sources:`-Block (`unpack: none` = Roh-Byte-Hash = `BASELINE_ZIP_SHA256`, gemessen 0
+Drift; `unpack: zip` mit demselben Hash → `source-drift`), **nicht** in `modules:` (netzlose `gates`
+bleiben). `test/sources-pin.bats` koppelt den `.d-check.yml`-Pin fail-closed in `gates` an den
+kanonischen Makefile-Pin. Neuer [`MR-013`](../../../../harness/conventions.md#mr-013--regelwerk-check-auf-d-check-sources-tool-statt-skript). Target-Name `regelwerk-check` behalten (kein Rename).
 
-<!-- Erst nach Abschluss füllen. -->
+**Rollenkette (Modul 8, je frischer Kontext).** Reviewer (Modul 10): nicht merge-blockierend, **0
+Findings**; **Kopplungstest-Zähne per Fehlinjektion belegt** (`docs/reviews/2026-07-19-slice-020-review.md`).
+Verifier (Modul 11): **alle DoD CONFIRMED, 0 VIOLATED** (`docs/reviews/2026-07-19-slice-020-verify.md`),
+inkl. eigenem `make gates` (Exit 0) + eigener Zahn-Prüfung (Test 54 rot bei verfälschtem Pin).
+
+**Steering-Loop-Lerneintrag (geschärfte Regel — Tool-Adoption mit Pin-Duplikation braucht einen
+Kopplungs-Sensor).** Ein Tool (d-check `sources`) übernimmt einen Eigenbau-Sensor, aber der gepinnte
+Wert (Baseline-Asset-`sha256`) muss in **zwei** Formaten leben: kanonisch im `Makefile`
+(`BASELINE_ZIP_SHA256`, [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache); die Re-Baseline nutzt ihn) **und** dupliziert in der Tool-Config
+(`.d-check.yml`, d-check liest nur seine Config). Eine Duplikation ohne Kopplung driftet still —
+deshalb `test/sources-pin.bats` **fail-closed in `gates`** (netzlos). **Regel:** Wer einen gepinnten
+Wert in eine zweite (Tool-)Config dupliziert, koppelt beide mit einem Gate-Test — sonst ist „Single
+Source of Truth" nur behauptet (dieselbe Tier-1-Drift-Klasse wie `DefaultTag==BASELINE_TAG`, hier
+config↔config statt code↔config).
+
+**Zwei Design-Entscheidungen gemessen, nicht geraten:** (a) `unpack: none` (beide Modi gegen das echte
+Asset getestet — none=0 Drift, zip=Drift); (b) Target-Name behalten statt Rename (Rename-Scope
+gemessen: ~15 Refs inkl. frozen MR-Historie → unverhältnismäßig für kosmetischen Gewinn).
 
 ## 8. Sub-Area-Modus-Begründung
 
