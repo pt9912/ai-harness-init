@@ -23,8 +23,9 @@ der Eigenbau `make regelwerk-check` (curl + `sha256sum`). Es deckt die **Integri
 
 **Motivation entschieden (2026-07-19):** „Tools verteilen statt Skripte pflegen" — `regelwerk-check`
 ist ein hand-gepflegtes Bash-Skript, `sources` das tool-gelieferte Äquivalent **derselben Achse**;
-nach der Adoption ist `regelwerk-check` **redundant und wird entfernt** (nicht ergänzt). **Verbleibende
-Vorbedingung: der Pin.** `sources` ist erst ab d-check **v0.51.0** verfügbar (gemessen; v0.50.0 hat es
+nach der Adoption wird `regelwerk-check`s **Bash-Körper durch `docker run … --enable sources`
+ersetzt** — der **Target-Name bleibt** (kein Rename: frozen MR-Historie + ~15 Referenzen churnen
+sonst; „Skript raus, Tool rein", Interface stabil). **Verbleibende Vorbedingung: der Pin.** `sources` ist erst ab d-check **v0.51.0** verfügbar (gemessen; v0.50.0 hat es
 nicht) → dieser Slice hängt an **slice-021** (Pin-Sprung v0.50.0→v0.51.1). Kein YAGNI mehr, sondern
 pin-blockiert ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten): eine Achse, ein Sensor — keine Doppelung).
 
@@ -34,29 +35,31 @@ pin-blockiert ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-ab
       **v0.51.0** (d-check-slice-080, 19. Modul; v0.50.0 kennt es **nicht** — `--print-config` /
       `ValidModules`). Diese Vorbedingung liefert **slice-021** (Pin-Sprung v0.50.0→v0.51.1); ohne sie
       bleibt dieser Slice blockiert.
-- [ ] `.d-check.yml` `sources`-Block: Eintrag `{url: BASELINE_URL, sha256: …, unpack: …}` für das
-      Baseline-ZIP (Marker-Weg entfällt — die URL steht im `Makefile`, nicht als Markdown-Link).
-      **`unpack`-Gotcha (Handbuch v0.51.1):** `unpack: zip` hasht ein pfad-sortiertes **Content-Manifest**,
-      **nicht** die Roh-Bytes — `BASELINE_ZIP_SHA256` (Roh-Bytes) passt dort **nicht**. Entscheidung +
-      Messung: `unpack: none` (Roh-Bytes → matcht den bestehenden Pin) **oder** `unpack: zip` (Manifest →
-      robuster, **neuer** Hash frisch zu messen). Hash **pro Modus gegen das echte Release gemessen**
-      ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)), `BASELINE_ZIP_SHA256` nicht blind übernommen.
+- [ ] `.d-check.yml` `sources`-Block: `{url: <Release-ZIP @ BASELINE_TAG>, sha256: BASELINE_ZIP_SHA256,
+      unpack: none}`; **`unpack: none` entschieden + gemessen** (Roh-Byte-Hash → matcht den bestehenden
+      `BASELINE_ZIP_SHA256`, **0 Drift**; Gegenprobe `unpack: zip` mit demselben Hash → `source-drift`,
+      da Content-Manifest, [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). **NICHT** in `modules:` (sources ist Netz — bräche den
+      netzlosen `docs-check`; nur via `make regelwerk-check` aktiviert).
 - [ ] **Netz-Grenze geklärt** ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)): `source-drift` fetcht die Quelle → **Netz** →
       **nicht** in die netzlosen `make gates`; als Maintenance/CI-Target geführt (wie
       `regelwerk-check`/`baseline-freshness`). Offline-grün bleibt unberührt.
-- [ ] **`regelwerk-check` ersetzt (nicht ergänzt):** das Bash-Target wird **entfernt** (`Makefile` +
-      `.PHONY`/Doku-Nennungen), `sources` übernimmt dieselbe Asset-Content-Drift-Achse — ein Sensor pro
-      Achse, keine Doppelung. `baseline-freshness` (Tag/Release-Liste) und `baseline-verify` (lokale
-      Kopie, in `gates`) bleiben unverändert nötig (andere Achsen).
-- [ ] `make gates` grün; MR-Eintrag; Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [ ] **`regelwerk-check`-Körper ersetzt (Bash raus, Name/Interface bleiben):** `docker run …
+      --enable sources` (auf `sources` isoliert) statt `curl`+`sha256sum` — dieselbe
+      Asset-Content-Drift-Achse, tool-geliefert. **Zwei-Pin-Kopplung:** `test/sources-pin.bats` koppelt
+      den `.d-check.yml`-`sources`-Pin **fail-closed in `gates`** (netzlos) an `Makefile`
+      `BASELINE_ZIP_SHA256`/`BASELINE_TAG` — Re-Baseline muss beide bewegen. `baseline-freshness`
+      (Tag-Achse) und `baseline-verify` (lokale Kopie) bleiben unverändert (andere Achsen).
+- [ ] `make gates` grün (netzlos, inkl. Kopplungstest); `make regelwerk-check` (Netz) grün gegen das
+      echte Asset; [`MR-013`](../../../../harness/conventions.md#mr-013--regelwerk-check-auf-d-check-sources-tool-statt-skript); Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `.d-check.yml` | update | `sources`-Modul + `source-pin` auf das Baseline-Asset |
-| `Makefile` | update | Maintenance-Target (Netz) für die `sources`-Prüfung **neu**; `regelwerk-check` **entfernen** (redundant) |
-| `harness/conventions.md` | update | MR-Eintrag (`sources`-Adoption); §Baseline ggf. |
+| `.d-check.yml` | update | `sources:`-Block (unpack: none), **nicht** in `modules:` (netzlos gates bleibt) |
+| `Makefile` | update | `regelwerk-check`-Körper: Bash → `docker run … --enable sources` (Name bleibt) |
+| `test/sources-pin.bats` | neu | koppelt `.d-check.yml`-`sources`-Pin an `Makefile` `BASELINE_ZIP_SHA256` (fail-closed, in gates) |
+| `harness/conventions.md` | update | neuer [`MR-013`](../../../../harness/conventions.md#mr-013--regelwerk-check-auf-d-check-sources-tool-statt-skript) |
 
 **Nicht** hier: ein neuer *Gate*-Name in [`AGENTS.md`](../../../../AGENTS.md) §4 / [`harness/README.md`](../../../../harness/README.md) §Sensors — `source-drift` ist Netz, gehört nie in `gates` ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 

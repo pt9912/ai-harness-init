@@ -74,30 +74,18 @@ shell-lint: ## Shell-Hooks/-Helfer linten (shellcheck) im gepinnten Image — Do
 baseline-verify: ## Vendored Baseline netzlos verifizieren (Integrität + Vollständigkeit) — IN gates
 	@bash harness/tools/baseline-verify.sh
 
-# Read-only Drift-Monitor: holt das Upstream-ZIP in eine temp-Datei (der
-# vendored Baum bleibt UNBERUEHRT) und vergleicht dessen sha256 mit dem
-# Provenienz-Pin (BASELINE_ZIP_SHA256, MR-007). Der einzige Upstream-Sensor —
-# baseline-verify prüft nur die eigene Arbeitskopie, nie den Upstream.
-# Maintenance/CI (Netz, Host-curl), NICHT in gates (LH-QA-01).
-# Recipe-Exit: 0 = kein Drift, 1 = DRIFT, 2 = Fetch-Fehler. Hinweis: `make`
-# kollabiert jeden Recipe-Fehler auf Exit 2 (Standard-Make) — fuer CI also
-# 0 = OK, !=0 = Alarm; ob Drift oder Fetch-Fehler sagt die echo-Meldung (kanonisch;
-# die make-"Fehler N"-Zeile spiegelt den Recipe-Exit, ist aber locale-/stderr-fragil).
-regelwerk-check: ## Upstream-Drift des Baseline-ZIP melden (read-only, Baum unberührt) — Maintenance/CI, NICHT in gates
-	@tmp="$$(mktemp)"; \
-	curl -fsSL "$(BASELINE_URL)" -o "$$tmp" \
-		|| { rm -f "$$tmp"; echo "FETCH-FEHLER (kein Drift-Urteil): Upstream nicht erreichbar — $(BASELINE_URL)"; exit 2; }; \
-	if printf '%s  %s\n' "$(BASELINE_ZIP_SHA256)" "$$tmp" | sha256sum -c - >/dev/null 2>&1; then \
-		rm -f "$$tmp"; echo "Kein Drift: Upstream-ZIP ($(BASELINE_TAG)) == gepinnter BASELINE_ZIP_SHA256."; \
-	else \
-		got="$$(sha256sum "$$tmp" | cut -d' ' -f1)"; rm -f "$$tmp"; \
-		echo "DRIFT: Upstream-ZIP ($(BASELINE_TAG)) != gepinnter BASELINE_ZIP_SHA256 (vendored Baum UNVERAENDERT)."; \
-		echo "  gepinnt:  $(BASELINE_ZIP_SHA256)"; \
-		echo "  upstream: $$got"; \
-		echo "  -> manuell re-reviewen, dann Baum neu vendoren + BASELINE_TAG/BASELINE_ZIP_SHA256 neu setzen."; \
-		exit 1; \
-	fi
-	@echo "Hinweis: prüft NUR das Asset von $(BASELINE_TAG). Ein NEUER Tag upstream bleibt hier unsichtbar — 'make baseline-freshness' prüft die Release-Liste (slice-018, MR-007)."
+# Upstream-Content-Drift des Baseline-ZIP via d-check `sources` (MR-013): d-check holt
+# das per sha256 gepinnte Asset, hasht es (unpack: none = Roh-Bytes) und meldet Abweichung
+# (source-drift, mit vollem Ist-Hash zum Re-Pinnen) bzw. Netzfehler (source-unreachable).
+# Loest den frueheren Eigenbau (curl+sha256sum) ab — "Tool statt Skript". Der Pin lebt
+# kanonisch im Makefile (BASELINE_ZIP_SHA256, MR-007) und dupliziert in .d-check.yml
+# `sources:`; test/sources-pin.bats koppelt beide (fail-closed bei Divergenz, in gates).
+# Auf `sources` isoliert (die Doku-Module deckt docs-check ab). Netz (kein --network none),
+# Maintenance/CI, NICHT in gates (LH-QA-01). baseline-verify prueft nur die Arbeitskopie;
+# baseline-freshness die Tag-Achse. d-check-Exit: 0 = kein Drift, !=0 = Alarm.
+regelwerk-check: ## Upstream-Content-Drift des Baseline-ZIP (d-check sources, Netz) — Maintenance/CI, NICHT in gates
+	docker run --rm -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable sources --disable links --disable anchors --disable ids --disable matrix --disable codepaths --disable spans
+	@echo "Hinweis: prueft NUR das Asset von $(BASELINE_TAG). Ein NEUER Tag upstream bleibt hier unsichtbar — 'make baseline-freshness' prueft die Release-Liste (slice-018, MR-007)."
 
 # Read-only Freshness-Sensor: folgt dem releases/latest-Redirect und meldet einen
 # NEUEREN Upstream-Tag als BASELINE_TAG (Release-LISTEN-Achse) — ergaenzt

@@ -61,3 +61,14 @@ codepaths:
     - docs/plan/adr/NNNN-titel.template.md
     - docs/plan/carveouts/carveout.template.md
     - docs/reviews/review-report.template.md
+# sources (opt-in, NETZ, seit d-check v0.51.0): Content-Pin des Baseline-Assets gegen
+# Upstream-Drift (MR-013) — der tool-gelieferte Ersatz fuer den Eigenbau (curl+sha256sum)
+# im Target `make regelwerk-check`. BEWUSST NICHT in `modules:` oben: sources ist Netz und
+# wuerde den netzlosen `docs-check`/`make gates` brechen (LH-QA-01); aktiviert nur via
+# `make regelwerk-check` (--enable sources). unpack: none = Roh-Byte-Hash = das kanonische
+# Makefile-BASELINE_ZIP_SHA256 (MR-007; gemessen 0 Drift). test/sources-pin.bats koppelt beide
+# fail-closed (in gates) — Re-Baseline muss beide Pins bewegen.
+sources:
+  - url: https://github.com/pt9912/ai-harness-course/releases/download/v3.5.0/lab-regelwerk.zip
+    sha256: 123e3383261102e6be6465e1f4bade08a474c00edc4fff89f5c4b11bd640f8ff
+    unpack: none
