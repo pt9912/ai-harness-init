@@ -26,21 +26,21 @@ byte-identisch"). Dieser Slice **aktiviert `sources` NICHT** — das ist slice-0
 
 ## 2. Definition of Done
 
-- [ ] **Pin v0.50.0 → v0.51.1.** `d-check.mk` `DCHECK_IMAGE`/`DCHECK_DIGEST`
+- [x] **Pin v0.50.0 → v0.51.1.** `d-check.mk` `DCHECK_IMAGE`/`DCHECK_DIGEST`
       (`sha256:fede3d027b2ebc1dd8534460853e57b67cc7a9a182cad2e2138c8eebf7a2d03c`, **dreifach belegt**:
       lokaler RepoDigest · `imagetools` · d-check-`version.md`/Release), [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit).
-- [ ] `d-check.mk` frisch aus `--print-mk` (v0.51.1) + [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)-Adaption (`docs-check`, `doc-help`,
+- [x] `d-check.mk` frisch aus `--print-mk` (v0.51.1) + [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)-Adaption (`docs-check`, `doc-help`,
       Kopfkommentar); einzige neue inhaltliche Differenz: `--disable sources` in fünf advisory-Recipes
       (verbatim vom Tool).
-- [ ] **Emitter-Pin nachgezogen** (Tier-1-Drift): `internal/emit` `DefaultImage`/`DefaultDigest` →
+- [x] **Emitter-Pin nachgezogen** (Tier-1-Drift): `internal/emit` `DefaultImage`/`DefaultDigest` →
       v0.51.1 (`TestDefault…_MatchesCanonical` liest `d-check.mk`, färbt sonst `make test` rot).
-- [ ] `harness/conventions.md` §Baseline d-check → v0.51.1 + neuer MR-Eintrag; historische MR-Bodies
+- [x] `harness/conventions.md` §Baseline d-check → v0.51.1 + neuer MR-Eintrag; historische MR-Bodies
       eingefroren.
-- [ ] **Pflicht-Trockenlauf** ([`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)-Muster, netzlos): v0.51.1 gegen unveränderte Config →
+- [x] **Pflicht-Trockenlauf** ([`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)-Muster, netzlos): v0.51.1 gegen unveränderte Config →
       **0-Befund-Differenz** (inert; `sources` nicht aktiviert). Ausgabe im Closure-Beleg.
-- [ ] **`sources` NICHT aktiviert** — nur verfügbar gemacht ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)); die Aktivierung mit
+- [x] **`sources` NICHT aktiviert** — nur verfügbar gemacht ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)); die Aktivierung mit
       realem `source-pin` ist slice-020.
-- [ ] `make gates` grün; Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] `make gates` grün; Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -79,16 +79,29 @@ DoD vollständig + Review konform + Verifikation + Closure-Notiz → nach `done/
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!--
-Wird *nach* Abschluss ergänzt. Inhalt:
-- Was hat funktioniert?
-- Was ging anders als geplant?
-- Steering-Loop-Eintrag: welcher Guide/Sensor sollte verbessert werden?
-  (kanonische Definition: [`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.0/kurs/de/grundlagen/klassifikation.md#steering-loop))
-- Folge-Slices: welche neuen open/-Einträge?
--->
+**Geliefert (2026-07-19).** d-check-Pin **v0.50.0 → v0.51.1** (Digest `sha256:fede3d02…`, dreifach
+belegt), `d-check.mk` frisch aus `--print-mk` + [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)-Adaption, `internal/emit`-Pin nachgezogen,
+`conventions.md` §Baseline + neuer [`MR-012`](../../../../harness/conventions.md#mr-012--d-check-pin-v0511-sources-verfügbar). **`sources` verfügbar gemacht, nicht aktiviert**
+(Phantom-Gate-Vermeidung, [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Trockenlauf netzlos: v0.51.1 == v0.50.0 == 0 Befunde (**inert gemessen**).
 
-<!-- Erst nach Abschluss füllen. -->
+**Rollenkette (Modul 8, je frischer Kontext).** Reviewer (Modul 10): nicht merge-blockierend, **0
+Findings** (`docs/reviews/2026-07-19-slice-021-review.md`). Verifier (Modul 11): **7/7 DoD CONFIRMED,
+0 VIOLATED** (`docs/reviews/2026-07-19-slice-021-verify.md`), inkl. eigenem `make gates` (Exit 0) +
+imagetools-Digest. Beide bestätigten Digest, faithful Regeneration und Inert-Eigenschaft unabhängig.
+
+**Steering-Loop-Lerneintrag (geschärfte Regel — bestätigtes Muster).** „Regelwerk-Uhr ≠ Tool-Uhr" ist
+jetzt belegt: die v3.5.0-Baseline (Modul 2) nennt `sources`, aber der gepinnte d-check v0.50.0 hatte es
+**nicht** (erst v0.51.0). Eine **DoD-Vorbedingung „Modul-Verfügbarkeit im gepinnten Tool messen"** fing
+die Lücke, bevor eine Config auf ein nicht existentes Modul zeigte. **Regel für jede
+Regelwerk-erwähnte Tool-Fähigkeit:** gegen die **gepinnte** Version messen, nicht aus dem (derivativen)
+Regelwerk-Text annehmen — grundiert in [`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile) (eigene Release-Uhr), nicht in einer Regelwerk-Zeile.
+
+**Prozedur bewährt (3. Pin-Bump der Session).** Der 3-Kopplungspunkte-Ablauf (`d-check.mk` ·
+`conventions.md` §Baseline · `internal/emit`, Tier-1-Drift-gekoppelt) + Trockenlauf + dreifacher Digest
+hielt zum dritten Mal (v0.10→v0.46 slice-016, v0.46→v0.50 slice-015, v0.50→v0.51.1 hier). Auch ein
+„offensichtlich inerter" Bump durchlief die volle Rollenkette — der Prozess prüft, nicht die Intuition.
+
+**Entsperrt slice-020** (`sources`-Adoption; ersetzt den Eigenbau `regelwerk-check`).
 
 ## 8. Sub-Area-Modus-Begründung
 
