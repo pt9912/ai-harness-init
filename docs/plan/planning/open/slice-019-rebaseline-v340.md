@@ -17,9 +17,10 @@ wechselt nur durch `git mv`, siehe
 
 Die committet vendored Baseline vom gepinnten Kurs-Tag **v3.1.0 auf v3.4.0** heben —
 eine bewusste [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)-Operation. Es ist ein **Content-Bump, kein reiner Pin-Bump**: der
-Baum wächst von 42 auf **54 Dateien** (regelwerk 21→22, templates 21→32; Regelwerks-Stand
-**Kurs-Welle 26 · 2026-07-17 → Kurs-Welle 31 · 2026-07-19**). Der Baum bleibt netzlos auf
-jedem Checkout präsent; `make baseline-verify` und `make gates` bleiben grün
+**Dateibestand bleibt bei 42** (regelwerk 21, templates 21 — `find -type f`, unverändert), aber
+nahezu jeder **Inhalt** ändert sich — alle 21 regelwerk-Module und 15 der 21 Templates differieren
+(Regelwerks-Stand **Kurs-Welle 26 · 2026-07-17 → Kurs-Welle 31 · 2026-07-19**, 5 Kurs-Wellen). Der
+Baum bleibt netzlos auf jedem Checkout präsent; `make baseline-verify` und `make gates` bleiben grün
 ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)/[`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)/[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
 
 Ausgelöst durch `make baseline-freshness` (slice-018), das den neueren Upstream-Tag real
@@ -28,7 +29,7 @@ alarmiert hat.
 ## 2. Definition of Done
 
 - [ ] **Vendored Baum ersetzt.** `.harness/baseline/v3.4.0/{regelwerk,templates}/` aus dem
-      v3.4.0-`lab-regelwerk.zip` entpackt (54 Dateien), `SHA256SUMS` neu erzeugt
+      v3.4.0-`lab-regelwerk.zip` entpackt (**42 Dateien**, gleicher Bestand wie v3.1.0), `SHA256SUMS` neu erzeugt
       ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 2: `sha256sum` über **alle** Dateien, Pfade relativ zu `<tag>/`,
       `LC_ALL=C`-sortiert, Datei selbst ausgenommen). Das alte `.harness/baseline/v3.1.0/`
       **entfernt** (Setzung 4: ein Tag zur Zeit). Der ZIP-sha256 ist **vor** dem Entpacken
@@ -42,10 +43,15 @@ alarmiert hat.
 - [ ] **Kopplungspunkt Doku.** `harness/conventions.md` §Baseline: vendored Tag + kanonische
       Kurs-URL + „Regelwerks-Stand" (Welle 31 · 2026-07-19). Historische Einträge (MR-Bodies)
       bleiben eingefroren.
-- [ ] **Kopplungspunkt Emit-Embed (Content-Bump-Risiko).** Falls `internal/emit`s eingebettete
-      Template-Teilmenge (`internal/emit/skel/`) durch die geänderten v3.4.0-Templates driftet
-      (Gleichheit-/Vollständigkeit-Wächter aus slice-003), das Embed re-syncen — drift-test-gesteuert,
-      kein Blind-Sync.
+- [ ] **Kopplungspunkt Emit-Embed (voraussichtlich fällig).** `internal/emit`s eingebettete
+      Template-Teilmenge (`internal/emit/skel/`) spiegelt Templates, die sich in v3.4.0 **breit
+      geändert** haben (u. a. `AGENTS`/`conventions`/`Makefile`/`lastenheft`) — der Gleichheit-
+      /Vollständigkeit-Wächter (slice-003) feuert voraussichtlich. Embed **drift-test-gesteuert**
+      re-syncen (kein Blind-Sync; nur was der rote Test benennt).
+- [ ] **slice-019-Template-Reconciliation.** `slice.template.md` hat sich v3.1.0→v3.4.0 geändert;
+      dieser Slice wurde per `cp` aus der **v3.1.0**-Vorlage erzeugt. Nach dem Vendoring gegen die
+      v3.4.0-Vorlage abgleichen (Struktur-Divergenz prüfen/übernehmen — dieselbe Reconciliation-Klasse
+      wie slice-013).
 - [ ] `make gates` grün (inkl. `baseline-verify`: Integrität **und** Vollständigkeit netzlos).
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
@@ -57,7 +63,8 @@ alarmiert hat.
 | `Makefile` (`BASELINE_TAG`, `BASELINE_ZIP_SHA256`) | update | Tag + Provenienz-Pin |
 | `internal/fetch/fetch.go` (`DefaultTag`) | update | Fetch-Pin gekoppelt (Tier-1-Drift-Test) |
 | `harness/conventions.md` §Baseline | update | Tag + Kurs-URL + Regelwerks-Stand (Welle 31) |
-| `internal/emit/skel/` | ggf. update | Embed re-sync, **nur** wenn Drift-Wächter rot (slice-003) |
+| `internal/emit/skel/` | voraussichtlich update | Embed re-sync (breite Template-Änderung), drift-test-gesteuert (slice-003) |
+| slice-019 selbst | reconcile | gegen die geänderte v3.4.0-`slice.template.md` abgleichen |
 
 **Nicht** blind: `AGENTS.md`/`CLAUDE.md` nutzen `<tag>` generisch (Glob/Variable) — kein Grep-Bump
 nötig ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 4). Historische MR-Bodies bleiben Zeitbezug.
@@ -79,11 +86,17 @@ DoD vollständig + Review konform (Integrität/Provenienz bestätigt) + Verifika
 
 ## 6. Risiken und offene Punkte
 
-- **Content-Bump, nicht Pin-Bump — Emit-Embed ist die Kern-Unsicherheit.** Die Templates wachsen
-  21→32; `internal/emit` bettet eine Teilmenge ein (`internal/emit/skel/`, slice-003) mit einem
-  Gleichheit-**und**-Vollständigkeit-Drift-Wächter. Ändert v3.4.0 eine eingebettete Datei, färbt
-  der Wächter rot — dann ist das Embed drift-test-gesteuert nachzuziehen (analog dem Emit-Pin in
-  slice-015). Blind-Sync ohne roten Test wäre falsch.
+- **Content-Bump, nicht Pin-Bump — Emit-Embed ist die Kern-Unsicherheit.** Der Dateibestand bleibt
+  bei 42, aber nahezu jeder Inhalt ändert sich (alle 21 regelwerk-Module, 15 der 21 Templates —
+  gemessen `diff -rq`). `internal/emit` bettet eine Template-Teilmenge ein (`internal/emit/skel/`,
+  slice-003) mit einem Gleichheit-**und**-Vollständigkeit-Drift-Wächter. Da die eingebetteten
+  Templates zu den geänderten gehören, feuert der Wächter **voraussichtlich** — das Embed ist dann
+  drift-test-gesteuert nachzuziehen (analog dem Emit-Pin in slice-015). Blind-Sync ohne roten Test
+  wäre falsch.
+- **Zahlen-Korrektur (Beleg für die Klasse).** Die Erstfassung dieses Slice behauptete „42→54
+  Dateien / templates 21→32" — das waren `unzip -Z1`-**Verzeichnis-Einträge**, als Dateien
+  fehlgezählt (`find -type f` misst 42/42). Genau die „behauptete statt gemessene Zahl"-Klasse, die
+  slice-015 adressiert; hier vom Pair-Partner gefangen, dann gemessen korrigiert.
 - **Provenienz ≠ Integrität** ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 1). `SHA256SUMS` (selbst erzeugt) beweist nur,
   dass der Baum sich seit dem Vendoring nicht bewegt; die **Herkunft** hängt allein an
   `BASELINE_ZIP_SHA256` (gegen das Release-Asset). Beide sind zu führen.
