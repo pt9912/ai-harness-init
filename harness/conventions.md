@@ -453,10 +453,10 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   ausgeliefert. Der Eigenbau entfällt — eine zweite Implementierung derselben Prüfung wäre
   reine Wartungslast ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
 - **Trockenlauf vor dem Pin (Pflicht, belegt — [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile)-Muster).** Beide Läufe netzlos
-  (`--network none`): (a) v0.50.0 gegen unveränderte Config → **62 Dateien, 0 Befunde, Exit 0**
+  (`--network none`): (a) v0.50.0 gegen unveränderte Config → **0 Befunde, Exit 0**
   (Pin-Sprung inert; die explizite `modules:`-Liste immunisiert gegen neue Default-Module);
-  (b) v0.50.0 mit `check-lines: true` → **62 Dateien, 0 Befunde, Exit 0** über dem realen
-  Korpus. Die einzige inhaltliche `--print-mk`-Fragment-Differenz zu v0.46.0: die fünf
+  (b) v0.50.0 mit `check-lines: true` → **0 Befunde, Exit 0** über dem realen Korpus (die
+  Zähne unabhängig belegt: `citation-out-of-range` feuert real auf eine Out-of-range-Referenz). Die einzige inhaltliche `--print-mk`-Fragment-Differenz zu v0.46.0: die fünf
   fokussierten advisory-Recipes gewinnen je `--disable citations` (18. Modul neu, opt-in) —
   verbatim vom Tool übernommen.
 - **`citations`-Modul bewusst nicht aktiviert.** Das eigenständige verbatim-Modul feuert nur

@@ -53,33 +53,33 @@ Prosa-Quantoren — mechanisch nicht entscheidbar, bleibt Review-Territorium.
 
 ## 2. Definition of Done
 
-- [ ] **d-check-Pin v0.46.0 → v0.50.0.** `d-check.mk` frisch aus `d-check --print-mk`
+- [x] **d-check-Pin v0.46.0 → v0.50.0.** `d-check.mk` frisch aus `d-check --print-mk`
       (v0.50.0) erzeugt und nach [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert) re-adaptiert (`doc-check`→`docs-check` in Target
       **und** Hilfetext, `DCHECK_DIGEST` gepinnt, Kopfkommentar, `doc-help`-Grep auf
       `docs?-`). `DCHECK_DIGEST` **dreifach belegt** (lokaler RepoDigest ·
       d-check-Closure-Notiz/Release-Run · `imagetools`-Registry-Inspektion),
       [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit).
-- [ ] **Emitter-Pin nachgezogen (Tier-1-Drift-Kopplung).** `internal/emit`s `DefaultImage`
+- [x] **Emitter-Pin nachgezogen (Tier-1-Drift-Kopplung).** `internal/emit`s `DefaultImage`
       /`DefaultDigest` auf v0.50.0 — der go-test `TestDefaultImage/Digest_MatchesCanonical`
       koppelt den *emittierten* Pin an `d-check.mk` und färbte sonst rot. Die **emittierte**
       Starter-Config bleibt bewusst `modules: [links, anchors]` (codepaths dort auskommentiert
       → **kein** `check-lines`; frische Zielrepos haben noch keine roots,
       [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) — Emitter ≠ Dogfood.
-- [ ] **Pflicht-Trockenlauf belegt** ([`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)-Muster, beide Läufe netzlos
+- [x] **Pflicht-Trockenlauf belegt** ([`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)-Muster, beide Läufe netzlos
       `--network none`): (a) v0.50.0 gegen unveränderte Config → **0-Befund-Differenz** zum
       v0.46.0-Stand (Pin-Sprung inert); (b) v0.50.0 mit `check-lines: true` → grün über dem
       realen Korpus, inkl. der real vorhandenen eingefrorenen Referenzen. Beide Ausgaben im
       Closure-Beleg.
-- [ ] **`.d-check.yml`** trägt `codepaths.check-lines: true` mit begründendem Kommentar
+- [x] **`.d-check.yml`** trägt `codepaths.check-lines: true` mit begründendem Kommentar
       (additive Härtung, nicht-leerer Prüfbereich via `codepaths` — kein eigenständiges
       Gate, [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). **Keine** neue Exemption spekulativ gesetzt (Trockenlauf grün;
       Frozen-Doc-Drift einem konkreten Fall überlassen — [`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile) „belegter Bedarf").
-- [ ] **`harness/conventions.md`** §Baseline auf v0.50.0 aktualisiert + neuer Eintrag
+- [x] **`harness/conventions.md`** §Baseline auf v0.50.0 aktualisiert + neuer Eintrag
       [`MR-011`](../../../../harness/conventions.md#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines) (Pin-Sprung + `check-lines`-Adoption + `citations`-Aufschub, mit
       Trockenlauf-Beleg).
-- [ ] **Kein** Eigenbau-Artefakt: `harness/tools/cite-check.sh` <!-- d-check:ignore (verworfener Ansatz — wird NICHT gebaut; durch d-check v0.50.0 abgeloest, s. §1) --> und
+- [x] **Kein** Eigenbau-Artefakt: `harness/tools/cite-check.sh` <!-- d-check:ignore (verworfener Ansatz — wird NICHT gebaut; durch d-check v0.50.0 abgeloest, s. §1) --> und
       `test/cite-check.bats` werden **nicht** angelegt (durch das Werkzeug abgelöst).
-- [ ] `make gates` grün; Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] `make gates` grün; Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -134,7 +134,7 @@ DoD vollständig + Review konform + Verifikation bestätigt DoD + Closure-Notiz 
 - **Frozen-Doc-Drift (gemessen, nicht spekulativ behandelt).** Von den real vorhandenen
   Inline-Code-Zeilenreferenzen (alle in `docs/plan/planning/done/`) werden nach
   `codepaths.roots` genau zwei tatsächlich zeilen-geprüft; beide bestehen heute
-  (`docs/plan/planning/README.md:26` → 36 Zeilen; `harness/conventions.md:18` → 438 Zeilen).
+  (`docs/plan/planning/README.md:26` → 36 Zeilen; `harness/conventions.md:18` → 481 Zeilen).
   Schrumpft ein Ziel künftig unter die referenzierte Zeile, färbte eine eingefrorene
   done/-Referenz rot. Das ist **dieselbe Klasse**, für die `docs/reviews/**` schon heute
   `codepaths`-exempt ist ([`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)) — aber `done/`-Slices sind es **nicht** und werden
@@ -148,7 +148,35 @@ DoD vollständig + Review konform + Verifikation bestätigt DoD + Closure-Notiz 
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Geliefert (2026-07-19).** d-check-Pin **v0.46.0 → v0.50.0** (Digest dreifach belegt),
+`d-check.mk` frisch aus `--print-mk` + [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)-Adaption, `codepaths.check-lines: true` als
+additive Härtung am aktiven `codepaths` (kein neues Gate), Emitter-Pin (`internal/emit`)
+nachgezogen, neuer [`MR-011`](../../../../harness/conventions.md#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines). Der ursprünglich geplante Eigenbau-Sensor
+`cite-check.sh` <!-- d-check:ignore (verworfener Ansatz, nie gebaut — durch d-check v0.50.0 abgeloest) --> entfiel — durch das Werkzeug abgelöst.
+
+**Rollenkette (Modul 8, je frischer Kontext).** Reviewer (Modul 10): **nicht merge-blockierend**,
+0 HIGH/MEDIUM (`docs/reviews/2026-07-19-slice-015-review.md`). Verifier (Modul 11): **alle DoD
+CONFIRMED, 0 VIOLATED** (`docs/reviews/2026-07-19-slice-015-verify.md`), inkl. selbst gefahrenem
+`make gates` (Exit 0) und Zähne-Beweis (`citation-out-of-range` feuert real, grün auf gültig).
+Beide bestätigten den dreifach belegten Digest und die faithful `--print-mk`-Regeneration unabhängig.
+
+**Steering-Loop-Lerneintrag (geschärfte Regel — Pin-Bump-Prozedur).** Ein d-check-Pin-Sprung hat
+**drei** Kopplungspunkte, nicht zwei: (1) `d-check.mk`-Pin, (2) `harness/conventions.md` §Baseline,
+(3) `internal/emit`s `DefaultImage`/`DefaultDigest` — der **emittierte** Pin, per Tier-1-Drift-Test
+an `d-check.mk` gekoppelt. Der re-gescopte Plan listete anfangs nur (1)+(2); der Drift-Test fing
+(3) (rot → Plan-Defekt-Rücksprung, Modul 9). **Regel für künftige Pin-Bumps** (ergänzt
+[`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert) §Auflösungs-Trigger): `internal/emit` von Anfang an in den Scope nehmen.
+
+**Zweite Lehre (Trigger-Disziplin, Modul 6 validiert).** Die Erstfassung war bewusst **blockiert**
+(Prämisse widerlegt). Aufgelöst wurde der Slice nicht durch Erzwingen des Eigenbaus, sondern durch
+**Adoption einer upstream gereiften Fähigkeit** (d-check v0.50.0) — der Block war korrekt, das Warten
+hat einen Duplikat-Sensor erspart ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
+
+**Selbst-Anwendung (Ironie als Beleg).** Der Verifier fand zwei veraltete Zahlen in den eigenen
+Artefakten dieses Zuges ([`MR-011`](../../../../harness/conventions.md#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines)-Dateizahl, §6-Zeilenzahl — beide durch spätere Edits gewandert);
+sie wurden korrigiert. Genau die Klasse, gegen die dieser Slice `check-lines` adoptiert — hier vom
+Verifier gefangen, weil `check-lines` nur `datei:zeile` prüft, nicht freie Prosa-Zahlen (§6, zweiter
+Punkt). Der Befund schärft die Abgrenzung, statt sie zu entkräften.
 
 ## 8. Sub-Area-Modus-Begründung
 
