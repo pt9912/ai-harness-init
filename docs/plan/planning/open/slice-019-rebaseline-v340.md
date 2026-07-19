@@ -35,23 +35,36 @@ alarmiert hat.
       **entfernt** (Setzung 4: ein Tag zur Zeit). Der ZIP-sha256 ist **vor** dem Entpacken
       gegen den Pin verifiziert.
 - [ ] **Provenienz + Integrität gepinnt** ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 1). `Makefile`
-      `BASELINE_TAG` → `v3.4.0`, `BASELINE_ZIP_SHA256` → `58fb40678ce0a507d893ac5c3f45e7c6449e1f3a6fa63badb532c19ed102378c`
-      (sha256 des Release-Assets, [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
+      `BASELINE_TAG` → `v3.4.0`, `BASELINE_ZIP_SHA256` → `58fb40678ce0a507d893ac5c3f45e7c6449e1f3a6fa63badb532c19ed102378c`.
+      **Herkunft des Werts (nicht zirkulär):** `sha256sum` des Assets, **frisch von der offiziellen
+      Release-URL** (`releases/download/v3.4.0/lab-regelwerk.zip`) gezogen — gemessen 2026-07-19
+      (nicht aus dem Freshness-Alarm übernommen). Bei Vendoring **erneut gegen einen frischen
+      Download gemessen**, bevor der Wert final gepinnt wird ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit); die offizielle URL
+      ist der Provenienz-Anker, `SHA256SUMS` trägt nur die Integrität — [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 1).
 - [ ] **Kopplungspunkt Fetch.** `internal/fetch/fetch.go` `DefaultTag` → `v3.4.0` — per
       `TestDefaultTag_MatchesBaseline` an `BASELINE_TAG` gekoppelt (färbt sonst `make test` rot,
       [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)/[`ADR-0001`](../../adr/0001-skelett-distribution.md)).
 - [ ] **Kopplungspunkt Doku.** `harness/conventions.md` §Baseline: vendored Tag + kanonische
       Kurs-URL + „Regelwerks-Stand" (Welle 31 · 2026-07-19). Historische Einträge (MR-Bodies)
       bleiben eingefroren.
-- [ ] **Kopplungspunkt Emit-Embed (voraussichtlich fällig).** `internal/emit`s eingebettete
-      Template-Teilmenge (`internal/emit/skel/`) spiegelt Templates, die sich in v3.4.0 **breit
-      geändert** haben (u. a. `AGENTS`/`conventions`/`Makefile`/`lastenheft`) — der Gleichheit-
-      /Vollständigkeit-Wächter (slice-003) feuert voraussichtlich. Embed **drift-test-gesteuert**
+- [ ] **Kopplungspunkt Emit-Embed (voraussichtlich fällig).** `internal/emit/skel/` bettet **15 der
+      21** Templates ein (gemessen `find`; **nicht** dabei: `Makefile`, `.d-check.yml`,
+      `project-readme`, die Set-Index-READMEs); mehrere eingebettete gehören zu den in v3.4.0
+      geänderten (`AGENTS`/`conventions`/`lastenheft`/`slice.template` u. a.) → `test/skel-drift.bats`
+      feuert voraussichtlich auf der **Gleichheit**-Achse (die **Vollständigkeit**-Achse kann nicht
+      feuern — der Dateibestand bleibt gleich, kein neues Template). Embed **drift-test-gesteuert**
       re-syncen (kein Blind-Sync; nur was der rote Test benennt).
 - [ ] **slice-019-Template-Reconciliation.** `slice.template.md` hat sich v3.1.0→v3.4.0 geändert;
       dieser Slice wurde per `cp` aus der **v3.1.0**-Vorlage erzeugt. Nach dem Vendoring gegen die
       v3.4.0-Vorlage abgleichen (Struktur-Divergenz prüfen/übernehmen — dieselbe Reconciliation-Klasse
       wie slice-013).
+- [ ] **Kopplungspunkt reviewer.md (kein Gate fängt es — Stilles-Grün-Klasse).**
+      `.harness/skills/reviewer.md` ist ein aus der Baseline **abgeleitetes** Artefakt, gepinnt auf
+      „Agents-Regelwerk v3.1.0 (Kurs-Welle 26), Modul 10 §Ziel-Form" (`reviewer.md:4`) und zählt die
+      „fünf v3.1.0-Pflicht-Punkte" auf (`reviewer.md:15`). Anders als das Emit-Embed prüft **kein Gate**
+      diese Prosa-Drift (`v3.1.0` ist kein ID-Muster). Modul 10 §Ziel-Form der v3.4.0/Welle-31-Fassung
+      gegen die fünf Punkte / das Output-Schema abgleichen; bei Änderung reviewer.md **versionieren**
+      (→ 1.2.0, analog slice-014), sonst in der Closure-Notiz **explizit begründen**, warum unverändert.
 - [ ] `make gates` grün (inkl. `baseline-verify`: Integrität **und** Vollständigkeit netzlos).
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
@@ -64,10 +77,16 @@ alarmiert hat.
 | `internal/fetch/fetch.go` (`DefaultTag`) | update | Fetch-Pin gekoppelt (Tier-1-Drift-Test) |
 | `harness/conventions.md` §Baseline | update | Tag + Kurs-URL + Regelwerks-Stand (Welle 31) |
 | `internal/emit/skel/` | voraussichtlich update | Embed re-sync (breite Template-Änderung), drift-test-gesteuert (slice-003) |
+| `README.md` (Zeile 26) | update | harter Literal-Pfad `.harness/baseline/v3.1.0/` (kein generisches `<tag>`) → sonst tote Repo-Wurzel-Referenz |
+| `.harness/skills/reviewer.md` | ggf. update | Baseline-Pin v3.1.0/Welle 26 + „fünf Punkte" gegen Modul 10 §Ziel-Form v3.4.0 abgleichen (kein Gate fängt es) |
 | slice-019 selbst | reconcile | gegen die geänderte v3.4.0-`slice.template.md` abgleichen |
 
-**Nicht** blind: `AGENTS.md`/`CLAUDE.md` nutzen `<tag>` generisch (Glob/Variable) — kein Grep-Bump
-nötig ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 4). Historische MR-Bodies bleiben Zeitbezug.
+**Vollständigkeits-Analyse (Review-korrigiert — die Erstfassung war unter-inklusiv):**
+`AGENTS.md`/`CLAUDE.md` nutzen `<tag>` generisch (Glob/Variable) — kein Bump
+([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 4). **Aber** `README.md:26` verdrahtet den Literal-Pfad
+`.harness/baseline/v3.1.0/` → **jetzt im Scope** (mein erster Grep hatte es durch die eigene
+Exclude-Zeile übersehen). Zu den repo-eigenen `blob/v3.1.0/kurs/…`-Prozess-Links s. §6
+(bewusste Bump-vs.-Einfrieren-Entscheidung). Historische MR-Bodies bleiben Zeitbezug.
 
 ## 4. Trigger
 
@@ -95,8 +114,18 @@ DoD vollständig + Review konform (Integrität/Provenienz bestätigt) + Verifika
   wäre falsch.
 - **Zahlen-Korrektur (Beleg für die Klasse).** Die Erstfassung dieses Slice behauptete „42→54
   Dateien / templates 21→32" — das waren `unzip -Z1`-**Verzeichnis-Einträge**, als Dateien
-  fehlgezählt (`find -type f` misst 42/42). Genau die „behauptete statt gemessene Zahl"-Klasse, die
-  slice-015 adressiert; hier vom Pair-Partner gefangen, dann gemessen korrigiert.
+  fehlgezählt (`find regelwerk templates -type f` misst **42** je Bump-Seite; der volle Baum inkl.
+  `SHA256SUMS` ergäbe 43). Genau die „behauptete statt gemessene Zahl"-Klasse, die slice-015
+  adressiert; hier zweimal in *diesem* Plan aufgetreten (auch das `Makefile`-Beispiel in Do 5) und
+  vom Plan-Review gemessen korrigiert.
+- **Kurs-Prozess-Links (`blob/v3.1.0/kurs/…`) — bewusste Entscheidung, nicht Automatismus.** Rund
+  ein Dutzend Planungs-Docs tragen solche Links. **Kanonisch** ist allein `conventions.md` §Baseline
+  (DoD 4) — sie ist der eine Kurs-Pin. **Setzung:** done/-Slices bleiben **eingefroren** (Zeitbezug —
+  sie hielten den Stand ihres Entstehens fest); die **live** Docs (roadmap in-progress, offene Slices,
+  Wellen-Pläne) tragen die Links als *auxiliare* Prozess-Referenz, **nicht** als zweiten Pin — sie
+  ziehen mit, wenn sie ohnehin angefasst werden (z. B. slice-019 selbst über die
+  slice.template-Reconciliation), sonst bleiben sie Zeitbezug. Kein repo-weiter Zwangs-Bump (das wäre
+  die Wartungsfalle, vor der slice-015 §6 warnt).
 - **Provenienz ≠ Integrität** ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 1). `SHA256SUMS` (selbst erzeugt) beweist nur,
   dass der Baum sich seit dem Vendoring nicht bewegt; die **Herkunft** hängt allein an
   `BASELINE_ZIP_SHA256` (gegen das Release-Asset). Beide sind zu führen.
