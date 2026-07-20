@@ -21,6 +21,30 @@ func isRecurring(base string) bool {
 	return false
 }
 
+// rootAnchor ist die Datei, an der eine korrekt gewurzelte Quelle erkennbar ist:
+// sie liegt im Kurs-Satz DIREKT an der templates/-Wurzel.
+const rootAnchor = "AGENTS.template.md"
+
+// checkRoot prueft POSITIV, dass src am templates/-Verzeichnis gewurzelt ist.
+//
+// Der Leer-Guard in Templates reicht dafuer nicht (Review-Befund slice-022b F-2):
+// eine VORFAHREN-Wurzelung (etwa `.harness/baseline/<tag>/` statt dessen
+// `templates/`) ist nicht leer — sie liefert sogar MEHR Treffer — und umgeht
+// zugleich beide Ausschluesse aus inScope, weil die am FS-Root verankert sind
+// (`project-readme.template.md` hiesse dann `templates/project-readme.template.md`).
+// Das Ergebnis waere ein Emit mit zu vielen Dateien und ohne Fehler. Lieber laut
+// abbrechen, als eine plausible Falsch-Wurzelung durchzulassen.
+func checkRoot(src fs.FS) error {
+	switch _, err := fs.Stat(src, rootAnchor); {
+	case err == nil:
+		return nil
+	case errors.Is(err, fs.ErrNotExist):
+		return fmt.Errorf("quelle ist nicht am templates/-Verzeichnis gewurzelt: %s fehlt an ihrer Wurzel", rootAnchor)
+	default:
+		return fmt.Errorf("%s pruefen: %w", rootAnchor, err)
+	}
+}
+
 // inScope entscheidet, welche Datei des Kurs-Template-Satzes der Bootstrap als
 // Doc-Template-Schicht emittiert (LH-FA-02).
 //
@@ -63,6 +87,9 @@ func inScope(rel string) bool {
 // der Docker-Build-Kontext ausschliesst (.dockerignore) — genau der Grund, warum
 // der alte Drift-Waechter nach bats musste.
 func Templates(src fs.FS, targetDir, name string, force bool) error {
+	if err := checkRoot(src); err != nil {
+		return err
+	}
 	plan, err := planTemplates(src, name)
 	if err != nil {
 		return err
@@ -70,7 +97,7 @@ func Templates(src fs.FS, targetDir, name string, force bool) error {
 	// Leere Quelle -> laut abbrechen. Ein falsch gewurzeltes src emittierte sonst
 	// stillschweigend NICHTS und meldete Erfolg (LH-QA-01: kein stilles Gruen).
 	if len(plan) == 0 {
-		return errors.New("keine in-scope Templates in der Quelle gefunden (falsch gewurzelt oder Baseline unvollstaendig?)")
+		return errors.New("keine in-scope Templates in der Quelle gefunden (Baseline unvollstaendig?)")
 	}
 	if !force {
 		for rel := range plan {

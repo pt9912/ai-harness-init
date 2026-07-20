@@ -1,0 +1,84 @@
+#!/usr/bin/env bats
+# courseset-fixture.bats — haelt die Test-Fixture courseSet() am REALEN
+# Kurs-Template-Satz fest (.harness/baseline/<tag>/templates/).
+#
+# Warum es diese Datei gibt (slice-022b, Review-Befunde F-3/F-4):
+# Mit dem Embed fiel test/skel-drift.bats — und damit die EINZIGE Stelle in
+# `make gates`, die den realen Template-Satz ueberhaupt anfasste. Die Emit-Tests
+# laufen seither gegen courseSet(), einen handgeschriebenen Nachbau in
+# internal/emit/templates_test.go. Damit ist ein NEUES Drift-Paar entstanden:
+# Fixture gegen Wirklichkeit. Strukturell dieselbe Klasse, die der Slice
+# abschaffen wollte — nur mit milderer Folge (Testtreue statt Auslieferung).
+#
+# Warum bats und nicht go-test: .harness/ liegt nicht im Docker-Build-Kontext
+# (.dockerignore), die go-test-Stage sieht den realen Baum also gar nicht. Genau
+# der Grund, aus dem schon der geloeschte Waechter hier lag.
+#
+# Was er NICHT leistet: Inhalts-Gleichheit. Er vergleicht den DATEIBESTAND. Die
+# Transformationen (Hinweis-Strip, Namens-Stempel, verbatim) pruefen die
+# Emit-Tests gegen die Fixture — die dieser Test ehrlich haelt.
+
+setup() {
+  REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
+  FIXTURE_SRC="$REPO/internal/emit/templates_test.go"
+  # vendored Baseline: genau ein <tag>-Verzeichnis (MR-007 "ein Tag zur Zeit").
+  REAL="$(echo "$REPO"/.harness/baseline/*/templates)"
+}
+
+# fixture_paths liest die Pfad-Schluessel aus dem courseSet()-MapFS-Literal.
+fixture_paths() {
+  awk -F'"' '/"[^"]+"[ \t]*:[ \t]*f\(/ { print $2 }' "$FIXTURE_SRC" | LC_ALL=C sort
+}
+
+real_paths() {
+  ( cd "$REAL" && find . -type f | sed 's|^\./||' | LC_ALL=C sort )
+}
+
+# in_scope filtert nach derselben Regel wie emit.inScope: *.template.md, minus
+# project-readme (LH-FA-05) und .harness/skills/** (LH-FA-06).
+in_scope() {
+  grep '\.template\.md$' \
+    | grep -v '^project-readme\.template\.md$' \
+    | grep -v '^\.harness/skills/'
+}
+
+@test "fixture: courseSet() bildet den realen Template-Satz vollstaendig ab" {
+  [ -d "$REAL" ] || { echo "vendored templates/ fehlt: $REAL"; return 1; }
+  diff <(fixture_paths) <(real_paths) || {
+    echo "DRIFT: courseSet() in $FIXTURE_SRC weicht vom realen Satz ab."
+    echo "  '<' nur in der Fixture, '>' nur im realen Baum."
+    echo "  Ein neuer Eintrag rechts ist die Frage, die der geloeschte"
+    echo "  skel-drift-Waechter stellte: gehoert er in scope, und wenn ja,"
+    echo "  ist er Singleton oder wiederkehrend (emit.isRecurring)?"
+    return 1
+  }
+}
+
+@test "fixture: der reale Satz liefert genau 15 in-scope-Templates" {
+  # Die Zahl ist kein Selbstzweck: 10 Singletons + 5 wiederkehrende. Bewegt sie
+  # sich, hat upstream etwas hinzugefuegt oder entfernt — und emit.isRecurring
+  # (eine 5er-Aufzaehlung, Review-Befund F-4) braucht dann eine Entscheidung,
+  # statt das Neue still als Singleton zu behandeln.
+  local n
+  n="$(real_paths | in_scope | wc -l | tr -d ' ')"
+  [ "$n" -eq 15 ] || {
+    echo "in-scope-Templates: $n, erwartet 15"
+    real_paths | in_scope
+    return 1
+  }
+}
+
+@test "fixture: die fuenf wiederkehrenden Templates existieren real" {
+  # emit.isRecurring zaehlt sie namentlich auf (LH-FA-02). Verschwindet einer
+  # upstream, emittiert das Tool ihn stillschweigend nicht mehr.
+  local rel
+  for rel in \
+    docs/plan/adr/NNNN-titel.template.md \
+    docs/plan/planning/slice.template.md \
+    docs/plan/planning/welle.template.md \
+    docs/plan/carveouts/carveout.template.md \
+    docs/reviews/review-report.template.md
+  do
+    [ -f "$REAL/$rel" ] || { echo "wiederkehrendes Template fehlt real: $rel"; return 1; }
+  done
+}

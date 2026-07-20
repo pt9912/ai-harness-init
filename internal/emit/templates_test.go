@@ -4,6 +4,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"testing"
 	"testing/fstest"
@@ -111,9 +112,14 @@ func TestTemplates_StampAndStrip(t *testing.T) {
 
 // TestTemplates_RecurringVerbatim: wiederkehrende Templates werden verbatim
 // emittiert — ihr Template-Hinweis-Block bleibt stehen (Singletons bekommen ihn
-// gestrippt, siehe TestTemplates_StampAndStrip). Byte-Gleichheit mit dem REALEN
-// Kurs-Satz belegt seit slice-022b `make smoke` (Tier 2, echter Bootstrap) — der
-// frueher hier genannte bats-Drift-Waechter ist mit dem Embed entfallen.
+// gestrippt, siehe TestTemplates_StampAndStrip).
+//
+// Gegen den REALEN Kurs-Satz laeuft dieser Test NICHT: er nutzt courseSet(), und
+// `.harness/` ist im Docker-Build-Kontext gar nicht sichtbar (.dockerignore). Die
+// Treue der Fixture zum realen Satz haelt `test/courseset-fixture.bats` fest.
+// (Eine frueher hier stehende Zuschreibung an `make smoke` war falsch: smoke
+// prueft Bootstrap-Exit, Skelett und d-check-Config — kein emittiertes Template.
+// Review-Befund slice-022b F-3.)
 func TestTemplates_RecurringVerbatim(t *testing.T) {
 	dir := t.TempDir()
 	if err := emit.Templates(courseSet(), dir, "X", true); err != nil {
@@ -128,29 +134,75 @@ func TestTemplates_RecurringVerbatim(t *testing.T) {
 	}
 }
 
-// TestTemplates_AusserScopeNichtEmittiert ist der Kern von slice-022b. Die
-// gefetchte Quelle traegt den VOLLEN Kurs-Satz (21 Dateien); der eingebettete
-// Baum war von Hand vorgefiltert (15). Diese Regel stand vorher NUR im geloeschten
-// Drift-Waechter — jede Zeile hier hat einen eigenen Grund, und keiner davon ist
-// "war halt nicht im Embed".
-func TestTemplates_AusserScopeNichtEmittiert(t *testing.T) {
+// TestTemplates_EmittierterBestandVollstaendig ist der Kern von slice-022b: die
+// gefetchte Quelle traegt den VOLLEN Kurs-Satz (21 Dateien), emittiert werden
+// genau 15. Geprueft wird der Ist-Bestand VOLLSTAENDIG — was nicht in der
+// Erwartung steht, darf nicht da sein.
+//
+// Die Vorgaenger-Fassung hiess AusserScopeNichtEmittiert und stat'te die
+// QUELL-Namen (`README.md`, `project-readme.template.md`, …). Der Emitter
+// schreibt aber TRANSFORMIERTE Namen: singletonTarget haengt `.md` an, wenn
+// `.template.md` nicht greift — aus `README.md` wuerde `README.md.md`, aus
+// `project-readme.template.md` wuerde `project-readme.md`. Alle sieben
+// Zusicherungen prueften damit Pfade, die der Code unter KEINER Mutation
+// schreibt: der Test war inert (Review-Befund slice-022b F-1, per Mutations-Sonde
+// belegt). Abwesenheits-Stichproben auf geratene Namen sind die falsche Form —
+// derselbe Fehler wie bei slice-022a N2.
+func TestTemplates_EmittierterBestandVollstaendig(t *testing.T) {
 	dir := t.TempDir()
 	if err := emit.Templates(courseSet(), dir, "X", true); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
-	for _, c := range []struct{ rel, warum string }{
-		{"README.md", "Set-Index des Satzes, nie ein Ziel-Artefakt"},
-		{"project-readme.template.md", "Root-README ist LH-FA-05 (slice-005)"},
-		{"readme.md", "Root-README auch nicht kleingeschrieben"},
-		{".harness/skills/reviewer.template.md", "Durchsetzungsschicht ist LH-FA-06"},
-		{".harness/skills/closure-note-reviewer.template.md", "Durchsetzungsschicht ist LH-FA-06"},
-		{".d-check.yml", "das Tool autoriert seine eigene minimale Config (emit.DocGate)"},
-		{"Makefile", "Ziel-Form gehoert zum Skelett-Generator (slice-023)"},
-	} {
-		if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(c.rel))); err == nil {
-			t.Errorf("%s wurde emittiert — %s", c.rel, c.warum)
-		}
+	want := []string{
+		// 10 Singletons -> .md
+		"AGENTS.md",
+		"docs/plan/adr/README.md",
+		"docs/plan/carveouts/README.md",
+		"docs/plan/planning/README.md",
+		"docs/plan/planning/in-progress/roadmap.md",
+		"harness/README.md",
+		"harness/conventions.md",
+		"spec/architecture.md",
+		"spec/lastenheft.md",
+		"spec/spezifikation.md",
+		// 5 Wiederkehrende -> verbatim co-located
+		"docs/plan/adr/NNNN-titel.template.md",
+		"docs/plan/carveouts/carveout.template.md",
+		"docs/plan/planning/slice.template.md",
+		"docs/plan/planning/welle.template.md",
+		"docs/reviews/review-report.template.md",
 	}
+	sort.Strings(want)
+	got := emittedTree(t, dir)
+	if strings.Join(got, "\n") != strings.Join(want, "\n") {
+		t.Errorf("emittierter Bestand weicht ab.\ngot:\n  %s\nwant:\n  %s",
+			strings.Join(got, "\n  "), strings.Join(want, "\n  "))
+	}
+}
+
+// emittedTree liefert alle emittierten Dateien relativ zu dir, slash-normalisiert
+// und sortiert.
+func emittedTree(t *testing.T, dir string) []string {
+	t.Helper()
+	var out []string
+	if err := filepath.WalkDir(dir, func(p string, d os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if d.IsDir() {
+			return nil
+		}
+		rel, relErr := filepath.Rel(dir, p)
+		if relErr != nil {
+			return relErr
+		}
+		out = append(out, filepath.ToSlash(rel))
+		return nil
+	}); err != nil {
+		t.Fatalf("Baum lesen: %v", err)
+	}
+	sort.Strings(out)
+	return out
 }
 
 // TestTemplates_NeuesUpstreamTemplateFliesstMit ist der strukturelle Ersatz fuer
@@ -170,15 +222,45 @@ func TestTemplates_NeuesUpstreamTemplateFliesstMit(t *testing.T) {
 	}
 }
 
-// TestTemplates_LeereQuelle: eine falsch gewurzelte oder leere Quelle darf nicht
-// still nichts emittieren und Erfolg melden (LH-QA-01).
-func TestTemplates_LeereQuelle(t *testing.T) {
-	err := emit.Templates(fstest.MapFS{"irgendwas.txt": &fstest.MapFile{Data: []byte("x")}}, t.TempDir(), "X", true)
-	if err == nil {
-		t.Fatal("leere Quelle wurde als Erfolg gemeldet")
+// TestTemplates_FalscheWurzelung deckt Review-Befund F-2. Der Leer-Guard allein
+// reicht nicht: eine VORFAHREN-Wurzelung ist nicht leer, liefert mehr Treffer und
+// umgeht die FS-Root-verankerten Ausschluesse — sie wuerde ohne Fehler zu viel
+// emittieren. Beide Formen muessen laut abbrechen.
+func TestTemplates_FalscheWurzelung(t *testing.T) {
+	// (a) Vorfahren-Wurzelung: der Satz liegt unter templates/, src zeigt darueber.
+	nested := fstest.MapFS{}
+	for p, f := range courseSet().(fstest.MapFS) {
+		nested["templates/"+p] = f
 	}
-	if !strings.Contains(err.Error(), "in-scope") {
+	nested["regelwerk/README.md"] = &fstest.MapFile{Data: []byte("# Index\n")}
+	dir := t.TempDir()
+	err := emit.Templates(nested, dir, "X", true)
+	if err == nil {
+		t.Fatal("Vorfahren-Wurzelung wurde akzeptiert — sie emittiert zu viel, nicht zu wenig")
+	}
+	if !strings.Contains(err.Error(), "gewurzelt") {
 		t.Errorf("Fehlermeldung benennt die Ursache nicht: %v", err)
+	}
+	if got := emittedTree(t, dir); len(got) != 0 {
+		t.Errorf("trotz Fehler emittiert: %v", got)
+	}
+
+	// (b) voellig fremde Quelle.
+	if err := emit.Templates(fstest.MapFS{"irgendwas.txt": &fstest.MapFile{Data: []byte("x")}}, t.TempDir(), "X", true); err == nil {
+		t.Error("fremde Quelle wurde als Erfolg gemeldet")
+	}
+}
+
+// TestTemplates_LeereQuelle: eine korrekt gewurzelte, aber inhaltsleere Quelle
+// darf nicht still nichts emittieren und Erfolg melden (LH-QA-01).
+func TestTemplates_LeereQuelle(t *testing.T) {
+	only := fstest.MapFS{"AGENTS.template.md": &fstest.MapFile{Data: []byte("# <Projektname>\n")}}
+	dir := t.TempDir()
+	if err := emit.Templates(only, dir, "X", true); err != nil {
+		t.Fatalf("Quelle mit genau dem Anker sollte emittieren: %v", err)
+	}
+	if got := emittedTree(t, dir); strings.Join(got, ",") != "AGENTS.md" {
+		t.Errorf("emittiert = %v, want [AGENTS.md]", got)
 	}
 }
 

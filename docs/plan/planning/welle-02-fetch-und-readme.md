@@ -69,10 +69,11 @@ gespiegelt (welle.template.md §4 — eine zweite Wahrheit driftet). -->
 - Blockiert: welle-03 (README & Voll-Smoke) — ohne den umgebauten Bootstrap hat deren
   Voll-Smoke kein vollständiges Ziel.
 - Intern **strikt sequenziell**: slice-022a → slice-022b → **slice-025** → slice-023 →
-  slice-004b. **022a ist additiv** (Baseline-Fetch neben dem bestehenden Embed), **022b räumt
-  ab** — der Zwischenzustand zweier Template-Quellen ist bewusst kurz und bleibt von
-  `test/skel-drift.bats` bewacht, bis das Embed fällt. Die Teilung entstand aus der
-  Ist-Messung vor der Implementierung (Re-Slice 2026-07-20, s. 022a §1).
+  slice-004b. **022a war additiv** (Baseline-Fetch neben dem bestehenden Embed), **022b hat
+  abgeräumt** — der Zwischenzustand zweier Template-Quellen war bewusst kurz und blieb vom
+  damaligen Drift-Wächter bewacht, bis das Embed fiel; der Wächter ist mit seinem Gegenstand
+  entfallen (022b). Die Teilung entstand aus der Ist-Messung vor der Implementierung
+  (Re-Slice 2026-07-20, s. 022a §1).
 - **slice-025 sitzt bewusst VOR 023/004b:** es sichert die Bootstrap-Kette ab, und jeder
   Slice danach hängt sonst einen weiteren ungeschützten Schritt an. Genau so ist der Befund
   viermal entstanden (slice-002 → 003 → 004a → 022a), während seine Lösung dreimal einem

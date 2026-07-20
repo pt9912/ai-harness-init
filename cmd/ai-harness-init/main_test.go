@@ -196,6 +196,30 @@ func TestRun_BaselineUndVerifierLanden(t *testing.T) {
 	}
 }
 
+// TestTemplatesDir_ZeigtAufDieGefetchteQuelle koppelt die Wurzelung, die
+// emit.Templates bekommt, an das, was fetch.Baseline tatsaechlich schreibt.
+//
+// Bis zum Review hatte sie NULL Zusicherung (Befund slice-022b F-3): die
+// run()-Tests enden bewusst am DocGate, also VOR dem Templates-Aufruf, und
+// `make smoke` fasst keine Templates an. Eine falsche Wurzelung waere erst im
+// emittierten Zielrepo aufgefallen — und dort nur, wenn jemand hinsieht.
+func TestTemplatesDir_ZeigtAufDieGefetchteQuelle(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, ".d-check.yml"), []byte("# vorhanden\n"), 0o644); err != nil {
+		t.Fatalf("Setup: %v", err)
+	}
+	var out, errb bytes.Buffer
+	if code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb); code != 1 {
+		t.Fatalf("Exit-Code = %d, want 1 (DocGate bricht ab)", code)
+	}
+	// Die Baseline liegt jetzt im Ziel. Genau dorthin muss templatesDir zeigen —
+	// und dort muss der Wurzel-Anker liegen, den emit.Templates prueft.
+	src := templatesDir(dir, fetch.DefaultTag)
+	if _, err := os.Stat(filepath.Join(src, "AGENTS.template.md")); err != nil {
+		t.Errorf("templatesDir zeigt nicht auf die gefetchte templates/-Wurzel (%s): %v", src, err)
+	}
+}
+
 // TestFetchExitCode deckt die Exit-Abbildung netzlos ab (Review-M2).
 func TestFetchExitCode(t *testing.T) {
 	if got := fetchExitCode(nil); got != 0 {

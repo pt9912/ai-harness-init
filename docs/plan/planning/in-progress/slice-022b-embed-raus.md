@@ -38,8 +38,17 @@ die Folgepflicht aus [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distr
 | `internal/emit/templates.go` | update | Quelle: `embed.FS` → `fs.FS` über die gefetchte Baseline; `planTemplates` walkt den realen Baum |
 | `internal/emit/skel` | entfernt | Embed-Duplikat; Folgepflicht [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md) |
 | `test/skel-drift.bats` | entfernt | bewachte die Doppelung, die entfällt — ersatzlos, kein Nachfolge-Sensor nötig |
-| `.d-check.yml` | update | den entfernten Test als Tombstone deklarieren (`codepaths.ignore-refs`, [`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)-Muster) |
+| ~~`.d-check.yml`~~ | **entfällt begründet** | Der Tombstone wäre wirkungslos: `codepaths.roots` ist `[spec, docs, harness]`, `test/` und `internal/` werden gar nicht gescannt — nach dem Löschen gemessen (d-check 0 Befunde) und vom Verifier mit Positiv-/Negativkontrolle bestätigt. Ein `ignore-refs`-Eintrag für etwas, das das Gate nicht prüft, wäre die breite unbelegte Liste, vor der [`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile) warnt |
 | Emit-Tests | update | Fixture-Baum statt Embed; die [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)-Fälle bleiben inhaltlich unverändert |
+
+**Nachgeführt 2026-07-20 (aus der Review-Runde).** Modul 9 macht diese Tabelle zum
+*Protokoll*; drei Artefakte kamen dazu:
+
+| Datei / Komponente | Änderungs-Art | Begründung |
+|---|---|---|
+| `cmd/ai-harness-init/main.go` | update | Signatur-Folge (`fs.FS`-Quelle) + Wurzelung; das Ziel-Layout liegt jetzt in `baselineDir`/`templatesDir` an einer Stelle statt inline |
+| `test/courseset-fixture.bats` | neu | Der Wegfall des Drift-Wächters ließ ein **neues** Drift-Paar entstehen (handgebaute Fixture vs. realer Satz) und nahm `make gates` die einzige Berührung mit `.harness/baseline/*/templates`. Der Fall hält beides — und meldet ein neu hinzugekommenes Upstream-Template, das `isRecurring` klassifizieren müsste |
+| `internal/emit/templates.go` | update | `checkRoot`: positive Prüfung der Wurzelung. Der Leer-Guard allein deckt sie nicht — eine Vorfahren-Wurzelung ist **nicht** leer und emittierte zu viel |
 
 ## 4. Trigger
 

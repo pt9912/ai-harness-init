@@ -103,7 +103,7 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 	// sha256 wird VOR dem Entpacken geprueft; scheitert er, wird begruendet
 	// NICHT emittiert statt eine erfundene Baseline zu schreiben. Danach ist das
 	// Zielrepo ueber seine Baseline netzlos (MR-007 fuers Ziel gespiegelt).
-	baseDir := filepath.Join(targetDir, ".harness", "baseline")
+	baseDir := baselineDir(targetDir)
 	if err := fetch.Baseline(ctx, baseDir, tag, src.baselineSHA, *force, src.baseline); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
@@ -131,14 +131,27 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 	// slice-022b die eben gefetchte Baseline des Ziels, nicht mehr ein
 	// eingebettetes Duplikat (ADR-0005: eine Quelle, der Kurs). Der
 	// Baseline-Schritt oben MUSS deshalb vorher gelaufen sein.
-	tmplFS := os.DirFS(filepath.Join(baseDir, tag, "templates"))
-	if err := emit.Templates(tmplFS, targetDir, *name, *force); err != nil {
+	if err := emit.Templates(os.DirFS(templatesDir(targetDir, tag)), targetDir, *name, *force); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
 
 	fmt.Fprintf(stdout, "ai-harness-init: Bootstrap (Skelett %q gestaged + Baseline %s vendored + Doc-Gate + Template-Baseline) — --lang=%s.\n", *lang, tag, *lang)
 	return 0
+}
+
+// baselineDir und templatesDir halten das Ziel-Layout an EINER Stelle: die
+// vendored Baseline liegt unter .harness/baseline/<tag>/, der Kurs-Template-Satz
+// in deren templates/. Als Funktionen (statt inline zusammengesetzt), damit die
+// Wurzelung eine Zusicherung bekommt — sie hatte vorher keine, und ein falsch
+// gewurzeltes emit.Templates faellt sonst erst im Ziel auf (Review-Befund
+// slice-022b F-3).
+func baselineDir(targetDir string) string {
+	return filepath.Join(targetDir, ".harness", "baseline")
+}
+
+func templatesDir(targetDir, tag string) string {
+	return filepath.Join(baselineDir(targetDir), tag, "templates")
 }
 
 // envOr liefert den Wert der Umgebungsvariable key oder def, wenn sie leer/ungesetzt ist.
