@@ -38,12 +38,20 @@ Kriterium ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzini
 > Ist-Messung vor der Implementierung in 022a/022b geteilt** (Modul-5-Rücksprung, wie
 > slice-001→001a/b und slice-004→004a/b) — Grund: ZIP≠Tar-Umbau plus ein bis dahin
 > unbemerktes Loch (der Ziel-Verifier für [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)s Prüfsummen-AC).
-> **Harness-Wartung ohne Welle, in dieser Reihenfolge:** slice-026 (`make mutate`) —
-> er sollte vor den restlichen welle-02-Slices landen, weil die Befund-Klasse, die er
-> bewacht, in **jedem** Slice dieses Zuges auftrat. Danach **slice-027** (CI; er deckt
-> die seit [`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung) offene Restlücke „frischer Klon"). Erst dann 025 → 023 → 004b. Offene
-> Aufräum-Punkte (kein Gate-Bruch): stale Links auf die superseded Skelett-Fetch-ADR in
-> welle-01/Root-README.
+> **Erledigt (2026-07-20):** slice-022a (Baseline-Fetch), slice-022b (Embed raus) — beide
+> `done/`, `make gates`/`make smoke` grün. Dazu **zwei Harness-Wartungs-Slices ohne Welle:**
+> slice-026 (`make mutate`, der Feedback-Quadrant zu [`AGENTS.md`](../../../../AGENTS.md) §3.6) und
+> slice-027 (CI). **CI läuft** auf `origin/main` pro Push (GitHub Actions,
+> [`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)) —
+> `gates`/`smoke`/`mutate` real grün belegt; die [`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)-Restlücke „frischer Klon"
+> ist damit geschlossen.
+>
+> **➤ NÄCHSTER SCHRITT (2026-07-21): slice-025** (Bootstrap-Kette absichern) via
+> `/implement-slice`. Danach **023 → 004b** (welle-02 schließt), dann welle-03 (005 → 024 → **M2**).
+> **Vor slice-025 messen** (Modul 9 Schritt 4): der Slice entscheidet die Entwurfsfrage
+> Pre-Flight vs. Staging→Commit **bewusst nicht vor** — die gehört in den ersten Lauf, ggf. mit ADR
+> (Doc führt). Offene Aufräum-Punkte (kein Gate-Bruch): stale Links auf die superseded
+> Skelett-Fetch-ADR in welle-01/Root-README.
 
 ## Nächste Wellen
 
