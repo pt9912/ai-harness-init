@@ -14,23 +14,22 @@ Der **Offline-Kern ist gebaut** — Meilenstein M1 erreicht, welle-01 geschlosse
 ([welle-01-results](docs/plan/planning/done/welle-01-results.md)). Das Go-Binary
 `cmd/ai-harness-init --lang <X> --name <Y>` leistet heute:
 
+- **Regelwerk + Templates ins Zielrepo vendoren** — Baseline-Asset per sha256-Pin geholt und
+  **vor** dem Entpacken verifiziert, dazu ein Prüfsummen-Verifier nach `tools/harness/`
+  ([`LH-FA-09`](spec/lastenheft.md#lh-fa-09--regelwerk-emittieren); slice-022a);
 - **Doc-Gate-Baseline emittieren** — `.d-check.yml` + `d-check.mk` (Runtime-Codegen aus
   `d-check --print-mk`; slice-002);
 - **Template-Baseline zweiklassig ablegen** — Singletons → gestempelte `.md`,
   Wiederkehrende → co-located `.template.md` (slice-003);
-- **Sprachskelett vom gepinnten Kurs-Tag fetchen** in einen Staging-Bereich (slice-004a);
-  unbekannte Sprache → Exit 2 + Liste.
+- **Sprachskelett vom gepinnten Kurs-Tag fetchen** in einen Staging-Bereich (slice-004a;
+  **transitorisch** — slice-023 löst den Fetch durch den deterministischen Generator ab,
+  [`ADR-0005`](docs/plan/adr/0005-ziel-repo-distribution.md)); unbekannte Sprache → Exit 2 + Liste.
 
 Der Gate-Stack läuft grün, Docker-only: `make baseline-verify` · `docs-check` (d-check
 v0.51.1) · `lint` · `build` · `test` (bats + Go-Unit) · `shell-lint`; `make gates` bündelt
 sie. `make smoke` (Nicht-Gate) fährt den echten Bootstrap host-orchestriert. Betriebsregelwerk
 + Templates liegen committet vendored unter `.harness/baseline/v3.5.0/` (netzlos, [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache));
 Durchsetzungsschicht (Command-Guard bash+awk, Gate-Nachweis, Regelwerk-Injektion) adoptiert.
-
-**Implementiert, aber noch nicht abgenommen:** der **Baseline-Emit** ins Zielrepo
-(Regelwerk + Templates + Prüfsummen-Verifier, [`LH-FA-09`](spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)). Er steht bewusst
-**nicht** in der Liste oben — dort kommt er an, wenn Review und Verifikation ihn
-tragen, nicht wenn der Code existiert.
 
 **Was noch nicht geht:** `make gates` läuft im *emittierten* Repo noch **nicht**
 out-of-the-box grün ([`LH-FA-01`](spec/lastenheft.md#lh-fa-01--repo-bootstrappen) Happy-Path) — dafür fehlen der Skelett-Generator,
