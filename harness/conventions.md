@@ -553,10 +553,18 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   [`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)), und ein Syntaxfehler
   darin ist **lokal vor dem Push** fangbar statt erst im ersten Actions-Lauf — das lokale
   Gegenbeispiel-Gate zur Zusage „die CI läuft" ([`AGENTS.md`](../AGENTS.md) §3.6).
+- **Setzung 4 — Runner + Actions gepinnt, so weit es geht ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).** `runs-on: ubuntu-24.04`
+  (benannte Version, **nicht** `ubuntu-latest`); `actions/checkout` per **Commit-SHA** gepinnt
+  (`@11bd719…` = v4.2.2), nicht per wanderndem `@v4`. **Grenze:** ein GitHub-**hosted** Runner-Image
+  ist nicht *digest*-pinnbar (das erlauben nur self-hosted/Container-Jobs) — `ubuntu-24.04` benennt
+  eine Version, deren Paketstand GitHub periodisch aktualisiert. Die Reproduzierbarkeit der *Checks*
+  trägt daher nicht der Runner, sondern die **digest-gepinnten Tool-Images** der `make`-Targets
+  (bats/shellcheck/actionlint/d-check/golang/golangci); der Runner liefert nur Docker + Checkout.
 - **Grenze — nicht lokal rot-sehbar.** Der Workflow selbst läuft auf GitHub; `ci-lint` belegt nur
   seine **Syntax**, nicht sein **Verhalten**. Ob `make gates` auf einem *wirklich* frischen Klon grün
-  ist, zeigt erst der erste Actions-Lauf — der einzige echte Beleg für die
-  [`MR-003`](#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)-Schließung.
+  ist, zeigt erst der erste Actions-Lauf. **Lokal so weit belegt wie möglich** (Verifikation
+  slice-027): `git clone` in ein frisches tmp ohne `.harness/state/` → `make gates` Exit 0; offen
+  bleibt allein die GitHub-gehostete Ausführung.
 - **Auflösungs-Trigger:** permanent; `ACTIONLINT_IMAGE` bei Bedarf neu pinnen (wie
   `BATS_IMAGE`/`SHELLCHECK_IMAGE`).
 

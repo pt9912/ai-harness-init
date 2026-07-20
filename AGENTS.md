@@ -128,6 +128,8 @@ Der Dogfood-Go-Gate-Stack ist **vollständig**: `make lint` / `make build` / `ma
 
 **Nicht-Gate-Verify** (verfügbar, aber **nicht** in `make gates` — wie `regelwerk-check`/`baseline-freshness`): `make smoke` fährt den Tier-2-Emit-Smoke (slice-002) — emittiert die Doc-Gate-Baseline in ein tmp-Repo und lässt das emittierte `docs-check` real laufen. Host-Docker + ggf. Netz-Pull, darum an DoD-Verify/CI/Wellen-Closure, nicht im offline-schlanken `make gates`. `make mutate` ist der Mutations-Sensor zu §3.6 (slice-026): er färbt jeden gelisteten Wächter absichtlich rot und meldet den, der grün bleibt. Jede Mutation kostet einen vollen `make test`-Zyklus — auch er gehört an DoD-Verify/Closure.
 
+**CI** ([`MR-014`](harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions), slice-027): GitHub Actions fährt `make gates` + `make smoke` + `make mutate` pro Push/PR auf frischem Klon (schließt die [`MR-003`](harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)-Restlücke, gibt `make mutate` seinen Pro-Push-Auslöser); die Netz-Sensoren nur nächtlich. Die CI ruft **nur `make`-Targets**. **Was CI prüft, ist genau der Inhalt dieser Targets — nichts darüber hinaus;** ein grüner Lauf ist keine Aussage über ungetestete Flächen.
+
 ## 5. Dokumentations-Regeln
 
 - Requirement- und ADR-IDs in PRs/Commits referenzieren (als Link oder Inline-Code).

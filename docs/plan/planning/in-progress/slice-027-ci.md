@@ -40,7 +40,7 @@ passt — statt sie an menschliche Disziplin zu binden.
 - [ ] `make mutate` und `make smoke` laufen in CI. Damit hängt [`AGENTS.md`](../../../../AGENTS.md) §3.6s Feedback nicht mehr allein an einem Wellen-Closure-Trigger.
 - [ ] **Die CI definiert den Build NICHT neu:** sie ruft ausschließlich `make`-Targets. Eine zweite Definition dessen, was ein Gate ist, wäre exakt die Drift-Klasse, die dieses Repo an mehreren Stellen bereits bekämpft hat ([`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)-Geist: eine Quelle, nicht zwei).
 - [ ] [`ADR-0003`](../../../../docs/plan/adr/0003-go-native-binaries.md) gewahrt: der Runner braucht Docker, aber **keine** Host-Go-Toolchain — sonst hätte die CI eine Fähigkeit, die der lokale Guard verbietet.
-- [ ] [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit): die CI-Umgebung ist gepinnt (Runner-Image/Version), kein floating `latest`.
+- [ ] [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit): kein floating `latest`. `runs-on: ubuntu-24.04` (benannte Version) und `actions/checkout` per Commit-SHA gepinnt. Grenze in [`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions) Setzung 4 benannt: ein GitHub-**hosted** Runner-Image ist nicht *digest*-pinnbar — die Check-Reproduzierbarkeit trägt die gepinnten Tool-Images, nicht der Runner.
 - [ ] Die netz-abhängigen Maintenance-Sensoren (`regelwerk-check`, `baseline-freshness`) laufen **getrennt** und in eigener Frequenz — sie gehören nicht in den Pfad, der pro Push grün sein muss.
 - [ ] [`AGENTS.md`](../../../../AGENTS.md) §4 und [`harness/README.md`](../../../../harness/README.md) benennen, **was CI prüft und was nicht** — kein „CI fängt das" ohne Angabe, was genau.
 - [ ] `make gates` grün.
@@ -53,6 +53,15 @@ passt — statt sie an menschliche Disziplin zu binden.
 | CI-Konfiguration | neu | Der eigentliche Liefergegenstand; Pfad/Format folgt aus der Runner-Entscheidung (§6) |
 | [`AGENTS.md`](../../../../AGENTS.md), [`harness/README.md`](../../../../harness/README.md) | update | Was CI prüft — und was sie **nicht** prüft |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | Neuer MR-Eintrag: die CI-Setzung samt Frequenz-Wahl; [`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)s Restlücke bekommt ihren Nachtrag |
+
+**Nachgeführt 2026-07-20 (aus der Implementierung).** Der Slice liefert mehr als die reine
+Workflow-Datei — das lokale Gegenbeispiel-Gate zur CI und dessen Selbstbewachung:
+
+| Datei / Komponente | Änderungs-Art | Begründung |
+|---|---|---|
+| `Makefile` | update | `ci-lint`-Target (actionlint, gepinntes Image) **in `make gates`**: der Workflow-Syntaxfehler ist lokal vor dem Push fangbar (das Gegenbeispiel-Gate zu „die CI läuft", [`AGENTS.md`](../../../../AGENTS.md) §3.6) |
+| `test/mutations/10-ci-workflow-syntax.sh` | neu | Schritt 19: der neue Gate-Wächter `ci-lint` bekommt seine Mutation (doppelter `runs-on` → actionlint rot); neuer `# verify: ci-lint`-Modus |
+| `harness/tools/mutate.sh` | update | `failure_form` um den `ci-lint`-Arm erweitert (die eine Zulassungsquelle aus [slice-026](../done/slice-026-mutations-sensor.md) N-2) |
 
 ## 4. Trigger
 
