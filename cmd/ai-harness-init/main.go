@@ -30,11 +30,20 @@ Flags:
   -h, --help    diese Hilfe anzeigen
 `
 
-// run parst die Argumente und liefert den Exit-Code. Ein-/Ausgabe und das
-// Zielverzeichnis sind injiziert, damit die Fehler- und Emit-Pfade ohne
-// Prozess-Exit und ohne CWD-Mutation testbar sind. Exit-Codes: 0 = Erfolg,
-// 2 = Aufruf-/Argument-Fehler (Usage), 1 = Emit-Fehler zur Laufzeit.
-func run(args []string, targetDir string, fetchTarball fetch.TarballFetch, stdout, stderr io.Writer) int {
+// sources buendelt die injizierbaren Netz-Quellen des Bootstraps samt dem
+// erwarteten Baseline-Pin. Als Struct (nicht als Parameter-Liste), damit die
+// Folge-Slices die run()-Signatur nicht bei jeder neuen Quelle erneut brechen.
+type sources struct {
+	skeleton    fetch.TarballFetch // Sprachskelett (slice-004a; loest slice-023 ab)
+	baseline    fetch.AssetFetch   // Regelwerk + Templates (LH-FA-09)
+	baselineSHA string             // erwarteter sha256 des Baseline-Assets (LH-QA-02)
+}
+
+// run parst die Argumente und liefert den Exit-Code. Ein-/Ausgabe, Zielverzeichnis
+// und die Netz-Quellen sind injiziert, damit die Fehler- und Emit-Pfade ohne
+// Prozess-Exit, ohne CWD-Mutation und ohne Netz testbar sind. Exit-Codes:
+// 0 = Erfolg, 2 = Aufruf-/Argument-Fehler (Usage), 1 = Emit-Fehler zur Laufzeit.
+func run(args []string, targetDir string, src sources, stdout, stderr io.Writer) int {
 	fs := flag.NewFlagSet("ai-harness-init", flag.ContinueOnError)
 	fs.SetOutput(io.Discard) // Ausgabe/Streams steuern wir selbst
 
@@ -70,9 +79,26 @@ func run(args []string, targetDir string, fetchTarball fetch.TarballFetch, stdou
 	skelDir := filepath.Join(targetDir, ".harness", "skeleton")
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
-	if err := fetch.Skeleton(ctx, skelDir, *lang, tag, fetchTarball); err != nil {
+	if err := fetch.Skeleton(ctx, skelDir, *lang, tag, src.skeleton); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return fetchExitCode(err)
+	}
+
+	// Baseline (Regelwerk + Templates) als vendored Stand des Ziels ablegen
+	// (slice-022a, LH-FA-09; ADR-0005 Herkunftsklasse "Fetch Kurs-SSoT"). Der
+	// sha256 wird VOR dem Entpacken geprueft; scheitert er, wird begruendet
+	// NICHT emittiert statt eine erfundene Baseline zu schreiben. Danach ist das
+	// Zielrepo ueber seine Baseline netzlos (MR-007 fuers Ziel gespiegelt).
+	baseDir := filepath.Join(targetDir, ".harness", "baseline")
+	if err := fetch.Baseline(ctx, baseDir, tag, src.baselineSHA, src.baseline); err != nil {
+		fmt.Fprintln(stderr, "Fehler:", err)
+		return 1
+	}
+	// Der zugehoerige Verifier — ohne ihn waere die Baseline zwar abgelegt, aber
+	// nicht netzlos PRUEFBAR (LH-FA-09 Pruefsummen-AC).
+	if err := emit.BaselineVerify(targetDir, *force); err != nil {
+		fmt.Fprintln(stderr, "Fehler:", err)
+		return 1
 	}
 
 	// Doc-Gate-Baseline emittieren (slice-002): d-check.mk zur Laufzeit via
@@ -93,7 +119,7 @@ func run(args []string, targetDir string, fetchTarball fetch.TarballFetch, stdou
 		return 1
 	}
 
-	fmt.Fprintf(stdout, "ai-harness-init: Bootstrap (Skelett %q gestaged + Doc-Gate + Template-Baseline) — --lang=%s.\n", *lang, *lang)
+	fmt.Fprintf(stdout, "ai-harness-init: Bootstrap (Skelett %q gestaged + Baseline %s vendored + Doc-Gate + Template-Baseline) — --lang=%s.\n", *lang, tag, *lang)
 	return 0
 }
 
@@ -124,5 +150,10 @@ func main() {
 		fmt.Fprintln(os.Stderr, "Fehler: Arbeitsverzeichnis nicht bestimmbar:", err)
 		os.Exit(1)
 	}
-	os.Exit(run(os.Args[1:], wd, fetch.DownloadTarball, os.Stdout, os.Stderr))
+	src := sources{
+		skeleton:    fetch.DownloadTarball,
+		baseline:    fetch.DownloadBaseline,
+		baselineSHA: envOr("BASELINE_SHA256", fetch.DefaultBaselineSHA256),
+	}
+	os.Exit(run(os.Args[1:], wd, src, os.Stdout, os.Stderr))
 }

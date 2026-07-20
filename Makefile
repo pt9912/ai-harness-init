@@ -63,7 +63,7 @@ smoke: ## Emit-Smoke: Doc-Gate in tmp-Repo emittieren + emittiertes docs-check r
 # ausgenommen (shellcheck parst die @test-Syntax nicht); .awk ist kein Shell.
 shell-lint: ## Shell-Hooks/-Helfer linten (shellcheck) im gepinnten Image — Docker-only (ADR-0003)
 	docker run --rm -v "$(CURDIR)":/mnt:ro -w /mnt $(SHELLCHECK_IMAGE) \
-		.claude/hooks/*.sh harness/tools/*.sh
+		.claude/hooks/*.sh harness/tools/*.sh internal/emit/templates/*.sh
 
 # Verifiziert die vendored Baseline NETZLOS: sha256sum -c über SHA256SUMS
 # (fängt geänderte/gelöschte Dateien) PLUS Vollständigkeits-Check (fängt

@@ -2,9 +2,12 @@ package main
 
 import (
 	"archive/tar"
+	"archive/zip"
 	"bytes"
 	"compress/gzip"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"io"
 	"os"
@@ -46,6 +49,41 @@ func goFixture(t *testing.T) fetch.TarballFetch {
 	}
 }
 
+// baselineFixture liefert ein minimales Bundle (beide Baeume) samt seinem
+// sha256 — so traegt der Test denselben Pin, den run() prueft, ohne Netz.
+func baselineFixture(t *testing.T) (fetch.AssetFetch, string) {
+	t.Helper()
+	var buf bytes.Buffer
+	zw := zip.NewWriter(&buf)
+	for _, e := range []struct{ name, content string }{
+		{"regelwerk/README.md", "index"},
+		{"templates/AGENTS.template.md", "agents"},
+	} {
+		w, err := zw.Create(e.name)
+		if err != nil {
+			t.Fatalf("zip Create %s: %v", e.name, err)
+		}
+		if _, err := w.Write([]byte(e.content)); err != nil {
+			t.Fatalf("zip Write %s: %v", e.name, err)
+		}
+	}
+	if err := zw.Close(); err != nil {
+		t.Fatalf("zip Close: %v", err)
+	}
+	data := buf.Bytes()
+	sum := sha256.Sum256(data)
+	return func(context.Context, string) (io.ReadCloser, error) {
+		return io.NopCloser(bytes.NewReader(data)), nil
+	}, hex.EncodeToString(sum[:])
+}
+
+// testSources buendelt beide netzlosen Fixtures fuer run().
+func testSources(t *testing.T) sources {
+	t.Helper()
+	asset, sum := baselineFixture(t)
+	return sources{skeleton: goFixture(t), baseline: asset, baselineSHA: sum}
+}
+
 // TestRun deckt die Arg-Parser-Pfade von LH-FA-01 ab (Exit-Codes + korrekter Stream).
 // Der erfolgreiche Bootstrap ruft `docker run <d-check>` (Doc-Gate) — kein Unit-Fall;
 // er wird in Tier 2 (`make smoke`) verifiziert. Diese Fälle kehren vor dem Fetch/Emit zurück.
@@ -65,7 +103,7 @@ func TestRun(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var out, errb bytes.Buffer
-			code := run(tt.args, t.TempDir(), goFixture(t), &out, &errb)
+			code := run(tt.args, t.TempDir(), testSources(t), &out, &errb)
 
 			if code != tt.wantCode {
 				t.Errorf("Exit-Code = %d, want %d", code, tt.wantCode)
@@ -92,7 +130,7 @@ func TestRun(t *testing.T) {
 // TestRun_UnknownLang: unbekannte Sprache -> Exit 2 (Fetch-first, netzlos via Fixture).
 func TestRun_UnknownLang(t *testing.T) {
 	var out, errb bytes.Buffer
-	code := run([]string{"--lang", "rust"}, t.TempDir(), goFixture(t), &out, &errb)
+	code := run([]string{"--lang", "rust"}, t.TempDir(), testSources(t), &out, &errb)
 	if code != 2 {
 		t.Errorf("Exit-Code = %d, want 2 (unbekannte Sprache)", code)
 	}
@@ -109,7 +147,7 @@ func TestRun_EmitFehler(t *testing.T) {
 		t.Fatalf("Setup: %v", err)
 	}
 	var out, errb bytes.Buffer
-	code := run([]string{"--lang", "go"}, dir, goFixture(t), &out, &errb)
+	code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb)
 
 	if code != 1 {
 		t.Errorf("Exit-Code = %d, want 1", code)
