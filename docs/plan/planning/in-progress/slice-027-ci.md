@@ -35,16 +35,16 @@ passt — statt sie an menschliche Disziplin zu binden.
 
 ## 2. Definition of Done
 
-- [ ] **Entwurfs-Entscheidungen getroffen und begründet** (§6): Runner-Plattform · welche Targets in welchem Job · Umgang mit den **netz-abhängigen** Sensoren · Frequenz je Sensor. **Vor der Konfiguration**, nicht nebenbei.
-- [ ] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6): CI fährt `make gates` auf einem **frisch geklonten** Repo ohne `.harness/state/` — genau der Fall, den [`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung) als Restlücke benennt und den lokal **nichts** prüft (der Stop-Hook gibt einen cleanen Tree ohne State frei).
-- [ ] `make mutate` und `make smoke` laufen in CI. Damit hängt [`AGENTS.md`](../../../../AGENTS.md) §3.6s Feedback nicht mehr allein an einem Wellen-Closure-Trigger.
-- [ ] **Die CI definiert den Build NICHT neu:** sie ruft ausschließlich `make`-Targets. Eine zweite Definition dessen, was ein Gate ist, wäre exakt die Drift-Klasse, die dieses Repo an mehreren Stellen bereits bekämpft hat ([`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)-Geist: eine Quelle, nicht zwei).
-- [ ] [`ADR-0003`](../../../../docs/plan/adr/0003-go-native-binaries.md) gewahrt: der Runner braucht Docker, aber **keine** Host-Go-Toolchain — sonst hätte die CI eine Fähigkeit, die der lokale Guard verbietet.
-- [ ] [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit): kein floating `latest`. `runs-on: ubuntu-24.04` (benannte Version) und `actions/checkout` per Commit-SHA gepinnt. Grenze in [`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions) Setzung 4 benannt: ein GitHub-**hosted** Runner-Image ist nicht *digest*-pinnbar — die Check-Reproduzierbarkeit trägt die gepinnten Tool-Images, nicht der Runner.
-- [ ] Die netz-abhängigen Maintenance-Sensoren (`regelwerk-check`, `baseline-freshness`) laufen **getrennt** und in eigener Frequenz — sie gehören nicht in den Pfad, der pro Push grün sein muss.
-- [ ] [`AGENTS.md`](../../../../AGENTS.md) §4 und [`harness/README.md`](../../../../harness/README.md) benennen, **was CI prüft und was nicht** — kein „CI fängt das" ohne Angabe, was genau.
-- [ ] `make gates` grün.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] **Entwurfs-Entscheidungen getroffen und begründet** (§6): Runner-Plattform · welche Targets in welchem Job · Umgang mit den **netz-abhängigen** Sensoren · Frequenz je Sensor. **Vor der Konfiguration**, nicht nebenbei.
+- [x] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6): CI fährt `make gates` auf einem **frisch geklonten** Repo ohne `.harness/state/` — genau der Fall, den [`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung) als Restlücke benennt und den lokal **nichts** prüft (der Stop-Hook gibt einen cleanen Tree ohne State frei).
+- [x] `make mutate` und `make smoke` laufen in CI. Damit hängt [`AGENTS.md`](../../../../AGENTS.md) §3.6s Feedback nicht mehr allein an einem Wellen-Closure-Trigger.
+- [x] **Die CI definiert den Build NICHT neu:** sie ruft ausschließlich `make`-Targets. Eine zweite Definition dessen, was ein Gate ist, wäre exakt die Drift-Klasse, die dieses Repo an mehreren Stellen bereits bekämpft hat ([`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)-Geist: eine Quelle, nicht zwei).
+- [x] [`ADR-0003`](../../../../docs/plan/adr/0003-go-native-binaries.md) gewahrt: der Runner braucht Docker, aber **keine** Host-Go-Toolchain — sonst hätte die CI eine Fähigkeit, die der lokale Guard verbietet.
+- [x] [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit): kein floating `latest`. `runs-on: ubuntu-24.04` (benannte Version) und `actions/checkout` per Commit-SHA gepinnt. Grenze in [`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions) Setzung 4 benannt: ein GitHub-**hosted** Runner-Image ist nicht *digest*-pinnbar — die Check-Reproduzierbarkeit trägt die gepinnten Tool-Images, nicht der Runner.
+- [x] Die netz-abhängigen Maintenance-Sensoren (`regelwerk-check`, `baseline-freshness`) laufen **getrennt** und in eigener Frequenz — sie gehören nicht in den Pfad, der pro Push grün sein muss.
+- [x] [`AGENTS.md`](../../../../AGENTS.md) §4 und [`harness/README.md`](../../../../harness/README.md) benennen, **was CI prüft und was nicht** — kein „CI fängt das" ohne Angabe, was genau.
+- [x] `make gates` grün.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -109,7 +109,55 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`. Danach ist d
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Geliefert.** `.github/workflows/ci.yml` fährt bei jedem Push/PR `make gates` + `make smoke` +
+`make mutate` auf frischem, gehostetem Klon; die Netz-Sensoren nur nächtlich. Die CI ruft
+**ausschließlich `make`-Targets** ([`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions), Setzung 1). Dazu `make ci-lint`
+(actionlint, gepinnt) als **Gate in `make gates`** — das lokale Gegenbeispiel-Gate zur Zusage
+„die CI läuft" ([`AGENTS.md`](../../../../AGENTS.md) §3.6), mit eigenem Mutations-Fall
+(`test/mutations/10`).
+
+**Der Kern — die [`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)-Restlücke ist geschlossen, und zwar belegt.** Sie stand seit
+2026-06-13 offen: „frischer Klon … CI ist dort das Netz" — und dieses Netz existierte nicht. Es
+existiert jetzt, und der Beleg ist **empirisch**, nicht behauptet: der GitHub-Actions-Lauf gegen den
+gepinnten Stand lief grün — `gates` (1m20s), `mutate` (2m35s), `smoke` (31s), `upstream-drift`
+skipped (push, nicht schedule). Zusätzlich lokal vom Verifier bestätigt: `git clone` in ein frisches
+tmp ohne `.harness/state/` → `make gates` Exit 0.
+
+**Drei Rollen-Runden, jede fing etwas, das die vorige nicht sah:**
+- **Verifier** fand die DoD-Verletzung, die Reviewer und Tests nicht sehen können ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit):
+  `ubuntu-latest`/`@v4` floating) — die reine Verifier-only-Klasse, und ich hatte sie übersehen,
+  weil ich die Tool-*Images* pinnte und die *Runner*-Umgebung nicht.
+- **Reviewer** fand zwei echte Workflow-Bugs (F-1 concurrency ließ Push den Nachtlauf kappen, F-2
+  verschluckte `baseline-freshness`) — beide gefixt statt vertagt.
+- **Sensor** (`make mutate`) fing beim Bau **zwei** eigene Fehler: Fall 09 („Mutation hat nicht
+  gegriffen", weil der neue `ci-lint`-Arm `failure_form` neu ausrichtete) und Fall 10 („falscher
+  Grund", weil `actionlint -color` das Fehler-Präfix zerstückelte).
+
+### Steering-Loop-Eintrag — benannte Spec-Lücke geschlossen + neue Grenze
+
+Die **Spec-Lücke** ist die Herkunft dieses Slice: [`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung) verließ sich seit einem
+Dreivierteljahr auf ein „CI ist dort das Netz", das niemand gebaut hatte. Der Lerneintrag ist
+weniger die CI selbst als das **Muster**: eine Zusage in einem MR („X fängt das") ohne das
+Artefakt X ist §3.6 auf Prozess-Ebene — sie überlebt, weil kein Sensor sie prüft. Gefunden wurde
+sie nicht durch Absicht, sondern beim **Berichten der slice-026-Restrisiken** (Messung „gibt es CI?"
+→ nein). Geschärfte Regel: **wenn ein MR ein Artefakt als Abdeckung nennt, gehört die Existenz
+dieses Artefakts geprüft, nicht angenommen** — dieselbe Rot-gesehen-Disziplin wie bei Tests, eine
+Ebene höher.
+
+### Was diese Closure NICHT behauptet
+
+- **Der nächtliche `upstream-drift`-Job ist im push-Pfad nicht belegt** (er ist dort `skipped`). Die
+  F-2-Änderung (`baseline-freshness` läuft auch bei `regelwerk-check`-Fehler) ist von `actionlint`
+  syntaktisch bestätigt, aber ihr **Verhalten** zeigt erst der erste `schedule`-Lauf (~03:00 UTC) oder
+  ein manueller Trigger. Ehrlich offen, nicht behauptet.
+- **`ci-lint` belegt Workflow-Syntax, nicht -Verhalten** — das Verhalten belegt der Actions-Lauf
+  (jetzt geschehen und grün).
+
+### Folge-Slices
+
+- Keiner zwingend. **N-6 (slice-026) ist mit diesem Slice vollständig** — `make mutate` hat jetzt
+  seinen mechanischen Pro-Push-Auslöser. Die restlichen welle-02-Slices (025 → 023 → 004b) folgen der
+  Roadmap; sie sind von slice-027 unberührt.
 
 ## 8. Sub-Area-Modus-Begründung
 
