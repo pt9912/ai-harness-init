@@ -20,8 +20,12 @@ setup() {
   printf '# Index\n' > "$TMP/.harness/baseline/vTESTTAG-1a2b/regelwerk/README.md"
   printf '# Modul\n' > "$TMP/.harness/baseline/vTESTTAG-1a2b/regelwerk/modul.md"
   printf '# Template\n' > "$TMP/.harness/baseline/vTESTTAG-1a2b/templates/slice.md"
+  # `! -type d` (nicht `-type f`) bildet die Produzenten-Form aus writeSums nach:
+  # die listet alle Nicht-Verzeichnisse. Die beiden Suiten behaupteten die Form
+  # vorher unterschiedlich (Review-Befund N5) — heute folgenlos, aber genau die
+  # Divergenz, aus der spaeter ein Fixture-Artefakt statt eines Befunds wird.
   ( cd "$TMP/.harness/baseline/vTESTTAG-1a2b" \
-      && find . -type f -not -name SHA256SUMS | sed 's|^\./||' | LC_ALL=C sort \
+      && find . ! -type d -not -name SHA256SUMS | sed 's|^\./||' | LC_ALL=C sort \
          | xargs sha256sum > SHA256SUMS )
 }
 
@@ -73,6 +77,10 @@ run_verify() { run bash "$TMP/harness/tools/baseline-verify.sh"; }
   rm "$TMP/.harness/baseline/vTESTTAG-1a2b/SHA256SUMS"
   run_verify
   [ "$status" -eq 1 ]
+  # Die eigene Meldung, nicht nur der Exit-Code (Review-Befund N3a am Zwilling):
+  # ohne die Existenzpruefung geht das Skript ueber sha256sum -c aus und meldet
+  # irrefuehrend "geaenderte oder fehlende Datei".
+  printf '%s' "$output" | grep -q 'nicht verifizierbar'
 }
 
 @test "verify: keine Baseline -> rot (kaputter Checkout)" {

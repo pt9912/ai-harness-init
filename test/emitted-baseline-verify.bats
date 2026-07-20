@@ -76,11 +76,16 @@ run_verify() { run bash "$TMP/tools/harness/baseline-verify.sh"; }
   [ "$status" -eq 1 ]
 }
 
+# Die Assertion prueft die EIGENE Meldung des Skripts, nicht bloss den Namen
+# "SHA256SUMS" (Review-Befund N3a): faellt die Existenzpruefung weg, laeuft das
+# Skript in `sha256sum -c` und dessen durchgereichtes `grep: SHA256SUMS: Datei
+# nicht gefunden` passte auf das lose Muster — der Fall blieb gruen, waehrend der
+# gepruefte Zweig fehlte.
 @test "emittiert: fehlende SHA256SUMS -> rot mit Begruendung" {
   rm "$BASE/SHA256SUMS"
   run_verify
   [ "$status" -eq 1 ]
-  printf '%s' "$output" | grep -q 'SHA256SUMS'
+  printf '%s' "$output" | grep -q 'nicht verifizierbar'
 }
 
 @test "emittiert: zwei <tag>-Verzeichnisse -> rot (ein Tag zur Zeit)" {
@@ -89,11 +94,16 @@ run_verify() { run bash "$TMP/tools/harness/baseline-verify.sh"; }
   [ "$status" -eq 1 ]
 }
 
+# Auch hier die eigene Meldung statt nur des Exit-Codes (Review-Befund N3b):
+# ohne die Pruefung greift `set -u` bei dirs[0] und liefert einen bash-
+# Interpreterfehler — ebenfalls Exit != 0, aber ohne die Erklaerung, dass eine
+# fehlende Baseline ein kaputter CHECKOUT ist und kein ausstehender Fetch.
 @test "emittiert: keine Baseline -> rot (kaputter Checkout, kein fehlender Fetch)" {
   rm -rf "$TMP/.harness/baseline"
   mkdir -p "$TMP/.harness/baseline"
   run_verify
   [ "$status" -eq 1 ]
+  printf '%s' "$output" | grep -q 'kaputten Checkout'
 }
 
 # Der Fall, fuer den die emittierte Suite bis zum Re-Review GAR KEINEN hatte
