@@ -127,8 +127,12 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
-	// Template-Baseline zweiklassig ablegen (slice-003).
-	if err := emit.Templates(targetDir, *name, *force); err != nil {
+	// Template-Baseline zweiklassig ablegen (slice-003) — Quelle ist seit
+	// slice-022b die eben gefetchte Baseline des Ziels, nicht mehr ein
+	// eingebettetes Duplikat (ADR-0005: eine Quelle, der Kurs). Der
+	// Baseline-Schritt oben MUSS deshalb vorher gelaufen sein.
+	tmplFS := os.DirFS(filepath.Join(baseDir, tag, "templates"))
+	if err := emit.Templates(tmplFS, targetDir, *name, *force); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}

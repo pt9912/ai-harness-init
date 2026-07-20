@@ -1,22 +1,14 @@
 package emit
 
 import (
-	"embed"
 	"errors"
 	"fmt"
 	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 )
-
-// skel traegt den eingebetteten, in-scope Template-Baum (LH-FA-02). Die
-// Set-Index-README des Sets ist bewusst NICHT eingebettet -> wird nie emittiert.
-// Quelle (bei Baseline-Bump re-syncen): .harness/baseline/<tag>/templates/ — der
-// Drift-Waechter TestEmit_MatchesVendoredSource haelt Embed == vendored fest.
-//
-//go:embed skel
-var skel embed.FS
 
 // isRecurring markiert die fuenf wiederkehrenden Templates (LH-FA-02): sie bleiben
 // verbatim als co-located .template.md, aus denen der Adopter je Artefakt kopiert.
@@ -29,15 +21,56 @@ func isRecurring(base string) bool {
 	return false
 }
 
+// inScope entscheidet, welche Datei des Kurs-Template-Satzes der Bootstrap als
+// Doc-Template-Schicht emittiert (LH-FA-02).
+//
+// Bis slice-022b existierte diese Regel NICHT im Code: der eingebettete Baum war
+// beim Einbetten von Hand vorgefiltert, und ihre einzige Formulierung stand im
+// Drift-Waechter test/skel-drift.bats. Mit dem Wechsel auf die gefetchte Quelle
+// (die den VOLLEN Satz traegt) muss sie explizit sein.
+//
+// Bewusst als REGEL, nicht als aufgezaehlte Allowlist: ein upstream neu
+// hinzugekommenes Template fliesst damit automatisch mit. Genau die Klasse
+// "Baseline gebumpt, Emit nicht nachgezogen" bewachte die Vollstaendigkeits-Achse
+// des geloeschten Drift-Waechters — sie verschwindet hier strukturell, statt
+// einen Ersatz-Sensor zu brauchen.
+func inScope(rel string) bool {
+	switch {
+	case !strings.HasSuffix(rel, ".template.md"):
+		// Traegt der Satz auch: .d-check.yml (das Tool AUTORIERT seine eigene,
+		// minimale — emit.DocGate), Makefile (Ziel-Form, gehoert zum Skelett-
+		// Generator) und die Set-Index-README.md (nie ein Ziel-Artefakt).
+		return false
+	case rel == "project-readme.template.md":
+		return false // Root-README: LH-FA-05, eigener Emit-Schritt (slice-005)
+	case strings.HasPrefix(rel, ".harness/skills/"):
+		return false // Durchsetzungsschicht: LH-FA-06/ADR-0004, eigener Emit-Schritt
+	default:
+		return true
+	}
+}
+
 // Templates legt die Template-Baseline zweiklassig in targetDir ab (LH-FA-02):
 // Singletons -> <ziel>.md (Template-Hinweis-Block gestrippt, <Projektname>
 // gestempelt), Wiederkehrende -> co-located .template.md (verbatim). name leer ->
 // <Projektname> bleibt Platzhalter (Content-Urteil des Menschen). Ohne force wird
 // eine vorhandene Zieldatei nicht ueberschrieben (LH-FA-01 Boundary-AC).
-func Templates(targetDir, name string, force bool) error {
-	plan, err := planTemplates(name)
+//
+// src ist der Kurs-Template-Satz, gewurzelt am templates/-Verzeichnis — seit
+// slice-022b die vom Bootstrap GEFETCHTE Baseline des Ziels statt eines
+// eingebetteten Duplikats (ADR-0005: eine Quelle, der Kurs). Injiziert als fs.FS,
+// damit die Tests hermetisch bleiben: der reale Baum liegt unter .harness/, das
+// der Docker-Build-Kontext ausschliesst (.dockerignore) — genau der Grund, warum
+// der alte Drift-Waechter nach bats musste.
+func Templates(src fs.FS, targetDir, name string, force bool) error {
+	plan, err := planTemplates(src, name)
 	if err != nil {
 		return err
+	}
+	// Leere Quelle -> laut abbrechen. Ein falsch gewurzeltes src emittierte sonst
+	// stillschweigend NICHTS und meldete Erfolg (LH-QA-01: kein stilles Gruen).
+	if len(plan) == 0 {
+		return errors.New("keine in-scope Templates in der Quelle gefunden (falsch gewurzelt oder Baseline unvollstaendig?)")
 	}
 	if !force {
 		for rel := range plan {
@@ -61,22 +94,21 @@ func Templates(targetDir, name string, force bool) error {
 	return nil
 }
 
-// planTemplates klassifiziert den eingebetteten Baum in Ziel-Pfad -> Inhalt.
-func planTemplates(name string) (map[string][]byte, error) {
+// planTemplates klassifiziert den Quell-Baum in Ziel-Pfad -> Inhalt.
+func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 	out := map[string][]byte{}
-	err := fs.WalkDir(skel, "skel", func(path string, d fs.DirEntry, walkErr error) error {
+	err := fs.WalkDir(src, ".", func(rel string, d fs.DirEntry, walkErr error) error {
 		if walkErr != nil {
 			return walkErr
 		}
-		if d.IsDir() {
+		if d.IsDir() || !inScope(rel) {
 			return nil
 		}
-		content, readErr := skel.ReadFile(path)
+		content, readErr := fs.ReadFile(src, rel)
 		if readErr != nil {
-			return fmt.Errorf("skel %s lesen: %w", path, readErr)
+			return fmt.Errorf("template %s lesen: %w", rel, readErr)
 		}
-		rel := strings.TrimPrefix(path, "skel/")
-		if isRecurring(filepath.Base(rel)) {
+		if isRecurring(path.Base(rel)) {
 			out[rel] = content // verbatim, co-located
 			return nil
 		}
