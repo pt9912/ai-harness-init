@@ -96,6 +96,19 @@ run_verify() { run bash "$TMP/tools/harness/baseline-verify.sh"; }
   [ "$status" -eq 1 ]
 }
 
+# Der Fall, fuer den die emittierte Suite bis zum Re-Review GAR KEINEN hatte
+# (Befund N3): die Escape-Vorbedingung. GNU sha256sum escapt Pfade mit Backslash
+# mit einem fuehrenden Backslash; der Vollstaendigkeits-Vergleich dekodiert das
+# nicht und wuerde falsch-positiv melden. Das Skript muss LAUT abbrechen, bevor
+# es irgendein Urteil faellt.
+@test "emittiert: GNU-escapter Pfad in SHA256SUMS -> lauter Abbruch" {
+  printf '\\%s  %s\n' "0000000000000000000000000000000000000000000000000000000000000000" 'weird\name' \
+    >> "$BASE/SHA256SUMS"
+  run_verify
+  [ "$status" -eq 1 ]
+  printf '%s' "$output" | grep -q 'escapte'
+}
+
 @test "emittiert: netzlos — kein curl/wget im Skript" {
   run grep -Eq 'curl|wget' "$TMP/tools/harness/baseline-verify.sh"
   [ "$status" -ne 0 ]

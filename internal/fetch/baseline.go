@@ -13,6 +13,11 @@
 //   3. Kein Teil-Emit (LH-QA-01): entpackt wird in ein Temp-Verzeichnis, das
 //      erst nach vollstaendigem Erfolg an seinen Platz umbenannt wird. Bricht
 //      irgendein Schritt ab, bleibt das Ziel unberuehrt statt halb befuellt.
+//      Mit --force ueber eine vorhandene Baseline gilt das eingeschraenkt: die
+//      alte wird beiseite gerenamt statt geloescht, ein Fehlschlag rollt zurueck
+//      — es bleibt ein Restfenster von zwei Renames, in dem ein Prozess-Tod das
+//      Ziel ohne Baseline zuruecklaesst (Daten unversehrt in .baseline-alt-*,
+//      s. replaceBaseline). Ehrlich benannt statt pauschal zugesagt.
 
 package fetch
 
@@ -92,8 +97,11 @@ func (e *SHA256Mismatch) Error() string {
 
 // Baseline holt das Bundle zu tag, verifiziert es gegen wantSHA und legt es als
 // <destDir>/<tag>/{regelwerk,templates}/ + SHA256SUMS ab. Ohne force wird ein
-// vorhandenes <tag>-Verzeichnis nicht ueberschrieben. Bei jedem Fehler bleibt
-// destDir unveraendert (Temp-Verzeichnis + finales Rename).
+// vorhandenes <tag>-Verzeichnis nicht ueberschrieben.
+//
+// Fehlerverhalten: bis zum finalen Rename bleibt destDir unveraendert. Ersetzt
+// der Lauf eine vorhandene Baseline (force), gilt die Einschraenkung aus
+// replaceBaseline — kein pauschales "unveraendert".
 func Baseline(ctx context.Context, destDir, tag, wantSHA string, force bool, fetch AssetFetch) error {
 	final := filepath.Join(destDir, tag)
 
@@ -141,23 +149,71 @@ func Baseline(ctx context.Context, destDir, tag, wantSHA string, force bool, fet
 // placeBaseline schiebt das fertige Temp-Verzeichnis an seinen Platz. Die
 // Existenz-Pruefung sitzt bewusst HIER (kurz vor dem Rename) und zusaetzlich
 // implizit im Rename selbst: ein frueher Check waere ein TOCTOU-Fenster ueber
-// den ganzen Download. Mit force wird eine vorhandene Baseline ERSETZT — ohne
-// das Entfernen scheitert os.Rename an einem nicht-leeren Zielverzeichnis, und
-// --force traege ueber den Baseline-Schritt nicht (Review-Befund slice-022a M1).
+// den ganzen Download.
+//
+// Mit force wird eine vorhandene Baseline ersetzt — per BEISEITE-RENAME, nicht
+// per Loeschen (Review-Befund slice-022a N1). Der naheliegende os.RemoveAll(final)
+// vor dem Rename zerstoert die Alt-Baseline, BEVOR der Ersatz steht: RemoveAll
+// akkumuliert Fehler und loescht Geschwister weiter, sodass ein einziger nicht
+// entfernbarer Eintrag den Rest des Baums trotzdem vernichtet — und auf demselben
+// Fehlerpfad raeumt der defer in Baseline() zusaetzlich den Ersatz weg. Uebrig
+// bliebe ein Zielrepo ohne Baseline. Hier sind stattdessen beide bewegenden
+// Schritte atomar und der zweite rueckrollbar; nur das abschliessende Aufraeumen
+// darf folgenlos scheitern.
 func placeBaseline(tmp, final, tag string, force bool) error {
 	switch _, err := os.Stat(final); {
 	case err == nil && !force:
 		return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", filepath.Base(final))
 	case err == nil:
-		if rmErr := os.RemoveAll(final); rmErr != nil {
-			return fmt.Errorf("%s ersetzen: %w", final, rmErr)
-		}
+		return replaceBaseline(tmp, final, tag)
 	case !errors.Is(err, fs.ErrNotExist):
 		return fmt.Errorf("%s pruefen: %w", final, err)
 	}
 	if err := os.Rename(tmp, final); err != nil {
 		return fmt.Errorf("baseline %s platzieren: %w", tag, err)
 	}
+	return nil
+}
+
+// replaceBaseline tauscht eine vorhandene Baseline gegen die neue: alt beiseite,
+// neu hinein, alt weg. Scheitert Schritt 2, wird Schritt 1 zurueckgerollt.
+//
+// Das Beiseite-Verzeichnis ist PUNKT-praefigiert: der Verifier entdeckt sein
+// <tag>-Verzeichnis per "$base"/*/-Glob, und ein sichtbarer zweiter Eintrag
+// liesse ihn "mehr als ein <tag>-Verzeichnis" melden (MR-007 Setzung 4).
+//
+// Restfenster (bewusst, dokumentiert): stirbt der Prozess zwischen Schritt 1 und
+// 2, steht das Ziel ohne Baseline da — die Daten liegen aber unversehrt im
+// .baseline-alt-*-Verzeichnis und sind per Rename zurueckholbar. Das ist strikt
+// besser als der geloeschte Baum, den RemoveAll hinterlassen haette.
+func replaceBaseline(tmp, final, tag string) error {
+	// MkdirTemp liefert einen EINDEUTIGEN Pfad — das angelegte Verzeichnis muss
+	// aber wieder weg: rename(2) auf ein existierendes Verzeichnis liefert auf
+	// dem hier benutzten Dateisystem EEXIST (gemessen, Overlay-FS im Container),
+	// nicht das von POSIX fuer leere Ziele erlaubte Ersetzen. Gebraucht wird der
+	// Name, nicht das Verzeichnis.
+	aside, err := os.MkdirTemp(filepath.Dir(final), ".baseline-alt-*")
+	if err != nil {
+		return fmt.Errorf("beiseite-verzeichnis fuer %s: %w", tag, err)
+	}
+	if err := os.Remove(aside); err != nil {
+		return fmt.Errorf("beiseite-verzeichnis %s freigeben: %w", aside, err)
+	}
+	if err := os.Rename(final, aside); err != nil {
+		return fmt.Errorf("alte baseline %s beiseite schieben: %w", tag, err)
+	}
+	if err := os.Rename(tmp, final); err != nil {
+		// Rueckrollen: die alte Baseline gehoert zurueck an ihren Platz, sonst
+		// haette der Fehlerpfad das Ziel schlechter hinterlassen als er es fand.
+		if back := os.Rename(aside, final); back != nil {
+			return fmt.Errorf("baseline %s platzieren: %w — RUECKROLLEN FEHLGESCHLAGEN, alte Baseline liegt in %s: %w", tag, err, aside, back)
+		}
+		return fmt.Errorf("baseline %s platzieren: %w", tag, err)
+	}
+	// Ab hier steht die neue Baseline. Ein Fehler beim Aufraeumen ist folgenlos
+	// fuer die Korrektheit — er hinterlaesst nur ein punkt-praefigiertes Rest-
+	// verzeichnis, das der Verifier-Glob ohnehin uebersieht.
+	_ = os.RemoveAll(aside)
 	return nil
 }
 
@@ -194,15 +250,33 @@ func unpackTrees(zr *zip.Reader, root, tag string) error {
 	return nil
 }
 
+// maxBaselinePrefix ist die Tiefe, in der ein Wurzel-Marker noch akzeptiert
+// wird: 0 (Marker steht an der Bundle-Wurzel) oder 1 (ein einzelnes Wrapper-
+// Verzeichnis davor). Mehr braucht die zugesagte Prefix-Toleranz nicht.
+const maxBaselinePrefix = 1
+
 // baselineEntry liefert den Pfad ab dem regelwerk/- oder templates/-Wurzel-
-// segment, egal wie tief das Bundle sie schachtelt (ein kuenftiger Top-Level-
-// Prefix aendert den Extrakt damit nicht) — dieselbe Marker-Logik wie
-// skeletonEntry beim Sprachskelett. Leerstring = ausserhalb beider Baeume.
+// segment. Ein einzelnes Wrapper-Verzeichnis davor ist erlaubt, damit ein
+// kuenftiger Top-Level-Prefix im Bundle den Extrakt nicht aendert.
+// Leerstring = ausserhalb beider Baeume.
+//
+// Zwei Schranken, beide aus Review-Befund slice-022a N2 — vorher akzeptierte
+// die Suche JEDES Marker-Segment in BELIEBIGER Tiefe:
+//   - Tiefe: ein sachfremder zweiter regelwerk/- oder templates/-Zweig im Asset
+//     (z. B. docs/examples/regelwerk/…) waere sonst still in die vendored
+//     Baseline gemischt und danach von deren eigenen Pruefsummen gedeckt worden.
+//   - Praefix-Form: ein leeres Segment (absoluter Pfad) oder ".." vor dem Marker
+//     ist ein Ausbruchsversuch. Er brach zwar nie aus dem Ziel aus (path.Clean
+//     laeuft davor), wurde aber still zu einem gueltig aussehenden Rel-Pfad
+//     UMGESCHRIEBEN und aufgenommen — schlechter als verworfen, weil unsichtbar.
 func baselineEntry(name string) string {
 	parts := strings.Split(path.Clean(name), "/")
-	for i, p := range parts {
+	for i := 0; i < len(parts) && i <= maxBaselinePrefix; i++ {
+		if i > 0 && (parts[i-1] == "" || parts[i-1] == "..") {
+			return "" // absoluter Pfad bzw. Traversal vor dem Marker
+		}
 		for _, tree := range baselineTrees() {
-			if p == tree && i+1 < len(parts) {
+			if parts[i] == tree && i+1 < len(parts) {
 				return strings.Join(parts[i:], "/")
 			}
 		}

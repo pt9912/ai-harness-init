@@ -9,6 +9,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -124,30 +125,42 @@ func TestBaseline_SumsForm(t *testing.T) {
 	}
 }
 
-// TestBaseline_SumsVerifiableByCoreutils belegt, dass die erzeugte Datei von
-// `sha256sum -c` gelesen werden kann — die Form ist kein Selbstzweck, das
-// emittierte baseline-verify fuettert sie genau so.
+// TestBaseline_SumsVerifiableByCoreutils fuettert die von writeSums ERZEUGTE
+// Datei an das echte `sha256sum -c` — genau so konsumiert sie das emittierte
+// baseline-verify.
+//
+// Die Vorgaenger-Fassung trug denselben Namen, rechnete den Hash aber selbst mit
+// crypto/sha256 nach und rief nie coreutils auf (Review-Befund slice-022a L1).
+// Eine Formatabweichung (ein Trenner statt zwei Leerzeichen) waere gruen
+// geblieben und haette das emittierte Skript rot gemacht. `sha256sum` liegt im
+// gepinnten Test-Image; fehlt es, ist das ein Image-Bruch und kein Grund, still
+// zu ueberspringen.
 func TestBaseline_SumsVerifiableByCoreutils(t *testing.T) {
+	bin, err := exec.LookPath("sha256sum")
+	if err != nil {
+		t.Fatalf("sha256sum nicht im Test-Image gefunden: %v", err)
+	}
 	data, sum := stdBundle(t)
 	dest := t.TempDir()
 	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data)); err != nil {
 		t.Fatalf("Baseline: %v", err)
 	}
 	root := filepath.Join(dest, "v3.5.0")
-	raw, err := os.ReadFile(filepath.Join(root, "SHA256SUMS"))
-	if err != nil {
-		t.Fatalf("SHA256SUMS lesen: %v", err)
+
+	cmd := exec.Command(bin, "-c", "SHA256SUMS")
+	cmd.Dir = root
+	if out, runErr := cmd.CombinedOutput(); runErr != nil {
+		t.Fatalf("sha256sum -c auf der erzeugten SHA256SUMS: %v\n%s", runErr, out)
 	}
-	for _, ln := range strings.Split(strings.TrimRight(string(raw), "\n"), "\n") {
-		wantHash, rel, _ := strings.Cut(ln, "  ")
-		content, readErr := os.ReadFile(filepath.Join(root, filepath.FromSlash(rel)))
-		if readErr != nil {
-			t.Fatalf("gelistete Datei %s fehlt: %v", rel, readErr)
-		}
-		got := sha256.Sum256(content)
-		if hex.EncodeToString(got[:]) != wantHash {
-			t.Errorf("%s: Hash in SHA256SUMS stimmt nicht mit dem Inhalt ueberein", rel)
-		}
+	// Gegenprobe mit Zaehnen: eine manipulierte Datei MUSS coreutils rot machen —
+	// sonst belegt der gruene Lauf oben nichts.
+	if err := os.WriteFile(filepath.Join(root, "regelwerk", "README.md"), []byte("manipuliert"), 0o644); err != nil {
+		t.Fatalf("manipulieren: %v", err)
+	}
+	cmd = exec.Command(bin, "-c", "SHA256SUMS")
+	cmd.Dir = root
+	if _, runErr := cmd.CombinedOutput(); runErr == nil {
+		t.Error("sha256sum -c blieb nach Manipulation gruen — die Pruefung traegt nicht")
 	}
 }
 
@@ -264,36 +277,82 @@ func TestBaseline_ForceReplaces(t *testing.T) {
 	// Der alte Stand ist ERSETZT, nicht gemischt — sonst listete SHA256SUMS
 	// eine Datei, die der Verifier als ungelistet meldete.
 	assertAbsent(t, filepath.Join(root, "regelwerk", "alt.md"))
+	// Kein .baseline-alt-*-Rest: der Ersatz laeuft ueber ein Beiseite-Rename
+	// (N1), und das Aufraeumen danach gehoert zum Erfolgspfad.
+	assertNoTempResidue(t, dest)
 }
 
-// TestBaseline_TraversalEntriesEscapeNothing deckt Review-Befund M4 (Zip-Slip)
-// als EIGENSCHAFT ab, nicht als Zweig-Abdeckung: der `!filepath.IsLocal`-Zweig in
-// unpackTrees ist durch die Marker-Logik konstruktionsbedingt unerreichbar
-// (path.Clean laeuft VOR dem Marker-Scan, danach ueberleben `..` nur als
-// FUEHRENDE Segmente — vor denen steht kein Marker). Er bleibt als zweites Netz
-// stehen; testbar ist, dass nichts aus dem Ziel ausbricht.
-func TestBaseline_TraversalEntriesEscapeNothing(t *testing.T) {
+// assertNoTempResidue belegt, dass weder das Entpack- noch das Beiseite-
+// Verzeichnis liegen bleibt. Beide sind punkt-praefigiert und daher fuer den
+// <tag>-Glob des Verifiers unsichtbar — ein Rest faellt sonst niemandem auf.
+func assertNoTempResidue(t *testing.T, dest string) {
+	t.Helper()
+	entries, err := os.ReadDir(dest)
+	if err != nil {
+		t.Fatalf("lesen %s: %v", dest, err)
+	}
+	for _, e := range entries {
+		if strings.HasPrefix(e.Name(), ".baseline-") {
+			t.Errorf("Rest-Verzeichnis %s in %s (Temp oder Beiseite nicht aufgeraeumt)", e.Name(), dest)
+		}
+	}
+}
+
+// TestBaseline_NurErwarteteEintraegeLanden loest Review-Befund N2 ab. Die
+// Vorgaenger-Fassung hiess "TraversalEntriesEscapeNothing" und pruefte nur die
+// Abwesenheit von Pfaden AUSSERHALB des Ziels — sie war gruen, waehrend zwei
+// ihrer eigenen Fixture-Eintraege (`../regelwerk/evil2.md`, `/regelwerk/evil3.md`)
+// unbeobachtet IM Baum landeten und von der selbst erzeugten SHA256SUMS gedeckt
+// wurden. "Bricht nicht aus" war die falsche Frage; die richtige ist "was genau
+// kommt an".
+//
+// Deshalb assertiert dieser Test den Ist-Bestand VOLLSTAENDIG: was nicht in der
+// Erwartung steht, darf nicht da sein.
+func TestBaseline_NurErwarteteEintraegeLanden(t *testing.T) {
 	data, sum := fixtureZip(t, map[string]string{
+		// erlaubt: Marker an der Wurzel bzw. hinter EINEM Wrapper
 		"lab/regelwerk/README.md":          "index",
 		"lab/templates/AGENTS.template.md": "agents",
-		"lab/regelwerk/../../evil.txt":     "ausbruch",
-		"../regelwerk/evil2.md":            "ausbruch2",
-		"/regelwerk/evil3.md":              "ausbruch3",
+		// verworfen: Clean frisst den Marker
+		"lab/regelwerk/../../evil.txt": "ausbruch",
+		// verworfen: Traversal bzw. absoluter Pfad VOR dem Marker
+		"../regelwerk/evil2.md": "ausbruch2",
+		"/regelwerk/evil3.md":   "ausbruch3",
+		// verworfen: sachfremder zweiter Marker-Zweig zu tief im Bundle
+		"lab/docs/examples/regelwerk/fremd.md": "fremd",
 	})
 	dest := t.TempDir()
 	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data)); err != nil {
 		t.Fatalf("Baseline: %v", err)
 	}
-	for _, outside := range []string{
-		filepath.Join(dest, "evil.txt"),
-		filepath.Join(dest, "..", "evil.txt"),
-		filepath.Join(dest, "v3.5.0", "evil.txt"),
-	} {
-		assertAbsent(t, outside)
+	root := filepath.Join(dest, "v3.5.0")
+	want := []string{"SHA256SUMS", "regelwerk/README.md", "templates/AGENTS.template.md"}
+	var got []string
+	if err := filepath.WalkDir(root, func(p string, d os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if d.IsDir() {
+			return nil
+		}
+		rel, relErr := filepath.Rel(root, p)
+		if relErr != nil {
+			return relErr
+		}
+		got = append(got, filepath.ToSlash(rel))
+		return nil
+	}); err != nil {
+		t.Fatalf("Baum lesen: %v", err)
 	}
-	// Gegenprobe: was NACH dem Clean unter einem Marker liegt, kommt normal an —
-	// der Schutz darf nicht einfach alles verwerfen.
-	assertContent(t, filepath.Join(dest, "v3.5.0", "regelwerk", "README.md"), "index")
+	sort.Strings(got)
+	if strings.Join(got, ",") != strings.Join(want, ",") {
+		t.Errorf("Ist-Bestand = %v\nwant %v\n(ein unerwarteter Eintrag ist still aufgenommen worden — N2)", got, want)
+	}
+	// Und die Pruefsummen decken genau diese zwei Dateien, nicht mehr.
+	raw := mustRead(t, filepath.Join(root, "SHA256SUMS"))
+	if n := len(strings.Split(strings.TrimRight(string(raw), "\n"), "\n")); n != 2 {
+		t.Errorf("SHA256SUMS listet %d Dateien, want 2 — verworfene Eintraege duerfen nicht gedeckt werden", n)
+	}
 }
 
 // TestBaseline_EscapedPathRefused deckt den zweiten Zweig aus M4: ein Pfad mit
