@@ -20,38 +20,13 @@ gezeigt, nicht als Treiber.
 (Embed raus, [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)) → slice-025 (Bootstrap-Kette absichern,
 [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)) → slice-023 (Go-Skelett-Generator,
 [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) → slice-004b (Verdrahten: Gerüst + Init-Flow).
-Strikt sequenziell. slice-004a liegt bereits in `done/`.
+Strikt sequenziell; slice-004a, slice-022a, slice-022b liegen in `done/`.
+**Nächster Slice:** slice-025 (Bootstrap-Kette absichern).
 
 **Closure-Trigger:** die Slices in `done/`, `make gates` grün, **Tier-2-`make smoke` grün**, **`make mutate` grün**,
 Carveout-Audit 0/dokumentiert, Closure-Notiz. Der **Voll**-E2E-Smoke ist bewusst welle-03s
 Kriterium ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) Happy-Path braucht die Root-README). Details in der
 [welle-02-Plan-Datei](../welle-02-fetch-und-readme.md).
-
-> **Stand (2026-07-20, nicht Teil der Wellen-Ordnung):** Der **Distributionsmodell-Pivot**
-> ([`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md) Accepted, CR [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), neue
-> [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)) ist **in die Planung überführt**: welle-02 wurde **umgeplant**
-> statt geschlossen (Modul 6 — eine Welle endet durch Closure-Kriterien, nicht durch
-> Kappen), slice-004b **re-gescopet** statt aufgelöst (Muster:
-> [slice-015](../done/slice-015-zitat-sensor.md)), slice-005 nach welle-03 umgehängt. Das
-> **Doc-Fundament ist fertig + gate-grün** (Lastenheft v0.7.0); der **Code** (embed→fetch,
-> Generator, Verdrahtung) ist jetzt geschnitten und folgt. **slice-022 wurde bei der
-> Ist-Messung vor der Implementierung in 022a/022b geteilt** (Modul-5-Rücksprung, wie
-> slice-001→001a/b und slice-004→004a/b) — Grund: ZIP≠Tar-Umbau plus ein bis dahin
-> unbemerktes Loch (der Ziel-Verifier für [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)s Prüfsummen-AC).
-> **Erledigt (2026-07-20):** slice-022a (Baseline-Fetch), slice-022b (Embed raus) — beide
-> `done/`, `make gates`/`make smoke` grün. Dazu **zwei Harness-Wartungs-Slices ohne Welle:**
-> slice-026 (`make mutate`, der Feedback-Quadrant zu [`AGENTS.md`](../../../../AGENTS.md) §3.6) und
-> slice-027 (CI). **CI läuft** auf `origin/main` pro Push (GitHub Actions,
-> [`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)) —
-> `gates`/`smoke`/`mutate` real grün belegt; die [`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)-Restlücke „frischer Klon"
-> ist damit geschlossen.
->
-> **➤ NÄCHSTER SCHRITT (2026-07-21): slice-025** (Bootstrap-Kette absichern) via
-> `/implement-slice`. Danach **023 → 004b** (welle-02 schließt), dann welle-03 (005 → 024 → **M2**).
-> **Vor slice-025 messen** (Modul 9 Schritt 4): der Slice entscheidet die Entwurfsfrage
-> Pre-Flight vs. Staging→Commit **bewusst nicht vor** — die gehört in den ersten Lauf, ggf. mit ADR
-> (Doc führt). Offene Aufräum-Punkte (kein Gate-Bruch): stale Links auf die superseded
-> Skelett-Fetch-ADR in welle-01/Root-README.
 
 ## Nächste Wellen
 
