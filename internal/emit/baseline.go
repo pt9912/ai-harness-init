@@ -44,6 +44,12 @@ func BaselineVerify(targetDir string, force bool) error {
 	if err := os.WriteFile(dst, baselineVerify, 0o755); err != nil {
 		return fmt.Errorf("%s schreiben: %w", BaselineVerifyPath, err)
 	}
+	// os.WriteFile wendet das Perm-Argument nur beim ANLEGEN an: ueber eine
+	// vorhandene 0644-Datei geschrieben (--force) bliebe der richtige Inhalt in
+	// einer nicht ausfuehrbaren Datei zurueck (Review-Befund slice-022a L2).
+	if err := os.Chmod(dst, 0o755); err != nil {
+		return fmt.Errorf("%s ausfuehrbar machen: %w", BaselineVerifyPath, err)
+	}
 	return nil
 }
 

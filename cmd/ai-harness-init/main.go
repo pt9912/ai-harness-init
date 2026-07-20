@@ -1,7 +1,15 @@
 // Command ai-harness-init bootstrappt ein bestehendes Git-Repo mit dem
-// AI-Harness-Prozess. Der Arg-Parser (slice-001a) tragt die korrekten
-// Fehlerpfade; slice-002 verdrahtet den ersten Emit-Schritt (Doc-Gate-Baseline).
-// Weitere Bootstrap-Wirkung (Templates, Sprachskelett) folgt in slice-003 ff.
+// AI-Harness-Prozess. run() fuehrt fuenf schreibende Schritte aus: Sprachskelett
+// stagen (slice-004a) -> Baseline vendoren (slice-022a) -> Verifier emittieren
+// (slice-022a) -> Doc-Gate emittieren (slice-002) -> Template-Baseline ablegen
+// (slice-003).
+//
+// OFFENER PUNKT (Review-Befund slice-022a I1, vierte Wiederholung der Klasse):
+// die Kette hat KEINEN gemeinsamen Pre-Flight. Scheitert Schritt n, bleiben die
+// Ergebnisse von 1..n-1 im Zielrepo liegen. Die einzelnen Schritte sind je fuer
+// sich atomar (fetch.Baseline via Temp->Rename, emit.DocGate via Pre-Check vor
+// dem Schreiben) — die Luecke ist die Kette, nicht das Glied. Aufloesung ist
+// slice-004b (Init-Flow) zugewiesen.
 package main
 
 import (
@@ -28,6 +36,12 @@ Flags:
   --name        Projektname (optional)
   --force       bestehende Dateien überschreiben (optional)
   -h, --help    diese Hilfe anzeigen
+
+Umgebung (bewusster Opt-in-Override der gepinnten Werte — LH-QA-02):
+  COURSE_TAG        Kurs-Version für Skelett und Baseline
+  BASELINE_SHA256   erwarteter sha256 des Baseline-Assets
+  DCHECK_IMAGE      d-check-Tag-Referenz
+  DCHECK_DIGEST     d-check-Digest (sticht den Tag)
 `
 
 // sources buendelt die injizierbaren Netz-Quellen des Bootstraps samt dem
@@ -90,7 +104,7 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 	// NICHT emittiert statt eine erfundene Baseline zu schreiben. Danach ist das
 	// Zielrepo ueber seine Baseline netzlos (MR-007 fuers Ziel gespiegelt).
 	baseDir := filepath.Join(targetDir, ".harness", "baseline")
-	if err := fetch.Baseline(ctx, baseDir, tag, src.baselineSHA, src.baseline); err != nil {
+	if err := fetch.Baseline(ctx, baseDir, tag, src.baselineSHA, *force, src.baseline); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}

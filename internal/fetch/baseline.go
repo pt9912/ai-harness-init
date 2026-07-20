@@ -94,7 +94,7 @@ func (e *SHA256Mismatch) Error() string {
 // <destDir>/<tag>/{regelwerk,templates}/ + SHA256SUMS ab. Ohne force wird ein
 // vorhandenes <tag>-Verzeichnis nicht ueberschrieben. Bei jedem Fehler bleibt
 // destDir unveraendert (Temp-Verzeichnis + finales Rename).
-func Baseline(ctx context.Context, destDir, tag, wantSHA string, fetch AssetFetch) error {
+func Baseline(ctx context.Context, destDir, tag, wantSHA string, force bool, fetch AssetFetch) error {
 	final := filepath.Join(destDir, tag)
 
 	rc, err := fetch(ctx, tag)
@@ -135,17 +135,23 @@ func Baseline(ctx context.Context, destDir, tag, wantSHA string, fetch AssetFetc
 	if err := writeSums(tmp); err != nil {
 		return err
 	}
-	return placeBaseline(tmp, final, tag)
+	return placeBaseline(tmp, final, tag, force)
 }
 
 // placeBaseline schiebt das fertige Temp-Verzeichnis an seinen Platz. Die
 // Existenz-Pruefung sitzt bewusst HIER (kurz vor dem Rename) und zusaetzlich
 // implizit im Rename selbst: ein frueher Check waere ein TOCTOU-Fenster ueber
-// den ganzen Download.
-func placeBaseline(tmp, final, tag string) error {
+// den ganzen Download. Mit force wird eine vorhandene Baseline ERSETZT — ohne
+// das Entfernen scheitert os.Rename an einem nicht-leeren Zielverzeichnis, und
+// --force traege ueber den Baseline-Schritt nicht (Review-Befund slice-022a M1).
+func placeBaseline(tmp, final, tag string, force bool) error {
 	switch _, err := os.Stat(final); {
-	case err == nil:
+	case err == nil && !force:
 		return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", filepath.Base(final))
+	case err == nil:
+		if rmErr := os.RemoveAll(final); rmErr != nil {
+			return fmt.Errorf("%s ersetzen: %w", final, rmErr)
+		}
 	case !errors.Is(err, fs.ErrNotExist):
 		return fmt.Errorf("%s pruefen: %w", final, err)
 	}

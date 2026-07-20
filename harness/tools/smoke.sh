@@ -8,7 +8,8 @@
 # Belege:
 #   1. Binary aus der artifact-Stage extrahieren (Host).
 #   2. `--lang go` bootstrappen: Doc-Gate (Runtime-Codegen, slice-002) + Template-
-#      Baseline (slice-003) + Sprachskelett-Fetch (slice-004a, Netz).
+#      Baseline (slice-003) + Sprachskelett-Fetch (slice-004a, Netz) + vendored
+#      Baseline mit Verifier (slice-022a, ZWEITER Netz-Fetch: Release-Asset).
 #   3. Skelett gestaged? (slice-004a-Fetch-Beweis, .harness/skeleton/).
 #   4. Emittiertes d-check laeuft und akzeptiert die Config (kein Config-Crash).
 #

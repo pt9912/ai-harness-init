@@ -78,10 +78,16 @@ if ! sha256sum -c SHA256SUMS >/dev/null 2>&1; then
   exit 1
 fi
 
-# 2) Vollstaendigkeit (zusaetzlich eingelegte Datei). SHA256SUMS selbst ist
+# 2) Vollstaendigkeit (zusaetzlich eingelegtes Artefakt). SHA256SUMS selbst ist
 # ausgenommen — sie kann sich nicht selbst hashen; ihre Integritaet traegt git.
+#
+# `! -type d` statt `-type f` (Review-Befund slice-022a H1, real vorgefuehrt):
+# ein eingelegter SYMLINK ist weder in SHA256SUMS gelistet noch von `-type f`
+# sichtbar — beide Achsen blieben gruen, waehrend `cat` Fremdinhalt lieferte.
+# Genau das stille Gruen, gegen das Setzung 3 geschrieben wurde. Mit `! -type d`
+# taucht er im Ist-Bestand auf, fehlt in der Soll-Liste und schlaegt an.
 listed="$(cut -d' ' -f3- SHA256SUMS | LC_ALL=C sort)"
-actual="$(find . -type f ! -path ./SHA256SUMS | sed 's|^\./||' | LC_ALL=C sort)"
+actual="$(find . ! -type d ! -path ./SHA256SUMS | sed 's|^\./||' | LC_ALL=C sort)"
 if [ "$listed" != "$actual" ]; then
   echo "FEHLER: Dateibestand von $tag weicht von SHA256SUMS ab (ungelistete oder fehlende Pfade):" >&2
   diff <(printf '%s\n' "$listed") <(printf '%s\n' "$actual") >&2 || true

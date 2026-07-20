@@ -160,6 +160,42 @@ func TestRun_EmitFehler(t *testing.T) {
 	}
 }
 
+// TestRun_BaselineUndVerifierLanden schliesst Review-Befund M2: bis hierher
+// behauptete KEIN Test, dass run() die Baseline und den Verifier ueberhaupt
+// ablegt — ein Entfernen der beiden Aufrufe aus main.go faerbte nichts rot.
+//
+// Der Lauf endet bewusst mit Exit 1 (vorhandene .d-check.yml laesst DocGate vor
+// dem Docker-Aufruf abbrechen). Genau das macht ihn netzlos fahrbar UND belegt
+// nebenbei den Zustand, den Review-I1 als Teil-Bootstrap beschreibt: die
+// Schritte 1..n-1 liegen bereits im Ziel.
+func TestRun_BaselineUndVerifierLanden(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, ".d-check.yml"), []byte("# vorhanden\n"), 0o644); err != nil {
+		t.Fatalf("Setup: %v", err)
+	}
+	var out, errb bytes.Buffer
+	if code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb); code != 1 {
+		t.Fatalf("Exit-Code = %d, want 1 (DocGate bricht ab)", code)
+	}
+	base := filepath.Join(dir, ".harness", "baseline", fetch.DefaultTag)
+	for _, rel := range []string{
+		filepath.Join(base, "SHA256SUMS"),
+		filepath.Join(base, "regelwerk", "README.md"),
+		filepath.Join(base, "templates", "AGENTS.template.md"),
+		filepath.Join(dir, "tools", "harness", "baseline-verify.sh"),
+	} {
+		if _, err := os.Stat(rel); err != nil {
+			t.Errorf("%s fehlt nach dem Lauf: %v", rel, err)
+		}
+	}
+	// Der Verifier muss ausfuehrbar sein — sonst ist die LH-FA-09-Zusage
+	// "netzlos verifizierbar" eine leere Geste.
+	info, err := os.Stat(filepath.Join(dir, "tools", "harness", "baseline-verify.sh"))
+	if err == nil && info.Mode().Perm()&0o111 == 0 {
+		t.Errorf("emittierter Verifier ist nicht ausfuehrbar: %v", info.Mode().Perm())
+	}
+}
+
 // TestFetchExitCode deckt die Exit-Abbildung netzlos ab (Review-M2).
 func TestFetchExitCode(t *testing.T) {
 	if got := fetchExitCode(nil); got != 0 {

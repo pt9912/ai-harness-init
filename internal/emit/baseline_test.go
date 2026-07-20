@@ -25,19 +25,22 @@ func TestBaselineVerify_EmittedExecutable(t *testing.T) {
 	}
 }
 
-// TestBaselineVerify_BothAxes ist der eigentliche LH-FA-09-Beleg: das emittierte
-// Skript muss BEIDE Achsen pruefen. `sha256sum -c` allein bliebe bei einer
-// ZUSAETZLICH eingelegten Datei gruen (es prueft nur, was gelistet ist) — ein
-// Ziel mit nur dieser Achse haette ein stilles Gruen geerbt. Geprueft wird die
-// Eigenschaft, nicht die Byte-Gleichheit mit dem Dogfood-Skript: beide duerfen
-// sich unabhaengig entwickeln, solange die Eigenschaft haelt.
+// TestBaselineVerify_BothAxes ist ein GROB-Waechter, kein Beleg: er prueft nur,
+// dass beide Achsen ueberhaupt noch im Skript stehen.
+//
+// Der eigentliche Beleg liegt in `test/emitted-baseline-verify.bats`, das das
+// Skript AUSFUEHRT. Warum das noetig wurde: diese Funktion war urspruenglich als
+// LH-FA-09-Beleg gedacht und auf den Marker `find . -type f` gepinnt — also exakt
+// auf das Implementierungsdetail, das den H1-Fehler ENTHIELT (ein eingelegter
+// Symlink blieb unsichtbar, beide Achsen meldeten gruen). Ein Marker-Test kann
+// konstruktionsbedingt nicht sehen, ob eine Achse ihre Eigenschaft auch erfuellt.
 func TestBaselineVerify_BothAxes(t *testing.T) {
 	script := string(emit.BaselineVerifyScript())
 	for _, marker := range []struct{ axis, want string }{
 		{"Integritaet (geaendert/geloescht)", "sha256sum -c SHA256SUMS"},
-		{"Vollstaendigkeit (eingelegt): Ist-Bestand einlesen", "find . -type f"},
-		{"Vollstaendigkeit (eingelegt): Soll-Liste einlesen", "cut -d' ' -f3- SHA256SUMS"},
-		{"Vollstaendigkeit (eingelegt): Vergleich", `[ "$listed" != "$actual" ]`},
+		{"Vollstaendigkeit: Ist-Bestand (Nicht-Verzeichnisse, nicht nur -type f)", "find . ! -type d"},
+		{"Vollstaendigkeit: Soll-Liste", "cut -d' ' -f3- SHA256SUMS"},
+		{"Vollstaendigkeit: Vergleich", `[ "$listed" != "$actual" ]`},
 	} {
 		if !strings.Contains(script, marker.want) {
 			t.Errorf("Achse %q fehlt im emittierten Skript (Marker %q nicht gefunden)", marker.axis, marker.want)
@@ -62,7 +65,9 @@ func TestBaselineVerify_NoOverwriteWithoutForce(t *testing.T) {
 	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
 		t.Fatalf("vorbereiten: %v", err)
 	}
-	if err := os.WriteFile(dst, []byte("eigenes Skript"), 0o755); err != nil {
+	// Bewusst 0644: --force muss den Modus MITziehen, nicht nur den Inhalt
+	// (Review-Befund slice-022a L2 — os.WriteFile setzt Perm nur beim Anlegen).
+	if err := os.WriteFile(dst, []byte("eigenes Skript"), 0o644); err != nil {
 		t.Fatalf("vorbereiten: %v", err)
 	}
 	err := emit.BaselineVerify(dir, false)
@@ -77,6 +82,13 @@ func TestBaselineVerify_NoOverwriteWithoutForce(t *testing.T) {
 	}
 	if got := mustReadString(t, dst); got == "eigenes Skript" {
 		t.Error("--force hat nicht ueberschrieben")
+	}
+	info, err := os.Stat(dst)
+	if err != nil {
+		t.Fatalf("stat: %v", err)
+	}
+	if info.Mode().Perm()&0o111 == 0 {
+		t.Errorf("nach --force Mode %v — richtiger Inhalt in nicht ausfuehrbarer Datei (L2)", info.Mode().Perm())
 	}
 }
 

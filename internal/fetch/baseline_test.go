@@ -66,7 +66,7 @@ func stdBundle(t *testing.T) ([]byte, string) {
 func TestBaseline_Extract(t *testing.T) {
 	data, sum := stdBundle(t)
 	dest := t.TempDir()
-	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, assetFetch(data)); err != nil {
+	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data)); err != nil {
 		t.Fatalf("Baseline: %v", err)
 	}
 	root := filepath.Join(dest, "v3.5.0")
@@ -88,7 +88,7 @@ func TestBaseline_Extract(t *testing.T) {
 func TestBaseline_SumsForm(t *testing.T) {
 	data, sum := stdBundle(t)
 	dest := t.TempDir()
-	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, assetFetch(data)); err != nil {
+	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data)); err != nil {
 		t.Fatalf("Baseline: %v", err)
 	}
 	raw, err := os.ReadFile(filepath.Join(dest, "v3.5.0", "SHA256SUMS"))
@@ -130,7 +130,7 @@ func TestBaseline_SumsForm(t *testing.T) {
 func TestBaseline_SumsVerifiableByCoreutils(t *testing.T) {
 	data, sum := stdBundle(t)
 	dest := t.TempDir()
-	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, assetFetch(data)); err != nil {
+	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data)); err != nil {
 		t.Fatalf("Baseline: %v", err)
 	}
 	root := filepath.Join(dest, "v3.5.0")
@@ -157,7 +157,7 @@ func TestBaseline_SHA256Mismatch_NothingWritten(t *testing.T) {
 	data, _ := stdBundle(t)
 	dest := t.TempDir()
 	wrong := strings.Repeat("0", 64)
-	err := fetch.Baseline(context.Background(), dest, "v3.5.0", wrong, assetFetch(data))
+	err := fetch.Baseline(context.Background(), dest, "v3.5.0", wrong, false, assetFetch(data))
 	var mm *fetch.SHA256Mismatch
 	if !errors.As(err, &mm) {
 		t.Fatalf("erwartete *SHA256Mismatch, got %v", err)
@@ -173,7 +173,7 @@ func TestBaseline_SHA256Mismatch_NothingWritten(t *testing.T) {
 func TestBaseline_IncompleteBundle(t *testing.T) {
 	data, sum := fixtureZip(t, map[string]string{"lab/regelwerk/README.md": "nur regelwerk"})
 	dest := t.TempDir()
-	err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, assetFetch(data))
+	err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data))
 	if err == nil {
 		t.Fatal("unvollstaendiges Bundle wurde akzeptiert")
 	}
@@ -189,7 +189,7 @@ func TestBaseline_Deterministic(t *testing.T) {
 	data, sum := stdBundle(t)
 	d1, d2 := t.TempDir(), t.TempDir()
 	for _, d := range []string{d1, d2} {
-		if err := fetch.Baseline(context.Background(), d, "v3.5.0", sum, assetFetch(data)); err != nil {
+		if err := fetch.Baseline(context.Background(), d, "v3.5.0", sum, false, assetFetch(data)); err != nil {
 			t.Fatalf("Baseline nach %s: %v", d, err)
 		}
 	}
@@ -211,7 +211,7 @@ func TestBaseline_ExistingTag(t *testing.T) {
 	if err := os.MkdirAll(existing, 0o755); err != nil {
 		t.Fatalf("vorbereiten: %v", err)
 	}
-	err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, assetFetch(data))
+	err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data))
 	if err == nil {
 		t.Fatal("vorhandene Baseline wurde ueberschrieben")
 	}
@@ -225,7 +225,7 @@ func TestBaseline_FetchError(t *testing.T) {
 		return nil, errors.New("netz weg")
 	}
 	dest := t.TempDir()
-	err := fetch.Baseline(context.Background(), dest, "v3.5.0", fetch.DefaultBaselineSHA256, failing)
+	err := fetch.Baseline(context.Background(), dest, "v3.5.0", fetch.DefaultBaselineSHA256, false, failing)
 	if err == nil {
 		t.Fatal("Fetch-Fehler wurde nicht propagiert")
 	}
@@ -241,6 +241,79 @@ func TestDefaultBaselineSHA256_MatchesMakefile(t *testing.T) {
 	if fetch.DefaultBaselineSHA256 != want {
 		t.Errorf("fetch.DefaultBaselineSHA256 %q != Makefile BASELINE_ZIP_SHA256 %q (Drift bei Re-Baseline)", fetch.DefaultBaselineSHA256, want)
 	}
+}
+
+// TestBaseline_ForceReplaces schliesst Review-Befund M1: --force trug ueber alle
+// anderen Emit-Schritte, nur nicht ueber den Baseline-Schritt — und die Meldung
+// empfahl genau das Flag, das der Aufrufer schon gesetzt hatte.
+func TestBaseline_ForceReplaces(t *testing.T) {
+	data, sum := stdBundle(t)
+	dest := t.TempDir()
+	root := filepath.Join(dest, "v3.5.0")
+	// Vorhandene, NICHT-leere Baseline: os.Rename allein scheitert daran.
+	if err := os.MkdirAll(filepath.Join(root, "regelwerk"), 0o755); err != nil {
+		t.Fatalf("vorbereiten: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(root, "regelwerk", "alt.md"), []byte("alt"), 0o644); err != nil {
+		t.Fatalf("vorbereiten: %v", err)
+	}
+	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, true, assetFetch(data)); err != nil {
+		t.Fatalf("Baseline mit force: %v", err)
+	}
+	assertContent(t, filepath.Join(root, "regelwerk", "README.md"), "index")
+	// Der alte Stand ist ERSETZT, nicht gemischt — sonst listete SHA256SUMS
+	// eine Datei, die der Verifier als ungelistet meldete.
+	assertAbsent(t, filepath.Join(root, "regelwerk", "alt.md"))
+}
+
+// TestBaseline_TraversalEntriesEscapeNothing deckt Review-Befund M4 (Zip-Slip)
+// als EIGENSCHAFT ab, nicht als Zweig-Abdeckung: der `!filepath.IsLocal`-Zweig in
+// unpackTrees ist durch die Marker-Logik konstruktionsbedingt unerreichbar
+// (path.Clean laeuft VOR dem Marker-Scan, danach ueberleben `..` nur als
+// FUEHRENDE Segmente — vor denen steht kein Marker). Er bleibt als zweites Netz
+// stehen; testbar ist, dass nichts aus dem Ziel ausbricht.
+func TestBaseline_TraversalEntriesEscapeNothing(t *testing.T) {
+	data, sum := fixtureZip(t, map[string]string{
+		"lab/regelwerk/README.md":          "index",
+		"lab/templates/AGENTS.template.md": "agents",
+		"lab/regelwerk/../../evil.txt":     "ausbruch",
+		"../regelwerk/evil2.md":            "ausbruch2",
+		"/regelwerk/evil3.md":              "ausbruch3",
+	})
+	dest := t.TempDir()
+	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data)); err != nil {
+		t.Fatalf("Baseline: %v", err)
+	}
+	for _, outside := range []string{
+		filepath.Join(dest, "evil.txt"),
+		filepath.Join(dest, "..", "evil.txt"),
+		filepath.Join(dest, "v3.5.0", "evil.txt"),
+	} {
+		assertAbsent(t, outside)
+	}
+	// Gegenprobe: was NACH dem Clean unter einem Marker liegt, kommt normal an —
+	// der Schutz darf nicht einfach alles verwerfen.
+	assertContent(t, filepath.Join(dest, "v3.5.0", "regelwerk", "README.md"), "index")
+}
+
+// TestBaseline_EscapedPathRefused deckt den zweiten Zweig aus M4: ein Pfad mit
+// Backslash wuerde von GNU sha256sum ESCAPT geschrieben, was den Vollstaendigkeits-
+// Check des Verifiers falsch-positiv machte. Lieber laut abbrechen (MR-007).
+func TestBaseline_EscapedPathRefused(t *testing.T) {
+	data, sum := fixtureZip(t, map[string]string{
+		"lab/regelwerk/README.md":          "index",
+		"lab/templates/AGENTS.template.md": "agents",
+		"lab/regelwerk/a\\b.md":            "backslash",
+	})
+	dest := t.TempDir()
+	err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data))
+	if err == nil {
+		t.Fatal("Pfad mit Backslash wurde akzeptiert — SHA256SUMS waere GNU-escapt")
+	}
+	if !strings.Contains(err.Error(), "Backslash") {
+		t.Errorf("Fehlermeldung nennt die Ursache nicht: %v", err)
+	}
+	assertEmptyDir(t, dest)
 }
 
 func mustRead(t *testing.T, path string) []byte {

@@ -103,3 +103,13 @@ run_verify() { run bash "$TMP/harness/tools/baseline-verify.sh"; }
   [ "$status" -eq 1 ]
   printf '%s' "$output" | grep -q 'escapte'
 }
+
+# Eingelegter SYMLINK: bis slice-022a meldete auch dieser Verifier "OK" (exit 0),
+# weil `find -type f` ihn nie fand und sha256sum -c ihn nicht listete — beide
+# Achsen blind fuer dieselbe Manipulation. Der Befund kam aus dem Review des
+# EMITTIERTEN Zwillings (H1) und traf diesen hier vorbestehend mit.
+@test "verify: eingelegter SYMLINK -> rot (Vollstaendigkeit, H1 geschlossen)" {
+  ln -s /etc/hostname "$TMP/.harness/baseline/vTESTTAG-1a2b/regelwerk/modul-99.md"
+  run_verify
+  [ "$status" -eq 1 ]
+}
