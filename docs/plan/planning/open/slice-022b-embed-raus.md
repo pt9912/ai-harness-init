@@ -16,7 +16,7 @@ wechselt nur durch `git mv`, siehe
 ## 1. Ziel
 
 Das Embed-Duplikat **abräumen**: `internal/emit` bezieht die Templates aus der von
-[slice-022a](../in-progress/slice-022a-baseline-fetch.md) gefetchten Baseline, `internal/emit/skel`
+[slice-022a](../done/slice-022a-baseline-fetch.md) gefetchten Baseline, `internal/emit/skel`
 (15 Dateien) wird **gelöscht**, und der Drift-Wächter `test/skel-drift.bats` entfällt
 **ersatzlos** — er bewachte genau die Doppelung, die es dann nicht mehr gibt. Damit ist
 die Folgepflicht aus [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md) („Embed entfernen") eingelöst und es bleibt
@@ -43,7 +43,7 @@ die Folgepflicht aus [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distr
 
 ## 4. Trigger
 
-[slice-022a](../in-progress/slice-022a-baseline-fetch.md) in `done/` — vorher gibt es keine gefetchte
+[slice-022a](../done/slice-022a-baseline-fetch.md) in `done/` — vorher gibt es keine gefetchte
 Quelle, aus der `emit` lesen könnte. Bis dahin **blockiert**.
 
 Rückführungen: `in-progress → next`, wenn Umverdrahtung und Test-Umbau getrennt gehören.
