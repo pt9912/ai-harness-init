@@ -118,7 +118,7 @@ einzige, die am ruhenden Baum **nicht** prüfbar ist: ein Test mit Zähnen und e
 sehen identisch aus.
 
 **Der Eintrag ist deshalb kein weiterer Regel-Text, sondern ein Sensor:**
-[slice-026](../in-progress/slice-026-mutations-sensor.md) (`make mutate`, kuratiertes Mutations-Set +
+[slice-026](slice-026-mutations-sensor.md) (`make mutate`, kuratiertes Mutations-Set +
 Schritt-18-Haken). Die Eskalations-Stufe ist selbst die Lehre — *geschärfte Regel* →
 *neuer Sensor*, weil die erste Stufe messbar nicht gehalten hat.
 
@@ -131,7 +131,7 @@ ist einen Blick wert, wenn der nächste Slice eine Quelle ersetzt.
 
 - **N-3** (der `emit.Templates`-Aufruf in `run()` ist von keinem Gate beobachtet) und
   **N-4** (`checkRoot` hängt an *einem* hart verdrahteten Dateinamen) sind **offen** und
-  [slice-026](../in-progress/slice-026-mutations-sensor.md) zugewiesen, weil sie dieselbe Fläche berühren.
+  [slice-026](slice-026-mutations-sensor.md) zugewiesen, weil sie dieselbe Fläche berühren.
 - **N-5** (INFO): die Begründung von §3.6 enthält mit *„jede Stelle mit Zähne-Beweis hielt,
   ausnahmslos"* eine unfalsifizierbare Universalaussage — in der Begründung einer
   Falsifizierbarkeits-Regel. Nicht korrigiert; benannt.
@@ -140,7 +140,7 @@ ist einen Blick wert, wenn der nächste Slice eine Quelle ersetzt.
 
 ### Folge-Slices
 
-- [slice-026](../in-progress/slice-026-mutations-sensor.md) — neu aus diesem Slice: der fehlende Quadrant zu §3.6, plus N-3/N-4.
+- [slice-026](slice-026-mutations-sensor.md) — neu aus diesem Slice: der fehlende Quadrant zu §3.6, plus N-3/N-4.
 - [slice-025](../open/slice-025-bootstrap-preflight.md) — unverändert offen; die Kette 025 → 023 → 004b folgt.
 
 ## 8. Sub-Area-Modus-Begründung

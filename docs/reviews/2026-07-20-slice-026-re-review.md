@@ -14,7 +14,7 @@ die Verifikation (Modul 11, getrennter Kontext, anderes Prüf-Artefakt).
 **Eingangs-Kontext** (die Verträge, gegen die geprüft wurde — ohne
 diese Liste ist der Lauf nicht reproduzierbar):
 
-- Slice-Plan: [`docs/plan/planning/in-progress/slice-026-mutations-sensor.md`](../plan/planning/in-progress/slice-026-mutations-sensor.md) (§2 DoD, §3 **zweimal** nachgeführt, §6 Risiken — insb. „der Reviewer sollte den Sensor gegen sich selbst wenden")
+- Slice-Plan: [`docs/plan/planning/in-progress/slice-026-mutations-sensor.md`](../plan/planning/done/slice-026-mutations-sensor.md) (§2 DoD, §3 **zweimal** nachgeführt, §6 Risiken — insb. „der Reviewer sollte den Sensor gegen sich selbst wenden")
 - aktive ADRs: [`ADR-0003`](../plan/adr/0003-go-native-binaries.md) (Docker-only), [`ADR-0005`](../plan/adr/0005-ziel-repo-distribution.md) (der Kurs ist die eine Quelle)
 - berührte `LH-*`-IDs: [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten), [`LH-FA-02`](../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
 - [`AGENTS.md`](../../AGENTS.md) Hard Rules §3.1–§3.6 (§3.6 auch **auf diesen Diff selbst** angewandt)
