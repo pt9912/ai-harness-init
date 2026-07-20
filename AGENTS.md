@@ -77,6 +77,34 @@ Korrekturen entstehen als neue ADR mit Supersedes, nicht durch
 Jede Schwellen-Senkung (Modul-Aktivierung, Strenge) ist ein ADR, kein
 PR-Kommentar.
 
+### 3.6 Keine Zusage ohne rot gesehenes Gegenbeispiel
+
+Eine Zusage — Doc-Kommentar, Test-Name, DoD-Punkt, Commit-Message — ist erst
+fertig, wenn benannt ist, **was passieren müsste, damit sie bricht**, und das
+einmal **rot gesehen** wurde. Ein Test, dessen Name eine Eigenschaft behauptet,
+muss die Eigenschaft messen, nicht ihre heutige Implementierung.
+
+**Falsch:** ein Test `…AusserScopeNichtEmittiert`, der die **Quell**-Namen
+prüft, während der Code **transformierte Ziel**-Namen schreibt — er kann unter
+keiner Mutation rot werden.
+**Richtig:** den **vollständigen Ist-Bestand** gegen die erwartete Liste prüfen
+und die Regel einmal aufheben, bis der Test fällt.
+
+**Falsch:** „Byte-Gleichheit belegt `make smoke`", ohne `smoke` gelesen zu haben.
+**Richtig:** benennen, was wirklich deckt — oder dass nichts deckt.
+
+**Falsch:** ein Doc-Kommentar, der „bei jedem Fehler bleibt das Ziel
+unverändert" zusagt, während ein `MkdirAll` davor läuft.
+**Richtig:** die Zusage auf das einschränken, was der Code hält.
+
+**Begründung (gemessen, nicht postuliert):** In slice-022a fünf Instanzen dieser
+Klasse, in slice-022b vier — gefunden von vier getrennten Rollen-Durchgängen.
+**Jede Stelle mit Zähne-Beweis hielt, jede ohne rutschte durch, ausnahmslos.**
+Ein Test, der eine Eigenschaft im Namen führt und ein Implementierungsdetail
+prüft, ist ein stilles Grün im Gate — §3.1 eine Ebene tiefer. Die Regel ist eine
+**Verschärfung** und braucht darum kein ADR (§3.5 gilt für Senkungen; vgl.
+[`MR-001`](harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) „Gate-*Anheben* → Steering-Loop").
+
 ## 4. Quality Gates
 
 | Target | Zweck |
