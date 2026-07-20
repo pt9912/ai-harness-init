@@ -46,6 +46,10 @@ Beobachtbare Bedingungen (kein Kalendertag); die Closure folgt den fünf Modul-6
 - **Tier-2-Emit-Smoke grün** (`make smoke`, seit slice-002): die Emit-Baseline läuft im
   tmp-Repo real durch. Der **Voll**-E2E-Smoke ist bewusst welle-03s Closure-Kriterium —
   er braucht die Root-README und wäre hier ein Beweis über unvollständigem Ziel.
+- **Mutations-Sensor grün** (`make mutate`, seit slice-026): jeder gelistete Wächter färbt
+  sich unter seiner Mutation rot. Steht hier, weil `make mutate` sonst ein Sensor **ohne
+  Auslöser** wäre — es gibt keine CI (s. slice-027), und ein Nicht-Gate-Target, das kein
+  Trigger verlangt, läuft nie. Das ist das Muster für Folge-Wellen.
 - Carveout-Audit ([Modul 7](https://github.com/pt9912/ai-harness-course/blob/v3.5.0/kurs/de/02-planung/modul-07-carveouts.md)): 0 offen oder dokumentiert.
 - Closure-Notiz in `done/welle-02-results.md` (Steering-Loop-Lerneintrag).
 

@@ -34,6 +34,8 @@ Beobachtbare Bedingungen (kein Kalendertag); die Closure folgt den fünf Modul-6
 - `make gates` grün.
 - **Voll-E2E-Smoke grün:** Bootstrap in tmp-Repo → `make gates` dort Exit 0 **ohne
   Nacharbeit**, mit echter Ausgabe belegt ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) — kein Erfolg ohne Gate-Lauf).
+- **Mutations-Sensor grün** (`make mutate`, seit slice-026) — dasselbe Muster wie in welle-02:
+  ein Nicht-Gate-Target ohne Trigger läuft nie.
 - Carveout-Audit ([Modul 7](https://github.com/pt9912/ai-harness-course/blob/v3.5.0/kurs/de/02-planung/modul-07-carveouts.md)): 0 offen oder dokumentiert.
 - Closure-Notiz in `done/welle-03-results.md` (Steering-Loop-Lerneintrag).
 

@@ -55,6 +55,15 @@ schlägt an. Dazu der fehlende Feedforward-Haken in der Pre-completion-Checklist
 | `.claude/commands/implement-slice.md` | update | Schritt-18-Haken (Feedforward-Hälfte von N-6) |
 | `cmd/ai-harness-init`, `internal/emit` | update | N-3 (Test auf die `run()`-Verdrahtung) und N-4 (robusterer Wurzel-Anker) |
 
+**Nachgeführt 2026-07-20.** Beim Berichten der Restrisiken gemessen: es gibt **keine CI**, und
+`make mutate` stand in **keinem** Closure-Trigger — ein Sensor ohne Auslöser. Damit hätte der
+Slice §3.6 einen zweiten Quadranten gegeben, der nie feuert. Zwei Nachträge:
+
+| Datei / Komponente | Änderungs-Art | Begründung |
+|---|---|---|
+| `welle-02`/`welle-03` §3 | update | `make mutate` als Closure-Kriterium — dieselbe mechanische Verankerung, die `make smoke` schon hatte. Ohne sie ist das Target dokumentiert und unaufgerufen |
+| `harness/tools/smoke.sh` | update | N-3: die Template-Schicht wird jetzt beobachtet (Tier 2 ist die einzige Stelle, an der die volle Kette real läuft) |
+
 ## 4. Trigger
 
 slice-022b in `done/`. Als Harness-Wartung hängt der Slice an keiner Welle —
