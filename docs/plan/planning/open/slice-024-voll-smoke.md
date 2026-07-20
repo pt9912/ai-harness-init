@@ -18,7 +18,7 @@ wechselt nur durch `git mv`, siehe
 Der **Voll-E2E-Smoke**: Bootstrap in ein tmp-Repo → dort läuft `make gates`
 **out-of-the-box grün**. Das ist der Happy-Path-Beweis von
 [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), den welle-01 aufschob und welle-02 aus Schnitt-Gründen weitergab —
-über den vollen Bootstrap aus Fetch (slice-022), Generator (slice-023), Verdrahtung
+über den vollen Bootstrap aus Fetch (slice-022a/022b), Generator (slice-023), Verdrahtung
 (slice-004b) und Root-README (slice-005).
 
 ## 2. Definition of Done

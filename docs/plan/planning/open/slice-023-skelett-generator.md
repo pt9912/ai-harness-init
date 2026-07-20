@@ -27,6 +27,7 @@ Ein Layout-Profil, nachvollziehbar wie `d-check --print-mk` — **nicht aus dem 
 - [ ] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6): das generierte `Makefile` behauptet **nur lauffähige** Targets — jedes emittierte Target läuft im frischen Zielrepo.
 - [ ] [`ADR-0003`](../../../../docs/plan/adr/0003-go-native-binaries.md) gewahrt: das generierte Skelett ist **Docker-only** (Stages im `Dockerfile`), keine Host-Toolchain-Annahme.
 - [ ] Der Generator bleibt **sprach-agnostisch** strukturiert (ein Profil je Sprache); `go` ist das erste, die übrigen fünf aus [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) folgen ohne Umbau der Mechanik.
+- [ ] **Der Skelett-Fetch ist abgelöst:** `fetch.Skeleton` (der `lab/example/<lang>`-Pfad aus slice-004a) ist entfernt, **und die `--lang`-Validierung ist übernommen** — sie hing bis hierher am Fetch (fail-fast in `cmd/ai-harness-init`) und darf nicht ersatzlos verschwinden. Unbekannte Sprache → weiterhin Exit 2 mit der Liste der unterstützten Profile.
 - [ ] `make gates` grün.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
@@ -35,14 +36,14 @@ Ein Layout-Profil, nachvollziehbar wie `d-check --print-mk` — **nicht aus dem 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `internal/gen` | neu | Generator-Mechanik + Go-Layout-Profil (Tool-als-Quelle) |
-| `cmd/ai-harness-init` | update | `--lang go` verdrahtet den Generator statt des früheren Fetch-Pfads |
+| `internal/fetch` | update | `Skeleton` + `lab/example`-Extrakt entfernen; der Baseline-Fetch aus slice-022a bleibt |
+| `cmd/ai-harness-init` | update | `--lang go` verdrahtet den Generator statt des früheren Fetch-Pfads; **`--lang`-Validierung wandert vom Fetch zum Generator-Profil** |
 | Generator-Tests | neu | Determinismus (zwei Läufe byte-identisch), Target-Lauffähigkeit, Docker-only |
 
 ## 4. Trigger
 
-slice-022 in `done/` (der alte Skelett-Fetch-Pfad ist dann abgeräumt und die
-Template-Quelle steht). Vorher **blockiert** — sonst konkurrieren Generator und
-Fetch um dieselbe Ausgabe.
+slice-022b in `done/` (die gefetchte Baseline ist dann einzige Template-Quelle).
+Vorher **blockiert** — sonst konkurrieren Generator und Embed um dieselbe Ausgabe.
 
 Rückführungen: `in-progress → next`, wenn sich Generator-Mechanik und Go-Profil nicht in
 einer Review-Sitzung prüfen lassen (dann trennen: Mechanik zuerst, Profil als Folge-Slice).

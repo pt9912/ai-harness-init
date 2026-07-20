@@ -40,7 +40,7 @@ erstmals ein Regelwerk) und [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--s
 
 Beobachtbare Bedingungen (kein Kalendertag); die Closure folgt den fünf Modul-6-Schritten:
 
-- slice-022, slice-023 und slice-004b liegen in `done/` (slice-004a liegt bereits dort).
+- slice-022a, slice-022b, slice-023 und slice-004b liegen in `done/` (slice-004a liegt bereits dort).
 - `make gates` grün.
 - **Tier-2-Emit-Smoke grün** (`make smoke`, seit slice-002): die Emit-Baseline läuft im
   tmp-Repo real durch. Der **Voll**-E2E-Smoke ist bewusst welle-03s Closure-Kriterium —
@@ -56,7 +56,8 @@ gespiegelt (welle.template.md §4 — eine zweite Wahrheit driftet). -->
 | Slice | Titel | Bezug |
 |---|---|---|
 | [slice-004a](done/slice-004a-skeleton-fetch.md) | Sprachskelett-Fetch *(geliefert unter dem abgelösten Modell)* | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
-| [slice-022a](open/slice-022a-baseline-fetch.md) | Templates + Regelwerk fetchen statt einbetten | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren), [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) |
+| [slice-022a](open/slice-022a-baseline-fetch.md) | Baseline-Fetch ins Zielrepo (additiv) | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren), [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| [slice-022b](open/slice-022b-embed-raus.md) | Embed raus — gefetchte Baseline ist einzige Template-Quelle | [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
 | [slice-023](open/slice-023-skelett-generator.md) | Go-Skelett-Generator (deterministisch) | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | [slice-004b](open/slice-004b-skeleton-wire.md) | Sprachskelett verdrahten (Gerüst + Init-Flow) | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
 
@@ -65,13 +66,15 @@ gespiegelt (welle.template.md §4 — eine zweite Wahrheit driftet). -->
 - Wird blockiert von: welle-01 (Offline-Kern) — **done**.
 - Blockiert: welle-03 (README & Voll-Smoke) — ohne den umgebauten Bootstrap hat deren
   Voll-Smoke kein vollständiges Ziel.
-- Intern **strikt sequenziell**: slice-022 → slice-023 → slice-004b. slice-022 muss zuerst,
-  weil Embed-Entfernung und Fetch zusammengehören; liefe der Generator davor, konkurrierten
-  zwei Quellen um dieselbe Ausgabe.
+- Intern **strikt sequenziell**: slice-022a → slice-022b → slice-023 → slice-004b.
+  **022a ist additiv** (Baseline-Fetch neben dem bestehenden Embed), **022b räumt ab** — der
+  Zwischenzustand zweier Template-Quellen ist bewusst kurz und bleibt von
+  `test/skel-drift.bats` bewacht, bis das Embed fällt. Die Teilung entstand aus der
+  Ist-Messung vor der Implementierung (Re-Slice 2026-07-20, s. 022a §1).
 - **slice-004a ist ein Sonderfall:** es liegt in `done/`, lieferte aber den
   Skelett-Fetch-Pfad, den [`ADR-0005`](../../../docs/plan/adr/0005-ziel-repo-distribution.md) ablöst. `done/` wird **nicht** zurückgesetzt
   (Modul 5: der Zustand ist die Verzeichnis-Position, Historie liegt in git); der Rückbau
-  passiert in slice-022. Die Closure-Notiz führt das als Lerneintrag.
+  passiert in slice-022a/022b. Die Closure-Notiz führt das als Lerneintrag.
 
 ## 6. Out-of-Scope für diese Welle
 

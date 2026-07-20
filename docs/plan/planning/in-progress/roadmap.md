@@ -16,8 +16,9 @@ gezeigt, nicht als Treiber.
 **Start:** 2026-07-18 (Trigger „welle-01 done" erfüllt; die Umplanung setzt den Start nicht zurück)
 **Geplantes Ende:** offen
 
-**Slice-IDs:** slice-022 (Templates+Regelwerk fetchen, [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)) → slice-023
-(Go-Skelett-Generator, [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) → slice-004b (Verdrahten: Gerüst + Init-Flow).
+**Slice-IDs:** slice-022a (Baseline-Fetch additiv, [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)) → slice-022b
+(Embed raus, [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)) → slice-023 (Go-Skelett-Generator,
+[`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) → slice-004b (Verdrahten: Gerüst + Init-Flow).
 Strikt sequenziell. slice-004a liegt bereits in `done/`.
 
 **Closure-Trigger:** die drei Slices in `done/`, `make gates` grün, **Tier-2-`make smoke` grün**,
@@ -32,9 +33,13 @@ Kriterium ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzini
 > Kappen), slice-004b **re-gescopet** statt aufgelöst (Muster:
 > [slice-015](../done/slice-015-zitat-sensor.md)), slice-005 nach welle-03 umgehängt. Das
 > **Doc-Fundament ist fertig + gate-grün** (Lastenheft v0.7.0); der **Code** (embed→fetch,
-> Generator, Verdrahtung) ist jetzt geschnitten und folgt. **Nächster Schritt:** slice-022
-> implementieren (`/implement-slice`). Offene Aufräum-Punkte (kein Gate-Bruch): stale Links
-> auf die superseded Skelett-Fetch-ADR in welle-01/Root-README.
+> Generator, Verdrahtung) ist jetzt geschnitten und folgt. **slice-022 wurde bei der
+> Ist-Messung vor der Implementierung in 022a/022b geteilt** (Modul-5-Rücksprung, wie
+> slice-001→001a/b und slice-004→004a/b) — Grund: ZIP≠Tar-Umbau plus ein bis dahin
+> unbemerktes Loch (der Ziel-Verifier für [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)s Prüfsummen-AC).
+> **Nächster Schritt:** slice-022a implementieren (`/implement-slice`). Offene
+> Aufräum-Punkte (kein Gate-Bruch): stale Links auf die superseded Skelett-Fetch-ADR in
+> welle-01/Root-README.
 
 ## Nächste Wellen
 
@@ -69,6 +74,7 @@ flowchart LR
 
 | Datum | Was wurde geändert? | Warum? |
 |---|---|---|
+| 2026-07-20 | **slice-022 → slice-022a/022b re-sliced** (vor der Implementierung, Modul-5-Rücksprung; Kette jetzt 022a→022b→023→004b) | Ist-Messung deckte auf: der Fetch-Umbau ist ZIP≠Tar (Kernlogik, kein „update"), und [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)s Prüfsummen-AC braucht einen **Ziel-Verifier**, den weder Template-Satz noch Emit-Pfad liefern — zusammen über der Ein-Sitzungs-Review-Linie. 022a additiv, 022b räumt ab; Zwischenzustand von `skel-drift.bats` bewacht |
 | 2026-07-20 | **welle-02 umgeplant** (nicht geschlossen): Ziel auf den Distributions-Umbau fokussiert, slice-022/023 neu, slice-004b re-gescopet, slice-005 nach welle-03 umgehängt; **welle-03 neu**; **M2 auf welle-02+welle-03** verteilt | [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md) machte das Wellen-Ziel („Skelett vom Kurs-Tag holen") und den Closure-Trigger ungültig. Kappen wäre die Auditierbarkeits-Lücke aus Modul 6 („Welle ≠ Sprint") — dieselbe Umplanungs-Antwort wie beim Go-Pivot 2026-07 |
 | 2026-07-18 | welle-01 geschlossen; welle-02 aktiviert; M1 erreicht | Trigger „alle welle-01-Slices `done/` + `make gates` grün" erfüllt |
 | 2026-07 | welle-01-Slices auf die Go-Ära re-geschnitten (slice-001 → 001a/001b) | Impl-Sprache Go / native Binaries ([`ADR-0003`](../../../../docs/plan/adr/0003-go-native-binaries.md)); slice-001 zu groß (Modul-5-Rücksprung) |

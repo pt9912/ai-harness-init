@@ -34,7 +34,7 @@ Verzeichnis-Gerüst anlegen, den Init-Flow verbinden und `d-check.mk` ins generi
 
 - [ ] [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) (Verdrahten-Teil): die generierten Code-Gates sind verdrahtet, **nur lauffähige** Targets ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 - [ ] Das generierte `Makefile` **bindet `d-check.mk` ein** ([`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)); Doc-Gate und Code-Gates hängen an **einem** `make gates`, nicht an zwei konkurrierenden.
-- [ ] [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen): das Verzeichnis-Gerüst des Zielrepos steht vollständig (Doc-Struktur aus slice-022, Skelett aus slice-023, Gerüst hier), der Init-Flow durchläuft alle Herkunftsklassen aus [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md).
+- [ ] [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen): das Verzeichnis-Gerüst des Zielrepos steht vollständig (Doc-Struktur aus slice-022a/022b, Skelett aus slice-023, Gerüst hier), der Init-Flow durchläuft alle Herkunftsklassen aus [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md).
 - [ ] Emit-Test belegt die Verdrahtung struktur-seitig (Include vorhanden, Targets aufrufbar). **Der Voll-E2E-Beweis ist ausdrücklich [slice-024](slice-024-voll-smoke.md)** — hier wird er *nicht* behauptet.
 - [ ] `make gates` grün.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -43,13 +43,13 @@ Verzeichnis-Gerüst anlegen, den Init-Flow verbinden und `d-check.mk` ins generi
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `cmd/ai-harness-init` | update | Init-Flow: Fetch (slice-022) → Generator (slice-023) → Gerüst → Verdrahtung |
+| `cmd/ai-harness-init` | update | Init-Flow: Fetch (slice-022a/022b) → Generator (slice-023) → Gerüst → Verdrahtung |
 | `internal/` | update | Verzeichnis-Gerüst + `d-check.mk`-Include ins generierte `Makefile` ([`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)) |
 | Emit-Tests | update | Gerüst-Vollständigkeit, Include vorhanden, Targets aufrufbar |
 
 ## 4. Trigger
 
-slice-023 in `done/` (das Skelett wird generiert) — und damit implizit slice-022. Die
+slice-023 in `done/` (das Skelett wird generiert) — und damit implizit slice-022a/022b. Die
 frühere Vorbedingung „Layering-ADR akzeptiert" ist **erfüllt** ([`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md),
 Accepted 2026-07-19) und damit kein Blocker mehr.
 
