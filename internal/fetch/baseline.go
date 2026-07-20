@@ -221,6 +221,7 @@ func replaceBaseline(tmp, final, tag string) error {
 // stellt sicher, dass BEIDE nicht-leer ankommen.
 func unpackTrees(zr *zip.Reader, root, tag string) error {
 	seen := map[string]int{}
+	claimedBy := map[string]string{} // Rel-Pfad -> ZIP-Eintrag, der ihn zuerst beansprucht
 	for _, f := range zr.File {
 		rel := baselineEntry(f.Name)
 		if rel == "" || f.FileInfo().IsDir() {
@@ -229,6 +230,17 @@ func unpackTrees(zr *zip.Reader, root, tag string) error {
 		if !filepath.IsLocal(rel) {
 			continue // unsicherer Pfad (../) — wie im Skelett-Pfad verworfen
 		}
+		// Zwei Eintraege auf denselben Rel-Pfad: FEHLER, nicht "letzter gewinnt"
+		// (Review-Befund slice-022a N4, mit Fixture belegt). writeFile nutzt
+		// O_TRUNC — ohne diese Schranke haengt der Inhalt der vendored Baseline
+		// an der ZIP-REIHENFOLGE statt am Asset-Inhalt, und die selbst erzeugte
+		// SHA256SUMS deckt das Ergebnis danach zu. Ein mehrdeutiges Bundle wird
+		// begruendet NICHT aufgenommen — dieselbe Linie wie beim unvollstaendigen
+		// Bundle und beim GNU-escapten Pfad (LH-QA-02, LH-FA-09 Kein-Halluzinat-AC).
+		if prev, dup := claimedBy[rel]; dup {
+			return fmt.Errorf("baseline %s: %q und %q bilden beide auf %s ab — mehrdeutiges Bundle, welcher Eintrag gewaenne haenge an der ZIP-Reihenfolge", tag, prev, f.Name, rel)
+		}
+		claimedBy[rel] = f.Name
 		rc, err := f.Open()
 		if err != nil {
 			return fmt.Errorf("%s im bundle oeffnen: %w", f.Name, err)

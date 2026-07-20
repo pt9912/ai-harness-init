@@ -355,6 +355,38 @@ func TestBaseline_NurErwarteteEintraegeLanden(t *testing.T) {
 	}
 }
 
+// TestBaseline_KollidierendeEintraegeRefused deckt Review-Befund N4 — der bis
+// hierher NICHT belegt war, sondern nur aus dem Code hergeleitet (der Reviewer
+// notierte ihn ausdruecklich als "verifizierbar, aber keine Fixture vorhanden").
+// Diese Fixture ist der Beleg: zwei verschiedene ZIP-Namen, ein Ziel-Rel-Pfad.
+//
+// Warum Fehler und nicht Warnung: welcher Eintrag gewinnt, haengt allein an der
+// ZIP-Reihenfolge. Das Ergebnis waere von der Asset-Ordnung abhaengig statt von
+// seinem Inhalt — und die vendored Baseline deckt es danach mit ihren eigenen
+// Pruefsummen. Ein mehrdeutiges Bundle ist kein Bundle, das man halb aufnimmt;
+// dieselbe Linie wie beim unvollstaendigen Bundle und beim escapten Pfad.
+func TestBaseline_KollidierendeEintraegeRefused(t *testing.T) {
+	data, sum := fixtureZip(t, map[string]string{
+		"lab/regelwerk/README.md":          "index",
+		"lab/templates/AGENTS.template.md": "agents",
+		// Beide erlaubt (Tiefe 1, sauberes Praefix), beide -> regelwerk/modul.md:
+		"lab/regelwerk/modul.md":  "aus lab",
+		"docs/regelwerk/modul.md": "aus docs",
+	})
+	dest := t.TempDir()
+	err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data))
+	if err == nil {
+		t.Fatal("mehrdeutiges Bundle wurde akzeptiert — ein Eintrag hat den anderen still ueberschrieben")
+	}
+	// Die Meldung muss BEIDE Quell-Eintraege nennen, sonst sucht der Maintainer blind.
+	for _, want := range []string{"lab/regelwerk/modul.md", "docs/regelwerk/modul.md", "regelwerk/modul.md"} {
+		if !strings.Contains(err.Error(), want) {
+			t.Errorf("Fehlermeldung nennt %q nicht: %v", want, err)
+		}
+	}
+	assertEmptyDir(t, dest)
+}
+
 // TestBaseline_EscapedPathRefused deckt den zweiten Zweig aus M4: ein Pfad mit
 // Backslash wuerde von GNU sha256sum ESCAPT geschrieben, was den Vollstaendigkeits-
 // Check des Verifiers falsch-positiv machte. Lieber laut abbrechen (MR-007).
