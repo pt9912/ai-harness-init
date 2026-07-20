@@ -33,7 +33,7 @@ BASELINE_TAG ?= v3.5.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 123e3383261102e6be6465e1f4bade08a474c00edc4fff89f5c4b11bd640f8ff
 
-.PHONY: help gates record-gates test lint build compile smoke shell-lint baseline-verify regelwerk-check baseline-freshness
+.PHONY: help gates record-gates test lint build compile smoke shell-lint baseline-verify regelwerk-check baseline-freshness mutate
 help: ## Targets anzeigen
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-14s %s\n", $$1, $$2}'
@@ -59,11 +59,14 @@ compile: ## Schnelles Compile-Feedback (Dockerfile compile-Stage, ohne Tests/Lin
 smoke: ## Emit-Smoke: Doc-Gate in tmp-Repo emittieren + emittiertes docs-check real gruen (Host-Docker) — NICHT in gates
 	@GO_VERSION='$(GO_VERSION)' bash harness/tools/smoke.sh
 
+mutate: ## Mutations-Sensor fuer AGENTS 3.6: faerbt jede Mutation ihren Waechter rot? — NICHT in gates
+	@bash harness/tools/mutate.sh
+
 # shellcheck über die harness-eigenen Shell-Hooks/-Helfer. .bats ist
 # ausgenommen (shellcheck parst die @test-Syntax nicht); .awk ist kein Shell.
 shell-lint: ## Shell-Hooks/-Helfer linten (shellcheck) im gepinnten Image — Docker-only (ADR-0003)
 	docker run --rm -v "$(CURDIR)":/mnt:ro -w /mnt $(SHELLCHECK_IMAGE) \
-		.claude/hooks/*.sh harness/tools/*.sh internal/emit/templates/*.sh
+		.claude/hooks/*.sh harness/tools/*.sh internal/emit/templates/*.sh test/mutations/*.sh
 
 # Verifiziert die vendored Baseline NETZLOS: sha256sum -c über SHA256SUMS
 # (fängt geänderte/gelöschte Dateien) PLUS Vollständigkeits-Check (fängt

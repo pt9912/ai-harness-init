@@ -34,9 +34,27 @@ docker build --build-arg GO_VERSION="$GO_VERSION" \
 echo "smoke: 2/4 Bootstrap (--lang go): Doc-Gate + Templates + Skelett-Fetch (Netz) ..."
 ( cd "$tmprepo" && "$tmpbin/ai-harness-init" --lang go --name smoke )
 
-echo "smoke: 3/4 Skelett gestaged? (slice-004a) ..."
+echo "smoke: 3/4 Skelett gestaged? (slice-004a) + Templates emittiert? (slice-022b) ..."
 if [ ! -f "$tmprepo/.harness/skeleton/Makefile" ]; then
 	echo "smoke: FEHLER — Sprachskelett nicht nach .harness/skeleton/ gestaged" >&2
+	exit 1
+fi
+# Dass run() die Template-Schicht ueberhaupt ablegt, beobachtete bis slice-026
+# KEIN Sensor (Review-Befund slice-022b N-3): die run()-Unit-Tests enden bewusst
+# am DocGate, also VOR dem Templates-Schritt. Hier ist die einzige Stelle, an der
+# die volle Kette real laeuft — also gehoert die Beobachtung hierher, auf
+# Tier 2 (DoD-Verify/CI), nicht in `make gates`.
+# Je ein Vertreter der beiden Klassen aus LH-FA-02: Singleton -> .md,
+# Wiederkehrendes -> verbatim .template.md.
+for rel in AGENTS.md docs/plan/planning/slice.template.md; do
+	if [ ! -f "$tmprepo/$rel" ]; then
+		echo "smoke: FEHLER — Template-Schicht unvollstaendig: $rel fehlt" >&2
+		exit 1
+	fi
+done
+# Gegenprobe zur In-Scope-Regel: der Set-Index darf NIE emittiert werden.
+if [ -f "$tmprepo/README.md" ]; then
+	echo "smoke: FEHLER — Set-Index README.md wurde emittiert (out of scope)" >&2
 	exit 1
 fi
 

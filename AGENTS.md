@@ -97,9 +97,14 @@ und die Regel einmal aufheben, bis der Test fällt.
 unverändert" zusagt, während ein `MkdirAll` davor läuft.
 **Richtig:** die Zusage auf das einschränken, was der Code hält.
 
+**Feedback:** `make mutate` (Nicht-Gate-Verify, §4) fährt ein kuratiertes Set aus
+*(Mutation → erwartet rot färbender Test)* und meldet jeden Wächter, der seine
+Zähne verloren hat. Es prüft die **Haltbarkeit** vorhandener Zähne, nicht die
+**Entstehung** neuer — letztere hängt an der Pre-completion-Checkliste, die zu
+jeder Zusage die rot färbende Mutation verlangt.
+
 **Begründung (gemessen, nicht postuliert):** In slice-022a fünf Instanzen dieser
 Klasse, in slice-022b vier — gefunden von vier getrennten Rollen-Durchgängen.
-**Jede Stelle mit Zähne-Beweis hielt, jede ohne rutschte durch, ausnahmslos.**
 Ein Test, der eine Eigenschaft im Namen führt und ein Implementierungsdetail
 prüft, ist ein stilles Grün im Gate — §3.1 eine Ebene tiefer. Die Regel ist eine
 **Verschärfung** und braucht darum kein ADR (§3.5 gilt für Senkungen; vgl.
@@ -119,7 +124,7 @@ prüft, ist ein stilles Grün im Gate — §3.1 eine Ebene tiefer. Die Regel ist
 
 Der Dogfood-Go-Gate-Stack ist **vollständig**: `make lint` / `make build` / `make test` (Go via Dockerfile-Stages, slice-001a/b) neben `docs-check` / `shell-lint` / `baseline-verify`. **Nicht behauptet**: das Architektur-Gate (a-check, [`LH-FA-07`](spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) — bewusst aufgeschoben, bis hexagonale Schichten existieren; sonst wäre es ein halluziniertes Gate über leerem Prüfbereich ([`LH-QA-01`](spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 
-**Nicht-Gate-Verify** (verfügbar, aber **nicht** in `make gates` — wie `regelwerk-check`/`baseline-freshness`): `make smoke` fährt den Tier-2-Emit-Smoke (slice-002) — emittiert die Doc-Gate-Baseline in ein tmp-Repo und lässt das emittierte `docs-check` real laufen. Host-Docker + ggf. Netz-Pull, darum an DoD-Verify/CI/Wellen-Closure, nicht im offline-schlanken `make gates`.
+**Nicht-Gate-Verify** (verfügbar, aber **nicht** in `make gates` — wie `regelwerk-check`/`baseline-freshness`): `make smoke` fährt den Tier-2-Emit-Smoke (slice-002) — emittiert die Doc-Gate-Baseline in ein tmp-Repo und lässt das emittierte `docs-check` real laufen. Host-Docker + ggf. Netz-Pull, darum an DoD-Verify/CI/Wellen-Closure, nicht im offline-schlanken `make gates`. `make mutate` ist der Mutations-Sensor zu §3.6 (slice-026): er färbt jeden gelisteten Wächter absichtlich rot und meldet den, der grün bleibt. Jede Mutation kostet einen vollen `make test`-Zyklus — auch er gehört an DoD-Verify/Closure.
 
 ## 5. Dokumentations-Regeln
 

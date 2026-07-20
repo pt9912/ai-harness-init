@@ -88,27 +88,35 @@ ist eine Lifecycle-Rücksprungkante (11).
     (Modul 11: „Behauptung ohne Bestätigung ist die häufigste Verifier-Lücke"; eine DoD-Verletzung
     ist eine Verifier-only-Klasse, unsichtbar für Review und Tests). Ausgeführte Sensors +
     Restrisiken berichten.
+19. **Zu jedem neuen oder geänderten Wächter die rot färbende Mutation benennen**
+    (`AGENTS.md` §3.6). Ein grüner Gate-Lauf belegt nur, dass nichts *bricht* — nicht, dass
+    der Wächter greift. Pro Zusage also: *welche Änderung am geprüften Code müsste diesen
+    Test rot machen, und wurde sie einmal gesehen?* Wo die Antwort dauerhaft interessant
+    ist, gehört sie als Fall nach `test/mutations/` (dann fährt `make mutate` sie künftig
+    automatisch); wo sie einmalig ist, in den Bericht. **Keine Antwort ist ein Befund**, kein
+    Formfehler — die Klasse „Zusage greift weiter als Abdeckung" hat vier Rollen-Durchgänge
+    gekostet, bevor sie hier landete.
 
 Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontexten** (Modul 8).
 
 ## Übergaben an nachgelagerte Rollen (Modul 8 → 10 → 11)
 
-19. **→ Reviewer (Code-Review, Modul 10):** den Diff + Plan-Verweis an einen **unabhängigen**
+20. **→ Reviewer (Code-Review, Modul 10):** den Diff + Plan-Verweis an einen **unabhängigen**
     Reviewer übergeben (`.harness/skills/reviewer.md`, frischer Kontext — kein Selbst-Review). Er
     kategorisiert Findings (HIGH/MEDIUM/LOW/INFO) in einen Report unter `docs/reviews/` und prüft
     den Diff gegen **Plan + ADR + Hard Rules** (nicht die DoD). HIGH/MEDIUM auflösen; ein HIGH mit
     Rollen-Konflikt folgt Modul 8 §Konflikt-Pfad (Sequenz mit Übergabe-Artefakten, nie
     „herabstufen, weil der Implementer widerspricht").
-20. **→ Verifier (Modul 11):** in getrenntem Kontext die DoD-/Spec-Behauptung und den
+21. **→ Verifier (Modul 11):** in getrenntem Kontext die DoD-/Spec-Behauptung und den
     Plan-vs-Code-Diff **bestätigen**, dazu ADR-Konformität. Das fängt, was Tests übersehen und der
     Reviewer nicht sieht (DoD-Verletzung).
-21. **→ Validator (Modul 8):** falls der Slice End-Nutzer-Wert liefert, gegen den realen Bedarf
+22. **→ Validator (Modul 8):** falls der Slice End-Nutzer-Wert liefert, gegen den realen Bedarf
     validieren („das Richtige bauen"). Meist n/a bei interner Wartung — dann explizit sagen statt
     still überspringen.
 
 ## Closure — Planner-Rolle (Modul 8 + Modul 5)
 
-22. Erst wenn der Review konform **und** die Verifikation die DoD bestätigt hat, schließt der
+23. Erst wenn der Review konform **und** die Verifikation die DoD bestätigt hat, schließt der
     **Planner**: die Closure-Notiz mit einem **Steering-Loop-Eintrag** schreiben (geschärfte Regel ·
     neuer Sensor · benannte Spec-Lücke — Modul 5: der `→ done`-Übergang verlangt einen Lerneintrag,
     nicht nur grüne Gates), dann den Slice `in-progress → done` verschieben (`git mv`, eigener

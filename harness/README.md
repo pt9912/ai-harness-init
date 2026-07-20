@@ -47,7 +47,7 @@ Nur existierende Targets (keine halluzinierten Gates):
 
 Der Dogfood-Go-Gate-Stack ist **vollständig**: `make lint` / `make build` / `make test` (Go via Dockerfile-Stages, slice-001a/b) neben `docs-check` / `shell-lint` / `baseline-verify`. **Nicht behauptet**: das Architektur-Gate (a-check, [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) — bewusst aufgeschoben, bis hexagonale Schichten existieren; sonst wäre es ein halluziniertes Gate über leerem Prüfbereich ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 
-**Nicht-Gate-Verify** (verfügbar, **nicht** in `make gates` — wie `regelwerk-check`/`baseline-freshness`): `make smoke` ist der Tier-2-Emit-Smoke (slice-002) — es emittiert die Doc-Gate-Baseline in ein tmp-Repo und lässt das emittierte `docs-check` real laufen (Host-Docker, ggf. Netz-Pull). Gehört an DoD-Verify/CI/Wellen-Closure, nicht in den offline-schlanken `make gates`.
+**Nicht-Gate-Verify** (verfügbar, **nicht** in `make gates` — wie `regelwerk-check`/`baseline-freshness`): `make smoke` ist der Tier-2-Emit-Smoke (slice-002) — es emittiert die Doc-Gate-Baseline in ein tmp-Repo und lässt das emittierte `docs-check` real laufen (Host-Docker, ggf. Netz-Pull). `make mutate` ist der Mutations-Sensor zu [`AGENTS.md`](../AGENTS.md) §3.6 (slice-026): er wendet ein kuratiertes Set von Mutationen an und meldet jeden Wächter, der dabei **grün** bleibt — die Regel ist sonst nur im Feedforward-Quadranten. Beide gehören an DoD-Verify/CI/Wellen-Closure, nicht in den offline-schlanken `make gates`.
 
 ## Traceability
 

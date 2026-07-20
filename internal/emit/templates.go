@@ -21,9 +21,10 @@ func isRecurring(base string) bool {
 	return false
 }
 
-// rootAnchor ist die Datei, an der eine korrekt gewurzelte Quelle erkennbar ist:
-// sie liegt im Kurs-Satz DIREKT an der templates/-Wurzel.
-const rootAnchor = "AGENTS.template.md"
+// (Bis slice-026 haing checkRoot an dem HART VERDRAHTETEN Namen
+// "AGENTS.template.md" — ein Upstream-Rename haette den Bootstrap mit
+// irrefuehrender Meldung gebrochen, Review-Befund slice-022b N-4. Die Pruefung
+// ist jetzt STRUKTURELL und kommt ohne Dateinamen aus.)
 
 // checkRoot prueft POSITIV, dass src am templates/-Verzeichnis gewurzelt ist.
 //
@@ -35,22 +36,28 @@ const rootAnchor = "AGENTS.template.md"
 // Das Ergebnis waere ein Emit mit zu vielen Dateien und ohne Fehler. Lieber laut
 // abbrechen, als eine plausible Falsch-Wurzelung durchzulassen.
 //
-// KOPPLUNG, die beim Aendern zaehlt: rootAnchor ist selbst in-scope
-// (`.template.md`, kein Ausschluss). Ein bestandener checkRoot garantiert damit
+// Das Merkmal ist die TIEFE, nicht ein Name: am templates/-Verzeichnis liegt
+// mindestens ein in-scope-Template DIREKT an der Wurzel; eine Ebene darueber
+// liegt dort keins (dort stehen nur die Verzeichnisse regelwerk/ und templates/).
+// Das unterscheidet exakt die Falsch-Wurzelung, um die es geht, und ueberlebt
+// jedes Upstream-Rename.
+//
+// KOPPLUNG, die beim Aendern zaehlt: der Wurzel-Nachweis nutzt dieselbe
+// inScope-Regel wie der Emit. Ein bestandener checkRoot garantiert damit
 // mindestens einen Plan-Eintrag — der frueher hier stehende `len(plan) == 0`-Guard
 // war dadurch UNERREICHBAR und ist entfallen (Review-Befund slice-022b N-1: der
 // Test, der ihn zu pruefen behauptete, sicherte im Rumpf das Gegenteil zu).
-// Wird rootAnchor je auf eine nicht-in-scope-Datei gelegt, kehrt der Fall
-// "gewurzelt, aber nichts zu emittieren" zurueck und braucht seinen Guard wieder.
 func checkRoot(src fs.FS) error {
-	switch _, err := fs.Stat(src, rootAnchor); {
-	case err == nil:
-		return nil
-	case errors.Is(err, fs.ErrNotExist):
-		return fmt.Errorf("quelle ist nicht am templates/-Verzeichnis gewurzelt: %s fehlt an ihrer Wurzel", rootAnchor)
-	default:
-		return fmt.Errorf("%s pruefen: %w", rootAnchor, err)
+	entries, err := fs.ReadDir(src, ".")
+	if err != nil {
+		return fmt.Errorf("quell-wurzel lesen: %w", err)
 	}
+	for _, e := range entries {
+		if !e.IsDir() && inScope(e.Name()) {
+			return nil
+		}
+	}
+	return errors.New("quelle ist nicht am templates/-Verzeichnis gewurzelt: an ihrer Wurzel liegt kein in-scope-Template (eine Ebene zu hoch?)")
 }
 
 // inScope entscheidet, welche Datei des Kurs-Template-Satzes der Bootstrap als
