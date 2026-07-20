@@ -34,6 +34,14 @@ const rootAnchor = "AGENTS.template.md"
 // (`project-readme.template.md` hiesse dann `templates/project-readme.template.md`).
 // Das Ergebnis waere ein Emit mit zu vielen Dateien und ohne Fehler. Lieber laut
 // abbrechen, als eine plausible Falsch-Wurzelung durchzulassen.
+//
+// KOPPLUNG, die beim Aendern zaehlt: rootAnchor ist selbst in-scope
+// (`.template.md`, kein Ausschluss). Ein bestandener checkRoot garantiert damit
+// mindestens einen Plan-Eintrag — der frueher hier stehende `len(plan) == 0`-Guard
+// war dadurch UNERREICHBAR und ist entfallen (Review-Befund slice-022b N-1: der
+// Test, der ihn zu pruefen behauptete, sicherte im Rumpf das Gegenteil zu).
+// Wird rootAnchor je auf eine nicht-in-scope-Datei gelegt, kehrt der Fall
+// "gewurzelt, aber nichts zu emittieren" zurueck und braucht seinen Guard wieder.
 func checkRoot(src fs.FS) error {
 	switch _, err := fs.Stat(src, rootAnchor); {
 	case err == nil:
@@ -96,9 +104,6 @@ func Templates(src fs.FS, targetDir, name string, force bool) error {
 	}
 	// Leere Quelle -> laut abbrechen. Ein falsch gewurzeltes src emittierte sonst
 	// stillschweigend NICHTS und meldete Erfolg (LH-QA-01: kein stilles Gruen).
-	if len(plan) == 0 {
-		return errors.New("keine in-scope Templates in der Quelle gefunden (Baseline unvollstaendig?)")
-	}
 	if !force {
 		for rel := range plan {
 			switch _, statErr := os.Stat(filepath.Join(targetDir, rel)); {

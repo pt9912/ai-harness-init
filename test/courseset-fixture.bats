@@ -25,9 +25,18 @@ setup() {
   REAL="$(echo "$REPO"/.harness/baseline/*/templates)"
 }
 
-# fixture_paths liest die Pfad-Schluessel aus dem courseSet()-MapFS-Literal.
+# fixture_paths liest die Pfad-SCHLUESSEL aus dem courseSet()-MapFS-Literal.
+#
+# Zwei Praezisierungen aus Review-Befund N-2: (a) der Bereich ist auf den
+# courseSet()-Rumpf begrenzt, sonst zoege der Scan Map-Schluessel aus anderen
+# Test-Funktionen mit; (b) gematcht wird der SCHLUESSEL, nicht die Schreibweise
+# des Werts. Die Vorgaenger-Fassung verlangte `: f(` — ein Eintrag im
+# `&fstest.MapFile{…}`-Stil (steht in derselben Datei bereits mehrfach) waere
+# still uebergangen worden, der Waechter also falsch-negativ.
 fixture_paths() {
-  awk -F'"' '/"[^"]+"[ \t]*:[ \t]*f\(/ { print $2 }' "$FIXTURE_SRC" | LC_ALL=C sort
+  awk '/^func courseSet\(\)/ { infn=1 } infn && /^}/ { infn=0 } infn' "$FIXTURE_SRC" \
+    | awk -F'"' '/^[ \t]*"[^"]+"[ \t]*:/ { print $2 }' \
+    | LC_ALL=C sort
 }
 
 real_paths() {
@@ -44,6 +53,12 @@ in_scope() {
 
 @test "fixture: courseSet() bildet den realen Template-Satz vollstaendig ab" {
   [ -d "$REAL" ] || { echo "vendored templates/ fehlt: $REAL"; return 1; }
+  # Eine leere Extraktion waere ein falsch-negativer Waechter, der nur zufaellig
+  # rot faerbt (weil dann alles als fehlend erscheint). Lieber hier laut sein.
+  [ "$(fixture_paths | wc -l)" -gt 0 ] || {
+    echo "courseSet() nicht gefunden oder keine Schluessel extrahiert — Parser gebrochen?"
+    return 1
+  }
   diff <(fixture_paths) <(real_paths) || {
     echo "DRIFT: courseSet() in $FIXTURE_SRC weicht vom realen Satz ab."
     echo "  '<' nur in der Fixture, '>' nur im realen Baum."

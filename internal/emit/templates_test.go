@@ -251,9 +251,17 @@ func TestTemplates_FalscheWurzelung(t *testing.T) {
 	}
 }
 
-// TestTemplates_LeereQuelle: eine korrekt gewurzelte, aber inhaltsleere Quelle
-// darf nicht still nichts emittieren und Erfolg melden (LH-QA-01).
-func TestTemplates_LeereQuelle(t *testing.T) {
+// TestTemplates_MinimalQuelle: eine Quelle, die NUR den Wurzel-Anker traegt,
+// emittiert genau ihn — checkRoot verwirft sie nicht als "zu duenn".
+//
+// Der Test hiess vorher TestTemplates_LeereQuelle und trug einen
+// LH-QA-01-Kommentar ueber den `len(plan) == 0`-Guard, sicherte im Rumpf aber
+// dessen GEGENTEIL zu (Erfolg statt Fehler). Der Guard war zu dem Zeitpunkt
+// bereits unerreichbar, weil rootAnchor selbst in-scope ist — Name und Kommentar
+// behaupteten eine Eigenschaft, die der Rumpf nicht pruefte und der Code nicht
+// hatte (Review-Befund slice-022b N-1, Bruch von AGENTS.md Hard Rule 3.6). Der
+// tote Guard ist entfernt, der Test heisst jetzt nach dem, was er misst.
+func TestTemplates_MinimalQuelle(t *testing.T) {
 	only := fstest.MapFS{"AGENTS.template.md": &fstest.MapFile{Data: []byte("# <Projektname>\n")}}
 	dir := t.TempDir()
 	if err := emit.Templates(only, dir, "X", true); err != nil {
