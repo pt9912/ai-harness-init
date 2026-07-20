@@ -10,9 +10,9 @@ zusammenkopieren wollen.
 
 ## Was kann ich heute tun?
 
-**Ehrlicher Stand (2026-07-18):** Der **Offline-Kern ist gebaut** — Meilenstein M1
-erreicht, welle-01 geschlossen ([welle-01-results](docs/plan/planning/done/welle-01-results.md)).
-Das Go-Binary `cmd/ai-harness-init --lang <X> --name <Y>` leistet heute:
+Der **Offline-Kern ist gebaut** — Meilenstein M1 erreicht, welle-01 geschlossen
+([welle-01-results](docs/plan/planning/done/welle-01-results.md)). Das Go-Binary
+`cmd/ai-harness-init --lang <X> --name <Y>` leistet heute:
 
 - **Doc-Gate-Baseline emittieren** — `.d-check.yml` + `d-check.mk` (Runtime-Codegen aus
   `d-check --print-mk`; slice-002);
@@ -27,20 +27,18 @@ sie. `make smoke` (Nicht-Gate) fährt den echten Bootstrap host-orchestriert. Be
 + Templates liegen committet vendored unter `.harness/baseline/v3.5.0/` (netzlos, [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache));
 Durchsetzungsschicht (Command-Guard bash+awk, Gate-Nachweis, Regelwerk-Injektion) adoptiert.
 
-**In Arbeit, noch nicht behauptet:** der **Baseline-Emit** ins Zielrepo (Regelwerk +
-Templates + Prüfsummen-Verifier, [`LH-FA-09`](spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)) ist implementiert, aber der
-unabhängige Review hat ein **merge-blockierendes HIGH** gefunden — deshalb steht die
-Fähigkeit oben bewusst **nicht** in der Liste. Sie wird hier erst genannt, wenn sie
-belegt trägt.
+**Implementiert, aber noch nicht abgenommen:** der **Baseline-Emit** ins Zielrepo
+(Regelwerk + Templates + Prüfsummen-Verifier, [`LH-FA-09`](spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)). Er steht bewusst
+**nicht** in der Liste oben — dort kommt er an, wenn Review und Verifikation ihn
+tragen, nicht wenn der Code existiert.
 
-**Noch offen (welle-02 → M2 in welle-03):** Distributions-Umbau abschließen (Embed
-entfernen, Skelett-**Generator**, Verdrahtung), dann **Root-README** emittieren (slice-005)
-und der **Voll-E2E-Smoke** (slice-024). Erst dann läuft `make gates` im *emittierten* Repo
-out-of-the-box grün ([`LH-FA-01`](spec/lastenheft.md#lh-fa-01--repo-bootstrappen) Happy-Path).
+**Was noch nicht geht:** `make gates` läuft im *emittierten* Repo noch **nicht**
+out-of-the-box grün ([`LH-FA-01`](spec/lastenheft.md#lh-fa-01--repo-bootstrappen) Happy-Path) — dafür fehlen der Skelett-Generator,
+die Verdrahtung und die Root-README.
 
-**Nächster Schritt:** die Review-Findings zu slice-022a auflösen. Siehe
-[roadmap](docs/plan/planning/in-progress/roadmap.md) (Aktuelle Welle) und
-[welle-02](docs/plan/planning/welle-02-fetch-und-readme.md) (§4 Slices).
+Welche Slices das in welcher Reihenfolge liefern, sagt die
+[roadmap](docs/plan/planning/in-progress/roadmap.md) — sie ist die Sequenzierungs-Autorität, dieses README
+wiederholt sie bewusst nicht.
 
 Keine Erfolgsmeldung ohne lauffähigen Beleg.
 
@@ -63,10 +61,7 @@ erzeugt das Tool **deterministisch aus eigenem Wissen** — nachvollziehbar wie
 Mensch oder Agent aus der gefetchten Vorlage. Emittiert wird nur, was wirklich
 läuft ([`LH-QA-01`](spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 
-> Bis 2026-07-19 stand hier *„Picker, kein Generator"*. [`ADR-0005`](docs/plan/adr/0005-ziel-repo-distribution.md) hat **nur die
-> Skelett-Klasse** auf einen deterministischen Generator umgestellt (das
-> `//go:embed`-Duplikat des Kurs-Template-Satzes fiel damit weg); Durchsetzung
-> und Workflow-Commands bleiben ausdrücklich Picker.
+Welche Klasse woher kommt, entscheidet [`ADR-0005`](docs/plan/adr/0005-ziel-repo-distribution.md); dort steht auch, warum.
 
 ## Was macht es vertrauenswürdig?
 
