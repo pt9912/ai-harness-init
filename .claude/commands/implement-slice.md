@@ -83,7 +83,11 @@ ist eine Lifecycle-Rücksprungkante (11).
 
 17. Doku, ADR-Index und README aktualisieren, falls ein öffentlicher Vertrag berührt ist.
 18. Die Pre-completion-Checkliste laufen: die DoD Punkt für Punkt **behaupten** und die
-    **Sensor-Belege** anhängen (`make gates`-Ausgabe). Das ist die *Behauptung* der
+    **Sensor-Belege** anhängen — `make gates` **und die Nicht-Gate-Sensoren, die den Slice
+    betreffen** (`make mutate` immer, wenn Wächter neu/geändert sind; `make smoke`, wenn der
+    Emit-Pfad berührt ist). Modul 11 verlangt genau hier den Lauf: *„der Implementation-Agent
+    läuft `make verify-*` **selbst** vor der ‚fertig'-Meldung"* — ein Sensor, der erst zur
+    Wellen-Closure feuert, ist pro Slice keiner. Das ist die *Behauptung* der
     Implementation-Rolle und die *Eingabe* des Verifiers — **nicht** das finale DoD-Urteil
     (Modul 11: „Behauptung ohne Bestätigung ist die häufigste Verifier-Lücke"; eine DoD-Verletzung
     ist eine Verifier-only-Klasse, unsichtbar für Review und Tests). Ausgeführte Sensors +

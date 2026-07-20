@@ -11,13 +11,15 @@
 # laege 3.6 nur im Feedforward-Quadranten, und Modul 9 nennt das "halb
 # durchgesetzt".
 #
-# WAS ES NICHT LEISTET, dreifach:
+# WAS ES NICHT LEISTET:
 #   - HALTBARKEIT statt ENTSTEHUNG: ein neu geschriebener Waechter ohne Mutation
 #     im Set bleibt unbewacht — kuratiert heisst unvollstaendig. Die
 #     Entstehungs-Seite haengt an Schritt 19 der Pre-completion-Checkliste.
-#   - NUR was `make test` faehrt. Waechter in `make smoke` (Tier 2) sind
-#     bauartbedingt nicht abdeckbar, weil run_case nur `make test` aufruft.
-#   - KEINE Aussage ueber Waechter, die in DIESEM Lauf gar nicht adressiert sind.
+#   - KEINE Aussage ueber Waechter, die kein Fall adressiert.
+# Nicht mehr auf `make test` beschraenkt: `# verify: smoke` faehrt einen Fall
+# gegen den Tier-2-Sensor. Die frueher hier stehende Zusage "Waechter in
+# make smoke sind bauartbedingt nicht abdeckbar" war eine Scope-Aussage, die als
+# Architektur-Aussage auftrat (Review-Befund slice-026 F-5).
 # Kein node/jq/python — bash, coreutils, sed. `sed` statt `perl`, weil POSIX es
 # garantiert und das Repo sonst kein perl braucht (Review-Befund slice-026 F-4:
 # die frueheren Faelle brauchten Host-perl, waehrend der Kopf "bash + coreutils"
@@ -64,17 +66,38 @@ report_fail() {
   fail_count=$((fail_count + 1))
 }
 
+# failure_form liefert das Muster, an dem ein FEHLGESCHLAGENER Waechter des
+# jeweiligen Sensors erkennbar ist. Es muss ausschliesslich bei Fehlschlag
+# auftreten — sonst ist Bedingung 4 wirkungslos (F-1).
+failure_form() {
+  case "$1" in
+    test)  printf '%s' '--- FAIL:|not ok [0-9]+' ;;  # go test | bats
+    smoke) printf '%s' 'smoke: FEHLER' ;;            # harness/tools/smoke.sh
+  esac
+}
+
 run_case() {
   local case_file="$1"
-  local name files expect
+  local name files expect verify
   name="$(basename "$case_file" .sh)"
 
   files="$(sed -n 's/^# files: //p' "$case_file")"
   expect="$(sed -n 's/^# expect: //p' "$case_file")"
+  # `# verify:` waehlt den Sensor, den die Mutation rot faerben soll. Ohne die
+  # Angabe faehrt run_case nur `make test` — und Waechter in `make smoke` waeren
+  # damit bauartbedingt unbewacht (Review-Befund slice-026 F-5). Genau die sind
+  # aber gerade als inert aufgeflogen (F-2), also brauchen sie die Abdeckung am
+  # dringendsten.
+  verify="$(sed -n 's/^# verify: //p' "$case_file")"
+  [ -n "$verify" ] || verify="test"
   if [ -z "$files" ] || [ -z "$expect" ]; then
     report_fail "$name" "Kopf unvollstaendig: '# files:' und '# expect:' sind Pflicht"
     return
   fi
+  case "$verify" in
+    test|smoke) ;;
+    *) report_fail "$name" "unbekanntes '# verify: $verify' (erlaubt: test, smoke)"; return ;;
+  esac
   # Als Array, damit mehrere Pfade sauber getrennt bleiben (statt ungequotetem
   # Word-Splitting — Hard Rule 3.2 laesst keine Inline-Suppression zu).
   local -a file_list
@@ -108,13 +131,13 @@ run_case() {
     return
   fi
 
-  # (3)+(4) Testlauf: rot erwartet, und zwar am benannten Test.
+  # (3)+(4) Sensor-Lauf: rot erwartet, und zwar am benannten Waechter.
   local out rc=0
-  out="$BACKUP/test.log"
-  ( cd "$REPO" && make test ) >"$out" 2>&1 || rc=$?
+  out="$BACKUP/verify.log"
+  ( cd "$REPO" && make "$verify" ) >"$out" 2>&1 || rc=$?
 
   if [ "$rc" -eq 0 ]; then
-    report_fail "$name" "make test blieb GRUEN — '$expect' hat keine Zaehne mehr"
+    report_fail "$name" "make $verify blieb GRUEN — '$expect' hat keine Zaehne mehr"
     restore
     return
   fi
@@ -122,8 +145,8 @@ run_case() {
   # ("ok 21 emittiert: eingelegter SYMLINK"), ein blosses grep auf den Namen war
   # damit fuer jeden bats-Fall unter allen Bedingungen erfuellt — Bedingung 4 war
   # dort wirkungslos (Review-Befund slice-026 F-1, per Sonde belegt). Erst die
-  # Fehlschlag-Form ist eine Aussage: `--- FAIL:` (go test) bzw. `not ok N` (bats).
-  if ! grep -E -- '--- FAIL:|not ok [0-9]+' "$out" | grep -qF -- "$expect"; then
+  # Fehlschlag-Form ist eine Aussage — und sie ist je Sensor eine andere.
+  if ! grep -E -- "$(failure_form "$verify")" "$out" | grep -qF -- "$expect"; then
     report_fail "$name" "rot, aber '$expect' faellt nicht — falscher Grund"
     restore
     return
@@ -150,13 +173,19 @@ fi
 # wuerde jeder Fall auf einem bereits roten Baum "bestehen" — aus dem falschen
 # Grund. Der Fall ist nicht theoretisch: waehrend des Reviews faerbte ein
 # paralleler mutate-Lauf im selben Arbeitsbaum die Tests rot.
-echo "mutate: Gruen-Vorlauf (make test muss VOR der ersten Mutation gruen sein)"
-if ! ( cd "$REPO" && make test ) >/dev/null 2>&1; then
-  echo "mutate: ABBRUCH — make test ist schon ohne Mutation rot." >&2
-  echo "  Auf rotem Baum ist jeder Fall bedeutungslos: er waere rot, aber nicht" >&2
-  echo "  wegen SEINER Mutation. Erst den Baum gruen bekommen." >&2
-  exit 1
-fi
+# Je Sensor, den irgendein Fall benutzt — sonst liefe ein smoke-Fall auf einem
+# bereits roten smoke los und "bestuende".
+modes="$(sed -n 's/^# verify: //p' "$CASES_DIR"/*.sh | LC_ALL=C sort -u)"
+[ -n "$modes" ] || modes=""
+for m in test $modes; do
+  echo "mutate: Gruen-Vorlauf make $m (muss VOR der ersten Mutation gruen sein)"
+  if ! ( cd "$REPO" && make "$m" ) >/dev/null 2>&1; then
+    echo "mutate: ABBRUCH — make $m ist schon ohne Mutation rot." >&2
+    echo "  Auf rotem Baum ist jeder Fall bedeutungslos: er waere rot, aber nicht" >&2
+    echo "  wegen SEINER Mutation. Erst den Baum gruen bekommen." >&2
+    exit 1
+  fi
+done
 
 echo "mutate: ${#cases[@]} Faelle (je ein voller make-test-Zyklus, das dauert)"
 for c in "${cases[@]}"; do

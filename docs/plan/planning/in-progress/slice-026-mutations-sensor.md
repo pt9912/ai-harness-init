@@ -64,6 +64,15 @@ Slice §3.6 einen zweiten Quadranten gegeben, der nie feuert. Zwei Nachträge:
 | `welle-02`/`welle-03` §3 | update | `make mutate` als Closure-Kriterium — dieselbe mechanische Verankerung, die `make smoke` schon hatte. Ohne sie ist das Target dokumentiert und unaufgerufen |
 | `harness/tools/smoke.sh` | update | N-3: die Template-Schicht wird jetzt beobachtet (Tier 2 ist die einzige Stelle, an der die volle Kette real läuft) |
 
+**Nachgeführt 2026-07-20 (aus der Review-Runde).** Zwei Findings verlangten mehr als eine
+Korrektur — sie erweiterten den Liefergegenstand:
+
+| Datei / Komponente | Änderungs-Art | Begründung |
+|---|---|---|
+| `harness/tools/mutate.sh` | update | **F-1**: Bedingung 4 zählt nur noch Fehlschlag-Zeilen (`bats` druckt Testnamen auch beim Bestehen — der Vergleich war für bats-Fälle wirkungslos). **F-6**: Grün-Vorlauf je Sensor. **F-5**: `# verify:`-Kopfzeile, damit ein Fall gegen `make smoke` statt `make test` laufen kann |
+| `test/mutations/07`, `08` | neu | **F-5**: der in diesem Slice geänderte Wächter `checkRoot` und der Tier-2-Wächter aus `smoke.sh` bekommen ihre Mutation. Ohne sie wäre „Wächter hat Zähne" für genau die Wächter unbelegt, die dieser Slice anfasst |
+| `.claude/commands/implement-slice.md` | update | **Modul-11-Lücke** (Verifikations-Befund): Schritt 18 verlangt jetzt die Nicht-Gate-Sensoren, die den Slice betreffen. Modul 11 verankert `verify:`-Sensoren dort — ein Sensor, der erst zur Wellen-Closure feuert, ist pro Slice keiner |
+
 ## 4. Trigger
 
 slice-022b in `done/`. Als Harness-Wartung hängt der Slice an keiner Welle —
