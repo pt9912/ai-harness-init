@@ -24,12 +24,12 @@ die Folgepflicht aus [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distr
 
 ## 2. Definition of Done
 
-- [ ] `internal/emit/skel` ist **entfernt** (15 Dateien) und `//go:embed skel` aus `internal/emit/templates.go` verschwunden — **kein** zweiter Template-Pfad bleibt zurück.
-- [ ] [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) weiterhin erfüllt: die zweiklassige Ablage (Singletons → `.md` mit gestripptem Hinweis-Block und gestempeltem Namen; Wiederkehrende → verbatim `.template.md`; Set-Index-README nie emittiert) entsteht **unverändert**, nur aus der gefetchten Quelle. Kein Verhaltensverlust gegenüber slice-003 — die bestehenden `templates_test.go`-Fälle bleiben gültig.
-- [ ] `test/skel-drift.bats` ist **gelöscht** und in [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)-Manier als bewusst entfernt behandelt: die Referenzen darauf sind bereinigt bzw. über `codepaths.ignore-refs` deklariert — **kein** `codepath-missing`, aber auch kein stiller Tombstone.
-- [ ] [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten): das Binary wird um den eingebetteten Baum kleiner; der Bootstrap braucht weiterhin nur `git + docker`.
-- [ ] `make gates` grün — insbesondere `make test` **ohne** die drei entfallenen Drift-Tests, ohne dass ein anderer Test ersatzlos Deckung verliert.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] `internal/emit/skel` ist **entfernt** (15 Dateien) und `//go:embed skel` aus `internal/emit/templates.go` verschwunden — **kein** zweiter Template-Pfad bleibt zurück.
+- [x] [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) weiterhin erfüllt: die zweiklassige Ablage (Singletons → `.md` mit gestripptem Hinweis-Block und gestempeltem Namen; Wiederkehrende → verbatim `.template.md`; Set-Index-README nie emittiert) entsteht **unverändert**, nur aus der gefetchten Quelle. Kein Verhaltensverlust gegenüber slice-003 — die bestehenden `templates_test.go`-Fälle bleiben gültig.
+- [x] `test/skel-drift.bats` ist **gelöscht** und in [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)-Manier als bewusst entfernt behandelt: die Referenzen darauf sind bereinigt — **kein** `codepath-missing`, aber auch kein stiller Tombstone. *(Korrigiert 2026-07-20: die Erstfassung verlangte zusätzlich eine `codepaths.ignore-refs`-Deklaration. Diese Prämisse war **falsch** — `codepaths.roots` ist `[spec, docs, harness]`, `test/` wird nicht gescannt, ein Eintrag wäre wirkungslos gewesen. Selbst gemessen und vom Verifier mit Positiv-/Negativkontrolle bestätigt. Die Korrektur senkt keine Latte, sie streicht eine unwirksame Forderung; die verbliebene — keine stillen Referenzen — ist erfüllt: `welle-02` ins Perfekt gesetzt, die übrigen Nennungen sind historisch erklärend.)*
+- [x] [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten): das Binary wird um den eingebetteten Baum kleiner; der Bootstrap braucht weiterhin nur `git + docker`.
+- [x] `make gates` grün — insbesondere `make test` **ohne** die drei entfallenen Drift-Tests, ohne dass ein anderer Test ersatzlos Deckung verliert.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -81,7 +81,67 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Geliefert.** `internal/emit/skel` (15 Dateien) und `//go:embed skel` sind entfernt;
+`emit.Templates` liest aus einem injizierten `fs.FS`, das `cmd` auf die von
+[slice-022a](../done/slice-022a-baseline-fetch.md) gefetchte Baseline wurzelt. Der Kurs ist
+damit einzige Quelle für Regelwerk **und** Doc-Templates — die
+[`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md)-Folgepflicht ist eingelöst. Unabhängig verifiziert: das Binary ist
+**57.344 Bytes** kleiner, und ein Bootstrap mit dem **Vor-Slice**-Binary erzeugt einen
+`diff -r`-**identischen** Ziel-Baum — null Verhaltensänderung, empirisch statt argumentiert.
+
+**Der eigentliche Inhalt war die Filterregel, nicht das Löschen.** Der vendored Satz
+trägt 21 Dateien, der Embed trug 15; die Differenz war handkuratiert und **nirgends im
+Code** — ihre einzige Formulierung stand im Wächter, den derselbe Slice löscht. Sie steht
+jetzt als **Regel** in `emit.inScope`, nicht als Allowlist: ein upstream neu
+hinzugekommenes Template fließt automatisch mit, die Klasse „Baseline gebumpt, Emit nicht
+nachgezogen" kann strukturell nicht mehr entstehen.
+
+**Was anders lief.** Zwei Review- und zwei Verifikations-Runden. Der erste Review fand ein
+HIGH (mein „Kern des Slice"-Test war **inert** — er prüfte Quell- statt transformierte
+Ziel-Namen und konnte unter keiner Mutation rot werden), das Re-Review ein zweites (der
+`len(plan)==0`-Guard war **toter Code**, weil `checkRoot`s Anker selbst in-scope ist — und
+der Test dazu sicherte im Rumpf das Gegenteil seines Namens zu). **Beide neuen Blocker
+entstanden in der Reparatur**, nicht im ursprünglichen Wurf.
+
+### Steering-Loop-Eintrag — neuer Sensor
+
+Die 022a-Closure trug als Lerneintrag eine **geschärfte Regel** („eine Zusage ist erst
+fertig, wenn ihr Gegenbeispiel rot gesehen wurde"). Sie wurde als
+[`AGENTS.md`](../../../../AGENTS.md) §3.6 Hard Rule. **Sie hat nicht getragen** — Befund
+N-1 ist eine Instanz genau dieser Klasse, entstanden **einen Commit nach** ihrer
+Formulierung und von `make gates` (EXIT=0) nicht bemerkt.
+
+Der Grund ist benennbar und steht im Regelwerk: 3.6 lag nur im **Feedforward**-Quadranten.
+Modul 9: *„Hard Rule nur in einem Quadranten ist halb durchgesetzt … **Beides ist
+Pflicht.**"* 3.1–3.5 hängen je an einem Gate; 3.6 an keinem — und 3.6 ist zugleich die
+einzige, die am ruhenden Baum **nicht** prüfbar ist: ein Test mit Zähnen und einer ohne
+sehen identisch aus.
+
+**Der Eintrag ist deshalb kein weiterer Regel-Text, sondern ein Sensor:**
+[slice-026](../open/slice-026-mutations-sensor.md) (`make mutate`, kuratiertes Mutations-Set +
+Schritt-18-Haken). Die Eskalations-Stufe ist selbst die Lehre — *geschärfte Regel* →
+*neuer Sensor*, weil die erste Stufe messbar nicht gehalten hat.
+
+**Zweite Beobachtung, kleiner aber gleicher Art:** beim Schließen eines Drift-Paars
+(Embed vs. vendored) habe ich ein neues aufgemacht (Fixture vs. vendored). Aufgefangen von
+`test/courseset-fixture.bats` — aber die Bewegung „Duplikat beseitigt, Duplikat erzeugt"
+ist einen Blick wert, wenn der nächste Slice eine Quelle ersetzt.
+
+### Was diese Closure NICHT behauptet
+
+- **N-3** (der `emit.Templates`-Aufruf in `run()` ist von keinem Gate beobachtet) und
+  **N-4** (`checkRoot` hängt an *einem* hart verdrahteten Dateinamen) sind **offen** und
+  [slice-026](../open/slice-026-mutations-sensor.md) zugewiesen, weil sie dieselbe Fläche berühren.
+- **N-5** (INFO): die Begründung von §3.6 enthält mit *„jede Stelle mit Zähne-Beweis hielt,
+  ausnahmslos"* eine unfalsifizierbare Universalaussage — in der Begründung einer
+  Falsifizierbarkeits-Regel. Nicht korrigiert; benannt.
+- Ein DoD-Punkt trug eine **falsche Prämisse** (`ignore-refs` nötig) und ist sichtbar
+  korrigiert statt passend gemacht — s. §2.
+
+### Folge-Slices
+
+- [slice-026](../open/slice-026-mutations-sensor.md) — neu aus diesem Slice: der fehlende Quadrant zu §3.6, plus N-3/N-4.
+- [slice-025](../open/slice-025-bootstrap-preflight.md) — unverändert offen; die Kette 025 → 023 → 004b folgt.
 
 ## 8. Sub-Area-Modus-Begründung
 
