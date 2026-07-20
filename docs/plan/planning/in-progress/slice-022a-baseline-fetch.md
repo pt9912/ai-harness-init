@@ -34,14 +34,14 @@ Embed-Pfad bleibt in diesem Slice **unangetastet**.
 
 ## 2. Definition of Done
 
-- [ ] [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) Happy Path: der Bootstrap legt Regelwerk **und** Templates als `.harness/baseline/<version>/{regelwerk,templates}/` + `SHA256SUMS` im Zielrepo ab (spiegelt [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) fürs Ziel), Test referenziert.
-- [ ] [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) Prüfsummen-AC: das Tool **generiert** einen `baseline-verify` (Tool-als-Quelle, wie `d-check --print-mk`), der **Integrität und Vollständigkeit** prüft — nicht nur `sha256sum -c`. [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 3 belegt, dass `-c` allein bei einer **eingelegten** Datei grün bleibt; diese Lücke wird **nicht** ins Ziel vererbt.
-- [ ] `SHA256SUMS`-Form nach [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 2: über **alle** Dateien beider Bäume, Pfade relativ zu `<tag>/`, `LC_ALL=C`-sortiert, die Datei selbst ausgenommen.
-- [ ] [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit): das Asset ist **sha256-gepinnt** und wird **vor** dem Entpacken verifiziert ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 1 — Provenienz ≠ Integrität); zwei Läufe mit gleicher Version → identische Ablage.
-- [ ] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) Kein-Halluzinat-AC: fehlt das Kurs-Asset zur Version oder bricht der sha256, wird **begründet nicht emittiert** (kein erfundenes Regelwerk, keine Teil-Baseline). `make gates` bleibt **offline-grün** — der Netz-Fetch ist Bootstrap-Pfad, kein Gate.
-- [ ] **Abgrenzung zu [slice-022b](../open/slice-022b-embed-raus.md) belegt:** `internal/emit/skel` ist unverändert und `test/skel-drift.bats` weiter grün — dieser Slice fügt hinzu, er räumt nicht ab.
-- [ ] `make gates` grün.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) Happy Path: der Bootstrap legt Regelwerk **und** Templates als `.harness/baseline/<version>/{regelwerk,templates}/` + `SHA256SUMS` im Zielrepo ab (spiegelt [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) fürs Ziel), Test referenziert.
+- [x] [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) Prüfsummen-AC: das Tool **generiert** einen `baseline-verify` (Tool-als-Quelle, wie `d-check --print-mk`), der **Integrität und Vollständigkeit** prüft — nicht nur `sha256sum -c`. [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 3 belegt, dass `-c` allein bei einer **eingelegten** Datei grün bleibt; diese Lücke wird **nicht** ins Ziel vererbt.
+- [x] `SHA256SUMS`-Form nach [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 2: über **alle** Dateien beider Bäume, Pfade relativ zu `<tag>/`, `LC_ALL=C`-sortiert, die Datei selbst ausgenommen.
+- [x] [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit): das Asset ist **sha256-gepinnt** und wird **vor** dem Entpacken verifiziert ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 1 — Provenienz ≠ Integrität); zwei Läufe mit gleicher Version → identische Ablage.
+- [x] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) Kein-Halluzinat-AC: fehlt das Kurs-Asset zur Version oder bricht der sha256, wird **begründet nicht emittiert** (kein erfundenes Regelwerk, keine Teil-Baseline). `make gates` bleibt **offline-grün** — der Netz-Fetch ist Bootstrap-Pfad, kein Gate.
+- [x] **Abgrenzung zu [slice-022b](../open/slice-022b-embed-raus.md) belegt:** `internal/emit/skel` ist unverändert und `test/skel-drift.bats` weiter grün — dieser Slice fügt hinzu, er räumt nicht ab.
+- [x] `make gates` grün.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -52,6 +52,16 @@ Embed-Pfad bleibt in diesem Slice **unangetastet**.
 | `internal/emit` | neu | `baseline-verify` generieren (Tool-als-Quelle; Integrität **+** Vollständigkeit) |
 | `cmd/ai-harness-init` | update | Baseline-Fetch in den Init-Flow; `fetch.Skeleton` bleibt vorerst (trägt die `--lang`-Validierung, s. §6) |
 | Fetch-Tests | neu/update | ZIP-Fixture, sha256-Mismatch → kein Teil-Emit, `SHA256SUMS`-Form, Determinismus |
+
+**Nachgeführt 2026-07-20 (aus den Review-Runden).** Modul 9 macht diese Tabelle zum
+*Protokoll* des Slice; vier Artefakte kamen dazu, die beim Schneiden nicht absehbar waren:
+
+| Datei / Komponente | Änderungs-Art | Begründung |
+|---|---|---|
+| `test/emitted-baseline-verify.bats` | neu | Das emittierte Skript war nur gegrept, nie ausgeführt — genau deshalb passierte H1 (eingelegter Symlink → „OK") die Suite. Zehn ausführende Fälle |
+| `harness/tools/baseline-verify.sh`, `test/baseline-verify.bats` | update | **Scope-Ausweitung, bewusst entschieden:** H1 traf den Dogfood-Zwilling vorbestehend. Den emittierten zu fixen und das Gate, das in `make gates` dieses Repos läuft, blind zu lassen, war nicht vertretbar |
+| `Makefile` | update | `shell-lint` deckt `internal/emit/templates/*.sh` — ohne das ginge ein **ungelintetes** Skript ins Zielrepo. Verschärfung, keine Lockerung (Hard Rule 3.5 unberührt) |
+| `harness/tools/smoke.sh` | update | Kopf-Kommentar kannte den zweiten Netz-Fetch nicht (Doku-Drift) |
 
 ## 4. Trigger
 
@@ -87,7 +97,66 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`. Entsperrt
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Geliefert.** `internal/fetch.Baseline` holt das sha256-gepinnte `lab-regelwerk.zip`,
+verifiziert es **vor** dem Entpacken und legt Regelwerk + Templates als vendored Baseline
+des Ziels ab (`SHA256SUMS` nach [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 2); `emit.BaselineVerify` emittiert den
+tool-generierten Verifier nach `tools/harness/`. Unabhängig verifiziert am realen Asset:
+43 Dateien (21+21+Summen), byte-identisch zur vendored Baseline dieses Repos, `make smoke`
+Exit 0. Der Embed-Pfad blieb unangetastet — die Abgrenzung zu
+[slice-022b](../open/slice-022b-embed-raus.md) hält.
+
+**Was anders lief.** Der Slice brauchte **zwei Review- und zwei Verifikations-Runden**.
+Der erste Review war merge-blockierend (HIGH: das emittierte Gate-Skript meldete einen
+eingelegten Symlink als „OK"), der zweite ebenfalls (zwei MEDIUM, **beide durch meine
+eigenen Fixes eingeführt**). Der Umfang wuchs über die geplante §3-Tabelle hinaus — nachgeführt,
+siehe dort. Positiv: alle vier Runden liefen in frischem Kontext, und jede fand etwas, das
+die vorige nicht sah.
+
+### Steering-Loop-Eintrag — geschärfte Regel
+
+**Die Klasse: „die Zusage greift weiter als die Abdeckung."** Drei Instanzen in **einem**
+Slice, jede von einer anderen Rolle gefunden:
+
+| | Zusage | Wirklichkeit |
+|---|---|---|
+| M1 | Doc-Kommentar beschrieb `--force`-Semantik | im Code nicht vorhanden |
+| N1 | Fix lieferte die Semantik | brach dafür zwei andere Zusagen derselben Datei |
+| Verifier | „bis zum finalen Rename bleibt destDir unveraendert" | `MkdirAll` legt destDir vorher an |
+
+Dazu zweimal dieselbe Signatur bei **Tests**: `TestBaselineVerify_BothAxes` war auf den Marker
+`find . -type f` gepinnt — auf exakt das Detail, das den H1-Fehler *enthielt*; und
+`TestBaseline_TraversalEntriesEscapeNothing` prüfte „bricht nicht aus", während zwei Einträge
+seiner eigenen Fixture unbeobachtet **im** Baum landeten.
+
+**Geschärfte Regel für Folge-Slices:** Eine Zusage in Doc-Kommentar, Test-Namen oder
+Commit-Message ist erst fertig, wenn ihr **Gegenbeispiel** benannt ist — *was genau müsste
+passieren, damit sie bricht, und beobachtet das jemand?* Ein Test, dessen Name eine
+Eigenschaft behauptet, muss die Eigenschaft messen, nicht ihre aktuelle Implementierung.
+Praktisch heißt das: **rot gesehen haben**, bevor die Zusage geschrieben wird. Die drei
+Zähne-Beweise dieses Slice (Pin-Kopplung, Sortier-Achse, H1-Symlink) haben getragen — die
+Stellen ohne Zähne-Beweis sind exakt die, die durchgerutscht sind.
+
+### Benannte Spec-Lücke (I3)
+
+`tools/harness/` mischt im emittierten Repo **zwei Herkunftsklassen**: [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)/[`ADR-0004`](../../../../docs/plan/adr/0004-durchsetzungs-emission.md)
+füllen es aus dem **Picker** (Kurs-Template-Satz), `baseline-verify.sh` ist **Generator**
+(Tool-als-Quelle, [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md)). Weder ADR noch [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption) noch dieser Plan sagen,
+**ob das Verzeichnis klassenrein sein soll**. Die Pfadwahl selbst ist korrekt (Lastenheft
+rank-1 vor lokaler Adaption) — offen ist die Regel dahinter. Gehört beim Durchsetzungsschicht-Emit
+([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)) entschieden, spätestens dann treffen beide Klassen real aufeinander.
+
+### Bewusst nicht getan (I4)
+
+Das Zielrepo erhält den Verifier, aber **kein** `make baseline-verify`. Es gibt heute kein
+emittiertes Root-`Makefile` (das kommt mit dem Generator, slice-023) — ein Target zu
+behaupten wäre ein halluziniertes Gate (Hard Rule 3.1). [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)s „netzlos
+verifizierbar" ist als **Fähigkeit** abgenommen (Skript läuft standalone, Zähne nachgewiesen),
+nicht als verdrahtetes Gate. Verdrahtung: slice-004b.
+
+### Folge-Slices
+
+- [slice-022b](../open/slice-022b-embed-raus.md) — entsperrt: das Embed kann jetzt gegen die gefetchte Quelle getauscht werden.
+- [slice-025](../open/slice-025-bootstrap-preflight.md) — neu aus diesem Slice: die Teil-Bootstrap-Kette (I1, vierte Wiederholung) plus L3/L4 aus demselben Codepfad.
 
 ## 8. Sub-Area-Modus-Begründung
 

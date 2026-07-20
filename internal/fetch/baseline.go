@@ -12,7 +12,9 @@
 //      genommen — sie kann sich nicht selbst hashen.
 //   3. Kein Teil-Emit (LH-QA-01): entpackt wird in ein Temp-Verzeichnis, das
 //      erst nach vollstaendigem Erfolg an seinen Platz umbenannt wird. Bricht
-//      irgendein Schritt ab, bleibt das Ziel unberuehrt statt halb befuellt.
+//      irgendein Schritt ab, entsteht KEINE halbe Baseline — wohl aber ein
+//      leeres destDir (s. Baseline). Das ist der Unterschied zwischen "keine
+//      Teil-Baseline" und "nichts angefasst"; nur Ersteres wird zugesagt.
 //      Mit --force ueber eine vorhandene Baseline gilt das eingeschraenkt: die
 //      alte wird beiseite gerenamt statt geloescht, ein Fehlschlag rollt zurueck
 //      — es bleibt ein Restfenster von zwei Renames, in dem ein Prozess-Tod das
@@ -99,9 +101,12 @@ func (e *SHA256Mismatch) Error() string {
 // <destDir>/<tag>/{regelwerk,templates}/ + SHA256SUMS ab. Ohne force wird ein
 // vorhandenes <tag>-Verzeichnis nicht ueberschrieben.
 //
-// Fehlerverhalten: bis zum finalen Rename bleibt destDir unveraendert. Ersetzt
-// der Lauf eine vorhandene Baseline (force), gilt die Einschraenkung aus
-// replaceBaseline — kein pauschales "unveraendert".
+// Fehlerverhalten: bis zum finalen Rename entsteht unter destDir kein
+// <tag>-Verzeichnis und kein Temp-Rest. destDir SELBST wird frueh angelegt
+// (os.MkdirAll) und bleibt bei einem Abbruch leer zurueck — ein leeres
+// .harness/baseline/ laesst den Verifier laut "kaputter Checkout" melden, statt
+// still gruen zu werden. Ersetzt der Lauf eine vorhandene Baseline (force), gilt
+// zusaetzlich die Einschraenkung aus replaceBaseline.
 func Baseline(ctx context.Context, destDir, tag, wantSHA string, force bool, fetch AssetFetch) error {
 	final := filepath.Join(destDir, tag)
 
