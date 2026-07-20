@@ -245,31 +245,57 @@ func TestTemplates_FalscheWurzelung(t *testing.T) {
 		t.Errorf("trotz Fehler emittiert: %v", got)
 	}
 
-	// (b) NACHFAHREN-Wurzelung: eine Ebene ZU TIEF. Sie traegt in-scope-Templates
-	// an ihrer Wurzel — die erste checkRoot-Fassung liess sie deshalb durch und
-	// haette `lastenheft.md` in den Ziel-ROOT statt nach spec/ geschrieben
-	// (Review-Befund slice-026 F-3: Erkennung war unter den abgeloesten
-	// Namens-Anker gefallen).
-	deep := fstest.MapFS{
-		"lastenheft.template.md":    &fstest.MapFile{Data: []byte("# <Projektname>\n")},
-		"architecture.template.md":  &fstest.MapFile{Data: []byte("# <Projektname>\n")},
-		"spezifikation.template.md": &fstest.MapFile{Data: []byte("# <Projektname>\n")},
-	}
-	dir2 := t.TempDir()
-	err = emit.Templates(deep, dir2, "X", true)
-	if err == nil {
-		t.Fatal("Nachfahren-Wurzelung wurde akzeptiert — sie emittiert in den falschen Ziel-Pfad")
-	}
-	if !strings.Contains(err.Error(), "zu tief") {
-		t.Errorf("Fehlermeldung unterscheidet die Richtung nicht: %v", err)
-	}
-	if got := emittedTree(t, dir2); len(got) != 0 {
-		t.Errorf("trotz Fehler emittiert: %v", got)
+	// (b)+(c) sind die Fixtures, an denen die VORIGE Fassung scheiterte
+	// (Review-Befund slice-026 N-1): beide tragen in-scope-Templates an ihrer
+	// Wurzel UND in Unterverzeichnissen, erfuellen also die damalige
+	// Zwei-Ebenen-Bedingung — und kamen durch. Die aeltere Test-Fixture bestand
+	// nur, weil sie zufaellig FLACH war. Genau die Klasse "ein Waechter besteht,
+	// weil seine Fixture zufaellig passt", zum vierten Mal in diesem Zug.
+	for _, c := range []struct {
+		name string
+		src  fstest.MapFS
+	}{
+		{"Vorfahre mit Template an der eigenen Wurzel", fstest.MapFS{
+			"CHANGELOG.template.md":                &fstest.MapFile{Data: []byte("# <Projektname>\n")},
+			"templates/AGENTS.template.md":         &fstest.MapFile{Data: []byte("# <Projektname>\n")},
+			"templates/spec/lastenheft.template.md": &fstest.MapFile{Data: []byte("# <Projektname>\n")},
+		}},
+		{"Nachfahre mit Templates auf beiden Ebenen", fstest.MapFS{
+			"README.template.md":              &fstest.MapFile{Data: []byte("# <Projektname>\n")},
+			"planning/roadmap.template.md":    &fstest.MapFile{Data: []byte("# <Projektname>\n")},
+			"planning/slice.template.md":      &fstest.MapFile{Data: []byte("# <Projektname>\n")},
+		}},
+	} {
+		d := t.TempDir()
+		if err := emit.Templates(c.src, d, "X", true); err == nil {
+			t.Errorf("%s wurde akzeptiert — sie emittiert in falsche Ziel-Pfade", c.name)
+		}
+		if got := emittedTree(t, d); len(got) != 0 {
+			t.Errorf("%s: trotz Fehler emittiert: %v", c.name, got)
+		}
 	}
 
-	// (c) voellig fremde Quelle.
+	// (d) voellig fremde Quelle.
 	if err := emit.Templates(fstest.MapFS{"irgendwas.txt": &fstest.MapFile{Data: []byte("x")}}, t.TempDir(), "X", true); err == nil {
 		t.Error("fremde Quelle wurde als Erfolg gemeldet")
+	}
+}
+
+// TestCheckRoot_EinRenameGenuegtNicht: die Schwelle ist zwei von drei Markern.
+// Ein einzelnes Upstream-Rename darf den Bootstrap NICHT brechen — das war der
+// Einwand gegen den urspruenglichen Ein-Datei-Anker (Befund slice-022b N-4).
+func TestCheckRoot_EinRenameGenuegtNicht(t *testing.T) {
+	src := courseSet().(fstest.MapFS)
+	delete(src, "AGENTS.template.md") // upstream umbenannt/verschoben
+	dir := t.TempDir()
+	if err := emit.Templates(src, dir, "X", true); err != nil {
+		t.Fatalf("ein fehlender Marker sollte den Bootstrap nicht brechen: %v", err)
+	}
+	// Gegenprobe: zwei fehlende Marker MUESSEN abbrechen, sonst ist die
+	// Schwelle wirkungslos.
+	delete(src, "spec/lastenheft.template.md")
+	if err := emit.Templates(src, t.TempDir(), "X", true); err == nil {
+		t.Error("zwei fehlende Marker wurden akzeptiert — Schwelle wirkungslos")
 	}
 }
 

@@ -20,10 +20,10 @@
 # gegen den Tier-2-Sensor. Die frueher hier stehende Zusage "Waechter in
 # make smoke sind bauartbedingt nicht abdeckbar" war eine Scope-Aussage, die als
 # Architektur-Aussage auftrat (Review-Befund slice-026 F-5).
-# Kein node/jq/python — bash, coreutils, sed. `sed` statt `perl`, weil POSIX es
-# garantiert und das Repo sonst kein perl braucht (Review-Befund slice-026 F-4:
+# Kein node/jq/python — bash, coreutils, GNU sed. `sed` statt `perl` (Befund F-4:
 # die frueheren Faelle brauchten Host-perl, waehrend der Kopf "bash + coreutils"
-# zusagte — die Zusage war weiter als die Abdeckung, ausgerechnet hier).
+# zusagte). Die Faelle nutzen `sed -i` und GNU-BRE-Escapes, sind also NICHT strikt
+# POSIX — die zwischenzeitliche POSIX-Zusage griff weiter als der Code (N-3).
 #
 # FAIL-CLOSED, vier Bedingungen. Der Sensor misst die ABWESENHEIT von Rot und
 # koennte darum selbst still gruen werden; jede dieser Bedingungen schliesst
@@ -32,9 +32,10 @@
 #   2. Die Mutation aendert die Datei NICHT      -> Befund. Das faengt den
 #      veralteten Patch: waere er nur wirkungslos, saehe "kein Rot" wie
 #      "Zaehne intakt" aus.
-#   3. `make test` bleibt GRUEN                  -> Befund. Der eigentliche Zweck.
-#   4. `make test` wird rot, aber der ERWARTETE  -> Befund. Rot aus dem falschen
-#      Test steht nicht in der Ausgabe              Grund ist kein Beleg.
+#   3. Der Sensor (`make test` bzw. `make smoke`, s. `# verify:`) bleibt GRUEN
+#      -> Befund. Der eigentliche Zweck.
+#   4. Der Sensor wird rot, aber der ERWARTETE Waechter steht nicht in seiner
+#      FEHLSCHLAG-Ausgabe -> Befund. Rot aus dem falschen Grund ist kein Beleg.
 #
 # NICHT in `make gates`: jede Mutation kostet einen vollen Docker-test-Zyklus
 # (--no-cache-filter, also kein Cache-Grun). Nicht-Gate-Verify neben `make smoke`
@@ -69,16 +70,24 @@ report_fail() {
 # failure_form liefert das Muster, an dem ein FEHLGESCHLAGENER Waechter des
 # jeweiligen Sensors erkennbar ist. Es muss ausschliesslich bei Fehlschlag
 # auftreten — sonst ist Bedingung 4 wirkungslos (F-1).
+#
+# EINZIGE Quelle der erlaubten Modi: ein unbekannter Modus liefert Exit 1, kein
+# leeres Muster. Zuvor stand die Zulassungsliste getrennt in run_case; ein Modus
+# ohne Arm hier ergab einen LEEREN Regex, und `grep -E ''` matcht jede Zeile —
+# Bedingung 4 fiel damit exakt in den F-1-Zustand zurueck (Review-Befund
+# slice-026 N-2, gemessen). Zwei Listen, die getrennt gepflegt werden, sind
+# genau die Drift-Konstruktion, die dieses Repo mehrfach beseitigt hat.
 failure_form() {
   case "$1" in
     test)  printf '%s' '--- FAIL:|not ok [0-9]+' ;;  # go test | bats
     smoke) printf '%s' 'smoke: FEHLER' ;;            # harness/tools/smoke.sh
+    *)     return 1 ;;
   esac
 }
 
 run_case() {
   local case_file="$1"
-  local name files expect verify
+  local name files expect verify form
   name="$(basename "$case_file" .sh)"
 
   files="$(sed -n 's/^# files: //p' "$case_file")"
@@ -94,10 +103,11 @@ run_case() {
     report_fail "$name" "Kopf unvollstaendig: '# files:' und '# expect:' sind Pflicht"
     return
   fi
-  case "$verify" in
-    test|smoke) ;;
-    *) report_fail "$name" "unbekanntes '# verify: $verify' (erlaubt: test, smoke)"; return ;;
-  esac
+  # Zulassung kommt aus failure_form — eine Quelle, keine zweite Liste (N-2).
+  if ! form="$(failure_form "$verify")"; then
+    report_fail "$name" "unbekanntes '# verify: $verify' — kein Fehlschlag-Muster definiert"
+    return
+  fi
   # Als Array, damit mehrere Pfade sauber getrennt bleiben (statt ungequotetem
   # Word-Splitting — Hard Rule 3.2 laesst keine Inline-Suppression zu).
   local -a file_list
@@ -146,7 +156,7 @@ run_case() {
   # damit fuer jeden bats-Fall unter allen Bedingungen erfuellt — Bedingung 4 war
   # dort wirkungslos (Review-Befund slice-026 F-1, per Sonde belegt). Erst die
   # Fehlschlag-Form ist eine Aussage — und sie ist je Sensor eine andere.
-  if ! grep -E -- "$(failure_form "$verify")" "$out" | grep -qF -- "$expect"; then
+  if ! grep -E -- "$form" "$out" | grep -qF -- "$expect"; then
     report_fail "$name" "rot, aber '$expect' faellt nicht — falscher Grund"
     restore
     return
@@ -157,40 +167,51 @@ run_case() {
   restore
 }
 
-[ -d "$CASES_DIR" ] || { echo "mutate: $CASES_DIR fehlt" >&2; exit 1; }
+# Hauptteil gekapselt, damit test/mutate-driver.bats die Funktionen SOURCEN
+# kann, ohne den ganzen Lauf auszuloesen. Ohne die Kapselung fuehrt jedes
+# `source` den Gruen-Vorlauf und die Mutations-Schleife aus — mein erster
+# Test-Entwurf tat genau das (Konstruktionsfehler im Test, nicht im Treiber).
+main() {
+  [ -d "$CASES_DIR" ] || { echo "mutate: $CASES_DIR fehlt" >&2; exit 1; }
 
-shopt -s nullglob
-cases=("$CASES_DIR"/*.sh)
-shopt -u nullglob
-if [ "${#cases[@]}" -eq 0 ]; then
-  # Ein leeres Set waere ein gruener Lauf ohne jede Aussage — genau das stille
-  # Gruen, gegen das der Sensor gerichtet ist.
-  echo "mutate: keine Faelle in $CASES_DIR — ein leeres Set ist kein gruener Lauf" >&2
-  exit 1
-fi
-
-# GRUEN-VORLAUF vor der ersten Mutation (Review-Befund slice-026 F-6). Ohne ihn
-# wuerde jeder Fall auf einem bereits roten Baum "bestehen" — aus dem falschen
-# Grund. Der Fall ist nicht theoretisch: waehrend des Reviews faerbte ein
-# paralleler mutate-Lauf im selben Arbeitsbaum die Tests rot.
-# Je Sensor, den irgendein Fall benutzt — sonst liefe ein smoke-Fall auf einem
-# bereits roten smoke los und "bestuende".
-modes="$(sed -n 's/^# verify: //p' "$CASES_DIR"/*.sh | LC_ALL=C sort -u)"
-[ -n "$modes" ] || modes=""
-for m in test $modes; do
-  echo "mutate: Gruen-Vorlauf make $m (muss VOR der ersten Mutation gruen sein)"
-  if ! ( cd "$REPO" && make "$m" ) >/dev/null 2>&1; then
-    echo "mutate: ABBRUCH — make $m ist schon ohne Mutation rot." >&2
-    echo "  Auf rotem Baum ist jeder Fall bedeutungslos: er waere rot, aber nicht" >&2
-    echo "  wegen SEINER Mutation. Erst den Baum gruen bekommen." >&2
+  shopt -s nullglob
+  cases=("$CASES_DIR"/*.sh)
+  shopt -u nullglob
+  if [ "${#cases[@]}" -eq 0 ]; then
+    # Ein leeres Set waere ein gruener Lauf ohne jede Aussage — genau das stille
+    # Gruen, gegen das der Sensor gerichtet ist.
+    echo "mutate: keine Faelle in $CASES_DIR — ein leeres Set ist kein gruener Lauf" >&2
     exit 1
   fi
-done
 
-echo "mutate: ${#cases[@]} Faelle (je ein voller make-test-Zyklus, das dauert)"
-for c in "${cases[@]}"; do
-  run_case "$c"
-done
+  # GRUEN-VORLAUF vor der ersten Mutation (Review-Befund slice-026 F-6). Ohne ihn
+  # wuerde jeder Fall auf einem bereits roten Baum "bestehen" — aus dem falschen
+  # Grund. Der Fall ist nicht theoretisch: waehrend des Reviews faerbte ein
+  # paralleler mutate-Lauf im selben Arbeitsbaum die Tests rot.
+  # Je Sensor, den irgendein Fall benutzt — sonst liefe ein smoke-Fall auf einem
+  # bereits roten smoke los und "bestuende".
+  modes="$(sed -n 's/^# verify: //p' "$CASES_DIR"/*.sh | LC_ALL=C sort -u)"
+  [ -n "$modes" ] || modes=""
+  for m in test $modes; do
+    echo "mutate: Gruen-Vorlauf make $m (muss VOR der ersten Mutation gruen sein)"
+    if ! ( cd "$REPO" && make "$m" ) >/dev/null 2>&1; then
+      echo "mutate: ABBRUCH — make $m ist schon ohne Mutation rot." >&2
+      echo "  Auf rotem Baum ist jeder Fall bedeutungslos: er waere rot, aber nicht" >&2
+      echo "  wegen SEINER Mutation. Erst den Baum gruen bekommen." >&2
+      exit 1
+    fi
+  done
 
-echo "mutate: $pass_count ok, $fail_count Befund(e)"
-[ "$fail_count" -eq 0 ]
+  echo "mutate: ${#cases[@]} Faelle (je ein voller make-test-Zyklus, das dauert)"
+  for c in "${cases[@]}"; do
+    run_case "$c"
+  done
+
+  echo "mutate: $pass_count ok, $fail_count Befund(e)"
+  [ "$fail_count" -eq 0 ]
+}
+
+# Nur bei DIREKTEM Aufruf laufen, nicht beim Sourcen.
+if [ "${BASH_SOURCE[0]}" = "$0" ]; then
+  main "$@"
+fi
