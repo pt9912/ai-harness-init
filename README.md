@@ -10,36 +10,32 @@ zusammenkopieren wollen.
 
 ## Was kann ich heute tun?
 
-Der **Offline-Kern ist gebaut** — Meilenstein M1 erreicht, welle-01 geschlossen
-([welle-01-results](docs/plan/planning/done/welle-01-results.md)). Das Go-Binary
-`cmd/ai-harness-init --lang <X> --name <Y>` leistet heute:
+Den Bootstrap **fahren, aber nur als Teil-Ergebnis** — und noch nicht mit einem
+fertigen Befehl. Es gibt kein `run`-Target und kein eingechecktes Binary
+(`cmd/ai-harness-init` ist Go-Quellcode, kein Executable); das Binary entsteht
+Docker-only ([`ADR-0003`](docs/plan/adr/0003-go-native-binaries.md), `artifact`-Stage) und läuft heute
+end-to-end nur über `make smoke` — gegen ein Wegwerf-Repo, `--lang go`.
 
-- **Regelwerk + Templates ins Zielrepo vendoren** — Baseline-Asset per sha256-Pin geholt und
-  **vor** dem Entpacken verifiziert, dazu ein Prüfsummen-Verifier nach `tools/harness/`
-  ([`LH-FA-09`](spec/lastenheft.md#lh-fa-09--regelwerk-emittieren); slice-022a);
-- **Doc-Gate-Baseline emittieren** — `.d-check.yml` + `d-check.mk` (Runtime-Codegen aus
-  `d-check --print-mk`; slice-002);
-- **Template-Baseline zweiklassig ablegen** — Singletons → gestempelte `.md`,
-  Wiederkehrende → co-located `.template.md` (slice-003);
-- **Sprachskelett vom gepinnten Kurs-Tag fetchen** in einen Staging-Bereich (slice-004a;
-  **transitorisch** — slice-023 löst den Fetch durch den deterministischen Generator ab,
-  [`ADR-0005`](docs/plan/adr/0005-ziel-repo-distribution.md)); unbekannte Sprache → Exit 2 + Liste.
+Dieser Lauf schreibt ins Zielrepo: Regelwerk + Templates (prüfsummen-verifiziert,
+[`LH-FA-09`](spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)), die Doc-Gate-Baseline, die Template-Ablage und ein
+transitorisch gestagtes Sprachskelett (der deterministische Generator löst den
+Fetch ab, [`ADR-0005`](docs/plan/adr/0005-ziel-repo-distribution.md)). Eine unbekannte Sprache bricht sauber
+ab (Exit 2 + Liste).
 
-Der Gate-Stack läuft grün, Docker-only: `make baseline-verify` · `docs-check` (d-check
-v0.51.1) · `lint` · `build` · `test` (bats + Go-Unit) · `shell-lint`; `make gates` bündelt
-sie. `make smoke` (Nicht-Gate) fährt den echten Bootstrap host-orchestriert. Betriebsregelwerk
-+ Templates liegen committet vendored unter `.harness/baseline/v3.5.0/` (netzlos, [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache));
-Durchsetzungsschicht (Command-Guard bash+awk, Gate-Nachweis, Regelwerk-Injektion) adoptiert.
+**Was noch fehlt — der eigentliche Zweck:** ein Repo, in dem `make gates`
+out-of-the-box grün läuft ([`LH-FA-01`](spec/lastenheft.md#lh-fa-01--repo-bootstrappen) Happy-Path). Dazu fehlen der
+Sprachskelett-Generator, die Verdrahtung der Code-Gates und die Root-README.
+Bis dahin ist der Emit ein Teil-Bootstrap, kein fertiges Repo.
 
-**Was noch nicht geht:** `make gates` läuft im *emittierten* Repo noch **nicht**
-out-of-the-box grün ([`LH-FA-01`](spec/lastenheft.md#lh-fa-01--repo-bootstrappen) Happy-Path) — dafür fehlen der Skelett-Generator,
-die Verdrahtung und die Root-README.
+Der Harness selbst — dieses Repo — ist dagegen voll abgesichert: der Gate-Stack
+läuft grün und Docker-only (`make gates` bündelt `baseline-verify` · `docs-check`
+mit d-check v0.51.1 · `lint` · `build` · `test` · `shell-lint` · `ci-lint`), und CI
+fährt ihn pro Push auf frischem Klon. Regelwerk + Templates liegen committet
+vendored unter `.harness/baseline/v3.5.0/` (netzlos, [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)).
 
-Welche Slices das in welcher Reihenfolge liefern, sagt die
+Welche Slices den fehlenden Rest in welcher Reihenfolge liefern, sagt die
 [roadmap](docs/plan/planning/in-progress/roadmap.md) — sie ist die Sequenzierungs-Autorität, dieses README
-wiederholt sie bewusst nicht.
-
-Keine Erfolgsmeldung ohne lauffähigen Beleg.
+wiederholt sie bewusst nicht. Keine Erfolgsmeldung ohne lauffähigen Beleg.
 
 ## Warum ai-harness-init?
 
