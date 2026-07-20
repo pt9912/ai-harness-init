@@ -61,7 +61,7 @@ Workflow-Datei — das lokale Gegenbeispiel-Gate zur CI und dessen Selbstbewachu
 |---|---|---|
 | `Makefile` | update | `ci-lint`-Target (actionlint, gepinntes Image) **in `make gates`**: der Workflow-Syntaxfehler ist lokal vor dem Push fangbar (das Gegenbeispiel-Gate zu „die CI läuft", [`AGENTS.md`](../../../../AGENTS.md) §3.6) |
 | `test/mutations/10-ci-workflow-syntax.sh` | neu | Schritt 19: der neue Gate-Wächter `ci-lint` bekommt seine Mutation (doppelter `runs-on` → actionlint rot); neuer `# verify: ci-lint`-Modus |
-| `harness/tools/mutate.sh` | update | `failure_form` um den `ci-lint`-Arm erweitert (die eine Zulassungsquelle aus [slice-026](../done/slice-026-mutations-sensor.md) N-2) |
+| `harness/tools/mutate.sh` | update | `failure_form` um den `ci-lint`-Arm erweitert (die eine Zulassungsquelle aus [slice-026](slice-026-mutations-sensor.md) N-2) |
 
 ## 4. Trigger
 
