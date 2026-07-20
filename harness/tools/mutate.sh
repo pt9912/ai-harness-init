@@ -15,7 +15,17 @@
 #   - HALTBARKEIT statt ENTSTEHUNG: ein neu geschriebener Waechter ohne Mutation
 #     im Set bleibt unbewacht — kuratiert heisst unvollstaendig. Die
 #     Entstehungs-Seite haengt an Schritt 19 der Pre-completion-Checkliste.
-#   - KEINE Aussage ueber Waechter, die kein Fall adressiert.
+#   - KEINE Aussage ueber Waechter, die kein Fall adressiert. Der Treiber selbst
+#     ist teilweise bewacht (test/mutate-driver.bats + Fall 09 decken failure_form,
+#     nicht die uebrigen run_case-Zweige — Review-Befund NR-2, dieselbe
+#     kuratiert-ist-unvollstaendig-Grenze).
+#
+# STALE LOCK (Review-Befund NR-1): der mkdir-Mutex traegt keine PID. Ein hart
+# abgebrochener Lauf (SIGKILL, Stromausfall — nicht INT/TERM, die raeumt der trap)
+# hinterlaesst .harness/state/mutate.lock, und jeder weitere Lauf bricht ab, bis
+# es von Hand entfernt wird. Bewusst fail-closed: ein liegengebliebener Lock
+# blockiert laut, statt einen zweiten Lauf auf denselben Baum zu lassen. Die
+# Abbruch-Meldung nennt den Pfad; der Lock ist gitignored (.harness/state/).
 # Nicht mehr auf `make test` beschraenkt: `# verify: smoke` faehrt einen Fall
 # gegen den Tier-2-Sensor. Die frueher hier stehende Zusage "Waechter in
 # make smoke sind bauartbedingt nicht abdeckbar" war eine Scope-Aussage, die als

@@ -34,15 +34,15 @@ schlägt an. Dazu der fehlende Feedforward-Haken in der Pre-completion-Checklist
 
 ## 2. Definition of Done
 
-- [ ] `make mutate` existiert und fährt den Startbestand: die **sechs Proben**, die in der 022a/022b-Sitzung von Hand gefahren wurden (Pin-Kopplung, Sortier-Achse, Symlink-Achse, `inScope`, Fixture-Drift, toter Leer-Guard) — je mit **namentlich** erwartetem rot färbendem Test.
-- [ ] **Der Sensor hat selbst Zähne** (Selbstanwendung von §3.6): eine Mutation, die den erwarteten Test **nicht** rot färbt, lässt `make mutate` rot werden — rot gesehen, nicht behauptet. Das ist der Kern: der Sensor misst die **Abwesenheit** von Rot, und genau das ist die Stelle, an der er selbst still grün werden könnte.
-- [ ] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6): `make mutate` ist **nicht** in `make gates` (jede Mutation kostet einen vollen Docker-`test`-Zyklus) und steht als **Nicht-Gate-Verify** in [`AGENTS.md`](../../../../AGENTS.md) §4 und [`harness/README.md`](../../../../harness/README.md) §Sensors — dieselbe Zeile wie `make smoke`. Kein behaupteter Gate.
-- [ ] **Die Grenze ist dokumentiert, nicht überdehnt:** der Sensor prüft die **Haltbarkeit** vorhandener Zähne, nicht die **Entstehung** neuer. Er fängt „ein Wächter hat Zähne verloren", nicht „eine neue Zusage wurde ohne Zähne geschrieben". Wer das nicht hinschreibt, begeht §3.6 am Sensor selbst.
-- [ ] **Feedforward-Hälfte:** `.claude/commands/implement-slice.md` Schritt 18 verlangt neben dem grünen Gate-Lauf die Angabe, **welche Mutation welchen Sensor rot färbt**. Heute verlangt er nur „Sensor-Belege (`make gates`-Ausgabe)", also den grünen Lauf — genau die Lücke aus Befund N-6.
-- [ ] [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten): bash + coreutils, kein neues Werkzeug; die Mutationen laufen über die vorhandenen `make`-Targets.
-- [ ] **Mitgenommen aus dem 022b-Re-Review:** N-3 (der `emit.Templates`-Aufruf in `run()` ist von keinem Test beobachtet) und N-4 (`checkRoot` hängt an *einem* hart verdrahteten Dateinamen) — beide berühren dieselbe Fläche.
-- [ ] `make gates` grün.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] `make mutate` existiert und fährt den Startbestand — je mit **namentlich** erwartetem rot färbendem Test. *(Gewachsen auf **neun** Fälle: die sechs Proben der 022a/022b-Sitzung — Pin-Kopplung, Sortier-Achse, Symlink-Achse, `inScope`, Fixture-Drift, **Escape-Vorbedingung**; dazu 07/08 für `checkRoot` und den smoke-Wächter sowie 09 für den Treiber selbst. Der ursprünglich als 6. genannte „tote Leer-Guard" **kann** nicht Fall sein — in slice-022b als unerreichbar entfernt, eine Mutation an nicht existierendem Code ist unmöglich; die Escape-Vorbedingung ist die echte Sonde an seiner Stelle.)*
+- [x] **Der Sensor hat selbst Zähne** (Selbstanwendung von §3.6): eine Mutation, die den erwarteten Test **nicht** rot färbt, lässt `make mutate` rot werden — rot gesehen, nicht behauptet. Das ist der Kern: der Sensor misst die **Abwesenheit** von Rot, und genau das ist die Stelle, an der er selbst still grün werden könnte.
+- [x] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6): `make mutate` ist **nicht** in `make gates` (jede Mutation kostet einen vollen Docker-`test`-Zyklus) und steht als **Nicht-Gate-Verify** in [`AGENTS.md`](../../../../AGENTS.md) §4 und [`harness/README.md`](../../../../harness/README.md) §Sensors — dieselbe Zeile wie `make smoke`. Kein behaupteter Gate.
+- [x] **Die Grenze ist dokumentiert, nicht überdehnt:** der Sensor prüft die **Haltbarkeit** vorhandener Zähne, nicht die **Entstehung** neuer. Er fängt „ein Wächter hat Zähne verloren", nicht „eine neue Zusage wurde ohne Zähne geschrieben". Wer das nicht hinschreibt, begeht §3.6 am Sensor selbst.
+- [x] **Feedforward-Hälfte:** `.claude/commands/implement-slice.md` bekommt einen neuen **Schritt 19**, der zu jedem neuen/geänderten Wächter die rot färbende Mutation verlangt (Schritt 18 verlangt bis dahin nur den grünen Gate-Lauf) — die Lücke aus Befund N-6. *(Ursprünglich als „Schritt 18 erweitern" formuliert; als eigener Schritt 19 geliefert, damit die Fehl-Semantik „keine Antwort ist ein Befund" nicht die Gate-Beleg-Pflicht verwässert.)*
+- [x] [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten): bash + coreutils, kein neues Werkzeug; die Mutationen laufen über die vorhandenen `make`-Targets.
+- [x] **Mitgenommen aus dem 022b-Re-Review:** N-3 (der `emit.Templates`-Aufruf in `run()` ist von keinem Test beobachtet) und N-4 (`checkRoot` hängt an *einem* hart verdrahteten Dateinamen) — beide berühren dieselbe Fläche.
+- [x] `make gates` grün.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -118,7 +118,56 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`. Damit ist
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Geliefert.** `make mutate` ist der computational-feedback-Quadrant zu
+[`AGENTS.md`](../../../../AGENTS.md) §3.6: `harness/tools/mutate.sh` fährt neun kuratierte
+Fälle (`test/mutations/`), jeder eine *(Mutation → erwartet rot färbender Wächter)*-Paarung,
+fail-closed über vier Bedingungen. Der Sensor deckt beide `make test`- **und**
+`make smoke`-Wächter (`# verify:`-Kopf) und **sich selbst** (`test/mutate-driver.bats` +
+Fall 09). Verankert als Closure-Kriterium in welle-02/03 und als Schritt-19-Pflicht in der
+Pre-completion-Checkliste — damit ist §3.6 zweiquadrantig, was Modul 9 verlangt.
+
+**Was anders lief — und der eigentliche Lerneintrag.** Der Slice brauchte **drei
+Review-Runden**. Das ist nicht der Steering-Punkt; die Runden konvergierten sauber (blockierende
+Befunde **2/4 → 0/2 → 0/0**, vom dritten Reviewer an der Rate belegt, nicht am Gefühl). Der
+Steering-Punkt ist, **wodurch** sie konvergierten.
+
+### Steering-Loop-Eintrag — geschärfte Regel (Meta-Ebene)
+
+Die Befund-Klasse dieses ganzen Zuges — *„ein Wächter besteht, weil seine Fixture zufällig
+passt"* — trat **fünfmal** auf (022a N2 → 022b F-1 → 026 F-2 → F-3 → N-1), zuletzt zweimal in
+Reparaturen, die genau diese Klasse schließen sollten. Solange ich sie **strukturell**
+anging (`checkRoot`: „Template an der Wurzel", dann „an der Wurzel und tiefer"), erzeugte jeder
+Fix eine neue Instanz. Erst der Wechsel der **Frage** hielt: von *„welche Form hat die
+Wurzel"* (beantwortbar durch eine zufällig passende Fixture) zu *„welcher Satz liegt hier"*
+(`rootMarkers`, Identität). §3.6 sagt „rot gesehen"; die Schärfung ist: **wenn dieselbe Klasse
+den Fix überlebt, ist nicht der Fix zu schwach, sondern die Frage falsch.** Ein zweiter
+strukturell gleicher Versuch ist ein Signal, keine Iteration.
+
+Zweite, konkretere Hälfte: der Wendepunkt war, **den Sensor gegen sich selbst zu wenden**
+(§6 hatte es verlangt). `mutate.sh` fing beim Bau einen eigenen Fehler (`tar -d` verglich
+Metadaten, Bedingung 2 feuerte nie), beim Umbau einen veralteten Fall (07 mutierte gelöschten
+Code → Bedingung 2), und seine Treiber-Tests fingen den Top-Level-Lock, der beim Sourcen
+mitlief. **Drei Fehler von Werkzeugen statt von Reviewern gefangen** — das ist der Beleg, dass
+der zweite Quadrant trägt, am Sensor, der ihn baut.
+
+### Was diese Closure NICHT behauptet
+
+- **Durchsetzungs-Hälfte von N-6 offen:** Schritt 19 verlangt die Sensoren, aber **kein Gate
+  erzwingt** ihren Lauf — der Stop-Hook deckt nur `make gates`. Träger ist
+  [slice-027](../open/slice-027-ci.md) (CI); dort ausdrücklich als DoD-Punkt.
+- **NR-1** (stale Lock nach SIGKILL blockiert bis manuellem `rmdir`) und **NR-2** (die neuen
+  `run_case`-Zweige jenseits `failure_form` sind nicht selbst-bewacht) sind **bewusste
+  Grenzen**, am Code benannt — fail-closed bzw. die schon deklarierte „kuratiert =
+  unvollständig"-Grenze.
+- **N-8**: `checkRoot`s Rename-Toleranz bekommt keinen eigenen Mutations-Fall, weil die
+  2-von-3-Schwelle eine Ein-Marker-Mutation per Konstruktion wirkungslos macht und
+  `TestCheckRoot_EinRenameGenuegtNicht` sie direkt prüft. Begründung am Code.
+
+### Folge-Slices
+
+- [slice-027](../open/slice-027-ci.md) — trägt die Durchsetzungs-Hälfte (N-6) und die
+  [`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)-Restlücke „frischer Klon".
+- Kein neuer Slice aus diesem hier — die offenen Punkte haben Träger oder sind begründete Grenzen.
 
 ## 8. Sub-Area-Modus-Begründung
 
