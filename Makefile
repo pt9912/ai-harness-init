@@ -7,6 +7,7 @@ include d-check.mk
 # Tool-Images digest-gepinnt (Reproduzierbarkeit, LH-QA-02; Docker-only, ADR-0003).
 BATS_IMAGE ?= bats/bats@sha256:e8f18e0acd4ea933bf019130b85033be75e8ce081db299e93578de83d7874e33
 SHELLCHECK_IMAGE ?= koalaman/shellcheck@sha256:bb596a0d169b85ddd81d8b6d3a2ff6d5baf5fca10b97f575ebc647c3dff62b3d
+ACTIONLINT_IMAGE ?= rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667
 
 # Go-Toolchain-Version (Dockerfile-Stages, a-check gespiegelt); der Base-Digest
 # steht digest-gepinnt im Dockerfile (LH-QA-02). Go-Gates leben im Makefile
@@ -33,7 +34,7 @@ BASELINE_TAG ?= v3.5.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 123e3383261102e6be6465e1f4bade08a474c00edc4fff89f5c4b11bd640f8ff
 
-.PHONY: help gates record-gates test lint build compile smoke shell-lint baseline-verify regelwerk-check baseline-freshness mutate
+.PHONY: help gates record-gates test lint build compile smoke shell-lint ci-lint baseline-verify regelwerk-check baseline-freshness mutate
 help: ## Targets anzeigen
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-14s %s\n", $$1, $$2}'
@@ -67,6 +68,18 @@ mutate: ## Mutations-Sensor fuer AGENTS 3.6: faerbt jede Mutation ihren Waechter
 shell-lint: ## Shell-Hooks/-Helfer linten (shellcheck) im gepinnten Image — Docker-only (ADR-0003)
 	docker run --rm -v "$(CURDIR)":/mnt:ro -w /mnt $(SHELLCHECK_IMAGE) \
 		.claude/hooks/*.sh harness/tools/*.sh internal/emit/templates/*.sh test/mutations/*.sh
+
+# GitHub-Actions-Workflows syntaktisch pruefen (actionlint, gepinntes Image) —
+# Docker-only. IN gates, weil .github/workflows/ ein reales committetes Artefakt
+# ist (kein leerer Pruefbereich, LH-QA-01) und ein Workflow-Syntaxfehler LOKAL
+# vor dem Push fangbar ist, statt erst im ersten Actions-Lauf (slice-027; das
+# lokale Gegenbeispiel-Gate zur Zusage "die CI laeuft", AGENTS 3.6).
+# KEIN -color: die Ausgabe wird gegatet, geloggt und vom Mutations-Sensor
+# gegrept — ANSI-Escapes zerstueckeln das `file:line:col:`-Praefix (real
+# vorgefuehrt beim Bau von test/mutations/10). actionlint faerbt ohne TTY ohnehin
+# nicht; das explizite -color war schaedlich.
+ci-lint: ## GitHub-Actions-Workflows linten (actionlint) im gepinnten Image — Docker-only, IN gates
+	docker run --rm -v "$(CURDIR)":/repo:ro -w /repo $(ACTIONLINT_IMAGE)
 
 # Verifiziert die vendored Baseline NETZLOS: sha256sum -c über SHA256SUMS
 # (fängt geänderte/gelöschte Dateien) PLUS Vollständigkeits-Check (fängt
@@ -108,4 +121,4 @@ record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
 # baseline-verify läuft als ERSTER Prerequisite: steht die vendored Baseline
 # nicht, ist jede Aussage der Folge-Gates über sie wertlos. record-gates läuft
 # als LETZTER — der Nachweis entsteht nur nach grünen Gates (MR-002).
-gates: baseline-verify docs-check lint build test shell-lint record-gates ## alle aktuell lauffähigen Gates + Nachweis
+gates: baseline-verify docs-check lint build test shell-lint ci-lint record-gates ## alle aktuell lauffähigen Gates + Nachweis

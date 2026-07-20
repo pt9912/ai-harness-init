@@ -102,9 +102,10 @@ report_fail() {
 # genau die Drift-Konstruktion, die dieses Repo mehrfach beseitigt hat.
 failure_form() {
   case "$1" in
-    test)  printf '%s' '--- FAIL:|not ok [0-9]+' ;;  # go test | bats
-    smoke) printf '%s' 'smoke: FEHLER' ;;            # harness/tools/smoke.sh
-    *)     return 1 ;;
+    test)    printf '%s' '--- FAIL:|not ok [0-9]+' ;;  # go test | bats
+    smoke)   printf '%s' 'smoke: FEHLER' ;;            # harness/tools/smoke.sh
+    ci-lint) printf '%s' ':[0-9]+:[0-9]+:' ;;          # actionlint file:line:col: (nur bei Fehler)
+    *)       return 1 ;;
   esac
 }
 

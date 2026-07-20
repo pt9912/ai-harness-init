@@ -524,6 +524,42 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Auflösungs-Trigger:** permanent; bei Re-Baseline beide Pins nachziehen (der Kopplungstest
   erzwingt es); bei d-check-Release neu gepinnt ([`MR-012`](#mr-012--d-check-pin-v0511-sources-verfügbar)).
 
+### MR-014 — CI auf frischem Klon (GitHub Actions)
+
+- **Datum:** 2026-07-20
+- **Geltungsbereich:** `.github/workflows/ci.yml` (neu), `Makefile` (`ACTIONLINT_IMAGE`,
+  `ci-lint`-Target, in `gates`), [`AGENTS.md`](../AGENTS.md) §4, [`harness/README.md`](README.md) §Sensors;
+  löst die seit [`MR-003`](#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung) offene
+  „CI ist dort das Netz"-Restlücke ein.
+- **Adaption:** GitHub Actions fährt bei **jedem Push und PR** `make gates` + `make smoke` +
+  `make mutate` — jeder Job **frisch ausgecheckt**. Das schließt die
+  [`MR-003`](#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)-Restlücke: der lokale
+  Stop-Hook gibt einen cleanen Tree **ohne** `.harness/state/` frei (kein Nachweis prüfbar), CI ist
+  dort die Absicherung. Zugleich bekommt `make mutate` (slice-026) seinen mechanischen
+  **Pro-Push-Auslöser** — die Durchsetzungs-Hälfte von dessen Befund N-6, die der lokale Hook nicht
+  leisten kann (er deckt nur `make gates`).
+- **Setzung 1 — nur `make`-Targets, keine zweite Gate-Definition.** Die Workflow-Steps rufen
+  ausschließlich `make <target>` auf; was ein Gate *ist*, steht weiterhin allein im Makefile
+  (Geist von [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert): eine Quelle, nicht zwei). Ein
+  CI-Step, der Build-Logik dupliziert, driftet gegen den lokalen Lauf und ist verboten.
+- **Setzung 2 — Frequenz nach Sensor-Klasse.** „Alles pro Push" für die hermetischen Sensoren
+  (`gates`/`smoke`/`mutate`); die **Netz-Sensoren** `regelwerk-check`/`baseline-freshness` laufen
+  **nur nächtlich** (`schedule`). Grund: sie erreichen einen Fremd-Host (Kurs-Release); ein
+  Upstream-Ausfall ist kein Defekt des Commits und darf keinen Push röten — sonst werden Gates
+  umgangen ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Geist auf Prozess-Ebene).
+- **Setzung 3 — `ci-lint` ist ein Gate.** actionlint prüft `.github/workflows/` (gepinntes Image,
+  Docker-only, [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md)) und läuft **in** `make gates`:
+  der Workflow ist ein reales committetes Artefakt (nicht-leerer Prüfbereich,
+  [`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)), und ein Syntaxfehler
+  darin ist **lokal vor dem Push** fangbar statt erst im ersten Actions-Lauf — das lokale
+  Gegenbeispiel-Gate zur Zusage „die CI läuft" ([`AGENTS.md`](../AGENTS.md) §3.6).
+- **Grenze — nicht lokal rot-sehbar.** Der Workflow selbst läuft auf GitHub; `ci-lint` belegt nur
+  seine **Syntax**, nicht sein **Verhalten**. Ob `make gates` auf einem *wirklich* frischen Klon grün
+  ist, zeigt erst der erste Actions-Lauf — der einzige echte Beleg für die
+  [`MR-003`](#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)-Schließung.
+- **Auflösungs-Trigger:** permanent; `ACTIONLINT_IMAGE` bei Bedarf neu pinnen (wie
+  `BATS_IMAGE`/`SHELLCHECK_IMAGE`).
+
 ## Modus-Deklaration pro Sub-Area
 
 | Sub-Area | Modus | Begründung | Graduation |

@@ -1,0 +1,71 @@
+# CI — der Sensor-Lauf auf frischem Klon (slice-027).
+#
+# Schliesst die MR-003-Restluecke: der lokale Stop-Hook gibt einen frisch
+# geklonten, cleanen Tree OHNE Nachweis frei ("CI ist dort das Netz"). Hier IST
+# das Netz. Jeder Job checkt frisch aus und faehrt ein `make`-Target — die CI
+# traegt KEINE zweite Definition dessen, was ein Gate ist (MR-010-Geist: eine
+# Quelle). Was hier gruen sein muss, ist genau `make gates`/`smoke`/`mutate`.
+#
+# Frequenz (slice-027 Entwurfsentscheidung "alles pro Push"): gates + smoke +
+# mutate bei jedem Push und PR; die NETZ-Sensoren (regelwerk-check,
+# baseline-freshness) laufen NUR naechtlich (schedule) — ein Upstream-Ausfall
+# darf nie einen Push blockieren (slice-027 Paragraph 6).
+#
+# Docker-only (ADR-0003): die Runner bringen Docker mit; keine Host-Go-Toolchain,
+# kein `actions/setup-go`. Alles laeuft in den gepinnten Images der make-Targets.
+
+name: ci
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 3 * * *' # taeglich 03:00 UTC — nur der netznachtlauf unten
+
+# Nicht zwei Laeufe desselben Refs parallel: `make mutate` mutiert den Checkout,
+# und zwei Laeufe wuerden CI-Minuten verbrennen, nicht die Korrektheit gefaehrden
+# (getrennte Runner) — abbrechen ist billiger.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Der Kern: make gates auf FRISCHEM Klon. Genau der Fall, den der lokale
+  # Stop-Hook nicht pruefen kann (MR-003).
+  gates:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make gates
+
+  # Tier-2-Emit-Smoke (Host-Docker, ggf. Netz-Pull des d-check-Image).
+  smoke:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make smoke
+
+  # Der Mutations-Sensor zu AGENTS.md 3.6 (slice-026). Hier bekommt seine
+  # Durchsetzung erstmals einen mechanischen Ausloeser PRO PUSH — die
+  # Durchsetzungs-Haelfte von Befund N-6. mutate mutiert den Checkout; auf einem
+  # eigenen Runner ist das folgenlos.
+  mutate:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make mutate
+
+  # NETZ-Sensoren: NUR nachts. Sie erreichen einen Fremd-Host (Kurs-Release);
+  # ein Ausfall dort ist kein Defekt DIESES Commits und darf keinen Push roetten.
+  # `make` kollabiert einen Nonzero-Exit auf Fehler — der Job meldet Drift oder
+  # Netzfehler als rot, aber eben nur im naechtlichen Lauf.
+  upstream-drift:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make regelwerk-check
+      - run: make baseline-freshness
