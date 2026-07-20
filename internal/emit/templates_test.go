@@ -245,7 +245,29 @@ func TestTemplates_FalscheWurzelung(t *testing.T) {
 		t.Errorf("trotz Fehler emittiert: %v", got)
 	}
 
-	// (b) voellig fremde Quelle.
+	// (b) NACHFAHREN-Wurzelung: eine Ebene ZU TIEF. Sie traegt in-scope-Templates
+	// an ihrer Wurzel — die erste checkRoot-Fassung liess sie deshalb durch und
+	// haette `lastenheft.md` in den Ziel-ROOT statt nach spec/ geschrieben
+	// (Review-Befund slice-026 F-3: Erkennung war unter den abgeloesten
+	// Namens-Anker gefallen).
+	deep := fstest.MapFS{
+		"lastenheft.template.md":    &fstest.MapFile{Data: []byte("# <Projektname>\n")},
+		"architecture.template.md":  &fstest.MapFile{Data: []byte("# <Projektname>\n")},
+		"spezifikation.template.md": &fstest.MapFile{Data: []byte("# <Projektname>\n")},
+	}
+	dir2 := t.TempDir()
+	err = emit.Templates(deep, dir2, "X", true)
+	if err == nil {
+		t.Fatal("Nachfahren-Wurzelung wurde akzeptiert — sie emittiert in den falschen Ziel-Pfad")
+	}
+	if !strings.Contains(err.Error(), "zu tief") {
+		t.Errorf("Fehlermeldung unterscheidet die Richtung nicht: %v", err)
+	}
+	if got := emittedTree(t, dir2); len(got) != 0 {
+		t.Errorf("trotz Fehler emittiert: %v", got)
+	}
+
+	// (c) voellig fremde Quelle.
 	if err := emit.Templates(fstest.MapFS{"irgendwas.txt": &fstest.MapFile{Data: []byte("x")}}, t.TempDir(), "X", true); err == nil {
 		t.Error("fremde Quelle wurde als Erfolg gemeldet")
 	}
@@ -262,13 +284,19 @@ func TestTemplates_FalscheWurzelung(t *testing.T) {
 // hatte (Review-Befund slice-022b N-1, Bruch von AGENTS.md Hard Rule 3.6). Der
 // tote Guard ist entfernt, der Test heisst jetzt nach dem, was er misst.
 func TestTemplates_MinimalQuelle(t *testing.T) {
-	only := fstest.MapFS{"AGENTS.template.md": &fstest.MapFile{Data: []byte("# <Projektname>\n")}}
-	dir := t.TempDir()
-	if err := emit.Templates(only, dir, "X", true); err != nil {
-		t.Fatalf("Quelle mit genau dem Anker sollte emittieren: %v", err)
+	// Minimal GUELTIG heisst seit dem F-3-Fix: in-scope-Templates auf BEIDEN
+	// Ebenen. Eine Quelle mit nur einem Wurzel-Template ist von einer
+	// Nachfahren-Wurzelung nicht unterscheidbar und wird abgelehnt.
+	minimal := fstest.MapFS{
+		"AGENTS.template.md":          &fstest.MapFile{Data: []byte("# <Projektname>\n")},
+		"spec/lastenheft.template.md": &fstest.MapFile{Data: []byte("# <Projektname>\n")},
 	}
-	if got := emittedTree(t, dir); strings.Join(got, ",") != "AGENTS.md" {
-		t.Errorf("emittiert = %v, want [AGENTS.md]", got)
+	dir := t.TempDir()
+	if err := emit.Templates(minimal, dir, "X", true); err != nil {
+		t.Fatalf("minimale gueltige Quelle sollte emittieren: %v", err)
+	}
+	if got := emittedTree(t, dir); strings.Join(got, ",") != "AGENTS.md,spec/lastenheft.md" {
+		t.Errorf("emittiert = %v, want [AGENTS.md spec/lastenheft.md]", got)
 	}
 }
 

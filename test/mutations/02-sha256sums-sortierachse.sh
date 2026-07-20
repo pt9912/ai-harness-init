@@ -6,4 +6,4 @@
 # "sortiert" aus — aber der Vollstaendigkeits-Check des Verifiers vergleicht
 # Pfad-Listen (MR-007 Setzung 2).
 set -euo pipefail
-perl -pi -e 's/return entries\[i\]\.rel < entries\[j\]\.rel/return entries[i].hash < entries[j].hash/' internal/fetch/baseline.go
+sed -i 's/entries\[i\]\.rel < entries\[j\]\.rel/entries[i].hash < entries[j].hash/' internal/fetch/baseline.go

@@ -52,11 +52,18 @@ for rel in AGENTS.md docs/plan/planning/slice.template.md; do
 		exit 1
 	fi
 done
-# Gegenprobe zur In-Scope-Regel: der Set-Index darf NIE emittiert werden.
-if [ -f "$tmprepo/README.md" ]; then
-	echo "smoke: FEHLER — Set-Index README.md wurde emittiert (out of scope)" >&2
-	exit 1
-fi
+# Gegenprobe zur In-Scope-Regel. Geprueft werden die Namen, die der Emitter
+# WIRKLICH schriebe — nicht die Quell-Namen: singletonTarget haengt ".md" an,
+# wenn ".template.md" nicht greift, aus `README.md` wuerde also `README.md.md`.
+# Die erste Fassung prueste `README.md` und war damit unter der Mutation, gegen
+# die sie gerichtet ist, wirkungslos (Review-Befund slice-026 F-2 — Falsch-
+# Beispiel 1 aus AGENTS Paragraph 3.6, woertlich).
+for rel in README.md.md Makefile.md .d-check.yml.md project-readme.md .harness/skills/reviewer.md; do
+	if [ -e "$tmprepo/$rel" ]; then
+		echo "smoke: FEHLER — out-of-scope-Artefakt emittiert: $rel" >&2
+		exit 1
+	fi
+done
 
 echo "smoke: 4/4 emittiertes docs-check laeuft + akzeptiert die Config ..."
 out="$(make -C "$tmprepo" -f d-check.mk docs-check 2>&1 || true)"

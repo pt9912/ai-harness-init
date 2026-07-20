@@ -2,7 +2,8 @@
 # files: internal/emit/templates.go
 # expect: TestTemplates_EmittierterBestandVollstaendig
 #
-# Die In-Scope-Regel laesst alles durch. Das Ziel bekommt Set-Index, Makefile,
-# project-readme und die skills — LH-FA-02 gebrochen (Befund 022b F-1).
+# Der erste inScope-Zweig feuert nie mehr. Damit fallen .d-check.yml, Makefile
+# und die Set-Index-README durch bis zum default: true — das Ziel bekommt sie,
+# LH-FA-02 gebrochen (Befund 022b F-1).
 set -euo pipefail
-perl -0pi -e 's/func inScope\(rel string\) bool \{\n\tswitch \{/func inScope(rel string) bool {\n\tif rel != "" {\n\t\treturn true\n\t}\n\tswitch {/' internal/emit/templates.go
+sed -i 's/case !strings\.HasSuffix(rel, "\.template\.md"):/case false:/' internal/emit/templates.go

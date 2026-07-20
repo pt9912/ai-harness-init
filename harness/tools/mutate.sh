@@ -11,10 +11,17 @@
 # laege 3.6 nur im Feedforward-Quadranten, und Modul 9 nennt das "halb
 # durchgesetzt".
 #
-# WAS ES NICHT LEISTET: Es prueft die HALTBARKEIT vorhandener Zaehne, nicht die
-# ENTSTEHUNG neuer. Ein neu geschriebener Waechter ohne Mutation im Set bleibt
-# unbewacht — kuratiert heisst unvollstaendig. Die Entstehungs-Seite haengt am
-# Schritt-18-Haken der Pre-completion-Checkliste, nicht hier.
+# WAS ES NICHT LEISTET, dreifach:
+#   - HALTBARKEIT statt ENTSTEHUNG: ein neu geschriebener Waechter ohne Mutation
+#     im Set bleibt unbewacht — kuratiert heisst unvollstaendig. Die
+#     Entstehungs-Seite haengt an Schritt 19 der Pre-completion-Checkliste.
+#   - NUR was `make test` faehrt. Waechter in `make smoke` (Tier 2) sind
+#     bauartbedingt nicht abdeckbar, weil run_case nur `make test` aufruft.
+#   - KEINE Aussage ueber Waechter, die in DIESEM Lauf gar nicht adressiert sind.
+# Kein node/jq/python — bash, coreutils, sed. `sed` statt `perl`, weil POSIX es
+# garantiert und das Repo sonst kein perl braucht (Review-Befund slice-026 F-4:
+# die frueheren Faelle brauchten Host-perl, waehrend der Kopf "bash + coreutils"
+# zusagte — die Zusage war weiter als die Abdeckung, ausgerechnet hier).
 #
 # FAIL-CLOSED, vier Bedingungen. Der Sensor misst die ABWESENHEIT von Rot und
 # koennte darum selbst still gruen werden; jede dieser Bedingungen schliesst
@@ -31,7 +38,6 @@
 # (--no-cache-filter, also kein Cache-Grun). Nicht-Gate-Verify neben `make smoke`
 # — gebunden an DoD-Verify/Closure, nicht an jeden Commit (LH-QA-01).
 #
-# Kein node/jq/python (LH-QA-03): bash + coreutils + git.
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -77,16 +83,19 @@ run_case() {
   # Sichern (Bedingung 1-4 duerfen den Baum nie veraendert zuruecklassen).
   BACKUP="$(mktemp -d)"
   ( cd "$REPO" && tar -cf "$BACKUP/files.tar" "${file_list[@]}" )
-  # Fuer Bedingung 2 zaehlt der INHALT, nicht die Metadaten: `perl -pi` schreibt
-  # die Datei auch dann neu, wenn keine Substitution greift — die mtime aendert
-  # sich, der Inhalt nicht. Ein tar-Vergleich meldete dann faelschlich "veraendert"
-  # und liesse den veralteten Patch als Bedingung 3 durchgehen (eigener
-  # Sonden-Befund beim Bau dieses Sensors).
+  # Fuer Bedingung 2 zaehlt der INHALT, nicht die Metadaten: `sed -i` (wie zuvor
+  # `perl -pi`) schreibt die Datei auch dann neu, wenn keine Substitution greift —
+  # die mtime aendert sich, der Inhalt nicht. Ein tar-Vergleich meldete dann
+  # faelschlich "veraendert" und liesse den veralteten Patch als Bedingung 3
+  # durchgehen (eigener Sonden-Befund beim Bau dieses Sensors).
   ( cd "$REPO" && sha256sum "${file_list[@]}" >"$BACKUP/before.sums" )
 
-  # (1) Mutation anwenden.
-  if ! ( cd "$REPO" && bash "$case_file" ) >"$BACKUP/mut.log" 2>&1; then
-    report_fail "$name" "Mutations-Skript scheiterte (s. $BACKUP/mut.log)"
+  # (1) Mutation anwenden. Die Ausgabe wandert in die Meldung, nicht in eine
+  # Datei — restore() raeumt das Temp-Verzeichnis sofort weg, ein Pfad-Zeiger
+  # darin ginge ins Leere (Review-Befund slice-026, LOW).
+  local mut_out
+  if ! mut_out="$( cd "$REPO" && bash "$case_file" 2>&1 )"; then
+    report_fail "$name" "Mutations-Skript scheiterte: ${mut_out//$'\n'/ }"
     restore
     return
   fi
@@ -109,8 +118,13 @@ run_case() {
     restore
     return
   fi
-  if ! grep -qF -- "$expect" "$out"; then
-    report_fail "$name" "rot, aber '$expect' fehlt in der Ausgabe — falscher Grund"
+  # Nur FEHLSCHLAG-Zeilen zaehlen. bats druckt jeden Testnamen AUCH beim Bestehen
+  # ("ok 21 emittiert: eingelegter SYMLINK"), ein blosses grep auf den Namen war
+  # damit fuer jeden bats-Fall unter allen Bedingungen erfuellt — Bedingung 4 war
+  # dort wirkungslos (Review-Befund slice-026 F-1, per Sonde belegt). Erst die
+  # Fehlschlag-Form ist eine Aussage: `--- FAIL:` (go test) bzw. `not ok N` (bats).
+  if ! grep -E -- '--- FAIL:|not ok [0-9]+' "$out" | grep -qF -- "$expect"; then
+    report_fail "$name" "rot, aber '$expect' faellt nicht — falscher Grund"
     restore
     return
   fi
@@ -129,6 +143,18 @@ if [ "${#cases[@]}" -eq 0 ]; then
   # Ein leeres Set waere ein gruener Lauf ohne jede Aussage — genau das stille
   # Gruen, gegen das der Sensor gerichtet ist.
   echo "mutate: keine Faelle in $CASES_DIR — ein leeres Set ist kein gruener Lauf" >&2
+  exit 1
+fi
+
+# GRUEN-VORLAUF vor der ersten Mutation (Review-Befund slice-026 F-6). Ohne ihn
+# wuerde jeder Fall auf einem bereits roten Baum "bestehen" — aus dem falschen
+# Grund. Der Fall ist nicht theoretisch: waehrend des Reviews faerbte ein
+# paralleler mutate-Lauf im selben Arbeitsbaum die Tests rot.
+echo "mutate: Gruen-Vorlauf (make test muss VOR der ersten Mutation gruen sein)"
+if ! ( cd "$REPO" && make test ) >/dev/null 2>&1; then
+  echo "mutate: ABBRUCH — make test ist schon ohne Mutation rot." >&2
+  echo "  Auf rotem Baum ist jeder Fall bedeutungslos: er waere rot, aber nicht" >&2
+  echo "  wegen SEINER Mutation. Erst den Baum gruen bekommen." >&2
   exit 1
 fi
 

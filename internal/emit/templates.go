@@ -36,11 +36,17 @@ func isRecurring(base string) bool {
 // Das Ergebnis waere ein Emit mit zu vielen Dateien und ohne Fehler. Lieber laut
 // abbrechen, als eine plausible Falsch-Wurzelung durchzulassen.
 //
-// Das Merkmal ist die TIEFE, nicht ein Name: am templates/-Verzeichnis liegt
-// mindestens ein in-scope-Template DIREKT an der Wurzel; eine Ebene darueber
-// liegt dort keins (dort stehen nur die Verzeichnisse regelwerk/ und templates/).
-// Das unterscheidet exakt die Falsch-Wurzelung, um die es geht, und ueberlebt
-// jedes Upstream-Rename.
+// Das Merkmal ist die VERTEILUNG ueber zwei Ebenen, nicht ein Name — und nicht
+// nur eine Ebene (Review-Befund slice-026 F-3): am templates/-Verzeichnis liegen
+// in-scope-Templates SOWOHL direkt an der Wurzel ALS AUCH in Unterverzeichnissen.
+//   - eine Ebene darueber (…/<tag>/): an der Wurzel liegt keins, dort stehen nur
+//     die Verzeichnisse regelwerk/ und templates/.
+//   - eine Ebene darunter (…/templates/spec/): an der Wurzel liegen drei, aber in
+//     Unterverzeichnissen keins — und der Emit schriebe `lastenheft.md` in den
+//     Ziel-ROOT statt nach spec/.
+// Die erste Fassung prueste nur "irgendein in-scope-Template an der Wurzel" und
+// liess damit JEDE templatehaltige Unterebene durch: weniger Erkennung als der
+// abgeloeste Namens-Anker, nicht mehr.
 //
 // KOPPLUNG, die beim Aendern zaehlt: der Wurzel-Nachweis nutzt dieselbe
 // inScope-Regel wie der Emit. Ein bestandener checkRoot garantiert damit
@@ -48,16 +54,31 @@ func isRecurring(base string) bool {
 // war dadurch UNERREICHBAR und ist entfallen (Review-Befund slice-022b N-1: der
 // Test, der ihn zu pruefen behauptete, sicherte im Rumpf das Gegenteil zu).
 func checkRoot(src fs.FS) error {
-	entries, err := fs.ReadDir(src, ".")
+	var atRoot, deeper int
+	err := fs.WalkDir(src, ".", func(rel string, d fs.DirEntry, walkErr error) error {
+		if walkErr != nil {
+			return walkErr
+		}
+		if d.IsDir() || !inScope(rel) {
+			return nil
+		}
+		if strings.Contains(rel, "/") {
+			deeper++
+		} else {
+			atRoot++
+		}
+		return nil
+	})
 	if err != nil {
 		return fmt.Errorf("quell-wurzel lesen: %w", err)
 	}
-	for _, e := range entries {
-		if !e.IsDir() && inScope(e.Name()) {
-			return nil
-		}
+	switch {
+	case atRoot == 0:
+		return errors.New("quelle ist nicht am templates/-Verzeichnis gewurzelt: an ihrer Wurzel liegt kein in-scope-Template (eine Ebene zu hoch?)")
+	case deeper == 0:
+		return errors.New("quelle ist nicht am templates/-Verzeichnis gewurzelt: in-scope-Templates nur an der Wurzel, keins in Unterverzeichnissen (eine Ebene zu tief?)")
 	}
-	return errors.New("quelle ist nicht am templates/-Verzeichnis gewurzelt: an ihrer Wurzel liegt kein in-scope-Template (eine Ebene zu hoch?)")
+	return nil
 }
 
 // inScope entscheidet, welche Datei des Kurs-Template-Satzes der Bootstrap als

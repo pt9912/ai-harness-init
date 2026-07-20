@@ -6,4 +6,4 @@
 # Vollstaendigkeits-Vergleich, der sie nicht dekodiert — falsch-positiv statt
 # lautem Abbruch (Befund N3c).
 set -euo pipefail
-perl -pi -e 's/^if grep -q .*SHA256SUMS; then$/if false; then/' internal/emit/templates/baseline-verify.sh
+sed -i 's/^if grep -q .*SHA256SUMS; then$/if false; then/' internal/emit/templates/baseline-verify.sh
