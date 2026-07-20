@@ -22,7 +22,7 @@ gezeigt, nicht als Treiber.
 [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) → slice-004b (Verdrahten: Gerüst + Init-Flow).
 Strikt sequenziell. slice-004a liegt bereits in `done/`.
 
-**Closure-Trigger:** die drei Slices in `done/`, `make gates` grün, **Tier-2-`make smoke` grün**,
+**Closure-Trigger:** die Slices in `done/`, `make gates` grün, **Tier-2-`make smoke` grün**, **`make mutate` grün**,
 Carveout-Audit 0/dokumentiert, Closure-Notiz. Der **Voll**-E2E-Smoke ist bewusst welle-03s
 Kriterium ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) Happy-Path braucht die Root-README). Details in der
 [welle-02-Plan-Datei](../welle-02-fetch-und-readme.md).
@@ -38,9 +38,10 @@ Kriterium ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzini
 > Ist-Messung vor der Implementierung in 022a/022b geteilt** (Modul-5-Rücksprung, wie
 > slice-001→001a/b und slice-004→004a/b) — Grund: ZIP≠Tar-Umbau plus ein bis dahin
 > unbemerktes Loch (der Ziel-Verifier für [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)s Prüfsummen-AC).
-> **Nächster Schritt:** slice-026 (`make mutate`, Harness-Wartung ohne Welle) — er
-> sollte vor den restlichen welle-02-Slices landen, weil die Befund-Klasse, die er
-> bewacht, in **jedem** Slice dieses Zuges auftrat. Danach 025 → 023 → 004b. Offene
+> **Harness-Wartung ohne Welle, in dieser Reihenfolge:** slice-026 (`make mutate`) —
+> er sollte vor den restlichen welle-02-Slices landen, weil die Befund-Klasse, die er
+> bewacht, in **jedem** Slice dieses Zuges auftrat. Danach **slice-027** (CI; er deckt
+> die seit [`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung) offene Restlücke „frischer Klon"). Erst dann 025 → 023 → 004b. Offene
 > Aufräum-Punkte (kein Gate-Bruch): stale Links auf die superseded Skelett-Fetch-ADR in
 > welle-01/Root-README.
 

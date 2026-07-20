@@ -87,7 +87,10 @@ ist eine Lifecycle-Rücksprungkante (11).
     betreffen** (`make mutate` immer, wenn Wächter neu/geändert sind; `make smoke`, wenn der
     Emit-Pfad berührt ist). Modul 11 verlangt genau hier den Lauf: *„der Implementation-Agent
     läuft `make verify-*` **selbst** vor der ‚fertig'-Meldung"* — ein Sensor, der erst zur
-    Wellen-Closure feuert, ist pro Slice keiner. Das ist die *Behauptung* der
+    Wellen-Closure feuert, ist pro Slice keiner. **Ein nicht gelaufener Sensor ist ein
+    Befund, kein Formfehler:** ihn wegzulassen ist eine Aussage („betrifft diesen Slice
+    nicht"), die begründet werden muss. Kein Gate erzwingt das — der Stop-Hook deckt nur
+    `make gates` (bis slice-027 die CI bringt). Das ist die *Behauptung* der
     Implementation-Rolle und die *Eingabe* des Verifiers — **nicht** das finale DoD-Urteil
     (Modul 11: „Behauptung ohne Bestätigung ist die häufigste Verifier-Lücke"; eine DoD-Verletzung
     ist eine Verifier-only-Klasse, unsichtbar für Review und Tests). Ausgeführte Sensors +

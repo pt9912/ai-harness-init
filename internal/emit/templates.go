@@ -71,6 +71,13 @@ func rootMarkers() []string {
 
 // minRootMarkers ist die Schwelle: zwei von drei. Ein einzelnes Upstream-Rename
 // bricht den Bootstrap damit nicht.
+//
+// Folge fuer die Mutations-Abdeckung (Review-Befund slice-026 N-8): eine Mutation
+// an EINEM Marker kann per Konstruktion nichts brechen — genau das sagt die
+// Schwelle zu, und TestCheckRoot_EinRenameGenuegtNicht haelt es fest. Das Set
+// (test/mutations/07) mutiert deshalb die SCHWELLE, nicht die Liste; ein Fall,
+// der zwei Marker gleichzeitig verbiegt, waere ein konstruierter Beleg fuer eine
+// Eigenschaft, die der Test schon direkt prueft.
 const minRootMarkers = 2
 
 func checkRoot(src fs.FS) error {

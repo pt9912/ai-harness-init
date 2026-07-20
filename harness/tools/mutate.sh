@@ -37,15 +37,21 @@
 #   4. Der Sensor wird rot, aber der ERWARTETE Waechter steht nicht in seiner
 #      FEHLSCHLAG-Ausgabe -> Befund. Rot aus dem falschen Grund ist kein Beleg.
 #
-# NICHT in `make gates`: jede Mutation kostet einen vollen Docker-test-Zyklus
-# (--no-cache-filter, also kein Cache-Grun). Nicht-Gate-Verify neben `make smoke`
-# — gebunden an DoD-Verify/Closure, nicht an jeden Commit (LH-QA-01).
+# NICHT in `make gates` — der tragende Grund ist NICHT die Laufzeit (gemessen rund
+# 7 s je Mutation bei warmem Cache), sondern: dieser Sensor VERAENDERT den
+# Arbeitsbaum. Ein Target, das nebenbei in einer normalen Sitzung laeuft, darf das
+# nicht tun (vgl. den Lock unten und Review-Befund F-12: ein paralleler Gate-Lauf
+# hat real den mutierten Stand gemessen). Nicht-Gate-Verify neben `make smoke`,
+# gebunden an DoD-Verify/Closure (LH-QA-01).
 #
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 CASES_DIR="$REPO/test/mutations"
 BACKUP=""
+
+LOCK="$REPO/.harness/state/mutate.lock"
+HAVE_LOCK=""
 
 restore() {
   [ -n "$BACKUP" ] || return 0
@@ -56,8 +62,15 @@ restore() {
   rm -rf "$BACKUP"
   BACKUP=""
 }
+
+cleanup() {
+  restore
+  [ -n "$HAVE_LOCK" ] && rmdir "$LOCK" 2>/dev/null
+  return 0
+}
 # Auch bei Abbruch (Ctrl-C, Kill) den Baum zuruecklassen, wie er war.
-trap 'restore' EXIT INT TERM
+trap 'cleanup' EXIT INT TERM
+
 
 fail_count=0
 pass_count=0
@@ -89,6 +102,18 @@ run_case() {
   local case_file="$1"
   local name files expect verify form
   name="$(basename "$case_file" .sh)"
+
+  # Doppelte Koepfe sind ein Befund, kein "letzter gewinnt": `sed -n …p` sammelt
+  # ALLE Treffer, `read -r -a … <<<` liest aber nur die erste Zeile — ein zweiter
+  # `# files:`-Kopf verschwaende sonst lautlos, die Datei waere weder gesichert
+  # noch zurueckgesetzt (Review-Befund slice-026 F-7).
+  local k
+  for k in files expect verify; do
+    if [ "$(grep -c "^# $k: " "$case_file")" -gt 1 ]; then
+      report_fail "$name" "mehrfacher '# $k:'-Kopf — nur der erste wuerde wirken"
+      return
+    fi
+  done
 
   files="$(sed -n 's/^# files: //p' "$case_file")"
   expect="$(sed -n 's/^# expect: //p' "$case_file")"
@@ -135,8 +160,20 @@ run_case() {
 
   # (2) Hat sie ueberhaupt gegriffen? Ein wirkungsloser Patch wuerde sonst als
   # "Waechter intakt" durchgehen — der Sensor waere still gruen.
-  if ( cd "$REPO" && sha256sum -c "$BACKUP/before.sums" ) >/dev/null 2>&1; then
-    report_fail "$name" "Mutation hat nichts veraendert — Patch veraltet?"
+  #
+  # JEDE gelistete Datei muss sich geaendert haben, nicht irgendeine: `# files:`
+  # benennt die Mutations-ZIELE. Ein blosses `sha256sum -c` ueber alle schlaegt
+  # schon fehl, wenn EINE abweicht — bei mehreren Pfaden waere der veraltete
+  # Patch fuer die uebrigen unsichtbar (Review-Befund slice-026 F-7). Heute traegt
+  # jeder Fall genau einen Pfad; die Schranke gilt, bevor der erste zwei traegt.
+  local f unchanged=""
+  for f in "${file_list[@]}"; do
+    if ( cd "$REPO" && grep -F -- " $f" "$BACKUP/before.sums" | sha256sum -c - ) >/dev/null 2>&1; then
+      unchanged="$unchanged $f"
+    fi
+  done
+  if [ -n "$unchanged" ]; then
+    report_fail "$name" "Mutation hat nicht gegriffen bei:$unchanged — Patch veraltet?"
     restore
     return
   fi
@@ -151,6 +188,10 @@ run_case() {
     restore
     return
   fi
+  # Bei einem Befund die letzten Zeilen des Sensor-Laufs zeigen: restore() loescht
+  # das Log gleich danach, und eine Ein-Zeilen-Meldung ohne Kontext ist schwer zu
+  # diagnostizieren (Review-Befund slice-026 N-5, zweite Haelfte von F-8).
+  show_tail() { sed -e 's/^/    | /' <(tail -n 12 "$out") >&2; }
   # Nur FEHLSCHLAG-Zeilen zaehlen. bats druckt jeden Testnamen AUCH beim Bestehen
   # ("ok 21 emittiert: eingelegter SYMLINK"), ein blosses grep auf den Namen war
   # damit fuer jeden bats-Fall unter allen Bedingungen erfuellt — Bedingung 4 war
@@ -158,6 +199,7 @@ run_case() {
   # Fehlschlag-Form ist eine Aussage — und sie ist je Sensor eine andere.
   if ! grep -E -- "$form" "$out" | grep -qF -- "$expect"; then
     report_fail "$name" "rot, aber '$expect' faellt nicht — falscher Grund"
+    show_tail
     restore
     return
   fi
@@ -172,6 +214,22 @@ run_case() {
 # `source` den Gruen-Vorlauf und die Mutations-Schleife aus — mein erster
 # Test-Entwurf tat genau das (Konstruktionsfehler im Test, nicht im Treiber).
 main() {
+  # LOCK gegen parallele Laeufe (Review-Befund slice-026 F-12, real eingetreten: ein
+  # `make gates` einer anderen Sitzung mass den mutierten Stand). `mkdir` ist atomar,
+  # also ein portabler Mutex ohne flock. Er steht IN main(), nicht im Top-Level:
+  # test/mutate-driver.bats sourct die Datei fuer ihre Funktionen, und ein Lock beim
+  # Sourcen wuerde die Tests verschmutzen (von genau diesen Tests gefangen).
+  mkdir -p "$(dirname "$LOCK")"
+  if ! mkdir "$LOCK" 2>/dev/null; then
+    echo "mutate: ABBRUCH — ein Lauf ist bereits aktiv ($LOCK)." >&2
+    echo "  Zwei gleichzeitige Laeufe mutieren denselben Arbeitsbaum; das Ergebnis" >&2
+    echo "  beider waere bedeutungslos. Stale? Dann '$LOCK' entfernen." >&2
+    exit 1
+  fi
+  HAVE_LOCK=1
+  echo "mutate: ACHTUNG — dieser Lauf VERAENDERT den Arbeitsbaum voruebergehend."
+  echo "  Keine anderen Gate-Laeufe in diesem Repo starten, solange er laeuft."
+
   [ -d "$CASES_DIR" ] || { echo "mutate: $CASES_DIR fehlt" >&2; exit 1; }
 
   shopt -s nullglob
@@ -193,6 +251,14 @@ main() {
   modes="$(sed -n 's/^# verify: //p' "$CASES_DIR"/*.sh | LC_ALL=C sort -u)"
   [ -n "$modes" ] || modes=""
   for m in test $modes; do
+    # Erst die Zulassung, dann der Lauf: ein vertippter Modus liefe sonst als
+    # `make <tippfehler>` und wuerde als "Baum ist rot" gemeldet — eine
+    # irrefuehrende Diagnose fuer einen Kopf-Fehler (Review-Befund slice-026 N-4).
+    if ! failure_form "$m" >/dev/null; then
+      echo "mutate: ABBRUCH — unbekannter '# verify: $m' in test/mutations/." >&2
+      echo "  Erlaubt ist, wofuer failure_form ein Fehlschlag-Muster kennt." >&2
+      exit 1
+    fi
     echo "mutate: Gruen-Vorlauf make $m (muss VOR der ersten Mutation gruen sein)"
     if ! ( cd "$REPO" && make "$m" ) >/dev/null 2>&1; then
       echo "mutate: ABBRUCH — make $m ist schon ohne Mutation rot." >&2

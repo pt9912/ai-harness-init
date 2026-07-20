@@ -98,8 +98,9 @@ unverändert" zusagt, während ein `MkdirAll` davor läuft.
 **Richtig:** die Zusage auf das einschränken, was der Code hält.
 
 **Feedback:** `make mutate` (Nicht-Gate-Verify, §4) fährt ein kuratiertes Set aus
-*(Mutation → erwartet rot färbender Test)* und meldet jeden Wächter, der seine
-Zähne verloren hat. Es prüft die **Haltbarkeit** vorhandener Zähne, nicht die
+*(Mutation → erwartet rot färbender Test)* und meldet jeden **gelisteten** Wächter,
+der seine Zähne verloren hat — gelistet heißt: wer keinen Fall in `test/mutations/`
+hat, ist unbewacht. Es prüft die **Haltbarkeit** vorhandener Zähne, nicht die
 **Entstehung** neuer — letztere hängt an der Pre-completion-Checkliste, die zu
 jeder Zusage die rot färbende Mutation verlangt.
 
