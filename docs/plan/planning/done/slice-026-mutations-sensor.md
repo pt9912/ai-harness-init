@@ -154,7 +154,7 @@ der zweite Quadrant trägt, am Sensor, der ihn baut.
 
 - **Durchsetzungs-Hälfte von N-6 offen:** Schritt 19 verlangt die Sensoren, aber **kein Gate
   erzwingt** ihren Lauf — der Stop-Hook deckt nur `make gates`. Träger ist
-  [slice-027](../open/slice-027-ci.md) (CI); dort ausdrücklich als DoD-Punkt.
+  [slice-027](../in-progress/slice-027-ci.md) (CI); dort ausdrücklich als DoD-Punkt.
 - **NR-1** (stale Lock nach SIGKILL blockiert bis manuellem `rmdir`) und **NR-2** (die neuen
   `run_case`-Zweige jenseits `failure_form` sind nicht selbst-bewacht) sind **bewusste
   Grenzen**, am Code benannt — fail-closed bzw. die schon deklarierte „kuratiert =
@@ -165,7 +165,7 @@ der zweite Quadrant trägt, am Sensor, der ihn baut.
 
 ### Folge-Slices
 
-- [slice-027](../open/slice-027-ci.md) — trägt die Durchsetzungs-Hälfte (N-6) und die
+- [slice-027](../in-progress/slice-027-ci.md) — trägt die Durchsetzungs-Hälfte (N-6) und die
   [`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)-Restlücke „frischer Klon".
 - Kein neuer Slice aus diesem hier — die offenen Punkte haben Träger oder sind begründete Grenzen.
 
