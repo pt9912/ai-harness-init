@@ -56,7 +56,7 @@ gespiegelt (welle.template.md §4 — eine zweite Wahrheit driftet). -->
 | Slice | Titel | Bezug |
 |---|---|---|
 | [slice-004a](done/slice-004a-skeleton-fetch.md) | Sprachskelett-Fetch *(geliefert unter dem abgelösten Modell)* | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
-| [slice-022](open/slice-022-templates-fetch.md) | Templates + Regelwerk fetchen statt einbetten | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren), [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) |
+| [slice-022a](open/slice-022a-baseline-fetch.md) | Templates + Regelwerk fetchen statt einbetten | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren), [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) |
 | [slice-023](open/slice-023-skelett-generator.md) | Go-Skelett-Generator (deterministisch) | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | [slice-004b](open/slice-004b-skeleton-wire.md) | Sprachskelett verdrahten (Gerüst + Init-Flow) | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
 
