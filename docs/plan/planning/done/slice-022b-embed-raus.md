@@ -16,7 +16,7 @@ wechselt nur durch `git mv`, siehe
 ## 1. Ziel
 
 Das Embed-Duplikat **abräumen**: `internal/emit` bezieht die Templates aus der von
-[slice-022a](../done/slice-022a-baseline-fetch.md) gefetchten Baseline, `internal/emit/skel`
+[slice-022a](slice-022a-baseline-fetch.md) gefetchten Baseline, `internal/emit/skel`
 (15 Dateien) wird **gelöscht**, und der Drift-Wächter `test/skel-drift.bats` entfällt
 **ersatzlos** — er bewachte genau die Doppelung, die es dann nicht mehr gibt. Damit ist
 die Folgepflicht aus [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md) („Embed entfernen") eingelöst und es bleibt
@@ -52,7 +52,7 @@ die Folgepflicht aus [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distr
 
 ## 4. Trigger
 
-[slice-022a](../done/slice-022a-baseline-fetch.md) in `done/` — vorher gibt es keine gefetchte
+[slice-022a](slice-022a-baseline-fetch.md) in `done/` — vorher gibt es keine gefetchte
 Quelle, aus der `emit` lesen könnte. Bis dahin **blockiert**.
 
 Rückführungen: `in-progress → next`, wenn Umverdrahtung und Test-Umbau getrennt gehören.
@@ -83,7 +83,7 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
 
 **Geliefert.** `internal/emit/skel` (15 Dateien) und `//go:embed skel` sind entfernt;
 `emit.Templates` liest aus einem injizierten `fs.FS`, das `cmd` auf die von
-[slice-022a](../done/slice-022a-baseline-fetch.md) gefetchte Baseline wurzelt. Der Kurs ist
+[slice-022a](slice-022a-baseline-fetch.md) gefetchte Baseline wurzelt. Der Kurs ist
 damit einzige Quelle für Regelwerk **und** Doc-Templates — die
 [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md)-Folgepflicht ist eingelöst. Unabhängig verifiziert: das Binary ist
 **57.344 Bytes** kleiner, und ein Bootstrap mit dem **Vor-Slice**-Binary erzeugt einen

@@ -22,7 +22,7 @@ wechselt nur durch `git mv`, siehe
 > braucht einen **Ziel-Verifier**, den weder Template-Satz noch Emit-Pfad heute liefern.
 > Beides zusammen sprengt den Ein-Sitzungs-Review → Teilung nach der §4-Rückführung, die
 > der Plan vorsah. **022a ist additiv** (Embed bleibt, von `test/skel-drift.bats` bewacht),
-> **[slice-022b](../in-progress/slice-022b-embed-raus.md)** räumt es ab. Der Zwischenzustand „zwei
+> **[slice-022b](slice-022b-embed-raus.md)** räumt es ab. Der Zwischenzustand „zwei
 > Template-Quellen" ist damit kurz **und bewacht** — die ursprüngliche §6-Sorge trifft
 > schwächer als beim Schneiden angenommen.
 
@@ -39,7 +39,7 @@ Embed-Pfad bleibt in diesem Slice **unangetastet**.
 - [x] `SHA256SUMS`-Form nach [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 2: über **alle** Dateien beider Bäume, Pfade relativ zu `<tag>/`, `LC_ALL=C`-sortiert, die Datei selbst ausgenommen.
 - [x] [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit): das Asset ist **sha256-gepinnt** und wird **vor** dem Entpacken verifiziert ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 1 — Provenienz ≠ Integrität); zwei Läufe mit gleicher Version → identische Ablage.
 - [x] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) Kein-Halluzinat-AC: fehlt das Kurs-Asset zur Version oder bricht der sha256, wird **begründet nicht emittiert** (kein erfundenes Regelwerk, keine Teil-Baseline). `make gates` bleibt **offline-grün** — der Netz-Fetch ist Bootstrap-Pfad, kein Gate.
-- [x] **Abgrenzung zu [slice-022b](../in-progress/slice-022b-embed-raus.md) belegt:** `internal/emit/skel` ist unverändert und `test/skel-drift.bats` weiter grün — dieser Slice fügt hinzu, er räumt nicht ab.
+- [x] **Abgrenzung zu [slice-022b](slice-022b-embed-raus.md) belegt:** `internal/emit/skel` ist unverändert und `test/skel-drift.bats` weiter grün — dieser Slice fügt hinzu, er räumt nicht ab.
 - [x] `make gates` grün.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
@@ -76,7 +76,7 @@ der von [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-templ
 ## 5. Closure-Trigger
 
 DoD vollständig + Review konform + Closure-Notiz → nach `done/`. Entsperrt
-[slice-022b](../in-progress/slice-022b-embed-raus.md).
+[slice-022b](slice-022b-embed-raus.md).
 
 ## 6. Risiken und offene Punkte
 
@@ -92,7 +92,7 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`. Entsperrt
   fail-fast — das ist die *einzige* Sprachprüfung. Dieser Slice lässt sie deshalb bewusst
   stehen; slice-023 (Generator) löst sie ab. Ohne diese Setzung stünde zwischen 022a und 023
   ein Bootstrap ohne Sprachvalidierung.
-- **Zwei Template-Quellen bis [slice-022b](../in-progress/slice-022b-embed-raus.md)** — bewusst, kurz und von
+- **Zwei Template-Quellen bis [slice-022b](slice-022b-embed-raus.md)** — bewusst, kurz und von
   `test/skel-drift.bats` bewacht (Embed == vendored bleibt geprüft, bis das Embed fällt).
 
 ## 7. Closure-Notiz (nach `done/`)
@@ -103,7 +103,7 @@ des Ziels ab (`SHA256SUMS` nach [`MR-007`](../../../../harness/conventions.md#mr
 tool-generierten Verifier nach `tools/harness/`. Unabhängig verifiziert am realen Asset:
 43 Dateien (21+21+Summen), byte-identisch zur vendored Baseline dieses Repos, `make smoke`
 Exit 0. Der Embed-Pfad blieb unangetastet — die Abgrenzung zu
-[slice-022b](../in-progress/slice-022b-embed-raus.md) hält.
+[slice-022b](slice-022b-embed-raus.md) hält.
 
 **Was anders lief.** Der Slice brauchte **zwei Review- und zwei Verifikations-Runden**.
 Der erste Review war merge-blockierend (HIGH: das emittierte Gate-Skript meldete einen
@@ -155,7 +155,7 @@ nicht als verdrahtetes Gate. Verdrahtung: slice-004b.
 
 ### Folge-Slices
 
-- [slice-022b](../in-progress/slice-022b-embed-raus.md) — entsperrt: das Embed kann jetzt gegen die gefetchte Quelle getauscht werden.
+- [slice-022b](slice-022b-embed-raus.md) — entsperrt: das Embed kann jetzt gegen die gefetchte Quelle getauscht werden.
 - [slice-025](../open/slice-025-bootstrap-preflight.md) — neu aus diesem Slice: die Teil-Bootstrap-Kette (I1, vierte Wiederholung) plus L3/L4 aus demselben Codepfad.
 
 ## 8. Sub-Area-Modus-Begründung
