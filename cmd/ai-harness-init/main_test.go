@@ -257,6 +257,31 @@ func TestRun_SkeletonKollisionSchreibtKeinEmit(t *testing.T) {
 	}
 }
 
+// TestRun_ReadmeKollisionSchreibtKeinEmit belegt, dass das Root-README-Ziel
+// (slice-005, LH-FA-05) im Phase-3-Pre-Flight liegt: eine vorhandene README.md am
+// Ziel-Root bricht VOR jedem Emit-Write ab (kein Teil-Bootstrap, slice-025).
+//
+// ROT-Gegenbeispiel (AGENTS 3.6): fehlt emit.RootReadmePath in emitTargets, prueft
+// der Pre-Flight die README-Kollision nicht -> Phase 4, DocGate scheitert netzlos an
+// docker, die Meldung ist KEIN "README.md existiert bereits". test/mutations/25.
+func TestRun_ReadmeKollisionSchreibtKeinEmit(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "README.md"), []byte("# vorhanden\n"), 0o644); err != nil {
+		t.Fatalf("Setup: %v", err)
+	}
+	var out, errb bytes.Buffer
+	code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb)
+	if code != 1 {
+		t.Fatalf("Exit-Code = %d, want 1 (Pre-Flight bricht an der README-Kollision ab)", code)
+	}
+	if !strings.Contains(errb.String(), "README.md existiert bereits") {
+		t.Errorf("stderr = %q, soll die README-Kollision melden", errb.String())
+	}
+	if _, err := os.Stat(filepath.Join(dir, "tools", "harness", "baseline-verify.sh")); !errors.Is(err, os.ErrNotExist) {
+		t.Errorf("Verifier trotz Pre-Flight-Abbruch geschrieben (Teil-Emit): %v", err)
+	}
+}
+
 // TestPreflightAbsent nagelt die Pre-Flight-LOGIK direkt fest: freie Ziele
 // liefern nil, ein vorhandenes meldet einen Fehler, der Pfad UND Ausweg nennt.
 func TestPreflightAbsent(t *testing.T) {

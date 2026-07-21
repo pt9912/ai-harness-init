@@ -44,6 +44,11 @@ if [ ! -f "$tmprepo/Makefile" ] || [ ! -f "$tmprepo/go.mod" ]; then
 	echo "smoke: FEHLER — Sprachskelett nicht an den Ziel-Root verdrahtet (Makefile/go.mod fehlt)" >&2
 	exit 1
 fi
+# Root-README (slice-005, LH-FA-05): aus project-readme.template.md emittiert.
+if [ ! -f "$tmprepo/README.md" ]; then
+	echo "smoke: FEHLER — Root-README nicht emittiert (slice-005, LH-FA-05)" >&2
+	exit 1
+fi
 if [ -d "$tmprepo/.harness/skeleton" ]; then
 	echo "smoke: FEHLER — transientes .harness/skeleton/ nach der Verdrahtung nicht aufgeraeumt (slice-004b)" >&2
 	exit 1

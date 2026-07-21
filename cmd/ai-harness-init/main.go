@@ -176,6 +176,13 @@ func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, st
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
+	// Root-README (slice-005, LH-FA-05): aus project-readme.template.md — bewusst
+	// aus dem Templates-Emit ausgeschlossen (eigenes Ziel README.md, gate-sichere
+	// Vorwaerts-Verweise). README.md liegt im Phase-3-Pre-Flight (emitTargets).
+	if err := emit.RootReadme(os.DirFS(templatesDir(targetDir, tag)), targetDir, name, force); err != nil {
+		fmt.Fprintln(stderr, "Fehler:", err)
+		return 1
+	}
 	// Verdrahten (slice-004b): das gestagte Skelett an den Ziel-Root platzieren und
 	// d-check.mk ins Makefile einbinden (MR-010) — ein make gates statt zweier
 	// Gate-Quellen. Erst HIER (Phase 4, nach allen Pre-Flights) erscheint das
@@ -211,7 +218,7 @@ func preflightAbsent(targetDir string, rels []string) error {
 // gefetchten Baseline; emit.TemplateTargets wurzel-prueft sie zugleich (eine
 // falsch gewurzelte Baseline faellt so VOR dem Docker-Lauf auf).
 func emitTargets(targetDir, tag, name string) ([]string, error) {
-	rels := []string{emit.BaselineVerifyPath, ".d-check.yml", "d-check.mk"}
+	rels := []string{emit.BaselineVerifyPath, ".d-check.yml", "d-check.mk", emit.RootReadmePath}
 	tt, err := emit.TemplateTargets(os.DirFS(templatesDir(targetDir, tag)), name)
 	if err != nil {
 		return nil, err
