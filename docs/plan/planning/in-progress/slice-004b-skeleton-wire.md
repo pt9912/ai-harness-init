@@ -32,12 +32,12 @@ Verzeichnis-Gerüst anlegen, den Init-Flow verbinden und `d-check.mk` ins generi
 
 ## 2. Definition of Done
 
-- [ ] [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) (Verdrahten-Teil): die generierten Code-Gates sind verdrahtet, **nur lauffähige** Targets ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-- [ ] Das generierte `Makefile` **bindet `d-check.mk` ein** ([`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)); Doc-Gate und Code-Gates hängen an **einem** `make gates`, nicht an zwei konkurrierenden.
-- [ ] [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen): das Verzeichnis-Gerüst des Zielrepos steht vollständig (Doc-Struktur aus slice-022a/022b, Skelett aus slice-023, Gerüst hier), der Init-Flow durchläuft alle Herkunftsklassen aus [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md).
-- [ ] Emit-Test belegt die Verdrahtung struktur-seitig (Include vorhanden, Targets aufrufbar). **Der Voll-E2E-Beweis ist ausdrücklich [slice-024](../open/slice-024-voll-smoke.md)** — hier wird er *nicht* behauptet.
-- [ ] `make gates` grün.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) (Verdrahten-Teil): die generierten Code-Gates sind verdrahtet, **nur lauffähige** Targets ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+- [x] Das generierte `Makefile` **bindet `d-check.mk` ein** ([`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)); Doc-Gate und Code-Gates hängen an **einem** `make gates`, nicht an zwei konkurrierenden.
+- [x] [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen): das Verzeichnis-Gerüst des Zielrepos steht vollständig (Doc-Struktur aus slice-022a/022b, Skelett aus slice-023, Gerüst hier), der Init-Flow durchläuft alle Herkunftsklassen aus [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md).
+- [x] Emit-Test belegt die Verdrahtung struktur-seitig (Include vorhanden, Targets aufrufbar). **Der Voll-E2E-Beweis ist ausdrücklich [slice-024](../open/slice-024-voll-smoke.md)** — hier wird er *nicht* behauptet.
+- [x] `make gates` grün.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -76,7 +76,29 @@ Slice die welle-02.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Abschluss 2026-07-21** (beobachtbarer Trigger). Review konform (0 HIGH/MEDIUM,
+F-1 behoben), Verifikation **DoD bestätigt** (5/6 erfüllt; Punkt 6 = diese Notiz),
+Sensoren selbst gefahren + grün: `make gates` (98/0), `make mutate` (23/23), `make
+smoke` inkl. Verdrahtungs-E2E (Schritt 5). Schließt als **letzter** Slice welle-02.
+
+**Geliefert:** das generierte Skelett (slice-023) landet am Ziel-Root, das `Makefile`
+bindet `d-check.mk` ein ([`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)) — **ein** kohärenter `make gates`-Einstieg statt
+zweier Gate-Quellen. `internal/wire` platziert in Phase 4 **nach** allen Pre-Flights
+(die Skelett-Root-Ziele hängen im Phase-3-Pre-Flight), sodass die slice-025-Garantie
+„Kollision → kein Teil-Bootstrap" hält. Kein Merge ([`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md): der Generator
+besitzt das `Makefile`); `AGENTS.md` bleibt tool-fremd.
+
+**Steering-Loop-Eintrag:**
+- **Neuer Sensor:** die [`AGENTS.md`](../../../../AGENTS.md) §3.6-Disziplin auf die
+  Verdrahtungsschicht ausgedehnt — Mutationen 21/22/23 in `test/mutations/` färben je
+  den benannten wire-Wächter rot (Makefile-Include · gates-Vorbedingung · Skelett-
+  Pre-Flight).
+- **Prozess-Grenze, diesmal mit Adresse:** der Lifecycle-Move-Link-Churn traf erneut
+  (dieser Slice fünf Links, die Welle-Closure mehr) — die **sechste** Instanz der
+  Klasse. Statt sie ein weiteres Mal in einer §6-Fußnote zu vertagen, wurde der ganze
+  §6-Follow-up-Backlog in die Roadmap mit **Trigger-Bedingungen** gehoben; die
+  `done/**`-Link-Exemption liegt jetzt als Cluster-D-Gate-Policy-Kandidat auditierbar
+  vor — nicht mehr „irgendwann".
 
 ## 8. Sub-Area-Modus-Begründung
 
