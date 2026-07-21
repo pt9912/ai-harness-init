@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.7.0
+**Version:** 0.8.0
 
 **Status:** Draft
 
@@ -44,9 +44,20 @@ Projektname gestempelt.
 
 ### LH-FA-02 — Zweiklassige Template-Ablage (F3)
 
-**Beschreibung:** Wiederkehrende Templates (ADR, slice, welle, carveout,
-review-report) bleiben co-located als `.template.md`; Singletons werden zu
-`.md`-Zielen. Die Set-Index-README wird nie mitkopiert.
+**Beschreibung:** Der emittierte Doc-Layer ist zweiklassig. **Singletons**
+(authored-once: `AGENTS.md`, `spec/*`, `harness/*`, Root-`README.md`, Roadmap)
+werden zu gestempelten `.md`-Zielen. **Wiederkehrende** Vorlagen (ADR · slice ·
+welle · carveout · review-report) werden **referenziert, nicht co-located
+dupliziert**: sie liegen als Teil der gefetchten, committet-vendored Baseline
+([`LH-FA-09`](../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)) unter
+`.harness/baseline/<version>/templates/` und werden **von dort** beim Anlegen
+eines Artefakts kopiert-und-ausgefüllt. **Derivative Index-Sichten** (ADR-/
+Carveout-Index) sind Fülle-wenn-Inhalt-da — sie entstehen durch Kopieren aus der
+Baseline, sobald der erste ADR/Carveout existiert, nicht als gate-unsichere
+Platzhalter-Skelette bei Bootstrap. Leere Struktur-Verzeichnisse (Lifecycle-
+Ordner, ADR-/Carveout-/Reviews-Ordner) werden mit `.gitkeep` gehalten; die
+Set-Index-README wird nie mitkopiert. Der emittierte Stand ist damit
+out-of-the-box **gate-sicher** ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 
 ### LH-FA-03 — Doc-Gate-Baseline emittieren (F6, F7)
 
@@ -233,3 +244,4 @@ Verifikation), auf die seine `AGENTS.md` §1 (Source Precedence) zeigt — und l
 | 0.5.0 | 2026-07-18 | CR: neue [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) Arch-Gate-Baseline emittieren (`.a-check.yml` + `a-check.mk`, per-Tool analog [`LH-FA-03`](../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7)) — a-check als Architektur-Gate (hexagonale Schichten); nur aktiviert, wo das Skelett Schichten trägt ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Implementierung folgt mit Emitter/Go-Code (Doc-führt) | a-check-Integration |
 | 0.6.0 | 2026-07-18 | CR: neue [`LH-FA-08`](../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) Agenten-Workflow-Commands emittieren (`.claude/commands/` — Picker aus den Kurs-Templates, abgegrenzt von [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)-Durchsetzung; Vorbedingung Kurs-Upstream-Ergänzung). Header-Version mit der Historie reconciled (lag auf 0.3.0). Implementierung folgt als späterer Slice (Doc-führt) | Workflow-Command-Idee |
 | 0.7.0 | 2026-07-19 | CR: [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) Picker (Fetch `lab/example`) → **deterministischer Generator** (Tool-als-Quelle); neue [`LH-FA-09`](../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) Regelwerk emittieren (Fetch Kurs @ version → Ziel-Baseline, danach netzlos); [`ADR-0005`](../docs/plan/adr/0005-ziel-repo-distribution.md) supersedes [`ADR-0001`](../docs/plan/adr/0001-skelett-distribution.md); §1/§2/§5 aufs Distributionsmodell nachgezogen | Distributionsmodell-CR |
+| 0.8.0 | 2026-07-21 | CR: [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) an [`ADR-0005`](../docs/plan/adr/0005-ziel-repo-distribution.md) nachgezogen — das Zielrepo erhält den **vollen** vendored Template-Baum ([`LH-FA-09`](../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)), darum wiederkehrende Vorlagen **referenziert statt co-located**, derivative Indexe Fülle-wenn-Inhalt, Leerordner via `.gitkeep`; out-of-the-box gate-sicher ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Beim 0.7.0-CR übersehene LH-FA-02-Prämisse; die [`MR-008`](../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)-Abgrenzung ist damit aufgelöst | Emit gate-sicher (slice-024-Smoke) |

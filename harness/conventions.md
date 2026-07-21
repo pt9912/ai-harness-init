@@ -319,6 +319,14 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   bindend. **MR-008 generalisiert ausdrücklich nicht** auf die Emissions-Logik
   (slice-003): wer sie umsetzt, folgt
   [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), nicht MR-008.
+- **Nachzug 2026-07-21 ([`ADR-0005`](../docs/plan/adr/0005-ziel-repo-distribution.md)):** die obige
+  Abgrenzung trägt nicht mehr. Ihre Prämisse — „ein emittiertes Fremdrepo erhält nicht notwendig den
+  vollen vendored Baum" — ist durch die ADR aufgehoben: das Zielrepo fetcht seither die **volle**
+  Baseline (Regelwerk **+ Templates**, [`LH-FA-09`](../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren))
+  und *kann* referenzieren wie der Dogfood. Die Emissions-Logik folgt daher jetzt dem **referenzierten**
+  Modell — kein Co-Location der wiederkehrenden Vorlagen mehr;
+  [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) ist auf 0.8.0 nachgezogen.
+  Die Reconciliation wurde beim 0.7.0-CR übersehen; slice-024s Voll-Smoke deckte sie auf.
 - **Begründung (empirisch, 2026-07-17 gemessen):** Die fünf bisher kopierten
   Blank-Templates waren **verbatim/nachhinkend** (null Repo-Adaptionen — jeder Diff
   gegen den vendored Baum war reines Upstream-Lag), **von nichts Stabilem
