@@ -32,14 +32,18 @@ func (e *UnknownLangError) Error() string {
 }
 
 // Generate schreibt das Skelett fuer lang nach destDir — in sortierter (also
-// deterministischer) Reihenfolge. Eine Sprache ohne Profil liefert einen
+// deterministischer) Reihenfolge. goVersion ist die Toolchain-Version des Profils
+// (fuer go: die Go-Version); der Generator bleibt REIN — gleiche (lang, goVersion)
+// liefert byte-identische Ausgabe (LH-QA-02), die Aufloesung des Werts (Default/
+// Env/Web) macht der Aufrufer (cmd). Eine Sprache ohne Profil liefert einen
 // *UnknownLangError mit der sortierten Liste der unterstuetzten Profile, statt
 // stillschweigend nichts zu tun.
-func Generate(destDir, lang string) error {
-	prof, ok := profiles()[lang]
+func Generate(destDir, lang, goVersion string) error {
+	build, ok := profiles()[lang]
 	if !ok {
 		return &UnknownLangError{Lang: lang, Available: SupportedLangs()}
 	}
+	prof := build(goVersion)
 	rels := make([]string, 0, len(prof))
 	for rel := range prof {
 		rels = append(rels, rel)
@@ -68,12 +72,12 @@ func SupportedLangs() []string {
 	return langs
 }
 
-// profiles bildet Sprache -> (Ziel-Relpfad -> Inhalt). Als Funktion (nicht
-// Paket-Variable) wie baselineTrees()/rootMarkers() im Repo — gochecknoglobals-
-// konform. Eine neue Sprache ist ein neuer Eintrag, kein Umbau der Mechanik
-// (LH-FA-04: sprach-agnostisch, ein Profil je Sprache).
-func profiles() map[string]map[string]string {
-	return map[string]map[string]string{
-		"go": goProfile(),
+// profiles bildet Sprache -> Profil-Builder (Ziel-Relpfad -> Inhalt fuer eine
+// Toolchain-Version). Als Funktion (nicht Paket-Variable) wie baselineTrees()/
+// rootMarkers() im Repo — gochecknoglobals-konform. Eine neue Sprache ist ein
+// neuer Eintrag, kein Umbau der Mechanik (LH-FA-04: sprach-agnostisch).
+func profiles() map[string]func(goVersion string) map[string]string {
+	return map[string]func(string) map[string]string{
+		"go": goProfile,
 	}
 }

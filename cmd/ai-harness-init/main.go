@@ -46,6 +46,7 @@ Umgebung (bewusster Opt-in-Override der gepinnten Werte — LH-QA-02):
   BASELINE_SHA256   erwarteter sha256 des Baseline-Assets
   DCHECK_IMAGE      d-check-Tag-Referenz
   DCHECK_DIGEST     d-check-Digest (sticht den Tag)
+  SKEL_GO_VERSION   Go-Version des generierten Skeletts (Default gepinnt, deterministisch)
 `
 
 // sources buendelt die injizierbare Netz-Quelle des Bootstraps — nur noch die
@@ -122,7 +123,11 @@ func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, st
 	// die Baseline holen (LH-FA-09, sha256-Pin vor dem Entpacken). Beide schreiben
 	// nach .harness/; der Baseline-Fetch ist retry-freundlich gewollt (s. EHRLICHE
 	// GRENZE Phase 4).
-	if err := gen.Generate(skelDir, lang); err != nil {
+	//
+	// Go-Version: gepinnter Default, per SKEL_GO_VERSION explizit ueberschreibbar
+	// (deterministisch — der Nutzer nennt den Wert). Der Web-"latest"-Lookup und ein
+	// go-freshness-Sensor sind bewusst eigene Folge-Slices (Netz/Nicht-Determinismus).
+	if err := gen.Generate(skelDir, lang, envOr("SKEL_GO_VERSION", gen.DefaultGoVersion)); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return langExitCode(err)
 	}

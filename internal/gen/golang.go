@@ -1,42 +1,84 @@
 package gen
 
-// goProfile ist das Go-Layout (ADR-0003 Docker-only): die Go-Gates leben als
-// Dockerfile-Stages, das Makefile faehrt sie, dazu eine minimale go.mod +
-// .golangci.yml und ein baubares cmd/app/main.go. Alle Werte STATISCH
-// (Determinismus, LH-QA-02). Die Base-/Lint-Pins spiegeln den Tool-Stand
-// (Wartungslast, ADR-0005 §Konsequenzen — bewusst klein gehalten).
+import "strings"
+
+// DefaultGoVersion ist der gepinnte Go-Toolchain-Default des generierten Skeletts
+// (LH-QA-02: kein floating). An das Repo-Dockerfile gekoppelt
+// (TestGoProfile_PinsMatchRepo), damit ein Bump nicht die eine Haelfte bewegt und
+// die andere vergisst. Ueberschreibbar beim Bootstrap (SKEL_GO_VERSION, cmd) — der
+// Generator selbst bleibt deterministisch: gleiche goVersion -> byte-identische
+// Ausgabe.
+const DefaultGoVersion = "1.26.4"
+
+// golangciVersion ist der gepinnte golangci-lint-Tag des generierten Skeletts.
+const golangciVersion = "v2.12.2"
+
+// goProfile ist das Go-Layout fuer die gegebene Go-Version (ADR-0003 Docker-only):
+// Go-Gates als Dockerfile-Stages, das Makefile faehrt sie, dazu go.mod +
+// .golangci.yml und ein baubares cmd/app/main.go.
+//
+// Die Images sind TAG-gepinnt (golang:<ver>, golangci-lint:<ver>) — kein floating
+// (LH-QA-02), aber bewusst OHNE Digest: ein Digest wuerde die Go-Version
+// festnageln und den GO_VERSION-Knopf wirkungslos machen. go (major.minor) in
+// go.mod leitet sich aus goVersion ab, damit die Sprachversion zur Toolchain passt.
 //
 // Jedes Makefile-Target, das `docker build --target <stage>` ruft, hat eine
 // gleichnamige Dockerfile-Stage (test/lint/build) — kein halluziniertes Gate
 // (LH-QA-01); TestGenerate_MakefileTargetsMatchStages haelt die Kopplung fest.
-func goProfile() map[string]string {
+func goProfile(goVersion string) map[string]string {
 	return map[string]string{
-		"go.mod":          goMod,
-		"Dockerfile":      goDockerfile,
-		"Makefile":        goMakefile,
+		"go.mod":          "module app\n\ngo " + majorMinor(goVersion) + "\n",
+		"Dockerfile":      render(goDockerfileTmpl, goVersion),
+		"Makefile":        render(goMakefileTmpl, goVersion),
 		".golangci.yml":   goGolangci,
 		"cmd/app/main.go": goMain,
 	}
 }
 
-const goMod = `module app
+// majorMinor liefert "1.26" aus "1.26.4" (die go.mod-Sprachversion). Passt die
+// Eingabe nicht ins major.minor(.patch)-Schema, kommt sie unveraendert zurueck.
+func majorMinor(v string) string {
+	parts := strings.SplitN(v, ".", 3)
+	if len(parts) < 2 {
+		return v
+	}
+	return parts[0] + "." + parts[1]
+}
 
-go 1.26
-`
+// render setzt goVersion + den golangci-Pin in ein Template ein ({{…}}-Platzhalter,
+// eine Stelle je Wert). strings.Replacer statt fmt.Sprintf, weil die Templates
+// literale %-Verben tragen (das awk im Makefile-help-Target).
+func render(tmpl, goVersion string) string {
+	return strings.NewReplacer(
+		"{{GO_VERSION}}", goVersion,
+		"{{GOLANGCI_VERSION}}", golangciVersion,
+	).Replace(tmpl)
+}
 
 const goMain = `// Command app — vom ai-harness-init generiertes Go-Skelett.
 package main
 
-func main() {}
+import (
+	"fmt"
+	"os"
+)
+
+func main() {
+	if _, err := fmt.Fprintln(os.Stdout, "Hallo vom generierten ai-harness-init-Skelett."); err != nil {
+		os.Exit(1)
+	}
+}
 `
 
-const goDockerfile = `# syntax=docker/dockerfile:1.7
+const goDockerfileTmpl = `# syntax=docker/dockerfile:1.7
 # Dockerfile — generiert von ai-harness-init (Go-Skelett). Jede Go-Gate ist eine
-# Stage (docker build --target <stage>); die Bases sind digest-gepinnt (LH-QA-02).
-ARG GO_VERSION=1.26.4
-ARG GOLANGCI_LINT_VERSION=v2.12.2
+# Stage (docker build --target <stage>); die Images sind TAG-gepinnt (LH-QA-02,
+# kein floating). Digest bewusst weggelassen, damit GO_VERSION ein echter Knopf
+# bleibt; wer Digest-Pinning will, haengt @sha256:… an.
+ARG GO_VERSION={{GO_VERSION}}
+ARG GOLANGCI_LINT_VERSION={{GOLANGCI_VERSION}}
 
-FROM golang:${GO_VERSION}@sha256:792443b89f65105abba56b9bd5e97f680a80074ac62fc844a584212f8c8102c3 AS deps
+FROM golang:${GO_VERSION} AS deps
 WORKDIR /src
 ENV GOFLAGS="-mod=readonly -buildvcs=false" \
     GOMODCACHE=/go/pkg/mod \
@@ -49,7 +91,7 @@ FROM deps AS test
 COPY . .
 RUN CGO_ENABLED=0 go test ./...
 
-FROM golangci/golangci-lint:${GOLANGCI_LINT_VERSION}@sha256:5cceeef04e53efe1470638d4b4b4f5ceefd574955ab3941b2d9a68a8c9ad5240 AS lint
+FROM golangci/golangci-lint:${GOLANGCI_LINT_VERSION} AS lint
 WORKDIR /src
 ENV GOFLAGS="-buildvcs=false"
 COPY --from=deps /go/pkg/mod /go/pkg/mod
@@ -61,12 +103,12 @@ COPY . .
 RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/app ./cmd/app
 `
 
-// goMakefile — die Recipe-Zeilen sind TAB-eingerueckt (Makefile-Pflicht).
-const goMakefile = `# Makefile — generiert von ai-harness-init (Go-Skelett). Go-Gates als
+// goMakefileTmpl — die Recipe-Zeilen sind TAB-eingerueckt (Makefile-Pflicht).
+const goMakefileTmpl = `# Makefile — generiert von ai-harness-init (Go-Skelett). Go-Gates als
 # Dockerfile-Stages (Docker-only, ADR-0003); der Doc-Gate-Include (d-check.mk)
 # wird beim Init-Flow verdrahtet.
-GO_VERSION ?= 1.26.4
-GOLANGCI_LINT_VERSION ?= v2.12.2
+GO_VERSION ?= {{GO_VERSION}}
+GOLANGCI_LINT_VERSION ?= {{GOLANGCI_VERSION}}
 IMAGE ?= app
 
 .PHONY: gates test lint build help
@@ -86,7 +128,13 @@ build: ## Go-Binary bauen (Dockerfile build-Stage) — Docker-only
 gates: lint build test ## Alle Go-Gates
 `
 
+// goGolangci — kuratiert reiche Config: die volle Linter-Enable-Liste unseres
+// Dogfood-.golangci.yml + Settings + _test.go-Exclusions, ABER ohne die
+// repo-EIGENEN Meinungen forbidigo (fmt.Print-Verbot; wir schreiben ueber
+// injizierte io.Writer — ein fremdes Skelett muss das nicht) und gomodguard
+// (logrus/zap-Block). Der GENERIERTE Code lintet erst im Ziel (slice-024).
 const goGolangci = `version: "2"
+
 linters:
   default: none
   enable:
@@ -95,4 +143,105 @@ linters:
     - ineffassign
     - staticcheck
     - unused
+    - containedctx
+    - contextcheck
+    - cyclop
+    - dupl
+    - fatcontext
+    - funlen
+    - gochecknoglobals
+    - gochecknoinits
+    - gocognit
+    - gocyclo
+    - iface
+    - inamedparam
+    - interfacebloat
+    - ireturn
+    - maintidx
+    - nestif
+    - noctx
+    - reassign
+    - revive
+    - testpackage
+    - unparam
+
+  settings:
+    errcheck:
+      exclude-functions:
+        - fmt.Fprintln
+        - fmt.Fprintf
+        - fmt.Fprint
+    cyclop:
+      max-complexity: 15
+    dupl:
+      threshold: 150
+    funlen:
+      lines: 100
+      statements: 60
+    gocognit:
+      min-complexity: 20
+    gocyclo:
+      min-complexity: 15
+    interfacebloat:
+      max: 10
+    ireturn:
+      allow:
+        - error
+        - empty
+        - anon
+        - stdlib
+        - generic
+    maintidx:
+      under: 20
+    nestif:
+      min-complexity: 5
+    revive:
+      rules:
+        - name: blank-imports
+        - name: context-as-argument
+        - name: context-keys-type
+        - name: dot-imports
+        - name: empty-block
+        - name: error-naming
+        - name: error-return
+        - name: error-strings
+        - name: errorf
+        - name: exported
+        - name: if-return
+        - name: increment-decrement
+        - name: indent-error-flow
+        - name: package-comments
+        - name: range
+        - name: receiver-naming
+        - name: redefines-builtin-id
+        - name: superfluous-else
+        - name: time-naming
+        - name: unexported-return
+        - name: unused-parameter
+        - name: var-declaration
+        - name: var-naming
+        - name: unused-receiver
+
+  exclusions:
+    generated: lax
+    rules:
+      - linters:
+          - cyclop
+          - gocognit
+          - gocyclo
+          - nestif
+          - funlen
+        path: _test\.go$
+      - linters:
+          - noctx
+          - unparam
+        path: _test\.go$
+      - linters:
+          - revive
+        path: _test\.go$
+        text: ^unused-parameter
+      - linters:
+          - revive
+        path: _test\.go$
+        text: ^unused-receiver
 `

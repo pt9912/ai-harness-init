@@ -28,14 +28,14 @@ trap cleanup EXIT
 # 0700-Mount nicht traversieren. Ein echtes Adopter-Git-Repo hat 0755.
 chmod 755 "$tmprepo"
 
-echo "smoke: 1/4 Binary aus der artifact-Stage auf den Host extrahieren ..."
+echo "smoke: 1/5 Binary aus der artifact-Stage auf den Host extrahieren ..."
 docker build --build-arg GO_VERSION="$GO_VERSION" \
 	--target artifact --output "type=local,dest=$tmpbin" .
 
-echo "smoke: 2/4 Bootstrap (--lang go): Doc-Gate + Templates + Skelett-Generierung (lokal) ..."
+echo "smoke: 2/5 Bootstrap (--lang go): Doc-Gate + Templates + Skelett-Generierung (lokal) ..."
 ( cd "$tmprepo" && "$tmpbin/ai-harness-init" --lang go --name smoke )
 
-echo "smoke: 3/4 Skelett generiert? (slice-023) + Templates emittiert? (slice-022b) ..."
+echo "smoke: 3/5 Skelett generiert? (slice-023) + Templates emittiert? (slice-022b) ..."
 if [ ! -f "$tmprepo/.harness/skeleton/Makefile" ]; then
 	echo "smoke: FEHLER — Sprachskelett nicht nach .harness/skeleton/ gestaged" >&2
 	exit 1
@@ -66,7 +66,7 @@ for rel in README.md.md Makefile.md .d-check.yml.md project-readme.md .harness/s
 	fi
 done
 
-echo "smoke: 4/4 emittiertes docs-check laeuft + akzeptiert die Config ..."
+echo "smoke: 4/5 emittiertes docs-check laeuft + akzeptiert die Config ..."
 out="$(make -C "$tmprepo" -f d-check.mk docs-check 2>&1 || true)"
 if ! printf '%s\n' "$out" | grep -q "geprüft"; then
 	echo "smoke: FEHLER — d-check lief nicht (Config-Crash / halluzinierte Config?):" >&2
@@ -75,5 +75,16 @@ if ! printf '%s\n' "$out" | grep -q "geprüft"; then
 fi
 printf '%s\n' "$out" | grep -E "geprüft|Befund"
 
-echo "smoke: OK — Bootstrap laeuft, Skelett gestaged, Doc-Gate-Config valide."
-echo "smoke: HINWEIS — 0 Befunde out-of-the-box (voller Green-Run) ist slice-005 (LH-FA-01)."
+echo "smoke: 5/5 generiertes Skelett: eigene Go-Gates (lint/build/test) real gruen? ..."
+# E2E (slice-023): das GENERIERTE .golangci.yml + Dockerfile + go.mod + main.go
+# zusammen gruen. KEIN Gate lintet .harness/skeleton/ (slice-023 §6-Grenze) — der
+# Beweis, dass die kuratiert-reiche Config und der generierte Code zusammenpassen,
+# gehoert hierher (Tier-2, Host-Docker: der generierte Makefile-Stack ruft docker).
+skel_out="$( make -C "$tmprepo/.harness/skeleton" gates 2>&1 )" || {
+	echo "smoke: FEHLER — die Go-Gates des generierten Skeletts sind rot (lint/build/test):" >&2
+	printf '%s\n' "$skel_out" | tail -25 >&2
+	exit 1
+}
+
+echo "smoke: OK — Bootstrap laeuft, Skelett generiert + eigene Go-Gates gruen, Doc-Gate-Config valide."
+echo "smoke: HINWEIS — 0 Befunde out-of-the-box (voller emittierter Green-Run) ist slice-005 (LH-FA-01)."

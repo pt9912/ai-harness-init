@@ -208,6 +208,29 @@ func TestRun_FetchKollisionSchreibtNichts(t *testing.T) {
 	}
 }
 
+// TestRun_SkelGoVersionOverride belegt die Verdrahtung env -> generiertes Skelett:
+// SKEL_GO_VERSION faedelt bis ins Dockerfile des generierten Skeletts. Der Lauf
+// bricht bewusst am Phase-3-Emit-Pre-Flight ab (vorhandene AGENTS.md), aber das
+// Skelett ist da (Phase 2) schon generiert.
+func TestRun_SkelGoVersionOverride(t *testing.T) {
+	t.Setenv("SKEL_GO_VERSION", "1.29.9")
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "AGENTS.md"), []byte("# vorhanden\n"), 0o644); err != nil {
+		t.Fatalf("Setup: %v", err)
+	}
+	var out, errb bytes.Buffer
+	if code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb); code != 1 {
+		t.Fatalf("Exit-Code = %d, want 1 (Emit-Pre-Flight bricht ab)", code)
+	}
+	df, err := os.ReadFile(filepath.Join(dir, ".harness", "skeleton", "Dockerfile"))
+	if err != nil {
+		t.Fatalf("generiertes Dockerfile lesen: %v", err)
+	}
+	if !strings.Contains(string(df), "ARG GO_VERSION=1.29.9") {
+		t.Errorf("SKEL_GO_VERSION=1.29.9 nicht ins generierte Dockerfile gefaedelt:\n%s", df)
+	}
+}
+
 // TestPreflightAbsent nagelt die Pre-Flight-LOGIK direkt fest: freie Ziele
 // liefern nil, ein vorhandenes meldet einen Fehler, der Pfad UND Ausweg nennt.
 func TestPreflightAbsent(t *testing.T) {

@@ -12,12 +12,15 @@ import (
 	"github.com/pt9912/ai-harness-init/internal/gen"
 )
 
-// genGo generiert das go-Skelett in ein frisches Temp-Verzeichnis.
-func genGo(t *testing.T) string {
+// genGo generiert das go-Skelett (Default-Version) in ein frisches Temp-Verzeichnis.
+func genGo(t *testing.T) string { return genGoWith(t, gen.DefaultGoVersion) }
+
+// genGoWith generiert das go-Skelett mit einer expliziten Go-Version.
+func genGoWith(t *testing.T, goVersion string) string {
 	t.Helper()
 	dir := t.TempDir()
-	if err := gen.Generate(dir, "go"); err != nil {
-		t.Fatalf("Generate(go): %v", err)
+	if err := gen.Generate(dir, "go", goVersion); err != nil {
+		t.Fatalf("Generate(go, %q): %v", goVersion, err)
 	}
 	return dir
 }
@@ -81,7 +84,7 @@ func TestGenerate_MakefileTargetsMatchStages(t *testing.T) {
 // sortierten Liste der unterstuetzten Profile — die --lang-Validierung, die mit
 // slice-023 vom Skelett-Fetch zum Generator wanderte.
 func TestGenerate_UnknownLang(t *testing.T) {
-	err := gen.Generate(t.TempDir(), "rust")
+	err := gen.Generate(t.TempDir(), "rust", gen.DefaultGoVersion)
 	var ule *gen.UnknownLangError
 	if !errors.As(err, &ule) {
 		t.Fatalf("erwartete *UnknownLangError, got %v", err)
@@ -109,6 +112,51 @@ func TestSupportedLangs(t *testing.T) {
 	if !found {
 		t.Errorf("SupportedLangs = %v, soll go enthalten", langs)
 	}
+}
+
+// TestGoProfile_PinsMatchRepo koppelt die Skelett-Default-Pins an die kanonischen
+// Repo-Pins (Dockerfile/go.mod) — sonst bumpt ein Repo-Update die eine Haelfte und
+// vergisst den Generator (slice-004a-Lehre, LH-QA-02, Wartungslast slice-023 §6).
+func TestGoProfile_PinsMatchRepo(t *testing.T) {
+	dir := genGo(t) // Default-Version
+	genDf := mustRead(t, filepath.Join(dir, "Dockerfile"))
+	repoDf := mustRead(t, filepath.Join("..", "..", "Dockerfile"))
+	for _, key := range []string{"ARG GO_VERSION", "ARG GOLANGCI_LINT_VERSION"} {
+		re := regexp.MustCompile(regexp.QuoteMeta(key) + `=(\S+)`)
+		if g, r := firstSub(t, re, genDf), firstSub(t, re, repoDf); g != r {
+			t.Errorf("%s: generiert %q != Repo-Dockerfile %q (Drift, LH-QA-02)", key, g, r)
+		}
+	}
+	reGo := regexp.MustCompile(`go (\d+\.\d+)`)
+	g := firstSub(t, reGo, mustRead(t, filepath.Join(dir, "go.mod")))
+	r := firstSub(t, reGo, mustRead(t, filepath.Join("..", "..", "go.mod")))
+	if g != r {
+		t.Errorf("go.mod-Sprachversion: generiert %q != Repo %q (Drift)", g, r)
+	}
+}
+
+// TestGenerate_GoVersionThreaded belegt, dass die uebergebene Go-Version wirklich
+// ins Skelett faedelt: das Dockerfile-ARG traegt sie exakt, go.mod die major.minor-
+// Ableitung. Damit ist der SKEL_GO_VERSION-Knopf (cmd) am Generator verankert.
+func TestGenerate_GoVersionThreaded(t *testing.T) {
+	dir := genGoWith(t, "1.27.3")
+	df := mustRead(t, filepath.Join(dir, "Dockerfile"))
+	if got := firstSub(t, regexp.MustCompile(`ARG GO_VERSION=(\S+)`), df); got != "1.27.3" {
+		t.Errorf("Dockerfile ARG GO_VERSION = %q, want 1.27.3", got)
+	}
+	gomod := mustRead(t, filepath.Join(dir, "go.mod"))
+	if got := firstSub(t, regexp.MustCompile(`go (\d+\.\d+)`), gomod); got != "1.27" {
+		t.Errorf("go.mod-Version = %q, want 1.27 (major.minor aus 1.27.3)", got)
+	}
+}
+
+func firstSub(t *testing.T, re *regexp.Regexp, s string) string {
+	t.Helper()
+	m := re.FindStringSubmatch(s)
+	if m == nil {
+		t.Fatalf("Muster %s nicht gefunden", re)
+	}
+	return m[1]
 }
 
 func walkRel(t *testing.T, dir string) []string {
