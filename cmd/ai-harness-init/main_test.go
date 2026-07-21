@@ -231,6 +231,32 @@ func TestRun_SkelGoVersionOverride(t *testing.T) {
 	}
 }
 
+// TestRun_SkeletonKollisionSchreibtKeinEmit belegt, dass die Skelett-ROOT-Ziele
+// (slice-004b) im Phase-3-Pre-Flight liegen: ein vorhandenes Makefile am Ziel-Root
+// bricht VOR jedem Emit-Write ab (kein Teil-Bootstrap, slice-025) — das generierte
+// Skelett wird ja erst in Phase 4 an den Root verdrahtet.
+//
+// ROT-Gegenbeispiel (AGENTS 3.6): fehlt wire.Targets im Phase-3-Pre-Flight, prueft
+// er die Makefile-Kollision nicht -> Phase 4, DocGate scheitert netzlos an docker,
+// die Meldung ist KEIN "Makefile existiert bereits". test/mutations/23 mutiert das.
+func TestRun_SkeletonKollisionSchreibtKeinEmit(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "Makefile"), []byte("# vorhanden\n"), 0o644); err != nil {
+		t.Fatalf("Setup: %v", err)
+	}
+	var out, errb bytes.Buffer
+	code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb)
+	if code != 1 {
+		t.Fatalf("Exit-Code = %d, want 1 (Pre-Flight bricht an der Makefile-Kollision ab)", code)
+	}
+	if !strings.Contains(errb.String(), "Makefile existiert bereits") {
+		t.Errorf("stderr = %q, soll die Makefile-Kollision melden", errb.String())
+	}
+	if _, err := os.Stat(filepath.Join(dir, "tools", "harness", "baseline-verify.sh")); !errors.Is(err, os.ErrNotExist) {
+		t.Errorf("Verifier trotz Pre-Flight-Abbruch geschrieben (Teil-Emit): %v", err)
+	}
+}
+
 // TestPreflightAbsent nagelt die Pre-Flight-LOGIK direkt fest: freie Ziele
 // liefern nil, ein vorhandenes meldet einen Fehler, der Pfad UND Ausweg nennt.
 func TestPreflightAbsent(t *testing.T) {

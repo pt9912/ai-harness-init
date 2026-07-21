@@ -36,9 +36,13 @@ docker build --build-arg GO_VERSION="$GO_VERSION" \
 echo "smoke: 2/5 Bootstrap (--lang go): Doc-Gate + Templates + Skelett-Generierung (lokal) ..."
 ( cd "$tmprepo" && "$tmpbin/ai-harness-init" --lang go --name smoke )
 
-echo "smoke: 3/5 Skelett generiert? (slice-023) + Templates emittiert? (slice-022b) ..."
-if [ ! -f "$tmprepo/.harness/skeleton/Makefile" ]; then
-	echo "smoke: FEHLER — Sprachskelett nicht nach .harness/skeleton/ gestaged" >&2
+echo "smoke: 3/5 Skelett an den Ziel-Root verdrahtet? (slice-004b) + Templates emittiert? (slice-022b) ..."
+if [ ! -f "$tmprepo/Makefile" ] || [ ! -f "$tmprepo/go.mod" ]; then
+	echo "smoke: FEHLER — Sprachskelett nicht an den Ziel-Root verdrahtet (Makefile/go.mod fehlt)" >&2
+	exit 1
+fi
+if [ -d "$tmprepo/.harness/skeleton" ]; then
+	echo "smoke: FEHLER — transientes .harness/skeleton/ nach der Verdrahtung nicht aufgeraeumt (slice-004b)" >&2
 	exit 1
 fi
 # Dass run() die Template-Schicht ueberhaupt ablegt, beobachtete bis slice-026
@@ -76,16 +80,22 @@ if ! printf '%s\n' "$out" | grep -q "geprüft"; then
 fi
 printf '%s\n' "$out" | grep -E "geprüft|Befund"
 
-echo "smoke: 5/5 generiertes Skelett: eigene Go-Gates (lint/build/test) real gruen? ..."
-# E2E (slice-023): das GENERIERTE .golangci.yml + Dockerfile + go.mod + main.go
-# zusammen gruen. KEIN Gate lintet .harness/skeleton/ (slice-023 §6-Grenze) — der
-# Beweis, dass die kuratiert-reiche Config und der generierte Code zusammenpassen,
-# gehoert hierher (Tier-2, Host-Docker: der generierte Makefile-Stack ruft docker).
-skel_out="$( make -C "$tmprepo/.harness/skeleton" gates 2>&1 )" || {
-	echo "smoke: FEHLER — die Go-Gates des generierten Skeletts sind rot (lint/build/test):" >&2
+echo "smoke: 5/5 verdrahtetes Skelett am Ziel-Root: d-check.mk eingebunden + Go-Gates gruen? ..."
+# slice-004b: das Skelett liegt jetzt am Ziel-Root, das Makefile bindet d-check.mk
+# ein (MR-010) — ein make gates statt zweier Gate-Quellen. Verdrahtung strukturell:
+if ! grep -q '^include d-check.mk$' "$tmprepo/Makefile"; then
+	echo "smoke: FEHLER — generiertes Makefile bindet d-check.mk NICHT ein (MR-010-Verdrahtung fehlt)" >&2
+	exit 1
+fi
+# E2E: die Go-Gates (lint/build/test) am Ziel-Root real gruen — NICHT `make gates`
+# (das schliesst jetzt docs-check ein, das auf den noch unvollstaendigen Templates
+# anschlaegt: 0 Befunde out-of-the-box ist slice-005/024, nicht hier). Belegt, dass
+# die kuratiert-reiche .golangci.yml + main.go am Root zusammenpassen (Host-Docker).
+skel_out="$( make -C "$tmprepo" lint build test 2>&1 )" || {
+	echo "smoke: FEHLER — die Go-Gates des verdrahteten Skeletts sind rot (lint/build/test):" >&2
 	printf '%s\n' "$skel_out" | tail -25 >&2
 	exit 1
 }
 
-echo "smoke: OK — Bootstrap laeuft, Skelett generiert + eigene Go-Gates gruen, Doc-Gate-Config valide."
-echo "smoke: HINWEIS — 0 Befunde out-of-the-box (voller emittierter Green-Run) ist slice-005 (LH-FA-01)."
+echo "smoke: OK — Bootstrap laeuft, Skelett an den Root verdrahtet (d-check.mk eingebunden) + Go-Gates gruen, Doc-Gate-Config valide."
+echo "smoke: HINWEIS — voller make-gates-Green-Run im Ziel (inkl. docs-check) ist slice-005/024 (LH-FA-01)."

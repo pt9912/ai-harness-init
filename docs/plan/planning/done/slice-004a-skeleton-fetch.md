@@ -17,7 +17,7 @@ wechselt nur durch `git mv`, siehe
 
 `cmd/ai-harness-init --lang <X>` holt `lab/example/<X>/` vom **gepinnten Kurs-Tag**
 (`ADR-0001`, Variante C) als Tag-Tarball und extrahiert den Teilbaum in den <!-- d-check:ignore (Verweis auf die superseded Skelett-Distributions-ADR; done/-Slice eingefroren) -->
-**Staging-Bereich** `.harness/skeleton/` (der Merge in den Root ist [slice-004b](../open/slice-004b-skeleton-wire.md)).
+**Staging-Bereich** `.harness/skeleton/` (der Merge in den Root ist [slice-004b](../in-progress/slice-004b-skeleton-wire.md)).
 Unbekannte Sprache → Exit 2 + Liste verfügbarer Skelette.
 
 ## 2. Definition of Done
@@ -32,7 +32,7 @@ Unbekannte Sprache → Exit 2 + Liste verfügbarer Skelette.
 ## 3. Plan (vor Code)
 
 Scope: **nur Fetch + Picker**; das Verdrahten (Merge Skelett-Gates ↔ Doc-Gate, `AGENTS.md`/`Makefile`-
-Konflikt) ist [slice-004b](../open/slice-004b-skeleton-wire.md) (+ Layering-ADR). Transport (gemessen): Tag-Tarball
+Konflikt) ist [slice-004b](../in-progress/slice-004b-skeleton-wire.md) (+ Layering-ADR). Transport (gemessen): Tag-Tarball
 (codeload; kein separates Release-Asset) + reines Go-`archive/tar`+`compress/gzip`-Extrakt — keine neue
 Dependency ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
 

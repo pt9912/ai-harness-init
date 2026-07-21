@@ -22,7 +22,7 @@ wechselt nur durch `git mv`, siehe
 > ist **Accepted** (Vorbedingung entfällt), und einen **Merge gibt es nicht mehr** — der
 > Generator *besitzt* `Makefile`/`Dockerfile`/`go.mod`, es gibt also keine Konfliktdateien.
 > Übrig bleibt, was der Titel immer meinte: **verdrahten**. Der Voll-E2E-Smoke wandert
-> nach [slice-024](slice-024-voll-smoke.md) (welle-03), weil er den vollständigen
+> nach [slice-024](../open/slice-024-voll-smoke.md) (welle-03), weil er den vollständigen
 > Bootstrap inklusive Root-README braucht.
 
 Das **generierte** Sprachskelett (slice-023) mit der Harness-Emit-Schicht **verdrahten**:
@@ -35,7 +35,7 @@ Verzeichnis-Gerüst anlegen, den Init-Flow verbinden und `d-check.mk` ins generi
 - [ ] [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) (Verdrahten-Teil): die generierten Code-Gates sind verdrahtet, **nur lauffähige** Targets ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 - [ ] Das generierte `Makefile` **bindet `d-check.mk` ein** ([`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)); Doc-Gate und Code-Gates hängen an **einem** `make gates`, nicht an zwei konkurrierenden.
 - [ ] [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen): das Verzeichnis-Gerüst des Zielrepos steht vollständig (Doc-Struktur aus slice-022a/022b, Skelett aus slice-023, Gerüst hier), der Init-Flow durchläuft alle Herkunftsklassen aus [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md).
-- [ ] Emit-Test belegt die Verdrahtung struktur-seitig (Include vorhanden, Targets aufrufbar). **Der Voll-E2E-Beweis ist ausdrücklich [slice-024](slice-024-voll-smoke.md)** — hier wird er *nicht* behauptet.
+- [ ] Emit-Test belegt die Verdrahtung struktur-seitig (Include vorhanden, Targets aufrufbar). **Der Voll-E2E-Beweis ist ausdrücklich [slice-024](../open/slice-024-voll-smoke.md)** — hier wird er *nicht* behauptet.
 - [ ] `make gates` grün.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 

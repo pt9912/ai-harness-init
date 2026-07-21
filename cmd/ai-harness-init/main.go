@@ -28,6 +28,7 @@ import (
 	"github.com/pt9912/ai-harness-init/internal/emit"
 	"github.com/pt9912/ai-harness-init/internal/fetch"
 	"github.com/pt9912/ai-harness-init/internal/gen"
+	"github.com/pt9912/ai-harness-init/internal/wire"
 )
 
 const usage = `ai-harness-init — bootstrappt ein Git-Repo mit dem AI-Harness-Prozess.
@@ -175,8 +176,16 @@ func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, st
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
+	// Verdrahten (slice-004b): das gestagte Skelett an den Ziel-Root platzieren und
+	// d-check.mk ins Makefile einbinden (MR-010) — ein make gates statt zweier
+	// Gate-Quellen. Erst HIER (Phase 4, nach allen Pre-Flights) erscheint das
+	// Root-Skelett — so haelt die slice-025-Garantie „Kollision -> kein Teil-Bootstrap".
+	if err := wire.Place(skelDir, targetDir, force); err != nil {
+		fmt.Fprintln(stderr, "Fehler:", err)
+		return 1
+	}
 
-	fmt.Fprintf(stdout, "ai-harness-init: Bootstrap (Skelett %q gestaged + Baseline %s vendored + Doc-Gate + Template-Baseline) — --lang=%s.\n", lang, tag, lang)
+	fmt.Fprintf(stdout, "ai-harness-init: Bootstrap (Skelett %q verdrahtet + Baseline %s vendored + Doc-Gate + Template-Baseline) — --lang=%s.\n", lang, tag, lang)
 	return 0
 }
 
@@ -207,7 +216,15 @@ func emitTargets(targetDir, tag, name string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	return append(rels, tt...), nil
+	rels = append(rels, tt...)
+	// Die Skelett-Ziele (slice-004b): das gestagte Skelett wird in Phase 4 an den
+	// Ziel-Root verdrahtet — seine Ziele gehoeren in DENSELBEN Pre-Flight, damit
+	// eine Kollision (z.B. ein vorhandenes Makefile) nichts Teil-Bootstrappt (slice-025).
+	st, err := wire.Targets(filepath.Join(targetDir, ".harness", "skeleton"))
+	if err != nil {
+		return nil, err
+	}
+	return append(rels, st...), nil
 }
 
 // baselineDir und templatesDir halten das Ziel-Layout an EINER Stelle: die
