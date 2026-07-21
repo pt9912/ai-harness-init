@@ -12,8 +12,11 @@
 #      Baseline (slice-003) + Sprachskelett-Generierung (slice-023, lokal/
 #      deterministisch, kein Netz) + vendored Baseline mit Verifier (slice-022a,
 #      Netz-Fetch: Release-Asset).
-#   3. Skelett generiert? (slice-023-Generator-Beweis, .harness/skeleton/).
+#   3. Skelett an den Ziel-Root verdrahtet (slice-004b) + transientes
+#      .harness/skeleton/ entfernt + Template-Schicht emittiert (slice-022b).
 #   4. Emittiertes d-check laeuft und akzeptiert die Config (kein Config-Crash).
+#   5. Verdrahtetes Makefile bindet d-check.mk ein (MR-010) + Go-Gates am
+#      Ziel-Root gruen (lint/build/test).
 #
 # NICHT geprueft: 0-Befunde-out-of-the-box (voller emittierter Green-Run). Die
 # emittierten Templates tragen noch Vorwaerts-Verweise/Platzhalter (u. a. auf die
