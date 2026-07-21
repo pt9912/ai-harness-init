@@ -141,7 +141,7 @@ ist einen Blick wert, wenn der nächste Slice eine Quelle ersetzt.
 ### Folge-Slices
 
 - [slice-026](slice-026-mutations-sensor.md) — neu aus diesem Slice: der fehlende Quadrant zu §3.6, plus N-3/N-4.
-- [slice-025](../in-progress/slice-025-bootstrap-preflight.md) — unverändert offen; die Kette 025 → 023 → 004b folgt.
+- [slice-025](slice-025-bootstrap-preflight.md) — unverändert offen; die Kette 025 → 023 → 004b folgt.
 
 ## 8. Sub-Area-Modus-Begründung
 
