@@ -35,14 +35,14 @@ Codepfad mit (slice-022a L3/L4).
 
 ## 2. Definition of Done
 
-- [ ] **Entwurfs-Entscheidung getroffen und begründet** (siehe §6): Pre-Flight-Check *oder* Staging→Commit. Der Unterschied ist nicht kosmetisch — Ersteres prüft Vorbedingungen, Letzteres macht die Kette atomar. Fällt die Wahl auf ein Modell mit Architektur-Wirkung, entsteht **vor dem Code** eine ADR (Modul 4).
-- [ ] [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen): ein Bootstrap, der an **irgendeinem** Schritt scheitert, hinterlässt das Zielrepo in dem Zustand, in dem er es vorfand — belegt je Schritt der Kette, nicht nur für einen.
-- [ ] Der Test, der das belegt, ist **rot gesehen** worden: ohne die Absicherung muss er fallen (die Klasse ist viermal durch Tests gerutscht, weil niemand den Kettenzustand *geprüft* hat — slice-022a M2 fing genau das).
-- [ ] **slice-022a L3** aufgelöst: kein `.baseline-*`-Temp-Rest bei Abbruch zwischen `MkdirTemp` und Rename; das Stat→Rename-Fenster ist entweder geschlossen oder als bewusst akzeptiert begründet (Race, ggf. nicht verifizierbar — dann ehrlich benennen statt stillschweigend lassen).
-- [ ] **slice-022a L4** aufgelöst: der Asset-Body wird nicht mehr unbegrenzt gepuffert, bevor der sha256-Pin greift (Größen-Schranke), [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten).
-- [ ] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6): `make gates` bleibt offline-grün; kein neues Gate behauptet.
-- [ ] `make gates` grün.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag — hier zwingend zur **Klasse**: warum drei Zuweisungen nicht trugen und was den vierten Anlauf anders macht.
+- [x] **Entwurfs-Entscheidung getroffen und begründet** (siehe §6): Pre-Flight-Check *oder* Staging→Commit. Der Unterschied ist nicht kosmetisch — Ersteres prüft Vorbedingungen, Letzteres macht die Kette atomar. Fällt die Wahl auf ein Modell mit Architektur-Wirkung, entsteht **vor dem Code** eine ADR (Modul 4). → **Gewählt: Pre-Flight, keine ADR** (additive CLI-Orchestrierung; s. §7).
+- [x] [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen): eine **Kollision ohne `--force`** an **irgendeinem** Kettenschritt lässt den jeweiligen Block nichts schreiben — belegt je Schritt (Fetch- **und** Emit-Ziele). *(Bei Closure eingeengt — F-1: der ursprünglich absolute Wortlaut „hinterlässt das Zielrepo in dem Zustand, in dem er es vorfand" war breiter als Plan §6 autorisiert; ein Runtime-Abbruch* während *Fetch/Docker lässt das gefetchte `.harness/` bewusst retry-freundlich liegen — keine Waisen-Teilemission, s. §7.)*
+- [x] Der Test, der das belegt, ist **rot gesehen** worden: ohne die Absicherung muss er fallen (die Klasse ist viermal durch Tests gerutscht, weil niemand den Kettenzustand *geprüft* hat — slice-022a M2 fing genau das). → `make mutate` 14/14, Fälle 12/14 färben die Pre-Flight-Tests rot.
+- [x] **slice-022a L3** aufgelöst: kein `.baseline-*`-Temp-Rest bei Abbruch zwischen `MkdirTemp` und Rename; das Stat→Rename-Fenster ist entweder geschlossen oder als bewusst akzeptiert begründet (Race, ggf. nicht verifizierbar — dann ehrlich benennen statt stillschweigend lassen). → `defer` (Go-Fehlerpfad) + Mutation 13; Prozess-Tod-/Stat→Rename-Fenster ehrlich als benigne/akzeptiert benannt.
+- [x] **slice-022a L4** aufgelöst: der Asset-Body wird nicht mehr unbegrenzt gepuffert, bevor der sha256-Pin greift (Größen-Schranke), [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten). → `readCapped(rc, 8 MiB)` vor dem Pin + Mutation 11.
+- [x] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6): `make gates` bleibt offline-grün; kein neues Gate behauptet.
+- [x] `make gates` grün.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag — hier zwingend zur **Klasse**: warum drei Zuweisungen nicht trugen und was den vierten Anlauf anders macht. → s. §7.
 
 ## 3. Plan (vor Code)
 
@@ -96,7 +96,59 @@ slice-023 mit einer abgesicherten Kette.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Abgeschlossen 2026-07-21.** Gewähltes Modell: **Pre-Flight, keine ADR** — additive
+Orchestrierungs-Härtung in der CLI-Schicht (Orchestrierung ist deren Verantwortung
+laut Architektur §2), ohne Herkunftsklasse oder Fetch-Generate-Modell aus
+[`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md) zu berühren und
+ohne Gate-Senkung. Die verworfene Alternative Staging→Commit HÄTTE Architektur-Wirkung
+gehabt (Staging-Schicht + geändertes Schreibmodell jedes Emit-Schritts) — sie wäre die
+ADR-pflichtige gewesen, nicht die gewählte.
+
+**Rollen-Durchlauf (frische Kontexte):** Review konform (0 HIGH/MEDIUM, 2 INFO —
+`docs/reviews/2026-07-21-slice-025-review.md`); Verifikation bestanden (8/8 DoD
+CONFIRMED, 0 VIOLATED — `docs/reviews/2026-07-21-slice-025-verify.md`; `make gates` +
+`make mutate` selbst gefahren).
+
+**Steering-Loop — die KLASSE (Kern dieses Slice).** Die Teil-Bootstrap-Klasse
+(slice-002 I1 → 003 I1 → 004a L3 → 022a I1) stand bei ihrer vierten Wiederholung.
+*Warum die drei Zuweisungen (004a→004b/005) nicht trugen:* die Lösung hing jeweils an
+einem ohnehin großen Folge-Slice, dessen eigenes Ziel (Merge/Verdrahten bzw.
+Root-README) den Pre-Flight verdrängte — die Absicherung war nie *jemandes Auftrag*,
+nur ein Nebenpunkt. *Was der vierte Anlauf anders macht:* ein **eigener Slice, dessen
+einziger Auftrag die Absicherung ist**, plus die Platzierung **vor** den Slices, die
+weitere ungeschützte Schritte anhängen (023/004b). Die Zuweisung trägt, weil sie mit
+keinem anderen Inhalt konkurriert. Geschärfte Regel: eine wiederkehrende
+Robustheits-Klasse, deren Lösung dreimal weitergereicht wurde, gehört in einen eigenen
+Slice, nicht in ein viertes Weiterreichen.
+
+**Neuer Sensor.** Vier Mutations-Fälle (`test/mutations/`, Nummern 11–14) nageln die
+neuen Wächter (Größen-Schranke, Emit-/Fetch-Pre-Flight, defer-Temp) an ihre benannten
+Tests — `make mutate` fährt sie künftig automatisch.
+
+**Gemessene §3.6-Lehre.** Der erste Emit-Pre-Flight-Wächter blieb still grün: ein
+Helfer (`reportPreflight`), der die Meldung DRUCKTE getrennt vom `return`, ließ die
+Mutation (nur `return` entfernt) den Beobachtungswert leaken. `make mutate` fing es
+(genau sein Zweck). Fix: Print + Return im selben Block. Regel: ein Wächter-Observable
+muss an seine Wirkung gebunden sein, sonst prüft der Test das Symptom, nicht die
+Ursache.
+
+**F-1-Reconciliation (Verifier).** DoD-Zeile 39 (§2) trug einen absoluten Wortlaut
+(„wie vorgefunden"), der breiter war als Plan §6 autorisiert. Bei dieser Closure auf
+das gelieferte, §6-sanktionierte Verhalten eingeengt: die je-Schritt-Absicherung gilt
+der **Kollisions-Klasse** (Fetch- und Emit-Ziele); ein Runtime-Abbruch *während*
+Fetch/Docker lässt das gefetchte `.harness/` bewusst **retry-freundlich** liegen (kein
+halbes Artefakt zum Handaufräumen — §6 „Teil-Erfolg ist nicht immer falsch"). Kein
+Code-Fix, reine Doc-Reconciliation.
+
+**Benannte Prozess-Lücke (Folge-MR, NICHT dieser Slice).** Ein Lifecycle-Move bricht
+Navigations-Links in eingefrorenen `done/`-Slices, die auf den bewegten Slice zeigen
+(hier: done/022a, done/022b → auf `in-progress/` repariert; beim Move nach `done/`
+brechen sie erneut). Kandidat analog
+[`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)
+(`docs/reviews/**`-Exemption): `done/**` von der Lifecycle-Pfad-Link-Prüfung ausnehmen
+— Gate-Policy, bewusst außerhalb dieses Slice.
+
+Wellen-Verweis folgt bei welle-02s Closure (done/welle-02-results.md).
 
 ## 8. Sub-Area-Modus-Begründung
 
