@@ -16,11 +16,11 @@ gezeigt, nicht als Treiber.
 **Start:** 2026-07-21 (Trigger „welle-02 done" erfüllt — alle Slices in `done/`, `make gates`/`make smoke`/`make mutate` grün, Carveout-Audit [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) dokumentiert)
 **Geplantes Ende:** offen
 
-**Slice-IDs:** slice-005 (Root-README emittieren, [`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2)) · slice-024
-(Voll-E2E-Smoke des Bootstraps, [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)). Beide liegen in `open/`.
-**Nächster Slice:** slice-005 (Root-README — Voraussetzung für den Voll-E2E-Smoke).
+**Slice-IDs:** slice-005 (Root-README, [`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2), **done**) → slice-028 (Emit
+out-of-the-box gate-sicher, [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)) → slice-024 (Voll-E2E-Smoke, [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)). slice-028/024 in `open/`.
+**Nächster Slice:** slice-028 — slice-024s Smoke deckte auf, dass das emittierte Repo **nicht** out-of-the-box grün ist (3 docs-check-Befunde); slice-028 macht den Emit gate-sicher (Spec 0.8.0).
 
-**Closure-Trigger:** beide Slices in `done/`, `make gates` grün, **Voll-E2E-`make smoke` grün** (das emittierte
+**Closure-Trigger:** alle drei Slices in `done/`, `make gates` grün, **Voll-E2E-`make smoke` grün** (das emittierte
 Repo fährt sein eigenes `make gates` 0-Befunde out-of-the-box, [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) Happy-Path
 [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)), **`make mutate` grün**, Carveout-Audit 0/dokumentiert, Closure-Notiz.
 **Erreicht M2.** Details in der [welle-03-Plan-Datei](../welle-03-readme-und-smoke.md).
