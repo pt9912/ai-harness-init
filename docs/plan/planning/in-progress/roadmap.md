@@ -33,23 +33,27 @@ Kriterium ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzini
 | Welle | Trigger | Wichtigste Slices | Geschätzter Aufwand |
 |---|---|---|---|
 | [welle-03-readme-und-smoke](../welle-03-readme-und-smoke.md) | welle-02 in `done/` | slice-005 (Root-README, [`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2)) · slice-024 (Voll-E2E-Smoke, [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)) | S–M |
-| welle-04 — Durchsetzung & Emission *(noch keine Plan-Datei; per `cp` bei welle-03-Closure)* | welle-03 in `done/` | Durchsetzungsschicht-Emit ([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)/[`ADR-0004`](../../../../docs/plan/adr/0004-durchsetzungs-emission.md), BLOCKED-Set je `--lang`) · Arch-Gate-Emit a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) · Workflow-Command-Emit ([`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)) | M–L |
 
 ## Backlog (aus Slice-§6 gehoben, 2026-07-21)
 
 > Diese Folge-Punkte standen verstreut als „offen / Folge-Slice / spätere Welle"
 > in einzelnen Slice-§6-Blöcken. Hier zentral als **planbare Cluster** (Modul 6/7),
-> damit sie auditierbar sind statt in Fußnoten zu driften. Slice-Namen bewusst
-> **plain** (Provenienz, keine Lifecycle-Pfad-Kopplung). **Nicht** hier, weil
-> bereits geliefert: „Scheduled CI-Job" (slice-009/018) → slice-027; „Sensor auf
-> neuen Tag" (slice-011) → slice-018.
+> damit sie auditierbar sind statt in Fußnoten zu driften. Jeder Cluster trägt eine
+> **Trigger-Bedingung, kein Datum** (Modul 6). Ein Wellen-Kandidat bekommt seine
+> Plandatei per `cp` **erst, wenn sein erster Slice geschnitten wird** — genau so
+> entstand welle-03 (slice-005/024 zuerst, dann die Datei); eine Welle-Datei mit
+> leerem §4 wäre die „zweite Wahrheit, die driftet". Slice-Namen bewusst **plain**
+> (Provenienz, keine Lifecycle-Pfad-Kopplung). **Nicht** hier, weil bereits
+> geliefert: „Scheduled CI-Job" (slice-009/018) → slice-027; „Sensor auf neuen
+> Tag" (slice-011) → slice-018.
 
-| Cluster | Folge-Punkte (Herkunfts-Slice) | Vorgesehene Ablage |
-|---|---|---|
-| **B · Freshness** | go-freshness-Sensor · SKEL_GO_VERSION=latest Web-Lookup (slice-023) · mechanische Freshness für Quellen-Links / BASELINE_TAG (slice-012) · Regelwerk-Refresh-Mechanik (slice-007) | kleine Welle „Freshness-Sensoren" (netz/nächtlich, Muster [slice-018](../done/slice-018-baseline-freshness.md)) |
-| **C · Doc-Gate-Härtung** | Prosa-Zahlen-Provenienz (slice-011/015) · Anker-Fragment-Sensor (slice-014) · citations-Modul / Zitat gegen Zeilenspanne (slice-015) | kleine Welle „Doc-Gate-Härtung" oder Einzel-Slices |
-| **D · Doku/Prozess-Reconciliation** | architecture.md an die [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md)-Klasse nachziehen (slice-023) · README nennt stale d-check-Pin (slice-019) · „≤3-DoD"-Regel klären (slice-013) · lastenheft_refs vs. Bezug-Zeile (slice-014) · `done/`-Lifecycle-Link-Exemption als Gate-Policy-Änderung (slice-025) | Harness-Wartung ohne Welle (Muster slice-026/027): je kleiner Slice bzw. conventions-Adaption |
-| **E · Konditional** | optionale .bats-Lint-Abdeckung (slice-008) → [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) (aktiv, Trigger-gebunden) · Codex-Hook real verifizieren + Pfad-Härtung (slice-007) → Backlog-Follow-up: **kein** Gate zu lockern, also **kein** Carveout | Carveout bzw. benannter Follow-up |
+| Cluster | Folge-Punkte (Herkunfts-Slice) | Trigger (Bedingung) | Vorgesehene Ablage |
+|---|---|---|---|
+| **A · Durchsetzung & Emission** | Durchsetzungs-Emit ([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)/[`ADR-0004`](../../../../docs/plan/adr/0004-durchsetzungs-emission.md), BLOCKED-Set je `--lang`) · Arch-Gate a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) · Workflow-Command-Emit ([`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)) | welle-03 in `done/` (green-before-extend: erst Baseline grün, dann Emit-Fläche erweitern) | welle-04 — Datei + erster Slice **bei Trigger** (wie welle-03 aus welle-02) |
+| **B · Freshness** | go-freshness-Sensor · SKEL_GO_VERSION=latest Web-Lookup (slice-023) · mechanische Freshness für Quellen-Links / BASELINE_TAG (slice-012) · Regelwerk-Refresh-Mechanik (slice-007) | erste beobachtete Pin-/Tag-/Quellen-Drift, oder M2 erreicht | kleine Welle „Freshness-Sensoren" (netz/nächtlich, Muster [slice-018](../done/slice-018-baseline-freshness.md)) bzw. Einzel-Slices |
+| **C · Doc-Gate-Härtung** | Prosa-Zahlen-Provenienz (slice-011/015) · Anker-Fragment-Sensor (slice-014) · citations-Modul / Zitat gegen Zeilenspanne (slice-015) | erneutes Auftreten einer der Befund-Klassen (Muster slice-026: neun Instanzen → Sensor) | kleine Welle bzw. Einzel-Slices |
+| **D · Doku/Prozess-Reconciliation** | architecture.md an die [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md)-Klasse nachziehen (slice-023) · README nennt stale d-check-Pin (slice-019) · „≤3-DoD"-Regel klären (slice-013) · lastenheft_refs vs. Bezug-Zeile (slice-014) · `done/`-Lifecycle-Link-Exemption als Gate-Policy-Änderung (slice-025) | Wartung — **kein** Welle-Trigger; bei nächster Harness-Wartungsrunde | Harness-Wartung ohne Welle (Muster slice-026/027): je kleiner Slice bzw. conventions-Adaption |
+| **E · Konditional** | optionale .bats-Lint-Abdeckung (slice-008) → [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) · Codex-Hook real verifizieren + Pfad-Härtung (slice-007) | .bats: CO-001-Auflösungs-Trigger (bats-Logik mit Verzweigung wächst) · Codex-Hook: eingesetzte Codex-Version wechselt | Carveout (aktiv) bzw. benannter Follow-up (**kein** Gate → **kein** Carveout) |
 
 ## Meilensteine
 
