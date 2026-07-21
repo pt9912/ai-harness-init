@@ -20,8 +20,8 @@ gezeigt, nicht als Treiber.
 (Embed raus, [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)) → slice-025 (Bootstrap-Kette absichern,
 [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)) → slice-023 (Go-Skelett-Generator,
 [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) → slice-004b (Verdrahten: Gerüst + Init-Flow).
-Strikt sequenziell; slice-004a, slice-022a, slice-022b, slice-025 liegen in `done/`.
-**Nächster Slice:** slice-023 (Go-Skelett-Generator).
+Strikt sequenziell; slice-004a, slice-022a, slice-022b, slice-025, slice-023 liegen in `done/`.
+**Nächster Slice:** slice-004b (Sprachskelett verdrahten: Gerüst + Init-Flow).
 
 **Closure-Trigger:** die Slices in `done/`, `make gates` grün, **Tier-2-`make smoke` grün**, **`make mutate` grün**,
 Carveout-Audit 0/dokumentiert, Closure-Notiz. Der **Voll**-E2E-Smoke ist bewusst welle-03s
