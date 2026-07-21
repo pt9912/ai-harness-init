@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -126,6 +127,29 @@ func inScope(rel string) bool {
 	default:
 		return true
 	}
+}
+
+// TemplateTargets liefert die Ziel-Relpfade, die Templates() in targetDir
+// SCHREIBEN wuerde — dieselbe Klassifikation (checkRoot + planTemplates), nur
+// ohne die Schreibvorgaenge. Der Bootstrap-Pre-Flight (cmd, slice-025) prueft
+// damit die Template-Kollisionen VOR dem ersten Emit-Write, gemeinsam mit den
+// uebrigen Emit-Zielen — kollidiert IRGENDEIN Emit-Ziel ohne --force, schreibt
+// KEIN Emit-Schritt. checkRoot laeuft hier mit: eine falsch gewurzelte gefetchte
+// Baseline faellt so im Pre-Flight auf, VOR dem Docker-Lauf in DocGate.
+func TemplateTargets(src fs.FS, name string) ([]string, error) {
+	if err := checkRoot(src); err != nil {
+		return nil, err
+	}
+	plan, err := planTemplates(src, name)
+	if err != nil {
+		return nil, err
+	}
+	targets := make([]string, 0, len(plan))
+	for rel := range plan {
+		targets = append(targets, rel)
+	}
+	sort.Strings(targets)
+	return targets, nil
 }
 
 // Templates legt die Template-Baseline zweiklassig in targetDir ab (LH-FA-02):

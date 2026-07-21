@@ -1,15 +1,17 @@
 // Command ai-harness-init bootstrappt ein bestehendes Git-Repo mit dem
-// AI-Harness-Prozess. run() fuehrt fuenf schreibende Schritte aus: Sprachskelett
-// stagen (slice-004a) -> Baseline vendoren (slice-022a) -> Verifier emittieren
-// (slice-022a) -> Doc-Gate emittieren (slice-002) -> Template-Baseline ablegen
-// (slice-003).
+// AI-Harness-Prozess. run() fuehrt die Bootstrap-Kette in vier Phasen aus:
+// (1) Pre-Flight der Fetch-Ziele -> (2) Fetch (Sprachskelett stagen slice-004a +
+// Baseline vendoren slice-022a) -> (3) Pre-Flight ALLER Emit-Ziele (inkl.
+// Template-Plan aus der gefetchten Baseline) -> (4) emittieren (Doc-Gate
+// slice-002, Verifier slice-022a, Template-Baseline slice-003).
 //
-// OFFENER PUNKT (Review-Befund slice-022a I1, vierte Wiederholung der Klasse):
-// die Kette hat KEINEN gemeinsamen Pre-Flight. Scheitert Schritt n, bleiben die
-// Ergebnisse von 1..n-1 im Zielrepo liegen. Die einzelnen Schritte sind je fuer
-// sich atomar (fetch.Baseline via Temp->Rename, emit.DocGate via Pre-Check vor
-// dem Schreiben) — die Luecke ist die Kette, nicht das Glied. Aufloesung ist
-// slice-004b (Init-Flow) zugewiesen.
+// Der gemeinsame Pre-Flight (slice-025) loest die viermal wiederholte
+// Teil-Bootstrap-Klasse (slice-002/003/004a/022a): kollidiert IRGENDEIN
+// Kettenziel ohne --force, schreibt der jeweilige Block NICHTS, statt dass ein
+// spaeter Schritt mitten in der Kette scheitert und die frueheren Ergebnisse
+// liegen bleiben. Gewaehltes Modell: Pre-Flight (Vorbedingungen pruefen), NICHT
+// Staging->Commit (Kette atomar machen) — Details und die ehrliche Grenze
+// (Runtime-Abbruch WAEHREND eines Fetch/Docker-Laufs) an run().
 package main
 
 import (
@@ -18,6 +20,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"time"
@@ -84,60 +87,117 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 		return 2
 	}
 
-	// Sprachskelett ZUERST holen (slice-004a, ADR-0001 Variante C): das validiert die
-	// Sprache fail-fast und vermeidet einen Doc-Gate-Teil-Emit, falls der Fetch scheitert
-	// (Review-L3). Staging nach .harness/skeleton/; der Merge in den Root ist slice-004b.
-	// Der Fetcher ist injiziert (netzlose Exit-Pfad-Tests, Review-M2). Braucht Netz
-	// (Bootstrap-Abhaengigkeit); unbekannte Sprache -> Exit 2, Netz-/Extrakt-Fehler -> Exit 1.
+	return bootstrap(targetDir, *lang, *name, *force, src, stdout, stderr)
+}
+
+// bootstrap fuehrt die Kette in vier Phasen aus (Ueberblick im Package-Doc). Die
+// Pre-Flights DRUCKEN UND RETURNEN im selben Block: der Beobachtungswert (die
+// Fehlermeldung) ist damit an die Wirkung (der Abbruch) gebunden — eine Mutation,
+// die nur den Abbruch entfernt, entfernt auch die Meldung. Ein frueherer
+// reportPreflight-Helfer trennte beides und liess den Print auch dann laufen, wenn
+// der Abbruch neutralisiert war; die Emit-Pre-Flight-Mutation blieb dadurch still
+// gruen (slice-025-Befund, von `make mutate` gefangen — genau sein Zweck).
+func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, stderr io.Writer) int {
 	tag := envOr("COURSE_TAG", fetch.DefaultTag)
 	skelDir := filepath.Join(targetDir, ".harness", "skeleton")
+	baseDir := baselineDir(targetDir)
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
-	if err := fetch.Skeleton(ctx, skelDir, *lang, tag, src.skeleton); err != nil {
+
+	// Phase 1 — Pre-Flight der Fetch-Ziele (statisch bekannt). Kollidiert eines
+	// ohne --force, wird NICHTS geholt. Emit-Ziele erst in Phase 3 (ihr Template-
+	// Anteil ist erst nach dem Fetch bekannt).
+	if !force {
+		if err := preflightAbsent(targetDir, []string{".harness/skeleton", ".harness/baseline/" + tag}); err != nil {
+			fmt.Fprintln(stderr, "Fehler:", err)
+			return 1
+		}
+	}
+
+	// Phase 2 — Fetch: Skelett ZUERST (Sprache fail-fast, unbekannt -> Exit 2),
+	// dann die Baseline (LH-FA-09, sha256-Pin vor dem Entpacken). Beide schreiben
+	// nach .harness/ und sind retry-freundlich gewollt (s. EHRLICHE GRENZE Phase 4).
+	if err := fetch.Skeleton(ctx, skelDir, lang, tag, src.skeleton); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return fetchExitCode(err)
 	}
-
-	// Baseline (Regelwerk + Templates) als vendored Stand des Ziels ablegen
-	// (slice-022a, LH-FA-09; ADR-0005 Herkunftsklasse "Fetch Kurs-SSoT"). Der
-	// sha256 wird VOR dem Entpacken geprueft; scheitert er, wird begruendet
-	// NICHT emittiert statt eine erfundene Baseline zu schreiben. Danach ist das
-	// Zielrepo ueber seine Baseline netzlos (MR-007 fuers Ziel gespiegelt).
-	baseDir := baselineDir(targetDir)
-	if err := fetch.Baseline(ctx, baseDir, tag, src.baselineSHA, *force, src.baseline); err != nil {
-		fmt.Fprintln(stderr, "Fehler:", err)
-		return 1
-	}
-	// Der zugehoerige Verifier — ohne ihn waere die Baseline zwar abgelegt, aber
-	// nicht netzlos PRUEFBAR (LH-FA-09 Pruefsummen-AC).
-	if err := emit.BaselineVerify(targetDir, *force); err != nil {
+	if err := fetch.Baseline(ctx, baseDir, tag, src.baselineSHA, force, src.baseline); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
 
-	// Doc-Gate-Baseline emittieren (slice-002): d-check.mk zur Laufzeit via
-	// `docker run <d-check> --print-mk`; Pin per Env ueberschreibbar. Emit-Fehler
-	// (vorhandene Datei ohne --force, docker nicht verfuegbar) -> Exit 1.
+	// Phase 3 — Pre-Flight ALLER Emit-Ziele (Verifier, Doc-Gate, Templates aus der
+	// gefetchten Baseline, dabei wurzel-geprueft). Kollidiert eines ohne --force,
+	// schreibt KEIN Emit-Schritt — die Teil-Bootstrap-Klasse ist geschlossen.
+	rels, err := emitTargets(targetDir, tag, name)
+	if err != nil {
+		fmt.Fprintln(stderr, "Fehler:", err)
+		return 1
+	}
+	if !force {
+		if err := preflightAbsent(targetDir, rels); err != nil {
+			fmt.Fprintln(stderr, "Fehler:", err)
+			return 1
+		}
+	}
+
+	// Phase 4 — Emit. DocGate ZUERST (Docker-Lauf = reales Fehlerrisiko, schreibt
+	// bei Fehler nichts), dann Verifier, dann Templates (ADR-0005: eine Quelle).
+	//
+	// EHRLICHE GRENZE (Pre-Flight, slice-025 §6): ein Runtime-Abbruch WAEHREND
+	// Fetch/Docker kann das gefetchte .harness/ zuruecklassen — retry-freundlich
+	// gewollt, nicht die verworfene Staging->Commit-Atomaritaet. --force
+	// ueberschreibt statt zu sichern; ein Fehler danach rollt das nicht zurueck.
 	opts := emit.Options{
 		Image:  envOr("DCHECK_IMAGE", emit.DefaultImage),
 		Digest: envOr("DCHECK_DIGEST", emit.DefaultDigest),
-		Force:  *force,
+		Force:  force,
 	}
 	if err := emit.DocGate(context.Background(), targetDir, opts); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
-	// Template-Baseline zweiklassig ablegen (slice-003) — Quelle ist seit
-	// slice-022b die eben gefetchte Baseline des Ziels, nicht mehr ein
-	// eingebettetes Duplikat (ADR-0005: eine Quelle, der Kurs). Der
-	// Baseline-Schritt oben MUSS deshalb vorher gelaufen sein.
-	if err := emit.Templates(os.DirFS(templatesDir(targetDir, tag)), targetDir, *name, *force); err != nil {
+	if err := emit.BaselineVerify(targetDir, force); err != nil {
+		fmt.Fprintln(stderr, "Fehler:", err)
+		return 1
+	}
+	if err := emit.Templates(os.DirFS(templatesDir(targetDir, tag)), targetDir, name, force); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
 
-	fmt.Fprintf(stdout, "ai-harness-init: Bootstrap (Skelett %q gestaged + Baseline %s vendored + Doc-Gate + Template-Baseline) — --lang=%s.\n", *lang, tag, *lang)
+	fmt.Fprintf(stdout, "ai-harness-init: Bootstrap (Skelett %q gestaged + Baseline %s vendored + Doc-Gate + Template-Baseline) — --lang=%s.\n", lang, tag, lang)
 	return 0
+}
+
+// preflightAbsent meldet den ERSTEN rel-Pfad unter targetDir, der bereits
+// existiert — der gemeinsame Pre-Flight der Bootstrap-Kette (slice-025). rels
+// sind slash-Pfade relativ zu targetDir. Ohne diesen Pre-Flight schreibt ein
+// spaeter Kettenschritt in ein Ziel, dessen Kollision erst mitten in der Kette
+// auffaellt, und die frueheren Schritte bleiben liegen.
+func preflightAbsent(targetDir string, rels []string) error {
+	for _, rel := range rels {
+		switch _, err := os.Stat(filepath.Join(targetDir, filepath.FromSlash(rel))); {
+		case err == nil:
+			return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", rel)
+		case !errors.Is(err, fs.ErrNotExist):
+			return fmt.Errorf("%s pruefen: %w", rel, err)
+		}
+	}
+	return nil
+}
+
+// emitTargets sammelt die Ziel-Relpfade aller Emit-Schritte (Verifier, Doc-Gate,
+// Templates) fuer den Pre-Flight aus Phase 3. Die Template-Ziele kommen aus der
+// gefetchten Baseline; emit.TemplateTargets wurzel-prueft sie zugleich (eine
+// falsch gewurzelte Baseline faellt so VOR dem Docker-Lauf auf).
+func emitTargets(targetDir, tag, name string) ([]string, error) {
+	rels := []string{emit.BaselineVerifyPath, ".d-check.yml", "d-check.mk"}
+	tt, err := emit.TemplateTargets(os.DirFS(templatesDir(targetDir, tag)), name)
+	if err != nil {
+		return nil, err
+	}
+	return append(rels, tt...), nil
 }
 
 // baselineDir und templatesDir halten das Ziel-Layout an EINER Stelle: die

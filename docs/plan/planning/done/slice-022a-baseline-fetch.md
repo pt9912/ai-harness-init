@@ -156,7 +156,7 @@ nicht als verdrahtetes Gate. Verdrahtung: slice-004b.
 ### Folge-Slices
 
 - [slice-022b](slice-022b-embed-raus.md) — entsperrt: das Embed kann jetzt gegen die gefetchte Quelle getauscht werden.
-- [slice-025](../open/slice-025-bootstrap-preflight.md) — neu aus diesem Slice: die Teil-Bootstrap-Kette (I1, vierte Wiederholung) plus L3/L4 aus demselben Codepfad.
+- [slice-025](../in-progress/slice-025-bootstrap-preflight.md) — neu aus diesem Slice: die Teil-Bootstrap-Kette (I1, vierte Wiederholung) plus L3/L4 aus demselben Codepfad.
 
 ## 8. Sub-Area-Modus-Begründung
 

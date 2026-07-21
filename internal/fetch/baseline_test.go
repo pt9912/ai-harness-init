@@ -407,6 +407,27 @@ func TestBaseline_EscapedPathRefused(t *testing.T) {
 	assertEmptyDir(t, dest)
 }
 
+// TestBaseline_AssetTooLarge belegt die L4-Schranke: ein Body ueber
+// maxBaselineBytes wird als *AssetTooLargeError abgewiesen, BEVOR der Pin greift —
+// und es bleibt nichts liegen. Die 8 MiB+1 muessen > maxBaselineBytes sein; steigt
+// der Cap, faellt dieser Test (dann Groesse UND Max-Erwartung hier nachziehen — die
+// Kopplung ist Absicht). Rot-Gegenbeispiel (AGENTS 3.6): faellt die Schranke, kommt
+// der Body durch und der Pin meldet stattdessen SHA256Mismatch.
+// test/mutations/11-baseline-groessen-schranke.sh mutiert genau das.
+func TestBaseline_AssetTooLarge(t *testing.T) {
+	oversized := bytes.Repeat([]byte{0}, 8<<20+1)
+	dest := t.TempDir()
+	err := fetch.Baseline(context.Background(), dest, "v3.5.0", strings.Repeat("0", 64), false, assetFetch(oversized))
+	var tl *fetch.AssetTooLargeError
+	if !errors.As(err, &tl) {
+		t.Fatalf("erwartete *AssetTooLargeError, got %v", err)
+	}
+	if tl.Max != 8<<20 {
+		t.Errorf("Max = %d, want %d (maxBaselineBytes)", tl.Max, 8<<20)
+	}
+	assertEmptyDir(t, dest) // die Schranke greift VOR jedem Schreiben
+}
+
 func mustRead(t *testing.T, path string) []byte {
 	t.Helper()
 	data, err := os.ReadFile(path)

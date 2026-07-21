@@ -57,7 +57,12 @@ func baselineFixture(t *testing.T) (fetch.AssetFetch, string) {
 	zw := zip.NewWriter(&buf)
 	for _, e := range []struct{ name, content string }{
 		{"regelwerk/README.md", "index"},
+		// Zwei Root-Marker: emit.TemplateTargets (Phase-3-Pre-Flight) verlangt via
+		// checkRoot mindestens zwei, damit ein einzelnes Upstream-Rename den
+		// Bootstrap nicht bricht (minRootMarkers). Ein Marker liesse den Pre-Flight
+		// schon an checkRoot scheitern, nicht an der zu testenden Kollision.
 		{"templates/AGENTS.template.md", "agents"},
+		{"templates/spec/lastenheft.template.md", "lastenheft"},
 	} {
 		w, err := zw.Create(e.name)
 		if err != nil {
@@ -139,8 +144,9 @@ func TestRun_UnknownLang(t *testing.T) {
 	}
 }
 
-// TestRun_EmitFehler: der Fetch (Fixture) staged erfolgreich, dann bricht DocGate an der
-// vorhandenen .d-check.yml ohne --force ab (Pre-Flight vor Docker) -> Exit 1, stdout leer.
+// TestRun_EmitFehler: der Fetch (Fixture) staged erfolgreich, dann faengt der
+// Phase-3-Emit-Pre-Flight die vorhandene .d-check.yml ohne --force ab (vor Docker)
+// -> Exit 1, stdout leer.
 func TestRun_EmitFehler(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, ".d-check.yml"), []byte("# vorhanden\n"), 0o644); err != nil {
@@ -160,49 +166,108 @@ func TestRun_EmitFehler(t *testing.T) {
 	}
 }
 
-// TestRun_BaselineUndVerifierLanden schliesst Review-Befund M2: bis hierher
-// behauptete KEIN Test, dass run() die Baseline und den Verifier ueberhaupt
-// ablegt — ein Entfernen der beiden Aufrufe aus main.go faerbte nichts rot.
+// TestRun_EmitKollisionSchreibtKeinEmit ist der Kern von slice-025 und ERSETZT
+// den frueheren TestRun_BaselineUndVerifierLanden: der behauptete, dass Baseline
+// UND Verifier bei einem an DocGate gescheiterten Lauf bereits im Ziel liegen —
+// genau der Teil-Bootstrap-Zustand, den dieser Slice VERHINDERT.
 //
-// Der Lauf endet bewusst mit Exit 1 (vorhandene .d-check.yml laesst DocGate vor
-// dem Docker-Aufruf abbrechen). Genau das macht ihn netzlos fahrbar UND belegt
-// nebenbei den Zustand, den Review-I1 als Teil-Bootstrap beschreibt: die
-// Schritte 1..n-1 liegen bereits im Ziel.
-func TestRun_BaselineUndVerifierLanden(t *testing.T) {
+// Jetzt kollidiert ein TEMPLATE-Ziel (AGENTS.md). Der Phase-3-Pre-Flight faengt
+// das VOR dem ersten Emit-Write: kein Verifier, kein Doc-Gate. Die gefetchte
+// Baseline (Phase 2) bleibt bewusst liegen — retry-freundlich (slice-025 §6).
+//
+// ROT-Gegenbeispiel (AGENTS 3.6): ohne den Phase-3-Pre-Flight liefe der Lauf in
+// Phase 4, DocGate riefe docker (im netzlosen Test nicht vorhanden) und der
+// Fehler waere KEIN "existiert bereits" — die Assertion unten wuerde rot.
+// test/mutations/12-preflight-emit.sh mutiert genau das.
+func TestRun_EmitKollisionSchreibtKeinEmit(t *testing.T) {
 	dir := t.TempDir()
-	if err := os.WriteFile(filepath.Join(dir, ".d-check.yml"), []byte("# vorhanden\n"), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "AGENTS.md"), []byte("# vorhanden\n"), 0o644); err != nil {
 		t.Fatalf("Setup: %v", err)
 	}
 	var out, errb bytes.Buffer
-	if code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb); code != 1 {
-		t.Fatalf("Exit-Code = %d, want 1 (DocGate bricht ab)", code)
+	code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb)
+	if code != 1 {
+		t.Fatalf("Exit-Code = %d, want 1 (Emit-Pre-Flight bricht ab)", code)
 	}
-	base := filepath.Join(dir, ".harness", "baseline", fetch.DefaultTag)
-	for _, rel := range []string{
-		filepath.Join(base, "SHA256SUMS"),
-		filepath.Join(base, "regelwerk", "README.md"),
-		filepath.Join(base, "templates", "AGENTS.template.md"),
-		filepath.Join(dir, "tools", "harness", "baseline-verify.sh"),
-	} {
-		if _, err := os.Stat(rel); err != nil {
-			t.Errorf("%s fehlt nach dem Lauf: %v", rel, err)
+	if !strings.Contains(errb.String(), "existiert bereits") {
+		t.Errorf("stderr = %q, soll die Kollision als Pre-Flight-Abbruch melden", errb.String())
+	}
+	if out.Len() > 0 {
+		t.Errorf("Exit 1, aber stdout nicht leer: %q", out.String())
+	}
+	// KEIN Emit-Write: der Slice sagt zu, dass bei einer Emit-Kollision KEIN
+	// Emit-Schritt schreibt, nicht nur der kollidierende.
+	for _, rel := range []string{filepath.Join("tools", "harness", "baseline-verify.sh"), "d-check.mk"} {
+		if _, err := os.Stat(filepath.Join(dir, rel)); !errors.Is(err, os.ErrNotExist) {
+			t.Errorf("%s wurde trotz Emit-Kollision geschrieben (Teil-Emit): %v", rel, err)
 		}
 	}
-	// Der Verifier muss ausfuehrbar sein — sonst ist die LH-FA-09-Zusage
-	// "netzlos verifizierbar" eine leere Geste.
-	info, err := os.Stat(filepath.Join(dir, "tools", "harness", "baseline-verify.sh"))
-	if err == nil && info.Mode().Perm()&0o111 == 0 {
-		t.Errorf("emittierter Verifier ist nicht ausfuehrbar: %v", info.Mode().Perm())
+	// Die gefetchte Baseline bleibt aber liegen — Phase 2 ist retry-freundlich.
+	base := filepath.Join(dir, ".harness", "baseline", fetch.DefaultTag)
+	if _, err := os.Stat(filepath.Join(base, "SHA256SUMS")); err != nil {
+		t.Errorf("gefetchte Baseline fehlt — Phase 2 soll retry-freundlich bestehen bleiben: %v", err)
+	}
+}
+
+// TestRun_FetchKollisionSchreibtNichts belegt den Phase-1-Pre-Flight (die andere
+// Halbzeit von slice-025): kollidiert ein FETCH-Ziel (die vendored Baseline),
+// wird gar nichts geholt — auch das Skelett nicht.
+//
+// ROT-Gegenbeispiel (AGENTS 3.6): ohne Phase 1 liefe fetch.Skeleton (Phase 2)
+// zuerst und legte das Skelett ab, EHE fetch.Baseline die vorhandene Baseline
+// bemerkt — .harness/skeleton/ waere dann da. test/mutations/14-preflight-fetch.sh
+// mutiert genau das.
+func TestRun_FetchKollisionSchreibtNichts(t *testing.T) {
+	dir := t.TempDir()
+	base := filepath.Join(dir, ".harness", "baseline", fetch.DefaultTag)
+	if err := os.MkdirAll(base, 0o755); err != nil {
+		t.Fatalf("Setup: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(base, "vorhanden.md"), []byte("alt\n"), 0o644); err != nil {
+		t.Fatalf("Setup: %v", err)
+	}
+	var out, errb bytes.Buffer
+	code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb)
+	if code != 1 {
+		t.Fatalf("Exit-Code = %d, want 1 (Fetch-Pre-Flight bricht ab)", code)
+	}
+	if !strings.Contains(errb.String(), "existiert bereits") {
+		t.Errorf("stderr = %q, soll die Baseline-Kollision melden", errb.String())
+	}
+	if _, err := os.Stat(filepath.Join(dir, ".harness", "skeleton")); !errors.Is(err, os.ErrNotExist) {
+		t.Errorf(".harness/skeleton wurde trotz Fetch-Kollision angelegt (Teil-Fetch): %v", err)
+	}
+}
+
+// TestPreflightAbsent nagelt die Pre-Flight-LOGIK direkt fest: freie Ziele
+// liefern nil, ein vorhandenes meldet einen Fehler, der Pfad UND Ausweg nennt.
+func TestPreflightAbsent(t *testing.T) {
+	dir := t.TempDir()
+	if err := preflightAbsent(dir, []string{"a", "b/c"}); err != nil {
+		t.Errorf("freie Ziele: %v, want nil", err)
+	}
+	if err := os.MkdirAll(filepath.Join(dir, "b"), 0o755); err != nil {
+		t.Fatalf("Setup: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "b", "c"), []byte("x"), 0o644); err != nil {
+		t.Fatalf("Setup: %v", err)
+	}
+	err := preflightAbsent(dir, []string{"a", "b/c"})
+	if err == nil {
+		t.Fatal("vorhandenes Ziel wurde nicht gemeldet")
+	}
+	if !strings.Contains(err.Error(), "b/c") || !strings.Contains(err.Error(), "--force") {
+		t.Errorf("Meldung nennt Pfad+Ausweg nicht: %v", err)
 	}
 }
 
 // TestTemplatesDir_ZeigtAufDieGefetchteQuelle koppelt die Wurzelung, die
 // emit.Templates bekommt, an das, was fetch.Baseline tatsaechlich schreibt.
 //
-// Bis zum Review hatte sie NULL Zusicherung (Befund slice-022b F-3): die
-// run()-Tests enden bewusst am DocGate, also VOR dem Templates-Aufruf, und
-// `make smoke` fasst keine Templates an. Eine falsche Wurzelung waere erst im
-// emittierten Zielrepo aufgefallen — und dort nur, wenn jemand hinsieht.
+// Bis zum Review hatte sie NULL Zusicherung (Befund slice-022b F-3). Der Lauf
+// bricht seit slice-025 am Phase-3-Emit-Pre-Flight ab (vorhandene .d-check.yml) —
+// aber ERST nach dem Baseline-Fetch (Phase 2). Deshalb liegt die gefetchte
+// templates/-Wurzel bereits im Ziel, und templatesDir muss genau dorthin zeigen.
 func TestTemplatesDir_ZeigtAufDieGefetchteQuelle(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, ".d-check.yml"), []byte("# vorhanden\n"), 0o644); err != nil {
@@ -210,7 +275,7 @@ func TestTemplatesDir_ZeigtAufDieGefetchteQuelle(t *testing.T) {
 	}
 	var out, errb bytes.Buffer
 	if code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb); code != 1 {
-		t.Fatalf("Exit-Code = %d, want 1 (DocGate bricht ab)", code)
+		t.Fatalf("Exit-Code = %d, want 1 (Emit-Pre-Flight bricht ab)", code)
 	}
 	// Die Baseline liegt jetzt im Ziel. Genau dorthin muss templatesDir zeigen —
 	// und dort muss der Wurzel-Anker liegen, den emit.Templates prueft.

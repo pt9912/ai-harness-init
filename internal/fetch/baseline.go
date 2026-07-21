@@ -53,6 +53,15 @@ const (
 	sumsName        = "SHA256SUMS"
 )
 
+// maxBaselineBytes schrankt den Asset-Puffer VOR dem sha256-Pin ein. Der Pin
+// (Setzung 1) prueft den INHALT — aber erst NACH dem Lesen; ohne Schranke
+// puffert io.ReadAll einen beliebig grossen Body eines boesartigen/kaputten
+// Servers vollstaendig, bevor der Pin ihn verwerfen kann (Review-Befund
+// slice-022a L4, LH-QA-03). Die Schranke ist eine DoS-Grenze, KEINE
+// Inhaltsaussage: das reale Asset misst ~241 KB (MR-007); 8 MiB laesst ~34-fach
+// Wachstum und begrenzt den Speicher auf einen festen Betrag.
+const maxBaselineBytes = 8 << 20
+
 // baselineTrees sind die beiden Wurzeln, die das Bundle traegt. Beide muessen
 // ankommen — ein Bundle mit nur einem Baum ist kein gueltiger Stand. Als
 // Funktion (nicht als Paket-Variable), wie supportedLangs() in fetch.go.
@@ -97,6 +106,16 @@ func (e *SHA256Mismatch) Error() string {
 	return fmt.Sprintf("baseline %s: sha256 %s erwartet, %s erhalten — Asset veraendert oder falscher Pin (LH-QA-02)", e.Tag, e.Want, e.Got)
 }
 
+// AssetTooLargeError meldet ein Asset, das maxBaselineBytes ueberschreitet, BEVOR
+// der sha256-Pin greift. Als Typ (via errors.As unterscheidbar), damit der
+// Aufrufer es vom Pin-Bruch (SHA256Mismatch) trennt: es ist ein Abwehr-Befund
+// (LH-QA-03), kein Reproduzierbarkeits-Befund.
+type AssetTooLargeError struct{ Max int64 }
+
+func (e *AssetTooLargeError) Error() string {
+	return fmt.Sprintf("baseline-asset ueberschreitet %d bytes vor dem sha256-pin — abgewiesen (LH-QA-03)", e.Max)
+}
+
 // Baseline holt das Bundle zu tag, verifiziert es gegen wantSHA und legt es als
 // <destDir>/<tag>/{regelwerk,templates}/ + SHA256SUMS ab. Ohne force wird ein
 // vorhandenes <tag>-Verzeichnis nicht ueberschrieben.
@@ -114,7 +133,7 @@ func Baseline(ctx context.Context, destDir, tag, wantSHA string, force bool, fet
 	if err != nil {
 		return err
 	}
-	data, err := readAllClose(rc)
+	data, err := readCapped(rc, maxBaselineBytes)
 	if err != nil {
 		return fmt.Errorf("baseline %s lesen: %w", tag, err)
 	}
@@ -140,7 +159,17 @@ func Baseline(ctx context.Context, destDir, tag, wantSHA string, force bool, fet
 	if err != nil {
 		return fmt.Errorf("temp-verzeichnis in %s: %w", destDir, err)
 	}
-	defer func() { _ = os.RemoveAll(tmp) }() // no-op nach erfolgreichem Rename
+	// defer raeumt tmp auf JEDEM Go-Fehlerpfad (no-op nach erfolgreichem Rename).
+	// Damit bleibt bei einem ABBRUCH (Fehler-Return) kein .baseline-*-Rest —
+	// TestBaseline_IncompleteBundle belegt genau das (Abbruch NACH MkdirTemp, dest
+	// bleibt leer; entfaellt der defer, wird der Test rot). Restfenster (bewusst
+	// benannt, slice-025 L3): stirbt der Prozess (SIGKILL) ZWISCHEN MkdirTemp und
+	// Rename, laeuft der defer nicht und ein .baseline-*-Verzeichnis bleibt liegen —
+	// benigne: punkt-praefigiert, also vom "$base"/*/-Glob des Verifiers uebersehen
+	// (MR-007 Setzung 4), und ein Folgelauf legt via MkdirTemp einen frischen
+	// eindeutigen Namen an. Das Stat->Rename-Fenster in placeBaseline ist derselbe
+	// akzeptierte Klasse-Race (dort benannt).
+	defer func() { _ = os.RemoveAll(tmp) }()
 
 	if err := unpackTrees(zr, tmp, tag); err != nil {
 		return err
@@ -155,6 +184,14 @@ func Baseline(ctx context.Context, destDir, tag, wantSHA string, force bool, fet
 // Existenz-Pruefung sitzt bewusst HIER (kurz vor dem Rename) und zusaetzlich
 // implizit im Rename selbst: ein frueher Check waere ein TOCTOU-Fenster ueber
 // den ganzen Download.
+//
+// Das verbleibende Stat->Rename-Fenster (ein Fremdprozess legt final ZWISCHEN
+// Stat und Rename an) ist ein bewusst akzeptierter Race (slice-025 L3): er ist
+// benigne, weil os.Rename auf ein leeres Ziel-Verzeichnis ersetzt und auf ein
+// nicht-leeres sauber mit ENOTEMPTY scheitert — kein stilles Ueberschreiben. Ihn
+// zu schliessen verlangte ein Lock ueber den ganzen Bootstrap; das ist bei einem
+// Einzel-Nutzer-Init (WIP=1) nicht der Kosten wert. Ehrlich benannt statt
+// stillschweigend gelassen.
 //
 // Mit force wird eine vorhandene Baseline ersetzt — per BEISEITE-RENAME, nicht
 // per Loeschen (Review-Befund slice-022a N1). Der naheliegende os.RemoveAll(final)
@@ -354,7 +391,19 @@ func sha256Sum(data []byte) []byte {
 	return sum[:]
 }
 
-func readAllClose(rc io.ReadCloser) ([]byte, error) {
+// readCapped liest bis zu limit bytes und meldet AssetTooLargeError, wenn der Body
+// die Schranke UEBERSCHREITET (statt still abzuschneiden — ein abgeschnittenes
+// Asset verfehlte nur den Pin und kaeme als SHA256Mismatch statt als das echte
+// Problem "zu gross"). rc wird immer geschlossen.
+func readCapped(rc io.ReadCloser, limit int64) ([]byte, error) {
 	defer func() { _ = rc.Close() }()
-	return io.ReadAll(rc)
+	// limit+1 lesen: kommt EIN Byte mehr als die Schranke, ist der Body zu gross.
+	data, err := io.ReadAll(io.LimitReader(rc, limit+1))
+	if err != nil {
+		return nil, err
+	}
+	if int64(len(data)) > limit {
+		return nil, &AssetTooLargeError{Max: limit}
+	}
+	return data, nil
 }

@@ -49,6 +49,52 @@ func courseSet() fs.FS {
 	}
 }
 
+// TestTemplateTargets_SpiegeltDenEmittiertenSatz koppelt den Phase-3-Pre-Flight
+// (cmd, slice-025) an das, was emit.Templates wirklich schreibt: TemplateTargets
+// muss GENAU die Ziel-Pfade liefern, die ein voller Templates-Lauf anlegt — sonst
+// prueft der Pre-Flight andere Pfade als der Emit schreibt (ein stilles Loch).
+func TestTemplateTargets_SpiegeltDenEmittiertenSatz(t *testing.T) {
+	dir := t.TempDir()
+	if err := emit.Templates(courseSet(), dir, "X", true); err != nil {
+		t.Fatalf("Templates: %v", err)
+	}
+	var written []string
+	if err := filepath.WalkDir(dir, func(p string, d os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if d.IsDir() {
+			return nil
+		}
+		rel, relErr := filepath.Rel(dir, p)
+		if relErr != nil {
+			return relErr
+		}
+		written = append(written, filepath.ToSlash(rel))
+		return nil
+	}); err != nil {
+		t.Fatalf("Baum lesen: %v", err)
+	}
+	sort.Strings(written)
+
+	targets, err := emit.TemplateTargets(courseSet(), "X")
+	if err != nil {
+		t.Fatalf("TemplateTargets: %v", err)
+	}
+	if strings.Join(targets, ",") != strings.Join(written, ",") {
+		t.Errorf("TemplateTargets = %v\nemit.Templates schrieb %v\n(Pre-Flight und Emit muessen dieselbe Menge sehen)", targets, written)
+	}
+}
+
+// TestTemplateTargets_MisrootedRejected: eine falsch gewurzelte Quelle faellt im
+// Pre-Flight auf (checkRoot), nicht erst beim Schreiben.
+func TestTemplateTargets_MisrootedRejected(t *testing.T) {
+	empty := fstest.MapFS{"irgendwas.txt": &fstest.MapFile{Data: []byte("x")}}
+	if _, err := emit.TemplateTargets(empty, ""); err == nil {
+		t.Error("falsch gewurzelte Quelle wurde akzeptiert (checkRoot muss greifen)")
+	}
+}
+
 func TestTemplates_Layout(t *testing.T) {
 	dir := t.TempDir()
 	if err := emit.Templates(courseSet(), dir, "X", true); err != nil {
