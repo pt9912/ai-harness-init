@@ -12,29 +12,29 @@ welle-03.
 
 ---
 
-> **Umplanung 2026-07-20 ([`ADR-0005`](../../../docs/plan/adr/0005-ziel-repo-distribution.md)-Pivot).** Diese Welle wurde **nicht geschlossen**,
+> **Umplanung 2026-07-20 ([`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md)-Pivot).** Diese Welle wurde **nicht geschlossen**,
 > sondern **umgeplant**: ihr ursprüngliches Ziel („holt das Sprachskelett vom gepinnten
-> Kurs-Tag") ist durch [`ADR-0005`](../../../docs/plan/adr/0005-ziel-repo-distribution.md) ungültig — das Skelett wird jetzt **generiert**, und
+> Kurs-Tag") ist durch [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md) ungültig — das Skelett wird jetzt **generiert**, und
 > gefetcht werden Regelwerk + Templates. Sie fokussiert damit auf den
 > **Distributions-Umbau**; Root-README und der Voll-E2E-Smoke wandern nach welle-03,
 > M2 mit ihnen. slice-004b ist re-gescopet (nicht aufgelöst), slice-005 umgehängt.
 > Vorbild für den Umgang: die Re-Scope-Spur von
-> [slice-015](done/slice-015-zitat-sensor.md). Drift-Log: Roadmap
+> [slice-015](slice-015-zitat-sensor.md). Drift-Log: Roadmap
 > §Historische Trigger-Verschiebungen.
 
 ## 1. Welle-Ziel
 
-Der **Distributions-Umbau** aus [`ADR-0005`](../../../docs/plan/adr/0005-ziel-repo-distribution.md): das Tool bezieht Regelwerk und
+Der **Distributions-Umbau** aus [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md): das Tool bezieht Regelwerk und
 Doc-Templates per **Fetch** aus der Kurs-SSoT (das Embed-Duplikat entfällt), **generiert**
 das Sprachskelett deterministisch aus tool-eigenem Wissen und **verdrahtet** beides zu
-einem kohärenten Zielrepo. Das löst [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) ein (das Zielrepo erhält
-erstmals ein Regelwerk) und [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) nach dem CR (Picker → Generator).
+einem kohärenten Zielrepo. Das löst [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) ein (das Zielrepo erhält
+erstmals ein Regelwerk) und [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) nach dem CR (Picker → Generator).
 
 ## 2. Trigger (Welle startet)
 
 - welle-01 done (Offline-Kern: `cmd/ai-harness-init` parst `--lang`, emittiert die
   Doc-Gate-Baseline und legt die Template-Baseline zweiklassig ab). **Erfüllt 2026-07-18**
-  ([welle-01-results](done/welle-01-results.md)).
+  ([welle-01-results](welle-01-results.md)).
 
 ## 3. Closure-Trigger (Welle schließt)
 
@@ -60,12 +60,12 @@ gespiegelt (welle.template.md §4 — eine zweite Wahrheit driftet). -->
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-004a](done/slice-004a-skeleton-fetch.md) | Sprachskelett-Fetch *(geliefert unter dem abgelösten Modell)* | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
-| [slice-022a](done/slice-022a-baseline-fetch.md) | Baseline-Fetch ins Zielrepo (additiv) | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren), [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
-| [slice-022b](done/slice-022b-embed-raus.md) | Embed raus — gefetchte Baseline ist einzige Template-Quelle | [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
-| [slice-025](done/slice-025-bootstrap-preflight.md) | Bootstrap-Kette absichern (Pre-Flight statt Teil-Emit) | [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| [slice-023](done/slice-023-skelett-generator.md) | Go-Skelett-Generator (deterministisch) | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
-| [slice-004b](in-progress/slice-004b-skeleton-wire.md) | Sprachskelett verdrahten (Gerüst + Init-Flow) | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
+| [slice-004a](slice-004a-skeleton-fetch.md) | Sprachskelett-Fetch *(geliefert unter dem abgelösten Modell)* | [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
+| [slice-022a](slice-022a-baseline-fetch.md) | Baseline-Fetch ins Zielrepo (additiv) | [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren), [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| [slice-022b](slice-022b-embed-raus.md) | Embed raus — gefetchte Baseline ist einzige Template-Quelle | [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
+| [slice-025](slice-025-bootstrap-preflight.md) | Bootstrap-Kette absichern (Pre-Flight statt Teil-Emit) | [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-023](slice-023-skelett-generator.md) | Go-Skelett-Generator (deterministisch) | [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| [slice-004b](slice-004b-skeleton-wire.md) | Sprachskelett verdrahten (Gerüst + Init-Flow) | [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
 
 ## 5. Abhängigkeiten
 
@@ -83,22 +83,23 @@ gespiegelt (welle.template.md §4 — eine zweite Wahrheit driftet). -->
   viermal entstanden (slice-002 → 003 → 004a → 022a), während seine Lösung dreimal einem
   Folge-Slice zugewiesen und nie geliefert wurde.
 - **slice-004a ist ein Sonderfall:** es liegt in `done/`, lieferte aber den
-  Skelett-Fetch-Pfad, den [`ADR-0005`](../../../docs/plan/adr/0005-ziel-repo-distribution.md) ablöst. `done/` wird **nicht** zurückgesetzt
+  Skelett-Fetch-Pfad, den [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md) ablöst. `done/` wird **nicht** zurückgesetzt
   (Modul 5: der Zustand ist die Verzeichnis-Position, Historie liegt in git); der Rückbau
   passiert in slice-022a/022b. Die Closure-Notiz führt das als Lerneintrag.
 
 ## 6. Out-of-Scope für diese Welle
 
-- **Root-README** ([`LH-FA-05`](../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2)) und **Voll-E2E-Smoke** — nach welle-03
+- **Root-README** ([`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2)) und **Voll-E2E-Smoke** — nach welle-03
   verschoben (Umplanung 2026-07-20), samt M2.
 - **Air-gapped Bootstrap** (netzloser Bootstrap) — Re-Evaluierungs-Trigger von
-  [`ADR-0005`](../../../docs/plan/adr/0005-ziel-repo-distribution.md), nicht Scope hier: der Bootstrap darf **einmalig** Netz brauchen.
-- **Weitere Sprach-Profile** über `go` hinaus ([`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) nennt sechs) — eigene Slices.
-- **Durchsetzungsschicht-Emit** ([`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)/[`ADR-0004`](../../../docs/plan/adr/0004-durchsetzungs-emission.md)),
-  **Arch-Gate-Emit** ([`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) und **Workflow-Command-Emit**
-  ([`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)) — eigene, spätere Wellen.
+  [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md), nicht Scope hier: der Bootstrap darf **einmalig** Netz brauchen.
+- **Weitere Sprach-Profile** über `go` hinaus ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) nennt sechs) — eigene Slices.
+- **Durchsetzungsschicht-Emit** ([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)/[`ADR-0004`](../../../../docs/plan/adr/0004-durchsetzungs-emission.md)),
+  **Arch-Gate-Emit** ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) und **Workflow-Command-Emit**
+  ([`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)) — eigene, spätere Wellen.
 - Inhaltliche Urteilsschritte (Spec/ADR/Modus) — global out-of-scope.
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Welle-Abschluss füllen. Verweis auf done/welle-02-results.md. -->
+**Abgeschlossen 2026-07-21** (beobachtbarer Trigger, kein Kalendertag). Volle
+Closure-Notiz mit Steering-Loop-Einträgen: [welle-02-results.md](welle-02-results.md).

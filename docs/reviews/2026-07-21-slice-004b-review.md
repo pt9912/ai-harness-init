@@ -12,7 +12,7 @@ DoD-/Spec-Konformität ist bewusst NICHT geprüft (Verifier-Rolle, Modul 11).
 
 **Eingangs-Kontext** (die Verträge, gegen die geprüft wurde):
 
-- Slice-Plan: [slice-004b](../plan/planning/in-progress/slice-004b-skeleton-wire.md)
+- Slice-Plan: [slice-004b](../plan/planning/done/slice-004b-skeleton-wire.md)
 - Aktive ADR: [ADR-0005](../plan/adr/0005-ziel-repo-distribution.md) (Herkunftsklassen/Ownership)
 - Hard Rules: [AGENTS.md](../../AGENTS.md) §3 (3.1/3.2/3.3/3.5/3.6)
 - Konventionen: [harness/conventions.md](../../harness/conventions.md) (`MR-010` d-check-Include)

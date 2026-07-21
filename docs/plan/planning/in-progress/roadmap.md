@@ -12,27 +12,25 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**Welle-ID:** [welle-02-fetch-und-readme](../welle-02-fetch-und-readme.md) — **umgeplant 2026-07-20**
-**Start:** 2026-07-18 (Trigger „welle-01 done" erfüllt; die Umplanung setzt den Start nicht zurück)
+**Welle-ID:** [welle-03-readme-und-smoke](../welle-03-readme-und-smoke.md)
+**Start:** 2026-07-21 (Trigger „welle-02 done" erfüllt — alle Slices in `done/`, `make gates`/`make smoke`/`make mutate` grün, Carveout-Audit [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) dokumentiert)
 **Geplantes Ende:** offen
 
-**Slice-IDs:** slice-022a (Baseline-Fetch additiv, [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)) → slice-022b
-(Embed raus, [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)) → slice-025 (Bootstrap-Kette absichern,
-[`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)) → slice-023 (Go-Skelett-Generator,
-[`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) → slice-004b (Verdrahten: Gerüst + Init-Flow).
-Strikt sequenziell; slice-004a, slice-022a, slice-022b, slice-025, slice-023 liegen in `done/`.
-**Nächster Slice:** slice-004b (Sprachskelett verdrahten: Gerüst + Init-Flow).
+**Slice-IDs:** slice-005 (Root-README emittieren, [`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2)) · slice-024
+(Voll-E2E-Smoke des Bootstraps, [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)). Beide liegen in `open/`.
+**Nächster Slice:** slice-005 (Root-README — Voraussetzung für den Voll-E2E-Smoke).
 
-**Closure-Trigger:** die Slices in `done/`, `make gates` grün, **Tier-2-`make smoke` grün**, **`make mutate` grün**,
-Carveout-Audit 0/dokumentiert, Closure-Notiz. Der **Voll**-E2E-Smoke ist bewusst welle-03s
-Kriterium ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) Happy-Path braucht die Root-README). Details in der
-[welle-02-Plan-Datei](../welle-02-fetch-und-readme.md).
+**Closure-Trigger:** beide Slices in `done/`, `make gates` grün, **Voll-E2E-`make smoke` grün** (das emittierte
+Repo fährt sein eigenes `make gates` 0-Befunde out-of-the-box, [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) Happy-Path
+[`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)), **`make mutate` grün**, Carveout-Audit 0/dokumentiert, Closure-Notiz.
+**Erreicht M2.** Details in der [welle-03-Plan-Datei](../welle-03-readme-und-smoke.md).
 
 ## Nächste Wellen
 
-| Welle | Trigger | Wichtigste Slices | Geschätzter Aufwand |
-|---|---|---|---|
-| [welle-03-readme-und-smoke](../welle-03-readme-und-smoke.md) | welle-02 in `done/` | slice-005 (Root-README, [`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2)) · slice-024 (Voll-E2E-Smoke, [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)) | S–M |
+Keine gefilte Welle. Der nächste Wellen-Kandidat ist **Cluster A** (Durchsetzung &
+Emission) im Backlog unten — er wird zu welle-04 mit eigener Plandatei, sobald sein
+erster Slice geschnitten wird (Trigger: welle-03 in `done/`). Weitere Kandidaten
+(B/C) ebenda, je mit Trigger-Bedingung.
 
 ## Backlog (aus Slice-§6 gehoben, 2026-07-21)
 
@@ -78,6 +76,7 @@ flowchart LR
 | Welle | Abschluss | Closure-Notiz |
 |---|---|---|
 | [welle-01-offline-kern](../done/welle-01-offline-kern.md) | 2026-07-18 | [welle-01-results.md](../done/welle-01-results.md) |
+| [welle-02-fetch-und-readme](../done/welle-02-fetch-und-readme.md) | 2026-07-21 | [welle-02-results.md](../done/welle-02-results.md) |
 
 ## Historische Trigger-Verschiebungen
 

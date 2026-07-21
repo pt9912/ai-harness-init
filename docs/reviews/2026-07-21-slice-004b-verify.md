@@ -18,7 +18,7 @@ Verifier (frischer Kontext, keine Selbst-Verifikation).
 
 **Eingangs-Kontext** (die Verträge, gegen die verifiziert wurde):
 
-- Slice-Plan mit DoD: [slice-004b](../plan/planning/in-progress/slice-004b-skeleton-wire.md) §2
+- Slice-Plan mit DoD: [slice-004b](../plan/planning/done/slice-004b-skeleton-wire.md) §2
 - Aktive ADR: [ADR-0005](../plan/adr/0005-ziel-repo-distribution.md) (vier Herkunftsklassen/Ownership)
 - Anforderungen: [spec/lastenheft.md](../../spec/lastenheft.md) — `LH-FA-04`, `LH-FA-01`, `LH-QA-01`
 - Konventionen: [harness/conventions.md](../../harness/conventions.md) (`MR-010` d-check.mk-Include)
