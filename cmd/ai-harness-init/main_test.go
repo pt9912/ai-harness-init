@@ -1,10 +1,8 @@
 package main
 
 import (
-	"archive/tar"
 	"archive/zip"
 	"bytes"
-	"compress/gzip"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
@@ -16,38 +14,8 @@ import (
 	"testing"
 
 	"github.com/pt9912/ai-harness-init/internal/fetch"
+	"github.com/pt9912/ai-harness-init/internal/gen"
 )
-
-// goFixture liefert einen netzlosen Fetcher mit einem minimalen go-Skelett (Marker
-// Makefile). Damit sind die run()-Pfade ohne echtes Netz testbar (Review-M2).
-func goFixture(t *testing.T) fetch.TarballFetch {
-	t.Helper()
-	var buf bytes.Buffer
-	gz := gzip.NewWriter(&buf)
-	tw := tar.NewWriter(gz)
-	for name, content := range map[string]string{
-		"c-3.1.0/lab/example/go/Makefile": "m",
-		"c-3.1.0/lab/example/go/go.mod":   "module x",
-	} {
-		hdr := &tar.Header{Name: name, Mode: 0o644, Size: int64(len(content)), Typeflag: tar.TypeReg}
-		if err := tw.WriteHeader(hdr); err != nil {
-			t.Fatalf("WriteHeader: %v", err)
-		}
-		if _, err := tw.Write([]byte(content)); err != nil {
-			t.Fatalf("Write: %v", err)
-		}
-	}
-	if err := tw.Close(); err != nil {
-		t.Fatalf("tar Close: %v", err)
-	}
-	if err := gz.Close(); err != nil {
-		t.Fatalf("gzip Close: %v", err)
-	}
-	data := buf.Bytes()
-	return func(context.Context, string) (io.ReadCloser, error) {
-		return io.NopCloser(bytes.NewReader(data)), nil
-	}
-}
 
 // baselineFixture liefert ein minimales Bundle (beide Baeume) samt seinem
 // sha256 — so traegt der Test denselben Pin, den run() prueft, ohne Netz.
@@ -82,11 +50,12 @@ func baselineFixture(t *testing.T) (fetch.AssetFetch, string) {
 	}, hex.EncodeToString(sum[:])
 }
 
-// testSources buendelt beide netzlosen Fixtures fuer run().
+// testSources buendelt die netzlose Baseline-Fixture fuer run(). Das Sprachskelett
+// braucht keine Fixture mehr — internal/gen erzeugt es lokal (slice-023).
 func testSources(t *testing.T) sources {
 	t.Helper()
 	asset, sum := baselineFixture(t)
-	return sources{skeleton: goFixture(t), baseline: asset, baselineSHA: sum}
+	return sources{baseline: asset, baselineSHA: sum}
 }
 
 // TestRun deckt die Arg-Parser-Pfade von LH-FA-01 ab (Exit-Codes + korrekter Stream).
@@ -285,15 +254,16 @@ func TestTemplatesDir_ZeigtAufDieGefetchteQuelle(t *testing.T) {
 	}
 }
 
-// TestFetchExitCode deckt die Exit-Abbildung netzlos ab (Review-M2).
-func TestFetchExitCode(t *testing.T) {
-	if got := fetchExitCode(nil); got != 0 {
+// TestLangExitCode deckt die Exit-Abbildung netzlos ab: unbekannte Sprache
+// (gen.UnknownLangError) -> 2, sonstiger Fehler -> 1, nil -> 0.
+func TestLangExitCode(t *testing.T) {
+	if got := langExitCode(nil); got != 0 {
 		t.Errorf("nil -> %d, want 0", got)
 	}
-	if got := fetchExitCode(&fetch.UnknownLangError{Lang: "rust"}); got != 2 {
+	if got := langExitCode(&gen.UnknownLangError{Lang: "rust"}); got != 2 {
 		t.Errorf("UnknownLangError -> %d, want 2", got)
 	}
-	if got := fetchExitCode(errors.New("netz weg")); got != 1 {
-		t.Errorf("Netz-/Extrakt-Fehler -> %d, want 1", got)
+	if got := langExitCode(errors.New("emit weg")); got != 1 {
+		t.Errorf("sonstiger Fehler -> %d, want 1", got)
 	}
 }

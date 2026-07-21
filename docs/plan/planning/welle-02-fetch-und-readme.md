@@ -64,7 +64,7 @@ gespiegelt (welle.template.md §4 — eine zweite Wahrheit driftet). -->
 | [slice-022a](done/slice-022a-baseline-fetch.md) | Baseline-Fetch ins Zielrepo (additiv) | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren), [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | [slice-022b](done/slice-022b-embed-raus.md) | Embed raus — gefetchte Baseline ist einzige Template-Quelle | [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
 | [slice-025](done/slice-025-bootstrap-preflight.md) | Bootstrap-Kette absichern (Pre-Flight statt Teil-Emit) | [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| [slice-023](open/slice-023-skelett-generator.md) | Go-Skelett-Generator (deterministisch) | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| [slice-023](in-progress/slice-023-skelett-generator.md) | Go-Skelett-Generator (deterministisch) | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | [slice-004b](open/slice-004b-skeleton-wire.md) | Sprachskelett verdrahten (Gerüst + Init-Flow) | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
 
 ## 5. Abhängigkeiten

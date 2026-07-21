@@ -1,7 +1,8 @@
-// Baseline-Bundle des Zielrepos (LH-FA-09, ADR-0005 Herkunftsklasse "Fetch
-// Kurs-SSoT"). Anders als der Sprachskelett-Pfad in fetch.go holt dies das
-// Release-Asset lab-regelwerk.zip und legt Regelwerk UND Templates als
-// committet-vendored Baseline im Ziel ab — es spiegelt MR-007 fuers Ziel.
+// Package fetch holt das Baseline-Bundle des Zielrepos (LH-FA-09, ADR-0005
+// Herkunftsklasse "Fetch Kurs-SSoT"): das Release-Asset lab-regelwerk.zip, aus
+// dem es Regelwerk UND Templates als committet-vendored Baseline im Ziel ablegt
+// — es spiegelt MR-007 fuers Ziel. (Der Sprachskelett-Fetch aus fetch.go wich mit
+// slice-023 dem Generator internal/gen; hier bleibt nur der Baseline-Fetch.)
 //
 // Drei Setzungen aus MR-007 sind hier Code, nicht Kommentar:
 //   1. Provenienz != Integritaet: der sha256 des Assets wird VOR dem Entpacken
@@ -20,7 +21,6 @@
 //      — es bleibt ein Restfenster von zwei Renames, in dem ein Prozess-Tod das
 //      Ziel ohne Baseline zuruecklaesst (Daten unversehrt in .baseline-alt-*,
 //      s. replaceBaseline). Ehrlich benannt statt pauschal zugesagt.
-
 package fetch
 
 import (
@@ -40,6 +40,12 @@ import (
 	"sort"
 	"strings"
 )
+
+// DefaultTag ist der per Default gepinnte Kurs-Tag (harness/conventions.md
+// §Baseline, BASELINE_TAG; LH-QA-02). Per Env (COURSE_TAG) fuer bewussten
+// Opt-in ueberschreibbar. TestDefaultTag_MatchesBaseline koppelt ihn an die
+// einzige Tag-Quelle im Makefile.
+const DefaultTag = "v3.5.0"
 
 // DefaultBaselineSHA256 ist der gepinnte sha256 des Baseline-Assets zu
 // DefaultTag (LH-QA-02). Kanonisch lebt er als BASELINE_ZIP_SHA256 im Makefile;
@@ -64,12 +70,11 @@ const maxBaselineBytes = 8 << 20
 
 // baselineTrees sind die beiden Wurzeln, die das Bundle traegt. Beide muessen
 // ankommen — ein Bundle mit nur einem Baum ist kein gueltiger Stand. Als
-// Funktion (nicht als Paket-Variable), wie supportedLangs() in fetch.go.
+// Funktion (nicht als Paket-Variable), gochecknoglobals-konform.
 func baselineTrees() []string { return []string{"regelwerk", "templates"} }
 
 // AssetFetch liefert ein Release-Asset am Tag. Injizierbar, damit der Entpack-
-// und Verifikationspfad ohne Netz (Fixture-ZIP) testbar ist — derselbe Schnitt
-// wie TarballFetch beim Sprachskelett.
+// und Verifikationspfad ohne Netz (Fixture-ZIP) testbar ist.
 type AssetFetch func(ctx context.Context, tag string) (io.ReadCloser, error)
 
 // DownloadBaseline ist der Produktions-Fetcher: HTTP-GET des Release-Assets.
@@ -389,6 +394,24 @@ func writeSums(root string) error {
 func sha256Sum(data []byte) []byte {
 	sum := sha256.Sum256(data)
 	return sum[:]
+}
+
+// writeFile schreibt r nach dst (Verzeichnisse anlegend) mit der uebergebenen
+// Datei-Mode. Von unpackTrees genutzt (frueher auch vom Skelett-Fetch in
+// fetch.go, der mit slice-023 dem Generator wich).
+func writeFile(dst string, r io.Reader, mode os.FileMode) error {
+	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+		return fmt.Errorf("%s anlegen: %w", filepath.Dir(dst), err)
+	}
+	f, err := os.OpenFile(dst, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, mode)
+	if err != nil {
+		return fmt.Errorf("%s oeffnen: %w", dst, err)
+	}
+	defer func() { _ = f.Close() }()
+	if _, err := io.Copy(f, r); err != nil {
+		return fmt.Errorf("%s schreiben: %w", dst, err)
+	}
+	return nil
 }
 
 // readCapped liest bis zu limit bytes und meldet AssetTooLargeError, wenn der Body

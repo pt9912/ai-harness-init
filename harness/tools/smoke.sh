@@ -8,9 +8,10 @@
 # Belege:
 #   1. Binary aus der artifact-Stage extrahieren (Host).
 #   2. `--lang go` bootstrappen: Doc-Gate (Runtime-Codegen, slice-002) + Template-
-#      Baseline (slice-003) + Sprachskelett-Fetch (slice-004a, Netz) + vendored
-#      Baseline mit Verifier (slice-022a, ZWEITER Netz-Fetch: Release-Asset).
-#   3. Skelett gestaged? (slice-004a-Fetch-Beweis, .harness/skeleton/).
+#      Baseline (slice-003) + Sprachskelett-Generierung (slice-023, lokal/
+#      deterministisch, kein Netz) + vendored Baseline mit Verifier (slice-022a,
+#      Netz-Fetch: Release-Asset).
+#   3. Skelett generiert? (slice-023-Generator-Beweis, .harness/skeleton/).
 #   4. Emittiertes d-check laeuft und akzeptiert die Config (kein Config-Crash).
 #
 # NICHT geprueft: 0-Befunde-out-of-the-box (voller emittierter Green-Run). Die
@@ -31,10 +32,10 @@ echo "smoke: 1/4 Binary aus der artifact-Stage auf den Host extrahieren ..."
 docker build --build-arg GO_VERSION="$GO_VERSION" \
 	--target artifact --output "type=local,dest=$tmpbin" .
 
-echo "smoke: 2/4 Bootstrap (--lang go): Doc-Gate + Templates + Skelett-Fetch (Netz) ..."
+echo "smoke: 2/4 Bootstrap (--lang go): Doc-Gate + Templates + Skelett-Generierung (lokal) ..."
 ( cd "$tmprepo" && "$tmpbin/ai-harness-init" --lang go --name smoke )
 
-echo "smoke: 3/4 Skelett gestaged? (slice-004a) + Templates emittiert? (slice-022b) ..."
+echo "smoke: 3/4 Skelett generiert? (slice-023) + Templates emittiert? (slice-022b) ..."
 if [ ! -f "$tmprepo/.harness/skeleton/Makefile" ]; then
 	echo "smoke: FEHLER — Sprachskelett nicht nach .harness/skeleton/ gestaged" >&2
 	exit 1

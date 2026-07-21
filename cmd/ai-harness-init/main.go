@@ -27,6 +27,7 @@ import (
 
 	"github.com/pt9912/ai-harness-init/internal/emit"
 	"github.com/pt9912/ai-harness-init/internal/fetch"
+	"github.com/pt9912/ai-harness-init/internal/gen"
 )
 
 const usage = `ai-harness-init — bootstrappt ein Git-Repo mit dem AI-Harness-Prozess.
@@ -41,19 +42,19 @@ Flags:
   -h, --help    diese Hilfe anzeigen
 
 Umgebung (bewusster Opt-in-Override der gepinnten Werte — LH-QA-02):
-  COURSE_TAG        Kurs-Version für Skelett und Baseline
+  COURSE_TAG        Kurs-Version für die Baseline (Regelwerk + Templates)
   BASELINE_SHA256   erwarteter sha256 des Baseline-Assets
   DCHECK_IMAGE      d-check-Tag-Referenz
   DCHECK_DIGEST     d-check-Digest (sticht den Tag)
 `
 
-// sources buendelt die injizierbaren Netz-Quellen des Bootstraps samt dem
-// erwarteten Baseline-Pin. Als Struct (nicht als Parameter-Liste), damit die
+// sources buendelt die injizierbare Netz-Quelle des Bootstraps — nur noch die
+// Baseline; das Sprachskelett generiert internal/gen lokal (slice-023, ADR-0005
+// Tool-als-Quelle) — samt dem erwarteten Baseline-Pin. Als Struct, damit die
 // Folge-Slices die run()-Signatur nicht bei jeder neuen Quelle erneut brechen.
 type sources struct {
-	skeleton    fetch.TarballFetch // Sprachskelett (slice-004a; loest slice-023 ab)
-	baseline    fetch.AssetFetch   // Regelwerk + Templates (LH-FA-09)
-	baselineSHA string             // erwarteter sha256 des Baseline-Assets (LH-QA-02)
+	baseline    fetch.AssetFetch // Regelwerk + Templates (LH-FA-09)
+	baselineSHA string           // erwarteter sha256 des Baseline-Assets (LH-QA-02)
 }
 
 // run parst die Argumente und liefert den Exit-Code. Ein-/Ausgabe, Zielverzeichnis
@@ -114,12 +115,16 @@ func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, st
 		}
 	}
 
-	// Phase 2 — Fetch: Skelett ZUERST (Sprache fail-fast, unbekannt -> Exit 2),
-	// dann die Baseline (LH-FA-09, sha256-Pin vor dem Entpacken). Beide schreiben
-	// nach .harness/ und sind retry-freundlich gewollt (s. EHRLICHE GRENZE Phase 4).
-	if err := fetch.Skeleton(ctx, skelDir, lang, tag, src.skeleton); err != nil {
+	// Phase 2 — Generieren + Fetch: das Sprachskelett ZUERST deterministisch
+	// generieren (ADR-0005 Tool-als-Quelle; kein Netz) — das validiert die Sprache
+	// fail-fast (unbekannt -> Exit 2 mit Profil-Liste; die --lang-Validierung hing
+	// bis slice-023 am Skelett-Fetch und darf nicht ersatzlos verschwinden) —, dann
+	// die Baseline holen (LH-FA-09, sha256-Pin vor dem Entpacken). Beide schreiben
+	// nach .harness/; der Baseline-Fetch ist retry-freundlich gewollt (s. EHRLICHE
+	// GRENZE Phase 4).
+	if err := gen.Generate(skelDir, lang); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
-		return fetchExitCode(err)
+		return langExitCode(err)
 	}
 	if err := fetch.Baseline(ctx, baseDir, tag, src.baselineSHA, force, src.baseline); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
@@ -222,13 +227,14 @@ func envOr(key, def string) string {
 	return def
 }
 
-// fetchExitCode bildet einen Fetch-Fehler auf den Exit-Code ab: unbekannte Sprache =
-// Aufruf-Fehler (2), sonst Netz-/Extrakt-Fehler (1). Rein/netzlos testbar (Review-M2).
-func fetchExitCode(err error) int {
+// langExitCode bildet einen Generator-Fehler auf den Exit-Code ab: unbekannte
+// Sprache = Aufruf-Fehler (2, gen.UnknownLangError), sonst Emit-Fehler (1).
+// Rein/netzlos testbar.
+func langExitCode(err error) int {
 	if err == nil {
 		return 0
 	}
-	var ule *fetch.UnknownLangError
+	var ule *gen.UnknownLangError
 	if errors.As(err, &ule) {
 		return 2
 	}
@@ -242,7 +248,6 @@ func main() {
 		os.Exit(1)
 	}
 	src := sources{
-		skeleton:    fetch.DownloadTarball,
 		baseline:    fetch.DownloadBaseline,
 		baselineSHA: envOr("BASELINE_SHA256", fetch.DefaultBaselineSHA256),
 	}
