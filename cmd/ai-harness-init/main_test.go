@@ -182,7 +182,7 @@ func TestRun_EmitKollisionSchreibtKeinEmit(t *testing.T) {
 // Halbzeit von slice-025): kollidiert ein FETCH-Ziel (die vendored Baseline),
 // wird gar nichts geholt — auch das Skelett nicht.
 //
-// ROT-Gegenbeispiel (AGENTS 3.6): ohne Phase 1 liefe fetch.Skeleton (Phase 2)
+// ROT-Gegenbeispiel (AGENTS 3.6): ohne Phase 1 liefe gen.Generate (Phase 2)
 // zuerst und legte das Skelett ab, EHE fetch.Baseline die vorhandene Baseline
 // bemerkt — .harness/skeleton/ waere dann da. test/mutations/14-preflight-fetch.sh
 // mutiert genau das.

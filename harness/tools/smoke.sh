@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # smoke.sh — Tier-2 Bootstrap-Smoke (Host-Docker + Netz, NICHT in gates). Verifiziert,
 # dass der Bootstrap end-to-end laeuft, host-orchestriert (die Binary ruft selbst
-# `docker run <d-check> --print-mk` und fetcht das Skelett per Netz — kein DinD, kein
-# Netz im Container). `make gates` bleibt offline-schlank (LH-QA-01); dieser Smoke
+# `docker run <d-check> --print-mk`, generiert das Skelett lokal und fetcht die
+# Baseline per Netz — kein DinD, kein Netz im Container). `make gates` bleibt
+# offline-schlank (LH-QA-01); dieser Smoke
 # gehoert an DoD-Verify/CI/Wellen-Closure.
 #
 # Belege:
