@@ -30,12 +30,12 @@ Was muss erfüllt sein, damit der Slice in done/ wandert?
 Liste mit jeweils prüfbarem Kriterium.
 -->
 
-- [ ] [`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) Happy Path: der Emit legt `.claude/commands/{implement-slice,plan-welle,close-welle}.md` ins Ziel (Tool-als-Quelle, go:embed). Test belegt: emittiert.
-- [ ] [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)/[`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) adaptierbar: die repo-spezifische „Repo-lokale Adaptionen"-Sektion trägt einen **adaptierbaren Marker** (der Adopter passt sie an sein Repo an), nicht 1:1 ai-harness-init-hart. Test belegt: Marker vorhanden.
-- [ ] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) kein-aus-dem-Nichts + keine toten Referenzen: die emittierte Fassung ist real erprobt (Dogfood) + kurs-geerdet; ai-harness-init-**interne** Referenzen, die im Ziel falsch wären (`make mutate`/`make smoke`/`test/mutations/`, konkrete Slice-Nummern, hart kodierte Sprach-Toolchain), sind genericisiert. Test belegt: kein `test/mutations`/`make mutate`/`ai-harness-init`-Leak.
-- [ ] `make full-smoke`/`make smoke` belegt die Commands real im Ziel (nicht nur behauptet).
-- [ ] `make gates` grün; `make mutate` deckt die neuen Wächter (rot gesehen).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] [`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) Happy Path: der Emit legt `.claude/commands/{implement-slice,plan-welle,close-welle}.md` ins Ziel (Tool-als-Quelle, go:embed). Test belegt: emittiert.
+- [x] [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)/[`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) adaptierbar: die repo-spezifische „Repo-lokale Adaptionen"-Sektion trägt einen **adaptierbaren Marker** (der Adopter passt sie an sein Repo an), nicht 1:1 ai-harness-init-hart. Test belegt: Marker vorhanden.
+- [x] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) kein-aus-dem-Nichts + keine toten Referenzen: die emittierte Fassung ist real erprobt (Dogfood) + kurs-geerdet; ai-harness-init-**interne** Referenzen, die im Ziel falsch wären (`make mutate`/`make smoke`/`test/mutations/`, konkrete Slice-Nummern, hart kodierte Sprach-Toolchain), sind genericisiert. Test belegt: kein `test/mutations`/`make mutate`/`ai-harness-init`-Leak.
+- [x] `make full-smoke`/`make smoke` belegt die Commands real im Ziel (nicht nur behauptet).
+- [x] `make gates` grün; `make mutate` deckt die neuen Wächter (rot gesehen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -84,16 +84,43 @@ DoD vollständig + Review konform + Verifikation bestätigt + Closure-Notiz → 
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!--
-Wird *nach* Abschluss ergänzt. Inhalt:
-- Was hat funktioniert?
-- Was ging anders als geplant?
-- Steering-Loop-Eintrag: welcher Guide/Sensor sollte verbessert werden?
-  (kanonische Definition: [`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.0/kurs/de/grundlagen/klassifikation.md#steering-loop))
-- Folge-Slices: welche neuen open/-Einträge?
--->
+**Abgeschlossen:** 2026-07-22. Review [KONFORM](../../../reviews/2026-07-22-slice-033-review.md)
+(0 HIGH/MEDIUM, 1 LOW behoben, 1 INFO, 9 Negativbefunde), Verifikation bestätigt die DoD (getrennter
+Kontext; `make gates` + `make mutate` **37/37** + `make full-smoke` selbst gefahren, dazu ein
+**selbst gebootstrapptes Ziel** inspiziert — 3 Commands, ANPASSEN-Marker in jedem, kein Leak, der
+harness-Prozess erhalten [Schritt-Parität 23/10/7, Rollen/Modul-Verweise/„frischer Kontext"], keine
+Über-Genericisierung [`make gates`/`record-gates` konkret gelassen], CLAUDE.md im Ziel abwesend).
 
-<!-- Erst nach Abschluss füllen. -->
+**Ergebnis:** Die Workflow-Commands (`.claude/commands/{implement-slice,plan-welle,close-welle}.md`)
+sind als **Tool-als-Quelle** emittiert ([`ADR-0006`](../../../../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md), eigene Funktion `emit.Commands` — Anleitung ≠
+Durchsetzung). **Damit ist die Emission komplett**: Durchsetzung ([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren), slice-030–032) +
+Anleitung ([`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren), dieser Slice) → **welle-04 ist closure-reif** (`/close-welle welle-04`).
+
+**Steering-Loop-Einträge:**
+
+- **Die vorherigen Emit-Slices machten die Genericisierung chirurgisch.** Vieles, was die Commands als
+  „Repo-lokale Adaption" nennen (`make gates`, `record-gates`, Doc-Gate, Command-Guard,
+  `.harness/skills/reviewer.md`, vendored Templates), hat slice-030–032 **real ins Ziel emittiert** —
+  im gebootstrappten Repo also **korrekt**, nicht zu verwässern. Nur die ai-harness-init-**internen**
+  Refs (Sensoren `make mutate`/`make smoke`/`test/mutations/`, die die Emission nicht mitliefert;
+  konkrete Dogfood-Slice-Nummern; die hart kodierte Sprach-Toolchain) waren tot/falsch und wurden
+  adaptierbar gemacht. Merke: „genericisieren" heißt nicht „alles Konkrete raus" — es heißt „tote
+  Refs raus, wahre Refs stehen lassen". Über-Genericisierung ist derselbe Fehler wie Unter-.
+- **Eine Mutation muss die Datei WIRKLICH ändern — der Sensor fing es.** Fall `37`s erster `sed`-Patch
+  zielte auf einen im Template über zwei Zeilen umbrochenen String → er griff nicht, und `make mutate`
+  meldete `BEFUND … Mutation hat nicht gegriffen … Patch veraltet?` (fail-closed-Bedingung 2). Ein
+  wirkungsloser Patch hätte sonst wie „Wächter intakt" ausgesehen. Neu gezielt auf eine
+  Einzeilenstelle. (Bonus: shellcheck `SC2016` fing danach Backticks im `sed`-Replacement — die
+  Mutations-Skripte fahren durch shell-lint.)
+- **Ein Literal-Set als Negativ-Wächter altert (Review-L-1).** `TestCommands_NoInternalLeak` prüfte
+  Dogfood-Slice-Nummern erst als 4 Literale (`slice-027/030/031/032`) — eine künftig durchsickernde
+  andere Nummer bliebe grün. Auf die **numerische Klasse** `slice-[0-9]{2,}` gehoben. Dieselbe Klasse
+  wie „Wächter besteht, weil Fixture zufällig passt": die Frage muss die Eigenschaft treffen (jede
+  konkrete Nummer), nicht eine Aufzählung bekannter Fälle.
+
+**Folge-Slices / benannte `open/`-Kandidaten:** keine neuen aus slice-033. Für den **welle-04-Closure**
+(nächster Schritt) offen: (a) git-Repo-Vorbedingung der emittierten `make gates` (INFO I-1, slice-031);
+(b) welle-04 §4-Tabelle-Stale (CLAUDE.md noch als slice-031-Scope gelistet, [`ADR-0006`](../../../../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md) → autort).
 
 ## 8. Sub-Area-Modus-Begründung
 
