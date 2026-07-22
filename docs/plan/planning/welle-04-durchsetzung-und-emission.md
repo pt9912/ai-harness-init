@@ -50,7 +50,7 @@ Tool-als-Quelle-Mechanik, dann Guard + Commands.
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-030](in-progress/slice-030-durchsetzung-skills-emit.md) | Reviewer-/Closure-Skill emittieren (`.harness/skills/`, Fetch — Emit-Pfad de-risken) | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
+| [slice-030](done/slice-030-durchsetzung-skills-emit.md) | Reviewer-/Closure-Skill emittieren (`.harness/skills/`, Fetch — Emit-Pfad de-risken) | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
 | slice-031 | Durchsetzungs-Mechanik als Tool-Quelle emittieren (Stop-Hook, `record-gates`, `CLAUDE.md`, `.claude/settings.json`) | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
 | slice-032 | Command-Guard emittieren + BLOCKED-Set je `--lang` (bash + awk, Tool-als-Quelle) | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
 | slice-033 | Workflow-Commands emittieren (`.claude/commands/`, Tool-als-Quelle) | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) |
