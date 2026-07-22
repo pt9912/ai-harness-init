@@ -38,11 +38,13 @@ Adopter-Docs zerstören**.
 2. **Die Emit-Schicht ist bis auf EINE Stelle sprach-agnostisch** (AGENTS/regelwerk/templates/
    Stop-Hook/record-gates/Commands — belegt in slice-031/033). Die **Ausnahme**: das
    **BLOCKED-Set des Command-Guards** ist per `--lang` (slice-032, `emit.Enforce(…, lang, …)`
-   substituiert die Sprach-Toolchain). Diese eine Stelle wird darum **fragment-komponiert**
-   (Entscheidung 2): der Guard-Skript-Kern bleibt sprachlos, das BLOCKED-Set liest er aus
-   `blocked/*`-Fragmenten — **universell bei Init** (apt/pip/npm/cargo), **je Sprache aus
-   `add-lang`**. So hat Init einen funktionsfähigen (universell blockenden) Guard, und `add-lang`
-   erweitert ihn ohne In-Place-Edit. `gen.Generate` (Skelett) + `wire.Place` brauchen weiter `--lang`.
+   substituiert die Sprach-Toolchain). Auflösung (Entscheidung 2): das **universelle** BLOCKED-Set
+   (apt/pip/npm/cargo) **bleibt im Guard-Skript gebacken** — als **fail-safe Boden**, der auch bei
+   fehlendem/leerem `tools/harness/blocked/` greift (der Guard darf NIE fail-open sein). Der Guard
+   liest zusätzlich `tools/harness/blocked/*` und **vereinigt** sie mit dem Boden — **je Sprache
+   aus `add-lang`** (`blocked/<sprache>`). So blockt Init schon sprachlos (Boden), `add-lang`
+   erweitert ohne In-Place-Edit, und ein sprachloser Re-Lauf lässt `blocked/<sprache>` unberührt.
+   `gen.Generate` (Skelett) + `wire.Place` brauchen weiter `--lang`.
 3. **Das `.mk`-Fragment-Muster trägt** — das Repo bindet das Doc-Gate heute schon als `d-check.mk`
    ein ([`MR-010`](../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)); Gate-Belange sind über includebare Fragmente komponierbar.
 
@@ -54,9 +56,9 @@ Festlegungen:
 1. **Drei Phasen, Sprache deferred.** `--lang` wird **optional**.
    - **Init** (`ai-harness-init [--name X]`, ohne Sprache): emittiert die sprach-agnostische Harness
      (regelwerk, AGENTS, Doc-Chain-Templates, `docs/plan`-Struktur, Commands) + die Durchsetzung
-     **inklusive eines funktionsfähigen Guards** (Guard-Skript + `blocked/universal` — blockt
-     apt/pip/npm/cargo sofort, sprachlos) + ein **sprach-agnostisches Gate**. `make gates` ist
-     **grün auf reinen Docs**.
+     **inklusive eines funktionsfähigen Guards** (Guard-Skript mit **eingebautem universellem
+     Boden** — blockt apt/pip/npm/cargo sofort, sprachlos) + ein **sprach-agnostisches Gate**.
+     `make gates` ist **grün auf reinen Docs**.
    - **Architecture** (Adopter-Arbeit über die emittierten Commands): lastenheft → spezifikation →
      architecture + ein **Sprach-ADR** verfassen.
    - **Prog. Languages** (`ai-harness-init add-lang <sprache> <pfad>`, **wiederholbar**): generiert das
@@ -69,27 +71,35 @@ Festlegungen:
      mit einem **benannten Glob-Include** (`include harness/mk/*.mk`) — so ist `add-lang` ein reiner
      **Fragment-Drop** (`harness/mk/<modul>.mk` mit lint/build/test), **kein** In-Place-Edit. Init
      legt `harness/mk/{doc-gate,baseline,enforce}.mk`. Die Fragmente **akkumulieren in eine Variable**
-     (`GATE_CHECKS += …`), das Ziel ist `gates: $(GATE_CHECKS) record-gates` — order-robust über
-     beliebig viele Fragmente. **`record-gates` zuletzt hält nur seriell:** das `gates`-Ziel wird
-     `.NOTPARALLEL` markiert (bzw. record-gates als eigener Nachlauf), sonst röte `make -j` den
-     Nachweis (parallele Prerequisites). **Migrations-Bruch benannt:** heute hängt der `wire`-Schritt
+     (`GATE_CHECKS += …`). **`record-gates` läuft zuletzt via Ordnungskante, nicht via Serialisierung:**
+     `gates: record-gates` **und** `record-gates: $(GATE_CHECKS)` — record-gates hängt an allen Checks,
+     läuft also strikt nach ihnen, **und `make -j` parallelisiert die Checks weiter** (lint/build/test).
+     Das ist der parallelitäts-erhaltende Weg; `.NOTPARALLEL` (das das GANZE Makefile serialisierte)
+     ist ausdrücklich **nicht** gewählt. **Migrations-Bruch benannt:** heute hängt der `wire`-Schritt
      `gates: docs-check` + `gates: record-gates` **direkt** an (kein `$(GATE_CHECKS)`) — die Umstellung
-     auf Variable-Akkumulation + Glob-Include ist Teil des Umbaus, nicht additiv.
-   - **Guard-BLOCKED-Fragmente:** der Command-Guard liest sein BLOCKED-Set aus `blocked/*`
-     (statt hart substituiert) — Init legt `blocked/universal`, `add-lang` droppt `blocked/<sprache>`.
-     Der Guard-Skript-Kern bleibt sprachlos; das löst H2 (Durchsetzung wird phasierbar, ohne
-     In-Place-Edit, ohne Clobber beim Re-Lauf).
+     auf Variable-Akkumulation + Glob-Include + Ordnungskante ist Teil des Umbaus, nicht additiv.
+   - **Guard-BLOCKED-Fragmente:** das **universelle** BLOCKED-Set bleibt im Guard-Skript **gebacken**
+     (fail-safe Boden — NIE fail-open, auch bei fehlendem `blocked/`); der Guard liest **zusätzlich**
+     `tools/harness/blocked/*` (Pfad relativ zu seinem `$here`-Anker, [`MR-005`](../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption)) und **vereinigt** sie
+     mit dem Boden. `add-lang` droppt `tools/harness/blocked/<sprache>`. Der Union-Read ist reines
+     bash+`cat` ([`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten): kein node/jq). Das löst H2 (Durchsetzung phasierbar, ohne In-Place-Edit,
+     ohne Clobber beim Re-Lauf) **ohne** die Fail-open-Regression eines reinen Runtime-Reads.
 3. **Idempotenz über eine Artefakt-Klassifikation** (ersetzt den Zwei-Wege-Pre-Flight
    refuse/`--force`). **Prinzip:** jede emittierte Datei ist **genau einer** Klasse zugeordnet; im
    **Zweifel gilt `skip-if-present`** (nie Adopter-Inhalt clobbern — der sichere Default). „konvergent"
    ist die bewusste Ausnahme für **rein tool-eigene Infrastruktur, die der Adopter nicht editieren
-   soll**.
+   soll**. **„konvergent" heißt: nur die von der jeweiligen Phase emittierten Dateien (auf kanonisch)
+   schreiben — ein Verzeichnis wird NIE geprunt.** Sonst setzte ein sprachloser Init-Re-Lauf
+   `blocked/<sprache>` oder `harness/mk/<sprache>.mk` zurück (die H2-Clobber-Falle eine Ebene tiefer).
+   **Nebeneffekt (adopter-sichere Fläche):** der Adopter kann eigene Targets in einer eigenen
+   Fragment-`.mk` ablegen (vom `include harness/mk/*.mk`-Glob eingebunden) — von der
+   Per-Datei-Konvergenz nie angefasst (die Makefile-Infra selbst ist tool-eigen).
 
    | Datei/Gruppe | Klasse | Warum |
    |---|---|---|
-   | `.harness/baseline/<tag>/` (regelwerk + templates), `harness/mk/*.mk` (Aggregator + Fragmente), `d-check.mk`, `.claude/hooks/*.sh`, `.claude/settings.json`, `tools/harness/*` (record-gates, working-tree-hash, extract-command.awk, Guard-Skript), `blocked/*` | **konvergent** | reine tool-erzeugte Infrastruktur; Re-Lauf schreibt kanonisch ([`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) byte-identisch), heilt Drift + Baseline-Upgrade |
+   | `.harness/baseline/<tag>/` (regelwerk + templates), `.harness/skills/*`, `harness/mk/*.mk` (tool-Fragmente; Adopter-`local.mk` unberührt), `d-check.mk`, `.claude/hooks/*.sh`, `.claude/settings.json`, `tools/harness/*` (record-gates, working-tree-hash, extract-command.awk, Guard-Skript), `tools/harness/blocked/<sprache>` | **konvergent** | reine tool-erzeugte Infrastruktur; Re-Lauf schreibt die emittierten Dateien kanonisch ([`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) byte-identisch), heilt Drift + Baseline-Upgrade, **prunt nie** |
    | `spec/{lastenheft,spezifikation,architecture}.md`, `docs/plan/adr/*`, roadmap/slices/carveouts, `README.md`, `CLAUDE.md`, `AGENTS.md`, `harness/conventions.md` (MR-Block!), `harness/README.md`, `.d-check.yml` | **skip-if-present** | Adopter füllt/adaptiert/wächst sie ([`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7)); nie überschreiben |
-   | **Skelett aufgeteilt:** `Makefile`-Aggregator + `harness/mk/*.mk` → **konvergent**; `main.go`, adopter-editierbarer Skelett-Code, `.golangci.yml` → **skip-if-present** | gemischt | H1: eine *Datei* ist eine Klasse — der Aggregator ist tool-eigen, der Code ist Adopter-Boden |
+   | **Skelett aufgeteilt** (H1, je Datei): `Makefile`-Aggregator + tool-`harness/mk/*.mk` → **konvergent**; `main.go`, adopter-editierbarer Skelett-Code, `.golangci.yml`, **`go.mod`** (Adopter wächst Deps), **`Dockerfile`** (Adopter passt Build-Schritte an) → **skip-if-present** — bei `add-lang` zwar generator-erzeugt ([`ADR-0005`](0005-ziel-repo-distribution.md)), aber beim Re-Lauf nicht clobbern | gemischt | eine *Datei* ist eine Klasse; der Aggregator ist tool-eigen, der Code + gewachsene Manifeste sind Adopter-Boden |
    | **Commands** (`.claude/commands/*.md`) | **skip-if-present** (Default) | sie tragen den ANPASSEN-Marker (slice-033) → der Adopter adaptiert sie; Prozess-Updates zieht er aus dem vendored regelwerk, nicht per Auto-Clobber. *Als bewusste Abweichung vom „Infrastruktur=konvergent" — beim implementierenden Slice final zu bestätigen.* |
 
    Jede Phase ist damit **idempotent + konvergent**: Re-Lauf repariert/hebt die tool-eigene
@@ -142,9 +152,9 @@ Festlegungen:
 | Tooling | Regel | Make-Target |
 |---|---|---|
 | `make full-smoke` | **Doc-only-Gate:** nach `init` (ohne Sprache) läuft `make gates` grün (docs-check + baseline-verify + record-gates), **ohne** Skelett | `make full-smoke` |
-| `make full-smoke` | **Guard bei Init:** der emittierte Guard blockt ohne Sprache schon `pip`/`apt` (`blocked/universal`); nach `add-lang go` zusätzlich `go`/`golangci-lint` (Union `blocked/*`) | `make full-smoke` |
-| `make full-smoke` | **Idempotenz:** `init` zweimal → 2. Lauf Exit 0, **keine** `skip-if-present`-Datei (`spec/*.md` mit Testinhalt) geändert; konvergente Artefakte byte-identisch | `make full-smoke` |
-| `make full-smoke` | **add-lang + Reihenfolge:** nach `add-lang go <pfad>` läuft `make gates` grün **inkl.** Go-Gates; `record-gates` bleibt letztes Prerequisite **auch unter `make -j`** (`.NOTPARALLEL`) | `make full-smoke` |
+| `make full-smoke` | **Guard bei Init (fail-safe Boden):** der Guard blockt ohne Sprache schon `pip`/`apt` (gebackener Boden); nach `add-lang go` zusätzlich `go`/`golangci-lint` (Union `tools/harness/blocked/*`). **Regression-Wächter:** bei geleertem/fehlendem `blocked/` blockt der Boden weiter (NIE fail-open) | `make full-smoke` |
+| `make full-smoke` | **Idempotenz + kein Prune:** `init` zweimal → 2. Lauf Exit 0, **keine** `skip-if-present`-Datei (`spec/*.md` mit Testinhalt) geändert; konvergente Artefakte byte-identisch; ein zuvor gedropptes `blocked/<sprache>`/`harness/mk/<sprache>.mk` **überlebt** den sprachlosen Re-Lauf | `make full-smoke` |
+| `make full-smoke` | **add-lang + Reihenfolge unter `-j`:** nach `add-lang go <pfad>` läuft `make -j gates` grün **inkl.** Go-Gates; `record-gates` läuft **strikt zuletzt** (Ordnungskante `record-gates: $(GATE_CHECKS)`), die Checks parallel | `make full-smoke` |
 | `go test` / `make mutate` | **Klassifikation:** ein Test koppelt jede emittierte Datei an ihre Klasse (konvergent vs. skip-if-present); eine Fehl-Klasse färbt rot | `make test` |
 
 ## Re-Evaluierungs-Trigger
@@ -161,4 +171,5 @@ Festlegungen:
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-07-22 | Proposed (nach Design-Dialog: Phasen · Idempotenz · Fragment-Gates · Interaktivität · Resume) | dieser ADR |
-| 2026-07-22 | Proposed überarbeitet nach unabhängigem Review (H1 Makefile-Klassen-Split · H2 Guard per `--lang` → BLOCKED-Fragmente · `.d-check.yml`/`conventions.md` reklassifiziert · Fragment-Migration + `make -j` benannt) | [Review](../../reviews/2026-07-22-adr-0007-proposed-review.md) |
+| 2026-07-22 | Proposed überarbeitet nach 1. Review (H1 Makefile-Klassen-Split · H2 Guard per `--lang` → BLOCKED-Fragmente · `.d-check.yml`/`conventions.md` reklassifiziert · Fragment-Migration + `make -j` benannt) | [Review 1](../../reviews/2026-07-22-adr-0007-proposed-review.md) |
+| 2026-07-22 | Proposed erneut überarbeitet nach 2. Review (NEU-H1 fail-open → universeller Boden im Guard gebacken · NEU-M2 konvergent=per-Datei/nie-prunen · `blocked/`-Pfad auf `tools/harness/blocked/` · `make -j` via Ordnungskante statt `.NOTPARALLEL` · Skills/`go.mod`/`Dockerfile` klassifiziert · adopter-`local.mk`-Fläche) | 2. Review (Text) |
