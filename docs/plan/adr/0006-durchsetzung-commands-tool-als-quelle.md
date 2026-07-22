@@ -1,6 +1,6 @@
 # ADR-0006: Durchsetzungsschicht + Workflow-Commands — Tool-als-Quelle statt Picker
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-07-22
 
@@ -127,3 +127,4 @@ Sprachskelett — aktuell zugunsten Generator entschieden ([`ADR-0005`](0005-zie
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-07-22 | Proposed (revidiert die Picker-Herkunft aus [`ADR-0004`](0004-durchsetzungs-emission.md)/[`ADR-0005`](0005-ziel-repo-distribution.md); Präzedenz [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) | Lastenheft 0.9.0 (CR [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)/[`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)) |
+| 2026-07-22 | Accepted — nach unabhängigem Review-Pass (6 MEDIUM aufgelöst, 0 HIGH; Kern-Entscheidung unverändert) | [Review-Report](../../reviews/2026-07-22-adr-0006-review.md) |

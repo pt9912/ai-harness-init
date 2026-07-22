@@ -23,6 +23,7 @@ flowchart TB
     Fetch --> Place
     Place --> Gate
     Gen --> Wire
+    CLI --> Enforce
     Fetch --> Enforce
 ```
 
@@ -36,7 +37,7 @@ flowchart TB
 | Emitter | Gate-Baseline schreiben | Gate ohne existierendes Target aktivieren |
 | Generator | Sprachskelett **deterministisch** erzeugen (Tool-als-Quelle) | nicht-reproduzierbare/floating Ausgabe |
 | Verdrahtung | Skelett am Ziel-Root platzieren + Doc-Gate einbinden | nicht-laufende Targets emittieren |
-| Enforce-Emitter | Stop-Hook/Guard/Skill ins Ziel schreiben | node/jq/OCI als Guard-Dep verlangen |
+| Enforce-Emitter | Durchsetzungs-Mechanik (tool-erzeugt, je `--lang`) + Reviewer-Skill (gefetcht) ins Ziel schreiben | node/jq/OCI als Guard-Dep verlangen |
 
 ## 3. Externe Abhängigkeiten
 

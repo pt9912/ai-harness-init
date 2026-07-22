@@ -26,9 +26,9 @@ die Ziel-Toolchain, kein node/jq ([`LH-QA-03`](../../../spec/lastenheft.md#lh-qa
 ## 2. Trigger (Welle startet)
 
 - welle-03 in `done/` (erfüllt — M2 erreicht).
-- [`ADR-0006`](../../../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md) **accepted** — derzeit **Proposed** (im Reviewer-Zyklus);
-  welle-04 aktiviert mit der Annahme. Picker → Tool-als-Quelle entsperrt die Emission **ohne**
-  Kurs-Upstream-Warten. **Beobachtbar**: ohne die angenommene ADR fehlte die Quelle.
+- [`ADR-0006`](../../../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md) **accepted** (erfüllt — nach unabhängigem
+  Review-Pass angenommen). Picker → Tool-als-Quelle entsperrt die Emission **ohne** Kurs-Upstream-Warten.
+  **Beobachtbar**: ohne die angenommene ADR fehlte die Quelle.
 
 ## 3. Closure-Trigger (Welle schließt)
 
