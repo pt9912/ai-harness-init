@@ -70,10 +70,12 @@ in_scope() {
 }
 
 @test "fixture: der reale Satz liefert genau 15 in-scope-Templates" {
-  # Die Zahl ist kein Selbstzweck: 10 Singletons + 5 wiederkehrende. Bewegt sie
-  # sich, hat upstream etwas hinzugefuegt oder entfernt — und emit.isRecurring
-  # (eine 5er-Aufzaehlung, Review-Befund F-4) braucht dann eine Entscheidung,
-  # statt das Neue still als Singleton zu behandeln.
+  # Die Zahl ist kein Selbstzweck: von 15 in-scope-Templates emittiert der Tool ab
+  # 0.8.0 (LH-FA-02) genau 8 als Singletons; 2 derivative Indexe (emit.isDerivativeIndex)
+  # und 5 wiederkehrende (emit.isRecurring) bleiben ununemittiert. Bewegt sich die
+  # Zahl, hat upstream etwas hinzugefuegt oder entfernt — und die beiden 5er-/2er-
+  # Aufzaehlungen brauchen dann eine Entscheidung, statt das Neue still als Singleton
+  # zu behandeln.
   local n
   n="$(real_paths | in_scope | wc -l | tr -d ' ')"
   [ "$n" -eq 15 ] || {
@@ -84,8 +86,10 @@ in_scope() {
 }
 
 @test "fixture: die fuenf wiederkehrenden Templates existieren real" {
-  # emit.isRecurring zaehlt sie namentlich auf (LH-FA-02). Verschwindet einer
-  # upstream, emittiert das Tool ihn stillschweigend nicht mehr.
+  # emit.isRecurring zaehlt sie namentlich auf (LH-FA-02). Ab 0.8.0 werden sie NICHT
+  # emittiert, sondern aus der vendored Baseline je Artefakt kopiert (ADR-0005) —
+  # verschwindet einer upstream, bricht genau dieses referenzierte Modell (der Nutzer
+  # findet die Vorlage nicht mehr im vendored Satz).
   local rel
   for rel in \
     docs/plan/adr/NNNN-titel.template.md \

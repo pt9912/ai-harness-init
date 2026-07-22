@@ -18,9 +18,10 @@
 #   5. Verdrahtetes Makefile bindet d-check.mk ein (MR-010) + Go-Gates am
 #      Ziel-Root gruen (lint/build/test).
 #
-# NICHT geprueft: 0-Befunde-out-of-the-box (voller emittierter Green-Run). Die
-# emittierten Templates tragen noch Vorwaerts-Verweise/Platzhalter (u. a. auf die
-# Root-README) — sie gate-sicher zu machen ist LH-FA-01 Happy-Path = slice-005.
+# GEPRUEFT (slice-028): das emittierte docs-check meldet 0 Befunde out-of-the-box
+# (Schritt 4) — die drei frueheren Befunde (2 derivative Indexe + 1 Roadmap-Zeile)
+# sind weg. NICHT hier: der zusammengefuehrte make-gates-E2E im Ziel (docs-check +
+# Go-Gates in EINEM Lauf) — das ist slice-024 (LH-FA-01 Happy-Path).
 set -euo pipefail
 
 GO_VERSION="${GO_VERSION:-1.26.4}"
@@ -58,35 +59,51 @@ fi
 # am DocGate, also VOR dem Templates-Schritt. Hier ist die einzige Stelle, an der
 # die volle Kette real laeuft — also gehoert die Beobachtung hierher, auf
 # Tier 2 (DoD-Verify/CI), nicht in `make gates`.
-# Je ein Vertreter der beiden Klassen aus LH-FA-02: Singleton -> .md,
-# Wiederkehrendes -> verbatim .template.md.
-for rel in AGENTS.md docs/plan/planning/slice.template.md; do
+# LH-FA-02 0.8.0: emittiert werden Singletons (-> .md) und die Struktur-.gitkeep;
+# wiederkehrende Vorlagen und derivative Indexe NICHT (referenziert aus vendored
+# bzw. Fuelle-wenn-Inhalt-da). Je ein positiver Vertreter beider Klassen:
+for rel in AGENTS.md docs/plan/adr/.gitkeep docs/plan/planning/in-progress/roadmap.md; do
 	if [ ! -f "$tmprepo/$rel" ]; then
 		echo "smoke: FEHLER — Template-Schicht unvollstaendig: $rel fehlt" >&2
 		exit 1
 	fi
 done
-# Gegenprobe zur In-Scope-Regel. Geprueft werden die Namen, die der Emitter
-# WIRKLICH schriebe — nicht die Quell-Namen: singletonTarget haengt ".md" an,
-# wenn ".template.md" nicht greift, aus `README.md` wuerde also `README.md.md`.
-# Die erste Fassung prueste `README.md` und war damit unter der Mutation, gegen
-# die sie gerichtet ist, wirkungslos (Review-Befund slice-026 F-2 — Falsch-
-# Beispiel 1 aus AGENTS Paragraph 3.6, woertlich).
-for rel in README.md.md Makefile.md .d-check.yml.md project-readme.md .harness/skills/reviewer.md; do
+# Gegenprobe: was NICHT emittiert werden darf. (a) wiederkehrende Vorlagen (0.8.0:
+# referenziert, nicht co-located) und (b) derivative Indexe (broken Platzhalter-
+# Links). (c) die In-Scope-Regel — geprueft an den Namen, die der Emitter WIRKLICH
+# schriebe, nicht den Quell-Namen: singletonTarget haengt ".md" an, aus `README.md`
+# wuerde `README.md.md`. Die erste Fassung prueste `README.md` und war unter der
+# Mutation, gegen die sie gerichtet ist, wirkungslos (Review-Befund slice-026 F-2 —
+# Falsch-Beispiel 1 aus AGENTS Paragraph 3.6, woertlich).
+for rel in \
+	docs/plan/planning/slice.template.md docs/plan/adr/NNNN-titel.template.md \
+	docs/plan/adr/README.md docs/plan/carveouts/README.md \
+	README.md.md Makefile.md .d-check.yml.md project-readme.md .harness/skills/reviewer.md; do
 	if [ -e "$tmprepo/$rel" ]; then
-		echo "smoke: FEHLER — out-of-scope-Artefakt emittiert: $rel" >&2
+		echo "smoke: FEHLER — Artefakt emittiert, das nicht darf (0.8.0): $rel" >&2
 		exit 1
 	fi
 done
 
-echo "smoke: 4/5 emittiertes docs-check laeuft + akzeptiert die Config ..."
-out="$(make -C "$tmprepo" -f d-check.mk docs-check 2>&1 || true)"
+echo "smoke: 4/5 emittiertes docs-check laeuft + meldet 0 Befunde out-of-the-box (slice-028, LH-QA-01) ..."
+dc_rc=0
+out="$(make -C "$tmprepo" -f d-check.mk docs-check 2>&1)" || dc_rc=$?
+# Erst: lief es ueberhaupt (kein Config-Crash)?
 if ! printf '%s\n' "$out" | grep -q "geprüft"; then
 	echo "smoke: FEHLER — d-check lief nicht (Config-Crash / halluzinierte Config?):" >&2
 	printf '%s\n' "$out" >&2
 	exit 1
 fi
-printf '%s\n' "$out" | grep -E "geprüft|Befund"
+printf '%s\n' "$out" | grep -E "geprüft|Befund" || true
+# Dann: 0 Befunde. docs-check ist ein Gate -> Exit != 0 heisst Befunde. Das ist der
+# slice-028-Kern: das emittierte Repo ist out-of-the-box gate-sicher (die drei
+# frueheren Befunde — 2 derivative Indexe + 1 Roadmap-Zeile — sind weg). Ein blosses
+# "lief durch" waere stilles Gruen (LH-QA-01): der Exit-Code ist die Aussage.
+if [ "$dc_rc" -ne 0 ]; then
+	echo "smoke: FEHLER — emittiertes docs-check meldet Befunde (nicht out-of-the-box gate-sicher, slice-028/LH-QA-01):" >&2
+	printf '%s\n' "$out" >&2
+	exit 1
+fi
 
 echo "smoke: 5/5 verdrahtetes Skelett am Ziel-Root: d-check.mk eingebunden + Go-Gates gruen? ..."
 # slice-004b: das Skelett liegt jetzt am Ziel-Root, das Makefile bindet d-check.mk
@@ -96,14 +113,14 @@ if ! grep -q '^include d-check.mk$' "$tmprepo/Makefile"; then
 	exit 1
 fi
 # E2E: die Go-Gates (lint/build/test) am Ziel-Root real gruen — NICHT `make gates`
-# (das schliesst jetzt docs-check ein, das auf den noch unvollstaendigen Templates
-# anschlaegt: 0 Befunde out-of-the-box ist slice-005/024, nicht hier). Belegt, dass
-# die kuratiert-reiche .golangci.yml + main.go am Root zusammenpassen (Host-Docker).
+# in EINEM Lauf (docs-check pruefen wir separat in Schritt 4; der zusammengefuehrte
+# make-gates-E2E im Ziel ist slice-024). Belegt, dass die kuratiert-reiche
+# .golangci.yml + main.go am Root zusammenpassen (Host-Docker).
 skel_out="$( make -C "$tmprepo" lint build test 2>&1 )" || {
 	echo "smoke: FEHLER — die Go-Gates des verdrahteten Skeletts sind rot (lint/build/test):" >&2
 	printf '%s\n' "$skel_out" | tail -25 >&2
 	exit 1
 }
 
-echo "smoke: OK — Bootstrap laeuft, Skelett an den Root verdrahtet (d-check.mk eingebunden) + Go-Gates gruen, Doc-Gate-Config valide."
-echo "smoke: HINWEIS — voller make-gates-Green-Run im Ziel (inkl. docs-check) ist slice-005/024 (LH-FA-01)."
+echo "smoke: OK — Bootstrap laeuft, Skelett verdrahtet + Go-Gates gruen, emittiertes docs-check 0 Befunde out-of-the-box (slice-028)."
+echo "smoke: HINWEIS — der zusammengefuehrte make-gates-E2E im Ziel (docs-check + Go-Gates in EINEM Lauf) ist slice-024 (LH-FA-01)."

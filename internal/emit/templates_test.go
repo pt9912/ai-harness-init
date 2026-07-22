@@ -32,8 +32,11 @@ func courseSet() fs.FS {
 		"docs/plan/adr/README.template.md":      f(hint + body),
 		"docs/plan/carveouts/README.template.md": f(hint + body),
 		"docs/plan/planning/README.template.md": f(hint + body),
-		"docs/plan/planning/roadmap.template.md": f(hint + body),
-		// in scope — Wiederkehrende (verbatim, Hinweis bleibt)
+		// Roadmap traegt die gate-unsichere "Abgeschlossene Wellen"-Beispielzeile
+		// (broken ../done/-Link) — NeutralizeRoadmap muss sie beim Emit entschaerfen.
+		"docs/plan/planning/roadmap.template.md": f(hint + "# Roadmap\n\n| <welle-NN> | YYYY-MM-DD | [`welle-NN-results.md`](../done/welle-NN-results.md) |\n"),
+		// in scope — Wiederkehrende (LH-FA-02 0.8.0: NICHT emittiert, referenziert
+		// aus der vendored Baseline) und derivative Indexe (nicht emittiert)
 		"docs/plan/adr/NNNN-titel.template.md":       f(hint + body),
 		"docs/plan/planning/slice.template.md":       f(hint + body),
 		"docs/plan/planning/welle.template.md":       f(hint + body),
@@ -104,7 +107,6 @@ func TestTemplates_Layout(t *testing.T) {
 		"AGENTS.md",
 		"spec/lastenheft.md", "spec/architecture.md", "spec/spezifikation.md",
 		"harness/README.md", "harness/conventions.md",
-		"docs/plan/adr/README.md", "docs/plan/carveouts/README.md",
 		"docs/plan/planning/README.md",
 		"docs/plan/planning/in-progress/roadmap.md", // Sonderfall: in-progress/, nicht flach
 	}
@@ -113,24 +115,38 @@ func TestTemplates_Layout(t *testing.T) {
 			t.Errorf("Singleton %s fehlt: %v", rel, err)
 		}
 	}
-	recurring := []string{
+	// Struktur-Verzeichnisse via .gitkeep gehalten (LH-FA-02 0.8.0). docs/plan/adr/
+	// traegt zugleich den Verzeichnis-Link aus AGENTS.md/harness/README.md.
+	gitkeeps := []string{
+		"docs/plan/adr/.gitkeep",
+		"docs/plan/carveouts/.gitkeep",
+		"docs/reviews/.gitkeep",
+		"docs/plan/planning/open/.gitkeep",
+		"docs/plan/planning/next/.gitkeep",
+		"docs/plan/planning/done/.gitkeep",
+	}
+	for _, rel := range gitkeeps {
+		if _, err := os.Stat(filepath.Join(dir, rel)); err != nil {
+			t.Errorf(".gitkeep %s fehlt: %v", rel, err)
+		}
+	}
+	// NICHT emittiert (0.8.0): wiederkehrende Vorlagen (referenziert aus vendored),
+	// derivative Indexe (Fuelle-wenn-Inhalt-da), Set-Index-README; roadmap NICHT flach.
+	absent := []string{
 		"docs/plan/adr/NNNN-titel.template.md",
 		"docs/plan/planning/slice.template.md",
 		"docs/plan/planning/welle.template.md",
 		"docs/plan/carveouts/carveout.template.md",
 		"docs/reviews/review-report.template.md",
+		"docs/plan/adr/README.md",       // derivativer ADR-Index
+		"docs/plan/carveouts/README.md", // derivativer Carveout-Index
+		"README.md",                     // Set-Index
+		"docs/plan/planning/roadmap.md", // roadmap gehoert unter in-progress/
 	}
-	for _, rel := range recurring {
-		if _, err := os.Stat(filepath.Join(dir, rel)); err != nil {
-			t.Errorf("Wiederkehrend %s fehlt: %v", rel, err)
+	for _, rel := range absent {
+		if _, err := os.Stat(filepath.Join(dir, rel)); err == nil {
+			t.Errorf("%s wurde emittiert (darf nicht)", rel)
 		}
-	}
-	// Set-Index-README wird NIE emittiert; roadmap NICHT flach unter planning/.
-	if _, err := os.Stat(filepath.Join(dir, "README.md")); err == nil {
-		t.Error("Set-Index-README.md wurde emittiert (darf nicht)")
-	}
-	if _, err := os.Stat(filepath.Join(dir, "docs/plan/planning/roadmap.md")); err == nil {
-		t.Error("roadmap.md liegt flach unter planning/ statt in-progress/")
 	}
 }
 
@@ -156,34 +172,48 @@ func TestTemplates_StampAndStrip(t *testing.T) {
 	}
 }
 
-// TestTemplates_RecurringVerbatim: wiederkehrende Templates werden verbatim
-// emittiert — ihr Template-Hinweis-Block bleibt stehen (Singletons bekommen ihn
-// gestrippt, siehe TestTemplates_StampAndStrip).
+// TestTemplates_RecurringNichtEmittiert: die fuenf wiederkehrenden Templates werden
+// ab 0.8.0 (LH-FA-02, ADR-0005) NICHT mehr emittiert — weder co-located als
+// .template.md (alte 0.7.0-Form) noch transformiert als .md. Sie liegen aus dem Fetch
+// vendored und werden von dort je Artefakt kopiert (wie im Dogfood). Geprueft werden
+// BEIDE Formen, die der Code faelschlich schreiben koennte (§3.6: alle Ziel-Namen
+// pruefen, die unter einer Mutation entstuenden — hier faellt entweder die
+// isRecurring-Weiche auf Singleton oder der alte co-located Zweig kehrt zurueck).
 //
 // Gegen den REALEN Kurs-Satz laeuft dieser Test NICHT: er nutzt courseSet(), und
 // `.harness/` ist im Docker-Build-Kontext gar nicht sichtbar (.dockerignore). Die
 // Treue der Fixture zum realen Satz haelt `test/courseset-fixture.bats` fest.
-// (Eine frueher hier stehende Zuschreibung an `make smoke` war falsch: smoke
-// prueft Bootstrap-Exit, Skelett und d-check-Config — kein emittiertes Template.
-// Review-Befund slice-022b F-3.)
-func TestTemplates_RecurringVerbatim(t *testing.T) {
+func TestTemplates_RecurringNichtEmittiert(t *testing.T) {
 	dir := t.TempDir()
 	if err := emit.Templates(courseSet(), dir, "X", true); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
-	got, err := os.ReadFile(filepath.Join(dir, "docs/plan/adr/NNNN-titel.template.md"))
-	if err != nil {
-		t.Fatalf("NNNN-titel lesen: %v", err)
-	}
-	if !strings.Contains(string(got), "Template-Hinweis") {
-		t.Error("wiederkehrendes Template transformiert (Hinweis-Block gestrippt) — nicht verbatim")
+	for _, rel := range []string{
+		// co-located (alte 0.7.0-Form)
+		"docs/plan/adr/NNNN-titel.template.md",
+		"docs/plan/planning/slice.template.md",
+		"docs/plan/planning/welle.template.md",
+		"docs/plan/carveouts/carveout.template.md",
+		"docs/reviews/review-report.template.md",
+		// transformierte .md-Form (falls die isRecurring-Weiche auf Singleton faellt)
+		"docs/plan/adr/NNNN-titel.md",
+		"docs/plan/planning/slice.md",
+		"docs/plan/planning/welle.md",
+		"docs/plan/carveouts/carveout.md",
+		"docs/reviews/review-report.md",
+	} {
+		if _, err := os.Stat(filepath.Join(dir, rel)); err == nil {
+			t.Errorf("wiederkehrendes Template emittiert (darf nicht, 0.8.0): %s", rel)
+		}
 	}
 }
 
-// TestTemplates_EmittierterBestandVollstaendig ist der Kern von slice-022b: die
-// gefetchte Quelle traegt den VOLLEN Kurs-Satz (21 Dateien), emittiert werden
-// genau 15. Geprueft wird der Ist-Bestand VOLLSTAENDIG — was nicht in der
-// Erwartung steht, darf nicht da sein.
+// TestTemplates_EmittierterBestandVollstaendig ist der Kern von slice-022b/028: die
+// gefetchte Quelle traegt den VOLLEN Kurs-Satz (21 Dateien); emittiert werden ab
+// 0.8.0 genau 14 — 8 Singletons (10 minus die zwei derivativen Indexe) plus 6
+// .gitkeep der Struktur-Verzeichnisse; wiederkehrende Vorlagen bleiben ununemittiert.
+// Geprueft wird der Ist-Bestand VOLLSTAENDIG — was nicht in der Erwartung steht,
+// darf nicht da sein.
 //
 // Die Vorgaenger-Fassung hiess AusserScopeNichtEmittiert und stat'te die
 // QUELL-Namen (`README.md`, `project-readme.template.md`, …). Der Emitter
@@ -200,10 +230,8 @@ func TestTemplates_EmittierterBestandVollstaendig(t *testing.T) {
 		t.Fatalf("Templates: %v", err)
 	}
 	want := []string{
-		// 10 Singletons -> .md
+		// 8 Singletons -> .md (10 minus ADR-/Carveout-Index)
 		"AGENTS.md",
-		"docs/plan/adr/README.md",
-		"docs/plan/carveouts/README.md",
 		"docs/plan/planning/README.md",
 		"docs/plan/planning/in-progress/roadmap.md",
 		"harness/README.md",
@@ -211,12 +239,13 @@ func TestTemplates_EmittierterBestandVollstaendig(t *testing.T) {
 		"spec/architecture.md",
 		"spec/lastenheft.md",
 		"spec/spezifikation.md",
-		// 5 Wiederkehrende -> verbatim co-located
-		"docs/plan/adr/NNNN-titel.template.md",
-		"docs/plan/carveouts/carveout.template.md",
-		"docs/plan/planning/slice.template.md",
-		"docs/plan/planning/welle.template.md",
-		"docs/reviews/review-report.template.md",
+		// 6 .gitkeep der Struktur-Verzeichnisse
+		"docs/plan/adr/.gitkeep",
+		"docs/plan/carveouts/.gitkeep",
+		"docs/plan/planning/done/.gitkeep",
+		"docs/plan/planning/next/.gitkeep",
+		"docs/plan/planning/open/.gitkeep",
+		"docs/reviews/.gitkeep",
 	}
 	sort.Strings(want)
 	got := emittedTree(t, dir)
@@ -345,8 +374,9 @@ func TestCheckRoot_EinRenameGenuegtNicht(t *testing.T) {
 	}
 }
 
-// TestTemplates_MinimalQuelle: eine Quelle, die NUR den Wurzel-Anker traegt,
-// emittiert genau ihn — checkRoot verwirft sie nicht als "zu duenn".
+// TestTemplates_MinimalQuelle: eine Quelle, die nur die Wurzel-Anker traegt,
+// emittiert genau sie (plus die quell-unabhaengigen Struktur-.gitkeep) — checkRoot
+// verwirft sie nicht als "zu duenn".
 //
 // Der Test hiess vorher TestTemplates_LeereQuelle und trug einen
 // LH-QA-01-Kommentar ueber den `len(plan) == 0`-Guard, sicherte im Rumpf aber
@@ -367,8 +397,16 @@ func TestTemplates_MinimalQuelle(t *testing.T) {
 	if err := emit.Templates(minimal, dir, "X", true); err != nil {
 		t.Fatalf("minimale gueltige Quelle sollte emittieren: %v", err)
 	}
-	if got := emittedTree(t, dir); strings.Join(got, ",") != "AGENTS.md,spec/lastenheft.md" {
-		t.Errorf("emittiert = %v, want [AGENTS.md spec/lastenheft.md]", got)
+	// Emittiert: die zwei Singletons der Quelle PLUS die tool-definierten .gitkeep der
+	// Struktur-Verzeichnisse (quell-unabhaengig, LH-FA-02 0.8.0).
+	want := []string{
+		"AGENTS.md", "spec/lastenheft.md",
+		"docs/plan/adr/.gitkeep", "docs/plan/carveouts/.gitkeep", "docs/reviews/.gitkeep",
+		"docs/plan/planning/open/.gitkeep", "docs/plan/planning/next/.gitkeep", "docs/plan/planning/done/.gitkeep",
+	}
+	sort.Strings(want)
+	if got := emittedTree(t, dir); strings.Join(got, "\n") != strings.Join(want, "\n") {
+		t.Errorf("emittiert = %v\nwant = %v", got, want)
 	}
 }
 
@@ -415,5 +453,46 @@ func TestStripHintBlock(t *testing.T) {
 	no := "# Titel\n\nkein Hinweis\n"
 	if got := emit.StripHintBlock(no); got != no {
 		t.Errorf("StripHintBlock ohne Marker veraenderte den Text: %q", got)
+	}
+}
+
+// TestNeutralizeRoadmap prueft die pure Neutralisierung: der broken ../done/-Link der
+// "Abgeschlossene Wellen"-Beispielzeile wird zu Inline-Code (Form bleibt, Link weg),
+// ohne Marker unveraendert.
+func TestNeutralizeRoadmap(t *testing.T) {
+	in := "## Abgeschlossene Wellen\n\n| <welle-NN> | YYYY-MM-DD | [`welle-NN-results.md`](../done/welle-NN-results.md) |\n"
+	got := emit.NeutralizeRoadmap(in)
+	if strings.Contains(got, "](../done/") {
+		t.Errorf("broken ../done/-Link nicht neutralisiert:\n%s", got)
+	}
+	if !strings.Contains(got, "`welle-NN-results.md`") {
+		t.Errorf("Beispiel-Form (Inline-Code) verloren:\n%s", got)
+	}
+	const plain = "kein Link hier\n"
+	if emit.NeutralizeRoadmap(plain) != plain {
+		t.Error("NeutralizeRoadmap veraenderte Text ohne den Marker")
+	}
+}
+
+// TestTemplates_RoadmapGateSafe: die emittierte Roadmap (in-progress/roadmap.md)
+// traegt KEINEN broken ../done/-Link mehr. Das ist die Wiring-Probe — sie belegt, dass
+// der Roadmap-Zweig in planTemplates NeutralizeRoadmap wirklich aufruft (die
+// Fixture-Roadmap in courseSet() traegt den realen broken Link). Ginge upstream der
+// Link-Wortlaut verloren oder aenderte er seine Form, faellt es hier auf (Ausgabe-
+// Property gemessen, nicht die Implementierung — §3.6).
+func TestTemplates_RoadmapGateSafe(t *testing.T) {
+	dir := t.TempDir()
+	if err := emit.Templates(courseSet(), dir, "X", true); err != nil {
+		t.Fatalf("Templates: %v", err)
+	}
+	got, err := os.ReadFile(filepath.Join(dir, "docs/plan/planning/in-progress/roadmap.md"))
+	if err != nil {
+		t.Fatalf("roadmap.md lesen: %v", err)
+	}
+	if strings.Contains(string(got), "](../done/") {
+		t.Errorf("emittierte Roadmap traegt noch einen broken ../done/-Link:\n%s", got)
+	}
+	if strings.Contains(string(got), "Template-Hinweis") {
+		t.Error("emittierte Roadmap traegt noch den Template-Hinweis-Block")
 	}
 }

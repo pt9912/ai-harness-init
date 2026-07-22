@@ -11,12 +11,33 @@ import (
 	"strings"
 )
 
-// isRecurring markiert die fuenf wiederkehrenden Templates (LH-FA-02): sie bleiben
-// verbatim als co-located .template.md, aus denen der Adopter je Artefakt kopiert.
+// isRecurring markiert die fuenf wiederkehrenden Templates (LH-FA-02, ab 0.8.0):
+// sie werden NICHT (mehr) emittiert. Sie liegen aus dem Fetch bereits vendored unter
+// .harness/baseline/<tag>/templates/ und werden von dort je Artefakt kopiert (wie im
+// Dogfood, ADR-0005) — eine co-located .md-Kopie waere Redundanz und widerspraeche
+// der emittierten AGENTS.md, die genau dieses referenzierte Modell beschreibt (der
+// Selbstwiderspruch, den slice-024s Voll-Smoke aufdeckte). Sie ist per .d-check.yml
+// (scan.ignore **/*.template.md) zwar gate-neutral, aber eben ueberfluessig.
 func isRecurring(base string) bool {
 	switch base {
 	case "NNNN-titel.template.md", "slice.template.md", "welle.template.md",
 		"carveout.template.md", "review-report.template.md":
+		return true
+	}
+	return false
+}
+
+// isDerivativeIndex markiert die beiden derivativen Index-Vorlagen (ADR-Index,
+// Carveout-Index). Sie werden NICHT als gestempelte Singletons emittiert
+// (Fuelle-wenn-Inhalt-da, LH-FA-02 0.8.0): ein frisches Repo hat null ADRs/Carveouts,
+// ihr als .md emittierter Platzhalter-Link ([<NNNN>](<NNNN>-titel.md) bzw.
+// [CO-<NNN>](CO-<NNN>-titel.md)) braeche docs-check out-of-the-box — genau zwei der
+// drei Befunde, die slice-024s Voll-Smoke aufdeckte. Der Planning-Index
+// (docs/plan/planning/README.template.md) ist bewusst NICHT dabei: er dokumentiert die
+// Lifecycle-Konvention (nuetzlich auch leer) und traegt keinen broken Link.
+func isDerivativeIndex(rel string) bool {
+	switch rel {
+	case "docs/plan/adr/README.template.md", "docs/plan/carveouts/README.template.md":
 		return true
 	}
 	return false
@@ -196,7 +217,11 @@ func Templates(src fs.FS, targetDir, name string, force bool) error {
 	return nil
 }
 
-// planTemplates klassifiziert den Quell-Baum in Ziel-Pfad -> Inhalt.
+// planTemplates klassifiziert den Quell-Baum in Ziel-Pfad -> Inhalt (LH-FA-02 0.8.0).
+// Emittiert werden nur die Singletons; wiederkehrende Vorlagen und derivative Indexe
+// bleiben ununemittiert (referenziert aus der vendored Baseline bzw.
+// Fuelle-wenn-Inhalt-da). Zusaetzlich werden die tool-definierten
+// Struktur-Verzeichnisse via .gitkeep gehalten (structureGitkeeps).
 func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 	out := map[string][]byte{}
 	err := fs.WalkDir(src, ".", func(rel string, d fs.DirEntry, walkErr error) error {
@@ -206,31 +231,90 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 		if d.IsDir() || !inScope(rel) {
 			return nil
 		}
+		// Wiederkehrende Vorlagen und derivative Indexe NICHT emittieren (ADR-0005):
+		// die Wiederkehrenden liegen aus dem Fetch vendored und werden von dort je
+		// Artefakt kopiert; die Indexe sind Fuelle-wenn-Inhalt-da (broken
+		// Platzhalter-Links in einem frischen Repo).
+		if isRecurring(path.Base(rel)) || isDerivativeIndex(rel) {
+			return nil
+		}
 		content, readErr := fs.ReadFile(src, rel)
 		if readErr != nil {
 			return fmt.Errorf("template %s lesen: %w", rel, readErr)
 		}
-		if isRecurring(path.Base(rel)) {
-			out[rel] = content // verbatim, co-located
-			return nil
+		body := stampName(StripHintBlock(string(content)), name)
+		if rel == roadmapTemplate {
+			// Die Roadmap MUSS emittiert bleiben (stark inbound-verlinkt), traegt aber
+			// eine gate-unsichere Beispielzeile — emit-seitig neutralisieren (§6 b).
+			body = NeutralizeRoadmap(body)
 		}
-		out[singletonTarget(rel)] = []byte(stampName(StripHintBlock(string(content)), name))
+		out[singletonTarget(rel)] = []byte(body)
 		return nil
 	})
 	if err != nil {
 		return nil, err
 	}
+	// Struktur-Verzeichnisse (tool-definiert, NICHT template-abgeleitet): der
+	// Harness-Prozess sieht sie vor, ein frisches Repo laesst sie leer. Git trackt
+	// keine leeren Verzeichnisse -> .gitkeep. docs/plan/adr/ traegt zugleich den
+	// Verzeichnis-Link aus AGENTS.md/harness/README.md — nach dem Wegfall von Index
+	// + NNNN-Template haelt nur .gitkeep es am Leben (sonst neuer docs-check-Befund).
+	for _, k := range structureGitkeeps() {
+		out[k] = []byte{}
+	}
 	return out, nil
 }
+
+// structureGitkeeps liefert die .gitkeep-Zielpfade der Lifecycle-/Struktur-
+// Verzeichnisse, die der Harness-Prozess vorsieht (LH-FA-02 0.8.0): die
+// Slice-Lifecycle-Ebenen open/next/done (in-progress/ traegt bereits die Roadmap)
+// sowie die ADR-/Carveout-/Reviews-Ordner. Tool-definiert und quell-unabhaengig —
+// darum eine feste Liste, kein Ableiten aus src.
+func structureGitkeeps() []string {
+	dirs := []string{
+		"docs/plan/adr",
+		"docs/plan/carveouts",
+		"docs/reviews",
+		"docs/plan/planning/open",
+		"docs/plan/planning/next",
+		"docs/plan/planning/done",
+	}
+	out := make([]string, len(dirs))
+	for i, d := range dirs {
+		out[i] = d + "/.gitkeep"
+	}
+	return out
+}
+
+// roadmapTemplate ist der Quell-Relpfad der Roadmap-Vorlage (templates/-gewurzelt).
+const roadmapTemplate = "docs/plan/planning/roadmap.template.md"
 
 // singletonTarget bildet einen Singleton-Template-Pfad auf sein .md-Ziel ab.
 func singletonTarget(rel string) string {
 	// Die Roadmap lebt unter in-progress/ — die emittierte planning/README.md
 	// verweist dorthin; ein Ziel in planning/ liesse ihren Link brechen.
-	if rel == "docs/plan/planning/roadmap.template.md" {
+	if rel == roadmapTemplate {
 		return "docs/plan/planning/in-progress/roadmap.md"
 	}
 	return strings.TrimSuffix(rel, ".template.md") + ".md"
+}
+
+// roadmapDoneLink ist die eine gate-unsichere Stelle der Roadmap-Vorlage: die
+// "Abgeschlossene Wellen"-Beispielzeile verlinkt ../done/welle-NN-results.md, das im
+// frischen Repo nicht existiert (broken link -> docs-check-Befund, der dritte aus
+// slice-024s Voll-Smoke). Der Rest der Roadmap ist gate-sicher.
+const roadmapDoneLink = "[`welle-NN-results.md`](../done/welle-NN-results.md)"
+
+// NeutralizeRoadmap macht die emittierte Roadmap gate-sicher: es ersetzt den einen
+// broken Vorwaerts-Link der "Abgeschlossene Wellen"-Beispielzeile durch Inline-Code
+// (die Zeile bleibt als Form-Beispiel erhalten, traegt aber keinen toten Link). Das
+// ist die emit-seitige Neutralisierung aus slice-028 §6 Option (b); der Kurs-Fix
+// (Option a) waere die SSoT-Loesung, ist aber blockiert (immutable vendored Baseline,
+// AGENTS 3.4). Ohne den Marker unveraendert — faellt der Link upstream weg oder aendert
+// er seine Form, faengt es TestTemplates_RoadmapGateSafe (kein `](../done/` im Ziel)
+// bzw. der Voll-Smoke (0 Befunde), nicht ein stilles Gruen.
+func NeutralizeRoadmap(s string) string {
+	return strings.ReplaceAll(s, roadmapDoneLink, "`welle-NN-results.md`")
 }
 
 // stampName ersetzt den <Projektname>-Platzhalter, falls ein Name gesetzt ist.
