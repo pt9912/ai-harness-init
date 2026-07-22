@@ -12,18 +12,14 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**Welle-ID:** [welle-03-readme-und-smoke](../welle-03-readme-und-smoke.md)
-**Start:** 2026-07-21 (Trigger „welle-02 done" erfüllt — alle Slices in `done/`, `make gates`/`make smoke`/`make mutate` grün, Carveout-Audit [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) dokumentiert)
-**Geplantes Ende:** offen
+**Keine aktive Welle.** welle-03 ist **geschlossen** (2026-07-22, siehe *Abgeschlossene Wellen* unten)
+und **M2 erreicht** (vollständiger Bootstrap): ein frisch gebootstrapptes Repo fährt `make gates`
+out-of-the-box grün (`make full-smoke`: 9 Dateien / 0 Befunde / Exit 0).
 
-**Slice-IDs:** slice-005 (Root-README, [`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2), **done**) → slice-028 (Emit
-out-of-the-box gate-sicher, [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), **done**) → slice-024 (Voll-E2E-Smoke, [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), **done**). Alle drei in `done/`.
-**Nächster Schritt:** **welle-03 schließen** — alle Slice-Bedingungen erfüllt: `make full-smoke` grün (frisch gebootstrapptes Repo fährt `make gates` out-of-the-box, 9 Dateien/0 Befunde), `make gates`/`make mutate` grün. Die Wellen-Closure (Modul 6) erreicht **M2**.
-
-**Closure-Trigger:** alle drei Slices in `done/`, `make gates` grün, **Voll-E2E-`make smoke` grün** (das emittierte
-Repo fährt sein eigenes `make gates` 0-Befunde out-of-the-box, [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) Happy-Path
-[`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)), **`make mutate` grün**, Carveout-Audit 0/dokumentiert, Closure-Notiz.
-**Erreicht M2.** Details in der [welle-03-Plan-Datei](../welle-03-readme-und-smoke.md).
+Der nächste Wellen-Kandidat ist **Cluster A** (Durchsetzung & Emission) im *Backlog* unten — er wird zu
+welle-04 mit eigener Plandatei (per `cp`), sobald sein erster Slice geschnitten wird (Trigger
+„welle-03 in `done/`" erfüllt). Bis dahin liegt bewusst **keine** flache Welle-Datei vor (eine leere §4
+wäre die „zweite Wahrheit, die driftet").
 
 ## Nächste Wellen
 
@@ -58,7 +54,7 @@ erster Slice geschnitten wird (Trigger: welle-03 in `done/`). Weitere Kandidaten
 | Meilenstein | Welle(n) | Trigger | Status |
 |---|---|---|---|
 | M1 — lauffähiger Offline-Kern (`cmd/ai-harness-init` parst + emittiert Gate-Baseline + legt Templates ab, ohne Netz) | welle-01 | slice-001a/001b/002/003 done | **erreicht (2026-07-18)** |
-| M2 — vollständiger Bootstrap (inkl. Sprachskelett-Generator + Root-README) | welle-02 **und** welle-03 | slice-005 + slice-024 in `done/` **und** Voll-E2E-Smoke grün (welle-03-Closure) | offen |
+| M2 — vollständiger Bootstrap (inkl. Sprachskelett-Generator + Root-README) | welle-02 **und** welle-03 | slice-005 + slice-024 in `done/` **und** Voll-E2E-Smoke grün (welle-03-Closure) | **erreicht (2026-07-22)** |
 
 ## Abhängigkeitsgraph
 
@@ -77,6 +73,7 @@ flowchart LR
 |---|---|---|
 | [welle-01-offline-kern](../done/welle-01-offline-kern.md) | 2026-07-18 | [welle-01-results.md](../done/welle-01-results.md) |
 | [welle-02-fetch-und-readme](../done/welle-02-fetch-und-readme.md) | 2026-07-21 | [welle-02-results.md](../done/welle-02-results.md) |
+| [welle-03-readme-und-smoke](../done/welle-03-readme-und-smoke.md) | 2026-07-22 | [welle-03-results.md](../done/welle-03-results.md) |
 
 ## Historische Trigger-Verschiebungen
 

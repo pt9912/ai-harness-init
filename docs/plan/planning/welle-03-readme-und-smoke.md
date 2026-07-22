@@ -73,4 +73,8 @@ Beobachtbare Bedingungen (kein Kalendertag); die Closure folgt den fünf Modul-6
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Welle-Abschluss füllen. Verweis auf done/welle-03-results.md. -->
+**Abgeschlossen 2026-07-22** (beobachtbarer Trigger). Lerneintrag + Verifikations-Belege:
+[`done/welle-03-results.md`](done/welle-03-results.md). **M2 erreicht** (vollständiger Bootstrap):
+ein frisch gebootstrapptes Repo fährt `make gates` out-of-the-box grün (`make full-smoke`:
+9 Dateien / 0 Befunde / Exit 0). Der Zustand dieser Welle ist die Verzeichnis-Position
+(`done/`), kein `Status:`-Feld.

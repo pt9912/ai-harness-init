@@ -2,7 +2,7 @@
 
 **Status:** Aktiv.
 
-**Datum angelegt:** 2026-07-21. **Letzte Prüfung:** 2026-07-21.
+**Datum angelegt:** 2026-07-21. **Letzte Prüfung:** 2026-07-22.
 
 **Betroffenes Gate:** `shell-lint` (shellcheck im gepinnten Image).
 
@@ -57,3 +57,4 @@ Lint-Werkzeug einführen.
 |---|---|---|
 | 2026-07-21 | Angelegt (Backlog-Formalisierung, Roadmap §Backlog Cluster E) | [slice-008](../planning/done/slice-008-shell-lint-gate.md) |
 | 2026-07-21 | Geprüft, weiterhin gültig | — |
+| 2026-07-22 | Audit bei welle-03-Closure: weiterhin gültig — Auflösungs-Trigger nicht erfüllt (welle-03 fügte keine bats-Hilfsfunktion mit Verzweigung/Schleifen hinzu; die vorhandenen `for`-Schleifen liegen in @test-Rümpfen, nicht in Helfern) | — |
