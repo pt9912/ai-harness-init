@@ -195,6 +195,14 @@ func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, st
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
+	// Workflow-Commands emittieren (slice-033, LH-FA-08/ADR-0006): die
+	// Slash-Command-Anleitung (.claude/commands/), mit der ein Agent die
+	// Harness-Rollen faehrt. Tool-als-Quelle, sprach-agnostisch (der Prozess ist
+	// universell; repo-spezifische Stellen sind adaptierbare Marker).
+	if err := emit.Commands(targetDir, force); err != nil {
+		fmt.Fprintln(stderr, "Fehler:", err)
+		return 1
+	}
 	// Verdrahten (slice-004b): das gestagte Skelett an den Ziel-Root platzieren und
 	// d-check.mk ins Makefile einbinden (MR-010) — ein make gates statt zweier
 	// Gate-Quellen. Erst HIER (Phase 4, nach allen Pre-Flights) erscheint das
@@ -235,6 +243,10 @@ func emitTargets(targetDir, tag, name string) ([]string, error) {
 	// Stop-Hook. In DENSELBEN Pre-Flight — eine vorhandene .claude/settings.json
 	// (Adopter hat schon Claude-Hooks) faellt so VOR dem Emit auf, kein Teil-Bootstrap.
 	rels = append(rels, emit.EnforcePaths()...)
+	// Workflow-Commands (slice-033, LH-FA-08/ADR-0006): die Slash-Command-Anleitung
+	// (.claude/commands/). Eigene Klasse (Anleitung ≠ Durchsetzung), aber DERSELBE
+	// Pre-Flight — eine vorhandene .claude/commands/… faellt so VOR dem Emit auf.
+	rels = append(rels, emit.CommandPaths()...)
 	tt, err := emit.TemplateTargets(os.DirFS(templatesDir(targetDir, tag)), name)
 	if err != nil {
 		return nil, err

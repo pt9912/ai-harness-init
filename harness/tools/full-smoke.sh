@@ -102,6 +102,19 @@ if [ -n "$pass_out" ]; then
 	exit 1
 fi
 
+# slice-033 (LH-FA-08): die Workflow-Commands liegen im real gebootstrappten Ziel
+# und tragen keine ai-harness-init-interne Referenz (adaptierbar, nicht 1:1 hart).
+for rel in implement-slice plan-welle close-welle; do
+	if [ ! -f "$tmprepo/.claude/commands/$rel.md" ]; then
+		echo "full-smoke: FEHLER — Workflow-Command fehlt: .claude/commands/$rel.md (slice-033)" >&2
+		exit 1
+	fi
+done
+if grep -rqE 'ai-harness-init|make mutate|test/mutations' "$tmprepo/.claude/commands/"; then
+	echo "full-smoke: FEHLER — emittierter Command traegt ai-harness-init-interne Referenz (slice-033)" >&2
+	exit 1
+fi
+
 echo "full-smoke: OK — frisch gebootstrapptes Repo faehrt make gates out-of-the-box gruen (lint/build/test + docs-check zusammengefuehrt), Exit 0 (LH-FA-01/LH-QA-01)."
 echo "full-smoke: OK — Gate-Nachweis-Kreis geschlossen: record-gates stempelt, Hash stimmt, .harness/.gitignore greift (slice-031)."
 echo "full-smoke: OK — emittierter Command-Guard greift: 'go build' geblockt, 'make test' durchgelassen (bash+awk, slice-032/LH-QA-03)."

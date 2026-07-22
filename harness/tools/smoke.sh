@@ -91,6 +91,19 @@ if grep -q "@@BLOCKED_SET@@" "$tmprepo/.claude/hooks/pretooluse-command-guard.sh
 	echo "smoke: FEHLER — Guard traegt den @@BLOCKED_SET@@-Platzhalter (Substitution fehlte, slice-032)" >&2
 	exit 1
 fi
+# Workflow-Commands (slice-033, LH-FA-08): die Slash-Command-Anleitung im Ziel.
+for rel in .claude/commands/implement-slice.md .claude/commands/plan-welle.md \
+	.claude/commands/close-welle.md; do
+	if [ ! -f "$tmprepo/$rel" ]; then
+		echo "smoke: FEHLER — Workflow-Command fehlt: $rel (slice-033)" >&2
+		exit 1
+	fi
+done
+# Kein ai-harness-init-interner Leak in den emittierten Commands (LH-FA-08 nicht 1:1 hart).
+if grep -rqE 'ai-harness-init|make mutate|test/mutations' "$tmprepo/.claude/commands/"; then
+	echo "smoke: FEHLER — emittierter Command traegt ai-harness-init-interne Referenz (slice-033)" >&2
+	exit 1
+fi
 # Gegenprobe: was NICHT emittiert werden darf. (a) wiederkehrende Vorlagen (0.8.0:
 # referenziert, nicht co-located) und (b) derivative Indexe (broken Platzhalter-
 # Links). (c) die In-Scope-Regel — geprueft an den Namen, die der Emitter WIRKLICH
