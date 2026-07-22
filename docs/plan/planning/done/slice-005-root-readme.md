@@ -24,7 +24,7 @@ project-readme-Vorlage; der Pointer-/Trust-Abschnitt steht als
 
 - [x] [`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2) erfüllt: Root-README aus Vorlage, Projektname gestempelt.
 - [x] Vorwärts-Verweise gate-sicher: kein Markdown-Link auf noch fehlende Ziele (Inline-Code/Plain-Text), `make docs-check` im Zielrepo grün.
-- [x] Der emittierte Stand ist smoke-fähig — der **Voll-E2E-Beweis** selbst ist [slice-024](../in-progress/slice-024-voll-smoke.md) ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)/[`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) und wird hier **nicht** behauptet.
+- [x] Der emittierte Stand ist smoke-fähig — der **Voll-E2E-Beweis** selbst ist [slice-024](slice-024-voll-smoke.md) ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)/[`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) und wird hier **nicht** behauptet.
 - [x] Go-Test: README vorhanden, gestempelt, `docs-check` grün.
 - [x] `make gates` grün.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -39,12 +39,12 @@ project-readme-Vorlage; der Pointer-/Trust-Abschnitt steht als
 ## 4. Trigger
 
 welle-02 in `done/` (der umgebaute Emit-Pfad steht) — damit startet welle-03. slice-005
-ist deren **erster** Slice; [slice-024](../in-progress/slice-024-voll-smoke.md) setzt auf ihm auf.
+ist deren **erster** Slice; [slice-024](slice-024-voll-smoke.md) setzt auf ihm auf.
 
 ## 5. Closure-Trigger
 
 DoD vollständig + Review konform + Closure-Notiz → nach `done/`.
-Schließt zusammen mit [slice-024](../in-progress/slice-024-voll-smoke.md) die welle-03 und erreicht **M2**.
+Schließt zusammen mit [slice-024](slice-024-voll-smoke.md) die welle-03 und erreicht **M2**.
 
 ## 6. Risiken und offene Punkte
 
