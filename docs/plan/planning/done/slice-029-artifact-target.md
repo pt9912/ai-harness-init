@@ -89,7 +89,8 @@ Nativ, kein OCI-Vertriebsmittel ([`ADR-0003`](../../../../docs/plan/adr/0003-go-
   bereits **entschieden** (native-only; OCI-als-Vertriebsmittel als Option B verworfen, weil das Tool
   selbst `docker` ruft → DooD-Reibung). Sie wurde neu hergeleitet, weil die Extraktions-Zeile im Smoke
   **keinen Zeiger** auf die ADR trug. Geschärft: der `Dockerfile`-`build`-Stage-Kommentar nennt jetzt
-  ADR-0003 und den DooD-Grund am Ort des Tradeoffs — damit er nicht ein drittes Mal re-litigiert wird.
+  [`ADR-0003`](../../../../docs/plan/adr/0003-go-native-binaries.md) und den DooD-Grund am Ort des
+  Tradeoffs — damit er nicht ein drittes Mal re-litigiert wird.
 - **Build-Utility braucht keinen eigenen Wächter, wenn die Konsumenten fail-closed sind.** `make artifact`
   hat keinen eigenen Test/Mutations-Fall — die Smokes (`set -euo pipefail`) brechen bei nonzero
   `make artifact` bzw. am nächsten `exec` eines leeren/kaputten Binaries rot. §3.6-Zusage strukturell
