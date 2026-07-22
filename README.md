@@ -10,32 +10,36 @@ zusammenkopieren wollen.
 
 ## Was kann ich heute tun?
 
-Den Bootstrap **fahren, aber nur als Teil-Ergebnis** — und noch nicht mit einem
-fertigen Befehl. Es gibt kein `run`-Target und kein eingechecktes Binary
-(`cmd/ai-harness-init` ist Go-Quellcode, kein Executable); das Binary entsteht
-Docker-only ([`ADR-0003`](docs/plan/adr/0003-go-native-binaries.md), `artifact`-Stage) und läuft heute
-end-to-end nur über `make smoke` — gegen ein Wegwerf-Repo, `--lang go`.
+Ein Verzeichnis **vollständig bootstrappen** (`--lang go`): Nach dem Lauf fährt das
+Zielrepo sein eigenes `make gates` **out-of-the-box grün** — der Happy-Path aus
+[`LH-FA-01`](spec/lastenheft.md#lh-fa-01--repo-bootstrappen), Meilenstein **M2** erreicht. Der Voll-E2E-Smoke
+`make full-smoke` belegt es real: Bootstrap in ein Wegwerf-Repo → dort `make gates`
+Exit 0 (docs-check 0 Befunde, Go-Gates grün).
 
-Dieser Lauf schreibt ins Zielrepo: Regelwerk + Templates (prüfsummen-verifiziert,
-[`LH-FA-09`](spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)), die Doc-Gate-Baseline, die Template-Ablage und ein
-transitorisch gestagtes Sprachskelett (der deterministische Generator löst den
-Fetch ab, [`ADR-0005`](docs/plan/adr/0005-ziel-repo-distribution.md)). Eine unbekannte Sprache bricht sauber
-ab (Exit 2 + Liste).
+Der Lauf schreibt ins Zielrepo: Regelwerk + Templates (prüfsummen-verifiziert,
+[`LH-FA-09`](spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)), die Doc-Gate-Baseline, die Template-Ablage,
+ein deterministisch generiertes Sprachskelett mit **verdrahteten** Code-Gates (der
+Generator löst den Fetch ab, [`ADR-0005`](docs/plan/adr/0005-ziel-repo-distribution.md)) und die
+Root-README. Eine unbekannte Sprache bricht sauber ab (Exit 2 + Liste).
 
-**Was noch fehlt — der eigentliche Zweck:** ein Repo, in dem `make gates`
-out-of-the-box grün läuft ([`LH-FA-01`](spec/lastenheft.md#lh-fa-01--repo-bootstrappen) Happy-Path). Dazu fehlen der
-Sprachskelett-Generator, die Verdrahtung der Code-Gates und die Root-README.
-Bis dahin ist der Emit ein Teil-Bootstrap, kein fertiges Repo.
+Das Binary entsteht Docker-only ([`ADR-0003`](docs/plan/adr/0003-go-native-binaries.md), `build`-Stage) —
+kein eingechecktes Executable (`cmd/ai-harness-init` ist Go-Quellcode): `make artifact
+DEST=<dir>` zieht es auf den Host. Die Schritt-für-Schritt-Anleitung (bauen, aufrufen,
+prüfen) steht im [Benutzerhandbuch](docs/user/benutzerhandbuch.md).
 
-Der Harness selbst — dieses Repo — ist dagegen voll abgesichert: der Gate-Stack
-läuft grün und Docker-only (`make gates` bündelt `baseline-verify` · `docs-check`
-mit d-check v0.51.1 · `lint` · `build` · `test` · `shell-lint` · `ci-lint`), und CI
-fährt ihn pro Push auf frischem Klon. Regelwerk + Templates liegen committet
-vendored unter `.harness/baseline/v3.5.0/` (netzlos, [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)).
+**Was noch fehlt:** vorgefertigte Release-Binaries (heute baut man aus dem
+Quellcode) und weitere Sprach-Profile über `go` hinaus
+([`LH-FA-04`](spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)).
 
-Welche Slices den fehlenden Rest in welcher Reihenfolge liefern, sagt die
-[roadmap](docs/plan/planning/in-progress/roadmap.md) — sie ist die Sequenzierungs-Autorität, dieses README
-wiederholt sie bewusst nicht. Keine Erfolgsmeldung ohne lauffähigen Beleg.
+Der Harness selbst — dieses Repo — ist voll abgesichert: der Gate-Stack läuft grün
+und Docker-only (`make gates` bündelt `baseline-verify` · `docs-check` mit d-check
+v0.51.1 · `lint` · `build` · `test` · `shell-lint` · `ci-lint`), und CI fährt ihn pro
+Push auf frischem Klon. Regelwerk + Templates liegen committet vendored unter
+`.harness/baseline/v3.5.0/` (netzlos, [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)).
+
+Welche Wellen als Nächstes kommen, sagt die
+[roadmap](docs/plan/planning/in-progress/roadmap.md) — sie ist die Sequenzierungs-Autorität, dieses
+README wiederholt sie bewusst nicht. Keine Erfolgsmeldung ohne lauffähigen Beleg.
 
 ## Warum ai-harness-init?
 
