@@ -73,7 +73,31 @@ DoD vollständig + Review konform + Verifikation bestätigt + Closure-Notiz → 
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Abgeschlossen:** 2026-07-22. Review [FREIGABE](../../../reviews/2026-07-22-slice-029-artifact-target.md)
+(0 HIGH/MEDIUM, 1 LOW/1 INFO), Verifikation bestätigt die DoD (getrennter Kontext, `make artifact` +
+`make gates` selbst gefahren).
+
+**Ergebnis:** Die Host-Extraktion des nativen Release-Binaries lebt an **einer** Stelle
+(`make artifact DEST=<dir>`: build einmal via Prereq, `docker cp` getrennt) — beide Smokes teilen sie,
+die `artifact`-Scratch-Stage ist entfernt. slice-024-Review-**F-2** (Bootstrap-Duplikation) aufgelöst.
+Nativ, kein OCI-Vertriebsmittel ([`ADR-0003`](../../../../docs/plan/adr/0003-go-native-binaries.md)), kein neuer Pin.
+
+**Steering-Loop-Eintrag:**
+
+- **ADR-„Warum" am Ort der Entscheidung sichtbar machen.** Die ganze Design-Diskussion (OCI-Image vs.
+  natives Binary, Entrypoint-Stage, `--output` vs. `docker cp`) war durch [`ADR-0003`](../../../../docs/plan/adr/0003-go-native-binaries.md)
+  bereits **entschieden** (native-only; OCI-als-Vertriebsmittel als Option B verworfen, weil das Tool
+  selbst `docker` ruft → DooD-Reibung). Sie wurde neu hergeleitet, weil die Extraktions-Zeile im Smoke
+  **keinen Zeiger** auf die ADR trug. Geschärft: der `Dockerfile`-`build`-Stage-Kommentar nennt jetzt
+  ADR-0003 und den DooD-Grund am Ort des Tradeoffs — damit er nicht ein drittes Mal re-litigiert wird.
+- **Build-Utility braucht keinen eigenen Wächter, wenn die Konsumenten fail-closed sind.** `make artifact`
+  hat keinen eigenen Test/Mutations-Fall — die Smokes (`set -euo pipefail`) brechen bei nonzero
+  `make artifact` bzw. am nächsten `exec` eines leeren/kaputten Binaries rot. §3.6-Zusage strukturell
+  getragen, nicht durch einen teuren E2E-Mutations-Fall (der wäre redundant).
+- **Benannter Follow-up (Review-F-1, optional):** die Image-Tag-Literale (`ai-harness-init:build/:test/
+  :lint/:compile`) stehen durchweg inline im Makefile. Eine repo-weite `IMAGE ?= ai-harness-init`-Variable
+  wäre Makefile-Hygiene — eigener kleiner Slice, falls die Duplikation stört (hier bewusst nicht gefixt:
+  eine Variable nur für build+artifact wäre inkonsistent zum Rest).
 
 ## 8. Sub-Area-Modus-Begründung
 
