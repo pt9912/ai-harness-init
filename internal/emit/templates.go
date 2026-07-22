@@ -310,9 +310,13 @@ const roadmapDoneLink = "[`welle-NN-results.md`](../done/welle-NN-results.md)"
 // (die Zeile bleibt als Form-Beispiel erhalten, traegt aber keinen toten Link). Das
 // ist die emit-seitige Neutralisierung aus slice-028 §6 Option (b); der Kurs-Fix
 // (Option a) waere die SSoT-Loesung, ist aber blockiert (immutable vendored Baseline,
-// AGENTS 3.4). Ohne den Marker unveraendert — faellt der Link upstream weg oder aendert
-// er seine Form, faengt es TestTemplates_RoadmapGateSafe (kein `](../done/` im Ziel)
-// bzw. der Voll-Smoke (0 Befunde), nicht ein stilles Gruen.
+// AGENTS 3.4). Ohne den Marker unveraendert. Deckungs-Grenze (ehrlich): geht der
+// Neutralisierungs-Effekt VERLOREN (Logik-Regression), faengt es
+// TestTemplates_RoadmapGateSafe (kein `](../done/` im emittierten Ziel) gegen die
+// courseSet()-Fixture. Aendert dagegen der KURS die Link-Form upstream, bleibt dieser
+// Test gruen — die Fixture traegt den alten Wortlaut, und courseset-fixture.bats
+// gleicht nur den Datei-BESTAND ab, keinen Inhalt; diese reale Drift faengt allein
+// `make smoke` (Tier-2, NICHT in make gates), das gegen den realen Satz emittiert.
 func NeutralizeRoadmap(s string) string {
 	return strings.ReplaceAll(s, roadmapDoneLink, "`welle-NN-results.md`")
 }
