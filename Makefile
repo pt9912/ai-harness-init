@@ -85,7 +85,7 @@ mutate: ## Mutations-Sensor fuer AGENTS 3.6: faerbt jede Mutation ihren Waechter
 # ausgenommen (shellcheck parst die @test-Syntax nicht); .awk ist kein Shell.
 shell-lint: ## Shell-Hooks/-Helfer linten (shellcheck) im gepinnten Image — Docker-only (ADR-0003)
 	docker run --rm -v "$(CURDIR)":/mnt:ro -w /mnt $(SHELLCHECK_IMAGE) \
-		.claude/hooks/*.sh harness/tools/*.sh internal/emit/templates/*.sh test/mutations/*.sh
+		.claude/hooks/*.sh harness/tools/*.sh internal/emit/templates/*.sh internal/emit/templates/enforce/*.sh test/mutations/*.sh
 
 # GitHub-Actions-Workflows syntaktisch pruefen (actionlint, gepinntes Image) —
 # Docker-only. IN gates, weil .github/workflows/ ein reales committetes Artefakt

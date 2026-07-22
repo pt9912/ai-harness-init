@@ -67,6 +67,27 @@ for rel in AGENTS.md docs/plan/adr/.gitkeep docs/plan/planning/in-progress/roadm
 		exit 1
 	fi
 done
+# Durchsetzungs-Mechanik (slice-031, LH-FA-06/ADR-0006): Gate-Nachweis + Stop-Hook
+# als Tool-als-Quelle emittiert. Positive Vertreter beider Zielorte (tools/harness/
+# + .claude/) und der Stempel-Ignore. Der geschlossene Nachweis-Kreis (make gates
+# schreibt den Stempel, Hash stimmt) ist Voll-Smoke (full-smoke.sh), nicht hier.
+for rel in tools/harness/record-gates.sh tools/harness/working-tree-hash.sh \
+	.claude/hooks/stop-require-gates.sh .claude/settings.json .harness/.gitignore; do
+	if [ ! -f "$tmprepo/$rel" ]; then
+		echo "smoke: FEHLER — Durchsetzungs-Mechanik unvollstaendig: $rel fehlt (slice-031)" >&2
+		exit 1
+	fi
+done
+# Grenze zu slice-032: der --lang-Command-Guard wird NOCH NICHT emittiert (sein
+# Skript kommt mit slice-032; die settings.json verdrahtet bewusst nur den Stop-Hook).
+if [ -e "$tmprepo/.claude/hooks/pretooluse-command-guard.sh" ]; then
+	echo "smoke: FEHLER — Command-Guard emittiert, gehoert aber zu slice-032 (nicht slice-031)" >&2
+	exit 1
+fi
+if grep -q "PreToolUse" "$tmprepo/.claude/settings.json"; then
+	echo "smoke: FEHLER — settings.json verdrahtet PreToolUse (Guard=slice-032), darf slice-031 nicht" >&2
+	exit 1
+fi
 # Gegenprobe: was NICHT emittiert werden darf. (a) wiederkehrende Vorlagen (0.8.0:
 # referenziert, nicht co-located) und (b) derivative Indexe (broken Platzhalter-
 # Links). (c) die In-Scope-Regel — geprueft an den Namen, die der Emitter WIRKLICH

@@ -61,10 +61,18 @@ func TestPlace_PlacesAndWires(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Makefile lesen: %v", err)
 	}
-	for _, want := range []string{"include d-check.mk", "gates: docs-check", "gates: lint build test"} {
+	// Der Gate-Nachweis (slice-031) haengt als LETZTES gates-Prerequisite an —
+	// `gates: record-gates` NACH `gates: docs-check`, damit record-gates zuletzt
+	// stempelt (nur bei gruenen Gates). Beleg: beide Zeilen + das record-gates-Recipe.
+	for _, want := range []string{"include d-check.mk", "gates: docs-check", "gates: lint build test", "gates: record-gates", "bash tools/harness/record-gates.sh"} {
 		if !strings.Contains(string(mk), want) {
 			t.Errorf("verdrahtetes Makefile enthaelt %q nicht:\n%s", want, mk)
 		}
+	}
+	// Reihenfolge ist die Zusage: `gates: record-gates` MUSS nach `gates: docs-check`
+	// stehen, sonst stempelt record-gates vor dem Doc-Gate (nicht mehr „zuletzt").
+	if strings.Index(string(mk), "gates: record-gates") < strings.Index(string(mk), "gates: docs-check") {
+		t.Errorf("gates: record-gates steht VOR gates: docs-check — stempelt zu frueh:\n%s", mk)
 	}
 	if _, err := os.Stat(staging); !os.IsNotExist(err) {
 		t.Errorf("transientes Staging nicht aufgeraeumt: %v", err)

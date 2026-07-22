@@ -31,6 +31,22 @@ const skeletonMakefile = "Makefile"
 const dCheckInclude = "\n# Doc-Gate (d-check.mk) einbinden — ein make gates statt zweier Quellen\n" +
 	"# (MR-010, verdrahtet von ai-harness-init, slice-004b).\ninclude d-check.mk\ngates: docs-check\n"
 
+// enforceWiring haengt den Gate-Nachweis ans Ziel-Makefile: record-gates stempelt
+// bei GRUENEN Gates den Content-Hash des Working Tree; der emittierte Stop-Hook
+// vergleicht denselben Hash (Durchsetzungs-Mechanik, ai-harness-init, slice-031,
+// ADR-0006). record-gates ist das LETZTE gates-Prerequisite — NACH dem
+// `gates: docs-check` des Wire angehaengt: Make kombiniert die Prerequisites in
+// Deklarations-Reihenfolge, also stempelt es zuletzt (nur wenn alle Gates gruen
+// waren). record-gates traegt das einzige Recipe der angehaengten Regeln; die
+// gen-gates-Regel und `gates: docs-check` haben keins (Make erlaubt nur eine
+// Recipe-tragende Regel je Target). Das Skript emittiert emit.Enforce nach
+// tools/harness/ — wie d-check.mk hier referenziert und emit.DocGate dort schreibt.
+const enforceWiring = "\n# Gate-Nachweis (record-gates) als LETZTES gates-Prerequisite — stempelt den\n" +
+	"# Content-Hash bei gruenen Gates; der Stop-Hook vergleicht ihn (slice-031, ADR-0006).\n" +
+	"gates: record-gates\n" +
+	"record-gates:\n" +
+	"\t@bash tools/harness/record-gates.sh\n"
+
 // Targets liefert die Ziel-Relpfade, die Place() in den Ziel-Root schreiben wuerde
 // — die Skelett-Dateien in stagingDir, relativ zu stagingDir, sortiert. Fuer den
 // Bootstrap-Pre-Flight (cmd, Phase 3): eine Kollision faellt so VOR dem Platzieren
@@ -97,6 +113,7 @@ func Place(stagingDir, targetDir string, force bool) error {
 		}
 		if rel == skeletonMakefile {
 			content = append(content, dCheckInclude...)
+			content = append(content, enforceWiring...)
 		}
 		dst := filepath.Join(targetDir, filepath.FromSlash(rel))
 		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {

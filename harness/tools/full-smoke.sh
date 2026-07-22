@@ -32,6 +32,12 @@ make artifact DEST="$tmpbin" GO_VERSION="$GO_VERSION"
 echo "full-smoke: 2/3 Bootstrap (--lang go --name full-smoke) in ein leeres tmp-Repo ..."
 ( cd "$tmprepo" && "$tmpbin/ai-harness-init" --lang go --name full-smoke )
 
+# slice-031: ein echter Adopter bootstrappt IN sein git-Repo. Der Gate-Nachweis
+# (record-gates -> working-tree-hash, jetzt letztes gates-Prerequisite) braucht
+# git (rev-parse/ls-files). Kein Commit noetig — --others erfasst die untracked
+# Bootstrap-Dateien; .harness/.gitignore haelt den Stempel aus dem Hash.
+git init -q "$tmprepo"
+
 echo "full-smoke: 3/3 im Ziel: make gates (der zusammengefuehrte Einstiegspunkt, MR-010) ..."
 gates_rc=0
 gates_out="$( make -C "$tmprepo" gates 2>&1 )" || gates_rc=$?
@@ -59,4 +65,24 @@ if [ -n "$missing" ]; then
 	exit 1
 fi
 
+# slice-031 (LH-FA-06/ADR-0006): der Gate-Nachweis-Kreis muss sich schliessen.
+# `make gates` endet mit record-gates, das den Content-Hash des Working Tree
+# stempelt. Beleg: (a) der Stempel existiert; (b) er == einer frischen
+# working-tree-hash-Berechnung. (b) validiert ZUGLEICH .harness/.gitignore: fehlte
+# der state/-Ignore, zaehlte der Stempel selbst in den Hash und (b) wiche ab — im
+# Ziel blockte der Stop-Hook sich dann selbst. Ein blosses „Stempel da" waere zu
+# schwach (der Selbst-Blockade-Bug erzeugt AUCH einen Stempel).
+stamp_file="$tmprepo/.harness/state/gates-passed.diffsha"
+if [ ! -f "$stamp_file" ]; then
+	echo "full-smoke: FEHLER — record-gates schrieb keinen Gate-Nachweis-Stempel (slice-031)." >&2
+	exit 1
+fi
+recomputed="$( cd "$tmprepo" && bash tools/harness/working-tree-hash.sh )"
+if [ "$recomputed" != "$(cat "$stamp_file")" ]; then
+	echo "full-smoke: FEHLER — Gate-Nachweis-Hash weicht vom Stempel ab: der Stop-Hook blockte sich" >&2
+	echo "  selbst (fehlt/greift .harness/.gitignore nicht? zaehlt der Stempel in den Hash?) (slice-031)." >&2
+	exit 1
+fi
+
 echo "full-smoke: OK — frisch gebootstrapptes Repo faehrt make gates out-of-the-box gruen (lint/build/test + docs-check zusammengefuehrt), Exit 0 (LH-FA-01/LH-QA-01)."
+echo "full-smoke: OK — Gate-Nachweis-Kreis geschlossen: record-gates stempelt, Hash stimmt, .harness/.gitignore greift (slice-031)."

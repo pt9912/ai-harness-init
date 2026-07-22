@@ -183,6 +183,16 @@ func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, st
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
+	// Durchsetzungs-Mechanik emittieren (slice-031, LH-FA-06/ADR-0006): Gate-Nachweis
+	// (tools/harness/record-gates.sh + working-tree-hash.sh) + Stop-Hook
+	// (.claude/hooks/ + settings.json) + .harness/.gitignore (der Stempel darf den
+	// Tree-Hash nicht aendern). Die Makefile-Verdrahtung (gates: record-gates) macht
+	// wire.Place; das gebootstrappte Repo ist damit selbst gegen halluzinierte
+	// Gate-Laeufe abgesichert. Der --lang-Guard folgt in slice-032.
+	if err := emit.Enforce(targetDir, force); err != nil {
+		fmt.Fprintln(stderr, "Fehler:", err)
+		return 1
+	}
 	// Verdrahten (slice-004b): das gestagte Skelett an den Ziel-Root platzieren und
 	// d-check.mk ins Makefile einbinden (MR-010) — ein make gates statt zweier
 	// Gate-Quellen. Erst HIER (Phase 4, nach allen Pre-Flights) erscheint das
@@ -219,6 +229,10 @@ func preflightAbsent(targetDir string, rels []string) error {
 // falsch gewurzelte Baseline faellt so VOR dem Docker-Lauf auf).
 func emitTargets(targetDir, tag, name string) ([]string, error) {
 	rels := []string{emit.BaselineVerifyPath, ".d-check.yml", "d-check.mk", emit.RootReadmePath}
+	// Durchsetzungs-Mechanik (slice-031, LH-FA-06/ADR-0006): Gate-Nachweis +
+	// Stop-Hook. In DENSELBEN Pre-Flight — eine vorhandene .claude/settings.json
+	// (Adopter hat schon Claude-Hooks) faellt so VOR dem Emit auf, kein Teil-Bootstrap.
+	rels = append(rels, emit.EnforcePaths()...)
 	tt, err := emit.TemplateTargets(os.DirFS(templatesDir(targetDir, tag)), name)
 	if err != nil {
 		return nil, err
