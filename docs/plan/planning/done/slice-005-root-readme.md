@@ -4,7 +4,7 @@
 (`open/` · `next/` · `in-progress/` · `done/`), Wechsel nur per `git mv` —
 v3.1.0-Konvention (`modul-05`).
 
-**Welle:** [welle-03-readme-und-smoke](../welle-03-readme-und-smoke.md) *(umgehängt
+**Welle:** [welle-03-readme-und-smoke](welle-03-readme-und-smoke.md) *(umgehängt
 2026-07-20 von welle-02 — [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md)-Pivot; Inhalt unberührt)*. Einordnung
 *(Kontext, nicht normativ)*: [roadmap](../in-progress/roadmap.md).
 
