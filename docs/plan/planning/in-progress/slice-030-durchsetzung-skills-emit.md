@@ -75,16 +75,30 @@ DoD vollständig + Review konform + Verifikation bestätigt + Closure-Notiz → 
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!--
-Wird *nach* Abschluss ergänzt. Inhalt:
-- Was hat funktioniert?
-- Was ging anders als geplant?
-- Steering-Loop-Eintrag: welcher Guide/Sensor sollte verbessert werden?
-  (kanonische Definition: [`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.0/kurs/de/grundlagen/klassifikation.md#steering-loop))
-- Folge-Slices: welche neuen open/-Einträge?
--->
+**Abgeschlossen:** 2026-07-22. Review [KONFORM](../../../reviews/2026-07-22-slice-030-review.md)
+(0 Findings, 7 Negativbefunde), Verifikation bestätigt die DoD (getrennter Kontext; `make gates` +
+`make mutate` + `make full-smoke` selbst gefahren, Skills real im gebootstrappten Repo gesehen).
 
-<!-- Erst nach Abschluss füllen. -->
+**Ergebnis:** Der `.harness/skills/`-Emit-Pfad ist geöffnet — der Reviewer-/Closure-Skill wird als
+Singleton emittiert (bleibt **Fetch**, [`ADR-0006`](../../../../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md)).
+Erster, de-riskender welle-04-Slice; slice-031–033 (Mechanik/Guard/Commands, Tool-als-Quelle) setzen darauf auf.
+
+**Steering-Loop-Eintrag:**
+
+- **Wo ein emittiertes Artefakt landet, bestimmt seine Gate-Exposition.** Anders als slice-028s Indexe/
+  Roadmap (unter `docs/`, vom Ziel-`docs-check` gescannt → mussten gate-sicher gemacht werden) liegen die
+  Skills unter `.harness/` — und die emittierte `.d-check.yml` ignoriert `.harness/**`. Sie sind damit
+  **gate-neutral** im Ziel (per Voll-Smoke belegt, nicht angenommen). Nützlicher Kontrast für die
+  Folge-Slices: Durchsetzung/Commands landen teils in `.claude/` (ebenfalls nicht im Standard-Scan) —
+  Gate-Exposition je Zielpfad prüfen.
+- **Der Smoke fing seinen eigenen Selbstwiderspruch.** `.harness/skills/reviewer.md` stand kurzzeitig in
+  **beiden** smoke.sh-Loops (Positiv „muss existieren" + Negativ „darf nicht") — der `make smoke`-Lauf
+  wurde sofort rot und zeigte es. Die Zielmengen-Kopplung (Emit-Test want / Fixture-Zahl / Pre-Flight)
+  aus slice-028 trug: alle drei Achsen zusammen bewegt, kein falsch-grün.
+- **Benannt (Planner-Nachzug bei welle-04-Closure):** welle-04 §1 nennt `CLAUDE.md` noch als
+  Durchsetzung (die ADR-0006-Überarbeitung stufte es auf **autort** um) und §6 nennt den
+  architecture.md-Nachzug „nicht Scope" (ist inzwischen erledigt) — zwei kleine Welle-Plan-Stale-Stellen
+  aus der ADR-0006-Evolution.
 
 ## 8. Sub-Area-Modus-Begründung
 
