@@ -61,7 +61,7 @@ fi
 # LH-FA-02 0.8.0: emittiert werden Singletons (-> .md) und die Struktur-.gitkeep;
 # wiederkehrende Vorlagen und derivative Indexe NICHT (referenziert aus vendored
 # bzw. Fuelle-wenn-Inhalt-da). Je ein positiver Vertreter beider Klassen:
-for rel in AGENTS.md docs/plan/adr/.gitkeep docs/plan/planning/in-progress/roadmap.md; do
+for rel in AGENTS.md docs/plan/adr/.gitkeep docs/plan/planning/in-progress/roadmap.md .harness/skills/reviewer.md; do
 	if [ ! -f "$tmprepo/$rel" ]; then
 		echo "smoke: FEHLER — Template-Schicht unvollstaendig: $rel fehlt" >&2
 		exit 1
@@ -77,7 +77,7 @@ done
 for rel in \
 	docs/plan/planning/slice.template.md docs/plan/adr/NNNN-titel.template.md \
 	docs/plan/adr/README.md docs/plan/carveouts/README.md \
-	README.md.md Makefile.md .d-check.yml.md project-readme.md .harness/skills/reviewer.md; do
+	README.md.md Makefile.md .d-check.yml.md project-readme.md; do
 	if [ -e "$tmprepo/$rel" ]; then
 		echo "smoke: FEHLER — Artefakt emittiert, das nicht darf (0.8.0): $rel" >&2
 		exit 1

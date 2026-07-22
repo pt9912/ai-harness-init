@@ -143,9 +143,10 @@ func inScope(rel string) bool {
 		return false
 	case rel == "project-readme.template.md":
 		return false // Root-README: LH-FA-05, eigener Emit-Schritt (slice-005)
-	case strings.HasPrefix(rel, ".harness/skills/"):
-		return false // Durchsetzungsschicht: LH-FA-06/ADR-0004, eigener Emit-Schritt
 	default:
+		// .harness/skills/{reviewer,closure-note-reviewer}.template.md sind seit
+		// slice-030 in-scope: der Reviewer-/Closure-Skill wird als Singleton emittiert
+		// (LH-FA-06 Skill-Teil; er bleibt Fetch, ADR-0006 — nur er liegt im Kurs-Satz).
 		return true
 	}
 }

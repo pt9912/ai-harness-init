@@ -44,11 +44,10 @@ real_paths() {
 }
 
 # in_scope filtert nach derselben Regel wie emit.inScope: *.template.md, minus
-# project-readme (LH-FA-05) und .harness/skills/** (LH-FA-06).
+# project-readme (LH-FA-05). Die .harness/skills/-Skills sind seit slice-030 in-scope.
 in_scope() {
   grep '\.template\.md$' \
-    | grep -v '^project-readme\.template\.md$' \
-    | grep -v '^\.harness/skills/'
+    | grep -v '^project-readme\.template\.md$'
 }
 
 @test "fixture: courseSet() bildet den realen Template-Satz vollstaendig ab" {
@@ -69,17 +68,17 @@ in_scope() {
   }
 }
 
-@test "fixture: der reale Satz liefert genau 15 in-scope-Templates" {
-  # Die Zahl ist kein Selbstzweck: von 15 in-scope-Templates emittiert der Tool ab
-  # 0.8.0 (LH-FA-02) genau 8 als Singletons; 2 derivative Indexe (emit.isDerivativeIndex)
-  # und 5 wiederkehrende (emit.isRecurring) bleiben ununemittiert. Bewegt sich die
-  # Zahl, hat upstream etwas hinzugefuegt oder entfernt — und die beiden 5er-/2er-
+@test "fixture: der reale Satz liefert genau 17 in-scope-Templates" {
+  # Die Zahl ist kein Selbstzweck: von 17 in-scope-Templates emittiert der Tool genau
+  # 10 als Singletons (8 + die 2 Durchsetzungs-Skills seit slice-030); 2 derivative Indexe
+  # (emit.isDerivativeIndex) und 5 wiederkehrende (emit.isRecurring) bleiben ununemittiert.
+  # Bewegt sich die Zahl, hat upstream etwas hinzugefuegt oder entfernt — und die
   # Aufzaehlungen brauchen dann eine Entscheidung, statt das Neue still als Singleton
   # zu behandeln.
   local n
   n="$(real_paths | in_scope | wc -l | tr -d ' ')"
-  [ "$n" -eq 15 ] || {
-    echo "in-scope-Templates: $n, erwartet 15"
+  [ "$n" -eq 17 ] || {
+    echo "in-scope-Templates: $n, erwartet 17"
     real_paths | in_scope
     return 1
   }

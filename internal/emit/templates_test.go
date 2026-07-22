@@ -32,6 +32,9 @@ func courseSet() fs.FS {
 		"docs/plan/adr/README.template.md":      f(hint + body),
 		"docs/plan/carveouts/README.template.md": f(hint + body),
 		"docs/plan/planning/README.template.md": f(hint + body),
+		// Durchsetzungs-Skills (LH-FA-06 Skill-Teil, seit slice-030 emittiert; bleiben Fetch, ADR-0006)
+		".harness/skills/reviewer.template.md":              f(hint + body),
+		".harness/skills/closure-note-reviewer.template.md": f(hint + body),
 		// Roadmap traegt die gate-unsichere "Abgeschlossene Wellen"-Beispielzeile
 		// (broken ../done/-Link) — NeutralizeRoadmap muss sie beim Emit entschaerfen.
 		"docs/plan/planning/roadmap.template.md": f(hint + "# Roadmap\n\n| <welle-NN> | YYYY-MM-DD | [`welle-NN-results.md`](../done/welle-NN-results.md) |\n"),
@@ -45,8 +48,6 @@ func courseSet() fs.FS {
 		// AUSSER Scope — jede Zeile ein eigener Grund, s. emit.inScope
 		"README.md":                                    f("# Set-Index\n"),
 		"project-readme.template.md":                   f(hint + body),
-		".harness/skills/reviewer.template.md":         f(hint + body),
-		".harness/skills/closure-note-reviewer.template.md": f(hint + body),
 		".d-check.yml":                                 f("modules: [links]\n"),
 		"Makefile":                                     f("all:\n\t@true\n"),
 	}
@@ -109,6 +110,8 @@ func TestTemplates_Layout(t *testing.T) {
 		"harness/README.md", "harness/conventions.md",
 		"docs/plan/planning/README.md",
 		"docs/plan/planning/in-progress/roadmap.md", // Sonderfall: in-progress/, nicht flach
+		".harness/skills/reviewer.md",               // Durchsetzungs-Skill (slice-030)
+		".harness/skills/closure-note-reviewer.md",
 	}
 	for _, rel := range singletons {
 		if _, err := os.Stat(filepath.Join(dir, rel)); err != nil {
@@ -210,8 +213,8 @@ func TestTemplates_RecurringNichtEmittiert(t *testing.T) {
 
 // TestTemplates_EmittierterBestandVollstaendig ist der Kern von slice-022b/028: die
 // gefetchte Quelle traegt den VOLLEN Kurs-Satz (21 Dateien); emittiert werden ab
-// 0.8.0 genau 14 — 8 Singletons (10 minus die zwei derivativen Indexe) plus 6
-// .gitkeep der Struktur-Verzeichnisse; wiederkehrende Vorlagen bleiben ununemittiert.
+// slice-030 genau 16 — 10 Singletons (8 + die 2 Durchsetzungs-Skills, LH-FA-06/ADR-0006)
+// plus 6 .gitkeep der Struktur-Verzeichnisse; wiederkehrende Vorlagen bleiben ununemittiert.
 // Geprueft wird der Ist-Bestand VOLLSTAENDIG — was nicht in der Erwartung steht,
 // darf nicht da sein.
 //
@@ -230,7 +233,7 @@ func TestTemplates_EmittierterBestandVollstaendig(t *testing.T) {
 		t.Fatalf("Templates: %v", err)
 	}
 	want := []string{
-		// 8 Singletons -> .md (10 minus ADR-/Carveout-Index)
+		// 10 Singletons -> .md (8 + die 2 Durchsetzungs-Skills, slice-030)
 		"AGENTS.md",
 		"docs/plan/planning/README.md",
 		"docs/plan/planning/in-progress/roadmap.md",
@@ -239,6 +242,8 @@ func TestTemplates_EmittierterBestandVollstaendig(t *testing.T) {
 		"spec/architecture.md",
 		"spec/lastenheft.md",
 		"spec/spezifikation.md",
+		".harness/skills/reviewer.md",
+		".harness/skills/closure-note-reviewer.md",
 		// 6 .gitkeep der Struktur-Verzeichnisse
 		"docs/plan/adr/.gitkeep",
 		"docs/plan/carveouts/.gitkeep",
