@@ -12,21 +12,27 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**Welle-ID:** [welle-04-durchsetzung-und-emission](../welle-04-durchsetzung-und-emission.md)
-**Start:** 2026-07-22 (Trigger erfüllt: welle-03 in `done/` + [`ADR-0006`](../../../../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md) — Picker → **Tool-als-Quelle** — **accepted** nach unabhängigem Review-Pass; welle-04 voll aktiv)
-**Geplantes Ende:** offen
+**Keine aktive Welle.** welle-04 (Durchsetzung & Emission) ist **geschlossen** (2026-07-22,
+[welle-04-results.md](../done/welle-04-results.md)) → die `.claude/`-Emission ist komplett:
+Durchsetzung ([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren), slice-030–032) + Anleitung ([`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren), slice-033). Der
+nächste Wellen-Kandidat kommt aus dem Backlog unten (B/C/D), sobald sein erster Slice geschnitten
+wird (green-before-extend; cp-Disziplin — kein Vorab-Schnitt).
 
-**Slice-IDs:** slice-030 (Reviewer-/Closure-Skill emittieren, de-risk, [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren), **done**) → slice-031 (Durchsetzungs-Mechanik: Gate-Nachweis/Stop-Hook/`.claude/settings.json`, Tool-als-Quelle, **done**) → slice-032 (Command-Guard + BLOCKED-Set je `--lang`, **done** → [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) komplett emittiert) → slice-033 (Workflow-Commands, [`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren), **done** → Anleitung komplett emittiert). **Alle 4 Slices in `done/`.**
-**Nächster Schritt:** `/close-welle welle-04` — die Welle ist **closure-reif** (alle Slices `done`, Emission komplett: Durchsetzung [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) + Anleitung [`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)). Beim Closure zu adressieren: die 2 benannten Folgepunkte unten + welle-04 §4-Tabelle-Stale (`CLAUDE.md` noch als slice-031-Scope gelistet, [`ADR-0006`](../../../../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md) → autort).
-**Benannter `open/`-Folgepunkt (slice-031-Closure):** git-Repo-Vorbedingung der emittierten `make gates` (`record-gates` startet mit `git rev-parse`) — im Ziel undokumentiert; beim welle-04-Closure als Doku-Zeile oder optionales Bootstrap-`git init` entscheiden.
-
-**Closure-Trigger:** alle vier Slices in `done/`, `make gates` grün, **`make full-smoke` grün** (emittiertes Repo trägt Durchsetzung + Commands, `make gates` dort out-of-the-box grün, Guard blockt die Ziel-Toolchain, kein node/jq — [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)), **`make mutate` grün**, Carveout-Audit 0/dokumentiert, Closure-Notiz. **a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) bewusst nicht in dieser Welle** (hängt an hexagonalen Schichten). Details in der [welle-04-Plan-Datei](../welle-04-durchsetzung-und-emission.md).
+**Aus dem welle-04-Closure benannte `open/`-Folgepunkte** (Backlog, trigger-gebunden):
+- **git-Repo-Vorbedingung der emittierten `make gates`** (INFO I-1): `record-gates` startet mit
+  `git rev-parse` — ein Bootstrap in ein nicht git-initialisiertes Verzeichnis röte `make gates` am
+  `record-gates`-Schritt trotz grüner lint/build/test/docs-check. Kandidat: README-Zeile oder
+  optionales Bootstrap-`git init`.
+- **`architecture.md`-Nachzug** (erweitert, Cluster D): der Commands-/Anleitung-Emitter (slice-033)
+  fehlt noch, die „je `--lang`"-Prosa am Enforce-Emitter ist gegen den Messbefund zu schärfen (nur
+  das Guard-BLOCKED-Set ist je Sprache).
 
 ## Nächste Wellen
 
-Cluster A ist als **welle-04 aktiv** (oben). Keine weitere gefilte Welle danach — die
-Kandidaten **B/C/D** stehen im Backlog unten, je mit Trigger-Bedingung; einer bekommt
-seine Plandatei per `cp`, sobald sein erster Slice geschnitten wird.
+**Keine gefilte Welle.** Cluster A ist mit welle-04 abgeschlossen; die Kandidaten **B/C/D** stehen im
+Backlog unten, je mit Trigger-Bedingung. Einer wird zur nächsten aktiven Welle (Plandatei per `cp`),
+sobald sein erster Slice geschnitten wird. **a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) bleibt aufgeschoben**
+(hängt an hexagonalen Schichten — weder Dogfood noch Skelett tragen `domain/ports/adapters`).
 
 ## Backlog (aus Slice-§6 gehoben, 2026-07-21)
 
@@ -74,6 +80,7 @@ flowchart LR
 | [welle-01-offline-kern](../done/welle-01-offline-kern.md) | 2026-07-18 | [welle-01-results.md](../done/welle-01-results.md) |
 | [welle-02-fetch-und-readme](../done/welle-02-fetch-und-readme.md) | 2026-07-21 | [welle-02-results.md](../done/welle-02-results.md) |
 | [welle-03-readme-und-smoke](../done/welle-03-readme-und-smoke.md) | 2026-07-22 | [welle-03-results.md](../done/welle-03-results.md) |
+| [welle-04-durchsetzung-und-emission](../done/welle-04-durchsetzung-und-emission.md) | 2026-07-22 | [welle-04-results.md](../done/welle-04-results.md) |
 
 ## Historische Trigger-Verschiebungen
 

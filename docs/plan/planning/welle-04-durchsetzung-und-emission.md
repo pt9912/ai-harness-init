@@ -16,9 +16,11 @@ kennt bisher M1/M2).
 ## 1. Welle-Ziel
 
 Der Bootstrap emittiert die **Durchsetzungsschicht** und die **Workflow-Commands** ins
-Zielrepo — **Tool-als-Quelle**, je `--lang` parametriert ([`ADR-0006`](../../../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md)).
+Zielrepo — **Tool-als-Quelle** ([`ADR-0006`](../../../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md); Messbefund der Closure: Mechanik und
+Commands sind sprach-agnostisch, **nur** das Guard-BLOCKED-Set ist je `--lang`).
 Der Adopter erhält damit nicht nur Gerüste + Sensors, sondern auch die **Durchsetzung**
-(Stop-Hook, Command-Guard, Gate-Nachweis, `CLAUDE.md` — [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren))
+(Stop-Hook, Command-Guard, Gate-Nachweis — [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren); `CLAUDE.md` bleibt **autort**,
+nicht emittiert — [`ADR-0006`](../../../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md))
 und die **Prozess-Anleitung** (`.claude/commands/` — [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)).
 Belegt via `make full-smoke`: das emittierte Repo fährt `make gates` grün, der Guard blockt
 die Ziel-Toolchain, kein node/jq ([`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
@@ -51,7 +53,7 @@ Tool-als-Quelle-Mechanik, dann Guard + Commands.
 | Slice | Titel | Bezug |
 |---|---|---|
 | [slice-030](done/slice-030-durchsetzung-skills-emit.md) | Reviewer-/Closure-Skill emittieren (`.harness/skills/`, Fetch — Emit-Pfad de-risken) | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
-| slice-031 | Durchsetzungs-Mechanik als Tool-Quelle emittieren (Stop-Hook, `record-gates`, `CLAUDE.md`, `.claude/settings.json`) | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
+| slice-031 | Durchsetzungs-Mechanik als Tool-Quelle emittieren (Stop-Hook, `record-gates`, `.claude/settings.json`; **nicht** `CLAUDE.md` — autort) | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
 | slice-032 | Command-Guard emittieren + BLOCKED-Set je `--lang` (bash + awk, Tool-als-Quelle) | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
 | slice-033 | Workflow-Commands emittieren (`.claude/commands/`, Tool-als-Quelle) | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) |
 
@@ -81,4 +83,7 @@ sobald sie an der Reihe sind (kein Vorab-Schnitt — Muster wie in welle-03).
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Welle-Abschluss füllen. Verweis auf welle-<NN>-results.md. -->
+**Geschlossen 2026-07-22** (beobachtbarer Trigger, kein Kalendertag). Ergebnisse, Steering-Loop-Einträge
+und Verifikations-Belege: [welle-04-results.md](done/welle-04-results.md). Alle vier Slices in `done/`;
+Emission komplett (Durchsetzung [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) + Anleitung [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)). Der Zustand
+ist die Verzeichnis-Position (diese Datei wandert per `git mv` nach `done/`), kein Status-Feld.
