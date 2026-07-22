@@ -66,7 +66,42 @@ slice-005 die welle-03 und erreicht **M2**.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Abgeschlossen:** 2026-07-22. Review konform ([`2026-07-22-slice-024-voll-smoke.md`](../../../reviews/2026-07-22-slice-024-voll-smoke.md):
+0 HIGH/MEDIUM, 2 LOW/1 INFO — F-1 aufgelöst), Verifikation bestätigt die DoD (getrennter Kontext,
+`make full-smoke` + `make gates` selbst gefahren).
+
+**Ergebnis:** Neuer Nicht-Gate-Verify `make full-smoke` ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)
+Happy-Path): Bootstrap in ein tmp-Repo, dann dort der **zusammengeführte** `make gates`
+([`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert): docs-check + Go-Gates
+kombiniert). Real: **9 Dateien, 0 Befunde, Exit 0 out-of-the-box** — kein Vorgänger-Defekt aufgedeckt.
+Der erste Integrations-Punkt lief grün.
+
+**Steering-Loop-Eintrag:**
+
+- **Sensor-Unterscheidung geschärft:** „getrennte Targets ≠ zusammengeführter Gate". Der Tier-2
+  `make smoke` fuhr docs-check (`-f d-check.mk`) und Go-Gates (`lint build test`) **getrennt** — das
+  belegte **nie** den verdrahteten `make gates`-Einstiegspunkt (die [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)-Kombination via
+  `include` + `gates: docs-check`). `make full-smoke` fährt genau den, den ein Adopter tippt.
+- **Neuer Sensor mit Zähnen (§3.6):** full-smoke prüft nicht nur `make gates` Exit 0, sondern belegt
+  im Lauf-Output, dass **alle vier** Gates wirklich liefen (`--target lint/build/test` + d-check
+  `geprüft`) — sonst wäre ein grünes `make gates` über einer stillen Teilmenge ein halluziniertes
+  Gate ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). **Rot gesehen**
+  (einmalig, manuell): bricht man `gates: docs-check` in der Verdrahtung, ist `make gates` Exit 0 über
+  einer Teilmenge — full-smoke fängt es am fehlenden `geprüft`-Marker. Kein permanenter `mutate`-Fall
+  (die Verdrahtung ist bereits von den `wire`-go-test-Mutationen 21–23 gedeckt; ein `verify: full-smoke`
+  verteuerte jeden `make mutate`-Lauf um zwei volle E2E-Bootstraps — §3.6 „einmalig → in den Bericht").
+- **Sensor-Trigger gefaltet (Nutzer-Entscheidung):** `full-smoke` bekam einen CI-Job pro Push — ein
+  Sensor ohne mechanischen Trigger ist der Defekt, der slice-026/027 gebar. Bewusst in slice-024
+  gefaltet statt Folge-Slice (per AskUserQuestion entschieden).
+- **Benannte Trade-offs (Review-F-2/F-3, bewusst akzeptiert):** (a) ~15 Zeilen Bootstrap-Vorspann sind
+  zwischen `smoke.sh` und `full-smoke.sh` dupliziert — vertretbar für zwei self-contained Smoke-Sensoren;
+  **Folge-Kandidat** (gemeinsamer Bootstrap-Helfer), falls ein dritter Smoke-Sensor entsteht. (b) Der
+  `GO_VERSION`-Default ist im Script hart (nur Fallback; das Makefile reicht `$(GO_VERSION)` durch, wie
+  bei `smoke.sh`).
+- **done/-Link-Churn — 7. Instanz, überfällig:** der Lifecycle-Move brach 9 Inbound-Links auf
+  `../open/slice-024…` in drei frozen `done/`-Slices + welle-03 (und beim `done/`-Move erneut). Die
+  Klasse liegt seit slice-025 als Backlog-Kandidat (Cluster D: `done/**`-Lifecycle-Link-Exemption als
+  Gate-Policy-Änderung) vor — bei 7 Instanzen ist sie reif für einen eigenen Wartungs-Slice.
 
 ## 8. Sub-Area-Modus-Begründung
 

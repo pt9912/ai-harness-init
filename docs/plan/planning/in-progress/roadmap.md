@@ -17,8 +17,8 @@ gezeigt, nicht als Treiber.
 **Geplantes Ende:** offen
 
 **Slice-IDs:** slice-005 (Root-README, [`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2), **done**) → slice-028 (Emit
-out-of-the-box gate-sicher, [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), **done**) → slice-024 (Voll-E2E-Smoke, [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)). slice-024 in `open/`.
-**Nächster Slice:** slice-024 — slice-028 machte den Emit gate-sicher (Spec 0.8.0, `make smoke`: 3 docs-check-Befunde → 0); slice-024 ist jetzt entsperrt und liefert den Voll-E2E-`make gates`-Beweis im Ziel (schließt welle-03 → M2).
+out-of-the-box gate-sicher, [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), **done**) → slice-024 (Voll-E2E-Smoke, [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), **done**). Alle drei in `done/`.
+**Nächster Schritt:** **welle-03 schließen** — alle Slice-Bedingungen erfüllt: `make full-smoke` grün (frisch gebootstrapptes Repo fährt `make gates` out-of-the-box, 9 Dateien/0 Befunde), `make gates`/`make mutate` grün. Die Wellen-Closure (Modul 6) erreicht **M2**.
 
 **Closure-Trigger:** alle drei Slices in `done/`, `make gates` grün, **Voll-E2E-`make smoke` grün** (das emittierte
 Repo fährt sein eigenes `make gates` 0-Befunde out-of-the-box, [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) Happy-Path
