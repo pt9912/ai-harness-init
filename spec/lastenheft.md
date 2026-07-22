@@ -96,11 +96,12 @@ als gate-sichere Vorwärts-Verweise, bis die Ziele existieren.
 **Beschreibung:** Der Bootstrap emittiert die Durchsetzungsschicht ins
 Zielrepo: Stop-Hook + Gate-Nachweis-Mechanik (`tools/harness/`,
 `record-gates`, `.claude/settings.json`), `CLAUDE.md`, Reviewer-Skill und
-Command-Guard. **Quelle:** die Durchsetzungs-**Mechanik** (Stop-Hook, Guard,
-Gate-Nachweis, `CLAUDE.md`) bringt das Tool selbst mit — **Tool-als-Quelle**, je
-`--lang` parametriert (wie das Sprachskelett [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4));
-der **Reviewer-Skill** bleibt aus dem gepinnten Kurs-Template-Satz gefetcht (er
-liegt dort).
+Command-Guard. **Quelle:** die ausführbare Durchsetzungs-**Mechanik** (Stop-Hook,
+Guard, Gate-Nachweis) bringt das Tool selbst mit — **Tool-als-Quelle**, je `--lang`
+parametriert (wie das Sprachskelett [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)).
+Der **Reviewer-Skill** bleibt aus dem Kurs-Template-Satz **gefetcht** (er liegt dort);
+`CLAUDE.md` ist ein **Briefing** wie `AGENTS.md` → **autort**, nicht tool-generiert
+(seine Vorlage ist eine offene Ergänzung).
 
 **Akzeptanzkriterien:**
 

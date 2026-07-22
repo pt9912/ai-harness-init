@@ -10,7 +10,7 @@
 
 **Schärft:** [`architecture.md §Komponenten`](../../../spec/architecture.md) — der *Durchsetzungs-Emitter* und der *Workflow-Command-Emitter* wechseln die Herkunftsklasse (Fetch/Picker → Tool-als-Quelle/Generator).
 
-**Revidiert (Teil-Supersede):** die Picker-Herkunfts-Setzung aus [`ADR-0004`](0004-durchsetzungs-emission.md) (§Entscheidung 1) und die „Durchsetzung + Workflow-Commands bleiben Picker"-Grenze aus [`ADR-0005`](0005-ziel-repo-distribution.md) (§Konsequenzen). Die übrigen Setzungen beider bleiben unberührt und **Accepted**: Guard **bash + awk** + BLOCKED-Set je `--lang` ([`ADR-0004`](0004-durchsetzungs-emission.md) §Entscheidung 2/3), Fetch-vs-Generate der übrigen Klassen ([`ADR-0005`](0005-ziel-repo-distribution.md)).
+**Revidiert (Teil-Supersede):** die Picker-Herkunfts-Setzung aus [`ADR-0004`](0004-durchsetzungs-emission.md) (§Entscheidung 1) und die „Durchsetzung + Workflow-Commands bleiben Picker"-Grenze aus [`ADR-0005`](0005-ziel-repo-distribution.md) (§Konsequenzen). Die übrigen Setzungen beider bleiben unberührt und **Accepted**: Guard **bash + awk** + BLOCKED-Set je `--lang` ([`ADR-0004`](0004-durchsetzungs-emission.md) §Entscheidung 2/3), Fetch-vs-Generate der übrigen Klassen ([`ADR-0005`](0005-ziel-repo-distribution.md)). Da [`AGENTS.md`](../../../AGENTS.md) §3.4 nur den **Voll**-Supersede kennt, wird die Teil-Revision **im ADR-Index an ADR-0004 annotiert** (§Entscheidung 1 revidiert) — so kann kein Slice die revidierte Picker-Stanza als aktiv zitieren.
 
 ---
 
@@ -44,25 +44,40 @@ generiere, was mechanisch ist") widerspricht der Picker-Setzung für genau diese
 
 ## Entscheidung
 
-Wir stellen die **Durchsetzungsschicht** (Stop-Hook, Command-Guard, Gate-Nachweis/`record-gates`,
-`CLAUDE.md`) und die **Workflow-Commands** (`.claude/commands/{implement-slice,plan-welle,close-welle}`)
-von **Picker → Tool-als-Quelle** um: das Tool bringt eine **generische, per `--lang` parametrierte**
-Fassung mit — abgeleitet aus dem erprobten Dogfood-Stand plus den Kurs-Prozess-Modulen — analog zum
-Sprachskelett ([`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)/[`ADR-0005`](0005-ziel-repo-distribution.md)).
+Wir stellen die ausführbare **Durchsetzungs-Mechanik** (Stop-Hook, Command-Guard,
+Gate-Nachweis/`record-gates`) und die **Workflow-Commands**
+(`.claude/commands/{implement-slice,plan-welle,close-welle}`) von **Picker → Tool-als-Quelle** um: das
+Tool bringt eine **generische, per `--lang` parametrierte** Fassung mit — analog zum Sprachskelett
+([`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)/[`ADR-0005`](0005-ziel-repo-distribution.md)).
 Kein Warten auf eine Kurs-Upstream-Ergänzung.
 
-Präzisierungen:
+**Abgrenzung der Klassen** — das Kriterium ist bewusst **zweiteilig** (Natur **und** Verfügbarkeit),
+kein sauberer Ein-Achsen-Schnitt:
 
-1. **Nur die mechanischen Klassen wechseln.** Der **Reviewer-/Closure-Skill** (`.harness/skills/`) bleibt
-   **Fetch/Picker** — er liegt im Kurs-Satz und ist kurs-SSoT-nah. Nur Durchsetzung + Commands werden
-   Tool-als-Quelle.
-2. **Guard unverändert.** Der Command-Guard bleibt **bash + awk**, das BLOCKED-Set bleibt je `--lang`
-   parametriert ([`ADR-0004`](0004-durchsetzungs-emission.md) §Entscheidung 2/3 gelten fort) — es ändert sich
-   nur die **Herkunft** (Tool statt Kurs-Fetch), nicht die Guard-Bauart.
-3. **Kein „aus dem Nichts"** (die [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)-Sorge):
-   Tool-als-Quelle ist **keine** Halluzination — die Fassung ist real erprobt (Dogfood) und kurs-geerdet
-   (Prozess-Module), so wie das generierte Skelett sprach-geerdet ist. Command-Vorlagen tragen
-   **adaptierbare Marker** (Adaptions-/„MR-Block", Build-Modell), nicht 1:1 hart ([`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)).
+1. **Tool-als-Quelle** — die ausführbare Mechanik (Hooks, Guard, `record-gates`) + die Command-Artefakte:
+   **mechanische/Prozess-Infrastruktur** (kein Kurs-SSoT-Inhalt) **und** im Kurs-Template-Satz **nicht
+   vorhanden**. Ableiten (aus den Kurs-Prozess-Modulen + dem erprobten Dogfood-Stand) schlägt
+   unbegrenztes Warten — dieselbe Bewegung wie beim Skelett.
+2. **Fetch/Picker (unverändert)** — der **Reviewer-/Closure-Skill** (`.harness/skills/`): er **liegt** im
+   Kurs-Satz (verfügbare, kurs-nahe Quelle). Ihn zu generieren wäre Eigenbau neben einer vorhandenen SSoT.
+3. **Autort (tool-fremd) — NICHT Teil dieser ADR:** `CLAUDE.md` ist ein **Briefing** wie `AGENTS.md`, das
+   [`ADR-0005`](0005-ziel-repo-distribution.md) als agent/mensch-autort einstuft; `CLAUDE.md` folgt derselben
+   Klasse und wird **nicht** tool-generiert. **Benannte Lücke:** der Kurs-Satz trägt `AGENTS.template.md`,
+   aber **kein** `CLAUDE.template.md` — die CLAUDE.md-Quelle ist ein **eigener CR** (Kurs-Ergänzung oder ein
+   tool-mitgeliefertes Starter-Template zum Ausfüllen), hier **nicht** entschieden.
+
+Weitere Setzungen:
+
+- **Guard-Bauart unverändert.** Der Command-Guard bleibt **bash + awk**, das BLOCKED-Set bleibt je `--lang`
+  parametriert ([`ADR-0004`](0004-durchsetzungs-emission.md) §Entscheidung 2/3 gelten fort) — es ändert sich
+  nur die **Herkunft** (Tool statt Kurs-Fetch), nicht die Bauart.
+- **Die generische Fassung ist zu AUTORIEREN, nicht 1:1 der Dogfood-Stand.** Der Dogfood trägt eine
+  **repo-adaptierte** Durchsetzung (MR-Block, Docker-only, ein konkretes BLOCKED-Set). „Tool-als-Quelle"
+  heißt: daraus + den Kurs-Modulen eine **generische, je `--lang` parametrierte** Fassung mit
+  **adaptierbaren Markern** ([`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)) ableiten.
+  „Kein aus dem Nichts" heißt hier: die Fassung ist erprobt + kurs-geerdet — und **jede** Zusage der
+  emittierten Durchsetzung wird per [`AGENTS.md`](../../../AGENTS.md) §3.6 **rot gesehen** (die Dogfood-Erprobtheit
+  ist Ausgangspunkt, **kein** Beleg für die neue generische Fassung).
 
 ## Verglichene Alternativen
 
@@ -71,11 +86,16 @@ Präzisierungen:
 | A — Bei Picker bleiben, Templates upstream in den Kurs bringen (Kurs-CR) | Der Kurs bliebe SSoT für alle `.claude/`-Artefakte | Upstream-Abhängigkeit + Wartezeit (unbestimmt); die Mechanik ist **nicht** Kurs-SSoT, sondern Tool-Infrastruktur; reintroduziert die Zwei-Quellen-Drift, die [`ADR-0005`](0005-ziel-repo-distribution.md) beim Embed-Skelett gerade beseitigt hat |
 | B — Guard/Hooks als OCI-Image, Commands weiter Picker | kein neuer Host-Dep | `docker run` pro Bash-Call (Latenz) — [`ADR-0004`](0004-durchsetzungs-emission.md) Option B verwarf das schon; löst das **Command**-Quellproblem nicht |
 | **C — Tool-als-Quelle für Durchsetzung + Commands (gewählt)** | kein Upstream-Warten; **eine** Quelle (das Tool); konsistent mit [`ADR-0005`](0005-ziel-repo-distribution.md) „generiere das Mechanische"; per `--lang` parametrierbar; sofort lieferbar | das Tool trägt die generische Durchsetzungs-/Command-Fassung (Wartung) + einen Adaptierbarkeits-Contract; im emittierten `.claude/`/`harness/` liegen zwei Herkunfts-Klassen nebeneinander (Skill gefetcht, Rest tool-generiert) |
+| D — Gemischt: Mechanik Tool-als-Quelle, Commands upstream-Picker | trennt die zwei Klassen sauber (die [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)/[`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) ohnehin trennen); Commands blieben Kurs-SSoT | Commands blieben upstream-blockiert (die Quelle fehlt) → dieselbe Warte-Falle wie A für die halbe Fläche; **zwei** Herkunftsmodelle statt einem, ohne Gegenwert (das Command-Artefakt ist so mechanisch wie die Mechanik) |
 
 ## Konsequenzen
 
 - Positiv: Cluster A (Durchsetzung + Commands emittieren) wird **ohne Upstream-Blocker lieferbar**; eine
   Quelle statt Picker-Drift; konsistent zum Skelett-Modell ([`ADR-0005`](0005-ziel-repo-distribution.md)).
+- Reproduzierbarkeit ([`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)): die Pin-Achse
+  wandert vom Kurs-Fetch **ins Tool** — die tool-getragene Fassung ist **deterministisch** (statischer Inhalt
+  + `--lang`-Parametrierung, wie der Skelett-Generator: gleiche Eingabe → byte-identisch), also
+  gepinnt-reproduzierbar, nicht floating.
 - Negativ: das Tool pflegt die **generische** Durchsetzungsschicht + Command-Vorlagen (je `--lang` +
   adaptierbare Marker); der Reviewer-Skill bleibt Fetch — im emittierten `.claude/`/`harness/` liegen
   damit zwei Herkunfts-Klassen.
@@ -94,6 +114,7 @@ Präzisierungen:
 |---|---|---|
 | Smoke | emittiertes Repo: Durchsetzung liegt **und wirkt** (Stop-Hook/Guard/`record-gates`), `make gates` grün **ohne** node/jq | `make smoke` / `make full-smoke` |
 | bats/go-test | Guard-BLOCKED-Set je `--lang` korrekt; Command-Vorlagen tragen die adaptierbaren Marker | `make test` |
+| go-test | **Determinismus**: gleiche `--lang` → byte-identische Durchsetzungs-/Command-Ausgabe (wie der Skelett-Generator, [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) | `make test` |
 
 ## Re-Evaluierungs-Trigger
 
