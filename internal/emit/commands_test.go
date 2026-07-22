@@ -3,6 +3,7 @@ package emit_test
 import (
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -55,16 +56,21 @@ func TestCommands_NoInternalLeak(t *testing.T) {
 	forbidden := []string{
 		"make mutate", "make smoke", "test/mutations",
 		"ai-harness-init",
-		// konkrete Dogfood-Slice-Nummern (im Ziel bedeutungslos). Das generische
-		// Platzhalter-Muster `slice-<NN>` bleibt erlaubt — es trägt keine Ziffern.
-		"slice-027", "slice-030", "slice-031", "slice-032",
 	}
+	// Konkrete Dogfood-Slice-Nummern (im Ziel bedeutungslos) als NUMERISCHE KLASSE,
+	// nicht als Literal-Aufzählung (Review-L-1): jede `slice-<Ziffern>` fällt auf. Das
+	// generische Platzhalter-Muster `slice-<NN>`/`slice-<titel>` trägt keine Ziffern
+	// und bleibt erlaubt.
+	sliceNum := regexp.MustCompile(`slice-[0-9]{2,}`)
 	for _, rel := range emit.CommandPaths() {
 		s := string(emit.CommandFile(rel))
 		for _, f := range forbidden {
 			if strings.Contains(s, f) {
 				t.Errorf("%s enthält ai-harness-init-interne Referenz %q — im Ziel tot/falsch (LH-FA-08 nicht 1:1 hart)", rel, f)
 			}
+		}
+		if m := sliceNum.FindString(s); m != "" {
+			t.Errorf("%s enthält konkrete Dogfood-Slice-Nummer %q — im Ziel bedeutungslos (LH-FA-08 nicht 1:1 hart)", rel, m)
 		}
 	}
 }
