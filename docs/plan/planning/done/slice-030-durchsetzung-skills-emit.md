@@ -96,9 +96,9 @@ Erster, de-riskender welle-04-Slice; slice-031–033 (Mechanik/Guard/Commands, T
   wurde sofort rot und zeigte es. Die Zielmengen-Kopplung (Emit-Test want / Fixture-Zahl / Pre-Flight)
   aus slice-028 trug: alle drei Achsen zusammen bewegt, kein falsch-grün.
 - **Benannt (Planner-Nachzug bei welle-04-Closure):** welle-04 §1 nennt `CLAUDE.md` noch als
-  Durchsetzung (die ADR-0006-Überarbeitung stufte es auf **autort** um) und §6 nennt den
+  Durchsetzung (die spätere ADR-Überarbeitung stufte es auf **autort** um) und §6 nennt den
   architecture.md-Nachzug „nicht Scope" (ist inzwischen erledigt) — zwei kleine Welle-Plan-Stale-Stellen
-  aus der ADR-0006-Evolution.
+  aus der ADR-Evolution.
 
 ## 8. Sub-Area-Modus-Begründung
 
