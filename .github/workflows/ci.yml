@@ -4,10 +4,10 @@
 # geklonten, cleanen Tree OHNE Nachweis frei ("CI ist dort das Netz"). Hier IST
 # das Netz. Jeder Job checkt frisch aus und faehrt ein `make`-Target — die CI
 # traegt KEINE zweite Definition dessen, was ein Gate ist (MR-010-Geist: eine
-# Quelle). Was hier gruen sein muss, ist genau `make gates`/`smoke`/`mutate`.
+# Quelle). Was hier gruen sein muss, ist genau `make gates`/`smoke`/`full-smoke`/`mutate`.
 #
 # Frequenz (slice-027 Entwurfsentscheidung "alles pro Push"): gates + smoke +
-# mutate bei jedem Push und PR; die NETZ-Sensoren (regelwerk-check,
+# full-smoke + mutate bei jedem Push und PR; die NETZ-Sensoren (regelwerk-check,
 # baseline-freshness) laufen NUR naechtlich (schedule) — ein Upstream-Ausfall
 # darf nie einen Push blockieren (slice-027 Paragraph 6).
 #
@@ -55,6 +55,18 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - run: make smoke
+
+  # Voll-E2E-Smoke (slice-024): Bootstrap -> im Ziel der ZUSAMMENGEFUEHRTE make gates
+  # (MR-010: docs-check + Go-Gates in einem Lauf) — der LH-FA-01-Happy-Path, dass ein
+  # frisch gebootstrapptes Repo out-of-the-box gruen faehrt. Host-Docker + ggf.
+  # Netz-Pull, wie smoke; der Sensor braucht diesen mechanischen Pro-Push-Ausloeser,
+  # sonst laeuft er nie (dasselbe Muster, das slice-027 fuer make mutate schloss).
+  full-smoke:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - run: make full-smoke
 
   # Der Mutations-Sensor zu AGENTS.md 3.6 (slice-026). Hier bekommt seine
   # Durchsetzung erstmals einen mechanischen Ausloeser PRO PUSH — die

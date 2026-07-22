@@ -34,7 +34,7 @@ BASELINE_TAG ?= v3.5.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 123e3383261102e6be6465e1f4bade08a474c00edc4fff89f5c4b11bd640f8ff
 
-.PHONY: help gates record-gates test lint build compile smoke shell-lint ci-lint baseline-verify regelwerk-check baseline-freshness mutate
+.PHONY: help gates record-gates test lint build compile smoke full-smoke shell-lint ci-lint baseline-verify regelwerk-check baseline-freshness mutate
 help: ## Targets anzeigen
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-14s %s\n", $$1, $$2}'
@@ -59,6 +59,13 @@ compile: ## Schnelles Compile-Feedback (Dockerfile compile-Stage, ohne Tests/Lin
 # LH-QA-01); gehoert an DoD-Verify/CI/Wellen-Closure. Logik in harness/tools/ (shell-lint).
 smoke: ## Emit-Smoke: Doc-Gate in tmp-Repo emittieren + emittiertes docs-check real gruen (Host-Docker) — NICHT in gates
 	@GO_VERSION='$(GO_VERSION)' bash harness/tools/smoke.sh
+
+# Voll-E2E-Smoke (slice-024, LH-FA-01 Happy-Path): Bootstrap in ein tmp-Repo, dann
+# dort der ZUSAMMENGEFUEHRTE `make gates` (MR-010: docs-check + Go-Gates kombiniert)
+# — die Sicht des echten Nutzers, die der Tier-2 `make smoke` bewusst nicht nimmt.
+# Host-Docker + ggf. Netz-Pull -> NICHT in gates (offline-schlank, LH-QA-01).
+full-smoke: ## Voll-E2E: Bootstrap in tmp-Repo -> dort make gates out-of-the-box gruen (Host-Docker) — NICHT in gates
+	@GO_VERSION='$(GO_VERSION)' bash harness/tools/full-smoke.sh
 
 mutate: ## Mutations-Sensor fuer AGENTS 3.6: faerbt jede Mutation ihren Waechter rot? — NICHT in gates
 	@bash harness/tools/mutate.sh
