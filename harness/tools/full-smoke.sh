@@ -45,12 +45,14 @@ fi
 # LH-QA-01: `make gates` muss die BEHAUPTETEN Gates WIRKLICH fahren, nicht still eine
 # Teilmenge. Belege im Lauf-Output, dass alle vier gelaufen sind: die drei Go-Gates
 # (Dockerfile-Stages, per make-Recipe-Echo `--target <stage>`) UND das Doc-Gate
-# (d-check druckt "… Befund(e)"). Ein gruenes make gates ueber einer stillen
-# Teilmenge waere ein halluziniertes Gate. Der "Befund"-Marker deckt zugleich die
+# (d-check druckt "… Datei(en) geprueft"). Ein gruenes make gates ueber einer stillen
+# Teilmenge waere ein halluziniertes Gate. Der "geprueft"-Marker deckt zugleich die
 # MR-010-Verdrahtung: ohne den `gates: docs-check`-Anhang liefe docs-check gar nicht
-# mit, der Marker fehlte -> hier rot (nicht bloss Exit 0 pruefen).
+# mit, der Marker fehlte -> hier rot (nicht bloss Exit 0 pruefen). "geprueft" (statt
+# "Befund") ist der kanonische "d-check lief"-Marker, auf den auch harness/tools/
+# smoke.sh keyt — er stammt aus der d-check-Laufzeit, nicht aus dem Recipe-Echo.
 missing=""
-for marker in "--target lint" "--target build" "--target test" "Befund"; do
+for marker in "--target lint" "--target build" "--target test" "geprüft"; do
 	printf '%s\n' "$gates_out" | grep -qF -- "$marker" || missing="$missing [$marker]"
 done
 if [ -n "$missing" ]; then
