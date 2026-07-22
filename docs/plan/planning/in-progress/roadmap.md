@@ -12,21 +12,20 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**Keine aktive Welle.** welle-03 ist **geschlossen** (2026-07-22, siehe *Abgeschlossene Wellen* unten)
-und **M2 erreicht** (vollständiger Bootstrap): ein frisch gebootstrapptes Repo fährt `make gates`
-out-of-the-box grün (`make full-smoke`: 9 Dateien / 0 Befunde / Exit 0).
+**Welle-ID:** [welle-04-durchsetzung-und-emission](../welle-04-durchsetzung-und-emission.md)
+**Start:** 2026-07-22 (Trigger erfüllt: welle-03 in `done/` + [`ADR-0006`](../../../../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md) accepted — Picker → **Tool-als-Quelle** entsperrte die Emission ohne Kurs-Upstream-Warten)
+**Geplantes Ende:** offen
 
-Der nächste Wellen-Kandidat ist **Cluster A** (Durchsetzung & Emission) im *Backlog* unten — er wird zu
-welle-04 mit eigener Plandatei (per `cp`), sobald sein erster Slice geschnitten wird (Trigger
-„welle-03 in `done/`" erfüllt). Bis dahin liegt bewusst **keine** flache Welle-Datei vor (eine leere §4
-wäre die „zweite Wahrheit, die driftet").
+**Slice-IDs:** slice-030 (Reviewer-/Closure-Skill emittieren, de-risk, [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)) → slice-031 (Durchsetzungs-Mechanik: Stop-Hook/`record-gates`/`CLAUDE.md`) → slice-032 (Command-Guard + BLOCKED-Set je `--lang`) → slice-033 (Workflow-Commands, [`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)). Nur slice-030 in `open/`; 031–033 per `cp` bei Trigger.
+**Nächster Slice:** slice-030 — öffnet den `.harness/skills/`-Emit-Pfad (de-risk), auf dem Mechanik-/Guard-/Command-Slices aufsetzen.
+
+**Closure-Trigger:** alle vier Slices in `done/`, `make gates` grün, **`make full-smoke` grün** (emittiertes Repo trägt Durchsetzung + Commands, `make gates` dort out-of-the-box grün, Guard blockt die Ziel-Toolchain, kein node/jq — [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)), **`make mutate` grün**, Carveout-Audit 0/dokumentiert, Closure-Notiz. **a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) bewusst nicht in dieser Welle** (hängt an hexagonalen Schichten). Details in der [welle-04-Plan-Datei](../welle-04-durchsetzung-und-emission.md).
 
 ## Nächste Wellen
 
-Keine gefilte Welle. Der nächste Wellen-Kandidat ist **Cluster A** (Durchsetzung &
-Emission) im Backlog unten — er wird zu welle-04 mit eigener Plandatei, sobald sein
-erster Slice geschnitten wird (Trigger: welle-03 in `done/`). Weitere Kandidaten
-(B/C) ebenda, je mit Trigger-Bedingung.
+Cluster A ist als **welle-04 aktiv** (oben). Keine weitere gefilte Welle danach — die
+Kandidaten **B/C/D** stehen im Backlog unten, je mit Trigger-Bedingung; einer bekommt
+seine Plandatei per `cp`, sobald sein erster Slice geschnitten wird.
 
 ## Backlog (aus Slice-§6 gehoben, 2026-07-21)
 
@@ -43,7 +42,7 @@ erster Slice geschnitten wird (Trigger: welle-03 in `done/`). Weitere Kandidaten
 
 | Cluster | Folge-Punkte (Herkunfts-Slice) | Trigger (Bedingung) | Vorgesehene Ablage |
 |---|---|---|---|
-| **A · Durchsetzung & Emission** | Durchsetzungs-Emit ([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)/[`ADR-0004`](../../../../docs/plan/adr/0004-durchsetzungs-emission.md), BLOCKED-Set je `--lang`) · Arch-Gate a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) · Workflow-Command-Emit ([`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)) | welle-03 in `done/` (green-before-extend: erst Baseline grün, dann Emit-Fläche erweitern) | welle-04 — Datei + erster Slice **bei Trigger** (wie welle-03 aus welle-02) |
+| **A · Durchsetzung & Emission** | Durchsetzungs-Emit ([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)/[`ADR-0004`](../../../../docs/plan/adr/0004-durchsetzungs-emission.md), BLOCKED-Set je `--lang`) · Arch-Gate a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) · Workflow-Command-Emit ([`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)) | welle-03 in `done/` (green-before-extend: erst Baseline grün, dann Emit-Fläche erweitern) | **welle-04 aktiv (2026-07-22)** — [`ADR-0006`](../../../../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md) entsperrte die Quelle (Picker → Tool-als-Quelle); slice-030 geschnitten. a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) bleibt aufgeschoben (hexagonale Schichten) |
 | **B · Freshness** | go-freshness-Sensor · SKEL_GO_VERSION=latest Web-Lookup (slice-023) · mechanische Freshness für Quellen-Links / BASELINE_TAG (slice-012) · Regelwerk-Refresh-Mechanik (slice-007) | erste beobachtete Pin-/Tag-/Quellen-Drift, oder M2 erreicht | kleine Welle „Freshness-Sensoren" (netz/nächtlich, Muster [slice-018](../done/slice-018-baseline-freshness.md)) bzw. Einzel-Slices |
 | **C · Doc-Gate-Härtung** | Prosa-Zahlen-Provenienz (slice-011/015) · Anker-Fragment-Sensor (slice-014) · citations-Modul / Zitat gegen Zeilenspanne (slice-015) | erneutes Auftreten einer der Befund-Klassen (Muster slice-026: neun Instanzen → Sensor) | kleine Welle bzw. Einzel-Slices |
 | **D · Doku/Prozess-Reconciliation** | architecture.md an die [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md)-Klasse nachziehen (slice-023) · README nennt stale d-check-Pin (slice-019) · „≤3-DoD"-Regel klären (slice-013) · lastenheft_refs vs. Bezug-Zeile (slice-014) · `done/`-Lifecycle-Link-Exemption als Gate-Policy-Änderung (slice-025) | Wartung — **kein** Welle-Trigger; bei nächster Harness-Wartungsrunde | Harness-Wartung ohne Welle (Muster slice-026/027): je kleiner Slice bzw. conventions-Adaption |
