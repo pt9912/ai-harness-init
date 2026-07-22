@@ -51,10 +51,11 @@ als etwas Unbelegtes.
 
 ## Kerngedanke
 
-**Hole, was Kurs-SSoT ist — generiere, was mechanisch ist.** Nichts entsteht
-aus dem Nichts. Regelwerk, Doc-Templates, Durchsetzungsschicht und
-Workflow-Commands kommen **gefetcht** vom gepinnten Kurs-Stand; dort bleibt die
-Single Source of Truth. Verzeichnis-Gerüst, Sprachskelett und die Gate-Fragmente
+**Hole die Kurs-Quelle, generiere das Mechanische.** Nichts entsteht
+aus dem Nichts. Der gepinnte Kurs-Stand ist die **Single Source of Truth (SSoT)** —
+die eine, verbindliche Quelle der Wahrheit für Prozess und Vorlagen. Regelwerk,
+Doc-Templates, Durchsetzungsschicht und Workflow-Commands kommen **gefetcht** von
+dort; die SSoT bleibt der Kurs. Verzeichnis-Gerüst, Sprachskelett und die Gate-Fragmente
 erzeugt das Tool **deterministisch aus eigenem Wissen** — nachvollziehbar wie
 `d-check --print-mk`. Der `AGENTS.md`-Inhalt bleibt tool-fremd: den autort ein
 Mensch oder Agent aus der gefetchten Vorlage. Emittiert wird nur, was wirklich
