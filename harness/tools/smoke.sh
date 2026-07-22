@@ -7,7 +7,7 @@
 # gehoert an DoD-Verify/CI/Wellen-Closure.
 #
 # Belege:
-#   1. Binary aus der artifact-Stage extrahieren (Host).
+#   1. Natives Release-Binary auf den Host ziehen (`make artifact`, docker cp).
 #   2. `--lang go` bootstrappen: Doc-Gate (Runtime-Codegen, slice-002) + Template-
 #      Baseline (slice-003) + Sprachskelett-Generierung (slice-023, lokal/
 #      deterministisch, kein Netz) + vendored Baseline mit Verifier (slice-022a,
@@ -33,9 +33,8 @@ trap cleanup EXIT
 # 0700-Mount nicht traversieren. Ein echtes Adopter-Git-Repo hat 0755.
 chmod 755 "$tmprepo"
 
-echo "smoke: 1/5 Binary aus der artifact-Stage auf den Host extrahieren ..."
-docker build --build-arg GO_VERSION="$GO_VERSION" \
-	--target artifact --output "type=local,dest=$tmpbin" .
+echo "smoke: 1/5 natives Release-Binary auf den Host extrahieren (make artifact) ..."
+make artifact DEST="$tmpbin" GO_VERSION="$GO_VERSION"
 
 echo "smoke: 2/5 Bootstrap (--lang go): Doc-Gate + Templates + Skelett-Generierung (lokal) ..."
 ( cd "$tmprepo" && "$tmpbin/ai-harness-init" --lang go --name smoke )

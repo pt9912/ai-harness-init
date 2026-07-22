@@ -40,14 +40,11 @@ COPY . .
 RUN golangci-lint run ./...
 
 # ---- build -----------------------------------------------------------------
-# Cross-Compile des Binaries im gepinnten Image (LH-QA-02; kein Host-go).
+# Cross-Compile des Binaries im gepinnten Image (LH-QA-02; kein Host-go). Zugleich
+# die Extraktions-Quelle: `make artifact DEST=…` kopiert /out/ai-harness-init per
+# `docker cp` aus DIESER Stage auf den Host (fuer die Smokes). Der Smoke laesst die
+# Binary auf dem HOST laufen, weil sie selbst `docker run <d-check> --print-mk`
+# ruft (kein DinD im Container). Kein OCI-Image als Vertriebsmittel (ADR-0003).
 FROM deps AS build
 COPY . .
 RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/ai-harness-init ./cmd/ai-harness-init
-
-# ---- artifact --------------------------------------------------------------
-# Nur das Binary (scratch), fuer `docker build --output type=local` (Host-
-# Extraktion, `make smoke`). Der smoke muss die Binary auf dem HOST laufen lassen,
-# weil sie selbst `docker run <d-check> --print-mk` aufruft (kein DinD im Container).
-FROM scratch AS artifact
-COPY --from=build /out/ai-harness-init /ai-harness-init

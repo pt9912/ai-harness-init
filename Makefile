@@ -34,7 +34,7 @@ BASELINE_TAG ?= v3.5.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 123e3383261102e6be6465e1f4bade08a474c00edc4fff89f5c4b11bd640f8ff
 
-.PHONY: help gates record-gates test lint build compile smoke full-smoke shell-lint ci-lint baseline-verify regelwerk-check baseline-freshness mutate
+.PHONY: help gates record-gates test lint build compile artifact smoke full-smoke shell-lint ci-lint baseline-verify regelwerk-check baseline-freshness mutate
 help: ## Targets anzeigen
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-14s %s\n", $$1, $$2}'
@@ -48,6 +48,17 @@ lint: ## Go-Lint (golangci-lint, Dockerfile lint-Stage, gepinntes Image) — Doc
 
 build: ## Go-Binary cross-compilieren (Dockerfile build-Stage, gepinntes Image) — Docker-only (ADR-0003)
 	docker build --build-arg GO_VERSION=$(GO_VERSION) --target build -t ai-harness-init:build .
+
+# Natives Release-Binary auf den Host ziehen (DEST=<dir>). Baut EINMAL (Prereq build,
+# taggt ai-harness-init:build) und KOPIERT dann GETRENNT aus einem Wegwerf-Container —
+# Build und Copy entkoppelt (kein --output-Fusion). Kein OCI-Image als Vertriebsmittel
+# (ADR-0003); die Smokes lassen die Binary auf dem Host laufen (sie ruft selbst docker).
+# Der Container wird immer aufgeraeumt (trap), auch wenn `docker cp` scheitert.
+artifact: build ## Natives Release-Binary auf den Host ziehen (DEST=<dir>) — für die Smokes, Docker-only
+	@test -n "$(DEST)" || { echo "artifact: DEST=<dir> ist Pflicht (Zielverzeichnis)"; exit 2; }
+	@cid="$$(docker create ai-harness-init:build true)"; \
+	trap 'docker rm -f "$$cid" >/dev/null 2>&1' EXIT; \
+	docker cp "$$cid:/out/ai-harness-init" "$(DEST)/ai-harness-init"
 
 compile: ## Schnelles Compile-Feedback (Dockerfile compile-Stage, ohne Tests/Lint) — Docker-only; NICHT in gates
 	docker build --build-arg GO_VERSION=$(GO_VERSION) --target compile -t ai-harness-init:compile .

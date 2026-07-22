@@ -26,9 +26,8 @@ trap cleanup EXIT
 # 0700-Mount nicht traversieren. Ein echtes Adopter-Git-Repo hat 0755.
 chmod 755 "$tmprepo"
 
-echo "full-smoke: 1/3 Binary aus der artifact-Stage auf den Host extrahieren ..."
-docker build --build-arg GO_VERSION="$GO_VERSION" \
-	--target artifact --output "type=local,dest=$tmpbin" .
+echo "full-smoke: 1/3 natives Release-Binary auf den Host extrahieren (make artifact) ..."
+make artifact DEST="$tmpbin" GO_VERSION="$GO_VERSION"
 
 echo "full-smoke: 2/3 Bootstrap (--lang go --name full-smoke) in ein leeres tmp-Repo ..."
 ( cd "$tmprepo" && "$tmpbin/ai-harness-init" --lang go --name full-smoke )
