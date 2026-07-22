@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.8.0
+**Version:** 0.9.0
 
 **Status:** Draft
 
@@ -96,8 +96,11 @@ als gate-sichere Vorwärts-Verweise, bis die Ziele existieren.
 **Beschreibung:** Der Bootstrap emittiert die Durchsetzungsschicht ins
 Zielrepo: Stop-Hook + Gate-Nachweis-Mechanik (`tools/harness/`,
 `record-gates`, `.claude/settings.json`), `CLAUDE.md`, Reviewer-Skill und
-Command-Guard. Quelle ist das gepinnte Kurs-Template-Set (Picker, kein
-Generator).
+Command-Guard. **Quelle:** die Durchsetzungs-**Mechanik** (Stop-Hook, Guard,
+Gate-Nachweis, `CLAUDE.md`) bringt das Tool selbst mit — **Tool-als-Quelle**, je
+`--lang` parametriert (wie das Sprachskelett [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4));
+der **Reviewer-Skill** bleibt aus dem gepinnten Kurs-Template-Satz gefetcht (er
+liegt dort).
 
 **Akzeptanzkriterien:**
 
@@ -137,12 +140,12 @@ Generator).
 planen/schließen, geerdet in den Regelwerk-Modulen zu Lifecycle/Rollen/Review/Verifikation).
 Damit erhält der Adopter den **Prozess**, nicht nur die Gerüste.
 
-**Quelle (Picker, nicht Generator — §5).** Die Commands kommen aus dem **gepinnten
-Kurs-Template-Satz** (Single Source of Truth, wie die Doc-Templates aus [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)),
-nicht tool-generiert aus dem Nichts. Vorbedingung ist daher eine **Kurs-Upstream-Ergänzung**:
-die Command-Vorlagen liegen im Template-Satz (der heute die Reviewer-/Closure-Skills trägt,
-noch **nicht** die Slash-Commands). Fehlen sie upstream, wird das Feature **begründet nicht
-emittiert** — kein halluziniertes Artefakt ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+**Quelle (Tool-als-Quelle — §5).** Die Command-Vorlagen bringt das Tool selbst mit — abgeleitet
+aus den Kurs-Prozess-Modulen und dem erprobten Dogfood-Stand, je `--lang` parametriert und mit
+adaptierbaren Markern (wie das Sprachskelett [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)).
+**Kein** aus dem Nichts generiertes Command: die Fassung ist real erprobt (Dogfood) und kurs-geerdet
+(Prozess-Module), so wie das generierte Skelett sprach-geerdet ist ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+Eine Kurs-Upstream-Ergänzung ist damit **nicht** mehr Vorbedingung (die frühere Picker-Setzung entfällt).
 
 **Abgrenzung zu [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren).** LH-FA-06 emittiert die **Durchsetzung** (Stop-Hook,
 Gate-Nachweis, Command-Guard, `CLAUDE.md`, Reviewer-Skill — was den Prozess *erzwingt*);
@@ -151,14 +154,15 @@ sind `.claude/`-Inhalt, aber verschiedene Klassen.
 
 **Akzeptanzkriterien:**
 
-- **Happy Path:** Given Bootstrap mit verfügbarem Kurs-Command-Satz, then
-  `.claude/commands/{implement-slice,plan-welle,close-welle}.md` liegen im Zielrepo, aus den
-  gepinnten Kurs-Vorlagen.
+- **Happy Path:** Given Bootstrap mit `--lang <X>`, then
+  `.claude/commands/{implement-slice,plan-welle,close-welle}.md` liegen im Zielrepo (Tool-als-Quelle,
+  je `--lang` parametriert).
 - **Adaptierbar (zweiklassig, [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)):** Command-Vorlagen tragen repo-spezifische
   Stellen (Adaptions-/„MR-Block", Build-Modell) als **adaptierbare** Marker, nicht 1:1 hart —
   der Adopter passt sie an sein Repo an.
-- **Picker ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):** kein aus dem Nichts generierter Command; fehlt die Quelle
-  upstream, wird nicht emittiert (begründet, statt ein erfundenes Command auszuliefern).
+- **Kein aus dem Nichts ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):** die emittierte Command-Fassung
+  ist real erprobt (Dogfood) und kurs-geerdet (Prozess-Module) — kein erfundenes Command, aber auch
+  kein Warten auf eine Upstream-Quelle.
 
 ### LH-FA-09 — Regelwerk emittieren
 
@@ -245,3 +249,4 @@ Verifikation), auf die seine `AGENTS.md` §1 (Source Precedence) zeigt — und l
 | 0.6.0 | 2026-07-18 | CR: neue [`LH-FA-08`](../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) Agenten-Workflow-Commands emittieren (`.claude/commands/` — Picker aus den Kurs-Templates, abgegrenzt von [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)-Durchsetzung; Vorbedingung Kurs-Upstream-Ergänzung). Header-Version mit der Historie reconciled (lag auf 0.3.0). Implementierung folgt als späterer Slice (Doc-führt) | Workflow-Command-Idee |
 | 0.7.0 | 2026-07-19 | CR: [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) Picker (Fetch `lab/example`) → **deterministischer Generator** (Tool-als-Quelle); neue [`LH-FA-09`](../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) Regelwerk emittieren (Fetch Kurs @ version → Ziel-Baseline, danach netzlos); [`ADR-0005`](../docs/plan/adr/0005-ziel-repo-distribution.md) supersedes [`ADR-0001`](../docs/plan/adr/0001-skelett-distribution.md); §1/§2/§5 aufs Distributionsmodell nachgezogen | Distributionsmodell-CR |
 | 0.8.0 | 2026-07-21 | CR: [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) an [`ADR-0005`](../docs/plan/adr/0005-ziel-repo-distribution.md) nachgezogen — das Zielrepo erhält den **vollen** vendored Template-Baum ([`LH-FA-09`](../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)), darum wiederkehrende Vorlagen **referenziert statt co-located**, derivative Indexe Fülle-wenn-Inhalt, Leerordner via `.gitkeep`; out-of-the-box gate-sicher ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Beim 0.7.0-CR übersehene LH-FA-02-Prämisse; die [`MR-008`](../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)-Abgrenzung ist damit aufgelöst | Emit gate-sicher (slice-024-Smoke) |
+| 0.9.0 | 2026-07-22 | CR: [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) + [`LH-FA-08`](../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) Durchsetzung + Workflow-Commands **Picker → Tool-als-Quelle** (das Tool bringt eine generische, je `--lang` parametrierte Fassung mit, abgeleitet aus Dogfood + Kurs-Prozess-Modulen; keine Kurs-Upstream-Ergänzung mehr als Vorbedingung). [`ADR-0006`](../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md) revidiert die Picker-Herkunft aus [`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md)/[`ADR-0005`](../docs/plan/adr/0005-ziel-repo-distribution.md), Präzedenz [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4). Reviewer-Skill bleibt Fetch; [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) (a-check) unberührt (hängt an hexagonalen Schichten) | Quellmodell-Reconciliation (Cluster A entsperren) |
