@@ -22,7 +22,7 @@ gezeigt, nicht als Treiber.
 des **Adopters**, kein Init-Argument. Init sprach-agnostisch, `--lang` optional, `add-lang` wiederholbar
 → Mono-Repo; Gate-/Guard-`.mk`/`blocked`-Fragmente; idempotente Emission (konvergent/skip-if-present).
 
-**▶ Nächster Schritt (Wiedereinstieg) — ADR-0007-Folgepflichten:**
+**▶ Nächster Schritt (Wiedereinstieg) — Folgepflichten aus [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md):**
 1. ✅ **CR an [`lastenheft.md`](../../../../spec/lastenheft.md)** (0.10.0, `2c8227b`) — erledigt
    ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) gesplittet, [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) auf `add-lang`).
 2. ⬜ **`architecture.md`-Nachzug** — Bootstrap-Phasen · `add-lang` · doc-only-Gate · Fragment-Assembly
