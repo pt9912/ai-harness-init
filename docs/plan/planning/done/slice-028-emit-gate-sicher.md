@@ -27,7 +27,7 @@ Nacharbeit**. Das entsperrt slice-024 (Voll-E2E-Smoke), der es beweist.
 - [ ] **Derivative Indexe** (ADR-Index, Carveout-Index) werden **nicht** als gestempelte Singletons emittiert (Fülle-wenn-Inhalt-da). Test belegt: nicht emittiert; kein emittiertes Singleton verlinkt sie.
 - [ ] Leere Struktur-Verzeichnisse (Lifecycle `open/`/`next/`/`done/`, ADR-/Carveout-/Reviews-Ordner) werden mit `.gitkeep` gehalten. Test belegt: vorhanden.
 - [ ] **Roadmap gate-sicher:** die emittierte Roadmap bricht `docs-check` im frischen Repo nicht (die „Abgeschlossene Wellen"-Beispielzeile — Design-Entscheidung in §6).
-- [ ] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6): der emittierte `docs-check` meldet **0 Befunde out-of-the-box** — belegt via `make smoke` (die heute 3 Befunde weg). Der **Voll-E2E-`make gates`-Beweis** ist [slice-024](../open/slice-024-voll-smoke.md), hier **nicht** behauptet.
+- [ ] [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6): der emittierte `docs-check` meldet **0 Befunde out-of-the-box** — belegt via `make smoke` (die heute 3 Befunde weg). Der **Voll-E2E-`make gates`-Beweis** ist [slice-024](../in-progress/slice-024-voll-smoke.md), hier **nicht** behauptet.
 - [ ] `make gates` grün; `make mutate` deckt die neuen Wächter (rot gesehen); Emit-Tests + `courseset-fixture.bats` an die neue Zielmenge angeglichen.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
@@ -53,7 +53,7 @@ erzwingt (Blocker, ggf. Carveout nach Modul 7).
 
 ## 5. Closure-Trigger
 
-DoD vollständig + Review konform + Closure-Notiz → nach `done/`. **Entsperrt [slice-024](../open/slice-024-voll-smoke.md)**
+DoD vollständig + Review konform + Closure-Notiz → nach `done/`. **Entsperrt [slice-024](../in-progress/slice-024-voll-smoke.md)**
 (Voll-E2E-Smoke), mit dem welle-03 schließt und **M2** erreicht.
 
 ## 6. Risiken und offene Punkte
@@ -83,7 +83,7 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`. **Entsperrt 
 ([`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) 0.8.0):
 `make smoke` meldet **9 Dateien, 0 Befunde** (vorher 3). Recurring nicht mehr co-located, derivative
 Indexe nicht emittiert, Struktur via `.gitkeep`, Roadmap emit-seitig neutralisiert (§6 Option b).
-Vendored Baseline unberührt (alles emit-seitig). **Entsperrt [slice-024](../open/slice-024-voll-smoke.md)**
+Vendored Baseline unberührt (alles emit-seitig). **Entsperrt [slice-024](../in-progress/slice-024-voll-smoke.md)**
 (Voll-E2E, schließt welle-03 → M2).
 
 **Steering-Loop-Eintrag:**
