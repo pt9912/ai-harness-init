@@ -98,9 +98,9 @@ Vendored Baseline unberührt (alles emit-seitig). **Entsperrt [slice-024](../ope
   benannt (Review-LOW-F-1). Kandidat für Backlog-Cluster C (Doc-Gate-Härtung), falls die Klasse wiederkehrt.
 - **Bestätigt (Muster „Messen zuerst"):** die emittierte `.d-check.yml` ignoriert `**/*.template.md`,
   also war Co-Location **nicht** der docs-check-Breaker; die 3 Befunde waren 2 Indexe + 1 Roadmap-Zeile.
-  Und `docs/plan/adr/.gitkeep` ist **load-bearing** (hält den Verzeichnis-Link aus
-  AGENTS.md/harness-README nach Wegfall von Index + NNNN-Template), nicht bloß Dekoration — aufgedeckt
-  durch Inbound-Link-Tracing, bestätigt durch den Smoke.
+  Und das im Ziel emittierte `.gitkeep` in `docs/plan/adr/` ist **load-bearing** (hält den
+  Verzeichnis-Link aus AGENTS.md/harness-README nach Wegfall von Index + NNNN-Template), nicht bloß
+  Dekoration — aufgedeckt durch Inbound-Link-Tracing, bestätigt durch den Smoke.
 
 ## 8. Sub-Area-Modus-Begründung
 
