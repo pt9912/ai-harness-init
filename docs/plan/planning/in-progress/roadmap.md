@@ -13,7 +13,7 @@ gezeigt, nicht als Treiber.
 ## Aktuelle Welle
 
 **Welle-ID:** [welle-04-durchsetzung-und-emission](../welle-04-durchsetzung-und-emission.md)
-**Start:** 2026-07-22 (Trigger erfüllt: welle-03 in `done/` + [`ADR-0006`](../../../../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md) accepted — Picker → **Tool-als-Quelle** entsperrte die Emission ohne Kurs-Upstream-Warten)
+**Start:** 2026-07-22 (welle-03 in `done/` erfüllt; [`ADR-0006`](../../../../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md) — Picker → **Tool-als-Quelle** — derzeit **Proposed** im Reviewer-Zyklus, welle-04 aktiviert mit der Annahme)
 **Geplantes Ende:** offen
 
 **Slice-IDs:** slice-030 (Reviewer-/Closure-Skill emittieren, de-risk, [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)) → slice-031 (Durchsetzungs-Mechanik: Stop-Hook/`record-gates`/`CLAUDE.md`) → slice-032 (Command-Guard + BLOCKED-Set je `--lang`) → slice-033 (Workflow-Commands, [`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)). Nur slice-030 in `open/`; 031–033 per `cp` bei Trigger.
