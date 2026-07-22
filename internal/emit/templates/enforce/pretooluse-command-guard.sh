@@ -38,8 +38,8 @@ emit_block() {
 JSON
 }
 
-# BLOCKED = universelle Paketmanager + die Toolchain der Ziel-Sprache (je --lang
-# von ai-harness-init eingesetzt; @@BLOCKED_SET@@ wird beim Emit ersetzt).
+# BLOCKED = universelle Host-Paketmanager + die Host-Toolchain der Ziel-Sprache.
+# Der Guard blockt genau diese Kommandos in Kopfposition (make/Docker-only).
 BLOCKED="@@BLOCKED_SET@@"
 PREFIXES="sudo env command exec nice time xargs eval"
 SHELLS="bash sh zsh dash ksh"

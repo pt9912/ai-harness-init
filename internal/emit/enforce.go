@@ -31,12 +31,13 @@ type enforceFile struct {
 	mode fs.FileMode // 0755 fuer ausfuehrbare Hooks/Tools, 0644 sonst
 }
 
-// enforceFiles ist die emittierte Durchsetzungs-Mechanik. Die Tool-Skripte liegen
+// enforceFiles ist die emittierte Durchsetzungsschicht. Die Tool-Skripte liegen
 // unter tools/harness/ (emittiertes Layout, LH-FA-06/ADR-0004 — NICHT das lokal
 // adaptierte harness/tools/, MR-005). Die Claude-Hooks/-Config liegen an ihren
-// von Claude Code fixierten .claude/-Pfaden. settings.json verdrahtet NUR den
-// Stop-Hook — der PreToolUse-Guard ist slice-032 (er kommt mit seinem Skript,
-// sonst liefe im Ziel ein Hook auf ein fehlendes Skript).
+// von Claude Code fixierten .claude/-Pfaden. settings.json verdrahtet BEIDE Hooks —
+// den Stop-Hook (slice-031) und den PreToolUse-Command-Guard (slice-032); der Guard
+// wird mit seinem awk-Extraktor (tools/harness/) mit-emittiert, sonst liefe der Hook
+// im Ziel ins Leere.
 func enforceFiles() []enforceFile {
 	return []enforceFile{
 		{"templates/enforce/working-tree-hash.sh", "tools/harness/working-tree-hash.sh", 0o755},
