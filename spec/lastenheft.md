@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.9.0
+**Version:** 0.10.0
 
 **Status:** Draft
 
@@ -32,15 +32,20 @@ Modus-Wahl, AGENTS.md) — das bleibt Mensch/Agent.
 
 ### LH-FA-01 — Repo bootstrappen
 
-**Beschreibung:** Im Zielverzeichnis die Harness-Struktur anlegen:
-Templates (zweiklassig), Doc-Gate-Baseline, Sprachskelett-Gates,
-Projektname gestempelt.
+**Beschreibung:** Der Bootstrap läuft in **Phasen**. **Init** legt im Zielverzeichnis
+die **sprach-agnostische** Harness-Struktur an: Templates (zweiklassig), den
+Doc-Chain (lastenheft/spezifikation/architecture), die Doc-Gate-Baseline, die
+Durchsetzung und ein **sprach-agnostisches** `make gates` (Doc-Gate); Projektname
+gestempelt — **`--lang` ist optional**. Das **Sprachskelett** folgt als separater,
+wiederholbarer Schritt ([`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)),
+erst nachdem die Ziel-Architektur + ihr Sprach-ADR es entscheiden (die Sprachwahl
+ist eine ADR-Entscheidung des Adopters, kein Init-Argument).
 
 **Akzeptanzkriterien:**
 
-- **Happy Path:** Given leeres Git-Repo, when `ai-harness-init --lang go --name X`, then make gates läuft grün.
-- **Boundary:** Given bereits vorhandene Artefakte, when Lauf, then kein Überschreiben ohne `--force`.
-- **Negative:** Given fehlendes `--lang`, when Lauf, then Exit 2 + Usage.
+- **Happy Path (Init, sprachlos):** Given leeres Git-Repo, when `ai-harness-init --name X` (ohne `--lang`), then die Harness + der Doc-Chain liegen an und `make gates` läuft grün (nur Doc-Gate, kein Skelett nötig).
+- **Happy Path (One-Shot-Kurzform):** Given leeres Git-Repo, when `ai-harness-init --lang go --name X`, then Init **und** ein Sprachskelett in einem Lauf, `make gates` grün inkl. Code-Gates.
+- **Boundary (idempotent):** Given ein zweiter Lauf, then Adopter-gefüllter Inhalt wird **nie** überschrieben (skip-if-present); die tool-eigene Infrastruktur konvergiert byte-identisch ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) — kein Kollisions-Abbruch, kein `--force` nötig.
 
 ### LH-FA-02 — Zweiklassige Template-Ablage (F3)
 
@@ -81,6 +86,20 @@ plus Skelett-Dateien (`Dockerfile`, `Makefile`, `go.mod`, `.golangci.yml` …) �
 nachvollziehbar wie `d-check --print-mk`, **nicht aus dem Nichts**). Verdrahtet
 die Code-Gates; emittiert nur lauffähige Make-Targets (keine halluzinierten
 Gates, [`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Smoke).
+
+**Wiederholbarer, ADR-gegateter Schritt** (`add-lang <sprache> <pfad>`): der Generator
+läuft **separat vom Init** ([`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)),
+je Sprache/Modul einmal — nachdem die Ziel-Architektur + ihr Sprach-ADR die Sprache
+entscheiden. Ein **Mono-Repo** trägt mehrere (mehrere `add-lang`-Aufrufe in getrennte
+Pfade). Die Code-Gates werden als Fragmente ans zusammengeführte `make gates` gehängt;
+ein sprachloses Ziel bleibt gültig (nur Doc-Gate). `--lang <X>` beim Init ist die
+**One-Shot-Kurzform** (Init + ein `add-lang`).
+
+**Akzeptanzkriterien:**
+
+- **Happy Path:** Given ein initialisiertes Ziel, when `add-lang go <pfad>`, then das Go-Skelett liegt unter `<pfad>` und `make gates` läuft grün inkl. der Go-Code-Gates.
+- **Wiederholbar (Mono-Repo):** Given ein Ziel mit bereits einer Sprache, when `add-lang <andere> <anderer-pfad>`, then beide Skelette koexistieren, `make gates` fährt beide Fragment-Gate-Sätze.
+- **Negative:** Given unbekannte Sprache, when `add-lang <X>`, then Exit 2 + sortierte Profil-Liste.
 
 **Unterstützte Sprachen:** `go`, `python`, `kotlin`, `java`, `csharp`, `cpp`.
 `cpp` (C++/CMake: cmake/ctest/clang-tidy) folgt; der Generator bleibt
@@ -251,3 +270,4 @@ Verifikation), auf die seine `AGENTS.md` §1 (Source Precedence) zeigt — und l
 | 0.7.0 | 2026-07-19 | CR: [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) Picker (Fetch `lab/example`) → **deterministischer Generator** (Tool-als-Quelle); neue [`LH-FA-09`](../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) Regelwerk emittieren (Fetch Kurs @ version → Ziel-Baseline, danach netzlos); [`ADR-0005`](../docs/plan/adr/0005-ziel-repo-distribution.md) supersedes [`ADR-0001`](../docs/plan/adr/0001-skelett-distribution.md); §1/§2/§5 aufs Distributionsmodell nachgezogen | Distributionsmodell-CR |
 | 0.8.0 | 2026-07-21 | CR: [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) an [`ADR-0005`](../docs/plan/adr/0005-ziel-repo-distribution.md) nachgezogen — das Zielrepo erhält den **vollen** vendored Template-Baum ([`LH-FA-09`](../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)), darum wiederkehrende Vorlagen **referenziert statt co-located**, derivative Indexe Fülle-wenn-Inhalt, Leerordner via `.gitkeep`; out-of-the-box gate-sicher ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Beim 0.7.0-CR übersehene LH-FA-02-Prämisse; die [`MR-008`](../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)-Abgrenzung ist damit aufgelöst | Emit gate-sicher (slice-024-Smoke) |
 | 0.9.0 | 2026-07-22 | CR: [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) + [`LH-FA-08`](../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) Durchsetzung + Workflow-Commands **Picker → Tool-als-Quelle** (das Tool bringt eine generische, je `--lang` parametrierte Fassung mit, abgeleitet aus Dogfood + Kurs-Prozess-Modulen; keine Kurs-Upstream-Ergänzung mehr als Vorbedingung). [`ADR-0006`](../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md) revidiert die Picker-Herkunft aus [`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md)/[`ADR-0005`](../docs/plan/adr/0005-ziel-repo-distribution.md), Präzedenz [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4). Reviewer-Skill bleibt Fetch; [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) (a-check) unberührt (hängt an hexagonalen Schichten) | Quellmodell-Reconciliation (Cluster A entsperren) |
+| 0.10.0 | 2026-07-22 | CR: Bootstrap-**Phasen** — [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) gesplittet (Init sprach-agnostisch, `--lang` **optional**; die Negative-AC „fehlt `--lang` → Exit 2" fällt; Boundary auf **idempotent** skip-if-present/konvergent statt `--force`) + [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) auf **wiederholbaren, ADR-gegateten** Skelett-Schritt (`add-lang`, Mono-Repo). Die Zielsprache ist eine ADR-Entscheidung des **Adopters**, kein Init-Argument — sonst käme das Skelett vor der Ziel-Architektur (code-führt-Inversion). Getrieben von [`ADR-0007`](../docs/plan/adr/0007-bootstrap-phasen.md) (nach zwei Proposed-Review-Runden accepted) | Bootstrap-Phasen-CR |
