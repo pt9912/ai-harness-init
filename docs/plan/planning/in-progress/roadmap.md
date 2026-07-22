@@ -1,6 +1,6 @@
 # Roadmap
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-07-21.
+**Status:** Aktiv. **Letzte Änderung:** 2026-07-22.
 
 **Format-Regel:** Die Roadmap ist eine Reihenfolge von **Wellen**,
 keine Reihenfolge von Terminen (siehe
@@ -12,26 +12,37 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**Keine aktive Welle.** welle-04 (Durchsetzung & Emission) ist **geschlossen** (2026-07-22,
-[welle-04-results.md](../done/welle-04-results.md)) → die `.claude/`-Emission ist komplett:
-Durchsetzung ([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren), slice-030–032) + Anleitung ([`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren), slice-033). Der
-nächste Wellen-Kandidat kommt aus dem Backlog unten (B/C/D), sobald sein erster Slice geschnitten
-wird (green-before-extend; cp-Disziplin — kein Vorab-Schnitt).
+**Keine aktive Welle** — der nächste Schritt steht aber fest (Wiedereinstieg unten). welle-04
+(Durchsetzung & Emission) ist **geschlossen** (2026-07-22, [welle-04-results.md](../done/welle-04-results.md))
+→ die `.claude/`-Emission ist komplett: Durchsetzung ([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren), slice-030–032)
++ Anleitung ([`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren), slice-033).
 
-**Aus dem welle-04-Closure benannte `open/`-Folgepunkte** (Backlog, trigger-gebunden):
-- **git-Repo-Vorbedingung der emittierten `make gates`** (INFO I-1): `record-gates` startet mit
-  `git rev-parse` — ein Bootstrap in ein nicht git-initialisiertes Verzeichnis röte `make gates` am
-  `record-gates`-Schritt trotz grüner lint/build/test/docs-check. Kandidat: README-Zeile oder
-  optionales Bootstrap-`git init`.
-- **`architecture.md`-Nachzug** (erweitert, Cluster D): der Commands-/Anleitung-Emitter (slice-033)
-  fehlt noch, die „je `--lang`"-Prosa am Enforce-Emitter ist gegen den Messbefund zu schärfen (nur
-  das Guard-BLOCKED-Set ist je Sprache).
+**Entsperrt: die Welle „Bootstrap-Phasen"** — [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md)
+**Accepted** (2026-07-22, nach zwei Proposed-Review-Runden): die Zielsprache ist eine ADR-Entscheidung
+des **Adopters**, kein Init-Argument. Init sprach-agnostisch, `--lang` optional, `add-lang` wiederholbar
+→ Mono-Repo; Gate-/Guard-`.mk`/`blocked`-Fragmente; idempotente Emission (konvergent/skip-if-present).
+
+**▶ Nächster Schritt (Wiedereinstieg) — ADR-0007-Folgepflichten:**
+1. ✅ **CR an [`lastenheft.md`](../../../../spec/lastenheft.md)** (0.10.0, `2c8227b`) — erledigt
+   ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) gesplittet, [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) auf `add-lang`).
+2. ⬜ **`architecture.md`-Nachzug** — Bootstrap-Phasen · `add-lang` · doc-only-Gate · Fragment-Assembly
+   (schließt den offenen Commands-/Anleitung-Emitter-Punkt aus dem welle-04-Closure mit ein). **← hier weiter.**
+3. ⬜ **Welle „Bootstrap-Phasen" planen** (`/plan-welle`) + Slices: optionales `--lang`/`add-lang`-CLI ·
+   Gate-Fragment-Umbau (`include harness/mk/*.mk` + `GATE_CHECKS +=` + Ordnungskante; Migrations-Bruch
+   der heutigen `wire`-Verdrahtung) · Guard-`blocked/*`-Union (universeller Boden gebacken) ·
+   Idempotenz-Klassifikation (ersetzt Pre-Flight-refuse/force).
+
+**Weiterer benannter `open/`-Folgepunkt** (Backlog, in die Welle einplanbar): git-Repo-Vorbedingung der
+emittierten `make gates` (INFO I-1) — `record-gates` startet mit `git rev-parse`; ein Bootstrap in ein
+nicht git-initialisiertes Verzeichnis röte `make gates` trotz grüner Übrig-Gates. Kandidat: README-Zeile
+oder optionales Bootstrap-`git init`.
 
 ## Nächste Wellen
 
-**Keine gefilte Welle.** Cluster A ist mit welle-04 abgeschlossen; die Kandidaten **B/C/D** stehen im
-Backlog unten, je mit Trigger-Bedingung. Einer wird zur nächsten aktiven Welle (Plandatei per `cp`),
-sobald sein erster Slice geschnitten wird. **a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) bleibt aufgeschoben**
+**Bootstrap-Phasen** (empfohlen, entsperrt durch [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md))
+wird zur nächsten aktiven Welle — Plandatei per `cp`, sobald ihr erster Slice geschnitten wird
+(green-before-extend; cp-Disziplin — kein Vorab-Schnitt). Alternativ-Kandidaten: Backlog **B/C/D** unten.
+**a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) bleibt aufgeschoben**
 (hängt an hexagonalen Schichten — weder Dogfood noch Skelett tragen `domain/ports/adapters`).
 
 ## Backlog (aus Slice-§6 gehoben, 2026-07-21)
