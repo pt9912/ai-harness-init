@@ -44,7 +44,7 @@ Beobachtbare Bedingungen (kein Kalendertag); die Closure folgt den fünf Modul-6
 | Slice | Titel | Bezug |
 |---|---|---|
 | [slice-005](done/slice-005-root-readme.md) | Root-README emittieren | [`LH-FA-05`](../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2), [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
-| [slice-028](in-progress/slice-028-emit-gate-sicher.md) | Emit out-of-the-box gate-sicher (Spec 0.8.0) | [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-028](done/slice-028-emit-gate-sicher.md) | Emit out-of-the-box gate-sicher (Spec 0.8.0) | [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-024](open/slice-024-voll-smoke.md) | Voll-E2E-Smoke des Bootstraps | [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 
 ## 5. Abhängigkeiten
