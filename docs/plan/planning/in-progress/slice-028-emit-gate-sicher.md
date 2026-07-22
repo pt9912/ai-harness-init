@@ -76,7 +76,31 @@ DoD vollständig + Review konform + Closure-Notiz → nach `done/`. **Entsperrt 
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Abgeschlossen:** 2026-07-22. Review konform ([`2026-07-22-slice-028-emit-gate-sicher.md`](../../../reviews/2026-07-22-slice-028-emit-gate-sicher.md):
+0 HIGH/MEDIUM, 1 LOW aufgelöst), Verifikation bestätigt die DoD (getrennter Kontext).
+
+**Ergebnis:** Der Emit produziert ein out-of-the-box gate-sicheres Zielrepo
+([`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) 0.8.0):
+`make smoke` meldet **9 Dateien, 0 Befunde** (vorher 3). Recurring nicht mehr co-located, derivative
+Indexe nicht emittiert, Struktur via `.gitkeep`, Roadmap emit-seitig neutralisiert (§6 Option b).
+Vendored Baseline unberührt (alles emit-seitig). **Entsperrt [slice-024](../open/slice-024-voll-smoke.md)**
+(Voll-E2E, schließt welle-03 → M2).
+
+**Steering-Loop-Eintrag:**
+
+- **Sensor-Anhebung:** `make smoke` Schritt 4 *assertet* jetzt den docs-check-Exit (0 Befunde), statt
+  ihn nur zu drucken. Ein print-only-„Beleg" ist kein Sensor ([`AGENTS.md`](../../../../AGENTS.md) §3.6) —
+  genau diese Lücke ließ das nicht-gate-sichere Ziel bis slice-024 unbemerkt: der Bootstrap lief, der
+  Befund-Zähler stand da, niemand las ihn. Vier neue Mutationen (26–29) geben den neuen Zusagen ihr
+  rot gesehenes Gegenbeispiel.
+- **Benannte Deckungs-Grenze:** reale Upstream-Drift der Roadmap-Link-Form fängt allein `make smoke`
+  (Tier-2), nicht `make gates` — der go-Test läuft gegen die `courseSet()`-Fixture. Im Code ehrlich
+  benannt (Review-LOW-F-1). Kandidat für Backlog-Cluster C (Doc-Gate-Härtung), falls die Klasse wiederkehrt.
+- **Bestätigt (Muster „Messen zuerst"):** die emittierte `.d-check.yml` ignoriert `**/*.template.md`,
+  also war Co-Location **nicht** der docs-check-Breaker; die 3 Befunde waren 2 Indexe + 1 Roadmap-Zeile.
+  Und `docs/plan/adr/.gitkeep` ist **load-bearing** (hält den Verzeichnis-Link aus
+  AGENTS.md/harness-README nach Wegfall von Index + NNNN-Template), nicht bloß Dekoration — aufgedeckt
+  durch Inbound-Link-Tracing, bestätigt durch den Smoke.
 
 ## 8. Sub-Area-Modus-Begründung
 
