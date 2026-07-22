@@ -7,16 +7,18 @@ import (
 	"testing"
 
 	"github.com/pt9912/ai-harness-init/internal/emit"
+	"github.com/pt9912/ai-harness-init/internal/gen"
 )
 
-// TestEnforce_EmitsAllMechanicFiles: die Durchsetzungs-Mechanik (LH-FA-06) landet
+// TestEnforce_EmitsAllMechanicFiles: die Durchsetzungsschicht (LH-FA-06) landet
 // vollstaendig im Ziel — Gate-Nachweis (record-gates + working-tree-hash),
-// Stop-Hook (stop-require-gates + settings.json) und der state/-Ignore. EnforcePaths
-// und der reale Emit koppeln denselben Bestand: der Pre-Flight (cmd Phase 3) sieht
+// Stop-Hook (stop-require-gates + settings.json), state/-Ignore UND Command-Guard
+// (pretooluse-command-guard.sh + extract-command.awk, slice-032). EnforcePaths und
+// der reale Emit koppeln denselben Bestand: der Pre-Flight (cmd Phase 3) sieht
 // dieselbe Menge wie der Emit (Phase 4), sonst Teil-Bootstrap-Luecke.
 func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Enforce(dir, false); err != nil {
+	if err := emit.Enforce(dir, "go", false); err != nil {
 		t.Fatalf("Enforce: %v", err)
 	}
 	for _, rel := range emit.EnforcePaths() {
@@ -24,14 +26,17 @@ func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 			t.Errorf("%s nicht emittiert: %v", rel, err)
 		}
 	}
-	// Die konkreten Zielpfade sind Vertrag (Stop-Hook + record-gates referenzieren
-	// tools/harness/; der Stempel-Ignore muss .harness/.gitignore sein).
+	// Die konkreten Zielpfade sind Vertrag (Stop-Hook + record-gates + Guard
+	// referenzieren tools/harness/; der Stempel-Ignore muss .harness/.gitignore sein;
+	// der Guard braucht den awk-Extraktor mit-emittiert, sonst laeuft er ins Leere).
 	want := []string{
 		"tools/harness/working-tree-hash.sh",
 		"tools/harness/record-gates.sh",
 		".claude/hooks/stop-require-gates.sh",
 		".claude/settings.json",
 		".harness/.gitignore",
+		".claude/hooks/pretooluse-command-guard.sh",
+		"tools/harness/extract-command.awk",
 	}
 	got := strings.Join(emit.EnforcePaths(), "\n")
 	for _, w := range want {
@@ -45,13 +50,14 @@ func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 // eine leere Zusage — Claude ruft den Stop-Hook, make ruft record-gates.
 func TestEnforce_ScriptsExecutable(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Enforce(dir, false); err != nil {
+	if err := emit.Enforce(dir, "go", false); err != nil {
 		t.Fatalf("Enforce: %v", err)
 	}
 	for _, rel := range []string{
 		"tools/harness/working-tree-hash.sh",
 		"tools/harness/record-gates.sh",
 		".claude/hooks/stop-require-gates.sh",
+		".claude/hooks/pretooluse-command-guard.sh",
 	} {
 		info, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel)))
 		if err != nil {
@@ -63,20 +69,72 @@ func TestEnforce_ScriptsExecutable(t *testing.T) {
 	}
 }
 
-// TestEnforce_SettingsStopOnly: die emittierte settings.json verdrahtet den
-// Stop-Hook, aber NICHT den PreToolUse-Guard — der ist slice-032 (sein Skript wird
-// noch nicht emittiert; ein settings.json-Verweis darauf liefe im Ziel ins Leere).
-// Das ist die Slice-031-Grenze, als Test fixiert.
-func TestEnforce_SettingsStopOnly(t *testing.T) {
+// TestEnforce_SettingsWiresBothHooks: die emittierte settings.json verdrahtet BEIDE
+// Hooks — den Stop-Hook (slice-031) UND den PreToolUse-Command-Guard (slice-032,
+// Matcher Bash). Die slice-031-Grenze „Stop-only" ist mit slice-032 aufgehoben; der
+// Guard-Verweis zeigt jetzt auf ein real mit-emittiertes Skript.
+func TestEnforce_SettingsWiresBothHooks(t *testing.T) {
 	settings := string(emit.EnforceFile(".claude/settings.json"))
-	if !strings.Contains(settings, "stop-require-gates.sh") {
-		t.Error("settings.json verdrahtet den Stop-Hook nicht")
+	for _, want := range []string{
+		`"Stop"`, "stop-require-gates.sh",
+		"PreToolUse", `"matcher": "Bash"`, "pretooluse-command-guard.sh",
+	} {
+		if !strings.Contains(settings, want) {
+			t.Errorf("settings.json verdrahtet %q nicht:\n%s", want, settings)
+		}
 	}
-	if !strings.Contains(settings, `"Stop"`) {
-		t.Error("settings.json hat keinen Stop-Block")
+}
+
+// TestEnforce_GuardBlockedSetPerLang: der emittierte Guard traegt fuer --lang go die
+// go-Toolchain PLUS die universellen Paketmanager, und der @@BLOCKED_SET@@-Platzhalter
+// ist ersetzt (ein zurueckbleibender Platzhalter waere ein zahnloser Guard). Gelesen
+// aus der WIRKLICH geschriebenen Datei (Substitution passiert beim Emit, nicht im
+// Embed).
+func TestEnforce_GuardBlockedSetPerLang(t *testing.T) {
+	dir := t.TempDir()
+	if err := emit.Enforce(dir, "go", false); err != nil {
+		t.Fatalf("Enforce: %v", err)
 	}
-	if strings.Contains(settings, "PreToolUse") {
-		t.Error("settings.json enthaelt PreToolUse — der Guard ist slice-032, nicht slice-031")
+	guard := mustReadString(t, filepath.Join(dir, filepath.FromSlash(".claude/hooks/pretooluse-command-guard.sh")))
+	if strings.Contains(guard, "@@BLOCKED_SET@@") {
+		t.Error("Guard traegt noch den @@BLOCKED_SET@@-Platzhalter — Substitution fehlte (zahnlos)")
+	}
+	for _, tool := range []string{"go", "gofmt", "golangci-lint", "staticcheck", "pip", "npm", "cargo"} {
+		if !strings.Contains(guard, tool) {
+			t.Errorf("emittierter Guard (--lang go) blockt %q nicht — BLOCKED-Set unvollstaendig", tool)
+		}
+	}
+}
+
+// TestBlockedSet_CoversAllGenProfiles koppelt das BLOCKED-Set an gen.SupportedLangs():
+// jedes Profil, das gen bootstrappen kann, MUSS eine Sprach-Toolchain im Guard haben —
+// sonst liefe im gebootstrappten Ziel die Host-Toolchain der Sprache ungehindert
+// (stille Luecke). Ein unbekanntes lang liefert nur die universelle Menge.
+func TestBlockedSet_CoversAllGenProfiles(t *testing.T) {
+	universalOnly := emit.BlockedSetForLang("___unbekannt___")
+	for _, lang := range gen.SupportedLangs() {
+		if emit.BlockedSetForLang(lang) == universalOnly {
+			t.Errorf("gen-Profil %q hat kein Sprach-BLOCKED-Set — Host-Toolchain liefe ungehindert (stille Luecke)", lang)
+		}
+	}
+}
+
+// TestEnforce_GuardBashAwkOnly (LH-QA-03): der emittierte Guard nutzt awk als
+// JSON-Parser (nicht jq/node) und referenziert den Extraktor am emittierten
+// tools/harness/-Pfad (MR-005). Ein reiner String-Grep auf „jq"/„node" waere
+// bruechig — beide stehen im erklaerenden „KEIN node/jq"-Kommentar; die
+// verbindliche Abhaengigkeits-Zusage belegt der behaviorale full-smoke-Lauf (Guard
+// laeuft dort mit bash + awk). Hier die positiven Struktur-Anker.
+func TestEnforce_GuardBashAwkOnly(t *testing.T) {
+	guard := string(emit.EnforceFile(".claude/hooks/pretooluse-command-guard.sh"))
+	if !strings.Contains(guard, "awk -f") {
+		t.Error("Guard nutzt nicht `awk -f` — der bash+awk-Parser fehlt (LH-QA-03)")
+	}
+	if strings.Contains(guard, "harness/tools/extract-command.awk") {
+		t.Error("Guard referenziert das lokale harness/tools/ statt des emittierten tools/harness/ (MR-005)")
+	}
+	if !strings.Contains(guard, "tools/harness/extract-command.awk") {
+		t.Error("Guard referenziert den awk-Extraktor nicht am emittierten Pfad")
 	}
 }
 
@@ -120,13 +178,13 @@ func TestEnforce_NoOverwriteWithoutForce(t *testing.T) {
 	if err := os.WriteFile(dst, []byte("eigenes Skript"), 0o644); err != nil {
 		t.Fatalf("vorbereiten: %v", err)
 	}
-	if err := emit.Enforce(dir, false); err == nil {
+	if err := emit.Enforce(dir, "go", false); err == nil {
 		t.Fatal("vorhandene Datei ohne --force ueberschrieben")
 	}
 	if got := mustReadString(t, dst); got != "eigenes Skript" {
 		t.Errorf("Inhalt bei Kollision veraendert: %q", got)
 	}
-	if err := emit.Enforce(dir, true); err != nil {
+	if err := emit.Enforce(dir, "go", true); err != nil {
 		t.Fatalf("Enforce mit force: %v", err)
 	}
 	info, err := os.Stat(dst)

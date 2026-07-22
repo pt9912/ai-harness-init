@@ -183,13 +183,15 @@ func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, st
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
-	// Durchsetzungs-Mechanik emittieren (slice-031, LH-FA-06/ADR-0006): Gate-Nachweis
-	// (tools/harness/record-gates.sh + working-tree-hash.sh) + Stop-Hook
-	// (.claude/hooks/ + settings.json) + .harness/.gitignore (der Stempel darf den
-	// Tree-Hash nicht aendern). Die Makefile-Verdrahtung (gates: record-gates) macht
-	// wire.Place; das gebootstrappte Repo ist damit selbst gegen halluzinierte
-	// Gate-Laeufe abgesichert. Der --lang-Guard folgt in slice-032.
-	if err := emit.Enforce(targetDir, force); err != nil {
+	// Durchsetzungs-Mechanik emittieren (slice-031/032, LH-FA-06/ADR-0006):
+	// Gate-Nachweis (tools/harness/record-gates.sh + working-tree-hash.sh) +
+	// Stop-Hook + Command-Guard (.claude/hooks/ + settings.json PreToolUse/Stop) +
+	// awk-Extraktor (tools/harness/) + .harness/.gitignore. Der Guard blockt die
+	// Host-Toolchain der Ziel-Sprache (BLOCKED-Set je lang) — daher lang. Die
+	// Makefile-Verdrahtung (gates: record-gates) macht wire.Place; das
+	// gebootstrappte Repo ist damit selbst gegen halluzinierte Gate-Laeufe UND
+	// versehentliche Host-Toolchain-Nutzung abgesichert.
+	if err := emit.Enforce(targetDir, lang, force); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}

@@ -1,6 +1,7 @@
 package emit
 
 import (
+	"bytes"
 	"embed"
 	"errors"
 	"fmt"
@@ -43,8 +44,41 @@ func enforceFiles() []enforceFile {
 		{"templates/enforce/stop-require-gates.sh", ".claude/hooks/stop-require-gates.sh", 0o755},
 		{"templates/enforce/settings.json", ".claude/settings.json", 0o644},
 		{"templates/enforce/gitignore", ".harness/.gitignore", 0o644},
+		// Command-Guard (slice-032): bash+awk, kein node/jq (LH-QA-03). Der Guard
+		// (0755) referenziert den awk-Extraktor unter tools/harness/ — beide
+		// gehoeren in denselben Emit, sonst laeuft der Guard fail-closed ins Leere.
+		{"templates/enforce/pretooluse-command-guard.sh", ".claude/hooks/pretooluse-command-guard.sh", 0o755},
+		{"templates/enforce/extract-command.awk", "tools/harness/extract-command.awk", 0o644},
 	}
 }
+
+// guardDst ist der Guard-Zielpfad — die einzige Datei mit --lang-Substitution
+// (@@BLOCKED_SET@@ -> blockedSet(lang)); alle anderen werden verbatim geschrieben.
+const guardDst = ".claude/hooks/pretooluse-command-guard.sh"
+
+// blockedSet setzt das BLOCKED-Set des emittierten Guards je --lang zusammen
+// (ADR-0006): die universellen Host-Paketmanager (sprach-agnostisch) plus die
+// Host-Toolchain der Ziel-Sprache. Der Guard erzwingt make/Docker-only, indem er
+// genau diese Kommandos in Kopfposition fail-closed blockt.
+func blockedSet(lang string) string {
+	const universal = "apt apt-get brew pip pip3 pipx npm pnpm yarn npx corepack cargo rustup gem conda"
+	if extra, ok := blockedByLang()[lang]; ok {
+		return universal + " " + extra
+	}
+	return universal
+}
+
+// blockedByLang bildet jede von gen unterstuetzte Sprache auf ihre Host-Toolchain
+// ab. An gen.SupportedLangs() gekoppelt (Test): ein neues gen-Profil ohne Eintrag
+// hier liesse die Sprach-Toolchain im Ziel ungehindert laufen (stille Luecke).
+func blockedByLang() map[string]string {
+	return map[string]string{
+		"go": "go gofmt golangci-lint staticcheck",
+	}
+}
+
+// BlockedSetForLang exportiert blockedSet fuer Tests (Kopplung an gen-Profile).
+func BlockedSetForLang(lang string) string { return blockedSet(lang) }
 
 // EnforcePaths liefert die Ziel-Relpfade der Durchsetzungs-Mechanik — fuer den
 // Bootstrap-Pre-Flight (cmd, Phase 3). Ohne sie faende eine Kollision (z.B. eine
@@ -63,7 +97,7 @@ func EnforcePaths() []string {
 // bekommen 0755 per Chmod NACH dem Write: WriteFile wendet den Modus nur beim
 // Anlegen an — ueber eine vorhandene 0644-Datei geschrieben (--force) bliebe der
 // richtige Inhalt in einer nicht ausfuehrbaren Datei zurueck (Befund slice-022a L2).
-func Enforce(targetDir string, force bool) error {
+func Enforce(targetDir, lang string, force bool) error {
 	if !force {
 		for _, f := range enforceFiles() {
 			dst := filepath.Join(targetDir, filepath.FromSlash(f.dst))
@@ -79,6 +113,11 @@ func Enforce(targetDir string, force bool) error {
 		content, err := enforceFS.ReadFile(f.src)
 		if err != nil {
 			return fmt.Errorf("%s einbetten: %w", f.src, err)
+		}
+		// Nur der Guard traegt eine --lang-Substitution; ein zurueckbleibendes
+		// @@BLOCKED_SET@@ waere ein Guard ohne Zaehne (blockt nur SHELLS-Rekursion).
+		if f.dst == guardDst {
+			content = bytes.ReplaceAll(content, []byte("@@BLOCKED_SET@@"), []byte(blockedSet(lang)))
 		}
 		dst := filepath.Join(targetDir, filepath.FromSlash(f.dst))
 		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {

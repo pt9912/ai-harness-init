@@ -67,25 +67,28 @@ for rel in AGENTS.md docs/plan/adr/.gitkeep docs/plan/planning/in-progress/roadm
 		exit 1
 	fi
 done
-# Durchsetzungs-Mechanik (slice-031, LH-FA-06/ADR-0006): Gate-Nachweis + Stop-Hook
-# als Tool-als-Quelle emittiert. Positive Vertreter beider Zielorte (tools/harness/
-# + .claude/) und der Stempel-Ignore. Der geschlossene Nachweis-Kreis (make gates
-# schreibt den Stempel, Hash stimmt) ist Voll-Smoke (full-smoke.sh), nicht hier.
+# Durchsetzungsschicht (slice-031/032, LH-FA-06/ADR-0006): Gate-Nachweis + Stop-Hook
+# + Command-Guard + awk-Extraktor als Tool-als-Quelle emittiert. Positive Vertreter
+# beider Zielorte (tools/harness/ + .claude/) und der Stempel-Ignore. Der geschlossene
+# Nachweis-Kreis + das Guard-Verhalten (blockt/laesst durch) sind Voll-Smoke
+# (full-smoke.sh), nicht hier.
 for rel in tools/harness/record-gates.sh tools/harness/working-tree-hash.sh \
-	.claude/hooks/stop-require-gates.sh .claude/settings.json .harness/.gitignore; do
+	.claude/hooks/stop-require-gates.sh .claude/settings.json .harness/.gitignore \
+	.claude/hooks/pretooluse-command-guard.sh tools/harness/extract-command.awk; do
 	if [ ! -f "$tmprepo/$rel" ]; then
-		echo "smoke: FEHLER — Durchsetzungs-Mechanik unvollstaendig: $rel fehlt (slice-031)" >&2
+		echo "smoke: FEHLER — Durchsetzungsschicht unvollstaendig: $rel fehlt (slice-031/032)" >&2
 		exit 1
 	fi
 done
-# Grenze zu slice-032: der --lang-Command-Guard wird NOCH NICHT emittiert (sein
-# Skript kommt mit slice-032; die settings.json verdrahtet bewusst nur den Stop-Hook).
-if [ -e "$tmprepo/.claude/hooks/pretooluse-command-guard.sh" ]; then
-	echo "smoke: FEHLER — Command-Guard emittiert, gehoert aber zu slice-032 (nicht slice-031)" >&2
+# slice-032: die settings.json verdrahtet jetzt BEIDE Hooks — der Guard (PreToolUse)
+# neben dem Stop-Hook. Ohne die PreToolUse-Verdrahtung liefe der emittierte Guard nie.
+if ! grep -q "PreToolUse" "$tmprepo/.claude/settings.json"; then
+	echo "smoke: FEHLER — settings.json verdrahtet PreToolUse (Command-Guard) nicht (slice-032)" >&2
 	exit 1
 fi
-if grep -q "PreToolUse" "$tmprepo/.claude/settings.json"; then
-	echo "smoke: FEHLER — settings.json verdrahtet PreToolUse (Guard=slice-032), darf slice-031 nicht" >&2
+# Der Platzhalter @@BLOCKED_SET@@ darf im Ziel nicht zurueckbleiben (zahnloser Guard).
+if grep -q "@@BLOCKED_SET@@" "$tmprepo/.claude/hooks/pretooluse-command-guard.sh"; then
+	echo "smoke: FEHLER — Guard traegt den @@BLOCKED_SET@@-Platzhalter (Substitution fehlte, slice-032)" >&2
 	exit 1
 fi
 # Gegenprobe: was NICHT emittiert werden darf. (a) wiederkehrende Vorlagen (0.8.0:

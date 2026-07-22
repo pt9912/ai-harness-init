@@ -84,5 +84,24 @@ if [ "$recomputed" != "$(cat "$stamp_file")" ]; then
 	exit 1
 fi
 
+# slice-032 (LH-FA-06/LH-QA-03): der emittierte Command-Guard muss real greifen —
+# nicht nur praesent sein. Wir fuettern ihn mit Hook-JSON: die go-Toolchain (BLOCKED-
+# Set --lang go) wird geblockt, ein make-Target durchgelassen. Das belegt zugleich
+# den awk-Pfad (tools/harness/, relativ zu BASH_SOURCE aufgeloest) und dass Guard +
+# Extraktor mit bash + awk auskommen (kein node/jq). Guard laeuft mit set -e; ein
+# Fehler/keine Ausgabe wo Block erwartet wird = rot.
+guard="$tmprepo/.claude/hooks/pretooluse-command-guard.sh"
+block_out="$(printf '%s' '{"tool_name":"Bash","tool_input":{"command":"go build ./..."}}' | bash "$guard" || true)"
+if ! printf '%s' "$block_out" | grep -q '"decision": "block"'; then
+	echo "full-smoke: FEHLER — emittierter Guard blockt 'go build' NICHT (BLOCKED-Set/awk-Pfad kaputt? slice-032). Ausgabe: [$block_out]" >&2
+	exit 1
+fi
+pass_out="$(printf '%s' '{"tool_name":"Bash","tool_input":{"command":"make test"}}' | bash "$guard" || true)"
+if [ -n "$pass_out" ]; then
+	echo "full-smoke: FEHLER — emittierter Guard blockt 'make test' faelschlich (slice-032). Ausgabe: [$pass_out]" >&2
+	exit 1
+fi
+
 echo "full-smoke: OK — frisch gebootstrapptes Repo faehrt make gates out-of-the-box gruen (lint/build/test + docs-check zusammengefuehrt), Exit 0 (LH-FA-01/LH-QA-01)."
 echo "full-smoke: OK — Gate-Nachweis-Kreis geschlossen: record-gates stempelt, Hash stimmt, .harness/.gitignore greift (slice-031)."
+echo "full-smoke: OK — emittierter Command-Guard greift: 'go build' geblockt, 'make test' durchgelassen (bash+awk, slice-032/LH-QA-03)."
