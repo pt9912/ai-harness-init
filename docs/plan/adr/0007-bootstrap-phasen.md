@@ -1,6 +1,6 @@
 # ADR-0007: Bootstrap-Phasen — Sprache via ADR, idempotente Fragment-Emission
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-07-22
 
@@ -173,3 +173,4 @@ Festlegungen:
 | 2026-07-22 | Proposed (nach Design-Dialog: Phasen · Idempotenz · Fragment-Gates · Interaktivität · Resume) | dieser ADR |
 | 2026-07-22 | Proposed überarbeitet nach 1. Review (H1 Makefile-Klassen-Split · H2 Guard per `--lang` → BLOCKED-Fragmente · `.d-check.yml`/`conventions.md` reklassifiziert · Fragment-Migration + `make -j` benannt) | [Review 1](../../reviews/2026-07-22-adr-0007-proposed-review.md) |
 | 2026-07-22 | Proposed erneut überarbeitet nach 2. Review (NEU-H1 fail-open → universeller Boden im Guard gebacken · NEU-M2 konvergent=per-Datei/nie-prunen · `blocked/`-Pfad auf `tools/harness/blocked/` · `make -j` via Ordnungskante statt `.NOTPARALLEL` · Skills/`go.mod`/`Dockerfile` klassifiziert · adopter-`local.mk`-Fläche) | 2. Review (Text) |
+| 2026-07-22 | **Accepted** (nach zwei Proposed-Review-Runden; beide bestätigten die Richtung, die Mechanik ist geschärft) — ab hier immutable ([`AGENTS.md` §3.4](../../../AGENTS.md)) | dieser ADR |
