@@ -7,4 +7,4 @@
 # Ziel-Repo tot/falsch ist (LH-FA-08 „nicht 1:1 hart" verletzt).
 # TestCommands_NoInternalLeak wird rot.
 set -euo pipefail
-sed -i 's/in den Mutations-Sensor deines Repos/in `make mutate`/' internal/emit/templates/commands/implement-slice.md
+sed -i 's/in den Mutations-Sensor deines Repos/in den make mutate Sensor/' internal/emit/templates/commands/implement-slice.md
