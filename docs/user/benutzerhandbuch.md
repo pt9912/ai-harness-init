@@ -1,8 +1,8 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Handbuch-Version:** 1.0
-**Software-Stand:** Entwicklungsstand M2 — vollständiger Bootstrap; Zielsprache `go` (weitere folgen). Noch keine vorgefertigten Release-Binaries.
-**Stand:** 2026-07-22
+**Handbuch-Version:** 1.1
+**Software-Stand:** Entwicklungsstand M2 — **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf). Zielsprache `go` (weitere folgen). Noch keine vorgefertigten Release-Binaries.
+**Stand:** 2026-07-23
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
 ---
@@ -114,14 +114,14 @@ make gates
 Während des Aufsetzens sehen Sie eine Abschluss-Zeile wie:
 
 ```text
-ai-harness-init: Bootstrap (Skelett "go" verdrahtet + Baseline v3.5.0 vendored + Doc-Gate + Template-Baseline) — --lang=go.
+ai-harness-init: Bootstrap (Baseline v3.5.0 vendored + Doc-Gate + Aggregator + Durchsetzung + Template-Baseline) — --lang=go (Skelett verdrahtet).
 ```
 
-Das bedeutet: Regelwerk und Vorlagen liegen im Repository, die Prüfungen sind verdrahtet, und ein lauffähiges Go-Grundgerüst ist eingebaut. `make gates` läuft danach ohne Fehler durch.
+Das bedeutet: Regelwerk und Vorlagen liegen im Repository, die Prüfungen sind verdrahtet, und ein lauffähiges Go-Grundgerüst ist eingebaut. `make gates` läuft danach ohne Fehler durch. (Ohne `--lang` steht statt „Skelett verdrahtet“ die Meldung „sprach-agnostisch (doc-only Gate)“ — siehe [Ohne Sprache aufsetzen](#ohne-sprache-aufsetzen-doc-only).)
 
 ### Wichtigstes Bedienkonzept
 
-`ai-harness-init` arbeitet in **einem** Schritt und ist **defensiv**: Findet es eine Datei, die es anlegen würde, bereits vor, **schreibt es gar nichts** und meldet den Konflikt — statt ein halb aufgesetztes Repository zu hinterlassen. Wenn Sie vorhandene Dateien bewusst ersetzen wollen, verwenden Sie `--force` (siehe [Aufgaben](#4-aufgaben)).
+`ai-harness-init` arbeitet in **einem** Schritt und ist **idempotent**: Sie können denselben Aufruf gefahrlos wiederholen. Bei einem zweiten Lauf wird die **werkzeug-eigene Infrastruktur** (Prüf-Konfiguration, Hooks, Regelwerk) auf den kanonischen Stand aufgefrischt (das heilt eventuelle Abweichungen und zieht ein neueres Regelwerk nach), während **von Ihnen gefüllte Dateien** (Doc-Chain, `README.md`, Ihr Quellcode) **unangetastet** bleiben. Es gibt **keinen** Kollisions-Abbruch und **kein** `--force` — der Re-Lauf ist der normale, sichere Weg, ein Repository zu reparieren oder auf einen neueren Kurs-Stand zu heben.
 
 ---
 
@@ -149,7 +149,7 @@ Dieser Abschnitt beschreibt die häufigsten Aufgaben Schritt für Schritt.
 
 **Ergebnis:** Das Verzeichnis enthält jetzt Regelwerk, Vorlagen, Prüf-Konfiguration und ein Go-Grundgerüst (siehe [Was wird angelegt](#6-was-wird-angelegt)). Der Platzhalter für den Projektnamen ist durch „Mein Projekt“ ersetzt.
 
-**Hinweise:** Der Aufruf braucht **einmalig** Netzwerk (Regelwerk-Download). Bricht er ab, weil eine Datei bereits existiert, siehe [Bestehende Dateien ersetzen](#bestehende-dateien-ersetzen).
+**Hinweise:** Der Aufruf braucht **einmalig** Netzwerk (Regelwerk-Download). `--lang` ist **optional** — ohne Sprache setzt das Werkzeug ein rein dokumentgeführtes Repository auf (siehe [Ohne Sprache aufsetzen](#ohne-sprache-aufsetzen-doc-only)). Den Aufruf können Sie gefahrlos wiederholen (siehe [Ein Repository erneut aufsetzen](#ein-repository-erneut-aufsetzen-idempotent)).
 
 ### Ohne Projektnamen aufsetzen
 
@@ -162,6 +162,43 @@ ai-harness-init --lang go
 ```
 
 **Ergebnis:** Das Repository wird aufgesetzt, aber der Platzhalter `<Projektname>` bleibt in den Vorlagen stehen. Sie können ihn später von Hand ersetzen. `--name` ist optional.
+
+### Ohne Sprache aufsetzen (doc-only)
+
+**Voraussetzung:** Sie wollen zuerst die Prozess- und Architektur-Dokumente aufsetzen und die Zielsprache **später** entscheiden (empfohlen: „doc führt“ — die Sprache ist eine Architektur-Entscheidung, kein Startargument).
+
+**Vorgehen**
+
+```bash
+ai-harness-init --name "Mein Projekt"
+```
+
+**Ergebnis:** Das Repository erhält Regelwerk, Vorlagen, Prüf-Konfiguration und die Durchsetzung — **aber kein Sprach-Grundgerüst**. `make gates` läuft dokument-only grün (Dokumentations-Prüfung + Regelwerk-Verifikation), ohne Kompilier-/Test-/Linter-Schritt. Ein Sprachmodul fügen Sie später mit `add-lang` hinzu (siehe unten).
+
+### Ein Sprachmodul hinzufügen (`add-lang`)
+
+**Voraussetzung:** Ein bereits aufgesetztes Repository (der Aggregator `Makefile` existiert).
+
+**Vorgehen**
+
+```bash
+ai-harness-init add-lang go .
+```
+
+`<pfad>` ist der Zielort des Moduls; `.` verortet es am Repository-Wurzelverzeichnis. Für ein **Mono-Repo** rufen Sie `add-lang` mehrfach mit verschiedenen Pfaden auf:
+
+```bash
+ai-harness-init add-lang go apps/api
+ai-harness-init add-lang go apps/web
+```
+
+**Ergebnis:** Je Aufruf entstehen das Sprach-Grundgerüst unter `<pfad>`, sein Code-Gate-Fragment (`harness/mk/<modul>.mk`) und das Guard-Fragment (`tools/harness/blocked/<sprache>`). Danach fährt `make gates` zusätzlich die Prüfungen des neuen Moduls. Die Abschluss-Zeile lautet z. B.:
+
+```text
+ai-harness-init: add-lang go nach apps/api — Skelett + harness/mk/apps-api.mk + tools/harness/blocked/go.
+```
+
+**Hinweise:** `--lang <sprache>` beim Aufsetzen ist die Kurzform für „aufsetzen **und** ein `add-lang(<sprache>, .)`“. Der `<pfad>` muss innerhalb des Repositorys liegen (kein absoluter Pfad, kein `..`).
 
 ### Das aufgesetzte Repository prüfen
 
@@ -177,19 +214,19 @@ make gates
 
 **Hinweise:** `make gates` nutzt Docker. Läuft Docker nicht, schlägt die Prüfung mit einer Docker-Fehlermeldung fehl — kein Fehler des Repositorys.
 
-### Bestehende Dateien ersetzen
+### Ein Repository erneut aufsetzen (idempotent)
 
-**Voraussetzung:** Sie wollen ein Verzeichnis erneut aufsetzen, in dem bereits Dateien aus einem früheren Lauf liegen.
+**Voraussetzung:** Sie wollen ein bereits aufgesetztes Verzeichnis reparieren (etwa nach einem abgebrochenen Lauf) oder auf einen neueren Kurs-Stand heben.
 
-**Vorgehen**
+**Vorgehen** — einfach denselben Aufruf wiederholen:
 
 ```bash
-ai-harness-init --lang go --name "Mein Projekt" --force
+ai-harness-init --lang go --name "Mein Projekt"
 ```
 
-**Ergebnis:** Vorhandene Zieldateien werden **überschrieben**. Ohne `--force` bricht der Lauf ab, sobald er die erste Kollision findet, und lässt Ihr Verzeichnis unverändert.
+**Ergebnis:** Der Lauf ist **idempotent** (Exit-Code 0). Die werkzeug-eigene Infrastruktur (Prüf-Konfiguration, Hooks, Aggregator, Regelwerk) wird auf den kanonischen Stand **aufgefrischt** — das heilt Abweichungen und zieht ein neueres Regelwerk nach. **Von Ihnen gefüllte Dateien** — die Dokumente unter `spec/`, `README.md`, `AGENTS.md`, Ihr Quellcode im Grundgerüst (`go.mod`, `cmd/app/main.go` …) — bleiben **unangetastet**.
 
-**Hinweise:** `--force` überschreibt ohne Rückfrage. Sichern Sie eigene Änderungen an den erzeugten Dateien vorher (z. B. per `git commit`).
+**Hinweise:** Es gibt **kein** `--force` und **keinen** Kollisions-Abbruch mehr (frühere Versionen kannten das). Wollen Sie eine von Ihnen bearbeitete werkzeug-eigene Datei bewusst auf den Ausgangsstand zurücksetzen, löschen Sie sie vor dem Re-Lauf — dann wird sie neu geschrieben.
 
 ### Eine andere Kurs-Version verwenden
 
@@ -221,14 +258,23 @@ SKEL_GO_VERSION=1.26.4 ai-harness-init --lang go --name "Mein Projekt"
 
 ## 5. Konfiguration
 
-### Aufruf-Optionen
+### Aufruf-Optionen (Aufsetzen)
 
 | Option | Pflicht | Bedeutung |
 |---|---|---|
-| `--lang <sprache>` | ja | Zielsprache des Grundgerüsts. Derzeit unterstützt: `go`. |
+| `--lang <sprache>` | nein | Zielsprache des Grundgerüsts (Kurzform für „aufsetzen + `add-lang(<sprache>, .)`“). Ohne sie: dokument-only. Derzeit unterstützt: `go`. |
 | `--name <name>` | nein | Projektname; ersetzt den Platzhalter `<Projektname>` in den Vorlagen. |
-| `--force` | nein | Vorhandene Zieldateien überschreiben. |
 | `-h`, `--help` | nein | Hilfe anzeigen und beenden. |
+
+Ein `--force` gibt es **nicht** — der Re-Lauf ist idempotent (siehe [Ein Repository erneut aufsetzen](#ein-repository-erneut-aufsetzen-idempotent)).
+
+### Subkommando `add-lang`
+
+```bash
+ai-harness-init add-lang <sprache> <pfad>
+```
+
+Fügt einem bereits aufgesetzten Repository ein Sprachmodul hinzu — **wiederholbar** (Mono-Repo). Beide Argumente sind Pflicht: `<sprache>` (z. B. `go`), `<pfad>` (Zielort im Repository; `.` = Wurzel). Siehe [Ein Sprachmodul hinzufügen](#ein-sprachmodul-hinzufügen-add-lang).
 
 ### Umgebungsvariablen
 
@@ -272,6 +318,8 @@ mein-projekt/
 └── .harness/baseline/        Vendored Regelwerk und Vorlagen (netzunabhängig)
 ```
 
+Die **Sprach-Dateien** (`Dockerfile`, `go.mod`, `.golangci.yml`, `cmd/app/main.go` sowie das Code-Gate-Fragment `harness/mk/<modul>.mk`) entstehen **nur mit einer Sprache** — also bei `--lang go` oder per `add-lang`. Ein Aufsetzen **ohne** Sprache legt sie nicht an (dokument-only); dazu kommen die Durchsetzung unter `.claude/` (Hooks, Command-Guard) und die Prüf-Fragmente `harness/mk/*.mk`.
+
 Die Dateien mit der Endung `.template.md` unter `.harness/baseline/` sind **Vorlagen**: Sie kopieren sie bei Bedarf und füllen sie aus (z. B. für eine neue Architektur-Entscheidung). Die Prozess-Regeln erklären, wann welche Vorlage zum Einsatz kommt.
 
 ---
@@ -279,16 +327,6 @@ Die Dateien mit der Endung `.template.md` unter `.harness/baseline/` sind **Vorl
 ## 7. Fehlerbehebung
 
 Alle Fehler von `ai-harness-init` beginnen auf der Fehlerausgabe mit `Fehler:` und liefern einen von Null verschiedenen Exit-Code (siehe [Anhang](#10-anhang)).
-
-### Fehler: `--lang ist erforderlich`
-
-**Ursache:** Sie haben `--lang` nicht angegeben. Das Werkzeug weiß nicht, welches Grundgerüst es erzeugen soll.
-
-**Lösung:** Geben Sie eine Sprache an:
-
-```bash
-ai-harness-init --lang go --name "Mein Projekt"
-```
 
 ### Fehler: `unbekannte Sprache "…"; verfuegbar: go`
 
@@ -300,15 +338,22 @@ ai-harness-init --lang go --name "Mein Projekt"
 ai-harness-init --lang go
 ```
 
-### Fehler: `… existiert bereits (--force zum Ueberschreiben)`
+### Fehler: `kein Aggregator (Makefile) — zuerst ai-harness-init (Init) im Repo laufen lassen`
 
-**Ursache:** Im Zielverzeichnis liegt bereits eine Datei, die das Werkzeug anlegen würde. Zum Schutz Ihrer Daten wird **nichts** geschrieben.
+**Ursache:** Sie haben `add-lang` in einem Verzeichnis aufgerufen, das noch **nicht** aufgesetzt ist (es fehlt die `Makefile`, die das Sprachmodul einbindet).
 
-**Lösung:** Entweder in ein leeres Verzeichnis wechseln, oder — wenn Sie bewusst ersetzen wollen — `--force` verwenden:
+**Lösung:** Setzen Sie das Repository zuerst auf (mit oder ohne Sprache), dann `add-lang`:
 
 ```bash
-ai-harness-init --lang go --name "Mein Projekt" --force
+ai-harness-init --name "Mein Projekt"
+ai-harness-init add-lang go apps/api
 ```
+
+### Fehler: `<pfad> muss innerhalb des Repos liegen (kein absoluter Pfad, kein ..)`
+
+**Ursache:** Sie haben `add-lang` einen Pfad gegeben, der aus dem Repository hinausführt (absolut oder mit `..`).
+
+**Lösung:** Verwenden Sie einen Pfad **innerhalb** des Repositorys, z. B. `.`, `apps/api`.
 
 ### Der Lauf hängt oder bricht mit einem Docker-Fehler ab
 
@@ -342,13 +387,16 @@ Nein. Sowohl das Bauen des Werkzeugs als auch die Prüfungen im aufgesetzten Rep
 Nein, nur **einmalig** beim ersten Aufsetzen (Regelwerk-Download). Danach arbeitet Ihr Repository netzunabhängig.
 
 **Kann ich denselben Ordner mehrfach aufsetzen?**
-Nur mit `--force`. Ohne diese Option bricht der Lauf bei der ersten vorhandenen Datei ab und lässt Ihr Verzeichnis unverändert.
+Ja — der Aufruf ist **idempotent** (Exit-Code 0). Ein zweiter Lauf frischt die werkzeug-eigene Infrastruktur auf und lässt Ihre eigenen Dateien unangetastet. Genau so reparieren Sie ein Repository oder heben es auf einen neueren Kurs-Stand.
+
+**Wie füge ich eine zweite Sprache oder ein weiteres Modul hinzu?**
+Mit `ai-harness-init add-lang <sprache> <pfad>`. Der Befehl ist wiederholbar; mehrere Aufrufe mit verschiedenen Pfaden ergeben ein Mono-Repo. Siehe [Ein Sprachmodul hinzufügen](#ein-sprachmodul-hinzufügen-add-lang).
 
 **Gibt es ein fertiges Download-Binary?**
 Derzeit nicht. Sie bauen das Programm einmalig aus dem Quellcode (siehe [Installation](#2-installation-und-zugriff)) — komplett in Docker, ohne lokale Go-Installation.
 
 **Verändert `ai-harness-init` meine bestehenden Dateien?**
-Nein, außer Sie verwenden `--force`. Ohne `--force` schreibt es nichts, sobald es eine Kollision entdeckt.
+Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — sie sind „nur schreiben, wenn nicht vorhanden“ (skip-if-present). Die **werkzeug-eigene** Infrastruktur (Prüf-Konfiguration, Hooks, Regelwerk) wird bei jedem Lauf kanonisch neu geschrieben; hatten Sie eine solche Datei von Hand geändert, wird die Änderung beim Re-Lauf überschrieben.
 
 ---
 
@@ -358,7 +406,9 @@ Nein, außer Sie verwenden `--force`. Ohne `--force` schreibt es nichts, sobald 
 |---|---|
 | **Harness** | Das Prozess-Gerüst aus Regeln, Vorlagen und Prüfungen, das `ai-harness-init` in Ihr Repository einsetzt. |
 | **Gate** | Eine automatische Prüfung, die grün (bestanden) oder rot (fehlgeschlagen) ist. `make gates` fährt alle Gates. |
-| **Bootstrap** | Das einmalige Aufsetzen eines Repositorys mit dem Harness — das, was `ai-harness-init` tut. |
+| **Bootstrap** | Das Aufsetzen eines Repositorys mit dem Harness — das, was `ai-harness-init` tut. Wiederholbar (idempotent). |
+| **`add-lang`** | Das Subkommando, das einem aufgesetzten Repository ein Sprachmodul hinzufügt — wiederholbar (Mono-Repo). |
+| **idempotent** | Ein wiederholter Aufruf hinterlässt denselben Zustand: werkzeug-eigene Dateien werden kanonisch aufgefrischt, Ihre gefüllten Dateien bleiben unberührt (kein Kollisions-Abbruch, kein `--force`). |
 | **Regelwerk / Baseline** | Der festgelegte Kurs-Stand aus Prozess-Regeln und Vorlagen, den das Werkzeug in Ihr Repository legt. |
 | **Grundgerüst (Skelett)** | Das minimale, lauffähige Sprach-Layout (bei `go`: `Dockerfile`, `Makefile`, `go.mod`, Beispiel-Code), das die Prüfungen bedienen. |
 | **Doc-Gate** | Die Dokumentations-Prüfung (Ziel `make docs-check`): prüft Verweise, Anker und Kennungen in den Markdown-Dateien. |
@@ -372,9 +422,9 @@ Nein, außer Sie verwenden `--force`. Ohne `--force` schreibt es nichts, sobald 
 
 | Code | Bedeutung |
 |---|---|
-| `0` | Erfolg. |
-| `2` | Aufruf-Fehler (z. B. fehlendes `--lang`, unbekannte Sprache, unbekannte Option). Ihr Verzeichnis bleibt unverändert. |
-| `1` | Laufzeit-Fehler beim Aufsetzen (z. B. Datei-Kollision ohne `--force`, Docker- oder Netzwerk-Problem). |
+| `0` | Erfolg (auch bei einem idempotenten Re-Lauf). |
+| `2` | Aufruf-Fehler (z. B. unbekannte Sprache, unbekannte Option, `add-lang` ohne `<sprache>`/`<pfad>` oder mit einem Pfad außerhalb des Repositorys). Ihr Verzeichnis bleibt unverändert. |
+| `1` | Laufzeit-Fehler beim Aufsetzen (z. B. Docker- oder Netzwerk-Problem, oder `add-lang` ohne vorher aufgesetztes Repository). |
 
 ### Grenzen und Hinweise
 
@@ -394,4 +444,5 @@ Nein, außer Sie verwenden `--force`. Ohne `--force` schreibt es nichts, sobald 
 
 | Handbuch-Version | Stand | Änderung |
 |---|---|---|
+| 1.1 | 2026-07-23 | Phasierter Bootstrap (welle-05): `--lang` optional (dokument-only Init), neues `add-lang`-Subkommando (Mono-Repo), idempotenter Re-Lauf. `--force` entfernt; Kollisions-Abbruch-Verhalten und die zugehörigen Fehler/FAQ/Exit-Codes ersetzt. |
 | 1.0 | 2026-07-22 | Erste Fassung. Deckt den vollständigen Bootstrap (`--lang go`), Konfiguration, Fehlerbehebung, FAQ und Glossar ab. |
