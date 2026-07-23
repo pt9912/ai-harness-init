@@ -60,9 +60,16 @@ fi
 # haengte gates nur an record-gates (ohne Prereqs) -> die Checks liefen GAR NICHT, alle
 # Marker fehlten -> hier rot (nicht bloss Exit 0 pruefen). Die Marker stammen aus der
 # Laufzeit bzw. dem Recipe-Echo, nicht aus einer statischen Behauptung.
+#
+# Marker-Grep per HERE-STRING (grep -qF <<<"$var"), NICHT `printf | grep -q`: unter
+# `set -o pipefail` schliesst `grep -q` beim ersten Treffer die Pipe, `printf` bekommt
+# EPIPE (Broken pipe), und pipefail propagiert dessen Nonzero -> der `|| missing`-Zweig
+# feuert, OBWOHL der Marker gefunden wurde. Das schlaegt nur bei GROSSEM $var zu (printf
+# schreibt noch, wenn grep frueh matcht) -> in CI beim langen apt-Log des C++-Bildes rot,
+# lokal gruen (Race). Der Here-String hat keinen Producer-Prozess -> kein EPIPE (slice-039).
 missing=""
 for marker in "--target lint" "--target build" "--target test" "geprüft" "Integritaet + Vollstaendigkeit"; do
-	printf '%s\n' "$gates_out" | grep -qF -- "$marker" || missing="$missing [$marker]"
+	grep -qF -- "$marker" <<<"$gates_out" || missing="$missing [$marker]"
 done
 if [ -n "$missing" ]; then
 	echo "full-smoke: FEHLER — make gates lief gruen, aber ohne Beleg fuer:$missing — stilles Teilmengen-Gate? (LH-QA-01)" >&2
@@ -152,7 +159,7 @@ fi
 # Die sprach-agnostischen Checks MUESSEN laufen (docs-check + baseline-verify) ...
 doc_missing=""
 for marker in "geprüft" "Integritaet + Vollstaendigkeit"; do
-	printf '%s\n' "$doc_out" | grep -qF -- "$marker" || doc_missing="$doc_missing [$marker]"
+	grep -qF -- "$marker" <<<"$doc_out" || doc_missing="$doc_missing [$marker]"
 done
 if [ -n "$doc_missing" ]; then
 	echo "full-smoke: FEHLER — sprachloser make gates ohne Beleg fuer:$doc_missing — stilles Teilmengen-Gate? (LH-QA-01)" >&2
@@ -217,7 +224,7 @@ fi
 # Mono-Repo-Kollisionsfreiheit).
 addlang_missing=""
 for marker in "--target lint" "--target build" "--target test" "apps/api" "apps/web"; do
-	printf '%s\n' "$addlang_out" | grep -qF -- "$marker" || addlang_missing="$addlang_missing [$marker]"
+	grep -qF -- "$marker" <<<"$addlang_out" || addlang_missing="$addlang_missing [$marker]"
 done
 if [ -n "$addlang_missing" ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang ohne Beleg fuer:$addlang_missing — Modul-Gate/Kollision? (slice-037/LH-QA-01)." >&2
@@ -263,7 +270,7 @@ fi
 # kollidiert, liefe es nicht -> hier rot (LH-QA-01, C++ via Docker-Stage).
 cpp_missing=""
 for marker in "apps/engine" "apps-engine:test"; do
-	printf '%s\n' "$cpp_out" | grep -qF -- "$marker" || cpp_missing="$cpp_missing [$marker]"
+	grep -qF -- "$marker" <<<"$cpp_out" || cpp_missing="$cpp_missing [$marker]"
 done
 if [ -n "$cpp_missing" ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang cpp ohne Beleg fuer:$cpp_missing — C++-Gate lief nicht? (slice-039/LH-QA-01)." >&2
