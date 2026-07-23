@@ -83,4 +83,6 @@ Verzeichnisse (dieselbe zweite Wahrheit, die beim Slice retired wurde). -->
 
 ## 7. Closure-Notiz
 
-*Erst nach Welle-Abschluss füllen — Verweis auf `welle-05-results.md`.*
+Welle **geschlossen 2026-07-23** (beobachtbarer Trigger: alle Slices 034–038 in `done/`,
+`make gates`/`make full-smoke`/`make mutate` grün). Ergebnisse, Steering-Loop-Einträge und
+Carveout-Audit: [welle-05-results.md](welle-05-results.md).

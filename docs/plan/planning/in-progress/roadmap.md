@@ -12,45 +12,23 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**[welle-05 — Bootstrap-Phasen](../welle-05-bootstrap-phasen.md)** (aktiv seit 2026-07-23) — setzt
-[`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md) um: Init sprach-agnostisch (`--lang`
-optional), `add-lang` wiederholbar (Mono-Repo), Gate-/Guard-Fragmente, idempotente Emission
-(konvergent/skip-if-present). Der Wellen-Trigger ist erfüllt (ADR Accepted + beide Doc-Folgepflichten
-erledigt, siehe unten).
+**Keine aktive Welle.** [welle-05 — Bootstrap-Phasen](../done/welle-05-bootstrap-phasen.md) ist
+**geschlossen (2026-07-23)** — [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md) ist umgesetzt
+(Init sprach-agnostisch, `add-lang` wiederholbar/Mono-Repo, idempotente Emission konvergent/skip-if-present,
+Guard-Boden gebacken). Ergebnisse: [welle-05-results.md](../done/welle-05-results.md).
 
-- **Slices:** [slice-034](../done/slice-034-gate-fragment-assembly.md) (Gate-Fragment-Assembly, ✅ `done/`) ·
-  035 CLI-Phasierung · 036 Guard-BLOCKED-Union · 037 `add-lang`-Subkommando · 038 Idempotenz-Klassifikation
-  — 034 **done**, [035](../done/slice-035-cli-phasierung.md) **done** (✅ Review konform + DoD bestätigt),
-  [036](../done/slice-036-guard-blocked-union.md) **done** (✅ Review konform + DoD bestätigt),
-  [037](../done/slice-037-add-lang.md) **done** (✅ Review konform nach M-1-Auflösung + DoD bestätigt —
-  `add-lang <sprache> <pfad>`, wiederholbar/Mono-Repo, `<pfad>`-aware Fragment, blocked skip-if-present),
-  [038](../done/slice-038-idempotenz-klassifikation.md) **done** (✅ Review konform nach MEDIUM-Auflösung
-  [`.harness/skills/*` konvergent] + DoD bestätigt — Idempotenz-Klassifikation konvergent/skip-if-present,
-  `--force` entfernt, 2. Init-Lauf idempotent). **welle-05 KOMPLETT (034–038 alle done) → `/close-welle`.**
-- **Trigger (erfüllt):** [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md) Accepted;
-  CR [`lastenheft.md`](../../../../spec/lastenheft.md) 0.10.0 **und** der
-  [`architecture.md`](../../../../spec/architecture.md)-Nachzug erledigt.
-- **Closure-Kriterien:** alle Slices 034–038 in `done/`; `make gates` grün; `make full-smoke` grün über
-  die [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md)-Fitness-Functions; `make mutate` grün;
-  Closure-Notiz `welle-05-results.md`.
+Die nächste Welle ist **noch nicht geschnitten** (green-before-extend, cp-Disziplin): die Backlog-Cluster
+**B/C/D** (unten) sind die Kandidaten, je nach erster beobachteter Drift bzw. nächster Wartungsrunde.
 
-**Doc-Folgepflichten aus [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md) — alle erledigt:**
-1. ✅ **CR an [`lastenheft.md`](../../../../spec/lastenheft.md)** (0.10.0, `2c8227b`) —
-   [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) gesplittet, [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) auf `add-lang`.
-2. ✅ **[`architecture.md`](../../../../spec/architecture.md)-Nachzug** (2026-07-23) — Bootstrap-Phasen ·
-   `add-lang` · doc-only-Gate · Fragment-Assembly · Commands-/Skills-Emitter (schloss den offenen
-   welle-04-Emitter-Punkt).
-3. ✅ **[welle-05](../welle-05-bootstrap-phasen.md) geplant** (`/plan-welle`) + slice-034 geschnitten.
-
-**Benannter `open/`-Folgepunkt, bewusst out-of-scope der Welle** (INFO I-1): git-Repo-Vorbedingung der
-emittierten `make gates` — `record-gates` startet mit `git rev-parse`; ein Bootstrap in ein nicht
-git-initialisiertes Verzeichnis röte `make gates` trotz grüner Übrig-Gates. `make full-smoke` git-init'et
-das Ziel; der reale Nicht-git-Init-Fall bleibt ein separater Wartungs-/Doku-Slice (README-Zeile oder
-optionales Bootstrap-`git init`).
+**Benannter `open/`-Folgepunkt** (aus welle-05 out-of-scope, [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md)
+INFO I-1): git-Repo-Vorbedingung der emittierten `make gates` — `record-gates` startet mit `git rev-parse`;
+ein Bootstrap in ein nicht git-initialisiertes Verzeichnis röte `make gates` trotz grüner Übrig-Gates.
+`make full-smoke` git-init'et das Ziel; der reale Nicht-git-Init-Fall bleibt ein separater Wartungs-/Doku-Slice.
+Ebenso offen: `smoke.sh:89` toter `@@BLOCKED_SET@@`-Check (slice-036-Folgepunkt).
 
 ## Nächste Wellen
 
-Nach [welle-05](../welle-05-bootstrap-phasen.md) sind die **Backlog-Cluster B/C/D** (unten) die
+Nach [welle-05](../done/welle-05-bootstrap-phasen.md) sind die **Backlog-Cluster B/C/D** (unten) die
 Kandidaten — je nach erster beobachteter Drift bzw. nächster Wartungsrunde; Plandatei per `cp`, sobald
 der erste Slice geschnitten wird (green-before-extend; cp-Disziplin — kein Vorab-Schnitt).
 **a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) bleibt aufgeschoben**
@@ -104,6 +82,7 @@ flowchart LR
 | [welle-02-fetch-und-readme](../done/welle-02-fetch-und-readme.md) | 2026-07-21 | [welle-02-results.md](../done/welle-02-results.md) |
 | [welle-03-readme-und-smoke](../done/welle-03-readme-und-smoke.md) | 2026-07-22 | [welle-03-results.md](../done/welle-03-results.md) |
 | [welle-04-durchsetzung-und-emission](../done/welle-04-durchsetzung-und-emission.md) | 2026-07-22 | [welle-04-results.md](../done/welle-04-results.md) |
+| [welle-05-bootstrap-phasen](../done/welle-05-bootstrap-phasen.md) | 2026-07-23 | [welle-05-results.md](../done/welle-05-results.md) |
 
 ## Historische Trigger-Verschiebungen
 
