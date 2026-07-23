@@ -1,6 +1,6 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Handbuch-Version:** 1.1
+**Handbuch-Version:** 1.2
 **Software-Stand:** Entwicklungsstand M2 — **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf). Zielsprache `go` (weitere folgen). Noch keine vorgefertigten Release-Binaries.
 **Stand:** 2026-07-23
 **Verantwortlich:** ai-harness-init-Team (pt9912)
@@ -121,7 +121,7 @@ Das bedeutet: Regelwerk und Vorlagen liegen im Repository, die Prüfungen sind v
 
 ### Wichtigstes Bedienkonzept
 
-`ai-harness-init` arbeitet in **einem** Schritt und ist **idempotent**: Sie können denselben Aufruf gefahrlos wiederholen. Bei einem zweiten Lauf wird die **werkzeug-eigene Infrastruktur** (Prüf-Konfiguration, Hooks, Regelwerk) auf den kanonischen Stand aufgefrischt (das heilt eventuelle Abweichungen und zieht ein neueres Regelwerk nach), während **von Ihnen gefüllte Dateien** (Doc-Chain, `README.md`, Ihr Quellcode) **unangetastet** bleiben. Es gibt **keinen** Kollisions-Abbruch und **kein** `--force` — der Re-Lauf ist der normale, sichere Weg, ein Repository zu reparieren oder auf einen neueren Kurs-Stand zu heben.
+`ai-harness-init` arbeitet in **einem** Schritt und ist **idempotent**: Sie können denselben Aufruf gefahrlos wiederholen. Bei einem zweiten Lauf wird die **werkzeug-eigene Infrastruktur** (Prüf-Konfiguration, Hooks, Regelwerk) auf den mitgelieferten Soll-Stand aufgefrischt (das heilt eventuelle Abweichungen und zieht ein neueres Regelwerk nach), während **von Ihnen gefüllte Dateien** (Ihre Projekt-Dokumente, `README.md`, Ihr Quellcode) **unangetastet** bleiben. Es gibt **keinen** Kollisions-Abbruch und **kein** `--force` — der Re-Lauf ist der normale, sichere Weg, ein Repository zu reparieren oder auf einen neueren Kurs-Stand zu heben.
 
 ---
 
@@ -173,11 +173,11 @@ ai-harness-init --lang go
 ai-harness-init --name "Mein Projekt"
 ```
 
-**Ergebnis:** Das Repository erhält Regelwerk, Vorlagen, Prüf-Konfiguration und die Durchsetzung — **aber kein Sprach-Grundgerüst**. `make gates` läuft dokument-only grün (Dokumentations-Prüfung + Regelwerk-Verifikation), ohne Kompilier-/Test-/Linter-Schritt. Ein Sprachmodul fügen Sie später mit `add-lang` hinzu (siehe unten).
+**Ergebnis:** Das Repository erhält Regelwerk, Vorlagen, Prüf-Konfiguration und die automatischen Schutz-Hooks (Command-Guard) — **aber kein Sprach-Grundgerüst**. `make gates` läuft dokument-only grün (Dokumentations-Prüfung + Regelwerk-Verifikation), ohne Kompilier-/Test-/Linter-Schritt. Ein Sprachmodul fügen Sie später mit `add-lang` hinzu (siehe unten).
 
 ### Ein Sprachmodul hinzufügen (`add-lang`)
 
-**Voraussetzung:** Ein bereits aufgesetztes Repository (der Aggregator `Makefile` existiert).
+**Voraussetzung:** Ein bereits aufgesetztes Repository (die zentrale `Makefile` existiert).
 
 **Vorgehen**
 
@@ -192,7 +192,7 @@ ai-harness-init add-lang go apps/api
 ai-harness-init add-lang go apps/web
 ```
 
-**Ergebnis:** Je Aufruf entstehen das Sprach-Grundgerüst unter `<pfad>`, sein Code-Gate-Fragment (`harness/mk/<modul>.mk`) und das Guard-Fragment (`tools/harness/blocked/<sprache>`). Danach fährt `make gates` zusätzlich die Prüfungen des neuen Moduls. Die Abschluss-Zeile lautet z. B.:
+**Ergebnis:** Je Aufruf entstehen das Sprach-Grundgerüst unter `<pfad>`, seine Prüf-Bausteine (`harness/mk/<modul>.mk`) und ein Schutz-Eintrag (`tools/harness/blocked/<sprache>`). Danach fährt `make gates` zusätzlich die Prüfungen des neuen Moduls. Die Abschluss-Zeile lautet z. B.:
 
 ```text
 ai-harness-init: add-lang go nach apps/api — Skelett + harness/mk/apps-api.mk + tools/harness/blocked/go.
@@ -224,7 +224,7 @@ make gates
 ai-harness-init --lang go --name "Mein Projekt"
 ```
 
-**Ergebnis:** Der Lauf ist **idempotent** (Exit-Code 0). Die werkzeug-eigene Infrastruktur (Prüf-Konfiguration, Hooks, Aggregator, Regelwerk) wird auf den kanonischen Stand **aufgefrischt** — das heilt Abweichungen und zieht ein neueres Regelwerk nach. **Von Ihnen gefüllte Dateien** — die Dokumente unter `spec/`, `README.md`, `AGENTS.md`, Ihr Quellcode im Grundgerüst (`go.mod`, `cmd/app/main.go` …) — bleiben **unangetastet**.
+**Ergebnis:** Der Lauf ist **idempotent** (Exit-Code 0). Die werkzeug-eigene Infrastruktur (Prüf-Konfiguration, Hooks, die zentrale `Makefile`, Regelwerk) wird auf den mitgelieferten Soll-Stand **aufgefrischt** — das heilt Abweichungen und zieht ein neueres Regelwerk nach. **Von Ihnen gefüllte Dateien** — die Dokumente unter `spec/`, `README.md`, `AGENTS.md`, Ihr Quellcode im Grundgerüst (`go.mod`, `cmd/app/main.go` …) — bleiben **unangetastet**.
 
 **Hinweise:** Es gibt **kein** `--force` und **keinen** Kollisions-Abbruch mehr (frühere Versionen kannten das). Wollen Sie eine von Ihnen bearbeitete werkzeug-eigene Datei bewusst auf den Ausgangsstand zurücksetzen, löschen Sie sie vor dem Re-Lauf — dann wird sie neu geschrieben.
 
@@ -315,10 +315,10 @@ mein-projekt/
 ├── harness/                  Einstiegs- und Konventions-Dokumente (Vorlagen)
 ├── docs/plan/                Planung: Architektur-Entscheidungen, Slices, Roadmap
 ├── tools/harness/            Hilfsskripte des Repositorys
-└── .harness/baseline/        Vendored Regelwerk und Vorlagen (netzunabhängig)
+└── .harness/baseline/        Mitgeliefertes Regelwerk und Vorlagen (netzunabhängig)
 ```
 
-Die **Sprach-Dateien** (`Dockerfile`, `go.mod`, `.golangci.yml`, `cmd/app/main.go` sowie das Code-Gate-Fragment `harness/mk/<modul>.mk`) entstehen **nur mit einer Sprache** — also bei `--lang go` oder per `add-lang`. Ein Aufsetzen **ohne** Sprache legt sie nicht an (dokument-only); dazu kommen die Durchsetzung unter `.claude/` (Hooks, Command-Guard) und die Prüf-Fragmente `harness/mk/*.mk`.
+Die **Sprach-Dateien** (`Dockerfile`, `go.mod`, `.golangci.yml`, `cmd/app/main.go` sowie der Prüf-Baustein `harness/mk/<modul>.mk`) entstehen **nur mit einer Sprache** — also bei `--lang go` oder per `add-lang`. Ein Aufsetzen **ohne** Sprache legt sie nicht an (dokument-only); dazu kommen die Schutz-Hooks unter `.claude/` (Command-Guard) und die Prüf-Bausteine `harness/mk/*.mk`.
 
 Die Dateien mit der Endung `.template.md` unter `.harness/baseline/` sind **Vorlagen**: Sie kopieren sie bei Bedarf und füllen sie aus (z. B. für eine neue Architektur-Entscheidung). Die Prozess-Regeln erklären, wann welche Vorlage zum Einsatz kommt.
 
@@ -396,7 +396,7 @@ Mit `ai-harness-init add-lang <sprache> <pfad>`. Der Befehl ist wiederholbar; me
 Derzeit nicht. Sie bauen das Programm einmalig aus dem Quellcode (siehe [Installation](#2-installation-und-zugriff)) — komplett in Docker, ohne lokale Go-Installation.
 
 **Verändert `ai-harness-init` meine bestehenden Dateien?**
-Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — sie sind „nur schreiben, wenn nicht vorhanden“ (skip-if-present). Die **werkzeug-eigene** Infrastruktur (Prüf-Konfiguration, Hooks, Regelwerk) wird bei jedem Lauf kanonisch neu geschrieben; hatten Sie eine solche Datei von Hand geändert, wird die Änderung beim Re-Lauf überschrieben.
+Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vorhandene Dateien dieser Art werden nie überschrieben. Die **werkzeug-eigene** Infrastruktur (Prüf-Konfiguration, Hooks, Regelwerk) wird bei jedem Lauf neu auf den Soll-Stand geschrieben; hatten Sie eine solche Datei von Hand geändert, wird die Änderung beim Re-Lauf überschrieben.
 
 ---
 
@@ -408,10 +408,13 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — si
 | **Gate** | Eine automatische Prüfung, die grün (bestanden) oder rot (fehlgeschlagen) ist. `make gates` fährt alle Gates. |
 | **Bootstrap** | Das Aufsetzen eines Repositorys mit dem Harness — das, was `ai-harness-init` tut. Wiederholbar (idempotent). |
 | **`add-lang`** | Das Subkommando, das einem aufgesetzten Repository ein Sprachmodul hinzufügt — wiederholbar (Mono-Repo). |
-| **idempotent** | Ein wiederholter Aufruf hinterlässt denselben Zustand: werkzeug-eigene Dateien werden kanonisch aufgefrischt, Ihre gefüllten Dateien bleiben unberührt (kein Kollisions-Abbruch, kein `--force`). |
+| **idempotent** | Ein wiederholter Aufruf hinterlässt denselben Zustand: werkzeug-eigene Dateien werden auf den Soll-Stand aufgefrischt, Ihre gefüllten Dateien bleiben unberührt (kein Kollisions-Abbruch, kein `--force`). |
 | **Regelwerk / Baseline** | Der festgelegte Kurs-Stand aus Prozess-Regeln und Vorlagen, den das Werkzeug in Ihr Repository legt. |
 | **Grundgerüst (Skelett)** | Das minimale, lauffähige Sprach-Layout (bei `go`: `Dockerfile`, `Makefile`, `go.mod`, Beispiel-Code), das die Prüfungen bedienen. |
 | **Doc-Gate** | Die Dokumentations-Prüfung (Ziel `make docs-check`): prüft Verweise, Anker und Kennungen in den Markdown-Dateien. |
+| **Aggregator (`Makefile`)** | Die zentrale `Makefile` im Repository, die alle Prüf-Bausteine einbindet; `make gates` fährt darüber alle Prüfungen. Erscheint so in der Abschluss-Ausgabe des Werkzeugs. |
+| **Prüf-Baustein (Fragment)** | Eine kleine `make`-Datei (`harness/mk/*.mk`), die je eine Prüfung beisteuert; die zentrale `Makefile` bindet sie ein. |
+| **Command-Guard / Durchsetzung** | Automatische Schutz-Hooks unter `.claude/`, die im aufgesetzten Repo riskante Befehle abfangen (z. B. Toolchains außerhalb von Docker). Erscheint als „Durchsetzung“ in der Abschluss-Ausgabe. |
 | **Vorlage (`.template.md`)** | Eine Datei zum Kopieren-und-Ausfüllen für wiederkehrende Artefakte (z. B. eine Architektur-Entscheidung). |
 
 ---
@@ -428,10 +431,11 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — si
 
 ### Grenzen und Hinweise
 
-* Es gibt **kein** eingecheckt vorliegendes Binary und kein `run`-Ziel; Sie bauen das Werkzeug aus dem Quellcode.
+* Es gibt **kein** eingecheckt vorliegendes Binary und kein `run`-Ziel; Sie bauen das Werkzeug aus dem Quellcode (daher **keine Release-Versionsnummer** — maßgeblich ist der Quellcode-Stand des Repos).
 * Der erste Lauf benötigt Netzwerk; danach ist das Repository netzunabhängig.
 * `ai-harness-init` und die Prüfungen im Zielrepository benötigen Docker.
 * Voreingestellte Versionen (Kurs-Stand, Go-Version, Prüf-Image) sind festgelegt und reproduzierbar; Abweichungen nur über die Umgebungsvariablen aus [Konfiguration](#5-konfiguration).
+* **Sicherheit:** Das Regelwerk wird beim Download gegen eine feste Prüfsumme verifiziert (`BASELINE_SHA256`); das aufgesetzte Repository fängt riskante Befehle über den Command-Guard ab und lässt die Prüfungen nur in Docker laufen.
 
 ### Support und Kontakt
 
@@ -444,5 +448,6 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — si
 
 | Handbuch-Version | Stand | Änderung |
 |---|---|---|
+| 1.2 | 2026-07-23 | Sprach-Review gegen den Benutzerhandbuch-Standard: Entwicklerbegriffe geglättet (Aggregator → zentrale `Makefile`, Durchsetzung → Schutz-Hooks, Doc-Chain → Projekt-Dokumente, „skip-if-present“/„kanonisch“/„vendored“ plain); die in der Werkzeug-Ausgabe sichtbaren Begriffe (Aggregator, Durchsetzung, Prüf-Baustein) ins Glossar aufgenommen; Sicherheits- und Versions-Hinweis im Anhang ergänzt. |
 | 1.1 | 2026-07-23 | Phasierter Bootstrap (welle-05): `--lang` optional (dokument-only Init), neues `add-lang`-Subkommando (Mono-Repo), idempotenter Re-Lauf. `--force` entfernt; Kollisions-Abbruch-Verhalten und die zugehörigen Fehler/FAQ/Exit-Codes ersetzt. |
 | 1.0 | 2026-07-22 | Erste Fassung. Deckt den vollständigen Bootstrap (`--lang go`), Konfiguration, Fehlerbehebung, FAQ und Glossar ab. |
