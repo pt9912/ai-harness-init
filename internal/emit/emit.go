@@ -47,6 +47,21 @@ const adopterHeader = "# d-check.mk — Doku-Referenz-Gate via d-check. Emittier
 // DCheckConfig liefert die eingebettete minimale .d-check.yml (links/anchors).
 func DCheckConfig() string { return dcheckConfig }
 
+// DocGateMkPath ist der Zielpfad des Doc-Gate-Fragments (slice-034, Fragment-Assembly).
+// Es bindet das tool-generierte d-check.mk ein und haengt docs-check an GATE_CHECKS an;
+// der Root-Aggregator faehrt es via make gates.
+const DocGateMkPath = "harness/mk/doc-gate.mk"
+
+// docGateMk ist der Inhalt des Doc-Gate-Fragments — verbatim (der Digest/Pin lebt in
+// d-check.mk, nicht hier). `include d-check.mk` loest relativ zum Ziel-Root auf (make
+// laeuft dort), nicht relativ zum Fragment-Verzeichnis harness/mk/.
+const docGateMk = `# harness/mk/doc-gate.mk — Doc-Gate-Fragment, emittiert von ai-harness-init (slice-034).
+# Bindet das tool-generierte d-check.mk ein (Befund-Gate docs-check) und haengt
+# docs-check an GATE_CHECKS an; der Root-Aggregator faehrt es via make gates.
+include d-check.mk
+GATE_CHECKS += docs-check
+`
+
 // Options steuert den Doc-Gate-Emit.
 type Options struct {
 	Image  string // Tag-Referenz -> emittiertes DCHECK_IMAGE
@@ -73,10 +88,10 @@ func (o Options) RunRef() string {
 // docker --print-mk, Adaption), dann die Schreibvorgaenge — so bleibt bei einem
 // Fehler nichts halb geschrieben.
 func DocGate(ctx context.Context, targetDir string, opts Options) error {
-	targets := []string{".d-check.yml", "d-check.mk"}
+	targets := []string{".d-check.yml", "d-check.mk", DocGateMkPath}
 	if !opts.Force {
 		for _, name := range targets {
-			switch _, err := os.Stat(filepath.Join(targetDir, name)); {
+			switch _, err := os.Stat(filepath.Join(targetDir, filepath.FromSlash(name))); {
 			case err == nil:
 				return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", name)
 			case !errors.Is(err, fs.ErrNotExist):
@@ -92,9 +107,13 @@ func DocGate(ctx context.Context, targetDir string, opts Options) error {
 	if err != nil {
 		return err
 	}
-	content := map[string][]byte{".d-check.yml": []byte(dcheckConfig), "d-check.mk": mk}
+	content := map[string][]byte{".d-check.yml": []byte(dcheckConfig), "d-check.mk": mk, DocGateMkPath: []byte(docGateMk)}
 	for _, name := range targets {
-		if err := os.WriteFile(filepath.Join(targetDir, name), content[name], 0o644); err != nil {
+		dst := filepath.Join(targetDir, filepath.FromSlash(name))
+		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+			return fmt.Errorf("%s anlegen: %w", filepath.Dir(name), err)
+		}
+		if err := os.WriteFile(dst, content[name], 0o644); err != nil {
 			return fmt.Errorf("%s schreiben: %w", name, err)
 		}
 	}

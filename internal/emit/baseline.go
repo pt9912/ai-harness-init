@@ -25,30 +25,63 @@ var baselineVerify []byte
 // Layout-Adaption NICHT auf die Emission generalisiert.
 const BaselineVerifyPath = "tools/harness/baseline-verify.sh"
 
-// BaselineVerify schreibt das Verifikations-Skript nach targetDir. Ausfuehrbar
-// (0755) — ein nicht ausfuehrbares Gate-Skript waere eine leere Zusage. Ohne
-// force wird eine vorhandene Datei nicht ueberschrieben (LH-FA-01 Boundary-AC).
+// BaselineMkPath ist der Zielpfad des Baseline-Fragments (slice-034). Es haengt
+// baseline-verify an GATE_CHECKS an und traegt das Rezept, das das Verifikations-
+// Skript ruft; der Root-Aggregator faehrt es via make gates. Damit ist das Skript
+// nicht mehr orphaned (vor slice-034 emittiert, aber in keinem gates-Lauf gefahren).
+const BaselineMkPath = "harness/mk/baseline.mk"
+
+// baselineMk ist der Inhalt des Baseline-Fragments. Die Recipe-Zeile ist TAB-eingerueckt.
+const baselineMk = `# harness/mk/baseline.mk — Baseline-Fragment, emittiert von ai-harness-init (slice-034).
+# Verifiziert die vendored Baseline netzlos und haengt baseline-verify an GATE_CHECKS;
+# der Root-Aggregator faehrt es via make gates.
+.PHONY: baseline-verify
+
+baseline-verify: ## Vendored Baseline netzlos verifizieren
+	@bash tools/harness/baseline-verify.sh
+
+GATE_CHECKS += baseline-verify
+`
+
+// BaselineVerify schreibt das Verifikations-Skript (0755, ausfuehrbar — ein nicht
+// ausfuehrbares Gate-Skript waere eine leere Zusage) UND das Baseline-Fragment
+// harness/mk/baseline.mk (0644, slice-034) nach targetDir. Ohne force wird eine
+// vorhandene Datei nicht ueberschrieben (LH-FA-01 Boundary-AC); der Kollisions-
+// Vorpass deckt BEIDE Ziele (kein Teil-Emit).
 func BaselineVerify(targetDir string, force bool) error {
-	dst := filepath.Join(targetDir, filepath.FromSlash(BaselineVerifyPath))
+	files := []struct {
+		path    string
+		content []byte
+		mode    fs.FileMode
+	}{
+		{BaselineVerifyPath, baselineVerify, 0o755},
+		{BaselineMkPath, []byte(baselineMk), 0o644},
+	}
 	if !force {
-		switch _, err := os.Stat(dst); {
-		case err == nil:
-			return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", BaselineVerifyPath)
-		case !errors.Is(err, fs.ErrNotExist):
-			return fmt.Errorf("%s pruefen: %w", BaselineVerifyPath, err)
+		for _, f := range files {
+			dst := filepath.Join(targetDir, filepath.FromSlash(f.path))
+			switch _, err := os.Stat(dst); {
+			case err == nil:
+				return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", f.path)
+			case !errors.Is(err, fs.ErrNotExist):
+				return fmt.Errorf("%s pruefen: %w", f.path, err)
+			}
 		}
 	}
-	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
-		return fmt.Errorf("%s anlegen: %w", filepath.Dir(BaselineVerifyPath), err)
-	}
-	if err := os.WriteFile(dst, baselineVerify, 0o755); err != nil {
-		return fmt.Errorf("%s schreiben: %w", BaselineVerifyPath, err)
-	}
-	// os.WriteFile wendet das Perm-Argument nur beim ANLEGEN an: ueber eine
-	// vorhandene 0644-Datei geschrieben (--force) bliebe der richtige Inhalt in
-	// einer nicht ausfuehrbaren Datei zurueck (Review-Befund slice-022a L2).
-	if err := os.Chmod(dst, 0o755); err != nil {
-		return fmt.Errorf("%s ausfuehrbar machen: %w", BaselineVerifyPath, err)
+	for _, f := range files {
+		dst := filepath.Join(targetDir, filepath.FromSlash(f.path))
+		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+			return fmt.Errorf("%s anlegen: %w", filepath.Dir(f.path), err)
+		}
+		if err := os.WriteFile(dst, f.content, f.mode); err != nil {
+			return fmt.Errorf("%s schreiben: %w", f.path, err)
+		}
+		// os.WriteFile wendet den Modus nur beim ANLEGEN an: ueber eine vorhandene
+		// 0644-Datei geschrieben (--force) bliebe der richtige Inhalt in einer nicht
+		// ausfuehrbaren Datei zurueck (Review-Befund slice-022a L2).
+		if err := os.Chmod(dst, f.mode); err != nil {
+			return fmt.Errorf("%s Modus setzen: %w", f.path, err)
+		}
 	}
 	return nil
 }

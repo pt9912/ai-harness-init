@@ -25,6 +25,23 @@ func TestBaselineVerify_EmittedExecutable(t *testing.T) {
 	}
 }
 
+// TestBaselineVerify_EmitsFragment: BaselineVerify emittiert das Baseline-Fragment
+// harness/mk/baseline.mk (slice-034) — es haengt baseline-verify an GATE_CHECKS und
+// ruft das Skript. Ohne das Fragment liefe baseline-verify in keinem gates-Lauf
+// (orphaned wie vor slice-034).
+func TestBaselineVerify_EmitsFragment(t *testing.T) {
+	dir := t.TempDir()
+	if err := emit.BaselineVerify(dir, false); err != nil {
+		t.Fatalf("BaselineVerify: %v", err)
+	}
+	mk := mustReadString(t, filepath.Join(dir, filepath.FromSlash(emit.BaselineMkPath)))
+	for _, want := range []string{".PHONY: baseline-verify", "baseline-verify:", "tools/harness/baseline-verify.sh", "GATE_CHECKS += baseline-verify"} {
+		if !strings.Contains(mk, want) {
+			t.Errorf("Baseline-Fragment enthaelt %q nicht:\n%s", want, mk)
+		}
+	}
+}
+
 // TestBaselineVerify_BothAxes ist ein GROB-Waechter, kein Beleg: er prueft nur,
 // dass beide Achsen ueberhaupt noch im Skript stehen.
 //

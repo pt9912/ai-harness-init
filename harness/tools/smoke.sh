@@ -15,8 +15,8 @@
 #   3. Skelett an den Ziel-Root verdrahtet (slice-004b) + transientes
 #      .harness/skeleton/ entfernt + Template-Schicht emittiert (slice-022b).
 #   4. Emittiertes d-check laeuft und akzeptiert die Config (kein Config-Crash).
-#   5. Verdrahtetes Makefile bindet d-check.mk ein (MR-010) + Go-Gates am
-#      Ziel-Root gruen (lint/build/test).
+#   5. Root-Makefile ist der Aggregator (include harness/mk/*.mk), das Doc-Gate-
+#      Fragment bindet d-check.mk ein (slice-034) + Go-Gates am Ziel-Root gruen.
 #
 # GEPRUEFT (slice-028): das emittierte docs-check meldet 0 Befunde out-of-the-box
 # (Schritt 4) — die drei frueheren Befunde (2 derivative Indexe + 1 Roadmap-Zeile)
@@ -141,13 +141,26 @@ if [ "$dc_rc" -ne 0 ]; then
 	exit 1
 fi
 
-echo "smoke: 5/5 verdrahtetes Skelett am Ziel-Root: d-check.mk eingebunden + Go-Gates gruen? ..."
-# slice-004b: das Skelett liegt jetzt am Ziel-Root, das Makefile bindet d-check.mk
-# ein (MR-010) — ein make gates statt zweier Gate-Quellen. Verdrahtung strukturell:
-if ! grep -q '^include d-check.mk$' "$tmprepo/Makefile"; then
-	echo "smoke: FEHLER — generiertes Makefile bindet d-check.mk NICHT ein (MR-010-Verdrahtung fehlt)" >&2
+echo "smoke: 5/5 verdrahtetes Skelett am Ziel-Root: Aggregator + Fragmente + Go-Gates gruen? ..."
+# slice-034: die Root-Makefile ist ein Aggregator (include harness/mk/*.mk); das
+# Doc-Gate-Fragment harness/mk/doc-gate.mk bindet d-check.mk ein — ein make gates statt
+# zweier Gate-Quellen. Verdrahtung strukturell, beide Ebenen:
+if ! grep -q '^include harness/mk/\*\.mk$' "$tmprepo/Makefile"; then
+	echo "smoke: FEHLER — Root-Makefile ist kein Aggregator (include harness/mk/*.mk fehlt, slice-034)" >&2
 	exit 1
 fi
+if ! grep -q '^include d-check.mk$' "$tmprepo/harness/mk/doc-gate.mk"; then
+	echo "smoke: FEHLER — Doc-Gate-Fragment bindet d-check.mk NICHT ein (slice-034)" >&2
+	exit 1
+fi
+# slice-034: die Gate-Fragmente je Belang liegen unter harness/mk/ (der Aggregator
+# bindet sie per Glob ein). Positive Vertreter aller vier Belange.
+for rel in harness/mk/go.mk harness/mk/doc-gate.mk harness/mk/baseline.mk harness/mk/enforce.mk; do
+	if [ ! -f "$tmprepo/$rel" ]; then
+		echo "smoke: FEHLER — Gate-Fragment fehlt: $rel (slice-034)" >&2
+		exit 1
+	fi
+done
 # E2E: die Go-Gates (lint/build/test) am Ziel-Root real gruen — NICHT `make gates`
 # in EINEM Lauf (docs-check pruefen wir separat in Schritt 4; der zusammengefuehrte
 # make-gates-E2E im Ziel ist slice-024). Belegt, dass die kuratiert-reiche

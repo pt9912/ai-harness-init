@@ -203,10 +203,11 @@ func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, st
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
-	// Verdrahten (slice-004b): das gestagte Skelett an den Ziel-Root platzieren und
-	// d-check.mk ins Makefile einbinden (MR-010) — ein make gates statt zweier
-	// Gate-Quellen. Erst HIER (Phase 4, nach allen Pre-Flights) erscheint das
-	// Root-Skelett — so haelt die slice-025-Garantie „Kollision -> kein Teil-Bootstrap".
+	// Verdrahten (slice-004b/034): das gestagte Skelett an den Ziel-Root platzieren —
+	// REINER Placer seit slice-034 (der Aggregator + die harness/mk/*.mk-Fragmente
+	// kommen aus gen bzw. den Emittern DocGate/BaselineVerify/Enforce, nicht mehr aus
+	// einem wire-Inline-Anhang). Erst HIER (Phase 4, nach allen Pre-Flights) erscheint
+	// das Root-Skelett — so haelt die slice-025-Garantie „Kollision -> kein Teil-Bootstrap".
 	if err := wire.Place(skelDir, targetDir, force); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
@@ -238,7 +239,7 @@ func preflightAbsent(targetDir string, rels []string) error {
 // gefetchten Baseline; emit.TemplateTargets wurzel-prueft sie zugleich (eine
 // falsch gewurzelte Baseline faellt so VOR dem Docker-Lauf auf).
 func emitTargets(targetDir, tag, name string) ([]string, error) {
-	rels := []string{emit.BaselineVerifyPath, ".d-check.yml", "d-check.mk", emit.RootReadmePath}
+	rels := []string{emit.BaselineVerifyPath, emit.BaselineMkPath, ".d-check.yml", "d-check.mk", emit.DocGateMkPath, emit.RootReadmePath}
 	// Durchsetzungs-Mechanik (slice-031, LH-FA-06/ADR-0006): Gate-Nachweis +
 	// Stop-Hook. In DENSELBEN Pre-Flight — eine vorhandene .claude/settings.json
 	// (Adopter hat schon Claude-Hooks) faellt so VOR dem Emit auf, kein Teil-Bootstrap.

@@ -9,7 +9,7 @@ import (
 	"github.com/pt9912/ai-harness-init/internal/wire"
 )
 
-const goodMakefile = "GO_VERSION ?= 1.26.4\n\ngates: lint build test ## Alle Go-Gates\n"
+const goodMakefile = "GATE_CHECKS :=\n\ninclude harness/mk/*.mk\n\ngates: record-gates ## Alle Gates\nrecord-gates: $(GATE_CHECKS)\n"
 
 // stageSkeleton baut ein minimales Staging-Skelett (Makefile mit gates-Target +
 // eine geschachtelte Datei) und liefert den Pfad.
@@ -43,10 +43,13 @@ func TestTargets(t *testing.T) {
 	}
 }
 
-// TestPlace_PlacesAndWires: die Skelett-Dateien landen im Ziel-Root, das Makefile
-// bindet d-check.mk ein (include + gates: docs-check neben den Go-Gates), und das
-// transiente Staging ist danach weg.
-func TestPlace_PlacesAndWires(t *testing.T) {
+// TestPlace_PlacesVerbatim: die Skelett-Dateien landen UNVERAENDERT im Ziel-Root
+// (seit slice-034 ist Place ein REINER Placer — kein Makefile-Rewrite mehr; der
+// Aggregator + die harness/mk/*.mk-Fragmente kommen aus gen bzw. den Emittern), und
+// das transiente Staging ist danach weg. Rot-Gegenbeispiel: haengte Place wieder die
+// alte dCheckInclude/enforceWiring-Verdrahtung ans Makefile, waere es nicht mehr
+// byte-identisch zum Staging.
+func TestPlace_PlacesVerbatim(t *testing.T) {
 	staging := stageSkeleton(t, goodMakefile)
 	target := t.TempDir()
 	if err := wire.Place(staging, target, false); err != nil {
@@ -61,18 +64,14 @@ func TestPlace_PlacesAndWires(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Makefile lesen: %v", err)
 	}
-	// Der Gate-Nachweis (slice-031) haengt als LETZTES gates-Prerequisite an —
-	// `gates: record-gates` NACH `gates: docs-check`, damit record-gates zuletzt
-	// stempelt (nur bei gruenen Gates). Beleg: beide Zeilen + das record-gates-Recipe.
-	for _, want := range []string{"include d-check.mk", "gates: docs-check", "gates: lint build test", "gates: record-gates", "bash tools/harness/record-gates.sh"} {
-		if !strings.Contains(string(mk), want) {
-			t.Errorf("verdrahtetes Makefile enthaelt %q nicht:\n%s", want, mk)
-		}
+	if string(mk) != goodMakefile {
+		t.Errorf("Makefile wurde beim Platzieren veraendert (Place ist kein reiner Placer mehr):\n%s", mk)
 	}
-	// Reihenfolge ist die Zusage: `gates: record-gates` MUSS nach `gates: docs-check`
-	// stehen, sonst stempelt record-gates vor dem Doc-Gate (nicht mehr „zuletzt").
-	if strings.Index(string(mk), "gates: record-gates") < strings.Index(string(mk), "gates: docs-check") {
-		t.Errorf("gates: record-gates steht VOR gates: docs-check — stempelt zu frueh:\n%s", mk)
+	// Place verdrahtet NICHTS mehr — die alten Inline-Anhaenge duerfen nicht auftauchen.
+	for _, forbidden := range []string{"include d-check.mk", "gates: docs-check", "bash tools/harness/record-gates.sh"} {
+		if strings.Contains(string(mk), forbidden) {
+			t.Errorf("Place haengt %q ans Makefile an — der Inline-Anhang ist seit slice-034 weg", forbidden)
+		}
 	}
 	if _, err := os.Stat(staging); !os.IsNotExist(err) {
 		t.Errorf("transientes Staging nicht aufgeraeumt: %v", err)

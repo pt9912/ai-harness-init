@@ -9,8 +9,9 @@
 # Abgrenzung zum Tier-2 `make smoke` (slice-002): jener prueft die Bootstrap-SCHRITTE
 # einzeln (Templates emittiert, docs-check-Config valide + 0 Befunde, Go-Gates
 # getrennt via `-f d-check.mk` bzw. `lint build test`). DIESER faehrt den
-# ZUSAMMENGEFUEHRTEN `make gates` (MR-010: docs-check + Go-Gates kombiniert ueber die
-# d-check.mk-Verdrahtung, `gates: docs-check` an `gates: lint build test` angehaengt)
+# ZUSAMMENGEFUEHRTEN `make -j gates` (slice-034: das Aggregator-Makefile bindet die
+# Gate-Fragmente harness/mk/*.mk ein — baseline/doc-gate/enforce + go —, die Checks
+# akkumulieren in GATE_CHECKS und record-gates stempelt zuletzt via Ordnungskante)
 # — die Sicht des echten Nutzers, die `make smoke` bewusst NICHT nimmt.
 #
 # Host-Docker + ggf. Netz-Pull -> NICHT in `make gates` (offline-schlank, LH-QA-01);
@@ -38,9 +39,9 @@ echo "full-smoke: 2/3 Bootstrap (--lang go --name full-smoke) in ein leeres tmp-
 # Bootstrap-Dateien; .harness/.gitignore haelt den Stempel aus dem Hash.
 git init -q "$tmprepo"
 
-echo "full-smoke: 3/3 im Ziel: make gates (der zusammengefuehrte Einstiegspunkt, MR-010) ..."
+echo "full-smoke: 3/3 im Ziel: make -j gates (der zusammengefuehrte Einstiegspunkt, Fragment-Assembly slice-034) ..."
 gates_rc=0
-gates_out="$( make -C "$tmprepo" gates 2>&1 )" || gates_rc=$?
+gates_out="$( make -j -C "$tmprepo" gates 2>&1 )" || gates_rc=$?
 printf '%s\n' "$gates_out"
 if [ "$gates_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates im emittierten Repo ist NICHT Exit 0 (LH-FA-01 Happy-Path verletzt)." >&2
@@ -48,16 +49,17 @@ if [ "$gates_rc" -ne 0 ]; then
 fi
 
 # LH-QA-01: `make gates` muss die BEHAUPTETEN Gates WIRKLICH fahren, nicht still eine
-# Teilmenge. Belege im Lauf-Output, dass alle vier gelaufen sind: die drei Go-Gates
-# (Dockerfile-Stages, per make-Recipe-Echo `--target <stage>`) UND das Doc-Gate
-# (d-check druckt "… Datei(en) geprueft"). Ein gruenes make gates ueber einer stillen
-# Teilmenge waere ein halluziniertes Gate. Der "geprueft"-Marker deckt zugleich die
-# MR-010-Verdrahtung: ohne den `gates: docs-check`-Anhang liefe docs-check gar nicht
-# mit, der Marker fehlte -> hier rot (nicht bloss Exit 0 pruefen). "geprueft" (statt
-# "Befund") ist der kanonische "d-check lief"-Marker, auf den auch harness/tools/
-# smoke.sh keyt — er stammt aus der d-check-Laufzeit, nicht aus dem Recipe-Echo.
+# Teilmenge. Belege im Lauf-Output, dass ALLE Checks liefen: die drei Go-Gates
+# (Dockerfile-Stages, per make-Recipe-Echo `--target <stage>`), das Doc-Gate (d-check
+# druckt "… Datei(en) geprueft") UND baseline-verify (seit slice-034 verdrahtet, sein
+# Erfolgs-Satz "Integritaet + Vollstaendigkeit"). Ein gruenes make gates ueber einer
+# stillen Teilmenge waere ein halluziniertes Gate. Die Marker decken zugleich die
+# Fragment-Assembly (slice-034): fehlte die Ordnungskante record-gates auf GATE_CHECKS,
+# haengte gates nur an record-gates (ohne Prereqs) -> die Checks liefen GAR NICHT, alle
+# Marker fehlten -> hier rot (nicht bloss Exit 0 pruefen). Die Marker stammen aus der
+# Laufzeit bzw. dem Recipe-Echo, nicht aus einer statischen Behauptung.
 missing=""
-for marker in "--target lint" "--target build" "--target test" "geprüft"; do
+for marker in "--target lint" "--target build" "--target test" "geprüft" "Integritaet + Vollstaendigkeit"; do
 	printf '%s\n' "$gates_out" | grep -qF -- "$marker" || missing="$missing [$marker]"
 done
 if [ -n "$missing" ]; then
@@ -115,6 +117,6 @@ if grep -rqE 'ai-harness-init|make mutate|test/mutations' "$tmprepo/.claude/comm
 	exit 1
 fi
 
-echo "full-smoke: OK — frisch gebootstrapptes Repo faehrt make gates out-of-the-box gruen (lint/build/test + docs-check zusammengefuehrt), Exit 0 (LH-FA-01/LH-QA-01)."
+echo "full-smoke: OK — frisch gebootstrapptes Repo faehrt make -j gates out-of-the-box gruen (lint/build/test + docs-check + baseline-verify via Fragment-Assembly, record-gates zuletzt), Exit 0 (LH-FA-01/LH-QA-01)."
 echo "full-smoke: OK — Gate-Nachweis-Kreis geschlossen: record-gates stempelt, Hash stimmt, .harness/.gitignore greift (slice-031)."
 echo "full-smoke: OK — emittierter Command-Guard greift: 'go build' geblockt, 'make test' durchgelassen (bash+awk, slice-032/LH-QA-03)."

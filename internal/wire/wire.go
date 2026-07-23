@@ -1,9 +1,10 @@
-// Package wire verdrahtet das generierte Sprachskelett (slice-023, gestaged unter
-// .harness/skeleton/) in den Ziel-Root: es platziert die Skelett-Dateien und
-// bindet d-check.mk ins generierte Makefile ein (MR-010) — sodass im Zielrepo EIN
-// make gates-Einstiegspunkt entsteht statt zweier Gate-Quellen (slice-004b,
-// LH-FA-04 Verdrahten-Teil). Einen Merge gibt es nicht (ADR-0005: der Generator
-// besitzt Makefile/Dockerfile/go.mod, es gibt keine Konfliktdateien).
+// Package wire platziert das generierte Sprachskelett (slice-023, gestaged unter
+// .harness/skeleton/) in den Ziel-Root. Seit slice-034 (Fragment-Assembly) ist es ein
+// REINER Placer: die Root-Makefile ist ein Aggregator (gen, include harness/mk/*.mk),
+// und die Gate-Belange (doc-gate/baseline/enforce) kommen als eigene harness/mk/*.mk-
+// Fragmente von ihren Emittern (DocGate/BaselineVerify/Enforce) — wire haengt NICHTS
+// mehr ans Makefile an (frueher dCheckInclude + enforceWiring; jetzt Migrations-Bruch).
+// Einen Merge gibt es nicht (ADR-0005: der Generator besitzt Makefile/Dockerfile/go.mod).
 //
 // Warum Phase-4-Placement aus dem Staging und nicht direkt an den Root: die
 // slice-025-Garantie „Kollision -> kein Teil-Bootstrap" haelt nur, wenn das
@@ -22,30 +23,6 @@ import (
 )
 
 const skeletonMakefile = "Makefile"
-
-// dCheckInclude wird ans generierte Makefile angehaengt: `include d-check.mk`
-// bringt das Doc-Gate-Target docs-check herein, und `gates: docs-check` haengt es
-// an das bestehende `gates: lint build test` — Make KOMBINIERT die Prerequisites,
-// solange hoechstens eine Regel ein Recipe traegt (die gen-gates-Regel hat keins).
-// So haengen Code- und Doc-Gate an EINEM make gates (MR-010, DoD slice-004b).
-const dCheckInclude = "\n# Doc-Gate (d-check.mk) einbinden — ein make gates statt zweier Quellen\n" +
-	"# (MR-010, verdrahtet von ai-harness-init, slice-004b).\ninclude d-check.mk\ngates: docs-check\n"
-
-// enforceWiring haengt den Gate-Nachweis ans Ziel-Makefile: record-gates stempelt
-// bei GRUENEN Gates den Content-Hash des Working Tree; der emittierte Stop-Hook
-// vergleicht denselben Hash (Durchsetzungs-Mechanik, ai-harness-init, slice-031,
-// ADR-0006). record-gates ist das LETZTE gates-Prerequisite — NACH dem
-// `gates: docs-check` des Wire angehaengt: Make kombiniert die Prerequisites in
-// Deklarations-Reihenfolge, also stempelt es zuletzt (nur wenn alle Gates gruen
-// waren). record-gates traegt das einzige Recipe der angehaengten Regeln; die
-// gen-gates-Regel und `gates: docs-check` haben keins (Make erlaubt nur eine
-// Recipe-tragende Regel je Target). Das Skript emittiert emit.Enforce nach
-// tools/harness/ — wie d-check.mk hier referenziert und emit.DocGate dort schreibt.
-const enforceWiring = "\n# Gate-Nachweis (record-gates) als LETZTES gates-Prerequisite — stempelt den\n" +
-	"# Content-Hash bei gruenen Gates; der Stop-Hook vergleicht ihn (slice-031, ADR-0006).\n" +
-	"gates: record-gates\n" +
-	"record-gates:\n" +
-	"\t@bash tools/harness/record-gates.sh\n"
 
 // Targets liefert die Ziel-Relpfade, die Place() in den Ziel-Root schreiben wuerde
 // — die Skelett-Dateien in stagingDir, relativ zu stagingDir, sortiert. Fuer den
@@ -74,25 +51,25 @@ func Targets(stagingDir string) ([]string, error) {
 	return rels, nil
 }
 
-// Place platziert die gestagten Skelett-Dateien in targetDir (Ziel-Root) und bindet
-// d-check.mk ins Makefile ein. Danach wird stagingDir entfernt (transientes
-// Staging — sonst traegt das Zielrepo zwei Makefiles). Ohne force wird eine
-// vorhandene Zieldatei nicht ueberschrieben (LH-FA-01 Boundary; der Phase-3-
-// Pre-Flight prueft das bereits, hier als Verteidigung).
+// Place platziert die gestagten Skelett-Dateien VERBATIM in targetDir (Ziel-Root) —
+// seit slice-034 ohne Makefile-Rewrite (reiner Placer). Danach wird stagingDir
+// entfernt (transientes Staging — sonst traegt das Zielrepo zwei Makefiles). Ohne
+// force wird eine vorhandene Zieldatei nicht ueberschrieben (LH-FA-01 Boundary; der
+// Phase-3-Pre-Flight prueft das bereits, hier als Verteidigung).
 func Place(stagingDir, targetDir string, force bool) error {
 	rels, err := Targets(stagingDir)
 	if err != nil {
 		return err
 	}
-	// Vorbedingung: das Skelett MUSS ein Makefile mit gates-Target tragen — sonst
-	// haengt sich `gates: docs-check` an nichts und definiert gates OHNE die
-	// Go-Gates (still leere Verdrahtung statt „ein make gates"). Laut abbrechen.
+	// Vorbedingung: das Skelett MUSS eine Root-Makefile mit gates-Target tragen (den
+	// Aggregator, gen/slice-034) — sonst ist `make gates` im Ziel undefiniert. Laut
+	// abbrechen (Verteidigung; der Phase-3-Pre-Flight prueft die Kollision separat).
 	mk, err := os.ReadFile(filepath.Join(stagingDir, skeletonMakefile))
 	if err != nil {
 		return fmt.Errorf("skelett-Makefile lesen: %w", err)
 	}
 	if !bytes.Contains(mk, []byte("\ngates:")) && !bytes.HasPrefix(mk, []byte("gates:")) {
-		return errors.New("skelett-Makefile hat kein gates-Target — d-check.mk-Include haette nichts zu verdrahten (MR-010)")
+		return errors.New("skelett-Makefile hat kein gates-Target — der Aggregator waere unvollstaendig (slice-034)")
 	}
 	// Kollisions-VORPASS: alle Ziele pruefen, BEVOR eines geschrieben wird — kein
 	// Teil-Placement bei Kollision (konsistent mit emit.Templates/slice-025).
@@ -110,10 +87,6 @@ func Place(stagingDir, targetDir string, force bool) error {
 		content, readErr := os.ReadFile(filepath.Join(stagingDir, filepath.FromSlash(rel)))
 		if readErr != nil {
 			return fmt.Errorf("%s lesen: %w", rel, readErr)
-		}
-		if rel == skeletonMakefile {
-			content = append(content, dCheckInclude...)
-			content = append(content, enforceWiring...)
 		}
 		dst := filepath.Join(targetDir, filepath.FromSlash(rel))
 		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {

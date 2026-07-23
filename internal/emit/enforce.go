@@ -45,6 +45,11 @@ func enforceFiles() []enforceFile {
 		{"templates/enforce/stop-require-gates.sh", ".claude/hooks/stop-require-gates.sh", 0o755},
 		{"templates/enforce/settings.json", ".claude/settings.json", 0o644},
 		{"templates/enforce/gitignore", ".harness/.gitignore", 0o644},
+		// Enforce-Gate-Fragment (slice-034): das record-gates-Rezept als
+		// harness/mk/enforce.mk. Die Ordnungskante (record-gates: $(GATE_CHECKS)) +
+		// `gates: record-gates` leben im Root-Aggregator (gen), weil sie GATE_CHECKS
+		// erst nach dem Glob-Include vollstaendig sehen. Sprach-agnostisch, verbatim.
+		{"templates/enforce/enforce.mk", "harness/mk/enforce.mk", 0o644},
 		// Command-Guard (slice-032): bash+awk, kein node/jq (LH-QA-03). Der Guard
 		// (0755) referenziert den awk-Extraktor unter tools/harness/ — beide
 		// gehoeren in denselben Emit, sonst laeuft der Guard fail-closed ins Leere.

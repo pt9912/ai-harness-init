@@ -30,7 +30,7 @@ func genGoWith(t *testing.T, goVersion string) string {
 func TestGenerate_GoProfile(t *testing.T) {
 	dir := genGo(t)
 	got := walkRel(t, dir)
-	want := []string{".golangci.yml", "Dockerfile", "Makefile", "cmd/app/main.go", "go.mod"}
+	want := []string{".golangci.yml", "Dockerfile", "Makefile", "cmd/app/main.go", "go.mod", "harness/mk/go.mk"}
 	if strings.Join(got, ",") != strings.Join(want, ",") {
 		t.Errorf("erzeugter Datei-Satz = %v\nwant %v", got, want)
 	}
@@ -56,13 +56,13 @@ func TestGenerate_Deterministic(t *testing.T) {
 	}
 }
 
-// TestGenerate_MakefileTargetsMatchStages ist der LH-QA-01-Anker: jedes
-// Makefile-Target, das `docker build --target <X>` ruft, muss eine gleichnamige
-// Dockerfile-Stage `AS <X>` haben — sonst ist es ein halluziniertes Gate. Ohne
-// den vollen Zielrepo-Lauf (slice-024) ist das der staerkste statische Beleg.
-func TestGenerate_MakefileTargetsMatchStages(t *testing.T) {
+// TestGenerate_GoMkTargetsMatchStages ist der LH-QA-01-Anker: jedes Target im
+// Code-Gate-Fragment (harness/mk/go.mk), das `docker build --target <X>` ruft, muss
+// eine gleichnamige Dockerfile-Stage `AS <X>` haben — sonst ist es ein halluziniertes
+// Gate. Seit slice-034 leben die --target-Aufrufe im Fragment, nicht mehr im Makefile.
+func TestGenerate_GoMkTargetsMatchStages(t *testing.T) {
 	dir := genGo(t)
-	mk := mustRead(t, filepath.Join(dir, "Makefile"))
+	mk := mustRead(t, filepath.Join(dir, "harness", "mk", "go.mk"))
 	df := mustRead(t, filepath.Join(dir, "Dockerfile"))
 
 	stages := map[string]bool{}
@@ -77,6 +77,30 @@ func TestGenerate_MakefileTargetsMatchStages(t *testing.T) {
 		if !stages[m[1]] {
 			t.Errorf("Makefile ruft `--target %s`, aber Dockerfile hat keine Stage `AS %s` (halluziniertes Gate)", m[1], m[1])
 		}
+	}
+}
+
+// TestGenerate_AggregatorHasOrderEdge ist der Reihenfolge-Waechter (slice-034): die
+// Root-Makefile MUSS ein Aggregator sein, der die Fragmente per Glob einbindet UND die
+// Ordnungskante `record-gates: $(GATE_CHECKS)` traegt. Ohne die Kante haengt gates nur
+// an record-gates (ohne Prereqs) -> die Checks liefen GAR NICHT (stilles Teilmengen-
+// Gate, LH-QA-01). Rot-Gegenbeispiel: test/mutations entfernt `$(GATE_CHECKS)` -> dieser
+// Test wird rot (und full-smoke saehe die --target-Marker fehlen).
+func TestGenerate_AggregatorHasOrderEdge(t *testing.T) {
+	mk := mustRead(t, filepath.Join(genGo(t), "Makefile"))
+	for _, want := range []string{"include harness/mk/*.mk", "gates: record-gates", "record-gates: $(GATE_CHECKS)"} {
+		if !strings.Contains(mk, want) {
+			t.Errorf("Aggregator-Makefile enthaelt %q nicht (Reihenfolge-Waechter):\n%s", want, mk)
+		}
+	}
+	// Das Code-Gate-Fragment haengt seine Checks via `GATE_CHECKS +=` an — nicht via
+	// eigenem gates:-Target (das umginge die Ordnungskante des Aggregators).
+	gomk := mustRead(t, filepath.Join(genGo(t), "harness", "mk", "go.mk"))
+	if !strings.Contains(gomk, "GATE_CHECKS += lint build test") {
+		t.Errorf("harness/mk/go.mk haengt lint/build/test nicht an GATE_CHECKS:\n%s", gomk)
+	}
+	if strings.Contains(gomk, "\ngates:") {
+		t.Errorf("Code-Gate-Fragment definiert ein eigenes gates:-Target (umgeht die Ordnungskante):\n%s", gomk)
 	}
 }
 

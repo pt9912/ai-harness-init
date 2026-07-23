@@ -37,6 +37,7 @@ func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 		".harness/.gitignore",
 		".claude/hooks/pretooluse-command-guard.sh",
 		"tools/harness/extract-command.awk",
+		"harness/mk/enforce.mk",
 	}
 	got := strings.Join(emit.EnforcePaths(), "\n")
 	for _, w := range want {
@@ -135,6 +136,25 @@ func TestEnforce_GuardBashAwkOnly(t *testing.T) {
 	}
 	if !strings.Contains(guard, "tools/harness/extract-command.awk") {
 		t.Error("Guard referenziert den awk-Extraktor nicht am emittierten Pfad")
+	}
+}
+
+// TestEnforce_EmitsGateFragment: das Enforce-Fragment harness/mk/enforce.mk (slice-034)
+// traegt das record-gates-Rezept, das tools/harness/record-gates.sh ruft. Die
+// Ordnungskante (record-gates: $(GATE_CHECKS)) lebt bewusst NICHT hier, sondern im
+// Root-Aggregator — sie braucht GATE_CHECKS erst nach dem Glob-Include vollstaendig.
+func TestEnforce_EmitsGateFragment(t *testing.T) {
+	frag := string(emit.EnforceFile("harness/mk/enforce.mk"))
+	if frag == "" {
+		t.Fatal("harness/mk/enforce.mk nicht emittiert (EnforceFile leer)")
+	}
+	for _, want := range []string{".PHONY: record-gates", "record-gates:", "tools/harness/record-gates.sh"} {
+		if !strings.Contains(frag, want) {
+			t.Errorf("Enforce-Fragment enthaelt %q nicht:\n%s", want, frag)
+		}
+	}
+	if strings.Contains(frag, "$(GATE_CHECKS)") {
+		t.Errorf("Enforce-Fragment traegt die Ordnungskante $(GATE_CHECKS) — die gehoert in den Root-Aggregator (Glob-Reihenfolge):\n%s", frag)
 	}
 }
 
