@@ -37,27 +37,29 @@ Was muss erfüllt sein, damit der Slice in done/ wandert?
 Liste mit jeweils prüfbarem Kriterium.
 -->
 
-- [ ] `gen.SupportedLangs()` = `["cpp", "go"]`; `add-lang cpp <pfad>` **und** `--lang cpp` erzeugen das
-  C++-Modul. Rot gesehen: eine Mutation, die das cpp-Profil aus `profiles()`/`fragments()` entfernt, färbt
-  einen Test rot ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)).
-- [ ] **cpp-Profil** liefert Skelett (`CMakeLists.txt`, `src/main.cpp`, `tests/CMakeLists.txt` +
+- [x] `gen.SupportedLangs()` = `["cpp", "go"]`; `add-lang cpp <pfad>` **und** `--lang cpp` erzeugen das
+  C++-Modul. Rot gesehen: Mutation 54 entfernt das cpp-Profil aus `profiles()` → `TestGenerate_CppProfile` rot
+  (das `fragments()`-Pendant ist über `CodeGateFragment("cpp")`→`UnknownLangError`→`t.Fatalf` mitgefangen)
+  ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)).
+- [x] **cpp-Profil** liefert Skelett (`CMakeLists.txt`, `src/main.cpp`, `tests/CMakeLists.txt` +
   `tests/test_main.cpp` [assert-basiert, **netzlos** — kein FetchContent], `Dockerfile` mit
   `build`/`test`/`lint`-Stages, `.clang-tidy`) + Code-Gate-Fragment (`harness/mk/<modul>.mk`, `<pfad>`-aware:
   Root unscoped / Subdir modul-scoped) + `tools/harness/blocked/cpp` (g++/gcc/cmake/clang-tidy).
-- [ ] **Kein halluziniertes Gate** ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):
+- [x] **Kein halluziniertes Gate** ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):
   jedes `docker build --target <stage>` im cpp-Fragment hat eine gleichnamige Dockerfile-Stage
-  (`TestCodeGateFragment_TargetsMatchStages` deckt cpp Root+Subdir).
-- [ ] **Kopplung erzwungen:** `TestBlockedFragment_CoversAllGenProfiles` deckt cpp automatisch (ein
-  gen-Profil **ohne** `blocked/`-Eintrag → rot). **Determinismus** ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)):
-  cpp-Profil statisch, byte-identisch (`TestGenerate_Deterministic` deckt cpp).
-- [ ] **Versions-Fädelung generalisiert:** `goVersion`→`version` (gen); `gen.DefaultVersion(lang)` +
+  (`TestCppCodeGateFragment_TargetsMatchStages` deckt cpp Root+Subdir; Mutation 57 rot).
+- [x] **Kopplung erzwungen:** `TestBlockedFragment_CoversAllGenProfiles` deckt cpp automatisch (ein
+  gen-Profil **ohne** `blocked/`-Eintrag → rot; Mutation 56). **Determinismus** ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)):
+  cpp-Profil statisch, byte-identisch (dedizierter `TestGenerate_CppDeterministic` — sauberer als die
+  go-Variante zu erweitern).
+- [x] **Versions-Fädelung generalisiert:** `goVersion`→`version` (gen); `gen.DefaultVersion(lang)` +
   `SKEL_<LANG>_VERSION`-Env; `DefaultCppVersion`. Go rückwärtskompatibel (`SKEL_GO_VERSION` wirkt weiter,
-  `TestRun_SkelGoVersionOverride` grün); ein `SKEL_CPP_VERSION`-Test faedelt die ubuntu-Version ins cpp-Dockerfile.
-- [ ] `make full-smoke`: `add-lang cpp <subdir>` → `make -j gates` grün **inkl. C++-Gates** (cmake build +
+  `TestRun_SkelGoVersionOverride` grün); `TestRun_SkelCppVersionOverride` faedelt die ubuntu-Version ins cpp-Dockerfile (Mutation 59 rot).
+- [x] `make full-smoke`: `add-lang cpp <subdir>` → `make -j gates` grün **inkl. C++-Gates** (cmake build +
   ctest + clang-tidy real in Docker); Guard blockt `g++`/`cmake` (via `blocked/cpp`) + `pip` (Boden).
-- [ ] `make gates` grün; `make mutate` grün (cpp-Wächter rot gesehen).
-- [ ] Doku: README (C++ unterstützt) + Usage-Text (`--lang cpp`, `SKEL_CPP_VERSION`); Benutzerhandbuch prüfen.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] `make gates` grün; `make mutate` grün 50/0 (cpp-Wächter 54–59 rot gesehen; refactor-veraltete 19/20/34 reconciled).
+- [x] Doku: README (C++ unterstützt) + Usage-Text (`--lang cpp`, `SKEL_CPP_VERSION`); Benutzerhandbuch 1.3 (§6 phasiert).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -134,16 +136,44 @@ Was könnte schief gehen? Welche Carveouts entstehen ggf.?
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!--
-Wird *nach* Abschluss ergänzt. Inhalt:
-- Was hat funktioniert?
-- Was ging anders als geplant?
-- Steering-Loop-Eintrag: welcher Guide/Sensor sollte verbessert werden?
-  (kanonische Definition: [`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.0/kurs/de/grundlagen/klassifikation.md#steering-loop))
-- Folge-Slices: welche neuen open/-Einträge?
--->
+**Geliefert.** C++ als zweite Zielsprache über die bestehende Mechanik ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)):
+`internal/gen/cpp.go` (CMake-Skelett + Dockerfile-Stages build/test/lint + netzloser CTest +
+`.clang-tidy`, an cmake-xray/b-cad geeicht), `blockedByLang["cpp"]`, Versions-Generalisierung
+`goVersion`→`version` / `gen.DefaultVersion(lang)` / `skelVersion(SKEL_<LANG>_VERSION)`. Sensoren:
+`make gates` Exit 0, `make mutate` 50/0 (cpp-Wächter 54–59 rot gesehen), `make full-smoke` Exit 0
+(reale C++-Gates in Docker, Guard blockt `cmake`). Review **KONFORM** (0 HIGH/0 MEDIUM,
+[Report](../../../reviews/slice-039-review.md)), Verifikation **DoD BESTÄTIGT**.
 
-<!-- Erst nach Abschluss füllen. -->
+**Was funktionierte.** Die von [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) versprochene Sprach-Agnostik hielt: die zweite Sprache war
+**drei Map-Einträge** (`profiles`/`fragments`/`blockedByLang`) + Tests, **kein** Umbau der Mechanik.
+Der einzige substanzielle Aufwand war die Versions-Generalisierung — nicht die Profil-Erweiterung.
+
+**Was anders lief.** Die Marker-Grep-Prüfung im full-smoke-cpp-Block schlug beim ersten Lauf fehl,
+obwohl die C++-Gates real grün liefen: mit dem gemischten Mono-Repo fahren **9 Docker-Builds parallel**
+(`-j`), und der ~60 s lange apt-Lauf des C++-Bildes flutet BuildKit-`\r`-Progress, der die
+make-Recipe-Echo-Zeilen **anderer** Targets zerhackt → der Grep fand die Recipe-Zeile nicht. Fix: `-Otarget`
+(Output-Sync pro Target).
+
+**Steering-Loop.**
+- **`make -j`-Marker-Greps sind unter parallelem BuildKit fragil.** Ein E2E-Beleg, der eine make-Recipe-
+  Zeile aus `make -j`-Output grept, kann durch Cross-Target-`\r`-Interleaving (v.a. bei langsamen apt-
+  Stages) leer ausgehen, obwohl der Gate lief. **Regel:** solche Marker-Greps über `-Otarget` (Output-Sync)
+  laufen lassen — semantik-neutral, aber deterministische Ausgabe. Neuer operativer Sensor-Gotcha.
+- **Beim zweiten Instanz-Auftreten einer Achse ist die versteckte Kopplung der nach der ersten Instanz
+  benannte Parameter.** `goVersion` war go-benannt, obwohl „Version" je Sprache etwas anderes heißt
+  (Go-Version vs. ubuntu-Tag). Die eigentliche Arbeit war, den **Namen** zu generalisieren (`version` +
+  `DefaultVersion(lang)`), nicht einen Zweig hinzuzufügen. **Regel:** bevor die zweite Instanz kommt, das
+  Erst-Instanz-benannte Symbol suchen — es ist die Naht, an der der Umbau sitzt.
+- **Refactor-Mutations-Reconciliation (verstärkt, slice-034/035-Klasse).** `goVersion`→`version` +
+  gofmt-Map-Ausrichtung machten **drei** bestehende Mutations-Seds (19/20/34) stumm — „Patch veraltet",
+  von `make mutate` als BEFUND gefangen. Bestätigt: ein Refactor bewachten Codes muss die Mutations-Anker
+  **im selben Slice** re-verankern (Wächter = Code + Mutation zusammen bewegen).
+
+**Folge-Punkte (keine Blocker).** INFO-2 des Reviews (zwei **Wurzel**-Sprachen `add-lang go .` +
+`add-lang cpp .` kollidierten auf unscoped `test/lint/build`) liegt außerhalb des Mono-Repo-Vertrags
+(distinkte Pfade) — kein Slice, nur notiert. Der Architektur-Schalter (`--arch`) + a-check
+([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren), Meilenstein M4)
+folgen ADR-first als eigene Welle (nächster Schritt: `ADR-0008` Proposed). <!-- d-check:ignore (ADR-0008 existiert noch nicht — kommt als naechster Schritt) -->
 
 ## 8. Sub-Area-Modus-Begründung
 
