@@ -145,7 +145,55 @@ Wird *nach* Abschluss ergänzt. Inhalt:
 - Folge-Slices: welche neuen open/-Einträge?
 -->
 
-<!-- Erst nach Abschluss füllen. -->
+**Geliefert:** jede emittierte Datei trägt genau eine Idempotenz-Klasse ([`ADR-0007`](../../adr/0007-bootstrap-phasen.md)
+Entscheidung 3) — **konvergent** (`writeFileMode`: Enforce/Makefile/BaselineVerify/`d-check.mk`+`doc-gate.mk`/
+BlockedFragment/wireLang-Fragment/`.harness/skills/*`/Baseline-Fetch — kanonisch neu, prunt nie) oder
+**skip-if-present** (`writeSkipIfPresent`: Templates-Doc-Chain/README/Commands/wire.Place-Skelett/`.d-check.yml`
+— nie clobbern). Das Pre-Flight-refuse/`--force`-Modell (slice-025) ist gefallen; ein 2. Init-Lauf ist
+**idempotent** (Exit 0). `--force` entfernt (Nutzer-Entscheidung via AskUserQuestion). `blocked/<sprache>`
+von skip-if-present (slice-037) auf **konvergent** gehoben (Review-I-1-Versöhnung). Review **KONFORM nach
+Auflösung** (1 MEDIUM: `.harness/skills/*` war fälschlich skip-if-present), Verifier **DoD BESTÄTIGT** (alle
+Sensoren real grün: `make gates`, `make full-smoke` mit Idempotenz-/kein-Prune-Fitness, `make mutate` 44 ok/0)
+— `docs/reviews/2026-07-23-slice-038-{review,verify}.md`.
+
+**Was funktionierte:** Die **zwei Writer** (`writeFileMode` konvergent / `writeSkipIfPresent`) lokalisierten
+die Klassifikation an EINER Stelle — jeder Emitter wählt nur noch den Writer je Datei, statt eigene
+Kollisions-Logik zu tragen. DocGate + Templates zeigen die **datei-granulare Mischklasse** (nicht je
+Verzeichnis): `.d-check.yml` skip neben `d-check.mk` konvergent; `.harness/skills/*` konvergent neben der
+Doc-Chain skip. Die **lastenheft-CR 0.10.0 + architecture.md §5 hatten das Modell schon antizipiert** (der
+Slice-034-Doc-Nachzug schrieb die Ziel-Form) — die Implementierung musste nur das Ist einholen.
+
+**Was anders lief:** (1) Der **Reviewer + Verifier fingen BEIDE dieselbe stille Fehl-Klasse**: `.harness/skills/*`
+lief über `emit.Templates`, das slice-038 pauschal auf skip-if-present stellte — die ADR-Tabelle listet sie
+aber explizit als konvergent. Die Uniform-Umstellung eines Emitters faltete eine Datei-Ausnahme still ein.
+Zwei unabhängige frische Kontexte fanden es; der Implementer (im Batch-Refactor) übersah es. (2) Die
+**Kollisions-Tests waren nicht migrierbar, sondern zu entfernen**: 6 cmd-Pre-Flight-Tests prüften einen
+Mechanismus, den der Slice ABSCHAFFT — sie waren unit-testbar NUR, weil der Pre-Flight vor Docker abbrach;
+ohne ihn erreicht ein Re-Lauf DocGate (Docker), also wandert die Idempotenz-Prüfung in full-smoke (E2E) +
+die Emitter-Unit-Tests. (3) **Parallel-Sensor-Interferenz:** die gleichzeitig laufenden Reviewer/Verifier-
+`make test` fingen einen mutierten Zwischenstand eines parallelen `make mutate` — ein Messartefakt, kein
+Defekt (beide erkannten es).
+
+**Steering-Loop:**
+1. **Ein Emitter uniform auf eine Klasse zu stellen, faltet Datei-Ausnahmen still ein.** `emit.Templates`
+   pauschal skip-if-present zu machen übersah, dass `.harness/skills/*` konvergent ist (ADR-Tabelle Z.100).
+   Guide-Schärfung: *bei einer Per-Datei-Klassifikation über einen Batch-Emitter jede Datei der ADR-Tabelle
+   zuordnen, nicht den Emitter als Ganzes* — DocGate war der richtige Präzedenzfall (gemischt), Templates
+   folgt ihm jetzt. Der Sensor dafür ist ein Konformitäts-Abgleich Code↔ADR-Tabelle je emittierter Datei.
+2. **Eine abgeschaffte Mechanik hat abzuschaffende, nicht zu migrierende Tests.** Die Pre-Flight-Kollisions-
+   Tests testeten den Refuse, den slice-038 ENTFERNT — sie zu „idempotent umschreiben" ginge nicht (der
+   Re-Lauf braucht dann Docker). Lehre: wenn ein Slice einen Mechanismus supersedet, wandert dessen
+   Test-Deckung in die neue Ebene (hier: Emitter-Unit + full-smoke-E2E), die alten Tests + ihre Mutationen
+   werden entfernt (12/14/23/25/46 raus), nicht gebogen.
+3. **Zwei Verifikations-Rollen, die dieselbe Fehl-Klasse finden, bestätigen den Wert der Rollen-Trennung.**
+   Reviewer (gegen ADR-Tabelle) UND Verifier (gegen DoD „architecture.md prüfen" + ADR-Konformität) fingen
+   die Skills-Klasse unabhängig — der blinde Fleck des Batch-Refactors war für den schreibenden Kontext
+   unsichtbar, für zwei frische nicht.
+
+**Folge-Slices / -Punkte:** (a) **welle-05 ist mit diesem Slice KOMPLETT** (034–038 alle done) → `/close-welle`.
+(b) **smoke.sh:89** toter `@@BLOCKED_SET@@`-Check (slice-036-Folgepunkt, weiter offen). (c) git-Repo-Vorbedingung
+der emittierten `make gates` (INFO I-1, Backlog). (d) optionale Interaktivität + Sprach-Profile über `go`
+hinaus bleiben [`ADR-0007`](../../adr/0007-bootstrap-phasen.md)-Backlog.
 
 ## 8. Sub-Area-Modus-Begründung
 
