@@ -138,7 +138,54 @@ Wird *nach* Abschluss ergänzt. Inhalt:
 - Folge-Slices: welche neuen open/-Einträge?
 -->
 
-<!-- Erst nach Abschluss füllen. -->
+**Geliefert:** `ai-harness-init add-lang <sprache> <pfad>` — wiederholbares Subkommando (Mono-Repo).
+`gen` bekam den Skelett/Fragment-Split (`gen.CodeGateFragment(lang, path)` + `gen.ModuleName`): das
+Code-Gate-Fragment ist jetzt `<pfad>`-aware — Root (`.`) die bestehende UNSCOPED Fassung
+(`test`/`lint`/`build`, `docker build .`, byte-identisch/rückwärtskompatibel), Subdir modul-scoped
+(`test-<modul>` …, `docker build <pfad>`, kollisionsfrei). `emit.Enforce` wurde sprach-agnostisch;
+`blocked/<sprache>` kommt aus dem neuen `emit.BlockedFragment` (skip-if-present, per-Sprache geteilt).
+`cmd` trägt den Subkommando-Dispatch + `wireLang`; `--lang`-Init = Init + `wireLang(., lang)`. Review
+**KONFORM nach Auflösung** (1 MEDIUM behoben: `<pfad>`-Containment), Verifier **DoD BESTÄTIGT** (alle
+Sensoren real grün: `make gates`, `make full-smoke` mit Mono-Repo `apps/api`+`apps/web`, `make mutate`
+44 ok / 0 Befund) — `docs/reviews/2026-07-23-slice-037-{review,verify}.md`.
+
+**Was funktionierte:** Die **Byte-Identität der Root-Fassung** (`context == "."` → das unveränderte
+`goMkFragmentTmpl`) hielt `smoke.sh`, `full-smoke.sh` und den `--lang`-One-Shot ohne jede Anpassung grün —
+die Mono-Repo-Erweiterung ist rein additiv (Subdir = neue scoped Fassung), der bestehende Pfad unberührt.
+Der full-smoke-E2E baute BEIDE Module (`apps-api:build` + `apps-web:build`) in EINEM `make -j gates`-Lauf
+— die Kollisionsfreiheit ist real bewiesen, nicht nur unit-behauptet.
+
+**Was anders lief:** (1) Der **Reviewer fing M-1** — ein nutzer-kontrollierter `<pfad>` erreichte zum
+ersten Mal `wire.Place`, und `cleanPath` (reines `filepath.Clean`) ließ `add-lang go ..` still aus dem
+Repo heraus schreiben. Der Implementer sah die Skelett-Platzierung, nicht die Eskalation. (2) Die
+**Mutation 17 wurde fix-induziert unspezifisch**: das neue zweite `if !ok {` (in `CodeGateFragment`) fing
+die breite `s/if !ok {/…/`-sed mit, der Nil-Func-Call dort paniced und verschob den Fehler-Ort — `make
+mutate` meldete es als **Befund** (falscher Grund), nicht als stilles Grün. Verankerung an Generates
+eindeutiger Return-Zeile löste es. (3) **Benennung:** der geteilte Kern heißt `wireLang`, nicht `addLang`
+(DoD-4-Wortlaut) — die Rückwärtskompat-Substanz hält, nur der Name im Plan war ungenau.
+
+**Steering-Loop:**
+1. **Der erste nutzer-kontrollierte Pfad zu einer Schreib-Operation braucht einen Containment-Check.**
+   `add-lang <pfad>` war die erste Stelle, an der ein CLI-Argument (nicht ein hartkodiertes `.`) zu
+   `wire.Place` floss — Containment (`..`/absolut → Exit 2) ist dort Pflicht, nicht Kür. Guide-Schärfung:
+   *jede neue CLI-Oberfläche, die einen Pfad annimmt und schreibt, benennt im Plan den Containment-Fall
+   und deckt ihn mit einem Ausbruch-Test + Mutation.*
+2. **Eine breite `sed`-Mutation wird durch ein neues gleichlautendes Konstrukt unspezifisch.** Mutation 17
+   (`s/if !ok {/…/`) war zahnhaft, solange `if !ok {` genau einmal vorkam; slice-037 fügte ein zweites
+   hinzu → die Mutation traf beide, panicte anderswo, `make mutate` fing es als Befund. Sensor-Lehre:
+   `make mutate`s „falscher-Grund"-Erkennung ist genau dafür da — **beim Hinzufügen eines Konstrukts, das
+   den sed-Anker einer bestehenden Mutation dupliziert, die Mutation an einer eindeutigen Zeile
+   re-verankern** (hier: die bare `return &UnknownLangError`-Zeile, die `CodeGateFragment`s `return "", &…`
+   nicht teilt).
+3. **Additive Erweiterung schützt bestehende Sensoren durch Byte-Identität.** Die Root-Fassung
+   byte-identisch zu halten (statt „auch den Root scopen") hielt drei Sensoren (smoke/full-smoke/--lang)
+   ohne Anpassung grün — die Regressionsfläche blieb auf den neuen Subdir-Zweig begrenzt.
+
+**Folge-Slices / -Punkte:** (a) **slice-038** (Idempotenz-Klassifikation konvergent/skip-if-present) ist der
+nächste — dort die blocked-Konvergenz (Review-I-1: ADR-0007 Z.100 listet blocked als konvergent, slice-037
+macht es skip-if-present) mit der ADR-Tabelle versöhnen + die Skelett-Dateien (Same-Module-Re-Lauf)
+klassifizieren. (b) **smoke.sh:89** toter `@@BLOCKED_SET@@`-Check (slice-036-Folgepunkt, weiter offen).
+(c) Optionale Interaktivität + Sprach-Profile über `go` hinaus bleiben ADR-0007-Backlog.
 
 ## 8. Sub-Area-Modus-Begründung
 
