@@ -146,6 +146,13 @@ func runAddLang(args []string, targetDir string, stdout, stderr io.Writer) int {
 		fmt.Fprint(stderr, addLangUsage)
 		return 2
 	}
+	// Ueberzaehlige Positionsargumente (Review-LOW): `add-lang go apps/api extra` darf
+	// `extra` nicht still verschlucken — ein Tippfehler soll auffallen, nicht durchrutschen.
+	if fs.NArg() > 0 {
+		fmt.Fprintln(stderr, "Fehler: unerwartetes Argument:", fs.Arg(0))
+		fmt.Fprint(stderr, addLangUsage)
+		return 2
+	}
 	return addLang(targetDir, path, lang, *force, stdout, stderr)
 }
 
@@ -155,6 +162,15 @@ func runAddLang(args []string, targetDir string, stdout, stderr io.Writer) int {
 // blocked. Netzlos: add-lang setzt einen bereits gebootstrappten Aggregator voraus
 // (Root-Makefile mit include harness/mk/*.mk) und ergaenzt nur ein Fragment.
 func addLang(targetDir, path, lang string, force bool, stdout, stderr io.Writer) int {
+	// Containment (Review-M-1): <pfad> ist das erste nutzer-kontrollierte Ziel, das
+	// wire.Place erreicht. Ein absoluter Pfad oder ein `..`-Ausbruch schriebe Skelett-
+	// Dateien AUS dem Ziel-Repo heraus (der Kollisions-Pre-Flight statet dieselben
+	// eskalierten Pfade und schuetzt nicht). Fail-fast mit Exit 2, bevor irgendetwas
+	// generiert/platziert wird — das Modul muss im Repo liegen.
+	if clean := filepath.ToSlash(filepath.Clean(path)); filepath.IsAbs(path) || clean == ".." || strings.HasPrefix(clean, "../") {
+		fmt.Fprintln(stderr, "Fehler: <pfad> muss innerhalb des Repos liegen (kein absoluter Pfad, kein ..).")
+		return 2
+	}
 	// Vorbedingung: der Aggregator (Root-Makefile) muss existieren — sonst wird das
 	// Fragment nicht verdrahtet (kein `make gates`). Freundlicher Abbruch statt Halbstand.
 	switch _, err := os.Stat(filepath.Join(targetDir, emit.MakefilePath)); {

@@ -488,3 +488,37 @@ func readFile(t *testing.T, path string) string {
 	}
 	return string(b)
 }
+
+// TestRun_AddLangPathEscape (Review-M-1): ein absoluter oder `..`-ausbrechender <pfad>
+// schreibt NICHTS aus dem Repo heraus, sondern bricht mit Exit 2 ab (Containment). Rot-
+// Gegenbeispiel: test/mutations neutralisiert den Containment-Check -> das Skelett landet
+// im Elternverzeichnis, Exit != 2 -> rot.
+func TestRun_AddLangPathEscape(t *testing.T) {
+	parent := t.TempDir()
+	repo := filepath.Join(parent, "repo")
+	if err := os.MkdirAll(repo, 0o755); err != nil {
+		t.Fatalf("setup: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(repo, "Makefile"), []byte("include harness/mk/*.mk\n"), 0o644); err != nil {
+		t.Fatalf("setup: %v", err)
+	}
+	for _, path := range []string{"..", "../evil", "/etc/evil"} {
+		var out, errb bytes.Buffer
+		if code := run([]string{"add-lang", "go", path}, repo, testSources(t), &out, &errb); code != 2 {
+			t.Errorf("add-lang go %q exit %d, want 2 (Containment)", path, code)
+		}
+	}
+	// Nichts ausserhalb des Repos geschrieben (kein Ausbruch ins Elternverzeichnis).
+	if _, err := os.Stat(filepath.Join(parent, "go.mod")); !os.IsNotExist(err) {
+		t.Errorf("add-lang schrieb go.mod ins Elternverzeichnis (Containment-Ausbruch!): %v", err)
+	}
+}
+
+// TestRun_AddLangExcessArg (Review-LOW): ein ueberzaehliges Positionsargument wird NICHT
+// still verschluckt, sondern faellt als Aufruf-Fehler (Exit 2) auf.
+func TestRun_AddLangExcessArg(t *testing.T) {
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "go", "apps/api", "extra"}, initializedRepo(t), testSources(t), &out, &errb); code != 2 {
+		t.Fatalf("add-lang mit ueberzaehligem Arg exit %d, want 2", code)
+	}
+}
