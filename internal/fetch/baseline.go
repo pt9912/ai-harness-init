@@ -16,11 +16,11 @@
 //      irgendein Schritt ab, entsteht KEINE halbe Baseline — wohl aber ein
 //      leeres destDir (s. Baseline). Das ist der Unterschied zwischen "keine
 //      Teil-Baseline" und "nichts angefasst"; nur Ersteres wird zugesagt.
-//      Mit --force ueber eine vorhandene Baseline gilt das eingeschraenkt: die
-//      alte wird beiseite gerenamt statt geloescht, ein Fehlschlag rollt zurueck
-//      — es bleibt ein Restfenster von zwei Renames, in dem ein Prozess-Tod das
-//      Ziel ohne Baseline zuruecklaesst (Daten unversehrt in .baseline-alt-*,
-//      s. replaceBaseline). Ehrlich benannt statt pauschal zugesagt.
+//      Ueber eine vorhandene Baseline (konvergent, slice-038) gilt das
+//      eingeschraenkt: die alte wird beiseite gerenamt statt geloescht, ein
+//      Fehlschlag rollt zurueck — es bleibt ein Restfenster von zwei Renames, in
+//      dem ein Prozess-Tod das Ziel ohne Baseline zuruecklaesst (Daten unversehrt
+//      in .baseline-alt-*, s. replaceBaseline). Ehrlich benannt statt pauschal zugesagt.
 package fetch
 
 import (

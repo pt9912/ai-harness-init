@@ -151,11 +151,9 @@ func inScope(rel string) bool {
 
 // TemplateTargets liefert die Ziel-Relpfade, die Templates() in targetDir
 // SCHREIBEN wuerde — dieselbe Klassifikation (checkRoot + planTemplates), nur
-// ohne die Schreibvorgaenge. Der Bootstrap-Pre-Flight (cmd, slice-025) prueft
-// damit die Template-Kollisionen VOR dem ersten Emit-Write, gemeinsam mit den
-// uebrigen Emit-Zielen — kollidiert IRGENDEIN Emit-Ziel ohne --force, schreibt
-// KEIN Emit-Schritt. checkRoot laeuft hier mit: eine falsch gewurzelte gefetchte
-// Baseline faellt so im Pre-Flight auf, VOR dem Docker-Lauf in DocGate.
+// ohne die Schreibvorgaenge (fuer Tests/Inspektion). checkRoot laeuft hier mit:
+// eine falsch gewurzelte gefetchte Baseline faellt so schon hier auf, mit lauter
+// Meldung statt still leerem Emit (LH-QA-01).
 func TemplateTargets(src fs.FS, name string) ([]string, error) {
 	if err := checkRoot(src); err != nil {
 		return nil, err
@@ -192,11 +190,17 @@ func Templates(src fs.FS, targetDir, name string) error {
 	if err != nil {
 		return err
 	}
-	// SKIP-IF-PRESENT (slice-038, ADR-0007): die Doc-Chain-Singletons + Struktur-gitkeeps
-	// sind Adopter-Boden — ein vorhandenes (adopter-gefuelltes) Singleton ueberlebt einen
-	// idempotenten Re-Lauf unberuehrt; nie clobbern.
+	// GEMISCHTE Idempotenz-Klasse (slice-038, ADR-0007 Z.100): .harness/skills/* ist
+	// tool-eigene Infrastruktur -> KONVERGENT (bei jedem Lauf kanonisch neu, heilt
+	// Baseline-Bump); der uebrige Satz (Doc-Chain-Singletons + Struktur-gitkeeps) ist
+	// Adopter-Boden -> SKIP-IF-PRESENT (nie clobbern, ein adopter-gefuelltes Singleton
+	// ueberlebt unberuehrt).
 	for rel, content := range plan {
-		if err := writeSkipIfPresent(targetDir, rel, content, 0o644); err != nil {
+		write := writeSkipIfPresent
+		if strings.HasPrefix(rel, ".harness/skills/") {
+			write = writeFileMode // konvergent
+		}
+		if err := write(targetDir, rel, content, 0o644); err != nil {
 			return err
 		}
 	}

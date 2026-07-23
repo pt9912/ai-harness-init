@@ -459,6 +459,41 @@ func TestTemplates_SkipIfPresent(t *testing.T) {
 	}
 }
 
+// TestTemplates_SkillsConvergent (slice-038, Review-MEDIUM-Auflösung): .harness/skills/* ist
+// tool-eigene Infrastruktur (ADR-0007 Z.100 KONVERGENT), NICHT skip-if-present wie der uebrige
+// Templates-Satz. Ein Re-Lauf ueber ein modifiziertes Skill heilt es kanonisch — waehrend ein
+// Doc-Chain-Singleton (skip-if-present) daneben unberuehrt bleibt. Rot-Gegenbeispiel: eine
+// Mutation, die die Skills-Ausnahme neutralisiert, laesst die Skill-Drift stehen.
+func TestTemplates_SkillsConvergent(t *testing.T) {
+	dir := t.TempDir()
+	skill := filepath.Join(dir, filepath.FromSlash(".harness/skills/reviewer.md"))
+	if err := os.MkdirAll(filepath.Dir(skill), 0o755); err != nil {
+		t.Fatalf("Setup: %v", err)
+	}
+	if err := os.WriteFile(skill, []byte("adopter-modifiziert"), 0o644); err != nil {
+		t.Fatalf("Setup: %v", err)
+	}
+	if err := os.MkdirAll(filepath.Join(dir, "spec"), 0o755); err != nil {
+		t.Fatalf("Setup: %v", err)
+	}
+	const singleton = "# adopter-gefuellt\n"
+	specTarget := filepath.Join(dir, "spec/lastenheft.md")
+	if err := os.WriteFile(specTarget, []byte(singleton), 0o644); err != nil {
+		t.Fatalf("Setup: %v", err)
+	}
+	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
+		t.Fatalf("Templates: %v", err)
+	}
+	// Skill KONVERGENT: Drift geheilt (nicht mehr die Adopter-Modifikation).
+	if got := mustReadString(t, skill); got == "adopter-modifiziert" {
+		t.Error("Skill .harness/skills/reviewer.md NICHT geheilt (konvergent verletzt, ADR-0007 Z.100)")
+	}
+	// Doc-Chain-Singleton SKIP-IF-PRESENT: unberuehrt.
+	if got := mustReadString(t, specTarget); got != singleton {
+		t.Errorf("Doc-Chain-Singleton clobbert (skip-if-present verletzt): %q", got)
+	}
+}
+
 func TestStripHintBlock(t *testing.T) {
 	in := "# Titel\n\n> **Template-Hinweis.** Zeile eins.\n> Zeile zwei.\n\n**Inhalt**\n"
 	want := "# Titel\n\n**Inhalt**\n"

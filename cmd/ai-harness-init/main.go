@@ -201,13 +201,11 @@ func wireLang(targetDir, skelDir, path, lang, goVersion string) error {
 	return emit.BlockedFragment(targetDir, lang)
 }
 
-// bootstrap fuehrt die Kette in vier Phasen aus (Ueberblick im Package-Doc). Die
-// Pre-Flights DRUCKEN UND RETURNEN im selben Block: der Beobachtungswert (die
-// Fehlermeldung) ist damit an die Wirkung (der Abbruch) gebunden — eine Mutation,
-// die nur den Abbruch entfernt, entfernt auch die Meldung. Ein frueherer
-// reportPreflight-Helfer trennte beides und liess den Print auch dann laufen, wenn
-// der Abbruch neutralisiert war; die Emit-Pre-Flight-Mutation blieb dadurch still
-// gruen (slice-025-Befund, von `make mutate` gefangen — genau sein Zweck).
+// bootstrap fuehrt die Kette in drei Phasen aus (Ueberblick im Package-Doc): (1) Skelett
+// generieren, (2) Baseline holen (konvergent), (3) emittieren (jede Datei mit ihrer
+// Idempotenz-Klasse). Seit slice-038 gibt es keinen Pre-Flight-refuse mehr; die
+// Fehlerpfade DRUCKEN UND RETURNEN im selben Block (der Beobachtungswert ist an die
+// Wirkung gebunden — eine Mutation, die nur den Abbruch entfernt, entfernt auch die Meldung).
 func bootstrap(targetDir, lang, name string, src sources, stdout, stderr io.Writer) int {
 	tag := envOr("COURSE_TAG", fetch.DefaultTag)
 	skelDir := filepath.Join(targetDir, ".harness", "skeleton")

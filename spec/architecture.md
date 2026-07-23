@@ -107,9 +107,10 @@ Der Fragment-Name ist **modul-** (nicht sprach-)abgeleitet: `<modul>` kommt aus 
 kollisionsfrei koexistieren. Subdir-Module tragen **modul-scoped** Targets
 (`test-<modul>`/`lint-<modul>`/`build-<modul>`, Build-Kontext `<pfad>`); der Root-Fall
 (`--lang`-One-Shot, `<pfad>=.`) behält die unscoped `test`/`lint`/`build`
-(rückwärtskompatibel). `blocked/<sprache>` ist per-Sprache **skip-if-present** — mehrere
-Module derselben Sprache teilen es. `--lang <X>` beim Init ist die One-Shot-Kurzform
-(Init + ein `add-lang(<X>, .)`); `emit.Enforce` bleibt dabei sprach-agnostisch.
+(rückwärtskompatibel). `blocked/<sprache>` ist per-Sprache **konvergent** (tool-fixierter
+Inhalt, bei jedem Lauf kanonisch neu — mehrere Module derselben Sprache schreiben es
+byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
+`add-lang(<X>, .)`); `emit.Enforce` bleibt dabei sprach-agnostisch.
 
 ## 5. Idempotenz, Fragment-Assembly und Resume
 
