@@ -299,27 +299,38 @@ COURSE_TAG=v3.5.0 SKEL_GO_VERSION=1.26.4 ai-harness-init --lang go --name "Mein 
 
 ## 6. Was wird angelegt
 
-Nach einem erfolgreichen Lauf enthält Ihr Verzeichnis die folgende Struktur (leere Prozess-Ordner werden mit einer `.gitkeep`-Datei gehalten, damit `git` sie behält):
+Der Bootstrap läuft in **Phasen**: Ein **Aufsetzen ohne Sprache** legt die dokument-geführte Basis an; ein **Sprachmodul** kommt danach per `--lang <sprache>` (Kurzform beim Aufsetzen) oder jederzeit per `add-lang <sprache> <pfad>` dazu — wiederholbar zu einem Mono-Repo. Entsprechend zeigen wir beide Fälle.
+
+### Phase 1 — Aufsetzen ohne Sprache (dokument-only)
+
+`ai-harness-init --name "Mein Projekt"` (ohne `--lang`) legt die sprach-unabhängige Basis an (leere Prozess-Ordner werden mit einer `.gitkeep`-Datei gehalten, damit `git` sie behält):
 
 ```text
 mein-projekt/
 ├── AGENTS.md                 Regeln und Verweise für KI-Agenten (Vorlage, ausfüllen)
 ├── README.md                 Projekt-Überblick
-├── Makefile                  Einstiegspunkt: make gates, lint, build, test …
-├── Dockerfile                Bau- und Prüf-Stufen (Docker-only)
-├── go.mod                    Go-Modul-Definition
-├── .golangci.yml             Konfiguration des Go-Linters
+├── Makefile                  Einstiegspunkt: make gates …
 ├── .d-check.yml              Konfiguration der Dokumentations-Prüfung
 ├── d-check.mk                Prüf-Ziel der Dokumentations-Prüfung (make docs-check)
-├── cmd/app/main.go           Lauffähiges Beispiel-Grundgerüst
 ├── spec/                     Anforderungen und Architektur (Vorlagen)
 ├── harness/                  Einstiegs- und Konventions-Dokumente (Vorlagen)
+│   └── mk/                   Prüf-Bausteine: Doc-Gate, Regelwerk-Prüfung, Schutz-Hooks
 ├── docs/plan/                Planung: Architektur-Entscheidungen, Slices, Roadmap
 ├── tools/harness/            Hilfsskripte des Repositorys
+├── .claude/                  Schutz-Hooks (Command-Guard, Gate-Nachweis) + Arbeitsabläufe
 └── .harness/baseline/        Mitgeliefertes Regelwerk und Vorlagen (netzunabhängig)
 ```
 
-Die **Sprach-Dateien** entstehen **nur mit einer Sprache** — also bei `--lang <sprache>` oder per `add-lang` — samt Prüf-Baustein `harness/mk/<modul>.mk`. Bei Go sind das `Dockerfile`, `go.mod`, `.golangci.yml`, `cmd/app/main.go`; bei C++ `Dockerfile`, `CMakeLists.txt`, `src/main.cpp`, `tests/` (netzloser CTest) und `.clang-tidy`. Ein Aufsetzen **ohne** Sprache legt sie nicht an (dokument-only); dazu kommen die Schutz-Hooks unter `.claude/` (Command-Guard) und die Prüf-Bausteine `harness/mk/*.mk`.
+Schon hier läuft `make gates` **grün** — dokument-only (Dokumentations-Prüfung + Regelwerk-Integrität), **ohne** Code-Gate und **ohne** Sprach-Grundgerüst.
+
+### Phase 2 — ein Sprachmodul hinzufügen
+
+`--lang <sprache>` (beim Aufsetzen) oder `add-lang <sprache> <pfad>` (jederzeit danach) legt **zusätzlich** die Sprach-Dateien an, samt Prüf-Baustein `harness/mk/<modul>.mk`. Sie unterscheiden sich je Sprache:
+
+- **Go:** `Dockerfile`, `go.mod`, `.golangci.yml`, `cmd/app/main.go`
+- **C++:** `Dockerfile`, `CMakeLists.txt`, `src/main.cpp`, `tests/` (netzloser CTest) und `.clang-tidy`
+
+Am Wurzelverzeichnis (`--lang go` bzw. `add-lang go .`) liegen sie neben den Basis-Dateien; in einem **Mono-Repo** (mehrere `add-lang`-Läufe mit verschiedenen `<pfad>`) je Modul ein solcher Satz unter seinem `<pfad>`, auch mit gemischten Sprachen. Erst mit einem Sprachmodul fährt `make gates` **zusätzlich** die Code-Gates (lint/build/test in Docker).
 
 Die Dateien mit der Endung `.template.md` unter `.harness/baseline/` sind **Vorlagen**: Sie kopieren sie bei Bedarf und füllen sie aus (z. B. für eine neue Architektur-Entscheidung). Die Prozess-Regeln erklären, wann welche Vorlage zum Einsatz kommt.
 
