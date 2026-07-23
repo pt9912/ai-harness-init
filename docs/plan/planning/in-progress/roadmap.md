@@ -12,28 +12,25 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**Keine aktive Welle.** [welle-05 — Bootstrap-Phasen](../done/welle-05-bootstrap-phasen.md) ist
-**geschlossen (2026-07-23)** — [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md) ist umgesetzt
-(Init sprach-agnostisch, `add-lang` wiederholbar/Mono-Repo, idempotente Emission konvergent/skip-if-present,
-Guard-Boden gebacken). Ergebnisse: [welle-05-results.md](../done/welle-05-results.md). Mit welle-04 + welle-05
-ist **Meilenstein M3** (durchsetzender, phasierter Harness) erreicht — siehe die Meilenstein-Tabelle unten.
+**Welle-ID:** keine aktive Welle (zuletzt [welle-05](../done/welle-05-bootstrap-phasen.md), geschlossen 2026-07-23).
+**Nächster Schnitt:** noch offen — cp-Disziplin (Plandatei erst, wenn ihr erster Slice steht); Kandidaten unter **Nächste Wellen**.
 
-Die nächste Welle ist **noch nicht geschnitten** (green-before-extend, cp-Disziplin): die Backlog-Cluster
-**B/C/D** (unten) sind die Kandidaten. Die benannten `open/`-Folgepunkte aus welle-05 (git-Vorbedingung der
-emittierten `make gates` / [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md) INFO I-1;
-`smoke.sh:89` toter `@@BLOCKED_SET@@`-Check) stehen jetzt auditierbar im Backlog (Cluster D), nicht mehr als
-Prosa hier.
+**Closure-Trigger:** n/a (keine aktive Welle).
 
 ## Nächste Wellen
 
-Nach [welle-05](../done/welle-05-bootstrap-phasen.md) sind die **Backlog-Cluster B/C/D** (unten) die
-Kandidaten; Plandatei per `cp`, sobald der erste Slice geschnitten wird (green-before-extend; cp-Disziplin —
-kein Vorab-Schnitt). **Cluster B (Freshness) ist der reifste Kandidat**: sein Trigger „M2 erreicht" ist
-gefeuert (2026-07-22) — C und D warten dagegen auf eine erneut beobachtete Befund-Klasse bzw. die nächste
-Wartungsrunde. **a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren))
-bleibt aufgeschoben** (hängt an hexagonalen Schichten — weder Dogfood noch Skelett tragen
-`domain/ports/adapters`); es ist der Kandidat für ein späteres **M4** (zusammen mit vorgefertigten
-Release-Binaries).
+Keine Welle ist geschnitten (cp-Disziplin — Plandatei erst per `cp`, wenn ihr erster Slice steht). Die
+prospektiven Kandidaten entsprechen den Backlog-Clustern; volle Herkunft + Folge-Punkte stehen im Backlog (unten):
+
+| Welle-Kandidat | Trigger | Wichtigste Slices | Aufwand |
+|---|---|---|---|
+| Freshness (Backlog B) | M2 erreicht (**gefeuert** 2026-07-22) oder erste beobachtete Pin-/Tag-/Quellen-Drift | go-freshness-Sensor · `SKEL_GO_VERSION=latest` · Quellen-Freshness | S–M |
+| Doc-Gate-Härtung (Backlog C) | erneut beobachtete Befund-Klasse | Anker-Fragment-Sensor · Prosa-Zahlen-Provenienz · citations | S |
+| Doku/Prozess-Wartung (Backlog D) | nächste Harness-Wartungsrunde (kein Welle-Trigger) | `done/`-Link-Exemption · `smoke.sh:89` · git-Vorbedingung `make gates` | S |
+
+**a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) bleibt aufgeschoben**
+(hexagonale Schichten fehlen — weder Dogfood noch Skelett tragen `domain/ports/adapters`); Kandidat für ein
+späteres **M4** (zusammen mit vorgefertigten Release-Binaries).
 
 ## Backlog (aus Slice-§6 gehoben, 2026-07-21)
 
