@@ -23,8 +23,9 @@ erledigt, siehe unten).
   — 034 **done**, [035](../done/slice-035-cli-phasierung.md) **done** (✅ Review konform + DoD bestätigt),
   [036](../done/slice-036-guard-blocked-union.md) **done** (✅ Review konform + DoD bestätigt),
   [037](../done/slice-037-add-lang.md) **done** (✅ Review konform nach M-1-Auflösung + DoD bestätigt —
-  `add-lang <sprache> <pfad>`, wiederholbar/Mono-Repo, `<pfad>`-aware Fragment, blocked skip-if-present);
-  038 als nächstes (Idempotenz-Klassifikation; cp-Disziplin: per `cp`, sobald er nach `next/` geht).
+  `add-lang <sprache> <pfad>`, wiederholbar/Mono-Repo, `<pfad>`-aware Fragment, blocked skip-if-present),
+  [038](slice-038-idempotenz-klassifikation.md) **in-progress** (Idempotenz-Klassifikation konvergent/
+  skip-if-present, `--force` entfernt, letzter Slice → dann welle-05-Closure).
 - **Trigger (erfüllt):** [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md) Accepted;
   CR [`lastenheft.md`](../../../../spec/lastenheft.md) 0.10.0 **und** der
   [`architecture.md`](../../../../spec/architecture.md)-Nachzug erledigt.
