@@ -93,8 +93,39 @@ grün · Slice per `git mv` nach `done/` · Closure-Notiz geschrieben.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-*Erst nach Abschluss füllen — was funktionierte · was anders lief · Steering-Loop-Eintrag ·
-Folge-Slices.*
+**Geliefert:** Init ist sprach-agnostisch — `--lang` optional. Sprachloser Bootstrap → `make gates`
+grün auf reinen Docs (docs-check + baseline-verify + record-gates, **kein** Code-Gate/Skelett). Der
+Aggregator ist vom `gen` in einen **Init-Emitter** (`emit.Makefile`) relocatet (der Option-A-Deferral aus
+slice-034). Review **KONFORM** (0 HIGH/MEDIUM, 1 INFO), DoD **bestätigt**
+(`docs/reviews/2026-07-23-slice-035-review.md`, `docs/reviews/2026-07-23-slice-035-verify.md`).
+
+**Was funktionierte:** die **Relocation** war chirurgisch — der Aggregator-Const **und** sein
+Ordnungskanten-Wächter (`TestGenerate_AggregatorHasOrderEdge` → `TestMakefile_HasOrderEdge`) **und** die
+Mutation 38 (`# files` → `emit/makefile.go`) wanderten **zusammen**; Reviewer + Verifier bestätigten:
+**kein Wächter an toter `gen`-Ausgabe** (die slice-034-F-1-Klasse trat nicht auf). Der doc-only-Lauf im
+`full-smoke` belegt sprachlos grün **und** die Abwesenheit von Code-Gate-Markern/Skelett
+([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+
+**Was anders lief:** die neuen `hasLang`-Conditionals hoben `bootstrap` über die gocognit-Schwelle
+(23 > 20) — die lineare Emit-Sequenz wurde in `emitAll` ausgelagert (die Pre-Flights blieben in
+`bootstrap`, weil ihr Print+Return an die Wirkung gebunden ist, slice-025).
+
+**Steering-Loop:**
+1. **Relocation = Code + Wächter + Mutation zusammen bewegen.** Wandert eine geprüfte Eigenschaft in ein
+   anderes Paket, MUSS der Wächter-Test und sein `test/mutations`-Fall mit — sonst prüft der Test tote
+   Ausgabe (die slice-034-F-1-Klasse). Hier korrekt vorweggenommen; der Reviewer bestätigte es explizit.
+2. **Phasieren eines Monolithen hebt die kognitive Komplexität.** Die lineare Fehler-Kette (`if err …`)
+   in einen Helfer auslagern — aber die Pre-Flights (mit §3.6-Print+Return-Bindung) am Ort lassen.
+3. **Refactor-Mutations-Reconciliation:** entfernter Code obsoletet **beides** — seine Mutation UND
+   seinen Test (Fall 22 + `TestPlace_NoGatesTarget` zusammen raus). Eine Kollisions-Zusage, die auf ein
+   umgezogenes Artefakt (Makefile → `emit.MakefilePath`) zielte, muss auf ein noch-treffendes Ziel
+   (`go.mod`, reines `wire.Targets`-Ziel) umgestellt werden, sonst bewacht sie den falschen Pfad.
+
+**Folge-Slices:** keine neuen `open/` nötig (036–038 der welle-05 geplant). Das Review-INFO (der
+Aggregator nutzt den Kollisions-**Refuse**, während [`ADR-0007`](../../adr/0007-bootstrap-phasen.md) ihn
+als **konvergent** klassifiziert) ist
+**slice-038** (Idempotenz-Klassifikation) — dort wird die konvergente Emission umgesetzt. **slice-036**
+(Guard-BLOCKED-Union) ist der nächste.
 
 ## 8. Sub-Area-Modus-Begründung
 
