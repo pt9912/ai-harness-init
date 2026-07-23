@@ -182,10 +182,11 @@ eindeutiger Return-Zeile löste es. (3) **Benennung:** der geteilte Kern heißt 
    ohne Anpassung grün — die Regressionsfläche blieb auf den neuen Subdir-Zweig begrenzt.
 
 **Folge-Slices / -Punkte:** (a) **slice-038** (Idempotenz-Klassifikation konvergent/skip-if-present) ist der
-nächste — dort die blocked-Konvergenz (Review-I-1: ADR-0007 Z.100 listet blocked als konvergent, slice-037
-macht es skip-if-present) mit der ADR-Tabelle versöhnen + die Skelett-Dateien (Same-Module-Re-Lauf)
-klassifizieren. (b) **smoke.sh:89** toter `@@BLOCKED_SET@@`-Check (slice-036-Folgepunkt, weiter offen).
-(c) Optionale Interaktivität + Sprach-Profile über `go` hinaus bleiben ADR-0007-Backlog.
+nächste — dort die blocked-Konvergenz (Review-I-1: [`ADR-0007`](../../adr/0007-bootstrap-phasen.md) Z.100
+listet blocked als konvergent, slice-037 macht es skip-if-present) mit der ADR-Tabelle versöhnen + die
+Skelett-Dateien (Same-Module-Re-Lauf) klassifizieren. (b) **smoke.sh:89** toter `@@BLOCKED_SET@@`-Check
+(slice-036-Folgepunkt, weiter offen). (c) Optionale Interaktivität + Sprach-Profile über `go` hinaus
+bleiben [`ADR-0007`](../../adr/0007-bootstrap-phasen.md)-Backlog.
 
 ## 8. Sub-Area-Modus-Begründung
 
