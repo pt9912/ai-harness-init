@@ -21,8 +21,8 @@ erledigt, siehe unten).
 - **Slices:** [slice-034](../done/slice-034-gate-fragment-assembly.md) (Gate-Fragment-Assembly, ✅ `done/`) ·
   035 CLI-Phasierung · 036 Guard-BLOCKED-Union · 037 `add-lang`-Subkommando · 038 Idempotenz-Klassifikation
   — 034 **done**, [035](../done/slice-035-cli-phasierung.md) **done** (✅ Review konform + DoD bestätigt),
-  [036](../in-progress/slice-036-guard-blocked-union.md) **in Arbeit**; 037–038 in §4 der Welle
-  (cp-Disziplin: je Slice per `cp`, sobald er nach `next/` geht).
+  [036](../done/slice-036-guard-blocked-union.md) **done** (✅ Review konform + DoD bestätigt),
+  037 als nächstes; 038 in §4 der Welle (cp-Disziplin: je Slice per `cp`, sobald er nach `next/` geht).
 - **Trigger (erfüllt):** [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md) Accepted;
   CR [`lastenheft.md`](../../../../spec/lastenheft.md) 0.10.0 **und** der
   [`architecture.md`](../../../../spec/architecture.md)-Nachzug erledigt.
