@@ -62,6 +62,12 @@ include d-check.mk
 GATE_CHECKS += docs-check
 `
 
+// DocGateMk liefert den Inhalt des Doc-Gate-Fragments (fuer Tests/Inspektion) — der
+// netzlose Waechter auf die docs-check-Verdrahtung, weil DocGate selbst Docker braucht
+// (--print-mk). Ohne ihn traege nur full-smoke die Zusage „docs-check haengt in gates"
+// (Review-Befund slice-034 F-1: die Deckung des entfernten Mutations-Falls 21).
+func DocGateMk() string { return docGateMk }
+
 // Options steuert den Doc-Gate-Emit.
 type Options struct {
 	Image  string // Tag-Referenz -> emittiertes DCHECK_IMAGE

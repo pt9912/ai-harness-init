@@ -30,9 +30,11 @@ bleibt Pflicht; die Phasierung/Init-sprachlos ist slice-035). Konkret (Ist-Messu
 - `wire.Place` lässt den Inline-Anhang (`dCheckInclude`/`enforceWiring`) fallen und wird **reiner
   Placer**.
 
-`make gates` bleibt **verhaltens-identisch** (lint build test docs-check baseline-verify →
-`record-gates` zuletzt). **Migrations-Bruch, nicht additiv.** slice-035 relocatet den Aggregator vom
-Generator in einen Init-Emitter (Phasierung).
+`make gates` fährt danach lint/build/test/docs-check **verhaltens-identisch** und **zusätzlich
+`baseline-verify`** (bis hier orphaned emittiert, jetzt verdrahtet), `record-gates` strikt zuletzt — der
+Gate-Ablauf wächst also **additiv** um baseline-verify. Die **Verdrahtung** selbst ist dagegen ein
+**Migrations-Bruch, nicht additiv** (wire-Inline-Anhang → Aggregator + Fragmente). slice-035 relocatet
+den Aggregator vom Generator in einen Init-Emitter (Phasierung).
 
 ## 2. Definition of Done
 
