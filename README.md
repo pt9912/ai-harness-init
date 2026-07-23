@@ -48,11 +48,11 @@ make artifact DEST=./bin
 
 ## Warum ai-harness-init?
 
-Der Hand-Bootstrap ist mechanisch, aber fehleranfällig — besonders die
-Code-Gates: ein fehlender oder falsch verdrahteter Gate ist ein
-halluzinierter Gate (Modul 13). ai-harness-init verdrahtet stattdessen
-Gates, die im emittierten Repo real laufen — und emittiert lieber nichts
-als etwas Unbelegtes.
+Den Harness von Hand aufzusetzen ist mechanisch und fehleranfällig — vor allem bei den
+automatischen Prüfungen (den **Gates**). Schnell baut man versehentlich eine Prüfung ein, die
+zwar dasteht, aber nichts wirklich prüft: eine trügerische Sicherheit. `ai-harness-init` richtet
+stattdessen nur Prüfungen ein, die im fertigen Repo **wirklich laufen** — und legt lieber gar
+nichts an als etwas, das es nicht belegen kann.
 
 ## Kerngedanke
 
