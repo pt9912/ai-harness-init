@@ -130,7 +130,7 @@ Was könnte schief gehen? Welche Carveouts entstehen ggf.?
   Base-Tag (`24.04`, bestimmt Compiler/cmake). `DefaultVersion(lang)` kapselt das; kein `majorMinor` für cpp
   (das ist go.mod-spezifisch).
 - **full-smoke wird langsamer** (realer C++-Build: apt install cmake/clang-tidy + cmake build + ctest). Bewusst
-  — der reale Gate-Lauf ist der Beweis (LH-QA-01).
+  — der reale Gate-Lauf ist der Beweis ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 
 ## 7. Closure-Notiz (nach `done/`)
 

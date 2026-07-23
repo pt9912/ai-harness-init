@@ -6,7 +6,7 @@ import "strings"
 // (LH-QA-02: kein floating). An das Repo-Dockerfile gekoppelt
 // (TestGoProfile_PinsMatchRepo), damit ein Bump nicht die eine Haelfte bewegt und
 // die andere vergisst. Ueberschreibbar beim Bootstrap (SKEL_GO_VERSION, cmd) — der
-// Generator selbst bleibt deterministisch: gleiche goVersion -> byte-identische
+// Generator selbst bleibt deterministisch: gleiche version -> byte-identische
 // Ausgabe.
 const DefaultGoVersion = "1.26.4"
 
@@ -25,11 +25,11 @@ const golangciVersion = "v2.12.2"
 // Die Images sind TAG-gepinnt (golang:<ver>, golangci-lint:<ver>) — kein floating
 // (LH-QA-02), aber bewusst OHNE Digest: ein Digest wuerde die Go-Version
 // festnageln und den GO_VERSION-Knopf wirkungslos machen. go (major.minor) in
-// go.mod leitet sich aus goVersion ab, damit die Sprachversion zur Toolchain passt.
-func goProfile(goVersion string) map[string]string {
+// go.mod leitet sich aus version ab, damit die Sprachversion zur Toolchain passt.
+func goProfile(version string) map[string]string {
 	return map[string]string{
-		"go.mod":          "module app\n\ngo " + majorMinor(goVersion) + "\n",
-		"Dockerfile":      render(goDockerfileTmpl, goVersion),
+		"go.mod":          "module app\n\ngo " + majorMinor(version) + "\n",
+		"Dockerfile":      render(goDockerfileTmpl, version),
 		".golangci.yml":   goGolangci,
 		"cmd/app/main.go": goMain,
 	}
@@ -43,21 +43,21 @@ func goProfile(goVersion string) map[string]string {
 // Sprache traegt. Jedes `docker build --target <stage>` referenziert eine gleichnamige
 // Dockerfile-Stage (test/lint/build) — kein halluziniertes Gate (LH-QA-01),
 // TestCodeGateFragment_TargetsMatchStages haelt die Kopplung fest.
-func goFragment(modul, context, goVersion string) string {
+func goFragment(modul, context, version string) string {
 	if context == "." {
-		return render(goMkFragmentTmpl, goVersion)
+		return render(goMkFragmentTmpl, version)
 	}
-	return renderScoped(goScopedMkFragmentTmpl, modul, context, goVersion)
+	return renderScoped(goScopedMkFragmentTmpl, modul, context, version)
 }
 
-// renderScoped setzt Modul-Name, Build-Kontext, goVersion + golangci-Pin in das
+// renderScoped setzt Modul-Name, Build-Kontext, version + golangci-Pin in das
 // modul-scoped Fragment-Template ein (Einzelpass, strings.Replacer — die Muster
 // ueberlappen nicht).
-func renderScoped(tmpl, modul, context, goVersion string) string {
+func renderScoped(tmpl, modul, context, version string) string {
 	return strings.NewReplacer(
 		"{{MODULE}}", modul,
 		"{{CONTEXT}}", context,
-		"{{GO_VERSION}}", goVersion,
+		"{{GO_VERSION}}", version,
 		"{{GOLANGCI_VERSION}}", golangciVersion,
 	).Replace(tmpl)
 }
@@ -72,12 +72,12 @@ func majorMinor(v string) string {
 	return parts[0] + "." + parts[1]
 }
 
-// render setzt goVersion + den golangci-Pin in ein Template ein ({{…}}-Platzhalter,
+// render setzt version + den golangci-Pin in ein Template ein ({{…}}-Platzhalter,
 // eine Stelle je Wert). strings.Replacer statt fmt.Sprintf, weil die Templates
 // literale %-Verben tragen (das awk im Makefile-help-Target).
-func render(tmpl, goVersion string) string {
+func render(tmpl, version string) string {
 	return strings.NewReplacer(
-		"{{GO_VERSION}}", goVersion,
+		"{{GO_VERSION}}", version,
 		"{{GOLANGCI_VERSION}}", golangciVersion,
 	).Replace(tmpl)
 }

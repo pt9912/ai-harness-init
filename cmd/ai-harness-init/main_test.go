@@ -153,6 +153,23 @@ func TestRun_SkelGoVersionOverride(t *testing.T) {
 	}
 }
 
+// TestRun_SkelCppVersionOverride belegt die generalisierte Versions-Verdrahtung (slice-039):
+// SKEL_CPP_VERSION faedelt bis ins Dockerfile des generierten cpp-Skeletts (ARG CXX_VERSION).
+// Beweist, dass skelVersion je Sprache den richtigen Env-Namen bildet — nicht mehr Go-fest.
+func TestRun_SkelCppVersionOverride(t *testing.T) {
+	t.Setenv("SKEL_CPP_VERSION", "22.04")
+	dir := t.TempDir()
+	var out, errb bytes.Buffer
+	run([]string{"--lang", "cpp"}, dir, testSources(t), &out, &errb)
+	df, err := os.ReadFile(filepath.Join(dir, ".harness", "skeleton", "Dockerfile"))
+	if err != nil {
+		t.Fatalf("generiertes cpp-Dockerfile lesen: %v", err)
+	}
+	if !strings.Contains(string(df), "ARG CXX_VERSION=22.04") {
+		t.Errorf("SKEL_CPP_VERSION=22.04 nicht ins generierte Dockerfile gefaedelt:\n%s", df)
+	}
+}
+
 // TestTemplatesDir_ZeigtAufDieGefetchteQuelle koppelt die Wurzelung, die
 // emit.Templates bekommt, an das, was fetch.Baseline tatsaechlich schreibt.
 //
@@ -225,6 +242,33 @@ func TestRun_AddLangDropsModule(t *testing.T) {
 	// wire.Place raeumt das transiente Staging auf.
 	if _, err := os.Stat(filepath.Join(dir, ".harness", "skeleton")); !os.IsNotExist(err) {
 		t.Errorf(".harness/skeleton nicht aufgeraeumt: %v", err)
+	}
+}
+
+// TestRun_AddLangCpp (slice-039, LH-FA-04 Mono-Repo gemischter Sprachen): `add-lang cpp
+// apps/engine` dropt das cpp-Skelett (CMake/Dockerfile/.clang-tidy), das modul-scoped
+// Code-Gate-Fragment und blocked/cpp — dieselbe Mechanik wie go, nur ein anderes Profil.
+// Beweist, dass eine zweite Sprache ohne Umbau der add-lang-Mechanik verdrahtet.
+func TestRun_AddLangCpp(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "cpp", "apps/engine"}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("add-lang cpp exit %d, stderr: %q", code, errb.String())
+	}
+	for _, rel := range []string{
+		"apps/engine/CMakeLists.txt", "apps/engine/Dockerfile", "apps/engine/src/main.cpp",
+		"apps/engine/.clang-tidy", "apps/engine/tests/test_main.cpp",
+		"harness/mk/apps-engine.mk", "tools/harness/blocked/cpp",
+	} {
+		if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err != nil {
+			t.Errorf("%s nicht gedroppt: %v", rel, err)
+		}
+	}
+	blocked := readFile(t, filepath.Join(dir, filepath.FromSlash("tools/harness/blocked/cpp")))
+	for _, want := range []string{"g++", "cmake", "clang-tidy"} {
+		if !strings.Contains(blocked, want) {
+			t.Errorf("blocked/cpp enthaelt %q nicht:\n%s", want, blocked)
+		}
 	}
 }
 

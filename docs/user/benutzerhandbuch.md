@@ -1,7 +1,7 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Handbuch-Version:** 1.2
-**Software-Stand:** Entwicklungsstand M2 — **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf). Zielsprache `go` (weitere folgen). Noch keine vorgefertigten Release-Binaries.
+**Handbuch-Version:** 1.3
+**Software-Stand:** Entwicklungsstand M2 — **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf). Zielsprachen `go` und `cpp` (C++; weitere folgen). Noch keine vorgefertigten Release-Binaries.
 **Stand:** 2026-07-23
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
@@ -262,7 +262,7 @@ SKEL_GO_VERSION=1.26.4 ai-harness-init --lang go --name "Mein Projekt"
 
 | Option | Pflicht | Bedeutung |
 |---|---|---|
-| `--lang <sprache>` | nein | Zielsprache des Grundgerüsts (Kurzform für „aufsetzen + `add-lang(<sprache>, .)`“). Ohne sie: dokument-only. Derzeit unterstützt: `go`. |
+| `--lang <sprache>` | nein | Zielsprache des Grundgerüsts (Kurzform für „aufsetzen + `add-lang(<sprache>, .)`“). Ohne sie: dokument-only. Derzeit unterstützt: `go`, `cpp` (C++ per CMake + clang-tidy). |
 | `--name <name>` | nein | Projektname; ersetzt den Platzhalter `<Projektname>` in den Vorlagen. |
 | `-h`, `--help` | nein | Hilfe anzeigen und beenden. |
 
@@ -274,7 +274,7 @@ Ein `--force` gibt es **nicht** — der Re-Lauf ist idempotent (siehe [Ein Repos
 ai-harness-init add-lang <sprache> <pfad>
 ```
 
-Fügt einem bereits aufgesetzten Repository ein Sprachmodul hinzu — **wiederholbar** (Mono-Repo). Beide Argumente sind Pflicht: `<sprache>` (z. B. `go`), `<pfad>` (Zielort im Repository; `.` = Wurzel). Siehe [Ein Sprachmodul hinzufügen](#ein-sprachmodul-hinzufügen-add-lang).
+Fügt einem bereits aufgesetzten Repository ein Sprachmodul hinzu — **wiederholbar** (Mono-Repo), auch mit gemischten Sprachen. Beide Argumente sind Pflicht: `<sprache>` (z. B. `go` oder `cpp`), `<pfad>` (Zielort im Repository; `.` = Wurzel). Siehe [Ein Sprachmodul hinzufügen](#ein-sprachmodul-hinzufügen-add-lang).
 
 ### Umgebungsvariablen
 
@@ -283,7 +283,8 @@ Alle Umgebungsvariablen sind **optional**. Ohne sie gelten festgelegte, reproduz
 | Variable | Bedeutung |
 |---|---|
 | `COURSE_TAG` | Kurs-Version für das Regelwerk und die Vorlagen. |
-| `SKEL_GO_VERSION` | Go-Version des erzeugten Grundgerüsts. |
+| `SKEL_GO_VERSION` | Go-Version des erzeugten Go-Grundgerüsts. |
+| `SKEL_CPP_VERSION` | Ubuntu-Basis-Tag des erzeugten C++-Grundgerüsts (bestimmt Compiler/CMake/clang-tidy). Allgemein: `SKEL_<SPRACHE>_VERSION` setzt die Toolchain-Version je Sprache. |
 | `BASELINE_SHA256` | Erwartete Prüfsumme des heruntergeladenen Regelwerk-Pakets. |
 | `DCHECK_IMAGE` | Abweichende Referenz für das Dokumentations-Prüf-Image. |
 | `DCHECK_DIGEST` | Abweichende Prüfsumme (Digest) des Prüf-Images; sticht die Referenz. |
@@ -318,7 +319,7 @@ mein-projekt/
 └── .harness/baseline/        Mitgeliefertes Regelwerk und Vorlagen (netzunabhängig)
 ```
 
-Die **Sprach-Dateien** (`Dockerfile`, `go.mod`, `.golangci.yml`, `cmd/app/main.go` sowie der Prüf-Baustein `harness/mk/<modul>.mk`) entstehen **nur mit einer Sprache** — also bei `--lang go` oder per `add-lang`. Ein Aufsetzen **ohne** Sprache legt sie nicht an (dokument-only); dazu kommen die Schutz-Hooks unter `.claude/` (Command-Guard) und die Prüf-Bausteine `harness/mk/*.mk`.
+Die **Sprach-Dateien** entstehen **nur mit einer Sprache** — also bei `--lang <sprache>` oder per `add-lang` — samt Prüf-Baustein `harness/mk/<modul>.mk`. Bei Go sind das `Dockerfile`, `go.mod`, `.golangci.yml`, `cmd/app/main.go`; bei C++ `Dockerfile`, `CMakeLists.txt`, `src/main.cpp`, `tests/` (netzloser CTest) und `.clang-tidy`. Ein Aufsetzen **ohne** Sprache legt sie nicht an (dokument-only); dazu kommen die Schutz-Hooks unter `.claude/` (Command-Guard) und die Prüf-Bausteine `harness/mk/*.mk`.
 
 Die Dateien mit der Endung `.template.md` unter `.harness/baseline/` sind **Vorlagen**: Sie kopieren sie bei Bedarf und füllen sie aus (z. B. für eine neue Architektur-Entscheidung). Die Prozess-Regeln erklären, wann welche Vorlage zum Einsatz kommt.
 
@@ -328,14 +329,14 @@ Die Dateien mit der Endung `.template.md` unter `.harness/baseline/` sind **Vorl
 
 Alle Fehler von `ai-harness-init` beginnen auf der Fehlerausgabe mit `Fehler:` und liefern einen von Null verschiedenen Exit-Code (siehe [Anhang](#10-anhang)).
 
-### Fehler: `unbekannte Sprache "…"; verfuegbar: go`
+### Fehler: `unbekannte Sprache "…"; verfuegbar: cpp, go`
 
 **Ursache:** Sie haben eine Sprache angegeben, für die es (noch) kein Grundgerüst gibt.
 
-**Lösung:** Verwenden Sie eine der aufgelisteten Sprachen. Derzeit ist das `go`:
+**Lösung:** Verwenden Sie eine der aufgelisteten Sprachen. Derzeit sind das `go` und `cpp`:
 
 ```bash
-ai-harness-init --lang go
+ai-harness-init --lang cpp
 ```
 
 ### Fehler: `kein Aggregator (Makefile) — zuerst ai-harness-init (Init) im Repo laufen lassen`
@@ -448,6 +449,7 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 
 | Handbuch-Version | Stand | Änderung |
 |---|---|---|
+| 1.3 | 2026-07-23 | Zweite Zielsprache **C++** (slice-039): `--lang cpp` und `add-lang cpp <pfad>` erzeugen ein CMake-Grundgerüst (Dockerfile-Stages build/test/lint mit CMake + CTest + clang-tidy, netzloser Test). Optionstabelle, `SKEL_CPP_VERSION`, Sprach-Datei-Liste, Fehlermeldung und FAQ nachgezogen. Gemischt-sprachige Mono-Repos möglich. |
 | 1.2 | 2026-07-23 | Sprach-Review gegen den Benutzerhandbuch-Standard: Entwicklerbegriffe geglättet (Aggregator → zentrale `Makefile`, Durchsetzung → Schutz-Hooks, Doc-Chain → Projekt-Dokumente, „skip-if-present“/„kanonisch“/„vendored“ plain); die in der Werkzeug-Ausgabe sichtbaren Begriffe (Aggregator, Durchsetzung, Prüf-Baustein) ins Glossar aufgenommen; Sicherheits- und Versions-Hinweis im Anhang ergänzt. |
 | 1.1 | 2026-07-23 | Phasierter Bootstrap (welle-05): `--lang` optional (dokument-only Init), neues `add-lang`-Subkommando (Mono-Repo), idempotenter Re-Lauf. `--force` entfernt; Kollisions-Abbruch-Verhalten und die zugehörigen Fehler/FAQ/Exit-Codes ersetzt. |
 | 1.0 | 2026-07-22 | Erste Fassung. Deckt den vollständigen Bootstrap (`--lang go`), Konfiguration, Fehlerbehebung, FAQ und Glossar ab. |

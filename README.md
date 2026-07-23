@@ -30,7 +30,8 @@ rein dokumentgeführtes Repo — die Sprache kommt später per `add-lang` dazu.
 ai-harness-init add-lang go apps/api
 ```
 
-Wiederholbar — mehrere Aufrufe mit verschiedenen Pfaden ergeben ein **Mono-Repo**.
+Wiederholbar — mehrere Aufrufe mit verschiedenen Pfaden ergeben ein **Mono-Repo**, auch mit
+gemischten Sprachen. Unterstützt sind heute `go` und `cpp` (C++, per CMake + clang-tidy).
 
 **Denselben Aufruf gefahrlos wiederholen.** Ein zweiter Lauf ist idempotent: das Werkzeug frischt
 seine eigenen Dateien auf (repariert Abweichungen, zieht ein neueres Regelwerk nach) und lässt die
@@ -44,7 +45,7 @@ Quellcode gebaut, komplett in Docker:
 make artifact DEST=./bin
 ```
 
-**Was heute noch fehlt:** vorgefertigte Release-Binaries und weitere Sprachen über `go` hinaus.
+**Was heute noch fehlt:** vorgefertigte Release-Binaries und weitere Sprachen über `go` und `cpp` hinaus.
 
 ## Warum ai-harness-init?
 

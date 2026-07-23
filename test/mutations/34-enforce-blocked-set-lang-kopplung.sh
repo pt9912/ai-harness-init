@@ -7,4 +7,4 @@
 # (stille Luecke). Die Kopplung an gen.SupportedLangs() muss rot werden (das go-Profil
 # haette kein Sprach-BLOCKED-Fragment). Am Zeilen-Praefix verankert (der \n-Suffix egal).
 set -euo pipefail
-sed -i '/"go": "go gofmt/d' internal/emit/enforce.go
+sed -i '/"go":.*"go gofmt/d' internal/emit/enforce.go

@@ -57,7 +57,8 @@ Umgebung (bewusster Opt-in-Override der gepinnten Werte — LH-QA-02):
   BASELINE_SHA256   erwarteter sha256 des Baseline-Assets
   DCHECK_IMAGE      d-check-Tag-Referenz
   DCHECK_DIGEST     d-check-Digest (sticht den Tag)
-  SKEL_GO_VERSION   Go-Version des generierten Skeletts (Default gepinnt, deterministisch)
+  SKEL_<LANG>_VERSION  Toolchain-Version des Skeletts je Sprache (SKEL_GO_VERSION, SKEL_CPP_VERSION;
+                       Default gepinnt, deterministisch)
 `
 
 // sources buendelt die injizierbare Netz-Quelle des Bootstraps — nur noch die
@@ -160,14 +161,14 @@ func addLang(targetDir, path, lang string, stdout, stderr io.Writer) int {
 		return 1
 	}
 
-	goVersion := envOr("SKEL_GO_VERSION", gen.DefaultGoVersion)
+	version := skelVersion(lang)
 	skelDir := filepath.Join(targetDir, ".harness", "skeleton")
 	// Skelett generieren — fail-fast Sprach-Validierung (unbekannt -> Exit 2 mit Liste).
-	if err := gen.Generate(skelDir, lang, goVersion); err != nil {
+	if err := gen.Generate(skelDir, lang, version); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return langExitCode(err)
 	}
-	if err := wireLang(targetDir, skelDir, path, lang, goVersion); err != nil {
+	if err := wireLang(targetDir, skelDir, path, lang, version); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
@@ -180,11 +181,11 @@ func addLang(targetDir, path, lang string, stdout, stderr io.Writer) int {
 // ist Adopter-Boden) und ergaenzt sein Code-Gate-Fragment (harness/mk/<modul>.mk, konvergent
 // — kanonisch neu geschrieben) + das blocked/<lang>-Fragment (konvergent). Gemeinsamer Kern
 // des --lang-One-Shots (Phase 4, <pfad>=".") und des add-lang-Subkommandos (beliebiger <pfad>).
-func wireLang(targetDir, skelDir, path, lang, goVersion string) error {
+func wireLang(targetDir, skelDir, path, lang, version string) error {
 	if err := wire.Place(skelDir, filepath.Join(targetDir, filepath.FromSlash(path))); err != nil {
 		return err
 	}
-	frag, err := gen.CodeGateFragment(lang, path, goVersion)
+	frag, err := gen.CodeGateFragment(lang, path, version)
 	if err != nil {
 		return err
 	}
@@ -209,7 +210,7 @@ func wireLang(targetDir, skelDir, path, lang, goVersion string) error {
 func bootstrap(targetDir, lang, name string, src sources, stdout, stderr io.Writer) int {
 	tag := envOr("COURSE_TAG", fetch.DefaultTag)
 	skelDir := filepath.Join(targetDir, ".harness", "skeleton")
-	goVersion := envOr("SKEL_GO_VERSION", gen.DefaultGoVersion)
+	version := skelVersion(lang)
 	baseDir := baselineDir(targetDir)
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
@@ -226,10 +227,10 @@ func bootstrap(targetDir, lang, name string, src sources, stdout, stderr io.Writ
 	// ersatzlos verschwinden). Kein Pre-Flight-refuse mehr (slice-038): die Idempotenz-
 	// Klassen erledigen das Kollisions-Handling je Datei, ein Re-Lauf ist idempotent.
 	//
-	// Go-Version: gepinnter Default, per SKEL_GO_VERSION explizit ueberschreibbar
-	// (deterministisch — der Nutzer nennt den Wert).
+	// Toolchain-Version: gepinnter Default je Sprache (skelVersion), per SKEL_<LANG>_VERSION
+	// explizit ueberschreibbar (deterministisch — der Nutzer nennt den Wert).
 	if hasLang {
-		if err := gen.Generate(skelDir, lang, goVersion); err != nil {
+		if err := gen.Generate(skelDir, lang, version); err != nil {
 			fmt.Fprintln(stderr, "Fehler:", err)
 			return langExitCode(err)
 		}
@@ -251,7 +252,7 @@ func bootstrap(targetDir, lang, name string, src sources, stdout, stderr io.Writ
 		Image:  envOr("DCHECK_IMAGE", emit.DefaultImage),
 		Digest: envOr("DCHECK_DIGEST", emit.DefaultDigest),
 	}
-	if err := emitAll(targetDir, skelDir, tag, name, lang, goVersion, hasLang, opts); err != nil {
+	if err := emitAll(targetDir, skelDir, tag, name, lang, version, hasLang, opts); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
@@ -270,7 +271,7 @@ func bootstrap(targetDir, lang, name string, src sources, stdout, stderr io.Writ
 // (Enforce/Makefile/BaselineVerify/DocGate-Fragmente) oder skip-if-present (Templates/
 // README/Commands/Skelett). Erste fehlgeschlagene Stufe gewinnt; bootstrap druckt den
 // Fehler einmal. DocGate zuerst (Docker-Lauf = reales Fehlerrisiko).
-func emitAll(targetDir, skelDir, tag, name, lang, goVersion string, hasLang bool, opts emit.Options) error {
+func emitAll(targetDir, skelDir, tag, name, lang, version string, hasLang bool, opts emit.Options) error {
 	if err := emit.DocGate(context.Background(), targetDir, opts); err != nil {
 		return err
 	}
@@ -303,7 +304,7 @@ func emitAll(targetDir, skelDir, tag, name, lang, goVersion string, hasLang bool
 	// Fragment (harness/mk/<lang>.mk) + blocked/<lang> droppen — der --lang-One-Shot ist
 	// Init + ein addLang(<pfad>="."). NUR mit Sprache; ohne --lang gibt es kein Skelett.
 	if hasLang {
-		if err := wireLang(targetDir, skelDir, ".", lang, goVersion); err != nil {
+		if err := wireLang(targetDir, skelDir, ".", lang, version); err != nil {
 			return err
 		}
 	}
@@ -330,6 +331,18 @@ func envOr(key, def string) string {
 		return v
 	}
 	return def
+}
+
+// skelVersion loest die Toolchain-Version des Skeletts je Sprache auf: SKEL_<LANG>_VERSION
+// (bewusster Env-Override, deterministisch) oder der gepinnte gen.DefaultVersion(lang).
+// Generisch statt Go-fest (slice-039): SKEL_GO_VERSION wirkt fuer go weiter, SKEL_CPP_VERSION
+// kommt hinzu — „Version" heisst je Sprache etwas anderes (go: Go-Version; cpp: ubuntu-Tag),
+// das gen-Profil interpretiert sie. Sprachlos (lang="") -> "" (unbenutzt, kein Skelett).
+func skelVersion(lang string) string {
+	if lang == "" {
+		return ""
+	}
+	return envOr("SKEL_"+strings.ToUpper(lang)+"_VERSION", gen.DefaultVersion(lang))
 }
 
 // langExitCode bildet einen Generator-Fehler auf den Exit-Code ab: unbekannte

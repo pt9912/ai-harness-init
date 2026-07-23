@@ -1,7 +1,10 @@
 // Package gen erzeugt Sprachskelette DETERMINISTISCH aus tool-eigenem
 // Layout-Wissen (ADR-0005 Herkunftsklasse "Tool-als-Quelle"), statt sie zu
-// fetchen. Ein Layout-Profil je Sprache; go ist das erste, die uebrigen aus
-// LH-FA-04 folgen ohne Umbau der Mechanik.
+// fetchen. Ein Layout-Profil je Sprache; go war das erste, cpp das zweite
+// (slice-039) — weitere folgen aus LH-FA-04 als neuer Eintrag, ohne Umbau der
+// Mechanik. Die „Toolchain-Version" (version) ist per Sprache verschieden (go:
+// Go-Version; cpp: ubuntu-Base-Tag) — das Profil interpretiert sie, der Aufrufer
+// faedelt sie generisch (SKEL_<LANG>_VERSION -> DefaultVersion(lang)).
 //
 // Determinismus (LH-QA-02): der Inhalt jedes Profils ist STATISCH (Konstanten,
 // kein Zeitstempel, keine Map-Iteration im Datei-INHALT), und Generate schreibt
@@ -32,18 +35,18 @@ func (e *UnknownLangError) Error() string {
 }
 
 // Generate schreibt das Skelett fuer lang nach destDir — in sortierter (also
-// deterministischer) Reihenfolge. goVersion ist die Toolchain-Version des Profils
-// (fuer go: die Go-Version); der Generator bleibt REIN — gleiche (lang, goVersion)
-// liefert byte-identische Ausgabe (LH-QA-02), die Aufloesung des Werts (Default/
-// Env/Web) macht der Aufrufer (cmd). Eine Sprache ohne Profil liefert einen
+// deterministischer) Reihenfolge. version ist die Toolchain-Version des Profils
+// (go: die Go-Version; cpp: der ubuntu-Base-Tag); der Generator bleibt REIN — gleiche
+// (lang, version) liefert byte-identische Ausgabe (LH-QA-02), die Aufloesung des Werts
+// (Default/Env) macht der Aufrufer (cmd). Eine Sprache ohne Profil liefert einen
 // *UnknownLangError mit der sortierten Liste der unterstuetzten Profile, statt
 // stillschweigend nichts zu tun.
-func Generate(destDir, lang, goVersion string) error {
+func Generate(destDir, lang, version string) error {
 	build, ok := profiles()[lang]
 	if !ok {
 		return &UnknownLangError{Lang: lang, Available: SupportedLangs()}
 	}
-	prof := build(goVersion)
+	prof := build(version)
 	rels := make([]string, 0, len(prof))
 	for rel := range prof {
 		rels = append(rels, rel)
@@ -76,10 +79,26 @@ func SupportedLangs() []string {
 // Toolchain-Version). Als Funktion (nicht Paket-Variable) wie baselineTrees()/
 // rootMarkers() im Repo — gochecknoglobals-konform. Eine neue Sprache ist ein
 // neuer Eintrag, kein Umbau der Mechanik (LH-FA-04: sprach-agnostisch).
-func profiles() map[string]func(goVersion string) map[string]string {
+func profiles() map[string]func(version string) map[string]string {
 	return map[string]func(string) map[string]string{
-		"go": goProfile,
+		"go":  goProfile,
+		"cpp": cppProfile,
 	}
+}
+
+// DefaultVersion liefert die gepinnte Default-Toolchain-Version fuer lang (go: die
+// Go-Version; cpp: der ubuntu-Base-Tag). Die Bedeutung von „Version" ist per Sprache
+// verschieden — der Aufrufer (cmd) faedelt sie generisch (SKEL_<LANG>_VERSION), das
+// Profil interpretiert sie. Unbekannte Sprache -> "" (Generate faengt sie separat via
+// UnknownLangError; ein leerer Versions-Default schadet dort nicht).
+func DefaultVersion(lang string) string {
+	switch lang {
+	case "go":
+		return DefaultGoVersion
+	case "cpp":
+		return DefaultCppVersion
+	}
+	return ""
 }
 
 // ModuleName leitet den Modul-Namen aus dem Zielpfad ab (slice-037, Mono-Repo): Root
@@ -110,19 +129,20 @@ func cleanPath(path string) string {
 // modul-scoped (test-<modul> …, `docker build <path>`, kollisionsfrei im Mono-Repo).
 // Eine Sprache ohne Fragment-Builder liefert *UnknownLangError — dieselbe Liste wie
 // Generate, damit `add-lang <sprache>` fail-fast dieselbe Diagnose gibt.
-func CodeGateFragment(lang, path, goVersion string) (string, error) {
+func CodeGateFragment(lang, path, version string) (string, error) {
 	build, ok := fragments()[lang]
 	if !ok {
 		return "", &UnknownLangError{Lang: lang, Available: SupportedLangs()}
 	}
-	return build(ModuleName(path, lang), cleanPath(path), goVersion), nil
+	return build(ModuleName(path, lang), cleanPath(path), version), nil
 }
 
 // fragments bildet Sprache -> Code-Gate-Fragment-Builder (Modul-Name, Build-Kontext,
 // Toolchain-Version -> Fragment-Inhalt). Getrennt von profiles(), weil das Fragment
 // <pfad>-aware ist (Kontext/Scoping), das Skelett aber ortsunabhaengig.
-func fragments() map[string]func(modul, context, goVersion string) string {
+func fragments() map[string]func(modul, context, version string) string {
 	return map[string]func(string, string, string) string{
-		"go": goFragment,
+		"go":  goFragment,
+		"cpp": cppFragment,
 	}
 }
