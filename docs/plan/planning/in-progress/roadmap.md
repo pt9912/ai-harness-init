@@ -16,6 +16,10 @@ gezeigt, nicht als Treiber.
 **Trigger (gefeuert):** upstream erschien Regelwerk **v3.5.1** > gepinnt `v3.5.0` — erste beobachtete Tag-/Quellen-Drift.
 **Slices:** slice-040 (Generalisierung + golangci-lint/d-check) geschnitten in `open/`; slice-041 (Go), slice-042 (ubuntu-Tag) in §4 der Welle (per `cp` bei Schnitt).
 
+**Nächster Schritt (Wiedereinstieg 2026-07-24):** slice-040 implementieren — `open → next → in-progress`, volle Rollen-Sequenz (Impl → Review → Verifikation → Closure). Der Slice-Plan ([slice-040](../open/slice-040-freshness-generalisierung.md)) trägt DoD + Datei-Plan + die zu klärende Pin-Quellen-Frage (golangci-lint an zwei Stellen gepinnt).
+
+**Davon unabhängig offen (keine Welle):** der **v3.5.1-Baseline-Bump** ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — `.harness/baseline/v3.5.1/` neu vendoren, `BASELINE_TAG`/`BASELINE_ZIP_SHA256` (Makefile) + `DefaultTag` (`internal/fetch/baseline.go`) neu pinnen, Doc-Links, `make baseline-verify`. Der nächtliche Sensor **meldet** die Drift, der Bump **behebt** sie.
+
 **Closure-Trigger:** alle Welle-Slices in `done/`; `make gates` + `make mutate` grün; jede Achse im nächtlichen `upstream-drift`-Job verdrahtet (read-only, nicht in gates); Closure-Notiz `welle-06-results.md`.
 
 ## Nächste Wellen
