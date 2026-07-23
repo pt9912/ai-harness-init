@@ -85,9 +85,9 @@ DoD vollständig · `make gates` grün · `make full-smoke` (sprachlos + `--lang
 - **Dogfood-Guard NICHT geändert (bewusst):** `test/guard.bats` testet den **Dogfood**-Guard
   (`.claude/hooks/`, [`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)) — der behält seinen eigenen BLOCKED-Set. slice-036 ändert nur das **emittierte**
   Template ([`ADR-0007`](../../adr/0007-bootstrap-phasen.md)-Fitness #2). Das Dogfooding des
-  Boden+Union-Modells (Dogfood adoptiert `harness/tools/blocked/`) ist ein bewusster Nicht-Inhalt
+  Boden+Union-Modells (Dogfood adoptiert `harness/tools/blocked/*`) ist ein bewusster Nicht-Inhalt
   (Single-Lang-Dogfood; Adoption bei Multi-Lang oder eigenem Slice).
-- **quote-blind-Union / bash+cat (LH-QA-03):** die `blocked/*`-Dateien sind reine Wortlisten
+- **quote-blind-Union / bash+cat ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)):** die `blocked/*`-Dateien sind reine Wortlisten
   (space/newline), die der Guard via `in_set` (whitespace-Split) vereinigt — kein Parsing, kein node/jq.
 - **`add-lang`-Drop ist slice-037:** hier emittiert nur der `--lang`-One-Shot `blocked/<lang>`; das
   wiederholbare `add-lang`-Drop (Mono-Repo) folgt.
