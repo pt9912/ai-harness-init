@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # files: internal/gen/golang.go
-# expect: TestGenerate_GoMkTargetsMatchStages
+# expect: TestCodeGateFragment_TargetsMatchStages
 #
 # Die Dockerfile-test-Stage wird umbenannt (test -> testx), aber das Code-Gate-
 # Fragment harness/mk/go.mk ruft weiter `--target test` — ein halluziniertes Gate

@@ -189,8 +189,50 @@ if [ -e "$tmprepo_doc/tools/harness/blocked" ]; then
 	exit 1
 fi
 
+# slice-037 (LH-FA-04/ADR-0007): add-lang ergaenzt dem gebootstrappten (hier: sprachlosen)
+# Repo ein Sprachmodul WIEDERHOLBAR (Mono-Repo). Zwei Aufrufe (apps/api + apps/web) am
+# doc-only-Repo: das geteilte blocked/go wird beim zweiten NICHT als Kollision abgebrochen
+# (skip-if-present), beide modul-scoped Code-Gate-Fragmente koexistieren, und `make -j gates`
+# faehrt danach ZUSAETZLICH die modul-scoped Go-Gates BEIDER Module (Build-Kontext je <pfad>).
+echo "full-smoke: add-lang go apps/api + apps/web ins doc-only-Repo (Mono-Repo, wiederholbar, slice-037) ..."
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang go apps/api )
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang go apps/web )
+for rel in apps/api/go.mod apps/api/Dockerfile apps/api/cmd/app/main.go harness/mk/apps-api.mk \
+           apps/web/go.mod harness/mk/apps-web.mk tools/harness/blocked/go; do
+	if [ ! -e "$tmprepo_doc/$rel" ]; then
+		echo "full-smoke: FEHLER — add-lang dropte $rel nicht (Mono-Repo/Wiederholbarkeit kaputt, slice-037)." >&2
+		exit 1
+	fi
+done
+addlang_rc=0
+addlang_out="$( make -j -C "$tmprepo_doc" gates 2>&1 )" || addlang_rc=$?
+printf '%s\n' "$addlang_out"
+if [ "$addlang_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — make gates nach add-lang ist NICHT Exit 0 (Mono-Repo-Modul kaputt, slice-037)." >&2
+	exit 1
+fi
+# Beide modul-scoped Go-Gates MUESSEN gelaufen sein: die --target-Echos (Go-Gate lief) UND
+# beide Build-Kontexte (apps/api + apps/web) im Recipe-Echo — waere ein Target kollidiert
+# (unscoped `test`), liefe nur EIN Modul, ein Kontext fehlte -> hier rot (LH-QA-01,
+# Mono-Repo-Kollisionsfreiheit).
+addlang_missing=""
+for marker in "--target lint" "--target build" "--target test" "apps/api" "apps/web"; do
+	printf '%s\n' "$addlang_out" | grep -qF -- "$marker" || addlang_missing="$addlang_missing [$marker]"
+done
+if [ -n "$addlang_missing" ]; then
+	echo "full-smoke: FEHLER — make gates nach add-lang ohne Beleg fuer:$addlang_missing — Modul-Gate/Kollision? (slice-037/LH-QA-01)." >&2
+	exit 1
+fi
+# Der Guard blockt jetzt go (blocked/go via add-lang) — vorher (sprachlos) tat er das nicht.
+addlanggo_out="$(printf '%s' '{"tool_input":{"command":"go build ./..."}}' | bash "$guard_doc" || true)"
+if ! printf '%s' "$addlanggo_out" | grep -q '"decision": "block"'; then
+	echo "full-smoke: FEHLER — Guard blockt 'go' nach add-lang NICHT (blocked/go via add-lang kaputt, slice-037). Ausgabe: [$addlanggo_out]" >&2
+	exit 1
+fi
+
 echo "full-smoke: OK — frisch gebootstrapptes Repo faehrt make -j gates out-of-the-box gruen (lint/build/test + docs-check + baseline-verify via Fragment-Assembly, record-gates zuletzt), Exit 0 (LH-FA-01/LH-QA-01)."
 echo "full-smoke: OK — sprachloser Init (ohne --lang) faehrt make -j gates doc-only gruen (docs-check + baseline-verify, KEIN Code-Gate, kein Skelett) — --lang optional (slice-035/LH-FA-01)."
 echo "full-smoke: OK — Gate-Nachweis-Kreis geschlossen: record-gates stempelt, Hash stimmt, .harness/.gitignore greift (slice-031)."
 echo "full-smoke: OK — emittierter Command-Guard greift: 'go build' geblockt, 'make test' durchgelassen (bash+awk, slice-032/LH-QA-03)."
 echo "full-smoke: OK — Guard-Boden GEBACKEN + blocked/*-Union: --lang go blockt go+pip, sprachlos nur pip (Boden), fail-safe nach geleertem blocked/ (slice-036/ADR-0007 NEU-H1)."
+echo "full-smoke: OK — add-lang WIEDERHOLBAR (Mono-Repo): apps/api + apps/web koexistieren, make -j gates faehrt beide modul-scoped Go-Gates, blocked/go skip-if-present, Guard blockt go danach (slice-037/LH-FA-04)."

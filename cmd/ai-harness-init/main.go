@@ -23,6 +23,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/pt9912/ai-harness-init/internal/emit"
@@ -35,12 +36,19 @@ const usage = `ai-harness-init — bootstrappt ein Git-Repo mit dem AI-Harness-P
 
 Verwendung:
   ai-harness-init [--lang <sprache>] [--name <name>] [--force]
+  ai-harness-init add-lang <sprache> <pfad> [--force]
 
-Flags:
-  --lang        Zielsprache (optional; ohne → sprach-agnostischer Init, doc-only-Gate)
+Init-Flags:
+  --lang        Zielsprache (optional; ohne → sprach-agnostischer Init, doc-only-Gate).
+                --lang <X> = Init + ein add-lang(<X>, .) als One-Shot-Kurzform.
   --name        Projektname (optional)
   --force       bestehende Dateien überschreiben (optional)
   -h, --help    diese Hilfe anzeigen
+
+Subkommando add-lang <sprache> <pfad> [--force]:
+  Fuegt einem bereits gebootstrappten Repo ein Sprachmodul hinzu (WIEDERHOLBAR, Mono-Repo):
+  Skelett unter <pfad> + Code-Gate-Fragment harness/mk/<modul>.mk + blocked/<sprache>.
+  <pfad>=. verortet am Repo-Root.
 
 Umgebung (bewusster Opt-in-Override der gepinnten Werte — LH-QA-02):
   COURSE_TAG        Kurs-Version für die Baseline (Regelwerk + Templates)
@@ -64,6 +72,13 @@ type sources struct {
 // Prozess-Exit, ohne CWD-Mutation und ohne Netz testbar sind. Exit-Codes:
 // 0 = Erfolg, 2 = Aufruf-/Argument-Fehler (Usage), 1 = Emit-Fehler zur Laufzeit.
 func run(args []string, targetDir string, src sources, stdout, stderr io.Writer) int {
+	// Subkommando-Dispatch (slice-037): `add-lang <sprache> <pfad>` ist der wiederholbare
+	// Mono-Repo-Pfad; alles andere ist der Default-Init. Die Unterscheidung steht VOR dem
+	// Flag-Parsing, weil add-lang Positionsargumente traegt, der Init nur Flags.
+	if len(args) > 0 && args[0] == "add-lang" {
+		return runAddLang(args[1:], targetDir, stdout, stderr)
+	}
+
 	fs := flag.NewFlagSet("ai-harness-init", flag.ContinueOnError)
 	fs.SetOutput(io.Discard) // Ausgabe/Streams steuern wir selbst
 
@@ -90,6 +105,145 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 	return bootstrap(targetDir, *lang, *name, *force, src, stdout, stderr)
 }
 
+const addLangUsage = `ai-harness-init add-lang <sprache> <pfad> [--force]
+
+Fuegt einem bereits gebootstrappten Repo ein Sprachmodul hinzu (WIEDERHOLBAR, Mono-Repo):
+generiert das Skelett unter <pfad>, dropt das Code-Gate-Fragment harness/mk/<modul>.mk
+(Build-Kontext <pfad>) und das blocked/<sprache>-Fragment (skip-if-present, per-Sprache
+wiederverwendet). Mehrere Aufrufe ergeben ein Mono-Repo. <pfad>=. verortet am Repo-Root.
+
+Argumente:
+  <sprache>   Zielsprache (gen-Profil; z.B. go)
+  <pfad>      Zielort des Moduls (. = Repo-Root)
+  --force     bestehende Skelett-/Fragment-Dateien ueberschreiben
+`
+
+// runAddLang parst `add-lang <sprache> <pfad> [--force]` und liefert den Exit-Code
+// (0 = Erfolg, 2 = Aufruf-Fehler, 1 = Laufzeit-Fehler). Die zwei Positionsargumente
+// stehen ZUERST, die Flags danach — Go's flag stoppt am ersten Nicht-Flag, daher werden
+// <sprache>/<pfad> direkt gelesen und nur der Rest an Parse gegeben.
+func runAddLang(args []string, targetDir string, stdout, stderr io.Writer) int {
+	if len(args) == 1 && (args[0] == "-h" || args[0] == "--help") {
+		fmt.Fprint(stdout, addLangUsage)
+		return 0
+	}
+	if len(args) < 2 || strings.HasPrefix(args[0], "-") || strings.HasPrefix(args[1], "-") {
+		fmt.Fprintln(stderr, "Fehler: add-lang braucht <sprache> und <pfad>")
+		fmt.Fprint(stderr, addLangUsage)
+		return 2
+	}
+	lang, path := args[0], args[1]
+
+	fs := flag.NewFlagSet("add-lang", flag.ContinueOnError)
+	fs.SetOutput(io.Discard)
+	force := fs.Bool("force", false, "bestehende Dateien ueberschreiben")
+	switch err := fs.Parse(args[2:]); {
+	case err == flag.ErrHelp:
+		fmt.Fprint(stdout, addLangUsage)
+		return 0
+	case err != nil:
+		fmt.Fprintln(stderr, "Fehler:", err)
+		fmt.Fprint(stderr, addLangUsage)
+		return 2
+	}
+	return addLang(targetDir, path, lang, *force, stdout, stderr)
+}
+
+// addLang fuehrt das add-lang-Subkommando aus (slice-037, wiederholbar/Mono-Repo):
+// Skelett generieren -> Pre-Flight (Skelett-Ziele unter <pfad> + Fragment absent, ausser
+// --force; blocked/<lang> ist skip-if-present und AUSGENOMMEN) -> platzieren + Fragment +
+// blocked. Netzlos: add-lang setzt einen bereits gebootstrappten Aggregator voraus
+// (Root-Makefile mit include harness/mk/*.mk) und ergaenzt nur ein Fragment.
+func addLang(targetDir, path, lang string, force bool, stdout, stderr io.Writer) int {
+	// Vorbedingung: der Aggregator (Root-Makefile) muss existieren — sonst wird das
+	// Fragment nicht verdrahtet (kein `make gates`). Freundlicher Abbruch statt Halbstand.
+	switch _, err := os.Stat(filepath.Join(targetDir, emit.MakefilePath)); {
+	case errors.Is(err, fs.ErrNotExist):
+		fmt.Fprintln(stderr, "Fehler: kein Aggregator ("+emit.MakefilePath+") — zuerst `ai-harness-init` (Init) im Repo laufen lassen.")
+		return 1
+	case err != nil:
+		fmt.Fprintln(stderr, "Fehler:", err)
+		return 1
+	}
+
+	goVersion := envOr("SKEL_GO_VERSION", gen.DefaultGoVersion)
+	skelDir := filepath.Join(targetDir, ".harness", "skeleton")
+	// Skelett generieren — fail-fast Sprach-Validierung (unbekannt -> Exit 2 mit Liste).
+	if err := gen.Generate(skelDir, lang, goVersion); err != nil {
+		fmt.Fprintln(stderr, "Fehler:", err)
+		return langExitCode(err)
+	}
+	// Pre-Flight: Skelett-Ziele unter <pfad> + Fragment absent (ausser --force). blocked/<lang>
+	// ist skip-if-present (Mono-Repo-Wiederverwendung) und NICHT im Pre-Flight.
+	if !force {
+		rels, err := addLangTargets(skelDir, path, lang)
+		if err != nil {
+			fmt.Fprintln(stderr, "Fehler:", err)
+			return 1
+		}
+		if err := preflightAbsent(targetDir, rels); err != nil {
+			fmt.Fprintln(stderr, "Fehler:", err)
+			return 1
+		}
+	}
+	if err := wireLang(targetDir, skelDir, path, lang, goVersion, force); err != nil {
+		fmt.Fprintln(stderr, "Fehler:", err)
+		return 1
+	}
+	fmt.Fprintf(stdout, "ai-harness-init: add-lang %s nach %s — Skelett + harness/mk/%s.mk + %s.\n",
+		lang, path, gen.ModuleName(path, lang), emit.BlockedFragmentPath(lang))
+	return 0
+}
+
+// addLangTargets liefert die Pre-Flight-Ziele eines add-lang-Laufs: die gestagten
+// Skelett-Dateien unter <pfad> + das Code-Gate-Fragment harness/mk/<modul>.mk. Das
+// blocked/<lang>-Fragment fehlt bewusst — es ist skip-if-present (Mono-Repo-Wiederverwendung).
+func addLangTargets(skelDir, path, lang string) ([]string, error) {
+	st, err := wire.Targets(skelDir)
+	if err != nil {
+		return nil, err
+	}
+	rels := make([]string, 0, len(st)+1)
+	for _, s := range st {
+		rels = append(rels, filepath.ToSlash(filepath.Join(path, filepath.FromSlash(s))))
+	}
+	rels = append(rels, "harness/mk/"+gen.ModuleName(path, lang)+".mk")
+	return rels, nil
+}
+
+// wireLang platziert das gestagte Skelett am Zielort <pfad> und ergaenzt sein Code-Gate-
+// Fragment (harness/mk/<modul>.mk, <pfad>-aware) + das blocked/<lang>-Fragment
+// (skip-if-present). Gemeinsamer Kern des --lang-One-Shots (Phase 4, <pfad>=".") und des
+// add-lang-Subkommandos (beliebiger <pfad>). Das Skelett kommt VERBATIM (wire.Place); nur
+// das Fragment ist <pfad>-abhaengig (Build-Kontext + modul-scoped Targets). Die
+// Fragment-Kollision wird VOR wire.Place geprueft (kein Teil-Placement Skelett-ohne-Fragment).
+func wireLang(targetDir, skelDir, path, lang, goVersion string, force bool) error {
+	fragRel := filepath.ToSlash(filepath.Join("harness", "mk", gen.ModuleName(path, lang)+".mk"))
+	if !force {
+		switch _, err := os.Stat(filepath.Join(targetDir, filepath.FromSlash(fragRel))); {
+		case err == nil:
+			return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", fragRel)
+		case !errors.Is(err, fs.ErrNotExist):
+			return fmt.Errorf("%s pruefen: %w", fragRel, err)
+		}
+	}
+	if err := wire.Place(skelDir, filepath.Join(targetDir, filepath.FromSlash(path)), force); err != nil {
+		return err
+	}
+	frag, err := gen.CodeGateFragment(lang, path, goVersion)
+	if err != nil {
+		return err
+	}
+	dst := filepath.Join(targetDir, filepath.FromSlash(fragRel))
+	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+		return fmt.Errorf("%s anlegen: %w", filepath.Dir(fragRel), err)
+	}
+	if err := os.WriteFile(dst, []byte(frag), 0o644); err != nil {
+		return fmt.Errorf("%s schreiben: %w", fragRel, err)
+	}
+	return emit.BlockedFragment(targetDir, lang, force)
+}
+
 // bootstrap fuehrt die Kette in vier Phasen aus (Ueberblick im Package-Doc). Die
 // Pre-Flights DRUCKEN UND RETURNEN im selben Block: der Beobachtungswert (die
 // Fehlermeldung) ist damit an die Wirkung (der Abbruch) gebunden — eine Mutation,
@@ -100,6 +254,7 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, stderr io.Writer) int {
 	tag := envOr("COURSE_TAG", fetch.DefaultTag)
 	skelDir := filepath.Join(targetDir, ".harness", "skeleton")
+	goVersion := envOr("SKEL_GO_VERSION", gen.DefaultGoVersion)
 	baseDir := baselineDir(targetDir)
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
@@ -135,7 +290,7 @@ func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, st
 	// (deterministisch — der Nutzer nennt den Wert). Der Web-"latest"-Lookup und ein
 	// go-freshness-Sensor sind bewusst eigene Folge-Slices (Netz/Nicht-Determinismus).
 	if hasLang {
-		if err := gen.Generate(skelDir, lang, envOr("SKEL_GO_VERSION", gen.DefaultGoVersion)); err != nil {
+		if err := gen.Generate(skelDir, lang, goVersion); err != nil {
 			fmt.Fprintln(stderr, "Fehler:", err)
 			return langExitCode(err)
 		}
@@ -172,7 +327,7 @@ func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, st
 		Digest: envOr("DCHECK_DIGEST", emit.DefaultDigest),
 		Force:  force,
 	}
-	if err := emitAll(targetDir, skelDir, tag, name, lang, hasLang, force, opts); err != nil {
+	if err := emitAll(targetDir, skelDir, tag, name, lang, goVersion, hasLang, force, opts); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
@@ -191,7 +346,7 @@ func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, st
 // Ausgelagert aus bootstrap gegen die gocognit-Schwelle (slice-035); die Pre-Flights
 // bleiben bewusst in bootstrap (ihr Print+Return ist an die Wirkung gebunden, slice-025).
 // DocGate zuerst (Docker-Lauf = reales Fehlerrisiko, schreibt bei Fehler nichts).
-func emitAll(targetDir, skelDir, tag, name, lang string, hasLang, force bool, opts emit.Options) error {
+func emitAll(targetDir, skelDir, tag, name, lang, goVersion string, hasLang, force bool, opts emit.Options) error {
 	if err := emit.DocGate(context.Background(), targetDir, opts); err != nil {
 		return err
 	}
@@ -206,8 +361,9 @@ func emitAll(targetDir, skelDir, tag, name, lang string, hasLang, force bool, op
 		return err
 	}
 	// Durchsetzung (slice-031/032): Gate-Nachweis + Stop-Hook + Command-Guard + awk +
-	// .harness/.gitignore. Der Guard blockt die Host-Toolchain je lang (sprachlos = Boden).
-	if err := emit.Enforce(targetDir, lang, force); err != nil {
+	// .harness/.gitignore. SPRACH-AGNOSTISCH (slice-037): der Guard traegt den Boden
+	// gebacken; das Sprach-Set (blocked/<lang>) droppt wireLang unten, nicht Enforce.
+	if err := emit.Enforce(targetDir, force); err != nil {
 		return err
 	}
 	// Workflow-Commands (slice-033): die Slash-Command-Anleitung, sprach-agnostisch.
@@ -219,10 +375,11 @@ func emitAll(targetDir, skelDir, tag, name, lang string, hasLang, force bool, op
 	if err := emit.Makefile(targetDir, force); err != nil {
 		return err
 	}
-	// Verdrahten (slice-004b/034): das gestagte Skelett an den Ziel-Root platzieren
-	// (reiner Placer). NUR mit Sprache — ohne --lang gibt es kein Skelett (slice-035).
+	// Verdrahten (slice-037): das gestagte Skelett am Root platzieren + sein Code-Gate-
+	// Fragment (harness/mk/<lang>.mk) + blocked/<lang> droppen — der --lang-One-Shot ist
+	// Init + ein addLang(<pfad>="."). NUR mit Sprache; ohne --lang gibt es kein Skelett.
 	if hasLang {
-		if err := wire.Place(skelDir, targetDir, force); err != nil {
+		if err := wireLang(targetDir, skelDir, ".", lang, goVersion, force); err != nil {
 			return err
 		}
 	}
@@ -256,7 +413,7 @@ func emitTargets(targetDir, tag, name, lang string) ([]string, error) {
 	// Durchsetzungs-Mechanik (slice-031, LH-FA-06/ADR-0006): Gate-Nachweis +
 	// Stop-Hook. In DENSELBEN Pre-Flight — eine vorhandene .claude/settings.json
 	// (Adopter hat schon Claude-Hooks) faellt so VOR dem Emit auf, kein Teil-Bootstrap.
-	rels = append(rels, emit.EnforcePaths(lang)...)
+	rels = append(rels, emit.EnforcePaths()...)
 	// Workflow-Commands (slice-033, LH-FA-08/ADR-0006): die Slash-Command-Anleitung
 	// (.claude/commands/). Eigene Klasse (Anleitung ≠ Durchsetzung), aber DERSELBE
 	// Pre-Flight — eine vorhandene .claude/commands/… faellt so VOR dem Emit auf.
@@ -276,6 +433,11 @@ func emitTargets(targetDir, tag, name, lang string) ([]string, error) {
 			return nil, err
 		}
 		rels = append(rels, st...)
+		// Das Code-Gate-Fragment (harness/mk/<lang>.mk) ist seit slice-037 NICHT mehr Teil
+		// des Skeletts (wire.Targets sieht es nicht) — es kommt aus gen.CodeGateFragment.
+		// Explizit in den Pre-Flight, damit eine Kollision VOR dem Emit auffaellt. blocked/<lang>
+		// gehoert NICHT hierher (skip-if-present, Mono-Repo-Wiederverwendung).
+		rels = append(rels, "harness/mk/"+gen.ModuleName(".", lang)+".mk")
 	}
 	return rels, nil
 }

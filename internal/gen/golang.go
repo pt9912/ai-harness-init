@@ -13,30 +13,53 @@ const DefaultGoVersion = "1.26.4"
 // golangciVersion ist der gepinnte golangci-lint-Tag des generierten Skeletts.
 const golangciVersion = "v2.12.2"
 
-// goProfile ist das Go-Layout fuer die gegebene Go-Version (ADR-0003 Docker-only):
-// Go-Gates als Dockerfile-Stages; das Code-Gate-Fragment harness/mk/go.mk traegt die
-// --target-Aufrufe + haengt lint/build/test an GATE_CHECKS. Die Root-Makefile (der
-// sprach-agnostische Aggregator) emittiert seit slice-035 der Init-Emitter emit.Makefile,
-// NICHT das Skelett — der Aggregator gehoert in die Init-Phase, nicht ins Sprach-Skelett.
-// Dazu go.mod + .golangci.yml und ein baubares cmd/app/main.go.
+// goProfile ist das Go-SKELETT fuer die gegebene Go-Version (ADR-0003 Docker-only):
+// Go-Gates als Dockerfile-Stages; dazu go.mod + .golangci.yml und ein baubares
+// cmd/app/main.go. Das Code-Gate-Fragment (harness/mk/<modul>.mk) gehoert seit
+// slice-037 NICHT mehr ins Skelett — es ist <pfad>-aware (Build-Kontext + modul-scoped
+// Targets fuer Mono-Repo) und kommt aus gen.CodeGateFragment, das der Emitter am
+// Zielort platziert; das Skelett selbst ist ortsunabhaengig. Die Root-Makefile (der
+// sprach-agnostische Aggregator) emittiert seit slice-035 emit.Makefile, NICHT das
+// Skelett — der Aggregator gehoert in die Init-Phase.
 //
 // Die Images sind TAG-gepinnt (golang:<ver>, golangci-lint:<ver>) — kein floating
 // (LH-QA-02), aber bewusst OHNE Digest: ein Digest wuerde die Go-Version
 // festnageln und den GO_VERSION-Knopf wirkungslos machen. go (major.minor) in
 // go.mod leitet sich aus goVersion ab, damit die Sprachversion zur Toolchain passt.
-//
-// Jedes Target im Code-Gate-Fragment (harness/mk/go.mk), das `docker build
-// --target <stage>` ruft, hat eine gleichnamige Dockerfile-Stage (test/lint/build)
-// — kein halluziniertes Gate (LH-QA-01); TestGenerate_GoMkTargetsMatchStages haelt
-// die Kopplung fest.
 func goProfile(goVersion string) map[string]string {
 	return map[string]string{
-		"go.mod":           "module app\n\ngo " + majorMinor(goVersion) + "\n",
-		"Dockerfile":       render(goDockerfileTmpl, goVersion),
-		"harness/mk/go.mk": render(goMkFragmentTmpl, goVersion),
-		".golangci.yml":    goGolangci,
-		"cmd/app/main.go":  goMain,
+		"go.mod":          "module app\n\ngo " + majorMinor(goVersion) + "\n",
+		"Dockerfile":      render(goDockerfileTmpl, goVersion),
+		".golangci.yml":   goGolangci,
+		"cmd/app/main.go": goMain,
 	}
+}
+
+// goFragment liefert das Go-Code-Gate-Fragment (harness/mk/<modul>.mk-Inhalt): am Root
+// (context ".") die bestehende UNSCOPED Fassung (Targets test/lint/build, `docker build
+// .`) byte-identisch — rueckwaertskompatibel mit dem --lang-One-Shot, smoke.sh und
+// full-smoke; im Subdir die MODUL-SCOPED Fassung (test-<modul>/lint-<modul>/build-<modul>,
+// `docker build <context>`), kollisionsfrei wenn ein Mono-Repo mehrere Module gleicher
+// Sprache traegt. Jedes `docker build --target <stage>` referenziert eine gleichnamige
+// Dockerfile-Stage (test/lint/build) — kein halluziniertes Gate (LH-QA-01),
+// TestCodeGateFragment_TargetsMatchStages haelt die Kopplung fest.
+func goFragment(modul, context, goVersion string) string {
+	if context == "." {
+		return render(goMkFragmentTmpl, goVersion)
+	}
+	return renderScoped(goScopedMkFragmentTmpl, modul, context, goVersion)
+}
+
+// renderScoped setzt Modul-Name, Build-Kontext, goVersion + golangci-Pin in das
+// modul-scoped Fragment-Template ein (Einzelpass, strings.Replacer — die Muster
+// ueberlappen nicht).
+func renderScoped(tmpl, modul, context, goVersion string) string {
+	return strings.NewReplacer(
+		"{{MODULE}}", modul,
+		"{{CONTEXT}}", context,
+		"{{GO_VERSION}}", goVersion,
+		"{{GOLANGCI_VERSION}}", golangciVersion,
+	).Replace(tmpl)
 }
 
 // majorMinor liefert "1.26" aus "1.26.4" (die go.mod-Sprachversion). Passt die
@@ -128,6 +151,32 @@ build: ## Go-Binary bauen (Dockerfile build-Stage) — Docker-only
 	docker build --build-arg GO_VERSION=$(GO_VERSION) --target build -t $(IMAGE):build .
 
 GATE_CHECKS += lint build test
+`
+
+// goScopedMkFragmentTmpl — das MODUL-SCOPED Go-Code-Gate-Fragment (harness/mk/<modul>.mk)
+// fuer ein Mono-Repo-Submodul unter {{CONTEXT}}: die Targets tragen den Modul-Namen
+// ({{MODULE}}, kollisionsfrei bei mehreren Modulen), der Build-Kontext ist {{CONTEXT}}
+// (nicht `.`), der Image-Tag ist der Modul-Name (inline, kein IMAGE-Var-Kollisionsrisiko).
+// Recipe-Zeilen sind TAB-eingerueckt.
+const goScopedMkFragmentTmpl = `# harness/mk/{{MODULE}}.mk — Go-Code-Gate-Fragment (Modul {{MODULE}}), generiert von
+# ai-harness-init. Go-Gates als Dockerfile-Stages (Docker-only, ADR-0003); modul-scoped
+# Targets (kollisionsfrei im Mono-Repo), Build-Kontext {{CONTEXT}}. Haengt an GATE_CHECKS,
+# der Root-Aggregator faehrt sie via make gates.
+GO_VERSION ?= {{GO_VERSION}}
+GOLANGCI_LINT_VERSION ?= {{GOLANGCI_VERSION}}
+
+.PHONY: test-{{MODULE}} lint-{{MODULE}} build-{{MODULE}}
+
+test-{{MODULE}}: ## Go-Unit-Tests Modul {{MODULE}} (test-Stage) — Docker-only
+	docker build --no-cache-filter test --build-arg GO_VERSION=$(GO_VERSION) --target test -t {{MODULE}}:test {{CONTEXT}}
+
+lint-{{MODULE}}: ## Go-Lint Modul {{MODULE}} (golangci-lint, lint-Stage) — Docker-only
+	docker build --build-arg GOLANGCI_LINT_VERSION=$(GOLANGCI_LINT_VERSION) --target lint -t {{MODULE}}:lint {{CONTEXT}}
+
+build-{{MODULE}}: ## Go-Binary Modul {{MODULE}} bauen (build-Stage) — Docker-only
+	docker build --build-arg GO_VERSION=$(GO_VERSION) --target build -t {{MODULE}}:build {{CONTEXT}}
+
+GATE_CHECKS += lint-{{MODULE}} build-{{MODULE}} test-{{MODULE}}
 `
 
 // goGolangci — kuratiert reiche Config: die volle Linter-Enable-Liste unseres

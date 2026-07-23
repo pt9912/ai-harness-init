@@ -84,28 +84,28 @@ func BlockedFragmentForLang(lang string) string { return blockedByLang()[lang] }
 // EnforcePaths liefert die Ziel-Relpfade der Durchsetzungs-Mechanik — fuer den
 // Bootstrap-Pre-Flight (cmd, Phase 3). Ohne sie faende eine Kollision (z.B. eine
 // vorhandene .claude/settings.json) erst mitten in Phase 4 statt (Teil-Bootstrap).
-func EnforcePaths(lang string) []string {
+// SPRACH-AGNOSTISCH (slice-037): das blocked/<lang>-Fragment gehoert NICHT mehr hierher
+// — es ist skip-if-present (Mono-Repo-Wiederverwendung, mehrere Module gleicher Sprache)
+// und wird von add-lang via BlockedFragment gedroppt, nicht vom Kollisions-Pre-Flight
+// erfasst.
+func EnforcePaths() []string {
 	files := enforceFiles()
-	paths := make([]string, 0, len(files)+1)
+	paths := make([]string, 0, len(files))
 	for _, f := range files {
 		paths = append(paths, f.dst)
-	}
-	// Sprach-BLOCKED-Fragment (blocked/<lang>) nur mit gen-Profil (slice-036): der
-	// --lang-One-Shot droppt es, der Guard vereinigt es zur Laufzeit mit dem Boden.
-	if _, ok := blockedByLang()[lang]; ok {
-		paths = append(paths, BlockedFragmentPath(lang))
 	}
 	return paths
 }
 
-// Enforce schreibt die Durchsetzungs-Mechanik nach targetDir. Kollisions-VORPASS
-// (ohne force) ueber ALLE Ziele inkl. blocked/<lang>: existiert eines, schreibt keines
+// Enforce schreibt die sprach-agnostische Durchsetzungs-Mechanik nach targetDir.
+// Kollisions-VORPASS (ohne force) ueber ALLE Ziele: existiert eines, schreibt keines
 // (kein Teil-Emit, slice-025). Der Guard traegt seinen universellen Boden GEBACKEN
-// (slice-036, keine @@BLOCKED_SET@@-Substitution mehr); das Sprach-Set kommt als
-// blocked/<lang>-Fragment, das der emittierte Guard zur Laufzeit mit dem Boden vereinigt.
-func Enforce(targetDir, lang string, force bool) error {
+// (slice-036); das Sprach-Set kommt als blocked/<lang>-Fragment, das der emittierte
+// Guard zur Laufzeit mit dem Boden vereinigt — gedroppt von add-lang (BlockedFragment,
+// slice-037), NICHT mehr hier (Enforce ist sprachlos).
+func Enforce(targetDir string, force bool) error {
 	if !force {
-		for _, p := range EnforcePaths(lang) {
+		for _, p := range EnforcePaths() {
 			dst := filepath.Join(targetDir, filepath.FromSlash(p))
 			switch _, err := os.Stat(dst); {
 			case err == nil:
@@ -124,14 +124,31 @@ func Enforce(targetDir, lang string, force bool) error {
 			return err
 		}
 	}
-	// Sprach-BLOCKED-Fragment (blocked/<lang>) nur mit gen-Profil (slice-036); die Union
-	// im emittierten Guard zieht es zur Laufzeit dazu.
-	if frag, ok := blockedByLang()[lang]; ok {
-		if err := writeFileMode(targetDir, BlockedFragmentPath(lang), []byte(frag), 0o644); err != nil {
-			return err
+	return nil
+}
+
+// BlockedFragment droppt das Sprach-BLOCKED-Fragment blocked/<lang> nach targetDir —
+// SKIP-IF-PRESENT (slice-037, Mono-Repo-Kern): mehrere Module gleicher Sprache teilen
+// EIN blocked/<lang>; ein zweites add-lang derselben Sprache darf es weder clobbern noch
+// als Kollision abbrechen. Ohne gen-Profil (unbekannte/leere Sprache) ist es ein no-op
+// — sprachlos gibt es kein Fragment, nur den gebackenen Guard-Boden. Mit force wird
+// ueberschrieben (Baseline-Bump). Der emittierte Guard vereinigt es zur Laufzeit mit
+// dem Boden (Union, slice-036).
+func BlockedFragment(targetDir, lang string, force bool) error {
+	frag, ok := blockedByLang()[lang]
+	if !ok {
+		return nil
+	}
+	dst := filepath.Join(targetDir, filepath.FromSlash(BlockedFragmentPath(lang)))
+	if !force {
+		switch _, err := os.Stat(dst); {
+		case err == nil:
+			return nil // skip-if-present: Mono-Repo-Wiederverwendung, kein Clobber, kein Fehler
+		case !errors.Is(err, fs.ErrNotExist):
+			return fmt.Errorf("%s pruefen: %w", BlockedFragmentPath(lang), err)
 		}
 	}
-	return nil
+	return writeFileMode(targetDir, BlockedFragmentPath(lang), []byte(frag), 0o644)
 }
 
 // writeFileMode schreibt content nach targetDir/rel (slash) mit mode: MkdirAll fuer den

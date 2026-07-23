@@ -368,3 +368,123 @@ func TestLangExitCode(t *testing.T) {
 		t.Errorf("sonstiger Fehler -> %d, want 1", got)
 	}
 }
+
+// initializedRepo legt ein minimal "gebootstrapptes" Ziel an: nur der Aggregator
+// (Root-Makefile) muss existieren, damit add-lang das Fragment verdrahtet sieht
+// (kein Baseline-Fetch noetig — add-lang ergaenzt nur ein Sprachmodul).
+func initializedRepo(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "Makefile"), []byte("include harness/mk/*.mk\n"), 0o644); err != nil {
+		t.Fatalf("Aggregator anlegen: %v", err)
+	}
+	return dir
+}
+
+// TestRun_AddLangDropsModule (slice-037, LH-FA-04): `add-lang go apps/api` dropt das
+// <pfad>-verortete Skelett + das modul-scoped Code-Gate-Fragment (Build-Kontext apps/api)
+// + blocked/go und raeumt das Staging auf. Rot-Gegenbeispiel: test/mutations entfernt den
+// add-lang-Dispatch -> der Init-Pfad laeuft, das Modul fehlt -> rot.
+func TestRun_AddLangDropsModule(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "go", "apps/api"}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("add-lang exit %d, stderr: %q", code, errb.String())
+	}
+	for _, rel := range []string{
+		"apps/api/go.mod", "apps/api/Dockerfile", "apps/api/cmd/app/main.go", "apps/api/.golangci.yml",
+		"harness/mk/apps-api.mk", "tools/harness/blocked/go",
+	} {
+		if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err != nil {
+			t.Errorf("%s nicht gedroppt: %v", rel, err)
+		}
+	}
+	frag := readFile(t, filepath.Join(dir, filepath.FromSlash("harness/mk/apps-api.mk")))
+	for _, want := range []string{"test-apps-api:", "--target test -t apps-api:test apps/api", "GATE_CHECKS += lint-apps-api build-apps-api test-apps-api"} {
+		if !strings.Contains(frag, want) {
+			t.Errorf("apps-api.mk enthaelt %q nicht:\n%s", want, frag)
+		}
+	}
+	// wire.Place raeumt das transiente Staging auf.
+	if _, err := os.Stat(filepath.Join(dir, ".harness", "skeleton")); !os.IsNotExist(err) {
+		t.Errorf(".harness/skeleton nicht aufgeraeumt: %v", err)
+	}
+}
+
+// TestRun_AddLangRoot: `add-lang go .` verortet am Root und liefert die UNSCOPED Fassung
+// (harness/mk/go.mk, test/lint/build, docker build .) — dieselbe wie der --lang-One-Shot.
+func TestRun_AddLangRoot(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "go", "."}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("add-lang go . exit %d: %q", code, errb.String())
+	}
+	for _, rel := range []string{"go.mod", "Dockerfile", "cmd/app/main.go", "harness/mk/go.mk", "tools/harness/blocked/go"} {
+		if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err != nil {
+			t.Errorf("%s nicht gedroppt (Root): %v", rel, err)
+		}
+	}
+	if frag := readFile(t, filepath.Join(dir, filepath.FromSlash("harness/mk/go.mk"))); !strings.Contains(frag, "GATE_CHECKS += lint build test") {
+		t.Errorf("Root-Fragment nicht unscoped:\n%s", frag)
+	}
+}
+
+// TestRun_AddLangRepeatable (slice-037, Mono-Repo-Kern): zwei add-lang-Aufrufe (apps/api +
+// apps/web) legen ZWEI Module an; das geteilte blocked/go wird beim zweiten Lauf NICHT
+// clobbert und ist KEIN Fehler (skip-if-present). Rot-Gegenbeispiel: macht blocked
+// refuse-if-present, bricht der zweite Lauf ab.
+func TestRun_AddLangRepeatable(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "go", "apps/api"}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("erstes add-lang exit %d: %q", code, errb.String())
+	}
+	out.Reset()
+	errb.Reset()
+	if code := run([]string{"add-lang", "go", "apps/web"}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("zweites add-lang (Mono-Repo) exit %d: %q", code, errb.String())
+	}
+	for _, rel := range []string{"apps/api/go.mod", "apps/web/go.mod", "harness/mk/apps-api.mk", "harness/mk/apps-web.mk", "tools/harness/blocked/go"} {
+		if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err != nil {
+			t.Errorf("%s fehlt nach zwei add-lang: %v", rel, err)
+		}
+	}
+}
+
+// TestRun_AddLangNoAggregator: ohne Root-Makefile (Repo nicht initialisiert) bricht
+// add-lang mit Hinweis ab (Exit 1), statt ein unverdrahtetes Fragment zu droppen.
+func TestRun_AddLangNoAggregator(t *testing.T) {
+	var out, errb bytes.Buffer
+	code := run([]string{"add-lang", "go", "apps/api"}, t.TempDir(), testSources(t), &out, &errb)
+	if code != 1 {
+		t.Fatalf("add-lang ohne Aggregator exit %d, want 1", code)
+	}
+	if !strings.Contains(errb.String(), "kein Aggregator") {
+		t.Errorf("kein Aggregator-Hinweis: %q", errb.String())
+	}
+}
+
+// TestRun_AddLangMissingArgs: add-lang braucht zwei Positionsargumente -> Exit 2.
+func TestRun_AddLangMissingArgs(t *testing.T) {
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "go"}, initializedRepo(t), testSources(t), &out, &errb); code != 2 {
+		t.Fatalf("add-lang mit einem Arg exit %d, want 2", code)
+	}
+}
+
+// TestRun_AddLangUnknownLang: eine Sprache ohne gen-Profil -> Exit 2 (fail-fast, wie Init).
+func TestRun_AddLangUnknownLang(t *testing.T) {
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "rust", "apps/api"}, initializedRepo(t), testSources(t), &out, &errb); code != 2 {
+		t.Fatalf("add-lang unbekannte Sprache exit %d, want 2", code)
+	}
+}
+
+func readFile(t *testing.T, path string) string {
+	t.Helper()
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("lesen %s: %v", path, err)
+	}
+	return string(b)
+}

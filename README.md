@@ -22,6 +22,14 @@ ein deterministisch generiertes Sprachskelett mit **verdrahteten** Code-Gates (d
 Generator löst den Fetch ab, [`ADR-0005`](docs/plan/adr/0005-ziel-repo-distribution.md)) und die
 Root-README. Eine unbekannte Sprache bricht sauber ab (Exit 2 + Liste).
 
+**Ein Sprachmodul nachziehen** (`ai-harness-init add-lang <sprache> <pfad>`): ein
+**wiederholbarer** Schritt, der einem bereits gebootstrappten Repo ein Skelett unter
+`<pfad>` + sein Code-Gate-Fragment (`harness/mk/<modul>.mk`, Build-Kontext `<pfad>`) +
+das `blocked/<sprache>`-Guard-Fragment hinzufügt — mehrere Aufrufe ergeben ein
+**Mono-Repo** ([`LH-FA-04`](spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4),
+[`ADR-0007`](docs/plan/adr/0007-bootstrap-phasen.md)). `--lang <X>` beim Init ist die
+One-Shot-Kurzform (Init + ein `add-lang(<X>, .)`).
+
 Das Binary entsteht Docker-only ([`ADR-0003`](docs/plan/adr/0003-go-native-binaries.md), `build`-Stage) —
 kein eingechecktes Executable (`cmd/ai-harness-init` ist Go-Quellcode): `make artifact
 DEST=<dir>` zieht es auf den Host. Die Schritt-für-Schritt-Anleitung (bauen, aufrufen,

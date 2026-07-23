@@ -97,10 +97,19 @@ sequenceDiagram
     participant C as CLI add-lang
     U->>U: Doc-Chain + Sprach-ADR schreiben  [Phase 2]
     U->>C: ai-harness-init add-lang SPRACHE PFAD   [wiederholbar]
-    C->>C: Skelett deterministisch generieren, gemäß ADR
-    C->>C: harness/mk/SPRACHE.mk + blocked/SPRACHE droppen
+    C->>C: Skelett nach PFAD generieren, gemäß ADR
+    C->>C: harness/mk/MODUL.mk (Kontext PFAD) + blocked/SPRACHE droppen
     C-->>U: make -j gates grün inkl. Code-Gates, record-gates zuletzt
 ```
+
+Der Fragment-Name ist **modul-** (nicht sprach-)abgeleitet: `<modul>` kommt aus `<pfad>`
+(`apps/api` → `apps-api`, Root → die Sprache), sodass zwei Module derselben Sprache
+kollisionsfrei koexistieren. Subdir-Module tragen **modul-scoped** Targets
+(`test-<modul>`/`lint-<modul>`/`build-<modul>`, Build-Kontext `<pfad>`); der Root-Fall
+(`--lang`-One-Shot, `<pfad>=.`) behält die unscoped `test`/`lint`/`build`
+(rückwärtskompatibel). `blocked/<sprache>` ist per-Sprache **skip-if-present** — mehrere
+Module derselben Sprache teilen es. `--lang <X>` beim Init ist die One-Shot-Kurzform
+(Init + ein `add-lang(<X>, .)`); `emit.Enforce` bleibt dabei sprach-agnostisch.
 
 ## 5. Idempotenz, Fragment-Assembly und Resume
 
@@ -108,7 +117,7 @@ sequenceDiagram
   Infrastruktur (Aggregator, Fragmente, Hooks, Guard, Baseline, Skills) ist
   **konvergent** — ein Re-Lauf schreibt sie kanonisch und **prunt nie**; im Zweifel
   gilt **skip-if-present** (Adopter-Boden: Doc-Chain, ADRs, `README`, `AGENTS`,
-  Manifeste, Skelett-Code). So überlebt ein zuvor gedropptes `harness/mk/<sprache>.mk`
+  Manifeste, Skelett-Code). So überlebt ein zuvor gedropptes `harness/mk/<modul>.mk`
   oder `blocked/<sprache>` einen sprachlosen Re-Lauf.
 - **Fragment-Assembly:** die Root-Makefile ist ein Aggregator mit `include harness/mk/*.mk`;
   jedes Fragment hängt seine Checks an eine Variable (`GATE_CHECKS += …`). Der

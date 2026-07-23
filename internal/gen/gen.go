@@ -81,3 +81,48 @@ func profiles() map[string]func(goVersion string) map[string]string {
 		"go": goProfile,
 	}
 }
+
+// ModuleName leitet den Modul-Namen aus dem Zielpfad ab (slice-037, Mono-Repo): Root
+// (".") -> die Sprache (Fragment harness/mk/<lang>.mk, rueckwaertskompatibel), sonst
+// der bereinigte Pfad mit Slashes zu Bindestrichen (apps/api -> apps-api, Fragment
+// harness/mk/apps-api.mk). Der Name traegt die Kollisionsfreiheit: das Fragment
+// benennt seine Targets modul-scoped (test-<modul> …), sodass zwei Module gleicher
+// Sprache nicht dasselbe Target definieren.
+func ModuleName(path, lang string) string {
+	clean := cleanPath(path)
+	if clean == "." {
+		return lang
+	}
+	return strings.ReplaceAll(clean, "/", "-")
+}
+
+// cleanPath bereinigt den Zielpfad zu einem slash-Pfad; leer -> ".".
+func cleanPath(path string) string {
+	if path == "" {
+		return "."
+	}
+	return filepath.ToSlash(filepath.Clean(path))
+}
+
+// CodeGateFragment liefert den Inhalt des Code-Gate-Fragments (harness/mk/<modul>.mk)
+// fuer lang am Zielpfad path (slice-037): Root (".") -> die bestehende UNSCOPED Fassung
+// (Targets test/lint/build, `docker build .`, rueckwaertskompatibel); Subdir ->
+// modul-scoped (test-<modul> …, `docker build <path>`, kollisionsfrei im Mono-Repo).
+// Eine Sprache ohne Fragment-Builder liefert *UnknownLangError — dieselbe Liste wie
+// Generate, damit `add-lang <sprache>` fail-fast dieselbe Diagnose gibt.
+func CodeGateFragment(lang, path, goVersion string) (string, error) {
+	build, ok := fragments()[lang]
+	if !ok {
+		return "", &UnknownLangError{Lang: lang, Available: SupportedLangs()}
+	}
+	return build(ModuleName(path, lang), cleanPath(path), goVersion), nil
+}
+
+// fragments bildet Sprache -> Code-Gate-Fragment-Builder (Modul-Name, Build-Kontext,
+// Toolchain-Version -> Fragment-Inhalt). Getrennt von profiles(), weil das Fragment
+// <pfad>-aware ist (Kontext/Scoping), das Skelett aber ortsunabhaengig.
+func fragments() map[string]func(modul, context, goVersion string) string {
+	return map[string]func(string, string, string) string{
+		"go": goFragment,
+	}
+}

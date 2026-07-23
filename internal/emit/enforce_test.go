@@ -18,10 +18,10 @@ import (
 // dieselbe Menge wie der Emit (Phase 4), sonst Teil-Bootstrap-Luecke.
 func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Enforce(dir, "go", false); err != nil {
+	if err := emit.Enforce(dir, false); err != nil {
 		t.Fatalf("Enforce: %v", err)
 	}
-	for _, rel := range emit.EnforcePaths("go") {
+	for _, rel := range emit.EnforcePaths() {
 		if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err != nil {
 			t.Errorf("%s nicht emittiert: %v", rel, err)
 		}
@@ -29,6 +29,7 @@ func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 	// Die konkreten Zielpfade sind Vertrag (Stop-Hook + record-gates + Guard
 	// referenzieren tools/harness/; der Stempel-Ignore muss .harness/.gitignore sein;
 	// der Guard braucht den awk-Extraktor mit-emittiert, sonst laeuft er ins Leere).
+	// blocked/<lang> gehoert seit slice-037 NICHT mehr hierher (skip-if-present, add-lang).
 	want := []string{
 		"tools/harness/working-tree-hash.sh",
 		"tools/harness/record-gates.sh",
@@ -38,13 +39,21 @@ func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 		".claude/hooks/pretooluse-command-guard.sh",
 		"tools/harness/extract-command.awk",
 		"harness/mk/enforce.mk",
-		"tools/harness/blocked/go",
 	}
-	got := strings.Join(emit.EnforcePaths("go"), "\n")
+	got := strings.Join(emit.EnforcePaths(), "\n")
 	for _, w := range want {
 		if !strings.Contains(got, w) {
 			t.Errorf("EnforcePaths fehlt %q — Ziel-Layout-Vertrag verletzt", w)
 		}
+	}
+	// SPRACH-AGNOSTISCH (slice-037): EnforcePaths traegt KEIN blocked/<lang> — das ist
+	// skip-if-present und wandert per add-lang, nicht ueber den Kollisions-Pre-Flight.
+	if strings.Contains(got, "blocked/") {
+		t.Errorf("EnforcePaths traegt ein blocked/-Fragment — das gehoert seit slice-037 zu add-lang (BlockedFragment):\n%s", got)
+	}
+	// Enforce selbst legt sprachlos KEIN blocked/ an.
+	if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash("tools/harness/blocked"))); !os.IsNotExist(err) {
+		t.Errorf("Enforce legte ein blocked/-Fragment an (soll sprach-agnostisch sein): %v", err)
 	}
 }
 
@@ -52,7 +61,7 @@ func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 // eine leere Zusage — Claude ruft den Stop-Hook, make ruft record-gates.
 func TestEnforce_ScriptsExecutable(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Enforce(dir, "go", false); err != nil {
+	if err := emit.Enforce(dir, false); err != nil {
 		t.Fatalf("Enforce: %v", err)
 	}
 	for _, rel := range []string{
@@ -112,24 +121,52 @@ func TestEnforce_GuardBakedFloorAndUnion(t *testing.T) {
 	}
 }
 
-// TestEnforce_EmitsBlockedFragment (slice-036): Enforce mit gen-Profil schreibt
-// tools/harness/blocked/<lang> mit der Sprach-Toolchain; SPRACHLOS wird KEIN
-// blocked/-Fragment geschrieben (der Guard-Boden greift dort allein).
-func TestEnforce_EmitsBlockedFragment(t *testing.T) {
+// TestBlockedFragment_Drops (slice-037): BlockedFragment mit gen-Profil schreibt
+// tools/harness/blocked/<lang> mit der Sprach-Toolchain; eine Sprache OHNE Profil (leer)
+// ist ein no-op (sprachlos greift der gebackene Guard-Boden allein).
+func TestBlockedFragment_Drops(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Enforce(dir, "go", false); err != nil {
-		t.Fatalf("Enforce(go): %v", err)
+	if err := emit.BlockedFragment(dir, "go", false); err != nil {
+		t.Fatalf("BlockedFragment(go): %v", err)
 	}
 	frag := mustReadString(t, filepath.Join(dir, filepath.FromSlash("tools/harness/blocked/go")))
 	if !strings.Contains(frag, "go gofmt golangci-lint staticcheck") {
 		t.Errorf("blocked/go traegt die go-Toolchain nicht: %q", frag)
 	}
 	dir2 := t.TempDir()
-	if err := emit.Enforce(dir2, "", false); err != nil {
-		t.Fatalf("Enforce(sprachlos): %v", err)
+	if err := emit.BlockedFragment(dir2, "", false); err != nil {
+		t.Fatalf("BlockedFragment(sprachlos): %v", err)
 	}
 	if _, err := os.Stat(filepath.Join(dir2, filepath.FromSlash("tools/harness/blocked"))); !os.IsNotExist(err) {
-		t.Errorf("sprachloser Enforce legte ein blocked/-Fragment an: %v", err)
+		t.Errorf("BlockedFragment(sprachlos) legte ein blocked/-Fragment an: %v", err)
+	}
+}
+
+// TestBlockedFragment_SkipIfPresent (slice-037, Mono-Repo-Kern): ein zweiter Drop
+// derselben Sprache OHNE force clobbert das vorhandene blocked/<lang> NICHT und ist KEIN
+// Fehler (mehrere Module gleicher Sprache teilen ein Fragment). Mit force wird ueberschrieben.
+func TestBlockedFragment_SkipIfPresent(t *testing.T) {
+	dir := t.TempDir()
+	dst := filepath.Join(dir, filepath.FromSlash("tools/harness/blocked/go"))
+	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+		t.Fatalf("vorbereiten: %v", err)
+	}
+	if err := os.WriteFile(dst, []byte("adopter-eigenes blocked\n"), 0o644); err != nil {
+		t.Fatalf("vorbereiten: %v", err)
+	}
+	// skip-if-present: kein Fehler, kein Clobber.
+	if err := emit.BlockedFragment(dir, "go", false); err != nil {
+		t.Fatalf("BlockedFragment skip-if-present soll kein Fehler sein: %v", err)
+	}
+	if got := mustReadString(t, dst); got != "adopter-eigenes blocked\n" {
+		t.Errorf("blocked/go bei skip-if-present clobbert: %q", got)
+	}
+	// force ueberschreibt (Baseline-Bump).
+	if err := emit.BlockedFragment(dir, "go", true); err != nil {
+		t.Fatalf("BlockedFragment(force): %v", err)
+	}
+	if got := mustReadString(t, dst); !strings.Contains(got, "go gofmt golangci-lint") {
+		t.Errorf("blocked/go mit --force nicht ueberschrieben: %q", got)
 	}
 }
 
@@ -226,13 +263,13 @@ func TestEnforce_NoOverwriteWithoutForce(t *testing.T) {
 	if err := os.WriteFile(dst, []byte("eigenes Skript"), 0o644); err != nil {
 		t.Fatalf("vorbereiten: %v", err)
 	}
-	if err := emit.Enforce(dir, "go", false); err == nil {
+	if err := emit.Enforce(dir, false); err == nil {
 		t.Fatal("vorhandene Datei ohne --force ueberschrieben")
 	}
 	if got := mustReadString(t, dst); got != "eigenes Skript" {
 		t.Errorf("Inhalt bei Kollision veraendert: %q", got)
 	}
-	if err := emit.Enforce(dir, "go", true); err != nil {
+	if err := emit.Enforce(dir, true); err != nil {
 		t.Fatalf("Enforce mit force: %v", err)
 	}
 	info, err := os.Stat(dst)
