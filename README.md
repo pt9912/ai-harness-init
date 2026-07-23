@@ -10,49 +10,41 @@ zusammenkopieren wollen.
 
 ## Was kann ich heute tun?
 
-Ein Verzeichnis **vollständig bootstrappen** (`--lang go`): Nach dem Lauf fährt das
-Zielrepo sein eigenes `make gates` **out-of-the-box grün** — der Happy-Path aus
-[`LH-FA-01`](spec/lastenheft.md#lh-fa-01--repo-bootstrappen), Meilenstein **M2** erreicht. Der Voll-E2E-Smoke
-`make full-smoke` belegt es real: Bootstrap in ein Wegwerf-Repo → dort `make gates`
-Exit 0 (docs-check 0 Befunde, Go-Gates grün).
+**Nötig:** Docker, git, GNU make — und beim allerersten Lauf einmal Internet (danach arbeitet das
+Repo netzunabhängig). Eine Go-Installation ist nicht nötig, alles läuft in Docker. Die ausführliche
+Schritt-für-Schritt-Anleitung steht im [Benutzerhandbuch](docs/user/benutzerhandbuch.md).
 
-Der Lauf schreibt ins Zielrepo: Regelwerk + Templates (prüfsummen-verifiziert,
-[`LH-FA-09`](spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)), die Doc-Gate-Baseline, die Template-Ablage,
-ein deterministisch generiertes Sprachskelett mit **verdrahteten** Code-Gates (der
-Generator löst den Fetch ab, [`ADR-0005`](docs/plan/adr/0005-ziel-repo-distribution.md)) und die
-Root-README. Eine unbekannte Sprache bricht sauber ab (Exit 2 + Liste).
+**Ein Repo aufsetzen** — in ein frisch mit `git init` angelegtes Verzeichnis:
 
-Ein zweiter Lauf ist **idempotent** (Exit 0, [`ADR-0007`](docs/plan/adr/0007-bootstrap-phasen.md)):
-tool-eigene Infrastruktur wird kanonisch aufgefrischt (heilt Drift + Baseline-Bump),
-adopter-gefüllte Dateien (Doc-Chain, README, Skelett-Code) bleiben **unberührt** — kein
-`--force`, kein Kollisions-Abbruch.
+```bash
+ai-harness-init --lang go --name "Mein Projekt"
+```
 
-**Ein Sprachmodul nachziehen** (`ai-harness-init add-lang <sprache> <pfad>`): ein
-**wiederholbarer** Schritt, der einem bereits gebootstrappten Repo ein Skelett unter
-`<pfad>` + sein Code-Gate-Fragment (`harness/mk/<modul>.mk`, Build-Kontext `<pfad>`) +
-das `blocked/<sprache>`-Guard-Fragment hinzufügt — mehrere Aufrufe ergeben ein
-**Mono-Repo** ([`LH-FA-04`](spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4),
-[`ADR-0007`](docs/plan/adr/0007-bootstrap-phasen.md)). `--lang <X>` beim Init ist die
-One-Shot-Kurzform (Init + ein `add-lang(<X>, .)`).
+Danach läuft dort `make gates` **out-of-the-box grün**: Prozess-Regeln, Vorlagen, Prüfungen und ein
+lauffähiges Go-Grundgerüst sind eingerichtet, nichts ist nachzuarbeiten. Ohne `--lang` entsteht ein
+rein dokumentgeführtes Repo — die Sprache kommt später per `add-lang` dazu.
 
-Das Binary entsteht Docker-only ([`ADR-0003`](docs/plan/adr/0003-go-native-binaries.md), `build`-Stage) —
-kein eingechecktes Executable (`cmd/ai-harness-init` ist Go-Quellcode): `make artifact
-DEST=<dir>` zieht es auf den Host. Die Schritt-für-Schritt-Anleitung (bauen, aufrufen,
-prüfen) steht im [Benutzerhandbuch](docs/user/benutzerhandbuch.md).
+**Eine Sprache oder ein Modul nachziehen:**
 
-**Was noch fehlt:** vorgefertigte Release-Binaries (heute baut man aus dem
-Quellcode) und weitere Sprach-Profile über `go` hinaus
-([`LH-FA-04`](spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)).
+```bash
+ai-harness-init add-lang go apps/api
+```
 
-Der Harness selbst — dieses Repo — ist voll abgesichert: der Gate-Stack läuft grün
-und Docker-only (`make gates` bündelt `baseline-verify` · `docs-check` mit d-check
-v0.51.1 · `lint` · `build` · `test` · `shell-lint` · `ci-lint`), und CI fährt ihn pro
-Push auf frischem Klon. Regelwerk + Templates liegen committet vendored unter
-`.harness/baseline/v3.5.0/` (netzlos, [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)).
+Wiederholbar — mehrere Aufrufe mit verschiedenen Pfaden ergeben ein **Mono-Repo**.
 
-Welche Wellen als Nächstes kommen, sagt die
-[roadmap](docs/plan/planning/in-progress/roadmap.md) — sie ist die Sequenzierungs-Autorität, dieses
-README wiederholt sie bewusst nicht. Keine Erfolgsmeldung ohne lauffähigen Beleg.
+**Denselben Aufruf gefahrlos wiederholen.** Ein zweiter Lauf ist idempotent: das Werkzeug frischt
+seine eigenen Dateien auf (repariert Abweichungen, zieht ein neueres Regelwerk nach) und lässt die
+selbst gefüllten Dateien — Dokumente, `README.md`, Quellcode — unberührt. Kein `--force`, kein
+Abbruch bei vorhandenen Dateien.
+
+**Das Werkzeug bauen.** Fertige Binaries gibt es noch nicht; `ai-harness-init` wird einmalig aus dem
+Quellcode gebaut, komplett in Docker:
+
+```bash
+make artifact DEST=./bin
+```
+
+**Was heute noch fehlt:** vorgefertigte Release-Binaries und weitere Sprachen über `go` hinaus.
 
 ## Warum ai-harness-init?
 
@@ -82,6 +74,7 @@ Welche Klasse woher kommt, entscheidet [`ADR-0005`](docs/plan/adr/0005-ziel-repo
 - **Verträge:** [`spec/lastenheft.md`](spec/lastenheft.md) (`LH-*`-IDs mit Akzeptanzkriterien).
 - **Entscheidungen:** [`docs/plan/adr/`](docs/plan/adr/) — z. B. [`ADR-0005`](docs/plan/adr/0005-ziel-repo-distribution.md) (Ziel-Repo-Distributionsmodell).
 - **Gates:** `make docs-check` (links/anchors/ids/codepaths), `make test` (Command-Guard bats + Go-Unit-Tests), `make lint`/`make build` (Go via Dockerfile-Stages), `make shell-lint` (shellcheck) — grün; `make gates` bündelt sie. (Das arch-Gate a-check folgt mit dem Go-Code.)
+- **Absicherung + Herkunft:** `make gates` läuft grün und Docker-only; CI fährt ihn pro Push auf einem frischen Klon. Regelwerk und Vorlagen liegen committet vendored unter `.harness/baseline/` (netzunabhängig, reproduzierbar). Der Voll-E2E-Smoke `make full-smoke` bootstrappt real in ein Wegwerf-Repo und lässt dort `make gates` grün laufen.
 
 ## Lizenz
 
