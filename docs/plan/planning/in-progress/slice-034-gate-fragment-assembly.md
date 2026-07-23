@@ -111,8 +111,35 @@ DoD vollständig · `make gates` grün · `make full-smoke` + `make mutate` grü
 
 ## 7. Closure-Notiz (nach `done/`)
 
-*Erst nach Abschluss füllen — was funktionierte · was anders lief · Steering-Loop-Eintrag ·
-Folge-Slices.*
+**Geliefert:** die emittierte Makefile-Verdrahtung als **Aggregator + `harness/mk/*.mk`-Fragmente**
+(Option A, verhaltens-erhaltend unter `--lang go`); `wire.Place` ist reiner Placer; `baseline-verify` im
+Ziel **neu verdrahtet** (vorher orphaned); `record-gates` läuft strikt zuletzt via Ordnungskante. Review
+konform (F-1 aufgelöst), DoD bestätigt (`docs/reviews/2026-07-23-slice-034-review.md`,
+`docs/reviews/2026-07-23-slice-034-verify.md`).
+
+**Was funktionierte:** die Ordnungskante ist **load-bearing** — ohne sie fährt `make gates` nur
+record-gates, die Checks entfallen; ein starkes, testbares Property (`make full-smoke`-Marker +
+`TestGenerate_AggregatorHasOrderEdge`). `make full-smoke` mit `make -j gates` belegte Parallelität +
+Nachweis-zuletzt real.
+
+**Was anders lief:** die Ist-Messung (Modul 9 §4) deckte auf, dass der Plan slice-035s Init-Phase
+voraussetzte → Nutzer-Entscheid **Option A** (Re-Scope **vor** Code, wie slice-022→022a/b). Der Reviewer
+fing **F-1** (die von der entfernten Mutation 21 getragene Doc-Gate-Deckung war nur behavioral migriert),
+das ich als Restrisiko nur benannt statt geschlossen hatte.
+
+**Steering-Loop:**
+1. **Ein Slice-Plan, der die Lieferung eines Folge-Slices voraussetzt** (hier „Init emittiert" = slice-035),
+   **ist ein Re-Slice-Signal — die Ist-Messung (Modul 9 §4) fängt es vor Code.** Der verfeinerte Plan
+   (Option A) scoped die Verengung explizit.
+2. **Eine entfernte Mutation ist entfernte Deckung.** 33 → 38/39 migriert, 21 zunächst nur „behavioral via
+   full-smoke" → Reviewer-F-1. Lehre: beim Löschen eines Mutations-Falls die bewachte **Eigenschaft**
+   benennen und ihr neues Zuhause (Test **und** Mutation) prüfen; „behavioral gedeckt" ist im §3.6-Sinn
+   keine gelistete rot-gesehene Zusage. → jetzt Fall 40 + `TestDocGate_FragmentWiresDocsCheck`.
+3. **Mutations-Seds müssen shellcheck-clean sein** (§3.2, kein Inline-Suppress): `$(...)` in Single-Quotes
+   triggert SC2016 → anker-`.*` statt Literal-Muster.
+
+**Folge-Slices:** keine neuen `open/` nötig (035–038 der welle-05 bereits geplant). **slice-035** relocatet
+den Aggregator vom `gen` in einen Init-Emitter (der Option-A-Deferral) und macht Init sprachlos.
 
 ## 8. Sub-Area-Modus-Begründung
 
