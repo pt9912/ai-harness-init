@@ -2,11 +2,11 @@
 
 ## Was ist ai-harness-init?
 
-Eine CLI, die ein bestehendes Git-Repo mit dem AI-Harness-Kurs-Prozess
-bootstrappt: Regelwerk und Templates vom gepinnten Kurs-Stand, die
-Doc-Gate-Baseline und ein deterministisch generiertes Sprachskelett mit
-verdrahteten Code-Gates. Für Teams, die den Harness nicht von Hand
-zusammenkopieren wollen.
+`ai-harness-init` ist ein Kommandozeilen-Werkzeug, das ein bestehendes Git-Repo mit dem
+**AI-Harness-Prozess** aufsetzt — ein festes Set aus Prozess-Regeln, Dokument-Vorlagen und
+automatischen Prüfungen (**Gates**), das die Zusammenarbeit von Mensch und KI-Agenten in einem
+Projekt geordnet hält. Nach einem Aufruf laufen die Prüfungen im Repo sofort grün, ohne
+Nacharbeit. Für Teams, die den Prozess nicht von Hand zusammenkopieren wollen.
 
 ## Was kann ich heute tun?
 
@@ -56,17 +56,12 @@ nichts an als etwas, das es nicht belegen kann.
 
 ## Kerngedanke
 
-**Hole die Kurs-Quelle, generiere das Mechanische.** Nichts entsteht
-aus dem Nichts. Der gepinnte Kurs-Stand ist die **Single Source of Truth (SSoT)** —
-die eine, verbindliche Quelle der Wahrheit für Prozess und Vorlagen. Regelwerk,
-Doc-Templates, Durchsetzungsschicht und Workflow-Commands kommen **gefetcht** von
-dort; die SSoT bleibt der Kurs. Verzeichnis-Gerüst, Sprachskelett und die Gate-Fragmente
-erzeugt das Tool **deterministisch aus eigenem Wissen** — nachvollziehbar wie
-`d-check --print-mk`. Der `AGENTS.md`-Inhalt bleibt tool-fremd: den autort ein
-Mensch oder Agent aus der gefetchten Vorlage. Emittiert wird nur, was wirklich
-läuft ([`LH-QA-01`](spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-
-Welche Klasse woher kommt, entscheidet [`ADR-0005`](docs/plan/adr/0005-ziel-repo-distribution.md); dort steht auch, warum.
+**Nichts entsteht aus dem Nichts.** Den *Inhalt* — Prozess-Regeln, Dokument-Vorlagen, die
+Durchsetzungs-Skripte — holt das Werkzeug aus einer festgelegten, geprüften Quelle (dem Kurs-Stand)
+und denkt ihn sich nicht aus. Nur das rein *Mechanische* — Verzeichnis-Struktur, Sprach-Grundgerüst,
+die Prüf-Bausteine — erzeugt es selbst, und zwar reproduzierbar: gleiche Eingabe, gleiches Ergebnis.
+Und es richtet nur ein, was auch **wirklich läuft** — lieber gar keine Prüfung als eine, die bloß
+dasteht.
 
 ## Was macht es vertrauenswürdig?
 
