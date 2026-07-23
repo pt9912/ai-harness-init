@@ -15,21 +15,34 @@ wechselt nur durch `git mv`, siehe
 
 ## 1. Ziel
 
-Die **emittierte** Root-Makefile wird ein **dünner Aggregator** mit benanntem Glob-Include
-(`include harness/mk/*.mk`); die Checks akkumulieren in `GATE_CHECKS`, und der Gate-Nachweis läuft über
-eine **Ordnungskante** (`record-gates: $(GATE_CHECKS)`) strikt zuletzt, während `make -j` die Checks
-parallel fährt. Init emittiert die sprach-agnostischen Fragmente `harness/mk/{doc-gate,baseline,enforce}.mk`.
-Das ersetzt die heutige `wire`-Direkt-Verdrahtung (`gates: docs-check` + `gates: record-gates` angehängt)
-— **Migrations-Bruch, nicht additiv**.
+Die **emittierte** Makefile-Verdrahtung wird **verhaltens-erhaltend** von „Skelett besitzt Root-Makefile
++ `wire` hängt inline an" auf **Aggregator + Fragmente** umgestellt — **ohne CLI-Änderung** (`--lang`
+bleibt Pflicht; die Phasierung/Init-sprachlos ist slice-035). Konkret (Ist-Messung, Option A gewählt):
+
+- Der Skelett-Generator (`gen`) emittiert die Root-`Makefile` als **dünnen Aggregator** (`include
+  harness/mk/*.mk`, `GATE_CHECKS`-Akkumulation, `gates: record-gates` + Ordnungskante
+  `record-gates: $(GATE_CHECKS)` **nach** dem Include) sowie das Code-Gate-Fragment
+  `harness/mk/<lang>.mk` (Go: lint/build/test).
+- Die drei sprach-agnostischen Emitter droppen je ihr `harness/mk/<belang>.mk`-Fragment: `emit.DocGate`
+  (`GATE_CHECKS += docs-check`, `include d-check.mk`); `emit.BaselineVerify` (`GATE_CHECKS +=
+  baseline-verify` + Rezept — **neu verdrahtet**, das Skript ist heute orphaned); `emit.Enforce`
+  (`record-gates`-Rezept).
+- `wire.Place` lässt den Inline-Anhang (`dCheckInclude`/`enforceWiring`) fallen und wird **reiner
+  Placer**.
+
+`make gates` bleibt **verhaltens-identisch** (lint build test docs-check baseline-verify →
+`record-gates` zuletzt). **Migrations-Bruch, nicht additiv.** slice-035 relocatet den Aggregator vom
+Generator in einen Init-Emitter (Phasierung).
 
 ## 2. Definition of Done
 
 - [ ] Die emittierte Root-Makefile ist ein Aggregator mit `include harness/mk/*.mk`; **kein** direktes
   `gates:`-Prereq-Anhängen mehr — der Migrations-Bruch der heutigen `wire`-Verdrahtung ist vollzogen
   ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)).
-- [ ] Init emittiert `harness/mk/{doc-gate,baseline,enforce}.mk`; jedes Fragment hängt seine Checks via
-  `GATE_CHECKS += …` an; jedes referenzierte Target existiert (kein halluziniertes Gate,
-  [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+- [ ] Der Bootstrap emittiert `harness/mk/{go,doc-gate,baseline,enforce}.mk`; jedes Fragment hängt seine
+  Checks via `GATE_CHECKS += …` an; jedes referenzierte Target existiert (kein halluziniertes Gate,
+  [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) — inkl. der
+  **neu verdrahteten** `baseline-verify` (Skript heute orphaned).
 - [ ] `record-gates: $(GATE_CHECKS)` **und** `gates: record-gates`: `record-gates` läuft strikt nach
   allen Checks, `make -j gates` parallelisiert die Checks (`.NOTPARALLEL` **nicht** gewählt). Rot
   gesehen: eine Mutation, die die Ordnungskante entfernt, färbt einen Reihenfolge-Wächter rot
@@ -51,11 +64,14 @@ Der Implementation-Agent erweitert diese Liste in seinem ersten Lauf.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `internal/emit` (Makefile-Emitter) | refactor | Root-Makefile → dünner Aggregator mit `include harness/mk/*.mk` statt Voll-Makefile |
-| `internal/emit` Templates (`harness/mk/*.mk`) | neu | `doc-gate`/`baseline`/`enforce` als sprach-agnostische Fragmente, je `GATE_CHECKS += …` |
-| `wire.Place` (Verdrahtung) | refactor | direkte `gates:`-Prereq-Anhänge entfernen → Ordnungskante `record-gates: $(GATE_CHECKS)` |
-| go-Tests + `make full-smoke` | update | Reihenfolge-Wächter (`record-gates` zuletzt) + byte-identische Fragment-Emission |
-| `test/mutations` | neu | Mutation „Ordnungskante entfernt" → der Reihenfolge-Wächter muss rot werden |
+| `internal/gen/golang.go` | refactor | `goMakefileTmpl` → Aggregator-Root-`Makefile` (Glob-Include + `GATE_CHECKS` + Ordnungskante) + neues Code-Gate-Fragment `harness/mk/<lang>.mk` (lint/build/test) |
+| `internal/emit/emit.go` (`DocGate`) | update | zusätzlich das `harness/mk/<belang>.mk`-Doc-Gate-Fragment (`GATE_CHECKS += docs-check`, `include d-check.mk`) |
+| `internal/emit/baseline.go` (`BaselineVerify`) | update | zusätzlich das Baseline-Fragment (`GATE_CHECKS += baseline-verify` + Rezept) — verdrahtet das heute orphaned `baseline-verify.sh` |
+| `internal/emit/enforce.go` (`Enforce`) | update | zusätzlich das Enforce-Fragment (`record-gates`-Rezept); `gates:`/Ordnungskante leben im Aggregator |
+| `internal/wire/wire.go` (`Place`) | refactor | `dCheckInclude`/`enforceWiring`-Anhang entfernen → reiner Placer (kein Makefile-Rewrite) |
+| `cmd/ai-harness-init/main.go` (`emitTargets`) | update | die neuen `harness/mk/*.mk`-Ziele in den Phase-3-Pre-Flight aufnehmen |
+| go-Tests (gen/emit/wire/cmd) + `make full-smoke` | update | Fragment-Emission byte-identisch; `make -j gates` grün, `record-gates` strikt zuletzt |
+| `test/mutations` | neu | Mutation „Ordnungskante entfernt" (`record-gates: $(GATE_CHECKS)` → `record-gates:`) → Reihenfolge-Wächter rot |
 
 ## 4. Trigger
 
@@ -82,8 +98,14 @@ DoD vollständig · `make gates` grün · `make full-smoke` + `make mutate` grü
 - **`make -j`-Parallelität:** die Ordnungskante muss `record-gates` strikt nach allen Checks halten,
   **ohne** die Checks zu serialisieren; `.NOTPARALLEL` ist per [`ADR-0007`](../../adr/0007-bootstrap-phasen.md)
   ausgeschlossen.
-- **Glob-Include-Reihenfolge:** `include harness/mk/*.mk` bindet alphabetisch ein — kein Fragment darf
-  von der Include-Reihenfolge abhängen (`GATE_CHECKS +=` ist reihenfolge-invariant).
+- **Glob-Include-Reihenfolge (gelöst):** `include harness/mk/*.mk` bindet alphabetisch ein
+  (baseline < doc-gate < enforce < go) — die Ordnungskante `record-gates: $(GATE_CHECKS)` steht deshalb
+  im **Root-Aggregator NACH dem Include** (nicht in einem Fragment), sonst sähe sie `GATE_CHECKS`
+  unvollständig (go.mk kommt zuletzt). `GATE_CHECKS +=` selbst ist reihenfolge-invariant.
+- **Aggregator vorübergehend im Generator (Option A):** der sprach-agnostische Aggregator wird bis
+  slice-035 vom `gen` (Go-Skelett) emittiert; slice-035 zieht ihn in einen Init-Emitter um. Der Umzug
+  ist eine Relocation (Inhalt stabil), kein Rewrite — bewusst akzeptiert, um green-before-extend zu
+  halten (kein Regressionsrisiko am `--lang go`-Pfad).
 
 ## 7. Closure-Notiz (nach `done/`)
 
