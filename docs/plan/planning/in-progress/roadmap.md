@@ -1,6 +1,6 @@
 # Roadmap
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-07-22.
+**Status:** Aktiv. **Letzte Änderung:** 2026-07-23.
 
 **Format-Regel:** Die Roadmap ist eine Reihenfolge von **Wellen**,
 keine Reihenfolge von Terminen (siehe
@@ -12,36 +12,41 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**Keine aktive Welle** — der nächste Schritt steht aber fest (Wiedereinstieg unten). welle-04
-(Durchsetzung & Emission) ist **geschlossen** (2026-07-22, [welle-04-results.md](../done/welle-04-results.md))
-→ die `.claude/`-Emission ist komplett: Durchsetzung ([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren), slice-030–032)
-+ Anleitung ([`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren), slice-033).
+**[welle-05 — Bootstrap-Phasen](../welle-05-bootstrap-phasen.md)** (aktiv seit 2026-07-23) — setzt
+[`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md) um: Init sprach-agnostisch (`--lang`
+optional), `add-lang` wiederholbar (Mono-Repo), Gate-/Guard-Fragmente, idempotente Emission
+(konvergent/skip-if-present). Der Wellen-Trigger ist erfüllt (ADR Accepted + beide Doc-Folgepflichten
+erledigt, siehe unten).
 
-**Entsperrt: die Welle „Bootstrap-Phasen"** — [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md)
-**Accepted** (2026-07-22, nach zwei Proposed-Review-Runden): die Zielsprache ist eine ADR-Entscheidung
-des **Adopters**, kein Init-Argument. Init sprach-agnostisch, `--lang` optional, `add-lang` wiederholbar
-→ Mono-Repo; Gate-/Guard-`.mk`/`blocked`-Fragmente; idempotente Emission (konvergent/skip-if-present).
+- **Slices:** [slice-034](../open/slice-034-gate-fragment-assembly.md) (Gate-Fragment-Assembly, `open/`) ·
+  035 CLI-Phasierung · 036 Guard-BLOCKED-Union · 037 `add-lang`-Subkommando · 038 Idempotenz-Klassifikation
+  — 034 geschnitten, der Rest in §4 der Welle (cp-Disziplin: je Slice per `cp`, sobald er nach `next/` geht).
+- **Trigger (erfüllt):** [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md) Accepted;
+  CR [`lastenheft.md`](../../../../spec/lastenheft.md) 0.10.0 **und** der
+  [`architecture.md`](../../../../spec/architecture.md)-Nachzug erledigt.
+- **Closure-Kriterien:** alle Slices 034–038 in `done/`; `make gates` grün; `make full-smoke` grün über
+  die [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md)-Fitness-Functions; `make mutate` grün;
+  Closure-Notiz `welle-05-results.md`.
 
-**▶ Nächster Schritt (Wiedereinstieg) — Folgepflichten aus [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md):**
-1. ✅ **CR an [`lastenheft.md`](../../../../spec/lastenheft.md)** (0.10.0, `2c8227b`) — erledigt
-   ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) gesplittet, [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) auf `add-lang`).
-2. ⬜ **`architecture.md`-Nachzug** — Bootstrap-Phasen · `add-lang` · doc-only-Gate · Fragment-Assembly
-   (schließt den offenen Commands-/Anleitung-Emitter-Punkt aus dem welle-04-Closure mit ein). **← hier weiter.**
-3. ⬜ **Welle „Bootstrap-Phasen" planen** (`/plan-welle`) + Slices: optionales `--lang`/`add-lang`-CLI ·
-   Gate-Fragment-Umbau (`include harness/mk/*.mk` + `GATE_CHECKS +=` + Ordnungskante; Migrations-Bruch
-   der heutigen `wire`-Verdrahtung) · Guard-`blocked/*`-Union (universeller Boden gebacken) ·
-   Idempotenz-Klassifikation (ersetzt Pre-Flight-refuse/force).
+**Doc-Folgepflichten aus [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md) — alle erledigt:**
+1. ✅ **CR an [`lastenheft.md`](../../../../spec/lastenheft.md)** (0.10.0, `2c8227b`) —
+   [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) gesplittet, [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) auf `add-lang`.
+2. ✅ **[`architecture.md`](../../../../spec/architecture.md)-Nachzug** (2026-07-23) — Bootstrap-Phasen ·
+   `add-lang` · doc-only-Gate · Fragment-Assembly · Commands-/Skills-Emitter (schloss den offenen
+   welle-04-Emitter-Punkt).
+3. ✅ **[welle-05](../welle-05-bootstrap-phasen.md) geplant** (`/plan-welle`) + slice-034 geschnitten.
 
-**Weiterer benannter `open/`-Folgepunkt** (Backlog, in die Welle einplanbar): git-Repo-Vorbedingung der
-emittierten `make gates` (INFO I-1) — `record-gates` startet mit `git rev-parse`; ein Bootstrap in ein
-nicht git-initialisiertes Verzeichnis röte `make gates` trotz grüner Übrig-Gates. Kandidat: README-Zeile
-oder optionales Bootstrap-`git init`.
+**Benannter `open/`-Folgepunkt, bewusst out-of-scope der Welle** (INFO I-1): git-Repo-Vorbedingung der
+emittierten `make gates` — `record-gates` startet mit `git rev-parse`; ein Bootstrap in ein nicht
+git-initialisiertes Verzeichnis röte `make gates` trotz grüner Übrig-Gates. `make full-smoke` git-init'et
+das Ziel; der reale Nicht-git-Init-Fall bleibt ein separater Wartungs-/Doku-Slice (README-Zeile oder
+optionales Bootstrap-`git init`).
 
 ## Nächste Wellen
 
-**Bootstrap-Phasen** (empfohlen, entsperrt durch [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md))
-wird zur nächsten aktiven Welle — Plandatei per `cp`, sobald ihr erster Slice geschnitten wird
-(green-before-extend; cp-Disziplin — kein Vorab-Schnitt). Alternativ-Kandidaten: Backlog **B/C/D** unten.
+Nach [welle-05](../welle-05-bootstrap-phasen.md) sind die **Backlog-Cluster B/C/D** (unten) die
+Kandidaten — je nach erster beobachteter Drift bzw. nächster Wartungsrunde; Plandatei per `cp`, sobald
+der erste Slice geschnitten wird (green-before-extend; cp-Disziplin — kein Vorab-Schnitt).
 **a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) bleibt aufgeschoben**
 (hängt an hexagonalen Schichten — weder Dogfood noch Skelett tragen `domain/ports/adapters`).
 
@@ -81,7 +86,8 @@ flowchart LR
     W2[welle-02<br/>Distributions-Umbau]
     W3[welle-03<br/>README & Voll-Smoke]
     W4[welle-04<br/>Durchsetzung & Emission]
-    W1 --> W2 --> W3 --> W4
+    W5[welle-05<br/>Bootstrap-Phasen]
+    W1 --> W2 --> W3 --> W4 --> W5
 ```
 
 ## Abgeschlossene Wellen
