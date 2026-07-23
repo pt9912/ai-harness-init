@@ -1,11 +1,8 @@
 package emit
 
 import (
-	"errors"
 	"fmt"
 	"io/fs"
-	"os"
-	"path/filepath"
 )
 
 // RootReadmePath ist das Ziel der Root-README (LH-FA-05): das Repo-Root README.md.
@@ -26,27 +23,14 @@ const rootReadmeSource = "project-readme.template.md"
 // externe Kurs-URL lebt im Template-Hinweis-Block, den StripHintBlock entfernt, sodass
 // die emittierte Datei ein echtes Repo-README ist, keine Vorlage mehr.
 //
-// name leer -> <Projektname> bleibt Platzhalter (Content-Urteil des Menschen). Ohne
-// force wird eine vorhandene README.md nicht ueberschrieben (LH-FA-01 Boundary-AC);
-// der Bootstrap-Pre-Flight in cmd prueft README.md zusammen mit den uebrigen
-// Emit-Zielen (slice-025 — kollidiert eines, schreibt KEIN Emit-Schritt).
-func RootReadme(src fs.FS, targetDir, name string, force bool) error {
-	dst := filepath.Join(targetDir, RootReadmePath)
-	if !force {
-		switch _, statErr := os.Stat(dst); {
-		case statErr == nil:
-			return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", RootReadmePath)
-		case !errors.Is(statErr, fs.ErrNotExist):
-			return fmt.Errorf("%s pruefen: %w", RootReadmePath, statErr)
-		}
-	}
+// name leer -> <Projektname> bleibt Platzhalter (Content-Urteil des Menschen).
+// SKIP-IF-PRESENT (slice-038, ADR-0007): das README ist Adopter-Boden — ein vorhandenes
+// (adopter-gewachsenes) README.md ueberlebt einen idempotenten Re-Lauf unberuehrt.
+func RootReadme(src fs.FS, targetDir, name string) error {
 	content, err := fs.ReadFile(src, rootReadmeSource)
 	if err != nil {
 		return fmt.Errorf("%s lesen: %w", rootReadmeSource, err)
 	}
 	out := []byte(stampName(StripHintBlock(string(content)), name))
-	if err := os.WriteFile(dst, out, 0o644); err != nil {
-		return fmt.Errorf("%s schreiben: %w", RootReadmePath, err)
-	}
-	return nil
+	return writeSkipIfPresent(targetDir, RootReadmePath, out, 0o644)
 }

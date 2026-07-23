@@ -11,7 +11,7 @@ import (
 
 func TestBaselineVerify_EmittedExecutable(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.BaselineVerify(dir, false); err != nil {
+	if err := emit.BaselineVerify(dir); err != nil {
 		t.Fatalf("BaselineVerify: %v", err)
 	}
 	dst := filepath.Join(dir, filepath.FromSlash(emit.BaselineVerifyPath))
@@ -31,7 +31,7 @@ func TestBaselineVerify_EmittedExecutable(t *testing.T) {
 // (orphaned wie vor slice-034).
 func TestBaselineVerify_EmitsFragment(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.BaselineVerify(dir, false); err != nil {
+	if err := emit.BaselineVerify(dir); err != nil {
 		t.Fatalf("BaselineVerify: %v", err)
 	}
 	mk := mustReadString(t, filepath.Join(dir, filepath.FromSlash(emit.BaselineMkPath)))
@@ -76,36 +76,34 @@ func TestBaselineVerify_Netzlos(t *testing.T) {
 	}
 }
 
-func TestBaselineVerify_NoOverwriteWithoutForce(t *testing.T) {
+// TestBaselineVerify_Convergent (slice-038): das Verifikations-Skript ist tool-eigene
+// Gate-Infrastruktur (ADR-0007 konvergent) — ein Re-Lauf schreibt es KANONISCH neu
+// (heilt eine adopter-modifizierte Fassung auf den Tool-Stand), kein Refuse. Der Modus
+// wird MITgezogen (0755, Review-Befund slice-022a L2 — os.WriteFile setzt Perm nur beim
+// Anlegen; writeFileMode chmod't nach). Rot-Gegenbeispiel: eine Mutation, die den Emitter
+// wieder refusen laesst, faerbt den Idempotenz-Test rot.
+func TestBaselineVerify_Convergent(t *testing.T) {
 	dir := t.TempDir()
 	dst := filepath.Join(dir, filepath.FromSlash(emit.BaselineVerifyPath))
 	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
 		t.Fatalf("vorbereiten: %v", err)
 	}
-	// Bewusst 0644: --force muss den Modus MITziehen, nicht nur den Inhalt
-	// (Review-Befund slice-022a L2 — os.WriteFile setzt Perm nur beim Anlegen).
-	if err := os.WriteFile(dst, []byte("eigenes Skript"), 0o644); err != nil {
+	if err := os.WriteFile(dst, []byte("adopter-modifiziert"), 0o644); err != nil {
 		t.Fatalf("vorbereiten: %v", err)
 	}
-	err := emit.BaselineVerify(dir, false)
-	if err == nil {
-		t.Fatal("vorhandene Datei wurde ohne --force ueberschrieben")
+	// Konvergent: kein Refuse, kanonisch neu geschrieben.
+	if err := emit.BaselineVerify(dir); err != nil {
+		t.Fatalf("BaselineVerify (konvergent darf nicht refusen): %v", err)
 	}
-	if got := mustReadString(t, dst); got != "eigenes Skript" {
-		t.Errorf("Inhalt veraendert: %q", got)
-	}
-	if err := emit.BaselineVerify(dir, true); err != nil {
-		t.Fatalf("BaselineVerify mit force: %v", err)
-	}
-	if got := mustReadString(t, dst); got == "eigenes Skript" {
-		t.Error("--force hat nicht ueberschrieben")
+	if got := mustReadString(t, dst); got == "adopter-modifiziert" {
+		t.Error("konvergenter Re-Lauf hat die Drift NICHT geheilt (nicht ueberschrieben)")
 	}
 	info, err := os.Stat(dst)
 	if err != nil {
 		t.Fatalf("stat: %v", err)
 	}
 	if info.Mode().Perm()&0o111 == 0 {
-		t.Errorf("nach --force Mode %v — richtiger Inhalt in nicht ausfuehrbarer Datei (L2)", info.Mode().Perm())
+		t.Errorf("nach konvergentem Re-Lauf Mode %v — richtiger Inhalt in nicht ausfuehrbarer Datei (L2)", info.Mode().Perm())
 	}
 }
 

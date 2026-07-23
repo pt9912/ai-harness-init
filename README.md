@@ -22,6 +22,11 @@ ein deterministisch generiertes Sprachskelett mit **verdrahteten** Code-Gates (d
 Generator löst den Fetch ab, [`ADR-0005`](docs/plan/adr/0005-ziel-repo-distribution.md)) und die
 Root-README. Eine unbekannte Sprache bricht sauber ab (Exit 2 + Liste).
 
+Ein zweiter Lauf ist **idempotent** (Exit 0, [`ADR-0007`](docs/plan/adr/0007-bootstrap-phasen.md)):
+tool-eigene Infrastruktur wird kanonisch aufgefrischt (heilt Drift + Baseline-Bump),
+adopter-gefüllte Dateien (Doc-Chain, README, Skelett-Code) bleiben **unberührt** — kein
+`--force`, kein Kollisions-Abbruch.
+
 **Ein Sprachmodul nachziehen** (`ai-harness-init add-lang <sprache> <pfad>`): ein
 **wiederholbarer** Schritt, der einem bereits gebootstrappten Repo ein Skelett unter
 `<pfad>` + sein Code-Gate-Fragment (`harness/mk/<modul>.mk`, Build-Kontext `<pfad>`) +

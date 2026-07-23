@@ -122,16 +122,19 @@ func (e *AssetTooLargeError) Error() string {
 }
 
 // Baseline holt das Bundle zu tag, verifiziert es gegen wantSHA und legt es als
-// <destDir>/<tag>/{regelwerk,templates}/ + SHA256SUMS ab. Ohne force wird ein
-// vorhandenes <tag>-Verzeichnis nicht ueberschrieben.
+// <destDir>/<tag>/{regelwerk,templates}/ + SHA256SUMS ab. KONVERGENT (slice-038,
+// ADR-0007): die vendored Baseline ist rein tool-eigen — ein vorhandenes <tag>-
+// Verzeichnis wird bei jedem Lauf durch die kanonische Fassung ERSETZT (heilt Drift +
+// Baseline-Bump). Der Swap ersetzt nur <tag>/ (ein tool-eigener Baum), prunt keinen
+// anderen .harness/-Inhalt.
 //
 // Fehlerverhalten: bis zum finalen Rename entsteht unter destDir kein
 // <tag>-Verzeichnis und kein Temp-Rest. destDir SELBST wird frueh angelegt
 // (os.MkdirAll) und bleibt bei einem Abbruch leer zurueck — ein leeres
 // .harness/baseline/ laesst den Verifier laut "kaputter Checkout" melden, statt
-// still gruen zu werden. Ersetzt der Lauf eine vorhandene Baseline (force), gilt
-// zusaetzlich die Einschraenkung aus replaceBaseline.
-func Baseline(ctx context.Context, destDir, tag, wantSHA string, force bool, fetch AssetFetch) error {
+// still gruen zu werden. Ersetzt der Lauf eine vorhandene Baseline, gilt zusaetzlich
+// die Einschraenkung aus replaceBaseline.
+func Baseline(ctx context.Context, destDir, tag, wantSHA string, fetch AssetFetch) error {
 	final := filepath.Join(destDir, tag)
 
 	rc, err := fetch(ctx, tag)
@@ -182,7 +185,7 @@ func Baseline(ctx context.Context, destDir, tag, wantSHA string, force bool, fet
 	if err := writeSums(tmp); err != nil {
 		return err
 	}
-	return placeBaseline(tmp, final, tag, force)
+	return placeBaseline(tmp, final, tag)
 }
 
 // placeBaseline schiebt das fertige Temp-Verzeichnis an seinen Platz. Die
@@ -198,8 +201,8 @@ func Baseline(ctx context.Context, destDir, tag, wantSHA string, force bool, fet
 // Einzel-Nutzer-Init (WIP=1) nicht der Kosten wert. Ehrlich benannt statt
 // stillschweigend gelassen.
 //
-// Mit force wird eine vorhandene Baseline ersetzt — per BEISEITE-RENAME, nicht
-// per Loeschen (Review-Befund slice-022a N1). Der naheliegende os.RemoveAll(final)
+// Eine vorhandene Baseline wird ersetzt (konvergent, slice-038) — per BEISEITE-RENAME,
+// nicht per Loeschen (Review-Befund slice-022a N1). Der naheliegende os.RemoveAll(final)
 // vor dem Rename zerstoert die Alt-Baseline, BEVOR der Ersatz steht: RemoveAll
 // akkumuliert Fehler und loescht Geschwister weiter, sodass ein einziger nicht
 // entfernbarer Eintrag den Rest des Baums trotzdem vernichtet — und auf demselben
@@ -207,10 +210,8 @@ func Baseline(ctx context.Context, destDir, tag, wantSHA string, force bool, fet
 // bliebe ein Zielrepo ohne Baseline. Hier sind stattdessen beide bewegenden
 // Schritte atomar und der zweite rueckrollbar; nur das abschliessende Aufraeumen
 // darf folgenlos scheitern.
-func placeBaseline(tmp, final, tag string, force bool) error {
+func placeBaseline(tmp, final, tag string) error {
 	switch _, err := os.Stat(final); {
-	case err == nil && !force:
-		return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", filepath.Base(final))
 	case err == nil:
 		return replaceBaseline(tmp, final, tag)
 	case !errors.Is(err, fs.ErrNotExist):

@@ -107,19 +107,14 @@ func TestRun(t *testing.T) {
 // macht hasLang immer true -> sprachlos laeuft gen.Generate("") -> UnknownLangError -> Exit 2.
 func TestRun_SprachlosKeinExit2(t *testing.T) {
 	dir := t.TempDir()
-	if err := os.WriteFile(filepath.Join(dir, ".d-check.yml"), []byte("# vorhanden\n"), 0o644); err != nil {
-		t.Fatalf("Setup: %v", err)
-	}
 	var out, errb bytes.Buffer
 	code := run([]string{}, dir, testSources(t), &out, &errb) // KEIN --lang
+	// Der Kern (slice-035): KEIN Exit 2 (das alte --lang-Refuse ist gefallen). Der Lauf
+	// laeuft sprach-agnostisch weiter und scheitert erst netzlos an DocGate (docker,
+	// im Test nicht vorhanden) -> Exit 1 — NICHT an einem --lang-Refuse. Seit slice-038
+	// gibt es keinen Pre-Flight-refuse mehr, der frueher vor Docker abbrach.
 	if code == 2 {
 		t.Fatalf("Exit 2 ohne --lang — das --lang-Refuse ist zurueck (soll optional sein). stderr: %q", errb.String())
-	}
-	if code != 1 {
-		t.Fatalf("Exit-Code = %d, want 1 (sprachlos -> Phase-3-Emit-Pre-Flight-Abbruch)", code)
-	}
-	if !strings.Contains(errb.String(), "existiert bereits") {
-		t.Errorf("stderr = %q, soll den Pre-Flight-Abbruch (Kollision) melden", errb.String())
 	}
 	// Sprachlos: KEIN Skelett generiert (gen/wire entfallen).
 	if _, err := os.Stat(filepath.Join(dir, ".harness", "skeleton")); !errors.Is(err, os.ErrNotExist) {
@@ -139,115 +134,16 @@ func TestRun_UnknownLang(t *testing.T) {
 	}
 }
 
-// TestRun_EmitFehler: der Fetch (Fixture) staged erfolgreich, dann faengt der
-// Phase-3-Emit-Pre-Flight die vorhandene .d-check.yml ohne --force ab (vor Docker)
-// -> Exit 1, stdout leer.
-func TestRun_EmitFehler(t *testing.T) {
-	dir := t.TempDir()
-	if err := os.WriteFile(filepath.Join(dir, ".d-check.yml"), []byte("# vorhanden\n"), 0o644); err != nil {
-		t.Fatalf("Setup: %v", err)
-	}
-	var out, errb bytes.Buffer
-	code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb)
-
-	if code != 1 {
-		t.Errorf("Exit-Code = %d, want 1", code)
-	}
-	if !strings.Contains(errb.String(), "existiert bereits") {
-		t.Errorf("stderr = %q, soll den Emit-Fehler nennen", errb.String())
-	}
-	if out.Len() > 0 {
-		t.Errorf("Exit 1, aber stdout nicht leer: %q", out.String())
-	}
-}
-
-// TestRun_EmitKollisionSchreibtKeinEmit ist der Kern von slice-025 und ERSETZT
-// den frueheren TestRun_BaselineUndVerifierLanden: der behauptete, dass Baseline
-// UND Verifier bei einem an DocGate gescheiterten Lauf bereits im Ziel liegen —
-// genau der Teil-Bootstrap-Zustand, den dieser Slice VERHINDERT.
-//
-// Jetzt kollidiert ein TEMPLATE-Ziel (AGENTS.md). Der Phase-3-Pre-Flight faengt
-// das VOR dem ersten Emit-Write: kein Verifier, kein Doc-Gate. Die gefetchte
-// Baseline (Phase 2) bleibt bewusst liegen — retry-freundlich (slice-025 §6).
-//
-// ROT-Gegenbeispiel (AGENTS 3.6): ohne den Phase-3-Pre-Flight liefe der Lauf in
-// Phase 4, DocGate riefe docker (im netzlosen Test nicht vorhanden) und der
-// Fehler waere KEIN "existiert bereits" — die Assertion unten wuerde rot.
-// test/mutations/12-preflight-emit.sh mutiert genau das.
-func TestRun_EmitKollisionSchreibtKeinEmit(t *testing.T) {
-	dir := t.TempDir()
-	if err := os.WriteFile(filepath.Join(dir, "AGENTS.md"), []byte("# vorhanden\n"), 0o644); err != nil {
-		t.Fatalf("Setup: %v", err)
-	}
-	var out, errb bytes.Buffer
-	code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb)
-	if code != 1 {
-		t.Fatalf("Exit-Code = %d, want 1 (Emit-Pre-Flight bricht ab)", code)
-	}
-	if !strings.Contains(errb.String(), "existiert bereits") {
-		t.Errorf("stderr = %q, soll die Kollision als Pre-Flight-Abbruch melden", errb.String())
-	}
-	if out.Len() > 0 {
-		t.Errorf("Exit 1, aber stdout nicht leer: %q", out.String())
-	}
-	// KEIN Emit-Write: der Slice sagt zu, dass bei einer Emit-Kollision KEIN
-	// Emit-Schritt schreibt, nicht nur der kollidierende.
-	for _, rel := range []string{filepath.Join("tools", "harness", "baseline-verify.sh"), "d-check.mk"} {
-		if _, err := os.Stat(filepath.Join(dir, rel)); !errors.Is(err, os.ErrNotExist) {
-			t.Errorf("%s wurde trotz Emit-Kollision geschrieben (Teil-Emit): %v", rel, err)
-		}
-	}
-	// Die gefetchte Baseline bleibt aber liegen — Phase 2 ist retry-freundlich.
-	base := filepath.Join(dir, ".harness", "baseline", fetch.DefaultTag)
-	if _, err := os.Stat(filepath.Join(base, "SHA256SUMS")); err != nil {
-		t.Errorf("gefetchte Baseline fehlt — Phase 2 soll retry-freundlich bestehen bleiben: %v", err)
-	}
-}
-
-// TestRun_FetchKollisionSchreibtNichts belegt den Phase-1-Pre-Flight (die andere
-// Halbzeit von slice-025): kollidiert ein FETCH-Ziel (die vendored Baseline),
-// wird gar nichts geholt — auch das Skelett nicht.
-//
-// ROT-Gegenbeispiel (AGENTS 3.6): ohne Phase 1 liefe gen.Generate (Phase 2)
-// zuerst und legte das Skelett ab, EHE fetch.Baseline die vorhandene Baseline
-// bemerkt — .harness/skeleton/ waere dann da. test/mutations/14-preflight-fetch.sh
-// mutiert genau das.
-func TestRun_FetchKollisionSchreibtNichts(t *testing.T) {
-	dir := t.TempDir()
-	base := filepath.Join(dir, ".harness", "baseline", fetch.DefaultTag)
-	if err := os.MkdirAll(base, 0o755); err != nil {
-		t.Fatalf("Setup: %v", err)
-	}
-	if err := os.WriteFile(filepath.Join(base, "vorhanden.md"), []byte("alt\n"), 0o644); err != nil {
-		t.Fatalf("Setup: %v", err)
-	}
-	var out, errb bytes.Buffer
-	code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb)
-	if code != 1 {
-		t.Fatalf("Exit-Code = %d, want 1 (Fetch-Pre-Flight bricht ab)", code)
-	}
-	if !strings.Contains(errb.String(), "existiert bereits") {
-		t.Errorf("stderr = %q, soll die Baseline-Kollision melden", errb.String())
-	}
-	if _, err := os.Stat(filepath.Join(dir, ".harness", "skeleton")); !errors.Is(err, os.ErrNotExist) {
-		t.Errorf(".harness/skeleton wurde trotz Fetch-Kollision angelegt (Teil-Fetch): %v", err)
-	}
-}
-
 // TestRun_SkelGoVersionOverride belegt die Verdrahtung env -> generiertes Skelett:
 // SKEL_GO_VERSION faedelt bis ins Dockerfile des generierten Skeletts. Der Lauf
-// bricht bewusst am Phase-3-Emit-Pre-Flight ab (vorhandene AGENTS.md), aber das
-// Skelett ist da (Phase 2) schon generiert.
+// scheitert netzlos an DocGate (docker, im Test nicht vorhanden) -> Exit 1, aber das
+// Skelett ist in Phase 1 (vor Docker) schon generiert und liegt in .harness/skeleton
+// (wire.Place laeuft erst in Phase 3, nach DocGate, also hier nie).
 func TestRun_SkelGoVersionOverride(t *testing.T) {
 	t.Setenv("SKEL_GO_VERSION", "1.29.9")
 	dir := t.TempDir()
-	if err := os.WriteFile(filepath.Join(dir, "AGENTS.md"), []byte("# vorhanden\n"), 0o644); err != nil {
-		t.Fatalf("Setup: %v", err)
-	}
 	var out, errb bytes.Buffer
-	if code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb); code != 1 {
-		t.Fatalf("Exit-Code = %d, want 1 (Emit-Pre-Flight bricht ab)", code)
-	}
+	run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb)
 	df, err := os.ReadFile(filepath.Join(dir, ".harness", "skeleton", "Dockerfile"))
 	if err != nil {
 		t.Fatalf("generiertes Dockerfile lesen: %v", err)
@@ -257,96 +153,17 @@ func TestRun_SkelGoVersionOverride(t *testing.T) {
 	}
 }
 
-// TestRun_SkeletonKollisionSchreibtKeinEmit belegt, dass die Skelett-ROOT-Ziele
-// (slice-004b) im Phase-3-Pre-Flight liegen: eine vorhandene go.mod am Ziel-Root bricht
-// VOR jedem Emit-Write ab (kein Teil-Bootstrap, slice-025). go.mod ist ein REINES
-// Skelett-Ziel — nur wire.Targets faengt es (die Root-Makefile kaeme seit slice-035 aus
-// emit.MakefilePath, nicht aus dem Skelett; sie waere ein schwaecheres Beispiel).
-//
-// ROT-Gegenbeispiel (AGENTS 3.6): fehlt wire.Targets im Phase-3-Pre-Flight, prueft er die
-// go.mod-Kollision nicht -> Phase 4, DocGate scheitert netzlos an docker, die Meldung ist
-// KEIN "go.mod existiert bereits". test/mutations/23 mutiert das.
-func TestRun_SkeletonKollisionSchreibtKeinEmit(t *testing.T) {
-	dir := t.TempDir()
-	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module vorhanden\n"), 0o644); err != nil {
-		t.Fatalf("Setup: %v", err)
-	}
-	var out, errb bytes.Buffer
-	code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb)
-	if code != 1 {
-		t.Fatalf("Exit-Code = %d, want 1 (Pre-Flight bricht an der go.mod-Kollision ab)", code)
-	}
-	if !strings.Contains(errb.String(), "go.mod existiert bereits") {
-		t.Errorf("stderr = %q, soll die go.mod-Kollision melden", errb.String())
-	}
-	if _, err := os.Stat(filepath.Join(dir, "tools", "harness", "baseline-verify.sh")); !errors.Is(err, os.ErrNotExist) {
-		t.Errorf("Verifier trotz Pre-Flight-Abbruch geschrieben (Teil-Emit): %v", err)
-	}
-}
-
-// TestRun_ReadmeKollisionSchreibtKeinEmit belegt, dass das Root-README-Ziel
-// (slice-005, LH-FA-05) im Phase-3-Pre-Flight liegt: eine vorhandene README.md am
-// Ziel-Root bricht VOR jedem Emit-Write ab (kein Teil-Bootstrap, slice-025).
-//
-// ROT-Gegenbeispiel (AGENTS 3.6): fehlt emit.RootReadmePath in emitTargets, prueft
-// der Pre-Flight die README-Kollision nicht -> Phase 4, DocGate scheitert netzlos an
-// docker, die Meldung ist KEIN "README.md existiert bereits". test/mutations/25.
-func TestRun_ReadmeKollisionSchreibtKeinEmit(t *testing.T) {
-	dir := t.TempDir()
-	if err := os.WriteFile(filepath.Join(dir, "README.md"), []byte("# vorhanden\n"), 0o644); err != nil {
-		t.Fatalf("Setup: %v", err)
-	}
-	var out, errb bytes.Buffer
-	code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb)
-	if code != 1 {
-		t.Fatalf("Exit-Code = %d, want 1 (Pre-Flight bricht an der README-Kollision ab)", code)
-	}
-	if !strings.Contains(errb.String(), "README.md existiert bereits") {
-		t.Errorf("stderr = %q, soll die README-Kollision melden", errb.String())
-	}
-	if _, err := os.Stat(filepath.Join(dir, "tools", "harness", "baseline-verify.sh")); !errors.Is(err, os.ErrNotExist) {
-		t.Errorf("Verifier trotz Pre-Flight-Abbruch geschrieben (Teil-Emit): %v", err)
-	}
-}
-
-// TestPreflightAbsent nagelt die Pre-Flight-LOGIK direkt fest: freie Ziele
-// liefern nil, ein vorhandenes meldet einen Fehler, der Pfad UND Ausweg nennt.
-func TestPreflightAbsent(t *testing.T) {
-	dir := t.TempDir()
-	if err := preflightAbsent(dir, []string{"a", "b/c"}); err != nil {
-		t.Errorf("freie Ziele: %v, want nil", err)
-	}
-	if err := os.MkdirAll(filepath.Join(dir, "b"), 0o755); err != nil {
-		t.Fatalf("Setup: %v", err)
-	}
-	if err := os.WriteFile(filepath.Join(dir, "b", "c"), []byte("x"), 0o644); err != nil {
-		t.Fatalf("Setup: %v", err)
-	}
-	err := preflightAbsent(dir, []string{"a", "b/c"})
-	if err == nil {
-		t.Fatal("vorhandenes Ziel wurde nicht gemeldet")
-	}
-	if !strings.Contains(err.Error(), "b/c") || !strings.Contains(err.Error(), "--force") {
-		t.Errorf("Meldung nennt Pfad+Ausweg nicht: %v", err)
-	}
-}
-
 // TestTemplatesDir_ZeigtAufDieGefetchteQuelle koppelt die Wurzelung, die
 // emit.Templates bekommt, an das, was fetch.Baseline tatsaechlich schreibt.
 //
 // Bis zum Review hatte sie NULL Zusicherung (Befund slice-022b F-3). Der Lauf
-// bricht seit slice-025 am Phase-3-Emit-Pre-Flight ab (vorhandene .d-check.yml) —
-// aber ERST nach dem Baseline-Fetch (Phase 2). Deshalb liegt die gefetchte
-// templates/-Wurzel bereits im Ziel, und templatesDir muss genau dorthin zeigen.
+// scheitert netzlos an DocGate (docker) -> Exit 1, aber ERST nach dem Baseline-Fetch
+// (Phase 2). Deshalb liegt die gefetchte templates/-Wurzel bereits im Ziel, und
+// templatesDir muss genau dorthin zeigen.
 func TestTemplatesDir_ZeigtAufDieGefetchteQuelle(t *testing.T) {
 	dir := t.TempDir()
-	if err := os.WriteFile(filepath.Join(dir, ".d-check.yml"), []byte("# vorhanden\n"), 0o644); err != nil {
-		t.Fatalf("Setup: %v", err)
-	}
 	var out, errb bytes.Buffer
-	if code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb); code != 1 {
-		t.Fatalf("Exit-Code = %d, want 1 (Emit-Pre-Flight bricht ab)", code)
-	}
+	run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb)
 	// Die Baseline liegt jetzt im Ziel. Genau dorthin muss templatesDir zeigen —
 	// und dort muss der Wurzel-Anker liegen, den emit.Templates prueft.
 	src := templatesDir(dir, fetch.DefaultTag)
@@ -477,6 +294,40 @@ func TestRun_AddLangUnknownLang(t *testing.T) {
 	var out, errb bytes.Buffer
 	if code := run([]string{"add-lang", "rust", "apps/api"}, initializedRepo(t), testSources(t), &out, &errb); code != 2 {
 		t.Fatalf("add-lang unbekannte Sprache exit %d, want 2", code)
+	}
+}
+
+// TestRun_AddLangIdempotent (slice-038): ein zweiter add-lang-Lauf FUER DASSELBE Modul
+// ist idempotent (Exit 0) — der Skelett-Code ist skip-if-present (adopter-modifiziert
+// ueberlebt), Fragment + blocked sind konvergent (kanonisch neu). Kein Refuse mehr (das
+// Pre-Flight-Modell ist gefallen). Rot-Gegenbeispiel: eine Mutation, die wire.Place oder
+// einen konvergenten Emitter refusen laesst, faerbt den zweiten Lauf rot (Exit != 0).
+func TestRun_AddLangIdempotent(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "go", "apps/api"}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("erstes add-lang exit %d: %q", code, errb.String())
+	}
+	// Adopter-Modifikation am Skelett-Code (skip-if-present-Boden).
+	mainGo := filepath.Join(dir, filepath.FromSlash("apps/api/cmd/app/main.go"))
+	if err := os.WriteFile(mainGo, []byte("// adopter-gewachsen\npackage main\n"), 0o644); err != nil {
+		t.Fatalf("Modifikation: %v", err)
+	}
+	out.Reset()
+	errb.Reset()
+	// Zweiter Lauf DESSELBEN Moduls: idempotent (Exit 0), kein Refuse.
+	if code := run([]string{"add-lang", "go", "apps/api"}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("zweites add-lang (idempotent) exit %d: %q", code, errb.String())
+	}
+	// Skelett-Code skip-if-present: die Adopter-Modifikation ueberlebt UNBERUEHRT.
+	if got := readFile(t, mainGo); got != "// adopter-gewachsen\npackage main\n" {
+		t.Errorf("main.go clobbert beim Re-Lauf (skip-if-present verletzt): %q", got)
+	}
+	// Fragment + blocked konvergent: da (kanonisch neu geschrieben).
+	for _, rel := range []string{"harness/mk/apps-api.mk", "tools/harness/blocked/go"} {
+		if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err != nil {
+			t.Errorf("%s fehlt nach idempotentem Re-Lauf: %v", rel, err)
+		}
 	}
 }
 

@@ -1,13 +1,5 @@
 package emit
 
-import (
-	"errors"
-	"fmt"
-	"io/fs"
-	"os"
-	"path/filepath"
-)
-
 // MakefilePath ist der Zielpfad der Root-Makefile (der Aggregator). Sprach-agnostisch:
 // der Init-Emitter schreibt sie IMMER — auch ohne --lang —, damit ein sprachloser
 // Bootstrap ein `make gates` hat (doc-only: docs-check + baseline-verify + record-gates).
@@ -45,23 +37,10 @@ record-gates: $(GATE_CHECKS)
 `
 
 // Makefile emittiert die Aggregator-Root-Makefile nach targetDir (Init-Phase,
-// sprach-agnostisch — immer, auch ohne --lang). Ohne force wird eine vorhandene Datei
-// nicht ueberschrieben (LH-FA-01 Boundary; der Phase-3-Pre-Flight prueft das bereits,
-// hier als Verteidigung).
-func Makefile(targetDir string, force bool) error {
-	dst := filepath.Join(targetDir, MakefilePath)
-	if !force {
-		switch _, err := os.Stat(dst); {
-		case err == nil:
-			return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", MakefilePath)
-		case !errors.Is(err, fs.ErrNotExist):
-			return fmt.Errorf("%s pruefen: %w", MakefilePath, err)
-		}
-	}
-	if err := os.WriteFile(dst, []byte(aggregatorMakefile), 0o644); err != nil {
-		return fmt.Errorf("%s schreiben: %w", MakefilePath, err)
-	}
-	return nil
+// sprach-agnostisch — immer, auch ohne --lang). KONVERGENT (slice-038): tool-eigener
+// Aggregator, bei jedem Lauf kanonisch neu geschrieben (heilt Drift), kein Refuse.
+func Makefile(targetDir string) error {
+	return writeFileMode(targetDir, MakefilePath, []byte(aggregatorMakefile), 0o644)
 }
 
 // AggregatorMakefile liefert den Aggregator-Inhalt (fuer Tests/Inspektion) — der

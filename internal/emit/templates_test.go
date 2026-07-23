@@ -59,7 +59,7 @@ func courseSet() fs.FS {
 // prueft der Pre-Flight andere Pfade als der Emit schreibt (ein stilles Loch).
 func TestTemplateTargets_SpiegeltDenEmittiertenSatz(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Templates(courseSet(), dir, "X", true); err != nil {
+	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	var written []string
@@ -101,7 +101,7 @@ func TestTemplateTargets_MisrootedRejected(t *testing.T) {
 
 func TestTemplates_Layout(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Templates(courseSet(), dir, "X", true); err != nil {
+	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	singletons := []string{
@@ -156,7 +156,7 @@ func TestTemplates_Layout(t *testing.T) {
 func TestTemplates_StampAndStrip(t *testing.T) {
 	dir := t.TempDir()
 	const name = "MeinProjekt"
-	if err := emit.Templates(courseSet(), dir, name, true); err != nil {
+	if err := emit.Templates(courseSet(), dir, name); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	got, err := os.ReadFile(filepath.Join(dir, "spec/lastenheft.md"))
@@ -188,7 +188,7 @@ func TestTemplates_StampAndStrip(t *testing.T) {
 // Treue der Fixture zum realen Satz haelt `test/courseset-fixture.bats` fest.
 func TestTemplates_RecurringNichtEmittiert(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Templates(courseSet(), dir, "X", true); err != nil {
+	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	for _, rel := range []string{
@@ -229,7 +229,7 @@ func TestTemplates_RecurringNichtEmittiert(t *testing.T) {
 // derselbe Fehler wie bei slice-022a N2.
 func TestTemplates_EmittierterBestandVollstaendig(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Templates(courseSet(), dir, "X", true); err != nil {
+	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	want := []string{
@@ -294,7 +294,7 @@ func TestTemplates_NeuesUpstreamTemplateFliesstMit(t *testing.T) {
 	src := courseSet().(fstest.MapFS)
 	src["spec/glossar.template.md"] = &fstest.MapFile{Data: []byte("> **Template-Hinweis.** X\n\n# <Projektname>\n")}
 	dir := t.TempDir()
-	if err := emit.Templates(src, dir, "X", true); err != nil {
+	if err := emit.Templates(src, dir, "X"); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	if _, err := os.Stat(filepath.Join(dir, "spec", "glossar.md")); err != nil {
@@ -314,7 +314,7 @@ func TestTemplates_FalscheWurzelung(t *testing.T) {
 	}
 	nested["regelwerk/README.md"] = &fstest.MapFile{Data: []byte("# Index\n")}
 	dir := t.TempDir()
-	err := emit.Templates(nested, dir, "X", true)
+	err := emit.Templates(nested, dir, "X")
 	if err == nil {
 		t.Fatal("Vorfahren-Wurzelung wurde akzeptiert — sie emittiert zu viel, nicht zu wenig")
 	}
@@ -347,7 +347,7 @@ func TestTemplates_FalscheWurzelung(t *testing.T) {
 		}},
 	} {
 		d := t.TempDir()
-		if err := emit.Templates(c.src, d, "X", true); err == nil {
+		if err := emit.Templates(c.src, d, "X"); err == nil {
 			t.Errorf("%s wurde akzeptiert — sie emittiert in falsche Ziel-Pfade", c.name)
 		}
 		if got := emittedTree(t, d); len(got) != 0 {
@@ -356,7 +356,7 @@ func TestTemplates_FalscheWurzelung(t *testing.T) {
 	}
 
 	// (d) voellig fremde Quelle.
-	if err := emit.Templates(fstest.MapFS{"irgendwas.txt": &fstest.MapFile{Data: []byte("x")}}, t.TempDir(), "X", true); err == nil {
+	if err := emit.Templates(fstest.MapFS{"irgendwas.txt": &fstest.MapFile{Data: []byte("x")}}, t.TempDir(), "X"); err == nil {
 		t.Error("fremde Quelle wurde als Erfolg gemeldet")
 	}
 }
@@ -368,13 +368,13 @@ func TestCheckRoot_EinRenameGenuegtNicht(t *testing.T) {
 	src := courseSet().(fstest.MapFS)
 	delete(src, "AGENTS.template.md") // upstream umbenannt/verschoben
 	dir := t.TempDir()
-	if err := emit.Templates(src, dir, "X", true); err != nil {
+	if err := emit.Templates(src, dir, "X"); err != nil {
 		t.Fatalf("ein fehlender Marker sollte den Bootstrap nicht brechen: %v", err)
 	}
 	// Gegenprobe: zwei fehlende Marker MUESSEN abbrechen, sonst ist die
 	// Schwelle wirkungslos.
 	delete(src, "spec/lastenheft.template.md")
-	if err := emit.Templates(src, t.TempDir(), "X", true); err == nil {
+	if err := emit.Templates(src, t.TempDir(), "X"); err == nil {
 		t.Error("zwei fehlende Marker wurden akzeptiert — Schwelle wirkungslos")
 	}
 }
@@ -399,7 +399,7 @@ func TestTemplates_MinimalQuelle(t *testing.T) {
 		"spec/lastenheft.template.md": &fstest.MapFile{Data: []byte("# <Projektname>\n")},
 	}
 	dir := t.TempDir()
-	if err := emit.Templates(minimal, dir, "X", true); err != nil {
+	if err := emit.Templates(minimal, dir, "X"); err != nil {
 		t.Fatalf("minimale gueltige Quelle sollte emittieren: %v", err)
 	}
 	// Emittiert: die zwei Singletons der Quelle PLUS die tool-definierten .gitkeep der
@@ -415,37 +415,47 @@ func TestTemplates_MinimalQuelle(t *testing.T) {
 	}
 }
 
-func TestTemplates_ForceBoundary(t *testing.T) {
+// TestTemplates_SkipIfPresent (slice-038): Doc-Chain-Singletons sind Adopter-Boden
+// (ADR-0007 skip-if-present) — ein vorhandenes (adopter-gefuelltes) Singleton ueberlebt
+// einen Re-Lauf UNBERUEHRT; die fehlenden werden geschrieben. Kein Fehler, kein Refuse.
+func TestTemplates_SkipIfPresent(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.MkdirAll(filepath.Join(dir, "spec"), 0o755); err != nil {
 		t.Fatalf("Setup: %v", err)
 	}
-	const sentinel = "# vorhanden\n"
+	const sentinel = "# adopter-gefuellt\n"
 	target := filepath.Join(dir, "spec/lastenheft.md")
 	if err := os.WriteFile(target, []byte(sentinel), 0o644); err != nil {
 		t.Fatalf("Setup: %v", err)
 	}
-	// ohne force -> Fehler, Original unveraendert, nichts geschrieben (Pre-Flight).
-	if err := emit.Templates(courseSet(), dir, "X", false); err == nil {
-		t.Fatal("ohne force: kein Fehler trotz vorhandener Datei")
+	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
+		t.Fatalf("Templates (skip-if-present darf nicht fehlschlagen): %v", err)
 	}
-	before, err := os.ReadFile(target)
-	if err != nil {
-		t.Fatalf("lesen: %v", err)
-	}
-	if string(before) != sentinel {
-		t.Errorf("Datei ohne force veraendert: %q", string(before))
-	}
-	// mit force -> ueberschrieben.
-	if err := emit.Templates(courseSet(), dir, "X", true); err != nil {
-		t.Fatalf("mit force: %v", err)
-	}
+	// Das vorhandene Singleton bleibt UNBERUEHRT (nie clobbern).
 	after, err := os.ReadFile(target)
 	if err != nil {
 		t.Fatalf("lesen: %v", err)
 	}
-	if string(after) == sentinel {
-		t.Error("mit force: Datei nicht ueberschrieben")
+	if string(after) != sentinel {
+		t.Errorf("vorhandenes Singleton clobbert (skip-if-present verletzt): %q", string(after))
+	}
+	// Ein FEHLENDES Singleton wurde geschrieben (der Emit ist nicht leer).
+	targets, err := emit.TemplateTargets(courseSet(), "X")
+	if err != nil {
+		t.Fatalf("TemplateTargets: %v", err)
+	}
+	wroteOther := false
+	for _, rel := range targets {
+		if rel == "spec/lastenheft.md" {
+			continue
+		}
+		if _, statErr := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); statErr == nil {
+			wroteOther = true
+			break
+		}
+	}
+	if !wroteOther {
+		t.Error("skip-if-present schrieb KEIN fehlendes Singleton (Emit leer?)")
 	}
 }
 
@@ -487,7 +497,7 @@ func TestNeutralizeRoadmap(t *testing.T) {
 // Property gemessen, nicht die Implementierung — §3.6).
 func TestTemplates_RoadmapGateSafe(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Templates(courseSet(), dir, "X", true); err != nil {
+	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	got, err := os.ReadFile(filepath.Join(dir, "docs/plan/planning/in-progress/roadmap.md"))

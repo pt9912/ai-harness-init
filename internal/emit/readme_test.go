@@ -41,7 +41,7 @@ func projectReadmeSet() fs.FS {
 func TestRootReadme_StampStrip(t *testing.T) {
 	dir := t.TempDir()
 	const name = "MeinProjekt"
-	if err := emit.RootReadme(projectReadmeSet(), dir, name, true); err != nil {
+	if err := emit.RootReadme(projectReadmeSet(), dir, name); err != nil {
 		t.Fatalf("RootReadme: %v", err)
 	}
 	got, err := os.ReadFile(filepath.Join(dir, "README.md"))
@@ -69,10 +69,10 @@ func TestRootReadme_StampStrip(t *testing.T) {
 // existierende Datei zeigen — sonst braeche docs-check im frischen Repo.
 func TestRootReadme_LinksGateSicher(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Templates(courseSet(), dir, "X", true); err != nil {
+	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
-	if err := emit.RootReadme(projectReadmeSet(), dir, "X", true); err != nil {
+	if err := emit.RootReadme(projectReadmeSet(), dir, "X"); err != nil {
 		t.Fatalf("RootReadme: %v", err)
 	}
 	readme, err := os.ReadFile(filepath.Join(dir, emit.RootReadmePath))
@@ -98,33 +98,24 @@ func TestRootReadme_LinksGateSicher(t *testing.T) {
 	}
 }
 
-// TestRootReadme_ForceBoundary: eine vorhandene README.md wird ohne force nicht
-// ueberschrieben (LH-FA-01 Boundary-AC), mit force schon.
-func TestRootReadme_ForceBoundary(t *testing.T) {
+// TestRootReadme_SkipIfPresent (slice-038): README.md ist Adopter-Boden (ADR-0007
+// skip-if-present) — ein vorhandenes (adopter-gewachsenes) README ueberlebt einen
+// Re-Lauf UNBERUEHRT. Kein Fehler, kein Clobber.
+func TestRootReadme_SkipIfPresent(t *testing.T) {
 	dir := t.TempDir()
-	const sentinel = "# vorhanden\n"
+	const sentinel = "# adopter-gewachsen\n"
 	target := filepath.Join(dir, emit.RootReadmePath)
 	if err := os.WriteFile(target, []byte(sentinel), 0o644); err != nil {
 		t.Fatalf("Setup: %v", err)
 	}
-	if err := emit.RootReadme(projectReadmeSet(), dir, "X", false); err == nil {
-		t.Fatal("ohne force: kein Fehler trotz vorhandener README.md")
-	}
-	before, err := os.ReadFile(target)
-	if err != nil {
-		t.Fatalf("lesen: %v", err)
-	}
-	if string(before) != sentinel {
-		t.Errorf("README ohne force veraendert: %q", string(before))
-	}
-	if err := emit.RootReadme(projectReadmeSet(), dir, "X", true); err != nil {
-		t.Fatalf("mit force: %v", err)
+	if err := emit.RootReadme(projectReadmeSet(), dir, "X"); err != nil {
+		t.Fatalf("RootReadme (skip-if-present darf nicht fehlschlagen): %v", err)
 	}
 	after, err := os.ReadFile(target)
 	if err != nil {
 		t.Fatalf("lesen: %v", err)
 	}
-	if string(after) == sentinel {
-		t.Error("mit force: README nicht ueberschrieben")
+	if string(after) != sentinel {
+		t.Errorf("vorhandenes README clobbert (skip-if-present verletzt): %q", string(after))
 	}
 }

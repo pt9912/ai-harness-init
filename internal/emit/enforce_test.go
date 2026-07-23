@@ -18,7 +18,7 @@ import (
 // dieselbe Menge wie der Emit (Phase 4), sonst Teil-Bootstrap-Luecke.
 func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Enforce(dir, false); err != nil {
+	if err := emit.Enforce(dir); err != nil {
 		t.Fatalf("Enforce: %v", err)
 	}
 	for _, rel := range emit.EnforcePaths() {
@@ -61,7 +61,7 @@ func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 // eine leere Zusage — Claude ruft den Stop-Hook, make ruft record-gates.
 func TestEnforce_ScriptsExecutable(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Enforce(dir, false); err != nil {
+	if err := emit.Enforce(dir); err != nil {
 		t.Fatalf("Enforce: %v", err)
 	}
 	for _, rel := range []string{
@@ -126,7 +126,7 @@ func TestEnforce_GuardBakedFloorAndUnion(t *testing.T) {
 // ist ein no-op (sprachlos greift der gebackene Guard-Boden allein).
 func TestBlockedFragment_Drops(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.BlockedFragment(dir, "go", false); err != nil {
+	if err := emit.BlockedFragment(dir, "go"); err != nil {
 		t.Fatalf("BlockedFragment(go): %v", err)
 	}
 	frag := mustReadString(t, filepath.Join(dir, filepath.FromSlash("tools/harness/blocked/go")))
@@ -134,7 +134,7 @@ func TestBlockedFragment_Drops(t *testing.T) {
 		t.Errorf("blocked/go traegt die go-Toolchain nicht: %q", frag)
 	}
 	dir2 := t.TempDir()
-	if err := emit.BlockedFragment(dir2, "", false); err != nil {
+	if err := emit.BlockedFragment(dir2, ""); err != nil {
 		t.Fatalf("BlockedFragment(sprachlos): %v", err)
 	}
 	if _, err := os.Stat(filepath.Join(dir2, filepath.FromSlash("tools/harness/blocked"))); !os.IsNotExist(err) {
@@ -142,31 +142,26 @@ func TestBlockedFragment_Drops(t *testing.T) {
 	}
 }
 
-// TestBlockedFragment_SkipIfPresent (slice-037, Mono-Repo-Kern): ein zweiter Drop
-// derselben Sprache OHNE force clobbert das vorhandene blocked/<lang> NICHT und ist KEIN
-// Fehler (mehrere Module gleicher Sprache teilen ein Fragment). Mit force wird ueberschrieben.
-func TestBlockedFragment_SkipIfPresent(t *testing.T) {
+// TestBlockedFragment_Convergent (slice-038, Review-I-1-Versoehnung): blocked/<sprache>
+// ist KONVERGENT (ADR-0007 Z.100), nicht mehr skip-if-present wie slice-037. Ein zweiter
+// Drop schreibt kanonisch neu (heilt Drift, byte-identisch) — auch im Mono-Repo idempotent,
+// weil der Inhalt tool-fixiert ist. Rot-Gegenbeispiel: eine Mutation, die wieder skippt,
+// laesst die Drift stehen (unten: die adopter-modifizierte Fassung ueberlebt faelschlich).
+func TestBlockedFragment_Convergent(t *testing.T) {
 	dir := t.TempDir()
 	dst := filepath.Join(dir, filepath.FromSlash("tools/harness/blocked/go"))
 	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
 		t.Fatalf("vorbereiten: %v", err)
 	}
-	if err := os.WriteFile(dst, []byte("adopter-eigenes blocked\n"), 0o644); err != nil {
+	if err := os.WriteFile(dst, []byte("adopter-modifiziert\n"), 0o644); err != nil {
 		t.Fatalf("vorbereiten: %v", err)
 	}
-	// skip-if-present: kein Fehler, kein Clobber.
-	if err := emit.BlockedFragment(dir, "go", false); err != nil {
-		t.Fatalf("BlockedFragment skip-if-present soll kein Fehler sein: %v", err)
-	}
-	if got := mustReadString(t, dst); got != "adopter-eigenes blocked\n" {
-		t.Errorf("blocked/go bei skip-if-present clobbert: %q", got)
-	}
-	// force ueberschreibt (Baseline-Bump).
-	if err := emit.BlockedFragment(dir, "go", true); err != nil {
-		t.Fatalf("BlockedFragment(force): %v", err)
+	// konvergent: kein Refuse, kanonisch neu (Drift geheilt).
+	if err := emit.BlockedFragment(dir, "go"); err != nil {
+		t.Fatalf("BlockedFragment (konvergent darf nicht fehlschlagen): %v", err)
 	}
 	if got := mustReadString(t, dst); !strings.Contains(got, "go gofmt golangci-lint") {
-		t.Errorf("blocked/go mit --force nicht ueberschrieben: %q", got)
+		t.Errorf("konvergenter Re-Lauf hat blocked/go NICHT kanonisch neu geschrieben (Drift nicht geheilt): %q", got)
 	}
 }
 
@@ -252,31 +247,32 @@ func TestEnforce_LangAgnostic(t *testing.T) {
 	}
 }
 
-// TestEnforce_NoOverwriteWithoutForce + Modus-Mitzug bei --force (Befund slice-022a
-// L2: os.WriteFile setzt Perm nur beim Anlegen).
-func TestEnforce_NoOverwriteWithoutForce(t *testing.T) {
+// TestEnforce_Convergent (slice-038): die Durchsetzungs-Mechanik ist tool-eigene
+// Infrastruktur (ADR-0007 konvergent) — ein Re-Lauf schreibt sie KANONISCH neu (heilt eine
+// adopter-modifizierte Fassung), kein Refuse. Der Modus wird MITgezogen (0755, Befund
+// slice-022a L2: os.WriteFile setzt Perm nur beim Anlegen; writeFileMode chmod't nach).
+// Rot-Gegenbeispiel: eine Mutation, die Enforce wieder refusen laesst, faerbt das rot.
+func TestEnforce_Convergent(t *testing.T) {
 	dir := t.TempDir()
 	dst := filepath.Join(dir, filepath.FromSlash("tools/harness/record-gates.sh"))
 	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
 		t.Fatalf("vorbereiten: %v", err)
 	}
-	if err := os.WriteFile(dst, []byte("eigenes Skript"), 0o644); err != nil {
+	if err := os.WriteFile(dst, []byte("adopter-modifiziert"), 0o644); err != nil {
 		t.Fatalf("vorbereiten: %v", err)
 	}
-	if err := emit.Enforce(dir, false); err == nil {
-		t.Fatal("vorhandene Datei ohne --force ueberschrieben")
+	// konvergent: kein Refuse, kanonisch neu (Drift geheilt).
+	if err := emit.Enforce(dir); err != nil {
+		t.Fatalf("Enforce (konvergent darf nicht refusen): %v", err)
 	}
-	if got := mustReadString(t, dst); got != "eigenes Skript" {
-		t.Errorf("Inhalt bei Kollision veraendert: %q", got)
-	}
-	if err := emit.Enforce(dir, true); err != nil {
-		t.Fatalf("Enforce mit force: %v", err)
+	if got := mustReadString(t, dst); got == "adopter-modifiziert" {
+		t.Error("konvergenter Re-Lauf hat record-gates.sh NICHT geheilt (nicht ueberschrieben)")
 	}
 	info, err := os.Stat(dst)
 	if err != nil {
 		t.Fatalf("stat: %v", err)
 	}
 	if info.Mode().Perm()&0o111 == 0 {
-		t.Errorf("nach --force Mode %v — richtiger Inhalt in nicht ausfuehrbarer Datei (L2)", info.Mode().Perm())
+		t.Errorf("nach konvergentem Re-Lauf Mode %v — richtiger Inhalt in nicht ausfuehrbarer Datei (L2)", info.Mode().Perm())
 	}
 }

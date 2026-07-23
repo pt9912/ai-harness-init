@@ -97,24 +97,13 @@ func EnforcePaths() []string {
 	return paths
 }
 
-// Enforce schreibt die sprach-agnostische Durchsetzungs-Mechanik nach targetDir.
-// Kollisions-VORPASS (ohne force) ueber ALLE Ziele: existiert eines, schreibt keines
-// (kein Teil-Emit, slice-025). Der Guard traegt seinen universellen Boden GEBACKEN
-// (slice-036); das Sprach-Set kommt als blocked/<lang>-Fragment, das der emittierte
-// Guard zur Laufzeit mit dem Boden vereinigt — gedroppt von add-lang (BlockedFragment,
-// slice-037), NICHT mehr hier (Enforce ist sprachlos).
-func Enforce(targetDir string, force bool) error {
-	if !force {
-		for _, p := range EnforcePaths() {
-			dst := filepath.Join(targetDir, filepath.FromSlash(p))
-			switch _, err := os.Stat(dst); {
-			case err == nil:
-				return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", p)
-			case !errors.Is(err, fs.ErrNotExist):
-				return fmt.Errorf("%s pruefen: %w", p, err)
-			}
-		}
-	}
+// Enforce schreibt die sprach-agnostische Durchsetzungs-Mechanik nach targetDir —
+// KONVERGENT (slice-038, ADR-0007 Idempotenz-Klasse): reine tool-eigene Infrastruktur,
+// bei jedem Lauf kanonisch neu geschrieben (heilt Drift), kein Refuse, kein --force
+// (das Pre-Flight-refuse-Modell aus slice-025 ist mit slice-038 gefallen). Der Guard
+// traegt seinen universellen Boden GEBACKEN (slice-036); das Sprach-Set kommt als
+// blocked/<lang>-Fragment (BlockedFragment, add-lang), NICHT hier (Enforce ist sprachlos).
+func Enforce(targetDir string) error {
 	for _, f := range enforceFiles() {
 		content, err := enforceFS.ReadFile(f.src)
 		if err != nil {
@@ -128,33 +117,25 @@ func Enforce(targetDir string, force bool) error {
 }
 
 // BlockedFragment droppt das Sprach-BLOCKED-Fragment blocked/<lang> nach targetDir —
-// SKIP-IF-PRESENT (slice-037, Mono-Repo-Kern): mehrere Module gleicher Sprache teilen
-// EIN blocked/<lang>; ein zweites add-lang derselben Sprache darf es weder clobbern noch
-// als Kollision abbrechen. Ohne gen-Profil (unbekannte/leere Sprache) ist es ein no-op
-// — sprachlos gibt es kein Fragment, nur den gebackenen Guard-Boden. Mit force wird
-// ueberschrieben (Baseline-Bump). Der emittierte Guard vereinigt es zur Laufzeit mit
-// dem Boden (Union, slice-036).
-func BlockedFragment(targetDir, lang string, force bool) error {
+// KONVERGENT (slice-038, Review-I-1-Versoehnung: ADR-0007 Z.100 listet blocked/<sprache>
+// als konvergent, nicht mehr skip-if-present wie slice-037). Kanonisch neu schreiben ist
+// auch im Mono-Repo idempotent: ein zweites add-lang derselben Sprache schreibt byte-
+// identisch (LH-QA-02), kein Clobber-Risiko (der Inhalt ist tool-fixiert). Ohne gen-Profil
+// (unbekannte/leere Sprache) ist es ein no-op — sprachlos gibt es kein Fragment, nur den
+// gebackenen Guard-Boden. Der emittierte Guard vereinigt es zur Laufzeit mit dem Boden.
+func BlockedFragment(targetDir, lang string) error {
 	frag, ok := blockedByLang()[lang]
 	if !ok {
 		return nil
 	}
-	dst := filepath.Join(targetDir, filepath.FromSlash(BlockedFragmentPath(lang)))
-	if !force {
-		switch _, err := os.Stat(dst); {
-		case err == nil:
-			return nil // skip-if-present: Mono-Repo-Wiederverwendung, kein Clobber, kein Fehler
-		case !errors.Is(err, fs.ErrNotExist):
-			return fmt.Errorf("%s pruefen: %w", BlockedFragmentPath(lang), err)
-		}
-	}
 	return writeFileMode(targetDir, BlockedFragmentPath(lang), []byte(frag), 0o644)
 }
 
-// writeFileMode schreibt content nach targetDir/rel (slash) mit mode: MkdirAll fuer den
-// Elternpfad + Chmod NACH dem Write (os.WriteFile wendet den Modus nur beim Anlegen an —
-// ueber eine vorhandene 0644-Datei mit --force bliebe der richtige Inhalt nicht
-// ausfuehrbar zurueck, Befund slice-022a L2).
+// writeFileMode ist der KONVERGENTE Writer (slice-038): schreibt content nach targetDir/rel
+// (slash) mit mode IMMER (kanonisch, ueberschreibt) — MkdirAll fuer den Elternpfad + Chmod
+// NACH dem Write (os.WriteFile wendet den Modus nur beim Anlegen an — ueber eine vorhandene
+// 0644-Datei geschrieben bliebe der richtige Inhalt sonst nicht ausfuehrbar zurueck, Befund
+// slice-022a L2). Fuer tool-eigene Infrastruktur, die der Adopter nicht editieren soll.
 func writeFileMode(targetDir, rel string, content []byte, mode fs.FileMode) error {
 	dst := filepath.Join(targetDir, filepath.FromSlash(rel))
 	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
@@ -167,6 +148,21 @@ func writeFileMode(targetDir, rel string, content []byte, mode fs.FileMode) erro
 		return fmt.Errorf("%s Modus setzen: %w", rel, err)
 	}
 	return nil
+}
+
+// writeSkipIfPresent ist der SKIP-IF-PRESENT-Writer (slice-038, ADR-0007): schreibt content
+// NUR, wenn targetDir/rel FEHLT — eine vorhandene Datei bleibt unberuehrt (return nil, kein
+// Fehler). Fuer Adopter-Boden (Doc-Chain, README, Skelett-Code, .d-check.yml, Commands): der
+// idempotente Re-Lauf clobbert adopter-modifizierten Inhalt NIE (der sichere Default der ADR).
+func writeSkipIfPresent(targetDir, rel string, content []byte, mode fs.FileMode) error {
+	dst := filepath.Join(targetDir, filepath.FromSlash(rel))
+	switch _, err := os.Stat(dst); {
+	case err == nil:
+		return nil // vorhanden -> nie ueberschreiben (skip-if-present)
+	case !errors.Is(err, fs.ErrNotExist):
+		return fmt.Errorf("%s pruefen: %w", rel, err)
+	}
+	return writeFileMode(targetDir, rel, content, mode)
 }
 
 // EnforceFile liefert den eingebetteten Inhalt einer Mechanik-Quelle an ihrem

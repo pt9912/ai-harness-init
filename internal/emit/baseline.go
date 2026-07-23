@@ -2,11 +2,7 @@ package emit
 
 import (
 	_ "embed" // fuer die //go:embed-Direktive (baselineVerify)
-	"errors"
-	"fmt"
 	"io/fs"
-	"os"
-	"path/filepath"
 )
 
 // baselineVerify ist das tool-AUTORIERTE Verifikations-Skript fuer die vendored
@@ -45,10 +41,9 @@ GATE_CHECKS += baseline-verify
 
 // BaselineVerify schreibt das Verifikations-Skript (0755, ausfuehrbar — ein nicht
 // ausfuehrbares Gate-Skript waere eine leere Zusage) UND das Baseline-Fragment
-// harness/mk/baseline.mk (0644, slice-034) nach targetDir. Ohne force wird eine
-// vorhandene Datei nicht ueberschrieben (LH-FA-01 Boundary-AC); der Kollisions-
-// Vorpass deckt BEIDE Ziele (kein Teil-Emit).
-func BaselineVerify(targetDir string, force bool) error {
+// harness/mk/baseline.mk (0644, slice-034) nach targetDir. KONVERGENT (slice-038):
+// tool-eigene Gate-Infrastruktur, bei jedem Lauf kanonisch neu geschrieben, kein Refuse.
+func BaselineVerify(targetDir string) error {
 	files := []struct {
 		path    string
 		content []byte
@@ -57,30 +52,9 @@ func BaselineVerify(targetDir string, force bool) error {
 		{BaselineVerifyPath, baselineVerify, 0o755},
 		{BaselineMkPath, []byte(baselineMk), 0o644},
 	}
-	if !force {
-		for _, f := range files {
-			dst := filepath.Join(targetDir, filepath.FromSlash(f.path))
-			switch _, err := os.Stat(dst); {
-			case err == nil:
-				return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", f.path)
-			case !errors.Is(err, fs.ErrNotExist):
-				return fmt.Errorf("%s pruefen: %w", f.path, err)
-			}
-		}
-	}
 	for _, f := range files {
-		dst := filepath.Join(targetDir, filepath.FromSlash(f.path))
-		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
-			return fmt.Errorf("%s anlegen: %w", filepath.Dir(f.path), err)
-		}
-		if err := os.WriteFile(dst, f.content, f.mode); err != nil {
-			return fmt.Errorf("%s schreiben: %w", f.path, err)
-		}
-		// os.WriteFile wendet den Modus nur beim ANLEGEN an: ueber eine vorhandene
-		// 0644-Datei geschrieben (--force) bliebe der richtige Inhalt in einer nicht
-		// ausfuehrbaren Datei zurueck (Review-Befund slice-022a L2).
-		if err := os.Chmod(dst, f.mode); err != nil {
-			return fmt.Errorf("%s Modus setzen: %w", f.path, err)
+		if err := writeFileMode(targetDir, f.path, f.content, f.mode); err != nil {
+			return err
 		}
 	}
 	return nil

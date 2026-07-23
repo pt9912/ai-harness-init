@@ -2,11 +2,7 @@ package emit
 
 import (
 	"embed"
-	"errors"
 	"fmt"
-	"io/fs"
-	"os"
-	"path/filepath"
 )
 
 // commandsFS traegt die tool-AUTORIERTEN Agenten-Workflow-Commands (LH-FA-08,
@@ -47,33 +43,19 @@ func CommandPaths() []string {
 	return paths
 }
 
-// Commands schreibt die Workflow-Commands nach targetDir (Muster Enforce):
-// Kollisions-VORPASS ohne force (existiert EINES, schreibt KEINES — kein
-// Teil-Emit), dann verbatim schreiben. Keine --lang-Substitution — die Commands
-// sind sprach-agnostisch.
-func Commands(targetDir string, force bool) error {
-	if !force {
-		for _, f := range commandFiles() {
-			dst := filepath.Join(targetDir, filepath.FromSlash(f.dst))
-			switch _, err := os.Stat(dst); {
-			case err == nil:
-				return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", f.dst)
-			case !errors.Is(err, fs.ErrNotExist):
-				return fmt.Errorf("%s pruefen: %w", f.dst, err)
-			}
-		}
-	}
+// Commands schreibt die Workflow-Commands nach targetDir — SKIP-IF-PRESENT (slice-038,
+// ADR-0007: die Commands tragen den ANPASSEN-Marker, der Adopter adaptiert sie). Ein
+// idempotenter Re-Lauf clobbert eine adopter-adaptierte Command-Anleitung NIE; Prozess-
+// Updates zieht der Adopter aus dem vendored regelwerk, nicht per Auto-Clobber. Keine
+// --lang-Substitution — die Commands sind sprach-agnostisch.
+func Commands(targetDir string) error {
 	for _, f := range commandFiles() {
 		content, err := commandsFS.ReadFile(f.src)
 		if err != nil {
 			return fmt.Errorf("%s einbetten: %w", f.src, err)
 		}
-		dst := filepath.Join(targetDir, filepath.FromSlash(f.dst))
-		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
-			return fmt.Errorf("%s anlegen: %w", filepath.Dir(f.dst), err)
-		}
-		if err := os.WriteFile(dst, content, f.mode); err != nil {
-			return fmt.Errorf("%s schreiben: %w", f.dst, err)
+		if err := writeSkipIfPresent(targetDir, f.dst, content, f.mode); err != nil {
+			return err
 		}
 	}
 	return nil

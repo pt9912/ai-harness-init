@@ -49,33 +49,29 @@ func Targets(stagingDir string) ([]string, error) {
 }
 
 // Place platziert die gestagten Skelett-Dateien VERBATIM in targetDir (Ziel-Root) —
-// reiner Placer (kein Makefile-Rewrite, keine Makefile-Vorbedingung mehr: die Root-
-// Makefile kommt seit slice-035 aus emit.Makefile, nicht aus dem Skelett). Danach wird
-// stagingDir entfernt (transientes Staging). Ohne force wird eine vorhandene Zieldatei
-// nicht ueberschrieben (LH-FA-01 Boundary; der Phase-3-Pre-Flight prueft das bereits).
-func Place(stagingDir, targetDir string, force bool) error {
+// reiner Placer. SKIP-IF-PRESENT (slice-038, ADR-0007): Skelett-Code (main.go, go.mod,
+// Dockerfile, .golangci.yml) ist Adopter-Boden — eine vorhandene (adopter-gewachsene)
+// Datei wird beim idempotenten Re-Lauf NIE ueberschrieben, nur fehlende geschrieben.
+// Danach wird stagingDir entfernt (transientes Staging, nicht ein Ziel-Verzeichnis —
+// kein Prune von Adopter-Inhalt).
+func Place(stagingDir, targetDir string) error {
 	rels, err := Targets(stagingDir)
 	if err != nil {
 		return err
 	}
-	// Kollisions-VORPASS: alle Ziele pruefen, BEVOR eines geschrieben wird — kein
-	// Teil-Placement bei Kollision (konsistent mit emit.Templates/slice-025).
-	if !force {
-		for _, rel := range rels {
-			switch _, statErr := os.Stat(filepath.Join(targetDir, filepath.FromSlash(rel))); {
-			case statErr == nil:
-				return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", rel)
-			case !errors.Is(statErr, fs.ErrNotExist):
-				return fmt.Errorf("%s pruefen: %w", rel, statErr)
-			}
-		}
-	}
 	for _, rel := range rels {
+		dst := filepath.Join(targetDir, filepath.FromSlash(rel))
+		// skip-if-present: vorhandene Skelett-Datei nie clobbern.
+		switch _, statErr := os.Stat(dst); {
+		case statErr == nil:
+			continue
+		case !errors.Is(statErr, fs.ErrNotExist):
+			return fmt.Errorf("%s pruefen: %w", rel, statErr)
+		}
 		content, readErr := os.ReadFile(filepath.Join(stagingDir, filepath.FromSlash(rel)))
 		if readErr != nil {
 			return fmt.Errorf("%s lesen: %w", rel, readErr)
 		}
-		dst := filepath.Join(targetDir, filepath.FromSlash(rel))
 		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
 			return fmt.Errorf("%s anlegen: %w", filepath.Dir(rel), err)
 		}

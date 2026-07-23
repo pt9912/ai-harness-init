@@ -17,10 +17,7 @@ import (
 	_ "embed" // fuer die //go:embed-Direktive (dcheckConfig)
 	"errors"
 	"fmt"
-	"io/fs"
-	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 )
 
@@ -72,7 +69,6 @@ func DocGateMk() string { return docGateMk }
 type Options struct {
 	Image  string // Tag-Referenz -> emittiertes DCHECK_IMAGE
 	Digest string // sha256-Pin -> emittiertes DCHECK_DIGEST + docker-Lauf
-	Force  bool   // vorhandene Zieldateien ueberschreiben
 }
 
 // RunRef ist die Referenz fuer den docker-Lauf: per Digest, wenn gesetzt (sticht
@@ -89,22 +85,12 @@ func (o Options) RunRef() string {
 	return repo + "@" + o.Digest
 }
 
-// DocGate emittiert .d-check.yml + d-check.mk nach targetDir. Reihenfolge: erst
-// die Vorbedingungen und alle fallierbaren Schritte (Existenz-Pruefung ohne force,
-// docker --print-mk, Adaption), dann die Schreibvorgaenge — so bleibt bei einem
-// Fehler nichts halb geschrieben.
+// DocGate emittiert .d-check.yml + d-check.mk + doc-gate.mk nach targetDir. GEMISCHTE
+// Idempotenz-Klasse (slice-038, ADR-0007): `.d-check.yml` ist SKIP-IF-PRESENT (Adopter-
+// Boden — er kann Module aktivieren), `d-check.mk` + `doc-gate.mk` sind KONVERGENT (tool-
+// generiert, heilen Drift/Digest-Bump). Reihenfolge: erst die fallierbaren Schritte
+// (docker --print-mk, Adaption), dann die Schreibvorgaenge — kein halb geschriebener Stand.
 func DocGate(ctx context.Context, targetDir string, opts Options) error {
-	targets := []string{".d-check.yml", "d-check.mk", DocGateMkPath}
-	if !opts.Force {
-		for _, name := range targets {
-			switch _, err := os.Stat(filepath.Join(targetDir, filepath.FromSlash(name))); {
-			case err == nil:
-				return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", name)
-			case !errors.Is(err, fs.ErrNotExist):
-				return fmt.Errorf("%s pruefen: %w", name, err)
-			}
-		}
-	}
 	raw, err := printMK(ctx, opts.RunRef())
 	if err != nil {
 		return err
@@ -113,17 +99,15 @@ func DocGate(ctx context.Context, targetDir string, opts Options) error {
 	if err != nil {
 		return err
 	}
-	content := map[string][]byte{".d-check.yml": []byte(dcheckConfig), "d-check.mk": mk, DocGateMkPath: []byte(docGateMk)}
-	for _, name := range targets {
-		dst := filepath.Join(targetDir, filepath.FromSlash(name))
-		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
-			return fmt.Errorf("%s anlegen: %w", filepath.Dir(name), err)
-		}
-		if err := os.WriteFile(dst, content[name], 0o644); err != nil {
-			return fmt.Errorf("%s schreiben: %w", name, err)
-		}
+	// .d-check.yml: skip-if-present (Adopter darf Module aktivieren, nie clobbern).
+	if err := writeSkipIfPresent(targetDir, ".d-check.yml", []byte(dcheckConfig), 0o644); err != nil {
+		return err
 	}
-	return nil
+	// d-check.mk + doc-gate.mk: konvergent (tool-generiert, kanonisch neu).
+	if err := writeFileMode(targetDir, "d-check.mk", mk, 0o644); err != nil {
+		return err
+	}
+	return writeFileMode(targetDir, DocGateMkPath, []byte(docGateMk), 0o644)
 }
 
 // AdaptMK wandelt rohe `d-check --print-mk`-Ausgabe in das Adopter-Fragment: der

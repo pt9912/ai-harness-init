@@ -14,7 +14,7 @@ import (
 // CommandPaths und der reale Emit koppeln denselben Bestand (Pre-Flight == Emit).
 func TestCommands_EmitsAll(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Commands(dir, false); err != nil {
+	if err := emit.Commands(dir); err != nil {
 		t.Fatalf("Commands: %v", err)
 	}
 	want := []string{
@@ -75,30 +75,28 @@ func TestCommands_NoInternalLeak(t *testing.T) {
 	}
 }
 
-// TestCommands_NoOverwriteWithoutForce: Kollisions-Vorpass, kein Teil-Emit.
-func TestCommands_NoOverwriteWithoutForce(t *testing.T) {
+// TestCommands_SkipIfPresent (slice-038): die Commands tragen den ANPASSEN-Marker →
+// Adopter-adaptiert (ADR-0007 skip-if-present). Ein Re-Lauf clobbert eine adaptierte
+// Command-Anleitung NICHT, schreibt aber die fehlenden Commands. Kein Fehler.
+// Rot-Gegenbeispiel: mutiert Commands auf Clobber, ueberschreibt es plan-welle.md.
+func TestCommands_SkipIfPresent(t *testing.T) {
 	dir := t.TempDir()
 	dst := filepath.Join(dir, filepath.FromSlash(".claude/commands/plan-welle.md"))
 	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
 		t.Fatalf("vorbereiten: %v", err)
 	}
-	if err := os.WriteFile(dst, []byte("eigener Command"), 0o644); err != nil {
+	if err := os.WriteFile(dst, []byte("adopter-adaptiert"), 0o644); err != nil {
 		t.Fatalf("vorbereiten: %v", err)
 	}
-	if err := emit.Commands(dir, false); err == nil {
-		t.Fatal("vorhandene Datei ohne --force überschrieben")
+	if err := emit.Commands(dir); err != nil {
+		t.Fatalf("Commands (skip-if-present darf nicht fehlschlagen): %v", err)
 	}
-	if got := mustReadString(t, dst); got != "eigener Command" {
-		t.Errorf("Inhalt bei Kollision verändert: %q", got)
+	// Die adaptierte Datei bleibt UNBERUEHRT.
+	if got := mustReadString(t, dst); got != "adopter-adaptiert" {
+		t.Errorf("plan-welle.md clobbert (skip-if-present verletzt): %q", got)
 	}
-	// Kein Teil-Emit: die anderen Commands dürfen NICHT geschrieben sein.
-	if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(".claude/commands/implement-slice.md"))); err == nil {
-		t.Error("Teil-Emit trotz Kollision (implement-slice.md geschrieben)")
-	}
-	if err := emit.Commands(dir, true); err != nil {
-		t.Fatalf("Commands mit force: %v", err)
-	}
-	if got := mustReadString(t, dst); got == "eigener Command" {
-		t.Error("--force hat nicht überschrieben")
+	// Die fehlenden Commands wurden geschrieben.
+	if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(".claude/commands/implement-slice.md"))); err != nil {
+		t.Errorf("implement-slice.md nicht geschrieben (skip-if-present schreibt fehlende): %v", err)
 	}
 }

@@ -67,7 +67,7 @@ func stdBundle(t *testing.T) ([]byte, string) {
 func TestBaseline_Extract(t *testing.T) {
 	data, sum := stdBundle(t)
 	dest := t.TempDir()
-	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data)); err != nil {
+	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, assetFetch(data)); err != nil {
 		t.Fatalf("Baseline: %v", err)
 	}
 	root := filepath.Join(dest, "v3.5.0")
@@ -89,7 +89,7 @@ func TestBaseline_Extract(t *testing.T) {
 func TestBaseline_SumsForm(t *testing.T) {
 	data, sum := stdBundle(t)
 	dest := t.TempDir()
-	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data)); err != nil {
+	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, assetFetch(data)); err != nil {
 		t.Fatalf("Baseline: %v", err)
 	}
 	raw, err := os.ReadFile(filepath.Join(dest, "v3.5.0", "SHA256SUMS"))
@@ -142,7 +142,7 @@ func TestBaseline_SumsVerifiableByCoreutils(t *testing.T) {
 	}
 	data, sum := stdBundle(t)
 	dest := t.TempDir()
-	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data)); err != nil {
+	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, assetFetch(data)); err != nil {
 		t.Fatalf("Baseline: %v", err)
 	}
 	root := filepath.Join(dest, "v3.5.0")
@@ -170,7 +170,7 @@ func TestBaseline_SHA256Mismatch_NothingWritten(t *testing.T) {
 	data, _ := stdBundle(t)
 	dest := t.TempDir()
 	wrong := strings.Repeat("0", 64)
-	err := fetch.Baseline(context.Background(), dest, "v3.5.0", wrong, false, assetFetch(data))
+	err := fetch.Baseline(context.Background(), dest, "v3.5.0", wrong, assetFetch(data))
 	var mm *fetch.SHA256Mismatch
 	if !errors.As(err, &mm) {
 		t.Fatalf("erwartete *SHA256Mismatch, got %v", err)
@@ -186,7 +186,7 @@ func TestBaseline_SHA256Mismatch_NothingWritten(t *testing.T) {
 func TestBaseline_IncompleteBundle(t *testing.T) {
 	data, sum := fixtureZip(t, map[string]string{"lab/regelwerk/README.md": "nur regelwerk"})
 	dest := t.TempDir()
-	err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data))
+	err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, assetFetch(data))
 	if err == nil {
 		t.Fatal("unvollstaendiges Bundle wurde akzeptiert")
 	}
@@ -202,7 +202,7 @@ func TestBaseline_Deterministic(t *testing.T) {
 	data, sum := stdBundle(t)
 	d1, d2 := t.TempDir(), t.TempDir()
 	for _, d := range []string{d1, d2} {
-		if err := fetch.Baseline(context.Background(), d, "v3.5.0", sum, false, assetFetch(data)); err != nil {
+		if err := fetch.Baseline(context.Background(), d, "v3.5.0", sum, assetFetch(data)); err != nil {
 			t.Fatalf("Baseline nach %s: %v", d, err)
 		}
 	}
@@ -215,22 +215,22 @@ func TestBaseline_Deterministic(t *testing.T) {
 	}
 }
 
-// TestBaseline_ExistingTag: ohne force wird eine vorhandene Baseline nicht
-// ueberschrieben (LH-FA-01 Boundary-AC, wie bei Templates/DocGate).
-func TestBaseline_ExistingTag(t *testing.T) {
+// TestBaseline_ExistingTag_Convergent (slice-038): eine vorhandene Baseline ist
+// KONVERGENT — sie wird durch die kanonische Fassung ERSETZT, kein Refuse (das Pre-Flight-
+// Modell aus slice-025 ist gefallen). So heilt ein Re-Lauf Drift + Baseline-Bump.
+// Rot-Gegenbeispiel: eine Mutation, die wieder refust, faerbt den Idempotenz-Test rot.
+func TestBaseline_ExistingTag_Convergent(t *testing.T) {
 	data, sum := stdBundle(t)
 	dest := t.TempDir()
 	existing := filepath.Join(dest, "v3.5.0")
 	if err := os.MkdirAll(existing, 0o755); err != nil {
 		t.Fatalf("vorbereiten: %v", err)
 	}
-	err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data))
-	if err == nil {
-		t.Fatal("vorhandene Baseline wurde ueberschrieben")
+	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, assetFetch(data)); err != nil {
+		t.Fatalf("Baseline (konvergent darf nicht refusen): %v", err)
 	}
-	if !strings.Contains(err.Error(), "--force") {
-		t.Errorf("Fehlermeldung nennt den Ausweg --force nicht: %v", err)
-	}
+	// Die kanonische Baseline steht jetzt (regelwerk/README.md aus dem Bundle).
+	assertContent(t, filepath.Join(existing, "regelwerk", "README.md"), "index")
 }
 
 func TestBaseline_FetchError(t *testing.T) {
@@ -238,7 +238,7 @@ func TestBaseline_FetchError(t *testing.T) {
 		return nil, errors.New("netz weg")
 	}
 	dest := t.TempDir()
-	err := fetch.Baseline(context.Background(), dest, "v3.5.0", fetch.DefaultBaselineSHA256, false, failing)
+	err := fetch.Baseline(context.Background(), dest, "v3.5.0", fetch.DefaultBaselineSHA256, failing)
 	if err == nil {
 		t.Fatal("Fetch-Fehler wurde nicht propagiert")
 	}
@@ -256,10 +256,11 @@ func TestDefaultBaselineSHA256_MatchesMakefile(t *testing.T) {
 	}
 }
 
-// TestBaseline_ForceReplaces schliesst Review-Befund M1: --force trug ueber alle
-// anderen Emit-Schritte, nur nicht ueber den Baseline-Schritt — und die Meldung
-// empfahl genau das Flag, das der Aufrufer schon gesetzt hatte.
-func TestBaseline_ForceReplaces(t *testing.T) {
+// TestBaseline_Convergent_Replaces (slice-038; loest den frueheren ForceReplaces-Fall
+// ab): eine vorhandene, NICHT-leere Baseline wird konvergent ERSETZT (Beiseite-Rename,
+// nicht gemischt) — der alte Stand ist danach weg, der kanonische steht. Kein Refuse,
+// kein --force noetig (das Flag ist mit slice-038 entfallen).
+func TestBaseline_Convergent_Replaces(t *testing.T) {
 	data, sum := stdBundle(t)
 	dest := t.TempDir()
 	root := filepath.Join(dest, "v3.5.0")
@@ -270,8 +271,8 @@ func TestBaseline_ForceReplaces(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(root, "regelwerk", "alt.md"), []byte("alt"), 0o644); err != nil {
 		t.Fatalf("vorbereiten: %v", err)
 	}
-	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, true, assetFetch(data)); err != nil {
-		t.Fatalf("Baseline mit force: %v", err)
+	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, assetFetch(data)); err != nil {
+		t.Fatalf("Baseline (konvergent): %v", err)
 	}
 	assertContent(t, filepath.Join(root, "regelwerk", "README.md"), "index")
 	// Der alte Stand ist ERSETZT, nicht gemischt — sonst listete SHA256SUMS
@@ -322,7 +323,7 @@ func TestBaseline_NurErwarteteEintraegeLanden(t *testing.T) {
 		"lab/docs/examples/regelwerk/fremd.md": "fremd",
 	})
 	dest := t.TempDir()
-	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data)); err != nil {
+	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, assetFetch(data)); err != nil {
 		t.Fatalf("Baseline: %v", err)
 	}
 	root := filepath.Join(dest, "v3.5.0")
@@ -374,7 +375,7 @@ func TestBaseline_KollidierendeEintraegeRefused(t *testing.T) {
 		"docs/regelwerk/modul.md": "aus docs",
 	})
 	dest := t.TempDir()
-	err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data))
+	err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, assetFetch(data))
 	if err == nil {
 		t.Fatal("mehrdeutiges Bundle wurde akzeptiert — ein Eintrag hat den anderen still ueberschrieben")
 	}
@@ -397,7 +398,7 @@ func TestBaseline_EscapedPathRefused(t *testing.T) {
 		"lab/regelwerk/a\\b.md":            "backslash",
 	})
 	dest := t.TempDir()
-	err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, false, assetFetch(data))
+	err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, assetFetch(data))
 	if err == nil {
 		t.Fatal("Pfad mit Backslash wurde akzeptiert — SHA256SUMS waere GNU-escapt")
 	}
@@ -417,7 +418,7 @@ func TestBaseline_EscapedPathRefused(t *testing.T) {
 func TestBaseline_AssetTooLarge(t *testing.T) {
 	oversized := bytes.Repeat([]byte{0}, 8<<20+1)
 	dest := t.TempDir()
-	err := fetch.Baseline(context.Background(), dest, "v3.5.0", strings.Repeat("0", 64), false, assetFetch(oversized))
+	err := fetch.Baseline(context.Background(), dest, "v3.5.0", strings.Repeat("0", 64), assetFetch(oversized))
 	var tl *fetch.AssetTooLargeError
 	if !errors.As(err, &tl) {
 		t.Fatalf("erwartete *AssetTooLargeError, got %v", err)

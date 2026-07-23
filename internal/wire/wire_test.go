@@ -53,7 +53,7 @@ func TestTargets(t *testing.T) {
 func TestPlace_PlacesVerbatim(t *testing.T) {
 	staging := stageSkeleton(t)
 	target := t.TempDir()
-	if err := wire.Place(staging, target, false); err != nil {
+	if err := wire.Place(staging, target); err != nil {
 		t.Fatalf("Place: %v", err)
 	}
 	for _, rel := range []string{"harness/mk/go.mk", "go.mod", "cmd/app/main.go"} {
@@ -83,23 +83,25 @@ func TestPlace_PlacesVerbatim(t *testing.T) {
 	}
 }
 
-// TestPlace_Collision: eine vorhandene Zieldatei ohne force -> Fehler VOR jedem Write
-// (kein Teil-Placement, konsistent mit slice-025).
-func TestPlace_Collision(t *testing.T) {
+// TestPlace_SkipIfPresent (slice-038): Skelett-Code ist Adopter-Boden (ADR-0007
+// skip-if-present) — eine vorhandene Zieldatei wird NICHT ueberschrieben, aber die
+// fehlenden Skelett-Dateien werden platziert. Kein Fehler (idempotenter Re-Lauf).
+// Rot-Gegenbeispiel: mutiert Place auf Clobber, ueberschreibt es die vorhandene go.mod.
+func TestPlace_SkipIfPresent(t *testing.T) {
 	staging := stageSkeleton(t)
 	target := t.TempDir()
 	if err := os.WriteFile(filepath.Join(target, "go.mod"), []byte("vorhanden"), 0o644); err != nil {
 		t.Fatalf("Setup: %v", err)
 	}
-	err := wire.Place(staging, target, false)
-	if err == nil {
-		t.Fatal("vorhandene Zieldatei wurde ohne --force ueberschrieben")
+	if err := wire.Place(staging, target); err != nil {
+		t.Fatalf("Place (skip-if-present darf nicht fehlschlagen): %v", err)
 	}
-	if !strings.Contains(err.Error(), "existiert bereits") {
-		t.Errorf("Fehlermeldung nennt die Kollision nicht: %v", err)
+	// Die vorhandene Datei bleibt UNBERUEHRT (nie clobbern).
+	if got, _ := os.ReadFile(filepath.Join(target, "go.mod")); string(got) != "vorhanden" {
+		t.Errorf("go.mod clobbert (skip-if-present verletzt): %q", got)
 	}
-	// Kein Teil-Placement: das Code-Gate-Fragment darf NICHT geschrieben sein (Vorpass greift).
-	if _, statErr := os.Stat(filepath.Join(target, filepath.FromSlash("harness/mk/go.mk"))); !os.IsNotExist(statErr) {
-		t.Errorf("go.mk trotz Kollision platziert (Teil-Placement): %v", statErr)
+	// Die uebrigen (fehlenden) Skelett-Dateien wurden platziert.
+	if _, statErr := os.Stat(filepath.Join(target, filepath.FromSlash("harness/mk/go.mk"))); statErr != nil {
+		t.Errorf("go.mk nicht platziert (skip-if-present platziert fehlende): %v", statErr)
 	}
 }

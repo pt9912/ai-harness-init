@@ -4,9 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	"os"
 	"path"
-	"path/filepath"
 	"sort"
 	"strings"
 )
@@ -186,7 +184,7 @@ func TemplateTargets(src fs.FS, name string) ([]string, error) {
 // damit die Tests hermetisch bleiben: der reale Baum liegt unter .harness/, das
 // der Docker-Build-Kontext ausschliesst (.dockerignore) — genau der Grund, warum
 // der alte Drift-Waechter nach bats musste.
-func Templates(src fs.FS, targetDir, name string, force bool) error {
+func Templates(src fs.FS, targetDir, name string) error {
 	if err := checkRoot(src); err != nil {
 		return err
 	}
@@ -194,25 +192,12 @@ func Templates(src fs.FS, targetDir, name string, force bool) error {
 	if err != nil {
 		return err
 	}
-	// Leere Quelle -> laut abbrechen. Ein falsch gewurzeltes src emittierte sonst
-	// stillschweigend NICHTS und meldete Erfolg (LH-QA-01: kein stilles Gruen).
-	if !force {
-		for rel := range plan {
-			switch _, statErr := os.Stat(filepath.Join(targetDir, rel)); {
-			case statErr == nil:
-				return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", rel)
-			case !errors.Is(statErr, fs.ErrNotExist):
-				return fmt.Errorf("%s pruefen: %w", rel, statErr)
-			}
-		}
-	}
+	// SKIP-IF-PRESENT (slice-038, ADR-0007): die Doc-Chain-Singletons + Struktur-gitkeeps
+	// sind Adopter-Boden — ein vorhandenes (adopter-gefuelltes) Singleton ueberlebt einen
+	// idempotenten Re-Lauf unberuehrt; nie clobbern.
 	for rel, content := range plan {
-		dst := filepath.Join(targetDir, rel)
-		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
-			return fmt.Errorf("%s anlegen: %w", filepath.Dir(rel), err)
-		}
-		if err := os.WriteFile(dst, content, 0o644); err != nil {
-			return fmt.Errorf("%s schreiben: %w", rel, err)
+		if err := writeSkipIfPresent(targetDir, rel, content, 0o644); err != nil {
+			return err
 		}
 	}
 	return nil

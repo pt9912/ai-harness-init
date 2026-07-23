@@ -1,6 +1,7 @@
 package emit_test
 
 import (
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -22,20 +23,25 @@ func TestMakefile_HasOrderEdge(t *testing.T) {
 	}
 }
 
-// TestMakefile_Emits: emit.Makefile schreibt die Aggregator-Root-Makefile (Init-Emitter,
-// sprach-agnostisch, immer) und ueberschreibt ohne force nicht (LH-FA-01 Boundary).
+// TestMakefile_Emits (slice-038): emit.Makefile schreibt den Aggregator (Init-Emitter,
+// sprach-agnostisch, immer) — KONVERGENT: ein Re-Lauf ueber eine adopter-modifizierte
+// Fassung schreibt sie kanonisch neu (heilt Drift), kein Refuse.
 func TestMakefile_Emits(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Makefile(dir, false); err != nil {
+	if err := emit.Makefile(dir); err != nil {
 		t.Fatalf("Makefile: %v", err)
 	}
 	if got := mustReadString(t, filepath.Join(dir, emit.MakefilePath)); got != emit.AggregatorMakefile() {
 		t.Errorf("emittierte Makefile != AggregatorMakefile():\n%s", got)
 	}
-	if err := emit.Makefile(dir, false); err == nil {
-		t.Error("vorhandene Makefile ohne --force ueberschrieben")
+	// konvergent: Re-Lauf ueber eine adopter-modifizierte Fassung heilt sie.
+	if err := os.WriteFile(filepath.Join(dir, emit.MakefilePath), []byte("adopter-modifiziert"), 0o644); err != nil {
+		t.Fatalf("vorbereiten: %v", err)
 	}
-	if err := emit.Makefile(dir, true); err != nil {
-		t.Errorf("Makefile mit force: %v", err)
+	if err := emit.Makefile(dir); err != nil {
+		t.Fatalf("Makefile (konvergent darf nicht refusen): %v", err)
+	}
+	if got := mustReadString(t, filepath.Join(dir, emit.MakefilePath)); got != emit.AggregatorMakefile() {
+		t.Error("konvergenter Re-Lauf hat die Makefile nicht kanonisch neu geschrieben")
 	}
 }
