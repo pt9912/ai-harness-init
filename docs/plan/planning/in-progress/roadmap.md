@@ -18,9 +18,10 @@ optional), `add-lang` wiederholbar (Mono-Repo), Gate-/Guard-Fragmente, idempoten
 (konvergent/skip-if-present). Der Wellen-Trigger ist erfüllt (ADR Accepted + beide Doc-Folgepflichten
 erledigt, siehe unten).
 
-- **Slices:** [slice-034](../in-progress/slice-034-gate-fragment-assembly.md) (Gate-Fragment-Assembly, `in-progress/`) ·
+- **Slices:** [slice-034](../done/slice-034-gate-fragment-assembly.md) (Gate-Fragment-Assembly, ✅ `done/`) ·
   035 CLI-Phasierung · 036 Guard-BLOCKED-Union · 037 `add-lang`-Subkommando · 038 Idempotenz-Klassifikation
-  — 034 geschnitten, der Rest in §4 der Welle (cp-Disziplin: je Slice per `cp`, sobald er nach `next/` geht).
+  — 034 **done** (Review konform + DoD bestätigt), 035 als nächstes; der Rest in §4 der Welle
+  (cp-Disziplin: je Slice per `cp`, sobald er nach `next/` geht).
 - **Trigger (erfüllt):** [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md) Accepted;
   CR [`lastenheft.md`](../../../../spec/lastenheft.md) 0.10.0 **und** der
   [`architecture.md`](../../../../spec/architecture.md)-Nachzug erledigt.
