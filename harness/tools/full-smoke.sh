@@ -21,8 +21,10 @@ set -euo pipefail
 GO_VERSION="${GO_VERSION:-1.26.4}"
 tmpbin="$(mktemp -d)"
 tmprepo="$(mktemp -d)"
-cleanup() { rm -rf "$tmpbin" "$tmprepo"; }
+tmprepo_doc="$(mktemp -d)"
+cleanup() { rm -rf "$tmpbin" "$tmprepo" "$tmprepo_doc"; }
 trap cleanup EXIT
+chmod 755 "$tmprepo_doc"
 # mktemp -d liefert 0700; der d-check-Container laeuft als Nicht-Root und kann den
 # 0700-Mount nicht traversieren. Ein echtes Adopter-Git-Repo hat 0755.
 chmod 755 "$tmprepo"
@@ -117,6 +119,44 @@ if grep -rqE 'ai-harness-init|make mutate|test/mutations' "$tmprepo/.claude/comm
 	exit 1
 fi
 
+# slice-035 (LH-FA-01/ADR-0007): --lang ist OPTIONAL. Ein SPRACHLOSER Init emittiert die
+# Harness + Aggregator + die sprach-agnostischen Fragmente (doc-gate/baseline/enforce) +
+# Durchsetzung, OHNE Skelett — `make gates` ist doc-only gruen. Beweis in einem zweiten
+# tmp-Repo (der --lang-go-Lauf oben bleibt der One-Shot).
+echo "full-smoke: doc-only Bootstrap (OHNE --lang) in ein zweites tmp-Repo ..."
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" --name full-smoke-doc )
+git init -q "$tmprepo_doc"
+echo "full-smoke: doc-only im Ziel: make -j gates (docs-check + baseline-verify + record-gates, KEIN Code-Gate) ..."
+doc_rc=0
+doc_out="$( make -j -C "$tmprepo_doc" gates 2>&1 )" || doc_rc=$?
+printf '%s\n' "$doc_out"
+if [ "$doc_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — sprachloser make gates ist NICHT Exit 0 (doc-only-Gate verletzt, LH-FA-01/slice-035)." >&2
+	exit 1
+fi
+# Die sprach-agnostischen Checks MUESSEN laufen (docs-check + baseline-verify) ...
+doc_missing=""
+for marker in "geprüft" "Integritaet + Vollstaendigkeit"; do
+	printf '%s\n' "$doc_out" | grep -qF -- "$marker" || doc_missing="$doc_missing [$marker]"
+done
+if [ -n "$doc_missing" ]; then
+	echo "full-smoke: FEHLER — sprachloser make gates ohne Beleg fuer:$doc_missing — stilles Teilmengen-Gate? (LH-QA-01)" >&2
+	exit 1
+fi
+# ... und die Code-Gates (lint/build/test) DUERFEN NICHT laufen (kein halluziniertes
+# Code-Gate ohne Sprache): weder ein --target-Aufruf im Output noch ein Skelett am Ziel.
+if printf '%s\n' "$doc_out" | grep -qE -- '--target (lint|build|test)'; then
+	echo "full-smoke: FEHLER — sprachloser make gates faehrt ein Code-Gate (--target ...) OHNE Sprache (halluziniertes Gate, LH-QA-01)." >&2
+	exit 1
+fi
+for skel in go.mod cmd/app/main.go harness/mk/go.mk Dockerfile; do
+	if [ -e "$tmprepo_doc/$skel" ]; then
+		echo "full-smoke: FEHLER — sprachloser Init legte ein Skelett-Artefakt an: $skel (soll nur mit --lang, slice-035)." >&2
+		exit 1
+	fi
+done
+
 echo "full-smoke: OK — frisch gebootstrapptes Repo faehrt make -j gates out-of-the-box gruen (lint/build/test + docs-check + baseline-verify via Fragment-Assembly, record-gates zuletzt), Exit 0 (LH-FA-01/LH-QA-01)."
+echo "full-smoke: OK — sprachloser Init (ohne --lang) faehrt make -j gates doc-only gruen (docs-check + baseline-verify, KEIN Code-Gate, kein Skelett) — --lang optional (slice-035/LH-FA-01)."
 echo "full-smoke: OK — Gate-Nachweis-Kreis geschlossen: record-gates stempelt, Hash stimmt, .harness/.gitignore greift (slice-031)."
 echo "full-smoke: OK — emittierter Command-Guard greift: 'go build' geblockt, 'make test' durchgelassen (bash+awk, slice-032/LH-QA-03)."

@@ -34,10 +34,10 @@ import (
 const usage = `ai-harness-init — bootstrappt ein Git-Repo mit dem AI-Harness-Prozess.
 
 Verwendung:
-  ai-harness-init --lang <sprache> [--name <name>] [--force]
+  ai-harness-init [--lang <sprache>] [--name <name>] [--force]
 
 Flags:
-  --lang        Zielsprache (Pflicht)
+  --lang        Zielsprache (optional; ohne → sprach-agnostischer Init, doc-only-Gate)
   --name        Projektname (optional)
   --force       bestehende Dateien überschreiben (optional)
   -h, --help    diese Hilfe anzeigen
@@ -67,7 +67,7 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 	fs := flag.NewFlagSet("ai-harness-init", flag.ContinueOnError)
 	fs.SetOutput(io.Discard) // Ausgabe/Streams steuern wir selbst
 
-	lang := fs.String("lang", "", "Zielsprache (Pflicht)")
+	lang := fs.String("lang", "", "Zielsprache (optional)")
 	name := fs.String("name", "", "Projektname")
 	force := fs.Bool("force", false, "bestehende Dateien überschreiben")
 
@@ -83,13 +83,10 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 		return 2
 	}
 
-	if *lang == "" {
-		// fehlendes --lang → Usage auf stderr, Exit 2 (LH-FA-01 Negative-AC).
-		fmt.Fprintln(stderr, "Fehler: --lang ist erforderlich.")
-		fmt.Fprint(stderr, usage)
-		return 2
-	}
-
+	// --lang ist OPTIONAL (slice-035, ADR-0007): fehlt es, laeuft der Bootstrap
+	// sprach-agnostisch (doc-only-Gate, kein Skelett). Der fruehere Exit 2 (LH-FA-01
+	// Negative-AC „fehlt --lang") ist mit ADR-0007 gefallen. Unbekannte Sprache und
+	// unbekannte Flags liefern weiter Exit 2 (via bootstrap/Parse).
 	return bootstrap(targetDir, *lang, *name, *force, src, stdout, stderr)
 }
 
@@ -107,11 +104,20 @@ func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, st
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
 
-	// Phase 1 — Pre-Flight der Fetch-Ziele (statisch bekannt). Kollidiert eines
-	// ohne --force, wird NICHTS geholt. Emit-Ziele erst in Phase 3 (ihr Template-
-	// Anteil ist erst nach dem Fetch bekannt).
+	// --lang optional (slice-035, ADR-0007): ohne Sprache laeuft der Bootstrap
+	// sprach-agnostisch — kein Skelett (gen/wire entfallen), aber Aggregator + die
+	// sprach-agnostischen Fragmente + Durchsetzung werden emittiert, `make gates` ist
+	// doc-only gruen (docs-check + baseline-verify + record-gates).
+	hasLang := lang != ""
+
+	// Phase 1 — Pre-Flight der Fetch-Ziele. .harness/skeleton nur mit Sprache (sonst
+	// generiert Phase 2 kein Skelett). Kollidiert eines ohne --force, wird NICHTS geholt.
+	fetchTargets := []string{".harness/baseline/" + tag}
+	if hasLang {
+		fetchTargets = append([]string{".harness/skeleton"}, fetchTargets...)
+	}
 	if !force {
-		if err := preflightAbsent(targetDir, []string{".harness/skeleton", ".harness/baseline/" + tag}); err != nil {
+		if err := preflightAbsent(targetDir, fetchTargets); err != nil {
 			fmt.Fprintln(stderr, "Fehler:", err)
 			return 1
 		}
@@ -128,9 +134,11 @@ func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, st
 	// Go-Version: gepinnter Default, per SKEL_GO_VERSION explizit ueberschreibbar
 	// (deterministisch — der Nutzer nennt den Wert). Der Web-"latest"-Lookup und ein
 	// go-freshness-Sensor sind bewusst eigene Folge-Slices (Netz/Nicht-Determinismus).
-	if err := gen.Generate(skelDir, lang, envOr("SKEL_GO_VERSION", gen.DefaultGoVersion)); err != nil {
-		fmt.Fprintln(stderr, "Fehler:", err)
-		return langExitCode(err)
+	if hasLang {
+		if err := gen.Generate(skelDir, lang, envOr("SKEL_GO_VERSION", gen.DefaultGoVersion)); err != nil {
+			fmt.Fprintln(stderr, "Fehler:", err)
+			return langExitCode(err)
+		}
 	}
 	if err := fetch.Baseline(ctx, baseDir, tag, src.baselineSHA, force, src.baseline); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
@@ -140,7 +148,7 @@ func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, st
 	// Phase 3 — Pre-Flight ALLER Emit-Ziele (Verifier, Doc-Gate, Templates aus der
 	// gefetchten Baseline, dabei wurzel-geprueft). Kollidiert eines ohne --force,
 	// schreibt KEIN Emit-Schritt — die Teil-Bootstrap-Klasse ist geschlossen.
-	rels, err := emitTargets(targetDir, tag, name)
+	rels, err := emitTargets(targetDir, tag, name, hasLang)
 	if err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
@@ -164,57 +172,61 @@ func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, st
 		Digest: envOr("DCHECK_DIGEST", emit.DefaultDigest),
 		Force:  force,
 	}
-	if err := emit.DocGate(context.Background(), targetDir, opts); err != nil {
-		fmt.Fprintln(stderr, "Fehler:", err)
-		return 1
-	}
-	if err := emit.BaselineVerify(targetDir, force); err != nil {
-		fmt.Fprintln(stderr, "Fehler:", err)
-		return 1
-	}
-	if err := emit.Templates(os.DirFS(templatesDir(targetDir, tag)), targetDir, name, force); err != nil {
-		fmt.Fprintln(stderr, "Fehler:", err)
-		return 1
-	}
-	// Root-README (slice-005, LH-FA-05): aus project-readme.template.md — bewusst
-	// aus dem Templates-Emit ausgeschlossen (eigenes Ziel README.md, gate-sichere
-	// Vorwaerts-Verweise). README.md liegt im Phase-3-Pre-Flight (emitTargets).
-	if err := emit.RootReadme(os.DirFS(templatesDir(targetDir, tag)), targetDir, name, force); err != nil {
-		fmt.Fprintln(stderr, "Fehler:", err)
-		return 1
-	}
-	// Durchsetzungs-Mechanik emittieren (slice-031/032, LH-FA-06/ADR-0006):
-	// Gate-Nachweis (tools/harness/record-gates.sh + working-tree-hash.sh) +
-	// Stop-Hook + Command-Guard (.claude/hooks/ + settings.json PreToolUse/Stop) +
-	// awk-Extraktor (tools/harness/) + .harness/.gitignore. Der Guard blockt die
-	// Host-Toolchain der Ziel-Sprache (BLOCKED-Set je lang) — daher lang. Die
-	// Makefile-Verdrahtung (gates: record-gates) macht wire.Place; das
-	// gebootstrappte Repo ist damit selbst gegen halluzinierte Gate-Laeufe UND
-	// versehentliche Host-Toolchain-Nutzung abgesichert.
-	if err := emit.Enforce(targetDir, lang, force); err != nil {
-		fmt.Fprintln(stderr, "Fehler:", err)
-		return 1
-	}
-	// Workflow-Commands emittieren (slice-033, LH-FA-08/ADR-0006): die
-	// Slash-Command-Anleitung (.claude/commands/), mit der ein Agent die
-	// Harness-Rollen faehrt. Tool-als-Quelle, sprach-agnostisch (der Prozess ist
-	// universell; repo-spezifische Stellen sind adaptierbare Marker).
-	if err := emit.Commands(targetDir, force); err != nil {
-		fmt.Fprintln(stderr, "Fehler:", err)
-		return 1
-	}
-	// Verdrahten (slice-004b/034): das gestagte Skelett an den Ziel-Root platzieren —
-	// REINER Placer seit slice-034 (der Aggregator + die harness/mk/*.mk-Fragmente
-	// kommen aus gen bzw. den Emittern DocGate/BaselineVerify/Enforce, nicht mehr aus
-	// einem wire-Inline-Anhang). Erst HIER (Phase 4, nach allen Pre-Flights) erscheint
-	// das Root-Skelett — so haelt die slice-025-Garantie „Kollision -> kein Teil-Bootstrap".
-	if err := wire.Place(skelDir, targetDir, force); err != nil {
+	if err := emitAll(targetDir, skelDir, tag, name, lang, hasLang, force, opts); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
 
-	fmt.Fprintf(stdout, "ai-harness-init: Bootstrap (Skelett %q verdrahtet + Baseline %s vendored + Doc-Gate + Template-Baseline) — --lang=%s.\n", lang, tag, lang)
+	langNote := "sprach-agnostisch (doc-only Gate)"
+	if hasLang {
+		langNote = "--lang=" + lang + " (Skelett verdrahtet)"
+	}
+	fmt.Fprintf(stdout, "ai-harness-init: Bootstrap (Baseline %s vendored + Doc-Gate + Aggregator + Durchsetzung + Template-Baseline) — %s.\n", tag, langNote)
 	return 0
+}
+
+// emitAll fuehrt die Emit-Schritte (Phase 4) aus: Doc-Gate, Verifier, Templates, README,
+// Durchsetzung, Commands und den Aggregator (immer) — und nur mit Sprache die Skelett-
+// Verdrahtung. Erste fehlgeschlagene Stufe gewinnt; bootstrap druckt den Fehler einmal.
+// Ausgelagert aus bootstrap gegen die gocognit-Schwelle (slice-035); die Pre-Flights
+// bleiben bewusst in bootstrap (ihr Print+Return ist an die Wirkung gebunden, slice-025).
+// DocGate zuerst (Docker-Lauf = reales Fehlerrisiko, schreibt bei Fehler nichts).
+func emitAll(targetDir, skelDir, tag, name, lang string, hasLang, force bool, opts emit.Options) error {
+	if err := emit.DocGate(context.Background(), targetDir, opts); err != nil {
+		return err
+	}
+	if err := emit.BaselineVerify(targetDir, force); err != nil {
+		return err
+	}
+	if err := emit.Templates(os.DirFS(templatesDir(targetDir, tag)), targetDir, name, force); err != nil {
+		return err
+	}
+	// Root-README (slice-005): eigenes Ziel README.md, aus dem Templates-Emit ausgeschlossen.
+	if err := emit.RootReadme(os.DirFS(templatesDir(targetDir, tag)), targetDir, name, force); err != nil {
+		return err
+	}
+	// Durchsetzung (slice-031/032): Gate-Nachweis + Stop-Hook + Command-Guard + awk +
+	// .harness/.gitignore. Der Guard blockt die Host-Toolchain je lang (sprachlos = Boden).
+	if err := emit.Enforce(targetDir, lang, force); err != nil {
+		return err
+	}
+	// Workflow-Commands (slice-033): die Slash-Command-Anleitung, sprach-agnostisch.
+	if err := emit.Commands(targetDir, force); err != nil {
+		return err
+	}
+	// Aggregator-Root-Makefile (slice-035, Init-Emitter) — IMMER, auch sprachlos: sie
+	// bindet die Gate-Fragmente per Glob ein (`make gates`).
+	if err := emit.Makefile(targetDir, force); err != nil {
+		return err
+	}
+	// Verdrahten (slice-004b/034): das gestagte Skelett an den Ziel-Root platzieren
+	// (reiner Placer). NUR mit Sprache — ohne --lang gibt es kein Skelett (slice-035).
+	if hasLang {
+		if err := wire.Place(skelDir, targetDir, force); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // preflightAbsent meldet den ERSTEN rel-Pfad unter targetDir, der bereits
@@ -238,8 +250,8 @@ func preflightAbsent(targetDir string, rels []string) error {
 // Templates) fuer den Pre-Flight aus Phase 3. Die Template-Ziele kommen aus der
 // gefetchten Baseline; emit.TemplateTargets wurzel-prueft sie zugleich (eine
 // falsch gewurzelte Baseline faellt so VOR dem Docker-Lauf auf).
-func emitTargets(targetDir, tag, name string) ([]string, error) {
-	rels := []string{emit.BaselineVerifyPath, emit.BaselineMkPath, ".d-check.yml", "d-check.mk", emit.DocGateMkPath, emit.RootReadmePath}
+func emitTargets(targetDir, tag, name string, hasLang bool) ([]string, error) {
+	rels := []string{emit.BaselineVerifyPath, emit.BaselineMkPath, ".d-check.yml", "d-check.mk", emit.DocGateMkPath, emit.MakefilePath, emit.RootReadmePath}
 	// Durchsetzungs-Mechanik (slice-031, LH-FA-06/ADR-0006): Gate-Nachweis +
 	// Stop-Hook. In DENSELBEN Pre-Flight — eine vorhandene .claude/settings.json
 	// (Adopter hat schon Claude-Hooks) faellt so VOR dem Emit auf, kein Teil-Bootstrap.
@@ -253,14 +265,18 @@ func emitTargets(targetDir, tag, name string) ([]string, error) {
 		return nil, err
 	}
 	rels = append(rels, tt...)
-	// Die Skelett-Ziele (slice-004b): das gestagte Skelett wird in Phase 4 an den
-	// Ziel-Root verdrahtet — seine Ziele gehoeren in DENSELBEN Pre-Flight, damit
-	// eine Kollision (z.B. ein vorhandenes Makefile) nichts Teil-Bootstrappt (slice-025).
-	st, err := wire.Targets(filepath.Join(targetDir, ".harness", "skeleton"))
-	if err != nil {
-		return nil, err
+	// Die Skelett-Ziele (slice-004b) NUR mit Sprache (slice-035): ohne --lang generiert
+	// Phase 2 kein Skelett und wire.Place laeuft nicht — seine Ziele gehoeren dann nicht
+	// in den Pre-Flight. Mit Sprache in DENSELBEN Pre-Flight, damit eine Kollision
+	// (z.B. ein vorhandenes go.mod) nichts Teil-Bootstrappt (slice-025).
+	if hasLang {
+		st, err := wire.Targets(filepath.Join(targetDir, ".harness", "skeleton"))
+		if err != nil {
+			return nil, err
+		}
+		rels = append(rels, st...)
 	}
-	return append(rels, st...), nil
+	return rels, nil
 }
 
 // baselineDir und templatesDir halten das Ziel-Layout an EINER Stelle: die

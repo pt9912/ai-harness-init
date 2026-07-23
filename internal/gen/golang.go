@@ -14,10 +14,11 @@ const DefaultGoVersion = "1.26.4"
 const golangciVersion = "v2.12.2"
 
 // goProfile ist das Go-Layout fuer die gegebene Go-Version (ADR-0003 Docker-only):
-// Go-Gates als Dockerfile-Stages; die Root-Makefile ist ein sprach-agnostischer
-// Aggregator (include harness/mk/*.mk), und das Code-Gate-Fragment harness/mk/go.mk
-// traegt die --target-Aufrufe + haengt lint/build/test an GATE_CHECKS (slice-034,
-// Fragment-Assembly). Dazu go.mod + .golangci.yml und ein baubares cmd/app/main.go.
+// Go-Gates als Dockerfile-Stages; das Code-Gate-Fragment harness/mk/go.mk traegt die
+// --target-Aufrufe + haengt lint/build/test an GATE_CHECKS. Die Root-Makefile (der
+// sprach-agnostische Aggregator) emittiert seit slice-035 der Init-Emitter emit.Makefile,
+// NICHT das Skelett — der Aggregator gehoert in die Init-Phase, nicht ins Sprach-Skelett.
+// Dazu go.mod + .golangci.yml und ein baubares cmd/app/main.go.
 //
 // Die Images sind TAG-gepinnt (golang:<ver>, golangci-lint:<ver>) — kein floating
 // (LH-QA-02), aber bewusst OHNE Digest: ein Digest wuerde die Go-Version
@@ -32,7 +33,6 @@ func goProfile(goVersion string) map[string]string {
 	return map[string]string{
 		"go.mod":           "module app\n\ngo " + majorMinor(goVersion) + "\n",
 		"Dockerfile":       render(goDockerfileTmpl, goVersion),
-		"Makefile":         aggregatorMakefile,
 		"harness/mk/go.mk": render(goMkFragmentTmpl, goVersion),
 		".golangci.yml":    goGolangci,
 		"cmd/app/main.go":  goMain,
@@ -105,35 +105,6 @@ RUN golangci-lint run ./...
 FROM deps AS build
 COPY . .
 RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/app ./cmd/app
-`
-
-// aggregatorMakefile — die sprach-agnostische Root-Makefile: ein duenner Aggregator,
-// der die Gate-Fragmente (harness/mk/*.mk) einbindet. KEIN {{…}}-Platzhalter (die
-// GO_VERSION lebt im Code-Gate-Fragment); die Recipe-Zeile ist TAB-eingerueckt.
-// slice-034: ersetzt das fruehere gates: lint build test + die wire-Inline-Anhaenge;
-// slice-035 zieht diese Datei in einen Init-Emitter um (Phasierung, Relocation).
-const aggregatorMakefile = `# Makefile — generiert von ai-harness-init (Aggregator, slice-034). Die Gate-Belange
-# leben als Fragmente unter harness/mk/*.mk; jedes haengt seine Checks an GATE_CHECKS.
-# Der Gate-Nachweis (record-gates) laeuft strikt ZULETZT via Ordnungskante auf
-# GATE_CHECKS — waehrend make -j die Checks parallelisiert; .NOTPARALLEL ist bewusst
-# NICHT gewaehlt (das serialisierte das ganze Makefile).
-GATE_CHECKS :=
-
-.PHONY: gates help
-
-# Gate-Fragmente je Belang (baseline/doc-gate/enforce + Sprach-Code-Gates) einbinden.
-# Alphabetisch (baseline < doc-gate < enforce < <lang>); die Ordnungskante unten steht
-# NACH dem Include und sieht GATE_CHECKS damit vollstaendig.
-include harness/mk/*.mk
-
-help: ## Diese Hilfe
-	@grep -hE '^[a-z-]+:.*##' $(MAKEFILE_LIST) | sort | awk 'BEGIN{FS=":.*##"}{printf "  %-14s %s\n",$$1,$$2}'
-
-# gates haengt allein an record-gates; record-gates haengt an ALLEN akkumulierten
-# Checks — der Nachweis laeuft strikt nach den Checks (Ordnungskante), waehrend make
-# -j die Checks parallel faehrt. Das record-gates-Rezept liefert harness/mk/enforce.mk.
-gates: record-gates ## Alle Gates (Checks parallel, Nachweis zuletzt)
-record-gates: $(GATE_CHECKS)
 `
 
 // goMkFragmentTmpl — das Go-Code-Gate-Fragment (harness/mk/go.mk): lint/build/test als

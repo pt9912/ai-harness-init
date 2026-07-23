@@ -30,7 +30,7 @@ func genGoWith(t *testing.T, goVersion string) string {
 func TestGenerate_GoProfile(t *testing.T) {
 	dir := genGo(t)
 	got := walkRel(t, dir)
-	want := []string{".golangci.yml", "Dockerfile", "Makefile", "cmd/app/main.go", "go.mod", "harness/mk/go.mk"}
+	want := []string{".golangci.yml", "Dockerfile", "cmd/app/main.go", "go.mod", "harness/mk/go.mk"}
 	if strings.Join(got, ",") != strings.Join(want, ",") {
 		t.Errorf("erzeugter Datei-Satz = %v\nwant %v", got, want)
 	}
@@ -80,27 +80,23 @@ func TestGenerate_GoMkTargetsMatchStages(t *testing.T) {
 	}
 }
 
-// TestGenerate_AggregatorHasOrderEdge ist der Reihenfolge-Waechter (slice-034): die
-// Root-Makefile MUSS ein Aggregator sein, der die Fragmente per Glob einbindet UND die
-// Ordnungskante `record-gates: $(GATE_CHECKS)` traegt. Ohne die Kante haengt gates nur
-// an record-gates (ohne Prereqs) -> die Checks liefen GAR NICHT (stilles Teilmengen-
-// Gate, LH-QA-01). Rot-Gegenbeispiel: test/mutations entfernt `$(GATE_CHECKS)` -> dieser
-// Test wird rot (und full-smoke saehe die --target-Marker fehlen).
-func TestGenerate_AggregatorHasOrderEdge(t *testing.T) {
-	mk := mustRead(t, filepath.Join(genGo(t), "Makefile"))
-	for _, want := range []string{"include harness/mk/*.mk", "gates: record-gates", "record-gates: $(GATE_CHECKS)"} {
-		if !strings.Contains(mk, want) {
-			t.Errorf("Aggregator-Makefile enthaelt %q nicht (Reihenfolge-Waechter):\n%s", want, mk)
-		}
-	}
-	// Das Code-Gate-Fragment haengt seine Checks via `GATE_CHECKS +=` an — nicht via
-	// eigenem gates:-Target (das umginge die Ordnungskante des Aggregators).
-	gomk := mustRead(t, filepath.Join(genGo(t), "harness", "mk", "go.mk"))
+// TestGenerate_GoMkFragment (slice-034/035): das Code-Gate-Fragment harness/mk/go.mk
+// haengt lint/build/test via `GATE_CHECKS +=` an — NICHT via eigenem gates:-Target (das
+// umginge die Ordnungskante des Aggregators). Die Root-Makefile emittiert gen seit
+// slice-035 NICHT mehr — der Aggregator + sein Ordnungskanten-Waechter leben in emit
+// (TestMakefile_HasOrderEdge). test/mutations bricht die GATE_CHECKS-Zeile -> rot.
+func TestGenerate_GoMkFragment(t *testing.T) {
+	dir := genGo(t)
+	gomk := mustRead(t, filepath.Join(dir, "harness", "mk", "go.mk"))
 	if !strings.Contains(gomk, "GATE_CHECKS += lint build test") {
 		t.Errorf("harness/mk/go.mk haengt lint/build/test nicht an GATE_CHECKS:\n%s", gomk)
 	}
 	if strings.Contains(gomk, "\ngates:") {
 		t.Errorf("Code-Gate-Fragment definiert ein eigenes gates:-Target (umgeht die Ordnungskante):\n%s", gomk)
+	}
+	// gen emittiert seit slice-035 KEINE Root-Makefile mehr (der Aggregator kommt aus emit).
+	if _, err := os.Stat(filepath.Join(dir, "Makefile")); err == nil {
+		t.Error("gen emittiert eine Root-Makefile — die gehoert seit slice-035 in emit.Makefile")
 	}
 }
 

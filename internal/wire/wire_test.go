@@ -9,11 +9,14 @@ import (
 	"github.com/pt9912/ai-harness-init/internal/wire"
 )
 
-const goodMakefile = "GATE_CHECKS :=\n\ninclude harness/mk/*.mk\n\ngates: record-gates ## Alle Gates\nrecord-gates: $(GATE_CHECKS)\n"
+// goGomk ist der Inhalt eines gestagten Code-Gate-Fragments — Platzhalter fuer die
+// Byte-Gleichheits-Pruefung (Place platziert verbatim). Die Recipe-Zeile ist TAB-eingerueckt.
+const goGomk = "GO_VERSION ?= 1.26.4\n\n.PHONY: test\ntest:\n\t@true\n\nGATE_CHECKS += test\n"
 
-// stageSkeleton baut ein minimales Staging-Skelett (Makefile mit gates-Target +
-// eine geschachtelte Datei) und liefert den Pfad.
-func stageSkeleton(t *testing.T, makefile string) string {
+// stageSkeleton baut ein minimales Staging-Skelett (Code-Gate-Fragment + go.mod +
+// geschachtelte Datei) und liefert den Pfad. Seit slice-035 traegt das Skelett KEINE
+// Root-Makefile mehr — die kommt aus dem Init-Emitter emit.Makefile.
+func stageSkeleton(t *testing.T) string {
 	t.Helper()
 	dir := t.TempDir()
 	write := func(rel, content string) {
@@ -25,7 +28,7 @@ func stageSkeleton(t *testing.T, makefile string) string {
 			t.Fatalf("write %s: %v", rel, err)
 		}
 	}
-	write("Makefile", makefile)
+	write("harness/mk/go.mk", goGomk)
 	write("go.mod", "module app\n\ngo 1.26\n")
 	write("cmd/app/main.go", "package main\n\nfunc main() {}\n")
 	return dir
@@ -33,73 +36,57 @@ func stageSkeleton(t *testing.T, makefile string) string {
 
 // TestTargets: sortierte Rel-Pfade relativ zum Staging (fuer den Phase-3-Pre-Flight).
 func TestTargets(t *testing.T) {
-	got, err := wire.Targets(stageSkeleton(t, goodMakefile))
+	got, err := wire.Targets(stageSkeleton(t))
 	if err != nil {
 		t.Fatalf("Targets: %v", err)
 	}
-	want := []string{"Makefile", "cmd/app/main.go", "go.mod"}
+	want := []string{"cmd/app/main.go", "go.mod", "harness/mk/go.mk"}
 	if strings.Join(got, ",") != strings.Join(want, ",") {
 		t.Errorf("Targets = %v, want %v (sortiert, rel zum Staging)", got, want)
 	}
 }
 
-// TestPlace_PlacesVerbatim: die Skelett-Dateien landen UNVERAENDERT im Ziel-Root
-// (seit slice-034 ist Place ein REINER Placer — kein Makefile-Rewrite mehr; der
-// Aggregator + die harness/mk/*.mk-Fragmente kommen aus gen bzw. den Emittern), und
-// das transiente Staging ist danach weg. Rot-Gegenbeispiel: haengte Place wieder die
-// alte dCheckInclude/enforceWiring-Verdrahtung ans Makefile, waere es nicht mehr
-// byte-identisch zum Staging.
+// TestPlace_PlacesVerbatim: die Skelett-Dateien landen UNVERAENDERT im Ziel-Root (reiner
+// Placer seit slice-034; slice-035: keine Root-Makefile im Skelett mehr — der Aggregator
+// kommt aus emit.Makefile), und das transiente Staging ist danach weg. Rot-Gegenbeispiel:
+// mutierte Place den Inhalt (alter Inline-Anhang), waere go.mk nicht byte-identisch.
 func TestPlace_PlacesVerbatim(t *testing.T) {
-	staging := stageSkeleton(t, goodMakefile)
+	staging := stageSkeleton(t)
 	target := t.TempDir()
 	if err := wire.Place(staging, target, false); err != nil {
 		t.Fatalf("Place: %v", err)
 	}
-	for _, rel := range []string{"Makefile", "go.mod", "cmd/app/main.go"} {
+	for _, rel := range []string{"harness/mk/go.mk", "go.mod", "cmd/app/main.go"} {
 		if _, err := os.Stat(filepath.Join(target, filepath.FromSlash(rel))); err != nil {
 			t.Errorf("%s fehlt am Ziel-Root: %v", rel, err)
 		}
 	}
-	mk, err := os.ReadFile(filepath.Join(target, "Makefile"))
+	gomk, err := os.ReadFile(filepath.Join(target, filepath.FromSlash("harness/mk/go.mk")))
 	if err != nil {
-		t.Fatalf("Makefile lesen: %v", err)
+		t.Fatalf("go.mk lesen: %v", err)
 	}
-	if string(mk) != goodMakefile {
-		t.Errorf("Makefile wurde beim Platzieren veraendert (Place ist kein reiner Placer mehr):\n%s", mk)
+	if string(gomk) != goGomk {
+		t.Errorf("go.mk wurde beim Platzieren veraendert (Place ist kein reiner Placer mehr):\n%s", gomk)
 	}
-	// Place verdrahtet NICHTS mehr — die alten Inline-Anhaenge duerfen nicht auftauchen.
+	// Place verdrahtet NICHTS mehr — die alten Inline-Anhaenge duerfen nirgends auftauchen.
 	for _, forbidden := range []string{"include d-check.mk", "gates: docs-check", "bash tools/harness/record-gates.sh"} {
-		if strings.Contains(string(mk), forbidden) {
-			t.Errorf("Place haengt %q ans Makefile an — der Inline-Anhang ist seit slice-034 weg", forbidden)
+		if strings.Contains(string(gomk), forbidden) {
+			t.Errorf("Place haengt %q an — der Inline-Anhang ist seit slice-034 weg", forbidden)
 		}
+	}
+	// Das Skelett traegt keine Root-Makefile mehr (die kommt aus emit.Makefile).
+	if _, err := os.Stat(filepath.Join(target, "Makefile")); err == nil {
+		t.Error("wire platziert eine Root-Makefile — die gehoert seit slice-035 in emit.Makefile")
 	}
 	if _, err := os.Stat(staging); !os.IsNotExist(err) {
 		t.Errorf("transientes Staging nicht aufgeraeumt: %v", err)
 	}
 }
 
-// TestPlace_NoGatesTarget: ein Makefile ohne gates-Target -> Fehler; `gates:
-// docs-check` haette sonst gates OHNE die Go-Gates definiert (still leere
-// Verdrahtung). Und es darf nichts platziert worden sein (Vorbedingung vor dem Write).
-func TestPlace_NoGatesTarget(t *testing.T) {
-	staging := stageSkeleton(t, "all:\n\t@true\n")
-	target := t.TempDir()
-	err := wire.Place(staging, target, false)
-	if err == nil {
-		t.Fatal("Makefile ohne gates-Target wurde akzeptiert")
-	}
-	if !strings.Contains(err.Error(), "gates") {
-		t.Errorf("Fehlermeldung nennt das fehlende gates-Target nicht: %v", err)
-	}
-	if entries, _ := os.ReadDir(target); len(entries) != 0 {
-		t.Errorf("trotz Fehler wurde platziert: %v", entries)
-	}
-}
-
-// TestPlace_Collision: eine vorhandene Zieldatei ohne force -> Fehler VOR jedem
-// Write (kein Teil-Placement, konsistent mit slice-025).
+// TestPlace_Collision: eine vorhandene Zieldatei ohne force -> Fehler VOR jedem Write
+// (kein Teil-Placement, konsistent mit slice-025).
 func TestPlace_Collision(t *testing.T) {
-	staging := stageSkeleton(t, goodMakefile)
+	staging := stageSkeleton(t)
 	target := t.TempDir()
 	if err := os.WriteFile(filepath.Join(target, "go.mod"), []byte("vorhanden"), 0o644); err != nil {
 		t.Fatalf("Setup: %v", err)
@@ -111,8 +98,8 @@ func TestPlace_Collision(t *testing.T) {
 	if !strings.Contains(err.Error(), "existiert bereits") {
 		t.Errorf("Fehlermeldung nennt die Kollision nicht: %v", err)
 	}
-	// Kein Teil-Placement: das Makefile darf NICHT geschrieben sein (Vorpass greift).
-	if _, statErr := os.Stat(filepath.Join(target, "Makefile")); !os.IsNotExist(statErr) {
-		t.Errorf("Makefile trotz Kollision platziert (Teil-Placement): %v", statErr)
+	// Kein Teil-Placement: das Code-Gate-Fragment darf NICHT geschrieben sein (Vorpass greift).
+	if _, statErr := os.Stat(filepath.Join(target, filepath.FromSlash("harness/mk/go.mk"))); !os.IsNotExist(statErr) {
+		t.Errorf("go.mk trotz Kollision platziert (Teil-Placement): %v", statErr)
 	}
 }

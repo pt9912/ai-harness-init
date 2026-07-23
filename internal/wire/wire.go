@@ -1,10 +1,10 @@
 // Package wire platziert das generierte Sprachskelett (slice-023, gestaged unter
-// .harness/skeleton/) in den Ziel-Root. Seit slice-034 (Fragment-Assembly) ist es ein
-// REINER Placer: die Root-Makefile ist ein Aggregator (gen, include harness/mk/*.mk),
-// und die Gate-Belange (doc-gate/baseline/enforce) kommen als eigene harness/mk/*.mk-
-// Fragmente von ihren Emittern (DocGate/BaselineVerify/Enforce) — wire haengt NICHTS
-// mehr ans Makefile an (frueher dCheckInclude + enforceWiring; jetzt Migrations-Bruch).
-// Einen Merge gibt es nicht (ADR-0005: der Generator besitzt Makefile/Dockerfile/go.mod).
+// .harness/skeleton/) in den Ziel-Root. REINER Placer (slice-034/035): es schreibt die
+// Skelett-Dateien (Code-Gate-Fragment harness/mk/<lang>.mk, Dockerfile, go.mod,
+// .golangci.yml, cmd/app/main.go) VERBATIM. Die Root-Makefile (der Aggregator) und die
+// sprach-agnostischen Fragmente (doc-gate/baseline/enforce) kommen aus den Init-Emittern
+// (emit.Makefile/DocGate/BaselineVerify/Enforce), NICHT aus wire — seit slice-035 traegt
+// das Skelett keine Root-Makefile mehr. Einen Merge gibt es nicht (ADR-0005).
 //
 // Warum Phase-4-Placement aus dem Staging und nicht direkt an den Root: die
 // slice-025-Garantie „Kollision -> kein Teil-Bootstrap" haelt nur, wenn das
@@ -13,7 +13,6 @@
 package wire
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -21,8 +20,6 @@ import (
 	"path/filepath"
 	"sort"
 )
-
-const skeletonMakefile = "Makefile"
 
 // Targets liefert die Ziel-Relpfade, die Place() in den Ziel-Root schreiben wuerde
 // — die Skelett-Dateien in stagingDir, relativ zu stagingDir, sortiert. Fuer den
@@ -52,24 +49,14 @@ func Targets(stagingDir string) ([]string, error) {
 }
 
 // Place platziert die gestagten Skelett-Dateien VERBATIM in targetDir (Ziel-Root) —
-// seit slice-034 ohne Makefile-Rewrite (reiner Placer). Danach wird stagingDir
-// entfernt (transientes Staging — sonst traegt das Zielrepo zwei Makefiles). Ohne
-// force wird eine vorhandene Zieldatei nicht ueberschrieben (LH-FA-01 Boundary; der
-// Phase-3-Pre-Flight prueft das bereits, hier als Verteidigung).
+// reiner Placer (kein Makefile-Rewrite, keine Makefile-Vorbedingung mehr: die Root-
+// Makefile kommt seit slice-035 aus emit.Makefile, nicht aus dem Skelett). Danach wird
+// stagingDir entfernt (transientes Staging). Ohne force wird eine vorhandene Zieldatei
+// nicht ueberschrieben (LH-FA-01 Boundary; der Phase-3-Pre-Flight prueft das bereits).
 func Place(stagingDir, targetDir string, force bool) error {
 	rels, err := Targets(stagingDir)
 	if err != nil {
 		return err
-	}
-	// Vorbedingung: das Skelett MUSS eine Root-Makefile mit gates-Target tragen (den
-	// Aggregator, gen/slice-034) — sonst ist `make gates` im Ziel undefiniert. Laut
-	// abbrechen (Verteidigung; der Phase-3-Pre-Flight prueft die Kollision separat).
-	mk, err := os.ReadFile(filepath.Join(stagingDir, skeletonMakefile))
-	if err != nil {
-		return fmt.Errorf("skelett-Makefile lesen: %w", err)
-	}
-	if !bytes.Contains(mk, []byte("\ngates:")) && !bytes.HasPrefix(mk, []byte("gates:")) {
-		return errors.New("skelett-Makefile hat kein gates-Target — der Aggregator waere unvollstaendig (slice-034)")
 	}
 	// Kollisions-VORPASS: alle Ziele pruefen, BEVOR eines geschrieben wird — kein
 	// Teil-Placement bei Kollision (konsistent mit emit.Templates/slice-025).

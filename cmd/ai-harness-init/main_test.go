@@ -69,7 +69,6 @@ func TestRun(t *testing.T) {
 		wantOut  string
 		wantErr  string
 	}{
-		{"fehlendes --lang -> Exit 2 + Usage stderr", []string{}, 2, "", "--lang ist erforderlich"},
 		{"--help -> Exit 0 + Usage stdout", []string{"--help"}, 0, "Verwendung:", ""},
 		{"-h -> Exit 0 + Usage stdout", []string{"-h"}, 0, "Verwendung:", ""},
 		{"unbekanntes Flag -> Exit 2 + Usage stderr", []string{"--bogus"}, 2, "", "Fehler"},
@@ -98,6 +97,33 @@ func TestRun(t *testing.T) {
 				t.Errorf("Exit 2, aber stdout nicht leer: %q", out.String())
 			}
 		})
+	}
+}
+
+// TestRun_SprachlosKeinExit2 belegt LH-FA-01/ADR-0007: --lang ist OPTIONAL. Fehlt es,
+// gibt es KEINEN Exit 2 mehr — der Bootstrap laeuft sprach-agnostisch und bricht (netzlos,
+// via kollidierender .d-check.yml) erst am Phase-3-Emit-Pre-Flight ab (Exit 1). Ein Exit 2
+// hier hiesse, das alte --lang-Refuse ist zurueck. Rot-Gegenbeispiel: test/mutations/41
+// macht hasLang immer true -> sprachlos laeuft gen.Generate("") -> UnknownLangError -> Exit 2.
+func TestRun_SprachlosKeinExit2(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, ".d-check.yml"), []byte("# vorhanden\n"), 0o644); err != nil {
+		t.Fatalf("Setup: %v", err)
+	}
+	var out, errb bytes.Buffer
+	code := run([]string{}, dir, testSources(t), &out, &errb) // KEIN --lang
+	if code == 2 {
+		t.Fatalf("Exit 2 ohne --lang — das --lang-Refuse ist zurueck (soll optional sein). stderr: %q", errb.String())
+	}
+	if code != 1 {
+		t.Fatalf("Exit-Code = %d, want 1 (sprachlos -> Phase-3-Emit-Pre-Flight-Abbruch)", code)
+	}
+	if !strings.Contains(errb.String(), "existiert bereits") {
+		t.Errorf("stderr = %q, soll den Pre-Flight-Abbruch (Kollision) melden", errb.String())
+	}
+	// Sprachlos: KEIN Skelett generiert (gen/wire entfallen).
+	if _, err := os.Stat(filepath.Join(dir, ".harness", "skeleton")); !errors.Is(err, os.ErrNotExist) {
+		t.Errorf(".harness/skeleton trotz sprachlosem Init angelegt: %v", err)
 	}
 }
 
@@ -232,25 +258,26 @@ func TestRun_SkelGoVersionOverride(t *testing.T) {
 }
 
 // TestRun_SkeletonKollisionSchreibtKeinEmit belegt, dass die Skelett-ROOT-Ziele
-// (slice-004b) im Phase-3-Pre-Flight liegen: ein vorhandenes Makefile am Ziel-Root
-// bricht VOR jedem Emit-Write ab (kein Teil-Bootstrap, slice-025) — das generierte
-// Skelett wird ja erst in Phase 4 an den Root verdrahtet.
+// (slice-004b) im Phase-3-Pre-Flight liegen: eine vorhandene go.mod am Ziel-Root bricht
+// VOR jedem Emit-Write ab (kein Teil-Bootstrap, slice-025). go.mod ist ein REINES
+// Skelett-Ziel — nur wire.Targets faengt es (die Root-Makefile kaeme seit slice-035 aus
+// emit.MakefilePath, nicht aus dem Skelett; sie waere ein schwaecheres Beispiel).
 //
-// ROT-Gegenbeispiel (AGENTS 3.6): fehlt wire.Targets im Phase-3-Pre-Flight, prueft
-// er die Makefile-Kollision nicht -> Phase 4, DocGate scheitert netzlos an docker,
-// die Meldung ist KEIN "Makefile existiert bereits". test/mutations/23 mutiert das.
+// ROT-Gegenbeispiel (AGENTS 3.6): fehlt wire.Targets im Phase-3-Pre-Flight, prueft er die
+// go.mod-Kollision nicht -> Phase 4, DocGate scheitert netzlos an docker, die Meldung ist
+// KEIN "go.mod existiert bereits". test/mutations/23 mutiert das.
 func TestRun_SkeletonKollisionSchreibtKeinEmit(t *testing.T) {
 	dir := t.TempDir()
-	if err := os.WriteFile(filepath.Join(dir, "Makefile"), []byte("# vorhanden\n"), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module vorhanden\n"), 0o644); err != nil {
 		t.Fatalf("Setup: %v", err)
 	}
 	var out, errb bytes.Buffer
 	code := run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb)
 	if code != 1 {
-		t.Fatalf("Exit-Code = %d, want 1 (Pre-Flight bricht an der Makefile-Kollision ab)", code)
+		t.Fatalf("Exit-Code = %d, want 1 (Pre-Flight bricht an der go.mod-Kollision ab)", code)
 	}
-	if !strings.Contains(errb.String(), "Makefile existiert bereits") {
-		t.Errorf("stderr = %q, soll die Makefile-Kollision melden", errb.String())
+	if !strings.Contains(errb.String(), "go.mod existiert bereits") {
+		t.Errorf("stderr = %q, soll die go.mod-Kollision melden", errb.String())
 	}
 	if _, err := os.Stat(filepath.Join(dir, "tools", "harness", "baseline-verify.sh")); !errors.Is(err, os.ErrNotExist) {
 		t.Errorf("Verifier trotz Pre-Flight-Abbruch geschrieben (Teil-Emit): %v", err)
