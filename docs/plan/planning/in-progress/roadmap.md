@@ -12,19 +12,20 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**Welle-ID:** keine aktive Welle (zuletzt [welle-05](../done/welle-05-bootstrap-phasen.md), geschlossen 2026-07-23).
-**Nächster Schnitt:** noch offen — cp-Disziplin (Plandatei erst, wenn ihr erster Slice steht); Kandidaten unter **Nächste Wellen**.
+**Welle-ID:** [welle-06-freshness](../welle-06-freshness.md) — Multi-Komponenten-Versions-Freshness. **Aktiv** seit 2026-07-23.
+**Trigger (gefeuert):** upstream erschien Regelwerk **v3.5.1** > gepinnt `v3.5.0` — erste beobachtete Tag-/Quellen-Drift.
+**Slices:** slice-040 (Generalisierung + golangci-lint/d-check) geschnitten in `open/`; slice-041 (Go), slice-042 (ubuntu-Tag) in §4 der Welle (per `cp` bei Schnitt).
 
-**Closure-Trigger:** n/a (keine aktive Welle).
+**Closure-Trigger:** alle Welle-Slices in `done/`; `make gates` + `make mutate` grün; jede Achse im nächtlichen `upstream-drift`-Job verdrahtet (read-only, nicht in gates); Closure-Notiz `welle-06-results.md`.
 
 ## Nächste Wellen
 
-Keine Welle ist geschnitten (cp-Disziplin — Plandatei erst per `cp`, wenn ihr erster Slice steht).
+Keine weitere Welle ist geschnitten (cp-Disziplin — Plandatei erst per `cp`, wenn ihr erster Slice steht).
 Prospektive Kandidaten (nur mit **beobachtbarem Trigger**, Modul 6):
 
 | Welle-Kandidat | Trigger | Wichtigste Slices | Aufwand |
 |---|---|---|---|
-| Freshness | M2 erreicht (**gefeuert** 2026-07-22) oder erste beobachtete Pin-/Tag-/Quellen-Drift | go-freshness-Sensor · `SKEL_GO_VERSION=latest` · Quellen-Freshness (slice-012/023) | S–M |
+| Arch-Gate (M4) | der Architektur-ADR (Achse `--arch`) accepted — er wird nach dieser Welle proposed | geschichtetes Skelett-Profil (domain/ports/adapters) · a-check-Emission | M |
 | Doc-Gate-Härtung | erneut beobachtete Befund-Klasse (Muster slice-026: neun Instanzen → Sensor) | Anker-Fragment-Sensor · Prosa-Zahlen-Provenienz · citations (slice-014/015) | S |
 
 ## Meilensteine
@@ -45,7 +46,9 @@ flowchart LR
     W3[welle-03<br/>README & Voll-Smoke]
     W4[welle-04<br/>Durchsetzung & Emission]
     W5[welle-05<br/>Bootstrap-Phasen]
+    W6[welle-06<br/>Freshness]
     W1 --> W2 --> W3 --> W4 --> W5
+    W5 -.-> W6
 ```
 
 ## Abgeschlossene Wellen
