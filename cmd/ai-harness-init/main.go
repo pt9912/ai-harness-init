@@ -148,7 +148,7 @@ func bootstrap(targetDir, lang, name string, force bool, src sources, stdout, st
 	// Phase 3 — Pre-Flight ALLER Emit-Ziele (Verifier, Doc-Gate, Templates aus der
 	// gefetchten Baseline, dabei wurzel-geprueft). Kollidiert eines ohne --force,
 	// schreibt KEIN Emit-Schritt — die Teil-Bootstrap-Klasse ist geschlossen.
-	rels, err := emitTargets(targetDir, tag, name, hasLang)
+	rels, err := emitTargets(targetDir, tag, name, lang)
 	if err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
@@ -250,12 +250,13 @@ func preflightAbsent(targetDir string, rels []string) error {
 // Templates) fuer den Pre-Flight aus Phase 3. Die Template-Ziele kommen aus der
 // gefetchten Baseline; emit.TemplateTargets wurzel-prueft sie zugleich (eine
 // falsch gewurzelte Baseline faellt so VOR dem Docker-Lauf auf).
-func emitTargets(targetDir, tag, name string, hasLang bool) ([]string, error) {
+func emitTargets(targetDir, tag, name, lang string) ([]string, error) {
+	hasLang := lang != ""
 	rels := []string{emit.BaselineVerifyPath, emit.BaselineMkPath, ".d-check.yml", "d-check.mk", emit.DocGateMkPath, emit.MakefilePath, emit.RootReadmePath}
 	// Durchsetzungs-Mechanik (slice-031, LH-FA-06/ADR-0006): Gate-Nachweis +
 	// Stop-Hook. In DENSELBEN Pre-Flight — eine vorhandene .claude/settings.json
 	// (Adopter hat schon Claude-Hooks) faellt so VOR dem Emit auf, kein Teil-Bootstrap.
-	rels = append(rels, emit.EnforcePaths()...)
+	rels = append(rels, emit.EnforcePaths(lang)...)
 	// Workflow-Commands (slice-033, LH-FA-08/ADR-0006): die Slash-Command-Anleitung
 	// (.claude/commands/). Eigene Klasse (Anleitung ≠ Durchsetzung), aber DERSELBE
 	// Pre-Flight — eine vorhandene .claude/commands/… faellt so VOR dem Emit auf.

@@ -1,7 +1,6 @@
 package emit
 
 import (
-	"bytes"
 	"embed"
 	"errors"
 	"fmt"
@@ -17,9 +16,10 @@ import (
 // ADR-0005/ADR-0006 ("Tool-als-Quelle"), genau wie baseline-verify.sh und die
 // minimale .d-check.yml.
 //
-// SPRACH-AGNOSTISCH: die Skripte sind reine git/sha256/Hook-Infrastruktur, ohne
-// --lang-Zweig — anders als der Command-Guard (slice-032), dessen BLOCKED-Set je
-// Sprache variiert. all: bettet auch die dot-lose gitignore-Quelle sicher ein.
+// SPRACH-AGNOSTISCH: alle eingebetteten Skripte inkl. des Command-Guards sind verbatim
+// (slice-036: der Guard traegt den universellen Boden GEBACKEN und liest blocked/* zur
+// Laufzeit; das Sprach-Set kommt als separates blocked/<lang>-Fragment, nicht mehr per
+// @@BLOCKED_SET@@-Substitution). all: bettet auch die dot-lose gitignore-Quelle sicher ein.
 //
 //go:embed all:templates/enforce
 var enforceFS embed.FS
@@ -58,60 +58,60 @@ func enforceFiles() []enforceFile {
 	}
 }
 
-// guardDst ist der Guard-Zielpfad — die einzige Datei mit --lang-Substitution
-// (@@BLOCKED_SET@@ -> blockedSet(lang)); alle anderen werden verbatim geschrieben.
-const guardDst = ".claude/hooks/pretooluse-command-guard.sh"
+// blockedDir ist das Verzeichnis der Sprach-BLOCKED-Fragmente im Ziel (emittiertes
+// Layout, MR-005). Der emittierte Guard traegt den universellen Boden GEBACKEN (fail-safe,
+// nie fail-open) und liest zusaetzlich blocked/* (Union, reines bash+cat, LH-QA-03).
+// add-lang droppt blocked/<sprache> (slice-037); der --lang-One-Shot emittiert es hier.
+const blockedDir = "tools/harness/blocked"
 
-// blockedSet setzt das BLOCKED-Set des emittierten Guards je --lang zusammen
-// (ADR-0006): die universellen Host-Paketmanager (sprach-agnostisch) plus die
-// Host-Toolchain der Ziel-Sprache. Der Guard erzwingt make/Docker-only, indem er
-// genau diese Kommandos in Kopfposition fail-closed blockt.
-func blockedSet(lang string) string {
-	const universal = "apt apt-get brew pip pip3 pipx npm pnpm yarn npx corepack cargo rustup gem conda"
-	if extra, ok := blockedByLang()[lang]; ok {
-		return universal + " " + extra
-	}
-	return universal
-}
+// BlockedFragmentPath liefert den Zielpfad des Sprach-BLOCKED-Fragments blocked/<lang>.
+func BlockedFragmentPath(lang string) string { return blockedDir + "/" + lang }
 
-// blockedByLang bildet jede von gen unterstuetzte Sprache auf ihre Host-Toolchain
-// ab. An gen.SupportedLangs() gekoppelt (Test): ein neues gen-Profil ohne Eintrag
-// hier liesse die Sprach-Toolchain im Ziel ungehindert laufen (stille Luecke).
+// blockedByLang bildet jede von gen unterstuetzte Sprache auf ihre Host-Toolchain ab —
+// der Inhalt des blocked/<lang>-Fragments (whitespace-getrennt, mit Zeilenumbruch). An
+// gen.SupportedLangs() gekoppelt (Test): ein neues gen-Profil ohne Eintrag hier liesse die
+// Sprach-Toolchain im Ziel ungehindert laufen (stille Luecke).
 func blockedByLang() map[string]string {
 	return map[string]string{
-		"go": "go gofmt golangci-lint staticcheck",
+		"go": "go gofmt golangci-lint staticcheck\n",
 	}
 }
 
-// BlockedSetForLang exportiert blockedSet fuer Tests (Kopplung an gen-Profile).
-func BlockedSetForLang(lang string) string { return blockedSet(lang) }
+// BlockedFragmentForLang exportiert den Fragment-Inhalt fuer Tests (Kopplung an
+// gen-Profile); leer, wenn lang kein Profil hat.
+func BlockedFragmentForLang(lang string) string { return blockedByLang()[lang] }
 
 // EnforcePaths liefert die Ziel-Relpfade der Durchsetzungs-Mechanik — fuer den
 // Bootstrap-Pre-Flight (cmd, Phase 3). Ohne sie faende eine Kollision (z.B. eine
 // vorhandene .claude/settings.json) erst mitten in Phase 4 statt (Teil-Bootstrap).
-func EnforcePaths() []string {
-	paths := make([]string, len(enforceFiles()))
-	for i, f := range enforceFiles() {
-		paths[i] = f.dst
+func EnforcePaths(lang string) []string {
+	files := enforceFiles()
+	paths := make([]string, 0, len(files)+1)
+	for _, f := range files {
+		paths = append(paths, f.dst)
+	}
+	// Sprach-BLOCKED-Fragment (blocked/<lang>) nur mit gen-Profil (slice-036): der
+	// --lang-One-Shot droppt es, der Guard vereinigt es zur Laufzeit mit dem Boden.
+	if _, ok := blockedByLang()[lang]; ok {
+		paths = append(paths, BlockedFragmentPath(lang))
 	}
 	return paths
 }
 
 // Enforce schreibt die Durchsetzungs-Mechanik nach targetDir. Kollisions-VORPASS
-// (ohne force): existiert EINES der Ziele, schreibt KEINES — kein Teil-Emit
-// (konsistent mit emit.Templates/wire.Place, slice-025). Ausfuehrbare Skripte
-// bekommen 0755 per Chmod NACH dem Write: WriteFile wendet den Modus nur beim
-// Anlegen an — ueber eine vorhandene 0644-Datei geschrieben (--force) bliebe der
-// richtige Inhalt in einer nicht ausfuehrbaren Datei zurueck (Befund slice-022a L2).
+// (ohne force) ueber ALLE Ziele inkl. blocked/<lang>: existiert eines, schreibt keines
+// (kein Teil-Emit, slice-025). Der Guard traegt seinen universellen Boden GEBACKEN
+// (slice-036, keine @@BLOCKED_SET@@-Substitution mehr); das Sprach-Set kommt als
+// blocked/<lang>-Fragment, das der emittierte Guard zur Laufzeit mit dem Boden vereinigt.
 func Enforce(targetDir, lang string, force bool) error {
 	if !force {
-		for _, f := range enforceFiles() {
-			dst := filepath.Join(targetDir, filepath.FromSlash(f.dst))
+		for _, p := range EnforcePaths(lang) {
+			dst := filepath.Join(targetDir, filepath.FromSlash(p))
 			switch _, err := os.Stat(dst); {
 			case err == nil:
-				return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", f.dst)
+				return fmt.Errorf("%s existiert bereits (--force zum Ueberschreiben)", p)
 			case !errors.Is(err, fs.ErrNotExist):
-				return fmt.Errorf("%s pruefen: %w", f.dst, err)
+				return fmt.Errorf("%s pruefen: %w", p, err)
 			}
 		}
 	}
@@ -120,21 +120,34 @@ func Enforce(targetDir, lang string, force bool) error {
 		if err != nil {
 			return fmt.Errorf("%s einbetten: %w", f.src, err)
 		}
-		// Nur der Guard traegt eine --lang-Substitution; ein zurueckbleibendes
-		// @@BLOCKED_SET@@ waere ein Guard ohne Zaehne (blockt nur SHELLS-Rekursion).
-		if f.dst == guardDst {
-			content = bytes.ReplaceAll(content, []byte("@@BLOCKED_SET@@"), []byte(blockedSet(lang)))
+		if err := writeFileMode(targetDir, f.dst, content, f.mode); err != nil {
+			return err
 		}
-		dst := filepath.Join(targetDir, filepath.FromSlash(f.dst))
-		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
-			return fmt.Errorf("%s anlegen: %w", filepath.Dir(f.dst), err)
+	}
+	// Sprach-BLOCKED-Fragment (blocked/<lang>) nur mit gen-Profil (slice-036); die Union
+	// im emittierten Guard zieht es zur Laufzeit dazu.
+	if frag, ok := blockedByLang()[lang]; ok {
+		if err := writeFileMode(targetDir, BlockedFragmentPath(lang), []byte(frag), 0o644); err != nil {
+			return err
 		}
-		if err := os.WriteFile(dst, content, f.mode); err != nil {
-			return fmt.Errorf("%s schreiben: %w", f.dst, err)
-		}
-		if err := os.Chmod(dst, f.mode); err != nil {
-			return fmt.Errorf("%s Modus setzen: %w", f.dst, err)
-		}
+	}
+	return nil
+}
+
+// writeFileMode schreibt content nach targetDir/rel (slash) mit mode: MkdirAll fuer den
+// Elternpfad + Chmod NACH dem Write (os.WriteFile wendet den Modus nur beim Anlegen an —
+// ueber eine vorhandene 0644-Datei mit --force bliebe der richtige Inhalt nicht
+// ausfuehrbar zurueck, Befund slice-022a L2).
+func writeFileMode(targetDir, rel string, content []byte, mode fs.FileMode) error {
+	dst := filepath.Join(targetDir, filepath.FromSlash(rel))
+	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+		return fmt.Errorf("%s anlegen: %w", filepath.Dir(rel), err)
+	}
+	if err := os.WriteFile(dst, content, mode); err != nil {
+		return fmt.Errorf("%s schreiben: %w", rel, err)
+	}
+	if err := os.Chmod(dst, mode); err != nil {
+		return fmt.Errorf("%s Modus setzen: %w", rel, err)
 	}
 	return nil
 }

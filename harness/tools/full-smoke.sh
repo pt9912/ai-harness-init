@@ -105,6 +105,21 @@ if [ -n "$pass_out" ]; then
 	echo "full-smoke: FEHLER — emittierter Guard blockt 'make test' faelschlich (slice-032). Ausgabe: [$pass_out]" >&2
 	exit 1
 fi
+# slice-036: der Guard traegt den universellen Boden GEBACKEN + vereinigt blocked/*. Mit
+# --lang go blockt er go (via blocked/go, oben) UND pip (Boden).
+pip_out="$(printf '%s' '{"tool_input":{"command":"pip install x"}}' | bash "$guard" || true)"
+if ! printf '%s' "$pip_out" | grep -q '"decision": "block"'; then
+	echo "full-smoke: FEHLER — emittierter Guard blockt 'pip' NICHT (gebackener Boden kaputt? slice-036). Ausgabe: [$pip_out]" >&2
+	exit 1
+fi
+# FAIL-SAFE (ADR-0007 NEU-H1): der Guard darf NIE fail-open sein. Mit GELEERTEM blocked/
+# blockt der gebackene Boden weiter — pip bleibt geblockt, auch ohne jedes Fragment.
+rm -f "${tmprepo:?}/tools/harness/blocked/"* 2>/dev/null || true
+failsafe_out="$(printf '%s' '{"tool_input":{"command":"pip install x"}}' | bash "$guard" || true)"
+if ! printf '%s' "$failsafe_out" | grep -q '"decision": "block"'; then
+	echo "full-smoke: FEHLER — Guard blockt pip NICHT mehr nach geleertem blocked/ (fail-OPEN! ADR-0007 NEU-H1). Ausgabe: [$failsafe_out]" >&2
+	exit 1
+fi
 
 # slice-033 (LH-FA-08): die Workflow-Commands liegen im real gebootstrappten Ziel
 # und tragen keine ai-harness-init-interne Referenz (adaptierbar, nicht 1:1 hart).
@@ -156,7 +171,26 @@ for skel in go.mod cmd/app/main.go harness/mk/go.mk Dockerfile; do
 	fi
 done
 
+# slice-036: der SPRACHLOSE emittierte Guard traegt den gebackenen Boden (blockt pip) —
+# aber KEIN blocked/go (sprachlos wird kein Fragment emittiert), also blockt er go NICHT.
+guard_doc="$tmprepo_doc/.claude/hooks/pretooluse-command-guard.sh"
+docpip_out="$(printf '%s' '{"tool_input":{"command":"pip install x"}}' | bash "$guard_doc" || true)"
+if ! printf '%s' "$docpip_out" | grep -q '"decision": "block"'; then
+	echo "full-smoke: FEHLER — sprachloser Guard blockt 'pip' NICHT (gebackener Boden kaputt? slice-036). Ausgabe: [$docpip_out]" >&2
+	exit 1
+fi
+docgo_out="$(printf '%s' '{"tool_input":{"command":"go build ./..."}}' | bash "$guard_doc" || true)"
+if [ -n "$docgo_out" ]; then
+	echo "full-smoke: FEHLER — sprachloser Guard blockt 'go' faelschlich (nur der Boden soll greifen, kein blocked/go; slice-036). Ausgabe: [$docgo_out]" >&2
+	exit 1
+fi
+if [ -e "$tmprepo_doc/tools/harness/blocked" ]; then
+	echo "full-smoke: FEHLER — sprachloser Init legte tools/harness/blocked/ an (soll nur mit --lang; slice-036)." >&2
+	exit 1
+fi
+
 echo "full-smoke: OK — frisch gebootstrapptes Repo faehrt make -j gates out-of-the-box gruen (lint/build/test + docs-check + baseline-verify via Fragment-Assembly, record-gates zuletzt), Exit 0 (LH-FA-01/LH-QA-01)."
 echo "full-smoke: OK — sprachloser Init (ohne --lang) faehrt make -j gates doc-only gruen (docs-check + baseline-verify, KEIN Code-Gate, kein Skelett) — --lang optional (slice-035/LH-FA-01)."
 echo "full-smoke: OK — Gate-Nachweis-Kreis geschlossen: record-gates stempelt, Hash stimmt, .harness/.gitignore greift (slice-031)."
 echo "full-smoke: OK — emittierter Command-Guard greift: 'go build' geblockt, 'make test' durchgelassen (bash+awk, slice-032/LH-QA-03)."
+echo "full-smoke: OK — Guard-Boden GEBACKEN + blocked/*-Union: --lang go blockt go+pip, sprachlos nur pip (Boden), fail-safe nach geleertem blocked/ (slice-036/ADR-0007 NEU-H1)."

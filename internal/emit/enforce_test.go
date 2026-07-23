@@ -21,7 +21,7 @@ func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 	if err := emit.Enforce(dir, "go", false); err != nil {
 		t.Fatalf("Enforce: %v", err)
 	}
-	for _, rel := range emit.EnforcePaths() {
+	for _, rel := range emit.EnforcePaths("go") {
 		if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err != nil {
 			t.Errorf("%s nicht emittiert: %v", rel, err)
 		}
@@ -38,8 +38,9 @@ func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 		".claude/hooks/pretooluse-command-guard.sh",
 		"tools/harness/extract-command.awk",
 		"harness/mk/enforce.mk",
+		"tools/harness/blocked/go",
 	}
-	got := strings.Join(emit.EnforcePaths(), "\n")
+	got := strings.Join(emit.EnforcePaths("go"), "\n")
 	for _, w := range want {
 		if !strings.Contains(got, w) {
 			t.Errorf("EnforcePaths fehlt %q — Ziel-Layout-Vertrag verletzt", w)
@@ -86,36 +87,63 @@ func TestEnforce_SettingsWiresBothHooks(t *testing.T) {
 	}
 }
 
-// TestEnforce_GuardBlockedSetPerLang: der emittierte Guard traegt fuer --lang go die
-// go-Toolchain PLUS die universellen Paketmanager, und der @@BLOCKED_SET@@-Platzhalter
-// ist ersetzt (ein zurueckbleibender Platzhalter waere ein zahnloser Guard). Gelesen
-// aus der WIRKLICH geschriebenen Datei (Substitution passiert beim Emit, nicht im
-// Embed).
-func TestEnforce_GuardBlockedSetPerLang(t *testing.T) {
-	dir := t.TempDir()
-	if err := emit.Enforce(dir, "go", false); err != nil {
-		t.Fatalf("Enforce: %v", err)
-	}
-	guard := mustReadString(t, filepath.Join(dir, filepath.FromSlash(".claude/hooks/pretooluse-command-guard.sh")))
+// TestEnforce_GuardBakedFloorAndUnion (slice-036, LH-FA-06/LH-QA-03): der emittierte Guard
+// traegt den universellen Boden GEBACKEN (BLOCKED="apt ...") — kein @@BLOCKED_SET@@-
+// Platzhalter mehr — und liest+vereinigt tools/harness/blocked/* (bash+cat). So blockt er
+// sprachlos schon die Paketmanager (fail-safe, nie fail-open); die Sprach-Toolchain kommt
+// als blocked/<lang>-Fragment. Rot-Gegenbeispiel: test/mutations entfernt den Boden -> rot.
+func TestEnforce_GuardBakedFloorAndUnion(t *testing.T) {
+	guard := string(emit.EnforceFile(".claude/hooks/pretooluse-command-guard.sh"))
 	if strings.Contains(guard, "@@BLOCKED_SET@@") {
-		t.Error("Guard traegt noch den @@BLOCKED_SET@@-Platzhalter — Substitution fehlte (zahnlos)")
+		t.Error("Guard traegt noch @@BLOCKED_SET@@ — der Boden ist seit slice-036 gebacken, nicht substituiert")
 	}
-	for _, tool := range []string{"go", "gofmt", "golangci-lint", "staticcheck", "pip", "npm", "cargo"} {
-		if !strings.Contains(guard, tool) {
-			t.Errorf("emittierter Guard (--lang go) blockt %q nicht — BLOCKED-Set unvollstaendig", tool)
+	if !strings.Contains(guard, `BLOCKED="apt`) {
+		t.Error(`Guard traegt den gebackenen Boden nicht (BLOCKED="apt ...") — fail-open-Risiko (ADR-0007 NEU-H1)`)
+	}
+	for _, floor := range []string{"pip", "npm", "cargo"} {
+		if !strings.Contains(guard, floor) {
+			t.Errorf("gebackener Boden unvollstaendig — %q fehlt", floor)
+		}
+	}
+	for _, union := range []string{"blocked_dir=", "tools/harness/blocked", "cat "} {
+		if !strings.Contains(guard, union) {
+			t.Errorf("Guard liest die blocked/*-Union nicht (%q fehlt) — add-lang-Fragmente waeren wirkungslos (LH-QA-03)", union)
 		}
 	}
 }
 
-// TestBlockedSet_CoversAllGenProfiles koppelt das BLOCKED-Set an gen.SupportedLangs():
-// jedes Profil, das gen bootstrappen kann, MUSS eine Sprach-Toolchain im Guard haben —
-// sonst liefe im gebootstrappten Ziel die Host-Toolchain der Sprache ungehindert
-// (stille Luecke). Ein unbekanntes lang liefert nur die universelle Menge.
-func TestBlockedSet_CoversAllGenProfiles(t *testing.T) {
-	universalOnly := emit.BlockedSetForLang("___unbekannt___")
+// TestEnforce_EmitsBlockedFragment (slice-036): Enforce mit gen-Profil schreibt
+// tools/harness/blocked/<lang> mit der Sprach-Toolchain; SPRACHLOS wird KEIN
+// blocked/-Fragment geschrieben (der Guard-Boden greift dort allein).
+func TestEnforce_EmitsBlockedFragment(t *testing.T) {
+	dir := t.TempDir()
+	if err := emit.Enforce(dir, "go", false); err != nil {
+		t.Fatalf("Enforce(go): %v", err)
+	}
+	frag := mustReadString(t, filepath.Join(dir, filepath.FromSlash("tools/harness/blocked/go")))
+	if !strings.Contains(frag, "go gofmt golangci-lint staticcheck") {
+		t.Errorf("blocked/go traegt die go-Toolchain nicht: %q", frag)
+	}
+	dir2 := t.TempDir()
+	if err := emit.Enforce(dir2, "", false); err != nil {
+		t.Fatalf("Enforce(sprachlos): %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(dir2, filepath.FromSlash("tools/harness/blocked"))); !os.IsNotExist(err) {
+		t.Errorf("sprachloser Enforce legte ein blocked/-Fragment an: %v", err)
+	}
+}
+
+// TestBlockedFragment_CoversAllGenProfiles koppelt die blocked/<lang>-Fragmente an
+// gen.SupportedLangs(): jedes Profil, das gen bootstrappen kann, MUSS ein nicht-leeres
+// Sprach-BLOCKED-Fragment haben — sonst liefe im gebootstrappten Ziel die Host-Toolchain
+// der Sprache ungehindert (stille Luecke). Ein unbekanntes lang liefert ein leeres Fragment.
+func TestBlockedFragment_CoversAllGenProfiles(t *testing.T) {
+	if emit.BlockedFragmentForLang("___unbekannt___") != "" {
+		t.Error("unbekannte Sprache liefert ein nicht-leeres blocked-Fragment (soll leer sein)")
+	}
 	for _, lang := range gen.SupportedLangs() {
-		if emit.BlockedSetForLang(lang) == universalOnly {
-			t.Errorf("gen-Profil %q hat kein Sprach-BLOCKED-Set — Host-Toolchain liefe ungehindert (stille Luecke)", lang)
+		if emit.BlockedFragmentForLang(lang) == "" {
+			t.Errorf("gen-Profil %q hat kein blocked/<lang>-Fragment — Host-Toolchain liefe ungehindert (stille Luecke)", lang)
 		}
 	}
 }

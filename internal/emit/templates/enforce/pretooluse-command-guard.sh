@@ -38,9 +38,18 @@ emit_block() {
 JSON
 }
 
-# BLOCKED = universelle Host-Paketmanager + die Host-Toolchain der Ziel-Sprache.
-# Der Guard blockt genau diese Kommandos in Kopfposition (make/Docker-only).
-BLOCKED="@@BLOCKED_SET@@"
+# BLOCKED = gebackener universeller Boden (fail-safe, NIE fail-open) + optionale
+# Sprach-Fragmente aus tools/harness/blocked/* (add-lang droppt blocked/<sprache>). So
+# blockt der Guard sprachlos schon apt/pip/npm/cargo; ein geleertes/fehlendes blocked/
+# laesst den Boden UNBERUEHRT (der Guard darf nie fail-open sein). Reine bash+cat-Union
+# (kein node/jq): die blocked/*-Dateien sind Wortlisten (whitespace-getrennt).
+BLOCKED="apt apt-get brew pip pip3 pipx npm pnpm yarn npx corepack cargo rustup gem conda"
+blocked_dir="$here/../../tools/harness/blocked"
+if [ -d "$blocked_dir" ]; then
+  for bf in "$blocked_dir"/*; do
+    [ -f "$bf" ] && BLOCKED="$BLOCKED $(cat "$bf")"
+  done
+fi
 PREFIXES="sudo env command exec nice time xargs eval"
 SHELLS="bash sh zsh dash ksh"
 

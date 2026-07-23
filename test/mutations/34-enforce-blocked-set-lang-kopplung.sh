@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 # files: internal/emit/enforce.go
-# expect: TestBlockedSet_CoversAllGenProfiles
+# expect: TestBlockedFragment_CoversAllGenProfiles
 #
-# Das go-BLOCKED-Set faellt aus blockedByLang -> blockedSet("go") liefert nur die
-# universellen Paketmanager; die go-Toolchain (go/gofmt/golangci-lint/staticcheck)
-# liefe im gebootstrappten Ziel ungehindert (stille Lang-Luecke). Der Waechter
-# koppelt an gen.SupportedLangs(): das go-Profil == universalOnly -> rot. Kompiliert
-# weiter (leere map).
+# Der go-Eintrag in blockedByLang wird entfernt -> BlockedFragmentForLang("go") ist leer.
+# Dann gibt es kein blocked/go-Fragment, und die go-Toolchain liefe im Ziel ungehindert
+# (stille Luecke). Die Kopplung an gen.SupportedLangs() muss rot werden (das go-Profil
+# haette kein Sprach-BLOCKED-Fragment). Am Zeilen-Praefix verankert (der \n-Suffix egal).
 set -euo pipefail
-sed -i '/"go": "go gofmt golangci-lint staticcheck",/d' internal/emit/enforce.go
+sed -i '/"go": "go gofmt/d' internal/emit/enforce.go
