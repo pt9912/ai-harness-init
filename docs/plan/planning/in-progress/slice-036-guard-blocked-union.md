@@ -94,8 +94,40 @@ DoD vollständig · `make gates` grün · `make full-smoke` (sprachlos + `--lang
 
 ## 7. Closure-Notiz (nach `done/`)
 
-*Erst nach Abschluss füllen — was funktionierte · was anders lief · Steering-Loop-Eintrag ·
-Folge-Slices.*
+**Geliefert:** der emittierte Command-Guard trägt den universellen Boden **gebacken** (nie fail-open) +
+liest+vereinigt `tools/harness/blocked/*` (bash+`cat`,
+[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)); die
+`@@BLOCKED_SET@@`-Substitution
+entfällt, das Sprach-Set wandert in ein `blocked/<lang>`-Fragment (One-Shot via `--lang`; das
+wiederholbare `add-lang`-Drop ist slice-037). Review **KONFORM** (0 HIGH/MEDIUM, 3 INFO), DoD
+**bestätigt** — der Sicherheitskern NEU-H1 (nie fail-open) explizit belegt
+(`docs/reviews/2026-07-23-slice-036-review.md`, `docs/reviews/2026-07-23-slice-036-verify.md`).
+
+**Was funktionierte:** die **Fail-open-Frage** wurde **doppelt** verifiziert — per Code-Lesen (`set -e`/
+`&&`-Semantik: das linke Glied `[ -f "$bf" ]` ist von errexit ausgenommen → der Boden bleibt unberührt,
+`scan` läuft) UND behavioral (`make full-smoke`: `rm -f blocked/*` → `pip` bleibt geblockt). Für eine
+Sicherheits-Invariante war beides nötig; Reviewer + Verifier prüften sie explizit.
+
+**Was anders lief:** der Verifier fing einen **toten Check**, den dieser Slice erzeugte: `smoke.sh` greppt
+weiter auf `@@BLOCKED_SET@@` im emittierten Guard — seit slice-036 kann der Platzhalter nicht mehr
+auftauchen, der Check ist tautologisch grün. Nicht slice-036-blockierend (`make smoke` ist Tier-2, nicht
+in `make gates`), aber ein §3.6-Smell → Folge-Punkt.
+
+**Steering-Loop:**
+1. **Sicherheits-Invariante doppelt verifizieren.** Ein „NIE fail-open"-Guard braucht Code-Lesen
+   (`set -e`/`&&`-Semantik) UND einen behavioralen Sensor (full-smoke fail-safe) — ein einzelner Sensor
+   belegt die **Abwesenheit** eines Zustands nicht.
+2. **Ein entferntes Konstrukt obsoletet seine Abwesenheits-Checks.** Wer ein Token (`@@BLOCKED_SET@@`)
+   entfernt, muss die Checks greppen, die dessen **Abwesenheit** prüfen, und mit-aktualisieren — sonst
+   werden sie tautologisch grün (stilles Grün). Der Verifier fing `smoke.sh`; der Implementer übersah es.
+3. **Test-Assertions ankern (Review-F-2).** `strings.Contains` über die ganze Datei matcht auch
+   Kommentar-Prosa; die echten Zähne liegen auf anker-genauen Assertions (`BLOCKED="apt`, `blocked_dir=`)
+   + den Mutationen 42/43.
+
+**Folge-Slices / -Punkte:** (a) **`smoke.sh` toter Check** → `! grep 'BLOCKED="apt'` statt `@@BLOCKED_SET@@`
+(kleiner Cleanup, mit `make smoke`-Beleg); (b) Review-F-2: die `pip`/`npm`/`cargo`-Contains-Assertions in
+`TestEnforce_GuardBakedFloorAndUnion` auf die `BLOCKED=`-Zeile isolieren; (c) **slice-037** (`add-lang`
+droppt `blocked/<lang>` wiederholbar/Mono-Repo) ist der nächste; (d) slice-038 (Idempotenz-Klassifikation).
 
 ## 8. Sub-Area-Modus-Begründung
 
