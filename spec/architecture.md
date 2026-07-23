@@ -99,7 +99,7 @@ sequenceDiagram
     U->>C: ai-harness-init add-lang SPRACHE PFAD   [wiederholbar]
     C->>C: Skelett deterministisch generieren, gemäß ADR
     C->>C: harness/mk/SPRACHE.mk + blocked/SPRACHE droppen
-    C-->>U: make -j gates grün inkl. Code-Gates; Nachweis strikt zuletzt
+    C-->>U: make -j gates grün inkl. Code-Gates, record-gates zuletzt
 ```
 
 ## 5. Idempotenz, Fragment-Assembly und Resume
