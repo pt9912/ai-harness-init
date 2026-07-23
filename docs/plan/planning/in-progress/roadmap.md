@@ -22,7 +22,8 @@ erledigt, siehe unten).
   035 CLI-Phasierung · 036 Guard-BLOCKED-Union · 037 `add-lang`-Subkommando · 038 Idempotenz-Klassifikation
   — 034 **done**, [035](../done/slice-035-cli-phasierung.md) **done** (✅ Review konform + DoD bestätigt),
   [036](../done/slice-036-guard-blocked-union.md) **done** (✅ Review konform + DoD bestätigt),
-  037 als nächstes; 038 in §4 der Welle (cp-Disziplin: je Slice per `cp`, sobald er nach `next/` geht).
+  [037](slice-037-add-lang.md) **in-progress** (`add-lang <sprache> <pfad>`, wiederholbar/Mono-Repo,
+  voller Scope); 038 in §4 der Welle (cp-Disziplin: je Slice per `cp`, sobald er nach `next/` geht).
 - **Trigger (erfüllt):** [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md) Accepted;
   CR [`lastenheft.md`](../../../../spec/lastenheft.md) 0.10.0 **und** der
   [`architecture.md`](../../../../spec/architecture.md)-Nachzug erledigt.
