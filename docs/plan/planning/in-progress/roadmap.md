@@ -19,43 +19,25 @@ gezeigt, nicht als Treiber.
 
 ## Nächste Wellen
 
-Keine Welle ist geschnitten (cp-Disziplin — Plandatei erst per `cp`, wenn ihr erster Slice steht). Die
-prospektiven Kandidaten entsprechen den Backlog-Clustern; volle Herkunft + Folge-Punkte stehen im Backlog (unten):
+Keine Welle ist geschnitten (cp-Disziplin — Plandatei erst per `cp`, wenn ihr erster Slice steht).
+Prospektive Kandidaten (nur mit **beobachtbarem Trigger**, Modul 6):
 
 | Welle-Kandidat | Trigger | Wichtigste Slices | Aufwand |
 |---|---|---|---|
-| Freshness (Backlog B) | M2 erreicht (**gefeuert** 2026-07-22) oder erste beobachtete Pin-/Tag-/Quellen-Drift | go-freshness-Sensor · `SKEL_GO_VERSION=latest` · Quellen-Freshness | S–M |
-| Doc-Gate-Härtung (Backlog C) | erneut beobachtete Befund-Klasse | Anker-Fragment-Sensor · Prosa-Zahlen-Provenienz · citations | S |
-| Doku/Prozess-Wartung (Backlog D) | nächste Harness-Wartungsrunde (kein Welle-Trigger) | `done/`-Link-Exemption · `smoke.sh:89` · git-Vorbedingung `make gates` | S |
+| Freshness | M2 erreicht (**gefeuert** 2026-07-22) oder erste beobachtete Pin-/Tag-/Quellen-Drift | go-freshness-Sensor · `SKEL_GO_VERSION=latest` · Quellen-Freshness (slice-012/023) | S–M |
+| Doc-Gate-Härtung | erneut beobachtete Befund-Klasse (Muster slice-026: neun Instanzen → Sensor) | Anker-Fragment-Sensor · Prosa-Zahlen-Provenienz · citations (slice-014/015) | S |
 
-**a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) bleibt aufgeschoben**
-(hexagonale Schichten fehlen — weder Dogfood noch Skelett tragen `domain/ports/adapters`); Kandidat für ein
-späteres **M4** (zusammen mit vorgefertigten Release-Binaries).
+**a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) bleibt aufgeschoben** —
+nicht als Punt, sondern per [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
+(kein Gate über leerem Prüfbereich): a-check prüft hexagonale Schichten (`domain/ports/adapters`), die weder
+Dogfood noch Skelett tragen. **Auslöser (beobachtbar):** sobald ein Skelett solche Schichten trägt bzw. der
+Go-Emitter für a-check gebaut wird — **dann** wird der Slice per `cp` geschnitten (nicht vorab). Kandidat für
+ein späteres **M4** (mit vorgefertigten Release-Binaries).
 
-## Backlog (aus Slice-§6 gehoben, 2026-07-21)
-
-> Diese Folge-Punkte standen verstreut als „offen / Folge-Slice / spätere Welle"
-> in einzelnen Slice-§6-Blöcken. Hier zentral als **planbare Cluster** (Modul 6/7),
-> damit sie auditierbar sind statt in Fußnoten zu driften. Jeder Cluster trägt eine
-> **Trigger-Bedingung, kein Datum** (Modul 6). Ein Wellen-Kandidat bekommt seine
-> Plandatei per `cp` **erst, wenn sein erster Slice geschnitten wird** — genau so
-> entstand welle-03 (slice-005/024 zuerst, dann die Datei); eine Welle-Datei mit
-> leerem §4 wäre die „zweite Wahrheit, die driftet". Slice-Namen bewusst **plain**
-> (Provenienz, keine Lifecycle-Pfad-Kopplung). **Nicht** hier, weil bereits
-> geliefert: „Scheduled CI-Job" (slice-009/018) → slice-027; „Sensor auf neuen
-> Tag" (slice-011) → slice-018; **Cluster A · Durchsetzung & Emission** komplett →
-> welle-04 (Durchsetzungs-Mechanik + Command-Guard + Workflow-Commands) und welle-05
-> (BLOCKED-Set je Sprache); der einzige Rest, das Arch-Gate a-check, ist als
-> M4-Kandidat + „aufgeschoben" getrackt. **architecture.md an das Distributionsmodell**
-> (slice-023) → welle-05-Nachzug (`Tool-als-Quelle` in der Schichten-Tabelle);
-> **README-d-check-Pin** (slice-019) → entfällt (README nennt keinen Pin mehr).
-
-| Cluster | Folge-Punkte (Herkunfts-Slice) | Trigger (Bedingung) | Vorgesehene Ablage |
-|---|---|---|---|
-| **B · Freshness** | go-freshness-Sensor · SKEL_GO_VERSION=latest Web-Lookup (slice-023) · mechanische Freshness für Quellen-Links / BASELINE_TAG (slice-012) · Regelwerk-Refresh-Mechanik (slice-007) | erste beobachtete Pin-/Tag-/Quellen-Drift — der **M2-Trigger ist gefeuert** (erreicht 2026-07-22), B ist damit ein lebender Nächste-Welle-Kandidat | kleine Welle „Freshness-Sensoren" (netz/nächtlich, Muster [slice-018](../done/slice-018-baseline-freshness.md)) bzw. Einzel-Slices |
-| **C · Doc-Gate-Härtung** | Prosa-Zahlen-Provenienz (slice-011/015) · Anker-Fragment-Sensor (slice-014) · citations-Modul / Zitat gegen Zeilenspanne (slice-015) | erneutes Auftreten einer der Befund-Klassen (Muster slice-026: neun Instanzen → Sensor) | kleine Welle bzw. Einzel-Slices |
-| **D · Doku/Prozess-Reconciliation** | „≤3-DoD"-Regel klären (slice-013) · lastenheft_refs vs. Bezug-Zeile (slice-014) · `done/`-Lifecycle-Link-Exemption als Gate-Policy-Änderung (slice-025) · `smoke.sh:89` toter `@@BLOCKED_SET@@`-Check (slice-036) · git-Vorbedingung der emittierten `make gates` ([`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md) INFO I-1, slice-038) | Wartung — **kein** Welle-Trigger; bei nächster Harness-Wartungsrunde | Harness-Wartung ohne Welle (Muster slice-026/027): je kleiner Slice bzw. conventions-Adaption |
-| **E · Konditional** | optionale .bats-Lint-Abdeckung (slice-008) → [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) · Codex-Hook real verifizieren + Pfad-Härtung (slice-007) | .bats: CO-001-Auflösungs-Trigger (bats-Logik mit Verzweigung wächst) · Codex-Hook: eingesetzte Codex-Version wechselt | Carveout (aktiv) bzw. benannter Follow-up (**kein** Gate → **kein** Carveout) |
+Kleinere **Wartungs-Folgepunkte ohne Welle** (kein beobachtbarer Trigger → keine Welle-Zeile, Modul 6) leben
+regelkonform an ihrem Ursprung — in den Welle-`results`-Notizen (§Folge-Slices) bzw. als Carveout
+([`CO-001`](../../carveouts/CO-001-bats-shell-lint.md)) — und werden als Einzel-Slice geschnitten, wenn eine
+Wartungsrunde sie aufnimmt (Muster slice-026/027).
 
 ## Meilensteine
 
