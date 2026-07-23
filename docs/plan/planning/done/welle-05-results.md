@@ -26,7 +26,7 @@ Der **Bootstrap ist phasiert** ([`ADR-0007`](../../adr/0007-bootstrap-phasen.md)
 
 ## 3. Was anders lief
 
-- **Messen-zuerst deckte einen Re-Slice und einen Doc-Stale-Fehler auf.** slice-034s Plan setzte die Lieferung von slice-035 voraus (Ist-Messung → Nutzer wählte den verhaltens-erhaltenden Option-A-Schnitt). slice-037s Review fand, dass ADR-0007s „Durchsetzung sprach-agnostisch" gegen den Ist-Guard (je `--lang`) falsch war — schon in der ADR-Proposed-Runde gefangen.
+- **Messen-zuerst deckte einen Re-Slice und einen Doc-Stale-Fehler auf.** slice-034s Plan setzte die Lieferung von slice-035 voraus (Ist-Messung → Nutzer wählte den verhaltens-erhaltenden Option-A-Schnitt). slice-037s Review fand, dass [`ADR-0007`](../../adr/0007-bootstrap-phasen.md)s „Durchsetzung sprach-agnostisch" gegen den Ist-Guard (je `--lang`) falsch war — schon in der ADR-Proposed-Runde gefangen.
 - **Eine abgeschaffte Mechanik hatte abzuschaffende, nicht zu migrierende Tests.** slice-038 entfernte den Pre-Flight-Refuse — die 6 cmd-Kollisions-Tests + ihre 5 Mutationen (12/14/23/25/46) wurden ENTFERNT (nicht „idempotent umgeschrieben"), die Deckung wanderte in Emitter-Unit-Tests + `full-smoke`.
 - **Fix-induzierte Regressionen brauchten den zweiten Blick.** slice-037: das neue zweite `if !ok {` machte Mutation 17 unspezifisch (Nil-Func-Panic) → `make mutate` meldete's als BEFUND, an eindeutiger Zeile re-verankert. Die Sicherheits-sensiblen Stellen ([`ADR-0007`](../../adr/0007-bootstrap-phasen.md) NEU-H1 fail-open, `<pfad>`-Containment) lohnten je einen expliziten zweiten Verifikations-Durchgang.
 
