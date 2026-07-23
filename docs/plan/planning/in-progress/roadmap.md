@@ -27,18 +27,6 @@ Prospektive Kandidaten (nur mit **beobachtbarem Trigger**, Modul 6):
 | Freshness | M2 erreicht (**gefeuert** 2026-07-22) oder erste beobachtete Pin-/Tag-/Quellen-Drift | go-freshness-Sensor · `SKEL_GO_VERSION=latest` · Quellen-Freshness (slice-012/023) | S–M |
 | Doc-Gate-Härtung | erneut beobachtete Befund-Klasse (Muster slice-026: neun Instanzen → Sensor) | Anker-Fragment-Sensor · Prosa-Zahlen-Provenienz · citations (slice-014/015) | S |
 
-**a-check ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) bleibt aufgeschoben** —
-nicht als Punt, sondern per [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
-(kein Gate über leerem Prüfbereich): a-check prüft hexagonale Schichten (`domain/ports/adapters`), die weder
-Dogfood noch Skelett tragen. **Auslöser (beobachtbar):** sobald ein Skelett solche Schichten trägt bzw. der
-Go-Emitter für a-check gebaut wird — **dann** wird der Slice per `cp` geschnitten (nicht vorab). Kandidat für
-ein späteres **M4** (mit vorgefertigten Release-Binaries).
-
-Kleinere **Wartungs-Folgepunkte ohne Welle** (kein beobachtbarer Trigger → keine Welle-Zeile, Modul 6) leben
-regelkonform an ihrem Ursprung — in den Welle-`results`-Notizen (§Folge-Slices) bzw. als Carveout
-([`CO-001`](../../carveouts/CO-001-bats-shell-lint.md)) — und werden als Einzel-Slice geschnitten, wenn eine
-Wartungsrunde sie aufnimmt (Muster slice-026/027).
-
 ## Meilensteine
 
 | Meilenstein | Welle(n) | Trigger | Status |
@@ -46,6 +34,7 @@ Wartungsrunde sie aufnimmt (Muster slice-026/027).
 | M1 — lauffähiger Offline-Kern (`cmd/ai-harness-init` parst + emittiert Gate-Baseline + legt Templates ab, ohne Netz) | welle-01 | slice-001a/001b/002/003 done | **erreicht (2026-07-18)** |
 | M2 — vollständiger Bootstrap (inkl. Sprachskelett-Generator + Root-README) | welle-02 **und** welle-03 | slice-005 + slice-024 in `done/` **und** Voll-E2E-Smoke grün (welle-03-Closure) | **erreicht (2026-07-22)** |
 | M3 — durchsetzender, phasierter Harness (emittierter Repo erzwingt den Prozess: Hooks + Command-Guard + Workflow-Anleitung; Bootstrap phasiert + idempotent: doc-führt auch für die Zielsprache, `add-lang`/Mono-Repo) | welle-04 **und** welle-05 | welle-04 + welle-05 in `done/` **und** `make full-smoke` grün über die Durchsetzungs- + Idempotenz-Fitness (Guard blockt, Gate-Nachweis-Kreis geschlossen, 2. Init-Lauf idempotent, kein Prune) | **erreicht (2026-07-23)** |
+| M4 — Arch-Gate integriert (a-check, [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) | — (Welle noch nicht geschnitten) | ein Skelett trägt hexagonale Schichten (`domain/ports/adapters`) **und** der a-check-Emitter ist gebaut → a-check wird emittiert + aktiv (sonst [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Verstoß über leerem Prüfbereich) | **offen** |
 
 ## Abhängigkeitsgraph
 
