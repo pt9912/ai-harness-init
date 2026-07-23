@@ -18,7 +18,7 @@ optional), `add-lang` wiederholbar (Mono-Repo), Gate-/Guard-Fragmente, idempoten
 (konvergent/skip-if-present). Der Wellen-Trigger ist erfüllt (ADR Accepted + beide Doc-Folgepflichten
 erledigt, siehe unten).
 
-- **Slices:** [slice-034](../open/slice-034-gate-fragment-assembly.md) (Gate-Fragment-Assembly, `open/`) ·
+- **Slices:** [slice-034](../next/slice-034-gate-fragment-assembly.md) (Gate-Fragment-Assembly, `next/`) ·
   035 CLI-Phasierung · 036 Guard-BLOCKED-Union · 037 `add-lang`-Subkommando · 038 Idempotenz-Klassifikation
   — 034 geschnitten, der Rest in §4 der Welle (cp-Disziplin: je Slice per `cp`, sobald er nach `next/` geht).
 - **Trigger (erfüllt):** [`ADR-0007`](../../../../docs/plan/adr/0007-bootstrap-phasen.md) Accepted;
