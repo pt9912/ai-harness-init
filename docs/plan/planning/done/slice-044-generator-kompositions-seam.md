@@ -114,7 +114,7 @@ trägt `archLayout` (Rollen `entrypoint`/`test`) + `composeSkeleton` (Gerüstung
 vierfach belegt:** `make test` (`TestGenerate_GoProfile`/`CppProfile` asserten den exakten Datei-Satz,
 grün), `make full-smoke` Exit 0 (Ziel out-of-the-box grün), `make mutate` 56 ok/0 (Fall 60 rot gesehen),
 und der `git diff e730439..HEAD` ändert **keine Inhalts-Konstante** (nur die Map→Funktions-Umstrukturierung).
-ADR-0008-konform: Gerüstung arch-invariant, Tests als Rolle (cpp `tests/`). YAGNI-minimal: nur `flat`,
+[`ADR-0008`](../../adr/0008-arch-achse-emittiertes-skelett.md)-konform: Gerüstung arch-invariant, Tests als Rolle (cpp `tests/`). YAGNI-minimal: nur `flat`,
 `archLayout(unknown)→nil` als slice-045-Naht, kein CLI/hexagonal. Review **KONFORM** (0 HIGH/MEDIUM/LOW),
 Verifikation **DoD BESTÄTIGT**.
 
@@ -126,7 +126,7 @@ werden — die tragende Lehre dieses Slice.
 
 - **Ein `make mutate`-fahrender Verifier gehört NICHT in einen Subagenten mit den heutigen
   Mechanismen.** Drei Fehlermodi real getroffen: (1) `isolation: worktree` legt `.claude/worktrees/<agent>`
-  **untracked** im Haupt-Tree ab → das MR-003-Working-Tree-Hash (tracked **+ untracked**) verschiebt sich,
+  **untracked** im Haupt-Tree ab → das [`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)-Working-Tree-Hash (tracked **+ untracked**) verschiebt sich,
   der Stop-Hook feuert dauerhaft, solange der Verifier läuft; (2) die Subagent-Bash **auto-backgroundet
   Befehle >120s** (mutate/full-smoke) → der Agent „pausiert" und verdiktet nie (zwei Versuche); (3) am
   schlimmsten fuhr ein Versuch `nohup make mutate &`, das den Agent-Stop **überlebte**, verwaiste und
