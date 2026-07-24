@@ -23,25 +23,25 @@ wiederverwendet, nur der Fetch ist Go-spezifisch.
 
 ## 2. Definition of Done
 
-- [ ] **Go-Fetch + Wrapper** (`harness/tools/go-freshness.sh` <!-- d-check:ignore (geplante Datei — entsteht in diesem Slice) -->): holt die aktuelle
+- [x] **Go-Fetch + Wrapper** (`harness/tools/go-freshness.sh` <!-- d-check:ignore (geplante Datei — entsteht in diesem Slice) -->): holt die aktuelle
   stabile Go-Version von `https://go.dev/VERSION?m=text` (erste Zeile, z. B. `go1.26.5`),
   **normalisiert** sie auf das Pin-Format (`go1.x.y` → `1.x.y`) und ruft für den Vergleich
   `component-freshness.sh --compare` (kein dupliziertes compare). bash+curl+coreutils, **kein
   jq/node** ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
-- [ ] **Hermetischer `--normalize <raw>`-Pfad**: die Normalisierung (erste Zeile, `go`-Präfix
+- [x] **Hermetischer `--normalize <raw>`-Pfad**: die Normalisierung (erste Zeile, `go`-Präfix
   strippen) ist netzlos mit Fixture-Strings testbar, getrennt vom Fetch (analog dem
   `--compare`-Muster aus slice-040).
-- [ ] **Make-Target `freshness-go`:** vergleicht den gepinnten `GO_VERSION` (kanonische Quelle
+- [x] **Make-Target `freshness-go`:** vergleicht den gepinnten `GO_VERSION` (kanonische Quelle
   benannt: Makefile-Var = der Build-Arg, den `make build`/`make test` reichen) gegen go.dev.
-- [ ] **Nachtlauf verdrahtet:** die Go-Achse im `upstream-drift`-Job (`schedule`), mit
+- [x] **Nachtlauf verdrahtet:** die Go-Achse im `upstream-drift`-Job (`schedule`), mit
   `if: '!cancelled()'` (alle Achsen laufen, auch wenn eine rot meldet) — belegt im Workflow-Diff.
   **Nicht** in `make gates` (offline-grün, [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-- [ ] `make gates` grün: die `--normalize`- + `--compare`-Fixture-Tests (aktuell / veraltet /
+- [x] `make gates` grün: die `--normalize`- + `--compare`-Fixture-Tests (aktuell / veraltet /
   fetch-fehler / Normalisierung) laufen **offline**.
-- [ ] `make mutate` grün: eine Mutation, die die Normalisierung bricht (z. B. `go`-Strip entfernt
+- [x] `make mutate` grün: eine Mutation, die die Normalisierung bricht (z. B. `go`-Strip entfernt
   oder `head -1` gelöscht), färbt einen Fixture-Test rot.
-- [ ] Doku: `make help`-Zeile + `harness/conventions.md`-Freshness-Notiz um die Go-Achse ergänzt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Doku: `make help`-Zeile + `harness/conventions.md`-Freshness-Notiz um die Go-Achse ergänzt.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -108,7 +108,41 @@ Wird *nach* Abschluss ergänzt. Inhalt:
 - Folge-Slices: welche neuen open/-Einträge?
 -->
 
-<!-- Erst nach Abschluss füllen. -->
+**Was hat funktioniert.** Die Ist-Messung **vor** Code (go.dev-Format live belegt,
+`golang/go`-GitHub-Achse als untauglich verworfen — Redirect auf `.../releases` statt
+`/releases/tag/<tag>`) verhinderte einen Fehlschnitt: der generische Vergleicher aus
+slice-040 ist quellen-agnostisch, also blieb nur Fetch + Normalisierung neu. Der Wrapper
+`go-freshness.sh` spiegelt exakt die `baseline-freshness.sh`-Architektur (2-arg-Delegation
+an `--compare`, Name + Advice injiziert). Rollen-Sequenz voll: Review **KONFORM** (0
+HIGH/MEDIUM/LOW, 2 INFO), Verifikation **DoD BESTÄTIGT** (Fetch-Fehler-Kette `raw="" → ""
+→ Exit 2` empirisch bestätigt). Sensoren real: `make gates` Exit 0, `make mutate` 53 ok/0.
+
+**Was anders lief als geplant.** Der Plan-§3 nannte den Normalisierungs-Wächter als
+„`go`-Strip / `head -1`"; geliefert war zunächst nur die `go`-Strip-Mutation (47). Der
+Review (INFO-1) benannte, dass die `head -1`-Zeile behavioral gedeckt, aber ohne eigenen
+Mutations-Fall war (`mutate.sh`: „kuratiert heisst unvollstaendig"). **Sofort geschlossen**
+mit Fall 48 (`head -n 1` → `cat`, färbt den Erste-Zeile-Fixture rot) statt als Folge-Schuld
+getragen — beide Normalisierungs-Schritte sind jetzt einzeln bewacht.
+
+**Steering-Loop-Eintrag** (kanonische Definition:
+[`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.0/kurs/de/grundlagen/klassifikation.md#steering-loop)):
+
+- **Der PreToolUse-Guard scannt den GANZEN Command-String — inklusive Heredoc-Inhalt.**
+  Ein `git commit` mit einer Bash-Heredoc-Message, die ein geblocktes Tool-Token trägt
+  (hier `go`/`go.dev`/`go1.x.y` im Text), wird fail-closed geblockt — der Commit lief nicht.
+  Das **schärft** die „commit via `-F`"-Konvention: die Message-Datei mit dem **Write-Tool**
+  schreiben (geht nicht durch den Command-Guard), dann `git commit -F <datei>` — nie die
+  Message als Heredoc/inline im Bash-Aufruf, wenn ihr Text Tool-Tokens enthalten könnte.
+- **Die netz-berührende Schicht hinter ein eigenes hermetisches Sub-Kommando legen.** Wie
+  slice-040 den Vergleich hinter `--compare` isolierte, isoliert slice-041 die Normalisierung
+  hinter `--normalize <roh>`. Das macht die einzige neue Logik der Sonderquelle offline
+  testbar (Fixture-Strings) **und** mutations-bewachbar, ohne je das Netz zu treffen —
+  das Muster verallgemeinert auf jede künftige Nicht-GitHub-Quelle.
+
+**Folge-Slices.** Keine neuen `open/`-Einträge. Nächster Welle-Slice steht (welle §4):
+slice-042 (C++/ubuntu-Base-Tag-Freshness, Quelle Docker-Hub-LTS). Review-INFO-2
+(Pin-Kopplung Makefile-`GO_VERSION` ↔ Dockerfile-ARG-Default) ist das aus slice-040 geerbte,
+in §6 dokumentierte Muster — kein neuer Trigger.
 
 ## 8. Sub-Area-Modus-Begründung
 
