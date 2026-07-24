@@ -16,7 +16,7 @@ gezeigt, nicht als Treiber.
 **Trigger (gefeuert):** upstream erschien Regelwerk **v3.5.1** > gepinnt `v3.5.0` — erste beobachtete Tag-/Quellen-Drift.
 **Slices:** slice-040 (Generalisierung + golangci-lint/d-check) geschnitten in `open/`; slice-041 (Go), slice-042 (ubuntu-Tag) in §4 der Welle (per `cp` bei Schnitt).
 
-**Aktueller Schritt:** slice-040 **in Arbeit** (`in-progress`), volle Rollen-Sequenz (Impl → Review → Verifikation → Closure). Der Slice-Plan ([slice-040](slice-040-freshness-generalisierung.md)) trägt DoD + Datei-Plan + die geklärte Pin-Quellen-Frage (golangci-lint kanonisch = `GOLANGCI_LINT_VERSION` im Makefile).
+**Aktueller Schritt:** slice-040 **abgeschlossen** ([done](../done/slice-040-freshness-generalisierung.md), 2026-07-24) — generischer `component-freshness.sh` + golangci-lint/d-check-Achsen im Nachtlauf; Review KONFORM, Verifikation DoD BESTÄTIGT. **Nächster Welle-Slice:** slice-041 (Go-Version-Freshness, Quelle go.dev/dl) — noch **nicht geschnitten** (cp-Disziplin: Slice-Datei per `cp` erst bei Schnitt). Die Welle bleibt offen (slice-041/042 stehen aus).
 
 **Davon unabhängig offen (keine Welle):** der **v3.5.1-Baseline-Bump** ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — `.harness/baseline/v3.5.1/` neu vendoren, `BASELINE_TAG`/`BASELINE_ZIP_SHA256` (Makefile) + `DefaultTag` (`internal/fetch/baseline.go`) neu pinnen, Doc-Links, `make baseline-verify`. Der nächtliche Sensor **meldet** die Drift, der Bump **behebt** sie.
 
