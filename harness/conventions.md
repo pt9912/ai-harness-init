@@ -292,6 +292,12 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   `.../releases`), darum ein eigener Wrapper `harness/tools/go-freshness.sh` — Fetch von
   `go.dev/VERSION?m=text` + Normalisierung (`go1.x.y` → `1.x.y`), dann derselbe wiederverwendete
   Vergleicher; **`make freshness-go`** (Pin: `GO_VERSION`) hängt ebenfalls im Nachtlauf.
+  **Sonderquelle C++/ubuntu (slice-042):** der ubuntu-Base-Tag des emittierten C++-Skeletts
+  (`DefaultCppVersion` in `internal/gen/cpp.go`) wird gegen das **Docker-Hub-LTS** geprüft — Wrapper
+  `harness/tools/cpp-freshness.sh` holt die ubuntu-Tags (`hub.docker.com/v2/…/ubuntu/tags`) und
+  extrahiert das aktuelle LTS (höchstes `NN.04` mit **geradem** `NN`; Interims `23.04`/`25.04`/`.10`
+  raus), dann derselbe Vergleicher; **`make freshness-cpp`** hängt im Nachtlauf. Damit deckt der
+  Drift-Job jede versions-gepinnte Komponente ab.
 - **Migration:** Ein bestehender `.harness/cache/`-Cache aus
   [`MR-006`](#mr-006--regelwerk-cache-als-split-modul-verzeichnis) ist nach dem
   Umstieg ein nicht mehr regenerierbares Überbleibsel (`regelwerk-fetch` existiert

@@ -34,7 +34,7 @@ BASELINE_TAG ?= v3.5.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 123e3383261102e6be6465e1f4bade08a474c00edc4fff89f5c4b11bd640f8ff
 
-.PHONY: help gates record-gates test lint build compile artifact smoke full-smoke shell-lint ci-lint baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go mutate
+.PHONY: help gates record-gates test lint build compile artifact smoke full-smoke shell-lint ci-lint baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.51.1 -> v0.51.1). Aus
@@ -170,6 +170,15 @@ freshness-dcheck: ## Neueren d-check-Release als DCHECK_IMAGE-Tag melden (read-o
 # gekoppelt. Read-only, Netz, Maintenance/CI, NICHT in gates (LH-QA-01).
 freshness-go: ## Neuere stabile Go-Version als GO_VERSION melden (read-only, Quelle go.dev) — Maintenance/CI, NICHT in gates
 	@GO_VERSION='$(GO_VERSION)' bash harness/tools/go-freshness.sh
+
+# C++/ubuntu-Base-Tag-Achse (slice-042, MR-007): SONDERQUELLE Docker Hub (weder
+# GitHub noch go.dev), „latest" = hoechstes LTS (gerades NN.04). Kanonische
+# Pin-Quelle: DefaultCppVersion in internal/gen/cpp.go (der emittierte C++-Skelett-
+# Tag; dies Repo baut kein C++, also KEIN Makefile-Var — per sed extrahiert).
+# Read-only, Netz, Maintenance/CI, NICHT in gates (LH-QA-01).
+freshness-cpp: ## Neueres ubuntu-LTS als DefaultCppVersion melden (read-only, Quelle Docker Hub) — Maintenance/CI, NICHT in gates
+	@pinned=$$(sed -n 's/.*DefaultCppVersion = "\([0-9.]*\)".*/\1/p' internal/gen/cpp.go); \
+	  CPP_PINNED="$$pinned" bash harness/tools/cpp-freshness.sh
 
 record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh

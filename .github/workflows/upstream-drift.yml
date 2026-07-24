@@ -51,3 +51,6 @@ jobs:
       # Go-Toolchain-Achse (slice-041): Sonderquelle go.dev, eigener Wrapper.
       - if: '!cancelled()'
         run: make freshness-go
+      # C++/ubuntu-Base-Tag-Achse (slice-042): Sonderquelle Docker Hub, LTS-Extraktion.
+      - if: '!cancelled()'
+        run: make freshness-cpp
