@@ -283,6 +283,52 @@ if ! printf '%s' "$cppguard_out" | grep -q '"decision": "block"'; then
 	exit 1
 fi
 
+# slice-045b (LH-FA-04 Arch-Achse / ADR-0009): add-lang go apps/hex --arch hexslice dropt
+# das GESCHICHTETE hexSlice-Skelett (domain/application/ports/adapters + cmd), und `make -j
+# gates` faehrt danach das modul-scoped Go-Gate von apps/hex REAL — d. h. es UEBERSETZT und
+# LINTET den generierten hexSlice-Code in Docker (build+lint+test-Stages). Das ist der
+# end-to-end-Beweis, den der slice-045a-Compile-Test (nur go test) NICHT abdeckt: der
+# emittierte .golangci.yml-Lint auf dem Schichten-Code. Ein flaches Modul (--arch flat)
+# traegt hier KEINE hexagon-Schicht — die Achse wirkt.
+echo "full-smoke: add-lang go apps/hex --arch hexslice ins Mono-Repo (Arch-Achse, slice-045b) ..."
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang go apps/hex --arch hexslice )
+for rel in apps/hex/internal/hexagon/domain/example/greeting.go \
+           apps/hex/internal/hexagon/application/example/greet/handler.go \
+           apps/hex/internal/adapters/inbound/cli/example/cli.go \
+           apps/hex/cmd/app/main.go harness/mk/apps-hex.mk; do
+	if [ ! -e "$tmprepo_doc/$rel" ]; then
+		echo "full-smoke: FEHLER — add-lang --arch hexslice dropte $rel nicht (Arch-Achse kaputt, slice-045b)." >&2
+		exit 1
+	fi
+done
+# Ein cpp+hexslice-Aufruf MUSS fail-fast Exit 2 geben (sprach×arch-Support, INFO-1) — der
+# cpp-Renderer traegt das hexSlice-Layout nicht, es darf NICHT still ein leeres Modul entstehen.
+cpphex_rc=0
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang cpp apps/cpphex --arch hexslice ) || cpphex_rc=$?
+if [ "$cpphex_rc" -ne 2 ]; then
+	echo "full-smoke: FEHLER — add-lang cpp --arch hexslice rc=$cpphex_rc, want 2 (sprach×arch-Support/INFO-1 kaputt, slice-045b)." >&2
+	exit 1
+fi
+if [ -e "$tmprepo_doc/apps/cpphex/CMakeLists.txt" ]; then
+	echo "full-smoke: FEHLER — cpp+hexslice legte ein Geruestung-Artefakt an (still statt Exit 2, INFO-1)." >&2
+	exit 1
+fi
+hex_rc=0
+hex_out="$( make -j -Otarget -C "$tmprepo_doc" gates 2>&1 )" || hex_rc=$?
+printf '%s\n' "$hex_out"
+if [ "$hex_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — make gates nach add-lang --arch hexslice ist NICHT Exit 0 (hexSlice-Code uebersetzt/lintet nicht, slice-045b)." >&2
+	exit 1
+fi
+hex_missing=""
+for marker in "apps/hex" "apps-hex:build" "apps-hex:lint"; do
+	grep -qF -- "$marker" <<<"$hex_out" || hex_missing="$hex_missing [$marker]"
+done
+if [ -n "$hex_missing" ]; then
+	echo "full-smoke: FEHLER — make gates nach --arch hexslice ohne Beleg fuer:$hex_missing — hexSlice-Gate (build/lint) lief nicht? (slice-045b/LH-QA-01)." >&2
+	exit 1
+fi
+
 # slice-038 (ADR-0007 Idempotenz-Klassifikation): ein ZWEITER Init-Lauf ist IDEMPOTENT
 # (Exit 0 statt Kollisions-Refuse). Konvergente Dateien (tool-Infra) werden kanonisch neu
 # geschrieben (heilen Drift); skip-if-present-Dateien (Adopter-Boden) bleiben unberuehrt.
@@ -330,4 +376,5 @@ echo "full-smoke: OK — emittierter Command-Guard greift: 'go build' geblockt, 
 echo "full-smoke: OK — Guard-Boden GEBACKEN + blocked/*-Union: --lang go blockt go+pip, sprachlos nur pip (Boden), fail-safe nach geleertem blocked/ (slice-036/ADR-0007 NEU-H1)."
 echo "full-smoke: OK — add-lang WIEDERHOLBAR (Mono-Repo): apps/api + apps/web koexistieren, make -j gates faehrt beide modul-scoped Go-Gates, Guard blockt go danach (slice-037/LH-FA-04)."
 echo "full-smoke: OK — ZWEITE SPRACHE (slice-039): add-lang cpp apps/engine koexistiert mit den Go-Modulen, make -j gates faehrt die REALEN C++-Gates (cmake/ctest/clang-tidy in Docker), Guard blockt cmake danach (blocked/cpp)."
+echo "full-smoke: OK — ARCH-ACHSE (slice-045b/ADR-0009): add-lang go apps/hex --arch hexslice dropt das hexSlice-Layout, make -j gates UEBERSETZT+LINTET den Schichten-Code real (apps-hex build/lint); cpp+hexslice ist fail-fast Exit 2 (sprach×arch-Support, INFO-1)."
 echo "full-smoke: OK — IDEMPOTENT (slice-038): 2. Init-Lauf Exit 0, README (skip-if-present) unberuehrt, Makefile-Drift (konvergent) geheilt; sprachloser Re-Lauf prunt kein add-lang-Fragment (kein Prune)."

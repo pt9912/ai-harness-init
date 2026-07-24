@@ -62,14 +62,23 @@ func archLayout(arch string) []codeRole {
 	return nil
 }
 
-// SupportedArchs liefert die unterstuetzten Architektur-Werte sortiert — fuer Hilfetexte
-// und die Unknown-Arch-Liste (slice-045b: die `--arch`-Fehlermeldung). Der Go-Renderer
-// ist heute der einzige mit einem hexslice-Layout (slice-045a); weitere Sprachen folgen
-// linear (LH-FA-04).
+// SupportedArchs liefert das Achsen-VOKABULAR sortiert — den Union aller Architekturen,
+// die irgendein Sprach-Renderer traegt (aus langArchs abgeleitet, kein Doppel-Pflegepunkt).
+// Fuer Hilfetexte und die Unknown-Arch-Liste bei einem Tippfehler (slice-045b). Welche
+// Architektur eine KONKRETE Sprache rendert, sagt archsForLang (per-Sprache, enger).
 func SupportedArchs() []string {
-	archs := []string{archFlat, archHexslice}
-	sort.Strings(archs)
-	return archs
+	set := map[string]bool{}
+	for _, archs := range langArchs() {
+		for _, a := range archs {
+			set[a] = true
+		}
+	}
+	out := make([]string, 0, len(set))
+	for a := range set {
+		out = append(out, a)
+	}
+	sort.Strings(out)
+	return out
 }
 
 // composeSkeleton komponiert die arch-invariante Gerueestung mit den Rollen des

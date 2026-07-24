@@ -34,8 +34,8 @@ import (
 const usage = `ai-harness-init — bootstrappt ein Git-Repo mit dem AI-Harness-Prozess.
 
 Verwendung:
-  ai-harness-init [--lang <sprache>] [--name <name>]
-  ai-harness-init add-lang <sprache> <pfad>
+  ai-harness-init [--lang <sprache>] [--arch <arch>] [--name <name>]
+  ai-harness-init add-lang <sprache> <pfad> [--arch <arch>]
 
 Der Init-Lauf ist IDEMPOTENT (ADR-0007): ein zweiter Lauf ist Exit 0 — tool-eigene
 Infrastruktur wird kanonisch neu geschrieben (heilt Drift), adopter-gefuellte Dateien
@@ -44,6 +44,8 @@ Infrastruktur wird kanonisch neu geschrieben (heilt Drift), adopter-gefuellte Da
 Init-Flags:
   --lang        Zielsprache (optional; ohne → sprach-agnostischer Init, doc-only-Gate).
                 --lang <X> = Init + ein add-lang(<X>, .) als One-Shot-Kurzform.
+  --arch        Ziel-Architektur des Skeletts (flat|hexslice, Default flat; nur mit --lang
+                wirksam). hexslice = geschichtetes HexSlice-Layout (ADR-0009).
   --name        Projektname (optional)
   -h, --help    diese Hilfe anzeigen
 
@@ -87,6 +89,7 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 
 	lang := fs.String("lang", "", "Zielsprache (optional)")
 	name := fs.String("name", "", "Projektname")
+	arch := fs.String("arch", gen.DefaultArch, "Ziel-Architektur des Skeletts (flat|hexslice; nur mit --lang)")
 
 	switch err := fs.Parse(args); {
 	case err == flag.ErrHelp:
@@ -102,12 +105,14 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 
 	// --lang ist OPTIONAL (slice-035, ADR-0007): fehlt es, laeuft der Bootstrap
 	// sprach-agnostisch (doc-only-Gate, kein Skelett). Der fruehere Exit 2 (LH-FA-01
-	// Negative-AC „fehlt --lang") ist mit ADR-0007 gefallen. Unbekannte Sprache und
-	// unbekannte Flags liefern weiter Exit 2 (via bootstrap/Parse).
-	return bootstrap(targetDir, *lang, *name, src, stdout, stderr)
+	// Negative-AC „fehlt --lang") ist mit ADR-0007 gefallen. --arch (slice-045b) waehlt
+	// das Code-Layout des Skeletts (Default flat = byte-identisch); ohne --lang ist es
+	// mangels Skelett inert. Unbekannte Sprache/Architektur und unbekannte Flags liefern
+	// weiter Exit 2 (via bootstrap/Parse).
+	return bootstrap(targetDir, *lang, *name, *arch, src, stdout, stderr)
 }
 
-const addLangUsage = `ai-harness-init add-lang <sprache> <pfad>
+const addLangUsage = `ai-harness-init add-lang <sprache> <pfad> [--arch <arch>]
 
 Fuegt einem bereits gebootstrappten Repo ein Sprachmodul hinzu (WIEDERHOLBAR, Mono-Repo):
 generiert das Skelett unter <pfad>, dropt das Code-Gate-Fragment harness/mk/<modul>.mk
@@ -118,6 +123,8 @@ wird konvergent kanonisch geschrieben, vorhandener Skelett-Code bleibt unberuehr
 Argumente:
   <sprache>   Zielsprache (gen-Profil; z.B. go)
   <pfad>      Zielort des Moduls (. = Repo-Root)
+  --arch      Ziel-Architektur (flat|hexslice, Default flat; slice-045b/ADR-0009). Eine
+              von der Sprache nicht getragene Architektur (z.B. cpp+hexslice) -> Exit 2.
 `
 
 // runAddLang parst `add-lang <sprache> <pfad>` und liefert den Exit-Code (0 = Erfolg,
@@ -127,14 +134,34 @@ func runAddLang(args []string, targetDir string, stdout, stderr io.Writer) int {
 		fmt.Fprint(stdout, addLangUsage)
 		return 0
 	}
-	if len(args) != 2 || strings.HasPrefix(args[0], "-") || strings.HasPrefix(args[1], "-") {
-		fmt.Fprintln(stderr, "Fehler: add-lang braucht genau <sprache> und <pfad>")
+	// --arch <arch> ist ein OPTIONALES Flag NACH den zwei Positionsargumenten (slice-045b) —
+	// das Standard-flag-Paket parst Flags nur VOR dem ersten Positionsargument, also von Hand
+	// heraustrennen. Der Rest muss genau die zwei Positionsargumente sein.
+	arch := gen.DefaultArch
+	var pos []string
+	for i := 0; i < len(args); i++ {
+		switch a := args[i]; {
+		case a == "--arch":
+			if i+1 >= len(args) {
+				fmt.Fprintln(stderr, "Fehler: --arch braucht einen Wert")
+				fmt.Fprint(stderr, addLangUsage)
+				return 2
+			}
+			arch = args[i+1]
+			i++
+		case strings.HasPrefix(a, "--arch="):
+			arch = strings.TrimPrefix(a, "--arch=")
+		default:
+			pos = append(pos, a)
+		}
+	}
+	if len(pos) != 2 || strings.HasPrefix(pos[0], "-") || strings.HasPrefix(pos[1], "-") {
+		fmt.Fprintln(stderr, "Fehler: add-lang braucht genau <sprache> und <pfad> (optional --arch <arch>)")
 		fmt.Fprint(stderr, addLangUsage)
 		return 2
 	}
-	// add-lang <sprache> <pfad>: args[0]=sprache(lang), args[1]=pfad(path). addLang
-	// nimmt (targetDir, path, lang, …) — daher path=args[1], lang=args[0].
-	return addLang(targetDir, args[1], args[0], stdout, stderr)
+	// pos[0]=sprache(lang), pos[1]=pfad(path). addLang nimmt (targetDir, path, lang, arch, …).
+	return addLang(targetDir, pos[1], pos[0], arch, stdout, stderr)
 }
 
 // addLang fuehrt das add-lang-Subkommando aus (slice-037/038, wiederholbar/Mono-Repo,
@@ -142,7 +169,7 @@ func runAddLang(args []string, targetDir string, stdout, stderr io.Writer) int {
 // (beide konvergent). Kein Pre-Flight-refuse mehr (slice-038): die Idempotenz-Klassen
 // erledigen das Kollisions-Handling je Datei. Netzlos: add-lang setzt einen bereits
 // gebootstrappten Aggregator voraus (Root-Makefile mit include harness/mk/*.mk).
-func addLang(targetDir, path, lang string, stdout, stderr io.Writer) int {
+func addLang(targetDir, path, lang, arch string, stdout, stderr io.Writer) int {
 	// Containment (Review-M-1): <pfad> ist das erste nutzer-kontrollierte Ziel, das
 	// wire.Place erreicht. Ein absoluter Pfad oder ein `..`-Ausbruch schriebe Skelett-
 	// Dateien AUS dem Ziel-Repo heraus. Fail-fast mit Exit 2, bevor etwas generiert wird.
@@ -163,10 +190,11 @@ func addLang(targetDir, path, lang string, stdout, stderr io.Writer) int {
 
 	version := skelVersion(lang)
 	skelDir := filepath.Join(targetDir, ".harness", "skeleton")
-	// Skelett generieren — fail-fast Sprach-Validierung (unbekannt -> Exit 2 mit Liste).
-	if err := gen.Generate(skelDir, lang, version); err != nil {
+	// Skelett generieren — fail-fast Sprach- UND Arch-Validierung (unbekannte Sprache oder
+	// sprach-fremde Architektur -> Exit 2 mit Liste; slice-045b, INFO-1).
+	if err := gen.GenerateArch(skelDir, lang, version, arch); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
-		return langExitCode(err)
+		return callExitCode(err)
 	}
 	if err := wireLang(targetDir, skelDir, path, lang, version); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
@@ -207,7 +235,7 @@ func wireLang(targetDir, skelDir, path, lang, version string) error {
 // Idempotenz-Klasse). Seit slice-038 gibt es keinen Pre-Flight-refuse mehr; die
 // Fehlerpfade DRUCKEN UND RETURNEN im selben Block (der Beobachtungswert ist an die
 // Wirkung gebunden — eine Mutation, die nur den Abbruch entfernt, entfernt auch die Meldung).
-func bootstrap(targetDir, lang, name string, src sources, stdout, stderr io.Writer) int {
+func bootstrap(targetDir, lang, name, arch string, src sources, stdout, stderr io.Writer) int {
 	tag := envOr("COURSE_TAG", fetch.DefaultTag)
 	skelDir := filepath.Join(targetDir, ".harness", "skeleton")
 	version := skelVersion(lang)
@@ -230,9 +258,9 @@ func bootstrap(targetDir, lang, name string, src sources, stdout, stderr io.Writ
 	// Toolchain-Version: gepinnter Default je Sprache (skelVersion), per SKEL_<LANG>_VERSION
 	// explizit ueberschreibbar (deterministisch — der Nutzer nennt den Wert).
 	if hasLang {
-		if err := gen.Generate(skelDir, lang, version); err != nil {
+		if err := gen.GenerateArch(skelDir, lang, version, arch); err != nil {
 			fmt.Fprintln(stderr, "Fehler:", err)
-			return langExitCode(err)
+			return callExitCode(err)
 		}
 	}
 
@@ -345,15 +373,17 @@ func skelVersion(lang string) string {
 	return envOr("SKEL_"+strings.ToUpper(lang)+"_VERSION", gen.DefaultVersion(lang))
 }
 
-// langExitCode bildet einen Generator-Fehler auf den Exit-Code ab: unbekannte
-// Sprache = Aufruf-Fehler (2, gen.UnknownLangError), sonst Emit-Fehler (1).
-// Rein/netzlos testbar.
-func langExitCode(err error) int {
+// callExitCode bildet einen Generator-Fehler auf den Exit-Code ab: ein AUFRUF-Fehler —
+// unbekannte Sprache (gen.UnknownLangError) ODER sprach-fremde/unbekannte Architektur
+// (gen.UnknownArchError, slice-045b) — ist Exit 2, sonst Emit-Fehler (1). Rein/netzlos
+// testbar.
+func callExitCode(err error) int {
 	if err == nil {
 		return 0
 	}
 	var ule *gen.UnknownLangError
-	if errors.As(err, &ule) {
+	var uae *gen.UnknownArchError
+	if errors.As(err, &ule) || errors.As(err, &uae) {
 		return 2
 	}
 	return 1

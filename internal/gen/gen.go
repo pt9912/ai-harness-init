@@ -66,8 +66,16 @@ func GenerateArch(destDir, lang, version, arch string) error {
 	if !ok {
 		return &UnknownLangError{Lang: lang, Available: SupportedLangs()}
 	}
+	// Zwei-stufige Arch-Validierung: (1) existiert die Architektur ueberhaupt (Tippfehler
+	// -> globales Vokabular SupportedArchs)? (2) rendert der Renderer DIESER Sprache sie
+	// (cpp+hexslice heute nicht -> die von der Sprache getragenen Archs)? Ohne (2) schriebe
+	// `add-lang cpp <pfad> --arch hexslice` still ein Geruestung-only-Skelett statt Exit 2
+	// (slice-045a-Review INFO-1).
 	if archLayout(arch) == nil {
 		return &UnknownArchError{Arch: arch, Available: SupportedArchs()}
+	}
+	if !archSupported(lang, arch) {
+		return &UnknownArchError{Arch: arch, Available: archsForLang(lang)}
 	}
 	prof := build(version, arch)
 	rels := make([]string, 0, len(prof))
@@ -107,6 +115,43 @@ func profiles() map[string]func(version, arch string) map[string]string {
 		"go":  goProfile,
 		"cpp": cppProfile,
 	}
+}
+
+// DefaultArch ist der Default-Architektur-Wert der CLI (flat = das heutige Skelett) —
+// exportiert, damit cmd das `--arch`-Flag ohne Magie-String vorbelegen kann.
+const DefaultArch = archFlat
+
+// langArchs bildet Sprache -> die Architekturen, die ihr Renderer WIRKLICH rendert.
+// Heute traegt jede Sprache flat; nur go traegt zusaetzlich hexslice (slice-045a) —
+// cpp-hexslice folgt linear (out-of-scope welle-07). Getrennt vom Achsen-Vokabular
+// SupportedArchs() (dem Union aller Werte): ein Achsen-Wert kann existieren, bevor jeder
+// Renderer ihn implementiert. GenerateArch validiert die (lang, arch)-Kombination
+// hiergegen, damit `add-lang cpp <pfad> --arch hexslice` fail-fast Exit 2 gibt, statt
+// still ein Geruestung-only-Skelett zu schreiben (slice-045a-Review INFO-1). EINE Quelle:
+// SupportedArchs() leitet den Union hieraus ab (kein Doppel-Pflegepunkt).
+func langArchs() map[string][]string {
+	return map[string][]string{
+		"go":  {archFlat, archHexslice},
+		"cpp": {archFlat},
+	}
+}
+
+// archSupported prueft, ob der Renderer der Sprache lang die Architektur arch rendert.
+func archSupported(lang, arch string) bool {
+	for _, a := range langArchs()[lang] {
+		if a == arch {
+			return true
+		}
+	}
+	return false
+}
+
+// archsForLang liefert die von lang getragenen Architekturen sortiert — fuer die
+// UnknownArchError-Liste (die CLI-Fehlermeldung bei einer sprach-fremden Architektur).
+func archsForLang(lang string) []string {
+	archs := append([]string(nil), langArchs()[lang]...)
+	sort.Strings(archs)
+	return archs
 }
 
 // DefaultVersion liefert die gepinnte Default-Toolchain-Version fuer lang (go: die

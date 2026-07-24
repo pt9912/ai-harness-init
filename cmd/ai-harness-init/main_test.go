@@ -191,14 +191,17 @@ func TestTemplatesDir_ZeigtAufDieGefetchteQuelle(t *testing.T) {
 
 // TestLangExitCode deckt die Exit-Abbildung netzlos ab: unbekannte Sprache
 // (gen.UnknownLangError) -> 2, sonstiger Fehler -> 1, nil -> 0.
-func TestLangExitCode(t *testing.T) {
-	if got := langExitCode(nil); got != 0 {
+func TestCallExitCode(t *testing.T) {
+	if got := callExitCode(nil); got != 0 {
 		t.Errorf("nil -> %d, want 0", got)
 	}
-	if got := langExitCode(&gen.UnknownLangError{Lang: "rust"}); got != 2 {
+	if got := callExitCode(&gen.UnknownLangError{Lang: "rust"}); got != 2 {
 		t.Errorf("UnknownLangError -> %d, want 2", got)
 	}
-	if got := langExitCode(errors.New("emit weg")); got != 1 {
+	if got := callExitCode(&gen.UnknownArchError{Arch: "onion"}); got != 2 {
+		t.Errorf("UnknownArchError -> %d, want 2 (slice-045b)", got)
+	}
+	if got := callExitCode(errors.New("emit weg")); got != 1 {
 		t.Errorf("sonstiger Fehler -> %d, want 1", got)
 	}
 }
@@ -338,6 +341,102 @@ func TestRun_AddLangUnknownLang(t *testing.T) {
 	var out, errb bytes.Buffer
 	if code := run([]string{"add-lang", "rust", "apps/api"}, initializedRepo(t), testSources(t), &out, &errb); code != 2 {
 		t.Fatalf("add-lang unbekannte Sprache exit %d, want 2", code)
+	}
+}
+
+// TestRun_AddLangArchHexslice (slice-045b, LH-FA-04 Arch-Achse CLI-Teil): `add-lang go
+// <pfad> --arch hexslice` emittiert das hexSlice-Layout unter <pfad> (die Schicht-Rollen
+// aus slice-045a). Das `--arch`-Flag steht NACH den Positionsargumenten. Rot-Gegenbeispiel:
+// eine Mutation, die den geparsten arch-Wert nicht an GenerateArch faedelt, liefert das
+// flache Skelett -> die hexagon-Dateien fehlen -> rot (test/mutations 64).
+func TestRun_AddLangArchHexslice(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "go", "apps/hex", "--arch", "hexslice"}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("add-lang --arch hexslice exit %d, stderr: %q", code, errb.String())
+	}
+	for _, rel := range []string{
+		"apps/hex/internal/hexagon/domain/example/greeting.go",
+		"apps/hex/internal/hexagon/application/example/greet/handler.go",
+		"apps/hex/internal/adapters/inbound/cli/example/cli.go",
+		"apps/hex/cmd/app/main.go", "apps/hex/go.mod",
+	} {
+		if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err != nil {
+			t.Errorf("hexSlice-Datei %s nicht gedroppt: %v", rel, err)
+		}
+	}
+}
+
+// TestRun_AddLangArchDefaultFlat (slice-045b, LH-QA-02): ohne `--arch` bleibt das flache
+// Skelett — cmd/app/main.go liegt, aber KEINE hexagon-Schicht. Der Default-Pfad ist
+// byte-identisch zum Vor-045b-Verhalten.
+func TestRun_AddLangArchDefaultFlat(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "go", "apps/flat"}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("add-lang ohne --arch exit %d, stderr: %q", code, errb.String())
+	}
+	if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash("apps/flat/cmd/app/main.go"))); err != nil {
+		t.Errorf("flat-Entry-Point fehlt: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash("apps/flat/internal/hexagon"))); !os.IsNotExist(err) {
+		t.Errorf("flat-Skelett traegt eine hexagon-Schicht (Default nicht flat!): %v", err)
+	}
+}
+
+// TestRun_AddLangUnknownArch (slice-045b, Negative-AC): eine unbekannte Architektur ->
+// Exit 2 (spiegelbildlich zur unbekannten Sprache). Rot-Gegenbeispiel: test/mutations 62
+// (callExitCode bildet UnknownArchError nicht mehr auf 2 ab).
+func TestRun_AddLangUnknownArch(t *testing.T) {
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "go", "apps/api", "--arch", "onion"}, initializedRepo(t), testSources(t), &out, &errb); code != 2 {
+		t.Fatalf("add-lang unbekannte Architektur exit %d, want 2", code)
+	}
+}
+
+// TestRun_AddLangCppHexsliceRejected (slice-045b, slice-045a-Review INFO-1 — die
+// sprach×arch-Support-Pruefung): `add-lang cpp <pfad> --arch hexslice` -> Exit 2, WEIL der
+// cpp-Renderer das hexSlice-Layout (noch) nicht traegt. Ohne diese Pruefung emittierte der
+// Aufruf still ein Geruestung-only-Skelett. Rot-Gegenbeispiel: test/mutations 63
+// (archSupported immer true). Zusatz: kein cpp-Skelett-Artefakt darf entstehen.
+func TestRun_AddLangCppHexsliceRejected(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "cpp", "apps/engine", "--arch", "hexslice"}, dir, testSources(t), &out, &errb); code != 2 {
+		t.Fatalf("add-lang cpp --arch hexslice exit %d, want 2 (INFO-1): %q", code, errb.String())
+	}
+	if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash("apps/engine/CMakeLists.txt"))); !os.IsNotExist(err) {
+		t.Errorf("cpp+hexslice legte ein Geruestung-Artefakt an (still statt Exit 2): %v", err)
+	}
+}
+
+// TestRun_AddLangArchMixed (slice-045b, LH-FA-04 „--arch je Modul"): zwei add-lang-Laeufe
+// mit VERSCHIEDENER Architektur koexistieren im Mono-Repo (apps/flat flach, apps/hex
+// hexSlice).
+func TestRun_AddLangArchMixed(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "go", "apps/flat"}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("erstes add-lang (flat) exit %d: %q", code, errb.String())
+	}
+	if code := run([]string{"add-lang", "go", "apps/hex", "--arch", "hexslice"}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("zweites add-lang (hexslice) exit %d: %q", code, errb.String())
+	}
+	if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash("apps/flat/cmd/app/main.go"))); err != nil {
+		t.Errorf("apps/flat (flach) fehlt: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash("apps/hex/internal/hexagon/domain/example/greeting.go"))); err != nil {
+		t.Errorf("apps/hex (hexSlice) fehlt: %v", err)
+	}
+}
+
+// TestRun_InitUnknownArch (slice-045b, Negative-AC am Init-One-Shot): `--lang go --arch
+// <unbekannt>` -> Exit 2. Der Fehler faellt in Phase 1 (Skelett generieren) VOR jedem
+// Baseline-Fetch/Emit -> netzloser Unit-Fall.
+func TestRun_InitUnknownArch(t *testing.T) {
+	var out, errb bytes.Buffer
+	if code := run([]string{"--lang", "go", "--arch", "onion"}, t.TempDir(), testSources(t), &out, &errb); code != 2 {
+		t.Fatalf("Init --arch onion exit %d, want 2: %q", code, errb.String())
 	}
 }
 
