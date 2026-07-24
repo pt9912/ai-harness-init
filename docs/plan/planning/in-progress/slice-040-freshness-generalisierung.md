@@ -22,25 +22,25 @@ verdrahtet in den nächtlichen `upstream-drift`-Job — read-only, außerhalb `m
 
 ## 2. Definition of Done
 
-- [ ] **Generischer Sensor** (`harness/tools/component-freshness.sh` <!-- d-check:ignore (geplante Datei — entsteht in diesem Slice) -->): parametriert über
+- [x] **Generischer Sensor** (`harness/tools/component-freshness.sh` <!-- d-check:ignore (geplante Datei — entsteht in diesem Slice) -->): parametriert über
   `name · pinned · releases-latest-url`, mit hermetischem `--compare <pinned> <latest>`-Pfad
   (netzlos testbar), bash+curl+coreutils ohne jq/node ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)). `baseline-freshness.sh`
   nutzt ihn (kein dupliziertes fetch/compare).
-- [ ] **golangci-lint-Achse:** Make-Target vergleicht den gepinnten `GOLANGCI_LINT_VERSION`
+- [x] **golangci-lint-Achse:** Make-Target vergleicht den gepinnten `GOLANGCI_LINT_VERSION`
   (kanonische Quelle benannt) gegen `golangci/golangci-lint` `releases/latest`.
-- [ ] **d-check-Achse:** Make-Target vergleicht den gepinnten d-check-Tag (aus `DCHECK_IMAGE`
+- [x] **d-check-Achse:** Make-Target vergleicht den gepinnten d-check-Tag (aus `DCHECK_IMAGE`
   in [`d-check.mk`](../../../../d-check.mk)) gegen `pt9912/d-check` `releases/latest`.
-- [ ] **Nachtlauf verdrahtet:** beide Achsen (+ die bestehende baseline-Achse) im
+- [x] **Nachtlauf verdrahtet:** beide Achsen (+ die bestehende baseline-Achse) im
   `upstream-drift`-Job (`schedule`), je mit `if: '!cancelled()'` (alle Achsen laufen, auch
   wenn eine rot meldet) — belegt im Workflow-Diff. **Nicht** in `make gates` (offline-grün,
   [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-- [ ] `make gates` grün: die `--compare`-Fixture-Tests (aktuell / veraltet / fetch-fehler)
+- [x] `make gates` grün: die `--compare`-Fixture-Tests (aktuell / veraltet / fetch-fehler)
   je Achse laufen **offline**.
-- [ ] `make mutate` grün: eine Mutation, die den Vergleicher bricht (z. B. veraltet↔aktuell
+- [x] `make mutate` grün: eine Mutation, die den Vergleicher bricht (z. B. veraltet↔aktuell
   invertiert oder der leere-latest-Zweig entfernt), färbt einen Fixture-Test rot.
-- [ ] Doku: `make help`-Zeilen + `harness/conventions.md`-Freshness-Notiz nachziehen, falls
+- [x] Doku: `make help`-Zeilen + `harness/conventions.md`-Freshness-Notiz nachziehen, falls
   neue öffentliche Targets.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -101,7 +101,49 @@ Wird *nach* Abschluss ergänzt. Inhalt:
 - Folge-Slices: welche neuen open/-Einträge?
 -->
 
-<!-- Erst nach Abschluss füllen. -->
+**Was hat funktioniert.** Die Verallgemeinerung war eine additive Extraktion, kein
+Neubau: die `releases/latest`-Mechanik wanderte 1:1 in `component-freshness.sh`,
+`baseline-freshness.sh` wurde zum dünnen Wrapper. Der **bestehende**
+`test/baseline-freshness.bats` blieb ohne Änderung grün — der Wrapper hält die 2-arg
+`--compare`-Schnittstelle und schreibt Output, dessen Substrings (`aktuell` / `VERALTET`
+/ `FETCH-FEHLER` / die Tags) der Alt-Test greppt. So diente der unveränderte Alt-Test als
+Regressions-Anker für die Verhaltens-Erhaltung. golangci-lint-Pin kanonisch geklärt:
+`GOLANGCI_LINT_VERSION` (Makefile) = der Build-Arg, den `make lint` reicht — der Sensor
+liest dieselbe Quelle, kann also nicht gegen den echten Build-Pin driften (Plan-§6-Risiko
+vermieden, kein neuer Kopplungstest nötig). Rollen-Sequenz voll durchlaufen: Review
+**KONFORM** (0 HIGH/MEDIUM/LOW, 3 INFO), Verifikation **DoD BESTÄTIGT**; Sensoren real:
+`make gates` Exit 0, `make mutate` 51 ok / 0 Befunde (Fall 46 rot gesehen).
+
+**Was anders lief als geplant.** Der Plan listete „Freshness-Fixture-Test (bats)" als
+*Update* der bestehenden Datei; tatsächlich war eine **neue** `test/component-freshness.bats`
+richtig (der generische Sensor ist ein neues Artefakt; der Alt-Test bewacht weiter den
+Wrapper). Kein Sammel-Target gebaut (YAGNI: der Nachtlauf verdrahtet jede Achse einzeln,
+`if: '!cancelled()'`). Review-INFO-1 bei Closure aufgelöst: ein Makefile-Kommentar sagte
+„kein zweiter Pin" zu, während weitere golangci-lint-Pins existieren — auf das eingeschränkt,
+was gilt (der *Sensor* liest eine Quelle; weitere Pins existieren, Advice nennt sie).
+
+**Steering-Loop-Eintrag** (kanonische Definition:
+[`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.0/kurs/de/grundlagen/klassifikation.md#steering-loop)):
+
+- **Neuer Sensor-Fall (`test/mutations/46`): erste Mutation mit literalem `$` im
+  sed-Muster → SC2016.** `shell-lint` (in `make gates`) deckt `test/mutations/*.sh` mit;
+  ein `sed 's/… "$var" …/…/'` mit `$` in Single-Quotes löst SC2016 aus (die Seds sind
+  bewusst SC2016-clean, gemessen mehrfach). **Regel für künftige Mutations-Autoren:** das
+  Ersetz-Muster auf einen **`$`-freien, eindeutigen Substring** der Zielzeile ankern
+  (hier `latest" = "`), nicht auf die volle `$var`-tragende Bedingung. Ein Muster mit `$`
+  ist entweder shellcheck-rot oder braucht eine Suppression — beides unnötig, wenn ein
+  eindeutiger `$`-freier Anker existiert.
+- **Wiederkehr der Doc-Overclaim-Klasse (§3.6):** ein neu geschriebener Makefile-Kommentar
+  überschritt erneut, was der Code hält („kein zweiter Pin"). Vom Review als INFO gefangen,
+  bei Closure präzisiert. Die Klasse „Zusage weiter als Abdeckung" tritt bei **neuen
+  begründenden Kommentaren** auf, nicht nur bei Test-Namen — beim Schreiben eines
+  „warum-kanonisch"-Kommentars zuerst prüfen, was der Code *nicht* garantiert.
+
+**Folge-Slices.** Keine neuen `open/`-Einträge aus diesem Slice. Nächste Welle-Slices stehen
+schon (welle §4): slice-041 (Go-Version-Freshness, Quelle go.dev/dl), slice-042 (ubuntu-Base-Tag).
+Review-INFO-2 (d-check Tag↔Digest) und INFO-3 (make-Exit-Kollaps 1↔2) sind **dokumentiert-akzeptiert**,
+kein Trigger (green-before-extend): eine Exit-Code-Verzweigung Drift↔Fetch-Fehler wird erst
+geschnitten, wenn der Nachtlauf real auf den Code verzweigen muss.
 
 ## 8. Sub-Area-Modus-Begründung
 

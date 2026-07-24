@@ -142,8 +142,11 @@ baseline-freshness: ## Neueren Upstream-Tag als BASELINE_TAG melden (read-only) 
 # Sensor (component-freshness.sh), je Achse mit kanonischer Pin-Quelle + Upstream-
 # releases/latest. Read-only, Netz, Maintenance/CI, NICHT in gates (LH-QA-01).
 # Kanonische Pin-Quelle golangci-lint: GOLANGCI_LINT_VERSION (oben) — DERSELBE Var,
-# den `make lint` als Build-Arg in die Dockerfile-lint-Stage reicht, also kein
-# zweiter Pin, gegen den der Sensor driften koennte.
+# den `make lint` als Build-Arg in die Dockerfile-lint-Stage reicht. Der Sensor liest
+# genau DIESE eine Quelle und vergleicht sie nur gegen Upstream (kein interner
+# Pin-gegen-Pin-Vergleich, also keine Falsch-Drift). Weitere golangci-lint-Pins
+# existieren (Dockerfile-ARG/Digest, gen-Skelett golangciVersion); ihr Nachziehen
+# nennt die Advice-Zeile, und TestGoProfile_PinsMatchRepo koppelt Skelett<->ARG.
 freshness-golangci: ## Neueren golangci-lint-Release als GOLANGCI_LINT_VERSION melden (read-only) — Maintenance/CI, NICHT in gates
 	@COMPONENT_NAME='golangci-lint' COMPONENT_PINNED='$(GOLANGCI_LINT_VERSION)' \
 	  COMPONENT_ADVICE='GOLANGCI_LINT_VERSION (Makefile) bumpen; Dockerfile-lint-Digest + gen-Skelett-Pin ziehen mit (TestGoProfile_PinsMatchRepo).' \
