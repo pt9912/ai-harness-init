@@ -1,0 +1,53 @@
+# Upstream-Drift — die NETZ-Sensoren, getrennt von ci.yml (Split slice-040ff-Nachzug,
+# MR-014). Sie erreichen einen Fremd-Host (Kurs-Release, golangci-lint/d-check/Go);
+# ein Ausfall dort ist KEIN Defekt eines Commits und darf keinen Push roetten. Darum
+# leben sie NICHT bei den Pro-Push-Gates (ci.yml), sondern hier — die Trennung nach
+# Sensor-Klasse (MR-014 Setzung 2) ist jetzt strukturell (eigene Datei) statt per
+# `if: github.event_name`.
+#
+# Trigger:
+#   * schedule (naechtlich 01:00 UTC) — der regulaere Drift-Wecker.
+#   * workflow_dispatch — MANUELL per "Run workflow"-Button startbar (z. B. um nach
+#     einem gemeldeten Upstream-Release sofort gegenzupruefen, statt bis 01:00 zu warten).
+#
+# Wie ci.yml: nur `make`-Targets, keine zweite Gate-Definition (MR-010-Geist).
+# Read-only — die Sensoren melden, sie mutieren nichts (ein Bump bleibt eine bewusste
+# MR-007-Operation). Docker-only (ADR-0003).
+
+name: upstream-drift
+
+on:
+  schedule:
+    - cron: '0 1 * * *' # taeglich 01:00 UTC
+  workflow_dispatch: # manueller "Run workflow"-Button
+
+# Eigene Gruppe je Ausloeser: ein manueller Lauf soll den naechtlichen NICHT
+# abbrechen (und umgekehrt) — `event_name` trennt schedule von workflow_dispatch
+# (Geist von Review-Befund slice-027 F-1).
+concurrency:
+  group: upstream-drift-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # `make` kollabiert einen Nonzero-Exit auf Fehler — der Job meldet Drift ODER
+  # Netzfehler als rot. Jeder Sensor ein eigener Step mit `if: '!cancelled()'`:
+  # die Sensoren pruefen UNABHAENGIGE Achsen (Asset-Content vs. Release-Tag je
+  # Komponente), man will ALLE Ergebnisse — ohne dies liefe der naechste nicht,
+  # sobald ein frueherer Drift meldet (Review-Befund slice-027 F-2). Der Job wird
+  # trotzdem rot, wenn einer failt.
+  upstream-drift:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - run: make regelwerk-check
+      - if: '!cancelled()'
+        run: make baseline-freshness
+      # Weitere Komponenten-Achsen (slice-040, MR-007): golangci-lint + d-check je
+      # gegen ihr Upstream-releases/latest.
+      - if: '!cancelled()'
+        run: make freshness-golangci
+      - if: '!cancelled()'
+        run: make freshness-dcheck
+      # Go-Toolchain-Achse (slice-041): Sonderquelle go.dev, eigener Wrapper.
+      - if: '!cancelled()'
+        run: make freshness-go

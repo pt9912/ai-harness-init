@@ -563,10 +563,13 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   (Geist von [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert): eine Quelle, nicht zwei). Ein
   CI-Step, der Build-Logik dupliziert, driftet gegen den lokalen Lauf und ist verboten.
 - **Setzung 2 — Frequenz nach Sensor-Klasse.** „Alles pro Push" für die hermetischen Sensoren
-  (`gates`/`smoke`/`mutate`); die **Netz-Sensoren** `regelwerk-check`/`baseline-freshness` laufen
-  **nur nächtlich** (`schedule`). Grund: sie erreichen einen Fremd-Host (Kurs-Release); ein
-  Upstream-Ausfall ist kein Defekt des Commits und darf keinen Push röten — sonst werden Gates
+  (`gates`/`smoke`/`full-smoke`/`mutate`); die **Netz-Sensoren** (`regelwerk-check`,
+  `baseline-freshness`, `freshness-golangci`/`-dcheck`/`-go`) laufen **nur nächtlich**
+  (`schedule`). Grund: sie erreichen einen Fremd-Host (Kurs-Release, golangci-lint/d-check/Go);
+  ein Upstream-Ausfall ist kein Defekt des Commits und darf keinen Push röten — sonst werden Gates
   umgangen ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Geist auf Prozess-Ebene).
+  **Seit dem Split (Nachtrag unten) ist diese Trennung strukturell** (zwei Workflow-Dateien) statt
+  per `if: github.event_name` in einer Datei.
 - **Setzung 3 — `ci-lint` ist ein Gate.** actionlint prüft `.github/workflows/` (gepinntes Image,
   Docker-only, [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md)) und läuft **in** `make gates`:
   der Workflow ist ein reales committetes Artefakt (nicht-leerer Prüfbereich,
@@ -575,7 +578,8 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Gegenbeispiel-Gate zur Zusage „die CI läuft" ([`AGENTS.md`](../AGENTS.md) §3.6).
 - **Setzung 4 — Runner + Actions gepinnt, so weit es geht ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).** `runs-on: ubuntu-24.04`
   (benannte Version, **nicht** `ubuntu-latest`); `actions/checkout` per **Commit-SHA** gepinnt
-  (`@11bd719…` = v4.2.2), nicht per wanderndem `@v4`. **Grenze:** ein GitHub-**hosted** Runner-Image
+  (`@fbc6f399…` = v5.1.0, seit dem Nachtrag unten; zuvor `@11bd719…` = v4.2.2), nicht per
+  wanderndem `@v5`. **Grenze:** ein GitHub-**hosted** Runner-Image
   ist nicht *digest*-pinnbar (das erlauben nur self-hosted/Container-Jobs) — `ubuntu-24.04` benennt
   eine Version, deren Paketstand GitHub periodisch aktualisiert. Die Reproduzierbarkeit der *Checks*
   trägt daher nicht der Runner, sondern die **digest-gepinnten Tool-Images** der `make`-Targets
@@ -585,8 +589,21 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   ist, zeigt erst der erste Actions-Lauf. **Lokal so weit belegt wie möglich** (Verifikation
   slice-027): `git clone` in ein frisches tmp ohne `.harness/state/` → `make gates` Exit 0; offen
   bleibt allein die GitHub-gehostete Ausführung.
+- **Nachtrag 2026-07-24 — Split + `workflow_dispatch` + checkout v5.** Der Workflow ist in **zwei
+  Dateien** getrennt: `.github/workflows/ci.yml` trägt nur die hermetischen Pro-Push-Sensoren
+  (`gates`/`smoke`/`full-smoke`/`mutate`), `.github/workflows/upstream-drift.yml` die Netz-Sensoren.
+  Damit ist die Sensor-Klassen-Trennung (Setzung 2) strukturell statt per `if: github.event_name`.
+  `upstream-drift.yml` trägt **`schedule` (01:00 UTC) + `workflow_dispatch`** — Letzteres gibt einen
+  „Run workflow"-Button, um den Drift-Lauf **manuell** anzustoßen (z. B. sofortige Gegenprüfung nach
+  einem gemeldeten Release), ohne bis zum Nachtlauf zu warten. Beide Dateien folgen weiter Setzung 1
+  (nur `make`-Targets); `ci-lint`/actionlint (Setzung 3) prüft `.github/workflows/` **glob**, deckt
+  also beide. Zugleich `actions/checkout` **v4.2.2 → v5.1.0** (`@fbc6f399…`, weiter SHA-gepinnt,
+  [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) — Auslöser war die GitHub-Warnung
+  „Node.js 20 is deprecated"; v5 läuft auf Node 24, `ubuntu-24.04` trägt das, die `checkout`-API ist
+  unverändert.
 - **Auflösungs-Trigger:** permanent; `ACTIONLINT_IMAGE` bei Bedarf neu pinnen (wie
-  `BATS_IMAGE`/`SHELLCHECK_IMAGE`).
+  `BATS_IMAGE`/`SHELLCHECK_IMAGE`); `actions/checkout` bei Node-Deprecation neu auf den dann
+  aktuellen SHA-Pin heben.
 
 ## Modus-Deklaration pro Sub-Area
 

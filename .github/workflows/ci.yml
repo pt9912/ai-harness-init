@@ -1,4 +1,4 @@
-# CI — der Sensor-Lauf auf frischem Klon (slice-027).
+# CI — der Sensor-Lauf auf frischem Klon (slice-027; Split slice-040ff-Nachzug).
 #
 # Schliesst die MR-003-Restluecke: der lokale Stop-Hook gibt einen frisch
 # geklonten, cleanen Tree OHNE Nachweis frei ("CI ist dort das Netz"). Hier IST
@@ -6,10 +6,11 @@
 # traegt KEINE zweite Definition dessen, was ein Gate ist (MR-010-Geist: eine
 # Quelle). Was hier gruen sein muss, ist genau `make gates`/`smoke`/`full-smoke`/`mutate`.
 #
-# Frequenz (slice-027 Entwurfsentscheidung "alles pro Push"): gates + smoke +
-# full-smoke + mutate bei jedem Push und PR; die NETZ-Sensoren (regelwerk-check,
-# baseline-freshness) laufen NUR naechtlich (schedule) — ein Upstream-Ausfall
-# darf nie einen Push blockieren (slice-027 Paragraph 6).
+# Diese Datei traegt NUR die hermetischen Pro-Push-Sensoren. Die NETZ-Sensoren
+# (regelwerk-check, baseline-freshness, freshness-*) leben getrennt in
+# upstream-drift.yml (schedule + workflow_dispatch) — ein Upstream-Ausfall darf nie
+# einen Push blockieren (slice-027 Paragraph 6; Trennung nach Sensor-Klasse,
+# MR-014 Setzung 2, jetzt STRUKTURELL statt per `if: event_name`).
 #
 # Docker-only (ADR-0003): die Runner bringen Docker mit; keine Host-Go-Toolchain,
 # kein `actions/setup-go`. Alles laeuft in den gepinnten Images der make-Targets.
@@ -23,17 +24,12 @@ on:
   # der Preis ist ein doppelter Lauf, der Gewinn die Fork-PR-Abdeckung.
   push:
   pull_request:
-  schedule:
-    - cron: '0 1 * * *' # taeglich 01:00 UTC — nur der Netz-Nachtlauf unten
 
 # Nicht zwei Laeufe DESSELBEN Ausloesers parallel: `make mutate` mutiert den
 # Checkout, zwei Laeufe verbrennen CI-Minuten (die Korrektheit ist durch getrennte
-# Runner sicher) — den aelteren abbrechen ist billiger.
-#
-# `event_name` MUSS in die Gruppe: sonst teilen sich schedule und push auf `main`
-# denselben `github.ref`, und ein Push braeche den naechtlichen Netz-Lauf ab (oder
-# umgekehrt) — Review-Befund slice-027 F-1. So bekommt jeder Ausloeser seine
-# eigene Gruppe.
+# Runner sicher) — den aelteren abbrechen ist billiger. `event_name` in der Gruppe
+# haelt push und pull_request desselben Refs auseinander (Geist von Review-Befund
+# slice-027 F-1; der schedule-Zweig lebt seit dem Split in upstream-drift.yml).
 concurrency:
   group: ci-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
@@ -42,18 +38,16 @@ jobs:
   # Der Kern: make gates auf FRISCHEM Klon. Genau der Fall, den der lokale
   # Stop-Hook nicht pruefen kann (MR-003).
   gates:
-    if: github.event_name != 'schedule'
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - run: make gates
 
   # Tier-2-Emit-Smoke (Host-Docker, ggf. Netz-Pull des d-check-Image).
   smoke:
-    if: github.event_name != 'schedule'
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - run: make smoke
 
   # Voll-E2E-Smoke (slice-024): Bootstrap -> im Ziel der ZUSAMMENGEFUEHRTE make gates
@@ -62,10 +56,9 @@ jobs:
   # Netz-Pull, wie smoke; der Sensor braucht diesen mechanischen Pro-Push-Ausloeser,
   # sonst laeuft er nie (dasselbe Muster, das slice-027 fuer make mutate schloss).
   full-smoke:
-    if: github.event_name != 'schedule'
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - run: make full-smoke
 
   # Der Mutations-Sensor zu AGENTS.md 3.6 (slice-026). Hier bekommt seine
@@ -73,36 +66,7 @@ jobs:
   # Durchsetzungs-Haelfte von Befund N-6. mutate mutiert den Checkout; auf einem
   # eigenen Runner ist das folgenlos.
   mutate:
-    if: github.event_name != 'schedule'
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - run: make mutate
-
-  # NETZ-Sensoren: NUR nachts. Sie erreichen einen Fremd-Host (Kurs-Release);
-  # ein Ausfall dort ist kein Defekt DIESES Commits und darf keinen Push roetten.
-  # `make` kollabiert einen Nonzero-Exit auf Fehler — der Job meldet Drift oder
-  # Netzfehler als rot, aber eben nur im naechtlichen Lauf.
-  upstream-drift:
-    if: github.event_name == 'schedule'
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - run: make regelwerk-check
-      # `if: '!cancelled()'`: die Netz-Sensoren pruefen UNABHAENGIGE Achsen
-      # (Asset-Content vs. Release-Tag je Komponente) — man will ALLE Ergebnisse.
-      # Ohne dies liefe der naechste Sensor nicht, sobald ein frueherer Drift meldet
-      # (Review-Befund slice-027 F-2). Der Job wird trotzdem rot, wenn einer failt.
-      - if: '!cancelled()'
-        run: make baseline-freshness
-      # Weitere Komponenten-Achsen (slice-040, MR-007): golangci-lint + d-check je
-      # gegen ihr Upstream-releases/latest. Jede eigenstaendig, damit eine gemeldete
-      # Drift die anderen nicht verschluckt.
-      - if: '!cancelled()'
-        run: make freshness-golangci
-      - if: '!cancelled()'
-        run: make freshness-dcheck
-      # Go-Toolchain-Achse (slice-041): Sonderquelle go.dev, eigener Wrapper,
-      # aber dieselbe read-only/nicht-in-gates-Disziplin.
-      - if: '!cancelled()'
-        run: make freshness-go
