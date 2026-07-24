@@ -17,12 +17,12 @@ Adopter-Entscheidung *nach* der Architektur, kein Init-Argument (Mono-Repo fäll
 heraus). Die Sprachwahl im Diagramm ist Ablauf, kein Constraint der Emitter.
 
 Neben der Sprache trägt `add-lang` eine **zweite, parallele Achse — die Architektur**
-(`--arch`, Default `flat`, opt-in `hexagonal`): der Generator **komponiert**
-`lang-renderer × arch-layout` — die Sprach-Schicht liefert die arch-invariante
+(`--arch`, Default `flat`, opt-in `hexslice` = Hexagonal + Vertical Slice): der Generator
+**komponiert** `lang-renderer × arch-layout` — die Sprach-Schicht liefert die arch-invariante
 Bau-/Toolchain-Gerüstung **plus** einen Rollen-Renderer, die Arch-Schicht das
 Code-Layout (welche Rollen in welchen Verzeichnissen). So wächst die Menge **linear
 (Sprachen + Architekturen)**, nicht multiplikativ. Ein schichten-tragendes Layout
-(`hexagonal`) gibt dem **Architektur-Gate** (a-check) einen realen Prüfbereich; es wird
+(`hexslice`) gibt dem **Architektur-Gate** (a-check) einen realen Prüfbereich; es wird
 **genau dann** emittiert (bei `flat` nicht — kein Gate über leerem Bereich).
 
 ```mermaid
@@ -67,7 +67,7 @@ flowchart TB
 | Gate-Emitter | Root-Makefile als **dünnen Aggregator** (benannter Glob-Include) + Gate-Fragmente je Belang; die Checks akkumulieren in eine Variable, der Nachweis läuft via **Ordnungskante** strikt zuletzt | Gate ohne existierendes Target aktivieren; ein Fragment in-place editieren; `make -j` serialisieren |
 | Enforce-Emitter | Durchsetzung (Hooks, Gate-Nachweis, Working-Tree-Hash, Command-Guard mit **gebackenem universellem Boden** + Union der blocked-Fragmente) schreiben | den Guard fail-open lassen (Boden greift immer); node/jq/OCI als Guard-Dep verlangen |
 | Commands-/Skills-Emitter | Agenten-Workflow-Commands (mit ANPASSEN-Marker) + Reviewer-Skill ins Ziel schreiben | Repo-Quell-Identität in die Artefakte tragen |
-| Generator | Skelett **deterministisch** je `add-lang` erzeugen (Tool-als-Quelle), **gemäß ADR**; **`lang-renderer × arch-layout` komponieren** — arch-invariante Bau-Gerüstung + arch-gegatetes Code-Layout (`flat` byte-identisch zum heutigen Skelett, `hexagonal` = `domain/ports/adapters`) | nicht-reproduzierbare/floating Ausgabe; ohne ADR generieren; die Bau-Gerüstung an die Architektur koppeln (sie ist arch-invariant) |
+| Generator | Skelett **deterministisch** je `add-lang` erzeugen (Tool-als-Quelle), **gemäß ADR**; **`lang-renderer × arch-layout` komponieren** — arch-invariante Bau-Gerüstung + arch-gegatetes Code-Layout (`flat` byte-identisch zum heutigen Skelett, `hexslice` = `domain`/`application` (Use-Case-Slices)/`ports`/`adapters` + Composition Root `cmd/`) | nicht-reproduzierbare/floating Ausgabe; ohne ADR generieren; die Bau-Gerüstung an die Architektur koppeln (sie ist arch-invariant) |
 | Verdrahtung | Skelett am Ziel-Root platzieren + Code-Gate-Fragment + Guard-blocked-Fragment **droppen** (kein In-Place-Edit); das **a-check-Fragment (`.a-check.yml` + `a-check.mk`) nur bei schichten-tragendem Layout** droppen | nicht-laufende Targets emittieren; a-check über einem flachen (leeren) Prüfbereich aktivieren |
 
 ## 3. Externe Abhängigkeiten
@@ -107,8 +107,8 @@ sequenceDiagram
     U->>U: Doc-Chain + Sprach-/Architektur-ADR schreiben  [Phase 2]
     U->>C: ai-harness-init add-lang SPRACHE PFAD [--arch ARCH]   [wiederholbar]
     C->>C: Skelett nach PFAD generieren — lang-renderer × arch-layout, gemäß ADR
-    C->>C: harness/mk/MODUL.mk + blocked/SPRACHE droppen; a-check-Fragment NUR bei hexagonal
-    C-->>U: make -j gates grün inkl. Code-Gates (+ a-check bei hexagonal), record-gates zuletzt
+    C->>C: harness/mk/MODUL.mk + blocked/SPRACHE droppen; a-check-Fragment NUR bei hexslice
+    C-->>U: make -j gates grün inkl. Code-Gates (+ a-check bei hexslice), record-gates zuletzt
 ```
 
 Der Fragment-Name ist **modul-** (nicht sprach-)abgeleitet: `<modul>` kommt aus `<pfad>`
@@ -139,14 +139,19 @@ byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
   `lang-renderer × arch-layout` — die **Bau-/Toolchain-Gerüstung** (Dockerfile-Stages,
   Manifeste, Lint-Config) ist **arch-invariant** und immer präsent (sonst bräche der
   Code-Gate-Lauf), das **Code-Layout** ist arch-gegatet (`flat` = ein Entry-Point wie
-  heute; `hexagonal` = `domain/ports/adapters` samt Tests je Schicht). Das
+  heute; `hexslice` = `domain`/`application` (Use-Case-Slices mit
+  `command`/`handler`/`validator`/`result`/`ports`)/`ports`/`adapters` (`inbound`/`outbound`)
+  + Composition Root `cmd/`, samt Tests je Schicht). Die a-check-Config bildet diese
+  Schichten ab: vier Layer (`domain`/`app`/`ports`/`adapters`), inward-only-Kanten
+  (`app→domain`, `app→ports`, `ports→domain`, `adapters→app`, `adapters→domain`) und
+  `cmd/**` als Composition Root (a-check-exempt, verdrahtet die Ports strukturell). Das
   **Architektur-Gate** (a-check, per-Tool-Fragment wie das Doc-Gate) wird **nur bei
   einem schichten-tragenden Layout** emittiert; bei `flat` liegt kein `.a-check.yml`/
   `a-check.mk` im Ziel — kein Gate über leerem Prüfbereich. Idempotenz-Klassen wie beim
   Doc-Gate: `a-check.mk` (+ Aggregator-Anschluss) **konvergent**, `.a-check.yml`
   **skip-if-present** (der Adopter passt die Schicht-Config an). Voraussetzung der
   a-check-Emission ist die Verfügbarkeit des a-check-Tools (gepinntes Image mit
-  `--print-mk`) — dieselbe Tool-als-Quelle-Linie wie d-check.
+  `--print-mk`, real ab v0.15.0) — dieselbe Tool-als-Quelle-Linie wie d-check.
 - **Guard-Boden + Union:** der Command-Guard trägt ein universelles BLOCKED-Set
   (apt/pip/npm/cargo) **im Skript gebacken** — er ist nie fail-open, auch bei
   fehlendem `tools/harness/blocked/`. Er liest zusätzlich `tools/harness/blocked/*`
