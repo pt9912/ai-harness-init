@@ -66,6 +66,17 @@ setup() {
   ! printf '%s' "$output" | grep -q 'VERALTET'
 }
 
+@test "cpp-freshness: leerer Pin (CPP_PINNED leer) -> Exit 2 (kann nicht urteilen), NICHT veraltet" {
+  # Voll-Lauf mit leerem Pin: der Check exit't 2 VOR dem Fetch -> hermetisch, kein
+  # Netz. Der pin-spezifische Text ('kein gepinnter Wert') unterscheidet diesen
+  # Exit 2 vom latest-leer-Exit-2 (der wuerde 'konnte den latest-Tag nicht bestimmen'
+  # sagen) — sonst koennte der Test via den Fetch-Fehler-Pfad falsch bestehen.
+  run env CPP_PINNED="" bash "$CPP_FRESH" </dev/null
+  [ "$status" -eq 2 ]
+  printf '%s' "$output" | grep -q 'kein gepinnter Wert'
+  ! printf '%s' "$output" | grep -q 'VERALTET'
+}
+
 @test "cpp-freshness: latest-lts speist compare (Integration, offline)" {
   # Realer Fluss ohne Netz: LTS aus Tag-Liste extrahieren, dann vergleichen.
   # FIX_INTERIM -> 24.04; gepinnt 24.04 -> aktuell. Bricht der LTS-Filter (25.04

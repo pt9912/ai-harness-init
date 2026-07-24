@@ -65,7 +65,16 @@ fi
 
 # Voller Lauf: gepinnt aus CPP_PINNED (das Makefile extrahiert DefaultCppVersion aus
 # cpp.go), latest per Netz -> LTS-Extraktion -> generischer Vergleicher.
-pinned="${CPP_PINNED:?CPP_PINNED nicht gesetzt — via Makefile aus internal/gen/cpp.go durchreichen}"
+#
+# Leerer Pin (sed-Extrakt aus cpp.go fehlgeschlagen, z. B. Konstant umbenannt) ist
+# die KANN-NICHT-URTEILEN-Klasse -> Exit 2 (wie ein Fetch-Fehler), NICHT `${VAR:?}`
+# (das braeche mit Exit 1 = VERALTET ab und meldete Drift, wo der Pin nur unlesbar
+# ist — der Header oben sagt fuer Exit 2 ausdruecklich "auch: kein gepinnter Wert").
+pinned="${CPP_PINNED:-}"
+if [ -z "$pinned" ]; then
+  echo "$NAME: FETCH-FEHLER (kein Freshness-Urteil): kein gepinnter Wert — CPP_PINNED leer (sed-Extrakt von DefaultCppVersion aus internal/gen/cpp.go fehlgeschlagen?)." >&2
+  exit 2
+fi
 raw="$(fetch_ubuntu_tags)" || raw=""
 latest="$(printf '%s' "$raw" | extract_latest_lts)"
 exec env COMPONENT_ADVICE="$ADVICE" bash "$GENERIC" --compare "$NAME" "$pinned" "$latest"
