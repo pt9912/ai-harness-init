@@ -27,12 +27,30 @@ const golangciVersion = "v2.12.2"
 // festnageln und den GO_VERSION-Knopf wirkungslos machen. go (major.minor) in
 // go.mod leitet sich aus version ab, damit die Sprachversion zur Toolchain passt.
 func goProfile(version string) map[string]string {
+	return composeSkeleton(goScaffolding, goRole, version, archFlat)
+}
+
+// goScaffolding — die arch-INVARIANTE Go-Bau-/Toolchain-Gerueestung: Modul-Manifest,
+// Dockerfile (die Gate-Stages test/lint/build) und Lint-Config. Immer praesent,
+// unabhaengig vom Arch-Layout (sonst braeche der Code-Gate-Lauf mangels Stages).
+func goScaffolding(version string) map[string]string {
 	return map[string]string{
-		"go.mod":          "module app\n\ngo " + majorMinor(version) + "\n",
-		"Dockerfile":      render(goDockerfileTmpl, version),
-		".golangci.yml":   goGolangci,
-		"cmd/app/main.go": goMain,
+		"go.mod":        "module app\n\ngo " + majorMinor(version) + "\n",
+		"Dockerfile":    render(goDockerfileTmpl, version),
+		".golangci.yml": goGolangci,
 	}
+}
+
+// goRole rendert eine Code-Rolle als Go-Datei(en). Entry-Point -> cmd/app/main.go;
+// die Test-Rolle traegt im flachen Go-Skelett heute KEINE eigene Datei (main.go ist
+// trivial) -> nil. Eine nicht unterstuetzte Rolle liefert nil (kein Beitrag). slice-045
+// ergaenzt die domain/ports/adapters-Rollen fuer das hexagonale Layout.
+func goRole(r codeRole) map[string]string {
+	switch r {
+	case roleEntrypoint:
+		return map[string]string{"cmd/app/main.go": goMain}
+	}
+	return nil
 }
 
 // goFragment liefert das Go-Code-Gate-Fragment (harness/mk/<modul>.mk-Inhalt): am Root

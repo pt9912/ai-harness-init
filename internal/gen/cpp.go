@@ -17,14 +17,34 @@ const DefaultCppVersion = "26.04"
 // das Skelett selbst ist ortsunabhaengig. Statisch/deterministisch (LH-QA-02): gleiche
 // version -> byte-identische Ausgabe.
 func cppProfile(version string) map[string]string {
+	return composeSkeleton(cppScaffolding, cppRole, version, archFlat)
+}
+
+// cppScaffolding — die arch-INVARIANTE C++-Bau-/Toolchain-Gerueestung: das
+// CMake-Projekt (die Gate-Stages), die Lint-Config und das Dockerfile. Immer praesent,
+// unabhaengig vom Arch-Layout.
+func cppScaffolding(version string) map[string]string {
 	return map[string]string{
-		"CMakeLists.txt":       cppCMakeLists,
-		"src/main.cpp":         cppMain,
-		"tests/CMakeLists.txt": cppTestCMakeLists,
-		"tests/test_main.cpp":  cppTest,
-		".clang-tidy":          cppClangTidy,
-		"Dockerfile":           renderCpp(cppDockerfileTmpl, version),
+		"CMakeLists.txt": cppCMakeLists,
+		".clang-tidy":    cppClangTidy,
+		"Dockerfile":     renderCpp(cppDockerfileTmpl, version),
 	}
+}
+
+// cppRole rendert eine Code-Rolle als C++-Datei(en). Entry-Point -> src/main.cpp;
+// die Test-Rolle traegt den netzlosen CTest-Satz unter tests/ (ADR-0008: Tests folgen
+// dem Code-Layout, nicht der Gerueestung). slice-045 ergaenzt die geschichteten Rollen.
+func cppRole(r codeRole) map[string]string {
+	switch r {
+	case roleEntrypoint:
+		return map[string]string{"src/main.cpp": cppMain}
+	case roleTest:
+		return map[string]string{
+			"tests/CMakeLists.txt": cppTestCMakeLists,
+			"tests/test_main.cpp":  cppTest,
+		}
+	}
+	return nil
 }
 
 // cppFragment liefert das C++-Code-Gate-Fragment (harness/mk/<modul>.mk-Inhalt): am Root
