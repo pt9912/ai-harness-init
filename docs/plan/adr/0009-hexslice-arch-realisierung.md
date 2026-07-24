@@ -1,6 +1,6 @@
 # ADR-0009: HexSlice als konkrete Realisierung der Architektur-Achse
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-07-24
 
@@ -147,6 +147,7 @@ niederschlägt: hier die konkrete Regel benennen. Beispiel:
 |---|---|---|
 | 2026-07-24 | Proposed (verfeinert [ADR-0008](0008-arch-achse-emittiertes-skelett.md) nach der kanonischen `hexslice-architecture`-Referenz + realem a-check v0.15.0) | dieser ADR |
 | 2026-07-24 | Proposed überarbeitet nach 1. Review (KONFORM, 1 MEDIUM der ADR-0007-H2-Klasse: die Kanten-Aufzählung in Entscheidung 2 ließ `app→ports` aus — auf den vollständigen 5-Kanten-Satz der realen `.a-check.yml` korrigiert + die `adapters→ports`-Nicht-Kante begründet. 2 INFO nicht-blockierend) | [Review 1](../../reviews/2026-07-24-adr-0009-proposed-review.md) |
+| 2026-07-24 | **Accepted** nach 2. Review (KONFORM, keine fix-induzierte Regression: 5-Kanten-Satz 1:1 gegen die kanonische `.a-check.yml` verifiziert, Nicht-Kante referenz-treu, keine Kollateral-Inkonsistenz — freeze-reif). Folgt dem ADR-0007/0008-Zwei-Runden-Präzedenz | [Review 1](../../reviews/2026-07-24-adr-0009-proposed-review.md) |
 
 <!--
 Nach Accepted: NICHT mehr inhaltlich überschreiben (Hard Rule aus
