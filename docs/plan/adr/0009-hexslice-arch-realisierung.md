@@ -64,8 +64,11 @@ Das schichten-tragende Arch-Layout aus [ADR-0008](0008-arch-achse-emittiertes-sk
    internal/adapters/outbound/<typ>/<area>/   Port-Implementierung (Persistenz · Notify · …)
    cmd/<binary>/main.go                       Composition Root (a-check-exempt)
    ```
-   **Abhängigkeitsrichtung nur nach innen:** Adapters→Application, Application→Domain, Adapters→Domain,
-   Ports→Domain; Domain→Application/Adapters ist **verboten**. Die Bau-/Toolchain-Gerüstung
+   **Abhängigkeitsrichtung nur nach innen — die fünf erlaubten Kanten der kanonischen `.a-check.yml`
+   (verbatim zu emittieren, Punkt 3):** `app→domain`, `app→ports`, `ports→domain`, `adapters→app`,
+   `adapters→domain`. Domain→Application/Adapters ist **verboten**. **Keine `adapters→ports`-Kante:**
+   Outbound-Adapter *implementieren* Ports über Go-Interface-Erfüllung (strukturell, **kein** Import) —
+   verdrahtet im Composition Root (`cmd/**`, a-check-exempt). Die Bau-/Toolchain-Gerüstung
    ([ADR-0008](0008-arch-achse-emittiertes-skelett.md): `go.mod`/`Dockerfile`/`.golangci.yml`) bleibt
    **arch-invariant** — `hexslice` ersetzt nur den Code-Teil.
 3. **a-check v0.15.0 gepinnt + `.a-check.yml`-Schema.** Bei `--arch hexslice` emittiert der Bootstrap
@@ -143,6 +146,7 @@ niederschlägt: hier die konkrete Regel benennen. Beispiel:
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-07-24 | Proposed (verfeinert [ADR-0008](0008-arch-achse-emittiertes-skelett.md) nach der kanonischen `hexslice-architecture`-Referenz + realem a-check v0.15.0) | dieser ADR |
+| 2026-07-24 | Proposed überarbeitet nach 1. Review (KONFORM, 1 MEDIUM der ADR-0007-H2-Klasse: die Kanten-Aufzählung in Entscheidung 2 ließ `app→ports` aus — auf den vollständigen 5-Kanten-Satz der realen `.a-check.yml` korrigiert + die `adapters→ports`-Nicht-Kante begründet. 2 INFO nicht-blockierend) | [Review 1](../../reviews/2026-07-24-adr-0009-proposed-review.md) |
 
 <!--
 Nach Accepted: NICHT mehr inhaltlich überschreiben (Hard Rule aus
