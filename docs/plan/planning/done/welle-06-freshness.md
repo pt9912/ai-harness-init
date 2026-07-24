@@ -6,7 +6,7 @@ Closure wandert diese Datei per `git mv` nach `done/` (neben ihre
 Status-Feld. Ob eine flache Welle *aktuell* oder *geplant* ist, sagt die Roadmap.
 
 **Zielmeilenstein:** kein Meilenstein-Bezug (Reliability/Wartung — härtet die
-Quellen-Freshness, die [`MR-003`](../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)/[`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)-Achse).
+Quellen-Freshness, die [`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)/[`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)-Achse).
 
 **Verantwortlich:** ai-harness-init-Team (pt9912). **Datum:** 2026-07-23.
 
@@ -23,10 +23,10 @@ Komponenten-Freshness-Sensor und hängt jede Achse in den Nachtlauf. Ergebnis: e
 Version **irgendeiner** Komponente färbt den Nachtlauf rot (read-only Meldung, kein Bump).
 
 Die Sensoren bleiben **read-only** und **außerhalb** `make gates` (Netz-Operation; `make gates`
-bleibt offline-grün, [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)), bash+curl+coreutils ohne jq/node ([`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)),
+bleibt offline-grün, [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)), bash+curl+coreutils ohne jq/node ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)),
 jeweils mit hermetischem `--compare`-Pfad für netzlose Fixture-Tests in `make gates`.
 Die *Auflösung* einer gemeldeten Drift (Re-Baseline/Bump) bleibt eine separate, bewusste
-Operation ([`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — der Sensor *meldet*, er *mutiert* nichts.
+Operation ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — der Sensor *meldet*, er *mutiert* nichts.
 
 ## 2. Trigger (Welle startet)
 
@@ -52,21 +52,21 @@ vorhandene Mechanik), dann die zwei Sonderquellen.
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| slice-040 | Freshness-Generalisierung + GitHub-Release-Achsen (golangci-lint · d-check) in den Nachtlauf | [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
-| slice-041 | Go-Version-Freshness (Quelle go.dev/dl) | [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
-| slice-042 | C++/ubuntu-Base-Tag-Freshness (Quelle Docker-Hub-LTS) | [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
+| slice-040 | Freshness-Generalisierung + GitHub-Release-Achsen (golangci-lint · d-check) in den Nachtlauf | [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
+| slice-041 | Go-Version-Freshness (Quelle go.dev/dl) | [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
+| slice-042 | C++/ubuntu-Base-Tag-Freshness (Quelle Docker-Hub-LTS) | [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
 
 ## 5. Abhängigkeiten
 
 - Wird blockiert von: nichts (die Mechanik `baseline-freshness.sh` + der Nachtlauf
   `upstream-drift` existieren aus slice-018/027).
-- Blockiert: nichts hart. Der v3.5.1-Bump ([`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) ist unabhängig — die Welle
+- Blockiert: nichts hart. Der v3.5.1-Bump ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) ist unabhängig — die Welle
   *erkennt* Drift breiter, *löst* sie aber nicht auf.
 
 ## 6. Out-of-Scope für diese Welle
 
 - **Kein Auto-Bump / kein Auto-PR.** Die Sensoren sind read-only; ein Re-Baseline/Version-
-  Bump bleibt eine bewusste Operation ([`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)).
+  Bump bleibt eine bewusste Operation ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)).
 - **Kein GitHub-Issue-Öffnen** aus dem Nachtlauf (rotes CI-Kästchen reicht als Signal;
   eine Issue-Aufwertung wäre eine spätere, separate Erweiterung).
 - **GH-Action-SHA-Pins** (`actions/checkout` etc.) — Dependabot-Territorium, nicht

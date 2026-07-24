@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.0/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-06-freshness](../welle-06-freshness.md).
+**Welle:** [welle-06-freshness](welle-06-freshness.md).
 
 **Bezug:** [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) (Freshness-Achse), [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (Netz-Sensor **nicht** in gates), [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (bash+curl, kein jq/node).
 
@@ -67,7 +67,7 @@ Vergleicher zu bauen. Nur Fetch + Normalisierung sind neu (die echte Go-Besonder
 
 ## 4. Trigger
 
-**`open` → `in-progress` (Implementer beginnt):** Welle [welle-06-freshness](../welle-06-freshness.md)
+**`open` → `in-progress` (Implementer beginnt):** Welle [welle-06-freshness](welle-06-freshness.md)
 ist aktiv; slice-040 (generischer Sensor + GitHub-Achsen) ist **done** und liefert den
 wiederverwendbaren Vergleicher. Kein Vorgänger blockiert.
 
