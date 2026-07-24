@@ -24,7 +24,7 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: '0 3 * * *' # taeglich 03:00 UTC — nur der Netz-Nachtlauf unten
+    - cron: '0 1 * * *' # taeglich 01:00 UTC — nur der Netz-Nachtlauf unten
 
 # Nicht zwei Laeufe DESSELBEN Ausloesers parallel: `make mutate` mutiert den
 # Checkout, zwei Laeufe verbrennen CI-Minuten (die Korrektheit ist durch getrennte
