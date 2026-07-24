@@ -118,7 +118,7 @@ verifiziert, `SHA256SUMS` per `find | LC_ALL=C sort | sha256sum` (temp→mv, dam
 nicht sieht), alter Tag raus — `baseline-verify: v3.5.1 OK — 42 Dateien`. Der Verifier zog die
 Provenienz-Kette unabhängig nach (Release-Asset gefetcht, sha == Pin, `diff -rq` byte-identisch zum
 Baum). Die 5 gekoppelten Pins hielten (Kopplungstests grün). Die **Reconciliation-Trennung** (aktive
-Refs bumpen · historische „seit v3.5.0"-Aussagen + test-interne Tags + ADR-0006 behalten) war korrekt
+Refs bumpen · historische „seit v3.5.0"-Aussagen + test-interne Tags + [`ADR-0006`](../../../../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md) behalten) war korrekt
 und vollständig — beide Rollen bestätigten es. Der Content-Delta (36/42 Dateien) war ein Minor-Refresh
 ohne Konventions-Kollision (Rollen-Module 05/08/09/10/11 änderten real nur ihre Quell-URL + den
 Welle-Stand 32→33). **Kein Mutations-Re-Anchoring nötig** (Fall 01 generisch; Go-Bump-Lehre honoriert:
