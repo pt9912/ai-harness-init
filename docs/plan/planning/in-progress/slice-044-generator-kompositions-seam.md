@@ -30,13 +30,13 @@ Was muss erfüllt sein, damit der Slice in done/ wandert?
 Liste mit jeweils prüfbarem Kriterium.
 -->
 
-- [ ] **Kompositions-Seam** ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)): der Generator trägt eine Kompositions-Schicht — ein **Arch-Layout** (Rollen → Verzeichnisse; `flat` = eine Entry-Point-Rolle) + ein **Sprach-Renderer** (Rolle → Inhalt je Sprache) + die **arch-invariante Bau-Gerüstung**. `profiles()`/`goProfile`/`cppProfile` sind darauf umgestellt.
-- [ ] **`flat` byte-identisch** ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)): das für `go`/`cpp` erzeugte Skelett ist **byte-gleich** zum Ist-Stand; ein Test belegt es (Golden-/Fixture-Vergleich), und `make mutate` färbt einen Byte-Drift rot.
-- [ ] **Kein neues Verhalten:** kein `--arch`-Flag, kein `hexagonal`-Layout in diesem Slice (kommen in slice-045) — reiner interner Seam.
-- [ ] `make gates` grün; `make mutate` grün (Byte-Identität-Wächter rot gesehen).
-- [ ] `make full-smoke` grün: das gebootstrappte Skelett unverändert, `make gates` im Ziel out-of-the-box grün.
-- [ ] Doku: prüfen, dass der Ist-Code die bereits nachgezogene `architecture.md`-§2/§5-Beschreibung (Kompositions-Schicht) trifft; kein weiterer öffentlicher Vertrag berührt (Lastenheft/ADR schon nachgezogen).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] **Kompositions-Seam** ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)): der Generator trägt eine Kompositions-Schicht — ein **Arch-Layout** (Rollen → Verzeichnisse; `flat` = eine Entry-Point-Rolle) + ein **Sprach-Renderer** (Rolle → Inhalt je Sprache) + die **arch-invariante Bau-Gerüstung**. `profiles()`/`goProfile`/`cppProfile` sind darauf umgestellt.
+- [x] **`flat` byte-identisch** ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)): das für `go`/`cpp` erzeugte Skelett ist **byte-gleich** zum Ist-Stand; ein Test belegt es (Golden-/Fixture-Vergleich), und `make mutate` färbt einen Byte-Drift rot.
+- [x] **Kein neues Verhalten:** kein `--arch`-Flag, kein `hexagonal`-Layout in diesem Slice (kommen in slice-045) — reiner interner Seam.
+- [x] `make gates` grün; `make mutate` grün (Byte-Identität-Wächter rot gesehen).
+- [x] `make full-smoke` grün: das gebootstrappte Skelett unverändert, `make gates` im Ziel out-of-the-box grün.
+- [x] Doku: prüfen, dass der Ist-Code die bereits nachgezogene `architecture.md`-§2/§5-Beschreibung (Kompositions-Schicht) trifft; kein weiterer öffentlicher Vertrag berührt (Lastenheft/ADR schon nachgezogen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -108,7 +108,44 @@ Wird *nach* Abschluss ergänzt. Inhalt:
 - Folge-Slices: welche neuen open/-Einträge?
 -->
 
-<!-- Erst nach Abschluss füllen. -->
+**Was hat funktioniert.** Der Seam ist ein sauberer, verhaltens-erhaltender Refactor: `arch.go`
+trägt `archLayout` (Rollen `entrypoint`/`test`) + `composeSkeleton` (Gerüstung ∪ Rollen), `goProfile`/
+`cppProfile` komponieren `<lang>Scaffolding` + `<lang>Role` mit dem `flat`-Layout. **Byte-Identität
+vierfach belegt:** `make test` (`TestGenerate_GoProfile`/`CppProfile` asserten den exakten Datei-Satz,
+grün), `make full-smoke` Exit 0 (Ziel out-of-the-box grün), `make mutate` 56 ok/0 (Fall 60 rot gesehen),
+und der `git diff e730439..HEAD` ändert **keine Inhalts-Konstante** (nur die Map→Funktions-Umstrukturierung).
+ADR-0008-konform: Gerüstung arch-invariant, Tests als Rolle (cpp `tests/`). YAGNI-minimal: nur `flat`,
+`archLayout(unknown)→nil` als slice-045-Naht, kein CLI/hexagonal. Review **KONFORM** (0 HIGH/MEDIUM/LOW),
+Verifikation **DoD BESTÄTIGT**.
+
+**Was anders lief als geplant.** Die **Verifier-Infrastruktur scheiterte zweimal** und musste saniert
+werden — die tragende Lehre dieses Slice.
+
+**Steering-Loop-Einträge** (kanonische Definition:
+[`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.1/kurs/de/grundlagen/klassifikation.md#steering-loop)):
+
+- **Ein `make mutate`-fahrender Verifier gehört NICHT in einen Subagenten mit den heutigen
+  Mechanismen.** Drei Fehlermodi real getroffen: (1) `isolation: worktree` legt `.claude/worktrees/<agent>`
+  **untracked** im Haupt-Tree ab → das MR-003-Working-Tree-Hash (tracked **+ untracked**) verschiebt sich,
+  der Stop-Hook feuert dauerhaft, solange der Verifier läuft; (2) die Subagent-Bash **auto-backgroundet
+  Befehle >120s** (mutate/full-smoke) → der Agent „pausiert" und verdiktet nie (zwei Versuche); (3) am
+  schlimmsten fuhr ein Versuch `nohup make mutate &`, das den Agent-Stop **überlebte**, verwaiste und
+  Mutationen (`DefaultGoVersion="9.9.9"` u. a.) auf dem **Haupt-Tree** hinterließ — Force-Kill +
+  `git checkout -- .` + Lock-Cleanup nötig. **Regel bis zur Harness-Behebung:** die langsamen DoD-Sensoren
+  laufen **in-context** (der Implementer fährt gates/mutate/full-smoke real grün), danach bestätigt ein
+  **read-only Verifier** (nur `git diff`/Code/Logs, **keine** `make`-Läufe, <120s) den DoD-Kern unabhängig
+  — genau das lieferte hier das saubere Urteil. **Harness-Folgepunkte:** `.claude/worktrees/` in
+  `.gitignore` (schließt Fehlermodus 1); Subagenten dürfen langsame Befehle nicht nohup-detachen (2/3).
+- **Byte-Identität prüft man am stärksten am DIFF, nicht nur am Sensor.** `git diff <vor>..<nach>` auf die
+  Generator-Dateien zeigt, ob nur die Struktur oder auch eine Inhalts-Konstante wanderte — eine
+  Sekunden-Probe, die die teuren Sensoren (test/smoke) unabhängig plausibilisiert und die
+  read-only-Verifikation trägt.
+
+**Folge-Slices.** Keine neuen `open/`-Einträge. **Nächster Welle-Slice: slice-045** (erstes
+`hexagonal`-Arch-Layout + Go-Rollen-Renderer [domain/ports/adapters] + CLI `--arch`) — er baut auf dieser
+Seam. **Review-INFO** dieses Slice: (a) `archLayout(unknown)→nil` ist ein bewusst dormanter Zweig (slice-045
+aktiviert ihn) — kein toter Code, die Naht; (b) Mutations-Nummern-Kollision `51` → auf `60` umbenannt
+(INFO-2 aufgelöst).
 
 ## 8. Sub-Area-Modus-Begründung
 
