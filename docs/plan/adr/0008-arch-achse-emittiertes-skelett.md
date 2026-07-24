@@ -1,6 +1,6 @@
 # ADR-0008: Architektur-Achse (`--arch`) für das emittierte Skelett
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-07-24
 
@@ -24,7 +24,7 @@ aber **noch nicht integriert** — kein gepinntes Image, kein `a-check --print-m
 der Umsetzungs-Welle (s. Annahme 1 + Re-Evaluierungs-Trigger), keine erreichte Parität.
 
 **Der Blocker (seit M2 aufgeschoben):** Es existiert **kein geschichtetes Skelett**. Der Generator
-([`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) trägt heute **ein flaches Layout-Profil je Sprache** (`go` → `main.go`,
+([`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) trägt heute **ein flaches Layout-Profil je Sprache** (`go` → `cmd/app/main.go`,
 `cpp` → `src/main.cpp`; `profiles()` in `internal/gen/gen.go` mappt `lang → func(version) → {relpfad:
 inhalt}`). Ein a-check über einer **flachen** Struktur wäre ein **halluziniertes Gate über leerem
 Prüfbereich** — [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) verbietet das ausdrücklich, und [`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)s
@@ -80,12 +80,14 @@ die Struktur des **emittierten** Skeletts bestimmt. Fünf Festlegungen:
    Domain-Entity, Port-Interface, Adapter) in ihrer Sprache rendert. Die **Arch-Schicht** liefert das
    **Code-Layout**: welche Rollen in welchen Verzeichnissen. Der Generator komponiert (a) + (b × Layout):
    **N Sprach-Renderer + M Arch-Layouts** statt N×M volle Profile. `flat` = das heutige Layout (eine
-   Rolle „Entry-Point" → `main.go`/`src/main.cpp`) **plus die unveränderte Bau-Gerüstung** — d. h. das
-   Ist-`flat`-Profil (go: `go.mod`/`Dockerfile`/`.golangci.yml`/`main.go`; cpp: 6 Dateien) bleibt
-   **byte-identisch** ([`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)); `hexagonal` ersetzt nur den **Code**-Teil durch
-   `domain/ports/adapters`, die Bau-Gerüstung bleibt. So ist „neue Sprache = neuer Renderer (Gerüstung +
-   Rollen)" **und** „neue Architektur = neues Layout" je linear, und der `flat`-Pfad bricht `make gates`
-   nicht.
+   Rolle „Entry-Point" → `cmd/app/main.go`/`src/main.cpp`) **plus die unveränderte Bau-Gerüstung** — d. h.
+   das Ist-`flat`-Profil (go: `go.mod`/`Dockerfile`/`.golangci.yml`/`cmd/app/main.go`; cpp: 6 Dateien inkl.
+   `tests/`) bleibt **byte-identisch** ([`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)); `hexagonal` ersetzt nur den
+   **Code**-Teil durch `domain/ports/adapters`, die Bau-Gerüstung bleibt. **Tests folgen dem
+   Code-Layout, nicht der Gerüstung:** die Rollen-Menge trägt eine **Test-Rolle** (`flat` = der heutige
+   Test-Satz, z. B. cpps `tests/`; `hexagonal` = Tests je Schicht) — arch-**gegatet**, nicht
+   arch-invariant. So ist „neue Sprache = neuer Renderer (Gerüstung + Rollen)" **und** „neue Architektur
+   = neues Layout" je linear, und der `flat`-Pfad bricht `make gates` nicht.
 3. **a-check konditional emittieren ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).** Nur bei einem **schichten-tragenden**
    Layout (`hexagonal`) emittiert `add-lang` `.a-check.yml` (bildet die realen Schichten des Skeletts
    ab) + `a-check.mk` (aus `a-check --print-mk`, Image digest-gepinnt) und hängt `a-check` als
@@ -119,8 +121,9 @@ die Struktur des **emittierten** Skeletts bestimmt. Fünf Festlegungen:
   und Architekturen je **linear** wachsend. `flat` bleibt Default → **keine** Regression der heutigen
   Emission.
 - **Negativ:** Der Generator braucht eine **Kompositions-Schicht** (`lang-renderer × arch-layout`) statt
-  der heutigen flachen `profiles()`-Map — mehr Struktur, und die Sprach-Profile müssen von „ein
-  Datei-Satz" auf „rendere Rolle X" umgestellt werden (Migrations-Bruch, kein rein additiver Schritt).
+  der heutigen flachen `profiles()`-Map — mehr Struktur: die Sprach-Profile werden in **arch-invariante
+  Bau-Gerüstung** (bleibt) **und einen Rollen-Renderer** (der Code-Teil wird rollen-gerendert) getrennt
+  (Migrations-Bruch am Code-Teil, kein rein additiver Schritt; die Gerüstung wandert unverändert).
   Je Sprache ist ein **Schicht-Renderer** zu schreiben (Aufwand, aber linear und opt-in — nur wo
   `hexagonal` gewünscht). **a-check läuft nicht auf dem Dogfood** (emitted-only) — die Parität, die
   d-check hat, ist hier bewusst nicht gegeben; der Nachweis trägt `full-smoke`. **CLI-Kosten:** der
@@ -164,6 +167,8 @@ die Struktur des **emittierten** Skeletts bestimmt. Fünf Festlegungen:
 |---|---|---|
 | 2026-07-24 | Proposed (nach Design-Dialog: Achsen-Trennung `--arch` ⟂ `--lang`; **Nutzer-Korrektur: Zielrepo-Fokus, nicht Repo-Architektur**; a-check emitted-only konditional) | dieser ADR |
 | 2026-07-24 | Proposed überarbeitet nach 1. Review (2× MEDIUM der ADR-0007-H2-Klasse: **M-1** a-check von „reales Tool" → **zu belegende Vorbedingung** [Kontext + Annahme 1]; **M-2** Kompositions-Modell — Bau-/Toolchain-Gerüstung als **arch-invariant** benannt, `flat`-Profil byte-identisch, Gate bricht nicht; **LOW-1** `add-lang`-Parser-Umbau als CLI-Kosten. INFO-1: Idempotenz-Klassen konsistent bestätigt) | [Review 1](../../reviews/2026-07-24-adr-0008-proposed-review.md) |
+| 2026-07-24 | 2. Review: **ACCEPT-REIF** — alle Runde-1-Befunde substanziell aufgelöst, keine fix-induzierte Regression, keine neue Ist-Behauptung (M-1/M-2/LOW-1 gegen den Code verifiziert). Drei Vor-Freeze-Schärfungen übernommen: Test-Rolle im Layout-Modell verortet, Migrations-Bruch-Gerüstungshälfte ergänzt, Entry-Point-Pfad `cmd/app/main.go` präzisiert | [Review 2](../../reviews/2026-07-24-adr-0008-proposed-review-2.md) |
+| 2026-07-24 | **Accepted** (nach zwei Proposed-Review-Runden; Richtung tragfähig, Mechanik geschärft) — ab hier immutable ([`AGENTS.md` §3.4](../../../AGENTS.md)) | dieser ADR |
 
 <!--
 Nach Accepted: NICHT mehr inhaltlich überschreiben (Hard Rule 3.4). Spätere Schärfungen als neue ADR
