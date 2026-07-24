@@ -78,16 +78,37 @@ Review konform + Verifier bestätigt die DoD, Closure-Notiz mit Steering-Loop-Ei
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!--
-Wird *nach* Abschluss ergänzt. Inhalt:
-- Was hat funktioniert?
-- Was ging anders als geplant?
-- Steering-Loop-Eintrag: welcher Guide/Sensor sollte verbessert werden?
-  (kanonische Definition: [`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.1/kurs/de/grundlagen/klassifikation.md#steering-loop))
-- Folge-Slices: welche neuen open/-Einträge?
--->
+**Geliefert.** Der Go-Renderer erzeugt das hexSlice-Layout (13 Rollen-Dateien: domain/application/
+ports/adapters + Composition Root, eine `example`-Area/`greet`-Slice) über die slice-044-Seam;
+`GenerateArch(dir, lang, version, arch)` faltet die Arch-Achse ein, `Generate` delegiert `flat`
+(byte-identisch). `flat` blieb vierfach belegt unangetastet. Review KONFORM (kein HIGH/MEDIUM),
+Verifier DoD BESTÄTIGT. Sensoren real: `make gates` grün · `make mutate` 57 ok/0 (Fall 61 rot
+gesehen) · **Renderer-Compile-Beleg** grün.
 
-<!-- Erst nach Abschluss füllen. -->
+**Anders als geplant.** Der gen-Seam wuchs über „nur archLayout+goRole" hinaus: `GenerateArch` +
+`UnknownArchError` + `SupportedArchs()` landeten hier (die gen-Schicht besitzt jetzt die
+Arch-Validierung, slice-045b hängt nur Exit-2-Mapping + CLI daran) — sauberere Schichtung als der
+ursprüngliche Schnitt; Plan §3 + slice-045b nachgezogen.
+
+**Steering-Loop-Einträge:**
+- **Neuer Sensor — Compile-in-Test für Generator-String-Konstanten.** Vom Generator emittierter Code
+  lebt als Go-String-Konstante und wird von den **Repo-Gates NICHT gelesen** (nur Daten) — ein
+  Datei-Satz-Test allein beweist Struktur, nicht Übersetzbarkeit. `TestGenerate_GoHexslice_Compiles`
+  generiert ins Temp-Repo und fährt dort ein echtes `go test ./...` (netzlos, Docker-`test`-Stage,
+  `exec.LookPath`-Skip host-los). Das fängt die Klasse „String-Konstante kompiliert nicht" **im
+  liefernden Slice** statt erst im nachgelagerten full-smoke. Für künftige Sprach-/Arch-Renderer
+  wiederverwenden.
+- **Operative Gotcha — Watcher-Selbstmatch.** Ein `until ! pgrep -f 'harness/tools/mutate.sh'`-Watcher
+  matcht **seine eigene Kommandozeile** (die das Muster enthält) → er terminiert nie. Watcher-Pattern
+  müssen die eigene Prozess-Zeile ausschließen (`| grep -v until`) oder anders ankern. Zudem: `make
+  mutate` (57 Fälle) liegt **über** dem 10-Min-Foreground-Limit → im Hintergrund fahren (harness-
+  getrackt vom Hauptkontext, NICHT detached/Subagent — slice-044-Lehre).
+
+**Folge-Punkte (kein neuer open/-Slice nötig, in bestehende Slices gezogen):**
+- slice-045b: die **sprach×arch-Support-Prüfung** muss **vor** die `--arch`-CLI (INFO-1 aus Review) —
+  sonst emittiert `add-lang cpp <pfad> --arch hexslice` still ein Gerüstung-only-Skelett.
+- slice-046: der emittierte `.a-check.yml`-Glob-Satz muss die realen Areas/Slices (`example`, `greet`,
+  `example/ports`) enumerieren (nicht die Referenz-`order/createorder`) — Layout↔Config-Kopplung.
 
 ## 8. Sub-Area-Modus-Begründung
 

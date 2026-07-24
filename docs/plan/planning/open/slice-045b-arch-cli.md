@@ -63,6 +63,13 @@ Review konform + Verifier bestätigt die DoD, Closure-Notiz mit Steering-Loop-Ei
 
 - **Zwei Eintrittspunkte** (`add-lang` + Init-`--lang`-One-Shot) müssen dieselbe Arch-Achse tragen —
   ein geteilter `wireLang`-Kern verhindert Divergenz (slice-037-Lehre: geteilter Kern).
+- **sprach×arch-Support-Prüfung ZUERST (aus slice-045a-Review, INFO-1 — blockierend für die CLI):**
+  heute rendert nur der Go-Renderer das hexSlice-Layout; `cppRole` liefert für die Schicht-Rollen `nil`,
+  ein `GenerateArch("cpp", …, "hexslice")` gäbe ein **stilles Gerüstung-only-Skelett**. Bevor die
+  `--arch`-CLI (via `GenerateArch`) einen Nutzer-Pfad öffnet, muss die (lang, arch)-Kombination
+  validiert werden (unterstützt der Renderer die Architektur?) — sonst emittiert `add-lang cpp <pfad>
+  --arch hexslice` still ein leeres Layout. Kandidat: eine sprach-deklarierte Arch-Menge oder ein
+  Guard in `GenerateArch`, der eine layered-arch ohne Rollen-Beitrag als Fehler meldet.
 - **Exit-2-Konsistenz:** die unbekannte-Architektur-Meldung muss dem unbekannte-Sprache-Format
   gleichen (Exit-Code + sortierte Liste), sonst zwei divergente Fehlerklassen.
 - **Byte-Identität `flat`:** ohne `--arch` bleibt der Default-Pfad `flat` — der bestehende
