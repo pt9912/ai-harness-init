@@ -77,16 +77,38 @@ Review konform + Verifier bestätigt die DoD, Closure-Notiz mit Steering-Loop-Ei
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!--
-Wird *nach* Abschluss ergänzt. Inhalt:
-- Was hat funktioniert?
-- Was ging anders als geplant?
-- Steering-Loop-Eintrag: welcher Guide/Sensor sollte verbessert werden?
-  (kanonische Definition: [`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.1/kurs/de/grundlagen/klassifikation.md#steering-loop))
-- Folge-Slices: welche neuen open/-Einträge?
--->
+**Geliefert.** `--arch` ist durch `add-lang` und den Init-One-Shot verdrahtet (Default `flat`,
+byte-identisch); `add-lang go <pfad> --arch hexslice` emittiert das hexSlice-Layout aus slice-045a,
+unbekannte/sprach-fremde Architektur → Exit 2. Die slice-045a-Review-**INFO-1** ist aufgelöst: `gen`
+besitzt jetzt die (lang, arch)-Support-Prüfung (`langArchs`), `cpp+hexslice` fällt fail-fast statt still
+ein Gerüstung-only-Skelett zu schreiben. Review KONFORM (1 INFO), Verifier DoD BESTÄTIGT. Sensoren
+real: `make gates` grün · `make mutate` **60 ok/0** (62/63/64 rot gesehen) · `make full-smoke` grün
+(apps-hex build+**lint** real — der emittierte Lint auf dem Schichten-Code, den 045a nicht abdecken
+konnte; cpp+hexslice → Exit 2).
 
-<!-- Erst nach Abschluss füllen. -->
+**Anders als geplant.** Die Schichtung wurde schärfer als der Plan: `gen` besitzt das Achsen-Vokabular
+(`SupportedArchs`, aus `langArchs` abgeleitet — eine Quelle) UND die per-Sprache-Support-Prüfung
+(`archsForLang`); `cmd` besitzt nur das Exit-Code-Mapping (`callExitCode`). Zwei-stufige Validierung
+(Tippfehler → globales Vokabular; sprach-fremd → sprach-Liste).
+
+**Steering-Loop-Einträge:**
+- **Mutation muss VERHALTEN brechen, nicht KOMPILAT (mutate-Befund-Weg 4 verdient sich seinen Platz).**
+  Fall 62 war zuerst `errors.As(err, &uae)` → `false` — das ließ `uae` **ungenutzt** → Go-Compile-
+  Fehler. `make mutate` meldete korrekt „rot, aber aus falschem Grund": eine Mutation, die das Kompilat
+  bricht statt die Assertion, belegt den Wächter NICHT. Fix: `||` → `&&` (beide `errors.As` bleiben
+  genutzt → kompiliert, der erwartete Test fällt an der Assertion). **Regel: eine sed-Mutation, die die
+  einzige Verwendung einer Variable entfernt, färbt aus Compile-Grund rot — auf eine verhaltens-,
+  nicht kompilat-brechende Form legen.**
+- **F-12 strukturell auflösen (→ [slice-047](../open/slice-047-mutate-host-isolation.md)).** `make mutate`
+  mutiert den **Host-Baum** (nur der Test läuft im Container, die Mutation nicht) — das machte diesen
+  Slice zäh: mutate blockierte die lesenden Rollen, drei Background-Läufe wurden gekillt, der Stop-Hook
+  nagte in jedem Warte-Turn. Was funktionierte: **Foreground** (der Befehl blockt den Turn → keine
+  Yield/Stop-Hook-Zyklen → kein Kill). Der Backlog-Slice **slice-047** beseitigt die Wurzel (Zyklus
+  gegen isolierte Kopie, Host-Baum nie anfassen).
+
+**Folge-Punkte:** slice-046 (a-check-Emitter) unverändert offen — der emittierte `.a-check.yml`-Glob-Satz
+muss die realen Areas/Slices (`example`/`greet`) enumerieren (aus slice-045a-Closure). Review-INFO
+(`--arch=` leerer Wert) nicht-blockierend, kein Folge-Slice.
 
 ## 8. Sub-Area-Modus-Begründung
 
