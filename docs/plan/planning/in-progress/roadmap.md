@@ -12,14 +12,14 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**Keine aktive Welle.** [welle-06-freshness](../done/welle-06-freshness.md) ist **geschlossen** (2026-07-24, s. Abgeschlossene Wellen) — alle drei Slices (040/041/042) in `done/`, jede versions-gepinnte Komponente im nächtlichen `upstream-drift`-Job (Regelwerk-Tag · golangci-lint · d-check · Go · ubuntu-LTS). Keine Folge-Welle geschnitten (green-before-extend, cp-Disziplin — Plandatei erst per `cp`, wenn ihr erster Slice steht).
+**Welle-ID:** [welle-07-arch-achse](../welle-07-arch-achse.md) — Architektur-Achse (`--arch`) + konditionales Arch-Gate. **Aktiv** seit 2026-07-24.
+**Trigger (erfüllt):** [`ADR-0008`](../../adr/0008-arch-achse-emittiertes-skelett.md) **Accepted** (nach zwei Proposed-Review-Runden) + Doc-Kette komplett — Lastenheft **0.11.0** ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)-Arch-Achse, [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)-Happy-Path) + `architecture.md`-Nachzug.
+**Slices:** slice-044 (Generator-Kompositions-Seam) geschnitten in `open/`; slice-045 (`hexagonal`-Layout + Go-Renderer + `--arch`), slice-046 (konditionaler a-check-Emitter) in §4 der Welle (per `cp` bei Schnitt).
+**Wellen-Vorbedingung (Risiko):** das **a-check-Tool** (gepinntes Image + `--print-mk`, wie d-check) ist im Repo noch **nicht belegt** (nur Dockerfile-Kopf-Referenz) — slice-046 beginnt mit dem Beleg; fehlt es, liefert die Welle 044+045 und vertagt die a-check-Emission (Re-Scope, Modul 7).
 
-**Vom Freshness-Nachtlauf gemeldete Drift — alle drei [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)-Folgeoperationen 2026-07-24 aufgelöst** (der Sensor *meldete*, die Bumps *behoben*):
-- **Baseline v3.5.0→v3.5.1:** [slice-043](../done/slice-043-baseline-bump-v3.5.1.md) (Re-Vendor + 5 Pins + Doc-Reconciliation; Review KONFORM, Verifikation DoD BESTÄTIGT).
-- **ubuntu-LTS 24.04→26.04:** `DefaultCppVersion` gebumpt (Wartung).
-- **Go 1.26.4→1.26.5:** `GO_VERSION` + Digest + Skelett-Pin gebumpt (Wartung).
+**Closure-Trigger:** alle Welle-Slices in `done/`; `make gates` + `make mutate` grün; `make full-smoke` belegt **beide** [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)-Richtungen (`--arch hexagonal` → `make a-check` Exit 0; `--arch flat` → kein a-check); Closure-Notiz `welle-07-results.md`.
 
-Der `upstream-drift`-Nachtlauf fährt damit wieder vollständig grün.
+**Zuletzt:** welle-06-freshness geschlossen (2026-07-24); die drei gemeldeten Drifts (Baseline v3.5.1, ubuntu 26.04, Go 1.26.5) alle aufgelöst → `upstream-drift`-Nachtlauf wieder voll grün.
 
 ## Nächste Wellen
 
@@ -28,8 +28,9 @@ Prospektive Kandidaten (nur mit **beobachtbarem Trigger**, Modul 6):
 
 | Welle-Kandidat | Trigger | Wichtigste Slices | Aufwand |
 |---|---|---|---|
-| Arch-Gate (M4) | der Architektur-ADR (Achse `--arch`) accepted — er wird nach dieser Welle proposed | geschichtetes Skelett-Profil (domain/ports/adapters) · a-check-Emission | M |
 | Doc-Gate-Härtung | erneut beobachtete Befund-Klasse (Muster slice-026: neun Instanzen → Sensor) | Anker-Fragment-Sensor · Prosa-Zahlen-Provenienz · citations (slice-014/015) | S |
+
+*(Arch-Gate/M4 ist seit 2026-07-24 die **aktuelle** Welle [welle-07-arch-achse](../welle-07-arch-achse.md) — der Trigger „`--arch`-ADR accepted" ist mit [`ADR-0008`](../../adr/0008-arch-achse-emittiertes-skelett.md) eingetreten.)*
 
 ## Meilensteine
 
@@ -38,7 +39,7 @@ Prospektive Kandidaten (nur mit **beobachtbarem Trigger**, Modul 6):
 | M1 — lauffähiger Offline-Kern (`cmd/ai-harness-init` parst + emittiert Gate-Baseline + legt Templates ab, ohne Netz) | welle-01 | slice-001a/001b/002/003 done | **erreicht (2026-07-18)** |
 | M2 — vollständiger Bootstrap (inkl. Sprachskelett-Generator + Root-README) | welle-02 **und** welle-03 | slice-005 + slice-024 in `done/` **und** Voll-E2E-Smoke grün (welle-03-Closure) | **erreicht (2026-07-22)** |
 | M3 — durchsetzender, phasierter Harness (emittierter Repo erzwingt den Prozess: Hooks + Command-Guard + Workflow-Anleitung; Bootstrap phasiert + idempotent: doc-führt auch für die Zielsprache, `add-lang`/Mono-Repo) | welle-04 **und** welle-05 | welle-04 + welle-05 in `done/` **und** `make full-smoke` grün über die Durchsetzungs- + Idempotenz-Fitness (Guard blockt, Gate-Nachweis-Kreis geschlossen, 2. Init-Lauf idempotent, kein Prune) | **erreicht (2026-07-23)** |
-| M4 — Arch-Gate integriert (a-check, [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) | — (Welle noch nicht geschnitten) | ein Skelett trägt hexagonale Schichten (`domain/ports/adapters`) **und** der a-check-Emitter ist gebaut → a-check wird emittiert + aktiv (sonst [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Verstoß über leerem Prüfbereich) | **offen** |
+| M4 — Arch-Gate integriert (a-check, [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) | [welle-07-arch-achse](../welle-07-arch-achse.md) | ein Skelett trägt hexagonale Schichten (`domain/ports/adapters`) **und** der a-check-Emitter ist gebaut → a-check wird emittiert + aktiv (sonst [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Verstoß über leerem Prüfbereich) | **in Umsetzung** (welle-07 aktiv seit 2026-07-24; [`ADR-0008`](../../adr/0008-arch-achse-emittiertes-skelett.md) Accepted) |
 
 ## Abhängigkeitsgraph
 
@@ -50,8 +51,10 @@ flowchart LR
     W4[welle-04<br/>Durchsetzung & Emission]
     W5[welle-05<br/>Bootstrap-Phasen]
     W6[welle-06<br/>Freshness]
+    W7[welle-07<br/>Arch-Achse]
     W1 --> W2 --> W3 --> W4 --> W5
     W5 -.-> W6
+    W5 --> W7
 ```
 
 ## Abgeschlossene Wellen
