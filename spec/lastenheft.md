@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.10.0
+**Version:** 0.11.0
 
 **Status:** Draft
 
@@ -95,15 +95,31 @@ Pfade). Die Code-Gates werden als Fragmente ans zusammengeführte `make gates` g
 ein sprachloses Ziel bleibt gültig (nur Doc-Gate). `--lang <X>` beim Init ist die
 **One-Shot-Kurzform** (Init + ein `add-lang`).
 
+**Architektur-Achse (`--arch`, parallel zur Sprach-Achse).** Die Struktur des
+emittierten Skeletts ist eine **eigene Achse** neben der Sprache: `--arch <arch>`,
+Default **`flat`** (das heutige Verhalten), opt-in **`hexagonal`** (`domain/ports/adapters`).
+Der Generator **komponiert** `lang × arch` — die Sprach-Schicht liefert die
+**arch-invariante Bau-/Toolchain-Gerüstung** (`Dockerfile`/`go.mod`/`.golangci.yml`
+bzw. `CMakeLists`/`.clang-tidy` — immer präsent) **plus** einen Rollen-Renderer, die
+Arch-Schicht das **Code-Layout** (welche Rollen in welchen Verzeichnissen); so wächst
+die Menge **linear (N Sprachen + M Architekturen)**, nicht N×M. Die Architektur ist eine
+**ADR-Entscheidung des Adopters** (in der Architecture-Phase, wie die Sprache);
+`add-lang <sprache> <pfad> [--arch <arch>]`, je Modul (Mono-Repo mischbar). Sie ist die
+Achse, die [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)s
+Arch-Gate einen realen Prüfbereich gibt.
+
 **Akzeptanzkriterien:**
 
 - **Happy Path:** Given ein initialisiertes Ziel, when `add-lang go <pfad>`, then das Go-Skelett liegt unter `<pfad>` und `make gates` läuft grün inkl. der Go-Code-Gates.
 - **Wiederholbar (Mono-Repo):** Given ein Ziel mit bereits einer Sprache, when `add-lang <andere> <anderer-pfad>`, then beide Skelette koexistieren, `make gates` fährt beide Fragment-Gate-Sätze.
-- **Negative:** Given unbekannte Sprache, when `add-lang <X>`, then Exit 2 + sortierte Profil-Liste.
+- **Arch-Achse:** Given `add-lang go <pfad> --arch hexagonal`, then das Skelett trägt `domain/ports/adapters` (die Bau-Gerüstung unverändert); **ohne** `--arch` (bzw. `--arch flat`) bleibt das flache Skelett **byte-identisch** ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
+- **Negative:** Given unbekannte Sprache, when `add-lang <X>`, then Exit 2 + sortierte Profil-Liste. Given unbekannte Architektur, when `add-lang go <pfad> --arch <Y>`, then Exit 2 + sortierte Architektur-Liste.
 
 **Unterstützte Sprachen:** `go`, `python`, `kotlin`, `java`, `csharp`, `cpp`.
 `cpp` (C++/CMake: cmake/ctest/clang-tidy) folgt; der Generator bleibt
-sprach-agnostisch (ein Layout-Profil je Sprache).
+sprach-agnostisch (ein Sprach-Renderer je Sprache, komponiert mit dem Arch-Layout).
+**Unterstützte Architekturen:** `flat` (Default), `hexagonal` (weitere nur mit
+belegtem Bedarf, kein spekulatives Layout).
 
 ### LH-FA-05 — Root-README emittieren (F1, F2)
 
@@ -138,15 +154,19 @@ Der **Reviewer-Skill** bleibt aus dem Kurs-Template-Satz **gefetcht** (er liegt 
 **Beschreibung:** Analog [`LH-FA-03`](../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) (per-Tool-Fragment) emittiert der Bootstrap das
 **Architektur-Gate**: `.a-check.yml` (Schicht-/Sprach-Config) + `a-check.mk` (a-checks
 `--print-mk`-Fragment, a-check-Image per Digest gepinnt). a-check prüft hexagonale Schichten
-(domain/ports/adapters) im emittierten Sprachskelett ([`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) — read-only, netzlos.
+(domain/ports/adapters) im emittierten Sprachskelett — read-only, netzlos. Der Prüfbereich
+entsteht über die **Architektur-Achse** ([`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)):
+das Gate wird **genau dann** emittiert, wenn ein schichten-tragendes Layout (`--arch hexagonal`)
+gewählt ist. **Vorbedingung:** a-check muss — wie d-check — als gepinntes Image mit `--print-mk`
+verfügbar sein (heute im Repo nur avisiert, nicht integriert); die Umsetzung beginnt mit diesem Beleg.
 
 **Akzeptanzkriterien:**
 
-- **Happy Path:** Given Bootstrap mit einem Sprachskelett, das hexagonale Schichten trägt,
-  then `.a-check.yml` + `a-check.mk` liegen im Zielrepo und `make a-check` ist Exit 0 (die
-  Config bildet die realen Schichten ab).
+- **Happy Path:** Given `add-lang <sprache> <pfad> --arch hexagonal` (das Skelett trägt
+  `domain/ports/adapters`), then `.a-check.yml` + `a-check.mk` liegen im Zielrepo und
+  `make a-check` ist Exit 0 (die Config bildet die realen Schichten ab).
 - **Keine halluzinierten Gates ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):** a-check bricht bei fehlender/ungültiger
-  `.a-check.yml` mit Exit 2 ab. Trägt das Skelett **keine** hexagonalen Schichten, wird das
+  `.a-check.yml` mit Exit 2 ab. Bei `--arch flat` (kein schichten-tragendes Layout) wird das
   Gate begründet **nicht** emittiert — statt ein arch-Gate über einem leeren Prüfbereich leer
   grün melden zu lassen.
 - **Minimal ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)):** a-check läuft Docker-only, netzlos, read-only — das emittierte
@@ -271,3 +291,4 @@ Verifikation), auf die seine `AGENTS.md` §1 (Source Precedence) zeigt — und l
 | 0.8.0 | 2026-07-21 | CR: [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) an [`ADR-0005`](../docs/plan/adr/0005-ziel-repo-distribution.md) nachgezogen — das Zielrepo erhält den **vollen** vendored Template-Baum ([`LH-FA-09`](../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)), darum wiederkehrende Vorlagen **referenziert statt co-located**, derivative Indexe Fülle-wenn-Inhalt, Leerordner via `.gitkeep`; out-of-the-box gate-sicher ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Beim 0.7.0-CR übersehene LH-FA-02-Prämisse; die [`MR-008`](../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)-Abgrenzung ist damit aufgelöst | Emit gate-sicher (slice-024-Smoke) |
 | 0.9.0 | 2026-07-22 | CR: [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) + [`LH-FA-08`](../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) Durchsetzung + Workflow-Commands **Picker → Tool-als-Quelle** (das Tool bringt eine generische, je `--lang` parametrierte Fassung mit, abgeleitet aus Dogfood + Kurs-Prozess-Modulen; keine Kurs-Upstream-Ergänzung mehr als Vorbedingung). [`ADR-0006`](../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md) revidiert die Picker-Herkunft aus [`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md)/[`ADR-0005`](../docs/plan/adr/0005-ziel-repo-distribution.md), Präzedenz [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4). Reviewer-Skill bleibt Fetch; [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) (a-check) unberührt (hängt an hexagonalen Schichten) | Quellmodell-Reconciliation (Cluster A entsperren) |
 | 0.10.0 | 2026-07-22 | CR: Bootstrap-**Phasen** — [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) gesplittet (Init sprach-agnostisch, `--lang` **optional**; die Negative-AC „fehlt `--lang` → Exit 2" fällt; Boundary auf **idempotent** skip-if-present/konvergent statt `--force`) + [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) auf **wiederholbaren, ADR-gegateten** Skelett-Schritt (`add-lang`, Mono-Repo). Die Zielsprache ist eine ADR-Entscheidung des **Adopters**, kein Init-Argument — sonst käme das Skelett vor der Ziel-Architektur (code-führt-Inversion). Getrieben von [`ADR-0007`](../docs/plan/adr/0007-bootstrap-phasen.md) (nach zwei Proposed-Review-Runden accepted) | Bootstrap-Phasen-CR |
+| 0.11.0 | 2026-07-24 | CR: **Architektur-Achse** — [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) um `--arch <arch>` (Default `flat`, opt-in `hexagonal`) erweitert, **parallel** zur Sprach-Achse; der Generator komponiert `lang × arch` (arch-invariante Bau-Gerüstung + arch-gegatetes Code-Layout, `flat` byte-identisch, **N+M statt N×M**); neue AC (Arch-Achse + unbekannte Architektur → Exit 2). [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)-Happy-Path auf `--arch hexagonal` konkretisiert; a-check-**Emission konditional** auf ein schichten-tragendes Layout ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)), a-check-Tool-Verfügbarkeit (Pin/`--print-mk`) als Vorbedingung benannt. Zielrepo-Fokus (nicht ai-harness-init selbst), a-check emitted-only. Getrieben von [`ADR-0008`](../docs/plan/adr/0008-arch-achse-emittiertes-skelett.md) (nach zwei Proposed-Review-Runden accepted) | Arch-Achsen-CR (entsperrt M4) |
