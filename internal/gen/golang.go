@@ -8,7 +8,7 @@ import "strings"
 // die andere vergisst. Ueberschreibbar beim Bootstrap (SKEL_GO_VERSION, cmd) — der
 // Generator selbst bleibt deterministisch: gleiche version -> byte-identische
 // Ausgabe.
-const DefaultGoVersion = "1.26.4"
+const DefaultGoVersion = "1.26.5"
 
 // golangciVersion ist der gepinnte golangci-lint-Tag des generierten Skeletts.
 const golangciVersion = "v2.12.2"

@@ -7,11 +7,11 @@
 # GO_VERSION + GOLANGCI_LINT_VERSION spiegeln das Schwester-Repo a-check (1.26.4 /
 # v2.12.2); die Base-Digests sind dieselben wie dort. Kein Host-go/-golangci-lint
 # (Docker-only, ADR-0003) — die Aufrufe leben hier im Dockerfile, nicht im Bash.
-ARG GO_VERSION=1.26.4
+ARG GO_VERSION=1.26.5
 ARG GOLANGCI_LINT_VERSION=v2.12.2
 
 # ---- deps ------------------------------------------------------------------
-FROM golang:${GO_VERSION}@sha256:792443b89f65105abba56b9bd5e97f680a80074ac62fc844a584212f8c8102c3 AS deps
+FROM golang:${GO_VERSION}@sha256:3aff6657219a4d9c14e27fb1d8976c49c29fddb70ba835014f477e1c70636647 AS deps
 WORKDIR /src
 ENV GOFLAGS="-mod=readonly -buildvcs=false" \
     GOMODCACHE=/go/pkg/mod \
