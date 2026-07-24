@@ -24,27 +24,27 @@ gepinnte Achse der Welle abgedeckt (welle-06 schließt nach diesem Slice).
 
 ## 2. Definition of Done
 
-- [ ] **Docker-Hub-Fetch + Wrapper** (`harness/tools/cpp-freshness.sh` <!-- d-check:ignore (geplante Datei — entsteht in diesem Slice) -->): holt die
+- [x] **Docker-Hub-Fetch + Wrapper** (`harness/tools/cpp-freshness.sh` <!-- d-check:ignore (geplante Datei — entsteht in diesem Slice) -->): holt die
   ubuntu-Tags von `https://hub.docker.com/v2/repositories/library/ubuntu/tags/?page_size=100`,
   **extrahiert das aktuelle LTS** (höchstes `NN.04` mit **geradem** `NN`; `23.04`/`25.04` sind
   Nicht-LTS-Interims und werden ausgefiltert) und ruft für den Vergleich
   `component-freshness.sh --compare` (kein dupliziertes compare). bash+curl+coreutils+awk,
   **kein jq/node** ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
-- [ ] **Hermetischer `--latest-lts <roh>`-Pfad**: die LTS-Extraktion (Tag-Liste → höchstes
+- [x] **Hermetischer `--latest-lts <roh>`-Pfad**: die LTS-Extraktion (Tag-Liste → höchstes
   gerades `NN.04`) ist netzlos mit Fixture-Strings testbar, getrennt vom Fetch (analog
   `--normalize`/`--compare` aus slice-040/041).
-- [ ] **Make-Target `freshness-cpp`:** extrahiert den gepinnten `DefaultCppVersion` aus
+- [x] **Make-Target `freshness-cpp`:** extrahiert den gepinnten `DefaultCppVersion` aus
   [`internal/gen/cpp.go`](../../../../internal/gen/cpp.go) (kanonische Quelle; leer → Exit 2, kein Falsch-Urteil) und
   vergleicht ihn gegen das Docker-Hub-LTS.
-- [ ] **Nachtlauf verdrahtet:** die cpp-Achse im `upstream-drift`-Job
+- [x] **Nachtlauf verdrahtet:** die cpp-Achse im `upstream-drift`-Job
   ([`.github/workflows/upstream-drift.yml`](../../../../.github/workflows/upstream-drift.yml)), mit `if: '!cancelled()'`. **Nicht** in
   `make gates` (offline-grün, [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-- [ ] `make gates` grün: die `--latest-lts`- + `--compare`-Fixture-Tests (LTS-Filter /
+- [x] `make gates` grün: die `--latest-lts`- + `--compare`-Fixture-Tests (LTS-Filter /
   Interim-Ausschluss / max / leer / aktuell / veraltet / fetch-fehler) laufen **offline**.
-- [ ] `make mutate` grün: eine Mutation, die den LTS-Filter bricht (gerade↔ungerade), färbt
+- [x] `make mutate` grün: eine Mutation, die den LTS-Filter bricht (gerade↔ungerade), färbt
   einen Fixture-Test rot (Fixture mit Interim > höchstem LTS als Fänger).
-- [ ] Doku: `make help`-Zeile + `harness/conventions.md`-Freshness-Notiz um die cpp/Docker-Hub-Achse.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Doku: `make help`-Zeile + `harness/conventions.md`-Freshness-Notiz um die cpp/Docker-Hub-Achse.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -114,7 +114,44 @@ Wird *nach* Abschluss ergänzt. Inhalt:
 - Folge-Slices: welche neuen open/-Einträge?
 -->
 
-<!-- Erst nach Abschluss füllen. -->
+**Was hat funktioniert.** Die dritte Sonderquelle fügte sich ins Muster: der
+quellen-agnostische Vergleicher (slice-040) + das hermetische Sub-Kommando (slice-041,
+hier `--latest-lts`) trugen unverändert; neu war nur Docker-Hub-Fetch + LTS-Extraktion.
+Der **Fänger-Fixture** (`FIX_INTERIM` = 25.04/24.04/22.04 → erwartet **24.04**) bewacht die
+eigentliche Docker-Hub-Besonderheit — dass ein numerisch höheres **Nicht-LTS-Interim**
+(25.04) das echte LTS (24.04) nicht schlagen darf; ohne den Gerade-Jahr-Filter fiele der
+Test. Real gegen Docker Hub belegt: LTS = 26.04 (25.04 live vorhanden, korrekt ausgefiltert),
+gepinnt 24.04 → VERALTET (detect-not-fix). **Damit deckt der Nachtlauf jede versions-gepinnte
+Komponente ab** — welle-06 ist inhaltlich komplett.
+
+**Was anders lief als geplant.** **Beide** nachgelagerten Rollen (Review MEDIUM-1, Verifier
+DoD-3) fanden **dasselbe** Finding: der Leer-Pin-Pfad nutzte `${CPP_PINNED:?}` (Exit 1 =
+VERALTET-Klasse), während der von diesem Slice **neu hinzugefügte** Header-Satz („Exit 2 …
+auch: kein gepinnter Wert") und die DoD Exit 2 zusagen. Gefixt: expliziter Leer-Check vor dem
+Fetch → Exit 2 (kann-nicht-urteilen), + eigener Fixture-Test + Mutation 50. Nebenher fiel im
+mutate-Lauf ein **Go-Bump-Nachhall** auf (Mutation 18 hardcodete den alten Pin-String → BEFUND
+nach 1.26.4→1.26.5), separat generisch re-verankert (`736dbf7`).
+
+**Steering-Loop-Eintrag** (kanonische Definition:
+[`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.0/kurs/de/grundlagen/klassifikation.md#steering-loop)):
+
+- **Ein NEU hinzugefügter Contract-Satz braucht sofort seine rot gesehene Gegenprobe (§3.6).**
+  Der Slice erweiterte den Datei-Header um „Exit 2 auch: kein gepinnter Wert" — eine *neue*
+  Zusage —, ohne dass der Code sie hielt (`${VAR:?}` = Exit 1) und ohne Test. Die §3.6-Klasse
+  „Zusage weiter als Abdeckung" tritt genau dort auf, wo ein Kommentar **mehr** verspricht als
+  die Schwester-Datei (`go-freshness.sh` erhob den Anspruch bewusst nicht). Regel: wer einen
+  Contract-Kommentar **verschärft**, liefert im selben Zug Code + Test + Mutation, sonst ist der
+  Kommentar eine Halb-Zusage. **Zwei unabhängige Rollen fingen es** — erneut der Beleg für die
+  Kontext-Trennung der Rollen.
+- **Ein Pin-Bump muss `make mutate` nachziehen, nicht nur `make gates`.** Der Go-Bump lief nur
+  gegen `gates`; wert-hardcodende Mutationen (Fall 18) veralteten still und flogen erst im
+  nächsten `mutate`-Lauf auf. `gates` enthält `mutate` bewusst **nicht** (mutiert den Baum) —
+  darum gehört zu jedem Wert-Bump ein expliziter `make mutate`-Lauf in die Pre-completion.
+
+**Folge-Slices.** Keine neuen `open/`-Einträge. **welle-06 ist bereit zur Closure** (alle drei
+Slices 040/041/042 done, jede Achse im Nachtlauf verdrahtet). Offen als bewusste
+[`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)-Folgeoperationen (out-of-scope, vom Sensor **gemeldet**): Baseline-Bump v3.5.1
+und ubuntu-LTS-Bump 24.04→26.04.
 
 ## 8. Sub-Area-Modus-Begründung
 
