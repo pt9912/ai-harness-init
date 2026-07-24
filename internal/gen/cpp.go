@@ -7,7 +7,7 @@ import "strings"
 // „Version" heisst je Sprache etwas anderes (go: Go-Version; cpp: ubuntu-Tag); das Profil
 // interpretiert sie, der Aufrufer faedelt sie generisch (SKEL_CPP_VERSION). TAG-gepinnt,
 // kein floating (LH-QA-02), aber bewusst OHNE Digest, damit der Knopf wirkt.
-const DefaultCppVersion = "24.04"
+const DefaultCppVersion = "26.04"
 
 // cppProfile ist das C++-SKELETT fuer die gegebene ubuntu-Version (ADR-0003 Docker-only):
 // die Gates sind Dockerfile-Stages (build/test/lint); dazu ein CMake-Projekt, ein baubares
