@@ -279,7 +279,15 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   `regelwerk-check`s Asset-Achse). Maintenance/Netz, **nicht** in `gates` (offline-grün
   bleibt); der Sensor mutiert nichts (Re-Baseline bleibt die bewusste Operation oben).
   `baseline-verify` deckt weiterhin **keine** der beiden Upstream-Achsen ab — es prüft nur
-  die eigene Arbeitskopie, nie den Upstream.
+  die eigene Arbeitskopie, nie den Upstream. **Generalisiert (slice-040):** die
+  `releases/latest`-Tag-Mechanik von `baseline-freshness` lebt seit slice-040 als
+  parametrierter Sensor `harness/tools/component-freshness.sh` (`name · pinned ·
+  releases-latest-url`); `baseline-freshness` ist ein dünner Wrapper darum, und
+  **`make freshness-golangci`** (Pin: `GOLANGCI_LINT_VERSION`) sowie
+  **`make freshness-dcheck`** (Pin: `DCHECK_IMAGE`-Tag aus [`d-check.mk`](../d-check.mk))
+  tragen dieselbe Read-only-/Nachtlauf-Disziplin auf zwei weitere Komponenten-Achsen —
+  Maintenance/Netz, **nicht** in `gates` ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)),
+  bash+curl ohne jq/node ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
 - **Migration:** Ein bestehender `.harness/cache/`-Cache aus
   [`MR-006`](#mr-006--regelwerk-cache-als-split-modul-verzeichnis) ist nach dem
   Umstieg ein nicht mehr regenerierbares Überbleibsel (`regelwerk-fetch` existiert

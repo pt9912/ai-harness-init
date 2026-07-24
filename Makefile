@@ -34,7 +34,12 @@ BASELINE_TAG ?= v3.5.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 123e3383261102e6be6465e1f4bade08a474c00edc4fff89f5c4b11bd640f8ff
 
-.PHONY: help gates record-gates test lint build compile artifact smoke full-smoke shell-lint ci-lint baseline-verify regelwerk-check baseline-freshness mutate
+.PHONY: help gates record-gates test lint build compile artifact smoke full-smoke shell-lint ci-lint baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck mutate
+
+# d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
+# steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.51.1 -> v0.51.1). Aus
+# DCHECK_IMAGE, NICHT DCHECK_REF — letzteres traegt bei gesetztem Digest keinen Tag.
+DCHECK_TAG := $(lastword $(subst :, ,$(DCHECK_IMAGE)))
 help: ## Targets anzeigen
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-14s %s\n", $$1, $$2}'
@@ -132,6 +137,27 @@ regelwerk-check: ## Upstream-Content-Drift des Baseline-ZIP (d-check sources, Ne
 # Fetch<->Vergleich getrennt (hermetisch testbar).
 baseline-freshness: ## Neueren Upstream-Tag als BASELINE_TAG melden (read-only) — Maintenance/CI, NICHT in gates
 	@BASELINE_TAG='$(BASELINE_TAG)' RELEASES_LATEST_URL='https://github.com/pt9912/ai-harness-course/releases/latest' bash harness/tools/baseline-freshness.sh
+
+# Freshness-Achsen weiterer Komponenten (slice-040, MR-007): derselbe generische
+# Sensor (component-freshness.sh), je Achse mit kanonischer Pin-Quelle + Upstream-
+# releases/latest. Read-only, Netz, Maintenance/CI, NICHT in gates (LH-QA-01).
+# Kanonische Pin-Quelle golangci-lint: GOLANGCI_LINT_VERSION (oben) — DERSELBE Var,
+# den `make lint` als Build-Arg in die Dockerfile-lint-Stage reicht, also kein
+# zweiter Pin, gegen den der Sensor driften koennte.
+freshness-golangci: ## Neueren golangci-lint-Release als GOLANGCI_LINT_VERSION melden (read-only) — Maintenance/CI, NICHT in gates
+	@COMPONENT_NAME='golangci-lint' COMPONENT_PINNED='$(GOLANGCI_LINT_VERSION)' \
+	  COMPONENT_ADVICE='GOLANGCI_LINT_VERSION (Makefile) bumpen; Dockerfile-lint-Digest + gen-Skelett-Pin ziehen mit (TestGoProfile_PinsMatchRepo).' \
+	  RELEASES_LATEST_URL='https://github.com/golangci/golangci-lint/releases/latest' \
+	  bash harness/tools/component-freshness.sh
+
+# Kanonische Pin-Quelle d-check: der Tag in DCHECK_IMAGE (d-check.mk), via DCHECK_TAG
+# extrahiert. Ein neuer d-check-Release verlangt `d-check --print-mk` neu erzeugen +
+# DCHECK_DIGEST neu pinnen (MR-010/MR-012) — daher der Advice.
+freshness-dcheck: ## Neueren d-check-Release als DCHECK_IMAGE-Tag melden (read-only) — Maintenance/CI, NICHT in gates
+	@COMPONENT_NAME='d-check' COMPONENT_PINNED='$(DCHECK_TAG)' \
+	  COMPONENT_ADVICE='d-check --print-mk neu erzeugen + DCHECK_IMAGE/DCHECK_DIGEST in d-check.mk neu pinnen (MR-010/MR-012).' \
+	  RELEASES_LATEST_URL='https://github.com/pt9912/d-check/releases/latest' \
+	  bash harness/tools/component-freshness.sh
 
 record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh

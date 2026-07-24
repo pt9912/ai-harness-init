@@ -89,9 +89,16 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - run: make regelwerk-check
-      # `if: '!cancelled()'`: die beiden Netz-Sensoren pruefen UNABHAENGIGE Achsen
-      # (Asset-Content vs. Release-Tag) — man will beide Ergebnisse. Ohne dies
-      # liefe baseline-freshness nicht, sobald regelwerk-check Drift meldet
+      # `if: '!cancelled()'`: die Netz-Sensoren pruefen UNABHAENGIGE Achsen
+      # (Asset-Content vs. Release-Tag je Komponente) — man will ALLE Ergebnisse.
+      # Ohne dies liefe der naechste Sensor nicht, sobald ein frueherer Drift meldet
       # (Review-Befund slice-027 F-2). Der Job wird trotzdem rot, wenn einer failt.
       - if: '!cancelled()'
         run: make baseline-freshness
+      # Weitere Komponenten-Achsen (slice-040, MR-007): golangci-lint + d-check je
+      # gegen ihr Upstream-releases/latest. Jede eigenstaendig, damit eine gemeldete
+      # Drift die anderen nicht verschluckt.
+      - if: '!cancelled()'
+        run: make freshness-golangci
+      - if: '!cancelled()'
+        run: make freshness-dcheck
