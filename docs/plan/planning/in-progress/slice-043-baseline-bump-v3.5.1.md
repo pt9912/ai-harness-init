@@ -51,8 +51,10 @@ den `baseline-freshness` als neueren Tag meldete). Alle gekoppelten Pins ziehen 
 
 **Ist-Messung (2026-07-24, live belegt):**
 - Release v3.5.1 erreichbar; `lab-regelwerk.zip` = 124657 Bytes, sha256
-  `7268a8e6f36476c98d5cf0547d16deacec70fcddcf23df38f87d029e967cb10d`, **54 Dateien** (regelwerk/ +
-  templates/) — der v3.5.0-Baum hat 42 → das Regelwerk **wuchs** (neue Module/Templates).
+  `7268a8e6f36476c98d5cf0547d16deacec70fcddcf23df38f87d029e967cb10d`. **42 Dateien** (21 regelwerk +
+  21 templates) — **gleicher Dateisatz** wie v3.5.0 (die „54" in `unzip -l` zählte Verzeichnis-Einträge
+  mit, kein Wachstum). **36 der 42 Dateien inhaltlich geändert** (alle 21 Regelwerk-Module + 15
+  Templates; 0 hinzugefügt, 0 entfernt) — ein breiter Minor-Content-Refresh, keine Struktur-Änderung.
 - 5 Pin-Stellen: `BASELINE_TAG`/`BASELINE_ZIP_SHA256` (`Makefile`), `DefaultTag`/`DefaultBaselineSHA256`
   ([`internal/fetch/baseline.go`](../../../../internal/fetch/baseline.go)), `.d-check.yml`-`sources` (url+sha256).
 - `internal/fetch/baseline_test.go` nutzt `"v3.5.0"` als **Test-internes Fetch-Argument** (arbiträrer
@@ -89,8 +91,9 @@ DoD vollständig; Review konform (Modul 10); Verifikation bestätigt die DoD (Mo
 
 ## 6. Risiken und offene Punkte
 
-- **Regelwerk-Inhalt änderte sich (42→54 Dateien).** Der Re-Vendor übernimmt den neuen Stand; ob eine
-  neue/geänderte Regel eine Repo-Konventions-Kollision einführt, ist beim Review zu prüfen (der Baum ist
+- **Regelwerk-Inhalt änderte sich breit (36/42 Dateien, gleicher Dateisatz).** Der Re-Vendor übernimmt
+  den neuen Stand; ob eine geänderte Regel eine Repo-Konventions-Kollision einführt, ist beim Review
+  zu prüfen — Stichprobe auf die Rollen-Module (5/8/9/10/11), auf die sich das Repo stützt (der Baum ist
   derivativ; bei Konflikt gilt der Kurs). Kein Blocker erwartet — v3.5.0→v3.5.1 ist ein Minor.
 - **Externe Kurs-URLs nicht d-check-geprüft** (netzlos). Ein `.../blob/v3.5.0/...`→`.../v3.5.1/...`-Bump
   bricht `docs-check` nicht (externe Anker werden nicht erreicht), aber die Ziel-Anker müssen im

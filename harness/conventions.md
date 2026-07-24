@@ -8,23 +8,24 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ## Baseline
 
 - **Konvention:** AI-Harness-Kurs
-- **Regelwerk + Templates:** `v3.5.0` committet vendored
-  (`.harness/baseline/v3.5.0/`, [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
-  `regelwerk/README.md`: **Kurs-Welle 32 · 2026-07-19**.
+- **Regelwerk + Templates:** `v3.5.1` committet vendored
+  (`.harness/baseline/v3.5.1/`, [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
+  `regelwerk/README.md`: **Kurs-Welle 33 · 2026-07-23**.
 - **d-check:** Image v0.51.1 (Digest in d-check.mk, [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert), [`MR-011`](#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines), [`MR-012`](#mr-012--d-check-pin-v0511-sources-verfügbar))
 - **Datum der Adoption:** 2026-06-13 (Templates-Stand damals: `templates-v4`).
-  **Re-Baseline auf `v3.1.0`:** 2026-07-17 (slice-011/012); **auf `v3.5.0`:** 2026-07-19 (slice-019).
+  **Re-Baseline auf `v3.1.0`:** 2026-07-17 (slice-011/012); **auf `v3.5.0`:** 2026-07-19 (slice-019);
+  **auf `v3.5.1`:** 2026-07-24 (slice-043).
 
 ## Adoptierte Konventions-Quellen
 
-- **Extern (Kurs, kanonisch):** <https://github.com/pt9912/ai-harness-course/tree/v3.5.0/kurs/de>
-  — auf den Tag `v3.5.0` gepinnt, **nicht** `main`-floating
+- **Extern (Kurs, kanonisch):** <https://github.com/pt9912/ai-harness-course/tree/v3.5.1/kurs/de>
+  — auf den Tag `v3.5.1` gepinnt, **nicht** `main`-floating
   ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit); Erreichbarkeit
-  am 2026-07-19 per `curl` als HTTP 200 belegt). Ersetzt die frühere
+  am 2026-07-24 per `curl` belegt — das Release-Asset `lab-regelwerk.zip` gefetcht + sha256-verifiziert). Ersetzt die frühere
   `raw…/main/…/agents-regelwerk.md`-Monolith-URL, die **404** liefert (der Monolith
   existiert upstream seit v2.0.0 nicht mehr — die Module leben unter `/kurs/de/`).
 - **In-Repo (verkörperte Form):** die committet vendored Baseline
-  `.harness/baseline/v3.5.0/{regelwerk,templates}/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — die
+  `.harness/baseline/v3.5.1/{regelwerk,templates}/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — die
   präsente, netzlose Sicht auf die kanonische Quelle; bei Konflikt gilt der Kurs.
 
 ## Adaptions-Block

@@ -114,7 +114,7 @@ make gates
 Während des Aufsetzens sehen Sie eine Abschluss-Zeile wie:
 
 ```text
-ai-harness-init: Bootstrap (Baseline v3.5.0 vendored + Doc-Gate + Aggregator + Durchsetzung + Template-Baseline) — --lang=go (Skelett verdrahtet).
+ai-harness-init: Bootstrap (Baseline v3.5.1 vendored + Doc-Gate + Aggregator + Durchsetzung + Template-Baseline) — --lang=go (Skelett verdrahtet).
 ```
 
 Das bedeutet: Regelwerk und Vorlagen liegen im Repository, die Prüfungen sind verdrahtet, und ein lauffähiges Go-Grundgerüst ist eingebaut. `make gates` läuft danach ohne Fehler durch. (Ohne `--lang` steht statt „Skelett verdrahtet“ die Meldung „sprach-agnostisch (doc-only Gate)“ — siehe [Ohne Sprache aufsetzen](#ohne-sprache-aufsetzen-doc-only).)
@@ -235,7 +235,7 @@ ai-harness-init --lang go --name "Mein Projekt"
 **Vorgehen**
 
 ```bash
-COURSE_TAG=v3.5.0 ai-harness-init --lang go --name "Mein Projekt"
+COURSE_TAG=v3.5.1 ai-harness-init --lang go --name "Mein Projekt"
 ```
 
 **Ergebnis:** Das Regelwerk wird vom angegebenen Kurs-Stand geholt. Ohne die Variable wird der im Werkzeug festgelegte, geprüfte Stand verwendet.
@@ -292,7 +292,7 @@ Alle Umgebungsvariablen sind **optional**. Ohne sie gelten festgelegte, reproduz
 Beispiel mit mehreren Variablen:
 
 ```bash
-COURSE_TAG=v3.5.0 SKEL_GO_VERSION=1.26.4 ai-harness-init --lang go --name "Mein Projekt"
+COURSE_TAG=v3.5.1 SKEL_GO_VERSION=1.26.4 ai-harness-init --lang go --name "Mein Projekt"
 ```
 
 ---
