@@ -26,8 +26,8 @@ const golangciVersion = "v2.12.2"
 // (LH-QA-02), aber bewusst OHNE Digest: ein Digest wuerde die Go-Version
 // festnageln und den GO_VERSION-Knopf wirkungslos machen. go (major.minor) in
 // go.mod leitet sich aus version ab, damit die Sprachversion zur Toolchain passt.
-func goProfile(version string) map[string]string {
-	return composeSkeleton(goScaffolding, goRole, version, archFlat)
+func goProfile(version, arch string) map[string]string {
+	return composeSkeleton(goScaffolding, goRole, version, arch)
 }
 
 // goScaffolding — die arch-INVARIANTE Go-Bau-/Toolchain-Gerueestung: Modul-Manifest,
@@ -41,14 +41,43 @@ func goScaffolding(version string) map[string]string {
 	}
 }
 
-// goRole rendert eine Code-Rolle als Go-Datei(en). Entry-Point -> cmd/app/main.go;
-// die Test-Rolle traegt im flachen Go-Skelett heute KEINE eigene Datei (main.go ist
-// trivial) -> nil. Eine nicht unterstuetzte Rolle liefert nil (kein Beitrag). slice-045
-// ergaenzt die domain/ports/adapters-Rollen fuer das hexagonale Layout.
+// goRole rendert eine Code-Rolle als Go-Datei(en). Flach: Entry-Point -> cmd/app/main.go,
+// Test-Rolle -> nil (main.go ist trivial). hexSlice (slice-045a, ADR-0009): die vier
+// Schicht-Rollen + der Composition Root rendern in die kanonischen Verzeichnisse
+// (internal/hexagon/{domain,application}, internal/adapters/{inbound,outbound}, cmd/app).
+// Die Import-Richtungen sind inward-only (app->domain, app->ports, ports->domain,
+// adapters->app, adapters->domain); Outbound-Adapter erfuellen die Ports strukturell
+// (kein Import), verdrahtet im Composition Root. Eine nicht unterstuetzte Rolle -> nil.
 func goRole(r codeRole) map[string]string {
 	switch r {
 	case roleEntrypoint:
 		return map[string]string{"cmd/app/main.go": goMain}
+	case roleDomain:
+		return map[string]string{
+			"internal/hexagon/domain/example/greeting.go":      goHexDomain,
+			"internal/hexagon/domain/example/greeting_test.go": goHexDomainTest,
+		}
+	case rolePorts:
+		return map[string]string{
+			"internal/hexagon/application/example/ports/greeting_repository.go": goHexAreaPort,
+			"internal/hexagon/application/example/greet/ports/notifier.go":      goHexSlicePort,
+		}
+	case roleAppSlice:
+		return map[string]string{
+			"internal/hexagon/application/example/greet/command.go":     goHexCommand,
+			"internal/hexagon/application/example/greet/result.go":      goHexResult,
+			"internal/hexagon/application/example/greet/validator.go":   goHexValidator,
+			"internal/hexagon/application/example/greet/handler.go":     goHexHandler,
+			"internal/hexagon/application/example/greet/handler_test.go": goHexHandlerTest,
+		}
+	case roleAdapters:
+		return map[string]string{
+			"internal/adapters/inbound/cli/example/cli.go":            goHexInboundCLI,
+			"internal/adapters/outbound/memory/example/repository.go": goHexOutboundRepo,
+			"internal/adapters/outbound/notify/stdout.go":             goHexOutboundNotify,
+		}
+	case roleCompositionRoot:
+		return map[string]string{"cmd/app/main.go": goHexMain}
 	}
 	return nil
 }
@@ -110,6 +139,304 @@ import (
 
 func main() {
 	if _, err := fmt.Fprintln(os.Stdout, "Hallo vom generierten ai-harness-init-Skelett."); err != nil {
+		os.Exit(1)
+	}
+}
+`
+
+// --- hexSlice-Go-Rollen (slice-045a, ADR-0009) ---------------------------------
+// Minimal-kompilierendes, a-check-konformes HexSlice-Skelett (eine example-Area, eine
+// greet-Use-Case-Slice). Die Struktur — Schichten + inward-only-Importe — ist der
+// Vertrag, nicht die Domaene; der Adopter ersetzt example/greet durch seine Slices.
+
+// goHexDomain — Domain-Schicht (importiert nur die Standardbibliothek).
+const goHexDomain = `// Package example ist die Domain des generierten hexSlice-Skeletts (Domain-Schicht:
+// importiert nur sich selbst).
+package example
+
+import "errors"
+
+// Greeting ist ein Domain-Value-Object mit nicht-leerer Nachricht.
+type Greeting struct {
+	// Message ist der validierte Gruss-Text.
+	Message string
+}
+
+// NewGreeting konstruiert ein Greeting und erzwingt die Domain-Invariante (nicht-leere
+// Nachricht).
+func NewGreeting(message string) (Greeting, error) {
+	if message == "" {
+		return Greeting{}, errors.New("empty greeting message")
+	}
+	return Greeting{Message: message}, nil
+}
+`
+
+// goHexDomainTest — Domain-Test (external Test-Package, testpackage-konform).
+const goHexDomainTest = `package example_test
+
+import (
+	"testing"
+
+	"app/internal/hexagon/domain/example"
+)
+
+func TestNewGreeting(t *testing.T) {
+	g, err := example.NewGreeting("hi")
+	if err != nil {
+		t.Fatalf("unerwarteter Fehler: %v", err)
+	}
+	if g.Message != "hi" {
+		t.Errorf("Message = %q, want hi", g.Message)
+	}
+	if _, err := example.NewGreeting(""); err == nil {
+		t.Error("leere Nachricht muss einen Fehler liefern")
+	}
+}
+`
+
+// goHexAreaPort — Business-Area-Port (Port-Schicht: importiert nur die Domain).
+const goHexAreaPort = `// Package ports deklariert die Business-Area-Ports der example-Area (Port-Schicht:
+// importiert nur die Domain).
+package ports
+
+import "app/internal/hexagon/domain/example"
+
+// GreetingRepository persistiert Greetings (Outbound-Port; ein Adapter erfuellt ihn
+// strukturell, verdrahtet im Composition Root).
+type GreetingRepository interface {
+	// Save persistiert ein Greeting.
+	Save(greeting example.Greeting) error
+}
+`
+
+// goHexSlicePort — slice-lokaler Port (Port-Schicht: importiert nur die Domain).
+const goHexSlicePort = `// Package ports deklariert die slice-lokalen Ports der greet-Use-Case (Port-Schicht:
+// importiert nur die Domain).
+package ports
+
+import "app/internal/hexagon/domain/example"
+
+// Notifier annonciert ein Greeting (slice-lokaler Outbound-Port).
+type Notifier interface {
+	// Notify annonciert das Greeting.
+	Notify(greeting example.Greeting) error
+}
+`
+
+// goHexCommand — Application-Slice: die Eingabe (traegt das Package-Kommentar).
+const goHexCommand = `// Package greet ist die greet-Use-Case-Slice (Application-Schicht: importiert Domain
+// und Ports, nie Adapter).
+package greet
+
+// Command ist die Eingabe der greet-Use-Case.
+type Command struct {
+	// Message ist der rohe Gruss-Text.
+	Message string
+}
+`
+
+// goHexResult — Application-Slice: die Ausgabe.
+const goHexResult = `package greet
+
+// Result ist die Ausgabe der greet-Use-Case.
+type Result struct {
+	// Message ist der bestaetigte Gruss-Text.
+	Message string
+}
+`
+
+// goHexValidator — Application-Slice: Roh-Eingabe -> Domain (app -> domain).
+const goHexValidator = `package greet
+
+import "app/internal/hexagon/domain/example"
+
+// Validate wandelt die Roh-Eingabe in ein Domain-Greeting (app -> domain).
+func Validate(cmd Command) (example.Greeting, error) {
+	return example.NewGreeting(cmd.Message)
+}
+`
+
+// goHexHandler — Application-Slice: der Use-Case-Handler (app -> domain, app -> ports).
+const goHexHandler = `package greet
+
+import (
+	areaports "app/internal/hexagon/application/example/ports"
+	sliceports "app/internal/hexagon/application/example/greet/ports"
+)
+
+// Handler fuehrt die greet-Use-Case aus (app -> domain, app -> ports).
+type Handler struct {
+	repo     areaports.GreetingRepository
+	notifier sliceports.Notifier
+}
+
+// NewHandler verdrahtet den Handler mit seinen Ports.
+func NewHandler(repo areaports.GreetingRepository, notifier sliceports.Notifier) *Handler {
+	return &Handler{repo: repo, notifier: notifier}
+}
+
+// Handle validiert die Eingabe zu einem Domain-Greeting und persistiert/annonciert es.
+func (h *Handler) Handle(cmd Command) (Result, error) {
+	greeting, err := Validate(cmd)
+	if err != nil {
+		return Result{}, err
+	}
+	if err := h.repo.Save(greeting); err != nil {
+		return Result{}, err
+	}
+	if err := h.notifier.Notify(greeting); err != nil {
+		return Result{}, err
+	}
+	return Result{Message: greeting.Message}, nil
+}
+`
+
+// goHexHandlerTest — Handler-Test mit Stub-Ports (external Test-Package).
+const goHexHandlerTest = `package greet_test
+
+import (
+	"testing"
+
+	"app/internal/hexagon/application/example/greet"
+	"app/internal/hexagon/domain/example"
+)
+
+type stubRepo struct{}
+
+func (stubRepo) Save(example.Greeting) error { return nil }
+
+type stubNotifier struct{}
+
+func (stubNotifier) Notify(example.Greeting) error { return nil }
+
+func TestHandlerHandle(t *testing.T) {
+	h := greet.NewHandler(stubRepo{}, stubNotifier{})
+	res, err := h.Handle(greet.Command{Message: "hi"})
+	if err != nil {
+		t.Fatalf("unerwarteter Fehler: %v", err)
+	}
+	if res.Message != "hi" {
+		t.Errorf("Message = %q, want hi", res.Message)
+	}
+}
+`
+
+// goHexInboundCLI — Inbound-Adapter (adapter -> app).
+const goHexInboundCLI = `// Package cli ist der Inbound-CLI-Adapter der example-Area (treibt die Use-Case;
+// Adapter-Schicht -> Application).
+package cli
+
+import (
+	"fmt"
+	"io"
+
+	"app/internal/hexagon/application/example/greet"
+)
+
+// Runner treibt die greet-Use-Case von der Kommandozeile (adapter -> app).
+type Runner struct {
+	handler *greet.Handler
+	out     io.Writer
+}
+
+// NewRunner verdrahtet den CLI-Adapter mit dem Handler und der Ausgabe.
+func NewRunner(handler *greet.Handler, out io.Writer) *Runner {
+	return &Runner{handler: handler, out: out}
+}
+
+// Run fuehrt die Use-Case aus und schreibt das Ergebnis.
+func (r *Runner) Run(message string) error {
+	res, err := r.handler.Handle(greet.Command{Message: message})
+	if err != nil {
+		return err
+	}
+	_, err = fmt.Fprintln(r.out, res.Message)
+	return err
+}
+`
+
+// goHexOutboundRepo — Outbound-Adapter, erfuellt den GreetingRepository-Port
+// strukturell (adapter -> domain; kein Port-Import).
+const goHexOutboundRepo = `// Package memory ist ein In-Memory-Outbound-Adapter der example-Area (erfuellt den
+// GreetingRepository-Port strukturell; verdrahtet im Composition Root).
+package memory
+
+import "app/internal/hexagon/domain/example"
+
+// Repository haelt Greetings im Speicher.
+type Repository struct {
+	saved []example.Greeting
+}
+
+// NewRepository konstruiert ein leeres In-Memory-Repository.
+func NewRepository() *Repository {
+	return &Repository{}
+}
+
+// Save haengt das Greeting an den Speicher an.
+func (r *Repository) Save(greeting example.Greeting) error {
+	r.saved = append(r.saved, greeting)
+	return nil
+}
+
+// Count liefert die Anzahl gespeicherter Greetings.
+func (r *Repository) Count() int {
+	return len(r.saved)
+}
+`
+
+// goHexOutboundNotify — Outbound-Adapter, erfuellt den Notifier-Port strukturell
+// (adapter -> domain; kein Port-Import).
+const goHexOutboundNotify = `// Package notify ist ein Outbound-Adapter, der Greetings auf einen io.Writer annonciert
+// (erfuellt den Notifier-Port strukturell; verdrahtet im Composition Root).
+package notify
+
+import (
+	"fmt"
+	"io"
+
+	"app/internal/hexagon/domain/example"
+)
+
+// Writer annonciert Greetings auf einen io.Writer.
+type Writer struct {
+	out io.Writer
+}
+
+// NewWriter konstruiert einen Writer.
+func NewWriter(out io.Writer) *Writer {
+	return &Writer{out: out}
+}
+
+// Notify schreibt die Gruss-Nachricht.
+func (w *Writer) Notify(greeting example.Greeting) error {
+	_, err := fmt.Fprintln(w.out, greeting.Message)
+	return err
+}
+`
+
+// goHexMain — Composition Root (cmd/app/main.go): verdrahtet Adapter, Ports und die
+// Use-Case-Slice. a-check-exempt (cmd/**). Ersetzt im hexSlice-Layout den flachen goMain.
+const goHexMain = `// Command app — vom ai-harness-init generiertes hexSlice-Skelett. Composition Root:
+// verdrahtet Adapter, Ports und Use-Case-Slices (a-check-exempt, cmd/**).
+package main
+
+import (
+	"os"
+
+	cli "app/internal/adapters/inbound/cli/example"
+	memory "app/internal/adapters/outbound/memory/example"
+	"app/internal/adapters/outbound/notify"
+	"app/internal/hexagon/application/example/greet"
+)
+
+func main() {
+	repo := memory.NewRepository()
+	notifier := notify.NewWriter(os.Stdout)
+	handler := greet.NewHandler(repo, notifier)
+	runner := cli.NewRunner(handler, os.Stdout)
+	if err := runner.Run("Hallo vom generierten hexSlice-Skelett."); err != nil {
 		os.Exit(1)
 	}
 }

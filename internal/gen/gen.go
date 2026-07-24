@@ -34,19 +34,42 @@ func (e *UnknownLangError) Error() string {
 	return fmt.Sprintf("unbekannte Sprache %q; verfuegbar: %s", e.Lang, strings.Join(e.Available, ", "))
 }
 
-// Generate schreibt das Skelett fuer lang nach destDir — in sortierter (also
-// deterministischer) Reihenfolge. version ist die Toolchain-Version des Profils
-// (go: die Go-Version; cpp: der ubuntu-Base-Tag); der Generator bleibt REIN — gleiche
-// (lang, version) liefert byte-identische Ausgabe (LH-QA-02), die Aufloesung des Werts
-// (Default/Env) macht der Aufrufer (cmd). Eine Sprache ohne Profil liefert einen
-// *UnknownLangError mit der sortierten Liste der unterstuetzten Profile, statt
-// stillschweigend nichts zu tun.
+// UnknownArchError meldet eine Architektur ohne Layout samt der sortierten Liste der
+// unterstuetzten (slice-045a). Symmetrisch zu UnknownLangError: als Typ (via errors.As
+// unterscheidbar), damit slice-045b den Aufruf-Fehler (Exit 2) sauber vom Emit-Fehler
+// trennt. Der Generator selbst emittiert bei unbekannter Architektur nichts, statt still
+// ein Gerueestung-only-Skelett zu schreiben.
+type UnknownArchError struct {
+	Arch      string
+	Available []string
+}
+
+func (e *UnknownArchError) Error() string {
+	return fmt.Sprintf("unbekannte Architektur %q; verfuegbar: %s", e.Arch, strings.Join(e.Available, ", "))
+}
+
+// Generate schreibt das FLACHE Skelett fuer lang nach destDir (Rueckwaerts-API: der
+// heutige --lang-One-Shot ruft es unveraendert). Aequivalent zu GenerateArch(…, "flat").
 func Generate(destDir, lang, version string) error {
+	return GenerateArch(destDir, lang, version, archFlat)
+}
+
+// GenerateArch schreibt das Skelett fuer (lang, arch) nach destDir — in sortierter (also
+// deterministischer) Reihenfolge. version ist die Toolchain-Version des Profils (go: die
+// Go-Version; cpp: der ubuntu-Base-Tag); der Generator bleibt REIN — gleiche (lang, version,
+// arch) liefert byte-identische Ausgabe (LH-QA-02), die Aufloesung der Werte (Default/Env/
+// CLI) macht der Aufrufer (cmd, slice-045b). Eine Sprache ohne Profil -> *UnknownLangError,
+// eine Architektur ohne Layout -> *UnknownArchError (je mit sortierter Liste), statt
+// stillschweigend nichts bzw. ein Gerueestung-only-Skelett zu schreiben.
+func GenerateArch(destDir, lang, version, arch string) error {
 	build, ok := profiles()[lang]
 	if !ok {
 		return &UnknownLangError{Lang: lang, Available: SupportedLangs()}
 	}
-	prof := build(version)
+	if archLayout(arch) == nil {
+		return &UnknownArchError{Arch: arch, Available: SupportedArchs()}
+	}
+	prof := build(version, arch)
 	rels := make([]string, 0, len(prof))
 	for rel := range prof {
 		rels = append(rels, rel)
@@ -79,8 +102,8 @@ func SupportedLangs() []string {
 // Toolchain-Version). Als Funktion (nicht Paket-Variable) wie baselineTrees()/
 // rootMarkers() im Repo — gochecknoglobals-konform. Eine neue Sprache ist ein
 // neuer Eintrag, kein Umbau der Mechanik (LH-FA-04: sprach-agnostisch).
-func profiles() map[string]func(version string) map[string]string {
-	return map[string]func(string) map[string]string{
+func profiles() map[string]func(version, arch string) map[string]string {
+	return map[string]func(string, string) map[string]string{
 		"go":  goProfile,
 		"cpp": cppProfile,
 	}

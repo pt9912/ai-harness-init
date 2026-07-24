@@ -27,7 +27,8 @@ Kompositions-Seam aus slice-044; **noch ohne** CLI-Flag (das ist slice-045b) und
 
 - [ ] [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) (Arch-Achse, Layout-Teil): `composeSkeleton(goScaffolding, goRole, version, "hexslice")` erzeugt das vollständige hexSlice-Go-Skelett (domain/application/ports/adapters + `cmd/`) plus die arch-invariante Bau-Gerüstung; ein `gen`-Test verankert die exakte Datei-Menge + Verzeichnis-Struktur gegen die kanonische Referenz.
 - [ ] [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (`flat` byte-identisch): `composeSkeleton(…, "flat")` bleibt bit-für-bit unverändert (kein Content-Konstant der flat-Rollen berührt); der bestehende `flat`-Test grün, `git diff` zeigt keine Änderung an flat-Content.
-- [ ] `archLayout("hexslice")` liefert die hexSlice-Rollen-Menge; `archLayout(<unbekannt>)` bleibt `nil` (der Exit-2-Pfad ist slice-045b, hier nur die Renderer-seitige Grundlage).
+- [ ] `archLayout("hexslice")` liefert die hexSlice-Rollen-Menge; `archLayout(<unbekannt>)` bleibt `nil`. Der gen-Seam `GenerateArch(dir, lang, version, arch)` (Rückwärts-`Generate` = `GenerateArch(…, "flat")`) meldet unbekannte Architektur als `*UnknownArchError` (sortierte `SupportedArchs()`-Liste) — die Grundlage, an die slice-045b die `--arch`-CLI-Validierung (Exit 2) hängt.
+- [ ] **Renderer-Compile-Beleg:** das gerenderte hexSlice-Skelett übersetzt und seine Tests bestehen (`go test ./...` im generierten Temp-Repo, netzlos) — die Generator-String-Konstanten sind sonst ungeprüft (Repo-Gates linten sie nicht). Der volle Lint/Gate/CLI-Nachweis end-to-end folgt in slice-045b via full-smoke.
 - [ ] `make gates` grün (`go test ./...` inkl. der neuen Renderer-Tests).
 - [ ] `make mutate` grün — der neue Layout-/Renderer-Wächter je rot gesehen (die rot-färbende Mutation benannt und als `test/mutations/`-Fall abgelegt).
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -41,10 +42,12 @@ Die a-check-Config (`.a-check.yml`/`a-check.mk`) und das CLI-Flag sind **nicht**
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `internal/gen/arch.go` — `archLayout("hexslice")` | update | den `hexslice`-Zweig ergänzen: liefert die hexSlice-Rollen-Menge (Entrypoint + Test + die Schicht-Rollen); `flat` und `unknown→nil` unverändert |
-| `internal/gen/golang.go` — `goRole` (hexslice-Zweig) | update | die Rollen in die kanonischen Go-Pfade rendern (`internal/hexagon/domain/<area>`, `internal/hexagon/application/<area>/<usecase>/{command,handler,validator,result,ports}`, `application/<area>/ports`, `internal/adapters/{inbound,outbound}/<typ>/<area>`, `cmd/<binary>/main.go`) mit minimalem, kompilierendem Inhalt aus der Referenz |
-| `internal/gen/*_test.go` | neu | exakte Datei-Menge + Struktur des hexSlice-Skeletts verankern; `flat`-Byte-Identität separat |
-| `test/mutations/NN-hexslice-*.sh` | neu | rot-färbende Mutation für den Layout-/Renderer-Wächter (z. B. eine Schicht-Datei aus der Menge entfernen → Test rot) |
+| `internal/gen/arch.go` — `archLayout("hexslice")` + `SupportedArchs()` | update | den `hexslice`-Zweig ergänzen (fünf Schicht-Rollen + Composition Root); `flat` und `unknown→nil` unverändert; `SupportedArchs()` als sortierte Achsen-Vokabular-Quelle |
+| `internal/gen/gen.go` — `GenerateArch` + `UnknownArchError` | update | arch-aware Public-Seam: `Generate` delegiert `…, "flat"` (byte-identisch), `GenerateArch` faltet die Arch-Achse ein und meldet unbekannte Architektur typisiert (slice-045b hängt Exit 2 daran); `profiles()`-Builder auf `func(version, arch)` gehoben |
+| `internal/gen/golang.go` — `goRole` (hexslice-Zweige) + Inhalt | update | die Rollen in die kanonischen Go-Pfade rendern (`internal/hexagon/domain/example`, `internal/hexagon/application/example/greet/{command,handler,validator,result,ports}`, `application/example/ports`, `internal/adapters/{inbound,outbound}/…`, `cmd/app/main.go`) mit minimalem, kompilierendem Inhalt (eine example-Area, eine greet-Slice) |
+| `internal/gen/hexslice_test.go` | neu | exakte Datei-Menge (16), Renderer-Compile-Beleg (`go test` im Temp-Repo), `flat`-Byte-Identität, `UnknownArchError`, `SupportedArchs` |
+| `test/mutations/61-hexslice-role-fileset.sh` | neu | rot-färbende Mutation: eine Schicht-Datei (`goHexDomain,`) aus `goRole` entfernen → Datei-Satz-Test rot |
+| `internal/gen/cpp.go` — `cppProfile(version, arch)` | update | Signatur-Angleich (Arch durchgereicht); cpp-hexslice-Renderer bewusst NOCH nicht (out-of-scope, s. §6) |
 
 ## 4. Trigger
 
@@ -67,6 +70,11 @@ Review konform + Verifier bestätigt die DoD, Closure-Notiz mit Steering-Loop-Ei
   Referenz-Business-Logik (Order/CreateOrder) — die Struktur ist das Vertrag, nicht die Domäne.
 - **a-check-Konformität** des gerenderten Layouts wird erst in slice-046 mit `make a-check` bewiesen;
   hier nur strukturell gegen die 5-Kanten-Erwartung aus [ADR-0009](../../adr/0009-hexslice-arch-realisierung.md) geplant.
+- **cpp + hexslice** ist bewusst NICHT gebaut (nur der Go-Renderer, §6-Grenze): `cppRole` liefert für die
+  Schicht-Rollen `nil`, ein `GenerateArch("cpp", …, "hexslice")` gäbe ein Gerüstung-only-Skelett. Kein
+  Nutzer-Pfad erreicht das in welle-07 (die `--arch`-CLI aus slice-045b validiert `go`+`hexslice` via
+  full-smoke; cpp-hexslice ist als linearer Folge-Renderer vertagt). Beim cpp-hexslice-Renderer ist eine
+  sprach×arch-Unterstützungs-Prüfung nachzuziehen (Folge-Punkt), damit die Kombination nicht still leer bleibt.
 
 ## 7. Closure-Notiz (nach `done/`)
 

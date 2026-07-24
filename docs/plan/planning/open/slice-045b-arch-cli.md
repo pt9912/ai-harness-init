@@ -41,8 +41,7 @@ CLI-Achse hinzu.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `cmd/ai-harness-init/*.go` — Arg-Parsing | update | `--arch <arch>` neben `--lang` parsen; Default `flat`; an `wireLang`/`composeSkeleton` durchreichen |
-| `cmd/ai-harness-init/*.go` — Arch-Validierung | update | unbekannte Architektur (`archLayout(arch) == nil`) → Exit 2 + sortierte Liste `gen.SupportedArchs()`, spiegelbildlich zur unbekannten-Sprache-Klasse |
-| `internal/gen` — `SupportedArchs()` | neu | sortierte Architektur-Liste als eine Quelle (für die Fehlermeldung + Tests), analog `SupportedLangs()` |
+| `cmd/ai-harness-init/*.go` — Arch-Validierung | update | `add-lang`/Init auf `gen.GenerateArch(…, arch)` umstellen; den `*gen.UnknownArchError` (aus slice-045a) auf **Exit 2 + sortierte `gen.SupportedArchs()`-Liste** abbilden, spiegelbildlich zur unbekannten-Sprache-Klasse (`*gen.UnknownLangError`) |
 | `cmd/…_test.go` | neu | Happy-Path (`--arch hexslice`/`flat`) + Negative (Exit 2 + Liste) verankern |
 | `test/mutations/NN-arch-cli-*.sh` | neu | rot-färbende Mutation für den Exit-2-Pfad (z. B. die Validierung entfernen → unbekannte Architektur nicht mehr Exit 2) |
 

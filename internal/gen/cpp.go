@@ -16,8 +16,8 @@ const DefaultCppVersion = "26.04"
 // Code-Gate-Fragment (harness/mk/<modul>.mk) kommt wie bei go aus gen.CodeGateFragment;
 // das Skelett selbst ist ortsunabhaengig. Statisch/deterministisch (LH-QA-02): gleiche
 // version -> byte-identische Ausgabe.
-func cppProfile(version string) map[string]string {
-	return composeSkeleton(cppScaffolding, cppRole, version, archFlat)
+func cppProfile(version, arch string) map[string]string {
+	return composeSkeleton(cppScaffolding, cppRole, version, arch)
 }
 
 // cppScaffolding — die arch-INVARIANTE C++-Bau-/Toolchain-Gerueestung: das
@@ -33,7 +33,9 @@ func cppScaffolding(version string) map[string]string {
 
 // cppRole rendert eine Code-Rolle als C++-Datei(en). Entry-Point -> src/main.cpp;
 // die Test-Rolle traegt den netzlosen CTest-Satz unter tests/ (ADR-0008: Tests folgen
-// dem Code-Layout, nicht der Gerueestung). slice-045 ergaenzt die geschichteten Rollen.
+// dem Code-Layout, nicht der Gerueestung). Die hexSlice-Schicht-Rollen sind hier NOCH
+// nicht implementiert (slice-045a baut nur den Go-Renderer; cpp+hexslice folgt linear,
+// out-of-scope welle-07) -> unbekannte Rolle -> nil.
 func cppRole(r codeRole) map[string]string {
 	switch r {
 	case roleEntrypoint:
