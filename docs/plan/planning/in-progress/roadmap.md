@@ -12,15 +12,12 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**Welle-ID:** [welle-06-freshness](../welle-06-freshness.md) — Multi-Komponenten-Versions-Freshness. **Aktiv** seit 2026-07-23.
-**Trigger (gefeuert):** upstream erschien Regelwerk **v3.5.1** > gepinnt `v3.5.0` — erste beobachtete Tag-/Quellen-Drift.
-**Slices:** slice-040 (Generalisierung + golangci-lint/d-check) geschnitten in `open/`; slice-041 (Go), slice-042 (ubuntu-Tag) in §4 der Welle (per `cp` bei Schnitt).
+**Keine aktive Welle.** [welle-06-freshness](../done/welle-06-freshness.md) ist **geschlossen** (2026-07-24, s. Abgeschlossene Wellen) — alle drei Slices (040/041/042) in `done/`, jede versions-gepinnte Komponente im nächtlichen `upstream-drift`-Job (Regelwerk-Tag · golangci-lint · d-check · Go · ubuntu-LTS). Keine Folge-Welle geschnitten (green-before-extend, cp-Disziplin — Plandatei erst per `cp`, wenn ihr erster Slice steht).
 
-**Aktueller Schritt:** slice-040 ([done](../done/slice-040-freshness-generalisierung.md)) **und** slice-041 ([done](../done/slice-041-go-version-freshness.md)) **abgeschlossen** (2026-07-24) — generischer `component-freshness.sh` + golangci-lint/d-check-Achsen (040) und die Go-Sonderquelle go.dev via `go-freshness.sh` (041) im Nachtlauf; je Review KONFORM, Verifikation DoD BESTÄTIGT. **Nächster Welle-Slice:** slice-042 (C++/ubuntu-Base-Tag-Freshness, Quelle Docker-Hub-LTS) — noch **nicht geschnitten** (cp-Disziplin: Slice-Datei per `cp` erst bei Schnitt). Die Welle bleibt offen (slice-042 steht aus).
-
-**Davon unabhängig offen (keine Welle):** der **v3.5.1-Baseline-Bump** ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — `.harness/baseline/v3.5.1/` neu vendoren, `BASELINE_TAG`/`BASELINE_ZIP_SHA256` (Makefile) + `DefaultTag` (`internal/fetch/baseline.go`) neu pinnen, Doc-Links, `make baseline-verify`. Der nächtliche Sensor **meldet** die Drift, der Bump **behebt** sie.
-
-**Closure-Trigger:** alle Welle-Slices in `done/`; `make gates` + `make mutate` grün; jede Achse im nächtlichen `upstream-drift`-Job verdrahtet (read-only, nicht in gates); Closure-Notiz `welle-06-results.md`.
+**Vom Freshness-Nachtlauf gemeldete Drift — bewusste [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)-Folgeoperationen, out-of-scope (der Sensor *meldet*, der Bump *behebt*):**
+- **v3.5.1-Baseline-Bump:** `.harness/baseline/v3.5.1/` neu vendoren, `BASELINE_TAG`/`BASELINE_ZIP_SHA256` (Makefile) + `DefaultTag` (`internal/fetch/baseline.go`) neu pinnen, Doc-Links, `make baseline-verify`.
+- **ubuntu-LTS-Bump 24.04→26.04:** `DefaultCppVersion` (`internal/gen/cpp.go`) auf das neue LTS.
+- Go 1.26.4→1.26.5 wurde in der Welle-Sitzung bereits eingelöst.
 
 ## Nächste Wellen
 
@@ -64,6 +61,7 @@ flowchart LR
 | [welle-03-readme-und-smoke](../done/welle-03-readme-und-smoke.md) | 2026-07-22 | [welle-03-results.md](../done/welle-03-results.md) |
 | [welle-04-durchsetzung-und-emission](../done/welle-04-durchsetzung-und-emission.md) | 2026-07-22 | [welle-04-results.md](../done/welle-04-results.md) |
 | [welle-05-bootstrap-phasen](../done/welle-05-bootstrap-phasen.md) | 2026-07-23 | [welle-05-results.md](../done/welle-05-results.md) |
+| [welle-06-freshness](../done/welle-06-freshness.md) | 2026-07-24 | [welle-06-results.md](../done/welle-06-results.md) |
 
 ## Historische Trigger-Verschiebungen
 

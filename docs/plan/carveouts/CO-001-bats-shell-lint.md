@@ -2,11 +2,11 @@
 
 **Status:** Aktiv.
 
-**Datum angelegt:** 2026-07-21. **Letzte Prüfung:** 2026-07-22.
+**Datum angelegt:** 2026-07-21. **Letzte Prüfung:** 2026-07-24 (welle-06-Closure-Audit: unverändert gültig; welle-06 fügte drei `.bats`-Dateien hinzu — `component-freshness`, `go-freshness`, `cpp-freshness` —, die unter denselben Glob-Ausschluss fallen).
 
 **Betroffenes Gate:** `shell-lint` (shellcheck im gepinnten Image).
 
-**Geltungsbereich:** die acht bats-Dateien unter test/ (Endung .bats). Die
+**Geltungsbereich:** alle bats-Dateien unter test/ (Endung .bats; aktuell elf). Die
 Shell-Hooks und -Helfer unter harness/tools/, .claude/hooks/,
 internal/emit/templates/ und test/mutations/ bleiben **voll** gelintet — der
 Ausschluss betrifft ausschließlich die bats-Testdateien.

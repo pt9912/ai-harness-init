@@ -79,4 +79,6 @@ vorhandene Mechanik), dann die zwei Sonderquellen.
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Welle-Abschluss füllen. Verweis auf welle-<NN>-results.md. -->
+**Geschlossen** (Beleg statt Datum: alle drei Slices in `done/`, `make gates` Exit 0, `make mutate`
+55 ok/0, jede Achse im `upstream-drift`-Job verdrahtet). Results-Notiz mit Lieferung, Steering-Loop
+und Verifikation: [welle-06-results.md](welle-06-results.md).
