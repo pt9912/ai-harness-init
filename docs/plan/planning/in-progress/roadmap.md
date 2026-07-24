@@ -29,6 +29,7 @@ Prospektive Kandidaten (nur mit **beobachtbarem Trigger**, Modul 6):
 | Welle-Kandidat | Trigger | Wichtigste Slices | Aufwand |
 |---|---|---|---|
 | Doc-Gate-Härtung | erneut beobachtete Befund-Klasse (Muster slice-026: neun Instanzen → Sensor) | Anker-Fragment-Sensor · Prosa-Zahlen-Provenienz · citations (slice-014/015) | S |
+| mutate-Isolierung (Härtung, ohne Welle — [slice-047](../open/slice-047-mutate-host-isolation.md) **geschnitten**) | wiederholte F-12-Reibung in welle-07 (mutate mutiert den Host-Baum → blockiert lesende Rollen, Background-Läufe gekillt) | Zyklus gegen isolierte Kopie fahren, Host-Baum nie anfassen | S |
 
 *(Arch-Gate/M4 ist seit 2026-07-24 die **aktuelle** Welle [welle-07-arch-achse](../welle-07-arch-achse.md) — der Trigger „`--arch`-ADR accepted" ist mit [`ADR-0008`](../../adr/0008-arch-achse-emittiertes-skelett.md) eingetreten.)*
 
