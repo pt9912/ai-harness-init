@@ -16,9 +16,12 @@
 
 [`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) verlangt, dass der Bootstrap ein **Architektur-Gate** ins Zielrepo emittiert:
 `.a-check.yml` + `a-check.mk` (per-Tool-Fragment via `a-check --print-mk`, analog dem Doc-Gate
-[`MR-010`](../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)). a-check ist ein **reales Schwester-Tool** (a-check/d-check, gleiche Build-Familie —
-im `Dockerfile`-Kopf benannt) und prüft **hexagonale Schichten** (`domain/ports/adapters`) im
-emittierten Sprachskelett — read-only, netzlos.
+[`MR-010`](../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)). a-check soll **hexagonale Schichten** (`domain/ports/adapters`) im emittierten
+Sprachskelett prüfen — read-only, netzlos. a-check ist als **Schwester-Tool avisiert** (im
+`Dockerfile`-Kopf als gleiche Build-Familie wie d-check benannt); **anders als d-check** ist es im Repo
+aber **noch nicht integriert** — kein gepinntes Image, kein `a-check --print-mk`-Aufruf, kein
+`a-check.mk`. Seine reale Verfügbarkeit + Pin + `--print-mk` sind eine **zu erfüllende Vorbedingung**
+der Umsetzungs-Welle (s. Annahme 1 + Re-Evaluierungs-Trigger), keine erreichte Parität.
 
 **Der Blocker (seit M2 aufgeschoben):** Es existiert **kein geschichtetes Skelett**. Der Generator
 ([`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) trägt heute **ein flaches Layout-Profil je Sprache** (`go` → `main.go`,
@@ -48,8 +51,11 @@ Mechanismus, mit dem diese Entscheidung ins generierte Skelett fließt.
 
 **Tragende Annahmen** (kippen sie, kippt die Entscheidung):
 
-1. **a-check ist ein reales, gepinntes Tool** mit `--print-mk` (wie d-check) — der Emitter erzeugt ein
-   Fragment, baut das Gate nicht selbst.
+1. **a-check wird als gepinntes Tool mit `--print-mk` verfügbar** (wie d-check) — der Emitter erzeugt
+   dann ein Fragment, baut das Gate nicht selbst. **Heute nicht erfüllt** (nur Dockerfile-Kopf-Referenz);
+   die Umsetzungs-Welle beginnt mit dem Beleg (Image + Digest + realer `--print-mk`-Lauf). Kippt die
+   Verfügbarkeit, ist die a-check-**Emission** blockiert (nicht die `--arch`-Achse selbst — das
+   geschichtete Skelett steht auch ohne a-check).
 2. **Das `profiles()`-Muster trägt eine zweite Dimension** — der Generator kann `lang × arch`
    komponieren, ohne die Sprach-Agnostik ([`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) aufzugeben.
 3. **`flat` bleibt Default und gültig** — ein sprachliches Ziel ohne Arch-Wahl bekommt das heutige
@@ -66,12 +72,20 @@ die Struktur des **emittierten** Skeletts bestimmt. Fünf Festlegungen:
    `apps/api --arch hexagonal` und `apps/tool --arch flat` mischen). `--arch` beim Init ist die
    **One-Shot-Kurzform** neben `--lang` (Init + ein `add-lang(<lang>, ., <arch>)`), rückwärtskompatibel:
    fehlt `--arch`, gilt `flat` und alles bleibt wie heute.
-2. **Komposition `lang-renderer × arch-layout`, nicht N×M-Profile.** Die **Arch-Schicht** liefert das
-   **Layout** (welche Verzeichnisse — `domain/ports/adapters` — und welche Datei-Rollen je Schicht);
-   die **Sprach-Schicht** **rendert** die Dateien je Rolle in ihrer Sprache. Der Generator komponiert
-   beide: **N Sprach-Renderer + M Arch-Layouts**, statt N×M volle Profile. `flat` ist das degenerierte
-   Layout (eine Rolle: „Entry-Point" → `main.go`/`src/main.cpp` wie heute). So bleibt „eine neue
-   Sprache = ein neuer Renderer" **und** „eine neue Architektur = ein neues Layout" je linear.
+2. **Komposition — Bau-Gerüstung (arch-invariant) + Code-Layout (arch-gegatet), nicht N×M-Profile.**
+   Die **Sprach-Schicht** liefert **zwei Teile**: (a) die **arch-invariante Bau-/Toolchain-Gerüstung**
+   — `go.mod`, `Dockerfile` (die Gate-Stages!), `.golangci.yml` bzw. `CMakeLists.txt`/`.clang-tidy` —,
+   die **immer** präsent ist, unabhängig von `--arch` (sonst bräche `make gates` mangels
+   Dockerfile-Stages); (b) einen **Rollen-Renderer**, der eine Datei-**Rolle** (Entry-Point,
+   Domain-Entity, Port-Interface, Adapter) in ihrer Sprache rendert. Die **Arch-Schicht** liefert das
+   **Code-Layout**: welche Rollen in welchen Verzeichnissen. Der Generator komponiert (a) + (b × Layout):
+   **N Sprach-Renderer + M Arch-Layouts** statt N×M volle Profile. `flat` = das heutige Layout (eine
+   Rolle „Entry-Point" → `main.go`/`src/main.cpp`) **plus die unveränderte Bau-Gerüstung** — d. h. das
+   Ist-`flat`-Profil (go: `go.mod`/`Dockerfile`/`.golangci.yml`/`main.go`; cpp: 6 Dateien) bleibt
+   **byte-identisch** ([`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)); `hexagonal` ersetzt nur den **Code**-Teil durch
+   `domain/ports/adapters`, die Bau-Gerüstung bleibt. So ist „neue Sprache = neuer Renderer (Gerüstung +
+   Rollen)" **und** „neue Architektur = neues Layout" je linear, und der `flat`-Pfad bricht `make gates`
+   nicht.
 3. **a-check konditional emittieren ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).** Nur bei einem **schichten-tragenden**
    Layout (`hexagonal`) emittiert `add-lang` `.a-check.yml` (bildet die realen Schichten des Skeletts
    ab) + `a-check.mk` (aus `a-check --print-mk`, Image digest-gepinnt) und hängt `a-check` als
@@ -109,7 +123,10 @@ die Struktur des **emittierten** Skeletts bestimmt. Fünf Festlegungen:
   Datei-Satz" auf „rendere Rolle X" umgestellt werden (Migrations-Bruch, kein rein additiver Schritt).
   Je Sprache ist ein **Schicht-Renderer** zu schreiben (Aufwand, aber linear und opt-in — nur wo
   `hexagonal` gewünscht). **a-check läuft nicht auf dem Dogfood** (emitted-only) — die Parität, die
-  d-check hat, ist hier bewusst nicht gegeben; der Nachweis trägt `full-smoke`.
+  d-check hat, ist hier bewusst nicht gegeben; der Nachweis trägt `full-smoke`. **CLI-Kosten:** der
+  `add-lang`-Parser verwirft heute jedes `-`-Argument hart (`cmd/ai-harness-init/main.go`: „genau zwei
+  Positionsargumente, keine Flags") — `--arch` ist dort ein **Parser-Umbau**, kein additiver Schritt
+  (analog listete [`ADR-0007`](0007-bootstrap-phasen.md) die `add-lang`-Oberfläche als Kosten).
 - **Folgepflicht:**
   - **CR an [`lastenheft.md`](../../../spec/lastenheft.md):** [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) um die **Arch-Achse** ergänzen
     (`add-lang … [--arch <arch>]`, `lang × arch`-Komposition); [`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)s Happy-Path auf
@@ -146,6 +163,7 @@ die Struktur des **emittierten** Skeletts bestimmt. Fünf Festlegungen:
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-07-24 | Proposed (nach Design-Dialog: Achsen-Trennung `--arch` ⟂ `--lang`; **Nutzer-Korrektur: Zielrepo-Fokus, nicht Repo-Architektur**; a-check emitted-only konditional) | dieser ADR |
+| 2026-07-24 | Proposed überarbeitet nach 1. Review (2× MEDIUM der ADR-0007-H2-Klasse: **M-1** a-check von „reales Tool" → **zu belegende Vorbedingung** [Kontext + Annahme 1]; **M-2** Kompositions-Modell — Bau-/Toolchain-Gerüstung als **arch-invariant** benannt, `flat`-Profil byte-identisch, Gate bricht nicht; **LOW-1** `add-lang`-Parser-Umbau als CLI-Kosten. INFO-1: Idempotenz-Klassen konsistent bestätigt) | [Review 1](../../reviews/2026-07-24-adr-0008-proposed-review.md) |
 
 <!--
 Nach Accepted: NICHT mehr inhaltlich überschreiben (Hard Rule 3.4). Spätere Schärfungen als neue ADR
