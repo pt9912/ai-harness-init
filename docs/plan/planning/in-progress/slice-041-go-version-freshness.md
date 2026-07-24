@@ -59,7 +59,7 @@ meldet ab Tag 1 real Drift (korrekt; Auflösung = `GO_VERSION`-Bump, out-of-scop
 | `.github/workflows/ci.yml` | update | Go-Achse in den `upstream-drift`-Job (`if: '!cancelled()'`) |
 | `test/go-freshness.bats` | neu | `--normalize` (Fixture: `go1.26.5\n…` → `1.26.5`) + `--compare`-Klassen offline |
 | `test/mutations/` | neu | Normalisierungs-Wächter (`go`-Strip / `head -1` entfernt) |
-| `harness/conventions.md` | update | MR-007-Freshness-Notiz um die Go-Achse ergänzt |
+| `harness/conventions.md` | update | die [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)-Freshness-Notiz um die Go-Achse ergänzt |
 
 **Wiederverwendung statt Duplikat:** `component-freshness.sh`s `compare_tags` ist quellen-agnostisch
 (vergleicht zwei Strings) — `go-freshness.sh` ruft dessen `--compare`-Pfad, statt einen zweiten

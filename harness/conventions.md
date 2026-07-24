@@ -287,7 +287,11 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   **`make freshness-dcheck`** (Pin: `DCHECK_IMAGE`-Tag aus [`d-check.mk`](../d-check.mk))
   tragen dieselbe Read-only-/Nachtlauf-Disziplin auf zwei weitere Komponenten-Achsen —
   Maintenance/Netz, **nicht** in `gates` ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)),
-  bash+curl ohne jq/node ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
+  bash+curl ohne jq/node ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)). **Sonderquelle Go
+  (slice-041):** die Go-Toolchain hat kein GitHub-`releases/latest` (`golang/go` redirected auf
+  `.../releases`), darum ein eigener Wrapper `harness/tools/go-freshness.sh` — Fetch von
+  `go.dev/VERSION?m=text` + Normalisierung (`go1.x.y` → `1.x.y`), dann derselbe wiederverwendete
+  Vergleicher; **`make freshness-go`** (Pin: `GO_VERSION`) hängt ebenfalls im Nachtlauf.
 - **Migration:** Ein bestehender `.harness/cache/`-Cache aus
   [`MR-006`](#mr-006--regelwerk-cache-als-split-modul-verzeichnis) ist nach dem
   Umstieg ein nicht mehr regenerierbares Überbleibsel (`regelwerk-fetch` existiert

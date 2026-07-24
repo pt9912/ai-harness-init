@@ -34,7 +34,7 @@ BASELINE_TAG ?= v3.5.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 123e3383261102e6be6465e1f4bade08a474c00edc4fff89f5c4b11bd640f8ff
 
-.PHONY: help gates record-gates test lint build compile artifact smoke full-smoke shell-lint ci-lint baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck mutate
+.PHONY: help gates record-gates test lint build compile artifact smoke full-smoke shell-lint ci-lint baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go mutate
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.51.1 -> v0.51.1). Aus
@@ -161,6 +161,15 @@ freshness-dcheck: ## Neueren d-check-Release als DCHECK_IMAGE-Tag melden (read-o
 	  COMPONENT_ADVICE='d-check --print-mk neu erzeugen + DCHECK_IMAGE/DCHECK_DIGEST in d-check.mk neu pinnen (MR-010/MR-012).' \
 	  RELEASES_LATEST_URL='https://github.com/pt9912/d-check/releases/latest' \
 	  bash harness/tools/component-freshness.sh
+
+# Go-Toolchain-Achse (slice-041, MR-007): SONDERQUELLE go.dev (golang/go hat kein
+# GitHub-releases/latest), darum ein eigener Wrapper go-freshness.sh (Fetch +
+# Normalisierung go1.x.y->1.x.y), der den Vergleicher aus component-freshness.sh
+# wiederverwendet. Kanonische Pin-Quelle: GO_VERSION (oben) — derselbe Build-Arg,
+# den make build/test reichen; das gen-Skelett-Pin ist via TestGoProfile_PinsMatchRepo
+# gekoppelt. Read-only, Netz, Maintenance/CI, NICHT in gates (LH-QA-01).
+freshness-go: ## Neuere stabile Go-Version als GO_VERSION melden (read-only, Quelle go.dev) — Maintenance/CI, NICHT in gates
+	@GO_VERSION='$(GO_VERSION)' bash harness/tools/go-freshness.sh
 
 record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh

@@ -102,3 +102,7 @@ jobs:
         run: make freshness-golangci
       - if: '!cancelled()'
         run: make freshness-dcheck
+      # Go-Toolchain-Achse (slice-041): Sonderquelle go.dev, eigener Wrapper,
+      # aber dieselbe read-only/nicht-in-gates-Disziplin.
+      - if: '!cancelled()'
+        run: make freshness-go
