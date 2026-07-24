@@ -14,10 +14,12 @@ gezeigt, nicht als Treiber.
 
 **Keine aktive Welle.** [welle-06-freshness](../done/welle-06-freshness.md) ist **geschlossen** (2026-07-24, s. Abgeschlossene Wellen) — alle drei Slices (040/041/042) in `done/`, jede versions-gepinnte Komponente im nächtlichen `upstream-drift`-Job (Regelwerk-Tag · golangci-lint · d-check · Go · ubuntu-LTS). Keine Folge-Welle geschnitten (green-before-extend, cp-Disziplin — Plandatei erst per `cp`, wenn ihr erster Slice steht).
 
-**Vom Freshness-Nachtlauf gemeldete Drift — bewusste [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)-Folgeoperationen, out-of-scope (der Sensor *meldet*, der Bump *behebt*):**
-- **v3.5.1-Baseline-Bump:** `.harness/baseline/v3.5.1/` neu vendoren, `BASELINE_TAG`/`BASELINE_ZIP_SHA256` (Makefile) + `DefaultTag` (`internal/fetch/baseline.go`) neu pinnen, Doc-Links, `make baseline-verify`.
-- **ubuntu-LTS-Bump 24.04→26.04:** `DefaultCppVersion` (`internal/gen/cpp.go`) auf das neue LTS.
-- Go 1.26.4→1.26.5 wurde in der Welle-Sitzung bereits eingelöst.
+**Vom Freshness-Nachtlauf gemeldete Drift — alle drei [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)-Folgeoperationen 2026-07-24 aufgelöst** (der Sensor *meldete*, die Bumps *behoben*):
+- **Baseline v3.5.0→v3.5.1:** [slice-043](../done/slice-043-baseline-bump-v3.5.1.md) (Re-Vendor + 5 Pins + Doc-Reconciliation; Review KONFORM, Verifikation DoD BESTÄTIGT).
+- **ubuntu-LTS 24.04→26.04:** `DefaultCppVersion` gebumpt (Wartung).
+- **Go 1.26.4→1.26.5:** `GO_VERSION` + Digest + Skelett-Pin gebumpt (Wartung).
+
+Der `upstream-drift`-Nachtlauf fährt damit wieder vollständig grün.
 
 ## Nächste Wellen
 

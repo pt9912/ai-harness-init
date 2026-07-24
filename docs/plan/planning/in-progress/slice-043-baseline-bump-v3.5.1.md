@@ -22,30 +22,30 @@ den `baseline-freshness` als neueren Tag meldete). Alle gekoppelten Pins ziehen 
 
 ## 2. Definition of Done
 
-- [ ] **Baum re-vendored:** `.harness/baseline/v3.5.1/{regelwerk,templates}/` + `SHA256SUMS`
+- [x] **Baum re-vendored:** `.harness/baseline/v3.5.1/{regelwerk,templates}/` + `SHA256SUMS`
   (aus dem Release-ZIP entpackt; SHA256SUMS neu erzeugt: `sha256sum` über alle Dateien, Pfade relativ
   zu `<tag>/`, `LC_ALL=C`-sortiert, die Datei selbst ausgenommen — [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 2). Der alte
   `.harness/baseline/v3.5.0/`-Baum ist **entfernt** (Setzung 4: ein Tag zur Zeit).
-- [ ] **Provenienz-Pin:** `BASELINE_ZIP_SHA256` (Makefile) = sha256 des v3.5.1-Release-Assets
+- [x] **Provenienz-Pin:** `BASELINE_ZIP_SHA256` (Makefile) = sha256 des v3.5.1-Release-Assets
   (`7268a8e6f36476c98d5cf0547d16deacec70fcddcf23df38f87d029e967cb10d`, live gemessen); `BASELINE_TAG` = `v3.5.1`.
-- [ ] **Gekoppelte Pins mitgezogen (fail-closed-Tests grün):** `DefaultTag` + `DefaultBaselineSHA256`
+- [x] **Gekoppelte Pins mitgezogen (fail-closed-Tests grün):** `DefaultTag` + `DefaultBaselineSHA256`
   ([`internal/fetch/baseline.go`](../../../../internal/fetch/baseline.go), Kopplung `TestDefaultTag_MatchesBaseline` /
   `TestDefaultBaselineSHA256_MatchesMakefile`) und der `.d-check.yml`-`sources`-Block (url + sha256,
   Kopplung `test/sources-pin.bats`, [`MR-013`](../../../../harness/conventions.md#mr-013--regelwerk-check-auf-d-check-sources-tool-statt-skript)).
-- [ ] **Doc-Reconciliation:** die **aktiven** `v3.5.0`-Referenzen auf `v3.5.1` gezogen
+- [x] **Doc-Reconciliation:** die **aktiven** `v3.5.0`-Referenzen auf `v3.5.1` gezogen
   (`harness/conventions.md` §Baseline/Adoptierte Quellen, `docs/user/benutzerhandbuch.md`,
   `docs/plan/planning/README.md`, die Command-Templates/`.claude`-Commands, `.harness/skills/reviewer.md`).
   **Ausgenommen** (unverändert): frozen `done/`-Slices + `docs/reviews/**` (Zeitdokumente),
   **accepted ADRs** ([`ADR-0006`](../../../../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md), Hard Rule 3.4 immutable — historischer Bezug bleibt), der vendored Baum selbst
   (wird ersetzt). Diese Slice-Datei und die Roadmap dürfen `v3.5.0` als **historischen** Bezug führen.
-- [ ] `make baseline-verify` grün: `v3.5.1 OK — <N> Dateien` (Integrität + Vollständigkeit, netzlos).
-- [ ] `make gates` grün (alle Gates auf dem re-vendored Stand).
-- [ ] `make mutate` grün: die Baseline-Wächter (Fälle 01/02/03) bleiben scharf. **Vorab-Befund:**
+- [x] `make baseline-verify` grün: `v3.5.1 OK — <N> Dateien` (Integrität + Vollständigkeit, netzlos).
+- [x] `make gates` grün (alle Gates auf dem re-vendored Stand).
+- [x] `make mutate` grün: die Baseline-Wächter (Fälle 01/02/03) bleiben scharf. **Vorab-Befund:**
   Fall 01 matcht generisch (`[0-9a-f]{64}`), 02/03 hardcoden Tag/Hash nicht → **kein** Re-Anchoring
   erwartet; im Lauf bestätigt (Go-Bump-Lehre: Wert-Bump zieht `make mutate` nach).
-- [ ] Doku: `harness/conventions.md` §Baseline auf `v3.5.1` + Re-Baseline-Datum; ggf.
+- [x] Doku: `harness/conventions.md` §Baseline auf `v3.5.1` + Re-Baseline-Datum; ggf.
   Regelwerks-Stand-Zeile (Kurs-Welle) nachgezogen.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -113,7 +113,43 @@ Wird *nach* Abschluss ergänzt. Inhalt:
 - Folge-Slices: welche neuen open/-Einträge?
 -->
 
-<!-- Erst nach Abschluss füllen. -->
+**Was hat funktioniert.** Der Re-Vendor lief mechanisch sauber: Provenienz **vor** dem Entpacken
+verifiziert, `SHA256SUMS` per `find | LC_ALL=C sort | sha256sum` (temp→mv, damit `find` die Datei
+nicht sieht), alter Tag raus — `baseline-verify: v3.5.1 OK — 42 Dateien`. Der Verifier zog die
+Provenienz-Kette unabhängig nach (Release-Asset gefetcht, sha == Pin, `diff -rq` byte-identisch zum
+Baum). Die 5 gekoppelten Pins hielten (Kopplungstests grün). Die **Reconciliation-Trennung** (aktive
+Refs bumpen · historische „seit v3.5.0"-Aussagen + test-interne Tags + ADR-0006 behalten) war korrekt
+und vollständig — beide Rollen bestätigten es. Der Content-Delta (36/42 Dateien) war ein Minor-Refresh
+ohne Konventions-Kollision (Rollen-Module 05/08/09/10/11 änderten real nur ihre Quell-URL + den
+Welle-Stand 32→33). **Kein Mutations-Re-Anchoring nötig** (Fall 01 generisch; Go-Bump-Lehre honoriert:
+`make mutate` nach dem Pin-Bump gefahren, 55 ok/0).
+
+**Was anders lief als geplant.** Der Reviewer meldete ein MEDIUM „`make test` nichtdeterministisch rot"
+— **widerlegt als Orchestrierungs-Artefakt** (nicht slice-043-induziert): ich hatte Review und Verify
+**gleichzeitig** auf demselben Working Tree gestartet, und der Verifier fuhr `make mutate`, das den Baum
+je Fall mutiert. Der Reviewer maß diese Mutationen (die vier „Fehlschläge" sind 1:1 Mutations-Ziele).
+Nachweis: 6/6 `make test`-Läufe grün allein + der Emitter sortiert deterministisch
+(`internal/emit/templates.go:169`). Der Report trägt einen Planner-Nachtrag.
+
+**Steering-Loop-Eintrag** (kanonische Definition:
+[`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.1/kurs/de/grundlagen/klassifikation.md#steering-loop)):
+
+- **Eine mutierende Rolle nie parallel zu einer lesenden Rolle auf demselben Working Tree.** Der
+  Verifier fährt `make mutate` (mutiert den Baum je Fall); läuft der Reviewer währenddessen `make test`
+  auf demselben Tree, misst er die Mutationen und meldet Phantom-„Flakiness" (F-12-Klasse: „ein
+  paralleler mutate-Lauf hat real den mutierten Stand gemessen"). Der `mutate.lock` schützt nur gegen
+  **parallele mutate-Läufe**, nicht gegen mutate + konkurrierendes test. **Regel für die
+  Rollen-Orchestrierung:** Review und Verify, wenn eine von beiden mutiert, **sequenziell** fahren —
+  oder der mutierenden Rolle einen **isolierten Worktree** geben. (Diese Session hatte dieselbe
+  Parallel-Orchestrierung bei slice-040/041/042; dort kollidierte das Timing zufällig nicht — hier tat
+  es das und erzeugte einen Falsch-Befund.)
+- **Ein „Nichtdeterminismus"-Befund ist erst real, wenn er ISOLIERT reproduziert wurde.** Die schnelle
+  Gegenprobe (N Läufe allein) trennt echten Map-Seed-Nichtdeterminismus von einem Mess-Artefakt — und
+  die Failure-Test-Namen gegen die Mutations-Fall-Namen zu halten, zeigt die wahre Ursache in Sekunden.
+
+**Folge-Slices.** Keine. Der Reviewer-INFO (Aggregator-Order-Edge) folgt aus derselben Artefakt-Ursache
+und ist gegenstandslos. **Beide vom Freshness-Nachtlauf gemeldeten Drifts sind jetzt aufgelöst**
+(Go 1.26.5, ubuntu 26.04 LTS, Baseline v3.5.1) — der `upstream-drift`-Job fährt wieder vollständig grün.
 
 ## 8. Sub-Area-Modus-Begründung
 
