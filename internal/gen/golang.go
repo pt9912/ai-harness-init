@@ -456,11 +456,19 @@ func main() {
 // Was das fuer den Adopter heisst — praezise, nicht beschoenigt (Review F-3): die Globs
 // zaehlen die EINE generierte Slice literal auf, und die Config ist skip-if-present, das
 // Tool zieht also nie nach. Wer eine zweite Slice anlegt, MUSS sie in app/ports aufnehmen.
-// Unterbleibt das, faellt ihr Code unter keine Schicht — GEMESSEN (a-check v0.15.0 gegen
-// ein Skelett mit nicht eingetragener zweiter Slice): Exit 1, `wrong-direction` auf ihren
-// Domain-Import. Der Fall ist also fail-LOUD, kein stilles Gruen; der Adopter wird zur
-// Config-Pflege gezwungen, statt sie unbemerkt zu versaeumen. Die emittierte Datei sagt
-// ihm das unten selbst.
+// Unterbleibt das, faellt ihr Code unter keine Schicht. Wie sich das zeigt, haengt vom
+// Code ab — hier die Grenze der Aussage, nicht die bequeme Fassung (Review-Runde 2, N-2):
+//
+//	- Die neue Slice importiert eine Schicht (Domain/Ports — der Normalfall, denn eine
+//	  Use-Case-Slice ohne Domain-Bezug ist keine): a-check meldet `wrong-direction` und
+//	  faellt (Exit 1). Einmal so gemessen (a-check v0.15.0, Wegwerf-Skelett mit nicht
+//	  eingetragener zweiter Slice) — im Repo liegt dafuer KEIN Sensor, es ist eine
+//	  Hand-Messung, keine bewachte Zusage.
+//	- Die neue Slice importiert KEINE Schicht (rein interner Code): sie faellt unter
+//	  keine Regel und bleibt still gruen. Diesen Fall faengt niemand.
+//
+// Der Gate-Lauf ist also ein wahrscheinlicher, kein garantierter Hinweis. Die emittierte
+// Datei unten sagt dem Adopter genau das — nicht mehr.
 //
 // Mit nur EINER Slice koennen lateral-slice/port-locality noch nicht feuern (dafuer
 // braucht es zwei). Was hier und heute REAL rot gesehen wurde, ist `core-impurity`
@@ -484,9 +492,10 @@ const goHexArchConfig = `# .a-check.yml — Architektur-Gate (HexSlice = hexagon
 #   - Area/Slice UMBENANNT  -> die Globs mitziehen.
 #   - Slice HINZUGEFUEGT    -> je einen app-Glob (.../<neue-slice>/**) und, falls
 #     sie einen slice-lokalen Port hat, einen ports-Glob (.../<neue-slice>/ports/**)
-#     ERGAENZEN. Vergisst du es, faellt der neue Code unter keine Schicht und
-#     a-check meldet seine Importe als wrong-direction (Exit 1) — laut, nicht
-#     still. Der Gate-Lauf sagt dir also Bescheid.
+#     ERGAENZEN. Vergisst du es, faellt der neue Code unter keine Schicht: importiert
+#     er eine (Domain/Ports), meldet a-check wrong-direction und faellt — importiert
+#     er keine, bleibt er still gruen und ungeprueft. Verlass dich also nicht darauf,
+#     dass der Gate-Lauf dich erinnert; die Globs gehoeren zum Anlegen einer Slice.
 version: 1
 
 languages:

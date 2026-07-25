@@ -390,7 +390,11 @@ echo "full-smoke: Arch-Gate-Zaehne belegt (verbotener Domain->Adapter-Import fae
 # Den Befund SICHTBAR machen: ein „belegt"-Satz ohne die Zeile, die ihn belegt, ist
 # genau die Behauptung ohne Beleg, die AGENTS.md §3.6 meint. Der Lauf-Output steht
 # sonst nur im Erfolgsfall-Puffer und wuerde nie gedruckt.
-grep -E 'core-impurity|wrong-direction' <<<"$teeth_out" | head -2 | sed 's/^/full-smoke:   /'
+# KEIN `| head -N`: head schliesst die Pipe nach N Zeilen, der Producer bekommt SIGPIPE,
+# und unter `set -e` + pipefail bricht full-smoke daran ab — ohne Meldung, groessen-
+# abhaengig. Dieselbe Klasse wie F-5 (die zweite Instanz im selben Slice, Review-Runde 2
+# N-1). `sed -n 1,2p` liest weiter und drainiert, statt frueh zu schliessen.
+grep -E 'core-impurity|wrong-direction' <<<"$teeth_out" | sed -n '1,2s/^/full-smoke:   /p'
 
 # slice-046, ROOT-Modul: der Init-One-Shot `--lang go --arch hexslice` verortet das Modul
 # am Repo-Root — das Arch-Gate mountet dann das GANZE Ziel, samt der vendored Baseline.
@@ -420,7 +424,15 @@ fi
 # Klasse, gegen die der Kopf dieses Skripts steuert; Review F-5). Der Marker ist die
 # a-check-MOUNT-Form, nicht das blosse Wort "a-check" — letzteres steht auch in einem
 # Kommentar oder Dateinamen (Verifier-LOW: unspezifischer Marker).
-dryrun_out="$( make -n -C "$tmprepo_hex" gates 2>&1 )"
+# `|| dryrun_rc=$?` statt nackter Zuweisung: sonst beendet `set -e` den Smoke ohne jede
+# Diagnose, weil die make-Meldung in der verworfenen Variablen steckt (Runde 2, N-4).
+dryrun_rc=0
+dryrun_out="$( make -n -C "$tmprepo_hex" gates 2>&1 )" || dryrun_rc=$?
+if [ "$dryrun_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — make -n gates am Root-Modul scheiterte (rc=$dryrun_rc):" >&2
+	printf '%s\n' "$dryrun_out" >&2
+	exit 1
+fi
 if ! grep -qF -- ':/src:ro' <<<"$dryrun_out"; then
 	echo "full-smoke: FEHLER — das Root-Arch-Gate haengt nicht in make gates (GATE_CHECKS-Verdrahtung, slice-046)." >&2
 	exit 1
