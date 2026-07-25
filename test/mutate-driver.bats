@@ -55,8 +55,10 @@ setup() {
   # Gegen die REINE Pfad-Funktion: sie traegt die Ortsregel, und der Test kostet so
   # kein 8-MB-Kopieren (Review F-7 — die Tests laufen in JEDEM make test, also ~70x
   # je mutate-Lauf).
-  local dest
-  dest="$(bash -c "source '$DRIVER' 2>/dev/null || true; isolation_path '$(mktemp -d)'")"
+  local root dest
+  root="$(mktemp -d)"
+  dest="$(bash -c "source '$DRIVER' 2>/dev/null || true; isolation_path '$root'")"
+  rm -rf "$root"
   [ -n "$dest" ]
   case "$dest" in
     "$REPO" | "$REPO"/*) return 1 ;;   # unter dem Repo -> Befund
@@ -153,6 +155,28 @@ setup() {
   # Status 1, wo dieselbe Zeile ohne `-q` Status 0 gibt; der bats-Container bringt
   # wieder ein anderes grep mit). Negiertes `grep -q` ist in beiden eindeutig.
   ! grep -q '^AGENTS.md$' <<<"$ziele"
+}
+
+# Die Mitten-im-Lauf-Pruefung ist der Sensor der Kern-Zusage dieses Slice — und war
+# als einziger unbewacht (Review-Runde 2 F-1, Verifier R2-1). Die Begruendung „als
+# Mutations-Fall nicht darstellbar" trug nicht: beide Zweige kehren VOR jedem
+# make-Aufruf zurueck, also ist derselbe hermetische Weg moeglich wie fuer die uebrigen
+# Funktionen. Fixture: ein Mini-Baum mit einer Zieldatei und einem Fall darauf; der
+# Referenzwert wird absichtlich verfaelscht, indem die Zieldatei nach der Aufnahme
+# veraendert wird — run_case muss das melden, bevor er einen Sensor faehrt.
+@test "driver: run_case meldet einen HOST-Treffer, bevor er den Sensor faehrt" {
+  local iso cases
+  iso="$(mktemp -d)"; cases="$iso/cases"
+  mkdir -p "$iso/repo" "$cases"
+  printf 'alt\n' >"$iso/repo/ziel.txt"
+  # Der Fall mutiert die Kopie UND (das ist der simulierte Bruch) den Host-Baum:
+  # hier sind beide dasselbe Verzeichnis, also faellt der Referenzwert auseinander.
+  printf '#!/usr/bin/env bash\n# files: ziel.txt\n# expect: egal\nsed -i s/alt/neu/ ziel.txt\n' >"$cases/01-fall.sh"
+  run bash -c "source '$DRIVER' 2>/dev/null || true
+    WORK='$iso/repo'; REPO='$iso/repo'; CASES_DIR='$cases'
+    run_case '$cases/01-fall.sh'"
+  rm -rf "$iso"
+  [[ "$output" == *"Isolation gebrochen"* ]]
 }
 
 @test "driver: das smoke-Muster trifft Fehlschlag-Zeilen, NICHT Fortschritts-Zeilen" {

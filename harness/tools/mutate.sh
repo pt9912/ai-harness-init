@@ -35,7 +35,7 @@
 # zusagte). Die Faelle nutzen `sed -i` und GNU-BRE-Escapes, sind also NICHT strikt
 # POSIX — die zwischenzeitliche POSIX-Zusage griff weiter als der Code (N-3).
 #
-# FAIL-CLOSED, vier Bedingungen. Der Sensor misst die ABWESENHEIT von Rot und
+# FAIL-CLOSED, fuenf Bedingungen. Der Sensor misst die ABWESENHEIT von Rot und
 # koennte darum selbst still gruen werden; jede dieser Bedingungen schliesst
 # einen Weg dorthin:
 #   1. Das Mutations-Skript scheitert            -> Befund (nicht uebersprungen).
@@ -46,6 +46,9 @@
 #      -> Befund. Der eigentliche Zweck.
 #   4. Der Sensor wird rot, aber der ERWARTETE Waechter steht nicht in seiner
 #      FEHLSCHLAG-Ausgabe -> Befund. Rot aus dem falschen Grund ist kein Beleg.
+#   5. Die Zieldatei(en) im HOST-Baum aendern sich waehrend eines Falls -> Befund und
+#      ABBRUCH. Die Isolation ist dann gebrochen (oder es wurde parallel editiert);
+#      beides macht jede weitere Messung wertlos.
 #
 # NICHT in `make gates` — der Grund ist die LAUFZEIT (ein voller `make test`-Zyklus
 # je Fall, gemessen rund 7 s bei warmem Cache; bei 70+ Faellen eine Viertelstunde).
@@ -57,8 +60,8 @@
 # ISOLATION: der Baum wird EINMAL pro Lauf nach ausserhalb des Repos kopiert; Seds
 # und Sensor-Laeufe treffen nur diese Kopie. Ausserhalb, weil ein Verzeichnis UNTER
 # dem Repo ungetrackt im Working Tree laege und den MR-003-Stop-Hook-Hash verschoebe.
-# Der Treiber BELEGT die Unversehrtheit selbst (target_fingerprint vor/nach dem Lauf,
-# fail-closed), statt sie zuzusagen.
+# Der Treiber BELEGT die Unversehrtheit selbst — je Fall zwischen Mutation und Restore,
+# und einmal ueber alle Ziele am Ende —, statt sie zuzusagen.
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -254,6 +257,15 @@ run_case() {
   # durchgehen (eigener Sonden-Befund beim Bau dieses Sensors).
   ( cd "$WORK" && sha256sum "${file_list[@]}" >"$BACKUP/before.sums" )
 
+  # Referenzwert der HOST-Fassung DIESES Falls, unmittelbar vor der Mutation.
+  local case_before
+  case_before="$(printf '%s\n' "${file_list[@]}" | tr '\n' '\0' | fingerprint_of_list "$REPO")" || case_before=""
+  if [ -z "$case_before" ]; then
+    report_fail "$name" "Host-Fingerabdruck der Zieldatei(en) nicht berechenbar"
+    restore
+    return
+  fi
+
   # (1) Mutation anwenden. Die Ausgabe wandert in die Meldung, nicht in eine
   # Datei — restore() raeumt das Temp-Verzeichnis sofort weg, ein Pfad-Zeiger
   # darin ginge ins Leere (Review-Befund slice-026, LOW).
@@ -264,26 +276,30 @@ run_case() {
     return
   fi
 
-  # ISOLATIONS-PRUEFUNG MITTEN IM LAUF (Review F-2): genau JETZT ist die Mutation
-  # angewandt und noch nicht zurueckgenommen. Ein Vergleich erst NACH dem Lauf kann den
-  # symmetrischen Rueckfall nicht sehen — laufen Sed und Restore beide gegen $REPO (also
-  # exakt das Verhalten vor der Isolation), ist vorher==nachher und der Waechter bliebe
-  # gruen. Hier faellt er. Kostet einen Hash ueber die `# files:`-Ziele je Fall.
+  # ISOLATIONS-PRUEFUNG MITTEN IM LAUF: genau JETZT ist die Mutation angewandt und
+  # noch nicht zurueckgenommen. Ein Vergleich erst NACH dem Lauf kann den symmetrischen
+  # Rueckfall nicht sehen — laufen Sed und Restore beide gegen $REPO (das Verhalten vor
+  # der Isolation), ist vorher==nachher und der Waechter bliebe gruen. Hier faellt er.
   #
-  # Steht VOR Bedingung 2, nicht danach: im Rueckfall bleibt die KOPIE unveraendert
-  # (der Sed traf den Host), also feuerte sonst zuerst „Mutation hat nicht gegriffen"
-  # — ein gebrochener Sensor waere als veralteter Patch fehldiagnostiziert. Real so
-  # gemessen, als der Rot-Beleg fuer diese Bedingung gebaut wurde.
-  local host_now
-  if ! host_now="$(target_fingerprint "$REPO" "$CASES_DIR")"; then
-    report_fail "$name" "Host-Fingerabdruck waehrend des Laufs nicht berechenbar"
+  # Gemessen werden DIE DATEIEN DIESES FALLS, nicht alle Ziele: eine parallel bearbeitete
+  # fremde Zieldatei liesse sonst JEDEN Folgefall abbrechen — bis zu 70 falsche Befunde,
+  # kein einziger Waechter gemessen, und die Briefings sagen fuer genau diesen Fall das
+  # Gegenteil zu (Review-Runde 2, F-3).
+  #
+  # Steht VOR Bedingung 2: im Rueckfall bleibt die KOPIE unveraendert, also feuerte sonst
+  # zuerst „Mutation hat nicht gegriffen" — ein gebrochener Sensor waere als veralteter
+  # Patch fehldiagnostiziert. Real so gemessen, als der Rot-Beleg gebaut wurde.
+  local case_now
+  case_now="$(printf '%s\n' "${file_list[@]}" | tr '\n' '\0' | fingerprint_of_list "$REPO")" || case_now=""
+  if [ -z "$case_now" ] || [ "$case_now" != "$case_before" ]; then
+    report_fail "$name" "die Zieldatei(en) im HOST-Baum haben sich waehrend des Falls geaendert — Isolation gebrochen, oder parallel editiert"
+    # ABBRUCH statt Weiterlaufen (F-4): ist die Isolation gebrochen, mutieren die
+    # Folgefaelle weiter gegen den Host — und ein Host-Restore gibt es nicht, das
+    # Backup liegt in der Kopie. Lieber laut stehenbleiben.
+    echo "mutate: ABBRUCH — der Host-Baum ist betroffen; Folgefaelle wuerden ihn weiter mutieren." >&2
+    echo "  Betroffen: ${file_list[*]}" >&2
     restore
-    return
-  fi
-  if [ "$host_now" != "$HOST_BEFORE" ]; then
-    report_fail "$name" "die Mutation hat den HOST-Baum getroffen statt die Kopie — Isolation gebrochen"
-    restore
-    return
+    exit 1
   fi
 
   # (2) Hat sie ueberhaupt gegriffen? Ein wirkungsloser Patch wuerde sonst als
@@ -372,10 +388,9 @@ main() {
   shopt -u nullglob
   if [ "${#cases[@]}" -eq 0 ]; then
     # Ein leeres Set waere ein gruener Lauf ohne jede Aussage — genau das stille
-    # Gruen, gegen das der Sensor gerichtet ist. Diese Pruefung steht VOR dem
-    # Fingerabdruck: der scheitert ueber einem leeren Fall-Verzeichnis ohnehin, und
-    # dann meldete der Lauf einen Rechen-Fehler statt der wahren Ursache (der Waechter
-    # war dadurch unerreichbar geworden — Verifier R-3).
+    # Gruen, gegen das der Sensor gerichtet ist. Steht VOR dem Fingerabdruck: der
+    # scheitert ueber einem leeren Fall-Verzeichnis ohnehin, und dann meldete der Lauf
+    # einen Rechen-Fehler statt der wahren Ursache.
     echo "mutate: keine Faelle in $CASES_DIR — ein leeres Set ist kein gruener Lauf" >&2
     exit 1
   fi
