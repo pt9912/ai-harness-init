@@ -16,7 +16,7 @@ diese Liste ist der Lauf nicht reproduzierbar):
 
 - Runde-1-Report [`2026-07-25-slice-046-impl-review.md`](2026-07-25-slice-046-impl-review.md) (F-1…F-10)
 - Verifikations-Report [`2026-07-25-slice-046-verification.md`](2026-07-25-slice-046-verification.md) (DoD BESTÄTIGT, R-1 == F-1, R-2/R-3 offen)
-- Slice-Plan [`slice-046-arch-gate-emitter.md`](../plan/planning/in-progress/slice-046-arch-gate-emitter.md)
+- Slice-Plan [`slice-046-arch-gate-emitter.md`](../plan/planning/done/slice-046-arch-gate-emitter.md)
 - aktive ADRs: [ADR-0009](../plan/adr/0009-hexslice-arch-realisierung.md), [ADR-0008](../plan/adr/0008-arch-achse-emittiertes-skelett.md), [ADR-0007](../plan/adr/0007-bootstrap-phasen.md), [ADR-0003](../plan/adr/0003-go-native-binaries.md)
 - berührte IDs: [`LH-FA-07`](../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren), [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
 - [`AGENTS.md`](../../AGENTS.md) (Hard Rules §3.1–§3.6), [`harness/conventions.md`](../../harness/conventions.md)

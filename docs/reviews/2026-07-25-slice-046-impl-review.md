@@ -12,7 +12,7 @@ geprüft: die DoD-Abhakung (Verifier, Modul 11).
 **Eingangs-Kontext** (die Verträge, gegen die geprüft wurde — ohne
 diese Liste ist der Lauf nicht reproduzierbar):
 
-- Slice-Plan [`slice-046-arch-gate-emitter.md`](../plan/planning/in-progress/slice-046-arch-gate-emitter.md)
+- Slice-Plan [`slice-046-arch-gate-emitter.md`](../plan/planning/done/slice-046-arch-gate-emitter.md)
 - aktive ADRs: [ADR-0009](../plan/adr/0009-hexslice-arch-realisierung.md) (Realisierung), [ADR-0008](../plan/adr/0008-arch-achse-emittiertes-skelett.md) (Mechanik), [ADR-0007](../plan/adr/0007-bootstrap-phasen.md) (Idempotenz-Klassen), [ADR-0003](../plan/adr/0003-go-native-binaries.md) (Docker-only)
 - berührte IDs: [`LH-FA-07`](../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren), [`LH-FA-04`](../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
 - [`AGENTS.md`](../../AGENTS.md) (Hard Rules §3.1–§3.6), [`harness/conventions.md`](../../harness/conventions.md) (MR-Block)
