@@ -44,8 +44,16 @@ lädt sie ans GitHub-Release. Damit bekommt [`LH-QA-04`](../../../../spec/lasten
       Setzung 1 — keine zweite Build-Definition im Workflow) und lädt die Artefakte ans Release.
       **Nicht** in `ci.yml`: Setzung 2 trennt nach Sensor-Klasse, ein Release-Job liefe sonst bei
       jedem Push mit.
-- [ ] **Plattform-Smoke nach dem CR:** Start-Smoke je Plattform, Voll-Smoke weiter nur auf Linux.
-      `ci-lint` deckt den neuen Workflow.
+- [x] **Plattform-Smoke nach dem CR:** Start-Smoke je Plattform, Voll-Smoke weiter nur auf Linux.
+      `ci-lint` deckt den neuen Workflow **syntaktisch** — sein **Verhalten** ist per
+      `workflow_dispatch` real gemessen: Lauf `30166346539` grün auf **allen sechs** Runnern
+      (`ubuntu-24.04`, `ubuntu-24.04-arm`, `macos-26-intel`, `macos-26`, `windows-2025`,
+      `windows-11-arm`), `publish` korrekt übersprungen. Damit sind die Runner-Labels **gemessen**
+      statt der Runner-Images-Doku entnommen.
+      **Der Lauf davor (`30166231831`) war rot — und das ist der Beleg, dass er nötig war:** alle
+      sechs Jobs scheiterten identisch an `dist/<binary> existiert nicht`, weil `actions/checkout`
+      (Default `clean: true`) das zuvor heruntergeladene Artefakt löschte. Ein Reihenfolge-Fehler,
+      den **kein** lokales Gate sehen kann.
       **Verortung entschieden (2026-07-25): im `release.yml`, nicht in `ci.yml` und nicht in einer
       vierten Datei.** Vier Gründe: (a) die Messmethode bindet den Nachweis an die **Release-Artefakte**
       — dort entstehen sie, dort werden sie geprüft, ohne zweiten Build oder Weiterreichen zwischen
