@@ -23,20 +23,24 @@ lesende Rollen) **strukturell** aufgelöst statt per Disziplin umgangen.
 
 ## 2. Definition of Done
 
-- [ ] Der Host-Arbeitsbaum ist während UND nach einem `make mutate`-Lauf **byte-unverändert**:
+- [x] Der Host-Arbeitsbaum ist während UND nach einem `make mutate`-Lauf **byte-unverändert**:
       ein Content-Hash der getrackten+ungetrackten Dateien vor dem Lauf == nach dem Lauf, und ein
       **paralleler** `make test`/Hash-Sample MITTEN im Lauf sieht keine Mutation (die F-12-Reproduktion
       aus [slice-044](../done/slice-044-generator-kompositions-seam.md) läuft jetzt sauber).
-- [ ] Der Mutations-Sensor bleibt **semantisch identisch** (dieselben Fälle, dieselben vier
+- [x] Der Mutations-Sensor bleibt **semantisch identisch** (dieselben Fälle, dieselben vier
       Befund-Wege aus `mutate.sh`): jede Mutation färbt ihren Wächter rot, ein veralteter/wirkungsloser
       Patch bleibt ein Befund. `make mutate` liefert weiter „N ok, M Befund(e)".
-- [ ] Ein **abgebrochener** Lauf (SIGKILL) hinterlässt **keine** Residuen im Host-Baum (die Isolation
+- [x] Ein **abgebrochener** Lauf (SIGKILL) hinterlässt **keine** Residuen im Host-Baum (die Isolation
       liegt außerhalb; kein `git checkout -- .`-Recovery mehr nötig).
-- [ ] `mutate.lock` wird überflüssig ODER bewacht nur noch die Isolations-Ressource — dokumentiert.
-- [ ] `make gates` grün (inkl. shellcheck auf das geänderte `mutate.sh`).
-- [ ] `make mutate` grün gegen die Isolation (Selbst-Beweis: der geänderte Sensor bewacht sich weiter).
-- [ ] Doku: `harness/conventions.md` (der MR-Block zu F-12 / mutate) auf „isoliert, kein Host-Baum-Kontakt" nachgezogen.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] `mutate.lock` wird überflüssig ODER bewacht nur noch die Isolations-Ressource — dokumentiert.
+- [x] `make gates` grün (inkl. shellcheck auf das geänderte `mutate.sh`).
+- [x] `make mutate` grün gegen die Isolation (Selbst-Beweis: der geänderte Sensor bewacht sich weiter).
+- [x] Doku nachgezogen — **mit Plan-Drift:** einen MR-Block-Eintrag zu F-12/mutate gibt es in
+      `harness/conventions.md` **nicht** ([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)…[`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions) kennen keinen; `mutate` erscheint dort nur in
+      den CI-Absätzen). Nachgezogen wurde deshalb dort, wo der Sensor beschrieben wird:
+      [`AGENTS.md`](../../../../AGENTS.md) §4 und [`harness/README.md`](../../../../harness/README.md)
+      §Nicht-Gate-Verify. Vom Verifier als vollständiger Ersatz-Ort bestätigt.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -89,17 +93,78 @@ real gesehen, Review konform + Verifier bestätigt die DoD, Closure-Notiz mit St
   nur die Ausführungs-Isolierung ändert sich.
 
 ## 7. Closure-Notiz (nach `done/`)
+**Geliefert.** `make mutate` fährt den Zyklus gegen eine **isolierte Kopie außerhalb des Repos**;
+der Host-Arbeitsbaum wird nie beschrieben. Belegt, nicht zugesagt: der Treiber vergleicht den
+Fingerabdruck der Zieldatei(en) **je Fall zwischen Mutation und Restore** (und einmal über alle
+Ziele am Ende) und **bricht ab**, wenn der Baum betroffen ist. Real gesehen: `make gates` lief
+mehrfach **grün parallel zu einem laufenden `make mutate`**, und während eines Laufs wurde die
+Roadmap editiert — beides war vor diesem Slice die F-12-Reibung, die drei Slices lang jede lesende
+Rolle blockiert hat. Sensoren: `make gates` grün (176 Dateien, 0 Befunde) · `make mutate`
+**73 ok/0** mit den Fällen 72–77 je rot **an ihrem eigenen Wächter** · `shell-lint` clean.
+Review Runde 1 und 2 NICHT KONFORM (je 3 MEDIUM), Runde 3 (eng, auf Abbruch-Pfad und Wächter)
+NICHT KONFORM (1 MEDIUM) — alle aufgelöst; Verifier **DoD BESTÄTIGT** (Runde 2, beide TEILWEISE
+geschlossen).
 
-<!--
-Wird *nach* Abschluss ergänzt. Inhalt:
-- Was hat funktioniert?
-- Was ging anders als geplant?
-- Steering-Loop-Eintrag: welcher Guide/Sensor sollte verbessert werden?
-  (kanonische Definition: [`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.1/kurs/de/grundlagen/klassifikation.md#steering-loop))
-- Folge-Slices: welche neuen open/-Einträge?
--->
+**Anders als geplant.** Drei Dinge, die der Plan nicht kannte:
 
-<!-- Erst nach Abschluss füllen. -->
+1. **Die Kopie braucht `.git`.** Der Plan (und meine Messung) sahen nur `test/`; `make ci-lint`
+   fährt aber actionlint, und das bricht ohne git-Projektwurzel ab. Der **Grün-Vorlauf** fing es
+   beim allerersten Lauf — genau dafür gibt es ihn.
+2. **Der Fingerabdruck musste zweimal umgebaut werden.** Erst lauf-weit über alle Ziele (rötete
+   jede parallele Arbeit — der Nutzen des Slice hob sich selbst auf), dann fall-lokal mit Abbruch.
+3. **Der Plan-Drift bei der Doku:** einen MR-Block-Eintrag zu F-12/mutate gibt es nicht; der
+   Nachzug ging an die Orte, wo der Sensor wirklich beschrieben wird.
+
+**Steering-Loop-Eintrag — die Lehre dieses Slice.**
+
+Dieselbe Fehlerklasse ist **viermal** aufgetreten, jedes Mal eine Ebene tiefer:
+
+| Die Zusage lag bei … | … der Wächter aber bei | gefunden von |
+|---|---|---|
+| fail-closed ohne git | `pipefail` propagierte den Fehler ohnehin | `make mutate`, Bedingung 3 |
+| leere Ziel-Liste | ein leerlaufendes Glob scheiterte vorher | `make mutate`, Bedingung 3 |
+| Ortsregel der Kopie | vorgelagerte Nicht-Leer-Assertion | Reviewer, Runde 2 |
+| Abbruch nach erkanntem Bruch | Meldungstext statt Exit-Status | Reviewer, Runde 3 |
+
+Die gemeinsame Ursache ist **Mehrfach-Absicherung**: wo eine Eigenschaft doppelt gesichert ist,
+ist die *vordere* Schranke unbeobachtbar — und der Fall sieht trotzdem gut aus, weil er ja rot
+wird. **Regel, schärfer als „eine Mutation muss Verhalten brechen": ein Fall belegt nur die
+Schranke, die im Test-Szenario als ERSTE greifen kann. Wer eine Mutation schreibt, geht den Pfad
+bis zur Assertion durch, statt sich mit „es wird rot" zufriedenzugeben.**
+
+Zwei Nebenlehren:
+
+- **Deckung ergänzen, nicht ersetzen.** Beim Re-Verankern von Fall 72 blieb der alte Wächter
+  nackt zurück — die slice-034-Lehre „entfernte Mutation = entfernte Deckung", reproduziert,
+  während sie in derselben Sitzung zitiert wurde. Kennen schützt nicht; nachzählen schützt.
+- **Einen Rot-Beleg zu bauen ist selbst ein Sensor.** Der Versuch, die Isolationsprüfung rot zu
+  sehen, förderte einen echten Reihenfolge-Fehler zutage: der Bruch wurde als „Patch veraltet"
+  fehldiagnostiziert. Ohne den Beleg-Versuch wäre die Meldung im Ernstfall in die falsche
+  Richtung gelaufen.
+
+**Benannte Restrisiken (kein Folge-Slice):**
+
+- Der Fingerabdruck deckt die `# files:`-Ziele, nicht den ganzen Baum — bewusster Preis dafür,
+  dass parallele Arbeit den Lauf nicht rötet. Ein Defekt, der eine Host-Datei außerhalb dieser
+  Menge schreibt, fiele hier nicht auf.
+- Editierst du während eines Laufs die Zieldatei des gerade laufenden Falls, schlägt der Wächter
+  an; host-seitig ist das nicht von einem echten Bruch zu unterscheiden. Die Meldung nennt beide
+  Ursachen.
+- Der Abbruch-Exit-Code ist nicht von „Befunde gefunden" unterscheidbar (beide 1).
+- Die Reichweite des `exit` hängt am Aufrufkontext (heute plain in der Schleife, geprüft).
+- `require_isolated` wird trotz Kommentar nur einmal in `main` gerufen; Fall 72 ankert auf
+  Einrückungstiefe.
+- **R-4:** der geteilte Docker-Tag `ai-harness-init:build` in `artifact`/`smoke` bleibt ein
+  Ressourcen-Kanal; der Lock serialisiert `mutate`-Läufe, nicht ein paralleles `make artifact`.
+- **In-Container** (Mutation *und* Test im Container) bleibt die sauberste Stufe und ein
+  möglicher Folge-Slice; die Temp-Kopie liefert dieselbe Host-Unversehrtheit ohne den Umbau des
+  Fall-Header-Vertrags.
+
+**Folge-Slices:** keine neuen aus diesem Slice. Der Sensor für die **Wächter-zu-Fall-Zuordnung**
+(diese vier Datenpunkte sind sein Bedarfsnachweis) ist als Achse 5 des Wartungs-Kandidaten in der
+Roadmap eingetragen — mit der Schärfung, dass er nicht nur zählen darf, *ob* ein Wächter einen Fall
+hat, sondern prüfen muss, ob der Fall den **Zweig trifft, den der Wächter im Namen führt**.
+
 
 ## 8. Sub-Area-Modus-Begründung
 
