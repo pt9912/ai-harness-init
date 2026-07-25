@@ -44,8 +44,17 @@ lädt sie ans GitHub-Release. Damit bekommt [`LH-QA-04`](../../../../spec/lasten
       Setzung 1 — keine zweite Build-Definition im Workflow) und lädt die Artefakte ans Release.
       **Nicht** in `ci.yml`: Setzung 2 trennt nach Sensor-Klasse, ein Release-Job liefe sonst bei
       jedem Push mit.
-- [ ] **Plattform-Smoke nach dem CR:** Start-Smoke je Plattform in der CI-Matrix, Voll-Smoke weiter
-      nur auf Linux. `ci-lint` deckt den neuen Workflow.
+- [ ] **Plattform-Smoke nach dem CR:** Start-Smoke je Plattform, Voll-Smoke weiter nur auf Linux.
+      `ci-lint` deckt den neuen Workflow.
+      **Verortung entschieden (2026-07-25): im `release.yml`, nicht in `ci.yml` und nicht in einer
+      vierten Datei.** Vier Gründe: (a) die Messmethode bindet den Nachweis an die **Release-Artefakte**
+      — dort entstehen sie, dort werden sie geprüft, ohne zweiten Build oder Weiterreichen zwischen
+      Workflows; (b) [`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)
+      Setzung 2 trennt nach **Sensor-Klasse**, nicht nach Runner-Typ — tag-getrieben ist die dritte
+      Klasse, keine vierte; (c) `ci.yml` bleibt homogen (heute vier Jobs, alle `ubuntu-24.04`, alle
+      Docker); (d) macOS-Runner pro Push für einen Start-Smoke wären viel Laufzeit für wenig Aussage.
+      **Preis, benannt:** das Feedback kommt erst beim Tag. Gegenmaßnahme wie bei
+      `upstream-drift.yml`: `workflow_dispatch`, damit der Nachweis vor dem Tag manuell anstoßbar ist.
 - [ ] `make gates` grün · `make mutate` grün mit rot gesehener Mutation je neuem Wächter
       (Cross-Compile-Verdrahtung · `DEST`-Pflicht · Matrix-Vollständigkeit).
 - [ ] `make full-smoke` unverändert grün (der Default-Pfad darf sich nicht bewegen).
@@ -68,8 +77,7 @@ Matrix steht vollständig in `spec/lastenheft.md`. Die Zusage ist damit älter a
 | `spec/lastenheft.md` | update (CR) | Messmethode [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) auf real Messbares präzisieren, Grenze benennen — **vor** dem Code |
 | `Dockerfile` | update | `build`-Stage um Zielplattform-Build-Args; Default-Verhalten byte-identisch |
 | `Makefile` | update | Matrix-Target über die sechs Kombinationen; `artifact` bleibt unverändert |
-| `.github/workflows/release.yml` | neu | tag-getrieben, nur `make`-Targets, Upload ans Release |
-| `.github/workflows/ci.yml` | update | Start-Smoke-Matrix (macos/windows/linux) — **kein** Release-Job |
+| `.github/workflows/release.yml` | neu | tag-getrieben (+ `workflow_dispatch`), nur `make`-Targets, Upload ans Release — **und** die Start-Smoke-Matrix (macos/windows/linux) |
 | `test/` + `test/mutations/` | neu | Wächter je neuer Zusage, jeder mit rot färbender Mutation |
 
 ## 4. Trigger

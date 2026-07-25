@@ -1,0 +1,114 @@
+# Release — Plattform-Matrix bauen, auf jeder Plattform starten, ans Release haengen
+# (slice-048, LH-QA-04).
+#
+# DRITTE Sensor-Klasse neben ci.yml (hermetisch pro Push) und upstream-drift.yml
+# (Netz, naechtlich): tag-getrieben. MR-014 Setzung 2 trennt nach Klasse, nicht nach
+# Runner-Typ — deshalb liegt der Plattform-Nachweis HIER und nicht in ci.yml: die
+# Artefakte, die er prueft, entstehen in diesem Lauf. So gibt es keinen zweiten Build
+# und kein Weiterreichen zwischen Workflows.
+#
+# MR-014 Setzung 1 (nur make-Targets, keine zweite Build-Definition) gilt weiter: der
+# BAU steckt vollstaendig in `make release-artifacts`. Upload/Download zwischen Jobs
+# und das Anhaengen ans Release sind Workflow-Mechanik, kein Build-Schritt.
+#
+# GRENZE, benannt statt verschwiegen (LH-QA-04 Messmethode, CR 0.13.0): auf macOS und
+# Windows laeuft ein START-Smoke — das Binary laeuft, meldet seine Usage, Exit 0. Ein
+# VOLL-Smoke ist dort nicht erreichbar: die macOS-Runner tragen kein Container-Runtime,
+# die Windows-Runner nur Windows-Container. Der Voll-Smoke bleibt Linux-Sache und
+# laeuft pro Push in ci.yml.
+#
+# workflow_dispatch wie in upstream-drift.yml: der Plattform-Nachweis ist damit VOR
+# einem Tag manuell anstossbar — sonst kaeme das Feedback erst beim Release.
+
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+# Ein laufendes Release NICHT abbrechen (anders als ci.yml): ein halb hochgeladenes
+# Release ist schlechter als ein doppelter Lauf.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  # Bauen: EIN Linux-Runner cross-kompiliert alle sechs Binaries im gepinnten Image
+  # (Docker-only, ADR-0003). Die Plattform-Runner bauen nichts — sie starten nur.
+  artifacts:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - run: mkdir -p dist
+      - run: make release-artifacts DEST=dist
+      - name: Inventar zeigen (Beleg im Lauf-Log, nicht nur Exit 0)
+        run: ls -l dist
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: release-binaries
+          path: dist/
+          retention-days: 7
+          if-no-files-found: error
+
+  # Start-Smoke je Plattform. fail-fast: false — ein Bruch auf einer Plattform soll
+  # die Aussage der uebrigen nicht verdecken.
+  start-smoke:
+    needs: artifacts
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            bin: ai-harness-init-linux-amd64
+          - runner: ubuntu-24.04-arm
+            bin: ai-harness-init-linux-arm64
+          - runner: macos-26-intel
+            bin: ai-harness-init-darwin-amd64
+          - runner: macos-26
+            bin: ai-harness-init-darwin-arm64
+          - runner: windows-2025
+            bin: ai-harness-init-windows-amd64.exe
+          - runner: windows-11-arm
+            bin: ai-harness-init-windows-arm64.exe
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: release-binaries
+          path: dist
+      - name: Start-Smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          bin="dist/${{ matrix.bin }}"
+          chmod +x "$bin" || true
+          # --help ist der Start-Smoke: das Binary laeuft auf DIESER Plattform und
+          # meldet seine Usage. Der Marker-Grep haelt fest, dass wirklich die Usage
+          # kam und nicht bloss irgendeine Ausgabe mit Exit 0 (LH-QA-01-Geist).
+          out="$("./$bin" --help)"
+          printf '%s\n' "$out"
+          grep -qF -- 'ai-harness-init' <<<"$out"
+          grep -qF -- 'add-lang' <<<"$out"
+
+  # Veroeffentlichen: nur fuer einen echten Tag. Ein workflow_dispatch-Lauf baut und
+  # smoked, laedt aber NICHTS hoch — sonst entstuende ein Release ohne Tag.
+  publish:
+    needs: start-smoke
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: release-binaries
+          path: dist
+      - name: Artefakte ans Release haengen
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${GITHUB_REF_NAME}" dist/* --clobber
