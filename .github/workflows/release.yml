@@ -81,13 +81,16 @@ jobs:
             bin: ai-harness-init-windows-arm64.exe
     runs-on: ${{ matrix.runner }}
     steps:
+      # REIHENFOLGE IST TRAGEND: Checkout ZUERST, Artefakt DANACH. `actions/checkout`
+      # raeumt den Workspace per Default auf (clean: true) und loescht dabei alles
+      # Ungetrackte — ein vorher heruntergeladenes dist/ waere weg. Genau so ist der
+      # erste reale Dispatch-Lauf gescheitert, auf allen sechs Runnern gleich; lokal
+      # ist das nicht sichtbar, weil kein Gate den Workflow ausfuehrt.
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: release-binaries
           path: dist
-      # Das Skript wird gebraucht, das Binary kommt aus dem Artefakt — deshalb hier
-      # ein Checkout (der publish-Job braucht keinen und hat darum GH_REPO).
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - name: Start-Smoke
         shell: bash
         # Die PRUEFUNG lebt im Repo (harness/tools/start-smoke.sh), nicht in dieser
