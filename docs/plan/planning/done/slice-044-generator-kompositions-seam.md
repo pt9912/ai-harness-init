@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.1/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-07-arch-achse](../welle-07-arch-achse.md).
+**Welle:** [welle-07-arch-achse](welle-07-arch-achse.md).
 
 **Bezug:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) (Generator/Arch-Achse), [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (`flat` byte-identisch), [`ADR-0008`](../../adr/0008-arch-achse-emittiertes-skelett.md) (Kompositions-Modell).
 
@@ -72,7 +72,7 @@ geht dieser Slice zurück?
 (kanonische Definition: [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.1/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine))
 -->
 
-**`open` → `in-progress` (Implementer beginnt):** Welle [welle-07-arch-achse](../welle-07-arch-achse.md)
+**`open` → `in-progress` (Implementer beginnt):** Welle [welle-07-arch-achse](welle-07-arch-achse.md)
 ist aktiv ([`ADR-0008`](../../adr/0008-arch-achse-emittiertes-skelett.md) Accepted, Doc-Kette komplett);
 erster Slice, kein Vorgänger blockiert.
 
