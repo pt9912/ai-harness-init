@@ -1,6 +1,6 @@
 # Roadmap
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-07-23.
+**Status:** Aktiv. **Letzte Änderung:** 2026-07-25.
 
 **Format-Regel:** Die Roadmap ist eine Reihenfolge von **Wellen**,
 keine Reihenfolge von Terminen (siehe
@@ -12,14 +12,18 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**Welle-ID:** [welle-07-arch-achse](../welle-07-arch-achse.md) — Architektur-Achse (`--arch`) + konditionales Arch-Gate. **Aktiv** seit 2026-07-24.
-**Trigger (erfüllt):** [`ADR-0008`](../../adr/0008-arch-achse-emittiertes-skelett.md) + [`ADR-0009`](../../adr/0009-hexslice-arch-realisierung.md) **Accepted** (je nach zwei Proposed-Review-Runden) + Doc-Kette komplett — Lastenheft **0.12.0** ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)-Arch-Achse mit `hexslice`, [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)-Happy-Path) + `architecture.md`-Nachzug.
-**Slices:** slice-044 (Kompositions-Seam) **[done](../done/slice-044-generator-kompositions-seam.md)** · slice-045a (hexSlice-Layout + Go-Renderer) **[done](../done/slice-045a-hexslice-go-renderer.md)** · slice-045b (`--arch`-CLI) **[done](../done/slice-045b-arch-cli.md)** (2026-07-24; Review KONFORM, Verifier DoD BESTÄTIGT; INFO-1 aufgelöst, mutate 60 ok/0 Fälle 62/63/64 rot, full-smoke apps-hex build+lint real); slice-046 (konditionaler a-check-Emitter) **[done](../done/slice-046-arch-gate-emitter.md)** (2026-07-25; Review Runde 1 NICHT KONFORM → Runde 2 **KONFORM**, Verifier DoD BESTÄTIGT; `mutate` 67 ok/0 mit den Fällen 65–71 rot, `full-smoke` Exit 0 mit beiden Richtungen + Zähne-Beleg). **Alle Welle-Slices sind damit in `done/` — die Welle ist closure-reif** (`/close-welle`). slice-045 wurde bei [`ADR-0009`](../../adr/0009-hexslice-arch-realisierung.md) in **045a/045b** re-sliced (Layout+Renderer vs. CLI je eigene DoD).
-**Wellen-Vorbedingung (aufgelöst):** das **a-check-Tool** (gepinntes Image + `--print-mk`, wie d-check) ist durch [`ADR-0009`](../../adr/0009-hexslice-arch-realisierung.md) belegt (v0.15.0, Digest-gepinnt, real) — das ursprüngliche Risiko ist abgeräumt; slice-046 beginnt trotzdem mit der Pin-Verifikation.
+**Keine aktive Welle.** welle-07-arch-achse ist geschlossen (Belege: alle vier Slices in `done/`,
+`make gates` Exit 0, `make mutate` 67 ok/0, `make full-smoke` Exit 0 mit **beiden**
+[`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)-Richtungen,
+Carveout-Audit, Results-Notiz) → siehe *Abgeschlossene Wellen*. Die nächste Welle ist **nicht**
+geschnitten (cp-Disziplin: Plandatei erst per `cp`, wenn ihr erster Slice steht) — Kandidaten unten.
 
-**Closure-Trigger:** alle Welle-Slices in `done/`; `make gates` + `make mutate` grün; `make full-smoke` belegt **beide** [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)-Richtungen (`--arch hexslice` → `make a-check` Exit 0; `--arch flat` → kein a-check); Closure-Notiz `welle-07-results.md`.
+**Ohne Welle in Arbeit:** [slice-047](../open/slice-047-mutate-host-isolation.md) (`open/`,
+mutate-Host-Isolation, Härtung) — geschnitten aus der F-12-Reibung dieser Welle.
 
-**Zuletzt:** welle-06-freshness geschlossen (2026-07-24); die drei gemeldeten Drifts (Baseline v3.5.1, ubuntu 26.04, Go 1.26.5) alle aufgelöst → `upstream-drift`-Nachtlauf wieder voll grün.
+**Zuletzt:** welle-07-arch-achse geschlossen (2026-07-25); **M4 erreicht** — das emittierte Skelett
+trägt auf Wunsch hexSlice-Schichten und bekommt dann sein Architektur-Gate, ein flaches Modul
+bekommt keines.
 
 ## Nächste Wellen
 
@@ -31,7 +35,7 @@ Prospektive Kandidaten (nur mit **beobachtbarem Trigger**, Modul 6):
 | Doc-Gate-Härtung | erneut beobachtete Befund-Klasse (Muster slice-026: neun Instanzen → Sensor) | Anker-Fragment-Sensor · Prosa-Zahlen-Provenienz · citations (slice-014/015) | S |
 | mutate-Isolierung (Härtung, ohne Welle — [slice-047](../open/slice-047-mutate-host-isolation.md) **geschnitten**) | wiederholte F-12-Reibung in welle-07 (mutate mutiert den Host-Baum → blockiert lesende Rollen, Background-Läufe gekillt) | Zyklus gegen isolierte Kopie fahren, Host-Baum nie anfassen | S |
 
-*(Arch-Gate/M4 ist seit 2026-07-24 die **aktuelle** Welle [welle-07-arch-achse](../welle-07-arch-achse.md) — der Trigger „`--arch`-ADR accepted" ist mit [`ADR-0008`](../../adr/0008-arch-achse-emittiertes-skelett.md) eingetreten.)*
+*(Arch-Gate/M4 war [welle-07-arch-achse](../done/welle-07-arch-achse.md) — 2026-07-25 geschlossen, Meilenstein erreicht.)*
 
 ## Meilensteine
 
@@ -40,7 +44,7 @@ Prospektive Kandidaten (nur mit **beobachtbarem Trigger**, Modul 6):
 | M1 — lauffähiger Offline-Kern (`cmd/ai-harness-init` parst + emittiert Gate-Baseline + legt Templates ab, ohne Netz) | welle-01 | slice-001a/001b/002/003 done | **erreicht (2026-07-18)** |
 | M2 — vollständiger Bootstrap (inkl. Sprachskelett-Generator + Root-README) | welle-02 **und** welle-03 | slice-005 + slice-024 in `done/` **und** Voll-E2E-Smoke grün (welle-03-Closure) | **erreicht (2026-07-22)** |
 | M3 — durchsetzender, phasierter Harness (emittierter Repo erzwingt den Prozess: Hooks + Command-Guard + Workflow-Anleitung; Bootstrap phasiert + idempotent: doc-führt auch für die Zielsprache, `add-lang`/Mono-Repo) | welle-04 **und** welle-05 | welle-04 + welle-05 in `done/` **und** `make full-smoke` grün über die Durchsetzungs- + Idempotenz-Fitness (Guard blockt, Gate-Nachweis-Kreis geschlossen, 2. Init-Lauf idempotent, kein Prune) | **erreicht (2026-07-23)** |
-| M4 — Arch-Gate integriert (a-check, [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) | [welle-07-arch-achse](../welle-07-arch-achse.md) | ein Skelett trägt hexSlice-Schichten (`domain`/`application`/`ports`/`adapters`) **und** der a-check-Emitter ist gebaut → a-check wird emittiert + aktiv (sonst [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Verstoß über leerem Prüfbereich) | **erreicht** (slice-046 done 2026-07-25; `make full-smoke` belegt beide Richtungen real — Welle-Closure steht noch aus) |
+| M4 — Arch-Gate integriert (a-check, [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) | [welle-07-arch-achse](../done/welle-07-arch-achse.md) | ein Skelett trägt hexSlice-Schichten (`domain`/`application`/`ports`/`adapters`) **und** der a-check-Emitter ist gebaut → a-check wird emittiert + aktiv (sonst [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Verstoß über leerem Prüfbereich) | **erreicht** (welle-07 geschlossen 2026-07-25; `make full-smoke` belegt beide Richtungen real) |
 
 ## Abhängigkeitsgraph
 
@@ -68,6 +72,7 @@ flowchart LR
 | [welle-04-durchsetzung-und-emission](../done/welle-04-durchsetzung-und-emission.md) | 2026-07-22 | [welle-04-results.md](../done/welle-04-results.md) |
 | [welle-05-bootstrap-phasen](../done/welle-05-bootstrap-phasen.md) | 2026-07-23 | [welle-05-results.md](../done/welle-05-results.md) |
 | [welle-06-freshness](../done/welle-06-freshness.md) | 2026-07-24 | [welle-06-results.md](../done/welle-06-results.md) |
+| [welle-07-arch-achse](../done/welle-07-arch-achse.md) | 2026-07-25 | [welle-07-results.md](../done/welle-07-results.md) |
 
 ## Historische Trigger-Verschiebungen
 

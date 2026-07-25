@@ -70,4 +70,10 @@ Template angelegt (cp-Disziplin).
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Welle-Abschluss füllen. Verweis auf welle-<NN>-results.md. -->
+**Geschlossen** — die Belege stehen in [`welle-07-results.md`](done/welle-07-results.md) (Modul-6-Struktur:
+Geliefert · was funktionierte · was anders lief · Steering-Loop-Einträge · Folge-Slices · Verifikation).
+
+Kurz: alle vier Slices (044, 045a, 045b, 046) in `done/`; `make gates` Exit 0, `make mutate` 67 ok/0,
+`make full-smoke` Exit 0 mit **beiden** [`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)-Richtungen
+und rot gesehenem emittierten Gate; Carveout-Audit: ein offener Carveout ([`CO-001`](../carveouts/CO-001-bats-shell-lint.md)),
+unverändert gültig, kein stilles rotes Gate. **M4 erreicht.**
