@@ -12,7 +12,7 @@ geprüft: die DoD-Abhakung (Verifier, Modul 11).
 **Eingangs-Kontext** (die Verträge, gegen die geprüft wurde — ohne
 diese Liste ist der Lauf nicht reproduzierbar):
 
-- Slice-Plan [`slice-047-mutate-host-isolation.md`](../plan/planning/in-progress/slice-047-mutate-host-isolation.md) (DoD §2, Plan-Tabelle §3, Risiken §6)
+- Slice-Plan [`slice-047-mutate-host-isolation.md`](../plan/planning/done/slice-047-mutate-host-isolation.md) (DoD §2, Plan-Tabelle §3, Risiken §6)
 - aktive ADRs: [ADR-0003](../plan/adr/0003-go-native-binaries.md) (Docker-only)
 - berührte IDs: [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
 - [`AGENTS.md`](../../AGENTS.md) (Hard Rules §3.1–§3.6), [`harness/conventions.md`](../../harness/conventions.md) (MR-Block, [`MR-003`](../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung), [`MR-014`](../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions))

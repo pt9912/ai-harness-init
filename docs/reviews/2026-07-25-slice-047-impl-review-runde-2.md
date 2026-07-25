@@ -14,7 +14,7 @@ aufgelöst, (b) hat der Fix **neue** Probleme eingeführt. Runde 1 wird
 **Eingangs-Kontext** (die Verträge, gegen die geprüft wurde — ohne
 diese Liste ist der Lauf nicht reproduzierbar):
 
-- Slice-Plan [`slice-047-mutate-host-isolation.md`](../plan/planning/in-progress/slice-047-mutate-host-isolation.md) (DoD §2, Plan-Tabelle §3, Risiken §6)
+- Slice-Plan [`slice-047-mutate-host-isolation.md`](../plan/planning/done/slice-047-mutate-host-isolation.md) (DoD §2, Plan-Tabelle §3, Risiken §6)
 - **Report Runde 1** [`2026-07-25-slice-047-impl-review.md`](2026-07-25-slice-047-impl-review.md) (F-1…F-12 im Wortlaut)
 - **Verifier-Report** [`2026-07-25-slice-047-verification.md`](2026-07-25-slice-047-verification.md) (R-1…R-7, zwei TEILWEISE)
 - aktive ADRs: [ADR-0003](../plan/adr/0003-go-native-binaries.md) (Docker-only)

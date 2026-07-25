@@ -99,7 +99,7 @@ konnte; cpp+hexslice → Exit 2).
   genutzt → kompiliert, der erwartete Test fällt an der Assertion). **Regel: eine sed-Mutation, die die
   einzige Verwendung einer Variable entfernt, färbt aus Compile-Grund rot — auf eine verhaltens-,
   nicht kompilat-brechende Form legen.**
-- **F-12 strukturell auflösen (→ [slice-047](../in-progress/slice-047-mutate-host-isolation.md)).** `make mutate`
+- **F-12 strukturell auflösen (→ [slice-047](../done/slice-047-mutate-host-isolation.md)).** `make mutate`
   mutiert den **Host-Baum** (nur der Test läuft im Container, die Mutation nicht) — das machte diesen
   Slice zäh: mutate blockierte die lesenden Rollen, drei Background-Läufe wurden gekillt, der Stop-Hook
   nagte in jedem Warte-Turn. Was funktionierte: **Foreground** (der Befehl blockt den Turn → keine

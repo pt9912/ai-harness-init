@@ -71,7 +71,7 @@ nicht als eigenes Gate (welle-07 §6).
   zwischen „behoben" und „wirklich behoben".
 - **`make mutate` war die Reibungsquelle der Welle** (F-12): es mutiert den **Host**-Baum, blockiert
   damit jede lesende Rolle und ließ den Stop-Hook in jedem Warte-Turn anschlagen. Der strukturelle Fix
-  ist als [slice-047](../in-progress/slice-047-mutate-host-isolation.md) geschnitten, aber bewusst **nicht**
+  ist als [slice-047](../done/slice-047-mutate-host-isolation.md) geschnitten, aber bewusst **nicht**
   Teil dieser Welle.
 
 ## 4. Steering-Loop-Einträge
@@ -101,7 +101,7 @@ nicht als eigenes Gate (welle-07 §6).
 
 ## 5. Folge-Slices / offene Punkte
 
-- **[slice-047](../in-progress/slice-047-mutate-host-isolation.md)** (`in-progress/`, ohne Welle): `make mutate`
+- **[slice-047](../done/slice-047-mutate-host-isolation.md)** (`in-progress/`, ohne Welle): `make mutate`
   gegen eine isolierte Kopie fahren, den Host-Baum nie anfassen. Löst die F-12-Klasse strukturell.
 - **Benannte Restrisiken aus slice-046** (kein Folge-Slice, in seiner Closure-Notiz begründet): keine
   Atomaritäts-Zusage im Emit-Pfad · Fragment-Namenskollision erst bei einem Modul unter
