@@ -1,8 +1,8 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Handbuch-Version:** 1.3
-**Software-Stand:** Entwicklungsstand M2 — **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf). Zielsprachen `go` und `cpp` (C++; weitere folgen). Noch keine vorgefertigten Release-Binaries.
-**Stand:** 2026-07-23
+**Handbuch-Version:** 1.4
+**Software-Stand:** Entwicklungsstand M4 — **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat` oder `hexslice`; bei `hexslice` kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen); `hexslice` liefert derzeit nur der Go-Renderer. Noch keine vorgefertigten Release-Binaries.
+**Stand:** 2026-07-25
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
 ---
@@ -200,6 +200,33 @@ ai-harness-init: add-lang go nach apps/api — Skelett + harness/mk/apps-api.mk 
 
 **Hinweise:** `--lang <sprache>` beim Aufsetzen ist die Kurzform für „aufsetzen **und** ein `add-lang(<sprache>, .)`“. Der `<pfad>` muss innerhalb des Repositorys liegen (kein absoluter Pfad, kein `..`).
 
+### Ein geschichtetes Grundgerüst wählen (`--arch`)
+
+**Voraussetzung:** wie bei `add-lang`.
+
+Standardmäßig entsteht ein **flaches** Grundgerüst: ein Einstiegspunkt, keine Schichten. Mit `--arch hexslice` entsteht stattdessen ein **geschichtetes** Grundgerüst (HexSlice = hexagonal + vertikale Use-Case-Schnitte):
+
+```bash
+ai-harness-init add-lang go apps/api --arch hexslice
+```
+
+**Ergebnis — zusätzlich zum flachen Fall:**
+
+- der Code liegt in Schichten: `internal/hexagon/domain/…`, `internal/hexagon/application/<bereich>/<use-case>/…` (mit eigenen `ports/`), `internal/adapters/{inbound,outbound}/…`, dazu `cmd/<binary>/main.go` als Verdrahtungs-Punkt;
+- **das Architektur-Gate wird mitgeliefert**: `<pfad>/.a-check.yml` (die Schicht-Regeln) und `a-check.mk` (der Prüf-Baustein). `make gates` fährt es ab sofort mit.
+
+Das Architektur-Gate prüft die **Abhängigkeitsrichtung**: Importe zeigen nur nach innen. Ein Verstoß — etwa ein Import aus der Domain in einen Adapter — lässt `make gates` **rot** werden, mit Datei und Zeile:
+
+```text
+internal/hexagon/domain/example/greeting.go:8: core-impurity: Kern importiert app/internal/adapters/outbound/notify
+```
+
+**Bei `--arch flat` (dem Standard) wird kein Architektur-Gate angelegt** — es gäbe dort keine Schichten zu prüfen, und ein Gate ohne Prüfbereich wäre eine leere Zusage.
+
+**Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports`). Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft.
+
+**Grenzen:** `--arch hexslice` liefert derzeit nur der Go-Renderer. `add-lang cpp <pfad> --arch hexslice` endet bewusst mit Exit 2 statt still ein Grundgerüst ohne Schichten anzulegen. Eine unbekannte Architektur endet ebenfalls mit Exit 2 und nennt die verfügbaren Werte.
+
 ### Das aufgesetzte Repository prüfen
 
 **Voraussetzung:** Der Aufsetz-Lauf war erfolgreich; Docker läuft.
@@ -263,6 +290,7 @@ SKEL_GO_VERSION=1.26.4 ai-harness-init --lang go --name "Mein Projekt"
 | Option | Pflicht | Bedeutung |
 |---|---|---|
 | `--lang <sprache>` | nein | Zielsprache des Grundgerüsts (Kurzform für „aufsetzen + `add-lang(<sprache>, .)`“). Ohne sie: dokument-only. Derzeit unterstützt: `go`, `cpp` (C++ per CMake + clang-tidy). |
+| `--arch <arch>` | nein | Bauform des Grundgerüsts: `flat` (Standard) oder `hexslice` (geschichtet, mit Architektur-Gate). Wirkt nur zusammen mit `--lang`. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch). |
 | `--name <name>` | nein | Projektname; ersetzt den Platzhalter `<Projektname>` in den Vorlagen. |
 | `-h`, `--help` | nein | Hilfe anzeigen und beenden. |
 
@@ -274,7 +302,7 @@ Ein `--force` gibt es **nicht** — der Re-Lauf ist idempotent (siehe [Ein Repos
 ai-harness-init add-lang <sprache> <pfad>
 ```
 
-Fügt einem bereits aufgesetzten Repository ein Sprachmodul hinzu — **wiederholbar** (Mono-Repo), auch mit gemischten Sprachen. Beide Argumente sind Pflicht: `<sprache>` (z. B. `go` oder `cpp`), `<pfad>` (Zielort im Repository; `.` = Wurzel). Siehe [Ein Sprachmodul hinzufügen](#ein-sprachmodul-hinzufügen-add-lang).
+Fügt einem bereits aufgesetzten Repository ein Sprachmodul hinzu — **wiederholbar** (Mono-Repo), auch mit gemischten Sprachen. Beide Positions-Argumente sind Pflicht: `<sprache>`, `<pfad>` (Zielort im Repository; `.` = Wurzel). Optional folgt **nach** ihnen `--arch <arch>` (`flat` oder `hexslice`); die Bauform ist je Modul frei wählbar, ein Mono-Repo darf beide mischen. Siehe [Ein Sprachmodul hinzufügen](#ein-sprachmodul-hinzufügen-add-lang) und [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch).
 
 ### Umgebungsvariablen
 
@@ -288,6 +316,8 @@ Alle Umgebungsvariablen sind **optional**. Ohne sie gelten festgelegte, reproduz
 | `BASELINE_SHA256` | Erwartete Prüfsumme des heruntergeladenen Regelwerk-Pakets. |
 | `DCHECK_IMAGE` | Abweichende Referenz für das Dokumentations-Prüf-Image. |
 | `DCHECK_DIGEST` | Abweichende Prüfsumme (Digest) des Prüf-Images; sticht die Referenz. |
+| `A_CHECK_IMAGE` | Abweichende Referenz für das Architektur-Prüf-Image (nur bei `--arch hexslice` genutzt). |
+| `A_CHECK_DIGEST` | Abweichende Prüfsumme (Digest) des Architektur-Prüf-Images; sticht die Referenz. |
 
 Beispiel mit mehreren Variablen:
 
@@ -331,6 +361,8 @@ Schon hier läuft `make gates` **grün** — dokument-only (Dokumentations-Prüf
 - **C++:** `Dockerfile`, `CMakeLists.txt`, `src/main.cpp`, `tests/` (netzloser CTest) und `.clang-tidy`
 
 Am Wurzelverzeichnis (`--lang go` bzw. `add-lang go .`) liegen sie neben den Basis-Dateien; in einem **Mono-Repo** (mehrere `add-lang`-Läufe mit verschiedenen `<pfad>`) je Modul ein solcher Satz unter seinem `<pfad>`, auch mit gemischten Sprachen. Erst mit einem Sprachmodul fährt `make gates` **zusätzlich** die Code-Gates (lint/build/test in Docker).
+
+Mit `--arch hexslice` sieht der Code-Teil anders aus (die Bau-Dateien bleiben gleich): statt eines einzelnen Einstiegspunkts entstehen die Schichten `internal/hexagon/{domain,application}`, `internal/adapters/{inbound,outbound}` und `cmd/<binary>/main.go` — **plus** das Architektur-Gate `<pfad>/.a-check.yml` und `a-check.mk`. Bei `flat` (dem Standard) entsteht keines von beidem. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch).
 
 Die Dateien mit der Endung `.template.md` unter `.harness/baseline/` sind **Vorlagen**: Sie kopieren sie bei Bedarf und füllen sie aus (z. B. für eine neue Architektur-Entscheidung). Die Prozess-Regeln erklären, wann welche Vorlage zum Einsatz kommt.
 
@@ -460,6 +492,7 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 
 | Handbuch-Version | Stand | Änderung |
 |---|---|---|
+| 1.4 | 2026-07-25 | **Bauform `--arch`** (slice-045b/046): `hexslice` erzeugt ein geschichtetes Grundgerüst und liefert das **Architektur-Gate** (`.a-check.yml` + `a-check.mk`) mit, `flat` (Standard) nicht. Neuer Aufgaben-Abschnitt samt Pflege-Hinweis für zusätzliche Use-Case-Schnitte, Optionstabelle, `add-lang`-Signatur, `A_CHECK_IMAGE`/`A_CHECK_DIGEST` und Phase-2-Beschreibung nachgezogen. Nachzug: das Handbuch kannte die Achse seit zwei Slices nicht. |
 | 1.3 | 2026-07-23 | Zweite Zielsprache **C++** (slice-039): `--lang cpp` und `add-lang cpp <pfad>` erzeugen ein CMake-Grundgerüst (Dockerfile-Stages build/test/lint mit CMake + CTest + clang-tidy, netzloser Test). Optionstabelle, `SKEL_CPP_VERSION`, Sprach-Datei-Liste, Fehlermeldung und FAQ nachgezogen. Gemischt-sprachige Mono-Repos möglich. |
 | 1.2 | 2026-07-23 | Sprach-Review gegen den Benutzerhandbuch-Standard: Entwicklerbegriffe geglättet (Aggregator → zentrale `Makefile`, Durchsetzung → Schutz-Hooks, Doc-Chain → Projekt-Dokumente, „skip-if-present“/„kanonisch“/„vendored“ plain); die in der Werkzeug-Ausgabe sichtbaren Begriffe (Aggregator, Durchsetzung, Prüf-Baustein) ins Glossar aufgenommen; Sicherheits- und Versions-Hinweis im Anhang ergänzt. |
 | 1.1 | 2026-07-23 | Phasierter Bootstrap (welle-05): `--lang` optional (dokument-only Init), neues `add-lang`-Subkommando (Mono-Repo), idempotenter Re-Lauf. `--force` entfernt; Kollisions-Abbruch-Verhalten und die zugehörigen Fehler/FAQ/Exit-Codes ersetzt. |
