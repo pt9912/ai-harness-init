@@ -297,8 +297,18 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   (`DefaultCppVersion` in `internal/gen/cpp.go`) wird gegen das **Docker-Hub-LTS** geprüft — Wrapper
   `harness/tools/cpp-freshness.sh` holt die ubuntu-Tags (`hub.docker.com/v2/…/ubuntu/tags`) und
   extrahiert das aktuelle LTS (höchstes `NN.04` mit **geradem** `NN`; Interims `23.04`/`25.04`/`.10`
-  raus), dann derselbe Vergleicher; **`make freshness-cpp`** hängt im Nachtlauf. Damit deckt der
-  Drift-Job jede versions-gepinnte Komponente ab.
+  raus), dann derselbe Vergleicher; **`make freshness-cpp`** hängt im Nachtlauf.
+- **Reichweite des Drift-Jobs — ehrlich, nicht rund.** Er deckt die **Baseline**, **d-check**,
+  **golangci-lint**, die **Go-Toolchain** und den **ubuntu-Base-Tag** ab. **Nicht** abgedeckt sind
+  die drei übrigen digest-gepinnten Werkzeug-Images: **bats**, **shellcheck** und **actionlint** —
+  sie altern unbeobachtet. Hier stand bis 2026-07-25 „damit deckt der Drift-Job jede versions-gepinnte
+  Komponente ab"; das war eine Zusage über der halben Menge, aufgefallen erst, als ein Nutzer den
+  veralteten bats-Pin von Hand fand (real **1.11.0**, während bats-core bereits weiter ist).
+  Der Grund für die Lücke ist mechanisch: diese drei sind **nur per Digest** gepinnt, tragen also
+  keinen Versions-String, den ein Vergleich lesen könnte. Der saubere Weg ist, die Version **aus dem
+  gepinnten Image selbst** zu lesen (`bats --version`, `shellcheck --version`, `actionlint -version`)
+  und gegen `releases/latest` zu vergleichen — dann gibt es keine zweite Quelle, die driften kann.
+  Bis das gebaut ist, gilt die Lücke als **benannt**, nicht als geschlossen.
 - **Migration:** Ein bestehender `.harness/cache/`-Cache aus
   [`MR-006`](#mr-006--regelwerk-cache-als-split-modul-verzeichnis) ist nach dem
   Umstieg ein nicht mehr regenerierbares Überbleibsel (`regelwerk-fetch` existiert
