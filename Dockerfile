@@ -45,6 +45,17 @@ RUN golangci-lint run ./...
 # `docker cp` aus DIESER Stage auf den Host (fuer die Smokes). Der Smoke laesst die
 # Binary auf dem HOST laufen, weil sie selbst `docker run <d-check> --print-mk`
 # ruft (kein DinD im Container). Kein OCI-Image als Vertriebsmittel (ADR-0003).
+# ---- build -----------------------------------------------------------------
+# Release-Binary. TARGET_OS/TARGET_ARCH waehlen die Zielplattform (LH-QA-04);
+# LEER gelassen bauen sie fuer die Plattform des Build-Images — der bisherige
+# Default-Pfad bleibt damit byte-identisch (`make build`, `artifact`, beide Smokes
+# haengen daran). Leere GOOS/GOARCH sind fuer die Toolchain dasselbe wie ungesetzt.
+# Bewusst NICHT die BuildKit-eigenen TARGETOS/TARGETARCH: die haengen an der
+# --platform des Builds und wuerden zusaetzlich das Base-Image emulieren; hier soll
+# nur cross-kompiliert werden, im selben gepinnten Image (LH-QA-02).
 FROM deps AS build
+ARG TARGET_OS=
+ARG TARGET_ARCH=
 COPY . .
-RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/ai-harness-init ./cmd/ai-harness-init
+RUN CGO_ENABLED=0 GOOS=${TARGET_OS} GOARCH=${TARGET_ARCH} \
+    go build -trimpath -ldflags="-s -w" -o /out/ai-harness-init ./cmd/ai-harness-init

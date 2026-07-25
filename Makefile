@@ -34,7 +34,7 @@ BASELINE_TAG ?= v3.5.1
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 7268a8e6f36476c98d5cf0547d16deacec70fcddcf23df38f87d029e967cb10d
 
-.PHONY: help gates record-gates test lint build compile artifact smoke full-smoke shell-lint ci-lint baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate
+.PHONY: help gates record-gates test lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.51.1 -> v0.51.1). Aus
@@ -64,6 +64,32 @@ artifact: build ## Natives Release-Binary auf den Host ziehen (DEST=<dir>) — f
 	@cid="$$(docker create ai-harness-init:build true)"; \
 	trap 'docker rm -f "$$cid" >/dev/null 2>&1' EXIT; \
 	docker cp "$$cid:/out/ai-harness-init" "$(DEST)/ai-harness-init"
+
+# Plattform-Matrix (LH-QA-04): ein natives Binary je GOOS/GOARCH, cross-kompiliert
+# im GEPINNTEN Image (kein Host-Toolchain, ADR-0003). Die Liste ist eine Variable,
+# damit ein Teil-Lauf (z. B. nur linux) ohne Recipe-Aenderung moeglich ist; der
+# Default ist die vollstaendige Matrix aus dem Lastenheft.
+#
+# Namensschema: ai-harness-init-<os>-<arch>, windows zusaetzlich mit .exe — der
+# Dateiname traegt die Plattform, weil alle sechs im selben DEST landen.
+RELEASE_PLATFORMS ?= linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64 windows/arm64
+
+release-artifacts: ## Alle Release-Binaries der Plattform-Matrix nach DEST=<dir> (LH-QA-04) — Docker-only
+	@test -n "$(DEST)" || { echo "release-artifacts: DEST=<dir> ist Pflicht (Zielverzeichnis)"; exit 2; }
+	@set -e; for p in $(RELEASE_PLATFORMS); do \
+		os="$${p%%/*}"; arch="$${p##*/}"; ext=""; \
+		[ "$$os" = "windows" ] && ext=".exe"; \
+		tag="ai-harness-init:build-$$os-$$arch"; \
+		echo "release-artifacts: $$os/$$arch ..."; \
+		docker build --build-arg GO_VERSION=$(GO_VERSION) \
+			--build-arg TARGET_OS="$$os" --build-arg TARGET_ARCH="$$arch" \
+			--target build -t "$$tag" . ; \
+		cid="$$(docker create "$$tag" true)"; \
+		trap 'docker rm -f "$$cid" >/dev/null 2>&1' EXIT; \
+		docker cp "$$cid:/out/ai-harness-init" "$(DEST)/ai-harness-init-$$os-$$arch$$ext"; \
+		docker rm -f "$$cid" >/dev/null 2>&1; trap - EXIT; \
+	done
+	@echo "release-artifacts: OK — $(words $(RELEASE_PLATFORMS)) Binaries in $(DEST)"
 
 compile: ## Schnelles Compile-Feedback (Dockerfile compile-Stage, ohne Tests/Lint) — Docker-only; NICHT in gates
 	docker build --build-arg GO_VERSION=$(GO_VERSION) --target compile -t ai-harness-init:compile .
