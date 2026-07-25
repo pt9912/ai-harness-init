@@ -451,10 +451,21 @@ func main() {
 // Die Slice- und Port-Globs tragen LITERALE Verzeichnis-Praefixe (…/greet/**, nicht
 // …/**/ports/**), wie es die kanonische hexslice-Referenz verlangt: nur an einem solchen
 // Praefix haengen die beiden Vertical-Slice-Regeln (lateral-slice, port-locality); ein
-// Wildcard-in-der-Mitte laesst sie still inert. Mit der EINEN generierten Slice koennen
-// sie noch nicht feuern (dafuer braucht es eine zweite Slice) — der Praefix haelt sie
-// scharf, sobald der Adopter seine zweite Slice anlegt. Was hier und heute REAL feuert,
-// ist die Richtungsprueefung (core-impurity/wrong-direction) — einmal rot gesehen.
+// Wildcard-in-der-Mitte laesst sie still inert.
+//
+// Was das fuer den Adopter heisst — praezise, nicht beschoenigt (Review F-3): die Globs
+// zaehlen die EINE generierte Slice literal auf, und die Config ist skip-if-present, das
+// Tool zieht also nie nach. Wer eine zweite Slice anlegt, MUSS sie in app/ports aufnehmen.
+// Unterbleibt das, faellt ihr Code unter keine Schicht — GEMESSEN (a-check v0.15.0 gegen
+// ein Skelett mit nicht eingetragener zweiter Slice): Exit 1, `wrong-direction` auf ihren
+// Domain-Import. Der Fall ist also fail-LOUD, kein stilles Gruen; der Adopter wird zur
+// Config-Pflege gezwungen, statt sie unbemerkt zu versaeumen. Die emittierte Datei sagt
+// ihm das unten selbst.
+//
+// Mit nur EINER Slice koennen lateral-slice/port-locality noch nicht feuern (dafuer
+// braucht es zwei). Was hier und heute REAL rot gesehen wurde, ist `core-impurity`
+// (verbotener Domain->Adapter-Import, full-smoke) — `wrong-direction` in der oben
+// genannten Messung.
 const goHexArchConfig = `# .a-check.yml — Architektur-Gate (HexSlice = hexagonal + vertical slice),
 # emittiert von ai-harness-init. Bildet die Schichten des generierten hexSlice-
 # Skeletts ab; a-check laeuft netzlos + read-only (make a-check).
@@ -466,8 +477,16 @@ const goHexArchConfig = `# .a-check.yml — Architektur-Gate (HexSlice = hexagon
 # Regeln: lateral-slice (eine Slice importiert keine andere derselben Schicht)
 # und port-locality (ein slice-lokaler Port bleibt in seiner Slice). Ein
 # Wildcard-in-der-Mitte (.../**/ports/**) traegt keinen solchen Praefix und
-# liesse beide Regeln still inert — beim Umbenennen der Area/Slice also die
-# Globs mitziehen.
+# liesse beide Regeln still inert.
+#
+# DIESE DATEI IST DEINE: sie wird beim Re-Bootstrap nicht ueberschrieben, also
+# waechst sie nur, wenn du sie pflegst. Zwei Faelle:
+#   - Area/Slice UMBENANNT  -> die Globs mitziehen.
+#   - Slice HINZUGEFUEGT    -> je einen app-Glob (.../<neue-slice>/**) und, falls
+#     sie einen slice-lokalen Port hat, einen ports-Glob (.../<neue-slice>/ports/**)
+#     ERGAENZEN. Vergisst du es, faellt der neue Code unter keine Schicht und
+#     a-check meldet seine Importe als wrong-direction (Exit 1) — laut, nicht
+#     still. Der Gate-Lauf sagt dir also Bescheid.
 version: 1
 
 languages:

@@ -31,10 +31,23 @@ const (
 )
 
 // archAdopterHeader ersetzt den a-check-eigenen Kopf-Kommentar im emittierten Fragment.
+// „Referenz" statt „Digest": gepinnt wird Options.RunRef() — der Digest, wenn einer
+// gesetzt ist, sonst die Tag-Referenz. Der Default setzt einen Digest; wer ihn per
+// A_CHECK_DIGEST="" leert, bekommt den Tag und soll das im Kopf auch lesen (Review F-6).
 const archAdopterHeader = "# a-check.mk — Architektur-Gate via a-check. Emittiert von ai-harness-init,\n" +
-	"# adaptiert aus `a-check --print-mk`: A_CHECK_IMAGE auf den Digest gepinnt, der das\n" +
-	"# Fragment ERZEUGT hat (der vom Tool gedruckte Pin kann nachhinken — Reproduzierbarkeit).\n" +
+	"# adaptiert aus `a-check --print-mk`: A_CHECK_IMAGE auf die Referenz gepinnt, die das\n" +
+	"# Fragment ERZEUGT hat (Digest, sonst Tag) — der vom Tool gedruckte Pin kann nachhinken.\n" +
 	"# Eingebunden vom Arch-Gate-Fragment unter harness/mk/; die .a-check.yml liegt im Modul.\n"
+
+// archIncludeSentinel macht `include a-check.mk` include-once. Er ist bewusst eine
+// TOOL-EIGENE Variable und NICHT A_CHECK_IMAGE (Review F-1 / Verifier R-1): make
+// importiert die Umgebung, und A_CHECK_IMAGE ist der dokumentierte Adopter-Override
+// (`a-check.mk` bietet sie per `?=` an). Auf ihr zu keyen hiesse: wer den Override
+// benutzt, verliert den `include` — und im ROOT-Fall zeigt `GATE_CHECKS += a-check`
+// dann auf ein undefiniertes Target („No rule to make target"). Der Override und das
+// Gate wuerden sich gegenseitig ausschliessen, in den beiden Zweigen sogar
+// gegensaetzlich. Ein eigener Sentinel entkoppelt beides.
+const archIncludeSentinel = "ARCH_GATE_MK_INCLUDED"
 
 // ArchGateMkPath ist der Zielpfad des Arch-Gate-Fragments eines Moduls — modul-scoped
 // wie das Code-Gate-Fragment (slice-037), damit zwei hexSlice-Module in einem Mono-Repo
@@ -46,14 +59,17 @@ func ArchGateMkPath(modul string) string { return "harness/mk/arch-" + modul + "
 // (byte-nah an der kanonischen Nutzung); im Unterverzeichnis definiert es das
 // modul-scoped `a-check-<modul>`, das NUR das Modul-Verzeichnis mountet — sonst liefe
 // a-check mit der Modul-Config ueber dem ganzen Repo (die Globs traefen nichts bzw. das
-// Falsche). Der ifndef-Waechter macht `include a-check.mk` include-once: ohne ihn
+// Falsche). Der Sentinel-Waechter macht `include a-check.mk` include-once: ohne ihn
 // wuerde ein zweites hexSlice-Modul dieselben Targets ein zweites Mal definieren
-// (`overriding recipe`).
+// (`overriding recipe`); belegt in full-smoke mit ZWEI hexSlice-Modulen.
 func ArchGateMk(modul, path string) string {
 	head := "# " + ArchGateMkPath(modul) + " — Arch-Gate-Fragment (Modul " + modul + "), emittiert von\n" +
 		"# ai-harness-init (slice-046). Bindet das tool-generierte a-check.mk ein und haengt das\n" +
 		"# Architektur-Gate an GATE_CHECKS; der Root-Aggregator faehrt es via make gates.\n" +
-		"ifndef A_CHECK_IMAGE\n" +
+		"# Der Sentinel haelt den include ein-malig, ohne auf A_CHECK_IMAGE zu keyen — die\n" +
+		"# Variable ist der Adopter-Override und darf das Gate nicht abschalten.\n" +
+		"ifndef " + archIncludeSentinel + "\n" +
+		archIncludeSentinel + " := 1\n" +
 		"include " + ArchMkPath + "\n" +
 		"endif\n"
 	if path == "." {

@@ -414,11 +414,73 @@ if [ "$roothex_rc" -ne 0 ]; then
 	exit 1
 fi
 # Das Gate haengt auch WIRKLICH im Aggregator (nicht nur als Einzel-Target erreichbar):
-# `make -n gates` zeigt die Recipes, ohne sie zu fahren.
-if ! make -n -C "$tmprepo_hex" gates 2>&1 | grep -qF -- "a-check"; then
+# `make -n gates` zeigt die Recipes, ohne sie zu fahren. Erst in eine Variable, dann
+# Here-String — NICHT `make -n … | grep -q`: unter pipefail schliesst grep beim ersten
+# Treffer die Pipe, make bekommt EPIPE und pipefail propagiert dessen Nonzero (dieselbe
+# Klasse, gegen die der Kopf dieses Skripts steuert; Review F-5). Der Marker ist die
+# a-check-MOUNT-Form, nicht das blosse Wort "a-check" — letzteres steht auch in einem
+# Kommentar oder Dateinamen (Verifier-LOW: unspezifischer Marker).
+dryrun_out="$( make -n -C "$tmprepo_hex" gates 2>&1 )"
+if ! grep -qF -- ':/src:ro' <<<"$dryrun_out"; then
 	echo "full-smoke: FEHLER — das Root-Arch-Gate haengt nicht in make gates (GATE_CHECKS-Verdrahtung, slice-046)." >&2
 	exit 1
 fi
+# Review F-1 / Verifier R-1, BEHAVIORAL: mit gesetztem A_CHECK_IMAGE (dem dokumentierten
+# Adopter-Override) muss das Gate WEITER existieren und laufen. Keyte der include-once-
+# Waechter auf diese Variable, entfiele der `include` und `GATE_CHECKS += a-check` zeigte
+# auf ein undefiniertes Target ("No rule to make target 'a-check'"). Der Override traegt
+# hier dieselbe Referenz, die der Bootstrap gepinnt hat — geprueft wird die Verdrahtung,
+# nicht ein anderes Image.
+override_ref="$( sed -n 's/^A_CHECK_IMAGE ?= //p' "$tmprepo_hex/a-check.mk" )"
+if [ -z "$override_ref" ]; then
+	echo "full-smoke: FEHLER — im emittierten a-check.mk steht kein A_CHECK_IMAGE-Pin (slice-046/LH-QA-02)." >&2
+	exit 1
+fi
+override_rc=0
+override_out="$( A_CHECK_IMAGE="$override_ref" make -C "$tmprepo_hex" a-check 2>&1 )" || override_rc=$?
+if [ "$override_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — mit gesetztem A_CHECK_IMAGE ist das Arch-Gate weg oder rot (keyt der include-once-Waechter auf den Adopter-Override? Review F-1). rc=$override_rc" >&2
+	printf '%s\n' "$override_out" >&2
+	exit 1
+fi
+
+# slice-046 (Review F-2): ZWEI hexSlice-Module in einem Mono-Repo. Jedes bringt sein
+# Arch-Gate-Fragment mit, und jedes Fragment will `include a-check.mk`. Ohne den
+# include-once-Waechter definierte der zweite `include` dieselben Targets erneut — make
+# meldet "overriding recipe" und das Verhalten haengt an der Include-Reihenfolge. Der
+# Waechter war bis hierhin nur als Literal getestet; DIES ist sein Verhaltens-Beleg.
+echo "full-smoke: zweites hexSlice-Modul (apps/hex2) ins Mono-Repo — include-once + Koexistenz (slice-046) ..."
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang go apps/hex2 --arch hexslice )
+for rel in apps/hex2/.a-check.yml harness/mk/arch-apps-hex2.mk; do
+	if [ ! -e "$tmprepo_doc/$rel" ]; then
+		echo "full-smoke: FEHLER — zweites hexSlice-Modul ohne $rel (slice-046)." >&2
+		exit 1
+	fi
+done
+two_rc=0
+two_out="$( make -j -Otarget -C "$tmprepo_doc" gates 2>&1 )" || two_rc=$?
+if [ "$two_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — make gates mit ZWEI hexSlice-Modulen ist NICHT Exit 0 (doppelter include? slice-046/Review F-2). rc=$two_rc" >&2
+	printf '%s\n' "$two_out" >&2
+	exit 1
+fi
+if grep -qF -- "overriding recipe" <<<"$two_out"; then
+	echo "full-smoke: FEHLER — make meldet 'overriding recipe': a-check.mk wurde doppelt eingebunden (include-once-Waechter kaputt, Review F-2)." >&2
+	exit 1
+fi
+two_missing=""
+for marker in 'apps/hex":/src:ro' 'apps/hex2":/src:ro'; do
+	grep -qF -- "$marker" <<<"$two_out" || two_missing="$two_missing [$marker]"
+done
+if [ -n "$two_missing" ]; then
+	echo "full-smoke: FEHLER — mit zwei hexSlice-Modulen fehlt der Gate-Lauf fuer:$two_missing (ein Modul stillgelegt? slice-046/LH-QA-01)." >&2
+	exit 1
+fi
+# Beide Mount-Zeilen SICHTBAR machen: die Assertion oben lebt im Puffer, und ein
+# „beide liefen"-Satz ohne die zwei Zeilen ist eine Behauptung ohne Beleg (dieselbe
+# Sichtbarkeits-Disziplin wie beim Zaehne-Beweis).
+echo "full-smoke: beide Arch-Gates liefen im selben make-gates-Lauf:"
+grep -oE 'apps/hex2?":/src:ro' <<<"$two_out" | sort -u | sed 's/^/full-smoke:   /'
 
 # slice-038 (ADR-0007 Idempotenz-Klassifikation): ein ZWEITER Init-Lauf ist IDEMPOTENT
 # (Exit 0 statt Kollisions-Refuse). Konvergente Dateien (tool-Infra) werden kanonisch neu
@@ -469,4 +531,5 @@ echo "full-smoke: OK — add-lang WIEDERHOLBAR (Mono-Repo): apps/api + apps/web 
 echo "full-smoke: OK — ZWEITE SPRACHE (slice-039): add-lang cpp apps/engine koexistiert mit den Go-Modulen, make -j gates faehrt die REALEN C++-Gates (cmake/ctest/clang-tidy in Docker), Guard blockt cmake danach (blocked/cpp)."
 echo "full-smoke: OK — ARCH-ACHSE (slice-045b/ADR-0009): add-lang go apps/hex --arch hexslice dropt das hexSlice-Layout, make -j gates UEBERSETZT+LINTET den Schichten-Code real (apps-hex build/lint); cpp+hexslice ist fail-fast Exit 2 (sprach×arch-Support, INFO-1)."
 echo "full-smoke: OK — ARCH-GATE KONDITIONAL (slice-046/LH-FA-07): --arch hexslice dropt .a-check.yml + a-check.mk + arch-Fragment und make gates FAEHRT a-check real (Modul-scoped apps/hex und am Root); flache Module bekommen keines (LH-QA-01); ein verbotener Domain->Adapter-Import faerbt das Gate rot (Zaehne belegt)."
+echo "full-smoke: OK — ARCH-GATE ROBUST (slice-046, Review F-1/F-2): ZWEI hexSlice-Module koexistieren (kein doppelter include, kein 'overriding recipe', beide Gates laufen), und mit gesetztem A_CHECK_IMAGE (Adopter-Override) bleibt das Gate verdrahtet und gruen."
 echo "full-smoke: OK — IDEMPOTENT (slice-038): 2. Init-Lauf Exit 0, README (skip-if-present) unberuehrt, Makefile-Drift (konvergent) geheilt; sprachloser Re-Lauf prunt kein add-lang-Fragment (kein Prune)."

@@ -96,8 +96,23 @@ func TestArchGateMk_RootAndScoped(t *testing.T) {
 		t.Errorf("scoped Fragment haengt das UNSCOPED Target an GATE_CHECKS (Kollision):\n%s", scoped)
 	}
 	for _, frag := range []string{root, scoped} {
-		if !strings.Contains(frag, "ifndef A_CHECK_IMAGE\ninclude a-check.mk\nendif\n") {
+		if !strings.Contains(frag, "ifndef ARCH_GATE_MK_INCLUDED\nARCH_GATE_MK_INCLUDED := 1\ninclude a-check.mk\nendif\n") {
 			t.Errorf("Fragment ohne include-once-Waechter:\n%s", frag)
+		}
+	}
+}
+
+// TestArchGateMk_WaechterKeytNichtAufNutzerVariable (slice-046, Review F-1 / Verifier R-1):
+// der include-once-Waechter darf NICHT auf A_CHECK_IMAGE keyen. make importiert die
+// Umgebung, und A_CHECK_IMAGE ist der dokumentierte Adopter-Override (a-check.mk bietet
+// sie per `?=` an): wer ihn benutzt, verlöre sonst den `include`, und im ROOT-Fragment
+// zeigte `GATE_CHECKS += a-check` auf ein undefiniertes Target — der Override schaltete
+// das Gate ab. Rot-Gegenbeispiel: test/mutations 70 setzt den Waechter auf A_CHECK_IMAGE
+// zurueck. Das VERHALTEN unter gesetzter Variable belegt zusaetzlich make full-smoke.
+func TestArchGateMk_WaechterKeytNichtAufNutzerVariable(t *testing.T) {
+	for _, frag := range []string{emit.ArchGateMk("go", "."), emit.ArchGateMk("apps-hex", "apps/hex")} {
+		if strings.Contains(frag, "ifndef A_CHECK_IMAGE") {
+			t.Errorf("include-once-Waechter keyt auf den Adopter-Override A_CHECK_IMAGE:\n%s", frag)
 		}
 	}
 }

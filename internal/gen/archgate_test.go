@@ -1,6 +1,8 @@
 package gen_test
 
 import (
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"testing"
@@ -121,6 +123,80 @@ func TestArchGateConfig_MatchesSkeleton(t *testing.T) {
 			}
 		}
 	}
+}
+
+// TestArchGateConfig_EdgesMatchSkeleton (slice-046, Review F-4): ADR-0009 §Fitness-Function
+// verlangt die Kopplung von Schichten UND KANTEN an das Skelett. Die Schicht-Achse haelt
+// TestArchGateConfig_MatchesSkeleton; hier die Kanten-Achse, in beide Richtungen:
+//
+//	(a) jeder REALE schicht-uebergreifende Import des generierten Skeletts hat eine
+//	    passende `edges`-Kante — fehlte eine, waere das emittierte Skelett im eigenen
+//	    Gate `wrong-direction`-rot;
+//	(b) jede deklarierte Kante wird von mindestens einem realen Import BENUTZT — eine
+//	    Kante ohne Import ist eine Erlaubnis auf Vorrat, und genau so lockert sich ein
+//	    Gate unbemerkt (die `adapters->ports`-Kante fehlt bewusst: Outbound-Adapter
+//	    erfuellen Ports strukturell, ohne Import).
+//
+// Rot-Gegenbeispiel: test/mutations 71 fuegt eine Kante hinzu, die kein Import braucht.
+func TestArchGateConfig_EdgesMatchSkeleton(t *testing.T) {
+	cfg, ok := gen.ArchGateConfig("go", "hexslice")
+	if !ok {
+		t.Fatal("go+hexslice traegt keine Arch-Gate-Config")
+	}
+	globs := archGlobs(t, cfg)
+	declared := archEdges(t, cfg)
+	dir := genHexslice(t)
+
+	// Import-Pfade des Skeletts sind "app/<relpfad>" (Modul heisst app) — der Praefix
+	// faellt weg, dann liegen Datei- und Import-Pfad im selben Raum.
+	importRe := regexp.MustCompile(`"app/([^"]+)"`)
+	used := map[string]bool{}
+	for _, rel := range walkRel(t, dir) {
+		if !strings.HasSuffix(rel, ".go") || strings.HasSuffix(rel, "_test.go") || strings.HasPrefix(rel, "cmd/") {
+			continue
+		}
+		from, _ := mostSpecific(globs, rel)
+		for _, m := range importRe.FindAllStringSubmatch(readFileT(t, filepath.Join(dir, filepath.FromSlash(rel))), -1) {
+			to, _ := mostSpecific(globs, m[1]+"/x.go")
+			if to == "" || to == from {
+				continue // ausserhalb der Schichten oder schicht-intern: keine Kante noetig
+			}
+			edge := from + "->" + to
+			used[edge] = true
+			if !declared[edge] {
+				t.Errorf("%s importiert %q (%s), aber die Config deklariert keine Kante %s — das emittierte Skelett waere im eigenen Gate rot", rel, m[1], to, edge)
+			}
+		}
+	}
+	for edge := range declared {
+		if !used[edge] {
+			t.Errorf("Kante %s ist deklariert, wird aber von keinem Import des Skeletts gebraucht (Erlaubnis auf Vorrat)", edge)
+		}
+	}
+}
+
+// archEdges zieht die deklarierten Kanten als Menge "from->to" aus der Config.
+func archEdges(t *testing.T, cfg string) map[string]bool {
+	t.Helper()
+	re := regexp.MustCompile(`\{from:\s*([a-z]+),\s*to:\s*([a-z]+)\}`)
+	out := map[string]bool{}
+	for _, m := range re.FindAllStringSubmatch(cfg, -1) {
+		out[m[1]+"->"+m[2]] = true
+	}
+	if len(out) == 0 {
+		t.Fatalf("keine Kanten in der Config gefunden:\n%s", cfg)
+	}
+	return out
+}
+
+// readFileT liest eine Datei oder faellt.
+func readFileT(t *testing.T, path string) string {
+	t.Helper()
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("%s lesen: %v", path, err)
+	}
+	return string(b)
 }
 
 // mostSpecific liefert Schicht und Glob mit dem laengsten passenden Praefix.

@@ -2,9 +2,11 @@
 # files: internal/emit/archgate.go
 # expect: TestArchGateMk_RootAndScoped
 #
-# Weitet den Mount des modul-scoped Arch-Gates vom Modul-Verzeichnis auf das ganze
-# Ziel-Repo (der Pfad-Anteil hinter CURDIR faellt weg). Die modul-relative Schicht-Config
-# traefe dann nichts mehr am erwarteten Ort — im Mono-Repo liefe a-check mit der Config
-# des einen Moduls ueber allen anderen. Der Anker ist bewusst dollar-frei (SC2016).
+# Kappt den Trenner zwischen CURDIR und dem Modul-Pfad im Mount des modul-scoped
+# Arch-Gates: aus <repo>/apps/hex wird <repo>apps/hex. Der Mount zeigt dann nicht mehr
+# auf das Modul — die modul-relative Schicht-Config traefe nichts am erwarteten Ort.
+# (Praezisiert nach Review F-7: die Mutation weitet den Scope nicht, sie zerstoert den
+# Pfad; rot wird der Waechter so oder so, aber der Kopf muss die Wirkung treffen.)
+# Der Anker ist bewusst dollar-frei (SC2016).
 set -euo pipefail
 sed -i 's|(CURDIR)/" + path|(CURDIR)" + path|' internal/emit/archgate.go
