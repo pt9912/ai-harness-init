@@ -7,13 +7,12 @@
 # Artefakte, die er prueft, entstehen in diesem Lauf. So gibt es keinen zweiten Build
 # und kein Weiterreichen zwischen Workflows.
 #
-# MR-014 Setzung 1 lautet: die Steps rufen AUSSCHLIESSLICH `make <target>`, damit ein
-# Check nur EINE Quelle hat. Hier gilt sie so: der Bau steckt vollstaendig in
-# `make release-artifacts`; Upload/Download zwischen Jobs und der Release-Upload sind
-# Workflow-Mechanik, kein Check. Die eine Ausnahme ist der Start-Smoke auf den
-# macOS-/Windows-Runnern — dort ist `make` nicht installiert (gemessen), deshalb ruft
-# der Step ein repo-eigenes, von shell-lint gedecktes Skript. Der MR-Block traegt die
-# Ausnahme samt Grund; eine zweite Definition in dieser YAML entsteht dadurch nicht.
+# MR-014 Setzung 1: ein Check wird NIE in dieser YAML definiert — er lebt versioniert
+# im Repo, der Step ruft ihn nur. Der Bau steckt in `make release-artifacts`; der
+# Start-Smoke in `harness/tools/start-smoke.sh` (kein make-Target, weil make auf den
+# Windows-/macOS-Runnern fehlt — gemessen; der Aufruf ist auf ALLEN sechs Runnern
+# derselbe, ein Split erzeugte zwei Definitionen). Upload/Download zwischen Jobs und
+# der Release-Upload sind Workflow-Mechanik, kein Check.
 #
 # GRENZE, benannt statt verschwiegen (LH-QA-04 Messmethode, CR 0.13.0): auf macOS und
 # Windows laeuft ein START-Smoke — das Binary laeuft, meldet seine Usage, Exit 0. Ein
@@ -93,10 +92,9 @@ jobs:
           path: dist
       - name: Start-Smoke
         shell: bash
-        # Die PRUEFUNG lebt im Repo (harness/tools/start-smoke.sh), nicht in dieser
-        # YAML: MR-014 Setzung 1 will EINE Quelle je Check. `make <target>` waere die
-        # Regelform, ist hier aber nicht gangbar — make ist auf den Windows- und
-        # macOS-Runnern nicht installiert (gemessen). Der MR-Block traegt die Ausnahme.
+        # Die PRUEFUNG lebt im Repo, nicht in dieser YAML (MR-014 Setzung 1: eine
+        # Quelle je Check). Auf ALLEN sechs Runnern derselbe Aufruf — kein Split nach
+        # Runner, der zwei Definitionen erzeugte.
         run: bash harness/tools/start-smoke.sh "dist/${{ matrix.bin }}"
 
   # Veroeffentlichen: nur fuer einen echten Tag. Ein workflow_dispatch-Lauf baut und

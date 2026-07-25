@@ -579,14 +579,20 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   ausschließlich `make <target>` auf; was ein Gate *ist*, steht weiterhin allein im Makefile
   (Geist von [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert): eine Quelle, nicht zwei). Ein
   CI-Step, der Build-Logik dupliziert, driftet gegen den lokalen Lauf und ist verboten.
-  **Nachtrag 2026-07-25 (slice-048) — eine benannte Ausnahme, mit gemessenem Grund.** Der
-  Plattform-Start-Smoke in `release.yml` läuft auf **macOS- und Windows-Runnern**, und dort ist
-  `make` **nicht installiert** (an den Runner-Images-Readmes für `windows-2025` und `macos-26`
-  geprüft, nicht angenommen) — die Regelform `make <target>` ist dort schlicht nicht ausführbar.
-  Der **Zweck** der Setzung bleibt gewahrt: die Prüfung lebt als versioniertes, von `shell-lint`
-  gedecktes Skript im Repo (`harness/tools/start-smoke.sh`), der Workflow **ruft** es nur auf. Es
-  entsteht also keine zweite Definition in der YAML. Diese Ausnahme gilt **genau** für Steps auf
-  Runnern ohne `make`; auf den Linux-Runnern bleibt `make <target>` verbindlich.
+  **Nachtrag 2026-07-25 (slice-048) — Präzisierung, keine Aufweichung.** Die Setzung meint
+  „**eine** Quelle je Check", und `make <target>` ist die **Regelform**, in der das erreicht wird —
+  nicht der Zweck selbst. Deshalb gilt: **ein Check wird nie in der Workflow-YAML definiert.** Er
+  lebt als versioniertes, von `shell-lint` gedecktes Artefakt im Repo (ein `make`-Target oder ein
+  Skript unter `harness/tools/`); der Workflow-Step **ruft** ihn nur auf. Ein Inline-Prüfblock in
+  der YAML bleibt verboten — unabhängig davon, auf welchem Runner er liefe.
+  **Warum die Regelform hier nicht greift (gemessen, nicht angenommen):** der Plattform-Start-Smoke
+  in `release.yml` läuft auf sechs Runnern, und `make` ist auf den Windows- und macOS-Images
+  **nicht** installiert (an den Runner-Images-Readmes für `windows-2025` und `macos-26` geprüft,
+  <https://github.com/actions/runner-images>, Stand 2026-07-25; die übrigen `make`-losen Labels
+  wurden nicht einzeln geprüft). Ein Aufruf `make start-smoke` wäre dort schlicht nicht
+  ausführbar. Der Check liegt daher als `harness/tools/start-smoke.sh` im Repo und wird auf
+  **allen** sechs Runnern gleich aufgerufen — bewusst **nicht** gesplittet in „`make` auf Linux,
+  Skript sonst": ein Split erzeugte genau die zwei Definitionen, die die Setzung verhindert.
 - **Setzung 2 — Frequenz nach Sensor-Klasse.** „Alles pro Push" für die hermetischen Sensoren
   (`gates`/`smoke`/`full-smoke`/`mutate`); die **Netz-Sensoren** (`regelwerk-check`,
   `baseline-freshness`, `freshness-golangci`/`-dcheck`/`-go`) laufen **nur nächtlich**

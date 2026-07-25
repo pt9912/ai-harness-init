@@ -7,18 +7,28 @@
 # die Windows-Runner nur Windows-Container. Die Messmethode im Lastenheft benennt
 # diese Grenze; dieses Skript loest genau sie ein, nicht mehr.
 #
-# WARUM EIN SKRIPT UND KEIN make-TARGET: MR-014 Setzung 1 verlangt, dass die
-# Workflow-Steps `make <target>` rufen — damit die Definition eines Checks im Repo
-# lebt und nicht in der YAML driftet. `make` ist auf den Windows- und macOS-Runnern
-# aber NICHT installiert (an den Runner-Images-Readmes geprueft, nicht angenommen).
-# Der Zweck der Setzung — EINE Quelle, keine zweite Definition im Workflow — bleibt
-# so gewahrt: die Pruefung steht hier, versioniert und von shell-lint gedeckt; der
-# Workflow ruft sie nur auf. Der MR-Block traegt diese Ausnahme mit Begruendung.
+# WARUM EIN SKRIPT UND KEIN make-TARGET: MR-014 Setzung 1 verlangt, dass ein Check nie
+# in der Workflow-YAML definiert wird, sondern versioniert im Repo lebt — `make <target>`
+# ist die Regelform dafuer, nicht der Zweck. `make` ist auf den Windows- und macOS-Runnern
+# nicht installiert (an den Runner-Images-Readmes geprueft), ein `make start-smoke` waere
+# dort nicht ausfuehrbar. Also ein Skript, und zwar auf ALLEN sechs Runnern dasselbe: ein
+# Split „make auf Linux, Skript sonst" erzeugte genau die zwei Definitionen, die die
+# Setzung verhindert. shell-lint deckt diese Datei.
 #
 # Aufruf: start-smoke.sh <pfad-zum-binary>
 set -euo pipefail
 
 bin="${1:?start-smoke: Pfad zum Binary ist Pflicht}"
+
+# PFAD-FORM ERZWINGEN, bevor irgendetwas geprueft oder ausgefuehrt wird: `[ -f "$bin" ]`
+# prueft eine DATEI, ein Aufruf ohne Slash macht aber einen PATH-Lookup. Bei einem
+# gleichnamigen Kommando im PATH liefe das FREMDE Binary, und das Skript meldete OK,
+# waehrend die uebergebene Datei nie gestartet wurde — ein stiller Nachweis ueber dem
+# falschen Gegenstand (Review-Runde 3, F-3; hermetisch nachgestellt).
+case "$bin" in
+	*/*) ;;
+	*) bin="./$bin" ;;
+esac
 
 [ -f "$bin" ] || { echo "start-smoke: FEHLER — $bin existiert nicht." >&2; exit 1; }
 chmod +x "$bin" 2>/dev/null || true

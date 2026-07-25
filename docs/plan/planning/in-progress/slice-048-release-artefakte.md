@@ -39,9 +39,11 @@ lädt sie ans GitHub-Release. Damit bekommt [`LH-QA-04`](../../../../spec/lasten
 - [ ] **Reproduzierbarkeit** ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)):
       zwei Läufe derselben Version liefern je Plattform byte-identische Binaries — gemessen, nicht
       behauptet.
-- [ ] **Release-Workflow:** eigene `.github/workflows/release.yml`, **tag-getrieben**, ruft **nur**
-      `make`-Targets ([`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)
-      Setzung 1 — keine zweite Build-Definition im Workflow) und lädt die Artefakte ans Release.
+- [x] **Release-Workflow:** eigene `.github/workflows/release.yml`, **tag-getrieben**, definiert
+      **keinen Check in der YAML** ([`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)
+      Setzung 1, Nachtrag 2026-07-25): der Bau steckt in `make release-artifacts`, der Start-Smoke in
+      `harness/tools/start-smoke.sh` — beides versioniert im Repo, der Step ruft nur. Lädt die
+      Artefakte ans Release.
       **Nicht** in `ci.yml`: Setzung 2 trennt nach Sensor-Klasse, ein Release-Job liefe sonst bei
       jedem Push mit.
 - [x] **Plattform-Smoke nach dem CR:** Start-Smoke je Plattform, Voll-Smoke weiter nur auf Linux.
@@ -85,8 +87,9 @@ Matrix steht vollständig in `spec/lastenheft.md`. Die Zusage ist damit älter a
 | `spec/lastenheft.md` | update (CR) | Messmethode [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) auf real Messbares präzisieren, Grenze benennen — **vor** dem Code |
 | `Dockerfile` | update | `build`-Stage um Zielplattform-Build-Args; Default-Verhalten byte-identisch |
 | `Makefile` | update | Matrix-Target über die sechs Kombinationen; `artifact` bleibt unverändert |
-| `.github/workflows/release.yml` | neu | tag-getrieben (+ `workflow_dispatch`), nur `make`-Targets, Upload ans Release — **und** die Start-Smoke-Matrix (macos/windows/linux) |
+| `.github/workflows/release.yml` | neu | tag-getrieben (+ `workflow_dispatch`), **kein Check in der YAML** (Bau via `make release-artifacts`, Start-Smoke via `harness/tools/start-smoke.sh`), Upload ans Release — **und** die Start-Smoke-Matrix (macos/windows/linux) |
 | `test/` + `test/mutations/` | neu | Wächter je neuer Zusage, jeder mit rot färbender Mutation |
+| `harness/tools/start-smoke.sh` | neu | der Plattform-Nachweis als versioniertes, `shell-lint`-gedecktes Skript (ungeplant — Folge des Review-Befundes zur [`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)-Setzung 1) |
 
 ## 4. Trigger
 

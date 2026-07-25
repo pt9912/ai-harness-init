@@ -146,3 +146,39 @@ mk_platforms() {
   rm -rf "$dir"
   [ "$status" -ne 0 ]
 }
+
+# F-3 (Runde 3): ohne erzwungene Pfad-Form macht der Aufruf einen PATH-Lookup — ein
+# gleichnamiges Kommando im PATH wuerde geprueft, waehrend die uebergebene Datei nie
+# laeuft. Der Test stellt genau das nach: eine LOKALE Datei ohne Slash, die faellt,
+# und ein gleichnamiges, gruenes Kommando im PATH. Der Sensor muss die lokale Datei
+# nehmen und rot werden. Rot-Gegenbeispiel: test/mutations 84.
+@test "release: start-smoke nimmt die uebergebene Datei, nicht ein PATH-Kommando" {
+  local dir pathdir
+  dir="$(mktemp -d)"; pathdir="$(mktemp -d)"
+  # Der Hochstapler im PATH: meldet eine tadellose Usage.
+  printf '#!/usr/bin/env bash\necho "ai-harness-init"\necho "add-lang"\n' >"$pathdir/kandidat"
+  # Die echte Datei am uebergebenen Ort: faellt.
+  printf '#!/usr/bin/env bash\nexit 3\n' >"$dir/kandidat"
+  chmod +x "$pathdir/kandidat" "$dir/kandidat"
+  cd "$dir"
+  PATH="$pathdir:$PATH" run bash "$REPO/harness/tools/start-smoke.sh" kandidat
+  cd /
+  rm -rf "$dir" "$pathdir"
+  [ "$status" -ne 0 ]
+  # NICHT 127: der Fehlschlag muss vom lokalen Kandidaten kommen (der mit 3 endet),
+  # nicht von einer kaputten Test-Umgebung. Beim ersten Entwurf war genau das der
+  # Fall — der Test war gruen aus dem falschen Grund.
+  [ "$status" -ne 127 ]
+}
+
+# F-4 (Runde 3): die Zusage lautet ZWEI Marker. Eine Usage mit nur einem davon darf
+# nicht durchgehen — sonst traegt die zweite Haelfte der Zusage keine Abdeckung.
+@test "release: start-smoke FAELLT bei nur EINEM Marker" {
+  local dir
+  dir="$(mktemp -d)"
+  printf '#!/usr/bin/env bash\necho "ai-harness-init — aber ohne das Kommando"\n' >"$dir/fake"
+  chmod +x "$dir/fake"
+  run bash "$REPO/harness/tools/start-smoke.sh" "$dir/fake"
+  rm -rf "$dir"
+  [ "$status" -ne 0 ]
+}
