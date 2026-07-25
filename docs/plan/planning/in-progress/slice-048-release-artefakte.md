@@ -23,20 +23,20 @@ lädt sie ans GitHub-Release. Damit bekommt [`LH-QA-04`](../../../../spec/lasten
 
 ## 2. Definition of Done
 
-- [ ] **Schritt 0 — CR am Lastenheft (vor Code):** die Messmethode von [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)
+- [x] **Schritt 0 — CR am Lastenheft (vor Code):** die Messmethode von [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)
       verlangt „Plattform-Smoke in der CI-Matrix". Das ist so **nicht erfüllbar**: `make full-smoke`
       braucht einen Linux-Docker-Daemon, den die macOS-Runner nicht haben und die Windows-Runner nur
       für Windows-Container. Die Messmethode wird auf real Messbares präzisiert — **Start-Smoke** je
       Plattform (Binary läuft, meldet seine Usage, Exit 0) plus **Voll-Smoke auf Linux** — und die
       Grenze wird im Lastenheft **benannt** statt weggelassen. Ohne diesen CR wäre der Rest ein Gate,
       das eine Plattform-Zusage nur behauptet ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-- [ ] **Cross-Compile:** die `build`-Stage im `Dockerfile` nimmt die Zielplattform als Build-Args;
+- [x] **Cross-Compile:** die `build`-Stage im `Dockerfile` nimmt die Zielplattform als Build-Args;
       ohne Angabe bleibt das heutige Verhalten **byte-identisch** (`make artifact` und beide Smokes
       dürfen sich nicht bewegen).
-- [ ] **Matrix-Target:** ein `make`-Target erzeugt alle sechs Binaries nach `DEST` mit
+- [x] **Matrix-Target:** ein `make`-Target erzeugt alle sechs Binaries nach `DEST` mit
       plattform-tragenden Namen; `DEST` bleibt Pflicht (Exit 2 ohne). Docker-only, kein
       Host-Toolchain-Aufruf ([ADR-0003](../../adr/0003-go-native-binaries.md)).
-- [ ] **Reproduzierbarkeit** ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)):
+- [x] **Reproduzierbarkeit** ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)):
       zwei Läufe derselben Version liefern je Plattform byte-identische Binaries — gemessen, nicht
       behauptet.
 - [x] **Release-Workflow:** eigene `.github/workflows/release.yml`, **tag-getrieben**, definiert
@@ -65,10 +65,10 @@ lädt sie ans GitHub-Release. Damit bekommt [`LH-QA-04`](../../../../spec/lasten
       Docker); (d) macOS-Runner pro Push für einen Start-Smoke wären viel Laufzeit für wenig Aussage.
       **Preis, benannt:** das Feedback kommt erst beim Tag. Gegenmaßnahme wie bei
       `upstream-drift.yml`: `workflow_dispatch`, damit der Nachweis vor dem Tag manuell anstoßbar ist.
-- [ ] `make gates` grün · `make mutate` grün mit rot gesehener Mutation je neuem Wächter
+- [x] `make gates` grün · `make mutate` grün mit rot gesehener Mutation je neuem Wächter
       (Cross-Compile-Verdrahtung · `DEST`-Pflicht · Matrix-Vollständigkeit).
-- [ ] `make full-smoke` unverändert grün (der Default-Pfad darf sich nicht bewegen).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] `make full-smoke` unverändert grün (der Default-Pfad darf sich nicht bewegen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -141,17 +141,71 @@ bestätigt die DoD, Closure-Notiz mit Steering-Loop-Eintrag.
   Lastenheft verlangt sie nicht, und ein halber Signaturpfad wäre schlechter als keiner.
 
 ## 7. Closure-Notiz (nach `done/`)
+**Geliefert.** [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) hatte seit Lastenheft-Version 0.2.0 **null Abdeckung**: die build-Stage
+kannte keine Zielplattform, `make artifact` zog ein Binary, ein Release-Workflow existierte nicht.
+Jetzt erzeugt `make release-artifacts DEST=<dir>` alle sechs nativen Binaries (Formate per `file`
+und per `od` auf Ziel-OS **und** Ziel-Architektur geprüft), und `release.yml` baut, smoked auf sechs
+Runnern und hängt sie ans Release. Der Default-Pfad blieb **byte-identisch** — gegen den Stand vor
+der Änderung per `git stash` gemessen.
 
-<!--
-Wird *nach* Abschluss ergänzt. Inhalt:
-- Was hat funktioniert?
-- Was ging anders als geplant?
-- Steering-Loop-Eintrag: welcher Guide/Sensor sollte verbessert werden?
-  (kanonische Definition: [`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.1/kurs/de/grundlagen/klassifikation.md#steering-loop))
-- Folge-Slices: welche neuen open/-Einträge?
--->
+**Anders als geplant — vier Dinge:**
 
-<!-- Erst nach Abschluss füllen. -->
+1. **Schritt 0 wurde größer als gedacht.** Die Messmethode von [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) war nicht erfüllbar; der
+   CR (Lastenheft **0.13.0**) präzisiert sie auf Start-Smoke je Plattform plus Voll-Smoke auf Linux
+   und **benennt die Grenze**, statt sie wegzulassen.
+2. **`harness/tools/start-smoke.sh` war ungeplant** — Folge eines Review-Befundes: der Start-Smoke
+   lag zuerst als bash-Block in der YAML und verletzte damit
+   [`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions) Setzung 1.
+3. **Der [`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)-Nachtrag musste zweimal geschrieben werden.** Die erste Fassung band die Ausnahme
+   an den **Runner**; die zweckwahrende Eigenschaft stand nur in der Begründung. Jetzt ist die Norm
+   die Eigenschaft.
+4. **Drei reale Release-Läufe statt null.** Der erste war rot.
+
+**Steering-Loop-Einträge.**
+
+- **Ein Workflow ist erst geprüft, wenn er gelaufen ist.** `ci-lint` belegt die **Syntax**, nicht das
+  **Verhalten** — und `runs-on: ${{ matrix.runner }}` kann es nicht einmal syntaktisch prüfen. Der
+  erste Dispatch-Lauf scheiterte auf **allen sechs** Runnern identisch: `actions/checkout` räumt den
+  Workspace per Default auf (`clean: true`) und löschte das zuvor heruntergeladene Artefakt. Kein
+  Gate dieses Repos kann das sehen. **Regel: zu jedem neuen Workflow gehört ein realer Lauf VOR der
+  Closure, nicht danach.**
+- **Grün heißt nicht befundfrei.** Der `artifacts`-Job war „success" — und trug sieben
+  Deprecation-Warnungen (`Node.js 20`), die ich überlas, weil ich auf das Ergebnis schaute statt in
+  den Lauf. Gefunden hat sie der Nutzer. **Regel: einen grünen Lauf auf Warnungen lesen, nicht nur
+  auf sein Ergebnis.** Nach dem Bump: 7 → 0, gemessen.
+- **Ein Lookup ist nur so gut wie seine Frage.** Ich hatte die Action-SHAs *nachgeschlagen* statt
+  geraten — aber nach dem Tag `v4` gefragt und exakt das bekommen: den Stand, auf den der Major-Tag
+  zeigt. Aktuell waren v7.0.1 und v8.0.1. **Regel: nach `releases/latest` fragen; „ich habe
+  nachgeschlagen" ist keine Aussage über Aktualität.**
+- **Eine Regel für den Anlass statt für den Zweck zu formulieren, bindet sie an den falschen
+  Gegenstand.** Mein erster [`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)-Nachtrag erlaubte die Ausnahme „auf Runnern ohne `make`" — damit
+  wäre ein Inline-Prüfblock in der YAML gedeckt gewesen, sobald er auf Windows läuft, und zugleich
+  war der Linux-Zweig des realen Workflows nicht gedeckt. Der Zweck der Setzung ist **eine Quelle je
+  Check**; das ist jetzt die Norm, die `make`-Verfügbarkeit nur noch der Grund.
+
+**Was gut lief.** Die Reihenfolge Doc-führt (CR vor Code) hat sich ausgezahlt: ohne ihn wäre ein
+Gate entstanden, das eine Plattform-Zusage nur behauptet. Und die Disziplin, **jede Mutation vor der
+Fertig-Meldung zu bauen**, hat zwei eigene Fehler gefangen, bevor eine Rolle sie sehen musste — den
+`! cmd`-vor-`set -e`-Fallstrick und einen Test, der aus der falschen Ursache grün war.
+
+**Benannte Restrisiken (kein Folge-Slice):**
+
+- Der **`publish`-Pfad** ist strukturell fertig, aber zum Zeitpunkt dieser Closure **nie gelaufen**
+  (drei Dispatch-Läufe haben ihn korrekt übersprungen). Ein Vorab-Tag (`-RC`, als `--prerelease`)
+  ist die vorgesehene Probe.
+- Die Runner-Labels sind gemessen (Lauf `30168310098` grün auf allen sechs), aber ein
+  **Label-Wegfall** würde erst beim nächsten Lauf auffallen — `ci-lint` kann `runs-on`-Ausdrücke
+  nicht prüfen.
+- Der `publish`-Inline-Block in der YAML ist ~20 Zeilen ungelintete Logik — dieselbe „eine
+  Quelle"-Achse wie beim Start-Smoke, hier bewusst nicht mitgezogen (er ruft nur `gh`).
+- **Signatur/Notarisierung** (macOS-Gatekeeper, Windows-SmartScreen) bleibt out-of-scope.
+- `make` wurde nur für `windows-2025` und `macos-26` als fehlend belegt, nicht für alle vier
+  `make`-losen Labels — für die neue Norm ist das unerheblich, sie hängt nicht mehr am Runner.
+
+**Folge-Slices:** keine neuen. Die **Action-Pins** gehören in denselben Vollständigkeits-Wächter wie
+die Freshness-Achsen (Roadmap-Kandidat „Inventar gegen Abdeckung") — dieser Slice liefert dafür den
+dritten Bedarfsnachweis.
+
 
 ## 8. Sub-Area-Modus-Begründung
 
