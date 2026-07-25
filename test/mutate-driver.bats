@@ -43,6 +43,96 @@ setup() {
   printf -- '--- FAIL: TestIrgendwas (0.00s)\n'        | grep -Eq -- "$form"
 }
 
+# --- Isolation (slice-047) ----------------------------------------------------
+# Die Kern-Zusage des Treibers ist seit slice-047: "ein Lauf veraendert den
+# Host-Baum nicht". Sie haengt an zwei Eigenschaften, die hier hermetisch (ohne
+# Docker, ohne echten Mutations-Lauf) geprueft werden.
+
+# Die Isolation MUSS ausserhalb des Repos liegen. Ein Verzeichnis UNTER dem Repo
+# laege ungetrackt im Working Tree und verschoebe den MR-003-Stop-Hook-Hash — der
+# Hook feuerte dann bei jedem Lauf (die slice-044-Worktree-Falle, real erlebt).
+@test "driver: die isolierte Kopie liegt AUSSERHALB des Repos" {
+  local root dest
+  root="$(mktemp -d)"
+  dest="$(bash -c "source '$DRIVER' 2>/dev/null || true; prepare_isolation '$root'")"
+  [ -n "$dest" ]
+  case "$dest" in
+    "$REPO"/*) rm -rf "$root"; return 1 ;;   # unter dem Repo -> Befund
+  esac
+  rm -rf "$root"
+}
+
+# Die Kopie muss tragen, was ein Sensor-Lauf braucht — einschliesslich `.git`: der
+# `# verify: ci-lint`-Modus faehrt actionlint, und das verlangt eine git-Projektwurzel
+# („no project was found in any parent directories"). Ein zu sparsamer Ausschnitt
+# laesst den Gruen-Vorlauf scheitern, und zwar aus einem Grund, der nichts mit einer
+# Mutation zu tun hat. Nur der Laufzustand (.harness/state, gitignored) bleibt drausen.
+@test "driver: die Kopie traegt den Sensor-Bedarf inklusive .git" {
+  local root dest
+  root="$(mktemp -d)"
+  dest="$(bash -c "source '$DRIVER' 2>/dev/null || true; prepare_isolation '$root'")"
+  [ -f "$dest/Makefile" ]
+  [ -f "$dest/Dockerfile" ]
+  [ -d "$dest/test" ]
+  [ -d "$dest/harness/tools" ]
+  [ -d "$dest/.harness/baseline" ]
+  [ -e "$dest/.git" ]
+  [ ! -e "$dest/.harness/state" ]
+  rm -rf "$root"
+}
+
+# Der Fingerabdruck ist der Messwert, mit dem der Treiber seine Host-Unversehrtheit
+# BELEGT statt sie zuzusagen. Taugt er nichts (z. B. konstant), waere die fuenfte
+# Bedingung ein stilles Gruen — also: gleiche Inhalte gleicher Wert, geaenderter
+# Inhalt anderer Wert. Geprueft wird die RECHNUNG (fingerprint_of_list), weil die
+# Listen-Beschaffung git braucht und der bats-Container keines traegt.
+@test "driver: der Fingerabdruck ist stabil und reagiert auf eine Aenderung" {
+  local dir a b c
+  dir="$(mktemp -d)"
+  printf 'eins\n' >"$dir/datei.txt"
+  a="$(printf 'datei.txt\0' | bash -c "source '$DRIVER' 2>/dev/null || true; fingerprint_of_list '$dir'")"
+  b="$(printf 'datei.txt\0' | bash -c "source '$DRIVER' 2>/dev/null || true; fingerprint_of_list '$dir'")"
+  [ -n "$a" ]
+  [ "$a" = "$b" ]
+  printf 'zwei\n' >"$dir/datei.txt"
+  c="$(printf 'datei.txt\0' | bash -c "source '$DRIVER' 2>/dev/null || true; fingerprint_of_list '$dir'")"
+  [ "$a" != "$c" ]
+  rm -rf "$dir"
+}
+
+# FAIL-CLOSED: ohne Mutations-Ziele darf target_fingerprint NICHT einen Hash ueber die
+# leere Menge liefern — zwei leere Hashes waeren gleich, und die fuenfte Bedingung
+# meldete „Host unveraendert", ohne je gemessen zu haben. Genau dieser stille Weg war
+# beim Bau des Waechters offen; der Test haelt ihn zu.
+@test "driver: target_fingerprint FAELLT bei leerer Ziel-Liste (kein leeres Gruen)" {
+  local leer
+  leer="$(mktemp -d)"
+  # Ein Fall-Verzeichnis mit einer Datei OHNE `# files:`-Kopf: mutation_targets
+  # LAEUFT erfolgreich durch und liefert eine LEERE Liste — nur so wird die Schranke
+  # `[ -n "$targets" ]` ueberhaupt erreicht. Ein leeres Verzeichnis taugt nicht: dort
+  # scheitert schon das Glob, die Funktion faellt aus einem anderen Grund, und die
+  # Zusage im Testnamen waere ungeprueft (von make mutate zweimal so gemeldet).
+  printf '#!/usr/bin/env bash\n# expect: irgendwas\n' >"$leer/00-ohne-files-kopf.sh"
+  run bash -c "source '$DRIVER' 2>/dev/null || true; target_fingerprint '$REPO' '$leer'"
+  rm -rf "$leer"
+  [ "$status" -ne 0 ]
+}
+
+# Der Fingerabdruck deckt GENAU die `# files:`-Ziele ab — nicht mehr (sonst roetet
+# parallele Arbeit am Repo den Lauf) und nicht weniger (sonst bliebe ein
+# Isolations-Bruch an einer Zieldatei unsichtbar).
+@test "driver: der Fingerabdruck deckt die Mutations-Ziele, nicht den ganzen Baum" {
+  local ziele
+  ziele="$(bash -c "source '$DRIVER' 2>/dev/null || true; mutation_targets '$REPO/test/mutations'")"
+  [ -n "$ziele" ]
+  grep -q '^harness/tools/mutate.sh$' <<<"$ziele"
+  # NICHT `grep -qv` fuer die ABWESENHEIT: `-q` und `-v` kombinieren sich je nach
+  # grep-Implementierung verschieden (auf dem Entwickler-Host liefert ugrep 7.5.0
+  # Status 1, wo dieselbe Zeile ohne `-q` Status 0 gibt; der bats-Container bringt
+  # wieder ein anderes grep mit). Negiertes `grep -q` ist in beiden eindeutig.
+  ! grep -q '^AGENTS.md$' <<<"$ziele"
+}
+
 @test "driver: das smoke-Muster trifft Fehlschlag-Zeilen, NICHT Fortschritts-Zeilen" {
   local form
   form="$(bash -c "source '$DRIVER' 2>/dev/null || true; failure_form smoke")"

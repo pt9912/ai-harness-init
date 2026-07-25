@@ -47,18 +47,27 @@
 #   4. Der Sensor wird rot, aber der ERWARTETE Waechter steht nicht in seiner
 #      FEHLSCHLAG-Ausgabe -> Befund. Rot aus dem falschen Grund ist kein Beleg.
 #
-# NICHT in `make gates` — der tragende Grund ist NICHT die Laufzeit (gemessen rund
-# 7 s je Mutation bei warmem Cache), sondern: dieser Sensor VERAENDERT den
-# Arbeitsbaum. Ein Target, das nebenbei in einer normalen Sitzung laeuft, darf das
-# nicht tun (vgl. den Lock unten und Review-Befund F-12: ein paralleler Gate-Lauf
-# hat real den mutierten Stand gemessen). Nicht-Gate-Verify neben `make smoke`,
-# gebunden an DoD-Verify/Closure (LH-QA-01).
+# NICHT in `make gates` — der Grund ist die LAUFZEIT (ein voller `make test`-Zyklus
+# je Fall, gemessen rund 7 s bei warmem Cache; bei 70+ Faellen eine Viertelstunde).
+# Der frueher hier stehende Grund („dieser Sensor veraendert den Arbeitsbaum") ist
+# mit slice-047 entfallen und wurde ERSETZT, nicht ergaenzt — eine gewanderte Grenze
+# umzuschreiben statt zu kommentieren haelt den Kopf ehrlich. Nicht-Gate-Verify neben
+# `make smoke`, gebunden an DoD-Verify/Closure (LH-QA-01).
 #
+# ISOLATION: der Baum wird EINMAL pro Lauf nach ausserhalb des Repos kopiert; Seds
+# und Sensor-Laeufe treffen nur diese Kopie. Ausserhalb, weil ein Verzeichnis UNTER
+# dem Repo ungetrackt im Working Tree laege und den MR-003-Stop-Hook-Hash verschoebe.
+# Der Treiber BELEGT die Unversehrtheit selbst (target_fingerprint vor/nach dem Lauf,
+# fail-closed), statt sie zuzusagen.
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 CASES_DIR="$REPO/test/mutations"
 BACKUP=""
+# WORK ist der Baum, gegen den mutiert und gemessen wird — die isolierte Kopie.
+# Bis prepare_isolation() sie anlegt, ist er leer; run_case laeuft NIE gegen $REPO.
+WORK=""
+ISO_ROOT=""
 
 LOCK="$REPO/.harness/state/mutate.lock"
 HAVE_LOCK=""
@@ -66,19 +75,86 @@ HAVE_LOCK=""
 restore() {
   [ -n "$BACKUP" ] || return 0
   # Alles zurueckspielen, was gesichert wurde. tar bewahrt die relativen Pfade.
-  if [ -f "$BACKUP/files.tar" ]; then
-    tar -xf "$BACKUP/files.tar" -C "$REPO"
+  # Ziel ist die KOPIE ($WORK), nie der Host-Baum (slice-047).
+  if [ -f "$BACKUP/files.tar" ] && [ -n "$WORK" ]; then
+    tar -xf "$BACKUP/files.tar" -C "$WORK"
   fi
   rm -rf "$BACKUP"
   BACKUP=""
 }
 
+# fingerprint_of_list hasht die INHALTE einer NUL-separierten Dateiliste (relativ zu
+# dir), die auf stdin kommt. Getrennt von der Listen-BESCHAFFUNG, damit die Rechen-
+# Eigenschaft ohne git pruefbar ist — der bats-Container traegt kein git.
+fingerprint_of_list() {
+  local dir="$1"
+  ( cd "$dir" && LC_ALL=C sort -z | xargs -0 -r sha256sum ) | sha256sum | cut -d' ' -f1
+}
+
+# mutation_targets liefert die Vereinigung aller `# files:`-Ziele, zeilenweise und
+# sortiert. Genau diese Dateien koennte ein Isolations-Bruch im Host-Baum beschaedigen.
+mutation_targets() {
+  sed -n 's/^# files: //p' "$1"/*.sh | tr ' ' '\n' | sed '/^$/d' | LC_ALL=C sort -u
+}
+
+# target_fingerprint hasht diese Dateien im Baum root. Er ist der Beleg der Kern-Zusage
+# des Sensors: „ein Lauf veraendert den Host-Baum nicht."
+#
+# BEWUSST NUR die Mutations-Ziele, nicht der ganze Baum: sonst roetet jede parallele
+# Arbeit am Repo (Doku, Slice-Dateien, Reviews) den Lauf — und die Isolation verloere
+# genau den Nutzen, fuer den sie gebaut ist. Der Preis: schreibt ein kuenftiger Defekt
+# in eine Host-Datei AUSSERHALB dieser Menge, faellt es hier nicht auf. Die Menge deckt
+# ab, was die Faelle anfassen; mehr behauptet dieser Waechter nicht.
+#
+# FAIL-CLOSED: leere Ziel-Liste oder fehlende Datei -> Exit != 0, kein Hash ueber die
+# leere Menge (zwei leere Hashes waeren gleich und meldeten „unveraendert", ohne je
+# gemessen zu haben).
+target_fingerprint() {
+  local root="$1" cases="$2" targets
+  targets="$(mutation_targets "$cases")"
+  [ -n "$targets" ] || return 1
+  printf '%s\n' "$targets" | tr '\n' '\0' | fingerprint_of_list "$root"
+}
+
+# prepare_isolation kopiert den Host-Baum EINMAL nach ausserhalb des Repos und
+# liefert den Pfad der Kopie. Die Kopie IST das Repo — inklusive `.git`. Der erste
+# Entwurf sparte `.git` aus („kein Testlauf braucht git"); diese Messung war zu eng
+# (sie sah nur test/, nicht die uebrigen `# verify:`-Modi): `make ci-lint` faehrt
+# actionlint, und das bricht ohne git-Projektwurzel mit „no project was found in any
+# parent directories" ab. Der Gruen-Vorlauf fing es beim ersten Lauf — genau dafuer
+# gibt es ihn. Ausgeschlossen bleibt nur `.harness/state/` (Laufzustand, gitignored,
+# enthaelt u. a. den Lock DIESES Laufs). tar statt rsync/cp -a: tar ist im Repo
+# ohnehin die Sicherungs-Mechanik, das haelt die Abhaengigkeitsflaeche schmal
+# (LH-QA-03). Gemessen 8,0 MB mit .git — einmal pro Lauf, nicht pro Fall.
+prepare_isolation() {
+  local root="$1" dest
+  dest="$root/repo"
+  # FAIL-CLOSED gegen die slice-044-Falle: eine Isolation UNTER dem Repo laege
+  # ungetrackt im Working Tree, verschoebe den MR-003-Stop-Hook-Hash und traege die
+  # Mutationen zurueck in genau den Baum, den die lesenden Rollen messen. Lieber laut
+  # abbrechen als „isoliert" heissen und es nicht sein.
+  case "$dest" in
+    "$REPO" | "$REPO"/*)
+      echo "mutate: ABBRUCH — die Isolation laege unter dem Repo ($dest)." >&2
+      return 1
+      ;;
+  esac
+  mkdir -p "$dest"
+  ( cd "$REPO" && tar -cf - --exclude=./.harness/state . ) | tar -xf - -C "$dest"
+  printf '%s' "$dest"
+}
+
 cleanup() {
   restore
+  # Die Isolation liegt ausserhalb des Repos: sie wegzuwerfen kann den Host-Baum
+  # nicht beruehren — auch nicht bei einem Abbruch mitten in einer Mutation.
+  [ -n "$ISO_ROOT" ] && rm -rf "$ISO_ROOT"
   [ -n "$HAVE_LOCK" ] && rmdir "$LOCK" 2>/dev/null
   return 0
 }
-# Auch bei Abbruch (Ctrl-C, Kill) den Baum zuruecklassen, wie er war.
+# Bei Abbruch (Ctrl-C, Kill) die Isolation wegraeumen. Der Host-Baum braucht keine
+# Wiederherstellung mehr — er wurde nie veraendert (slice-047). Ein SIGKILL laesst
+# hoechstens ein Temp-Verzeichnis ausserhalb des Repos liegen, kein Residuum im Baum.
 trap 'cleanup' EXIT INT TERM
 
 
@@ -151,19 +227,19 @@ run_case() {
 
   # Sichern (Bedingung 1-4 duerfen den Baum nie veraendert zuruecklassen).
   BACKUP="$(mktemp -d)"
-  ( cd "$REPO" && tar -cf "$BACKUP/files.tar" "${file_list[@]}" )
+  ( cd "$WORK" && tar -cf "$BACKUP/files.tar" "${file_list[@]}" )
   # Fuer Bedingung 2 zaehlt der INHALT, nicht die Metadaten: `sed -i` (wie zuvor
   # `perl -pi`) schreibt die Datei auch dann neu, wenn keine Substitution greift —
   # die mtime aendert sich, der Inhalt nicht. Ein tar-Vergleich meldete dann
   # faelschlich "veraendert" und liesse den veralteten Patch als Bedingung 3
   # durchgehen (eigener Sonden-Befund beim Bau dieses Sensors).
-  ( cd "$REPO" && sha256sum "${file_list[@]}" >"$BACKUP/before.sums" )
+  ( cd "$WORK" && sha256sum "${file_list[@]}" >"$BACKUP/before.sums" )
 
   # (1) Mutation anwenden. Die Ausgabe wandert in die Meldung, nicht in eine
   # Datei — restore() raeumt das Temp-Verzeichnis sofort weg, ein Pfad-Zeiger
   # darin ginge ins Leere (Review-Befund slice-026, LOW).
   local mut_out
-  if ! mut_out="$( cd "$REPO" && bash "$case_file" 2>&1 )"; then
+  if ! mut_out="$( cd "$WORK" && bash "$case_file" 2>&1 )"; then
     report_fail "$name" "Mutations-Skript scheiterte: ${mut_out//$'\n'/ }"
     restore
     return
@@ -179,7 +255,7 @@ run_case() {
   # jeder Fall genau einen Pfad; die Schranke gilt, bevor der erste zwei traegt.
   local f unchanged=""
   for f in "${file_list[@]}"; do
-    if ( cd "$REPO" && grep -F -- " $f" "$BACKUP/before.sums" | sha256sum -c - ) >/dev/null 2>&1; then
+    if ( cd "$WORK" && grep -F -- " $f" "$BACKUP/before.sums" | sha256sum -c - ) >/dev/null 2>&1; then
       unchanged="$unchanged $f"
     fi
   done
@@ -192,7 +268,7 @@ run_case() {
   # (3)+(4) Sensor-Lauf: rot erwartet, und zwar am benannten Waechter.
   local out rc=0
   out="$BACKUP/verify.log"
-  ( cd "$REPO" && make "$verify" ) >"$out" 2>&1 || rc=$?
+  ( cd "$WORK" && make "$verify" ) >"$out" 2>&1 || rc=$?
 
   if [ "$rc" -eq 0 ]; then
     report_fail "$name" "make $verify blieb GRUEN — '$expect' hat keine Zaehne mehr"
@@ -225,23 +301,40 @@ run_case() {
 # `source` den Gruen-Vorlauf und die Mutations-Schleife aus — mein erster
 # Test-Entwurf tat genau das (Konstruktionsfehler im Test, nicht im Treiber).
 main() {
-  # LOCK gegen parallele Laeufe (Review-Befund slice-026 F-12, real eingetreten: ein
-  # `make gates` einer anderen Sitzung mass den mutierten Stand). `mkdir` ist atomar,
-  # also ein portabler Mutex ohne flock. Er steht IN main(), nicht im Top-Level:
-  # test/mutate-driver.bats sourct die Datei fuer ihre Funktionen, und ein Lock beim
-  # Sourcen wuerde die Tests verschmutzen (von genau diesen Tests gefangen).
+  # LOCK gegen parallele Laeufe. Seine URSPRUENGLICHE Begruendung ist mit slice-047
+  # entfallen: zwei Laeufe mutieren nicht mehr denselben Arbeitsbaum (jeder hat seine
+  # eigene Kopie). Was bleibt, ist die geteilte RESSOURCE: beide Laeufe bauen dieselben
+  # Docker-Image-Tags (`ai-harness-init:test` …) und wuerden einander die Tags und den
+  # Build-Cache unter den Fuessen wegziehen — die Ergebnisse blieben zwar korrekt (jeder
+  # Build hat seinen eigenen Kontext), aber die Laufzeit vervielfachte sich und ein
+  # `make smoke`-Fall kollidierte in seinen tmp-Ressourcen. Der Lock bleibt also, mit
+  # geaenderter Begruendung — nicht mehr Baum-Schutz, sondern Ressourcen-Serialisierung.
+  # `mkdir` ist atomar, also ein portabler Mutex ohne flock. Er steht IN main(), nicht
+  # im Top-Level: test/mutate-driver.bats sourct die Datei fuer ihre Funktionen, und ein
+  # Lock beim Sourcen wuerde die Tests verschmutzen (von genau diesen Tests gefangen).
   mkdir -p "$(dirname "$LOCK")"
   if ! mkdir "$LOCK" 2>/dev/null; then
     echo "mutate: ABBRUCH — ein Lauf ist bereits aktiv ($LOCK)." >&2
-    echo "  Zwei gleichzeitige Laeufe mutieren denselben Arbeitsbaum; das Ergebnis" >&2
-    echo "  beider waere bedeutungslos. Stale? Dann '$LOCK' entfernen." >&2
+    echo "  Zwei gleichzeitige Laeufe teilen sich Docker-Tags und Build-Cache." >&2
+    echo "  Stale? Dann '$LOCK' entfernen." >&2
     exit 1
   fi
   HAVE_LOCK=1
-  echo "mutate: ACHTUNG — dieser Lauf VERAENDERT den Arbeitsbaum voruebergehend."
-  echo "  Keine anderen Gate-Laeufe in diesem Repo starten, solange er laeuft."
 
   [ -d "$CASES_DIR" ] || { echo "mutate: $CASES_DIR fehlt" >&2; exit 1; }
+
+  # ISOLATION: den Baum EINMAL nach ausserhalb des Repos kopieren. Ab hier trifft
+  # keine Mutation mehr den Host-Baum — parallele Gate-/Test-Laeufe in diesem Repo
+  # sind unbedenklich, und ein Abbruch laesst nichts zurueck (slice-047).
+  local host_before host_after
+  if ! host_before="$(target_fingerprint "$REPO" "$CASES_DIR")"; then
+    echo "mutate: ABBRUCH — Fingerabdruck der Mutations-Ziele nicht berechenbar." >&2
+    echo "  Ohne ihn liefe der Lauf ohne den Beleg, dass der Host-Baum unberuehrt bleibt." >&2
+    exit 1
+  fi
+  ISO_ROOT="$(mktemp -d)"
+  WORK="$(prepare_isolation "$ISO_ROOT")"
+  echo "mutate: isolierte Kopie unter $WORK — der Host-Baum wird NICHT veraendert."
 
   shopt -s nullglob
   cases=("$CASES_DIR"/*.sh)
@@ -271,7 +364,7 @@ main() {
       exit 1
     fi
     echo "mutate: Gruen-Vorlauf make $m (muss VOR der ersten Mutation gruen sein)"
-    if ! ( cd "$REPO" && make "$m" ) >/dev/null 2>&1; then
+    if ! ( cd "$WORK" && make "$m" ) >/dev/null 2>&1; then
       echo "mutate: ABBRUCH — make $m ist schon ohne Mutation rot." >&2
       echo "  Auf rotem Baum ist jeder Fall bedeutungslos: er waere rot, aber nicht" >&2
       echo "  wegen SEINER Mutation. Erst den Baum gruen bekommen." >&2
@@ -283,6 +376,14 @@ main() {
   for c in "${cases[@]}"; do
     run_case "$c"
   done
+
+  # FUENFTE Bedingung, fail-closed: die Mutations-Ziele im Host-Baum muessen nach dem
+  # Lauf byte-gleich sein — GEMESSEN, nicht zugesagt. Sie faellt, sobald ein Pfad wieder
+  # gegen $REPO statt gegen die Kopie laeuft.
+  host_after="$(target_fingerprint "$REPO" "$CASES_DIR")"
+  if [ "$host_before" != "$host_after" ]; then
+    report_fail "host-baum" "eine Mutations-Zieldatei im HOST-Baum hat sich geaendert — entweder greift die Isolation nicht, oder es wurde parallel editiert"
+  fi
 
   echo "mutate: $pass_count ok, $fail_count Befund(e)"
   [ "$fail_count" -eq 0 ]

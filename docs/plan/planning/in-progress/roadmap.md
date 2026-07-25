@@ -18,7 +18,7 @@ gezeigt, nicht als Treiber.
 Carveout-Audit, Results-Notiz) → siehe *Abgeschlossene Wellen*. Die nächste Welle ist **nicht**
 geschnitten (cp-Disziplin: Plandatei erst per `cp`, wenn ihr erster Slice steht) — Kandidaten unten.
 
-**Ohne Welle in Arbeit:** [slice-047](../open/slice-047-mutate-host-isolation.md) (`open/`,
+**Ohne Welle in Arbeit:** [slice-047](slice-047-mutate-host-isolation.md) (`open/`,
 mutate-Host-Isolation, Härtung) — geschnitten aus der F-12-Reibung dieser Welle.
 
 **Zuletzt:** welle-07-arch-achse geschlossen (2026-07-25); **M4 erreicht** — das emittierte Skelett
@@ -33,7 +33,7 @@ Prospektive Kandidaten (nur mit **beobachtbarem Trigger**, Modul 6):
 | Welle-Kandidat | Trigger | Wichtigste Slices | Aufwand |
 |---|---|---|---|
 | Doc-Gate-Härtung | erneut beobachtete Befund-Klasse (Muster slice-026: neun Instanzen → Sensor) | Anker-Fragment-Sensor · Prosa-Zahlen-Provenienz · citations (slice-014/015) | S |
-| mutate-Isolierung (Härtung, ohne Welle — [slice-047](../open/slice-047-mutate-host-isolation.md) **geschnitten**) | wiederholte F-12-Reibung in welle-07 (mutate mutiert den Host-Baum → blockiert lesende Rollen, Background-Läufe gekillt) | Zyklus gegen isolierte Kopie fahren, Host-Baum nie anfassen | S |
+| mutate-Isolierung (Härtung, ohne Welle — [slice-047](slice-047-mutate-host-isolation.md) **geschnitten**) | wiederholte F-12-Reibung in welle-07 (mutate mutiert den Host-Baum → blockiert lesende Rollen, Background-Läufe gekillt) | Zyklus gegen isolierte Kopie fahren, Host-Baum nie anfassen | S |
 
 *(Arch-Gate/M4 war [welle-07-arch-achse](../done/welle-07-arch-achse.md) — 2026-07-25 geschlossen, Meilenstein erreicht.)*
 
