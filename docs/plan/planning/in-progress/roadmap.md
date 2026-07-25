@@ -12,29 +12,25 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**Keine aktive Welle.** welle-07-arch-achse ist geschlossen (Belege: alle vier Slices in `done/`,
-`make gates` Exit 0, `make mutate` 67 ok/0, `make full-smoke` Exit 0 mit **beiden**
-[`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)-Richtungen,
-Carveout-Audit, Results-Notiz) → siehe *Abgeschlossene Wellen*. Die nächste Welle ist **nicht**
-geschnitten (cp-Disziplin: Plandatei erst per `cp`, wenn ihr erster Slice steht) — Kandidaten unten.
+**Keine aktive Welle.** Die nächste ist **nicht** geschnitten (cp-Disziplin: Plandatei erst per `cp`,
+wenn ihr erster Slice steht) — Kandidaten unten.
 
-**Ohne Welle in Arbeit:** [slice-047](../done/slice-047-mutate-host-isolation.md) (`in-progress/`,
-mutate-Host-Isolation, Härtung) — geschnitten aus der F-12-Reibung dieser Welle.
+**Ohne Welle in Arbeit** (Wartung, Präzedenz slice-026/027/043/047/048):
 
-**Zuletzt:** welle-07-arch-achse geschlossen (2026-07-25); **M4 erreicht** — das emittierte Skelett
-trägt auf Wunsch hexSlice-Schichten und bekommt dann sein Architektur-Gate, ein flaches Modul
-bekommt keines.
+| Slice | Trigger (beobachtbar) | Closure-Kriterium |
+|---|---|---|
+| [slice-049](../open/slice-049-baseline-bump-v3.5.2.md) — Baseline-Re-Vendor v3.5.1 → v3.5.2, `open/` | `make baseline-freshness` meldet `v3.5.1 < v3.5.2` (2026-07-25 gemessen) | DoD vollständig · `baseline-verify` + `gates` + `mutate` + `baseline-freshness` grün · CR-Regel-Entscheidung in [`harness/conventions.md`](../../../../harness/conventions.md) |
 
 ## Nächste Wellen
 
 Keine weitere Welle ist geschnitten (cp-Disziplin — Plandatei erst per `cp`, wenn ihr erster Slice steht).
-Prospektive Kandidaten (nur mit **beobachtbarem Trigger**, Modul 6):
+Prospektive Kandidaten (nur mit **beobachtbarem Trigger**, Modul 6). **Diese Tabelle führt nur, was
+*noch nicht* geschnitten ist** — ein geschnittener Slice steht unter *Aktuelle Welle*, sonst wird
+derselbe Stand an zwei Orten gepflegt und einer davon altert (real passiert mit slice-047/048):
 
 | Welle-Kandidat | Trigger | Wichtigste Slices | Aufwand |
 |---|---|---|---|
 | Doc-Gate-Härtung | erneut beobachtete Befund-Klasse (Muster slice-026: neun Instanzen → Sensor) | Anker-Fragment-Sensor · Prosa-Zahlen-Provenienz · citations (slice-014/015) | S |
-| mutate-Isolierung (Härtung, ohne Welle — [slice-047](../done/slice-047-mutate-host-isolation.md) **geschnitten**) | wiederholte F-12-Reibung in welle-07 (mutate mutiert den Host-Baum → blockiert lesende Rollen, Background-Läufe gekillt) | Zyklus gegen isolierte Kopie fahren, Host-Baum nie anfassen | S |
-| **Release-Artefakte / Plattform-Matrix** (**naechster Slice nach slice-047**, Nutzer-Entscheidung 2026-07-25) | [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) ist vertraglich zugesagt und **nicht gebaut**: die `build`-Stage im [`Dockerfile`](../../../../Dockerfile) kennt weder `GOOS` noch `GOARCH`, `make artifact` zieht genau ein Binary, und ein Release-Workflow existiert nicht — Zusage ohne Abdeckung | `Dockerfile`-`build`-Stage um `GOOS`/`GOARCH`-Build-Args · Makefile-Target ueber die sechs Kombinationen (linux/macos/windows × amd64/arm64), `DEST` bleibt Pflicht · **eigene** `.github/workflows/release.yml` (tag-getrieben) statt `ci.yml`-Erweiterung: [`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions) Setzung 2 trennt nach Sensor-Klasse (Pro-Push / naechtlich / tag), Setzung 1 verbietet Build-Logik im Workflow (nur `make`-Targets) · **offener Entwurfspunkt vor der Umsetzung:** die Messmethode verlangt „Plattform-Smoke in der CI-Matrix", aber `full-smoke` braucht Host-Docker — auf macOS/Windows-Runnern nicht gegeben; realistisch pruefbar ist der Start des Binaries, alles darueber braucht eine ehrliche Grenze statt einer Behauptung | M |
 | **Vollstaendigkeits-Waechter fuer kuratierte Listen** (Inventar gegen Abdeckung) — schliesst zugleich die Freshness-Luecke (bats · shellcheck · actionlint) | am 2026-07-25 fand ein NUTZER den veralteten bats-Pin von Hand (real 1.11.0) — der Nachtlauf konnte ihn nicht finden, weil es fuer diese drei Images keinen Sensor gibt; [`harness/conventions.md`](../../../../harness/conventions.md) behauptete trotzdem, er decke „jede versions-gepinnte Komponente" ab (Aussage inzwischen korrigiert) | Drei Achsen ergaenzen. Mechanischer Kniff: die drei sind **nur per Digest** gepinnt, tragen also keinen Versions-String — die Version aus dem **gepinnten Image selbst** lesen (`bats --version`, `shellcheck --version`, `actionlint -version`) und gegen `releases/latest` vergleichen; so entsteht keine zweite Quelle, die driften kann. Danach den bats-Pin real bumpen. **Die Verallgemeinerung ist der eigentliche Gewinn:** das Repo fuehrt ZWEI kuratierte Listen, und beide pruefen nur ihre Eintraege, nie ihre Vollstaendigkeit — `upstream-drift` prueft jeden GELISTETEN Pin (nicht, ob jeder Pin gelistet ist), `make mutate` prueft jeden GELISTETEN Waechter (nicht, ob jeder Waechter gelistet ist). Derselbe Bauplan deckt beide: **Inventar einsammeln, gegen die Abdeckungs-Menge halten, Differenz melden** — Pins aus `Makefile`/`d-check.mk` gegen die `freshness-*`-Targets, Waechter gegen die `# expect:`-Menge. Damit faellt Achse 5 des Wartungs-Kandidaten mit hierher. Bedarfsnachweis real: den veralteten bats-Pin fand ein Mensch, kein Sensor | M |
 | **Doku- und Sensor-Wartung** (Trigger **beobachtet** 2026-07-25, wahrscheinlich **zwei** Slices — Schnitt-Vorschlag beim Anlegen) | dieselbe Aussage musste in zwei Dateien geschrieben werden; ein Lifecycle-Move machte CI auf `main` rot; eine re-verankerte Mutation liess einen Waechter unbewacht zurück | (1) **Dopplung**: 25 % von [`AGENTS.md`](../../../../AGENTS.md) sind nahezu wortgleich in [`harness/README.md`](../../../../harness/README.md), ein 814-Zeichen-Absatz identisch → eine Quelle je Aussage · (2) **Abwärts-Verweise**: neun Slice-IDs in [`AGENTS.md`](../../../../AGENTS.md), sieben in [`harness/README.md`](../../../../harness/README.md), null in `CLAUDE.md`; `matrix` um eine `briefing`-Klasse erweitern (Gate-Anheben nach [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)-Muster) · (3) **Herkunfts-Prosa** in [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh): 69 Zeilen Kopf, 12× „Review-Befund" — Regel bleibt, Fall-Nummer geht · (4) **Lifecycle-Move-Konvention**: eingehende Links gehören in den Move-Commit (Hard Rule 3.3 schützt die *verschobene* Datei, nicht die Verweisenden) · (5) **Sensor Wächter↔Fall**: jeder Wächter ohne `test/mutations/`-Fall wird gelistet — die Klasse „entfernte/re-verankerte Mutation lässt einen Wächter nackt" ist zweimal real eingetreten | M |
 
@@ -48,6 +44,7 @@ Prospektive Kandidaten (nur mit **beobachtbarem Trigger**, Modul 6):
 | M2 — vollständiger Bootstrap (inkl. Sprachskelett-Generator + Root-README) | welle-02 **und** welle-03 | slice-005 + slice-024 in `done/` **und** Voll-E2E-Smoke grün (welle-03-Closure) | **erreicht (2026-07-22)** |
 | M3 — durchsetzender, phasierter Harness (emittierter Repo erzwingt den Prozess: Hooks + Command-Guard + Workflow-Anleitung; Bootstrap phasiert + idempotent: doc-führt auch für die Zielsprache, `add-lang`/Mono-Repo) | welle-04 **und** welle-05 | welle-04 + welle-05 in `done/` **und** `make full-smoke` grün über die Durchsetzungs- + Idempotenz-Fitness (Guard blockt, Gate-Nachweis-Kreis geschlossen, 2. Init-Lauf idempotent, kein Prune) | **erreicht (2026-07-23)** |
 | M4 — Arch-Gate integriert (a-check, [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) | [welle-07-arch-achse](../done/welle-07-arch-achse.md) | ein Skelett trägt hexSlice-Schichten (`domain`/`application`/`ports`/`adapters`) **und** der a-check-Emitter ist gebaut → a-check wird emittiert + aktiv (sonst [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Verstoß über leerem Prüfbereich) | **erreicht** (welle-07 geschlossen 2026-07-25; `make full-smoke` belegt beide Richtungen real) |
+| M5 — **erstes Release** (`v0.1.0` mit vorgefertigten Binaries für die sechs Plattformen) | ohne Welle: [slice-049](../open/slice-049-baseline-bump-v3.5.2.md) → Doku-Nachzug → Tag | drei Schritte in dieser Reihenfolge (Nutzer-Entscheidung 2026-07-25): (1) Re-Baseline v3.5.2, damit `v0.1.0` keinen veralteten Regelwerks-Stand ausliefert · (2) Doku-Nachzug — [README](../../../../README.md) und [Benutzerhandbuch](../../../user/benutzerhandbuch.md) behaupten noch „keine vorgefertigten Release-Binaries", der Installations-Abschnitt kennt nur den Bau aus Quelle · (3) Tag `v0.1.0` mit grünem `release`-Lauf und sechs Assets | **offen** — der Pfad ist bewiesen, nicht der Meilenstein: die `v0.1.0-RC`-Probe lief grün über alle acht Jobs (Bau, sechs Plattform-Start-Smokes, `publish`), das Prerelease wurde danach entfernt ([slice-048](../done/slice-048-release-artefakte.md) §Nachtrag) |
 
 ## Abhängigkeitsgraph
 
