@@ -45,7 +45,6 @@ RUN golangci-lint run ./...
 # `docker cp` aus DIESER Stage auf den Host (fuer die Smokes). Der Smoke laesst die
 # Binary auf dem HOST laufen, weil sie selbst `docker run <d-check> --print-mk`
 # ruft (kein DinD im Container). Kein OCI-Image als Vertriebsmittel (ADR-0003).
-# ---- build -----------------------------------------------------------------
 # Release-Binary. TARGET_OS/TARGET_ARCH waehlen die Zielplattform (LH-QA-04);
 # LEER gelassen bauen sie fuer die Plattform des Build-Images — der bisherige
 # Default-Pfad bleibt damit byte-identisch (`make build`, `artifact`, beide Smokes

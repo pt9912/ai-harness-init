@@ -579,6 +579,14 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   ausschließlich `make <target>` auf; was ein Gate *ist*, steht weiterhin allein im Makefile
   (Geist von [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert): eine Quelle, nicht zwei). Ein
   CI-Step, der Build-Logik dupliziert, driftet gegen den lokalen Lauf und ist verboten.
+  **Nachtrag 2026-07-25 (slice-048) — eine benannte Ausnahme, mit gemessenem Grund.** Der
+  Plattform-Start-Smoke in `release.yml` läuft auf **macOS- und Windows-Runnern**, und dort ist
+  `make` **nicht installiert** (an den Runner-Images-Readmes für `windows-2025` und `macos-26`
+  geprüft, nicht angenommen) — die Regelform `make <target>` ist dort schlicht nicht ausführbar.
+  Der **Zweck** der Setzung bleibt gewahrt: die Prüfung lebt als versioniertes, von `shell-lint`
+  gedecktes Skript im Repo (`harness/tools/start-smoke.sh`), der Workflow **ruft** es nur auf. Es
+  entsteht also keine zweite Definition in der YAML. Diese Ausnahme gilt **genau** für Steps auf
+  Runnern ohne `make`; auf den Linux-Runnern bleibt `make <target>` verbindlich.
 - **Setzung 2 — Frequenz nach Sensor-Klasse.** „Alles pro Push" für die hermetischen Sensoren
   (`gates`/`smoke`/`full-smoke`/`mutate`); die **Netz-Sensoren** (`regelwerk-check`,
   `baseline-freshness`, `freshness-golangci`/`-dcheck`/`-go`) laufen **nur nächtlich**

@@ -7,9 +7,13 @@
 # Artefakte, die er prueft, entstehen in diesem Lauf. So gibt es keinen zweiten Build
 # und kein Weiterreichen zwischen Workflows.
 #
-# MR-014 Setzung 1 (nur make-Targets, keine zweite Build-Definition) gilt weiter: der
-# BAU steckt vollstaendig in `make release-artifacts`. Upload/Download zwischen Jobs
-# und das Anhaengen ans Release sind Workflow-Mechanik, kein Build-Schritt.
+# MR-014 Setzung 1 lautet: die Steps rufen AUSSCHLIESSLICH `make <target>`, damit ein
+# Check nur EINE Quelle hat. Hier gilt sie so: der Bau steckt vollstaendig in
+# `make release-artifacts`; Upload/Download zwischen Jobs und der Release-Upload sind
+# Workflow-Mechanik, kein Check. Die eine Ausnahme ist der Start-Smoke auf den
+# macOS-/Windows-Runnern — dort ist `make` nicht installiert (gemessen), deshalb ruft
+# der Step ein repo-eigenes, von shell-lint gedecktes Skript. Der MR-Block traegt die
+# Ausnahme samt Grund; eine zweite Definition in dieser YAML entsteht dadurch nicht.
 #
 # GRENZE, benannt statt verschwiegen (LH-QA-04 Messmethode, CR 0.13.0): auf macOS und
 # Windows laeuft ein START-Smoke — das Binary laeuft, meldet seine Usage, Exit 0. Ein
@@ -81,25 +85,26 @@ jobs:
         with:
           name: release-binaries
           path: dist
+      # Das Skript wird gebraucht, das Binary kommt aus dem Artefakt — deshalb hier
+      # ein Checkout (der publish-Job braucht keinen und hat darum GH_REPO).
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - name: Start-Smoke
         shell: bash
-        run: |
-          set -euo pipefail
-          bin="dist/${{ matrix.bin }}"
-          chmod +x "$bin" || true
-          # --help ist der Start-Smoke: das Binary laeuft auf DIESER Plattform und
-          # meldet seine Usage. Der Marker-Grep haelt fest, dass wirklich die Usage
-          # kam und nicht bloss irgendeine Ausgabe mit Exit 0 (LH-QA-01-Geist).
-          out="$("./$bin" --help)"
-          printf '%s\n' "$out"
-          grep -qF -- 'ai-harness-init' <<<"$out"
-          grep -qF -- 'add-lang' <<<"$out"
+        # Die PRUEFUNG lebt im Repo (harness/tools/start-smoke.sh), nicht in dieser
+        # YAML: MR-014 Setzung 1 will EINE Quelle je Check. `make <target>` waere die
+        # Regelform, ist hier aber nicht gangbar — make ist auf den Windows- und
+        # macOS-Runnern nicht installiert (gemessen). Der MR-Block traegt die Ausnahme.
+        run: bash harness/tools/start-smoke.sh "dist/${{ matrix.bin }}"
 
   # Veroeffentlichen: nur fuer einen echten Tag. Ein workflow_dispatch-Lauf baut und
   # smoked, laedt aber NICHTS hoch — sonst entstuende ein Release ohne Tag.
   publish:
     needs: start-smoke
-    if: startsWith(github.ref, 'refs/tags/')
+    # `github.event_name == 'push'` ist NOETIG, nicht redundant: ein
+    # workflow_dispatch laesst sich auf einem TAG-Ref starten, und dann waere
+    # startsWith(refs/tags/) wahr — der Lauf wuerde veroeffentlichen, obwohl der Kopf
+    # dieser Datei zusagt, dass ein Dispatch nichts hochlaedt (Review F-6).
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -111,6 +116,13 @@ jobs:
       - name: Artefakte ans Release haengen
         env:
           GH_TOKEN: ${{ github.token }}
+          # GH_REPO ist PFLICHT: dieser Job checkt bewusst nicht aus (er braucht nur
+          # die Artefakte), und `gh` loest sein Basis-Repo sonst aus den git-Remotes
+          # des Arbeitsverzeichnisses — ohne Checkout bricht schon `gh release view`
+          # mit „kein Git-Repository" ab, bevor ein API-Aufruf stattfindet. Hermetisch
+          # gemessen; ohne diese Zeile waere der ganze publish-Pfad ein sicherer
+          # Fehlschlag (Review F-1, HIGH).
+          GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
           tag="${GITHUB_REF_NAME}"
@@ -122,8 +134,11 @@ jobs:
           # markiert. Das ist die Probe fuer genau den Pfad, der sonst KEINEN Sensor
           # hat — workflow_dispatch baut und smoked, beruehrt den Upload aber nie.
           # Ein RC-Tag durchlaeuft die ganze Kette und ist hinterher loeschbar.
+          # SemVer: das Praerelease-Feld steht zwischen Version und dem optionalen
+          # Build-Metadatum. Der Metadaten-Teil wird deshalb ZUERST abgeschnitten,
+          # sonst gaelte `v1.0.0+build-1` faelschlich als Vorabversion (Review F-7).
           vorab=nein
-          case "$tag" in *-*) vorab=ja ;; esac
+          case "${tag%%+*}" in *-*) vorab=ja ;; esac
           if gh release view "$tag" >/dev/null 2>&1; then
             gh release upload "$tag" dist/* --clobber
           elif [ "$vorab" = ja ]; then

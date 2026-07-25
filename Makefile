@@ -72,6 +72,13 @@ artifact: build ## Natives Release-Binary auf den Host ziehen (DEST=<dir>) — f
 #
 # Namensschema: ai-harness-init-<os>-<arch>, windows zusaetzlich mit .exe — der
 # Dateiname traegt die Plattform, weil alle sechs im selben DEST landen.
+#
+# --no-cache-filter build: die build-Stage wird JEDES MAL neu uebersetzt. Ohne das
+# liefert ein zweiter Lauf denselben Layer zurueck, und ein Vergleich zweier Laeufe
+# waere tautologisch gleich — er belegte den Cache, nicht die Reproduzierbarkeit
+# (LH-QA-02; real so gemessen und vom Verifier aufgedeckt: die Artefakte trugen
+# sekundengleiche mtimes). Dieselbe Begruendung wie beim `--no-cache-filter test`
+# des test-Targets: ein Cache-Treffer darf ein Ergebnis nicht ersetzen.
 RELEASE_PLATFORMS ?= linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64 windows/arm64
 
 release-artifacts: ## Alle Release-Binaries der Plattform-Matrix nach DEST=<dir> (LH-QA-04) — Docker-only
@@ -81,7 +88,7 @@ release-artifacts: ## Alle Release-Binaries der Plattform-Matrix nach DEST=<dir>
 		[ "$$os" = "windows" ] && ext=".exe"; \
 		tag="ai-harness-init:build-$$os-$$arch"; \
 		echo "release-artifacts: $$os/$$arch ..."; \
-		docker build --build-arg GO_VERSION=$(GO_VERSION) \
+		docker build --no-cache-filter build --build-arg GO_VERSION=$(GO_VERSION) \
 			--build-arg TARGET_OS="$$os" --build-arg TARGET_ARCH="$$arch" \
 			--target build -t "$$tag" . ; \
 		cid="$$(docker create "$$tag" true)"; \

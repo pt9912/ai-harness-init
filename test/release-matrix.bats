@@ -28,21 +28,30 @@ setup() {
 # eine Plattform weg oder kommt eine hinzu, ohne dass das Makefile mitzieht, ist
 # das ein Befund — in beide Richtungen.
 lh_platforms() {
-  local zeile
+  local zeile os_teil arch_teil os arch
   # Der Anforderungssatz laeuft ueber ZWEI Zeilen (Betriebssysteme, dann
-  # Architekturen) — beide einsammeln und zu einer Zeichenkette verbinden, sonst
-  # sucht die Arch-Pruefung im halben Satz.
+  # Architekturen) — beide einsammeln und verbinden, sonst sucht die Arch-Pruefung
+  # im halben Satz.
   zeile="$(grep -A4 'LH-QA-04 — Plattform-Matrix' "$LH" | tr '\n' ' ')"
-  local os arch
-  for os in linux macos windows; do
-    case "$zeile" in *"$os"*) ;; *) return 1 ;; esac
+  # Die beiden fett gesetzten Segmente TRAGEN die Mengen — sie werden gelesen, nicht
+  # gegen eine feste Liste geprueft. Nur so greift die Kopplung in BEIDE Richtungen:
+  # eine im Lastenheft ERGAENZTE Plattform faellt hier ebenso auf wie eine entfernte.
+  # (Vorher stand hier eine feste Ausgabe-Liste; ein zusaetzliches „· freebsd" in der
+  # Anforderung liess den Waechter gruen — Review F-4.)
+  os_teil="$(printf '%s' "$zeile" | sed -n 's/.*Native Binaries für \*\*\([^*]*\)\*\*.*/\1/p')"
+  # Zwischen den Segmenten stehen `×` und MEHRERE Leerzeichen (der Satz ist im
+  # Lastenheft umbrochen) — das Muster muss variable Abstaende zulassen.
+  arch_teil="$(printf '%s' "$zeile" | sed -n 's/.*Native Binaries für \*\*[^*]*\*\* *× *\*\*\([^*]*\)\*\*.*/\1/p')"
+  [ -n "$os_teil" ] || return 1
+  [ -n "$arch_teil" ] || return 1
+  for os in $(printf '%s' "$os_teil" | sed 's/·/ /g'); do
+    # macos heisst in der Toolchain darwin — die einzige Stelle, an der Anforderung
+    # und Bau-Vokabular auseinandergehen.
+    [ "$os" = "macos" ] && os=darwin
+    for arch in $(printf '%s' "$arch_teil" | sed 's/·/ /g'); do
+      printf '%s/%s\n' "$os" "$arch"
+    done
   done
-  for arch in amd64 arm64; do
-    case "$zeile" in *"$arch"*) ;; *) return 1 ;; esac
-  done
-  # macos heisst in der Toolchain darwin — die Uebersetzung ist der einzige Punkt,
-  # an dem Anforderung und Bau-Vokabular auseinandergehen.
-  printf '%s\n' linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64 windows/arm64
 }
 
 mk_platforms() {
@@ -66,6 +75,11 @@ mk_platforms() {
 @test "release: Windows-Artefakte tragen .exe" {
   grep -q 'ext=".exe"' "$MK"
   grep -q '\[ "\$\$os" = "windows" \]' "$MK"
+  # Entscheidend ist, dass die Endung im ZIELNAMEN landet — die beiden Zeilen oben
+  # setzen sie nur. Faellt `$$ext` aus der Kopier-Zeile, hiesse das Windows-Artefakt
+  # wie die uebrigen und waere dort nicht ohne Umbenennen startbar, ohne dass ein
+  # Waechter es merkte (Review F-2).
+  grep -q 'ai-harness-init-\$\$os-\$\$arch\$\$ext' "$MK"
 }
 
 @test "release: die build-Stage nimmt eine Zielplattform entgegen" {
@@ -104,4 +118,31 @@ mk_platforms() {
   [ -n "$rezept" ]
   printf '%s' "$rezept" | grep -q 'test -n "\$(DEST)"'
   printf '%s' "$rezept" | grep -q 'exit 2'
+}
+
+# --- Start-Smoke (slice-048) -------------------------------------------------
+# Der Plattform-Nachweis selbst braucht einen Waechter: er ist die einzige Zusage
+# des Slice, die auf fremden Runnern laeuft und dort niemand liest.
+
+@test "release: start-smoke akzeptiert eine echte Usage" {
+  local dir
+  dir="$(mktemp -d)"
+  printf '#!/usr/bin/env bash\necho "ai-harness-init — bootstrappt"\necho "  add-lang <sprache>"\n' >"$dir/fake"
+  chmod +x "$dir/fake"
+  run bash "$REPO/harness/tools/start-smoke.sh" "$dir/fake"
+  rm -rf "$dir"
+  [ "$status" -eq 0 ]
+}
+
+# Der Kern: ein Binary, das irgendetwas ausgibt und mit 0 endet, darf NICHT als
+# Nachweis durchgehen — sonst waere der Plattform-Smoke ein Gate ueber leerem
+# Bereich (LH-QA-01). Rot-Gegenbeispiel: test/mutations 83.
+@test "release: start-smoke FAELLT bei Exit 0 ohne Usage" {
+  local dir
+  dir="$(mktemp -d)"
+  printf '#!/usr/bin/env bash\necho "nichts zur Sache"\n' >"$dir/fake"
+  chmod +x "$dir/fake"
+  run bash "$REPO/harness/tools/start-smoke.sh" "$dir/fake"
+  rm -rf "$dir"
+  [ "$status" -ne 0 ]
 }
