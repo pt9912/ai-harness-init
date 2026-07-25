@@ -118,7 +118,11 @@ bestätigt die DoD, Closure-Notiz mit Steering-Loop-Eintrag.
 - **Byte-Identität des Default-Pfads:** `artifact`, `smoke` und `full-smoke` hängen am heutigen
   Build-Ziel. Build-Args mit Default dürfen es nicht verschieben — die slice-044-Disziplin
   (additive Erweiterung schützt die vorhandenen Sensoren).
-- **Der Release-Upload ist nicht lokal rot-sehbar** — dieselbe Grenze, die
+- **Der Release-Upload ist nicht lokal rot-sehbar** — aber **probeweise fahrbar**: ein
+  SemVer-Vorab-Tag (`v0.1.0-RC`) durchlaeuft die ganze Kette inklusive Upload und wird als
+  `--prerelease` markiert, also klar erkennbar und hinterher loeschbar. `workflow_dispatch`
+  deckt die Stufe davor (bauen + Start-Smoke ohne jeden Upload). Damit bleibt nur der
+  Unterschied zwischen Vorab- und Endversion ungeprobt. Es bleibt dieselbe Grenze, die
   [`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions) für die CI
   benennt: `ci-lint` belegt die Syntax des Workflows, nicht sein Verhalten. Der erste echte Tag ist
   die Instanz, die es zeigt; das ist ehrlich zu benennen statt „getestet" zu behaupten.

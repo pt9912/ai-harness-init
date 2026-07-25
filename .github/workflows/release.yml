@@ -111,4 +111,23 @@ jobs:
       - name: Artefakte ans Release haengen
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "${GITHUB_REF_NAME}" dist/* --clobber
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME}"
+          # `gh release upload` laedt in ein BESTEHENDES Release und legt keines an —
+          # bei einem frischen Tag waere das ein sicherer Fehlschlag. Deshalb erst
+          # pruefen, dann anlegen ODER ergaenzen.
+          #
+          # VORAB-TAG (SemVer-Praerelease, z. B. v0.1.0-RC): wird als --prerelease
+          # markiert. Das ist die Probe fuer genau den Pfad, der sonst KEINEN Sensor
+          # hat — workflow_dispatch baut und smoked, beruehrt den Upload aber nie.
+          # Ein RC-Tag durchlaeuft die ganze Kette und ist hinterher loeschbar.
+          vorab=nein
+          case "$tag" in *-*) vorab=ja ;; esac
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" dist/* --clobber
+          elif [ "$vorab" = ja ]; then
+            gh release create "$tag" dist/* --generate-notes --prerelease
+          else
+            gh release create "$tag" dist/* --generate-notes
+          fi
