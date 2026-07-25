@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # files: harness/tools/mutate.sh
-# expect: run_case meldet einen HOST-Treffer
+# expect: run_case meldet einen HOST-Treffer und BRICHT AB
 #
 # Dreht die Mitten-im-Lauf-Pruefung um: aus "hat sich geaendert" wird "ist gleich".
 # Der Treiber meldete dann einen Isolations-Bruch NICHT mehr — und genau diese Pruefung

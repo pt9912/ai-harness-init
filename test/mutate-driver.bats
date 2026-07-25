@@ -157,26 +157,33 @@ setup() {
   ! grep -q '^AGENTS.md$' <<<"$ziele"
 }
 
-# Die Mitten-im-Lauf-Pruefung ist der Sensor der Kern-Zusage dieses Slice — und war
-# als einziger unbewacht (Review-Runde 2 F-1, Verifier R2-1). Die Begruendung „als
-# Mutations-Fall nicht darstellbar" trug nicht: beide Zweige kehren VOR jedem
-# make-Aufruf zurueck, also ist derselbe hermetische Weg moeglich wie fuer die uebrigen
-# Funktionen. Fixture: ein Mini-Baum mit einer Zieldatei und einem Fall darauf; der
-# Referenzwert wird absichtlich verfaelscht, indem die Zieldatei nach der Aufnahme
-# veraendert wird — run_case muss das melden, bevor er einen Sensor faehrt.
-@test "driver: run_case meldet einen HOST-Treffer, bevor er den Sensor faehrt" {
+# Die Mitten-im-Lauf-Pruefung ist der Sensor der Kern-Zusage dieses Slice, und der
+# ABBRUCH ist ihre Wirkung. Beides braucht Deckung (Runde 2 F-1, Runde 3 F-1).
+#
+# Die Fixture trennt Kopie ($WORK) und Baum ($REPO) und laesst den Fall den BAUM per
+# absolutem Pfad treffen — die Kopie bleibt unveraendert. Das ist der reale Bruch, und
+# es deckt zugleich die REIHENFOLGE: waere die Pruefung hinter Bedingung 2, meldete der
+# Treiber „Mutation hat nicht gegriffen" statt des Isolations-Bruchs (Runde 3 F-2, die
+# vorherige Fixture liess beide zusammenfallen und konnte das nicht unterscheiden).
+#
+# Geprueft wird BEIDES: die Meldung UND der Exit-Status. Ohne die Status-Assertion
+# bliebe ein `exit 1` -> `return` unsichtbar, und die Schleife liefe nach erkanntem
+# Bruch weiter gegen den Host — der Zustand, den der Abbruch gerade beseitigt hat.
+@test "driver: run_case meldet einen HOST-Treffer und BRICHT AB" {
   local iso cases
   iso="$(mktemp -d)"; cases="$iso/cases"
-  mkdir -p "$iso/repo" "$cases"
-  printf 'alt\n' >"$iso/repo/ziel.txt"
-  # Der Fall mutiert die Kopie UND (das ist der simulierte Bruch) den Host-Baum:
-  # hier sind beide dasselbe Verzeichnis, also faellt der Referenzwert auseinander.
-  printf '#!/usr/bin/env bash\n# files: ziel.txt\n# expect: egal\nsed -i s/alt/neu/ ziel.txt\n' >"$cases/01-fall.sh"
+  mkdir -p "$iso/kopie" "$iso/baum" "$cases"
+  printf 'alt\n' >"$iso/kopie/ziel.txt"
+  printf 'alt\n' >"$iso/baum/ziel.txt"
+  # Der Fall trifft den BAUM (absoluter Pfad), nicht die Kopie: genau der Bruch.
+  printf '#!/usr/bin/env bash\n# files: ziel.txt\n# expect: egal\nsed -i s/alt/neu/ %s/ziel.txt\n' \
+    "$iso/baum" >"$cases/01-fall.sh"
   run bash -c "source '$DRIVER' 2>/dev/null || true
-    WORK='$iso/repo'; REPO='$iso/repo'; CASES_DIR='$cases'
+    WORK='$iso/kopie'; REPO='$iso/baum'; CASES_DIR='$cases'
     run_case '$cases/01-fall.sh'"
   rm -rf "$iso"
   [[ "$output" == *"Isolation gebrochen"* ]]
+  [ "$status" -ne 0 ]
 }
 
 @test "driver: das smoke-Muster trifft Fehlschlag-Zeilen, NICHT Fortschritts-Zeilen" {
