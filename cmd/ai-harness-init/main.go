@@ -59,6 +59,8 @@ Umgebung (bewusster Opt-in-Override der gepinnten Werte — LH-QA-02):
   BASELINE_SHA256   erwarteter sha256 des Baseline-Assets
   DCHECK_IMAGE      d-check-Tag-Referenz
   DCHECK_DIGEST     d-check-Digest (sticht den Tag)
+  A_CHECK_IMAGE     a-check-Tag-Referenz (Arch-Gate, nur bei --arch hexslice)
+  A_CHECK_DIGEST    a-check-Digest (sticht den Tag)
   SKEL_<LANG>_VERSION  Toolchain-Version des Skeletts je Sprache (SKEL_GO_VERSION, SKEL_CPP_VERSION;
                        Default gepinnt, deterministisch)
 `
@@ -70,6 +72,10 @@ Umgebung (bewusster Opt-in-Override der gepinnten Werte — LH-QA-02):
 type sources struct {
 	baseline    fetch.AssetFetch // Regelwerk + Templates (LH-FA-09)
 	baselineSHA string           // erwarteter sha256 des Baseline-Assets (LH-QA-02)
+	// archMK liefert das Arch-Gate-Fragment (`a-check --print-mk`, slice-046). Injiziert
+	// wie die Baseline-Quelle, weil der add-lang-Pfad — anders als der Bootstrap —
+	// netzlose ERFOLGS-Faelle hat, die sonst an Docker haengen wuerden.
+	archMK emit.PrintMK
 }
 
 // run parst die Argumente und liefert den Exit-Code. Ein-/Ausgabe, Zielverzeichnis
@@ -81,7 +87,7 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 	// Mono-Repo-Pfad; alles andere ist der Default-Init. Die Unterscheidung steht VOR dem
 	// Flag-Parsing, weil add-lang Positionsargumente traegt, der Init nur Flags.
 	if len(args) > 0 && args[0] == "add-lang" {
-		return runAddLang(args[1:], targetDir, stdout, stderr)
+		return runAddLang(args[1:], targetDir, src, stdout, stderr)
 	}
 
 	fs := flag.NewFlagSet("ai-harness-init", flag.ContinueOnError)
@@ -125,11 +131,14 @@ Argumente:
   <pfad>      Zielort des Moduls (. = Repo-Root)
   --arch      Ziel-Architektur (flat|hexslice, Default flat; slice-045b/ADR-0009). Eine
               von der Sprache nicht getragene Architektur (z.B. cpp+hexslice) -> Exit 2.
+              hexslice dropt zusaetzlich das Architektur-Gate (.a-check.yml + a-check.mk
+              + harness/mk/arch-<modul>.mk); flat bekommt keines (kein Gate ueber leerem
+              Pruefbereich) und bleibt damit Docker-frei.
 `
 
 // runAddLang parst `add-lang <sprache> <pfad>` und liefert den Exit-Code (0 = Erfolg,
 // 2 = Aufruf-Fehler, 1 = Laufzeit-Fehler). Genau zwei Positionsargumente, keine Flags.
-func runAddLang(args []string, targetDir string, stdout, stderr io.Writer) int {
+func runAddLang(args []string, targetDir string, src sources, stdout, stderr io.Writer) int {
 	if len(args) == 1 && (args[0] == "-h" || args[0] == "--help") {
 		fmt.Fprint(stdout, addLangUsage)
 		return 0
@@ -161,7 +170,7 @@ func runAddLang(args []string, targetDir string, stdout, stderr io.Writer) int {
 		return 2
 	}
 	// pos[0]=sprache(lang), pos[1]=pfad(path). addLang nimmt (targetDir, path, lang, arch, …).
-	return addLang(targetDir, pos[1], pos[0], arch, stdout, stderr)
+	return addLang(targetDir, pos[1], pos[0], arch, src, stdout, stderr)
 }
 
 // addLang fuehrt das add-lang-Subkommando aus (slice-037/038, wiederholbar/Mono-Repo,
@@ -169,7 +178,7 @@ func runAddLang(args []string, targetDir string, stdout, stderr io.Writer) int {
 // (beide konvergent). Kein Pre-Flight-refuse mehr (slice-038): die Idempotenz-Klassen
 // erledigen das Kollisions-Handling je Datei. Netzlos: add-lang setzt einen bereits
 // gebootstrappten Aggregator voraus (Root-Makefile mit include harness/mk/*.mk).
-func addLang(targetDir, path, lang, arch string, stdout, stderr io.Writer) int {
+func addLang(targetDir, path, lang, arch string, src sources, stdout, stderr io.Writer) int {
 	// Containment (Review-M-1): <pfad> ist das erste nutzer-kontrollierte Ziel, das
 	// wire.Place erreicht. Ein absoluter Pfad oder ein `..`-Ausbruch schriebe Skelett-
 	// Dateien AUS dem Ziel-Repo heraus. Fail-fast mit Exit 2, bevor etwas generiert wird.
@@ -196,7 +205,7 @@ func addLang(targetDir, path, lang, arch string, stdout, stderr io.Writer) int {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return callExitCode(err)
 	}
-	if err := wireLang(targetDir, skelDir, path, lang, version); err != nil {
+	if err := wireLang(targetDir, skelDir, path, lang, version, arch, src.archMK); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
@@ -207,9 +216,11 @@ func addLang(targetDir, path, lang, arch string, stdout, stderr io.Writer) int {
 
 // wireLang platziert das gestagte Skelett am Zielort <pfad> (skip-if-present: Skelett-Code
 // ist Adopter-Boden) und ergaenzt sein Code-Gate-Fragment (harness/mk/<modul>.mk, konvergent
-// — kanonisch neu geschrieben) + das blocked/<lang>-Fragment (konvergent). Gemeinsamer Kern
-// des --lang-One-Shots (Phase 4, <pfad>=".") und des add-lang-Subkommandos (beliebiger <pfad>).
-func wireLang(targetDir, skelDir, path, lang, version string) error {
+// — kanonisch neu geschrieben), das Arch-Gate (KONDITIONAL, slice-046) + das
+// blocked/<lang>-Fragment (konvergent). Gemeinsamer Kern des --lang-One-Shots (Phase 4,
+// <pfad>=".") und des add-lang-Subkommandos (beliebiger <pfad>) — beide Eintrittspunkte
+// tragen damit dieselbe Arch-Gate-Bedingung, statt sie zweimal zu formulieren.
+func wireLang(targetDir, skelDir, path, lang, version, arch string, archMK emit.PrintMK) error {
 	if err := wire.Place(skelDir, filepath.Join(targetDir, filepath.FromSlash(path))); err != nil {
 		return err
 	}
@@ -227,7 +238,34 @@ func wireLang(targetDir, skelDir, path, lang, version string) error {
 	if err := os.WriteFile(dst, []byte(frag), 0o644); err != nil {
 		return fmt.Errorf("%s schreiben: %w", filepath.ToSlash(fragRel), err)
 	}
+	// Arch-Gate KONDITIONAL (slice-046, LH-FA-07/LH-QA-01): nur wenn (lang, arch) ein
+	// schichten-tragendes Layout rendert, gibt es einen Pruefbereich — sonst waere
+	// a-check ein Gate ueber leerer Flaeche. gen entscheidet das (dieselbe Quelle wie
+	// die Rollen-Pfade), cmd verdrahtet nur.
+	if cfg, ok := gen.ArchGateConfig(lang, arch); ok {
+		archOpts := emit.Options{
+			Image:  envOr("A_CHECK_IMAGE", emit.DefaultArchImage),
+			Digest: envOr("A_CHECK_DIGEST", emit.DefaultArchDigest),
+		}
+		// Eigenes Zeitbudget fuer den `a-check --print-mk`-Lauf (wie emitAll es fuer
+		// DocGate haelt): der flache Pfad bleibt davon unberuehrt: er kommt hier nie an
+		// und damit ohne Docker/Netz aus (slice-037-Eigenschaft).
+		ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
+		defer cancel()
+		if err := emit.ArchGate(ctx, targetDir, cleanRel(path), gen.ModuleName(path, lang), cfg, archOpts, archMK); err != nil {
+			return err
+		}
+	}
 	return emit.BlockedFragment(targetDir, lang)
+}
+
+// cleanRel normalisiert den Modul-Pfad zu einem slash-Relpfad ("" -> "."), damit der
+// Emitter Root und Unterverzeichnis unterscheiden kann, ohne den Aufrufer-String zu raten.
+func cleanRel(path string) string {
+	if path == "" {
+		return "."
+	}
+	return filepath.ToSlash(filepath.Clean(path))
 }
 
 // bootstrap fuehrt die Kette in drei Phasen aus (Ueberblick im Package-Doc): (1) Skelett
@@ -280,7 +318,7 @@ func bootstrap(targetDir, lang, name, arch string, src sources, stdout, stderr i
 		Image:  envOr("DCHECK_IMAGE", emit.DefaultImage),
 		Digest: envOr("DCHECK_DIGEST", emit.DefaultDigest),
 	}
-	if err := emitAll(targetDir, skelDir, tag, name, lang, version, hasLang, opts); err != nil {
+	if err := emitAll(targetDir, skelDir, tag, name, lang, version, arch, hasLang, opts, src.archMK); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
@@ -299,7 +337,7 @@ func bootstrap(targetDir, lang, name, arch string, src sources, stdout, stderr i
 // (Enforce/Makefile/BaselineVerify/DocGate-Fragmente) oder skip-if-present (Templates/
 // README/Commands/Skelett). Erste fehlgeschlagene Stufe gewinnt; bootstrap druckt den
 // Fehler einmal. DocGate zuerst (Docker-Lauf = reales Fehlerrisiko).
-func emitAll(targetDir, skelDir, tag, name, lang, version string, hasLang bool, opts emit.Options) error {
+func emitAll(targetDir, skelDir, tag, name, lang, version, arch string, hasLang bool, opts emit.Options, archMK emit.PrintMK) error {
 	if err := emit.DocGate(context.Background(), targetDir, opts); err != nil {
 		return err
 	}
@@ -332,7 +370,7 @@ func emitAll(targetDir, skelDir, tag, name, lang, version string, hasLang bool, 
 	// Fragment (harness/mk/<lang>.mk) + blocked/<lang> droppen — der --lang-One-Shot ist
 	// Init + ein addLang(<pfad>="."). NUR mit Sprache; ohne --lang gibt es kein Skelett.
 	if hasLang {
-		if err := wireLang(targetDir, skelDir, ".", lang, version); err != nil {
+		if err := wireLang(targetDir, skelDir, ".", lang, version, arch, archMK); err != nil {
 			return err
 		}
 	}
@@ -398,6 +436,7 @@ func main() {
 	src := sources{
 		baseline:    fetch.DownloadBaseline,
 		baselineSHA: envOr("BASELINE_SHA256", fetch.DefaultBaselineSHA256),
+		archMK:      emit.DockerPrintMK,
 	}
 	os.Exit(run(os.Args[1:], wd, src, os.Stdout, os.Stderr))
 }

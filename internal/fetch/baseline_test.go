@@ -82,6 +82,28 @@ func TestBaseline_Extract(t *testing.T) {
 	}
 }
 
+// TestBaseline_TagDirTraversierbar (slice-046): das <tag>-Verzeichnis ist fuer ALLE
+// traversierbar (0755), nicht 0700. Das ist kein Kosmetik-Punkt: os.MkdirTemp legt 0700
+// an, und unter diesem Modus wurde das Verzeichnis bisher an seinen Platz umbenannt. Die
+// Gates laufen als NICHT-Root im Container ueber einem read-only Mount des Zielrepos — ein
+// 0700-Verzeichnis ist dort nicht betretbar, und das emittierte a-check bricht mit
+// „permission denied" ab, obwohl an der Architektur nichts falsch ist (real gemessen).
+// Rot-Gegenbeispiel: test/mutations entfernt den Chmod -> dieser Test faellt.
+func TestBaseline_TagDirTraversierbar(t *testing.T) {
+	data, sum := stdBundle(t)
+	dest := t.TempDir()
+	if err := fetch.Baseline(context.Background(), dest, "v3.5.0", sum, assetFetch(data)); err != nil {
+		t.Fatalf("Baseline: %v", err)
+	}
+	info, err := os.Stat(filepath.Join(dest, "v3.5.0"))
+	if err != nil {
+		t.Fatalf("Stat <tag>: %v", err)
+	}
+	if perm := info.Mode().Perm(); perm&0o055 != 0o055 {
+		t.Errorf("<tag>-Verzeichnis hat Modus %o — nicht-Root im Container kann es nicht traversieren (want r-x fuer group+other)", perm)
+	}
+}
+
 // TestBaseline_SumsForm haelt MR-007 Setzung 2 fest: GNU-Format, Pfade relativ
 // zu <tag>/, nach PFAD sortiert, SHA256SUMS selbst nicht gelistet. Die Sortier-
 // Achse ist der Punkt — nach Hash sortiert waere die Datei genauso "sortiert",

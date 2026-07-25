@@ -22,9 +22,13 @@ GO_VERSION="${GO_VERSION:-1.26.4}"
 tmpbin="$(mktemp -d)"
 tmprepo="$(mktemp -d)"
 tmprepo_doc="$(mktemp -d)"
-cleanup() { rm -rf "$tmpbin" "$tmprepo" "$tmprepo_doc"; }
+tmprepo_hex="$(mktemp -d)"
+cleanup() { rm -rf "$tmpbin" "$tmprepo" "$tmprepo_doc" "$tmprepo_hex"; }
 trap cleanup EXIT
 chmod 755 "$tmprepo_doc"
+# Das Root-Modul-Ziel (slice-046) wird von a-check als read-only Mount gelesen — wie die
+# anderen Ziele braucht es 0755 (ein echtes Adopter-Repo hat das).
+chmod 755 "$tmprepo_hex"
 # mktemp -d liefert 0700; der d-check-Container laeuft als Nicht-Root und kann den
 # 0700-Mount nicht traversieren. Ein echtes Adopter-Git-Repo hat 0755.
 chmod 755 "$tmprepo"
@@ -329,6 +333,93 @@ if [ -n "$hex_missing" ]; then
 	exit 1
 fi
 
+# slice-046 (LH-FA-07/ADR-0009): das hexSlice-Modul traegt sein ARCHITEKTUR-GATE — die
+# Schicht-Config IM MODUL, das tool-generierte a-check.mk im Ziel-Root und das
+# modul-scoped Gate-Fragment. Der Lauf oben hat es bereits mitgefahren; hier der Beleg,
+# dass es (a) liegt, (b) im zusammengefuehrten `make gates` WIRKLICH lief.
+for rel in apps/hex/.a-check.yml a-check.mk harness/mk/arch-apps-hex.mk; do
+	if [ ! -e "$tmprepo_doc/$rel" ]; then
+		echo "full-smoke: FEHLER — hexSlice-Modul ohne Arch-Gate-Artefakt: $rel (slice-046/LH-FA-07)." >&2
+		exit 1
+	fi
+done
+# Der Beleg ist der MOUNT des Moduls im Recipe-Echo, nicht der Target-NAME: make echot die
+# Recipe-Zeile, und die traegt den Namen `a-check-apps-hex` nirgends (anders als die
+# Go-Gates, deren Recipe `-t apps-hex:lint` enthaelt). `apps/hex":/src:ro` ist die
+# a-check-Mount-Form (d-check mountet nach /repo) und damit eindeutig.
+if ! grep -qF -- 'apps/hex":/src:ro' <<<"$hex_out"; then
+	echo "full-smoke: FEHLER — make gates fuhr das Arch-Gate NICHT mit (kein a-check-Mount von apps/hex im Lauf; slice-046/LH-QA-01)." >&2
+	exit 1
+fi
+# LH-QA-01 andersherum: die FLACHEN Module derselben Mono-Repo-Ziele bekommen KEIN
+# Arch-Gate — kein Fragment, keine Config. Ein Gate ueber flachem (leerem) Pruefbereich
+# waere genau der halluzinierte Gate, den die Welle ausschliesst.
+for rel in harness/mk/arch-apps-api.mk harness/mk/arch-apps-web.mk apps/api/.a-check.yml .a-check.yml; do
+	if [ -e "$tmprepo_doc/$rel" ]; then
+		echo "full-smoke: FEHLER — flaches Modul bekam ein Arch-Gate-Artefakt: $rel (halluziniertes Gate, LH-QA-01/slice-046)." >&2
+		exit 1
+	fi
+done
+if [ -e "$tmprepo/a-check.mk" ] || [ -e "$tmprepo/.a-check.yml" ]; then
+	echo "full-smoke: FEHLER — das FLACHE --lang-go-Ziel traegt ein Arch-Gate-Artefakt (LH-QA-01/slice-046)." >&2
+	exit 1
+fi
+
+# ZAEHNE (AGENTS.md §3.6): ein gruen laufendes Gate belegt nicht, dass es greift. Ein
+# verbotener Import (Domain -> Adapter, gegen die inward-only-Kanten) MUSS das emittierte
+# Gate roetten. Danach zuruecknehmen — der Rest des Smokes laeuft auf dem heilen Stand.
+hexdomain="$tmprepo_doc/apps/hex/internal/hexagon/domain/example/greeting.go"
+cp "$hexdomain" "$hexdomain.orig"
+# Import in die Adapter-Schicht einschmuggeln (blank import: kompiliert, verletzt aber die
+# Richtung) — der sed haengt ihn an die vorhandene errors-Import-Zeile.
+sed -i 's|^import "errors"$|import (\n\t"errors"\n\n\t_ "app/internal/adapters/outbound/notify"\n)|' "$hexdomain"
+teeth_rc=0
+teeth_out="$( make -C "$tmprepo_doc" a-check-apps-hex 2>&1 )" || teeth_rc=$?
+mv "$hexdomain.orig" "$hexdomain"
+if [ "$teeth_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — das emittierte Arch-Gate bleibt bei einem VERBOTENEN Import gruen (zahnloses Gate, AGENTS.md §3.6/LH-QA-01)." >&2
+	printf '%s\n' "$teeth_out" >&2
+	exit 1
+fi
+if ! grep -qE 'core-impurity|wrong-direction' <<<"$teeth_out"; then
+	echo "full-smoke: FEHLER — Arch-Gate rot, aber ohne Richtungs-Befund (rot aus falschem Grund? slice-046). Ausgabe:" >&2
+	printf '%s\n' "$teeth_out" >&2
+	exit 1
+fi
+echo "full-smoke: Arch-Gate-Zaehne belegt (verbotener Domain->Adapter-Import faerbt a-check rot, danach zurueckgenommen):"
+# Den Befund SICHTBAR machen: ein „belegt"-Satz ohne die Zeile, die ihn belegt, ist
+# genau die Behauptung ohne Beleg, die AGENTS.md §3.6 meint. Der Lauf-Output steht
+# sonst nur im Erfolgsfall-Puffer und wuerde nie gedruckt.
+grep -E 'core-impurity|wrong-direction' <<<"$teeth_out" | head -2 | sed 's/^/full-smoke:   /'
+
+# slice-046, ROOT-Modul: der Init-One-Shot `--lang go --arch hexslice` verortet das Modul
+# am Repo-Root — das Arch-Gate mountet dann das GANZE Ziel, samt der vendored Baseline.
+# Genau hier schlug der 0700-Modus des <tag>-Verzeichnisses zu (a-check laeuft als
+# Nicht-Root und kann es nicht traversieren -> Exit 2 „permission denied"). Der Fall ist
+# eigenstaendig zu belegen; die Mono-Repo-Module oben mounten nur ihr Unterverzeichnis.
+echo "full-smoke: Root-Modul-Bootstrap (--lang go --arch hexslice) in ein viertes tmp-Repo (slice-046) ..."
+( cd "$tmprepo_hex" && "$tmpbin/ai-harness-init" --lang go --arch hexslice --name full-smoke-hex )
+git init -q "$tmprepo_hex"
+for rel in .a-check.yml a-check.mk harness/mk/arch-go.mk internal/hexagon/domain/example/greeting.go; do
+	if [ ! -e "$tmprepo_hex/$rel" ]; then
+		echo "full-smoke: FEHLER — Root-Modul (--arch hexslice) ohne $rel (slice-046)." >&2
+		exit 1
+	fi
+done
+roothex_rc=0
+roothex_out="$( make -C "$tmprepo_hex" a-check 2>&1 )" || roothex_rc=$?
+printf '%s\n' "$roothex_out"
+if [ "$roothex_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — make a-check am Root-Modul ist NICHT Exit 0 (Schicht-Config falsch verortet oder Baseline-Verzeichnis nicht traversierbar? slice-046/LH-FA-07)." >&2
+	exit 1
+fi
+# Das Gate haengt auch WIRKLICH im Aggregator (nicht nur als Einzel-Target erreichbar):
+# `make -n gates` zeigt die Recipes, ohne sie zu fahren.
+if ! make -n -C "$tmprepo_hex" gates 2>&1 | grep -qF -- "a-check"; then
+	echo "full-smoke: FEHLER — das Root-Arch-Gate haengt nicht in make gates (GATE_CHECKS-Verdrahtung, slice-046)." >&2
+	exit 1
+fi
+
 # slice-038 (ADR-0007 Idempotenz-Klassifikation): ein ZWEITER Init-Lauf ist IDEMPOTENT
 # (Exit 0 statt Kollisions-Refuse). Konvergente Dateien (tool-Infra) werden kanonisch neu
 # geschrieben (heilen Drift); skip-if-present-Dateien (Adopter-Boden) bleiben unberuehrt.
@@ -377,4 +468,5 @@ echo "full-smoke: OK — Guard-Boden GEBACKEN + blocked/*-Union: --lang go block
 echo "full-smoke: OK — add-lang WIEDERHOLBAR (Mono-Repo): apps/api + apps/web koexistieren, make -j gates faehrt beide modul-scoped Go-Gates, Guard blockt go danach (slice-037/LH-FA-04)."
 echo "full-smoke: OK — ZWEITE SPRACHE (slice-039): add-lang cpp apps/engine koexistiert mit den Go-Modulen, make -j gates faehrt die REALEN C++-Gates (cmake/ctest/clang-tidy in Docker), Guard blockt cmake danach (blocked/cpp)."
 echo "full-smoke: OK — ARCH-ACHSE (slice-045b/ADR-0009): add-lang go apps/hex --arch hexslice dropt das hexSlice-Layout, make -j gates UEBERSETZT+LINTET den Schichten-Code real (apps-hex build/lint); cpp+hexslice ist fail-fast Exit 2 (sprach×arch-Support, INFO-1)."
+echo "full-smoke: OK — ARCH-GATE KONDITIONAL (slice-046/LH-FA-07): --arch hexslice dropt .a-check.yml + a-check.mk + arch-Fragment und make gates FAEHRT a-check real (Modul-scoped apps/hex und am Root); flache Module bekommen keines (LH-QA-01); ein verbotener Domain->Adapter-Import faerbt das Gate rot (Zaehne belegt)."
 echo "full-smoke: OK — IDEMPOTENT (slice-038): 2. Init-Lauf Exit 0, README (skip-if-present) unberuehrt, Makefile-Drift (konvergent) geheilt; sprachloser Re-Lauf prunt kein add-lang-Fragment (kein Prune)."

@@ -1,4 +1,7 @@
-// Package emit schreibt die Doc-Gate-Baseline in ein Zielrepo.
+// Package emit schreibt die Gate-Baselines in ein Zielrepo — das Doc-Gate (hier)
+// und, konditional bei einem schichten-tragenden Layout, das Arch-Gate (archgate.go,
+// slice-046). Beide folgen demselben Muster: tool-autorierte Config + tool-generiertes
+// `.mk`-Fragment aus `--print-mk`.
 //
 // Zwei Artefakte mit bewusst verschiedener Herkunft:
 //   - .d-check.yml — vom Tool AUTORIERTE minimale Config (nur links/anchors;
@@ -147,7 +150,8 @@ func AdaptMK(raw []byte, digest string) ([]byte, error) {
 
 // printMK ruft `docker run <ref> --print-mk` und liefert die rohe Ausgabe.
 // --network none haertet den Lauf (--print-mk braucht kein Netz; der Image-Pull,
-// falls noetig, laeuft ueber den Daemon, nicht das Container-Netz).
+// falls noetig, laeuft ueber den Daemon, nicht das Container-Netz). Tool-neutral:
+// d-check und a-check (slice-046) teilen dieselbe --print-mk-Konvention.
 func printMK(ctx context.Context, ref string) ([]byte, error) {
 	out, err := exec.CommandContext(ctx, "docker", "run", "--rm", "--network", "none", ref, "--print-mk").Output()
 	if err != nil {

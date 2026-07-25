@@ -179,6 +179,16 @@ func Baseline(ctx context.Context, destDir, tag, wantSHA string, fetch AssetFetc
 	// akzeptierte Klasse-Race (dort benannt).
 	defer func() { _ = os.RemoveAll(tmp) }()
 
+	// MkdirTemp legt 0700 an — und das Verzeichnis wird unter diesem Modus zum
+	// <tag>-Verzeichnis umbenannt. Ein frischer Klon haette 0755; der Unterschied
+	// ist nicht kosmetisch: die Gates laufen als Nicht-Root im Container ueber einem
+	// read-only Mount des Zielrepos, und ein 0700-Verzeichnis ist dort nicht
+	// traversierbar — das emittierte a-check bricht dann mit „permission denied"
+	// (Exit 2) ab, obwohl nichts an der Architektur falsch ist (slice-046, gemessen).
+	if err := os.Chmod(tmp, 0o755); err != nil {
+		return fmt.Errorf("modus des temp-verzeichnisses in %s: %w", destDir, err)
+	}
+
 	if err := unpackTrees(zr, tmp, tag); err != nil {
 		return err
 	}

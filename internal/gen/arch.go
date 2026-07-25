@@ -62,6 +62,47 @@ func archLayout(arch string) []codeRole {
 	return nil
 }
 
+// archLayered sagt, ob eine Architektur SCHICHTEN traegt — strukturell aus dem
+// Layout abgeleitet (traegt es die Domain-Rolle?), nicht aus einer zweiten Namensliste.
+// Das ist die LH-QA-01-Bedingung des Arch-Gates (slice-046): nur ueber einem
+// schichten-tragenden Layout hat a-check einen nicht-leeren Pruefbereich; `flat`
+// bekommt darum kein Gate. Eine kuenftige geschichtete Architektur ist damit
+// automatisch „layered", ohne dass hier jemand eine Liste nachzieht.
+func archLayered(arch string) bool {
+	for _, r := range archLayout(arch) {
+		if r == roleDomain {
+			return true
+		}
+	}
+	return false
+}
+
+// ArchGateConfig liefert die `.a-check.yml` des Moduls fuer (lang, arch) und ok=false,
+// wenn diese Kombination KEIN Arch-Gate traegt (slice-046, LH-FA-07): `flat` (kein
+// Pruefbereich, LH-QA-01), eine sprach-fremde Architektur oder ein Renderer ohne
+// hinterlegte Config. Die Config gehoert zum LAYOUT-Wissen — sie lebt in derselben
+// Quelle wie die Rollen-Pfade, damit Schicht-Globs und generierte Verzeichnisse nicht
+// auseinanderdriften (ADR-0009 Fitness-Function; TestArchGateConfig_MatchesSkeleton
+// haelt die Kopplung fest). Der Inhalt ist MODUL-RELATIV: der Gate-Lauf mountet das
+// Modul-Verzeichnis, darum traegt die Config keinen <pfad>-Praefix.
+func ArchGateConfig(lang, arch string) (string, bool) {
+	if !archLayered(arch) || !archSupported(lang, arch) {
+		return "", false
+	}
+	cfg, ok := archGateConfigs()[lang][arch]
+	return cfg, ok
+}
+
+// archGateConfigs bildet Sprache -> Architektur -> `.a-check.yml`-Inhalt. Ein fehlender
+// Eintrag heisst „kein Arch-Gate" — TestArchGateConfig_CoversEveryLayeredCombo verhindert,
+// dass eine schichten-tragende (lang, arch)-Kombination hier still ohne Config bleibt und
+// das Gate lautlos ausfaellt.
+func archGateConfigs() map[string]map[string]string {
+	return map[string]map[string]string{
+		"go": {archHexslice: goHexArchConfig},
+	}
+}
+
 // SupportedArchs liefert das Achsen-VOKABULAR sortiert — den Union aller Architekturen,
 // die irgendein Sprach-Renderer traegt (aus langArchs abgeleitet, kein Doppel-Pflegepunkt).
 // Fuer Hilfetexte und die Unknown-Arch-Liste bei einem Tippfehler (slice-045b). Welche

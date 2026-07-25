@@ -58,7 +58,7 @@ der EINE Verdrahtungs-Kern beider Eintrittspunkte) und `harness/tools/full-smoke
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `internal/gen/arch.go` | update | `ArchGateConfig(lang, arch)` — die `.a-check.yml` gehört zum Layout-Wissen (dieselbe Quelle wie die Rollen-Pfade); `flat`/nicht-getragen → kein Config |
-| `internal/gen/*_test.go` | neu | Kopplungstest: jede Schicht-Glob deckt genau die real generierten Rollen-Dateien (ADR-0009-Fitness) |
+| `internal/gen/*_test.go` | neu | Kopplungstest: jede Schicht-Glob deckt genau die real generierten Rollen-Dateien ([ADR-0009](../../adr/0009-hexslice-arch-realisierung.md)-Fitness) |
 | `internal/emit/archgate.go` | neu | `ArchGate(...)`: `.a-check.yml` (skip-if-present, Adopter-Boden) + `a-check.mk` (konvergent, `--print-mk` + Digest-Re-Pin) + `harness/mk/arch-<modul>.mk` (konvergent) — Muster `DocGate` |
 | `cmd/ai-harness-init/main.go` | update | `wireLang` bekommt `arch` und ruft `ArchGate` **konditional**; `A_CHECK_IMAGE`/`A_CHECK_DIGEST` als bewusste Env-Overrides |
 | `internal/fetch/baseline.go` | update | die vendored Baseline landet heute mit **0700** im Ziel (`MkdirTemp`) — ein read-only Nicht-Root-Container (a-check) kann sie nicht traversieren → Exit 2 beim Root-Modul. 0755 wie ein frischer Klon |

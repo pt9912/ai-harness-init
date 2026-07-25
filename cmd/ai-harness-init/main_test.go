@@ -13,6 +13,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/pt9912/ai-harness-init/internal/emit"
 	"github.com/pt9912/ai-harness-init/internal/fetch"
 	"github.com/pt9912/ai-harness-init/internal/gen"
 )
@@ -50,12 +51,30 @@ func baselineFixture(t *testing.T) (fetch.AssetFetch, string) {
 	}, hex.EncodeToString(sum[:])
 }
 
+// archMKFixture ist die netzlose Attrappe von `a-check --print-mk` (slice-046). Sie
+// traegt bewusst einen ANDEREN Pin als den, mit dem sie „erzeugt" wurde — genau die
+// Lage beim realen a-check v0.15.0 (der gedruckte Pin hinkt nach). So belegt der
+// Emit-Pfad im Test, dass AdaptArchMK auf die ERZEUGENDE Referenz umpinnt.
+const archMKFixturePin = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+
+func archMKFixture() emit.PrintMK {
+	return func(context.Context, string) ([]byte, error) {
+		return []byte("# a-check.mk — erzeugt von `a-check --print-mk`.\n" +
+			"A_CHECK_IMAGE ?= ghcr.io/pt9912/a-check@" + archMKFixturePin + "\n" +
+			"\n.PHONY: a-check a-check-graph\n" +
+			"a-check: ## Architektur: Hexagon-Regeln via a-check (netzlos, read-only).\n" +
+			"\tdocker run --rm --network none -v \"$(CURDIR)\":/src:ro $(A_CHECK_IMAGE) /src\n"), nil
+	}
+}
+
 // testSources buendelt die netzlose Baseline-Fixture fuer run(). Das Sprachskelett
-// braucht keine Fixture mehr — internal/gen erzeugt es lokal (slice-023).
+// braucht keine Fixture mehr — internal/gen erzeugt es lokal (slice-023); die
+// Arch-Gate-Fragment-Quelle (slice-046) ist injiziert, damit der add-lang-Erfolgsfall
+// ohne Docker laeuft.
 func testSources(t *testing.T) sources {
 	t.Helper()
 	asset, sum := baselineFixture(t)
-	return sources{baseline: asset, baselineSHA: sum}
+	return sources{baseline: asset, baselineSHA: sum, archMK: archMKFixture()}
 }
 
 // TestRun deckt die Arg-Parser-Pfade von LH-FA-01 ab (Exit-Codes + korrekter Stream).
@@ -363,6 +382,56 @@ func TestRun_AddLangArchHexslice(t *testing.T) {
 	} {
 		if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err != nil {
 			t.Errorf("hexSlice-Datei %s nicht gedroppt: %v", rel, err)
+		}
+	}
+}
+
+// TestRun_AddLangArchHexsliceEmitsArchGate (slice-046, LH-FA-07): der schichten-tragende
+// add-lang-Lauf dropt das Architektur-Gate — Schicht-Config IM MODUL, tool-generiertes
+// Fragment im Ziel-Root und das modul-scoped Gate-Fragment, das a-check-<modul> an
+// GATE_CHECKS haengt. Rot-Gegenbeispiel: test/mutations (ArchGateConfig meldet nie ok
+// -> kein Artefakt) bzw. der Wegfall des ArchGate-Aufrufs.
+func TestRun_AddLangArchHexsliceEmitsArchGate(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "go", "apps/hex", "--arch", "hexslice"}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("add-lang --arch hexslice exit %d, stderr: %q", code, errb.String())
+	}
+	cfg := readFile(t, filepath.Join(dir, "apps", "hex", emit.ArchConfigName))
+	if !strings.Contains(cfg, "internal/hexagon/domain/**") {
+		t.Errorf("Schicht-Config ohne Domain-Glob:\n%s", cfg)
+	}
+	mk := readFile(t, filepath.Join(dir, emit.ArchMkPath))
+	if strings.Contains(mk, archMKFixturePin) {
+		t.Errorf("a-check.mk traegt den GEDRUCKTEN (nachhinkenden) Pin statt des erzeugenden:\n%s", mk)
+	}
+	if !strings.Contains(mk, emit.DefaultArchDigest) {
+		t.Errorf("a-check.mk ist nicht auf den erzeugenden Digest gepinnt:\n%s", mk)
+	}
+	frag := readFile(t, filepath.Join(dir, filepath.FromSlash(emit.ArchGateMkPath("apps-hex"))))
+	for _, want := range []string{"include " + emit.ArchMkPath, "GATE_CHECKS += a-check-apps-hex", "$(CURDIR)/apps/hex"} {
+		if !strings.Contains(frag, want) {
+			t.Errorf("Arch-Gate-Fragment ohne %q:\n%s", want, frag)
+		}
+	}
+}
+
+// TestRun_AddLangArchFlatEmitsNoArchGate (slice-046, LH-QA-01): ein FLACHES Modul
+// bekommt KEIN Arch-Gate — kein `.a-check.yml`, kein `a-check.mk`, kein Gate-Fragment.
+// Ein Gate ueber leerem Pruefbereich waere genau der halluzinierte Gate, den LH-QA-01
+// verbietet. Rot-Gegenbeispiel: test/mutations (die Konditionalitaet faellt weg).
+func TestRun_AddLangArchFlatEmitsNoArchGate(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "go", "apps/flat"}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("add-lang ohne --arch exit %d, stderr: %q", code, errb.String())
+	}
+	for _, rel := range []string{
+		"apps/flat/" + emit.ArchConfigName, emit.ArchConfigName,
+		emit.ArchMkPath, emit.ArchGateMkPath("apps-flat"),
+	} {
+		if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); !os.IsNotExist(err) {
+			t.Errorf("flat-Modul emittierte Arch-Gate-Artefakt %s (halluziniertes Gate, LH-QA-01): %v", rel, err)
 		}
 	}
 }

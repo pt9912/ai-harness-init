@@ -442,6 +442,74 @@ func main() {
 }
 `
 
+// goHexArchConfig — die `.a-check.yml` des hexSlice-Go-Moduls (slice-046, LH-FA-07).
+// Sie bildet GENAU die Schichten ab, die goRole oben generiert; die Kopplung haelt
+// TestArchGateConfig_MatchesSkeleton fest (ADR-0009 Fitness-Function). MODUL-RELATIV:
+// der Gate-Lauf mountet das Modul-Verzeichnis, darum kein <pfad>-Praefix — ein Mono-Repo
+// mit zwei hexSlice-Modulen bekommt zwei eigene Configs statt einer geteilten.
+//
+// Die Slice- und Port-Globs tragen LITERALE Verzeichnis-Praefixe (…/greet/**, nicht
+// …/**/ports/**), wie es die kanonische hexslice-Referenz verlangt: nur an einem solchen
+// Praefix haengen die beiden Vertical-Slice-Regeln (lateral-slice, port-locality); ein
+// Wildcard-in-der-Mitte laesst sie still inert. Mit der EINEN generierten Slice koennen
+// sie noch nicht feuern (dafuer braucht es eine zweite Slice) — der Praefix haelt sie
+// scharf, sobald der Adopter seine zweite Slice anlegt. Was hier und heute REAL feuert,
+// ist die Richtungsprueefung (core-impurity/wrong-direction) — einmal rot gesehen.
+const goHexArchConfig = `# .a-check.yml — Architektur-Gate (HexSlice = hexagonal + vertical slice),
+# emittiert von ai-harness-init. Bildet die Schichten des generierten hexSlice-
+# Skeletts ab; a-check laeuft netzlos + read-only (make a-check).
+#
+# Streng dekodiert: ein unbekannter Schluessel ist Exit 2.
+#
+# Die Slice-Globs (.../greet/**) und Port-Globs (.../ports/**) tragen bewusst
+# literale Verzeichnis-Praefixe. Nur daran haengen die beiden Vertical-Slice-
+# Regeln: lateral-slice (eine Slice importiert keine andere derselben Schicht)
+# und port-locality (ein slice-lokaler Port bleibt in seiner Slice). Ein
+# Wildcard-in-der-Mitte (.../**/ports/**) traegt keinen solchen Praefix und
+# liesse beide Regeln still inert — beim Umbenennen der Area/Slice also die
+# Globs mitziehen.
+version: 1
+
+languages:
+  go: ["**/*.go"]
+
+layers:
+  domain:
+    globs: ["internal/hexagon/domain/**"]
+    role: domain
+  ports:
+    globs:
+      - "internal/hexagon/application/example/greet/ports/**"   # use-case-lokal
+      - "internal/hexagon/application/example/ports/**"         # business-area-geteilt
+    role: port
+  app:
+    globs:
+      - "internal/hexagon/application/example/greet/**"         # Slice: greet
+    role: app
+  adapters:
+    globs: ["internal/adapters/**"]
+    role: adapter
+
+# Erlaubte gerichtete Abhaengigkeiten (nur nach innen). Ein Cross-Layer-Import
+# ohne passende Kante ist ein Befund (wrong-direction).
+edges:
+  - {from: app,      to: domain}
+  - {from: app,      to: ports}
+  - {from: ports,    to: domain}
+  - {from: adapters, to: app}      # der Inbound-Adapter treibt die Use-Case
+  - {from: adapters, to: domain}   # Adapter mappen auf/von Domain-Objekten
+# Keine adapters->ports-Kante: Outbound-Adapter ERFUELLEN die Ports ueber
+# Go-Interface-Erfuellung (strukturell, kein Import); verdrahtet wird im
+# Composition Root (cmd/**).
+
+# Der Composition Root verdrahtet Adapter und Slices — von den Schichtregeln befreit.
+composition_root: ["cmd/**"]
+
+# Tests gehoeren nicht zum Produktions-Abhaengigkeitsgraphen.
+exclude:
+  - "**/*_test.go"
+`
+
 const goDockerfileTmpl = `# syntax=docker/dockerfile:1.7
 # Dockerfile — generiert von ai-harness-init (Go-Skelett). Jede Go-Gate ist eine
 # Stage (docker build --target <stage>); die Images sind TAG-gepinnt (LH-QA-02,
