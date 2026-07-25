@@ -190,9 +190,8 @@ Fertig-Meldung zu bauen**, hat zwei eigene Fehler gefangen, bevor eine Rolle sie
 
 **Benannte Restrisiken (kein Folge-Slice):**
 
-- Der **`publish`-Pfad** ist strukturell fertig, aber zum Zeitpunkt dieser Closure **nie gelaufen**
-  (drei Dispatch-Läufe haben ihn korrekt übersprungen). Ein Vorab-Tag (`-RC`, als `--prerelease`)
-  ist die vorgesehene Probe.
+- ~~Der **`publish`-Pfad** ist strukturell fertig, aber zum Zeitpunkt dieser Closure **nie
+  gelaufen**~~ — **eingelöst, siehe Nachtrag unten.**
 - Die Runner-Labels sind gemessen (Lauf `30168310098` grün auf allen sechs), aber ein
   **Label-Wegfall** würde erst beim nächsten Lauf auffallen — `ci-lint` kann `runs-on`-Ausdrücke
   nicht prüfen.
@@ -216,3 +215,29 @@ Sub-Area und kein Diskrepanz-Risiko.
 
 Einzige Ausnahme mit anderem Charakter ist der **CR am Lastenheft**: dort gilt Doc-führt — die
 Präzisierung der Messmethode geht dem Code voraus, nicht umgekehrt.
+
+---
+
+## Nachtrag nach der Closure (2026-07-25)
+
+Der oben als Restrisiko geführte **`publish`-Pfad ist eingelöst.** Er wurde nach der Closure per
+Vorab-Tag `v0.1.0-RC` real gefahren (Lauf `30169789629`, grün über alle acht Jobs). Belegt sind
+damit genau die vier Dinge, für die es keinen lokalen Sensor gibt:
+
+- `gh` findet das Repo **ohne Checkout** (der `GH_REPO`-Fix aus Review-Befund F-1),
+- `gh release view` → nicht vorhanden → **`create`** statt `upload` (der Defekt, der beim Nachdenken
+  über einen Vorab-Tag auffiel),
+- die Vorabversions-Erkennung greift: das Release trug `isPrerelease: true`,
+- die `contents: write`-Permissions genügen; **sechs Assets** hingen am Release (5,9–6,6 MB).
+
+Das Prerelease samt Tag wurde nach der Probe wieder entfernt — Stand danach verifiziert: kein
+Release, kein Remote-Tag, kein lokaler Tag.
+
+**Warum dieser Nachtrag und keine Korrektur oben:** die Notiz beschreibt den Stand *zur Closure*,
+und der war korrekt. Sie würde aber eine überholte Aussage führen, wenn der Beleg nur im
+Sitzungsverlauf stünde. Ein sichtbarer Nachtrag hält beides — den damaligen Stand und die
+Einlösung.
+
+**Der Steering-Eintrag „ein Workflow ist erst geprüft, wenn er gelaufen ist" bekommt damit seinen
+vierten Beleg** — und diesmal einen positiven: der Lauf hat nichts gefunden, weil die drei vorherigen
+Läufe alles gefunden hatten, was zu finden war.
