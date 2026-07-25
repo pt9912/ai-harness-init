@@ -68,6 +68,9 @@ BACKUP=""
 # Bis prepare_isolation() sie anlegt, ist er leer; run_case laeuft NIE gegen $REPO.
 WORK=""
 ISO_ROOT=""
+# HOST_BEFORE: Fingerabdruck der Mutations-Ziele im HOST-Baum vor dem Lauf (run_case
+# vergleicht mitten im Lauf dagegen).
+HOST_BEFORE=""
 
 LOCK="$REPO/.harness/state/mutate.lock"
 HAVE_LOCK=""
@@ -116,32 +119,48 @@ target_fingerprint() {
   printf '%s\n' "$targets" | tr '\n' '\0' | fingerprint_of_list "$root"
 }
 
-# prepare_isolation kopiert den Host-Baum EINMAL nach ausserhalb des Repos und
-# liefert den Pfad der Kopie. Die Kopie IST das Repo — inklusive `.git`. Der erste
-# Entwurf sparte `.git` aus („kein Testlauf braucht git"); diese Messung war zu eng
-# (sie sah nur test/, nicht die uebrigen `# verify:`-Modi): `make ci-lint` faehrt
-# actionlint, und das bricht ohne git-Projektwurzel mit „no project was found in any
-# parent directories" ab. Der Gruen-Vorlauf fing es beim ersten Lauf — genau dafuer
-# gibt es ihn. Ausgeschlossen bleibt nur `.harness/state/` (Laufzustand, gitignored,
-# enthaelt u. a. den Lock DIESES Laufs). tar statt rsync/cp -a: tar ist im Repo
-# ohnehin die Sicherungs-Mechanik, das haelt die Abhaengigkeitsflaeche schmal
-# (LH-QA-03). Gemessen 8,0 MB mit .git — einmal pro Lauf, nicht pro Fall.
-prepare_isolation() {
-  local root="$1" dest
-  dest="$root/repo"
-  # FAIL-CLOSED gegen die slice-044-Falle: eine Isolation UNTER dem Repo laege
-  # ungetrackt im Working Tree, verschoebe den MR-003-Stop-Hook-Hash und traege die
-  # Mutationen zurueck in genau den Baum, den die lesenden Rollen messen. Lieber laut
-  # abbrechen als „isoliert" heissen und es nicht sein.
+# isolation_path liefert den Zielpfad der Kopie und VERWEIGERT fail-closed ein Ziel
+# unter dem Repo (die slice-044-Falle: ein ungetracktes Verzeichnis im Working Tree
+# verschoebe den MR-003-Stop-Hook-Hash und traege die Mutationen zurueck in genau den
+# Baum, den die lesenden Rollen messen). Rein — kein Kopieren: so ist die Ortsregel
+# pruefbar, ohne dass jeder Test 8 MB schiebt (Review F-5/F-7).
+isolation_path() {
+  local root="$1" dest="$1/repo"
   case "$dest" in
     "$REPO" | "$REPO"/*)
       echo "mutate: ABBRUCH — die Isolation laege unter dem Repo ($dest)." >&2
       return 1
       ;;
   esac
+  [ -n "$root" ] || { echo "mutate: ABBRUCH — leere Isolations-Wurzel." >&2; return 1; }
+  printf '%s' "$dest"
+}
+
+# prepare_isolation kopiert den Host-Baum EINMAL pro Lauf an diesen Ort. Die Kopie IST
+# das Repo — inklusive `.git`: `make ci-lint` faehrt actionlint, und das bricht ohne
+# git-Projektwurzel ab („no project was found in any parent directories"). Der erste
+# Entwurf sparte `.git` aus; der Gruen-Vorlauf fing es. Ausgeschlossen bleibt nur
+# `.harness/state/` (Laufzustand, gitignored, enthaelt den Lock DIESES Laufs). tar statt
+# rsync/cp -a: tar ist im Repo ohnehin die Sicherungs-Mechanik (LH-QA-03). 8,0 MB.
+prepare_isolation() {
+  local dest
+  dest="$(isolation_path "$1")" || return 1
   mkdir -p "$dest"
   ( cd "$REPO" && tar -cf - --exclude=./.harness/state . ) | tar -xf - -C "$dest"
   printf '%s' "$dest"
+}
+
+# require_isolated ist die fail-closed Schranke VOR jedem Zugriff auf $WORK. Ohne sie
+# haengt „run_case laeuft nie gegen $REPO" allein an der Aufruf-Reihenfolge: `cd ""` ist
+# in bash Exit 0 OHNE Wirkung, ein leeres $WORK liesse also alle `cd "$WORK"`-Stellen
+# lautlos im cwd des Treibers laufen — und das ist unter `make mutate` das Repo
+# (Review F-1). Eine Zusage, die nur durch Reihenfolge gilt, ist keine.
+require_isolated() {
+  case "${WORK:-}" in
+    "") echo "mutate: ABBRUCH — WORK ist leer; ohne Isolation wird nicht mutiert." >&2; return 1 ;;
+    "$REPO" | "$REPO"/*) echo "mutate: ABBRUCH — WORK liegt im Repo ($WORK)." >&2; return 1 ;;
+  esac
+  [ -d "$WORK" ] || { echo "mutate: ABBRUCH — WORK ist kein Verzeichnis ($WORK)." >&2; return 1; }
 }
 
 cleanup() {
@@ -245,6 +264,28 @@ run_case() {
     return
   fi
 
+  # ISOLATIONS-PRUEFUNG MITTEN IM LAUF (Review F-2): genau JETZT ist die Mutation
+  # angewandt und noch nicht zurueckgenommen. Ein Vergleich erst NACH dem Lauf kann den
+  # symmetrischen Rueckfall nicht sehen — laufen Sed und Restore beide gegen $REPO (also
+  # exakt das Verhalten vor der Isolation), ist vorher==nachher und der Waechter bliebe
+  # gruen. Hier faellt er. Kostet einen Hash ueber die `# files:`-Ziele je Fall.
+  #
+  # Steht VOR Bedingung 2, nicht danach: im Rueckfall bleibt die KOPIE unveraendert
+  # (der Sed traf den Host), also feuerte sonst zuerst „Mutation hat nicht gegriffen"
+  # — ein gebrochener Sensor waere als veralteter Patch fehldiagnostiziert. Real so
+  # gemessen, als der Rot-Beleg fuer diese Bedingung gebaut wurde.
+  local host_now
+  if ! host_now="$(target_fingerprint "$REPO" "$CASES_DIR")"; then
+    report_fail "$name" "Host-Fingerabdruck waehrend des Laufs nicht berechenbar"
+    restore
+    return
+  fi
+  if [ "$host_now" != "$HOST_BEFORE" ]; then
+    report_fail "$name" "die Mutation hat den HOST-Baum getroffen statt die Kopie — Isolation gebrochen"
+    restore
+    return
+  fi
+
   # (2) Hat sie ueberhaupt gegriffen? Ein wirkungsloser Patch wuerde sonst als
   # "Waechter intakt" durchgehen — der Sensor waere still gruen.
   #
@@ -326,25 +367,29 @@ main() {
   # ISOLATION: den Baum EINMAL nach ausserhalb des Repos kopieren. Ab hier trifft
   # keine Mutation mehr den Host-Baum — parallele Gate-/Test-Laeufe in diesem Repo
   # sind unbedenklich, und ein Abbruch laesst nichts zurueck (slice-047).
-  local host_before host_after
-  if ! host_before="$(target_fingerprint "$REPO" "$CASES_DIR")"; then
+  shopt -s nullglob
+  cases=("$CASES_DIR"/*.sh)
+  shopt -u nullglob
+  if [ "${#cases[@]}" -eq 0 ]; then
+    # Ein leeres Set waere ein gruener Lauf ohne jede Aussage — genau das stille
+    # Gruen, gegen das der Sensor gerichtet ist. Diese Pruefung steht VOR dem
+    # Fingerabdruck: der scheitert ueber einem leeren Fall-Verzeichnis ohnehin, und
+    # dann meldete der Lauf einen Rechen-Fehler statt der wahren Ursache (der Waechter
+    # war dadurch unerreichbar geworden — Verifier R-3).
+    echo "mutate: keine Faelle in $CASES_DIR — ein leeres Set ist kein gruener Lauf" >&2
+    exit 1
+  fi
+
+  local host_after
+  if ! HOST_BEFORE="$(target_fingerprint "$REPO" "$CASES_DIR")"; then
     echo "mutate: ABBRUCH — Fingerabdruck der Mutations-Ziele nicht berechenbar." >&2
     echo "  Ohne ihn liefe der Lauf ohne den Beleg, dass der Host-Baum unberuehrt bleibt." >&2
     exit 1
   fi
   ISO_ROOT="$(mktemp -d)"
   WORK="$(prepare_isolation "$ISO_ROOT")"
+  require_isolated || exit 1
   echo "mutate: isolierte Kopie unter $WORK — der Host-Baum wird NICHT veraendert."
-
-  shopt -s nullglob
-  cases=("$CASES_DIR"/*.sh)
-  shopt -u nullglob
-  if [ "${#cases[@]}" -eq 0 ]; then
-    # Ein leeres Set waere ein gruener Lauf ohne jede Aussage — genau das stille
-    # Gruen, gegen das der Sensor gerichtet ist.
-    echo "mutate: keine Faelle in $CASES_DIR — ein leeres Set ist kein gruener Lauf" >&2
-    exit 1
-  fi
 
   # GRUEN-VORLAUF vor der ersten Mutation (Review-Befund slice-026 F-6). Ohne ihn
   # wuerde jeder Fall auf einem bereits roten Baum "bestehen" — aus dem falschen
@@ -377,11 +422,15 @@ main() {
     run_case "$c"
   done
 
-  # FUENFTE Bedingung, fail-closed: die Mutations-Ziele im Host-Baum muessen nach dem
-  # Lauf byte-gleich sein — GEMESSEN, nicht zugesagt. Sie faellt, sobald ein Pfad wieder
-  # gegen $REPO statt gegen die Kopie laeuft.
-  host_after="$(target_fingerprint "$REPO" "$CASES_DIR")"
-  if [ "$host_before" != "$host_after" ]; then
+  # FUENFTE Bedingung, fail-closed: die Mutations-Ziele im Host-Baum sind nach dem Lauf
+  # byte-gleich. Sie faengt ein LIEGENGEBLIEBENES Residuum. Den symmetrischen Rueckfall
+  # (Sed und Restore beide gegen $REPO) faengt NICHT sie, sondern die Pruefung mitten im
+  # Lauf in run_case — dort ist der Host im Moment der Messung mutiert (Review F-2).
+  if ! host_after="$(target_fingerprint "$REPO" "$CASES_DIR")"; then
+    report_fail "host-baum" "Fingerabdruck nach dem Lauf nicht berechenbar — Ziel-Datei entfernt?"
+    host_after=""
+  fi
+  if [ "$HOST_BEFORE" != "$host_after" ]; then
     report_fail "host-baum" "eine Mutations-Zieldatei im HOST-Baum hat sich geaendert — entweder greift die Isolation nicht, oder es wurde parallel editiert"
   fi
 

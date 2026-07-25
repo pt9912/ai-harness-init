@@ -18,7 +18,7 @@ gezeigt, nicht als Treiber.
 Carveout-Audit, Results-Notiz) → siehe *Abgeschlossene Wellen*. Die nächste Welle ist **nicht**
 geschnitten (cp-Disziplin: Plandatei erst per `cp`, wenn ihr erster Slice steht) — Kandidaten unten.
 
-**Ohne Welle in Arbeit:** [slice-047](slice-047-mutate-host-isolation.md) (`open/`,
+**Ohne Welle in Arbeit:** [slice-047](slice-047-mutate-host-isolation.md) (`in-progress/`,
 mutate-Host-Isolation, Härtung) — geschnitten aus der F-12-Reibung dieser Welle.
 
 **Zuletzt:** welle-07-arch-achse geschlossen (2026-07-25); **M4 erreicht** — das emittierte Skelett

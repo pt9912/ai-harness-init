@@ -52,14 +52,35 @@ setup() {
 # laege ungetrackt im Working Tree und verschoebe den MR-003-Stop-Hook-Hash — der
 # Hook feuerte dann bei jedem Lauf (die slice-044-Worktree-Falle, real erlebt).
 @test "driver: die isolierte Kopie liegt AUSSERHALB des Repos" {
-  local root dest
-  root="$(mktemp -d)"
-  dest="$(bash -c "source '$DRIVER' 2>/dev/null || true; prepare_isolation '$root'")"
+  # Gegen die REINE Pfad-Funktion: sie traegt die Ortsregel, und der Test kostet so
+  # kein 8-MB-Kopieren (Review F-7 — die Tests laufen in JEDEM make test, also ~70x
+  # je mutate-Lauf).
+  local dest
+  dest="$(bash -c "source '$DRIVER' 2>/dev/null || true; isolation_path '$(mktemp -d)'")"
   [ -n "$dest" ]
   case "$dest" in
-    "$REPO"/*) rm -rf "$root"; return 1 ;;   # unter dem Repo -> Befund
+    "$REPO" | "$REPO"/*) return 1 ;;   # unter dem Repo -> Befund
   esac
-  rm -rf "$root"
+}
+
+# Die Verweigerung selbst: ein Ziel UNTER dem Repo muss fallen, nicht nur „nicht
+# gewaehlt werden". Das ist der Zweig, den Mutation 72 rot faerbt (Review F-5: vorher
+# traf sie nur die Nicht-Leer-Assertion, nicht die Ortsregel).
+@test "driver: isolation_path VERWEIGERT ein Ziel unter dem Repo" {
+  run bash -c "source '$DRIVER' 2>/dev/null || true; isolation_path '$REPO/.mutate-iso'"
+  [ "$status" -ne 0 ]
+}
+
+# require_isolated ist die Schranke vor jedem $WORK-Zugriff. `cd ""` ist in bash Exit 0
+# OHNE Wirkung — ein leeres WORK liesse die Seds im cwd des Treibers laufen, und das ist
+# unter `make mutate` das Repo (Review F-1).
+@test "driver: require_isolated FAELLT bei leerem oder repo-internem WORK" {
+  run bash -c "source '$DRIVER' 2>/dev/null || true; WORK=''; require_isolated"
+  [ "$status" -ne 0 ]
+  run bash -c "source '$DRIVER' 2>/dev/null || true; WORK='$REPO'; require_isolated"
+  [ "$status" -ne 0 ]
+  run bash -c "source '$DRIVER' 2>/dev/null || true; WORK='$REPO/test'; require_isolated"
+  [ "$status" -ne 0 ]
 }
 
 # Die Kopie muss tragen, was ein Sensor-Lauf braucht — einschliesslich `.git`: der
@@ -68,6 +89,7 @@ setup() {
 # laesst den Gruen-Vorlauf scheitern, und zwar aus einem Grund, der nichts mit einer
 # Mutation zu tun hat. Nur der Laufzustand (.harness/state, gitignored) bleibt drausen.
 @test "driver: die Kopie traegt den Sensor-Bedarf inklusive .git" {
+  # Der EINZIGE Test, der wirklich kopiert (Review F-7).
   local root dest
   root="$(mktemp -d)"
   dest="$(bash -c "source '$DRIVER' 2>/dev/null || true; prepare_isolation '$root'")"

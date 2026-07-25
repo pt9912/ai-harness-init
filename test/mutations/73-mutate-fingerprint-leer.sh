@@ -11,6 +11,8 @@
 # Fassung), und `make mutate` meldete ihn korrekt als zahnlos — unter `pipefail`
 # propagierte der Folgefehler ohnehin, die Funktion fiel weiterhin. `return 0`
 # verlaesst die Funktion sofort und bricht die Eigenschaft wirklich.
-# Der Anker `|| return 1` kommt in mutate.sh genau einmal vor (geprueft).
+# Der Anker traegt die volle Zeile (`[ -n "$targets" ] || return 1`), nicht das blosse
+# `|| return 1` — Letzteres kommt seit dem F-1-Fix mehrfach vor (Review-Anmerkung zur
+# Anker-Eindeutigkeit). Doppelte Anfuehrungszeichen mit escaptem Dollar: kein SC2016.
 set -euo pipefail
-sed -i 's/|| return 1/|| return 0/' harness/tools/mutate.sh
+sed -i "s#-n \"\$targets\" \] || return 1#-n \"\$targets\" ] || return 0#" harness/tools/mutate.sh
