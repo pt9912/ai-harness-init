@@ -38,14 +38,19 @@ seine eigenen Dateien auf (repariert Abweichungen, zieht ein neueres Regelwerk n
 selbst gefüllten Dateien — Dokumente, `README.md`, Quellcode — unberührt. Kein `--force`, kein
 Abbruch bei vorhandenen Dateien.
 
-**Das Werkzeug bauen.** Fertige Binaries gibt es noch nicht; `ai-harness-init` wird einmalig aus dem
-Quellcode gebaut, komplett in Docker:
+**Das Werkzeug beschaffen.** Ab `v0.1.0` liegen fertige Programme für sechs Plattformen
+(linux · macos · windows × amd64 · arm64) am
+[GitHub-Release](https://github.com/pt9912/ai-harness-init/releases/latest) — herunterladen,
+ausführbar machen, fertig. Wer einen Stand **ohne** Versions-Kennzeichnung braucht, baut einmalig
+aus dem Quellcode; das geschieht komplett in Docker:
 
 ```bash
 make artifact DEST=./bin
 ```
 
-**Was heute noch fehlt:** vorgefertigte Release-Binaries und weitere Sprachen über `go` und `cpp` hinaus.
+Beide Wege Schritt für Schritt im [Benutzerhandbuch](docs/user/benutzerhandbuch.md).
+
+**Was heute noch fehlt:** weitere Sprachen über `go` und `cpp` hinaus.
 
 ## Warum ai-harness-init?
 

@@ -1,8 +1,8 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Handbuch-Version:** 1.4
-**Software-Stand:** Entwicklungsstand M4 — **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat` oder `hexslice`; bei `hexslice` kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen); `hexslice` liefert derzeit nur der Go-Renderer. Noch keine vorgefertigten Release-Binaries.
-**Stand:** 2026-07-25
+**Handbuch-Version:** 1.5
+**Software-Stand:** `v0.1.0` — erstes Release mit **vorgefertigten Programmen für sechs Plattformen** (linux · macos · windows × amd64 · arm64). Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat` oder `hexslice`; bei `hexslice` kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen); `hexslice` liefert derzeit nur der Go-Renderer.
+**Stand:** 2026-07-26
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
 ---
@@ -58,9 +58,55 @@ Eine lokale Go-Installation ist **nicht** nötig — alles läuft über Docker.
 * `git` und GNU `make` auf dem Pfad.
 * Beim ersten Aufruf: Internet-Zugang.
 
+> **Was wo geprüft wird — damit Sie wissen, worauf Sie sich stützen.** Der vollständige Durchlauf
+> (Repo aufsetzen, Prüfungen grün) wird bei jedem Release auf **Linux** gefahren. Für **macOS** und
+> **Windows** wird geprüft, dass das Programm auf der Plattform **startet** — nicht, dass ein
+> kompletter Durchlauf dort durchläuft. Grund: die gehosteten Prüf-Maschinen für macOS und Windows
+> können die benötigten Linux-Container nicht fahren.
+
 ### Das Werkzeug bereitstellen
 
-Es gibt derzeit **noch keine** vorgefertigten Download-Binaries. Sie bauen das Programm einmalig aus dem Quellcode — das geschieht komplett in Docker, Sie brauchen dafür keine Go-Installation.
+Es gibt **zwei Wege**. Empfohlen ist der **Download** — ab `v0.1.0` liegen fertige Programme für sechs Plattformen bereit. Den Bau aus dem Quellcode brauchen Sie nur, wenn Sie einen Stand **ohne** Versions-Kennzeichnung verwenden wollen.
+
+#### Weg A — fertiges Programm herunterladen (empfohlen)
+
+**Vorgehen**
+
+1. Öffnen Sie die [Release-Seite](https://github.com/pt9912/ai-harness-init/releases/latest) und laden Sie die Datei für Ihr System herunter:
+
+   | System | Datei |
+   |---|---|
+   | Linux, Intel/AMD | `ai-harness-init-linux-amd64` |
+   | Linux, ARM | `ai-harness-init-linux-arm64` |
+   | macOS, Intel | `ai-harness-init-darwin-amd64` |
+   | macOS, Apple Silicon | `ai-harness-init-darwin-arm64` |
+   | Windows, Intel/AMD | `ai-harness-init-windows-amd64.exe` |
+   | Windows, ARM | `ai-harness-init-windows-arm64.exe` |
+
+2. Machen Sie die Datei ausführbar und geben Sie ihr den kurzen Namen (Linux/macOS; das Beispiel nimmt Linux/Intel):
+
+   ```bash
+   chmod +x ai-harness-init-linux-amd64
+   mv ai-harness-init-linux-amd64 ~/.local/bin/ai-harness-init
+   ```
+
+   Unter Windows genügt es, die `.exe`-Datei in einen Ordner Ihres Suchpfads zu legen.
+
+3. Prüfen Sie, dass es läuft:
+
+   ```bash
+   ai-harness-init --help
+   ```
+
+> **Hinweis für macOS:** Lädt ein Browser die Datei herunter, versieht macOS sie mit einem Quarantäne-Vermerk und verweigert den Start. `xattr -d com.apple.quarantine <datei>` entfernt ihn.
+
+**Ergebnis**
+
+Das Programm ist unter dem kurzen Namen `ai-harness-init` aufrufbar. Das Handbuch verwendet ab hier diesen Aufruf.
+
+#### Weg B — aus dem Quellcode bauen
+
+Sie bauen das Programm einmalig selbst — das geschieht komplett in Docker, Sie brauchen dafür keine Go-Installation.
 
 **Vorgehen**
 
@@ -85,7 +131,7 @@ Es gibt derzeit **noch keine** vorgefertigten Download-Binaries. Sie bauen das P
 
 **Ergebnis**
 
-Im Ordner **bin** liegt das ausführbare Programm `ai-harness-init`. Kopieren Sie es bei Bedarf an eine Stelle auf Ihrem Pfad (zum Beispiel nach `~/.local/bin`), damit Sie es überall als `ai-harness-init` aufrufen können. Das Handbuch verwendet ab hier den kurzen Aufruf `ai-harness-init`.
+Im Ordner **bin** liegt das ausführbare Programm `ai-harness-init`. Kopieren Sie es bei Bedarf an eine Stelle auf Ihrem Pfad (zum Beispiel nach `~/.local/bin`), damit Sie es überall unter dem kurzen Namen aufrufen können.
 
 > **Hinweis:** `make artifact DEST=./bin` verlangt die Angabe `DEST`. Ohne sie bricht der Befehl mit einer klaren Meldung ab.
 
