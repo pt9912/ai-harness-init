@@ -727,6 +727,60 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   bleiben permanent (sie sind die Substanz, nicht der Ersatz). Bei einem Baseline-Bump, der diesen
   Abschnitt erneut ändert, ist die Adaption neu zu prüfen.
 
+### MR-016 — Welle oder nicht, und wo wellenlose Arbeit geführt wird
+
+- **Datum:** 2026-07-26
+- **Geltungsbereich:** `docs/plan/planning/` (Schnitt-Entscheidung je Slice) und
+  `docs/plan/planning/in-progress/roadmap.md` §Aktuelle Welle.
+- **Warum überhaupt eine Adaption:** Die Baseline sieht wellenlose Slices **ausdrücklich vor** —
+  das vendored Template schreibt `**Welle:** <welle-id> oder "ohne Welle" (Wartung/Spike)`. Modul 6
+  strukturiert die Roadmap aber **wellen-zentriert** (fünf Abschnitte, alle über Wellen). Für
+  wellenlose Arbeit gibt es dort **keinen Ort** — und genau deshalb ist sie in *Aktuelle Welle*
+  gelandet, bis der Abschnitt 23 Zeilen lang war und zugleich „Keine aktive Welle" meldete
+  (Nutzer-Beobachtung 2026-07-26).
+- **Ist-Messung (2026-07-26, Kommando neben der Aussage):**
+  `grep -l '^\*\*Welle:\*\* ohne Welle' docs/plan/planning/{done,in-progress,open}/slice-*.md | wc -l`
+  → **21 von 56** Slices, durchgehend seit slice-011. Das ist kein Ausnahmefall mehr, sondern ein
+  zweiter Modus — und er war **nirgends deklariert** (`grep "ohne Welle" harness/conventions.md`
+  war leer).
+- **Setzung 1 — der Schnitt-Test: drei Fragen, alle beim Schneiden beantwortbar.** Modul 6
+  definiert die Welle als *„Bündel paralleler/serialisierter Slices mit Closure-Kriterien"*. Daraus
+  folgt, dass die Frage **nicht** „wie groß" lautet:
+  1. **Bündel?** Braucht es **mindestens zwei** Slices, die zusammen landen müssen, damit die
+     Aussage stimmt? Nein → ohne Welle.
+  2. **Gemeinsames Closure-Kriterium?** Gibt es eine beobachtbare Bedingung, die **erst wahr wird,
+     wenn alle fertig sind**, und die sich von den einzelnen DoDs unterscheidet? Nein → ohne Welle.
+     Eine Welle um einen einzelnen Slice hätte einen Closure-Trigger, der dessen DoD nur abschreibt.
+  3. **Auslöser reaktiv oder gewollt?** Sensor hat gefeuert, Nutzer hat gemeldet, Pin ist veraltet
+     → **reaktiv**, ohne Welle. „Wir wollen eine neue Fähigkeit" → **gewollt**, Welle — auch wenn es
+     zunächst nach einem Slice aussieht.
+- **Frage 3 ist die, die gefehlt hat — mit Belegen.** Drei der 21 wellenlosen Slices waren keine
+  Wartung, sondern Fähigkeits-Sprünge: [slice-027](../docs/plan/planning/done/slice-027-ci.md) (CI überhaupt erst aufbauen),
+  [slice-039](../docs/plan/planning/done/slice-039-cpp-zweite-sprache.md) (zweite Zielsprache),
+  [slice-048](../docs/plan/planning/done/slice-048-release-artefakte.md) (Release-Pipeline mit Plattform-Matrix). Sie werden **nicht** rückwirkend
+  umgeschrieben — sie sind der Beleg, dass die Grenze nötig ist. Empirischer Zusatz: Fähigkeits-Arbeit
+  wird hier fast immer nachgeschnitten (slice-001 → 001a/001b, slice-022 → 022a/022b); was re-sliced
+  wird, war ein Bündel.
+- **Setzung 2 — wellenlose Arbeit wird in der Roadmap NICHT geführt.** Ihr Zustand **ist** das
+  Verzeichnis (Modul 5; [`docs/plan/planning/README.md`](../docs/plan/planning/README.md) sagt es wörtlich: „Slices tragen ihren
+  Status über das **Verzeichnis**"). `ls docs/plan/planning/in-progress/` beantwortet „was läuft
+  gerade" autoritativ und ohne Pflegeaufwand. Eine Abschrift in der Roadmap wäre eine **zweite
+  Quelle** — und sie ist real gealtert (Drift-Log 2026-07-25: slice-047 stand dort als
+  `in-progress`, obwohl geschlossen). *Aktuelle Welle* trägt daher die Welle und sonst nichts.
+- **Setzung 3 — ein geschlossener wellenloser Slice hinterlässt in der Roadmap keine Spur.** Seine
+  Belege stehen in `done/<slice>.md` §7 und in git; das Closure-Log der Roadmap ist für **Wellen**
+  (Modul 6: Zeiger auf die `welle-NN-results.md`, keine Beleg-Prosa). Das war bis `80eec58` die
+  gelebte Praxis — sie wurde am 2026-07-26 versehentlich aufgegeben und ist damit wiederhergestellt.
+- **Durchsetzung — benannt, und diesmal muss nichts gebaut werden.** d-checks Modul **`planning`**
+  prüft genau die Konsistenz *Roadmap ↔ `in-progress/`*. Es ist im gepinnten Image vorhanden, als
+  `doc-planning` in [`d-check.mk`](../d-check.mk) erzeugt und **an keinen Trigger gehängt** —
+  Achse (4) des Roadmap-Kandidaten *Regeln ohne Feedback-Quadrant schließen*. Bis es verdrahtet ist,
+  lebt diese Setzung im **inferential-feedforward**-Quadranten. Setzung 1 (der Schnitt-Test) ist
+  eine Urteilsregel und bleibt dort ohnehin.
+- **Auflösungs-Trigger:** permanent. Setzung 2/3 fallen, sobald Modul 6 selbst einen Ort für
+  wellenlose Arbeit vorsieht; Setzung 1 ist neu zu prüfen, wenn der Anteil wellenloser Slices
+  wieder sinkt oder ein Fall auftritt, den die drei Fragen nicht entscheiden.
+
 ## Modus-Deklaration pro Sub-Area
 
 | Sub-Area | Modus | Begründung | Graduation |
