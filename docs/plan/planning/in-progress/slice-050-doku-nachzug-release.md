@@ -25,13 +25,13 @@ existiert**, nicht vorher.
 
 ## 2. Definition of Done
 
-- [ ] **Die vier gemessenen Falschaussagen sind weg** (Fundstellen und Kommando in §3):
+- [x] **Die vier gemessenen Falschaussagen sind weg** (Fundstellen und Kommando in §3):
   [`README.md`](../../../../README.md) Zeile 41 („Fertige Binaries gibt es noch nicht") und Zeile 48 („Was heute noch
   fehlt: vorgefertigte Release-Binaries"), [Benutzerhandbuch](../../../user/benutzerhandbuch.md) Zeile 4
   („Noch keine vorgefertigten Release-Binaries") und Zeile 63 („Es gibt derzeit **noch keine**
   vorgefertigten Download-Binaries"). **Prüfbar:** das §3-Kommando liefert danach keinen Treffer
   mehr, der einen fehlenden Release behauptet.
-- [ ] **Der Installations-Abschnitt trägt den Download-Weg als ersten Weg**
+- [x] **Der Installations-Abschnitt trägt den Download-Weg als ersten Weg**
   ([Benutzerhandbuch](../../../user/benutzerhandbuch.md) §2 „Das Werkzeug bereitstellen"), mit den **sechs Asset-Namen
   exakt so, wie der Workflow sie erzeugt** — Quelle ist die `matrix`-Liste in
   [`.github/workflows/release.yml`](../../../../.github/workflows/release.yml), nicht die plausible Form. Der Bau aus Quelle bleibt
@@ -40,9 +40,14 @@ existiert**, nicht vorher.
   den es nicht gibt. Die Aussagen sind auf `ab v0.1.0` bezogen formuliert, und der Slice
   **schließt erst, wenn der Tag steht** (§5). Das Gegenbeispiel ist benannt: ein Leser, der die
   Doku des getaggten Standes liest und keinen Download findet.
-- [ ] **Handbuch-Kopf `Software-Stand`** von „Entwicklungsstand M4" auf den veröffentlichten Stand
+  **BEWUSST NICHT ABGEHAKT** — Verifikation (Modul 11): **TEILWEISE**. Die Zusage hält auf `main`
+  überall, aber **das hier selbst benannte Gegenbeispiel ist im veröffentlichten Tag rot**:
+  `git show v0.1.0:docs/user/benutzerhandbuch.md` trägt „Gibt es ein fertiges Download-Binary? —
+  Derzeit nicht" und „keine Release-Versionsnummer". Ein `[x]` wäre hier genau das stille Grün,
+  gegen das dieser Punkt geschrieben ist. Einordnung, Ursache und Folge-Weg: §7 (A-1).
+- [x] **Handbuch-Kopf `Software-Stand`** von „Entwicklungsstand M4" auf den veröffentlichten Stand
   gezogen (M5 erreicht, `v0.1.0`).
-- [ ] **Kein Commit DIESES Slice ändert `spec/lastenheft.md`.** Geprüft wird die **volle**
+- [x] **Kein Commit DIESES Slice ändert `spec/lastenheft.md`.** Geprüft wird die **volle**
   Slice-Range bis zum Closure-Stand, nicht ein eingefrorener Ausschnitt (Runde-5-Befund T-2), und
   die Aussage gilt **nur für diesen Slice** — sie ist **kein** Allquantor über die Repo-Historie
   (Runde-5-Befund T-1: `7b717f4` ist ein Slice-Commit an `spec/lastenheft.md`, von
@@ -55,10 +60,10 @@ existiert**, nicht vorher.
   [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) ändert sich **nicht**: die Anforderung (sechs Kombinationen) und ihre
   Messmethode stehen seit 0.13.0 fest; dieser Slice beschreibt sie nur in Nutzer-Sprache. Wäre eine
   Lastenheft-Änderung nötig, ist das ein **eigener CR** ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)), kein Nebeneffekt.
-- [ ] **Tag `v0.1.0` gesetzt, `release`-Lauf grün über alle acht Jobs**, und das Release trägt
+- [x] **Tag `v0.1.0` gesetzt, `release`-Lauf grün über alle acht Jobs**, und das Release trägt
   **sechs** Assets — **gezählt, nicht angenommen**.
-- [ ] `make gates` grün.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] `make gates` grün.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -151,7 +156,84 @@ Wird *nach* Abschluss ergänzt. Inhalt:
 - Folge-Slices: welche neuen open/-Einträge?
 -->
 
-<!-- Erst nach Abschluss füllen. -->
+**Was hat funktioniert.** Der Release-Weg selbst lief ohne Reibung: Tag aus dem korrigierten Commit
+geschnitten, `release`-Lauf **8/8 Jobs grün**, **sechs** Assets — und die Asset-Namen sind nicht
+behauptet, sondern dreifach maschinell gleichgesetzt (`matrix` in
+[`.github/workflows/release.yml`](../../../../.github/workflows/release.yml) ↔ Handbuch-Tabelle ↔ `gh release view`, symmetrische
+Differenz leer; vom Verifier unabhängig wiederholt). [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) ist damit erstmals real
+eingelöst. Die **Kopplung von Doku und Tag** in einem Slice (§4) hat sich bewährt: der
+veröffentlichte Stand trägt die korrigierte Installations-Anleitung, weil der Tag aus ihr
+geschnitten wurde — die umgekehrte Reihenfolge hätte ein Release ausgeliefert, das seinen eigenen
+Download-Weg verneint.
+
+**Was anders lief als geplant — und es ist das Eigentliche.** Der Slice brauchte **fünf
+Review-Runden** für einen Doku-Nachzug. Kein einziger Befund traf die Doku-*Absicht*; **alle**
+trafen **Ist-Aussagen über einen Zustand**, und zwar immer nach demselben Muster: eine Behauptung
+greift weiter als das, was gemessen wurde. Die Klasse ist dieselbe wie in
+[slice-049](../done/slice-049-baseline-bump-v3.5.2.md) — aber sie ist **gewandert**, und die Wanderung ist der Befund:
+
+| Runde | Ort der Aussage | Was zu weit griff |
+|---|---|---|
+| 1 | Slice-Plan §3 | „Weitere Stellen gibt es nicht" — die FAQ war nicht im Suchmuster, und sie ging **mit ins Release** |
+| 1 | eigener Ehrlichkeits-Kasten im Handbuch | „bei jedem Release auf Linux" — der Voll-Smoke hängt am Push, nicht am Release, und nur an amd64 |
+| 2 | `README.md` | dritte kuratierte Gate-Liste, fünf von sieben Prerequisites |
+| 3 | **`spec/lastenheft.md`** | „es genügt, den Voll-Smoke auf einem Linux-ARM-Runner zu fahren" — das gepinnte d-check-Image ist Single-Arch-`amd64` |
+| 3–5 | **Release-Text (git-extern)** | zweimal eine *entlastende* Zusage über eine Menge, die nicht vollständig gemessen war |
+| 5 | die **DoD** selbst | „jeder Lastenheft-Commit … keine Slice-Commits" — `7b717f4` widerlegt es, und [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) listet ihn selbst |
+
+Jede Station liegt **weiter außerhalb** dessen, was [`AGENTS.md`](../../../../AGENTS.md) §3.6 aufzählt und `make mutate`
+erreicht: Plan-Prosa → Nutzer-Doku → `README` → `spec/` (rank 1!) → **git-extern**. Der Durchbruch
+kam in Runde 4/5 nicht durch eine bessere Formulierung, sondern durch einen **Bauform-Wechsel**:
+statt einer Aufzählung, die vollständig sein müsste, trägt die Aussage jetzt **den Befehl, der sie
+misst** — im Release-Text (`git diff v0.1.0 origin/main -- '*.md'`) und in der DoD
+(`git log … -- spec/lastenheft.md`). Eine dritte, engere Aufzählung wäre derselbe Fehler mit
+kleinerem Radius gewesen.
+
+**Abweichungen, die mit in `done/` gehen** (kein stilles Grün):
+
+- **A-1 — DoD-Punkt 3 ist NICHT abgehakt.** Das dort selbst benannte Gegenbeispiel ist im
+  veröffentlichten Tag rot: `v0.1.0` trägt in FAQ und Anhang zwei Sätze, die den Release verneinen.
+  Ursache ist der gebrochene Plan-Allquantor aus Runde 1. **Offengelegt** im Release-Text (mit
+  Messbefehl), **nicht** im Tag reparierbar ohne Force. Folge-Weg: ein `v0.1.1` zieht es mit, oder
+  ein Sensor prüft **vor** dem Tag. Beides ist ein eigener Vorgang mit eigenem Trigger.
+- **A-2 — Push vor der Closure.** Der Verifier maß `origin/main` drei Commits hinter `HEAD`; **kein
+  CI-Lauf hatte den Prüfstand gesehen**. Er hat die Lücke selbst geschlossen (`make gates` und
+  `make full-smoke`, beide Exit 0). Lehre: in diesem Repo pusht **nichts automatisch** — eine
+  frühere Annahme des Gegenteils war falsch und ist korrigiert.
+- **A-3 — der DoD-Messbefehl misst schwächer als die Eigenschaft.** Er klassifiziert Commits über
+  ihr **Präfix** (`spec:`), also über eine Selbstauskunft. Der Verifier hat die stärkere Messung
+  nachgezogen (`git log --name-only` über alle Commits). Gehört zu [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) §Durchsetzung.
+- **A-4 — [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) hat keine Regel für CRs, die aus dem Review eines LAUFENDEN Slice
+  entstehen.** Setzung 2 ordnet den CR *vor* den umsetzenden Slice; hier entstand er **mitten
+  darin** (aus Befund N-2). Kein Verstoß — die Ordnungs-Klausel greift ins Leere. Die Setzung
+  braucht diesen Fall.
+
+**Steering-Loop-Eintrag** (kanonische Definition:
+[`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/grundlagen/klassifikation.md#steering-loop)):
+
+- **[`AGENTS.md`](../../../../AGENTS.md) §3.6 schärfen — dieselbe Forderung wie in [slice-049](../done/slice-049-baseline-bump-v3.5.2.md), jetzt mit dem
+  Beweis, dass sie nicht reicht.** slice-049 schlug vor: *ein Allquantor über einen Repo-Zustand
+  trägt den Befehl, der ihn misst, neben sich.* Dieser Slice hat den Vorschlag **fünfmal gebrochen,
+  während er notiert war** — Feedforward ohne Feedback verfällt nicht später, sondern sofort. Die
+  Träger-Liste braucht zusätzlich `spec/` und **veröffentlichte Artefakte außerhalb von git**.
+- **Der Sensor-Kandidat bekommt eine Achse, die er nicht hatte.** *Regeln ohne Feedback-Quadrant
+  schließen* führt bisher nur Repo-interne Regeln. Der Release-Text zeigt: ein Artefakt kann
+  **veröffentlicht und unbewacht** sein. Kein Gate dieses Repos erreicht ihn — er wurde viermal
+  überarbeitet, jedes Mal von einem Menschen bzw. Reviewer gefunden.
+- **Ein Sensor VOR dem Tag ist der eigentliche Hebel.** A-1 wäre durch nichts anderes verhindert
+  worden: der Tag ist der Moment, in dem Doku-Fehler unumkehrbar werden. Ein Check, der vor dem
+  Tag-Push die Aussagen der Nutzer-Doku gegen den Ist-Zustand hält, hätte alle vier Runde-1-Befunde
+  gefangen.
+
+**Folge-Kandidaten** (nicht geschnitten — cp-Disziplin): `v0.1.1` mit dem Doku-Nachzug im Tag ·
+Sensor vor dem Tag-Push · [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) um den Mid-Slice-CR-Fall ergänzen (A-4) · die
+Präfix-Schwäche des Commit-Klassifikators (A-3).
+
+**Review und Verifikation.** Fünf Review-Runden; **Runde 5: KONFORM** (0 HIGH, 0 MEDIUM, 4 LOW,
+2 INFO), die LOWs danach aufgelöst. Verifikation: **DoD TEILWEISE BESTÄTIGT** — 7 von 8 Punkten
+bestätigt mit eigenen Belegen, 0 × WIDERLEGT, Punkt 3 als A-1 offen. Der Verifier fuhr `make gates`
+und `make full-smoke` selbst und bestätigte die Sensor-Auslassungen am realen Diff (10 Dateien,
+ausnahmslos `.md`).
 
 ## 8. Sub-Area-Modus-Begründung
 
