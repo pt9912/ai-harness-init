@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
 **Welle:** ohne Welle (Wartung — die vom `baseline-freshness`-Sensor gemeldete Tag-Drift auflösen,
-wie [slice-043](../done/slice-043-baseline-bump-v3.5.1.md) für v3.5.0→v3.5.1).
+wie [slice-043](slice-043-baseline-bump-v3.5.1.md) für v3.5.0→v3.5.1).
 
 **Bezug:** [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) (committet vendored Baseline + Re-Baseline-Mechanik), [`MR-013`](../../../../harness/conventions.md#mr-013--regelwerk-check-auf-d-check-sources-tool-statt-skript) (`.d-check.yml`-`sources`-Kopplung), [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (Reproduzierbarkeit/Pins).
 
@@ -126,7 +126,7 @@ Entscheidung an [`harness/conventions.md`](../../../../harness/conventions.md) v
 | [`.d-check.yml`](../../../../.d-check.yml) | update | `sources`-url + sha256 (Kopplung [`test/sources-pin.bats`](../../../../test/sources-pin.bats)) |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | Baseline-Stand + **CR-Regel-Entscheidung** (Adaptions-Eintrag oder neuer `MR-*`) |
 | aktive Doc-Dateien (§2-Liste) | update | `v3.5.1`→`v3.5.2`, frozen/ADR/vendored ausgenommen |
-| [`roadmap.md`](../in-progress/roadmap.md) | update | Tag-Bezug + Stand-Drift (führt [slice-047](../done/slice-047-mutate-host-isolation.md) noch als `in-progress`, kennt [slice-048](../done/slice-048-release-artefakte.md) nicht) |
+| [`roadmap.md`](../in-progress/roadmap.md) | update | Tag-Bezug + Stand-Drift (führt [slice-047](slice-047-mutate-host-isolation.md) noch als `in-progress`, kennt [slice-048](slice-048-release-artefakte.md) nicht) |
 | `spec/lastenheft.md` | **unberührt** | die adoptierte Regel verbietet es diesem Slice (s. o.) |
 
 **Reihenfolge:** (1) Provenienz prüfen → vendoren → `SHA256SUMS` → alter Baum raus → Pins →
@@ -255,7 +255,7 @@ Slice steht):
   Commit oder zwei?), dann auf die Slice-Moves ausdehnen — heute schreibt sie nur der
   Welle-Closure-Command, und bewacht ist sie in keinem Fall.
 - **Verlorener Kandidat** (Runde-4-Befund V-2): die Zählung „`done/`-Link-Churn — 7. Instanz,
-  ÜBERFÄLLIG" steht in [welle-03-results.md](../done/welle-03-results.md) und [slice-024](../done/slice-024-voll-smoke.md), ihr Backlog-Kandidat
+  ÜBERFÄLLIG" steht in [welle-03-results.md](welle-03-results.md) und [slice-024](slice-024-voll-smoke.md), ihr Backlog-Kandidat
   („Cluster D", gegenläufige Lösungsrichtung) ist in der Roadmap **nicht mehr auffindbar**. Ein
   verlorener Kandidat ist selbst eine Befundklasse.
 - **M5 Schritt 2:** Doku-Nachzug — [README](../../../../README.md) und [Benutzerhandbuch](../../../user/benutzerhandbuch.md) behaupten weiter „keine
@@ -274,11 +274,11 @@ Slice steht):
   [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache), die Kopplungstests, `baseline-verify`); dieser Slice **re-vendored** sie, baut nicht neu.
 - **Konventionen-Dichte:** hoch. [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) fixiert vier Setzungen (Provenienz≠Integrität,
   `SHA256SUMS`-Umfang, Vollständigkeits-Check, ein Tag zur Zeit); [`MR-013`](../../../../harness/conventions.md#mr-013--regelwerk-check-auf-d-check-sources-tool-statt-skript) die Zwei-Pin-Kopplung.
-  Der Re-Vendor **erbt** sie, erfindet sie nicht neu ([slice-043](../done/slice-043-baseline-bump-v3.5.1.md) ist der gefahrene Präzedenzfall).
+  Der Re-Vendor **erbt** sie, erfindet sie nicht neu ([slice-043](slice-043-baseline-bump-v3.5.1.md) ist der gefahrene Präzedenzfall).
 - **Phase-Reife:** Phase 4 (reif). Der Re-Vendor ist wiederkehrende Wartung; die Mechanik lief
   einmal sauber durch.
 - **Evidenz-/Diskrepanz-Risiko:** **mittel-hoch, und diesmal konkret** — anders als bei
-  [slice-043](../done/slice-043-baseline-bump-v3.5.1.md) ist die Konventions-Kollision nicht hypothetisch, sondern gemessen (CR-Regel gegen
+  [slice-043](slice-043-baseline-bump-v3.5.1.md) ist die Konventions-Kollision nicht hypothetisch, sondern gemessen (CR-Regel gegen
   13 Historie-Zeilen). Sie ist der Grund, warum dieser Slice die volle Rollen-Sequenz fährt und nicht
   als Pin-Bump durchgewinkt wird.
 - **Reconciliation-Aufwand:** ein Slice. **Graduation-Trigger:** falls die CR-Regel-Entscheidung

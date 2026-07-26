@@ -22,7 +22,7 @@ nicht übernommen.
 **Eingangs-Kontext** (die Verträge, gegen die geprüft wurde — ohne
 diese Liste ist der Lauf nicht reproduzierbar):
 
-- Slice-Plan: [`slice-049-baseline-bump-v3.5.2.md`](../plan/planning/in-progress/slice-049-baseline-bump-v3.5.2.md) (§2 DoD, §3 Plan, §5 Closure-Trigger, §6 Risiken)
+- Slice-Plan: `in-progress/slice-049-baseline-bump-v3.5.2.md` (§2 DoD, §3 Plan, §5 Closure-Trigger, §6 Risiken)
 - **Vorherige Findings am gleichen Modul (Pflicht-Punkt 5):** Runde 1 F-1…F-6 **und** Runde 2
   N-1…N-4 im Wortlaut, samt beider Implementations-Nachträge
 - **Verifier-Report** [`2026-07-26-slice-049-verification.md`](2026-07-26-slice-049-verification.md)

@@ -28,7 +28,7 @@ jede seiner fünf Tatsachenbehauptungen einzeln nachgemessen.
 **Eingangs-Kontext** (die Verträge, gegen die geprüft wurde — ohne diese Liste ist der Lauf
 nicht reproduzierbar):
 
-- Slice-Plan: [`slice-049-baseline-bump-v3.5.2.md`](../plan/planning/in-progress/slice-049-baseline-bump-v3.5.2.md)
+- Slice-Plan: `in-progress/slice-049-baseline-bump-v3.5.2.md`
   (§2 DoD, §3 Plan, §5 Closure-Trigger, §6 Risiken)
 - **Vorherige Findings am gleichen Modul (Pflicht-Punkt 5):** Runde 1 F-1…F-5/INFO-1,
   Runde 2 N-1…N-4, Runde 3 R-1/R-2 im Wortlaut, samt aller drei Implementations-Nachträge

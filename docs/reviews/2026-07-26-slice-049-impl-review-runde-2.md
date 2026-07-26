@@ -19,7 +19,7 @@ von Implementation und Verifikation.
 **Eingangs-Kontext** (die Verträge, gegen die geprüft wurde — ohne
 diese Liste ist der Lauf nicht reproduzierbar):
 
-- Slice-Plan: [`slice-049-baseline-bump-v3.5.2.md`](../plan/planning/in-progress/slice-049-baseline-bump-v3.5.2.md) (§2 DoD, §3 Plan, §5 Closure-Trigger, §6 Risiken)
+- Slice-Plan: `in-progress/slice-049-baseline-bump-v3.5.2.md` (§2 DoD, §3 Plan, §5 Closure-Trigger, §6 Risiken)
 - **Vorherige Findings am gleichen Modul (Pflicht-Punkt 5):** Runde 1 F-1…F-6 **im Wortlaut**, samt
   [Nachtrag der Implementation](2026-07-26-slice-049-impl-review.md#nachtrag-der-implementation-2026-07-26--auflösung-der-findings)
 - **Verifier-Report** [`2026-07-26-slice-049-verification.md`](2026-07-26-slice-049-verification.md)
@@ -52,7 +52,7 @@ Jede Zeile ist am Diff bzw. an einer eigenen Messung geprüft, nicht am Nachtrag
 | F-2 | MEDIUM | **aufgelöst** | `git show c615da7 -- spec/lastenheft.md` gelesen: ändert **nur** die Link-Form der Historie-Zeile 0.2.0. `MR-015` führt `c615da7` jetzt gleichrangig neben `7b717f4` ([`conventions.md`](../../harness/conventions.md):693–695). |
 | F-3 | MEDIUM | **nicht behoben; blockierende Wirkung von mir REFUTED — mit eigenem Beleg, nicht wegen des Widerspruchs** | s. u. „F-3 im Detail" |
 | F-4 | LOW | **NICHT aufgelöst** | Die Korrektur ist selbst falsch und liegt nicht dort, wo der Nachtrag sie verortet — s. N-3. |
-| F-5 | LOW | **aufgelöst** | `git grep -n "blob/v3\.5\.1"` über aktive Pfade: einziger Treffer ist die §6-**Prosa** des Slice („Ein `.../blob/v3.5.1/...`→`v3.5.2`-Bump", [Zeile 162](../plan/planning/in-progress/slice-049-baseline-bump-v3.5.2.md)) — eine Beschreibung des Musters, kein Verweis. Beide Definitions-URLs (Zeile 6, 181) stehen auf `v3.5.2`. |
+| F-5 | LOW | **aufgelöst** | `git grep -n "blob/v3\.5\.1"` über aktive Pfade: einziger Treffer ist die §6-**Prosa** des Slice („Ein `.../blob/v3.5.1/...`→`v3.5.2`-Bump", Zeile 162) — eine Beschreibung des Musters, kein Verweis. Beide Definitions-URLs (Zeile 6, 181) stehen auf `v3.5.2`. |
 | INFO-1 | INFO | **aufgelöst** | [`conventions.md`](../../harness/conventions.md):643–646 nennt `AGENTS.md` nicht mehr als berührt, sagt ausdrücklich „MR-Adaption, **keine** neue Hard Rule"; `git diff --stat 80eec58..HEAD -- AGENTS.md` ist leer — Geltungsbereich und Ist-Stand decken sich jetzt. |
 
 ### F-1 im Detail — echte Reparatur, keine Umgehung
@@ -161,7 +161,7 @@ dasselbe fest. Dieser Report liefert den fehlenden Akt.
 - `quelle`: [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (die Zahl ist als
   Checkliste für den nächsten Re-Vendor gedacht) · Hard Rule 3.6 · Maintainability
 - `pfad`: [`2026-07-26-slice-049-impl-review.md`](2026-07-26-slice-049-impl-review.md):287–290 und
-  Commit-Message `d38db74` (F-4-Absatz); [`slice-049-baseline-bump-v3.5.2.md`](../plan/planning/in-progress/slice-049-baseline-bump-v3.5.2.md):80
+  Commit-Message `d38db74` (F-4-Absatz); `in-progress/slice-049-baseline-bump-v3.5.2.md`:80
 - `befund`: Die Korrektur „**13** Vorkommen, davon **11** gezogen und **2** behalten" ist in zwei von
   drei Zahlen falsch. Eigene Zählung (`git grep -o -e "v3\.5\.1"` je Datei, Vorkommen statt Zeilen)
   über die vier genannten Dateien: `80eec58` trägt **15** (`conventions.md` 6, `benutzerhandbuch.md` 3,

@@ -6,7 +6,7 @@ Implementation und Review. Geprüft wird **nicht** Stil/Qualität (das ist die R
 ob die **DoD-Behauptung** des Implementers hält — „Behauptung ohne Bestätigung ist die häufigste
 Verifier-Lücke".
 
-**Gegenstand:** [`slice-049-baseline-bump-v3.5.2.md`](../plan/planning/in-progress/slice-049-baseline-bump-v3.5.2.md)
+**Gegenstand:** `in-progress/slice-049-baseline-bump-v3.5.2.md`
 §2 (DoD, 11 Punkte) · §3 (Plan) · §6 (Risiken).
 **Range:** `80eec58..HEAD` = `9cfa1f3` (Lifecycle-Move) → `ce4b611` (Impl) → `d38db74` (Review-Fix).
 **Datum:** 2026-07-26 · **Modell:** claude-opus-5[1m].

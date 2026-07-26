@@ -14,7 +14,7 @@ Range `80eec58..ce4b611` (zwei Commits: `9cfa1f3` reiner Lifecycle-Move, `ce4b61
 **Eingangs-Kontext** (die Verträge, gegen die geprüft wurde — ohne
 diese Liste ist der Lauf nicht reproduzierbar):
 
-- Slice-Plan: [`slice-049-baseline-bump-v3.5.2.md`](../plan/planning/in-progress/slice-049-baseline-bump-v3.5.2.md) (§2 DoD als *Absichts*-Quelle, §3 Plan, §6 Risiken)
+- Slice-Plan: `in-progress/slice-049-baseline-bump-v3.5.2.md` (§2 DoD als *Absichts*-Quelle, §3 Plan, §6 Risiken)
 - aktive ADRs: keine im Diff geändert; mittelbar berührt `ADR-0003` (Docker-only). Immutabilitäts-Schutz geprüft für alle accepted ADRs (Hard Rule 3.4)
 - berührte `LH-*`-IDs: `LH-QA-02` (Reproduzierbarkeit/Pins), `LH-QA-01` (keine halluzinierten Gates), `LH-QA-03` (minimale Abhängigkeiten) in [`spec/lastenheft.md`](../../spec/lastenheft.md)
 - [`AGENTS.md`](../../AGENTS.md) §3 (Hard Rules 3.1–3.6)
