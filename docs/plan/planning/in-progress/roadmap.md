@@ -15,11 +15,13 @@ gezeigt, nicht als Treiber.
 **Keine aktive Welle.** Die nächste ist **nicht** geschnitten (cp-Disziplin: Plandatei erst per `cp`,
 wenn ihr erster Slice steht) — Kandidaten unten.
 
-**Ohne Welle in Arbeit** (Wartung, Präzedenz slice-026/027/043/047/048):
-
-| Slice | Trigger (beobachtbar) | Closure-Kriterium |
-|---|---|---|
-| [slice-049](slice-049-baseline-bump-v3.5.2.md) — Baseline-Re-Vendor v3.5.1 → v3.5.2, `in-progress/` | `make baseline-freshness` meldet `v3.5.1 < v3.5.2` (2026-07-25 geschnitten, 2026-07-26 erneut live gemessen) | DoD vollständig · `baseline-verify` + `gates` + `mutate` + `baseline-freshness` grün · CR-Regel-Entscheidung in [`harness/conventions.md`](../../../../harness/conventions.md) ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)) |
+**Kein Slice in Arbeit.** [slice-049](slice-049-baseline-bump-v3.5.2.md) ist am 2026-07-26 geschlossen
+(Baseline-Re-Vendor v3.5.1 → v3.5.2, Wartung ohne Welle — Präzedenz slice-026/027/043/047/048, jetzt
+auch 049). Belege: `baseline-verify: v3.5.2 OK — 42 Dateien` · `make gates` Exit 0 · `make mutate`
+81 ok/0 · `make full-smoke` Exit 0 · `make baseline-freshness` Exit 0 (der auslösende Sensor bestätigt
+seine eigene Auflösung) · DoD **BESTÄTIGT** 10/10 · Review **KONFORM** in Runde 4. Die normative
+Achse — Change Request als *externer* Vorgang bei Personalunion von Auftraggeber und Entwickler —
+steht als [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) in [`harness/conventions.md`](../../../../harness/conventions.md).
 
 ## Nächste Wellen
 
@@ -45,7 +47,7 @@ derselbe Stand an zwei Orten gepflegt und einer davon altert (real passiert mit 
 | M2 — vollständiger Bootstrap (inkl. Sprachskelett-Generator + Root-README) | welle-02 **und** welle-03 | slice-005 + slice-024 in `done/` **und** Voll-E2E-Smoke grün (welle-03-Closure) | **erreicht (2026-07-22)** |
 | M3 — durchsetzender, phasierter Harness (emittierter Repo erzwingt den Prozess: Hooks + Command-Guard + Workflow-Anleitung; Bootstrap phasiert + idempotent: doc-führt auch für die Zielsprache, `add-lang`/Mono-Repo) | welle-04 **und** welle-05 | welle-04 + welle-05 in `done/` **und** `make full-smoke` grün über die Durchsetzungs- + Idempotenz-Fitness (Guard blockt, Gate-Nachweis-Kreis geschlossen, 2. Init-Lauf idempotent, kein Prune) | **erreicht (2026-07-23)** |
 | M4 — Arch-Gate integriert (a-check, [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) | [welle-07-arch-achse](../done/welle-07-arch-achse.md) | ein Skelett trägt hexSlice-Schichten (`domain`/`application`/`ports`/`adapters`) **und** der a-check-Emitter ist gebaut → a-check wird emittiert + aktiv (sonst [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Verstoß über leerem Prüfbereich) | **erreicht** (welle-07 geschlossen 2026-07-25; `make full-smoke` belegt beide Richtungen real) |
-| M5 — **erstes Release** (`v0.1.0` mit vorgefertigten Binaries für die sechs Plattformen) | ohne Welle: [slice-049](slice-049-baseline-bump-v3.5.2.md) → Doku-Nachzug → Tag | drei Schritte in dieser Reihenfolge (Nutzer-Entscheidung 2026-07-25): (1) Re-Baseline v3.5.2, damit `v0.1.0` keinen veralteten Regelwerks-Stand ausliefert · (2) Doku-Nachzug — [README](../../../../README.md) und [Benutzerhandbuch](../../../user/benutzerhandbuch.md) behaupten noch „keine vorgefertigten Release-Binaries", der Installations-Abschnitt kennt nur den Bau aus Quelle · (3) Tag `v0.1.0` mit grünem `release`-Lauf und sechs Assets | **offen** — der Pfad ist bewiesen, nicht der Meilenstein: die `v0.1.0-RC`-Probe lief grün über alle acht Jobs (Bau, sechs Plattform-Start-Smokes, `publish`), das Prerelease wurde danach entfernt ([slice-048](../done/slice-048-release-artefakte.md) §Nachtrag) |
+| M5 — **erstes Release** (`v0.1.0` mit vorgefertigten Binaries für die sechs Plattformen) | ohne Welle: [slice-049](slice-049-baseline-bump-v3.5.2.md) → Doku-Nachzug → Tag | drei Schritte in dieser Reihenfolge (Nutzer-Entscheidung 2026-07-25): (1) Re-Baseline v3.5.2, damit `v0.1.0` keinen veralteten Regelwerks-Stand ausliefert — **erledigt 2026-07-26 (slice-049)** · (2) **nächster Schritt:** Doku-Nachzug — [README](../../../../README.md) und [Benutzerhandbuch](../../../user/benutzerhandbuch.md) behaupten noch „keine vorgefertigten Release-Binaries", der Installations-Abschnitt kennt nur den Bau aus Quelle · (3) Tag `v0.1.0` mit grünem `release`-Lauf und sechs Assets | **offen** — der Pfad ist bewiesen, nicht der Meilenstein: die `v0.1.0-RC`-Probe lief grün über alle acht Jobs (Bau, sechs Plattform-Start-Smokes, `publish`), das Prerelease wurde danach entfernt ([slice-048](../done/slice-048-release-artefakte.md) §Nachtrag) |
 
 ## Abhängigkeitsgraph
 

@@ -23,26 +23,26 @@ dem Baum stillschweigend einzuziehen.
 
 ## 2. Definition of Done
 
-- [ ] **Baum re-vendored:** `.harness/baseline/v3.5.2/{regelwerk,templates}/` + `SHA256SUMS` <!-- d-check:ignore (geplant — entsteht beim Vendoren) -->
+- [x] **Baum re-vendored:** `.harness/baseline/v3.5.2/{regelwerk,templates}/` + `SHA256SUMS` <!-- d-check:ignore (geplant — entsteht beim Vendoren) -->
   (aus dem Release-ZIP entpackt; `SHA256SUMS` neu erzeugt: `sha256sum` über alle Dateien, Pfade relativ
   zu `<tag>/`, `LC_ALL=C`-sortiert, die Datei selbst ausgenommen — [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 2). Der alte
   `.harness/baseline/v3.5.1/`-Baum ist **entfernt** (Setzung 4: ein Tag zur Zeit).
-- [ ] **Provenienz-Pin:** `BASELINE_ZIP_SHA256` ([`Makefile`](../../../../Makefile)) = sha256 des v3.5.2-Release-Assets
+- [x] **Provenienz-Pin:** `BASELINE_ZIP_SHA256` ([`Makefile`](../../../../Makefile)) = sha256 des v3.5.2-Release-Assets
   (`2af45aad2777cadf26127066c9a2dc43f7111ee2687e44fe2eceb95c6c0a1925`, am 2026-07-25 live gemessen);
   `BASELINE_TAG` = `v3.5.2`. **Provenienz vor dem Entpacken prüfen**, nicht danach.
-- [ ] **Gekoppelte Pins mitgezogen (fail-closed-Tests grün):** `DefaultTag` + `DefaultBaselineSHA256`
+- [x] **Gekoppelte Pins mitgezogen (fail-closed-Tests grün):** `DefaultTag` + `DefaultBaselineSHA256`
   ([`internal/fetch/baseline.go`](../../../../internal/fetch/baseline.go), Kopplung `TestDefaultTag_MatchesBaseline` /
   `TestDefaultBaselineSHA256_MatchesMakefile`) und der [`.d-check.yml`](../../../../.d-check.yml)-`sources`-Block (url + sha256,
   Kopplung [`test/sources-pin.bats`](../../../../test/sources-pin.bats), [`MR-013`](../../../../harness/conventions.md#mr-013--regelwerk-check-auf-d-check-sources-tool-statt-skript)).
-- [ ] **CR-Regel entschieden und belegt** (die *inhaltliche* Arbeit dieses Slice, s. §3 „Normativer
+- [x] **CR-Regel entschieden und belegt** (die *inhaltliche* Arbeit dieses Slice, s. §3 „Normativer
   Delta"): das Ergebnis steht als Adaptions-Eintrag in [`harness/conventions.md`](../../../../harness/conventions.md) — entweder
   „konform, weil …" mit benanntem Beleg oder ein **neuer `MR-*`**, der die Abweichung trägt.
   **Nicht** als Prosa in einer Slice-Notiz: die Regel überlebt den Slice, die Notiz nicht.
-- [ ] **`spec/lastenheft.md` bleibt in diesem Slice unberührt** — und zwar belegt (`git diff --stat`
+- [x] **`spec/lastenheft.md` bleibt in diesem Slice unberührt** — und zwar belegt (`git diff --stat`
   zeigt die Datei nicht). Das ist kein Formalismus, sondern die Regel selbst: ein Slice darf `LH-*`
   nicht ändern. Ergibt die Entscheidung eine nötige Lastenheft-Änderung, ist das ein **Folge-CR mit
   eigenem Trigger**, kein Nebeneffekt dieses Slice.
-- [ ] **Doc-Reconciliation:** die **aktiven** `v3.5.1`-Referenzen auf `v3.5.2` gezogen.
+- [x] **Doc-Reconciliation:** die **aktiven** `v3.5.1`-Referenzen auf `v3.5.2` gezogen.
   **Zählung korrigiert (Verifikation A-1 / Review-Runde-2 N-3, bei `80eec58` nachgemessen):**
   **15 Vorkommen** in 4 Dateien — [`harness/conventions.md`](../../../../harness/conventions.md) 6×,
   [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) 3×,
@@ -53,15 +53,15 @@ dem Baum stillschweigend einzuziehen.
   **Ausgenommen** (unverändert): frozen `done/`-Slices + `docs/reviews/**` (Zeitdokumente),
   **accepted ADRs** (Hard Rule 3.4 immutable — historischer Bezug bleibt), der vendored Baum selbst
   (wird ersetzt). Diese Slice-Datei darf `v3.5.1` als **historischen** Bezug führen.
-- [ ] `make baseline-verify` grün: `v3.5.2 OK — 42 Dateien` (Integrität + Vollständigkeit, netzlos).
-- [ ] `make gates` grün (alle Gates auf dem re-vendored Stand).
-- [ ] `make mutate` grün. **Vorab-Befund (gemessen, s. §3):** kein Fall hardcodet Tag, Hash oder
+- [x] `make baseline-verify` grün: `v3.5.2 OK — 42 Dateien` (Integrität + Vollständigkeit, netzlos).
+- [x] `make gates` grün (alle Gates auf dem re-vendored Stand).
+- [x] `make mutate` grün. **Vorab-Befund (gemessen, s. §3):** kein Fall hardcodet Tag, Hash oder
   Asset-Größe — Fall 01 matcht generisch (`[0-9a-f]{64}`), 02/03/11/13/67 hängen an der Mechanik,
   nicht am Wert → **kein** Re-Anchoring erwartet. Die Go-Bump-Lehre bleibt: ein Wert-Bump zieht
   `make mutate` nach, die Erwartung ersetzt den Lauf nicht.
-- [ ] `make baseline-freshness` meldet danach **keinen** Drift mehr (Exit 0) — der Sensor, der diesen
+- [x] `make baseline-freshness` meldet danach **keinen** Drift mehr (Exit 0) — der Sensor, der diesen
   Slice ausgelöst hat, bestätigt seine eigene Auflösung.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -189,7 +189,82 @@ Wird *nach* Abschluss ergänzt. Inhalt:
 - Folge-Slices: welche neuen open/-Einträge?
 -->
 
-<!-- Erst nach Abschluss füllen. -->
+**Was hat funktioniert.** Die Mechanik lief sauber und ohne Überraschung: Provenienz **vor** dem
+Entpacken geprüft (125180 Bytes, `2af45aad…1925` — identisch mit dem Planungswert), `SHA256SUMS`
+neu erzeugt, alter Baum raus, `baseline-verify: v3.5.2 OK — 42 Dateien`. Die fünf gekoppelten Pins
+hielten (Kopplungstests + [`test/sources-pin.bats`](../../../../test/sources-pin.bats) grün). Der **normative Delta wurde gemessen
+statt geschätzt**: 33 der 36 geänderten Dateien sind reine Versions-/Welle-Bumps (nach
+Normalisierung leerer Diff), substanziell sind exakt die drei geplanten. `make mutate` 81 ok/0 ohne
+Re-Anchoring — die Vorab-Erwartung traf, der Lauf ersetzte sie trotzdem nicht. `make full-smoke`
+belegte den geerbten Template-Baum real; die **Verifikation wiederholte ihn mit ausdrücklicher
+Begründung** (er liegt nicht in `gates`, der Implementer-Lauf ist also eine Behauptung ohne
+deckenden Gate-Lauf) und zog zusätzlich die **Provenienz-Kette unabhängig nach**: Asset geholt,
+entpackt, `diff -rq` gegen den vendorten Baum byte-identisch. Damit ist mehr belegt, als die DoD
+verlangt — die Grenze, die der Review offenlassen musste, ist geschlossen.
+
+**Was anders lief als geplant.** Die inhaltliche Achse kostete **vier Review-Runden** — und zwar
+nicht, weil die Regel falsch war, sondern weil **ihre Ist-Belege viermal auf dieselbe Weise falsch
+waren**:
+
+1. **F-1 (HIGH):** [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 2 nannte `git log` + `git show --stat` als Nachweis-Verfahren
+   und behauptete, die Messung bestätige die Praxis — geprüft war aber nur das Commit-**Präfix**,
+   nicht die **Datei-Menge**. Real: 16 Commits berühren `spec/lastenheft.md`, 6 ändern sie allein,
+   10 bündeln.
+2. **N-1 (HIGH):** „die Praxis wurde nie ausgeübt" — universelles Negativ aus zwei Stichproben,
+   widerlegt durch einen Commit, der 7 Inbound-Links über 5 Dateien im selben Move zieht.
+3. **N-3 (LOW):** eine falsche Zählung (13) durch eine ebenfalls falsche (13/11/2) ersetzt; real
+   **15/11/4**.
+4. **R-1 (MEDIUM):** „kein Dokument schreibt sie" — wieder ein ungeprüfter Allquantor;
+   [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) schreibt die Konvention und löst sie **gegenläufig**
+   zur Kandidaten-Formulierung auf (eigener Reconciliation-Commit **nach** dem Move).
+
+Die **Setzung selbst** überstand jede Runde unbeschädigt; gefallen sind nur ihre Ist-Aussagen. Diese
+Trennung — normativer Gehalt vs. behaupteter Ist-Zustand — ist die eigentliche Lehre des Slice.
+Alle vier falschen Sätze bleiben in den Zeitdokumenten **stehen und markiert**, statt geglättet zu
+werden.
+
+**Steering-Loop-Eintrag** (kanonische Definition:
+[`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/grundlagen/klassifikation.md#steering-loop)):
+
+- **[`AGENTS.md`](../../../../AGENTS.md) §3.6 schärfen — der Guide kennt den Träger nicht, an dem er hier viermal
+  gerissen ist.** Seine Aufzählung nennt Doc-Kommentar, Test-Name, DoD-Punkt und Commit-Message,
+  aber **nicht die Ist-Messung in Prosa** (Konventions-, Planungs- und Report-Text). Die kleinste
+  tragende Schärfung: *ein Allquantor über einen Repo-Zustand trägt den Befehl, der ihn misst, neben
+  sich — Kommando, Suchraum und Ergebnis.* Vier Instanzen in einer Sitzung, drei davon Allquantoren.
+- **Der Sensor-Bauplan liegt schon in der Roadmap:** der Kandidat *Prosa-Zahlen-Provenienz* deckt
+  mit derselben Mechanik Wörter statt Zahlen ab — er braucht keine neue Achse, nur eine Ausweitung.
+- **Reviewer-Skill:** der Suchraum gehört um `.claude/commands/` und `internal/emit/templates/`
+  erweitert. Dort lag der Gegenbeleg zu R-1 — und Runde 2 hat ihn ebenfalls verfehlt, der blinde
+  Fleck ist also nicht rollen-spezifisch.
+- **Der Slice ist sein eigener Beleg:** eine Regel ohne Sensor altert nicht erst später. [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+  wurde in **derselben Sitzung** viermal falsch belegt, während niemand sie falsch *anwenden*
+  konnte — es gab nichts anzuwenden. Feedforward ohne Feedback verfällt sofort, nicht mit der Zeit.
+
+**Folge-Kandidaten** (bewusst **nicht** geschnitten — cp-Disziplin: Plandatei erst, wenn der erste
+Slice steht):
+
+- **Regeln ohne Feedback-Quadrant schließen.** Fünf gemessene Instanzen; für **vier** liefert
+  d-check den Sensor bereits mit (`targets` für Hard Rule 3.1/[`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), `vcs` für Hard Rule 3.4,
+  `commits` für die ID-Zusage aus [`harness/README.md`](../../../../harness/README.md) §Traceability, `planning` für
+  Roadmap↔`in-progress`). Nur die Co-Change-Regel aus [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) braucht einen Eigenbau
+  (Cutoff ab diesem Eintrag; fail-closed bei Shallow Clone — `actions/checkout` holt per Default
+  Tiefe 1, ein History-Sensor wäre dort blind **und grün**). Runde-4-Befund V-1 bestätigt die
+  Verfügbarkeit: `doc-immutable`/`doc-commits` sind range-fähig und bereits verdrahtet, nur an
+  keinen Trigger gehängt.
+- **Lifecycle-Move-Konvention** (Roadmap-Kandidat, Achse 4): **zuerst den Widerspruch klären** (ein
+  Commit oder zwei?), dann auf die Slice-Moves ausdehnen — heute schreibt sie nur der
+  Welle-Closure-Command, und bewacht ist sie in keinem Fall.
+- **Verlorener Kandidat** (Runde-4-Befund V-2): die Zählung „`done/`-Link-Churn — 7. Instanz,
+  ÜBERFÄLLIG" steht in [welle-03-results.md](../done/welle-03-results.md) und [slice-024](../done/slice-024-voll-smoke.md), ihr Backlog-Kandidat
+  („Cluster D", gegenläufige Lösungsrichtung) ist in der Roadmap **nicht mehr auffindbar**. Ein
+  verlorener Kandidat ist selbst eine Befundklasse.
+- **M5 Schritt 2:** Doku-Nachzug — [README](../../../../README.md) und [Benutzerhandbuch](../../../user/benutzerhandbuch.md) behaupten weiter „keine
+  vorgefertigten Release-Binaries".
+
+**Verifikation und Review.** DoD **BESTÄTIGT** 10/10 mit selbst erhobenen Belegen
+([Verifikations-Report](../../../reviews/2026-07-26-slice-049-verification.md)); Review **KONFORM** in Runde 4 (0 HIGH, 0 MEDIUM;
+[Runde 1](../../../reviews/2026-07-26-slice-049-impl-review.md) · [Runde 2](../../../reviews/2026-07-26-slice-049-impl-review-runde-2.md) ·
+[Runde 3](../../../reviews/2026-07-26-slice-049-impl-review-runde-3.md) · [Runde 4](../../../reviews/2026-07-26-slice-049-impl-review-runde-4.md)).
 
 ## 8. Sub-Area-Modus-Begründung
 
