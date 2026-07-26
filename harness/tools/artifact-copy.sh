@@ -14,7 +14,9 @@
 # DAS ZIELVERZEICHNIS WIRD ANGELEGT. Das ist der Anlass des Slice: ein NUTZER
 # meldete, dass `make artifact DEST=./bin` fehlschlaegt, wenn `bin` nicht existiert
 # — `docker cp` bricht dann mit "invalid output path: directory … does not exist"
-# ab (Exit 2). Genau diesen Aufruf schreiben README und Benutzerhandbuch vor. Kein
+# ab. (Der Fehler selbst endet mit Exit 1; die 2 im Nutzer-Bericht war `make`s
+# eigener Abbruch-Code — real nachgemessen, Review-Befund F-3.) Genau diesen Aufruf
+# schreiben README und Benutzerhandbuch vor. Kein
 # Sensor fand es, weil die CI den Defekt an der AUFRUFSTELLE umging
 # (`mkdir -p dist` vor dem make-Aufruf) — sie war gruen, WEIL sie kompensierte.
 # Die Kompensation gehoert ins Werkzeug, nicht in den Aufrufer.

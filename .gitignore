@@ -3,3 +3,9 @@
 # .harness/baseline/ ist die committet vendored Baseline (MR-007) —
 # beide gehören ins Repo, nicht hierher)
 .harness/state/
+
+# `make artifact DEST=./bin` (README, Benutzerhandbuch Weg B) legt das Verzeichnis
+# seit slice-051 selbst an — vorher brach der Aufruf ab und hinterliess nichts.
+# Ohne diesen Eintrag machte die dokumentierte Anleitung den Arbeitsbaum schmutzig
+# und verschoebe den MR-003-Working-Tree-Hash (Review-Befund F-5).
+/bin/

@@ -194,9 +194,14 @@ mk_platforms() {
 # Fehlermodus ab. Sein `cp` schreibt mit `>` in den Zielpfad und faellt daher — wie
 # `docker cp` — wenn das Verzeichnis fehlt. Der Test haengt also an der beobachtbaren
 # WIRKUNG (Verzeichnis da, Datei da), nicht daran, dass der Stub aufgerufen wurde.
+# Der Stub PROTOKOLLIERT seine Aufrufe (DOCKER_STUB_LOG). Das ist noetig, weil zwei
+# Zusagen des Skripts sonst unbewacht blieben (Review F-1/INFO-1): dass der Container
+# aufgeraeumt wird, und dass aus dem ERWARTETEN Quellpfad kopiert wird. Beides
+# hinterlaesst im Zielverzeichnis keine Spur — ohne Protokoll waere es nicht messbar.
 docker_stub() {
   printf '%s\n' \
     '#!/usr/bin/env bash' \
+    'printf "%s\n" "$*" >> "${DOCKER_STUB_LOG:-/dev/null}"' \
     'case "$1" in' \
     '  create) echo "cid-fake" ;;' \
     '  cp)     printf "binaerinhalt\n" > "$3" ;;' \
@@ -235,7 +240,52 @@ docker_stub() {
   [ "$ok_file" -eq 1 ]
 }
 
+# Review F-2: der Name sagt "alle drei", die erste Fassung mass nur das FEHLENDE
+# dritte. Ein auf `$name` reduzierter Guard waere gruen geblieben, waehrend ein
+# leeres Image oder Ziel mit Exit 0 durchgelaufen waere. Jetzt wird jede der drei
+# Positionen einzeln leer gesetzt.
 @test "release: artifact-copy verlangt alle drei Argumente (Exit 2)" {
-  run bash "$REPO/harness/tools/artifact-copy.sh" bild "/tmp"
+  run bash "$REPO/harness/tools/artifact-copy.sh" "" /tmp/egal datei
   [ "$status" -eq 2 ]
+  run bash "$REPO/harness/tools/artifact-copy.sh" bild "" datei
+  [ "$status" -eq 2 ]
+  run bash "$REPO/harness/tools/artifact-copy.sh" bild /tmp/egal ""
+  [ "$status" -eq 2 ]
+  # und der weggelassene dritte Parameter (nicht nur der leere)
+  run bash "$REPO/harness/tools/artifact-copy.sh" bild /tmp/egal
+  [ "$status" -eq 2 ]
+}
+
+# Review F-1: die Zusage "der Container wird immer aufgeraeumt" stand nur als
+# Kommentar im Skript — kein Test mass sie. Ohne den `trap` blieben alle uebrigen
+# Waechter gruen, waehrend jeder Aufruf einen Container zurueckliesse.
+@test "release: artifact-copy raeumt den Container auf" {
+  local dir pathdir
+  dir="$(mktemp -d)"; pathdir="$(mktemp -d)"
+  docker_stub "$pathdir"
+  DOCKER_STUB_LOG="$dir/aufrufe" PATH="$pathdir:$PATH" \
+    run bash "$REPO/harness/tools/artifact-copy.sh" bild "$dir/bin" ai-harness-init
+  local aufgeraeumt=0
+  grep -q '^rm ' "$dir/aufrufe" && aufgeraeumt=1
+  rm -rf "$dir" "$pathdir"
+  [ "$status" -eq 0 ]
+  [ "$aufgeraeumt" -eq 1 ]
+}
+
+# Review INFO-1: Image-Tag und Container-Quellpfad waren unbewacht — ein Tippfehler
+# in `/out/ai-harness-init` haette alle Waechter gruen gelassen, weil die Zieldatei
+# vom Stub trotzdem entsteht.
+@test "release: artifact-copy nimmt das uebergebene Image und den erwarteten Quellpfad" {
+  local dir pathdir
+  dir="$(mktemp -d)"; pathdir="$(mktemp -d)"
+  docker_stub "$pathdir"
+  DOCKER_STUB_LOG="$dir/aufrufe" PATH="$pathdir:$PATH" \
+    run bash "$REPO/harness/tools/artifact-copy.sh" mein-bild "$dir/bin" ziel
+  local ok_img=0 ok_src=0
+  grep -q '^create mein-bild ' "$dir/aufrufe" && ok_img=1
+  grep -qF "cp cid-fake:/out/ai-harness-init $dir/bin/ziel" "$dir/aufrufe" && ok_src=1
+  rm -rf "$dir" "$pathdir"
+  [ "$status" -eq 0 ]
+  [ "$ok_img" -eq 1 ]
+  [ "$ok_src" -eq 1 ]
 }
