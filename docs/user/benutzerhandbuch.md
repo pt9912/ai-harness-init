@@ -1,6 +1,6 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Handbuch-Version:** 1.5
+**Handbuch-Version:** 1.6
 **Software-Stand:** `v0.1.0` — erstes Release mit **vorgefertigten Programmen für sechs Plattformen** (linux · macos · windows × amd64 · arm64). Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat` oder `hexslice`; bei `hexslice` kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen); `hexslice` liefert derzeit nur der Go-Renderer.
 **Stand:** 2026-07-26
 **Verantwortlich:** ai-harness-init-Team (pt9912)
@@ -142,7 +142,7 @@ Sie bauen das Programm einmalig selbst — das geschieht komplett in Docker, Sie
 
 Im Ordner **bin** liegt das ausführbare Programm `ai-harness-init`. Kopieren Sie es bei Bedarf an eine Stelle auf Ihrem Pfad (zum Beispiel nach `~/.local/bin`), damit Sie es überall unter dem kurzen Namen aufrufen können.
 
-> **Hinweis:** `make artifact DEST=./bin` verlangt die Angabe `DEST`. Ohne sie bricht der Befehl mit einer klaren Meldung ab. Den Zielordner müssen Sie **nicht** vorher anlegen — er wird erstellt, falls er fehlt. (In `v0.1.0` war das noch nicht so: dort schlug der Befehl mit `invalid output path: directory … does not exist` fehl, wenn der Ordner nicht existierte.)
+> **Hinweis:** `make artifact DEST=./bin` verlangt die Angabe `DEST`. Ohne sie bricht der Befehl mit einer klaren Meldung ab. Den Zielordner müssen Sie **nicht** vorher anlegen — er wird erstellt, falls er fehlt.
 
 ---
 
@@ -547,6 +547,7 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 
 | Handbuch-Version | Stand | Änderung |
 |---|---|---|
+| 1.6 | 2026-07-26 | `make artifact DEST=<ordner>` legt den Zielordner jetzt selbst an. Bis einschließlich `v0.1.0` brach der Befehl mit `invalid output path: directory … does not exist` ab, wenn der Ordner fehlte — obwohl die Anleitung genau diesen Aufruf vorschreibt (von einem Nutzer gemeldet). Der Hinweis im Installations-Abschnitt sagt das jetzt; die Versions-Abgrenzung steht hier statt im Fließtext. |
 | 1.5 | 2026-07-26 | **Erstes Release `v0.1.0`**: fertige Programme für sechs Plattformen (Linux · macOS · Windows × Intel/AMD · ARM) sind der empfohlene Weg; §2 in Weg A (Download) und Weg B (aus dem Quellcode bauen) geteilt, mit Dateitabelle, Suchpfad-Hinweis und macOS-Quarantäne-Hinweis. Neuer Kasten „Was wo geprüft wird": der vollständige Durchlauf läuft auf Linux/Intel-AMD, beim Release wird auf allen sechs Dateien nur der **Start** geprüft. FAQ, Anhang und Systemanforderungen nachgezogen; FAQ-Sprachliste um `cpp` korrigiert. |
 | 1.4 | 2026-07-25 | **Bauform `--arch`** (slice-045b/046): `hexslice` erzeugt ein geschichtetes Grundgerüst und liefert das **Architektur-Gate** (`.a-check.yml` + `a-check.mk`) mit, `flat` (Standard) nicht. Neuer Aufgaben-Abschnitt samt Pflege-Hinweis für zusätzliche Use-Case-Schnitte, Optionstabelle, `add-lang`-Signatur, `A_CHECK_IMAGE`/`A_CHECK_DIGEST` und Phase-2-Beschreibung nachgezogen. Nachzug: das Handbuch kannte die Achse seit zwei Slices nicht. |
 | 1.3 | 2026-07-23 | Zweite Zielsprache **C++** (slice-039): `--lang cpp` und `add-lang cpp <pfad>` erzeugen ein CMake-Grundgerüst (Dockerfile-Stages build/test/lint mit CMake + CTest + clang-tidy, netzloser Test). Optionstabelle, `SKEL_CPP_VERSION`, Sprach-Datei-Liste, Fehlermeldung und FAQ nachgezogen. Gemischt-sprachige Mono-Repos möglich. |
