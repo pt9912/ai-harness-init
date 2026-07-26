@@ -294,3 +294,17 @@ Antwort, keine Kategorie-Änderung.
 - **INFO-1 — behoben.** Der `MR-015`-Geltungsbereich nennt `AGENTS.md` nicht mehr als
   berührt; er sagt jetzt ausdrücklich, dass die Setzung eine MR-Adaption und **keine**
   neue Hard Rule ist, und verweist die Katalog-Frage an den Slice, der den Sensor baut.
+
+---
+
+## Korrektur zum Nachtrag (2026-07-26, nach Review-Runde 2)
+
+Die dritte Säule der F-3-Ablehnung oben — „die Praxis wurde nie ausgeübt" — ist
+**falsch** und wird hier korrigiert statt überschrieben (Zeitdokument). Runde 2 legte
+`08410bc` vor (slice-047-Closure): ein Lifecycle-Move, der im **selben** Commit 7
+eingehende Links über 5 Dateien zieht. Die Konvention ist real geübt, nur uneinheitlich.
+Der Fehler ist die Klasse „universelles Negativ aus zwei Stichproben" — dieselbe
+`AGENTS.md`-§3.6-Familie wie F-1. Die verbleibenden zwei Säulen der Ablehnung hat
+Runde 2 unabhängig geprüft und getragen; sie hat F-3s blockierende Wirkung mit **eigenem**
+Beleg verworfen (Reviewer-Akt, nicht Implementer-Akt). Fortsetzung in
+[`2026-07-26-slice-049-impl-review-runde-2.md`](2026-07-26-slice-049-impl-review-runde-2.md).

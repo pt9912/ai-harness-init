@@ -42,9 +42,14 @@ dem Baum stillschweigend einzuziehen.
   zeigt die Datei nicht). Das ist kein Formalismus, sondern die Regel selbst: ein Slice darf `LH-*`
   nicht ändern. Ergibt die Entscheidung eine nötige Lastenheft-Änderung, ist das ein **Folge-CR mit
   eigenem Trigger**, kein Nebeneffekt dieses Slice.
-- [ ] **Doc-Reconciliation:** die **aktiven** `v3.5.1`-Referenzen auf `v3.5.2` gezogen
-  ([`harness/conventions.md`](../../../../harness/conventions.md) 6×, [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) 3×,
-  [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md) 3×, [`roadmap.md`](../in-progress/roadmap.md) 1×).
+- [ ] **Doc-Reconciliation:** die **aktiven** `v3.5.1`-Referenzen auf `v3.5.2` gezogen.
+  **Zählung korrigiert (Verifikation A-1 / Review-Runde-2 N-3, bei `80eec58` nachgemessen):**
+  **15 Vorkommen** in 4 Dateien — [`harness/conventions.md`](../../../../harness/conventions.md) 6×,
+  [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) 3×,
+  [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md) 3×,
+  [`roadmap.md`](../in-progress/roadmap.md) **3×** (nicht 1× — die Kandidaten-Zeile trägt zwei).
+  Davon **11 gezogen**, **4 bewusst als historischer Bezug behalten** (Re-Baseline-Historie,
+  Reviewer-1.3.0-Eintrag, zwei Roadmap-Nennungen des Bump-Ziels).
   **Ausgenommen** (unverändert): frozen `done/`-Slices + `docs/reviews/**` (Zeitdokumente),
   **accepted ADRs** (Hard Rule 3.4 immutable — historischer Bezug bleibt), der vendored Baum selbst
   (wird ersetzt). Diese Slice-Datei darf `v3.5.1` als **historischen** Bezug führen.
@@ -77,7 +82,9 @@ dem Baum stillschweigend einzuziehen.
 - 5 Pin-Stellen unverändert an ihren Orten: `BASELINE_TAG`/`BASELINE_ZIP_SHA256`
   ([`Makefile`](../../../../Makefile)), `DefaultTag`/`DefaultBaselineSHA256`
   ([`internal/fetch/baseline.go`](../../../../internal/fetch/baseline.go)), [`.d-check.yml`](../../../../.d-check.yml)-`sources` (url + sha256).
-- Aktive Doc-Referenzen auf `v3.5.1`: 13 Vorkommen in 4 Dateien (Zählung in §2). Alles Weitere liegt
+- Aktive Doc-Referenzen auf `v3.5.1`: 13 Vorkommen in 4 Dateien (Zählung in §2). **Diese
+  Planungs-Messung war falsch — real 15** (`roadmap.md` trägt 3, nicht 1); korrigiert in §2, der
+  Fehler wird hier stehen gelassen statt überschrieben. Alles Weitere liegt
   in `done/`, `docs/reviews/**` oder im vendored Baum.
 
 **Normativer Delta — die eigentliche Arbeit.** v3.5.2 ergänzt in `grundlagen-konventionen.md`
