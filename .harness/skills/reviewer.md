@@ -1,7 +1,7 @@
 # Reviewer-Skill — ai-harness-init
 
-**Version:** 1.3.0 · **Datum:** 2026-07-24 ·
-**Baseline:** Agents-Regelwerk v3.5.1 (Kurs-Welle 33), Modul 10 §Ziel-Form: Reviewer-Skill
+**Version:** 1.4.0 · **Datum:** 2026-07-26 ·
+**Baseline:** Agents-Regelwerk v3.5.2 (Kurs-Welle 34), Modul 10 §Ziel-Form: Reviewer-Skill
 (Output-Schema, Kategorien-Semantik, Report-Pflicht, Pflicht-Kontext-Eingang).
 
 <!-- Versionierung (Modul 10): Änderungen werden versioniert, nicht überschrieben;
@@ -13,11 +13,14 @@ entfernt. 1.2.0 (slice-019): Baseline-Re-Pin v3.1.0→v3.5.0 (Welle 26→32); Mo
 ein `templates/`-Präfix) — reines Label-/Metadaten-Update, keine Änderung an den fünf
 Punkten / Output-Schema / Kategorien. 1.3.0 (slice-043): Baseline-Re-Pin v3.5.0→v3.5.1
 (Welle 32→33); die fünf Pflicht-Punkte / Output-Schema / Kategorien sind repo-gepflegt und
-unverändert übernommen — reines Baseline-Label-Update. -->
+unverändert übernommen — reines Baseline-Label-Update. 1.4.0 (slice-049): Baseline-Re-Pin
+v3.5.1→v3.5.2 (Welle 33→34); `modul-10-review-harness.md` änderte im Re-Vendor real **nur** seine
+eingebettete Quell-URL (`/v3.5.1/`→`/v3.5.2/`) — gemessen, nicht angenommen: nach Normalisierung
+der Versions-Strings ist der Diff leer. Wieder reines Baseline-Label-Update. -->
 
 ## Eingangs-Kontext (Pflicht — sonst nicht reproduzierbar)
 
-Der Reviewer erhält die **fünf v3.5.1-Pflicht-Punkte** (Modul 10): den
+Der Reviewer erhält die **fünf v3.5.2-Pflicht-Punkte** (Modul 10): den
 **Diff/Commit-Range**, die betroffenen `LH-*`-Anforderungen (in
 [`spec/lastenheft.md`](../../spec/lastenheft.md)), die **referenzierten aktiven ADRs**
 (deren ID im PR/Commit vorkommt), die **Hard Rules** ([`AGENTS.md`](../../AGENTS.md) §3)
