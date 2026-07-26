@@ -42,7 +42,11 @@ existiert**, nicht vorher.
   Doku des getaggten Standes liest und keinen Download findet.
 - [ ] **Handbuch-Kopf `Software-Stand`** von „Entwicklungsstand M4" auf den veröffentlichten Stand
   gezogen (M5 erreicht, `v0.1.0`).
-- [ ] **`spec/lastenheft.md` unberührt** — belegt per `git diff --stat`.
+- [ ] **`spec/lastenheft.md` unberührt — über die Commits DIESES Slice** (`63236d3..321b849`),
+  belegt per `git diff 63236d3..321b849 -- spec/lastenheft.md` (leer). **Range ausdrücklich
+  benannt** (Review-Runde-3-Befund INFO-1): seit `30f0fcd` liegt ein **Change-Request-Commit** am
+  Lastenheft im Repo — eine Nutzer-Entscheidung, kein Slice-Commit. Genau diese Unterscheidung
+  macht [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 2 lesbar; ohne die Range wäre die DoD-Aussage mehrdeutig.
   [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) ändert sich **nicht**: die Anforderung (sechs Kombinationen) und ihre
   Messmethode stehen seit 0.13.0 fest; dieser Slice beschreibt sie nur in Nutzer-Sprache. Wäre eine
   Lastenheft-Änderung nötig, ist das ein **eigener CR** ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)), kein Nebeneffekt.
