@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.13.0
+**Version:** 0.14.0
 
 **Status:** Draft
 
@@ -260,10 +260,10 @@ Verifikation), auf die seine `AGENTS.md` §1 (Source Precedence) zeigt — und l
   liefert die docker-CLI auf macOS/Windows).
 - **Messmethode:** Release liefert ein Binary je `GOOS`/`GOARCH`. Plattform-Nachweis
   in der CI-Matrix, **abgestuft nach dem, was die Runner hergeben**:
-  - **linux:** **Voll-Smoke** — Bootstrap in ein tmp-Repo, dort `make gates` grün
+  - **linux/amd64:** **Voll-Smoke** — Bootstrap in ein tmp-Repo, dort `make gates` grün
     (derselbe Nachweis wie [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)).
-  - **macos · windows:** **Start-Smoke** — das Binary läuft auf der Zielplattform,
-    meldet seine Usage und endet mit Exit 0.
+  - **linux/arm64 · macos · windows:** **Start-Smoke** — das Binary läuft auf der
+    Zielplattform, meldet seine Usage und endet mit Exit 0.
 - **Grenze der Messmethode (benannt statt weggelassen).** Ein Voll-Smoke auf macOS
   und Windows ist mit den gehosteten Runnern **nicht** erreichbar: die macOS-Images
   tragen **kein** Container-Runtime, und die Windows-Images bringen zwar Docker mit,
@@ -274,6 +274,16 @@ Verifikation), auf die seine `AGENTS.md` §1 (Source Precedence) zeigt — und l
   überdecken, die kein Lauf einlöst
   ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
   Sie schließt sich erst mit Plattform-Runnern, die Linux-Container fahren.
+- **Und eine zweite, technisch andere Grenze — `linux/arm64`.** Sie steht hier
+  getrennt, weil die Begründung oben für sie **nicht** trägt: ein Linux-ARM-Runner
+  fährt Linux-Container und *könnte* den Voll-Smoke prinzipiell tragen. Er läuft
+  dort heute schlicht **nicht** — der Voll-Smoke ist ein einzelner Job auf
+  `ubuntu-24.04` (amd64), keine Matrix. Der Wortlaut beschreibt damit, was real
+  läuft, statt eine breitere Abdeckung zuzusagen, die kein Lauf einlöst
+  ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+  Diese Grenze schließt sich **ohne** neue Plattform-Runner: es genügt, den
+  Voll-Smoke zusätzlich auf einem Linux-ARM-Runner zu fahren. Ob das geschieht,
+  ist eine eigene Entscheidung mit eigenem Trigger.
 
 ## 5. Globale Out-of-Scope-Punkte
 
@@ -309,3 +319,4 @@ Verifikation), auf die seine `AGENTS.md` §1 (Source Precedence) zeigt — und l
 | 0.11.0 | 2026-07-24 | CR: **Architektur-Achse** — [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) um `--arch <arch>` (Default `flat`, opt-in `hexagonal`) erweitert, **parallel** zur Sprach-Achse; der Generator komponiert `lang × arch` (arch-invariante Bau-Gerüstung + arch-gegatetes Code-Layout, `flat` byte-identisch, **N+M statt N×M**); neue AC (Arch-Achse + unbekannte Architektur → Exit 2). [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)-Happy-Path auf `--arch hexagonal` konkretisiert; a-check-**Emission konditional** auf ein schichten-tragendes Layout ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)), a-check-Tool-Verfügbarkeit (Pin/`--print-mk`) als Vorbedingung benannt. Zielrepo-Fokus (nicht ai-harness-init selbst), a-check emitted-only. Getrieben von [`ADR-0008`](../docs/plan/adr/0008-arch-achse-emittiertes-skelett.md) (nach zwei Proposed-Review-Runden accepted) | Arch-Achsen-CR (entsperrt M4) |
 | 0.12.0 | 2026-07-24 | CR: Arch-Wert **`hexagonal` → `hexslice`** (HexSlice = Hexagonal + Vertical Slice: `domain`/`application`/`ports`/`adapters` + Composition Root `cmd/`) in [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) + [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren); a-check-Tool-**Vorbedingung erfüllt** (v0.15.0, Digest-gepinnt, real verfügbar — statt „nur avisiert"). Getrieben von [`ADR-0009`](../docs/plan/adr/0009-hexslice-arch-realisierung.md) (verfeinert [`ADR-0008`](../docs/plan/adr/0008-arch-achse-emittiertes-skelett.md) nach der kanonischen `hexslice-architecture`-Referenz; nach zwei Proposed-Review-Runden accepted) | HexSlice-Realisierungs-CR |
 | 0.13.0 | 2026-07-25 | CR: Messmethode [`LH-QA-04`](../spec/lastenheft.md#lh-qa-04--plattform-matrix) **abgestuft** — Voll-Smoke auf linux, **Start-Smoke** auf macos/windows —, und die Grenze **benannt**: die gehosteten macOS-Runner tragen kein Container-Runtime, die Windows-Runner nur Windows-Container; ein Voll-Smoke ist dort nicht erreichbar (Runner-Images-Doku geprüft). Der bisherige Wortlaut „Plattform-Smoke in der CI-Matrix" war so **nicht einlösbar** und hätte als Gate eine Zusage getragen, die kein Lauf deckt ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Die **Anforderung** (Matrix linux · macos · windows × amd64 · arm64) bleibt unverändert; präzisiert wird allein, was sie belegt. Getrieben von slice-048 (Schritt 0, Doc-führt vor Code) | Messmethoden-CR (Plattform-Matrix) |
+| 0.14.0 | 2026-07-26 | CR: Messmethode [`LH-QA-04`](../spec/lastenheft.md#lh-qa-04--plattform-matrix) **präzisiert** — der Voll-Smoke gilt für **linux/amd64**, `linux/arm64` steht bei den Start-Smoke-Plattformen. Grund: der 0.13.0-Wortlaut sagte „linux" undifferenziert zu, real läuft der Voll-Smoke als **einzelner Job** auf `ubuntu-24.04` (amd64), und `linux/arm64` bekommt denselben Start-Smoke wie macos/windows. Die 0.13.0-Grenzbegründung (kein Linux-Container-Runtime auf den gehosteten macOS-/Windows-Runnern) trägt für einen **Linux**-ARM-Runner ausdrücklich **nicht**; die zweite Grenze steht deshalb als eigener Punkt und nennt ihre Auflösung (Voll-Smoke zusätzlich auf einem Linux-ARM-Runner fahren). Die **Anforderung** (Matrix linux · macos · windows × amd64 · arm64) bleibt unverändert; präzisiert wird allein, was sie belegt ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) | Nutzer-Entscheidung 2026-07-26 (Anlass: slice-050-Review N-2) |
