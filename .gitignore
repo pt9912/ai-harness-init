@@ -9,3 +9,8 @@
 # Ohne diesen Eintrag machte die dokumentierte Anleitung den Arbeitsbaum schmutzig
 # und verschoebe den MR-003-Working-Tree-Hash (Review-Befund F-5).
 /bin/
+
+# `make release-artifacts DEST=dist` (CI-Aufruf, seit slice-051 ohne vorheriges
+# mkdir) legt dist/ jetzt selbst an — lokal gefahren waere es sonst ungetrackt im
+# Arbeitsbaum (dieselbe Klasse wie /bin/, Verifier-Befund A-3).
+/dist/

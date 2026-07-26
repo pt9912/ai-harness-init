@@ -265,8 +265,11 @@ docker_stub() {
   docker_stub "$pathdir"
   DOCKER_STUB_LOG="$dir/aufrufe" PATH="$pathdir:$PATH" \
     run bash "$REPO/harness/tools/artifact-copy.sh" bild "$dir/bin" ai-harness-init
+  # Verifier-Befund A-1: `^rm ` allein genuegt nicht — ein trap auf eine FREMDE ID
+  # liesse den Waechter gruen, waehrend der erzeugte Container liegen bliebe. Geprueft
+  # wird deshalb die ID, die `docker create` zurueckgegeben hat.
   local aufgeraeumt=0
-  grep -q '^rm ' "$dir/aufrufe" && aufgeraeumt=1
+  grep -q '^rm -f cid-fake' "$dir/aufrufe" && aufgeraeumt=1
   rm -rf "$dir" "$pathdir"
   [ "$status" -eq 0 ]
   [ "$aufgeraeumt" -eq 1 ]
@@ -283,7 +286,7 @@ docker_stub() {
   STUB_CP_FAELLT=1 DOCKER_STUB_LOG="$dir/aufrufe" PATH="$pathdir:$PATH" \
     run bash "$REPO/harness/tools/artifact-copy.sh" bild "$dir/bin" ai-harness-init
   local aufgeraeumt=0
-  grep -q '^rm ' "$dir/aufrufe" && aufgeraeumt=1
+  grep -q '^rm -f cid-fake' "$dir/aufrufe" && aufgeraeumt=1
   rm -rf "$dir" "$pathdir"
   # Der Aufruf MUSS scheitern — sonst misst der Test den Erfolgsfall doppelt.
   [ "$status" -ne 0 ]
