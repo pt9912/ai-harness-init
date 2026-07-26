@@ -204,7 +204,7 @@ docker_stub() {
     'printf "%s\n" "$*" >> "${DOCKER_STUB_LOG:-/dev/null}"' \
     'case "$1" in' \
     '  create) echo "cid-fake" ;;' \
-    '  cp)     printf "binaerinhalt\n" > "$3" ;;' \
+    '  cp)     [ -n "${STUB_CP_FAELLT:-}" ] && exit 1; printf "binaerinhalt\n" > "$3" ;;' \
     '  rm)     : ;;' \
     '  *)      exit 99 ;;' \
     'esac' >"$1/docker"
@@ -269,6 +269,24 @@ docker_stub() {
   grep -q '^rm ' "$dir/aufrufe" && aufgeraeumt=1
   rm -rf "$dir" "$pathdir"
   [ "$status" -eq 0 ]
+  [ "$aufgeraeumt" -eq 1 ]
+}
+
+# Review-Runde-2-Befund N-1: der Test darueber prueft nur, DASS ein `rm` lief. Ein
+# nachgestelltes `docker rm` statt des traps haette ihn gruen gelassen — und damit
+# genau die Haelfte der Zusage verfehlt, die zaehlt: aufgeraeumt wird AUCH, wenn das
+# Kopieren scheitert. Hier faellt der Stub-`cp` absichtlich.
+@test "release: artifact-copy raeumt auch auf, wenn das Kopieren SCHEITERT" {
+  local dir pathdir
+  dir="$(mktemp -d)"; pathdir="$(mktemp -d)"
+  docker_stub "$pathdir"
+  STUB_CP_FAELLT=1 DOCKER_STUB_LOG="$dir/aufrufe" PATH="$pathdir:$PATH" \
+    run bash "$REPO/harness/tools/artifact-copy.sh" bild "$dir/bin" ai-harness-init
+  local aufgeraeumt=0
+  grep -q '^rm ' "$dir/aufrufe" && aufgeraeumt=1
+  rm -rf "$dir" "$pathdir"
+  # Der Aufruf MUSS scheitern — sonst misst der Test den Erfolgsfall doppelt.
+  [ "$status" -ne 0 ]
   [ "$aufgeraeumt" -eq 1 ]
 }
 

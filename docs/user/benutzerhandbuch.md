@@ -1,6 +1,6 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Handbuch-Version:** 1.6
+**Handbuch-Version:** 1.7
 **Software-Stand:** `v0.1.0` — erstes Release mit **vorgefertigten Programmen für sechs Plattformen** (linux · macos · windows × amd64 · arm64). Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat` oder `hexslice`; bei `hexslice` kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen); `hexslice` liefert derzeit nur der Go-Renderer.
 **Stand:** 2026-07-26
 **Verantwortlich:** ai-harness-init-Team (pt9912)
@@ -142,7 +142,7 @@ Sie bauen das Programm einmalig selbst — das geschieht komplett in Docker, Sie
 
 Im Ordner **bin** liegt das ausführbare Programm `ai-harness-init`. Kopieren Sie es bei Bedarf an eine Stelle auf Ihrem Pfad (zum Beispiel nach `~/.local/bin`), damit Sie es überall unter dem kurzen Namen aufrufen können.
 
-> **Hinweis:** `make artifact DEST=./bin` verlangt die Angabe `DEST`. Ohne sie bricht der Befehl mit einer klaren Meldung ab. Den Zielordner müssen Sie **nicht** vorher anlegen — er wird erstellt, falls er fehlt.
+> **Hinweis:** Weg B baut den Stand, den Sie geklont haben (Schritt 1 holt den aktuellen Entwicklungsstand, nicht die veröffentlichte Version) — die Angaben hier beziehen sich darauf. `make artifact DEST=./bin` verlangt die Angabe `DEST`. Ohne sie bricht der Befehl mit einer klaren Meldung ab. Den Zielordner müssen Sie **nicht** vorher anlegen — er wird erstellt, falls er fehlt.
 
 ---
 
@@ -308,7 +308,7 @@ ai-harness-init --lang go --name "Mein Projekt"
 
 **Ergebnis:** Der Lauf ist **idempotent** (Exit-Code 0). Die werkzeug-eigene Infrastruktur (Prüf-Konfiguration, Hooks, die zentrale `Makefile`, Regelwerk) wird auf den mitgelieferten Soll-Stand **aufgefrischt** — das heilt Abweichungen und zieht ein neueres Regelwerk nach. **Von Ihnen gefüllte Dateien** — die Dokumente unter `spec/`, `README.md`, `AGENTS.md`, Ihr Quellcode im Grundgerüst (`go.mod`, `cmd/app/main.go` …) — bleiben **unangetastet**.
 
-**Hinweise:** Es gibt **kein** `--force` und **keinen** Kollisions-Abbruch mehr (frühere Versionen kannten das). Wollen Sie eine von Ihnen bearbeitete werkzeug-eigene Datei bewusst auf den Ausgangsstand zurücksetzen, löschen Sie sie vor dem Re-Lauf — dann wird sie neu geschrieben.
+**Hinweise:** Es gibt **kein** `--force` und **keinen** Kollisions-Abbruch. Wollen Sie eine von Ihnen bearbeitete werkzeug-eigene Datei bewusst auf den Ausgangsstand zurücksetzen, löschen Sie sie vor dem Re-Lauf — dann wird sie neu geschrieben.
 
 ### Eine andere Kurs-Version verwenden
 
@@ -545,8 +545,11 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 
 ## 11. Änderungshistorie
 
+> **Wo Versions-Aussagen hingehören.** Der Rumpf dieses Handbuchs beschreibt den **Ist-Stand**. Aussagen der Form „**ab** Version X gibt es Y" bleiben dort — sie sind eine Fähigkeits-Angabe mit Gültigkeitsgrenze, die Sie beim Lesen brauchen. Aussagen der Form „**in** Version X war es noch anders" gehören **hierher**: sie wachsen mit jeder Korrektur weiter und verdrängen sonst den Ist-Stand aus dem Fließtext.
+
 | Handbuch-Version | Stand | Änderung |
 |---|---|---|
+| 1.7 | 2026-07-26 | Regel, wo Versions-Aussagen hingehören, als Kasten über dieser Tabelle verankert — sie stand bis dahin nur in einer Commit-Message. Zwei Folgen davon: der Rückblick „(frühere Versionen kannten das)" im Re-Lauf-Abschnitt ist hierher gewandert (gemeint war der Wegfall von `--force` und Kollisions-Abbruch), und Weg B benennt jetzt, dass er den **geklonten Entwicklungsstand** baut, nicht die veröffentlichte Version. |
 | 1.6 | 2026-07-26 | `make artifact DEST=<ordner>` legt den Zielordner jetzt selbst an. Bis einschließlich `v0.1.0` brach der Befehl mit `invalid output path: directory … does not exist` ab, wenn der Ordner fehlte — obwohl die Anleitung genau diesen Aufruf vorschreibt (von einem Nutzer gemeldet). Der Hinweis im Installations-Abschnitt sagt das jetzt; die Versions-Abgrenzung steht hier statt im Fließtext. |
 | 1.5 | 2026-07-26 | **Erstes Release `v0.1.0`**: fertige Programme für sechs Plattformen (Linux · macOS · Windows × Intel/AMD · ARM) sind der empfohlene Weg; §2 in Weg A (Download) und Weg B (aus dem Quellcode bauen) geteilt, mit Dateitabelle, Suchpfad-Hinweis und macOS-Quarantäne-Hinweis. Neuer Kasten „Was wo geprüft wird": der vollständige Durchlauf läuft auf Linux/Intel-AMD, beim Release wird auf allen sechs Dateien nur der **Start** geprüft. FAQ, Anhang und Systemanforderungen nachgezogen; FAQ-Sprachliste um `cpp` korrigiert. |
 | 1.4 | 2026-07-25 | **Bauform `--arch`** (slice-045b/046): `hexslice` erzeugt ein geschichtetes Grundgerüst und liefert das **Architektur-Gate** (`.a-check.yml` + `a-check.mk`) mit, `flat` (Standard) nicht. Neuer Aufgaben-Abschnitt samt Pflege-Hinweis für zusätzliche Use-Case-Schnitte, Optionstabelle, `add-lang`-Signatur, `A_CHECK_IMAGE`/`A_CHECK_DIGEST` und Phase-2-Beschreibung nachgezogen. Nachzug: das Handbuch kannte die Achse seit zwei Slices nicht. |
