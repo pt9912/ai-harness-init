@@ -273,7 +273,9 @@ Antwort, keine Kategorie-Änderung.
   2. *Die zitierte Repo-Praxis trägt nicht:* `14e3455` sagt im Betreff ausdrücklich
      „keine Inbound-Links zu ziehen"; `ec16f77` behauptet „+ Inbound-Links im selben
      Commit", sein `--stat` zeigt aber **1 Datei / 0 Insertions** — die Praxis wurde nie
-     ausgeübt, die Commit-Message überzeichnet. Es gibt im Repo **keine** adoptierte
+     ausgeübt, die Commit-Message überzeichnet. <!-- WIDERLEGT (Runde 2, N-1): `08410bc`
+     zieht 7 Inbound-Links über 5 Dateien im selben Move-Commit. Satz bleibt als
+     Zeitdokument stehen; Korrektur am Ende dieser Datei. --> Es gibt im Repo **keine** adoptierte
      Konvention, die Zwischen-Commits gate-grün verlangt; `make gates` ist an den Handoff
      gebunden, CI an den gepushten Head.
   3. *Abhilfe wäre unverhältnismäßig:* beide Commits liegen bereits auf `origin/main`
