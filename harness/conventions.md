@@ -641,8 +641,10 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 - **Datum:** 2026-07-26
 - **Geltungsbereich:** `spec/lastenheft.md` §7 Historie (**Form künftiger** Einträge, nicht die
-  bestehenden), die Commit-Disziplin um diese Datei, [`AGENTS.md`](../AGENTS.md) §3.4/§3.5-Umfeld;
-  adoptiert den Normativ-Delta, den die Baseline `v3.5.2` mitbringt
+  bestehenden) und die Commit-Disziplin um diese Datei. [`AGENTS.md`](../AGENTS.md) bleibt
+  **unverändert**: dies ist eine MR-Adaption, **keine** neue Hard Rule — ob die Setzung in den
+  Hard-Rule-Katalog gehört, entscheidet der Slice, der ihren Sensor baut (s. §Durchsetzung).
+  Adoptiert den Normativ-Delta, den die Baseline `v3.5.2` mitbringt
   (`.harness/baseline/v3.5.2/regelwerk/grundlagen-konventionen.md`, §Spec-Stratifizierung).
 - **Der adoptierte Wortlaut** (verbatim aus dem vendored Baum, nicht paraphrasiert):
 
@@ -674,15 +676,30 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Externalität des Ticket-Systems, sondern die **Trennung der Entscheidung von der Umsetzung** —
   und die ist hier real herstellbar.
 - **Setzung 2 — die Trennung ist am Commit ablesbar, nicht an der Prosa.** Ein angenommener CR
-  landet in einem **eigenen Commit**, der **ausschließlich** `spec/lastenheft.md` ändert und
-  **vor** dem `open → in-progress`-Move des umsetzenden Slice liegt. Damit ist die Frage
-  nachträglich mechanisch beantwortbar: `git log -- spec/lastenheft.md` + `git show --stat`.
-  **Gemessen (2026-07-26):** alle 13 CR-Zeilen stammen aus eigenen `spec:`/`plan:`-Commits; kein
-  `LH-*` wurde je in einem Slice-Inhalts-Commit geändert. **Ein Commit berührte die Datei doch**
-  (`7b717f4`, slice-048-Findings) — er drehte in §7 die Zeilen 0.12.0/0.13.0 in die richtige
-  Reihenfolge, änderte also **keine** Anforderung. Substanziell unbedenklich, mechanisch aber
-  genau das, was das Signal verwischt: darum gilt die Setzung **auch für rein redaktionelle**
-  Änderungen an `spec/lastenheft.md` — eigener Commit, sonst ist die Trennung nicht mehr lesbar.
+  landet **ab diesem Eintrag** in einem **eigenen Commit**, der **ausschließlich**
+  `spec/lastenheft.md` ändert und **vor** dem `open → in-progress`-Move des umsetzenden Slice
+  liegt. Damit ist die Frage nachträglich mechanisch beantwortbar:
+  `git log -- spec/lastenheft.md` + `git show --stat`.
+- **Setzung 2 ist eine NEUE Disziplin, keine Beschreibung des Ist-Standes** — gemessen, nicht
+  geschätzt. *(Die erste Fassung dieses Eintrags behauptete hier das Gegenteil; der Review zu
+  slice-049 hat sie widerlegt. Der Befund ist die eigene Klasse dieses Repos —
+  [`AGENTS.md`](../AGENTS.md) §3.6, „Zusage weiter als Abdeckung" — und wird darum stehen
+  gelassen statt geglättet.)* **Ist-Messung 2026-07-26:** **16 Commits** berühren
+  `spec/lastenheft.md`; **6** ändern sie allein (`5c4930b`, `9ce4721`, `af0d454`, `2c8227b`,
+  `2879429`, `27628b5`), **10 bündeln** sie. Die Bündel zerfallen in drei Klassen:
+  **sieben Entscheidungs-Bündel**, die das Lastenheft gemeinsam mit dem **ADR** tragen, der die
+  Entscheidung trug (`43f1eda`, `65f4bcf`, `ec3af11`, `a0e74f1`, `bc447fe`), bzw. mit
+  [`harness/conventions.md`](conventions.md) (`beec837`) oder einer Slice-Datei (`4b0d0d5`);
+  der **Initial-Bootstrap** (`d30db38`, 21 Dateien); und **zwei rein redaktionelle** Berührungen
+  (`c615da7` — Link-Form einer Historie-Zeile bei der Doc-Gate-Schärfung; `7b717f4` —
+  Zeilenreihenfolge 0.12.0/0.13.0 im slice-048-Fix).
+- **Was der Ist-Stand trotzdem belegt.** Keine **Anforderung** wurde je in einem
+  Slice-Implementierungs-Commit **inhaltlich** geändert: die beiden slice-nahen Berührungen sind
+  genau die zwei redaktionellen. Die **substanzielle** Regel hält also; das **mechanische**
+  Merkmal wird hier neu eingeführt. Es gilt **auch für rein redaktionelle** Änderungen —
+  `c615da7`/`7b717f4` sind der Beleg, dass genau die das Signal verwischen.
+  **Cutoff:** geprüft wird ab dem Commit, der diesen Eintrag trägt. Ein Sensor, der die Historie
+  mitprüfte, wäre dauerhaft rot (10 von 16) und entwertete die Setzung, statt sie zu tragen.
 - **Setzung 3 — die Verweis-Spalte nennt die annehmende Instanz, die Änderungs-Spalte den Anlass.**
   Künftige Zeilen tragen im Verweis den annehmenden Akt (`Nutzer-Entscheidung YYYY-MM-DD`), nicht
   den umsetzenden Slice; der Anlass (ein ADR, ein Slice-Befund) bleibt in der Änderungs-Spalte.
