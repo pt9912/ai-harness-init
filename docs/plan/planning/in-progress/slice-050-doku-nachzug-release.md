@@ -42,15 +42,16 @@ existiert**, nicht vorher.
   Doku des getaggten Standes liest und keinen Download findet.
 - [ ] **Handbuch-Kopf `Software-Stand`** von „Entwicklungsstand M4" auf den veröffentlichten Stand
   gezogen (M5 erreicht, `v0.1.0`).
-- [ ] **`spec/lastenheft.md` unberührt — über die Commits DIESES Slice** (`63236d3..321b849`),
-  belegt per `git diff 63236d3..321b849 -- spec/lastenheft.md` (leer). **Range ausdrücklich
-  benannt** (Review-Runde-3-Befund INFO-1, Zahl korrigiert nach Runde-4-Befund S-2): **jeder**
-  Commit, der `spec/lastenheft.md` ändert, liegt **außerhalb** dieser Range — es sind
-  Nutzer-Entscheidungen (Change Requests) bzw. deren Korrekturen, keine Slice-Commits, und ihre
-  Zahl wächst weiter. **Statt einer Zahl der Messbefehl:**
-  `git log --format=%h --no-merges 63236d3..321b849 -- spec/lastenheft.md` ist leer.
-  Genau diese Unterscheidung macht [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 2 lesbar; ohne die Range wäre die
-  DoD-Aussage mehrdeutig.
+- [ ] **Kein Commit DIESES Slice ändert `spec/lastenheft.md`.** Geprüft wird die **volle**
+  Slice-Range bis zum Closure-Stand, nicht ein eingefrorener Ausschnitt (Runde-5-Befund T-2), und
+  die Aussage gilt **nur für diesen Slice** — sie ist **kein** Allquantor über die Repo-Historie
+  (Runde-5-Befund T-1: `7b717f4` ist ein Slice-Commit an `spec/lastenheft.md`, von
+  [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) §Ist-Messung selbst gelistet — genau deshalb entstand die Setzung).
+  **Messbefehl statt Zahl** (Runde-4-Befund S-2):
+  `git log --format='%h %s' 63236d3..HEAD -- spec/lastenheft.md` listet **ausschließlich**
+  `spec:`-Commits, die Nutzer-Entscheidungen tragen (Change Requests bzw. deren Korrekturen) —
+  kein `impl:`/`fix:`/`close:`-Commit dieses Slice. Genau diese Unterscheidung macht
+  [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 2 nachträglich lesbar.
   [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) ändert sich **nicht**: die Anforderung (sechs Kombinationen) und ihre
   Messmethode stehen seit 0.13.0 fest; dieser Slice beschreibt sie nur in Nutzer-Sprache. Wäre eine
   Lastenheft-Änderung nötig, ist das ein **eigener CR** ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)), kein Nebeneffekt.
