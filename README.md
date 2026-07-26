@@ -74,7 +74,7 @@ dasteht.
 - **Prozess:** [`AGENTS.md`](AGENTS.md) (Hard Rules), [`harness/README.md`](harness/README.md) (Source Precedence, Sensors).
 - **Verträge:** [`spec/lastenheft.md`](spec/lastenheft.md) (`LH-*`-IDs mit Akzeptanzkriterien).
 - **Entscheidungen:** [`docs/plan/adr/`](docs/plan/adr/) — z. B. [`ADR-0005`](docs/plan/adr/0005-ziel-repo-distribution.md) (Ziel-Repo-Distributionsmodell).
-- **Gates:** `make docs-check` (links/anchors/ids/codepaths), `make test` (Command-Guard bats + Go-Unit-Tests), `make lint`/`make build` (Go via Dockerfile-Stages), `make shell-lint` (shellcheck) — grün; `make gates` bündelt sie. (Das arch-Gate a-check folgt mit dem Go-Code.)
+- **Gates:** `make gates` bündelt sieben — `make baseline-verify` (vendored Baseline netzlos), `make docs-check` (links/anchors/ids/codepaths), `make lint`/`make build` (Go via Dockerfile-Stages), `make test` (Command-Guard bats + Go-Unit-Tests), `make shell-lint` (shellcheck), `make ci-lint` (actionlint) — alle grün. Das Architektur-Gate a-check ist **nicht** dabei: es wird in Zielrepos mit geschichtetem Grundgerüst **emittiert**, hier hätte es einen leeren Prüfbereich.
 - **Absicherung + Herkunft:** `make gates` läuft grün und Docker-only; CI fährt ihn pro Push auf einem frischen Klon. Regelwerk und Vorlagen liegen committet vendored unter `.harness/baseline/` (netzunabhängig, reproduzierbar). Der Voll-E2E-Smoke `make full-smoke` bootstrappt real in ein Wegwerf-Repo und lässt dort `make gates` grün laufen.
 
 ## Lizenz
