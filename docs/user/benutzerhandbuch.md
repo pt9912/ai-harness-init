@@ -142,7 +142,7 @@ Sie bauen das Programm einmalig selbst — das geschieht komplett in Docker, Sie
 
 Im Ordner **bin** liegt das ausführbare Programm `ai-harness-init`. Kopieren Sie es bei Bedarf an eine Stelle auf Ihrem Pfad (zum Beispiel nach `~/.local/bin`), damit Sie es überall unter dem kurzen Namen aufrufen können.
 
-> **Hinweis:** `make artifact DEST=./bin` verlangt die Angabe `DEST`. Ohne sie bricht der Befehl mit einer klaren Meldung ab.
+> **Hinweis:** `make artifact DEST=./bin` verlangt die Angabe `DEST`. Ohne sie bricht der Befehl mit einer klaren Meldung ab. Den Zielordner müssen Sie **nicht** vorher anlegen — er wird erstellt, falls er fehlt. (In `v0.1.0` war das noch nicht so: dort schlug der Befehl mit `invalid output path: directory … does not exist` fehl, wenn der Ordner nicht existierte.)
 
 ---
 

@@ -182,3 +182,60 @@ mk_platforms() {
   rm -rf "$dir"
   [ "$status" -ne 0 ]
 }
+
+# --- slice-051: artifact-copy legt DEST an --------------------------------------
+#
+# Anlass war ein NUTZER-BERICHT, kein Sensor: `make artifact DEST=./bin` schlug fehl,
+# wenn `bin` fehlte. Kein Test konnte das fangen, weil die Logik inline im Recipe lag
+# und das bats-Image weder `make` noch eine docker-CLI hat (gemessen). Als Skript ist
+# sie pruefbar — der Stub unten braucht keinen Daemon.
+#
+# WICHTIG, damit der Test nicht sich selbst prueft: der Stub bildet den REALEN
+# Fehlermodus ab. Sein `cp` schreibt mit `>` in den Zielpfad und faellt daher — wie
+# `docker cp` — wenn das Verzeichnis fehlt. Der Test haengt also an der beobachtbaren
+# WIRKUNG (Verzeichnis da, Datei da), nicht daran, dass der Stub aufgerufen wurde.
+docker_stub() {
+  printf '%s\n' \
+    '#!/usr/bin/env bash' \
+    'case "$1" in' \
+    '  create) echo "cid-fake" ;;' \
+    '  cp)     printf "binaerinhalt\n" > "$3" ;;' \
+    '  rm)     : ;;' \
+    '  *)      exit 99 ;;' \
+    'esac' >"$1/docker"
+  chmod +x "$1/docker"
+}
+
+@test "release: artifact-copy legt ein FEHLENDES Zielverzeichnis an" {
+  local dir pathdir
+  dir="$(mktemp -d)"; pathdir="$(mktemp -d)"
+  docker_stub "$pathdir"
+  # Der Kern des Nutzer-Befunds: DEST existiert NICHT.
+  [ ! -d "$dir/bin" ]
+  PATH="$pathdir:$PATH" run bash "$REPO/harness/tools/artifact-copy.sh" bild "$dir/bin" ai-harness-init
+  local ok_dir=1 ok_file=1
+  [ -d "$dir/bin" ] || ok_dir=0
+  [ -s "$dir/bin/ai-harness-init" ] || ok_file=0
+  rm -rf "$dir" "$pathdir"
+  [ "$status" -eq 0 ]
+  [ "$ok_dir" -eq 1 ]
+  [ "$ok_file" -eq 1 ]
+}
+
+@test "release: artifact-copy schreibt auch in ein BESTEHENDES Zielverzeichnis" {
+  local dir pathdir
+  dir="$(mktemp -d)"; pathdir="$(mktemp -d)"
+  docker_stub "$pathdir"
+  mkdir -p "$dir/bin"
+  PATH="$pathdir:$PATH" run bash "$REPO/harness/tools/artifact-copy.sh" bild "$dir/bin" ai-harness-init-linux-amd64
+  local ok_file=1
+  [ -s "$dir/bin/ai-harness-init-linux-amd64" ] || ok_file=0
+  rm -rf "$dir" "$pathdir"
+  [ "$status" -eq 0 ]
+  [ "$ok_file" -eq 1 ]
+}
+
+@test "release: artifact-copy verlangt alle drei Argumente (Exit 2)" {
+  run bash "$REPO/harness/tools/artifact-copy.sh" bild "/tmp"
+  [ "$status" -eq 2 ]
+}

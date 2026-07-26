@@ -47,7 +47,6 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-      - run: mkdir -p dist
       - run: make release-artifacts DEST=dist
       - name: Inventar zeigen (Beleg im Lauf-Log, nicht nur Exit 0)
         run: ls -l dist

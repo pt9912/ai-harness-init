@@ -61,9 +61,7 @@ build: ## Go-Binary cross-compilieren (Dockerfile build-Stage, gepinntes Image) 
 # Der Container wird immer aufgeraeumt (trap), auch wenn `docker cp` scheitert.
 artifact: build ## Natives Release-Binary auf den Host ziehen (DEST=<dir>) — für die Smokes, Docker-only
 	@test -n "$(DEST)" || { echo "artifact: DEST=<dir> ist Pflicht (Zielverzeichnis)"; exit 2; }
-	@cid="$$(docker create ai-harness-init:build true)"; \
-	trap 'docker rm -f "$$cid" >/dev/null 2>&1' EXIT; \
-	docker cp "$$cid:/out/ai-harness-init" "$(DEST)/ai-harness-init"
+	@bash harness/tools/artifact-copy.sh ai-harness-init:build "$(DEST)" ai-harness-init
 
 # Plattform-Matrix (LH-QA-04): ein natives Binary je GOOS/GOARCH, cross-kompiliert
 # im GEPINNTEN Image (kein Host-Toolchain, ADR-0003). Die Liste ist eine Variable,
@@ -91,10 +89,7 @@ release-artifacts: ## Alle Release-Binaries der Plattform-Matrix nach DEST=<dir>
 		docker build --no-cache-filter build --build-arg GO_VERSION=$(GO_VERSION) \
 			--build-arg TARGET_OS="$$os" --build-arg TARGET_ARCH="$$arch" \
 			--target build -t "$$tag" . ; \
-		cid="$$(docker create "$$tag" true)"; \
-		trap 'docker rm -f "$$cid" >/dev/null 2>&1' EXIT; \
-		docker cp "$$cid:/out/ai-harness-init" "$(DEST)/ai-harness-init-$$os-$$arch$$ext"; \
-		docker rm -f "$$cid" >/dev/null 2>&1; trap - EXIT; \
+		bash harness/tools/artifact-copy.sh "$$tag" "$(DEST)" "ai-harness-init-$$os-$$arch$$ext"; \
 	done
 	@echo "release-artifacts: OK — $(words $(RELEASE_PLATFORMS)) Binaries in $(DEST)"
 
