@@ -11,7 +11,7 @@ nicht wiederholt.** Drei Artefakte:
    **R-3 (LOW)**; eine Datei ([`spec/lastenheft.md`](../../spec/lastenheft.md), +9/−5).
 2. **`3780d21`** („fix(docs): slice-050 Review-Runde-3-Findings") — Auflösung von **R-2 (MEDIUM)**
    und **INFO-1**; zwei Dateien
-   ([`slice-050-doku-nachzug-release.md`](../plan/planning/in-progress/slice-050-doku-nachzug-release.md) +5/−1,
+   (`in-progress/slice-050-doku-nachzug-release.md` +5/−1,
    [`2026-07-26-slice-050-impl-review-runde-3.md`](2026-07-26-slice-050-impl-review-runde-3.md) 524 Zeilen neu).
 3. **Der Release-Text von `v0.1.0`** — ein Artefakt **außerhalb von git**, per
    `gh release view v0.1.0 --json body` gelesen.
@@ -22,7 +22,7 @@ Implementation und Verifikation und von den Runden 1–3.
 
 **Eingangs-Kontext** (die Verträge, gegen die geprüft wurde):
 
-- Slice-Plan: [`in-progress/slice-050-doku-nachzug-release.md`](../plan/planning/in-progress/slice-050-doku-nachzug-release.md) (§1 Ziel, §2 DoD, §3 Dateitabelle, §5 Closure-Trigger)
+- Slice-Plan: `in-progress/slice-050-doku-nachzug-release.md` (§1 Ziel, §2 DoD, §3 Dateitabelle, §5 Closure-Trigger)
 - berührte `LH-*`-IDs: [`LH-QA-04`](../../spec/lastenheft.md#lh-qa-04--plattform-matrix) (Anforderung, Messmethode, **beide** Grenz-Notizen),
   [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)
 - aktive ADRs: keine im Diff geändert; mittelbar [`ADR-0003`](../plan/adr/0003-go-native-binaries.md) (Docker-only)
@@ -184,7 +184,7 @@ ist eine Aussage im Text, nicht der Weg, auf dem er entstand.
 - `kategorie`: **MEDIUM**
 - `quelle`: Hard Rule [`AGENTS.md`](../../AGENTS.md) §3.6 („Keine Zusage ohne rot gesehenes Gegenbeispiel";
   „**Richtig:** die Zusage auf das einschränken, was der Code hält") · Slice-Plan
-  [`slice-050-doku-nachzug-release.md`](../plan/planning/in-progress/slice-050-doku-nachzug-release.md):39–42 DoD (das dort benannte Gegenbeispiel) ·
+  `in-progress/slice-050-doku-nachzug-release.md`:39–42 DoD (das dort benannte Gegenbeispiel) ·
   Runde-1-Findings F-5/F-6/F-7 · Runde-3-Finding R-2 (**derselbe Satzbau, enger gefasst**)
 - `pfad`: `gh release view v0.1.0 --json body`, Absatz 3, letzter Satz („**Die sechs Binaries sind
   davon nicht betroffen**, ebenso wenig die Download- und Installationsschritte selbst.")
@@ -230,7 +230,7 @@ ist eine Aussage im Text, nicht der Weg, auf dem er entstand.
 - `kategorie`: **LOW**
 - `quelle`: [`MR-015`](../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 2 · Hard Rule [`AGENTS.md`](../../AGENTS.md) §3.6
   (die Regel führt „**Commit-Message**" ausdrücklich als Zusage-Träger)
-- `pfad`: [`slice-050-doku-nachzug-release.md`](../plan/planning/in-progress/slice-050-doku-nachzug-release.md):47
+- `pfad`: `in-progress/slice-050-doku-nachzug-release.md`:47
 - `befund`: Der Punkt lautet: „seit `30f0fcd` liegt **ein** **Change-Request-Commit** am Lastenheft
   im Repo". Zum Zeitpunkt von `3780d21` (11:18:11) lagen **zwei** Commits an dieser Datei
   (`git log --oneline 30f0fcd~1..HEAD -- spec/lastenheft.md` → `614351e`, `30f0fcd`); `614351e`

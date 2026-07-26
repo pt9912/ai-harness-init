@@ -21,7 +21,7 @@
 | **Referenzierte aktive ADRs** | keine — beide Commits nennen keine ADR-ID; kein Go-Code, kein Gate, kein Workflow berührt |
 | **Hard Rules** | [`AGENTS.md`](../../AGENTS.md) §3, insbesondere §3.6 („Keine Zusage ohne rot gesehenes Gegenbeispiel"; „DoD-Punkt" und „Commit-Message" sind dort ausdrücklich Zusage-Träger) |
 | **Vorherige Findings am gleichen Modul** | Runde 4 S-1/S-2/S-3/S-4 ([`2026-07-26-slice-050-impl-review-runde-4.md`](2026-07-26-slice-050-impl-review-runde-4.md)) inkl. Implementations-Nachtrag |
-| **Slice-Plan** (Repo-Ergänzung) | [`slice-050-doku-nachzug-release.md`](../plan/planning/in-progress/slice-050-doku-nachzug-release.md) |
+| **Slice-Plan** (Repo-Ergänzung) | `in-progress/slice-050-doku-nachzug-release.md` |
 | Konventions-Anker | [`MR-015`](../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) (Change Request bei Personalunion), [`MR-001`](../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) |
 
 **Messumgebung.** `HEAD` = `85e3c26`; `origin/main` lokal = `3780d21`; `git ls-remote origin refs/heads/main`
@@ -72,7 +72,7 @@ Dateien verengt, der Satz darüber ist es nicht.
 
 ### S-2 (LOW) — DoD-Punkt zählt die Lastenheft-Commits falsch · **im Kern behoben, zwei Restdefekte** → T-1, T-2
 
-Der DoD-Punkt ([`slice-050-doku-nachzug-release.md`](../plan/planning/in-progress/slice-050-doku-nachzug-release.md):45–53) nennt **keine Zahl** mehr. Er trägt jetzt eine
+Der DoD-Punkt (`in-progress/slice-050-doku-nachzug-release.md`:45–53) nennt **keine Zahl** mehr. Er trägt jetzt eine
 Regel plus den Messbefehl. **Selbst gefahren** (Prüfpunkt (B)):
 
 ```
@@ -146,7 +146,7 @@ Sortiert nach Kategorie (Modul 10: „HIGH zuerst, immer" — hier gibt es keine
 - `kategorie`: **LOW**
 - `quelle`: Hard Rule [`AGENTS.md`](../../AGENTS.md) §3.6 (der „DoD-Punkt" ist dort ausdrücklich Zusage-Träger) ·
   [`MR-015`](../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) §Ist-Messung
-- `pfad`: [`slice-050-doku-nachzug-release.md`](../plan/planning/in-progress/slice-050-doku-nachzug-release.md):47–49
+- `pfad`: `in-progress/slice-050-doku-nachzug-release.md`:47–49
 - `befund`: Der Satz lautet „**jeder** Commit, der `spec/lastenheft.md` ändert, liegt **außerhalb**
   dieser Range — es sind Nutzer-Entscheidungen (Change Requests) bzw. deren Korrekturen, **keine
   Slice-Commits**". Der zweite Teil ist als Allquantor formuliert und ist falsch:
@@ -175,7 +175,7 @@ Sortiert nach Kategorie (Modul 10: „HIGH zuerst, immer" — hier gibt es keine
 
 - `kategorie`: **LOW**
 - `quelle`: Hard Rule [`AGENTS.md`](../../AGENTS.md) §3.6 · Skill-Anker LOW („latente Wartungsfalle, hart verdrahteter Wert")
-- `pfad`: [`slice-050-doku-nachzug-release.md`](../plan/planning/in-progress/slice-050-doku-nachzug-release.md):45–46
+- `pfad`: `in-progress/slice-050-doku-nachzug-release.md`:45–46
 - `befund`: Der Punkt setzt „**die Commits DIESES Slice**" mit `63236d3..321b849` gleich. Diese Range
   enthält fünf Commits (`git log --oneline 63236d3..321b849`: `813418c`, `38b60ed`, `0c31697`,
   `a4dac1f`, `321b849`). Der Slice hat seither **drei weitere** Commits bekommen — `3780d21`,

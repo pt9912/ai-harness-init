@@ -19,7 +19,7 @@ Implementation und Verifikation.
 **Eingangs-Kontext** (die Verträge, gegen die geprüft wurde — ohne diese Liste ist der Lauf
 nicht reproduzierbar):
 
-- Slice-Plan: [`in-progress/slice-050-doku-nachzug-release.md`](../plan/planning/in-progress/slice-050-doku-nachzug-release.md)
+- Slice-Plan: `in-progress/slice-050-doku-nachzug-release.md`
   (§1 Ziel, §2 DoD, §3 Plan, §4 Trigger, §5 Closure, §6 Risiken)
 - berührte `LH-*`-IDs: [`LH-QA-04`](../../spec/lastenheft.md#lh-qa-04--plattform-matrix)
   (samt §*Grenze der Messmethode*), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),

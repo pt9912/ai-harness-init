@@ -82,7 +82,7 @@ enthält der Rest des Handbuchs keine zweite Installations-Beschreibung.
   `ai-harness-init-windows-arm64.exe`.
 - **Release-Pfad ist bewiesen, nicht der Meilenstein:** die `v0.1.0-RC`-Probe lief grün über alle
   acht Jobs (Bau, sechs Plattform-Start-Smokes, `publish`); das Prerelease wurde danach entfernt
-  ([slice-048](../done/slice-048-release-artefakte.md) §Nachtrag). `git tag` ist **leer** — es gibt noch keinen Tag.
+  ([slice-048](slice-048-release-artefakte.md) §Nachtrag). `git tag` ist **leer** — es gibt noch keinen Tag.
 - **`publish` feuert nur auf einem Tag-Push** (Bedingung `github.event_name == 'push'` **und**
   `refs/tags/`-Präfix) — ein `workflow_dispatch` veröffentlicht bewusst nicht.
 
@@ -100,7 +100,7 @@ pushen, `release`-Lauf beobachten. (3) Assets zählen. (4) Roadmap fortschreiben
 ## 4. Trigger
 
 **`open` → `in-progress` (Implementer beginnt):** M5 Schritt 1 ist erledigt —
-[slice-049](../done/slice-049-baseline-bump-v3.5.2.md) hat die Baseline auf `v3.5.2` gezogen und ist am 2026-07-26 geschlossen
+[slice-049](slice-049-baseline-bump-v3.5.2.md) hat die Baseline auf `v3.5.2` gezogen und ist am 2026-07-26 geschlossen
 (`baseline-freshness` Exit 0). Keine aktive Welle, kein Vorgänger blockiert.
 
 **Kopplung an Schritt 3, ausdrücklich benannt statt versteckt.** Der Doku-Nachzug und der Tag sind
@@ -170,7 +170,7 @@ Download-Weg verneint.
 Review-Runden** für einen Doku-Nachzug. Kein einziger Befund traf die Doku-*Absicht*; **alle**
 trafen **Ist-Aussagen über einen Zustand**, und zwar immer nach demselben Muster: eine Behauptung
 greift weiter als das, was gemessen wurde. Die Klasse ist dieselbe wie in
-[slice-049](../done/slice-049-baseline-bump-v3.5.2.md) — aber sie ist **gewandert**, und die Wanderung ist der Befund:
+[slice-049](slice-049-baseline-bump-v3.5.2.md) — aber sie ist **gewandert**, und die Wanderung ist der Befund:
 
 | Runde | Ort der Aussage | Was zu weit griff |
 |---|---|---|
@@ -211,7 +211,7 @@ kleinerem Radius gewesen.
 **Steering-Loop-Eintrag** (kanonische Definition:
 [`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/grundlagen/klassifikation.md#steering-loop)):
 
-- **[`AGENTS.md`](../../../../AGENTS.md) §3.6 schärfen — dieselbe Forderung wie in [slice-049](../done/slice-049-baseline-bump-v3.5.2.md), jetzt mit dem
+- **[`AGENTS.md`](../../../../AGENTS.md) §3.6 schärfen — dieselbe Forderung wie in [slice-049](slice-049-baseline-bump-v3.5.2.md), jetzt mit dem
   Beweis, dass sie nicht reicht.** slice-049 schlug vor: *ein Allquantor über einen Repo-Zustand
   trägt den Befehl, der ihn misst, neben sich.* Dieser Slice hat den Vorschlag **fünfmal gebrochen,
   während er notiert war** — Feedforward ohne Feedback verfällt nicht später, sondern sofort. Die

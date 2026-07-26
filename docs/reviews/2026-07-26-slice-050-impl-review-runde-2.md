@@ -18,7 +18,7 @@ Implementation und Verifikation und von Runde 1.
 
 **Eingangs-Kontext** (die Verträge, gegen die geprüft wurde):
 
-- Slice-Plan: [`in-progress/slice-050-doku-nachzug-release.md`](../plan/planning/in-progress/slice-050-doku-nachzug-release.md) (§1–§6)
+- Slice-Plan: `in-progress/slice-050-doku-nachzug-release.md` (§1–§6)
 - berührte `LH-*`-IDs: [`LH-QA-04`](../../spec/lastenheft.md#lh-qa-04--plattform-matrix) (samt
   §*Grenze der Messmethode*), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
   [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)

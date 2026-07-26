@@ -23,7 +23,7 @@ Implementation und Verifikation und von Runde 1 und 2.
 
 **Eingangs-Kontext** (die Verträge, gegen die geprüft wurde):
 
-- Slice-Plan: [`in-progress/slice-050-doku-nachzug-release.md`](../plan/planning/in-progress/slice-050-doku-nachzug-release.md) (§1 Bezug, §2 DoD, §4 Dateitabelle)
+- Slice-Plan: `in-progress/slice-050-doku-nachzug-release.md` (§1 Bezug, §2 DoD, §4 Dateitabelle)
 - berührte `LH-*`-IDs: [`LH-QA-04`](../../spec/lastenheft.md#lh-qa-04--plattform-matrix) (Anforderung, Messmethode, beide Grenz-Notizen),
   [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-FA-07`](../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)
 - aktive ADRs: keine im Diff geändert; mittelbar [`ADR-0003`](../plan/adr/0003-go-native-binaries.md) (Docker-only)
@@ -161,7 +161,7 @@ Erste reale Anwendung der Setzungen 2 und 3. Geprüft wird jede Setzung einzeln,
 | Cutoff („geprüft wird ab dem Commit, der diesen Eintrag trägt") | `30f0fcd` liegt nach der Einführung von MR-015 (slice-049) | **im Geltungsbereich** |
 
 **Liegt er richtig relativ zu slice-050?** — **Ja.** `30f0fcd` ist **kein** Slice-Commit: er ist weder
-im Slice-Plan als Datei geführt ([`slice-050-doku-nachzug-release.md`](../plan/planning/in-progress/slice-050-doku-nachzug-release.md) §4 nennt
+im Slice-Plan als Datei geführt (`in-progress/slice-050-doku-nachzug-release.md` §4 nennt
 `spec/lastenheft.md` ausdrücklich als **unberührt**), noch ein Lifecycle-Move, noch eine
 Auflösungs-Runde. Die DoD-Aussage „**`spec/lastenheft.md` unberührt** — belegt per `git diff --stat`"
 trägt für die Commits des Slice unverändert: `git diff --stat 813418c..321b849` nennt keine Datei
@@ -337,9 +337,9 @@ schreibt sie in die höchstrangige interne Quelle.*
 ### INFO-1 — Die DoD-Mess-Anweisung „belegt per `git diff --stat`" nennt keine Commit-Range
 
 - `kategorie`: **INFO** (dokumentationswürdige, aber undokumentierte Annahme)
-- `quelle`: Slice-Plan [`slice-050-doku-nachzug-release.md`](../plan/planning/in-progress/slice-050-doku-nachzug-release.md) §2 DoD ·
+- `quelle`: Slice-Plan `in-progress/slice-050-doku-nachzug-release.md` §2 DoD ·
   [`MR-015`](../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 2
-- `pfad`: [`slice-050-doku-nachzug-release.md`](../plan/planning/in-progress/slice-050-doku-nachzug-release.md):45
+- `pfad`: `in-progress/slice-050-doku-nachzug-release.md`:45
 - `befund`: Die DoD-Zeile „**`spec/lastenheft.md` unberührt** — belegt per `git diff --stat`" nennt
   kein Bezugs-Range. Seit `30f0fcd` liegt zwischen dem letzten Slice-Commit (`321b849`) und der noch
   ausstehenden Closure ein Commit, der genau diese Datei ändert. Die implizite Annahme, das Range
