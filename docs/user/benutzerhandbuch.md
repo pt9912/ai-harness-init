@@ -54,15 +54,21 @@ Eine lokale Go-Installation ist **nicht** nötig — alles läuft über Docker.
 
 ### Systemanforderungen
 
-* Ein Betriebssystem mit Docker (Linux oder macOS werden empfohlen).
+* Ein Betriebssystem mit Docker — Linux, macOS oder Windows (für alle drei gibt es fertige Programme; was auf welcher Plattform geprüft wird, steht im Kasten unten).
 * `git` und GNU `make` auf dem Pfad.
 * Beim ersten Aufruf: Internet-Zugang.
 
-> **Was wo geprüft wird — damit Sie wissen, worauf Sie sich stützen.** Der vollständige Durchlauf
-> (Repo aufsetzen, Prüfungen grün) wird bei jedem Release auf **Linux** gefahren. Für **macOS** und
-> **Windows** wird geprüft, dass das Programm auf der Plattform **startet** — nicht, dass ein
-> kompletter Durchlauf dort durchläuft. Grund: die gehosteten Prüf-Maschinen für macOS und Windows
-> können die benötigten Linux-Container nicht fahren.
+> **Was wo geprüft wird — damit Sie wissen, worauf Sie sich stützen.** Zwei verschiedene Prüfungen,
+> und sie decken nicht dasselbe:
+>
+> * **Bei jeder Änderung am Quellcode** läuft der **vollständige Durchlauf** (Repo aufsetzen,
+>   Prüfungen grün) — auf **Linux/Intel-AMD**, auf einer Maschine.
+> * **Beim Erstellen eines Release** wird auf **allen sechs** ausgelieferten Dateien geprüft, dass
+>   das Programm auf seiner Plattform **startet**. Mehr nicht.
+>
+> Für **macOS**, **Windows** und **Linux/ARM** ist damit belegt, dass das Programm dort **läuft** —
+> **nicht**, dass ein kompletter Durchlauf dort durchläuft. Grund für macOS und Windows: die
+> gehosteten Prüf-Maschinen können die benötigten Linux-Container nicht fahren.
 
 ### Das Werkzeug bereitstellen
 
@@ -83,12 +89,15 @@ Es gibt **zwei Wege**. Empfohlen ist der **Download** — ab `v0.1.0` liegen fer
    | Windows, Intel/AMD | `ai-harness-init-windows-amd64.exe` |
    | Windows, ARM | `ai-harness-init-windows-arm64.exe` |
 
-2. Machen Sie die Datei ausführbar und geben Sie ihr den kurzen Namen (Linux/macOS; das Beispiel nimmt Linux/Intel):
+2. Machen Sie die Datei ausführbar und legen Sie sie unter dem kurzen Namen in einen Ordner Ihres Suchpfads (Linux/macOS; das Beispiel nimmt Linux/Intel und den Ordner `~/.local/bin`):
 
    ```bash
    chmod +x ai-harness-init-linux-amd64
+   mkdir -p ~/.local/bin
    mv ai-harness-init-linux-amd64 ~/.local/bin/ai-harness-init
    ```
+
+   **Prüfen Sie, ob dieser Ordner in Ihrem Suchpfad liegt** (`echo $PATH`) — auf macOS ist `~/.local/bin` standardmäßig **nicht** enthalten. Falls nicht, nehmen Sie einen Ordner, der drin ist, oder ergänzen Sie den Pfad in Ihrer Shell-Konfiguration.
 
    Unter Windows genügt es, die `.exe`-Datei in einen Ordner Ihres Suchpfads zu legen.
 
@@ -102,7 +111,7 @@ Es gibt **zwei Wege**. Empfohlen ist der **Download** — ab `v0.1.0` liegen fer
 
 **Ergebnis**
 
-Das Programm ist unter dem kurzen Namen `ai-harness-init` aufrufbar. Das Handbuch verwendet ab hier diesen Aufruf.
+Liegt der Ordner in Ihrem Suchpfad, ist das Programm unter dem kurzen Namen `ai-harness-init` aufrufbar. **Das Handbuch verwendet ab hier diesen kurzen Aufruf** — das gilt für beide Wege.
 
 #### Weg B — aus dem Quellcode bauen
 
@@ -468,7 +477,7 @@ ai-harness-init add-lang go apps/api
 ## 8. Häufige Fragen (FAQ)
 
 **Welche Sprachen werden unterstützt?**
-Derzeit `go`. Das Werkzeug ist auf weitere Sprachen ausgelegt; sie kommen ohne Änderung der Bedienung hinzu. Die jeweils aktuelle Liste zeigt eine unbekannte Sprache in ihrer Fehlermeldung.
+Derzeit `go` und `cpp` (C++). Das Werkzeug ist auf weitere Sprachen ausgelegt; sie kommen ohne Änderung der Bedienung hinzu. Die jeweils aktuelle Liste zeigt eine unbekannte Sprache in ihrer Fehlermeldung.
 
 **Muss ich Go installieren?**
 Nein. Sowohl das Bauen des Werkzeugs als auch die Prüfungen im aufgesetzten Repository laufen über Docker.
@@ -483,7 +492,7 @@ Ja — der Aufruf ist **idempotent** (Exit-Code 0). Ein zweiter Lauf frischt die
 Mit `ai-harness-init add-lang <sprache> <pfad>`. Der Befehl ist wiederholbar; mehrere Aufrufe mit verschiedenen Pfaden ergeben ein Mono-Repo. Siehe [Ein Sprachmodul hinzufügen](#ein-sprachmodul-hinzufügen-add-lang).
 
 **Gibt es ein fertiges Download-Binary?**
-Derzeit nicht. Sie bauen das Programm einmalig aus dem Quellcode (siehe [Installation](#2-installation-und-zugriff)) — komplett in Docker, ohne lokale Go-Installation.
+Ja, ab `v0.1.0` — für sechs Plattformen (Linux, macOS, Windows × Intel/AMD und ARM). Das ist der empfohlene Weg, siehe [Installation](#2-installation-und-zugriff). Den Bau aus dem Quellcode brauchen Sie nur für einen Stand ohne Versions-Kennzeichnung.
 
 **Verändert `ai-harness-init` meine bestehenden Dateien?**
 Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vorhandene Dateien dieser Art werden nie überschrieben. Die **werkzeug-eigene** Infrastruktur (Prüf-Konfiguration, Hooks, Regelwerk) wird bei jedem Lauf neu auf den Soll-Stand geschrieben; hatten Sie eine solche Datei von Hand geändert, wird die Änderung beim Re-Lauf überschrieben.
@@ -521,7 +530,7 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 
 ### Grenzen und Hinweise
 
-* Es gibt **kein** eingecheckt vorliegendes Binary und kein `run`-Ziel; Sie bauen das Werkzeug aus dem Quellcode (daher **keine Release-Versionsnummer** — maßgeblich ist der Quellcode-Stand des Repos).
+* Im Quellcode-Repository liegt **kein** eingecheckt vorliegendes Binary und kein `run`-Ziel. Fertige Programme gibt es **an den Releases** (ab `v0.1.0`); wer aus dem Quellcode baut, arbeitet gegen den Repo-Stand und hat dann keine Versions-Kennzeichnung.
 * Der erste Lauf benötigt Netzwerk; danach ist das Repository netzunabhängig.
 * `ai-harness-init` und die Prüfungen im Zielrepository benötigen Docker.
 * Voreingestellte Versionen (Kurs-Stand, Go-Version, Prüf-Image) sind festgelegt und reproduzierbar; Abweichungen nur über die Umgebungsvariablen aus [Konfiguration](#5-konfiguration).
@@ -538,6 +547,7 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 
 | Handbuch-Version | Stand | Änderung |
 |---|---|---|
+| 1.5 | 2026-07-26 | **Erstes Release `v0.1.0`**: fertige Programme für sechs Plattformen (Linux · macOS · Windows × Intel/AMD · ARM) sind der empfohlene Weg; §2 in Weg A (Download) und Weg B (aus dem Quellcode bauen) geteilt, mit Dateitabelle, Suchpfad-Hinweis und macOS-Quarantäne-Hinweis. Neuer Kasten „Was wo geprüft wird": der vollständige Durchlauf läuft auf Linux/Intel-AMD, beim Release wird auf allen sechs Dateien nur der **Start** geprüft. FAQ, Anhang und Systemanforderungen nachgezogen; FAQ-Sprachliste um `cpp` korrigiert. |
 | 1.4 | 2026-07-25 | **Bauform `--arch`** (slice-045b/046): `hexslice` erzeugt ein geschichtetes Grundgerüst und liefert das **Architektur-Gate** (`.a-check.yml` + `a-check.mk`) mit, `flat` (Standard) nicht. Neuer Aufgaben-Abschnitt samt Pflege-Hinweis für zusätzliche Use-Case-Schnitte, Optionstabelle, `add-lang`-Signatur, `A_CHECK_IMAGE`/`A_CHECK_DIGEST` und Phase-2-Beschreibung nachgezogen. Nachzug: das Handbuch kannte die Achse seit zwei Slices nicht. |
 | 1.3 | 2026-07-23 | Zweite Zielsprache **C++** (slice-039): `--lang cpp` und `add-lang cpp <pfad>` erzeugen ein CMake-Grundgerüst (Dockerfile-Stages build/test/lint mit CMake + CTest + clang-tidy, netzloser Test). Optionstabelle, `SKEL_CPP_VERSION`, Sprach-Datei-Liste, Fehlermeldung und FAQ nachgezogen. Gemischt-sprachige Mono-Repos möglich. |
 | 1.2 | 2026-07-23 | Sprach-Review gegen den Benutzerhandbuch-Standard: Entwicklerbegriffe geglättet (Aggregator → zentrale `Makefile`, Durchsetzung → Schutz-Hooks, Doc-Chain → Projekt-Dokumente, „skip-if-present“/„kanonisch“/„vendored“ plain); die in der Werkzeug-Ausgabe sichtbaren Begriffe (Aggregator, Durchsetzung, Prüf-Baustein) ins Glossar aufgenommen; Sicherheits- und Versions-Hinweis im Anhang ergänzt. |
