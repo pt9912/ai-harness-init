@@ -32,7 +32,7 @@ Punkte, davon sieben slice-eigene; die Kürzung am 2026-07-27 war eine
 Konformitäts-Korrektur, keine Scope-Reduktion: die gestrichenen Punkte waren
 Messungen und Belege und stehen jetzt dort, wo sie hingehören (§3 und §6). -->
 
-- [ ] **(1) `add-lang cpp <pfad> --arch hexslice` legt das geschichtete Modul an** — Exit 0 statt
+- [x] **(1) `add-lang cpp <pfad> --arch hexslice` legt das geschichtete Modul an** — Exit 0 statt
   heute Exit 2. Das umfasst untrennbar: die fünf Rollen in `cppRole`
   (`roleDomain`/`rolePorts`/`roleAppSlice`/`roleAdapters`/`roleCompositionRoot`, dieselben, die
   `archLayout(hexslice)` liefert), die geöffnete Achse (`langArchs()["cpp"]`) **und** die
@@ -40,20 +40,20 @@ Messungen und Belege und stehen jetzt dort, wo sie hingehören (§3 und §6). --
   `TestArchGateConfig_CoversEveryLayeredCombo` (aus slice-046) sie koppelt — Beleg in §3, Zeile 5.
   Gegenprobe: `--arch flat` bleibt **byte-identisch**
   ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
-- [ ] **(2) Das Skelett baut real — und der Build sieht die Schichten.** Im gebootstrappten Ziel ist
+- [x] **(2) Das Skelett baut real — und der Build sieht die Schichten.** Im gebootstrappten Ziel ist
   `make gates` grün inklusive der cpp-Code-Gates über dem Schichten-Code. Ein grüner Build allein
   belegt das **nicht** (§6, erster Punkt), darum als **Zahn**: ein Fehler in einer Schicht-Datei
   färbt den Modul-Build rot, einmal gesehen und zurückgenommen
   ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-- [ ] **(3) Die Exit-2-Zusage ist umgeschrieben, nicht danebengestellt.** Ihre drei Fundstellen
+- [x] **(3) Die Exit-2-Zusage ist umgeschrieben, nicht danebengestellt.** Ihre drei Fundstellen
   (§3, Zeile 6) zeigen danach auf eine weiterhin **nicht getragene** Kombination; der Zweig bleibt
   bewacht. Dazu der neue `test/mutations/`-Fall für die Rollen-Abdeckung, rot gesehen. Messbefehl
   im Abschluss, kein Durchsehen (Lehre slice-032).
-- [ ] `make gates` grün, `make mutate` ohne Befund.
-- [ ] **Kein Doku-Update in diesem Slice** — die Aussage „`hexslice` liefert derzeit nur der
+- [x] `make gates` grün, `make mutate` ohne Befund.
+- [x] **Kein Doku-Update in diesem Slice** — die Aussage „`hexslice` liefert derzeit nur der
   Go-Renderer" (Handbuch-Kopf, README) fällt erst mit slice-054s Zähnen. Sie hier zu ändern hieße,
   eine Fähigkeit zu bewerben, deren Zusage noch keinen Sensor hat.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -152,7 +152,62 @@ Wird *nach* Abschluss ergänzt. Inhalt:
 - Folge-Slices: welche neuen open/-Einträge?
 -->
 
-<!-- Erst nach Abschluss füllen. -->
+**Was funktioniert hat.** `add-lang cpp <pfad> --arch hexslice` legt ein geschichtetes C++-Modul an,
+das im realen Ziel **baut, lintet und testet** — und dessen Schichten beide Gates **wirklich
+erreichen**, belegt durch zwei rot gesehene Gegenbeispiele im `make full-smoke` (Fehler in der
+Domain-Schicht → Modul-Build rot; `bugprone`-Verstoß darin → Lint-Gate rot). Die Vorbedingung
+(a-check versteht C++) war **vor** dem Schnitt gemessen, nicht angenommen. `make gates` Exit 0
+(d-check 203/0), `make mutate` 89 ok/0 mit drei neuen Fällen, `make full-smoke` Exit 0 — alle drei
+auf dem Endstand gefahren.
+
+**Was anders lief als geplant — vier Korrekturen, alle aus Messungen.**
+
+1. **Die Welle-Grenze verschob sich vor dem ersten Code-Edit.** `TestArchGateConfig_CoversEveryLayeredCombo`
+   (aus slice-046) leitet die Kombinationen aus dem realen Generator ab und färbt rot, sobald eine
+   schichten-tragende Kombination **ohne** Config existiert. Achse und `.a-check.yml` sind damit
+   **eine** Landung; slice-054 behält den **Beleg**, nicht das Artefakt.
+2. **Der DoD war zu groß und wurde gekürzt** — von elf rohen (sieben slice-eigenen) auf **drei**
+   slice-eigene Punkte, nachdem der Nutzer die Drift gegen Modul 5 §Ziel-Form („≤ 3 DoD-Punkte")
+   benannte. Keine Scope-Reduktion: die gestrichenen Punkte waren Messungen und Belege und stehen
+   in §3 und §6.
+3. **Ein CR war unvermeidbar** (`0.16.0`): a-check löst **nur modul-root-relative** Referenzen auf.
+   Dieselbe verbotene Kante als `../…` oder `hexagon/…` geschrieben → **0 Befunde**, als
+   `src/hexagon/…` → `core-impurity`. Ein C++-Schicht-Layout braucht deshalb den Modul-Root im
+   Include-Pfad — und die alte AC „Bau-Gerüstung unverändert … flat byte-identisch" war für Go
+   schreibbar (modul-qualifizierte Importe) und für C++ **nicht einlösbar**.
+4. **Der erste `full-smoke`-Lauf war rot, und das war sein Wert:** der Test-Include-Pfad zeigte auf
+   `src/` statt auf den Modul-Root, und `ports::GreetingRepository` löste innerhalb von
+   `namespace …::greet` auf den **slice-lokalen** Port-Namensraum auf. Beides fängt kein Unit-Test.
+
+**Benannte Abweichung (aus der Verifikation, damit sie niemand als Lücke liest):** DoD (1) verlangt
+als Gegenprobe „`--arch flat` bleibt **byte-identisch**". Das flache Skelett weicht jetzt um **drei
+Zeilen** ab (Include-Pfad in `CMakeLists.txt` und `tests/CMakeLists.txt`, unverankerter
+`HeaderFilterRegex`), für ein flaches Layout wirkungslos. Gedeckt ist das von **CR 0.16.0**, dessen
+AC seither „funktional unverändert … allein um dieses Minimum" sagt. Der DoD-Text ist älter als der
+Vertrag; abgenommen wird gegen die Anforderung.
+
+**Steering-Loop-Eintrag — zwei Lehren, beide vom Nutzer angestoßen.**
+
+*Erstens: ein Kommentar trägt keine Zusage.* Der `cppRole`-Kommentar behauptete, clang-tidy lintet
+die Schicht-Header mit; gemessen ließ ein `bugprone`-Verstoß den Gate **grün**, weil
+`HeaderFilterRegex: '^src/'` den absoluten Container-Pfad nie trifft. Das Layout wäre gebaut und
+ungelintet gewesen — bei grünem Gate. Die Regel gehört seither nach
+[`spec/architecture.md`](../../../../spec/architecture.md) §5 (normativ) und der Beleg in einen
+Zahn (`full-smoke`); der Kommentar zeigt nur noch dorthin. **Verallgemeinert:** wo eine Aussage
+über das *emittierte* Artefakt entsteht, ist die Frage nicht „ist der Kommentar richtig", sondern
+„welcher Sensor fällt um, wenn sie falsch wird".
+
+*Zweitens: die Schnitt-Regeln der Baseline sind unbewacht.* Über neun Slices lagen die
+slice-eigenen DoD-Punkte bei 4–8 statt ≤ 3 — neun von neun über dem Grenzwert, und
+[`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) erklärt „keine inhaltlichen
+Adaptionen ggü. Baseline-Default", ohne dass ein MR die Abweichung deklariert. Kein Gate zählt sie.
+Der Sensor-Vorschlag (Zähl-Target mit Cutoff ab Einführung) steht als **Achse (8)** am
+Roadmap-Kandidaten *Regeln ohne Feedback-Quadrant schließen*.
+
+**Folge-Slices.** Keine neuen `open/`-Einträge; drei benannte Punkte gehen an slice-054 bzw. den
+Backlog: der ungetestete Root-One-Shot `--lang cpp --arch hexslice` (Review-F-5), drei ältere
+Anforderungs-ID-Leaks im emittierten flachen Skelett (F-4, Wartungs-Slice — sie zu fixen ändert
+`flat`-Bytes), und die unerreichbar gewordene zweite Arch-Validierungsstufe (F-6, im Code benannt).
 
 ## 8. Sub-Area-Modus-Begründung
 
