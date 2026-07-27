@@ -26,45 +26,33 @@ abzulehnen.
 
 ## 2. Definition of Done
 
-- [ ] **`cppRole` rendert die fünf hexSlice-Rollen.** `internal/gen/cpp.go:39` kennt heute nur
-  `roleEntrypoint` und `roleTest`; dazu kommen `roleDomain`, `rolePorts`, `roleAppSlice`,
-  `roleAdapters`, `roleCompositionRoot` — dieselben Rollen, die `archLayout(hexslice)` liefert, damit
-  keine zweite Namensliste entsteht.
-- [ ] **Die Achse ist geöffnet:** `langArchs()["cpp"]` trägt `archHexslice`
-  (`internal/gen/gen.go:132`), und `add-lang cpp <pfad> --arch hexslice` endet mit **Exit 0**.
-- [ ] **Die cpp-`.a-check.yml` liegt vor** (`archGateConfigs()["cpp"][hexslice]`) und bildet die
-  gerenderten Schichten ab. **Nachgezogen am 2026-07-27 aus einer Ist-Messung, nicht aus dem
-  ursprünglichen Zuschnitt** (§3, Zeile 5): `TestArchGateConfig_CoversEveryLayeredCombo`
-  (`internal/gen/archgate_test.go:250`, aus slice-046) leitet die Kombinationen **aus dem realen
-  Generator** ab — eine schichten-tragende Kombination **ohne** Config färbt ihn rot. Achse und
-  Config sind damit **eine Landung**; sie zu trennen hieße, den Wächter blind zu machen
-  ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Die **Zähne** dieser Config (a-check läuft real,
-  verbotener Include rot gesehen) bleiben in slice-054 — dieser Slice belegt sie auf Unit-Ebene
-  (`TestArchGateConfig_*`), nicht end-to-end.
-- [ ] **Das Skelett baut wirklich.** Im real gebootstrappten Ziel ist `make gates` grün **inklusive**
-  der cpp-Code-Gates über dem Schichten-Code (cmake/ctest/clang-tidy) — nicht nur „Dateien liegen da".
-  Das ist der [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Beleg
-  dieses Slice und wird im `full-smoke` gemessen, nicht behauptet.
-- [ ] **Und der Build sieht die Schichten wirklich** — ein grüner Build allein belegt das **nicht**
-  (die arch-invariante `CMakeLists.txt` übersetzt heute nur `src/main.cpp`; Schicht-Dateien, die
-  keine Übersetzungseinheit erreicht, wären still tot und das Gate bliebe grün). Beleg deshalb als
-  **Zahn**, nicht als Behauptung: ein Fehler in einer Schicht-Datei muss den Modul-Build **rot**
-  färben, einmal gesehen und zurückgenommen (dieselbe Form, die `full-smoke` für den verbotenen
-  Import schon fährt).
-- [ ] **`--arch flat` bleibt byte-identisch** ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)):
-  `TestGenerate_CppProfile` läuft unverändert grün, die additive Erweiterung berührt den flachen
-  Zweig nicht (das Muster aus slice-037: additiv erweitern schützt bestehende Sensoren).
-- [ ] **Die Exit-2-Zusage ist umgeschrieben, nicht danebengestellt.** Der heutige Beleg
-  „`cpp --arch hexslice` → Exit 2" existiert in drei Formen (Test, `harness/tools/full-smoke.sh`
-  Zeilen 308-317, Mutations-Fall). Alle drei werden **auf die neue Grenze gezogen** — die bleibt es
-  ja: eine **andere** nicht getragene Kombination muss weiter Exit 2 geben, sonst verliert der
-  Zweig seinen Wächter. Messbefehl im Abschluss, kein Durchsehen (Lehre slice-032).
-- [ ] **Mindestens ein neuer `test/mutations/`-Fall, rot gesehen:** die Rollen-Abdeckung von
-  `cppRole` (fehlt eine Rolle, bleibt das Layout unvollständig und niemand merkt es).
+<!-- Drei slice-eigene Punkte + die drei Standard-Zeilen der Vorlage — Modul 5
+§Ziel-Form: Slice („≤ 3 DoD-Punkte"). Der erste Entwurf dieses Slice trug elf
+Punkte, davon sieben slice-eigene; die Kürzung am 2026-07-27 war eine
+Konformitäts-Korrektur, keine Scope-Reduktion: die gestrichenen Punkte waren
+Messungen und Belege und stehen jetzt dort, wo sie hingehören (§3 und §6). -->
+
+- [ ] **(1) `add-lang cpp <pfad> --arch hexslice` legt das geschichtete Modul an** — Exit 0 statt
+  heute Exit 2. Das umfasst untrennbar: die fünf Rollen in `cppRole`
+  (`roleDomain`/`rolePorts`/`roleAppSlice`/`roleAdapters`/`roleCompositionRoot`, dieselben, die
+  `archLayout(hexslice)` liefert), die geöffnete Achse (`langArchs()["cpp"]`) **und** die
+  cpp-`.a-check.yml` (`archGateConfigs()`). Die drei sind **eine Landung**, weil
+  `TestArchGateConfig_CoversEveryLayeredCombo` (aus slice-046) sie koppelt — Beleg in §3, Zeile 5.
+  Gegenprobe: `--arch flat` bleibt **byte-identisch**
+  ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
+- [ ] **(2) Das Skelett baut real — und der Build sieht die Schichten.** Im gebootstrappten Ziel ist
+  `make gates` grün inklusive der cpp-Code-Gates über dem Schichten-Code. Ein grüner Build allein
+  belegt das **nicht** (§6, erster Punkt), darum als **Zahn**: ein Fehler in einer Schicht-Datei
+  färbt den Modul-Build rot, einmal gesehen und zurückgenommen
+  ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+- [ ] **(3) Die Exit-2-Zusage ist umgeschrieben, nicht danebengestellt.** Ihre drei Fundstellen
+  (§3, Zeile 6) zeigen danach auf eine weiterhin **nicht getragene** Kombination; der Zweig bleibt
+  bewacht. Dazu der neue `test/mutations/`-Fall für die Rollen-Abdeckung, rot gesehen. Messbefehl
+  im Abschluss, kein Durchsehen (Lehre slice-032).
 - [ ] `make gates` grün, `make mutate` ohne Befund.
-- [ ] **Kein Doku-Nachzug in diesem Slice** — die Aussage „`hexslice` liefert derzeit nur der
-  Go-Renderer" (Handbuch-Kopf, README) fällt erst, wenn das Gate steht (slice-054). Sie hier zu
-  ändern hieße, eine Fähigkeit zu bewerben, deren Zusage noch keinen Sensor hat.
+- [ ] **Kein Doku-Update in diesem Slice** — die Aussage „`hexslice` liefert derzeit nur der
+  Go-Renderer" (Handbuch-Kopf, README) fällt erst mit slice-054s Zähnen. Sie hier zu ändern hieße,
+  eine Fähigkeit zu bewerben, deren Zusage noch keinen Sensor hat.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
@@ -130,6 +118,11 @@ Move-Commit, Link-Reconciliation im Folge-Commit); Closure-Notiz mit Steering-Lo
   Frage 1/2 wäre `cpp × hexslice` kein Bündel mehr und hätte kein Closure-Kriterium jenseits des
   einen DoD. Das ist keine Formalie: [welle-08](../welle-08-cpp-hexslice.md) und die Roadmap
   wären zurückzunehmen.
+- **Ein grüner Build belegt nicht, dass die Schichten übersetzt werden.** Die arch-invariante
+  `CMakeLists.txt` erfasst heute nur `src/main.cpp`; eine Schicht-Datei, die keine
+  Übersetzungseinheit erreicht, wäre still tot — und das Gate bliebe **grün**. Diese Klasse hat
+  slice-024 schon einmal gefangen („still grün über einer Teilmenge"). Deshalb steht der Beleg in
+  DoD (2) als Zahn und nicht als Behauptung.
 - **C++ hat keine Interface-Erfüllung wie Go.** Der Go-Renderer kommt ohne
   `adapters → ports`-Kante aus, weil Outbound-Adapter die Ports **strukturell** erfüllen. In C++
   erfüllt ein Adapter ein Port-Interface durch **Vererbung** — also mit `#include` des Port-Headers.
