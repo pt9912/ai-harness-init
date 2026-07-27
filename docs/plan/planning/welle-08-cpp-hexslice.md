@@ -62,7 +62,7 @@ Verzeichnisse (dieselbe zweite Wahrheit, die beim Slice retired wurde). -->
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-053](in-progress/slice-053-cpp-hexslice-renderer.md) | `cppRole` rendert die hexSlice-Schichten; die Achse öffnet sich für cpp — **samt cpp-`.a-check.yml`** | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) |
+| [slice-053](done/slice-053-cpp-hexslice-renderer.md) | `cppRole` rendert die hexSlice-Schichten; die Achse öffnet sich für cpp — **samt cpp-`.a-check.yml`** | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) |
 | slice-054 | Die Zähne end-to-end (a-check läuft real, verbotener Include rot gesehen) + Mutationen + Doku-Nachzug | [`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 
 **Grenze verschoben am 2026-07-27, aus einer Messung vor dem ersten Code-Edit.** Ursprünglich sollte
