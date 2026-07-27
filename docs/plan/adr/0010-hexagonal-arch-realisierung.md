@@ -1,6 +1,6 @@
 # ADR-0010: Hexagonal als zweite Layout-Realisierung der Architektur-Achse
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-07-27
 
@@ -258,10 +258,11 @@ niederschlägt: hier die konkrete Regel benennen. Beispiel:
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-07-27 | Proposed | `docs/plan/planning/open/slice-058-hexagonal-go.md` §3a (Plan-Review F-2 verlangte die Entscheidung) |
+| 2026-07-27 | Proposed | slice-058 §3a (Plan-Review F-2 verlangte die Entscheidung) — auf die Slice-**ID** verwiesen, nicht auf den Pfad: der wandert durch die Lifecycle-Ordner, diese ADR darf ihm nach der Annahme nicht mehr folgen |
 | 2026-07-27 | Überarbeitet (Runde 2), weiter Proposed | Proposed-Review `docs/reviews/2026-07-27-adr-0010-proposed-review.md`: F-1 (treibende Seite fehlte, Familie uneinheitlich) und F-2 (`composition_root` zu eng) aufgelöst, F-4 (Trigger ohne Sensor) eingeordnet, F-5 als Folgepflicht 4 ergänzt |
-| 2026-07-27 | Überarbeitet (Runde 3), weiter Proposed | Proposed-Review Runde 2 `docs/reviews/2026-07-27-adr-0010-proposed-review-runde-2.md`: N-1 (ungedeckter Bereich unter `driving/`) als **Schicht** aufgelöst statt als Ausnahme; daraus **Festlegung 3** (fail-closed bei unbekannten Adoptern) und die Rücknahme des Runde-2-Absatzes zur „Familien-Treue bei der Prüfschärfe"; N-2 als Folgepflicht 5; Alternative E (`--flavour`-Achse) mit gemessenen Kosten ergänzt |
+| 2026-07-27 | Überarbeitet (Runde 3), weiter Proposed | Proposed-Review Runde 2 `docs/reviews/2026-07-27-adr-0010-proposed-review-runde-2.md`: N-1 (ungedeckter Bereich unter `driving/`) als **Schicht** aufgelöst statt als Ausnahme; daraus **Festlegung 3** (fail-closed bei unbekannten Adoptern) und die Rücknahme des Runde-2-Absatzes zur „Familien-Treue bei der Prüfschärfe"; N-2 als Folgepflicht 5; Alternative E (`--flavour`-Achse) ergänzt (die dort genannten Kosten-Zahlen nimmt Runde 4 zurück) |
 | 2026-07-27 | Überarbeitet (Runde 4), weiter Proposed | Proposed-Review Runde 3 `docs/reviews/2026-07-27-adr-0010-proposed-review-runde-3.md`: N-1 (Verdrahtungsort) und N-2 (Rolle des Kerns) in Festlegung 1 entschieden — Verdrahtung in `cmd/**`, Kern `role: app`, Ports importfrei, `ports→core` als Zyklus ausgeschlossen; N-3 (`direction:` nicht genutzt) und N-5 (Wirkmechanismus `lateral-adapter`) benannt; N-4 (unbelegte Sekunden-Zahlen, doppelt gezählter Zuwachs) zurückgenommen; N-6 als Folgepflicht 6, dazu Folgepflicht 7 (Zahn für `lateral-adapter`) |
+| 2026-07-27 | **Accepted** | Vier Proposed-Runden (Reviews `docs/reviews/2026-07-27-adr-0010-proposed-review.md`, `…-runde-2.md`, `…-runde-3.md`), alle blockierenden Befunde entschieden; Annahme durch den Auftraggeber. Ab hier **immutabel** ([`AGENTS.md`](../../../AGENTS.md) §3.4) — spätere Schärfungen als neue ADR mit *Supersedes* |
 
 <!--
 Nach Accepted: NICHT mehr inhaltlich überschreiben (Hard Rule aus

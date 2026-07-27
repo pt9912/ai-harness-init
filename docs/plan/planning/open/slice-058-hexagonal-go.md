@@ -19,7 +19,10 @@ folgt dem Layout), [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-h
 (kein Gate ohne rot gesehenes Gegenbeispiel),
 [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (`flat` und `hexslice`
 bleiben unberührt), [`ADR-0009`](../../adr/0009-hexslice-arch-realisierung.md) (die
-HexSlice-Realisierung, von der dieses Layout **abgegrenzt** wird).
+HexSlice-Realisierung, von der dieses Layout **abgegrenzt** wird),
+[`ADR-0010`](../../adr/0010-hexagonal-arch-realisierung.md) (**Accepted**, vier
+Proposed-Runden — Schichten, Rollen, Kanten und Verdrahtungsort dieses Layouts sind dort
+festgelegt; dieser Slice setzt sie um und erfindet sie nicht neu).
 
 **Autor:** ai-harness-init-Team (pt9912). **Datum:** 2026-07-27.
 
@@ -27,17 +30,24 @@ HexSlice-Realisierung, von der dieses Layout **abgegrenzt** wird).
 
 ## 1. Ziel
 
-`add-lang go <pfad> --arch hexagonal` legt ein Go-Modul mit den **drei klassischen Schichten** an —
-`core` / `port` / `adapter` plus Composition Root —, und das Arch-Gate prüft sie. Maßstab ist die
-**gelebte Konvention der Werkzeug-Familie**, nicht das Lehrbuch und nicht das
-`--print-config`-Gerüst.
+`add-lang go <pfad> --arch hexagonal` legt ein Go-Modul mit den **vier geprüften Schichten** an —
+`core` / `ports` / `driven` / `driving`, verdrahtet in `cmd/**` —, und das Arch-Gate prüft sie.
+Maßstab ist die **gelebte Konvention der Werkzeug-Familie**, nicht das Lehrbuch und nicht das
+`--print-config`-Gerüst; [`ADR-0010`](../../adr/0010-hexagonal-arch-realisierung.md) hält
+fest, wo wir ihr folgen (die Pfade) und wo nicht (die Verdrahtungsstelle).
 
 ## 2. Definition of Done
 
 - [ ] **(1) `add-lang go <pfad> --arch hexagonal` legt das geschichtete Modul an — samt Gate.**
-  Exit 0, mit dem Layout der Familie (`internal/hexagon/core`, `internal/hexagon/port`,
-  `internal/adapter/driven`, Composition Root `cmd/**`), **nicht** dem `--print-config`-Gerüst
-  (`internal/core` …); dazu Rollen-Vokabular, geöffnete Achse und `.a-check.yml`.
+  Exit 0, mit **genau** dem Layout aus [`ADR-0010`](../../adr/0010-hexagonal-arch-realisierung.md)
+  Festlegung 1: `internal/hexagon/core` (`role: app`), `internal/hexagon/port` (`role: port`,
+  importfrei), `internal/adapter/driven` und `internal/adapter/driving` (beide `role: adapter`,
+  explizit — die Namen inferieren keine Rolle), `composition_root: ["cmd/**"]`; Kanten
+  `core→ports`, `driven→ports`, `driven→core`, `driving→core` und **keine** weiteren. **Nicht** das
+  `--print-config`-Gerüst (`internal/core` …). Die **Verdrahtung liegt in `cmd/**`** — dort
+  entsteht der getriebene Adapter, wird in die Use-Case injiziert und diese an die treibende CLI
+  übergeben; die CLI importiert **keinen** Adapter. Dazu Rollen-Vokabular, geöffnete Achse und
+  `.a-check.yml`.
   **Voraussetzung, die der Plan-Review als HIGH gefunden hat:** die Geschichtet-Erkennung wird von
   **Namen auf Struktur** gehoben. Heute entscheidet `archLayered` an `roleDomain` und der
   Kopplungs-Wächter an `strings.Contains(rel, "hexagon/domain/")` — beides ist hexslice-Vokabular.
@@ -51,15 +61,23 @@ HexSlice-Realisierung, von der dieses Layout **abgegrenzt** wird).
   **gerenderten Baum** ab. Gegenprobe: `flat` und `hexslice` bleiben **byte-identisch**, und für
   beide bleibt die Gate-Entscheidung unverändert (rot gesehen: die neue Erkennung einmal so
   brechen, dass `hexslice` sein Gate verliert).
-- [ ] **(2) Das Gate hat Zähne, und die Kanten-Menge ist bewacht.** Ein verbotener
-  `core → adapter`-Import färbt `a-check` im realen Ziel rot, **mit Richtungs-Befund** (nicht nur
-  Exit ≠ 0). Die Kante **`adapters → core`** ist Teil der emittierten Config — sie steht im
-  `--print-config`-Gerüst nur auskommentiert, die Familie führt sie real — und sie bekommt einen
-  Mutations-Fall, sonst „räumt" sie später jemand weg (die Lehre aus slice-054/Fall 96).
+- [ ] **(2) Das Gate hat Zähne — an beiden tragenden Regeln, mit Regel-Namen.** Zwei
+  Gegenbeispiele werden im realen Ziel **rot gesehen**, nicht nur „Exit ≠ 0": ein
+  `core → driven`-Import als **`app-impurity`** (der Kern trägt `role: app` und darf keinen Adapter
+  sehen) und ein `driving → driven`-Import als **`lateral-adapter`** — Letzterer ist die tragende
+  Regel dieses Layouts und **keine Kante**, also fängt ihn kein Kanten-Wächter
+  ([`ADR-0010`](../../adr/0010-hexagonal-arch-realisierung.md) Folgepflicht 7). Die Kante
+  **`driven → core`** ist Teil der emittierten Config — im Gerüst nur auskommentiert, in der Familie
+  real geführt — und bekommt einen Mutations-Fall, sonst „räumt" sie später jemand weg (die Lehre
+  aus slice-054/Fall 96).
 - [ ] **(3) Die Abgrenzung zu `hexslice` ist mechanisch, nicht nur beschrieben.** Ein Test hält
   fest, dass die beiden Layouts **disjunkte Verzeichnisnamen** tragen (`core` vs `domain`, `port`
   vs `application/**/ports`, `adapter/driven` vs `adapters/outbound`); sonst verschmelzen sie beim
   nächsten Aufräumen zu einem Layout mit zwei Kanten-Mengen — genau das, was CR 0.17.0 ausschließt.
+  Im selben Zug hält ein Test die **Zyklenfreiheit** der emittierten Kanten-Menge fest: `core→ports`
+  **und** `ports→core` zusammen wären in einer einzigen Kern-Schicht ein Import-Zyklus, den die
+  Sprache ausschließt — der Grund, aus dem [`ADR-0010`](../../adr/0010-hexagonal-arch-realisierung.md)
+  `ports→core` nicht führt.
 - [ ] `make gates` grün, `make mutate` ohne Befund, `make full-smoke` grün.
 - [ ] Doku-Update: [Handbuch](../../../user/benutzerhandbuch.md) und
   [`README.md`](../../../../README.md) nennen die dritte Bauform — **erst wenn (1) und (2) grün
@@ -84,46 +102,40 @@ HexSlice-Realisierung, von der dieses Layout **abgegrenzt** wird).
 | `internal/gen/gen.go` | update | `langArchs()["go"] += archHexagonal` |
 | `internal/gen/golang.go` | update | Rollen-Renderer für das neue Layout + die `.a-check.yml` der Familie |
 | `internal/gen/*_test.go` | update/neu | Datei-Satz, Config-gegen-Skelett, Disjunktheit der Layouts, `flat`/`hexslice` unverändert |
-| `harness/tools/full-smoke.sh` | update | `add-lang go <pfad> --arch hexagonal` + Zahn (verbotener `core → adapter`-Import) |
-| `test/mutations/` | neu | Rollen-Abdeckung · `adapters → core`-Kante · Disjunktheit |
+| `harness/tools/full-smoke.sh` | update | `add-lang go <pfad> --arch hexagonal` + **zwei** Zähne: `core → driven` (`app-impurity`) und `driving → driven` (`lateral-adapter`) |
+| `test/mutations/` | neu | Rollen-Abdeckung (die expliziten `role:`-Einträge) · `driven → core`-Kante · Disjunktheit |
 | [`spec/architecture.md`](../../../../spec/architecture.md) §5 | update | die normative Heimat der Layout-Regeln nennt heute **nur** `hexslice` (6 Treffer gegen 0) — ein zweites schichten-tragendes Layout gehört dorthin, nicht nur ins Handbuch (Plan-Review F-3, slice-053-Lehre) |
 | `internal/gen/arch.go` (`archLayered`) + `internal/gen/archgate_test.go` | update | Geschichtet-Erkennung von Namen auf Struktur (Plan-Review F-1) — berührt `hexslice` mit |
 | Handbuch, [`README.md`](../../../../README.md) | update | dritte Bauform — **nach** den Sensoren |
 
-## 3a. ADR-Frage (Plan-Review F-2) — offen, Nutzer-Entscheidung
+## 3a. ADR-Frage (Plan-Review F-2) — **entschieden**
 
-**Der Befund:** für die Realisierung von `hexslice` wurde eine eigene ADR geschrieben
-([`ADR-0009`](../../adr/0009-hexslice-arch-realisierung.md): welche Rollen, welche Richtungen, nach
-welcher Referenz). Für `hexagonal` steht dieselbe Klasse an. Der Plan behandelte sie zunächst als
-Renderer-Detail — inkonsistent zur eigenen Präzedenz.
+Der Plan-Review verlangte für dieses Layout dieselbe Klasse Entscheidung, die `hexslice` in
+[`ADR-0009`](../../adr/0009-hexslice-arch-realisierung.md) bekommen hat. Sie steht jetzt in
+[`ADR-0010`](../../adr/0010-hexagonal-arch-realisierung.md) (**Accepted**, 2026-07-27) und
+band vier Proposed-Runden — jede fing, was die vorige eingebaut hatte:
 
-**Was für eine ADR spricht:** die Wahl trifft Adopter dauerhaft (Verzeichnis-Layout ist schwer
-umkehrbar, sobald Repos so gebaut sind), und es ist eine **echte Wahl** — die gelebte
-Familien-Konvention (`internal/hexagon/core`) gegen das Gate-Gerüst (`internal/core`). Beide sind
-vertretbar; wir wählen die erste. Genau solche Entscheidungen sollen laut
-[`AGENTS.md`](../../../../AGENTS.md) §5 auffindbar sein — ein Slice wandert nach `done/` und wird
-nicht mehr gelesen.
+| Runde | was sie entschied |
+|---|---|
+| 1 | die treibende Seite fehlte ganz; die Familie löst sie **uneinheitlich** |
+| 2 | sie wurde ergänzt — und öffnete dabei einen ungeprüften Bereich unter `driving/` |
+| 3 | `driving/**` wird **Schicht** statt Ausnahme; daraus die Regel *bei Unkenntnis der Adopter ist der Default fail-closed* |
+| 4 | die Folgen davon: explizite Rollen, Kanten-Menge ohne `ports→core` (Zyklus), **Verdrahtung in `cmd/**`** |
 
-**Was dagegen spricht:** [`ADR-0008`](../../adr/0008-arch-achse-emittiertes-skelett.md) trägt die
-Achse bereits und sieht mehrere Architekturen ausdrücklich vor; die Layout-Wahl ist hier weniger
-Entwurf als **Messung** (zwei reale Repos, ein Gate-Gerüst). Eine ADR pro Architektur könnte die
-Achse mit Zeremonie belasten, die der nächsten Sprache nicht hilft.
-
-**Empfehlung des Reviews:** eine **kurze `ADR-0010`** <!-- d-check:ignore (noch nicht angelegt — Gegenstand der offenen Entscheidung) --> (Proposed-first wie 0006–0009), die genau zwei
-Dinge festhält — *welches Layout emittiert wird und warum die Familien-Konvention gegen das
-Gate-Gerüst gewinnt* sowie *warum `hexagonal` und `hexslice` getrennte Layouts bleiben*. Das ist
-billiger als die spätere Frage „warum eigentlich `core` und nicht `domain`?", die sonst niemand
-mehr beantworten kann.
-
-**Bis zur Entscheidung bleibt dieser Slice in `open/`.**
+**Für diesen Slice heißt das:** Schichten, Rollen, Kanten, Verdrahtungsort und die beiden tragenden
+Regeln (`app-impurity`, `lateral-adapter`) sind **vorgegeben**, nicht Gegenstand der Umsetzung. Die
+Umsetzung erfindet sie nicht neu und weicht nicht ab; fällt bei der Umsetzung ein Grund gegen die
+Festlegung auf, ist das eine **neue ADR mit *Supersedes***, kein stiller Renderer-Entscheid — die
+ADR ist ab Annahme immutabel ([`AGENTS.md`](../../../../AGENTS.md) §3.4).
 
 ## 4. Trigger
 
 **`open` → `in-progress`:** CR **0.17.0** ist gefahren (eigener Commit, vor diesem Slice) — die
 Anforderung führt `hexagonal` jetzt. Der Bedarf ist doppelt belegt: Gate-Standardform **und** zwei
 reale Repos der Familie. **Zusätzlich seit dem Plan-Review vom 2026-07-27:** die ADR-Frage aus §3a
-ist entschieden (ADR geschrieben oder begründet abgelehnt). Der Plan-Review war **blockierend**
-(1 HIGH); sein Befund steckt jetzt in DoD (1).
+ist entschieden — [`ADR-0010`](../../adr/0010-hexagonal-arch-realisierung.md) ist
+**Accepted**. Der Plan-Review war **blockierend** (1 HIGH); sein Befund steckt jetzt in DoD (1).
+Damit ist die Bedingung „bleibt in `open/`, bis entschieden ist" erfüllt.
 
 Rückführungen:
 
@@ -145,7 +157,7 @@ Move-Commit, Link-Reconciliation im Folge-Commit); Closure-Notiz mit Steering-Lo
 - **Zwei Layouts, die sich ähneln, verschmelzen mit der Zeit.** `hexagonal` und `hexslice` teilen
   die Idee, nicht die Namen. Ohne den Disjunktheits-Test aus DoD (3) macht der nächste Aufräumer
   ein Layout mit zwei Kanten-Mengen daraus — und CR 0.17.0 hat genau das ausgeschlossen.
-- **Die Kante `adapters → core` sieht wie ein Fehler aus.** Sie steht im Gate-Gerüst nur
+- **Die Kante `driven → core` sieht wie ein Fehler aus.** Sie steht im Gate-Gerüst nur
   auskommentiert. Wer die emittierte Config gegen das Gerüst liest, hält sie für Überschuss —
   deshalb der Mutations-Fall (dieselbe Klasse wie die C++-Kante `adapters → ports` in slice-054).
 - **Das Rollen-Vokabular ist heute hexslice-geprägt.** `roleDomain`/`roleAppSlice` passen nicht auf
@@ -161,6 +173,10 @@ Move-Commit, Link-Reconciliation im Folge-Commit); Closure-Notiz mit Steering-Lo
 - **Der Disjunktheits-Test darf keine hartkodierte Liste sein** — er leitet die
   Verzeichnisnamen aus den Renderern ab und prüft den Schnitt beider Mengen; sonst altert er
   beim vierten Layout still (Plan-Review F-5).
+- **Die Verdrahtung liegt in `cmd/**` — dem einzigen ungeprüften Bereich.** Das ist die eine
+  Stelle, an der wir der Familie bewusst nicht folgen. Steht dort mehr als Konstruktion, wandert
+  Logik ins Ungeprüfte; der Renderer emittiert deshalb dort **nur** Konstruktion, und die Use-Case
+  bleibt im Kern ([`ADR-0010`](../../adr/0010-hexagonal-arch-realisierung.md) §Konsequenzen).
 - **Kein Carveout absehbar.**
 
 ## 7. Closure-Notiz (nach `done/`)
