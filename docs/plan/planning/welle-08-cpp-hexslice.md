@@ -62,7 +62,7 @@ Verzeichnisse (dieselbe zweite Wahrheit, die beim Slice retired wurde). -->
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-053](open/slice-053-cpp-hexslice-renderer.md) | `cppRole` rendert die hexSlice-Schichten; die Achse öffnet sich für cpp — **samt cpp-`.a-check.yml`** | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) |
+| [slice-053](in-progress/slice-053-cpp-hexslice-renderer.md) | `cppRole` rendert die hexSlice-Schichten; die Achse öffnet sich für cpp — **samt cpp-`.a-check.yml`** | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) |
 | slice-054 | Die Zähne end-to-end (a-check läuft real, verbotener Include rot gesehen) + Mutationen + Doku-Nachzug | [`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 
 **Grenze verschoben am 2026-07-27, aus einer Messung vor dem ersten Code-Edit.** Ursprünglich sollte
@@ -73,7 +73,7 @@ Achse und Config sind also **eine** Landung. Dasselbe gilt für die wandernde Ex
 slice-054 bleibt, ist der **Beleg**, nicht das Artefakt: dass das Gate im realen Ziel läuft und
 Zähne hat. Die Alternative (alles in einen Slice) steht mit ihrer Konsequenz in slice-053 §6.
 
-**Nur slice-053 ist geschnitten** (`open/`). slice-054 bekommt seine Datei per `cp` aus der Vorlage,
+**Nur slice-053 ist geschnitten.** slice-054 bekommt seine Datei per `cp` aus der Vorlage,
 wenn er an der Reihe ist — ein leerer Slice-Platzhalter wäre eine zweite Wahrheit, die driftet
 (cp-Disziplin, dieselbe Regel wie in welle-05 für die Slices 035–038).
 
