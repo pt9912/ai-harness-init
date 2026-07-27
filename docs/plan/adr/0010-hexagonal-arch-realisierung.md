@@ -52,24 +52,65 @@ erzwingt —, kippt die Entscheidung.
 **Festlegung 1 — emittiert wird die gelebte Familien-Konvention, nicht das Gate-Gerüst.**
 `--arch hexagonal` erzeugt
 
-| Rolle | Verzeichnis | im Arch-Gate |
-|---|---|---|
-| Kern | `internal/hexagon/core/**` | Schicht `core` |
-| Ports | `internal/hexagon/port/**` | Schicht `ports` |
-| getriebene Adapter | `internal/adapter/driven/**` | Schicht `driven` (Rolle *adapter*) |
-| **treibende Adapter** | **`internal/adapter/driving/**`** | **Schicht `driving`** (Rolle *adapter*) |
-| Einstiegspunkt | `cmd/**` | **Composition Root** (einziger befreiter Bereich) |
+| Rolle | Verzeichnis | Schicht | `role:` in der Config |
+|---|---|---|---|
+| Kern (Use-Case **und** Domäne) | `internal/hexagon/core/**` | `core` | **`app`** — explizit, denn die Namens-Inferenz gäbe `domain` |
+| Ports | `internal/hexagon/port/**` | `ports` | `port` — **importfrei** |
+| getriebene Adapter | `internal/adapter/driven/**` | `driven` | `adapter` — explizit, der Name inferiert nichts |
+| treibende Adapter | `internal/adapter/driving/**` | `driving` | `adapter` — explizit, der Name inferiert nichts |
+| Verdrahtung + Einstiegspunkt | `cmd/**` | — | **Composition Root**, einziger befreiter Bereich |
 
-Die emittierte `.a-check.yml` führt die Kanten `driven→ports`, `driven→core`, `driving→ports`,
-`driving→core`, `ports→core` und `composition_root: ["cmd/**"]`. **Keine** Kante
-`driving→driven`: ein treibender Adapter ruft keinen getriebenen direkt auf, er geht durch Kern
-und Ports.
+Die emittierte `.a-check.yml` führt **vier** Kanten — `core→ports`, `driven→ports`, `driven→core`,
+`driving→core` — und `composition_root: ["cmd/**"]`. Drei naheliegende Kanten fehlen **mit je
+eigenem Grund**: `ports→core`, `driving→ports`, `driving→driven` (unten).
 
 Begründung: ein Adopter soll ein Layout bekommen, das in dieser Werkzeug-Familie **real gebaut und
-real geprüft** wird — nicht das Minimalbeispiel der Werkzeug-Doku. Die Kanten `driven→core` und
-`driving→core` sind Teil der Festlegung, weil Adapter Domänentypen abbilden (im ersten Referenz-Repo
-real geführt, im Gerüst nur auskommentiert); sie sehen wie ein Überschuss aus und brauchen deshalb
-einen eigenen Wächter.
+real geprüft** wird — nicht das Minimalbeispiel der Werkzeug-Doku. Die Kante `driven→core` ist Teil
+der Festlegung, weil Adapter Domänentypen abbilden (im ersten Referenz-Repo real geführt, im Gerüst
+nur auskommentiert); sie sieht wie ein Überschuss aus und braucht deshalb einen eigenen Wächter.
+
+**Zu den Rollen** (ergänzt in Runde 4): Rollen sind nicht dekorativ, sie schalten **kategorische**
+Regeln, die keine Kante aufhebt. `driven` und `driving` inferieren **keine** Rolle (die Inferenz
+kennt nur `core`/`ports`/`adapters`/`application`/`app`) — ohne den expliziten Eintrag wären beide
+Schichten bloß kanten-geprüft. Der Kern trägt bewusst `app` statt des inferierten `domain`: eine
+`domain`-Schicht darf **keinen** Port importieren (`core-impurity`, kategorisch), der Kern könnte
+seine getriebenen Ports also nicht aufrufen, und die Use-Case-Logik müsste in den **befreiten**
+`cmd/**`-Bereich ausweichen — Strenge auf dem Papier, Stille in der Praxis. Mit `role: app` bleibt
+die Use-Case in einer **geprüften** Schicht, in der `app-impurity` weiterhin jeden Adapter- und
+Tech-Import verbietet. Verworfen: den Kern aufteilen (`model` = `domain` + `app` = `app`) wie das
+zweite Referenz-Repo — das ist dort durch eine gewachsene Kern-Größe begründet und macht aus drei
+Schichten fünf; für ein Skelett mit einer Use-Case trägt es nichts (Re-Evaluierungs-Trigger unten).
+
+**Warum es keine Kante `ports→core` gibt** (Runde 4): mit **einer** Kern-Schicht wären `core→ports`
+und `ports→core` zusammen ein **Import-Zyklus** — die Sprache selbst schließt das aus, nicht erst
+das Gate. Es ist also eine echte Richtungswahl, und die beiden Referenzen wählen verschieden: das
+zweite hält die Ports importfrei und lässt den Kern sie importieren; das erste hält den Kern rein
+(`ports→core`) und orchestriert dafür in seiner **exemten** CLI. Der zweite Weg ist uns seit
+Festlegung 1/Runde 3 verschlossen (die CLI ist eine geprüfte Schicht), also wählen wir den ersten:
+**Ports sind importfrei**, der Kern importiert sie.
+
+**Wo verdrahtet wird** (Runde 4, und die eine Stelle, an der wir der Familie nicht folgen):
+**in `cmd/**`.** Dort entsteht der getriebene Adapter, wird in die Use-Case injiziert, und die
+Use-Case wird an die treibende CLI übergeben. Gemessen an beiden Referenzen ist das **nicht** ihre
+Form: beide konstruieren ihre getriebenen Adapter **in der CLI** (vier bzw. fünf Import-Zeilen; im
+zweiten Repo importiert `cmd/**` keinen einzigen Adapter). Seit Runde 3 ist die CLI bei uns eine
+`role: adapter`-Schicht, und ein Adapter, der einen anderen importiert, ist `lateral-adapter` —
+**kategorisch und kanten-unabhängig**: die Regel greift vor allen Richtungs-Regeln, eine Kante
+`driving→driven` würde sie **nicht** aufheben. Festlegung 1 übernimmt damit die **Pfade** der
+Familie, nicht ihre **Verdrahtungsstelle**; das ist der konkrete Preis von Runde 3 und gehört
+ausgesprochen, nicht impliziert.
+
+**Warum es keine Kante `driving→ports` gibt** (Runde 4): die CLI bekommt die Use-Case, nicht den
+Port — sie braucht ihn im emittierten Skelett nicht. Wir emittieren keine Kante auf Vorrat: greift
+ein Adopter dort doch nach einem Port, meldet sich das Gate beim ersten Lauf, und er trägt eine
+Zeile nach (Festlegung 3). Eine ungenutzte erlaubte Kante meldet sich nie.
+
+**Nicht genutzt: die `direction:`-Dimension** (Runde 4). Das Gate kennt eine eigene, zweckgebaute
+Achse `driving|driven` für Schichten; sie steuert **ausschließlich** `port-direction-mismatch` und
+verlangt auf **beiden** Seiten einen gesetzten Wert. Sie bewertet damit, ob ein Adapter den *falschen*
+Port anfasst — das setzt **geteilte** Ports (treibende und getriebene) voraus. Unser Skelett führt
+**eine** `ports`-Schicht und gar keine Kante von `driving` dorthin; die Dimension hätte nichts zu
+graden. Sie bleibt leer — als Entscheidung, nicht aus Versehen (Trigger unten).
 
 **Zur treibenden Seite** (ergänzt in Runde 2, verschärft in Runde 3): Beide Referenz-Repos haben
 eine, an **verschiedenen** Orten — `internal/cli` beim einen, `internal/adapter/driving/cli` beim
@@ -83,7 +124,8 @@ verlässt, wo die Architektur ihren Namen hat) — aber **nicht die Prüffreihei
 1. **Runde 2 hat gezeigt, was die Prüffreiheit kostet:** deckt man nur `driving/cli` ab, fällt
    jeder weitere treibende Adapter (`driving/http`, `driving/grpc` …) unter **keinen** Glob und ist
    für das Gate unsichtbar. Deckt man `driving/**` als Composition Root ab, ist die ganze treibende
-   Seite ungeprüft. Beides sind **stille** Zustände.
+   Seite ungeprüft. Beides sind **stille** Zustände. Was die Strenge stattdessen kostet, steht oben
+   unter *Wo verdrahtet wird* — sie ist bezahlt, nicht geschenkt.
 2. **Wir kennen die Adopter nicht** — und genau deshalb ist die Wahl entscheidbar (siehe
    Festlegung 3): ein zu strenger Default meldet sich beim ersten Lauf und kostet eine Zeile in der
    adopter-eigenen Config; ein zu lascher meldet sich nie.
@@ -124,7 +166,7 @@ auch eine Option.
 | B — `hexagonal` als Modus von `hexslice` (dieselben Verzeichnisse, weniger Regeln) | ein Layout weniger im Generator; scheinbar sparsamer | die HexSlice-Regeln hängen an literalen Verzeichnis-Präfixen — ein gemeinsames Layout mit zwei Kanten-Mengen ist **nicht bewachbar**; die Namen (`domain` vs `core`) passen nicht |
 | C — gar nicht liefern, Adopter schreibt sein Layout selbst | kein Aufwand; maximale Freiheit | der belegte Bedarf bliebe unbedient; der Generator könnte die Form, die das Gate als Standard vorschlägt, weiterhin nicht erzeugen |
 | **D — gelebte Familien-Konvention als eigenes Layout (gewählt)** | erprobt an zwei realen Repos; die Kanten-Menge stimmt mit der Praxis; getrennte Layouts bleiben bewachbar | Abweichung vom `--print-config`-Gerüst muss erklärt werden; zwei Rollen-Sätze im Generator; die `.a-check.yml` wächst weiter N×M (je Sprache × Architektur) |
-| E — eine dritte Achse (`--flavour`) für die Platzierung der treibenden Seite | jede beobachtete Variante wäre abbildbar, ohne die Arch-Achse mit Werten zu füllen | **gemessen**: die Belegmatrix wächst von 4 auf 8 Kombinationen (2 Sprachen × 2 Architekturen × 2 Flavours); je belegter Kombination kostet der Voll-E2E-Smoke **~45 s** CI-Wanduhr (Median 174 s → 218 s beim letzten Zuwachs), dazu je 1–2 Mutations-Fälle und ein Zahn-Block. Der Beleg wäre **eine** Pfad-Abweichung in zwei Repos derselben Familie — die ein Adopter mit einem `git mv` und einer Glob-Zeile selbst löst. Verworfen, bis die Achse **mehr als eine Frage** beantwortet |
+| E — eine dritte Achse (`--flavour`) für die Platzierung der treibenden Seite | jede beobachtete Variante wäre abbildbar, ohne die Arch-Achse mit Werten zu füllen | die Achse trägt **zwei** weitere Voll-E2E-Kombinationen (je Sprache eine), dazu je Kombination Mutations-Fälle und einen Zahn-Block; belegt sind heute vier Kombinationen in `harness/tools/full-smoke.sh`, und der Zuwachs von vier auf sechs gehört **dieser** ADR, nicht der Achse. *(Runde 4: die Runde-3-Fassung nannte hier „gemessen" samt Sekunden-Zahlen ohne auffindbaren Fundort und rechnete beide Zuwächse der Achse zu — beides zurückgenommen.)* Der Anlass wäre **eine** Pfad-Abweichung in zwei Repos derselben Familie, die ein Adopter mit einem `git mv` und einer Glob-Zeile selbst löst. Verworfen, bis die Achse **mehr als eine Frage** beantwortet |
 
 ## Konsequenzen
 
@@ -147,6 +189,13 @@ Was wird leichter, was schwerer.
   `composition_root` ein: **eine Zeile**, in seiner eigenen, nie überschriebenen Datei.
   *(Dieser Absatz ersetzt die Runde-2-Fassung, die das Gegenteil festlegte — die Begründung dort
   ist mit Festlegung 3 hinfällig geworden und wird nicht stehengelassen.)*
+- **Negativ, konkret (Runde 4):** die Strenge verschiebt die **Verdrahtung** aus der CLI nach
+  `cmd/**`. Das emittierte Skelett sieht damit an einer Stelle anders aus als die Repos, auf die
+  sich Festlegung 1 beruft — und `cmd/**` ist der befreite Bereich, die Verdrahtung also
+  ungeprüft. Das ist vertretbar, solange dort **nur** Konstruktion steht: Konstruktion ist die
+  Aufgabe des Composition Root, Orchestrierung nicht. Genau deshalb trägt der Kern `role: app` und
+  behält die Use-Case (siehe Festlegung 1) — sonst wanderte mit der Verdrahtung auch die Logik in
+  den ungeprüften Bereich.
 - **Folgepflicht 1 (blockierend für die Umsetzung):** die Geschichtet-Erkennung ist heute an
   HexSlice-Namen verdrahtet (`archLayered` prüft `roleDomain`; der Kopplungs-Wächter prüft
   `hexagon/domain/`). Sie wird auf eine **strukturelle** Bedingung gehoben, sonst entsteht ein
@@ -163,6 +212,13 @@ Was wird leichter, was schwerer.
 - **Folgepflicht 5:** die Nutzer-Doku benennt, dass `hexagonal` die treibende Seite **strenger**
   prüft als die Referenz-Repos, und wie man sie auf deren Niveau lockert. Ohne das liest sich die
   Abweichung als Fehler statt als Entscheidung.
+- **Folgepflicht 6:** Festlegung 3 gilt über diese ADR hinaus, steht aber in einer Layout-ADR. Sie
+  bekommt einen **Zeiger** aus dem Adaptions-Block der Konventionen, damit sie findet, wer nach der
+  Default-Regel für emittierte Prüfbereiche sucht — nicht nach dem hexagonalen Go-Layout.
+- **Folgepflicht 7:** der Voll-Smoke bekommt einen **Zahn für `lateral-adapter`**: ein Import von
+  `driving/**` nach `driven/**` im emittierten Repo muss rot werden. Ohne ihn ist die tragende
+  Regel dieser Fassung nur behauptet — und sie ist keine Kante, also fängt sie kein
+  Kanten-Wächter.
 
 ## Fitness Function (falls maschinell prüfbar)
 
@@ -174,11 +230,12 @@ niederschlägt: hier die konkrete Regel benennen. Beispiel:
 
 | Tooling | Regel | Make-Target |
 |---|---|---|
-| a-check (im Ziel) | Ein Import von `core` nach `adapter` verletzt die Richtung und färbt das Gate rot — **mit** Richtungs-Befund, nicht nur Exit ≠ 0 | `make a-check-<modul>` im emittierten Repo, gefahren im `make full-smoke` |
+| a-check (im Ziel) | Ein Import von `core` nach `driven` färbt das Gate rot — als **`app-impurity`** (die Kern-Schicht trägt `role: app` und darf keinen Adapter sehen), **mit** Regel-Namen im Befund, nicht nur Exit ≠ 0 | `make a-check-<modul>` im emittierten Repo, gefahren im `make full-smoke` |
 | Go-Test (hier) | Jede schichten-tragende (Sprache, Architektur) hat eine Arch-Gate-Config — die Erkennung ist **strukturell**, nicht namensbasiert | `make test` (`TestArchGateConfig_CoversEveryLayeredCombo`) |
 | Go-Test (hier) | Die Verzeichnisnamen von `hexagonal` und `hexslice` sind **disjunkt**; die Namen werden aus den Renderern abgeleitet, nicht aus einer Liste | `make test` |
 | `make mutate` | Die Kante `driven→core` wird entfernt → der zugehörige Wächter muss rot werden | `make mutate` |
-| a-check (im Ziel) | Ein Import von `driving` nach `driven` verletzt die Schichtung (es gibt keine solche Kante) und färbt das Gate rot | `make a-check-<modul>`, im `make full-smoke` |
+| a-check (im Ziel) | Ein Import von `driving` nach `driven` färbt das Gate rot — als **`lateral-adapter`** (zwei `role: adapter`-Schichten), nicht wegen einer fehlenden Kante | `make a-check-<modul>`, im `make full-smoke` |
+| Go-Test (hier) | Die emittierte Kanten-Menge ist **zyklenfrei** — sonst wäre das Skelett in der Zielsprache nicht übersetzbar (der Grund, aus dem `ports→core` fehlt) | `make test` |
 
 ## Re-Evaluierungs-Trigger
 
@@ -188,6 +245,11 @@ niederschlägt: hier die konkrete Regel benennen. Beispiel:
   eingefrorener Snapshot. **Ehrlich eingeordnet:** diesen Trigger feuert **kein Sensor**. Die
   Referenz-Repos liegen außerhalb dieses Repos; kein Gate und kein Nachtlauf sieht sie. Er lebt
   rein im *inferential-feedforward*-Quadranten und wirkt nur, wenn ihn jemand liest.
+- Wenn das emittierte Skelett seine Ports **teilt** (treibende neben getriebenen) — dann bekommt die
+  `direction:`-Dimension etwas zu graden, und ihr Weglassen ist neu zu bewerten.
+- Wenn der emittierte Kern über eine Use-Case hinauswächst — dann ist die verworfene Teilung
+  (`model` = `domain` neben `app`) erneut zu prüfen, weil `role: app` auf dem ganzen Kern die
+  Domänen-Reinheit nicht mehr abbildet.
 - Wenn eine **vierte** Architektur hinzukommt und sich zeigt, dass drei getrennte Rollen-Sätze den
   Kompositions-Kern verbiegen — dann ist Option B erneut zu prüfen, diesmal mit Messung statt
   Vermutung.
@@ -199,6 +261,7 @@ niederschlägt: hier die konkrete Regel benennen. Beispiel:
 | 2026-07-27 | Proposed | `docs/plan/planning/open/slice-058-hexagonal-go.md` §3a (Plan-Review F-2 verlangte die Entscheidung) |
 | 2026-07-27 | Überarbeitet (Runde 2), weiter Proposed | Proposed-Review `docs/reviews/2026-07-27-adr-0010-proposed-review.md`: F-1 (treibende Seite fehlte, Familie uneinheitlich) und F-2 (`composition_root` zu eng) aufgelöst, F-4 (Trigger ohne Sensor) eingeordnet, F-5 als Folgepflicht 4 ergänzt |
 | 2026-07-27 | Überarbeitet (Runde 3), weiter Proposed | Proposed-Review Runde 2 `docs/reviews/2026-07-27-adr-0010-proposed-review-runde-2.md`: N-1 (ungedeckter Bereich unter `driving/`) als **Schicht** aufgelöst statt als Ausnahme; daraus **Festlegung 3** (fail-closed bei unbekannten Adoptern) und die Rücknahme des Runde-2-Absatzes zur „Familien-Treue bei der Prüfschärfe"; N-2 als Folgepflicht 5; Alternative E (`--flavour`-Achse) mit gemessenen Kosten ergänzt |
+| 2026-07-27 | Überarbeitet (Runde 4), weiter Proposed | Proposed-Review Runde 3 `docs/reviews/2026-07-27-adr-0010-proposed-review-runde-3.md`: N-1 (Verdrahtungsort) und N-2 (Rolle des Kerns) in Festlegung 1 entschieden — Verdrahtung in `cmd/**`, Kern `role: app`, Ports importfrei, `ports→core` als Zyklus ausgeschlossen; N-3 (`direction:` nicht genutzt) und N-5 (Wirkmechanismus `lateral-adapter`) benannt; N-4 (unbelegte Sekunden-Zahlen, doppelt gezählter Zuwachs) zurückgenommen; N-6 als Folgepflicht 6, dazu Folgepflicht 7 (Zahn für `lateral-adapter`) |
 
 <!--
 Nach Accepted: NICHT mehr inhaltlich überschreiben (Hard Rule aus
