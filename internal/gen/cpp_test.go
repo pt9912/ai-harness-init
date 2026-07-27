@@ -159,3 +159,124 @@ func TestGenerate_CppVersionThreaded(t *testing.T) {
 		t.Errorf("Fragment CXX_VERSION-Default = %q, want 22.04", got)
 	}
 }
+
+// genCppArch generiert das cpp-Skelett fuer eine Architektur in ein frisches Temp-Verzeichnis.
+func genCppArch(t *testing.T, arch string) string {
+	t.Helper()
+	dir := t.TempDir()
+	if err := gen.GenerateArch(dir, "cpp", gen.DefaultCppVersion, arch); err != nil {
+		t.Fatalf("GenerateArch(cpp, %q): %v", arch, err)
+	}
+	return dir
+}
+
+// TestGenerate_CppHexsliceProfile_FileSet (slice-053, ADR-0009): --arch hexslice erzeugt
+// GENAU die kanonischen hexSlice-Rollen-Dateien PLUS die arch-invariante Bau-Gerueestung.
+// Die Mutation "eine Schicht-Datei aus cppRole entfernen" faerbt diesen Test rot.
+func TestGenerate_CppHexsliceProfile_FileSet(t *testing.T) {
+	got := walkRel(t, genCppArch(t, "hexslice"))
+	want := []string{
+		".clang-tidy",
+		"CMakeLists.txt",
+		"Dockerfile",
+		"src/adapters/inbound/cli/example/cli.hpp",
+		"src/adapters/outbound/memory/example/repository.hpp",
+		"src/adapters/outbound/notify/stdout.hpp",
+		"src/hexagon/application/example/greet/command.hpp",
+		"src/hexagon/application/example/greet/handler.hpp",
+		"src/hexagon/application/example/greet/ports/notifier.hpp",
+		"src/hexagon/application/example/ports/greeting_repository.hpp",
+		"src/hexagon/domain/example/greeting.hpp",
+		"src/main.cpp",
+		"tests/CMakeLists.txt",
+		"tests/test_greet.cpp",
+	}
+	if strings.Join(got, ",") != strings.Join(want, ",") {
+		t.Errorf("cpp-hexSlice-Datei-Satz = %v\nwant %v", got, want)
+	}
+}
+
+// TestGenerate_CppHexsliceIncludesAreModuleRootRelative (slice-053) ist der Zahn unter der
+// Arch-Gate-Sichtbarkeit: a-check loest NUR modul-root-relative Include-Strings auf
+// ("src/hexagon/..."). Ein relativer ("../...") oder praefixloser ("hexagon/...") Include
+// uebersetzt zwar — bleibt dem Gate aber UNSICHTBAR, und ein verbotener Import faellt
+// still durch (LH-QA-01, gemessen 2026-07-27 gegen das gepinnte a-check-Image).
+func TestGenerate_CppHexsliceIncludesAreModuleRootRelative(t *testing.T) {
+	dir := genCppArch(t, "hexslice")
+	for _, rel := range walkRel(t, dir) {
+		if !strings.HasSuffix(rel, ".hpp") && !strings.HasSuffix(rel, ".cpp") {
+			continue
+		}
+		for _, line := range strings.Split(mustRead(t, filepath.Join(dir, filepath.FromSlash(rel))), "\n") {
+			line = strings.TrimSpace(line)
+			if !strings.HasPrefix(line, `#include "`) {
+				continue // <...>-Includes sind Standardbibliothek
+			}
+			target := strings.Trim(strings.TrimPrefix(line, "#include"), ` "`)
+			if !strings.HasPrefix(target, "src/") {
+				t.Errorf("%s: %q ist nicht modul-root-relativ — a-check sieht diesen Import nicht", rel, target)
+			}
+		}
+	}
+}
+
+// TestArchGateConfig_CppMatchesSkeleton (slice-053, ADR-0009 Fitness-Function): die
+// cpp-.a-check.yml deklariert GENAU die Schichten, die das generierte Skelett traegt —
+// jede Produktionsdatei ausserhalb des Composition Root faellt unter den erwarteten
+// Schicht-Glob. Die Erwartung steht ausgeschrieben, nicht aus der Config abgeleitet
+// (sonst pruefte der Test die Config gegen sich selbst).
+func TestArchGateConfig_CppMatchesSkeleton(t *testing.T) {
+	cfg, ok := gen.ArchGateConfig("cpp", "hexslice")
+	if !ok {
+		t.Fatal("cpp+hexslice traegt keine Arch-Gate-Config")
+	}
+	globs := archGlobs(t, cfg)
+	want := map[string]string{
+		"src/hexagon/domain/example/greeting.hpp":                       "domain",
+		"src/hexagon/application/example/ports/greeting_repository.hpp": "ports",
+		"src/hexagon/application/example/greet/ports/notifier.hpp":      "ports",
+		"src/hexagon/application/example/greet/command.hpp":             "app",
+		"src/hexagon/application/example/greet/handler.hpp":             "app",
+		"src/adapters/inbound/cli/example/cli.hpp":                      "adapters",
+		"src/adapters/outbound/memory/example/repository.hpp":           "adapters",
+		"src/adapters/outbound/notify/stdout.hpp":                       "adapters",
+	}
+	seen := map[string]bool{}
+	for _, rel := range walkRel(t, genCppArch(t, "hexslice")) {
+		if !strings.HasSuffix(rel, ".hpp") || strings.HasPrefix(rel, "tests/") {
+			continue // main.cpp ist composition_root, tests/ ist exclude
+		}
+		seen[rel] = true
+		layer, _ := mostSpecific(globs, rel)
+		if layer == "" {
+			t.Errorf("%s faellt unter KEINE Schicht (Loch im Pruefbereich)", rel)
+			continue
+		}
+		if want[rel] == "" {
+			t.Errorf("%s ist neu im Skelett, aber in der Erwartung nicht gefuehrt (Config/Skelett-Drift?)", rel)
+		} else if layer != want[rel] {
+			t.Errorf("%s faellt unter Schicht %q, want %q", rel, layer, want[rel])
+		}
+	}
+	for rel := range want {
+		if !seen[rel] {
+			t.Errorf("erwartete Skelett-Datei %s fehlt (Rollen-Pfad gewandert?)", rel)
+		}
+	}
+}
+
+// TestArchGateConfig_CppAllowsAdapterToPorts (slice-053): die cpp-Config MUSS die
+// adapters->ports-Kante tragen — in C++ erfuellt ein Outbound-Adapter seinen Port durch
+// VERERBUNG und includiert ihn deshalb. Die Go-Fassung hat die Kante bewusst nicht
+// (strukturelle Interface-Erfuellung). Wer sie fuer ein Copy-Paste-Versehen haelt und
+// streicht, faerbt das Arch-Gate des generierten Skeletts rot.
+func TestArchGateConfig_CppAllowsAdapterToPorts(t *testing.T) {
+	cfg, _ := gen.ArchGateConfig("cpp", "hexslice")
+	if !strings.Contains(cfg, "{from: adapters, to: ports}") {
+		t.Error("cpp-Config ohne adapters->ports-Kante: der erbende Outbound-Adapter faerbt a-check rot")
+	}
+	goCfg, _ := gen.ArchGateConfig("go", "hexslice")
+	if strings.Contains(goCfg, "{from: adapters, to: ports}") {
+		t.Error("go-Config traegt adapters->ports — die strukturelle Erfuellung braucht sie nicht")
+	}
+}

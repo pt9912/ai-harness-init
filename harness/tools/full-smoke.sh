@@ -305,16 +305,18 @@ for rel in apps/hex/internal/hexagon/domain/example/greeting.go \
 		exit 1
 	fi
 done
-# Ein cpp+hexslice-Aufruf MUSS fail-fast Exit 2 geben (sprach×arch-Support, INFO-1) — der
-# cpp-Renderer traegt das hexSlice-Layout nicht, es darf NICHT still ein leeres Modul entstehen.
-cpphex_rc=0
-( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang cpp apps/cpphex --arch hexslice ) || cpphex_rc=$?
-if [ "$cpphex_rc" -ne 2 ]; then
-	echo "full-smoke: FEHLER — add-lang cpp --arch hexslice rc=$cpphex_rc, want 2 (sprach×arch-Support/INFO-1 kaputt, slice-045b)." >&2
+# slice-053: die Zusage "nicht getragene Kombination -> Exit 2" ist GEWANDERT, nicht
+# entfallen. Bis slice-053 trug sie `cpp --arch hexslice`; seit der cpp-Renderer hexslice
+# rendert, ist eine UNBEKANNTE Architektur der verbliebene reale Ablehnungs-Fall. Es darf
+# NICHT still ein Geruestung-only-Modul entstehen (slice-045a-Review INFO-1).
+onion_rc=0
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang cpp apps/onion --arch onion ) || onion_rc=$?
+if [ "$onion_rc" -ne 2 ]; then
+	echo "full-smoke: FEHLER — add-lang cpp --arch onion rc=$onion_rc, want 2 (Arch-Validierung kaputt, slice-053)." >&2
 	exit 1
 fi
-if [ -e "$tmprepo_doc/apps/cpphex/CMakeLists.txt" ]; then
-	echo "full-smoke: FEHLER — cpp+hexslice legte ein Geruestung-Artefakt an (still statt Exit 2, INFO-1)." >&2
+if [ -e "$tmprepo_doc/apps/onion/CMakeLists.txt" ]; then
+	echo "full-smoke: FEHLER — unbekannte Architektur legte ein Geruestung-Artefakt an (still statt Exit 2)." >&2
 	exit 1
 fi
 hex_rc=0
@@ -395,6 +397,63 @@ echo "full-smoke: Arch-Gate-Zaehne belegt (verbotener Domain->Adapter-Import fae
 # abhaengig. Dieselbe Klasse wie F-5 (die zweite Instanz im selben Slice, Review-Runde 2
 # N-1). `sed -n 1,2p` liest weiter und drainiert, statt frueh zu schliessen.
 grep -E 'core-impurity|wrong-direction' <<<"$teeth_out" | sed -n '1,2s/^/full-smoke:   /p'
+
+# --- slice-053 (LH-FA-04 Arch-Achse, zweite Sprache): cpp x hexslice ---------------
+# Bis hierher trug NUR go das Schicht-Layout. Jetzt dasselbe fuer C++ — und zwar mit den
+# beiden Belegen, die der Slice verlangt: (a) das Modul wird real GEBAUT (nicht nur
+# abgelegt), (b) der Build sieht die SCHICHTEN. (b) ist nicht selbstverstaendlich: die
+# arch-invariante CMakeLists uebersetzt genau eine Uebersetzungseinheit (src/main.cpp),
+# und eine Schicht-Datei, die keine erreicht, waere still tot bei gruenem Gate (die
+# slice-024-Klasse "gruen ueber einer Teilmenge").
+echo "full-smoke: add-lang cpp apps/cpphex --arch hexslice (Arch-Achse, zweite Sprache, slice-053) ..."
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang cpp apps/cpphex --arch hexslice )
+for rel in apps/cpphex/src/hexagon/domain/example/greeting.hpp \
+           apps/cpphex/src/hexagon/application/example/greet/handler.hpp \
+           apps/cpphex/src/hexagon/application/example/ports/greeting_repository.hpp \
+           apps/cpphex/src/adapters/outbound/memory/example/repository.hpp \
+           apps/cpphex/src/main.cpp apps/cpphex/tests/test_greet.cpp \
+           apps/cpphex/.a-check.yml harness/mk/apps-cpphex.mk harness/mk/arch-apps-cpphex.mk; do
+	if [ ! -e "$tmprepo_doc/$rel" ]; then
+		echo "full-smoke: FEHLER — add-lang cpp --arch hexslice dropte $rel nicht (slice-053)." >&2
+		exit 1
+	fi
+done
+cpphex_rc=0
+cpphex_out="$( make -j -Otarget -C "$tmprepo_doc" gates 2>&1 )" || cpphex_rc=$?
+printf '%s\n' "$cpphex_out"
+if [ "$cpphex_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — make gates nach add-lang cpp --arch hexslice ist NICHT Exit 0 (C++-hexSlice uebersetzt/lintet nicht, slice-053)." >&2
+	exit 1
+fi
+cpphex_missing=""
+for marker in "apps-cpphex:build" "apps-cpphex:lint" 'apps/cpphex":/src:ro'; do
+	grep -qF -- "$marker" <<<"$cpphex_out" || cpphex_missing="$cpphex_missing [$marker]"
+done
+if [ -n "$cpphex_missing" ]; then
+	echo "full-smoke: FEHLER — make gates ohne Beleg fuer:$cpphex_missing — C++-hexSlice-Gate oder sein Arch-Gate lief nicht? (slice-053/LH-QA-01)." >&2
+	exit 1
+fi
+# ZAEHNE (AGENTS.md §3.6), Teil 1 — "der Build sieht die Schichten": ein Syntaxfehler in
+# einem SCHICHT-Header MUSS den Modul-Build roetten. Bliebe er gruen, waere die Schicht
+# nicht uebersetzt worden und das ganze Layout tote Ablage. Danach zuruecknehmen.
+cpplayer="$tmprepo_doc/apps/cpphex/src/hexagon/domain/example/greeting.hpp"
+cp "$cpplayer" "$cpplayer.orig"
+printf '%s\n' 'static_assert(false, "full-smoke: absichtlicher Schicht-Fehler");' >> "$cpplayer"
+cppteeth_rc=0
+cppteeth_out="$( make -C "$tmprepo_doc" build-apps-cpphex 2>&1 )" || cppteeth_rc=$?
+mv "$cpplayer.orig" "$cpplayer"
+if [ "$cppteeth_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — ein Fehler in der Domain-SCHICHT laesst den C++-Build gruen: die Schichten werden nicht uebersetzt (tote Ablage, slice-024-Klasse/AGENTS.md §3.6)." >&2
+	printf '%s\n' "$cppteeth_out" >&2
+	exit 1
+fi
+if ! grep -qF -- 'full-smoke: absichtlicher Schicht-Fehler' <<<"$cppteeth_out"; then
+	echo "full-smoke: FEHLER — C++-Build rot, aber nicht wegen der Schicht-Datei (rot aus falschem Grund?). Ausgabe:" >&2
+	printf '%s\n' "$cppteeth_out" >&2
+	exit 1
+fi
+echo "full-smoke: C++-Schicht-Zaehne belegt (Fehler in der Domain-Schicht faerbt den Modul-Build rot, danach zurueckgenommen):"
+grep -F -- 'full-smoke: absichtlicher Schicht-Fehler' <<<"$cppteeth_out" | sed -n '1,2s/^/full-smoke:   /p'
 
 # slice-046, ROOT-Modul: der Init-One-Shot `--lang go --arch hexslice` verortet das Modul
 # am Repo-Root — das Arch-Gate mountet dann das GANZE Ziel, samt der vendored Baseline.

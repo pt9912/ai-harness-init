@@ -463,19 +463,22 @@ func TestRun_AddLangUnknownArch(t *testing.T) {
 	}
 }
 
-// TestRun_AddLangCppHexsliceRejected (slice-045b, slice-045a-Review INFO-1 — die
-// sprach×arch-Support-Pruefung): `add-lang cpp <pfad> --arch hexslice` -> Exit 2, WEIL der
-// cpp-Renderer das hexSlice-Layout (noch) nicht traegt. Ohne diese Pruefung emittierte der
-// Aufruf still ein Geruestung-only-Skelett. Rot-Gegenbeispiel: test/mutations 63
-// (archSupported immer true). Zusatz: kein cpp-Skelett-Artefakt darf entstehen.
-func TestRun_AddLangCppHexsliceRejected(t *testing.T) {
+// TestRun_AddLangUnknownArchRejected (slice-045b/slice-053 — die Arch-Validierung):
+// `add-lang <sprache> <pfad> --arch <unbekannt>` -> Exit 2, und es entsteht KEIN Artefakt.
+// Ohne die Pruefung emittierte der Aufruf still ein Geruestung-only-Skelett.
+//
+// Die Zusage ist mit slice-053 GEWANDERT, nicht entfallen: bis dahin trug sie
+// `cpp --arch hexslice` (der cpp-Renderer kannte das Layout nicht). Seit cpp hexslice
+// rendert, ist eine unbekannte Architektur der verbliebene reale Ablehnungs-Fall — die
+// Zusage wurde umgeschrieben statt danebengestellt. Rot-Gegenbeispiel: test/mutations 63.
+func TestRun_AddLangUnknownArchRejected(t *testing.T) {
 	dir := initializedRepo(t)
 	var out, errb bytes.Buffer
-	if code := run([]string{"add-lang", "cpp", "apps/engine", "--arch", "hexslice"}, dir, testSources(t), &out, &errb); code != 2 {
-		t.Fatalf("add-lang cpp --arch hexslice exit %d, want 2 (INFO-1): %q", code, errb.String())
+	if code := run([]string{"add-lang", "cpp", "apps/engine", "--arch", "onion"}, dir, testSources(t), &out, &errb); code != 2 {
+		t.Fatalf("add-lang cpp --arch onion exit %d, want 2: %q", code, errb.String())
 	}
 	if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash("apps/engine/CMakeLists.txt"))); !os.IsNotExist(err) {
-		t.Errorf("cpp+hexslice legte ein Geruestung-Artefakt an (still statt Exit 2): %v", err)
+		t.Errorf("unbekannte Architektur legte ein Geruestung-Artefakt an (still statt Exit 2): %v", err)
 	}
 }
 

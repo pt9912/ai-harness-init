@@ -225,8 +225,8 @@ func matchGlob(glob, rel string) bool {
 
 // TestArchGateConfig_OnlyLayered (slice-046, LH-QA-01): nur eine schichten-tragende,
 // von der Sprache getragene Kombination bekommt ein Arch-Gate. `flat` traegt keinen
-// Pruefbereich, cpp rendert hexslice nicht — beide bekommen keine Config, und der
-// Aufrufer emittiert dann nichts.
+// Pruefbereich und bekommt keine Config, der Aufrufer emittiert dann nichts. Seit
+// slice-053 rendert AUCH cpp hexslice und traegt darum eine eigene Config.
 func TestArchGateConfig_OnlyLayered(t *testing.T) {
 	for _, tc := range []struct {
 		lang, arch string
@@ -236,7 +236,7 @@ func TestArchGateConfig_OnlyLayered(t *testing.T) {
 		{"go", "flat", false},
 		{"go", "", false},
 		{"cpp", "flat", false},
-		{"cpp", "hexslice", false},
+		{"cpp", "hexslice", true},
 		{"go", "onion", false},
 	} {
 		if _, ok := gen.ArchGateConfig(tc.lang, tc.arch); ok != tc.want {

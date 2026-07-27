@@ -68,9 +68,10 @@ func GenerateArch(destDir, lang, version, arch string) error {
 	}
 	// Zwei-stufige Arch-Validierung: (1) existiert die Architektur ueberhaupt (Tippfehler
 	// -> globales Vokabular SupportedArchs)? (2) rendert der Renderer DIESER Sprache sie
-	// (cpp+hexslice heute nicht -> die von der Sprache getragenen Archs)? Ohne (2) schriebe
-	// `add-lang cpp <pfad> --arch hexslice` still ein Geruestung-only-Skelett statt Exit 2
-	// (slice-045a-Review INFO-1).
+	// (-> die von der Sprache getragenen Archs)? Ohne (2) schriebe eine nicht getragene
+	// Kombination still ein Geruestung-only-Skelett statt Exit 2 (slice-045a-Review
+	// INFO-1). Seit slice-053 tragen go und cpp beide Archs — der Zweig bleibt fuer die
+	// naechste Sprache noetig und ist ueber einen Renderer ohne hexslice bewacht.
 	if archLayout(arch) == nil {
 		return &UnknownArchError{Arch: arch, Available: SupportedArchs()}
 	}
@@ -122,17 +123,25 @@ func profiles() map[string]func(version, arch string) map[string]string {
 const DefaultArch = archFlat
 
 // langArchs bildet Sprache -> die Architekturen, die ihr Renderer WIRKLICH rendert.
-// Heute traegt jede Sprache flat; nur go traegt zusaetzlich hexslice (slice-045a) —
-// cpp-hexslice folgt linear (out-of-scope welle-07). Getrennt vom Achsen-Vokabular
-// SupportedArchs() (dem Union aller Werte): ein Achsen-Wert kann existieren, bevor jeder
-// Renderer ihn implementiert. GenerateArch validiert die (lang, arch)-Kombination
-// hiergegen, damit `add-lang cpp <pfad> --arch hexslice` fail-fast Exit 2 gibt, statt
-// still ein Geruestung-only-Skelett zu schreiben (slice-045a-Review INFO-1). EINE Quelle:
-// SupportedArchs() leitet den Union hieraus ab (kein Doppel-Pflegepunkt).
+// Heute tragen go (slice-045a) und cpp (slice-053) beide Architekturen. Getrennt vom
+// Achsen-Vokabular SupportedArchs() (dem Union aller Werte): ein Achsen-Wert kann
+// existieren, bevor jeder Renderer ihn implementiert. GenerateArch validiert die
+// (lang, arch)-Kombination hiergegen, damit eine nicht getragene Kombination fail-fast
+// Exit 2 gibt, statt still ein Geruestung-only-Skelett zu schreiben (slice-045a-Review
+// INFO-1).
+//
+// EHRLICH BENANNT (slice-053): seit cpp hexslice rendert, tragen BEIDE Sprachen BEIDE
+// Architekturen — die sprach-spezifische zweite Stufe ist damit von aussen nicht mehr
+// erreichbar und folglich UNBEWACHT. Sie bleibt als Verteidigung fuer die naechste
+// Sprache stehen (die kommt mit flat und ohne hexslice-Renderer), aber niemand soll
+// glauben, ein Test decke sie: der Exit-2-Beleg haengt jetzt an Stufe 1 (unbekannte
+// Architektur). Ein Seam nur fuer die Testbarkeit waere eine Paket-Variable und
+// verstiesse gegen gochecknoglobals. EINE Quelle: SupportedArchs() leitet den Union
+// hieraus ab (kein Doppel-Pflegepunkt).
 func langArchs() map[string][]string {
 	return map[string][]string{
 		"go":  {archFlat, archHexslice},
-		"cpp": {archFlat},
+		"cpp": {archFlat, archHexslice},
 	}
 }
 
