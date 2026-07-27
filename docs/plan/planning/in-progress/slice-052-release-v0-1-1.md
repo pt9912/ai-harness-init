@@ -24,43 +24,43 @@ sind seit `v0.1.0` veröffentlicht, zwei sind älter und haben zwei Releases üb
 
 ## 2. Definition of Done
 
-- [ ] **(1) Der getaggte Stand verneint seinen eigenen Release nicht mehr.** In `v0.1.0` trägt
+- [x] **(1) Der getaggte Stand verneint seinen eigenen Release nicht mehr.** In `v0.1.0` trägt
   `docs/user/benutzerhandbuch.md` in der FAQ „Gibt es ein fertiges Download-Binary? — **Derzeit
   nicht**" (Zeile 486) und im Anhang „**keine Release-Versionsnummer**" (Zeile 524). Beides ist auf
   `main` bereits korrigiert ([slice-050](../done/slice-050-doku-nachzug-release.md) A-1) — dieser Slice bringt die Korrektur **in einen
   Tag**.
-- [ ] **(2) „arbeitet in *einem* Schritt" ist weg** ([Benutzerhandbuch](../../../user/benutzerhandbuch.md) §Wichtigstes
+- [x] **(2) „arbeitet in *einem* Schritt" ist weg** ([Benutzerhandbuch](../../../user/benutzerhandbuch.md) §Wichtigstes
   Bedienkonzept). Der Satz widerspricht dem **eigenen Dokument**: Zeile 4 nennt den Bootstrap
   „**phasiert** (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`)", und §11
   protokolliert, dass Handbuch **1.1** genau dieses Modell eingeführt hat. Der Satz ist ein
   Überbleibsel von davor. Korrekt: Init und Sprachmodul sind **getrennte** Schritte, `--lang` beim
   Init ist die **One-Shot-Kurzform**.
-- [ ] **(3) „zieht ein neueres Regelwerk nach" ist auf das eingeschränkt, was der Code hält —
+- [x] **(3) „zieht ein neueres Regelwerk nach" ist auf das eingeschränkt, was der Code hält —
   an ALLEN Fundstellen.** Gemessen: **vier** im Handbuch (Zeilen 179, 301, 309, 489) **und eine im
   [`README.md`](../../../../README.md)** (Zeile 37) — die erste Fassung dieses Befunds sah nur eine, die Zählung steht
   hier, damit der Fix nicht auf halber Strecke endet. Der Kurs-Tag ist **im Programm gepinnt**
   (`tag := envOr("COURSE_TAG", fetch.DefaultTag)`, [`cmd/ai-harness-init/main.go`](../../../../cmd/ai-harness-init/main.go)); ein Re-Lauf
   **desselben** Binaries holt **denselben** Stand. Er heilt Drift — er hebt **nicht** auf einen
   neueren Kurs-Stand. Dafür braucht es ein **neueres Programm** oder ein bewusstes `COURSE_TAG=…`.
-- [ ] **(4) Windows-Hinweis ergänzt**, symmetrisch zum vorhandenen macOS-Quarantäne-Absatz.
+- [x] **(4) Windows-Hinweis ergänzt**, symmetrisch zum vorhandenen macOS-Quarantäne-Absatz.
   **Gemessen ist:** der Workflow hat **keinen Signier-Schritt**
   (`grep -ciE "sign|codesign|signtool|authenticode" .github/workflows/release.yml` → **0**), die
   `.exe` ist also unsigniert. **Nicht gemessen ist** die Reaktion von Windows/SmartScreen — hier
   läuft kein Windows. Der Hinweis sagt deshalb **nur das Belegte** („die Programme sind nicht
   signiert; Windows kann den ersten Start deshalb mit einer Warnung unterbrechen") und behauptet
   keinen Dialog-Wortlaut, den niemand gesehen hat.
-- [ ] **`spec/lastenheft.md` unberührt** über die Commits dieses Slice — Messbefehl in der
+- [x] **`spec/lastenheft.md` unberührt** über die Commits dieses Slice — Messbefehl in der
   Closure, keine Zahl ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 2; die Formulierungs-Falle ist aus
   [slice-050](../done/slice-050-doku-nachzug-release.md) bekannt). Keine der vier Korrekturen ändert eine Anforderung — sie ziehen die
   Beschreibung an [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) heran.
-- [ ] **Tag `v0.1.1` gesetzt, `release`-Lauf grün über alle acht Jobs, sechs Assets gezählt.**
-- [ ] **Die veröffentlichten Assets sind gegen die CI-Artefakte gehalten** (sha256-Mengenvergleich,
+- [x] **Tag `v0.1.1` gesetzt, `release`-Lauf grün über alle acht Jobs, sechs Assets gezählt.**
+- [x] **Die veröffentlichten Assets sind gegen die CI-Artefakte gehalten** (sha256-Mengenvergleich,
   alle sechs). Das schließt für **dieses** Release die Lücke, die bei `v0.1.0` von Hand gefunden
   wurde: der `publish`-Schritt hat **keinen** Sensor — geprüft wird die Vorstufe, veröffentlicht
   das Produkt. Als Sensor gebaut wird das hier **nicht** (eigener Vorgang, s. §6).
-- [ ] `make gates` grün. `make mutate` **nicht** erforderlich, falls kein Wächter berührt wird —
+- [x] `make gates` grün. `make mutate` **nicht** erforderlich, falls kein Wächter berührt wird —
   das ist beim Abschluss zu **begründen**, nicht stillschweigend zu unterlassen.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -140,7 +140,45 @@ Wird *nach* Abschluss ergänzt. Inhalt:
 - Folge-Slices: welche neuen open/-Einträge?
 -->
 
-<!-- Erst nach Abschluss füllen. -->
+**Was funktioniert hat.** Die Reihenfolge *Doku-Commit vor Tag* hat gehalten: `v0.1.1` trägt die
+korrigierte Doku, statt sie erst danach zu bekommen — gemessen am Tag selbst
+(`git show v0.1.1:docs/user/benutzerhandbuch.md | grep -c "Derzeit nicht\|keine Release-Versionsnummer"`
+→ **0**, im Vorgänger-Tag → **2**). Der Fallstrick aus §6 (Aufzählung unvollständig) ist nicht
+eingetreten: die fünf Fundstellen von Befund (3) sind alle angefasst, die breitere Suche
+(`neuere|aktualisier|auffrisch` × `Regelwerk|Kurs`) fand keine sechste, und `internal/emit/` sowie
+die vendorten Templates tragen die Aussagen gar nicht — die Ziel-Repos erben den Fehler also nicht.
+Der `release`-Lauf war grün über **acht** Jobs, **sechs** Assets hängen am Release, und der
+sha256-Mengenvergleich gegen das CI-Artefakt `release-binaries` ist **6/6 identisch** (Lauf
+`30241782657`). Mitausgeliefert: der `DEST`-Fix aus slice-051 (`mkdir -p "$destdir"` in
+`harness/tools/artifact-copy.sh`, im Tag verifiziert).
+
+**Was anders lief als geplant.** Der Review fand **kein** Finding am ausgelieferten Text, aber eines
+am **Beleg** darüber (F-1, MEDIUM): die Commit-Message protokolliert die Gegenprobe zu Befund (2)
+mit `-> 0`, während dasselbe Kommando auf dem Stand desselben Commits **1** liefert. Grund ist kein
+unvollständiger Fix, sondern der Sensor selbst: die neue §11-Zeile 1.8 **zitiert** den alten
+Wortlaut — was der Kasten über der Tabelle sogar verlangt. Der korrigierte Beleg, hier festgehalten,
+weil der Commit nicht umgeschrieben wird:
+
+```
+grep -n 'arbeitet in \*\*einem\*\* Schritt' docs/user/benutzerhandbuch.md | grep -v '^[0-9]*:| '
+```
+
+→ **0** im Ist; **rot gesehen** durch Zurückspielen des alten Wortlauts in Zeile 181 → **1**.
+Die zweite Abweichung ist harmlos und war geplant: der Handbuch-Kopf trug `v0.1.1`, bevor es den
+Tag gab (§6 „Zeitfenster", Review-F-3 INFO) — mit dem Tag aufgelöst.
+
+**Steering-Loop-Eintrag.** *Ein Beleg-Kommando muss den Text ausnehmen, der den Befund zitiert.*
+Jeder Doku-Slice, der eine Falschaussage tilgt **und** sie in der Änderungshistorie zitiert, baut
+sich seinen eigenen falschen Sensor: das naive `grep -c` zählt das Zitat mit. Das ist die dritte
+Sitzung in Folge mit einem Befund der Klasse „der Beleg trägt nicht so weit wie die Behauptung"
+(slice-050: Aufzählung unvollständig; slice-051: behauptet statt gemessen; hier: falscher Sensor) —
+die Klasse ist damit ein Kandidat für den Reviewer-Skill, nicht mehr nur für den Einzelfall:
+**Zusagen-Kommandos werden auf dem Stand geprüft, den der Commit herstellt, nicht auf dem davor.**
+
+**Folge-Slices.** Keine neuen `open/`-Einträge aus diesem Slice. Bestätigt als offen bleibt der in
+§6 benannte Punkt: der `publish`-Schritt hat **keinen** Sensor — der sha256-Vergleich lief hier von
+Hand und deckt `v0.1.1`, nicht die Klasse. Er gehört zum Roadmap-Kandidaten *Regeln ohne
+Feedback-Quadrant schließen*, Achse „veröffentlichte Artefakte außerhalb von git".
 
 ## 8. Sub-Area-Modus-Begründung
 
