@@ -1,6 +1,6 @@
 # Roadmap
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-07-26.
+**Status:** Aktiv. **Letzte Änderung:** 2026-07-27.
 
 **Format-Regel:** Die Roadmap ist eine Reihenfolge von **Wellen**,
 keine Reihenfolge von Terminen (siehe
@@ -14,12 +14,6 @@ gezeigt, nicht als Treiber.
 
 **Keine aktive Welle.** Die nächste ist **nicht** geschnitten (cp-Disziplin: Plandatei erst per `cp`,
 wenn ihr erster Slice steht) — Kandidaten unten.
-
-*Was gerade läuft, steht **nicht hier**: der Zustand eines Slice **ist** sein Verzeichnis
-([`docs/plan/planning/README.md`](../README.md), Modul 5) — `in-progress/` und `open/` beantworten die Frage
-autoritativ und ohne Pflegeaufwand. Diese Roadmap führt Wellen, nicht den Arbeitsvorrat; eine
-Abschrift des Lifecycle-Standes hier wäre eine zweite Quelle, und sie ist real gealtert
-(Drift-Log 2026-07-25: slice-047 stand hier noch als `in-progress`, obwohl geschlossen).*
 
 ## Nächste Wellen
 
