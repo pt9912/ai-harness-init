@@ -19,7 +19,7 @@ Implementation und Verifikation.
 **Eingangs-Kontext** (die Verträge, gegen die geprüft wurde — ohne diese Liste ist der Lauf
 nicht reproduzierbar):
 
-- Slice-Plan: [`in-progress/slice-051-artifact-dest-anlegen.md`](../plan/planning/in-progress/slice-051-artifact-dest-anlegen.md)
+- Slice-Plan: `in-progress/slice-051-artifact-dest-anlegen.md`
   (§1 Ziel, §3 Plan, §4 Trigger, §6 Risiken — §2 DoD gelesen, aber **nicht** als Prüfmaßstab
   verwendet; das ist Modul 11)
 - berührte `LH-*`-IDs: [`LH-QA-04`](../../spec/lastenheft.md#lh-qa-04--plattform-matrix) (die Release-Binaries entstehen über genau

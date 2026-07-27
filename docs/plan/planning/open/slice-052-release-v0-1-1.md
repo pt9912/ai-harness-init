@@ -93,7 +93,7 @@ veröffentlichte Stand die richtige Doku trägt, (5) Assets zählen und gegen di
 
 **`open` → `in-progress`:** die vier Befunde sind gemessen (§3); zwei davon (1) sind seit `v0.1.0`
 veröffentlicht. **Alle vier fand ein Mensch beim Lesen, kein Sensor** — (1) im Review zu
-[slice-050](../done/slice-050-doku-nachzug-release.md), (2)–(4) durch Nutzer-Fragen. Voraussetzung: [slice-051](../in-progress/slice-051-artifact-dest-anlegen.md) ist
+[slice-050](../done/slice-050-doku-nachzug-release.md), (2)–(4) durch Nutzer-Fragen. Voraussetzung: [slice-051](../done/slice-051-artifact-dest-anlegen.md) ist
 geschlossen — sein `DEST`-Fix soll **mit** `v0.1.1` ausgeliefert werden, nicht danach.
 
 Rückführungen:

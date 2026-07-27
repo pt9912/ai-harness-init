@@ -97,7 +97,7 @@ nur das Vorhandensein einer Zeile.
 
 **`open` → `in-progress` (Implementer beginnt):** **ein Nutzer hat den Fehler berichtet** und er ist
 am 2026-07-26 real reproduziert (Ausgabe in §3). Keine aktive Welle, kein Vorgänger blockiert;
-[slice-050](../done/slice-050-doku-nachzug-release.md) ist geschlossen und hat den Aufruf erst prominent gemacht.
+[slice-050](slice-050-doku-nachzug-release.md) ist geschlossen und hat den Aufruf erst prominent gemacht.
 
 Rückführungen:
 
@@ -128,7 +128,7 @@ Closure-Notiz mit Steering-Loop-Eintrag.
   gewollt (der Ernstfall wird dadurch real gefahren), aber sie zeigt sich **erst beim nächsten
   Release**. Bis dahin trägt der bats-Wächter die Aussage.
 - **`v0.1.0` bleibt betroffen.** Der Fix erscheint erst in einem Folge-Release; der ausgelieferte
-  Stand behält den Fehler. Das ist derselbe offene Punkt wie [slice-050](../done/slice-050-doku-nachzug-release.md) §7 A-1 und gehört in
+  Stand behält den Fehler. Das ist derselbe offene Punkt wie [slice-050](slice-050-doku-nachzug-release.md) §7 A-1 und gehört in
   denselben `v0.1.1`-Vorgang.
 
 ## 7. Closure-Notiz (nach `done/`)
@@ -155,7 +155,7 @@ Plattformen, weil `dist` ungetrackt ist und kein Step es vorher anlegt.
 **einen** Mutations-Fall vor. Geliefert sind **sechs** Wächter (96–101) und **fünf** Fälle (86–90).
 Der Zuwachs kam nicht aus Gründlichkeit, sondern aus fremden Augen: **jede Runde fand genau die
 Hälfte, die die vorige Auflösung liegen gelassen hatte** — und zwar an **einer einzigen Zusage**,
-„der Container wird immer aufgeräumt" ([`Makefile`](../../../../Makefile) Zeile 61, aus [slice-029](../done/slice-029-artifact-target.md)):
+„der Container wird immer aufgeräumt" ([`Makefile`](../../../../Makefile) Zeile 61, aus [slice-029](slice-029-artifact-target.md)):
 
 | Runde | Finder | Welche Hälfte war unbewacht | Auflösung |
 |---|---|---|---|
@@ -166,7 +166,7 @@ Hälfte, die die vorige Auflösung liegen gelassen hatte** — und zwar an **ein
 Den Zerlegungs-Schritt habe ich **zweimal nicht von selbst gemacht**. Die Ursache ist benennbar und
 sie ist keine Nachlässigkeit im Einzelfall: [`AGENTS.md`](../../../../AGENTS.md) §3.6 greift, wenn eine Zusage
 **geschrieben** wird. Diese Zusage wurde nicht geschrieben, sondern **geerbt** — sie stand seit
-[slice-029](../done/slice-029-artifact-target.md) im Recipe und ist durch diesen Slice nur in eine Datei **gewandert**, die ein
+[slice-029](slice-029-artifact-target.md) im Recipe und ist durch diesen Slice nur in eine Datei **gewandert**, die ein
 bats-Test erreichen kann. Genau diese Wanderung passiert den Filter, weil sie wie eine reine
 Verschiebung aussieht, während sie in Wahrheit die erste Gelegenheit ist, die Zusage überhaupt zu
 messen.
@@ -208,7 +208,7 @@ messen.
   Pfad war der, den [`README.md`](../../../../README.md) und das [Benutzerhandbuch](../../../user/benutzerhandbuch.md) den Nutzern
   vorschreiben — und genau dort fand ihn ein **Mensch**, kein Sensor. Kandidat: die in der
   Nutzer-Doku dokumentierten Befehle einmal **wörtlich** fahren, statt sie nur zu lesen. Das ist
-  dieselbe Richtung wie der Vorschlag „Sensor **vor** dem Tag-Push" aus [slice-050](../done/slice-050-doku-nachzug-release.md) §7 und
+  dieselbe Richtung wie der Vorschlag „Sensor **vor** dem Tag-Push" aus [slice-050](slice-050-doku-nachzug-release.md) §7 und
   verstärkt ihn: dort ging es um Aussagen der Doku über den Zustand, hier um ihre **Befehle**.
 
 **Folge-Slices.** [slice-052](../open/slice-052-release-v0-1-1.md) (`v0.1.1`) ist geschnitten und liegt in `open/` — erst er
