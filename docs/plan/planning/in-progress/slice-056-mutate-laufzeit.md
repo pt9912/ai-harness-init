@@ -27,22 +27,22 @@ der 92 Fälle beide zu bezahlen. Die **Aussage** des Laufs bleibt unverändert; 
 
 ## 2. Definition of Done
 
-- [ ] **(1) Die Sensor-Wahl je Fall ist mechanisch und fail-closed.** Die vorhandene
+- [x] **(1) Die Sensor-Wahl je Fall ist mechanisch und fail-closed.** Die vorhandene
   `# expect:`-Zeile bestimmt, welcher Sensor läuft: nennt sie einen Go-Test (`^Test[A-Z]`), fährt der
   Fall nur die Go-Stufe; sonst nur den bats-Container. **Bei Zweifel der volle Satz** — eine
   unbekannte, leere oder mehrdeutige `expect`-Zeile fährt **beide** Sensoren, nie weniger. Die
   bestehenden `# verify:`-Modi (`smoke`, `ci-lint`) bleiben unberührt.
-- [ ] **(2) Die Aussage des Laufs ist nachweislich unverändert.** `make mutate` meldet weiterhin
+- [x] **(2) Die Aussage des Laufs ist nachweislich unverändert.** `make mutate` meldet weiterhin
   **92 ok / 0 Befunde**, und **jeder** Fall färbt weiterhin denselben Wächter rot wie vorher —
   belegt durch den Lauf, nicht durch Argumentation. Ein Fall, dessen Sensor **falsch** zugeordnet
   wird, muss auffallen: rot gesehen an einem absichtlich fehl-zugeordneten Fall.
-- [ ] **(3) Vorher/Nachher ist gemessen, nicht geschätzt.** Laufzeit des vollständigen
+- [x] **(3) Vorher/Nachher ist gemessen, nicht geschätzt.** Laufzeit des vollständigen
   `make mutate` vor und nach dem Umbau, beide Zahlen in der Closure-Notiz. Bleibt der Gewinn unter
   einem Drittel, ist das ein Befund und gehört genannt — nicht weggelassen.
-- [ ] `make gates` grün, `make mutate` ohne Befund.
-- [ ] Doku-Update: die `mutate`-Beschreibung in [`AGENTS.md`](../../../../AGENTS.md) §4 und
+- [x] `make gates` grün, `make mutate` ohne Befund.
+- [x] Doku-Update: die `mutate`-Beschreibung in [`AGENTS.md`](../../../../AGENTS.md) §4 und
   [`harness/README.md`](../../../../harness/README.md) sagt, dass je Fall nur ein Sensor läuft.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -120,7 +120,52 @@ Wird *nach* Abschluss ergänzt. Inhalt:
 - Folge-Slices: welche neuen open/-Einträge?
 -->
 
-<!-- Erst nach Abschluss füllen. -->
+**Was funktioniert hat — die Zahlen zuerst, weil der Slice sie zur Bedingung gemacht hat.**
+
+| | Vorher | Nachher |
+|---|---|---|
+| Fälle | 92 | **93** (der neue Wächter auf die Auswahl kommt hinzu) |
+| Laufzeit | **19m01s** | **10m54s** |
+
+**−43 %, über einen Fall mehr.** Beide Läufe allein auf dem Docker-Daemon. Wichtiger als die Zeit
+ist der zweite Beleg: der **fallweise** Vergleich beider Lauf-Logs zeigt genau **einen**
+Unterschied — den neuen Fall. Kein alter Fall hat seinen Wächter verloren. Ein schnellerer Sensor,
+der weniger sieht, wäre der einzige Weg gewesen, diesen Slice falsch zu machen.
+
+Der Gewinn liegt **über** der vorab notierten Erwartung (~ein Drittel). Das ist ein Befund, keine
+Bestätigung: der bats-Container wiegt mehr, als die reine Go-Build-Rechnung hergab.
+
+**Was anders lief als geplant.**
+
+1. **Das eigene Gate meldete einen Fehlalarm.** Der neue Kommentar erklärte das Auswahl-Muster mit
+   einem illustrativen Testnamen — der Existenz-Check aus slice-055 las ihn als Sensor-Verweis und
+   färbte `make gates` rot. Eng aufgelöst (Muster statt Name); die breite Lösung (Existenz-Check nur
+   in Blöcken mit Behauptung) wäre eine **Gate-Lockerung** und gehört nicht in einen Laufzeit-Slice.
+2. **Eine Messung ging verloren.** Gates rot → Fix in `mutate.sh` → die Datei ist während eines
+   Laufs gesperrt (sie ist selbst Mutations-Ziel) → laufende Messung abgebrochen, ~10 Minuten weg.
+3. **Eine frühere Baseline wurde ebenfalls verworfen** — dort hätte ein parallel nötiger Gate-Lauf
+   denselben Docker-Tag gebaut und die Vorher-Zahl **künstlich erhöht**, also den Gewinn geschönt.
+4. **DoD (2) war in sich widersprüchlich** („weiterhin 92 ok" **und** ein neuer Wächter). Abgenommen
+   wurde die Substanz; dieselbe Klasse wie „byte-identisch" in slice-053.
+
+**Steering-Loop-Eintrag: wer eine Laufzeit misst, misst zuerst die Umgebung.** Beide verworfenen
+Läufe scheiterten nicht am Umbau, sondern an **geteilten Ressourcen**: derselbe Docker-Image-Tag,
+derselbe Daemon. Eine Messung, die parallel zu `make gates` läuft, ist keine langsamere Messung —
+sie ist eine **falsche**, und zwar in die bequeme Richtung. Regel für künftige Laufzeit-Slices:
+vor der Messung Gates grün, während der Messung nichts anderes auf dem Daemon, und beide Zahlen
+unter identischen Bedingungen.
+
+**Zweiter Eintrag: eine Metadaten-Zeile, die Steuergröße wird, braucht ihre Fail-closed-Regel im
+selben Zug.** Die `# expect:`-Zeile war Dokumentation; jetzt entscheidet sie über die Abdeckung. Der
+Schutz ist nicht Sorgfalt, sondern die Konstruktion: unbekannt/leer/mehrdeutig → **voller Satz**,
+plus ein Mutations-Fall, der genau diesen Rückfall entschärft.
+
+**Folge-Slices.** **Hebel B** ist entschieden und wird direkt im Anschluss geschnitten: Cache-Mount
+für den Go-Kompilat-Cache **plus `-count=1`** (ohne das cachte `go test` auch Ergebnisse, und „die
+Tests sind wirklich gelaufen" wäre nicht mehr wahr) — mit einem Wächter dagegen, dass `-count=1`
+still wieder verschwindet. Er adressiert, was nach diesem Slice übrig ist: 60 Fälle × Go-Build,
+davon 94 % Übersetzung. Dazu offen aus Review-F-1: der Prüfbereich des `comment-claims`-Gates
+(illustrative Namen vs. behauptete Sensoren) — Kandidat für den bereits notierten slice-055-Punkt.
 
 ## 8. Sub-Area-Modus-Begründung
 

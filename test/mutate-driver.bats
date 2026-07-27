@@ -193,3 +193,40 @@ setup() {
   printf 'smoke: OK — Bootstrap laeuft\n'              | grep -Eq -- "$form" && return 1
   printf 'smoke: FEHLER — out-of-scope-Artefakt\n'     | grep -Eq -- "$form"
 }
+
+# --- narrow_sensor (slice-056) ------------------------------------------------
+# Die Zuordnung `# expect:` -> Sensor ist ab slice-056 STEUERGROESSE, nicht nur
+# Dokumentation. Vier Faelle; die letzten beiden sind der eigentliche Schutz: was nicht
+# eindeutig zuzuordnen ist, muss den VOLLEN Satz fahren. Ein schnellerer Lauf, der
+# weniger prueft, waere das stille Gruen, gegen das make mutate antritt.
+
+@test "driver: narrow_sensor waehlt fuer einen Go-Testnamen nur die Go-Stufe" {
+  run bash -c "source '$DRIVER' 2>/dev/null || true; narrow_sensor TestGenerate_Deterministic"
+  [ "$output" = "test-go" ]
+}
+
+@test "driver: narrow_sensor waehlt fuer einen bats-Titel nur die bats-Stufe" {
+  run bash -c "source '$DRIVER' 2>/dev/null || true; narrow_sensor 'emittiert: eingelegter SYMLINK'"
+  [ "$output" = "test-bats" ]
+}
+
+@test "driver: narrow_sensor faellt bei LEERER Erwartung auf den vollen Satz zurueck" {
+  run bash -c "source '$DRIVER' 2>/dev/null || true; narrow_sensor ''"
+  [ "$output" = "test" ]
+}
+
+@test "driver: narrow_sensor faellt bei MEHRZEILIGER Erwartung auf den vollen Satz zurueck" {
+  run bash -c "source '$DRIVER' 2>/dev/null || true; narrow_sensor 'TestEins
+TestZwei'"
+  [ "$output" = "test" ]
+}
+
+# Die neuen Modi brauchen ein Fehlschlag-Muster — sonst faellt Bedingung 4 in den
+# F-1-Zustand (rot aus falschem Grund wird als Beleg akzeptiert).
+@test "driver: failure_form kennt die zwei neuen Stufen" {
+  local m
+  for m in test-go test-bats; do
+    run bash -c "source '$DRIVER' 2>/dev/null || true; failure_form $m"
+    [ -n "$output" ]
+  done
+}

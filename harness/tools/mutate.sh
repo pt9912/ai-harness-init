@@ -198,9 +198,37 @@ report_fail() {
 # Bedingung 4 fiel damit exakt in den F-1-Zustand zurueck (Review-Befund
 # slice-026 N-2, gemessen). Zwei Listen, die getrennt gepflegt werden, sind
 # genau die Drift-Konstruktion, die dieses Repo mehrfach beseitigt hat.
+# narrow_sensor waehlt den Sensor eines Falls OHNE eigenen `# verify:`-Modus aus seiner
+# `# expect:`-Zeile: nennt sie einen Go-Test, genuegt die Go-Stufe; sonst die bats-Stufe.
+# Bis slice-056 fuhr jeder dieser Faelle BEIDE Stufen — 92 Faelle x (bats + voller
+# go-test-Build).
+#
+# FAIL-CLOSED ist der Kern: alles, was nicht eindeutig zuzuordnen ist (leere Erwartung,
+# mehrere Zeilen, ein Name der weder Go-Test-Form noch bats-Titel ist), faellt auf den
+# VOLLEN Satz zurueck. Ein schnellerer Lauf, der weniger prueft, waere genau das stille
+# Gruen, gegen das make mutate antritt (LH-QA-01). test/mutate-driver.bats faehrt die
+# drei Faelle; test/mutations/97 nimmt die Auswahl weg und muss den Driver-Test roeten.
+narrow_sensor() {
+  local expect="$1"
+  # Mehrzeilig oder leer -> nicht eindeutig -> voller Satz.
+  case "$expect" in
+    "") printf '%s' 'test'; return ;;
+    *"
+"*) printf '%s' 'test'; return ;;
+  esac
+  # Go-Testfunktionen tragen das Praefix `Test` plus Grossbuchstabe (Konvention des
+  # Test-Werkzeugs, nicht unsere) — deshalb dieses Muster und keine Namensliste.
+  case "$expect" in
+    Test[A-Z]*) printf '%s' 'test-go' ;;
+    *)          printf '%s' 'test-bats' ;;
+  esac
+}
+
 failure_form() {
   case "$1" in
-    test)    printf '%s' '--- FAIL:|not ok [0-9]+' ;;  # go test | bats
+    test)     printf '%s' '--- FAIL:|not ok [0-9]+' ;;  # go test | bats
+    test-go)  printf '%s' '--- FAIL:' ;;                # nur die Go-Stufe
+    test-bats) printf '%s' 'not ok [0-9]+' ;;           # nur die bats-Stufe
     smoke)   printf '%s' 'smoke: FEHLER' ;;            # harness/tools/smoke.sh
     ci-lint) printf '%s' ':[0-9]+:[0-9]+:' ;;          # actionlint file:line:col: (nur bei Fehler)
     *)       return 1 ;;
@@ -226,13 +254,13 @@ run_case() {
 
   files="$(sed -n 's/^# files: //p' "$case_file")"
   expect="$(sed -n 's/^# expect: //p' "$case_file")"
-  # `# verify:` waehlt den Sensor, den die Mutation rot faerben soll. Ohne die
-  # Angabe faehrt run_case nur `make test` — und Waechter in `make smoke` waeren
-  # damit bauartbedingt unbewacht (Review-Befund slice-026 F-5). Genau die sind
-  # aber gerade als inert aufgeflogen (F-2), also brauchen sie die Abdeckung am
-  # dringendsten.
+  # `# verify:` waehlt den Sensor, den die Mutation rot faerben soll — Waechter in
+  # `make smoke` waeren sonst bauartbedingt unbewacht (Review-Befund slice-026 F-5).
+  # OHNE die Angabe waehlt seit slice-056 narrow_sensor die passende Stufe aus der
+  # `# expect:`-Zeile (fail-closed: im Zweifel beide); bis dahin lief immer der volle
+  # `make test`.
   verify="$(sed -n 's/^# verify: //p' "$case_file")"
-  [ -n "$verify" ] || verify="test"
+  [ -n "$verify" ] || verify="$(narrow_sensor "$expect")"
   if [ -z "$files" ] || [ -z "$expect" ]; then
     report_fail "$name" "Kopf unvollstaendig: '# files:' und '# expect:' sind Pflicht"
     return
