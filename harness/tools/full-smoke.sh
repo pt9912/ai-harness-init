@@ -455,6 +455,35 @@ fi
 echo "full-smoke: C++-Schicht-Zaehne belegt (Fehler in der Domain-Schicht faerbt den Modul-Build rot, danach zurueckgenommen):"
 grep -F -- 'full-smoke: absichtlicher Schicht-Fehler' <<<"$cppteeth_out" | sed -n '1,2s/^/full-smoke:   /p'
 
+# ZAEHNE, Teil 2 — "der LINT sieht die Schichten": ein Build-Fehler beweist nur, dass der
+# Compiler sie erreicht. clang-tidy laeuft nur auf src/main.cpp; ob es die eingebundenen
+# Schicht-Header mitprueft, entscheidet der HeaderFilterRegex — und ein am Zeilenanfang
+# verankertes Muster traefe den absoluten Container-Pfad NIE (gemessen: der Gate blieb
+# gruen). Also messen statt behaupten: ein bugprone-Verstoss IN der Domain-Schicht muss
+# den Lint-Gate roetten.
+cpplint_layer="$tmprepo_doc/apps/cpphex/src/hexagon/domain/example/greeting.hpp"
+cp "$cpplint_layer" "$cpplint_layer.orig"
+# if/else mit identischen Zweigen -> bugprone-branch-clone; die Datei bleibt UEBERSETZBAR,
+# der Befund kommt also wirklich vom Linter und nicht vom Compiler. Eingefuegt vor der
+# schliessenden Namensraum-Zeile — reines sed, kein python/jq (LH-QA-03: das Repo kommt
+# mit bash + git + docker aus).
+sed -i 's|^}  // namespace hexagon::domain::example$|inline bool full_smoke_probe(bool b) { if (b) { return true; } else { return true; } }\n\n}  // namespace hexagon::domain::example|' "$cpplint_layer"
+cpplint_rc=0
+cpplint_out="$( make -C "$tmprepo_doc" lint-apps-cpphex 2>&1 )" || cpplint_rc=$?
+mv "$cpplint_layer.orig" "$cpplint_layer"
+if [ "$cpplint_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — ein clang-tidy-Verstoss IN der Domain-Schicht laesst den Lint-Gate gruen: die Schicht-Header werden nicht gelintet (HeaderFilterRegex? AGENTS.md §3.6/LH-QA-01)." >&2
+	printf '%s\n' "$cpplint_out" >&2
+	exit 1
+fi
+if ! grep -qF -- 'bugprone-branch-clone' <<<"$cpplint_out"; then
+	echo "full-smoke: FEHLER — Lint-Gate rot, aber ohne den erwarteten Schicht-Befund (rot aus falschem Grund?). Ausgabe:" >&2
+	printf '%s\n' "$cpplint_out" >&2
+	exit 1
+fi
+echo "full-smoke: C++-Lint-Zaehne belegt (bugprone-Verstoss in der Domain-Schicht faerbt den Lint-Gate rot, danach zurueckgenommen):"
+grep -F -- 'bugprone-branch-clone' <<<"$cpplint_out" | sed -n '1,2s/^/full-smoke:   /p'
+
 # slice-046, ROOT-Modul: der Init-One-Shot `--lang go --arch hexslice` verortet das Modul
 # am Repo-Root — das Arch-Gate mountet dann das GANZE Ziel, samt der vendored Baseline.
 # Genau hier schlug der 0700-Modus des <tag>-Verzeichnisses zu (a-check laeuft als

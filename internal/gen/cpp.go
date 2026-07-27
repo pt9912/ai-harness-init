@@ -41,10 +41,9 @@ func cppScaffolding(version string) map[string]string {
 // Bequemlichkeit: die arch-invariante CMakeLists uebersetzt genau eine
 // Uebersetzungseinheit (add_executable(app src/main.cpp)). Eine .cpp-Schicht-Datei, die
 // dort nicht gelistet ist, waere still tot — der Build bliebe gruen ueber einer Teilmenge
-// (die slice-024-Klasse). Header-only heisst: was der Composition Root includiert, wird
-// UEBERSETZT und von clang-tidy (HeaderFilterRegex '^src/') mitgelintet, ohne dass die
-// Gerueestung arch-abhaengig wird. Der Beleg dafuer ist ein Zahn, keine Behauptung
-// (full-smoke: Fehler in einer Schicht-Datei faerbt den Modul-Build rot).
+// (die slice-024-Klasse). Normativ steht das Layout in spec/architecture.md; ob Build und
+// Lint die Schichten wirklich erreichen, sagen die Zaehne in harness/tools/full-smoke.sh,
+// nicht dieser Kommentar.
 //
 // Der Composition Root traegt zusaetzlich tests/, weil die Gerueestung
 // add_subdirectory(tests) arch-INVARIANT ausfuehrt: ohne tests/ scheiterte schon das
@@ -144,13 +143,10 @@ int main() {
 
 // --- hexSlice-Schichten (slice-053, ADR-0009) -------------------------------------
 //
-// Import-Richtungen inward-only, wie im Go-Renderer — mit EINEM sprach-bedingten
-// Unterschied, der kein Detail ist: Go-Outbound-Adapter erfuellen ihre Ports
-// STRUKTURELL (Interface-Erfuellung ohne Import), C++ erfuellt sie durch VERERBUNG und
-// muss den Port-Header also includieren. Die cpp-Schicht-Config traegt deshalb eine
-// `adapters -> ports`-Kante, die die Go-Config bewusst NICHT hat. Wer die Kante fuer
-// einen Copy-Paste-Fehler haelt und sie streicht, faerbt das Arch-Gate des generierten
-// Skeletts rot.
+// Inward-only, mit der sprach-bedingten Abweichung, die spec/architecture.md §5 setzt:
+// C++ erfuellt einen Port durch Vererbung, includiert ihn also — daher die
+// `adapters -> ports`-Kante, die die Go-Fassung nicht hat. Durchgesetzt wird das von
+// TestArchGateConfig_CppAllowsAdapterToPorts, nicht von diesem Kommentar.
 
 // cppHexDomain — Domain-Schicht: importiert nur die Standardbibliothek, nie eine
 // andere Schicht. Die Invariante (nicht-leere Nachricht) lebt hier.
@@ -479,8 +475,7 @@ const cppHexArchConfig = `# .a-check.yml — Architektur-Gate (HexSlice = hexago
 # Die Schicht-Header binden einander MODUL-ROOT-RELATIV ein ("src/hexagon/…").
 # Das ist keine Stilfrage: a-check loest NUR diese Form auf — relative ("../…") und
 # praefixlose ("hexagon/…") Includes sind ihm unsichtbar, und das Gate waere dann
-# still gruen (gemessen; LH-QA-01). Die CMakeLists traegt dafuer den Modul-Root im
-# Include-Pfad.
+# still gruen. Die CMakeLists traegt dafuer den Modul-Root im Include-Pfad.
 #
 # Die Slice-Globs (.../greet/**) und Port-Globs (.../ports/**) tragen bewusst
 # literale Verzeichnis-Praefixe. Nur daran haengen die beiden Vertical-Slice-
@@ -548,9 +543,9 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 
 add_executable(app src/main.cpp)
 # Modul-Root im Include-Pfad: Schicht-Header binden einander MODUL-ROOT-RELATIV ein
-# ("src/hexagon/..."), weil das Architektur-Gate nur diese Form aufloest — relative
-# und praefixlose Includes sind ihm unsichtbar, das Gate waere still gruen (gemessen;
-# LH-QA-01, LH-FA-04-AC "Arch-Achse"). Fuer das flache Skelett ist die Zeile wirkungslos.
+# ("src/hexagon/..."), weil das Architektur-Gate nur diese Form aufloest — relative und
+# praefixlose Includes sind ihm unsichtbar, das Gate waere still gruen. Fuer ein flaches
+# Layout ist die Zeile wirkungslos.
 target_include_directories(app PRIVATE ${CMAKE_SOURCE_DIR})
 
 enable_testing()
@@ -574,7 +569,9 @@ Checks: >
   clang-analyzer-*,
   readability-function-cognitive-complexity
 WarningsAsErrors: ''
-HeaderFilterRegex: '^src/'
+# Unverankert: clang-tidy sieht den Header-Pfad absolut (/src/src/...), ein '^src/'
+# traefe ihn nie.
+HeaderFilterRegex: '(^|/)src/'
 FormatStyle: none
 CheckOptions:
   - key: readability-function-cognitive-complexity.Threshold

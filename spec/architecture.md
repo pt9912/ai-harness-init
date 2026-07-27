@@ -152,6 +152,25 @@ byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
   **skip-if-present** (der Adopter passt die Schicht-Config an). Voraussetzung der
   a-check-Emission ist die Verfügbarkeit des a-check-Tools (gepinntes Image mit
   `--print-mk`, real ab v0.15.0) — dieselbe Tool-als-Quelle-Linie wie d-check.
+- **Was das Arch-Gate sehen kann, bestimmt das Layout — nicht umgekehrt.** a-check
+  löst **nur modul-root-relative** Referenz-Strings auf. Ein Sprach-Renderer, dessen
+  Schicht-Dateien einander relativ oder über einen verkürzten Pfad referenzieren, baut
+  ein Layout, das **übersetzt, aber unsichtbar ist**: das Gate meldet dann 0 Befunde über
+  einer real verletzten Schichtung — ein stilles Grün. Verbindlich ist daher: die
+  Referenzen zwischen Schicht-Dateien sind **modul-root-relativ**, und die
+  Bau-Gerüstung trägt das Minimum, das diese Form auflösbar **und** prüfbar macht
+  (bei C++ den Modul-Root im Include-Pfad und ein Header-Filter-Muster, das die
+  Schicht-Header erreicht — beides für ein flaches Layout wirkungslos). Belegt wird das
+  nicht durch Zusicherung, sondern durch zwei Gegenbeispiele im Voll-E2E-Smoke: ein
+  Fehler in einer Schicht-Datei muss den Modul-**Build** röten, ein Lint-Verstoß darin
+  den **Lint**-Gate.
+- **Die Kanten-Menge ist sprach-abhängig, das Layout nicht.** Wie ein Outbound-Adapter
+  seinen Port erfüllt, entscheidet die Sprache: **strukturell** (Go: Interface-Erfüllung
+  ohne Import → keine `adapters→ports`-Kante) oder **durch Vererbung** (C++: der Adapter
+  bindet den Port-Header ein → die Kante ist **erforderlich**). Die a-check-Config eines
+  Sprach-Renderers bildet dessen reale Erfüllungs-Form ab; eine Kante aus einer anderen
+  Sprache zu übernehmen oder zu streichen, färbt das Gate des generierten Skeletts rot.
+  Das Schicht-Layout selbst bleibt über alle Sprachen dasselbe.
 - **Guard-Boden + Union:** der Command-Guard trägt ein universelles BLOCKED-Set
   (apt/pip/npm/cargo) **im Skript gebacken** — er ist nie fail-open, auch bei
   fehlendem `tools/harness/blocked/`. Er liest zusätzlich `tools/harness/blocked/*`
