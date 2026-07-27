@@ -27,7 +27,7 @@ sind seit `v0.1.0` veröffentlicht, zwei sind älter und haben zwei Releases üb
 - [x] **(1) Der getaggte Stand verneint seinen eigenen Release nicht mehr.** In `v0.1.0` trägt
   `docs/user/benutzerhandbuch.md` in der FAQ „Gibt es ein fertiges Download-Binary? — **Derzeit
   nicht**" (Zeile 486) und im Anhang „**keine Release-Versionsnummer**" (Zeile 524). Beides ist auf
-  `main` bereits korrigiert ([slice-050](../done/slice-050-doku-nachzug-release.md) A-1) — dieser Slice bringt die Korrektur **in einen
+  `main` bereits korrigiert ([slice-050](slice-050-doku-nachzug-release.md) A-1) — dieser Slice bringt die Korrektur **in einen
   Tag**.
 - [x] **(2) „arbeitet in *einem* Schritt" ist weg** ([Benutzerhandbuch](../../../user/benutzerhandbuch.md) §Wichtigstes
   Bedienkonzept). Der Satz widerspricht dem **eigenen Dokument**: Zeile 4 nennt den Bootstrap
@@ -51,7 +51,7 @@ sind seit `v0.1.0` veröffentlicht, zwei sind älter und haben zwei Releases üb
   keinen Dialog-Wortlaut, den niemand gesehen hat.
 - [x] **`spec/lastenheft.md` unberührt** über die Commits dieses Slice — Messbefehl in der
   Closure, keine Zahl ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 2; die Formulierungs-Falle ist aus
-  [slice-050](../done/slice-050-doku-nachzug-release.md) bekannt). Keine der vier Korrekturen ändert eine Anforderung — sie ziehen die
+  [slice-050](slice-050-doku-nachzug-release.md) bekannt). Keine der vier Korrekturen ändert eine Anforderung — sie ziehen die
   Beschreibung an [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) heran.
 - [x] **Tag `v0.1.1` gesetzt, `release`-Lauf grün über alle acht Jobs, sechs Assets gezählt.**
 - [x] **Die veröffentlichten Assets sind gegen die CI-Artefakte gehalten** (sha256-Mengenvergleich,
@@ -85,7 +85,7 @@ der Tabelle keinen unkorrigierten Treffer mehr liefert.
 | `spec/lastenheft.md` | **unberührt** | keine Anforderung ändert sich |
 
 **Reihenfolge:** (1) alle vier Korrekturen, (2) `make gates`, (3) Review + Verifikation,
-(4) Tag `v0.1.1` **aus dem korrigierten Commit** — die Reihenfolge aus [slice-050](../done/slice-050-doku-nachzug-release.md), damit der
+(4) Tag `v0.1.1` **aus dem korrigierten Commit** — die Reihenfolge aus [slice-050](slice-050-doku-nachzug-release.md), damit der
 veröffentlichte Stand die richtige Doku trägt, (5) Assets zählen und gegen die CI-Artefakte halten,
 (6) Closure.
 
@@ -93,7 +93,7 @@ veröffentlichte Stand die richtige Doku trägt, (5) Assets zählen und gegen di
 
 **`open` → `in-progress`:** die vier Befunde sind gemessen (§3); zwei davon (1) sind seit `v0.1.0`
 veröffentlicht. **Alle vier fand ein Mensch beim Lesen, kein Sensor** — (1) im Review zu
-[slice-050](../done/slice-050-doku-nachzug-release.md), (2)–(4) durch Nutzer-Fragen. Voraussetzung: [slice-051](../done/slice-051-artifact-dest-anlegen.md) ist
+[slice-050](slice-050-doku-nachzug-release.md), (2)–(4) durch Nutzer-Fragen. Voraussetzung: [slice-051](slice-051-artifact-dest-anlegen.md) ist
 geschlossen — sein `DEST`-Fix soll **mit** `v0.1.1` ausgeliefert werden, nicht danach.
 
 Rückführungen:
@@ -120,7 +120,7 @@ Link-Reconciliation im Folge-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
 - **(4) ist bewusst schwächer formuliert als die Erwartung.** Dass eine unsignierte `.exe` unter
   Windows eine SmartScreen-Warnung auslöst, ist plausibel und **nicht gemessen**. Der Hinweis sagt
   nur, was belegt ist. Wer Windows hat, kann daraus später eine belegte Aussage machen.
-- **Das Zeitfenster zwischen Doku-Commit und Tag** ist wie bei [slice-050](../done/slice-050-doku-nachzug-release.md) unvermeidbar und
+- **Das Zeitfenster zwischen Doku-Commit und Tag** ist wie bei [slice-050](slice-050-doku-nachzug-release.md) unvermeidbar und
   **benannt**, nicht wegdefiniert.
 - **Der `publish`-Schritt bleibt ohne Sensor.** Dieser Slice prüft die Assets **von Hand** — das
   deckt `v0.1.1`, nicht die Klasse. Der Sensor (ein Job **nach** `publish`, der die
@@ -188,5 +188,5 @@ Feedback-Quadrant schließen*, Achse „veröffentlichte Artefakte außerhalb vo
 vollständig bekannt.
 
 Der Vollblock entfällt damit laut Template. **Anmerkung:** dieser Slice hat wie
-[slice-050](../done/slice-050-doku-nachzug-release.md) eine **nach außen wirkende** Achse (der Tag) — kein Modus-Thema, sondern eine
+[slice-050](slice-050-doku-nachzug-release.md) eine **nach außen wirkende** Achse (der Tag) — kein Modus-Thema, sondern eine
 Freigabe-Frage; sie steht in §5 und §6.

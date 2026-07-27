@@ -211,7 +211,7 @@ messen.
   dieselbe Richtung wie der Vorschlag „Sensor **vor** dem Tag-Push" aus [slice-050](slice-050-doku-nachzug-release.md) §7 und
   verstärkt ihn: dort ging es um Aussagen der Doku über den Zustand, hier um ihre **Befehle**.
 
-**Folge-Slices.** [slice-052](../in-progress/slice-052-release-v0-1-1.md) (`v0.1.1`) ist geschnitten und in Arbeit — erst er
+**Folge-Slices.** [slice-052](slice-052-release-v0-1-1.md) (`v0.1.1`) ist geschnitten und in Arbeit — erst er
 bringt den Fix zu den Nutzern; `v0.1.0` behält ihn (§6, unverändert gültig). Die drei
 Steering-Einträge sind **nicht** geschnitten (cp-Disziplin) und gehören in den Roadmap-Kandidaten
 *Regeln ohne Feedback-Quadrant schließen*.
