@@ -2,11 +2,11 @@
 
 **Status:** Aktiv.
 
-**Datum angelegt:** 2026-07-21. **Letzte Prüfung:** 2026-07-25 (welle-07-Closure-Audit: unverändert gültig; welle-07 fügte **keine** `.bats`-Datei hinzu — ihre neuen Wächter sind Go-Tests und `test/mutations/*.sh`, und Letztere werden von `shell-lint` **voll** gelintet. Geltungsbereich und Begründung unberührt). **Vorherige Prüfung:** 2026-07-24 (welle-06-Closure-Audit: drei `.bats`-Dateien hinzugekommen — `component-freshness`, `go-freshness`, `cpp-freshness` —, die unter denselben Glob-Ausschluss fallen).
+**Datum angelegt:** 2026-07-21. **Letzte Prüfung:** 2026-07-27 (welle-08-Closure-Audit: **unverändert gültig, Trigger nicht erfüllt**. welle-08 selbst fügte **keine** `.bats`-Datei hinzu; die Zahl stieg dennoch von zwölf auf **dreizehn** — `test/comment-claims.bats` kam aus einem wellenlosen Slice derselben Sitzung. Gemessen: die neue Datei trägt **null** Verzweigungen/Schleifen (`grep -cE '^\s*(if|for|while|case) '` → 0), also weiter lineare `run`+`assert`-Logik — der Auflösungs-Trigger verlangt eigene Hilfsfunktionen mit Verzweigung. Die im Geltungsbereich genannte Zahl war auf „elf" stehengeblieben und ist hiermit korrigiert). **Vorherige Prüfung:** 2026-07-25 (welle-07-Closure-Audit: unverändert gültig; welle-07 fügte **keine** `.bats`-Datei hinzu — ihre neuen Wächter sind Go-Tests und `test/mutations/*.sh`, und Letztere werden von `shell-lint` **voll** gelintet. Geltungsbereich und Begründung unberührt). **Vorherige Prüfung:** 2026-07-24 (welle-06-Closure-Audit: drei `.bats`-Dateien hinzugekommen — `component-freshness`, `go-freshness`, `cpp-freshness` —, die unter denselben Glob-Ausschluss fallen).
 
 **Betroffenes Gate:** `shell-lint` (shellcheck im gepinnten Image).
 
-**Geltungsbereich:** alle bats-Dateien unter test/ (Endung .bats; aktuell elf). Die
+**Geltungsbereich:** alle bats-Dateien unter test/ (Endung .bats; aktuell dreizehn). Die
 Shell-Hooks und -Helfer unter harness/tools/, .claude/hooks/,
 internal/emit/templates/ und test/mutations/ bleiben **voll** gelintet — der
 Ausschluss betrifft ausschließlich die bats-Testdateien.

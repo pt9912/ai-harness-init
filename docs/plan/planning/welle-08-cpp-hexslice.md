@@ -106,4 +106,4 @@ die welle-07 mit der konditionalen Emission (`archLayered`) schon einmal aufgel�
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Welle-Abschluss füllen. Verweis auf welle-08-results.md. -->
+Geschlossen. Was gelernt wurde, steht in [welle-08-results.md](done/welle-08-results.md) — geliefert, was funktionierte, was anders lief, die vier Steering-Loop-Einträge und die Verifikations-Belege.

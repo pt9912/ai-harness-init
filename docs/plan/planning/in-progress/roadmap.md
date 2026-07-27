@@ -12,20 +12,8 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**[welle-08 — `cpp × hexslice`](../welle-08-cpp-hexslice.md)** (geschnitten 2026-07-27).
-
-- **Slice-IDs:** [slice-053](../done/slice-053-cpp-hexslice-renderer.md) (Rollen-Renderer + Achse
-  öffnen **+ cpp-`.a-check.yml`**) → slice-054 (die Zähne end-to-end + Mutationen + Doku-Nachzug).
-  Nur slice-053 ist geschnitten (cp-Disziplin). **Grenze am 2026-07-27 verschoben**, aus einer
-  Messung vor dem ersten Code-Edit: der slice-046-Wächter `TestArchGateConfig_CoversEveryLayeredCombo`
-  koppelt Achse und Config zu **einer** Landung.
-- **Trigger (erfüllt):** [welle-07](../done/welle-07-arch-achse.md) in `done/` · a-check versteht
-  C++ — gegen das gepinnte Image gemessen (verbotener `domain → adapters`-Include → `core-impurity`,
-  Exit 1; legaler Import still) · keine konkurrierende aktive Welle, `make gates` grün.
-- **Closure-Kriterien:** beide Slices in `done/` · `make gates` + `make mutate` grün ·
-  `make full-smoke` fährt `add-lang cpp <pfad> --arch hexslice` mit grünem `make gates`
-  **inklusive** cpp-Arch-Gate und **rot gesehenem** verbotenem Import · die alte Exit-2-Zusage ist
-  **umgeschrieben statt danebengestellt** (per Suche belegt) · `done/welle-08-results.md`.
+**Keine aktive Welle.** Die nächste ist **nicht** geschnitten (cp-Disziplin: Plandatei erst per `cp`,
+wenn ihr erster Slice steht) — Kandidaten unten.
 
 ## Nächste Wellen
 
@@ -81,6 +69,7 @@ flowchart LR
 | [welle-05-bootstrap-phasen](../done/welle-05-bootstrap-phasen.md) | 2026-07-23 | [welle-05-results.md](../done/welle-05-results.md) |
 | [welle-06-freshness](../done/welle-06-freshness.md) | 2026-07-24 | [welle-06-results.md](../done/welle-06-results.md) |
 | [welle-07-arch-achse](../done/welle-07-arch-achse.md) | 2026-07-25 | [welle-07-results.md](../done/welle-07-results.md) |
+| [welle-08-cpp-hexslice](../done/welle-08-cpp-hexslice.md) | 2026-07-27 | [welle-08-results.md](../done/welle-08-results.md) |
 
 ## Historische Trigger-Verschiebungen
 
