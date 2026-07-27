@@ -26,26 +26,26 @@ nicht von Disziplin.
 
 ## 2. Definition of Done
 
-- [ ] **(1) Der Ist-Bestand ist geprüft und bereinigt.** Jede Abdeckungs-Behauptung in einem
+- [x] **(1) Der Ist-Bestand ist geprüft und bereinigt.** Jede Abdeckungs-Behauptung in einem
   **echten** Code-Kommentar (Go außerhalb von Roh-String-Literalen; `harness/tools/*.sh`) nennt
   entweder ihren Sensor — Testname, `make`-Target, `full-smoke`, `test/mutations` — oder die
   Behauptung fällt weg. **Mindestens eine ist heute nachweislich falsch:**
   `internal/gen/gen.go:74` behauptet, der unerreichbare Zweig sei „über einen Renderer ohne
   hexslice bewacht" — einen solchen Renderer gibt es nicht. Beleg am Ende per Kommando, nicht
   per Durchsehen.
-- [ ] **(2) Ein Gate hält die Klasse.** Neues `make`-Target (bash+awk, hermetisch, in `gates`):
+- [x] **(2) Ein Gate hält die Klasse.** Neues `make`-Target (bash+awk, hermetisch, in `gates`):
   es scannt echte Kommentare, meldet jede Behauptung ohne Sensor-Nennung und ist **fail-closed**.
   **Roh-String-Literale sind ausgenommen** — der emittierte Inhalt ist Anleitung an den Adopter,
   nicht unsere Zusage; ohne diese Trennung wäre das Gate sofort falsch-rot.
-- [ ] **(3) Der Sensor hat Zähne.** Ein Gegenbeispiel wurde **rot gesehen** (Behauptung ohne
+- [x] **(3) Der Sensor hat Zähne.** Ein Gegenbeispiel wurde **rot gesehen** (Behauptung ohne
   Sensor-Nennung → Gate rot) und liegt als `test/mutations/`-Fall vor; dazu bats-Tests für die
   Roh-String-Ausnahme ([`AGENTS.md`](../../../../AGENTS.md) §3.6, Präzedenz `start-smoke.sh`:
   Skript + Tests + Mutations-Fall).
-- [ ] `make gates` grün, `make mutate` ohne Befund.
-- [ ] Doku: die neue Gate-Zeile in [`AGENTS.md`](../../../../AGENTS.md) §4 und
+- [x] `make gates` grün, `make mutate` ohne Befund.
+- [x] Doku: die neue Gate-Zeile in [`AGENTS.md`](../../../../AGENTS.md) §4 und
   [`harness/README.md`](../../../../harness/README.md) — ein Gate, das dort fehlt, ist ein
   undokumentierter Vertrag.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -116,7 +116,43 @@ Wird *nach* Abschluss ergänzt. Inhalt:
 - Folge-Slices: welche neuen open/-Einträge?
 -->
 
-<!-- Erst nach Abschluss füllen. -->
+**Was funktioniert hat.** Der Sweep ist belegt statt durchgesehen: `make comment-claims` meldet
+**30 Datei(en), 0 Befund(e)**, und der Gate hängt in `gates` — die Klasse kann nicht
+zurückdriften, ohne rot zu werden. `make mutate` **91 ok / 0** mit zwei neuen Fällen,
+`make gates` Exit 0.
+
+**Was anders lief als geplant — die Messung drehte den Zuschnitt.** Erwartet war „Modalverben
+entschärfen". Gemessen: die 19 regel-setzenden Marker sind fast alle **beschreibend** (sie erklären
+die Prüfung, die darunter steht, geben eine fremde Vorschrift wieder oder spiegeln eine verankerte
+Regel). Das Problem war die **behauptete Abdeckung** — zehn Stellen, darunter eine am selben Tag
+selbst erzeugte Falschaussage. Ein pauschaler Sweep über Modalverben hätte den Kontext vernichtet,
+den das Repo bewusst pflegt, und das eigentliche Problem stehen gelassen.
+
+**Steering-Loop-Eintrag: ein neu gebauter Sensor ist selbst eine Zusage — und zwar die
+unbelegteste im Diff.** Vier Fehler entstanden **im Wächter**, nicht im bewachten Code:
+
+1. Der Existenz-Check **bestätigte sich selbst** — er fand den erfundenen Testnamen in der
+   Fixture, die ihn als Gegenbeispiel führt. (Verlangt jetzt die Definition, nicht die Erwähnung.)
+2. `grep --include` gibt es im Alpine-basierten bats-Image nicht — der Gate war **im Container rot,
+   lokal grün**. Dieselbe Klasse wie der EPIPE-Fall aus slice-039.
+3. Ein bats-Fall **hatte keine Zähne**: die Fixture setzte die Behauptung auf die `const`-Zeile,
+   die nie als Kommentar gelesen wird — die Ausnahme wurde nie ausgeübt. Gefunden von
+   `make mutate`, nachdem `make test` grün gemeldet hatte.
+4. Der Sweep selbst erfand zwei Sensor-Namen — der Anlass für Prüfung (b).
+
+Verallgemeinert: **wer einen Sensor baut, hat den Sensor noch nicht.** Erst der rot gesehene
+Mutations-Lauf macht aus dem Skript einen Wächter. Die Reihenfolge dieses Slice — grün gemeldet →
+Mutation widerlegt → korrigiert → grün — ist der Beleg und wird hier festgehalten statt geglättet.
+
+**Zweiter Eintrag, aus F-3 und F-1 zusammen:** ein Test, der die *Fixture* falsch baut, ist von
+einem Test, der die Eigenschaft prüft, **im grünen Zustand nicht unterscheidbar**. Nur die Mutation
+trennt sie. Das ist die operative Fassung von [`AGENTS.md`](../../../../AGENTS.md) §3.6 für
+neu geschriebene Tests.
+
+**Folge-Slices.** Keine neuen `open/`-Einträge. Zwei benannte Grenzen gehen in den Backlog:
+der Prüfbereich lässt `test/**` aus (Review-F-6), und der Gate prüft Form statt Bedeutung — eine
+korrekte, aber inhaltlich nicht tragende Sensor-Nennung besteht ihn (Review-F-5, per Konstruktion
+Review-Arbeit).
 
 ## 8. Sub-Area-Modus-Begründung
 
