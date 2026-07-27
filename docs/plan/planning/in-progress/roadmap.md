@@ -12,8 +12,18 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**Keine aktive Welle.** Die nächste ist **nicht** geschnitten (cp-Disziplin: Plandatei erst per `cp`,
-wenn ihr erster Slice steht) — Kandidaten unten.
+**[welle-08 — `cpp × hexslice`](../welle-08-cpp-hexslice.md)** (geschnitten 2026-07-27).
+
+- **Slice-IDs:** [slice-053](../open/slice-053-cpp-hexslice-renderer.md) (Rollen-Renderer + Achse
+  öffnen) → slice-054 (Arch-Gate-Config für cpp + Zähne + Doku-Nachzug). Nur slice-053 ist
+  geschnitten (cp-Disziplin).
+- **Trigger (erfüllt):** [welle-07](../done/welle-07-arch-achse.md) in `done/` · a-check versteht
+  C++ — gegen das gepinnte Image gemessen (verbotener `domain → adapters`-Include → `core-impurity`,
+  Exit 1; legaler Import still) · keine konkurrierende aktive Welle, `make gates` grün.
+- **Closure-Kriterien:** beide Slices in `done/` · `make gates` + `make mutate` grün ·
+  `make full-smoke` fährt `add-lang cpp <pfad> --arch hexslice` mit grünem `make gates`
+  **inklusive** cpp-Arch-Gate und **rot gesehenem** verbotenem Import · die alte Exit-2-Zusage ist
+  **umgeschrieben statt danebengestellt** (per Suche belegt) · `done/welle-08-results.md`.
 
 ## Nächste Wellen
 
@@ -52,9 +62,10 @@ flowchart LR
     W5[welle-05<br/>Bootstrap-Phasen]
     W6[welle-06<br/>Freshness]
     W7[welle-07<br/>Arch-Achse]
+    W8[welle-08<br/>cpp × hexslice]
     W1 --> W2 --> W3 --> W4 --> W5
     W5 -.-> W6
-    W5 --> W7
+    W5 --> W7 --> W8
 ```
 
 ## Abgeschlossene Wellen
@@ -73,6 +84,7 @@ flowchart LR
 
 | Datum | Was wurde geändert? | Warum? |
 |---|---|---|
+| 2026-07-27 | **[welle-08 `cpp × hexslice`](../welle-08-cpp-hexslice.md) geschnitten** und in *Aktuelle Welle* gehoben; der Abhängigkeitsgraph bekommt die Kante `W7 → W8` | Der Befund kam aus dem Lastenheft-Ist-Abgleich nach dem slice-052-Abschluss: die Arch-Achse trägt **eine** Sprache, obwohl [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) sie als `lang × arch`-Komposition beschreibt. Gegen [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) geprüft und **als Welle** geschnitten (Nutzer-Entscheidung): Bündel aus zwei Slices · ein gemeinsames Closure-Kriterium, das keiner der beiden DoDs abschreibt (`add-lang cpp --arch hexslice` → `make gates` grün **inklusive** rot gesehenem Arch-Gate-Zahn) · Auslöser **gewollt**, nicht reaktiv. Die Vorbedingung wurde **vor** dem Schnitt gemessen statt angenommen: a-check versteht C++ (Fixture gegen das gepinnte Image, `core-impurity` bei verbotenem Include) — dieselbe Beleg-Klasse, die [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) für Go verlangt hatte |
 | 2026-07-26 | **Der Block „ohne Welle geschnitten" und die Closure-Absätze zu slice-049/050 sind aus *Aktuelle Welle* entfernt**; der Abschnitt trägt wieder nur die Aussage über die Welle | Nutzer-Beobachtung: ein Abschnitt, der „Keine aktive Welle" meldet, war 23 Zeilen lang. Gegen Modul 6 gehalten: *Aktuelle Welle* trägt **die laufende Welle** (Slice-IDs · Trigger · Closure-Kriterien), Abgeschlossenes wandert ins **Closure-Log** — Beleg-Prosa gehört dort nicht hin. Schwerer wiegt die Dublette: der Lifecycle-Zustand **ist** das Verzeichnis (Modul 5, [`README.md`](../README.md)); ihn hier abzuschreiben erzeugt eine zweite Quelle, die altert — genau der Fehler aus dem Eintrag vom 2026-07-25, den ich mit den Closure-Absätzen selbst wieder eingeführt hatte. Die Präzedenz war richtig: bis `80eec58` hinterließ ein geschlossener wellenloser Slice hier **keine Spur**. Die Regel, *wann* Arbeit eine Welle braucht und warum wellenlose Arbeit hier **nicht** geführt wird, steht seither als [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) im Adaptions-Block — sie war 21 von 56 Slices lang gelebte, aber undeklarierte Praxis |
 | 2026-07-26 | **Kandidat *Verifikations-Quadrant schließen* (S) subsumiert** in den breiteren **Regeln ohne Feedback-Quadrant schließen** (L); slice-049 geschlossen, M5 Schritt 1 abgehakt | Beim slice-049-Abschluss wurde die Klasse **sechsmal** gemessen statt einmal: die Closure-Notiz war nur *eine* Regel ohne Feedback-Quadrant, daneben stehen Hard Rule 3.1/3.4, die Commit-ID-Zusage, die Roadmap↔`in-progress`-Konsistenz und [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 2. Zwei Zeilen derselben Klasse zu führen ist genau die Doppelführung, an der slice-047/048 hier gealtert sind. **Der S-Schnitt geht nicht verloren:** Achse (6) ist in der neuen Zeile ausdrücklich als unabhängig vorziehbar markiert. Auslöser war eine Nutzer-Frage nach der fehlenden Durchsetzung von [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) — die Messung ergab, dass vier der sechs Sensoren im bereits gepinnten d-check-Image **mitgeliefert und unverdrahtet** sind (6 von 18 Modulen aktiv) |
 | 2026-07-25 | **M5 nachgetragen** (erstes Release, `v0.1.0`) und die *Aktuelle Welle* auf ihre drei Pflicht-Bestandteile zurückgeschnitten (Slice-IDs · Trigger · Closure-Kriterien); die Kandidaten-Tabelle führt ab jetzt nur noch **Ungeschnittenes** | Der Release-Weg stand als Fließtext unter *Aktuelle Welle* — falscher Ort: Modul 6 nennt das Release als Musterfall eines **Meilensteins** („extern beobachtbar … durch externe Bestätigung (Audit, Release, Kunde)"), während *Aktuelle Welle* nur die laufende Welle trägt. Zugleich stand derselbe Stand doppelt (Kandidaten-Tabelle **und** *Aktuelle Welle*) und war dort real gealtert: [slice-047](../done/slice-047-mutate-host-isolation.md) lief noch als `in-progress`, [slice-048](../done/slice-048-release-artefakte.md) fehlte ganz, obwohl beide geschlossen waren |
