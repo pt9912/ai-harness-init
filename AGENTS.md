@@ -117,7 +117,7 @@ prüft, ist ein stilles Grün im Gate — §3.1 eine Ebene tiefer. Die Regel ist
 |---|---|
 | `make baseline-verify` | Vendored Baseline netzlos verifizieren (Integrität + Vollständigkeit, [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) |
 | `make docs-check` | Doku-Referenzen (links/anchors/ids/codepaths) via d-check |
-| `make test` | Command-Guard-Tests (bats) + Go-Unit-Tests (Dockerfile-`test`-Stage) im gepinnten Image |
+| `make test` | Command-Guard-Tests (bats) + Go-Unit-Tests (Dockerfile-`test`-Stage) im gepinnten Image; die Stage erbt von einer **Vorwärm-Stufe** (vorübersetzte Standardbibliothek) und erzwingt die Test-Ausführung mit `-count=1` (slice-057) |
 | `make lint` | Go-Lint (golangci-lint, Dockerfile-`lint`-Stage) im gepinnten Image |
 | `make build` | Go-Binary cross-compilieren (Dockerfile-`build`-Stage) im gepinnten Image |
 | `make shell-lint` | Shell-Hooks/-Helfer lint-clean (shellcheck) im gepinnten Image |

@@ -21,9 +21,31 @@ COPY go.su[m] ./
 RUN mkdir -p "$GOMODCACHE" && go mod download
 
 # ---- test ------------------------------------------------------------------
-FROM deps AS test
+# ---- warm ------------------------------------------------------------------
+# Vorwaerm-Stufe (slice-057): uebersetzt die Standardbibliothek EINMAL in den
+# Kompilat-Cache DIESER SCHICHT. Das Modul hat keine externen Abhaengigkeiten, die
+# Standardbibliothek ist also der gesamte teilbare Anteil; die eigenen Pakete aendern
+# sich pro Lauf und bleiben ausserhalb.
+#
+# Warum eine Schicht und kein --mount=type=cache: der Mount ist in dieser Umgebung
+# zwar aktiv (eigenes Dateisystem im Build), aber sein Inhalt erreicht den naechsten
+# Build nicht — vier Erklaerungen wurden gemessen und ausgeschlossen, die Ursache
+# liegt tiefer (Messreihe in docs/plan/planning/done/slice-057-go-kompilat-cache.md).
+# Eine Schicht dagegen cacht Docker hier nachweislich; sie haengt nur am Basis-Image
+# und an go.mod, waehrend --no-cache-filter nur die test-Stufe neu ausfuehrt.
+FROM deps AS warm
+RUN CGO_ENABLED=0 go build std
+
+# ---- test ------------------------------------------------------------------
+# -count=1 gehoert zum Vorwaermen und ist NICHT redundant: mit warmem Kompilat-Cache
+# wuerde das Test-Werkzeug unveraenderte Pakete mit "(cached)" ueberspringen. Fuer ein
+# Gate waere das eine Zusage, die der Lauf nicht mehr einloest. --no-cache-filter
+# (Makefile) erzwingt, dass die SCHICHT neu ausgefuehrt wird; -count=1, dass die TESTS
+# neu laufen. Zwei Ebenen, nicht eine — test/dockerfile-teststufe.bats prueft es,
+# test/mutations/98 nimmt es weg.
+FROM warm AS test
 COPY . .
-RUN CGO_ENABLED=0 go test ./...
+RUN CGO_ENABLED=0 go test -count=1 ./...
 
 # ---- compile ---------------------------------------------------------------
 # Schnelles Compile-Feedback (ohne Tests/Lint).
