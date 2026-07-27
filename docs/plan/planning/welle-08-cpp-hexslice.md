@@ -62,8 +62,16 @@ Verzeichnisse (dieselbe zweite Wahrheit, die beim Slice retired wurde). -->
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-053](open/slice-053-cpp-hexslice-renderer.md) | `cppRole` rendert die hexSlice-Schichten; die Achse öffnet sich für cpp | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
-| slice-054 | Arch-Gate-Config für cpp + Zähne + Doku-Nachzug | [`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) |
+| [slice-053](open/slice-053-cpp-hexslice-renderer.md) | `cppRole` rendert die hexSlice-Schichten; die Achse öffnet sich für cpp — **samt cpp-`.a-check.yml`** | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) |
+| slice-054 | Die Zähne end-to-end (a-check läuft real, verbotener Include rot gesehen) + Mutationen + Doku-Nachzug | [`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+
+**Grenze verschoben am 2026-07-27, aus einer Messung vor dem ersten Code-Edit.** Ursprünglich sollte
+die Arch-Gate-Config zu slice-054 gehören. `TestArchGateConfig_CoversEveryLayeredCombo`
+(`internal/gen/archgate_test.go:250`, aus slice-046) leitet die Kombinationen aber **aus dem realen
+Generator** ab und färbt rot, sobald eine schichten-tragende Kombination **ohne** Config existiert —
+Achse und Config sind also **eine** Landung. Dasselbe gilt für die wandernde Exit-2-Zusage. Was in
+slice-054 bleibt, ist der **Beleg**, nicht das Artefakt: dass das Gate im realen Ziel läuft und
+Zähne hat. Die Alternative (alles in einen Slice) steht mit ihrer Konsequenz in slice-053 §6.
 
 **Nur slice-053 ist geschnitten** (`open/`). slice-054 bekommt seine Datei per `cp` aus der Vorlage,
 wenn er an der Reihe ist — ein leerer Slice-Platzhalter wäre eine zweite Wahrheit, die driftet

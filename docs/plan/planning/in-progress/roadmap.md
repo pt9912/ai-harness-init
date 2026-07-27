@@ -15,8 +15,10 @@ gezeigt, nicht als Treiber.
 **[welle-08 — `cpp × hexslice`](../welle-08-cpp-hexslice.md)** (geschnitten 2026-07-27).
 
 - **Slice-IDs:** [slice-053](../open/slice-053-cpp-hexslice-renderer.md) (Rollen-Renderer + Achse
-  öffnen) → slice-054 (Arch-Gate-Config für cpp + Zähne + Doku-Nachzug). Nur slice-053 ist
-  geschnitten (cp-Disziplin).
+  öffnen **+ cpp-`.a-check.yml`**) → slice-054 (die Zähne end-to-end + Mutationen + Doku-Nachzug).
+  Nur slice-053 ist geschnitten (cp-Disziplin). **Grenze am 2026-07-27 verschoben**, aus einer
+  Messung vor dem ersten Code-Edit: der slice-046-Wächter `TestArchGateConfig_CoversEveryLayeredCombo`
+  koppelt Achse und Config zu **einer** Landung.
 - **Trigger (erfüllt):** [welle-07](../done/welle-07-arch-achse.md) in `done/` · a-check versteht
   C++ — gegen das gepinnte Image gemessen (verbotener `domain → adapters`-Include → `core-impurity`,
   Exit 1; legaler Import still) · keine konkurrierende aktive Welle, `make gates` grün.

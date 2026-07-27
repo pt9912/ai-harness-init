@@ -32,10 +32,25 @@ abzulehnen.
   keine zweite Namensliste entsteht.
 - [ ] **Die Achse ist geöffnet:** `langArchs()["cpp"]` trägt `archHexslice`
   (`internal/gen/gen.go:132`), und `add-lang cpp <pfad> --arch hexslice` endet mit **Exit 0**.
+- [ ] **Die cpp-`.a-check.yml` liegt vor** (`archGateConfigs()["cpp"][hexslice]`) und bildet die
+  gerenderten Schichten ab. **Nachgezogen am 2026-07-27 aus einer Ist-Messung, nicht aus dem
+  ursprünglichen Zuschnitt** (§3, Zeile 5): `TestArchGateConfig_CoversEveryLayeredCombo`
+  (`internal/gen/archgate_test.go:250`, aus slice-046) leitet die Kombinationen **aus dem realen
+  Generator** ab — eine schichten-tragende Kombination **ohne** Config färbt ihn rot. Achse und
+  Config sind damit **eine Landung**; sie zu trennen hieße, den Wächter blind zu machen
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Die **Zähne** dieser Config (a-check läuft real,
+  verbotener Include rot gesehen) bleiben in slice-054 — dieser Slice belegt sie auf Unit-Ebene
+  (`TestArchGateConfig_*`), nicht end-to-end.
 - [ ] **Das Skelett baut wirklich.** Im real gebootstrappten Ziel ist `make gates` grün **inklusive**
   der cpp-Code-Gates über dem Schichten-Code (cmake/ctest/clang-tidy) — nicht nur „Dateien liegen da".
   Das ist der [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Beleg
   dieses Slice und wird im `full-smoke` gemessen, nicht behauptet.
+- [ ] **Und der Build sieht die Schichten wirklich** — ein grüner Build allein belegt das **nicht**
+  (die arch-invariante `CMakeLists.txt` übersetzt heute nur `src/main.cpp`; Schicht-Dateien, die
+  keine Übersetzungseinheit erreicht, wären still tot und das Gate bliebe grün). Beleg deshalb als
+  **Zahn**, nicht als Behauptung: ein Fehler in einer Schicht-Datei muss den Modul-Build **rot**
+  färben, einmal gesehen und zurückgenommen (dieselbe Form, die `full-smoke` für den verbotenen
+  Import schon fährt).
 - [ ] **`--arch flat` bleibt byte-identisch** ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)):
   `TestGenerate_CppProfile` läuft unverändert grün, die additive Erweiterung berührt den flachen
   Zweig nicht (das Muster aus slice-037: additiv erweitern schützt bestehende Sensoren).
@@ -62,6 +77,8 @@ abzulehnen.
 | 2 | `cppRole` kennt zwei Rollen | `grep -n "case role" internal/gen/cpp.go` → `roleEntrypoint`, `roleTest` |
 | 3 | Der Go-Renderer ist die Form-Vorlage | `grep -n "case role" internal/gen/golang.go` → fünf Rollen (Zeilen 53-79) |
 | 4 | a-check versteht C++ | Fixture gegen das gepinnte Image: verbotener `domain → adapters`-Include → `core-impurity`, Exit 1; legaler Import still (Welle-Trigger, §2 der Welle) |
+| 5 | **Achse und Arch-Gate-Config sind gekoppelt** (Plan-Korrektur 2026-07-27) | `sed -n '250,270p' internal/gen/archgate_test.go` → `TestArchGateConfig_CoversEveryLayeredCombo` leitet die Kombinationen aus dem realen Generator ab (`strings.Contains(rel, "hexagon/domain/")`) und meldet „rendert Schichten, hat aber keine Arch-Gate-Config". Öffnet dieser Slice die Achse ohne Config, ist der Wächter rot |
+| 6 | Die Exit-2-Zusage hängt an derselben Kante | `grep -rn "cpp.*hexslice" cmd/ai-harness-init/main_test.go harness/tools/full-smoke.sh test/mutations/` → drei Fundstellen (`main_test.go:474`, `full-smoke.sh:308-317`, `test/mutations/63-langarch-support.sh`); sie fallen **mit** dem Öffnen der Achse, also hier — nicht in slice-054 |
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
@@ -71,7 +88,9 @@ abzulehnen.
 | `internal/gen/cpp_test.go`, `hexslice_test.go` | update | Rollen-Abdeckung + Byte-Identität des flachen Zweigs |
 | `harness/tools/full-smoke.sh` | update | die Exit-2-Assertion wandert auf eine weiterhin nicht getragene Kombination; neuer Positiv-Beleg für cpp+hexslice inkl. grüner Code-Gates |
 | `test/mutations/` | neu | Rollen-Abdeckung `cppRole` |
-| `internal/gen/arch.go` | **unberührt** | Rollen-Vokabular und `archLayered` tragen bereits; wer hier ändert, ändert die Achse statt einen Renderer |
+| `internal/gen/arch.go` (`archGateConfigs`) | update | der cpp-Eintrag — **nachgezogen** (Zeile 5 der Ist-Messung); Rollen-Vokabular, `archLayout` und `archLayered` bleiben **unberührt**, wer die anfasst, ändert die Achse statt einen Renderer |
+| `internal/gen/archgate_test.go` | update | `TestArchGateConfig_OnlyLayered` führt `{"cpp","hexslice", false}` — die Erwartung dreht sich auf `true` |
+| `cmd/ai-harness-init/main_test.go`, `test/mutations/63-langarch-support.sh` | update | die Exit-2-Zusage wandert auf eine weiterhin nicht getragene Kombination |
 
 ## 4. Trigger
 
@@ -99,6 +118,18 @@ Move-Commit, Link-Reconciliation im Folge-Commit); Closure-Notiz mit Steering-Lo
 
 ## 6. Risiken und offene Punkte
 
+- **OFFENE ENTSCHEIDUNG (Nutzer, 2026-07-27): die Welle-Grenze hat sich verschoben.** Die
+  Ist-Messung (§3 Zeilen 5-6) zeigt, dass Achse, Arch-Gate-Config **und** die wandernde
+  Exit-2-Zusage **eine** Landung sind. Der Plan oben ist auf **Variante A** korrigiert:
+  slice-053 = Renderer + Achse + Config + Unit-Belege; slice-054 = die **end-to-end-Zähne**
+  (a-check läuft real im `full-smoke`, verbotener Include rot gesehen), die Mutationen dazu und
+  der Doku-Nachzug. Die Welle bleibt damit zweiteilig und ihr gemeinsames Closure-Kriterium
+  (§3 der Welle) bleibt bei slice-054.
+  **Variante B** wäre, alles in **einen** Slice zu ziehen. Dann entfällt slice-054 — und mit ihm
+  die Welle: nach [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
+  Frage 1/2 wäre `cpp × hexslice` kein Bündel mehr und hätte kein Closure-Kriterium jenseits des
+  einen DoD. Das ist keine Formalie: [welle-08](../welle-08-cpp-hexslice.md) und die Roadmap
+  wären zurückzunehmen.
 - **C++ hat keine Interface-Erfüllung wie Go.** Der Go-Renderer kommt ohne
   `adapters → ports`-Kante aus, weil Outbound-Adapter die Ports **strukturell** erfüllen. In C++
   erfüllt ein Adapter ein Port-Interface durch **Vererbung** — also mit `#include` des Port-Headers.
