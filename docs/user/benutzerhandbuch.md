@@ -1,8 +1,8 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Handbuch-Version:** 1.7
-**Software-Stand:** `v0.1.0` — erstes Release mit **vorgefertigten Programmen für sechs Plattformen** (linux · macos · windows × amd64 · arm64). Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat` oder `hexslice`; bei `hexslice` kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen); `hexslice` liefert derzeit nur der Go-Renderer.
-**Stand:** 2026-07-26
+**Handbuch-Version:** 1.8
+**Software-Stand:** `v0.1.1` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64), seit `v0.1.0`. Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat` oder `hexslice`; bei `hexslice` kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen); `hexslice` liefert derzeit nur der Go-Renderer.
+**Stand:** 2026-07-27
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
 ---
@@ -109,6 +109,8 @@ Es gibt **zwei Wege**. Empfohlen ist der **Download** — ab `v0.1.0` liegen fer
 
 > **Hinweis für macOS:** Lädt ein Browser die Datei herunter, versieht macOS sie mit einem Quarantäne-Vermerk und verweigert den Start. `xattr -d com.apple.quarantine <datei>` entfernt ihn.
 
+> **Hinweis für Windows:** Die Programme werden **nicht signiert** — der Release-Lauf hat keinen Signier-Schritt. Windows kann den ersten Start deshalb mit einer Warnung unterbrechen. Was genau angezeigt wird, hängt von Ihrer Windows-Version und Ihren Sicherheitseinstellungen ab; hier läuft kein Windows, also steht hier auch kein Dialog-Wortlaut, den niemand nachgeprüft hat.
+
 **Ergebnis**
 
 Liegt der Ordner in Ihrem Suchpfad, ist das Programm unter dem kurzen Namen `ai-harness-init` aufrufbar. **Das Handbuch verwendet ab hier diesen kurzen Aufruf** — das gilt für beide Wege.
@@ -176,7 +178,9 @@ Das bedeutet: Regelwerk und Vorlagen liegen im Repository, die Prüfungen sind v
 
 ### Wichtigstes Bedienkonzept
 
-`ai-harness-init` arbeitet in **einem** Schritt und ist **idempotent**: Sie können denselben Aufruf gefahrlos wiederholen. Bei einem zweiten Lauf wird die **werkzeug-eigene Infrastruktur** (Prüf-Konfiguration, Hooks, Regelwerk) auf den mitgelieferten Soll-Stand aufgefrischt (das heilt eventuelle Abweichungen und zieht ein neueres Regelwerk nach), während **von Ihnen gefüllte Dateien** (Ihre Projekt-Dokumente, `README.md`, Ihr Quellcode) **unangetastet** bleiben. Es gibt **keinen** Kollisions-Abbruch und **kein** `--force` — der Re-Lauf ist der normale, sichere Weg, ein Repository zu reparieren oder auf einen neueren Kurs-Stand zu heben.
+`ai-harness-init` arbeitet in **getrennten Schritten** und ist **idempotent**. Getrennt heißt: **Init** legt die sprach-agnostische Harness an, das **Sprachmodul** kommt als eigener Schritt dazu (`add-lang`, wiederholbar). `--lang` beim Init ist die **Kurzform**, die beide Schritte in einem Aufruf erledigt — nicht ein einziger, unteilbarer Vorgang.
+
+Idempotent heißt: Sie können denselben Aufruf gefahrlos wiederholen. Bei einem zweiten Lauf wird die **werkzeug-eigene Infrastruktur** (Prüf-Konfiguration, Hooks, Regelwerk) auf den Soll-Stand aufgefrischt, den **dieses Programm mitbringt** — das heilt Abweichungen. Es **hebt Sie nicht auf einen neueren Kurs-Stand**: die Kurs-Version ist im Programm fest eingebaut, ein zweiter Lauf desselben Programms holt denselben Stand. Einen neueren Stand bekommen Sie mit einem **neueren Programm** — oder bewusst über [eine andere Kurs-Version](#eine-andere-kurs-version-verwenden). **Von Ihnen gefüllte Dateien** (Ihre Projekt-Dokumente, `README.md`, Ihr Quellcode) bleiben **unangetastet**. Es gibt **keinen** Kollisions-Abbruch und **kein** `--force` — der Re-Lauf ist der normale, sichere Weg, ein Repository zu **reparieren**.
 
 ---
 
@@ -298,7 +302,7 @@ make gates
 
 ### Ein Repository erneut aufsetzen (idempotent)
 
-**Voraussetzung:** Sie wollen ein bereits aufgesetztes Verzeichnis reparieren (etwa nach einem abgebrochenen Lauf) oder auf einen neueren Kurs-Stand heben.
+**Voraussetzung:** Sie wollen ein bereits aufgesetztes Verzeichnis reparieren — etwa nach einem abgebrochenen Lauf oder nachdem eine werkzeug-eigene Datei versehentlich verändert wurde. (Auf einen **neueren Kurs-Stand** hebt Sie dieser Lauf **nicht**; dafür siehe [Eine andere Kurs-Version verwenden](#eine-andere-kurs-version-verwenden).)
 
 **Vorgehen** — einfach denselben Aufruf wiederholen:
 
@@ -306,7 +310,7 @@ make gates
 ai-harness-init --lang go --name "Mein Projekt"
 ```
 
-**Ergebnis:** Der Lauf ist **idempotent** (Exit-Code 0). Die werkzeug-eigene Infrastruktur (Prüf-Konfiguration, Hooks, die zentrale `Makefile`, Regelwerk) wird auf den mitgelieferten Soll-Stand **aufgefrischt** — das heilt Abweichungen und zieht ein neueres Regelwerk nach. **Von Ihnen gefüllte Dateien** — die Dokumente unter `spec/`, `README.md`, `AGENTS.md`, Ihr Quellcode im Grundgerüst (`go.mod`, `cmd/app/main.go` …) — bleiben **unangetastet**.
+**Ergebnis:** Der Lauf ist **idempotent** (Exit-Code 0). Die werkzeug-eigene Infrastruktur (Prüf-Konfiguration, Hooks, die zentrale `Makefile`, Regelwerk) wird auf den Soll-Stand **aufgefrischt**, den dieses Programm mitbringt — das heilt Abweichungen, holt aber **denselben** Kurs-Stand wie beim ersten Lauf. **Von Ihnen gefüllte Dateien** — die Dokumente unter `spec/`, `README.md`, `AGENTS.md`, Ihr Quellcode im Grundgerüst (`go.mod`, `cmd/app/main.go` …) — bleiben **unangetastet**.
 
 **Hinweise:** Es gibt **kein** `--force` und **keinen** Kollisions-Abbruch. Wollen Sie eine von Ihnen bearbeitete werkzeug-eigene Datei bewusst auf den Ausgangsstand zurücksetzen, löschen Sie sie vor dem Re-Lauf — dann wird sie neu geschrieben.
 
@@ -486,7 +490,7 @@ Nein. Sowohl das Bauen des Werkzeugs als auch die Prüfungen im aufgesetzten Rep
 Nein, nur **einmalig** beim ersten Aufsetzen (Regelwerk-Download). Danach arbeitet Ihr Repository netzunabhängig.
 
 **Kann ich denselben Ordner mehrfach aufsetzen?**
-Ja — der Aufruf ist **idempotent** (Exit-Code 0). Ein zweiter Lauf frischt die werkzeug-eigene Infrastruktur auf und lässt Ihre eigenen Dateien unangetastet. Genau so reparieren Sie ein Repository oder heben es auf einen neueren Kurs-Stand.
+Ja — der Aufruf ist **idempotent** (Exit-Code 0). Ein zweiter Lauf frischt die werkzeug-eigene Infrastruktur auf und lässt Ihre eigenen Dateien unangetastet. Genau so **reparieren** Sie ein Repository. Auf einen neueren Kurs-Stand hebt Sie der Re-Lauf **nicht** — die Kurs-Version steckt im Programm; dafür brauchen Sie ein neueres Programm oder [eine andere Kurs-Version](#eine-andere-kurs-version-verwenden).
 
 **Wie füge ich eine zweite Sprache oder ein weiteres Modul hinzu?**
 Mit `ai-harness-init add-lang <sprache> <pfad>`. Der Befehl ist wiederholbar; mehrere Aufrufe mit verschiedenen Pfaden ergeben ein Mono-Repo. Siehe [Ein Sprachmodul hinzufügen](#ein-sprachmodul-hinzufügen-add-lang).
@@ -549,6 +553,7 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 
 | Handbuch-Version | Stand | Änderung |
 |---|---|---|
+| 1.8 | 2026-07-27 | Drei Aussagen korrigiert, die beschrieben, was das Werkzeug **nicht** tut. (1) „arbeitet in **einem** Schritt" — bis 1.7 stand das im Bedienkonzept, obwohl der Bootstrap seit 1.1 **phasiert** ist (Init sprach-agnostisch, Sprachmodul per `add-lang`); `--lang` beim Init ist die Kurzform für beide Schritte. (2) „zieht ein neueres Regelwerk nach" — an **vier** Stellen im Handbuch und einer im `README.md`. Der Re-Lauf frischt auf den Stand auf, den das **Programm mitbringt**; die Kurs-Version ist darin gepinnt, ein neuerer Stand kommt mit einem neueren Programm oder bewusst über `COURSE_TAG`. (3) Neuer Windows-Hinweis, symmetrisch zum macOS-Quarantäne-Hinweis: die Programme sind **nicht signiert**, der erste Start kann deshalb mit einer Warnung unterbrochen werden. Alle drei fand ein Mensch beim Lesen, kein Sensor. |
 | 1.7 | 2026-07-26 | Regel, wo Versions-Aussagen hingehören, als Kasten über dieser Tabelle verankert — sie stand bis dahin nur in einer Commit-Message. Zwei Folgen davon: der Rückblick „(frühere Versionen kannten das)" im Re-Lauf-Abschnitt ist hierher gewandert (gemeint war der Wegfall von `--force` und Kollisions-Abbruch), und Weg B benennt jetzt, dass er den **geklonten Entwicklungsstand** baut, nicht die veröffentlichte Version. |
 | 1.6 | 2026-07-26 | `make artifact DEST=<ordner>` legt den Zielordner jetzt selbst an. Bis einschließlich `v0.1.0` brach der Befehl mit `invalid output path: directory … does not exist` ab, wenn der Ordner fehlte — obwohl die Anleitung genau diesen Aufruf vorschreibt (von einem Nutzer gemeldet). Der Hinweis im Installations-Abschnitt sagt das jetzt; die Versions-Abgrenzung steht hier statt im Fließtext. |
 | 1.5 | 2026-07-26 | **Erstes Release `v0.1.0`**: fertige Programme für sechs Plattformen (Linux · macOS · Windows × Intel/AMD · ARM) sind der empfohlene Weg; §2 in Weg A (Download) und Weg B (aus dem Quellcode bauen) geteilt, mit Dateitabelle, Suchpfad-Hinweis und macOS-Quarantäne-Hinweis. Neuer Kasten „Was wo geprüft wird": der vollständige Durchlauf läuft auf Linux/Intel-AMD, beim Release wird auf allen sechs Dateien nur der **Start** geprüft. FAQ, Anhang und Systemanforderungen nachgezogen; FAQ-Sprachliste um `cpp` korrigiert. |

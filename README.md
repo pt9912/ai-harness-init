@@ -34,9 +34,11 @@ Wiederholbar — mehrere Aufrufe mit verschiedenen Pfaden ergeben ein **Mono-Rep
 gemischten Sprachen. Unterstützt sind heute `go` und `cpp` (C++, per CMake + clang-tidy).
 
 **Denselben Aufruf gefahrlos wiederholen.** Ein zweiter Lauf ist idempotent: das Werkzeug frischt
-seine eigenen Dateien auf (repariert Abweichungen, zieht ein neueres Regelwerk nach) und lässt die
-selbst gefüllten Dateien — Dokumente, `README.md`, Quellcode — unberührt. Kein `--force`, kein
-Abbruch bei vorhandenen Dateien.
+seine eigenen Dateien auf den Stand auf, den es **selbst mitbringt** (repariert Abweichungen), und
+lässt die selbst gefüllten Dateien — Dokumente, `README.md`, Quellcode — unberührt. Kein `--force`,
+kein Abbruch bei vorhandenen Dateien. Ein **neuerer** Regelwerks-Stand kommt nicht durch den
+Re-Lauf, sondern mit einem neueren Programm (oder bewusst über `COURSE_TAG`) — die Kurs-Version ist
+im Programm gepinnt.
 
 **Das Werkzeug beschaffen.** Ab `v0.1.0` liegen fertige Programme für sechs Plattformen
 (linux · macos · windows × amd64 · arm64) am
