@@ -34,7 +34,7 @@ BASELINE_TAG ?= v3.5.2
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 2af45aad2777cadf26127066c9a2dc43f7111ee2687e44fe2eceb95c6c0a1925
 
-.PHONY: help gates record-gates test lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate
+.PHONY: help gates record-gates test lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.51.1 -> v0.51.1). Aus
@@ -119,6 +119,13 @@ mutate: ## Mutations-Sensor fuer AGENTS 3.6: faerbt jede Mutation ihren Waechter
 shell-lint: ## Shell-Hooks/-Helfer linten (shellcheck) im gepinnten Image — Docker-only (ADR-0003)
 	docker run --rm -v "$(CURDIR)":/mnt:ro -w /mnt $(SHELLCHECK_IMAGE) \
 		.claude/hooks/*.sh harness/tools/*.sh internal/emit/templates/*.sh internal/emit/templates/enforce/*.sh test/mutations/*.sh
+
+# Kommentar-Behauptungen gegen ihre Sensoren halten (AGENTS.md 3.6, slice-055).
+# Hermetisch: reines bash+awk auf dem Arbeitsbaum, kein Docker, kein Netz — es
+# gehoert damit in gates und nicht in die Nicht-Gate-Verify-Klasse. Geprueft werden
+# ECHTE Kommentare: Roh-String-Literale (emittierter Inhalt) sind ausgenommen.
+comment-claims: ## Kommentar-Behauptungen nennen ihren Sensor (AGENTS.md 3.6) — hermetisch
+	@bash harness/tools/comment-claims.sh $$(git ls-files 'internal/*.go' 'internal/**/*.go' 'cmd/**/*.go' | grep -v '_test[.]go') $$(git ls-files 'harness/tools/*.sh' '.claude/hooks/*.sh')
 
 # GitHub-Actions-Workflows syntaktisch pruefen (actionlint, gepinntes Image) —
 # Docker-only. IN gates, weil .github/workflows/ ein reales committetes Artefakt
@@ -214,4 +221,4 @@ record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
 # baseline-verify läuft als ERSTER Prerequisite: steht die vendored Baseline
 # nicht, ist jede Aussage der Folge-Gates über sie wertlos. record-gates läuft
 # als LETZTER — der Nachweis entsteht nur nach grünen Gates (MR-002).
-gates: baseline-verify docs-check lint build test shell-lint ci-lint record-gates ## alle aktuell lauffähigen Gates + Nachweis
+gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims record-gates ## alle aktuell lauffähigen Gates + Nachweis

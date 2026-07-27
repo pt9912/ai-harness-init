@@ -124,8 +124,8 @@ int main() {
 `
 
 // cppTest — minimaler NETZLOSER Test (kein doctest/FetchContent, LH-QA-03): eine explizite
-// Pruefung + Exit-Code (kein assert, damit er auch unter NDEBUG greift). Er belegt, dass die
-// Toolchain baut und CTest den Test faehrt.
+// Pruefung + Exit-Code (kein assert, damit er auch unter NDEBUG greift). Er laeuft im Ziel
+// ueber die Toolchain und CTest.
 const cppTest = `// Minimaler netzloser Test (kein externes Framework) — belegt Build + CTest-Lauf.
 #include <cstdlib>
 
@@ -422,7 +422,7 @@ int main() {
 `
 
 // cppHexTest — netzloser CTest-Fall ueber der Use-Case (kein externes Framework,
-// LH-QA-03): er belegt die Domain-Invariante UND den Handler-Durchlauf.
+// LH-QA-03): er prueft die Domain-Invariante UND den Handler-Durchlauf.
 const cppHexTest = `// Minimaler netzloser Test (kein externes Framework) ueber der greet-Use-Case.
 #include <cstdlib>
 #include <sstream>

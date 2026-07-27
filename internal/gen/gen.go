@@ -9,7 +9,7 @@
 // Determinismus (LH-QA-02): der Inhalt jedes Profils ist STATISCH (Konstanten,
 // kein Zeitstempel, keine Map-Iteration im Datei-INHALT), und Generate schreibt
 // in sortierter Reihenfolge. Zwei Laeufe mit derselben Sprache liefern
-// byte-identische Dateien — der Test belegt es, die Konstruktion garantiert es.
+// byte-identische Dateien; TestGenerate_Deterministic faehrt genau das.
 package gen
 
 import (
@@ -70,8 +70,9 @@ func GenerateArch(destDir, lang, version, arch string) error {
 	// -> globales Vokabular SupportedArchs)? (2) rendert der Renderer DIESER Sprache sie
 	// (-> die von der Sprache getragenen Archs)? Ohne (2) schriebe eine nicht getragene
 	// Kombination still ein Geruestung-only-Skelett statt Exit 2 (slice-045a-Review
-	// INFO-1). Seit slice-053 tragen go und cpp beide Archs — der Zweig bleibt fuer die
-	// naechste Sprache noetig und ist ueber einen Renderer ohne hexslice bewacht.
+	// INFO-1). Seit slice-053 tragen go und cpp beide Archs — Stufe (2) ist damit von aussen
+	// nicht erreichbar und hat KEINEN eigenen Sensor; sie bleibt als Verteidigung fuer die
+	// naechste Sprache stehen. Mutation 63 nimmt deshalb beide Stufen weg, nicht eine.
 	if archLayout(arch) == nil {
 		return &UnknownArchError{Arch: arch, Available: SupportedArchs()}
 	}

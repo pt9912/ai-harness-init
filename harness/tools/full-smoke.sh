@@ -101,9 +101,9 @@ fi
 
 # slice-032 (LH-FA-06/LH-QA-03): der emittierte Command-Guard muss real greifen —
 # nicht nur praesent sein. Wir fuettern ihn mit Hook-JSON: die go-Toolchain (BLOCKED-
-# Set --lang go) wird geblockt, ein make-Target durchgelassen. Das belegt zugleich
-# den awk-Pfad (tools/harness/, relativ zu BASH_SOURCE aufgeloest) und dass Guard +
-# Extraktor mit bash + awk auskommen (kein node/jq). Guard laeuft mit set -e; ein
+# Set --lang go) wird geblockt, ein make-Target durchgelassen. Dieser full-smoke-Schritt
+# faehrt zugleich den awk-Pfad (tools/harness/, relativ zu BASH_SOURCE aufgeloest) und
+# zeigt, dass Guard + Extraktor mit bash + awk auskommen (kein node/jq). Guard laeuft mit set -e; ein
 # Fehler/keine Ausgabe wo Block erwartet wird = rot.
 guard="$tmprepo/.claude/hooks/pretooluse-command-guard.sh"
 block_out="$(printf '%s' '{"tool_name":"Bash","tool_input":{"command":"go build ./..."}}' | bash "$guard" || true)"

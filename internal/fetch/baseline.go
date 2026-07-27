@@ -7,7 +7,7 @@
 // Drei Setzungen aus MR-007 sind hier Code, nicht Kommentar:
 //   1. Provenienz != Integritaet: der sha256 des Assets wird VOR dem Entpacken
 //      geprueft. Er ist der einzige Anker fuer die Upstream-Herkunft; die
-//      selbst erzeugte SHA256SUMS belegt danach nur noch Unveraendertheit.
+//      selbst erzeugte SHA256SUMS prueft danach nur noch Unveraendertheit.
 //   2. SHA256SUMS-Umfang: alle Dateien beider Baeume, Pfade relativ zu <tag>/,
 //      LC_ALL=C-sortiert (nach PFAD, nicht nach Hash), die Datei selbst aus-
 //      genommen — sie kann sich nicht selbst hashen.
@@ -275,8 +275,8 @@ func replaceBaseline(tmp, final, tag string) error {
 	return nil
 }
 
-// unpackTrees schreibt die regelwerk/- und templates/-Baeume nach root und
-// stellt sicher, dass BEIDE nicht-leer ankommen.
+// unpackTrees schreibt die regelwerk/- und templates/-Baeume nach root und bricht
+// ab, wenn einer der beiden leer ankommt.
 func unpackTrees(zr *zip.Reader, root, tag string) error {
 	seen := map[string]int{}
 	claimedBy := map[string]string{} // Rel-Pfad -> ZIP-Eintrag, der ihn zuerst beansprucht
@@ -289,7 +289,7 @@ func unpackTrees(zr *zip.Reader, root, tag string) error {
 			continue // unsicherer Pfad (../) — wie im Skelett-Pfad verworfen
 		}
 		// Zwei Eintraege auf denselben Rel-Pfad: FEHLER, nicht "letzter gewinnt"
-		// (Review-Befund slice-022a N4, mit Fixture belegt). writeFile nutzt
+		// (Review-Befund slice-022a N4; TestBaseline_KollidierendeEintraegeRefused faehrt den Fall). writeFile nutzt
 		// O_TRUNC — ohne diese Schranke haengt der Inhalt der vendored Baseline
 		// an der ZIP-REIHENFOLGE statt am Asset-Inhalt, und die selbst erzeugte
 		// SHA256SUMS deckt das Ergebnis danach zu. Ein mehrdeutiges Bundle wird

@@ -339,7 +339,7 @@ run_case() {
   # Nur FEHLSCHLAG-Zeilen zaehlen. bats druckt jeden Testnamen AUCH beim Bestehen
   # ("ok 21 emittiert: eingelegter SYMLINK"), ein blosses grep auf den Namen war
   # damit fuer jeden bats-Fall unter allen Bedingungen erfuellt — Bedingung 4 war
-  # dort wirkungslos (Review-Befund slice-026 F-1, per Sonde belegt). Erst die
+  # dort wirkungslos (Review-Befund slice-026 F-1, per Sonde nachgestellt). Erst die
   # Fehlschlag-Form ist eine Aussage — und sie ist je Sensor eine andere.
   if ! grep -E -- "$form" "$out" | grep -qF -- "$expect"; then
     report_fail "$name" "rot, aber '$expect' faellt nicht — falscher Grund"

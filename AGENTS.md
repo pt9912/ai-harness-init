@@ -122,6 +122,7 @@ prüft, ist ein stilles Grün im Gate — §3.1 eine Ebene tiefer. Die Regel ist
 | `make build` | Go-Binary cross-compilieren (Dockerfile-`build`-Stage) im gepinnten Image |
 | `make shell-lint` | Shell-Hooks/-Helfer lint-clean (shellcheck) im gepinnten Image |
 | `make ci-lint` | GitHub-Actions-Workflows syntax-clean (actionlint) im gepinnten Image (slice-027) |
+| `make comment-claims` | Kommentar-Behauptungen nennen ihren Sensor, und der genannte Test existiert (§3.6, hermetisch: bash+awk) |
 | `make gates` | alle aktuell lauffähigen Gates |
 
 Der Dogfood-Go-Gate-Stack ist **vollständig**: `make lint` / `make build` / `make test` (Go via Dockerfile-Stages, slice-001a/b) neben `docs-check` / `shell-lint` / `baseline-verify`. **Nicht behauptet**: das Architektur-Gate (a-check, [`LH-FA-07`](spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) — der Dogfood ist **flach**, hier hätte a-check einen leeren Prüfbereich ([`LH-QA-01`](spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). **Emittiert wird es trotzdem** (slice-046, emitted-only): ein Zielrepo mit `--arch hexslice` bekommt `.a-check.yml` + `a-check.mk` + sein Gate-Fragment und fährt a-check in seinem `make gates` mit; ein flaches Ziel bekommt keines. Belegt in `make full-smoke` (beide Richtungen + ein verbotener Import, der das emittierte Gate rot färbt), nicht hier.

@@ -63,7 +63,7 @@ if [ ! -f "$encoder" ] || ! command -v awk >/dev/null 2>&1; then
   emit "WARN: Regelwerk-Injektor degradiert (awk oder json-encode.awk fehlt). Regelwerk NICHT als geladen voraussetzen."
   exit 0
 fi
-# Ab hier ist awk garantiert -> $tag-tragende Meldungen laufen durch den Encoder.
+# Ab hier ist awk vorhanden -> $tag-tragende Meldungen laufen durch den Encoder.
 if [ ! -f "$index" ]; then
   warn_encoded "WARN: Baseline-Index fehlt ($tag/regelwerk/README.md) — die Baseline ist unvollstaendig. 'make baseline-verify' meldet Details. Regelwerk NICHT als geladen voraussetzen."
   exit 0
