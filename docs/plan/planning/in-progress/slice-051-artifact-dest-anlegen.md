@@ -25,31 +25,31 @@ nur das Vorhandensein einer Zeile.
 
 ## 2. Definition of Done
 
-- [ ] **Der Nutzer-Befund ist behoben:** `make artifact DEST=<nicht existierendes Verzeichnis>`
+- [x] **Der Nutzer-Befund ist behoben:** `make artifact DEST=<nicht existierendes Verzeichnis>`
   endet mit **Exit 0** und legt das Binary ab. Gegenprobe: derselbe Aufruf ist **vor** dem Fix
   Exit 2 (in §3 real gemessen).
-- [ ] **Beide Targets, nicht nur das gemeldete:** `release-artifacts` trägt denselben Defekt und
+- [x] **Beide Targets, nicht nur das gemeldete:** `release-artifacts` trägt denselben Defekt und
   wird mitgezogen.
-- [ ] **Die Logik lebt als Skript im Repo** unter `harness/tools/`, die Recipes **rufen** sie nur
+- [x] **Die Logik lebt als Skript im Repo** unter `harness/tools/`, die Recipes **rufen** sie nur
   ([`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions) Setzung 1, Präzedenz [`harness/tools/start-smoke.sh`](../../../../harness/tools/start-smoke.sh)). Grund ist nicht Ästhetik:
   **nur so ist das Verhalten netzlos testbar** (§3).
-- [ ] **Verhaltens-Wächter in bats — lokal und in CI, ohne Docker-Daemon:** ein Test stubbt
+- [x] **Verhaltens-Wächter in bats — lokal und in CI, ohne Docker-Daemon:** ein Test stubbt
   `docker` über `PATH` (Präzedenz [`test/release-matrix.bats`](../../../../test/release-matrix.bats), Test „start-smoke nimmt die
   uebergebene Datei"), zeigt `DEST` auf ein **nicht existierendes** Verzeichnis unter `mktemp -d`
   und prüft: Exit 0, Verzeichnis angelegt, Datei am erwarteten Ort. Läuft in `make test` →
   `make gates` → CI pro Push.
-- [ ] **Mutations-Fall `test/mutations/86-…`** (nächste freie Nummer, in §3 gemessen): nimmt dem
+- [x] **Mutations-Fall `test/mutations/86-…`** (nächste freie Nummer, in §3 gemessen): nimmt dem
   Skript das `mkdir -p` und **erwartet den bats-Test rot**. Ohne diesen Fall wäre der Wächter
   selbst ungewacht ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
-- [ ] **Der Workaround in der CI fällt weg:** `- run: mkdir -p dist` in
+- [x] **Der Workaround in der CI fällt weg:** `- run: mkdir -p dist` in
   [`.github/workflows/release.yml`](../../../../.github/workflows/release.yml) wird entfernt. Damit fährt **jeder Release-Lauf** den
   Fall real auf sechs Plattformen — und die Bau-Logik verlässt die YAML
   ([`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions) Setzung 1).
-- [ ] **Der irreführende Handbuch-Hinweis ist korrigiert:** er deckt heute nur den fehlenden
+- [x] **Der irreführende Handbuch-Hinweis ist korrigiert:** er deckt heute nur den fehlenden
   **Parameter** („verlangt die Angabe `DEST`"), nicht das fehlende **Verzeichnis** — und die reale
   Meldung im zweiten Fall kommt von `docker cp`, nicht vom Werkzeug.
-- [ ] `make gates` grün · `make mutate` grün (der neue Fall färbt seinen eigenen Wächter rot).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] `make gates` grün · `make mutate` grün (der neue Fall färbt seinen eigenen Wächter rot).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -142,7 +142,88 @@ Wird *nach* Abschluss ergänzt. Inhalt:
 - Folge-Slices: welche neuen open/-Einträge?
 -->
 
-<!-- Erst nach Abschluss füllen. -->
+**Was hat funktioniert.** Die Reihenfolge aus §3 hat getragen: erst **messen**, dann bauen. Dass die
+Logik ein Skript werden musste, ist nicht als Ästhetik behauptet, sondern **vorher** am gepinnten
+bats-Image gemessen worden (kein `make`, keine docker-CLI darin) — der Verifier hat dieselbe Messung
+unabhängig wiederholt. Der in §6 benannte Fallstrick ist **nicht** eingetreten: die Wächter hängen an
+der beobachtbaren Wirkung (Verzeichnis da, Datei nicht leer), nicht am Stub-Aufruf; belegt durch
+Einzel-Proben je Mutation gegen je eine eigene Kopie. Und das Entfernen von `mkdir -p dist` verlegt
+den Beweis von der Behauptung in den Ernstfall: der Release-Lauf fährt den Fall jetzt real auf sechs
+Plattformen, weil `dist` ungetrackt ist und kein Step es vorher anlegt.
+
+**Was anders lief als geplant — und es ist das Eigentliche.** Der Plan sah **einen** Wächter und
+**einen** Mutations-Fall vor. Geliefert sind **sechs** Wächter (96–101) und **fünf** Fälle (86–90).
+Der Zuwachs kam nicht aus Gründlichkeit, sondern aus fremden Augen: **jede Runde fand genau die
+Hälfte, die die vorige Auflösung liegen gelassen hatte** — und zwar an **einer einzigen Zusage**,
+„der Container wird immer aufgeräumt" ([`Makefile`](../../../../Makefile) Zeile 61, aus [slice-029](../done/slice-029-artifact-target.md)):
+
+| Runde | Finder | Welche Hälfte war unbewacht | Auflösung |
+|---|---|---|---|
+| Review 1 (F-1) | Reviewer | **OB** überhaupt aufgeräumt wird | Test 99 + Fall 87 |
+| Review 2 (N-1) | Reviewer | auch wenn `docker cp` **scheitert** | Test 100 + Fall 89 |
+| Verifikation (A-1) | Verifier | das **richtige Ziel** — ein `trap` auf eine fremde ID ließ **alle** Wächter grün | Fall 90 |
+
+Den Zerlegungs-Schritt habe ich **zweimal nicht von selbst gemacht**. Die Ursache ist benennbar und
+sie ist keine Nachlässigkeit im Einzelfall: [`AGENTS.md`](../../../../AGENTS.md) §3.6 greift, wenn eine Zusage
+**geschrieben** wird. Diese Zusage wurde nicht geschrieben, sondern **geerbt** — sie stand seit
+[slice-029](../done/slice-029-artifact-target.md) im Recipe und ist durch diesen Slice nur in eine Datei **gewandert**, die ein
+bats-Test erreichen kann. Genau diese Wanderung passiert den Filter, weil sie wie eine reine
+Verschiebung aussieht, während sie in Wahrheit die erste Gelegenheit ist, die Zusage überhaupt zu
+messen.
+
+**Abweichungen — Stand bei der Closure** (aus dem Verifier-Report, `docs/reviews/2026-07-26-slice-051-verification.md`):
+
+- **A-1 (substanziell) — behoben**, nicht vertagt: die Assertion prüfte nur `^rm `, also
+  *irgendein* Aufräumen; sie prüft jetzt die ID, die `docker create` zurückgegeben hat, und Fall 90
+  hält es fest. Damit ist die Zusage in drei Hälften zerlegt und jede einzeln bewacht.
+- **A-3 — behoben:** `dist/` steht jetzt neben `/bin/` in der `.gitignore`. Ohne den Eintrag machte
+  ein lokaler `release-artifacts`-Lauf den Arbeitsbaum schmutzig, seit `mkdir -p dist` aus der CI weg
+  ist — dieselbe Klasse wie F-5, ein Verzeichnis weiter.
+- **A-2 — nicht behebbar, deshalb korrigiert und in den Steering Loop gegeben** (unten).
+- **A-4 — nachrichtlich:** beide Review-Reports reisen im selben Commit wie die von ihnen
+  ausgelösten Auflösungen; „berichtet" und „aufgelöst" sind an der Commit-Grenze nicht trennbar. Im
+  Slice konsistent gehandhabt, hier nur festgehalten.
+
+**Steering-Loop-Einträge** (kanonische Definition:
+[`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/grundlagen/klassifikation.md#steering-loop)):
+
+- **Geschärfte Regel — [`AGENTS.md`](../../../../AGENTS.md) §3.6 deckt das *Schreiben* einer Zusage, nicht ihr
+  *Erben*.** Vorschlag in der Sprache der Regel: *wer eine bestehende Zusage in eine erstmals
+  testbare Einheit verschiebt, zerlegt sie in ihre Hälften und bewacht jede einzeln — die
+  Verschiebung ist die erste Gelegenheit, sie zu messen, und damit der Zeitpunkt, zu dem §3.6
+  greift.* Beleg ist nicht eine Meinung, sondern die Tabelle oben: **drei Hälften, drei Runden,
+  drei verschiedene Finder**, keine davon von mir selbst.
+- **Sensor-Lücke, benannt — eine Sensor-Auslassung wird mit einer Behauptung über eine Quelle
+  begründet, die niemand liest (A-2).** Ich habe `make smoke` mit der Begründung ausgelassen, es sei
+  „eine echte Teilmenge von `full-smoke`". Das ist **falsch**, und zwar an **zwei** Stellen des
+  eigenen Repos wörtlich widerlegt (Kopf von [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) und
+  [`AGENTS.md`](../../../../AGENTS.md) §4 sagen beide, `full-smoke` nehme die Sicht, die `smoke` **bewusst nicht**
+  nimmt). Das Ergebnis war zufällig sauber — `make mutate` fährt `smoke` als Grün-Vorlauf. Die Klasse
+  steht in §3.6 sogar als eigenes Beispiel („Byte-Gleichheit belegt `make smoke`, ohne `smoke`
+  gelesen zu haben"); die Regel existiert also, ihr fehlt der **Feedback-Quadrant**: kein Gate liest
+  je die Begründung, mit der ein Sensor übersprungen wurde. Das ist eine weitere Achse für den
+  Roadmap-Kandidaten *Regeln ohne Feedback-Quadrant schließen*.
+- **Der Auslöser selbst ist der dritte Eintrag: die Abdeckung kompensierte an der Aufrufstelle.**
+  Die CI war grün, **weil sie umging** (`mkdir -p dist` vor dem Target). Der einzige unkompensierte
+  Pfad war der, den [`README.md`](../../../../README.md) und das [Benutzerhandbuch](../../../user/benutzerhandbuch.md) den Nutzern
+  vorschreiben — und genau dort fand ihn ein **Mensch**, kein Sensor. Kandidat: die in der
+  Nutzer-Doku dokumentierten Befehle einmal **wörtlich** fahren, statt sie nur zu lesen. Das ist
+  dieselbe Richtung wie der Vorschlag „Sensor **vor** dem Tag-Push" aus [slice-050](../done/slice-050-doku-nachzug-release.md) §7 und
+  verstärkt ihn: dort ging es um Aussagen der Doku über den Zustand, hier um ihre **Befehle**.
+
+**Folge-Slices.** [slice-052](../open/slice-052-release-v0-1-1.md) (`v0.1.1`) ist geschnitten und liegt in `open/` — erst er
+bringt den Fix zu den Nutzern; `v0.1.0` behält ihn (§6, unverändert gültig). Die drei
+Steering-Einträge sind **nicht** geschnitten (cp-Disziplin) und gehören in den Roadmap-Kandidaten
+*Regeln ohne Feedback-Quadrant schließen*.
+
+**Review und Verifikation.** Zwei Review-Runden — Runde 1 **NICHT KONFORM** (0 HIGH, 2 MEDIUM,
+3 LOW, 1 INFO, merge-blockierend wegen F-1/F-2), Runde 2 **KONFORM** (0 HIGH, 0 MEDIUM, 2 LOW,
+1 INFO). Verifikation: **DoD BESTÄTIGT** — 8 von 9 Punkten mit eigenen Belegen, **0 widerlegt**,
+Punkt 9 (diese Notiz) zum Prüfzeitpunkt nicht fällig. Der Verifier fuhr beide Targets real
+(inklusive des vollen Sechs-Plattform-Baus), `make gates`, `make mutate` mit Einzel-Proben je Fall
+und baute einen Zusatz-Sensor, den niemand verlangt hatte: nach sieben realen Skript-Aufrufen meldet
+`docker ps -a` **null** übrig gebliebene Container — der `trap` räumt also auch gegen den echten
+Daemon auf, nicht nur im Protokoll der Attrappe.
 
 ## 8. Sub-Area-Modus-Begründung
 
