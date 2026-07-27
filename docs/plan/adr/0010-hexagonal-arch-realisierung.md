@@ -47,7 +47,7 @@ erzwingt —, kippt die Entscheidung.
 
 ## Entscheidung
 
-**Genau zwei Festlegungen.**
+**Genau drei Festlegungen.**
 
 **Festlegung 1 — emittiert wird die gelebte Familien-Konvention, nicht das Gate-Gerüst.**
 `--arch hexagonal` erzeugt
@@ -56,25 +56,37 @@ erzwingt —, kippt die Entscheidung.
 |---|---|---|
 | Kern | `internal/hexagon/core/**` | Schicht `core` |
 | Ports | `internal/hexagon/port/**` | Schicht `ports` |
-| getriebene Adapter | `internal/adapter/driven/**` | Schicht `adapters` |
-| **treibende Seite** | **`internal/adapter/driving/cli/**`** | **Composition Root** (von den Schichtregeln befreit) |
-| Einstiegspunkt | `cmd/**` | **Composition Root** |
+| getriebene Adapter | `internal/adapter/driven/**` | Schicht `driven` (Rolle *adapter*) |
+| **treibende Adapter** | **`internal/adapter/driving/**`** | **Schicht `driving`** (Rolle *adapter*) |
+| Einstiegspunkt | `cmd/**` | **Composition Root** (einziger befreiter Bereich) |
 
-Die emittierte `.a-check.yml` führt die Kanten `adapters→ports`, `ports→core` **und
-`adapters→core`** sowie `composition_root: ["cmd/**", "internal/adapter/driving/cli/**"]`.
+Die emittierte `.a-check.yml` führt die Kanten `driven→ports`, `driven→core`, `driving→ports`,
+`driving→core`, `ports→core` und `composition_root: ["cmd/**"]`. **Keine** Kante
+`driving→driven`: ein treibender Adapter ruft keinen getriebenen direkt auf, er geht durch Kern
+und Ports.
 
 Begründung: ein Adopter soll ein Layout bekommen, das in dieser Werkzeug-Familie **real gebaut und
-real geprüft** wird — nicht das Minimalbeispiel der Werkzeug-Doku. Die Kante `adapters→core` ist
-Teil der Festlegung, weil Adapter Domänentypen abbilden; sie sieht wie ein Überschuss aus und
-braucht deshalb einen eigenen Wächter.
+real geprüft** wird — nicht das Minimalbeispiel der Werkzeug-Doku. Die Kanten `driven→core` und
+`driving→core` sind Teil der Festlegung, weil Adapter Domänentypen abbilden (im ersten Referenz-Repo
+real geführt, im Gerüst nur auskommentiert); sie sehen wie ein Überschuss aus und brauchen deshalb
+einen eigenen Wächter.
 
-**Zur treibenden Seite** (ergänzt in Runde 2, nachdem der Proposed-Review sie als Lücke fand):
-Beide Referenz-Repos haben eine, an **verschiedenen** Orten — `internal/cli` beim einen,
-`internal/adapter/driving/cli` beim anderen —, und **beide behandeln sie als Composition Root**.
-Die Familie ist hier also nicht einheitlich; gewählt wird `internal/adapter/driving/cli`, weil es
-die Ports-und-Adapter-Sprache konsequent durchhält (*driving* und *driven* als Paar) und den
-Adapter-Begriff nicht auf halbem Weg verlässt. Verworfen: `internal/cli` — kürzer, aber es
-verlässt das Vokabular genau dort, wo die Architektur ihren Namen hat.
+**Zur treibenden Seite** (ergänzt in Runde 2, verschärft in Runde 3): Beide Referenz-Repos haben
+eine, an **verschiedenen** Orten — `internal/cli` beim einen, `internal/adapter/driving/cli` beim
+anderen —, und **beide behandeln sie als Composition Root**, also als prüffreien Bereich.
+
+Wir übernehmen den **Ort** (`internal/adapter/driving/**`, weil *driving*/*driven* das
+Ports-und-Adapter-Vokabular durchhält; `internal/cli` verworfen, weil es das Vokabular genau dort
+verlässt, wo die Architektur ihren Namen hat) — aber **nicht die Prüffreiheit**. Bei uns ist
+`driving` eine **Schicht**. Zwei Gründe:
+
+1. **Runde 2 hat gezeigt, was die Prüffreiheit kostet:** deckt man nur `driving/cli` ab, fällt
+   jeder weitere treibende Adapter (`driving/http`, `driving/grpc` …) unter **keinen** Glob und ist
+   für das Gate unsichtbar. Deckt man `driving/**` als Composition Root ab, ist die ganze treibende
+   Seite ungeprüft. Beides sind **stille** Zustände.
+2. **Wir kennen die Adopter nicht** — und genau deshalb ist die Wahl entscheidbar (siehe
+   Festlegung 3): ein zu strenger Default meldet sich beim ersten Lauf und kostet eine Zeile in der
+   adopter-eigenen Config; ein zu lascher meldet sich nie.
 
 **Festlegung 2 — `hexagonal` und `hexslice` sind getrennte Layouts, nicht zwei Strenge-Grade.**
 Sie teilen die Idee (Kern innen, Adapter außen), aber **nicht die Verzeichnisnamen**: `core` gegen
@@ -83,6 +95,21 @@ gemeinsames Layout mit zwei Kanten-Mengen wäre nicht sparsamer, sondern **unbew
 Regeln, die HexSlice ausmachen (Slice-Lokalität, laterale Trennung), hängen an literalen
 Verzeichnis-Präfixen. Konsequenz: der Generator führt zwei Rollen-Sätze, und ein Test hält die
 **Disjunktheit der Verzeichnisnamen** fest.
+
+**Festlegung 3 — bei Unkenntnis der Adopter ist der Default fail-closed.**
+Die emittierte `.a-check.yml` ist ein **Startpunkt**, kein Vertrag: sie ist *skip-if-present*, der
+Adopter darf sie ändern. Damit ist unsere Wahl ein Default, und Defaults für **unbekannte** Nutzer
+entscheidet man nicht nach vermuteter Präferenz, sondern nach dem **Fehlerbild**:
+
+| Default | wenn falsch | merkt es der Adopter? | Korrektur |
+|---|---|---|---|
+| zu streng | Gate wird rot auf etwas Legitimes | **sofort**, beim ersten Lauf | eine Glob-Zeile |
+| zu lasch | Bereich bleibt ungeprüft | **nie** | — |
+
+**Laut falsch schlägt leise falsch.** Diese Regel gilt über diese ADR hinaus für jeden emittierten
+Prüfbereich; sie ist dieselbe, nach der der Command-Guard einen gebackenen Boden trägt und der
+Mutations-Sensor im Zweifel beide Stufen fährt. Für die Referenz-Repos heißt das: **die Familie ist
+Referenz für das Layout, nicht für die Prüfschärfe.**
 
 ## Verglichene Alternativen
 
@@ -97,6 +124,7 @@ auch eine Option.
 | B — `hexagonal` als Modus von `hexslice` (dieselben Verzeichnisse, weniger Regeln) | ein Layout weniger im Generator; scheinbar sparsamer | die HexSlice-Regeln hängen an literalen Verzeichnis-Präfixen — ein gemeinsames Layout mit zwei Kanten-Mengen ist **nicht bewachbar**; die Namen (`domain` vs `core`) passen nicht |
 | C — gar nicht liefern, Adopter schreibt sein Layout selbst | kein Aufwand; maximale Freiheit | der belegte Bedarf bliebe unbedient; der Generator könnte die Form, die das Gate als Standard vorschlägt, weiterhin nicht erzeugen |
 | **D — gelebte Familien-Konvention als eigenes Layout (gewählt)** | erprobt an zwei realen Repos; die Kanten-Menge stimmt mit der Praxis; getrennte Layouts bleiben bewachbar | Abweichung vom `--print-config`-Gerüst muss erklärt werden; zwei Rollen-Sätze im Generator; die `.a-check.yml` wächst weiter N×M (je Sprache × Architektur) |
+| E — eine dritte Achse (`--flavour`) für die Platzierung der treibenden Seite | jede beobachtete Variante wäre abbildbar, ohne die Arch-Achse mit Werten zu füllen | **gemessen**: die Belegmatrix wächst von 4 auf 8 Kombinationen (2 Sprachen × 2 Architekturen × 2 Flavours); je belegter Kombination kostet der Voll-E2E-Smoke **~45 s** CI-Wanduhr (Median 174 s → 218 s beim letzten Zuwachs), dazu je 1–2 Mutations-Fälle und ein Zahn-Block. Der Beleg wäre **eine** Pfad-Abweichung in zwei Repos derselben Familie — die ein Adopter mit einem `git mv` und einer Glob-Zeile selbst löst. Verworfen, bis die Achse **mehr als eine Frage** beantwortet |
 
 ## Konsequenzen
 
@@ -111,14 +139,14 @@ Was wird leichter, was schwerer.
 - **Negativ:** die Abweichung vom `--print-config`-Gerüst ist erklärungsbedürftig — wer beides
   nebeneinander legt, sieht unterschiedliche Pfade. Der Generator trägt zwei Rollen-Sätze; die
   Menge der Arch-Gate-Configs wächst weiter mit **Sprache × Architektur** (der Renderer nicht).
-- **Negativ, und der Preis der Familien-Treue:** die treibende Seite ist **Composition Root** und
-  damit von den Schichtregeln **befreit**. Ein treibender Adapter darf dort am Port vorbei direkt
-  in den Kern greifen, ohne dass das Gate etwas meldet. Bei `hexslice` ist das anders — dort ist
-  der Inbound-Adapter eine echte Schicht mit der Kante `adapters→app`. Wir übernehmen die
-  schwächere Prüfung bewusst, weil beide Referenzen es so halten und der Composition Root
-  konstruktionsbedingt alles verdrahten darf; wer mehr Strenge will, wählt `hexslice`. Diese
-  Asymmetrie zwischen den beiden Layouts ist eine **Eigenschaft**, kein Versehen — sie gehört in
-  die Nutzer-Doku, sonst liest sie sich als Inkonsistenz.
+- **Negativ, und bewusst in Kauf genommen:** wir prüfen die treibende Seite **strenger als beide
+  Referenzen**. Dort ist sie Composition Root, bei uns eine Schicht mit eigenen Kanten. Ein Adopter,
+  der seine Referenz danebenlegt, sieht eine Abweichung und muss sie einordnen können — deshalb
+  steht sie in der emittierten Config und in der Nutzer-Doku (Folgepflichten 4 und 5). Wer die
+  Prüffreiheit der Referenzen will, trägt `internal/adapter/driving/**` in seinen
+  `composition_root` ein: **eine Zeile**, in seiner eigenen, nie überschriebenen Datei.
+  *(Dieser Absatz ersetzt die Runde-2-Fassung, die das Gegenteil festlegte — die Begründung dort
+  ist mit Festlegung 3 hinfällig geworden und wird nicht stehengelassen.)*
 - **Folgepflicht 1 (blockierend für die Umsetzung):** die Geschichtet-Erkennung ist heute an
   HexSlice-Namen verdrahtet (`archLayered` prüft `roleDomain`; der Kopplungs-Wächter prüft
   `hexagon/domain/`). Sie wird auf eine **strukturelle** Bedingung gehoben, sonst entsteht ein
@@ -132,6 +160,9 @@ Was wird leichter, was schwerer.
 - **Folgepflicht 4:** die emittierte `.a-check.yml` nennt in ihrem Kopf-Kommentar, **warum** die
   Pfade vom `--print-config`-Gerüst abweichen. Der Adopter liest zuerst die Config; ohne den Satz
   hält er die Abweichung für einen Werkzeug-Fehler.
+- **Folgepflicht 5:** die Nutzer-Doku benennt, dass `hexagonal` die treibende Seite **strenger**
+  prüft als die Referenz-Repos, und wie man sie auf deren Niveau lockert. Ohne das liest sich die
+  Abweichung als Fehler statt als Entscheidung.
 
 ## Fitness Function (falls maschinell prüfbar)
 
@@ -146,7 +177,8 @@ niederschlägt: hier die konkrete Regel benennen. Beispiel:
 | a-check (im Ziel) | Ein Import von `core` nach `adapter` verletzt die Richtung und färbt das Gate rot — **mit** Richtungs-Befund, nicht nur Exit ≠ 0 | `make a-check-<modul>` im emittierten Repo, gefahren im `make full-smoke` |
 | Go-Test (hier) | Jede schichten-tragende (Sprache, Architektur) hat eine Arch-Gate-Config — die Erkennung ist **strukturell**, nicht namensbasiert | `make test` (`TestArchGateConfig_CoversEveryLayeredCombo`) |
 | Go-Test (hier) | Die Verzeichnisnamen von `hexagonal` und `hexslice` sind **disjunkt**; die Namen werden aus den Renderern abgeleitet, nicht aus einer Liste | `make test` |
-| `make mutate` | Die Kante `adapters→core` wird entfernt → der zugehörige Wächter muss rot werden | `make mutate` |
+| `make mutate` | Die Kante `driven→core` wird entfernt → der zugehörige Wächter muss rot werden | `make mutate` |
+| a-check (im Ziel) | Ein Import von `driving` nach `driven` verletzt die Schichtung (es gibt keine solche Kante) und färbt das Gate rot | `make a-check-<modul>`, im `make full-smoke` |
 
 ## Re-Evaluierungs-Trigger
 
@@ -166,6 +198,7 @@ niederschlägt: hier die konkrete Regel benennen. Beispiel:
 |---|---|---|
 | 2026-07-27 | Proposed | `docs/plan/planning/open/slice-058-hexagonal-go.md` §3a (Plan-Review F-2 verlangte die Entscheidung) |
 | 2026-07-27 | Überarbeitet (Runde 2), weiter Proposed | Proposed-Review `docs/reviews/2026-07-27-adr-0010-proposed-review.md`: F-1 (treibende Seite fehlte, Familie uneinheitlich) und F-2 (`composition_root` zu eng) aufgelöst, F-4 (Trigger ohne Sensor) eingeordnet, F-5 als Folgepflicht 4 ergänzt |
+| 2026-07-27 | Überarbeitet (Runde 3), weiter Proposed | Proposed-Review Runde 2 `docs/reviews/2026-07-27-adr-0010-proposed-review-runde-2.md`: N-1 (ungedeckter Bereich unter `driving/`) als **Schicht** aufgelöst statt als Ausnahme; daraus **Festlegung 3** (fail-closed bei unbekannten Adoptern) und die Rücknahme des Runde-2-Absatzes zur „Familien-Treue bei der Prüfschärfe"; N-2 als Folgepflicht 5; Alternative E (`--flavour`-Achse) mit gemessenen Kosten ergänzt |
 
 <!--
 Nach Accepted: NICHT mehr inhaltlich überschreiben (Hard Rule aus
