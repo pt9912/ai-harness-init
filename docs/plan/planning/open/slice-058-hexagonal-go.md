@@ -34,12 +34,23 @@ HexSlice-Realisierung, von der dieses Layout **abgegrenzt** wird).
 
 ## 2. Definition of Done
 
-- [ ] **(1) `add-lang go <pfad> --arch hexagonal` legt das geschichtete Modul an** — Exit 0, mit
-  dem Layout der Familie (`internal/hexagon/core`, `internal/hexagon/port`,
+- [ ] **(1) `add-lang go <pfad> --arch hexagonal` legt das geschichtete Modul an — samt Gate.**
+  Exit 0, mit dem Layout der Familie (`internal/hexagon/core`, `internal/hexagon/port`,
   `internal/adapter/driven`, Composition Root `cmd/**`), **nicht** dem `--print-config`-Gerüst
-  (`internal/core` …). Untrennbar dabei: das Rollen-Vokabular, die geöffnete Achse und die
-  `.a-check.yml` — der Wächter `TestArchGateConfig_CoversEveryLayeredCombo` koppelt sie (dieselbe
-  Kopplung wie in slice-053). Gegenprobe: `flat` und `hexslice` bleiben **byte-identisch**.
+  (`internal/core` …); dazu Rollen-Vokabular, geöffnete Achse und `.a-check.yml`.
+  **Voraussetzung, die der Plan-Review als HIGH gefunden hat:** die Geschichtet-Erkennung wird von
+  **Namen auf Struktur** gehoben. Heute entscheidet `archLayered` an `roleDomain` und der
+  Kopplungs-Wächter an `strings.Contains(rel, "hexagon/domain/")` — beides ist hexslice-Vokabular.
+  Unverändert übernommen hieße: `archLayered("hexagonal")` = false → **kein Arch-Gate emittiert**,
+  und der Wächter bliebe dabei **grün**
+  ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+  Der Umbau berührt `hexslice` mit und ist deshalb Teil **dieses** Punktes, nicht ein Anhang:
+  *geschichtet* heißt künftig „das Layout trägt mindestens eine Rolle, die weder Entry-Point noch
+  Test noch Composition Root ist". **Der Kopplungs-Wächter darf dabei nicht dieselbe Funktion
+  befragen, die er bewacht** — sonst ist er tautologisch; er leitet *geschichtet* aus dem
+  **gerenderten Baum** ab. Gegenprobe: `flat` und `hexslice` bleiben **byte-identisch**, und für
+  beide bleibt die Gate-Entscheidung unverändert (rot gesehen: die neue Erkennung einmal so
+  brechen, dass `hexslice` sein Gate verliert).
 - [ ] **(2) Das Gate hat Zähne, und die Kanten-Menge ist bewacht.** Ein verbotener
   `core → adapter`-Import färbt `a-check` im realen Ziel rot, **mit Richtungs-Befund** (nicht nur
   Exit ≠ 0). Die Kante **`adapters → core`** ist Teil der emittierten Config — sie steht im
@@ -75,13 +86,44 @@ HexSlice-Realisierung, von der dieses Layout **abgegrenzt** wird).
 | `internal/gen/*_test.go` | update/neu | Datei-Satz, Config-gegen-Skelett, Disjunktheit der Layouts, `flat`/`hexslice` unverändert |
 | `harness/tools/full-smoke.sh` | update | `add-lang go <pfad> --arch hexagonal` + Zahn (verbotener `core → adapter`-Import) |
 | `test/mutations/` | neu | Rollen-Abdeckung · `adapters → core`-Kante · Disjunktheit |
+| [`spec/architecture.md`](../../../../spec/architecture.md) §5 | update | die normative Heimat der Layout-Regeln nennt heute **nur** `hexslice` (6 Treffer gegen 0) — ein zweites schichten-tragendes Layout gehört dorthin, nicht nur ins Handbuch (Plan-Review F-3, slice-053-Lehre) |
+| `internal/gen/arch.go` (`archLayered`) + `internal/gen/archgate_test.go` | update | Geschichtet-Erkennung von Namen auf Struktur (Plan-Review F-1) — berührt `hexslice` mit |
 | Handbuch, [`README.md`](../../../../README.md) | update | dritte Bauform — **nach** den Sensoren |
+
+## 3a. ADR-Frage (Plan-Review F-2) — offen, Nutzer-Entscheidung
+
+**Der Befund:** für die Realisierung von `hexslice` wurde eine eigene ADR geschrieben
+([`ADR-0009`](../../adr/0009-hexslice-arch-realisierung.md): welche Rollen, welche Richtungen, nach
+welcher Referenz). Für `hexagonal` steht dieselbe Klasse an. Der Plan behandelte sie zunächst als
+Renderer-Detail — inkonsistent zur eigenen Präzedenz.
+
+**Was für eine ADR spricht:** die Wahl trifft Adopter dauerhaft (Verzeichnis-Layout ist schwer
+umkehrbar, sobald Repos so gebaut sind), und es ist eine **echte Wahl** — die gelebte
+Familien-Konvention (`internal/hexagon/core`) gegen das Gate-Gerüst (`internal/core`). Beide sind
+vertretbar; wir wählen die erste. Genau solche Entscheidungen sollen laut
+[`AGENTS.md`](../../../../AGENTS.md) §5 auffindbar sein — ein Slice wandert nach `done/` und wird
+nicht mehr gelesen.
+
+**Was dagegen spricht:** [`ADR-0008`](../../adr/0008-arch-achse-emittiertes-skelett.md) trägt die
+Achse bereits und sieht mehrere Architekturen ausdrücklich vor; die Layout-Wahl ist hier weniger
+Entwurf als **Messung** (zwei reale Repos, ein Gate-Gerüst). Eine ADR pro Architektur könnte die
+Achse mit Zeremonie belasten, die der nächsten Sprache nicht hilft.
+
+**Empfehlung des Reviews:** eine **kurze `ADR-0010`** <!-- d-check:ignore (noch nicht angelegt — Gegenstand der offenen Entscheidung) --> (Proposed-first wie 0006–0009), die genau zwei
+Dinge festhält — *welches Layout emittiert wird und warum die Familien-Konvention gegen das
+Gate-Gerüst gewinnt* sowie *warum `hexagonal` und `hexslice` getrennte Layouts bleiben*. Das ist
+billiger als die spätere Frage „warum eigentlich `core` und nicht `domain`?", die sonst niemand
+mehr beantworten kann.
+
+**Bis zur Entscheidung bleibt dieser Slice in `open/`.**
 
 ## 4. Trigger
 
 **`open` → `in-progress`:** CR **0.17.0** ist gefahren (eigener Commit, vor diesem Slice) — die
 Anforderung führt `hexagonal` jetzt. Der Bedarf ist doppelt belegt: Gate-Standardform **und** zwei
-reale Repos der Familie.
+reale Repos der Familie. **Zusätzlich seit dem Plan-Review vom 2026-07-27:** die ADR-Frage aus §3a
+ist entschieden (ADR geschrieben oder begründet abgelehnt). Der Plan-Review war **blockierend**
+(1 HIGH); sein Befund steckt jetzt in DoD (1).
 
 Rückführungen:
 
@@ -112,6 +154,13 @@ Move-Commit, Link-Reconciliation im Folge-Commit); Closure-Notiz mit Steering-Lo
   Kompositions-Kern verbiegt, greift die Rückführung nach `next`.
 - **Die zweite Sprache ist bewusst draußen.** cpp erbt die Achse, braucht aber eine eigene
   Kanten-Prüfung (Vererbung ⇒ `adapters → ports`, wie in slice-053 gemessen). Eigener Zuschnitt.
+- **Die ungenutzten Gate-Fähigkeiten bleiben ungenutzt** (`adapter_sink`, `tech`,
+  `forbidden_constructs`): die Referenz-Configs der Familie führen sie, unsere emittierte tut
+  es weiterhin nicht — dieselbe Abgrenzung wie in welle-08 §6. Sie steht hier, damit die
+  Auslassung als Absicht lesbar ist (Plan-Review F-4).
+- **Der Disjunktheits-Test darf keine hartkodierte Liste sein** — er leitet die
+  Verzeichnisnamen aus den Renderern ab und prüft den Schnitt beider Mengen; sonst altert er
+  beim vierten Layout still (Plan-Review F-5).
 - **Kein Carveout absehbar.**
 
 ## 7. Closure-Notiz (nach `done/`)
