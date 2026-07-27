@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-08-cpp-hexslice](../welle-08-cpp-hexslice.md) — der zweite und letzte Slice;
+**Welle:** [welle-08-cpp-hexslice](welle-08-cpp-hexslice.md) — der zweite und letzte Slice;
 mit ihm wird das Closure-Kriterium der Welle wahr.
 
 **Bezug:** [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) (das
@@ -80,7 +80,7 @@ Rückführungen:
 DoD vollständig; Review konform (Modul 10) mit ausgestelltem Verdikt; Verifikation bestätigt die
 DoD (Modul 11); `make gates`/`make mutate`/`make full-smoke` grün; `git mv` nach `done/` (eigener
 Move-Commit, Link-Reconciliation im Folge-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
-**Danach ist das Closure-Kriterium der [welle-08](../welle-08-cpp-hexslice.md) wahr.**
+**Danach ist das Closure-Kriterium der [welle-08](welle-08-cpp-hexslice.md) wahr.**
 
 ## 6. Risiken und offene Punkte
 

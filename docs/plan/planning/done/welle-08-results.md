@@ -42,7 +42,7 @@ Architektur-Gate **wirklich sieht**.
   `TestArchGateConfig_CoversEveryLayeredCombo` leitet die Kombinationen aus dem realen Generator ab
   und färbt rot, sobald eine schichten-tragende Kombination **ohne** Config existiert. Achse und
   `.a-check.yml` mussten damit in **eine** Landung; slice-054 behielt den Beleg, nicht das Artefakt.
-- **Zwei Change Requests wurden nötig** ([`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)),
+- **Zwei Change Requests wurden nötig** ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)),
   beide aus Messungen: Lastenheft **0.15.0** (§5 trug überholte Herkunfts-Aussagen) und **0.16.0**
   (die AC „Bau-Gerüstung unverändert … `flat` byte-identisch" war für C++ **nicht einlösbar**, weil
   ein Schicht-Layout den Modul-Root im Include-Pfad braucht).
@@ -57,7 +57,7 @@ Architektur-Gate **wirklich sieht**.
 - **Was das Gate sehen kann, bestimmt das Layout — nicht umgekehrt.** a-check löst **nur
   modul-root-relative** Referenzen auf; relative und präfixlose Includes sind ihm unsichtbar. Ein
   anders geschriebenes Layout übersetzt und ist dem Gate **still** unsichtbar. Verankert in
-  [`spec/architecture.md`](../../../spec/architecture.md) §5, belegt durch zwei Zähne im
+  [`spec/architecture.md`](../../../../spec/architecture.md) §5, belegt durch zwei Zähne im
   Voll-E2E-Smoke.
 - **Die Kanten-Menge ist sprach-abhängig, das Layout nicht.** Go erfüllt Ports strukturell (keine
   `adapters → ports`-Kante), C++ durch Vererbung (Kante **erforderlich**). Eine solche Abweichung
@@ -79,7 +79,7 @@ Architektur-Gate **wirklich sieht**.
 | `make mutate` | **92 ok, 0 Befunde** |
 | `make full-smoke` | Exit 0; Arch-Gate-Zahn `core-impurity` rot gesehen, Schicht- und Lint-Zahn ebenso, Root-One-Shot belegt |
 | Alte Exit-2-Zusage umgeschrieben | `grep -rn "AddLangCppHexsliceRejected" --include=*.go --include=*.sh .` → **0 Treffer** |
-| Carveout-Audit | [`CO-001`](../carveouts/CO-001-bats-shell-lint.md) aktiv, Trigger **nicht** erfüllt (neue `.bats`-Datei: 0 Verzweigungen); Prüfvermerk und die stale Anzahl korrigiert. **Keine weiteren Carveouts, keine neuen aus dieser Welle.** |
+| Carveout-Audit | [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) aktiv, Trigger **nicht** erfüllt (neue `.bats`-Datei: 0 Verzweigungen); Prüfvermerk und die stale Anzahl korrigiert. **Keine weiteren Carveouts, keine neuen aus dieser Welle.** |
 
 ## 6. Folge-Slices
 

@@ -6,7 +6,7 @@ Closure wandert diese Datei per `git mv` nach `done/` (neben ihre
 Status-Feld. Ob eine flache Welle *aktuell* oder *geplant* ist, sagt die Roadmap.
 
 **Zielmeilenstein:** kein Meilenstein-Bezug — M4 (Arch-Gate integriert) ist mit
-[welle-07](done/welle-07-arch-achse.md) erreicht; diese Welle **verbreitert** die dort gebaute Achse
+[welle-07](welle-07-arch-achse.md) erreicht; diese Welle **verbreitert** die dort gebaute Achse
 auf eine zweite Sprache, sie erreicht keinen neuen extern beobachtbaren Zustand.
 
 **Verantwortlich:** ai-harness-init-Team (pt9912). **Datum:** 2026-07-27.
@@ -17,17 +17,17 @@ auf eine zweite Sprache, sie erreicht keinen neuen extern beobachtbaren Zustand.
 
 `add-lang cpp <pfad> --arch hexslice` liefert ein **geschichtetes C++-Modul** — und das Arch-Gate
 prüft es real. Heute endet derselbe Aufruf mit **Exit 2** (`internal/gen/gen.go:132`:
-`"cpp": {archFlat}`); die Achse aus [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)
+`"cpp": {archFlat}`); die Achse aus [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)
 trägt bislang **eine** Sprache, obwohl sie als `lang × arch`-Komposition entworfen ist.
 
 Die Welle ist erst geliefert, wenn beides zusammen wahr ist: das Skelett **baut** (die
 C++-Toolchain-Gates bleiben grün) **und** ein verbotener `domain → adapters`-Include **färbt
 a-check rot**. Ein Layout ohne Gate wäre ein Verzeichnisbaum ohne Zusage; ein Gate ohne Layout
-wäre ein leerer Prüfbereich ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+wäre ein leerer Prüfbereich ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 
 ## 2. Trigger (Welle startet)
 
-- **[welle-07](done/welle-07-arch-achse.md) liegt in `done/`** — die Arch-Achse (Rollen-Vokabular,
+- **[welle-07](welle-07-arch-achse.md) liegt in `done/`** — die Arch-Achse (Rollen-Vokabular,
   `--arch`-CLI, konditionale Gate-Emission) ist gebaut; diese Welle fügt einen Renderer hinzu,
   keine Mechanik. welle-07 hat cpp ausdrücklich ausgeklammert („cpp/andere folgen je Bedarf
   (linear, opt-in) — nicht in dieser Welle", §6).
@@ -36,7 +36,7 @@ wäre ein leerer Prüfbereich ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01
   `languages: cpp: ["**/*.cpp", "**/*.hpp"]`: der verbotene `domain → adapters`-Include meldete
   `src/domain/bad.cpp:1: core-impurity`, Exit **1**; der legale `adapter → domain`-Include blieb
   still. Damit ist die Vorbedingung dieselbe Klasse wie die a-check-Verfügbarkeit, die
-  [`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) für Go verlangte
+  [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) für Go verlangte
   — **belegt statt avisiert**.
 - **Green-before-extend:** keine aktive Welle, `in-progress/` trägt keinen Slice, `make gates` grün.
 
@@ -62,8 +62,8 @@ Verzeichnisse (dieselbe zweite Wahrheit, die beim Slice retired wurde). -->
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-053](done/slice-053-cpp-hexslice-renderer.md) | `cppRole` rendert die hexSlice-Schichten; die Achse öffnet sich für cpp — **samt cpp-`.a-check.yml`** | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) |
-| slice-054 | Die Zähne end-to-end (a-check läuft real, verbotener Include rot gesehen) + Mutationen + Doku-Nachzug | [`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-053](slice-053-cpp-hexslice-renderer.md) | `cppRole` rendert die hexSlice-Schichten; die Achse öffnet sich für cpp — **samt cpp-`.a-check.yml`** | [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) |
+| slice-054 | Die Zähne end-to-end (a-check läuft real, verbotener Include rot gesehen) + Mutationen + Doku-Nachzug | [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren), [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 
 **Grenze verschoben am 2026-07-27, aus einer Messung vor dem ersten Code-Edit.** Ursprünglich sollte
 die Arch-Gate-Config zu slice-054 gehören. `TestArchGateConfig_CoversEveryLayeredCombo`
@@ -79,12 +79,12 @@ wenn er an der Reihe ist — ein leerer Slice-Platzhalter wäre eine zweite Wahr
 
 **Warum in dieser Reihenfolge:** slice-053 schafft den **Prüfbereich**, den slice-054s Gate braucht.
 Umgekehrt hätte slice-054 ein Gate über einem leeren Baum — genau die Konstellation, die
-[`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) verbietet und
+[`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) verbietet und
 die welle-07 mit der konditionalen Emission (`archLayered`) schon einmal aufgelöst hat.
 
 ## 5. Abhängigkeiten
 
-- **Wird blockiert von:** [welle-07](done/welle-07-arch-achse.md) (geschlossen) — Rollen-Vokabular,
+- **Wird blockiert von:** [welle-07](welle-07-arch-achse.md) (geschlossen) — Rollen-Vokabular,
   `--arch`-Achse und die konditionale Arch-Gate-Emission stammen von dort.
 - **Blockiert:** nichts. Weitere Sprach-Renderer (`python`, `kotlin`, `java`, `csharp`) hängen
   **nicht** an dieser Welle; sie brauchen je einen eigenen Renderer, nicht diese Kombination.
@@ -95,7 +95,7 @@ die welle-07 mit der konditionalen Emission (`archLayered`) schon einmal aufgel�
 ## 6. Out-of-Scope für diese Welle
 
 - **Weitere Sprachen** (`python`, `kotlin`, `java`, `csharp` aus
-  [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) — je ein eigener
+  [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)) — je ein eigener
   Renderer, je ein eigener Zuschnitt.
 - **Weitere Architekturen** über `flat`/`hexslice` hinaus — „kein spekulatives Layout" gilt
   unverändert.
@@ -106,4 +106,4 @@ die welle-07 mit der konditionalen Emission (`archLayered`) schon einmal aufgel�
 
 ## 7. Closure-Notiz
 
-Geschlossen. Was gelernt wurde, steht in [welle-08-results.md](done/welle-08-results.md) — geliefert, was funktionierte, was anders lief, die vier Steering-Loop-Einträge und die Verifikations-Belege.
+Geschlossen. Was gelernt wurde, steht in [welle-08-results.md](welle-08-results.md) — geliefert, was funktionierte, was anders lief, die vier Steering-Loop-Einträge und die Verifikations-Belege.

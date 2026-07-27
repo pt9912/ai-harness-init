@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-08-cpp-hexslice](../welle-08-cpp-hexslice.md).
+**Welle:** [welle-08-cpp-hexslice](welle-08-cpp-hexslice.md).
 
 **Bezug:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) (die Arch-Achse
 komponiert `lang × arch`; „weitere Sprachen folgen sprach-agnostisch über je einen Renderer"),
@@ -82,7 +82,7 @@ Messungen und Belege und stehen jetzt dort, wo sie hingehören (§3 und §6). --
 
 ## 4. Trigger
 
-**`open` → `in-progress`:** die Trigger der [welle-08](../welle-08-cpp-hexslice.md) sind erfüllt
+**`open` → `in-progress`:** die Trigger der [welle-08](welle-08-cpp-hexslice.md) sind erfüllt
 (welle-07 in `done/`, a-check-C++-Fähigkeit gemessen, keine konkurrierende aktive Welle). Dieser Slice
 ist der **erste** der Welle und braucht keinen Vorgänger.
 
@@ -116,7 +116,7 @@ Move-Commit, Link-Reconciliation im Folge-Commit); Closure-Notiz mit Steering-Lo
   **Variante B** wäre, alles in **einen** Slice zu ziehen. Dann entfällt slice-054 — und mit ihm
   die Welle: nach [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
   Frage 1/2 wäre `cpp × hexslice` kein Bündel mehr und hätte kein Closure-Kriterium jenseits des
-  einen DoD. Das ist keine Formalie: [welle-08](../welle-08-cpp-hexslice.md) und die Roadmap
+  einen DoD. Das ist keine Formalie: [welle-08](welle-08-cpp-hexslice.md) und die Roadmap
   wären zurückzunehmen.
 - **Ein grüner Build belegt nicht, dass die Schichten übersetzt werden.** Die arch-invariante
   `CMakeLists.txt` erfasst heute nur `src/main.cpp`; eine Schicht-Datei, die keine
