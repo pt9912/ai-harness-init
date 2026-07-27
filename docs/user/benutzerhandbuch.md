@@ -1,7 +1,7 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Handbuch-Version:** 1.8
-**Software-Stand:** `v0.1.1` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64), seit `v0.1.0`. Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat` oder `hexslice`; bei `hexslice` kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen); `hexslice` liefert derzeit nur der Go-Renderer.
+**Handbuch-Version:** 1.9
+**Software-Stand:** `v0.1.1` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64), seit `v0.1.0`. Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat` oder `hexslice`; bei `hexslice` kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen), beide auch mit `hexslice`.
 **Stand:** 2026-07-27
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
@@ -284,7 +284,7 @@ internal/hexagon/domain/example/greeting.go:8: core-impurity: Kern importiert ap
 
 **Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports`). Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft.
 
-**Grenzen:** `--arch hexslice` liefert derzeit nur der Go-Renderer. `add-lang cpp <pfad> --arch hexslice` endet bewusst mit Exit 2 statt still ein Grundgerüst ohne Schichten anzulegen. Eine unbekannte Architektur endet ebenfalls mit Exit 2 und nennt die verfügbaren Werte.
+**Grenzen:** `--arch hexslice` liefert für **beide** Zielsprachen. Eine Sprache, deren Renderer die gewählte Architektur nicht kennt, endet mit Exit 2 statt still ein Grundgerüst ohne Schichten anzulegen; eine unbekannte Architektur ebenso, mit Nennung der verfügbaren Werte.
 
 ### Das aufgesetzte Repository prüfen
 
@@ -553,6 +553,7 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 
 | Handbuch-Version | Stand | Änderung |
 |---|---|---|
+| 1.9 | 2026-07-27 | `--arch hexslice` liefert jetzt auch der **C++**-Renderer: `add-lang cpp <pfad> --arch hexslice` legt ein geschichtetes Modul an, statt wie bis dahin mit Exit 2 abzulehnen. Der Kopf und der Abschnitt „Eine Bauform wählen" sagen das jetzt. Der Satz fiel bewusst **nach** den Sensoren, nicht mit dem Renderer: erst als der Voll-E2E-Smoke belegt hatte, dass ein verbotener Schicht-Import das Architektur-Gate rot färbt und ein Fehler in einer Schicht-Datei den Build, beschreibt die Doku die Fähigkeit. |
 | 1.8 | 2026-07-27 | Drei Aussagen korrigiert, die beschrieben, was das Werkzeug **nicht** tut. (1) „arbeitet in **einem** Schritt" — bis 1.7 stand das im Bedienkonzept, obwohl der Bootstrap seit 1.1 **phasiert** ist (Init sprach-agnostisch, Sprachmodul per `add-lang`); `--lang` beim Init ist die Kurzform für beide Schritte. (2) „zieht ein neueres Regelwerk nach" — an **vier** Stellen im Handbuch und einer im `README.md`. Der Re-Lauf frischt auf den Stand auf, den das **Programm mitbringt**; die Kurs-Version ist darin gepinnt, ein neuerer Stand kommt mit einem neueren Programm oder bewusst über `COURSE_TAG`. (3) Neuer Windows-Hinweis, symmetrisch zum macOS-Quarantäne-Hinweis: die Programme sind **nicht signiert**, der erste Start kann deshalb mit einer Warnung unterbrochen werden. Alle drei fand ein Mensch beim Lesen, kein Sensor. |
 | 1.7 | 2026-07-26 | Regel, wo Versions-Aussagen hingehören, als Kasten über dieser Tabelle verankert — sie stand bis dahin nur in einer Commit-Message. Zwei Folgen davon: der Rückblick „(frühere Versionen kannten das)" im Re-Lauf-Abschnitt ist hierher gewandert (gemeint war der Wegfall von `--force` und Kollisions-Abbruch), und Weg B benennt jetzt, dass er den **geklonten Entwicklungsstand** baut, nicht die veröffentlichte Version. |
 | 1.6 | 2026-07-26 | `make artifact DEST=<ordner>` legt den Zielordner jetzt selbst an. Bis einschließlich `v0.1.0` brach der Befehl mit `invalid output path: directory … does not exist` ab, wenn der Ordner fehlte — obwohl die Anleitung genau diesen Aufruf vorschreibt (von einem Nutzer gemeldet). Der Hinweis im Installations-Abschnitt sagt das jetzt; die Versions-Abgrenzung steht hier statt im Fließtext. |

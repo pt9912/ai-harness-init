@@ -23,12 +23,15 @@ tmpbin="$(mktemp -d)"
 tmprepo="$(mktemp -d)"
 tmprepo_doc="$(mktemp -d)"
 tmprepo_hex="$(mktemp -d)"
-cleanup() { rm -rf "$tmpbin" "$tmprepo" "$tmprepo_doc" "$tmprepo_hex"; }
+tmprepo_cpphex="$(mktemp -d)"
+cleanup() { rm -rf "$tmpbin" "$tmprepo" "$tmprepo_doc" "$tmprepo_hex" "$tmprepo_cpphex"; }
 trap cleanup EXIT
 chmod 755 "$tmprepo_doc"
 # Das Root-Modul-Ziel (slice-046) wird von a-check als read-only Mount gelesen — wie die
 # anderen Ziele braucht es 0755 (ein echtes Adopter-Repo hat das).
 chmod 755 "$tmprepo_hex"
+# Auch das cpp-Root-Ziel (slice-054) wird von a-check read-only gemountet.
+chmod 755 "$tmprepo_cpphex"
 # mktemp -d liefert 0700; der d-check-Container laeuft als Nicht-Root und kann den
 # 0700-Mount nicht traversieren. Ein echtes Adopter-Git-Repo hat 0755.
 chmod 755 "$tmprepo"
@@ -484,6 +487,31 @@ fi
 echo "full-smoke: C++-Lint-Zaehne belegt (bugprone-Verstoss in der Domain-Schicht faerbt den Lint-Gate rot, danach zurueckgenommen):"
 grep -F -- 'bugprone-branch-clone' <<<"$cpplint_out" | sed -n '1,2s/^/full-smoke:   /p'
 
+# ZAEHNE, Teil 3 (slice-054) — "das ARCH-GATE sieht die Schichten": Build und Lint sagen
+# nichts ueber die Schicht-RICHTUNG. Ein verbotener domain -> adapters Include muss das
+# emittierte a-check-Gate roetten, und zwar MIT Richtungs-Befund: ein Include kann auch
+# den Compiler roeten (fehlende Datei, Zyklus) — dann waere der Zahn rot aus falschem
+# Grund. Dieselbe Form, die welle-07 fuer Go etabliert hat.
+cpparch_layer="$tmprepo_doc/apps/cpphex/src/hexagon/domain/example/greeting.hpp"
+cp "$cpparch_layer" "$cpparch_layer.orig"
+# Der Include steht modul-root-relativ — nur diese Form loest a-check auf (slice-053).
+sed -i '1i #include "src/adapters/outbound/notify/stdout.hpp"' "$cpparch_layer"
+cpparch_rc=0
+cpparch_out="$( make -C "$tmprepo_doc" a-check-apps-cpphex 2>&1 )" || cpparch_rc=$?
+mv "$cpparch_layer.orig" "$cpparch_layer"
+if [ "$cpparch_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — das emittierte cpp-Arch-Gate bleibt bei einem VERBOTENEN Import gruen (zahnloses Gate, AGENTS.md §3.6/LH-QA-01)." >&2
+	printf '%s\n' "$cpparch_out" >&2
+	exit 1
+fi
+if ! grep -qE 'core-impurity|wrong-direction' <<<"$cpparch_out"; then
+	echo "full-smoke: FEHLER — cpp-Arch-Gate rot, aber ohne Richtungs-Befund (rot aus falschem Grund? slice-054). Ausgabe:" >&2
+	printf '%s\n' "$cpparch_out" >&2
+	exit 1
+fi
+echo "full-smoke: C++-Arch-Gate-Zaehne belegt (verbotener Domain->Adapter-Include faerbt a-check rot, danach zurueckgenommen):"
+grep -E 'core-impurity|wrong-direction' <<<"$cpparch_out" | sed -n '1,2s/^/full-smoke:   /p'
+
 # slice-046, ROOT-Modul: der Init-One-Shot `--lang go --arch hexslice` verortet das Modul
 # am Repo-Root — das Arch-Gate mountet dann das GANZE Ziel, samt der vendored Baseline.
 # Genau hier schlug der 0700-Modus des <tag>-Verzeichnisses zu (a-check laeuft als
@@ -523,6 +551,33 @@ if [ "$dryrun_rc" -ne 0 ]; then
 fi
 if ! grep -qF -- ':/src:ro' <<<"$dryrun_out"; then
 	echo "full-smoke: FEHLER — das Root-Arch-Gate haengt nicht in make gates (GATE_CHECKS-Verdrahtung, slice-046)." >&2
+	exit 1
+fi
+
+# slice-054 (Review-F-5 aus slice-053): der Root-One-Shot fuer C++. Am Repo-Root ist
+# CMAKE_SOURCE_DIR der REPO-Root und nicht ein Modul-Verzeichnis — die modul-root-relativen
+# Schicht-Includes muessen sich also gegen einen anderen Basis-Pfad aufloesen als im
+# Mono-Repo-Fall. Der Pfad war plausibel korrekt und ungeprueft — dieser Block prueft ihn.
+echo "full-smoke: Root-Modul-Bootstrap (--lang cpp --arch hexslice) in ein fuenftes tmp-Repo (slice-054) ..."
+( cd "$tmprepo_cpphex" && "$tmpbin/ai-harness-init" --lang cpp --arch hexslice --name full-smoke-cpphex )
+git init -q "$tmprepo_cpphex"
+for rel in .a-check.yml a-check.mk harness/mk/arch-cpp.mk src/hexagon/domain/example/greeting.hpp src/main.cpp; do
+	if [ ! -e "$tmprepo_cpphex/$rel" ]; then
+		echo "full-smoke: FEHLER — cpp-Root-Modul (--arch hexslice) ohne $rel (slice-054)." >&2
+		exit 1
+	fi
+done
+cpproot_rc=0
+cpproot_out="$( make -j -Otarget -C "$tmprepo_cpphex" gates 2>&1 )" || cpproot_rc=$?
+printf '%s\n' "$cpproot_out"
+if [ "$cpproot_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — make gates am cpp-Root-Modul ist NICHT Exit 0 (Include-Pfad am Root? Schicht-Config falsch verortet? slice-054)." >&2
+	exit 1
+fi
+# Das Arch-Gate muss im Lauf WIRKLICH vorgekommen sein — der Mount ist der Beleg, nicht
+# das blosse Wort a-check (das steht auch in Kommentaren und Dateinamen).
+if ! grep -qF -- ':/src:ro' <<<"$cpproot_out"; then
+	echo "full-smoke: FEHLER — am cpp-Root-Modul lief das Arch-Gate nicht mit (GATE_CHECKS-Verdrahtung, slice-054)." >&2
 	exit 1
 fi
 # Review F-1 / Verifier R-1, BEHAVIORAL: mit gesetztem A_CHECK_IMAGE (dem dokumentierten

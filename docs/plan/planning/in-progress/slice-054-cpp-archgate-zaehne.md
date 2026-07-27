@@ -26,21 +26,21 @@ die Nutzer-Doku, dass `hexslice` nicht mehr nur der Go-Renderer liefert.
 
 ## 2. Definition of Done
 
-- [ ] **(1) Das cpp-Arch-Gate ist rot gesehen.** `make full-smoke` schmuggelt einen verbotenen
+- [x] **(1) Das cpp-Arch-Gate ist rot gesehen.** `make full-smoke` schmuggelt einen verbotenen
   `domain → adapters`-Include in das gebootstrappte cpp-hexSlice-Modul, fährt dessen Arch-Gate und
   verlangt **Exit ≠ 0 mit `core-impurity`/`wrong-direction`** — danach zurückgenommen. Dieselbe
   Zahn-Form, die welle-07 für Go etabliert hat; slice-053 hat Build und Lint belegt, **nicht** das
   Arch-Gate.
-- [ ] **(2) Der Root-One-Shot ist belegt** (Review-F-5 aus slice-053): `--lang cpp --arch hexslice`
+- [x] **(2) Der Root-One-Shot ist belegt** (Review-F-5 aus slice-053): `--lang cpp --arch hexslice`
   am Repo-Root — `CMAKE_SOURCE_DIR` ist dort der Repo-Root, nicht ein Modul-Verzeichnis. Belegt
   wird, dass `make gates` im Ziel grün ist **und** das Arch-Gate real mitläuft.
-- [ ] **(3) Die Doku sagt, was gilt.** „`hexslice` liefert derzeit nur der Go-Renderer" fällt in
+- [x] **(3) Die Doku sagt, was gilt.** „`hexslice` liefert derzeit nur der Go-Renderer" fällt in
   [Handbuch](../../../user/benutzerhandbuch.md)-Kopf und [`README.md`](../../../../README.md);
   Handbuch-Version + §11-Zeile. **Erst jetzt** — vorher hätte die Doku eine Fähigkeit beworben,
   deren Zusage noch keinen rot gesehenen Sensor hat.
-- [ ] `make gates` grün, `make mutate` ohne Befund, `make full-smoke` grün.
-- [ ] Doku-Update siehe (3) — kein weiterer öffentlicher Vertrag berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] `make gates` grün, `make mutate` ohne Befund, `make full-smoke` grün.
+- [x] Doku-Update siehe (3) — kein weiterer öffentlicher Vertrag berührt.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -106,7 +106,39 @@ Wird *nach* Abschluss ergänzt. Inhalt:
 - Folge-Slices: welche neuen open/-Einträge?
 -->
 
-<!-- Erst nach Abschluss füllen. -->
+**Was funktioniert hat.** Das emittierte C++-Arch-Gate ist **rot gesehen** — und aus dem richtigen
+Grund: der `full-smoke` prüft den Befundtext, nicht nur den Exit-Code
+(`greeting.hpp:1: core-impurity: Kern importiert src/adapters/outbound/notify/stdout.hpp`), danach
+zurückgenommen. Der Root-One-Shot ist belegt (fünftes tmp-Repo, alle Artefakte, `make gates` grün,
+Arch-Gate-Mount im Lauf) und löst damit Review-F-5 aus slice-053 ein. Erst danach fiel die
+Doku-Aussage. Sensoren auf dem Endstand: `make gates` Exit 0 (d-check 208/0, comment-claims 31/0),
+`make mutate` **92 ok / 0**, `make full-smoke` Exit 0.
+
+**Was anders lief als geplant.** Der Plan verlangte in §3 zu prüfen, ob ein Mutations-Fall die
+cpp-eigene `adapters → ports`-Kante trägt. Die Messung sagte **nein**: sie hing allein an einem
+Unit-Test, war also nach [`AGENTS.md`](../../../../AGENTS.md) §3.6 unbewacht. Das ist die
+gefährlichste Form von Lücke, weil sie **still** ist — die Kante sieht wie ein Copy-Paste-Überschuss
+aus (Go hat sie bewusst nicht), und wer sie „aufräumt", rötet kein Repo-Gate, macht aber jedes frisch
+gebootstrappte C++-Ziel out-of-the-box rot. Fall **96** schließt das, rot gesehen.
+
+**Steering-Loop-Eintrag: eine sprach-bedingte Abweichung braucht einen Wächter, keinen Kommentar.**
+Wo zwei Renderer dieselbe Struktur mit **unterschiedlichen** Regeln abbilden, ist die Abweichung
+per Konstruktion verdächtig — sie sieht in jedem Review wie ein Fehler aus. Genau dann trägt nur
+ein Mutations-Fall die Begründung: er macht aus „das ist Absicht" eine Aussage, die fällt, wenn
+jemand sie aufhebt. Der Kommentar daneben erklärt das *Warum*; bewachen kann er es nicht (die
+Lehre aus slice-055, hier zum ersten Mal auf eine **inhaltliche** Abweichung angewandt).
+
+**Zweiter Eintrag, geschenkt vom Vortag:** das `comment-claims`-Gate aus slice-055 hat in diesem
+Slice seinen ersten Fremd-Treffer gelandet — auf einem Kommentar, den derselbe Autor kurz nach dem
+Gate schrieb („…hier wird er **belegt**" ohne Sensor-Nennung). Ein Sensor, der binnen einer Stunde
+seinen Erbauer fängt, ist besser belegt als jede Begründung im Slice-Plan.
+
+**Folge-Slices.** Keine neuen `open/`-Einträge aus dem Inhalt. Ein Vorgang ist **benannt und
+entschieden** (Nutzer, 2026-07-27): `make mutate` läuft über 15 Minuten — 92 Fälle sequenziell,
+jeder zahlt **beide** Sensoren (bats **und** vollen `go test`-Build), obwohl 60 Fälle einen Go-Test
+und 32 einen anderen Sensor erwarten; dazu fehlt dem Go-Build ein Kompilat-Cache. Der Umbau kommt
+als eigener Slice **nach** der Welle-Closure — nicht vorher, weil er genau das Werkzeug beträfe,
+das die Closure-Belege liefert.
 
 ## 8. Sub-Area-Modus-Begründung
 
