@@ -50,12 +50,31 @@ erzwingt —, kippt die Entscheidung.
 **Genau zwei Festlegungen.**
 
 **Festlegung 1 — emittiert wird die gelebte Familien-Konvention, nicht das Gate-Gerüst.**
-`--arch hexagonal` erzeugt `internal/hexagon/core/**`, `internal/hexagon/port/**`,
-`internal/adapter/driven/**` mit Composition Root `cmd/**`; die emittierte `.a-check.yml` führt die
-Kanten `adapters→ports`, `ports→core` **und `adapters→core`**. Begründung: ein Adopter soll ein
-Layout bekommen, das in dieser Werkzeug-Familie **real gebaut und real geprüft** wird — nicht das
-Minimalbeispiel der Werkzeug-Doku. Die Kante `adapters→core` ist Teil der Festlegung, weil Adapter
-Domänentypen abbilden; sie sieht wie ein Überschuss aus und braucht deshalb einen eigenen Wächter.
+`--arch hexagonal` erzeugt
+
+| Rolle | Verzeichnis | im Arch-Gate |
+|---|---|---|
+| Kern | `internal/hexagon/core/**` | Schicht `core` |
+| Ports | `internal/hexagon/port/**` | Schicht `ports` |
+| getriebene Adapter | `internal/adapter/driven/**` | Schicht `adapters` |
+| **treibende Seite** | **`internal/adapter/driving/cli/**`** | **Composition Root** (von den Schichtregeln befreit) |
+| Einstiegspunkt | `cmd/**` | **Composition Root** |
+
+Die emittierte `.a-check.yml` führt die Kanten `adapters→ports`, `ports→core` **und
+`adapters→core`** sowie `composition_root: ["cmd/**", "internal/adapter/driving/cli/**"]`.
+
+Begründung: ein Adopter soll ein Layout bekommen, das in dieser Werkzeug-Familie **real gebaut und
+real geprüft** wird — nicht das Minimalbeispiel der Werkzeug-Doku. Die Kante `adapters→core` ist
+Teil der Festlegung, weil Adapter Domänentypen abbilden; sie sieht wie ein Überschuss aus und
+braucht deshalb einen eigenen Wächter.
+
+**Zur treibenden Seite** (ergänzt in Runde 2, nachdem der Proposed-Review sie als Lücke fand):
+Beide Referenz-Repos haben eine, an **verschiedenen** Orten — `internal/cli` beim einen,
+`internal/adapter/driving/cli` beim anderen —, und **beide behandeln sie als Composition Root**.
+Die Familie ist hier also nicht einheitlich; gewählt wird `internal/adapter/driving/cli`, weil es
+die Ports-und-Adapter-Sprache konsequent durchhält (*driving* und *driven* als Paar) und den
+Adapter-Begriff nicht auf halbem Weg verlässt. Verworfen: `internal/cli` — kürzer, aber es
+verlässt das Vokabular genau dort, wo die Architektur ihren Namen hat.
 
 **Festlegung 2 — `hexagonal` und `hexslice` sind getrennte Layouts, nicht zwei Strenge-Grade.**
 Sie teilen die Idee (Kern innen, Adapter außen), aber **nicht die Verzeichnisnamen**: `core` gegen
@@ -92,6 +111,14 @@ Was wird leichter, was schwerer.
 - **Negativ:** die Abweichung vom `--print-config`-Gerüst ist erklärungsbedürftig — wer beides
   nebeneinander legt, sieht unterschiedliche Pfade. Der Generator trägt zwei Rollen-Sätze; die
   Menge der Arch-Gate-Configs wächst weiter mit **Sprache × Architektur** (der Renderer nicht).
+- **Negativ, und der Preis der Familien-Treue:** die treibende Seite ist **Composition Root** und
+  damit von den Schichtregeln **befreit**. Ein treibender Adapter darf dort am Port vorbei direkt
+  in den Kern greifen, ohne dass das Gate etwas meldet. Bei `hexslice` ist das anders — dort ist
+  der Inbound-Adapter eine echte Schicht mit der Kante `adapters→app`. Wir übernehmen die
+  schwächere Prüfung bewusst, weil beide Referenzen es so halten und der Composition Root
+  konstruktionsbedingt alles verdrahten darf; wer mehr Strenge will, wählt `hexslice`. Diese
+  Asymmetrie zwischen den beiden Layouts ist eine **Eigenschaft**, kein Versehen — sie gehört in
+  die Nutzer-Doku, sonst liest sie sich als Inkonsistenz.
 - **Folgepflicht 1 (blockierend für die Umsetzung):** die Geschichtet-Erkennung ist heute an
   HexSlice-Namen verdrahtet (`archLayered` prüft `roleDomain`; der Kopplungs-Wächter prüft
   `hexagon/domain/`). Sie wird auf eine **strukturelle** Bedingung gehoben, sonst entsteht ein
@@ -102,6 +129,9 @@ Was wird leichter, was schwerer.
 - **Folgepflicht 3:** die zweite Sprache (C++) erbt die Achse, **nicht** die Kanten-Menge — dort
   erfüllt ein Adapter seinen Port durch Vererbung und braucht zusätzlich `adapters→ports` (in
   slice-053 gemessen). Eigener Zuschnitt.
+- **Folgepflicht 4:** die emittierte `.a-check.yml` nennt in ihrem Kopf-Kommentar, **warum** die
+  Pfade vom `--print-config`-Gerüst abweichen. Der Adopter liest zuerst die Config; ohne den Satz
+  hält er die Abweichung für einen Werkzeug-Fehler.
 
 ## Fitness Function (falls maschinell prüfbar)
 
@@ -123,7 +153,9 @@ niederschlägt: hier die konkrete Regel benennen. Beispiel:
 - Wenn das Arch-Gate seine Standardform **erzwingt** (statt sie vorzuschlagen) — dann kippt die
   Annahme, auf der Festlegung 1 steht.
 - Wenn ein Repo der Familie das Layout ändert — die Referenz ist die gelebte Praxis, nicht ein
-  eingefrorener Snapshot.
+  eingefrorener Snapshot. **Ehrlich eingeordnet:** diesen Trigger feuert **kein Sensor**. Die
+  Referenz-Repos liegen außerhalb dieses Repos; kein Gate und kein Nachtlauf sieht sie. Er lebt
+  rein im *inferential-feedforward*-Quadranten und wirkt nur, wenn ihn jemand liest.
 - Wenn eine **vierte** Architektur hinzukommt und sich zeigt, dass drei getrennte Rollen-Sätze den
   Kompositions-Kern verbiegen — dann ist Option B erneut zu prüfen, diesmal mit Messung statt
   Vermutung.
@@ -133,6 +165,7 @@ niederschlägt: hier die konkrete Regel benennen. Beispiel:
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-07-27 | Proposed | `docs/plan/planning/open/slice-058-hexagonal-go.md` §3a (Plan-Review F-2 verlangte die Entscheidung) |
+| 2026-07-27 | Überarbeitet (Runde 2), weiter Proposed | Proposed-Review `docs/reviews/2026-07-27-adr-0010-proposed-review.md`: F-1 (treibende Seite fehlte, Familie uneinheitlich) und F-2 (`composition_root` zu eng) aufgelöst, F-4 (Trigger ohne Sensor) eingeordnet, F-5 als Folgepflicht 4 ergänzt |
 
 <!--
 Nach Accepted: NICHT mehr inhaltlich überschreiben (Hard Rule aus
