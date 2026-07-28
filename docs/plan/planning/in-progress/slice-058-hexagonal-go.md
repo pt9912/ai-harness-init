@@ -211,7 +211,7 @@ Verifikation je selbst gefahren: `make gates` Exit 0 (d-check 224/0, comment-cla
   (`if false` an der Schleifenbedingung) ließ die Schleifenvariable ungenutzt → Compile-Fehler →
   `make mutate` meldete „rot, aber die Erwartung fällt nicht — falscher Grund". Der Sensor hat
   seinen eigenen Defekt gefangen, nicht ich.
-- **Der CR kam zu spät.** `LH-FA-07` beschrieb das Gate layout-spezifisch; das fiel erst im
+- **Der CR kam zu spät.** [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) beschrieb das Gate layout-spezifisch; das fiel erst im
   Review auf (F-2). Der CR 0.18.0 liegt damit **nach** dem `open → in-progress`-Move, während
   [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
   Setzung 2 ihn davor verlangt — die Abweichung steht in der Historie-Zeile selbst.
@@ -240,7 +240,7 @@ Verifikation je selbst gefahren: `make gates` Exit 0 (d-check 224/0, comment-cla
    **Sensor-Lücke, ehrlich benannt:** `make comment-claims` deckt Kommentar-Behauptungen im
    Code, **nicht** die `#`-Prosa in `test/mutations/` — diese Klasse hat heute keinen Sensor.
 3. **Wenn ein Slice eine Fähigkeit verdoppelt, ist die bindende Anforderung auf „Klasse statt
-   Instanz" zu prüfen.** `LH-FA-07` nannte `--arch hexslice` namentlich; mit dem zweiten Layout
+   Instanz" zu prüfen.** [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) nannte `--arch hexslice` namentlich; mit dem zweiten Layout
    trat der Vertrag vom Verhalten weg. Dieselbe Konstellation lag bei slice-053 (zweite Sprache)
    vor und fiel dort **nicht** auf — die Klasse ist also älter als dieser Slice.
 4. **Restrisiko, benannt statt geglättet (Verifikations-A-1):** „`flat` und `hexslice` bleiben
