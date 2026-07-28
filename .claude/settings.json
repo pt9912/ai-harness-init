@@ -11,6 +11,28 @@
                 ]
             }
         ],
+        "PostToolUse": [
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "bash \"$CLAUDE_PROJECT_DIR\"/harness/tools/span-emit.sh"
+                    }
+                ]
+            }
+        ],
+        "PostToolUseFailure": [
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "bash \"$CLAUDE_PROJECT_DIR\"/harness/tools/span-emit.sh"
+                    }
+                ]
+            }
+        ],
         "Stop": [
             {
                 "hooks": [

@@ -814,6 +814,53 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Adopter danach besitzt. Neu zu bewerten, sobald ein Adopter belegt, dass ein strenger
   Default ihn mehr kostet als eine Zeile — dann ist das Fehlerbild falsch modelliert.
 
+### MR-018 — Span-Schema der Telemetrie-Erfassung
+
+- **Datum:** 2026-07-28
+- **Geltungsbereich:** die Spans, die `harness/tools/span-emit.sh` je Tool-Call in den
+  gitignorierten Zustands-Bereich schreibt. Umsetzung von
+  [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) Folgepflicht 1: die
+  **Feldtabelle** gehört hierher und nicht in die ab *Accepted* immutable ADR — sie wächst mit
+  jedem Feld, das seine Incident-Frage nachweist.
+- **Das Schema ist GESCHLOSSEN.** Erfasst wird, was hier steht; jedes andere Feld einer künftigen
+  Payload wird **nicht** still mitgeschrieben. Wer eines aufnimmt, trägt es hier ein — mit seiner
+  Incident-Frage, sonst gar nicht (*„Ein Attribut ohne Incident-Frage fliegt raus"*, Modul 15).
+
+| Feld | Pflicht | Incident-Frage |
+|---|---|---|
+| `seq` | Pflicht | *Fehlt ein Span?* — je Strom monoton steigend, damit der **Leser** eine Lücke sieht |
+| `ts` | Pflicht | *Wann geschah es?* |
+| `event` | Pflicht | *Erfolg oder Fehlschlag?* (Nach- bzw. Fehlschlag-Ereignis) |
+| `tool` | Pflicht | *Welches Werkzeug lief?* |
+| `tool_use_id` | Pflicht | *Welche Ereignisse gehören zu einem Aufruf?* |
+| `session`, `agent` | Pflicht | *Welcher Lauf war es?* — zusammen bilden sie den **Strom** |
+| `agent_type` | Optional | *Welche Art Lauf?* — **nicht** die Harness-Rolle, s. Sammelposten unten |
+| `slice` | Pflicht | *Auf wessen Rechnung lief der Zugriff?* — aus dem Lifecycle-Verzeichnis, Liste (kein Slice ⇒ leer und als leer erkennbar) |
+| `requirement` | Pflicht | *Gegen welche Anforderung?* — aus der `Bezug:`-Zeile der Slices, Liste |
+| `status` | Pflicht | *Ging es gut?* |
+| `permission_mode` | Optional | *Unter welcher Berechtigungs-Lage?* |
+| `transcript` | Optional | *Wo stehen Token- und Cache-Zähler?* — Brücke für die Auswertung |
+| `path` | Optional | *Was wurde wohin geschrieben/gelesen?* — nur bei namentlich gelisteten Datei-Werkzeugen |
+| `bytes`, `sha256_16` | Optional | *Hat sich etwas geändert?* — aus dem **Dateisystem**, nie aus der Payload |
+| `program`, `argc` | Optional | *Welches Programm lief?* — erstes Token und Argument-Anzahl, nie die Kommandozeile |
+
+- **Zwei erklärte Abweichungen vom Modul-15-Pflicht-Minimum** (die ADR verlangt sie zu benennen,
+  nicht wegzulassen):
+  1. **Cache-Status steht nicht im Span.** Er liegt im Transkript des Agenten-Werkzeugs, nicht in
+     der Hook-Payload; ihn je Tool-Call nachzuschlagen kostete einen Dateizugriff pro Aufruf.
+     Der Span trägt stattdessen `transcript` als **Zeiger**, die Auflösung macht die Auswertung
+     (slice-060). Das ist eine Abweichung und keine Erfüllung: ist das Transkript weg, ist die
+     Frage unbeantwortbar.
+  2. **`agent_type` ist nicht die Harness-Rolle.** Bei Review- und Verify-Läufen steht dort der
+     Subagent-Typ (`general-purpose`), nicht *Reviewer* bzw. *Verifier*. Die Rollen-Achse ist
+     damit ein **Sammelposten**; ihn aufzuteilen verlangt eine Konvention (rollen-benannte
+     Agenten-Typen oder Übergabe beim Start) und ist eine Prozess-, keine Skript-Entscheidung.
+- **Bewacht:** `test/span-emit.bats` (Klemme, stumme Ausgabe, kein fremder Inhalt, fail-closed
+  Default, Modus, Strom-Trennung, Kopplung an `.gitignore`) sowie
+  `test/mutations/107-span-klemme-entfernt.sh` und `test/mutations/108-span-schema-offen.sh`.
+- **Auflösungs-Trigger:** permanent, solange Spans erfasst werden. Die Tabelle ändert sich mit
+  jedem neuen Feld — jede Änderung ist ein Eintrag hier, kein Nebeneffekt im Skript.
+
 ## Modus-Deklaration pro Sub-Area
 
 | Sub-Area | Modus | Begründung | Graduation |
