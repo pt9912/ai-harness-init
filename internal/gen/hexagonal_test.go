@@ -291,6 +291,13 @@ func genArch(t *testing.T, lang, arch string) string {
 
 // layeredArchsFor liefert die schichten-tragenden Architekturen von lang — abgeleitet aus
 // dem realen Generator (eine Kombination mit Arch-Gate-Config), nicht aus einer Liste.
+//
+// GRENZE, benannt statt verschwiegen (Review F-5): das Kriterium ist die vorhandene
+// Config, nicht der gerenderte Baum. Ein geschichtetes Layout OHNE Config faellt hier
+// still aus dem Disjunktheits-Vergleich — es hat dann aber gar kein Arch-Gate, und genau
+// diesen Zustand faengt TestArchGateConfig_CoversEveryLayeredCombo (strukturell, aus dem
+// Baum). Die Luecke ist also gedeckt, nur von einem anderen Waechter; der Vergleich hier
+// braucht die Globs, und die kommen aus der Config.
 func layeredArchsFor(t *testing.T, lang string) []string {
 	t.Helper()
 	var out []string
