@@ -46,13 +46,17 @@ Ablageort ist dieselbe Stelle wie beim Gate-Stempel.
 - [ ] **(1) Das Span-Schema steht, bevor der erste Span geschrieben wird — jedes Feld mit
   seiner Incident-Frage.** Modul 15 führt **zwei** Listen, und beide gelten:
   *Mindestfelder eines Tool-Call-Spans* — `tool.name`, `tool.arguments` (redigiert),
-  `tool.result.status` **plus Korrelations-IDs zu Slice/PR/Agent-Rolle`; und das
+  `tool.result.status` **plus Korrelations-IDs zu Slice/PR/Agent-Rolle**; und das
   *Audit-Span-Schema* mit dem **Pflicht-Minimum: Slice-ID, Agent-Rolle, Cache-Status,
   `requirement.id`**. Jedes Feld wird als *Pflicht* oder *Optional* markiert und trägt seine
-  Incident-Frage (*„Ein Attribut ohne Incident-Frage fliegt raus"*). **Jede Abweichung vom
-  Pflicht-Minimum wird begründet** — insbesondere `requirement.id` und `Cache-Status`, für die
-  heute keine offensichtliche Quelle im Hook existiert: sie werden **nicht stillschweigend
-  weggelassen**, sondern entweder erschlossen oder als begründete Abweichung dokumentiert.
+  Incident-Frage (*„Ein Attribut ohne Incident-Frage fliegt raus"*). **Ableiten schlägt
+  deklarieren**
+  ([`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 1.4):
+  `slice.id` kommt aus dem Lifecycle-Verzeichnis, `requirement.id` aus der `**Bezug:**`-Zeile
+  des Slice — **samt Randfällen** (kein Slice in `in-progress/`: Feld leer und als leer
+  erkennbar; mehrere `LH-*`: alle). Offen bleibt genau der **Cache-Status**; ob ein Span mit
+  `transcript_path` den Mindestsatz erfüllt oder von ihm abweicht, entscheidet dieser Slice mit
+  Beleg — nicht per Vorab-Freistellung.
 - [ ] **(2) Der Hook schreibt real, die erfasste MENGE ist benannt, und der Gate-Nachweis bleibt
   heil.** An einem echten Lauf belegt: Spans liegen vor, Felder vollständig, Korrelations-IDs
   gefüllt. **Die Abdeckung wird ausgesprochen, nicht suggeriert:** der heutige Hook ist mit
@@ -62,13 +66,14 @@ Ablageort ist dieselbe Stelle wie beim Gate-Stempel.
   Ablageort ist `.harness/state/` — **gitignored, wie der Gate-Stempel**: ein Span im getrackten
   Baum ginge in den `working-tree-hash` ein und der Stop-Hook blockierte sich selbst (die
   slice-031-Lehre, hier vorweggenommen statt nachher gelernt).
-- [ ] **(3) Zwei Zähne, rot gesehen.** Ein Span **ohne Pflicht-Feld** und ein Span, der ein
-  Secret durchlässt — je als `test/mutations/`-Fall hinterlegt
-  ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Der zweite ist der wichtigere und muss als
-  **Allowlist** gebaut sein: nur bekannte, unkritische Felder gehen durch, alles andere wird
-  redigiert. Eine Denylist prüft nur die Muster, die der Implementierung schon eingefallen sind,
-  und kann unter keiner **realen** Lücke rot werden — ein Audit-Log, das Secrets sammelt, ist
-  schlimmer als keines.
+- [ ] **(3) Zwei Zähne, rot gesehen.** Ein Span **ohne Pflicht-Feld** und ein Werkzeug, das
+  **nicht** in der Tabelle steht und trotzdem Argumente durchlässt — je als
+  `test/mutations/`-Fall ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Der zweite prüft den
+  **fail-closed Default**: erfasst wird, was im geschlossenen Schema steht, für alles andere nur
+  Name und Status
+  ([`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 2).
+  Werte stehen dabei **abgeleitet** statt roh — Pfad und Länge statt Inhalt, Programm-Token
+  statt Kommandozeile; so wandert kein Byte fremden Inhalts ins Log.
 - [ ] `make gates` grün, `make mutate` ohne Befund.
 - [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -122,11 +127,11 @@ Re-Evaluierungs-Trigger aus [`ADR-0011`](../../adr/0011-telemetrie-erfassung-pol
 | D | Wie wird aus `agent_type` unsere **Rolle**? | Die Payload liefert den Subagent-Typ, nicht die Harness-Rolle (s. o.). Zu entscheiden: rollen-benannte Agenten-Typen spawnen, oder die Rolle beim Start mitgeben. Fällt die Zuordnung nicht eindeutig aus, ist der **Sammelposten** zu benennen und aufzuteilen — Modul 15 verlangt genau diese Entscheidung, nicht ihr Weglassen. |
 | E | Was kostet der Hook pro Tool-Call? | Ein Audit, das den Lauf spürbar bremst, wird abgeschaltet — dann ist es kein Sensor mehr. Größenordnung dieser Sitzung: **189 Tool-Calls** im Haupt-Kontext, bei Pre+Post also ~380 Hook-Starts; bei den Subagenten kommen 49 und 66 Calls dazu. |
 | F | Wie viel kostet die **volle** Abdeckung? | `matcher: ""` erfasst alles — auch `Read`. Ob jeder gelesene Pfad ins Audit gehört, ist eine Schema-Frage (Incident-Frage vorhanden?) und eine Kosten-Frage (Zeile E). Die Abdeckung ist herstellbar; die Auswahl bleibt zu treffen. |
-| G | Woher kommen `requirement.id` und `Cache-Status`? | Beide stehen im Pflicht-Minimum des Audit-Schemas. Für `requirement.id` ist der Slice-Plan die einzige Quelle (§Bezug); der Cache-Status liegt im Transkript, nicht in der Hook-Payload. Wenn eines nicht erschließbar ist, ist das eine **begründete Abweichung** nach Modul 15 — kein stilles Weglassen. |
+| G | Traegt die Ableitung ihre Randfaelle? | `slice.id` aus `in-progress/` — **heute liegt dort kein Slice**, das Feld muss also leer und als leer erkennbar sein statt geraten. `requirement.id` aus der Bezug-Zeile: bis zu vier `LH-*` je Slice, also eine Liste, nicht ein Wert. Offen bleibt der Cache-Status (Transkript statt Payload). |
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `harness/tools/` (neuer Span-Emitter) | neu | Ablage nach [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption) (lokale Tools liegen hier). **Die Mechanik ist offen** — Randbedingung „keine neue Abhängigkeit", Auswahl nach den Messungen A–G, nicht vorab festgelegt |
+| `harness/tools/` (neuer Span-Emitter) | neu | Ablage nach [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption) (lokale Tools liegen hier). **Die Mechanik ist offen** — Randbedingung „nichts, das installiert werden muss" ([`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 4), Auswahl nach den Messungen A–G, nicht vorab festgelegt |
 | `.claude/settings.json` | update | Event(s) und **Matcher** verdrahten (abhängig von Messung A **und F**) |
 | `harness/tools/json-encode.awk` | prüfen, ggf. wiederverwenden | existiert bereits für JSON-**Ausgabe**; ob es auch für die Payload-**Eingabe** trägt, ist Messung A — Encoding und Parsing sind nicht dasselbe Problem |
 | `test/` + `test/mutations/` | neu | die zwei Zähne aus DoD (3) |

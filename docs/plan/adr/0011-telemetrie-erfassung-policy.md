@@ -81,21 +81,23 @@ ist der falsche Ort dafür. Die Policy selbst ist bindend:
    die Werte darin aussehen, regelt Festlegung 2.
 4. **Ableiten schlägt deklarieren.** Ein Pflicht-Feld, das nicht in der Payload steht, ist
    zuerst auf **Ableitbarkeit** zu prüfen, bevor es zur Abweichung erklärt wird — `slice.id`
-   kommt aus dem Lifecycle-Verzeichnis, `requirement.id` aus der `**Bezug:**`-Zeile der
-   Slice-Datei (gemessen: jeder Slice führt seine `LH-*`-IDs maschinenlesbar). **Erst wenn keine
-   Ableitung trägt**, wird begründet dokumentiert statt weggelassen. Offen ist heute genau ein
-   Feld: der **Cache-Status** steht im Transkript, nicht in der Payload; ob ein Span, der den
-   `transcript_path` trägt und die Auflösung dem Auswerter überlässt, den Mindestsatz erfüllt
-   oder von ihm abweicht, entscheidet der umsetzende Slice — mit Beleg, nicht per Vorab-Freistellung.
+   aus dem Lifecycle-Verzeichnis, `requirement.id` aus der `**Bezug:**`-Zeile der Slice-Datei
+   (gemessen: jeder Slice führt seine `LH-*`-IDs maschinenlesbar). **Die Ableitung muss ihre
+   Randfälle mitentscheiden, sonst ist sie keine:** liegt **kein** Slice in `in-progress/` — der
+   Zustand *heute* —, ist das Feld **leer und als leer erkennbar**, nicht geraten; liegen
+   **mehrere** `LH-*`-IDs im Bezug (der Normalfall, bis zu vier), trägt der Span sie **alle**,
+   denn „die eine Anforderung" gibt es nicht. Offen bleibt genau ein Feld: der **Cache-Status**
+   steht im Transkript, nicht in der Payload; ob ein Span, der den `transcript_path` trägt und
+   die Auflösung dem Auswerter überlässt, den Mindestsatz erfüllt oder von ihm abweicht,
+   entscheidet der umsetzende Slice — mit Beleg, nicht per Vorab-Freistellung.
 
 **Warum diese Reihenfolge:** eine deklarierte Abweichung ist **billiger zu schreiben als eine
 Lösung** und deshalb verdächtig. Von den drei Feldern, für die eine frühere Fassung dieser ADR
 sie in Anspruch nahm, löst sich eines durch besseres Erfassen und eines durch eine Ableitung —
 übrig bleibt eines, und das ist eine echte offene Frage.
-4. **Ein nicht erschließbares Pflicht-Feld wird begründet dokumentiert, nicht weggelassen.**
-   Betrifft absehbar `requirement.id` (steht nur im Slice-Plan) und den Cache-Status (steht im
-   Transkript, nicht in der Hook-Payload). Eine stillschweigend verkürzte Feldliste ist die
-   Fehlerklasse, die der welle-09-Plan-Review als HIGH gefunden hat.
+5. **Was auch nach der Ableitung nicht erreichbar ist, wird begründet dokumentiert, nicht
+   weggelassen.** Eine stillschweigend verkürzte Feldliste ist die Fehlerklasse, die der
+   welle-09-Plan-Review als HIGH gefunden hat.
 
 **Festlegung 2 — Argument-Werte werden ABGELEITET erfasst, und die Schärfe ist je Ebene
 verschieden.** „Redigiert" im Sinne von Modul 15 heißt nicht *weggelassen*, sondern *abgeleitet
@@ -103,9 +105,10 @@ statt roh*. Je Werkzeug wird erfasst, was die Incident-Frage beantwortet — nic
 
 | Werkzeug | Incident-Frage | erfasst wird |
 |---|---|---|
-| Schreib-Werkzeuge | *was wurde **wohin** geschrieben?* | **Pfad** + **Fingerabdruck** (Länge, Hash) — **nie** der Inhalt |
+| Schreib-Werkzeuge | *was wurde **wohin** geschrieben?* | **Pfad** + **Länge**; im Repo zusätzlich ein Inhalts-**Hash** |
 | Kommando-Werkzeug | *welches Programm lief?* | **erstes Token** + Argument-Anzahl — nicht die volle Zeile |
 | Lese-Werkzeuge | *worauf wurde zugegriffen?* | Pfad |
+| **jedes andere, auch künftige** | *welches Werkzeug lief, mit welchem Ausgang?* | **nur** Name und Status — **keine** Argumente. Das ist der Default, und er ist fail-closed: ein Werkzeug, das hier nicht steht, gibt nichts preis. Betrifft heute u. a. das Agenten-Werkzeug mit seinem **Freitext-Prompt** — ausgerechnet das, auf dessen Subagenten-Hooks die Rollen-Achse beruht |
 
 Damit wandert **kein Byte fremden Inhalts** ins Log: Massen-Abfluss über die Telemetrie ist
 konstruktiv ausgeschlossen, nicht per Regel verboten.
@@ -113,10 +116,18 @@ konstruktiv ausgeschlossen, nicht per Regel verboten.
 **Das Bedrohungsmodell, benannt statt behauptet** — denn ohne Angabe, *vor wem*, ist „sensibel"
 eine Stimmung: die Span-Datei liegt gitignored auf derselben Maschine wie die Quellen, die sie
 beschreibt. **Wer sie lesen kann, kann auch die Dateien lesen** — Pfade verraten ihm nichts
-Neues. Gemessen: sie ist nie committet, die einzige Stelle, die den Baum kopiert
-(`harness/tools/mutate.sh`), schließt den Zustands-Bereich ausdrücklich aus, und ein
-Mutations-Fall bewacht genau diese Ausnahme. Es bleiben **drei** reale Gründe, Inhalte dennoch
-nicht zu erfassen:
+Neues. Gemessen: sie ist nie committet, und die einzige Stelle, die den Baum kopiert
+(`harness/tools/mutate.sh`), schließt den Zustands-Bereich ausdrücklich aus.
+
+**Diese Ausnahme ist allerdings UNBEWACHT** — und das gehört hierher, weil das Bedrohungsmodell
+darauf steht: eine frühere Fassung dieses Absatzes behauptete, ein Mutations-Fall halte sie fest.
+Das war falsch (`test/mutations/74` benutzt den Ausschluss nur als *sed-Anker* und bewacht, dass
+`.git` **mit**kopiert wird). Wer den Ausschluss entfernt, kopiert Spans in die Mutations-Kopie,
+und **kein Sensor meldet es** — genau die Klasse, gegen die
+[`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) steht.
+Folgepflicht 5 unten schließt das; bis dahin ist es eine benannte Lücke, keine Zusage.
+
+Es bleiben **drei** reale Gründe, Inhalte dennoch nicht zu erfassen:
 
 1. **Persistenz über Rotation hinaus** — ein rotiertes Secret ist aus der Quelle raus und stünde
    im Log weiter.
@@ -129,7 +140,11 @@ nicht zu erfassen:
 
 **Daraus die ebenen-abhängige Schärfe:** im **Repo** dürfen Pfade und Kommando-Tokens roh
 stehen — dort ist die Vertrauensgrenze bekannt und identisch mit der des Arbeitsverzeichnisses.
-Für alles **Emittierte** gilt die Tabelle oben unverkürzt. *(Eine frühere Fassung begründete
+Für alles **Emittierte** gilt die Tabelle unverkürzt **und ohne Inhalts-Hash**: ein Hash ist
+gegenüber einem Verdacht ein **Bestätigungs-Orakel** („war es dieser Wert?"), und Grund 1
+(Persistenz nach Rotation) trifft ihn genauso wie den Klartext. Wo wir die Vertrauensgrenze
+nicht kennen, bleibt die Länge — sie beantwortet *„hat sich etwas geändert"*, ohne etwas zu
+bestätigen. *(Eine frühere Fassung begründete
 dieselbe Tabelle mit einer leeren Allowlist gegen Secrets und einer Warnung vor Pfaden — die
 Allowlist war ein Sicherheits-Instrument ohne benannten Gegner, die Pfad-Warnung eine importierte
 Floskel. Beides ist ersetzt.)*
@@ -148,14 +163,15 @@ Kosmetik sind:
 - **Lebensdauer: die Sitzung — und der Emitter räumt beim Anlegen auf, nicht beim Beenden.**
   Jede Sitzung schreibt in ihre **eigene, sitzungs-benannte** Datei; **beim ersten Span einer
   Sitzung** entfernt der Emitter ältere Bestände. Damit gibt es keinen Aufräum-Zeitpunkt, der
-  bei einem Absturz ausfallen könnte, und keinen Dienst, der laufen müsste. **Er löscht dabei
-  niemals die Datei einer *laufenden* fremden Sitzung** (Runde 3): parallele Läufe sind in
-  diesem Repo normal — der Aufräum-Schritt muss an der Sitzungs-Kennung erkennen, was er
-  anfassen darf, sonst reißt er einer nebenherlaufenden Sitzung den Bestand weg, und die
-  entstehende Lücke wäre für den Lücken-Detektor gerade **nicht** sichtbar (es fehlt dann die
-  ganze Datei, nicht eine Nummer). *(Runde 2 hatte zu Recht bemängelt, dass „je Sitzung eine
-  Datei" ohne Löschenden ein **wachsender** Bestand ist.)* Wer Spans aufheben will, kopiert sie
-  bewusst heraus; dann sind es seine Artefakte, nicht unsere.
+  bei einem Absturz ausfallen könnte, und keinen Dienst, der laufen müsste. **Er fasst dabei
+  ausschließlich seine EIGENE Datei an** — fremde Sitzungen bleiben unberührt. Der Grund ist,
+  dass „läuft die noch?" **nicht entscheidbar** ist: eine Sitzungs-Kennung ist kein
+  Lebendigkeits-Signal, und Runde 3 hat zu Recht darauf gezeigt. Ein weggeräumter fremder
+  Bestand wäre zudem die **unsichtbarste** Lücke: es fehlte die ganze Datei, nicht eine Nummer.
+  Der Preis ist ausgesprochen: alte Bestände bleiben liegen, bis jemand sie **ausdrücklich**
+  entfernt (ein `make`-Ziel, kein Automatismus) — das ist der wachsende Bestand, den Runde 2
+  bemängelt hat, jetzt aber als **benannte** Entscheidung statt als Versehen. Wer Spans aufheben
+  will, kopiert sie bewusst heraus; dann sind es seine Artefakte, nicht unsere.
 - **Kein Beleg-Status.** Ein Span ist kein Review-Gegenstand und keine Quelle für eine Zusage im
   Sinne von [`AGENTS.md`](../../../AGENTS.md) §3.6. Was belegt werden muss, wird gemessen — nicht
   aus dem Log gelesen.
@@ -203,7 +219,8 @@ Fehlgriffe zu glätten.)*
 ADR.** Ob ein Ziel-Repo überhaupt einen Span-Emitter bekommt, ist eine Vertragsänderung und
 gehört slice-062 samt CR
 ([`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)).
-**Wird emittiert, gelten die Festlegungen 1–4 und 6 unverändert** — leere Start-Allowlist, Ablage
+**Wird emittiert, gelten die Festlegungen 1–4 und 6 unverändert** — geschlossenes Schema mit
+fail-closed Default für unbekannte Werkzeuge, abgeleitete Werte **ohne** Inhalts-Hash, Ablage
 außerhalb des versionierten Baums mit restriktivem Modus, keine Host-Sprachlaufzeit, fail-open im
 Betrieb. Das nimmt dem CR nichts vorweg: er entscheidet das **Ob**, nicht das **Wie**. Eine
 laxere Fassung für fremde Repos wäre die Umkehrung unserer eigenen Begründung — und nach
@@ -220,8 +237,12 @@ Audit-Skript unbrauchbar), und bei jedem Fehler gilt *Span verloren, Lauf läuft
 Ereignis-Wahl kann sie nicht herstellen** (Runde 3). Der Grund ist gemessen, nicht vermutet:
 
 - Hooks desselben Ereignisses laufen **parallel**, und ihre Ausgabe ist bei Exit 0 ein
-  **Entscheidungs-Kanal**; wie das Werkzeug widersprüchliche Antworten aggregiert, ist nicht
-  dokumentiert.
+  **Entscheidungs-Kanal**. Wie das Werkzeug widersprüchliche Antworten aggregiert, ist
+  dokumentiert — und es macht die Sache **schlimmer**, nicht besser: ein `block` **eines**
+  Hooks setzt sich durch (ODER-Verknüpfung, in der Rangfolge `deny > ask > defer > allow`). Ein
+  Telemetrie-Hook, der versehentlich eine Entscheidung ausgibt, wird also nicht überstimmt,
+  sondern **gewinnt**. *(Die Runde-4-Fassung führte hier „nicht dokumentiert" als Messung — an
+  der Quelle widerlegt; die korrekte Semantik trägt das Argument stärker.)*
 - Es gibt **kein entscheidungsfreies Ereignis**, auf das man ausweichen könnte: auch die
   Nach-Ereignisse nehmen ein Top-Level-`decision` entgegen, und `Stop`/`SubagentStop` sind
   blockierbar.
@@ -264,7 +285,7 @@ und der Verlust wird **sichtbar gemacht**, nicht verschluckt (Folgepflicht 4).
 | A — **nichts tun** (Status quo) | kein Aufwand, keine neue Sicherheitsfläche; die Transkripte des Werkzeugs existieren ohnehin | Modul 15 bleibt in allen vier Blöcken unumgesetzt; die Transkripte tragen **keine** Korrelations-IDs (`agent.role` steht dort als `general-purpose`, `slice.id` gar nicht — gemessen), also ist weder Token-Attribution je Rolle noch Slice-Bezug möglich; die Nicht-Umsetzung bliebe undiskutiert |
 | B — **OTel-Stack** (SDK, Collector, Backend, Dashboard) | Standard-Format, Werkzeug-Ökosystem, beliebig auswertbar | verletzt [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (neue Laufzeit-Abhängigkeit) und wäre im emittierten Ziel gar nicht tragbar; ein Backend ohne Betreiber ist Infrastruktur ohne Abnehmer — genau das, was Modul 15 mit *„ein Attribut ohne Incident-Frage fliegt raus"* ausschließt |
 | **C — lokale Span-Erfassung mit Policy, Werkzeug offen (gewählt)** | nutzt die **bereits verdrahtete** Hook-Mechanik; nichts zu installieren; die Sicherheitsfrage ist vorab entschieden statt nachträglich gehärtet; die Werkzeug-Wahl bleibt der Messung überlassen | die Auswertung ist Eigenbau (kein Ökosystem); **C erzeugt die Sicherheitsfläche, die A und E gar nicht erst haben** — jede Erweiterung der Allowlist ist eine Einzelfall-Abwägung, und diese Pflege endet nie; die Abdeckung hängt an dem, was das Werkzeug an Ereignissen hergibt |
-| E — **Korrelations-Hook ohne Payload**: der Span trägt nur IDs (`tool_use_id`, Tool-Name, Slice, Agent, Status), die Argumente bleiben im Transkript | löst die Sicherheitsfläche **fast vollständig** auf — was nie erfasst wird, kann nicht leaken; minimaler Hook, minimale Kosten | die Incident-Frage *„was wurde wohin geschrieben?"* ist dann nur über das Transkript beantwortbar, also über eine Quelle außerhalb des Repos — und `tool.arguments` (redigiert) steht im Modul-15-Mindestsatz, das Weglassen wäre eine begründungspflichtige Abweichung. **Wichtig:** E ist der **Grenzfall von C** — mit leerer Allowlist *ist* C genau E. Festlegung 1.3 macht E damit zum **Startzustand**, aus dem heraus jedes Feld sich einzeln rechtfertigen muss |
+| E — **Korrelations-Hook ohne Payload**: der Span trägt nur IDs (`tool_use_id`, Tool-Name, Slice, Agent, Status), die Argumente bleiben im Transkript | löst die Sicherheitsfläche **fast vollständig** auf — was nie erfasst wird, kann nicht leaken; minimaler Hook, minimale Kosten | die Incident-Frage *„was wurde wohin geschrieben?"* ist dann nur über das Transkript beantwortbar, also über eine Quelle außerhalb des Repos — und `tool.arguments` (redigiert) steht im Modul-15-Mindestsatz, das Weglassen wäre eine begründungspflichtige Abweichung. **Wichtig:** E ist der **Grenzfall von C** — C fällt für jedes Werkzeug, das nicht in der Tabelle von Festlegung 2 steht, auf genau E zurück (Name und Status, keine Argumente). E ist damit nicht die verworfene Alternative, sondern Cs **Default**; entschieden ist, für welche Werkzeuge wir davon abweichen und wie weit |
 | D — **nur Transkripte auswerten**, gar nicht erfassen | null Erfassungs-Aufwand, keine neue Sicherheitsfläche, die Daten liegen schon vor | die Datenquelle liegt **außerhalb** des Repos, gehört uns nicht und kann sich mit dem Werkzeug ändern; ohne Korrelations-IDs bleibt die Rollen- und Slice-Zuordnung Rekonstruktion statt Messung (real erlebt: die Rollen-Zuordnung dieser Sitzung stammte aus dem Gedächtnis, nicht aus den Daten) |
 
 ## Konsequenzen
@@ -294,6 +315,10 @@ und der Verlust wird **sichtbar gemacht**, nicht verschluckt (Folgepflicht 4).
   diesem `MR`-Eintrag, nicht in einem Kommentar.
 - **Folgepflicht 3:** die Nutzer-Doku bleibt unberührt, **solange nicht emittiert wird** — Spans
   sind bis dahin ein Dogfood-Werkzeug ohne Adopter-Wirkung.
+- **Folgepflicht 5:** der **Zustands-Ausschluss der Mutations-Kopie bekommt seinen Wächter**
+  (`test/mutations/`). Er trägt heute das Bedrohungsmodell aus Festlegung 2 und ist unbewacht;
+  eine frühere Fassung dieser ADR behauptete das Gegenteil. Solange der Fall fehlt, ist die
+  Aussage „Spans verlassen die Maschine nicht" eine **Beobachtung**, keine Zusage.
 - **Folgepflicht 4 — der Verlust wird beim LESER sichtbar, nicht beim Schreiber.** Fail-open
   heißt „der Lauf geht weiter", nicht „niemand erfährt davon" — sonst entsteht ein Log, das
   lückenhaft ist und vollständig aussieht. Ein vom eigenen Timeout abgebrochener Emitter kann
@@ -303,9 +328,14 @@ und der Verlust wird **sichtbar gemacht**, nicht verschluckt (Folgepflicht 4).
   steigende Folgenummer**, sodass eine Lücke **im Bestand** erkennbar ist — von dem, der ihn
   liest, ohne Zutun dessen, der ihn schreibt. **Die Nummer wird als Erstes vergeben**, vor jeder
   anderen Arbeit des Emitters; stirbt er danach, fehlt der Eintrag und die Lücke ist sichtbar.
-  **Ehrlich zur Grenze** (Runde 3): stirbt er *davor*, wurde nie eine Nummer vergeben — dann
-  entsteht keine Lücke, und dieser Fall bleibt unsichtbar. Er ist damit **nicht** gedeckt, und
-  das steht hier, statt die Folgenummer als Vollschutz auszugeben. Der zugehörige Zahn steht
+  **Der Nummernkreis gehört zu (Sitzung, Agent), nicht zur Sitzung allein** (Runde 4):
+  Subagenten teilen laut Quelle die Sitzungs-Kennung und feuern dieselben Hooks — ein
+  sitzungs-weiter Zähler vergäbe bei parallelen Läufen **dieselbe Nummer zweimal**, und eine
+  Doppelvergabe erzeugt keine Lücke, sieht also aus wie Vollständigkeit. Je Agent ein eigener
+  Strom, je Strom ein eigener Zähler.
+  **Ehrlich zu den Grenzen:** stirbt der Emitter *vor* der Vergabe, wurde nie eine Nummer
+  vergeben — dann entsteht keine Lücke, und dieser Fall bleibt unsichtbar. Er ist **nicht**
+  gedeckt, und das steht hier, statt die Folgenummer als Vollschutz auszugeben. Der zugehörige Zahn steht
   unten in der Fitness Function; ohne ihn wäre auch diese Folgepflicht nur eine Absicht.
 
 ## Fitness Function (falls maschinell prüfbar)
@@ -317,7 +347,10 @@ und der Verlust wird **sichtbar gemacht**, nicht verschluckt (Folgepflicht 4).
 | `test/mutations/` | **Der Ablageort wird auf einen nicht-ignorierten Pfad gezogen** — der Wächter muss rot werden | `make mutate` |
 | `test/mutations/` | **Ein Span wird unterschlagen** (der Emitter überspringt einen Aufruf) — die Lücke in der Folgenummer muss auffallen; ohne diesen Fall wäre Folgepflicht 4 eine Absicht | `make mutate` |
 | bats (`make test`) | Der Emitter setzt den restriktiven Modus **selbst**: die erzeugte Datei ist `0600`, unabhängig von den Rechten des Verzeichnisses | `make test` |
-| bats (`make test`) | **Fail-open, soweit hier prüfbar:** ein Emitter mit Exit ≠ 0 und einer, der auf stdout schreibt, verändern das Ergebnis des aufrufenden Skripts nicht. **Die Wirkung im Werkzeug** (blockt ein Exit-Code den Tool-Call? was tut sein Timeout?) prüft dieser Sensor **nicht** — sie gehört zur Messung im Slice und ist dort zu belegen, nicht hier zu behaupten | `make test` |
+| bats (`make test`) | **Die Klemme greift:** ein Emitter, dessen *innere* Arbeit fehlschlägt (erzwungener Fehler; getrennt: ein `awk`-Fatalfehler, der für sich Exit 2 liefert), endet trotzdem mit **Exit 0** | `make test` |
+| bats (`make test`) | **Der Emitter schweigt auf dem Entscheidungs-Kanal:** unter allen geprüften Fehlerfällen ist sein **stdout leer** — auch das seiner Kindprozesse | `make test` |
+| `test/mutations/` | **Die Klemme wird entfernt** (der Emitter reicht seinen inneren Exit-Code durch) — der Wächter muss rot werden; ohne diesen Fall wäre Festlegung 6 eine Absicht | `make mutate` |
+| `test/mutations/` | **Der Zustands-Ausschluss der Mutations-Kopie wird entfernt** — der Wächter muss rot werden (heute unbewacht, s. Festlegung 2 / Folgepflicht 5) | `make mutate` |
 
 **Was hier bewusst NICHT steht, und warum** (Proposed-Review-Befund, Runde 1): die Zeile
 *„ein Lauf mit Spans lässt den Working-Tree-Hash unverändert"* ist **gestrichen**. Sie war unter
@@ -355,10 +388,13 @@ dieselbe Tautologie.
   Die Zahl ist eine Setzung, keine Messung: sie liegt unter der Wahrnehmungsschwelle eines
   interaktiven Laufs und weit unter dem Timeout aus Festlegung 6. Wer sie ändert, ändert sie
   **hier** — nicht im Skript.
-- **Wenn die Allowlist nach dem ersten Auswertungs-Slice (060) immer noch leer ist**
-  *(feedforward — aber an ein Ereignis geknüpft, nicht an ein Gefühl)*: dann erfasst das Audit
-  nur IDs und ist faktisch Alternative E. Das ist **kein Fehler**, aber der Anlass, die Wahl
-  zwischen C und E ausdrücklich zu wiederholen, statt sie durch Nichtstun zu treffen.
+- **Wenn nach dem ersten Auswertungs-Slice (060) kein Werkzeug über den Default hinaus erfasst
+  wird** *(feedforward — an ein Ereignis geknüpft, nicht an ein Gefühl)*: dann ist das Audit
+  faktisch Alternative E. Das ist **kein Fehler**, aber der Anlass, die Wahl zwischen C und E
+  ausdrücklich zu wiederholen, statt sie durch Nichtstun zu treffen. *(Die Runde-4-Fassung
+  knüpfte den Trigger an eine „leere Allowlist" — die es nach Festlegung 1.3 nicht mehr gibt;
+  er hätte also nie auslösen können. Dieselbe Tautologie-Klasse wie die in Runde 1 gestrichene
+  Fitness Function.)*
 
 ## Geschichte
 
