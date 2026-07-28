@@ -51,6 +51,13 @@ als *Trace aus Spans — einen pro Tool-Call*. Diese Spans entstehen bei uns heu
 der `PreToolUse`-Guard sieht jeden Bash-Aufruf samt Argumenten, entscheidet und **vergisst ihn
 sofort**. Genau dort setzt die Welle an — die Mechanik ist verdrahtet, es fehlt die Senke.
 
+Dass die Oberfläche das hergibt, ist **gemessen, nicht angenommen** (2026-07-28, Werkzeug-Doku
+<https://code.claude.com/docs/de/hooks>): Ergebnis- und Fehlschlag-Event, eine gemeinsame
+Aufruf-ID über beide, `transcript_path` als Brücke zu den Token-Zählern, Hooks feuern **auch in
+Subagenten**, und ein leerer Matcher trifft **alle** Tools. Die Quelle ist dabei **nicht
+gepinnt** und wird von keinem Gate geprüft — sie belegt die Aussagen, sie ersetzt sie nicht;
+die Fakten stehen in slice-059 §3 ausgeschrieben.
+
 Die Welle **faltet den Roadmap-Kandidaten *Regeln ohne Feedback-Quadrant schließen* hinein**,
 statt eine zweite Wahrheit danebenzustellen: dessen Achse (1) — die Gate-Tabellen in
 [`AGENTS.md`](../../../AGENTS.md) §4 und [`harness/README.md`](../../../harness/README.md)

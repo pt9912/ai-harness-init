@@ -30,6 +30,19 @@ verdrahtet und wird sogar ins Ziel-Repo emittiert. Der `PreToolUse`-Guard **sieh
 Bash-Aufruf samt Argumenten, entscheidet — und **behält nichts** (`grep -E "log|tee|>>"` im Guard
 ist leer). Es fehlt also nicht die Erfassungsstelle, sondern die Senke.
 
+**Was die Hook-Oberfläche hergibt** (an der Werkzeug-Doku gemessen, 2026-07-28,
+<https://code.claude.com/docs/de/hooks>): ein Nach-Event mit dem Tool-Ergebnis und ein eigenes
+Fehlschlag-Event; eine gemeinsame `tool_use_id` über Vor- und Nach-Event (die Span-Identität);
+`transcript_path` als Brücke zu den Token-/Cache-Zählern; und — entscheidend für die
+Rollen-Achse — Hooks feuern **auch in Subagenten**, mit `agent_id`/`agent_type` in der Payload.
+Ein leerer Matcher trifft **alle** Tools; die heutige Bash-Enge ist also eine
+Registrierungs-Entscheidung, keine Plattform-Grenze.
+
+*Zur Quelle:* sie ist **Herkunft, nicht Inhalt** — die Aussagen stehen hier ausgeschrieben,
+damit diese ADR lesbar bleibt, wenn die Seite sich ändert. Anders als die Kurs-Links ist sie
+**nicht gepinnt**, und kein Gate prüft sie (`docs-check` läuft netzlos). Genau deshalb steht ihr
+Wandel unten als Re-Evaluierungs-Trigger.
+
 **Warum eine ADR und nicht nur ein Slice-Plan.** Der Plan-Review zu welle-09 hat es benannt: hier
 entstehen eine **neue Artefakt-Klasse** (Spans), ein **neuer Datenfluss** (Agentenlauf →
 Dateisystem) und eine **Sicherheitsfläche** (Tool-Argumente können Secrets tragen). Diese
@@ -110,10 +123,18 @@ für fremde Repos wäre die Umkehrung unserer eigenen Begründung.
 - **Negativ:** die Auswertung ist Eigenbau; wer OTel-Werkzeuge erwartet, findet keine. Die
   Allowlist kostet laufende Pflege — jedes neue Feld, das erfasst werden soll, muss ausdrücklich
   freigegeben werden (das ist der Preis von fail-closed, und er ist gewollt).
-- **Negativ, ehrlich benannt:** die Abdeckung ist womöglich **kleiner** als „jeder Tool-Call".
-  Der heute registrierte Matcher (`Bash`) sähe keinen `Write`/`Edit`-Aufruf — also gerade die
-  Schreibzugriffe, nach denen die Incident-Frage zu `slice.id` fragt. Wird die Abdeckung nicht
-  vollständig, ist die **Zusage** einzuschränken, nicht die Lücke zu verschweigen.
+- **Zur Abdeckung — am 2026-07-28 geklärt, und zwar in die gute Richtung:** die erste Fassung
+  dieser ADR hielt für möglich, dass die Erfassung **kleiner** ausfällt als „jeder Tool-Call",
+  weil der registrierte Matcher (`Bash`) keine `Write`/`Edit`-Aufrufe sieht — gerade die
+  Schreibzugriffe, nach denen die Incident-Frage zu `slice.id` fragt. Die Doku-Messung zeigt: ein
+  leerer Matcher trifft **alle** Tools. Die Enge ist unsere Registrierung, keine Grenze des
+  Werkzeugs. **Die Regel bleibt trotzdem stehen**, weil sie allgemeiner gilt als dieser Fall:
+  wird eine Abdeckung *doch* unvollständig, ist die **Zusage** einzuschränken, nicht die Lücke zu
+  verschweigen.
+- **Negativ, und jetzt der schärfere Punkt:** volle Abdeckung heißt, der Hook sieht auch
+  `Write`/`Edit`-Payloads — also **Datei-Inhalte**. Die Erfassungsfläche wächst damit genau um
+  das, was am ehesten Secrets trägt. Festlegung 2 (Allowlist) ist deshalb nicht Beiwerk, sondern
+  die Bedingung, unter der volle Abdeckung überhaupt vertretbar ist.
 - **Folgepflicht 1:** das Span-Schema (Feld · Pflicht/Optional · Incident-Frage) wird als
   `MR-<NNN>` in [`harness/conventions.md`](../../../harness/conventions.md) geführt — es ist eine
   Strukturregel, kein Implementierungsdetail, und der nächste Leser muss es ohne Code finden.
@@ -134,9 +155,16 @@ für fremde Repos wäre die Umkehrung unserer eigenen Begründung.
 ## Re-Evaluierungs-Trigger
 
 - **Wenn das Agenten-Werkzeug seine Hook-Oberfläche ändert** (neue Events, andere Payload) —
-  dann ist die Abdeckung neu zu messen und die Zusage aus Festlegung 1 nachzuziehen.
-- **Wenn Hooks in Subagenten nicht feuern** und die Rollen-Zuordnung dauerhaft am Transkript
-  hängt — dann ist Option D für den Rollen-Teil erneut zu prüfen, diesmal mit Messung.
+  dann ist die Abdeckung neu zu messen und die Zusage aus Festlegung 1 nachzuziehen. Die Quelle
+  (<https://code.claude.com/docs/de/hooks>) ist **nicht gepinnt** und wird von keinem Gate
+  geprüft; dieser Trigger lebt daher im *inferential-feedforward*-Quadranten und wirkt nur, wenn
+  ihn jemand liest — dieselbe ehrliche Einordnung wie beim Referenz-Repo-Trigger in
+  [ADR-0010](0010-hexagonal-arch-realisierung.md).
+- **Wenn `agent_type` nicht auf unsere Rollen abbildbar bleibt.** Die Payload liefert den
+  *Subagent-Typ* (bei unseren Review-/Verify-Läufen `general-purpose`), nicht die Harness-Rolle.
+  Solange wir keine rollen-benannten Agenten-Typen spawnen, ist die Rollen-Achse ein
+  **Sammelposten** — und Modul 15 verlangt, ihn als solchen zu benennen und begründet
+  aufzuteilen, statt eine Zuordnung zu behaupten.
 - **Wenn Spans emittiert werden sollen** (slice-062): Festlegung 5 wird dort eingelöst, und die
   Portabilität von Festlegung 2/3 ist am realen Ziel zu belegen, nicht zu behaupten.
 - **Wenn dieses Repo selbst Agentenläufe betreibt** (statt in einem fremden Werkzeug zu laufen) —

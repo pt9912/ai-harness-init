@@ -82,16 +82,43 @@ Slice. Ablageort ist dieselbe Stelle wie beim Gate-Stempel.
 | 4 | Der gitignored Ablageort **existiert bereits** | `git check-ignore -v .harness/state/gates-passed.diffsha` → `.gitignore:5`. **Achtung, zwei Ebenen:** im Dogfood steht die Regel in der Repo-`.gitignore`; die **emittierte** Fassung bringt eine eigene `.harness/.gitignore` mit (slice-031). Wer das verwechselt, plant gegen die falsche Datei |
 | 5 | Die Hooks werden **ins Ziel emittiert** | `internal/emit/templates/enforce/settings.json` — identische Struktur (Dogfood und Ziel teilen die Mechanik) |
 
-**Vor dem ersten Code zu messen (der Slice beginnt mit Messen, nicht mit Schreiben):**
+**Bereits beantwortet — an der Werkzeug-Doku gemessen am 2026-07-28**
+(<https://code.claude.com/docs/de/hooks>). **Die Quelle ist Herkunft, nicht Inhalt:** die
+Aussagen stehen unten ausgeschrieben, damit der Plan lesbar bleibt, wenn die Seite sich
+ändert. Sie ist — anders als die Kurs-Links — **nicht gepinnt** und wird von keinem Gate
+geprüft (`docs-check` läuft netzlos, d-checks `external`-Modul ist aus): ein toter Link
+rottet hier still. Ändert das Werkzeug seine Hook-Oberfläche, ist das der
+Re-Evaluierungs-Trigger aus [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md).
+
+| # | Frage | Antwort (Quelle: Hook-Doku) |
+|---|---|---|
+| A | Welche Events, welche Payload-Felder? | **`PostToolUse` liefert `tool_response`**, **`PostToolUseFailure` liefert `error`** — `tool.result.status` ist also erfüllbar, in beiden Ausgängen. Jedes Tool-Event trägt zusätzlich `tool_use_id` (dieselbe ID über Pre-/Post-Event: **die Span-Identität**), `session_id`, `prompt_id`, `transcript_path`, `cwd`, `permission_mode`. |
+| B | Feuern Hooks **in Subagenten**? | **Ja** — *„When a subagent calls a tool, tool events such as `PreToolUse` and `PostToolUse` fire the same configured hooks as in the main conversation"*, und die Payload trägt `agent_id` + `agent_type`. Die Rückführungs-Kante nach `next` (Rollen-Achse hängt am Transkript) ist damit **abgewendet**. |
+| F | Welche Tool-Calls sieht der Hook? | **`"matcher": ""` = match all.** Die heutige Bash-Enge ist eine Registrierungs-Entscheidung, keine Plattform-Grenze; die Abdeckung ist herstellbar, die Zusage muss nicht gekürzt werden. |
+
+**Was daraus NEU folgt und im Schnitt zu berücksichtigen ist:**
+
+- **`agent_type` ist nicht unsere Rolle.** Die Payload liefert den *Subagent-Typ* (bei unseren
+  Review-/Verify-Läufen `general-purpose`) — nicht die Harness-Rolle *Reviewer* bzw. *Verifier*.
+  Rollen-Attribution braucht also eine **Konvention**, nicht nur ein Feld: entweder wir spawnen
+  rollen-benannte Agenten-Typen, oder die Rolle wird beim Start mitgegeben. Das ist eine
+  Prozess-Entscheidung, keine Skript-Frage — sie gehört in die `MR`-Fassung des Schemas
+  ([`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Folgepflicht 1).
+- **`transcript_path` in der Payload ist die Brücke zu Block 2–3:** er verbindet den Span mit dem
+  Transkript, in dem Token- und Cache-Zähler stehen. slice-060 braucht damit keine zweite
+  Zuordnungs-Heuristik.
+- **`PermissionDenied` existiert als eigenes Event.** Ein *abgelehnter* Tool-Call ist
+  audit-relevant („was wurde versucht und geblockt?") — der Guard entscheidet das heute und
+  vergisst es. Kandidat für das Schema, mit eigener Incident-Frage.
+
+**Weiterhin offen — vor dem ersten Code zu messen:**
 
 | # | Frage | Warum sie den Schnitt entscheidet |
 |---|---|---|
-| A | Welche Hook-Events kennt das Werkzeug, und welche Felder trägt die Payload? | `PreToolUse` sieht **kein Ergebnis** — für `tool.result.status` braucht es ein Nach-Event. Fehlt es, ist das Pflicht-Minimum nicht erfüllbar und Punkt (1) muss die Abweichung begründen. |
-| B | Feuern Hooks auch **in Subagenten**? | Wenn nein, fehlen genau die Rollen-Läufe (Reviewer, Verifier) — dann ist `agent.role` über Hooks **nicht** erfassbar und die Rollen-Achse hängt am Transkript. Das ist die Rückführungs-Bedingung nach `next`. |
 | C | Woher kommt `slice.id`? | `ls docs/plan/planning/in-progress/slice-*.md` — der Zustand **ist** das Verzeichnis (Modul 5). Eine Quelle, kein Zustandsfile. |
-| D | Woher kommt `agent.role`? | Offen. Kandidaten: der laufende Command/Skill, oder der Transkript-Pfad aus der Payload. **Nicht raten** — messen und, falls nicht ermittelbar, den Sammelposten benennen (Modul 15 verlangt genau diese Entscheidung). |
-| E | Was kostet der Hook pro Tool-Call? | Ein Audit, das den Lauf spürbar bremst, wird abgeschaltet — dann ist es kein Sensor mehr. |
-| F | **Welche Tool-Calls sieht der Hook überhaupt?** | Der bestehende `PreToolUse`-Eintrag hat `"matcher": "Bash"`. `Write`/`Edit` fielen damit heraus — also genau die **Schreibzugriffe**, für die `slice.id` seine Incident-Frage trägt. Zu messen: welche Matcher/Events es gibt und was sie abdecken. Ergebnis entscheidet, ob DoD (2) „alle Tool-Calls" sagen darf oder eine eingeschränkte Menge benennen muss. |
+| D | Wie wird aus `agent_type` unsere **Rolle**? | Die Payload liefert den Subagent-Typ, nicht die Harness-Rolle (s. o.). Zu entscheiden: rollen-benannte Agenten-Typen spawnen, oder die Rolle beim Start mitgeben. Fällt die Zuordnung nicht eindeutig aus, ist der **Sammelposten** zu benennen und aufzuteilen — Modul 15 verlangt genau diese Entscheidung, nicht ihr Weglassen. |
+| E | Was kostet der Hook pro Tool-Call? | Ein Audit, das den Lauf spürbar bremst, wird abgeschaltet — dann ist es kein Sensor mehr. Größenordnung dieser Sitzung: **189 Tool-Calls** im Haupt-Kontext, bei Pre+Post also ~380 Hook-Starts; bei den Subagenten kommen 49 und 66 Calls dazu. |
+| F | Wie viel kostet die **volle** Abdeckung? | `matcher: ""` erfasst alles — auch `Read`. Ob jeder gelesene Pfad ins Audit gehört, ist eine Schema-Frage (Incident-Frage vorhanden?) und eine Kosten-Frage (Zeile E). Die Abdeckung ist herstellbar; die Auswahl bleibt zu treffen. |
 | G | Woher kommen `requirement.id` und `Cache-Status`? | Beide stehen im Pflicht-Minimum des Audit-Schemas. Für `requirement.id` ist der Slice-Plan die einzige Quelle (§Bezug); der Cache-Status liegt im Transkript, nicht in der Hook-Payload. Wenn eines nicht erschließbar ist, ist das eine **begründete Abweichung** nach Modul 15 — kein stilles Weglassen. |
 
 | Datei / Komponente | Änderungs-Art | Begründung |
