@@ -14,8 +14,13 @@ gezeigt, nicht als Treiber.
 
 **[welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)**, geschnitten am 2026-07-28.
 
-**Welle-Ziel:** jeder der vier Regelblöcke von Modul 15 trägt am Ende **entweder einen laufenden
-Sensor oder eine deklarierte Abweichung** mit Auflösungs-Trigger — und nichts dazwischen.
+**Welle-Ziel:** jeder der vier Regelblöcke von Modul 15 trägt am Ende — auf **beiden Ebenen**,
+im Repo (Dogfood) **und** im Tool (was ins Ziel-Repo emittiert wird) — entweder einen laufenden
+Sensor oder eine deklarierte Entscheidung mit Auflösungs-Trigger, und nichts dazwischen. Der
+Closure-Beleg ist eine **4 × 2-Matrix**; eine leere Zelle ist ein offener Trigger. Beide Ebenen
+gehören zusammen, weil das Tool das **vollständige Regelwerk** ins Ziel emittiert: nur die
+Dogfood-Seite zu schließen hieße, ein Repo zu reparieren und die Lücke an jedes andere
+weiterzuliefern.
 
 **Auslöser:** Nutzer-Befund. Modul 15 ist seit `554cade` (2026-07-17) adoptiert, wurde in vier
 Re-Vendor-Läufen mitkopiert und **nie inhaltlich behandelt**; zugleich erklärt

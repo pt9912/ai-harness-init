@@ -13,17 +13,38 @@ Status-Feld. Ob eine flache Welle *aktuell* oder *geplant* ist, sagt die Roadmap
 
 ## 1. Welle-Ziel
 
-**Jeder der vier Regelblöcke von `modul-15-observability.md` trägt am Ende entweder einen
-laufenden Sensor oder eine deklarierte Abweichung mit Auflösungs-Trigger — und nichts
-dazwischen.** „Nichts dazwischen" ist der Kern: der heutige Zustand ist weder Umsetzung noch
-Abweichung, sondern Schweigen.
+**Jeder der vier Regelblöcke von `modul-15-observability.md` trägt am Ende — auf BEIDEN Ebenen —
+entweder einen laufenden Sensor oder eine deklarierte Entscheidung mit Auflösungs-Trigger, und
+nichts dazwischen.** Die beiden Ebenen sind:
 
-Der Anlass ist ein **Nutzer-Befund** (2026-07-28), und er wiegt schwerer als ein einzelnes
-fehlendes Modul: [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) erklärt
-für das gesamte Repo *„keine inhaltlichen Adaptionen ggü. Baseline-Default"*. Modul 15 stellt
-Regeln auf, kein `MR` deklariert eine Abweichung davon, und umgesetzt ist keiner seiner vier
-Blöcke. Damit ist die Nicht-Umsetzung heute eine **nicht deklarierte Abweichung** — genau die
-Klasse, die Modul 7 „permanenter Carveout, der lügt" nennt.
+1. **das Repo** (Dogfood: was hier läuft) und
+2. **das Tool** (was `ai-harness-init` ins Ziel-Repo emittiert).
+
+„Nichts dazwischen" ist der Kern: der heutige Zustand ist auf beiden Ebenen weder Umsetzung noch
+Entscheidung, sondern Schweigen.
+
+**Warum beide Ebenen in dieselbe Welle gehören.** Das Tool emittiert das **vollständige
+Regelwerk** ins Ziel — Modul 15 inklusive. Ein bootstrappedes Repo bekommt also dieselben Regeln
+und dieselbe Leere. Würden wir nur die Dogfood-Seite schließen, reparierten wir **ein** Repo und
+lieferten die Lücke weiter an jedes andere. Die Ebenen haben verschiedene Verträge (unten §3),
+aber es ist eine Frage, und sie hier zu trennen hieße, die zweite Hälfte zu vergessen.
+
+**Zur Begründung — korrigiert gegenüber der ersten Fassung dieses Plans (2026-07-28, gemessen).**
+Die erste Fassung stützte die Welle darauf, dass
+[`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) *„keine inhaltlichen
+Adaptionen"* erkläre und die Nicht-Umsetzung damit eine **nicht deklarierte Abweichung** sei.
+Das war **über-gelesen**: die vendored Vorlage
+(`.harness/baseline/v3.5.2/templates/harness/conventions.template.md`) grenzt dieselbe Aussage
+ausdrücklich ein — *„für Verzeichniskonvention, Lifecycle-Regeln, Carveout-Disziplin,
+ID-Schema"*. Die Baseline behauptet **nirgends**, jede Regel jedes Moduls sei umgesetzt; sie
+behauptet strukturelle Konformität. Unser [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) hat die Aufzählung fallen lassen und daraus
+eine pauschale Aussage gemacht.
+
+Die tragfähige Begründung ist deshalb die schwächere und wahre: **Modul 15 ist adoptiert,
+in keinem Block umgesetzt und nie diskutiert — niemand hat je entschieden, ob das in Ordnung
+ist.** Genau das entscheidet diese Welle. *(Nebenbefund, der eigenständig zählt: unser [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage)
+ist gegenüber der Vorlage eine **Verschärfung**, die als solche nirgends deklariert ist — eine
+Adaption, die behauptet, es gebe keine. Sie gehört in slice-062 mit auf den Tisch.)*
 
 **Der Einstieg ist die Erfassung, nicht die Auswertung.** Modul 15 beschreibt einen Agentenlauf
 als *Trace aus Spans — einen pro Tool-Call*. Diese Spans entstehen bei uns heute **nirgends**:
@@ -53,9 +74,20 @@ Modul-15-Block-4.
 ## 3. Closure-Trigger (Welle schließt)
 
 - Alle Slices dieser Welle in `done/`.
-- **Je Regelblock von Modul 15 ein belegter Zustand** — Sensor *oder* deklarierte Abweichung
-  (`MR-<NNN>` mit Geltungsbereich, Begründung, Auflösungs-Trigger). Der Nachweis ist eine
-  Tabelle in `welle-09-results.md`, Block für Block, mit dem Kommando neben der Aussage.
+- **Je Regelblock UND je Ebene ein belegter Zustand** — die Closure-Tabelle in
+  `welle-09-results.md` ist eine **4 × 2-Matrix** (vier Blöcke × {Repo, Tool}), jede Zelle mit
+  genau einem von drei Werten und dem Kommando daneben:
+
+  | Wert | Bedeutung |
+  |---|---|
+  | **Sensor** | läuft real, mit `test/mutations/`-Fall ([`AGENTS.md`](../../../AGENTS.md) §3.6) |
+  | **deklariert** | bewusste Nicht-Umsetzung als `MR-<NNN>` (Geltungsbereich, Begründung, Auflösungs-Trigger) |
+  | **emittiert / nicht emittiert** | nur Tool-Spalte: die Entscheidung selbst ist der Beleg, nicht ihr Ausgang |
+
+  Eine leere Zelle ist ein offener Closure-Trigger — kein „passt schon".
+- **Die Tool-Spalte braucht ihren eigenen Beleg:** was emittiert wird, ist im frisch
+  gebootstrappten Ziel **out-of-the-box grün** (`make full-smoke`) — die Lehre aus slice-028,
+  die für jede Emission gilt und nicht nur für Gates.
 - `make gates` und `make mutate` grün; jeder neue Wächter hat seinen `test/mutations/`-Fall
   ([`AGENTS.md`](../../../AGENTS.md) §3.6).
 - Carveout-Audit (Modul 7): [`CO-001`](../carveouts/CO-001-bats-shell-lint.md) geprüft, neue
@@ -67,12 +99,14 @@ Modul-15-Block-4.
 Nur der erste Slice ist geschnitten (cp-Disziplin — die übrigen bekommen ihre Datei per `cp`,
 wenn sie an der Reihe sind; ein leeres `open/` ist ehrlicher als eine driftende Vorplanung).
 
-| Slice | Titel | Bezug |
-|---|---|---|
-| slice-059 | **Erfassung**: Spans per Agenten-Hook (Block 1) | [`MR-002`](../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) |
-| slice-060 | **Auswertung**: Token-Bilanz je Rolle + getrennte Cache-Zähler (Blöcke 2–3) | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
-| slice-061 | **Doku-Konsistenz**: behauptete Befehle existieren (Block 4) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| slice-062 | **Bestands-Prüfung**: welche Regelwerk-Abschnitte sind adoptiert, aber unumgesetzt? | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
+| Slice | Ebene | Titel | Bezug |
+|---|---|---|---|
+| slice-059 | Repo | **Erfassung**: Spans per Agenten-Hook (Block 1) | [`MR-002`](../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) |
+| slice-060 | Repo | **Auswertung**: Token-Bilanz je Rolle + getrennte Cache-Zähler (Blöcke 2–3) | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-061 | Repo | **Doku-Konsistenz**: behauptete Befehle existieren (Block 4) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| slice-062 | **Tool** | **Entscheidung**: welche Modul-15-Regeln gehören in den emittierten Harness? (ADR + CR) | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
+| slice-063 | **Tool** | **Emission**: das Entschiedene emittieren, out-of-the-box grün belegt | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
+| slice-064 | beide | **Bestands-Prüfung**: welche Regelwerk-Abschnitte sind adoptiert, aber unumgesetzt? | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 
 **Die Reihenfolge ist die Aussage.** Erst die **Erfassung**, dann die Auswertung: ohne Spans hat
 die Token-Bilanz keine eigene Datenquelle, sondern nur das Transkript des Werkzeugs — das
@@ -86,9 +120,31 @@ Hit-/Miss-Zähler (`cache_read` vs. `cache_creation`, Hit-Rate 96,9 % am 2026-07
 also genau die Trennung, auf der Modul 15 besteht. Das bequeme Argument „kein Gegenstand" ist
 damit ausgeschlossen; offen ist die Zuordnung zur **Rolle**, nicht die Datenlage.
 
-**Zu slice-062:** der Trigger-Befund aus §2 verallgemeinert. Wenn Delta-Prüfung den Bestand nie
-sieht, ist Modul 15 vermutlich nicht der einzige Fall — und niemand weiß es, weil es nie
-jemand geprüft hat. Erst messen, dann entscheiden, ob daraus ein Sensor wird.
+**Warum die Repo-Seite zuerst kommt — und die Tool-Seite nicht bloß „danach".** Das Repo ist der
+Prüfstand: was wir ins Ziel legen, haben wir hier erprobt (dieselbe Linie wie
+[`ADR-0006`](../adr/0006-durchsetzung-commands-tool-als-quelle.md), wo die emittierte
+Durchsetzung aus dem Dogfood abgeleitet wurde). Ein Span-Emitter, den wir ungeprüft emittieren,
+verstößt gegen die eigene Regel „nichts behaupten, was nicht läuft". Die Reihenfolge ist damit
+**Erprobung → Entscheidung → Emission**, nicht „Dogfood jetzt, Ziel irgendwann".
+
+**Zu slice-062 (Tool, Entscheidung):** Was ins Ziel gehört, ist **keine** Implementer-Frage. Es
+berührt den Adopter-Vertrag und damit das Lastenheft — nach
+[`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+bewegt das nur ein **Change Request des Auftraggebers**, in eigenem Commit **vor** dem
+umsetzenden Slice. Zu entscheiden ist mindestens: (a) bekommt ein Ziel-Repo einen Span-Emitter,
+(b) zieht die emittierte `.d-check.yml` (heute `[links, anchors]`) das `targets`-Modul nach,
+(c) welche Nicht-Emission wird begründet statt vergessen. Ein ADR ist wahrscheinlich, weil eine
+neue Artefakt-Klasse mit Sicherheitsfläche (redigierte Tool-Argumente) im Ziel entsteht.
+
+**Zu slice-063 (Tool, Emission):** liefert nur, was 062 entschieden hat — und belegt es dort, wo
+es zählt: `make full-smoke`, out-of-the-box grün im frisch gebootstrappten Ziel. Emittierte
+Artefakte tragen **keine** Quell-Repo-Identität (die Lehre aus slice-031/032/033).
+
+**Zu slice-064:** der Trigger-Befund aus §2 verallgemeinert, und er gilt für **beide** Ebenen.
+Wenn die Delta-Prüfung den Bestand nie sieht, ist Modul 15 vermutlich nicht der einzige Fall —
+und niemand weiß es, weil es nie jemand geprüft hat. Hier gehört auch der Nebenbefund aus §1 hin
+(unser [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) ist gegenüber der Vorlage verschärft, ohne dass es jemand deklariert hat). Erst
+messen, dann entscheiden, ob daraus ein Sensor wird.
 
 ## 5. Abhängigkeiten
 
@@ -107,14 +163,14 @@ jemand geprüft hat. Erst messen, dann entscheiden, ob daraus ein Sensor wird.
   Observability-Stack betreiben* sind zwei verschiedene Dinge, und nur das zweite ist hier
   Overhead. Für die Auswahl gilt Modul 15 selbst: *„Ein Attribut ohne Incident-Frage fliegt
   raus."*
-- **Die emittierte Ebene — aufgeschoben, nicht erledigt.** Die Hooks **werden** ins Ziel-Repo
-  emittiert (`internal/emit/templates/enforce/settings.json`), ein Span-Emitter wäre also
-  emittierbar; und die emittierte `.d-check.yml` führt heute nur `[links, anchors]`. Beides zu
-  ändern heißt, den **Adopter-Vertrag** zu ändern
-  ([`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7)) — mit
-  eigenem Beleg-Bedarf (out-of-the-box grün, Lehre aus slice-028) und eigener Entscheidung. Es
-  gehört in einen Zuschnitt **nach** dieser Welle, nicht als Nebenprodukt der Dogfood-Wartung
-  hinein.
+- **Nicht out-of-scope, sondern ausdrücklich drin: die Tool-Ebene** (slice-062/063). Sie stand in
+  der ersten Fassung dieses Plans unter „aufgeschoben" — auf Nutzer-Entscheidung vom 2026-07-28
+  ist sie Teil der Welle. Was hier dennoch **nicht** dazugehört: den Adopter-Vertrag zu ändern,
+  **ohne** dass ein CR ihn trägt ([`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)) und ohne den `full-smoke`-Beleg.
+- **Die Kurs-Vorlagen selbst.** `conventions.template.md` und die übrige Doc-Chain kommen aus der
+  vendored Baseline; sie gehören dem Kurs, nicht uns. Wenn dort etwas fehlt, ist das ein
+  Upstream-Befund — kein Grund, eine repo-eigene Kopie zu pflegen (die
+  [`MR-008`](../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)-Linie).
 - **Die übrigen Achsen des Roadmap-Kandidaten** (`vcs`/`commits`-Module, Closure-Notiz-Sensor,
   Release-Text-Check, DoD-Punkte-Zähler). Sie bleiben Kandidaten; diese Welle nimmt nur, was
   Modul-15-Konformität wirklich verlangt. Wer mehr hineinzieht, verliert das Closure-Kriterium.

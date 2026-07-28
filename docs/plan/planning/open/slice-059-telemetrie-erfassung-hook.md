@@ -113,11 +113,14 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
   im Kleingedruckten.
 - **Hook-Latenz.** Siehe Messung E. Ein spürbar langsamerer Lauf führt zur Abschaltung, und ein
   abgeschalteter Sensor ist schlechter als ein nie gebauter (er behauptet Abdeckung).
-- **Die emittierte Ebene ist bewusst NICHT Teil dieses Slice** — aber sie ist eine echte Frage,
-  keine erledigte: die Hooks **werden** ins Ziel emittiert
-  (`internal/emit/templates/enforce/settings.json`), ein Span-Emitter wäre also emittierbar. Das
-  ändert den Adopter-Vertrag und braucht seinen eigenen Beleg (out-of-the-box grün, Lehre aus
-  slice-028) — eigener Zuschnitt nach dieser Welle.
+- **Die Tool-Ebene ist nicht Teil dieses Slice, aber Teil dieser Welle** (slice-062 Entscheidung,
+  slice-063 Emission). Dieser Slice ist der **Prüfstand**: die Hooks werden ins Ziel emittiert
+  (`internal/emit/templates/enforce/settings.json`), ein Span-Emitter wäre also emittierbar —
+  aber erst, wenn er hier real gelaufen ist. Wer ihn ungeprüft emittiert, behauptet etwas, das
+  nicht läuft. **Folge für den Zuschnitt hier:** das Span-Skript gehört nach
+  `harness/tools/` und nicht in eine Form, die einen späteren Umzug in die emittierte Ablage
+  (`tools/harness/`, [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption))
+  erschwert — und es trägt **keine** Quell-Repo-Identität (Lehre aus slice-031/032/033).
 - **Kein Carveout absehbar.**
 
 ## 7. Closure-Notiz (nach `done/`)
