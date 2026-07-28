@@ -692,5 +692,3 @@ Entscheidungen den Slice **unausführbar** (R2-1) bzw. **auf einer undokumentier
 Produktiv-Diff; nichts geht an die Implementation. slice-059 bleibt in `open/`. Der Report ersetzt
 keine Verifikation — DoD-Konformität prüft der Verifier separat (Modul 11; anderes Prüf-Artefakt,
 anderer Eingabe-Kontext).
-</content>
-</invoke>

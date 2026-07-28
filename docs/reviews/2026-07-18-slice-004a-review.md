@@ -174,4 +174,3 @@ Einzel-Slice hinaus ein Steering-Signal (Teil-Bootstrap-Vertrag dokumentieren/Cl
 kein Slice-Blocker.
 
 Keine HIGH-Findings; keine Harness-Lüge, kein halluziniertes Gate, keine Hard-Rule-Verletzung.
-</content>

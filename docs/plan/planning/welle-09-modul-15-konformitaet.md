@@ -170,7 +170,7 @@ wandert vor. Das entscheidet der Planner beim Schnitt von 062, nicht dieser Plan
 **ADR-Bedarf — vor slice-059, nicht bei slice-062** (Plan-Review-Befund): Schema, Datenfluss und
 Sicherheitsfläche werden faktisch im **Dogfood-Slice** entschieden, nicht erst bei der Emission.
 Die Entscheidung liegt als [`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.md) vor —
-Status **Proposed**, nach der zweiten Runde. Solange sie nicht *Accepted* ist, bleibt slice-059
+Status **Proposed**, nach der vierten Runde. Solange sie nicht *Accepted* ist, bleibt slice-059
 in `open/` — dieselbe Bedingung, die slice-058 getragen hat.
 
 ## 5. Abhängigkeiten
@@ -186,13 +186,15 @@ in `open/` — dieselbe Bedingung, die slice-058 getragen hat.
 - **Ein OTel-*Stack*** — Collector, Backend, Dashboard, Vendor-SDK. **Nicht** die Erfassung: die
   ist der Kern dieser Welle. Die Unterscheidung ist die Pointe — *Spans erfassen* und *einen
   Observability-Stack betreiben* sind zwei verschiedene Dinge, und nur das zweite ist hier
-  Overhead. **Die Randbedingung ist „keine neue Abhängigkeit", nicht ein bestimmtes Werkzeug**
-  — welche Mechanik sie erfüllt, entscheidet die Messung im jeweiligen Slice, nicht dieser Plan.
-  Die Grenzen sind dabei je Ebene verschieden: im Repo Docker-only
-  ([`ADR-0003`](../adr/0003-go-native-binaries.md)), im Ziel zusätzlich
-  [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (`bash + git +
-  docker`). Für die Feld-Auswahl gilt Modul 15 selbst: *„Ein Attribut ohne Incident-Frage fliegt
-  raus."*
+  Overhead. **Die Randbedingung ist „nichts, das installiert werden muss", nicht ein bestimmtes
+  Werkzeug** — welche Mechanik sie erfüllt, entscheidet die Messung im jeweiligen Slice, nicht
+  dieser Plan. Die Grenze verläuft zwischen der POSIX-Basis, die der Harness ohnehin voraussetzt,
+  und jeder Laufzeit, die ein Adopter **installieren** müsste; maßgeblich ist
+  [`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.md) Festlegung 4 (die frühere Fassung
+  dieses Absatzes zitierte
+  [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) falsch und ist
+  damit überholt). Für die Feld-Auswahl gilt Modul 15 selbst: *„Ein Attribut ohne Incident-Frage
+  fliegt raus."*
 - **Nicht out-of-scope, sondern ausdrücklich drin: die Tool-Ebene** (slice-062/063). Sie stand in
   der ersten Fassung dieses Plans unter „aufgeschoben" — auf Nutzer-Entscheidung vom 2026-07-28
   ist sie Teil der Welle. Was hier dennoch **nicht** dazugehört: den Adopter-Vertrag zu ändern,
