@@ -92,7 +92,7 @@ Re-Evaluierungs-Trigger aus [`ADR-0011`](../../adr/0011-telemetrie-erfassung-pol
 
 | # | Frage | Antwort (Quelle: Hook-Doku) |
 |---|---|---|
-| A | Welche Events, welche Payload-Felder? | **`PostToolUse` liefert `tool_response`**, **`PostToolUseFailure` liefert `error`** — `tool.result.status` ist also erfüllbar, in beiden Ausgängen. Jedes Tool-Event trägt zusätzlich `tool_use_id` (dieselbe ID über Pre-/Post-Event: **die Span-Identität**), `session_id`, `prompt_id`, `transcript_path`, `cwd`, `permission_mode`. |
+| A | Welche Events, welche Payload-Felder? | **`PostToolUse` liefert das Tool-Ergebnis** (dokumentiert als `tool_output`/`tool_output_path` — die erste Fassung dieser Zeile schrieb `tool_response`, ein Feldname aus einer zusammenfassenden Abfrage statt aus dem Volltext; der Proposed-Review hat es am Original korrigiert), **`PostToolUseFailure` liefert `error`** — `tool.result.status` ist also in beiden Ausgängen erfüllbar. Jedes Tool-Event trägt zusätzlich `tool_use_id` (dieselbe ID über Pre-/Post-Event: **die Span-Identität**), `session_id`, `prompt_id`, `transcript_path`, `cwd`, `permission_mode`. |
 | B | Feuern Hooks **in Subagenten**? | **Ja** — *„When a subagent calls a tool, tool events such as `PreToolUse` and `PostToolUse` fire the same configured hooks as in the main conversation"*, und die Payload trägt `agent_id` + `agent_type`. Die Rückführungs-Kante nach `next` (Rollen-Achse hängt am Transkript) ist damit **abgewendet**. |
 | F | Welche Tool-Calls sieht der Hook? | **`"matcher": ""` = match all.** Die heutige Bash-Enge ist eine Registrierungs-Entscheidung, keine Plattform-Grenze; die Abdeckung ist herstellbar, die Zusage muss nicht gekürzt werden. |
 
