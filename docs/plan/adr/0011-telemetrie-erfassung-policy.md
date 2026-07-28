@@ -96,9 +96,7 @@ ist der falsche Ort dafür. Die Policy selbst ist bindend:
    welle-09-Plan-Review als HIGH gefunden hat.
 
 **Warum diese Reihenfolge:** eine deklarierte Abweichung ist **billiger zu schreiben als eine
-Lösung** und deshalb verdächtig. Von den drei Feldern, für die eine frühere Fassung dieser ADR
-sie in Anspruch nahm, löst sich eines durch besseres Erfassen und eines durch eine Ableitung —
-übrig bleibt eines, und das ist eine echte offene Frage.
+Lösung** und deshalb verdächtig. Sie steht am Ende der Prüfung, nicht an ihrem Anfang.
 
 **Festlegung 2 — Argument-Werte werden ABGELEITET erfasst, und die Schärfe ist je Ebene
 verschieden.** „Redigiert" im Sinne von Modul 15 heißt nicht *weggelassen*, sondern *abgeleitet
@@ -109,7 +107,7 @@ statt roh*. Je Werkzeug wird erfasst, was die Incident-Frage beantwortet — nic
 | Schreib-Werkzeuge | *was wurde **wohin** geschrieben?* | **Pfad** + **Länge**; im Repo zusätzlich ein Inhalts-**Hash** |
 | Kommando-Werkzeug | *welches Programm lief?* | **erstes Token** + Argument-Anzahl — nicht die volle Zeile |
 | Lese-Werkzeuge | *worauf wurde zugegriffen?* | Pfad |
-| **jedes andere, auch künftige** | *welches Werkzeug lief, mit welchem Ausgang?* | **nur** Name und Status — **keine** Argumente. Der Default entscheidet über den **Werkzeug-NAMEN**, nicht über eine Gattung: die Zeilen oben sind auf konkrete Namen abzubilden, und was nicht namentlich gelistet ist, fällt hierher (die Gattungs-Formulierung der Vorfassung ließ genau dort Argumente durch, wo ein Name keiner Gattung zugeordnet war). Betrifft heute u. a. das Agenten-Werkzeug mit seinem **Freitext-Prompt** — ausgerechnet das, auf dessen Subagenten-Hooks die Rollen-Achse beruht |
+| **jedes andere, auch künftige** | *welches Werkzeug lief, mit welchem Ausgang?* | **nur** Name und Status — **keine** Argumente. Der Default entscheidet über den **Werkzeug-NAMEN**, nicht über eine Gattung: die Zeilen oben sind auf konkrete Namen abzubilden, und was nicht namentlich gelistet ist, fällt hierher — eine Gattungs-Zuordnung ließe Argumente genau dort durch, wo ein Name in keine Gattung passt. Betrifft heute u. a. das Agenten-Werkzeug mit seinem **Freitext-Prompt** — ausgerechnet das, auf dessen Subagenten-Hooks die Rollen-Achse beruht |
 
 Damit wandert **kein Byte fremden Inhalts** ins Log: Massen-Abfluss über die Telemetrie ist
 konstruktiv ausgeschlossen, nicht per Regel verboten.
@@ -125,12 +123,7 @@ Neues. Gemessen: sie ist nie committet, und die einzige Stelle, die den Baum kop
 .git"*). Der Test läuft in `make test` und damit **in `make gates`**; selbst gefahren am
 2026-07-28.
 
-*Zur Herkunft dieser Zeile, weil sie zweimal falsch war und das lehrreicher ist als ihr
-Endstand:* Runde 4 behauptete hier einen **Mutations-Fall** — falsch, `test/mutations/74`
-benutzt den Ausschluss nur als *sed-Anker*. Runde 5 korrigierte auf **„unbewacht, kein Sensor
-meldet es"** — ebenfalls falsch, der bats-Test oben tut genau das. Beide Fassungen entstanden
-aus einer `grep`-Trefferliste, die als Vollständigkeitsaussage gelesen wurde, statt den Sensor
-zu **fahren**. Ein Mutations-Fall wäre hier übrigens auch das falsche Werkzeug: `make mutate`
+**Ein Mutations-Fall wäre hier das falsche Werkzeug** und ist bewusst keiner: `make mutate`
 arbeitet in der isolierten Kopie, und die enthält den Zustands-Bereich gerade **nicht** — die
 Mutation maskierte sich selbst.
 
@@ -151,10 +144,7 @@ Für alles **Emittierte** gilt die Tabelle unverkürzt **und ohne Inhalts-Hash**
 gegenüber einem Verdacht ein **Bestätigungs-Orakel** („war es dieser Wert?"), und Grund 1
 (Persistenz nach Rotation) trifft ihn genauso wie den Klartext. Wo wir die Vertrauensgrenze
 nicht kennen, bleibt die Länge — sie beantwortet *„hat sich etwas geändert"*, ohne etwas zu
-bestätigen. *(Eine frühere Fassung begründete
-dieselbe Tabelle mit einer leeren Allowlist gegen Secrets und einer Warnung vor Pfaden — die
-Allowlist war ein Sicherheits-Instrument ohne benannten Gegner, die Pfad-Warnung eine importierte
-Floskel. Beides ist ersetzt.)*
+bestätigen.
 
 **Festlegung 3 — Spans liegen außerhalb des versionierten Baums, und das ist Korrektheit, nicht
 Ordnung.** Der Gate-Nachweis hasht **getrackte und untrackte** Dateien
@@ -173,11 +163,11 @@ Kosmetik sind:
   bei einem Absturz ausfallen könnte, und keinen Dienst, der laufen müsste. **Er fasst dabei
   ausschließlich seine EIGENE Datei an** — fremde Sitzungen bleiben unberührt. Der Grund ist,
   dass „läuft die noch?" **nicht entscheidbar** ist: eine Sitzungs-Kennung ist kein
-  Lebendigkeits-Signal, und Runde 3 hat zu Recht darauf gezeigt. Ein weggeräumter fremder
+  Lebendigkeits-Signal. Ein weggeräumter fremder
   Bestand wäre zudem die **unsichtbarste** Lücke: es fehlte die ganze Datei, nicht eine Nummer.
   Der Preis ist ausgesprochen: alte Bestände bleiben liegen, bis jemand sie **ausdrücklich**
-  entfernt (ein `make`-Ziel, kein Automatismus) — das ist der wachsende Bestand, den Runde 2
-  bemängelt hat, jetzt aber als **benannte** Entscheidung statt als Versehen. Wer Spans aufheben
+  entfernt (ein `make`-Ziel, kein Automatismus). Der Bestand wächst also — das ist eine
+  **benannte** Entscheidung, kein Versehen. Wer Spans aufheben
   will, kopiert sie bewusst heraus; dann sind es seine Artefakte, nicht unsere.
 - **Kein Beleg-Status.** Ein Span ist kein Review-Gegenstand und keine Quelle für eine Zusage im
   Sinne von [`AGENTS.md`](../../../AGENTS.md) §3.6. Was belegt werden muss, wird gemessen — nicht
@@ -205,7 +195,7 @@ Grenze, und sie verläuft **nicht** zwischen „Shell" und „Sprache", sondern 
   Command-Guard es heute nicht blockt (sein BLOCKED-Set führt die Paketmanager, nicht jeden
   Interpreter). Toleranz des Guards ist keine Erlaubnis.
 
-**Woher die Grenze kommt — präzise, weil Runde 1 hier zweimal danebenlag.** Sie kommt **nicht**
+**Woher die Grenze kommt — präzise, weil die naheliegende Quelle die falsche ist.** Sie kommt **nicht**
 aus der Bootstrap-Klausel von
 [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten): die spricht
 ausweislich ihrer Messmethode (*„Binary auf frischem System mit nur git + docker → Bootstrap
@@ -217,10 +207,6 @@ Festlegung 5 samt CR. Was
 [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) beisteuert, ist
 die Zusage für die **emittierte** Seite: *„Emittierte Ziel-Repos bleiben make/docker-getrieben."*
 
-*(Runde 1 verengte die Anforderung fälschlich aufs Ziel und erweiterte ihren Wortlaut um `bash`;
-Runde 2 leitete die Repo-Bindung aus der falschen Klausel ab und geriet dadurch so weit, dass die
-Regel wörtlich den eigenen Guard getroffen hätte. Beide Korrekturen stehen hier, statt die
-Fehlgriffe zu glätten.)*
 
 **Festlegung 5 — das OB der Emission entscheidet der Change Request, das WIE entscheidet diese
 ADR.** Ob ein Ziel-Repo überhaupt einen Span-Emitter bekommt, ist eine Vertragsänderung und
@@ -240,27 +226,20 @@ niemals blockieren oder spürbar verzögern: kein blockierender Exit-Code, ein *
 Timeout deutlich unterhalb des Werkzeug-Defaults** (dokumentiert sind 600 s — als Grenze für ein
 Audit-Skript unbrauchbar), und bei jedem Fehler gilt *Span verloren, Lauf läuft weiter*.
 
-**Die Trennung ist mechanisch herzustellen, nicht durch Disziplin** (Runde 2) — **und die
-Ereignis-Wahl kann sie nicht herstellen** (Runde 3). Der Grund ist gemessen, nicht vermutet:
+**Die Trennung ist mechanisch herzustellen, nicht durch Disziplin — und die Ereignis-Wahl kann
+sie nicht herstellen.** Der Grund ist gemessen, nicht vermutet:
 
 - Hooks desselben Ereignisses laufen **parallel**, und ihre Ausgabe ist bei Exit 0 ein
-  **Entscheidungs-Kanal**. *(Frühere Fassungen behaupteten hier erst, die Aggregation
-  widersprüchlicher Antworten sei „nicht dokumentiert", dann eine konkrete Rangfolge. **Beides
-  ist gestrichen** — die erste Aussage war an der Quelle widerlegt, die zweite verschweißte zwei
-  Regeln aus disjunkten Ereignis-Mengen. Das Argument braucht sie nicht: dass ein
-  Telemetrie-Hook auf einem Kanal steht, auf dem Entscheidungen transportiert werden, ist das
-  Risiko — unabhängig davon, wie das Werkzeug mehrere Antworten verrechnet.)*
+  **Entscheidungs-Kanal**. Wie das Werkzeug mehrere Antworten verrechnet, ist für das Argument
+  **unerheblich**: dass ein Telemetrie-Hook überhaupt auf einem Kanal steht, auf dem
+  Entscheidungen transportiert werden, ist das Risiko.
 - Es gibt **kein entscheidungsfreies Ereignis**, auf das man ausweichen könnte: auch die
   Nach-Ereignisse nehmen ein Top-Level-`decision` entgegen, und `Stop`/`SubagentStop` sind
   blockierbar.
 - **Dieses Repo betreibt bereits einen zweiten fail-closed Hook** — `stop-require-gates.sh` auf
   `Stop`, der bei Exit 0 ein `{"decision":"block"}` schreibt. `Stop` ist zugleich eine der
-  Lauf-Grenzen, an die eine frühere Fassung dieser ADR die Erfassung schicken wollte. Die
-  Kollision wäre also nicht vermieden, sondern nur verlegt worden.
-
-*(Die Runde-3-Fassung behauptete, die Erfassung löse das „durch Konstruktion", indem sie das
-Guard-Ereignis meidet. Das war eine zu weite Reichweiten-Aussage über einen real vorhandenen
-Mechanismus — vom Proposed-Review am eigenen Repo widerlegt.)*
+  Lauf-Grenzen, die als Erfassungsort naheliegen — wer dorthin ausweicht, **verlegt** die
+  Kollision, statt sie zu vermeiden.
 
 **Die Konstruktion sitzt deshalb nicht bei der Ereignis-Wahl, sondern beim Emitter selbst: er
 wird auf dem Entscheidungs-Kanal sprech-unfähig gemacht.** Zwei Setzungen, beide prüfbar:
@@ -303,14 +282,10 @@ und der Verlust wird **sichtbar gemacht**, nicht verschluckt (Folgepflicht 4).
 - **Negativ:** die Auswertung ist Eigenbau; wer OTel-Werkzeuge erwartet, findet keine. Das
   geschlossene Schema kostet laufende Pflege — jedes Werkzeug, dessen Argumente erfasst werden
   sollen, muss namentlich aufgenommen werden (der Preis von fail-closed, und er ist gewollt).
-- **Zur Abdeckung — am 2026-07-28 geklärt, und zwar in die gute Richtung:** die erste Fassung
-  dieser ADR hielt für möglich, dass die Erfassung **kleiner** ausfällt als „jeder Tool-Call",
-  weil der registrierte Matcher (`Bash`) keine `Write`/`Edit`-Aufrufe sieht — gerade die
-  Schreibzugriffe, nach denen die Incident-Frage zu `slice.id` fragt. Die Doku-Messung zeigt: ein
-  leerer Matcher trifft **alle** Tools. Die Enge ist unsere Registrierung, keine Grenze des
-  Werkzeugs. **Die Regel bleibt trotzdem stehen**, weil sie allgemeiner gilt als dieser Fall:
-  wird eine Abdeckung *doch* unvollständig, ist die **Zusage** einzuschränken, nicht die Lücke zu
-  verschweigen.
+- **Zur Abdeckung:** volle Abdeckung ist herstellbar — ein leerer Matcher trifft **alle** Tools
+  (gemessen 2026-07-28); die heutige Bash-Enge ist unsere Registrierung, keine Grenze des
+  Werkzeugs. **Die Regel gilt trotzdem allgemein:** wird eine Abdeckung doch unvollständig, ist
+  die **Zusage** einzuschränken, nicht die Lücke zu verschweigen.
 - **Negativ, und jetzt der schärfere Punkt:** volle Abdeckung heißt, der Hook sieht auch
   `Write`/`Edit`-Payloads — also **Datei-Inhalte**. Die Erfassungsfläche wächst damit genau um
   das, was am ehesten Secrets trägt. Die **abgeleitete** Erfassung aus Festlegung 2 ist deshalb
@@ -331,11 +306,11 @@ und der Verlust wird **sichtbar gemacht**, nicht verschluckt (Folgepflicht 4).
   lückenhaft ist und vollständig aussieht. Ein vom eigenen Timeout abgebrochener Emitter kann
   seinen Ausfall aber **nicht selbst melden**; eine Sichtbarkeit, die von ihm abhinge, wäre
   genau die Zusage ohne Abdeckung, gegen die [`AGENTS.md`](../../../AGENTS.md) §3.6 steht
-  (Proposed-Review Runde 2). Die Setzung ist deshalb: **jeder Span trägt eine je Sitzung monoton
+  Die Setzung ist deshalb: **jeder Span trägt eine je Sitzung monoton
   steigende Folgenummer**, sodass eine Lücke **im Bestand** erkennbar ist — von dem, der ihn
   liest, ohne Zutun dessen, der ihn schreibt. **Die Nummer wird als Erstes vergeben**, vor jeder
   anderen Arbeit des Emitters; stirbt er danach, fehlt der Eintrag und die Lücke ist sichtbar.
-  **Der Nummernkreis gehört zu (Sitzung, Agent), nicht zur Sitzung allein** (Runde 4):
+  **Der Nummernkreis gehört zu (Sitzung, Agent), nicht zur Sitzung allein:**
   Subagenten teilen laut Quelle die Sitzungs-Kennung und feuern dieselben Hooks — ein
   sitzungs-weiter Zähler vergäbe bei parallelen Läufen **dieselbe Nummer zweimal**, und eine
   Doppelvergabe erzeugt keine Lücke, sieht also aus wie Vollständigkeit. Je Agent ein eigener
@@ -359,7 +334,7 @@ und der Verlust wird **sichtbar gemacht**, nicht verschluckt (Folgepflicht 4).
 | `test/mutations/` | **Die Klemme wird entfernt** (der Emitter reicht seinen inneren Exit-Code durch) — der Wächter muss rot werden; ohne diesen Fall wäre Festlegung 6 eine Absicht | `make mutate` |
 | bats (`make test`) | **Der Zustands-Ausschluss der Mutations-Kopie hält** — die Zusicherung liegt bereits vor (`test/mutate-driver.bats`), sie ist hier nur benannt, weil das Bedrohungsmodell aus Festlegung 2 auf ihr steht. **Kein** Mutations-Fall: `make mutate` arbeitet in der isolierten Kopie, die den Zustands-Bereich nicht enthält — die Mutation maskierte sich selbst | `make gates` |
 
-**Was hier bewusst NICHT steht, und warum** (Proposed-Review-Befund, Runde 1): die Zeile
+**Was hier bewusst NICHT steht, und warum:** die Zeile
 *„ein Lauf mit Spans lässt den Working-Tree-Hash unverändert"* ist **gestrichen**. Sie war unter
 keiner Mutation rot zu bekommen: `working-tree-hash.sh` listet mit `--exclude-standard`, schließt
 gitignorierte Pfade also **unbedingt** aus — die Zusage war per Konstruktion wahr. Was die
