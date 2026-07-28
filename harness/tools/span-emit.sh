@@ -64,13 +64,16 @@ EOF
     slices="${slices:+$slices,}\"$b\""
     slice_files+=("$f")
   done
-  # requirement.id aus der Bezug-Zeile derselben Slices — bis zu vier je Slice,
-  # also eine Liste, kein Wert.
+  # requirement.id NUR aus dem Bezug-Block — nicht aus der ganzen Datei: ein
+  # Slice erwaehnt im Fliesstext fremde Anforderungen (Praezedenzfaelle,
+  # Abgrenzungen), und die sind nicht sein Bezug. Der Block reicht von der
+  # `**Bezug:**`-Zeile bis zur naechsten Leerzeile.
   if [ ${#slice_files[@]} -gt 0 ]; then
     while IFS= read -r r; do
       [ -n "$r" ] || continue
       reqs="${reqs:+$reqs,}\"$r\""
-    done < <(grep -hoE 'LH-[A-Z]{2}-[0-9]{2}' "${slice_files[@]}" 2>/dev/null | sort -u)
+    done < <(sed -n '/^\*\*Bezug:\*\*/,/^$/p' "${slice_files[@]}" |
+             grep -oE 'LH-[A-Z]{2}-[0-9]{2}' | sort -u)
   fi
 
   # --- Strom = (Sitzung, Agent), Ablage gitignored (ADR-0011 Festlegung 3) ----
@@ -89,44 +92,78 @@ EOF
   # Aufraeumen beim ANLEGEN, und ausschliesslich der EIGENE Strom: "laeuft die
   # andere Sitzung noch?" ist nicht entscheidbar (ADR-0011 Festlegung 3), also
   # wird fremder Bestand nie angefasst.
-  if [ ! -e "$file" ]; then
-    : > "$file" || return 0
-    chmod 600 "$file" 2>/dev/null || true
-  fi
+  # Modus VOR dem ersten Byte: `install -m` legt die Datei mit dem richtigen
+  # Modus an, statt sie erst offen zu schaffen und dann nachzuziehen (das liesse
+  # ein Fenster mit umask-Rechten offen).
+  [ -e "$file" ] || install -m 600 /dev/null "$file"
 
-  # Folgenummer ZUERST vergeben: stirbt der Prozess danach, fehlt der Eintrag
-  # und die Luecke ist sichtbar.
-  seq=$(( $(wc -l < "$file" 2>/dev/null || echo 0) + 1 ))
+  # --- Sperre: Nummernvergabe UND Anhaengen sind eine Einheit ----------------
+  # `mkdir` ist die portable atomare Operation. Ohne sie vergaeben parallele
+  # Emitter dieselbe Nummer und ihre Zeilen verschraenkten sich (gemessen im
+  # Review: 6 doppelte seq, 8 kaputte Zeilen bei 25 Parallelen).
+  lock="$dir/.$stream.lock"
+  tries=0
+  until mkdir "$lock" 2>/dev/null; do
+    tries=$((tries + 1))
+    # Fail-open: wer die Sperre nicht bekommt, verliert seinen Span — nicht der
+    # Lauf seinen Fortgang. Diese Aufgabe ist unsichtbar (es wurde nie eine
+    # Nummer beansprucht) — dieselbe benannte Grenze wie der Tod vor der Vergabe.
+    [ "$tries" -lt 200 ] || return 0
+  done
+
+  # Die Nummer wird VERGEBEN, nicht aus dem Bestand abgeleitet. Der Unterschied
+  # ist die ganze Zusage: `wc -l + 1` waere immer dicht 1..N, eine Luecke also
+  # konstruktiv unmoeglich — der Leser saehe Vollstaendigkeit, wo Spans fehlen
+  # (Review-Befund HIGH-3). Der Zaehler steht in einer eigenen Datei und wird
+  # VOR dem Schreiben erhoeht: stirbt der Prozess danach, fehlt die Zeile und
+  # die Luecke ist sichtbar.
+  seqfile="$dir/$stream.seq"
+  seq=$(( $(cat "$seqfile" 2>/dev/null || printf 0) + 1 ))
+  printf '%s\n' "$seq" > "$seqfile"
 
   # --- Abgeleitete Argument-Werte (ADR-0011 Festlegung 2) --------------------
   # Der Fingerabdruck kommt aus dem DATEISYSTEM, nicht aus der Payload: so
   # passiert kein Byte fremden Inhalts diesen Emitter. Er beantwortet "hat sich
   # etwas geaendert", ohne den Inhalt zu tragen.
+  # NUR fuer Schreib-Werkzeuge: die Tabelle in MR-018 gibt Lese-Werkzeugen den
+  # Pfad und sonst nichts. Ein Fingerabdruck auf einem gelesenen Pfad waere ein
+  # Bestaetigungs-Orakel ohne Incident-Frage (Review-Befund).
   size=""; hash=""
-  if [ -n "$path" ] && [ -f "$path" ]; then
-    size="$(wc -c < "$path" 2>/dev/null | tr -d ' ')"
-    hash="$(sha256sum "$path" 2>/dev/null | cut -c1-16)"
-  fi
+  case "$tool" in
+    Write|Edit|MultiEdit|NotebookEdit)
+      if [ -n "$path" ] && [ -f "$path" ]; then
+        size="$(wc -c < "$path" | tr -d ' ')"
+        hash="$(sha256sum "$path" | cut -c1-16)"
+      fi
+      ;;
+  esac
 
-  # --- Die Span-Zeile. Werte aus der Payload sind bereits JSON-escapt. -------
-  {
-    printf '{"seq":%d,"ts":"%s","event":"%s","tool":"%s","tool_use_id":"%s"' \
-      "$seq" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$event" "$tool" "$useid"
-    printf ',"session":"%s","agent":"%s","agent_type":"%s"' "$session" "$agent" "$agenttype"
-    printf ',"slice":[%s],"requirement":[%s]' "$slices" "$reqs"
-    printf ',"status":"%s"' "$([ -n "$err" ] && printf 'error' || printf 'ok')"
-    [ -n "$permission" ] && printf ',"permission_mode":"%s"' "$permission"
-    [ -n "$transcript" ] && printf ',"transcript":"%s"' "$transcript"
-    [ -n "$path" ]       && printf ',"path":"%s"' "$path"
-    [ -n "$size" ]       && printf ',"bytes":%s' "$size"
-    [ -n "$hash" ]       && printf ',"sha256_16":"%s"' "$hash"
-    [ -n "$program" ]    && printf ',"program":"%s"' "$program"
-    [ -n "$argc" ]       && printf ',"argc":%s' "$argc"
-    printf '}\n'
-  } >> "$file" 2>/dev/null || return 0
+  # --- Die Span-Zeile: EIN Puffer, EIN Schreibvorgang ------------------------
+  # Elf einzelne printf in eine Datei zu schieben hiess, dass sich parallele
+  # Emitter mitten in der Zeile verschraenken konnten (Review-Befund). Die Zeile
+  # entsteht deshalb vollstaendig im Speicher und geht in einem Stueck raus —
+  # innerhalb der Sperre, die auch die Nummer haelt.
+  line='{"seq":'"$seq"',"ts":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'"'
+  line="$line"',"event":"'"$event"'","tool":"'"$tool"'","tool_use_id":"'"$useid"'"'
+  line="$line"',"session":"'"$session"'","agent":"'"$agent"'","agent_type":"'"$agenttype"'"'
+  line="$line"',"slice":['"$slices"'],"requirement":['"$reqs"']'
+  if [ -n "$err" ]; then line="$line"',"status":"error"'; else line="$line"',"status":"ok"'; fi
+  [ -n "$permission" ] && line="$line"',"permission_mode":"'"$permission"'"'
+  [ -n "$transcript" ] && line="$line"',"transcript":"'"$transcript"'"'
+  [ -n "$path" ]       && line="$line"',"path":"'"$path"'"'
+  [ -n "$size" ]       && line="$line"',"bytes":'"$size"
+  [ -n "$hash" ]       && line="$line"',"sha256_16":"'"$hash"'"'
+  [ -n "$program" ]    && line="$line"',"program":"'"$program"'"'
+  [ -n "$argc" ]       && line="$line"',"argc":'"$argc"
+  printf '%s}\n' "$line" >> "$file"
+
+  rmdir "$lock"
 }
 
-# Die Klemme. Rumpf in einer Subshell, stdout verworfen, Exit-Code verworfen —
-# was hier drinnen passiert, erreicht den Entscheidungs-Kanal nicht.
-( emit_span ) >/dev/null 2>&1 || true
+# Die Klemme, und sie ist TRAGEND: `set -e` laesst jeden inneren Fehlschlag die
+# Subshell verlassen, statt ihn an Ort und Stelle zu schlucken. Erst dadurch hat
+# die Klemme ueberhaupt etwas zu fangen — und erst dadurch ist sie mutierbar
+# (test/mutations/107). Ohne `set -e` waere `exit 0` unerreichbare Deko: der
+# Rumpf kaeme immer mit 0 zurueck, und der Waechter koennte nie rot werden.
+( set -e; emit_span ) >/dev/null 2>&1 || true
 exit 0

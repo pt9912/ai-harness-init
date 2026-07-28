@@ -91,20 +91,18 @@ END {
           if (k1 == "hook_event_name" || k1 == "tool_name" || k1 == "tool_use_id" ||
               k1 == "session_id" || k1 == "agent_id" || k1 == "agent_type" ||
               k1 == "transcript_path" || k1 == "permission_mode")
+          {
             emit(k1, buf)
+            if (k1 == "tool_name") toolname = buf   # entscheidet unten die Erfassung
+          }
           else if (k1 == "error") emit("error", "1")
         } else if (depth == 2 && ctype[2] == "o" && curkey[1] == "tool_input") {
+          # NICHT sofort ausgeben: ob diese Werte ueberhaupt erfasst werden
+          # duerfen, entscheidet der WERKZEUG-NAME — und der kann in der Payload
+          # nach `tool_input` stehen. Also merken und am Ende entscheiden.
           k2 = curkey[2]
-          if (k2 == "file_path" || k2 == "notebook_path") emit("path", buf)
-          else if (k2 == "command") {
-            # NUR das erste Token (das Programm) und die Zahl der Felder — nie
-            # die Zeile selbst (ADR-0011 Festlegung 2).
-            m = split(buf, parts, /[ \t\n]+/)
-            first = ""
-            for (p = 1; p <= m; p++) { if (parts[p] != "") { first = parts[p]; break } }
-            emit("program", first)
-            emit("argc", sprintf("%d", (m > 0 ? m - 1 : 0)))
-          }
+          if (k2 == "file_path" || k2 == "notebook_path") { if (cand_path == "") cand_path = buf }
+          else if (k2 == "command") { if (cand_cmd == "") cand_cmd = buf }
         }
         instr = 0
         continue
@@ -120,6 +118,37 @@ END {
     if (c == "]") { if (depth > 0) depth--; continue }
     if (c == ":") { if (depth > 0 && ctype[depth] == "o") wantkey[depth] = 0; continue }
     if (c == ",") { if (depth > 0 && ctype[depth] == "o") wantkey[depth] = 1; continue }
+  }
+  # --- Der fail-closed Default haengt am WERKZEUG-NAMEN -----------------------
+  # ADR-0011 Festlegung 2: die Tabelle bildet auf konkrete Namen ab; was nicht
+  # namentlich gelistet ist, gibt NUR Name und Status preis. Die Achse ist der
+  # Werkzeug-Name, nicht der Feld-Name — sonst gaebe jedes unbekannte Werkzeug,
+  # das zufaellig `command` oder `file_path` fuehrt, seine Argumente preis
+  # (Review-Befund HIGH-1: `mcp__db__run` lieferte `"program":"psql"`).
+  tn = toolname
+  if (tn == "Write" || tn == "Edit" || tn == "MultiEdit" || tn == "NotebookEdit" || tn == "Read") {
+    if (cand_path != "") emit("path", cand_path)
+  } else if (tn == "Bash" || tn == "BashOutput") {
+    if (cand_cmd != "") {
+      # Das PROGRAMM ist nicht schlicht das erste Feld: eine Kommandozeile darf
+      # mit Zuweisungen beginnen, und deren WERTE sind oft genau das, was nie
+      # ins Log darf (Review-Befund HIGH-7: `GITHUB_TOKEN=ghp_… gh pr create`
+      # landete verbatim als "program"). Fuehrende NAME=WERT-Praefixe werden
+      # deshalb uebersprungen; bleibt danach etwas mit `=` uebrig, wird GAR
+      # NICHTS ausgegeben — im Zweifel nichts erfassen.
+      m = split(cand_cmd, parts, /[ \t\n]+/)
+      prog = ""
+      for (p = 1; p <= m; p++) {
+        if (parts[p] == "") continue
+        if (parts[p] ~ /^[A-Za-z_][A-Za-z0-9_]*=/) continue   # Zuweisungs-Praefix
+        prog = parts[p]
+        break
+      }
+      if (prog != "" && prog !~ /=/) {
+        emit("program", prog)
+        emit("argc", sprintf("%d", (m > 0 ? m - 1 : 0)))
+      }
+    }
   }
   # Kein Exit-Code-Signal: ein unvollstaendiges JSON kostet Felder, nicht den
   # Lauf (fail-open). Der Aufrufer klemmt ohnehin auf 0.
