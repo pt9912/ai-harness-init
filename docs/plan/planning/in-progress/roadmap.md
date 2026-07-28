@@ -12,8 +12,20 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**Keine aktive Welle.** Die nächste ist **nicht** geschnitten (cp-Disziplin: Plandatei erst per `cp`,
-wenn ihr erster Slice steht) — Kandidaten unten.
+**[welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)**, geschnitten am 2026-07-28.
+
+**Welle-Ziel:** jeder der vier Regelblöcke von Modul 15 trägt am Ende **entweder einen laufenden
+Sensor oder eine deklarierte Abweichung** mit Auflösungs-Trigger — und nichts dazwischen.
+
+**Auslöser:** Nutzer-Befund. Modul 15 ist seit `554cade` (2026-07-17) adoptiert, wurde in vier
+Re-Vendor-Läufen mitkopiert und **nie inhaltlich behandelt**; zugleich erklärt
+[`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) „keine inhaltlichen
+Adaptionen ggü. Baseline-Default". Damit trägt das Repo heute eine **nicht deklarierte
+Abweichung**. Die Ursache ist mechanisch und größer als dieses Modul: die Adoptions-Prüfung
+sieht bei jeder Re-Baseline nur das **Delta**, nie den **Bestand**.
+
+**Erster Slice:** `slice-059` (Erfassung: Spans per Agenten-Hook). Die übrigen sind in §4 der
+Welle benannt, aber **nicht** geschnitten (cp-Disziplin).
 
 ## Nächste Wellen
 
