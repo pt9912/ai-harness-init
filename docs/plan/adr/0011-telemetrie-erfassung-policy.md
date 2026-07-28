@@ -72,9 +72,15 @@ ist der falsche Ort dafür. Die Policy selbst ist bindend:
    `requirement.id`). Keine darf gegen die andere ausgespielt werden.
 2. **Ein Feld ohne Incident-Frage wird nicht erfasst** — und die Frage steht neben dem Feld,
    nicht in einem Kommentar.
-3. **Die Argument-Allowlist beginnt LEER.** Ein Feld kommt hinein, wenn es seine Incident-Frage
-   nachweist — nicht, weil es verfügbar ist. Das ist die operative Fassung von *fail-closed im
-   Umfang*.
+3. **Die Argument-Allowlist beginnt LEER — und das ist selbst eine erklärte Abweichung.**
+   Ein Feld kommt hinein, wenn es seine Incident-Frage nachweist, nicht weil es verfügbar ist
+   (die operative Fassung von *fail-closed im Umfang*). Modul 15 führt `tool.arguments`
+   (redigiert) im Mindestsatz; **leer zu starten weicht davon ab**, und die Begründung steht
+   hier statt in einer Fußnote: die Erfassungsfläche wächst bei voller Abdeckung um `Write`- und
+   `Edit`-Payloads, also um **Datei-Inhalte**. Ein Audit-Log, das die einsammelt, verlagert das
+   Risiko, statt es zu senken. Die Abweichung wird im `MR`-Eintrag als solche geführt (Regel 4
+   gilt für *nicht erschließbare* Felder — dieses hier ist erschließbar und wird **bewusst**
+   nicht erfasst; der Unterschied gehört benannt).
 4. **Ein nicht erschließbares Pflicht-Feld wird begründet dokumentiert, nicht weggelassen.**
    Betrifft absehbar `requirement.id` (steht nur im Slice-Plan) und den Cache-Status (steht im
    Transkript, nicht in der Hook-Payload). Eine stillschweigend verkürzte Feldliste ist die
@@ -100,30 +106,47 @@ Kosmetik sind:
 - **Modus restriktiv (`0600`), vom Emitter selbst gesetzt.** Gemessen 2026-07-28: das
   Zustands-Verzeichnis ist `775`, die Stempeldatei `664` — welt-lesbar. Für einen Gate-Hash ist
   das folgenlos; für ein Audit-Log mit Pfaden und Argumenten nicht.
-- **Lebensdauer: die Sitzung.** Spans werden je Sitzung neu angelegt statt fortgeschrieben; ein
-  Lauf hinterlässt keinen wachsenden Bestand. Wer sie aufheben will, kopiert sie bewusst heraus
-  — dann sind es seine Artefakte, nicht unsere.
+- **Lebensdauer: die Sitzung — und der Emitter räumt beim Anlegen auf, nicht beim Beenden.**
+  Jede Sitzung schreibt in ihre eigene Datei; **beim ersten Span einer Sitzung** entfernt der
+  Emitter die Bestände älterer Sitzungen. Damit gibt es keinen Aufräum-Zeitpunkt, der bei einem
+  Absturz ausfallen könnte, und keinen Dienst, der laufen müsste. *(Runde 2 hat zu Recht
+  bemängelt, dass „je Sitzung eine Datei" ohne Löschenden sehr wohl ein **wachsender** Bestand
+  ist — genau das schließt die Aufräum-Regel jetzt.)* Wer Spans aufheben will, kopiert sie
+  bewusst heraus; dann sind es seine Artefakte, nicht unsere.
 - **Kein Beleg-Status.** Ein Span ist kein Review-Gegenstand und keine Quelle für eine Zusage im
   Sinne von [`AGENTS.md`](../../../AGENTS.md) §3.6. Was belegt werden muss, wird gemessen — nicht
   aus dem Log gelesen.
 
-**Festlegung 4 — die Randbedingung ist „keine Host-Sprachlaufzeit"; das Werkzeug entscheidet die
-Messung.** Welches Hook-Event, welcher Matcher, welches Dateiformat — das entscheidet der
-umsetzende Slice **nach** seinen Messungen. Was diese ADR festlegt, ist die Grenze, und sie ist
-schärfer als „keine neue Abhängigkeit":
-[`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) verlangt verbatim
-*„die Laufzeit beim Bootstrap braucht nur **git + docker** (keine Host-Sprachlaufzeit, kein
-Paketmanager)"* — und das bindet **dieses Repo**, nicht nur das Ziel (*„Emittierte Ziel-Repos
-bleiben make/docker-getrieben"*).
+**Festlegung 4 — die Randbedingung ist „nichts, das installiert werden muss"; das Werkzeug
+entscheidet die Messung.** Welches Hook-Event, welcher Matcher, welches Dateiformat — das
+entscheidet der umsetzende Slice **nach** seinen Messungen. Was diese ADR festlegt, ist die
+Grenze, und sie verläuft **nicht** zwischen „Shell" und „Sprache", sondern zwischen
+**vorhanden** und **zu installieren**:
 
-*(Diese Fassung korrigiert Runde 1, die dieselbe Anforderung auf das Ziel verengt und ihren
-Wortlaut um `bash` erweitert hatte — beides falsch, vom Proposed-Review nachgewiesen.)*
+- **Erlaubt:** die POSIX-Basis, die der Harness ohnehin voraussetzt — `bash`, `awk`,
+  Coreutils, `git`, `docker`. Das ist exakt die Linie, die
+  [ADR-0004](0004-durchsetzungs-emission.md) für den Command-Guard gezogen hat: *„`awk` ist
+  POSIX-Basis (überall vorhanden…)"*. Die 16 Host-Skripte dieses Repos, der Guard und der
+  Stop-Hook liegen darin — sie sind **nicht** betroffen.
+- **Ausgeschlossen:** jede Laufzeit, die ein Adopter **installieren** müsste, um den Harness zu
+  betreiben. Ein Hook-Skript in einer solchen Laufzeit fällt damit heraus — auch dann, wenn der
+  Command-Guard es heute nicht blockt (sein BLOCKED-Set führt die Paketmanager, nicht jeden
+  Interpreter). Toleranz des Guards ist keine Erlaubnis.
 
-**Konkrete Folge, damit die Regel nicht abstrakt bleibt:** ein Hook-Skript in einer
-Host-Sprachlaufzeit ist damit **ausgeschlossen** — auch dann, wenn der Command-Guard es heute
-nicht blockt (sein BLOCKED-Set führt die Paketmanager, nicht jeden Interpreter). Toleranz des
-Guards ist keine Erlaubnis der Anforderung. Die vorhandene Durchsetzungsschicht ist zero-dep
-bash+awk ([ADR-0004](0004-durchsetzungs-emission.md)); die Erfassung bleibt in derselben Klasse.
+**Woher die Grenze kommt — präzise, weil Runde 1 hier zweimal danebenlag.** Sie kommt **nicht**
+aus der Bootstrap-Klausel von
+[`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten): die spricht
+ausweislich ihrer Messmethode (*„Binary auf frischem System mit nur git + docker → Bootstrap
+grün"*) von der **Nutzer**-Laufzeit des Tools, nicht von unseren Skripten. Für die
+Durchsetzungsschicht — und die Erfassung gehört dorthin — ist
+[ADR-0004](0004-durchsetzungs-emission.md) die bindende Quelle. Was
+[`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) beisteuert, ist
+die Zusage für die **emittierte** Seite: *„Emittierte Ziel-Repos bleiben make/docker-getrieben."*
+
+*(Runde 1 verengte die Anforderung fälschlich aufs Ziel und erweiterte ihren Wortlaut um `bash`;
+Runde 2 leitete die Repo-Bindung aus der falschen Klausel ab und geriet dadurch so weit, dass die
+Regel wörtlich den eigenen Guard getroffen hätte. Beide Korrekturen stehen hier, statt die
+Fehlgriffe zu glätten.)*
 
 **Festlegung 5 — das OB der Emission entscheidet der Change Request, das WIE entscheidet diese
 ADR.** Ob ein Ziel-Repo überhaupt einen Span-Emitter bekommt, ist eine Vertragsänderung und
@@ -136,11 +159,25 @@ laxere Fassung für fremde Repos wäre die Umkehrung unserer eigenen Begründung
 [`MR-017`](../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)
 ist der Default für unbekannte Adopter ohnehin die strengere Seite.
 
-**Festlegung 6 — Telemetrie ist fail-OPEN, der Guard bleibt fail-closed.** Ein Erfassungs-Hook
-läuft an **jedem** Tool-Call. Er darf einen Lauf niemals blockieren oder spürbar verzögern: kein
-blockierender Exit-Code, ein **eigener harter Timeout deutlich unterhalb des Werkzeug-Defaults**
-(dokumentiert sind 600 s — als Grenze für ein Audit-Skript unbrauchbar), und bei jedem Fehler
-gilt *Span verloren, Lauf läuft weiter*.
+**Festlegung 6 — Telemetrie ist fail-OPEN, der Guard bleibt fail-closed — und beide teilen sich
+kein Entscheidungs-Event.** Ein Erfassungs-Hook läuft an **jedem** Tool-Call. Er darf einen Lauf
+niemals blockieren oder spürbar verzögern: kein blockierender Exit-Code, ein **eigener harter
+Timeout deutlich unterhalb des Werkzeug-Defaults** (dokumentiert sind 600 s — als Grenze für ein
+Audit-Skript unbrauchbar), und bei jedem Fehler gilt *Span verloren, Lauf läuft weiter*.
+
+**Die Trennung ist mechanisch herzustellen, nicht durch Disziplin** (Proposed-Review Runde 2):
+Hooks desselben Events laufen **parallel**, und ihre Ausgabe ist bei Exit 0 ein
+**Entscheidungs-Kanal** — ein Telemetrie-Hook auf dem Event des Guards könnte dessen Urteil
+beeinflussen, und wie das Werkzeug widersprüchliche Antworten aggregiert, ist nicht dokumentiert.
+Daraus zwei Setzungen:
+
+1. **Die Erfassung meidet das Entscheidungs-Event des Guards.** Sie hängt an den Ereignissen
+   *nach* der Entscheidung (Ergebnis und Fehlschlag) und an den Lauf-Grenzen; ein abgelehnter
+   Aufruf hat mit `PermissionDenied` ohnehin sein eigenes Ereignis. Das löst die Kollision
+   **durch Konstruktion** statt durch Sorgfalt.
+2. **Die Erfassung schreibt nichts auf den Entscheidungs-Kanal.** Ihr Ausgabekanal ist die
+   Span-Datei; auf stdout gehört nichts, auch keine Diagnose. Wer beides mischt, macht ein
+   Audit-Werkzeug zum Mitentscheider über Berechtigungen.
 
 Die Gegen-Entscheidung ist real und wird **bewusst verworfen**: ein fail-closed Audit („kein
 Span, keine Aktion") ist in regulierten Umgebungen richtig — dort wiegt der fehlende Nachweis
@@ -157,7 +194,7 @@ und der Verlust wird **sichtbar gemacht**, nicht verschluckt (Folgepflicht 4).
 |---|---|---|
 | A — **nichts tun** (Status quo) | kein Aufwand, keine neue Sicherheitsfläche; die Transkripte des Werkzeugs existieren ohnehin | Modul 15 bleibt in allen vier Blöcken unumgesetzt; die Transkripte tragen **keine** Korrelations-IDs (`agent.role` steht dort als `general-purpose`, `slice.id` gar nicht — gemessen), also ist weder Token-Attribution je Rolle noch Slice-Bezug möglich; die Nicht-Umsetzung bliebe undiskutiert |
 | B — **OTel-Stack** (SDK, Collector, Backend, Dashboard) | Standard-Format, Werkzeug-Ökosystem, beliebig auswertbar | verletzt [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (neue Laufzeit-Abhängigkeit) und wäre im emittierten Ziel gar nicht tragbar; ein Backend ohne Betreiber ist Infrastruktur ohne Abnehmer — genau das, was Modul 15 mit *„ein Attribut ohne Incident-Frage fliegt raus"* ausschließt |
-| **C — lokale Span-Erfassung mit Policy, Werkzeug offen (gewählt)** | nutzt die **bereits verdrahtete** Hook-Mechanik; keine neue Abhängigkeit; die Sicherheitsfrage ist vorab entschieden (Allowlist) statt nachträglich gehärtet; die Werkzeug-Wahl bleibt der Messung überlassen | die Auswertung ist Eigenbau (kein Ökosystem); die Abdeckung hängt an dem, was das Agenten-Werkzeug an Hook-Events hergibt — möglicherweise weniger als „jeder Tool-Call" |
+| **C — lokale Span-Erfassung mit Policy, Werkzeug offen (gewählt)** | nutzt die **bereits verdrahtete** Hook-Mechanik; nichts zu installieren; die Sicherheitsfrage ist vorab entschieden statt nachträglich gehärtet; die Werkzeug-Wahl bleibt der Messung überlassen | die Auswertung ist Eigenbau (kein Ökosystem); **C erzeugt die Sicherheitsfläche, die A und E gar nicht erst haben** — jede Erweiterung der Allowlist ist eine Einzelfall-Abwägung, und diese Pflege endet nie; die Abdeckung hängt an dem, was das Werkzeug an Ereignissen hergibt |
 | E — **Korrelations-Hook ohne Payload**: der Span trägt nur IDs (`tool_use_id`, Tool-Name, Slice, Agent, Status), die Argumente bleiben im Transkript | löst die Sicherheitsfläche **fast vollständig** auf — was nie erfasst wird, kann nicht leaken; minimaler Hook, minimale Kosten | die Incident-Frage *„was wurde wohin geschrieben?"* ist dann nur über das Transkript beantwortbar, also über eine Quelle außerhalb des Repos — und `tool.arguments` (redigiert) steht im Modul-15-Mindestsatz, das Weglassen wäre eine begründungspflichtige Abweichung. **Wichtig:** E ist der **Grenzfall von C** — mit leerer Allowlist *ist* C genau E. Festlegung 1.3 macht E damit zum **Startzustand**, aus dem heraus jedes Feld sich einzeln rechtfertigen muss |
 | D — **nur Transkripte auswerten**, gar nicht erfassen | null Erfassungs-Aufwand, keine neue Sicherheitsfläche, die Daten liegen schon vor | die Datenquelle liegt **außerhalb** des Repos, gehört uns nicht und kann sich mit dem Werkzeug ändern; ohne Korrelations-IDs bleibt die Rollen- und Slice-Zuordnung Rekonstruktion statt Messung (real erlebt: die Rollen-Zuordnung dieser Sitzung stammte aus dem Gedächtnis, nicht aus den Daten) |
 
@@ -188,10 +225,15 @@ und der Verlust wird **sichtbar gemacht**, nicht verschluckt (Folgepflicht 4).
   diesem `MR`-Eintrag, nicht in einem Kommentar.
 - **Folgepflicht 3:** die Nutzer-Doku bleibt unberührt, **solange nicht emittiert wird** — Spans
   sind bis dahin ein Dogfood-Werkzeug ohne Adopter-Wirkung.
-- **Folgepflicht 4:** der **Verlust** eines Spans wird sichtbar (Festlegung 6). Fail-open heißt
-  „der Lauf geht weiter", nicht „niemand erfährt davon" — sonst entsteht ein Log, das lückenhaft
-  ist und vollständig aussieht. Wie die Sichtbarkeit aussieht (Zähler, Marker im Span-Strom),
-  entscheidet der umsetzende Slice; **dass** es sie gibt, entscheidet diese ADR.
+- **Folgepflicht 4 — der Verlust wird beim LESER sichtbar, nicht beim Schreiber.** Fail-open
+  heißt „der Lauf geht weiter", nicht „niemand erfährt davon" — sonst entsteht ein Log, das
+  lückenhaft ist und vollständig aussieht. Ein vom eigenen Timeout abgebrochener Emitter kann
+  seinen Ausfall aber **nicht selbst melden**; eine Sichtbarkeit, die von ihm abhinge, wäre
+  genau die Zusage ohne Abdeckung, gegen die [`AGENTS.md`](../../../AGENTS.md) §3.6 steht
+  (Proposed-Review Runde 2). Die Setzung ist deshalb: **jeder Span trägt eine je Sitzung
+  monoton steigende Folgenummer**, sodass eine Lücke **im Bestand** erkennbar ist — von dem, der
+  ihn liest, ohne Zutun dessen, der ihn schreibt. Der zugehörige Zahn steht unten in der Fitness
+  Function; ohne ihn wäre auch diese Folgepflicht nur eine Absicht.
 
 ## Fitness Function (falls maschinell prüfbar)
 
@@ -200,8 +242,9 @@ und der Verlust wird **sichtbar gemacht**, nicht verschluckt (Folgepflicht 4).
 | `test/mutations/` | Ein Span **ohne Pflicht-Feld** färbt seinen Wächter rot | `make mutate` |
 | `test/mutations/` | Ein Feld, das **nicht** auf der Allowlist steht, wird nicht durchgelassen — die Mutation setzt ein neues Feld ein und muss rot werden | `make mutate` |
 | `test/mutations/` | **Der Ablageort wird auf einen nicht-ignorierten Pfad gezogen** — der Wächter muss rot werden | `make mutate` |
+| `test/mutations/` | **Ein Span wird unterschlagen** (der Emitter überspringt einen Aufruf) — die Lücke in der Folgenummer muss auffallen; ohne diesen Fall wäre Folgepflicht 4 eine Absicht | `make mutate` |
 | bats (`make test`) | Der Emitter setzt den restriktiven Modus **selbst**: die erzeugte Datei ist `0600`, unabhängig von den Rechten des Verzeichnisses | `make test` |
-| bats (`make test`) | **Fail-open belegt:** ein absichtlich fehlschlagender Emitter (Exit ≠ 0, und getrennt: Überschreiten des eigenen Timeouts) lässt den Tool-Call **durch** | `make test` |
+| bats (`make test`) | **Fail-open, soweit hier prüfbar:** ein Emitter mit Exit ≠ 0 und einer, der auf stdout schreibt, verändern das Ergebnis des aufrufenden Skripts nicht. **Die Wirkung im Werkzeug** (blockt ein Exit-Code den Tool-Call? was tut sein Timeout?) prüft dieser Sensor **nicht** — sie gehört zur Messung im Slice und ist dort zu belegen, nicht hier zu behaupten | `make test` |
 
 **Was hier bewusst NICHT steht, und warum** (Proposed-Review-Befund, Runde 1): die Zeile
 *„ein Lauf mit Spans lässt den Working-Tree-Hash unverändert"* ist **gestrichen**. Sie war unter
@@ -227,23 +270,27 @@ dieselbe Tautologie.
   verlangt, ihn als solchen zu benennen und begründet aufzuteilen, statt eine Zuordnung zu
   behaupten. **Schwelle:** sobald ein Auswertungs-Slice (060) eine Zahl *je Rolle* ausweisen
   soll, ist die Abbildung zu entscheiden — vorher nicht.
-- **Wenn Spans emittiert werden sollen** (slice-062) *(feedback — der CR ist der Auslöser)*:
+- **Wenn Spans emittiert werden sollen** (slice-062) *(feedforward — ein CR ist ein menschlicher Vorgang, kein Sensor)*:
   Festlegung 5 wird dort eingelöst, und die Portabilität von 1–4 und 6 ist am realen Ziel zu
   **belegen**, nicht zu behaupten.
 - **Wenn dieses Repo selbst Agentenläufe betreibt** (statt in einem fremden Werkzeug zu laufen)
   *(feedforward — kein Sensor)* — dann kippt die Annahme „Audit, kein Betriebs-Monitoring", und
   Option B ist neu zu bewerten.
-- **Wenn die Erfassung den Lauf messbar bremst** *(feedback — die Messung liegt im Slice)*:
-  **Schwelle** ist der im Slice gemessene Aufschlag je Tool-Call; überschreitet er den dort
-  festgelegten Wert, ist nicht die Grenze zu erhöhen, sondern der Umfang zu senken (Festlegung 6
-  verlangt ohnehin einen harten Timeout).
-- **Wenn die leere Start-Allowlist dauerhaft leer bleibt** *(feedforward)* — dann erfasst das
-  Audit nur IDs, ist also faktisch Alternative E. Das ist **kein Fehler**, aber der Anlass, die
-  Wahl zwischen C und E ausdrücklich zu wiederholen, statt sie durch Nichtstun zu treffen.
+- **Wenn die Erfassung den Lauf bremst** *(feedforward, bis ein Slice den Sensor baut)*:
+  **Schwelle hier festgelegt statt an den Slice delegiert** — überschreitet der Aufschlag je
+  Tool-Call **50 ms im Median**, ist nicht die Grenze zu erhöhen, sondern der Umfang zu senken.
+  Die Zahl ist eine Setzung, keine Messung: sie liegt unter der Wahrnehmungsschwelle eines
+  interaktiven Laufs und weit unter dem Timeout aus Festlegung 6. Wer sie ändert, ändert sie
+  **hier** — nicht im Skript.
+- **Wenn die Allowlist nach dem ersten Auswertungs-Slice (060) immer noch leer ist**
+  *(feedforward — aber an ein Ereignis geknüpft, nicht an ein Gefühl)*: dann erfasst das Audit
+  nur IDs und ist faktisch Alternative E. Das ist **kein Fehler**, aber der Anlass, die Wahl
+  zwischen C und E ausdrücklich zu wiederholen, statt sie durch Nichtstun zu treffen.
 
 ## Geschichte
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-07-28 | Proposed | welle-09 §4 / slice-059 §6 (der Plan-Review vom 2026-07-28 verlangte die Entscheidung **vor** dem Slice) — auf die Slice-**ID** verwiesen, nicht auf den Pfad: der wandert durch die Lifecycle-Ordner |
+| 2026-07-28 | Überarbeitet (Runde 3), weiter **Proposed** | Proposed-Review Runde 2 `docs/reviews/2026-07-28-adr-0011-proposed-review-runde-2.md` (3 HIGH, 8 MEDIUM, 3 LOW/INFO — **alle drei HIGH von der Runde-2-Fassung selbst erzeugt**, dasselbe Muster wie ADR-0007). **R2-1/R2-10** — die verschärfte Randbedingung war *zu weit*: wörtlich hätte „keine Host-Sprachlaufzeit" die 16 eigenen Host-Skripte, den Guard und den Stop-Hook getroffen, und die Repo-Bindung war aus der **falschen Klausel** abgeleitet (die Bootstrap-Klausel meint ausweislich ihrer Messmethode die *Nutzer*-Laufzeit). Festlegung 4 zieht die Grenze jetzt zwischen **vorhanden** (POSIX-Basis, die Linie aus [ADR-0004](0004-durchsetzungs-emission.md)) und **zu installieren**. **R2-2** — fail-open und fail-closed teilten sich das Entscheidungs-Event; Hooks laufen parallel, und bei Exit 0 ist die Ausgabe ein Entscheidungs-Kanal. Festlegung 6 löst die Kollision jetzt **durch Konstruktion**: die Erfassung meidet das Guard-Event und schreibt nichts auf stdout. **R2-3** — Folgepflicht 4 hing an einem Emitter, der seinen eigenen Timeout-Tod nicht melden kann: jetzt **Folgenummern**, deren Lücke der *Leser* sieht, samt eigenem Mutations-Fall. Dazu: Aufräum-Regel beim Anlegen (statt eines Zeitpunkts, der bei Absturz ausfällt), die leere Allowlist als **erklärte** Abweichung vom Modul-15-Mindestsatz, Quadranten-Korrektur (zwei Trigger waren fälschlich *feedback*), eine **hier** festgelegte Latenz-Schwelle statt eines Verweises auf den Slice, Cs Contra-Spalte um die Sicherheitsfläche ergänzt, Index und slice-059 nachgezogen |
 | 2026-07-28 | Überarbeitet (Runde 2), weiter **Proposed** | Proposed-Review `docs/reviews/2026-07-28-adr-0011-proposed-review.md` (2 HIGH, 6 MEDIUM, 3 LOW, nicht annehmbar). **H-1** — eine Fitness Function, die unter keiner Mutation rot werden konnte (`--exclude-standard` schließt gitignorierte Pfade unbedingt aus, die Zusage war per Konstruktion wahr): gestrichen und durch den Fall ersetzt, der die Eigenschaft wirklich bewacht. **H-2** — Hook-Fehlschlag und Timeout waren nirgends entschieden, obwohl der Mechanismus an jedem Tool-Call hängt: neue **Festlegung 6** (Telemetrie fail-**open**, Guard bleibt fail-closed) samt verworfener Gegen-Entscheidung. **M** — [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) war falsch zitiert und auf das Ziel verengt (Festlegung 4 korrigiert, Randbedingung dadurch **schärfer**: keine Host-Sprachlaufzeit); Festlegung 1 war Wiedergabe statt Entscheidung (jetzt Schema-**Policy** mit leerer Start-Allowlist); Aufbewahrung, Dateimodus und Leserechte fehlten (Festlegung 3); Festlegung 5 war „portabel gemeint" statt bindend (jetzt: das **Ob** entscheidet der CR, das **Wie** diese ADR); Alternative **E** (Korrelations-Hook ohne Payload) ergänzt — sie ist der Grenzfall von C und durch die leere Start-Allowlist zugleich dessen Startzustand; Re-Evaluierungs-Trigger mit Schwellen und ehrlicher Quadranten-Kennzeichnung |

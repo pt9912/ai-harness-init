@@ -13,8 +13,10 @@ inhaltliche Adaption — Modul 15 ist adoptiert und unumgesetzt),
 (die Hook-Mechanik, an die dieser Slice andockt),
 [`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)
 (der inhaltsbasierte Nachweis, den ein Span im Arbeitsbaum brechen würde),
-[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (bash+awk, keine
-neue Abhängigkeit). Regelwerk-Quelle:
+[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (die Zusage für
+die **emittierte** Seite: „Ziel-Repos bleiben make/docker-getrieben"),
+[`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) (**Proposed** — solange nicht
+angenommen, bleibt dieser Slice in `open/`). Regelwerk-Quelle:
 `.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md` §Span-/Audit-Attribut-Regeln.
 
 **Autor:** ai-harness-init-Team (pt9912). **Datum:** 2026-07-28.
@@ -29,14 +31,15 @@ ohnehin sitzt: im **Hook**. Ohne diesen Schritt haben die übrigen Modul-15-Blö
 Cache-Zähler) keine eigene Datenquelle, sondern nur das Transkript des Werkzeugs — das außerhalb
 des Repos liegt, uns nicht gehört und keine Korrelations-IDs trägt.
 
-Kein OTel-SDK, kein Collector, kein Dashboard. **Die Randbedingung ist „keine neue
-Abhängigkeit", nicht ein bestimmtes Werkzeug** — welche Mechanik das erfüllt, ist Ergebnis der
-Messung unten und nicht Vorgabe dieses Plans. Die beiden Ebenen haben dabei **verschiedene**
-Grenzen: hier gilt Docker-only ([`ADR-0003`](../../adr/0003-go-native-binaries.md)), im
-emittierten Ziel gilt zusätzlich
-[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (über
-`bash + git + docker` hinaus nichts) — die schärfere Grenze bindet erst slice-063, nicht diesen
-Slice. Ablageort ist dieselbe Stelle wie beim Gate-Stempel.
+Kein OTel-SDK, kein Collector, kein Dashboard. **Die Randbedingung ist „nichts, das installiert
+werden muss", nicht ein bestimmtes Werkzeug** — welche Mechanik das erfüllt, ist Ergebnis der
+Messung unten und nicht Vorgabe dieses Plans. Die Grenze verläuft zwischen der **POSIX-Basis**,
+die der Harness ohnehin voraussetzt (`bash`, `awk`, Coreutils, `git`, `docker` — die Linie aus
+[`ADR-0004`](../../adr/0004-durchsetzungs-emission.md)), und jeder Laufzeit, die ein Adopter
+**installieren** müsste. Sie gilt **schon hier** und nicht erst bei der Emission
+([`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 4; die erste Fassung
+dieses Absatzes schob sie auf slice-063 — das war falsch und vom Proposed-Review widerlegt).
+Ablageort ist dieselbe Stelle wie beim Gate-Stempel.
 
 ## 2. Definition of Done
 
