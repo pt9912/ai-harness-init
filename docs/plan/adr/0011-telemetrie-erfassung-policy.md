@@ -91,13 +91,14 @@ ist der falsche Ort dafür. Die Policy selbst ist bindend:
    die Auflösung dem Auswerter überlässt, den Mindestsatz erfüllt oder von ihm abweicht,
    entscheidet der umsetzende Slice — mit Beleg, nicht per Vorab-Freistellung.
 
+5. **Was auch nach der Ableitung nicht erreichbar ist, wird begründet dokumentiert, nicht
+   weggelassen.** Eine stillschweigend verkürzte Feldliste ist die Fehlerklasse, die der
+   welle-09-Plan-Review als HIGH gefunden hat.
+
 **Warum diese Reihenfolge:** eine deklarierte Abweichung ist **billiger zu schreiben als eine
 Lösung** und deshalb verdächtig. Von den drei Feldern, für die eine frühere Fassung dieser ADR
 sie in Anspruch nahm, löst sich eines durch besseres Erfassen und eines durch eine Ableitung —
 übrig bleibt eines, und das ist eine echte offene Frage.
-5. **Was auch nach der Ableitung nicht erreichbar ist, wird begründet dokumentiert, nicht
-   weggelassen.** Eine stillschweigend verkürzte Feldliste ist die Fehlerklasse, die der
-   welle-09-Plan-Review als HIGH gefunden hat.
 
 **Festlegung 2 — Argument-Werte werden ABGELEITET erfasst, und die Schärfe ist je Ebene
 verschieden.** „Redigiert" im Sinne von Modul 15 heißt nicht *weggelassen*, sondern *abgeleitet
@@ -108,7 +109,7 @@ statt roh*. Je Werkzeug wird erfasst, was die Incident-Frage beantwortet — nic
 | Schreib-Werkzeuge | *was wurde **wohin** geschrieben?* | **Pfad** + **Länge**; im Repo zusätzlich ein Inhalts-**Hash** |
 | Kommando-Werkzeug | *welches Programm lief?* | **erstes Token** + Argument-Anzahl — nicht die volle Zeile |
 | Lese-Werkzeuge | *worauf wurde zugegriffen?* | Pfad |
-| **jedes andere, auch künftige** | *welches Werkzeug lief, mit welchem Ausgang?* | **nur** Name und Status — **keine** Argumente. Das ist der Default, und er ist fail-closed: ein Werkzeug, das hier nicht steht, gibt nichts preis. Betrifft heute u. a. das Agenten-Werkzeug mit seinem **Freitext-Prompt** — ausgerechnet das, auf dessen Subagenten-Hooks die Rollen-Achse beruht |
+| **jedes andere, auch künftige** | *welches Werkzeug lief, mit welchem Ausgang?* | **nur** Name und Status — **keine** Argumente. Der Default entscheidet über den **Werkzeug-NAMEN**, nicht über eine Gattung: die Zeilen oben sind auf konkrete Namen abzubilden, und was nicht namentlich gelistet ist, fällt hierher (die Gattungs-Formulierung der Vorfassung ließ genau dort Argumente durch, wo ein Name keiner Gattung zugeordnet war). Betrifft heute u. a. das Agenten-Werkzeug mit seinem **Freitext-Prompt** — ausgerechnet das, auf dessen Subagenten-Hooks die Rollen-Achse beruht |
 
 Damit wandert **kein Byte fremden Inhalts** ins Log: Massen-Abfluss über die Telemetrie ist
 konstruktiv ausgeschlossen, nicht per Regel verboten.
@@ -119,13 +120,19 @@ beschreibt. **Wer sie lesen kann, kann auch die Dateien lesen** — Pfade verrat
 Neues. Gemessen: sie ist nie committet, und die einzige Stelle, die den Baum kopiert
 (`harness/tools/mutate.sh`), schließt den Zustands-Bereich ausdrücklich aus.
 
-**Diese Ausnahme ist allerdings UNBEWACHT** — und das gehört hierher, weil das Bedrohungsmodell
-darauf steht: eine frühere Fassung dieses Absatzes behauptete, ein Mutations-Fall halte sie fest.
-Das war falsch (`test/mutations/74` benutzt den Ausschluss nur als *sed-Anker* und bewacht, dass
-`.git` **mit**kopiert wird). Wer den Ausschluss entfernt, kopiert Spans in die Mutations-Kopie,
-und **kein Sensor meldet es** — genau die Klasse, gegen die
-[`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) steht.
-Folgepflicht 5 unten schließt das; bis dahin ist es eine benannte Lücke, keine Zusage.
+**Und diese Ausnahme ist bewacht — von `test/mutate-driver.bats`** (Zusicherung
+`[ ! -e "$dest/.harness/state" ]`, Testfall *„die Kopie trägt den Sensor-Bedarf inklusive
+.git"*). Der Test läuft in `make test` und damit **in `make gates`**; selbst gefahren am
+2026-07-28.
+
+*Zur Herkunft dieser Zeile, weil sie zweimal falsch war und das lehrreicher ist als ihr
+Endstand:* Runde 4 behauptete hier einen **Mutations-Fall** — falsch, `test/mutations/74`
+benutzt den Ausschluss nur als *sed-Anker*. Runde 5 korrigierte auf **„unbewacht, kein Sensor
+meldet es"** — ebenfalls falsch, der bats-Test oben tut genau das. Beide Fassungen entstanden
+aus einer `grep`-Trefferliste, die als Vollständigkeitsaussage gelesen wurde, statt den Sensor
+zu **fahren**. Ein Mutations-Fall wäre hier übrigens auch das falsche Werkzeug: `make mutate`
+arbeitet in der isolierten Kopie, und die enthält den Zustands-Bereich gerade **nicht** — die
+Mutation maskierte sich selbst.
 
 Es bleiben **drei** reale Gründe, Inhalte dennoch nicht zu erfassen:
 
@@ -160,7 +167,7 @@ Kosmetik sind:
 - **Modus restriktiv (`0600`), vom Emitter selbst gesetzt.** Gemessen 2026-07-28: das
   Zustands-Verzeichnis ist `775`, die Stempeldatei `664` — welt-lesbar. Für einen Gate-Hash ist
   das folgenlos; für ein Audit-Log mit Pfaden und Argumenten nicht.
-- **Lebensdauer: die Sitzung — und der Emitter räumt beim Anlegen auf, nicht beim Beenden.**
+- **Je Sitzung ein eigener Strom — und der Emitter fasst nur seinen eigenen an.**
   Jede Sitzung schreibt in ihre **eigene, sitzungs-benannte** Datei; **beim ersten Span einer
   Sitzung** entfernt der Emitter ältere Bestände. Damit gibt es keinen Aufräum-Zeitpunkt, der
   bei einem Absturz ausfallen könnte, und keinen Dienst, der laufen müsste. **Er fasst dabei
@@ -237,12 +244,12 @@ Audit-Skript unbrauchbar), und bei jedem Fehler gilt *Span verloren, Lauf läuft
 Ereignis-Wahl kann sie nicht herstellen** (Runde 3). Der Grund ist gemessen, nicht vermutet:
 
 - Hooks desselben Ereignisses laufen **parallel**, und ihre Ausgabe ist bei Exit 0 ein
-  **Entscheidungs-Kanal**. Wie das Werkzeug widersprüchliche Antworten aggregiert, ist
-  dokumentiert — und es macht die Sache **schlimmer**, nicht besser: ein `block` **eines**
-  Hooks setzt sich durch (ODER-Verknüpfung, in der Rangfolge `deny > ask > defer > allow`). Ein
-  Telemetrie-Hook, der versehentlich eine Entscheidung ausgibt, wird also nicht überstimmt,
-  sondern **gewinnt**. *(Die Runde-4-Fassung führte hier „nicht dokumentiert" als Messung — an
-  der Quelle widerlegt; die korrekte Semantik trägt das Argument stärker.)*
+  **Entscheidungs-Kanal**. *(Frühere Fassungen behaupteten hier erst, die Aggregation
+  widersprüchlicher Antworten sei „nicht dokumentiert", dann eine konkrete Rangfolge. **Beides
+  ist gestrichen** — die erste Aussage war an der Quelle widerlegt, die zweite verschweißte zwei
+  Regeln aus disjunkten Ereignis-Mengen. Das Argument braucht sie nicht: dass ein
+  Telemetrie-Hook auf einem Kanal steht, auf dem Entscheidungen transportiert werden, ist das
+  Risiko — unabhängig davon, wie das Werkzeug mehrere Antworten verrechnet.)*
 - Es gibt **kein entscheidungsfreies Ereignis**, auf das man ausweichen könnte: auch die
   Nach-Ereignisse nehmen ein Top-Level-`decision` entgegen, und `Stop`/`SubagentStop` sind
   blockierbar.
@@ -293,9 +300,9 @@ und der Verlust wird **sichtbar gemacht**, nicht verschluckt (Folgepflicht 4).
 - **Positiv:** die Erfassung entsteht dort, wo die Mechanik schon sitzt — kein neuer Baustein im
   Bootstrap-Pfad. Die Sicherheitsentscheidung fällt **vor** dem ersten Span, nicht nach dem
   ersten Vorfall. Und die Werkzeug-Wahl bleibt dort, wo sie hingehört: bei der Messung.
-- **Negativ:** die Auswertung ist Eigenbau; wer OTel-Werkzeuge erwartet, findet keine. Die
-  Allowlist kostet laufende Pflege — jedes neue Feld, das erfasst werden soll, muss ausdrücklich
-  freigegeben werden (das ist der Preis von fail-closed, und er ist gewollt).
+- **Negativ:** die Auswertung ist Eigenbau; wer OTel-Werkzeuge erwartet, findet keine. Das
+  geschlossene Schema kostet laufende Pflege — jedes Werkzeug, dessen Argumente erfasst werden
+  sollen, muss namentlich aufgenommen werden (der Preis von fail-closed, und er ist gewollt).
 - **Zur Abdeckung — am 2026-07-28 geklärt, und zwar in die gute Richtung:** die erste Fassung
   dieser ADR hielt für möglich, dass die Erfassung **kleiner** ausfällt als „jeder Tool-Call",
   weil der registrierte Matcher (`Bash`) keine `Write`/`Edit`-Aufrufe sieht — gerade die
@@ -306,8 +313,8 @@ und der Verlust wird **sichtbar gemacht**, nicht verschluckt (Folgepflicht 4).
   verschweigen.
 - **Negativ, und jetzt der schärfere Punkt:** volle Abdeckung heißt, der Hook sieht auch
   `Write`/`Edit`-Payloads — also **Datei-Inhalte**. Die Erfassungsfläche wächst damit genau um
-  das, was am ehesten Secrets trägt. Festlegung 2 (Allowlist) ist deshalb nicht Beiwerk, sondern
-  die Bedingung, unter der volle Abdeckung überhaupt vertretbar ist.
+  das, was am ehesten Secrets trägt. Die **abgeleitete** Erfassung aus Festlegung 2 ist deshalb
+  nicht Beiwerk, sondern die Bedingung, unter der volle Abdeckung überhaupt vertretbar ist.
 - **Folgepflicht 1:** das Span-Schema (Feld · Pflicht/Optional · Incident-Frage) wird als
   `MR-<NNN>` in [`harness/conventions.md`](../../../harness/conventions.md) geführt — es ist eine
   Strukturregel, kein Implementierungsdetail, und der nächste Leser muss es ohne Code finden.
@@ -315,10 +322,10 @@ und der Verlust wird **sichtbar gemacht**, nicht verschluckt (Folgepflicht 4).
   diesem `MR`-Eintrag, nicht in einem Kommentar.
 - **Folgepflicht 3:** die Nutzer-Doku bleibt unberührt, **solange nicht emittiert wird** — Spans
   sind bis dahin ein Dogfood-Werkzeug ohne Adopter-Wirkung.
-- **Folgepflicht 5:** der **Zustands-Ausschluss der Mutations-Kopie bekommt seinen Wächter**
-  (`test/mutations/`). Er trägt heute das Bedrohungsmodell aus Festlegung 2 und ist unbewacht;
-  eine frühere Fassung dieser ADR behauptete das Gegenteil. Solange der Fall fehlt, ist die
-  Aussage „Spans verlassen die Maschine nicht" eine **Beobachtung**, keine Zusage.
+- **Folgepflicht 5:** die **stdout-Setzung aus Festlegung 6 bekommt ihren Mutations-Fall.** Für
+  die Exit-Klemme ist er unten gelistet, für „der Emitter schweigt" nur ein bats-Test — und
+  gerade die Kindprozess-Hälfte („auch das der Kinder", die fd 1 erben) verliert ihre Zähne
+  lautlos, wenn jemand die Umleitung entfernt.
 - **Folgepflicht 4 — der Verlust wird beim LESER sichtbar, nicht beim Schreiber.** Fail-open
   heißt „der Lauf geht weiter", nicht „niemand erfährt davon" — sonst entsteht ein Log, das
   lückenhaft ist und vollständig aussieht. Ein vom eigenen Timeout abgebrochener Emitter kann
@@ -343,14 +350,14 @@ und der Verlust wird **sichtbar gemacht**, nicht verschluckt (Folgepflicht 4).
 | Tooling | Regel | Make-Target |
 |---|---|---|
 | `test/mutations/` | Ein Span **ohne Pflicht-Feld** färbt seinen Wächter rot | `make mutate` |
-| `test/mutations/` | Ein Feld, das **nicht** auf der Allowlist steht, wird nicht durchgelassen — die Mutation setzt ein neues Feld ein und muss rot werden | `make mutate` |
+| `test/mutations/` | Ein Werkzeug, das **nicht namentlich** im Schema steht, gibt trotzdem Argumente preis — der Wächter muss rot werden (der fail-closed Default aus Festlegung 2) | `make mutate` |
 | `test/mutations/` | **Der Ablageort wird auf einen nicht-ignorierten Pfad gezogen** — der Wächter muss rot werden | `make mutate` |
 | `test/mutations/` | **Ein Span wird unterschlagen** (der Emitter überspringt einen Aufruf) — die Lücke in der Folgenummer muss auffallen; ohne diesen Fall wäre Folgepflicht 4 eine Absicht | `make mutate` |
 | bats (`make test`) | Der Emitter setzt den restriktiven Modus **selbst**: die erzeugte Datei ist `0600`, unabhängig von den Rechten des Verzeichnisses | `make test` |
 | bats (`make test`) | **Die Klemme greift:** ein Emitter, dessen *innere* Arbeit fehlschlägt (erzwungener Fehler; getrennt: ein `awk`-Fatalfehler, der für sich Exit 2 liefert), endet trotzdem mit **Exit 0** | `make test` |
 | bats (`make test`) | **Der Emitter schweigt auf dem Entscheidungs-Kanal:** unter allen geprüften Fehlerfällen ist sein **stdout leer** — auch das seiner Kindprozesse | `make test` |
 | `test/mutations/` | **Die Klemme wird entfernt** (der Emitter reicht seinen inneren Exit-Code durch) — der Wächter muss rot werden; ohne diesen Fall wäre Festlegung 6 eine Absicht | `make mutate` |
-| `test/mutations/` | **Der Zustands-Ausschluss der Mutations-Kopie wird entfernt** — der Wächter muss rot werden (heute unbewacht, s. Festlegung 2 / Folgepflicht 5) | `make mutate` |
+| bats (`make test`) | **Der Zustands-Ausschluss der Mutations-Kopie hält** — die Zusicherung liegt bereits vor (`test/mutate-driver.bats`), sie ist hier nur benannt, weil das Bedrohungsmodell aus Festlegung 2 auf ihr steht. **Kein** Mutations-Fall: `make mutate` arbeitet in der isolierten Kopie, die den Zustands-Bereich nicht enthält — die Mutation maskierte sich selbst | `make gates` |
 
 **Was hier bewusst NICHT steht, und warum** (Proposed-Review-Befund, Runde 1): die Zeile
 *„ein Lauf mit Spans lässt den Working-Tree-Hash unverändert"* ist **gestrichen**. Sie war unter
@@ -401,6 +408,8 @@ dieselbe Tautologie.
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-07-28 | Proposed | welle-09 §4 / slice-059 §6 (der Plan-Review vom 2026-07-28 verlangte die Entscheidung **vor** dem Slice) — auf die Slice-**ID** verwiesen, nicht auf den Pfad: der wandert durch die Lifecycle-Ordner |
+| 2026-07-28 | Überarbeitet (Runde 6), weiter **Proposed** | Proposed-Review Runde 5 `docs/reviews/2026-07-28-adr-0011-proposed-review-runde-5.md` (2 HIGH, beide im **selben Reparatur-Absatz**, keine Festlegung berührt). **R5-1:** die Runde-5-Korrektur ersetzte eine falsche Sensor-**Zusage** durch eine falsche Sensor-**Verneinung** — der Zustands-Ausschluss ist sehr wohl bewacht, von `test/mutate-driver.bats` (Zusicherung `[ ! -e "$dest/.harness/state" ]`, Testfall `ok 89`, läuft in `make gates`; selbst nachgefahren). **R5-2:** der dafür eingesetzte Mutations-Fall wäre gar nicht ausführbar — `make mutate` arbeitet in der isolierten Kopie, die den Zustands-Bereich nicht enthält; die Mutation maskierte sich selbst. Beide Fehlgriffe stehen jetzt **im Text**, weil ihre Klasse lehrreicher ist als ihr Endstand: dreimal wurde eine `grep`-Trefferliste als Vollständigkeitsaussage gelesen, statt den Sensor zu fahren. Dazu: die Aggregations-Aussage **ersatzlos gestrichen** (erst „nicht dokumentiert", dann eine Rangfolge aus disjunkten Ereignis-Mengen — das Argument braucht beides nicht), fail-closed Default auf den **Werkzeug-Namen** statt auf Gattungen (dort gingen Argumente durch), Allowlist-Reste in Konsequenz und Fitness Function gezogen, die Überschrift „Lebensdauer: die Sitzung" auf das korrigiert, was darunter entschieden ist, Folgepflicht 5 auf die stdout-Setzung umgewidmet (sie hat als einzige noch keinen Mutations-Fall), Listen-Bruch in Festlegung 1 behoben |
+| 2026-07-28 | Überarbeitet (Runde 5), weiter **Proposed** | Proposed-Review Runde 4 `docs/reviews/2026-07-28-adr-0011-proposed-review-runde-4.md` (3 HIGH — **alle drei Defekte der Überarbeitung, nicht der Entscheidung**; der Reviewer hielt fest, die Entscheidung sei „in keinem Punkt mehr strittig"). Behoben: ein Beleg ohne Wächter, ein beim Ersetzen stehen gebliebener Absatz (zwei widersprüchliche Regeln „4."), ein Kernstück ohne Fitness Function. Dazu Ableitungs-Randfälle, fail-closed Default, kein Inhalts-Hash auf der emittierten Ebene, Aufräumen nur der eigenen Datei, Nummernkreis je (Sitzung, Agent) |
 | 2026-07-28 | Überarbeitet (Runde 4), weiter **Proposed** | Proposed-Review Runde 3 `docs/reviews/2026-07-28-adr-0011-proposed-review-runde-3.md` (**1 HIGH**, von 3 — Konvergenz messbar: HIGH 2 → 3 → 1). **R3-1, blockierend:** die Zusage, die fail-open/fail-closed-Kollision *durch Ereignis-Wahl* zu lösen, hielt nicht — es gibt **kein entscheidungsfreies Ereignis** (auch die Nach-Ereignisse nehmen ein `decision` entgegen, `Stop`/`SubagentStop` sind blockierbar), und dieses Repo betreibt auf `Stop` bereits einen **zweiten fail-closed Hook**, ausgerechnet auf einer der benannten Lauf-Grenzen. Festlegung 6 verlagert die Konstruktion deshalb an den **Emitter**: kein stdout, Exit-Code hart auf 0 geklemmt (gemessen: `awk` endet bei fatalem Fehler mit Exit 2 — genau dem blockierenden Wert). **Nutzer-Einwand im selben Zug, unabhängig vom Review:** die Allowlist war ein Sicherheits-Instrument ohne benannten Gegner. Festlegung 2 ist ersetzt durch **abgeleitete** Argument-Werte (Pfad + Fingerabdruck statt Inhalt, Programm-Token statt Kommandozeile) mit **benanntem Bedrohungsmodell** und **ebenen-abhängiger** Schärfe; die Warnung vor Pfaden ist ersatzlos gestrichen (sie verrieten niemandem etwas, der nicht ohnehin Lesezugriff hat — gemessen). Damit **entfällt die Abweichung vom Modul-15-Mindestsatz**: `tool.arguments` wird erfasst. Festlegung 1 bekommt die Regel **Ableiten schlägt deklarieren** (`requirement.id` ist aus der Slice-`Bezug:`-Zeile ableitbar — gemessen); offen bleibt genau der Cache-Status. Dazu: Folgenummer-Vergabezeitpunkt samt **ehrlich benannter Lücke** (stirbt der Emitter vor der Vergabe, entsteht keine), Aufräumen ohne fremde Sitzungen zu treffen, `sed`/`grep` in der Erlaubt-Liste samt Eigenschafts-Kriterium statt Aufzählung, Container-Start-pro-Aufruf als Grenze benannt, `ADR-0004` als Quelle auf die Bauart eingegrenzt, welle-09 nachgezogen |
 | 2026-07-28 | Überarbeitet (Runde 3), weiter **Proposed** | Proposed-Review Runde 2 `docs/reviews/2026-07-28-adr-0011-proposed-review-runde-2.md` (3 HIGH, 8 MEDIUM, 3 LOW/INFO — **alle drei HIGH von der Runde-2-Fassung selbst erzeugt**, dasselbe Muster wie ADR-0007). **R2-1/R2-10** — die verschärfte Randbedingung war *zu weit*: wörtlich hätte „keine Host-Sprachlaufzeit" die 16 eigenen Host-Skripte, den Guard und den Stop-Hook getroffen, und die Repo-Bindung war aus der **falschen Klausel** abgeleitet (die Bootstrap-Klausel meint ausweislich ihrer Messmethode die *Nutzer*-Laufzeit). Festlegung 4 zieht die Grenze jetzt zwischen **vorhanden** (POSIX-Basis, die Linie aus [ADR-0004](0004-durchsetzungs-emission.md)) und **zu installieren**. **R2-2** — fail-open und fail-closed teilten sich das Entscheidungs-Event; Hooks laufen parallel, und bei Exit 0 ist die Ausgabe ein Entscheidungs-Kanal. Festlegung 6 löst die Kollision jetzt **durch Konstruktion**: die Erfassung meidet das Guard-Event und schreibt nichts auf stdout. **R2-3** — Folgepflicht 4 hing an einem Emitter, der seinen eigenen Timeout-Tod nicht melden kann: jetzt **Folgenummern**, deren Lücke der *Leser* sieht, samt eigenem Mutations-Fall. Dazu: Aufräum-Regel beim Anlegen (statt eines Zeitpunkts, der bei Absturz ausfällt), die leere Allowlist als **erklärte** Abweichung vom Modul-15-Mindestsatz, Quadranten-Korrektur (zwei Trigger waren fälschlich *feedback*), eine **hier** festgelegte Latenz-Schwelle statt eines Verweises auf den Slice, Cs Contra-Spalte um die Sicherheitsfläche ergänzt, Index und slice-059 nachgezogen |
 | 2026-07-28 | Überarbeitet (Runde 2), weiter **Proposed** | Proposed-Review `docs/reviews/2026-07-28-adr-0011-proposed-review.md` (2 HIGH, 6 MEDIUM, 3 LOW, nicht annehmbar). **H-1** — eine Fitness Function, die unter keiner Mutation rot werden konnte (`--exclude-standard` schließt gitignorierte Pfade unbedingt aus, die Zusage war per Konstruktion wahr): gestrichen und durch den Fall ersetzt, der die Eigenschaft wirklich bewacht. **H-2** — Hook-Fehlschlag und Timeout waren nirgends entschieden, obwohl der Mechanismus an jedem Tool-Call hängt: neue **Festlegung 6** (Telemetrie fail-**open**, Guard bleibt fail-closed) samt verworfener Gegen-Entscheidung. **M** — [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) war falsch zitiert und auf das Ziel verengt (Festlegung 4 korrigiert, Randbedingung dadurch **schärfer**: keine Host-Sprachlaufzeit); Festlegung 1 war Wiedergabe statt Entscheidung (jetzt Schema-**Policy** mit leerer Start-Allowlist); Aufbewahrung, Dateimodus und Leserechte fehlten (Festlegung 3); Festlegung 5 war „portabel gemeint" statt bindend (jetzt: das **Ob** entscheidet der CR, das **Wie** diese ADR); Alternative **E** (Korrelations-Hook ohne Payload) ergänzt — sie ist der Grenzfall von C und durch die leere Start-Allowlist zugleich dessen Startzustand; Re-Evaluierungs-Trigger mit Schwellen und ehrlicher Quadranten-Kennzeichnung |
