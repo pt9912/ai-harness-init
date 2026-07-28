@@ -29,26 +29,43 @@ ohnehin sitzt: im **Hook**. Ohne diesen Schritt haben die übrigen Modul-15-Blö
 Cache-Zähler) keine eigene Datenquelle, sondern nur das Transkript des Werkzeugs — das außerhalb
 des Repos liegt, uns nicht gehört und keine Korrelations-IDs trägt.
 
-Kein OTel-SDK, kein Collector, kein Dashboard: **JSONL, geschrieben von bash+awk**, an derselben
-Stelle wie der Gate-Stempel.
+Kein OTel-SDK, kein Collector, kein Dashboard. **Die Randbedingung ist „keine neue
+Abhängigkeit", nicht ein bestimmtes Werkzeug** — welche Mechanik das erfüllt, ist Ergebnis der
+Messung unten und nicht Vorgabe dieses Plans. Die beiden Ebenen haben dabei **verschiedene**
+Grenzen: hier gilt Docker-only ([`ADR-0003`](../../adr/0003-go-native-binaries.md)), im
+emittierten Ziel gilt zusätzlich
+[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (über
+`bash + git + docker` hinaus nichts) — die schärfere Grenze bindet erst slice-063, nicht diesen
+Slice. Ablageort ist dieselbe Stelle wie beim Gate-Stempel.
 
 ## 2. Definition of Done
 
 - [ ] **(1) Das Span-Schema steht, bevor der erste Span geschrieben wird — jedes Feld mit
-  seiner Incident-Frage.** Modul 15 verlangt genau das und zieht die Grenze selbst: *„Ein
-  Attribut ohne Incident-Frage fliegt raus."* Pflicht-Minimum: `slice.id` („auf wessen Rechnung
-  lief der Schreibzugriff?"), `agent.role`, `tool.name`, `tool.arguments` **redigiert** („was
-  wurde wohin geschrieben — ohne Secrets im Log?"), `tool.result.status`. Jede Abweichung vom
-  Minimum wird **begründet**, nicht weggelassen.
-- [ ] **(2) Der Hook schreibt real, und der Gate-Nachweis bleibt heil.** An einem echten Lauf
-  belegt: Spans liegen vor, Felder vollständig, Korrelations-IDs gefüllt. Ziel ist
-  `.harness/state/` — **gitignored, wie der Gate-Stempel**: ein Span im getrackten Baum ginge in
-  den `working-tree-hash` ein und der Stop-Hook blockierte sich selbst (die slice-031-Lehre, hier
-  vorweggenommen statt nachher gelernt).
-- [ ] **(3) Zwei Zähne, rot gesehen.** Ein Span **ohne Pflicht-Feld** und ein Span mit einem
-  **unredigierten Secret** in `tool.arguments` sind Befunde — je als `test/mutations/`-Fall
-  hinterlegt ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Der zweite ist der wichtigere: ein
-  Audit-Log, das Secrets sammelt, ist schlimmer als keines.
+  seiner Incident-Frage.** Modul 15 führt **zwei** Listen, und beide gelten:
+  *Mindestfelder eines Tool-Call-Spans* — `tool.name`, `tool.arguments` (redigiert),
+  `tool.result.status` **plus Korrelations-IDs zu Slice/PR/Agent-Rolle`; und das
+  *Audit-Span-Schema* mit dem **Pflicht-Minimum: Slice-ID, Agent-Rolle, Cache-Status,
+  `requirement.id`**. Jedes Feld wird als *Pflicht* oder *Optional* markiert und trägt seine
+  Incident-Frage (*„Ein Attribut ohne Incident-Frage fliegt raus"*). **Jede Abweichung vom
+  Pflicht-Minimum wird begründet** — insbesondere `requirement.id` und `Cache-Status`, für die
+  heute keine offensichtliche Quelle im Hook existiert: sie werden **nicht stillschweigend
+  weggelassen**, sondern entweder erschlossen oder als begründete Abweichung dokumentiert.
+- [ ] **(2) Der Hook schreibt real, die erfasste MENGE ist benannt, und der Gate-Nachweis bleibt
+  heil.** An einem echten Lauf belegt: Spans liegen vor, Felder vollständig, Korrelations-IDs
+  gefüllt. **Die Abdeckung wird ausgesprochen, nicht suggeriert:** der heutige Hook ist mit
+  `"matcher": "Bash"` registriert und sähe damit **keinen** `Write`/`Edit`-Aufruf — genau die
+  Schreibzugriffe, nach denen die Incident-Frage zu `slice.id` fragt. Entweder die Erfassung
+  deckt sie ab, oder die Zusage wird auf das eingeschränkt, was sie hält (Messung F).
+  Ablageort ist `.harness/state/` — **gitignored, wie der Gate-Stempel**: ein Span im getrackten
+  Baum ginge in den `working-tree-hash` ein und der Stop-Hook blockierte sich selbst (die
+  slice-031-Lehre, hier vorweggenommen statt nachher gelernt).
+- [ ] **(3) Zwei Zähne, rot gesehen.** Ein Span **ohne Pflicht-Feld** und ein Span, der ein
+  Secret durchlässt — je als `test/mutations/`-Fall hinterlegt
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Der zweite ist der wichtigere und muss als
+  **Allowlist** gebaut sein: nur bekannte, unkritische Felder gehen durch, alles andere wird
+  redigiert. Eine Denylist prüft nur die Muster, die der Implementierung schon eingefallen sind,
+  und kann unter keiner **realen** Lücke rot werden — ein Audit-Log, das Secrets sammelt, ist
+  schlimmer als keines.
 - [ ] `make gates` grün, `make mutate` ohne Befund.
 - [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -62,7 +79,7 @@ Stelle wie der Gate-Stempel.
 | 1 | Die Hook-Mechanik ist **verdrahtet**, in beiden Werkzeugen | `.claude/settings.json` → `PreToolUse` (Guard) + `Stop` (Gate-Nachweis); `.codex/hooks.json` → `SessionStart` |
 | 2 | Der Guard **sieht jeden Bash-Tool-Call** samt Argumenten | `.claude/hooks/pretooluse-command-guard.sh` + `harness/tools/extract-command.awk` — die Payload wird bereits geparst, nur nichts davon behalten |
 | 3 | Es gibt **kein** Log: der Guard entscheidet und vergisst | `grep -E "log|tee|>>" .claude/hooks/pretooluse-command-guard.sh` → leer |
-| 4 | Der gitignored Ablageort **existiert bereits** | `.harness/.gitignore` → `state/`; dort liegt `gates-passed.diffsha` |
+| 4 | Der gitignored Ablageort **existiert bereits** | `git check-ignore -v .harness/state/gates-passed.diffsha` → `.gitignore:5`. **Achtung, zwei Ebenen:** im Dogfood steht die Regel in der Repo-`.gitignore`; die **emittierte** Fassung bringt eine eigene `.harness/.gitignore` mit (slice-031). Wer das verwechselt, plant gegen die falsche Datei |
 | 5 | Die Hooks werden **ins Ziel emittiert** | `internal/emit/templates/enforce/settings.json` — identische Struktur (Dogfood und Ziel teilen die Mechanik) |
 
 **Vor dem ersten Code zu messen (der Slice beginnt mit Messen, nicht mit Schreiben):**
@@ -74,12 +91,14 @@ Stelle wie der Gate-Stempel.
 | C | Woher kommt `slice.id`? | `ls docs/plan/planning/in-progress/slice-*.md` — der Zustand **ist** das Verzeichnis (Modul 5). Eine Quelle, kein Zustandsfile. |
 | D | Woher kommt `agent.role`? | Offen. Kandidaten: der laufende Command/Skill, oder der Transkript-Pfad aus der Payload. **Nicht raten** — messen und, falls nicht ermittelbar, den Sammelposten benennen (Modul 15 verlangt genau diese Entscheidung). |
 | E | Was kostet der Hook pro Tool-Call? | Ein Audit, das den Lauf spürbar bremst, wird abgeschaltet — dann ist es kein Sensor mehr. |
+| F | **Welche Tool-Calls sieht der Hook überhaupt?** | Der bestehende `PreToolUse`-Eintrag hat `"matcher": "Bash"`. `Write`/`Edit` fielen damit heraus — also genau die **Schreibzugriffe**, für die `slice.id` seine Incident-Frage trägt. Zu messen: welche Matcher/Events es gibt und was sie abdecken. Ergebnis entscheidet, ob DoD (2) „alle Tool-Calls" sagen darf oder eine eingeschränkte Menge benennen muss. |
+| G | Woher kommen `requirement.id` und `Cache-Status`? | Beide stehen im Pflicht-Minimum des Audit-Schemas. Für `requirement.id` ist der Slice-Plan die einzige Quelle (§Bezug); der Cache-Status liegt im Transkript, nicht in der Hook-Payload. Wenn eines nicht erschließbar ist, ist das eine **begründete Abweichung** nach Modul 15 — kein stilles Weglassen. |
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `harness/tools/` (neues Span-Skript) | neu | bash+awk, schreibt JSONL nach `.harness/state/` ([`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption): lokale Tools liegen hier) |
-| `.claude/settings.json` | update | das Nach-Event verdrahten (abhängig von Messung A) |
-| `harness/tools/json-encode.awk` | update / wiederverwenden | existiert bereits — JSON-Encoding ohne neue Abhängigkeit ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)) |
+| `harness/tools/` (neuer Span-Emitter) | neu | Ablage nach [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption) (lokale Tools liegen hier). **Die Mechanik ist offen** — Randbedingung „keine neue Abhängigkeit", Auswahl nach den Messungen A–G, nicht vorab festgelegt |
+| `.claude/settings.json` | update | Event(s) und **Matcher** verdrahten (abhängig von Messung A **und F**) |
+| `harness/tools/json-encode.awk` | prüfen, ggf. wiederverwenden | existiert bereits für JSON-**Ausgabe**; ob es auch für die Payload-**Eingabe** trägt, ist Messung A — Encoding und Parsing sind nicht dasselbe Problem |
 | `test/` + `test/mutations/` | neu | die zwei Zähne aus DoD (3) |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | das Span-Schema als `MR`-Eintrag — es ist eine Struktur-Regel, kein Implementierungsdetail |
 
@@ -121,6 +140,13 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
   `harness/tools/` und nicht in eine Form, die einen späteren Umzug in die emittierte Ablage
   (`tools/harness/`, [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption))
   erschwert — und es trägt **keine** Quell-Repo-Identität (Lehre aus slice-031/032/033).
+- **ADR-Bedarf: wahrscheinlich, und VOR diesem Slice zu klären** (Plan-Review-Befund). Ein
+  Span-Schema führt eine neue Artefakt-Klasse, einen neuen Datenfluss und eine Sicherheitsfläche
+  ein — und die Entscheidungen fallen faktisch **hier**, nicht erst bei der Emission: welche
+  Felder, welche Redaktions-Strategie, welcher Ablageort. Genau diese Klasse hat bei slice-058
+  zu [`ADR-0010`](../../adr/0010-hexagonal-arch-realisierung.md) geführt. Solange das nicht
+  entschieden ist, bleibt dieser Slice in `open/` — dieselbe Bedingung, die slice-058 getragen
+  hat.
 - **Kein Carveout absehbar.**
 
 ## 7. Closure-Notiz (nach `done/`)

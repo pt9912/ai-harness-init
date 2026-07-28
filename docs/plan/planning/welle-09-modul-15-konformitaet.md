@@ -81,13 +81,17 @@ Modul-15-Block-4.
   | Wert | Bedeutung |
   |---|---|
   | **Sensor** | läuft real, mit `test/mutations/`-Fall ([`AGENTS.md`](../../../AGENTS.md) §3.6) |
-  | **deklariert** | bewusste Nicht-Umsetzung als `MR-<NNN>` (Geltungsbereich, Begründung, Auflösungs-Trigger) |
-  | **emittiert / nicht emittiert** | nur Tool-Spalte: die Entscheidung selbst ist der Beleg, nicht ihr Ausgang |
+  | **deklariert** | bewusste Nicht-Umsetzung als `MR-<NNN>` — Geltungsbereich, Begründung, **Auflösungs-Trigger** |
+  | **emittiert** | im Ziel vorhanden **und dort rot gesehen** (s. u.) |
+  | **nicht emittiert** | begründete Entscheidung **mit Auflösungs-Trigger** — dieselbe Pflicht wie bei „deklariert"; eine Entscheidung ohne Trigger ist nach Modul 7 die permanente Ausnahme, die lügt |
 
   Eine leere Zelle ist ein offener Closure-Trigger — kein „passt schon".
-- **Die Tool-Spalte braucht ihren eigenen Beleg:** was emittiert wird, ist im frisch
-  gebootstrappten Ziel **out-of-the-box grün** (`make full-smoke`) — die Lehre aus slice-028,
-  die für jede Emission gilt und nicht nur für Gates.
+- **Die Tool-Spalte braucht ihren eigenen Beleg, und „grün" genügt nicht.** Ein emittierter
+  Mechanismus, der **nie feuert**, lässt `make full-smoke` ebenfalls grün — das ist die
+  [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Falle eine Ebene weiter. Verlangt sind daher **beide** Richtungen, wie in welle-08
+  etabliert: (a) das frisch gebootstrappte Ziel ist out-of-the-box grün (Lehre aus slice-028),
+  **und** (b) ein Gegenbeispiel im Ziel wird **rot gesehen** — für einen emittierten Span-Emitter
+  etwa: er läuft, und ein Lauf ohne Pflicht-Feld fällt auf.
 - `make gates` und `make mutate` grün; jeder neue Wächter hat seinen `test/mutations/`-Fall
   ([`AGENTS.md`](../../../AGENTS.md) §3.6).
 - Carveout-Audit (Modul 7): [`CO-001`](../carveouts/CO-001-bats-shell-lint.md) geprüft, neue
@@ -106,7 +110,7 @@ wenn sie an der Reihe sind; ein leeres `open/` ist ehrlicher als eine driftende 
 | slice-061 | Repo | **Doku-Konsistenz**: behauptete Befehle existieren (Block 4) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | slice-062 | **Tool** | **Entscheidung**: welche Modul-15-Regeln gehören in den emittierten Harness? (ADR + CR) | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
 | slice-063 | **Tool** | **Emission**: das Entschiedene emittieren, out-of-the-box grün belegt | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
-| slice-064 | beide | **Bestands-Prüfung**: welche Regelwerk-Abschnitte sind adoptiert, aber unumgesetzt? | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-064 | beide | **Die Baseline-Aussage geradeziehen** + begrenzte Bestands-Stichprobe | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 
 **Die Reihenfolge ist die Aussage.** Erst die **Erfassung**, dann die Auswertung: ohne Spans hat
 die Token-Bilanz keine eigene Datenquelle, sondern nur das Transkript des Werkzeugs — das
@@ -140,11 +144,26 @@ neue Artefakt-Klasse mit Sicherheitsfläche (redigierte Tool-Argumente) im Ziel 
 es zählt: `make full-smoke`, out-of-the-box grün im frisch gebootstrappten Ziel. Emittierte
 Artefakte tragen **keine** Quell-Repo-Identität (die Lehre aus slice-031/032/033).
 
-**Zu slice-064:** der Trigger-Befund aus §2 verallgemeinert, und er gilt für **beide** Ebenen.
-Wenn die Delta-Prüfung den Bestand nie sieht, ist Modul 15 vermutlich nicht der einzige Fall —
-und niemand weiß es, weil es nie jemand geprüft hat. Hier gehört auch der Nebenbefund aus §1 hin
-(unser [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) ist gegenüber der Vorlage verschärft, ohne dass es jemand deklariert hat). Erst
-messen, dann entscheiden, ob daraus ein Sensor wird.
+**Zu slice-064 — bewusst BEGRENZT.** Er liefert zwei Dinge und **nicht** eine Inventur aller 21
+Regelwerk-Abschnitte: (a) unser
+[`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) wird auf das zurückgeführt,
+was die Vorlage sagt (die Verschärfung aus §1 wird entweder deklariert oder zurückgenommen);
+(b) eine **Stichprobe** über die Abschnitte, die Modul 15 am nächsten liegen (Phase 05:
+modul-14/15/16), als Beleg dafür, ob der Befund Einzelfall oder Muster ist. Ergibt die
+Stichprobe ein Muster, ist der Sensor dafür ein **eigener Kandidat** — nicht Teil dieser Welle.
+Sonst zöge eine unbegrenzte Bestandsaufnahme das Closure-Kriterium ins Unabsehbare, und die
+Welle verlöre genau das, was sie in §6 von sich selbst verlangt.
+
+**Wann [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) geradegezogen wird — nicht erst am Ende.** Die als überzogen gemessene Fassung
+steht bis dahin in [`harness/conventions.md`](../../../harness/conventions.md), und der
+CR-/ADR-Autor von slice-062 liest sie, um die emittierte Ebene zu beurteilen. Die Korrektur ist
+darum **Vorbedingung für slice-062**, auch wenn sie in slice-064 dokumentiert wird — oder sie
+wandert vor. Das entscheidet der Planner beim Schnitt von 062, nicht dieser Plan im Voraus.
+
+**ADR-Bedarf — vor slice-059, nicht bei slice-062** (Plan-Review-Befund): Schema, Datenfluss und
+Sicherheitsfläche werden faktisch im **Dogfood-Slice** entschieden, nicht erst bei der Emission.
+Solange das nicht als ADR entschieden ist, bleibt slice-059 in `open/` — dieselbe Bedingung, die
+slice-058 getragen hat.
 
 ## 5. Abhängigkeiten
 
@@ -156,12 +175,15 @@ messen, dann entscheiden, ob daraus ein Sensor wird.
 
 ## 6. Out-of-Scope für diese Welle
 
-- **Ein OTel-*Stack*** — Collector, Backend, Dashboard, Vendor-SDK. **Nicht** die Erfassung:
-  die ist der Kern dieser Welle und passiert lokal als JSONL aus bash+awk
-  ([`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten): keine neue
-  Abhängigkeit). Die Unterscheidung ist die Pointe — *Spans erfassen* und *einen
+- **Ein OTel-*Stack*** — Collector, Backend, Dashboard, Vendor-SDK. **Nicht** die Erfassung: die
+  ist der Kern dieser Welle. Die Unterscheidung ist die Pointe — *Spans erfassen* und *einen
   Observability-Stack betreiben* sind zwei verschiedene Dinge, und nur das zweite ist hier
-  Overhead. Für die Auswahl gilt Modul 15 selbst: *„Ein Attribut ohne Incident-Frage fliegt
+  Overhead. **Die Randbedingung ist „keine neue Abhängigkeit", nicht ein bestimmtes Werkzeug**
+  — welche Mechanik sie erfüllt, entscheidet die Messung im jeweiligen Slice, nicht dieser Plan.
+  Die Grenzen sind dabei je Ebene verschieden: im Repo Docker-only
+  ([`ADR-0003`](../adr/0003-go-native-binaries.md)), im Ziel zusätzlich
+  [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (`bash + git +
+  docker`). Für die Feld-Auswahl gilt Modul 15 selbst: *„Ein Attribut ohne Incident-Frage fliegt
   raus."*
 - **Nicht out-of-scope, sondern ausdrücklich drin: die Tool-Ebene** (slice-062/063). Sie stand in
   der ersten Fassung dieses Plans unter „aufgeschoben" — auf Nutzer-Entscheidung vom 2026-07-28
