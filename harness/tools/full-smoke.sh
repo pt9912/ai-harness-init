@@ -637,6 +637,109 @@ fi
 echo "full-smoke: beide Arch-Gates liefen im selben make-gates-Lauf:"
 grep -oE 'apps/hex2?":/src:ro' <<<"$two_out" | sort -u | sed 's/^/full-smoke:   /'
 
+# --- slice-058 (LH-FA-04 Arch-Achse / ADR-0010): go x hexagonal, das DRITTE Layout -----
+# Nicht „hexslice mit weniger Regeln", sondern ein eigenes Layout mit eigenem Vokabular
+# (core/port/adapter statt domain/application/ports/adapters). Belegt werden hier drei
+# Dinge, die kein Unit-Test belegen kann: (a) das Modul entsteht mit den Pfaden der
+# gelebten Familien-Konvention und NICHT mit dem `--print-config`-Geruest, (b) `make -j
+# gates` UEBERSETZT und LINTET den Schichten-Code real, (c) die beiden TRAGENDEN Regeln
+# dieses Layouts haben Zaehne — mit Regel-NAMEN, nicht nur Exit != 0.
+echo "full-smoke: add-lang go apps/hexagonal --arch hexagonal (drittes Layout, slice-058/ADR-0010) ..."
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang go apps/hexagonal --arch hexagonal )
+for rel in apps/hexagonal/internal/hexagon/core/greet.go \
+           apps/hexagonal/internal/hexagon/core/greeting.go \
+           apps/hexagonal/internal/hexagon/port/greeting_repository.go \
+           apps/hexagonal/internal/adapter/driven/memory/repository.go \
+           apps/hexagonal/internal/adapter/driving/cli/cli.go \
+           apps/hexagonal/cmd/app/main.go \
+           apps/hexagonal/.a-check.yml harness/mk/apps-hexagonal.mk harness/mk/arch-apps-hexagonal.mk; do
+	if [ ! -e "$tmprepo_doc/$rel" ]; then
+		echo "full-smoke: FEHLER — add-lang --arch hexagonal dropte $rel nicht (slice-058/ADR-0010 Festlegung 1)." >&2
+		exit 1
+	fi
+done
+# ADR-0010 Festlegung 1, andersherum: emittiert wird die FAMILIEN-Konvention, nicht das
+# `a-check --print-config`-Geruest. Entstuende dessen Form, waere die Entscheidung still
+# gedreht — und niemand saehe es, weil beide Formen gruen durchs Gate gehen.
+for rel in apps/hexagonal/internal/core apps/hexagonal/internal/ports apps/hexagonal/internal/adapters; do
+	if [ -e "$tmprepo_doc/$rel" ]; then
+		echo "full-smoke: FEHLER — hexagonal emittierte das --print-config-Geruest ($rel) statt der Familien-Konvention (ADR-0010 Festlegung 1)." >&2
+		exit 1
+	fi
+done
+# Zweite Stufe der Arch-Validierung, seit slice-058 wieder ERREICHBAR: hexagonal ist ein
+# gueltiger Achsen-Wert, den der cpp-Renderer nicht traegt -> Exit 2, kein Artefakt
+# (zwischen slice-053 und slice-058 war dieser Pfad von aussen nicht erreichbar).
+cpphexagonal_rc=0
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang cpp apps/cpphexagonal --arch hexagonal ) || cpphexagonal_rc=$?
+if [ "$cpphexagonal_rc" -ne 2 ]; then
+	echo "full-smoke: FEHLER — add-lang cpp --arch hexagonal rc=$cpphexagonal_rc, want 2 (sprach-spezifische Arch-Validierung kaputt, slice-058)." >&2
+	exit 1
+fi
+if [ -e "$tmprepo_doc/apps/cpphexagonal/CMakeLists.txt" ]; then
+	echo "full-smoke: FEHLER — die nicht getragene Kombination legte ein Geruestung-Artefakt an (still statt Exit 2)." >&2
+	exit 1
+fi
+hexagonal_rc=0
+hexagonal_out="$( make -j -Otarget -C "$tmprepo_doc" gates 2>&1 )" || hexagonal_rc=$?
+if [ "$hexagonal_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — make gates mit dem hexagonalen Modul ist NICHT Exit 0 (Schichten-Code uebersetzt/lintet nicht, slice-058)." >&2
+	printf '%s\n' "$hexagonal_out" >&2
+	exit 1
+fi
+hexagonal_missing=""
+for marker in "apps-hexagonal:build" "apps-hexagonal:lint" 'apps/hexagonal":/src:ro'; do
+	grep -qF -- "$marker" <<<"$hexagonal_out" || hexagonal_missing="$hexagonal_missing [$marker]"
+done
+if [ -n "$hexagonal_missing" ]; then
+	echo "full-smoke: FEHLER — make gates ohne Beleg fuer:$hexagonal_missing — Code-Gate oder Arch-Gate des hexagonalen Moduls lief nicht? (slice-058/LH-QA-01)." >&2
+	exit 1
+fi
+
+# ZAHN 1 (ADR-0010 Fitness-Function): der Kern traegt `role: app` und darf KEINEN Adapter
+# sehen. Ein Import core -> driven muss als `app-impurity` rot werden — mit dem
+# Regel-NAMEN, sonst waere „rot" auch aus einem Compile-Fehler erklaerbar.
+hexcore="$tmprepo_doc/apps/hexagonal/internal/hexagon/core/greeting.go"
+cp "$hexcore" "$hexcore.orig"
+sed -i 's|^import "errors"$|import (\n\t"errors"\n\n\t_ "app/internal/adapter/driven/memory"\n)|' "$hexcore"
+impurity_rc=0
+impurity_out="$( make -C "$tmprepo_doc" a-check-apps-hexagonal 2>&1 )" || impurity_rc=$?
+mv "$hexcore.orig" "$hexcore"
+if [ "$impurity_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — core -> driven laesst das Arch-Gate GRUEN (zahnloses Gate, AGENTS.md 3.6/LH-QA-01)." >&2
+	printf '%s\n' "$impurity_out" >&2
+	exit 1
+fi
+if ! grep -qF -- 'app-impurity' <<<"$impurity_out"; then
+	echo "full-smoke: FEHLER — Arch-Gate rot, aber NICHT als app-impurity (rot aus falschem Grund; traegt der Kern noch role: app? ADR-0010). Ausgabe:" >&2
+	printf '%s\n' "$impurity_out" >&2
+	exit 1
+fi
+echo "full-smoke: hexagonal-Zahn 1 belegt (core -> driven faerbt a-check als app-impurity rot, danach zurueckgenommen):"
+grep -F -- 'app-impurity' <<<"$impurity_out" | sed -n '1,2s/^/full-smoke:   /p'
+
+# ZAHN 2 (ADR-0010 Folgepflicht 7): `driving` und `driven` tragen BEIDE role: adapter —
+# ein Import zwischen ihnen ist `lateral-adapter`. Das ist die tragende Regel dieses
+# Layouts und KEINE Kante: kein Kanten-Waechter faengt sie, eine Kante hoebe sie nicht auf.
+hexdriving="$tmprepo_doc/apps/hexagonal/internal/adapter/driving/cli/cli.go"
+cp "$hexdriving" "$hexdriving.orig"
+sed -i 's|^\t"app/internal/hexagon/core"$|\t"app/internal/hexagon/core"\n\t_ "app/internal/adapter/driven/memory"|' "$hexdriving"
+lateral_rc=0
+lateral_out="$( make -C "$tmprepo_doc" a-check-apps-hexagonal 2>&1 )" || lateral_rc=$?
+mv "$hexdriving.orig" "$hexdriving"
+if [ "$lateral_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — driving -> driven laesst das Arch-Gate GRUEN (die tragende Regel dieses Layouts ist nur behauptet, ADR-0010 Folgepflicht 7)." >&2
+	printf '%s\n' "$lateral_out" >&2
+	exit 1
+fi
+if ! grep -qF -- 'lateral-adapter' <<<"$lateral_out"; then
+	echo "full-smoke: FEHLER — Arch-Gate rot, aber NICHT als lateral-adapter (tragen beide Adapter-Schichten noch role: adapter? ADR-0010). Ausgabe:" >&2
+	printf '%s\n' "$lateral_out" >&2
+	exit 1
+fi
+echo "full-smoke: hexagonal-Zahn 2 belegt (driving -> driven faerbt a-check als lateral-adapter rot, danach zurueckgenommen):"
+grep -F -- 'lateral-adapter' <<<"$lateral_out" | sed -n '1,2s/^/full-smoke:   /p'
+
 # slice-038 (ADR-0007 Idempotenz-Klassifikation): ein ZWEITER Init-Lauf ist IDEMPOTENT
 # (Exit 0 statt Kollisions-Refuse). Konvergente Dateien (tool-Infra) werden kanonisch neu
 # geschrieben (heilen Drift); skip-if-present-Dateien (Adopter-Boden) bleiben unberuehrt.
@@ -687,4 +790,5 @@ echo "full-smoke: OK — ZWEITE SPRACHE (slice-039): add-lang cpp apps/engine ko
 echo "full-smoke: OK — ARCH-ACHSE (slice-045b/ADR-0009): add-lang go apps/hex --arch hexslice dropt das hexSlice-Layout, make -j gates UEBERSETZT+LINTET den Schichten-Code real (apps-hex build/lint); cpp+hexslice ist fail-fast Exit 2 (sprach×arch-Support, INFO-1)."
 echo "full-smoke: OK — ARCH-GATE KONDITIONAL (slice-046/LH-FA-07): --arch hexslice dropt .a-check.yml + a-check.mk + arch-Fragment und make gates FAEHRT a-check real (Modul-scoped apps/hex und am Root); flache Module bekommen keines (LH-QA-01); ein verbotener Domain->Adapter-Import faerbt das Gate rot (Zaehne belegt)."
 echo "full-smoke: OK — ARCH-GATE ROBUST (slice-046, Review F-1/F-2): ZWEI hexSlice-Module koexistieren (kein doppelter include, kein 'overriding recipe', beide Gates laufen), und mit gesetztem A_CHECK_IMAGE (Adopter-Override) bleibt das Gate verdrahtet und gruen."
+echo "full-smoke: OK — DRITTES LAYOUT (slice-058/ADR-0010): add-lang go apps/hexagonal --arch hexagonal dropt core/port/adapter{driven,driving} in den Pfaden der Familien-Konvention (nicht das --print-config-Geruest), make -j gates uebersetzt+lintet sie real und faehrt ihr a-check mit; cpp+hexagonal ist fail-fast Exit 2. ZAEHNE mit Regel-NAMEN: core->driven = app-impurity, driving->driven = lateral-adapter."
 echo "full-smoke: OK — IDEMPOTENT (slice-038): 2. Init-Lauf Exit 0, README (skip-if-present) unberuehrt, Makefile-Drift (konvergent) geheilt; sprachloser Re-Lauf prunt kein add-lang-Fragment (kein Prune)."

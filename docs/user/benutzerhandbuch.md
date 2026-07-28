@@ -1,8 +1,8 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Handbuch-Version:** 1.9
-**Software-Stand:** `v0.1.1` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64), seit `v0.1.0`. Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat` oder `hexslice`; bei `hexslice` kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen), beide auch mit `hexslice`.
-**Stand:** 2026-07-27
+**Handbuch-Version:** 1.10
+**Software-Stand:** `v0.1.1` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64), seit `v0.1.0`. Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat`, `hexagonal` oder `hexslice`; bei den beiden geschichteten kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen), beide auch mit `hexslice`; `hexagonal` liefert heute der Go-Renderer.
+**Stand:** 2026-07-28
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
 ---
@@ -263,15 +263,21 @@ ai-harness-init: add-lang go nach apps/api — Skelett + harness/mk/apps-api.mk 
 
 **Voraussetzung:** wie bei `add-lang`.
 
-Standardmäßig entsteht ein **flaches** Grundgerüst: ein Einstiegspunkt, keine Schichten. Mit `--arch hexslice` entsteht stattdessen ein **geschichtetes** Grundgerüst (HexSlice = hexagonal + vertikale Use-Case-Schnitte):
+Standardmäßig entsteht ein **flaches** Grundgerüst: ein Einstiegspunkt, keine Schichten. Es gibt zwei geschichtete Bauformen, und sie sind **keine zwei Strenge-Grade derselben Sache**, sondern eigene Layouts mit eigenen Verzeichnisnamen:
+
+| `--arch` | Bauform | wann |
+|---|---|---|
+| `flat` (Standard) | ein Einstiegspunkt, keine Schichten | kleine Werkzeuge; Sie wollen die Struktur selbst wählen |
+| `hexagonal` | die drei klassischen Schichten: Kern, Ports, Adapter (getrieben/treibend) | der übliche Fall für eine Anwendung mit Fachlogik |
+| `hexslice` | dasselbe **plus** vertikale Use-Case-Schnitte (jeder Schnitt mit eigenen Ports) | viele fachlich getrennte Anwendungsfälle, die nebeneinander wachsen sollen |
 
 ```bash
-ai-harness-init add-lang go apps/api --arch hexslice
+ai-harness-init add-lang go apps/api --arch hexagonal
 ```
 
 **Ergebnis — zusätzlich zum flachen Fall:**
 
-- der Code liegt in Schichten: `internal/hexagon/domain/…`, `internal/hexagon/application/<bereich>/<use-case>/…` (mit eigenen `ports/`), `internal/adapters/{inbound,outbound}/…`, dazu `cmd/<binary>/main.go` als Verdrahtungs-Punkt;
+- der Code liegt in Schichten. Bei `hexagonal`: `internal/hexagon/core/…` (Fachlogik **und** Anwendungsfall), `internal/hexagon/port/…` (die Schnittstellen nach außen — bewusst **ohne** eigene Importe), `internal/adapter/driven/…` (was der Kern benutzt: Datenbank, Datei, Fremdsystem), `internal/adapter/driving/…` (was den Kern antreibt: CLI, HTTP), dazu `cmd/<binary>/main.go` als Verdrahtungs-Punkt. Bei `hexslice`: `internal/hexagon/domain/…`, `internal/hexagon/application/<bereich>/<use-case>/…` (mit eigenen `ports/`), `internal/adapters/{inbound,outbound}/…`, ebenfalls mit `cmd/<binary>/main.go`;
 - **das Architektur-Gate wird mitgeliefert**: `<pfad>/.a-check.yml` (die Schicht-Regeln) und `a-check.mk` (der Prüf-Baustein). `make gates` fährt es ab sofort mit.
 
 Das Architektur-Gate prüft die **Abhängigkeitsrichtung**: Importe zeigen nur nach innen. Ein Verstoß — etwa ein Import aus der Domain in einen Adapter — lässt `make gates` **rot** werden, mit Datei und Zeile:
@@ -280,11 +286,22 @@ Das Architektur-Gate prüft die **Abhängigkeitsrichtung**: Importe zeigen nur n
 internal/hexagon/domain/example/greeting.go:8: core-impurity: Kern importiert app/internal/adapters/outbound/notify
 ```
 
+Bei `hexagonal` greifen zwei Regeln, die **unabhängig von den erlaubten Richtungen** gelten und darum auch von keiner zusätzlichen Kante aufgehoben werden. Beide sind an einem echten Lauf gemessen, nicht behauptet:
+
+```text
+internal/hexagon/core/greeting.go:9: app-impurity: Application importiert app/internal/adapter/driven/memory
+internal/adapter/driving/cli/cli.go:11: lateral-adapter: Adapter importiert anderen Adapter app/internal/adapter/driven/memory
+```
+
+Die erste sagt: der **Kern** sieht keinen Adapter — er kennt nur seine Ports. Die zweite: die beiden **Adapter-Seiten sehen einander nie** — was den Kern antreibt, greift nicht selbst auf Datenbank oder Fremdsystem zu. Zusammengesteckt wird ausschließlich in `cmd/<binary>/main.go`: dort entsteht der getriebene Adapter, wird dem Anwendungsfall übergeben und dieser an die treibende Seite.
+
 **Bei `--arch flat` (dem Standard) wird kein Architektur-Gate angelegt** — es gäbe dort keine Schichten zu prüfen, und ein Gate ohne Prüfbereich wäre eine leere Zusage.
 
-**Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports`). Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft.
+**Die treibende Seite wird bei `hexagonal` bewusst mitgeprüft** — strenger, als es verbreitete Vorlagen tun, die sie als reinen Verdrahtungs-Bereich freistellen. Der Grund: ein zu strenger Standard meldet sich beim **ersten** Lauf und kostet Sie eine Zeile; ein zu lascher meldet sich **nie** und lässt einen Bereich still ungeprüft. Wollen Sie die Freistellung, tragen Sie in **Ihrer** `.a-check.yml` `"internal/adapter/driving/**"` unter `composition_root` ein — eine Zeile, in einer Datei, die das Werkzeug nie überschreibt.
 
-**Grenzen:** `--arch hexslice` liefert für **beide** Zielsprachen. Eine Sprache, deren Renderer die gewählte Architektur nicht kennt, endet mit Exit 2 statt still ein Grundgerüst ohne Schichten anzulegen; eine unbekannte Architektur ebenso, mit Nennung der verfügbaren Werte.
+**Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Bei `hexslice` gilt: legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports`). Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft. Bei `hexagonal` wachsen neue Dateien in die bestehenden vier Schichten hinein; nachzutragen ist erst, wenn Sie ein **neues** Schicht-Verzeichnis anlegen.
+
+**Grenzen:** `--arch hexslice` liefert für **beide** Zielsprachen, `--arch hexagonal` derzeit nur der **Go**-Renderer. Eine Sprache, deren Renderer die gewählte Bauform nicht kennt (heute `cpp` mit `hexagonal`), endet mit Exit 2 und nennt die Bauformen, die **diese** Sprache kann — statt still ein Grundgerüst ohne Schichten anzulegen; eine unbekannte Bauform ebenso, mit Nennung der verfügbaren Werte.
 
 ### Das aufgesetzte Repository prüfen
 
@@ -349,7 +366,7 @@ SKEL_GO_VERSION=1.26.4 ai-harness-init --lang go --name "Mein Projekt"
 | Option | Pflicht | Bedeutung |
 |---|---|---|
 | `--lang <sprache>` | nein | Zielsprache des Grundgerüsts (Kurzform für „aufsetzen + `add-lang(<sprache>, .)`“). Ohne sie: dokument-only. Derzeit unterstützt: `go`, `cpp` (C++ per CMake + clang-tidy). |
-| `--arch <arch>` | nein | Bauform des Grundgerüsts: `flat` (Standard) oder `hexslice` (geschichtet, mit Architektur-Gate). Wirkt nur zusammen mit `--lang`. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch). |
+| `--arch <arch>` | nein | Bauform des Grundgerüsts: `flat` (Standard), `hexagonal` (drei Schichten) oder `hexslice` (Schichten plus Use-Case-Schnitte); die beiden geschichteten bringen das Architektur-Gate mit. Wirkt nur zusammen mit `--lang`. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch). |
 | `--name <name>` | nein | Projektname; ersetzt den Platzhalter `<Projektname>` in den Vorlagen. |
 | `-h`, `--help` | nein | Hilfe anzeigen und beenden. |
 
@@ -361,7 +378,7 @@ Ein `--force` gibt es **nicht** — der Re-Lauf ist idempotent (siehe [Ein Repos
 ai-harness-init add-lang <sprache> <pfad>
 ```
 
-Fügt einem bereits aufgesetzten Repository ein Sprachmodul hinzu — **wiederholbar** (Mono-Repo), auch mit gemischten Sprachen. Beide Positions-Argumente sind Pflicht: `<sprache>`, `<pfad>` (Zielort im Repository; `.` = Wurzel). Optional folgt **nach** ihnen `--arch <arch>` (`flat` oder `hexslice`); die Bauform ist je Modul frei wählbar, ein Mono-Repo darf beide mischen. Siehe [Ein Sprachmodul hinzufügen](#ein-sprachmodul-hinzufügen-add-lang) und [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch).
+Fügt einem bereits aufgesetzten Repository ein Sprachmodul hinzu — **wiederholbar** (Mono-Repo), auch mit gemischten Sprachen. Beide Positions-Argumente sind Pflicht: `<sprache>`, `<pfad>` (Zielort im Repository; `.` = Wurzel). Optional folgt **nach** ihnen `--arch <arch>` (`flat`, `hexagonal` oder `hexslice`); die Bauform ist je Modul frei wählbar, ein Mono-Repo darf sie mischen. Siehe [Ein Sprachmodul hinzufügen](#ein-sprachmodul-hinzufügen-add-lang) und [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch).
 
 ### Umgebungsvariablen
 
@@ -375,7 +392,7 @@ Alle Umgebungsvariablen sind **optional**. Ohne sie gelten festgelegte, reproduz
 | `BASELINE_SHA256` | Erwartete Prüfsumme des heruntergeladenen Regelwerk-Pakets. |
 | `DCHECK_IMAGE` | Abweichende Referenz für das Dokumentations-Prüf-Image. |
 | `DCHECK_DIGEST` | Abweichende Prüfsumme (Digest) des Prüf-Images; sticht die Referenz. |
-| `A_CHECK_IMAGE` | Abweichende Referenz für das Architektur-Prüf-Image (nur bei `--arch hexslice` genutzt). |
+| `A_CHECK_IMAGE` | Abweichende Referenz für das Architektur-Prüf-Image (nur bei einer geschichteten Bauform genutzt). |
 | `A_CHECK_DIGEST` | Abweichende Prüfsumme (Digest) des Architektur-Prüf-Images; sticht die Referenz. |
 
 Beispiel mit mehreren Variablen:
@@ -421,7 +438,7 @@ Schon hier läuft `make gates` **grün** — dokument-only (Dokumentations-Prüf
 
 Am Wurzelverzeichnis (`--lang go` bzw. `add-lang go .`) liegen sie neben den Basis-Dateien; in einem **Mono-Repo** (mehrere `add-lang`-Läufe mit verschiedenen `<pfad>`) je Modul ein solcher Satz unter seinem `<pfad>`, auch mit gemischten Sprachen. Erst mit einem Sprachmodul fährt `make gates` **zusätzlich** die Code-Gates (lint/build/test in Docker).
 
-Mit `--arch hexslice` sieht der Code-Teil anders aus (die Bau-Dateien bleiben gleich): statt eines einzelnen Einstiegspunkts entstehen die Schichten `internal/hexagon/{domain,application}`, `internal/adapters/{inbound,outbound}` und `cmd/<binary>/main.go` — **plus** das Architektur-Gate `<pfad>/.a-check.yml` und `a-check.mk`. Bei `flat` (dem Standard) entsteht keines von beidem. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch).
+Mit einer geschichteten Bauform sieht der Code-Teil anders aus (die Bau-Dateien bleiben gleich): statt eines einzelnen Einstiegspunkts entstehen Schichten — bei `hexslice` `internal/hexagon/{domain,application}` und `internal/adapters/{inbound,outbound}`, bei `hexagonal` `internal/hexagon/{core,port}` und `internal/adapter/{driven,driving}` —, dazu `cmd/<binary>/main.go` und **plus** das Architektur-Gate `<pfad>/.a-check.yml` und `a-check.mk`. Bei `flat` (dem Standard) entsteht keines von beidem. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch).
 
 Die Dateien mit der Endung `.template.md` unter `.harness/baseline/` sind **Vorlagen**: Sie kopieren sie bei Bedarf und füllen sie aus (z. B. für eine neue Architektur-Entscheidung). Die Prozess-Regeln erklären, wann welche Vorlage zum Einsatz kommt.
 
@@ -553,6 +570,7 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 
 | Handbuch-Version | Stand | Änderung |
 |---|---|---|
+| 1.10 | 2026-07-28 | **Dritte Bauform `--arch hexagonal`** (heute für **Go**): die drei klassischen Schichten — Kern, importfreie Ports, getriebene und treibende Adapter — ohne Use-Case-Schnitte. Der Abschnitt „Ein geschichtetes Grundgerüst wählen" führt jetzt eine Wahl-Tabelle (wann welche Bauform), nennt die beiden Regeln, die **unabhängig von den erlaubten Richtungen** greifen (`app-impurity`, `lateral-adapter`) samt echter Fehlermeldung, und sagt ausdrücklich, dass die **treibende Seite strenger geprüft** wird als in verbreiteten Vorlagen — samt der einen Zeile, mit der Sie das lockern. Reihenfolge wie in 1.9: der Text kam **nach** den Sensoren — erst als beide Regeln im Voll-E2E-Smoke real rot gesehen waren. |
 | 1.9 | 2026-07-27 | `--arch hexslice` liefert jetzt auch der **C++**-Renderer: `add-lang cpp <pfad> --arch hexslice` legt ein geschichtetes Modul an, statt wie bis dahin mit Exit 2 abzulehnen. Der Kopf und der Abschnitt „Eine Bauform wählen" sagen das jetzt. Der Satz fiel bewusst **nach** den Sensoren, nicht mit dem Renderer: erst als der Voll-E2E-Smoke belegt hatte, dass ein verbotener Schicht-Import das Architektur-Gate rot färbt und ein Fehler in einer Schicht-Datei den Build, beschreibt die Doku die Fähigkeit. |
 | 1.8 | 2026-07-27 | Drei Aussagen korrigiert, die beschrieben, was das Werkzeug **nicht** tut. (1) „arbeitet in **einem** Schritt" — bis 1.7 stand das im Bedienkonzept, obwohl der Bootstrap seit 1.1 **phasiert** ist (Init sprach-agnostisch, Sprachmodul per `add-lang`); `--lang` beim Init ist die Kurzform für beide Schritte. (2) „zieht ein neueres Regelwerk nach" — an **vier** Stellen im Handbuch und einer im `README.md`. Der Re-Lauf frischt auf den Stand auf, den das **Programm mitbringt**; die Kurs-Version ist darin gepinnt, ein neuerer Stand kommt mit einem neueren Programm oder bewusst über `COURSE_TAG`. (3) Neuer Windows-Hinweis, symmetrisch zum macOS-Quarantäne-Hinweis: die Programme sind **nicht signiert**, der erste Start kann deshalb mit einer Warnung unterbrochen werden. Alle drei fand ein Mensch beim Lesen, kein Sensor. |
 | 1.7 | 2026-07-26 | Regel, wo Versions-Aussagen hingehören, als Kasten über dieser Tabelle verankert — sie stand bis dahin nur in einer Commit-Message. Zwei Folgen davon: der Rückblick „(frühere Versionen kannten das)" im Re-Lauf-Abschnitt ist hierher gewandert (gemeint war der Wegfall von `--force` und Kollisions-Abbruch), und Weg B benennt jetzt, dass er den **geklonten Entwicklungsstand** baut, nicht die veröffentlichte Version. |

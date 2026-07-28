@@ -38,6 +38,25 @@ const (
 	// roleCompositionRoot — der Composition Root (cmd/**), der Adapter/Ports/Slices
 	// verdrahtet; a-check-exempt.
 	roleCompositionRoot codeRole = "composition-root"
+	// roleHexagonalCore — der Kern des hexagonal-Layouts (Domaene UND Use-Case in EINER
+	// geprueften Schicht, `role: app`; importiert seine Ports, nie einen Adapter — ADR-0010).
+	roleHexagonalCore codeRole = "hexagonal-core"
+	// roleHexagonalPort — die Port-Schicht des hexagonal-Layouts: IMPORTFREI (darum
+	// sprechen ihre Signaturen Standardtypen; es gibt keine Kante ports->core, sie waere
+	// mit core->ports ein Import-Zyklus — ADR-0010).
+	roleHexagonalPort codeRole = "hexagonal-port"
+	// roleHexagonalDriven — die getriebenen Adapter (internal/adapter/driven/**): sie
+	// erfuellen die Ports und bilden auf Kern-Typen ab (driven->ports, driven->core).
+	roleHexagonalDriven codeRole = "hexagonal-driven"
+	// roleHexagonalDriving — die treibenden Adapter (internal/adapter/driving/**): sie
+	// rufen den Kern (driving->core). Bei uns eine GEPRUEFTE Schicht, nicht Composition
+	// Root — ADR-0010 Festlegung 3 (fail-closed bei unbekannten Adoptern).
+	roleHexagonalDriving codeRole = "hexagonal-driving"
+	// roleHexagonalRoot — der Composition Root des hexagonal-Layouts (cmd/**): eigene
+	// Rolle, weil der Inhalt layout-spezifisch ist (hier entsteht der getriebene Adapter,
+	// wird in die Use-Case injiziert und diese an den treibenden Adapter uebergeben —
+	// ADR-0010 §Wo verdrahtet wird). a-check-exempt wie roleCompositionRoot.
+	roleHexagonalRoot codeRole = "hexagonal-composition-root"
 )
 
 // archFlat ist die heutige, flache Architektur (ein Entry-Point, kein Schichten-Layout).
@@ -47,34 +66,63 @@ const archFlat = "flat"
 // ADR-0009): domain / application (Use-Case-Slices) / ports / adapters + Composition Root.
 const archHexslice = "hexslice"
 
+// archHexagonal ist das schichten-tragende hexagonal-Layout (ADR-0010): core / port /
+// adapter (driven + driving) + Composition Root — die drei klassischen Schichten OHNE
+// Use-Case-Slices. Eigenes Layout, kein Strenge-Grad von hexslice: die Verzeichnisnamen
+// sind disjunkt (ADR-0010 Festlegung 2), was TestArchLayouts_Disjunkt festhaelt.
+const archHexagonal = "hexagonal"
+
 // archLayout liefert die Code-Rollen einer Architektur in STABILER Reihenfolge.
-// `flat` traegt Entry-Point + Test; `hexslice` traegt die vier Schicht-Rollen + den
-// Composition Root (der Sprach-Renderer fuellt jede Rolle). Unbekannte Architektur ->
-// nil: GenerateArch macht daraus den *UnknownArchError (analog UnknownLangError),
-// slice-045b haengt die `--arch`-CLI-Validierung (Exit 2) daran.
+// `flat` traegt Entry-Point + Test; `hexslice` und `hexagonal` tragen je ihre vier
+// Schicht-Rollen + ihren Composition Root (der Sprach-Renderer fuellt jede Rolle).
+// Unbekannte Architektur -> nil: GenerateArch macht daraus den *UnknownArchError (analog
+// UnknownLangError), slice-045b haengt die `--arch`-CLI-Validierung (Exit 2) daran.
 func archLayout(arch string) []codeRole {
 	switch arch {
 	case "", archFlat:
 		return []codeRole{roleEntrypoint, roleTest}
 	case archHexslice:
 		return []codeRole{roleDomain, rolePorts, roleAppSlice, roleAdapters, roleCompositionRoot}
+	case archHexagonal:
+		return []codeRole{roleHexagonalCore, roleHexagonalPort, roleHexagonalDriven, roleHexagonalDriving, roleHexagonalRoot}
 	}
 	return nil
 }
 
-// archLayered sagt, ob eine Architektur SCHICHTEN traegt — strukturell aus dem
-// Layout abgeleitet (traegt es die Domain-Rolle?), nicht aus einer zweiten Namensliste.
+// archLayered sagt, ob eine Architektur SCHICHTEN traegt — STRUKTURELL aus dem Layout
+// abgeleitet: traegt es mindestens eine Rolle, die weder Entry-Point noch Toolchain-Test
+// noch Composition Root ist? Genau das ist eine gepruefte Schicht. Bis slice-058 fragte
+// die Bedingung nach der hexslice-Rolle `domain` — ein NAME, kein Struktur-Merkmal: ein
+// zweites geschichtetes Layout mit anderem Vokabular (hexagonal: core/port/adapter) waere
+// „nicht geschichtet" gewesen und haette sein Arch-Gate lautlos verloren
+// (LH-QA-01, ADR-0010 Folgepflicht 1).
+//
 // Das ist die LH-QA-01-Bedingung des Arch-Gates (slice-046): nur ueber einem
 // schichten-tragenden Layout hat a-check einen nicht-leeren Pruefbereich; `flat`
-// bekommt darum kein Gate. Eine kuenftige geschichtete Architektur ist damit
-// automatisch „layered", ohne dass hier jemand eine Liste nachzieht.
+// bekommt darum kein Gate. Der Wert dieser Funktion wird NICHT von den Wächtern
+// befragt, die sie bewachen — TestArchGateConfig_CoversEveryLayeredCombo leitet
+// „geschichtet" aus dem gerenderten Baum ab, sonst waere er tautologisch.
 func archLayered(arch string) bool {
 	for _, r := range archLayout(arch) {
-		if r == roleDomain {
+		if isLayerRole(r) {
 			return true
 		}
 	}
 	return false
+}
+
+// isLayerRole sagt, ob eine Rolle eine GEPRUEFTE SCHICHT ist. Nicht-Schichten sind der
+// ausfuehrbare Entry-Point des flachen Skeletts, der Toolchain-Test und jeder Composition
+// Root (a-check-exempt, cmd/**) — alles andere ist Schicht. Ein neues Layout bringt
+// hoechstens einen weiteren Composition Root mit; jede seiner uebrigen Rollen ist per
+// Default Schicht (fail-closed: ein vergessener Eintrag macht ein Layout „geschichtet",
+// nicht lautlos gate-los).
+func isLayerRole(r codeRole) bool {
+	switch r {
+	case roleEntrypoint, roleTest, roleCompositionRoot, roleHexagonalRoot:
+		return false
+	}
+	return true
 }
 
 // ArchGateConfig liefert die `.a-check.yml` des Moduls fuer (lang, arch) und ok=false,
@@ -99,7 +147,7 @@ func ArchGateConfig(lang, arch string) (string, bool) {
 // das Gate lautlos ausfaellt.
 func archGateConfigs() map[string]map[string]string {
 	return map[string]map[string]string{
-		"go":  {archHexslice: goHexArchConfig},
+		"go":  {archHexslice: goHexArchConfig, archHexagonal: goHexagonalArchConfig},
 		"cpp": {archHexslice: cppHexArchConfig},
 	}
 }

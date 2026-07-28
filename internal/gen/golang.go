@@ -47,7 +47,15 @@ func goScaffolding(version string) map[string]string {
 // (internal/hexagon/{domain,application}, internal/adapters/{inbound,outbound}, cmd/app).
 // Die Import-Richtungen sind inward-only (app->domain, app->ports, ports->domain,
 // adapters->app, adapters->domain); Outbound-Adapter erfuellen die Ports strukturell
-// (kein Import), verdrahtet im Composition Root. Eine nicht unterstuetzte Rolle -> nil.
+// (kein Import), verdrahtet im Composition Root.
+//
+// hexagonal (slice-058, ADR-0010): die vier Schicht-Rollen + ein EIGENER Composition Root
+// rendern in die Pfade der gelebten Familien-Konvention (internal/hexagon/{core,port},
+// internal/adapter/{driven,driving}, cmd/app) — NICHT in das `--print-config`-Geruest
+// (internal/core …). Die Kanten sind core->ports, driven->ports, driven->core,
+// driving->core; die Ports bleiben importfrei (ports->core waere mit core->ports ein
+// Import-Zyklus), und die beiden Adapter-Schichten sehen einander nie (lateral-adapter).
+// Verdrahtet wird ausschliesslich im Composition Root. Eine nicht unterstuetzte Rolle -> nil.
 func goRole(r codeRole) map[string]string {
 	switch r {
 	case roleEntrypoint:
@@ -78,6 +86,20 @@ func goRole(r codeRole) map[string]string {
 		}
 	case roleCompositionRoot:
 		return map[string]string{"cmd/app/main.go": goHexMain}
+	case roleHexagonalCore:
+		return map[string]string{
+			"internal/hexagon/core/greeting.go": goHexagonalGreeting,
+			"internal/hexagon/core/greet.go":    goHexagonalService,
+			"internal/hexagon/core/greet_test.go": goHexagonalServiceTest,
+		}
+	case roleHexagonalPort:
+		return map[string]string{"internal/hexagon/port/greeting_repository.go": goHexagonalPort}
+	case roleHexagonalDriven:
+		return map[string]string{"internal/adapter/driven/memory/repository.go": goHexagonalDriven}
+	case roleHexagonalDriving:
+		return map[string]string{"internal/adapter/driving/cli/cli.go": goHexagonalDriving}
+	case roleHexagonalRoot:
+		return map[string]string{"cmd/app/main.go": goHexagonalMain}
 	}
 	return nil
 }
@@ -531,6 +553,317 @@ edges:
 # Composition Root (cmd/**).
 
 # Der Composition Root verdrahtet Adapter und Slices — von den Schichtregeln befreit.
+composition_root: ["cmd/**"]
+
+# Tests gehoeren nicht zum Produktions-Abhaengigkeitsgraphen.
+exclude:
+  - "**/*_test.go"
+`
+
+// --- hexagonal-Go-Rollen (slice-058, ADR-0010) ---------------------------------
+// Minimal-kompilierendes, a-check-konformes hexagonales Skelett: EIN Kern (Domaene und
+// Use-Case zusammen, `role: app`), EINE importfreie Port-Schicht, je ein getriebener und
+// ein treibender Adapter, verdrahtet im Composition Root. Die Struktur — Schichten +
+// Kanten — ist der Vertrag, nicht die Domaene; der Adopter ersetzt greet durch seine
+// Use-Cases. Der Unterschied zum hexSlice-Layout ist NICHT die Strenge, sondern das
+// Vokabular: core/port/adapter statt domain/application/ports/adapters (ADR-0010
+// Festlegung 2 — die Verzeichnisnamen sind disjunkt).
+
+// goHexagonalPort — die Port-Schicht: IMPORTFREI. Darum sprechen ihre Signaturen
+// Standardtypen und keine Kern-Typen: eine Kante ports->core waere zusammen mit
+// core->ports ein Import-Zyklus, den die Sprache selbst ausschliesst (ADR-0010).
+const goHexagonalPort = `// Package port deklariert die getriebenen Ports des Kerns (Port-Schicht: IMPORTFREI —
+// darum sprechen die Signaturen Standardtypen, nicht Kern-Typen; eine Kante zurueck in
+// den Kern waere ein Import-Zyklus).
+package port
+
+// GreetingRepository persistiert eine Gruss-Nachricht (getriebener Port; ein Adapter
+// unter internal/adapter/driven erfuellt ihn, verdrahtet im Composition Root).
+type GreetingRepository interface {
+	// Save persistiert die Gruss-Nachricht.
+	Save(message string) error
+}
+`
+
+// goHexagonalGreeting — der Kern, Domaenen-Teil (importiert nur die Standardbibliothek).
+const goHexagonalGreeting = `// Package core ist der Kern des generierten hexagonalen Skeletts: Domaene UND Use-Case
+// in EINER geprueften Schicht (role: app). Er importiert seine getriebenen Ports und nie
+// einen Adapter — ein Adapter-Import hier ist ein app-impurity-Befund.
+package core
+
+import "errors"
+
+// Greeting ist ein Domaenen-Value-Object mit nicht-leerer Nachricht.
+type Greeting struct {
+	// Message ist der validierte Gruss-Text.
+	Message string
+}
+
+// NewGreeting konstruiert ein Greeting und erzwingt die Domaenen-Invariante (nicht-leere
+// Nachricht).
+func NewGreeting(message string) (Greeting, error) {
+	if message == "" {
+		return Greeting{}, errors.New("empty greeting message")
+	}
+	return Greeting{Message: message}, nil
+}
+`
+
+// goHexagonalService — der Kern, Use-Case-Teil (core -> ports). Die Use-Case bleibt im
+// KERN, nicht im Composition Root: sonst wanderte mit der Verdrahtung auch die Logik in
+// den ungeprueften Bereich (ADR-0010 §Konsequenzen).
+const goHexagonalService = `package core
+
+import "app/internal/hexagon/port"
+
+// GreetService ist die Use-Case des Kerns (core -> ports).
+type GreetService struct {
+	repo port.GreetingRepository
+}
+
+// NewGreetService verdrahtet die Use-Case mit ihrem getriebenen Port.
+func NewGreetService(repo port.GreetingRepository) *GreetService {
+	return &GreetService{repo: repo}
+}
+
+// Greet validiert die Roh-Eingabe zu einem Greeting und persistiert sie ueber den Port.
+func (s *GreetService) Greet(message string) (Greeting, error) {
+	greeting, err := NewGreeting(message)
+	if err != nil {
+		return Greeting{}, err
+	}
+	if err := s.repo.Save(greeting.Message); err != nil {
+		return Greeting{}, err
+	}
+	return greeting, nil
+}
+`
+
+// goHexagonalServiceTest — Kern-Test mit Stub-Port (external Test-Package).
+const goHexagonalServiceTest = `package core_test
+
+import (
+	"testing"
+
+	"app/internal/hexagon/core"
+)
+
+type stubRepo struct {
+	saved []string
+}
+
+func (r *stubRepo) Save(message string) error {
+	r.saved = append(r.saved, message)
+	return nil
+}
+
+func TestGreetServiceGreet(t *testing.T) {
+	repo := &stubRepo{}
+	svc := core.NewGreetService(repo)
+	greeting, err := svc.Greet("hi")
+	if err != nil {
+		t.Fatalf("unerwarteter Fehler: %v", err)
+	}
+	if greeting.Message != "hi" {
+		t.Errorf("Message = %q, want hi", greeting.Message)
+	}
+	if len(repo.saved) != 1 {
+		t.Errorf("Save-Aufrufe = %d, want 1", len(repo.saved))
+	}
+	if _, err := svc.Greet(""); err == nil {
+		t.Error("leere Nachricht muss einen Fehler liefern")
+	}
+}
+`
+
+// goHexagonalDriven — getriebener Adapter: erfuellt den Port (driven -> ports) und bildet
+// auf Kern-Typen ab (driven -> core). Die zweite Kante sieht wie ein Ueberschuss aus — sie
+// ist im `--print-config`-Geruest nur auskommentiert, in der Familie real gefuehrt
+// (ADR-0010 Festlegung 1); test/mutations/100 bewacht sie.
+const goHexagonalDriven = `// Package memory ist ein getriebener In-Memory-Adapter (driven): er erfuellt den
+// GreetingRepository-Port (driven -> ports) und bildet die gespeicherten Nachrichten auf
+// Kern-Objekte ab (driven -> core). Verdrahtet wird er im Composition Root.
+package memory
+
+import (
+	"app/internal/hexagon/core"
+	"app/internal/hexagon/port"
+)
+
+// Repository haelt Gruss-Nachrichten im Speicher.
+type Repository struct {
+	saved []string
+}
+
+// Der Compiler haelt fest, dass der Adapter seinen Port erfuellt (driven -> ports).
+var _ port.GreetingRepository = (*Repository)(nil)
+
+// NewRepository konstruiert ein leeres In-Memory-Repository.
+func NewRepository() *Repository {
+	return &Repository{}
+}
+
+// Save haengt die Nachricht an den Speicher an.
+func (r *Repository) Save(message string) error {
+	r.saved = append(r.saved, message)
+	return nil
+}
+
+// Greetings bildet die gespeicherten Nachrichten auf Kern-Objekte ab (driven -> core).
+func (r *Repository) Greetings() ([]core.Greeting, error) {
+	out := make([]core.Greeting, 0, len(r.saved))
+	for _, message := range r.saved {
+		greeting, err := core.NewGreeting(message)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, greeting)
+	}
+	return out, nil
+}
+`
+
+// goHexagonalDriving — treibender Adapter (driving -> core). Er importiert KEINEN
+// getriebenen Adapter: zwei Schichten mit role: adapter duerfen einander nicht sehen
+// (lateral-adapter — kategorisch, keine Kante hebt das auf).
+const goHexagonalDriving = `// Package cli ist der treibende Adapter (driving): er nimmt die Eingabe entgegen und
+// ruft die Use-Case des Kerns (driving -> core). Er importiert KEINEN getriebenen Adapter
+// — zwei Adapter-Schichten sehen einander nie (lateral-adapter); verdrahtet wird in cmd/**.
+package cli
+
+import (
+	"fmt"
+	"io"
+
+	"app/internal/hexagon/core"
+)
+
+// Runner treibt die Greet-Use-Case von der Kommandozeile.
+type Runner struct {
+	svc *core.GreetService
+	out io.Writer
+}
+
+// NewRunner verdrahtet den treibenden Adapter mit der Use-Case und der Ausgabe.
+func NewRunner(svc *core.GreetService, out io.Writer) *Runner {
+	return &Runner{svc: svc, out: out}
+}
+
+// Run fuehrt die Use-Case aus und schreibt das Ergebnis.
+func (r *Runner) Run(message string) error {
+	greeting, err := r.svc.Greet(message)
+	if err != nil {
+		return err
+	}
+	_, err = fmt.Fprintln(r.out, greeting.Message)
+	return err
+}
+`
+
+// goHexagonalMain — Composition Root (cmd/app/main.go) des hexagonalen Layouts. HIER —
+// und nur hier — entsteht der getriebene Adapter, wird in die Use-Case injiziert und
+// diese an den treibenden Adapter uebergeben (ADR-0010 §Wo verdrahtet wird; die eine
+// Stelle, an der wir der Familien-Konvention bewusst NICHT folgen, weil die treibende
+// Seite bei uns eine gepruefte Schicht ist). a-check-exempt (cmd/**) — darum steht hier
+// ausschliesslich Konstruktion, keine Logik.
+const goHexagonalMain = `// Command app — vom ai-harness-init generiertes hexagonales Skelett. Composition Root:
+// hier entsteht der getriebene Adapter, wird in die Use-Case injiziert und diese an den
+// treibenden Adapter uebergeben. a-check-exempt (cmd/**), darum steht hier ausschliesslich
+// Konstruktion — Logik gehoert in den Kern.
+package main
+
+import (
+	"os"
+
+	"app/internal/adapter/driven/memory"
+	"app/internal/adapter/driving/cli"
+	"app/internal/hexagon/core"
+)
+
+func main() {
+	repo := memory.NewRepository()
+	svc := core.NewGreetService(repo)
+	runner := cli.NewRunner(svc, os.Stdout)
+	if err := runner.Run("Hallo vom generierten hexagonalen Skelett."); err != nil {
+		os.Exit(1)
+	}
+}
+`
+
+// goHexagonalArchConfig — die `.a-check.yml` des hexagonalen Go-Moduls (slice-058,
+// ADR-0010, LH-FA-07). Sie bildet GENAU die Schichten ab, die goRole oben generiert; die
+// Kopplung halten TestArchGateConfig_HexagonalMatchesSkeleton (Schichten) und
+// TestArchGateConfig_HexagonalEdgesMatchSkeleton (Kanten). MODUL-RELATIV: der Gate-Lauf
+// mountet das Modul-Verzeichnis, darum kein <pfad>-Praefix.
+//
+// Vier Eigenschaften, die beim Lesen wie Fehler aussehen und keine sind:
+//
+//	(1) die PFADE weichen vom `a-check --print-config`-Geruest ab (internal/hexagon/core
+//	    statt internal/core) — emittiert wird die gelebte Konvention der Werkzeug-Familie,
+//	    nicht das Minimalbeispiel der Werkzeug-Doku (ADR-0010 Festlegung 1). Der Kopf der
+//	    emittierten Datei sagt dem Adopter genau das (ADR-0010 Folgepflicht 4).
+//	(2) jede Schicht traegt ihre Rolle EXPLIZIT: `driven`/`driving` inferieren keine
+//	    (die Inferenz kennt core/ports/adapters/application/app), und der Kern traegt
+//	    bewusst `app` statt des inferierten `domain` — sonst duerfte er seine eigenen
+//	    Ports nicht importieren und die Use-Case muesste in den befreiten cmd/**-Bereich.
+//	(3) die Kante driven->core steht real da (im Geruest nur auskommentiert).
+//	(4) es gibt KEINE Kante ports->core: zusammen mit core->ports waere das in einer
+//	    einzigen Kern-Schicht ein Import-Zyklus.
+//
+// Was hier und heute REAL rot gesehen wurde: app-impurity (core -> driven) und
+// lateral-adapter (driving -> driven), beide in harness/tools/full-smoke.sh.
+const goHexagonalArchConfig = `# .a-check.yml — Architektur-Gate (hexagonal: core / port / adapter), emittiert von
+# ai-harness-init. Bildet die Schichten des generierten hexagonalen Skeletts ab;
+# a-check laeuft netzlos + read-only (make a-check).
+#
+# Streng dekodiert: ein unbekannter Schluessel ist Exit 2.
+#
+# WARUM DIE PFADE VOM STANDARD-GERUEST ABWEICHEN: 'a-check --print-config' schlaegt
+# internal/core / internal/ports / internal/adapters vor. Emittiert wird stattdessen
+# die Form, die in dieser Werkzeug-Familie real gebaut und real geprueft wird
+# (internal/hexagon/core, internal/hexagon/port, internal/adapter/{driven,driving}).
+# Das ist Absicht, kein Werkzeug-Fehler.
+#
+# WARUM JEDE SCHICHT IHRE ROLLE EXPLIZIT TRAEGT: die Namens-Inferenz kennt nur
+# core/ports/adapters/application/app — 'driven' und 'driving' inferieren nichts und
+# waeren ohne role: bloss kanten-geprueft. Der Kern traegt bewusst 'app' und nicht
+# 'domain': eine domain-Schicht darf keinen Port importieren, dann muesste die
+# Use-Case in den befreiten cmd/**-Bereich ausweichen.
+#
+# DIE TREIBENDE SEITE IST HIER STRENGER als in den Referenz-Repos: dort ist sie
+# Composition Root (ungeprueft), hier eine Schicht mit eigenen Kanten. Wer die
+# Prueffreiheit will, traegt "internal/adapter/driving/**" unten in composition_root
+# ein — eine Zeile, in DIESER Datei, die beim Re-Bootstrap nie ueberschrieben wird.
+version: 1
+
+languages:
+  go: ["**/*.go"]
+
+layers:
+  core:
+    globs: ["internal/hexagon/core/**"]
+    role: app
+  ports:
+    globs: ["internal/hexagon/port/**"]
+    role: port
+  driven:
+    globs: ["internal/adapter/driven/**"]
+    role: adapter
+  driving:
+    globs: ["internal/adapter/driving/**"]
+    role: adapter
+
+# Erlaubte gerichtete Abhaengigkeiten. Ein Cross-Layer-Import ohne passende Kante ist
+# ein Befund (wrong-direction). KEINE Kante ports->core: zusammen mit core->ports waere
+# das ein Import-Zyklus. KEINE Kante driving->driven: zwei adapter-Schichten sehen
+# einander nie (lateral-adapter, kategorisch — eine Kante wuerde das nicht aufheben).
+edges:
+  - {from: core,    to: ports}
+  - {from: driven,  to: ports}   # der Adapter erfuellt den Port explizit
+  - {from: driven,  to: core}    # Adapter bilden auf/von Kern-Objekten ab
+  - {from: driving, to: core}    # die treibende Seite ruft die Use-Case
+
+# Der Composition Root verdrahtet Adapter und Use-Case — von den Schichtregeln befreit.
 composition_root: ["cmd/**"]
 
 # Tests gehoeren nicht zum Produktions-Abhaengigkeitsgraphen.

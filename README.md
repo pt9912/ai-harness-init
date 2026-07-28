@@ -33,6 +33,21 @@ ai-harness-init add-lang go apps/api
 Wiederholbar — mehrere Aufrufe mit verschiedenen Pfaden ergeben ein **Mono-Repo**, auch mit
 gemischten Sprachen. Unterstützt sind heute `go` und `cpp` (C++, per CMake + clang-tidy).
 
+**Die Bauform wählen** — neben der Sprache entscheidet `--arch`, wie das Grundgerüst *geschnitten*
+ist:
+
+```bash
+ai-harness-init add-lang go apps/api --arch hexagonal
+```
+
+Drei Bauformen: `flat` (Standard — ein Einstiegspunkt, keine Schichten), `hexagonal` (die drei
+klassischen Schichten: Kern, Ports, Adapter) und `hexslice` (dieselben Schichten **plus** vertikale
+Use-Case-Schnitte). Die beiden geschichteten bringen ein **Architektur-Gate** mit, das die
+Schichtung im fertigen Repo wirklich prüft — ein verbotener Import lässt `make gates` rot werden,
+mit Regel-Name, Datei und Zeile. Bei `flat` wird keines angelegt: dort gäbe es nichts zu prüfen.
+`hexagonal` und `hexslice` sind **eigene** Layouts, keine zwei Strenge-Grade desselben. Details im
+[Benutzerhandbuch](docs/user/benutzerhandbuch.md).
+
 **Denselben Aufruf gefahrlos wiederholen.** Ein zweiter Lauf ist idempotent: das Werkzeug frischt
 seine eigenen Dateien auf den Stand auf, den es **selbst mitbringt** (repariert Abweichungen), und
 lässt die selbst gefüllten Dateien — Dokumente, `README.md`, Quellcode — unberührt. Kein `--force`,

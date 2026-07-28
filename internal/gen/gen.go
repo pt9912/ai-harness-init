@@ -70,9 +70,11 @@ func GenerateArch(destDir, lang, version, arch string) error {
 	// -> globales Vokabular SupportedArchs)? (2) rendert der Renderer DIESER Sprache sie
 	// (-> die von der Sprache getragenen Archs)? Ohne (2) schriebe eine nicht getragene
 	// Kombination still ein Geruestung-only-Skelett statt Exit 2 (slice-045a-Review
-	// INFO-1). Seit slice-053 tragen go und cpp beide Archs — Stufe (2) ist damit von aussen
-	// nicht erreichbar und hat KEINEN eigenen Sensor; sie bleibt als Verteidigung fuer die
-	// naechste Sprache stehen. Mutation 63 nimmt deshalb beide Stufen weg, nicht eine.
+	// INFO-1). Seit slice-058 ist Stufe (2) wieder erreichbar und bewacht: `cpp --arch
+	// hexagonal` existiert als Achsen-Wert, wird vom cpp-Renderer aber nicht gerendert
+	// (TestGenerateArch_LangSpecificArchRejected). Mutation 63 nimmt trotzdem BEIDE Stufen
+	// weg — sie bewacht die Eigenschaft „nicht getragene Architektur wird abgelehnt", und
+	// fuer eine UNBEKANNTE Architektur deckt Stufe (1) allein.
 	if archLayout(arch) == nil {
 		return &UnknownArchError{Arch: arch, Available: SupportedArchs()}
 	}
@@ -131,17 +133,17 @@ const DefaultArch = archFlat
 // Exit 2 gibt, statt still ein Geruestung-only-Skelett zu schreiben (slice-045a-Review
 // INFO-1).
 //
-// EHRLICH BENANNT (slice-053): seit cpp hexslice rendert, tragen BEIDE Sprachen BEIDE
-// Architekturen — die sprach-spezifische zweite Stufe ist damit von aussen nicht mehr
-// erreichbar und folglich UNBEWACHT. Sie bleibt als Verteidigung fuer die naechste
-// Sprache stehen (die kommt mit flat und ohne hexslice-Renderer), aber niemand soll
-// glauben, ein Test decke sie: der Exit-2-Beleg haengt jetzt an Stufe 1 (unbekannte
-// Architektur). Ein Seam nur fuer die Testbarkeit waere eine Paket-Variable und
-// verstiesse gegen gochecknoglobals. EINE Quelle: SupportedArchs() leitet den Union
-// hieraus ab (kein Doppel-Pflegepunkt).
+// STAND slice-058: go traegt flat + hexslice + hexagonal, cpp traegt flat + hexslice.
+// Die sprach-spezifische zweite Stufe der Arch-Validierung ist damit wieder von aussen
+// ERREICHBAR und bewacht — `cpp --arch hexagonal` ist eine existierende Architektur, die
+// dieser Renderer nicht rendert (TestGenerateArch_LangSpecificArchRejected haelt es fest,
+// full-smoke faehrt den Exit-2-Fall real). Zwischen slice-053 und slice-058 war sie
+// unerreichbar und ehrlich als unbewacht benannt; das ist mit dem dritten Achsen-Wert
+// hinfaellig. EINE Quelle: SupportedArchs() leitet den Union hieraus ab (kein
+// Doppel-Pflegepunkt).
 func langArchs() map[string][]string {
 	return map[string][]string{
-		"go":  {archFlat, archHexslice},
+		"go":  {archFlat, archHexslice, archHexagonal},
 		"cpp": {archFlat, archHexslice},
 	}
 }

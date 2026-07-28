@@ -96,8 +96,8 @@ func TestGenerateArch_UnknownArch(t *testing.T) {
 	if uae.Arch != "onion" {
 		t.Errorf("Arch = %q, want onion", uae.Arch)
 	}
-	if strings.Join(uae.Available, ",") != "flat,hexslice" {
-		t.Errorf("Available = %v, want [flat hexslice] (sortiert)", uae.Available)
+	if strings.Join(uae.Available, ",") != "flat,hexagonal,hexslice" {
+		t.Errorf("Available = %v, want [flat hexagonal hexslice] (sortiert)", uae.Available)
 	}
 }
 
@@ -124,13 +124,16 @@ func TestGenerate_FlatUnchangedByArch(t *testing.T) {
 	}
 }
 
-// TestSupportedArchs (slice-045a): sortiert und enthaelt flat + hexslice.
+// TestSupportedArchs (slice-045a, erweitert in slice-058): sortiert und enthaelt das
+// volle Achsen-VOKABULAR — flat + hexagonal + hexslice. Der Union kommt aus langArchs,
+// nicht aus einer zweiten Liste: `hexagonal` rendert heute nur go (ADR-0010), steht aber
+// im Vokabular und ist damit fuer cpp die Exit-2-Klasse „sprach-fremde Architektur".
 func TestSupportedArchs(t *testing.T) {
 	archs := gen.SupportedArchs()
 	if !sort.StringsAreSorted(archs) {
 		t.Errorf("SupportedArchs nicht sortiert: %v", archs)
 	}
-	if strings.Join(archs, ",") != "flat,hexslice" {
-		t.Errorf("SupportedArchs = %v, want [flat hexslice]", archs)
+	if strings.Join(archs, ",") != "flat,hexagonal,hexslice" {
+		t.Errorf("SupportedArchs = %v, want [flat hexagonal hexslice]", archs)
 	}
 }

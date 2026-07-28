@@ -44,8 +44,11 @@ Infrastruktur wird kanonisch neu geschrieben (heilt Drift), adopter-gefuellte Da
 Init-Flags:
   --lang        Zielsprache (optional; ohne → sprach-agnostischer Init, doc-only-Gate).
                 --lang <X> = Init + ein add-lang(<X>, .) als One-Shot-Kurzform.
-  --arch        Ziel-Architektur des Skeletts (flat|hexslice, Default flat; nur mit --lang
-                wirksam). hexslice = geschichtetes HexSlice-Layout (ADR-0009).
+  --arch        Ziel-Architektur des Skeletts (flat|hexagonal|hexslice, Default flat; nur
+                mit --lang wirksam). hexagonal = die drei klassischen Schichten
+                core/port/adapter (ADR-0010), hexslice = HexSlice mit Use-Case-Slices
+                (ADR-0009). Welche Architekturen eine SPRACHE traegt, sagt die
+                Fehlermeldung bei einer nicht getragenen Kombination.
   --name        Projektname (optional)
   -h, --help    diese Hilfe anzeigen
 
@@ -59,7 +62,7 @@ Umgebung (bewusster Opt-in-Override der gepinnten Werte — LH-QA-02):
   BASELINE_SHA256   erwarteter sha256 des Baseline-Assets
   DCHECK_IMAGE      d-check-Tag-Referenz
   DCHECK_DIGEST     d-check-Digest (sticht den Tag)
-  A_CHECK_IMAGE     a-check-Tag-Referenz (Arch-Gate, nur bei --arch hexslice)
+  A_CHECK_IMAGE     a-check-Tag-Referenz (Arch-Gate, nur bei geschichtetem --arch)
   A_CHECK_DIGEST    a-check-Digest (sticht den Tag)
   SKEL_<LANG>_VERSION  Toolchain-Version des Skeletts je Sprache (SKEL_GO_VERSION, SKEL_CPP_VERSION;
                        Default gepinnt, deterministisch)
@@ -95,7 +98,7 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 
 	lang := fs.String("lang", "", "Zielsprache (optional)")
 	name := fs.String("name", "", "Projektname")
-	arch := fs.String("arch", gen.DefaultArch, "Ziel-Architektur des Skeletts (flat|hexslice; nur mit --lang)")
+	arch := fs.String("arch", gen.DefaultArch, "Ziel-Architektur des Skeletts (flat|hexagonal|hexslice; nur mit --lang)")
 
 	switch err := fs.Parse(args); {
 	case err == flag.ErrHelp:
@@ -129,10 +132,11 @@ wird konvergent kanonisch geschrieben, vorhandener Skelett-Code bleibt unberuehr
 Argumente:
   <sprache>   Zielsprache (gen-Profil; z.B. go)
   <pfad>      Zielort des Moduls (. = Repo-Root)
-  --arch      Ziel-Architektur (flat|hexslice, Default flat; slice-045b/ADR-0009). Eine
-              von der Sprache nicht getragene Architektur (z.B. cpp+hexslice) -> Exit 2.
-              hexslice dropt zusaetzlich das Architektur-Gate (.a-check.yml + a-check.mk
-              + harness/mk/arch-<modul>.mk); flat bekommt keines (kein Gate ueber leerem
+  --arch      Ziel-Architektur (flat|hexagonal|hexslice, Default flat; ADR-0009/ADR-0010).
+              Eine von der Sprache nicht getragene Architektur (z.B. cpp+hexagonal) -> Exit 2
+              mit der Liste, die DIESE Sprache traegt. Ein geschichtetes Layout dropt
+              zusaetzlich das Architektur-Gate (.a-check.yml + a-check.mk +
+              harness/mk/arch-<modul>.mk); flat bekommt keines (kein Gate ueber leerem
               Pruefbereich) und bleibt damit Docker-frei.
 `
 

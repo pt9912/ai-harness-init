@@ -226,17 +226,23 @@ func matchGlob(glob, rel string) bool {
 // TestArchGateConfig_OnlyLayered (slice-046, LH-QA-01): nur eine schichten-tragende,
 // von der Sprache getragene Kombination bekommt ein Arch-Gate. `flat` traegt keinen
 // Pruefbereich und bekommt keine Config, der Aufrufer emittiert dann nichts. Seit
-// slice-053 rendert AUCH cpp hexslice und traegt darum eine eigene Config.
+// slice-053 rendert AUCH cpp hexslice und traegt darum eine eigene Config; seit
+// slice-058 rendert go zusaetzlich hexagonal — cpp aber NICHT, und eine sprach-fremde
+// Architektur bekommt kein Gate (sie erzeugt gar kein Skelett, Exit-2-Klasse).
+// Rot-Gegenbeispiel fuer die strukturelle Geschichtet-Erkennung: test/mutations/102
+// stuft eine Schicht-Rolle als Nicht-Schicht ein — hexslice verliert dann sein Gate.
 func TestArchGateConfig_OnlyLayered(t *testing.T) {
 	for _, tc := range []struct {
 		lang, arch string
 		want       bool
 	}{
 		{"go", "hexslice", true},
+		{"go", "hexagonal", true},
 		{"go", "flat", false},
 		{"go", "", false},
 		{"cpp", "flat", false},
 		{"cpp", "hexslice", true},
+		{"cpp", "hexagonal", false}, // Achsen-Wert vorhanden, cpp-Renderer traegt ihn nicht
 		{"go", "onion", false},
 	} {
 		if _, ok := gen.ArchGateConfig(tc.lang, tc.arch); ok != tc.want {
@@ -245,10 +251,18 @@ func TestArchGateConfig_OnlyLayered(t *testing.T) {
 	}
 }
 
-// TestArchGateConfig_CoversEveryLayeredCombo (slice-046): jede (Sprache, Architektur),
-// die ein schichten-tragendes Skelett rendert, MUSS eine Config haben — sonst faellt das
-// Gate bei einer kuenftigen Sprache still aus (die Emission ist an ok gekoppelt). Der
+// TestArchGateConfig_CoversEveryLayeredCombo (slice-046, strukturell seit slice-058):
+// jede (Sprache, Architektur), die ein schichten-tragendes Skelett rendert, MUSS eine
+// Config haben — sonst faellt das Gate still aus (die Emission ist an ok gekoppelt). Der
 // Test leitet die Kombinationen aus dem realen Generator ab, nicht aus einer Liste.
+//
+// „Geschichtet" leitet er dabei aus dem GERENDERTEN BAUM ab (layeredTree) und fragt NICHT
+// gen.archLayered — sonst befragte der Waechter dieselbe Funktion, die er bewacht, und
+// waere tautologisch: eine Erkennung, die ein Layout faelschlich als flach einstuft,
+// verloere sein Gate und der Test bliebe gruen (ADR-0010 Folgepflicht 1, LH-QA-01).
+// Bis slice-058 stand hier `strings.Contains(rel, "hexagon/domain/")` — ein
+// hexslice-NAME, der genau diesen Fall fuer jedes andere Vokabular offen liess.
+// Rot-Gegenbeispiel: test/mutations/102 stuft eine Schicht-Rolle als Nicht-Schicht ein.
 func TestArchGateConfig_CoversEveryLayeredCombo(t *testing.T) {
 	for _, lang := range gen.SupportedLangs() {
 		for _, arch := range gen.SupportedArchs() {
@@ -256,17 +270,39 @@ func TestArchGateConfig_CoversEveryLayeredCombo(t *testing.T) {
 			if err := gen.GenerateArch(dir, lang, gen.DefaultVersion(lang), arch); err != nil {
 				continue // Kombination wird nicht getragen (Exit-2-Klasse) — kein Gate erwartet
 			}
-			layered := false
-			for _, rel := range walkRel(t, dir) {
-				if strings.Contains(rel, "hexagon/domain/") {
-					layered = true
-				}
-			}
-			if _, ok := gen.ArchGateConfig(lang, arch); layered && !ok {
+			if _, ok := gen.ArchGateConfig(lang, arch); layeredTree(t, lang, arch, dir) && !ok {
 				t.Errorf("%s+%s rendert Schichten, hat aber keine Arch-Gate-Config (Gate faellt still aus)", lang, arch)
 			}
 		}
 	}
+}
+
+// layeredTree sagt STRUKTURELL, ob der gerenderte Baum von (lang, arch) Schichten traegt:
+// enthaelt er eine Quelldatei, die das FLACHE Skelett derselben Sprache nicht hat und die
+// weder im Composition Root (cmd/) noch im Toolchain-Test-Verzeichnis (tests/) liegt?
+// Genau das ist eine geprueft-relevante Schicht — unabhaengig davon, wie sie heisst.
+// Bewusst gegen `flat` gemessen und nicht gegen eine Verzeichnisliste: der Vergleichspunkt
+// kommt aus demselben Generator, den der Test prueft, aber aus einem ANDEREN Layout.
+func layeredTree(t *testing.T, lang, arch, dir string) bool {
+	t.Helper()
+	if arch == "flat" {
+		return false
+	}
+	flatDir := t.TempDir()
+	if err := gen.GenerateArch(flatDir, lang, gen.DefaultVersion(lang), "flat"); err != nil {
+		t.Fatalf("GenerateArch(%s, flat): %v", lang, err)
+	}
+	flatRels := map[string]bool{}
+	for _, rel := range walkRel(t, flatDir) {
+		flatRels[rel] = true
+	}
+	for _, rel := range walkRel(t, dir) {
+		if flatRels[rel] || strings.HasPrefix(rel, "cmd/") || strings.HasPrefix(rel, "tests/") {
+			continue
+		}
+		return true
+	}
+	return false
 }
 
 // TestArchGateConfig_ModuleRelative (slice-046): die Config ist MODUL-relativ — der
