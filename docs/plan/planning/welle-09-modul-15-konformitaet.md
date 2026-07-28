@@ -170,8 +170,8 @@ wandert vor. Das entscheidet der Planner beim Schnitt von 062, nicht dieser Plan
 **ADR-Bedarf — vor slice-059, nicht bei slice-062** (Plan-Review-Befund): Schema, Datenfluss und
 Sicherheitsfläche werden faktisch im **Dogfood-Slice** entschieden, nicht erst bei der Emission.
 Die Entscheidung liegt als [`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.md) vor —
-Status **Proposed**, nach der sechsten Runde. Solange sie nicht *Accepted* ist, bleibt slice-059
-in `open/` — dieselbe Bedingung, die slice-058 getragen hat.
+**Accepted** am 2026-07-28 nach **sechs** Proposed-Runden (blockierende Befunde 2 → 3 → 1 → 3 →
+2 → 0). Die Bedingung, unter der slice-059 in `open/` blieb, ist damit erfüllt.
 
 ## 5. Abhängigkeiten
 

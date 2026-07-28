@@ -15,8 +15,10 @@ inhaltliche Adaption — Modul 15 ist adoptiert und unumgesetzt),
 (der inhaltsbasierte Nachweis, den ein Span im Arbeitsbaum brechen würde),
 [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (die Zusage für
 die **emittierte** Seite: „Ziel-Repos bleiben make/docker-getrieben"),
-[`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) (**Proposed** — solange nicht
-angenommen, bleibt dieser Slice in `open/`). Regelwerk-Quelle:
+[`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) (**Accepted** 2026-07-28 — Schema-
+Policy, abgeleitete Werte, Ablageort und fail-open-Betrieb sind dort **festgelegt**; dieser
+Slice setzt sie um und erfindet sie nicht neu, [`AGENTS.md`](../../../../AGENTS.md) §3.4).
+Regelwerk-Quelle:
 `.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md` §Span-/Audit-Attribut-Regeln.
 
 **Autor:** ai-harness-init-Team (pt9912). **Datum:** 2026-07-28.
@@ -140,7 +142,11 @@ Re-Evaluierungs-Trigger aus [`ADR-0011`](../../adr/0011-telemetrie-erfassung-pol
 ## 4. Trigger
 
 **`open` → `next`:** [welle-09](../welle-09-modul-15-konformitaet.md) ist geschnitten (dieser
-Slice ist ihr erster), `in-progress/` ist leer (WIP-Limit 1).
+Slice ist ihr erster), `in-progress/` ist leer (WIP-Limit 1) — **und
+[`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) ist *Accepted***. Die dritte
+Bedingung kam aus dem Plan-Review und war die zuletzt offene: Schema-Policy, Datenfluss und
+Sicherheitsfläche sind entschieden, bevor der erste Span geschrieben wird. **Alle drei erfüllt
+am 2026-07-28.**
 
 Rückführungen:
 
