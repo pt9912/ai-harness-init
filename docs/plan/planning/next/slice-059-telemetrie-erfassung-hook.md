@@ -131,9 +131,23 @@ Re-Evaluierungs-Trigger aus [`ADR-0011`](../../adr/0011-telemetrie-erfassung-pol
 | F | Wie viel kostet die **volle** Abdeckung? | `matcher: ""` erfasst alles — auch `Read`. Ob jeder gelesene Pfad ins Audit gehört, ist eine Schema-Frage (Incident-Frage vorhanden?) und eine Kosten-Frage (Zeile E). Die Abdeckung ist herstellbar; die Auswahl bleibt zu treffen. |
 | G | Traegt die Ableitung ihre Randfaelle? | `slice.id` aus `in-progress/` — **heute liegt dort kein Slice**, das Feld muss also leer und als leer erkennbar sein statt geraten. `requirement.id` aus der Bezug-Zeile: bis zu vier `LH-*` je Slice, also eine Liste, nicht ein Wert. Offen bleibt der Cache-Status (Transkript statt Payload). |
 
+**Mechanik-Entscheidung (2026-07-28, nach der Messung — die der Plan sich offengehalten hat):**
+**Go**, nicht awk. Begründung, und sie ist gemessen, nicht ästhetisch: der Emitter ist
+**fail-open** und hat damit **nicht** die Kompensation, mit der `extract-command.awk` seine
+Ungeeignetheit auffängt (*„bei Unsicherheit lieber blocken"* — fail-closed). Der Review hat die
+Folge belegt: `error` nur als String erkannt, bei `{"message":…}` meldet der Span `ok` für einen
+fehlgeschlagenen Aufruf. Jedes Feld ist ein handgeschriebener Sonderfall, jede Typ-Variante ein
+neuer. Dazu 21 externe Aufrufe je Span (gemessen) gegen **einen** Prozess-Start.
+[`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 4 steht dem **nicht**
+entgegen: sie schließt Laufzeiten aus, die ein **Adopter** installieren müsste — für die
+Dogfood-Seite bindet sie nicht. Ob das Ziel-Repo einen Emitter bekommt, entscheidet **slice-062**
+(§4 der Welle), nicht dieser Slice.
+
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `harness/tools/` (neuer Span-Emitter) | neu | Ablage nach [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption) (lokale Tools liegen hier). **Die Mechanik ist offen** — Randbedingung „nichts, das installiert werden muss" ([`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 4), Auswahl nach den Messungen A–G, nicht vorab festgelegt |
+| Span-Emitter in **Go** | neu | Echter JSON-Parser statt handgeführtem Scanner; ein Prozess statt gemessener 21 externer Aufrufe; von `make lint`/`make test` abgedeckt wie der übrige Go-Code ([`ADR-0003`](../../adr/0003-go-native-binaries.md)) |
+| **Gate für den Fehlt-Fall** | neu | Ein kompiliertes Artefakt kann **fehlen** — und dann entsteht **gar kein Strom**, was die Folgenummer prinzipiell nicht sieht (sie wurde nie vergeben). Der stille Totalausfall ist schlimmer als der Teilverlust, gegen den die Nummern eingeführt wurden. Ein Gate prüft deshalb: Emitter vorhanden **und** erzeugt für eine synthetische Payload einen Span. Damit wird aus dem stillen Ausfall ein rotes Gate |
+| `harness/tools/span-emit.sh`, `span-fields.awk` | ersetzt | Die awk-Fassung bleibt bis zur Ablösung verdrahtet und ist die **Semantik-Vorlage**: ihre Sicherheits-Eigenschaften (Werkzeug-Name als Achse, Env-Präfix übersprungen, vergebene statt abgeleitete Folgenummer, Sperre, Modus vor dem ersten Byte) sind in `44b974a` belegt und gelten unverändert weiter |
 | `.claude/settings.json` | update | Event(s) und **Matcher** verdrahten (abhängig von Messung A **und F**) |
 | `harness/tools/json-encode.awk` | prüfen, ggf. wiederverwenden | existiert bereits für JSON-**Ausgabe**; ob es auch für die Payload-**Eingabe** trägt, ist Messung A — Encoding und Parsing sind nicht dasselbe Problem |
 | `test/` + `test/mutations/` | neu | die zwei Zähne aus DoD (3) |
