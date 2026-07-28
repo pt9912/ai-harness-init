@@ -38,7 +38,7 @@ fest, wo wir ihr folgen (die Pfade) und wo nicht (die Verdrahtungsstelle).
 
 ## 2. Definition of Done
 
-- [ ] **(1) `add-lang go <pfad> --arch hexagonal` legt das geschichtete Modul an — samt Gate.**
+- [x] **(1) `add-lang go <pfad> --arch hexagonal` legt das geschichtete Modul an — samt Gate.**
   Exit 0, mit **genau** dem Layout aus [`ADR-0010`](../../adr/0010-hexagonal-arch-realisierung.md)
   Festlegung 1: `internal/hexagon/core` (`role: app`), `internal/hexagon/port` (`role: port`,
   importfrei), `internal/adapter/driven` und `internal/adapter/driving` (beide `role: adapter`,
@@ -61,7 +61,7 @@ fest, wo wir ihr folgen (die Pfade) und wo nicht (die Verdrahtungsstelle).
   **gerenderten Baum** ab. Gegenprobe: `flat` und `hexslice` bleiben **byte-identisch**, und für
   beide bleibt die Gate-Entscheidung unverändert (rot gesehen: die neue Erkennung einmal so
   brechen, dass `hexslice` sein Gate verliert).
-- [ ] **(2) Das Gate hat Zähne — an beiden tragenden Regeln, mit Regel-Namen.** Zwei
+- [x] **(2) Das Gate hat Zähne — an beiden tragenden Regeln, mit Regel-Namen.** Zwei
   Gegenbeispiele werden im realen Ziel **rot gesehen**, nicht nur „Exit ≠ 0": ein
   `core → driven`-Import als **`app-impurity`** (der Kern trägt `role: app` und darf keinen Adapter
   sehen) und ein `driving → driven`-Import als **`lateral-adapter`** — Letzterer ist die tragende
@@ -70,7 +70,7 @@ fest, wo wir ihr folgen (die Pfade) und wo nicht (die Verdrahtungsstelle).
   **`driven → core`** ist Teil der emittierten Config — im Gerüst nur auskommentiert, in der Familie
   real geführt — und bekommt einen Mutations-Fall, sonst „räumt" sie später jemand weg (die Lehre
   aus slice-054/Fall 96).
-- [ ] **(3) Die Abgrenzung zu `hexslice` ist mechanisch, nicht nur beschrieben.** Ein Test hält
+- [x] **(3) Die Abgrenzung zu `hexslice` ist mechanisch, nicht nur beschrieben.** Ein Test hält
   fest, dass die beiden Layouts **disjunkte Verzeichnisnamen** tragen (`core` vs `domain`, `port`
   vs `application/**/ports`, `adapter/driven` vs `adapters/outbound`); sonst verschmelzen sie beim
   nächsten Aufräumen zu einem Layout mit zwei Kanten-Mengen — genau das, was CR 0.17.0 ausschließt.
@@ -78,11 +78,11 @@ fest, wo wir ihr folgen (die Pfade) und wo nicht (die Verdrahtungsstelle).
   **und** `ports→core` zusammen wären in einer einzigen Kern-Schicht ein Import-Zyklus, den die
   Sprache ausschließt — der Grund, aus dem [`ADR-0010`](../../adr/0010-hexagonal-arch-realisierung.md)
   `ports→core` nicht führt.
-- [ ] `make gates` grün, `make mutate` ohne Befund, `make full-smoke` grün.
-- [ ] Doku-Update: [Handbuch](../../../user/benutzerhandbuch.md) und
+- [x] `make gates` grün, `make mutate` ohne Befund, `make full-smoke` grün.
+- [x] Doku-Update: [Handbuch](../../../user/benutzerhandbuch.md) und
   [`README.md`](../../../../README.md) nennen die dritte Bauform — **erst wenn (1) und (2) grün
   sind** (die Reihenfolge aus slice-054).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -181,16 +181,92 @@ Move-Commit, Link-Reconciliation im Folge-Commit); Closure-Notiz mit Steering-Lo
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!--
-Wird *nach* Abschluss ergänzt. Inhalt:
-- Was hat funktioniert?
-- Was ging anders als geplant?
-- Steering-Loop-Eintrag: welcher Guide/Sensor sollte verbessert werden?
-  (kanonische Definition: [`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/grundlagen/klassifikation.md#steering-loop))
-- Folge-Slices: welche neuen open/-Einträge?
--->
+**Abgeschlossen:** 2026-07-28. **Rollen-Sequenz vollständig:** Implementation → Review
+(`docs/reviews/2026-07-28-slice-058-impl-review.md`, KONFORM mit Auflagen: 0 HIGH · 2 MEDIUM ·
+2 LOW · 1 INFO) → Verifikation (`docs/reviews/2026-07-28-slice-058-verification.md`, **DoD
+BESTÄTIGT**, keine Rückkante) → Closure. Sensoren auf dem Endstand, von Review **und**
+Verifikation je selbst gefahren: `make gates` Exit 0 (d-check 224/0, comment-claims 31/0) ·
+`make mutate` **102 ok / 0 Befunde** · `make full-smoke` Exit 0.
 
-<!-- Erst nach Abschluss füllen. -->
+### Was funktioniert hat
+
+- **Die ADR ging voraus, und das war der Unterschied.** Schichten, Rollen, Kanten und
+  Verdrahtungsort standen in [`ADR-0010`](../../adr/0010-hexagonal-arch-realisierung.md) fest
+  (vier Proposed-Runden); die Umsetzung hatte keine Designfrage mehr offen, und der Review konnte
+  sie **Zeile für Zeile gegen die ADR-Tabelle** prüfen statt zu diskutieren — 0 HIGH.
+- **Der Plan-Review-HIGH vor dem Code.** Die Geschichtet-Erkennung von Namen auf Struktur zu
+  heben war **Voraussetzung, nicht Anhang**: unverändert übernommen hätte `hexagonal` still kein
+  Arch-Gate bekommen, und der Wächter wäre dabei grün geblieben.
+- **Zähne mit Regel-Namen statt „Exit ≠ 0".** Beide tragenden Regeln wurden im realen Ziel rot
+  gesehen (`app-impurity`, `lateral-adapter`) — Letztere ist **keine Kante**, also fängt sie kein
+  Kanten-Wächter.
+
+### Was anders lief als geplant
+
+- **Aus drei Mutations-Klassen wurden acht Fälle** (99–106). Der Plan nannte Rollen,
+  `driven→core` und Disjunktheit; die strukturelle Erkennung brauchte **zwei Richtungen**
+  (102 = das neue Layout verliert sein Gate, 103 = das bestehende verliert es), und der Review
+  fand drei weitere Wächter ohne Fall (104–106).
+- **Ein Mutations-Fall scheiterte an sich selbst und meldete es.** Die erste Fassung von 103
+  (`if false` an der Schleifenbedingung) ließ die Schleifenvariable ungenutzt → Compile-Fehler →
+  `make mutate` meldete „rot, aber die Erwartung fällt nicht — falscher Grund". Der Sensor hat
+  seinen eigenen Defekt gefangen, nicht ich.
+- **Der CR kam zu spät.** `LH-FA-07` beschrieb das Gate layout-spezifisch; das fiel erst im
+  Review auf (F-2). Der CR 0.18.0 liegt damit **nach** dem `open → in-progress`-Move, während
+  [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+  Setzung 2 ihn davor verlangt — die Abweichung steht in der Historie-Zeile selbst.
+- **Mehr als geplant, aber ADR-gedeckt:**
+  [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)
+  stand nicht in der Plan-Tabelle; [`ADR-0010`](../../adr/0010-hexagonal-arch-realisierung.md)
+  Folgepflicht 6 verlangt den Zeiger.
+
+### Steering-Loop-Einträge
+
+1. **Eine Fähigkeits-Erkennung, die an Namen hängt, ist eine Zeitbombe mit stillem Zünder.**
+   `archLayered` fragte nach der Rolle `domain` — für das erste geschichtete Layout richtig, für
+   jedes zweite falsch, und zwar **grün**. Geschärfte Regel: Erkennungen, die über eine
+   *Fähigkeit* entscheiden (bekommt dieses Ding sein Gate?), strukturell formulieren, nie über
+   eine Namensliste — und **der Wächter darf nicht dieselbe Funktion befragen, die er bewacht**,
+   sonst ist er tautologisch. Neuer Sensor: die Baum-abgeleitete Erkennung im Kopplungs-Wächter
+   plus die Fälle `test/mutations/102-archlayered-namensbasiert.sh` und
+   `test/mutations/103-archlayered-erkennung-weg.sh` (beide Richtungen).
+2. **Falsche Begründung im Sensor-Korpus ist ein eigener Befund-Typ — zweimal in diesem Slice
+   getroffen.** Review-F-4 (`test/mutations/63-langarch-support.sh` begründete sich mit einer
+   Aussage, die derselbe Commit als überholt korrigierte) und Verifikations-A-2
+   (`test/mutations/104-hexagonal-role-fileset.sh` behauptete „das Skelett übersetzt weiter" —
+   es übersetzt **nicht**). Die Mutation greift in beiden Fällen; die **Prosa** lügt, und wer sie
+   liest, zieht den falschen Schluss. Geschärfte Regel: die Begründung eines Mutations-Falls wird
+   gegen den **beobachteten** Fehlschlag geschrieben, nicht gegen die Absicht.
+   **Sensor-Lücke, ehrlich benannt:** `make comment-claims` deckt Kommentar-Behauptungen im
+   Code, **nicht** die `#`-Prosa in `test/mutations/` — diese Klasse hat heute keinen Sensor.
+3. **Wenn ein Slice eine Fähigkeit verdoppelt, ist die bindende Anforderung auf „Klasse statt
+   Instanz" zu prüfen.** `LH-FA-07` nannte `--arch hexslice` namentlich; mit dem zweiten Layout
+   trat der Vertrag vom Verhalten weg. Dieselbe Konstellation lag bei slice-053 (zweite Sprache)
+   vor und fiel dort **nicht** auf — die Klasse ist also älter als dieser Slice.
+4. **Restrisiko, benannt statt geglättet (Verifikations-A-1):** „`flat` und `hexslice` bleiben
+   byte-identisch" ist **statisch belegt** (der Diff fasst ihre Konstanten nicht an), aber von
+   **keinem Sensor gemessen** — kein Wächter vergleicht den Inhalt gegen einen Vorher-Stand. Der
+   DoD-Text ist an dieser Stelle strenger als
+   [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), das für `flat`
+   „funktional unverändert" verlangt. Der Teil der Zusage **mit** Rot-Pflicht (die
+   Gate-Entscheidung) hat sein Gegenbeispiel (Fall 103).
+
+### Folge-Kandidaten (benannt, **nicht** geschnitten — cp-Disziplin)
+
+- **`make doc-targets` verdrahten** (`modules:` + `gates`) samt Mutations-Fall „Geister-Befehl":
+  die Modul-15-Pflichtregel *„keine Befehle behaupten, die es nicht gibt"* liegt als
+  tool-geliefertes Ziel vor, ist an keinen Trigger gehängt und heute grün gemessen (224/0).
+  Gehört auf die Achse *Regeln ohne Feedback-Quadrant schließen* — dieselbe, auf der
+  [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
+  schon `doc-planning` benannt hat. **Dogfood-Ebene**; ob die *emittierte* `.d-check.yml` (heute
+  `[links, anchors]`) nachzieht, ist eine eigene Frage am Adopter-Vertrag
+  ([`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7)).
+- **cpp × hexagonal** — [`ADR-0010`](../../adr/0010-hexagonal-arch-realisierung.md) Folgepflicht 3:
+  die zweite Sprache erbt die Achse, **nicht** die Kanten-Menge (Vererbung ⇒ `adapters→ports`).
+- **Byte-Identitäts-Sensor** für `flat`/`hexslice` — oder die Zusage auf das einschränken, was
+  gedeckt ist (A-1).
+- **CLI-Ebenen-Test für `hexagonal`** (A-4): heute hängt die CLI-Ebene allein am `make full-smoke`;
+  `hexslice` hat seinen Test in `cmd/ai-harness-init/main_test.go`.
 
 ## 8. Sub-Area-Modus-Begründung
 
