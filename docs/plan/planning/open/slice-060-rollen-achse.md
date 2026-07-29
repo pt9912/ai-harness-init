@@ -42,13 +42,22 @@ Eimer — `general-purpose` und den Haupt-Kontext. Das ist eine Summe, keine Rec
   Span.** Je Harness-Rolle eine Datei `.claude/agents/<name>.md` mit Frontmatter (`name`,
   `description`, `tools`, `model`; der Body wird zum Systemprompt). **Zwei Bedingungen, und sie
   ruhen auf verschiedenen Belegen — das gehört auseinandergehalten:**
-  1. **Vordergrund** (`run_in_background: false`) ist **gemessen** (§3): im Hintergrund kommt
-     weder ein Zähler noch `agentType` an.
-  2. **Der Aufruf wählt den Typ ausdrücklich.** Die Subagenten-Doku (Herstellerseite
-     `/docs/de/sub-agents`, im Repo **nicht** vorliegend) nennt die @-Erwähnung als den Weg, der
-     die Ausführung *garantiert*, während natürliche Sprache die Delegation dem Modell
-     überlässt. **Ungemessen ist, ob eine @-Erwähnung im Vordergrund läuft** — der dokumentierte
-     Default ist Hintergrund. Diese Messung gehört an den Anfang der Umsetzung, nicht ans Ende.
+  1. **WELCHE Rolle läuft, entscheidet der Aufrufer per @-Erwähnung.** Die Subagenten-Doku
+     (Herstellerseite `/docs/de/sub-agents`, im Repo **nicht** vorliegend) nennt sie als den
+     Weg, der die Ausführung *garantiert*, während natürliche Sprache die Delegation dem Modell
+     überlässt.
+  2. **WIE sie läuft, entscheidet der Werkzeug-Aufruf** — `run_in_background: false`. **Beide
+     Richtungen gemessen** (§3): im Hintergrund kommt weder ein Zähler noch `agentType` an.
+     **Gemessen ist auch die Trennung selbst** (2026-07-29): ein per @-Erwähnung angeforderter
+     Lauf ohne ausdrücklichen Schalter lief im **Hintergrund** — der Span zeigt `duration_ms: 3`
+     bei 4.184 ms tatsächlicher Laufzeit des Subagenten. Die @-Erwähnung wählt also den Typ,
+     nicht die Betriebsart.
+
+  **Das verschiebt die Zuständigkeit, und zwar zum Besseren:** die Vordergrund-Bedingung ist
+  **keine Nutzer-Konvention**, sondern eine **Aufruf-Konvention** — sie liegt dort, wo eine
+  `.claude/agents/`-Definition oder ein Kommando sie festschreiben kann, statt sie einem
+  Gedächtnis zu überlassen. Ob eine dieser zwei Stellen sie wirklich erzwingt, ist beim
+  Umsetzen zu prüfen; erzwingt keine, bleibt es eine Konvention ohne Sensor (§6).
 
   Beide Bedingungen gehören als Konvention in
   [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung),
@@ -89,10 +98,11 @@ Feldnamen und Wertlängen, nie Werte):**
 |---|---|---|
 | 1 | **Vordergrund** (`run_in_background: false`) | `usage` (543 B) mit `input_tokens`, `output_tokens`, `cache_creation_input_tokens`, `cache_read_input_tokens` · `totalTokens` · `totalDurationMs` · `totalToolUseCount` · **`agentType`** · `resolvedModel` · `status` · **`content`**, **`prompt`** |
 | 2 | **Hintergrund** (`run_in_background: true`) | `agentId` · `isAsync` · `outputFile` · `canReadOutputFile` · `resolvedModel` · `status` · **`prompt`**, **`description`** — **keine Zähler, kein `agentType`** |
-| 3 | **Fehlschlag** (unbekannter Agenten-Typ) | Ereignis `PostToolUseFailure`; `tool_response` **fehlt ganz** — nicht leer, sondern nicht vorhanden. `error` steht auf oberster Ebene, dazu ein bis dahin ungesehenes `is_interrupt`. **Die Positiv-Liste greift hier konstruktiv:** es ist nichts zu erfassen, weil nichts Gelistetes existiert |
-| 4 | alle drei | `tool_input` trägt `subagent_type`, `prompt`, `description`, `run_in_background` |
-| 5 | zwei verschiedene Dauern | `duration_ms` der Payload war **4 ms** (der Hook feuert beim Start), `totalDurationMs` trägt die Laufzeit des Subagenten |
-| 6 | die Rollen-Achse ist heute leer (Bestands-Auszählung, nicht Teil der A/B-Erhebung) | alle Subagenten-Ströme tragen `agent_type: "general-purpose"`, `agent_role: ""` |
+| 3 | **@-Erwähnung ohne ausdrücklichen Schalter** | lief im **Hintergrund**: Span `duration_ms: 3` bei 4.184 ms echter Laufzeit. Die @-Erwähnung wählt den **Typ**, nicht die **Betriebsart** |
+| 4 | **Fehlschlag** (unbekannter Agenten-Typ) | Ereignis `PostToolUseFailure`; `tool_response` **fehlt ganz** — nicht leer, sondern nicht vorhanden. `error` steht auf oberster Ebene, dazu ein bis dahin ungesehenes `is_interrupt`. **Die Positiv-Liste greift hier konstruktiv:** es ist nichts zu erfassen, weil nichts Gelistetes existiert |
+| 5 | alle vier | `tool_input` trägt `subagent_type`, `prompt`, `description`, `run_in_background` |
+| 6 | zwei verschiedene Dauern | `duration_ms` der Payload war **4 ms** (der Hook feuert beim Start), `totalDurationMs` trägt die Laufzeit des Subagenten |
+| 7 | die Rollen-Achse ist heute leer (Bestands-Auszählung, nicht Teil der A/B-Erhebung) | alle Subagenten-Ströme tragen `agent_type: "general-purpose"`, `agent_role: ""` |
 
 **Was daraus folgt:** die Zähler sind erreichbar, **aber nur im Vordergrund**. Daraus wird eine
 **Prozess-Bedingung**, keine Erfassungs-Frage — und sie passt zum seriellen Betrieb, den dieses
@@ -144,7 +154,7 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
   zwei Aufrufen. Ein Prompt ist in
   [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 2 namentlich als das
   benannt, was nie ins Log darf. Deshalb die **Positiv**-Liste in DoD (2): sie hält auch, wenn
-  eine künftige Antwort ein fünftes Freitext-Feld bringt. Der **Fehlerfall ist inzwischen gemessen** (§3 Zeile 3):
+  eine künftige Antwort ein fünftes Freitext-Feld bringt. Der **Fehlerfall ist inzwischen gemessen** (§3 Zeile 4):
   dort fehlt `tool_response` ganz — die Positiv-Liste erfasst folglich nichts, ohne dass es
   einer Sonderregel bedarf. Gefunden wurde dabei ein fünfter undokumentierter Schlüssel
   (`is_interrupt`) in nun drei gemessenen Aufrufen; die Fläche wächst erkennbar weiter, was die
@@ -152,7 +162,9 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
 - **Die Vordergrund-Bedingung kostet Parallelität** — ein Rollen-Lauf blockiert die
   Hauptschleife. Das ist der Preis der Telemetrie.
 - **Und sie hat keinen Sensor.** Wird eine Rolle im Hintergrund gestartet, fehlen die Zähler
-  **lautlos**: es entsteht ein Span, nur ohne Telemetrie. Die Bilanz rechnet dann über weniger
+  **lautlos**: es entsteht ein Span, nur ohne Telemetrie. Verschärfend: der Hintergrund ist der
+  **Standard**, die Vordergrund-Bedingung also eine aktive Abweichung davon, die bei jedem
+  Aufruf neu hergestellt werden muss. Die Bilanz rechnet dann über weniger
   Läufen, ohne es zu melden. Deshalb verlangt
   [slice-066](slice-066-telemetrie-auswertung.md) eine **Abdeckungszahl** — wie viele
   `Agent`-Spans überhaupt Zähler trugen — und nicht nur die Größe des Sammelpostens.
