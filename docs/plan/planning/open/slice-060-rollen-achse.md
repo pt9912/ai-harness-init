@@ -89,9 +89,10 @@ Feldnamen und Wertlängen, nie Werte):**
 |---|---|---|
 | 1 | **Vordergrund** (`run_in_background: false`) | `usage` (543 B) mit `input_tokens`, `output_tokens`, `cache_creation_input_tokens`, `cache_read_input_tokens` · `totalTokens` · `totalDurationMs` · `totalToolUseCount` · **`agentType`** · `resolvedModel` · `status` · **`content`**, **`prompt`** |
 | 2 | **Hintergrund** (`run_in_background: true`) | `agentId` · `isAsync` · `outputFile` · `canReadOutputFile` · `resolvedModel` · `status` · **`prompt`**, **`description`** — **keine Zähler, kein `agentType`** |
-| 3 | beide | `tool_input` trägt `subagent_type`, `prompt`, `description`, `run_in_background` |
-| 4 | zwei verschiedene Dauern | `duration_ms` der Payload war **4 ms** (der Hook feuert beim Start), `totalDurationMs` trägt die Laufzeit des Subagenten |
-| 5 | die Rollen-Achse ist heute leer | alle Subagenten-Ströme tragen `agent_type: "general-purpose"`, `agent_role: ""` |
+| 3 | **Fehlschlag** (unbekannter Agenten-Typ) | Ereignis `PostToolUseFailure`; `tool_response` **fehlt ganz** — nicht leer, sondern nicht vorhanden. `error` steht auf oberster Ebene, dazu ein bis dahin ungesehenes `is_interrupt`. **Die Positiv-Liste greift hier konstruktiv:** es ist nichts zu erfassen, weil nichts Gelistetes existiert |
+| 4 | alle drei | `tool_input` trägt `subagent_type`, `prompt`, `description`, `run_in_background` |
+| 5 | zwei verschiedene Dauern | `duration_ms` der Payload war **4 ms** (der Hook feuert beim Start), `totalDurationMs` trägt die Laufzeit des Subagenten |
+| 6 | die Rollen-Achse ist heute leer (Bestands-Auszählung, nicht Teil der A/B-Erhebung) | alle Subagenten-Ströme tragen `agent_type: "general-purpose"`, `agent_role: ""` |
 
 **Was daraus folgt:** die Zähler sind erreichbar, **aber nur im Vordergrund**. Daraus wird eine
 **Prozess-Bedingung**, keine Erfassungs-Frage — und sie passt zum seriellen Betrieb, den dieses
@@ -142,9 +143,11 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
   zwei Aufrufen. Ein Prompt ist in
   [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 2 namentlich als das
   benannt, was nie ins Log darf. Deshalb die **Positiv**-Liste in DoD (2): sie hält auch, wenn
-  eine künftige Antwort ein fünftes Freitext-Feld bringt. **Ungemessen bleiben Fehlerfälle** —
-  welche Felder eine fehlgeschlagene `Agent`-Antwort trägt, hat niemand gesehen; eine billige
-  Messung zu Beginn der Umsetzung.
+  eine künftige Antwort ein fünftes Freitext-Feld bringt. Der **Fehlerfall ist inzwischen gemessen** (§3 Zeile 3):
+  dort fehlt `tool_response` ganz — die Positiv-Liste erfasst folglich nichts, ohne dass es
+  einer Sonderregel bedarf. Gefunden wurde dabei ein fünfter undokumentierter Schlüssel
+  (`is_interrupt`) in nun drei gemessenen Aufrufen; die Fläche wächst erkennbar weiter, was die
+  Wahl der Positiv-Liste stützt.
 - **Die Vordergrund-Bedingung kostet Parallelität** — ein Rollen-Lauf blockiert die
   Hauptschleife. Das ist der Preis der Telemetrie.
 - **Und sie hat keinen Sensor.** Wird eine Rolle im Hintergrund gestartet, fehlen die Zähler
