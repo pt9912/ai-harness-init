@@ -8,7 +8,13 @@ scan:
   # trägt kurs-eigene MR-/ADR-Kennungen (Beispiele, nicht die des Repos), die
   # sonst die ids-Link-Pflicht träfen. Glob ohne <tag>: der Tag-String lebt
   # allein in BASELINE_TAG (Makefile).
-  ignore: ["**/*.template.md", ".tmp/**", ".harness/baseline/**"]
+  # docs/user/claude-hooks-referenz.md: vendored Werkzeug-Doku (Hooks-Referenz),
+  # dieselbe Klasse wie die Baseline — externer Inhalt, nicht repo-autoritativ. Sie
+  # verlinkt durchgaengig auf /docs/de/...-Pfade der Herstellerseite; gemessen 70
+  # target-missing, alle aus dieser Ursache. Sie liegt committet im Repo, damit die
+  # Plaene sie NETZLOS zitieren koennen (die Linie aus MR-007) — geprueft wird sie
+  # nicht, denn wir schreiben sie nicht.
+  ignore: ["**/*.template.md", ".tmp/**", ".harness/baseline/**", "docs/user/claude-hooks-referenz.md"]
 modules: [links, anchors, ids, matrix, codepaths, spans]
 # Kennungen sind linkpflichtig (auch in Inline-Code, link-policy: always) —
 # "klickbar zur Quelle" als gemessenes Property. Literal-schwere Artefakte
