@@ -34,9 +34,12 @@ Die Auswertung ([slice-066](slice-066-telemetrie-auswertung.md)) setzt hier auf.
 ## 2. Definition of Done
 
 - [ ] **(1) Rollen-benannte Agenten-Typen, und `agent_role` füllt sich ohne Änderung an der
-  Erfassung.** Die Harness-Rollen aus Modul 8 bekommen eigene Agenten-Typen; wer eine Rolle
-  startet, startet sie unter ihrem Namen. `roleFromAgentType` leitet daraus ab — kein neues
-  Feld, kein zweiter Mechanismus. **Belegt an einem echten Lauf**, nicht am Test.
+  Erfassung.** Je Harness-Rolle eine Datei `.claude/agents/<name>.md` mit Frontmatter
+  (`name`, `description`, `tools`, `model`; der Body wird zum Systemprompt). Gestartet wird
+  **per @-Erwähnung** — die Werkzeug-Doku führt sie als den Weg, der *„garantiert, dass der
+  Subagent für eine Aufgabe ausgeführt wird"*; natürliche Sprache überlässt die Delegation
+  dem Modell. `roleFromAgentType` leitet `agent_role` daraus ab — kein neues Feld, kein
+  zweiter Mechanismus. **Belegt an einem echten Lauf**, nicht am Test.
 - [ ] **(2) `Agent` wird ein namentlich gelistetes Werkzeug — für ZAHLEN, nie für Text.** Aus
   `tool_response` werden `usage` (vier Zähler), `totalTokens`, `totalDurationMs` und
   `totalToolUseCount` erfasst, aus `tool_input` der `subagent_type`; der Antworttext des
@@ -106,7 +109,12 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
 - **Eine Rolle, die niemand startet, füllt kein Feld.** Der Mechanismus greift erst, wenn
   Rollen-Läufe wirklich unter ihrem Typ gestartet werden. Ein Versehen liefert
   `general-purpose` — ein ehrliches „unbekannt", kein falsches Etikett, aber eben auch keine
-  Rolle.
+  Rolle. Deshalb die @-Erwähnung und nicht natürliche Sprache.
+- **Nicht geeignet: die Fork-artigen Kommandos** (`/fork`, in dieser Fassung `/subtask`). Sie
+  starten einen **Hintergrund**-Subagenten, der *„das vollständige Gespräch erbt"* — das ist
+  das Gegenteil dessen, was Modul 8 für Reviewer und Verifier verlangt (*Rollen-Trennung ist
+  Kontext-Trennung*). Ein Reviewer mit dem Kontext des Implementers wiederholt dessen blinden
+  Fleck, statt ihn zu finden. Sie liefern zudem keine Nutzungstelemetrie.
 - **Nicht in diesem Slice:** die Rechnung selbst ([slice-066](slice-066-telemetrie-auswertung.md))
   und die Emission (slice-062/063).
 
