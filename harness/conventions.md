@@ -907,9 +907,12 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) lässt diese Wahl
      ausdrücklich offen (*„ob ein Span, der den `transcript_path` trägt … den Mindestsatz
      erfüllt oder von ihm abweicht, entscheidet der umsetzende Slice"*) — es ist damit eine
-     **erklärte Abweichung**, keine Regelverletzung. **Folge, unverblümt:** die Cache-Zähler aus
-     Modul 15 Block 3 haben ohne eine andere Quelle **keine Datengrundlage**; welche es geben
-     kann, klärt slice-060, bevor er etwas verspricht.
+     **erklärte Abweichung**, keine Regelverletzung. **Die andere Quelle ist inzwischen gemessen** (2026-07-29): ein
+     `Agent`-Aufruf im **Vordergrund** trägt in `tool_response` ein `usage`-Objekt mit allen
+     vier Zählern. Der Cache-Status ist damit **für Subagenten-Läufe** erreichbar — ohne
+     Transkript und ohne Zugriff außerhalb des Repos (slice-060 erfasst ihn). **Nicht**
+     erreichbar bleibt er für den Haupt-Kontext und für Hintergrund-Läufe; insoweit gilt die
+     Abweichung fort.
   2. **Die PR-NUMMER steht nicht im Span, ihr Anker schon.** Modul 15 verlangt die
      Korrelation zu *Slice/PR/Agent-Rolle*. Eine PR-Nummer lebt bei der Forge; der
      Emitter geht nicht ins Netz und ruft kein `gh` (er läuft je Tool-Call). Erfasst

@@ -38,22 +38,40 @@ Eimer — `general-purpose` und den Haupt-Kontext. Das ist eine Summe, keine Rec
 
 ## 2. Definition of Done
 
-- [ ] **(1) Rollen-benannte Agenten-Typen, im VORDERGRUND gestartet — und `agent_role` füllt
-  sich ohne Änderung an der Erfassung.** Je Harness-Rolle eine Datei `.claude/agents/<name>.md`
-  mit Frontmatter (`name`, `description`, `tools`, `model`; der Body wird zum Systemprompt).
-  Gestartet wird **per @-Erwähnung** — der Weg, den die Werkzeug-Doku als *„garantiert"* führt,
-  während natürliche Sprache die Delegation dem Modell überlässt — **und im Vordergrund**, weil
-  im Hintergrund gemessen keine Telemetrie ankommt (§3 Zeile 2). Beides gehört als Konvention in
+- [ ] **(1) Rollen-benannte Agenten-Typen, im VORDERGRUND gestartet — und die Rolle steht im
+  Span.** Je Harness-Rolle eine Datei `.claude/agents/<name>.md` mit Frontmatter (`name`,
+  `description`, `tools`, `model`; der Body wird zum Systemprompt). **Zwei Bedingungen, und sie
+  ruhen auf verschiedenen Belegen — das gehört auseinandergehalten:**
+  1. **Vordergrund** (`run_in_background: false`) ist **gemessen** (§3): im Hintergrund kommt
+     weder ein Zähler noch `agentType` an.
+  2. **Der Aufruf wählt den Typ ausdrücklich.** Die Subagenten-Doku (Herstellerseite
+     `/docs/de/sub-agents`, im Repo **nicht** vorliegend) nennt die @-Erwähnung als den Weg, der
+     die Ausführung *garantiert*, während natürliche Sprache die Delegation dem Modell
+     überlässt. **Ungemessen ist, ob eine @-Erwähnung im Vordergrund läuft** — der dokumentierte
+     Default ist Hintergrund. Diese Messung gehört an den Anfang der Umsetzung, nicht ans Ende.
+
+  Beide Bedingungen gehören als Konvention in
   [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung),
   nicht in ein Gedächtnis. **Belegt an einem echten Lauf**, nicht am Test.
-- [ ] **(2) `Agent` wird ein namentlich gelistetes Werkzeug — für Zahlen und zwei Kennungen,
-  nie für Freitext.** Erfasst werden aus `tool_response`: die vier Zähler aus `usage`,
-  `totalTokens`, `totalDurationMs`, `totalToolUseCount`, dazu **`agentType`** (die *tatsächlich
-  gelaufene* Rolle — nicht `tool_input.subagent_type`, das nur die Anforderung ist) und
-  `resolvedModel` (das Label `model.version`, das Modul 15 §Cache-Counter-Regeln verlangt).
-  **Niemals erfasst:** `content`, `prompt`, `description`, `outputFile` — die vier gemessenen
-  Freitext-Felder. Jedes erfasste Feld mit Incident-Frage in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung); der Zahn ist eine
-  Mutation, die **eines dieser vier** in den Span wandern lässt.
+- [ ] **(2) `Agent` wird ein namentlich gelistetes Werkzeug — mit einer POSITIV-Liste.**
+  Erfasst wird aus `tool_response` **ausschließlich, was hier steht**: die vier Zähler aus
+  `usage`, `totalTokens`, `totalDurationMs`, `totalToolUseCount`, dazu die *tatsächlich
+  gelaufene* Rolle (aus `agentType` — nicht `tool_input.subagent_type`, das nur die Anforderung
+  ist) und `resolvedModel` (das Label `model.version` aus Modul 15 §Cache-Counter-Regeln).
+  **Alles andere fällt heraus, ohne genannt zu werden** — das ist der konstruktive Ausschluss
+  aus [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 2. Eine frühere
+  Fassung dieses Punktes zählte stattdessen vier verbotene Felder auf; eine **Negativ**-Liste
+  altert mit jedem neuen Antwortfeld, und die Messung hat allein in zwei Aufrufen vier
+  undokumentierte Schlüssel gezeigt.
+  **Die Rolle bekommt einen eigenen Feldnamen** (`spawned_role`) — der Span führt bereits
+  `agent_type` mit anderer Bedeutung (der Typ des *laufenden* Agenten). Unbekannte Werte werden
+  wie in `roleFromAgentType` zu **leer** normalisiert; `general-purpose` ist keine Rolle, und
+  eine Zeile `general-purpose: 62 %` wäre genau das, was die Lesevorschrift in
+  [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
+  verbietet.
+  Jedes erfasste Feld mit Incident-Frage in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung); **je Freitext-Fläche ein eigener Zahn**
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.6 — vier Zusagen sind vier Gegenbeispiele): je eine
+  Mutation, die `content`, `prompt`, `description` bzw. `outputFile` in den Span wandern lässt.
 - [ ] **(3) Was die Erfassung nicht abdeckt, steht als erklärte Abweichung.** **Gemessen:**
   Hintergrund-Läufe liefern weder Zähler noch `agentType`; und der Haupt-Kontext wird von keinem
   `Agent`-Aufruf umschlossen. Beides gehört benannt, nicht weggelassen
@@ -119,18 +137,26 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
 
 ## 6. Risiken und offene Punkte
 
-- **`Agent` zu listen erweitert den fail-closed Default**, und die Antwort trägt **vier**
-  gemessene Freitext-Felder (`content`, `prompt`, `description`, `outputFile`). Ein Prompt ist in
+- **`Agent` zu listen erweitert den fail-closed Default**, und die Antwort trägt mindestens
+  **vier** gemessene Freitext-Felder (`content`, `prompt`, `description`, `outputFile`) — in nur
+  zwei Aufrufen. Ein Prompt ist in
   [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 2 namentlich als das
-  benannt, was nie ins Log darf. Die Erweiterung trägt nur, wenn der Zahn aus DoD (2) **alle
-  vier** abdeckt — eine frühere Fassung dieses Plans deckte nur `content`.
-- **Die Vordergrund-Bedingung kostet Parallelität.** Ein Rollen-Lauf blockiert die Hauptschleife.
-  Das ist der Preis der Telemetrie und gehört ausgesprochen, nicht versteckt.
+  benannt, was nie ins Log darf. Deshalb die **Positiv**-Liste in DoD (2): sie hält auch, wenn
+  eine künftige Antwort ein fünftes Freitext-Feld bringt. **Ungemessen bleiben Fehlerfälle** —
+  welche Felder eine fehlgeschlagene `Agent`-Antwort trägt, hat niemand gesehen; eine billige
+  Messung zu Beginn der Umsetzung.
+- **Die Vordergrund-Bedingung kostet Parallelität** — ein Rollen-Lauf blockiert die
+  Hauptschleife. Das ist der Preis der Telemetrie.
+- **Und sie hat keinen Sensor.** Wird eine Rolle im Hintergrund gestartet, fehlen die Zähler
+  **lautlos**: es entsteht ein Span, nur ohne Telemetrie. Die Bilanz rechnet dann über weniger
+  Läufen, ohne es zu melden. Deshalb verlangt
+  [slice-066](slice-066-telemetrie-auswertung.md) eine **Abdeckungszahl** — wie viele
+  `Agent`-Spans überhaupt Zähler trugen — und nicht nur die Größe des Sammelpostens.
 - **Eine Rolle, die niemand unter ihrem Typ startet, füllt kein Feld.** Ein Versehen liefert
   `general-purpose` — ein ehrliches „unbekannt", kein falsches Etikett, aber eben keine Rolle.
   Deshalb @-Erwähnung statt natürlicher Sprache.
 - **Nicht geeignet: Kommandos, die den Kontext vererben.** `/fork <directive>` startet laut
-  Kommando-Referenz *„einen Hintergrund-Subagenten, der das vollständige Gespräch erbt"*;
+  Kommando-Referenz der Herstellerseite (`/docs/de/commands`, im Repo **nicht** vorliegend) *„einen Hintergrund-Subagenten, der das vollständige Gespräch erbt"*;
   `/subtask` beschreibt sich in der CLI-Hilfe als *„Send a subagent off with your full context"*.
   (Ob beide dasselbe Kommando sind, ist **nicht belegt** — für den Ausschluss gleichgültig.)
   Kontext-Vererbung ist das Gegenteil dessen, was Modul 8 für Reviewer und Verifier verlangt —

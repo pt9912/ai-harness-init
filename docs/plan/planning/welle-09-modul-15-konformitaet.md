@@ -107,8 +107,9 @@ Modul-15-Block-4.
 
 ## 4. Slices in dieser Welle
 
-Nur der erste Slice ist geschnitten (cp-Disziplin — die übrigen bekommen ihre Datei per `cp`,
-wenn sie an der Reihe sind; ein leeres `open/` ist ehrlicher als eine driftende Vorplanung).
+Geschnitten sind slice-059 (**done**), slice-060 und slice-066; die übrigen bekommen ihre Datei
+per `cp`, wenn sie an der Reihe sind (cp-Disziplin — ein leeres `open/` ist ehrlicher als eine
+driftende Vorplanung).
 
 **Warum zwei Slices statt eines für die Blöcke 2–3** (Schnitt-Korrektur vom 2026-07-29, auf
 Nutzer-Befund): `agent_role` ist heute in **jedem** Span leer. Eine Token-Bilanz hätte damit

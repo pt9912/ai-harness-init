@@ -38,7 +38,10 @@ Bestand, aufrufbar als `make`-Ziel.
   in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
   bindenden Lesevorschrift **aufgeteilt**, nicht als eigene Zeile geführt — und **wie groß der
   aufgeteilte Anteil war, steht im Ergebnis**. Ohne diese Zahl ruht die Bilanz auf einer Regel,
-  ohne dass der Leser es sieht.
+  ohne dass der Leser es sieht. **Dazu die Abdeckungszahl:** wie viele `Agent`-Spans überhaupt
+  Zähler trugen. Die Vordergrund-Konvention aus slice-060 hat keinen Sensor — ein
+  Hintergrund-Start fehlt lautlos, und ohne diese Zahl liest sich eine unvollständige Erhebung
+  wie eine vollständige.
 - [ ] **(2) Cache-Zähler getrennt, mit den Labels, die die Regel verlangt.**
   `cache_creation_input_tokens` und `cache_read_input_tokens` werden **nie** zu einer Zahl
   verrechnet. Modul 15 §Cache-Counter-Regeln verlangt als Labels mindestens `slice.id`,
