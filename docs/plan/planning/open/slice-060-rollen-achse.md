@@ -74,15 +74,15 @@ Die Auswertung ([slice-066](slice-066-telemetrie-auswertung.md)) setzt hier auf.
 
 | # | Frage | Warum sie den Schnitt entscheidet |
 |---|---|---|
-| A | Welche **Namen** tragen die Agenten-Typen? | `roleFromAgentType` kennt heute `planner`, `architect`, `implementer`, `reviewer`, `verifier`, `validator`. Modul 8 nennt die dritte Rolle *Implementation*, der Code `implementer` — eine der beiden Schreibweisen gewinnt, und die Wahl gehört in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung), nicht in den Code |
+| ~~A~~ | ~~Welche **Namen** tragen die Agenten-Typen?~~ | **Entschieden am 2026-07-29: `implementer`** — kurz, gleichförmig mit den übrigen fünf und bereits im Code. Modul 8 nennt die Rolle *Implementation*; die Abweichung ist eine **Schreibweise**, keine Rollen-Änderung, und steht als Festlegung in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung), nicht im Code |
 | B | Bekommen **Ziel-Repos** dieselben Typen? | `.claude/commands/` wird emittiert (`internal/emit/templates/commands/`). Ob `.claude/agents/` mitgeht, ist eine Entscheidung von slice-062 — **hier** ist nur zu vermeiden, dass die Dogfood-Fassung eine Form bekommt, die den Umzug erschwert |
 
 ## 4. Trigger
 
 **`open` → `next`:** Schnitt steht, Ist-Messung liegt vor.
 
-**`next` → `in-progress`:** WIP-Limit; dazu **Frage A entschieden** (die Namen sind eine
-Festlegung, keine Implementierungs-Wahl).
+**`next` → `in-progress`:** WIP-Limit — kein anderer Slice in `in-progress/`. **Frage A ist
+entschieden** (2026-07-29), damit ist dies die einzige verbleibende Bedingung.
 
 Rückführungen:
 

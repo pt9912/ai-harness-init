@@ -930,6 +930,13 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      unterscheiden. Aufgelöst wird sie durch rollen-benannte Agenten-Typen — eine
      **Prozess**-Entscheidung (slice-060), nach der sich das Feld **ohne** Änderung an
      der Erfassung füllt.
+     **Die kanonischen Namen der Agenten-Typen** (Festlegung vom 2026-07-29, slice-060
+     Frage A): `planner` · `architect` · `implementer` · `reviewer` · `verifier` ·
+     `validator`. Modul 8 nennt die dritte Rolle *Implementation*; als **Bezeichner**
+     gilt `implementer` — kurz, gleichförmig mit den übrigen fünf und bereits im Code.
+     Die Abweichung ist eine Schreibweise, keine Rollen-Änderung, und sie steht hier,
+     damit sie nicht im Code lebt.
+
      **Was auch dann nicht abgedeckt ist:** der Haupt-Strom trägt keinen Agenten-Typ
      (`agent` und `agent_type` sind dort strukturell leer) und wechselt innerhalb einer
      Sitzung zwischen Planer und Implementation. Für ihn ist die Splitting-Regel des
