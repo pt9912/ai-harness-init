@@ -21,12 +21,15 @@
 # (`mkdir -p dist` vor dem make-Aufruf) — sie war gruen, WEIL sie kompensierte.
 # Die Kompensation gehoert ins Werkzeug, nicht in den Aufrufer.
 #
-# Aufruf: artifact-copy.sh <image> <ziel-verzeichnis> <ziel-dateiname>
+# Aufruf: artifact-copy.sh <image> <ziel-verzeichnis> <ziel-dateiname> [<quell-pfad>]
+# Der Quell-Pfad im Image ist optional und steht auf /out/ai-harness-init, solange
+# niemand etwas anderes nennt (slice-059 holt so /out/span-emit aus der span-Stage).
 set -euo pipefail
 
 img="${1:-}"
 destdir="${2:-}"
 name="${3:-}"
+src="${4:-/out/ai-harness-init}"
 
 if [ -z "$img" ] || [ -z "$destdir" ] || [ -z "$name" ]; then
   echo "artifact-copy: Aufruf: artifact-copy.sh <image> <ziel-verzeichnis> <ziel-dateiname>" >&2
@@ -38,4 +41,4 @@ mkdir -p "$destdir"
 
 cid="$(docker create "$img" true)"
 trap 'docker rm -f "$cid" >/dev/null 2>&1' EXIT
-docker cp "$cid:/out/ai-harness-init" "$destdir/$name"
+docker cp "$cid:$src" "$destdir/$name"

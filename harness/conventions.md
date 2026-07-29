@@ -817,8 +817,8 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ### MR-018 — Span-Schema der Telemetrie-Erfassung
 
 - **Datum:** 2026-07-28
-- **Geltungsbereich:** die Spans, die `harness/tools/span-emit.sh` je Tool-Call in den
-  gitignorierten Zustands-Bereich schreibt. Umsetzung von
+- **Geltungsbereich:** die Spans, die `cmd/span-emit` je Tool-Call in den
+  gitignorierten Zustands-Bereich schreibt (Logik in `internal/span/`). Umsetzung von
   [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) Folgepflicht 1: die
   **Feldtabelle** gehört hierher und nicht in die ab *Accepted* immutable ADR — sie wächst mit
   jedem Feld, das seine Incident-Frage nachweist.
@@ -837,6 +837,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 | `agent_type` | Optional | *Welche Art Lauf?* — **nicht** die Harness-Rolle, s. Sammelposten unten |
 | `slice` | Pflicht | *Auf wessen Rechnung lief der Zugriff?* — aus dem Lifecycle-Verzeichnis, Liste (kein Slice ⇒ leer und als leer erkennbar) |
 | `requirement` | Pflicht | *Gegen welche Anforderung?* — aus der `Bezug:`-Zeile der Slices, Liste |
+| `branch`, `commit` | Pflicht | *Zu welcher Änderung gehört der Zugriff?* — die dritte Korrelations-Achse aus Modul 15 (*Slice/**PR**/Agent-Rolle*), abgeleitet aus `.git/HEAD`; die PR-Nummer selbst ist nicht erreichbar, s. Abweichung 3 |
 | `status` | Pflicht | *Ging es gut?* |
 | `permission_mode` | Optional | *Unter welcher Berechtigungs-Lage?* |
 | `transcript` | Optional | *Wo stehen Token- und Cache-Zähler?* — Brücke für die Auswertung |
@@ -844,20 +845,33 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 | `bytes`, `sha256_16` | Optional | *Hat sich etwas geändert?* — aus dem **Dateisystem**, nie aus der Payload |
 | `program`, `argc` | Optional | *Welches Programm lief?* — erstes Token und Argument-Anzahl, nie die Kommandozeile |
 
-- **Zwei erklärte Abweichungen vom Modul-15-Pflicht-Minimum** (die ADR verlangt sie zu benennen,
+- **Drei erklärte Abweichungen vom Modul-15-Pflicht-Minimum** (die ADR verlangt sie zu benennen,
   nicht wegzulassen):
   1. **Cache-Status steht nicht im Span.** Er liegt im Transkript des Agenten-Werkzeugs, nicht in
      der Hook-Payload; ihn je Tool-Call nachzuschlagen kostete einen Dateizugriff pro Aufruf.
      Der Span trägt stattdessen `transcript` als **Zeiger**, die Auflösung macht die Auswertung
      (slice-060). Das ist eine Abweichung und keine Erfüllung: ist das Transkript weg, ist die
      Frage unbeantwortbar.
+  3. **Die PR-NUMMER steht nicht im Span, ihr Anker schon.** Modul 15 verlangt die
+     Korrelation zu *Slice/PR/Agent-Rolle*. Eine PR-Nummer lebt bei der Forge; der
+     Emitter geht nicht ins Netz und ruft kein `gh` (er läuft je Tool-Call). Erfasst
+     werden deshalb `branch` und `commit` — die Größen, über die eine Auswertung den
+     PR nachschlägt. Das ist eine Ableitung, keine Erfüllung: liegt kein PR zum
+     Branch vor, bleibt die Frage offen. Ein `.git` als Datei (Worktree, Submodul)
+     wird nicht aufgelöst; dann sind beide Felder leer und als leer erkennbar.
   2. **`agent_type` ist nicht die Harness-Rolle.** Bei Review- und Verify-Läufen steht dort der
      Subagent-Typ (`general-purpose`), nicht *Reviewer* bzw. *Verifier*. Die Rollen-Achse ist
      damit ein **Sammelposten**; ihn aufzuteilen verlangt eine Konvention (rollen-benannte
      Agenten-Typen oder Übergabe beim Start) und ist eine Prozess-, keine Skript-Entscheidung.
-- **Bewacht:** `test/span-emit.bats` (Klemme, stumme Ausgabe, kein fremder Inhalt, fail-closed
-  Default, Modus, Strom-Trennung, Kopplung an `.gitignore`) sowie
-  `test/mutations/107-span-klemme-entfernt.sh` und `test/mutations/108-span-schema-offen.sh`.
+- **Bewacht:** `internal/span/span_test.go` und `cmd/span-emit/main_test.go` (Klemme und stumme
+  Ausgabe als Prozess-Eigenschaft, fail-closed Default an fremden Werkzeug-Namen, kein
+  Payload-Inhalt im Span, vergebene statt abgeleitete Folgenummer, Nebenläufigkeit, Modus,
+  Strom-Trennung, Ableitung von `slice`/`requirement`/`branch`), `make span-check`
+  (Emitter vorhanden **und** funktionsfähig, Ablageort real `git check-ignore`-geprüft) sowie
+  `test/mutations/107-span-klemme-entfernt.sh`, `test/mutations/108-span-schema-offen.sh`,
+  `test/mutations/109-span-folgenummer-eingefroren.sh` und
+  `test/mutations/110-span-pflichtfeld-verschwindet.sh` (die Pflicht-Spalte oben: ein
+  `omitempty` am falschen Feld liesse es bei leerem Wert lautlos verschwinden).
 - **Auflösungs-Trigger:** permanent, solange Spans erfasst werden. Die Tabelle ändert sich mit
   jedem neuen Feld — jede Änderung ist ein Eintrag hier, kein Nebeneffekt im Skript.
 

@@ -1,0 +1,70 @@
+// Command span-emit schreibt EINEN Span je Tool-Call in den gitignorierten
+// Zustands-Bereich. Es ist der Hook-Einstieg zu internal/span; die Policy steht in
+// ADR-0011, die Mechanik dort, hier steht nur die KLEMME.
+//
+// ZWEI EIGENSCHAFTEN SIND NICHT VERHANDELBAR (ADR-0011 Festlegung 6), und beide sind
+// hier konstruktiv hergestellt, nicht durch Sorgfalt:
+//
+//  1. Der Exit-Code ist auf 0 geklemmt. Das ist kein Formalismus: ein Hook, der mit
+//     2 endet, BLOCKT den Tool-Call. Der Lauf, den die Telemetrie nur beobachten
+//     soll, stuende dann still, weil ihr Beobachter stolperte.
+//  2. stdout bleibt LEER. Dort liegt bei Hooks der ENTSCHEIDUNGS-Kanal; wer dort
+//     schreibt, entscheidet ueber Berechtigungen mit, statt zu beobachten. Kein
+//     Pfad dieses Binaries schreibt nach stdout — und `forbidigo` (make lint)
+//     verbietet fmt.Print* repo-weit, haelt die Eigenschaft also auf Gate-Ebene.
+//
+// Beides bewacht test/mutations/107-span-klemme-entfernt.sh gegen
+// TestClampSurvivesBrokenPayload.
+package main
+
+import (
+	"io"
+	"os"
+	"time"
+
+	"github.com/pt9912/ai-harness-init/internal/span"
+)
+
+// maxPayload begrenzt, was von stdin gelesen wird. Eine Write-Payload traegt den
+// Datei-INHALT, kann also gross sein; jenseits dieser Grenze kostet der Aufruf seinen
+// Span (fail-open, benannt) statt den Speicher des Rechners.
+const maxPayload = 64 << 20
+
+func main() {
+	// DIE KLEMME, und sie ist TRAGEND: emit() laesst jeden Fehlschlag als panic
+	// hochkommen, statt ihn an Ort und Stelle zu schlucken. Erst dadurch hat die
+	// Klemme ueberhaupt etwas zu fangen — und erst dadurch ist sie MUTIERBAR. Wird
+	// diese Zeile entfernt, endet ein kaputtes JSON auf stdin mit Exit 2, dem Wert,
+	// mit dem ein Hook blockiert.
+	defer clamp()
+	emit(os.Stdin)
+}
+
+func clamp() {
+	_ = recover()
+	os.Exit(0)
+}
+
+// emit ist der Weg von stdin in den Strom. Er gibt KEINEN Fehler zurueck: der einzige
+// Ausgang fuer einen Fehlschlag ist die Klemme oben.
+func emit(stdin io.Reader) {
+	wd, err := os.Getwd()
+	must(err)
+	root, ok := span.FindRoot(wd)
+	if !ok {
+		// Ohne Repo-Wurzel gibt es keinen Ablageort. Der Emitter raet keinen.
+		return
+	}
+	payload, err := io.ReadAll(io.LimitReader(stdin, maxPayload))
+	must(err)
+	if len(payload) == 0 {
+		return
+	}
+	must(span.Emit(root, payload, time.Now()))
+}
+
+func must(err error) {
+	if err != nil {
+		panic(err)
+	}
+}

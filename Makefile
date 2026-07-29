@@ -34,7 +34,7 @@ BASELINE_TAG ?= v3.5.2
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 2af45aad2777cadf26127066c9a2dc43f7111ee2687e44fe2eceb95c6c0a1925
 
-.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate
+.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims span-emit-build span-check span-clean baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.51.1 -> v0.51.1). Aus
@@ -222,10 +222,31 @@ freshness-cpp: ## Neueres ubuntu-LTS als DefaultCppVersion melden (read-only, Qu
 	@pinned=$$(sed -n 's/.*DefaultCppVersion = "\([0-9.]*\)".*/\1/p' internal/gen/cpp.go); \
 	  CPP_PINNED="$$pinned" bash harness/tools/cpp-freshness.sh
 
+# Der Span-Emitter (slice-059, ADR-0011). Er ist ein Host-Binary: der Hook ruft ihn
+# je Tool-Call, also darf er nicht erst einen Container starten (gemessen: docker run
+# 388 ms gegen 24 ms fuer den ganzen Emitter). Gebaut wird er trotzdem Docker-only im
+# gepinnten Image (ADR-0003) und danach herausgeholt — derselbe Weg wie `make artifact`.
+# Das Ziel liegt im gitignorierten Zustands-Bereich, damit das Binary den
+# working-tree-hash nicht verschiebt (MR-003).
+SPAN_BIN := .harness/state/bin/span-emit
+
+span-emit-build: ## Span-Emitter bauen und in den Zustands-Bereich legen — Docker-only (ADR-0003)
+	docker build --build-arg GO_VERSION=$(GO_VERSION) --target span -t ai-harness-init:span .
+	@bash harness/tools/artifact-copy.sh ai-harness-init:span "$(dir $(SPAN_BIN))" "$(notdir $(SPAN_BIN))" /out/span-emit
+
+span-check: span-emit-build ## Emitter vorhanden UND funktionsfaehig (der Fehlt-Fall) — IN gates
+	@bash harness/tools/span-check.sh "$(SPAN_BIN)"
+
+# ADR-0011 Festlegung 3 verlangt fuers Aufraeumen ausdruecklich ein make-Ziel und
+# KEINEN Automatismus: "laeuft die andere Sitzung noch?" ist nicht entscheidbar, also
+# raeumt niemand fremden Bestand nebenbei weg.
+span-clean: ## Span-Bestaende entfernen (ausdruecklich, kein Automatismus)
+	@rm -rf .harness/state/spans && echo "span-clean: .harness/state/spans entfernt"
+
 record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh
 
 # baseline-verify läuft als ERSTER Prerequisite: steht die vendored Baseline
 # nicht, ist jede Aussage der Folge-Gates über sie wertlos. record-gates läuft
 # als LETZTER — der Nachweis entsteht nur nach grünen Gates (MR-002).
-gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims record-gates ## alle aktuell lauffähigen Gates + Nachweis
+gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims span-check record-gates ## alle aktuell lauffähigen Gates + Nachweis

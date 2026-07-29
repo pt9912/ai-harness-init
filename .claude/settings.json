@@ -17,7 +17,8 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "bash \"$CLAUDE_PROJECT_DIR\"/harness/tools/span-emit.sh"
+                        "command": "\"$CLAUDE_PROJECT_DIR\"/.harness/state/bin/span-emit",
+                        "timeout": 5
                     }
                 ]
             }
@@ -28,7 +29,8 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "bash \"$CLAUDE_PROJECT_DIR\"/harness/tools/span-emit.sh"
+                        "command": "\"$CLAUDE_PROJECT_DIR\"/.harness/state/bin/span-emit",
+                        "timeout": 5
                     }
                 ]
             }

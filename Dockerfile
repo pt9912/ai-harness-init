@@ -80,3 +80,13 @@ ARG TARGET_ARCH=
 COPY . .
 RUN CGO_ENABLED=0 GOOS=${TARGET_OS} GOARCH=${TARGET_ARCH} \
     go build -trimpath -ldflags="-s -w" -o /out/ai-harness-init ./cmd/ai-harness-init
+
+# ---- span ------------------------------------------------------------------
+# Der Span-Emitter (slice-059). EIGENE Stage und EIGENES Binary, KEIN Subkommando
+# von ai-harness-init: ob der EMITTIERTE Harness einen Emitter bekommt, entscheidet
+# slice-062 — ein Subkommando haette diese Entscheidung vorweggenommen, weil es mit
+# dem Produkt-Binary beim Adopter landete (welle-09 §4). Der Hook laesst das Binary
+# auf dem HOST laufen; `make span-check` holt es hier heraus.
+FROM deps AS span
+COPY . .
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/span-emit ./cmd/span-emit
