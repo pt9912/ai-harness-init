@@ -15,10 +15,12 @@ inhaltliche Adaption),
 [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) (**Accepted** — Festlegung 2, der
 fail-closed Default am Werkzeug-Namen, wird um genau ein Werkzeug erweitert),
 [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (der Emitter
-bleibt ein Docker-only gebautes Go-Binary),
-[`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)
-(die Rollen-Typen sind das **Dogfood**-Gegenstück zu den emittierten Workflow-Commands; ob sie
-mitgehen, entscheidet slice-062). Regelwerk-Quelle:
+bleibt ein Docker-only gebautes Go-Binary — **Dogfood-Ebene**: das Werkzeug *dieses* Repos, nicht
+das emittierte Zielprojekt). **Bewusst NICHT im Bezug:**
+[`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) —
+die Anforderung betrifft die **emittierten** Workflow-Commands, dieser Slice emittiert nichts
+(§6). Die Kennung hier zu führen füllte die `requirement`-Achse **falsch**, und gefüllt-und-falsch
+ist schlechter als leer-und-erkennbar; die Nachbarschaft steht als Frage B. Regelwerk-Quelle:
 `.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md` §Kernidee und
 §Token-Attributions-Regeln sowie `modul-08-agentenrollen.md`.
 
@@ -32,8 +34,9 @@ mitgehen, entscheidet slice-062). Regelwerk-Quelle:
 ist in jedem Span leer, weil alle Subagenten unter `general-purpose` laufen. Dieser Slice füllt
 sie und erfasst die Nutzungstelemetrie, die im selben Payload eintrifft.
 
-**Warum ein eigener Slice:** ohne gefüllte Rollen hätte eine Token-Bilanz genau zwei namenlose
-Eimer — `general-purpose` und den Haupt-Kontext. Das ist eine Summe, keine Rechnung.
+**Warum ein eigener Slice:** die Begründung des Schnitts steht in
+[welle-09 §4](../welle-09-modul-15-konformitaet.md) — kurz: ohne gefüllte Rollen wäre die
+Token-Bilanz eine Summe, keine Rechnung.
 [slice-066](slice-066-telemetrie-auswertung.md) setzt hier auf.
 
 ## 2. Definition of Done
@@ -53,11 +56,18 @@ Eimer — `general-purpose` und den Haupt-Kontext. Das ist eine Summe, keine Rec
      bei 4.184 ms tatsächlicher Laufzeit des Subagenten. Die @-Erwähnung wählt also den Typ,
      nicht die Betriebsart.
 
-  **Das verschiebt die Zuständigkeit, und zwar zum Besseren:** die Vordergrund-Bedingung ist
-  **keine Nutzer-Konvention**, sondern eine **Aufruf-Konvention** — sie liegt dort, wo eine
-  `.claude/agents/`-Definition oder ein Kommando sie festschreiben kann, statt sie einem
-  Gedächtnis zu überlassen. Ob eine dieser zwei Stellen sie wirklich erzwingt, ist beim
-  Umsetzen zu prüfen; erzwingt keine, bleibt es eine Konvention ohne Sensor (§6).
+  **Das verschiebt die Zuständigkeit — und macht die Bedingung ERZWINGBAR.** Sie ist keine
+  Nutzer-Konvention, sondern eine **Aufruf-Konvention**, und ihr Durchsetzungsort ist **weder**
+  das Frontmatter (die vier Felder oben kennen keine Betriebsart) **noch** ein Kommando (eine
+  Prompt-Datei ist dasselbe Gedächtnis), sondern ein **`PreToolUse`-Guard**: der Mechanismus
+  läuft in diesem Repo bereits, blockt Tool-Calls anhand ihrer `tool_input` und ist bei
+  Parse-Zweifel fail-closed (`.claude/hooks/pretooluse-command-guard.sh`, verdrahtet in
+  `.claude/settings.json`; er verweigert über den Entscheidungs-Kanal, nicht über den
+  Exit-Code). `run_in_background` liegt in `tool_input` — gemessen, §3 Zeile 5. **Der Sensor
+  ist also zu bauen, nicht zu vermissen:** ein zweiter Eintrag mit `"matcher": "Agent"`, der
+  einen **Rollen**-Typ ablehnt, dessen `run_in_background` nicht `false` ist. Damit wird aus der
+  Konvention eine Regel mit Gegenbeispiel: der Zahn ist ein Rollen-Aufruf im Hintergrund, den der
+  Guard rot ablehnt.
 
   Beide Bedingungen gehören als Konvention in
   [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung),
@@ -78,9 +88,14 @@ Eimer — `general-purpose` und den Haupt-Kontext. Das ist eine Summe, keine Rec
   eine Zeile `general-purpose: 62 %` wäre genau das, was die Lesevorschrift in
   [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
   verbietet.
-  Jedes erfasste Feld mit Incident-Frage in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung); **je Freitext-Fläche ein eigener Zahn**
-  ([`AGENTS.md`](../../../../AGENTS.md) §3.6 — vier Zusagen sind vier Gegenbeispiele): je eine
-  Mutation, die `content`, `prompt`, `description` bzw. `outputFile` in den Span wandern lässt.
+  Jedes erfasste Feld mit Incident-Frage in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung).
+  **Zwei Sorten Zähne** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): je eine Mutation für
+  `content`, `prompt`, `description` und `outputFile` — **und einen für die GRENZE selbst**. Vier
+  namentliche Fälle unterscheiden eine Positiv-Liste nämlich nicht von einer Implementierung, die
+  genau diese vier ausfiltert; sie belegen die Zusage, nicht die Eigenschaft. Der Grenz-Zahn
+  füttert eine Antwort mit einem **ungelisteten, erfundenen** Feld und prüft, dass es den Span
+  nicht erreicht; die Mutation stellt die Erfassung auf „alles außer den vier" um. Ohne ihn ist
+  die Eigenschaft, mit der §6 die Umstellung begründet (*hält auch beim fünften Feld*), unbelegt.
 - [ ] **(3) Was die Erfassung nicht abdeckt, steht als erklärte Abweichung.** **Gemessen:**
   Hintergrund-Läufe liefern weder Zähler noch `agentType`; und der Haupt-Kontext wird von keinem
   `Agent`-Aufruf umschlossen. Beides gehört benannt, nicht weggelassen
@@ -91,8 +106,8 @@ Eimer — `general-purpose` und den Haupt-Kontext. Das ist eine Summe, keine Rec
 
 ## 3. Plan (vor Code)
 
-**Ist-Messung (2026-07-29, A/B an zwei echten Agenten-Aufrufen dieses Repos; erfasst wurden nur
-Feldnamen und Wertlängen, nie Werte):**
+**Ist-Messung (2026-07-29, an **vier** echten Agenten-Aufrufen dieses Repos — Vordergrund,
+Hintergrund, @-Erwähnung, Fehlschlag; erfasst wurden nur Feldnamen und Wertlängen, nie Werte):**
 
 | # | Aufruf | `tool_response` enthält |
 |---|---|---|
@@ -113,16 +128,19 @@ aus dem `agent_role` des Spans: der `Agent`-Aufruf ist ein Tool-Call des **Aufru
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `.claude/agents/` | neu | je Harness-Rolle ein Typ. Der Reviewer hat mit `.harness/skills/reviewer.md` bereits seinen Anweisungssatz — der Typ zeigt darauf, eine Quelle |
-| `internal/span/` | update | `Agent` in die Werkzeug-Klasse; Zahlen und die zwei Kennungen aus `tool_response` |
-| [`harness/conventions.md`](../../../../harness/conventions.md) | update | Werkzeug- und Feldtabelle in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung), die Start-Konvention (@-Erwähnung + Vordergrund), die zwei Abweichungen aus DoD (3) |
-| `test/` + `test/mutations/` | neu | der Zahn aus DoD (2) |
+| `internal/span/` | update | `Agent` in die Werkzeug-Klasse; die Positiv-Liste samt neuem Feld `spawned_role`. **Auch der Kommentar** bei `span.go` („vom Ergebnis darf nur die Länge in den Span") — er wird durch DoD (2) falsch, sobald sieben benannte Werte aus `tool_response` gelesen werden |
+| `.claude/settings.json` + `.claude/hooks/` | update + neu | der `PreToolUse`-Guard mit `"matcher": "Agent"` aus DoD (1) |
+| [`harness/conventions.md`](../../../../harness/conventions.md) | update | in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung): Werkzeug- und Feldtabelle (**inkl. `spawned_role`**), die Umstellung auf die **Positiv-Liste**, die Start-Konvention (@-Erwähnung + Vordergrund + Guard), die zwei Abweichungen aus DoD (3) — und §Bewacht, das heute dasselbe sagt wie der Emitter-Kommentar |
+| `test/mutations/` | neu + update | **fünf** Zähne aus DoD (2): vier Freitext-Felder plus der Grenz-Zahn. **Update**: `test/mutations/115` behauptet heute, vom Ergebnis dürfe ausschließlich die Größe erfasst werden — ab DoD (2) ist das falsch. `make comment-claims` fängt es **nicht**, weil es die Existenz des Sensors prüft, nicht die Wahrheit des Satzes |
 
-**Offen, vor dem Code zu entscheiden:**
+**Angrenzende Fragen — bewusst NICHT in diesem Slice entschieden.** Keine ist eine
+Vorbedingung: der Trigger `next → in-progress` ist allein das WIP-Limit. Sie stehen hier, damit
+sie nicht als vergessen gelten:
 
-| # | Frage | Warum sie den Schnitt entscheidet |
+| # | Frage | Wo sie hingehört |
 |---|---|---|
-| C | Bekommt der **Haupt-Kontext** eine Rolle — abgeleitet aus dem Prompt? | `UserPromptSubmit` trägt das Feld `prompt` (gemessen an der Referenz). Der Text ist Freitext, aber **ihn zu lesen ist nicht dasselbe wie ihn zu übernehmen**: derselbe Emitter liest bei `Bash` die volle Kommandozeile und schreibt daraus ein einziges Token. Analog ließe sich der Prompt gegen die **geschlossene Liste der sechs Rollennamen** halten und **nur die Zuordnung** schreiben — einer von sieben Werten, kein Teilstring. **Zwei Reste, die das nicht umsonst machen:** eine beiläufige Erwähnung („der reviewer hat gesagt…") ergäbe einen Falsch-Treffer, weshalb nur die **@-Erwähnungs-Form** taugt und nicht das bloße Wort; und es ist ein **neues Hook-Ereignis** mit eigener Fehlerfläche. **Was es nicht löst:** die Token des Haupt-Kontexts — die stehen in keiner Payload. Es löst die **Splitting-Regel** (slice-066 Frage A), indem der Sammelposten je Anweisung ein Etikett bekäme, statt geschätzt zu werden. Bewusst **kein** vierter DoD-Punkt: Modul 5 setzt die Grenze bei drei |
 | B | Bekommen **Ziel-Repos** dieselben Agenten-Typen? | `.claude/commands/` wird emittiert ([`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren), `internal/emit/templates/commands/`). Ob `.claude/agents/` mitgeht, entscheidet slice-062 — **hier** ist nur zu vermeiden, dass die Dogfood-Fassung eine Form bekommt, die den Umzug erschwert |
+| C | Bekommt der **Haupt-Kontext** eine Rolle — abgeleitet aus dem Prompt? | `UserPromptSubmit` trägt das Feld `prompt` (gemessen an der Referenz). Der Text ist Freitext, aber **ihn zu lesen ist nicht dasselbe wie ihn zu übernehmen**: derselbe Emitter liest bei `Bash` die volle Kommandozeile und schreibt daraus ein einziges Token. Analog ließe sich der Prompt gegen die **geschlossene Liste der sechs Rollennamen** halten und **nur die Zuordnung** schreiben — einer von sieben Werten, kein Teilstring. **Die Reste, und sie sind größer als zuerst notiert:** (a) **Mehrfach-Treffer** — nennt eine Anweisung zwei Rollennamen, muss die Ableitung entscheiden, welcher gilt oder ob keiner gilt. Ohne diese Festlegung liefert sie **keinen** der sieben Werte, sondern eine Vermutung, und das Argument oben („einer von sieben Werten, kein Teilstring") trägt nicht mehr. (b) **Die Zustands-Brücke** — `UserPromptSubmit` feuert **einmal je Anweisung**, die Spans entstehen **je Tool-Call**; das Etikett muss den Weg dazwischen überleben, und das ist der aufwendige Teil, nicht die Zuordnung selbst. (c) Ein **Falsch-Treffer** bei beiläufiger Erwähnung („der reviewer hat gesagt…"), weshalb nur die @-Erwähnungs-Form taugt und nicht das bloße Wort. (d) Ein **neues Hook-Ereignis** mit eigener Fehlerfläche. **Was es nicht löst:** die Token des Haupt-Kontexts — die stehen in keiner Payload. Es löst die **Splitting-Regel** (slice-066 Frage A), indem der Sammelposten je Anweisung ein Etikett bekäme, statt geschätzt zu werden. Bewusst **kein** vierter DoD-Punkt: Modul 5 setzt die Grenze bei drei |
 
 *Entschieden: die **Namen** (`planner` · `architect` · `implementer` · `reviewer` · `verifier` ·
 `validator`; Festlegung in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) vom 2026-07-29) und die **Aufnahme von `Agent`** in die
@@ -157,17 +175,21 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
   eine künftige Antwort ein fünftes Freitext-Feld bringt. Der **Fehlerfall ist inzwischen gemessen** (§3 Zeile 4):
   dort fehlt `tool_response` ganz — die Positiv-Liste erfasst folglich nichts, ohne dass es
   einer Sonderregel bedarf. Gefunden wurde dabei ein fünfter undokumentierter Schlüssel
-  (`is_interrupt`) in nun drei gemessenen Aufrufen; die Fläche wächst erkennbar weiter, was die
+  (`is_interrupt`) in nun vier gemessenen Aufrufen; die Fläche wächst erkennbar weiter, was die
   Wahl der Positiv-Liste stützt.
 - **Die Vordergrund-Bedingung kostet Parallelität** — ein Rollen-Lauf blockiert die
   Hauptschleife. Das ist der Preis der Telemetrie.
-- **Und sie hat keinen Sensor.** Wird eine Rolle im Hintergrund gestartet, fehlen die Zähler
-  **lautlos**: es entsteht ein Span, nur ohne Telemetrie. Verschärfend: der Hintergrund ist der
-  **Standard**, die Vordergrund-Bedingung also eine aktive Abweichung davon, die bei jedem
-  Aufruf neu hergestellt werden muss. Die Bilanz rechnet dann über weniger
-  Läufen, ohne es zu melden. Deshalb verlangt
-  [slice-066](slice-066-telemetrie-auswertung.md) eine **Abdeckungszahl** — wie viele
-  `Agent`-Spans überhaupt Zähler trugen — und nicht nur die Größe des Sammelpostens.
+- **Ohne den Guard aus DoD (1) fehlen die Zähler lautlos.** Ein Hintergrund-Start erzeugt einen
+  Span, nur ohne Telemetrie; die Bilanz rechnet dann über weniger Läufen, ohne es zu melden.
+  Verschärfend: der Hintergrund ist der **Standard**, die Vordergrund-Bedingung also eine aktive
+  Abweichung, die bei jedem Aufruf neu herzustellen ist. **Eine frühere Fassung dieses Punktes
+  behauptete, die Bedingung habe *keinen* Sensor** — eine Vollständigkeitsaussage, für die ich
+  nie nachgesehen habe. Alle drei Teile lagen im Repo bereit: ein laufender `PreToolUse`-Guard,
+  Filterung feiner als der Tool-Name, und `run_in_background` in `tool_input`. Der Sensor steht
+  jetzt in DoD (1).
+- **Zweite Verteidigungslinie bleibt nötig:** ein Guard kann fehlen, abgeschaltet oder umgangen
+  sein. Deshalb verlangt [slice-066](slice-066-telemetrie-auswertung.md) eine **Abdeckungszahl**
+  — wie viele `Agent`-Spans überhaupt Zähler trugen — und nicht nur die Größe des Sammelpostens.
 - **Eine Rolle, die niemand unter ihrem Typ startet, füllt kein Feld.** Ein Versehen liefert
   `general-purpose` — ein ehrliches „unbekannt", kein falsches Etikett, aber eben keine Rolle.
   Deshalb @-Erwähnung statt natürlicher Sprache.

@@ -115,8 +115,10 @@ driftende Vorplanung).
 Nutzer-Befund): `agent_role` ist heute in **jedem** Span leer. Eine Token-Bilanz hätte damit
 genau zwei namenlose Eimer — `general-purpose` und den Haupt-Kontext — und wäre eine Summe, keine
 Rechnung. Die Rollen-Achse ist deshalb **Vorbedingung**, nicht Teilaufgabe. Sie ist zudem ein
-eigener Liefergegenstand mit eigener Vertragsfläche: sie berührt `.claude/agents/`, die Kommandos
-und damit die **emittierte** Seite.
+eigener Liefergegenstand mit eigener Vertragsfläche: sie berührt `.claude/agents/` und den
+`PreToolUse`-Guard. **Nicht** die emittierte Seite — ob die Rollen-Typen in die Ziel-Repos
+mitgehen, entscheidet slice-062 (slice-060 Frage B); eine frühere Fassung dieses Absatzes zog sie
+hier bereits ein.
 
 **Beide Ebenen sind drin — Repo und Tool.** Die erste Fassung dieses Plans schob die Tool-Ebene
 unter „aufgeschoben"; auf Nutzer-Entscheidung vom 2026-07-28 gehört sie zur Welle (slice-062/063).
@@ -142,10 +144,14 @@ steht dort als `general-purpose`, `slice.id` gar nicht; am 2026-07-28 gemessen).
 Erfassungsort existiert bereits: der `PreToolUse`-Guard sieht jeden Bash-Aufruf samt Argumenten
 und behält **nichts** davon.
 
-**Zu slice-060:** die Rohdaten sind real vorhanden — die Sitzungs-Transkripte tragen getrennte
-Hit-/Miss-Zähler (`cache_read` vs. `cache_creation`, Hit-Rate 96,9 % am 2026-07-28 gemessen),
-also genau die Trennung, auf der Modul 15 besteht. Das bequeme Argument „kein Gegenstand" ist
-damit ausgeschlossen; offen ist die Zuordnung zur **Rolle**, nicht die Datenlage.
+**Zu slice-066 (dem Auswerter):** die Rohdaten sind real vorhanden, und die Quelle ist seit dem
+2026-07-29 **gemessen** statt vermutet — ein `Agent`-Aufruf im **Vordergrund** trägt in
+`tool_response` ein `usage`-Objekt mit getrennten Hit-/Miss-Zählern
+(`cache_read_input_tokens` vs. `cache_creation_input_tokens`), also genau die Trennung, auf der
+Modul 15 besteht. **Nicht** aus Sitzungs-Transkripten: eine frühere Fassung dieses Absatzes
+begründete die Datenlage damit, während beide Slices den Zugriff außerhalb des Repos
+ausschließen. Das bequeme Argument „kein Gegenstand" ist damit ausgeschlossen; offen ist die
+Zuordnung zur **Rolle** (slice-060), nicht die Datenlage.
 
 **Warum die Repo-Seite zuerst kommt — und die Tool-Seite nicht bloß „danach".** Das Repo ist der
 Prüfstand: was wir ins Ziel legen, haben wir hier erprobt (dieselbe Linie wie
