@@ -14,26 +14,18 @@ gezeigt, nicht als Treiber.
 
 **[welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)**, geschnitten am 2026-07-28.
 
-**Welle-Ziel:** jeder der vier Regelblöcke von Modul 15 trägt am Ende — auf **beiden Ebenen**,
-im Repo (Dogfood) **und** im Tool (was ins Ziel-Repo emittiert wird) — entweder einen laufenden
-Sensor oder eine deklarierte Entscheidung mit Auflösungs-Trigger, und nichts dazwischen. Der
-Closure-Beleg ist eine **4 × 2-Matrix**; eine leere Zelle ist ein offener Trigger. Beide Ebenen
-gehören zusammen, weil das Tool das **vollständige Regelwerk** ins Ziel emittiert: nur die
-Dogfood-Seite zu schließen hieße, ein Repo zu reparieren und die Lücke an jedes andere
-weiterzuliefern.
+**Slices:** geschnitten sind `slice-059` (Erfassung) · `slice-060` (Rollen-Achse) ·
+`slice-066` (Auswertung); `slice-061`–`slice-064` sind in §4 der Welle benannt, aber **nicht**
+geschnitten (cp-Disziplin). Ihr Lifecycle-Zustand ist ihr Verzeichnis, nicht diese Zeile.
 
-**Auslöser:** Nutzer-Befund. Modul 15 ist seit `554cade` (2026-07-17) adoptiert, wurde in vier
-Re-Vendor-Läufen mitkopiert und **nie inhaltlich behandelt** — adoptiert, in keinem Block
-umgesetzt, nie diskutiert. *(Die erste Fassung dieses Eintrags stützte sich zusätzlich darauf,
-[`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) mache daraus eine „nicht
-deklarierte Abweichung". Das ist **zurückgenommen**: die Baseline-Vorlage grenzt dieselbe Aussage
-auf Verzeichniskonvention, Lifecycle, Carveouts und ID-Schema ein — siehe welle-09 §1. Dass unser
-[`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) diese Eingrenzung fallen ließ, ist ein eigener Befund und liegt bei slice-064.)*
-Die Ursache ist mechanisch und größer als dieses Modul: die Adoptions-Prüfung sieht bei jeder
-Re-Baseline nur das **Delta**, nie den **Bestand**.
+**Trigger:** Nutzer-Befund — Modul 15 ist seit `554cade` adoptiert und in keinem Block umgesetzt.
+Herleitung und die zwei Korrekturen am Schnitt stehen im Closure-Log (2026-07-28).
 
-**Erster Slice:** `slice-059` (Erfassung: Spans per Agenten-Hook). Die übrigen sind in §4 der
-Welle benannt, aber **nicht** geschnitten (cp-Disziplin).
+**Closure-Kriterium:** eine **4 × 2-Matrix** — vier Regelblöcke × {Repo, Tool}, je Zelle ein
+laufender Sensor **oder** eine deklarierte Entscheidung mit Auflösungs-Trigger, nichts dazwischen;
+eine leere Zelle ist ein offener Trigger. Zwei Ebenen, weil das Tool das Regelwerk ins Ziel
+emittiert: nur die Dogfood-Seite zu schließen hieße, ein Repo zu reparieren und die Lücke an
+jedes andere weiterzuliefern.
 
 ## Nächste Wellen
 
