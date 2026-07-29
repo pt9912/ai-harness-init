@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
 **Welle:** [welle-09](../welle-09-modul-15-konformitaet.md) — Blöcke 2–3, setzt auf
-[slice-060](slice-060-rollen-achse.md) auf.
+[slice-060](../in-progress/slice-060-rollen-achse.md) auf.
 
 **Bezug:** [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) (Baseline ohne
 inhaltliche Adaption — Modul 15 ist adoptiert und in den Blöcken 2–3 unumgesetzt),
@@ -104,7 +104,7 @@ Bestand, aufrufbar als `make`-Ziel.
 
 ## 3. Plan (vor Code)
 
-**Voraussetzung, die [slice-060](slice-060-rollen-achse.md) liefert:** die `Agent`-Spans tragen
+**Voraussetzung, die [slice-060](../in-progress/slice-060-rollen-achse.md) liefert:** die `Agent`-Spans tragen
 `spawned_role` (normalisiert), `resolvedModel` und die Nutzungstelemetrie (`usage` mit vier Zählern, `totalTokens`,
 `totalDurationMs`, `totalToolUseCount`). **Gemessen am 2026-07-29:** diese Felder kommen **nur
 bei Vordergrund-Läufen** an; im Hintergrund trägt die Antwort weder Zähler noch `agentType`, das Feld bleibt also leer. Die
@@ -127,7 +127,7 @@ Auswertung liest ausschließlich Spans**, kein Zugriff außerhalb des Repos, kei
 
 ## 4. Trigger
 
-**`open` → `next`:** [slice-060](slice-060-rollen-achse.md) ist **done** — vorher trägt kein Span
+**`open` → `next`:** [slice-060](../in-progress/slice-060-rollen-achse.md) ist **done** — vorher trägt kein Span
 eine Rolle (Begründung des Schnitts: [welle-09 §4](../welle-09-modul-15-konformitaet.md)).
 
 **`next` → `in-progress`:** WIP-Limit; dazu **Frage A entschieden**.
@@ -155,7 +155,7 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
 - **Der Haupt-Kontext bleibt unerfasst.** Seine Token erscheinen in keiner Payload; die Bilanz
   kann ihn nur über die Splitting-Regel behandeln. Wie groß dieser Anteil ist, gehört deshalb in
   jedes Ergebnis — sonst liest sich eine Regel wie eine Messung.
-- **Nicht in diesem Slice:** die Rollen-Achse ([slice-060](slice-060-rollen-achse.md)), die
+- **Nicht in diesem Slice:** die Rollen-Achse ([slice-060](../in-progress/slice-060-rollen-achse.md)), die
   Doku-Konsistenz (slice-061) und die Tool-Ebene (slice-062/063).
 
 ## 7. Closure-Notiz (nach `done/`)

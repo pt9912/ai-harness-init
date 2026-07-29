@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
 **Welle:** [welle-09](../welle-09-modul-15-konformitaet.md) — Vorbedingung von
-[slice-066](slice-066-telemetrie-auswertung.md).
+[slice-066](../open/slice-066-telemetrie-auswertung.md).
 
 **Bezug:** [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) (Baseline ohne
 inhaltliche Adaption),
@@ -46,7 +46,7 @@ sie und erfasst die Nutzungstelemetrie, die im selben Payload eintrifft.
 **Warum ein eigener Slice:** die Begründung des Schnitts steht in
 [welle-09 §4](../welle-09-modul-15-konformitaet.md) — kurz: ohne gefüllte Rollen wäre die
 Token-Bilanz eine Summe, keine Rechnung.
-[slice-066](slice-066-telemetrie-auswertung.md) setzt hier auf.
+[slice-066](../open/slice-066-telemetrie-auswertung.md) setzt hier auf.
 
 ## 2. Definition of Done
 
@@ -99,7 +99,7 @@ Token-Bilanz eine Summe, keine Rechnung.
   **Nicht geeignet: `SubagentStart`.** Das Ereignis filtert seinen Matcher direkt auf den
   Agenten-Typ und wäre der bequemere Ort — aber es **kann die Erstellung nicht blockieren**
   (Referenz, §SubagentStart). Als *Zähler* ist es dennoch wertvoll, und zwar für
-  [slice-066](slice-066-telemetrie-auswertung.md).
+  [slice-066](../open/slice-066-telemetrie-auswertung.md).
 
   **Der Zahn ist ein Gegenbeispiel, kein Testfall** ([`AGENTS.md`](../../../../AGENTS.md) §3.6):
   ein **echter** Aufruf eines Rollen-Typs mit `run_in_background: true`, der **rot abgelehnt**
@@ -234,7 +234,7 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
   Filterung feiner als der Tool-Name, und `run_in_background` in `tool_input`. Der Sensor steht
   jetzt in DoD (1).
 - **Zweite Verteidigungslinie bleibt nötig:** ein Guard kann fehlen, abgeschaltet oder umgangen
-  sein. Deshalb verlangt [slice-066](slice-066-telemetrie-auswertung.md) eine **Abdeckungszahl**
+  sein. Deshalb verlangt [slice-066](../open/slice-066-telemetrie-auswertung.md) eine **Abdeckungszahl**
   — wie viele `Agent`-Spans überhaupt Zähler trugen — und nicht nur die Größe des Sammelpostens.
 - **Eine Rolle, die niemand unter ihrem Typ startet, füllt kein Feld.** Ein Versehen liefert
   `general-purpose` — ein ehrliches „unbekannt", kein falsches Etikett, aber eben keine Rolle.
@@ -245,7 +245,7 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
   (Ob beide dasselbe Kommando sind, ist **nicht belegt** — für den Ausschluss gleichgültig.)
   Kontext-Vererbung ist das Gegenteil dessen, was Modul 8 für Reviewer und Verifier verlangt —
   *Rollen-Trennung ist Kontext-Trennung*.
-- **Nicht in diesem Slice:** die Rechnung ([slice-066](slice-066-telemetrie-auswertung.md)) und
+- **Nicht in diesem Slice:** die Rechnung ([slice-066](../open/slice-066-telemetrie-auswertung.md)) und
   die Emission (slice-062/063).
 
 ## 7. Closure-Notiz (nach `done/`)
