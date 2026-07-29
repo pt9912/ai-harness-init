@@ -113,9 +113,22 @@ Move-Commit, eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Ei
 
 ## 6. Risiken und offene Punkte
 
-- **Eine Bilanz, die niemand liest, ist kein Sensor.** Der Bericht muss eine Frage beantworten,
-  die jemand stellt — sonst ist er Telemetrie-Boilerplate, genau das, was Modul 15 mit *„ein
-  Attribut ohne Incident-Frage fliegt raus"* ausschließt.
+- **Der Bericht muss eine Aussage treffen, nicht nur Zahlen drucken** — und das ist kein
+  Vorbehalt gegen die Bilanz. Eine frühere Fassung dieses Punktes schrieb *„eine Bilanz, die
+  niemand liest, ist kein Sensor"* und stützte sich auf Modul 15 §Span-/Audit-Attribut-Regeln
+  (*„ein Attribut ohne Incident-Frage fliegt raus"*). **Das war eine Fehl-Lesung:** jene Regel
+  gilt für **Attribute eines Span-Schemas**, nicht für Berichte — und die Kernidee desselben
+  Moduls verlangt die Bilanz **unbedingt**: *„jeder Span ein Audit-Schema, **jede Rolle eine
+  Token-Bilanz**, jeder Cache einen Counter"*. Der Satz lieferte also das Argument, sie **nicht**
+  zu bauen, gegen die Regel, die sie fordert.
+  **Was das Regelwerk zur Verwendung wirklich sagt**, steht in §Regeln gegen typische
+  Fehlannahmen und ist eine Verteidigung, keine Bedingung: Metriken sind *„auch für Kosten
+  (Token, Cache-Hit-Rate) und Drift"*, und ein teurer Tool-Call ist nicht per se unnötig —
+  *„Frage: lässt er sich durch Caching, Vorab-Filter oder Kontext-Verdichtung billiger machen?"*.
+  **Das ist die Frage, die der Bericht bedienen muss.** Das Risiko bleibt damit real, aber es
+  liegt woanders: eine Tabelle aus Summen, ohne die **größte Rolle als Zahl und Prozentsatz**
+  und ohne die Größe des aufgeteilten Sammelpostens, erfüllt die Token-Attributions-Regeln nicht
+  — sie sieht nur so aus.
 - **Der Sammelposten ist heute der Normalfall, nicht der Randfall.** `agent_role` ist in **allen**
   Spans leer. Ohne DoD (3) berichtet die Bilanz eine einzige Zeile — formal erfüllt, inhaltlich
   wertlos. Deshalb steht die Rollen-Achse in der DoD und nicht unter „später".
