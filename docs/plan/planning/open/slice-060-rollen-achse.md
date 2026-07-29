@@ -110,11 +110,15 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
   Rollen-Läufe wirklich unter ihrem Typ gestartet werden. Ein Versehen liefert
   `general-purpose` — ein ehrliches „unbekannt", kein falsches Etikett, aber eben auch keine
   Rolle. Deshalb die @-Erwähnung und nicht natürliche Sprache.
-- **Nicht geeignet: die Fork-artigen Kommandos** (`/fork`, in dieser Fassung `/subtask`). Sie
-  starten einen **Hintergrund**-Subagenten, der *„das vollständige Gespräch erbt"* — das ist
-  das Gegenteil dessen, was Modul 8 für Reviewer und Verifier verlangt (*Rollen-Trennung ist
-  Kontext-Trennung*). Ein Reviewer mit dem Kontext des Implementers wiederholt dessen blinden
-  Fleck, statt ihn zu finden. Sie liefern zudem keine Nutzungstelemetrie.
+- **Nicht geeignet: Kommandos, die den Kontext vererben.** `/fork <directive>` startet laut
+  Kommando-Referenz *„einen **Hintergrund**-Subagenten, der **das vollständige Gespräch erbt**"*;
+  `/subtask` beschreibt sich in der CLI-Hilfe als *„Send a subagent off with **your full
+  context**"*. (Ob beide dasselbe Kommando sind, ist **nicht belegt** — `/subtask` steht nicht
+  in der Kommando-Tabelle. Für den Ausschluss ist es auch gleichgültig: jedes trägt die
+  Eigenschaft nach seiner eigenen Quelle.) Kontext-Vererbung ist das Gegenteil dessen, was
+  Modul 8 für Reviewer und Verifier verlangt — *Rollen-Trennung ist Kontext-Trennung*. Ein
+  Reviewer mit dem Kontext des Implementers wiederholt dessen blinden Fleck, statt ihn zu
+  finden. Als **Hintergrund**-Läufe liefern sie zudem keine Nutzungstelemetrie.
 - **Nicht in diesem Slice:** die Rechnung selbst ([slice-066](slice-066-telemetrie-auswertung.md))
   und die Emission (slice-062/063).
 
