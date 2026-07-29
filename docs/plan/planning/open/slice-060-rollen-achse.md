@@ -16,13 +16,19 @@ inhaltliche Adaption),
 fail-closed Default am Werkzeug-Namen, wird um genau ein Werkzeug erweitert),
 [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (der Emitter
 bleibt ein Docker-only gebautes Go-Binary — **Dogfood-Ebene**: das Werkzeug *dieses* Repos, nicht
-das emittierte Zielprojekt). **Bewusst NICHT im Bezug:**
-[`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) —
-die Anforderung betrifft die **emittierten** Workflow-Commands, dieser Slice emittiert nichts
-(§6). Die Kennung hier zu führen füllte die `requirement`-Achse **falsch**, und gefüllt-und-falsch
-ist schlechter als leer-und-erkennbar; die Nachbarschaft steht als Frage B. Regelwerk-Quelle:
+das emittierte Zielprojekt). Regelwerk-Quelle:
 `.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md` §Kernidee und
 §Token-Attributions-Regeln sowie `modul-08-agentenrollen.md`.
+
+**Bewusst NICHT im Bezug:**
+[`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) — die
+Anforderung betrifft die **emittierten** Workflow-Commands, dieser Slice emittiert nichts (§6).
+Die Kennung dort zu führen füllte die `requirement`-Achse **falsch**, und gefüllt-und-falsch ist
+schlechter als leer-und-erkennbar; die Nachbarschaft steht als Frage B. **Dieser Absatz steht
+absichtlich unterhalb der Leerzeile:** `references()` in `internal/span/emit.go` liest den Block
+**mechanisch** bis zur ersten Leerzeile und unterscheidet nicht zwischen einer geführten und einer
+ausdrücklich ausgeschlossenen Kennung — eine Ausschluss-Notiz *im* Block trüge genau das ein, was
+sie ausschließt.
 
 **Autor:** ai-harness-init-Team (pt9912). **Datum:** 2026-07-29.
 
