@@ -307,6 +307,45 @@ func TestStreamsAreSeparate(t *testing.T) {
 	}
 }
 
+// TestAgentRoleFromKnownTypes: die Rollen-Achse aus Modul 15 fuellt sich aus dem
+// Agenten-Typ, wenn der eine Rolle NENNT — und bleibt sonst leer statt geraten. Heute
+// ist sie durchweg leer (gemessen: alle Subagenten-Stroeme tragen `general-purpose`);
+// genau das soll ein Auswerter SEHEN, statt es aus einer fehlenden Zeile zu schliessen.
+func TestAgentRoleFromKnownTypes(t *testing.T) {
+	cases := map[string]string{
+		"reviewer": "reviewer", "verifier": "verifier", "planner": "planner",
+		"architect": "architect", "implementer": "implementer", "validator": "validator",
+		"general-purpose": "", "": "", "Explore": "", "reviewer-2": "",
+	}
+	for typ, want := range cases {
+		got := span.Build(span.Payload{Tool: "Bash", AgentType: typ}, t.TempDir(), time.Now()).AgentRole
+		if got != want {
+			t.Fatalf("agent_type %q -> agent_role %q, erwartet %q", typ, got, want)
+		}
+	}
+}
+
+// TestStreamNamesStayDistinct: der Strom ist (Sitzung, Agent) — zwei verschiedene
+// Paare duerfen nie denselben Strom und damit denselben Nummernkreis bekommen. Zwei
+// Wege dorthin gab es (Review-Befund LOW-7): ein `-` in der Sitzung, das wie der
+// Trenner aussieht, und das Kuerzen langer Namen auf 120 Zeichen.
+func TestStreamNamesStayDistinct(t *testing.T) {
+	paare := []span.Payload{
+		{Session: "a-b"},
+		{Session: "a", Agent: "b"},
+		{Session: strings.Repeat("x", 200) + "eins"},
+		{Session: strings.Repeat("x", 200) + "zwei"},
+	}
+	seen := map[string]int{}
+	for i, p := range paare {
+		name := span.StreamName(p)
+		if j, doppelt := seen[name]; doppelt {
+			t.Fatalf("Paar %d und %d teilen den Strom %q", j, i, name)
+		}
+		seen[name] = i
+	}
+}
+
 // TestStreamNameCannotEscapeDirectory: eine Sitzungs-Kennung ist Fremd-Eingabe.
 // Gemessen wird die EIGENSCHAFT — bleibt der reale Pfad im Ablageort? —, nicht die
 // Zeichenmenge: Punkte sind ohne Pfad-Trenner harmlos.
@@ -329,7 +368,8 @@ func TestCorrelationFromLifecycle(t *testing.T) {
 	if err := os.MkdirAll(dir, 0o700); err != nil {
 		t.Fatal(err)
 	}
-	slice := "**Bezug:** LH-QA-01 und LH-FA-02.\n\nFliesstext nennt LH-XX-99 als Abgrenzung.\n"
+	slice := "**Bezug:** LH-QA-01 und LH-FA-02, ADR-0011 und ADR-0003.\n\n" +
+		"Fliesstext nennt LH-XX-99 und ADR-9999 als Abgrenzung.\n"
 	if err := os.WriteFile(filepath.Join(dir, "slice-042-beispiel.md"), []byte(slice), 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -339,6 +379,12 @@ func TestCorrelationFromLifecycle(t *testing.T) {
 	}
 	if strings.Join(s.Requirement, ",") != "LH-FA-02,LH-QA-01" {
 		t.Fatalf("requirement = %v (nur der Bezug-Block zaehlt)", s.Requirement)
+	}
+	// adr.id ist die dritte ableitbare Korrelations-Achse aus Modul 15 Kernidee. Sie
+	// fehlte zuerst ganz — weder erfasst noch als Abweichung erklaert (MEDIUM-7),
+	// obwohl sie im selben Block steht wie requirement.id.
+	if strings.Join(s.Adr, ",") != "ADR-0003,ADR-0011" {
+		t.Fatalf("adr = %v (nur der Bezug-Block zaehlt)", s.Adr)
 	}
 }
 
@@ -350,7 +396,8 @@ func TestCorrelationEmptyIsRecognisable(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(string(b), `"slice":[]`) || !strings.Contains(string(b), `"requirement":[]`) {
+	if !strings.Contains(string(b), `"slice":[]`) || !strings.Contains(string(b), `"requirement":[]`) ||
+		!strings.Contains(string(b), `"adr":[]`) {
 		t.Fatalf("leere Korrelation ist nicht als leer erkennbar: %s", b)
 	}
 }
@@ -379,26 +426,67 @@ func TestGitRefFromHead(t *testing.T) {
 	}
 }
 
-// TestStaleLockIsBroken: ein zwischen Mkdir und Remove getoeteter Prozess legte den
-// Strom sonst DAUERHAFT still — unsichtbar, weil ohne beanspruchte Nummer keine
-// Luecke entsteht.
-func TestStaleLockIsBroken(t *testing.T) {
+// TestLeftoverLockFileDoesNotBlock: mit flock gibt der Kernel die Sperre frei, sobald
+// der haltende Prozess endet. Eine liegengebliebene Lock-DATEI ist damit harmlos —
+// anders als das liegengebliebene Lock-VERZEICHNIS der Vorgaenger-Fassung, das den
+// Strom stilllegte und deshalb gebrochen werden musste (was seinerseits nicht atomar
+// war, Review-Befund MEDIUM-5).
+func TestLeftoverLockFileDoesNotBlock(t *testing.T) {
 	root := newRoot(t)
 	dir := filepath.Join(root, span.Dir)
 	if err := os.MkdirAll(dir, 0o700); err != nil {
 		t.Fatal(err)
 	}
-	lock := filepath.Join(dir, ".s1.lock")
-	if err := os.Mkdir(lock, 0o700); err != nil {
-		t.Fatal(err)
-	}
-	old := time.Now().Add(-10 * time.Minute)
-	if err := os.Chtimes(lock, old, old); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, ".s1.lock"), nil, 0o600); err != nil {
 		t.Fatal(err)
 	}
 	emit(t, root, `{"tool_name":"Bash","session_id":"s1"}`)
 	if got := readLines(t, root, "s1"); len(got) != 1 {
-		t.Fatalf("liegengebliebenes Schloss hat den Strom stillgelegt: %+v", got)
+		t.Fatalf("liegengebliebene Lock-Datei hat den Strom stillgelegt: %+v", got)
+	}
+}
+
+// TestUnresolvableGitRefStillCarriesFields ist der Worktree-Fall: dort ist `.git` eine
+// DATEI, die Ableitung schlaegt fehl — und MR-018 sagt fuer diesen Fall "leer und als
+// leer erkennbar" zu. Mit `omitempty` verschwanden die Schluessel stattdessen ganz
+// (Review-Befund HIGH-2). Der Unterschied ist der zwischen "unbekannt" und "nicht
+// vorhanden", und genau den soll ein Audit-Schema tragen.
+func TestUnresolvableGitRefStillCarriesFields(t *testing.T) {
+	root := t.TempDir()
+	if err := os.WriteFile(filepath.Join(root, ".git"), []byte("gitdir: /woanders\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	b, err := json.Marshal(span.Build(span.Payload{Tool: "Bash"}, root, time.Now()))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, want := range []string{`"branch":""`, `"commit":""`} {
+		if !strings.Contains(string(b), want) {
+			t.Fatalf("%s fehlt — der Schluessel muss anwesend und leer sein: %s", want, b)
+		}
+	}
+}
+
+// TestNoCommandArgumentsReachSpan ist der Kanarienvogel fuer KOMMANDO-Werkzeuge,
+// gemessen an der GESCHRIEBENEN ZEILE statt am Rueckgabewert einer Funktion. Die
+// abgeloeste bats-Fassung hatte ihn, die erste Go-Fassung liess ihn ersatzlos entfallen
+// (Review-Befund MEDIUM-6): geprueft wurden nur noch Programm-Token, Write-Inhalte und
+// unbekannte Werkzeuge — nie die Argumente eines BEKANNTEN Werkzeugs.
+func TestNoCommandArgumentsReachSpan(t *testing.T) {
+	root := newRoot(t)
+	emit(t, root, `{"tool_name":"Bash","session_id":"s1",
+	  "tool_input":{"command":"gh auth login --with-token AUTHORIZATION-TOKEN-XYZ /etc/shadow"}}`)
+	b, err := os.ReadFile(filepath.Join(root, span.Dir, "s1.jsonl"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, forbidden := range []string{"AUTHORIZATION-TOKEN-XYZ", "--with-token", "/etc/shadow", "login"} {
+		if strings.Contains(string(b), forbidden) {
+			t.Fatalf("Argument %q steht in der Span-Zeile: %s", forbidden, b)
+		}
+	}
+	if !strings.Contains(string(b), `"program":"gh"`) {
+		t.Fatalf("das Programm-Token fehlt: %s", b)
 	}
 }
 
@@ -422,9 +510,15 @@ func TestMandatoryFieldsAlwaysPresent(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	// Die Liste ist die PFLICHT-Spalte aus MR-018, vollstaendig. Sie war zuerst um
+	// `branch`/`commit` kuerzer — genau die zwei, die im Code ein `omitempty` trugen
+	// und in einem git-worktree lautlos verschwanden. Der Waechter mass damit die
+	// heutige Implementierung statt der Zusage (Review-Befund HIGH-2 / Verifier V-1),
+	// also exakt das Muster, vor dem sein eigener Kommentar warnt.
 	for _, feld := range []string{
 		`"seq":`, `"ts":`, `"event":`, `"tool":`, `"tool_use_id":`,
-		`"session":`, `"agent":`, `"slice":`, `"requirement":`, `"status":`,
+		`"session":`, `"agent":`, `"agent_role":`, `"slice":`, `"requirement":`, `"adr":`,
+		`"branch":`, `"commit":`, `"status":`,
 	} {
 		if !strings.Contains(string(b), feld) {
 			t.Fatalf("Pflichtfeld %s fehlt in einem Span mit leeren Werten: %s", feld, b)

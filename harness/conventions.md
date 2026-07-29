@@ -159,7 +159,14 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Geltungsbereich:** [`harness/tools/`](../harness/tools/), [`.claude/`](../.claude/), [`.codex/`](../.codex/), `Makefile`, `.d-check.yml`
 - **Adaption:** Die ausführbaren Harness-Tools (Gate-Nachweis, Working-Tree-Hash,
   Command-Guard-Extraktor, SessionStart-Injektor + awk-Encoder) liegen unter
-  `harness/tools/` statt dem Baseline-Default `tools/harness/`. Damit liegt die
+  `harness/tools/` statt dem Baseline-Default `tools/harness/`. **Eine Ausnahme, und
+  sie ist keine Aufweichung:** der Span-Emitter (slice-059) ist ein **kompiliertes**
+  Harness-Tool und liegt deshalb im Go-Modulbaum (`cmd/span-emit/` + `internal/span/`)
+  — Go-Quellen können nicht unter `harness/tools/` liegen, ohne aus dem Modul zu
+  fallen. Die Regel gilt für **Skripte**; die Shell-Hälfte desselben Slice
+  (`harness/tools/span-check.sh`) liegt regelkonform hier. Wer das Layout für die
+  Emission liest (slice-062/063), muss den Emitter also **zusätzlich** zu diesem
+  Verzeichnis betrachten (Review-Befund LOW-3). Damit liegt die
   gesamte Harness — Docs (`harness/README.md`, `harness/conventions.md`) und
   Tooling — unter einem `harness/`-Dach (der Regelwerk-Cache liegt gitignored
   unter `.harness/cache/`, siehe [`MR-004`](#mr-004--sessionstart-regelwerk-injektor)).
@@ -834,9 +841,11 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 | `tool` | Pflicht | *Welches Werkzeug lief?* |
 | `tool_use_id` | Pflicht | *Welche Ereignisse gehören zu einem Aufruf?* |
 | `session`, `agent` | Pflicht | *Welcher Lauf war es?* — zusammen bilden sie den **Strom** |
-| `agent_type` | Optional | *Welche Art Lauf?* — **nicht** die Harness-Rolle, s. Sammelposten unten |
+| `agent_type` | Optional | *Welche Art Lauf?* — der **Subagent-Typ** der Payload, roh |
+| `agent_role` | Pflicht | *Welche Rolle verursachte den Zugriff?* — das Modul-15-Pflichtfeld. Gefüllt, wenn `agent_type` eine Harness-Rolle **nennt** (`planner`, `architect`, `implementer`, `reviewer`, `verifier`, `validator`). **Leer heißt UNBEKANNT, nie „rollenlos“** — s. die Lesevorschrift unten |
 | `slice` | Pflicht | *Auf wessen Rechnung lief der Zugriff?* — aus dem Lifecycle-Verzeichnis, Liste (kein Slice ⇒ leer und als leer erkennbar) |
 | `requirement` | Pflicht | *Gegen welche Anforderung?* — aus der `Bezug:`-Zeile der Slices, Liste |
+| `adr` | Pflicht | *Auf wessen Entscheidung lief der Zugriff?* — die dritte Korrelations-Achse aus Modul 15 §Kernidee, aus demselben `Bezug:`-Block wie `requirement`, Liste |
 | `branch`, `commit` | Pflicht | *Zu welcher Änderung gehört der Zugriff?* — die dritte Korrelations-Achse aus Modul 15 (*Slice/**PR**/Agent-Rolle*), abgeleitet aus `.git/HEAD`; die PR-Nummer selbst ist nicht erreichbar, s. Abweichung 3 |
 | `status` | Pflicht | *Ging es gut?* |
 | `permission_mode` | Optional | *Unter welcher Berechtigungs-Lage?* |
@@ -845,33 +854,116 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 | `bytes`, `sha256_16` | Optional | *Hat sich etwas geändert?* — aus dem **Dateisystem**, nie aus der Payload |
 | `program`, `argc` | Optional | *Welches Programm lief?* — erstes Token und Argument-Anzahl, nie die Kommandozeile |
 
-- **Drei erklärte Abweichungen vom Modul-15-Pflicht-Minimum** (die ADR verlangt sie zu benennen,
+- **Welches Werkzeug gibt was preis — die namentliche Liste.** Die Feldtabelle oben sagt
+  *„nur bei namentlich gelisteten Werkzeugen"*; hier stehen die Namen. Sie stand zuerst
+  ausschließlich im Code, worauf die Feldtabelle dann ins Leere verwies
+  ([`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) Folgepflicht 1
+  verlangt sie **hier**: *„der nächste Leser muss es ohne Code finden"* — Review-Befund
+  HIGH-1). Ein Werkzeug aufzunehmen ist eine **Entscheidung** und wird hier eingetragen,
+  nicht im Code nachgezogen.
+
+| Werkzeug-Name | erfasst zusätzlich zu Name und Status |
+|---|---|
+| `Write`, `Edit`, `MultiEdit`, `NotebookEdit` | `path` (aus `file_path`/`notebook_path`) + `bytes` + `sha256_16` **aus dem Dateisystem** |
+| `Read` | `path` — **kein** Fingerabdruck (er wäre auf einem gelesenen Pfad ein Bestätigungs-Orakel ohne Incident-Frage) |
+| `Bash`, `BashOutput` | `program` (erstes Token nach übersprungenen `NAME=WERT`-Präfixen) + `argc` |
+| **jedes andere** | **nichts** — der fail-closed Default aus [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) Festlegung 2 |
+
+- **Die erfasste MENGE, ausgesprochen statt suggeriert.** Verdrahtet sind **zwei**
+  Ereignisse — `PostToolUse` und `PostToolUseFailure` — je mit leerem Matcher, der
+  **jedes** Werkzeug sieht (belegt: live liegen Spans für `Bash`, `Read`, `Write`,
+  `Edit`, `Agent`, `ToolSearch`, `Monitor` vor, auch aus Subagenten-Strömen). Erfasst
+  wird damit der **abgeschlossene** Aufruf. **Nicht erfasst und nicht behauptet:** ein
+  vom PreToolUse-Guard **geblockter** Aufruf hinterlässt keinen Span — die Frage
+  *„was wurde versucht und geblockt?"* beantwortet dieses Schema nicht (Verifier-Befund;
+  `PermissionDenied` ist als eigenes Ereignis Kandidat, aber keine Zusage).
+
+- **Vier erklärte Abweichungen vom Modul-15-Pflicht-Minimum** (die ADR verlangt sie zu benennen,
   nicht wegzulassen):
   1. **Cache-Status steht nicht im Span.** Er liegt im Transkript des Agenten-Werkzeugs, nicht in
      der Hook-Payload; ihn je Tool-Call nachzuschlagen kostete einen Dateizugriff pro Aufruf.
      Der Span trägt stattdessen `transcript` als **Zeiger**, die Auflösung macht die Auswertung
      (slice-060). Das ist eine Abweichung und keine Erfüllung: ist das Transkript weg, ist die
      Frage unbeantwortbar.
-  3. **Die PR-NUMMER steht nicht im Span, ihr Anker schon.** Modul 15 verlangt die
+  2. **Die PR-NUMMER steht nicht im Span, ihr Anker schon.** Modul 15 verlangt die
      Korrelation zu *Slice/PR/Agent-Rolle*. Eine PR-Nummer lebt bei der Forge; der
      Emitter geht nicht ins Netz und ruft kein `gh` (er läuft je Tool-Call). Erfasst
      werden deshalb `branch` und `commit` — die Größen, über die eine Auswertung den
      PR nachschlägt. Das ist eine Ableitung, keine Erfüllung: liegt kein PR zum
-     Branch vor, bleibt die Frage offen. Ein `.git` als Datei (Worktree, Submodul)
+     Branch vor, bleibt die Frage offen. Die Felder sind **Pflicht**: ist die Ableitung
+     nicht möglich, stehen sie leer da statt zu fehlen — der Unterschied zwischen
+     „unbekannt" und „nicht vorhanden" (Review-Befund HIGH-2). Ein `.git` als Datei (Worktree, Submodul)
      wird nicht aufgelöst; dann sind beide Felder leer und als leer erkennbar.
-  2. **`agent_type` ist nicht die Harness-Rolle.** Bei Review- und Verify-Läufen steht dort der
-     Subagent-Typ (`general-purpose`), nicht *Reviewer* bzw. *Verifier*. Die Rollen-Achse ist
-     damit ein **Sammelposten**; ihn aufzuteilen verlangt eine Konvention (rollen-benannte
-     Agenten-Typen oder Übergabe beim Start) und ist eine Prozess-, keine Skript-Entscheidung.
+  3. **`agent_role` ist heute durchweg leer, und das ist der Befund — nicht das Feld.**
+     Die Payload liefert `agent_type`; dort steht bei Review- **und** Verify-Läufen
+     derselbe Wert (`general-purpose`), die beiden Rollen sind in den Daten also
+     ununterscheidbar (gemessen 2026-07-29 über alle Ströme). `agent_role` wird deshalb
+     **abgeleitet, nicht geraten**: nennt der Agenten-Typ eine Rolle, ist er die Rolle;
+     sonst bleibt das Feld leer. Es ist trotzdem **Pflicht** — dieselbe Begründung wie
+     bei `branch`/`commit`: die Lücke gehört in **jeden** Span, nicht nur in diesen
+     Absatz, sonst kann ein Auswerter „unbekannt" nicht von „nicht vorhanden"
+     unterscheiden. Aufgelöst wird sie durch rollen-benannte Agenten-Typen — eine
+     **Prozess**-Entscheidung (slice-060), nach der sich das Feld **ohne** Änderung an
+     der Erfassung füllt.
+     **Was auch dann nicht abgedeckt ist:** der Haupt-Strom trägt keinen Agenten-Typ
+     (`agent` und `agent_type` sind dort strukturell leer) und wechselt innerhalb einer
+     Sitzung zwischen Planer und Implementation. Für ihn ist die Splitting-Regel des
+     Sammelpostens zu entscheiden (Modul 15 verlangt sie begründet, nicht perfekt);
+     ableitbar aus bereits erfassten Feldern sind zwei Signale — das `slice`-Feld
+     (Lifecycle-Verzeichnis, WIP-Limit 1) und das Schreibziel (`docs/plan/**` gegen
+     Code-Pfade).
+
+     **Lesevorschrift, bindend für jede Auswertung:** eine Rolle gibt es **immer** —
+     jeder Tool-Call wurde von jemandem in einer Rolle verursacht. Ein leeres
+     `agent_role` ist deshalb eine Aussage über **unser Wissen**, nicht über den Lauf:
+     es heißt *unbekannt*, niemals *ohne Rolle*.
+
+     Modul 15 verlangt an dieser Stelle wörtlich: *„Wo ein Span keinen Rollen-Tag trägt
+     (Sammelposten), entscheide begründet, wie du ihn aufteilst (anteilig nach
+     Tool-Calls? dem auslösenden Slice zugeschlagen?)"*. Daraus folgt genau dreierlei,
+     und die Reihenfolge ist die Prüfreihenfolge:
+     1. **Pflicht:** eine begründete Splitting-Regel, angewendet — am Ende liegt jedes
+        Token auf einer der realen Rollen, nicht auf *unbekannt*.
+     2. **Ebenfalls Pflicht, weil dieses Repo Annahmen benennt:** wie **groß** der
+        aufgeteilte Anteil war. Ohne diese Zahl kann der Leser nicht beurteilen, wie
+        viel des Ergebnisses auf der Regel ruht statt auf Messung.
+     3. **Falsch ist nur das eine:** den Sammelposten **ungeteilt** als Rolle führen
+        (*„ohne Rolle: 60 %"* als Ergebniszeile) — das erfindet eine Kostenstelle, die
+        es nicht gibt. Die Größe zu **zeigen** ist erlaubt und erwünscht; sie
+        **stehenzulassen** ist es nicht.
+
+     Nicht gemessen und deshalb offen: ob ein vom **Nutzer** direkt abgesetzter Aufruf
+     einen Span erzeugt — dessen Verursacher wäre der Nutzer und keine der sechs
+     Rollen, also eine eigene Kostenstelle.
+  4. **Altbestände werden beim ersten Span einer Sitzung NICHT entfernt.**
+     [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) Festlegung 3
+     sieht das vor; der Emitter hängt ausschließlich an. Praktisch folgenlos, solange
+     die Sitzungs-Kennung eine UUID ist — aber ein Werkzeug, das Kennungen
+     wiederverwendet, mischt zwei Läufe in einer Datei. Aufgeräumt wird ausdrücklich
+     (`make span-clean`), nicht nebenbei (Review-Befund LOW-5).
+
+- **Tooling-Klarstellung zur Fitness Function.** Drei ihrer Zeilen nennen als Tooling
+  `bats (make test)`; umgesetzt sind sie als **Go**-Tests unter demselben Target
+  (`make test` umfasst `test-bats` **und** `test-go`). Die ADR ist ab *Accepted*
+  immutabel ([`AGENTS.md`](../AGENTS.md) §3.4), die Klarstellung gehört also hierher und
+  nicht dorthin — wer die Wächter in `test/*.bats` sucht, findet sie nicht
+  (Review-Befund LOW-8).
+
 - **Bewacht:** `internal/span/span_test.go` und `cmd/span-emit/main_test.go` (Klemme und stumme
   Ausgabe als Prozess-Eigenschaft, fail-closed Default an fremden Werkzeug-Namen, kein
   Payload-Inhalt im Span, vergebene statt abgeleitete Folgenummer, Nebenläufigkeit, Modus,
   Strom-Trennung, Ableitung von `slice`/`requirement`/`branch`), `make span-check`
   (Emitter vorhanden **und** funktionsfähig, Ablageort real `git check-ignore`-geprüft) sowie
   `test/mutations/107-span-klemme-entfernt.sh`, `test/mutations/108-span-schema-offen.sh`,
-  `test/mutations/109-span-folgenummer-eingefroren.sh` und
+  `test/mutations/109-span-folgenummer-eingefroren.sh`,
   `test/mutations/110-span-pflichtfeld-verschwindet.sh` (die Pflicht-Spalte oben: ein
-  `omitempty` am falschen Feld liesse es bei leerem Wert lautlos verschwinden).
+  `omitempty` am falschen Feld ließe es bei leerem Wert lautlos verschwinden),
+  `test/mutations/111-span-korrelationsfeld-verschwindet.sh` (dieselbe Mechanik an
+  `branch` — dem Feld, an dem der Wächter zuerst vorbeisah),
+  `test/mutations/112-span-stdout-geschwaetzig.sh` (die **stdout**-Hälfte von
+  Festlegung 6; Fall 107 deckt nur die Exit-Hälfte, weil der Panic-Pfad auf stderr
+  schreibt) und `test/mutations/113-span-ablageort-getrackt.sh` (Zeile 3 der Fitness
+  Function: Ablageort auf einen getrackten Pfad).
 - **Auflösungs-Trigger:** permanent, solange Spans erfasst werden. Die Tabelle ändert sich mit
   jedem neuen Feld — jede Änderung ist ein Eintrag hier, kein Nebeneffekt im Skript.
 

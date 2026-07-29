@@ -10,6 +10,14 @@
 # Teilverlust, gegen den die Nummern eingefuehrt wurden. Dieses Gate macht aus ihm
 # ein rotes Gate.
 #
+# WAS ES ZUSICHERT, GENAU. Einzeln gefahren (`make span-check`) meldet es einen
+# fehlenden Emitter rot — das ist der Fehlt-Fall. In `make gates` steht
+# `span-emit-build` als eigenes Glied DAVOR; die Zusicherung dort lautet also: nach
+# einem Gate-Lauf ist der Emitter vorhanden UND belegt funktionsfaehig. Sie lautet
+# NICHT "ein Gate-Lauf meldet den fehlenden Emitter" — das kann er nicht, weil er ihn
+# unmittelbar vorher baut. Die frueher hier stehende Fassung liess das Gate von seinem
+# eigenen Bau abhaengen und behauptete trotzdem das Melden (Review-Befund MEDIUM-1).
+#
 # ES PRUEFT DREI DINGE, und das dritte ist der Grund, warum es hier und nicht in
 # einem Go-Test steht:
 #   1. Das Binary ist da und ausfuehrbar.
@@ -22,9 +30,21 @@
 #      Haelfte dieser Eigenschaft — dass der Emitter nur dorthin schreibt — misst
 #      TestSpansLandInStateDir.
 #
-# PLATTFORM: das Binary kommt aus dem gepinnten Linux-Build-Image; auf einem
-# Nicht-Linux-Host laeuft es nicht. Dieselbe Grenze wie bei `make artifact` und den
-# Smokes, hier nur benannt statt umgangen.
+# PLATTFORM: der Emitter wird FUER DEN HOST gebaut (`make span-emit-build` leitet
+# GOOS/GOARCH aus `uname` ab und reicht sie ins gepinnte Linux-Image). Eine fruehere
+# Fassung baute ohne die Schalter, erzeugte also immer ein Linux-ELF, und dieses Gate
+# waere auf einem macOS-Host mit "exec format error" rot gewesen — ohne inhaltlichen
+# Defekt (Review-Befund MEDIUM-2). Die Meldung unten nennt diesen Fall trotzdem
+# ausdruecklich: bleibt eine Plattform-Kombination uebrig, soll der Lauf nicht raten.
+#
+# GEMESSEN am 2026-07-29, weil "die Schalter sind gesetzt" auf einem Linux-Host nichts
+# beweist — mit und ohne sie entsteht dort dasselbe Binary:
+#   Host-Bau                      -> 7f 45 4c 46  (ELF, Linux)
+#   TARGET_OS=darwin ARCH=arm64   -> cf fa ed fe  (Mach-O, macOS)
+#   dieses Skript auf das darwin-Binary -> BEFUND "Exit 126 ... andere Plattform"
+# Der letzte Punkt ist das rot gesehene Gegenbeispiel zum Zweig unten. Was er NICHT
+# ist: ein dauerhafter Waechter — auf einem Linux-Host kann keine Mutation den Zweig
+# erreichen, weil dort jeder Bau lauffaehig ist. Einmalig gemessen, nicht bewacht.
 set -euo pipefail
 
 BIN="${1:-}"
@@ -39,7 +59,12 @@ fail() { echo "span-check: BEFUND — $*" >&2; exit 1; }
 
 # --- 2. Funktionsfaehig ------------------------------------------------------
 # Eigener Strom-Name, damit der Gate-Lauf keinen echten Sitzungs-Strom anfasst.
-stream="span-check-$$"
+# OHNE `-`: der Emitter schreibt den Trenner zwischen Sitzung und Agent zu `_` um,
+# damit zwei verschiedene Paare nie denselben Strom bekommen (MR-018/LOW-7). Ein
+# `span-check-$$` landete deshalb als `span_check_$$.jsonl` — der Gate suchte am
+# falschen Pfad und meldete "kein Span geschrieben". Genau dafuer ist er da: er misst
+# den REAL geschriebenen Ablageort, nicht den erwarteten.
+stream="spancheck$$"
 payload="{\"hook_event_name\":\"PostToolUse\",\"tool_name\":\"Bash\",\"tool_use_id\":\"tu_gate\",\"session_id\":\"$stream\",\"tool_input\":{\"command\":\"make gates\"}}"
 
 file=".harness/state/spans/$stream.jsonl"
@@ -47,7 +72,13 @@ trap 'rm -f "$file" ".harness/state/spans/$stream.seq"' EXIT
 
 # Here-String statt Pipe: schluepft der Emitter vor dem Lesen heraus, kostete eine
 # Pipe unter `pipefail` ein EPIPE und damit eine irrefuehrende Fehlermeldung.
-out="$("$BIN" <<<"$payload")" || fail "der Emitter endete mit Exit $? (ein Hook blockt damit den Tool-Call)"
+rc=0
+out="$("$BIN" <<<"$payload")" || rc=$?
+if [ "$rc" = 126 ]; then
+  fail "der Emitter laesst sich nicht ausfuehren (Exit 126) — gebaut fuer eine andere Plattform als diesen Host? '$(uname -s)/$(uname -m)'"
+elif [ "$rc" != 0 ]; then
+  fail "der Emitter endete mit Exit $rc (ein Hook blockt damit den Tool-Call)"
+fi
 [ -z "$out" ] || fail "der Emitter schrieb auf stdout — dort liegt der Entscheidungs-Kanal: $out"
 
 [ -s "$file" ] || fail "kein Span geschrieben ($file fehlt oder ist leer)"

@@ -110,6 +110,13 @@ Modul-15-Block-4.
 Nur der erste Slice ist geschnitten (cp-Disziplin — die übrigen bekommen ihre Datei per `cp`,
 wenn sie an der Reihe sind; ein leeres `open/` ist ehrlicher als eine driftende Vorplanung).
 
+**Beide Ebenen sind drin — Repo und Tool.** Die erste Fassung dieses Plans schob die Tool-Ebene
+unter „aufgeschoben"; auf Nutzer-Entscheidung vom 2026-07-28 gehört sie zur Welle (slice-062/063).
+Die Aussage stand bis zum 2026-07-29 als Verneinung im Out-of-Scope-Abschnitt („nicht
+out-of-scope, sondern drin") — an einer Stelle also, die auflistet, was **nicht** dazugehört. Wer
+sie überflog, las das Gegenteil. Sie steht deshalb hier, wo der Umfang festgelegt wird; §6 führt
+nur noch, was wirklich ausgeschlossen ist.
+
 | Slice | Ebene | Titel | Bezug |
 |---|---|---|---|
 | slice-059 | Repo | **Erfassung**: Spans per Agenten-Hook (Block 1) | [`MR-002`](../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) |
@@ -195,10 +202,9 @@ Die Entscheidung liegt als [`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.
   [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) falsch und ist
   damit überholt). Für die Feld-Auswahl gilt Modul 15 selbst: *„Ein Attribut ohne Incident-Frage
   fliegt raus."*
-- **Nicht out-of-scope, sondern ausdrücklich drin: die Tool-Ebene** (slice-062/063). Sie stand in
-  der ersten Fassung dieses Plans unter „aufgeschoben" — auf Nutzer-Entscheidung vom 2026-07-28
-  ist sie Teil der Welle. Was hier dennoch **nicht** dazugehört: den Adopter-Vertrag zu ändern,
-  **ohne** dass ein CR ihn trägt ([`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)) und ohne den `full-smoke`-Beleg.
+- **Den Adopter-Vertrag ändern, ohne dass ein CR ihn trägt** ([`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler))
+  **und ohne `full-smoke`-Beleg.** Die Tool-Ebene selbst ist **drin** (slice-062/063, s. §4) —
+  ausgeschlossen ist nur, sie ohne diese zwei Belege in den Adopter-Vertrag zu schieben.
 - **Die Kurs-Vorlagen selbst.** `conventions.template.md` und die übrige Doc-Chain kommen aus der
   vendored Baseline; sie gehören dem Kurs, nicht uns. Wenn dort etwas fehlt, ist das ein
   Upstream-Befund — kein Grund, eine repo-eigene Kopie zu pflegen (die

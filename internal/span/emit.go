@@ -12,6 +12,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -31,11 +32,6 @@ const (
 
 	lockTries = 200
 	lockWait  = 2 * time.Millisecond
-	// lockStale bricht ein liegengebliebenes Schloss. Ohne diese Grenze legte ein
-	// zwischen Mkdir und Remove getoeteter Prozess den Strom DAUERHAFT still — und
-	// zwar unsichtbar, weil ohne beanspruchte Nummer keine Luecke entsteht. Die
-	// Spanne ist um Groessenordnungen laenger als das Anhaengen einer Zeile.
-	lockStale = 60 * time.Second
 
 	maxStreamName = 120
 )
@@ -52,10 +48,12 @@ type Span struct {
 	Session        string   `json:"session"`
 	Agent          string   `json:"agent"`
 	AgentType      string   `json:"agent_type"`
+	AgentRole      string   `json:"agent_role"`
 	Slice          []string `json:"slice"`
 	Requirement    []string `json:"requirement"`
-	Branch         string   `json:"branch,omitempty"`
-	Commit         string   `json:"commit,omitempty"`
+	Adr            []string `json:"adr"`
+	Branch         string   `json:"branch"`
+	Commit         string   `json:"commit"`
 	Status         string   `json:"status"`
 	PermissionMode string   `json:"permission_mode,omitempty"`
 	Transcript     string   `json:"transcript,omitempty"`
@@ -80,7 +78,7 @@ func Emit(root string, payload []byte, now time.Time) error {
 // gepflegten Datei, die veralten koennte.
 func Build(p Payload, root string, now time.Time) Span {
 	d := Derive(p)
-	slices, reqs := correlation(root)
+	slices, reqs, adrs := correlation(root)
 	branch, commit := gitRef(root)
 	status := "ok"
 	if p.Failed {
@@ -94,8 +92,10 @@ func Build(p Payload, root string, now time.Time) Span {
 		Session:        p.Session,
 		Agent:          p.Agent,
 		AgentType:      p.AgentType,
+		AgentRole:      roleFromAgentType(p.AgentType),
 		Slice:          slices,
 		Requirement:    reqs,
+		Adr:            adrs,
 		Branch:         branch,
 		Commit:         commit,
 		Status:         status,
@@ -143,32 +143,67 @@ func fingerprint(s *Span, path string) {
 	s.Sha256Prefix = hex.EncodeToString(h.Sum(nil))[:16]
 }
 
-// StreamName bildet den Strom (Sitzung, Agent) aus ADR-0011 Festlegung 3. Der Name
-// wird auf harmlose Zeichen reduziert: eine Sitzungs-Kennung ist Fremd-Eingabe, und
+// roleFromAgentType fuellt die Rollen-Achse aus Modul 15, SOWEIT sie erreichbar ist.
+// LEER HEISST UNBEKANNT, nicht "rollenlos": eine Rolle gibt es immer, wir kennen sie
+// nur nicht. Die Lesevorschrift dazu steht in MR-018 — eine Auswertung, die die leeren
+// Spans als eigene Kostenstelle aufsummiert, erfindet eine, die es nicht gibt.
+//
+// wird ein Subagent unter dem Namen seiner Harness-Rolle gestartet, IST der
+// Agenten-Typ die Rolle. Jeder andere Wert — heute durchweg `general-purpose` — ergibt
+// ein LEERES Feld.
+//
+// Warum ein Feld, das heute meist leer bleibt: dieselbe Begruendung wie bei
+// `branch`/`commit`. Ein Pflichtfeld, dessen Ableitung scheitert, gehoert anwesend und
+// leer in die Zeile, sonst kann ein Auswerter "unbekannt" nicht von "nicht vorhanden"
+// unterscheiden. Die frueher hier fehlende Achse machte die Luecke nur in MR-018
+// sichtbar — jetzt steht sie in JEDEM Span. Und sie fuellt sich ohne
+// Erfassungs-Aenderung, sobald rollen-benannte Agenten-Typen existieren (slice-060).
+// Bewacht von TestAgentRoleFromKnownTypes.
+func roleFromAgentType(agentType string) string {
+	switch agentType {
+	case "planner", "architect", "implementer", "reviewer", "verifier", "validator":
+		return agentType
+	default:
+		return ""
+	}
+}
+
+// StreamName bildet den Strom (Sitzung, Agent) aus ADR-0011 Festlegung 3. Zwei Dinge
+// sind hier keine Kosmetik: die Teile werden EINZELN reduziert (sonst faellt
+// Sitzung "a-b" ohne Agent mit Sitzung "a" plus Agent "b" zusammen), und beim Kuerzen
+// tritt ein Fingerabdruck des vollen Namens an die Stelle des Restes — sonst teilten
+// sich zwei Laeufe, die sich erst jenseits der Grenze unterscheiden, einen Strom UND
+// einen Nummernkreis (Review-Befund LOW-7). Eine Sitzungs-Kennung ist Fremd-Eingabe;
 // `../..` darf keinen Pfad verlassen.
 func StreamName(p Payload) string {
-	name := p.Session
+	name := sanitizePart(p.Session)
 	if name == "" {
 		name = "nosession"
 	}
 	if p.Agent != "" {
-		name += "-" + p.Agent
+		name += "-" + sanitizePart(p.Agent)
 	}
+	if len(name) > maxStreamName {
+		sum := sha256.Sum256([]byte(name))
+		name = name[:maxStreamName-13] + "-" + hex.EncodeToString(sum[:])[:12]
+	}
+	return name
+}
+
+// sanitizePart laesst nur harmlose Zeichen durch — den Trenner `-` ausdruecklich
+// NICHT, denn er trennt Sitzung von Agent.
+func sanitizePart(s string) string {
 	var b strings.Builder
-	for _, r := range name {
+	for _, r := range s {
 		switch {
 		case r >= 'a' && r <= 'z', r >= 'A' && r <= 'Z', r >= '0' && r <= '9',
-			r == '.', r == '_', r == '-':
+			r == '.', r == '_':
 			b.WriteRune(r)
 		default:
 			b.WriteByte('_')
 		}
 	}
-	out := b.String()
-	if len(out) > maxStreamName {
-		out = out[:maxStreamName]
-	}
-	return out
+	return b.String()
 }
 
 // Append vergibt die Folgenummer und haengt die Zeile an — beides unter DERSELBEN
@@ -178,11 +213,13 @@ func Append(root, stream string, s Span) error {
 	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return err
 	}
-	lock := filepath.Join(dir, "."+stream+".lock")
-	if err := acquire(lock, time.Now()); err != nil {
+	lock, err := acquire(filepath.Join(dir, "."+stream+".lock"))
+	if err != nil {
 		return err
 	}
-	defer func() { _ = os.Remove(lock) }()
+	// Schliessen gibt die Sperre frei — und der Kernel tut dasselbe, wenn dieser
+	// Prozess stirbt, ohne hierher zu kommen.
+	defer func() { _ = lock.Close() }()
 
 	// Die Nummer wird VERGEBEN, nicht aus dem Bestand abgeleitet. Der Unterschied ist
 	// die ganze Zusage (Review-Befund HIGH-3): `wc -l + 1` waere immer dicht 1..N,
@@ -192,7 +229,7 @@ func Append(root, stream string, s Span) error {
 	// ist sichtbar (bewacht von TestSeqIsAssignedNotDerived).
 	seqFile := filepath.Join(dir, stream+".seq")
 	s.Seq = nextSeq(seqFile)
-	if err := os.WriteFile(seqFile, []byte(strconv.Itoa(s.Seq)+"\n"), 0o600); err != nil {
+	if err := writeOwnerOnly(seqFile, []byte(strconv.Itoa(s.Seq)+"\n")); err != nil {
 		return err
 	}
 
@@ -235,62 +272,96 @@ func appendLine(file string, line []byte) error {
 	return err
 }
 
-// acquire holt die Sperre. `mkdir` ist die portable atomare Operation; ohne sie
-// vergeben nebenlaeufige Emitter dieselbe Nummer und ihre Zeilen verschraenken sich
-// (im Review gemessen: 6 doppelte seq, 8 kaputte Zeilen bei 25 Parallelen).
-// Bewacht von TestConcurrentEmittersGetDistinctSeq.
-func acquire(lock string, now time.Time) error {
+// acquire holt die Sperre. FLOCK und nicht mkdir: der Kernel gibt eine flock-Sperre
+// frei, sobald der haltende Prozess endet — auch bei SIGKILL. Damit gibt es kein
+// liegengebliebenes Schloss, das den Strom dauerhaft stilllegt, und damit auch kein
+// Brechen eines solchen Schlosses. Die Vorgaenger-Fassung brach es nach 60 s, und
+// genau dieses Brechen war nicht atomar: zwei Emitter konnten dasselbe veraltete
+// Schloss sehen, der zweite Remove traf das FRISCHE Schloss des ersten, und beide
+// vergaben dieselbe Nummer (Review-Befund MEDIUM-5). Eine Doppelvergabe erzeugt keine
+// Luecke — der Leser saehe Vollstaendigkeit. Bewacht von
+// TestConcurrentEmittersGetDistinctSeq und TestLeftoverLockFileDoesNotBlock.
+//
+// Nicht blockierend, sondern begrenzt wiederholend: wer die Sperre nicht bekommt,
+// verliert seinen Span — nicht der Lauf seinen Fortgang (fail-open). Diese Aufgabe ist
+// unsichtbar, weil nie eine Nummer beansprucht wurde; dieselbe benannte Grenze wie der
+// Tod vor der Vergabe.
+func acquire(path string) (*os.File, error) {
+	f, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR, 0o600)
+	if err != nil {
+		return nil, err
+	}
 	for range lockTries {
-		if err := os.Mkdir(lock, 0o700); err == nil {
-			return nil
-		}
-		if fi, err := os.Stat(lock); err == nil && now.Sub(fi.ModTime()) > lockStale {
-			_ = os.Remove(lock)
-			continue
+		if err := syscall.Flock(int(f.Fd()), syscall.LOCK_EX|syscall.LOCK_NB); err == nil {
+			return f, nil
 		}
 		time.Sleep(lockWait)
 	}
-	// Fail-open: wer die Sperre nicht bekommt, verliert seinen Span — nicht der Lauf
-	// seinen Fortgang. Diese Aufgabe ist unsichtbar (es wurde nie eine Nummer
-	// beansprucht) — dieselbe benannte Grenze wie der Tod vor der Vergabe.
-	return errors.New("span: Sperre nicht erhalten")
+	_ = f.Close()
+	return nil, errors.New("span: Sperre nicht erhalten")
 }
 
-// correlation leitet slice.id und requirement.id ab. slice.id IST das
-// Lifecycle-Verzeichnis (Modul 5) — kein Slice ergibt eine LEERE Liste, die als leer
-// erkennbar bleibt statt geraten zu werden; mehrere ergeben alle.
-func correlation(root string) (slices, reqs []string) {
-	slices, reqs = []string{}, []string{}
+// writeOwnerOnly schreibt und zieht den Modus nach. os.WriteFile setzt den Modus nur
+// beim ANLEGEN; ein aus einer frueheren Fassung stammender Zaehler mit zu weitem Modus
+// bliebe sonst dauerhaft zu weit (Verifier-Befund).
+func writeOwnerOnly(file string, data []byte) error {
+	if err := os.WriteFile(file, data, 0o600); err != nil {
+		return err
+	}
+	if fi, err := os.Stat(file); err == nil && fi.Mode().Perm()&0o077 != 0 {
+		return os.Chmod(file, 0o600)
+	}
+	return nil
+}
+
+// correlation leitet die drei ableitbaren Korrelations-Achsen aus Modul 15 ab:
+// slice.id, requirement.id und adr.id. slice.id IST das Lifecycle-Verzeichnis
+// (Modul 5) — kein Slice ergibt eine LEERE Liste, die als leer erkennbar bleibt statt
+// geraten zu werden; mehrere ergeben alle. adr.id steht im selben Bezug-Block wie
+// requirement.id und ist damit auf demselben Weg erreichbar; ihn wegzulassen und als
+// Abweichung zu erklaeren waere gegen ADR-0011 Festlegung 1.4 gewesen ("Ableiten
+// schlaegt deklarieren"). Die vierte Achse, agent.role, ist NICHT ableitbar und steht
+// als erklaerte Abweichung in MR-018.
+func correlation(root string) (slices, reqs, adrs []string) {
+	slices, reqs, adrs = []string{}, []string{}, []string{}
 	matches, err := filepath.Glob(filepath.Join(root, "docs/plan/planning/in-progress/slice-*.md"))
 	if err != nil {
-		return slices, reqs
+		return slices, reqs, adrs
 	}
 	sort.Strings(matches)
-	seen := map[string]bool{}
+	seenReq, seenAdr := map[string]bool{}, map[string]bool{}
 	for _, m := range matches {
 		slices = append(slices, strings.TrimSuffix(filepath.Base(m), ".md"))
-		for _, id := range requirements(m) {
-			if !seen[id] {
-				seen[id] = true
+		r, a := references(m)
+		for _, id := range r {
+			if !seenReq[id] {
+				seenReq[id] = true
 				reqs = append(reqs, id)
+			}
+		}
+		for _, id := range a {
+			if !seenAdr[id] {
+				seenAdr[id] = true
+				adrs = append(adrs, id)
 			}
 		}
 	}
 	sort.Strings(reqs)
-	return slices, reqs
+	sort.Strings(adrs)
+	return slices, reqs, adrs
 }
 
-// requirements liest die Anforderungs-Kennungen NUR aus dem Bezug-Block, nicht aus
+// references liest Anforderungs- und ADR-Kennungen NUR aus dem Bezug-Block, nicht aus
 // der ganzen Datei: ein Slice erwaehnt im Fliesstext fremde Anforderungen
 // (Praezedenzfaelle, Abgrenzungen), und die sind nicht sein Bezug (Review-Befund
 // MEDIUM-2). Der Block reicht von der `**Bezug:**`-Zeile bis zur naechsten Leerzeile.
-func requirements(file string) []string {
+func references(file string) (reqs, adrs []string) {
 	b, err := os.ReadFile(file)
 	if err != nil {
-		return nil
+		return nil, nil
 	}
-	re := regexp.MustCompile(`LH-[A-Z]{2}-[0-9]{2}`)
-	var out []string
+	reReq := regexp.MustCompile(`LH-[A-Z]{2}-[0-9]{2}`)
+	reAdr := regexp.MustCompile(`ADR-[0-9]{4}`)
 	inBlock := false
 	for _, line := range strings.Split(string(b), "\n") {
 		if strings.HasPrefix(line, "**Bezug:**") {
@@ -299,10 +370,11 @@ func requirements(file string) []string {
 			break
 		}
 		if inBlock {
-			out = append(out, re.FindAllString(line, -1)...)
+			reqs = append(reqs, reReq.FindAllString(line, -1)...)
+			adrs = append(adrs, reAdr.FindAllString(line, -1)...)
 		}
 	}
-	return out
+	return reqs, adrs
 }
 
 // gitRef leitet Branch und Commit aus .git ab — die Korrelations-Achse, nach der

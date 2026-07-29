@@ -8,13 +8,24 @@
 //  1. Der Exit-Code ist auf 0 geklemmt. Das ist kein Formalismus: ein Hook, der mit
 //     2 endet, BLOCKT den Tool-Call. Der Lauf, den die Telemetrie nur beobachten
 //     soll, stuende dann still, weil ihr Beobachter stolperte.
+//     Bewacht von test/mutations/107-span-klemme-entfernt.sh gegen die
+//     Exit-Zusicherung in TestClampSurvivesBrokenPayload.
 //  2. stdout bleibt LEER. Dort liegt bei Hooks der ENTSCHEIDUNGS-Kanal; wer dort
-//     schreibt, entscheidet ueber Berechtigungen mit, statt zu beobachten. Kein
-//     Pfad dieses Binaries schreibt nach stdout — und `forbidigo` (make lint)
-//     verbietet fmt.Print* repo-weit, haelt die Eigenschaft also auf Gate-Ebene.
+//     schreibt, entscheidet ueber Berechtigungen mit, statt zu beobachten.
+//     Bewacht von test/mutations/112-span-stdout-geschwaetzig.sh gegen die
+//     stdout-Zusicherung derselben Tests.
 //
-// Beides bewacht test/mutations/107-span-klemme-entfernt.sh gegen
-// TestClampSurvivesBrokenPayload.
+// DIE ZWEI HAENGEN AN VERSCHIEDENEN FAELLEN, und das ist der Punkt: Mutation 107
+// laesst den Emitter ueber den Panic-Pfad enden, und dessen Ausgabe geht auf STDERR.
+// Die stdout-Zusicherung kann unter 107 also gar nicht feuern — eine fruehere Fassung
+// dieses Kommentars sagte "beides bewacht 107" und griff damit weiter als ihr Sensor
+// (Review-Befund HIGH-3; ADR-0011 Folgepflicht 5 verlangt fuer die stdout-Setzung
+// ausdruecklich einen eigenen Fall).
+//
+// Was `forbidigo` (make lint) beitraegt, ist WENIGER als die Eigenschaft: es verbietet
+// die Form `fmt.Print*`, nicht das Schreiben nach stdout. `os.Stdout.Write`,
+// `fmt.Fprintln(os.Stdout, …)` und das eingebaute `println` passieren es (MEDIUM-4).
+// Die Eigenschaft haengt an den zwei Faellen oben, nicht am Linter.
 package main
 
 import (

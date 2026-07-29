@@ -191,10 +191,19 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
   slice-063 Emission). Dieser Slice ist der **Prüfstand**: die Hooks werden ins Ziel emittiert
   (`internal/emit/templates/enforce/settings.json`), ein Span-Emitter wäre also emittierbar —
   aber erst, wenn er hier real gelaufen ist. Wer ihn ungeprüft emittiert, behauptet etwas, das
-  nicht läuft. **Folge für den Zuschnitt hier:** das Span-Skript gehört nach
-  `harness/tools/` und nicht in eine Form, die einen späteren Umzug in die emittierte Ablage
-  (`tools/harness/`, [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption))
-  erschwert — und es trägt **keine** Quell-Repo-Identität (Lehre aus slice-031/032/033).
+  nicht läuft. **Folge für den Zuschnitt hier — und sie ist nach der
+  Mechanik-Entscheidung anders ausgefallen, als dieser Absatz sie zuerst formulierte:** die
+  Sorge war *„keine Form, die einen späteren Umzug in die emittierte Ablage erschwert"*
+  (`tools/harness/`, [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption)),
+  und *„keine Quell-Repo-Identität"* (Lehre aus slice-031/032/033). Beides ist erfüllt —
+  aber **nicht** durch eine Ablage unter `harness/tools/`: ein Go-Binary kann dort nicht
+  liegen, ohne aus dem Modul zu fallen. Der Emitter liegt in `cmd/span-emit/` +
+  `internal/span/`, die Shell-Hälfte (`harness/tools/span-check.sh`) regelkonform dort.
+  Das **Umzugs-Hindernis** wäre ein Subkommando von `ai-harness-init` gewesen: es hätte
+  slice-062 (bekommt der emittierte Harness einen Emitter?) vorweggenommen. Der Verifier
+  hat die zwei Sorgen nachgemessen und
+  [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption)
+  als **nicht verletzt** befunden; die Ausnahme steht dort jetzt ausdrücklich.
 - **ADR-Bedarf: wahrscheinlich, und VOR diesem Slice zu klären** (Plan-Review-Befund). Ein
   Span-Schema führt eine neue Artefakt-Klasse, einen neuen Datenfluss und eine Sicherheitsfläche
   ein — und die Entscheidungen fallen faktisch **hier**, nicht erst bei der Emission: welche

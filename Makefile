@@ -223,18 +223,36 @@ freshness-cpp: ## Neueres ubuntu-LTS als DefaultCppVersion melden (read-only, Qu
 	  CPP_PINNED="$$pinned" bash harness/tools/cpp-freshness.sh
 
 # Der Span-Emitter (slice-059, ADR-0011). Er ist ein Host-Binary: der Hook ruft ihn
-# je Tool-Call, also darf er nicht erst einen Container starten (gemessen: docker run
-# 388 ms gegen 24 ms fuer den ganzen Emitter). Gebaut wird er trotzdem Docker-only im
+# je Tool-Call, also darf er nicht erst einen Container starten (gemessen: docker run 388 ms
+# gegen 2,5 ms fuer den ganzen Emitter — die frueher hier stehenden 24 ms waren der
+# Wert der abgeloesten bash+awk-Fassung, Review-Befund LOW-6). Gebaut wird er trotzdem Docker-only im
 # gepinnten Image (ADR-0003) und danach herausgeholt — derselbe Weg wie `make artifact`.
 # Das Ziel liegt im gitignorierten Zustands-Bereich, damit das Binary den
 # working-tree-hash nicht verschiebt (MR-003).
 SPAN_BIN := .harness/state/bin/span-emit
 
-span-emit-build: ## Span-Emitter bauen und in den Zustands-Bereich legen — Docker-only (ADR-0003)
-	docker build --build-arg GO_VERSION=$(GO_VERSION) --target span -t ai-harness-init:span .
+# Der Emitter laeuft am HOOK, also auf dem HOST — deshalb wird er FUER DEN HOST gebaut,
+# im gepinnten Linux-Image (ADR-0003). Ohne diese Ableitung entstuende immer ein
+# Linux-ELF, und `make gates` waere auf einem macOS-Host rot ohne inhaltlichen Defekt
+# (Review-Befund MEDIUM-2 — der Befund nannte die Portabilitaet als Grenze; sie ist
+# keine, Go kennt GOOS/GOARCH laengst, nur dieser Bau nutzte sie nicht). Dieselben
+# Schalter wie die Plattform-Matrix (LH-QA-04), nur auf genau eine Plattform gerichtet:
+# die des Aufrufers.
+SPAN_OS   := $(shell uname -s | tr 'A-Z' 'a-z')
+SPAN_ARCH := $(shell uname -m | sed -e 's/^x86_64$$/amd64/' -e 's/^aarch64$$/arm64/')
+
+span-emit-build: ## Span-Emitter fuer die HOST-Plattform bauen — Docker-only (ADR-0003)
+	docker build --build-arg GO_VERSION=$(GO_VERSION) \
+		--build-arg TARGET_OS=$(SPAN_OS) --build-arg TARGET_ARCH=$(SPAN_ARCH) \
+		--target span -t ai-harness-init:span .
 	@bash harness/tools/artifact-copy.sh ai-harness-init:span "$(dir $(SPAN_BIN))" "$(notdir $(SPAN_BIN))" /out/span-emit
 
-span-check: span-emit-build ## Emitter vorhanden UND funktionsfaehig (der Fehlt-Fall) — IN gates
+# OHNE Prerequisite auf span-emit-build, und das ist der Punkt: mit ihm konnte das Gate
+# den Fehlt-Fall, den es begruendet, gar nicht melden — der Bau lief unmittelbar davor
+# (Review-Befund MEDIUM-1). Einzeln gefahren misst `make span-check` jetzt wirklich, ob
+# der Emitter da ist. In `gates` steht der Bau als eigenes Glied davor: nach einem
+# Gate-Lauf ist der Emitter vorhanden UND belegt funktionsfaehig.
+span-check: ## Emitter vorhanden UND funktionsfaehig (der Fehlt-Fall) — IN gates
 	@bash harness/tools/span-check.sh "$(SPAN_BIN)"
 
 # ADR-0011 Festlegung 3 verlangt fuers Aufraeumen ausdruecklich ein make-Ziel und
@@ -249,4 +267,4 @@ record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
 # baseline-verify läuft als ERSTER Prerequisite: steht die vendored Baseline
 # nicht, ist jede Aussage der Folge-Gates über sie wertlos. record-gates läuft
 # als LETZTER — der Nachweis entsteht nur nach grünen Gates (MR-002).
-gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims span-check record-gates ## alle aktuell lauffähigen Gates + Nachweis
+gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims span-emit-build span-check record-gates ## alle aktuell lauffähigen Gates + Nachweis

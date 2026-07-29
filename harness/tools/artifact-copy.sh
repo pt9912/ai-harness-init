@@ -32,7 +32,7 @@ name="${3:-}"
 src="${4:-/out/ai-harness-init}"
 
 if [ -z "$img" ] || [ -z "$destdir" ] || [ -z "$name" ]; then
-  echo "artifact-copy: Aufruf: artifact-copy.sh <image> <ziel-verzeichnis> <ziel-dateiname>" >&2
+  echo "artifact-copy: Aufruf: artifact-copy.sh <image> <ziel-verzeichnis> <ziel-dateiname> [<quell-pfad>]" >&2
   exit 2
 fi
 
