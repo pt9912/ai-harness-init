@@ -76,13 +76,25 @@ Token-Bilanz eine Summe, keine Rechnung.
   | a | `PreToolUse` kann einen Tool-Call verweigern | **läuft** — `.claude/hooks/pretooluse-command-guard.sh` tut es täglich |
   | b | Der `PreToolUse`-Matcher filtert auf den **Werkzeug-Namen**, `Agent` ist einer | **dokumentiert** — `docs/user/claude-hooks-referenz.md` §Matcher-Tabelle |
   | c | `run_in_background` liegt in `tool_input` | **gemessen** — §3 Zeile 5 |
-  | d | Ein `PreToolUse`-Hook feuert für `Agent` **in dieser Version**, und sein Deny greift dort | **UNGEMESSEN** |
+  | d | Ein `PreToolUse`-Hook feuert für `Agent` **in dieser Version**, und sein Deny greift dort | **GEMESSEN** — §3 Zeilen 8–10 |
 
-  **(d) ist der erste Schritt der Umsetzung, nicht der letzte** — die Messung braucht einen
-  Eintrag in `.claude/settings.json` und einen Sitzungs-Neustart, ist also im Plan-Review nicht
-  billig zu haben. Verschärfend: `run_in_background` **fehlt im dokumentierten Eingabe-Schema**
-  von `Agent`, obwohl die Messung es zeigt. Der Guard behandelt deshalb *fehlend* wie
-  *Hintergrund* — fail-closed, wie der bestehende bei Parse-Zweifel.
+  **(d) war der erste Schritt der Umsetzung und ist erledigt** (2026-07-29): der Hook feuert, und
+  sein Deny greift — ein `Agent`-Aufruf im Hintergrund wurde **abgelehnt**, der Ablehnungsgrund
+  kam wörtlich als Fehler beim Aufrufer an, der Subagent lief nicht. Damit ist der Zahn zu diesem
+  DoD-Punkt **rot gesehen**, nicht behauptet.
+
+  **Zwei Annahmen dieses Plans hat die Messung widerlegt:** ein Sitzungs-Neustart war **nicht**
+  nötig (die Änderung an `.claude/settings.json` griff sofort), und der Aufwand war klein genug,
+  dass die vorige Fassung ihn zu Unrecht als „im Plan-Review nicht billig zu haben" führte. Was
+  richtig war: die **Kontrolle** war nötig. Ohne sie hätte ein stiller Hook zwei Ursachen gehabt
+  — „feuert nicht für `Agent`" und „Konfiguration nicht gelesen" —, und nur die erste wäre ein
+  Befund gewesen.
+
+  `run_in_background` **fehlt im dokumentierten Eingabe-Schema** von `Agent`, obwohl die Messung
+  es an beiden Ereignissen zeigt. Der Guard behandelt *fehlend* deshalb wie *Hintergrund* —
+  fail-closed, wie der bestehende bei Parse-Zweifel. **Das ist keine Kleinigkeit:** in der
+  Kontroll-Messung trugen die `Bash`-Aufrufe das Feld gar nicht, ein weggelassener Schalter ist
+  also der Normalfall und nicht der Ausnahmefall.
 
   **Die Rollen-Liste wird ABGELEITET, nicht kopiert:** ein Typ ist genau dann eine Rolle, wenn
   `.claude/agents/<name>.md` existiert. Damit entsteht keine dritte Kopie neben
@@ -163,6 +175,9 @@ Hintergrund, @-Erwähnung, Fehlschlag; erfasst wurden nur Feldnamen und Wertlän
 | 5 | alle vier | `tool_input` trägt `subagent_type`, `prompt`, `description`, `run_in_background` |
 | 6 | zwei verschiedene Dauern | `duration_ms` der Payload war **4 ms** (der Hook feuert beim Start), `totalDurationMs` trägt die Laufzeit des Subagenten |
 | 7 | die Rollen-Achse ist heute leer (Bestands-Auszählung, nicht Teil der A/B-Erhebung) | alle Subagenten-Ströme tragen `agent_type: "general-purpose"`, `agent_role: ""` |
+| 8 | **`PreToolUse` feuert für `Agent`** (2026-07-29, Sonde mit `"matcher": "Agent"`, danach entfernt) | ja — und `tool_input` trägt `subagent_type` und `run_in_background` schon **vor** dem Lauf. **Kontrolle:** dieselbe Sonde war zusätzlich für `Bash` verdrahtet und loggte dessen Aufrufe; ein stiller Hook wäre sonst mehrdeutig gewesen |
+| 9 | **Das Deny greift** | ein `Agent`-Aufruf mit `run_in_background: true` wurde **abgelehnt**; der Text aus `permissionDecisionReason` kam **wörtlich** als Fehler beim Aufrufer an, der Subagent lief nicht. Derselbe Typ mit `run_in_background: false` lief unmittelbar davor durch |
+| 10 | die Ausgabeform | `hookSpecificOutput.permissionDecision: "deny"` — die **aktuelle**; das `decision`/`reason` des bestehenden Guards ist für `PreToolUse` veraltet. Und: die Änderung an `.claude/settings.json` griff **ohne Sitzungs-Neustart** |
 
 **Was daraus folgt:** die Zähler sind erreichbar, **aber nur im Vordergrund**. Daraus wird eine
 **Prozess-Bedingung**, keine Erfassungs-Frage — und sie passt zum seriellen Betrieb, den dieses
