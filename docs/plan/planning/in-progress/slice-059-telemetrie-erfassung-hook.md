@@ -45,7 +45,7 @@ Ablageort ist dieselbe Stelle wie beim Gate-Stempel.
 
 ## 2. Definition of Done
 
-- [ ] **(1) Das Span-Schema steht, bevor der erste Span geschrieben wird — jedes Feld mit
+- [x] **(1) Das Span-Schema steht, bevor der erste Span geschrieben wird — jedes Feld mit
   seiner Incident-Frage.** Modul 15 führt **zwei** Listen, und beide gelten:
   *Mindestfelder eines Tool-Call-Spans* — `tool.name`, `tool.arguments` (redigiert),
   `tool.result.status` **plus Korrelations-IDs zu Slice/PR/Agent-Rolle**; und das
@@ -59,7 +59,12 @@ Ablageort ist dieselbe Stelle wie beim Gate-Stempel.
   erkennbar; mehrere `LH-*`: alle). Offen bleibt genau der **Cache-Status**; ob ein Span mit
   `transcript_path` den Mindestsatz erfüllt oder von ihm abweicht, entscheidet dieser Slice mit
   Beleg — nicht per Vorab-Freistellung.
-- [ ] **(2) Der Hook schreibt real, die erfasste MENGE ist benannt, und der Gate-Nachweis bleibt
+  **Belegt (Verifikation Runde 2):** Struct und [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) sind **bijektiv** (24 = 24, keine
+  Differenz in beide Richtungen), die Pflicht-Spalte deckt sich mit den Struct-Tags (15/15 ohne
+  `omitempty`), die Werkzeug-Tabelle ist Name für Name deckungsgleich mit `toolClass`. Beide
+  Modul-15-Listen sind abgebildet; die vier nicht erfüllbaren Punkte stehen als **erklärte
+  Abweichungen** (Cache-Status, PR-Nummer, `agent_role`, Altbestände) statt zu fehlen.
+- [x] **(2) Der Hook schreibt real, die erfasste MENGE ist benannt, und der Gate-Nachweis bleibt
   heil.** An einem echten Lauf belegt: Spans liegen vor, Felder vollständig, Korrelations-IDs
   gefüllt. **Die Abdeckung wird ausgesprochen, nicht suggeriert:** der heutige Hook ist mit
   `"matcher": "Bash"` registriert und sähe damit **keinen** `Write`/`Edit`-Aufruf — genau die
@@ -68,7 +73,13 @@ Ablageort ist dieselbe Stelle wie beim Gate-Stempel.
   Ablageort ist `.harness/state/` — **gitignored, wie der Gate-Stempel**: ein Span im getrackten
   Baum ginge in den `working-tree-hash` ein und der Stop-Hook blockierte sich selbst (die
   slice-031-Lehre, hier vorweggenommen statt nachher gelernt).
-- [ ] **(3) Zwei Zähne, rot gesehen.** Ein Span **ohne Pflicht-Feld** und ein Werkzeug, das
+  **Belegt:** der Emitter läuft seit 2026-07-28 produktiv am echten Hook; live erfasst sind
+  `Bash`, `Read`, `Write`, `Edit`, `Agent`, `ToolSearch`, `Monitor` samt getrennter
+  Subagenten-Ströme — `matcher: ""` sieht also wirklich auch `Write`/`Edit`. Die Abdeckung ist in
+  [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) **ausgesprochen** (zwei Ereignisse, leerer Matcher) samt der gemessenen Lücke: ein vom
+  Guard **geblockter** Aufruf erzeugt keinen Span. Der `working-tree-hash` blieb vor und nach
+  einem Span byte-identisch (vom Verifier selbst gemessen).
+- [x] **(3) Zwei Zähne, rot gesehen.** Ein Span **ohne Pflicht-Feld** und ein Werkzeug, das
   **nicht** in der Tabelle steht und trotzdem Argumente durchlässt — je als
   `test/mutations/`-Fall ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Der zweite prüft den
   **fail-closed Default**: erfasst wird, was im geschlossenen Schema steht, für alles andere nur
@@ -76,9 +87,13 @@ Ablageort ist dieselbe Stelle wie beim Gate-Stempel.
   ([`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 2).
   Werte stehen dabei **abgeleitet** statt roh — Pfad und Länge statt Inhalt, Programm-Token
   statt Kommandozeile; so wandert kein Byte fremden Inhalts ins Log.
-- [ ] `make gates` grün, `make mutate` ohne Befund.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+  **Belegt:** Zahn 1 über `test/mutations/110` und `111` (`omitempty` an einem Pflichtfeld →
+  `TestMandatoryFieldsAlwaysPresent` rot), Zahn 2 über `test/mutations/108` (`classNone` →
+  `classCommand` → `TestUnknownToolStaysSilent` rot). Dazu sieben weitere Span-Fälle
+  (107, 109, 112–116) — insgesamt **112 ok, 0 Befunde**.
+- [x] `make gates` grün, `make mutate` ohne Befund. **Belegt:** `make gates` Exit 0 (d-check 239/0 · comment-claims 36/0 · bats 127 · `span-check` grün) · `make mutate` **112 ok, 0 Befunde**.
+- [x] Doku-Update. **Belegt:** [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) (Feldtabelle, Werkzeug→Feld-Tabelle, erfasste Menge, vier erklärte Abweichungen, Lesevorschrift zu `agent_role`, Migrations-Regel zur Strom-Identität, Payload-Messung), die Ausnahme in [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption), sowie `span-emit-build`/`span-check` in den zwei kanonischen Gate-Tabellen ([`AGENTS.md`](../../../../AGENTS.md) §4, [`harness/README.md`](../../../../harness/README.md)).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag — §7.
 
 ## 3. Plan (vor Code)
 
@@ -151,7 +166,7 @@ Dogfood-Seite bindet sie nicht. Ob das Ziel-Repo einen Emitter bekommt, entschei
 | `.claude/settings.json` | update | Event(s) und **Matcher** verdrahten (abhängig von Messung A **und F**) |
 | `harness/tools/json-encode.awk` | prüfen, ggf. wiederverwenden | existiert bereits für JSON-**Ausgabe**; ob es auch für die Payload-**Eingabe** trägt, ist Messung A — Encoding und Parsing sind nicht dasselbe Problem |
 | `test/` + `test/mutations/` | neu | die zwei Zähne aus DoD (3) |
-| `harness/tools/agent-watch.sh` | **neu, außerhalb des Gegenstands** | Speicher-Melder für Subagenten-Läufe. Er gehört **nicht** zur Telemetrie-Erfassung — er entstand, weil die Sensor-Läufe *dieses* Slice die Maschine zweimal zum Absturz brachten. Als stille Beigabe wäre er Scope-Creep; hier steht er benannt, samt seiner Grenze: **unbewacht**, kein Gate, kein Makefile-Ziel. Seine Einbindung ist Gegenstand von [slice-065](../next/slice-065-testlauf-ressourcendeckel.md) |
+| `harness/tools/agent-watch.sh` | **neu, außerhalb des Gegenstands** | Speicher-Melder für Subagenten-Läufe. Er gehört **nicht** zur Telemetrie-Erfassung — er entstand, weil die Sensor-Läufe *dieses* Slice die Maschine zweimal zum Absturz brachten. Als stille Beigabe wäre er Scope-Creep; hier steht er benannt, samt seiner Grenze: **kein funktionaler Wächter, kein Makefile-Ziel, kein `MR`-Eintrag** — `shell-lint` und `comment-claims` fassen ihn wie jedes Skript unter `harness/tools/`, aber niemand prüft, ob er *tut*, was er sagt. Seine Einbindung ist Gegenstand von [slice-065](../next/slice-065-testlauf-ressourcendeckel.md) |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | das Span-Schema als `MR`-Eintrag — es ist eine Struktur-Regel, kein Implementierungsdetail |
 
 ## 4. Trigger
@@ -185,8 +200,9 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
   einem Test dieses Slice, der zweite ein globaler OOM, bei dem der Kernel-Dump Claude
   Code selbst mit 25,37 GB als größten Verbraucher ausweist (85 % von 29,7 GB; bei 20
   Kernen lag die Last bei ~24 %, CPU war nie das Problem). Der Melder beobachtet und
-  meldet; **abbrechen kann er nichts** — Subagenten sind keine eigenen Prozesse. Er ist
-  **unbewacht** und steht unter keinem Gate. Das ist keine Nachlässigkeit, sondern die
+  meldet; **abbrechen kann er nichts** — Subagenten sind keine eigenen Prozesse. Er hat **keinen funktionalen Wächter**
+  (`shell-lint` und `comment-claims` fassen ihn als Skript, prüfen aber nicht seine
+  Wirkung) und kein Makefile-Ziel. Das ist keine Nachlässigkeit, sondern die
   Grenze dieses Slice: seine Einbindung (Makefile-Ziel, `MR`-Eintrag, Wächter) gehört zu
   [slice-065](../next/slice-065-testlauf-ressourcendeckel.md), nicht hierher. Ihn
   stillschweigend mitzuliefern wäre die Alternative gewesen — und genau die Klasse, die
@@ -226,6 +242,69 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
 - **Kein Carveout absehbar.**
 
 ## 7. Closure-Notiz (nach `done/`)
+
+**Was funktioniert hat.** Der Emitter läuft seit dem 2026-07-28 produktiv und hat in dieser
+Sitzung mehr geleistet, als er sollte: mit seinen Daten ließ sich die Vollständigkeit der
+Subagenten-Erfassung belegen (48 Spans gegen 48 selbst gemeldete Tool-Calls eines Reviewers),
+und dieselben Daten haben eine falsche Ursachen-Erklärung des Implementers **widerlegt**. Ein
+Sensor, der den widerlegt, der ihn gebaut hat, ist der Beweis, dass er misst statt zu bestätigen.
+
+**Was anders lief als geplant.** Der Slice brauchte **drei Review- und zwei Verifikationsrunden**
+(21 + 14 Befunde). Fast keiner davon lag im Code — sie lagen in der **Deckung zwischen Zusage und
+Sensor**: ein Wächter, der 10 von 12 Pflichtfeldern zählte; ein Gate, das 7 von 14 prüfte; ein
+Kommentar, der eine Mutation weiter behauptete, als sie reicht; eine Zusage über `flock`, die den
+Fall nannte, den sie nicht prüfte. Der Emitter selbst war nach zwei Tagen fertig; teuer war
+ausschließlich das Einlösen dessen, was über ihn behauptet wurde.
+
+Dazu zwei Abstürze der Arbeitsmaschine — der erste durch eine **Prozess-Rekursion in einem Test
+dieses Slice** (die Kind-Prozess-Abzweigung stand im Test-Rumpf statt in `TestMain`), der zweite
+ein globaler OOM. Für den zweiten habe ich nacheinander drei Erklärungen gebaut — „nicht
+host-portabel", „parallele Builds", „fremde Umgebung" — und **alle drei waren falsch**; zwei
+widerlegte der Auftraggeber, die dritte der Kernel-Dump. Die Ursache ist bis heute nicht
+gefunden, nur eingekreist.
+
+**Steering-Loop-Einträge:**
+
+1. **Geschärfte Regel — die Zusage ist so breit wie ihr Sensor, nicht wie ihr Satz.** Drei
+   Befundklassen dieses Slice sind dieselbe: ein Wächter zählt eine Teilmenge dessen auf, was
+   die Regel fordert, und ist grün, *weil* er die heutige Implementierung abbildet. Betroffen
+   waren `TestMandatoryFieldsAlwaysPresent` (10 von 12), `span-check.sh` (7 von 14) und die
+   Klemmen-Zusage in `cmd/span-emit/main.go` („beides bewacht 107", während der Panic-Pfad auf
+   stderr schreibt). **Anwendung:** wo eine Liste normativ ist, muss der Wächter sie *zählen*,
+   nicht *nachbilden*.
+
+2. **Neuer Sensor — `make span-check`**, in `make gates`. Er prüft Vorhandensein, Funktion an
+   einer synthetischen Payload und — per `git check-ignore` am realen Repo — dass der
+   geschriebene Pfad ignoriert ist. Der Fehlt-Fall ist **rot gesehen**. Dazu zehn neue
+   Mutations-Fälle (107–116).
+
+3. **Benannte Spec-Lücke — grün wegen Altbestand.** Der Emitter legte seinen Ablageort mit
+   `0700` an; `make docs-check` scheiterte daran. Sichtbar wurde es erst, als `make span-clean`
+   das `0755`-Verzeichnis der abgelösten Fassung wegräumte. **Kein Gate misst, ob ein grüner
+   Lauf auf einem frischen Zustand grün wäre** — die CI auf frischem Klon ist der einzige Ort,
+   an dem das auffällt, und sie lief hier zuletzt vor dem Slice.
+
+4. **Offener Rest ohne Sensor (Review Runde 3, F-1):** die neue Regel *„vor einer Änderung der
+   Strom-Namensbildung `make span-clean`"* hat keinen Wächter. Dieselbe Doppelvergabe ist
+   **zweimal** entstanden (awk→Go: 16 Duplikate; `sanitizePart`: 58) und wurde beide Male von
+   Hand gefunden. Kandidat für den Roadmap-Eintrag *„Regeln ohne Feedback-Quadrant schließen"*.
+
+5. **Prozess-Lehre — bei einem Absturz zuerst den Kernel fragen.** Der OOM-Dump beantwortet in
+   einer Zeile, was aus Spans, Zeitachsen und Image-Zeitstempeln nicht rekonstruierbar war. Meine
+   drei Fehlversuche davor waren durchweg Korrelation, die als Kausalität auftrat.
+
+**Folge-Slices und offene Reste:**
+
+- **slice-060** (Auswertung) erbt drei Vorarbeiten: die Rollen-Zuordnung über rollen-benannte
+  Agenten-Typen (dann füllt sich `agent_role` **ohne** Änderung an der Erfassung), die zwei
+  neuen Felder `duration_ms`/`result_bytes`, und die bindende Lesevorschrift zum Sammelposten.
+- **slice-065** (`next/`) trägt `harness/tools/agent-watch.sh` als einzubindende Vorarbeit —
+  heute ohne funktionalen Wächter, ohne Makefile-Ziel, ohne `MR`-Eintrag.
+- **Offen und benannt:** F-1 (kein Sensor für die `span-clean`-Regel), F-5 (`result_bytes` ist
+  die Länge der JSON-Kodierung, der Wächter prüft nur `> 0`), sowie die Grenze, dass die
+  `git check-ignore`-Prüfung in `span-check.sh` selbst unbewacht bleibt — eine Mutation kann sie
+  nicht fangen, weil das *Entfernen* einer Prüfung den Gate grün lässt.
+
 
 <!--
 Wird *nach* Abschluss ergänzt. Inhalt:

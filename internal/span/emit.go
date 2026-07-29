@@ -235,6 +235,15 @@ func Append(root, stream string, s Span) error {
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return err
 	}
+	// MkdirAll setzt den Modus NUR beim Anlegen und unterliegt der umask: ein
+	// 0700-Altbestand aus einer frueheren Fassung bliebe unbetretbar, und genau daran
+	// scheiterte `make docs-check`. Fuer Dateien zieht appendLine denselben Fall nach;
+	// fuers Verzeichnis fehlte es (Review Runde 3, F-3).
+	if fi, statErr := os.Stat(dir); statErr == nil && fi.Mode().Perm()&0o055 != 0o055 {
+		if chErr := os.Chmod(dir, 0o755); chErr != nil {
+			return chErr
+		}
+	}
 	lock, err := acquire(filepath.Join(dir, "."+stream+".lock"))
 	if err != nil {
 		return err
@@ -317,7 +326,13 @@ func acquire(path string) (*os.File, error) {
 		// Kommentar ausschliesst (Review-Befund Runde 2, MEDIUM-1). Einmal aufraeumen
 		// und erneut versuchen; scheitert auch das, gilt fail-open.
 		if fi, statErr := os.Stat(path); statErr == nil && fi.IsDir() {
-			if rmErr := os.Remove(path); rmErr != nil {
+			// Rmdir und NICHT os.Remove: letzteres unlinkt auch DATEIEN. Treffen zwei
+			// Emitter dasselbe Altlast-Verzeichnis, koennte der zweite die frische,
+			// bereits geflockte Lock-DATEI des ersten loeschen — zwei Inodes, dieselbe
+			// Folgenummer. Das waere das Fehlerbild aus Runde-1-MEDIUM-5, in der
+			// Reparatur von Runde-2-MEDIUM-1 wieder aufgemacht (Review Runde 3, F-2).
+			// Rmdir scheitert an einer Datei und kann diesen Weg nicht gehen.
+			if rmErr := syscall.Rmdir(path); rmErr != nil {
 				return nil, err
 			}
 			f, err = os.OpenFile(path, os.O_CREATE|os.O_RDWR, 0o600)

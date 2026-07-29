@@ -11,5 +11,11 @@
 # aus ("kein liegengebliebenes Schloss legt einen Strom still"), und genau das hat der
 # Waechter bis Runde 2 nur BEHAUPTET, nicht geprueft (Review Runde 2, MEDIUM-1): er
 # nannte den Fall in seinem Doc-Kommentar und fuhr ihn nie.
+#
+# ANKER NACHGEZOGEN am 2026-07-29: die Reparatur von Review-Runde-3-F-2 ersetzte
+# `os.Remove` durch `syscall.Rmdir` (os.Remove unlinkt auch DATEIEN und koennte die
+# frische Lock-Datei eines anderen Emitters treffen). Dieser Fall zeigte danach ins
+# Leere — gefunden von der fail-closed Bedingung 2 des Treibers ("Mutation aendert die
+# Datei NICHT -> Befund"), nicht von mir. Ohne sie haette er weiter "ok" gemeldet.
 set -euo pipefail
-sed -i 's@if rmErr := os.Remove(path); rmErr != nil {@if rmErr := os.Chmod(path, 0o700); rmErr != nil {@' internal/span/emit.go
+sed -i 's@if rmErr := syscall.Rmdir(path); rmErr != nil {@if rmErr := os.Chmod(path, 0o700); rmErr != nil {@' internal/span/emit.go

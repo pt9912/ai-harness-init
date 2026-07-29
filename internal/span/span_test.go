@@ -359,6 +359,22 @@ func TestSpanDirIsTraversable(t *testing.T) {
 	if fi.Mode().Perm()&0o055 != 0o055 {
 		t.Fatalf("Ablage-Verzeichnis ist nicht betretbar: %v — jedes Werkzeug, das den Baum laeuft, bricht daran", fi.Mode().Perm())
 	}
+
+	// Und der Fall, der real eintrat: ein BESTEHENDES Verzeichnis aus einer frueheren
+	// Fassung mit 0700. MkdirAll fasst es nicht an — der Modus muss nachgezogen werden
+	// (Review Runde 3, F-3). Der Test mass zuvor nur den frisch angelegten Fall.
+	zweite := newRoot(t)
+	if err := os.MkdirAll(filepath.Join(zweite, span.Dir), 0o700); err != nil {
+		t.Fatal(err)
+	}
+	emit(t, zweite, `{"tool_name":"Bash","session_id":"s1"}`)
+	fi, err = os.Stat(filepath.Join(zweite, span.Dir))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fi.Mode().Perm()&0o055 != 0o055 {
+		t.Fatalf("bestehendes 0700-Verzeichnis wurde nicht korrigiert: %v", fi.Mode().Perm())
+	}
 }
 
 // TestStreamsAreSeparate: der Strom ist (Sitzung, Agent).
