@@ -104,9 +104,21 @@ wirkungslos und darf sie nicht scheinbar abdecken.
 
 ## 4. Trigger
 
-**`open` → `next`:** wenn slice-059 geschlossen ist (er hält das WIP-Limit) **und** der
-Zahlen-Bedarf aus Zeile „Zahlenwahl" gemessen vorliegt. Der Slice ist nicht dringend —
-der auslösende Defekt ist behoben; offen ist die Klasse.
+**`open` → `next`:** der Schnitt steht und die Ist-Messung liegt vor (beides seit
+2026-07-29). **Die erste Fassung dieser Zeile band den Übergang an die Schließung von
+slice-059 „wegen des WIP-Limits" — das war falsch:** das WIP-Limit gilt für
+`in-progress/`, nicht für `next/`. Zwei verschiedene Übergänge in einer Bedingung, und
+der Slice lag dadurch länger in `open/`, als die Regel verlangt (vom Auftraggeber
+zweimal angemerkt).
+
+**`next` → `in-progress`:** *hier* greift das WIP-Limit — slice-059 muss geschlossen
+sein. Zweite Bedingung: der Zahlen-Bedarf aus der Zeile „Zahlenwahl" ist gemessen
+(`pids-limit`, `memory` aus dem realen Bedarf des Testlaufs, nicht geraten).
+
+**Dringlichkeit, ehrlich:** der auslösende Defekt ist behoben, die Klasse ist offen —
+und seit dem 2026-07-29 liegt mit `harness/tools/agent-watch.sh` ein **unbewachtes**
+Artefakt im Repo, dessen Verankerung zu diesem Slice gehört. Das ist eine stehende
+Schuld, kein Wunsch.
 
 Rückführungen:
 
