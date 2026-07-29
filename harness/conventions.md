@@ -846,12 +846,14 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 | `slice` | Pflicht | *Auf wessen Rechnung lief der Zugriff?* — aus dem Lifecycle-Verzeichnis, Liste (kein Slice ⇒ leer und als leer erkennbar) |
 | `requirement` | Pflicht | *Gegen welche Anforderung?* — aus der `Bezug:`-Zeile der Slices, Liste |
 | `adr` | Pflicht | *Auf wessen Entscheidung lief der Zugriff?* — die dritte Korrelations-Achse aus Modul 15 §Kernidee, aus demselben `Bezug:`-Block wie `requirement`, Liste |
-| `branch`, `commit` | Pflicht | *Zu welcher Änderung gehört der Zugriff?* — die dritte Korrelations-Achse aus Modul 15 (*Slice/**PR**/Agent-Rolle*), abgeleitet aus `.git/HEAD`; die PR-Nummer selbst ist nicht erreichbar, s. Abweichung 3 |
+| `branch`, `commit` | Pflicht | *Zu welcher Änderung gehört der Zugriff?* — die dritte Korrelations-Achse aus Modul 15 (*Slice/**PR**/Agent-Rolle*), abgeleitet aus `.git/HEAD`; die PR-Nummer selbst ist nicht erreichbar, s. Abweichung 2 |
 | `status` | Pflicht | *Ging es gut?* |
 | `permission_mode` | Optional | *Unter welcher Berechtigungs-Lage?* |
 | `transcript` | Optional | *Wo stehen Token- und Cache-Zähler?* — Brücke für die Auswertung |
 | `path` | Optional | *Was wurde wohin geschrieben/gelesen?* — nur bei namentlich gelisteten Datei-Werkzeugen |
 | `bytes`, `sha256_16` | Optional | *Hat sich etwas geändert?* — aus dem **Dateisystem**, nie aus der Payload |
+| `duration_ms` | Optional | *Wie lange dauerte der Aufruf?* — aus der Payload übernommen. Ohne sie ist **Gleichzeitigkeit nicht entscheidbar**: ein Span trägt sonst nur seinen Abschluss, und zwei Ströme lassen sich nicht überlagern |
+| `result_bytes` | Optional | *Wie groß war das Ergebnis?* — **nur die Länge, nie der Inhalt**. Ohne sie ist nicht entscheidbar, ob ein **einzelner** Aufruf eine Ressourcenspitze erklärt |
 | `program`, `argc` | Optional | *Welches Programm lief?* — erstes Token und Argument-Anzahl, nie die Kommandozeile |
 
 - **Welches Werkzeug gibt was preis — die namentliche Liste.** Die Feldtabelle oben sagt
@@ -868,6 +870,21 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 | `Read` | `path` — **kein** Fingerabdruck (er wäre auf einem gelesenen Pfad ein Bestätigungs-Orakel ohne Incident-Frage) |
 | `Bash`, `BashOutput` | `program` (erstes Token nach übersprungenen `NAME=WERT`-Präfixen) + `argc` |
 | **jedes andere** | **nichts** — der fail-closed Default aus [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) Festlegung 2 |
+
+- **Was die Payload sonst noch trägt — gemessen, nicht aus der Doku.** Am 2026-07-29
+  wurde eine echte Hook-Payload auf ihre **Schlüsselnamen** hin vermessen (nur Namen und
+  Wertlängen, nie Werte):
+  `cwd · duration_ms · effort · hook_event_name · permission_mode · prompt_id ·
+  session_id · tool_input · tool_name · tool_response · tool_use_id · transcript_path`.
+  Zwei Lehren daraus, beide unbequem: **`duration_ms` liegt bereit** — die Annahme, dafür
+  brauche es einen zweiten Hook auf `PreToolUse`, war falsch. Und das Ergebnis heißt
+  **`tool_response`**, nicht `tool_output`; der Slice-Plan hatte den richtigen Namen
+  stehen und „korrigierte" ihn anhand der Doku zum falschen. **Die Payload ist die
+  Quelle, die Doku ist Herkunft.**
+  **Nicht erfasst und damit ausdrücklich abgelehnt:** `cwd` (steht implizit im Pfad),
+  `effort` (keine Incident-Frage), `prompt_id` — letzteres ist ein ernsthafter Kandidat
+  (*„welche Aufrufe gehören zu einer Nutzer-Anweisung?"*), aber ein neues Feld ist eine
+  Entscheidung und keine Gelegenheit.
 
 - **Die erfasste MENGE, ausgesprochen statt suggeriert.** Verdrahtet sind **zwei**
   Ereignisse — `PostToolUse` und `PostToolUseFailure` — je mit leerem Matcher, der
@@ -949,6 +966,22 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   nicht dorthin — wer die Wächter in `test/*.bats` sucht, findet sie nicht
   (Review-Befund LOW-8).
 
+- **Der Strom ist `(session, agent)` — die FELDER, nicht der Dateiname.** Der Dateiname
+  ist eine Ableitung davon und darf sich ändern; die Identität nicht. Das ist keine
+  Formalie, sondern eine gemessene Lehre: die Korrektur der Namensbildung am 2026-07-29
+  (Trenner `-` innerhalb der Teile zu `_`, gegen Strom-Kollisionen) hat den **laufenden**
+  Strom dieser Sitzung in zwei Dateien mit **identischem `(session, agent)`** und zwei
+  Zählerkreisen zerlegt — **58 doppelt vergebene Nummern**. Eine Doppelvergabe erzeugt
+  keine Lücke; der Leser sieht Vollständigkeit, wo zwei Läufe stehen — genau das
+  Fehlerbild, gegen das [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md)
+  Folgepflicht 4 die Nummern eingeführt hat.
+  **Daraus zwei bindende Regeln:** (1) eine Auswertung gruppiert nach den **Feldern**,
+  nie nach dem Dateinamen, und setzt die Eindeutigkeit von `seq` **je Datei** voraus,
+  nicht je `(session, agent)`; (2) wer die Namensbildung ändert, räumt vorher mit
+  `make span-clean` auf — sonst wandert der Bruch in den Bestand statt in die
+  Änderung. Dieselbe Klasse trat schon einmal auf (awk→Go, 16 Duplikate); beide Male
+  war der Auslöser ein Wechsel der Mechanik bei laufendem Strom.
+
 - **Bewacht:** `internal/span/span_test.go` und `cmd/span-emit/main_test.go` (Klemme und stumme
   Ausgabe als Prozess-Eigenschaft, fail-closed Default an fremden Werkzeug-Namen, kein
   Payload-Inhalt im Span, vergebene statt abgeleitete Folgenummer, Nebenläufigkeit, Modus,
@@ -963,7 +996,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   `test/mutations/112-span-stdout-geschwaetzig.sh` (die **stdout**-Hälfte von
   Festlegung 6; Fall 107 deckt nur die Exit-Hälfte, weil der Panic-Pfad auf stderr
   schreibt) und `test/mutations/113-span-ablageort-getrackt.sh` (Zeile 3 der Fitness
-  Function: Ablageort auf einen getrackten Pfad).
+  Function: Ablageort auf einen getrackten Pfad), `test/mutations/114-span-lock-verzeichnis.sh` (ein liegengebliebenes Lock-**Verzeichnis** der Vorgänger-Fassung legte den Strom lautlos still) und `test/mutations/115-span-ergebnis-inhalt.sh` (vom Ergebnis darf nur die Länge in den Span).
 - **Auflösungs-Trigger:** permanent, solange Spans erfasst werden. Die Tabelle ändert sich mit
   jedem neuen Feld — jede Änderung ist ein Eintrag hier, kein Nebeneffekt im Skript.
 

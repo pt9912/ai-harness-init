@@ -62,6 +62,8 @@ type Span struct {
 	Sha256Prefix   string   `json:"sha256_16,omitempty"`
 	Program        string   `json:"program,omitempty"`
 	Argc           *int     `json:"argc,omitempty"`
+	DurationMS     *int64   `json:"duration_ms,omitempty"`
+	ResultBytes    *int64   `json:"result_bytes,omitempty"`
 }
 
 // Emit ist der ganze Weg: Payload lesen, Span bauen, an den Strom anhaengen.
@@ -107,6 +109,17 @@ func Build(p Payload, root string, now time.Time) Span {
 	if d.HasArgc {
 		argc := d.Argc
 		s.Argc = &argc
+	}
+	// Dauer und Ergebnis-Groesse: die zwei Achsen, ohne die zwei Fragen dieses Tages
+	// unbeantwortbar blieben — "lief es gleichzeitig?" und "hat ein einzelner Aufruf
+	// den Speicher gesprengt?". Beide kommen aus der Payload, beide ohne Inhalt.
+	if p.HasDuration {
+		ms := p.DurationMS
+		s.DurationMS = &ms
+	}
+	if p.HasResult {
+		rb := p.ResultBytes
+		s.ResultBytes = &rb
 	}
 	// Fingerabdruck NUR fuer Schreib-Werkzeuge (Review-Befund MEDIUM-1): auf einem
 	// gelesenen Pfad waere er ein Bestaetigungs-Orakel ohne Incident-Frage. Er kommt
@@ -210,7 +223,16 @@ func sanitizePart(s string) string {
 // Sperre, weil beides eine Einheit ist.
 func Append(root, stream string, s Span) error {
 	dir := filepath.Join(root, Dir)
-	if err := os.MkdirAll(dir, 0o700); err != nil {
+	// 0755 fuer das VERZEICHNIS, 0600 fuer die DATEIEN — und die Trennung ist
+	// gemessen, nicht gewaehlt: mit 0700 scheiterte `make docs-check` mit
+	// "permission denied", sobald es das Verzeichnis betreten wollte (der Container
+	// laeuft unter einer anderen Kennung). Aufgefallen ist es erst, als `make
+	// span-clean` das 0755-Verzeichnis der Vorgaenger-Fassung wegraeumte — bis dahin
+	// war der Gate GRUEN WEGEN ALTBESTAND, und auf einem frischen Checkout waere er
+	// beim ersten Span rot geworden. Schuetzenswert ist der INHALT, und der steht in
+	// den Dateien; die Verzeichnis-Rechte folgen dem umgebenden Zustands-Bereich
+	// (.harness/state ist 775). Bewacht von TestSpanDirIsTraversable.
+	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return err
 	}
 	lock, err := acquire(filepath.Join(dir, "."+stream+".lock"))
@@ -289,6 +311,19 @@ func appendLine(file string, line []byte) error {
 func acquire(path string) (*os.File, error) {
 	f, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR, 0o600)
 	if err != nil {
+		// Ein VERZEICHNIS an dieser Stelle ist der Nachlass der Vorgaenger-Fassung, die
+		// mit `mkdir` sperrte: `OpenFile` scheitert daran mit EISDIR, und der Strom
+		// waere ab da dauerhaft und lautlos tot — genau die Eigenschaft, die dieser
+		// Kommentar ausschliesst (Review-Befund Runde 2, MEDIUM-1). Einmal aufraeumen
+		// und erneut versuchen; scheitert auch das, gilt fail-open.
+		if fi, statErr := os.Stat(path); statErr == nil && fi.IsDir() {
+			if rmErr := os.Remove(path); rmErr != nil {
+				return nil, err
+			}
+			f, err = os.OpenFile(path, os.O_CREATE|os.O_RDWR, 0o600)
+		}
+	}
+	if err != nil {
 		return nil, err
 	}
 	for range lockTries {
@@ -320,8 +355,11 @@ func writeOwnerOnly(file string, data []byte) error {
 // geraten zu werden; mehrere ergeben alle. adr.id steht im selben Bezug-Block wie
 // requirement.id und ist damit auf demselben Weg erreichbar; ihn wegzulassen und als
 // Abweichung zu erklaeren waere gegen ADR-0011 Festlegung 1.4 gewesen ("Ableiten
-// schlaegt deklarieren"). Die vierte Achse, agent.role, ist NICHT ableitbar und steht
-// als erklaerte Abweichung in MR-018.
+// schlaegt deklarieren"). Die vierte Achse, agent.role, wird NICHT hier abgeleitet:
+// sie haengt am LAUF, nicht am Repo-Zustand, und kommt aus dem Agenten-Typ
+// (roleFromAgentType). Die frueher hier stehende Fassung nannte sie "nicht ableitbar"
+// — das war schon im selben Commit ueberholt, in dem sie abgeleitet wurde
+// (Review-Befund Runde 2, MEDIUM-3).
 func correlation(root string) (slices, reqs, adrs []string) {
 	slices, reqs, adrs = []string{}, []string{}, []string{}
 	matches, err := filepath.Glob(filepath.Join(root, "docs/plan/planning/in-progress/slice-*.md"))

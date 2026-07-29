@@ -295,6 +295,68 @@ func TestSpansLandInStateDir(t *testing.T) {
 	}
 }
 
+// TestDurationAndResultSize misst die zwei Achsen, die am 2026-07-29 gefehlt haben:
+// ohne Dauer war "liefen zwei Agenten gleichzeitig?" nicht entscheidbar, ohne
+// Ergebnis-Groesse "hat ein einzelner Aufruf den Speicher gesprengt?". Beide stehen in
+// der Payload — gemessen, nicht aus der Doku uebernommen.
+func TestDurationAndResultSize(t *testing.T) {
+	p, err := span.Parse([]byte(`{"tool_name":"Bash","duration_ms":1234,
+	  "tool_response":"AWS_SECRET_ACCESS_KEY=abc123 und noch mehr Ausgabe"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := span.Build(p, t.TempDir(), time.Now())
+	if s.DurationMS == nil || *s.DurationMS != 1234 {
+		t.Fatalf("duration_ms = %v, erwartet 1234", s.DurationMS)
+	}
+	if s.ResultBytes == nil || *s.ResultBytes <= 0 {
+		t.Fatalf("result_bytes fehlt: %v", s.ResultBytes)
+	}
+	// Und der Kanarienvogel: vom Ergebnis darf NUR die Laenge in den Span.
+	b, err := json.Marshal(s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, forbidden := range []string{"abc123", "AWS_SECRET", "noch mehr Ausgabe"} {
+		if strings.Contains(string(b), forbidden) {
+			t.Fatalf("Ergebnis-Inhalt %q steht im Span: %s", forbidden, b)
+		}
+	}
+}
+
+// TestMissingDurationStaysAbsent: fehlt die Angabe in der Payload, wird sie nicht
+// erfunden — ein `duration_ms: 0` waere eine Messung, die nie stattfand.
+func TestMissingDurationStaysAbsent(t *testing.T) {
+	p, err := span.Parse([]byte(`{"tool_name":"Bash"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, err := json.Marshal(span.Build(p, t.TempDir(), time.Now()))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(b), "duration_ms") || strings.Contains(string(b), "result_bytes") {
+		t.Fatalf("nicht gemessene Groessen stehen im Span: %s", b)
+	}
+}
+
+// TestSpanDirIsTraversable haelt die Trennung fest: die DATEIEN sind 0600 (der
+// Inhalt ist schuetzenswert), das VERZEICHNIS ist betretbar. Mit 0700 scheiterte
+// `make docs-check` an "permission denied" — und das fiel monatelang nicht auf, weil
+// dort noch ein 0755-Verzeichnis der Vorgaenger-Fassung lag: der Gate war gruen wegen
+// Altbestand, nicht wegen Korrektheit.
+func TestSpanDirIsTraversable(t *testing.T) {
+	root := newRoot(t)
+	emit(t, root, `{"tool_name":"Bash","session_id":"s1"}`)
+	fi, err := os.Stat(filepath.Join(root, span.Dir))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fi.Mode().Perm()&0o055 != 0o055 {
+		t.Fatalf("Ablage-Verzeichnis ist nicht betretbar: %v — jedes Werkzeug, das den Baum laeuft, bricht daran", fi.Mode().Perm())
+	}
+}
+
 // TestStreamsAreSeparate: der Strom ist (Sitzung, Agent).
 func TestStreamsAreSeparate(t *testing.T) {
 	root := newRoot(t)
@@ -443,6 +505,23 @@ func TestLeftoverLockFileDoesNotBlock(t *testing.T) {
 	emit(t, root, `{"tool_name":"Bash","session_id":"s1"}`)
 	if got := readLines(t, root, "s1"); len(got) != 1 {
 		t.Fatalf("liegengebliebene Lock-Datei hat den Strom stillgelegt: %+v", got)
+	}
+}
+
+// TestLeftoverLockDirectoryDoesNotBlock: die Vorgaenger-Fassung sperrte mit `mkdir`,
+// hinterliess also ein VERZEICHNIS an der Lock-Stelle. `OpenFile` scheitert daran mit
+// EISDIR — ohne Behandlung waere der Strom ab dem Wechsel dauerhaft und lautlos tot,
+// genau die Eigenschaft, die der flock-Kommentar ausschliesst (Review Runde 2,
+// MEDIUM-1). Der Wächter nannte den Fall bis dahin, ohne ihn zu pruefen.
+func TestLeftoverLockDirectoryDoesNotBlock(t *testing.T) {
+	root := newRoot(t)
+	dir := filepath.Join(root, span.Dir)
+	if err := os.MkdirAll(filepath.Join(dir, ".s1.lock"), 0o700); err != nil {
+		t.Fatal(err)
+	}
+	emit(t, root, `{"tool_name":"Bash","session_id":"s1"}`)
+	if got := readLines(t, root, "s1"); len(got) != 1 {
+		t.Fatalf("liegengebliebenes Lock-VERZEICHNIS hat den Strom stillgelegt: %+v", got)
 	}
 }
 

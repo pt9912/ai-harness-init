@@ -29,6 +29,13 @@
 #      Stop-Hook blockierte sich selbst (MR-003, Review-Befund MEDIUM-4). Die andere
 #      Haelfte dieser Eigenschaft — dass der Emitter nur dorthin schreibt — misst
 #      TestSpansLandInStateDir.
+#      GRENZE, benannt statt verschwiegen: diese dritte Pruefung ist selbst UNBEWACHT.
+#      Ein Mutations-Fall kann sie nicht fangen, weil das ENTFERNEN einer Pruefung den
+#      Gate GRUEN laesst, nicht rot — Mutation misst, ob ein Waechter Zaehne hat, nicht
+#      ob er existiert. Fall 113 faerbt `TestSpansLandInStateDir` rot und deckt damit
+#      die Code-Haelfte; die `git check-ignore`-Haelfte haengt an dieser Datei allein
+#      (Review Runde 2 zu HIGH-4). Ein echter Waechter braeuchte einen Lauf gegen ein
+#      Repo, dessen .gitignore den Ablageort NICHT deckt — Kandidat, kein Bestand.
 #
 # PLATTFORM: der Emitter wird FUER DEN HOST gebaut (`make span-emit-build` leitet
 # GOOS/GOARCH aus `uname` ab und reicht sie ins gepinnte Linux-Image). Eine fruehere
@@ -83,9 +90,15 @@ fi
 
 [ -s "$file" ] || fail "kein Span geschrieben ($file fehlt oder ist leer)"
 
+# Die VOLLE Pflicht-Spalte aus MR-018, nicht eine Auswahl. Die Vorgaenger-Fassung
+# pruefte 7 von 14 — und es fehlten ausgerechnet die vier, die derselbe Commit
+# einfuehrte oder rettete (`agent_role`, `adr`, `branch`, `commit`). Damit haette
+# dieselbe Klasse, die als HIGH-2 im Code gefunden wurde, an der zweiten Sensorstelle
+# unbemerkt weitergelebt (Review Runde 2, MEDIUM-2).
 line="$(cat "$file")"
-for feld in '"seq":1' '"tool":"Bash"' '"tool_use_id":"tu_gate"' '"status":"ok"' \
-            '"slice":' '"requirement":' '"program":"make"'; do
+for feld in '"seq":1' '"ts":' '"event":' '"tool":"Bash"' '"tool_use_id":"tu_gate"' \
+            '"session":' '"agent":' '"agent_role":' '"slice":' '"requirement":' \
+            '"adr":' '"branch":' '"commit":' '"status":"ok"' '"program":"make"'; do
   grep -qF "$feld" <<<"$line" || fail "Pflichtfeld fehlt im Span: $feld — $line"
 done
 

@@ -37,6 +37,16 @@ type Payload struct {
 	PermissionMode string
 	Input          ToolInput
 	Failed         bool
+
+	// DurationMS und ResultBytes stammen aus einer MESSUNG an einer echten Payload
+	// (2026-07-29), nicht aus der Werkzeug-Doku: sie traegt `duration_ms` und
+	// `tool_response`. Die Doku nennt fuer das Ergebnis `tool_output`; der Slice-Plan
+	// hatte `tool_response` stehen und "korrigierte" es zu `tool_output` — die
+	// Korrektur ging von der Doku aus und lag daneben.
+	DurationMS  int64
+	ResultBytes int64
+	HasDuration bool
+	HasResult   bool
 }
 
 // ToolInput traegt die drei Felder, aus denen ueberhaupt abgeleitet wird. Der
@@ -72,6 +82,20 @@ func Parse(b []byte) (Payload, error) {
 		// Fehler bewusst verworfen: ist `tool_input` kein Objekt, bleiben die
 		// abgeleiteten Werte leer — der Span selbst entsteht trotzdem.
 		_ = json.Unmarshal(in, &p.Input)
+	}
+	// Die DAUER kommt fertig aus der Payload — es braucht dafuer keinen zweiten Hook
+	// auf PreToolUse, wie zuerst angenommen.
+	if v, ok := raw["duration_ms"]; ok {
+		var ms int64
+		if err := json.Unmarshal(v, &ms); err == nil {
+			p.DurationMS, p.HasDuration = ms, true
+		}
+	}
+	// Vom ERGEBNIS wird ausschliesslich die LAENGE genommen, nie der Inhalt — dieselbe
+	// Linie wie bei `tool_input` (ADR-0011 Festlegung 2). Gemessen wird die Groesse,
+	// wie die Payload sie traegt.
+	if v, ok := raw["tool_response"]; ok {
+		p.ResultBytes, p.HasResult = int64(len(v)), true
 	}
 	p.Failed = failed(raw, p.Event)
 	return p, nil
