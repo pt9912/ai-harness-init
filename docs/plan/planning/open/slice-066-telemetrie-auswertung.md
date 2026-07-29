@@ -53,20 +53,34 @@ Bestand, aufrufbar als `make`-Ziel.
   bindenden Lesevorschrift **aufgeteilt**, nicht als eigene Zeile geführt — und **wie groß der
   aufgeteilte Anteil war, steht im Ergebnis**. Ohne diese Zahl ruht die Bilanz auf einer Regel,
   ohne dass der Leser es sieht. **Dazu die Abdeckungszahl:** wie viele `Agent`-Spans überhaupt
-  Zähler trugen. Die Vordergrund-Konvention aus slice-060 hat keinen Sensor — ein
-  Hintergrund-Start fehlt lautlos, und ohne diese Zahl liest sich eine unvollständige Erhebung
-  wie eine vollständige.
+  Zähler trugen. **Nicht**, weil die Vordergrund-Konvention aus slice-060 sensorlos wäre — sie
+  bekommt dort einen `PreToolUse`-Guard —, sondern weil ein Guard **fehlen, abgeschaltet oder
+  umgangen** sein kann und ein Hintergrund-Start dann lautlos ausfällt. Ohne diese Zahl liest
+  sich eine unvollständige Erhebung wie eine vollständige. (Eine frühere Fassung behauptete hier
+  das Gegenteil von slice-060 — der Satz war in slice-060 zurückgezogen und hier stehen
+  geblieben.)
+  **Der Nenner kommt aus einer anderen Quelle als der Zähler.** Zählte die Abdeckungszahl beide
+  Größen aus denselben Spans, prüfte sie sich selbst. Das Ereignis **`SubagentStart`** feuert je
+  Spawn und trägt `agent_type` (Referenz, §SubagentStart) — es kann nicht blockieren, aber es
+  **zählt**, unabhängig davon, ob der `Agent`-Span Telemetrie trug. Erst diese zwei Quellen
+  machen aus der Abdeckungszahl eine Messung statt einer Selbstauskunft.
 - [ ] **(2) Cache-Zähler getrennt — mit allen vier Angaben, die die Regel je Counter verlangt.**
   `cache_creation_input_tokens` und `cache_read_input_tokens` werden **nie** zu einer Zahl
   verrechnet. Modul 15 §Cache-Counter-Regeln stellt **vier** Fragen je Counter, und alle vier
   gehören beantwortet — eine frühere Fassung dieses Plans nahm nur die **Labels** auf:
-  1. **Name** — je Counter ausgeschrieben, nicht umschrieben.
-  2. **Unit/Cardinality** — Counter, Gauge oder Histogram.
+  1. **Name** — `prompt_cache_hits_total`, `prompt_cache_misses_total`,
+     `prompt_cache_input_tokens_total`. Ausgeschrieben, damit die Bilanz und eine spätere
+     Metrik-Ausleitung denselben Namen führen.
+  2. **Unit/Cardinality** — alle drei **Counter** (monoton, Einheit Token), nicht Gauge und nicht
+     Histogram: sie summieren einen Bestand, sie messen keinen Momentanwert und keine Verteilung.
   3. **Labels** — mindestens `slice.id`, `agent.role`, **`model.version`**; letzteres liegt als
      `resolvedModel` in denselben Spans.
   4. **Aggregation** — `hits / (hits + misses)`, und **wo die Division läuft**. Hier: im
      Auswerter, weil dieses Repo weder Metrik-DB noch Dashboard hat. Das ist zu **sagen**, nicht
-     stillschweigend zu tun.
+     stillschweigend zu tun. **Und welcher Zähler welcher ist, steht hier und nicht nur in der
+     Welle:** `hits` = `cache_read_input_tokens` (aus dem Cache gelesen),
+     `misses` = `cache_creation_input_tokens` (in den Cache geschrieben, also gerade **nicht**
+     getroffen).
 
   **Und die Zahl stimmt nicht:** das Modul spricht von **drei** Countern, die Payload liefert
   **zwei** (`cache_creation_input_tokens`, `cache_read_input_tokens`). Der dritte ist die
@@ -75,6 +89,10 @@ Bestand, aufrufbar als `make`-Ziel.
   derselben `usage`. **Deklarierte Entscheidung:** alle drei werden geführt; eine einzelne
   `cache.hit_ratio` reicht ausdrücklich nicht, weil sie Kosten- und Sicherheits-Indikator
   vermischt.
+  **Auflösungs-Trigger je Deklaration** (welle-09 verlangt ihn für jede): die Namen und die
+  Counter-Form werden neu entschieden, **sobald dieses Repo eine Metrik-Senke bekommt** — dann
+  wandert die Division dorthin und die Namen müssen deren Konvention folgen. Bis dahin gilt die
+  Festlegung unverändert.
 - [ ] **(3) Die Splitting-Regel des Sammelpostens steht als Festlegung, nicht im Code.** Welche
   Regel gilt (Frage A) und **wie groß** der aufgeteilte Anteil war, gehört nach
   [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)

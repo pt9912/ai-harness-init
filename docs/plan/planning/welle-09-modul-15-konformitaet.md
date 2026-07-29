@@ -47,9 +47,13 @@ ist gegenüber der Vorlage eine **Verschärfung**, die als solche nirgends dekla
 Adaption, die behauptet, es gebe keine. Sie gehört in slice-062 mit auf den Tisch.)*
 
 **Der Einstieg ist die Erfassung, nicht die Auswertung.** Modul 15 beschreibt einen Agentenlauf
-als *Trace aus Spans — einen pro Tool-Call*. Diese Spans entstehen bei uns heute **nirgends**:
-der `PreToolUse`-Guard sieht jeden Bash-Aufruf samt Argumenten, entscheidet und **vergisst ihn
-sofort**. Genau dort setzt die Welle an — die Mechanik ist verdrahtet, es fehlt die Senke.
+als *Trace aus Spans — einen pro Tool-Call*. Diese Spans entstanden bei uns bis
+[slice-059](done/slice-059-telemetrie-erfassung-hook.md) **nirgends**: der `PreToolUse`-Guard sah
+jeden Bash-Aufruf samt Argumenten, entschied und **vergaß ihn sofort**. Genau dort setzte die
+Welle an — die Mechanik war verdrahtet, es fehlte die Senke. **Seit slice-059 (done) entstehen
+sie**, und zwar an `PostToolUse`/`PostToolUseFailure`, **nicht** am `PreToolUse`-Guard; eine
+frühere Fassung dieses Absatzes stand im Präsens und beschrieb damit einen überholten
+Ist-Zustand.
 
 Dass die Oberfläche das hergibt, ist **gemessen, nicht angenommen** (2026-07-28, Werkzeug-Doku
 <https://code.claude.com/docs/de/hooks>): Ergebnis- und Fehlschlag-Event, eine gemeinsame
@@ -141,8 +145,10 @@ nur noch, was wirklich ausgeschlossen ist.
 die Token-Bilanz keine eigene Datenquelle, sondern nur das Transkript des Werkzeugs — das
 außerhalb des Repos liegt, uns nicht gehört und **keine Korrelations-IDs trägt** (`agent.role`
 steht dort als `general-purpose`, `slice.id` gar nicht; am 2026-07-28 gemessen). Und der
-Erfassungsort existiert bereits: der `PreToolUse`-Guard sieht jeden Bash-Aufruf samt Argumenten
-und behält **nichts** davon.
+Erfassungsort **existiert** seit [slice-059](done/slice-059-telemetrie-erfassung-hook.md): der
+Emitter läuft an `PostToolUse`/`PostToolUseFailure` und schreibt je Tool-Call einen Span mit den
+Korrelations-Achsen. Der `PreToolUse`-Guard, den eine frühere Fassung hier als Erfassungsort
+nannte, ist es **nicht** — er entscheidet und behält nichts.
 
 **Zu slice-066 (dem Auswerter):** die Rohdaten sind real vorhanden, und die Quelle ist seit dem
 2026-07-29 **gemessen** statt vermutet — ein `Agent`-Aufruf im **Vordergrund** trägt in

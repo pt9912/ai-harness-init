@@ -53,14 +53,18 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Historie/Geschichte), `spans` (Markdown-Span-Hygiene) sowie `ids` mit
   `link-policy: always` (Kennungen sind klickbare Links zur Quelle, Requirement-IDs
   mit Abschnitts-Anker; `exempt-paths`: `docs/reviews/**`, `CHANGELOG.md`) plus
-  ein `MR`-Pattern (→ diese Datei). **`scan.ignore` nimmt vendored Fremd-Dokumente aus** —
-  Dateien, die dieses Repo *spiegelt* statt schreibt und deshalb nicht nach seinen Regeln
-  formen darf: `.harness/baseline/**` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache))
-  und `docs/user/claude-hooks-referenz.md` (die Hooks-Referenz der Herstellerseite, Quelle der
-  Payload-Messungen). Sie umzuschreiben, damit das Gate grün wird, hieße die Quelle zu
-  verfälschen; sie zu scannen erzeugt Befunde gegen ihren Autor. Das ist **Scoping**, keine
-  Gate-Lockerung nach [`AGENTS.md`](../AGENTS.md) §3.5 — der Prüfumfang schrumpft nicht um
-  eigenen Bestand.
+  ein `MR`-Pattern (→ diese Datei). **`scan.ignore` führt heute vier Einträge, aus zwei
+  Gründen** — beide sind **Scoping**, keine Gate-Lockerung nach
+  [`AGENTS.md`](../AGENTS.md) §3.5, denn der Prüfumfang schrumpft nicht um Bestand, den dieses
+  Repo autoritativ schreibt:
+  1. **Vendored Fremd-Dokumente** — dieses Repo *spiegelt* sie, statt sie zu schreiben, und darf
+     sie deshalb nicht nach seinen Regeln formen: `.harness/baseline/**`
+     ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) und
+     `docs/user/claude-hooks-referenz.md` (die Hooks-Referenz der Herstellerseite, netzlose
+     Quelle der Payload-Messungen). Sie umzuschreiben, damit das Gate grün wird, hieße die Quelle
+     zu verfälschen; sie zu scannen erzeugt Befunde gegen ihren Autor.
+  2. **Kein Fließtext** — `**/*.template.md` sind Ziel-Form-Vorlagen mit Platzhaltern statt
+     Verweisen, `.tmp/**` ist Wegwerf-Bestand. Beide tragen keine Aussage, die veralten könnte.
 - **Begründung:** Halb-erzwungene ID-Klammer und unbewachte Referenz-Richtung
   geschlossen; „klickbar zur Quelle" als gemessenes Property. Gate-*Anheben* →
   Steering-Loop, kein ADR nötig. Legitime ADR-Supersede-Lineage über Inline-Code
@@ -918,17 +922,10 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      `Agent`-Aufruf im **Vordergrund** trägt in `tool_response` ein `usage`-Objekt mit allen
      vier Zählern. Der Cache-Status ist damit **für Subagenten-Läufe** erreichbar — ohne
      Transkript und ohne Zugriff außerhalb des Repos. **Erfasst wird er dadurch noch nicht:**
-     slice-060 ist geplant, liegt in `open/`, und keine Zeile Code liest die Zähler — die
-     *Messung* ist belegt, die *Erfassung* ist es nicht. **Nicht** erreichbar bleibt er für den
+     die *Messung* ist belegt, die *Erfassung* ist es nicht — erfasst ist er erst, wenn diese
+     Feldtabelle die Cache-Zähler führt. Bis dahin sagt die Tabelle selbst, wo es steht; eine
+     Aussage über das Lifecycle-Verzeichnis eines Slice stünde hier falsch, sobald er umzieht. **Nicht** erreichbar bleibt er für den
      Haupt-Kontext und für Hintergrund-Läufe; insoweit gilt die Abweichung fort.
-  **Wer der „Auswerter (slice-060)" aus [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) ist.**
-  Die ADR ist ab *Accepted* immutabel und nennt an drei Stellen die Slice-**ID** 060 als den
-  Auswertungs-Slice (Festlegung 1 Punkt 3 sowie die Re-Evaluierungs-Trigger 2 und 6). Der Schnitt
-  vom 2026-07-29 hat die Arbeit geteilt: **slice-060 ist die Rollen-Achse** (Erfassung),
-  **slice-066 ist die Auswertung**. Gemeint ist an allen drei Stellen der **auswertende** Slice,
-  also slice-066. Diese Umdeutung steht hier und nur hier — die ADR wird dafür nicht angefasst
-  ([`AGENTS.md`](../AGENTS.md) §3.4).
-
   2. **Die PR-NUMMER steht nicht im Span, ihr Anker schon.** Modul 15 verlangt die
      Korrelation zu *Slice/PR/Agent-Rolle*. Eine PR-Nummer lebt bei der Forge; der
      Emitter geht nicht ins Netz und ruft kein `gh` (er läuft je Tool-Call). Erfasst
@@ -1041,3 +1038,11 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 | `*` (gesamtes Repo) | Greenfield | Neues Repo, Doc führt, Code folgt | n/a (GF) |
 | `harness/tools/` | Greenfield | adoptierte Harness-Mechanik (Adaptions-Block) | n/a (GF) |
 | `.codex/` | Greenfield | neue Pfad-Familie, adoptierte SessionStart-Hook-Mechanik | n/a (GF) |
+
+**Wer der „Auswerter (slice-060)" aus [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) ist.**
+Die ADR ist ab *Accepted* immutabel und nennt an drei Stellen die Slice-**ID** 060 als den
+Auswertungs-Slice (Festlegung 1 Punkt 3 sowie die Re-Evaluierungs-Trigger 2 und 6). Der Schnitt
+vom 2026-07-29 hat die Arbeit geteilt: **slice-060 ist die Rollen-Achse** (Erfassung),
+**slice-066 ist die Auswertung**. Gemeint ist an allen drei Stellen der **auswertende** Slice,
+also slice-066. Diese Umdeutung steht hier und nur hier — die ADR wird dafür nicht angefasst
+([`AGENTS.md`](../AGENTS.md) §3.4).
