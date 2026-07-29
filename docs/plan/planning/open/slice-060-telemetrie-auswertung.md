@@ -82,7 +82,7 @@ Strom → Transkript steht; sie steht bereits (Zeile 4). Der eigentliche Arbeits
 
 | # | Frage | Warum sie den Schnitt entscheidet |
 |---|---|---|
-| A | Welche **Splitting-Regel** für den Haupt-Strom? | Modul 15 nennt zwei Kandidaten (anteilig nach Tool-Calls; dem auslösenden Slice zugeschlagen). Zwei Signale liegen bereits im Span: das `slice`-Feld (Lifecycle-Verzeichnis, WIP-Limit 1) und das Schreibziel (`docs/plan/**` gegen Code-Pfade). Die Wahl ist zu **begründen**, nicht zu treffen |
+| A | Welche **Splitting-Regel** für den Haupt-Strom? | Modul 15 nennt zwei Kandidaten (anteilig nach Tool-Calls; dem auslösenden Slice zugeschlagen). Zwei Signale liegen bereits im Span: das `slice`-Feld (Lifecycle-Verzeichnis, WIP-Limit 1) und das Schreibziel (`docs/plan/**` gegen Code-Pfade). Die Wahl ist zu **begründen**, nicht zu treffen. **DoD (3) löst diese Frage nicht mit:** der Haupt-Strom trägt strukturell keinen `agent_type`, bleibt also auch mit rollen-benannten Agenten-Typen ein Sammelposten |
 | B | Token je **Span** oder je **Nachricht**? | Die Zähler hängen an Transkript-Nachrichten, die Rollen an Strömen. Eine Zuordnung Token→Tool-Call gibt es nicht — ob sie geschätzt wird (und wie sichtbar) oder ob die Bilanz auf Strom-Ebene bleibt, ist eine Genauigkeits-Zusage |
 | C | Was passiert mit **fremden** Transkripten? | Der Bestand enthält 18 Subagenten-Transkripte aus mehreren Sitzungen. Ob die Bilanz eine Sitzung oder den Bestand summiert, ändert jede Zahl |
 
@@ -117,9 +117,6 @@ Move-Commit, eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Ei
   aus. Die Frage, die der Bericht bedienen soll, benennt Modul 15 selbst: *„lässt er sich durch
   Caching, Vorab-Filter oder Kontext-Verdichtung billiger machen?"*
 
-- **Der Sammelposten ist heute der Normalfall, nicht der Randfall.** `agent_role` ist in **allen**
-  Spans leer. Ohne DoD (3) berichtet die Bilanz eine einzige Zeile — formal erfüllt, inhaltlich
-  wertlos. Deshalb steht die Rollen-Achse in der DoD und nicht unter „später".
 - **Die Zuordnung Token → Rolle ist eine Zusage über Genauigkeit.** Zähler hängen an Nachrichten,
   Rollen an Strömen; jede Verfeinerung darüber hinaus ist Schätzung und muss als solche im
   Ergebnis stehen.
