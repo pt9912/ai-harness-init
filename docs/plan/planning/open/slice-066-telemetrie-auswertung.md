@@ -12,7 +12,9 @@ wechselt nur durch `git mv`, siehe
 inhaltliche Adaption — Modul 15 ist adoptiert und in den Blöcken 2–3 unumgesetzt),
 [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
 (das Span-Schema, das dieser Slice **liest**, samt der dort bindenden Lesevorschrift zum
-Sammelposten). Regelwerk-Quelle:
+Sammelposten),
+[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (die Auswertung
+bleibt ein Docker-only gebautes Go-Binary). Regelwerk-Quelle:
 `.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md`
 §Token-Attributions-Regeln und §Cache-Counter-Regeln.
 
@@ -29,24 +31,36 @@ Bestand, aufrufbar als `make`-Ziel.
 ## 2. Definition of Done
 
 - [ ] **(1) Token-Bilanz je Rolle, mit ausgesprochenem Sammelposten.** Input- und Output-Token
-  summiert **je `agent_role`**, die größte Rolle als **Zahl und Prozentsatz** der Gesamtsumme
+  summiert **je Rolle** — die Rolle steht in den `Agent`-Spans als `agentType` (die *tatsächlich
+  gelaufene*), nicht im `agent_role` desselben Spans, das die Rolle des **Aufrufers** trägt.
+  Die größte Rolle als **Zahl und Prozentsatz** der Gesamtsumme
   (Modul 15 §Token-Attributions-Regeln, wörtlich). Spans mit leerem `agent_role` werden nach der
   in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
   bindenden Lesevorschrift **aufgeteilt**, nicht als eigene Zeile geführt — und **wie groß der
   aufgeteilte Anteil war, steht im Ergebnis**. Ohne diese Zahl ruht die Bilanz auf einer Regel,
   ohne dass der Leser es sieht.
-- [ ] **(2) Cache-Zähler getrennt.** `cache_creation_input_tokens` und `cache_read_input_tokens`
-  werden **nie** zu einer Zahl verrechnet (Modul 15 §Cache-Counter-Regeln).
+- [ ] **(2) Cache-Zähler getrennt, mit den Labels, die die Regel verlangt.**
+  `cache_creation_input_tokens` und `cache_read_input_tokens` werden **nie** zu einer Zahl
+  verrechnet. Modul 15 §Cache-Counter-Regeln verlangt als Labels mindestens `slice.id`,
+  `agent.role` und **`model.version`** — letzteres liegt als `resolvedModel` in denselben Spans;
+  eine frühere Fassung dieses Plans hatte die Achse übersehen.
+- [ ] **(3) Die Splitting-Regel des Sammelpostens steht als Festlegung, nicht im Code.** Welche
+  Regel gilt (Frage A) und **wie groß** der aufgeteilte Anteil war, gehört nach
+  [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
+  bzw. in jedes Ergebnis. Eine Regel, die nur im Auswertungs-Code lebt, ist für den Leser der
+  Bilanz unsichtbar.
 - [ ] `make gates` grün, `make mutate` ohne Befund.
 - [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
-**Voraussetzung, die [slice-060](slice-060-rollen-achse.md) liefert:** die Spans tragen
-`agent_role` gefüllt sowie die Nutzungstelemetrie der `Agent`-Aufrufe (`usage` mit vier Zählern,
-`totalTokens`, `totalDurationMs`, `totalToolUseCount`). **Die Auswertung liest ausschließlich
-Spans** — kein Zugriff außerhalb des Repos, kein Transkript.
+**Voraussetzung, die [slice-060](slice-060-rollen-achse.md) liefert:** die `Agent`-Spans tragen
+`agentType`, `resolvedModel` und die Nutzungstelemetrie (`usage` mit vier Zählern, `totalTokens`,
+`totalDurationMs`, `totalToolUseCount`). **Gemessen am 2026-07-29:** diese Felder kommen **nur
+bei Vordergrund-Läufen** an; im Hintergrund trägt die Antwort weder Zähler noch `agentType`. Die
+Bilanz deckt damit genau die Läufe ab, die der Konvention aus slice-060 folgen — und **die
+Auswertung liest ausschließlich Spans**, kein Zugriff außerhalb des Repos, kein Transkript.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
