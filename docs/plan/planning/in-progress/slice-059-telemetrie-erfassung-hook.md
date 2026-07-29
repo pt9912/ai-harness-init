@@ -151,7 +151,7 @@ Dogfood-Seite bindet sie nicht. Ob das Ziel-Repo einen Emitter bekommt, entschei
 | `.claude/settings.json` | update | Event(s) und **Matcher** verdrahten (abhängig von Messung A **und F**) |
 | `harness/tools/json-encode.awk` | prüfen, ggf. wiederverwenden | existiert bereits für JSON-**Ausgabe**; ob es auch für die Payload-**Eingabe** trägt, ist Messung A — Encoding und Parsing sind nicht dasselbe Problem |
 | `test/` + `test/mutations/` | neu | die zwei Zähne aus DoD (3) |
-| `harness/tools/agent-watch.sh` | **neu, außerhalb des Gegenstands** | Speicher-Melder für Subagenten-Läufe. Er gehört **nicht** zur Telemetrie-Erfassung — er entstand, weil die Sensor-Läufe *dieses* Slice die Maschine zweimal zum Absturz brachten. Als stille Beigabe wäre er Scope-Creep; hier steht er benannt, samt seiner Grenze: **unbewacht**, kein Gate, kein Makefile-Ziel. Seine Einbindung ist Gegenstand von [slice-065](../open/slice-065-testlauf-ressourcendeckel.md) |
+| `harness/tools/agent-watch.sh` | **neu, außerhalb des Gegenstands** | Speicher-Melder für Subagenten-Läufe. Er gehört **nicht** zur Telemetrie-Erfassung — er entstand, weil die Sensor-Läufe *dieses* Slice die Maschine zweimal zum Absturz brachten. Als stille Beigabe wäre er Scope-Creep; hier steht er benannt, samt seiner Grenze: **unbewacht**, kein Gate, kein Makefile-Ziel. Seine Einbindung ist Gegenstand von [slice-065](../next/slice-065-testlauf-ressourcendeckel.md) |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | das Span-Schema als `MR`-Eintrag — es ist eine Struktur-Regel, kein Implementierungsdetail |
 
 ## 4. Trigger
@@ -188,7 +188,7 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
   meldet; **abbrechen kann er nichts** — Subagenten sind keine eigenen Prozesse. Er ist
   **unbewacht** und steht unter keinem Gate. Das ist keine Nachlässigkeit, sondern die
   Grenze dieses Slice: seine Einbindung (Makefile-Ziel, `MR`-Eintrag, Wächter) gehört zu
-  [slice-065](../open/slice-065-testlauf-ressourcendeckel.md), nicht hierher. Ihn
+  [slice-065](../next/slice-065-testlauf-ressourcendeckel.md), nicht hierher. Ihn
   stillschweigend mitzuliefern wäre die Alternative gewesen — und genau die Klasse, die
   dieser Slice zweimal im Review bezahlt hat.
 - **Ein Audit-Log, das Secrets sammelt, ist ein Schaden, kein Sensor.** Die Redaktion ist
