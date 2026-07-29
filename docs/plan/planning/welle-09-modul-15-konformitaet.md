@@ -110,6 +110,13 @@ Modul-15-Block-4.
 Nur der erste Slice ist geschnitten (cp-Disziplin — die übrigen bekommen ihre Datei per `cp`,
 wenn sie an der Reihe sind; ein leeres `open/` ist ehrlicher als eine driftende Vorplanung).
 
+**Warum zwei Slices statt eines für die Blöcke 2–3** (Schnitt-Korrektur vom 2026-07-29, auf
+Nutzer-Befund): `agent_role` ist heute in **jedem** Span leer. Eine Token-Bilanz hätte damit
+genau zwei namenlose Eimer — `general-purpose` und den Haupt-Kontext — und wäre eine Summe, keine
+Rechnung. Die Rollen-Achse ist deshalb **Vorbedingung**, nicht Teilaufgabe. Sie ist zudem ein
+eigener Liefergegenstand mit eigener Vertragsfläche: sie berührt `.claude/agents/`, die Kommandos
+und damit die **emittierte** Seite.
+
 **Beide Ebenen sind drin — Repo und Tool.** Die erste Fassung dieses Plans schob die Tool-Ebene
 unter „aufgeschoben"; auf Nutzer-Entscheidung vom 2026-07-28 gehört sie zur Welle (slice-062/063).
 Die Aussage stand bis zum 2026-07-29 als Verneinung im Out-of-Scope-Abschnitt („nicht
@@ -120,7 +127,8 @@ nur noch, was wirklich ausgeschlossen ist.
 | Slice | Ebene | Titel | Bezug |
 |---|---|---|---|
 | slice-059 | Repo | **Erfassung**: Spans per Agenten-Hook (Block 1) | [`MR-002`](../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) |
-| slice-060 | Repo | **Auswertung**: Token-Bilanz je Rolle + getrennte Cache-Zähler (Blöcke 2–3) | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-060 | Repo | **Rollen-Achse**: rollen-benannte Agenten-Typen + Nutzungstelemetrie der Subagenten | [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) |
+| slice-066 | Repo | **Auswertung**: Token-Bilanz je Rolle + getrennte Cache-Zähler (Blöcke 2–3) — setzt auf slice-060 auf | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | slice-061 | Repo | **Doku-Konsistenz**: behauptete Befehle existieren (Block 4) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | slice-062 | **Tool** | **Entscheidung**: welche Modul-15-Regeln gehören in den emittierten Harness? (ADR + CR) | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
 | slice-063 | **Tool** | **Emission**: das Entschiedene emittieren, out-of-the-box grün belegt | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
