@@ -97,7 +97,7 @@ fi
 # unbemerkt weitergelebt (Review Runde 2, MEDIUM-2).
 line="$(cat "$file")"
 for feld in '"seq":1' '"ts":' '"event":' '"tool":"Bash"' '"tool_use_id":"tu_gate"' \
-            '"session":' '"agent":' '"agent_role":' '"slice":' '"requirement":' \
+            '"session":' '"agent":' '"agent_type":' '"agent_role":' '"slice":' '"requirement":' \
             '"adr":' '"branch":' '"commit":' '"status":"ok"' '"program":"make"'; do
   grep -qF "$feld" <<<"$line" || fail "Pflichtfeld fehlt im Span: $feld — $line"
 done

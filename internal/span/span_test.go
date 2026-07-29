@@ -93,6 +93,10 @@ func TestUnknownToolStaysSilent(t *testing.T) {
 		`{"tool_name":"Task","tool_input":{"command":"deploy --prod","file_path":"/tmp/x"}}`,
 		`{"tool_name":"","tool_input":{"command":"rm -rf /","file_path":"/tmp/y"}}`,
 		`{"tool_input":{"command":"curl https://evil.example","file_path":"/tmp/z"}}`,
+		// BashOutput sieht aus wie ein Kommando-Werkzeug, ist aber keins: seine
+		// Eingabe ist eine Shell-Kennung. Es gehoert deshalb NICHT in die Tabelle
+		// (Review Runde 2, LOW-7).
+		`{"tool_name":"BashOutput","tool_input":{"command":"rm -rf /","bash_id":"x"}}`,
 	}
 	for _, payload := range payloads {
 		t.Run(payload, func(t *testing.T) {
@@ -596,7 +600,7 @@ func TestMandatoryFieldsAlwaysPresent(t *testing.T) {
 	// also exakt das Muster, vor dem sein eigener Kommentar warnt.
 	for _, feld := range []string{
 		`"seq":`, `"ts":`, `"event":`, `"tool":`, `"tool_use_id":`,
-		`"session":`, `"agent":`, `"agent_role":`, `"slice":`, `"requirement":`, `"adr":`,
+		`"session":`, `"agent":`, `"agent_type":`, `"agent_role":`, `"slice":`, `"requirement":`, `"adr":`,
 		`"branch":`, `"commit":`, `"status":`,
 	} {
 		if !strings.Contains(string(b), feld) {

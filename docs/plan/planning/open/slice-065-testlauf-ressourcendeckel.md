@@ -99,6 +99,7 @@ wirkungslos und darf sie nicht scheinbar abdecken.
 | Wächter für die Grenze | neu | DoD (2). Ob er die Prozesse wirklich startet oder `/sys/fs/cgroup/pids.max` liest, entscheidet der Implementer **mit Messung**: das Lesen prüft die Konfiguration, das Starten die Wirkung — und §3.6 verlangt die Wirkung |
 | `test/dockerfile-teststufe.bats` | update | DoD (3): die Cache-Zusage auf die neue Mechanik umschreiben |
 | `test/mutations/98-teststufe-count.sh` | update | dito — die Mutation muss weiter den Wächter röten, der die Zusage trägt |
+| `harness/tools/agent-watch.sh` | **vorhanden, einzubinden** | Der Melder existiert seit dem 2026-07-29 (entstanden in slice-059, dort als ungeplantes Artefakt benannt): er beobachtet die Werkzeugschicht und meldet ab einer Schwelle. **Unbewacht, kein Makefile-Ziel, kein `MR`-Eintrag.** Hier gehört er verankert — und er ist die zweite Hälfte des Themas: der Deckel begrenzt, der Melder sieht zu. Basislinie gemessen: ~3 GB im Normalbetrieb, ein serieller Agenten-Lauf kostet 0,15 GB |
 | Zahlenwahl (`pids-limit`, `memory`) | Entscheidung | Kein Ratewert: aus dem realen Bedarf des Testlaufs messen und mit Abstand darüber setzen. Ein zu enger Deckel macht den Gate flatterig, ein zu weiter schützt nicht |
 
 ## 4. Trigger

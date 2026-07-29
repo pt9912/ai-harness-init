@@ -158,8 +158,12 @@ func toolClass(tool string) class {
 		return classFileWrite
 	case "Read":
 		return classFileRead
-	case "Bash", "BashOutput":
+	case "Bash":
 		return classCommand
+	// `BashOutput` steht hier BEWUSST NICHT: seine Eingabe ist eine Shell-Kennung,
+	// keine Kommandozeile — es faellt damit auf den fail-closed Default und gibt nur
+	// Name und Status preis. Es zu listen war eine Zusage, die strukturell nie
+	// eintreten konnte (Review Runde 2, LOW-7).
 	default:
 		// Der Default (ADR-0011 Festlegung 2): was nicht namentlich in der
 		// MR-018-Tabelle steht, gibt NUR Name und Status preis.

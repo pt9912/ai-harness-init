@@ -841,7 +841,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 | `tool` | Pflicht | *Welches Werkzeug lief?* |
 | `tool_use_id` | Pflicht | *Welche Ereignisse gehören zu einem Aufruf?* |
 | `session`, `agent` | Pflicht | *Welcher Lauf war es?* — zusammen bilden sie den **Strom** |
-| `agent_type` | Optional | *Welche Art Lauf?* — der **Subagent-Typ** der Payload, roh |
+| `agent_type` | Pflicht | *Welche Art Lauf?* — der **Subagent-Typ** der Payload, roh. **Pflicht wie `agent`**: die vier Felder `session`/`agent`/`agent_type`/`agent_role` sind ein Block, und leer ist dort eine Aussage (Haupt-Kontext), kein fehlender Wert |
 | `agent_role` | Pflicht | *Welche Rolle verursachte den Zugriff?* — das Modul-15-Pflichtfeld. Gefüllt, wenn `agent_type` eine Harness-Rolle **nennt** (`planner`, `architect`, `implementer`, `reviewer`, `verifier`, `validator`). **Leer heißt UNBEKANNT, nie „rollenlos“** — s. die Lesevorschrift unten |
 | `slice` | Pflicht | *Auf wessen Rechnung lief der Zugriff?* — aus dem Lifecycle-Verzeichnis, Liste (kein Slice ⇒ leer und als leer erkennbar) |
 | `requirement` | Pflicht | *Gegen welche Anforderung?* — aus der `Bezug:`-Zeile der Slices, Liste |
@@ -868,7 +868,8 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 |---|---|
 | `Write`, `Edit`, `MultiEdit`, `NotebookEdit` | `path` (aus `file_path`/`notebook_path`) + `bytes` + `sha256_16` **aus dem Dateisystem** |
 | `Read` | `path` — **kein** Fingerabdruck (er wäre auf einem gelesenen Pfad ein Bestätigungs-Orakel ohne Incident-Frage) |
-| `Bash`, `BashOutput` | `program` (erstes Token nach übersprungenen `NAME=WERT`-Präfixen) + `argc` |
+| `Bash` | `program` (erstes Token nach übersprungenen `NAME=WERT`-Präfixen) + `argc` |
+| `BashOutput` | **nichts** — seine Eingabe ist eine Shell-Kennung, keine Kommandozeile; die Zeile sagte bis 2026-07-29 `program`/`argc` zu, was strukturell nie eintreten konnte (Review Runde 2, LOW-7) |
 | **jedes andere** | **nichts** — der fail-closed Default aus [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) Festlegung 2 |
 
 - **Was die Payload sonst noch trägt — gemessen, nicht aus der Doku.** Am 2026-07-29
