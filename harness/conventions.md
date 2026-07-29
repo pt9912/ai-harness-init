@@ -849,7 +849,6 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 | `branch`, `commit` | Pflicht | *Zu welcher Änderung gehört der Zugriff?* — die dritte Korrelations-Achse aus Modul 15 (*Slice/**PR**/Agent-Rolle*), abgeleitet aus `.git/HEAD`; die PR-Nummer selbst ist nicht erreichbar, s. Abweichung 2 |
 | `status` | Pflicht | *Ging es gut?* |
 | `permission_mode` | Optional | *Unter welcher Berechtigungs-Lage?* |
-| `transcript` | Optional | *Wo stehen Token- und Cache-Zähler?* — Brücke für die Auswertung |
 | `path` | Optional | *Was wurde wohin geschrieben/gelesen?* — nur bei namentlich gelisteten Datei-Werkzeugen |
 | `bytes`, `sha256_16` | Optional | *Hat sich etwas geändert?* — aus dem **Dateisystem**, nie aus der Payload |
 | `duration_ms` | Optional | *Wie lange dauerte der Aufruf?* — aus der Payload übernommen. Ohne sie ist **Gleichzeitigkeit nicht entscheidbar**: ein Span trägt sonst nur seinen Abschluss, und zwei Ströme lassen sich nicht überlagern |
@@ -898,11 +897,19 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 - **Vier erklärte Abweichungen vom Modul-15-Pflicht-Minimum** (die ADR verlangt sie zu benennen,
   nicht wegzulassen):
-  1. **Cache-Status steht nicht im Span.** Er liegt im Transkript des Agenten-Werkzeugs, nicht in
-     der Hook-Payload; ihn je Tool-Call nachzuschlagen kostete einen Dateizugriff pro Aufruf.
-     Der Span trägt stattdessen `transcript` als **Zeiger**, die Auflösung macht die Auswertung
-     (slice-060). Das ist eine Abweichung und keine Erfüllung: ist das Transkript weg, ist die
-     Frage unbeantwortbar.
+  1. **Cache-Status ist nicht erfasst — und auch nicht auflösbar.** Er liegt im Transkript des
+     Agenten-Werkzeugs, nicht in der Hook-Payload. Eine frühere Fassung trug den
+     `transcript_path` als **Zeiger** und überließ die Auflösung der Auswertung; der Zeiger ist
+     am 2026-07-29 auf Entscheidung des Auftraggebers **entfernt** worden, und zwar samt dem
+     Lesen des Feldes. Der Grund ist keine Sparsamkeit: das Transkript liegt **außerhalb des
+     Repos**, in fremdem Besitz, und trägt den vollen Gesprächsinhalt. Ein Zeiger darauf legt
+     eine Auflösung nahe, die niemand genehmigt hat.
+     [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) lässt diese Wahl
+     ausdrücklich offen (*„ob ein Span, der den `transcript_path` trägt … den Mindestsatz
+     erfüllt oder von ihm abweicht, entscheidet der umsetzende Slice"*) — es ist damit eine
+     **erklärte Abweichung**, keine Regelverletzung. **Folge, unverblümt:** die Cache-Zähler aus
+     Modul 15 Block 3 haben ohne eine andere Quelle **keine Datengrundlage**; welche es geben
+     kann, klärt slice-060, bevor er etwas verspricht.
   2. **Die PR-NUMMER steht nicht im Span, ihr Anker schon.** Modul 15 verlangt die
      Korrelation zu *Slice/PR/Agent-Rolle*. Eine PR-Nummer lebt bei der Forge; der
      Emitter geht nicht ins Netz und ruft kein `gh` (er läuft je Tool-Call). Erfasst

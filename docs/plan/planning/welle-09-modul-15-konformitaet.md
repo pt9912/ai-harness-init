@@ -53,7 +53,7 @@ sofort**. Genau dort setzt die Welle an — die Mechanik ist verdrahtet, es fehl
 
 Dass die Oberfläche das hergibt, ist **gemessen, nicht angenommen** (2026-07-28, Werkzeug-Doku
 <https://code.claude.com/docs/de/hooks>): Ergebnis- und Fehlschlag-Event, eine gemeinsame
-Aufruf-ID über beide, `transcript_path` als Brücke zu den Token-Zählern, Hooks feuern **auch in
+Aufruf-ID über beide, `transcript_path` als **damals angenommene** Brücke zu den Token-Zählern, Hooks feuern **auch in
 Subagenten**, und ein leerer Matcher trifft **alle** Tools. Die Quelle ist dabei **nicht
 gepinnt** und wird von keinem Gate geprüft — sie belegt die Aussagen, sie ersetzt sie nicht;
 die Fakten stehen in slice-059 §3 ausgeschrieben.

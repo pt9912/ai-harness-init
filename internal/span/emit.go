@@ -56,7 +56,6 @@ type Span struct {
 	Commit         string   `json:"commit"`
 	Status         string   `json:"status"`
 	PermissionMode string   `json:"permission_mode,omitempty"`
-	Transcript     string   `json:"transcript,omitempty"`
 	Path           string   `json:"path,omitempty"`
 	Bytes          *int64   `json:"bytes,omitempty"`
 	Sha256Prefix   string   `json:"sha256_16,omitempty"`
@@ -102,7 +101,6 @@ func Build(p Payload, root string, now time.Time) Span {
 		Commit:         commit,
 		Status:         status,
 		PermissionMode: p.PermissionMode,
-		Transcript:     p.Transcript,
 		Path:           d.Path,
 		Program:        d.Program,
 	}

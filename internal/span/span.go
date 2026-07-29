@@ -23,7 +23,13 @@ import (
 )
 
 // Payload ist das GESCHLOSSENE Schema (ADR-0011 Festlegung 1.3): hier steht
-// vollstaendig, was aus einer Hook-Payload ueberhaupt gelesen wird. Ein neues Feld
+// vollstaendig, was aus einer Hook-Payload ueberhaupt gelesen wird.
+//
+// `transcript_path` wird BEWUSST NICHT gelesen. Der Pfad zeigte auf das Transkript
+// des Agenten-Werkzeugs — die einzige Quelle der Token- und Cache-Zaehler, aber auch
+// eine Datei mit vollem Gespraechsinhalt ausserhalb des Repos. Ihn zu erfassen hiess,
+// eine Aufloesung nahezulegen, die niemand genehmigt hat. Was nicht gelesen wird, kann
+// nicht ins Log geraten — dieselbe Linie wie bei den Datei-Inhalten. Ein neues Feld
 // einer kuenftigen Werkzeug-Version wird NICHT still mitgeschrieben — es muesste in
 // Parse eingetragen werden, und das ist eine Entscheidung, kein Nebeneffekt.
 type Payload struct {
@@ -33,7 +39,6 @@ type Payload struct {
 	Session        string
 	Agent          string
 	AgentType      string
-	Transcript     string
 	PermissionMode string
 	Input          ToolInput
 	Failed         bool
@@ -75,7 +80,6 @@ func Parse(b []byte) (Payload, error) {
 		Session:        rawString(raw, "session_id"),
 		Agent:          rawString(raw, "agent_id"),
 		AgentType:      rawString(raw, "agent_type"),
-		Transcript:     rawString(raw, "transcript_path"),
 		PermissionMode: rawString(raw, "permission_mode"),
 	}
 	if in, ok := raw["tool_input"]; ok {
