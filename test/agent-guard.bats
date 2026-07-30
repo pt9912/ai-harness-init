@@ -9,6 +9,14 @@
 # Guard griff — er merkt nicht, wenn er spaeter aufhoert zu greifen. Diese Tests
 # sind der wiederholbare Teil.
 #
+# Und die dritte Ebene: dass DIESE Tests Zaehne haben, steht als staendiger Fall in
+# test/mutations/ (AGENTS.md 3.6 — `make mutate` faehrt sie, ein gruener `make test`
+# allein sagt darueber nichts). Rot-Gegenbeispiele: test/mutations 117 (Rollen-Frage
+# weg -> der Guard lehnt alles ab) · 118 (Namensliste statt Ableitung — der einzige
+# Fall, der abgeleitet von kopiert unterscheidet) · 119 (fehlender Schalter
+# fail-open) · 120 (Zeichensatz des Typnamens gelockert) · 121/122 (Eltern-Pruefung
+# des Key-Stacks weg, je fuer subagent_type und run_in_background).
+#
 # Deckt: die Unterscheidung Rolle/Nicht-Rolle · fehlender Schalter gilt als
 # Hintergrund · Parse-Zweifel -> verweigern · der Fehlmatch, den ein Regex-Griff
 # machen wuerde · die ABLEITUNG der Rollen-Liste aus dem Verzeichnis.
