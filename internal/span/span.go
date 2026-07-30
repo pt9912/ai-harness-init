@@ -112,7 +112,9 @@ func Parse(b []byte) (Payload, error) {
 	// Punkt 3 (geschlossenes Schema) und dem Satz "kein Byte fremden Inhalts".
 	//
 	// Bewacht von TestNoResponseFreetextReachesSpan, TestUnlistedResponseKeyStaysOut und
-	// TestOnlyAgentToolGetsResponseValues.
+	// TestOnlyAgentToolGetsResponseValues; der Dauer-Sensor der ACHSE ist
+	// test/mutations/133-span-werkzeugachse-geweitet.sh (die Bedingung eine Zeile tiefer
+	// auf jedes klassifizierte Werkzeug geweitet).
 	if v, ok := raw["tool_response"]; ok {
 		p.ResultBytes, p.HasResult = int64(len(v)), true
 		if toolClass(p.Tool) == classAgent {
@@ -189,7 +191,10 @@ func toolClass(tool string) class {
 	// ToolInput fuehrt weiterhin genau drei Felder), und ein `Agent`-Span traegt nie
 	// `path`, `program`, `argc`, `bytes` oder `sha256_16`. Erfasst wird ausschliesslich
 	// aus dem ERGEBNIS nach der Positiv-Liste (response.go). Bewacht von
-	// TestAgentGetsNoArgumentFields.
+	// TestAgentGetsNoArgumentFields, mit einem Dauer-Sensor je Zusicherung:
+	// test/mutations/132-span-rolle-aus-argument.sh (B1, die Herkunft der Rolle) und
+	// test/mutations/135-span-agent-auf-gattungszeile.sh (B2, diese Zeile hier — `Agent`
+	// als Kommando-Gattung abgeleitet).
 	case "Agent":
 		return classAgent
 	// `BashOutput` steht hier BEWUSST NICHT: seine Eingabe ist eine Shell-Kennung,

@@ -107,7 +107,11 @@ func intoTotalToolUse(r *AgentResult, v json.RawMessage)  { r.TotalToolUseCount 
 // Bewacht von TestSpawnedRoleIsNormalised (die Normalisierung) und
 // test/mutations/128-span-rolle-unnormalisiert.sh (ihr Dauer-Sensor); die Abwesenheit
 // bei fehlendem Ergebnis bewachen TestAgentGetsNoArgumentFields und
-// TestFailedAgentCallCapturesNothing an der geschriebenen Zeile.
+// TestFailedAgentCallCapturesNothing an der geschriebenen Zeile, mit den Dauer-Sensoren
+// test/mutations/132-span-rolle-aus-argument.sh (die HERKUNFT: ein Rueckfall auf
+// `tool_input.subagent_type` faerbt den ersten rot) und
+// test/mutations/134-span-zaehler-praesent-leer.sh (die DRAHT-FORM: ein Zaehler ohne
+// `omitempty` steht als `null` auch dort, wo nie gemessen wurde).
 func intoSpawnedRole(r *AgentResult, v json.RawMessage) {
 	r.SpawnedRole = roleFromAgentType(text(v))
 }

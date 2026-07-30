@@ -1099,29 +1099,83 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Festlegung 6; Fall 107 deckt nur die Exit-Hälfte, weil der Panic-Pfad auf stderr
   schreibt) und `test/mutations/113-span-ablageort-getrackt.sh` (Zeile 3 der Fitness
   Function: Ablageort auf einen getrackten Pfad), `test/mutations/114-span-lock-verzeichnis.sh` (ein liegengebliebenes Lock-**Verzeichnis** der Vorgänger-Fassung legte den Strom lautlos still) und `test/mutations/115-span-ergebnis-inhalt.sh` (**kein Freitext** aus dem Ergebnis — für jedes Werkzeug die Länge, darüber hinaus nur die Positiv-Liste bei `Agent`). Die Zeile sagte bis 2026-07-30 „vom Ergebnis darf nur die Länge in den Span" zu; das wurde mit der Positiv-Liste falsch und ist **ersetzt, nicht ergänzt** — `make comment-claims` fängt so etwas nicht, es prüft die Existenz des Sensors, nicht die Wahrheit des Satzes.
-- **Bewacht (die Erfassung aus `tool_response`, seit 2026-07-30):**
-  `internal/span/response_test.go` — `TestNoResponseFreetextReachesSpan` (die vier
-  gemessenen Freitext-Felder, je mit eigenem Kanarienvogel),
-  `TestUnlistedResponseKeyStaysOut` (die **Grenze** selbst: erfundene Schlüssel, auch ein
-  verschachtelter), `TestOnlyAgentToolGetsResponseValues` (die Achse ist der
-  Werkzeug-**Name**, nicht die Gestalt der Antwort), `TestAgentGetsNoArgumentFields` (aus
-  `Agent`s `tool_input` erreicht nichts den Span, und `Agent` liegt auf keiner
-  Gattungszeile), `TestSpawnedRoleIsNormalised`,
-  `TestResolvedModelIsStructurallyBounded` und `TestFailedAgentCallCapturesNothing`;
-  dazu **sieben** Zähne in `test/mutations/`:
-  `test/mutations/123-span-ergebnis-content.sh`,
-  `test/mutations/124-span-ergebnis-prompt.sh`,
-  `test/mutations/125-span-ergebnis-description.sh` und
-  `test/mutations/126-span-ergebnis-outputfile.sh` (je ein Freitext-Feld in die
-  Positiv-Liste aufgenommen),
-  `test/mutations/127-span-positivliste-negiert.sh` (die Liste **negiert**: alles außer
-  den vier wandert durch),
-  `test/mutations/128-span-rolle-unnormalisiert.sh` (die Normalisierung entfernt — danach
-  steht `general-purpose` als Rolle im Span, die erfundene Kostenstelle, die die
-  Lesevorschrift verbietet) und
-  `test/mutations/129-span-modellschranke-kuerzt.sh` (die Schranke **kürzt statt zu
-  verwerfen** — die feinere der beiden Zusagen aus Festlegung 4 der Positiv-Liste, und sie
-  impliziert die gröbere). **127 ist der tragende:** vier namentliche Fälle unterscheiden eine
+- **Bewacht (die Erfassung aus `tool_response`, seit 2026-07-30) — Zusicherung für
+  Zusicherung, nicht Wächter für Wächter.** Die Liste unten nennt, **was** ein Zahn
+  bindet; sie nennt die Wächter deshalb mehrfach, wo sie mehreres zusagen.
+
+  **Warum diese Form — die Vorgängerin stellte Namen und Zahlen nebeneinander und wurde
+  als 1:1-Abbildung gelesen** (Verifier-Befund V-1 vom 2026-07-30). Dort standen sieben
+  Wächter und **sieben** Zähne (123–129). Gezählt nach *„irgendein Fall nennt ihn"*
+  hatten **fünf** der sieben einen Zahn; gezählt nach *„ein Zahn bindet die Zusicherung,
+  die dieser Absatz ihm zuschreibt"* waren es **vier**. Die Differenz ist genau
+  `TestAgentGetsNoArgumentFields`: `test/mutations/131-span-werkzeugname-leer.sh` nennt
+  ihn, bindet aber seine Gegenprobe `"tool":"Agent"` — nicht die Zusicherung, für die es
+  ihn gibt. **Gemessen, nicht geschlossen** (2026-07-30, einzeln über den
+  `run_case`-Pfad des Treibers): streicht man seine beiden B1-Zusicherungen — das
+  `"spawned_role"` im `mustNotContain` und die `s.SpawnedRole != ""`-Prüfung —, bleibt
+  `make test-go` **grün** und Fall 131 meldet weiter „ok". Die Grenze, auf der das
+  Architect-Verdikt vom 2026-07-30 ruht
+  (`docs/reviews/2026-07-30-slice-060-dod2-adr-0011-architect.md`), durfte damit lautlos
+  verschwinden.
+
+  Die vier Fälle 132–135 schließen das. **Jeder ist einzeln gefahren und färbt genau
+  EINEN Wächter an genau der Zeile seiner Zusicherung** (2026-07-30, Grün-Vorlauf und
+  -Nachlauf grün, Host-Baum unberührt): 132 an `response_test.go:209`, 133 an `:171`,
+  135 an `:223`, 134 an `:323`. Mehrfach-Rot verdeckt seinen eigenen Grund — die Lehre
+  aus Review-Befund MEDIUM-4 —, deshalb steht die Zahl je Fall auch in seinem Kopf.
+
+  1. `TestNoResponseFreetextReachesSpan` — **keines der vier gemessenen Freitext-Felder
+     erreicht die Zeile**, je mit eigenem Kanarienvogel. Zähne:
+     `test/mutations/123-span-ergebnis-content.sh`,
+     `test/mutations/124-span-ergebnis-prompt.sh`,
+     `test/mutations/125-span-ergebnis-description.sh`,
+     `test/mutations/126-span-ergebnis-outputfile.sh` (je ein Freitext-Feld in die
+     Positiv-Liste aufgenommen).
+  2. `TestUnlistedResponseKeyStaysOut` — die **Grenze** selbst: ein ungelisteter
+     Schlüssel bleibt draußen, auch ein verschachtelter. Zahn:
+     `test/mutations/127-span-positivliste-negiert.sh` (die Liste **negiert**: alles
+     außer den vier wandert durch).
+  3. `TestOnlyAgentToolGetsResponseValues` — die Achse ist der Werkzeug-**Name**, nicht
+     die Gestalt der Antwort. Zahn:
+     `test/mutations/133-span-werkzeugachse-geweitet.sh` (die Achse auf **jedes**
+     klassifizierte Werkzeug geweitet; `Bash`, `Read` und `Write` geben dann Zähler,
+     Rolle und Modell preis).
+  4. `TestAgentGetsNoArgumentFields` — **B1**: `spawned_role` kommt aus
+     `tool_response.agentType`, **nie** aus `tool_input.subagent_type`. Zahn:
+     `test/mutations/132-span-rolle-aus-argument.sh` (der Rückfall auf das Argument,
+     wenn das Ergebnis keine Rolle lieferte).
+  5. `TestAgentGetsNoArgumentFields` — **B2**: `Agent` liegt auf **keiner**
+     Gattungszeile (kein `path`, `program`, `argc`, `bytes`, `sha256_16`). Zahn:
+     `test/mutations/135-span-agent-auf-gattungszeile.sh` (`Agent` als Kommando-Werkzeug
+     abgeleitet).
+  6. `TestSpawnedRoleIsNormalised` — der Wert aus dem Ergebnis wird gegen die sechs
+     kanonischen Namen normalisiert. Zahn:
+     `test/mutations/128-span-rolle-unnormalisiert.sh` (die Normalisierung entfernt —
+     danach steht `general-purpose` als Rolle im Span, die erfundene Kostenstelle, die
+     die Lesevorschrift verbietet).
+  7. `TestResolvedModelIsStructurallyBounded` — die Schranke um `model_version`
+     **verwirft, statt zu kürzen**. Zahn:
+     `test/mutations/129-span-modellschranke-kuerzt.sh` (die feinere der beiden Zusagen
+     aus Festlegung 4 der Positiv-Liste; sie impliziert die gröbere).
+  8. `TestFailedAgentCallCapturesNothing` — **kein halber Span**: die neun Werte fehlen,
+     statt anwesend-und-ungemessen dazustehen. Zahn:
+     `test/mutations/134-span-zaehler-praesent-leer.sh` (`omitempty` von `input_tokens`
+     genommen — der Zähler steht danach als `null` in **jeder** Zeile).
+  9. `TestAgentGetsNoArgumentFields` **und** `TestFailedAgentCallCapturesNothing` — die
+     Gegenprobe `"tool":"Agent"`: ein `Agent`-Span ist an der geschriebenen Zeile als
+     solcher erkennbar. Zahn: `test/mutations/131-span-werkzeugname-leer.sh` (Punkt 2 der
+     Voraussetzung weiter unten; dieser Fall färbt bauartbedingt mehrere Wächter, sein
+     Kopf sagt welche).
+
+  **Was hier KEINEN Zahn hat, und darum benannt ist:** die übrigen
+  `mustContain`-Gegenproben. Dass überhaupt erfasst wird (die neun Werte in der Zeile)
+  und dass `status` und `event` eines Fehlschlags stimmen, bindet kein Fall — eine
+  Mutation, die die Erfassung **ganz** abschaltet, bliebe von `make mutate` unbemerkt.
+  Das ist die schwächere Hälfte dieser Wächter (dieselbe Grenze, die der Kommentar an
+  `mustContain` für die zwei reinen Negativ-Wächter schon nennt), und sie steht hier statt
+  mitgezählt zu werden.
+
+  **127 ist der tragende:** vier namentliche Fälle unterscheiden eine
   Positiv-Liste **nicht** von einer Implementierung, die genau diese vier ausfiltert.
   **Seine Grenz-Zusicherung ist eindeutig an ihn gebunden**, und das ist gemessen: mit
   entferntem `mustNotContain`-Block meldet der Treiber ihn als **Befund** (*„rot, aber …
@@ -1161,9 +1215,19 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Treibers; Grün-Vorlauf und -Nachlauf grün, Host-Fingerabdruck vor/nach gleich): mit intakten
   Wächtern melden sie „ok"; mit gestrichener Listen-Zeile meldet 130 **Befund** (*„blieb
   GRUEN — … hat keine Zaehne mehr"*), mit gestrichener Zeilen-Gegenprobe meldet 131 **Befund**
-  (*„rot, aber … faellt nicht — falscher Grund"*). Die **sieben** Zähne oben (123–129) bewachen
-  die **Erfassung**; diese **zwei** (130, 131) bewachen ihre **Voraussetzung** — zwei Zählungen
-  über zwei Eigenschaften, keine Korrektur der ersten.
+  (*„rot, aber … faellt nicht — falscher Grund"*). Die **elf** Zähne oben (123–129 und
+  132–135) bewachen die **Erfassung**; diese **zwei** (130, 131) bewachen ihre
+  **Voraussetzung** — zwei Zählungen über zwei Eigenschaften, keine Korrektur der ersten.
+  Die erste Zahl war bis 2026-07-30 **sieben** und ist mit den vier Fällen aus
+  Verifier-Befund V-1 gewachsen, nicht korrigiert worden.
+
+  **Auch Fall 132 ist zweiseitig gemessen** (2026-07-30, derselbe Pfad): mit intaktem
+  Wächter meldet er „ok" (`-> TestAgentGetsNoArgumentFields rot`, gefallen an
+  `response_test.go:209` — der B1-Zeile, als einziger Wächter des ganzen Laufs); mit
+  gestrichenen B1-Zusicherungen meldet er **Befund** (*„make test-go blieb GRUEN —
+  … hat keine Zaehne mehr"*), **während 131 im selben Lauf weiter „ok" meldet**. Genau
+  diese zwei Zeilen nebeneinander sind der Beleg, dass B1 jetzt gebunden ist und vorher
+  nicht.
 - **Auflösungs-Trigger:** permanent, solange Spans erfasst werden. Die Tabelle ändert sich mit
   jedem neuen Feld — jede Änderung ist ein Eintrag hier, kein Nebeneffekt im Skript.
 
