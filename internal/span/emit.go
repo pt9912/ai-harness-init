@@ -63,6 +63,12 @@ type Span struct {
 	Argc           *int     `json:"argc,omitempty"`
 	DurationMS     *int64   `json:"duration_ms,omitempty"`
 	ResultBytes    *int64   `json:"result_bytes,omitempty"`
+	// AgentResult ist EINGEBETTET: seine neun Felder erscheinen flach in der Zeile,
+	// hinter result_bytes. Damit steht die Erfassung an EINER Stelle (die Positiv-Liste
+	// in response.go) und nicht zusaetzlich als Zuweisungs-Liste hier — zwei Listen, die
+	// getrennt gepflegt werden, sind die Drift-Konstruktion, die dieses Repo mehrfach
+	// beseitigt hat.
+	AgentResult
 }
 
 // Emit ist der ganze Weg: Payload lesen, Span bauen, an den Strom anhaengen.
@@ -103,6 +109,9 @@ func Build(p Payload, root string, now time.Time) Span {
 		PermissionMode: p.PermissionMode,
 		Path:           d.Path,
 		Program:        d.Program,
+		// EINE Zuweisung fuer alle neun Werte aus dem Agenten-Ergebnis. Parse hat sie
+		// entlang der Positiv-Liste erfasst; hier gibt es nichts mehr zu entscheiden.
+		AgentResult: p.Spawned,
 	}
 	if d.HasArgc {
 		argc := d.Argc

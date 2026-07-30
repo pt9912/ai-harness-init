@@ -865,6 +865,13 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 | `duration_ms` | Optional | *Wie lange dauerte der Aufruf?* — aus der Payload übernommen. Ohne sie ist **Gleichzeitigkeit nicht entscheidbar**: ein Span trägt sonst nur seinen Abschluss, und zwei Ströme lassen sich nicht überlagern |
 | `result_bytes` | Optional | *Wie groß war das Ergebnis?* — **nur die Länge, nie der Inhalt**; gemessen wird die **JSON-Kodierung**, wie die Payload sie trägt (samt Anführungszeichen und Escapes), nicht die Zeichenzahl des Ergebnisses. Ohne sie ist nicht entscheidbar, ob ein **einzelner** Aufruf eine Ressourcenspitze erklärt |
 | `program`, `argc` | Optional | *Welches Programm lief?* — erstes Token und Argument-Anzahl, nie die Kommandozeile |
+| `spawned_role` | Optional | *Welche Rolle lief im Subagenten — auf wessen Rechnung geht sein Verbrauch?* — aus `tool_response.agentType`, gegen die sechs kanonischen Typnamen normalisiert. **Nie** aus `tool_input.subagent_type`: das ist die *Anforderung*, nicht der *Lauf*, und es liegt auf der Argument-Achse. Eigener Feldname, weil `agent_type`/`agent_role` schon den Typ des **laufenden** Agenten führen. Leer heißt unbekannt — dieselbe Lesevorschrift wie bei `agent_role` |
+| `input_tokens`, `output_tokens` | Optional | *Wie teuer war dieser Subagenten-Lauf?* — die Verbrauchs-Achse, ohne die eine Token-Bilanz je Rolle eine Summe statt einer Rechnung ist |
+| `cache_creation_input_tokens`, `cache_read_input_tokens` | Optional | *Zahlte der Lauf den Cache oder nutzte er ihn?* — der Cache-Status, der bis 2026-07-29 als nicht erreichbar galt (Abweichung 1 unten) |
+| `total_tokens` | Optional | *Wie groß war der Lauf insgesamt?* — die Summe des Werkzeugs, gegen die die vier Zähler plausibilisierbar sind (sie ist nicht deren Addition) |
+| `total_duration_ms` | Optional | *Wie lange lief der Subagent wirklich?* — **nicht** `duration_ms`: das misst den Aufruf, wie der Hook ihn sieht (gemessen 4 ms gegen 4.184 ms tatsächlicher Laufzeit) |
+| `total_tool_use_count` | Optional | *Wie viele Werkzeug-Aufrufe verursachte der Subagent?* — der Teiler, ohne den „Token je Aufruf" nicht rechenbar ist |
+| `model_version` | Optional | *Welches Modell verursachte die Kosten?* — das Modul-15-Label `model.version`, aus `tool_response.resolvedModel`, **strukturell begrenzt** (Länge und geschlossener Zeichensatz). Was die Gestalt eines Bezeichners nicht hat, wird **verworfen, nicht gekürzt** |
 
 - **Welches Werkzeug gibt was preis — die namentliche Liste.** Die Feldtabelle oben sagt
   *„nur bei namentlich gelisteten Werkzeugen"*; hier stehen die Namen. Sie stand zuerst
@@ -880,7 +887,57 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 | `Read` | `path` — **kein** Fingerabdruck (er wäre auf einem gelesenen Pfad ein Bestätigungs-Orakel ohne Incident-Frage) |
 | `Bash` | `program` (erstes Token nach übersprungenen `NAME=WERT`-Präfixen) + `argc` |
 | `BashOutput` | **nichts** — seine Eingabe ist eine Shell-Kennung, keine Kommandozeile; die Zeile sagte bis 2026-07-29 `program`/`argc` zu, was strukturell nie eintreten konnte (Review Runde 2, LOW-7) |
+| `Agent` | `spawned_role` + die vier `usage`-Zähler + `total_tokens` + `total_duration_ms` + `total_tool_use_count` + `model_version` — **neun Werte aus sechs Schlüsseln**, alle aus `tool_response` und alle nach der **Positiv-Liste** (nächster Punkt). **Kein** `path`, `program`, `argc`, `bytes`, `sha256_16`: aus `Agent`s `tool_input` erreicht nichts den Span (dort liegen `subagent_type`, `prompt`, `description`, `run_in_background`; `ToolInput` in `internal/span/span.go` führt weiterhin genau drei Felder) |
 | **jedes andere** | **nichts** — der fail-closed Default aus [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) Festlegung 2 |
+
+- **Die Erfassung aus `tool_response` ist eine POSITIV-Liste, und die Form ist tragend.**
+  Die Werkzeug-Tabelle regelte bis 2026-07-30 ausschließlich, was aus den **Argumenten**
+  erfasst wird; die `Agent`-Zeile ist die erste, die aus dem **Ergebnis** erfasst. Das ist
+  eine zweite Fläche mit eigenem Risiko und **nicht** die harmlose: `tool_response` trägt
+  vier gemessene Freitext-Felder — `content` (der vollständige Bericht des Subagenten,
+  der größte Freitext-Block des ganzen Aufrufs), `prompt`, `description`, `outputFile` —
+  und `prompt` ist genau das Feld, das
+  [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) Festlegung 2
+  namentlich als das benennt, was nie ins Log darf. Es steht in **beiden** Flächen. Daraus
+  fünf Festlegungen:
+  1. **Erfasst wird ausschließlich, was `responseKeys()` in
+     `internal/span/response.go` namentlich nennt** — sechs Schlüssel, **neun** Blatt-Werte
+     (die vier `usage`-Zähler einzeln), oben in **sieben** Tabellenzeilen geführt. Wer die
+     drei Zahlen verwechselt, zählt Rolle und Modell nicht mit — genau die zwei Werte, an
+     denen die Grenzen des Architect-Verdikts hängen. Alles andere fällt heraus, **ohne
+     genannt zu werden**: es gibt keinen Zweig, der einen ungelisteten Schlüssel überhaupt
+     ansieht. Das ist der konstruktive Ausschluss aus Festlegung 1 Punkt 3 (*„das Schema
+     ist GESCHLOSSEN"*), die einzige Regel von Festlegung 1, die **nicht** hierher
+     delegiert ist.
+  2. **Positiv und nicht negativ.** Vier gemessene Aufrufe zeigten **fünf**
+     undokumentierte Schlüssel; die Fläche wächst erkennbar weiter. Eine Negativ-Liste
+     altert mit jedem neuen Antwortfeld, eine Positiv-Liste hält auch beim fünften
+     Freitext-Feld. Eine frühere Fassung zählte stattdessen vier verbotene Felder auf —
+     das ist die Fassung, die altert.
+  3. **Der Fehlschlag braucht keine Sonderregel.** Bei einem fehlgeschlagenen
+     Agenten-Aufruf fehlt `tool_response` **ganz** (gemessen — nicht leer, sondern nicht
+     vorhanden); es existiert also nichts Gelistetes. Es entsteht ein Span mit Name und
+     Status, kein halber.
+  4. **`model_version` ist der einzige Rohstring** unter den neun Werten — die übrigen acht
+     sind Zahlen oder das gegen sechs Namen normalisierte Etikett. Er trägt deshalb eine
+     **strukturelle** Schranke: Länge höchstens 64 und ein geschlossener Zeichensatz
+     (Buchstaben, Ziffern, `.`, `_`, `-` und die Klammern `[` `]`, die zur
+     Bezeichner-Sprache des Herstellers gehören). Was das nicht erfüllt, wird
+     **verworfen, nicht gekürzt**: 64 Byte eines Geheimnisses sind auch 64 Byte fremden
+     Inhalts, und ein verstümmeltes Präfix ist ein falsches Protokoll, wo „unbekannt" das
+     ehrliche ist (dieselbe fail-closed Linie wie `commandProgram`). **Der Zeichensatz ist
+     eine Entscheidung unter Unsicherheit, und das gehört gesagt:** die Messung erfasste
+     nur Schlüsselnamen und Wertlängen, nie Werte — die Gestalt eines echten
+     `resolvedModel` ist **nicht** gemessen. Der Fehlermodus ist ein **fehlendes** Feld,
+     nicht ein falsches, und er ist am Bestand ablesbar: trägt kein `Agent`-Span mit
+     Zählern ein `model_version`, ist die Schranke zu eng geraten und wird **hier**
+     geweitet, nicht im Code aufgeweicht.
+  5. **Die Zähler kommen nur im Vordergrund an.** Ein Hintergrund-Lauf liefert weder
+     Zähler noch `agentType`, sondern `agentId`, `isAsync`, `outputFile`,
+     `canReadOutputFile` (gemessen); die Erfassung ist insoweit konstruktiv unvollständig.
+     Die Start-Konvention, die den Vordergrund herstellt, und die erklärte Abweichung
+     dazu sind DoD (1) und DoD (3) von slice-060 und **stehen noch aus** — bis dahin ist
+     die Lücke hier benannt und nicht durch die `Agent`-Zeile überdeckt.
 
 - **Was die Payload sonst noch trägt — gemessen, nicht aus der Doku.** Am 2026-07-29
   wurde eine echte Hook-Payload auf ihre **Schlüsselnamen** hin vermessen (nur Namen und
@@ -1027,7 +1084,31 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   `test/mutations/112-span-stdout-geschwaetzig.sh` (die **stdout**-Hälfte von
   Festlegung 6; Fall 107 deckt nur die Exit-Hälfte, weil der Panic-Pfad auf stderr
   schreibt) und `test/mutations/113-span-ablageort-getrackt.sh` (Zeile 3 der Fitness
-  Function: Ablageort auf einen getrackten Pfad), `test/mutations/114-span-lock-verzeichnis.sh` (ein liegengebliebenes Lock-**Verzeichnis** der Vorgänger-Fassung legte den Strom lautlos still) und `test/mutations/115-span-ergebnis-inhalt.sh` (vom Ergebnis darf nur die Länge in den Span).
+  Function: Ablageort auf einen getrackten Pfad), `test/mutations/114-span-lock-verzeichnis.sh` (ein liegengebliebenes Lock-**Verzeichnis** der Vorgänger-Fassung legte den Strom lautlos still) und `test/mutations/115-span-ergebnis-inhalt.sh` (**kein Freitext** aus dem Ergebnis — für jedes Werkzeug die Länge, darüber hinaus nur die Positiv-Liste bei `Agent`). Die Zeile sagte bis 2026-07-30 „vom Ergebnis darf nur die Länge in den Span" zu; das wurde mit der Positiv-Liste falsch und ist **ersetzt, nicht ergänzt** — `make comment-claims` fängt so etwas nicht, es prüft die Existenz des Sensors, nicht die Wahrheit des Satzes.
+- **Bewacht (die Erfassung aus `tool_response`, seit 2026-07-30):**
+  `internal/span/response_test.go` — `TestNoResponseFreetextReachesSpan` (die vier
+  gemessenen Freitext-Felder, je mit eigenem Kanarienvogel),
+  `TestUnlistedResponseKeyStaysOut` (die **Grenze** selbst: erfundene Schlüssel, auch ein
+  verschachtelter), `TestOnlyAgentToolGetsResponseValues` (die Achse ist der
+  Werkzeug-**Name**, nicht die Gestalt der Antwort), `TestAgentGetsNoArgumentFields` (aus
+  `Agent`s `tool_input` erreicht nichts den Span, und `Agent` liegt auf keiner
+  Gattungszeile), `TestSpawnedRoleIsNormalised`,
+  `TestResolvedModelIsStructurallyBounded` und `TestFailedAgentCallCapturesNothing`;
+  dazu **fünf** Zähne in `test/mutations/`:
+  `test/mutations/123-span-ergebnis-content.sh`,
+  `test/mutations/124-span-ergebnis-prompt.sh`,
+  `test/mutations/125-span-ergebnis-description.sh` und
+  `test/mutations/126-span-ergebnis-outputfile.sh` (je ein Freitext-Feld in die
+  Positiv-Liste aufgenommen) sowie
+  `test/mutations/127-span-positivliste-negiert.sh` (die Liste **negiert**: alles außer
+  den vier wandert durch). Der fünfte ist der tragende: vier namentliche Fälle
+  unterscheiden eine Positiv-Liste **nicht** von einer Implementierung, die genau diese
+  vier ausfiltert.
+  **Was kein `test/mutations/`-Fall deckt, und darum hier steht:** die Normalisierung von
+  `spawned_role` und die Schranke um `model_version` sind je einmal rot gesehen worden
+  (Implementations-Bericht vom 2026-07-30), stehen als **Dauer**-Sensor aber nur in den
+  beiden Go-Wächtern oben — sie können ihre Zähne also verlieren, ohne dass `make mutate`
+  es meldet.
 - **Auflösungs-Trigger:** permanent, solange Spans erfasst werden. Die Tabelle ändert sich mit
   jedem neuen Feld — jede Änderung ist ein Eintrag hier, kein Nebeneffekt im Skript.
 

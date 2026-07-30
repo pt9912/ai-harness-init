@@ -52,6 +52,11 @@ type Payload struct {
 	ResultBytes int64
 	HasDuration bool
 	HasResult   bool
+
+	// Spawned traegt die neun Werte, die bei einem namentlich gelisteten
+	// Agenten-Aufruf aus dem ERGEBNIS erfasst werden. Was darin steht, entscheidet
+	// die Positiv-Liste in response.go — nicht dieses Feld.
+	Spawned AgentResult
 }
 
 // ToolInput traegt die drei Felder, aus denen ueberhaupt abgeleitet wird. Der
@@ -95,11 +100,24 @@ func Parse(b []byte) (Payload, error) {
 			p.DurationMS, p.HasDuration = ms, true
 		}
 	}
-	// Vom ERGEBNIS wird ausschliesslich die LAENGE genommen, nie der Inhalt — dieselbe
-	// Linie wie bei `tool_input` (ADR-0011 Festlegung 2). Gemessen wird die Groesse,
-	// wie die Payload sie traegt.
+	// Aus dem ERGEBNIS erreicht KEIN FREITEXT den Span. Fuer JEDES Werkzeug wird die
+	// LAENGE genommen (gemessen wird die Groesse, wie die Payload sie traegt); darueber
+	// hinaus nur, was die POSITIV-Liste responseKeys() namentlich nennt, und nur fuer
+	// ein namentlich gelistetes Werkzeug — die Achse ist der WERKZEUG-Name.
+	//
+	// Die frueher hier stehende Zusage "vom Ergebnis wird ausschliesslich die LAENGE
+	// genommen" ist mit slice-060 DoD (2) falsch geworden und wurde ERSETZT, nicht
+	// ergaenzt. Sie ruhte ausserdem auf der falschen Fundstelle: ADR-0011 Festlegung 2
+	// regelt die ARGUMENT-Achse; das Verbot von Ergebnis-INHALT ruht auf Festlegung 1
+	// Punkt 3 (geschlossenes Schema) und dem Satz "kein Byte fremden Inhalts".
+	//
+	// Bewacht von TestNoResponseFreetextReachesSpan, TestUnlistedResponseKeyStaysOut und
+	// TestOnlyAgentToolGetsResponseValues.
 	if v, ok := raw["tool_response"]; ok {
 		p.ResultBytes, p.HasResult = int64(len(v)), true
+		if toolClass(p.Tool) == classAgent {
+			p.Spawned = extractAgentResult(v)
+		}
 	}
 	p.Failed = failed(raw, p.Event)
 	return p, nil
@@ -154,6 +172,7 @@ const (
 	classFileRead
 	classFileWrite
 	classCommand
+	classAgent
 )
 
 func toolClass(tool string) class {
@@ -164,6 +183,15 @@ func toolClass(tool string) class {
 		return classFileRead
 	case "Bash":
 		return classCommand
+	// `Agent` ist seit slice-060 namentlich gelistet — aber auf KEINE der drei
+	// Gattungen oben abgebildet: aus seinem `tool_input` erreicht nichts den Span
+	// (dort liegen `subagent_type`, `prompt`, `description`, `run_in_background`, und
+	// ToolInput fuehrt weiterhin genau drei Felder), und ein `Agent`-Span traegt nie
+	// `path`, `program`, `argc`, `bytes` oder `sha256_16`. Erfasst wird ausschliesslich
+	// aus dem ERGEBNIS nach der Positiv-Liste (response.go). Bewacht von
+	// TestAgentGetsNoArgumentFields.
+	case "Agent":
+		return classAgent
 	// `BashOutput` steht hier BEWUSST NICHT: seine Eingabe ist eine Shell-Kennung,
 	// keine Kommandozeile — es faellt damit auf den fail-closed Default und gibt nur
 	// Name und Status preis. Es zu listen war eine Zusage, die strukturell nie
