@@ -111,7 +111,7 @@ Modul-15-Block-4.
 
 ## 4. Slices in dieser Welle
 
-Geschnitten sind slice-059 (**done**), slice-060 und slice-066; die übrigen bekommen ihre Datei
+Geschnitten sind slice-059 (**done**), slice-060, slice-066 und slice-068; die übrigen bekommen ihre Datei
 per `cp`, wenn sie an der Reihe sind (cp-Disziplin — ein leeres `open/` ist ehrlicher als eine
 driftende Vorplanung).
 
@@ -136,6 +136,7 @@ nur noch, was wirklich ausgeschlossen ist.
 | slice-059 | Repo | **Erfassung**: Spans per Agenten-Hook (Block 1) | [`MR-002`](../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) |
 | slice-060 | Repo | **Rollen-Achse**: rollen-benannte Agenten-Typen + Nutzungstelemetrie der Subagenten | [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) |
 | slice-066 | Repo | **Auswertung**: Token-Bilanz je Rolle + getrennte Cache-Zähler (Blöcke 2–3) — setzt auf slice-060 auf | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-068 | Repo | **Rollen-Arbeit läuft als Rolle**: die Konvention wird vollständig (was, nicht nur wie) + die Haupt-Kontext-Token als erklärte Abweichung — berührt die Matrix-Zelle *Token-Attribution × Repo* | keine `LH-*` (Dogfood-Prozessebene; im Slice begründet) |
 | slice-061 | Repo | **Doku-Konsistenz**: behauptete Befehle existieren (Block 4) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | slice-062 | **Tool** | **Entscheidung**: welche Modul-15-Regeln gehören in den emittierten Harness? (ADR + CR) | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
 | slice-063 | **Tool** | **Emission**: das Entschiedene emittieren, out-of-the-box grün belegt | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
