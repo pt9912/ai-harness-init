@@ -16,9 +16,9 @@ import (
 	"time"
 )
 
-// Dir ist der Ablageort — eine KONSTANTE, keine Konfiguration. Der Review-Befund
-// MEDIUM-4 traf die Vorgaenger-Fassung, die ihn per Umgebungsvariable ueberschreibbar
-// machte: ein Hook erbt die Umgebung des Agenten-Prozesses, und ein Span im
+// Dir ist der Ablageort — eine KONSTANTE, keine Konfiguration. Per Umgebungsvariable
+// ueberschreibbar traegt er nicht: ein Hook erbt die Umgebung des Agenten-Prozesses,
+// und ein Span im
 // GETRACKTEN Baum verschiebt den working-tree-hash bei jedem Tool-Call — der
 // Stop-Hook blockierte sich selbst (MR-003). Tests setzen stattdessen die WURZEL
 // (ein temporaeres Verzeichnis), nicht das Ziel darunter.
@@ -128,7 +128,7 @@ func Build(p Payload, root string, now time.Time) Span {
 		rb := p.ResultBytes
 		s.ResultBytes = &rb
 	}
-	// Fingerabdruck NUR fuer Schreib-Werkzeuge (Review-Befund MEDIUM-1): auf einem
+	// Fingerabdruck NUR fuer Schreib-Werkzeuge: auf einem
 	// gelesenen Pfad waere er ein Bestaetigungs-Orakel ohne Incident-Frage. Er kommt
 	// aus dem DATEISYSTEM, nie aus der Payload — so passiert kein Byte fremden
 	// Inhalts diesen Emitter (bewacht von TestNoPayloadContentReachesSpan).
@@ -193,7 +193,7 @@ func roleFromAgentType(agentType string) string {
 // Sitzung "a-b" ohne Agent mit Sitzung "a" plus Agent "b" zusammen), und beim Kuerzen
 // tritt ein Fingerabdruck des vollen Namens an die Stelle des Restes — sonst teilten
 // sich zwei Laeufe, die sich erst jenseits der Grenze unterscheiden, einen Strom UND
-// einen Nummernkreis (Review-Befund LOW-7). Eine Sitzungs-Kennung ist Fremd-Eingabe;
+// einen Nummernkreis. Eine Sitzungs-Kennung ist Fremd-Eingabe;
 // `../..` darf keinen Pfad verlassen.
 func StreamName(p Payload) string {
 	name := sanitizePart(p.Session)
@@ -245,7 +245,7 @@ func Append(root, stream string, s Span) error {
 	// MkdirAll setzt den Modus NUR beim Anlegen und unterliegt der umask: ein
 	// 0700-Altbestand aus einer frueheren Fassung bliebe unbetretbar, und genau daran
 	// scheiterte `make docs-check`. Fuer Dateien zieht appendLine denselben Fall nach;
-	// fuers Verzeichnis fehlte es (Review Runde 3, F-3).
+	// fuers Verzeichnis gilt derselbe Fall.
 	if fi, statErr := os.Stat(dir); statErr == nil && fi.Mode().Perm()&0o055 != 0o055 {
 		if chErr := os.Chmod(dir, 0o755); chErr != nil {
 			return chErr
@@ -260,7 +260,7 @@ func Append(root, stream string, s Span) error {
 	defer func() { _ = lock.Close() }()
 
 	// Die Nummer wird VERGEBEN, nicht aus dem Bestand abgeleitet. Der Unterschied ist
-	// die ganze Zusage (Review-Befund HIGH-3): `wc -l + 1` waere immer dicht 1..N,
+	// die ganze Zusage: `wc -l + 1` waere immer dicht 1..N,
 	// eine Luecke also konstruktiv unmoeglich — der Leser saehe Vollstaendigkeit, wo
 	// Spans fehlen. Der Zaehler steht in einer eigenen Datei und wird VOR dem
 	// Schreiben erhoeht: stirbt der Prozess danach, fehlt die Zeile und die Luecke
@@ -293,8 +293,8 @@ func nextSeq(seqFile string) int {
 // appendLine schreibt die Zeile in EINEM Stueck. Der Modus steht VOR dem ersten Byte:
 // O_CREATE mit 0600 legt die Datei gleich richtig an, statt sie erst offen zu
 // schaffen und den Modus nachzuziehen (das liesse ein Fenster mit umask-Rechten
-// offen). Ein bestehender Strom mit zu weitem Modus wird korrigiert — Review-Befund
-// LOW-3, bewacht von TestModeIsOwnerOnly.
+// offen). Ein bestehender Strom mit zu weitem Modus wird korrigiert; bewacht von
+// TestModeIsOwnerOnly.
 func appendLine(file string, line []byte) error {
 	f, err := os.OpenFile(file, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o600)
 	if err != nil {
@@ -316,7 +316,7 @@ func appendLine(file string, line []byte) error {
 // Brechen eines solchen Schlosses. Die Vorgaenger-Fassung brach es nach 60 s, und
 // genau dieses Brechen war nicht atomar: zwei Emitter konnten dasselbe veraltete
 // Schloss sehen, der zweite Remove traf das FRISCHE Schloss des ersten, und beide
-// vergaben dieselbe Nummer (Review-Befund MEDIUM-5). Eine Doppelvergabe erzeugt keine
+// vergaben dieselbe Nummer. Eine Doppelvergabe erzeugt keine
 // Luecke — der Leser saehe Vollstaendigkeit. Bewacht von
 // TestConcurrentEmittersGetDistinctSeq und TestLeftoverLockFileDoesNotBlock.
 //
@@ -330,15 +330,14 @@ func acquire(path string) (*os.File, error) {
 		// Ein VERZEICHNIS an dieser Stelle ist der Nachlass der Vorgaenger-Fassung, die
 		// mit `mkdir` sperrte: `OpenFile` scheitert daran mit EISDIR, und der Strom
 		// waere ab da dauerhaft und lautlos tot — genau die Eigenschaft, die dieser
-		// Kommentar ausschliesst (Review-Befund Runde 2, MEDIUM-1). Einmal aufraeumen
+		// Kommentar ausschliesst. Einmal aufraeumen
 		// und erneut versuchen; scheitert auch das, gilt fail-open.
 		if fi, statErr := os.Stat(path); statErr == nil && fi.IsDir() {
 			// Rmdir und NICHT os.Remove: letzteres unlinkt auch DATEIEN. Treffen zwei
 			// Emitter dasselbe Altlast-Verzeichnis, koennte der zweite die frische,
 			// bereits geflockte Lock-DATEI des ersten loeschen — zwei Inodes, dieselbe
-			// Folgenummer. Das waere das Fehlerbild aus Runde-1-MEDIUM-5, in der
-			// Reparatur von Runde-2-MEDIUM-1 wieder aufgemacht (Review Runde 3, F-2).
-			// Rmdir scheitert an einer Datei und kann diesen Weg nicht gehen.
+			// Folgenummer, also wieder die Doppelvergabe, die das Schloss verhindern
+			// soll. Rmdir scheitert an einer Datei und kann diesen Weg nicht gehen.
 			if rmErr := syscall.Rmdir(path); rmErr != nil {
 				return nil, err
 			}
@@ -379,9 +378,7 @@ func writeOwnerOnly(file string, data []byte) error {
 // Abweichung zu erklaeren waere gegen ADR-0011 Festlegung 1.4 gewesen ("Ableiten
 // schlaegt deklarieren"). Die vierte Achse, agent.role, wird NICHT hier abgeleitet:
 // sie haengt am LAUF, nicht am Repo-Zustand, und kommt aus dem Agenten-Typ
-// (roleFromAgentType). Die frueher hier stehende Fassung nannte sie "nicht ableitbar"
-// — das war schon im selben Commit ueberholt, in dem sie abgeleitet wurde
-// (Review-Befund Runde 2, MEDIUM-3).
+// (roleFromAgentType).
 func correlation(root string) (slices, reqs, adrs []string) {
 	slices, reqs, adrs = []string{}, []string{}, []string{}
 	matches, err := filepath.Glob(filepath.Join(root, "docs/plan/planning/in-progress/slice-*.md"))
@@ -413,8 +410,8 @@ func correlation(root string) (slices, reqs, adrs []string) {
 
 // references liest Anforderungs- und ADR-Kennungen NUR aus dem Bezug-Block, nicht aus
 // der ganzen Datei: ein Slice erwaehnt im Fliesstext fremde Anforderungen
-// (Praezedenzfaelle, Abgrenzungen), und die sind nicht sein Bezug (Review-Befund
-// MEDIUM-2). Der Block reicht von der `**Bezug:**`-Zeile bis zur naechsten Leerzeile.
+// (Praezedenzfaelle, Abgrenzungen), und die sind nicht sein Bezug. Der Block reicht von
+// der `**Bezug:**`-Zeile bis zur naechsten Leerzeile.
 func references(file string) (reqs, adrs []string) {
 	b, err := os.ReadFile(file)
 	if err != nil {

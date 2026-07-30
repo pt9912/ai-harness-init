@@ -17,10 +17,8 @@
 //
 // DIE ZWEI HAENGEN AN VERSCHIEDENEN FAELLEN, und das ist der Punkt: Mutation 107
 // laesst den Emitter ueber den Panic-Pfad enden, und dessen Ausgabe geht auf STDERR.
-// Die stdout-Zusicherung kann unter 107 also gar nicht feuern — eine fruehere Fassung
-// dieses Kommentars sagte "beides bewacht 107" und griff damit weiter als ihr Sensor
-// (Review-Befund HIGH-3; ADR-0011 Folgepflicht 5 verlangt fuer die stdout-Setzung
-// ausdruecklich einen eigenen Fall).
+// Die stdout-Zusicherung kann unter 107 also gar nicht feuern; sie braucht ihren
+// eigenen Fall (ADR-0011 Folgepflicht 5 verlangt ihn ausdruecklich).
 //
 // Was `forbidigo` (make lint) beitraegt, ist WENIGER als die Eigenschaft: es verbietet
 // die Form `fmt.Print*`, nicht das Schreiben nach stdout. `os.Stdout.Write`,

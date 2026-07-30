@@ -137,10 +137,9 @@ func rawString(raw map[string]json.RawMessage, key string) string {
 	return s
 }
 
-// failed entscheidet den Status aus ZWEI Quellen, und das ist der Kern des
-// Review-Befunds MEDIUM-5: `error` traegt je nach Werkzeug einen String, ein Objekt
-// oder null. Auf den TYP zu pruefen war der Fehler — hier zaehlt "vorhanden und nicht
-// leer". Dazu das Ereignis selbst: ein Fehlschlag-Event ist auch ohne `error`-Feld
+// failed entscheidet den Status aus ZWEI Quellen, weil `error` je nach Werkzeug einen
+// String, ein Objekt oder null traegt. Auf den TYP zu pruefen traegt deshalb nicht —
+// hier zaehlt "vorhanden und nicht leer". Dazu das Ereignis selbst: ein Fehlschlag-Event ist auch ohne `error`-Feld
 // ein Fehlschlag. Bewacht von TestFailedStatusFromErrorShapes.
 func failed(raw map[string]json.RawMessage, event string) bool {
 	if strings.Contains(event, "Failure") {
@@ -164,9 +163,9 @@ func failed(raw map[string]json.RawMessage, event string) bool {
 }
 
 // class ist die ACHSE des fail-closed Defaults: der WERKZEUG-NAME, nicht der
-// Feld-Name. Die Unterscheidung ist der Review-Befund HIGH-1 — haengt die Erfassung
-// am Feld, gibt jedes unbekannte Werkzeug, das zufaellig `command` fuehrt, seine
-// Argumente preis (gemessen: `mcp__db__run` lieferte `"program":"psql"`).
+// Feld-Name. Die Unterscheidung traegt: haengt die Erfassung am Feld, gibt jedes
+// unbekannte Werkzeug, das zufaellig `command` fuehrt, seine Argumente preis
+// (gemessen: `mcp__db__run` lieferte `"program":"psql"`).
 type class int
 
 const (
@@ -200,7 +199,7 @@ func toolClass(tool string) class {
 	// `BashOutput` steht hier BEWUSST NICHT: seine Eingabe ist eine Shell-Kennung,
 	// keine Kommandozeile — es faellt damit auf den fail-closed Default und gibt nur
 	// Name und Status preis. Es zu listen war eine Zusage, die strukturell nie
-	// eintreten konnte (Review Runde 2, LOW-7).
+	// eintreten konnte.
 	default:
 		// Der Default (ADR-0011 Festlegung 2): was nicht namentlich in der
 		// MR-018-Tabelle steht, gibt NUR Name und Status preis.
@@ -242,13 +241,13 @@ func filePath(in ToolInput) string {
 
 // commandProgram zieht das PROGRAMM aus einer Kommandozeile — nicht schlicht das
 // erste Feld. Eine Zeile darf mit Zuweisungen beginnen, und deren WERTE sind oft
-// genau das, was nie ins Log darf (Review-Befund HIGH-7: `GITHUB_TOKEN=ghp_… gh pr
-// create` landete verbatim als "program"). Fuehrende NAME=WERT-Praefixe werden
+// genau das, was nie ins Log darf (gemessen: `GITHUB_TOKEN=ghp_… gh pr create` landete
+// sonst verbatim als "program"). Fuehrende NAME=WERT-Praefixe werden
 // uebersprungen; bleibt danach etwas mit `=` uebrig, wird GAR NICHTS ausgegeben.
 // Bewacht von TestCommandProgramSkipsAssignments.
 func commandProgram(cmd string) (string, int, bool) {
 	// strings.Fields verwirft fuehrenden Leerraum, statt ein leeres erstes Feld zu
-	// erzeugen — der Review-Befund LOW-2 ("  ls -l" ergab argc 2 statt 1).
+	// erzeugen (gemessen: "  ls -l" ergab sonst argc 2 statt 1).
 	fields := strings.Fields(cmd)
 	for i, f := range fields {
 		if isAssignment(f) {

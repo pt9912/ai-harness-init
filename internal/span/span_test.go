@@ -13,7 +13,7 @@ import (
 )
 
 // newRoot legt eine Repo-Wurzel im Temp-Bereich an. Die Tests setzen die WURZEL, nie
-// den Ablageort darunter — der ist eine Konstante (Review-Befund MEDIUM-4).
+// den Ablageort darunter — der ist eine Konstante.
 func newRoot(t *testing.T) string {
 	t.Helper()
 	root := t.TempDir()
@@ -50,7 +50,7 @@ func readLines(t *testing.T, root, stream string) []span.Span {
 	return out
 }
 
-// TestFailedStatusFromErrorShapes ist der Review-Befund MEDIUM-5: `error` traegt je
+// TestFailedStatusFromErrorShapes haelt fest: `error` traegt je
 // nach Werkzeug einen String, ein Objekt oder null. Die Vorgaenger-Fassung erkannte
 // nur den Top-Level-String und meldete "ok" fuer einen fehlgeschlagenen Aufruf.
 func TestFailedStatusFromErrorShapes(t *testing.T) {
@@ -83,7 +83,7 @@ func TestFailedStatusFromErrorShapes(t *testing.T) {
 }
 
 // TestUnknownToolStaysSilent misst die EIGENSCHAFT des fail-closed Defaults, nicht
-// ihre heutige Umsetzung (Review-Befund HIGH-2): jede Payload hier traegt Felder, die
+// ihre heutige Umsetzung: jede Payload hier traegt Felder, die
 // ein GELISTETES Werkzeug preisgeben wuerde. Haengt die Erfassung wieder am
 // Feld-Namen statt am Werkzeug-Namen, faellt dieser Test.
 func TestUnknownToolStaysSilent(t *testing.T) {
@@ -95,7 +95,7 @@ func TestUnknownToolStaysSilent(t *testing.T) {
 		`{"tool_input":{"command":"curl https://evil.example","file_path":"/tmp/z"}}`,
 		// BashOutput sieht aus wie ein Kommando-Werkzeug, ist aber keins: seine
 		// Eingabe ist eine Shell-Kennung. Es gehoert deshalb NICHT in die Tabelle
-		// (Review Runde 2, LOW-7).
+		// strukturell nie eintreten kann.
 		`{"tool_name":"BashOutput","tool_input":{"command":"rm -rf /","bash_id":"x"}}`,
 	}
 	for _, payload := range payloads {
@@ -153,7 +153,7 @@ func TestCommandProgramSkipsAssignments(t *testing.T) {
 	}
 }
 
-// TestReadToolGetsPathOnly ist der Review-Befund MEDIUM-1: ein Fingerabdruck auf
+// TestReadToolGetsPathOnly haelt fest: ein Fingerabdruck auf
 // einem GELESENEN Pfad waere ein Bestaetigungs-Orakel ohne Incident-Frage.
 func TestReadToolGetsPathOnly(t *testing.T) {
 	root := newRoot(t)
@@ -211,7 +211,7 @@ func TestNoPayloadContentReachesSpan(t *testing.T) {
 	}
 }
 
-// TestSeqIsAssignedNotDerived ist der Review-Befund HIGH-3: waere die Nummer aus dem
+// TestSeqIsAssignedNotDerived haelt fest: waere die Nummer aus dem
 // Bestand abgeleitet (`wc -l + 1`), waere eine Luecke konstruktiv unmoeglich — der
 // Leser saehe Vollstaendigkeit, wo Spans fehlen.
 func TestSeqIsAssignedNotDerived(t *testing.T) {
@@ -286,7 +286,7 @@ func TestModeIsOwnerOnly(t *testing.T) {
 }
 
 // TestSpansLandInStateDir haelt die Kopplung an den gitignorierten Ort fest
-// (Review-Befund MEDIUM-4). Die zweite Haelfte der Eigenschaft — dass .gitignore
+// Die zweite Haelfte der Eigenschaft — dass .gitignore
 // genau diesen Ort deckt — misst harness/tools/span-check.sh am realen Repo.
 func TestSpansLandInStateDir(t *testing.T) {
 	if span.Dir != ".harness/state/spans" {
@@ -321,7 +321,7 @@ func TestDurationAndResultSize(t *testing.T) {
 	// die Laenge in den Span") ist seit slice-060 DoD (2) falsch — bei `Agent` erreichen
 	// zusaetzlich die neun Werte der Positiv-Liste den Span (MR-018). Fuer JEDES
 	// Werkzeug gilt die Laenge, darueber hinaus nur die Positiv-Liste bei `Agent`
-	// (Review-Befund LOW-1 vom 2026-07-30; `make comment-claims` kann es nicht fangen,
+	// (`make comment-claims` kann es nicht fangen,
 	// es nimmt `_test.go` aus).
 	b, err := json.Marshal(s)
 	if err != nil {
@@ -368,7 +368,7 @@ func TestSpanDirIsTraversable(t *testing.T) {
 
 	// Und der Fall, der real eintrat: ein BESTEHENDES Verzeichnis aus einer frueheren
 	// Fassung mit 0700. MkdirAll fasst es nicht an — der Modus muss nachgezogen werden
-	// (Review Runde 3, F-3). Der Test mass zuvor nur den frisch angelegten Fall.
+	// Gemessen wird deshalb auch der Altbestand, nicht nur der frisch angelegte Fall.
 	zweite := newRoot(t)
 	if err := os.MkdirAll(filepath.Join(zweite, span.Dir), 0o700); err != nil {
 		t.Fatal(err)
@@ -415,7 +415,7 @@ func TestAgentRoleFromKnownTypes(t *testing.T) {
 
 // TestStreamNamesStayDistinct: der Strom ist (Sitzung, Agent) — zwei verschiedene
 // Paare duerfen nie denselben Strom und damit denselben Nummernkreis bekommen. Zwei
-// Wege dorthin gab es (Review-Befund LOW-7): ein `-` in der Sitzung, das wie der
+// Wege dorthin gibt es mehrere: ein `-` in der Sitzung, das wie der
 // Trenner aussieht, und das Kuerzen langer Namen auf 120 Zeichen.
 func TestStreamNamesStayDistinct(t *testing.T) {
 	paare := []span.Payload{
@@ -449,7 +449,7 @@ func TestStreamNameCannotEscapeDirectory(t *testing.T) {
 }
 
 // TestCorrelationFromLifecycle: slice.id IST das Lifecycle-Verzeichnis (Modul 5),
-// requirement.id kommt NUR aus dem Bezug-Block (Review-Befund MEDIUM-2).
+// requirement.id kommt NUR aus dem Bezug-Block.
 func TestCorrelationFromLifecycle(t *testing.T) {
 	root := newRoot(t)
 	dir := filepath.Join(root, "docs/plan/planning/in-progress")
@@ -518,7 +518,7 @@ func TestGitRefFromHead(t *testing.T) {
 // der haltende Prozess endet. Eine liegengebliebene Lock-DATEI ist damit harmlos —
 // anders als das liegengebliebene Lock-VERZEICHNIS der Vorgaenger-Fassung, das den
 // Strom stilllegte und deshalb gebrochen werden musste (was seinerseits nicht atomar
-// war, Review-Befund MEDIUM-5).
+// war).
 func TestLeftoverLockFileDoesNotBlock(t *testing.T) {
 	root := newRoot(t)
 	dir := filepath.Join(root, span.Dir)
@@ -537,8 +537,7 @@ func TestLeftoverLockFileDoesNotBlock(t *testing.T) {
 // TestLeftoverLockDirectoryDoesNotBlock: die Vorgaenger-Fassung sperrte mit `mkdir`,
 // hinterliess also ein VERZEICHNIS an der Lock-Stelle. `OpenFile` scheitert daran mit
 // EISDIR — ohne Behandlung waere der Strom ab dem Wechsel dauerhaft und lautlos tot,
-// genau die Eigenschaft, die der flock-Kommentar ausschliesst (Review Runde 2,
-// MEDIUM-1). Der Wächter nannte den Fall bis dahin, ohne ihn zu pruefen.
+// genau die Eigenschaft, die der flock-Kommentar ausschliesst.
 func TestLeftoverLockDirectoryDoesNotBlock(t *testing.T) {
 	root := newRoot(t)
 	dir := filepath.Join(root, span.Dir)
@@ -554,7 +553,7 @@ func TestLeftoverLockDirectoryDoesNotBlock(t *testing.T) {
 // TestUnresolvableGitRefStillCarriesFields ist der Worktree-Fall: dort ist `.git` eine
 // DATEI, die Ableitung schlaegt fehl — und MR-018 sagt fuer diesen Fall "leer und als
 // leer erkennbar" zu. Mit `omitempty` verschwanden die Schluessel stattdessen ganz
-// (Review-Befund HIGH-2). Der Unterschied ist der zwischen "unbekannt" und "nicht
+// Der Unterschied ist der zwischen "unbekannt" und "nicht
 // vorhanden", und genau den soll ein Audit-Schema tragen.
 func TestUnresolvableGitRefStillCarriesFields(t *testing.T) {
 	root := t.TempDir()
@@ -575,7 +574,7 @@ func TestUnresolvableGitRefStillCarriesFields(t *testing.T) {
 // TestNoCommandArgumentsReachSpan ist der Kanarienvogel fuer KOMMANDO-Werkzeuge,
 // gemessen an der GESCHRIEBENEN ZEILE statt am Rueckgabewert einer Funktion. Die
 // abgeloeste bats-Fassung hatte ihn, die erste Go-Fassung liess ihn ersatzlos entfallen
-// (Review-Befund MEDIUM-6): geprueft wurden nur noch Programm-Token, Write-Inhalte und
+// Geprueft wurden sonst nur Programm-Token, Write-Inhalte und
 // unbekannte Werkzeuge — nie die Argumente eines BEKANNTEN Werkzeugs.
 func TestNoCommandArgumentsReachSpan(t *testing.T) {
 	root := newRoot(t)
@@ -618,7 +617,7 @@ func TestMandatoryFieldsAlwaysPresent(t *testing.T) {
 	// Die Liste ist die PFLICHT-Spalte aus MR-018, vollstaendig. Sie war zuerst um
 	// `branch`/`commit` kuerzer — genau die zwei, die im Code ein `omitempty` trugen
 	// und in einem git-worktree lautlos verschwanden. Der Waechter mass damit die
-	// heutige Implementierung statt der Zusage (Review-Befund HIGH-2 / Verifier V-1),
+	// heutige Implementierung statt der Zusage,
 	// also exakt das Muster, vor dem sein eigener Kommentar warnt.
 	for _, feld := range []string{
 		`"seq":`, `"ts":`, `"event":`, `"tool":`, `"tool_use_id":`,
