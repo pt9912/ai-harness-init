@@ -95,36 +95,21 @@ func intoTotalToolUse(r *AgentResult, v json.RawMessage)  { r.TotalToolUseCount 
 // Rolle, und eine Ergebniszeile `general-purpose: 62 %` waere genau das, was die
 // Lesevorschrift in MR-018 verbietet.
 //
-// LEER HEISST HIER ABWESEND, nicht `""` — das Feld traegt `omitempty` (Review-Befund
-// MEDIUM-2 vom 2026-07-30). Das ist die ANDERE Draht-Form als bei `agent_role`, das als
-// Pflichtfeld present-and-empty in jeder Zeile steht: `agent_role` gehoert zu einem
-// Block, den JEDER Span traegt, `spawned_role` entsteht nur bei einem `Agent`-Aufruf. Ein
-// `"spawned_role":""` in jedem `Bash`-Span behauptete einen Subagenten, den es nicht gab.
-// Lesbar bleibt der Unterschied, weil `tool` Pflicht ist: ein `Agent`-Span OHNE
-// `spawned_role` ist ein Lauf mit unbekannter Rolle, nicht ein Lauf ohne Rolle. Die
-// bindende Fassung steht in MR-018 an der Feldtabellen-Zeile.
+// LEER HEISST HIER ABWESEND, nicht `""`: das Feld traegt `omitempty`. Das ist die andere
+// Draht-Form als bei `agent_role`, das als Pflichtfeld present-and-empty in jeder Zeile
+// steht — `agent_role` gehoert zu einem Block, den JEDER Span traegt, `spawned_role`
+// entsteht nur bei einem `Agent`-Aufruf. Ein `"spawned_role":""` in jedem `Bash`-Span
+// behauptete einen Subagenten, den es nicht gab. Lesbar bleibt der Unterschied, weil
+// `tool` Pflicht ist: ein `Agent`-Span OHNE `spawned_role` ist ein Lauf mit unbekannter
+// Rolle, nicht ein Lauf ohne Rolle. Die bindende Fassung steht in MR-018.
 //
-// Bewacht von TestSpawnedRoleIsNormalised (die Normalisierung) und
-// test/mutations/128-span-rolle-unnormalisiert.sh (ihr Dauer-Sensor); die Abwesenheit
-// bei fehlendem Ergebnis bewachen TestAgentGetsNoArgumentFields und
-// TestFailedAgentCallCapturesNothing an der geschriebenen Zeile, mit einem Dauer-Sensor
-// je ACHSE: test/mutations/132-span-rolle-aus-argument.sh fuer die HERKUNFT (ein
-// Rueckfall auf `tool_input.subagent_type` faerbt den ERSTEN rot; der zweite fuehrt
-// `subagent_type: "nope"`, das zu leer normalisiert, und bleibt dort absichtlich gruen)
-// und test/mutations/137-span-rollenfeld-praesent-leer.sh fuer die DRAHT-FORM
-// (`spawned_role` ohne `omitempty` steht als `""` in jeder Zeile und faerbt BEIDE; die
-// `# expect:`-Zeile bindet den zweiten, weil der erste seine Zusicherung schon aus 132
-// haelt).
-//
-// HIER STAND BIS ZUM 2026-07-30 an Stelle von 137 der Fall
-// test/mutations/134-span-zaehler-praesent-leer.sh. Der mutiert
-// `json:"input_tokens,omitempty"` und beruehrt `spawned_role` nirgends: streicht man
-// `"spawned_role"` aus der mustNotContain-Liste von TestFailedAgentCallCapturesNothing,
-// meldet 134 weiter "ok" (gemessen). Der Kommentar schrieb einem existierenden Zahn
-// einen Biss zu, den er nicht hat — Review-Befund MEDIUM-2, dieselbe Fehlerform wie
-// R2-MEDIUM-1. `make comment-claims` faengt das bauartbedingt nicht: es prueft, dass ein
-// genannter TEST existiert, nicht dass ein genannter FALL die genannte Zusicherung
-// bindet.
+// Bewacht von TestSpawnedRoleIsNormalised mit dem Dauer-Sensor
+// test/mutations/128-span-rolle-unnormalisiert.sh. Die Abwesenheit bei fehlendem Ergebnis
+// bewachen TestAgentGetsNoArgumentFields und TestFailedAgentCallCapturesNothing, je ein
+// Dauer-Sensor pro Achse: test/mutations/132-span-rolle-aus-argument.sh fuer die HERKUNFT
+// (Rueckfall auf `tool_input.subagent_type`) und
+// test/mutations/137-span-rollenfeld-praesent-leer.sh fuer die DRAHT-FORM
+// (`spawned_role` ohne `omitempty`).
 func intoSpawnedRole(r *AgentResult, v json.RawMessage) {
 	r.SpawnedRole = roleFromAgentType(text(v))
 }

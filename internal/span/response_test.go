@@ -25,8 +25,7 @@ const (
 // rawStream liefert die GESCHRIEBENE Zeile als Text. Die Erfassungs-Zusagen dieses
 // Slice sind Aussagen ueber die ZEILE, nicht ueber einen Rueckgabewert: was aus einem
 // eingebetteten Struct erst beim Marshalling entsteht, ist an einer Struct-Assertion
-// nicht vollstaendig messbar (dieselbe Lehre wie Review-Befund MEDIUM-6, der einen
-// Kanarienvogel am Rueckgabewert statt an der Zeile hatte).
+// nicht vollstaendig messbar.
 func rawStream(t *testing.T, root, stream string) string {
 	t.Helper()
 	b, err := os.ReadFile(filepath.Join(root, span.Dir, stream+".jsonl"))
@@ -49,7 +48,7 @@ func mustNotContain(t *testing.T, line string, verboten ...string) {
 // ERFASSUNG prueft, auch bei einer Erfassung von NICHTS — der Name behauptet dann eine
 // Eigenschaft und prueft eine leere Menge (AGENTS.md §3.6).
 //
-// WIE WEIT DAS TRAEGT, gehoert dazugesagt (Review-Befund LOW-3 vom 2026-07-30): fuenf
+// WIE WEIT DAS TRAEGT: fuenf
 // der sieben Waechter dieser Datei nennen in ihrer Gegenprobe erfasste WERTE und fallen
 // damit bei einer Erfassung von nichts. ZWEI tun das nicht, weil sie reine
 // NEGATIV-Waechter sind: TestAgentGetsNoArgumentFields und
@@ -123,8 +122,7 @@ func TestNoResponseFreetextReachesSpan(t *testing.T) {
 // Fall. Ein ungelisteter Schluessel liegt hier auch VERSCHACHTELT (in `usage`) —
 // dieselbe Frage eine Ebene tiefer.
 //
-// DIE GEGENPROBE UNTEN LAESST `model_version` ABSICHTLICH AUS, und das ist der Grund
-// (Review-Befund MEDIUM-4 vom 2026-07-30): die Senke des Grenz-Zahns
+// DIE GEGENPROBE UNTEN LAESST `model_version` ABSICHTLICH AUS. Die Senke des Grenz-Zahns
 // test/mutations/127-span-positivliste-negiert.sh IST dieses Feld — es ist der einzige
 // String unter den neun erfassten Werten. Stuende `"model_version":"claude-opus-5[1m]"`
 // in der Gegenprobe, verschoebe die Senke die schliessende Anfuehrung und dieser
@@ -155,8 +153,8 @@ func TestUnlistedResponseKeyStaysOut(t *testing.T) {
 // TestOnlyAgentToolGetsResponseValues haelt die ACHSE fest: erfasst wird nach dem
 // WERKZEUG-Namen (ADR-0011 Festlegung 2), nicht nach der Gestalt der Antwort. Haengt
 // die Erfassung an der Antwort, gibt jedes fremde Werkzeug, dessen Ergebnis zufaellig
-// `usage` fuehrt, seine Zaehler und sein Modell preis — dieselbe Klasse wie
-// Review-Befund HIGH-1 auf der Argument-Achse (`mcp__db__run` lieferte "psql").
+// `usage` fuehrt, seine Zaehler und sein Modell preis — dieselbe Klasse, die auf der
+// Argument-Achse schon aufgetreten ist (`mcp__db__run` lieferte "psql").
 func TestOnlyAgentToolGetsResponseValues(t *testing.T) {
 	const response = `"tool_response":{"usage":{"input_tokens":11},"totalTokens":110,
 	  "agentType":"reviewer","resolvedModel":"claude-opus-5[1m]"}`
@@ -314,9 +312,8 @@ func TestResolvedModelIsStructurallyBounded(t *testing.T) {
 // dazu ein bis dahin ungesehenes `is_interrupt`. Es entsteht ein Span mit Name und
 // Status, kein HALBER: die neun Werte fehlen alle, statt mit 0 dazustehen.
 //
-// WAS AN DIESER LISTE EINEN DAUER-ZAHN HAT, und was nicht — die Auszaehlung gehoert
-// hierher, weil die Liste sonst wieder mehr behauptet als sie bindet (Review-Befunde
-// MEDIUM-1 und MEDIUM-2 vom 2026-07-30): DREI der neun Eintraege sind einzeln
+// WAS AN DIESER LISTE EINEN DAUER-ZAHN HAT, und was nicht — sonst behauptet die Liste
+// mehr, als sie bindet: DREI der neun Eintraege sind einzeln
 // gebunden — `input_tokens` von test/mutations/134-span-zaehler-praesent-leer.sh,
 // `output_tokens` von test/mutations/136-span-ausgabezaehler-praesent-leer.sh,
 // `spawned_role` von test/mutations/137-span-rollenfeld-praesent-leer.sh. Die
@@ -331,13 +328,10 @@ func TestFailedAgentCallCapturesNothing(t *testing.T) {
 	  "tool_input":{"subagent_type":"nope","prompt":"`+geheimPrompt+`"}}`)
 	line := rawStream(t, root, "s1")
 	mustContain(t, line, `"tool":"Agent"`, `"status":"error"`, `"event":"PostToolUseFailure"`)
-	// DIE NEUN WERTE NAMENTLICH — bis zum 2026-07-30 waren es ACHT (Review-Befund
-	// MEDIUM-1). Es fehlte `output_tokens`, und es stand repo-weit in keiner einzigen
-	// Negativ-Pruefung. GEMESSEN, nicht geschlossen: mit `json:"output_tokens"` statt
-	// `json:"output_tokens,omitempty"` blieb `make test-go` bei Exit 0 mit NULL
-	// `--- FAIL:`-Zeilen, waehrend jede geschriebene Zeile — auch ein reiner
-	// `Bash`-Span — `"output_tokens":null` trug. Genau die Lesart, die MR-018 traegt
-	// ("unbekannt" gegen "nicht vorhanden"), kippte damit bei gruenem Gate-Stack.
+	// DIE NEUN WERTE NAMENTLICH. Fehlt einer, faellt seine Draht-Form aus der Pruefung:
+	// ein Feld ohne `omitempty` stuende als `"<name>":null` in JEDER Zeile, auch in einem
+	// reinen `Bash`-Span, und kippte die MR-018-Lesart "unbekannt" gegen "nicht
+	// vorhanden" — bei gruenem Gate-Stack.
 	//
 	// Die zwei Cache-Zaehler deckte `"input_tokens"` schon per TEILSTRING ab; sie
 	// stehen jetzt trotzdem namentlich da, damit der Leser NEUN Namen gegen die
