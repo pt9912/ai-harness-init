@@ -868,7 +868,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 | `spawned_role` | Optional | *Welche Rolle lief im Subagenten — auf wessen Rechnung geht sein Verbrauch?* — aus `tool_response.agentType`, gegen die sechs kanonischen Typnamen normalisiert. **Nie** aus `tool_input.subagent_type`: das ist die *Anforderung*, nicht der *Lauf*, und es liegt auf der Argument-Achse. Eigener Feldname, weil `agent_type`/`agent_role` schon den Typ des **laufenden** Agenten führen. **ABWESEND heißt UNBEKANNT, nie „rollenlos"** — dieselbe *Lesart* wie bei `agent_role`, aber ausdrücklich **nicht** dessen Draht-Form: `agent_role` ist **Pflicht** und steht als `""` in jeder Zeile, `spawned_role` ist `omitempty` und **fehlt** bei leerem Wert. Das ist Absicht und keine Nachlässigkeit — ein `"spawned_role":""` in jedem `Bash`-Span behauptete einen Subagenten, den es nicht gab; die Present-and-empty-Regel gilt für den Vierer-Block, den **jeder** Span trägt, nicht für ein Feld, das nur ein Werkzeug erzeugt. **Unterscheidbar bleibt es am Pflichtfeld `tool`:** ein `Agent`-Span **ohne** `spawned_role` ist ein Lauf mit *unbekannter* Rolle und gehört in den Sammelposten — eine Auswertung, die nach `spawned_role: ""` sucht, findet ihn nicht und darf ihn deshalb nicht aus der Bilanz fallen lassen (Review-Befund MEDIUM-2 vom 2026-07-30; bis dahin berief sich diese Zeile auf die `agent_role`-Vorschrift und sagte damit das Gegenteil dessen, was der Draht tut) |
 | `input_tokens`, `output_tokens` | Optional | *Wie teuer war dieser Subagenten-Lauf?* — die Verbrauchs-Achse, ohne die eine Token-Bilanz je Rolle eine Summe statt einer Rechnung ist |
 | `cache_creation_input_tokens`, `cache_read_input_tokens` | Optional | *Zahlte der Lauf den Cache oder nutzte er ihn?* — der Cache-Status, der bis 2026-07-29 als nicht erreichbar galt und seit 2026-07-30 für Subagenten-Läufe **erfasst** ist (Abweichung 1 unten, dort auf den Rest-Zustand zurückgeschnitten) |
-| `total_tokens` | Optional | *Wie groß war der Lauf insgesamt?* — die Summe, die das **Werkzeug selbst** ausweist. **Ob** sie die Addition der vier Zähler ist, war bis 2026-07-30 **nicht gemessen** (die Ist-Messung erfasste nur Schlüsselnamen und Wertlängen, nie Werte). Am eigenen Bestand nachgerechnet **ist** sie es, exakt und an **beiden** vorliegenden Zähler-Spans (2 + 6.040 + 427 + 217.418 = 223.887 sowie 2 + 2.746 + 913 + 222.231 = 225.892). Eine Auswertung addiert sie deshalb **nicht** zu den vier, sondern gegen sie — und wiederholt die Probe, sobald mehr Spans vorliegen (n = 2 ist kein Gesetz) |
+| `total_tokens` | Optional | *Wie groß war der Lauf insgesamt?* — die Summe, die das **Werkzeug selbst** ausweist. **Ob** sie die Addition der vier Zähler ist, war bis 2026-07-30 **nicht gemessen** (die Ist-Messung erfasste nur Schlüsselnamen und Wertlängen, nie Werte). Am eigenen Bestand nachgerechnet **ist** sie es, exakt, an jedem geprüften Zähler-Span. Eine Auswertung addiert sie deshalb **nicht** zu den vier, sondern gegen sie. **Hier steht bewusst keine Zahl und keine Stichprobengröße mehr:** der Bestand unter `.harness/state/spans/` ist gitignored, maschinenlokal und wächst mit jedem Subagenten-Lauf — die zuvor hier eingefrorene Rechnung über „beide vorliegenden Zähler-Spans" war drei Minuten nach ihrem Commit falsch und für einen anderen Checkout ohnehin nicht nachvollziehbar (Review-Befund R2-LOW-1 vom 2026-07-30). Die Probe gehört **gefahren**, nicht zitiert, und sie bleibt eine Stichprobe |
 | `total_duration_ms` | Optional | *Wie lange lief der Subagent wirklich?* — **nicht** `duration_ms`: das misst den Aufruf, wie der Hook ihn sieht (gemessen 4 ms gegen 4.184 ms tatsächlicher Laufzeit) |
 | `total_tool_use_count` | Optional | *Wie viele Werkzeug-Aufrufe verursachte der Subagent?* — der Teiler, ohne den „Token je Aufruf" nicht rechenbar ist |
 | `model_version` | Optional | *Welches Modell verursachte die Kosten?* — das Modul-15-Label `model.version`, aus `tool_response.resolvedModel`, **strukturell begrenzt** (Länge und geschlossener Zeichensatz). Was die Gestalt eines Bezeichners nicht hat, wird **verworfen, nicht gekürzt** |
@@ -974,8 +974,15 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      `cache_creation_input_tokens` und `cache_read_input_tokens` aus dem `usage`-Objekt der
      `tool_response` eines Vordergrund-`Agent`-Aufrufs (gemessen 2026-07-29, erfasst seit
      2026-07-30) — ohne Transkript und ohne Zugriff außerhalb des Repos. Eine Auswertung, die
-     die Cache-Hit-Rate aus Modul 15 rechnet, hat für Subagenten-Läufe also alles, was sie
-     braucht, und darf die Größe **nicht** als unerreichbar führen.
+     die Cache-Hit-Rate aus Modul 15 rechnet, findet für Subagenten-Läufe die **Zähler** vor —
+     Erzeugung und Lesung getrennt, wie Modul 15 es fordert (*„Eine einzelne Metrik
+     `cache.hit_ratio` reicht nicht"*) — und darf die Größe **nicht** als unerreichbar führen.
+     **Vollständig ist die Rechnung damit nicht, und das gehört in denselben Satz:** Modul 15
+     verlangt zu den Zählern die Labels `slice.id`, `agent.role` und `model.version`; das
+     Rollen-Label liegt nur vor, wenn `spawned_role` gefüllt ist — bei einem
+     `general-purpose`-Subagenten fehlt es, und der Lauf gehört in den Sammelposten samt seiner
+     Splitting-Pflicht (Abweichung 3 unten). Bis zum 2026-07-30 stand hier *„hat … alles, was
+     sie braucht"*; das ging einen Schritt weiter als das Erfasste (Review-Befund R2-INFO-1).
      **Unerreichbar bleibt zweierlei, und das ist die fortbestehende Abweichung:** der
      **Haupt-Kontext** (kein `Agent`-Aufruf umschließt ihn, seine Token stehen in keiner
      Payload) und der **Hintergrund-Lauf** (liefert weder Zähler noch `agentType` — Festlegung 5
@@ -1133,10 +1140,30 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   die beiden Wächter hatten keinen **Dauer**-Sensor.
   **Die Draht-Form von `spawned_role`** — abwesend statt `""`, und damit die Lesevorschrift,
   die darauf ruht — bewachen `TestAgentGetsNoArgumentFields` und
-  `TestFailedAgentCallCapturesNothing` an der geschriebenen Zeile; ihre **Voraussetzung**,
-  dass `tool` Pflicht bleibt und ein `Agent`-Span deshalb als solcher erkennbar ist, bewacht
-  `TestMandatoryFieldsAlwaysPresent` mit dem Zahn
-  `test/mutations/110-span-pflichtfeld-verschwindet.sh`.
+  `TestFailedAgentCallCapturesNothing` an der geschriebenen Zeile. Ihre **Voraussetzung** hat
+  **zwei Hälften**, und beide hingen bis zum 2026-07-30 an einer falschen Fundstelle: hier stand,
+  `TestMandatoryFieldsAlwaysPresent` bewache sie *„mit dem Zahn
+  `test/mutations/110-span-pflichtfeld-verschwindet.sh`"*. Fall 110 mutiert aber `tool_use_id`
+  und Fall 111 `branch`; **kein** Fall berührte `tool` (Review-Befund R2-MEDIUM-1 vom
+  2026-07-30). Gemessen statt geschlossen: streicht man `"tool":` aus der Pflicht-Liste in
+  `internal/span/span_test.go`, meldet 110 weiter „ok". Die zwei Hälften mit ihren echten
+  Sensoren:
+  1. **`tool` bleibt Pflicht** — es steht auch bei leerem Wert in der Zeile. Wächter:
+     `TestMandatoryFieldsAlwaysPresent` (die Listen-Zeile). Dauer-Zahn:
+     `test/mutations/130-span-werkzeugfeld-verschwindet.sh` (`omitempty` an `json:"tool"`).
+  2. **Ein `Agent`-Span ist an der Zeile als solcher erkennbar** (`"tool":"Agent"`). Wächter:
+     `TestAgentGetsNoArgumentFields` und `TestFailedAgentCallCapturesNothing`. Dauer-Zahn:
+     `test/mutations/131-span-werkzeugname-leer.sh` (der Werkzeug-Name erreicht die Zeile nicht
+     mehr). **Hälfte 1 trägt Hälfte 2 nicht:** `"Agent"` ist ein nicht-leerer Wert, den ein
+     `omitempty` nicht verschwinden lässt — die zwei Zähne sind darum zwei und nicht einer.
+
+  **Beide Zähne sind zweiseitig gemessen** (2026-07-30, einzeln über den `run_case`-Pfad des
+  Treibers; Grün-Vorlauf und -Nachlauf grün, Host-Fingerabdruck vor/nach gleich): mit intakten
+  Wächtern melden sie „ok"; mit gestrichener Listen-Zeile meldet 130 **Befund** (*„blieb
+  GRUEN — … hat keine Zaehne mehr"*), mit gestrichener Zeilen-Gegenprobe meldet 131 **Befund**
+  (*„rot, aber … faellt nicht — falscher Grund"*). Die **sieben** Zähne oben (123–129) bewachen
+  die **Erfassung**; diese **zwei** (130, 131) bewachen ihre **Voraussetzung** — zwei Zählungen
+  über zwei Eigenschaften, keine Korrektur der ersten.
 - **Auflösungs-Trigger:** permanent, solange Spans erfasst werden. Die Tabelle ändert sich mit
   jedem neuen Feld — jede Änderung ist ein Eintrag hier, kein Nebeneffekt im Skript.
 

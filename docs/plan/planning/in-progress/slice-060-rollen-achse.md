@@ -166,6 +166,14 @@ Token-Bilanz eine Summe, keine Rechnung.
   eine offene Map, während **jede** bestehende Span-Mutation einzeilig ist. Die Mutation lautet
   dann: einen Eintrag aus der Liste **entfernen** und stattdessen alles Nicht-Gelistete
   durchlassen.
+  **Abweichung — hier, wo die DoD gelesen wird, und nicht nur im Fall-Kopf** (Review-Befund
+  R2-INFO-2 vom 2026-07-30): der gelieferte Grenz-Zahn
+  `test/mutations/127-span-positivliste-negiert.sh` entfernt **keinen** Eintrag; er hängt hinter
+  die Erfassung eine Negativ-Liste, weil `AgentResult` ein geschlossenes Struct ist und „alles
+  Nicht-Gelistete durchlassen" eine Senke braucht — die einzige ist `model_version`. Die Zusage
+  „einzeilig mutierbar" hält damit für die vier namentlichen Zähne (123–126), **nicht** für 127;
+  die Form-Vorgabe selbst (Auswahl = benannte Liste an einer Stelle) ist erfüllt. Die
+  ausführliche Begründung steht im Fall-Kopf, nicht hier — dies ist der Zeiger darauf.
 - [ ] **(3) Was die Erfassung nicht abdeckt, steht als erklärte Abweichung.** **Gemessen:**
   Hintergrund-Läufe liefern weder Zähler noch `agentType`; und der Haupt-Kontext wird von keinem
   `Agent`-Aufruf umschlossen. Beides gehört benannt, nicht weggelassen
@@ -205,7 +213,7 @@ aus dem `agent_role` des Spans: der `Agent`-Aufruf ist ein Tool-Call des **Aufru
 | `.claude/settings.json` + `.claude/hooks/` | update + neu | der `PreToolUse`-Guard mit `"matcher": "Agent"` aus DoD (1) |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung): Werkzeug- und Feldtabelle (**inkl. `spawned_role`**), die Umstellung auf die **Positiv-Liste**, die Start-Konvention (@-Erwähnung + Vordergrund + Guard), die zwei Abweichungen aus DoD (3) — und §Bewacht, das heute dasselbe sagt wie der Emitter-Kommentar |
 | `test/` | neu | die Fälle zur Erfassung: dass die Positiv-Liste greift, dass `spawned_role` normalisiert, dass der Fehlerfall keinen halben Span erzeugt. **Klarstellung vom 2026-07-30** (Review-Befund LOW-2): diese Zeile sagte „die bats-Fälle" zu; geliefert sind alle drei Eigenschaften als **Go**-Wächter in `internal/span/response_test.go` unter demselben Target — `make test` umfasst `test-bats` **und** `test-go`. Neu unter `test/` ist ausschließlich `test/mutations/`. Dieselbe Werkzeug-Verschiebung führt [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) schon als Klarstellung für die drei Fitness-Function-Zeilen der ADR; für diese Plan-Zeile fehlte sie |
-| `test/mutations/` | neu + update | **fünf** Zähne aus DoD (2): vier Freitext-Felder plus der Grenz-Zahn — geliefert sind **sieben** (Stand 2026-07-30): 123–127 nach Plan, dazu 128 (`spawned_role` unnormalisiert) und 129 (Modell-Schranke kürzt statt zu verwerfen). Die zwei über den Plan hinaus sind die Auflösung von Review-Befund MEDIUM-3: [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) §Bewacht belegte den Rot-Nachweis dieser beiden Wächter mit einem Artefakt, das es nicht gab, und benannte gleichzeitig ihren fehlenden Dauer-Sensor — beides löst ein Fall, kein Verweis. **Update**: `test/mutations/115` behauptet heute, vom Ergebnis dürfe ausschließlich die Größe erfasst werden — ab DoD (2) ist das falsch. `make comment-claims` fängt es **nicht**, weil es die Existenz des Sensors prüft, nicht die Wahrheit des Satzes |
+| `test/mutations/` | neu + update | **fünf** Zähne aus DoD (2): vier Freitext-Felder plus der Grenz-Zahn — geliefert sind **neun** (Stand 2026-07-30): 123–127 nach Plan, dazu 128 (`spawned_role` unnormalisiert), 129 (Modell-Schranke kürzt statt zu verwerfen), 130 (`omitempty` an `json:"tool"`) und 131 (der Werkzeug-Name erreicht die Zeile nicht mehr). 130 und 131 lösen Review-Befund R2-MEDIUM-1 aus Runde 2: [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) schrieb die **Voraussetzung** der `spawned_role`-Lesart dem Zahn 110 zu, der `tool_use_id` mutiert — kein Fall berührte `tool`. 128 und 129 sind die Auflösung von Review-Befund MEDIUM-3 aus Runde 1: [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) §Bewacht belegte den Rot-Nachweis dieser beiden Wächter mit einem Artefakt, das es nicht gab, und benannte gleichzeitig ihren fehlenden Dauer-Sensor — beides löst ein Fall, kein Verweis. **Update**: `test/mutations/115` behauptet heute, vom Ergebnis dürfe ausschließlich die Größe erfasst werden — ab DoD (2) ist das falsch. `make comment-claims` fängt es **nicht**, weil es die Existenz des Sensors prüft, nicht die Wahrheit des Satzes |
 
 **Angrenzende Fragen — bewusst NICHT in diesem Slice entschieden.** Keine ist eine
 Vorbedingung: der Trigger `next → in-progress` ist allein das WIP-Limit. Sie stehen hier, damit
@@ -286,6 +294,26 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
   und [`AGENTS.md`](../../../../AGENTS.md) §4); der **Mechanismus** ist bewusst **nicht**
   Gegenstand dieses Slice — er betrifft jede künftige neue Datei in den vier Prüfbereichen, nicht
   die Telemetrie, und ein Gate-*Anheben* ist ein Steering-Loop, kein ADR.
+  **Die erste Fassung dieser Einschränkung war selbst zu eng** (Review-Befund R2-HIGH-1 vom
+  2026-07-30): sie zählte **zwei** Verengungen gegen den Gate-Stempel, real sind es **drei** —
+  (1) Index-only, (2) die vier Pfad-Muster, (3) die `_test.go`-Ausnahme. Nur (1) heilt ein
+  `git add`; (2) und (3) sind **permanent**, und `Makefile`, `harness/tools/*.awk` (darunter
+  `harness/tools/extract-agent-call.awk` aus DoD (1)), `internal/emit/templates/` und `test/`
+  liegen damit dauerhaft ungeprüft. **Alle drei** Prosa-Stellen —
+  [`harness/README.md`](../../../../harness/README.md),
+  [`AGENTS.md`](../../../../AGENTS.md) §4 und dieser Absatz — nennen jetzt alle drei Achsen.
+  **Zum gemessenen Einzeltreffer im `Makefile` (Zeile 83) ausdrücklich entschieden, statt ihn
+  mitzunehmen:** er gehört **nicht** in diesen Slice. Der Satz dort verneint eine Abdeckung
+  (*„er belegte den Cache, nicht die Reproduzierbarkeit"*) und ist damit die Form, für die
+  `harness/tools/comment-claims.sh` seine Negations-Ausnahme führt; sie verfehlt ihn um **ein**
+  Zeichen (Fenster zwölf, Abstand dreizehn — gemessen). Der Treffer ist also kein Beleg für eine
+  unbewachte Behauptung, sondern für eine zu enge Ausnahme — mithin ein **Mechanismus**-Befund.
+  Ihn hier durch Umformulieren des Kommentars stillzulegen, entfernte genau das Gegenbeispiel,
+  an dem der Mechanismus-Slice seine Entscheidung misst.
+  **Landeplatz, offen und benannt:** den Mechanismus-Schnitt zu legen ist Planner-Arbeit; dieser
+  Slice trägt ihn nicht. Bis dahin lebt die Warnung dort, wo sie den Slice überlebt — in
+  [`harness/README.md`](../../../../harness/README.md), nicht nur in diesem Plan
+  (Review-Befund R2-LOW-2).
 - **Die Werkzeug-Achse sitzt nur in `Parse`, nicht in `Build`** — zurückgestellt, mit Grund
   (Review-Befund INFO-2 vom 2026-07-30). `Parse` prüft `Agent` am Werkzeug-Namen; `Build`
   überträgt die erfassten Werte danach bedingungslos. Heute folgenlos, weil `Parse` der einzige
