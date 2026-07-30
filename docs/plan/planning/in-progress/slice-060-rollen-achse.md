@@ -12,8 +12,13 @@ wechselt nur durch `git mv`, siehe
 inhaltliche Adaption),
 [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
 (das Span-Schema, das dieser Slice **erweitert**),
-[`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) (**Accepted** — Festlegung 2, der
-fail-closed Default am Werkzeug-Namen, wird um genau ein Werkzeug erweitert),
+[`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) (**Accepted** — Festlegung 2 setzt den
+fail-closed Default am Werkzeug-**Namen**; dieser Slice nimmt `Agent` in die **delegierte** Liste
+in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) auf
+und lässt die ADR unberührt — **Architect-Verdikt vom 2026-07-30**, Artefakt
+`docs/reviews/2026-07-30-slice-060-dod2-adr-0011-architect.md`. Eine frühere Fassung schrieb hier
+„Festlegung 2 … wird erweitert" und formulierte damit eine ADR-Änderung, wo eine
+Adaptions-Änderung gemeint ist),
 [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) — und zwar der
 Satz *„Der **Tool-Build** läuft reproduzierbar im gepinnten Image … kein Host-`go`"*,
 nicht der Satz über die Ziel-Repos. **Die Kennung deckt beide Ebenen**, und der geschlossene
@@ -146,6 +151,14 @@ Token-Bilanz eine Summe, keine Rechnung.
   nicht erreicht. Ohne ihn ist die Eigenschaft, mit der §6 die Umstellung begründet (*hält auch
   beim fünften Feld*), unbelegt.
 
+  **Die Grenze, innerhalb der das ADR-konform bleibt, ist geprüft und benannt:** das
+  Architect-Artefakt vom 2026-07-30
+  (`docs/reviews/2026-07-30-slice-060-dod2-adr-0011-architect.md` §6) führt **fünf** prüfbare
+  Bedingungen B1–B5, je mit Gegenbeispiel — darunter, dass `spawned_role` **nie** aus
+  `tool_input.subagent_type` kommt (das wäre die Argument-Fläche, die Festlegung 2 schützt) und
+  dass `resolvedModel` als **einziger Rohstring** unter den erfassten Werten eine strukturelle
+  Schranke braucht. Das ist die Checkliste des Verifiers, kein vierter DoD-Punkt.
+
   **Damit dieser Zahn einzeilig mutierbar bleibt, legt der Plan die FORM fest:** die Auswahl der
   erfassten Schlüssel steht als **eine benannte Liste an einer Stelle**, über die die Erfassung
   iteriert — nicht als Feldliste eines geschlossenen Structs. Der Unterschied entscheidet, ob es
@@ -188,7 +201,7 @@ aus dem `agent_role` des Spans: der `Agent`-Aufruf ist ein Tool-Call des **Aufru
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `.claude/agents/` | neu | je Harness-Rolle ein Typ. Der Reviewer hat mit `.harness/skills/reviewer.md` bereits seinen Anweisungssatz — der Typ zeigt darauf, eine Quelle |
-| `internal/span/` | update | `Agent` in die Werkzeug-Klasse; die Positiv-Liste samt neuem Feld `spawned_role`. **Auch der Kommentar** bei `span.go` („vom Ergebnis darf nur die Länge in den Span") — er wird durch DoD (2) falsch, sobald sieben benannte Werte aus `tool_response` gelesen werden |
+| `internal/span/` | update | `Agent` in die Werkzeug-Klasse; die Positiv-Liste samt neuem Feld `spawned_role`. **Auch der Kommentar** bei `span.go` („vom Ergebnis darf nur die Länge in den Span") — er wird durch DoD (2) falsch, sobald **sechs** benannte Schlüssel aus `tool_response` gelesen werden (`usage`, `totalTokens`, `totalDurationMs`, `totalToolUseCount`, `agentType`, `resolvedModel`) — **neun** Werte, wenn man die vier Zähler in `usage` einzeln zählt. „Sieben" stand hier und war unter beiden Zählweisen falsch; die Zahl entsteht, wenn man Rolle und Modell vergisst — genau die zwei Werte, an denen die Verifier-Grenzen B1 und B5 hängen |
 | `.claude/settings.json` + `.claude/hooks/` | update + neu | der `PreToolUse`-Guard mit `"matcher": "Agent"` aus DoD (1) |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung): Werkzeug- und Feldtabelle (**inkl. `spawned_role`**), die Umstellung auf die **Positiv-Liste**, die Start-Konvention (@-Erwähnung + Vordergrund + Guard), die zwei Abweichungen aus DoD (3) — und §Bewacht, das heute dasselbe sagt wie der Emitter-Kommentar |
 | `test/` | neu | die bats-Fälle zur Erfassung: dass die Positiv-Liste greift, dass `spawned_role` normalisiert, dass der Fehlerfall keinen halben Span erzeugt |
