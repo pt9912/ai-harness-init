@@ -1167,13 +1167,19 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      Voraussetzung weiter unten; dieser Fall färbt bauartbedingt mehrere Wächter, sein
      Kopf sagt welche).
 
-  **Was hier KEINEN Zahn hat, und darum benannt ist:** die übrigen
-  `mustContain`-Gegenproben. Dass überhaupt erfasst wird (die neun Werte in der Zeile)
-  und dass `status` und `event` eines Fehlschlags stimmen, bindet kein Fall — eine
-  Mutation, die die Erfassung **ganz** abschaltet, bliebe von `make mutate` unbemerkt.
-  Das ist die schwächere Hälfte dieser Wächter (dieselbe Grenze, die der Kommentar an
-  `mustContain` für die zwei reinen Negativ-Wächter schon nennt), und sie steht hier statt
-  mitgezählt zu werden.
+  **Was hier KEINEN Zahn hat, und darum benannt ist:** die
+  `mustContain`-**Gegenproben** — die Zeilen, die diese Wächter davor bewahren, eine
+  Erfassung von *nichts* für grün zu halten. **Gemessen (2026-07-30), nicht geschlossen:**
+  macht man `mustContain` in der isolierten Kopie wirkungslos, bleibt `make test-go`
+  grün, und die Fälle 123 und 127 melden weiter „ok" — sie färben ihre Wächter über die
+  `mustNotContain`-Hälfte und merken vom Verlust der anderen nichts. Unbewacht ist damit
+  **nicht die Eigenschaft** (eine ganz ausfallende Erfassung bräche die Gegenproben und
+  damit `make test`), sondern **der Wächter dieser Eigenschaft**: er darf seine Zähne
+  verlieren, ohne dass `make mutate` es meldet — dieselbe Klasse wie V-1, eine Ebene
+  tiefer. Ein Fall dafür ist **möglich** (eine Mutation, die die Erfassung abschaltet),
+  färbte aber mehrere Wächter dieser Liste auf einmal; ob dieser Preis richtig ist,
+  entscheidet der Slice, der ihn schneidet. Hier ist die Lücke **benannt**, nicht
+  mitgezählt.
 
   **127 ist der tragende:** vier namentliche Fälle unterscheiden eine
   Positiv-Liste **nicht** von einer Implementierung, die genau diese vier ausfiltert.
