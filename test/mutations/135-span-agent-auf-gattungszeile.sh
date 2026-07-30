@@ -24,10 +24,17 @@
 # WARUM DIE KOMMANDO- UND NICHT DIE DATEI-GATTUNG: mit `classFileRead` faellt der
 # Waechter schon an seinem `mustNotContain` (der Pfad `/etc/shadow` aus dem `tool_input`
 # stuende dann in der Zeile) — die STRUKT-Pruefung darunter wuerde nie erreicht, und
-# genau sie ist B2. Ueber die Kommando-Gattung entstehen `"program":"gh"` und `"argc":5`;
+# genau sie ist B2. Ueber die Kommando-Gattung entstehen `"program":"gh"` und `"argc":4`;
 # beide stehen auf keiner `mustNotContain`-Liste, der Waechter laeuft bis zur
 # Strukt-Pruefung durch und faellt dort. So bindet dieser Fall die Zusicherung, die er
 # tragen soll — nicht eine davor.
+#
+# `"argc":4` UND NICHT 5 (Review-Befund LOW-1 vom 2026-07-30): `argc` zaehlt ARGUMENTE,
+# nicht Felder — `commandProgram` liefert `len(fields) - i - 1`, und die Kommandozeile
+# des Waechters (`gh auth login --with-token TOKEN-iii999`) hat fuenf Felder. Dieselbe
+# Semantik misst TestCommandProgramSkipsAssignments bei jedem `make test-go`
+# (`"ls -l /tmp"` -> argc 2). Der Kopf sagte bis dahin 5 zu — siebte Instanz der
+# Familie "Zahl behauptet statt abgezaehlt" in diesem Slice.
 #
 # ROT WIRD GENAU EINER: die uebrigen `Agent`-Payloads dieser Flaeche fuehren kein
 # `command` in ihrem `tool_input`, und `commandProgram("")` liefert nichts — sie bleiben

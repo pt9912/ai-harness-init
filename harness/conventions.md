@@ -1118,11 +1118,31 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   (`docs/reviews/2026-07-30-slice-060-dod2-adr-0011-architect.md`), durfte damit lautlos
   verschwinden.
 
-  Die vier Fälle 132–135 schließen das. **Jeder ist einzeln gefahren und färbt genau
-  EINEN Wächter an genau der Zeile seiner Zusicherung** (2026-07-30, Grün-Vorlauf und
-  -Nachlauf grün, Host-Baum unberührt): 132 an `response_test.go:209`, 133 an `:171`,
-  135 an `:223`, 134 an `:323`. Mehrfach-Rot verdeckt seinen eigenen Grund — die Lehre
-  aus Review-Befund MEDIUM-4 —, deshalb steht die Zahl je Fall auch in seinem Kopf.
+  Die vier Fälle 132–135 schließen das; 136 und 137 kamen am selben Tag aus den
+  Review-Befunden MEDIUM-1 und MEDIUM-2 dazu. **Jeder ist einzeln über den
+  `run_case`-Pfad des Treibers gefahren** (Grün-Vorlauf und -Nachlauf grün, Host-Baum
+  unberührt), und **fünf der sechs färben genau EINEN Wächter an genau der Zeile ihrer
+  Zusicherung**; 137 färbt bauartbedingt zwei, weil die Draht-Form von `spawned_role` in
+  zwei Wächtern zugesagt ist — sein Kopf sagt welche, und seine `# expect:`-Zeile bindet
+  den, dessen Eintrag sonst ungebunden bliebe. Mehrfach-Rot verdeckt seinen eigenen
+  Grund — die Lehre aus Review-Befund MEDIUM-4 —, deshalb steht die Zahl je Fall auch in
+  seinem Kopf.
+
+  **Wo genau sie fielen, ist eine datierte MESSUNG und keine lebende Zusage** — die
+  Nummern altern mit der nächsten in `response_test.go` eingefügten Zeile, und **kein
+  Sensor prüft sie**: `check-lines` (`.d-check.yml`) validiert Zeilen-Referenzen nur an
+  Pfaden mit Verzeichnis-Komponente, ein bloßes `response_test.go:209` liegt außerhalb
+  seines Prüfbereichs (gemessen: `make docs-check` bleibt mit ihnen grün). Bis zum
+  2026-07-30 stand dieser Satz im Präsens und datiert war nur die Klammer — Review-Befund
+  LOW-2. **Gemessen am 2026-07-30:** 132 fiel an `response_test.go:209`, 133 an `:171`,
+  135 an `:223`, 134 an `:347`, 136 an `:347`, 137 an `:209` **und** `:347` — die letzten
+  drei an derselben `mustNotContain`-Zeile `:347`, je an einem anderen **Eintrag** (134 an
+  `input_tokens`, 136 an `output_tokens`, 137 an `spawned_role`), 137 zusätzlich an
+  `:209`, der gleichlautenden Zusicherung des zweiten Wächters. Die drei ersten Nummern
+  stammen aus der Messung vor den Befunden MEDIUM-1/-2 und gelten weiter, weil der Diff
+  dieses Tages `response_test.go` erst ab dem Kopf von
+  `TestFailedAgentCallCapturesNothing` anfasst; `:323` aus jener Messung ist durch
+  denselben Diff zu `:347` geworden — genau die Alterung, die der Absatz oben benennt.
 
   1. `TestNoResponseFreetextReachesSpan` — **keines der vier gemessenen Freitext-Felder
      erreicht die Zeile**, je mit eigenem Kanarienvogel. Zähne:
@@ -1158,9 +1178,32 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      `test/mutations/129-span-modellschranke-kuerzt.sh` (die feinere der beiden Zusagen
      aus Festlegung 4 der Positiv-Liste; sie impliziert die gröbere).
   8. `TestFailedAgentCallCapturesNothing` — **kein halber Span**: die neun Werte fehlen,
-     statt anwesend-und-ungemessen dazustehen. Zahn:
+     statt anwesend-und-ungemessen dazustehen. Seine `mustNotContain`-Liste nennt sie
+     seit dem 2026-07-30 **alle neun** namentlich; bis dahin waren es **acht**.
+     `output_tokens` fehlte und stand repo-weit in keiner Negativ-Prüfung — die Zeile
+     hier schrieb dem Wächter also eine Zusicherung zu, die er nicht hatte
+     (Review-Befund MEDIUM-1). **Gemessen, nicht geschlossen:** mit
+     `json:"output_tokens"` statt `json:"output_tokens,omitempty"` blieb `make test-go`
+     bei **Exit 0** mit **null** `--- FAIL:`-Zeilen, während jede geschriebene Zeile —
+     auch ein reiner `Bash`-Span — `"output_tokens":null` trug (beides in isolierter
+     Kopie gefahren, die Span-Zeile aus dem gebauten Emitter gelesen). Zähne:
      `test/mutations/134-span-zaehler-praesent-leer.sh` (`omitempty` von `input_tokens`
-     genommen — der Zähler steht danach als `null` in **jeder** Zeile).
+     genommen — der Zähler steht danach als `null` in **jeder** Zeile),
+     `test/mutations/136-span-ausgabezaehler-praesent-leer.sh` (dasselbe an
+     `output_tokens`) und `test/mutations/137-span-rollenfeld-praesent-leer.sh`
+     (dasselbe an `spawned_role`; er gehört zugleich zur Draht-Form weiter unten).
+     **Was diese drei NICHT binden, und darum hier steht:** sie binden **drei** der neun
+     Listen-Einträge. Ein Zahn bindet einen Eintrag genau dann, wenn seine Mutation
+     genau diesen Namen in die Fehlschlag-Zeile schreibt — 134 schreibt `input_tokens`,
+     136 `output_tokens`, 137 `spawned_role`. Die übrigen **sechs** (die zwei
+     Cache-Zähler, `total_tokens`, `total_duration_ms`, `total_tool_use_count`,
+     `model_version`) prüft der Wächter, aber **kein Fall des heutigen Sets schreibt
+     einen von ihnen in diese Zeile** — wer einen aus der Liste streicht, bekommt von
+     `make mutate` keinen Befund. Das ist aus der Bauart der Fälle **abgeleitet**, nicht
+     einzeln gefahren. Sechs weitere `omitempty`-Kopien wären möglich und sind bewusst
+     **nicht** geschnitten (sie kosten je einen vollen Sensor-Lauf und binden je einen
+     Namen); wer sie will, schneidet sie — hier steht, was gedeckt ist, statt die Zahl
+     neun ein zweites Mal auf einen Zahn zu schreiben, der einen Eintrag bindet.
   9. `TestAgentGetsNoArgumentFields` **und** `TestFailedAgentCallCapturesNothing` — die
      Gegenprobe `"tool":"Agent"`: ein `Agent`-Span ist an der geschriebenen Zeile als
      solcher erkennbar. Zahn: `test/mutations/131-span-werkzeugname-leer.sh` (Punkt 2 der
@@ -1200,7 +1243,17 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   die beiden Wächter hatten keinen **Dauer**-Sensor.
   **Die Draht-Form von `spawned_role`** — abwesend statt `""`, und damit die Lesevorschrift,
   die darauf ruht — bewachen `TestAgentGetsNoArgumentFields` und
-  `TestFailedAgentCallCapturesNothing` an der geschriebenen Zeile. Ihre **Voraussetzung** hat
+  `TestFailedAgentCallCapturesNothing` an der geschriebenen Zeile. **Ihr Dauer-Zahn ist
+  seit dem 2026-07-30 `test/mutations/137-span-rollenfeld-praesent-leer.sh`** (das
+  `omitempty` an `json:"spawned_role"` genommen: danach steht `"spawned_role":""` in jeder
+  Zeile und behauptet in jedem `Bash`-Span einen Subagenten, den es nicht gab). Bis dahin
+  hatte sie **keinen** — der Code-Kommentar an `intoSpawnedRole` nannte dafür Fall 134,
+  der `json:"input_tokens,omitempty"` mutiert und `spawned_role` nirgends berührt
+  (Review-Befund MEDIUM-2; gemessen: mit gestrichenem `"spawned_role"` in der
+  `mustNotContain`-Liste des Fehlschlag-Wächters meldet 134 weiter „ok"). **Fall 132
+  trägt sie nicht:** er bindet die *Herkunft* und nur im ersten der beiden Wächter — der
+  zweite führt `subagent_type: "nope"`, das zu leer normalisiert, und bleibt unter 132
+  absichtlich grün. Ihre **Voraussetzung** hat
   **zwei Hälften**, und beide hingen bis zum 2026-07-30 an einer falschen Fundstelle: hier stand,
   `TestMandatoryFieldsAlwaysPresent` bewache sie *„mit dem Zahn
   `test/mutations/110-span-pflichtfeld-verschwindet.sh`"*. Fall 110 mutiert aber `tool_use_id`
@@ -1221,11 +1274,12 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Treibers; Grün-Vorlauf und -Nachlauf grün, Host-Fingerabdruck vor/nach gleich): mit intakten
   Wächtern melden sie „ok"; mit gestrichener Listen-Zeile meldet 130 **Befund** (*„blieb
   GRUEN — … hat keine Zaehne mehr"*), mit gestrichener Zeilen-Gegenprobe meldet 131 **Befund**
-  (*„rot, aber … faellt nicht — falscher Grund"*). Die **elf** Zähne oben (123–129 und
-  132–135) bewachen die **Erfassung**; diese **zwei** (130, 131) bewachen ihre
+  (*„rot, aber … faellt nicht — falscher Grund"*). Die **dreizehn** Zähne oben (123–129 und
+  132–137) bewachen die **Erfassung**; diese **zwei** (130, 131) bewachen ihre
   **Voraussetzung** — zwei Zählungen über zwei Eigenschaften, keine Korrektur der ersten.
-  Die erste Zahl war bis 2026-07-30 **sieben** und ist mit den vier Fällen aus
-  Verifier-Befund V-1 gewachsen, nicht korrigiert worden.
+  Die erste Zahl war bis 2026-07-30 **sieben**, wuchs mit den vier Fällen aus
+  Verifier-Befund V-1 auf elf und mit den zwei Fällen aus den Review-Befunden MEDIUM-1
+  und MEDIUM-2 (136, 137) auf dreizehn — gewachsen, nicht korrigiert.
 
   **Auch Fall 132 ist zweiseitig gemessen** (2026-07-30, derselbe Pfad): mit intaktem
   Wächter meldet er „ok" (`-> TestAgentGetsNoArgumentFields rot`, gefallen an

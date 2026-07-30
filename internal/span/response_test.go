@@ -313,6 +313,17 @@ func TestResolvedModelIsStructurallyBounded(t *testing.T) {
 // Zeile 4 — nicht leer, sondern nicht vorhanden); `error` steht auf oberster Ebene,
 // dazu ein bis dahin ungesehenes `is_interrupt`. Es entsteht ein Span mit Name und
 // Status, kein HALBER: die neun Werte fehlen alle, statt mit 0 dazustehen.
+//
+// WAS AN DIESER LISTE EINEN DAUER-ZAHN HAT, und was nicht — die Auszaehlung gehoert
+// hierher, weil die Liste sonst wieder mehr behauptet als sie bindet (Review-Befunde
+// MEDIUM-1 und MEDIUM-2 vom 2026-07-30): DREI der neun Eintraege sind einzeln
+// gebunden — `input_tokens` von test/mutations/134-span-zaehler-praesent-leer.sh,
+// `output_tokens` von test/mutations/136-span-ausgabezaehler-praesent-leer.sh,
+// `spawned_role` von test/mutations/137-span-rollenfeld-praesent-leer.sh. Die
+// uebrigen SECHS prueft dieser Waechter, aber kein Fall bindet sie einzeln: wer einen
+// von ihnen aus der Liste streicht, bekommt von `make mutate` keinen Befund. Die
+// normative Fassung dieser Auszaehlung steht in harness/conventions.md MR-018
+// §Bewacht Punkt 8.
 func TestFailedAgentCallCapturesNothing(t *testing.T) {
 	root := newRoot(t)
 	emit(t, root, `{"hook_event_name":"PostToolUseFailure","tool_name":"Agent",
@@ -320,8 +331,23 @@ func TestFailedAgentCallCapturesNothing(t *testing.T) {
 	  "tool_input":{"subagent_type":"nope","prompt":"`+geheimPrompt+`"}}`)
 	line := rawStream(t, root, "s1")
 	mustContain(t, line, `"tool":"Agent"`, `"status":"error"`, `"event":"PostToolUseFailure"`)
+	// DIE NEUN WERTE NAMENTLICH — bis zum 2026-07-30 waren es ACHT (Review-Befund
+	// MEDIUM-1). Es fehlte `output_tokens`, und es stand repo-weit in keiner einzigen
+	// Negativ-Pruefung. GEMESSEN, nicht geschlossen: mit `json:"output_tokens"` statt
+	// `json:"output_tokens,omitempty"` blieb `make test-go` bei Exit 0 mit NULL
+	// `--- FAIL:`-Zeilen, waehrend jede geschriebene Zeile — auch ein reiner
+	// `Bash`-Span — `"output_tokens":null` trug. Genau die Lesart, die MR-018 traegt
+	// ("unbekannt" gegen "nicht vorhanden"), kippte damit bei gruenem Gate-Stack.
+	//
+	// Die zwei Cache-Zaehler deckte `"input_tokens"` schon per TEILSTRING ab; sie
+	// stehen jetzt trotzdem namentlich da, damit der Leser NEUN Namen gegen die
+	// Feldtabelle in MR-018 zaehlen kann statt sieben plus einer Teilstring-
+	// Ueberlegung. `result_bytes` ist KEINER der neun — es ist die Laenge, die jedes
+	// Werkzeug abgibt; sie fehlt hier, weil `tool_response` ganz fehlt.
 	mustNotContain(t, line,
-		"spawned_role", "input_tokens", "total_tokens", "total_duration_ms",
-		"total_tool_use_count", "model_version", "result_bytes",
+		"spawned_role", "input_tokens", "output_tokens",
+		"cache_creation_input_tokens", "cache_read_input_tokens",
+		"total_tokens", "total_duration_ms", "total_tool_use_count", "model_version",
+		"result_bytes",
 		geheimPrompt, "is_interrupt", "not found")
 }
