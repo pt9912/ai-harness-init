@@ -25,11 +25,33 @@
 # Datenstruktur zu wechseln (und ein Wechsel der Datenstruktur waere keine einzeilige
 # Mutation mehr, was die Form-Vorgabe des Plans gerade verhindern soll).
 #
+# ABWEICHUNG VON DER PLAN-FORMULIERUNG, benannt statt uebergangen (Review-Befund LOW-4
+# vom 2026-07-30): slice-060 DoD (2) formuliert die Mutation als „einen Eintrag aus der
+# Liste ENTFERNEN und stattdessen alles Nicht-Gelistete durchlassen". Dieser Fall
+# entfernt keinen Eintrag; er haengt hinter die Erfassung eine Negativ-Liste. Der Grund
+# ist der TRAEGER: `AgentResult` ist ein geschlossenes Struct, „alles Nicht-Gelistete
+# durchlassen" braucht also eine Senke, und die einzige ist `model_version`. Die
+# Zusage „einzeilig mutierbar" haelt damit fuer die vier namentlichen Zaehne (123..126,
+# je ein `sed` auf einen Listen-Eintrag), NICHT fuer diesen: ein `sed`, sieben eingefuegte
+# Zeilen und eine Senken-Wahl. Die Form-Vorgabe selbst (Auswahl = benannte Liste an einer
+# Stelle) ist erfuellt; ihre Begruendung gilt nur fuer die vier.
+#
 # ROT WERDEN DREI, ERWARTET WIRD EINER — das gehoert gesagt, damit der Kopf nicht mehr
 # behauptet als er traegt: neben „TestUnlistedResponseKeyStaysOut" fallen auch
 # „TestNoResponseFreetextReachesSpan" und „TestResolvedModelIsStructurallyBounded",
 # weil beide `model_version` mitpruefen und die Senke ihren Wert verlaengert. Bedingung 4
 # des Treibers verlangt den GENANNTEN Waechter in der Fehlschlag-Ausgabe; die beiden
 # anderen sind Mitlaeufer der Senke, nicht der Gegenstand.
+#
+# IM BENANNTEN WAECHTER ist die Rot-Ursache dagegen EINE (Review-Befund MEDIUM-4 vom
+# 2026-07-30, hier aufgeloest): bis zum 2026-07-30 pruefte die Gegenprobe von
+# TestUnlistedResponseKeyStaysOut zusaetzlich `"model_version":"claude-opus-5[1m]"` — die
+# Senke verschob die schliessende Anfuehrung, und der Waechter fiel AUCH ohne seine
+# Grenz-Zusicherung. Ein Streichen des mustNotContain-Blocks haette diesen Fall bei
+# „ok" gelassen, waehrend genau die Eigenschaft unbewacht war, um derentwillen es ihn
+# gibt. Die Gegenprobe nennt jetzt nur Werte, die die Senke nicht beruehrt; damit ist
+# „127 rot" gleichbedeutend mit „die Grenz-Zusicherung greift". Gegenprobe dazu einmal
+# gefahren: mit entferntem mustNotContain-Block meldet der Treiber diesen Fall als
+# BEFUND („rot, aber '...' faellt nicht — falscher Grund"), vorher als „ok".
 set -euo pipefail
 sed -i 's@^\treturn res$@\tfor key, raw := range obj {\n\t\tswitch key {\n\t\tcase "content", "prompt", "description", "outputFile":\n\t\tdefault:\n\t\t\tres.ModelVersion += key + string(raw)\n\t\t}\n\t}\n\treturn res@' internal/span/response.go

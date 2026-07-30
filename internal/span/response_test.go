@@ -45,9 +45,18 @@ func mustNotContain(t *testing.T, line string, verboten ...string) {
 	}
 }
 
-// mustContain traegt die GEGENPROBE. Ohne sie bestuende jeder Waechter dieser Datei
-// auch bei einer Erfassung von NICHTS — der Name behauptet dann eine Eigenschaft und
-// prueft eine leere Menge (AGENTS.md §3.6).
+// mustContain traegt die GEGENPROBE: ohne sie bestuende ein Waechter, der eine
+// ERFASSUNG prueft, auch bei einer Erfassung von NICHTS — der Name behauptet dann eine
+// Eigenschaft und prueft eine leere Menge (AGENTS.md §3.6).
+//
+// WIE WEIT DAS TRAEGT, gehoert dazugesagt (Review-Befund LOW-3 vom 2026-07-30): fuenf
+// der sieben Waechter dieser Datei nennen in ihrer Gegenprobe erfasste WERTE und fallen
+// damit bei einer Erfassung von nichts. ZWEI tun das nicht, weil sie reine
+// NEGATIV-Waechter sind: TestAgentGetsNoArgumentFields und
+// TestFailedAgentCallCapturesNothing pruefen Name, Status und Ereignis — Groessen, die
+// von der Erfassung unabhaengig sind. Ihre Gegenprobe schliesst „kein Span" aus, nicht
+// „keine Erfassung"; das ist fuer ihre Zusage auch richtig (beide messen die ABWESENHEIT
+// von Feldern), aber es ist die schwaechere Aussage.
 func mustContain(t *testing.T, line string, erwartet ...string) {
 	t.Helper()
 	for _, v := range erwartet {
@@ -113,6 +122,18 @@ func TestNoResponseFreetextReachesSpan(t *testing.T) {
 // Aufrufen auf fuenf undokumentierte Schluessel, und der fuenfte kuenftige ist derselbe
 // Fall. Ein ungelisteter Schluessel liegt hier auch VERSCHACHTELT (in `usage`) —
 // dieselbe Frage eine Ebene tiefer.
+//
+// DIE GEGENPROBE UNTEN LAESST `model_version` ABSICHTLICH AUS, und das ist der Grund
+// (Review-Befund MEDIUM-4 vom 2026-07-30): die Senke des Grenz-Zahns
+// test/mutations/127-span-positivliste-negiert.sh IST dieses Feld — es ist der einzige
+// String unter den neun erfassten Werten. Stuende `"model_version":"claude-opus-5[1m]"`
+// in der Gegenprobe, verschoebe die Senke die schliessende Anfuehrung und dieser
+// Waechter faellt unter Fall 127 aus ZWEI unabhaengigen Gruenden. Wer dann den
+// mustNotContain-Block streicht — die Grenz-Zusicherung selbst —, bekaeme von
+// `make mutate` weiter „127 ok": Bedingung 4 des Treibers fand den erwarteten Namen
+// nach wie vor in der Fehlschlag-Ausgabe. So faellt der Waechter unter Fall 127 an
+// GENAU der Zusicherung, die er tragen soll. Dass `model_version` ueberhaupt erfasst
+// wird, deckt TestNoResponseFreetextReachesSpan mit; hier waere es Ueberdetermination.
 func TestUnlistedResponseKeyStaysOut(t *testing.T) {
 	root := newRoot(t)
 	emit(t, root, `{"tool_name":"Agent","session_id":"s1","tool_response":{
@@ -128,8 +149,7 @@ func TestUnlistedResponseKeyStaysOut(t *testing.T) {
 		"geheimZaehler", "agentId", "isAsync", "canReadOutputFile", "is_interrupt",
 		"erfundenesFeld", "nochNieGesehen")
 	mustContain(t, line,
-		`"spawned_role":"verifier"`, `"input_tokens":11`, `"total_tokens":110`,
-		`"model_version":"claude-opus-5[1m]"`)
+		`"spawned_role":"verifier"`, `"input_tokens":11`, `"total_tokens":110`)
 }
 
 // TestOnlyAgentToolGetsResponseValues haelt die ACHSE fest: erfasst wird nach dem

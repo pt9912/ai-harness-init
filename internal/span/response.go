@@ -93,7 +93,21 @@ func intoTotalToolUse(r *AgentResult, v json.RawMessage)  { r.TotalToolUseCount 
 // roleFromAgentType wird WIEDERVERWENDET, nicht kopiert: ein unbekannter Wert — heute
 // durchweg `general-purpose` — ergibt ein LEERES Feld. `general-purpose` ist keine
 // Rolle, und eine Ergebniszeile `general-purpose: 62 %` waere genau das, was die
-// Lesevorschrift in MR-018 verbietet. Bewacht von TestSpawnedRoleIsNormalised.
+// Lesevorschrift in MR-018 verbietet.
+//
+// LEER HEISST HIER ABWESEND, nicht `""` — das Feld traegt `omitempty` (Review-Befund
+// MEDIUM-2 vom 2026-07-30). Das ist die ANDERE Draht-Form als bei `agent_role`, das als
+// Pflichtfeld present-and-empty in jeder Zeile steht: `agent_role` gehoert zu einem
+// Block, den JEDER Span traegt, `spawned_role` entsteht nur bei einem `Agent`-Aufruf. Ein
+// `"spawned_role":""` in jedem `Bash`-Span behauptete einen Subagenten, den es nicht gab.
+// Lesbar bleibt der Unterschied, weil `tool` Pflicht ist: ein `Agent`-Span OHNE
+// `spawned_role` ist ein Lauf mit unbekannter Rolle, nicht ein Lauf ohne Rolle. Die
+// bindende Fassung steht in MR-018 an der Feldtabellen-Zeile.
+//
+// Bewacht von TestSpawnedRoleIsNormalised (die Normalisierung) und
+// test/mutations/128-span-rolle-unnormalisiert.sh (ihr Dauer-Sensor); die Abwesenheit
+// bei fehlendem Ergebnis bewachen TestAgentGetsNoArgumentFields und
+// TestFailedAgentCallCapturesNothing an der geschriebenen Zeile.
 func intoSpawnedRole(r *AgentResult, v json.RawMessage) {
 	r.SpawnedRole = roleFromAgentType(text(v))
 }
@@ -134,7 +148,9 @@ const maxModelVersion = 64
 // `model_version`, ist die Schranke zu eng geraten und wird hier weiter, nicht im Code
 // aufgeweicht.
 //
-// Bewacht von TestResolvedModelIsStructurallyBounded.
+// Bewacht von TestResolvedModelIsStructurallyBounded und
+// test/mutations/129-span-modellschranke-kuerzt.sh (die Mutation KUERZT statt zu
+// verwerfen — der Fall, gegen den der Absatz oben steht).
 func modelVersion(s string) string {
 	if s == "" || len(s) > maxModelVersion {
 		return ""

@@ -204,8 +204,8 @@ aus dem `agent_role` des Spans: der `Agent`-Aufruf ist ein Tool-Call des **Aufru
 | `internal/span/` | update | `Agent` in die Werkzeug-Klasse; die Positiv-Liste samt neuem Feld `spawned_role`. **Auch der Kommentar** bei `span.go` („vom Ergebnis darf nur die Länge in den Span") — er wird durch DoD (2) falsch, sobald **sechs** benannte Schlüssel aus `tool_response` gelesen werden (`usage`, `totalTokens`, `totalDurationMs`, `totalToolUseCount`, `agentType`, `resolvedModel`) — **neun** Werte, wenn man die vier Zähler in `usage` einzeln zählt. „Sieben" stand hier und war unter beiden Zählweisen falsch; die Zahl entsteht, wenn man Rolle und Modell vergisst — genau die zwei Werte, an denen die Verifier-Grenzen B1 und B5 hängen |
 | `.claude/settings.json` + `.claude/hooks/` | update + neu | der `PreToolUse`-Guard mit `"matcher": "Agent"` aus DoD (1) |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung): Werkzeug- und Feldtabelle (**inkl. `spawned_role`**), die Umstellung auf die **Positiv-Liste**, die Start-Konvention (@-Erwähnung + Vordergrund + Guard), die zwei Abweichungen aus DoD (3) — und §Bewacht, das heute dasselbe sagt wie der Emitter-Kommentar |
-| `test/` | neu | die bats-Fälle zur Erfassung: dass die Positiv-Liste greift, dass `spawned_role` normalisiert, dass der Fehlerfall keinen halben Span erzeugt |
-| `test/mutations/` | neu + update | **fünf** Zähne aus DoD (2): vier Freitext-Felder plus der Grenz-Zahn. **Update**: `test/mutations/115` behauptet heute, vom Ergebnis dürfe ausschließlich die Größe erfasst werden — ab DoD (2) ist das falsch. `make comment-claims` fängt es **nicht**, weil es die Existenz des Sensors prüft, nicht die Wahrheit des Satzes |
+| `test/` | neu | die Fälle zur Erfassung: dass die Positiv-Liste greift, dass `spawned_role` normalisiert, dass der Fehlerfall keinen halben Span erzeugt. **Klarstellung vom 2026-07-30** (Review-Befund LOW-2): diese Zeile sagte „die bats-Fälle" zu; geliefert sind alle drei Eigenschaften als **Go**-Wächter in `internal/span/response_test.go` unter demselben Target — `make test` umfasst `test-bats` **und** `test-go`. Neu unter `test/` ist ausschließlich `test/mutations/`. Dieselbe Werkzeug-Verschiebung führt [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) schon als Klarstellung für die drei Fitness-Function-Zeilen der ADR; für diese Plan-Zeile fehlte sie |
+| `test/mutations/` | neu + update | **fünf** Zähne aus DoD (2): vier Freitext-Felder plus der Grenz-Zahn — geliefert sind **sieben** (Stand 2026-07-30): 123–127 nach Plan, dazu 128 (`spawned_role` unnormalisiert) und 129 (Modell-Schranke kürzt statt zu verwerfen). Die zwei über den Plan hinaus sind die Auflösung von Review-Befund MEDIUM-3: [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) §Bewacht belegte den Rot-Nachweis dieser beiden Wächter mit einem Artefakt, das es nicht gab, und benannte gleichzeitig ihren fehlenden Dauer-Sensor — beides löst ein Fall, kein Verweis. **Update**: `test/mutations/115` behauptet heute, vom Ergebnis dürfe ausschließlich die Größe erfasst werden — ab DoD (2) ist das falsch. `make comment-claims` fängt es **nicht**, weil es die Existenz des Sensors prüft, nicht die Wahrheit des Satzes |
 
 **Angrenzende Fragen — bewusst NICHT in diesem Slice entschieden.** Keine ist eine
 Vorbedingung: der Trigger `next → in-progress` ist allein das WIP-Limit. Sie stehen hier, damit
@@ -273,6 +273,30 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
   (Ob beide dasselbe Kommando sind, ist **nicht belegt** — für den Ausschluss gleichgültig.)
   Kontext-Vererbung ist das Gegenteil dessen, was Modul 8 für Reviewer und Verifier verlangt —
   *Rollen-Trennung ist Kontext-Trennung*.
+- **Der Abschluss-Gate-Lauf zu DoD (2) deckte `internal/span/response.go` NICHT** — das gehört
+  geschrieben, nicht stehengelassen (Review-Befund HIGH-1 vom 2026-07-30). Die protokollierte
+  Zeile *„comment-claims: 37 Datei(en) geprueft, 0 Befund(e)"* entstand, während die Datei noch
+  **untrackt** war: der Prüfbereich von `comment-claims` kommt aus dem Index, der Nachweis-Hash von
+  `record-gates` deckt Getrackte **und** Untrackte. Die Datei lag damit *innerhalb* des
+  bestätigten Baum-Zustands und *außerhalb* des Prüfbereichs — ihre Kommentar-Blöcke mit
+  Sensor-Nennungen waren ungeprüft, während der Stop-Hook den Abschluss durchließ. **Deckend
+  nachgefahren, sobald die Datei getrackt war:** 38 Datei(en), 0 Befund(e) — die Differenz zu
+  37 ist genau diese Datei. Eingeschränkt ist damit die
+  **Zusage** (der Prüfbereich steht jetzt in [`harness/README.md`](../../../../harness/README.md)
+  und [`AGENTS.md`](../../../../AGENTS.md) §4); der **Mechanismus** ist bewusst **nicht**
+  Gegenstand dieses Slice — er betrifft jede künftige neue Datei in den vier Prüfbereichen, nicht
+  die Telemetrie, und ein Gate-*Anheben* ist ein Steering-Loop, kein ADR.
+- **Die Werkzeug-Achse sitzt nur in `Parse`, nicht in `Build`** — zurückgestellt, mit Grund
+  (Review-Befund INFO-2 vom 2026-07-30). `Parse` prüft `Agent` am Werkzeug-Namen; `Build`
+  überträgt die erfassten Werte danach bedingungslos. Heute folgenlos, weil `Parse` der einzige
+  Ort ist, an dem ein gefülltes `Payload` entsteht. Ein **zweiter** Erzeuger (Nachbearbeitung,
+  Transkript-Import, ein Test-Helfer, der zum Produktionspfad wird) könnte die Achse umgehen, und
+  `TestOnlyAgentToolGetsResponseValues` fängt es nicht — er geht über `Parse`. Nicht in DoD (2)
+  nachgezogen, weil eine zweite Prüfung eine **neue Zusage** ist und nach
+  [`AGENTS.md`](../../../../AGENTS.md) §3.6 ihren eigenen rot gesehenen Zahn braucht; das ist ein
+  eigener Schnitt, kein Anhang. Der Fingerabdruck-Zweig prüft seine Klasse dagegen in `Build`
+  selbst — die zwei Achsen-Prüfungen liegen also auf verschiedenen Ebenen, und das ist der
+  eigentliche Befund.
 - **Nicht in diesem Slice:** die Rechnung ([slice-066](../open/slice-066-telemetrie-auswertung.md)) und
   die Emission (slice-062/063).
 

@@ -122,7 +122,7 @@ prüft, ist ein stilles Grün im Gate — §3.1 eine Ebene tiefer. Die Regel ist
 | `make build` | Go-Binary cross-compilieren (Dockerfile-`build`-Stage) im gepinnten Image |
 | `make shell-lint` | Shell-Hooks/-Helfer lint-clean (shellcheck) im gepinnten Image |
 | `make ci-lint` | GitHub-Actions-Workflows syntax-clean (actionlint) im gepinnten Image (slice-027) |
-| `make comment-claims` | Kommentar-Behauptungen nennen ihren Sensor, und der genannte Test existiert (§3.6, hermetisch: bash+awk) |
+| `make comment-claims` | Kommentar-Behauptungen nennen ihren Sensor, und der genannte Test existiert (§3.6, hermetisch: bash+awk). **Prüfbereich = Index ohne Test-Dateien**, also enger als der Gate-Stempel: eine noch **untrackte** neue Datei zählt in den Stempel, aber nicht in die „N Datei(en) geprueft"-Zeile — Details in [`harness/README.md`](harness/README.md) |
 | `make span-emit-build` | Span-Emitter für die **Host**-Plattform bauen und in den gitignorierten Zustands-Bereich legen (slice-059; der Hook ruft ihn dort) |
 | `make span-check` | Der Emitter ist vorhanden **und** erzeugt für eine synthetische Payload einen Span, dessen Ablageort `git check-ignore` bestätigt ([`MR-018`](harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)) |
 | `make gates` | alle aktuell lauffähigen Gates |

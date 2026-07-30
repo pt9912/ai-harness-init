@@ -316,7 +316,13 @@ func TestDurationAndResultSize(t *testing.T) {
 	if s.ResultBytes == nil || *s.ResultBytes <= 0 {
 		t.Fatalf("result_bytes fehlt: %v", s.ResultBytes)
 	}
-	// Und der Kanarienvogel: vom Ergebnis darf NUR die Laenge in den Span.
+	// Und der Kanarienvogel: aus dem Ergebnis erreicht bei `Bash` NUR die Laenge den
+	// Span. Die frueher hier stehende unqualifizierte Fassung („vom Ergebnis darf NUR
+	// die Laenge in den Span") ist seit slice-060 DoD (2) falsch — bei `Agent` erreichen
+	// zusaetzlich die neun Werte der Positiv-Liste den Span (MR-018). Fuer JEDES
+	// Werkzeug gilt die Laenge, darueber hinaus nur die Positiv-Liste bei `Agent`
+	// (Review-Befund LOW-1 vom 2026-07-30; `make comment-claims` kann es nicht fangen,
+	// es nimmt `_test.go` aus).
 	b, err := json.Marshal(s)
 	if err != nil {
 		t.Fatal(err)

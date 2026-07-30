@@ -865,10 +865,10 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 | `duration_ms` | Optional | *Wie lange dauerte der Aufruf?* — aus der Payload übernommen. Ohne sie ist **Gleichzeitigkeit nicht entscheidbar**: ein Span trägt sonst nur seinen Abschluss, und zwei Ströme lassen sich nicht überlagern |
 | `result_bytes` | Optional | *Wie groß war das Ergebnis?* — **nur die Länge, nie der Inhalt**; gemessen wird die **JSON-Kodierung**, wie die Payload sie trägt (samt Anführungszeichen und Escapes), nicht die Zeichenzahl des Ergebnisses. Ohne sie ist nicht entscheidbar, ob ein **einzelner** Aufruf eine Ressourcenspitze erklärt |
 | `program`, `argc` | Optional | *Welches Programm lief?* — erstes Token und Argument-Anzahl, nie die Kommandozeile |
-| `spawned_role` | Optional | *Welche Rolle lief im Subagenten — auf wessen Rechnung geht sein Verbrauch?* — aus `tool_response.agentType`, gegen die sechs kanonischen Typnamen normalisiert. **Nie** aus `tool_input.subagent_type`: das ist die *Anforderung*, nicht der *Lauf*, und es liegt auf der Argument-Achse. Eigener Feldname, weil `agent_type`/`agent_role` schon den Typ des **laufenden** Agenten führen. Leer heißt unbekannt — dieselbe Lesevorschrift wie bei `agent_role` |
+| `spawned_role` | Optional | *Welche Rolle lief im Subagenten — auf wessen Rechnung geht sein Verbrauch?* — aus `tool_response.agentType`, gegen die sechs kanonischen Typnamen normalisiert. **Nie** aus `tool_input.subagent_type`: das ist die *Anforderung*, nicht der *Lauf*, und es liegt auf der Argument-Achse. Eigener Feldname, weil `agent_type`/`agent_role` schon den Typ des **laufenden** Agenten führen. **ABWESEND heißt UNBEKANNT, nie „rollenlos"** — dieselbe *Lesart* wie bei `agent_role`, aber ausdrücklich **nicht** dessen Draht-Form: `agent_role` ist **Pflicht** und steht als `""` in jeder Zeile, `spawned_role` ist `omitempty` und **fehlt** bei leerem Wert. Das ist Absicht und keine Nachlässigkeit — ein `"spawned_role":""` in jedem `Bash`-Span behauptete einen Subagenten, den es nicht gab; die Present-and-empty-Regel gilt für den Vierer-Block, den **jeder** Span trägt, nicht für ein Feld, das nur ein Werkzeug erzeugt. **Unterscheidbar bleibt es am Pflichtfeld `tool`:** ein `Agent`-Span **ohne** `spawned_role` ist ein Lauf mit *unbekannter* Rolle und gehört in den Sammelposten — eine Auswertung, die nach `spawned_role: ""` sucht, findet ihn nicht und darf ihn deshalb nicht aus der Bilanz fallen lassen (Review-Befund MEDIUM-2 vom 2026-07-30; bis dahin berief sich diese Zeile auf die `agent_role`-Vorschrift und sagte damit das Gegenteil dessen, was der Draht tut) |
 | `input_tokens`, `output_tokens` | Optional | *Wie teuer war dieser Subagenten-Lauf?* — die Verbrauchs-Achse, ohne die eine Token-Bilanz je Rolle eine Summe statt einer Rechnung ist |
-| `cache_creation_input_tokens`, `cache_read_input_tokens` | Optional | *Zahlte der Lauf den Cache oder nutzte er ihn?* — der Cache-Status, der bis 2026-07-29 als nicht erreichbar galt (Abweichung 1 unten) |
-| `total_tokens` | Optional | *Wie groß war der Lauf insgesamt?* — die Summe, die das **Werkzeug selbst** ausweist. **Ob** sie die Addition der vier Zähler ist, ist **nicht gemessen** (die Messung erfasste nur Schlüsselnamen und Wertlängen, nie Werte); eine Auswertung, die beides gegeneinander rechnet, prüft das zuerst |
+| `cache_creation_input_tokens`, `cache_read_input_tokens` | Optional | *Zahlte der Lauf den Cache oder nutzte er ihn?* — der Cache-Status, der bis 2026-07-29 als nicht erreichbar galt und seit 2026-07-30 für Subagenten-Läufe **erfasst** ist (Abweichung 1 unten, dort auf den Rest-Zustand zurückgeschnitten) |
+| `total_tokens` | Optional | *Wie groß war der Lauf insgesamt?* — die Summe, die das **Werkzeug selbst** ausweist. **Ob** sie die Addition der vier Zähler ist, war bis 2026-07-30 **nicht gemessen** (die Ist-Messung erfasste nur Schlüsselnamen und Wertlängen, nie Werte). Am eigenen Bestand nachgerechnet **ist** sie es, exakt und an **beiden** vorliegenden Zähler-Spans (2 + 6.040 + 427 + 217.418 = 223.887 sowie 2 + 2.746 + 913 + 222.231 = 225.892). Eine Auswertung addiert sie deshalb **nicht** zu den vier, sondern gegen sie — und wiederholt die Probe, sobald mehr Spans vorliegen (n = 2 ist kein Gesetz) |
 | `total_duration_ms` | Optional | *Wie lange lief der Subagent wirklich?* — **nicht** `duration_ms`: das misst den Aufruf, wie der Hook ihn sieht (gemessen 4 ms gegen 4.184 ms tatsächlicher Laufzeit) |
 | `total_tool_use_count` | Optional | *Wie viele Werkzeug-Aufrufe verursachte der Subagent?* — der Teiler, ohne den „Token je Aufruf" nicht rechenbar ist |
 | `model_version` | Optional | *Welches Modell verursachte die Kosten?* — das Modul-15-Label `model.version`, aus `tool_response.resolvedModel`, **strukturell begrenzt** (Länge und geschlossener Zeichensatz). Was die Gestalt eines Bezeichners nicht hat, wird **verworfen, nicht gekürzt** |
@@ -965,8 +965,22 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 - **Vier erklärte Abweichungen vom Modul-15-Pflicht-Minimum** (die ADR verlangt sie zu benennen,
   nicht wegzulassen):
-  1. **Cache-Status ist nicht erfasst — und auch nicht auflösbar.** Er liegt im Transkript des
-     Agenten-Werkzeugs, nicht in der Hook-Payload. Eine frühere Fassung trug den
+  1. **Cache-Status ist für Subagenten-Läufe im Vordergrund erfasst — für den Haupt-Kontext
+     und für Hintergrund-Läufe bleibt er unerreichbar.** Das ist der Rest-Zustand; die
+     Abweichung ist **verkleinert, nicht aufgehoben**, und die Überschrift sagt es jetzt
+     (bis 2026-07-30 stand hier *„nicht erfasst — und auch nicht auflösbar"*, während die
+     Feldtabelle oben die Cache-Zähler schon führte: derselbe Absatz und dieselbe Tabelle
+     sagten Gegenteiliges, Review-Befund MEDIUM-1). **Erfasst** sind
+     `cache_creation_input_tokens` und `cache_read_input_tokens` aus dem `usage`-Objekt der
+     `tool_response` eines Vordergrund-`Agent`-Aufrufs (gemessen 2026-07-29, erfasst seit
+     2026-07-30) — ohne Transkript und ohne Zugriff außerhalb des Repos. Eine Auswertung, die
+     die Cache-Hit-Rate aus Modul 15 rechnet, hat für Subagenten-Läufe also alles, was sie
+     braucht, und darf die Größe **nicht** als unerreichbar führen.
+     **Unerreichbar bleibt zweierlei, und das ist die fortbestehende Abweichung:** der
+     **Haupt-Kontext** (kein `Agent`-Aufruf umschließt ihn, seine Token stehen in keiner
+     Payload) und der **Hintergrund-Lauf** (liefert weder Zähler noch `agentType` — Festlegung 5
+     der Positiv-Liste oben).
+     **Warum nicht über das Transkript** — die frühere Quelle: eine frühere Fassung trug den
      `transcript_path` als **Zeiger** und überließ die Auflösung der Auswertung; der Zeiger ist
      am 2026-07-29 auf Entscheidung des Auftraggebers **entfernt** worden, und zwar samt dem
      Lesen des Feldes. Der Grund ist keine Sparsamkeit: das Transkript liegt **außerhalb des
@@ -975,14 +989,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) lässt diese Wahl
      ausdrücklich offen (*„ob ein Span, der den `transcript_path` trägt … den Mindestsatz
      erfüllt oder von ihm abweicht, entscheidet der umsetzende Slice"*) — es ist damit eine
-     **erklärte Abweichung**, keine Regelverletzung. **Die andere Quelle ist inzwischen gemessen** (2026-07-29): ein
-     `Agent`-Aufruf im **Vordergrund** trägt in `tool_response` ein `usage`-Objekt mit allen
-     vier Zählern. Der Cache-Status ist damit **für Subagenten-Läufe** erreichbar — ohne
-     Transkript und ohne Zugriff außerhalb des Repos. **Erfasst wird er dadurch noch nicht:**
-     die *Messung* ist belegt, die *Erfassung* ist es nicht — erfasst ist er erst, wenn diese
-     Feldtabelle die Cache-Zähler führt. Bis dahin sagt die Tabelle selbst, wo es steht; eine
-     Aussage über das Lifecycle-Verzeichnis eines Slice stünde hier falsch, sobald er umzieht. **Nicht** erreichbar bleibt er für den
-     Haupt-Kontext und für Hintergrund-Läufe; insoweit gilt die Abweichung fort.
+     **erklärte Abweichung**, keine Regelverletzung.
   2. **Die PR-NUMMER steht nicht im Span, ihr Anker schon.** Modul 15 verlangt die
      Korrelation zu *Slice/PR/Agent-Rolle*. Eine PR-Nummer lebt bei der Forge; der
      Emitter geht nicht ins Netz und ruft kein `gh` (er läuft je Tool-Call). Erfasst
@@ -1094,21 +1101,42 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   `Agent`s `tool_input` erreicht nichts den Span, und `Agent` liegt auf keiner
   Gattungszeile), `TestSpawnedRoleIsNormalised`,
   `TestResolvedModelIsStructurallyBounded` und `TestFailedAgentCallCapturesNothing`;
-  dazu **fünf** Zähne in `test/mutations/`:
+  dazu **sieben** Zähne in `test/mutations/`:
   `test/mutations/123-span-ergebnis-content.sh`,
   `test/mutations/124-span-ergebnis-prompt.sh`,
   `test/mutations/125-span-ergebnis-description.sh` und
   `test/mutations/126-span-ergebnis-outputfile.sh` (je ein Freitext-Feld in die
-  Positiv-Liste aufgenommen) sowie
+  Positiv-Liste aufgenommen),
   `test/mutations/127-span-positivliste-negiert.sh` (die Liste **negiert**: alles außer
-  den vier wandert durch). Der fünfte ist der tragende: vier namentliche Fälle
-  unterscheiden eine Positiv-Liste **nicht** von einer Implementierung, die genau diese
-  vier ausfiltert.
-  **Was kein `test/mutations/`-Fall deckt, und darum hier steht:** die Normalisierung von
-  `spawned_role` und die Schranke um `model_version` sind je einmal rot gesehen worden
-  (Implementations-Bericht vom 2026-07-30), stehen als **Dauer**-Sensor aber nur in den
-  beiden Go-Wächtern oben — sie können ihre Zähne also verlieren, ohne dass `make mutate`
-  es meldet.
+  den vier wandert durch),
+  `test/mutations/128-span-rolle-unnormalisiert.sh` (die Normalisierung entfernt — danach
+  steht `general-purpose` als Rolle im Span, die erfundene Kostenstelle, die die
+  Lesevorschrift verbietet) und
+  `test/mutations/129-span-modellschranke-kuerzt.sh` (die Schranke **kürzt statt zu
+  verwerfen** — die feinere der beiden Zusagen aus Festlegung 4 der Positiv-Liste, und sie
+  impliziert die gröbere). **127 ist der tragende:** vier namentliche Fälle unterscheiden eine
+  Positiv-Liste **nicht** von einer Implementierung, die genau diese vier ausfiltert.
+  **Seine Grenz-Zusicherung ist eindeutig an ihn gebunden**, und das ist gemessen: mit
+  entferntem `mustNotContain`-Block meldet der Treiber ihn als **Befund** (*„rot, aber …
+  fällt nicht — falscher Grund"*), nicht als „ok" — bis 2026-07-30 blieb er dort „ok",
+  weil die Gegenprobe desselben Wächters `model_version` mitprüfte und die Senke des Falls
+  genau dieses Feld ist (Review-Befund MEDIUM-4).
+  **Die zwei zuletzt ergänzten Zähne haben eine Vorgeschichte, die hierher gehört:** bis
+  2026-07-30 stand an dieser Stelle, die Normalisierung von `spawned_role` und die
+  Schranke um `model_version` seien „je einmal rot gesehen worden", und als Beleg war ein
+  *Implementations-Bericht vom 2026-07-30* genannt — ein Artefakt, das im Repo **nie
+  existierte** und auch in keiner Commit-Message stand (Review-Befund MEDIUM-3). Der
+  Beleg ist jetzt der Lauf selbst: Fall 128 und Fall 129 sind am 2026-07-30 einzeln über
+  den `run_case`-Pfad des Treibers gefahren und **rot gesehen** (Grün-Vorlauf und
+  -Nachlauf grün, Host-Baum unberührt), und sie wiederholen die Messung bei jedem
+  `make mutate`. Damit ist zugleich die Lücke geschlossen, die derselbe Absatz benannte:
+  die beiden Wächter hatten keinen **Dauer**-Sensor.
+  **Die Draht-Form von `spawned_role`** — abwesend statt `""`, und damit die Lesevorschrift,
+  die darauf ruht — bewachen `TestAgentGetsNoArgumentFields` und
+  `TestFailedAgentCallCapturesNothing` an der geschriebenen Zeile; ihre **Voraussetzung**,
+  dass `tool` Pflicht bleibt und ein `Agent`-Span deshalb als solcher erkennbar ist, bewacht
+  `TestMandatoryFieldsAlwaysPresent` mit dem Zahn
+  `test/mutations/110-span-pflichtfeld-verschwindet.sh`.
 - **Auflösungs-Trigger:** permanent, solange Spans erfasst werden. Die Tabelle ändert sich mit
   jedem neuen Feld — jede Änderung ist ein Eintrag hier, kein Nebeneffekt im Skript.
 
