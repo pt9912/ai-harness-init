@@ -9,6 +9,15 @@
                         "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/pretooluse-command-guard.sh"
                     }
                 ]
+            },
+            {
+                "matcher": "Agent",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/pretooluse-agent-guard.sh"
+                    }
+                ]
             }
         ],
         "PostToolUse": [
