@@ -359,7 +359,7 @@ func acquire(path string) (*os.File, error) {
 
 // writeOwnerOnly schreibt und zieht den Modus nach. os.WriteFile setzt den Modus nur
 // beim ANLEGEN; ein aus einer frueheren Fassung stammender Zaehler mit zu weitem Modus
-// bliebe sonst dauerhaft zu weit (Verifier-Befund).
+// bliebe sonst dauerhaft zu weit.
 func writeOwnerOnly(file string, data []byte) error {
 	if err := os.WriteFile(file, data, 0o600); err != nil {
 		return err

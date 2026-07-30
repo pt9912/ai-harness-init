@@ -22,7 +22,7 @@
 //
 // Was `forbidigo` (make lint) beitraegt, ist WENIGER als die Eigenschaft: es verbietet
 // die Form `fmt.Print*`, nicht das Schreiben nach stdout. `os.Stdout.Write`,
-// `fmt.Fprintln(os.Stdout, …)` und das eingebaute `println` passieren es (MEDIUM-4).
+// `fmt.Fprintln(os.Stdout, …)` und das eingebaute `println` passieren es.
 // Die Eigenschaft haengt an den zwei Faellen oben, nicht am Linter.
 package main
 

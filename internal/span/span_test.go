@@ -94,8 +94,8 @@ func TestUnknownToolStaysSilent(t *testing.T) {
 		`{"tool_name":"","tool_input":{"command":"rm -rf /","file_path":"/tmp/y"}}`,
 		`{"tool_input":{"command":"curl https://evil.example","file_path":"/tmp/z"}}`,
 		// BashOutput sieht aus wie ein Kommando-Werkzeug, ist aber keins: seine
-		// Eingabe ist eine Shell-Kennung. Es gehoert deshalb NICHT in die Tabelle
-		// strukturell nie eintreten kann.
+		// Eingabe ist eine Shell-Kennung. Es gehoert deshalb NICHT in die Tabelle: ein
+		// Kommando-Eintrag dafuer waere eine Zusage, die strukturell nie eintreten kann.
 		`{"tool_name":"BashOutput","tool_input":{"command":"rm -rf /","bash_id":"x"}}`,
 	}
 	for _, payload := range payloads {
@@ -115,9 +115,9 @@ func TestUnknownToolStaysSilent(t *testing.T) {
 	}
 }
 
-// TestCommandProgramSkipsAssignments deckt zwei Befunde: HIGH-7 (eine
-// Inline-Env-Zuweisung landete verbatim als "program") und LOW-2 (argc zaehlte
-// Felder statt Argumente).
+// TestCommandProgramSkipsAssignments deckt zwei Faelle: eine Inline-Env-Zuweisung, die
+// sonst verbatim als "program" landet, und argc, das sonst Felder statt Argumente
+// zaehlt.
 func TestCommandProgramSkipsAssignments(t *testing.T) {
 	cases := []struct {
 		cmd      string
@@ -259,7 +259,7 @@ func TestConcurrentEmittersGetDistinctSeq(t *testing.T) {
 	}
 }
 
-// TestModeIsOwnerOnly deckt LOW-3: der Modus steht vor dem ersten Byte, und ein
+// TestModeIsOwnerOnly deckt: der Modus steht vor dem ersten Byte, und ein
 // bestehender Strom mit zu weitem Modus wird korrigiert.
 func TestModeIsOwnerOnly(t *testing.T) {
 	root := newRoot(t)
@@ -285,7 +285,7 @@ func TestModeIsOwnerOnly(t *testing.T) {
 	}
 }
 
-// TestSpansLandInStateDir haelt die Kopplung an den gitignorierten Ort fest
+// TestSpansLandInStateDir haelt die Kopplung an den gitignorierten Ort fest.
 // Die zweite Haelfte der Eigenschaft — dass .gitignore
 // genau diesen Ort deckt — misst harness/tools/span-check.sh am realen Repo.
 func TestSpansLandInStateDir(t *testing.T) {
@@ -367,7 +367,7 @@ func TestSpanDirIsTraversable(t *testing.T) {
 	}
 
 	// Und der Fall, der real eintrat: ein BESTEHENDES Verzeichnis aus einer frueheren
-	// Fassung mit 0700. MkdirAll fasst es nicht an — der Modus muss nachgezogen werden
+	// Fassung mit 0700. MkdirAll fasst es nicht an — der Modus muss nachgezogen werden.
 	// Gemessen wird deshalb auch der Altbestand, nicht nur der frisch angelegte Fall.
 	zweite := newRoot(t)
 	if err := os.MkdirAll(filepath.Join(zweite, span.Dir), 0o700); err != nil {
@@ -469,8 +469,8 @@ func TestCorrelationFromLifecycle(t *testing.T) {
 		t.Fatalf("requirement = %v (nur der Bezug-Block zaehlt)", s.Requirement)
 	}
 	// adr.id ist die dritte ableitbare Korrelations-Achse aus Modul 15 Kernidee. Sie
-	// fehlte zuerst ganz — weder erfasst noch als Abweichung erklaert (MEDIUM-7),
-	// obwohl sie im selben Block steht wie requirement.id.
+	// fehlte zuerst ganz — weder erfasst noch als Abweichung erklaert, obwohl sie im
+	// selben Block steht wie requirement.id.
 	if strings.Join(s.Adr, ",") != "ADR-0003,ADR-0011" {
 		t.Fatalf("adr = %v (nur der Bezug-Block zaehlt)", s.Adr)
 	}
@@ -552,7 +552,7 @@ func TestLeftoverLockDirectoryDoesNotBlock(t *testing.T) {
 
 // TestUnresolvableGitRefStillCarriesFields ist der Worktree-Fall: dort ist `.git` eine
 // DATEI, die Ableitung schlaegt fehl — und MR-018 sagt fuer diesen Fall "leer und als
-// leer erkennbar" zu. Mit `omitempty` verschwanden die Schluessel stattdessen ganz
+// leer erkennbar" zu. Mit `omitempty` verschwanden die Schluessel stattdessen ganz.
 // Der Unterschied ist der zwischen "unbekannt" und "nicht
 // vorhanden", und genau den soll ein Audit-Schema tragen.
 func TestUnresolvableGitRefStillCarriesFields(t *testing.T) {
@@ -573,7 +573,7 @@ func TestUnresolvableGitRefStillCarriesFields(t *testing.T) {
 
 // TestNoCommandArgumentsReachSpan ist der Kanarienvogel fuer KOMMANDO-Werkzeuge,
 // gemessen an der GESCHRIEBENEN ZEILE statt am Rueckgabewert einer Funktion. Die
-// abgeloeste bats-Fassung hatte ihn, die erste Go-Fassung liess ihn ersatzlos entfallen
+// abgeloeste bats-Fassung hatte ihn, die erste Go-Fassung liess ihn ersatzlos entfallen.
 // Geprueft wurden sonst nur Programm-Token, Write-Inhalte und
 // unbekannte Werkzeuge — nie die Argumente eines BEKANNTEN Werkzeugs.
 func TestNoCommandArgumentsReachSpan(t *testing.T) {
