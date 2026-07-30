@@ -868,7 +868,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 | `spawned_role` | Optional | *Welche Rolle lief im Subagenten — auf wessen Rechnung geht sein Verbrauch?* — aus `tool_response.agentType`, gegen die sechs kanonischen Typnamen normalisiert. **Nie** aus `tool_input.subagent_type`: das ist die *Anforderung*, nicht der *Lauf*, und es liegt auf der Argument-Achse. Eigener Feldname, weil `agent_type`/`agent_role` schon den Typ des **laufenden** Agenten führen. Leer heißt unbekannt — dieselbe Lesevorschrift wie bei `agent_role` |
 | `input_tokens`, `output_tokens` | Optional | *Wie teuer war dieser Subagenten-Lauf?* — die Verbrauchs-Achse, ohne die eine Token-Bilanz je Rolle eine Summe statt einer Rechnung ist |
 | `cache_creation_input_tokens`, `cache_read_input_tokens` | Optional | *Zahlte der Lauf den Cache oder nutzte er ihn?* — der Cache-Status, der bis 2026-07-29 als nicht erreichbar galt (Abweichung 1 unten) |
-| `total_tokens` | Optional | *Wie groß war der Lauf insgesamt?* — die Summe des Werkzeugs, gegen die die vier Zähler plausibilisierbar sind (sie ist nicht deren Addition) |
+| `total_tokens` | Optional | *Wie groß war der Lauf insgesamt?* — die Summe, die das **Werkzeug selbst** ausweist. **Ob** sie die Addition der vier Zähler ist, ist **nicht gemessen** (die Messung erfasste nur Schlüsselnamen und Wertlängen, nie Werte); eine Auswertung, die beides gegeneinander rechnet, prüft das zuerst |
 | `total_duration_ms` | Optional | *Wie lange lief der Subagent wirklich?* — **nicht** `duration_ms`: das misst den Aufruf, wie der Hook ihn sieht (gemessen 4 ms gegen 4.184 ms tatsächlicher Laufzeit) |
 | `total_tool_use_count` | Optional | *Wie viele Werkzeug-Aufrufe verursachte der Subagent?* — der Teiler, ohne den „Token je Aufruf" nicht rechenbar ist |
 | `model_version` | Optional | *Welches Modell verursachte die Kosten?* — das Modul-15-Label `model.version`, aus `tool_response.resolvedModel`, **strukturell begrenzt** (Länge und geschlossener Zeichensatz). Was die Gestalt eines Bezeichners nicht hat, wird **verworfen, nicht gekürzt** |
@@ -933,7 +933,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      Zählern ein `model_version`, ist die Schranke zu eng geraten und wird **hier**
      geweitet, nicht im Code aufgeweicht.
   5. **Die Zähler kommen nur im Vordergrund an.** Ein Hintergrund-Lauf liefert weder
-     Zähler noch `agentType`, sondern `agentId`, `isAsync`, `outputFile`,
+     Zähler noch `agentType`, dafür u. a. `agentId`, `isAsync`, `outputFile` und
      `canReadOutputFile` (gemessen); die Erfassung ist insoweit konstruktiv unvollständig.
      Die Start-Konvention, die den Vordergrund herstellt, und die erklärte Abweichung
      dazu sind DoD (1) und DoD (3) von slice-060 und **stehen noch aus** — bis dahin ist
