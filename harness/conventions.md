@@ -1093,8 +1093,10 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      3. **Was er nicht deckt — und erst das ist die Abweichung.** (a) Ein Typ **ohne**
         Datei in `.claude/agents/` ist keine Rolle: `general-purpose`, `Explore` und die
         übrigen eingebauten Typen laufen im Hintergrund durch, **absichtlich** — sie
-        tragen ohnehin keine Rolle in den Span. Ihre `Agent`-Spans stehen mit Name und
-        Status da, ohne einen der neun Werte. (b) Der Guard ist eine Verdrahtung in
+        tragen ohnehin keine Rolle in den Span. Ihre `Agent`-Spans tragen von den neun
+        Werten genau **einen**: `model_version`, weil `resolvedModel` auch im
+        Hintergrund gesetzt ist. Ein Etikett ohne Zahl — die **acht** Werte an
+        `usage`/`total*`/`agentType` fehlen. (b) Der Guard ist eine Verdrahtung in
         `.claude/settings.json`; er kann fehlen, abgeschaltet oder umgangen sein, und
         **kein Sensor dieses Repos prüft, dass er verdrahtet ist** — gemessen am
         2026-07-31 über `test/**`, `Makefile`, `harness/tools/*.sh` und die Go-Tests: die
