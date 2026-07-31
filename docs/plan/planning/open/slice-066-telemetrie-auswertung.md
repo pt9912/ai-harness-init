@@ -59,9 +59,7 @@ Auswertung über den vorhandenen Bestand, aufrufbar als `make`-Ziel.
   Zähler trugen. **Nicht**, weil die Vordergrund-Konvention aus slice-060 sensorlos wäre — sie
   bekommt dort einen `PreToolUse`-Guard —, sondern weil ein Guard **fehlen, abgeschaltet oder
   umgangen** sein kann und ein Hintergrund-Start dann lautlos ausfällt. Ohne diese Zahl liest
-  sich eine unvollständige Erhebung wie eine vollständige. (Eine frühere Fassung behauptete hier
-  das Gegenteil von slice-060 — der Satz war in slice-060 zurückgezogen und hier stehen
-  geblieben.)
+  sich eine unvollständige Erhebung wie eine vollständige.
   **Die Bezugsgröße der Abdeckungszahl kommt aus einer anderen Quelle als der Zähler.** Zählte
   die Abdeckungszahl beide Größen aus denselben Spans, prüfte sie sich selbst. Das Ereignis
   **`SubagentStart`** feuert je Spawn und trägt `agent_type` (Referenz, §SubagentStart) — es kann
