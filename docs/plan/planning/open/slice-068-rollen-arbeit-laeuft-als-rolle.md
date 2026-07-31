@@ -70,12 +70,13 @@ es nicht.
      auf einer Schranke, die niemand vermessen hat. Beide Ausgänge sagen dasselbe: die
      Definition muss an den **Zählern** hängen.
 - [ ] **(3) Die Welle-Aussage steht als Festlegung, nicht als Zelle.** welle-09 verlangt je
-  Matrix-Zelle *„entweder einen laufenden Sensor oder eine deklarierte Entscheidung mit
-  Auflösungs-Trigger, und nichts dazwischen"*. Für *Token-Attribution × Repo* ist heute genau
-  **dazwischen**. Dieser Slice schreibt die **Festlegung**, dass die Zelle **deklarierte
-  Entscheidung** trägt und nicht „Sensor" — ein Bericht ist kein Wächter. **Ihre Belegart ist
-  zweigeteilt, und das gehört in die Festlegung:** der Hintergrund-Teil (Abweichung 5) trägt
-  einen Auflösungs-Trigger, der Haupt-Kontext dagegen das Verdikt *permanent* aus
+  Matrix-Zelle *„einen laufenden Sensor, eine deklarierte Entscheidung mit Auflösungs-Trigger
+  oder das Verdikt einer ADR, dass die Abweichung permanent ist; und nichts dazwischen"*. Für
+  *Token-Attribution × Repo* ist heute genau **dazwischen**. Dieser Slice schreibt die
+  **Festlegung**, dass die Zelle keinen „Sensor" trägt — ein Bericht ist kein Wächter — und
+  welchen der übrigen Werte sie je Abweichung führt. **Ihre Belegart ist zweigeteilt, und das
+  gehört in die Festlegung:** der Hintergrund-Teil (Abweichung 5) trägt **deklariert** samt
+  Auflösungs-Trigger, der Haupt-Kontext das **ADR-Verdikt** *permanent* aus
   [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) — dort fällt der Trigger nach
   Modul 7 §Werkzeug-Wahl weg. Wer die Zelle mit einem Trigger für **beides** ausfüllt, schreibt
   einen hin, den es nicht mehr gibt. Die Zelle selbst entsteht bei der Wellen-Closure in
@@ -117,6 +118,7 @@ dieser Notiz ableiten.
 |---|---|---|
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | die Konvention aus DoD (1) und die Festlegungen aus DoD (2)/(3) in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung); der Zeiger von der Start-Konvention hierher wird eingelöst |
 | [`slice-066`](slice-066-telemetrie-auswertung.md) | update | die Definition des Sammelposten-Anteils an den **Zählern** statt an „irgendeinem Wert"; die Lesart als Konventions-Messgröße |
+| [welle-09](../welle-09-modul-15-konformitaet.md) | update | DoD (3) legt die Belegart der Zelle *Token-Attribution × Repo* fest. Der Welle-Plan führt dieselbe Aussage an zwei Stellen — in der Wert-Tabelle seines Closure-Triggers und in der Slice-Zeile zu diesem Slice. Kommt die Festlegung anders heraus als dort beschrieben, ziehen beide Stellen nach; sonst steht dieselbe Aussage zweimal verschieden im Repo |
 
 **Kein Code, kein neuer Wächter.** Das ist beabsichtigt; der Grund steht in §6.
 

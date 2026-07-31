@@ -14,8 +14,8 @@ Status-Feld. Ob eine flache Welle *aktuell* oder *geplant* ist, sagt die Roadmap
 ## 1. Welle-Ziel
 
 **Jeder der vier Regelblöcke von `modul-15-observability.md` trägt am Ende — auf BEIDEN Ebenen —
-entweder einen laufenden Sensor oder eine deklarierte Entscheidung mit Auflösungs-Trigger, und
-nichts dazwischen.** Die beiden Ebenen sind:
+einen laufenden Sensor, eine deklarierte Entscheidung mit Auflösungs-Trigger oder das Verdikt
+einer ADR, dass die Abweichung permanent ist; und nichts dazwischen.** Die beiden Ebenen sind:
 
 1. **das Repo** (Dogfood: was hier läuft) und
 2. **das Tool** (was `ai-harness-init` ins Ziel-Repo emittiert).
@@ -87,14 +87,19 @@ Modul-15-Block-4.
 - Alle Slices dieser Welle in `done/`.
 - **Je Regelblock UND je Ebene ein belegter Zustand** — die Closure-Tabelle in
   `welle-09-results.md` ist eine **4 × 2-Matrix** (vier Blöcke × {Repo, Tool}), jede Zelle mit
-  genau einem von drei Werten und dem Kommando daneben:
+  einem Wert aus der Tabelle unten und dem Kommando daneben. Welche Werte in Frage kommen, hängt
+  an der Spalte: **Sensor** und **deklariert** gelten der Repo-Spalte, **emittiert** und **nicht
+  emittiert** der Tool-Spalte, **ADR-Verdikt** beiden — permanent ist eine Eigenschaft der
+  Abweichung, nicht der Ebene. Bündelt eine Zelle mehrere Abweichungen, nennt sie den Wert **je
+  Abweichung**; die Zelle *Token-Attribution × Repo* ist genau dieser Fall (slice-068 DoD (3)).
 
   | Wert | Bedeutung |
   |---|---|
   | **Sensor** | läuft real, mit `test/mutations/`-Fall ([`AGENTS.md`](../../../AGENTS.md) §3.6) |
   | **deklariert** | bewusste Nicht-Umsetzung als `MR-<NNN>` — Geltungsbereich, Begründung, **Auflösungs-Trigger** |
+  | **ADR-Verdikt** | die Abweichung ist **permanent** und in einer ADR entschieden — Geltungsbereich und Begründung wie bei „deklariert", aber **ohne Auflösungs-Trigger**: Modul 7 §Werkzeug-Wahl lässt ihn auf dem ADR-Pfad wegfallen. An seiner Stelle nennt die Zelle die Re-Evaluierungs-Trigger der ADR, die niemand herbeiführt, sondern bemerkt. Erster Fall: [`ADR-0012`](../adr/0012-haupt-kontext-ohne-token-bilanz.md) |
   | **emittiert** | im Ziel vorhanden **und dort rot gesehen** (s. u.) |
-  | **nicht emittiert** | begründete Entscheidung **mit Auflösungs-Trigger** — dieselbe Pflicht wie bei „deklariert"; eine Entscheidung ohne Trigger ist nach Modul 7 die permanente Ausnahme, die lügt |
+  | **nicht emittiert** | begründete Entscheidung **mit Auflösungs-Trigger** — dieselbe Pflicht wie bei „deklariert"; eine Entscheidung, die sich ohne Trigger als temporär ausgibt, ist nach Modul 7 die permanente Ausnahme, die lügt. Ist sie wirklich permanent, gehört sie in eine ADR und die Zelle trägt „ADR-Verdikt" |
 
   Eine leere Zelle ist ein offener Closure-Trigger — kein „passt schon".
 - **Die Tool-Spalte braucht ihren eigenen Beleg, und „grün" genügt nicht.** Ein emittierter
@@ -111,18 +116,27 @@ Modul-15-Block-4.
 
 ## 4. Slices in dieser Welle
 
-Geschnitten sind slice-059 (**done**), slice-060, slice-066 und slice-068; die übrigen bekommen ihre Datei
-per `cp`, wenn sie an der Reihe sind (cp-Disziplin — ein leeres `open/` ist ehrlicher als eine
-driftende Vorplanung).
+Geschnitten sind slice-059 (**done**), slice-060, slice-066, slice-068 und slice-071; die übrigen
+bekommen ihre Datei per `cp`, wenn sie an der Reihe sind (cp-Disziplin — ein leeres `open/` ist
+ehrlicher als eine driftende Vorplanung).
 
-**Warum zwei Slices statt eines für die Blöcke 2–3** (Schnitt-Korrektur vom 2026-07-29, auf
-Nutzer-Befund): `agent_role` ist heute in **jedem** Span leer. Eine Token-Bilanz hätte damit
-genau zwei namenlose Eimer — `general-purpose` und den Haupt-Kontext — und wäre eine Summe, keine
-Rechnung. Die Rollen-Achse ist deshalb **Vorbedingung**, nicht Teilaufgabe. Sie ist zudem ein
-eigener Liefergegenstand mit eigener Vertragsfläche: sie berührt `.claude/agents/` und den
-`PreToolUse`-Guard. **Nicht** die emittierte Seite — ob die Rollen-Typen in die Ziel-Repos
-mitgehen, entscheidet slice-062 (slice-060 Frage B); eine frühere Fassung dieses Absatzes zog sie
-hier bereits ein.
+**Warum die Rollen-Achse ein eigener Slice vor der Auswertung ist:** `agent_role` ist heute in
+**jedem** Span leer. Eine Token-Bilanz hätte damit genau zwei namenlose Eimer —
+`general-purpose` und den Haupt-Kontext — und wäre eine Summe, keine Rechnung. Die Rollen-Achse
+ist deshalb **Vorbedingung**, nicht Teilaufgabe. Sie ist zudem ein eigener Liefergegenstand mit
+eigener Vertragsfläche: sie berührt `.claude/agents/` und den `PreToolUse`-Guard. **Nicht** die
+emittierte Seite — ob die Rollen-Typen in die Ziel-Repos mitgehen, entscheidet slice-062
+(slice-060 Frage B).
+
+**Warum Block 2 und Block 3 getrennte Slices sind.** Die Closure-Matrix führt sie als zwei
+Zellen, und sie beantworten zwei Fragen: *wer hat wie viel verbraucht* (Token-Attribution, Block
+2, slice-066) und *was hat der Cache getragen* (Cache-Counter, Block 3, slice-071). Jede trägt
+ihre eigenen Pflicht-Angaben, ihre eigene Festlegung in
+[`harness/conventions.md`](../../../harness/conventions.md) und ihren eigenen Zahn. In einem
+Slice zusammen waren es mehr Zusagen, als Modul 5 §Ziel-Form einem Schnitt zugesteht — die
+Nenner-Angabe aus [`ADR-0012`](../adr/0012-haupt-kontext-ohne-token-bilanz.md) hätte als vierter
+DoD-Punkt danebengestanden. Keiner der beiden wartet auf den anderen: beide setzen auf slice-060
+auf, nicht aufeinander, und wer zuerst läuft, legt das gemeinsame `make`-Ziel an.
 
 **Beide Ebenen sind drin — Repo und Tool.** Die erste Fassung dieses Plans schob die Tool-Ebene
 unter „aufgeschoben"; auf Nutzer-Entscheidung vom 2026-07-28 gehört sie zur Welle (slice-062/063).
@@ -135,8 +149,9 @@ nur noch, was wirklich ausgeschlossen ist.
 |---|---|---|---|
 | slice-059 | Repo | **Erfassung**: Spans per Agenten-Hook (Block 1) | [`MR-002`](../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) |
 | slice-060 | Repo | **Rollen-Achse**: rollen-benannte Agenten-Typen + Nutzungstelemetrie der Subagenten | [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) |
-| slice-066 | Repo | **Auswertung**: Token-Bilanz je Rolle + getrennte Cache-Zähler (Blöcke 2–3) — setzt auf slice-060 auf | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
-| slice-068 | Repo | **Rollen-Arbeit läuft als Rolle**: die Konvention wird vollständig (was, nicht nur wie) + die Berichtsgröße, an der sie ablesbar ist — legt für die Matrix-Zelle *Token-Attribution × Repo* fest, dass sie „deklarierte Entscheidung mit Trigger" trägt. Die Haupt-Kontext-Abweichung selbst hat slice-060 DoD (3) geliefert | keine `LH-*` (Dogfood-Prozessebene; im Slice begründet) |
+| slice-066 | Repo | **Auswertung**: Token-Bilanz je Rolle, die ihren Nenner nennt (Block 2) — setzt auf slice-060 auf | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-071 | Repo | **Cache-Rechnung**: die drei Counter getrennt, mit allen vier Angaben je Counter (Block 3) — setzt auf slice-060 auf | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-068 | Repo | **Rollen-Arbeit läuft als Rolle**: die Konvention wird vollständig (was, nicht nur wie) + die Berichtsgröße, an der sie ablesbar ist — legt für die Matrix-Zelle *Token-Attribution × Repo* fest, dass ihre Belegart **zweigeteilt** ist: der Hintergrund-Teil trägt „deklariert" mit Auflösungs-Trigger, der Haupt-Kontext das „ADR-Verdikt" aus [`ADR-0012`](../adr/0012-haupt-kontext-ohne-token-bilanz.md) ohne Trigger. Die Haupt-Kontext-Abweichung selbst hat slice-060 DoD (3) geliefert | keine `LH-*` (Dogfood-Prozessebene; im Slice begründet) |
 | slice-061 | Repo | **Doku-Konsistenz**: behauptete Befehle existieren (Block 4) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | slice-062 | **Tool** | **Entscheidung**: welche Modul-15-Regeln gehören in den emittierten Harness? (ADR + CR) | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
 | slice-063 | **Tool** | **Emission**: das Entschiedene emittieren, out-of-the-box grün belegt | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
@@ -151,14 +166,16 @@ Emitter läuft an `PostToolUse`/`PostToolUseFailure` und schreibt je Tool-Call e
 Korrelations-Achsen. Der `PreToolUse`-Guard, den eine frühere Fassung hier als Erfassungsort
 nannte, ist es **nicht** — er entscheidet und behält nichts.
 
-**Zu slice-066 (dem Auswerter):** die Rohdaten sind real vorhanden, und die Quelle ist seit dem
-2026-07-29 **gemessen** statt vermutet — ein `Agent`-Aufruf im **Vordergrund** trägt in
+**Zu slice-066 und slice-071 (der Auswertung):** die Rohdaten sind real vorhanden, und die
+Quelle ist **gemessen** statt vermutet — ein `Agent`-Aufruf im **Vordergrund** trägt in
 `tool_response` ein `usage`-Objekt mit getrennten Hit-/Miss-Zählern
 (`cache_read_input_tokens` vs. `cache_creation_input_tokens`), also genau die Trennung, auf der
-Modul 15 besteht. **Nicht** aus Sitzungs-Transkripten: eine frühere Fassung dieses Absatzes
-begründete die Datenlage damit, während beide Slices den Zugriff außerhalb des Repos
-ausschließen. Das bequeme Argument „kein Gegenstand" ist damit ausgeschlossen; offen ist die
-Zuordnung zur **Rolle** (slice-060), nicht die Datenlage.
+Modul 15 besteht. **Nicht** aus Sitzungs-Transkripten — beide Slices schließen jeden Zugriff
+außerhalb des Repos aus. Das bequeme Argument „kein Gegenstand" ist damit ausgeschlossen; offen
+ist die Zuordnung zur **Rolle** (slice-060), nicht die Datenlage. **Was die Zahlen NICHT
+abdecken**, steht in [`ADR-0012`](../adr/0012-haupt-kontext-ohne-token-bilanz.md): der
+Haupt-Kontext trägt keine, dauerhaft — deshalb nennt jede Bilanz aus diesem Bestand ihren
+Nenner (slice-066 DoD (2)).
 
 **Warum die Repo-Seite zuerst kommt — und die Tool-Seite nicht bloß „danach".** Das Repo ist der
 Prüfstand: was wir ins Ziel legen, haben wir hier erprobt (dieselbe Linie wie

@@ -1,6 +1,6 @@
 # Roadmap
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-07-27.
+**Status:** Aktiv. **Letzte Änderung:** 2026-07-31.
 
 **Format-Regel:** Die Roadmap ist eine Reihenfolge von **Wellen**,
 keine Reihenfolge von Terminen (siehe
@@ -15,15 +15,17 @@ gezeigt, nicht als Treiber.
 **[welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)**, geschnitten am 2026-07-28.
 
 **Slices:** geschnitten sind `slice-059` (Erfassung) · `slice-060` (Rollen-Achse) ·
-`slice-066` (Auswertung) · `slice-068` (Rollen-Arbeit läuft als Rolle);
+`slice-066` (Token-Bilanz) · `slice-071` (Cache-Rechnung) · `slice-068` (Rollen-Arbeit läuft als
+Rolle);
 `slice-061`–`slice-064` sind in §4 der Welle benannt, aber **nicht** geschnitten (cp-Disziplin). Ihr Lifecycle-Zustand ist ihr Verzeichnis, nicht diese Zeile.
 
 **Trigger:** Nutzer-Befund — Modul 15 ist seit `554cade` adoptiert und in keinem Block umgesetzt.
 Herleitung und die zwei Korrekturen am Schnitt stehen im Closure-Log (2026-07-28).
 
 **Closure-Kriterium:** eine **4 × 2-Matrix** — vier Regelblöcke × {Repo, Tool}, je Zelle ein
-laufender Sensor **oder** eine deklarierte Entscheidung mit Auflösungs-Trigger, nichts dazwischen;
-eine leere Zelle ist ein offener Trigger. Zwei Ebenen, weil das Tool das Regelwerk ins Ziel
+laufender Sensor, eine deklarierte Entscheidung mit Auflösungs-Trigger **oder** das Verdikt einer
+ADR, dass die Abweichung permanent ist; nichts dazwischen, und eine leere Zelle ist ein offener
+Trigger. Zwei Ebenen, weil das Tool das Regelwerk ins Ziel
 emittiert: nur die Dogfood-Seite zu schließen hieße, ein Repo zu reparieren und die Lücke an
 jedes andere weiterzuliefern.
 
@@ -87,6 +89,7 @@ flowchart LR
 
 | Datum | Was wurde geändert? | Warum? |
 |---|---|---|
+| 2026-07-31 | **slice-066 re-geschnitten** in `slice-066` (Token-Bilanz je Rolle, Block 2) und **`slice-071`** (Cache-Rechnung, Block 3); [welle-09](../welle-09-modul-15-konformitaet.md) kennt als weitere Belegart das **ADR-Verdikt** — permanente Abweichung, in einer ADR entschieden, ohne Auflösungs-Trigger | [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) verlangt, dass jede Token-Bilanz aus diesem Bestand ihren **Nenner** nennt: sie rechnet über Subagenten-Läufe, nicht über den Lauf. Die Angabe braucht einen eigenen DoD-Punkt samt zwei Zähnen (Go-Test + `test/mutations/`-Fall); slice-066 trug bereits drei Punkte, und Modul 5 §Ziel-Form lässt keinen vierten zu. Der Schnitt folgt der Naht, die das Closure-Kriterium selbst zieht — Block 2 und Block 3 sind zwei Zellen, zwei Fragen, zwei Zähne. Die fehlende **Belegart** folgt aus Modul 7 §Werkzeug-Wahl: auf dem ADR-Pfad fällt der Auflösungs-Trigger weg, während der Welle-Plan „deklariert" ausdrücklich über einen Trigger definierte — die Zelle *Token-Attribution × Repo* wäre entweder mit einem Trigger gefüllt worden, den es nicht mehr gibt, oder leer geblieben |
 | 2026-07-28 | **[welle-09 Modul-15-Konformität](../welle-09-modul-15-konformitaet.md) geschnitten** und in *Aktuelle Welle* gehoben; **Achse (1) des Kandidaten *Regeln ohne Feedback-Quadrant schließen* dorthin eingefaltet** (sie ist Modul-15-Block-4) — die Kandidaten-Zeile ist entsprechend annotiert, statt denselben Stand zweimal zu führen | Nutzer-Befund: Modul 15 liegt seit `554cade` (2026-07-17) vendored im Repo, taucht in **vier** Commits auf (011/019/043/049 — allesamt Re-Vendor) und wurde **nie inhaltlich behandelt**. Ursache mechanisch: die Adoptions-Prüfung sieht bei jeder Re-Baseline nur das **Delta**, nie den **Bestand** — kein Sensor meldet „adoptiert, aber nicht umgesetzt". Gegen [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) geprüft und **als Welle** geschnitten: Bündel · gemeinsames Closure-Kriterium (4 × 2-Matrix über vier Regelblöcke × {Repo, Tool}) · Auslöser reaktiv, aber Frage 1+2 tragen. **Zwei Korrekturen noch im Schnitt:** (a) die erste Fassung stellte die **Erfassung** unter Out-of-Scope und begann mit dem billigsten Block — umgedreht, denn ohne eigene Spans hängt jede Auswertung am Transkript des Werkzeugs, das keine Korrelations-IDs trägt; (b) die Begründung „nicht deklarierte Abweichung von [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)" war **über-gelesen** (die Vorlage grenzt die Aussage auf vier Bereiche ein) und ist zurückgenommen. Der Plan-Review vom selben Tag war **blockierend** (2 HIGH) — beide Befunde trafen die Slice-DoD, nicht den Schnitt |
 | 2026-07-27 | **[welle-08 `cpp × hexslice`](../done/welle-08-cpp-hexslice.md) geschnitten** und in *Aktuelle Welle* gehoben; der Abhängigkeitsgraph bekommt die Kante `W7 → W8` | Der Befund kam aus dem Lastenheft-Ist-Abgleich nach dem slice-052-Abschluss: die Arch-Achse trägt **eine** Sprache, obwohl [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) sie als `lang × arch`-Komposition beschreibt. Gegen [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) geprüft und **als Welle** geschnitten (Nutzer-Entscheidung): Bündel aus zwei Slices · ein gemeinsames Closure-Kriterium, das keiner der beiden DoDs abschreibt (`add-lang cpp --arch hexslice` → `make gates` grün **inklusive** rot gesehenem Arch-Gate-Zahn) · Auslöser **gewollt**, nicht reaktiv. Die Vorbedingung wurde **vor** dem Schnitt gemessen statt angenommen: a-check versteht C++ (Fixture gegen das gepinnte Image, `core-impurity` bei verbotenem Include) — dieselbe Beleg-Klasse, die [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) für Go verlangt hatte |
 | 2026-07-26 | **Der Block „ohne Welle geschnitten" und die Closure-Absätze zu slice-049/050 sind aus *Aktuelle Welle* entfernt**; der Abschnitt trägt wieder nur die Aussage über die Welle | Nutzer-Beobachtung: ein Abschnitt, der „Keine aktive Welle" meldet, war 23 Zeilen lang. Gegen Modul 6 gehalten: *Aktuelle Welle* trägt **die laufende Welle** (Slice-IDs · Trigger · Closure-Kriterien), Abgeschlossenes wandert ins **Closure-Log** — Beleg-Prosa gehört dort nicht hin. Schwerer wiegt die Dublette: der Lifecycle-Zustand **ist** das Verzeichnis (Modul 5, [`README.md`](../README.md)); ihn hier abzuschreiben erzeugt eine zweite Quelle, die altert — genau der Fehler aus dem Eintrag vom 2026-07-25, den ich mit den Closure-Absätzen selbst wieder eingeführt hatte. Die Präzedenz war richtig: bis `80eec58` hinterließ ein geschlossener wellenloser Slice hier **keine Spur**. Die Regel, *wann* Arbeit eine Welle braucht und warum wellenlose Arbeit hier **nicht** geführt wird, steht seither als [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) im Adaptions-Block — sie war 21 von 56 Slices lang gelebte, aber undeklarierte Praxis |

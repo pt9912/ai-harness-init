@@ -1,15 +1,15 @@
-# Slice slice-066: Telemetrie-Auswertung — Token-Bilanz je Rolle und getrennte Cache-Zähler
+# Slice slice-066: Telemetrie-Auswertung — Token-Bilanz je Rolle, mit genanntem Nenner
 
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
 Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-09](../welle-09-modul-15-konformitaet.md) — Blöcke 2–3, setzt auf
+**Welle:** [welle-09](../welle-09-modul-15-konformitaet.md) — Block 2, setzt auf
 [slice-060](../in-progress/slice-060-rollen-achse.md) auf.
 
 **Bezug:** [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) (Baseline ohne
-inhaltliche Adaption — Modul 15 ist adoptiert und in den Blöcken 2–3 unumgesetzt),
+inhaltliche Adaption — Modul 15 ist adoptiert und in Block 2 unumgesetzt),
 [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
 (das Span-Schema, das dieser Slice **liest**, samt der dort bindenden Lesevorschrift zum
 Sammelposten),
@@ -19,11 +19,14 @@ gemeint ist seit dem Schnitt **dieser** Slice, verankert in
 [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)),
 [`ADR-0003`](../../adr/0003-go-native-binaries.md) (**Accepted** — die Auswertung ist ein
 Go-Binary, Docker-only gebaut),
+[`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) (**Proposed** — der Haupt-Kontext
+bleibt dauerhaft ohne Zahl; daraus folgt DoD (2), und die zwei Wächter-Zeilen ihrer Fitness
+Function sind die aus diesem Slice),
 [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (dieselbe Zusage
 auf der **Dogfood-Ebene**: das Werkzeug dieses Repos, nicht das emittierte Zielprojekt).
 Regelwerk-Quelle:
 `.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md`
-§Token-Attributions-Regeln und §Cache-Counter-Regeln.
+§Token-Attributions-Regeln.
 
 **Autor:** ai-harness-init-Team (pt9912). **Datum:** 2026-07-29.
 
@@ -31,9 +34,9 @@ Regelwerk-Quelle:
 
 ## 1. Ziel
 
-**Aus den erfassten Spans wird eine Rechnung:** wer hat wie viel verbraucht, und was hat der
-Cache getragen. Kein Dashboard, kein Zeitreihen-Speicher — eine Auswertung über den vorhandenen
-Bestand, aufrufbar als `make`-Ziel.
+**Aus den erfassten Spans wird eine Rechnung:** wer hat wie viel verbraucht — und über welche
+Menge von Läufen wird dabei überhaupt gerechnet. Kein Dashboard, kein Zeitreihen-Speicher — eine
+Auswertung über den vorhandenen Bestand, aufrufbar als `make`-Ziel.
 
 ## 2. Definition of Done
 
@@ -59,40 +62,28 @@ Bestand, aufrufbar als `make`-Ziel.
   sich eine unvollständige Erhebung wie eine vollständige. (Eine frühere Fassung behauptete hier
   das Gegenteil von slice-060 — der Satz war in slice-060 zurückgezogen und hier stehen
   geblieben.)
-  **Der Nenner kommt aus einer anderen Quelle als der Zähler.** Zählte die Abdeckungszahl beide
-  Größen aus denselben Spans, prüfte sie sich selbst. Das Ereignis **`SubagentStart`** feuert je
-  Spawn und trägt `agent_type` (Referenz, §SubagentStart) — es kann nicht blockieren, aber es
-  **zählt**, unabhängig davon, ob der `Agent`-Span Telemetrie trug. Erst diese zwei Quellen
-  machen aus der Abdeckungszahl eine Messung statt einer Selbstauskunft.
-- [ ] **(2) Cache-Zähler getrennt — mit allen vier Angaben, die die Regel je Counter verlangt.**
-  `cache_creation_input_tokens` und `cache_read_input_tokens` werden **nie** zu einer Zahl
-  verrechnet. Modul 15 §Cache-Counter-Regeln stellt **vier** Fragen je Counter, und alle vier
-  gehören beantwortet — eine frühere Fassung dieses Plans nahm nur die **Labels** auf:
-  1. **Name** — `prompt_cache_hits_total`, `prompt_cache_misses_total`,
-     `prompt_cache_input_tokens_total`. Ausgeschrieben, damit die Bilanz und eine spätere
-     Metrik-Ausleitung denselben Namen führen.
-  2. **Unit/Cardinality** — alle drei **Counter** (monoton, Einheit Token), nicht Gauge und nicht
-     Histogram: sie summieren einen Bestand, sie messen keinen Momentanwert und keine Verteilung.
-  3. **Labels** — mindestens `slice.id`, `agent.role`, **`model.version`**; letzteres liegt als
-     `resolvedModel` in denselben Spans.
-  4. **Aggregation** — `hits / (hits + misses)`, und **wo die Division läuft**. Hier: im
-     Auswerter, weil dieses Repo weder Metrik-DB noch Dashboard hat. Das ist zu **sagen**, nicht
-     stillschweigend zu tun. **Und welcher Zähler welcher ist, steht hier und nicht nur in der
-     Welle:** `hits` = `cache_read_input_tokens` (aus dem Cache gelesen),
-     `misses` = `cache_creation_input_tokens` (in den Cache geschrieben, also gerade **nicht**
-     getroffen).
-
-  **Und die Zahl stimmt nicht:** das Modul spricht von **drei** Countern, die Payload liefert
-  **zwei** (`cache_creation_input_tokens`, `cache_read_input_tokens`). Der dritte ist die
-  Token-Eingabe-Metrik, gegen die das Modul den Miss-Spike erkennt (*„Anstieg der
-  Token-Eingabe-Metrik ohne Anstieg der Cache-Hit-Rate"*) — sie liegt als `input_tokens` in
-  derselben `usage`. **Deklarierte Entscheidung:** alle drei werden geführt; eine einzelne
-  `cache.hit_ratio` reicht ausdrücklich nicht, weil sie Kosten- und Sicherheits-Indikator
-  vermischt.
-  **Auflösungs-Trigger je Deklaration** (welle-09 verlangt ihn für jede): die Namen und die
-  Counter-Form werden neu entschieden, **sobald dieses Repo eine Metrik-Senke bekommt** — dann
-  wandert die Division dorthin und die Namen müssen deren Konvention folgen. Bis dahin gilt die
-  Festlegung unverändert.
+  **Die Bezugsgröße der Abdeckungszahl kommt aus einer anderen Quelle als der Zähler.** Zählte
+  die Abdeckungszahl beide Größen aus denselben Spans, prüfte sie sich selbst. Das Ereignis
+  **`SubagentStart`** feuert je Spawn und trägt `agent_type` (Referenz, §SubagentStart) — es kann
+  nicht blockieren, aber es **zählt**, unabhängig davon, ob der `Agent`-Span Telemetrie trug.
+  Erst diese zwei Quellen machen aus der Abdeckungszahl eine Messung statt einer Selbstauskunft.
+  Diese Bezugsgröße ist **nicht** der Nenner aus DoD (2): sie zählt Spawns innerhalb der
+  erfassten Teilmenge, jener benennt die Teilmenge selbst.
+- [ ] **(2) Die Bilanz nennt ihren Nenner — und ein Fall nimmt ihn wieder weg.** Die Ausgabe
+  sagt, **worüber** sie rechnet: über **Subagenten-Läufe**, nicht über den Lauf. Der Verbrauch
+  des Haupt-Kontexts steht in keiner Payload; ein Prozentsatz aus diesen Zahlen ist damit ein
+  Anteil an der **erfassten Teilmenge**, und wer ihn druckt, druckt das dazu. Die Pflicht steht
+  in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
+  Abweichung 6; ihre Begründung und ihre Bindung an einen Wächter stehen in
+  [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) — sie gilt unabhängig davon,
+  wie über deren Annahme entschieden wird.
+  **Zwei Zähne, rot gesehen:** ein Go-Test, der die Angabe in der erzeugten Ausgabe verlangt und
+  ohne sie fällt (`make test`), und ein Fall in `test/mutations/`, der die Angabe aus dem
+  Auswerter entfernt und diesen Test rot färben muss (`make mutate`). Ein nie angelegter Fall
+  erzeugt kein Rot — die Angabe wäre dann eine Absicht.
+  **Nicht dasselbe wie der Sammelposten-Anteil aus DoD (1):** der misst, wie viel der Bilanz auf
+  der Splitting-Regel ruht; dieser sagt, worüber überhaupt gerechnet wird. Zwei Größen, zwei
+  Angaben, zwei Zähne — zusammengelegt geht eine verloren.
 - [ ] **(3) Die Splitting-Regel des Sammelpostens steht als Festlegung, nicht im Code.** Welche
   Regel gilt (Frage A) und **wie groß** der aufgeteilte Anteil war, gehört nach
   [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
@@ -116,7 +107,7 @@ Auswertung liest ausschließlich Spans**, kein Zugriff außerhalb des Repos, kei
 | Auswertung (Go, eigenes Kommando) | neu | Aggregation über die Span-Ströme; dieselbe Linie wie der Emitter — Docker-only gebaut ([`ADR-0003`](../../adr/0003-go-native-binaries.md)), **kein** Subkommando des Produkt-Binaries, damit slice-062 nicht vorweggenommen wird |
 | `Makefile` | update | ein `make`-Ziel. **Kein Gate:** eine Bilanz prüft nichts, und ein Gate über einem Bericht wäre eines über leerem Prüfbereich ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | die **Splitting-Regel** des Sammelpostens gehört als Festlegung dorthin, nicht in den Code |
-| `test/` + `test/mutations/` | neu | die Zähne aus DoD (1) und (2) |
+| `test/` + `test/mutations/` | neu | die Zähne aus DoD (1) — Sammelposten-Anteil und Abdeckungszahl — und die zwei aus DoD (2) für die Nenner-Angabe |
 
 **Offen, vor dem Code zu entscheiden:**
 
@@ -154,8 +145,12 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
   Vorab-Filter oder Kontext-Verdichtung billiger machen?"*
 - **Der Haupt-Kontext bleibt unerfasst.** Seine Token erscheinen in keiner Payload; die Bilanz
   kann ihn nur über die Splitting-Regel behandeln. Wie groß dieser Anteil ist, gehört deshalb in
-  jedes Ergebnis — sonst liest sich eine Regel wie eine Messung.
-- **Nicht in diesem Slice:** die Rollen-Achse ([slice-060](../in-progress/slice-060-rollen-achse.md)), die
+  jedes Ergebnis — sonst liest sich eine Regel wie eine Messung. **Wie groß der Haupt-Kontext
+  selbst war, sagt auch dieser Slice nicht:** er liest ausschließlich Spans, und kein Span trägt
+  diese Token. Der Sammelposten-Anteil misst den aufgeteilten Teil **innerhalb** der erfassten
+  Teilmenge, nicht die Teilmenge gegen den ganzen Lauf.
+- **Nicht in diesem Slice:** die Cache-Zähler ([slice-071](slice-071-cache-zaehler-getrennt.md)),
+  die Rollen-Achse ([slice-060](../in-progress/slice-060-rollen-achse.md)), die
   Doku-Konsistenz (slice-061) und die Tool-Ebene (slice-062/063).
 
 ## 7. Closure-Notiz (nach `done/`)
