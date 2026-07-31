@@ -935,9 +935,11 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   5. **Die Zähler kommen nur im Vordergrund an.** Ein Hintergrund-Lauf liefert weder
      Zähler noch `agentType`, dafür u. a. `agentId`, `isAsync`, `outputFile` und
      `canReadOutputFile` (gemessen); die Erfassung ist insoweit konstruktiv unvollständig.
-     Die Start-Konvention, die den Vordergrund herstellt, und die erklärte Abweichung
-     dazu sind DoD (1) und DoD (3) von slice-060 und **stehen noch aus** — bis dahin ist
-     die Lücke hier benannt und nicht durch die `Agent`-Zeile überdeckt.
+     Den Vordergrund **herstellen** kann nur etwas, das den Start verweigert: der
+     `PreToolUse`-Guard `.claude/hooks/pretooluse-agent-guard.sh`, und er tut es für
+     **Rollen**-Typen. Was er nicht herstellt, steht als **Abweichung 5** unten — mit der
+     Prüfung davor und einem Auflösungs-Trigger. Die Lücke ist damit benannt und nicht
+     durch die `Agent`-Zeile überdeckt.
 
 - **Was die Payload sonst noch trägt — gemessen, nicht aus der Doku.** Am 2026-07-29
   wurde eine echte Hook-Payload auf ihre **Schlüsselnamen** hin vermessen (nur Namen und
@@ -963,8 +965,10 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   *„was wurde versucht und geblockt?"* beantwortet dieses Schema nicht (Verifier-Befund;
   `PermissionDenied` ist als eigenes Ereignis Kandidat, aber keine Zusage).
 
-- **Vier erklärte Abweichungen vom Modul-15-Pflicht-Minimum** (die ADR verlangt sie zu benennen,
-  nicht wegzulassen):
+- **Sechs erklärte Abweichungen vom Modul-15-Pflicht-Minimum** (die ADR verlangt sie zu benennen,
+  nicht wegzulassen). Die Zahl ist **gewachsen, nicht korrigiert**: vier standen hier seit
+  slice-059, die zwei letzten kamen am 2026-07-31 dazu und benennen, was die Erfassung aus
+  `tool_response` **nicht** erreicht:
   1. **Cache-Status ist für Subagenten-Läufe im Vordergrund erfasst — für den Haupt-Kontext
      und für Hintergrund-Läufe bleibt er unerreichbar.** Das ist der Rest-Zustand; die
      Abweichung ist **verkleinert, nicht aufgehoben**, und die Überschrift sagt es jetzt
@@ -984,9 +988,11 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      Splitting-Pflicht (Abweichung 3 unten). Bis zum 2026-07-30 stand hier *„hat … alles, was
      sie braucht"*; das ging einen Schritt weiter als das Erfasste (Review-Befund R2-INFO-1).
      **Unerreichbar bleibt zweierlei, und das ist die fortbestehende Abweichung:** der
-     **Haupt-Kontext** (kein `Agent`-Aufruf umschließt ihn, seine Token stehen in keiner
-     Payload) und der **Hintergrund-Lauf** (liefert weder Zähler noch `agentType` — Festlegung 5
-     der Positiv-Liste oben).
+     **Hintergrund-Lauf** und der **Haupt-Kontext**. Beiden fehlt nicht nur der
+     Cache-Status, sondern die **ganze** Verbrauchs-Achse; sie stehen deshalb seit dem
+     2026-07-31 als **Abweichung 5 und 6** unten — je mit der Prüfung davor und einem
+     Auflösungs-Trigger. Hier sind sie nur benannt: derselbe Ausfall zweimal beschrieben
+     wäre zwei Stellen, die auseinanderdriften.
      **Warum nicht über das Transkript** — die frühere Quelle: eine frühere Fassung trug den
      `transcript_path` als **Zeiger** und überließ die Auflösung der Auswertung; der Zeiger ist
      am 2026-07-29 auf Entscheidung des Auftraggebers **entfernt** worden, und zwar samt dem
@@ -1060,6 +1066,88 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      die Sitzungs-Kennung eine UUID ist — aber ein Werkzeug, das Kennungen
      wiederverwendet, mischt zwei Läufe in einer Datei. Aufgeräumt wird ausdrücklich
      (`make span-clean`), nicht nebenbei (Review-Befund LOW-5).
+  5. **Ein Hintergrund-Lauf trägt keine Verbrauchs-Achse — der Guard verkleinert die
+     Lücke, er schließt sie nicht.** *Erst die Prüfung, dann die Abweichung*, und in
+     dieser Reihenfolge, weil
+     [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) Festlegung 1
+     Punkt 5 die deklarierte Abweichung als die billige Hälfte kennzeichnet
+     (*„billiger zu schreiben als eine Lösung und deshalb verdächtig"*).
+     1. **Ableitbar? Nein — und das ist gemessen, nicht angenommen.** Die
+        `tool_response` eines Hintergrund-Laufs trägt `agentId`, `isAsync`,
+        `outputFile`, `canReadOutputFile`, `resolvedModel`, `status`, `prompt` und
+        `description` (2026-07-29, an einem echten Aufruf); **keinen** der vier
+        `usage`-Zähler, kein `totalTokens`/`totalDurationMs`/`totalToolUseCount`, kein
+        `agentType`. Es gibt keinen Teilwert, aus dem ein Zähler folgte. Der einzige
+        Zeiger auf mehr — `outputFile` — führt auf einen Freitext-Bestand außerhalb der
+        Payload und ist aus demselben Grund ausgeschlossen wie das Transkript in
+        Abweichung 1.
+     2. **Vermeidbar? Für Rollen-Typen ja — und dieser Teil ist gelöst, nicht erklärt.**
+        Der `PreToolUse`-Guard `.claude/hooks/pretooluse-agent-guard.sh` lehnt einen
+        Agenten-Typ, für den `.claude/agents/<name>.md` existiert, im Hintergrund ab;
+        ein **fehlender** Schalter gilt dabei als Hintergrund, weil die Abwesenheit der
+        gemessene Normalfall ist. Bewacht von `test/agent-guard.bats` (in `make test`)
+        und den Fällen
+        `test/mutations/117-agentguard-rollenpruefung-entfernt.sh`,
+        `test/mutations/118-agentguard-namensliste-statt-ableitung.sh` und
+        `test/mutations/119-agentguard-schalter-failopen.sh`.
+     3. **Was er nicht deckt — und erst das ist die Abweichung.** (a) Ein Typ **ohne**
+        Datei in `.claude/agents/` ist keine Rolle: `general-purpose`, `Explore` und die
+        übrigen eingebauten Typen laufen im Hintergrund durch, **absichtlich** — sie
+        tragen ohnehin keine Rolle in den Span. Ihre `Agent`-Spans stehen mit Name und
+        Status da, ohne einen der neun Werte. (b) Der Guard ist eine Verdrahtung in
+        `.claude/settings.json`; er kann fehlen, abgeschaltet oder umgangen sein, und
+        **kein Sensor dieses Repos prüft, dass er verdrahtet ist** — gemessen am
+        2026-07-31 über `test/**`, `Makefile`, `harness/tools/*.sh` und die Go-Tests: die
+        einzige Verdrahtungs-Prüfung an einer `settings.json` steht in
+        `harness/tools/smoke.sh` und gilt dem **emittierten** Repo und dessen
+        Command-Guard.
+
+     **Die Abweichung:** ein `Agent`-Span aus einem Hintergrund-Lauf sieht aus wie ein
+     erfasster Lauf und ist keiner. Die Erfassung ist insoweit **konstruktiv
+     unvollständig** — sie erfindet nichts, sie fehlt.
+     **Auflösungs-Trigger, zwei, beide beobachtbar:** (1) die **Abdeckungszahl** aus
+     slice-066 DoD (1) — wie viele `Agent`-Spans überhaupt Zähler trugen, mit einem
+     Nenner aus `SubagentStart` statt aus denselben Spans; zeigt sie einen nennenswerten
+     Anteil zählerloser `Agent`-Spans, ist zu entscheiden, ob der Guard auf **alle**
+     Agenten-Typen geweitet wird oder die Zusage einzuschränken ist. (2) Trägt die
+     `tool_response` eines Hintergrund-Laufs eines Tages Zähler, entfällt die Abweichung
+     ersatzlos — das ist der Hook-Oberflächen-Trigger aus
+     [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md)
+     §Re-Evaluierungs-Trigger, hier nur zugeordnet.
+  6. **Der Haupt-Kontext hat keine Zahl — die härtere Hälfte.** Abweichung 3 oben
+     benennt seine fehlende **Rolle**; hier steht seine fehlende **Zahl**. Die zwei sind
+     verschieden, und die Reihenfolge der Härte ist die umgekehrte der Bequemlichkeit:
+     selbst eine gelöste Rollen-Ableitung gäbe dem Haupt-Kontext ein Etikett, aber
+     keinen Zähler. Auch hier zuerst die Prüfung:
+     1. **Woher die Zähler kommen — gemessen.** Die vier `usage`-Zähler und die drei
+        `total*`-Werte stehen ausschließlich in der `tool_response` eines
+        `Agent`-Aufrufs. Den Haupt-Kontext umschließt **kein** `Agent`-Aufruf; es gibt
+        also kein Ereignis, an dem seine Token anfielen, und keine Payload, die sie
+        trüge.
+     2. **Aus den erfassten Feldern ableitbar? Nein.** Ein Span trägt `result_bytes` und
+        `duration_ms` — Größen **eines** Aufrufs, keine Token. Eine Umrechnung wäre eine
+        Schätzung, und eine Schätzung an dieser Stelle ist genau das Raten, das
+        [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) Festlegung 1
+        Punkt 4 ausschließt (*leer und als leer erkennbar*, nicht geraten).
+     3. **Eine zweite Quelle? Keine, die offen steht.** Das Transkript ist als Quelle
+        ausgeschlossen (Abweichung 1, letzter Absatz: fremder Besitz, außerhalb des
+        Repos, voller Gesprächsinhalt). `SubagentStart` zählt Spawns und trägt keine
+        Token.
+
+     **Die Abweichung:** der Verbrauch des Haupt-Kontexts steht in keiner Payload. Jede
+     Token-Bilanz aus diesen Spans ist damit eine Bilanz über **Subagenten-Läufe**; ihr
+     Nenner ist nicht der Verbrauch des Laufs, und ein Prozentsatz daraus ist ein Anteil
+     an der erfassten Teilmenge. Wer ihn schreibt, schreibt das dazu. Für den
+     Haupt-Strom selbst gilt unverändert die Splitting-Pflicht aus Abweichung 3 samt der
+     Pflicht, die Größe des Sammelpostens zu **zeigen**.
+     **Auflösungs-Trigger:** eine Quelle **innerhalb des Repos**, die Haupt-Kontext-Token
+     trägt — dieselbe Bedingung führt slice-068 DoD (2). **Ehrlich zu ihrer
+     Erreichbarkeit**, weil Modul 7 einen ernst erreichbaren Trigger verlangt und sonst
+     die Überführung in eine Dauer-Entscheidung: niemand kann diesen Trigger
+     **herbeiführen**, er wird **beobachtet**. Ausgeschlossen ist er nicht — die
+     Payload-Fläche wächst messbar (fünf undokumentierte Schlüssel in vier gemessenen
+     Aufrufen). Bleibt er auf absehbare Zeit aus, ist der Ort dieser Abweichung nicht
+     länger dieser Eintrag, sondern eine ADR.
 
 - **Tooling-Klarstellung zur Fitness Function.** Drei ihrer Zeilen nennen als Tooling
   `bats (make test)`; umgesetzt sind sie als **Go**-Tests unter demselben Target
