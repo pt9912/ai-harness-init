@@ -43,7 +43,7 @@ weiß niemand — und genau das ist der Gegenstand.
 
 **Was gemessen ist** (im Einzelnen in
 [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
-Abweichung 6, hier nicht verdoppelt — zwei Stellen mit derselben Messung driften auseinander):
+Abweichung 6):
 die vier `usage`-Zähler und die drei `total*`-Werte stehen ausschließlich in der `tool_response`
 eines `Agent`-Aufrufs. Den Haupt-Kontext umschließt **kein** `Agent`-Aufruf; es gibt kein
 Ereignis, an dem seine Token anfielen, und keine Payload, die sie trüge. Aus den erfassten
@@ -88,25 +88,19 @@ Temporalität):
    ist verboten. `:63-67` beantwortet das ohne Rest: *„Nein (‚nichts davon werden wir in
    absehbarer Zeit tun') → permanent, übergeführt in eine ADR."*
 
-   **Die Grenze dieser Antwort gehört in denselben Punkt, weil das ganze Verdikt an ihr hängt.**
-   *Herbeiführen* kann diese Bedingung niemand — *nachsehen*, ob sie längst gilt, sehr wohl. Die
+   **Die Grenze dieser Antwort:** *herbeiführen* kann die Bedingung niemand — *nachsehen*, ob sie längst gilt, sehr wohl. Die
    Payloads aller Ereignisse außer `PostToolUse`/`PostToolUseFailure` und der `tool_response` des
    `Agent`-Werkzeugs sind hier **nie vermessen** worden; dass keines von ihnen ein Nutzungsfeld
    trägt, ist **gelesen** (die vendored Werkzeug-Doku), nicht gemessen — und die Regel dieses
    Repos lautet *„die Payload ist die Quelle, die Doku ist Herkunft"*. An der **Antwort** ändert
    das nichts: eine Sonde **beobachtet** den Trigger, sie führt ihn nicht herbei (Alternative C),
    und Frage 2 fragt nach dem Erreichen, nicht nach dem Bemerken. Am **Status** der Antwort ändert
-   es etwas: sie ist eine Entscheidung unter benannter Unsicherheit. Die Fläche steht deshalb
-   unten als Re-Evaluierungs-Trigger und nicht hier als abgeschlossene Prüfung.
+   es etwas: sie ist eine Entscheidung unter benannter Unsicherheit, und die Fläche steht unten
+   als Re-Evaluierungs-Trigger.
 
-**Die Gegenposition, die zuvor an dieser Stelle stand, trägt nicht** — und sie gehört genannt,
-weil sie bequem ist: der Trigger sei *nur beobachtbar, nicht durch Aufwand erreichbar*, und
-brauche deshalb weder Folge-Slice noch ADR. „Aufwand" steht in Modul 7 an genau einer Stelle,
-und sie entscheidet *Carveout gegen ADR*, nicht *Träger gegen kein Träger*. Die Haltung selbst
-ist dort ausdrücklich beantwortet (`:129`): *„Gegen ‚Wenn der Trigger eintritt, lösen wir den
-Carveout auf': Realität: er bleibt liegen. Deshalb braucht jeder temporäre Carveout einen
-Folge-Slice mit ID, der das Auflösen plant. Slice schlägt Memo."* Ein Zustand, für den es weder
-einen Träger noch etwas zu planen gibt, ist nach diesem Modul kein temporärer.
+**Ein Zustand ohne Träger ist nach Modul 7 kein temporärer** (`:129`): *„Gegen ‚Wenn der
+Trigger eintritt, lösen wir den Carveout auf': Realität: er bleibt liegen. Deshalb braucht jeder
+temporäre Carveout einen Folge-Slice mit ID, der das Auflösen plant. Slice schlägt Memo."*
 
 **Annahmen, auf denen diese ADR steht** — kippt eine, kippt die Entscheidung: (a) die
 Hook-Oberfläche des Werkzeugs trägt für den Haupt-Kontext keine Zähler; (b) das Transkript
@@ -216,7 +210,7 @@ werden"*); die Nenner-Angabe in derselben Ausgabe ohne Zahn zu lassen, wäre zwe
 | Go-Test (`make test`) — **fällig mit slice-066, existiert heute nicht** | Die erzeugte Bilanz **benennt ihren Nenner**: dass sie über **Subagenten-Läufe** rechnet und nicht über den Lauf. Fehlt die Angabe in der Ausgabe, fällt der Test | `make test` |
 | `test/mutations/` — **fällig mit slice-066, existiert heute nicht** | Die Nenner-Angabe wird aus dem Auswerter **entfernt** — der Wächter darüber muss rot werden; ohne diesen Fall wäre Festlegung 2 eine Absicht | `make mutate` |
 
-**Was die zwei Zeilen NICHT leisten, damit niemand mehr hineinliest.** Sie binden die
+**Was die zwei Zeilen nicht leisten.** Sie binden die
 **Anwesenheit** der Nenner-Angabe, nicht ihre **Wahrheit**: ob die genannte Teilmenge die
 tatsächlich gerechnete ist, prüft kein Sensor — dieselbe Grenze, die
 [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) für
@@ -225,8 +219,8 @@ Satzes*). Und der Nenner ist **nicht** der Sammelposten-Anteil aus slice-066 DoD
 wie viel der Bilanz auf der Splitting-Regel ruht; dieser hier sagt, worüber überhaupt gerechnet
 wird. Zwei Größen, zwei Angaben, zwei Zähne — wer sie zusammenlegt, verliert eine.
 
-**Dass die Zeilen einen Sensor nennen, den es noch nicht gibt, ist die Form dieses Repos und
-keine Ausnahme:** [ADR-0011](0011-telemetrie-erfassung-policy.md) wurde mit **fünf**
+**Die Zeilen nennen einen Sensor, den es noch nicht gibt** —
+[ADR-0011](0011-telemetrie-erfassung-policy.md) wurde mit **fünf**
 `test/mutations/`-Zeilen angenommen, deren Dateien erst der umsetzende Slice anlegte — zum
 Zeitpunkt der Annahme trug das Verzeichnis 106 Fälle, die Span-Fälle beginnen bei 107.
 [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) ist
