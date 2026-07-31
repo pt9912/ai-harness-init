@@ -15,11 +15,13 @@
 # weg -> der Guard lehnt alles ab) · 118 (Namensliste statt Ableitung — der einzige
 # Fall, der abgeleitet von kopiert unterscheidet) · 119 (fehlender Schalter
 # fail-open) · 120 (Zeichensatz des Typnamens gelockert) · 121/122 (Eltern-Pruefung
-# des Key-Stacks weg, je fuer subagent_type und run_in_background).
+# des Key-Stacks weg, je fuer subagent_type und run_in_background) · 139 (fehlender
+# Typ fail-open).
 #
 # Deckt: die Unterscheidung Rolle/Nicht-Rolle · fehlender Schalter gilt als
-# Hintergrund · Parse-Zweifel -> verweigern · der Fehlmatch, den ein Regex-Griff
-# machen wuerde · die ABLEITUNG der Rollen-Liste aus dem Verzeichnis.
+# Hintergrund · fehlender Typ gilt als unlesbarer Aufruf · Parse-Zweifel ->
+# verweigern · der Fehlmatch, den ein Regex-Griff machen wuerde · die ABLEITUNG der
+# Rollen-Liste aus dem Verzeichnis.
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
@@ -161,6 +163,17 @@ assert_passed() {
 
 @test "guard: kaputte Eingabe -> DENY (fail-closed)" {
   run guard 'nicht mal JSON'
+  assert_denied
+}
+
+# Der Guard haengt an "matcher": "Agent" — jeder Aufruf, den er sieht, ist ein
+# Agenten-Aufruf. Fehlt darin der Typ, ist nicht entscheidbar, ob eine Rolle startet.
+# Der Schalter steht hier auf false, damit allein die ABWESENHEIT des Typs die
+# Ablehnung traegt: mit `false` wuerde selbst ein Rollen-Typ durchlaufen.
+# Gegenrichtung sind die PASS-Faelle darueber — ein VORHANDENER Nicht-Rollen-Typ
+# laeuft weiter durch, der Guard lehnt also nicht pauschal ab.
+@test "guard: Agent-Aufruf ohne Subagent-Typ -> DENY (fail-closed)" {
+  run guard '{"tool_name":"Agent","tool_input":{"prompt":"x","run_in_background":false}}'
   assert_denied
 }
 

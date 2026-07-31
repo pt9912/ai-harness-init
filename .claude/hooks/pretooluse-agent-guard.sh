@@ -1,13 +1,19 @@
 #!/usr/bin/env bash
-# pretooluse-agent-guard — erzwingt, dass ein ROLLEN-Agent im VORDERGRUND
-# startet (run_in_background: false). Grund ist Telemetrie, nicht Sicherheit:
+# pretooluse-agent-guard — verweigert jeden Agenten-Aufruf, den er mit erkennbarem
+# ROLLEN-Typ und ohne run_in_background: false sieht. Was er entscheidet, ist die
+# AUFRUFFORM vor dem Start; ueber den Ausgang des Laufs entscheidet er nicht mit —
+# was er damit nicht deckt, steht in MR-018, Abweichung 5, Pruefschritt 3.
+# Grund ist Telemetrie, nicht Sicherheit:
 # gemessen am 2026-07-29 traegt die Antwort eines Hintergrund-Laufs weder
 # Nutzungszaehler noch agentType — die Rollen-Achse bliebe leer und die
 # Token-Bilanz eine Summe statt einer Rechnung (slice-060, MR-018, Modul 15).
 #
 # Reines bash + awk, KEIN node/jq (LH-QA-03): der Extraktor
 # (harness/tools/extract-agent-call.awk) zieht genau zwei Felder aus der
-# Hook-stdin-JSON; bei Parse-Zweifel -> fail-closed (verweigern).
+# Hook-stdin-JSON. JEDER unlesbare Eingang endet fail-closed (verweigern):
+# fehlendes awk, fehlender Extraktor, Parse-Zweifel, fehlender Typ, fehlender
+# Schalter. Eine Datei, eine Politik — die Frage "durchlassen oder verweigern,
+# wenn ich es nicht weiss?" wird hier nur einmal beantwortet.
 #
 # DIE ROLLEN-LISTE WIRD ABGELEITET, NICHT KOPIERT: ein Typ ist genau dann eine
 # Rolle, wenn .claude/agents/<name>.md existiert. Damit gibt es keine vierte
@@ -72,8 +78,15 @@ set -e
 rib="$(sed -n '1p' <<<"$parsed")"
 stype="$(sed -n '2p' <<<"$parsed")"
 
-# Kein Subagent-Typ -> kein Rollen-Aufruf.
-[ "$stype" = "ABSENT" ] && exit 0
+# Kein lesbarer Subagent-Typ -> verweigern. Der Hook haengt an "matcher": "Agent";
+# was er sieht, IST ein Agenten-Aufruf, und ohne den Typ ist nicht entscheidbar, ob
+# eine Rolle startet. Das dokumentierte Eingabe-Schema von Agent fuehrt
+# subagent_type (docs/user/claude-hooks-referenz.md, Abschnitt Agent) — eine Payload
+# ohne ihn ist keine bekannte Aufrufform, und Durchlassen hiesse raten. Zwoelf
+# Zeilen tiefer steht dieselbe Antwort fuer den fehlenden Schalter. Sensor:
+# test/agent-guard.bats, "guard: Agent-Aufruf ohne Subagent-Typ -> DENY
+# (fail-closed)"; Dauer-Sensor test/mutations/139-agentguard-typ-failopen.sh.
+[ "$stype" = "ABSENT" ] && { emit_deny "Agent-Guard: Aufruf ohne lesbaren subagent_type (fail-closed). Ohne Typ ist nicht entscheidbar, ob ein Rollen-Agent startet; ein Rollen-Typ startet mit run_in_background: false."; exit 0; }
 
 # Kein Rollen-Typ -> Betriebsart ist frei. Der Zeichensatz von stype ist im
 # Extraktor auf [A-Za-z0-9_:-] geprueft, ein Ausbruch aus agents_dir also nicht

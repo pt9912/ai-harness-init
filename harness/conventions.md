@@ -869,7 +869,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 | `input_tokens`, `output_tokens` | Optional | *Wie teuer war dieser Subagenten-Lauf?* — die Verbrauchs-Achse, ohne die eine Token-Bilanz je Rolle eine Summe statt einer Rechnung ist |
 | `cache_creation_input_tokens`, `cache_read_input_tokens` | Optional | *Zahlte der Lauf den Cache oder nutzte er ihn?* — der Cache-Status, der bis 2026-07-29 als nicht erreichbar galt und seit 2026-07-30 für Subagenten-Läufe **erfasst** ist (Abweichung 1 unten, dort auf den Rest-Zustand zurückgeschnitten) |
 | `total_tokens` | Optional | *Wie groß war der Lauf insgesamt?* — die Summe, die das **Werkzeug selbst** ausweist. **Ob** sie die Addition der vier Zähler ist, war bis 2026-07-30 **nicht gemessen** (die Ist-Messung erfasste nur Schlüsselnamen und Wertlängen, nie Werte). Am eigenen Bestand nachgerechnet **ist** sie es, exakt, an jedem geprüften Zähler-Span. Eine Auswertung addiert sie deshalb **nicht** zu den vier, sondern gegen sie. **Hier steht bewusst keine Zahl und keine Stichprobengröße mehr:** der Bestand unter `.harness/state/spans/` ist gitignored, maschinenlokal und wächst mit jedem Subagenten-Lauf — die zuvor hier eingefrorene Rechnung über „beide vorliegenden Zähler-Spans" war drei Minuten nach ihrem Commit falsch und für einen anderen Checkout ohnehin nicht nachvollziehbar (Review-Befund R2-LOW-1 vom 2026-07-30). Die Probe gehört **gefahren**, nicht zitiert, und sie bleibt eine Stichprobe |
-| `total_duration_ms` | Optional | *Wie lange lief der Subagent wirklich?* — **nicht** `duration_ms`: das misst den Aufruf, wie der Hook ihn sieht. Die zwei Größen stammen aus **einem** Vordergrund-Aufruf: `duration_ms` trug dort 4 ms, weil der Hook beim **Start** feuert, während `total_duration_ms` die Laufzeit des Subagenten trägt. **Die weiter unten genannten 4.184 ms gehören nicht hierher** — sie stammen aus einem anderen, im **Hintergrund** gelaufenen Aufruf, und der trägt gar kein `totalDurationMs`. Jede Paarung gehört ihrem Aufruf; zwei Beobachtungen zu einer zu fügen ergäbe eine Messung, die niemand gemacht hat |
+| `total_duration_ms` | Optional | *Wie lange lief der Subagent wirklich?* — **nicht** `duration_ms`: das misst den Aufruf, wie der Hook ihn sieht. Die Erfassung hängt an `PostToolUse`/`PostToolUseFailure`, der Hook feuert also **nach** dem Aufruf; `duration_ms` ist die Wanduhr des ganzen Werkzeug-Aufrufs und liegt deshalb in einem Vordergrund-Lauf **über** `total_duration_ms`, um Anlauf und Rückgabe. Wer die Reihenfolge umdreht, liest die Differenz als Subagenten-Zeit. **Die Probe gehört gefahren, nicht zitiert** (hier steht darum keine Zahl): jeder `Agent`-Span mit beiden Werten zeigt sie, und ein Span, in dem `duration_ms` **unter** `total_duration_ms` liegt, wäre der Befund. **Die weiter unten genannten 4.184 ms gehören nicht hierher** — sie stammen aus einem im **Hintergrund** gelaufenen Aufruf, und der trägt gar kein `totalDurationMs`; sein `duration_ms` ist klein, weil das Werkzeug für einen Hintergrund-Subagenten sofort nach dem Start zurückgibt. Jede Paarung gehört ihrem Aufruf; zwei Beobachtungen zu einer zu fügen ergäbe eine Messung, die niemand gemacht hat |
 | `total_tool_use_count` | Optional | *Wie viele Werkzeug-Aufrufe verursachte der Subagent?* — der Teiler, ohne den „Token je Aufruf" nicht rechenbar ist |
 | `model_version` | Optional | *Welches Modell verursachte die Kosten?* — das Modul-15-Label `model.version`, aus `tool_response.resolvedModel`, **strukturell begrenzt** (Länge und geschlossener Zeichensatz). Was die Gestalt eines Bezeichners nicht hat, wird **verworfen, nicht gekürzt** |
 
@@ -975,11 +975,16 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
   **Die zwei Bedingungen sind UNABHÄNGIG — gemessen, nicht angenommen.** Ein per
   @-Erwähnung angeforderter Lauf **ohne** ausdrücklichen Schalter lief im **Hintergrund**:
-  sein Span trug `duration_ms: 3` — der Hook feuert beim **Start** — bei 4.184 ms
-  tatsächlicher Laufzeit des Subagenten. Die @-Erwähnung wählt den **Typ**, nicht die
+  sein Span trug `duration_ms: 3` bei 4.184 ms tatsächlicher Laufzeit des Subagenten.
+  Der Hook feuert **nach** dem Aufruf (`PostToolUse`), die drei Millisekunden sind also
+  die Dauer des **Aufrufs** — das Werkzeug gab sofort nach dem Start zurück, wie es die
+  vendored Hooks-Referenz für Hintergrund-Subagenten beschreibt. Genau darum trägt die
+  Zahl etwas: feuerte der Hook beim Start, stünden bei jedem Lauf drei Millisekunden da
+  und die Beobachtung wäre leer. Die @-Erwähnung wählt den **Typ**, nicht die
   **Betriebsart**. Wer nur Bedingung 1 einhält, bekommt **keine Zahl** — und je nach Typ
-  auch keinen Span: bei einem **Rollen**-Typ verweigert der Guard den Start, und ein
-  geblockter Aufruf hinterlässt keinen Span; bei jedem anderen Typ läuft der Aufruf
+  auch keinen Span: bei einem **Rollen**-Typ verweigert der Guard den Start, sobald der
+  Aufruf ihn mit diesem Typ erreicht, und ein geblockter Aufruf hinterlässt keinen Span;
+  bei jedem anderen Typ läuft der Aufruf
   durch, und seine Antwort trägt weder Zähler noch `agentType`, also auch kein
   `spawned_role`. „Die Rolle und keine Zahl" trifft damit keinen der beiden Fälle: die
   Rolle kommt aus `agentType`, und das fehlt im Hintergrund.
@@ -987,14 +992,22 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   **Was diese Konvention ERZWINGT und was sie nur behauptet** — beides gehört in denselben
   Punkt, sonst liest sich die Regel breiter als ihr Sensor
   ([`AGENTS.md`](../AGENTS.md) §3.6):
-  - **Bedingung 2 ist für Rollen-Typen erzwungen.** Der `PreToolUse`-Guard
-    `.claude/hooks/pretooluse-agent-guard.sh` verweigert den Start. **An einem echten
-    Aufruf rot gesehen**, nicht nur am Test: ein Rollen-Typ mit `run_in_background: true`
-    wurde abgelehnt, der Ablehnungsgrund kam wörtlich als Fehler beim Aufrufer an, der
-    Subagent lief nicht — derselbe Typ mit `false` lief unmittelbar davor durch. Ableitung
-    der Rollen-Liste, fail-closed-Politik bei fehlendem Schalter, Dauer-Sensoren und
+  - **Für Bedingung 2 gibt es einen Wächter, und seine Zusage reicht genau so weit wie
+    seine Entscheidung: der `PreToolUse`-Guard `.claude/hooks/pretooluse-agent-guard.sh`
+    lehnt einen Aufruf ab, den er mit erkennbarem Rollen-Typ und ohne
+    `run_in_background: false` sieht.** **An einem echten Aufruf rot gesehen**, nicht nur
+    am Test: ein Rollen-Typ mit `run_in_background: true` wurde abgelehnt, der
+    Ablehnungsgrund kam wörtlich als Fehler beim Aufrufer an, der Subagent lief nicht —
+    derselbe Typ mit `false` lief unmittelbar davor durch.
+    **Was damit NICHT zugesagt ist — und der Unterschied ist der ganze Punkt:** dass jeder
+    Rollen-Lauf am Ende Zähler trägt. Der Guard entscheidet über die **Aufrufform**, die
+    ihm der Hook vor dem Start vorlegt; über den Ausgang des Laufs entscheidet er nicht
+    mit, und der Bestand dieses Repos trägt einen `Agent`-Span eines **Rollen**-Typs, der
+    von den neun Werten nur `model_version` führt. Ableitung der Rollen-Liste,
+    fail-closed-Politik bei fehlendem Schalter und fehlendem Typ, Dauer-Sensoren und
     **Grenzen** stehen in **Abweichung 5**; kurz: er greift nur für Typen mit einer Datei
-    in `.claude/agents/`, und er kann fehlen oder abgeschaltet sein.
+    in `.claude/agents/`, er sieht nur den Start, und er kann fehlen oder abgeschaltet
+    sein.
   - **Bedingung 1 ist NICHT durchgesetzt — und der Grund trägt nur für einen Teil der
     Payload.** Gemessen über vier echte Aufrufe — darunter den per @-Erwähnung
     angeforderten — trägt `tool_input` die Schlüssel `subagent_type`, `prompt`,
@@ -1184,15 +1197,20 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
         Zeiger auf mehr — `outputFile` — führt auf einen Freitext-Bestand außerhalb der
         Payload und ist aus demselben Grund ausgeschlossen wie das Transkript in
         Abweichung 1.
-     2. **Vermeidbar? Für Rollen-Typen ja — und dieser Teil ist gelöst, nicht erklärt.**
+     2. **Vermeidbar? Für die Aufrufform, die der Guard sieht, ja — und nur für sie.**
         Der `PreToolUse`-Guard `.claude/hooks/pretooluse-agent-guard.sh` lehnt einen
         Agenten-Typ, für den `.claude/agents/<name>.md` existiert, im Hintergrund ab;
         ein **fehlender** Schalter gilt dabei als Hintergrund, weil die Abwesenheit der
-        gemessene Normalfall ist. Bewacht von `test/agent-guard.bats` (in `make test`)
-        und den Fällen
+        gemessene Normalfall ist, und ein **fehlender Typ** als unlesbarer Aufruf, weil
+        der Hook an `"matcher": "Agent"` hängt und deshalb keinen Nicht-Agenten-Aufruf
+        sieht: ohne Typ ist nicht entscheidbar, ob eine Rolle startet. Beide Antworten
+        sind dieselbe — verweigern —, und das ist keine Selbstverständlichkeit, sondern
+        die Stelle, an der ein Guard still durchlässig wird. Bewacht von
+        `test/agent-guard.bats` (in `make test`) und den Fällen
         `test/mutations/117-agentguard-rollenpruefung-entfernt.sh`,
-        `test/mutations/118-agentguard-namensliste-statt-ableitung.sh` und
-        `test/mutations/119-agentguard-schalter-failopen.sh`.
+        `test/mutations/118-agentguard-namensliste-statt-ableitung.sh`,
+        `test/mutations/119-agentguard-schalter-failopen.sh` und
+        `test/mutations/139-agentguard-typ-failopen.sh`.
      3. **Was er nicht deckt — und erst das ist die Abweichung.** (a) Ein Typ **ohne**
         Datei in `.claude/agents/` ist keine Rolle: `general-purpose`, `Explore` und die
         übrigen eingebauten Typen laufen im Hintergrund durch, **absichtlich** — sie
@@ -1201,26 +1219,54 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
         Hintergrund-Antwort (gemessen), läuft aber durch die strukturelle Schranke aus
         Festlegung 4 — hat der Wert deren Gestalt nicht, fehlt `model_version` ganz (das
         Feld ist `omitempty`). Die **acht** Werte an `usage`/`total*`/`agentType` fehlen
-        in jedem Fall. **Beobachtet ist diese Zeile nicht:** sie folgt aus der
-        Payload-Messung und aus dem Code, nicht aus einem Span — was sie entschiede, ist
-        ein `Agent`-Span aus einem Hintergrund-Lauf. Wer die Zeile zur Definition einer
-        Abdeckungszahl heranzieht, hängt sie deshalb an die **Zähler** und nicht an
-        „irgendein erfasster Wert". (b) Der Guard ist eine Verdrahtung in
+        in jedem Fall. **Die Zeile selbst ist abgeleitet, nicht beobachtet:** sie folgt
+        aus der Payload-Messung und aus dem Code — was sie entschiede, ist ein
+        `Agent`-Span aus einem Hintergrund-Lauf eines Typs **ohne** Datei in
+        `.claude/agents/`, und ein solcher liegt nicht vor. Ihre **Gestalt** liegt
+        inzwischen im Bestand: ein `Agent`-Span, der von den neun Werten genau
+        `model_version` trägt und keinen der acht. Er stammt von einem **Rollen**-Typ und
+        gehört damit zu (c); die Zeile hier — über einen Typ **ohne** Datei in
+        `.claude/agents/` — bleibt abgeleitet. Wer die Zeile zur Definition einer
+        Abdeckungszahl heranzieht, hängt sie an die **Zähler** und nicht an „irgendein
+        erfasster Wert": jener Span trägt einen erfassten Wert und ist trotzdem ein
+        zählerloser Lauf. (b) Der Guard ist eine Verdrahtung in
         `.claude/settings.json`; er kann fehlen, abgeschaltet oder umgangen sein, und
-        **kein Sensor dieses Repos prüft, dass er verdrahtet ist**. Gemessen am
-        2026-07-31 über `test/**`, `Makefile`, `harness/tools/*.sh` und die Go-Tests
-        berühren die Verdrahtung einer `settings.json` **drei** Artefakte: **zwei
-        Prüfungen** — der `PreToolUse`-Test in `harness/tools/smoke.sh` und
-        `TestEnforce_SettingsWiresBothHooks` in `internal/emit/enforce_test.go` — und der
-        **Dauer-Sensor** der zweiten,
-        `test/mutations/32-enforce-settings-wires-guard.sh`. **Alle drei** gelten dem
-        **emittierten** Repo und dessen Command-Guard; für die Verdrahtung **dieses**
-        Repos prüft keines etwas. Ein Vorbild samt rot gesehener Mutation gibt es also,
-        einen Sensor nicht.
+        **kein Sensor dieses Repos prüft, dass er verdrahtet ist**. Über `test/**`,
+        `Makefile`, `harness/tools/*.sh` und die Go-Tests berühren die `settings.json`
+        **vier** Artefakte in **drei** Dateien: **zwei Prüfungen ihrer Verdrahtung** — der
+        `PreToolUse`-Test in `harness/tools/smoke.sh` und
+        `TestEnforce_SettingsWiresBothHooks` in `internal/emit/enforce_test.go` —, **eine
+        Prüfung ihres bloßen Vorhandenseins** (`TestEnforce_EmitsAllMechanicFiles` in
+        derselben Datei, die den Pfad im Ziel-Layout fordert, ohne den Inhalt anzusehen)
+        und der **Dauer-Sensor** der zweiten Verdrahtungs-Prüfung,
+        `test/mutations/32-enforce-settings-wires-guard.sh`. Die Zahl hängt am Verb: unter
+        *„die Verdrahtung prüfen"* sind es drei, unter *„die Datei berühren"* vier. **Alle vier** gelten dem **emittierten** Repo und dessen
+        Command-Guard; für die Verdrahtung **dieses** Repos prüft keines etwas. Ein
+        Vorbild samt rot gesehener Mutation gibt es also, einen Sensor nicht.
+        (c) **Er entscheidet über den Start, nicht über den Ausgang.** Der Guard sieht die
+        `tool_input`-Payload, bevor der Aufruf läuft; ob dessen Antwort am Ende Zähler
+        trägt, entscheidet er nicht mit. Der Bestand trägt dafür einen Fall: ein
+        `Agent`-Span eines **Rollen**-Typs — `.claude/agents/architect.md` existiert, der
+        Unterstrom führt den Typ in jeder Zeile —, dessen erfasster Wert-Satz aus genau
+        `model_version` besteht: kein `spawned_role`, keiner der vier `usage`-Zähler, kein
+        `total*`. Der Unterstrom des Subagenten schrieb **nach** dem Zeitstempel dieses
+        Spans weiter, und der Haupt-Strom lief in derselben Zeit weiter — der Aufruf hat
+        den Subagenten nicht bis zu dessen Ende festgehalten. **Welche Aufrufform das war,
+        ist aus dem Repo nicht entscheidbar:** die `PreToolUse`-Payload wird nirgends
+        protokolliert. Ein Hintergrund-Start im Sinne des Schalters passt nicht zu der
+        Dauer, die der Span trägt — für einen Hintergrund-Subagenten gibt das Werkzeug
+        sofort nach dem Start zurück (Hooks-Referenz), und der eine hier als
+        Hintergrund-Lauf protokollierte Aufruf trug drei Millisekunden, dieser die
+        Größenordnung des ganzen Laufs. **Was es entschiede:** eine Sonde auf die
+        **Schlüsselnamen** von `tool_input` im `Agent`-Zweig des `PreToolUse`-Hooks — die
+        Werte gehen sie nichts an, dieselbe Trennung wie beim `Bash`-Guard. Sie ist nicht
+        gefahren. Bis dahin gilt für den Guard, was er entscheidet, und nicht, was am Ende
+        im Span steht.
 
-     **Die Abweichung:** ein `Agent`-Span aus einem Hintergrund-Lauf sieht aus wie ein
-     erfasster Lauf und ist keiner. Die Erfassung ist insoweit **konstruktiv
-     unvollständig** — sie erfindet nichts, sie fehlt.
+     **Die Abweichung:** ein `Agent`-Span **ohne Zähler** sieht aus wie ein erfasster
+     Lauf und ist keiner. Beim Hintergrund-Lauf ist das konstruktiv (Prüfschritt 1); dass
+     es **nicht nur** dort eintritt, steht in (c). Die Erfassung ist insoweit
+     **konstruktiv unvollständig** — sie erfindet nichts, sie fehlt.
      **Auflösungs-Trigger, zwei — beobachtbar formuliert, aber verschieden belastbar:**
      (1) die **Abdeckungszahl** aus slice-066 DoD (1) — wie viele `Agent`-Spans überhaupt
      Zähler trugen, mit einem Nenner aus `SubagentStart` statt aus denselben Spans; zeigt
@@ -1295,10 +1341,14 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      eingerichtet hat.
      **Kein Slice führt die Bedingung — eine Quelle im Repo, die diese Token trägt —, und
      das ist nachgemessen:** alle Dateien in `open/`, `next/`, `in-progress/`, der
-     Welle-Plan und die Roadmap, auf *Token* durchsucht und die fünf Treffer-Dateien
+     Welle-Plan und die Roadmap, auf *Token* durchsucht und **jede** Treffer-Datei
      gelesen; sie sprechen von anderen Fragen (Splitting-Regel des Sammelpostens,
-     Berichtsgröße, Wächter-Bindung), und der eine Slice, der die Bedingung einmal trug,
-     hat seinen DoD-Punkt ausdrücklich hierher abgegeben. Ein Folge-Slice entsteht deshalb
+     Berichtsgröße, Wächter-Bindung, Cache-Rechnung, der `token:`-Modus des Doc-Gates),
+     und der eine Slice, der die Bedingung einmal trug, hat seinen DoD-Punkt ausdrücklich
+     hierher abgegeben. **Die Zahl der Treffer steht hier bewusst nicht:** sie wächst mit
+     jedem neu geschnittenen Slice und wäre schon beim nächsten falsch — dieselbe Falle
+     wie bei den Span-Zählungen oben. Wer den Satz prüft, sucht neu und liest, was er
+     findet. Ein Folge-Slice entsteht deshalb
      **nicht**:
      sein Inhalt wäre „abwarten", und das ist das Memo, das Modul 7 durch einen Slice
      ersetzt sehen will. Was ohne Slice bleibt, ist die Beobachtung — sie steht als
