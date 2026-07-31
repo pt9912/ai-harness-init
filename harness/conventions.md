@@ -937,9 +937,67 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      `canReadOutputFile` (gemessen); die Erfassung ist insoweit konstruktiv unvollständig.
      Den Vordergrund **herstellen** kann nur etwas, das den Start verweigert: der
      `PreToolUse`-Guard `.claude/hooks/pretooluse-agent-guard.sh`, und er tut es für
-     **Rollen**-Typen. Was er nicht herstellt, steht als **Abweichung 5** unten — mit der
+     **Rollen**-Typen. Die **Regel** dazu — wie ein Rollen-Lauf zu starten ist — steht als
+     **Start-Konvention** im nächsten Punkt; hier steht nur ihre Folge für die Erfassung.
+     Was der Guard nicht herstellt, steht als **Abweichung 5** unten — mit der
      Prüfung davor und einem Auflösungs-Trigger. Die Lücke ist damit benannt und nicht
      durch die `Agent`-Zeile überdeckt.
+
+- **Die START-KONVENTION für Rollen-Läufe — zwei Bedingungen, zwei BELEGKLASSEN.** Die
+  Erfassung oben setzt einen so gestarteten Lauf voraus; die Regel gehört deshalb hierher
+  und nicht in ein Gedächtnis. Wer Rollen-Arbeit an einen Subagenten gibt, startet ihn
+  1. **unter seinem Rollen-Typ, per @-Erwähnung** — das entscheidet, **WELCHE** Rolle
+     läuft. **Belegklasse: fremde Doku, im Repo NICHT vorliegend.** Die Subagenten-Seite
+     der Herstellerseite (`/docs/de/sub-agents`) nennt die @-Erwähnung als den Weg, der die
+     Ausführung *garantiert*, während natürliche Sprache die Delegation dem Modell
+     überlässt. Die vendored Hooks-Referenz `docs/user/claude-hooks-referenz.md` **verweist**
+     in ihrem `Agent`-Eintrag nur auf diese Seite und trägt den Satz nicht. Er steht hier
+     als **fremde Zusage**, nicht als Repo-Beleg — wer ihn nachprüfen will, findet im Repo
+     nichts, woran.
+  2. **im VORDERGRUND** — `run_in_background: false`; das entscheidet, **WIE** er läuft.
+     **Belegklasse: gemessen, und zusätzlich repo-lokal dokumentiert.** Gemessen ist, dass
+     ein Hintergrund-Lauf keine Verbrauchs-Achse trägt — im Einzelnen in **Abweichung 5**,
+     hier nicht wiederholt. Dokumentiert ist dasselbe in
+     `docs/user/claude-hooks-referenz.md`: ihr `Agent`-Eintrag führt den Hintergrund als
+     **Standard** und sagt, die Antwort eines Hintergrund-Subagenten trage keine
+     Nutzungsfelder, sondern `status: "async_launched"`, `agentId`, `description`,
+     `prompt`, `outputFile` und `resolvedModel`. Zwei unabhängige Belege für dieselbe
+     Bedingung — und der einzige Punkt dieser Konvention, für den das gilt.
+
+  **Die zwei Bedingungen sind UNABHÄNGIG — gemessen, nicht angenommen.** Ein per
+  @-Erwähnung angeforderter Lauf **ohne** ausdrücklichen Schalter lief im **Hintergrund**:
+  sein Span trug `duration_ms: 3` — der Hook feuert beim **Start** — bei 4.184 ms
+  tatsächlicher Laufzeit des Subagenten. Die @-Erwähnung wählt den **Typ**, nicht die
+  **Betriebsart**. Wer nur Bedingung 1 einhält, bekommt die Rolle und keine Zahl.
+
+  **Was diese Konvention ERZWINGT und was sie nur behauptet** — beides gehört in denselben
+  Punkt, sonst liest sich die Regel breiter als ihr Sensor
+  ([`AGENTS.md`](../AGENTS.md) §3.6):
+  - **Bedingung 2 ist für Rollen-Typen erzwungen.** Der `PreToolUse`-Guard
+    `.claude/hooks/pretooluse-agent-guard.sh` verweigert den Start. **An einem echten
+    Aufruf rot gesehen**, nicht nur am Test: ein Rollen-Typ mit `run_in_background: true`
+    wurde abgelehnt, der Ablehnungsgrund kam wörtlich als Fehler beim Aufrufer an, der
+    Subagent lief nicht — derselbe Typ mit `false` lief unmittelbar davor durch. Ableitung
+    der Rollen-Liste, fail-closed-Politik bei fehlendem Schalter, Dauer-Sensoren und
+    **Grenzen** stehen in **Abweichung 5**; kurz: er greift nur für Typen mit einer Datei
+    in `.claude/agents/`, und er kann fehlen oder abgeschaltet sein.
+  - **Bedingung 1 ist NICHT durchsetzbar, und der Grund ist strukturell, nicht
+    organisatorisch.** Die Payload hält die **Wahl** nicht fest. Gemessen über vier echte
+    Aufrufe — darunter den per @-Erwähnung angeforderten — trägt `tool_input` die Schlüssel
+    `subagent_type`, `prompt`, `description` und `run_in_background`; das dokumentierte
+    Eingabe-Schema in `docs/user/claude-hooks-referenz.md` nennt darüber hinaus nur
+    `model`. **Keiner** davon sagt, *wie* der Typ angefordert wurde: ein per @-Erwähnung
+    angeforderter Rollen-Typ und ein sprachlich delegierter kommen am Hook identisch an.
+    Ein Guard hat damit nichts, worauf er prüfen könnte — und **darum** prüft **kein
+    Sensor dieses Repos** Bedingung 1. Die Abwesenheit folgt aus der Payload, nicht aus
+    einer Trefferliste. Hier **benannt**, nicht mitgezählt. Wer die Rolle nicht anfordert,
+    bekommt `general-purpose`: nach der Lesevorschrift zu `agent_role` ein ehrliches
+    „unbekannt", aber eben keine Rolle, und der Lauf fällt in den Sammelposten samt
+    Splitting-Pflicht (Abweichung 3).
+
+  **Abgrenzung, damit keine zweite Wahrheit entsteht:** hier steht **WIE** ein Rollen-Lauf
+  startet, wenn einer startet. **DASS** Rollen-Arbeit überhaupt als Rolle läuft, ist eine
+  andere Regel — sie trägt slice-068.
 
 - **Was die Payload sonst noch trägt — gemessen, nicht aus der Doku.** Am 2026-07-29
   wurde eine echte Hook-Payload auf ihre **Schlüsselnamen** hin vermessen (nur Namen und
