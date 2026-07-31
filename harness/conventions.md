@@ -1119,30 +1119,48 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   verschwinden.
 
   Die vier Fälle 132–135 schließen das; 136 und 137 kamen am selben Tag aus den
-  Review-Befunden MEDIUM-1 und MEDIUM-2 dazu. **Jeder ist einzeln über den
-  `run_case`-Pfad des Treibers gefahren** (Grün-Vorlauf und -Nachlauf grün, Host-Baum
-  unberührt), und **fünf der sechs färben genau EINEN Wächter an genau der Zeile ihrer
-  Zusicherung**; 137 färbt bauartbedingt zwei, weil die Draht-Form von `spawned_role` in
-  zwei Wächtern zugesagt ist — sein Kopf sagt welche, und seine `# expect:`-Zeile bindet
-  den, dessen Eintrag sonst ungebunden bliebe. Mehrfach-Rot verdeckt seinen eigenen
-  Grund — die Lehre aus Review-Befund MEDIUM-4 —, deshalb steht die Zahl je Fall auch in
-  seinem Kopf.
+  Review-Befunden MEDIUM-1 und MEDIUM-2 dazu, 138 am 2026-07-31. **Jeder ist einzeln über
+  den `run_case`-Pfad des Treibers gefahren** (Grün-Vorlauf und -Nachlauf grün, Host-Baum
+  unberührt), und **fünf der sieben färben genau EINEN Wächter an genau der Zeile ihrer
+  Zusicherung**; 137 und 138 färben bauartbedingt **zwei**, weil die Draht-Form von
+  `spawned_role` in zwei Wächtern zugesagt ist — ihre Köpfe sagen welche, und ihre
+  `# expect:`-Zeilen binden je einen der zwei Einträge. Mehrfach-Rot verdeckt seinen
+  eigenen Grund — die Lehre aus Review-Befund MEDIUM-4 —, deshalb steht die Zahl je Fall
+  auch in seinem Kopf.
+
+  **„Ein Wächter" heißt eine Test-FUNKTION, nicht eine `--- FAIL:`-Zeile** — bei 133
+  fallen **vier** Zeilen an: die Funktion `TestOnlyAgentToolGetsResponseValues` und ihre
+  drei Untertests `Bash`, `Read`, `Write`, alle an derselben Zeile. Wer am `--- FAIL:`
+  abzählt, bekommt dort eine andere Zahl als hier; gezählt wird die Funktion.
 
   **Wo genau sie fielen, ist eine datierte MESSUNG und keine lebende Zusage** — die
   Nummern altern mit der nächsten in `response_test.go` eingefügten Zeile, und **kein
-  Sensor prüft sie**: `check-lines` (`.d-check.yml`) validiert Zeilen-Referenzen nur an
-  Pfaden mit Verzeichnis-Komponente, ein bloßes `response_test.go:209` liegt außerhalb
-  seines Prüfbereichs (gemessen: `make docs-check` bleibt mit ihnen grün). Bis zum
-  2026-07-30 stand dieser Satz im Präsens und datiert war nur die Klammer — Review-Befund
-  LOW-2. **Gemessen am 2026-07-30:** 132 fiel an `response_test.go:209`, 133 an `:171`,
-  135 an `:223`, 134 an `:347`, 136 an `:347`, 137 an `:209` **und** `:347` — die letzten
-  drei an derselben `mustNotContain`-Zeile `:347`, je an einem anderen **Eintrag** (134 an
-  `input_tokens`, 136 an `output_tokens`, 137 an `spawned_role`), 137 zusätzlich an
-  `:209`, der gleichlautenden Zusicherung des zweiten Wächters. Die drei ersten Nummern
-  stammen aus der Messung vor den Befunden MEDIUM-1/-2 und gelten weiter, weil der Diff
-  dieses Tages `response_test.go` erst ab dem Kopf von
-  `TestFailedAgentCallCapturesNothing` anfasst; `:323` aus jener Messung ist durch
-  denselben Diff zu `:347` geworden — genau die Alterung, die der Absatz oben benennt.
+  Sensor prüft sie**. Der Grund ist **nicht** die Form der Referenz, sondern ihr Ort:
+  `codepaths` — und mit ihm die Zeilen-Prüfung `check-lines` — arbeitet nur unter
+  `roots: [spec, docs, harness]` (`.d-check.yml`, Zeile 50), und `internal/` steht dort
+  nicht; der Konfigurations-Kommentar sagt es selbst (*„tools/cmd/internal folgen mit dem
+  Go-Code (Phase 3)"*). **Gemessen am 2026-07-31** (drei `make docs-check`-Läufe gegen
+  eine isolierte Kopie, alle Sonden in **derselben** Datei, damit das referenzierende
+  Dokument konstant bleibt): eine Zeilen-Referenz auf `internal/span/response_test.go`
+  weit jenseits seiner Zeilenzahl bleibt **still** — als Bereich **und** als Einzelzeile,
+  mit voller Verzeichnis-Komponente (259 Datei(en), 0 Befund(e)) —, während dieselbe Form
+  auf `harness/tools/mutate.sh` **einen** Befund `citation-out-of-range` meldet. Die
+  Verzeichnis-Komponente ist also weder notwendig noch hinreichend; bindend ist `roots`.
+  **Was daraus für die zurückgestellte Sensor-Arbeit folgt:** sie ist eine **Erweiterung
+  von `codepaths.roots` um `internal`** — eine Gate-Anhebung, ab der **jeder**
+  Inline-Code-Pfad unter `internal/` mitvalidiert wird, mit entsprechender Sprengweite —
+  und damit ein Steering-Loop nach [`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids),
+  **nicht** ein Weiten von `check-lines` auf Referenzen ohne Verzeichnis-Komponente. Bis
+  zum 2026-07-30 stand dieser Satz im Präsens und datiert war nur die Klammer —
+  Review-Befund LOW-2. **Gemessen am 2026-07-31** (Roh-Läufe, alle `--- FAIL:`-Zeilen
+  ausgezählt): 132 fiel an `response_test.go:207`, 133 an `:169`, 135 an `:221`, 134 an
+  `:343`, 136 an `:343`, 137 an `:207` **und** `:343`, 138 ebenso an `:207` **und**
+  `:343` — 134/136/137/138 an derselben `mustNotContain`-Zeile `:343`, je an einem
+  anderen **Eintrag** (134 an `input_tokens`, 136 an `output_tokens`, 137 und 138 an
+  `spawned_role`), 137 und 138 zusätzlich an `:207`, der gleichlautenden Zusicherung des
+  ersten Wächters. Die Vorgänger-Messung vom 2026-07-30 nannte `:209`/`:171`/`:223`/`:347`
+  — dieselben Zusicherungen, um zwei bis vier Zeilen verschoben, genau die Alterung, die
+  der Absatz oben benennt.
 
   1. `TestNoResponseFreetextReachesSpan` — **keines der vier gemessenen Freitext-Felder
      erreicht die Zeile**, je mit eigenem Kanarienvogel. Zähne:
@@ -1179,10 +1197,18 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      aus Festlegung 4 der Positiv-Liste; sie impliziert die gröbere).
   8. `TestFailedAgentCallCapturesNothing` — **kein halber Span**: die neun Werte fehlen,
      statt anwesend-und-ungemessen dazustehen. Seine `mustNotContain`-Liste nennt sie
-     seit dem 2026-07-30 **alle neun** namentlich; bis dahin waren es **acht**.
-     `output_tokens` fehlte und stand repo-weit in keiner Negativ-Prüfung — die Zeile
-     hier schrieb dem Wächter also eine Zusicherung zu, die er nicht hatte
-     (Review-Befund MEDIUM-1). **Gemessen, nicht geschlossen:** mit
+     seit dem 2026-07-30 **alle neun** namentlich. **Vorher trennten sich zwei
+     Zählungen, und das Auseinanderhalten ist der Punkt:** *namentlich* standen **sechs**
+     der neun da (`spawned_role`, `input_tokens`, `total_tokens`, `total_duration_ms`,
+     `total_tool_use_count`, `model_version`), *gedeckt* waren **acht** — die zwei
+     Cache-Zähler fielen als Teilstring unter `"input_tokens"`. **Acht** ist also die
+     Abdeckungs-, nicht die Nennungs-Zahl. (Das Literal selbst trug zehn Argumente:
+     die sechs Namen, `result_bytes` — das **keiner** der neun ist — und drei
+     Nicht-Feld-Proben.) `output_tokens` war weder genannt noch gedeckt und stand
+     repo-weit in keiner Negativ-Prüfung — die Zeile hier schrieb dem Wächter also eine
+     Zusicherung zu, die er nicht hatte (Review-Befund MEDIUM-1). Genau diese
+     Verwechslung von *genannt* mit *gedeckt* ist der Mechanismus, der ihn verborgen
+     hat. **Gemessen, nicht geschlossen:** mit
      `json:"output_tokens"` statt `json:"output_tokens,omitempty"` blieb `make test-go`
      bei **Exit 0** mit **null** `--- FAIL:`-Zeilen, während jede geschriebene Zeile —
      auch ein reiner `Bash`-Span — `"output_tokens":null` trug (beides in isolierter
@@ -1193,17 +1219,26 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      `output_tokens`) und `test/mutations/137-span-rollenfeld-praesent-leer.sh`
      (dasselbe an `spawned_role`; er gehört zugleich zur Draht-Form weiter unten).
      **Was diese drei NICHT binden, und darum hier steht:** sie binden **drei** der neun
-     Listen-Einträge. Ein Zahn bindet einen Eintrag genau dann, wenn seine Mutation
-     genau diesen Namen in die Fehlschlag-Zeile schreibt — 134 schreibt `input_tokens`,
-     136 `output_tokens`, 137 `spawned_role`. Die übrigen **sechs** (die zwei
+     Listen-Einträge. **Der Prüfstein dafür ist das Kippen, nicht das Rot:** ein Zahn
+     bindet einen Eintrag genau dann, wenn das **Streichen dieses Eintrags** den Fall von
+     „ok" auf **Befund** kippt. Dass seine Mutation genau diesen Namen in die
+     Fehlschlag-Zeile schreibt, ist dafür **notwendig, nicht hinreichend** —
+     `mustNotContain` prüft per `strings.Contains` und bricht beim **ersten** Treffer ab.
+     Ein Fall an `cache_read_input_tokens` schriebe den Namen und bliebe trotzdem
+     ungebunden: streicht man den Eintrag, greift weiterhin `"input_tokens"` als
+     Teilstring, der Wächter bleibt rot, `make mutate` meldet „ok". 134 (`input_tokens`),
+     136 (`output_tokens`) und 137 (`spawned_role`) sind in dieser Richtung **gefahren**,
+     nicht abgeleitet. Die übrigen **sechs** (die zwei
      Cache-Zähler, `total_tokens`, `total_duration_ms`, `total_tool_use_count`,
      `model_version`) prüft der Wächter, aber **kein Fall des heutigen Sets schreibt
      einen von ihnen in diese Zeile** — wer einen aus der Liste streicht, bekommt von
      `make mutate` keinen Befund. Das ist aus der Bauart der Fälle **abgeleitet**, nicht
      einzeln gefahren. Sechs weitere `omitempty`-Kopien wären möglich und sind bewusst
      **nicht** geschnitten (sie kosten je einen vollen Sensor-Lauf und binden je einen
-     Namen); wer sie will, schneidet sie — hier steht, was gedeckt ist, statt die Zahl
-     neun ein zweites Mal auf einen Zahn zu schreiben, der einen Eintrag bindet.
+     Namen); wer sie will, schneidet sie — und misst dann das **Kippen**, denn für die
+     zwei Cache-Zähler ist es aus dem Teilstring-Grund oben **nicht** zu haben, solange
+     `"input_tokens"` in derselben Liste steht. Hier steht, was gedeckt ist, statt die
+     Zahl neun ein zweites Mal auf einen Zahn zu schreiben, der einen Eintrag bindet.
   9. `TestAgentGetsNoArgumentFields` **und** `TestFailedAgentCallCapturesNothing` — die
      Gegenprobe `"tool":"Agent"`: ein `Agent`-Span ist an der geschriebenen Zeile als
      solcher erkennbar. Zahn: `test/mutations/131-span-werkzeugname-leer.sh` (Punkt 2 der
@@ -1243,17 +1278,48 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   die beiden Wächter hatten keinen **Dauer**-Sensor.
   **Die Draht-Form von `spawned_role`** — abwesend statt `""`, und damit die Lesevorschrift,
   die darauf ruht — bewachen `TestAgentGetsNoArgumentFields` und
-  `TestFailedAgentCallCapturesNothing` an der geschriebenen Zeile. **Ihr Dauer-Zahn ist
-  seit dem 2026-07-30 `test/mutations/137-span-rollenfeld-praesent-leer.sh`** (das
-  `omitempty` an `json:"spawned_role"` genommen: danach steht `"spawned_role":""` in jeder
-  Zeile und behauptet in jedem `Bash`-Span einen Subagenten, den es nicht gab). Bis dahin
-  hatte sie **keinen** — der Code-Kommentar an `intoSpawnedRole` nannte dafür Fall 134,
+  `TestFailedAgentCallCapturesNothing` an der geschriebenen Zeile, **jeder mit einem
+  EIGENEN `mustNotContain`-Eintrag**. Zwei Einträge brauchen **zwei** Zähne, denn der
+  Treiber sucht je Fall genau **einen** Namen in der Fehlschlag-Ausgabe (Bedingung 4) —
+  ein Fall kann höchstens einen Eintrag binden, auch wenn seine Mutation beide Wächter
+  rot färbt. Die zwei Zähne tragen darum **dieselbe** Mutation (das `omitempty` an
+  `json:"spawned_role"` genommen: danach steht `"spawned_role":""` in jeder Zeile und
+  behauptet in jedem `Bash`-Span einen Subagenten, den es nicht gab) und unterscheiden
+  sich nur in ihrer `# expect:`-Zeile:
+  **`test/mutations/137-span-rollenfeld-praesent-leer.sh`** (seit 2026-07-30) bindet den
+  Eintrag im **Fehlschlag**-Wächter,
+  **`test/mutations/138-span-rollenfeld-praesent-leer-erfolgsfall.sh`** (seit 2026-07-31)
+  den im **ersten**. **Zweiseitig gemessen am 2026-07-31** (isolierte Kopie, Grün-Vorlauf
+  und -Nachlauf grün, alle `--- FAIL:`-Zeilen ausgezählt): mit intakten Wächtern melden
+  beide „ok" und färben je **zwei** Wächter (`response_test.go:207` und `:343`); streicht
+  man `"spawned_role"` aus der Liste des **ersten** Wächters, meldet **138 Befund**
+  (*„rot, aber … faellt nicht — falscher Grund"* — es fällt nur noch der Fehlschlag-
+  Wächter), während **137 „ok"** meldet; streicht man ihn aus der Liste des
+  **Fehlschlag**-Wächters, kehrt es sich um (**137 Befund**, **138 „ok"**).
+  **Die Strukt-Prüfung `s.SpawnedRole != ""` im ersten Wächter deckt das nicht ab** und
+  darum ist dessen Eintrag tragend: das Feld ist in **beiden** Draht-Formen `""`, über
+  An- oder Abwesenheit entscheidet allein das JSON-Tag. **Bis 2026-07-31 war dieser
+  Eintrag von keinem Fall gebunden** — man konnte ihn streichen, und `make gates` wie
+  `make mutate` blieben still. **Das ist eine Vollständigkeits-Aussage und darum
+  ausgezählt statt behauptet:** kippen kann nur ein Fall, dessen `# expect:`-Zeile genau
+  diesen Wächter nennt (Bedingung 4 prüft **einen** Namen); das sind über alle Fälle
+  genau **vier** — 131, 132, 135 und der neue 138. Mit gestrichenem Eintrag melden 131,
+  132 und 135 weiter „ok" (gemessen 2026-07-31, ein Lauf), weil sie an der Gegenprobe
+  `"tool":"Agent"`, an der Strukt-Prüfung bzw. an der Gattungszeile fallen — **nur 138**
+  meldet Befund. Vor dem 2026-07-30
+  hatte die Draht-Form **überhaupt** keinen Zahn — der Code-Kommentar an `intoSpawnedRole`
+  nannte dafür Fall 134,
   der `json:"input_tokens,omitempty"` mutiert und `spawned_role` nirgends berührt
   (Review-Befund MEDIUM-2; gemessen: mit gestrichenem `"spawned_role"` in der
   `mustNotContain`-Liste des Fehlschlag-Wächters meldet 134 weiter „ok"). **Fall 132
   trägt sie nicht:** er bindet die *Herkunft* und nur im ersten der beiden Wächter — der
   zweite führt `subagent_type: "nope"`, das zu leer normalisiert, und bleibt unter 132
-  absichtlich grün. Ihre **Voraussetzung** hat
+  absichtlich grün (gemessen 2026-07-31: 132 färbt **genau einen** Wächter, alle
+  `--- FAIL:`-Zeilen ausgezählt). **Die Herkunfts-Achse des zweiten Wächters hat damit
+  keinen Zahn** — und zwar bewusst: ein *roher* Rückfall färbte ihn mit, und „132 rot"
+  hieße dann nicht mehr eindeutig „B1 greift im ERSTEN Wächter" (die Begründung steht im
+  Kopf von 132). Hier **benannt**, nicht mitgezählt. Ihre
+  **Voraussetzung** hat
   **zwei Hälften**, und beide hingen bis zum 2026-07-30 an einer falschen Fundstelle: hier stand,
   `TestMandatoryFieldsAlwaysPresent` bewache sie *„mit dem Zahn
   `test/mutations/110-span-pflichtfeld-verschwindet.sh`"*. Fall 110 mutiert aber `tool_use_id`
@@ -1274,20 +1340,24 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Treibers; Grün-Vorlauf und -Nachlauf grün, Host-Fingerabdruck vor/nach gleich): mit intakten
   Wächtern melden sie „ok"; mit gestrichener Listen-Zeile meldet 130 **Befund** (*„blieb
   GRUEN — … hat keine Zaehne mehr"*), mit gestrichener Zeilen-Gegenprobe meldet 131 **Befund**
-  (*„rot, aber … faellt nicht — falscher Grund"*). Die **dreizehn** Zähne oben (123–129 und
-  132–137) bewachen die **Erfassung**; diese **zwei** (130, 131) bewachen ihre
+  (*„rot, aber … faellt nicht — falscher Grund"*). Die **vierzehn** Zähne oben (123–129 und
+  132–138) bewachen die **Erfassung**; diese **zwei** (130, 131) bewachen ihre
   **Voraussetzung** — zwei Zählungen über zwei Eigenschaften, keine Korrektur der ersten.
   Die erste Zahl war bis 2026-07-30 **sieben**, wuchs mit den vier Fällen aus
-  Verifier-Befund V-1 auf elf und mit den zwei Fällen aus den Review-Befunden MEDIUM-1
-  und MEDIUM-2 (136, 137) auf dreizehn — gewachsen, nicht korrigiert.
+  Verifier-Befund V-1 auf elf, mit den zwei Fällen aus den Review-Befunden MEDIUM-1
+  und MEDIUM-2 (136, 137) auf dreizehn und am 2026-07-31 mit 138 auf vierzehn —
+  gewachsen, nicht korrigiert.
 
   **Auch Fall 132 ist zweiseitig gemessen** (2026-07-30, derselbe Pfad): mit intaktem
-  Wächter meldet er „ok" (`-> TestAgentGetsNoArgumentFields rot`, gefallen an
-  `response_test.go:209` — der B1-Zeile, als einziger Wächter des ganzen Laufs); mit
+  Wächter meldet er „ok" (`-> TestAgentGetsNoArgumentFields rot`, gefallen an der
+  B1-Zeile — am 2026-07-31 `response_test.go:207` —, als einziger Wächter des ganzen
+  Laufs); mit
   gestrichenen B1-Zusicherungen meldet er **Befund** (*„make test-go blieb GRUEN —
   … hat keine Zaehne mehr"*), **während 131 im selben Lauf weiter „ok" meldet**. Genau
   diese zwei Zeilen nebeneinander sind der Beleg, dass B1 jetzt gebunden ist und vorher
-  nicht.
+  nicht. **Was er bindet, ist die EIGENSCHAFT B1, nicht der `mustNotContain`-Eintrag:**
+  streicht man nur diesen, fällt der Wächter weiter über die Strukt-Prüfung und 132
+  meldet „ok" (gemessen 2026-07-31). Den Eintrag bindet 138.
 - **Auflösungs-Trigger:** permanent, solange Spans erfasst werden. Die Tabelle ändert sich mit
   jedem neuen Feld — jede Änderung ist ein Eintrag hier, kein Nebeneffekt im Skript.
 

@@ -38,15 +38,22 @@
 # MESSWERT (`"spawned_role":"reviewer"` bzw. `"verifier"`) — ein fehlendes `omitempty`
 # beruehrt sie nicht.
 #
-# GEBUNDEN BLEIBT DER BENANNTE: `# expect:` nennt `TestFailedAgentCallCapturesNothing`,
-# weil dessen Eintrag der ungebundene war — die B1-Zusicherung in
-# `TestAgentGetsNoArgumentFields` haelt Fall 132 (zweiseitig gemessen, MR-018). Streicht
-# jemand `"spawned_role"` aus dem Fehlschlag-Waechter, bleibt dieser Lauf zwar rot (ueber
-# den anderen Waechter), aber Bedingung 4 des Treibers findet den erwarteten Namen nicht
-# mehr in der Fehlschlag-Ausgabe und meldet BEFUND ("rot, aber ... faellt nicht —
-# falscher Grund"). GEMESSEN am 2026-07-30, beide Seiten in EINEM Lauf: mit gestrichenem
-# Eintrag meldet 134 weiter "ok" und DIESER Fall BEFUND. Genau das ist der Unterschied
-# zu Fall 134.
+# GEBUNDEN IST GENAU EIN EINTRAG — DER BENANNTE. `# expect:` nennt
+# `TestFailedAgentCallCapturesNothing`, also bindet dieser Fall dessen
+# `mustNotContain`-Eintrag: streicht jemand `"spawned_role"` dort, bleibt der Lauf zwar
+# rot (ueber den anderen Waechter), aber Bedingung 4 des Treibers findet den erwarteten
+# Namen nicht mehr in der Fehlschlag-Ausgabe und meldet BEFUND ("rot, aber ... faellt
+# nicht — falscher Grund"). GEMESSEN am 2026-07-30, beide Seiten in EINEM Lauf: mit
+# gestrichenem Eintrag meldet 134 weiter "ok" und DIESER Fall BEFUND. Genau das ist der
+# Unterschied zu Fall 134.
+#
+# DEN EINTRAG DES ANDEREN WAECHTERS BINDET ER NICHT, und dafuer gibt es einen zweiten
+# Fall: `test/mutations/138-span-rollenfeld-praesent-leer-erfolgsfall.sh` traegt dieselbe
+# Mutation mit `# expect: TestAgentGetsNoArgumentFields`. Streicht man `"spawned_role"`
+# aus DESSEN `mustNotContain`-Liste, meldet dieser Fall hier weiter "ok" (er faellt ueber
+# den Fehlschlag-Waechter) und 138 BEFUND — gemessen am 2026-07-31. Die Strukt-Pruefung
+# `s.SpawnedRole != ""` im ersten Waechter faengt es nicht: das Feld ist in beiden
+# Draht-Formen `""`, ueber Anwesenheit entscheidet allein das JSON-Tag.
 #
 # DER ANKER TRIFFT NUR DIESES FELD: `json:"spawned_role,omitempty"` steht repo-weit
 # genau einmal (internal/span/response.go, `SpawnedRole`).

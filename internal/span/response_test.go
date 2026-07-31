@@ -335,9 +335,11 @@ func TestFailedAgentCallCapturesNothing(t *testing.T) {
 	//
 	// Die zwei Cache-Zaehler deckte `"input_tokens"` schon per TEILSTRING ab; sie
 	// stehen jetzt trotzdem namentlich da, damit der Leser NEUN Namen gegen die
-	// Feldtabelle in MR-018 zaehlen kann statt sieben plus einer Teilstring-
-	// Ueberlegung. `result_bytes` ist KEINER der neun — es ist die Laenge, die jedes
-	// Werkzeug abgibt; sie fehlt hier, weil `tool_response` ganz fehlt.
+	// Feldtabelle in MR-018 zaehlen kann statt SECHS plus einer Teilstring-
+	// Ueberlegung. Sechs ist die Zahl der frueher namentlich genannten Werte; die
+	// zwei Cache-Zaehler kamen per Teilstring dazu, `output_tokens` fehlte ganz.
+	// `result_bytes` ist KEINER der neun — es ist die Laenge, die jedes Werkzeug
+	// abgibt; sie fehlt hier, weil `tool_response` ganz fehlt.
 	mustNotContain(t, line,
 		"spawned_role", "input_tokens", "output_tokens",
 		"cache_creation_input_tokens", "cache_read_input_tokens",

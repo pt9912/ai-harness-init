@@ -105,11 +105,23 @@ func intoTotalToolUse(r *AgentResult, v json.RawMessage)  { r.TotalToolUseCount 
 //
 // Bewacht von TestSpawnedRoleIsNormalised mit dem Dauer-Sensor
 // test/mutations/128-span-rolle-unnormalisiert.sh. Die Abwesenheit bei fehlendem Ergebnis
-// bewachen TestAgentGetsNoArgumentFields und TestFailedAgentCallCapturesNothing, je ein
-// Dauer-Sensor pro Achse: test/mutations/132-span-rolle-aus-argument.sh fuer die HERKUNFT
-// (Rueckfall auf `tool_input.subagent_type`) und
-// test/mutations/137-span-rollenfeld-praesent-leer.sh fuer die DRAHT-FORM
-// (`spawned_role` ohne `omitempty`).
+// bewachen TestAgentGetsNoArgumentFields und TestFailedAgentCallCapturesNothing — die
+// zwei Achsen liegen aber NICHT gleich ueber beiden Waechtern:
+//
+// HERKUNFT (Rueckfall auf `tool_input.subagent_type`):
+// test/mutations/132-span-rolle-aus-argument.sh faerbt NUR den ersten. Der zweite fuehrt
+// `subagent_type: "nope"`, das roleFromAgentType zu leer normalisiert, und bleibt unter
+// 132 absichtlich gruen — seine Herkunfts-Achse hat damit keinen Zahn, und das ist
+// Absicht: ein ROHER Rueckfall faerbte ihn mit, und "132 rot" hiesse dann nicht mehr
+// eindeutig "die Herkunft greift im ERSTEN Waechter".
+//
+// DRAHT-FORM (`spawned_role` ohne `omitempty`):
+// test/mutations/137-span-rollenfeld-praesent-leer.sh und
+// test/mutations/138-span-rollenfeld-praesent-leer-erfolgsfall.sh faerben BEIDE. Die zwei
+// Faelle tragen dieselbe Mutation und unterscheiden sich nur in ihrer `# expect:`-Zeile:
+// 137 bindet den `mustNotContain`-Eintrag des Fehlschlag-Waechters, 138 den des ersten.
+// Ein Fall bindet nur EINEN von beiden, weil der Treiber je Fall genau einen Namen in
+// der Fehlschlag-Ausgabe sucht.
 func intoSpawnedRole(r *AgentResult, v json.RawMessage) {
 	r.SpawnedRole = roleFromAgentType(text(v))
 }
