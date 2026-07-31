@@ -59,11 +59,16 @@ es nicht.
   1. **Die Größe steht im Bericht, nicht als bestandene Schwelle.** Eine Kennzahl mit Grenze
      erzeugt den Anreiz, Arbeit zu verlagern, damit die Zahl stimmt — statt weil die
      Rollen-Trennung trägt.
-  2. **„Span mit Zählern" ist die falsche Definition von gedeckt.** Gemessen: ein
-     **Hintergrund**-Lauf liefert `resolvedModel`, und die Positiv-Liste erfasst es unbedingt —
-     acht der neun Werte fehlen, einer kommt an. Eine Abdeckungszahl, die „Span mit irgendeinem
-     erfassten Wert" zählt, zählt genau die Läufe als gedeckt, deren Fehlen sie zeigen soll.
-     Die Definition muss an den **Zählern** hängen.
+  2. **„Span mit Zählern" ist die falsche Definition von gedeckt.** **Gemessen** ist, dass die
+     Antwort eines **Hintergrund**-Laufs `resolvedModel` trägt und **keinen** der acht übrigen
+     Werte — keine Zähler, kein `agentType`. Ob daraus im Span ein `model_version` wird, hängt
+     an der strukturellen Schranke aus
+     [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
+     und ist an keinem Span **beobachtet**; die Festlegung braucht das auch nicht: kommt der
+     eine Wert an, zählt eine Abdeckungszahl über „Span mit irgendeinem erfassten Wert" genau
+     die Läufe als gedeckt, deren Fehlen sie zeigen soll — kommt er nicht an, ruht dieselbe Zahl
+     auf einer Schranke, die niemand vermessen hat. Beide Ausgänge sagen dasselbe: die
+     Definition muss an den **Zählern** hängen.
 - [ ] **(3) Die Welle-Aussage steht als Festlegung, nicht als Zelle.** welle-09 verlangt je
   Matrix-Zelle *„entweder einen laufenden Sensor oder eine deklarierte Entscheidung mit
   Auflösungs-Trigger, und nichts dazwischen"*. Für *Token-Attribution × Repo* ist heute genau
@@ -80,9 +85,21 @@ Nicht-Erreichbarkeit der Haupt-Kontext-Token als erklärte Abweichung mit Auflö
 von [slice-060](../in-progress/slice-060-rollen-achse.md) DoD (3) geliefert worden und steht als
 Abweichung 6 in
 [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung):
-dieselbe Reihenfolge (Prüfung → Abweichung → Trigger), dieselben drei Prüfschritte, derselbe
-Trigger-Wortlaut. Ihn hier stehen zu lassen hätte eine zweite Wahrheit über denselben Sachverhalt
-erzeugt.
+dieselbe Reihenfolge (Prüfung → Abweichung → Trigger) und dieselbe Trigger-**Bedingung**. Ihn
+hier stehen zu lassen hätte eine zweite Wahrheit über denselben Sachverhalt erzeugt.
+**Die Prüfschritte sind nicht dieselben, und das gehört genannt, damit niemand die Gleichheit
+statt der Sache prüft:** der frühere DoD (2) führte (a) Zähler nur in `tool_response`,
+(b) Transkripte als Quelle ausgeschlossen, (c) `SubagentStart` trägt keine Token. Abweichung 6
+führt (a) unverändert als ihren ersten Schritt, fasst (b) und (c) zum dritten („eine zweite
+Quelle?") zusammen und schiebt als **zweiten** einen neuen dazwischen: ob die Token aus den
+bereits erfassten Feldern (`result_bytes`, `duration_ms`) **ableitbar** wären — mit der Antwort
+nein und dem Verweis auf
+[`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 1 Punkt 4. Drei gegen
+drei ist damit ein Zufall der Zählung: geliefert wurde ein Schritt mehr, und zwei sind
+verschmolzen.
+**Der Auflösungs-Trigger hängt seit dem Neuschnitt an keinem Slice mehr** — auch nicht an
+diesem. Abweichung 6 sagt das inzwischen selbst und begründet es; wer hier einen Träger sucht,
+findet ihn nicht und soll ihn nicht aus dieser Notiz ableiten.
 
 ## 3. Plan (vor Code)
 

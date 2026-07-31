@@ -269,6 +269,19 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
   nie nachgesehen habe. Alle drei Teile lagen im Repo bereit: ein laufender `PreToolUse`-Guard,
   Filterung feiner als der Tool-Name, und `run_in_background` in `tool_input`. Der Sensor steht
   jetzt in DoD (1).
+- **Bedingung 1 (@-Erwähnung) bleibt ohne Sensor — geliefert ist eine erklärte
+  Nicht-Durchsetzbarkeit, nicht eine Durchsetzung.** Das ist eine **Substitution**, und sie
+  gehört so protokolliert wie die Abweichung in DoD (2), sonst liest sich DoD (1) als „beide
+  Bedingungen erzwungen". Der Grund trägt nur zur Hälfte: für die typisierten
+  `tool_input`-Schlüssel (`subagent_type`, `run_in_background`, `model`) steht in der Payload
+  nichts, worauf ein Guard prüfen könnte; für `prompt` und `description` ist es **ungeprüft**,
+  weil die Ist-Messung in §3 ausdrücklich nur **Feldnamen und Wertlängen, nie Werte** erfasst
+  hat. Was es entschiede, ist benannt und **nicht gefahren**: eine Werte-Sonde auf
+  `tool_input.prompt` bei einem @-erwähnten Aufruf. Bis dahin gilt „nicht nachgesehen", nicht
+  „strukturell unmöglich" —
+  [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
+  sagt es inzwischen so, und die frühere, weitere Fassung des Satzes war dieselbe Klasse wie der
+  Punkt darüber: eine Vollständigkeitsaussage, deren Prüfbereich enger war als ihr Satz.
 - **Zweite Verteidigungslinie bleibt nötig:** ein Guard kann fehlen, abgeschaltet oder umgangen
   sein. Deshalb verlangt [slice-066](../open/slice-066-telemetrie-auswertung.md) eine **Abdeckungszahl**
   — wie viele `Agent`-Spans überhaupt Zähler trugen — und nicht nur die Größe des Sammelpostens.

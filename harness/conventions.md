@@ -869,7 +869,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 | `input_tokens`, `output_tokens` | Optional | *Wie teuer war dieser Subagenten-Lauf?* — die Verbrauchs-Achse, ohne die eine Token-Bilanz je Rolle eine Summe statt einer Rechnung ist |
 | `cache_creation_input_tokens`, `cache_read_input_tokens` | Optional | *Zahlte der Lauf den Cache oder nutzte er ihn?* — der Cache-Status, der bis 2026-07-29 als nicht erreichbar galt und seit 2026-07-30 für Subagenten-Läufe **erfasst** ist (Abweichung 1 unten, dort auf den Rest-Zustand zurückgeschnitten) |
 | `total_tokens` | Optional | *Wie groß war der Lauf insgesamt?* — die Summe, die das **Werkzeug selbst** ausweist. **Ob** sie die Addition der vier Zähler ist, war bis 2026-07-30 **nicht gemessen** (die Ist-Messung erfasste nur Schlüsselnamen und Wertlängen, nie Werte). Am eigenen Bestand nachgerechnet **ist** sie es, exakt, an jedem geprüften Zähler-Span. Eine Auswertung addiert sie deshalb **nicht** zu den vier, sondern gegen sie. **Hier steht bewusst keine Zahl und keine Stichprobengröße mehr:** der Bestand unter `.harness/state/spans/` ist gitignored, maschinenlokal und wächst mit jedem Subagenten-Lauf — die zuvor hier eingefrorene Rechnung über „beide vorliegenden Zähler-Spans" war drei Minuten nach ihrem Commit falsch und für einen anderen Checkout ohnehin nicht nachvollziehbar (Review-Befund R2-LOW-1 vom 2026-07-30). Die Probe gehört **gefahren**, nicht zitiert, und sie bleibt eine Stichprobe |
-| `total_duration_ms` | Optional | *Wie lange lief der Subagent wirklich?* — **nicht** `duration_ms`: das misst den Aufruf, wie der Hook ihn sieht (gemessen 4 ms gegen 4.184 ms tatsächlicher Laufzeit) |
+| `total_duration_ms` | Optional | *Wie lange lief der Subagent wirklich?* — **nicht** `duration_ms`: das misst den Aufruf, wie der Hook ihn sieht. Die zwei Größen stammen aus **einem** Vordergrund-Aufruf: `duration_ms` trug dort 4 ms, weil der Hook beim **Start** feuert, während `total_duration_ms` die Laufzeit des Subagenten trägt. **Die weiter unten genannten 4.184 ms gehören nicht hierher** — sie stammen aus einem anderen, im **Hintergrund** gelaufenen Aufruf, und der trägt gar kein `totalDurationMs`. Jede Paarung gehört ihrem Aufruf; zwei Beobachtungen zu einer zu fügen ergäbe eine Messung, die niemand gemacht hat |
 | `total_tool_use_count` | Optional | *Wie viele Werkzeug-Aufrufe verursachte der Subagent?* — der Teiler, ohne den „Token je Aufruf" nicht rechenbar ist |
 | `model_version` | Optional | *Welches Modell verursachte die Kosten?* — das Modul-15-Label `model.version`, aus `tool_response.resolvedModel`, **strukturell begrenzt** (Länge und geschlossener Zeichensatz). Was die Gestalt eines Bezeichners nicht hat, wird **verworfen, nicht gekürzt** |
 
@@ -935,9 +935,18 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   5. **Die Zähler kommen nur im Vordergrund an.** Ein Hintergrund-Lauf liefert weder
      Zähler noch `agentType`, dafür u. a. `agentId`, `isAsync`, `outputFile` und
      `canReadOutputFile` (gemessen); die Erfassung ist insoweit konstruktiv unvollständig.
-     Den Vordergrund **herstellen** kann nur etwas, das den Start verweigert: der
-     `PreToolUse`-Guard `.claude/hooks/pretooluse-agent-guard.sh`, und er tut es für
-     **Rollen**-Typen. Die **Regel** dazu — wie ein Rollen-Lauf zu starten ist — steht als
+     Den Vordergrund **herstellt** hier ein `PreToolUse`-Hook, der den Start
+     **verweigert**: der Guard `.claude/hooks/pretooluse-agent-guard.sh`, und er tut es
+     für **Rollen**-Typen. **Dass das der einzige Weg wäre, steht hier nicht** — die
+     vendored Hooks-Referenz `docs/user/claude-hooks-referenz.md` führt für dasselbe
+     Ereignis ein `updatedInput`, das die Tool-Argumente **vor** der Ausführung ersetzt
+     und sich ausdrücklich mit `"allow"` kombinieren lässt; ein Hook könnte den Schalter
+     also **umschreiben** statt abzulehnen. **Gemessen ist dieser zweite Weg nicht:** ob
+     das Agenten-Werkzeug ein umgeschriebenes `run_in_background` befolgt, hat niemand
+     geprüft. Er steht hier als benannte, ungeprüfte Alternative — wer abwägt, ob die
+     Telemetrie den Preis der Vordergrund-Bedingung wert ist (sie kostet Parallelität),
+     soll nicht zwischen „verweigern" und „aufgeben" wählen müssen, weil ein dritter Weg
+     ungenannt blieb. Die **Regel** dazu — wie ein Rollen-Lauf zu starten ist — steht als
      **Start-Konvention** im nächsten Punkt; hier steht nur ihre Folge für die Erfassung.
      Was der Guard nicht herstellt, steht als **Abweichung 5** unten — mit der
      Prüfung davor und einem Auflösungs-Trigger. Die Lücke ist damit benannt und nicht
@@ -968,7 +977,12 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   @-Erwähnung angeforderter Lauf **ohne** ausdrücklichen Schalter lief im **Hintergrund**:
   sein Span trug `duration_ms: 3` — der Hook feuert beim **Start** — bei 4.184 ms
   tatsächlicher Laufzeit des Subagenten. Die @-Erwähnung wählt den **Typ**, nicht die
-  **Betriebsart**. Wer nur Bedingung 1 einhält, bekommt die Rolle und keine Zahl.
+  **Betriebsart**. Wer nur Bedingung 1 einhält, bekommt **keine Zahl** — und je nach Typ
+  auch keinen Span: bei einem **Rollen**-Typ verweigert der Guard den Start, und ein
+  geblockter Aufruf hinterlässt keinen Span; bei jedem anderen Typ läuft der Aufruf
+  durch, und seine Antwort trägt weder Zähler noch `agentType`, also auch kein
+  `spawned_role`. „Die Rolle und keine Zahl" trifft damit keinen der beiden Fälle: die
+  Rolle kommt aus `agentType`, und das fehlt im Hintergrund.
 
   **Was diese Konvention ERZWINGT und was sie nur behauptet** — beides gehört in denselben
   Punkt, sonst liest sich die Regel breiter als ihr Sensor
@@ -981,16 +995,27 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
     der Rollen-Liste, fail-closed-Politik bei fehlendem Schalter, Dauer-Sensoren und
     **Grenzen** stehen in **Abweichung 5**; kurz: er greift nur für Typen mit einer Datei
     in `.claude/agents/`, und er kann fehlen oder abgeschaltet sein.
-  - **Bedingung 1 ist NICHT durchsetzbar, und der Grund ist strukturell, nicht
-    organisatorisch.** Die Payload hält die **Wahl** nicht fest. Gemessen über vier echte
-    Aufrufe — darunter den per @-Erwähnung angeforderten — trägt `tool_input` die Schlüssel
-    `subagent_type`, `prompt`, `description` und `run_in_background`; das dokumentierte
-    Eingabe-Schema in `docs/user/claude-hooks-referenz.md` nennt darüber hinaus nur
-    `model`. **Keiner** davon sagt, *wie* der Typ angefordert wurde: ein per @-Erwähnung
-    angeforderter Rollen-Typ und ein sprachlich delegierter kommen am Hook identisch an.
-    Ein Guard hat damit nichts, worauf er prüfen könnte — und **darum** prüft **kein
-    Sensor dieses Repos** Bedingung 1. Die Abwesenheit folgt aus der Payload, nicht aus
-    einer Trefferliste. Hier **benannt**, nicht mitgezählt. Wer die Rolle nicht anfordert,
+  - **Bedingung 1 ist NICHT durchgesetzt — und der Grund trägt nur für einen Teil der
+    Payload.** Gemessen über vier echte Aufrufe — darunter den per @-Erwähnung
+    angeforderten — trägt `tool_input` die Schlüssel `subagent_type`, `prompt`,
+    `description` und `run_in_background`; das dokumentierte Eingabe-Schema in
+    `docs/user/claude-hooks-referenz.md` nennt darüber hinaus nur `model`. Für die
+    **typisierten** Schlüssel — `subagent_type`, `run_in_background`, `model` — ist die
+    Sache entschieden: sie führen den Typ und die Betriebsart, nicht den Weg der
+    Anforderung; ein per @-Erwähnung angeforderter Rollen-Typ und ein sprachlich
+    delegierter kommen **in ihnen** identisch an. Für `prompt` und `description` ist sie
+    es **nicht**: das sind Freitext-Felder des Aufrufers, und dieselbe Messung erfasste
+    ausdrücklich **nur Feldnamen und Wertlängen, nie Werte**. Ob sich eine @-Erwähnung im
+    `prompt` niederschlägt, ist damit in **keine** Richtung gemessen — die Ableitung aus
+    Schlüssel*namen* reicht über Felder, deren *Inhalt* niemand angesehen hat, nicht
+    hinaus. **Kein Sensor dieses Repos prüft Bedingung 1**, und der Grund ist zweigeteilt:
+    für die typisierten Felder, weil dort nichts steht, worauf er prüfen könnte; für die
+    zwei Freitext-Felder, weil niemand nachgesehen hat. Ein Sensor dort wäre keine
+    ausgeschlossene, sondern eine **ungetroffene** Entscheidung — der bestehende
+    `Bash`-Guard liest die volle Kommandozeile, ohne sie zu protokollieren; die Trennung
+    zwischen *lesen* und *schreiben* ist in diesem Repo etabliert. Was es entschiede, ist
+    benannt: eine Werte-Sonde auf `tool_input.prompt` bei einem @-erwähnten Aufruf. Sie
+    ist nicht gefahren. Hier **benannt**, nicht mitgezählt. Wer die Rolle nicht anfordert,
     bekommt `general-purpose`: nach der Lesevorschrift zu `agent_role` ein ehrliches
     „unbekannt", aber eben keine Rolle, und der Lauf fällt in den Sammelposten samt
     Splitting-Pflicht (Abweichung 3).
@@ -1026,7 +1051,12 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Sechs erklärte Abweichungen vom Modul-15-Pflicht-Minimum** (die ADR verlangt sie zu benennen,
   nicht wegzulassen). Die Zahl ist **gewachsen, nicht korrigiert**: vier standen hier seit
   slice-059, die zwei letzten kamen am 2026-07-31 dazu und benennen, was die Erfassung aus
-  `tool_response` **nicht** erreicht:
+  `tool_response` **nicht** erreicht.
+  **Nicht jede trägt einen ausgewiesenen Auflösungs-Trigger, und das ist keine
+  Nachlässigkeit:** 5 und 6 tragen einen, weil ihre Bedingung sich beobachtbar formulieren
+  lässt. Wo keiner steht, ist je Abweichung zu entscheiden, ob sie als dauerhaft gemeint
+  ist — der Ort dafür ist das Wellen-Closure-Audit (Modul 7), nicht eine pauschale Zeile
+  hier; eine solche wäre für mindestens eine der sechs falsch.
   1. **Cache-Status ist für Subagenten-Läufe im Vordergrund erfasst — für den Haupt-Kontext
      und für Hintergrund-Läufe bleibt er unerreichbar.** Das ist der Rest-Zustand; die
      Abweichung ist **verkleinert, nicht aufgehoben**, und die Überschrift sagt es jetzt
@@ -1151,29 +1181,45 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      3. **Was er nicht deckt — und erst das ist die Abweichung.** (a) Ein Typ **ohne**
         Datei in `.claude/agents/` ist keine Rolle: `general-purpose`, `Explore` und die
         übrigen eingebauten Typen laufen im Hintergrund durch, **absichtlich** — sie
-        tragen ohnehin keine Rolle in den Span. Ihre `Agent`-Spans tragen von den neun
-        Werten genau **einen**: `model_version`, weil `resolvedModel` auch im
-        Hintergrund gesetzt ist. Ein Etikett ohne Zahl — die **acht** Werte an
-        `usage`/`total*`/`agentType` fehlen. (b) Der Guard ist eine Verdrahtung in
+        tragen ohnehin keine Rolle in den Span. In ihre `Agent`-Spans gelangt von den
+        neun Werten **höchstens einer**: `resolvedModel` steht auch in der
+        Hintergrund-Antwort (gemessen), läuft aber durch die strukturelle Schranke aus
+        Festlegung 4 — hat der Wert deren Gestalt nicht, fehlt `model_version` ganz (das
+        Feld ist `omitempty`). Die **acht** Werte an `usage`/`total*`/`agentType` fehlen
+        in jedem Fall. **Beobachtet ist diese Zeile nicht:** sie folgt aus der
+        Payload-Messung und aus dem Code, nicht aus einem Span — was sie entschiede, ist
+        ein `Agent`-Span aus einem Hintergrund-Lauf. Wer die Zeile zur Definition einer
+        Abdeckungszahl heranzieht, hängt sie deshalb an die **Zähler** und nicht an
+        „irgendein erfasster Wert". (b) Der Guard ist eine Verdrahtung in
         `.claude/settings.json`; er kann fehlen, abgeschaltet oder umgangen sein, und
-        **kein Sensor dieses Repos prüft, dass er verdrahtet ist** — gemessen am
-        2026-07-31 über `test/**`, `Makefile`, `harness/tools/*.sh` und die Go-Tests: die
-        einzige Verdrahtungs-Prüfung an einer `settings.json` steht in
-        `harness/tools/smoke.sh` und gilt dem **emittierten** Repo und dessen
-        Command-Guard.
+        **kein Sensor dieses Repos prüft, dass er verdrahtet ist**. Gemessen am
+        2026-07-31 über `test/**`, `Makefile`, `harness/tools/*.sh` und die Go-Tests
+        berühren die Verdrahtung einer `settings.json` **drei** Artefakte: **zwei
+        Prüfungen** — der `PreToolUse`-Test in `harness/tools/smoke.sh` und
+        `TestEnforce_SettingsWiresBothHooks` in `internal/emit/enforce_test.go` — und der
+        **Dauer-Sensor** der zweiten,
+        `test/mutations/32-enforce-settings-wires-guard.sh`. **Alle drei** gelten dem
+        **emittierten** Repo und dessen Command-Guard; für die Verdrahtung **dieses**
+        Repos prüft keines etwas. Ein Vorbild samt rot gesehener Mutation gibt es also,
+        einen Sensor nicht.
 
      **Die Abweichung:** ein `Agent`-Span aus einem Hintergrund-Lauf sieht aus wie ein
      erfasster Lauf und ist keiner. Die Erfassung ist insoweit **konstruktiv
      unvollständig** — sie erfindet nichts, sie fehlt.
-     **Auflösungs-Trigger, zwei, beide beobachtbar:** (1) die **Abdeckungszahl** aus
-     slice-066 DoD (1) — wie viele `Agent`-Spans überhaupt Zähler trugen, mit einem
-     Nenner aus `SubagentStart` statt aus denselben Spans; zeigt sie einen nennenswerten
-     Anteil zählerloser `Agent`-Spans, ist zu entscheiden, ob der Guard auf **alle**
-     Agenten-Typen geweitet wird oder die Zusage einzuschränken ist. (2) Trägt die
-     `tool_response` eines Hintergrund-Laufs eines Tages Zähler, entfällt die Abweichung
-     ersatzlos — das ist der Hook-Oberflächen-Trigger aus
+     **Auflösungs-Trigger, zwei — beobachtbar formuliert, aber verschieden belastbar:**
+     (1) die **Abdeckungszahl** aus slice-066 DoD (1) — wie viele `Agent`-Spans überhaupt
+     Zähler trugen, mit einem Nenner aus `SubagentStart` statt aus denselben Spans; zeigt
+     sie einen nennenswerten Anteil zählerloser `Agent`-Spans, ist zu entscheiden, ob der
+     Guard auf **alle** Agenten-Typen geweitet wird oder die Zusage einzuschränken ist.
+     Sie ist **messbar, aber noch nicht gemessen**: slice-066 liegt in `open/`, der
+     Trigger wirkt also erst, wenn dieser Slice läuft. (2) Trägt die `tool_response` eines
+     Hintergrund-Laufs eines Tages Zähler, entfällt die Abweichung ersatzlos — das ist der
+     Hook-Oberflächen-Trigger aus
      [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md)
-     §Re-Evaluierungs-Trigger, hier nur zugeordnet.
+     §Re-Evaluierungs-Trigger, hier nur zugeordnet. Die ADR ordnet ihn selbst ein: die
+     Quelle ist **nicht gepinnt** und wird von **keinem Gate** geprüft, er *„wirkt nur,
+     wenn ihn jemand liest"*. **Von selbst feuert damit keiner der beiden** — der eine
+     wartet auf einen Slice, der andere auf einen Leser.
   6. **Der Haupt-Kontext hat keine Zahl — die härtere Hälfte.** Abweichung 3 oben
      benennt seine fehlende **Rolle**; hier steht seine fehlende **Zahl**. Die zwei sind
      verschieden, und die Reihenfolge der Härte ist die umgekehrte der Bequemlichkeit:
@@ -1201,13 +1247,25 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      Haupt-Strom selbst gilt unverändert die Splitting-Pflicht aus Abweichung 3 samt der
      Pflicht, die Größe des Sammelpostens zu **zeigen**.
      **Auflösungs-Trigger:** eine Quelle **innerhalb des Repos**, die Haupt-Kontext-Token
-     trägt — dieselbe Bedingung führt slice-068 DoD (2). **Ehrlich zu ihrer
-     Erreichbarkeit**, weil Modul 7 einen ernst erreichbaren Trigger verlangt und sonst
-     die Überführung in eine Dauer-Entscheidung: niemand kann diesen Trigger
-     **herbeiführen**, er wird **beobachtet**. Ausgeschlossen ist er nicht — die
-     Payload-Fläche wächst messbar (fünf undokumentierte Schlüssel in vier gemessenen
-     Aufrufen). Bleibt er auf absehbare Zeit aus, ist der Ort dieser Abweichung nicht
-     länger dieser Eintrag, sondern eine ADR.
+     trägt. **Ehrlich zu ihrer Erreichbarkeit**, weil Modul 7 einen ernst erreichbaren
+     Trigger verlangt und sonst die Überführung in eine Dauer-Entscheidung: niemand kann
+     diesen Trigger **herbeiführen**, er wird **beobachtet**. Ausgeschlossen ist er nicht
+     — die Payload-Fläche wächst messbar (fünf undokumentierte Schlüssel in vier
+     gemessenen Aufrufen); der Weg, auf dem er einträfe, ist eine geänderte
+     Hook-Oberfläche, und dafür führt
+     [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md)
+     §Re-Evaluierungs-Trigger bereits den Punkt — ungepinnt, von keinem Gate geprüft,
+     wirksam nur, wenn ihn jemand liest.
+     **Kein Slice führt diese Bedingung, und das steht hier statt eines Zeigers auf
+     einen.** Modul 7 verlangt den Folge-Slice für den Fall, dass der Trigger **durch
+     Aufwand** erreichbar ist; dieser ist es nicht — es gibt nichts zu planen, nur etwas
+     zu bemerken, und ein Slice, dessen Inhalt „abwarten" wäre, ist genau das Memo, das
+     Modul 7 durch einen Slice ersetzt sehen will. Bleibt der Trigger auf absehbare Zeit
+     aus, ist der Ort dieser Abweichung nicht länger dieser Eintrag, sondern eine ADR
+     (Modul 7 §Werkzeug-Wahl: ein ehrlich nie erreichbarer Trigger macht die Ausnahme zur
+     Architekturentscheidung). Der Ort dieser Entscheidung ist das Wellen-Closure-Audit,
+     das Modul 7 ohnehin über die temporären Ausnahmen verlangt; **erzwungen wird sie von
+     nichts** — kein Gate sieht diesen Absatz.
 
 - **Tooling-Klarstellung zur Fitness Function.** Drei ihrer Zeilen nennen als Tooling
   `bats (make test)`; umgesetzt sind sie als **Go**-Tests unter demselben Target
