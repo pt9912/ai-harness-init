@@ -1053,10 +1053,25 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   slice-059, die zwei letzten kamen am 2026-07-31 dazu und benennen, was die Erfassung aus
   `tool_response` **nicht** erreicht.
   **Nicht jede trägt einen ausgewiesenen Auflösungs-Trigger, und das ist keine
-  Nachlässigkeit:** 5 und 6 tragen einen, weil ihre Bedingung sich beobachtbar formulieren
-  lässt. Wo keiner steht, ist je Abweichung zu entscheiden, ob sie als dauerhaft gemeint
-  ist — der Ort dafür ist das Wellen-Closure-Audit (Modul 7), nicht eine pauschale Zeile
-  hier; eine solche wäre für mindestens eine der sechs falsch.
+  Nachlässigkeit:** 5 trägt einen, weil ihre Bedingung sich beobachtbar formulieren lässt und
+  ihr Eintritt durch Arbeit erreichbar ist. 6 trug einen und trägt jetzt statt seiner ein
+  **Verdikt**: sie ist permanent und in
+  [`ADR-0012`](../docs/plan/adr/0012-haupt-kontext-ohne-token-bilanz.md) übergeführt — der
+  Trichter, der das entscheidet, steht bei ihr.
+  **Wo keiner steht, entscheidet der Modul-7-Trichter (§Werkzeug-Wahl bei Diskrepanz), und der
+  Ort dieser Entscheidung ist DIESER Eintrag — nicht das Wellen-Closure-Audit.** Dessen
+  Gegenstand sind die Artefakte unter `docs/plan/carveouts/`: sein DoD verlangt je aktivem
+  **Carveout** ein aktuelles Prüfdatum und für jeden lange aktiven die Bestätigung oder die
+  ADR-Überführung, und der Closure-Trigger der laufenden Welle setzt genau diesen Umfang
+  (*„CO-001 geprüft, neue Carveouts dokumentiert oder begründet keine"*). Diese sechs
+  Abweichungen sind **keine** Carveouts und liegen nicht dort; ein Audit über `carveouts/`
+  sieht sie nicht, und es als Träger zu benennen hieße, die Entscheidung an einen Prüfbereich
+  zu übergeben, der sie nicht enthält.
+  **Was das für die vier übrigen heißt — ausgesprochen, statt offengelassen:** 1 ist auf ihren
+  Rest-Zustand zurückgeschnitten und hängt für ihn an 5 und 6; 3 hat mit slice-060 und
+  slice-068 benannte Träger. **2 und 4 sind durch den Trichter nicht gelaufen** und tragen
+  weder Trigger noch Verdikt — das ist hier **benannt, nicht entschieden**, und es ist
+  Planner-Arbeit, keine Nebenbei-Zeile.
   1. **Cache-Status ist für Subagenten-Läufe im Vordergrund erfasst — für den Haupt-Kontext
      und für Hintergrund-Läufe bleibt er unerreichbar.** Das ist der Rest-Zustand; die
      Abweichung ist **verkleinert, nicht aufgehoben**, und die Überschrift sagt es jetzt
@@ -1077,10 +1092,10 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      sie braucht"*; das ging einen Schritt weiter als das Erfasste (Review-Befund R2-INFO-1).
      **Unerreichbar bleibt zweierlei, und das ist die fortbestehende Abweichung:** der
      **Hintergrund-Lauf** und der **Haupt-Kontext**. Beiden fehlt nicht nur der
-     Cache-Status, sondern die **ganze** Verbrauchs-Achse; sie stehen deshalb seit dem
-     2026-07-31 als **Abweichung 5 und 6** unten — je mit der Prüfung davor und einem
-     Auflösungs-Trigger. Hier sind sie nur benannt: derselbe Ausfall zweimal beschrieben
-     wäre zwei Stellen, die auseinanderdriften.
+     Cache-Status, sondern die **ganze** Verbrauchs-Achse; sie stehen deshalb als
+     **Abweichung 5 und 6** unten — je mit der Prüfung davor, 5 mit einem
+     Auflösungs-Trigger, 6 mit dem Verdikt *permanent*. Hier sind sie nur benannt:
+     derselbe Ausfall zweimal beschrieben wäre zwei Stellen, die auseinanderdriften.
      **Warum nicht über das Transkript** — die frühere Quelle: eine frühere Fassung trug den
      `transcript_path` als **Zeiger** und überließ die Auflösung der Auswertung; der Zeiger ist
      am 2026-07-29 auf Entscheidung des Auftraggebers **entfernt** worden, und zwar samt dem
@@ -1235,10 +1250,23 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
         Schätzung, und eine Schätzung an dieser Stelle ist genau das Raten, das
         [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) Festlegung 1
         Punkt 4 ausschließt (*leer und als leer erkennbar*, nicht geraten).
-     3. **Eine zweite Quelle? Keine, die offen steht.** Das Transkript ist als Quelle
-        ausgeschlossen (Abweichung 1, letzter Absatz: fremder Besitz, außerhalb des
-        Repos, voller Gesprächsinhalt). `SubagentStart` zählt Spawns und trägt keine
-        Token.
+     3. **Eine zweite Quelle? Zwei geprüft, beide zu — und eine Fläche ist ungeprüft.**
+        Das Transkript ist als Quelle ausgeschlossen (Abweichung 1, letzter Absatz:
+        fremder Besitz, außerhalb des Repos, voller Gesprächsinhalt). `SubagentStart`
+        zählt Spawns und trägt keine Token. **Was hier NICHT gemessen ist, gehört in
+        denselben Punkt, sonst reicht der Satz weiter als seine Prüfung:** vermessen sind
+        die Schlüsselmengen von `PostToolUse`/`PostToolUseFailure` und die `tool_response`
+        des `Agent`-Werkzeugs — sonst nichts. Die Payloads der übrigen Ereignisse hat hier
+        niemand angesehen, auch die des verdrahteten `Stop`-Hooks nicht: der greift genau
+        ein Feld heraus und protokolliert nichts. Für sie ist **gelesen** statt gemessen,
+        und zwar die vendored `docs/user/claude-hooks-referenz.md`: über ihre ganze Länge
+        nennt sie ein `usage`-Objekt und ein `totalTokens` ausschließlich für die
+        `tool_response` des `Agent`-Werkzeugs, für kein anderes Ereignis ein
+        Nutzungsfeld. Das ist Herkunft, keine Messung — die Regel dieses Eintrags lautet
+        *„die Payload ist die Quelle"*. Die Fläche steht deshalb als **benannte
+        ungemessene** im Re-Evaluierungs-Trigger von
+        [`ADR-0012`](../docs/plan/adr/0012-haupt-kontext-ohne-token-bilanz.md), nicht als
+        Vollständigkeitsaussage hier.
 
      **Die Abweichung:** der Verbrauch des Haupt-Kontexts steht in keiner Payload. Jede
      Token-Bilanz aus diesen Spans ist damit eine Bilanz über **Subagenten-Läufe**; ihr
@@ -1246,26 +1274,37 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      an der erfassten Teilmenge. Wer ihn schreibt, schreibt das dazu. Für den
      Haupt-Strom selbst gilt unverändert die Splitting-Pflicht aus Abweichung 3 samt der
      Pflicht, die Größe des Sammelpostens zu **zeigen**.
-     **Auflösungs-Trigger:** eine Quelle **innerhalb des Repos**, die Haupt-Kontext-Token
-     trägt. **Ehrlich zu ihrer Erreichbarkeit**, weil Modul 7 einen ernst erreichbaren
-     Trigger verlangt und sonst die Überführung in eine Dauer-Entscheidung: niemand kann
-     diesen Trigger **herbeiführen**, er wird **beobachtet**. Ausgeschlossen ist er nicht
-     — die Payload-Fläche wächst messbar (fünf undokumentierte Schlüssel in vier
-     gemessenen Aufrufen); der Weg, auf dem er einträfe, ist eine geänderte
-     Hook-Oberfläche, und dafür führt
-     [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md)
-     §Re-Evaluierungs-Trigger bereits den Punkt — ungepinnt, von keinem Gate geprüft,
-     wirksam nur, wenn ihn jemand liest.
-     **Kein Slice führt diese Bedingung, und das steht hier statt eines Zeigers auf
-     einen.** Modul 7 verlangt den Folge-Slice für den Fall, dass der Trigger **durch
-     Aufwand** erreichbar ist; dieser ist es nicht — es gibt nichts zu planen, nur etwas
-     zu bemerken, und ein Slice, dessen Inhalt „abwarten" wäre, ist genau das Memo, das
-     Modul 7 durch einen Slice ersetzt sehen will. Bleibt der Trigger auf absehbare Zeit
-     aus, ist der Ort dieser Abweichung nicht länger dieser Eintrag, sondern eine ADR
-     (Modul 7 §Werkzeug-Wahl: ein ehrlich nie erreichbarer Trigger macht die Ausnahme zur
-     Architekturentscheidung). Der Ort dieser Entscheidung ist das Wellen-Closure-Audit,
-     das Modul 7 ohnehin über die temporären Ausnahmen verlangt; **erzwungen wird sie von
-     nichts** — kein Gate sieht diesen Absatz.
+     **Status: PERMANENT — übergeführt in
+     [`ADR-0012`](../docs/plan/adr/0012-haupt-kontext-ohne-token-bilanz.md)** (dort
+     *Proposed*; über die Annahme entscheidet der Architect, wie Modul 7 §Carveout-Audit
+     die Rollen verteilt). **Hier steht deshalb kein Auflösungs-Trigger mehr**, und das
+     ist die Regel, nicht ihr Bruch: auf dem ADR-Pfad fällt der Trigger weg, die
+     Beschreibung bleibt.
+     **Der Trichter, der das entschieden hat** — Modul 7 §Werkzeug-Wahl bei Diskrepanz,
+     zwei Fragen in seiner Reihenfolge: (1) *einzelne Diskrepanz oder Cluster?* Einzelne —
+     die Nachbar-Abweichung 5 betrifft dieselbe Achse, hat aber ihren eigenen, erreichbaren
+     Trigger, und die Symptome einer BF-Sub-Area-Markierung liegen nicht vor. (2) *Trigger
+     ernst zu erreichen?* Nein — die Quelle stünde in einer Payload, die uns nicht gehört,
+     oder im ausgeschlossenen Transkript; **niemand kann diesen Trigger herbeiführen, er
+     wird beobachtet**, und Modul 7 führt genau diesen Fall auf *„permanent, übergeführt in
+     eine ADR"*. Die frühere Fassung dieses Absatzes las aus derselben Feststellung das
+     Gegenteil heraus — dass ein nur beobachtbarer Trigger auch **ohne** Träger als
+     temporäre Ausnahme stehenbleiben dürfe — und benannte als Entscheidungs-Ort ein Audit
+     über `docs/plan/carveouts/`, das diesen Absatz nicht umfasst. Damit wäre die Abweichung
+     genau so in die De-facto-Permanenz gedriftet, gegen die Modul 7 das Audit überhaupt
+     eingerichtet hat.
+     **Kein Slice führt die Bedingung — eine Quelle im Repo, die diese Token trägt —, und
+     das ist nachgemessen:** alle Dateien in `open/`, `next/`, `in-progress/`, der
+     Welle-Plan und die Roadmap, auf *Token* durchsucht und die fünf Treffer-Dateien
+     gelesen; sie sprechen von anderen Fragen (Splitting-Regel des Sammelpostens,
+     Berichtsgröße, Wächter-Bindung), und der eine Slice, der die Bedingung einmal trug,
+     hat seinen DoD-Punkt ausdrücklich hierher abgegeben. Ein Folge-Slice entsteht deshalb
+     **nicht**:
+     sein Inhalt wäre „abwarten", und das ist das Memo, das Modul 7 durch einen Slice
+     ersetzt sehen will. Was ohne Slice bleibt, ist die Beobachtung — sie steht als
+     Re-Evaluierungs-Trigger in der ADR, samt der ehrlichen Einordnung, dass sie nur wirkt,
+     wenn jemand sie liest. **Erzwungen wird auch das von nichts** — kein Gate sieht diesen
+     Absatz und keines die ADR.
 
 - **Tooling-Klarstellung zur Fitness Function.** Drei ihrer Zeilen nennen als Tooling
   `bats (make test)`; umgesetzt sind sie als **Go**-Tests unter demselben Target

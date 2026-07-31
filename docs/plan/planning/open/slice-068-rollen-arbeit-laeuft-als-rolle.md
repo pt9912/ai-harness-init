@@ -73,9 +73,14 @@ es nicht.
   Matrix-Zelle *„entweder einen laufenden Sensor oder eine deklarierte Entscheidung mit
   Auflösungs-Trigger, und nichts dazwischen"*. Für *Token-Attribution × Repo* ist heute genau
   **dazwischen**. Dieser Slice schreibt die **Festlegung**, dass die Zelle **deklarierte
-  Entscheidung mit Trigger** trägt und nicht „Sensor" — ein Bericht ist kein Wächter. Die Zelle
-  selbst entsteht bei der Wellen-Closure in `welle-09-results.md`; sie hier abhaken zu wollen
-  wäre eine Zusage über ein Artefakt, das es noch nicht gibt.
+  Entscheidung** trägt und nicht „Sensor" — ein Bericht ist kein Wächter. **Ihre Belegart ist
+  zweigeteilt, und das gehört in die Festlegung:** der Hintergrund-Teil (Abweichung 5) trägt
+  einen Auflösungs-Trigger, der Haupt-Kontext dagegen das Verdikt *permanent* aus
+  [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) — dort fällt der Trigger nach
+  Modul 7 §Werkzeug-Wahl weg. Wer die Zelle mit einem Trigger für **beides** ausfüllt, schreibt
+  einen hin, den es nicht mehr gibt. Die Zelle selbst entsteht bei der Wellen-Closure in
+  `welle-09-results.md`; sie hier abhaken zu wollen wäre eine Zusage über ein Artefakt, das es
+  noch nicht gibt.
 
 - [ ] `make gates` grün.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -85,8 +90,11 @@ Nicht-Erreichbarkeit der Haupt-Kontext-Token als erklärte Abweichung mit Auflö
 von [slice-060](../in-progress/slice-060-rollen-achse.md) DoD (3) geliefert worden und steht als
 Abweichung 6 in
 [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung):
-dieselbe Reihenfolge (Prüfung → Abweichung → Trigger) und dieselbe Trigger-**Bedingung**. Ihn
-hier stehen zu lassen hätte eine zweite Wahrheit über denselben Sachverhalt erzeugt.
+dieselbe Reihenfolge (Prüfung → Abweichung → Einordnung) und dieselbe Sache. Ihn hier stehen zu
+lassen hätte eine zweite Wahrheit über denselben Sachverhalt erzeugt. **Die Einordnung ist
+inzwischen eine andere als die des entfallenen DoD-Punktes:** wo er einen Auflösungs-Trigger
+vorsah, trägt Abweichung 6 das Verdikt *permanent* — der Modul-7-Trichter hat sie in
+[`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) übergeführt.
 **Die Prüfschritte sind nicht dieselben, und das gehört genannt, damit niemand die Gleichheit
 statt der Sache prüft:** der frühere DoD (2) führte (a) Zähler nur in `tool_response`,
 (b) Transkripte als Quelle ausgeschlossen, (c) `SubagentStart` trägt keine Token. Abweichung 6
@@ -97,9 +105,11 @@ nein und dem Verweis auf
 [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 1 Punkt 4. Drei gegen
 drei ist damit ein Zufall der Zählung: geliefert wurde ein Schritt mehr, und zwei sind
 verschmolzen.
-**Der Auflösungs-Trigger hängt seit dem Neuschnitt an keinem Slice mehr** — auch nicht an
-diesem. Abweichung 6 sagt das inzwischen selbst und begründet es; wer hier einen Träger sucht,
-findet ihn nicht und soll ihn nicht aus dieser Notiz ableiten.
+**Es gibt keinen Auflösungs-Trigger mehr, an dem ein Slice hängen könnte** — auch nicht an
+diesem. Abweichung 6 sagt das inzwischen selbst und begründet es aus Modul 7: die Bedingung ist
+nicht durch Aufwand herbeizuführen, also ist die Ausnahme permanent und gehört in eine ADR statt
+in einen Folge-Slice. Wer hier einen Träger sucht, findet keinen — und soll auch keinen aus
+dieser Notiz ableiten.
 
 ## 3. Plan (vor Code)
 
