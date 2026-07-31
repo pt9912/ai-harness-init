@@ -24,9 +24,10 @@ Architekturentscheidung — entscheidet diese ADR)
 **Schärft:** `—` (Prozess-/Betriebs-ADR ohne Spec-Stratum, dieselbe Einordnung wie
 [ADR-0011](0011-telemetrie-erfassung-policy.md)). Die **emittierte** Ebene wird hier nicht
 **entschieden** — Gegenstand ist der Dogfood-Bestand dieses Repos, und das **Ob** der Emission
-bleibt slice-062 samt Change Request ([ADR-0011](0011-telemetrie-erfassung-policy.md)
-Festlegung 5). **Berührt** ist sie sehr wohl, und zwar als Folgepflicht 3 unten: wird je
-emittiert, gilt diese Grenze im Ziel und gehört dort genannt.
+bleibt dem Slice, der die Tool-Ebene entscheidet, samt Change Request
+([ADR-0011](0011-telemetrie-erfassung-policy.md) Festlegung 5). **Berührt** ist sie sehr wohl,
+und zwar als Folgepflicht 3 unten: wird je emittiert, gilt diese Grenze im Ziel und gehört dort
+genannt.
 
 ---
 
@@ -37,9 +38,9 @@ verlangt eine Token-Bilanz **je Rolle**.
 [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) führt
 sechs erklärte Abweichungen von diesem Pflicht-Minimum; die sechste ist die härteste und der
 Gegenstand hier: **der Haupt-Kontext hat keine Zahl** — und er ist der Ort, an dem auch
-Rollen-Arbeit anfällt: an slice-060 ist belegt, dass Planner und Implementation über weite
-Strecken in **einem** Kontextfenster liefen. **Wie viele Token** das sind, weiß niemand — und
-genau das ist der Gegenstand.
+Rollen-Arbeit anfällt: an der Arbeit an der Rollen-Achse dieses Repos ist belegt, dass Planner
+und Implementation über weite Strecken in **einem** Kontextfenster liefen. **Wie viele Token**
+das sind, weiß niemand — und genau das ist der Gegenstand.
 
 **Was gemessen ist** (im Einzelnen in
 [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
@@ -55,11 +56,10 @@ sind zwei Größen, und nur die zweite steht hier zur Entscheidung.
 
 **Warum die Entscheidung jetzt fällt.** Die Abweichung stand als *temporäre*: mit einem
 Auflösungs-Trigger — *„eine Quelle innerhalb des Repos, die Haupt-Kontext-Token trägt"* — und
-**ohne Folge-Slice**. Über die **neun** lebenden Plandateien — `open/`, `next/`, `in-progress/`
-samt Roadmap und der flach liegende Welle-Plan — führt kein Slice diese Bedingung; die fünf, die
-überhaupt von Token sprechen, tun es zu anderen Fragen (Splitting-Regel des Sammelpostens,
-Berichtsgröße, Wächter-Bindung), und der eine Slice, der die Bedingung einmal trug, hat seinen
-DoD-Punkt
+**ohne Folge-Slice**. Über die lebenden Plandateien — `open/`, `next/`, `in-progress/` samt
+Roadmap und der flach liegende Welle-Plan — führt kein Slice diese Bedingung; wo überhaupt von
+Token die Rede ist, geht es um andere Fragen (Splitting-Regel des Sammelpostens, Berichtsgröße,
+Wächter-Bindung), und der eine Slice, der die Bedingung einmal trug, hat seinen DoD-Punkt
 ausdrücklich an
 [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
 abgegeben. `.harness/baseline/v3.5.2/regelwerk/modul-07-carveouts.md:26-29` beschreibt genau
@@ -140,7 +140,7 @@ Erfassungs-Mechanik angenommen haben. Drei Festlegungen folgen:
 | C — **Mess-Slice**: Sonde auf die hier nie vermessenen Ereignis-Payloads | planbar, endlich, und er machte aus gelesener Doku eine Messung — die Lehre dieses Repos lautet *„die Payload ist die Quelle, die Doku ist Herkunft"* | er **löst nichts auf**: er beobachtet, ob der Trigger schon eingetreten ist, er führt ihn nicht herbei. Sein Erwartungswert ist negativ — die vendored `docs/user/claude-hooks-referenz.md` nennt in ihrer ganzen Länge ein `usage`-Objekt und ein `totalTokens` **nur** für die `tool_response` des `Agent`-Werkzeugs (`:1571-1574`), für kein anderes Ereignis ein Nutzungsfeld. Danach stünde dieselbe Frage erneut, und die Abweichung wäre um eine Runde älter. Das Wissen, das er brächte, ist unten als **benannte ungemessene Fläche** aufgehoben, ohne einen WIP-Platz zu belegen |
 | D — **Transkript als Quelle** | es trägt die Zähler und liegt auf derselben Maschine | auf Entscheidung des Auftraggebers ausgeschlossen: fremder Besitz, außerhalb des Repos, voller Gesprächsinhalt. [ADR-0011](0011-telemetrie-erfassung-policy.md) hat dieselbe Option bereits als Alternative D verworfen; ein Zeiger darauf legte eine Auflösung nahe, die niemand genehmigt hat |
 | E — **eigener Telemetrie-Empfänger**, der die Nutzungs-Telemetrie des Werkzeugs annimmt | er bekäme Zahlen, die kein Hook trägt | [ADR-0011](0011-telemetrie-erfassung-policy.md) hat den Stack als Option B verworfen ([`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten): neue Laufzeit-Abhängigkeit; ein Backend ohne Betreiber). Dazu ein Detail aus der vendored Werkzeug-Doku: das Werkzeug **entfernt die Exporter-Variablen aus jedem Unterprozess, den es spawnt, einschließlich Hooks** — die Erfassungsstelle, die wir haben, käme an diese Achse ohnehin nicht heran |
-| G — **Rollen-Arbeit in Subagenten verlagern**, damit weniger im Haupt-Kontext anfällt | die einzige Option, die die **Größe** des unerfassten Anteils bewegt statt seiner Messbarkeit; sie ist bereits geplant (slice-068 schreibt die Konvention und legt die Berichtsgröße fest, slice-066 erzeugt sie) | sie beantwortet die Frage dieser ADR **nicht**: der Haupt-Kontext bekäme keine Zahl, sondern nur weniger Arbeit — und **wie viel weniger, misst niemand**: die verschobene Menge liegt vor der Verschiebung in genau der Größe, die keine Payload trägt. Ablesbar ist allein, was auf der anderen Seite ankommt. Sie ist deshalb keine Alternative zu F, sondern das, was **neben** F läuft. Sie steht hier, damit die Konsequenz unten nicht als *„daran ist nichts zu machen"* gelesen wird |
+| G — **Rollen-Arbeit in Subagenten verlagern**, damit weniger im Haupt-Kontext anfällt | die einzige Option, die die **Größe** des unerfassten Anteils bewegt statt seiner Messbarkeit; sie ist bereits geplant — der Slice, der die Rollen-Konvention schreibt, legt die Berichtsgröße fest, und die Auswertung erzeugt sie | sie beantwortet die Frage dieser ADR **nicht**: der Haupt-Kontext bekäme keine Zahl, sondern nur weniger Arbeit — und **wie viel weniger, misst niemand**: die verschobene Menge liegt vor der Verschiebung in genau der Größe, die keine Payload trägt. Ablesbar ist allein, was auf der anderen Seite ankommt. Sie ist deshalb keine Alternative zu F, sondern das, was **neben** F läuft. Sie steht hier, damit die Konsequenz unten nicht als *„daran ist nichts zu machen"* gelesen wird |
 | **F — permanent, als ADR (gewählt)** | die Abweichung hört auf, auf einen Träger zu warten, den es nicht gibt; die Einordnung steht dort, wo Architekturentscheidungen stehen, und die Nenner-Pflicht bekommt ihre Begründung und ihren Zahn | eine ADR ist ab *Accepted* immutabel ([`AGENTS.md`](../../../AGENTS.md) §3.4): wird die Quelle doch erreichbar, entsteht eine neue ADR mit *Supersedes*, kein Federstrich. Und sie schließt keine Lücke — sie benennt sie dauerhaft |
 
 ## Konsequenzen
@@ -158,9 +158,9 @@ Erfassungs-Mechanik angenommen haben. Drei Festlegungen folgen:
 - **Negativ:** eine Auswertung muss ihren Nenner selbst führen. Kein Feld im Span sagt ihr, wie
   groß der nicht erfasste Teil war — die Größe ist nicht klein, sie ist **unbekannt**. **Und sie
   bleibt es:** solange die Annahmen (a)–(c) gelten, beziffert keine Auswertung sie — sie liest
-  Spans, und kein Span trägt diese Token. Was slice-066 beziffert, ist eine **andere** Größe: den
-  Sammelposten-Anteil **innerhalb** der erfassten Teilmenge (unten abgegrenzt). Eine Größenangabe
-  an dieser Stelle wäre die Schätzung, die der Kontext oben ausschließt
+  Spans, und kein Span trägt diese Token. Was die Auswertung beziffert, ist eine **andere**
+  Größe: den Sammelposten-Anteil **innerhalb** der erfassten Teilmenge (unten abgegrenzt). Eine
+  Größenangabe an dieser Stelle wäre die Schätzung, die der Kontext oben ausschließt
   ([ADR-0011](0011-telemetrie-erfassung-policy.md) Festlegung 1 Punkt 4).
 - **Folgepflicht 1:**
   [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
@@ -170,31 +170,26 @@ Erfassungs-Mechanik angenommen haben. Drei Festlegungen folgen:
 - **Folgepflicht 2 — und sie verlangt eine Ergänzung des Vokabulars, nicht nur eine Zelle.** Die
   Matrix-Zelle *Token-Attribution × Repo* des Wellen-Closure führt für den Haupt-Kontext
   **nicht** „deklarierte Entscheidung mit Auflösungs-Trigger", sondern den Verweis auf diese ADR.
-  **Diesen Wert kennt der Welle-Plan bisher nicht:** sein Closure-Trigger definiert *deklariert*
-  ausdrücklich als bewusste Nicht-Umsetzung **mit Auflösungs-Trigger** — genau das, was Modul 7
-  auf dem ADR-Pfad wegfallen lässt —, und eine leere Zelle liest er als offenen Closure-Trigger.
-  Wer sie ausfüllt, ohne das zu bemerken, schreibt entweder einen Trigger hin, den es nicht mehr
-  gibt, oder lässt die Zelle offen. Die Zelle bleibt belegt — die **Belegart** wechselt.
-  **Das überholte Vokabular steht im Welle-Plan an drei Stellen:** im Welle-Ziel, in der
-  Wert-Tabelle des Closure-Triggers und in der Slice-Zeile zu slice-068, die diesem eine
-  Festlegung *„deklarierte Entscheidung mit Trigger"* zuschreibt — die er nach seinem DoD (3) so
-  nicht mehr trifft. Wer die Belegart ergänzt, zieht den Satz mit, der die Belegarten zählt.
-  slice-068 trägt die Festlegung; seine Plan-Tabelle führt den Welle-Plan heute **nicht** als
-  berührte Datei, und dorthin gehört die Ergänzung geplant.
+  Ein Closure-Vokabular, das *deklariert* als bewusste Nicht-Umsetzung **mit Auflösungs-Trigger**
+  definiert — genau das, was Modul 7 auf dem ADR-Pfad wegfallen lässt —, hat für diesen Wert
+  keinen Platz: wer die Zelle damit ausfüllt, schreibt entweder einen Trigger hin, den es nicht
+  mehr gibt, oder lässt sie offen, und eine offene Zelle ist ein offener Closure-Trigger. Die
+  Zelle bleibt belegt — die **Belegart** wechselt, und wer sie einführt, zieht den Satz mit, der
+  die Belegarten aufzählt. Die Festlegung trägt der Slice, der die Rollen-Konvention schreibt;
+  der Welle-Plan gehört dafür in seine Plan-Tabelle.
 - **Folgepflicht 3:** wird der Span-Emitter je emittiert (die Tool-Ebene, eigener Slice mit
   Change Request), gilt diese Grenze im Ziel unverändert — sie ist keine Eigenschaft unseres
   Aufbaus, sondern der Mechanik. Sie gehört dort **genannt**, nicht stillschweigend
   mitgeliefert.
-- **Folgepflicht 4 — sie geht der Annahme dieser ADR voraus, sie folgt ihr nicht.** slice-066
-  nimmt die Nenner-Angabe in seine Definition of Done auf: die erzeugte Bilanz benennt, worüber
-  sie rechnet, und ein Fall in `test/mutations/` entfernt die Angabe wieder. Heute bindet seine
-  Plan-Tabelle `test/` und `test/mutations/` ausdrücklich an DoD (1) und (2) — an den
-  Sammelposten-Anteil samt Abdeckungszahl und an die getrennten Cache-Zähler. Die Nenner-Angabe
-  ist keine von beiden (unten abgegrenzt). Ohne diesen DoD-Punkt zeigen die zwei Zeilen der
-  Fitness Function auf einen Slice, der sie nicht führt: er liefe plan-konform ab, `make gates`
-  und `make mutate` blieben grün, und Festlegung 2 bliebe ohne Zahn — ein nie angelegter Fall
-  erzeugt kein Rot. Der Slice-Plan gehört dem Planner; diese ADR benennt die Bedingung, sie
-  schreibt ihn nicht.
+- **Folgepflicht 4 — sie geht der Annahme dieser ADR voraus, sie folgt ihr nicht.** Der Slice,
+  der die Bilanz baut, führt die Nenner-Angabe als **eigenen** Punkt seiner Definition of Done:
+  die erzeugte Bilanz benennt, worüber sie rechnet, und ein Fall in `test/mutations/` entfernt
+  die Angabe wieder. Sie ist **weder** der Sammelposten-Anteil **noch** die Abdeckungszahl
+  (unten abgegrenzt) — ein DoD-Punkt, der eine dieser beiden Größen bindet, bindet die
+  Nenner-Angabe nicht. Ohne ihn zeigen die zwei Zeilen der Fitness Function auf einen Slice, der
+  sie nicht führt: er liefe plan-konform ab, `make gates` und `make mutate` blieben grün, und
+  Festlegung 2 bliebe ohne Zahn — ein nie angelegter Fall erzeugt kein Rot. Der Slice-Plan gehört
+  dem Planner; diese ADR benennt die Bedingung, sie schreibt ihn nicht.
 
 ## Fitness Function (falls maschinell prüfbar)
 
@@ -212,39 +207,37 @@ Links, Anker, Kennungen, Matrix, Codepfade und Spans — **keine Behauptungen**.
 für diese Hälfte nennte damit ein Tooling, dessen Prüfbereich diesen Text nicht enthält — eine
 Zusage ohne Gegenbeispiel, kein Wächter.
 
-**Festlegung 2 — eine, fällig mit slice-066.** Die Bilanz ist **kein Prosa-Bericht**: slice-066
-baut sie als eigenes Go-Kommando, Docker-only gebaut wie jedes Binary dieses Repos
-([ADR-0003](0003-go-native-binaries.md)), und führt `test/` samt `test/mutations/` in seiner
-Plan-Tabelle. Ihre Ausgabe ist damit genau die Fläche, die dieses Repo überall sonst bewacht —
-ein Go-Test auf die erzeugte Zeile plus ein Fall, der sie entfernt. slice-068 verlangt für die
-Nachbargröße bereits dasselbe (*„fällt der Sammelposten-Anteil aus dem Bericht, muss ein Fall rot
-werden"*); die Nenner-Angabe in derselben Ausgabe ohne Zahn zu lassen, wäre zweierlei Maß.
+**Festlegung 2 — eine, fällig mit der Bilanz.** Die Bilanz ist **kein Prosa-Bericht**: der Slice,
+der sie baut, baut sie als eigenes Go-Kommando, Docker-only wie jedes Binary dieses Repos
+([ADR-0003](0003-go-native-binaries.md)), und führt `test/` samt `test/mutations/`. Ihre Ausgabe
+ist damit genau die Fläche, die dieses Repo überall sonst bewacht — ein Go-Test auf die erzeugte
+Zeile plus ein Fall, der sie entfernt. Für die **Nachbargröße** in derselben Ausgabe ist derselbe
+Zahn bereits verlangt (*„fällt der Sammelposten-Anteil aus dem Bericht, muss ein Fall rot
+werden"*); die Nenner-Angabe daneben ohne Zahn zu lassen, wäre zweierlei Maß.
 
 | Tooling | Regel | Make-Target |
 |---|---|---|
-| Go-Test (`make test`) — **fällig mit slice-066 (Folgepflicht 4), existiert heute nicht** | Die erzeugte Bilanz **benennt ihren Nenner**: dass sie über **Subagenten-Läufe** rechnet und nicht über den Lauf. Fehlt die Angabe in der Ausgabe, fällt der Test | `make test` |
-| `test/mutations/` — **fällig mit slice-066 (Folgepflicht 4), existiert heute nicht** | Die Nenner-Angabe wird aus dem Auswerter **entfernt** — der Wächter darüber muss rot werden; ohne diesen Fall wäre Festlegung 2 eine Absicht | `make mutate` |
+| Go-Test (`make test`) — **fällig mit der Bilanz (Folgepflicht 4), existiert heute nicht** | Die erzeugte Bilanz **benennt ihren Nenner**: dass sie über **Subagenten-Läufe** rechnet und nicht über den Lauf. Fehlt die Angabe in der Ausgabe, fällt der Test | `make test` |
+| `test/mutations/` — **fällig mit der Bilanz (Folgepflicht 4), existiert heute nicht** | Die Nenner-Angabe wird aus dem Auswerter **entfernt** — der Wächter darüber muss rot werden; ohne diesen Fall wäre Festlegung 2 eine Absicht | `make mutate` |
 
 **Was die zwei Zeilen nicht leisten.** Sie binden die
 **Anwesenheit** der Nenner-Angabe, nicht ihre **Wahrheit**: ob die genannte Teilmenge die
 tatsächlich gerechnete ist, prüft kein Sensor — dieselbe Grenze, die
 [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) für
 `make comment-claims` ausspricht (*es prüft die Existenz des Sensors, nicht die Wahrheit des
-Satzes*). Und der Nenner ist **nicht** der Sammelposten-Anteil aus slice-066 DoD (1): der misst,
-wie viel der Bilanz auf der Splitting-Regel ruht; dieser hier sagt, worüber überhaupt gerechnet
-wird. Zwei Größen, zwei Angaben, zwei Zähne — wer sie zusammenlegt, verliert eine. Aus demselben
-Grund tragen die Risiken von slice-066 die Nenner-Pflicht **nicht**: was dort steht, ist die
-Pflicht zur Größe des aufgeteilten Anteils.
+Satzes*). Und der Nenner ist **keine** der beiden Nachbargrößen in derselben Ausgabe: der
+**Sammelposten-Anteil** misst, wie viel der Bilanz auf der Splitting-Regel ruht; die
+**Abdeckungszahl** zählt Spawns **innerhalb** der erfassten Teilmenge; der Nenner benennt die
+Teilmenge selbst. Drei Größen, drei Angaben — wer zwei davon zusammenlegt, verliert eine. Die
+zwei Zeilen oben binden **allein** die Nenner-Angabe.
 
 **Die Zeilen nennen einen Sensor, den es noch nicht gibt** —
 [ADR-0011](0011-telemetrie-erfassung-policy.md) wurde mit **fünf**
 `test/mutations/`-Zeilen angenommen, deren Dateien erst der umsetzende Slice anlegte — zum
 Zeitpunkt der Annahme trug das Verzeichnis 106 Fälle, die Span-Fälle beginnen bei 107. **Die
 Präzedenz trägt eine Hälfte:** dass die Datei fehlen darf. Die zweite trägt sie nicht — dort
-nannte der umsetzende Slice die Zähne in seiner eigenen DoD
-(`docs/plan/planning/done/slice-059-telemetrie-erfassung-hook.md` DoD (3), *„Zwei Zähne, rot
-gesehen"*, und dieselben zwei in seiner Plan-Tabelle). Genau das verlangt Folgepflicht 4 für
-slice-066.
+nannte der **umsetzende** Slice die Zähne in seiner eigenen Definition of Done (*„Zwei Zähne, rot
+gesehen"*) und dieselben zwei in seiner Plan-Tabelle. Genau das verlangt Folgepflicht 4 hier.
 [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) ist
 dadurch nicht berührt: hier wird kein Gate in `make gates`, [`AGENTS.md`](../../../AGENTS.md) §4
 oder [`harness/README.md`](../../../harness/README.md) **behauptet** — hier steht eine Zusage an
@@ -281,6 +274,7 @@ Zeile behauptet keinen Gate an einem dieser drei Orte.
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-07-31 | Überarbeitet, weiter **Proposed** | **Die Konsequenz schrieb dem Auswertungs-Slice eine Messung zu, die er nicht leisten kann:** er liest ausschließlich Spans, und kein Span trägt Haupt-Kontext-Token; dieselbe Zuschreibung stand in Alternative G. Beide Stellen sagen jetzt, dass die Größe unbeziffert bleibt, solange die Annahmen (a)–(c) gelten. Der Wächter der Nenner-Pflicht steht nicht mehr im Präsens, sondern als fällig. Der Beleg-Verweis auf die Risiken von slice-066 ist entfallen — dort steht die Pflicht zur Größe des aufgeteilten Anteils, die diese ADR gegen den Nenner abgrenzt; die Abgrenzung sagt das jetzt selbst. [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) trägt nur noch **eine** Rolle: die emittierte Ebene, hier nicht berührt, mit einem Kriterium an einer Stelle; die fehlende Fitness Function für Festlegung 1 steht allein auf [`AGENTS.md`](../../../AGENTS.md) §3.6. Neu ist **Folgepflicht 4** — slice-066 nimmt die Nenner-Angabe in seine DoD auf, sonst zeigen die zwei Wächter-Zeilen auf einen Slice, der sie nicht führt; die Präzedenz aus [ADR-0011](0011-telemetrie-erfassung-policy.md) deckt nur das Fehlen der Datei, nicht das Fehlen des DoD-Punktes. Folgepflicht 2 nennt jetzt alle drei Stellen des überholten Welle-Vokabulars und die fehlende Zeile in der Plan-Tabelle von slice-068. Die Mengenaussage *„bisher überwiegend"* über den Ort der Rollen-Arbeit ist auf die eine belegte Beobachtung zurückgenommen |
-| 2026-07-31 | Überarbeitet nach Proposed-Review, weiter **Proposed** | **Der blockierende Befund lag in der Fitness Function:** sie erklärte **beide** Hälften für nicht prüfbar, weil die Nenner-Pflicht „in Prosa eines Berichts" lebe, und prüfte das gegen `comment-claims` und `docs-check`. Die Bilanz entsteht aber als Docker-only gebautes Go-Kommando mit `test/`- und `test/mutations/`-Zeile in seiner Plan-Tabelle, und slice-068 bindet für die Nachbargröße in derselben Ausgabe bereits einen Fall. Die Sensor-Klasse war damit die falsche. Festlegung 2 trägt jetzt zwei Zeilen, Festlegung 1 weiter keine — mit [`AGENTS.md`](../../../AGENTS.md) §3.6 statt [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) als tragendem Grund. Dazu: zwei Größenaussagen über den Haupt-Kontext-Anteil gestrichen (dieselbe ADR führt die Größe wenige Zeilen weiter als **unbekannt**, und slice-068 arbeitet daran, sie zu verschieben); die Antwort auf Trichter-Frage 2 um ihre benannte Unsicherheit ergänzt (die ungemessene Payload-Fläche ist *gelesen*, nicht gemessen); Alternative **G** aufgenommen (Arbeit in Subagenten verlagern — bewegt die Größe, nicht die Messbarkeit); Folgepflicht 2 um die im Welle-Vokabular fehlende Belegart ergänzt; `Schärft` von *nicht berührt* auf *nicht entschieden* präzisiert (Folgepflicht 3 berührt die emittierte Ebene sehr wohl); Modul-7-Zitat `:26-29` als Analogie gekennzeichnet, weil Abweichung 6 kein Carveout ist |
+| 2026-07-31 | Überarbeitet, weiter **Proposed** | **Die Verpflichtungen waren an Slice-Kennungen adressiert und veralteten damit schneller, als die ADR gelesen wird:** die Zuschreibung an die Definition of Done der Auswertung beschrieb einen Schnitt, den derselbe Tag schon abgelöst hatte, und die Aussage über das Vokabular des Welle-Plans ebenso. Eine ADR ist dauerhaft, ein Slice ist ein Lifecycle-Artefakt — die Bindung des einen an das andere erzeugt die Lüge nur mit Verzögerung. Die Pflichten hängen jetzt an der **Funktion** (der Slice, der die Bilanz baut; der Slice, der die Rollen-Konvention schreibt), nicht an einer Nummer; ein Re-Schnitt verschiebt damit den Träger, nicht die Pflicht. Die Abgrenzung der Nenner-Angabe ist auf **drei** Größen ausgeschrieben (Nenner · Sammelposten-Anteil · Abdeckungszahl), weil die zweite Grenze bisher nur behauptet und nirgends gezogen war. Die zwei Mengenangaben über den Plan-Bestand sind entfallen — sie zählten Lifecycle-Dateien und waren beim Zählen bereits überholt. Slice-Kennungen führt allein die Verweis-Spalte dieser Tabelle |
+| 2026-07-31 | Überarbeitet, weiter **Proposed** | **Die Konsequenz schrieb dem Auswertungs-Slice eine Messung zu, die er nicht leisten kann:** er liest ausschließlich Spans, und kein Span trägt Haupt-Kontext-Token; dieselbe Zuschreibung stand in Alternative G. Beide Stellen sagen jetzt, dass die Größe unbeziffert bleibt, solange die Annahmen (a)–(c) gelten. Der Wächter der Nenner-Pflicht steht nicht mehr im Präsens, sondern als fällig. Der Beleg-Verweis auf die Risiken des Auswertungs-Slice ist entfallen — dort steht die Pflicht zur Größe des aufgeteilten Anteils, die diese ADR gegen den Nenner abgrenzt; die Abgrenzung sagt das jetzt selbst. [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) trägt nur noch **eine** Rolle: die emittierte Ebene, hier nicht berührt, mit einem Kriterium an einer Stelle; die fehlende Fitness Function für Festlegung 1 steht allein auf [`AGENTS.md`](../../../AGENTS.md) §3.6. Neu ist **Folgepflicht 4** — der Slice, der die Bilanz baut, nimmt die Nenner-Angabe in seine DoD auf, sonst zeigen die zwei Wächter-Zeilen auf einen Slice, der sie nicht führt; die Präzedenz aus [ADR-0011](0011-telemetrie-erfassung-policy.md) deckt nur das Fehlen der Datei, nicht das Fehlen des DoD-Punktes. Folgepflicht 2 nennt jetzt die Stellen des überholten Welle-Vokabulars und die fehlende Zeile in der Plan-Tabelle des Slice, der die Rollen-Konvention schreibt. Die Mengenaussage *„bisher überwiegend"* über den Ort der Rollen-Arbeit ist auf die eine belegte Beobachtung zurückgenommen |
+| 2026-07-31 | Überarbeitet nach Proposed-Review, weiter **Proposed** | **Der blockierende Befund lag in der Fitness Function:** sie erklärte **beide** Hälften für nicht prüfbar, weil die Nenner-Pflicht „in Prosa eines Berichts" lebe, und prüfte das gegen `comment-claims` und `docs-check`. Die Bilanz entsteht aber als Docker-only gebautes Go-Kommando mit `test/`- und `test/mutations/`-Zeile in seiner Plan-Tabelle, und für die Nachbargröße in derselben Ausgabe ist bereits ein Fall gebunden. Die Sensor-Klasse war damit die falsche. Festlegung 2 trägt jetzt zwei Zeilen, Festlegung 1 weiter keine — mit [`AGENTS.md`](../../../AGENTS.md) §3.6 statt [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) als tragendem Grund. Dazu: zwei Größenaussagen über den Haupt-Kontext-Anteil gestrichen (dieselbe ADR führt die Größe wenige Zeilen weiter als **unbekannt**, und die geplante Rollen-Konvention arbeitet daran, sie zu verschieben); die Antwort auf Trichter-Frage 2 um ihre benannte Unsicherheit ergänzt (die ungemessene Payload-Fläche ist *gelesen*, nicht gemessen); Alternative **G** aufgenommen (Arbeit in Subagenten verlagern — bewegt die Größe, nicht die Messbarkeit); Folgepflicht 2 um die im Welle-Vokabular fehlende Belegart ergänzt; `Schärft` von *nicht berührt* auf *nicht entschieden* präzisiert (Folgepflicht 3 berührt die emittierte Ebene sehr wohl); Modul-7-Zitat `:26-29` als Analogie gekennzeichnet, weil Abweichung 6 kein Carveout ist |
 | 2026-07-31 | **Proposed** | slice-060 DoD (3) — die Werkzeug-Wahl nach Modul 7 zu [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) Abweichung 6. Anlass war ein Review-Befund: die Abweichung stand als temporäre da, ohne Folge-Slice und mit einem Entscheidungs-Ort, dessen Prüfbereich sie nicht umfasst |
