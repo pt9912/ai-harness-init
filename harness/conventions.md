@@ -1675,29 +1675,36 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   unangetastet, seine übrigen Setzungen (ID-Schema, Verzeichniskonvention) gelten fort.
 - **Form des Gefäßes.** Die Abschnittsnummern sind die der vendored Vorlage
   `.harness/baseline/v3.5.2/templates/spec/spezifikation.template.md` und werden **nie neu
-  vergeben**: geführt sind die drei Abschnitte mit Bestand (3 · 5 · 6) plus die Historie (7),
-  die drei ohne Bestand lassen ihre Nummer frei. Grund ist die Anker-Stabilität — ein
-  `Schärft:`-Zeiger steht in Dokumenten, die ab *Accepted* nicht mehr geändert werden dürfen
-  ([`AGENTS.md`](../AGENTS.md) §3.4). Einzige Abweichung von der Vorlagen-Form: §5 trägt die
+  vergeben**: geführt sind die Abschnitte 3 · 5 · 6 plus die Historie (7), die übrigen
+  (1 · 2 · 4) lassen ihre Nummer frei. Grund ist die Anker-Stabilität — ein `Schärft:`-Zeiger
+  steht in Dokumenten, die ab *Accepted* nicht mehr geändert werden dürfen
+  ([`AGENTS.md`](../AGENTS.md) §3.4). Zwei Abweichungen von der Vorlagen-Form: §5 trägt die
   Drei-Spalten-Gestalt, die
   [`modul-15-observability.md`](../.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md)
   vorschreibt (Feld · Pflicht/Optional · Incident-Frage) statt der Vorlagen-Spalten
   *Span · Pflicht-Attribute · Quelle* — die Vorlage verweist an dieser Stelle selbst auf das
-  Modul, und der vorhandene Bestand trägt bereits diese drei Spalten.
-- **Sensor.** `spec/spezifikation.md` ist in `.d-check.yml` der `matrix`-Klasse `spec-straten`
-  beigetreten; eine `ADR-`- oder `slice-`-Kennung im bindenden Text (außerhalb der
-  Historie-Tabelle) färbt `make docs-check` rot. Gegenprobe gefahren, nicht behauptet.
-- **Begründung (gemessen 2026-08-01).** Der Adaptions-Block hat technische Festlegungen
-  aufgenommen, für die er nicht das Gefäß ist:
-  [`MR-018`](#mr-018--span-schema-der-telemetrie-erfassung) ist am letzten committeten Stand
-  **824 Zeilen** von **1673** und damit größer als die übrigen achtzehn Einträge **zusammen**
-  (801). Er trug am 2026-07-28 noch **47** Zeilen; von den 803 Zeilen, die die Datei seither
-  gewachsen ist, entfallen **777 auf diesen einen Eintrag**. Der Eintrag nennt den Grund selbst
-  — die Tabelle *„wächst mit jedem Feld“* und gehört nicht in eine ab *Accepted* immutable
-  Entscheidung. Das ist die Definition des Technik-Stratums; das Gefäß fehlte, also wuchs der
-  Inhalt in das nächstbeste. Dazu ein Rang-Befund: der Adaptions-Block steht in **keiner** der
-  beiden Precedence-Listen des Repos — eine fortschreibbare technische Festlegung lag damit in
-  einem ungerangten Dokument.
+  Modul, und der vorhandene Bestand trägt bereits diese drei Spalten; und vor §3 steht ein
+  **nicht nummerierter** Abschnitt `Aufnahme-Regel`, den die Vorlage nicht kennt — er nennt die
+  Bedingungen, unter denen ein Satz hierher gehört, nimmt keine Nummer und verschiebt damit
+  keinen Anker.
+- **Sensor, und seine Grenze (gemessen 2026-08-01).** `spec/spezifikation.md` ist in
+  `.d-check.yml` der `matrix`-Klasse `spec-straten` beigetreten. Rot färbt `make docs-check`
+  damit eine **verlinkte** `ADR-`- oder `slice-`-Kennung im bindenden Text (außerhalb der
+  Historie-Tabelle) als `matrix-forbidden` und eine **nackte** `ADR-`-Kennung als `id-unlinked`.
+  **Nicht** rot färbt eine **nackte** `slice-`-Kennung: `ids.patterns` führt kein Muster für
+  sie, und `matrix` greift nur über den Link — eine solche Zeile im bindenden Text lässt den
+  Gate bei Exit 0. Diese Hälfte der Regel trägt der Mensch.
+- **Begründung (gemessen 2026-08-01 am Stand `5200da6`, jede Zahl über die Blockgrenzen
+  `grep -nE '^### MR-[0-9]{3}|^## Modus-Deklaration'`).** Der Adaptions-Block hat technische
+  Festlegungen aufgenommen, für die er nicht das Gefäß ist:
+  [`MR-018`](#mr-018--span-schema-der-telemetrie-erfassung) trug dort **824 Zeilen** und damit
+  mehr als die übrigen achtzehn Einträge **zusammen** (801). Am 2026-07-28 waren es noch **47**;
+  von den 803 Zeilen, um die die Datei seither gewachsen war, entfielen **777 auf diesen einen
+  Eintrag**. Der Eintrag nennt den Grund selbst — die Tabelle *„wächst mit jedem Feld“* und
+  gehört nicht in eine ab *Accepted* immutable Entscheidung. Das ist die Definition des
+  Technik-Stratums; das Gefäß fehlte, also wuchs der Inhalt in das nächstbeste. Dazu ein
+  Rang-Befund: der Adaptions-Block steht in **keiner** der beiden Precedence-Listen des Repos —
+  eine fortschreibbare technische Festlegung lag damit in einem ungerangten Dokument.
 - **Was hier NICHT entschieden ist:** dass Bestand aus dem Adaptions-Block umzieht. Diese
   Adaption legt das Gefäß an und rangt es; welcher Satz wohin wandert, ist eine eigene Arbeit
   — und der Umzug einer Festlegung, deren Zielort eine akzeptierte ADR vorschreibt, braucht
@@ -1731,16 +1738,16 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Vorlage mit zwei Transformationen (Hinweis-Blockquote entfernt, `<Projektname>` gestempelt);
   ihre neun HTML-Kommentare und mit ihnen die Disziplin-Regel wandern unverändert ins Zielrepo,
   wo die Baseline-Regel gilt.
-- **Begründung (gemessen 2026-08-01).** Die drei sitzungsfesten Posten der Einstiegs-Leseliste
-  messen zusammen 165.197 Bytes; der größte Eintrag dieses Blocks misst 824 Zeilen / 70.727
-  Bytes und damit 42,8 % davon. Ein stehengelassener aufgehobener Rumpf dieser Größe macht den
-  Pflicht-Lesepfad zu überwiegend nicht mehr bindendem Text und führt seine Festlegung an zwei
-  Orten, von denen nur einer bindet. Was die append-only-Führung dagegen leisten soll —
-  Nachvollziehbarkeit — leistet `git` vollständig und besser: jede Fassung, ihr Autor und der
-  aufhebende Commit. Nicht in `git` steht, was der Kopf hält: Nummer, Anker und die Reichweite
-  am Ort des Lesens.
+- **Begründung (gemessen 2026-08-01 am Stand `c145f2b`).** Die drei sitzungsfesten Posten der
+  Einstiegs-Leseliste messen zusammen 165.197 Bytes; der größte Eintrag dieses Blocks misst 824
+  Zeilen / 70.727 Bytes und damit 42,8 % davon. Ein stehengelassener aufgehobener Rumpf dieser
+  Größe macht den Pflicht-Lesepfad zu überwiegend nicht mehr bindendem Text und führt seine
+  Festlegung an zwei Orten, von denen nur einer bindet. Was die append-only-Führung dagegen
+  leisten soll — Nachvollziehbarkeit — leistet `git` vollständig und besser: jede Fassung, ihr
+  Autor und der aufhebende Commit. Nicht in `git` steht, was der Kopf hält: Nummer, Anker und
+  die Reichweite am Ort des Lesens.
 - **Auflösungs-Trigger:** an [`ADR-0014`](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md)
-  gebunden — fällt eine ihrer Annahmen (Historie auf jedem Checkout präsent), fällt diese
+  gebunden — fällt ihre Annahme (die Historie ist da, wo der Rumpf gebraucht wird), fällt diese
   Adaption mit ihr.
 
 ## Modus-Deklaration pro Sub-Area

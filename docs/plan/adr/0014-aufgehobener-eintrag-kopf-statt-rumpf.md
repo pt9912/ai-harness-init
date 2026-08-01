@@ -35,7 +35,7 @@ den Block ohne sie. **Sie bindet hier trotzdem, und zwar aus zwei Quellen unglei
 [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) erklärt *„keine
 inhaltlichen Adaptionen ggü. Baseline-Default"* — das trägt eine Form-Regel nur mittelbar; und
 [`MR-019`](../../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence)
-zitiert den Satz wörtlich als seinen eigenen Grund und handelt danach. Die zweite Quelle ist
+zitiert den Satz als seinen eigenen Grund und handelt danach. Die zweite Quelle ist
 die tragende: die Regel bindet, weil ein bindender Eintrag sie aufgenommen hat, nicht weil ein
 Kommentar überlebt hätte.
 
@@ -43,8 +43,8 @@ Kommentar überlebt hätte.
 *explizite Aufhebungen*. Ob das Entfernen des Rumpfs eines aufgehobenen Eintrags die verbotene
 Änderung oder der Vollzug der erlaubten Aufhebung ist, entscheidet er nicht.
 
-**Der Preis, gemessen 2026-08-01.** Die drei sitzungsfesten Posten der Einstiegs-Leseliste
-(`harness/README.md`, [`AGENTS.md`](../../../AGENTS.md),
+**Der Preis, gemessen 2026-08-01 am Stand `c145f2b`.** Die drei sitzungsfesten Posten der
+Einstiegs-Leseliste (`harness/README.md`, [`AGENTS.md`](../../../AGENTS.md),
 [`harness/conventions.md`](../../../harness/conventions.md)) messen zusammen **165.197 Bytes**
 (`wc -l -c`). Der größte Eintrag des Adaptions-Blocks misst **824 Zeilen / 70.727 Bytes** —
 **42,8 %** davon (Blockgrenzen über
@@ -54,11 +54,12 @@ dieser Anteil des Pflicht-Lesepfads Text ohne Bindung, und die darin geführte F
 an zwei Orten, von denen nur einer bindet — der Hinweis darauf rund 800 Zeilen unter dem, was
 er entwertet.
 
-**Annahme, auf der diese Entscheidung steht:** `git` ist auf jedem Checkout präsent und wird
-benutzt. Das ist keine Vermutung — die Wachstumskurve dieses Eintrags und die Zahlen in
-[ADR-0013](0013-technik-stratum-als-zielort.md) sind aus der Historie gemessen, nicht aus dem
-Text. Wird ein Checkout ohne Historie zum Normalfall, kippt die Annahme und mit ihr die
-Entscheidung.
+**Annahme, auf der diese Entscheidung steht:** wer den Rumpf braucht, hat die Historie — das
+ist **nicht** dasselbe wie „jeder Checkout hat sie". Die CI klont flach (kein
+`actions/checkout`-Schritt ihrer Workflows setzt `fetch-depth`, gemessen 2026-08-01) und
+braucht ihn nie: kein Gate liest ihn, sie prüfen den Kopf und seine Anker. Gebraucht wird er im
+Arbeits-Klon, und der trägt sie. Entsteht ein Arbeitsablauf, der den Rumpf **ohne** Historie
+braucht, kippt die Annahme und mit ihr die Entscheidung.
 
 ## Entscheidung
 
@@ -93,7 +94,7 @@ Eine Schranke über die Größe geltender Einträge bleibt unentschieden.
 
 | Option | Pro | Contra |
 |---|---|---|
-| A — **so lassen**: der Rumpf bleibt Byte für Byte stehen | wortlaut-sicher ohne Auslegung; kein neuer Mechanismus | 42,8 % des Pflicht-Lesepfads sind aufgehobener Text, und die Festlegung bindet an einem von zwei Orten, ohne dass ein Sensor sie unterscheidet. Der Zeiger auf die Aufhebung steht rund 800 Zeilen **unter** dem, was er entwertet — die Leserichtung trifft zuerst das Überholte |
+| A — **so lassen**: der Rumpf bleibt Byte für Byte stehen | wortlaut-sicher ohne Auslegung; kein neuer Mechanismus | der oben gemessene Anteil des Pflicht-Lesepfads ist aufgehobener Text, und die Festlegung bindet an einem von zwei Orten, ohne dass ein Sensor sie unterscheidet. Der Zeiger auf die Aufhebung steht rund 800 Zeilen **unter** dem, was er entwertet — die Leserichtung trifft zuerst das Überholte |
 | B — **Rumpf in ein Archiv-Dokument** außerhalb des Pflicht-Lesepfads, Stumpf mit Zeiger | hält den Wortlaut („nichts gelöscht") und den Lesepfad zugleich; der Rumpf bleibt ohne `git`-Kommando lesbar | er leistet weniger als `git` — eine eingefrorene Kopie statt jeder Fassung samt aufhebendem Commit — und kostet mehr: eine zweite Quelle derselben Konvention ist genau das Drift-Risiko, vor dem das Regelwerk beim Konventionsdokument warnt. Unter `docs/` läge er zudem im Prüfbereich von `codepaths`/`ids` — jede Referenz in totem Text bliebe wartungspflichtig |
 | **C — Kopf bleibt, Rumpf geht (gewählt)** | der Zweck der Disziplin — Nachvollziehbarkeit — bleibt vollständig bei `git`, das ihn ohnehin besser trägt; erhalten bleibt, was `git` **nicht** trägt: Nummer, Anker und die Reichweite am Ort des Lesens, für den Preis weniger Zeilen | es ist eine Lockerung der Baseline-Disziplin und braucht diese Entscheidung samt ihrem Eintrag. Wer den Rumpf lesen will, braucht die Historie; eine Ansicht ohne sie zeigt ihn nicht |
 | D — **Eintrag ersatzlos entfernen**, Überschrift eingeschlossen | maximal knapp | bricht jeden Zeiger: die Umbenennung *einer* Eintrags-Überschrift färbt `make docs-check` mit **119** `anchor-missing` rot (gemessen, s. Fitness Function). Und die Nummer verschwände aus einer chronologischen Folge, deren Lückenlosigkeit die Regel schützt |
@@ -136,7 +137,7 @@ Eine Schranke über die Größe geltender Einträge bleibt unentschieden.
 **Rot gesehen, mit Gegenprobe** (2026-08-01, gepinntes Image, `--network none`): die
 Überschrift des größten Eintrags umbenannt → `make docs-check` Exit 2 mit **119**
 `anchor-missing` über `harness/README.md`, `harness/conventions.md` selbst und die
-Zeitdokumente; dieselbe Datei unverändert → `d-check: 275 Datei(en) geprüft, 0 Befund(e)`.
+Zeitdokumente; dieselbe Datei unverändert → **0 Befund(e)**, Exit 0.
 
 **Was hier bewusst NICHT steht.** Erstens ein Wächter über Bedingung 2 (b) — *„jede bindende
 Aussage steht andernorts"* ist keine Eigenschaft, die ein Doc-Gate lesen kann. Zweitens ein
@@ -148,8 +149,9 @@ einmalig gesehen und nicht laufend gebunden. Bewacht ist der **Kopf**, nicht der
 
 ## Re-Evaluierungs-Trigger
 
-- **Wenn ein Checkout ohne Historie zum Normalfall wird** *(feedforward — an einem Zustand
-  ablesbar, kein Gate)*: dann trägt allein der Rumpf, und Festlegung 1 ist falsch.
+- **Wenn der Rumpf ohne Historie gebraucht wird** *(feedforward — an einem Zustand ablesbar,
+  kein Gate)*: etwa weil ein Arbeitsablauf auf flachen Klonen entsteht, in dem jemand den
+  aufgehobenen Text lesen muss. Dann trägt allein der Rumpf, und Festlegung 1 ist falsch.
 - **Wenn der Adaptions-Block einen Index bekommt** *(feedforward)*: dann steht die Reichweite an
   zwei Orten. Der Kopf ist dann gegen den Index zu prüfen, nicht zu verdoppeln.
 - **Wenn die Baseline die Disziplin-Regel aus dem Vorlagen-Kommentar in ein Prosa-Modul hebt**

@@ -26,8 +26,10 @@ Zwei Formregeln, weil beide von außen gelesen werden:
 
 - **Der bindende Text zeigt nicht abwärts.** Außerhalb der [Historie](#7-historie)
   steht hier keine Entscheidungs- und keine Planungs-Kennung: ein Wert steht für
-  sich, das Warum findet man über die aufwärts zeigende Entscheidung. Gemessen von
-  der `matrix`-Klasse `spec-straten` in `.d-check.yml`.
+  sich, das Warum findet man über die aufwärts zeigende Entscheidung. Gemessen wird
+  davon in `.d-check.yml` die **verlinkte** Kennung (`matrix`-Klasse `spec-straten`)
+  und die **nackte** Entscheidungs-Kennung (`ids`); für eine nackte Planungs-Kennung
+  führt `ids.patterns` kein Muster — dort gilt die Regel ohne Wächter.
 - **Abschnittsnummern werden nie neu vergeben.** Sie sind die der vendored Vorlage
   `.harness/baseline/v3.5.2/templates/spec/spezifikation.template.md`; ein
   Abschnitt ohne Inhalt lässt seine Nummer frei, und ein hinzukommender bekommt

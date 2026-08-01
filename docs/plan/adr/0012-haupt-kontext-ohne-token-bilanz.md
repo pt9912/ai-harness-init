@@ -23,7 +23,9 @@ Architekturentscheidung — entscheidet diese ADR)
 
 **Schärft:** [`spezifikation.md §5 Metriken und Tracing-Felder`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder)
 — die erklärten Abweichungen vom Pflicht-Minimum und die Nenner-Pflicht aus Festlegung 2.
-Aufwärts-Deklaration: wer diese ADR ändert, zieht diesen Abschnitt nach. Die **emittierte** Ebene wird hier nicht
+Aufwärts-Deklaration: wer diese ADR ändert, zieht diesen Abschnitt nach — er ist der von
+[ADR-0013](0013-technik-stratum-als-zielort.md) entschiedene **Zielort** dieser Begründungen,
+und die Deklaration greift ab der ersten Zeile, die dort steht. Die **emittierte** Ebene wird hier nicht
 **entschieden** — Gegenstand ist der Dogfood-Bestand dieses Repos, und das **Ob** der Emission
 bleibt dem Slice, der die Tool-Ebene entscheidet, samt Change Request
 ([ADR-0011](0011-telemetrie-erfassung-policy.md) Festlegung 5). **Berührt** ist sie sehr wohl,
