@@ -75,7 +75,21 @@ stream="spancheck$$"
 payload="{\"hook_event_name\":\"PostToolUse\",\"tool_name\":\"Bash\",\"tool_use_id\":\"tu_gate\",\"session_id\":\"$stream\",\"tool_input\":{\"command\":\"make gates\"}}"
 
 file=".harness/state/spans/$stream.jsonl"
-trap 'rm -f "$file" ".harness/state/spans/$stream.seq"' EXIT
+# Alle DREI Artefakte, die der Emitter je Strom anlegt — Daten, Sequenz und Sperre
+# (internal/span/emit.go). Die Sperre traegt einen fuehrenden Punkt.
+#
+# Die Sperre hier zu loeschen ist sicher, und zwar NUR weil der Strom-Name die PID
+# traegt: die Loesch-Race, vor der emit.go warnt, setzt zwei Emitter auf DEMSELBEN
+# Strom voraus (zwei Inodes unter einem Pfad), und diesen Strom kann kein zweiter
+# Prozess haben. Wer den Namen konstant macht, muss diese Zeile zurueckbauen.
+#
+# GRENZE, benannt statt verschwiegen: dass der Gate-Lauf nichts hinterlaesst, ist
+# UNBEWACHT. Der bats-Lauf mountet das Repo read-only (`make test-bats`), dieses
+# Skript aber schreibt in den Zustands-Baum und ermittelt seinen Ort ueber
+# `git rev-parse --show-toplevel` — ein Zahn braucht also ein eigenes Repo im
+# Testlauf, nicht eine Zusatz-Zeile hier. Bis dahin haelt die Eigenschaft an dieser
+# Zeile allein.
+trap 'rm -f "$file" ".harness/state/spans/$stream.seq" ".harness/state/spans/.$stream.lock"' EXIT
 
 # Here-String statt Pipe: schluepft der Emitter vor dem Lesen heraus, kostete eine
 # Pipe unter `pipefail` ein EPIPE und damit eine irrefuehrende Fehlermeldung.
