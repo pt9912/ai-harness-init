@@ -36,16 +36,17 @@ Asset.
 
 ## 2. Kanonische Quellen (Source Precedence)
 
-2-Strata-Spec (Lastenheft → Architektur, keine separate
-Spezifikations-Datei). In dieser Reihenfolge:
+3-Strata-Spec (Vertrag → Technik → Sicht, [`MR-019`](harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence)).
+In dieser Reihenfolge:
 
 1. [`spec/lastenheft.md`](spec/lastenheft.md) — vertraglich abnahmebindend.
-2. [`spec/architecture.md`](spec/architecture.md) — Komponenten- und Sequenzsicht.
-3. [`docs/plan/adr/`](docs/plan/adr/) — Architekturentscheidungen.
-4. [`docs/plan/planning/in-progress/roadmap.md`](docs/plan/planning/in-progress/roadmap.md) — aktuelle Welle.
-5. [`README.md`](README.md) — Projekt-Überblick.
-6. **AGENTS.md (diese Datei).**
-7. [`harness/README.md`](harness/README.md) — Harness-Einstieg.
+2. [`spec/spezifikation.md`](spec/spezifikation.md) — technisch verbindlich, ohne Vertragsänderung fortschreibbar.
+3. [`spec/architecture.md`](spec/architecture.md) — Komponenten- und Sequenzsicht.
+4. [`docs/plan/adr/`](docs/plan/adr/) — Architekturentscheidungen.
+5. [`docs/plan/planning/in-progress/roadmap.md`](docs/plan/planning/in-progress/roadmap.md) — aktuelle Welle.
+6. [`README.md`](README.md) — Projekt-Überblick.
+7. **AGENTS.md (diese Datei).**
+8. [`harness/README.md`](harness/README.md) — Harness-Einstieg.
 
 ## 3. Harte Regeln
 

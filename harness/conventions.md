@@ -1656,6 +1656,56 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Auflösungs-Trigger:** permanent, solange Spans erfasst werden. Die Tabelle ändert sich mit
   jedem neuen Feld — jede Änderung ist ein Eintrag hier, kein Nebeneffekt im Skript.
 
+### MR-019 — Technik-Stratum als Rang 2 der Source Precedence
+
+- **Datum:** 2026-08-01
+- **Geltungsbereich:** [`spec/spezifikation.md`](../spec/spezifikation.md),
+  [`AGENTS.md`](../AGENTS.md) §2, [`harness/README.md`](README.md) §Source precedence,
+  `.d-check.yml` (`matrix.classes`).
+- **Adaption:** Das Repo führt das **Technik-Stratum**. `spec/spezifikation.md` steht als
+  eigener **Rang 2** zwischen Vertrag (Rang 1) und Sicht (Rang 3); die nachfolgenden Ränge
+  verschieben sich um eins. Damit ist das Stratum **deklariert** — der Kurs
+  ([`grundlagen-konventionen.md` §Spec-Straten](../.harness/baseline/v3.5.2/regelwerk/grundlagen-konventionen.md#spec-straten-mehr-als-ein-spec-dokument))
+  verlangt die Deklaration hier und nennt ein undeklariertes Spec-Dokument *„nicht normativ
+  zitierbar“*.
+- **Hebt die 2-Strata-Klausel aus [`MR-000`](#mr-000--baseline-aussage) auf** —
+  *„2-Strata-Spec (Lastenheft → Architektur, keine separate Spezifikations-Datei)“*. Die
+  Vorlage lässt für akzeptierte Einträge genau diesen Weg zu (*„nur neue Einträge oder
+  explizite Aufhebungen via neuen MR“*); [`MR-000`](#mr-000--baseline-aussage) bleibt deshalb
+  unangetastet, seine übrigen Setzungen (ID-Schema, Verzeichniskonvention) gelten fort.
+- **Form des Gefäßes.** Die Abschnittsnummern sind die der vendored Vorlage
+  `.harness/baseline/v3.5.2/templates/spec/spezifikation.template.md` und werden **nie neu
+  vergeben**: geführt sind die drei Abschnitte mit Bestand (3 · 5 · 6) plus die Historie (7),
+  die drei ohne Bestand lassen ihre Nummer frei. Grund ist die Anker-Stabilität — ein
+  `Schärft:`-Zeiger steht in Dokumenten, die ab *Accepted* nicht mehr geändert werden dürfen
+  ([`AGENTS.md`](../AGENTS.md) §3.4). Einzige Abweichung von der Vorlagen-Form: §5 trägt die
+  Drei-Spalten-Gestalt, die
+  [`modul-15-observability.md`](../.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md)
+  vorschreibt (Feld · Pflicht/Optional · Incident-Frage) statt der Vorlagen-Spalten
+  *Span · Pflicht-Attribute · Quelle* — die Vorlage verweist an dieser Stelle selbst auf das
+  Modul, und der vorhandene Bestand trägt bereits diese drei Spalten.
+- **Sensor.** `spec/spezifikation.md` ist in `.d-check.yml` der `matrix`-Klasse `spec-straten`
+  beigetreten; eine `ADR-`- oder `slice-`-Kennung im bindenden Text (außerhalb der
+  Historie-Tabelle) färbt `make docs-check` rot. Gegenprobe gefahren, nicht behauptet.
+- **Begründung (gemessen 2026-08-01).** Der Adaptions-Block hat technische Festlegungen
+  aufgenommen, für die er nicht das Gefäß ist:
+  [`MR-018`](#mr-018--span-schema-der-telemetrie-erfassung) ist am letzten committeten Stand
+  **824 Zeilen** von **1673** und damit größer als die übrigen achtzehn Einträge **zusammen**
+  (801). Er trug am 2026-07-28 noch **47** Zeilen; von den 803 Zeilen, die die Datei seither
+  gewachsen ist, entfallen **777 auf diesen einen Eintrag**. Der Eintrag nennt den Grund selbst
+  — die Tabelle *„wächst mit jedem Feld“* und gehört nicht in eine ab *Accepted* immutable
+  Entscheidung. Das ist die Definition des Technik-Stratums; das Gefäß fehlte, also wuchs der
+  Inhalt in das nächstbeste. Dazu ein Rang-Befund: der Adaptions-Block steht in **keiner** der
+  beiden Precedence-Listen des Repos — eine fortschreibbare technische Festlegung lag damit in
+  einem ungerangten Dokument.
+- **Was hier NICHT entschieden ist:** dass Bestand aus dem Adaptions-Block umzieht. Diese
+  Adaption legt das Gefäß an und rangt es; welcher Satz wohin wandert, ist eine eigene Arbeit
+  — und der Umzug einer Festlegung, deren Zielort eine akzeptierte ADR vorschreibt, braucht
+  zuerst deren Teil-Revision
+  ([`ADR-0013`](../docs/plan/adr/0013-technik-stratum-als-zielort.md)).
+- **Auflösungs-Trigger:** permanent. Fällt der letzte Abschnitt mit Bestand weg, ist das
+  Stratum neu zu begründen — ein Spec-Dokument ohne Inhalt ist ein Rang ohne Gegenstand.
+
 ## Modus-Deklaration pro Sub-Area
 
 | Sub-Area | Modus | Begründung | Graduation |

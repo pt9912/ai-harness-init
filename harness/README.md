@@ -9,23 +9,25 @@ Strukturregeln und Adaptionen leben in [`conventions.md`](conventions.md).
 
 ## Source precedence
 
-2-Strata-Spec (keine separate Spezifikations-Datei):
+3-Strata-Spec (Vertrag › Technik › Sicht, [`MR-019`](conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence)):
 
 | Rang | Datei | Charakter |
 |---|---|---|
 | 1 | [`spec/lastenheft.md`](../spec/lastenheft.md) | vertraglich abnahmebindend |
-| 2 | [`spec/architecture.md`](../spec/architecture.md) | Komponenten/Sequenzen, meilensteinfrei |
-| 3 | [`docs/plan/adr/`](../docs/plan/adr/) | Architekturentscheidungen |
-| 4 | [`docs/plan/planning/in-progress/roadmap.md`](../docs/plan/planning/in-progress/roadmap.md) | aktuelle Welle |
-| 5 | [`README.md`](../README.md) | Projekt-Überblick |
-| 6 | [`AGENTS.md`](../AGENTS.md) | Agent-Briefing |
-| 7 | diese Datei | Harness-Einstieg |
+| 2 | [`spec/spezifikation.md`](../spec/spezifikation.md) | technisch verbindlich, ohne Vertragsänderung fortschreibbar |
+| 3 | [`spec/architecture.md`](../spec/architecture.md) | Komponenten/Sequenzen, meilensteinfrei |
+| 4 | [`docs/plan/adr/`](../docs/plan/adr/) | Architekturentscheidungen |
+| 5 | [`docs/plan/planning/in-progress/roadmap.md`](../docs/plan/planning/in-progress/roadmap.md) | aktuelle Welle |
+| 6 | [`README.md`](../README.md) | Projekt-Überblick |
+| 7 | [`AGENTS.md`](../AGENTS.md) | Agent-Briefing |
+| 8 | diese Datei | Harness-Einstieg |
 
 ## Guides (Feedforward)
 
 | Quelle | Inhalt |
 |---|---|
 | [`spec/lastenheft.md`](../spec/lastenheft.md) | Anforderungen, IDs, Akzeptanzkriterien |
+| [`spec/spezifikation.md`](../spec/spezifikation.md) | technische Festlegungen: Defaults, Tracing-Felder, externe Fassungen |
 | [`spec/architecture.md`](../spec/architecture.md) | Komponenten, Schichten, Constraints |
 | [`docs/plan/adr/`](../docs/plan/adr/) | Architekturentscheidungen |
 | [`AGENTS.md`](../AGENTS.md) | Hard Rules, Source Precedence |

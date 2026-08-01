@@ -38,7 +38,7 @@ ids:
 # Provenance nur in den Historie-/Geschichte-Tabellen (ausgenommen).
 matrix:
   classes:
-    - {name: spec-straten, paths: [spec/lastenheft.md, spec/architecture.md]}
+    - {name: spec-straten, paths: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md]}
     - {name: adr, paths: ["docs/plan/adr/[0-9]*.md"]}
     - {name: slice, paths: ["docs/plan/planning/**/slice-*.md"]}
   rules:
