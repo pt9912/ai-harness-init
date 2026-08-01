@@ -49,8 +49,7 @@ Vorlage hier bindet),
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
 (kein Gate über leerem Prüfbereich — die Grenze, an der die Sensor-Frage unten gemessen wird),
 [`AGENTS.md`](../../../../AGENTS.md) §3.3 (Verschieben und Ändern sind zwei Commits — hier in der
-Sache), §3.4 (ADRs sind ab Accepted immutabel), §3.5 (Regel-Lockerung nur mit ADR — die Grenze,
-an der die Entfernung des Rumpfs hängt), §3.6 (keine Zusage ohne rot gesehenes
+Sache), §3.4 (ADRs sind ab Accepted immutabel), §3.6 (keine Zusage ohne rot gesehenes
 Gegenbeispiel — der Grund, warum die Wächter-Bindung nicht ersatzlos entfallen darf).
 
 **Autor:** ai-harness-init-Team (pt9912). **Datum:** 2026-08-01.
@@ -176,9 +175,10 @@ Aufheber und Aufgehobenes in derselben.
 **Der Preis, benannt statt geschlossen:** wer den Rumpf lesen will, braucht die Historie, und kein
 Sensor sagt ihm, dass es ihn gab — das sagt der Kopf und sonst nichts. Erspart bleibt dafür der
 umgekehrte Preis: 824 Zeilen Überholtes in dem Dokument, das jede Agenten-Sitzung mitliest, und
-eine Feldtabelle an zwei Orten, von denen nur einer bindet. Die Lockerung der Disziplin-Regel ist
-ein ADR ([`AGENTS.md`](../../../../AGENTS.md) §3.5) — sie liegt vor, und dieser Slice ist ihr
-**Vollzug**, nicht ihr Anlass.
+eine Feldtabelle an zwei Orten, von denen nur einer bindet. Die Lockerung der Disziplin-Regel aus
+dem Vorlagen-Kommentar trägt
+[`ADR-0014`](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) — sie liegt vor, und dieser
+Slice ist ihr **Vollzug**, nicht ihr Anlass.
 
 ### Zwei Fehlzuordnungen im heutigen Text — verschiedener Art, darum verschieden behandelt
 
@@ -316,7 +316,7 @@ erlaubt die Entfernung des Rumpfs; beide stehen auf *Proposed*. Ein Umzug gegen 
 angenommene Zielort-Setzung liefe Gefahr, zweimal zu laufen, und eine Entfernung ohne die zweite
 wäre ein Bruch der Disziplin-Regel.
 
-**Keine Abhängigkeit von [slice-075](slice-075-regelwerk-verweis-linkpflicht.md) — in keiner
+**Keine Abhängigkeit von [slice-075](../open/slice-075-regelwerk-verweis-linkpflicht.md) — in keiner
 Richtung, aber eine gemessene Überschneidung.** **19 der 28** Stellen seines Bestands stehen im
 Rumpf von [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung);
 mit dem Rumpf gehen sie und kommen als auflösende Links am Zielort wieder. Läuft slice-075 zuerst,
@@ -365,7 +365,7 @@ Closure-Notiz mit Steering-Loop-Eintrag.
   2 und 4 tragen weder Auflösungs-Trigger noch Verdikt. Sie zu führen ist eine **inhaltliche**
   Entscheidung; dieser Slice ist ein **Umbau**. Der offene Zustand wandert aus dem Eintrag hierher
   und von hier an einen eigenen Schnitt — er verschwindet nicht.
-- **[slice-075](slice-075-regelwerk-verweis-linkpflicht.md) braucht eine Nachmessung, in zwei
+- **[slice-075](../open/slice-075-regelwerk-verweis-linkpflicht.md) braucht eine Nachmessung, in zwei
   Punkten, und beide sind gemessen.** (1) Seine Klassen-Tabelle kennt `spec/**` nicht — heute zu
   Recht: `git ls-files 'spec/*.md' | xargs grep -ohE 'Modul[- ][0-9]{1,2}' | wc -l` → **0**. Nach
   diesem Umzug trägt [`spec/spezifikation.md`](../../../../spec/spezifikation.md) Modul-Nennungen,
@@ -388,11 +388,11 @@ Closure-Notiz mit Steering-Loop-Eintrag.
   an der Emission **nichts** ändert; dieser Slice bewegt sie nicht.
 - **Nicht in diesem Slice:** eine Größen-Schranke über
   Adaptions-Einträge · die inhaltliche Prüfung der sechs Abweichungen · eine neue ADR · die
-  Linkpflicht als **Regel** ([slice-075](slice-075-regelwerk-verweis-linkpflicht.md) — dieser Slice
+  Linkpflicht als **Regel** ([slice-075](../open/slice-075-regelwerk-verweis-linkpflicht.md) — dieser Slice
   setzt Links, er erzwingt sie nicht) · der Prüfbereich und die Bindungs-Schärfe des
-  Mutations-Sensors ([slice-069](slice-069-zahn-bindet-zusicherung.md),
-  [slice-070](slice-070-comment-claims-pruefbereich.md)) · die emittierte Ebene und
-  [slice-073](slice-073-emittierte-doc-gate-module.md) · der Inhalt der übrigen 20 Einträge · die
+  Mutations-Sensors ([slice-069](../open/slice-069-zahn-bindet-zusicherung.md),
+  [slice-070](../open/slice-070-comment-claims-pruefbereich.md)) · die emittierte Ebene und
+  [slice-073](../open/slice-073-emittierte-doc-gate-module.md) · der Inhalt der übrigen 20 Einträge · die
   Textänderung an [`AGENTS.md`](../../../../AGENTS.md) §3.4. Ob
   [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)
   ins Stratum gehört, entscheidet **nicht** dieser Slice, sondern die Aufnahme-Regel bei der
