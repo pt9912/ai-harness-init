@@ -118,7 +118,7 @@ mischen, machte im Review eine **Korrektur** von einer **Entfernung** ununtersch
 
 | Option | Pro | Contra |
 |---|---|---|
-| A — **nichts tun**: Folgepflicht 1 bleibt, der Eintrag wächst weiter | kein Aufwand; der Text steht schon | die gemessene Kurve ist der Gegenbeweis (47 → 824 Zeilen in vier Tagen, 777 von 803 Zeilen Dateiwachstum). Der Inhalt bleibt in einem Dokument ohne Precedence-Rang, das jeder Agentenlauf mitliest — und die Regel, die ihn dort hält, ist eine Folgepflicht, deren eigene Begründung auf ein anderes Gefäß zeigt |
+| A — **nichts tun**: Folgepflicht 1 bleibt, der Eintrag wächst weiter | kein Aufwand; der Text steht schon | die oben gemessene Kurve ist der Gegenbeweis (47 → 824 Zeilen in vier Tagen, 777 von 803 Zeilen Dateiwachstum). Der Inhalt bleibt in einem Dokument ohne Precedence-Rang, das jeder Agentenlauf mitliest — und die Regel, die ihn dort hält, ist eine Folgepflicht, deren eigene Begründung auf ein anderes Gefäß zeigt |
 | B — **Voll-Supersede** von [ADR-0011](0011-telemetrie-erfassung-policy.md) | der von [`AGENTS.md`](../../../AGENTS.md) §3.4 wörtlich genannte Weg; keine Auslegung nötig | er erklärt sechs geltende Festlegungen für abgelöst, um **zwei** Folgepflichten zu ersetzen — die Entscheidung selbst hat sich nicht geändert. Und er bricht, was von ihr abhängt: eine Slice darf *„nur aktive ADRs"* normativ referenzieren, und der Doku-Gate verbietet Verweise auf `superseded` (`matrix.status.forbidden`). Der Preis ist ein Vielfaches des Nutzens |
 | D — **den Eintrag im Adaptions-Block kürzen** statt seinen Inhalt zu verlagern | fasst keine ADR an; die Byte-Achse ist mechanisch messbar | es behandelt die Größe, nicht die Zuständigkeit: die Feldtabelle bliebe in einem ungerangten Dokument, dessen Gegenstand Abweichungen von der Baseline sind. Der nächste Sensor müsste eine Schranke gegen die Sache verteidigen, die dort legitim wächst |
 | **C — Teil-Revision, Zielort wechselt ins Technik-Stratum (gewählt)** | die Vorgängerin bleibt vollständig gültig; nur die revidierten Sätze verlieren ihre Wirkung, und der Index sagt, welche. Der Inhalt bekommt ein Gefäß, dessen Änderungs-Prozess zu ihm passt und das einen Precedence-Rang trägt | [`AGENTS.md`](../../../AGENTS.md) §3.4 nennt diesen Weg nicht — er steht in der Kurs-Fassung der Hard Rule (*„der abgelösten **oder geschärften** Vorgängerin"*) und lebt im Repo als zweimal angewandte Praxis. Wer nur §3.4 liest, findet ihn nicht; die Auffindbarkeit hängt am ADR-Index, nicht an der revidierten ADR selbst — die darf nicht darauf zeigen |
@@ -161,18 +161,19 @@ mischen, machte im Review eine **Korrektur** von einer **Entfernung** ununtersch
 
 | Tooling | Regel | Make-Target |
 |---|---|---|
-| d-check (`matrix`, Klasse `spec-straten`) | Eine **verlinkte** Entscheidungs- **oder** Planungs-Kennung im bindenden Text von `spec/spezifikation.md` (außerhalb der Historie) meldet `matrix-forbidden` | `make docs-check` |
-| d-check (`ids`) | Eine **nackte** Entscheidungs-Kennung dort meldet `id-unlinked` — die zweite Hälfte derselben Kante | `make docs-check` |
-| **keines** | Eine **nackte** Planungs-Kennung dort meldet **nichts**: `ids.patterns` führt kein Muster für sie, und `matrix` greift nur über den Link. Diese Hälfte von Festlegung 3 trägt der Mensch | — |
+| d-check (`matrix`, Klasse `spec-straten`) | Ein Link im bindenden Text von `spec/spezifikation.md` (außerhalb der Historie), dessen **Ziel** in der `matrix`-Klasse `adr` oder `slice` liegt, meldet `matrix-forbidden` — rot wird die **Klasse des Ziels**, nicht der Text der Kennung | `make docs-check` |
+| d-check (`ids`) | Eine **nackte** Entscheidungs-Kennung dort meldet `id-unlinked`: sie ist linkpflichtig, und ihr Link auf die eigene Datei fällt unter Zeile 1 | `make docs-check` |
+| **keines** | Eine **nackte** Planungs-Kennung meldet **nichts** — `ids.patterns` führt kein Muster für sie —, und ebensowenig meldet eine Kennung, deren Link an einem Ziel außerhalb beider Klassen endet. Diesen Rest von Festlegung 3 trägt der Mensch | — |
 
-**Die zwei ersten Zeilen rot gesehen, mit Gegenprobe** (2026-08-01, gepinntes Image,
-`--network none`): eine Zeile `siehe ADR-0011` in §3 meldet
-`spec/spezifikation.md:47 ADR-0011 id-unlinked`; dieselbe Zeile als Markdown-Link meldet
-`spec/spezifikation.md:47 ../docs/plan/adr/0011-telemetrie-erfassung-policy.md matrix-forbidden`,
-ein verlinkter Slice-Pfad ebendort dieselbe Form. Die dritte Zeile ist ebenso gemessen: eine
-nackte Planungs-Kennung im bindenden Text lässt `make docs-check` bei Exit 0. Die Gegenprobe
-zeigt, dass die **Klassen-Mitgliedschaft** die Ursache ist und nicht ein Nebeneffekt: derselbe
-Link bleibt still, sobald `spec/spezifikation.md` aus `spec-straten` entfernt wird.
+**Alle drei Zeilen gemessen** (2026-08-01, gepinntes Image, `--network none`, Sonden im
+bindenden Text von §3): eine Zeile `siehe ADR-0011` meldet `ADR-0011 id-unlinked`; ein Link auf
+die Datei dieser Entscheidung meldet
+`../docs/plan/adr/0011-telemetrie-erfassung-policy.md matrix-forbidden`, ein Link auf eine Datei
+der Klasse `slice` dieselbe Form — **auch dann, wenn im Linktext gar keine Kennung steht**.
+Still bleiben eine nackte Planungs-Kennung und jede verlinkte Kennung, deren Ziel außerhalb
+beider Klassen liegt (gemessen mit `AGENTS.md` als Ziel): `make docs-check` bei Exit 0. Die
+Gegenprobe zeigt, dass die **Klassen-Mitgliedschaft** die Ursache ist und nicht ein Nebeneffekt:
+derselbe Link bleibt still, sobald `spec/spezifikation.md` aus `spec-straten` entfernt wird.
 
 **Was hier bewusst NICHT steht.** Erstens ein Wächter über der **Größe** eines Eintrags im
 Adaptions-Block: er wäre die Schranke gegen ein Symptom, nicht der Sensor dieser Entscheidung,

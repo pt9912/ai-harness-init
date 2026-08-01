@@ -1689,11 +1689,13 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   keinen Anker.
 - **Sensor, und seine Grenze (gemessen 2026-08-01).** `spec/spezifikation.md` ist in
   `.d-check.yml` der `matrix`-Klasse `spec-straten` beigetreten. Rot färbt `make docs-check`
-  damit eine **verlinkte** `ADR-`- oder `slice-`-Kennung im bindenden Text (außerhalb der
-  Historie-Tabelle) als `matrix-forbidden` und eine **nackte** `ADR-`-Kennung als `id-unlinked`.
-  **Nicht** rot färbt eine **nackte** `slice-`-Kennung: `ids.patterns` führt kein Muster für
-  sie, und `matrix` greift nur über den Link — eine solche Zeile im bindenden Text lässt den
-  Gate bei Exit 0. Diese Hälfte der Regel trägt der Mensch.
+  damit jeden Link im bindenden Text (außerhalb der Historie-Tabelle), dessen **Ziel** in der
+  `matrix`-Klasse `adr` oder `slice` liegt, als `matrix-forbidden` — entschieden wird über die
+  Klasse des Ziels, nicht über den Text der Kennung —, und eine **nackte** `ADR-`-Kennung als
+  `id-unlinked`. **Nicht** rot färbt eine **nackte** `slice-`-Kennung (`ids.patterns` führt kein
+  Muster für sie), und ebensowenig eine `ADR-`- oder `slice-`-Kennung, deren Link an einem Ziel
+  außerhalb beider Klassen endet — beides lässt den Gate bei Exit 0. Diesen Rest der Regel trägt
+  der Mensch.
 - **Begründung (gemessen 2026-08-01 am Stand `5200da6`, jede Zahl über die Blockgrenzen
   `grep -nE '^### MR-[0-9]{3}|^## Modus-Deklaration'`).** Der Adaptions-Block hat technische
   Festlegungen aufgenommen, für die er nicht das Gefäß ist:
@@ -1741,7 +1743,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Begründung (gemessen 2026-08-01 am Stand `c145f2b`).** Die drei sitzungsfesten Posten der
   Einstiegs-Leseliste messen zusammen 165.197 Bytes; der größte Eintrag dieses Blocks misst 824
   Zeilen / 70.727 Bytes und damit 42,8 % davon. Ein stehengelassener aufgehobener Rumpf dieser
-  Größe macht den Pflicht-Lesepfad zu überwiegend nicht mehr bindendem Text und führt seine
+  Größe macht diesen Anteil des Pflicht-Lesepfads zu Text ohne Bindung und führt seine
   Festlegung an zwei Orten, von denen nur einer bindet. Was die append-only-Führung dagegen
   leisten soll — Nachvollziehbarkeit — leistet `git` vollständig und besser: jede Fassung, ihr
   Autor und der aufhebende Commit. Nicht in `git` steht, was der Kopf hält: Nummer, Anker und

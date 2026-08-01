@@ -97,7 +97,7 @@ Eine Schranke über die Größe geltender Einträge bleibt unentschieden.
 | A — **so lassen**: der Rumpf bleibt Byte für Byte stehen | wortlaut-sicher ohne Auslegung; kein neuer Mechanismus | der oben gemessene Anteil des Pflicht-Lesepfads ist aufgehobener Text, und die Festlegung bindet an einem von zwei Orten, ohne dass ein Sensor sie unterscheidet. Der Zeiger auf die Aufhebung steht rund 800 Zeilen **unter** dem, was er entwertet — die Leserichtung trifft zuerst das Überholte |
 | B — **Rumpf in ein Archiv-Dokument** außerhalb des Pflicht-Lesepfads, Stumpf mit Zeiger | hält den Wortlaut („nichts gelöscht") und den Lesepfad zugleich; der Rumpf bleibt ohne `git`-Kommando lesbar | er leistet weniger als `git` — eine eingefrorene Kopie statt jeder Fassung samt aufhebendem Commit — und kostet mehr: eine zweite Quelle derselben Konvention ist genau das Drift-Risiko, vor dem das Regelwerk beim Konventionsdokument warnt. Unter `docs/` läge er zudem im Prüfbereich von `codepaths`/`ids` — jede Referenz in totem Text bliebe wartungspflichtig |
 | **C — Kopf bleibt, Rumpf geht (gewählt)** | der Zweck der Disziplin — Nachvollziehbarkeit — bleibt vollständig bei `git`, das ihn ohnehin besser trägt; erhalten bleibt, was `git` **nicht** trägt: Nummer, Anker und die Reichweite am Ort des Lesens, für den Preis weniger Zeilen | es ist eine Lockerung der Baseline-Disziplin und braucht diese Entscheidung samt ihrem Eintrag. Wer den Rumpf lesen will, braucht die Historie; eine Ansicht ohne sie zeigt ihn nicht |
-| D — **Eintrag ersatzlos entfernen**, Überschrift eingeschlossen | maximal knapp | bricht jeden Zeiger: die Umbenennung *einer* Eintrags-Überschrift färbt `make docs-check` mit **119** `anchor-missing` rot (gemessen, s. Fitness Function). Und die Nummer verschwände aus einer chronologischen Folge, deren Lückenlosigkeit die Regel schützt |
+| D — **Eintrag ersatzlos entfernen**, Überschrift eingeschlossen | maximal knapp | bricht jeden Zeiger auf sie: die Umbenennung *einer* Eintrags-Überschrift färbt `make docs-check` mit `anchor-missing` über die zeigenden Dokumente rot (gemessen, s. Fitness Function). Und die Nummer verschwände aus einer chronologischen Folge, deren Lückenlosigkeit die Regel schützt |
 
 ## Konsequenzen
 
@@ -134,10 +134,12 @@ Eine Schranke über die Größe geltender Einträge bleibt unentschieden.
 |---|---|---|
 | d-check (`anchors`) | Die Überschrift eines aufgehobenen Eintrags steht wörtlich fort; entfällt oder ändert sie sich, meldet jeder Zeiger darauf `anchor-missing` | `make docs-check` |
 
-**Rot gesehen, mit Gegenprobe** (2026-08-01, gepinntes Image, `--network none`): die
-Überschrift des größten Eintrags umbenannt → `make docs-check` Exit 2 mit **119**
-`anchor-missing` über `harness/README.md`, `harness/conventions.md` selbst und die
-Zeitdokumente; dieselbe Datei unverändert → **0 Befund(e)**, Exit 0.
+**Rot gesehen, mit Gegenprobe** (2026-08-01, gepinntes Image, `--network none`, am Stand
+`b2fb908`): die Überschrift des größten Eintrags umbenannt → `make docs-check` Exit 2, und
+**jeder** Befund des Laufs ist ein `anchor-missing` auf sie — über `harness/README.md`,
+`harness/conventions.md` selbst und die Zeitdokumente, an diesem Stand 121 Stück; dieselbe Datei
+unverändert → **0 Befund(e)**, Exit 0. Die Fehlerform ist die Zusicherung, die Stückzahl wandert
+mit jeder neuen Referenz — darum steht sie mit ihrem Stand.
 
 **Was hier bewusst NICHT steht.** Erstens ein Wächter über Bedingung 2 (b) — *„jede bindende
 Aussage steht andernorts"* ist keine Eigenschaft, die ein Doc-Gate lesen kann. Zweitens ein
