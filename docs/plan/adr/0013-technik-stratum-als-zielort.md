@@ -1,6 +1,6 @@
 # ADR-0013: Fortschreibbare technische Festlegungen leben im Technik-Stratum, nicht im Adaptions-Block
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-08-01
 
@@ -207,3 +207,4 @@ sie ist geringer als „bewacht".
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-08-01 | **Proposed** | Architect-Verdikt zur Einführung des Technik-Stratums; Anlass war ein Befund am Adaptions-Block (ein Eintrag größer als alle übrigen zusammen) und die zwei Entscheidungen mit `Schärft: —` |
+| 2026-08-01 | **Accepted** | Annahme durch den Auftraggeber; ab hier immutabel ([`AGENTS.md`](../../../AGENTS.md) §3.4) — spätere Schärfungen als neue ADR mit *Supersedes* |

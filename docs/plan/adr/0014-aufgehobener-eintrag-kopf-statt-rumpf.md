@@ -1,6 +1,6 @@
 # ADR-0014: Ein aufgehobener Eintrag des Adaptions-Blocks behält seinen Kopf, nicht seinen Rumpf
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-08-01
 
@@ -168,3 +168,4 @@ einmalig gesehen und nicht laufend gebunden. Bewacht ist der **Kopf**, nicht der
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-08-01 | **Proposed** | Architect-Verdikt zum Verbleib eines aufgehobenen Adaptions-Eintrags; Anlass war die Messung, dass ein aufgehobener Rumpf 42,8 % des sitzungsfesten Pflicht-Lesepfads einnähme |
+| 2026-08-01 | **Accepted** | Annahme durch den Auftraggeber; ab hier immutabel ([`AGENTS.md`](../../../AGENTS.md) §3.4) — spätere Schärfungen als neue ADR mit *Supersedes* |
