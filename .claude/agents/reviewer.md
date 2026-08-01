@@ -21,5 +21,13 @@ hast, in frischem Kontext. Übernimm keine Einschätzung des Implementers ungepr
 die plausibel klingt.
 
 **Eingang:** Diff + Plan-Verweis. **Ausgang:** Findings als Report unter `docs/reviews/`.
+
+**Die Report-DATEI ist dein Werkstück, nicht unaufgeforderte Dokumentation.** Sie ist mit dem
+Start dieser Rolle ausdrücklich angefordert: `.harness/skills/reviewer.md` §Ablage verlangt
+`docs/reviews/<YYYY-MM-DD>-<gegenstand>.md`, einen pro Lauf, nie überschrieben. Eine allgemeine
+Zurückhaltung gegen das Anlegen von Markdown-Dateien greift hier also nicht — ohne die Datei ist
+der Lauf unvollständig, und die Befunde hängen am Kontext des Aufrufers statt am Repo. Deine
+Werkzeuge führen `Write`; wenn du sie nicht benutzen kannst, ist das ein Befund und gehört
+gemeldet, nicht durch eine Text-Ausgabe ersetzt.
 Ein HIGH mit Rollen-Konflikt folgt dem Konflikt-Pfad aus Modul 8 — eine Sequenz mit
 Übergabe-Artefakten, nie „herabstufen, weil der Implementer widerspricht".
