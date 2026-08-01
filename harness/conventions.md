@@ -1233,16 +1233,16 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
         `.claude/settings.json`; er kann fehlen, abgeschaltet oder umgangen sein, und
         **kein Sensor dieses Repos prüft, dass er verdrahtet ist**. Über `test/**`,
         `Makefile`, `harness/tools/*.sh` und die Go-Tests berühren die `settings.json`
-        **vier** Artefakte in **drei** Dateien: **zwei Prüfungen ihrer Verdrahtung** — der
-        `PreToolUse`-Test in `harness/tools/smoke.sh` und
-        `TestEnforce_SettingsWiresBothHooks` in `internal/emit/enforce_test.go` —, **eine
-        Prüfung ihres bloßen Vorhandenseins** (`TestEnforce_EmitsAllMechanicFiles` in
-        derselben Datei, die den Pfad im Ziel-Layout fordert, ohne den Inhalt anzusehen)
-        und der **Dauer-Sensor** der zweiten Verdrahtungs-Prüfung,
-        `test/mutations/32-enforce-settings-wires-guard.sh`. Die Zahl hängt am Verb: unter
-        *„die Verdrahtung prüfen"* sind es drei, unter *„die Datei berühren"* vier. **Alle vier** gelten dem **emittierten** Repo und dessen
-        Command-Guard; für die Verdrahtung **dieses** Repos prüft keines etwas. Ein
-        Vorbild samt rot gesehener Mutation gibt es also, einen Sensor nicht.
+        **fünf** Prüfstellen in **drei** Dateien: **zwei Prüfungen ihrer Verdrahtung** —
+        der `PreToolUse`-Test in `harness/tools/smoke.sh` und
+        `TestEnforce_SettingsWiresBothHooks` in `internal/emit/enforce_test.go` —, **zwei
+        Prüfungen ihres bloßen Vorhandenseins** — die Existenz-Schleife derselben
+        `smoke.sh` und `TestEnforce_EmitsAllMechanicFiles` in derselben Go-Datei, beide
+        fordern nur den Pfad im Ziel — und der **Dauer-Sensor** der zweiten
+        Verdrahtungs-Prüfung, `test/mutations/32-enforce-settings-wires-guard.sh`. Unter
+        *„die Verdrahtung prüfen"* sind es drei. **Alle fünf** gelten dem **emittierten**
+        Repo und dessen Command-Guard; für die Verdrahtung **dieses** Repos prüft keines
+        etwas. Ein Vorbild samt rot gesehener Mutation gibt es also, einen Sensor nicht.
         (c) **Er entscheidet über den Start, nicht über den Ausgang.** Der Guard sieht die
         `tool_input`-Payload, bevor der Aufruf läuft; ob dessen Antwort am Ende Zähler
         trägt, entscheidet er nicht mit. Der Bestand trägt dafür einen Fall: ein
@@ -1257,11 +1257,11 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
         Dauer, die der Span trägt — für einen Hintergrund-Subagenten gibt das Werkzeug
         sofort nach dem Start zurück (Hooks-Referenz), und der eine hier als
         Hintergrund-Lauf protokollierte Aufruf trug drei Millisekunden, dieser die
-        Größenordnung des ganzen Laufs. **Was es entschiede:** eine Sonde auf die
-        **Schlüsselnamen** von `tool_input` im `Agent`-Zweig des `PreToolUse`-Hooks — die
-        Werte gehen sie nichts an, dieselbe Trennung wie beim `Bash`-Guard. Sie ist nicht
-        gefahren. Bis dahin gilt für den Guard, was er entscheidet, und nicht, was am Ende
-        im Span steht.
+        Größenordnung des ganzen Laufs. **Entscheidbar wird das erst beim nächsten Mal:**
+        ein nur protokollierender zweiter `PreToolUse`-Eintrag trennt „der Hook sah den
+        Aufruf" von „er sah ihn nie" — geschnitten als slice-074, gebaut ist er nicht. Bis
+        dahin gilt für den Guard, was er entscheidet, und nicht, was am Ende im Span
+        steht.
 
      **Die Abweichung:** ein `Agent`-Span **ohne Zähler** sieht aus wie ein erfasster
      Lauf und ist keiner. Beim Hintergrund-Lauf ist das konstruktiv (Prüfschritt 1); dass
