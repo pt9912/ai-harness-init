@@ -1706,6 +1706,43 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Auflösungs-Trigger:** permanent. Fällt der letzte Abschnitt mit Bestand weg, ist das
   Stratum neu zu begründen — ein Spec-Dokument ohne Inhalt ist ein Rang ohne Gegenstand.
 
+### MR-020 — Aufgehobener Eintrag behält Kopf und Zeiger statt Rumpf
+
+- **Datum:** 2026-08-01
+- **Geltungsbereich:** dieser Adaptions-Block. **Nicht** `docs/plan/adr/` — dort gilt
+  [`AGENTS.md`](../AGENTS.md) §3.4 unverändert.
+- **Adaption:** Die Disziplin-Regel der vendored Vorlage
+  (`.harness/baseline/v3.5.2/templates/harness/conventions.template.md`, Kommentar über dem
+  Adaptions-Block) verlangt *„keine nachträglichen inhaltlichen Änderungen an akzeptierten
+  Einträgen — nur neue Einträge oder explizite Aufhebungen via neuen MR"*. Davon weicht dieses
+  Repo in **einem** Punkt ab: **der Rumpf eines vollständig aufgehobenen Eintrags wird
+  entfernt.** Es bleiben stehen die Nummer, die Überschrift **wörtlich** (sie ist der Anker),
+  das `Datum` und **eine** Zeile mit dem aufhebenden Eintrag und den Zielorten je Posten-Art;
+  die Historie trägt `git`. Bedingungen, Abwägung und Reichweite:
+  [`ADR-0014`](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md).
+- **„Akzeptiert" heißt committet.** Ein Eintrag hier führt kein Status-Feld (Pflichtfelder: ID ·
+  Datum · Geltungsbereich · Adaption · Begründung · Auflösungs-Trigger); ohne diese Festlegung
+  hätte die Regel keinen bestimmbaren Auslöser.
+- **Hebt die Blankett-Klausel aus [`MR-000`](#mr-000--baseline-aussage) für diesen Punkt auf** —
+  *„keine inhaltlichen Adaptionen ggü. Baseline-Default"*.
+  [`MR-000`](#mr-000--baseline-aussage) bleibt unangetastet, seine übrigen Setzungen gelten
+  fort.
+- **Nur die Dogfood-Ebene.** Das emittierte `harness/conventions.md` ist dieselbe vendored
+  Vorlage mit zwei Transformationen (Hinweis-Blockquote entfernt, `<Projektname>` gestempelt);
+  ihre neun HTML-Kommentare und mit ihnen die Disziplin-Regel wandern unverändert ins Zielrepo,
+  wo die Baseline-Regel gilt.
+- **Begründung (gemessen 2026-08-01).** Die drei sitzungsfesten Posten der Einstiegs-Leseliste
+  messen zusammen 165.197 Bytes; der größte Eintrag dieses Blocks misst 824 Zeilen / 70.727
+  Bytes und damit 42,8 % davon. Ein stehengelassener aufgehobener Rumpf dieser Größe macht den
+  Pflicht-Lesepfad zu überwiegend nicht mehr bindendem Text und führt seine Festlegung an zwei
+  Orten, von denen nur einer bindet. Was die append-only-Führung dagegen leisten soll —
+  Nachvollziehbarkeit — leistet `git` vollständig und besser: jede Fassung, ihr Autor und der
+  aufhebende Commit. Nicht in `git` steht, was der Kopf hält: Nummer, Anker und die Reichweite
+  am Ort des Lesens.
+- **Auflösungs-Trigger:** an [`ADR-0014`](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md)
+  gebunden — fällt eine ihrer Annahmen (Historie auf jedem Checkout präsent), fällt diese
+  Adaption mit ihr.
+
 ## Modus-Deklaration pro Sub-Area
 
 | Sub-Area | Modus | Begründung | Graduation |
