@@ -321,6 +321,132 @@ altert:
    verlieren, die nirgends sonst geschrieben ist — daran hängt, ob der Rumpf gehen darf
    ([`ADR-0014`](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) Bedingung (a) und (b)).
 
+### Die vier Nachmessungen, mit Kommando und Ergebnis (Stand `9156acb`)
+
+| # | Frage | Kommando | Ergebnis |
+|---|---|---|---|
+| 1 | Blockgrenzen | `grep -nE '^### MR-[0-9]{3}\|^## Modus-Deklaration' harness/conventions.md` | 835 … 1658 — **unverändert** gegenüber §1 |
+| 1 | Umfang des Eintrags | `awk 'NR>=835&&NR<=1658' harness/conventions.md \| wc -l -c` | **824 Z / 70.727 B** — unverändert |
+| 1 | Datei gesamt | `wc -l -c harness/conventions.md` | **1.769 Z / 145.716 B** (§1: 1.767 / 145.563 — die Datei wuchs, der Block nicht) |
+| 1 | Anteil des Eintrags | 824 / 1769 · 70.727 / 145.716 | **46,6 % der Zeilen, 48,5 % der Bytes** |
+| 1 | Teilblöcke | `awk 'NR>=847&&NR<=875' …` usw., je `\| wc -l -c` | Feldtabelle **29 Z / 7.193 B** · Werkzeug-Tabelle **17 Z / 1.851 B** · Abweichungs-Block **295 Z / 23.672 B** · die zwei `Bewacht`-Punkte **15 Z / 1.804 B** und **259 Z / 20.145 B** — alle unverändert |
+| 1 | Wächter und Zähne | `awk … \| grep -oE 'Test[A-Z][A-Za-z0-9_]+' \| sort -u \| wc -l` bzw. `grep -oE 'test/mutations/[0-9]+-[a-z0-9-]+\.sh' \| sort -u` | **10** Funktionen, **30** Fälle; je Fall `test -f` → **0 fehlend** |
+| 1 | Klassen im Rumpf | `grep -cE '20[0-9]{2}-[0-9]{2}-[0-9]{2}'` · `grep -cE '(Review\|Verifier)-Befund'` · `grep -oE 'slice-[0-9]+' \| sort -u` · `grep -oE 'Modul[- ][0-9]{1,2}' \| wc -l` | **49** datierte Zeilen (51 Vorkommen) · **19** Befund-Zeilen (20 Vorkommen) · **4** verschiedene Slice-Kennungen (9 Vorkommen) · **19** Modul-Nennungen — alle unverändert |
+| 2 | prüft `codepaths` unter `test/`? | fünf Sonden in **einer** Datei (`spec/spezifikation.md`) einer isolierten Kopie, `make docs-check`, gepinntes Image, `--network none` | **Nein.** Ein nicht existierender Pfad unter `test/` bleibt **still**; derselbe Fehler unter `harness/` meldet `codepath-missing`. Eine Zeilen-Referenz `…:9000-9001` unter `test/` bleibt **still**, dieselbe Form auf `harness/tools/mutate.sh` meldet `citation-out-of-range`. Ohne Sonden: 281 Datei(en), **0** Befund(e) |
+| 3 | Anker-Form der Modul-Überschriften | sieben Kandidaten plus eine erfundene, als Links in `spec/spezifikation.md` der Kopie | Alle sieben lösen auf (`#span-audit-attribut-regeln`, `#token-attributions-regeln`, `#cache-counter-regeln`, `#kernidee-modul-15`, `#regeln-gegen-typische-fehlannahmen-modul-15`, `#rollen-sequenz-für-einen-slice`, `#werkzeug-wahl-bei-diskrepanz-carveout-bf-markierung-oder-adr-modul-7`); die erfundene meldet **`anchor-missing`** — der Wächter ist wach |
+| 4 | Steht eine Aussage nur im Eintrag? | posten-weise beim Inventar unten | Zwei Posten stehen andernorts bindend und entfallen deshalb (Zeilen R-41 und R-43 der Tabelle); alle übrigen bindenden Aussagen ziehen um |
+| — | eingehende Verweise auf die Überschrift | `grep -rl` bzw. `grep -rho 'mr-018--span-schema-der-telemetrie-erfassung' --include='*.md' .` | **127** Vorkommen in **25** Dateien |
+
+**Was Nachmessung 2 für die Sensor-Spalte heißt:** sie hat **einen Namen und keinen Sensor.**
+Kein Gate dieses Repos prüft, dass ein in der Spalte genannter Fall unter `test/mutations/` noch
+existiert oder noch so heißt; `codepaths` sieht die Wurzel nicht, `make mutate` fährt nur die
+Dateien, die es findet, und `make comment-claims` lässt jede Markdown-Datei außen vor. Die Spalte
+ist damit **Feedforward** — sie sagt dem Leser, welcher Wächter eine Zusicherung hält, und ihre
+Alterung fängt niemand mechanisch. Diese Grenze gehört an die Stelle, an der die Spalte begründet
+wird: in den aufhebenden Eintrag, neben die Feststellung, dass die vierte Spalte eine Abweichung
+von der Vorlagen-Form ist.
+
+### Das Inventar: jeder Posten mit Zielort oder Verdikt
+
+**Vorher** ist die Zeilenspanne im Eintrag am Stand `9156acb`; **nachher** der Zielort oder das
+Verdikt *ersatzlos* samt Grund. Der Kopf bleibt (Überschrift wörtlich, `Datum`, Zeiger-Zeile), der
+Rumpf 838–1657 ist hier vollständig aufgeteilt — **2 Kopf- und 79 Rumpf-Posten**, kein Rest.
+**Vollständigkeit gemessen, nicht behauptet:** über die 54 Hauptspannen und die 25 Teil-Posten
+laufend geprüft, welche Zeile von 838 bis 1657 in keiner Spanne liegt — es sind **23**, und alle
+**23 sind leer**.
+
+| # | Posten | vorher | Art | nachher |
+|---|---|---|---|---|
+| K-01 | Überschrift | 835 | Anker | **bleibt wörtlich** — 127 Verweise zeigen darauf |
+| K-02 | `Datum` | 837 | Kopf-Pflichtfeld | **bleibt** |
+| R-01 | Geltungsbereich: die Spans, die der Emitter je Tool-Call schreibt | 838–839 | technische Festlegung | **§5** (Gegenstand des Abschnitts) |
+| R-02 | Geltungsbereich: „Umsetzung von … Folgepflicht 1 — die Feldtabelle gehört hierher" | 839–842 | Zielort-Setzung einer Entscheidung | **ersatzlos** — genau diese Setzung ist teil-revidiert; ihre Begründung (*„wächst mit jedem Feld"*) ist die Aufnahme-Regel des Zielorts und steht dort |
+| R-03 | „Das Schema ist GESCHLOSSEN" | 843–845 | technische Festlegung | **§5** |
+| R-04 | Feldtabelle, 26 Zeilen | 847–874 | technische Festlegung | **§5**, wörtlich, plus die Sensor-Spalte |
+| R-04a | `spawned_role`: Befund-Klammer *„bis dahin berief sich diese Zeile …"* | 868 | Entstehungs-Erzählung | **ersatzlos** |
+| R-04b | `cache_*`: *„galt bis 2026-07-29 … erfasst seit 2026-07-30"* | 870 | datierte Messung | **Zeitdokument**; die Zeile behält, dass die Zähler erfasst sind |
+| R-04c | `total_tokens`: *„war bis 2026-07-30 nicht gemessen"* samt Befund-Klammer | 871 | Entstehungs-Erzählung | **ersatzlos**; die Rechen-Regel (nicht addieren, sondern gegenrechnen) bleibt |
+| R-04d | `total_duration_ms`: die Abgrenzung gegen die 4.184 ms | 872 | datierte Messung | **Zeitdokument** — sie zeigt auf eine Beobachtung, die dorthin geht; die Regel *„jede Paarung gehört ihrem Aufruf"* bleibt in **§5** |
+| R-05 | Werkzeug-Liste: *„hier stehen die Namen"* und *„ein Werkzeug aufzunehmen ist eine Entscheidung"* | 876–882 | technische Festlegung | **§5** |
+| R-05a | Werkzeug-Liste: *„sie stand zuerst ausschließlich im Code …"* samt Befund | 877–882 | Entstehungs-Erzählung | **ersatzlos** |
+| R-06 | Werkzeug-Tabelle, 6 Zeilen | 884–891 | technische Festlegung | **§5**, wörtlich |
+| R-06a | `BashOutput`: *„die Zeile sagte bis 2026-07-29 … zu"* samt Befund | 889 | Entstehungs-Erzählung | **ersatzlos**; die Zusage *„nichts"* samt Grund bleibt |
+| R-07 | Positiv-Liste, Einleitung: die vier gemessenen Freitext-Felder | 893–902 | technische Festlegung | **§5**; der Zeiger auf die Entscheidung, die `prompt` verbietet, wird gestrichen — die Aussage steht ohne ihn |
+| R-07a | Positiv-Liste, Einleitung: *„regelte bis 2026-07-30 ausschließlich …"* | 894–895 | Entstehungs-Erzählung | **ersatzlos** |
+| R-08 | Festlegung 1: nur was `responseKeys()` nennt — sechs Schlüssel, neun Werte, sieben Zeilen | 903–911 | technische Festlegung | **§5**; die Adresse *„Festlegung 1 Punkt 3"* wird durch die Eigenschaft ersetzt, auf die sie zeigt |
+| R-09 | Festlegung 2: positiv statt negativ | 912–916 | technische Festlegung | **§5** |
+| R-09a | Festlegung 2: *„eine frühere Fassung zählte vier verbotene Felder auf"* | 915–916 | Entstehungs-Erzählung | **ersatzlos** |
+| R-10 | Festlegung 3: der Fehlschlag braucht keine Sonderregel | 917–920 | technische Festlegung | **§5** |
+| R-11 | Festlegung 4: `model_version` verwirft statt zu kürzen | 921–934 | technische Festlegung | **§5** — und die Schranke selbst (Länge ≤ 64, geschlossener Zeichensatz) zusätzlich nach **§3** |
+| R-12 | Festlegung 5: die Zähler kommen nur im Vordergrund an; der Guard; der ungeprüfte zweite Weg | 935–953 | technische Festlegung | **§5** |
+| R-13 | Start-Konvention, zwei Bedingungen mit ihren Belegklassen | 955–974 | technische Festlegung | **§5** |
+| R-14 | Start-Konvention: die zwei Bedingungen sind unabhängig — die Regel | 976–990 | technische Festlegung | **§5** |
+| R-14a | Start-Konvention: `duration_ms: 3` bei 4.184 ms | 977–982 | datierte Messung | **Zeitdokument** |
+| R-15 | Start-Konvention: was sie erzwingt und was sie nur behauptet — Zusage und Grenze des Guards | 992–1010 | technische Festlegung | **§5** |
+| R-15a | Start-Konvention: *„an einem echten Aufruf rot gesehen"* | 998–1001 | rot-gesehen-Nachweis | **Zeitdokument** |
+| R-16 | Start-Konvention: Bedingung 1 ist nicht durchgesetzt, und der Grund ist zweigeteilt | 1011–1034 | technische Festlegung | **§5** |
+| R-16a | Start-Konvention: *„gemessen über vier echte Aufrufe"* — die Schlüssel von `tool_input` | 1012–1015 | datierte Messung | **Zeitdokument** |
+| R-17 | Abgrenzung: hier steht **wie** ein Rollen-Lauf startet, nicht **dass** | 1036–1038 | technische Festlegung | **§5**, Planungs-Zeiger gestrichen |
+| R-18 | Die vermessenen Schlüsselnamen der Payload | 1040–1044 | datierte Messung | **Zeitdokument** |
+| R-19 | *„Die Payload ist die Quelle, die Doku ist Herkunft."* | 1048–1049 | technische Festlegung | **§5** |
+| R-19a | Die zwei Lehren (`duration_ms` liegt bereit; `tool_response` statt `tool_output`) | 1045–1048 | Entstehungs-Erzählung | **ersatzlos** |
+| R-20 | Nicht erfasst und ausdrücklich abgelehnt: `cwd`, `effort`, `prompt_id` | 1050–1053 | technische Festlegung | **§5** |
+| R-21 | Die erfasste Menge: zwei Ereignisse, leerer Matcher, kein Span für einen geblockten Aufruf | 1055–1062 | technische Festlegung | **§5**; die Befund-Herkunft entfällt, der Kandidat `PermissionDenied` bleibt |
+| R-22 | Überschrift des Abweichungs-Blocks (Posten (a), falscher Regelblock) | 1064–1065 | technische Festlegung | **§5**, **wörtlich mit dem Fehler** — Korrektur im fünften Commit |
+| R-23 | *„Die Zahl ist gewachsen, nicht korrigiert"* samt Slice-Kennung und Datum | 1065–1067 | Entstehungs-Erzählung | **ersatzlos** |
+| R-24 | Welche Abweichung einen Auflösungs-Trigger trägt und welche ein Verdikt | 1068–1073 | Prozess-Zustand | **Plan §6** (dort bereits geführt) |
+| R-25 | Der Trichter entscheidet, und der Ort der Entscheidung ist dieser Eintrag; Abgrenzung zum Carveout-Audit | 1074–1082 | Prozess-Zustand | **Plan §6** — der Eintrag hört auf, ein Entscheidungs-Ort zu sein |
+| R-26 | Stand der vier übrigen Abweichungen (Träger, offene) | 1083–1087 | Prozess-Zustand | **Plan §6** (dort bereits geführt) |
+| R-27 | Abweichung 1: Cache-Status — Rest-Zustand, Zähler, fehlende Labels, Transkript-Ausschluss | 1088–1121 | technische Festlegung | **§5** |
+| R-27a | Abweichung 1: *„bis 2026-07-30 stand hier …"* (zweimal) samt Befunden | 1091–1093, 1104–1105 | Entstehungs-Erzählung | **ersatzlos** |
+| R-27b | Abweichung 1: *„gemessen 2026-07-29, erfasst seit 2026-07-30"* | 1095–1096 | datierte Messung | **Zeitdokument** |
+| R-27c | Abweichung 1: die Entfernung des `transcript_path`-Zeigers am 2026-07-29 | 1112–1117 | Entstehungs-Erzählung | **ersatzlos**; der Grund (fremder Besitz, voller Gesprächsinhalt) bleibt als Ausschluss in **§5** |
+| R-28 | Abweichung 2: die PR-Nummer steht nicht im Span, ihr Anker schon | 1122–1130 | technische Festlegung | **§5**; die Befund-Klammer entfällt |
+| R-29 | Abweichung 3: `agent_role`, Ableitung, kanonische Rollen-Namen, Lesevorschrift, Splitting-Pflicht | 1131–1178 | technische Festlegung | **§5** |
+| R-29a | Abweichung 3: *„(Festlegung vom 2026-07-29, … Frage A)"* und *„(gemessen 2026-07-29 über alle Ströme)"* | 1134, 1142–1143 | datierte Messung | **Zeitdokument** |
+| R-29b | Abweichung 3: *„eine Prozess-Entscheidung (slice-060)"* | 1140 | Planungs-Kennung | **Zeiger gestrichen**, die Aussage bleibt |
+| R-30 | Abweichung 4: Altbestände werden nicht entfernt | 1179–1184 | technische Festlegung | **§5**; der Zeiger auf die Entscheidung, von der sie abweicht, wird gestrichen, die Befund-Klammer entfällt |
+| R-31 | Abweichung 5: Kopf und Prüfschritt 1 (nicht ableitbar, gemessen) | 1185–1199 | technische Festlegung | **§5** |
+| R-32 | Abweichung 5: Prüfschritt 2 — was der Guard ablehnt, samt seinen vier Zähnen | 1200–1213 | technische Festlegung | **§5**, die Zähne in die Sensor-Angabe |
+| R-33 | Abweichung 5 (a): ein Typ ohne Rollen-Datei; die Zeile ist abgeleitet, nicht beobachtet | 1214–1232 | technische Festlegung | **§5** |
+| R-34 | Abweichung 5 (b): kein Sensor prüft die Verdrahtung (Posten (c), gemischte Bezugsgrößen) | 1232–1245 | technische Festlegung | **§5**, **wörtlich mit dem Fehler** — Korrektur im fünften Commit |
+| R-35 | Abweichung 5 (c): er entscheidet über den Start, nicht über den Ausgang | 1246–1260 | technische Festlegung | **§5** |
+| R-35a | Abweichung 5 (c): die Sonde auf die Schlüsselnamen von `tool_input` (Posten (d)) | 1260–1264 | Prozess-Zustand | **ersatzlos** — sie trennt die zwei Lesarten in keinem Zweig; ihren Gegenstand trägt [slice-074](../open/slice-074-agent-vor-aufruf-protokoll.md) |
+| R-36 | Abweichung 5: *„Die Abweichung"* — ein `Agent`-Span ohne Zähler | 1266–1269 | technische Festlegung | **§5** |
+| R-37 | Abweichung 5: Auflösungs-Trigger (1) Abdeckungszahl aus einem offenen Slice | 1270–1276 | Prozess-Zustand | **Plan §6** |
+| R-37a | Abweichung 5: Auflösungs-Trigger (2) trägt die Antwort eines Hintergrund-Laufs eines Tages Zähler | 1276–1283 | technische Festlegung (beobachtbare Eigenschaft) | **§5**, ohne den Zeiger auf die Entscheidung, die ihn einordnet |
+| R-38 | Abweichung 6: Kopf und die drei Prüfschritte | 1284–1315 | technische Festlegung | **§5** |
+| R-39 | Abweichung 6: *„Die Abweichung"* — jede Bilanz ist eine über Subagenten-Läufe | 1317–1322 | technische Festlegung | **§5** |
+| R-40 | Abweichung 6: Status *permanent*, der Trichter, *„kein Slice führt die Bedingung"*, kein Folge-Slice | 1323–1357 | Verdikt und seine Begründung | **ersatzlos** — der Posten ist in eine Entscheidung übergeführt, und die trägt Verdikt, Trichter und Re-Evaluierung; ein zweiter Ort driftet |
+| R-41 | Tooling-Klarstellung zur Fitness Function (bats gegen Go) | 1359–1364 | Klarstellung | **ersatzlos** — beide Hälften stehen andernorts bindend: dass `make test` bats **und** Go fährt, sagt die Gate-Tabelle in [`AGENTS.md`](../../../../AGENTS.md) §4; **wo** die Wächter liegen, sagt ab jetzt die Sensor-Spalte namentlich |
+| R-42 | Der Strom ist `(session, agent)` — die Felder, nicht der Dateiname; die zwei bindenden Regeln | 1366–1380 | technische Festlegung | **§5** |
+| R-42a | Der Strom: die 58 doppelt vergebenen Nummern und der frühere Fall (awk→Go, 16 Duplikate) | 1368–1372, 1379–1380 | datierte Messung | **Zeitdokument** |
+| R-43 | `Bewacht:` — die Sensoren der Emitter-Eigenschaften und neun Zähne | 1382–1396 | Sensor-Bindung | **§5** (`Bewacht`-Block unter dem Abschnitt) |
+| R-43a | `Bewacht:` — *„die Zeile sagte bis 2026-07-30 … zu"* samt der Grenze von `make comment-claims` | 1396 | Entstehungs-Erzählung | **ersatzlos** — die Grenze des Gates steht bindend in [`harness/README.md`](../../../../harness/README.md) §Sensors |
+| R-44 | `Bewacht (die Erfassung …)` — die Form: Zusicherung für Zusicherung, nicht Wächter für Wächter | 1397–1399 | Sensor-Bindung | **§5** |
+| R-44a | Die Vorgeschichte der Form (V-1), die 5-gegen-4-Zählung, das gemessene Streichen | 1401–1424 | datierte Messung | **Zeitdokument** |
+| R-45 | *„Ein Wächter heißt eine Test-Funktion, nicht eine `--- FAIL:`-Zeile"* | 1426–1429 | Zählregel einer Messung | **Zeitdokument** |
+| R-46 | Wo genau die Wächter fielen (Zeilennummern, beide Messreihen) und warum das kein Sensor prüft | 1431–1458 | datierte Messung | **Zeitdokument**; die Folgerung, dass eine Erweiterung von `codepaths.roots` ein Gate-Anheben wäre, geht mit |
+| R-47 | Die neun Zusicherungen mit ihren Wächtern und Zähnen | 1460–1541 | Sensor-Bindung | **§5** (`Bewacht`-Block) |
+| R-47a | Zusicherung 8: die Nennungs-gegen-Abdeckungs-Zählung, die `omitempty`-Messung, *„drei der neun"* | 1495–1541 | datierte Messung | **Zeitdokument**; die Regel *„der Prüfstein ist das Kippen, nicht das Rot"* und die benannte Lücke der sechs ungebundenen Einträge bleiben in **§5** |
+| R-48 | Was keinen Zahn hat: die `mustContain`-Gegenproben | 1543–1555 | Sensor-Bindung (benannte Lücke) | **§5**; die Messung dazu ins **Zeitdokument** |
+| R-49 | Warum 127 der tragende Fall ist | 1557–1563 | Sensor-Bindung | **§5**; die Messung samt Befund-Herkunft ins **Zeitdokument** |
+| R-50 | Die Vorgeschichte der zwei zuletzt ergänzten Zähne (der nie existierende Implementations-Bericht) | 1564–1573 | Entstehungs-Erzählung | **ersatzlos**; dass 128 und 129 rot gesehen wurden, geht ins **Zeitdokument** |
+| R-51 | Die Draht-Form von `spawned_role`: zwei Einträge brauchen zwei Zähne | 1574–1616 | Sensor-Bindung | **§5**; die zweiseitigen Messungen und die Vier-Fälle-Auszählung ins **Zeitdokument** |
+| R-52 | Die Voraussetzung, zwei Hälften: `tool` bleibt Pflicht, ein `Agent`-Span ist erkennbar | 1617–1632 | Sensor-Bindung | **§5** |
+| R-52a | Die frühere falsche Fundstelle (110 statt 130) samt Befund | 1618–1624 | Entstehungs-Erzählung | **ersatzlos** |
+| R-53 | Beide Zähne zweiseitig gemessen; die Zählungs-Historie sieben → elf → dreizehn → vierzehn | 1634–1655 | datierte Messung | **Zeitdokument** |
+| R-54 | Auflösungs-Trigger: *„permanent, solange Spans erfasst werden"* | 1656 | Kopf-Pflichtfeld des Eintrags | **ersatzlos** — der aufhebende Eintrag trägt seinen eigenen |
+| R-54a | *„Jede Änderung ist ein Eintrag hier, kein Nebeneffekt im Skript"* | 1656–1657 | technische Festlegung | **§5** (Fortschreibungs-Regel des Abschnitts) |
+
+**Was das Inventar an bindender Substanz *nicht* mitnimmt, ist an vier Stellen verzeichnet** und
+nirgends sonst: R-02, R-40, R-41 und R-43a. Drei davon stehen andernorts bindend (die Aufnahme-Regel
+des Zielorts, die Entscheidung, in die der Posten übergeführt ist, die Gate-Tabelle und die
+Sensors-Tabelle); R-02 ist die einzige, die entfällt, weil ihr Gegenstand — der Zielort — durch
+diesen Umzug beantwortet wird. Alles Übrige, was ersatzlos entfällt, ist Entstehungs-Erzählung
+(Befund-Herkunft, *„bis <Datum> stand hier …"*) oder Prozess-Zustand, und für beides ist der
+Zielort begründet, nicht bloß behauptet.
+
 ## 4. Trigger
 
 **`open` → `next`:** [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) **und**
