@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
 **Welle:** ohne Welle (Sensor-Wartung) — die Klasse ist bei
-[slice-060](../in-progress/slice-060-rollen-achse.md) fünfmal aufgetreten, betrifft aber
+[slice-060](../done/slice-060-rollen-achse.md) fünfmal aufgetreten, betrifft aber
 `harness/tools/mutate.sh` und damit jeden Slice.
 
 **Bezug:** [`AGENTS.md`](../../../../AGENTS.md) §3.6 (keine Zusage ohne rot gesehenes
@@ -87,7 +87,7 @@ nicht gezählt.
 
 ## 4. Trigger
 
-**`open` → `next`:** [slice-060](../in-progress/slice-060-rollen-achse.md) ist **done**. Grund
+**`open` → `next`:** [slice-060](../done/slice-060-rollen-achse.md) ist **done**. Grund
 ist nicht Abhängigkeit, sondern WIP-Limit und Konfliktfläche: slice-060 legt weiter Fälle an.
 
 **`next` → `in-progress`:** WIP-Limit.

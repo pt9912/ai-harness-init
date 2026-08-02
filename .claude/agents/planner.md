@@ -14,7 +14,7 @@ anstehende Aufgabe passende und folge ihm.** Diese Datei wiederholt sie nicht.
 
 **Warum es diesen Typ gibt.** Wegen der **Rollen-Achse der Telemetrie**: nur ein Lauf unter einem
 rollen-benannten Typ trägt seine Rolle in den Span
-([slice-060](../../docs/plan/planning/in-progress/slice-060-rollen-achse.md)).
+([slice-060](../../docs/plan/planning/done/slice-060-rollen-achse.md)).
 
 **Eingang:** Anforderung oder Welle. **Ausgang:** Slice-Plan mit Bezug auf `LH-*` an den
 Architect; am Ende der Sequenz die **Closure** mit Lerneintrag.

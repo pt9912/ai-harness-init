@@ -7,7 +7,7 @@
 | **Rolle** | Reviewer (Modul 10), `.harness/skills/reviewer.md` v1.4.0 |
 | **Datum** | 2026-07-31 |
 | **Diff/Commit-Range** | `e59cec4` (+319/−48, vier Dateien, rein dokumentarisch) |
-| **Slice-Plan** | [`slice-060`](../plan/planning/in-progress/slice-060-rollen-achse.md) DoD (3) + §6 |
+| **Slice-Plan** | [`slice-060`](../plan/planning/done/slice-060-rollen-achse.md) DoD (3) + §6 |
 | **`LH-*`** | `LH-QA-03` (Satz *„Der Tool-Build läuft reproduzierbar im gepinnten Image"*) — vom Diff nicht berührt; `LH-QA-02` (Reproduzierbarkeit einer Messangabe) für LOW-2 |
 | **Aktive ADRs** | [`ADR-0011`](../plan/adr/0011-telemetrie-erfassung-policy.md) (**Accepted**) Festlegung 1 Punkt 4/5, §Re-Evaluierungs-Trigger |
 | **Hard Rules** | [`AGENTS.md`](../../AGENTS.md) §3.4 (ADR immutable), §3.6 (keine Zusage ohne rot gesehenes Gegenbeispiel) |

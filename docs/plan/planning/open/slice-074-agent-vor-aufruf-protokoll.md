@@ -46,7 +46,7 @@ entscheidbar, ob der Hook einen Aufruf überhaupt gesehen hat — und eine Auswe
 die Frage von sich aus, statt auf ihr nächstes Auftreten zu warten.**
 
 **Der Anlass, und er ist eingegrenzt, nicht geklärt.** Ein Aufruf unter einem **Rollen**-Typ ist
-durchgelaufen, obwohl der Guard aus [slice-060](../in-progress/slice-060-rollen-achse.md)
+durchgelaufen, obwohl der Guard aus [slice-060](../done/slice-060-rollen-achse.md)
 verdrahtet ist und ihn hätte ablehnen müssen. Drei Beobachtungen grenzen die Ursache ein:
 
 1. **Der Guard scheidet aus.** Die Fassung vor der letzten Änderung lehnt dieselbe Aufrufform mit
@@ -147,7 +147,7 @@ entscheidbar, nicht das vergangene.
 
 | # | Aussage | Belegklasse |
 |---|---|---|
-| 1 | `PreToolUse` feuert für `Agent`, und `tool_input` trägt `subagent_type` und `run_in_background` schon **vor** dem Lauf | **gemessen** — [slice-060](../in-progress/slice-060-rollen-achse.md) §3 Zeile 8, an einer echten Sonde mit `"matcher": "Agent"` |
+| 1 | `PreToolUse` feuert für `Agent`, und `tool_input` trägt `subagent_type` und `run_in_background` schon **vor** dem Lauf | **gemessen** — [slice-060](../done/slice-060-rollen-achse.md) §3 Zeile 8, an einer echten Sonde mit `"matcher": "Agent"` |
 | 2 | `PreToolUse`-Hooks erhalten `tool_name`, `tool_input` **und `tool_use_id`** | **dokumentiert, nicht gemessen** — `docs/user/claude-hooks-referenz.md` §PreToolUse-Eingabe. Die Sonde protokollierte den Wert nicht; damit ist die Korrelations-Achse gelesen und nicht belegt |
 | 3 | Der Span führt `tool_use_id` als **Pflichtfeld**, mit der Incident-Frage *„welche Ereignisse gehören zu einem Aufruf?"* | **läuft** — [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) Feldtabelle |
 | 4 | Dass Vor- und Nachereignis desselben Aufrufs **denselben** Wert tragen | **weder gemessen noch dokumentiert-verglichen** — die Referenz sagt es für die zwei Nach-Ereignisse, für das Paar Vor↔Nach steht es nirgends |
@@ -241,7 +241,7 @@ Was wirklich wartet, ist allein die **Erklärung** des einen beobachteten Falls 
 ausdrücklich nicht Gegenstand (§1, letzter Absatz).
 
 **Die Auswertungsregel ist zugleich die Kontrolle, und deshalb braucht dieser Slice keine zweite
-Verdrahtung.** [slice-060](../in-progress/slice-060-rollen-achse.md) hat gelernt, dass ein stiller
+Verdrahtung.** [slice-060](../done/slice-060-rollen-achse.md) hat gelernt, dass ein stiller
 Hook zwei Ursachen hat — *feuert nicht für dieses Werkzeug* und *Konfiguration nicht gelesen* —
 und hat dafür damals eine Kontroll-Sonde auf `Bash` mitverdrahtet. Hier leistet das der **Span**:
 er entsteht aus derselben Konfigurationsdatei am Nachereignis. Liegt ein `Agent`-Span vor und
@@ -267,7 +267,7 @@ schließt der Matcher aus.
    abschreibt. **Auch nicht in [welle-09](../welle-09-modul-15-konformitaet.md):** deren Closure
    ist eine 4 × 2-Matrix über vier Regelblöcke × {Repo, Tool}; dieser Slice füllt keine Zelle und
    leert keine — *Erfassung × Repo* tragen slice-059 und
-   [slice-060](../in-progress/slice-060-rollen-achse.md). Ihn hineinzuziehen erweiterte den Umfang,
+   [slice-060](../done/slice-060-rollen-achse.md). Ihn hineinzuziehen erweiterte den Umfang,
    ohne das Kriterium zu bewegen; §6 jener Welle schließt genau das aus.
 3. **Auslöser reaktiv oder gewollt?** **Reaktiv** — ein beobachteter Vorfall, keine neue Fähigkeit.
 
@@ -313,7 +313,7 @@ ADR setzt ihren fail-closed Default am **Werkzeug-Namen** für die Span-Erfassun
 eine zweite Senke mit eigener Datei, eigenem Format und eigener Politik — die Positiv-Liste
 übernimmt sie, aber ob das eine Anwendung oder eine Erweiterung ist, entscheidet nicht der
 Planner. Präzedenz ist derselbe Schritt bei
-[slice-060](../in-progress/slice-060-rollen-achse.md), wo ein Architect-Verdikt die Grenzen der
+[slice-060](../done/slice-060-rollen-achse.md), wo ein Architect-Verdikt die Grenzen der
 Erfassung geprüft und benannt hat. **Kein vierter DoD-Punkt:** die Entscheidung ist Vorbedingung
 des Schnitts, keine Zusage des Slice.
 
@@ -367,7 +367,7 @@ eigenem Move-Commit, eingehende Links im Zug danach; Closure-Notiz mit Steering-
   damit ein Sensor, dessen Lauf an einer Prozess-Regel hängt — schwächer als ein Gate, und der
   Unterschied gehört benannt, nicht überspielt.
 - **Nicht in diesem Slice:** die Entscheidung des Guards (sie bleibt, wie
-  [slice-060](../in-progress/slice-060-rollen-achse.md) sie gesetzt hat); die veraltete
+  [slice-060](../done/slice-060-rollen-achse.md) sie gesetzt hat); die veraltete
   Ausgabeform des Nachbar-Guards (slice-067); die Rechnung über die Zähler
   ([slice-066](slice-066-telemetrie-auswertung.md),
   [slice-071](slice-071-cache-zaehler-getrennt.md)); jede Emission ins Ziel (slice-062/063); und

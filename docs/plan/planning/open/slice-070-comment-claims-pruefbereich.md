@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
 **Welle:** ohne Welle (Sensor-Wartung) — der Befund entstand bei
-[slice-060](../in-progress/slice-060-rollen-achse.md), betrifft aber jede Datei des Repos.
+[slice-060](../done/slice-060-rollen-achse.md), betrifft aber jede Datei des Repos.
 
 **Bezug:** [`AGENTS.md`](../../../../AGENTS.md) §3.6 (die Regel, die `comment-claims`
 durchsetzt),
@@ -97,7 +97,7 @@ Abdeckung). Ein Bereich, der beim Anschalten hundert Befunde wirft, ist ein ande
 
 ## 4. Trigger
 
-**`open` → `next`:** [slice-060](../in-progress/slice-060-rollen-achse.md) ist **done** —
+**`open` → `next`:** [slice-060](../done/slice-060-rollen-achse.md) ist **done** —
 WIP-Limit, und slice-060 schreibt weiter Kommentare in den Prüfbereich.
 
 **`next` → `in-progress`:** WIP-Limit; dazu die Ist-Messung aus §3, weil sie über den Schnitt

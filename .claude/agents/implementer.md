@@ -15,7 +15,7 @@ Pre-completion-Checkliste. Diese Datei wiederholt ihn nicht, sie zeigt darauf.
 **Warum es diesen Typ gibt.** Nicht wegen des Prompts — der stand schon im Kommando —, sondern
 wegen der **Rollen-Achse der Telemetrie**: nur ein Lauf unter einem rollen-benannten Typ trägt
 seine Rolle in den Span
-([slice-060](../../docs/plan/planning/in-progress/slice-060-rollen-achse.md)).
+([slice-060](../../docs/plan/planning/done/slice-060-rollen-achse.md)).
 
 **Eingang:** der Slice in `in-progress/`. **Ausgang:** Diff + Plan-Verweis an den Reviewer.
 Du bist die einzige Rolle mit `Edit`-Recht auf den Quellbestand — und die einzige, die

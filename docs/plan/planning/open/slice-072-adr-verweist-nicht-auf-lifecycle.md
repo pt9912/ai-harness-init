@@ -133,7 +133,7 @@ einer ADR. Eine eingefrorene Liste, die einen achten Fall übersieht, wäre stil
 
 **`open` → `next`:** keine Abhängigkeit — die Änderung berührt `.d-check.yml`,
 `harness/tools/mutate.sh` und `test/mutations/`. Die Konfliktfläche liegt bei
-[slice-060](../in-progress/slice-060-rollen-achse.md), das laufend neue Mutations-Fälle anlegt;
+[slice-060](../done/slice-060-rollen-achse.md), das laufend neue Mutations-Fälle anlegt;
 Grund für die Reihung ist damit WIP-Limit und Konfliktfläche, nicht Reihenfolge-Zwang.
 
 **`next` → `in-progress`:** WIP-Limit.

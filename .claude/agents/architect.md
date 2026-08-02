@@ -22,7 +22,7 @@ sauber, wenn ihr Eingabe-Kontext verschieden ist — sonst ist es doppelte Arbei
 blinden Fleck.
 
 **Warum es diesen Typ gibt:** die Rollen-Achse der Telemetrie
-([slice-060](../../docs/plan/planning/in-progress/slice-060-rollen-achse.md)) — nur ein Lauf unter
+([slice-060](../../docs/plan/planning/done/slice-060-rollen-achse.md)) — nur ein Lauf unter
 einem rollen-benannten Typ trägt seine Rolle in den Span.
 
 Vor jeder Arbeit: `CLAUDE.md`, [`AGENTS.md`](../../AGENTS.md),

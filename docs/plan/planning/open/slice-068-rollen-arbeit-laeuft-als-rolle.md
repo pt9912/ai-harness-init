@@ -29,7 +29,7 @@ bleibt deshalb **leer und erkennbar** statt gefüllt und falsch.
 ## 1. Ziel
 
 **Die Konvention sagt, WAS als Rolle läuft — nicht nur, WIE.**
-[slice-060](../in-progress/slice-060-rollen-achse.md) hat die Betriebsart geregelt und in
+[slice-060](../done/slice-060-rollen-achse.md) hat die Betriebsart geregelt und in
 [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
 geschrieben: **wie** ein Rollen-Lauf startet (@-Erwähnung + Vordergrund), erzwungen vom
 `PreToolUse`-Guard. Was fehlt, ist der Satz davor — **dass** Rollen-Arbeit überhaupt unter einem
@@ -88,7 +88,7 @@ es nicht.
 
 **Was aus diesem Slice ENTFALLEN ist (2026-07-31):** der frühere DoD (2) — die
 Nicht-Erreichbarkeit der Haupt-Kontext-Token als erklärte Abweichung mit Auflösungs-Trigger — ist
-von [slice-060](../in-progress/slice-060-rollen-achse.md) DoD (3) geliefert worden und steht als
+von [slice-060](../done/slice-060-rollen-achse.md) DoD (3) geliefert worden und steht als
 Abweichung 6 in
 [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung):
 dieselbe Reihenfolge (Prüfung → Abweichung → Einordnung) und dieselbe Sache. Ihn hier stehen zu
@@ -124,7 +124,7 @@ dieser Notiz ableiten.
 
 ## 4. Trigger
 
-**`open` → `next`:** [slice-060](../in-progress/slice-060-rollen-achse.md) ist **done** — er
+**`open` → `next`:** [slice-060](../done/slice-060-rollen-achse.md) ist **done** — er
 schreibt in dieselbe
 [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)-Sektion, und zwei gleichzeitige Änderungen daran erzeugen
 vermeidbare Konflikte.

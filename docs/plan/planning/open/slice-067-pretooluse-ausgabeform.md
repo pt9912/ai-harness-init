@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
 **Welle:** ohne Welle (Wartung) — Befund aus der Umsetzung von
-[slice-060](../in-progress/slice-060-rollen-achse.md).
+[slice-060](../done/slice-060-rollen-achse.md).
 
 **Bezug:** [`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)
 (die Hook-Verdrahtung dieses Repos),
@@ -35,7 +35,7 @@ dann durchläuft. Die Docker-only-Zusage aus
 [`ADR-0003`](../../adr/0003-go-native-binaries.md) verschwände, ohne dass ein Gate rot wird.
 
 **Herkunft:** Befund bei der Umsetzung von
-[slice-060](../in-progress/slice-060-rollen-achse.md) — dessen neuer Guard die aktuelle Form
+[slice-060](../done/slice-060-rollen-achse.md) — dessen neuer Guard die aktuelle Form
 bereits verwendet und sie am 2026-07-29 an einem echten abgelehnten Aufruf **gemessen** hat.
 Dieser Slice zieht den **bestehenden** Guard nach.
 
@@ -73,7 +73,7 @@ Referenz ihr **aktuelles** Format, keine Altlast.
 
 ## 4. Trigger
 
-**`open` → `next`:** sobald [slice-060](../in-progress/slice-060-rollen-achse.md) geschlossen ist
+**`open` → `next`:** sobald [slice-060](../done/slice-060-rollen-achse.md) geschlossen ist
 — er fasst dieselbe Verdrahtung an, und zwei gleichzeitige Änderungen an `.claude/settings.json`
 und `.claude/hooks/` erzeugen vermeidbare Konflikte.
 
@@ -101,7 +101,7 @@ Steering-Loop-Eintrag.
   laufenden Version noch existiert, ist nicht gemessen — und **muss** es auch nicht sein: der
   Slice entfernt gerade die Abhängigkeit davon.
 - **Zeitdruck gibt es keinen, Vergessen ist die Gefahr.** Der Befund entstand als Nebenprodukt
-  von [slice-060](../in-progress/slice-060-rollen-achse.md) und lebte zunächst nur in einer
+  von [slice-060](../done/slice-060-rollen-achse.md) und lebte zunächst nur in einer
   Commit-Message. Deshalb steht er hier — auf Nutzer-Hinweis, dass genau das nicht verloren gehen
   darf.
 

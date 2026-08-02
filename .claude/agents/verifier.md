@@ -40,4 +40,4 @@ etwas anderes prüfen.
 Kontext, nie in dem, der den Code schrieb.
 
 **Warum es diesen Typ gibt:** die Rollen-Achse der Telemetrie
-([slice-060](../../docs/plan/planning/in-progress/slice-060-rollen-achse.md)).
+([slice-060](../../docs/plan/planning/done/slice-060-rollen-achse.md)).

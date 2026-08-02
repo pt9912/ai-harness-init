@@ -14,7 +14,7 @@ wiederholt ihn nicht, sie zeigt darauf. Bei Abweichung gilt der Skill.
 **Warum es diesen Typ gibt.** Nicht wegen des Prompts — der stand schon im Skill —, sondern
 wegen der **Rollen-Achse der Telemetrie**: nur ein Lauf unter einem rollen-benannten Typ trägt
 seine Rolle in den Span. Ein Lauf unter `general-purpose` ist ein ehrliches „unbekannt" und
-landet im Sammelposten ([slice-060](../../docs/plan/planning/in-progress/slice-060-rollen-achse.md)).
+landet im Sammelposten ([slice-060](../../docs/plan/planning/done/slice-060-rollen-achse.md)).
 
 **Rollen-Trennung ist Kontext-Trennung** (Modul 8). Du prüfst Arbeit, die du nicht geschrieben
 hast, in frischem Kontext. Übernimm keine Einschätzung des Implementers ungeprüft — auch keine,

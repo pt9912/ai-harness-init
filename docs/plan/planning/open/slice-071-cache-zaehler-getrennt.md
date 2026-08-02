@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
 **Welle:** [welle-09](../welle-09-modul-15-konformitaet.md) — Block 3, setzt auf
-[slice-060](../in-progress/slice-060-rollen-achse.md) auf.
+[slice-060](../done/slice-060-rollen-achse.md) auf.
 
 **Bezug:** [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) (Baseline ohne
 inhaltliche Adaption — Modul 15 ist adoptiert und in Block 3 unumgesetzt),
@@ -71,7 +71,7 @@ geschrieben.** Aus denselben Spans wie die Token-Bilanz, aber mit einer anderen 
 
 ## 3. Plan (vor Code)
 
-**Voraussetzung, die [slice-060](../in-progress/slice-060-rollen-achse.md) liefert:** die
+**Voraussetzung, die [slice-060](../done/slice-060-rollen-achse.md) liefert:** die
 `Agent`-Spans tragen `spawned_role` (normalisiert), `resolvedModel` und die `usage` mit ihren
 vier Zählern — zwei davon sind die Cache-Zähler, `resolvedModel` ist das Pflicht-Label
 `model.version`. **Gemessen am 2026-07-29:** diese Felder kommen **nur bei
@@ -92,7 +92,7 @@ Vordergrund-Läufen** an.
 
 ## 4. Trigger
 
-**`open` → `next`:** [slice-060](../in-progress/slice-060-rollen-achse.md) ist **done** — vorher
+**`open` → `next`:** [slice-060](../done/slice-060-rollen-achse.md) ist **done** — vorher
 trägt kein Span eine Rolle, und `agent.role` ist eines der drei Pflicht-Labels aus DoD (1).
 
 **`next` → `in-progress`:** WIP-Limit; dazu **Frage A entschieden**.
@@ -122,7 +122,7 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
   sichtbar wird. Wer die drei später an eine Metrik-Senke gibt, muss diese Herkunft mitliefern,
   sonst liest sich der dritte wie ein Cache-Wert.
 - **Nicht in diesem Slice:** die Token-Bilanz je Rolle ([slice-066](slice-066-telemetrie-auswertung.md)),
-  die Rollen-Achse ([slice-060](../in-progress/slice-060-rollen-achse.md)) und die Tool-Ebene
+  die Rollen-Achse ([slice-060](../done/slice-060-rollen-achse.md)) und die Tool-Ebene
   (slice-062/063).
 
 ## 7. Closure-Notiz (nach `done/`)

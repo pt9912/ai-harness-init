@@ -7,7 +7,7 @@
 | **Rolle** | Reviewer (Modul 10), `.harness/skills/reviewer.md` v1.4.0 |
 | **Datum** | 2026-07-31 |
 | **Diff/Commit-Range** | `c53b845..HEAD` = `a4199c9` · `ae33b40` · `0738bc3` · `3533628` (+230/−80, drei Dateien, rein dokumentarisch) |
-| **Slice-Plan** | [`docs/plan/planning/in-progress/slice-060-rollen-achse.md`](../plan/planning/in-progress/slice-060-rollen-achse.md) DoD (1) letzte Zeile + DoD (3) |
+| **Slice-Plan** | [`docs/plan/planning/done/slice-060-rollen-achse.md`](../plan/planning/done/slice-060-rollen-achse.md) DoD (1) letzte Zeile + DoD (3) |
 | **`LH-*`** | [`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (Satz *„Der Tool-Build läuft reproduzierbar im gepinnten Image"*) — vom Diff nicht berührt |
 | **Aktive ADRs** | [`ADR-0011`](../plan/adr/0011-telemetrie-erfassung-policy.md) (**Accepted**) Festlegung 1 Punkt 4/5, §Re-Evaluierungs-Trigger |
 | **Hard Rules** | [`AGENTS.md`](../../AGENTS.md) §3.4 (ADR immutable), §3.6 (keine Zusage ohne rot gesehenes Gegenbeispiel) |
