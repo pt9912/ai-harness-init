@@ -40,8 +40,9 @@ Der Unterschied ist keine Wortklauberei: der Guard erzwingt den Vordergrund für
 
 **Die zweite Hälfte ist die Messgröße.** Modul 15 §Token-Attributions-Regeln unterstellt, der
 Sammelposten sei die **Ausnahme**; in diesem Repo ist er die **Regel**. Ob die Konvention gelebt
-wird, ist am Sammelposten-Anteil ablesbar — und nur dort, denn eine mechanische Durchsetzung gibt
-es nicht.
+wird, ist am Sammelposten-Anteil **zum Teil** ablesbar: wer delegiert, aber nicht unter dem
+Rollen-Typ, hebt ihn — wer den Schritt selbst im Haupt-Kontext tut, erzeugt gar keinen Span. Eine
+mechanische Durchsetzung gibt es nicht.
 
 ## 2. Definition of Done
 
@@ -50,7 +51,8 @@ es nicht.
   und ihre Grenze steht daneben.** Wortlaut-Kern: Arbeit, die einer Harness-Rolle zugeordnet ist,
   läuft **unter dem Rollen-Typ**; der Haupt-Kontext orchestriert und ist der Sammelposten.
   **Die Grenze gehört in denselben Absatz:** eine mechanische Durchsetzung ist **nicht möglich**,
-  weil niemand maschinell entscheiden kann, ob eine Haupt-Kontext-Handlung „Planner-Arbeit" war.
+  weil ein Wächter über eine **Aufrufform** entscheidet, die ihm vor dem Start vorliegt — und
+  hier unterbleibt gerade der Aufruf, den er sähe.
   Ein Guard wie der aus slice-060 kann hier also nicht entstehen — und das ist zu **sagen**, nicht
   durch Schweigen offenzulassen; in der Sensor-Spalte steht dann *kein Wächter* mit diesem Grund.
   **Der bindende Text trägt keine Entscheidungs- und keine Planungs-Kennung** — auch keine nackte
@@ -62,7 +64,8 @@ es nicht.
   1. **Die Größe steht im Bericht, nicht als bestandene Schwelle.** Eine Kennzahl mit Grenze
      erzeugt den Anreiz, Arbeit zu verlagern, damit die Zahl stimmt — statt weil die
      Rollen-Trennung trägt.
-  2. **„Span mit Zählern" ist die falsche Definition von gedeckt.** **Gemessen** ist, dass die
+  2. **„Span mit irgendeinem erfassten Wert" ist die falsche Definition von gedeckt.**
+     **Gemessen** ist, dass die
      Antwort eines **Hintergrund**-Laufs `resolvedModel` trägt und **keinen** der acht übrigen
      Werte — keine Zähler, kein `agentType`. Ob daraus im Span ein `model_version` wird, hängt
      an der strukturellen Schranke aus
@@ -80,7 +83,8 @@ es nicht.
   welchen der übrigen Werte sie je Abweichung führt. **Ihre Belegart ist zweigeteilt, und das
   gehört in die Festlegung:** der Hintergrund-Teil (Abweichung 5) trägt **deklariert** samt
   Auflösungs-Trigger, der Haupt-Kontext das **ADR-Verdikt** *permanent* aus
-  [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) — dort fällt der Trigger nach
+  [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) (**Proposed** — die Zelle trägt
+  den Wert erst mit der Annahme) — dort fällt der Trigger nach
   Modul 7 §Werkzeug-Wahl weg. Wer die Zelle mit einem Trigger für **beides** ausfüllt, schreibt
   einen hin, den es nicht mehr gibt. Die Zelle selbst entsteht bei der Wellen-Closure in
   `welle-09-results.md`; sie hier abhaken zu wollen wäre eine Zusage über ein Artefakt, das es
@@ -89,38 +93,12 @@ es nicht.
 - [ ] `make gates` grün.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
-**Was aus diesem Slice ENTFALLEN ist (2026-07-31):** der frühere DoD (2) — die
-Nicht-Erreichbarkeit der Haupt-Kontext-Token als erklärte Abweichung mit Auflösungs-Trigger — ist
-von [slice-060](../done/slice-060-rollen-achse.md) DoD (3) geliefert worden und steht als
-Abweichung 6 in
-[`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5:
-dieselbe Reihenfolge (Prüfung → Abweichung → Einordnung) und dieselbe Sache. Ihn hier stehen zu
-lassen hätte eine zweite Wahrheit über denselben Sachverhalt erzeugt. **Die Einordnung ist
-inzwischen eine andere als die des entfallenen DoD-Punktes:** wo er einen Auflösungs-Trigger
-vorsah, trägt Abweichung 6 das Verdikt *permanent* — der Modul-7-Trichter hat sie in
-[`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) übergeführt.
-**Die Prüfschritte sind nicht dieselben, und das gehört genannt, damit niemand die Gleichheit
-statt der Sache prüft:** der frühere DoD (2) führte (a) Zähler nur in `tool_response`,
-(b) Transkripte als Quelle ausgeschlossen, (c) `SubagentStart` trägt keine Token. Abweichung 6
-führt (a) unverändert als ihren ersten Schritt, fasst (b) und (c) zum dritten („eine zweite
-Quelle?") zusammen und schiebt als **zweiten** einen neuen dazwischen: ob die Token aus den
-bereits erfassten Feldern (`result_bytes`, `duration_ms`) **ableitbar** wären — mit der Antwort
-nein und dem Verweis auf
-[`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 1 Punkt 4. Drei gegen
-drei ist damit ein Zufall der Zählung: geliefert wurde ein Schritt mehr, und zwei sind
-verschmolzen.
-**Es gibt keinen Auflösungs-Trigger mehr, an dem ein Slice hängen könnte** — auch nicht an
-diesem. Abweichung 6 sagt das inzwischen selbst und begründet es aus Modul 7: die Bedingung ist
-nicht durch Aufwand herbeizuführen, also ist die Ausnahme permanent und gehört in eine ADR statt
-in einen Folge-Slice. Wer hier einen Träger sucht, findet keinen — und soll auch keinen aus
-dieser Notiz ableiten.
-
 ## 3. Plan (vor Code)
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | die Konvention aus DoD (1) und die Festlegungen aus DoD (2) in §5, unmittelbar an der Start-Konvention, deren Abgrenzung die Lücke wörtlich benennt. Beides trifft die [Aufnahme-Regel](../../../../spec/spezifikation.md#aufnahme-regel): messbar an der Berichtsgröße, ohne Vertragsänderung fortschreibbar, mit jeder weiteren Rolle wachsend. **Kein Adaptions-Eintrag:** die Umkehrung *Sammelposten = Regel statt Ausnahme* steht dort bereits bindend (Abweichung 3 und 6); ein zweiter Ort driftet |
-| [`slice-066`](../open/slice-066-telemetrie-auswertung.md) | update | die Definition des Sammelposten-Anteils an den **Zählern** statt an „irgendeinem Wert"; die Lesart als Konventions-Messgröße |
+| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | die Konvention aus DoD (1) und die Festlegungen aus DoD (2) in §5, unmittelbar an der Start-Konvention, deren Abgrenzung die Lücke wörtlich benennt. Beides trifft die [Aufnahme-Regel](../../../../spec/spezifikation.md#aufnahme-regel): gemessen wird gegen die **Festlegung** — welcher Lauf in den Sammelposten fällt, und was die Berichtsgröße zeigt und was nicht —, nicht an der Größe allein, die nur die delegierte Hälfte trägt; ohne Vertragsänderung fortschreibbar; die nächste Festlegung zur Größe ist ein weiterer Punkt ihrer Liste und verdrängt keinen anderen Text. **Kein Adaptions-Eintrag:** die Umkehrung *Sammelposten = Regel statt Ausnahme* steht dort bereits bindend (Abweichung 3 und 6); ein zweiter Ort driftet |
+| [`slice-066`](../open/slice-066-telemetrie-auswertung.md) | keine Änderung | die Definition des Sammelposten-Anteils hängt dort in DoD (1) bereits an den **Zählern** (*„wie viele `Agent`-Spans überhaupt Zähler trugen"*), und die Lesart als Konventions-Messgröße steht im Stratum; sie ein zweites Mal in eine fremde DoD zu schreiben erzeugte den zweiten Ort, den die Zeile darüber vermeidet |
 | [welle-09](../welle-09-modul-15-konformitaet.md) | update | DoD (3) legt die Belegart der Zelle *Token-Attribution × Repo* fest. Der Welle-Plan führt dieselbe Aussage an zwei Stellen — in der Wert-Tabelle seines Closure-Triggers und in der Slice-Zeile zu diesem Slice. Kommt die Festlegung anders heraus als dort beschrieben, ziehen beide Stellen nach; sonst steht dieselbe Aussage zweimal verschieden im Repo |
 
 **Kein Code, kein neuer Wächter.** Das ist beabsichtigt; der Grund steht in §6.
@@ -163,7 +141,19 @@ DoD vollständig; Review konform (Modul 10); Verifikation bestätigt (Modul 11);
 - **Die Berichtsgröße hängt an slice-066.** Wird dort die Definition anders geschnitten, hängt
   DoD (2) in der Luft. Deshalb die Rückführungskante in §4.
 - **Nicht in diesem Slice:** Frage C (Rollen-Ableitung für den Haupt-Kontext) und die emittierte
-  Ebene — ob die Konvention ins Ziel-Repo mitgeht, entscheidet slice-062.
+  Ebene — ob die Konvention ins Ziel-Repo mitgeht, entscheidet slice-062. Ebenso die
+  **Nicht-Erreichbarkeit der Haupt-Kontext-Token**: sie steht als Abweichung 6 in
+  [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
+  und nennt dort **keinen Auflösungs-Trigger**. Wer an ihr einen Träger für einen Folge-Slice
+  sucht, findet keinen — auch nicht in diesem Plan.
+- **Die Belegart der Zelle hat heute nur einen halben Träger, und das ist Wellen-Ebene.** Das
+  *ADR-Verdikt* für den Haupt-Kontext bindet erst mit der Annahme von
+  [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md); und *deklariert* verlangt die
+  Wert-Tabelle von [welle-09](../welle-09-modul-15-konformitaet.md) als `MR-<NNN>`, während die
+  Hintergrund-Abweichung seit [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) als
+  erklärte Abweichung in Rang 2 steht — für diese Form führt die Tabelle keinen Wert. Beides
+  gehört in den Welle-Plan und vor das Füllen der Zelle; die Festlegung dieses Slice — kein
+  *Sensor*, und welcher Wert je Abweichung — hängt nicht daran.
 
 ## 7. Closure-Notiz (nach `done/`)
 
