@@ -232,10 +232,10 @@ und keine davon die, die die Zahl misst. Hier war die Größe **Token im Sammelp
 *„und von ihr nur, was Zähler trägt"* hat kein Gegenbeispiel, weil das die Definition der Zahl
 ist und kein Korrelat.
 
-**Warum die Nähe des Kriteriums nicht genügt.** *„Gedeckt heißt Span mit Zählern"* stand als
-Punkt 2 derselben Festlegung zwei Zeilen unter dem Satz, den es korrigiert — und der Satz blieb
-falsch. Ein Kriterium, das **neben** einer Zusage steht, wird nicht automatisch **auf** sie
-angewandt.
+**Warum die Nähe des Kriteriums nicht genügt.** *„Gedeckt heißt Span mit Zählern"* steht als
+Punkt 2 derselben Festlegung, zwei Zeilen unter dem Satz, für den es gilt. Diese Nachbarschaft
+trägt nichts: ein Kriterium, das **neben** einer Zusage steht, wird nicht automatisch **auf**
+sie angewandt — es muss im Prädikat der Zusage selbst stehen.
 
 **Anwendung, prüfbar am Text:** wer schreibt *„sichtbar ist …"*, *„gedeckt ist …"*,
 *„erfasst ist …"*, nennt die Größe, aus der die Zahl entsteht, und prüft, ob das Prädikat in
@@ -249,7 +249,7 @@ es bereits **beobachtet** im Bestand.
 |---|---|
 | Die Rollen-Liste steht zweimal und ist nicht gekoppelt: der Guard leitet sie aus `.claude/agents/` **ab**, `roleFromAgentType` in `internal/span/emit.go` führt sie als **hart notierte** Liste von sechs Namen (kein `.go` liest das Verzeichnis — gemessen: 0 Treffer). Eine siebte Rollen-Datei erzwänge den Vordergrund, der Lauf trüge Zähler, `spawned_role` bliebe leer — er hübe den Sammelposten-Anteil, **ohne ein Bruch zu sein**, und der Kommentar am Ort (*„wird ein Subagent unter dem Namen seiner Harness-Rolle gestartet, IST der Agenten-Typ die Rolle"*) wäre für ihn falsch. Heute 0 Instanzen: `ls -1 .claude/agents/` führt genau die sechs kanonischen Namen | kein Schnitt gelegt — Planner-Arbeit. Der Trigger ist beobachtbar und braucht kein Urteil: die **siebte** Datei in `.claude/agents/`. Die Zusage ist eine neue und braucht ihren eigenen rot gesehenen Zahn ([`AGENTS.md`](../../../../AGENTS.md) §3.6) |
 | Ein gehobener Sammelposten-Anteil belegt keinen Bruch — die Zahl trägt beide Fälle. Wer sie druckt, sagt das dazu | [slice-066](../open/slice-066-telemetrie-auswertung.md) DoD (1), wo die Größe entsteht |
-| Zwei Textmängel in Rang 2: die Historie-Zeile zählt den Inhalt von §5 auf und nennt die zwei hier hinzugekommenen Festlegungen nicht; im bindenden Absatz zeigen *er* und *seiner* auf ein Substantiv (*der Bruch*), das im Dokument nicht mehr steht | die nächste Änderung an §5 — geplant ist [slice-066](../open/slice-066-telemetrie-auswertung.md) DoD (3). Keine Wirkung auf eine DoD, kein Gate greift |
+| Zwei Textmängel in Rang 2: die Historie-Zeile zählt den Inhalt von §5 auf, ohne die DASS-Regel und die Berichtsgröße zu nennen; im bindenden Absatz zeigen *er* und *seiner* auf ein Substantiv (*der Bruch*), das im Dokument nicht steht | die nächste Änderung an §5 — geplant ist [slice-066](../open/slice-066-telemetrie-auswertung.md) DoD (3). Keine Wirkung auf eine DoD, kein Gate greift |
 | [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) steht auf *Proposed*; ohne Verdikt ist die Matrix-Zelle nicht füllbar | Architect — Vorbedingung der welle-09-Closure, nicht dieses Slice |
 
 **Gates.** `make gates` **Exit 0**: `baseline-verify: v3.5.2 OK — 42 Dateien`,
