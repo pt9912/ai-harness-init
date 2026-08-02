@@ -39,9 +39,8 @@ Folgepflichten 1 und 2 sind teil-revidiert),
 gerade stehen bleibt),
 [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
 (die Form, die der aufgehobene Eintrag danach hat: Nummer, Überschrift, `Datum`, Zeiger-Zeile),
-[`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) (*„keine inhaltlichen
-Adaptionen ggü. Baseline-Default"* — die Aussage, unter der die Disziplin-Regel der vendored
-Vorlage hier bindet),
+[`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) (die Aussage, unter der
+die Disziplin-Regel der vendored Vorlage hier bindet),
 [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
 (Kennung → klickbarer Anker),
 [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
@@ -166,11 +165,9 @@ ihr zu ändern — dort gilt [`AGENTS.md`](../../../../AGENTS.md) §3.4 unberüh
 **Der Adaptions-Block hat keinen Index** — auf `## Adaptions-Block` folgt unmittelbar der erste
 Eintrag —, und er braucht keinen: die Zeiger-Zeile steht im Kopf von
 [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) selbst,
-also dort, wo der Leser ankommt. Der **ADR-Index** (`docs/plan/adr/README.md`, Statusspalte mit
-Teil-Revisions-Annotation an drei Einträgen) ist die Antwort auf ein anderes Problem:
-[`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) und
-[`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) sind zwei Dateien, hier stehen
-Aufheber und Aufgehobenes in derselben.
+also dort, wo der Leser ankommt. Der **ADR-Index** (`docs/plan/adr/README.md`) ist die Antwort auf
+ein anderes Problem: dort sind Aufheber und Aufgehobenes zwei Dateien, hier stehen beide in
+derselben.
 
 **Der Preis, benannt statt geschlossen:** wer den Rumpf lesen will, braucht die Historie, und kein
 Sensor sagt ihm, dass es ihn gab — das sagt der Kopf und sonst nichts. Erspart bleibt dafür der
@@ -180,24 +177,38 @@ dem Vorlagen-Kommentar trägt
 [`ADR-0014`](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) — sie liegt vor, und dieser
 Slice ist ihr **Vollzug**, nicht ihr Anlass.
 
-### Zwei Fehlzuordnungen im heutigen Text — verschiedener Art, darum verschieden behandelt
+### Vier Mängel im heutigen Text — zweierlei Art, darum verschieden behandelt
 
-**(a) Die Überschrift des Abweichungs-Blocks nennt einen Regelblock für Posten aus dreien.** Das
-*Pflicht-Minimum* des Moduls hat vier Posten: Slice-ID · Agent-Rolle · Cache-Status ·
-`requirement.id`. Am Rumpf gelesen treffen **1** (Cache-Status) und **3** (`agent_role`) es —
-zwei von vier. **2** (PR-Nummer) kommt aus den *Mindestfeldern eines Tool-Call-Spans*
-(*„Korrelations-IDs zu Slice/PR/Agent-Rolle"*), einer anderen Liste desselben Moduls; **5**
-(Hintergrund-Lauf ohne Verbrauchs-Achse) und **6** (Haupt-Kontext ohne Zahl) aus den
-*Token-Attributions-Regeln*. Drei Regelblöcke unter der Überschrift eines einzigen. Das ist eine
-**Korrektur am Wortlaut** und fährt **nicht** im Umzugs-Diff mit (§3).
+**(a) Korrektur — die Überschrift des Abweichungs-Blocks nennt einen Regelblock für Posten aus
+dreien.** Das *Pflicht-Minimum* des Moduls hat vier Posten: Slice-ID · Agent-Rolle ·
+Cache-Status · `requirement.id`. Am Rumpf gelesen treffen **1** (Cache-Status) und **3**
+(`agent_role`) es — zwei von vier. **2** (PR-Nummer) kommt aus den *Mindestfeldern eines
+Tool-Call-Spans* (*„Korrelations-IDs zu Slice/PR/Agent-Rolle"*), einer anderen Liste desselben
+Moduls; **5** (Hintergrund-Lauf ohne Verbrauchs-Achse) und **6** (Haupt-Kontext ohne Zahl) aus
+den *Token-Attributions-Regeln*. Drei Regelblöcke unter der Überschrift eines einzigen.
 
-**(b) Abweichung 4 weicht von gar keiner Modul-Regel ab.** *„Altbestände werden beim ersten Span
-einer Sitzung NICHT entfernt"* — ihr erster Satz nennt
+**(b) Zielort-Frage — Abweichung 4 weicht von gar keiner Modul-Regel ab.** *„Altbestände werden
+beim ersten Span einer Sitzung NICHT entfernt"* — ihr erster Satz nennt
 [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 3 als die Quelle, von der
-sie abweicht: Aufbewahrung statt Schema, und ein anderes Dokument. Das ist **keine Korrektur**,
-sondern eine **Zielort-Frage**, und
+sie abweicht: Aufbewahrung statt Schema, und ein anderes Dokument.
 [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) legt sie ausdrücklich in dieses
-Inventar. Sie fährt mit, weil sie *der Umzug* ist.
+Inventar; sie fährt mit, weil sie *der Umzug* ist.
+
+**(c) Korrektur — die Zahl der `settings.json`-Prüfstellen mischt zwei Bezugsgrößen.** Über den im
+Satz selbst deklarierten Umfang (`test/**`, `Makefile`, `harness/tools/*.sh`, Go-Tests) sind es
+**fünf** Prüfstellen in drei Dateien mit **zwei** Prüfungen des bloßen Vorhandenseins, nicht *„vier
+Artefakte"* mit einer: die Existenz-Schleife in `harness/tools/smoke.sh` fehlt, während der
+`PreToolUse`-Block derselben Datei als Artefakt mitzählt. Vier gilt für benannte Einheiten, fünf
+für eigenständige Zusicherungen über die Datei; die Zählregel geht mit an den Zielort.
+
+**(d) Zielort-Frage — die zugesagte Sonde auf die Schlüsselnamen von `tool_input` entscheidet
+nichts.** Sie trennt die zwei offenen Lesarten in keinem Zweig — der Hook lief und wurde
+übergangen, oder er feuerte nicht —, und der Guard scheidet aus, weil seine Fassung vor dem
+fail-closed-Zweig dieselbe Payload mit demselben Grund ablehnt; was sie trennt, ist der
+protokollierende Hook aus [slice-074](../open/slice-074-agent-vor-aufruf-protokoll.md). Ein
+Auflösungs-Trigger ist Prozess-Zustand und gehört in einen Plan, der ihn bereits trägt — am
+Eintrag **ersatzlos**; richtiggestellt stünde er am Zielort falsch, weil DoD (1) dort keine
+Planungs-Kennung duldet.
 
 ### Wo die Sensor-Bindung lebt
 
@@ -280,7 +291,9 @@ erste Nachmessung in §3. Der Umzug ändert daran nichts: Quell- und Zielpfad li
 
 1. **Inventar** — jeder Posten mit Art und Zielort, bevor eine Zeile bewegt wird. Sonst
    entscheidet die Reihenfolge des Lesens, was überlebt.
-2. **Umzug** — der Bestand geht **wörtlich** an seinen Zielort. Fällt dabei eine Aussage als
+2. **Umzug** — der Bestand geht **wörtlich** an seinen Zielort, die falschen Wortlaute (a) und (c)
+   eingeschlossen: sie wandern falsch mit und werden erst in Schritt 5 aufgelöst, damit im Diff
+   eine Korrektur von einer Entfernung unterscheidbar bleibt. Fällt eine weitere Aussage als
    falsch auf, wird sie **benannt**, nicht mitkorrigiert.
 3. **Aufhebung** — der neue Eintrag und die Zeiger-Zeile im Kopf. Erst jetzt, weil beide die
    Zielorte nennen müssen.
@@ -288,9 +301,10 @@ erste Nachmessung in §3. Der Umzug ändert daran nichts: Quell- und Zielpfad li
    ([`ADR-0014`](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) Festlegung 2c), weil das
    Intervall dazwischen genau der Zustand ist, in dem die Feldtabelle an zwei Orten steht und kein
    Sensor den bindenden nennt.
-5. **Korrektur** — Fehlzuordnung (a) aus §1: je Abweichung ihr wirklicher Regelblock. Eigener
-   Commit mit eigener Message; sonst ist im Ergebnis eine Korrektur nicht von einer Entfernung zu
-   unterscheiden.
+5. **Korrektur** — die zwei falschen Wortlaute aus §1: je Abweichung ihr wirklicher Regelblock
+   (a) und die Zählgröße samt der Regel, unter der sie gilt (c). Eigener Commit mit eigener
+   Message; sonst ist im Ergebnis eine Korrektur nicht von einer Entfernung zu unterscheiden.
+   **(d) gehört nicht hierher:** eine Zusage, die nichts misst, wird nicht richtiggestellt.
 
 **Was die Umsetzung zuerst nachmisst** (Modul 9 §4), weil jede Zahl aus §1 mit dem nächsten Commit
 altert:
@@ -356,11 +370,9 @@ Closure-Notiz mit Steering-Loop-Eintrag.
   lässt `make gates` grün. Danach trägt den Rumpf die Historie: wer ihn ohne sie braucht, hat ihn
   nicht, und genau das ist der erste Re-Evaluierungs-Trigger jener Entscheidung.
 - **Die Größe ist nach dem Umzug eine eigene Frage mit eigener Begründung.** Eine Schranke über
-  Adaptions-Einträge misst Größe, nicht Zuständigkeit; sie hier als Mittel des Umzugs zu benutzen
-  wäre genau die Option, die
-  [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) verworfen hat. Der Messwert für einen
-  späteren Schnitt steht in §1 (Maximum der übrigen Einträge 7.991 B); die Begründung müsste er
-  selbst liefern.
+  Adaptions-Einträge misst Größe, nicht Zuständigkeit — als Mittel des Umzugs wäre sie die von
+  [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) verworfene Option. Der Messwert für
+  einen späteren Schnitt steht in §1 (Maximum der übrigen Einträge 7.991 B), die Begründung nicht.
 - **Zwei Abweichungen sind durch den Modul-7-Trichter nicht gelaufen.** Der Eintrag sagt es selbst:
   2 und 4 tragen weder Auflösungs-Trigger noch Verdikt. Sie zu führen ist eine **inhaltliche**
   Entscheidung; dieser Slice ist ein **Umbau**. Der offene Zustand wandert aus dem Eintrag hierher
