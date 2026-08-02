@@ -16,9 +16,9 @@ inhaltliche Adaption),
 fail-closed Default am Werkzeug-**Namen**; dieser Slice nimmt `Agent` in die **delegierte** Liste
 in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) auf
 und lässt die ADR unberührt — **Architect-Verdikt vom 2026-07-30**, Artefakt
-`docs/reviews/2026-07-30-slice-060-dod2-adr-0011-architect.md`. Eine frühere Fassung schrieb hier
-„Festlegung 2 … wird erweitert" und formulierte damit eine ADR-Änderung, wo eine
-Adaptions-Änderung gemeint ist),
+`docs/reviews/2026-07-30-slice-060-dod2-adr-0011-architect.md`. Erweitert wird die **Adaption**,
+nicht die Festlegung: wer es umgekehrt formuliert, sagt eine ADR-Änderung zu, die dieser Slice
+nicht vornimmt),
 [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) — und zwar der
 Satz *„Der **Tool-Build** läuft reproduzierbar im gepinnten Image … kein Host-`go`"*,
 nicht der Satz über die Ziel-Repos. **Die Kennung deckt beide Ebenen**, und der geschlossene
@@ -55,7 +55,7 @@ Token-Bilanz eine Summe, keine Rechnung.
 
 ## 2. Definition of Done
 
-- [ ] **(1) Rollen-benannte Agenten-Typen, im VORDERGRUND gestartet — und die Rolle steht im
+- [x] **(1) Rollen-benannte Agenten-Typen, im VORDERGRUND gestartet — und die Rolle steht im
   Span.** Je Harness-Rolle eine Datei `.claude/agents/<name>.md` mit Frontmatter (`name`,
   `description`, `tools`, `model`; der Body wird zum Systemprompt). **Zwei Bedingungen, und sie
   ruhen auf verschiedenen Belegen — das gehört auseinandergehalten:**
@@ -128,7 +128,7 @@ Token-Bilanz eine Summe, keine Rechnung.
   Beide Bedingungen gehören als Konvention in
   [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung),
   nicht in ein Gedächtnis. **Belegt an einem echten Lauf**, nicht am Test.
-- [ ] **(2) `Agent` wird ein namentlich gelistetes Werkzeug — mit einer POSITIV-Liste.**
+- [x] **(2) `Agent` wird ein namentlich gelistetes Werkzeug — mit einer POSITIV-Liste.**
   Erfasst wird aus `tool_response` **ausschließlich, was hier steht**: die vier Zähler aus
   `usage`, `totalTokens`, `totalDurationMs`, `totalToolUseCount`, dazu die *tatsächlich
   gelaufene* Rolle (aus `agentType` — nicht `tool_input.subagent_type`, das nur die Anforderung
@@ -176,13 +176,13 @@ Token-Bilanz eine Summe, keine Rechnung.
   **nicht** für 127; die Form-Vorgabe selbst (Auswahl = benannte Liste an einer Stelle) ist
   erfüllt. Die ausführliche Begründung steht im Fall-Kopf, nicht hier — dies ist der Zeiger
   darauf.
-- [ ] **(3) Was die Erfassung nicht abdeckt, steht als erklärte Abweichung.** **Gemessen:**
+- [x] **(3) Was die Erfassung nicht abdeckt, steht als erklärte Abweichung.** **Gemessen:**
   Hintergrund-Läufe liefern weder Zähler noch `agentType`; und der Haupt-Kontext wird von keinem
   `Agent`-Aufruf umschlossen. Beides gehört benannt, nicht weggelassen
   ([`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 1 Punkt 5).
-- [ ] `make gates` grün, `make mutate` ohne Befund.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] `make gates` grün, `make mutate` ohne Befund.
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -267,11 +267,11 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
 - **Ohne den Guard aus DoD (1) fehlen die Zähler lautlos.** Ein Hintergrund-Start erzeugt einen
   Span, nur ohne Telemetrie; die Bilanz rechnet dann über weniger Läufen, ohne es zu melden.
   Verschärfend: der Hintergrund ist der **Standard**, die Vordergrund-Bedingung also eine aktive
-  Abweichung, die bei jedem Aufruf neu herzustellen ist. **Eine frühere Fassung dieses Punktes
-  behauptete, die Bedingung habe *keinen* Sensor** — eine Vollständigkeitsaussage, für die ich
-  nie nachgesehen habe. Alle drei Teile lagen im Repo bereit: ein laufender `PreToolUse`-Guard,
-  Filterung feiner als der Tool-Name, und `run_in_background` in `tool_input`. Der Sensor steht
-  jetzt in DoD (1).
+  Abweichung, die bei jedem Aufruf neu herzustellen ist. **Ihr Sensor steht in DoD (1)**, und
+  seine drei Teile lagen im Repo bereit: ein laufender `PreToolUse`-Guard, eine Filterung feiner
+  als der Tool-Name, und `run_in_background` in `tool_input`. Wer die Bedingung für sensorlos
+  hält, hat nicht nachgesehen — die Aussage „hat keinen Sensor" ist eine Vollständigkeitsaussage
+  und verlangt denselben Lauf wie ihr Gegenteil.
 - **Bedingung 1 (@-Erwähnung) bleibt ohne Sensor — geliefert ist eine erklärte
   Nicht-Durchsetzbarkeit, nicht eine Durchsetzung.** Das ist eine **Substitution**, und sie
   gehört so protokolliert wie die Abweichung in DoD (2), sonst liest sich DoD (1) als „beide
@@ -284,10 +284,15 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
   „strukturell unmöglich" —
   [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
   sagt es ebenso.
-- **Fünf fail-closed-Zweige, drei mit Sensor — und zwei Pfade, die fail-OPEN sind.** Zähne
-  haben *fehlender Typ* und *fehlender Schalter*; der *Parse-Zweifel* hat einen bats-Fall, aber
-  keinen Dauer-Sensor, und **awk und Extraktor sind unbewacht** — kein Fall in `test/` erreicht
-  sie. Fail-**open** sind zwei Pfade, die gar kein Zweig sind: fehlt `cat` oder `sed`, endet der
+- **Fünf fail-closed-Zweige, zwei mit Dauer-Sensor — und zwei Pfade, die fail-OPEN sind.** Das
+  Kriterium steht hier, weil das Wort *unbewacht* sonst zwei Mengen bezeichnet: nach
+  [`AGENTS.md`](../../../../AGENTS.md) §3.6 (*„wer keinen Fall in `test/mutations/` hat, ist
+  unbewacht"*) sind **drei** der fünf unbewacht — *awk*, *Extraktor* und der *Parse-Zweifel*.
+  Der Parse-Zweifel hat einen bats-Fall, aber keinen Dauer-Sensor; awk und Extraktor erreicht
+  **kein** Fall in `test/`. Zähne im Sinne des Dauer-Sensors haben allein *fehlender Typ*
+  (`test/mutations/139-agentguard-typ-failopen.sh`) und *fehlender Schalter*
+  (`test/mutations/119-agentguard-schalter-failopen.sh`).
+  Fail-**open** sind zwei Pfade, die gar kein Zweig sind: fehlt `cat` oder `sed`, endet der
   Guard mit Exit 127 **ohne Ausgabe**; liefert der Extraktor `rc=0` mit leerem oder falschem
   Inhalt, antwortet er PASS. Beide Male läuft der Aufruf, weil jeder Exit außer 0 und 2
   nicht-blockierend ist. **DoD (1) sagt keinen dieser Zweige zu** — der Slice trägt die Grenze,
@@ -353,7 +358,122 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Was gilt.** Die Rollen-Achse trägt Werte. Über den lokalen Span-Bestand ausgezählt
+(`grep -o '"agent_role":"[a-z-]*"' | sort | uniq -c`): **3.151 von 4.069** Spans führen eine
+Rolle (`implementer` 976 · `planner` 819 · `reviewer` 681 · `architect` 449 · `verifier` 226),
+918 sind leer — Haupt-Kontext und `general-purpose`, beide erklärt. Von **69** `Agent`-Spans
+tragen **47** ein `spawned_role`, und als Wert kommt ausschließlich einer der kanonischen
+Rollennamen vor; `general-purpose` erscheint dort nie. Der Zustand aus §3 Zeile 7 — alle Ströme
+mit leerer Rolle — ist damit abgelöst.
+
+Durchgesetzt wird die Aufrufform, nicht der Ausgang: der `PreToolUse`-Guard verweigert einen
+Rollen-Typ ohne `run_in_background: false`, und er leitet die Rollen-Liste aus
+`.claude/agents/` ab, statt sie zu kopieren. Erfasst wird aus der Antwort ausschließlich, was
+`responseKeys()` nennt — neun Blatt-Werte aus sechs Schlüsseln, mit einem Zahn auf die **Grenze**
+selbst und nicht nur auf vier Namen. Was die Erfassung nicht abdeckt, steht als Abweichung 5 und 6
+in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung),
+je mit den Prüfschritten **vor** der Abweichung.
+
+Gates: `make gates` Exit 0 (d-check · 150 bats · sieben Go-Pakete · comment-claims 38/0 ·
+span-check); `make mutate` **135 ok, 0 Befund(e)** über die CI auf frischem Runner.
+
+**Was der Slice nicht deckt, steht in §6 und ist mit dieser Closure eingefroren.** Der Kern in
+einem Satz: von den fünf fail-closed-Zweigen des Guards haben nach
+[`AGENTS.md`](../../../../AGENTS.md) §3.6 **drei** keinen Dauer-Sensor, zwei Pfade sind gar kein
+Zweig und antworten fail-**open**, und die Werkzeug-Achse der Erfassung sitzt nur in `Parse`,
+nicht in `Build`. Keiner dieser Punkte ist in einer DoD zugesagt; jeder ist eine **neue** Zusage
+und braucht darum seinen eigenen rot gesehenen Zahn. Der Schnitt dafür ist **nicht gelegt** —
+gemessen an `grep -rn 'fail-open' docs/plan/planning/{open,next}/`: zwei Treffer, beide zu
+anderen Gegenständen (Prüfbereichs-Form, ADR-Listenpflege).
+
+**Zwei Sachmängel bleiben stehen, mit Träger und mit Preis.** In
+[`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) sind
+zwei Aussagen falsch bzw. leer:
+
+| Mangel | Befund | Träger |
+|---|---|---|
+| Zahl der `settings.json`-Prüfstellen | über den Umfang, den der Satz selbst deklariert (`test/**` · `Makefile` · `harness/tools/*.sh` · Go-Tests), sind es **fünf** Prüfstellen in drei Dateien mit **zwei** Prüfungen des bloßen Vorhandenseins — der Text sagt *vier Artefakte* mit *einer*. Die zweite Existenz-Prüfung ist die `for rel in …`-Schleife in `harness/tools/smoke.sh`, deren anderer Block als Artefakt mitzählt | [slice-076](../next/slice-076-mr-018-umzug-technik-stratum.md) §1, Posten (c) |
+| die zugesagte Werte-Sonde auf die Schlüsselnamen von `tool_input` | sie entscheidet nichts: in beiden offenen Lesarten — der Hook lief und wurde übergangen, oder er feuerte nie — zeigt sie dasselbe | [slice-076](../next/slice-076-mr-018-umzug-technik-stratum.md) §1, Posten (d) — dort **ersatzlos**, weil der trennende Sensor [slice-074](../open/slice-074-agent-vor-aufruf-protokoll.md) ist |
+
+**Der Preis, ungeschönt.** Beide Mängel waren korrigiert und sind **zurückgenommen**: die
+adoptierte Vorlagen-Disziplin lässt an einem akzeptierten Eintrag nur *neue Einträge* oder eine
+*explizite Aufhebung via neuen MR* zu, und eine gezielte Korrektur im Rumpf ist keines von
+beidem. Der Eintrag darf aus demselben Grund auch **nicht** auf seinen Träger zeigen — gemessen
+über den Eintrags-Block: `grep -c 'slice-07[0-9]'` → **0**, und das bleibt so. Bis zum Vollzug
+von [slice-076](../next/slice-076-mr-018-umzug-technik-stratum.md) steht damit im
+Pflicht-Lesepfad (`CLAUDE.md`, Punkt 3 der Vor-jeder-Änderung-Leseliste) eine gemessen falsche
+Zahl, und am Ort des Lesens steht nichts, das sie einschränkt.
+
+**Diese Notiz dokumentiert das, sie behebt es nicht** — wer
+[`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
+liest, kommt hier nicht vorbei. Der einzige Weg, der die Sache am Ort des Lesens erreichte und
+die Disziplin wahrte, wäre ein **neuer** Adaptions-Eintrag, der die Zahl richtigstellt; dieser
+Slice geht ihn bewusst nicht, weil er einen Eintrag in einen Block schriebe, den
+[`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) und
+[`ADR-0014`](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) gerade auflösen. Die
+Behebung ist der Umzug, nicht ein weiterer Satz.
+
+**Steering-Loop-Einträge.**
+
+1. **Geschärfte Regel — eine Zusage reicht so weit wie der Prüfbereich, über den sie gemessen
+   wurde, und der Prüfbereich gehört dorthin, wo die Zusage steht.** Dreimal in diesem Slice war
+   eine Aussage breiter als ihr Bereich, und jedes Mal fiel es erst durch eine **gefahrene**
+   Gegenprobe auf, nie durch Lesen: (a) *„N Datei(en) geprueft, 0 Befund(e)"* deckte den Baum
+   nicht — die geprüfte Datei war untrackt und lag außerhalb des Index-Prüfbereichs, während der
+   Gate-Stempel sie einschloss (Gegenprobe: derselbe Lauf nach `git add`, 37 → 38);
+   (b) der Guard-Kopf sagte *„Zähne haben die letzten drei"* — Gegenprobe: jeden Fall auf eine
+   Kopie angewandt und die geänderte Zeile abgelesen; zwei der vier Guard-Fälle treffen die
+   Rollen-Frage, keinen fail-closed-Zweig; (c) *„vier Artefakte … eine Prüfung ihres bloßen
+   Vorhandenseins"* — Gegenprobe: die vier `grep` über genau den deklarierten Umfang, Ergebnis
+   fünf und zwei. **Anwendung:** wer eine Menge behauptet, nennt das Kriterium und fährt es;
+   eine Trefferliste ist keine Vollständigkeitsaussage, und *„hat keinen Sensor"* verlangt
+   denselben Lauf wie *„hat einen"*.
+
+2. **Geschärfte Regel — ein Wort, das eine Menge bezeichnet, braucht sein Kriterium am Ort des
+   Lesens.** *Bewacht* meinte in zwei committeten Artefakten desselben Slice zwei verschiedene
+   Mengen: der Guard-Kopf zählte den Parse-Zweifel wegen seines bats-Falls zu den bewachten
+   Zweigen, §6 dieses Plans nicht — dieselbe Sache, drei gegen zwei, ohne dass an einer der
+   beiden Stellen stand, welches Kriterium gilt.
+   [`AGENTS.md`](../../../../AGENTS.md) §3.6 hat eines (*„wer keinen Fall in `test/mutations/`
+   hat, ist unbewacht"*), und unter ihm sind es drei. Kein Gate misst das: `comment-claims`
+   prüft, ob ein genannter Sensor **existiert**, nie ob er die genannte Menge **trägt**.
+   **Anwendung:** Zahl und Kriterium stehen zusammen oder gar nicht; §6 führt sie seit dieser
+   Closure zusammen.
+
+3. **Benannte Spec-Lücke — für die Korrektur eines akzeptierten Adaptions-Eintrags gibt es
+   keine Regel.** Geregelt ist die **Aufhebung**
+   ([`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf),
+   [`ADR-0014`](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md)) und der **neue
+   Eintrag**; der dritte Fall — eine einzelne, gemessen falsche Aussage im Rumpf eines Eintrags,
+   der im Übrigen bindet — ist in keinem Artefakt entschieden. Die Folge ist am Bestand
+   ablesbar: eine Korrektur wurde geschrieben, als Disziplin-Bruch erkannt und byte-genau
+   zurückgenommen (Blob-Hash vor der Korrektur und nach der Rücknahme identisch), und der Mangel
+   wandert in einen Slice, dessen Trigger ein WIP-Limit ist. **Die Lücke ist die Regel, nicht der
+   Vorgang** — solange sie offen ist, kostet jeder Mangel dieser Klasse dieselbe Wartezeit im
+   Pflicht-Lesepfad.
+
+4. **Neuer Sensor — `test/agent-guard.bats` (23 Fälle) und `test/mutations/117`–`139`.** Die
+   Verhaltens- und Parse-Fälle machen den einmaligen Live-Beleg wiederholbar; die
+   Mutations-Fälle binden ihn dauerhaft. Zwei Eigenschaften daran sind das Übertragbare: die
+   Rollen-Liste wird über das **Verzeichnis** geprüft (ein Fall legt eine erfundene Rolle in ein
+   Fixture-Verzeichnis und erwartet Deny — eine kopierte Namensliste bestünde ihn nicht), und
+   die Positiv-Liste hat einen Zahn auf die **Grenze** (ein erfundenes, ungelistetes Feld darf
+   den Span nicht erreichen) statt nur vier Zähne auf vier Namen. Vier namentliche Fälle
+   unterscheiden eine Positiv-Liste nicht von einer Implementierung, die genau diese vier
+   ausfiltert.
+
+**Offen, mit Träger.**
+
+| Posten | Träger |
+|---|---|
+| [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) steht auf *Proposed*; die Matrix-Zelle *Token-Attribution × Repo* der Welle verlangt ein **Verdikt** | Architect — Vorbedingung der welle-09-Closure, nicht dieses Slice |
+| die zwei Sachmängel in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) | [slice-076](../next/slice-076-mr-018-umzug-technik-stratum.md) (c) und (d) |
+| die drei fail-closed-Zweige ohne Dauer-Sensor und die zwei fail-open-Pfade (§6) | kein Schnitt gelegt — Planner-Arbeit |
+| `comment-claims`: Index-Verengung, vier Pfad-Muster, `_test.go`-Ausnahme, das Zwölf-Zeichen-Fenster der Verneinungs-Ausnahme | [slice-070](../open/slice-070-comment-claims-pruefbereich.md) |
+| ein Fall bindet einen Wächter-**Namen**, nicht seine **Zusicherung** | [slice-069](../open/slice-069-zahn-bindet-zusicherung.md) |
+| der veraltete Top-Level-`decision`-Pfad des Nachbar-Guards | [slice-067](../open/slice-067-pretooluse-ausgabeform.md) |
+| die Sonde, die „der Hook lief" von „er feuerte nie" trennt | [slice-074](../open/slice-074-agent-vor-aufruf-protokoll.md) |
+| die Rechnung über den erfassten Werten (Bilanz, Cache-Zähler, Abdeckungszahl) | [slice-066](../open/slice-066-telemetrie-auswertung.md) · [slice-071](../open/slice-071-cache-zaehler-getrennt.md) · [slice-068](../open/slice-068-rollen-arbeit-laeuft-als-rolle.md) |
 
 ## 8. Sub-Area-Modus-Begründung
 
