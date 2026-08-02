@@ -100,7 +100,7 @@ Modul-15-Block-4.
   | Wert | Bedeutung |
   |---|---|
   | **Sensor** | läuft real, mit `test/mutations/`-Fall ([`AGENTS.md`](../../../AGENTS.md) §3.6) |
-  | **deklariert** | bewusste Nicht-Umsetzung als `MR-<NNN>` — Geltungsbereich, Begründung, **Auflösungs-Trigger** |
+  | **deklariert** | bewusste Nicht-Umsetzung, ausgeschrieben mit Geltungsbereich, Begründung und **Auflösungs-Trigger**. Diese drei Angaben sind der Wert; das Gefäß folgt dem Gegenstand nach [`ADR-0013`](../adr/0013-technik-stratum-als-zielort.md): eine Abweichung von der adoptierten Baseline steht als `MR-<NNN>` im Adaptions-Block, eine technische Festlegung dieses Repos als erklärte Abweichung im Technik-Stratum ([`spec/spezifikation.md`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder), Rang 2). Wer den Wert am Gefäß statt an den drei Angaben festmacht, erklärt eine vollständige Deklaration am falschen Ort für keine |
   | **ADR-Verdikt** | die Abweichung ist **permanent** und in einer ADR entschieden — Geltungsbereich und Begründung wie bei „deklariert", aber **ohne Auflösungs-Trigger**: Modul 7 §Werkzeug-Wahl lässt ihn auf dem ADR-Pfad wegfallen. An seiner Stelle nennt die Zelle die Re-Evaluierungs-Trigger der ADR, die niemand herbeiführt, sondern bemerkt. Erster Fall: [`ADR-0012`](../adr/0012-haupt-kontext-ohne-token-bilanz.md) |
   | **emittiert** | im Ziel vorhanden **und dort rot gesehen** (s. u.) |
   | **nicht emittiert** | begründete Entscheidung **mit Auflösungs-Trigger** — dieselbe Pflicht wie bei „deklariert"; eine Entscheidung, die sich ohne Trigger als temporär ausgibt, ist nach Modul 7 die permanente Ausnahme, die lügt. Ist sie wirklich permanent, gehört sie in eine ADR und die Zelle trägt „ADR-Verdikt" |

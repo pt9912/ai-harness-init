@@ -146,14 +146,18 @@ DoD vollständig; Review konform (Modul 10); Verifikation bestätigt (Modul 11);
   [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
   und nennt dort **keinen Auflösungs-Trigger**. Wer an ihr einen Träger für einen Folge-Slice
   sucht, findet keinen — auch nicht in diesem Plan.
-- **Die Belegart der Zelle hat heute nur einen halben Träger, und das ist Wellen-Ebene.** Das
-  *ADR-Verdikt* für den Haupt-Kontext bindet erst mit der Annahme von
-  [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md); und *deklariert* verlangt die
-  Wert-Tabelle von [welle-09](../welle-09-modul-15-konformitaet.md) als `MR-<NNN>`, während die
-  Hintergrund-Abweichung seit [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) als
-  erklärte Abweichung in Rang 2 steht — für diese Form führt die Tabelle keinen Wert. Beides
-  gehört in den Welle-Plan und vor das Füllen der Zelle; die Festlegung dieses Slice — kein
-  *Sensor*, und welcher Wert je Abweichung — hängt nicht daran.
+- **Die Belegart der Zelle hat einen ganzen und einen halben Träger, und der halbe ist
+  Wellen-Ebene.** Der Hintergrund-Teil trägt *deklariert* und ist einlösbar: Geltungsbereich,
+  Begründung und Auflösungs-Trigger stehen als erklärte Abweichung in Rang 2
+  ([`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5),
+  und die Wert-Tabelle von [welle-09](../welle-09-modul-15-konformitaet.md) macht den Wert an
+  diesen drei Angaben fest statt am Gefäß — der Zielort folgt dem Gegenstand nach
+  [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md). Das *ADR-Verdikt* für den
+  Haupt-Kontext bindet dagegen erst mit der Annahme von
+  [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md); bis dahin steht für diese
+  Hälfte ein Wert fest, dessen Träger noch *Proposed* ist. Die Zelle selbst wird bei der
+  Wellen-Closure gefüllt, nicht hier — und sie ist erst füllbar, wenn über
+  [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) entschieden ist.
 
 ## 7. Closure-Notiz (nach `done/`)
 
