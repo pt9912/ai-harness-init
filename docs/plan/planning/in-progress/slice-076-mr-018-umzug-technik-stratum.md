@@ -241,7 +241,7 @@ erste Nachmessung in §3. Der Umzug ändert daran nichts: Quell- und Zielpfad li
 
 ## 2. Definition of Done
 
-- [ ] **(1) Der Zielort trägt den Bestand.**
+- [x] **(1) Der Zielort trägt den Bestand.**
   [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
   führt die Feldtabelle in der vom Observability-Modul verlangten Gestalt plus die Sensor-Spalte,
   die Werkzeug-Tabelle und je erklärter Abweichung eine Begründung;
@@ -250,7 +250,7 @@ erste Nachmessung in §3. Der Umzug ändert daran nichts: Quell- und Zielpfad li
   ([`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) Festlegung 3; gemessen von der
   `matrix`-Klasse `spec-straten`). **Keine Nennung eines Regelwerks-Moduls ohne auflösenden
   Link** — im umgezogenen Text wie im neuen Eintrag. `make docs-check` grün.
-- [ ] **(2) Der Eintrag wird vollständig aufgehoben, und die Aufhebung wird vollzogen.** Ein
+- [x] **(2) Der Eintrag wird vollständig aufgehoben, und die Aufhebung wird vollzogen.** Ein
   **neuer** Eintrag im Adaptions-Block (die nächste freie Nummer) hebt
   [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
   auf, nennt je Posten-Art den Zielort, trägt was nach dem Inventar Regelwerks-Delta bleibt und
@@ -264,7 +264,7 @@ erste Nachmessung in §3. Der Umzug ändert daran nichts: Quell- und Zielpfad li
   **(c)** Aufhebung und Entfernung sind **zwei** Commits, und der Entfernungs-Commit löscht nur:
   `git show --numstat <sha> -- harness/conventions.md` zeigt **0** Insertions. Die Überschrift
   steht wörtlich fort, gemessen an **0** `anchor-missing` in `make docs-check`.
-- [ ] **(3) Kein Posten verschwindet still, keine Zusage verliert ihren Sensor.** Das Kriterium
+- [x] **(3) Kein Posten verschwindet still, keine Zusage verliert ihren Sensor.** Das Kriterium
   aus §1 wird posten-weise angewandt und als Vorher/Nachher-Inventar in §3 fortgeschrieben; jeder
   Posten trägt seinen Zielort oder das Verdikt *ersatzlos* mit Grund — **jeder**, auch der, der
   keine bindende Aussage ist und den
@@ -273,9 +273,9 @@ erste Nachmessung in §3. Der Umzug ändert daran nichts: Quell- und Zielpfad li
   Wächter-Funktionen und jeder der **30** Mutations-Fälle steht danach in der Sensor-Spalte oder an
   einem benannten Ort — **nachgezählt gegen die Ist-Zahlen aus §1**
   ([`AGENTS.md`](../../../../AGENTS.md) §3.6), nicht behauptet.
-- [ ] `make gates` grün; `make mutate` grün über die CI (`.github/workflows/ci.yml`, frischer
+- [x] `make gates` grün; `make mutate` grün über die CI (`.github/workflows/ci.yml`, frischer
   Runner).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -584,7 +584,137 @@ Closure-Notiz mit Steering-Loop-Eintrag.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Was gilt.** Das Span-Schema steht im Technik-Stratum.
+[`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
+führt die Feldtabelle in vier Spalten (Feld · Pflicht · Incident-Frage · **Sensor**), die
+Werkzeug-Tabelle mit ihrem fail-closed Default, die Positiv-Liste mit ihren fünf Festlegungen,
+die Start-Konvention, die sechs erklärten Abweichungen — je unter dem Regelblock, von dem sie
+wirklich abweichen — und den `Bewacht`-Block mit neun Zusicherungen;
+[§3](../../../../spec/spezifikation.md#3-defaults-und-konstanten) trägt die zwei Schranken um
+`model_version`. Die datierten Messungen liegen in
+`docs/reviews/2026-08-02-span-schema-messreihen.md`. Von
+[`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
+bleiben Nummer, Überschrift, `Datum` und eine Zeiger-Zeile;
+[`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+hebt ihn auf, nennt je Posten-Art den Zielort und trägt die zwei Deltas, die den Gegenstand des
+Adaptions-Blocks wirklich treffen: die Sensor-Spalte als dritte Abweichung von der Vorlagen-Form
+und `implementer` statt *Implementation*.
+
+Die drei Bedingungen aus
+[`ADR-0014`](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) Festlegung 2 stehen einzeln
+belegt: **(a)** das Inventar in §3 deckt jede nicht-leere Zeile des Rumpfs — die 23 ungedeckten
+Zeilen sind gegen den gepinnten Stand sämtlich leer; **(b)** 10 von 10 Wächter-Funktionen und 30
+von 30 Mutations-Fällen stehen am Zielort, und was nicht mitzieht, ist einzeln mit Grund
+verzeichnet; **(c)** Aufhebung und Entfernung sind zwei Commits, und der zweite fügt nichts ein
+(`0 820` über genau eine Datei). Die Überschrift steht byte-gleich fort; sie trägt 129 Vorkommen
+in 25 Markdown-Dateien.
+
+**Was der Slice erreicht hat, in Zahlen** — Stand `9156acb` gegen den Stand dieser Closure, jede
+Zahl mit ihrem Kommando:
+
+| Größe | Kommando | vorher | nachher |
+|---|---|---|---|
+| der aufgehobene Eintrag | `awk 'NR>=835&&NR<=1658'` bzw. `awk 'NR>=835&&NR<=839'`, je `\| wc -l -c` | 824 Z / 70.727 B | **5 Z / 625 B** |
+| [`harness/conventions.md`](../../../../harness/conventions.md) | `wc -l -c harness/conventions.md` | 1.769 Z / 145.716 B | **1.030 Z / 82.301 B** |
+| der Pflicht-Lesepfad ([`harness/README.md`](../../../../harness/README.md) + [`AGENTS.md`](../../../../AGENTS.md) + [`harness/conventions.md`](../../../../harness/conventions.md)) | `cat harness/README.md AGENTS.md harness/conventions.md \| wc -c` | 168.751 B | **105.375 B** — 63.376 B weniger, 37,6 % |
+| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | `wc -l -c spec/spezifikation.md` | 73 Z / 2.963 B | **631 Z / 54.074 B** |
+| Modul-Nennungen in [`harness/conventions.md`](../../../../harness/conventions.md) | `grep -oE 'Modul[- ][0-9]{1,2}' harness/conventions.md \| wc -l` | 28 | **9** |
+| Modul-Nennungen in `spec/` | `git ls-files 'spec/*.md' \| xargs grep -ohE 'Modul[- ][0-9]{1,2}' \| wc -l` | 0 | **9**, jede mit auflösendem Link |
+| Nennungen des Eintrags im Nicht-Markdown-Bestand | `git grep -o 'MR-01[8]' -- ':!*.md' \| wc -l`, dazu dasselbe mit `-l` | 41 in 23 Dateien | **13 in 12** |
+
+**Der Umzug ist kein Rückschnitt.** Was der Pflicht-Lesepfad verliert, tragen zwei andere Orte:
+631 Zeilen im Technik-Stratum und 250 im Zeitdokument. Ersatzlos entfallen sind vier einzeln
+benannte bindende Posten — drei davon, weil sie andernorts bindend stehen — sowie zwei Klassen,
+Entstehungs-Erzählung und Prozess-Zustand.
+
+**Gates.** `make gates` Exit 0 (baseline-verify · d-check 284 Datei(en) / 0 Befund(e) · 150 bats ·
+Go-Tests · comment-claims 38 Datei(en) / 0 Befund(e) · span-check); `make mutate` **135 ok, 0
+Befund(e)** über die CI auf frischem Runner, Jobs `smoke`, `gates`, `mutate` und `full-smoke`
+grün.
+
+**Was der Slice nicht deckt, steht in §6 und friert mit dieser Closure ein.** Vier Punkte, die
+§6 nicht führt, kommen hinzu:
+
+1. **Die Sensor-Spalte ist Feedforward.** Kein Gate prüft, ob ein in ihr genannter Wächter noch
+   existiert oder noch so heißt: `codepaths.roots` sind `[spec, docs, harness]`, `test/` steht
+   dort nicht; `make mutate` fährt nur die Fall-Dateien, die es findet; `make comment-claims`
+   lässt jede Markdown-Datei außen vor. Die Grenze steht am Ort der Zusage
+   ([§5](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder), Absatz *Was die vierte
+   Spalte sagt und was nicht*) und mit ihrer Messung in
+   [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben);
+   ihre Alterung fängt niemand mechanisch.
+2. **Der bindende Text trägt eine falsche Aussage über das Modul, das er verlinkt** — die
+   `branch`/`commit`-Zeile nennt sich die dritte Korrelations-Achse, während der PR in der
+   zitierten Liste der zweite Posten ist. §6 benennt sie;
+   [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) Folgepflicht 1 verlangt die
+   getrennte Behebung, und die ist nicht Gegenstand dieses Slice.
+3. **Zwei der sieben verbliebenen Adressen im Quellbestand** zitieren im Präsens eine Regel und
+   geben den aufgehobenen Eintrag als deren Quelle an; wer ihnen folgt, landet auf fünf Zeilen und
+   muss die Zeiger-Zeile weitergehen.
+4. **Vier LOW- und zwei INFO-Befunde des Reviews sind unbehoben**
+   (`docs/reviews/2026-08-02-slice-076-mr-018-umzug-review.md`): die Zeiger-Zeile nennt drei von
+   sechs Posten-Arten; Nachmessung 4 in §3 nennt zwei Posten und die falsche Kennung, während die
+   bindende, nicht mitgezogene Substanz an vier Stellen verzeichnet ist (R-02, R-40, R-41,
+   R-43a); drei Zahlen der Entfernungs-Commit-Message sind am eigenen Commit nicht messbar;
+   `B1`/`B2` stehen als importierte Verdikt-Etiketten ohne Herkunft im Rang-2-Dokument;
+   [`MR-019`](../../../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence)
+   zählt weiter zwei Abweichungen von der Vorlagen-Form, obwohl es drei sind; die datierten
+   Messungen liegen jetzt im `codepaths`-Ausnahmebereich.
+
+**Steering-Loop-Einträge.**
+
+1. **Geschärfte Regel — eine Messung antwortet auf die Frage, die ihr Gegenstand, ihr Muster und
+   ihr Bezugsstand stellen, nicht auf die, die gemeint war; und sie antwortet still.** Dreimal
+   lieferte hier eine Messung ein leeres oder grünes Ergebnis auf eine Frage, die sie nicht
+   gestellt hatte, je auf einer anderen Achse:
+   - **Gegenstand.** Ein `comm` über die zehn Wächter-Namen und die dreißig Fall-Nummern ist in
+     beide Richtungen leer. Er misst, ob **Namen** wandern; ob **Aussagen** wandern, misst er
+     nicht. Ein Shingle-Abgleich aller 820 gelöschten Zeilen gegen die deklarierten Zielorte fand
+     drei echte Kürzungen, darunter eine, die einen stehengebliebenen Satz ohne sein Vorderglied
+     zurückließ.
+   - **Muster.** `test/mutations/[0-9]+` findet 25 der 30 Fälle am Zielort und meldet fünf als
+     fehlend — der Zielort führt die Kurzform *Fall N*, die er selbst definiert. Über beide
+     Schreibweisen und zeilenübergreifend gesucht sind es 30 von 30.
+   - **Bezugsstand.** Die 23 vom Inventar ungedeckten Zeilen sind gegen den gepinnten Stand
+     sämtlich **leer** und gegen den Stand unmittelbar vor der Entfernung sämtlich **nicht** leer,
+     weil der Aufhebungs-Commit den Rumpf um die Zeiger-Zeile nach unten schiebt. Dieselben 23
+     Nummern, entgegengesetztes Ergebnis.
+
+   **Anwendung:** wer eine Vollständigkeit behauptet, nennt zur Zahl, **worüber** sie zählt,
+   **womit** sie sucht und **gegen welchen Stand**. Fehlt eines davon, ist die Antwort nicht
+   falsch, sondern unbestimmt — und sie sieht grün aus. Für die Klasse dieses Slice — ein Bestand
+   wird bewegt und die Quelle gelöscht — ist der tragende Beleg der Abgleich über den
+   **gelöschten Text** und nicht über das Inventar: das Inventar misst die eigene Buchführung.
+
+2. **Benannte Spec-Lücke — die Aufhebung eines Eintrags regelt seinen Kopf, nicht die Aussagen,
+   die von außen auf ihn zeigen.**
+   [`ADR-0014`](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) Festlegung 2 stellt drei
+   Bedingungen (Vollständigkeit · Verbleib jeder bindenden Aussage · zwei Commits), und
+   [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
+   regelt die Form des Kopfs. Keines von beiden erfasst die Gegenrichtung: nach der Entfernung
+   behaupteten 28 Kommentar-Zeilen im Quellbestand weiterhin im Präsens einen Inhalt an einem Ort,
+   der keinen mehr hat — vier davon nannten ihn ausdrücklich die normative bzw. bindende Fassung —,
+   während der aufhebende Eintrag zur selben Zeit sagte, kein Satz binde noch von dort. Kein
+   Sensor sieht den Widerspruch: von den betroffenen Dateien liegen 3 von 12 im Prüfbereich von
+   `make comment-claims`, dessen Ausdruck fragt, ob eine Abdeckungs-Behauptung ihren Sensor nennt,
+   nicht ob das genannte Dokument noch bindet; `make docs-check` scannt nur Markdown.
+   **Anwendung:** zur Aufhebung gehört als vierte Bedingung der Rückwärts-Zug — jede
+   Präsens-Aussage über den Inhalt zeigt danach auf den neuen Ort, die bloße Adresse und die
+   Vergangenheitsform bleiben stehen. Der Zug ist von Hand zu führen und braucht einen eigenen
+   Commit, weil er vor der Entfernung noch falsch wäre.
+
+**Offen, mit Träger.**
+
+| Posten | Träger |
+|---|---|
+| DoD (1) von [slice-068](../open/slice-068-rollen-arbeit-laeuft-als-rolle.md) verlangt die Konvention **in** dem Eintrag, der jetzt fünf Zeilen trägt; der Zielort ist neu zu setzen | jener Slice |
+| Die Festlegung aus DoD (2) von [slice-071](../open/slice-071-cache-zaehler-getrennt.md) und die Splitting-Regel aus [slice-066](../open/slice-066-telemetrie-auswertung.md) §3 sind als `update` an [`harness/conventions.md`](../../../../harness/conventions.md) geplant; als technische Festlegungen treffen sie die Aufnahme-Regel des Stratums | jene Slices |
+| [slice-074](../open/slice-074-agent-vor-aufruf-protokoll.md) §3 plant eine Feldliste mit Incident-Fragen in den Adaptions-Block und einen Nachtrag in den aufgehobenen Eintrag; beide Zielorte sind verschoben | jener Slice |
+| Der Bestand von [slice-075](../open/slice-075-regelwerk-verweis-linkpflicht.md) ist von 28 auf 9 Stellen geschrumpft, und `spec/` trägt jetzt 9 Modul-Nennungen — seine Klassen-Tabelle muss `spec/**` entscheiden | jener Slice |
+| Die zwei Abweichungen ohne Trichter-Durchlauf (2 und 4) | kein Schnitt gelegt — Planner-Arbeit |
+| Die falsche Korrelations-Achsen-Angabe im Stratum | kein Schnitt gelegt; [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) Folgepflicht 1 verlangt die getrennte Behebung |
+| Der Quellen-Konflikt zwischen Voll-Supersede in [`AGENTS.md`](../../../../AGENTS.md) §3.4 und der geschärften Vorgängerin der Kurs-Fassung | kein Schnitt gelegt — eigene Entscheidung |
+| Die Größe der Adaptions-Einträge als eigene Frage, mit eigener Begründung statt der hier verworfenen | kein Schnitt gelegt |
 
 ## 8. Sub-Area-Modus-Begründung
 
