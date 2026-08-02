@@ -285,6 +285,7 @@ erste Nachmessung in §3. Der Umzug ändert daran nichts: Quell- und Zielpfad li
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | der neue Eintrag am Ende des Blocks und die Zeiger-Zeile im Kopf des aufgehobenen; dessen Rumpf geht in einem eigenen, reinen Lösch-Commit (DoD 2) |
 | `docs/reviews/` | neu | das Zeitdokument, das die 49 datierten Mess-Zeilen aufnimmt |
 | [`AGENTS.md`](../../../../AGENTS.md) | update | die `span-check`-Zeile der Gate-Tabelle nennt heute den aufgehobenen Eintrag als Quelle des Schemas und zeigt danach auf das Stratum |
+| [`harness/README.md`](../../../../harness/README.md) | update | zwei Zeiger derselben Art: die `span-check`-Zeile seiner Gate-Tabelle und die Prosa-Stelle zum Prüfbereich von `make comment-claims`, die die eingefrorene Span-Zählung des Eintrags als dieselbe Falle nennt — beide zeigen danach auf das Stratum |
 | `internal/span/`, `.claude/hooks/pretooluse-agent-guard.sh`, `harness/tools/span-check.sh`, `test/mutations/` | update | Kommentare, die im **Präsens** eine Aussage über den Inhalt des aufgehobenen Eintrags treffen, nennen den Ort, an dem der Inhalt steht; sonst widerspricht der Quellbestand DoD (2a). Nicht berührt: Vergangenheitsform über einen früheren Stand (bleibt wahr) und die bloße Adresse (dafür ist die Zeiger-Zeile im Kopf da) |
 
 **Die Commit-Folge ist tragend, und sie trennt Verschieben von Ändern**
@@ -588,6 +589,9 @@ Closure-Notiz mit Steering-Loop-Eintrag.
 ## 8. Sub-Area-Modus-Begründung
 
 Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example):
-[`spec/`](../../../../spec/spezifikation.md), [`harness/conventions.md`](../../../../harness/conventions.md)
-und `docs/` gehören zum Greenfield-Bestand; der Modus steht in der Modus-Deklaration von
-[`harness/conventions.md`](../../../../harness/conventions.md).
+[`spec/`](../../../../spec/spezifikation.md), [`harness/conventions.md`](../../../../harness/conventions.md),
+[`harness/README.md`](../../../../harness/README.md), `harness/tools/`,
+[`AGENTS.md`](../../../../AGENTS.md), `docs/`, `.claude/hooks/`, `internal/span/` und `test/mutations/`
+gehören zum Greenfield-Bestand; der Modus steht in der Modus-Deklaration von
+[`harness/conventions.md`](../../../../harness/conventions.md), einschlägig sind dort die Zeilen
+`*` (gesamtes Repo) und `harness/tools/`.
