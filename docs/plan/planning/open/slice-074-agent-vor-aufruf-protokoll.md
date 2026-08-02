@@ -11,9 +11,9 @@ Setzung 1 geprüft, alle drei Fragen samt Antwort in §3.
 
 **Bezug:**
 [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) —
-Abweichung 5, Prüfschritt 3 (c) benennt die Sonde, die dieser Slice fährt
-(*„eine Sonde auf die Schlüsselnamen von `tool_input` im `Agent`-Zweig des
-`PreToolUse`-Hooks … Sie ist nicht gefahren"*); dasselbe
+Abweichung 5, Prüfschritt 3 (c) benennt für die Frage dieses Slice eine Sonde
+(*„eine Sonde auf die Schlüsselnamen von `tool_input` … Sie ist nicht gefahren"*); dieser Slice
+fährt eine andere, §3. Dasselbe
 [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
 hält das Span-Schema für **geschlossen** und die erfasste Menge auf den *abgeschlossenen*
 Aufruf begrenzt — das Protokoll dieses Slice ist deshalb **kein Span** und ändert daran nichts,
@@ -298,7 +298,7 @@ die Frage erledigt sei. Sie ist für den **heutigen** Ziel-Vertrag entschieden.
 | `harness/tools/extract-agent-call.awk` | update | **die einzige Stelle, an der dieser Slice geteilten Boden berührt** — additive Erweiterung um `tool_use_id` und `session_id`. Der Guard liest die ersten zwei Ausgabezeilen einzeln adressiert; angehängte Zeilen ändern seinen Kontrakt nicht, und sein Skript bleibt unverändert. Die Alternative wäre ein **zweiter** Scanner mit einer zweiten JSON-Politik, die auseinanderdriftet. Das Netz gegen einen Fehler liegt bereits: `test/agent-guard.bats` und die Mutations-Fälle, die den Guard bzw. den Extraktor als Zieldatei führen (gemessen über den Inhalt der Fälle, nicht über ihre Namen: `grep -l pretooluse-agent-guard test/mutations/*.sh` → **4**, `grep -l extract-agent-call test/mutations/*.sh` → **3**). **Ungedeckt bleibt der Kopfkommentar der Datei** — er sagt heute *„Stdout = GENAU zwei Zeilen"* und wird falsch; `.awk` liegt dauerhaft außerhalb des `comment-claims`-Prüfbereichs, dort trägt allein das Review |
 | `harness/tools/` | neu | die Auswertungsregel aus DoD (3) |
 | [`Makefile`](../../../../Makefile) | update | das Nicht-Gate-Ziel aus DoD (3) und sein ausdrückliches Aufräum-Pendant. **Nicht** in `gates` |
-| [`harness/conventions.md`](../../../../harness/conventions.md) | update | ein neuer Eintrag im Adaptions-Block: Feldliste mit Incident-Fragen, die Stichtags-Regel, Leser und Auslöser, die Abgrenzung *kein Span*, die Nicht-Emissions-Entscheidung samt Auflösungs-Trigger. Dazu der Nachtrag in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) Abweichung 5, Prüfschritt 3 (c) — dort steht die Sonde als *nicht gefahren* |
+| [`harness/conventions.md`](../../../../harness/conventions.md) | update | ein neuer Eintrag im Adaptions-Block: Feldliste mit Incident-Fragen, die Stichtags-Regel, Leser und Auslöser, die Abgrenzung *kein Span*, die Nicht-Emissions-Entscheidung samt Auflösungs-Trigger. Dazu der Nachtrag in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) Abweichung 5, Prüfschritt 3 (c) — die Sonde dort bleibt ungefahren |
 | [`AGENTS.md`](../../../../AGENTS.md) + [`harness/README.md`](../../../../harness/README.md) | update | das neue Ziel in der Nicht-Gate-Verify-Liste, mit seinem Auslöser und der Aussage, warum es nicht in `gates` steht |
 | `test/` | neu | die Fixture-Matrix aus DoD (1), die Freitext- und Grenz-Fälle aus DoD (2), die Fixture-Paare aus DoD (3) |
 | `test/mutations/` | neu | die Dauer-Sensoren zu allen drei DoD-Punkten |
