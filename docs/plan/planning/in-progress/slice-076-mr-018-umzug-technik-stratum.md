@@ -376,14 +376,14 @@ laufend geprüft, welche Zeile von 838 bis 1657 in keiner Spanne liegt — es si
 | R-05a | Werkzeug-Liste: *„sie stand zuerst ausschließlich im Code …"* samt Befund | 877–882 | Entstehungs-Erzählung | **ersatzlos** |
 | R-06 | Werkzeug-Tabelle, 6 Zeilen | 884–891 | technische Festlegung | **§5**, wörtlich |
 | R-06a | `BashOutput`: *„die Zeile sagte bis 2026-07-29 … zu"* samt Befund | 889 | Entstehungs-Erzählung | **ersatzlos**; die Zusage *„nichts"* samt Grund bleibt |
-| R-07 | Positiv-Liste, Einleitung: die vier gemessenen Freitext-Felder | 893–902 | technische Festlegung | **§5**; der Zeiger auf die Entscheidung, die `prompt` verbietet, wird gestrichen — die Aussage steht ohne ihn |
+| R-07 | Positiv-Liste, Einleitung: die vier gemessenen Freitext-Felder und die zwei Erfassungs-Flächen | 893–902 | technische Festlegung | **§5**; der Zeiger auf die Entscheidung, die `prompt` verbietet, wird gestrichen — die Aussage steht ohne ihn. Die zwei Flächen werden am Zielort **benannt statt hergeleitet** (Argumente = `tool_input`, Ergebnis = `tool_response`, und das Ergebnis ist nicht die harmlosere): die Herleitung lief über die Entstehung der Werkzeug-Tabelle und geht mit R-07a, der Satz *„es steht in beiden Flächen"* braucht sein Vorderglied |
 | R-07a | Positiv-Liste, Einleitung: *„regelte bis 2026-07-30 ausschließlich …"* | 894–895 | Entstehungs-Erzählung | **ersatzlos** |
 | R-08 | Festlegung 1: nur was `responseKeys()` nennt — sechs Schlüssel, neun Werte, sieben Zeilen | 903–911 | technische Festlegung | **§5**; die Adresse *„Festlegung 1 Punkt 3"* wird durch die Eigenschaft ersetzt, auf die sie zeigt |
 | R-09 | Festlegung 2: positiv statt negativ | 912–916 | technische Festlegung | **§5** |
 | R-09a | Festlegung 2: *„eine frühere Fassung zählte vier verbotene Felder auf"* | 915–916 | Entstehungs-Erzählung | **ersatzlos** |
 | R-10 | Festlegung 3: der Fehlschlag braucht keine Sonderregel | 917–920 | technische Festlegung | **§5** |
 | R-11 | Festlegung 4: `model_version` verwirft statt zu kürzen | 921–934 | technische Festlegung | **§5** — und die Schranke selbst (Länge ≤ 64, geschlossener Zeichensatz) zusätzlich nach **§3** |
-| R-12 | Festlegung 5: die Zähler kommen nur im Vordergrund an; der Guard; der ungeprüfte zweite Weg | 935–953 | technische Festlegung | **§5** |
+| R-12 | Festlegung 5: die Zähler kommen nur im Vordergrund an; der Guard; der ungeprüfte zweite Weg | 935–953 | technische Festlegung | **§5**; der Schluss-Zusatz *„— mit der Prüfung davor und einem Auflösungs-Trigger. Die Lücke ist damit benannt und nicht durch die `Agent`-Zeile überdeckt"* **ersatzlos**: er beschreibt den Aufbau des Dokuments statt seines Gegenstands, und er zählt falsch weiter — die zwei Auflösungs-Trigger von Abweichung 5 liegen nach dem Umzug getrennt (die beobachtbare Bedingung in **§5**, der Prozess-Zustand in **§6 dieses Plans**) |
 | R-13 | Start-Konvention, zwei Bedingungen mit ihren Belegklassen | 955–974 | technische Festlegung | **§5** |
 | R-14 | Start-Konvention: die zwei Bedingungen sind unabhängig — die Regel | 976–990 | technische Festlegung | **§5** |
 | R-14a | Start-Konvention: `duration_ms: 3` bei 4.184 ms | 977–982 | datierte Messung | **Zeitdokument** |
@@ -402,7 +402,7 @@ laufend geprüft, welche Zeile von 838 bis 1657 in keiner Spanne liegt — es si
 | R-24 | Welche Abweichung einen Auflösungs-Trigger trägt und welche ein Verdikt | 1068–1073 | Prozess-Zustand | **Plan §6** (dort bereits geführt) |
 | R-25 | Der Trichter entscheidet, und der Ort der Entscheidung ist dieser Eintrag; Abgrenzung zum Carveout-Audit | 1074–1082 | Prozess-Zustand | **Plan §6** — der Eintrag hört auf, ein Entscheidungs-Ort zu sein |
 | R-26 | Stand der vier übrigen Abweichungen (Träger, offene) | 1083–1087 | Prozess-Zustand | **Plan §6** (dort bereits geführt) |
-| R-27 | Abweichung 1: Cache-Status — Rest-Zustand, Zähler, fehlende Labels, Transkript-Ausschluss | 1088–1121 | technische Festlegung | **§5** |
+| R-27 | Abweichung 1: Cache-Status — Rest-Zustand, Zähler, fehlende Labels, Transkript-Ausschluss | 1088–1121 | technische Festlegung | **§5**; der Schlusssatz *„es ist damit eine erklärte Abweichung, keine Regelverletzung"* samt dem Zitat, mit dem die Entscheidung die Wahl offenlässt, **ersatzlos**: sein *„damit"* hing an genau diesem Zeiger, den DoD (1) am Zielort nicht duldet — mitgenommen wäre er ein zweites frei hängendes Vorderglied. Die Einordnung trägt dort die Blocküberschrift *„Sechs erklärte Abweichungen"* mit ihrer Zuordnung je Regelblock |
 | R-27a | Abweichung 1: *„bis 2026-07-30 stand hier …"* (zweimal) samt Befunden | 1091–1093, 1104–1105 | Entstehungs-Erzählung | **ersatzlos** |
 | R-27b | Abweichung 1: *„gemessen 2026-07-29, erfasst seit 2026-07-30"* | 1095–1096 | datierte Messung | **Zeitdokument** |
 | R-27c | Abweichung 1: die Entfernung des `transcript_path`-Zeigers am 2026-07-29 | 1112–1117 | Entstehungs-Erzählung | **ersatzlos**; der Grund (fremder Besitz, voller Gesprächsinhalt) bleibt als Ausschluss in **§5** |

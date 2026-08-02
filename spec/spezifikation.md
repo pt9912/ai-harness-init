@@ -72,7 +72,15 @@ Nebeneffekt im Skript.
 **Was die vierte Spalte sagt und was nicht.** Sie nennt den Wächter, der die Zusicherung
 der Zeile hält; *Fall N* meint `test/mutations/N-*.sh`. Ein Strich heißt: für diese Zeile
 ist kein Wächter namentlich gebunden. Zusicherungen, die keine Zeile dieser Tabelle sind,
-stehen im Punkt **Bewacht** am Ende des Abschnitts.
+stehen im Punkt **Bewacht** am Ende des Abschnitts. **Die Nennung selbst ist unbewacht:**
+kein Gate prüft, ob ein hier oder unter **Bewacht** genannter Wächter noch existiert oder
+noch so heißt — `codepaths` validiert nur Pfade unter seinen `roots` (`spec`, `docs`,
+`harness`), ein erfundener Pfad unter `test/` oder `internal/` bleibt still und derselbe
+unter `harness/` meldet `codepath-missing` (gemessen); `make mutate` fährt nur die
+Fall-Dateien, die es findet; `make comment-claims` lässt jede Markdown-Datei außen vor.
+Die Spalte ist damit **Feedforward**: ihre Alterung fängt niemand mechanisch, und wer eine
+Zeile ändert, zieht ihren Wächter von Hand nach (Sonden und Gegenproben in
+[`MR-021`](../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)).
 
 | Feld | Pflicht | Incident-Frage | Sensor |
 |---|---|---|---|
@@ -124,8 +132,10 @@ Die Werkzeug-Achse ist der Werkzeug-**Name**, nicht die Gestalt der Antwort; bew
 **Die Erfassung aus `tool_response` ist eine POSITIV-Liste, und die Form ist tragend.**
 `tool_response` trägt vier gemessene Freitext-Felder — `content` (der vollständige Bericht
 des Subagenten, der größte Freitext-Block des ganzen Aufrufs), `prompt`, `description`,
-`outputFile` — und `prompt` ist genau das Feld, das nie ins Log darf. Es steht in **beiden**
-Flächen. Daraus fünf Festlegungen:
+`outputFile` — und `prompt` ist genau das Feld, das nie ins Log darf. Es steht auf **beiden**
+Erfassungs-Flächen eines `Agent`-Aufrufs — in den **Argumenten** (`tool_input`) und im
+**Ergebnis** (`tool_response`) —, und das Ergebnis ist nicht die harmlosere der beiden.
+Daraus fünf Festlegungen:
 
 1. **Erfasst wird ausschließlich, was `responseKeys()` in `internal/span/response.go`
    namentlich nennt** — sechs Schlüssel, **neun** Blatt-Werte (die vier `usage`-Zähler
