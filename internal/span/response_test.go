@@ -228,7 +228,7 @@ func TestAgentGetsNoArgumentFields(t *testing.T) {
 // TestSpawnedRoleIsNormalised: der Wert aus dem ERGEBNIS wird gegen die sechs
 // kanonischen Namen normalisiert, alles andere wird LEER. `general-purpose` ist keine
 // Rolle — eine Ergebniszeile `general-purpose: 62 %` waere genau die erfundene
-// Kostenstelle, die die Lesevorschrift in MR-018 verbietet.
+// Kostenstelle, die die Lesevorschrift in spec/spezifikation.md §5 verbietet.
 //
 // Geprueft wird der Weg ueber `tool_response.agentType` (nicht roleFromAgentType
 // selbst — das deckt TestAgentRoleFromKnownTypes): die WIEDERVERWENDUNG ist die
@@ -319,8 +319,8 @@ func TestResolvedModelIsStructurallyBounded(t *testing.T) {
 // `spawned_role` von test/mutations/137-span-rollenfeld-praesent-leer.sh. Die
 // uebrigen SECHS prueft dieser Waechter, aber kein Fall bindet sie einzeln: wer einen
 // von ihnen aus der Liste streicht, bekommt von `make mutate` keinen Befund. Die
-// normative Fassung dieser Auszaehlung steht in harness/conventions.md MR-018
-// §Bewacht Punkt 8.
+// normative Fassung dieser Auszaehlung steht in spec/spezifikation.md §5
+// unter Bewacht, Punkt 8.
 func TestFailedAgentCallCapturesNothing(t *testing.T) {
 	root := newRoot(t)
 	emit(t, root, `{"hook_event_name":"PostToolUseFailure","tool_name":"Agent",
@@ -330,12 +330,12 @@ func TestFailedAgentCallCapturesNothing(t *testing.T) {
 	mustContain(t, line, `"tool":"Agent"`, `"status":"error"`, `"event":"PostToolUseFailure"`)
 	// DIE NEUN WERTE NAMENTLICH. Fehlt einer, faellt seine Draht-Form aus der Pruefung:
 	// ein Feld ohne `omitempty` stuende als `"<name>":null` in JEDER Zeile, auch in einem
-	// reinen `Bash`-Span, und kippte die MR-018-Lesart "unbekannt" gegen "nicht
+	// reinen `Bash`-Span, und kippte die Lesart aus spec/spezifikation.md §5 "unbekannt" gegen "nicht
 	// vorhanden" — bei gruenem Gate-Stack.
 	//
 	// Die zwei Cache-Zaehler deckte `"input_tokens"` schon per TEILSTRING ab; sie
 	// stehen jetzt trotzdem namentlich da, damit der Leser NEUN Namen gegen die
-	// Feldtabelle in MR-018 zaehlen kann statt SECHS plus einer Teilstring-
+	// Feldtabelle in spec/spezifikation.md §5 zaehlen kann statt SECHS plus einer Teilstring-
 	// Ueberlegung. Sechs ist die Zahl der frueher namentlich genannten Werte; die
 	// zwei Cache-Zaehler kamen per Teilstring dazu, `output_tokens` fehlte ganz.
 	// `result_bytes` ist KEINER der neun — es ist die Laenge, die jedes Werkzeug

@@ -285,6 +285,7 @@ erste Nachmessung in §3. Der Umzug ändert daran nichts: Quell- und Zielpfad li
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | der neue Eintrag am Ende des Blocks und die Zeiger-Zeile im Kopf des aufgehobenen; dessen Rumpf geht in einem eigenen, reinen Lösch-Commit (DoD 2) |
 | `docs/reviews/` | neu | das Zeitdokument, das die 49 datierten Mess-Zeilen aufnimmt |
 | [`AGENTS.md`](../../../../AGENTS.md) | update | die `span-check`-Zeile der Gate-Tabelle nennt heute den aufgehobenen Eintrag als Quelle des Schemas und zeigt danach auf das Stratum |
+| `internal/span/`, `.claude/hooks/pretooluse-agent-guard.sh`, `harness/tools/span-check.sh`, `test/mutations/` | update | Kommentare, die im **Präsens** eine Aussage über den Inhalt des aufgehobenen Eintrags treffen, nennen den Ort, an dem der Inhalt steht; sonst widerspricht der Quellbestand DoD (2a). Nicht berührt: Vergangenheitsform über einen früheren Stand (bleibt wahr) und die bloße Adresse (dafür ist die Zeiger-Zeile im Kopf da) |
 
 **Die Commit-Folge ist tragend, und sie trennt Verschieben von Ändern**
 ([`AGENTS.md`](../../../../AGENTS.md) §3.3 in der Sache):
@@ -305,6 +306,10 @@ erste Nachmessung in §3. Der Umzug ändert daran nichts: Quell- und Zielpfad li
    (a) und die Zählgröße samt der Regel, unter der sie gilt (c). Eigener Commit mit eigener
    Message; sonst ist im Ergebnis eine Korrektur nicht von einer Entfernung zu unterscheiden.
    **(d) gehört nicht hierher:** eine Zusage, die nichts misst, wird nicht richtiggestellt.
+6. **Nachzug** — die Kommentar-Aussagen im Quellbestand über den Inhalt des Eintrags zeigen auf
+   dessen Ort. Eigener Commit, und erst hier: vor Schritt 4 wären sie noch wahr gewesen. Er
+   berührt keine bindende Aussage, sondern deren Adresse — die Zählung, welche Nennung das eine
+   und welche das andere ist, steht in §6.
 
 **Was die Umsetzung zuerst nachmisst** (Modul 9 §4), weil jede Zahl aus §1 mit dem nächsten Commit
 altert:
@@ -534,6 +539,17 @@ Closure-Notiz mit Steering-Loop-Eintrag.
   und [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
   je an [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)). Die Textänderung
   ist eine eigene Entscheidung.
+- **Wie oft der Quellbestand den Eintrag nennt, und in welcher Rolle — 41 Nennungen in 23
+  Nicht-Markdown-Dateien, Satz für Satz eingeordnet.** **28** treffen im Präsens eine Aussage über
+  seinen **Inhalt** (*„die Feldtabelle steht in …"*, *„die bindende Fassung steht in …"*, *„die
+  VOLLE Pflicht-Spalte aus …"*); **6** stehen in der **Vergangenheitsform** über einen früheren
+  Stand (*„sagte bis zum …"*) und bleiben, weil sie wahr sind — ein Nachzug machte sie falsch;
+  **7** sind bloße **Adressen** (Klammer-Zitat, Befund-Kennung) und bleiben, weil die Zeiger-Zeile
+  im Kopf genau für sie da ist. Nur die 28 ziehen nach (§3 Schritt 6): **29 Zeilen in 17 Dateien**,
+  keine davon eine Zusage und keine ein `# files:`/`# expect:`-Kopf. **Kein Sensor sieht diese
+  Klasse:** 18 der 23 Dateien liegen dauerhaft außerhalb des `make comment-claims`-Prüfbereichs,
+  und für die übrigen fünf trifft dessen Ausdruck keine der 41 Zeilen — er fragt, ob eine
+  Abdeckungs-Behauptung ihren Sensor nennt, nicht, ob das genannte Dokument noch bindet.
 - **Dogfood und emittiert sind hier verschieden.** Ein gebootstrapptes Ziel bekommt
   `harness/conventions.md` **und** `spec/spezifikation.md` aus derselben vendored Vorlage — was es
   nicht bekommt, ist unser Bestand.

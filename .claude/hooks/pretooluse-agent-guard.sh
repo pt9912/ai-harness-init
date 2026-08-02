@@ -2,7 +2,7 @@
 # pretooluse-agent-guard — verweigert jeden Agenten-Aufruf, den er mit erkennbarem
 # ROLLEN-Typ und ohne run_in_background: false sieht. Was er entscheidet, ist die
 # AUFRUFFORM vor dem Start; ueber den Ausgang des Laufs entscheidet er nicht mit —
-# was er damit nicht deckt, steht in MR-018, Abweichung 5, Pruefschritt 3.
+# was er damit nicht deckt, steht in spec/spezifikation.md §5, Abweichung 5, Pruefschritt 3.
 # Grund ist Telemetrie, nicht Sicherheit:
 # gemessen am 2026-07-29 traegt die Antwort eines Hintergrund-Laufs weder
 # Nutzungszaehler noch agentType — die Rollen-Achse bliebe leer und die
@@ -17,7 +17,7 @@
 #
 # DIE ROLLEN-LISTE WIRD ABGELEITET, NICHT KOPIERT: ein Typ ist genau dann eine
 # Rolle, wenn .claude/agents/<name>.md existiert. Damit gibt es keine vierte
-# Kopie neben dem Verzeichnis, MR-018 und roleFromAgentType — und der Guard kann
+# Kopie neben dem Verzeichnis, spec/spezifikation.md §5 und roleFromAgentType — und der Guard kann
 # nicht gegen das Verzeichnis veralten, das er bewacht. Sensor: test/agent-guard.bats,
 # "JEDER Typ in .claude/agents/ wird im Hintergrund abgelehnt" faehrt die Ableitung
 # ueber jede Datei im Verzeichnis.

@@ -13,7 +13,7 @@
 # eine kuenftige Antwort ein fuenftes Freitext-Feld bringt". Ohne diesen Fall ist genau
 # dieser Satz unbelegt. Zugleich ist er der Sensor zu ADR-0011 Festlegung 1 Punkt 3
 # ("das Schema ist GESCHLOSSEN") — der EINZIGEN Regel von Festlegung 1, die nicht an
-# MR-018 delegiert ist und deren Bruch das Architect-Verdikt vom 2026-07-30 kippt (B3).
+# spec/spezifikation.md §5 delegiert ist und deren Bruch das Architect-Verdikt vom 2026-07-30 kippt (B3).
 #
 # DIE VIER BLEIBEN AUSGESCHLOSSEN, und das ist Absicht: so misst dieser Zahn die GRENZE
 # und nicht ein zweites Mal die vier Namen (die gehoeren 123..126). Rot wird er allein

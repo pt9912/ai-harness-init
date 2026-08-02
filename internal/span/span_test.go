@@ -551,7 +551,7 @@ func TestLeftoverLockDirectoryDoesNotBlock(t *testing.T) {
 }
 
 // TestUnresolvableGitRefStillCarriesFields ist der Worktree-Fall: dort ist `.git` eine
-// DATEI, die Ableitung schlaegt fehl — und MR-018 sagt fuer diesen Fall "leer und als
+// DATEI, die Ableitung schlaegt fehl — und spec/spezifikation.md §5 sagt fuer diesen Fall "leer und als
 // leer erkennbar" zu. Mit `omitempty` verschwanden die Schluessel stattdessen ganz.
 // Der Unterschied ist der zwischen "unbekannt" und "nicht
 // vorhanden", und genau den soll ein Audit-Schema tragen.
@@ -601,7 +601,7 @@ func TestNoRootNoSpan(t *testing.T) {
 	}
 }
 
-// TestMandatoryFieldsAlwaysPresent haelt die PFLICHT-Spalte aus MR-018 fest: ein
+// TestMandatoryFieldsAlwaysPresent haelt die PFLICHT-Spalte aus spec/spezifikation.md §5 fest: ein
 // Pflichtfeld steht auch dann in der Zeile, wenn sein Wert leer ist. Ein
 // `omitempty` an der falschen Stelle liesse es lautlos verschwinden, und der Leser
 // saehe nicht das Fehlen, sondern gar nichts — die Zeile bliebe wohlgeformt.
@@ -614,7 +614,7 @@ func TestMandatoryFieldsAlwaysPresent(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	// Die Liste ist die PFLICHT-Spalte aus MR-018, vollstaendig. Sie war zuerst um
+	// Die Liste ist die PFLICHT-Spalte aus spec/spezifikation.md §5, vollstaendig. Sie war zuerst um
 	// `branch`/`commit` kuerzer — genau die zwei, die im Code ein `omitempty` trugen
 	// und in einem git-worktree lautlos verschwanden. Der Waechter mass damit die
 	// heutige Implementierung statt der Zusage,

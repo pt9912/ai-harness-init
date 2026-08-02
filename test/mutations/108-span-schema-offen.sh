@@ -3,7 +3,7 @@
 # expect: TestUnknownToolStaysSilent
 #
 # Oeffnet den fail-closed Default: ein Werkzeug, das NICHT namentlich in der
-# MR-018-Tabelle steht, wird behandelt wie ein Kommando-Werkzeug — es gibt also
+# Werkzeug-Tabelle in spec/spezifikation.md §5 steht, wird behandelt wie ein Kommando-Werkzeug — es gibt also
 # Argumente preis.
 #
 # Das ist die Achse, an der ADR-0011 Festlegung 2 haengt: erfasst wird nach dem

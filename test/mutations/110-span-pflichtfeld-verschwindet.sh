@@ -6,7 +6,7 @@
 # wohlgeformtes JSON — und genau das ist die Gefahr: bei leerem Wert verschwindet das
 # Feld, und der Leser sieht nicht das Fehlen, sondern gar nichts.
 #
-# Die Pflicht-Spalte in MR-018 ist eine Zusage an den AUSWERTER: er darf sich darauf
+# Die Pflicht-Spalte in spec/spezifikation.md §5 ist eine Zusage an den AUSWERTER: er darf sich darauf
 # verlassen, dass die Achse da ist, um zu erkennen, dass ihr Wert fehlt. Ein
 # stillschweigend weggelassenes Feld ist der Unterschied zwischen "unbekannt" und
 # "nicht vorhanden" — Modul 15 nennt genau ihn als das, was ein Audit-Schema tragen

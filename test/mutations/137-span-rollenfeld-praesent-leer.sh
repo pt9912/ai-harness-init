@@ -6,7 +6,7 @@
 # Zeile — auch in jedem `Bash`-Span, der nie einen Subagenten gestartet hat.
 #
 # DAS IST DIE DRAHT-FORM, AUF DER EINE LESEVORSCHRIFT RUHT, nicht eine Formalie.
-# harness/conventions.md MR-018 legt fuer `spawned_role` ausdruecklich die ANDERE
+# spec/spezifikation.md §5 legt fuer `spawned_role` ausdruecklich die ANDERE
 # Draht-Form fest als fuer `agent_role`: `agent_role` ist Pflicht und steht als `""` in
 # jeder Zeile, `spawned_role` ist `omitempty` und FEHLT bei leerem Wert. Ein
 # `"spawned_role":""` in jedem `Bash`-Span behauptete einen Subagenten, den es nicht

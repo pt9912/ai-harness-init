@@ -10,7 +10,7 @@
 # ES IST DIE SPIEGELUNG VON FALL 110/111/130, nicht ihre Kopie: dort setzt die Mutation
 # ein `omitempty` an ein PFLICHT-Feld und laesst es lautlos verschwinden; hier nimmt sie
 # es von einem OPTIONALEN und laesst es lautlos erscheinen. Beide Draht-Formen sind in
-# harness/conventions.md MR-018 festgelegt, und beide tragen dieselbe Lesevorschrift —
+# spec/spezifikation.md §5 festgelegt, und beide tragen dieselbe Lesevorschrift —
 # der Unterschied zwischen „unbekannt" und „nicht vorhanden". Ein anwesender Zaehler
 # ohne Messung dreht sie um: der Auswerter sieht eine Messung, wo keine stattfand, und
 # genau das ist die Fehlerform, gegen die ADR-0011 Folgepflicht 4 die Folgenummern

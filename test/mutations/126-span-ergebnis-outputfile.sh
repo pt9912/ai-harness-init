@@ -8,7 +8,7 @@
 # `outputFile` ist ein PFAD, und Pfade sehen erfassbar aus: der Span fuehrt fuer
 # Datei-Werkzeuge ohnehin ein `path`. Der Unterschied ist die Herkunft — dieser Pfad
 # kommt aus dem ERGEBNIS eines fremden Werkzeugs und zeigt AUSSERHALB des Repos, in
-# denselben Bereich wie der `transcript_path`, dessen Erfassung MR-018 Abweichung 1
+# denselben Bereich wie der `transcript_path`, dessen Erfassung spec/spezifikation.md §5 Abweichung 1
 # ausdruecklich zurueckgenommen hat. Ein Zeiger auf fremden Gespraechsinhalt legt eine
 # Aufloesung nahe, die niemand genehmigt hat. Gemessen in slice-060 §3 Zeile 2.
 #

@@ -202,7 +202,7 @@ func toolClass(tool string) class {
 	// eintreten konnte.
 	default:
 		// Der Default (ADR-0011 Festlegung 2): was nicht namentlich in der
-		// MR-018-Tabelle steht, gibt NUR Name und Status preis.
+		// Werkzeug-Tabelle in spec/spezifikation.md §5 steht, gibt NUR Name und Status preis.
 		return classNone
 	}
 }
@@ -215,7 +215,7 @@ type Derived struct {
 	HasArgc bool
 }
 
-// Derive bildet die MR-018-Tabelle ab: Datei-Werkzeuge geben den Pfad, Kommando-
+// Derive bildet die Werkzeug-Tabelle aus spec/spezifikation.md §5 ab: Datei-Werkzeuge geben den Pfad, Kommando-
 // Werkzeuge das Programm-Token und die Argument-Anzahl, alles andere nichts.
 func Derive(p Payload) Derived {
 	switch toolClass(p.Tool) {

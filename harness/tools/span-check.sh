@@ -104,7 +104,7 @@ fi
 
 [ -s "$file" ] || fail "kein Span geschrieben ($file fehlt oder ist leer)"
 
-# Die VOLLE Pflicht-Spalte aus MR-018, nicht eine Auswahl. Die Vorgaenger-Fassung
+# Die VOLLE Pflicht-Spalte aus spec/spezifikation.md §5, nicht eine Auswahl. Die Vorgaenger-Fassung
 # pruefte 7 von 14 — und es fehlten ausgerechnet die vier, die derselbe Commit
 # einfuehrte oder rettete (`agent_role`, `adr`, `branch`, `commit`). Damit haette
 # dieselbe Klasse, die als HIGH-2 im Code gefunden wurde, an der zweiten Sensorstelle

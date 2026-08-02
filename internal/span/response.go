@@ -19,7 +19,7 @@ import "encoding/json"
 // EINE Stelle, an der ein neues Feld eingetragen wird, statt einer zweiten
 // Zuweisungs-Liste in Build, die gegen die erste driften kann.
 //
-// Die Feldtabelle samt Incident-Fragen steht in harness/conventions.md MR-018 — sie ist
+// Die Feldtabelle samt Incident-Fragen steht in spec/spezifikation.md §5 — sie ist
 // die normative Fassung (ADR-0011 Folgepflicht 1: "der naechste Leser muss es ohne Code
 // finden"), dieses Struct ihre Umsetzung.
 type AgentResult struct {
@@ -93,7 +93,7 @@ func intoTotalToolUse(r *AgentResult, v json.RawMessage)  { r.TotalToolUseCount 
 // roleFromAgentType wird WIEDERVERWENDET, nicht kopiert: ein unbekannter Wert — heute
 // durchweg `general-purpose` — ergibt ein LEERES Feld. `general-purpose` ist keine
 // Rolle, und eine Ergebniszeile `general-purpose: 62 %` waere genau das, was die
-// Lesevorschrift in MR-018 verbietet.
+// Lesevorschrift in spec/spezifikation.md §5 verbietet.
 //
 // LEER HEISST HIER ABWESEND, nicht `""`: das Feld traegt `omitempty`. Das ist die andere
 // Draht-Form als bei `agent_role`, das als Pflichtfeld present-and-empty in jeder Zeile
@@ -101,7 +101,7 @@ func intoTotalToolUse(r *AgentResult, v json.RawMessage)  { r.TotalToolUseCount 
 // entsteht nur bei einem `Agent`-Aufruf. Ein `"spawned_role":""` in jedem `Bash`-Span
 // behauptete einen Subagenten, den es nicht gab. Lesbar bleibt der Unterschied, weil
 // `tool` Pflicht ist: ein `Agent`-Span OHNE `spawned_role` ist ein Lauf mit unbekannter
-// Rolle, nicht ein Lauf ohne Rolle. Die bindende Fassung steht in MR-018.
+// Rolle, nicht ein Lauf ohne Rolle. Die bindende Fassung steht in spec/spezifikation.md §5.
 //
 // Bewacht von TestSpawnedRoleIsNormalised mit dem Dauer-Sensor
 // test/mutations/128-span-rolle-unnormalisiert.sh. Die Abwesenheit bei fehlendem Ergebnis

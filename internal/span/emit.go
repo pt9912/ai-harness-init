@@ -37,7 +37,7 @@ const (
 )
 
 // Span ist die geschriebene Zeile. Die Feldtabelle samt Incident-Fragen steht in
-// harness/conventions.md MR-018 — sie ist die normative Fassung, dieses Struct ihre
+// spec/spezifikation.md §5 — sie ist die normative Fassung, dieses Struct ihre
 // Umsetzung. Die Reihenfolge hier ist die Reihenfolge in der Datei.
 type Span struct {
 	Seq            int      `json:"seq"`
@@ -165,7 +165,7 @@ func fingerprint(s *Span, path string) {
 
 // roleFromAgentType fuellt die Rollen-Achse aus Modul 15, SOWEIT sie erreichbar ist.
 // LEER HEISST UNBEKANNT, nicht "rollenlos": eine Rolle gibt es immer, wir kennen sie
-// nur nicht. Die Lesevorschrift dazu steht in MR-018 — eine Auswertung, die die leeren
+// nur nicht. Die Lesevorschrift dazu steht in spec/spezifikation.md §5 — eine Auswertung, die die leeren
 // Spans als eigene Kostenstelle aufsummiert, erfindet eine, die es nicht gibt.
 //
 // wird ein Subagent unter dem Namen seiner Harness-Rolle gestartet, IST der

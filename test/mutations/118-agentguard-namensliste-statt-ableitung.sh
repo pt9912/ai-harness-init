@@ -6,7 +6,7 @@
 # Rollen. Beide Fassungen verhalten sich fuer jeden Typ gleich, den das Repo heute
 # fuehrt — der Unterschied ist die Zusage aus slice-060: „ein Typ ist genau dann eine
 # Rolle, wenn `.claude/agents/<name>.md` existiert", damit keine vierte Kopie neben
-# dem Verzeichnis, MR-018 und roleFromAgentType entsteht und der Guard nicht gegen
+# dem Verzeichnis, spec/spezifikation.md §5 und roleFromAgentType entsteht und der Guard nicht gegen
 # das Verzeichnis veralten kann, das er bewacht.
 #
 # DIESER FALL IST DER EINZIGE DES SATZES, DER ABGELEITET VON KOPIERT UNTERSCHEIDET.

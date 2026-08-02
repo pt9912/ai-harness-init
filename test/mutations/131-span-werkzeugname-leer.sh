@@ -7,7 +7,7 @@
 # haelt), aber es traegt nichts mehr.
 #
 # WARUM ES DIESEN FALL BRAUCHT: die Lesevorschrift zu `spawned_role` in
-# harness/conventions.md MR-018 sagt, ein `Agent`-Span OHNE `spawned_role` sei ein Lauf
+# spec/spezifikation.md §5 sagt, ein `Agent`-Span OHNE `spawned_role` sei ein Lauf
 # mit unbekannter Rolle und gehoere in den Sammelposten — „unterscheidbar bleibt es am
 # Pflichtfeld `tool`". Diese Unterscheidbarkeit ist die zweite Haelfte der Voraussetzung,
 # die MR-018 bis zum 2026-07-30 dem Zahn 110 zuschrieb (Review-Befund R2-MEDIUM-1).

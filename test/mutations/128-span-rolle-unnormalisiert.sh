@@ -5,7 +5,7 @@
 # DIE NORMALISIERUNG WIRD ENTFERNT: `spawned_role` uebernimmt den Rohwert aus
 # `tool_response.agentType`, statt ihn gegen die sechs kanonischen Rollennamen zu halten.
 # Danach steht `general-purpose` als Rolle im Span — genau die erfundene Kostenstelle,
-# die die Lesevorschrift in harness/conventions.md MR-018 verbietet („eine Ergebniszeile
+# die die Lesevorschrift in spec/spezifikation.md §5 verbietet („eine Ergebniszeile
 # `general-purpose: 62 %`"). `Reviewer`, `reviewer-2` und `reviewer ` kaemen ebenso durch.
 #
 # WARUM ES DIESEN FALL BRAUCHT: MR-018 §Bewacht sagte bis zum 2026-07-30, die

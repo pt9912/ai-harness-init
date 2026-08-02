@@ -8,7 +8,7 @@
 #
 # ES IST KEINE KOPIE VON 134, SONDERN DIE AUFLOESUNG EINES GEMESSENEN LOCHS
 # (Review-Befund MEDIUM-1 vom 2026-07-30). `TestFailedAgentCallCapturesNothing` prueft
-# den Fehlschlag-Span gegen die NEUN Werte aus harness/conventions.md MR-018 — bis zum
+# den Fehlschlag-Span gegen die NEUN Werte aus spec/spezifikation.md §5 — bis zum
 # 2026-07-30 nannte seine `mustNotContain`-Liste aber nur ACHT davon. `input_tokens`
 # deckt per Teilstring zusaetzlich die zwei Cache-Zaehler ab; `output_tokens` deckt
 # NICHTS davon ab und stand repo-weit in keiner Negativ-Pruefung. Gemessen statt
@@ -21,7 +21,7 @@
 # ("make test-go blieb GRUEN — ... hat keine Zaehne mehr").
 #
 # WARUM DAS ZAEHLT und nicht Formalie ist: die Draht-Form traegt die Lesevorschrift aus
-# MR-018 — ein Wert, der DASTEHT, behauptet eine Messung. `"output_tokens":null` in
+# spec/spezifikation.md §5 — ein Wert, der DASTEHT, behauptet eine Messung. `"output_tokens":null` in
 # jedem `Bash`-Span erzaehlt der Auswertung von slice-066 einen Zaehler, den nie jemand
 # erhoben hat. Es ist die Fehlerform, gegen die ADR-0011 Folgepflicht 4 die
 # Folgenummern eingefuehrt hat, eine Ebene weiter innen.
