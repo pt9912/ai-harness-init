@@ -502,7 +502,22 @@ Closure-Notiz mit Steering-Loop-Eintrag.
 - **Zwei Abweichungen sind durch den Modul-7-Trichter nicht gelaufen.** Der Eintrag sagt es selbst:
   2 und 4 tragen weder Auflösungs-Trigger noch Verdikt. Sie zu führen ist eine **inhaltliche**
   Entscheidung; dieser Slice ist ein **Umbau**. Der offene Zustand wandert aus dem Eintrag hierher
-  und von hier an einen eigenen Schnitt — er verschwindet nicht.
+  und von hier an einen eigenen Schnitt — er verschwindet nicht. **Der Stand aller sechs, damit
+  „zwei sind offen" nachprüfbar ist:** 1 ist auf ihren Rest-Zustand zurückgeschnitten und hängt
+  für ihn an 5 und 6; 3 hat mit [slice-060](../done/slice-060-rollen-achse.md) und
+  [slice-068](../open/slice-068-rollen-arbeit-laeuft-als-rolle.md) benannte Träger; 5 trägt eine
+  beobachtbare Bedingung, die im Stratum steht (trägt die Antwort eines Hintergrund-Laufs eines
+  Tages Zähler, entfällt sie ersatzlos); 6 trägt statt eines Triggers das Verdikt *permanent* und
+  ist in [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) übergeführt. **Der zweite
+  Auflösungs-Trigger von 5 ist Prozess-Zustand und steht darum hier, nicht im Stratum:** die
+  Abdeckungszahl aus [slice-066](../open/slice-066-telemetrie-auswertung.md) DoD (1) — wie viele
+  `Agent`-Spans überhaupt Zähler trugen, mit einem Nenner aus `SubagentStart` statt aus denselben
+  Spans; zeigt sie einen nennenswerten Anteil zählerloser `Agent`-Spans, ist zu entscheiden, ob der
+  Guard auf **alle** Agenten-Typen geweitet wird oder die Zusage einzuschränken ist. Sie ist
+  **messbar, aber noch nicht gemessen**: jener Slice liegt in `open/`, der Trigger wirkt erst,
+  wenn er läuft. **Der Ort dieser Entscheidungen ist ein Plan und nicht das
+  Wellen-Closure-Audit:** dessen Gegenstand sind die Artefakte unter `docs/plan/carveouts/`, und
+  diese sechs Abweichungen sind keine Carveouts und liegen nicht dort.
 - **[slice-075](../open/slice-075-regelwerk-verweis-linkpflicht.md) braucht eine Nachmessung, in zwei
   Punkten, und beide sind gemessen.** (1) Seine Klassen-Tabelle kennt `spec/**` nicht — heute zu
   Recht: `git ls-files 'spec/*.md' | xargs grep -ohE 'Modul[- ][0-9]{1,2}' | wc -l` → **0**. Nach
