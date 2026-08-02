@@ -254,9 +254,37 @@ Punkt, sonst liest sich die Regel breiter als ihr Sensor
   eben keine Rolle, und der Lauf fällt in den Sammelposten samt Splitting-Pflicht
   (Abweichung 3).
 
-**Abgrenzung, damit keine zweite Wahrheit entsteht:** hier steht **WIE** ein Rollen-Lauf
-startet, wenn einer startet. **DASS** Rollen-Arbeit überhaupt als Rolle läuft, ist eine
-andere Regel und steht nicht hier.
+**DASS Rollen-Arbeit als Rolle läuft — die Regel, und warum sie keinen Wächter trägt.** Oben
+steht **WIE** ein Rollen-Lauf startet, wenn einer startet; hier steht, **DASS** einer startet:
+Arbeit, die einer Harness-Rolle zugeordnet ist, läuft **unter dem Rollen-Typ**; der
+Haupt-Kontext orchestriert und ist der **Sammelposten**. **Mechanisch durchsetzbar ist das
+nicht** — nicht aus Aufwand, sondern konstruktiv: ob eine Handlung im Haupt-Kontext
+„Planner-Arbeit" war, kann niemand maschinell entscheiden; die Payload trägt Werkzeug,
+Argumente und Ergebnis, nicht die Zuordnung der Absicht dahinter. Ein Wächter wie der für
+Bedingung 2 entscheidet über eine **Aufrufform**, die ihm vor dem Start vorliegt — hier
+unterbleibt gerade der Aufruf, den er sähe. **Diese Regel trägt deshalb keinen Wächter**, und
+was das für sie heißt, gehört in denselben Satz: sie kann gebrochen werden, ohne dass
+irgendetwas rot wird. Sichtbar wird der Bruch allein an der Berichtsgröße im nächsten Punkt;
+verhindert wird er von nichts.
+
+**Die BERICHTSGRÖSSE dieser Regel — und die Falle, die sie wertlos machte.** Ablesbar ist die
+Regel an der Größe, die Abweichung 3 ohnehin verlangt: dem **Anteil des Sammelpostens** an
+einer Token-Bilanz über diesen Bestand. Groß heißt „nicht gelebt". Zwei Festlegungen gehören
+dazu:
+
+1. **Der Anteil steht im BERICHT, nie als bestandene Schwelle.** Eine Kennzahl mit Grenze
+   erzeugt den Anreiz, Arbeit zu verlagern, damit die Zahl stimmt — statt weil die
+   Rollen-Trennung trägt. Gezeigt wird die Größe; entschieden wird an ihr nichts.
+2. **„Gedeckt" heißt „Span mit ZÄHLERN", nicht „Span mit irgendeinem erfassten Wert".** Die
+   Antwort eines Hintergrund-Laufs trägt von den neun Werten genau `resolvedModel` und keinen
+   der acht übrigen — keine Zähler, kein `agentType` (gemessen, Abweichung 5). Ob daraus im
+   Span ein `model_version` wird, entscheidet die strukturelle Schranke aus
+   [§3](#3-defaults-und-konstanten), und an einem Span aus einem Hintergrund-Lauf ist das
+   **nicht beobachtet** (Abweichung 5 (a): abgeleitet, nicht beobachtet). Die Festlegung
+   braucht die Beobachtung nicht, weil **beide Ausgänge dasselbe sagen**: kommt der Wert an,
+   zählt eine Zahl über „irgendeinen erfassten Wert" genau die Läufe als gedeckt, deren Fehlen
+   sie zeigen soll; kommt er nicht an, ruht dieselbe Zahl auf einer Schranke, die niemand
+   vermessen hat.
 
 **Die Payload ist die Quelle, die Doku ist Herkunft.** Was aus ihr **nicht erfasst und damit
 ausdrücklich abgelehnt** ist: `cwd` (steht implizit im Pfad), `effort` (keine

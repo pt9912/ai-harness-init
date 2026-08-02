@@ -92,6 +92,10 @@ Modul-15-Block-4.
   emittiert** der Tool-Spalte, **ADR-Verdikt** beiden — permanent ist eine Eigenschaft der
   Abweichung, nicht der Ebene. Bündelt eine Zelle mehrere Abweichungen, nennt sie den Wert **je
   Abweichung**; die Zelle *Token-Attribution × Repo* ist genau dieser Fall (slice-068 DoD (3)).
+  **Für sie ist der Wert *Sensor* ausgeschlossen:** ablesbar ist die Regel dahinter allein an
+  einer Berichtsgröße, und ein Bericht ist kein Wächter — er läuft nicht als Gate, er färbt
+  nichts rot, er hat keinen `test/mutations/`-Fall. Welchen der übrigen Werte die Zelle je
+  Abweichung führt, steht in ihrer Slice-Zeile in §4.
 
   | Wert | Bedeutung |
   |---|---|
