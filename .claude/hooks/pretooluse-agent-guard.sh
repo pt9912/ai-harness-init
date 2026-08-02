@@ -10,10 +10,10 @@
 #
 # Reines bash + awk, KEIN node/jq (LH-QA-03): der Extraktor
 # (harness/tools/extract-agent-call.awk) zieht genau zwei Felder aus der
-# Hook-stdin-JSON. JEDER unlesbare Eingang endet fail-closed (verweigern):
-# fehlendes awk, fehlender Extraktor, Parse-Zweifel, fehlender Typ, fehlender
-# Schalter. Eine Datei, eine Politik — die Frage "durchlassen oder verweigern,
-# wenn ich es nicht weiss?" wird hier nur einmal beantwortet.
+# Hook-stdin-JSON. Fail-closed antworten FUENF Zweige, nicht jeder Eingang:
+# fehlendes awk, fehlender Extraktor, Parse-Zweifel und fehlender Typ bei JEDEM
+# Aufruf, fehlender Schalter NUR bei Rollen-Typen. Zaehne haben die letzten drei
+# (test/agent-guard.bats); awk und Extraktor sind UNBEWACHT, nicht unbewachbar.
 #
 # DIE ROLLEN-LISTE WIRD ABGELEITET, NICHT KOPIERT: ein Typ ist genau dann eine
 # Rolle, wenn .claude/agents/<name>.md existiert. Damit gibt es keine vierte
