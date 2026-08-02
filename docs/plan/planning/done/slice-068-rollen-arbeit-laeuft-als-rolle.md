@@ -30,7 +30,7 @@ bleibt deshalb **leer und erkennbar** statt gefüllt und falsch.
 ## 1. Ziel
 
 **Die Konvention sagt, WAS als Rolle läuft — nicht nur, WIE.**
-[slice-060](../done/slice-060-rollen-achse.md) hat die Betriebsart geregelt: **wie** ein
+[slice-060](slice-060-rollen-achse.md) hat die Betriebsart geregelt: **wie** ein
 Rollen-Lauf startet (@-Erwähnung + Vordergrund), erzwungen vom `PreToolUse`-Guard. Was fehlt, ist
 der Satz davor — **dass** Rollen-Arbeit überhaupt unter einem Rollen-Typ läuft. Die Festlegung
 benennt die Lücke selbst und grenzt sich gegen sie ab.
@@ -105,7 +105,7 @@ Haupt-Kontext tut, erzeugt gar keinen Span. Eine mechanische Durchsetzung gibt e
 
 ## 4. Trigger
 
-**`open` → `next`:** [slice-060](../done/slice-060-rollen-achse.md) ist **done** — er
+**`open` → `next`:** [slice-060](slice-060-rollen-achse.md) ist **done** — er
 schreibt in denselben
 [§5](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder)-Abschnitt, und zwei
 gleichzeitige Änderungen daran erzeugen vermeidbare Konflikte.
