@@ -11,9 +11,9 @@
 # Reines bash + awk, KEIN node/jq (LH-QA-03): der Extraktor
 # (harness/tools/extract-agent-call.awk) zieht genau zwei Felder aus der
 # Hook-stdin-JSON. Fail-closed antworten FUENF Zweige, nicht jeder Eingang:
-# fehlendes awk, fehlender Extraktor, Parse-Zweifel und fehlender Typ bei JEDEM
-# Aufruf, fehlender Schalter NUR bei Rollen-Typen. Zaehne haben die letzten drei
-# (test/agent-guard.bats); awk und Extraktor sind UNBEWACHT, nicht unbewachbar.
+# fehlendes awk und fehlender Extraktor (UNBEWACHT, nicht unbewachbar),
+# Parse-Zweifel (nur test/agent-guard.bats) und fehlender Typ (test/mutations/139)
+# bei JEDEM Aufruf, fehlender Schalter (test/mutations/119) NUR bei Rollen-Typen.
 #
 # DIE ROLLEN-LISTE WIRD ABGELEITET, NICHT KOPIERT: ein Typ ist genau dann eine
 # Rolle, wenn .claude/agents/<name>.md existiert. Damit gibt es keine vierte
