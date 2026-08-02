@@ -41,12 +41,12 @@ Der Unterschied ist keine Wortklauberei: der Guard erzwingt den Vordergrund für
 **Die zweite Hälfte ist die Messgröße.** Modul 15 §Token-Attributions-Regeln unterstellt, der
 Sammelposten sei die **Ausnahme**; in diesem Repo ist er die **Regel**. Ob die Konvention gelebt
 wird, ist am Sammelposten-Anteil **zum Teil** ablesbar: wer delegiert, aber nicht unter dem
-Rollen-Typ, hebt ihn — wer den Schritt selbst im Haupt-Kontext tut, erzeugt gar keinen Span. Eine
-mechanische Durchsetzung gibt es nicht.
+Rollen-Typ, hebt ihn — sofern die Antwort seines Laufs Zähler trägt; wer den Schritt selbst im
+Haupt-Kontext tut, erzeugt gar keinen Span. Eine mechanische Durchsetzung gibt es nicht.
 
 ## 2. Definition of Done
 
-- [ ] **(1) Die Konvention steht in
+- [x] **(1) Die Konvention steht in
   [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5,
   und ihre Grenze steht daneben.** Wortlaut-Kern: Arbeit, die einer Harness-Rolle zugeordnet ist,
   läuft **unter dem Rollen-Typ**; der Haupt-Kontext orchestriert und ist der Sammelposten.
@@ -57,7 +57,7 @@ mechanische Durchsetzung gibt es nicht.
   durch Schweigen offenzulassen; in der Sensor-Spalte steht dann *kein Wächter* mit diesem Grund.
   **Der bindende Text trägt keine Entscheidungs- und keine Planungs-Kennung** — auch keine nackte
   `slice-`-Kennung, die dort kein Muster trifft und trotzdem verboten ist.
-- [ ] **(2) Die Berichtsgröße ist festgelegt — samt der Falle, die sie wertlos machen würde.**
+- [x] **(2) Die Berichtsgröße ist festgelegt — samt der Falle, die sie wertlos machen würde.**
   Der Sammelposten-Anteil aus [slice-066](../open/slice-066-telemetrie-auswertung.md) DoD (1) ist die
   Messgröße: groß heißt „nicht gelebt". Zwei Festlegungen gehören dazu, beide aus gemessenen
   Gründen:
@@ -75,7 +75,7 @@ mechanische Durchsetzung gibt es nicht.
      die Läufe als gedeckt, deren Fehlen sie zeigen soll — kommt er nicht an, ruht dieselbe Zahl
      auf einer Schranke, die niemand vermessen hat. Beide Ausgänge sagen dasselbe: die
      Definition muss an den **Zählern** hängen.
-- [ ] **(3) Die Welle-Aussage steht als Festlegung, nicht als Zelle.** welle-09 verlangt je
+- [x] **(3) Die Welle-Aussage steht als Festlegung, nicht als Zelle.** welle-09 verlangt je
   Matrix-Zelle *„einen laufenden Sensor, eine deklarierte Entscheidung mit Auflösungs-Trigger
   oder das Verdikt einer ADR, dass die Abweichung permanent ist; und nichts dazwischen"*. Für
   *Token-Attribution × Repo* ist heute genau **dazwischen**. Dieser Slice schreibt die
@@ -90,15 +90,15 @@ mechanische Durchsetzung gibt es nicht.
   `welle-09-results.md`; sie hier abhaken zu wollen wäre eine Zusage über ein Artefakt, das es
   noch nicht gibt.
 
-- [ ] `make gates` grün.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] `make gates` grün.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | die Konvention aus DoD (1) und die Festlegungen aus DoD (2) in §5, unmittelbar an der Start-Konvention, deren Abgrenzung die Lücke wörtlich benennt. Beides trifft die [Aufnahme-Regel](../../../../spec/spezifikation.md#aufnahme-regel): gemessen wird gegen die **Festlegung** — welcher Lauf in den Sammelposten fällt, und was die Berichtsgröße zeigt und was nicht —, nicht an der Größe allein, die nur die delegierte Hälfte trägt; ohne Vertragsänderung fortschreibbar; die nächste Festlegung zur Größe ist ein weiterer Punkt ihrer Liste und verdrängt keinen anderen Text. **Kein Adaptions-Eintrag:** die Umkehrung *Sammelposten = Regel statt Ausnahme* steht dort bereits bindend (Abweichung 3 und 6); ein zweiter Ort driftet |
-| [`slice-066`](../open/slice-066-telemetrie-auswertung.md) | keine Änderung | die Definition des Sammelposten-Anteils hängt dort in DoD (1) bereits an den **Zählern** (*„wie viele `Agent`-Spans überhaupt Zähler trugen"*), und die Lesart als Konventions-Messgröße steht im Stratum; sie ein zweites Mal in eine fremde DoD zu schreiben erzeugte den zweiten Ort, den die Zeile darüber vermeidet |
+| [`slice-066`](../open/slice-066-telemetrie-auswertung.md) | keine Änderung | dort stehen in DoD (1) beide Größen, die diese Festlegung braucht, und sie stehen **getrennt**: der Sammelposten-Anteil (*„wie groß der aufgeteilte Anteil war"*, an leerem `spawned_role`) und die Abdeckungszahl (*„wie viele `Agent`-Spans überhaupt Zähler trugen"*). Die Lesart als Konventions-Messgröße steht im Stratum; sie ein zweites Mal in eine fremde DoD zu schreiben erzeugte den zweiten Ort, den die Zeile darüber vermeidet |
 | [welle-09](../welle-09-modul-15-konformitaet.md) | update | DoD (3) legt die Belegart der Zelle *Token-Attribution × Repo* fest. Der Welle-Plan führt dieselbe Aussage an zwei Stellen — in der Wert-Tabelle seines Closure-Triggers und in der Slice-Zeile zu diesem Slice. Kommt die Festlegung anders heraus als dort beschrieben, ziehen beide Stellen nach; sonst steht dieselbe Aussage zweimal verschieden im Repo |
 
 **Kein Code, kein neuer Wächter.** Das ist beabsichtigt; der Grund steht in §6.
@@ -161,7 +161,105 @@ DoD vollständig; Review konform (Modul 10); Verifikation bestätigt (Modul 11);
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Was gilt.** Die Start-Konvention hat ihre zweite Hälfte: **dass** Arbeit, die einer
+Harness-Rolle zugeordnet ist, unter dem Rollen-Typ läuft, steht in
+[`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5,
+und ihre Grenze steht im selben Absatz. Die Grenze ist kein Vorbehalt, sondern der Kern: ein
+Wächter entscheidet über eine **Aufrufform**, die ihm vor dem Start vorliegt, und hier
+unterbleibt gerade der Aufruf, den er sähe. **Diese Regel trägt deshalb keinen Wächter** — als
+Satz, nicht als Schweigen. Daneben die Berichtsgröße mit zwei Festlegungen: der
+Sammelposten-Anteil steht im **Bericht**, nie als bestandene Schwelle (eine Kennzahl mit Grenze
+erzeugt den Anreiz, Arbeit zu verlagern, damit die Zahl stimmt), und *gedeckt* heißt *Span mit
+**Zählern***, nicht *Span mit irgendeinem erfassten Wert*.
+
+Für die Matrix-Zelle *Token-Attribution × Repo* ist der Wert *Sensor* ausgeschlossen — ein
+Bericht läuft nicht als Gate, färbt nichts rot und hat keinen `test/mutations/`-Fall. Ihre
+Belegart ist zweigeteilt: der Hintergrund-Teil trägt *deklariert*, und er ist einlösbar —
+Geltungsbereich, Begründung und Auflösungs-Trigger stehen als erklärte Abweichung 5 in Rang 2,
+und die Wert-Tabelle von [welle-09](../welle-09-modul-15-konformitaet.md) macht den Wert an
+diesen drei Angaben fest statt an einem Gefäß, dessen Zielort
+[`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) inzwischen anders setzt. Der
+Haupt-Kontext trägt das ADR-Verdikt *permanent*; es bindet erst mit der Annahme von
+[`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md).
+
+**Die Auszählung, an der die Zusage hängt.** Sammelposten heißt nach der Feldtabelle
+*„`Agent`-Span **ohne** `spawned_role`"*, und gehoben wird ein Anteil nur von Token. Über die
+Formen, die ein delegierter Lauf annehmen kann, hebt **genau eine** den Anteil:
+
+| Form | hebt den Anteil |
+|---|---|
+| Nicht-Rollen-Typ im Hintergrund — der Guard greift nur bei einer Datei in `.claude/agents/`, der Lauf fällt in den Sammelposten und trägt keinen der acht Werte an `usage`/`total*`/`agentType` | nein |
+| Rollen-Typ im Hintergrund, Guard verdrahtet — abgelehnt, es entsteht gar kein Span | nein |
+| Rollen-Typ im Hintergrund, Guard fehlend, abgeschaltet oder umgangen — fällt zählerlos hinein | nein |
+| fehlgeschlagener Agenten-Aufruf — keine `tool_response`, kein erfasster Wert | nein |
+| Vordergrund-Lauf, dessen Antwort keine Zähler trägt — im Bestand **beobachtet**: ein `Agent`-Span eines Rollen-Typs, dessen erfasster Wert-Satz aus genau `model_version` besteht | nein |
+| Vordergrund-Lauf eines Nicht-Rollen-Typs, dessen Antwort Zähler trägt | **ja** — ein Bruch dieser Konvention ist er nur, wenn die delegierte Arbeit Rollen-Arbeit war |
+
+Damit ist die Zusage so breit wie ihr Gegenstand: sichtbar ist die eine Form, und von ihr nur,
+was Zähler trägt.
+
+**Was der Slice nicht deckt.**
+
+- **Kein Zahn, und der Grund ist der Gegenstand.** Zugesagt ist eine Aussage darüber, was
+  messbar ist und was nicht; ein Wächter über einer Unmessbarkeit wäre die Zusage ohne
+  Abdeckung, gegen die [`AGENTS.md`](../../../../AGENTS.md) §3.6 steht. Der Zahn liegt bei
+  [slice-066](../open/slice-066-telemetrie-auswertung.md): fällt der Sammelposten-Anteil aus dem
+  Bericht, muss ein Fall rot werden.
+- **Die tragende Zusage ist *kein Wächter*, und ihre Folge steht mit ihr.** Die Konvention kann
+  gebrochen werden, ohne dass irgendetwas rot wird. Die einzige Rückmeldung ist eine Größe, die
+  eine der beiden Formen gar nicht erreicht — wer den Schritt selbst im Haupt-Kontext tut,
+  erzeugt keinen `Agent`-Span und steht weder im Zähler noch im Nenner. **Klein heißt deshalb
+  nicht „gelebt"**, und nur *groß* trägt eine Aussage.
+- **Frage C** (Rollen-Ableitung für den Haupt-Kontext) bleibt offen; sie ist Vorbedingung für
+  jede Splitting-Regel, nicht für diese Konvention.
+- **Die emittierte Ebene.** Ob die Konvention ins Ziel-Repo mitgeht, entscheidet slice-062.
+- **Die Nicht-Erreichbarkeit der Haupt-Kontext-Token** steht als Abweichung 6 in Rang 2 und
+  nennt dort **keinen** Auflösungs-Trigger. Wer an ihr einen Träger für einen Folge-Slice sucht,
+  findet keinen.
+- **Die zweite Hälfte der Belegart** hängt an einer Entscheidung, die dieser Slice nicht trifft
+  ([`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md), *Proposed*).
+
+**Steering-Loop-Eintrag — geschärfte Regel.**
+
+**Eine Zusage darüber, was eine Kennzahl sichtbar macht, wird in der Größe formuliert, aus der
+die Zahl gebildet wird — nicht in den Umständen, die diese Größe üblicherweise erzeugen.** Die
+Umstände (Aufrufform, Betriebsart, Delegations-Weg) sind empirische Begleiter der Größe, und
+jeder Begleiter hat Gegenbeispiele, die einzeln gefunden werden müssen. Jede Einschränkung, die
+einen Umstand nennt, ist deshalb nicht der Abschluss der Korrektur, sondern ihre nächste,
+feinere Runde: *„sichtbar an der Berichtsgröße"* → *„sichtbar, wer delegiert, aber nicht unter
+dem Rollen-Typ"* → *„nur im Vordergrund"* — drei Formulierungen derselben Zusage, drei Mengen,
+und keine davon die, die die Zahl misst. Hier war die Größe **Token im Sammelposten**; erst
+*„und von ihr nur, was Zähler trägt"* hat kein Gegenbeispiel, weil das die Definition der Zahl
+ist und kein Korrelat.
+
+**Warum die Nähe des Kriteriums nicht genügt.** *„Gedeckt heißt Span mit Zählern"* stand als
+Punkt 2 derselben Festlegung zwei Zeilen unter dem Satz, den es korrigiert — und der Satz blieb
+falsch. Ein Kriterium, das **neben** einer Zusage steht, wird nicht automatisch **auf** sie
+angewandt.
+
+**Anwendung, prüfbar am Text:** wer schreibt *„sichtbar ist …"*, *„gedeckt ist …"*,
+*„erfasst ist …"*, nennt die Größe, aus der die Zahl entsteht, und prüft, ob das Prädikat in
+deren Vokabular formuliert ist. Steht dort ein Umstand statt einer Größe, ist ein Gegenbeispiel
+zu suchen, bevor der Satz steht — für die naheliegende Einschränkung *„nur im Vordergrund"* lag
+es bereits **beobachtet** im Bestand.
+
+**Offen, mit Träger.**
+
+| Posten | Träger |
+|---|---|
+| Die Rollen-Liste steht zweimal und ist nicht gekoppelt: der Guard leitet sie aus `.claude/agents/` **ab**, `roleFromAgentType` in `internal/span/emit.go` führt sie als **hart notierte** Liste von sechs Namen (kein `.go` liest das Verzeichnis — gemessen: 0 Treffer). Eine siebte Rollen-Datei erzwänge den Vordergrund, der Lauf trüge Zähler, `spawned_role` bliebe leer — er hübe den Sammelposten-Anteil, **ohne ein Bruch zu sein**, und der Kommentar am Ort (*„wird ein Subagent unter dem Namen seiner Harness-Rolle gestartet, IST der Agenten-Typ die Rolle"*) wäre für ihn falsch. Heute 0 Instanzen: `ls -1 .claude/agents/` führt genau die sechs kanonischen Namen | kein Schnitt gelegt — Planner-Arbeit. Der Trigger ist beobachtbar und braucht kein Urteil: die **siebte** Datei in `.claude/agents/`. Die Zusage ist eine neue und braucht ihren eigenen rot gesehenen Zahn ([`AGENTS.md`](../../../../AGENTS.md) §3.6) |
+| Ein gehobener Sammelposten-Anteil belegt keinen Bruch — die Zahl trägt beide Fälle. Wer sie druckt, sagt das dazu | [slice-066](../open/slice-066-telemetrie-auswertung.md) DoD (1), wo die Größe entsteht |
+| Zwei Textmängel in Rang 2: die Historie-Zeile zählt den Inhalt von §5 auf und nennt die zwei hier hinzugekommenen Festlegungen nicht; im bindenden Absatz zeigen *er* und *seiner* auf ein Substantiv (*der Bruch*), das im Dokument nicht mehr steht | die nächste Änderung an §5 — geplant ist [slice-066](../open/slice-066-telemetrie-auswertung.md) DoD (3). Keine Wirkung auf eine DoD, kein Gate greift |
+| [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) steht auf *Proposed*; ohne Verdikt ist die Matrix-Zelle nicht füllbar | Architect — Vorbedingung der welle-09-Closure, nicht dieses Slice |
+
+**Gates.** `make gates` **Exit 0**: `baseline-verify: v3.5.2 OK — 42 Dateien`,
+`d-check: 287 Datei(en) geprüft, 0 Befund(e)`, `1..150` bats ohne `not ok`,
+`comment-claims: 38 Datei(en) geprueft, 0 Befund(e)`, `span-check` ok.
+`make mutate` deckt diesen Baum, ohne neu zu laufen: der Bogen des Slice besteht ausschließlich
+aus Markdown unter `spec/` und `docs/` (`git diff --name-only ddb27d1..HEAD | grep -v '\.md$'` →
+0 Treffer), und von den **36** eindeutigen `# files:`-Zielen der 135 Fälle liegt **keines** darin
+(`comm -12` → 0 Zeilen). Der Beleg ist der CI-Vollauf auf `13e9ac9`: `mutate: 135 ok, 0
+Befund(e)`. Ein neuer Zahn ist nicht fällig — kein Code, kein neuer Wächter.
 
 ## 8. Sub-Area-Modus-Begründung
 
