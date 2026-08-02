@@ -268,9 +268,10 @@ kann gebrochen werden, ohne dass irgendetwas rot wird. Verhindert wird er von ni
 
 **Die BERICHTSGRÖSSE dieser Regel — was sie zeigt und was nicht.** Zum Teil ablesbar ist die
 Regel an der Größe, die Abweichung 3 ohnehin verlangt: dem **Anteil des Sammelpostens** an einer
-Token-Bilanz über diesen Bestand. **Sichtbar ist die eine Form:** wer Rollen-Arbeit delegiert,
-aber nicht unter dem Rollen-Typ, dessen Lauf fällt in den Sammelposten und hebt den Anteil —
-groß heißt insoweit „nicht gelebt". **Die andere bleibt unsichtbar:** wer den Schritt selbst im
+Token-Bilanz über diesen Bestand. **Sichtbar ist die eine Form, und von ihr nur, was Zähler
+trägt:** wer Rollen-Arbeit delegiert, aber nicht unter dem Rollen-Typ, dessen Lauf fällt in den
+Sammelposten und hebt den Anteil — ein zählerloser fällt ebenso hinein und hebt nichts; groß
+heißt insoweit „nicht gelebt". **Die andere bleibt unsichtbar:** wer den Schritt selbst im
 Haupt-Kontext tut, erzeugt keinen `Agent`-Span und steht weder im Zähler noch im Nenner — die
 Bilanz rechnet über Subagenten-Läufe (Abweichung 6), und ein nie gestarteter Lauf ist keiner.
 Die Größe zeigt dann dasselbe Bild wie eine gelebte Konvention: **klein heißt nicht „gelebt"**.
