@@ -56,7 +56,7 @@ es nicht.
   **Der bindende Text trägt keine Entscheidungs- und keine Planungs-Kennung** — auch keine nackte
   `slice-`-Kennung, die dort kein Muster trifft und trotzdem verboten ist.
 - [ ] **(2) Die Berichtsgröße ist festgelegt — samt der Falle, die sie wertlos machen würde.**
-  Der Sammelposten-Anteil aus [slice-066](slice-066-telemetrie-auswertung.md) DoD (1) ist die
+  Der Sammelposten-Anteil aus [slice-066](../open/slice-066-telemetrie-auswertung.md) DoD (1) ist die
   Messgröße: groß heißt „nicht gelebt". Zwei Festlegungen gehören dazu, beide aus gemessenen
   Gründen:
   1. **Die Größe steht im Bericht, nicht als bestandene Schwelle.** Eine Kennzahl mit Grenze
@@ -120,7 +120,7 @@ dieser Notiz ableiten.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | die Konvention aus DoD (1) und die Festlegungen aus DoD (2) in §5, unmittelbar an der Start-Konvention, deren Abgrenzung die Lücke wörtlich benennt. Beides trifft die [Aufnahme-Regel](../../../../spec/spezifikation.md#aufnahme-regel): messbar an der Berichtsgröße, ohne Vertragsänderung fortschreibbar, mit jeder weiteren Rolle wachsend. **Kein Adaptions-Eintrag:** die Umkehrung *Sammelposten = Regel statt Ausnahme* steht dort bereits bindend (Abweichung 3 und 6); ein zweiter Ort driftet |
-| [`slice-066`](slice-066-telemetrie-auswertung.md) | update | die Definition des Sammelposten-Anteils an den **Zählern** statt an „irgendeinem Wert"; die Lesart als Konventions-Messgröße |
+| [`slice-066`](../open/slice-066-telemetrie-auswertung.md) | update | die Definition des Sammelposten-Anteils an den **Zählern** statt an „irgendeinem Wert"; die Lesart als Konventions-Messgröße |
 | [welle-09](../welle-09-modul-15-konformitaet.md) | update | DoD (3) legt die Belegart der Zelle *Token-Attribution × Repo* fest. Der Welle-Plan führt dieselbe Aussage an zwei Stellen — in der Wert-Tabelle seines Closure-Triggers und in der Slice-Zeile zu diesem Slice. Kommt die Festlegung anders heraus als dort beschrieben, ziehen beide Stellen nach; sonst steht dieselbe Aussage zweimal verschieden im Repo |
 
 **Kein Code, kein neuer Wächter.** Das ist beabsichtigt; der Grund steht in §6.
@@ -153,7 +153,7 @@ DoD vollständig; Review konform (Modul 10); Verifikation bestätigt (Modul 11);
   *ist* eine Aussage darüber, was messbar ist und was nicht. Ein Wächter, der eine Unmessbarkeit
   bewacht, wäre die Zusage ohne Abdeckung, gegen die
   [`AGENTS.md`](../../../../AGENTS.md) §3.6 steht. Der Zahn liegt bei
-  [slice-066](slice-066-telemetrie-auswertung.md): fällt der Sammelposten-Anteil aus dem Bericht,
+  [slice-066](../open/slice-066-telemetrie-auswertung.md): fällt der Sammelposten-Anteil aus dem Bericht,
   muss ein Fall rot werden.
 - **Eine Konvention ohne Durchsetzung wird gebrochen — auch von mir.** Belegt an der Arbeit an
   slice-060: Planner und Implementation liefen über weite Strecken in **einem** Kontextfenster,
