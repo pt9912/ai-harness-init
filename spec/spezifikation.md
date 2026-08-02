@@ -271,9 +271,25 @@ Eindeutigkeit von `seq` **je Datei** voraus, nicht je `(session, agent)`; (2) we
 Namensbildung ändert, räumt vorher mit `make span-clean` auf — sonst wandert der Bruch in
 den Bestand statt in die Änderung.
 
-**Sechs erklärte Abweichungen vom Modul-15-Pflicht-Minimum**
-([Modul 15 §Span-/Audit-Attribut-Regeln](../.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
-verlangt sie zu benennen, nicht wegzulassen).
+**Sechs erklärte Abweichungen — sie kommen aus drei Regelblöcken des Observability-Moduls, und
+eine weicht von keinem ab.** Das Modul verlangt, jede Abweichung zu benennen statt sie
+wegzulassen; von welcher Regel sie abweicht, gehört dazu:
+
+- Vom **Pflicht-Minimum** eines Audit-Span-Schemas — Slice-ID · Agent-Rolle · Cache-Status ·
+  `requirement.id`
+  ([§Span-/Audit-Attribut-Regeln](../.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md#span-audit-attribut-regeln))
+  — weichen **1** (Cache-Status) und **3** (`agent_role`) ab: zwei seiner vier Posten.
+- **2** (PR-Nummer) weicht von den **Mindestfeldern eines Tool-Call-Spans** ab
+  (*„Korrelations-IDs zu Slice/PR/Agent-Rolle"*, dieselbe
+  [Regelgruppe](../.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md#span-audit-attribut-regeln),
+  eine andere Liste).
+- **5** (Hintergrund-Lauf ohne Verbrauchs-Achse) und **6** (Haupt-Kontext ohne Zahl) weichen von
+  den
+  [**Token-Attributions-Regeln**](../.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md#token-attributions-regeln)
+  ab.
+- **4** (Altbestände) weicht von **keiner** Modul-Regel ab. Ihre Quelle ist eine Entscheidung
+  dieses Repos über die **Aufbewahrung**, nicht über das Schema; sie steht hier, weil sie
+  denselben Gegenstand betrifft.
 
 1. **Cache-Status ist für Subagenten-Läufe im Vordergrund erfasst — für den Haupt-Kontext
    und für Hintergrund-Läufe bleibt er unerreichbar.** Das ist der Rest-Zustand; die
@@ -399,16 +415,20 @@ verlangt sie zu benennen, nicht wegzulassen).
       Lauf. (b) Der Guard ist eine Verdrahtung in `.claude/settings.json`; er kann fehlen,
       abgeschaltet oder umgangen sein, und **kein Sensor dieses Repos prüft, dass er
       verdrahtet ist**. Über `test/`, `Makefile`, `harness/tools/` und die Go-Tests berühren
-      die `settings.json` **vier** Artefakte in **drei** Dateien: **zwei Prüfungen ihrer
+      die `settings.json` **fünf** Prüfstellen in **drei** Dateien: **zwei Prüfungen ihrer
       Verdrahtung** — der `PreToolUse`-Test in `harness/tools/smoke.sh` und
-      `TestEnforce_SettingsWiresBothHooks` in `internal/emit/enforce_test.go` —, **eine
-      Prüfung ihres bloßen Vorhandenseins** (`TestEnforce_EmitsAllMechanicFiles` in derselben
-      Datei, die den Pfad im Ziel-Layout fordert, ohne den Inhalt anzusehen) und der
-      **Dauer-Sensor** der zweiten Verdrahtungs-Prüfung, Fall 32. Die Zahl hängt am Verb:
-      unter *„die Verdrahtung prüfen"* sind es drei, unter *„die Datei berühren"* vier.
-      **Alle vier** gelten dem **emittierten** Repo und dessen Command-Guard; für die
-      Verdrahtung **dieses** Repos prüft keines etwas. Ein Vorbild samt rot gesehener
-      Mutation gibt es also, einen Sensor nicht. (c) **Er entscheidet über den Start, nicht
+      `TestEnforce_SettingsWiresBothHooks` in `internal/emit/enforce_test.go` —, **zwei
+      Prüfungen ihres bloßen Vorhandenseins** — die Existenz-Schleife über die
+      Durchsetzungsschicht in derselben `harness/tools/smoke.sh` und
+      `TestEnforce_EmitsAllMechanicFiles` in derselben Go-Datei, beide fordern den Pfad im
+      Ziel-Layout, ohne den Inhalt anzusehen — und der **Dauer-Sensor** der zweiten
+      Verdrahtungs-Prüfung, Fall 32. `Makefile` steuert nichts bei. **Die Zählregel, weil hier
+      zwei Bezugsgrößen zusammenlaufen:** *vier* gilt für benannte Einheiten (die
+      Existenz-Schleife trägt keinen Namen), *fünf* für eigenständige Zusicherungen über die
+      Datei; unter *„die Verdrahtung prüfen"* sind es drei. **Alle fünf** gelten dem
+      **emittierten** Repo und dessen Command-Guard; für die Verdrahtung **dieses** Repos
+      prüft keine etwas. Ein Vorbild samt rot gesehener Mutation gibt es also, einen Sensor
+      nicht. (c) **Er entscheidet über den Start, nicht
       über den Ausgang.** Der Guard sieht die `tool_input`-Payload, bevor der Aufruf läuft;
       ob dessen Antwort am Ende Zähler trägt, entscheidet er nicht mit. Der Bestand trägt
       dafür einen Fall: ein `Agent`-Span eines **Rollen**-Typs — `.claude/agents/architect.md`
