@@ -392,15 +392,15 @@ zwei Aussagen falsch bzw. leer:
 
 | Mangel | Befund | Träger |
 |---|---|---|
-| Zahl der `settings.json`-Prüfstellen | über den Umfang, den der Satz selbst deklariert (`test/**` · `Makefile` · `harness/tools/*.sh` · Go-Tests), sind es **fünf** Prüfstellen in drei Dateien mit **zwei** Prüfungen des bloßen Vorhandenseins — der Text sagt *vier Artefakte* mit *einer*. Die zweite Existenz-Prüfung ist die `for rel in …`-Schleife in `harness/tools/smoke.sh`, deren anderer Block als Artefakt mitzählt | [slice-076](../next/slice-076-mr-018-umzug-technik-stratum.md) §1, Posten (c) |
-| die zugesagte Werte-Sonde auf die Schlüsselnamen von `tool_input` | sie entscheidet nichts: in beiden offenen Lesarten — der Hook lief und wurde übergangen, oder er feuerte nie — zeigt sie dasselbe | [slice-076](../next/slice-076-mr-018-umzug-technik-stratum.md) §1, Posten (d) — dort **ersatzlos**, weil der trennende Sensor [slice-074](../open/slice-074-agent-vor-aufruf-protokoll.md) ist |
+| Zahl der `settings.json`-Prüfstellen | über den Umfang, den der Satz selbst deklariert (`test/**` · `Makefile` · `harness/tools/*.sh` · Go-Tests), sind es **fünf** Prüfstellen in drei Dateien mit **zwei** Prüfungen des bloßen Vorhandenseins — der Text sagt *vier Artefakte* mit *einer*. Die zweite Existenz-Prüfung ist die `for rel in …`-Schleife in `harness/tools/smoke.sh`, deren anderer Block als Artefakt mitzählt | [slice-076](../in-progress/slice-076-mr-018-umzug-technik-stratum.md) §1, Posten (c) |
+| die zugesagte Werte-Sonde auf die Schlüsselnamen von `tool_input` | sie entscheidet nichts: in beiden offenen Lesarten — der Hook lief und wurde übergangen, oder er feuerte nie — zeigt sie dasselbe | [slice-076](../in-progress/slice-076-mr-018-umzug-technik-stratum.md) §1, Posten (d) — dort **ersatzlos**, weil der trennende Sensor [slice-074](../open/slice-074-agent-vor-aufruf-protokoll.md) ist |
 
 **Der Preis, ungeschönt.** Beide Mängel waren korrigiert und sind **zurückgenommen**: die
 adoptierte Vorlagen-Disziplin lässt an einem akzeptierten Eintrag nur *neue Einträge* oder eine
 *explizite Aufhebung via neuen MR* zu, und eine gezielte Korrektur im Rumpf ist keines von
 beidem. Der Eintrag darf aus demselben Grund auch **nicht** auf seinen Träger zeigen — gemessen
 über den Eintrags-Block: `grep -c 'slice-07[0-9]'` → **0**, und das bleibt so. Bis zum Vollzug
-von [slice-076](../next/slice-076-mr-018-umzug-technik-stratum.md) steht damit im
+von [slice-076](../in-progress/slice-076-mr-018-umzug-technik-stratum.md) steht damit im
 Pflicht-Lesepfad (`CLAUDE.md`, Punkt 3 der Vor-jeder-Änderung-Leseliste) eine gemessen falsche
 Zahl, und am Ort des Lesens steht nichts, das sie einschränkt.
 
@@ -467,7 +467,7 @@ Behebung ist der Umzug, nicht ein weiterer Satz.
 | Posten | Träger |
 |---|---|
 | [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) steht auf *Proposed*; die Matrix-Zelle *Token-Attribution × Repo* der Welle verlangt ein **Verdikt** | Architect — Vorbedingung der welle-09-Closure, nicht dieses Slice |
-| die zwei Sachmängel in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) | [slice-076](../next/slice-076-mr-018-umzug-technik-stratum.md) (c) und (d) |
+| die zwei Sachmängel in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) | [slice-076](../in-progress/slice-076-mr-018-umzug-technik-stratum.md) (c) und (d) |
 | die drei fail-closed-Zweige ohne Dauer-Sensor und die zwei fail-open-Pfade (§6) | kein Schnitt gelegt — Planner-Arbeit |
 | `comment-claims`: Index-Verengung, vier Pfad-Muster, `_test.go`-Ausnahme, das Zwölf-Zeichen-Fenster der Verneinungs-Ausnahme | [slice-070](../open/slice-070-comment-claims-pruefbereich.md) |
 | ein Fall bindet einen Wächter-**Namen**, nicht seine **Zusicherung** | [slice-069](../open/slice-069-zahn-bindet-zusicherung.md) |
