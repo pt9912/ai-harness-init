@@ -10,13 +10,13 @@ wechselt nur durch `git mv`, siehe
 
 **Bezug:** [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) (Baseline ohne
 inhaltliche Adaption — Modul 15 ist adoptiert und in Block 2 unumgesetzt),
-[`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
+[`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
 (das Span-Schema, das dieser Slice **liest**, samt der dort bindenden Lesevorschrift zum
-Sammelposten),
+Sammelposten, und der Ort der Festlegung aus DoD (3)),
 [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) (**Accepted** — die Policy, unter
 der der ausgewertete Bestand entstanden ist; die ADR nennt den Auswerter dreimal „slice-060",
-gemeint ist seit dem Schnitt **dieser** Slice, verankert in
-[`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)),
+gemeint ist seit dem Schnitt **dieser** Slice — die Umdeutung steht unterhalb der
+Modus-Deklaration in [`harness/conventions.md`](../../../../harness/conventions.md)),
 [`ADR-0003`](../../adr/0003-go-native-binaries.md) (**Accepted** — die Auswertung ist ein
 Go-Binary, Docker-only gebaut),
 [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) (**Proposed** — der Haupt-Kontext
@@ -49,10 +49,10 @@ Auswertung über den vorhandenen Bestand, aufrufbar als `make`-Ziel.
   Die größte Rolle als **Zahl und Prozentsatz** der Gesamtsumme — beides, nicht eines von
   beiden (Modul 15 §Token-Attributions-Regeln). **Das Modul zählt dort fünf Rollen** (Planner ·
   Architect · Implementer · Reviewer · Verifier); die kanonische Liste dieses Repos führt mit
-  `validator` **sechs** ([`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)).
+  `validator` **sechs** ([`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5).
   Ein Verifier, der die Zahl gegen den Modul-Text prüft, soll die Differenz hier finden und nicht
   als Abweichung melden. Spans mit leerem `spawned_role` werden nach der
-  in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
+  in [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
   bindenden Lesevorschrift **aufgeteilt**, nicht als eigene Zeile geführt — und **wie groß der
   aufgeteilte Anteil war, steht im Ergebnis**. Ohne diese Zahl ruht die Bilanz auf einer Regel,
   ohne dass der Leser es sieht. **Dazu die Abdeckungszahl:** wie viele `Agent`-Spans überhaupt
@@ -71,7 +71,7 @@ Auswertung über den vorhandenen Bestand, aufrufbar als `make`-Ziel.
   sagt, **worüber** sie rechnet: über **Subagenten-Läufe**, nicht über den Lauf. Der Verbrauch
   des Haupt-Kontexts steht in keiner Payload; ein Prozentsatz aus diesen Zahlen ist damit ein
   Anteil an der **erfassten Teilmenge**, und wer ihn druckt, druckt das dazu. Die Pflicht steht
-  in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
+  in [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
   Abweichung 6; ihre Begründung und ihre Bindung an einen Wächter stehen in
   [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) — sie gilt unabhängig davon,
   wie über deren Annahme entschieden wird.
@@ -83,10 +83,15 @@ Auswertung über den vorhandenen Bestand, aufrufbar als `make`-Ziel.
   der Splitting-Regel ruht; dieser sagt, worüber überhaupt gerechnet wird. Zwei Größen, zwei
   Angaben, zwei Zähne — zusammengelegt geht eine verloren.
 - [ ] **(3) Die Splitting-Regel des Sammelpostens steht als Festlegung, nicht im Code.** Welche
-  Regel gilt (Frage A) und **wie groß** der aufgeteilte Anteil war, gehört nach
-  [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
-  bzw. in jedes Ergebnis. Eine Regel, die nur im Auswertungs-Code lebt, ist für den Leser der
-  Bilanz unsichtbar.
+  Regel gilt (Frage A), gehört nach
+  [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 —
+  dort erklärt Abweichung 3 die Regel für den Haupt-Strom als *zu entscheiden* und führt die zwei
+  ableitbaren Signale; **wie groß** der aufgeteilte Anteil war, gehört in jedes Ergebnis. Eine
+  Regel, die nur im Auswertungs-Code lebt, ist für den Leser der Bilanz unsichtbar. **Der bindende
+  Text trägt keine Entscheidungs- und keine Planungs-Kennung** — auch keine nackte
+  `slice-`-Kennung, die dort kein Muster trifft und trotzdem verboten ist; ergibt der
+  Modul-7-Trichter für die **Wahl** der Regel eine Entscheidung, trägt jene die Begründung und §5
+  zeigt aufwärts.
 - [ ] `make gates` grün, `make mutate` ohne Befund.
 - [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -104,7 +109,7 @@ Auswertung liest ausschließlich Spans**, kein Zugriff außerhalb des Repos, kei
 |---|---|---|
 | Auswertung (Go, eigenes Kommando) | neu | Aggregation über die Span-Ströme; dieselbe Linie wie der Emitter — Docker-only gebaut ([`ADR-0003`](../../adr/0003-go-native-binaries.md)), **kein** Subkommando des Produkt-Binaries, damit slice-062 nicht vorweggenommen wird |
 | `Makefile` | update | ein `make`-Ziel. **Kein Gate:** eine Bilanz prüft nichts, und ein Gate über einem Bericht wäre eines über leerem Prüfbereich ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) |
-| [`harness/conventions.md`](../../../../harness/conventions.md) | update | die **Splitting-Regel** des Sammelpostens gehört als Festlegung dorthin, nicht in den Code |
+| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | die **Splitting-Regel** des Sammelpostens gehört als Festlegung nach §5, nicht in den Code: technische Festlegung, ohne Vertragsänderung fortschreibbar, mit jedem weiteren Signal wachsend ([Aufnahme-Regel](../../../../spec/spezifikation.md#aufnahme-regel)). **Kein Adaptions-Eintrag:** eine der zwei vom Modul angebotenen Regeln zu wählen weicht von ihm nicht ab |
 | `test/` + `test/mutations/` | neu | die Zähne aus DoD (1) — Sammelposten-Anteil und Abdeckungszahl — und die zwei aus DoD (2) für die Nenner-Angabe |
 
 **Offen, vor dem Code zu entscheiden:**
@@ -158,5 +163,5 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
 ## 8. Sub-Area-Modus-Begründung
 
 Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example): `cmd/`, `internal/`,
-`Makefile` und `test/` gehören zum Greenfield-Bestand; der Modus steht in der
+`Makefile`, `spec/` und `test/` gehören zum Greenfield-Bestand; der Modus steht in der
 Modus-Deklaration von [`harness/conventions.md`](../../../../harness/conventions.md).

@@ -10,8 +10,8 @@ wechselt nur durch `git mv`, siehe
 
 **Bezug:** [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) (Baseline ohne
 inhaltliche Adaption — Modul 15 ist adoptiert und in Block 3 unumgesetzt),
-[`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
-(das Span-Schema, aus dem die Zähler gelesen werden),
+[`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
+(das Span-Schema, aus dem die Zähler gelesen werden, und der Ort der Festlegung aus DoD (2)),
 [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) (**Accepted** — die Policy, unter
 der der ausgewertete Bestand entstanden ist),
 [`ADR-0003`](../../adr/0003-go-native-binaries.md) (**Accepted** — die Auswertung ist ein
@@ -58,13 +58,18 @@ geschrieben.** Aus denselben Spans wie die Token-Bilanz, aber mit einer anderen 
   hier finden und nicht als Abweichung melden.
   **Der Zahn:** ein Go-Test auf die getrennten Zeilen der Ausgabe und ein Fall in
   `test/mutations/`, der die beiden Zähler zu einer Summe zusammenzieht — er muss rot werden.
-- [ ] **(2) Die Festlegung steht in [`harness/conventions.md`](../../../../harness/conventions.md),
+- [ ] **(2) Die Festlegung steht in
+  [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5,
   nicht nur im Code.** Welche drei Zähler geführt werden, unter welchen Namen, in welcher
   Counter-Form und **wo die Division läuft** — eine einzelne `cache.hit_ratio` reicht
-  ausdrücklich nicht, weil sie Kosten- und Sicherheits-Indikator vermischt. **Auflösungs-Trigger
-  (welle-09 verlangt ihn für jede Deklaration):** Namen, Counter-Form und Ort der Division werden
-  neu entschieden, **sobald dieses Repo eine Metrik-Senke bekommt** — dann wandert die Division
-  dorthin und die Namen folgen deren Konvention. Bis dahin gilt die Festlegung unverändert.
+  ausdrücklich nicht, weil sie Kosten- und Sicherheits-Indikator vermischt. Sie trifft die
+  [Aufnahme-Regel](../../../../spec/spezifikation.md#aufnahme-regel) auf allen drei Achsen und
+  setzt fort, was Abweichung 1 dort bereits verlangt: die Zähler sind für Vordergrund-Läufe
+  erfasst und dürfen **nicht** als unerreichbar geführt werden. **Auflösungs-Trigger, als
+  beobachtbare Bedingung und ohne Planungs-Kennung im bindenden Text:** Namen, Counter-Form und
+  Ort der Division werden neu entschieden, **sobald dieses Repo eine Metrik-Senke bekommt** — dann
+  wandert die Division dorthin und die Namen folgen deren Konvention. Bis dahin gilt die
+  Festlegung unverändert.
 - [ ] `make gates` grün, `make mutate` ohne Befund.
 - [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -81,7 +86,7 @@ Vordergrund-Läufen** an.
 |---|---|---|
 | Auswertung (Go, eigenes Kommando) | neu oder update | der Cache-Abschnitt der Ausgabe; dieselbe Linie wie der Emitter — Docker-only gebaut ([`ADR-0003`](../../adr/0003-go-native-binaries.md)), **kein** Subkommando des Produkt-Binaries, damit slice-062 nicht vorweggenommen wird. Ob das Kommando hier entsteht oder schon steht, entscheidet die Reihenfolge gegen [slice-066](slice-066-telemetrie-auswertung.md) |
 | `Makefile` | update | das `make`-Ziel der Auswertung, falls es noch keines gibt. **Kein Gate:** eine Rechnung prüft nichts, und ein Gate über einem Bericht wäre eines über leerem Prüfbereich ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) |
-| [`harness/conventions.md`](../../../../harness/conventions.md) | update | die Festlegung aus DoD (2) — Namen, Counter-Form, Ort der Division, Auflösungs-Trigger |
+| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | die Festlegung aus DoD (2) — Namen, Counter-Form, Ort der Division, Auflösungs-Trigger — in §5 neben Abweichung 1, die die Cache-Counter-Regeln bereits verlinkt. **Kein Adaptions-Eintrag:** eine adoptierte Modul-Regel umzusetzen ist keine Abweichung von ihr, und dass das Label `model.version` nur im Vordergrund vorliegt, steht dort schon als Abweichung 1 |
 | `test/` + `test/mutations/` | neu | der Zahn aus DoD (1) |
 
 **Offen, vor dem Code zu entscheiden:**
@@ -132,5 +137,5 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
 ## 8. Sub-Area-Modus-Begründung
 
 Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example): `cmd/`, `internal/`,
-`Makefile`, `harness/` und `test/` gehören zum Greenfield-Bestand; der Modus steht in der
+`Makefile`, `spec/` und `test/` gehören zum Greenfield-Bestand; der Modus steht in der
 Modus-Deklaration von [`harness/conventions.md`](../../../../harness/conventions.md).

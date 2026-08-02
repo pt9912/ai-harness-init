@@ -8,9 +8,10 @@ wechselt nur durch `git mv`, siehe
 **Welle:** [welle-09](../welle-09-modul-15-konformitaet.md) — er berührt die **Welle-Aussage**
 selbst (die 4 × 2-Matrix), nicht nur einen Slice.
 
-**Bezug:** [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
-(die Start-Konvention, deren zweite Hälfte hier entsteht — die Adaption zeigt bereits auf diesen
-Slice), [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) (**Accepted** — Festlegung 1
+**Bezug:** [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder)
+§5 (die Start-Konvention, deren zweite Hälfte hier entsteht — ihre Abgrenzung benennt die Lücke
+wörtlich: *„**DASS** Rollen-Arbeit überhaupt als Rolle läuft, ist eine andere Regel und steht nicht
+hier"*), [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) (**Accepted** — Festlegung 1
 Punkt 5, die Reihenfolge Prüfung vor Abweichung). Regelwerk-Quelle:
 `.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md` §Token-Attributions-Regeln sowie
 `modul-08-agentenrollen.md` §Rollen-Regeln.
@@ -29,11 +30,10 @@ bleibt deshalb **leer und erkennbar** statt gefüllt und falsch.
 ## 1. Ziel
 
 **Die Konvention sagt, WAS als Rolle läuft — nicht nur, WIE.**
-[slice-060](../done/slice-060-rollen-achse.md) hat die Betriebsart geregelt und in
-[`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
-geschrieben: **wie** ein Rollen-Lauf startet (@-Erwähnung + Vordergrund), erzwungen vom
-`PreToolUse`-Guard. Was fehlt, ist der Satz davor — **dass** Rollen-Arbeit überhaupt unter einem
-Rollen-Typ läuft. Die Adaption benennt die Lücke selbst und zeigt hierher.
+[slice-060](../done/slice-060-rollen-achse.md) hat die Betriebsart geregelt: **wie** ein
+Rollen-Lauf startet (@-Erwähnung + Vordergrund), erzwungen vom `PreToolUse`-Guard. Was fehlt, ist
+der Satz davor — **dass** Rollen-Arbeit überhaupt unter einem Rollen-Typ läuft. Die Festlegung
+benennt die Lücke selbst und grenzt sich gegen sie ab.
 
 Der Unterschied ist keine Wortklauberei: der Guard erzwingt den Vordergrund für Rollen, die man
 **startet**, und schweigt, wenn man den Reviewer gar nicht startet, sondern selbst reviewt.
@@ -45,13 +45,16 @@ es nicht.
 
 ## 2. Definition of Done
 
-- [ ] **(1) Die Konvention steht in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung),
+- [ ] **(1) Die Konvention steht in
+  [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5,
   und ihre Grenze steht daneben.** Wortlaut-Kern: Arbeit, die einer Harness-Rolle zugeordnet ist,
   läuft **unter dem Rollen-Typ**; der Haupt-Kontext orchestriert und ist der Sammelposten.
   **Die Grenze gehört in denselben Absatz:** eine mechanische Durchsetzung ist **nicht möglich**,
   weil niemand maschinell entscheiden kann, ob eine Haupt-Kontext-Handlung „Planner-Arbeit" war.
   Ein Guard wie der aus slice-060 kann hier also nicht entstehen — und das ist zu **sagen**, nicht
-  durch Schweigen offenzulassen.
+  durch Schweigen offenzulassen; in der Sensor-Spalte steht dann *kein Wächter* mit diesem Grund.
+  **Der bindende Text trägt keine Entscheidungs- und keine Planungs-Kennung** — auch keine nackte
+  `slice-`-Kennung, die dort kein Muster trifft und trotzdem verboten ist.
 - [ ] **(2) Die Berichtsgröße ist festgelegt — samt der Falle, die sie wertlos machen würde.**
   Der Sammelposten-Anteil aus [slice-066](slice-066-telemetrie-auswertung.md) DoD (1) ist die
   Messgröße: groß heißt „nicht gelebt". Zwei Festlegungen gehören dazu, beide aus gemessenen
@@ -63,7 +66,7 @@ es nicht.
      Antwort eines **Hintergrund**-Laufs `resolvedModel` trägt und **keinen** der acht übrigen
      Werte — keine Zähler, kein `agentType`. Ob daraus im Span ein `model_version` wird, hängt
      an der strukturellen Schranke aus
-     [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
+     [`spec/spezifikation.md`](../../../../spec/spezifikation.md#3-defaults-und-konstanten) §3
      und ist an keinem Span **beobachtet**; die Festlegung braucht das auch nicht: kommt der
      eine Wert an, zählt eine Abdeckungszahl über „Span mit irgendeinem erfassten Wert" genau
      die Läufe als gedeckt, deren Fehlen sie zeigen soll — kommt er nicht an, ruht dieselbe Zahl
@@ -90,7 +93,7 @@ es nicht.
 Nicht-Erreichbarkeit der Haupt-Kontext-Token als erklärte Abweichung mit Auflösungs-Trigger — ist
 von [slice-060](../done/slice-060-rollen-achse.md) DoD (3) geliefert worden und steht als
 Abweichung 6 in
-[`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung):
+[`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5:
 dieselbe Reihenfolge (Prüfung → Abweichung → Einordnung) und dieselbe Sache. Ihn hier stehen zu
 lassen hätte eine zweite Wahrheit über denselben Sachverhalt erzeugt. **Die Einordnung ist
 inzwischen eine andere als die des entfallenen DoD-Punktes:** wo er einen Auflösungs-Trigger
@@ -116,7 +119,7 @@ dieser Notiz ableiten.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| [`harness/conventions.md`](../../../../harness/conventions.md) | update | die Konvention aus DoD (1) und die Festlegungen aus DoD (2)/(3) in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung); der Zeiger von der Start-Konvention hierher wird eingelöst |
+| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | die Konvention aus DoD (1) und die Festlegungen aus DoD (2) in §5, unmittelbar an der Start-Konvention, deren Abgrenzung die Lücke wörtlich benennt. Beides trifft die [Aufnahme-Regel](../../../../spec/spezifikation.md#aufnahme-regel): messbar an der Berichtsgröße, ohne Vertragsänderung fortschreibbar, mit jeder weiteren Rolle wachsend. **Kein Adaptions-Eintrag:** die Umkehrung *Sammelposten = Regel statt Ausnahme* steht dort bereits bindend (Abweichung 3 und 6); ein zweiter Ort driftet |
 | [`slice-066`](slice-066-telemetrie-auswertung.md) | update | die Definition des Sammelposten-Anteils an den **Zählern** statt an „irgendeinem Wert"; die Lesart als Konventions-Messgröße |
 | [welle-09](../welle-09-modul-15-konformitaet.md) | update | DoD (3) legt die Belegart der Zelle *Token-Attribution × Repo* fest. Der Welle-Plan führt dieselbe Aussage an zwei Stellen — in der Wert-Tabelle seines Closure-Triggers und in der Slice-Zeile zu diesem Slice. Kommt die Festlegung anders heraus als dort beschrieben, ziehen beide Stellen nach; sonst steht dieselbe Aussage zweimal verschieden im Repo |
 
@@ -125,9 +128,9 @@ dieser Notiz ableiten.
 ## 4. Trigger
 
 **`open` → `next`:** [slice-060](../done/slice-060-rollen-achse.md) ist **done** — er
-schreibt in dieselbe
-[`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)-Sektion, und zwei gleichzeitige Änderungen daran erzeugen
-vermeidbare Konflikte.
+schreibt in denselben
+[§5](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder)-Abschnitt, und zwei
+gleichzeitige Änderungen daran erzeugen vermeidbare Konflikte.
 
 **`next` → `in-progress`:** WIP-Limit.
 
@@ -168,6 +171,6 @@ DoD vollständig; Review konform (Modul 10); Verifikation bestätigt (Modul 11);
 
 ## 8. Sub-Area-Modus-Begründung
 
-Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example): `harness/` und
+Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example): `spec/` und
 `docs/plan/` gehören zum Greenfield-Bestand; der Modus steht in der Modus-Deklaration von
 [`harness/conventions.md`](../../../../harness/conventions.md).

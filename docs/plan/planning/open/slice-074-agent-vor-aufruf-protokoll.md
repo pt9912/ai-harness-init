@@ -10,11 +10,10 @@ wechselt nur durch `git mv`, siehe
 Setzung 1 geprüft, alle drei Fragen samt Antwort in §3.
 
 **Bezug:**
-[`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) —
-Abweichung 5, Prüfschritt 3 (c) benennt für die Frage dieses Slice eine Sonde
-(*„eine Sonde auf die Schlüsselnamen von `tool_input` … Sie ist nicht gefahren"*); dieser Slice
-fährt eine andere, §3. Dasselbe
-[`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
+[`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 —
+Abweichung 5, Prüfschritt 3 (c) stellt die Frage dieses Slice und sagt, warum sie am Bestand
+nicht entscheidbar ist (*„die `PreToolUse`-Payload wird nirgends protokolliert"*); dieser Slice
+macht sie entscheidbar, §3. Dasselbe §5
 hält das Span-Schema für **geschlossen** und die erfasste Menge auf den *abgeschlossenen*
 Aufruf begrenzt — das Protokoll dieses Slice ist deshalb **kein Span** und ändert daran nichts,
 §3.
@@ -101,8 +100,11 @@ entscheidbar, nicht das vergangene.
   Entscheidung ausgeben lassen. Ein Hook, der nichts entscheidet, ist über sein **Ergebnis** nicht
   mutierbar; mutierbar ist sein **Kontrakt**, und der besteht aus genau diesen drei Größen.
 - [ ] **(2) Die Zeile trägt ausschließlich Felder fester Form und ist einem `Agent`-Span
-  zuordenbar.** Die Feldliste steht mit je einer Incident-Frage im Adaptions-Block von
-  [`harness/conventions.md`](../../../../harness/conventions.md) (§3), nicht im Code.
+  zuordenbar.** Die Feldliste steht mit je einer Incident-Frage in
+  [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
+  (§3), nicht im Code — als **eigener Block neben** dem geschlossenen Span-Schema, nicht in dessen
+  Feldtabelle; der bindende Text trägt **keine** Entscheidungs- und keine Planungs-Kennung, auch
+  keine nackte `slice-`-Kennung.
   **Korrelations-Achse ist `tool_use_id`**, mit `session` + Zeitstempel als Rückfall-Achse, falls
   die Messung zeigt, dass das Feld an diesem Ereignis nicht ankommt; ein Rückfall wird **benannt**,
   nicht stillschweigend genommen. **Nie in die Zeile gelangt der Inhalt eines Freitext-Feldes** —
@@ -149,7 +151,7 @@ entscheidbar, nicht das vergangene.
 |---|---|---|
 | 1 | `PreToolUse` feuert für `Agent`, und `tool_input` trägt `subagent_type` und `run_in_background` schon **vor** dem Lauf | **gemessen** — [slice-060](../done/slice-060-rollen-achse.md) §3 Zeile 8, an einer echten Sonde mit `"matcher": "Agent"` |
 | 2 | `PreToolUse`-Hooks erhalten `tool_name`, `tool_input` **und `tool_use_id`** | **dokumentiert, nicht gemessen** — `docs/user/claude-hooks-referenz.md` §PreToolUse-Eingabe. Die Sonde protokollierte den Wert nicht; damit ist die Korrelations-Achse gelesen und nicht belegt |
-| 3 | Der Span führt `tool_use_id` als **Pflichtfeld**, mit der Incident-Frage *„welche Ereignisse gehören zu einem Aufruf?"* | **läuft** — [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) Feldtabelle |
+| 3 | Der Span führt `tool_use_id` als **Pflichtfeld**, mit der Incident-Frage *„welche Ereignisse gehören zu einem Aufruf?"* | **läuft** — [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 Feldtabelle |
 | 4 | Dass Vor- und Nachereignis desselben Aufrufs **denselben** Wert tragen | **weder gemessen noch dokumentiert-verglichen** — die Referenz sagt es für die zwei Nach-Ereignisse, für das Paar Vor↔Nach steht es nirgends |
 | 5 | Das dokumentierte Eingabe-Schema von `Agent` führt `prompt`, `description`, `subagent_type`, `model` — **kein** `run_in_background`, obwohl die Messung es zeigt | **gelesen + gemessen, und sie widersprechen sich** — der Grund, weshalb der Guard *fehlend* wie *Hintergrund* behandelt |
 
@@ -186,10 +188,9 @@ Zuordnung läuft über `tool_use_id`, den Strom trägt `session`. `prompt_id` (*
 gehören zu einer Nutzer-Anweisung?"*) ist ein ernsthafter Kandidat und bleibt es; ein neues Feld
 ist eine Entscheidung und keine Gelegenheit. `cwd`, `permission_mode`, `effort` — keine
 Incident-Frage für diese Frage. Und **die Schlüsselnamen von `tool_input` als Menge**: sie sind
-erlaubt (Namen, keine Werte) und wären der breitere Griff, den
-[`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
-Abweichung 5 vorschlägt — die zwei Namen, die etwas entscheiden, stehen aber schon als eigene
-Felder da, und der Rest beantwortete keine benannte Frage. Wer die Menge später braucht, trägt sie
+erlaubt (Namen, keine Werte) und wären der breitere Griff — die zwei Namen, die etwas
+entscheiden, stehen aber schon als eigene Felder da, und der Rest beantwortete keine benannte
+Frage. Wer die Menge später braucht, trägt sie
 mit ihrer Incident-Frage nach.
 
 ### Warum das Protokoll KEIN Span ist
@@ -198,7 +199,7 @@ mit ihrer Incident-Frage nach.
   **abgeschlossene** Aufruf. `seq` steigt je Strom monoton mit der Lesart *„fehlt ein Span?"* —
   ein Vor-Aufruf-Satz im selben Strom gäbe jedem `Agent`-Aufruf **zwei** Sätze verschiedener
   Bedeutung und machte diese Lesart falsch.
-- [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) sagt
+- [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 sagt
   zugleich, was das Schema **nicht** beantwortet: *„ein vom PreToolUse-Guard geblockter Aufruf
   hinterlässt keinen Span"*. Das Protokoll erfasst ihn, weil es vor der Entscheidung schreibt —
   das ist ein **Nebeneffekt**, den dieser Slice benennt und **nicht** als Zusage führt; eine Zeile
@@ -255,7 +256,7 @@ Aufruf. Einordnung statt Beteuerung: der Guard läuft schon heute bei jedem `Age
 Span-Emitter bei **jedem Tool-Call überhaupt** — `Agent` ist unter den verdrahteten Ereignissen
 das seltenste. Die Zeile misst rund 120 Byte; das Protokoll wächst monoton und wird
 **ausdrücklich** geleert, nie nebenbei — dieselbe Disziplin wie beim Span-Bestand
-([`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
+([`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
 Abweichung 4). Der teure Fall wäre ein Hook, der bei jedem `Bash`-Aufruf schriebe; genau den
 schließt der Matcher aus.
 
@@ -298,7 +299,7 @@ die Frage erledigt sei. Sie ist für den **heutigen** Ziel-Vertrag entschieden.
 | `harness/tools/extract-agent-call.awk` | update | **die einzige Stelle, an der dieser Slice geteilten Boden berührt** — additive Erweiterung um `tool_use_id` und `session_id`. Der Guard liest die ersten zwei Ausgabezeilen einzeln adressiert; angehängte Zeilen ändern seinen Kontrakt nicht, und sein Skript bleibt unverändert. Die Alternative wäre ein **zweiter** Scanner mit einer zweiten JSON-Politik, die auseinanderdriftet. Das Netz gegen einen Fehler liegt bereits: `test/agent-guard.bats` und die Mutations-Fälle, die den Guard bzw. den Extraktor als Zieldatei führen (gemessen über den Inhalt der Fälle, nicht über ihre Namen: `grep -l pretooluse-agent-guard test/mutations/*.sh` → **4**, `grep -l extract-agent-call test/mutations/*.sh` → **3**). **Ungedeckt bleibt der Kopfkommentar der Datei** — er sagt heute *„Stdout = GENAU zwei Zeilen"* und wird falsch; `.awk` liegt dauerhaft außerhalb des `comment-claims`-Prüfbereichs, dort trägt allein das Review |
 | `harness/tools/` | neu | die Auswertungsregel aus DoD (3) |
 | [`Makefile`](../../../../Makefile) | update | das Nicht-Gate-Ziel aus DoD (3) und sein ausdrückliches Aufräum-Pendant. **Nicht** in `gates` |
-| [`harness/conventions.md`](../../../../harness/conventions.md) | update | ein neuer Eintrag im Adaptions-Block: Feldliste mit Incident-Fragen, die Stichtags-Regel, Leser und Auslöser, die Abgrenzung *kein Span*, die Nicht-Emissions-Entscheidung samt Auflösungs-Trigger. Dazu der Nachtrag in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) Abweichung 5, Prüfschritt 3 (c) — die Sonde dort bleibt ungefahren |
+| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | §5 nimmt auf, was die [Aufnahme-Regel](../../../../spec/spezifikation.md#aufnahme-regel) trifft: Feldliste mit Incident-Fragen, Stichtags-Regel und die Abgrenzung *kein Span* — je eine technische Festlegung, die mit einem sechsten Feld wächst, ohne dass eine Anforderung nachzieht. **Kein Adaptions-Eintrag:** Leser und Auslöser sind eine Prozess-Regel und stehen in der Zeile darunter, die Nicht-Emissions-Entscheidung ist eine Begründung und steht bei der Entscheidung aus §4. Berührt der zweite Erfassungsort beide Ebenen, gilt: die Festlegung nach §5, die Begründung in die Entscheidung |
 | [`AGENTS.md`](../../../../AGENTS.md) + [`harness/README.md`](../../../../harness/README.md) | update | das neue Ziel in der Nicht-Gate-Verify-Liste, mit seinem Auslöser und der Aussage, warum es nicht in `gates` steht |
 | `test/` | neu | die Fixture-Matrix aus DoD (1), die Freitext- und Grenz-Fälle aus DoD (2), die Fixture-Paare aus DoD (3) |
 | `test/mutations/` | neu | die Dauer-Sensoren zu allen drei DoD-Punkten |
@@ -379,6 +380,6 @@ eigenem Move-Commit, eingehende Links im Zug danach; Closure-Notiz mit Steering-
 
 ## 8. Sub-Area-Modus-Begründung
 
-Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example): `.claude/`,
+Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example): `.claude/`, `spec/`,
 `harness/tools/` und `test/` gehören zum Greenfield-Bestand; der Modus steht in der
 Modus-Deklaration von [`harness/conventions.md`](../../../../harness/conventions.md).
