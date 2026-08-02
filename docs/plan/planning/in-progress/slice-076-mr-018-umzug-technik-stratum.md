@@ -550,6 +550,20 @@ Closure-Notiz mit Steering-Loop-Eintrag.
   Klasse:** 18 der 23 Dateien liegen dauerhaft außerhalb des `make comment-claims`-Prüfbereichs,
   und für die übrigen fünf trifft dessen Ausdruck keine der 41 Zeilen — er fragt, ob eine
   Abdeckungs-Behauptung ihren Sensor nennt, nicht, ob das genannte Dokument noch bindet.
+- **Eine mitgezogene Aussage ist falsch; sie ist hier benannt und wird getrennt behoben.** Die
+  Zeile `branch`/`commit` der Feldtabelle in
+  [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
+  nennt sie die **dritte** Korrelations-Achse und zitiert dafür die Mindestfeld-Liste aus
+  [Modul 15 §Span-/Audit-Attribut-Regeln](../../../../.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
+  (*Slice/PR/Agent-Rolle*) — dort ist der PR der **zweite** Posten. Die `adr`-Zeile darüber trägt
+  dieselbe Formel zu Recht: sie zitiert die Liste aus
+  [§Kernidee](../../../../.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md#kernidee-modul-15)
+  (`slice.id`, `requirement.id`, `adr.id`, `agent.role`), und `adr.id` ist dort die dritte. **Nicht
+  in §3 Schritt 5:** dessen Umfang sind die zwei in §1 vorab inventarisierten Wortlaute (a) und
+  (c); für jede weitere auffallende Aussage verlangt Schritt 2 die **Benennung** und
+  [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) Folgepflicht 1 die **getrennte**
+  Behebung. Sie steht in diesem Plan und nicht am Zielort selbst: ein Satz im bindenden Text, der
+  sagt, dass der Satz daneben falsch ist, macht das Dokument widersprüchlich statt richtig.
 - **Dogfood und emittiert sind hier verschieden.** Ein gebootstrapptes Ziel bekommt
   `harness/conventions.md` **und** `spec/spezifikation.md` aus derselben vendored Vorlage — was es
   nicht bekommt, ist unser Bestand.
