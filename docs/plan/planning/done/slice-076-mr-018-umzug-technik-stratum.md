@@ -606,8 +606,9 @@ belegt: **(a)** das Inventar in §3 deckt jede nicht-leere Zeile des Rumpfs — 
 Zeilen sind gegen den gepinnten Stand sämtlich leer; **(b)** 10 von 10 Wächter-Funktionen und 30
 von 30 Mutations-Fällen stehen am Zielort, und was nicht mitzieht, ist einzeln mit Grund
 verzeichnet; **(c)** Aufhebung und Entfernung sind zwei Commits, und der zweite fügt nichts ein
-(`0 820` über genau eine Datei). Die Überschrift steht byte-gleich fort; sie trägt 129 Vorkommen
-in 25 Markdown-Dateien.
+(`0 820` über genau eine Datei). Die Überschrift steht byte-gleich fort; an diesem Stand zeigen
+130 Vorkommen in 25 Markdown-Dateien auf ihren Anker, und die Zusicherung ist die Fehlerform, nicht
+die Zahl: eine Umbenennung färbt jeden auflösenden Zeiger als `anchor-missing`.
 
 **Was der Slice erreicht hat, in Zahlen** — Stand `9156acb` gegen den Stand dieser Closure, jede
 Zahl mit ihrem Kommando:
