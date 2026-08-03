@@ -58,7 +58,7 @@ Haupt-Kontext tut, erzeugt gar keinen Span. Eine mechanische Durchsetzung gibt e
   **Der bindende Text trägt keine Entscheidungs- und keine Planungs-Kennung** — auch keine nackte
   `slice-`-Kennung, die dort kein Muster trifft und trotzdem verboten ist.
 - [x] **(2) Die Berichtsgröße ist festgelegt — samt der Falle, die sie wertlos machen würde.**
-  Der Sammelposten-Anteil aus [slice-066](../open/slice-066-telemetrie-auswertung.md) DoD (1) ist die
+  Der Sammelposten-Anteil aus [slice-066](../in-progress/slice-066-telemetrie-auswertung.md) DoD (1) ist die
   Messgröße: groß heißt „nicht gelebt". Zwei Festlegungen gehören dazu, beide aus gemessenen
   Gründen:
   1. **Die Größe steht im Bericht, nicht als bestandene Schwelle.** Eine Kennzahl mit Grenze
@@ -98,7 +98,7 @@ Haupt-Kontext tut, erzeugt gar keinen Span. Eine mechanische Durchsetzung gibt e
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | die Konvention aus DoD (1) und die Festlegungen aus DoD (2) in §5, unmittelbar an der Start-Konvention, deren Abgrenzung die Lücke wörtlich benennt. Beides trifft die [Aufnahme-Regel](../../../../spec/spezifikation.md#aufnahme-regel): gemessen wird gegen die **Festlegung** — welcher Lauf in den Sammelposten fällt, und was die Berichtsgröße zeigt und was nicht —, nicht an der Größe allein, die nur die delegierte Hälfte trägt; ohne Vertragsänderung fortschreibbar; die nächste Festlegung zur Größe ist ein weiterer Punkt ihrer Liste und verdrängt keinen anderen Text. **Kein Adaptions-Eintrag:** die Umkehrung *Sammelposten = Regel statt Ausnahme* steht dort bereits bindend (Abweichung 3 und 6); ein zweiter Ort driftet |
-| [`slice-066`](../open/slice-066-telemetrie-auswertung.md) | keine Änderung | dort stehen in DoD (1) beide Größen, die diese Festlegung braucht, und sie stehen **getrennt**: der Sammelposten-Anteil (*„wie groß der aufgeteilte Anteil war"*, an leerem `spawned_role`) und die Abdeckungszahl (*„wie viele `Agent`-Spans überhaupt Zähler trugen"*). Die Lesart als Konventions-Messgröße steht im Stratum; sie ein zweites Mal in eine fremde DoD zu schreiben erzeugte den zweiten Ort, den die Zeile darüber vermeidet |
+| [`slice-066`](../in-progress/slice-066-telemetrie-auswertung.md) | keine Änderung | dort stehen in DoD (1) beide Größen, die diese Festlegung braucht, und sie stehen **getrennt**: der Sammelposten-Anteil (*„wie groß der aufgeteilte Anteil war"*, an leerem `spawned_role`) und die Abdeckungszahl (*„wie viele `Agent`-Spans überhaupt Zähler trugen"*). Die Lesart als Konventions-Messgröße steht im Stratum; sie ein zweites Mal in eine fremde DoD zu schreiben erzeugte den zweiten Ort, den die Zeile darüber vermeidet |
 | [welle-09](../welle-09-modul-15-konformitaet.md) | update | DoD (3) legt die Belegart der Zelle *Token-Attribution × Repo* fest. Der Welle-Plan führt dieselbe Aussage an zwei Stellen — in der Wert-Tabelle seines Closure-Triggers und in der Slice-Zeile zu diesem Slice. Kommt die Festlegung anders heraus als dort beschrieben, ziehen beide Stellen nach; sonst steht dieselbe Aussage zweimal verschieden im Repo |
 
 **Kein Code, kein neuer Wächter.** Das ist beabsichtigt; der Grund steht in §6.
@@ -131,7 +131,7 @@ DoD vollständig; Review konform (Modul 10); Verifikation bestätigt (Modul 11);
   *ist* eine Aussage darüber, was messbar ist und was nicht. Ein Wächter, der eine Unmessbarkeit
   bewacht, wäre die Zusage ohne Abdeckung, gegen die
   [`AGENTS.md`](../../../../AGENTS.md) §3.6 steht. Der Zahn liegt bei
-  [slice-066](../open/slice-066-telemetrie-auswertung.md): fällt der Sammelposten-Anteil aus dem Bericht,
+  [slice-066](../in-progress/slice-066-telemetrie-auswertung.md): fällt der Sammelposten-Anteil aus dem Bericht,
   muss ein Fall rot werden.
 - **Eine Konvention ohne Durchsetzung wird gebrochen — auch von mir.** Belegt an der Arbeit an
   slice-060: Planner und Implementation liefen über weite Strecken in **einem** Kontextfenster,
@@ -203,7 +203,7 @@ was Zähler trägt.
 - **Kein Zahn, und der Grund ist der Gegenstand.** Zugesagt ist eine Aussage darüber, was
   messbar ist und was nicht; ein Wächter über einer Unmessbarkeit wäre die Zusage ohne
   Abdeckung, gegen die [`AGENTS.md`](../../../../AGENTS.md) §3.6 steht. Der Zahn liegt bei
-  [slice-066](../open/slice-066-telemetrie-auswertung.md): fällt der Sammelposten-Anteil aus dem
+  [slice-066](../in-progress/slice-066-telemetrie-auswertung.md): fällt der Sammelposten-Anteil aus dem
   Bericht, muss ein Fall rot werden.
 - **Die tragende Zusage ist *kein Wächter*, und ihre Folge steht mit ihr.** Die Konvention kann
   gebrochen werden, ohne dass irgendetwas rot wird. Die einzige Rückmeldung ist eine Größe, die
@@ -248,8 +248,8 @@ es bereits **beobachtet** im Bestand.
 | Posten | Träger |
 |---|---|
 | Die Rollen-Liste steht zweimal und ist nicht gekoppelt: der Guard leitet sie aus `.claude/agents/` **ab**, `roleFromAgentType` in `internal/span/emit.go` führt sie als **hart notierte** Liste von sechs Namen (kein `.go` liest das Verzeichnis — gemessen: 0 Treffer). Eine siebte Rollen-Datei erzwänge den Vordergrund, der Lauf trüge Zähler, `spawned_role` bliebe leer — er hübe den Sammelposten-Anteil, **ohne ein Bruch zu sein**, und der Kommentar am Ort (*„wird ein Subagent unter dem Namen seiner Harness-Rolle gestartet, IST der Agenten-Typ die Rolle"*) wäre für ihn falsch. Heute 0 Instanzen: `ls -1 .claude/agents/` führt genau die sechs kanonischen Namen | kein Schnitt gelegt — Planner-Arbeit. Der Trigger ist beobachtbar und braucht kein Urteil: die **siebte** Datei in `.claude/agents/`. Die Zusage ist eine neue und braucht ihren eigenen rot gesehenen Zahn ([`AGENTS.md`](../../../../AGENTS.md) §3.6) |
-| Ein gehobener Sammelposten-Anteil belegt keinen Bruch — die Zahl trägt beide Fälle. Wer sie druckt, sagt das dazu | [slice-066](../open/slice-066-telemetrie-auswertung.md) DoD (1), wo die Größe entsteht |
-| Zwei Textmängel in Rang 2: die Historie-Zeile zählt den Inhalt von §5 auf, ohne die DASS-Regel und die Berichtsgröße zu nennen; im bindenden Absatz zeigen *er* und *seiner* auf ein Substantiv (*der Bruch*), das im Dokument nicht steht | die nächste Änderung an §5 — geplant ist [slice-066](../open/slice-066-telemetrie-auswertung.md) DoD (3). Keine Wirkung auf eine DoD, kein Gate greift |
+| Ein gehobener Sammelposten-Anteil belegt keinen Bruch — die Zahl trägt beide Fälle. Wer sie druckt, sagt das dazu | [slice-066](../in-progress/slice-066-telemetrie-auswertung.md) DoD (1), wo die Größe entsteht |
+| Zwei Textmängel in Rang 2: die Historie-Zeile zählt den Inhalt von §5 auf, ohne die DASS-Regel und die Berichtsgröße zu nennen; im bindenden Absatz zeigen *er* und *seiner* auf ein Substantiv (*der Bruch*), das im Dokument nicht steht | die nächste Änderung an §5 — geplant ist [slice-066](../in-progress/slice-066-telemetrie-auswertung.md) DoD (3). Keine Wirkung auf eine DoD, kein Gate greift |
 | [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) steht auf *Proposed*; ohne Verdikt ist die Matrix-Zelle nicht füllbar | Architect — Vorbedingung der welle-09-Closure, nicht dieses Slice |
 
 **Gates.** `make gates` **Exit 0**: `baseline-verify: v3.5.2 OK — 42 Dateien`,

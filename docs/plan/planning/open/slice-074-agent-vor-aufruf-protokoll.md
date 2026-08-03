@@ -223,7 +223,7 @@ mit ihrer Incident-Frage nach.
   Gegenkraft ist die Prüfbereichs-Zahl in der letzten Zeile: ein Lauf über Null Spans sagt Null
   und behauptet nichts.
 - **Zweiter Leser, ohne Abhängigkeit in eine der beiden Richtungen:** die Abdeckungszahl aus
-  [slice-066](slice-066-telemetrie-auswertung.md) bekommt mit dem Protokoll eine **zweite**
+  [slice-066](../in-progress/slice-066-telemetrie-auswertung.md) bekommt mit dem Protokoll eine **zweite**
   Nenner-Quelle neben `SubagentStart`. Keiner der beiden Slices wartet auf den anderen.
 
 ### Warum das kein Memo ist
@@ -370,7 +370,7 @@ eigenem Move-Commit, eingehende Links im Zug danach; Closure-Notiz mit Steering-
 - **Nicht in diesem Slice:** die Entscheidung des Guards (sie bleibt, wie
   [slice-060](../done/slice-060-rollen-achse.md) sie gesetzt hat); die veraltete
   Ausgabeform des Nachbar-Guards (slice-067); die Rechnung über die Zähler
-  ([slice-066](slice-066-telemetrie-auswertung.md),
+  ([slice-066](../in-progress/slice-066-telemetrie-auswertung.md),
   [slice-071](slice-071-cache-zaehler-getrennt.md)); jede Emission ins Ziel (slice-062/063); und
   jede Ausweitung des Span-Schemas.
 

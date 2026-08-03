@@ -516,7 +516,7 @@ Closure-Notiz mit Steering-Loop-Eintrag.
   Tages Zähler, entfällt sie ersatzlos); 6 trägt statt eines Triggers das Verdikt *permanent* und
   ist in [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) übergeführt. **Der zweite
   Auflösungs-Trigger von 5 ist Prozess-Zustand und steht darum hier, nicht im Stratum:** die
-  Abdeckungszahl aus [slice-066](../open/slice-066-telemetrie-auswertung.md) DoD (1) — wie viele
+  Abdeckungszahl aus [slice-066](../in-progress/slice-066-telemetrie-auswertung.md) DoD (1) — wie viele
   `Agent`-Spans überhaupt Zähler trugen, mit einem Nenner aus `SubagentStart` statt aus denselben
   Spans; zeigt sie einen nennenswerten Anteil zählerloser `Agent`-Spans, ist zu entscheiden, ob der
   Guard auf **alle** Agenten-Typen geweitet wird oder die Zusage einzuschränken ist. Sie ist
@@ -709,7 +709,7 @@ grün.
 | Posten | Träger |
 |---|---|
 | DoD (1) von [slice-068](slice-068-rollen-arbeit-laeuft-als-rolle.md) verlangt die Konvention **in** dem Eintrag, der jetzt fünf Zeilen trägt; der Zielort ist neu zu setzen | jener Slice |
-| Die Festlegung aus DoD (2) von [slice-071](../open/slice-071-cache-zaehler-getrennt.md) und die Splitting-Regel aus [slice-066](../open/slice-066-telemetrie-auswertung.md) §3 sind als `update` an [`harness/conventions.md`](../../../../harness/conventions.md) geplant; als technische Festlegungen treffen sie die Aufnahme-Regel des Stratums | jene Slices |
+| Die Festlegung aus DoD (2) von [slice-071](../open/slice-071-cache-zaehler-getrennt.md) und die Splitting-Regel aus [slice-066](../in-progress/slice-066-telemetrie-auswertung.md) §3 sind als `update` an [`harness/conventions.md`](../../../../harness/conventions.md) geplant; als technische Festlegungen treffen sie die Aufnahme-Regel des Stratums | jene Slices |
 | [slice-074](../open/slice-074-agent-vor-aufruf-protokoll.md) §3 plant eine Feldliste mit Incident-Fragen in den Adaptions-Block und einen Nachtrag in den aufgehobenen Eintrag; beide Zielorte sind verschoben | jener Slice |
 | Der Bestand von [slice-075](../open/slice-075-regelwerk-verweis-linkpflicht.md) ist von 28 auf 9 Stellen geschrumpft, und `spec/` trägt jetzt 9 Modul-Nennungen — seine Klassen-Tabelle muss `spec/**` entscheiden | jener Slice |
 | Die zwei Abweichungen ohne Trichter-Durchlauf (2 und 4) | kein Schnitt gelegt — Planner-Arbeit |
