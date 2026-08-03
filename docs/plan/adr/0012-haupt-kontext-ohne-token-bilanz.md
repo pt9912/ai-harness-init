@@ -39,9 +39,9 @@ genannt.
 `.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md` §Token-Attributions-Regeln
 verlangt eine Token-Bilanz **je Rolle**.
 [`spec/spezifikation.md`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 führt
-sechs erklärte Abweichungen, und sie kommen aus **drei** Regelblöcken des Moduls — von den
-Token-Attributions-Regeln weichen **zwei** ab, die fünfte und die sechste. Die sechste ist die
-härteste und der
+sechs erklärte Abweichungen; sie kommen aus **drei** Regelblöcken des Moduls, und eine weicht
+von keinem ab. Von den Token-Attributions-Regeln weichen **zwei** ab, die fünfte und die
+sechste. Die sechste ist die härteste und der
 Gegenstand hier: **der Haupt-Kontext hat keine Zahl** — und er ist der Ort, an dem auch
 Rollen-Arbeit anfällt: an der Arbeit an der Rollen-Achse dieses Repos ist belegt, dass Planner
 und Implementation über weite Strecken in **einem** Kontextfenster liefen. **Wie viele Token**
@@ -81,20 +81,23 @@ bevor eine als Carveout festgeschrieben wird (`:48`).
 Temporalität):
 
 1. **Granularität — einzelne Diskrepanz oder Cluster?** *Einzelne.* Die Nachbar-Abweichung 5
-   (Hintergrund-Läufe tragen keine Verbrauchs-Achse) betrifft dieselbe Achse, aber es gibt
-   **keine gemeinsame Auflösung**: ihre Bedingung ist erfüllt, sobald die `tool_response` eines
-   Hintergrund-Laufs Zähler trägt — und träte sie ein, bliebe der Haupt-Kontext unberührt, denn
-   ihn umschließt überhaupt kein solcher Aufruf. Sie ist zudem durch einen `PreToolUse`-Guard
-   **verkleinert** (er schließt die Lücke nicht, aber er bewegt sie); an dieser hier bewegt kein
-   Aufwand dieses Repos etwas — das ist Frage 2. Ein gemeinsamer Geltungsbereich mit gemeinsamer
-   Auflösung besteht damit nicht. **Wohl aber teilen die zwei die Antwort auf Frage 2**, und das
-   gehört gesagt statt verschwiegen: auch der Trigger von Abweichung 5 wirkt nur, wenn ihn
-   jemand nachsieht. Ob sie deshalb denselben Pfad nehmen müsste, ist hier **nicht**
-   mitentschieden — Gegenstand dieser ADR ist die sechste. Auch
-   keines der beiden Symptome für eine **BF-Sub-Area-Markierung** liegt vor (`:130`): dieses
+   (Hintergrund-Läufe tragen keine Verbrauchs-Achse) betrifft **dieselbe Achse** — der Zielort
+   führt beide als denselben Ausfall an zwei getrennten Orten. Modul 7 macht daraus keinen
+   Schwellwert: seine Faustregel für *Cluster* ist der **gemeinsame Geltungsbereich**, keine
+   Carveout-Zahl (`:60-61`), und die Folge einer Cluster-Antwort wäre die
+   **BF-Sub-Area-Markierung**. **Keines ihrer beiden Symptome liegt vor** (`:130`): dieses
    Repo führt genau **einen** Carveout, und mit dem teilt diese Abweichung keinen
    Geltungsbereich; und sie folgt nicht aus dem Muster *„Code existiert vor Doku"* — die Doku
-   ist hier vollständig, es fehlt eine **Quelle**. → Frage 2.
+   ist hier vollständig, es fehlt eine **Quelle**. Dazu kommt, dass die zwei **keine gemeinsame
+   Auflösung** haben: die Bedingung von Abweichung 5 ist erfüllt, sobald die `tool_response`
+   eines Hintergrund-Laufs Zähler trägt — träte sie ein, bliebe der Haupt-Kontext unberührt,
+   denn ihn umschließt überhaupt kein solcher Aufruf. Abweichung 5 ist zudem durch einen
+   `PreToolUse`-Guard **verkleinert** (er schließt die Lücke nicht, aber er bewegt sie).
+   **Wohl aber teilen die zwei die Antwort auf Frage 2**, und das gehört gesagt statt
+   verschwiegen — nach deren eigenem Maßstab, dem **Erreichen**: auch die Bedingung von
+   Abweichung 5 liegt in der Payload des Werkzeugs, und die bringt kein Aufwand dieses Repos
+   herbei. Ob sie deshalb denselben Pfad nehmen müsste, ist hier **nicht** mitentschieden —
+   Gegenstand dieser ADR ist die sechste. → Frage 2.
 2. **Temporalität — Trigger ernst zu erreichen?** **Nein.** Kein Aufwand dieses Repos bringt die
    Bedingung herbei: die Hook-Oberfläche gehört dem Werkzeug, das Transkript ist als Quelle
    ausgeschlossen (fremder Besitz, außerhalb des Repos, voller Gesprächsinhalt), und Schätzen
@@ -184,16 +187,16 @@ Erfassungs-Mechanik angenommen haben. Drei Festlegungen folgen:
   hat es beim Umzug ins Technik-Stratum ausdrücklich als **ersatzlos** verzeichnet, mit dem
   Grund *„Ein zweiter Ort driftet"*. Wer das Verdikt am Ort der Abweichung sucht, findet es
   nicht dort, sondern hier; diese ADR ist sein einziger Träger.
-- **Folgepflicht 2 — eingelöst, und sie verlangte eine Ergänzung des Vokabulars, nicht nur eine
-  ausgefüllte Zelle.** Die Matrix-Zelle *Token-Attribution × Repo* des Wellen-Closure führt für
-  den Haupt-Kontext **nicht** „deklarierte Entscheidung mit Auflösungs-Trigger", sondern den
-  Verweis auf diese ADR. Ein Closure-Vokabular, das *deklariert* als bewusste Nicht-Umsetzung
+- **Folgepflicht 2 — die Vokabular-Ergänzung steht, die Zelle selbst entsteht erst bei der
+  Closure.** Die Matrix-Zelle *Token-Attribution × Repo* des Wellen-Closure wird für den
+  Haupt-Kontext **nicht** „deklarierte Entscheidung mit Auflösungs-Trigger" führen, sondern den
+  Verweis auf diese ADR; die Zelle entsteht mit der Ergebnis-Notiz der Welle, und sie bindet
+  erst mit der Annahme hier. Ein Closure-Vokabular, das *deklariert* als bewusste Nicht-Umsetzung
   **mit Auflösungs-Trigger** definiert — genau das, was Modul 7 auf dem ADR-Pfad wegfallen lässt
   —, ließe dafür nur die Wahl zwischen einem Trigger, den es nicht mehr gibt, und einer offenen
   Zelle; und eine offene Zelle ist ein offener Closure-Trigger. Der Welle-Plan führt die
-  Belegart **ADR-Verdikt** inzwischen als eigenen Wert mit dieser ADR als erstem Fall,
-  eingetragen von dem Slice, der die Rollen-Konvention schreibt, und mit dem Welle-Plan in
-  dessen Plan-Tabelle.
+  Belegart **ADR-Verdikt** inzwischen als eigenen Wert mit dieser ADR als erstem Fall, und der
+  Slice, der die Rollen-Konvention schreibt, führt den Welle-Plan in seiner Plan-Tabelle.
 - **Folgepflicht 3:** wird der Span-Emitter je emittiert (die Tool-Ebene, eigener Slice mit
   Change Request), gilt diese Grenze im Ziel unverändert — sie ist keine Eigenschaft unseres
   Aufbaus, sondern der Mechanik. Sie gehört dort **genannt**, nicht stillschweigend
@@ -292,6 +295,7 @@ Zeile behauptet keinen Gate an einem dieser drei Orte.
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
+| 2026-08-03 | Überarbeitet, weiter **Proposed** | **Zweite Bestätigungsrunde — und sie fing zwei Fehler, die der Fix der ersten selbst erzeugt hatte** (`docs/reviews/2026-08-03-adr-0012-bestaetigungsrunde-runde-2.md`): (1) die neue Trichter-Antwort räumte ein, dass die Nachbar-Abweichung die Antwort auf Frage 2 teilt, begründete das aber mit dem *Nachsehen* — genau der Eigenschaft, die derselbe Abschnitt für Frage 2 ausschließt (*„Frage 2 fragt nach dem Erreichen, nicht nach dem Bemerken"*). Sie steht jetzt auf dem Erreichen: die Bedingung der Nachbarin liegt in der Payload des Werkzeugs. Zugleich trägt die Antwort *„einzelne Diskrepanz"* wieder das, was sie wirklich trägt — die zwei BF-Symptome —, statt einer auf *gemeinsame Auflösung* verengten Fassung der Modul-7-Faustregel, die den **gemeinsamen Geltungsbereich** nennt. (2) *„Folgepflicht 2 — eingelöst"* stand über einem Präsens-Satz über eine Matrix-Zelle, die es noch nicht gibt: sie entsteht mit der Ergebnis-Notiz der Welle. Eingelöst ist die **Vokabular-Ergänzung**, nicht die Zelle. Dazu die falsch zugeschriebene Herkunft dieser Ergänzung (entfallen) und die zu kurze Fassung der Abweichungs-Herkunft (eine der sechs weicht von **keiner** Modul-Regel ab). **Außerhalb des Rumpfs:** der ADR-Index trug dieselbe Fehlzuschreibung *„vom Modul-15-Pflicht-Minimum"* weiter, die der Rumpf schon korrigiert hatte — eine Korrektur an einer von zwei Stellen ist keine |
 | 2026-08-03 | Überarbeitet, weiter **Proposed** | **Neun Verweise zeigten auf einen Eintrag, der seinen Rumpf abgegeben hat.** Der Span-Schema-Eintrag des Adaptions-Blocks ist vollständig aufgehoben ([`MR-021`](../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben), Bedingungen in [ADR-0014](0014-aufgehobener-eintrag-kopf-statt-rumpf.md)); er behält Nummer, Überschrift **wörtlich**, das `Datum` und eine Zeiger-Zeile, die sechs erklärten Abweichungen stehen im Technik-Stratum. Die Links lösten weiter auf — der Kopf ist genau als Anker erhalten —, aber jede Aussage darüber, was der Eintrag *führt*, *trägt* oder *ausspricht*, war seit dem Umzug im Präsens falsch, und **kein Gate liest sie**: `codepaths` prüft Pfade, nicht Sätze. Ab *Accepted* wären sie nach [`AGENTS.md`](../../../AGENTS.md) §3.4 nur noch per Supersedes zu korrigieren. Sie zeigen jetzt auf den Zielort, den der `Schärft`-Kopf dieser ADR ohnehin nennt. **Folgepflicht 1 war zudem sachlich überholt:** sie verlangte das Verdikt *permanent* am Ort der Abweichung — jener Umzug hat es dort als **ersatzlos** verzeichnet (*„Ein zweiter Ort driftet"*), womit diese ADR sein einziger Träger ist; die Folgepflicht sagt das jetzt. Die **unterste** Zeile dieser Tabelle — die, die diese ADR eröffnet — bleibt unverändert: sie datiert einen Zustand, in dem der Eintrag den Rumpf noch trug. **Nachgetragen in derselben Runde** (Bestätigungsrunde `docs/reviews/2026-08-03-adr-0012-bestaetigungsrunde.md`, drei MEDIUM): der Nachzug hatte die Verweise geprüft, nicht die Sätze um sie herum — die Trichter-Antwort auf Frage 1 stützte sich auf einen *„ernst erreichbaren"* Trigger der Nachbar-Abweichung, den der Zielort nicht mehr führt (sie teilt die Antwort auf Frage 2, was jetzt dasteht statt zu fehlen); die sechs Abweichungen wurden pauschal **einem** Pflicht-Minimum zugeschrieben, obwohl der Zielort sie ausdrücklich auf drei Regelblöcke verteilt; und Folgepflicht 2 verlangte im Präsens eine Vokabular-Ergänzung, die längst steht. Dazu vier kleinere: die Fallzahl bei Annahme der Vorgänger-ADR (**102**, nicht die höchste Nummer 106), die umgekehrte Wortstellung in einem Zitat, die Frageliste des Plan-Bestands und die Berichtsgröße, die nicht mehr geplant, sondern geliefert ist |
 | 2026-08-01 | Überarbeitet, weiter **Proposed** | `Schärft` von `—` auf den Abschnitt gesetzt, den diese ADR verbindlich macht. Die Begründung *„ohne Spec-Stratum"* traf zu, solange das Repo nur Vertrag und Sicht führte; mit dem Technik-Stratum ([ADR-0013](0013-technik-stratum-als-zielort.md), [`MR-019`](../../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence)) existiert das Ziel |
 | 2026-07-31 | Überarbeitet, weiter **Proposed** | **Die Verpflichtungen waren an Slice-Kennungen adressiert und veralteten damit schneller, als die ADR gelesen wird:** die Zuschreibung an die Definition of Done der Auswertung beschrieb einen Schnitt, den derselbe Tag schon abgelöst hatte, und die Aussage über das Vokabular des Welle-Plans ebenso. Eine ADR ist dauerhaft, ein Slice ist ein Lifecycle-Artefakt — die Bindung des einen an das andere erzeugt die Lüge nur mit Verzögerung. Die Pflichten hängen jetzt an der **Funktion** (der Slice, der die Bilanz baut; der Slice, der die Rollen-Konvention schreibt), nicht an einer Nummer; ein Re-Schnitt verschiebt damit den Träger, nicht die Pflicht. Die Abgrenzung der Nenner-Angabe ist auf **drei** Größen ausgeschrieben (Nenner · Sammelposten-Anteil · Abdeckungszahl), weil die zweite Grenze bisher nur behauptet und nirgends gezogen war. Die zwei Mengenangaben über den Plan-Bestand sind entfallen — sie zählten Lifecycle-Dateien und waren beim Zählen bereits überholt. Slice-Kennungen führt allein die Verweis-Spalte dieser Tabelle |
