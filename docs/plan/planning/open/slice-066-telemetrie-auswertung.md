@@ -19,9 +19,10 @@ gemeint ist seit dem Schnitt **dieser** Slice — die Umdeutung steht unterhalb 
 Modus-Deklaration in [`harness/conventions.md`](../../../../harness/conventions.md)),
 [`ADR-0003`](../../adr/0003-go-native-binaries.md) (**Accepted** — die Auswertung ist ein
 Go-Binary, Docker-only gebaut),
-[`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) (**Proposed** — der Haupt-Kontext
+[`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) (**Accepted** — der Haupt-Kontext
 bleibt dauerhaft ohne Zahl; daraus folgt DoD (2), und die zwei Wächter-Zeilen ihrer Fitness
-Function sind die aus diesem Slice),
+Function sind die aus diesem Slice. Ihre **Folgepflicht 4** benennt DoD (2) als Bedingung der
+Annahme, nicht als Folgearbeit: ohne diesen Punkt hätte ihre Festlegung 2 keinen Zahn),
 [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (dieselbe Zusage
 auf der **Dogfood-Ebene**: das Werkzeug dieses Repos, nicht das emittierte Zielprojekt).
 Regelwerk-Quelle:
