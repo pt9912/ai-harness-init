@@ -117,7 +117,7 @@ Auswertung liest ausschließlich Spans**, kein Zugriff außerhalb des Repos, kei
 
 | # | Frage | Warum sie den Schnitt entscheidet |
 |---|---|---|
-| A | Welche **Splitting-Regel** für den Haupt-Strom? | Er trägt kein `spawned_role` und wird von keinem `Agent`-Aufruf umschlossen — er bleibt der Sammelposten, auch nach slice-060. Modul 15 nennt zwei Kandidaten (anteilig nach Tool-Calls; dem auslösenden Slice zugeschlagen); zwei Signale liegen im Span (`slice`, Schreibziel). Die Wahl ist zu **begründen**, nicht bloß zu treffen |
+| A | ~~Welche **Splitting-Regel** für den Haupt-Strom?~~ **ENTSCHIEDEN (2026-08-03): anteilig nach Tool-Calls**, rollenlose Calls **nicht** im Nenner | Begründung, gegen den realen Bestand gemessen (5.607 Spans, 170 Dateien, drei Sitzungs-Ströme): **(1) Die Regel muss Rollen liefern.** Die Lesevorschrift in [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 setzt als Punkt 1 ihrer Prüfreihenfolge, dass am Ende *jedes Token auf einer der realen Rollen* liegt. *Anteilig nach Tool-Calls* leistet das; *dem auslösenden Slice zugeschlagen* liefert einen **Slice**, und ein Slice läuft durch alle sechs Rollen — das Glied Slice→Rolle liefert das Modul nicht mit. **(2) Das stärkere Signal trägt die schwächere Regel.** Das `slice`-Feld ist gemessen besser (76/92 der zähler-tragenden `Agent`-Spans, eindeutig, vier Werte ohne Mehrfachbelegung) als das Schreibziel (156/864 Haupt-Strom-Spans, und **kein** `Agent`-Span trägt `path`) — es beantwortet nur die falsche Frage. Signal-Stärke ersetzt keine Zuordnung. **(3) Der Schlüssel ist gemessen:** implementer 1368 · planner 1323 · reviewer 1004 · architect 449 · verifier 364 Tool-Calls (Summe 4.508). **Rollenlose Calls (1.101 = 864 Haupt-Strom + 236 in `general-purpose`-Subagenten) bleiben aus dem Nenner** — sonst verteilte der Sammelposten teilweise auf sich selbst. **(4) Der heutige Effekt ist null, und das gehört in die Ausgabe, nicht in eine Fußnote:** der Sammelposten misst **0 Spans** (jeder zähler-tragende `Agent`-Span trägt eine Rolle), der aufgeteilte Anteil aus DoD (1) ist damit **0,0 %**. Das ist **kein** Beleg, dass der Fall ausbleibt: 236 Tool-Calls liefen real in rollenlosen Typen — ihre Aufrufe waren Hintergrund-Läufe und tragen gar keine Zähler, fallen also unter Abweichung 5 statt in den Sammelposten |
 | B | Summiert die Bilanz **eine Sitzung** oder den **Bestand**? | Im Ablageort liegen Ströme mehrerer Sitzungen. Die Antwort ändert jede Zahl — und `make span-clean` ändert sie erneut |
 
 ## 4. Trigger
@@ -153,7 +153,7 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
   selbst war, sagt auch dieser Slice nicht:** er liest ausschließlich Spans, und kein Span trägt
   diese Token. Der Sammelposten-Anteil misst den aufgeteilten Teil **innerhalb** der erfassten
   Teilmenge, nicht die Teilmenge gegen den ganzen Lauf.
-- **Nicht in diesem Slice:** die Cache-Zähler ([slice-071](slice-071-cache-zaehler-getrennt.md)),
+- **Nicht in diesem Slice:** die Cache-Zähler ([slice-071](../open/slice-071-cache-zaehler-getrennt.md)),
   die Rollen-Achse ([slice-060](../done/slice-060-rollen-achse.md)), die
   Doku-Konsistenz (slice-061) und die Tool-Ebene (slice-062/063).
 
