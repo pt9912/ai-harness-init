@@ -38,7 +38,7 @@ genannt.
 
 `.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md` §Token-Attributions-Regeln
 verlangt eine Token-Bilanz **je Rolle**.
-[`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) führt
+[`spec/spezifikation.md`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 führt
 sechs erklärte Abweichungen von diesem Pflicht-Minimum; die sechste ist die härteste und der
 Gegenstand hier: **der Haupt-Kontext hat keine Zahl** — und er ist der Ort, an dem auch
 Rollen-Arbeit anfällt: an der Arbeit an der Rollen-Achse dieses Repos ist belegt, dass Planner
@@ -46,7 +46,7 @@ und Implementation über weite Strecken in **einem** Kontextfenster liefen. **Wi
 das sind, weiß niemand — und genau das ist der Gegenstand.
 
 **Was gemessen ist** (im Einzelnen in
-[`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
+[`spec/spezifikation.md`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
 Abweichung 6):
 die vier `usage`-Zähler und die drei `total*`-Werte stehen ausschließlich in der `tool_response`
 eines `Agent`-Aufrufs. Den Haupt-Kontext umschließt **kein** `Agent`-Aufruf; es gibt kein
@@ -63,14 +63,14 @@ Auflösungs-Trigger — *„eine Quelle innerhalb des Repos, die Haupt-Kontext-T
 Roadmap und der flach liegende Welle-Plan — führt kein Slice diese Bedingung; wo überhaupt von
 Token die Rede ist, geht es um andere Fragen (Splitting-Regel des Sammelpostens, Berichtsgröße,
 Wächter-Bindung), und der eine Slice, der die Bedingung einmal trug, hat seinen DoD-Punkt
-ausdrücklich an
-[`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
-abgegeben. `.harness/baseline/v3.5.2/regelwerk/modul-07-carveouts.md:26-29` beschreibt genau
+ausdrücklich an die Schema-Festlegung abgegeben, die heute in
+[`spec/spezifikation.md`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
+steht. `.harness/baseline/v3.5.2/regelwerk/modul-07-carveouts.md:26-29` beschreibt genau
 diesen Zustand: *„Fehlt der Folge-Slice, ist der Carveout de facto permanent — dann gehört er
 nicht in `carveouts/`, sondern über den Trichter unten in eine ADR."* **Der Satz greift hier nach
 seiner Logik, nicht nach seinem Buchstaben, und das gehört gesagt:** Abweichung 6 ist **kein**
 Carveout und liegt nicht unter `docs/plan/carveouts/` — sie ist eine erklärte Abweichung in
-[`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung).
+[`spec/spezifikation.md`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5.
 Bindend ist deshalb der **Trichter** (`:46-93`), und der spricht ausdrücklich von *Diskrepanzen*,
 bevor eine als Carveout festgeschrieben wird (`:48`).
 
@@ -126,7 +126,7 @@ Erfassungs-Mechanik angenommen haben. Drei Festlegungen folgen:
    Nenner.** Das ist die positive Hälfte: nicht messen ist entschieden, den fehlenden Anteil
    verschweigen nicht. Ein Prozentsatz aus diesen Zahlen ist ein Anteil an der **erfassten
    Teilmenge**; wer ihn schreibt, schreibt das dazu. Die Pflicht ist **nicht neu** — sie steht
-   in [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
+   in [`spec/spezifikation.md`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
    Abweichung 6; diese ADR begründet sie und bindet sie an einen Wächter (unten), sie führt sie
    nicht ein (eine zweite Formulierung derselben Pflicht wäre eine zweite Wahrheit).
 3. **Die Rollen-Frage bleibt offen und ist hier nicht mitentschieden.** Der Haupt-Strom bleibt
@@ -149,7 +149,7 @@ Erfassungs-Mechanik angenommen haben. Drei Festlegungen folgen:
 ## Konsequenzen
 
 - **Positiv:** der Zustand ist entschieden statt aufgeschoben. Wer
-  [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
+  [`spec/spezifikation.md`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
   Abweichung 6 liest, findet keine Zusage mehr, die auf einen Träger zeigt, den es nicht gibt.
 - **Positiv:** die Pflicht, den Nenner zu nennen, hat ab hier eine **Begründung** statt nur einen
   Ort — und einen Wächter, sobald die Bilanz entsteht (Fitness Function unten; heute existiert
@@ -165,11 +165,15 @@ Erfassungs-Mechanik angenommen haben. Drei Festlegungen folgen:
   Größe: den Sammelposten-Anteil **innerhalb** der erfassten Teilmenge (unten abgegrenzt). Eine
   Größenangabe an dieser Stelle wäre die Schätzung, die der Kontext oben ausschließt
   ([ADR-0011](0011-telemetrie-erfassung-policy.md) Festlegung 1 Punkt 4).
-- **Folgepflicht 1:**
-  [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung)
-  Abweichung 6 trägt statt eines Auflösungs-Triggers das Verdikt *permanent — übergeführt in
-  diese ADR*. Modul 7 §Werkzeug-Wahl sieht das so vor: auf dem ADR-Pfad **fällt der Trigger
-  weg**, die Beschreibung bleibt.
+- **Folgepflicht 1 — eingelöst, und zwar anders als zuerst vorgesehen.**
+  [`spec/spezifikation.md`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
+  Abweichung 6 trägt die Beschreibung **ohne Auflösungs-Trigger**; Modul 7 §Werkzeug-Wahl sieht
+  genau das vor: auf dem ADR-Pfad **fällt der Trigger weg**, die Beschreibung bleibt. Das
+  **Verdikt** steht dort nicht daneben, sondern allein hier —
+  [`MR-021`](../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+  hat es beim Umzug ins Technik-Stratum ausdrücklich als **ersatzlos** verzeichnet, mit dem
+  Grund *„Ein zweiter Ort driftet"*. Wer das Verdikt am Ort der Abweichung sucht, findet es
+  nicht dort, sondern hier; diese ADR ist sein einziger Träger.
 - **Folgepflicht 2 — und sie verlangt eine Ergänzung des Vokabulars, nicht nur eine Zelle.** Die
   Matrix-Zelle *Token-Attribution × Repo* des Wellen-Closure führt für den Haupt-Kontext
   **nicht** „deklarierte Entscheidung mit Auflösungs-Trigger", sondern den Verweis auf diese ADR.
@@ -226,9 +230,9 @@ werden"*); die Nenner-Angabe daneben ohne Zahn zu lassen, wäre zweierlei Maß.
 **Was die zwei Zeilen nicht leisten.** Sie binden die
 **Anwesenheit** der Nenner-Angabe, nicht ihre **Wahrheit**: ob die genannte Teilmenge die
 tatsächlich gerechnete ist, prüft kein Sensor — dieselbe Grenze, die
-[`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) für
-`make comment-claims` ausspricht (*es prüft die Existenz des Sensors, nicht die Wahrheit des
-Satzes*). Und der Nenner ist **keine** der beiden Nachbargrößen in derselben Ausgabe: der
+[`spec/spezifikation.md`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 für
+seine eigene Sensor-Spalte ausspricht — dort *„prüft kein Gate, ob ein … genannter Wächter noch
+existiert oder noch so heißt"*, und `make comment-claims` lässt jede Markdown-Datei außen vor. Und der Nenner ist **keine** der beiden Nachbargrößen in derselben Ausgabe: der
 **Sammelposten-Anteil** misst, wie viel der Bilanz auf der Splitting-Regel ruht; die
 **Abdeckungszahl** zählt Spawns **innerhalb** der erfassten Teilmenge; der Nenner benennt die
 Teilmenge selbst. Drei Größen, drei Angaben — wer zwei davon zusammenlegt, verliert eine. Die
@@ -262,7 +266,7 @@ Zeile behauptet keinen Gate an einem dieser drei Orte.
   nicht: der greift genau ein Feld heraus und protokolliert nichts. Gelesen ist für sie nur die
   vendored Werkzeug-Doku, und die ist **Herkunft, keine Messung**. Wer eines dieser Ereignisse
   verdrahtet, misst seine Schlüsselmenge mit und trägt sie in
-  [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) nach;
+  [`spec/spezifikation.md`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 nach;
   zeigt sie eine Nutzungs-Achse für den Haupt-Kontext, ist diese ADR abzulösen.
 - **Wenn die Transkript-Entscheidung kippt** *(feedforward — eine Erlaubnis des Auftraggebers,
   kein Sensor)*: dann ist Annahme (b) hinfällig, und mit ihr Alternative D. Zu entscheiden wäre
@@ -277,6 +281,7 @@ Zeile behauptet keinen Gate an einem dieser drei Orte.
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
+| 2026-08-03 | Überarbeitet, weiter **Proposed** | **Neun Verweise zeigten auf einen Eintrag, der seinen Rumpf abgegeben hat.** Der Span-Schema-Eintrag des Adaptions-Blocks ist vollständig aufgehoben ([`MR-021`](../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben), Bedingungen in [ADR-0014](0014-aufgehobener-eintrag-kopf-statt-rumpf.md)); er behält Nummer, Überschrift und eine Zeiger-Zeile, die sechs erklärten Abweichungen stehen im Technik-Stratum. Die Links lösten weiter auf — der Kopf ist genau als Anker erhalten —, aber jede Aussage darüber, was der Eintrag *führt*, *trägt* oder *ausspricht*, war seit dem Umzug im Präsens falsch, und **kein Gate liest sie**: `codepaths` prüft Pfade, nicht Sätze. Ab *Accepted* wären sie nach [`AGENTS.md`](../../../AGENTS.md) §3.4 nur noch per Supersedes zu korrigieren. Sie zeigen jetzt auf den Zielort, den der `Schärft`-Kopf dieser ADR ohnehin nennt. **Folgepflicht 1 war zudem sachlich überholt:** sie verlangte das Verdikt *permanent* am Ort der Abweichung — jener Umzug hat es dort als **ersatzlos** verzeichnet (*„Ein zweiter Ort driftet"*), womit diese ADR sein einziger Träger ist; die Folgepflicht sagt das jetzt. Die Zeile von 2026-07-31 unten bleibt unverändert: sie datiert einen Zustand, in dem der Eintrag den Rumpf noch trug |
 | 2026-08-01 | Überarbeitet, weiter **Proposed** | `Schärft` von `—` auf den Abschnitt gesetzt, den diese ADR verbindlich macht. Die Begründung *„ohne Spec-Stratum"* traf zu, solange das Repo nur Vertrag und Sicht führte; mit dem Technik-Stratum ([ADR-0013](0013-technik-stratum-als-zielort.md), [`MR-019`](../../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence)) existiert das Ziel |
 | 2026-07-31 | Überarbeitet, weiter **Proposed** | **Die Verpflichtungen waren an Slice-Kennungen adressiert und veralteten damit schneller, als die ADR gelesen wird:** die Zuschreibung an die Definition of Done der Auswertung beschrieb einen Schnitt, den derselbe Tag schon abgelöst hatte, und die Aussage über das Vokabular des Welle-Plans ebenso. Eine ADR ist dauerhaft, ein Slice ist ein Lifecycle-Artefakt — die Bindung des einen an das andere erzeugt die Lüge nur mit Verzögerung. Die Pflichten hängen jetzt an der **Funktion** (der Slice, der die Bilanz baut; der Slice, der die Rollen-Konvention schreibt), nicht an einer Nummer; ein Re-Schnitt verschiebt damit den Träger, nicht die Pflicht. Die Abgrenzung der Nenner-Angabe ist auf **drei** Größen ausgeschrieben (Nenner · Sammelposten-Anteil · Abdeckungszahl), weil die zweite Grenze bisher nur behauptet und nirgends gezogen war. Die zwei Mengenangaben über den Plan-Bestand sind entfallen — sie zählten Lifecycle-Dateien und waren beim Zählen bereits überholt. Slice-Kennungen führt allein die Verweis-Spalte dieser Tabelle |
 | 2026-07-31 | Überarbeitet, weiter **Proposed** | **Die Konsequenz schrieb dem Auswertungs-Slice eine Messung zu, die er nicht leisten kann:** er liest ausschließlich Spans, und kein Span trägt Haupt-Kontext-Token; dieselbe Zuschreibung stand in Alternative G. Beide Stellen sagen jetzt, dass die Größe unbeziffert bleibt, solange die Annahmen (a)–(c) gelten. Der Wächter der Nenner-Pflicht steht nicht mehr im Präsens, sondern als fällig. Der Beleg-Verweis auf die Risiken des Auswertungs-Slice ist entfallen — dort steht die Pflicht zur Größe des aufgeteilten Anteils, die diese ADR gegen den Nenner abgrenzt; die Abgrenzung sagt das jetzt selbst. [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) trägt nur noch **eine** Rolle: die emittierte Ebene, hier nicht berührt, mit einem Kriterium an einer Stelle; die fehlende Fitness Function für Festlegung 1 steht allein auf [`AGENTS.md`](../../../AGENTS.md) §3.6. Neu ist **Folgepflicht 4** — der Slice, der die Bilanz baut, nimmt die Nenner-Angabe in seine DoD auf, sonst zeigen die zwei Wächter-Zeilen auf einen Slice, der sie nicht führt; die Präzedenz aus [ADR-0011](0011-telemetrie-erfassung-policy.md) deckt nur das Fehlen der Datei, nicht das Fehlen des DoD-Punktes. Folgepflicht 2 nennt jetzt die Stellen des überholten Welle-Vokabulars und die fehlende Zeile in der Plan-Tabelle des Slice, der die Rollen-Konvention schreibt. Die Mengenaussage *„bisher überwiegend"* über den Ort der Rollen-Arbeit ist auf die eine belegte Beobachtung zurückgenommen |
