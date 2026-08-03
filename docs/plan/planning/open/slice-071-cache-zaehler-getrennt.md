@@ -93,7 +93,7 @@ Vordergrund-Läufen** an.
 
 | # | Frage | Warum sie den Schnitt entscheidet |
 |---|---|---|
-| A | Summiert die Rechnung **eine Sitzung** oder den **Bestand**? | Im Ablageort liegen Ströme mehrerer Sitzungen, und `make span-clean` ändert den Bestand erneut. Dieselbe Frage stellt [slice-066](../in-progress/slice-066-telemetrie-auswertung.md) (dort Frage B); wer zuerst läuft, entscheidet sie, der zweite übernimmt die Antwort — zwei Ausgaben über verschieden großen Beständen wären nicht vergleichbar |
+| A | ~~Summiert die Rechnung **eine Sitzung** oder den **Bestand**?~~ **BEANTWORTET (2026-08-03): der Bestand** — übernommen, nicht neu entschieden | Im Ablageort liegen Ströme mehrerer Sitzungen, und `make span-clean` ändert den Bestand erneut. Dieselbe Frage stellt [slice-066](../in-progress/slice-066-telemetrie-auswertung.md) (dort Frage B); **jener lief zuerst und hat sie entschieden** — Begründung und Messung stehen dort, hier gilt die Antwort. Was dieser Slice davon mitträgt: die Ausgabe nennt **Sitzungszahl und Zeitraum**, weil `span-clean` die Basis zurücksetzt. Die ursprüngliche Regel dieser Zeile — wer zuerst läuft, entscheidet sie, der zweite übernimmt die Antwort — zwei Ausgaben über verschieden großen Beständen wären nicht vergleichbar |
 
 ## 4. Trigger
 
