@@ -68,8 +68,9 @@ Dieser Slice zieht den **bestehenden** Guard nach.
 | `test/mutations/` | neu | der Zahn aus DoD (2) |
 
 **Was NICHT dazugehört:** die anderen Hook-Ereignisse dieses Repos
-(`PostToolUse`, `PostToolUseFailure`, `Stop`) bleiben auf den Top-Level-Feldern — das ist laut
-Referenz ihr **aktuelles** Format, keine Altlast.
+(`PostToolUse`, `PostToolUseFailure`, `SubagentStart`, `Stop`) bleiben auf den Top-Level-Feldern —
+das ist laut Referenz ihr **aktuelles** Format, keine Altlast. `SubagentStart` ist seit dem
+2026-08-08 verdrahtet und war beim Schnitt dieses Slice noch nicht in der Liste.
 
 ## 4. Trigger
 

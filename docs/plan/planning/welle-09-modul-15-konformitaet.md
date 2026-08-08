@@ -51,7 +51,8 @@ als *Trace aus Spans — einen pro Tool-Call*. Diese Spans entstanden bei uns bi
 [slice-059](done/slice-059-telemetrie-erfassung-hook.md) **nirgends**: der `PreToolUse`-Guard sah
 jeden Bash-Aufruf samt Argumenten, entschied und **vergaß ihn sofort**. Genau dort setzte die
 Welle an — die Mechanik war verdrahtet, es fehlte die Senke. **Seit slice-059 (done) entstehen
-sie**, und zwar an `PostToolUse`/`PostToolUseFailure`, **nicht** am `PreToolUse`-Guard; eine
+sie**, und zwar an `PostToolUse`/`PostToolUseFailure` (seit dem 2026-08-08 zusätzlich an
+`SubagentStart`), **nicht** am `PreToolUse`-Guard; eine
 frühere Fassung dieses Absatzes stand im Präsens und beschrieb damit einen überholten
 Ist-Zustand.
 
@@ -166,7 +167,8 @@ die Token-Bilanz keine eigene Datenquelle, sondern nur das Transkript des Werkze
 außerhalb des Repos liegt, uns nicht gehört und **keine Korrelations-IDs trägt** (`agent.role`
 steht dort als `general-purpose`, `slice.id` gar nicht; am 2026-07-28 gemessen). Und der
 Erfassungsort **existiert** seit [slice-059](done/slice-059-telemetrie-erfassung-hook.md): der
-Emitter läuft an `PostToolUse`/`PostToolUseFailure` und schreibt je Tool-Call einen Span mit den
+Emitter läuft an `PostToolUse`/`PostToolUseFailure` — und seit dem 2026-08-08 zusätzlich an
+`SubagentStart`, das je **Spawn** feuert statt je Tool-Call — und schreibt je Tool-Call einen Span mit den
 Korrelations-Achsen. Der `PreToolUse`-Guard, den eine frühere Fassung hier als Erfassungsort
 nannte, ist es **nicht** — er entscheidet und behält nichts.
 
