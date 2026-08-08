@@ -38,12 +38,9 @@ type Bilanz struct {
 	Rollen       []Rolle
 	Gesamt       int64
 	Sammelposten int64
-	// Verteilt sagt, ob die Splitting-Regel auf den Sammelposten angewendet werden
-	// KONNTE. Sie kann es nicht, wenn keine Rolle Tool-Calls traegt — dann liegen
-	// die Token in keiner Rollen-Zeile und damit ausserhalb von Gesamt. Ohne dieses
-	// Feld behauptete die Ausgabe eine Verteilung, die nicht stattgefunden hat, und
-	// die Token verschwaenden lautlos: genau die unvollstaendige Erhebung, die sich
-	// wie eine vollstaendige liest.
+	// Verteilt ist wahr, wenn die Splitting-Regel angewendet werden konnte — also
+	// mindestens eine Rolle Tool-Calls traegt. Ist es falsch, liegt Sammelposten in
+	// keiner Rollen-Zeile und damit ausserhalb von Gesamt.
 	Verteilt    bool
 	AgentLaeufe int
 	MitZaehlern int
@@ -53,8 +50,7 @@ type Bilanz struct {
 }
 
 // SammelpostenAnteil ist der Anteil der Bilanz, der auf der Splitting-Regel ruht
-// statt auf einer Messung. Ohne ihn liest sich eine verteilte Summe wie eine
-// gemessene.
+// statt auf einer Messung.
 func (b Bilanz) SammelpostenAnteil() float64 {
 	if b.Gesamt == 0 {
 		return 0
@@ -164,8 +160,8 @@ func verarbeite(b *Bilanz, s span.Span, direkt, toolCalls map[string]int64, sitz
 // TOOL-CALLS auf die realen Rollen. Die Regel selbst steht als Festlegung in
 // spec/spezifikation.md §5 — hier lebt nur ihre Umsetzung.
 //
-// Traegt keine Rolle Tool-Calls, bleibt der Sammelposten unverteilt: raten waere
-// schlechter als eine sichtbare Null.
+// Traegt keine Rolle Tool-Calls, bleibt der Sammelposten unverteilt; der zweite
+// Rueckgabewert sagt, welcher der beiden Faelle vorliegt.
 func verteile(direkt, toolCalls map[string]int64, sammelposten int64) ([]Rolle, bool) {
 	namen := map[string]struct{}{}
 	for n := range direkt {
@@ -189,6 +185,14 @@ func verteile(direkt, toolCalls map[string]int64, sammelposten int64) ([]Rolle, 
 		rollen = append(rollen, r)
 	}
 
+	// Der Rest der Ganzzahl-Division geht deterministisch weiter — absteigend nach
+	// Tool-Calls, bei Gleichstand alphabetisch, je ein Token —, damit die Summe der
+	// Zuteilungen genau der Sammelposten ist.
+	// Bewacht von TestAggregiere_GanzzahlRestGehtNichtVerloren.
+	if summeCalls > 0 {
+		verteileRest(rollen, sammelposten)
+	}
+
 	sort.Slice(rollen, func(i, j int) bool {
 		if rollen[i].Summe() != rollen[j].Summe() {
 			return rollen[i].Summe() > rollen[j].Summe()
@@ -196,6 +200,35 @@ func verteile(direkt, toolCalls map[string]int64, sammelposten int64) ([]Rolle, 
 		return rollen[i].Name < rollen[j].Name
 	})
 	return rollen, summeCalls > 0
+}
+
+// verteileRest gibt den Rundungsrest weiter, damit die Summe der Zuteilungen
+// genau der Sammelposten ist.
+func verteileRest(rollen []Rolle, sammelposten int64) {
+	var zugeteilt int64
+	for _, r := range rollen {
+		zugeteilt += r.Zugeteilt
+	}
+	rest := sammelposten - zugeteilt
+	if rest <= 0 {
+		return
+	}
+
+	reihenfolge := make([]int, len(rollen))
+	for i := range rollen {
+		reihenfolge[i] = i
+	}
+	sort.Slice(reihenfolge, func(a, b int) bool {
+		ra, rb := rollen[reihenfolge[a]], rollen[reihenfolge[b]]
+		if ra.ToolCalls != rb.ToolCalls {
+			return ra.ToolCalls > rb.ToolCalls
+		}
+		return ra.Name < rb.Name
+	})
+
+	for k := int64(0); k < rest; k++ {
+		rollen[reihenfolge[int(k)%len(reihenfolge)]].Zugeteilt++
+	}
 }
 
 // Schreibe gibt die Bilanz als Text aus.
@@ -209,15 +242,13 @@ func verteile(direkt, toolCalls map[string]int64, sammelposten int64) ([]Rolle, 
 func Schreibe(b Bilanz) string {
 	var sb strings.Builder
 
-	// Der Nenner. Er gehoert in die ERSTE Zeile und nicht in eine Fussnote: ein
-	// Prozentsatz aus diesen Zahlen ist ein Anteil an der erfassten Teilmenge, und
-	// wer ihn liest, liest ihn zuerst.
+	// Der Nenner steht in der ERSTEN Zeile und nicht in einer Fussnote: ein
+	// Prozentsatz aus diesen Zahlen ist ein Anteil an der erfassten Teilmenge.
 	sb.WriteString("Token-Bilanz je Rolle — gerechnet ueber Subagenten-Laeufe, nicht ueber den Lauf.\n")
 
-	// WAS summiert wird, gehoert neben das WORUEBER: `total_tokens` waere um ein
-	// Vielfaches groesser, weil dort die Cache-Lesungen mitlaufen — ein eigener
-	// Gegenstand mit eigenen Regeln (Modul 15 §Cache-Counter-Regeln). Ohne diese
-	// Zeile liest sich die Summe als Gesamtverbrauch.
+	// Gezaehlt werden input_tokens + output_tokens. `total_tokens` ist eine andere
+	// Groesse — dort laufen die Cache-Lesungen mit, ein eigener Gegenstand mit
+	// eigenen Regeln (Modul 15 §Cache-Counter-Regeln).
 	sb.WriteString("Summiert: input_tokens + output_tokens (ohne Cache-Lesungen).\n")
 
 	if b.Sitzungen > 0 {
@@ -238,10 +269,9 @@ func Schreibe(b Bilanz) string {
 			groesste.Name, groesste.Summe(), anteil(groesste.Summe(), b.Gesamt))
 	}
 
-	// Zwei Faelle, und die Ausgabe darf sie nicht verwechseln: verteilt ist der
-	// Sammelposten Teil der Summe und traegt einen Anteil; unverteilt liegt er in
-	// KEINER Zeile und damit ausserhalb von Gesamt — ein Prozentsatz waere dann auf
-	// eine Summe bezogen, die ihn nicht enthaelt.
+	// Drei Faelle: kein Sammelposten · verteilt, dann traegt er einen Anteil an der
+	// Summe · unverteilt, dann liegt er ausserhalb der Summe und bekommt keinen
+	// Prozentsatz.
 	// Bewacht von TestSchreibe_UnverteilterSammelpostenStehtAusserhalb.
 	switch {
 	case b.Sammelposten == 0:

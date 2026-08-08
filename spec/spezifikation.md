@@ -406,9 +406,18 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
 
    **Die Splitting-Regel, festgelegt: ANTEILIG NACH TOOL-CALLS.** Der Sammelposten wird auf
    die realen Rollen verteilt, im Verhältnis ihrer Tool-Calls; **rollenlose Calls bleiben aus
-   dem Nenner**, sonst verteilte der Sammelposten teilweise auf sich selbst. Trägt keine Rolle
-   Tool-Calls, bleibt er **unverteilt** — eine sichtbare Null ist besser als eine geratene
-   Verteilung.
+   dem Nenner**, sonst verteilte der Sammelposten teilweise auf sich selbst. **Der Rest der
+   Ganzzahl-Division wird weitergegeben** — absteigend nach Tool-Calls, bei Gleichstand
+   alphabetisch —, damit die Summe der Zuteilungen **genau** der Sammelposten ist; ein
+   liegengebliebenes Token stünde auf keiner Zeile, während die Ausgabe es als verteilt nennt.
+
+   **Die eine Ausnahme, und sie ist als solche markiert:** trägt **keine** Rolle Tool-Calls,
+   fehlt der Regel ihr Schlüssel, und der Sammelposten bleibt **unverteilt**. Punkt 1 der
+   Prüfreihenfolge unten — *jedes Token liegt am Ende auf einer realen Rolle* — ist dann nicht
+   erfüllbar: es gibt keine reale Rolle, auf die es liegen könnte. Geraten wird trotzdem nicht.
+   Stattdessen gilt die Pflicht aus Punkt 2 verschärft: die Ausgabe nennt den Betrag **und**
+   dass er unverteilt ist **und** dass er nicht in ihrer Summe steht. Ein Prozentsatz entfällt
+   dort — er wäre auf eine Summe bezogen, die diese Token nicht enthält.
 
    **Warum diese und nicht die andere.** Das Modul bietet zwei Regeln an; die zweite schlägt
    den Sammelposten dem **auslösenden Slice** zu. Sie scheidet aus, weil sie die falsche Größe

@@ -1,12 +1,9 @@
 // Command span-report rechnet aus dem Span-Bestand eine Token-Bilanz je Rolle.
 //
-// EIGENES Binary, KEIN Subkommando von ai-harness-init — aus demselben Grund wie
-// beim Emitter: ob der emittierte Harness eine Auswertung bekommt, entscheidet der
-// Slice, der die Tool-Ebene entscheidet. Ein Subkommando haette das vorweggenommen,
-// weil es mit dem Produkt-Binary beim Adopter landete.
+// EIGENES Binary, KEIN Subkommando von ai-harness-init: was der emittierte
+// Harness bekommt, entscheidet der Slice der Tool-Ebene, nicht dieses Kommando.
 //
-// Es ist KEIN Gate. Eine Bilanz prueft nichts — sie rechnet. Ein Gate ueber einem
-// Bericht waere eines ueber leerem Pruefbereich (LH-QA-01).
+// Es ist KEIN Gate — eine Bilanz prueft nichts, sie rechnet (LH-QA-01).
 package main
 
 import (

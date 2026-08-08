@@ -233,3 +233,32 @@ func TestSchreibe_UnverteilterSammelpostenStehtAusserhalb(t *testing.T) {
 		t.Fatalf("der unverteilte Sammelposten steht nicht als solcher da:\n%s", text)
 	}
 }
+
+// Die Summe der Zuteilungen ist genau der Sammelposten: die Ganzzahl-Division
+// laesst je Rolle bis zu ein Token liegen, und ein liegengebliebenes Token steht
+// auf keiner Zeile, waehrend die Ausgabe es als verteilt nennt.
+// Dauer-Sensor: test/mutations/149-report-ganzzahlrest-faellt-weg.sh
+func TestAggregiere_GanzzahlRestGehtNichtVerloren(t *testing.T) {
+	t.Parallel()
+	// 10 Token auf drei Rollen mit 1/1/1 Tool-Calls: 10/3 = 3 je Rolle, Rest 1.
+	dir := schreibeBestand(t,
+		agentSpan("", 10, 0),
+		callSpan("planner"), callSpan("reviewer"), callSpan("architect"),
+	)
+
+	b, err := report.Aggregiere(dir)
+	if err != nil {
+		t.Fatalf("Aggregiere: %v", err)
+	}
+	var summe int64
+	for _, r := range b.Rollen {
+		summe += r.Zugeteilt
+	}
+	if summe != b.Sammelposten {
+		t.Fatalf("Zuteilungen = %d, Sammelposten = %d — %d Token liegen auf keiner Zeile",
+			summe, b.Sammelposten, b.Sammelposten-summe)
+	}
+	if b.Gesamt != b.Sammelposten {
+		t.Fatalf("Gesamt = %d, erwartet %d", b.Gesamt, b.Sammelposten)
+	}
+}
