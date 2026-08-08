@@ -112,6 +112,37 @@ prüft, ist ein stilles Grün im Gate — §3.1 eine Ebene tiefer. Die Regel ist
 **Verschärfung** und braucht darum kein ADR (§3.5 gilt für Senkungen; vgl.
 [`MR-001`](harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) „Gate-*Anheben* → Steering-Loop").
 
+### 3.7 Ein Kommentar beschreibt, was da ist
+
+Gilt für Code, Konfiguration und Skripte. Ein Kommentar trägt eine der fünf
+Klassen — **Zusage · Kopplung · Abgrenzung · Rang-Zeiger · Grenze** — und
+schreibt an den, der die Stelle *ändert*, nicht an den, der die Entscheidung
+*trifft*.
+
+**Falsch:** „Ohne dieses Feld behauptete die Ausgabe eine Verteilung, die nicht
+stattgefunden hat" — Konjunktiv über die verworfene Alternative.
+**Richtig:** „Verteilt ist wahr, wenn die Splitting-Regel angewendet werden
+konnte" — Indikativ über den Zustand.
+
+**Falsch:** „die frühere Fassung prüfte nur die Länge" — beschreibt abwesenden
+Text.
+**Richtig:** die geltende Zusage nennen; die vorige hält `git`.
+
+**Begründung:** Die Abwägung gehört in die ADR, die Historie in `git`, die
+Herkunft in **ein** auflösbares Feld ([`LH-*`](spec/lastenheft.md),
+[`ADR-*`](docs/plan/adr/)). Was daneben steht, liest jeder Lauf mit und bezahlt
+es mit Kontext.
+
+**Herkunft und Reichweite, ehrlich:** die adoptierte Baseline führt diese Regel
+**nicht** — sie ist in einem der Releases nach dem gepinnten Stand entstanden.
+Diese Sektion ist ein **Vorgriff** darauf und weicht zudem in der Platzierung ab
+(upstream steht die Regel in den Grundlagen und wird aus dem
+Implementierungs-Modul referenziert, nicht als Hard Rule). Beides ist als
+[`MR-022`](harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline) deklariert; mit der Re-Baseline ist gegen die Upstream-Fassung
+zu halten. **Ein Wächter existiert nicht:** `make comment-claims` prüft, ob ein
+genannter Sensor existiert, nicht, worüber ein Kommentar spricht.
+
+
 ## 4. Quality Gates
 
 | Target | Zweck |

@@ -1013,6 +1013,40 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Auflösungs-Trigger:** permanent. Fiele die Setzung, dass das Technik-Stratum der Zielort ist,
   wäre nicht dieser Eintrag nachzubessern, sondern jene Entscheidung abzulösen.
 
+### MR-022 — Kommentar-Regel als Vorgriff auf eine neuere Baseline
+
+- **Datum:** 2026-08-08
+- **Geltungsbereich:** [`AGENTS.md`](../AGENTS.md) §3.7. Betrifft Kommentare in Code,
+  Konfiguration und Skripten dieses Repos — **nicht** die emittierte Ebene: was ein Zielrepo
+  an Regeln bekommt, entscheidet der Slice, der die Tool-Ebene entscheidet.
+- **Adaption, in zwei Punkten:**
+  1. **Vorgriff.** Die adoptierte Baseline `v3.5.2` führt die Regel **nicht**. Gemessen am
+     2026-08-08 über den vendored Baum: `grundlagen-harness-dateien.md` existiert dort nicht
+     (die Grundlagen liegen als `grundlagen-konventionen.md` ungeteilt vor), und der Abschnitt
+     *Was ein Kommentar trägt* hat **null** Treffer. Upstream existiert er — er ist in einem
+     der Releases nach dem gepinnten Stand entstanden.
+  2. **Platzierung.** Upstream steht die Regel in den **Grundlagen** und wird aus dem
+     Implementierungs-Modul referenziert. Hier steht sie als **Hard Rule** in
+     [`AGENTS.md`](../AGENTS.md) §3 — an dem Ort, an dem dieses Repo seine übrigen sechs führt.
+- **Begründung.** Die Regel wurde in einer Sitzung **dreimal** eingefordert, für drei
+  Artefakt-Arten (Plan-Text, `Makefile`-Kommentare, Go-Kommentare). Eine Regel, die dreimal
+  mündlich durchgesetzt wird, ist geschrieben billiger als ungeschrieben. Der Vorgriff ist der
+  Preis dafür, sie nicht bis zur Re-Baseline liegen zu lassen; ohne diesen Eintrag wäre er
+  eine stille Abweichung.
+- **Kein Wächter, und das gehört dazu.** `make comment-claims` prüft, ob ein **genannter
+  Sensor existiert** — nicht, worüber ein Kommentar spricht. Ein Teil der Klasse wäre
+  maschinell fangbar (Marker wie Befund-Kennungen oder Runden-Verweise im Prüfbereich), der
+  Rest nicht. Die Regel liegt damit im Feedforward-Quadranten; das ist benannt, nicht
+  behauptet.
+- **Auflösungs-Trigger.** Die Re-Baseline auf einen Stand, der die Regel führt. Dann ist gegen
+  die Upstream-Fassung zu halten: deckt sie sich, wird dieser Eintrag durch einen Nachfolger
+  aufgehoben und §3.7 auf den Baseline-Abschnitt zurückgeführt; weicht sie ab, bleibt die
+  Abweichung — dann aber gegen einen Text, den es gibt, statt gegen eine Lücke.
+- **Hebt die Blankett-Klausel aus [`MR-000`](#mr-000--baseline-aussage) für diesen Punkt auf**
+  — *„keine inhaltlichen Adaptionen ggü. Baseline-Default"*.
+  [`MR-000`](#mr-000--baseline-aussage) bleibt unangetastet, seine übrigen Setzungen gelten
+  fort.
+
 ## Modus-Deklaration pro Sub-Area
 
 | Sub-Area | Modus | Begründung | Graduation |
