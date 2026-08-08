@@ -52,7 +52,12 @@ Auswertung über den vorhandenen Bestand, aufrufbar als `make`-Ziel.
   Architect · Implementer · Reviewer · Verifier); die kanonische Liste dieses Repos führt mit
   `validator` **sechs** ([`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5).
   Ein Verifier, der die Zahl gegen den Modul-Text prüft, soll die Differenz hier finden und nicht
-  als Abweichung melden. Spans mit leerem `spawned_role` werden nach der
+  als Abweichung melden. **Diese Differenz stirbt mit der nächsten Baseline** (gemessen
+  2026-08-08 gegen den aktuellen Kurs-Stand): die harte Rollen-Liste ist dort entfallen und durch
+  *„die Rollen sind die aus Modul 8, festgelegt durch das gestartete Rollen-Artefakt"* ersetzt —
+  unser `validator` ist damit gedeckt. Gegen die **gepinnte** Fassung gilt der Satz oben
+  unverändert; für den Adaptions-Durchgang der Re-Baseline ist der Ausgang damit vorab benannt:
+  *gegenstandslos*. Spans mit leerem `spawned_role` werden nach der
   in [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
   bindenden Lesevorschrift **aufgeteilt**, nicht als eigene Zeile geführt — und **wie groß der
   aufgeteilte Anteil war, steht im Ergebnis**. Ohne diese Zahl ruht die Bilanz auf einer Regel,
@@ -63,9 +68,20 @@ Auswertung über den vorhandenen Bestand, aufrufbar als `make`-Ziel.
   sich eine unvollständige Erhebung wie eine vollständige.
   **Die Bezugsgröße der Abdeckungszahl kommt aus einer anderen Quelle als der Zähler.** Zählte
   die Abdeckungszahl beide Größen aus denselben Spans, prüfte sie sich selbst. Das Ereignis
-  **`SubagentStart`** feuert je Spawn und trägt `agent_type` (Referenz, §SubagentStart) — es kann
+  **`SubagentStart`** feuert je Spawn — es kann
   nicht blockieren, aber es **zählt**, unabhängig davon, ob der `Agent`-Span Telemetrie trug.
   Erst diese zwei Quellen machen aus der Abdeckungszahl eine Messung statt einer Selbstauskunft.
+  **Ist-Messung vor Code (2026-08-08):** das Ereignis war **nirgends verdrahtet** — kein Eintrag in
+  `.claude/settings.json`, kein Span im Bestand (5.706 Zeilen: nur `PostToolUse` und
+  `PostToolUseFailure`), kein Code-Treffer, und kein anderer Slice liefert es. Die Verdrahtung ist
+  mit diesem Slice erfolgt und kostete **keinen Code**: der Emitter schreibt bedingungslos, liest
+  das Ereignis generisch aus `hook_event_name` und `agent_type` generisch aus der Payload.
+  **Offen und erst nach der Verdrahtung messbar:** ob die Payload `agent_type` überhaupt trägt. Die
+  vendored Referenz führt das Ereignis nur in Tabellen — einen eigenen Abschnitt dazu gibt es
+  nicht —, und der Agent-Typ steht dort als **Matcher**-Wert, nicht als Payload-Feld. Nach der
+  Regel dieses Repos (*die Payload ist die Quelle, die Doku ist Herkunft*) ist das **gelesen, nicht
+  gemessen**. Trägt die Payload den Typ nicht, verliert die Abdeckungszahl ihre zweite Quelle —
+  dann geht dieser DoD-Punkt zurück in die Zerlegung, begründet statt vermutet.
   Diese Bezugsgröße ist **nicht** der Nenner aus DoD (2): sie zählt Spawns innerhalb der
   erfassten Teilmenge, jener benennt die Teilmenge selbst.
 - [ ] **(2) Die Bilanz nennt ihren Nenner — und ein Fall nimmt ihn wieder weg.** Die Ausgabe
@@ -111,6 +127,7 @@ Auswertung liest ausschließlich Spans**, kein Zugriff außerhalb des Repos, kei
 | Auswertung (Go, eigenes Kommando) | neu | Aggregation über die Span-Ströme; dieselbe Linie wie der Emitter — Docker-only gebaut ([`ADR-0003`](../../adr/0003-go-native-binaries.md)), **kein** Subkommando des Produkt-Binaries, damit slice-062 nicht vorweggenommen wird |
 | `Makefile` | update | ein `make`-Ziel. **Kein Gate:** eine Bilanz prüft nichts, und ein Gate über einem Bericht wäre eines über leerem Prüfbereich ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) |
 | [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | die **Splitting-Regel** des Sammelpostens gehört als Festlegung nach §5, nicht in den Code: technische Festlegung, ohne Vertragsänderung fortschreibbar, mit jedem weiteren Signal wachsend ([Aufnahme-Regel](../../../../spec/spezifikation.md#aufnahme-regel)). **Kein Adaptions-Eintrag:** eine der zwei vom Modul angebotenen Regeln zu wählen weicht von ihm nicht ab |
+| `.claude/settings.json` | update | **Nachtrag aus der Ist-Messung:** die zweite Quelle der Abdeckungszahl aus DoD (1) — `SubagentStart` — war nicht verdrahtet. Ein Ereignis-Block, dasselbe Binary wie `PostToolUse`, **kein Code**: der Emitter ist ereignis-generisch. Berührt die Durchsetzungsschicht ([`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)) und gehört deshalb in diese Tabelle, nicht in einen stillen Seiteneffekt |
 | `test/` + `test/mutations/` | neu | die Zähne aus DoD (1) — Sammelposten-Anteil und Abdeckungszahl — und die zwei aus DoD (2) für die Nenner-Angabe |
 
 **Offen, vor dem Code zu entscheiden:**

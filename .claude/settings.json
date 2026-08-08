@@ -44,6 +44,18 @@
                 ]
             }
         ],
+        "SubagentStart": [
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "\"$CLAUDE_PROJECT_DIR\"/.harness/state/bin/span-emit",
+                        "timeout": 5
+                    }
+                ]
+            }
+        ],
         "Stop": [
             {
                 "hooks": [
