@@ -61,46 +61,32 @@ Auswertung über den vorhandenen Bestand, aufrufbar als `make`-Ziel.
   in [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
   bindenden Lesevorschrift **aufgeteilt**, nicht als eigene Zeile geführt — und **wie groß der
   aufgeteilte Anteil war, steht im Ergebnis**. Ohne diese Zahl ruht die Bilanz auf einer Regel,
-  ohne dass der Leser es sieht. **Dazu die Abdeckungszahl:** wie viele `Agent`-Spans überhaupt
-  Zähler trugen. **Nicht**, weil die Vordergrund-Konvention aus slice-060 sensorlos wäre — sie
-  bekommt dort einen `PreToolUse`-Guard —, sondern weil ein Guard **fehlen, abgeschaltet oder
-  umgangen** sein kann und ein Hintergrund-Start dann lautlos ausfällt. Ohne diese Zahl liest
-  sich eine unvollständige Erhebung wie eine vollständige.
-  **Die Bezugsgröße der Abdeckungszahl kommt aus einer anderen Quelle als der Zähler.** Zählte
-  die Abdeckungszahl beide Größen aus denselben Spans, prüfte sie sich selbst. Das Ereignis
-  **`SubagentStart`** feuert je Spawn und trägt `agent_type`
-  ([`docs/user/claude-hooks-referenz.md`](../../../../docs/user/claude-hooks-referenz.md)
-  §SubagentStart, dort als **Eingabefeld** neben `agent_id`) — es kann
-  nicht blockieren, aber es **zählt**, unabhängig davon, ob der `Agent`-Span Telemetrie trug.
-  Erst diese zwei Quellen machen aus der Abdeckungszahl eine Messung statt einer Selbstauskunft.
-  **Ist-Messung vor Code (2026-08-08):** das Ereignis war **nirgends verdrahtet** — kein Eintrag in
-  `.claude/settings.json`, kein Span im Bestand (5.706 Zeilen: nur `PostToolUse` und
-  `PostToolUseFailure`), kein Code-Treffer, und kein anderer Slice liefert es. Die Verdrahtung ist
-  mit diesem Slice erfolgt und kostete **keinen Code**: der Emitter schreibt bedingungslos, liest
-  das Ereignis generisch aus `hook_event_name` und `agent_type` generisch aus der Payload.
-  **Gemessen am 2026-08-08, nach der Verdrahtung — drei reale Spawns, Vordergrund und
-  Hintergrund.** Die Spans tragen `agent_type` (`general-purpose` → `agent_role` leer,
-  `reviewer` → `agent_role` gefüllt; die Normalisierung aus slice-060 greift). Der Hook wirkte
-  **sofort**, ohne Sitzungswechsel. **Der tragende Fall ist belegt, nicht abgeleitet:** ein
-  **Hintergrund**-Spawn erzeugte einen `SubagentStart`-Span, während sein `Agent`-Span **keine**
-  Verbrauchs-Achse trug — die zweite Quelle sieht damit genau den Lauf, den die erste verliert.
-  Ohne diese Gegenprobe wäre „baubar" eine Zusage über den Vordergrund gewesen, während die
-  Abdeckungszahl gerade für den Hintergrund existiert. Die Schlüsselmenge steht in
-  [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5.
-  **Struktur, die der Auswerter kennen muss:** der Span landet im **eigenen Strom des Subagenten**
-  (`<session>-<agentid>.jsonl`, `seq 1`), nicht im Haupt-Strom — die Spawn-Zahl ist also über
-  **alle** Ströme zu zählen.
+  ohne dass der Leser es sieht. **Dazu die Abdeckungszahl — sie rechnet über dieselbe Menge wie
+  die Bilanz:** wie viele der `Agent`-Läufe des Bestands **Zähler trugen**, als Zahl **mit ihrer
+  Bezugsmenge** und nicht als nackter Prozentsatz (Momentaufnahme 2026-08-08T14:42Z: **72 von
+  95**; die Ziffern wachsen mit dem Bestand, die Aussage ist das Verhältnis). *Gedeckt* heißt
+  dabei **Span mit Zählern**, nicht „Span mit irgendeinem erfassten Wert" — die Unterscheidung
+  setzt [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder)
+  §5 bindend und ausdrücklich *„für jede Abdeckungszahl über diesen Bestand"*. Ohne diese Zahl
+  liest sich eine unvollständige Erhebung wie eine vollständige: 23 der 95 Läufe tragen zur
+  Bilanz **nichts** bei, und der Leser sähe es nicht.
 
-  **Die Bezugsgröße ist jünger als der Bestand, und das gehört in die Ausgabe.** `SubagentStart`
-  ist seit dem 2026-08-08 verdrahtet; der Bestand reicht bis 2026-07-29 zurück (Frage B: *der
-  Bestand*). Gemessen unmittelbar nach der Verdrahtung: **1** Spawn gegen **93** `Agent`-Spans —
-  für 92 davon existierte die Bezugsquelle nicht. Eine Abdeckungszahl über den ganzen Bestand
-  wäre damit nicht ungenau, sondern **sinnlos**. Die Ausgabe nennt deshalb das **Fenster**, über
-  das die Abdeckungszahl rechnet (ab dem ersten `SubagentStart`-Span im Bestand), und zwar aus
-  demselben Grund, aus dem die Bilanz ihren Nenner nennt: eine Zahl, die ihren Geltungsbereich
-  verschweigt, behauptet mehr als sie trägt.
-  Diese Bezugsgröße ist **nicht** der Nenner aus DoD (2): sie zählt Spawns innerhalb der
-  erfassten Teilmenge, jener benennt die Teilmenge selbst.
+  **Was diese Zahl nicht sieht, steht neben ihr:** einen Lauf, der **gar keinen** Span
+  hinterlassen hat. Zähler und Bezugsmenge stammen aus derselben Quelle; ein fehlender,
+  abgeschalteter oder umgangener Guard fällt hier lautlos aus — denselben Zustand hält
+  [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
+  Abweichung 5 (3)(b) fest. **Die zweite, unabhängige Quelle liefert dieser Slice nicht**, und der
+  Grund ist gemessen statt abgewogen: zwischen dem Start eines Subagenten und dem `Agent`-Span
+  seines Aufrufers gibt es **keine Korrelations-Achse** — der `SubagentStart`-Span trägt
+  `tool_use_id` **leer** und liegt im Strom des *gestarteten* Agenten, der `Agent`-Span des
+  Aufrufers trägt ihn gefüllt und liegt im Haupt-Strom (gemessen 2026-08-08). Ein bloßer
+  Mengenvergleich der zwei Quellen unterscheidet den verlorenen Lauf weder vom noch **laufenden**
+  noch vom **Hintergrund**-Lauf, der nach §5 Abweichung 5 planmäßig keine Zähler trägt: am
+  2026-08-08T14:42Z stünde er bei **2 von 4** — ohne einen einzigen Defekt. Ein Sensor, dessen
+  gesunder Stand nicht 100 % ist, meldet nichts. Er gehört samt der Entscheidung über seine Achse
+  in [slice-077](../open/slice-077-verlorener-lauf-sichtbar.md).
+  Die Abdeckungszahl ist **nicht** der Nenner aus DoD (2): sie misst innerhalb der erfassten
+  Teilmenge, jener benennt die Teilmenge selbst.
 - [ ] **(2) Die Bilanz nennt ihren Nenner — und ein Fall nimmt ihn wieder weg.** Die Ausgabe
   sagt, **worüber** sie rechnet: über **Subagenten-Läufe**, nicht über den Lauf. Der Verbrauch
   des Haupt-Kontexts steht in keiner Payload; ein Prozentsatz aus diesen Zahlen ist damit ein
@@ -144,7 +130,8 @@ Auswertung liest ausschließlich Spans**, kein Zugriff außerhalb des Repos, kei
 | Auswertung (Go, eigenes Kommando) | neu | Aggregation über die Span-Ströme; dieselbe Linie wie der Emitter — Docker-only gebaut ([`ADR-0003`](../../adr/0003-go-native-binaries.md)), **kein** Subkommando des Produkt-Binaries, damit slice-062 nicht vorweggenommen wird |
 | `Makefile` | update | ein `make`-Ziel. **Kein Gate:** eine Bilanz prüft nichts, und ein Gate über einem Bericht wäre eines über leerem Prüfbereich ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) |
 | [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | die **Splitting-Regel** des Sammelpostens gehört als Festlegung nach §5, nicht in den Code: technische Festlegung, ohne Vertragsänderung fortschreibbar, mit jedem weiteren Signal wachsend ([Aufnahme-Regel](../../../../spec/spezifikation.md#aufnahme-regel)). **Kein Adaptions-Eintrag:** eine der zwei vom Modul angebotenen Regeln zu wählen weicht von ihm nicht ab |
-| `.claude/settings.json` | update | **Nachtrag aus der Ist-Messung:** die zweite Quelle der Abdeckungszahl aus DoD (1) — `SubagentStart` — war nicht verdrahtet. Ein Ereignis-Block, dasselbe Binary wie `PostToolUse`, **kein Code**: der Emitter ist ereignis-generisch. Berührt die Durchsetzungsschicht ([`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)) und gehört deshalb in diese Tabelle, nicht in einen stillen Seiteneffekt |
+| `.claude/settings.json` | update | `SubagentStart` ist unter diesem Slice verdrahtet worden: ein Ereignis-Block, dasselbe Binary wie `PostToolUse`, **kein Code** — der Emitter ist ereignis-generisch. **Sein Leser ist nicht DoD (1), sondern [slice-077](../open/slice-077-verlorener-lauf-sichtbar.md)** — die Spans belegen je Spawn den angeforderten Typ und sind die Vorbedingung des dortigen Sensors; die Verdrahtung bleibt deshalb stehen. Ihre Schlüsselmenge ist gemessen und steht in [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5, ihre Herkunft in [`docs/user/claude-hooks-referenz.md`](../../../../docs/user/claude-hooks-referenz.md) §SubagentStart (`agent_type` dort als **Eingabefeld** neben `agent_id`). Berührt die Durchsetzungsschicht ([`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)) und gehört deshalb in diese Tabelle, nicht in einen stillen Seiteneffekt |
+| `harness/tools/extract-agent-call.awk` | update | der Kopfkommentar nennt die Abdeckungszahl dieses Slice als *zweite Verteidigungslinie* hinter dem Guard. Das leistet sie nach DoD (1) nicht — sie misst innerhalb derselben Quelle und sieht einen verlorenen Lauf nicht. Der Satz nennt künftig die **Eigenschaft** (ein Sensor über der Erfassung, heute nicht vorhanden) statt einer Planungs-Kennung, die jeder Re-Schnitt falsch macht |
 | `test/` + `test/mutations/` | neu | die Zähne aus DoD (1) — Sammelposten-Anteil und Abdeckungszahl — und die zwei aus DoD (2) für die Nenner-Angabe |
 
 **Offen, vor dem Code zu entscheiden:**
@@ -187,7 +174,10 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
   selbst war, sagt auch dieser Slice nicht:** er liest ausschließlich Spans, und kein Span trägt
   diese Token. Der Sammelposten-Anteil misst den aufgeteilten Teil **innerhalb** der erfassten
   Teilmenge, nicht die Teilmenge gegen den ganzen Lauf.
-- **Nicht in diesem Slice:** die Cache-Zähler ([slice-071](../open/slice-071-cache-zaehler-getrennt.md)),
+- **Nicht in diesem Slice:** der Sensor, der einen **verlorenen** Lauf sichtbar macht
+  ([slice-077](../open/slice-077-verlorener-lauf-sichtbar.md) — er braucht eine
+  Korrelations-Achse, die der Bestand heute nicht trägt); die Cache-Zähler
+  ([slice-071](../open/slice-071-cache-zaehler-getrennt.md)),
   die Rollen-Achse ([slice-060](../done/slice-060-rollen-achse.md)), die
   Doku-Konsistenz (slice-061) und die Tool-Ebene (slice-062/063).
 

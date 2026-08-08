@@ -222,9 +222,12 @@ mit ihrer Incident-Frage nach.
   liefe grün über einen leeren Prüfbereich. Der Auslöser bleibt darum **prozessual**, und die
   Gegenkraft ist die Prüfbereichs-Zahl in der letzten Zeile: ein Lauf über Null Spans sagt Null
   und behauptet nichts.
-- **Zweiter Leser, ohne Abhängigkeit in eine der beiden Richtungen:** die Abdeckungszahl aus
-  [slice-066](../in-progress/slice-066-telemetrie-auswertung.md) bekommt mit dem Protokoll eine **zweite**
-  Nenner-Quelle neben `SubagentStart`. Keiner der beiden Slices wartet auf den anderen.
+- **Zweiter Leser:** die Zeile entsteht auf der **Aufrufer**-Seite und trägt dieselbe
+  `tool_use_id` wie der `Agent`-Span — damit ist sie die stärkste Kandidaten-Achse für den Sensor
+  aus [slice-077](slice-077-verlorener-lauf-sichtbar.md), der den **verlorenen** Lauf sichtbar
+  machen soll. Das ist die Gegenrichtung zu DoD (3) und dort ausdrücklich **kein** Befund; sie
+  wird erst entscheidbar, wenn die zwei benignen Klassen ausgeschlossen sind, und genau das ist
+  jener Slice. Dieser hier wartet nicht auf ihn.
 
 ### Warum das kein Memo ist
 
