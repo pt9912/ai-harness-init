@@ -38,11 +38,18 @@ type Bilanz struct {
 	Rollen       []Rolle
 	Gesamt       int64
 	Sammelposten int64
-	AgentLaeufe  int
-	MitZaehlern  int
-	Sitzungen    int
-	Von          string
-	Bis          string
+	// Verteilt sagt, ob die Splitting-Regel auf den Sammelposten angewendet werden
+	// KONNTE. Sie kann es nicht, wenn keine Rolle Tool-Calls traegt — dann liegen
+	// die Token in keiner Rollen-Zeile und damit ausserhalb von Gesamt. Ohne dieses
+	// Feld behauptete die Ausgabe eine Verteilung, die nicht stattgefunden hat, und
+	// die Token verschwaenden lautlos: genau die unvollstaendige Erhebung, die sich
+	// wie eine vollstaendige liest.
+	Verteilt    bool
+	AgentLaeufe int
+	MitZaehlern int
+	Sitzungen   int
+	Von         string
+	Bis         string
 }
 
 // SammelpostenAnteil ist der Anteil der Bilanz, der auf der Splitting-Regel ruht
@@ -94,7 +101,7 @@ func Aggregiere(dir string) (Bilanz, error) {
 	}
 
 	b.Sitzungen = len(sitzungen)
-	b.Rollen = verteile(direkt, toolCalls, b.Sammelposten)
+	b.Rollen, b.Verteilt = verteile(direkt, toolCalls, b.Sammelposten)
 	for _, r := range b.Rollen {
 		b.Gesamt += r.Summe()
 	}
@@ -115,9 +122,14 @@ func verarbeite(b *Bilanz, s span.Span, direkt, toolCalls map[string]int64, sitz
 		}
 	}
 
-	// Der Schluessel der Splitting-Regel: Tool-Calls je Rolle. Rollenlose Calls
-	// bleiben AUSSEN — sonst verteilte der Sammelposten teilweise auf sich selbst.
-	if s.AgentRole != "" {
+	// Der Schluessel der Splitting-Regel: Tool-Calls je Rolle. Zwei Filter, und
+	// beide tragen. Rollenlose Calls bleiben AUSSEN, sonst verteilte der
+	// Sammelposten teilweise auf sich selbst. Und ein Span OHNE Werkzeug ist kein
+	// Tool-Call: `SubagentStart` feuert je Spawn, traegt weder `tool_name` noch
+	// `tool_use_id` (spec/spezifikation.md §5) und darf einen Schluessel, der
+	// Tool-Calls zaehlt, nicht verschieben.
+	// Bewacht von TestAggregiere_SpawnSpanZaehltNichtAlsToolCall.
+	if s.AgentRole != "" && s.Tool != "" {
 		toolCalls[s.AgentRole]++
 	}
 
@@ -154,7 +166,7 @@ func verarbeite(b *Bilanz, s span.Span, direkt, toolCalls map[string]int64, sitz
 //
 // Traegt keine Rolle Tool-Calls, bleibt der Sammelposten unverteilt: raten waere
 // schlechter als eine sichtbare Null.
-func verteile(direkt, toolCalls map[string]int64, sammelposten int64) []Rolle {
+func verteile(direkt, toolCalls map[string]int64, sammelposten int64) ([]Rolle, bool) {
 	namen := map[string]struct{}{}
 	for n := range direkt {
 		namen[n] = struct{}{}
@@ -183,7 +195,7 @@ func verteile(direkt, toolCalls map[string]int64, sammelposten int64) []Rolle {
 		}
 		return rollen[i].Name < rollen[j].Name
 	})
-	return rollen
+	return rollen, summeCalls > 0
 }
 
 // Schreibe gibt die Bilanz als Text aus.
@@ -214,7 +226,7 @@ func Schreibe(b Bilanz) string {
 	sb.WriteString("\n")
 
 	if len(b.Rollen) == 0 || b.Gesamt == 0 {
-		sb.WriteString("Keine Rolle traegt Token. Der Bestand ist leer oder ohne Zaehler.\n")
+		sb.WriteString("Keine Rolle traegt Token.\n")
 	}
 	for _, r := range b.Rollen {
 		fmt.Fprintf(&sb, "  %-12s %12d  %5.1f %%\n", r.Name, r.Summe(), anteil(r.Summe(), b.Gesamt))
@@ -226,8 +238,21 @@ func Schreibe(b Bilanz) string {
 			groesste.Name, groesste.Summe(), anteil(groesste.Summe(), b.Gesamt))
 	}
 
-	fmt.Fprintf(&sb, "Sammelposten: %d Token anteilig nach Tool-Calls verteilt (%.2f %% der Summe)\n",
-		b.Sammelposten, b.SammelpostenAnteil())
+	// Zwei Faelle, und die Ausgabe darf sie nicht verwechseln: verteilt ist der
+	// Sammelposten Teil der Summe und traegt einen Anteil; unverteilt liegt er in
+	// KEINER Zeile und damit ausserhalb von Gesamt — ein Prozentsatz waere dann auf
+	// eine Summe bezogen, die ihn nicht enthaelt.
+	// Bewacht von TestSchreibe_UnverteilterSammelpostenStehtAusserhalb.
+	switch {
+	case b.Sammelposten == 0:
+		sb.WriteString("Sammelposten: keiner — jeder zaehler-tragende Lauf trug eine Rolle.\n")
+	case b.Verteilt:
+		fmt.Fprintf(&sb, "Sammelposten: %d Token anteilig nach Tool-Calls verteilt (%.2f %% der Summe)\n",
+			b.Sammelposten, b.SammelpostenAnteil())
+	default:
+		fmt.Fprintf(&sb, "Sammelposten: %d Token NICHT verteilt — keine Rolle traegt Tool-Calls. "+
+			"Sie stehen in keiner Zeile oben und sind in der Summe NICHT enthalten.\n", b.Sammelposten)
+	}
 	fmt.Fprintf(&sb, "Abdeckung: %d von %d Agent-Laeufen trugen Zaehler\n", b.MitZaehlern, b.AgentLaeufe)
 
 	return sb.String()

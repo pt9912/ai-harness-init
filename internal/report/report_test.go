@@ -155,7 +155,10 @@ func TestSchreibe_NennerStehtDrin(t *testing.T) {
 // Dauer-Sensor: test/mutations/141-report-sammelposten-anteil-entfernt.sh
 func TestSchreibe_SammelpostenAnteilStehtDrin(t *testing.T) {
 	t.Parallel()
-	text := report.Schreibe(report.Bilanz{Sammelposten: 50, Gesamt: 200})
+	// Verteilt: true — dieser Zahn gilt dem VERTEILTEN Fall. Den unverteilten
+	// bewacht TestSchreibe_UnverteilterSammelpostenStehtAusserhalb, und er darf
+	// gerade keinen Prozentsatz tragen.
+	text := report.Schreibe(report.Bilanz{Sammelposten: 50, Gesamt: 200, Verteilt: true})
 	if !strings.Contains(text, "Sammelposten:") {
 		t.Fatalf("Sammelposten-Zeile fehlt:\n%s", text)
 	}
@@ -187,4 +190,46 @@ func rolle(t *testing.T, b report.Bilanz, name string) report.Rolle {
 	}
 	t.Fatalf("Rolle %q fehlt in %+v", name, b.Rollen)
 	return report.Rolle{}
+}
+
+// Ein Spawn ist KEIN Tool-Call: `SubagentStart` traegt weder `tool_name` noch
+// `tool_use_id` (spec/spezifikation.md §5) und darf den Schluessel der
+// Splitting-Regel nicht verschieben.
+// Dauer-Sensor: test/mutations/147-report-spawn-als-toolcall.sh
+func TestAggregiere_SpawnSpanZaehltNichtAlsToolCall(t *testing.T) {
+	t.Parallel()
+	dir := schreibeBestand(t,
+		agentSpan("", 100, 0),
+		callSpan("planner"),
+		// Ein Spawn-Span mit Rolle, aber ohne Werkzeug — er darf nicht zaehlen.
+		`{"ts":"2026-08-08T10:00:00Z","event":"SubagentStart","tool":"","session":"s1","agent_role":"reviewer"}`,
+	)
+
+	b, err := report.Aggregiere(dir)
+	if err != nil {
+		t.Fatalf("Aggregiere: %v", err)
+	}
+	for _, r := range b.Rollen {
+		if r.Name == "reviewer" && r.ToolCalls != 0 {
+			t.Fatalf("Spawn-Span als Tool-Call gezaehlt: reviewer hat %d", r.ToolCalls)
+		}
+	}
+	if got := rolle(t, b, "planner").Zugeteilt; got != 100 {
+		t.Fatalf("planner zugeteilt = %d, erwartet 100 (der Spawn zaehlt nicht mit)", got)
+	}
+}
+
+// Ein Sammelposten, den keine Rolle aufnehmen kann, liegt AUSSERHALB der Summe —
+// und die Ausgabe sagt das, statt eine Verteilung zu behaupten, die nicht
+// stattgefunden hat.
+// Dauer-Sensor: test/mutations/148-report-unverteilt-als-verteilt.sh
+func TestSchreibe_UnverteilterSammelpostenStehtAusserhalb(t *testing.T) {
+	t.Parallel()
+	text := report.Schreibe(report.Bilanz{Sammelposten: 150, Gesamt: 0, Verteilt: false})
+	if strings.Contains(text, "anteilig nach Tool-Calls verteilt") {
+		t.Fatalf("behauptet eine Verteilung, die nicht stattfand:\n%s", text)
+	}
+	if !strings.Contains(text, "NICHT verteilt") || !strings.Contains(text, "NICHT enthalten") {
+		t.Fatalf("der unverteilte Sammelposten steht nicht als solcher da:\n%s", text)
+	}
 }
