@@ -76,12 +76,22 @@ Auswertung über den vorhandenen Bestand, aufrufbar als `make`-Ziel.
   `PostToolUseFailure`), kein Code-Treffer, und kein anderer Slice liefert es. Die Verdrahtung ist
   mit diesem Slice erfolgt und kostete **keinen Code**: der Emitter schreibt bedingungslos, liest
   das Ereignis generisch aus `hook_event_name` und `agent_type` generisch aus der Payload.
-  **Offen und erst nach der Verdrahtung messbar:** ob die Payload `agent_type` überhaupt trägt. Die
-  vendored Referenz führt das Ereignis nur in Tabellen — einen eigenen Abschnitt dazu gibt es
-  nicht —, und der Agent-Typ steht dort als **Matcher**-Wert, nicht als Payload-Feld. Nach der
-  Regel dieses Repos (*die Payload ist die Quelle, die Doku ist Herkunft*) ist das **gelesen, nicht
-  gemessen**. Trägt die Payload den Typ nicht, verliert die Abdeckungszahl ihre zweite Quelle —
-  dann geht dieser DoD-Punkt zurück in die Zerlegung, begründet statt vermutet.
+  **Gemessen am 2026-08-08, nach der Verdrahtung — die Payload trägt `agent_type`.** Ein realer
+  Spawn erzeugte einen Span mit `event:"SubagentStart"`, `agent_type:"general-purpose"` und
+  korrekt leerem `agent_role` (Normalisierung aus slice-060 greift). Der Hook wirkte **sofort**,
+  ohne Sitzungswechsel. Damit ist die zweite Quelle real, und dieser DoD-Punkt ist baubar.
+  **Struktur, die der Auswerter kennen muss:** der Span landet im **eigenen Strom des Subagenten**
+  (`<session>-<agentid>.jsonl`, `seq 1`), nicht im Haupt-Strom — die Spawn-Zahl ist also über
+  **alle** Ströme zu zählen.
+
+  **Die Bezugsgröße ist jünger als der Bestand, und das gehört in die Ausgabe.** `SubagentStart`
+  ist seit dem 2026-08-08 verdrahtet; der Bestand reicht bis 2026-07-29 zurück (Frage B: *der
+  Bestand*). Gemessen unmittelbar nach der Verdrahtung: **1** Spawn gegen **93** `Agent`-Spans —
+  für 92 davon existierte die Bezugsquelle nicht. Eine Abdeckungszahl über den ganzen Bestand
+  wäre damit nicht ungenau, sondern **sinnlos**. Die Ausgabe nennt deshalb das **Fenster**, über
+  das die Abdeckungszahl rechnet (ab dem ersten `SubagentStart`-Span im Bestand), und zwar aus
+  demselben Grund, aus dem die Bilanz ihren Nenner nennt: eine Zahl, die ihren Geltungsbereich
+  verschweigt, behauptet mehr als sie trägt.
   Diese Bezugsgröße ist **nicht** der Nenner aus DoD (2): sie zählt Spawns innerhalb der
   erfassten Teilmenge, jener benennt die Teilmenge selbst.
 - [ ] **(2) Die Bilanz nennt ihren Nenner — und ein Fall nimmt ihn wieder weg.** Die Ausgabe
