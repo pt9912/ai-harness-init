@@ -41,7 +41,7 @@ Auswertung über den vorhandenen Bestand, aufrufbar als `make`-Ziel.
 
 ## 2. Definition of Done
 
-- [ ] **(1) Token-Bilanz je Rolle, mit ausgesprochenem Sammelposten.** Input- und Output-Token
+- [x] **(1) Token-Bilanz je Rolle, mit ausgesprochenem Sammelposten.** Input- und Output-Token
   summiert **je Rolle** — die Rolle steht in den `Agent`-Spans im Feld **`spawned_role`** (aus
   `tool_response.agentType`, also die *tatsächlich gelaufene*), **nicht** im `agent_role`
   desselben Spans, das die Rolle des **Aufrufers** trägt. Der Wert ist dort bereits normalisiert
@@ -87,7 +87,7 @@ Auswertung über den vorhandenen Bestand, aufrufbar als `make`-Ziel.
   in [slice-077](../open/slice-077-verlorener-lauf-sichtbar.md).
   Die Abdeckungszahl ist **nicht** der Nenner aus DoD (2): sie misst innerhalb der erfassten
   Teilmenge, jener benennt die Teilmenge selbst.
-- [ ] **(2) Die Bilanz nennt ihren Nenner — und ein Fall nimmt ihn wieder weg.** Die Ausgabe
+- [x] **(2) Die Bilanz nennt ihren Nenner — und ein Fall nimmt ihn wieder weg.** Die Ausgabe
   sagt, **worüber** sie rechnet: über **Subagenten-Läufe**, nicht über den Lauf. Der Verbrauch
   des Haupt-Kontexts steht in keiner Payload; ein Prozentsatz aus diesen Zahlen ist damit ein
   Anteil an der **erfassten Teilmenge**, und wer ihn druckt, druckt das dazu. Die Pflicht steht
@@ -102,7 +102,7 @@ Auswertung über den vorhandenen Bestand, aufrufbar als `make`-Ziel.
   **Nicht dasselbe wie der Sammelposten-Anteil aus DoD (1):** der misst, wie viel der Bilanz auf
   der Splitting-Regel ruht; dieser sagt, worüber überhaupt gerechnet wird. Zwei Größen, zwei
   Angaben, zwei Zähne — zusammengelegt geht eine verloren.
-- [ ] **(3) Die Splitting-Regel des Sammelpostens steht als Festlegung, nicht im Code.** Welche
+- [x] **(3) Die Splitting-Regel des Sammelpostens steht als Festlegung, nicht im Code.** Welche
   Regel gilt (Frage A), gehört nach
   [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 —
   dort erklärt Abweichung 3 die Regel für den Haupt-Strom als *zu entscheiden* und führt die zwei
@@ -112,9 +112,9 @@ Auswertung über den vorhandenen Bestand, aufrufbar als `make`-Ziel.
   `slice-`-Kennung, die dort kein Muster trifft und trotzdem verboten ist; ergibt der
   Modul-7-Trichter für die **Wahl** der Regel eine Entscheidung, trägt jene die Begründung und §5
   zeigt aufwärts.
-- [ ] `make gates` grün, `make mutate` ohne Befund.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] `make gates` grün, `make mutate` ohne Befund.
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -138,7 +138,7 @@ Auswertung liest ausschließlich Spans**, kein Zugriff außerhalb des Repos, kei
 
 | # | Frage | Warum sie den Schnitt entscheidet |
 |---|---|---|
-| A | ~~Welche **Splitting-Regel** für den Haupt-Strom?~~ **ENTSCHIEDEN (2026-08-03): anteilig nach Tool-Calls**, rollenlose Calls **nicht** im Nenner | Begründung, gegen den realen Bestand gemessen. **Zur Lesart der Zahlen unten: sie sind eine datierte Momentaufnahme, keine Konstanten.** Der Bestand wächst mit jedem Lauf — die Zahlen dieser Zeile haben sich zwischen ihrer Aufnahme und dem Plan-Review bereits bewegt, und das ist kein Defekt, sondern die Natur der Größe. Das Argument hängt an den **Verhältnissen und der Struktur**, nicht an den Ziffern; wer sie prüft, misst neu (`grep` über `.harness/state/spans/*.jsonl`) und erwartet andere Werte. **(1) Die Regel muss Rollen liefern.** Die Lesevorschrift in [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 setzt als Punkt 1 ihrer Prüfreihenfolge, dass am Ende *jedes Token auf einer der realen Rollen* liegt. *Anteilig nach Tool-Calls* leistet das; *dem auslösenden Slice zugeschlagen* liefert einen **Slice**, und ein Slice läuft durch alle sechs Rollen — das Glied Slice→Rolle liefert das Modul nicht mit. **(2) Das stärkere Signal trägt die schwächere Regel.** Das `slice`-Feld ist gemessen das stärkere Signal — **79/95** über alle `Agent`-Spans, **64/72** unter den zähler-tragenden (Stand 2026-08-08; die Bezugsmenge gehört zur Zahl, beide getrennt genannt, weil sie verschieden sind) —, das Schreibziel deckt nur **176/1012** Haupt-Strom-Spans, und **kein** `Agent`-Span trägt `path`. Es beantwortet trotzdem die falsche Frage: Signal-Stärke ersetzt keine Zuordnung. **(3) Der Schlüssel, Stand 2026-08-08:** implementer 1368 · planner 1323 · reviewer 1093 · architect 449 · verifier 364 Tool-Calls (Summe 4.597). **Rollenlose Calls — zum selben Stand 1.255 — bleiben aus dem Nenner**, sonst verteilte der Sammelposten teilweise auf sich selbst. **(4) Der Sammelposten ist klein, aber nicht mehr leer:** zum Schnitt-Zeitpunkt trug **kein** zähler-tragender `Agent`-Span eine leere Rolle; seit dem 2026-08-08 ist es **einer** — erzeugt ausgerechnet von einem `general-purpose`-Aufruf im **Vordergrund**, also genau der Form, die den Anteil hebt. **Zur Größe dieses Postens gehört die Angabe, WELCHE Größe gemeint ist, und die Zahlen dieser Zeile sind darin uneinheitlich:** die Beträge oben stammen aus `total_tokens` und enthalten damit die **Cache-Lesungen**, die um Größenordnungen schwerer wiegen als der Rest. Die **Bilanz** summiert dagegen `input_tokens + output_tokens` — so verlangt es DoD (1) und Modul 15 §Token-Attributions-Regeln, und die Cache-Zähler sind Block 3 und damit Gegenstand des Cache-Slice. Derselbe Lauf misst deshalb je nach Größe **21.953** (`total_tokens`) oder **227** (`input+output`); die Bilanz weist die zweite aus und nennt das in ihrer zweiten Ausgabezeile. Die Verhältnis-Aussagen dieser Zeile bleiben gültig, ihre absoluten Beträge sind nicht die der Bilanz. Die Regel hat damit einen realen Gegenstand statt eines gedachten, und die Zahl aus DoD (1) wird von Anfang an ungleich null sein |
+| A | ~~Welche **Splitting-Regel** für den Haupt-Strom?~~ **ENTSCHIEDEN (2026-08-03): anteilig nach Tool-Calls**, rollenlose Calls **nicht** im Nenner | Begründung, gegen den realen Bestand gemessen. **Zur Lesart der Zahlen unten: sie sind eine datierte Momentaufnahme, keine Konstanten.** Der Bestand wächst mit jedem Lauf — die Zahlen dieser Zeile haben sich zwischen ihrer Aufnahme und dem Plan-Review bereits bewegt, und das ist kein Defekt, sondern die Natur der Größe. Das Argument hängt an den **Verhältnissen und der Struktur**, nicht an den Ziffern; wer sie prüft, misst neu (`grep` über `.harness/state/spans/*.jsonl`) und erwartet andere Werte. **(1) Die Regel muss Rollen liefern.** Die Lesevorschrift in [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 setzt als Punkt 1 ihrer Prüfreihenfolge, dass am Ende *jedes Token auf einer der realen Rollen* liegt. *Anteilig nach Tool-Calls* leistet das; *dem auslösenden Slice zugeschlagen* liefert einen **Slice**, und ein Slice läuft durch alle sechs Rollen — das Glied Slice→Rolle liefert das Modul nicht mit. **(2) Das stärkere Signal trägt die schwächere Regel.** Das `slice`-Feld ist gemessen das stärkere Signal — **79/95** über alle `Agent`-Spans, **64/72** unter den zähler-tragenden (Stand 2026-08-08; die Bezugsmenge gehört zur Zahl, beide getrennt genannt, weil sie verschieden sind) —, das Schreibziel deckt nur **176/1012** Haupt-Strom-Spans, und **kein** `Agent`-Span trägt `path`. Es beantwortet trotzdem die falsche Frage: Signal-Stärke ersetzt keine Zuordnung. **(3) Der Schlüssel, Stand 2026-08-08:** implementer 1368 · planner 1323 · reviewer 1093 · architect 449 · verifier 364 Tool-Calls (Summe 4.597). **Rollenlose Calls — zum selben Stand 1.255 — bleiben aus dem Nenner**, sonst verteilte der Sammelposten teilweise auf sich selbst. **(4) Der Sammelposten ist klein, aber nicht mehr leer:** zum Schnitt-Zeitpunkt trug **kein** zähler-tragender `Agent`-Span eine leere Rolle; seit dem 2026-08-08 ist es **einer** — erzeugt ausgerechnet von einem `general-purpose`-Aufruf im **Vordergrund**, also genau der Form, die den Anteil hebt. **Zur Größe dieses Postens gehört die Angabe, WELCHE Größe gemeint ist, und es kommen zwei in Frage:** `total_tokens` enthält die **Cache-Lesungen**, die um Größenordnungen schwerer wiegen als der Rest. Die **Bilanz** summiert dagegen `input_tokens + output_tokens` — so verlangt es DoD (1) und Modul 15 §Token-Attributions-Regeln, und die Cache-Zähler sind Block 3 und damit Gegenstand des Cache-Slice. Derselbe Lauf misst deshalb je nach Größe **21.953** (`total_tokens`) oder **227** (`input+output`); die Bilanz weist die zweite aus und nennt das in ihrer zweiten Ausgabezeile. Die Verhältnis-Aussagen dieser Zeile bleiben gültig, ihre absoluten Beträge sind nicht die der Bilanz. Die Regel hat damit einen realen Gegenstand statt eines gedachten, und die Zahl aus DoD (1) wird von Anfang an ungleich null sein |
 | B | ~~Summiert die Bilanz **eine Sitzung** oder den **Bestand**?~~ **ENTSCHIEDEN (2026-08-03): der Bestand** | Gemessen am Ist-Stand (drei Sitzungs-Ströme, 5.624 Spans): **(1) Eine Sitzung trägt keine Rechnung.** Der laufende Strom führt **3** `Agent`-Läufe, ein gemessener Strom führt **2** mit **null** Token — eine Bilanz je Rolle über drei Läufe kann fünf Rollen-Zeilen nicht füllen. Über den Bestand sind es **70** zähler-tragende Läufe. **(2) Eine Sitzung ist kein Arbeitsschnitt:** der größte Strom läuft über fünf Tage und mehrere Commits, die Sitzungs-Grenze ist die Lebensdauer eines Werkzeug-Prozesses, nicht die einer Aufgabe. **(3) Der laufende Strom wächst während der Auswertung** — zwischen zwei Messungen real 5.597 → 5.607 Spans; zwei Aufrufe in derselben Sitzung gäben verschiedene Zahlen. **Der Preis, und er gehört in die Ausgabe:** der weitaus größte Teil der Summe stammt aus **einer** Sitzung, jeder Prozentsatz ist faktisch deren Prozentsatz. **Auch hier gehört die Größe zur Zahl** (Stand 2026-08-08): **96,2 %** gemessen in `input_tokens + output_tokens` — der Größe, die die Bilanz summiert — und **90,8 %** in `total_tokens`. Die Ausgabe nennt deshalb **Sitzungszahl und Zeitraum** — das fällt unter die Nenner-Pflicht aus DoD (2) und ist keine zusätzliche Zusage. `make span-clean` setzt die Basis zurück; auch das macht die Zeitraum-Angabe nötig, nicht optional. **Bindet [slice-071](../open/slice-071-cache-zaehler-getrennt.md) mit:** dort ist es Frage A, und der Plan sieht ausdrücklich vor, dass der zuerst laufende Slice sie für beide entscheidet |
 
 ## 4. Trigger
@@ -183,7 +183,93 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Was gilt.** Aus dem Span-Bestand wird eine Rechnung. `make span-report` schreibt eine
+Token-Bilanz je Rolle über `input_tokens + output_tokens`, mit der größten Rolle als Zahl **und**
+Prozentsatz. Drei Größen stehen als drei Zeilen nebeneinander und tragen je einen eigenen, rot
+gesehenen Zahn: der **Nenner** (gerechnet über Subagenten-Läufe, nicht über den Lauf), der
+**Anteil des Sammelpostens** an der Summe und die **Abdeckungszahl mit ihrer Bezugsmenge**. Die
+Splitting-Regel des Sammelpostens — anteilig nach Tool-Calls, rollenlose Calls nicht im Nenner,
+der Ganzzahl-Rest absteigend weitergegeben, und die Ausnahme, wenn keine reale Rolle Tool-Calls
+trägt — steht als Festlegung in
+[`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 und
+nicht im Auswertungs-Code; ihr bindender Text trägt keine Kennung.
+
+Die Bilanz ist ein **Bericht, kein Sensor**: sie prüft nichts und färbt nichts rot. Deshalb steht
+sie in keiner der beiden Gate-Tabellen — ein Gate über ihr wäre eines über leerem Prüfbereich
+([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) —,
+sondern im Nicht-Gate-Verify-Absatz von [`AGENTS.md`](../../../../AGENTS.md) §4 und
+[`harness/README.md`](../../../../harness/README.md). Sie liest ausschließlich Spans, read-only
+und netzlos.
+
+**Sensoren.** `make mutate`: **145 ok, 0 Befund(e)**, davon zehn (`test/mutations/140`–`149`) auf
+den Auswerter, jeder mit seinem namentlich erwarteten Wächter rot. Der Lauf trägt bis hierher —
+die 145 Fälle zielen auf 37 Dateien, und von denen hat sich seit dem Lauf keine geändert
+(Schnittmenge der `# files:`-Ziele mit den seither geänderten Pfaden: leer). `make gates` grün.
+
+**Was anders lief.**
+
+1. **Geliefert ist mehr, als §3 vorsieht — an fünf Positionen.** Die `report`-Stage im
+   `Dockerfile` folgt zwingend aus *Auswertung als eigenes Kommando* plus Docker-only, hat aber
+   eine eigene Begründung und keine Plan-Zeile. Vier der fünf `Makefile`-Hunks betreffen
+   `span-report` nicht, sondern kürzen Kommentare und reparieren `make help`. Statt der vier
+   geplanten Zähne stehen zehn Mutations-Fälle und zehn Go-Tests. Zwei Planner-Artefakte liegen
+   im selben Commit-Bereich. Und eine **neue Hard Rule** ([`AGENTS.md`](../../../../AGENTS.md)
+   §3.7) samt ihrem Adaptions-Eintrag
+   ([`MR-022`](../../../../harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline))
+   ist unter diesem Slice entstanden — eine repo-weite Setzung, die keine DoD-Zeile verlangt hat.
+   **§3 bleibt der Stand vor dem Code und wird nicht nachgezogen:** eine Tabelle, die im
+   Nachhinein zur Lieferung passend gemacht wird, sagt nichts mehr darüber, was geplant war.
+
+2. **Vier Korrekturen an einem Tag landeten an einem von mehreren Fundorten.** Ein Grep-Muster
+   nach einem Lifecycle-Move kannte eine der zwei Pfadformen nicht und fand 5 von 15 gebrochenen
+   Links; eine Fehlzuschreibung überlebte im Verzeichnis der Entscheidungen; dieselbe
+   Ereignis-Menge stand an drei Stellen und wurde an einer gezogen; und die Angabe, in welcher
+   Größe ein Prozentsatz gemessen ist, kam an die eine der zwei Stellen, an denen sie fehlte.
+   Vier Rollen fanden je eine Instanz — keine fand die eigene.
+
+3. **Ein bestehender Wächter wurde durch eine Code-Korrektur zahnlos.** Die Bedingung, auf die
+   `test/mutations/145` mit seinem `sed`-Muster zielt, hat im selben Zug ein zweites Konjunkt
+   bekommen; das Muster traf danach nicht mehr. Gegengeprüft worden waren nur die **neu
+   angelegten** Fälle.
+
+**Steering-Loop-Einträge.**
+
+1. **Benannte Spec-Lücke — ein Lerneintrag hat keinen vorgeschriebenen Träger und bleibt darum
+   liegen, wo ihn niemand liest.** Gemessen über die Notizen unter `done/`: die drei kanonischen
+   Formen (*geschärfte Regel* · *neuer Sensor* · *benannte Spec-Lücke*) kommen dort **57**-mal
+   vor, verteilt auf **32** Dateien. Das Wort *Lerneintrag* kommt in
+   [`AGENTS.md`](../../../../AGENTS.md), [`harness/conventions.md`](../../../../harness/conventions.md),
+   [`harness/README.md`](../../../../harness/README.md) und dem Reviewer-Skill **null**mal vor,
+   und die Vor-jeder-Änderung-Leseliste aus `CLAUDE.md` führt an `done/` vorbei. Der Beleg steht
+   in diesem Slice: die zwei Regeln, gegen die er am häufigsten verstoßen hat — *eine Zahl
+   braucht die Größe, in der sie gemessen ist* und *ein Befund nennt einen Fundort, nie die
+   Fundmenge* — standen bereits ausformuliert in einer früheren Closure-Notiz
+   ([slice-060](../done/slice-060-rollen-achse.md) §7) und hatten keinen lebenden Träger. Der
+   Gegenfall steht daneben: eine Regel, die in derselben Sitzung dreimal mündlich durchgesetzt
+   wurde, hat einen bekommen — Hard Rule plus Adaptions-Eintrag — und stufte noch am selben Tag
+   einen offenen Befund dieses Slice neu ein. **Die Lücke ist nicht die einzelne Regel, sondern
+   die fehlende Festlegung, welchen Träger ein Lerneintrag bekommt** (Hard Rule ·
+   Adaptions-Eintrag · Skill-Zeile · Zahn) und woran man erkennt, dass er keinen braucht.
+
+2. **Geschärfte Regel — nach einer Code-Änderung ist der Prüfumfang die Menge der Fälle, die auf
+   die geänderte Zeile zielen, nicht die Menge der neu angelegten.** Ein Mutations-Fall bindet
+   eine **Zeile in ihrer Wortform**; wer die Zeile anfasst, ändert damit stillschweigend das
+   Muster jedes Falls, der auf sie zeigt. Die Prüfung ist billig, weil der Sensor dafür schon
+   fail-closed ist: `harness/tools/mutate.sh` meldet eine Mutation, die nicht greift, als
+   **Befund** statt als *ok* — die Regel kostet einen Lauf, keinen Bau. Sie greift über diesen
+   Slice hinaus: jeder Fix an einer bewachten Zeile erbt sie.
+
+**Offen, mit Träger.**
+
+| Posten | Träger |
+|---|---|
+| Vier Sätze im `Makefile` sind ersatzlos entfallen, die die Kopplung dreier Ziele an `shell-lint` und die Isolierung des Regelwerk-Prüfbereichs begründen — zwei der fünf Klassen, die [`AGENTS.md`](../../../../AGENTS.md) §3.7 als tragend führt | dieser Slice, offen |
+| Der Kommentar von `test/mutations/145` begründet sein Zusatz-Rot mit dem Nenner; ausgelöst wird es von der Zusicherung auf den leeren Rollennamen | dieser Slice, offen |
+| Zwei Mengenangaben in einer Commit-Message treffen den Baum nicht (die Zeilenzahlen der `Makefile`-Kürzung und die Zahl der `make help`-Einträge vor der Reparatur). Die Historie wird nicht umgeschrieben; die gemessenen Werte stehen im Review-Bericht | verfallen, mit Beleg |
+| Ein nicht existierender Ablageort liefert dieselbe wohlgeformte leere Bilanz wie ein leerer — `filepath.Glob` unterscheidet beides nicht, und unter `make span-report` maskiert das vorangestellte `mkdir -p` den Fall | [slice-071](../open/slice-071-cache-zaehler-getrennt.md) |
+| *„Bestand: 3 Sitzung(en)"* nennt die Ströme des Ablageorts, nicht die Streuung der Summe — zwei tragen Zähler, und der weitaus größte Teil stammt aus einer | [slice-071](../open/slice-071-cache-zaehler-getrennt.md) |
+| Der Sensor, der einen Lauf **ohne** Span sichtbar macht — die Abdeckungszahl kann ihn nicht sehen, weil Zähler und Bezugsmenge aus derselben Quelle stammen | [slice-077](../open/slice-077-verlorener-lauf-sichtbar.md) |
+| Die Hook-Verdrahtung dieses Repos ist in keinem Block bewacht; `SubagentStart` ist unter diesem Slice dazugekommen und erbt die Lücke | [slice-078](../open/slice-078-verdrahtung-hat-waechter.md) |
 
 ## 8. Sub-Area-Modus-Begründung
 

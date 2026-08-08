@@ -126,6 +126,16 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
   derselben `usage` — kein eigener Cache-Zähler, sondern die Größe, gegen die der Miss-Spike
   sichtbar wird. Wer die drei später an eine Metrik-Senke gibt, muss diese Herkunft mitliefern,
   sonst liest sich der dritte wie ein Cache-Wert.
+- **Zwei Posten kommen aus dem Auswerter mit, weil dieser Slice denselben Leser fortschreibt.**
+  (a) Ein **nicht existierender** Ablageort liefert dieselbe wohlgeformte leere Ausgabe wie ein
+  **leerer**: `filepath.Glob` meldet über einem fehlenden Verzeichnis weder Treffer noch Fehler,
+  und das vorangestellte `mkdir -p` des `make`-Ziels maskiert den Fall — ein vertippter Mount
+  liest sich als Ergebnis. Das ist die Grenze aus
+  [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 1 Punkt 4: *leer und als
+  leer erkennbar*, nicht geraten. (b) Die Bestandszeile nennt die **Sitzungs-Ströme des
+  Ablageorts**, nicht die **Streuung der Summe** — beides fällt auseinander, sobald ein Strom
+  keine Zähler trägt oder einer die Summe dominiert. Wer den Nenner druckt, druckt beides oder
+  benennt, welches er meint.
 - **Nicht in diesem Slice:** die Token-Bilanz je Rolle ([slice-066](../in-progress/slice-066-telemetrie-auswertung.md)),
   die Rollen-Achse ([slice-060](../done/slice-060-rollen-achse.md)) und die Tool-Ebene
   (slice-062/063).
