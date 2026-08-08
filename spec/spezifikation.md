@@ -400,10 +400,27 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
 
    **Was auch dann nicht abgedeckt ist:** der Haupt-Strom trägt keinen Agenten-Typ (`agent`
    und `agent_type` sind dort strukturell leer) und wechselt innerhalb einer Sitzung
-   zwischen Planer und Implementation. Für ihn ist die Splitting-Regel des Sammelpostens zu
-   entscheiden (das Modul verlangt sie begründet, nicht perfekt); ableitbar aus bereits
-   erfassten Feldern sind zwei Signale — das `slice`-Feld (Lifecycle-Verzeichnis, WIP-Limit
-   1) und das Schreibziel (`docs/plan/` gegen Code-Pfade).
+   zwischen Planer und Implementation. Ableitbar aus bereits erfassten Feldern sind zwei
+   Signale — das `slice`-Feld (Lifecycle-Verzeichnis, WIP-Limit 1) und das Schreibziel
+   (`docs/plan/` gegen Code-Pfade).
+
+   **Die Splitting-Regel, festgelegt: ANTEILIG NACH TOOL-CALLS.** Der Sammelposten wird auf
+   die realen Rollen verteilt, im Verhältnis ihrer Tool-Calls; **rollenlose Calls bleiben aus
+   dem Nenner**, sonst verteilte der Sammelposten teilweise auf sich selbst. Trägt keine Rolle
+   Tool-Calls, bleibt er **unverteilt** — eine sichtbare Null ist besser als eine geratene
+   Verteilung.
+
+   **Warum diese und nicht die andere.** Das Modul bietet zwei Regeln an; die zweite schlägt
+   den Sammelposten dem **auslösenden Slice** zu. Sie scheidet aus, weil sie die falsche Größe
+   liefert: Punkt 1 der Prüfreihenfolge unten verlangt, dass am Ende jedes Token auf einer
+   **realen Rolle** liegt, und ein Slice läuft durch **alle** Rollen — das Glied Slice→Rolle
+   liefert das Modul nicht mit. Dass das `slice`-Feld dabei das **stärkere** Signal ist
+   (gemessen deutlich häufiger gefüllt als das Schreibziel, das auf `Agent`-Spans überhaupt
+   nicht vorkommt), ändert daran nichts: Signal-Stärke ersetzt keine Zuordnung.
+
+   **Was die Regel nicht ist:** eine Messung. Sie verteilt **Etiketten** auf gemessene Token,
+   sie erzeugt keine. Wie groß der so verteilte Anteil war, gehört deshalb in jedes Ergebnis
+   (Punkt 2 unten) — ohne diese Zahl liest sich eine verteilte Summe wie eine gemessene.
 
    **Lesevorschrift, bindend für jede Auswertung:** eine Rolle gibt es **immer** — jeder
    Tool-Call wurde von jemandem in einer Rolle verursacht. Ein leeres `agent_role` ist

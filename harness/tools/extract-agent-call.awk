@@ -23,8 +23,11 @@
 #      kein Rollenname, sondern ein Versuch.
 #      Grenze, ausgesprochen: ein Typ, der sich nur AEHNLICH schreibt wie eine
 #      Rolle (Unicode-Doppelgaenger), faellt hier nicht auf. Der Guard ist ein
-#      Stolperdraht, keine Sandbox (ADR-0004) — die zweite Verteidigungslinie
-#      ist die Abdeckungszahl in slice-066.
+#      Stolperdraht, keine Sandbox (ADR-0004). Eine zweite Verteidigungslinie
+#      gibt es dafuer heute NICHT: die Abdeckungszahl der Token-Bilanz zaehlt
+#      innerhalb derselben Quelle und sieht einen Lauf, der gar keinen Span
+#      hinterlassen hat, nicht. Ein Sensor darueber braucht erst eine
+#      Korrelations-Achse zwischen Spawn und Aufruf.
 
 function flushlit() {
   if (lit == "") return

@@ -97,3 +97,17 @@ ARG TARGET_ARCH=
 COPY . .
 RUN CGO_ENABLED=0 GOOS=${TARGET_OS} GOARCH=${TARGET_ARCH} \
     go build -trimpath -ldflags="-s -w" -o /out/span-emit ./cmd/span-emit
+
+# ---- report ----------------------------------------------------------------
+# Die Auswertung (slice-066). EIGENE Stage und EIGENES Binary aus demselben Grund
+# wie beim Emitter: kein Subkommando des Produkt-Binaries, sonst landete die
+# Entscheidung ueber eine emittierte Auswertung beim Adopter, bevor sie getroffen
+# ist.
+# KEIN TARGET_OS/TARGET_ARCH und KEIN artifact-copy: anders als der Emitter laeuft
+# die Auswertung nicht am Hook auf dem Host, sondern unter `make` IM Container ueber
+# einem read-only gemounteten Bestand. Ein Host-Binary waere ein Artefakt ohne
+# Leser.
+FROM deps AS report
+COPY . .
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/span-report ./cmd/span-report
+ENTRYPOINT ["/out/span-report"]

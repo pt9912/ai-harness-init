@@ -34,21 +34,23 @@ BASELINE_TAG ?= v3.5.2
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 2af45aad2777cadf26127066c9a2dc43f7111ee2687e44fe2eceb95c6c0a1925
 
-.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims span-emit-build span-check span-clean baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate
+.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims span-emit-build span-check span-clean span-report baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.51.1 -> v0.51.1). Aus
 # DCHECK_IMAGE, NICHT DCHECK_REF — letzteres traegt bei gesetztem Digest keinen Tag.
 DCHECK_TAG := $(lastword $(subst :, ,$(DCHECK_IMAGE)))
+# -h unterdrueckt den Dateinamen-Praefix: MAKEFILE_LIST traegt mehrere Dateien,
+# und ohne -h trennt awk am Doppelpunkt des Praefixes statt am Zielnamen.
 help: ## Targets anzeigen
-	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | \
-		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-14s %s\n", $$1, $$2}'
+	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | LC_ALL=C sort -t: -k1,1 | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-18s %s\n", $$1, $$2}'
 
 test: test-bats test-go ## Harness-Tests (bats) + Go-Unit-Tests (go test in Docker) — Docker-only (ADR-0003/0004)
 
-# Die zwei Stufen einzeln aufrufbar (slice-056): `make mutate` faehrt je Fall nur die
-# Stufe, deren Rot er erwartet. Fuer `gates` und CI aendert sich nichts — `test` ist
-# weiterhin die Summe beider, in derselben Reihenfolge.
+# Die zwei Stufen sind einzeln aufrufbar, damit `make mutate` je Fall nur die
+# Stufe faehrt, deren Rot er erwartet. `test` bleibt die Summe beider, in
+# derselben Reihenfolge.
 test-bats: ## Nur die Harness-Tests (bats) — Docker-only
 	docker run --rm --network none -v "$(CURDIR)":/code:ro -w /code $(BATS_IMAGE) test/
 
@@ -78,12 +80,11 @@ artifact: build ## Natives Release-Binary auf den Host ziehen (DEST=<dir>) — f
 # Namensschema: ai-harness-init-<os>-<arch>, windows zusaetzlich mit .exe — der
 # Dateiname traegt die Plattform, weil alle sechs im selben DEST landen.
 #
-# --no-cache-filter build: die build-Stage wird JEDES MAL neu uebersetzt. Ohne das
-# liefert ein zweiter Lauf denselben Layer zurueck, und ein Vergleich zweier Laeufe
-# waere tautologisch gleich — er belegte den Cache, nicht die Reproduzierbarkeit
-# (LH-QA-02; real so gemessen und vom Verifier aufgedeckt: die Artefakte trugen
-# sekundengleiche mtimes). Dieselbe Begruendung wie beim `--no-cache-filter test`
-# des test-Targets: ein Cache-Treffer darf ein Ergebnis nicht ersetzen.
+# --no-cache-filter build: die build-Stage wird JEDES MAL neu uebersetzt. Sonst
+# liefert ein zweiter Lauf denselben Layer zurueck, und ein Vergleich zweier
+# Laeufe belegte den Cache statt der Reproduzierbarkeit (LH-QA-02). Dieselbe
+# Begruendung wie beim `--no-cache-filter test` des test-Targets: ein
+# Cache-Treffer darf ein Ergebnis nicht ersetzen.
 RELEASE_PLATFORMS ?= linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64 windows/arm64
 
 release-artifacts: ## Alle Release-Binaries der Plattform-Matrix nach DEST=<dir> (LH-QA-04) — Docker-only
@@ -103,18 +104,15 @@ release-artifacts: ## Alle Release-Binaries der Plattform-Matrix nach DEST=<dir>
 compile: ## Schnelles Compile-Feedback (Dockerfile compile-Stage, ohne Tests/Lint) — Docker-only; NICHT in gates
 	docker build --build-arg GO_VERSION=$(GO_VERSION) --target compile -t ai-harness-init:compile .
 
-# Tier-2 Emit-Smoke (slice-002): der ehrliche Green-Run des EMITTIERTEN Doc-Gates.
-# Extrahiert das Binary auf den Host (die Binary ruft selbst docker run d-check
-# --print-mk), emittiert in ein tmp-Repo und laesst dort docs-check real laufen.
-# Host-Docker + ggf. Netz-Pull -> NICHT in gates (make gates bleibt offline-schlank,
-# LH-QA-01); gehoert an DoD-Verify/CI/Wellen-Closure. Logik in harness/tools/ (shell-lint).
+# Emittiert die Doc-Gate-Baseline in ein tmp-Repo und laesst dort das emittierte
+# docs-check real laufen. Braucht Host-Docker und ggf. einen Netz-Pull, deshalb
+# NICHT in gates (die bleiben offline-schlank, LH-QA-01).
 smoke: ## Emit-Smoke: Doc-Gate in tmp-Repo emittieren + emittiertes docs-check real gruen (Host-Docker) — NICHT in gates
 	@GO_VERSION='$(GO_VERSION)' bash harness/tools/smoke.sh
 
-# Voll-E2E-Smoke (slice-024, LH-FA-01 Happy-Path): Bootstrap in ein tmp-Repo, dann
-# dort der ZUSAMMENGEFUEHRTE `make gates` (MR-010: docs-check + Go-Gates kombiniert)
-# — die Sicht des echten Nutzers, die der Tier-2 `make smoke` bewusst nicht nimmt.
-# Host-Docker + ggf. Netz-Pull -> NICHT in gates (offline-schlank, LH-QA-01).
+# Bootstrappt ein tmp-Repo und faehrt dort den zusammengefuehrten `make gates`
+# (docs-check + Go-Gates in einem Lauf, MR-010) — der Happy-Path aus Nutzersicht
+# (LH-FA-01). Host-Docker und ggf. Netz-Pull, deshalb NICHT in gates (LH-QA-01).
 full-smoke: ## Voll-E2E: Bootstrap in tmp-Repo -> dort make gates out-of-the-box gruen (Host-Docker) — NICHT in gates
 	@GO_VERSION='$(GO_VERSION)' bash harness/tools/full-smoke.sh
 
@@ -127,117 +125,97 @@ shell-lint: ## Shell-Hooks/-Helfer linten (shellcheck) im gepinnten Image — Do
 	docker run --rm -v "$(CURDIR)":/mnt:ro -w /mnt $(SHELLCHECK_IMAGE) \
 		.claude/hooks/*.sh harness/tools/*.sh internal/emit/templates/*.sh internal/emit/templates/enforce/*.sh test/mutations/*.sh
 
-# Kommentar-Behauptungen gegen ihre Sensoren halten (AGENTS.md 3.6, slice-055).
-# Hermetisch: reines bash+awk auf dem Arbeitsbaum, kein Docker, kein Netz — es
-# gehoert damit in gates und nicht in die Nicht-Gate-Verify-Klasse. Geprueft werden
-# ECHTE Kommentare: Roh-String-Literale (emittierter Inhalt) sind ausgenommen.
+# Haelt Kommentar-Behauptungen gegen ihre Sensoren (AGENTS.md 3.6). Hermetisch —
+# reines bash+awk auf dem Arbeitsbaum, kein Docker, kein Netz —, deshalb IN gates.
+# Geprueft werden echte Kommentare; Roh-String-Literale (emittierter Inhalt) nicht.
 comment-claims: ## Kommentar-Behauptungen nennen ihren Sensor (AGENTS.md 3.6) — hermetisch
 	@bash harness/tools/comment-claims.sh $$(git ls-files 'internal/*.go' 'internal/**/*.go' 'cmd/**/*.go' | grep -v '_test[.]go') $$(git ls-files 'harness/tools/*.sh' '.claude/hooks/*.sh')
 
-# GitHub-Actions-Workflows syntaktisch pruefen (actionlint, gepinntes Image) —
-# Docker-only. IN gates, weil .github/workflows/ ein reales committetes Artefakt
-# ist (kein leerer Pruefbereich, LH-QA-01) und ein Workflow-Syntaxfehler LOKAL
-# vor dem Push fangbar ist, statt erst im ersten Actions-Lauf (slice-027; das
-# lokale Gegenbeispiel-Gate zur Zusage "die CI laeuft", AGENTS 3.6).
-# KEIN -color: die Ausgabe wird gegatet, geloggt und vom Mutations-Sensor
-# gegrept — ANSI-Escapes zerstueckeln das `file:line:col:`-Praefix (real
-# vorgefuehrt beim Bau von test/mutations/10). actionlint faerbt ohne TTY ohnehin
-# nicht; das explizite -color war schaedlich.
+# Prueft die GitHub-Actions-Workflows syntaktisch. IN gates: .github/workflows/
+# ist ein reales committetes Artefakt (kein leerer Pruefbereich, LH-QA-01), und
+# ein Syntaxfehler ist so lokal vor dem Push fangbar statt erst im Actions-Lauf.
+# Ohne -color: die Ausgabe wird geloggt und gegrept, ANSI-Escapes zerstueckeln
+# das `file:line:col:`-Praefix.
 ci-lint: ## GitHub-Actions-Workflows linten (actionlint) im gepinnten Image — Docker-only, IN gates
 	docker run --rm -v "$(CURDIR)":/repo:ro -w /repo $(ACTIONLINT_IMAGE)
 
-# Verifiziert die vendored Baseline NETZLOS: sha256sum -c über SHA256SUMS
-# (fängt geänderte/gelöschte Dateien) PLUS Vollständigkeits-Check (fängt
-# zusätzlich eingelegte — dafür ist sha256sum -c blind, es prüft nur Gelistetes).
-# Ohne den zweiten Schritt wäre "prüft die Integrität der Arbeitskopie"
-# überdehnt. Läuft IN gates: kein curl/unzip, kein Netz -> offline-grün bleibt
-# (LH-QA-01/02/03; MR-007). Logik in harness/tools/, damit shell-lint sie deckt.
+# Verifiziert die vendored Baseline netzlos, in zwei Schritten: `sha256sum -c`
+# über SHA256SUMS fängt geänderte und gelöschte Dateien, ein Vollständigkeits-
+# Check zusätzlich eingelegte — für die ist `sha256sum -c` blind, es prüft nur
+# Gelistetes. Kein curl, kein Netz, deshalb IN gates (MR-007).
 baseline-verify: ## Vendored Baseline netzlos verifizieren (Integrität + Vollständigkeit) — IN gates
 	@bash harness/tools/baseline-verify.sh
 
-# Upstream-Content-Drift des Baseline-ZIP via d-check `sources` (MR-013): d-check holt
-# das per sha256 gepinnte Asset, hasht es (unpack: none = Roh-Bytes) und meldet Abweichung
-# (source-drift, mit vollem Ist-Hash zum Re-Pinnen) bzw. Netzfehler (source-unreachable).
-# Loest den frueheren Eigenbau (curl+sha256sum) ab — "Tool statt Skript". Der Pin lebt
-# kanonisch im Makefile (BASELINE_ZIP_SHA256, MR-007) und dupliziert in .d-check.yml
-# `sources:`; test/sources-pin.bats koppelt beide (fail-closed bei Divergenz, in gates).
-# Auf `sources` isoliert (die Doku-Module deckt docs-check ab). Netz (kein --network none),
-# Maintenance/CI, NICHT in gates (LH-QA-01). baseline-verify prueft nur die Arbeitskopie;
-# baseline-freshness die Tag-Achse. d-check-Exit: 0 = kein Drift, !=0 = Alarm.
+# Meldet Content-Drift des gepinnten Baseline-ZIP: d-check holt das per sha256
+# gepinnte Asset, hasht die Roh-Bytes und meldet Abweichung (source-drift, mit
+# Ist-Hash zum Re-Pinnen) oder Netzfehler (source-unreachable). Der Pin lebt
+# kanonisch als BASELINE_ZIP_SHA256 und dupliziert in .d-check.yml; beide koppelt
+# test/sources-pin.bats fail-closed. Braucht Netz, deshalb NICHT in gates
+# (LH-QA-01). Prueft NUR das Asset des gepinnten Tags — die Tag-Achse prueft
+# baseline-freshness. Exit: 0 = kein Drift, !=0 = Alarm.
 regelwerk-check: ## Upstream-Content-Drift des Baseline-ZIP (d-check sources, Netz) — Maintenance/CI, NICHT in gates
 	docker run --rm -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable sources --disable links --disable anchors --disable ids --disable matrix --disable codepaths --disable spans
 	@echo "Hinweis: prueft NUR das Asset von $(BASELINE_TAG). Ein NEUER Tag upstream bleibt hier unsichtbar — 'make baseline-freshness' prueft die Release-Liste (slice-018, MR-007)."
 
-# Read-only Freshness-Sensor: folgt dem releases/latest-Redirect und meldet einen
-# NEUEREN Upstream-Tag als BASELINE_TAG (Release-LISTEN-Achse) — ergaenzt
-# regelwerk-checks Asset-Achse (MR-007-Luecke). Maintenance/CI (Netz, Host-curl),
-# NICHT in gates (LH-QA-01: make gates bleibt offline-gruen). Skript-Exit: 0 =
-# aktuell, 1 = VERALTET, 2 = Fetch-Fehler — aber `make` kollabiert jeden
-# Nonzero-Recipe-Exit auf sein Exit 2 (fuer CI: 0 = aktuell, !=0 = Alarm; ob
-# veraltet oder Fetch-Fehler sagt die echo-Meldung, wie bei regelwerk-check).
-# Mutiert nichts; Logik in harness/tools/ (shell-lint deckt sie),
-# Fetch<->Vergleich getrennt (hermetisch testbar).
+# Meldet einen neueren Upstream-Tag als BASELINE_TAG: folgt dem
+# releases/latest-Redirect und vergleicht die Release-LISTE — die Achse, die
+# regelwerk-check (Asset-Hash) nicht sieht. Read-only, mutiert nichts. Braucht
+# Netz, deshalb NICHT in gates (LH-QA-01). Skript-Exit: 0 = aktuell, 1 =
+# veraltet, 2 = Fetch-Fehler; `make` kollabiert jeden Nonzero auf sein Exit 2 —
+# welcher Fall vorliegt, sagt die Meldung.
 baseline-freshness: ## Neueren Upstream-Tag als BASELINE_TAG melden (read-only) — Maintenance/CI, NICHT in gates
 	@BASELINE_TAG='$(BASELINE_TAG)' RELEASES_LATEST_URL='https://github.com/pt9912/ai-harness-course/releases/latest' bash harness/tools/baseline-freshness.sh
 
-# Freshness-Achsen weiterer Komponenten (slice-040, MR-007): derselbe generische
-# Sensor (component-freshness.sh), je Achse mit kanonischer Pin-Quelle + Upstream-
-# releases/latest. Read-only, Netz, Maintenance/CI, NICHT in gates (LH-QA-01).
-# Kanonische Pin-Quelle golangci-lint: GOLANGCI_LINT_VERSION (oben) — DERSELBE Var,
-# den `make lint` als Build-Arg in die Dockerfile-lint-Stage reicht. Der Sensor liest
-# genau DIESE eine Quelle und vergleicht sie nur gegen Upstream (kein interner
-# Pin-gegen-Pin-Vergleich, also keine Falsch-Drift). Weitere golangci-lint-Pins
-# existieren (Dockerfile-ARG/Digest, gen-Skelett golangciVersion); ihr Nachziehen
-# nennt die Advice-Zeile, und TestGoProfile_PinsMatchRepo koppelt Skelett<->ARG.
+# Die freshness-*-Ziele nutzen denselben generischen Sensor, je Achse mit einer
+# kanonischen Pin-Quelle gegen Upstream-releases/latest. Read-only, Netz, NICHT
+# in gates (LH-QA-01).
+#
+# Pin-Quelle hier: GOLANGCI_LINT_VERSION — derselbe Var, den `make lint` als
+# Build-Arg reicht. Verglichen wird nur gegen Upstream, nie Pin gegen Pin, sonst
+# entstuende Falsch-Drift. Weitere golangci-lint-Pins (Dockerfile-ARG, Skelett)
+# nennt die Advice-Zeile; TestGoProfile_PinsMatchRepo koppelt Skelett und ARG.
 freshness-golangci: ## Neueren golangci-lint-Release als GOLANGCI_LINT_VERSION melden (read-only) — Maintenance/CI, NICHT in gates
 	@COMPONENT_NAME='golangci-lint' COMPONENT_PINNED='$(GOLANGCI_LINT_VERSION)' \
 	  COMPONENT_ADVICE='GOLANGCI_LINT_VERSION (Makefile) bumpen; Dockerfile-lint-Digest + gen-Skelett-Pin ziehen mit (TestGoProfile_PinsMatchRepo).' \
 	  RELEASES_LATEST_URL='https://github.com/golangci/golangci-lint/releases/latest' \
 	  bash harness/tools/component-freshness.sh
 
-# Kanonische Pin-Quelle d-check: der Tag in DCHECK_IMAGE (d-check.mk), via DCHECK_TAG
-# extrahiert. Ein neuer d-check-Release verlangt `d-check --print-mk` neu erzeugen +
-# DCHECK_DIGEST neu pinnen (MR-010/MR-012) — daher der Advice.
+# Pin-Quelle: der Tag in DCHECK_IMAGE, via DCHECK_TAG extrahiert. Ein neuer
+# Release verlangt `d-check --print-mk` neu zu erzeugen und DCHECK_DIGEST neu zu
+# pinnen (MR-010/MR-012) — das nennt die Advice-Zeile.
 freshness-dcheck: ## Neueren d-check-Release als DCHECK_IMAGE-Tag melden (read-only) — Maintenance/CI, NICHT in gates
 	@COMPONENT_NAME='d-check' COMPONENT_PINNED='$(DCHECK_TAG)' \
 	  COMPONENT_ADVICE='d-check --print-mk neu erzeugen + DCHECK_IMAGE/DCHECK_DIGEST in d-check.mk neu pinnen (MR-010/MR-012).' \
 	  RELEASES_LATEST_URL='https://github.com/pt9912/d-check/releases/latest' \
 	  bash harness/tools/component-freshness.sh
 
-# Go-Toolchain-Achse (slice-041, MR-007): SONDERQUELLE go.dev (golang/go hat kein
-# GitHub-releases/latest), darum ein eigener Wrapper go-freshness.sh (Fetch +
-# Normalisierung go1.x.y->1.x.y), der den Vergleicher aus component-freshness.sh
-# wiederverwendet. Kanonische Pin-Quelle: GO_VERSION (oben) — derselbe Build-Arg,
-# den make build/test reichen; das gen-Skelett-Pin ist via TestGoProfile_PinsMatchRepo
-# gekoppelt. Read-only, Netz, Maintenance/CI, NICHT in gates (LH-QA-01).
+# Go-Achse mit Sonderquelle go.dev — golang/go hat kein GitHub-releases/latest,
+# deshalb ein eigener Wrapper (Fetch + Normalisierung go1.x.y -> 1.x.y), der den
+# Vergleicher wiederverwendet. Pin-Quelle: GO_VERSION, derselbe Build-Arg wie in
+# make build/test; das Skelett-Pin koppelt TestGoProfile_PinsMatchRepo.
 freshness-go: ## Neuere stabile Go-Version als GO_VERSION melden (read-only, Quelle go.dev) — Maintenance/CI, NICHT in gates
 	@GO_VERSION='$(GO_VERSION)' bash harness/tools/go-freshness.sh
 
-# C++/ubuntu-Base-Tag-Achse (slice-042, MR-007): SONDERQUELLE Docker Hub (weder
-# GitHub noch go.dev), „latest" = hoechstes LTS (gerades NN.04). Kanonische
-# Pin-Quelle: DefaultCppVersion in internal/gen/cpp.go (der emittierte C++-Skelett-
-# Tag; dies Repo baut kein C++, also KEIN Makefile-Var — per sed extrahiert).
-# Read-only, Netz, Maintenance/CI, NICHT in gates (LH-QA-01).
+# C++/ubuntu-Achse mit Sonderquelle Docker Hub; „latest" ist hier das hoechste
+# LTS (gerades NN.04). Pin-Quelle: DefaultCppVersion in internal/gen/cpp.go — der
+# emittierte Skelett-Tag. Dies Repo baut kein C++, es gibt also keinen
+# Makefile-Var dafuer; der Wert wird per sed gelesen.
 freshness-cpp: ## Neueres ubuntu-LTS als DefaultCppVersion melden (read-only, Quelle Docker Hub) — Maintenance/CI, NICHT in gates
 	@pinned=$$(sed -n 's/.*DefaultCppVersion = "\([0-9.]*\)".*/\1/p' internal/gen/cpp.go); \
 	  CPP_PINNED="$$pinned" bash harness/tools/cpp-freshness.sh
 
-# Der Span-Emitter (slice-059, ADR-0011). Er ist ein Host-Binary: der Hook ruft ihn
-# je Tool-Call, also darf er nicht erst einen Container starten (gemessen: docker run 388 ms
-# gegen 2,5 ms fuer den ganzen Emitter — die frueher hier stehenden 24 ms waren der
-# Wert der abgeloesten bash+awk-Fassung, Review-Befund LOW-6). Gebaut wird er trotzdem Docker-only im
-# gepinnten Image (ADR-0003) und danach herausgeholt — derselbe Weg wie `make artifact`.
-# Das Ziel liegt im gitignorierten Zustands-Bereich, damit das Binary den
-# working-tree-hash nicht verschiebt (MR-003).
+# Der Span-Emitter ist ein HOST-Binary: der Hook ruft ihn je Tool-Call, ein
+# Container-Start je Aufruf waere um zwei Groessenordnungen teurer als der Emitter
+# selbst. Gebaut wird er trotzdem Docker-only im gepinnten Image (ADR-0003) und
+# danach herausgeholt, wie bei `make artifact`. Er liegt im gitignorierten
+# Zustands-Bereich, damit er den working-tree-hash nicht verschiebt (MR-003).
 SPAN_BIN := .harness/state/bin/span-emit
 
-# Der Emitter laeuft am HOOK, also auf dem HOST — deshalb wird er FUER DEN HOST gebaut,
-# im gepinnten Linux-Image (ADR-0003). Ohne diese Ableitung entstuende immer ein
-# Linux-ELF, und `make gates` waere auf einem macOS-Host rot ohne inhaltlichen Defekt
-# (Review-Befund MEDIUM-2 — der Befund nannte die Portabilitaet als Grenze; sie ist
-# keine, Go kennt GOOS/GOARCH laengst, nur dieser Bau nutzte sie nicht). Dieselben
-# Schalter wie die Plattform-Matrix (LH-QA-04), nur auf genau eine Plattform gerichtet:
-# die des Aufrufers.
+# Plattform des Aufrufers, abgeleitet fuer den Bau des Emitters: er laeuft auf dem
+# HOST, gebaut wird er im gepinnten Linux-Image. Ohne diese Ableitung entstuende
+# immer ein Linux-ELF, und `make gates` waere auf einem macOS-Host rot ohne
+# inhaltlichen Defekt. Dieselben Schalter wie die Plattform-Matrix (LH-QA-04), nur
+# auf genau eine Plattform gerichtet.
 SPAN_OS   := $(shell uname -s | tr 'A-Z' 'a-z')
 SPAN_ARCH := $(shell uname -m | sed -e 's/^x86_64$$/amd64/' -e 's/^aarch64$$/arm64/')
 
@@ -247,24 +225,30 @@ span-emit-build: ## Span-Emitter fuer die HOST-Plattform bauen — Docker-only (
 		--target span -t ai-harness-init:span .
 	@bash harness/tools/artifact-copy.sh ai-harness-init:span "$(dir $(SPAN_BIN))" "$(notdir $(SPAN_BIN))" /out/span-emit
 
-# OHNE Prerequisite auf span-emit-build, und das ist der Punkt: mit ihm konnte das Gate
-# den Fehlt-Fall, den es begruendet, gar nicht melden — der Bau lief unmittelbar davor
-# (Review-Befund MEDIUM-1). Einzeln gefahren misst `make span-check` jetzt wirklich, ob
-# der Emitter da ist. In `gates` steht der Bau als eigenes Glied davor: nach einem
-# Gate-Lauf ist der Emitter vorhanden UND belegt funktionsfaehig.
+# OHNE Prerequisite auf span-emit-build, und das ist tragend: mit ihm koennte das
+# Ziel den Fehlt-Fall, den es prueft, nie melden — der Bau liefe unmittelbar davor.
+# Einzeln gefahren misst es wirklich, ob der Emitter da ist. In `gates` steht der
+# Bau als eigenes Glied davor, dort gilt also beides: vorhanden UND funktionsfaehig.
 span-check: ## Emitter vorhanden UND funktionsfaehig (der Fehlt-Fall) — IN gates
 	@bash harness/tools/span-check.sh "$(SPAN_BIN)"
 
-# ADR-0011 Festlegung 3 verlangt fuers Aufraeumen ausdruecklich ein make-Ziel und
-# KEINEN Automatismus: "laeuft die andere Sitzung noch?" ist nicht entscheidbar, also
-# raeumt niemand fremden Bestand nebenbei weg.
+# Aufgeraeumt wird ausdruecklich, nie nebenbei (ADR-0011 Festlegung 3): ob eine
+# andere Sitzung noch laeuft, ist nicht entscheidbar — also raeumt niemand fremden
+# Bestand automatisch weg.
 span-clean: ## Span-Bestaende entfernen (ausdruecklich, kein Automatismus)
 	@rm -rf .harness/state/spans && echo "span-clean: .harness/state/spans entfernt"
+
+# Rechnet die Token-Bilanz je Rolle aus dem Span-Bestand. Bericht, kein Gate.
+# Bestand read-only gemountet, netzlos; laeuft auch ueber leerem Verzeichnis.
+span-report: ## Token-Bilanz je Rolle aus dem Span-Bestand — NICHT in gates (Bericht, kein Sensor)
+	@mkdir -p .harness/state/spans
+	@docker build --build-arg GO_VERSION=$(GO_VERSION) --target report -t ai-harness-init:report . >/dev/null
+	@docker run --rm --network none -v "$(CURDIR)/.harness/state/spans:/spans:ro" ai-harness-init:report
 
 record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh
 
-# baseline-verify läuft als ERSTER Prerequisite: steht die vendored Baseline
-# nicht, ist jede Aussage der Folge-Gates über sie wertlos. record-gates läuft
-# als LETZTER — der Nachweis entsteht nur nach grünen Gates (MR-002).
+# Die Reihenfolge ist tragend: baseline-verify als ERSTER Prerequisite — steht die
+# vendored Baseline nicht, ist jede Aussage der Folge-Gates über sie wertlos.
+# record-gates als LETZTER — der Nachweis entsteht nur nach grünen Gates (MR-002).
 gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims span-emit-build span-check record-gates ## alle aktuell lauffähigen Gates + Nachweis
