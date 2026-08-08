@@ -291,13 +291,34 @@ Incident-Frage), `prompt_id` — letzteres ist ein ernsthafter Kandidat (*„wel
 gehören zu einer Nutzer-Anweisung?"*), aber ein neues Feld ist eine Entscheidung und keine
 Gelegenheit.
 
-**Die erfasste MENGE, ausgesprochen statt suggeriert.** Verdrahtet sind **zwei** Ereignisse
-— `PostToolUse` und `PostToolUseFailure` — je mit leerem Matcher, der **jedes** Werkzeug
-sieht (belegt: live liegen Spans für `Bash`, `Read`, `Write`, `Edit`, `Agent`, `ToolSearch`,
-`Monitor` vor, auch aus Subagenten-Strömen). Erfasst wird damit der **abgeschlossene**
-Aufruf. **Nicht erfasst und nicht behauptet:** ein vom PreToolUse-Guard **geblockter** Aufruf
+**Die erfasste MENGE, ausgesprochen statt suggeriert.** Verdrahtet sind **drei** Ereignisse
+— `PostToolUse`, `PostToolUseFailure` und `SubagentStart` — je mit leerem Matcher, der
+**jedes** Werkzeug bzw. **jeden** Agenten-Typ sieht (belegt: live liegen Spans für `Bash`,
+`Read`, `Write`, `Edit`, `Agent`, `ToolSearch`, `Monitor` vor, auch aus Subagenten-Strömen).
+Die ersten beiden erfassen den **abgeschlossenen** Aufruf.
+
+**`SubagentStart` erfasst den START, nicht den Abschluss — und das ist sein Zweck.** Es feuert
+je Spawn und ist damit die **einzige** Quelle, die einen Lauf zählt, dessen Ergebnis keine
+Zähler trägt. **Seine Schlüsselmenge, gemessen am 2026-08-08** (drei reale Spawns, Vordergrund
+**und** Hintergrund): `hook_event_name` · `session_id` · `agent_id` · `agent_type` ·
+`permission_mode`. **Kein** `tool_name` und **kein** `tool_use_id` — es ist kein Tool-Call; die
+Werkzeug-Tabelle greift über den fail-closed Default, der Span trägt daher weder `path` noch
+`program`/`argc`. `agent_role` wird wie überall **abgeleitet**: nennt der Typ eine Rolle, ist er
+die Rolle, sonst bleibt das Feld leer (gemessen: `general-purpose` → leer, `reviewer` →
+`reviewer`). **Ablageort:** der Span landet im Strom des **gestarteten** Subagenten
+(`(session, agent)` mit dessen `agent_id`), nicht im Haupt-Strom — eine Auswertung, die Spawns
+zählt, liest deshalb **alle** Ströme.
+
+**Der Hintergrund-Fall ist gemessen, nicht angenommen:** ein Hintergrund-Spawn erzeugt einen
+`SubagentStart`-Span mit `agent_type`, während sein `Agent`-Span **keine** Verbrauchs-Achse
+trägt (Abweichung 5). Genau diese Paarung macht die Lücke sichtbar, die aus den Zählern allein
+nicht folgt.
+
+**Nicht erfasst und nicht behauptet:** ein vom PreToolUse-Guard **geblockter** Aufruf
 hinterlässt keinen Span — die Frage *„was wurde versucht und geblockt?"* beantwortet dieses
-Schema nicht (`PermissionDenied` ist als eigenes Ereignis Kandidat, aber keine Zusage).
+Schema nicht (`PermissionDenied` ist als eigenes Ereignis Kandidat, aber keine Zusage). Ebenso
+wenig behauptet: `SubagentStop` — es ist **nicht** verdrahtet, ein abgebrochener Subagent
+hinterlässt also einen Start ohne Ende.
 
 **Der Strom ist `(session, agent)` — die FELDER, nicht der Dateiname.** Der Dateiname ist
 eine Ableitung davon und darf sich ändern; die Identität nicht. Eine Doppelvergabe von `seq`
