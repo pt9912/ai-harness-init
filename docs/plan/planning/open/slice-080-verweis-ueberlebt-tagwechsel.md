@@ -87,7 +87,7 @@ DoD vollständig, ADR *Accepted*, Closure-Notiz geschrieben.
 ## 6. Risiken und offene Punkte
 
 - **Die bequeme Antwort ist die Ausnahme.** Ziele unter `.harness/baseline/` vom Link-Check
-  auszunehmen macht die vier ADRs auf einen Schlag grün — und nimmt zugleich die 17 heute
+  auszunehmen macht die vier ADRs auf einen Schlag grün — und nimmt zugleich die 16 heute
   gate-sichtbaren Verweise aus [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder)
   und [`harness/conventions.md`](../../../../harness/conventions.md#mr-000--baseline-aussage) mit
   aus der Prüfung. Das ist eine Senkung mit weit größerem Geltungsbereich als der Anlass.
