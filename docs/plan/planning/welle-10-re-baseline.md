@@ -1,4 +1,4 @@
-# Welle welle-10: Re-Baseline `v3.5.2` → `v5.3.0`
+# Welle welle-10: Re-Baseline `v3.5.2` → `v5.3.1`
 
 **Lifecycle:** Die aktive Welle liegt flach unter `docs/plan/planning/`; bei
 Closure wandert diese Datei per `git mv` nach `done/` (neben ihre
@@ -13,12 +13,37 @@ Status-Feld. Ob eine flache Welle *aktuell* oder *geplant* ist, sagt die Roadmap
 
 ## 1. Welle-Ziel
 
-Die adoptierte Baseline steht auf `v5.3.0`, **und jede Aussage dieses Repos über sie ist gegen
+Die adoptierte Baseline steht auf `v5.3.1`, **und jede Aussage dieses Repos über sie ist gegen
 diesen Stand gemessen.** Der Pin ist davon der kleinste Teil.
 
-Der Sprung ist **strukturell, nicht additiv**. Zehn Releases, drei Major-Sprünge; das Regelwerk
-wächst von 21 auf 26 Dateien, aber die Rechnung ist `−3 +8` (gemessen gegen einen lokalen
-Kurs-Klon, `git ls-tree -r --name-only <tag> lab/regelwerk | wc -l`):
+**Der Zielstand ist beweglich, aber nicht beliebig** — und die Regel dafür gehört in den Plan,
+nicht in den Dateinamen. Er wandert, wenn in ihm ein **gemessener Defekt** liegt, der eine
+Entscheidung dieses Repos berührt; **nicht**, weil ein neuerer Tag existiert. *„Immer das
+Neueste"* wäre kein Kriterium, sondern ein Abonnement: jeder Kurs-Tag zöge einen Plan-Umbau nach
+sich, und der Zielstand hörte auf, eine Entscheidung zu sein. Ein Tag, dessen Delta dieses Repo
+nicht berührt, bewegt ihn also nicht.
+
+Für `v5.3.1` trifft beides zu. Der `regelwerk/`-Spiegel gibt `modul-08-agentenrollen.md` unter
+`v5.3.0` an vier Stellen **paraphrasiert** statt quelltreu wieder und verliert dabei die
+Exklusivität (*„genau die Artefaktklasse"*) und die Pointe des Abschnitts (*„meistens kein
+Skill"*); `v5.3.1` stellt den Quelltext her. Getroffen sind wir, weil
+[ADR-0015](../adr/0015-rollen-eigentum-an-norm-artefakten.md) ihr Rollen-Eigentum aus genau
+diesem Modul herleitet — die Kurs-Regel dahinter lautet *Didaktik weglassen, Operatives quelltreu
+übernehmen, nie paraphrasieren.*
+
+**Was der Wechsel kostet, ist gemessen.** Im vendored Ausschnitt ändert `v5.3.0` → `v5.3.1`
+**7 Dateien um +14/−13 Zeilen**
+(`git diff --shortstat v5.3.0 v5.3.1 -- lab/regelwerk lab/templates`, lokaler Kurs-Klon);
+die Dateizahl bleibt **26 + 25 = 51**. Der Roh-Diff über `lab/` zählt **80** Dateien und geht
+glatt auf: **73** entfallen auf `lab/example`, das dieses Repo nicht vendort, die übrigen **7**
+sind die oben genannten. **Keine Messung dieses Plans bricht:**
+`modul-07-carveouts.md` — Träger der Zitat-Probe aus §6 von
+[slice-081](open/slice-081-baum-tauschen-pin-ziehen.md) — ist zwischen beiden Tags byte-gleich,
+und der einzige Hunk in `modul-08` liegt außerhalb des Closure-Schritts 3b.
+
+Der Sprung ist **strukturell, nicht additiv**. Elf Releases, zwei Major-Bumps über drei
+Major-Serien; das Regelwerk wächst von 21 auf 26 Dateien, aber die Rechnung ist `−3 +8` (gemessen
+gegen einen lokalen Kurs-Klon, `git ls-tree -r --name-only <tag> lab/regelwerk | wc -l`):
 
 - `grundlagen-konventionen.md` **zerfällt in sechs** Grundlagen-Dateien (`-begriffe`,
   `-bootstrap`, `-harness-dateien`, `-referenz-richtung`, `-source-precedence`, `-traceability`),
@@ -33,7 +58,7 @@ der Rest aus fünf ADRs und zwei Plan-Dateien. Gemessen mit
 `git grep -o "\.harness/baseline/v3\.5\.2/[^ )]*" -- ':!.harness/baseline' ':!docs/reviews' ':!docs/plan/planning/done'`
 (Zeitdokumente ausgenommen — sie bleiben stehen, §6).
 
-**Festlegung — die Migration läuft nach der Prozedur der Ziel-Fassung** (`v5.3.0`, Modul 2
+**Festlegung — die Migration läuft nach der Prozedur der Ziel-Fassung** (`v5.3.1`, Modul 2
 §*Freshness-Audit der vendored Baseline*), nicht nach der gepinnten. Drei Gründe, und der erste
 trägt allein: die gepinnte `v3.5.2` **beschreibt diesen Fall nicht** — sie nennt drei
 Eigenschaften des Audits und keinen Adaptions-Durchgang, während die Ziel-Fassung sieben
@@ -52,13 +77,13 @@ Fassung, die dieses Repo nicht adoptiert hat.
 ## 2. Trigger (Welle startet)
 
 - **`make baseline-freshness` meldet VERALTET** — der Sensor ist in jedem Lauf seiner sichtbaren
-  Historie rot, der älteste vom 2026-07-24; gepinnt ist `v3.5.2`, upstream steht `v5.3.0`. Der
+  Historie rot, der älteste vom 2026-07-24; gepinnt ist `v3.5.2`, upstream steht `v5.3.1`. Der
   Auslöser ist damit beobachtbar und real eingetreten, nicht angesetzt.
 - **[welle-09](welle-09-modul-15-konformitaet.md) liegt in `done/`.** Ihr Closure-Kriterium misst
   gegen **Modul 15 in der `v3.5.2`-Fassung**; ein Tausch während der Welle zöge ihr die Messlatte
   unter den Füßen weg. Die Reihenfolge steht aus Ordnungs-, nicht aus Risiko-Gründen: das Delta
-  jenes Moduls ist gemessen (`git diff v3.5.2 v5.3.0 -- lab/regelwerk/modul-15-observability.md`
-  → +8/−3 Zeilen in zwei Absätzen) und **bestätigt** beide Ergebnisse jener Welle — die
+  jenes Moduls ist gemessen (`git diff v3.5.2 v5.3.1 -- lab/regelwerk/modul-15-observability.md`
+  → +7/−2 Zeilen in zwei Absätzen) und **bestätigt** beide Ergebnisse jener Welle — die
   Token-Attribution rechnet upstream ausdrücklich „auf Kontexte, nicht auf Personen", und die
   Rollen sind die aus Modul 8, „festgelegt durch das gestartete Rollen-Artefakt".
 
@@ -68,7 +93,7 @@ Die Welle schließt, wenn **die drei Durchgänge der Ziel-Prozedur je einen Bele
 wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
 
 - **Alle Slices dieser Welle in `done/`.**
-- **Der Pin ist vollzogen:** `.harness/baseline/v5.3.0/` ist das **einzige** `<tag>`-Verzeichnis
+- **Der Pin ist vollzogen:** `.harness/baseline/v5.3.1/` ist das **einzige** `<tag>`-Verzeichnis
   ([`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache):
   ein Tag zur Zeit), `make baseline-verify` grün über **51** statt 42 Dateien (26 Regelwerk + 25
   Templates).

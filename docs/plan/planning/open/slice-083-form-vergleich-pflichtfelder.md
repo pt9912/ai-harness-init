@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-10](../welle-10-re-baseline-v5-3-0.md).
+**Welle:** [welle-10](../welle-10-re-baseline.md).
 
 **Bezug:** [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage),
 [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
@@ -27,7 +27,7 @@ Der Umfang ist gemessen: die Templates wachsen **21 → 25** (neu: `observations
 `reconciliation`, `welle-results`, ein Eintrags-Template für den Adaptions-Block), und die
 Vorlagen der Singletons ändern sich substanziell — `conventions.template.md` um 122,
 `AGENTS.template.md` um 95, die Spec-Vorlagen um 43 bis 76 Zeilen
-(`git diff --stat v3.5.2 v5.3.0 -- lab/templates/` gegen einen lokalen Kurs-Klon).
+(`git diff --stat v3.5.2 v5.3.1 -- lab/templates/` gegen einen lokalen Kurs-Klon).
 
 **Der schwerste Einzelpunkt ist ein neues Pflichtfeld:** die Pflichtgliederung des
 Adaptions-Blocks verlangt je Eintrag `Ersetzt-Baseline-Regel` — **genau eine** Regel der Baseline,

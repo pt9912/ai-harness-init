@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-10](../welle-10-re-baseline-v5-3-0.md).
+**Welle:** [welle-10](../welle-10-re-baseline.md).
 
 **Bezug:** [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (der Tag ist
 die Reproduzierbarkeits-Klammer), [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
@@ -72,7 +72,7 @@ Kein Code, keine Gate-Config: die Umsetzung liegt bei
 
 ## 4. Trigger
 
-Beginnt, sobald [welle-10](../welle-10-re-baseline-v5-3-0.md) startet — dieser Slice ist ihr
+Beginnt, sobald [welle-10](../welle-10-re-baseline.md) startet — dieser Slice ist ihr
 erster; kein Vorgänger innerhalb der Welle.
 
 Rückführungen: `in-progress` → `next`, wenn die Entscheidung mehr als eine Frage trägt (etwa
@@ -95,7 +95,7 @@ DoD vollständig, ADR *Accepted*, Closure-Notiz geschrieben.
   sie einen.** Ob `codepaths.roots` um `.harness` erweiterbar ist, ohne den Prüfbereich
   aufzublähen, ist **ungemessen**.
 - **Was hier entschieden wird, gilt über den Anlass hinaus:** dieselbe Frage stellt sich bei
-  jedem künftigen Bump. Eine Entscheidung, die nur `v3.5.2` → `v5.3.0` regelt, ist keine.
+  jedem künftigen Bump. Eine Entscheidung, die nur `v3.5.2` → `v5.3.1` regelt, ist keine.
 
 ## 7. Closure-Notiz (nach `done/`)
 
