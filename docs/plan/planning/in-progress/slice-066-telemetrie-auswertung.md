@@ -201,14 +201,26 @@ sondern im Nicht-Gate-Verify-Absatz von [`AGENTS.md`](../../../../AGENTS.md) §4
 [`harness/README.md`](../../../../harness/README.md). Sie liest ausschließlich Spans, read-only
 und netzlos.
 
-**Sensoren.** `make mutate` läuft mit `145 ok, 0 Befund(e)` über den Baum, den der Abschluss-Commit erzeugt;
-zehn seiner Fälle (`test/mutations/140`–`149`) zielen auf den Auswerter, jeder färbt seinen
-namentlich erwarteten Wächter rot. **Die Deckung reicht bis an den Move, und das ist eine
-Eigenschaft, kein Zufall:** was seit dem Lauf noch angefasst wurde, sind Plan-Artefakte, und
-**kein** Mutations-Fall trägt einen `docs/`-Pfad in seiner `# files:`-Zeile — der Prüfbereich des
-Sensors und die geänderten Dateien sind disjunkt. Welche Fälle ein Lauf nach einer **Code**-
-Änderung mindestens tragen muss, sagt dieselbe Schnittmenge, dann nicht leer: der Prüfumfang aus
-dem zweiten Steering-Loop-Eintrag unten. `make gates` grün.
+**Verifikation.** Das Code-Review steht auf **KONFORM**, merge-blockierend **nein** — 0 HIGH,
+0 MEDIUM (`docs/reviews/2026-08-09-slice-066-verdikt-runde.md`). Alle sieben Befunde, die davor
+offen standen, sind aufgelöst, jeder einzeln am Baum nachgemessen; die drei nicht-blockierenden
+Reste sind ebenfalls behoben — der Konjunktiv über die verworfene Alternative im
+`Makefile`-Kommentar, die Verallgemeinerung in der Roadmap-Zeile und die zwei Zahlen der
+Cutoff-Begründung in [`AGENTS.md`](../../../../AGENTS.md) §3.7, die ohne ihr Kommando dastanden.
+Die DoD-Bestätigung nach Modul 11 liegt getrennt davon vor
+(`docs/reviews/2026-08-08-slice-066-verify.md`); ihre zwei MEDIUM sind mit `8dc3d29` erledigt.
+
+**Sensoren.** `make gates` Exit 0. `make mutate` steht auf `145 ok, 0 Befund(e)`, vom Reviewer
+selbst über den Baum bei `d9a62ad` gefahren; zehn seiner Fälle (`test/mutations/140`–`149`)
+zielen auf den Auswerter, jeder färbt seinen namentlich erwarteten Wächter rot. **Was seit diesem
+Lauf geändert wurde, liegt außerhalb der gebundenen Zeilen — nachgemessen, nicht angenommen:**
+die `# files:`-Zeilen nennen **37** eindeutige Ziele, darunter **keinen** `docs/`-Pfad und nicht
+[`AGENTS.md`](../../../../AGENTS.md); der einzige seither berührte Zielpfad ist der `Makefile`,
+und die **vier** Fälle, die ihn tragen, binden Zeilen der Release-Matrix (`linux/arm64` in der
+Plattform-Liste, `ext=".exe"`, die Build-Stage-Zeile, der `release-artifacts:`-Block), während
+die Änderung im Kommentarkopf von `regelwerk-check` sitzt. Welche Fälle ein Lauf nach einer
+**Code**-Änderung mindestens tragen muss, sagt dieselbe Schnittmenge, dann nicht leer: der
+Prüfumfang aus dem zweiten Steering-Loop-Eintrag unten.
 
 **Was anders lief.**
 
@@ -226,12 +238,18 @@ dem zweiten Steering-Loop-Eintrag unten. `make gates` grün.
    **§3 bleibt der Stand vor dem Code und wird nicht nachgezogen:** eine Tabelle, die im
    Nachhinein zur Lieferung passend gemacht wird, sagt nichts mehr darüber, was geplant war.
 
-2. **Vier Korrekturen an einem Tag landeten an einem von mehreren Fundorten.** Ein Grep-Muster
+2. **Der gemeldete Fundort war wiederholt kleiner als die Fundmenge.** Vier Korrekturen an einem
+   Tag landeten an einem von mehreren Fundorten. Ein Grep-Muster
    nach einem Lifecycle-Move kannte eine der zwei Pfadformen nicht und fand 5 von 15 gebrochenen
    Links; eine Fehlzuschreibung überlebte im Verzeichnis der Entscheidungen; dieselbe
    Ereignis-Menge stand an drei Stellen und wurde an einer gezogen; und die Angabe, in welcher
    Größe ein Prozentsatz gemessen ist, kam an die eine der zwei Stellen, an denen sie fehlte.
-   Vier Rollen fanden je eine Instanz — keine fand die eigene.
+   Vier Rollen fanden je eine Instanz — keine fand die eigene. **Die fünfte fiel beim Nachprüfen
+   an, und diesmal ist die Menge gemessen statt geschätzt:** die Beschreibung von `make docs-check`
+   steht an **fünf** Stellen (`git grep -n 'links/anchors/ids/codepaths' -- ':!docs/reviews'`) und
+   nennt an jeder **vier** der **sechs** Module aus `.d-check.yml`; eine davon beziffert im selben
+   Satz `make gates` mit sieben statt zehn. Sie hat einen Träger bekommen, statt als Fundort
+   berichtet zu werden.
 
 3. **Ein bestehender Wächter wurde durch eine Code-Korrektur zahnlos.** Die Bedingung, auf die
    `test/mutations/145` mit seinem `sed`-Muster zielt, hat im selben Zug ein zweites Konjunkt
@@ -265,13 +283,41 @@ dem zweiten Steering-Loop-Eintrag unten. `make gates` grün.
    **Befund** statt als *ok* — die Regel kostet einen Lauf, keinen Bau. Sie greift über diesen
    Slice hinaus: jeder Fix an einer bewachten Zeile erbt sie.
 
+3. **Geschärfte Regel — eine Reparatur ist eine Änderung und erbt jede Regel, gegen die die
+   reparierte Stelle verstoßen hat; sie wird geprüft wie eine Erstfassung.** Die drei zuletzt
+   behobenen Befunde dieses Slice sitzen **sämtlich** in Zeilen, die am selben
+   Tag als Reparatur entstanden sind: ein wiederhergestellter `Makefile`-Kommentar endete im
+   Konjunktiv über die verworfene Alternative — wörtlich das Falsch-Beispiel der Regel, die
+   derselbe Tag als [`AGENTS.md`](../../../../AGENTS.md) §3.7 in Kraft gesetzt hat; eine
+   Roadmap-Zeile ersetzte **zwei ungleiche** Mengen durch **eine** Eigenschaft und heilte damit
+   die abgedriftete Zahl, während sie die zutreffende zerstörte; und die Cutoff-Begründung
+   derselben neuen Regel nannte ihre zwei Zahlen ohne die Kommandos, aus denen sie stammen.
+   Dazu eine Gegenmessung, die einen dieser Befunde für widerlegt erklärte und im **Ergebnis**
+   richtig, in der **Begründung** falsch war: `git ls-files 'Makefile'` ist ein Pathspec, kein
+   Glob, sieht die vendored Vorlage nicht (`'*Makefile'` → 2) und traf die genannte Zahl aus dem
+   falschen Grund.
+   **Die engere Regel, die daraus folgt und weiter trägt als der Fall:** eine **Eigenschaft** darf
+   nur ersetzen, was **eine** Größe ist — zwei Größen unter einer Eigenschaft zusammenzufassen
+   macht die richtige Angabe mit der falschen zusammen falsch.
+   **Der Träger ist geteilt, und die offene Hälfte ist die wichtigere.** Für Kommentare in Code,
+   Konfiguration und Skripten trägt [`AGENTS.md`](../../../../AGENTS.md) §3.7 — mit Cutoff und
+   ohne Wächter, denn `make comment-claims` prüft, ob ein genannter Sensor existiert, nicht,
+   worüber ein Kommentar spricht. Für **Prosa in Plan-Artefakten** trägt nichts: die Zeile, an der
+   es zuletzt riss, ist Markdown, und der Geltungsbereich von §3.7 nennt Code, Konfiguration und
+   Skripte — Markdown steht nicht darunter. Die Idee dafür steht als *Prosa-Zahlen-Provenienz* im
+   Roadmap-Kandidaten *Doc-Gate-Härtung* und ist ungeschnitten — Eintrag 1 an einem zweiten
+   Gegenstand.
+
 **Offen, mit Träger.**
 
 | Posten | Träger |
 |---|---|
 | Eine repo-weite Hard Rule und ihr Adaptions-Eintrag sind im Implementations-Kontext dieses Slice in Kraft gesetzt worden, ohne Übergabe an eine zweite Rolle | [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md), Proposed |
 | Ob [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) angenommen wird, hängt an einem einzigen lebenden Artefakt: die Statusspalte des ADR-Index. Der zweite Verweis auf sie steht in dieser Notiz und wird mit ihr zum Zeitdokument | [ADR-Index](../../adr/README.md), Statusspalte |
+| `d9a62ad` trägt Implementer- und Planner-Artefakte in **einem** Commit; die Message trennt die Kontexte, der Baum tut es nicht — die Eigenschaft, die [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) herstellen soll, blieb ausgerechnet in dem Lauf aus, der die ADR schreibt | [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 3, Cutoff ab Annahme — heute kein Verstoß, aber der erste Datenpunkt ihres Re-Evaluierungs-Triggers |
 | Zwei Mengenangaben in einer Commit-Message treffen den Baum nicht (die Zeilenzahlen der `Makefile`-Kürzung und die Zahl der `make help`-Einträge vor der Reparatur). Die Historie wird nicht umgeschrieben; die gemessenen Werte stehen im Review-Bericht | verfallen, mit Beleg |
+| Vier lebende Artefakte beschreiben `make docs-check` mit **vier** der **sechs** in `.d-check.yml` aktivierten Module — `matrix` (die Straten-Regeln) und `spans` fehlen; dieselbe [`README.md`](../../../../README.md)-Zeile beziffert `make gates` mit **sieben** statt **zehn**. Eine der vier Stellen ist der tool-generierte Hilfetext in `d-check.mk` und braucht die Re-Adaption aus [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert) Setzung 1, nicht eine Handkorrektur | [Roadmap](roadmap.md), Kandidat *Doku- und Sensor-Wartung*, Achse (6) |
+| `Dockerfile` bindet das Build-Frontend in seiner ersten Zeile per **Tag** (`docker/dockerfile:1.7`) — die einzige unverdigestete Image-Referenz des Baus; ohne erreichbare Registry kostet sie `make mutate` zweistellige Scheinbefunde, `make gates` bleibt davon unberührt | **kein Schnitt gelegt.** Der Bauplan — Inventar einsammeln, gegen die Abdeckungsmenge halten — steht im Roadmap-Kandidaten *Vollständigkeits-Wächter für kuratierte Listen*; dieser Fall ist dort **nicht** eingetragen |
 | Ein nicht existierender Ablageort liefert dieselbe wohlgeformte leere Bilanz wie ein leerer — `filepath.Glob` unterscheidet beides nicht, und unter `make span-report` maskiert das vorangestellte `mkdir -p` den Fall | [slice-071](../open/slice-071-cache-zaehler-getrennt.md) |
 | *„Bestand: 3 Sitzung(en)"* nennt die Ströme des Ablageorts, nicht die Streuung der Summe — zwei tragen Zähler, und der weitaus größte Teil stammt aus einer | [slice-071](../open/slice-071-cache-zaehler-getrennt.md) |
 | Der Sensor, der einen Lauf **ohne** Span sichtbar macht — die Abdeckungszahl kann ihn nicht sehen, weil Zähler und Bezugsmenge aus derselben Quelle stammen | [slice-077](../open/slice-077-verlorener-lauf-sichtbar.md) |
