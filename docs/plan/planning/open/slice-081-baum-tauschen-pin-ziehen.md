@@ -130,12 +130,15 @@ DoD vollständig, `make gates` nach dem Tausch grün, Closure-Notiz geschrieben.
   sieht sie. Sie fallen mit [slice-082](slice-082-adaptions-durchgang.md). Der Preis dafür, den
   Adaptions-Durchgang nicht in denselben Slice zu packen: das Repo trägt zwischen 081 und 082 eine
   Aussage, deren Bezug gewechselt hat.
-- **Die Ziel-Prozedur will beide Bäume nebeneinander, dieses Repo lässt das nicht zu.**
-  `harness/tools/baseline-verify.sh` bricht bei mehr als einem `<tag>`-Verzeichnis ab
-  ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache):
-  ein Tag zur Zeit). Der Form-Vergleich aus [slice-083](slice-083-form-vergleich-pflichtfelder.md)
-  läuft deshalb **außerhalb des Arbeitsbaums**. Der Konflikt ist benannt, nicht aufgelöst — wer ihn
-  auflösen will, tut das in einem eigenen Slice.
+- **Nach diesem Slice liegt die alte Form nur noch in der Historie — das ist die Zusage von
+  [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache),
+  nicht ihr Preis.** *„Ein Tag zur Zeit (Ersetzen), Historie liegt in git"*: der Form-Vergleich aus
+  [slice-083](slice-083-form-vergleich-pflichtfelder.md) holt die alte Seite dort, mit
+  Tree-Operanden statt zwei Verzeichnissen. Was er dafür braucht, ist **der Commit, der den Baum
+  getauscht hat** — er steht als jüngster Eintrag in `git log --oneline -- .harness/baseline/`,
+  derselben Abfrage, die heute die drei bisherigen Re-Vendors auflistet.
+  `harness/tools/baseline-verify.sh` bricht bei mehr als einem `<tag>`-Verzeichnis ab und schützt
+  damit die Eindeutigkeit, auf der dieser Zugriff beruht.
 - **Der mechanische Tag-Tausch macht aus einem toten Link ein falsches Zitat.** Gemessen an
   Zeile 129 von `modul-07-carveouts.md`: bei `v3.5.2` steht dort *„Slice schlägt Memo"*, bei
   `v5.3.1` ein unverwandter Satz über die Aufgaben des Implementers. Ein `sed` über den Tag-String

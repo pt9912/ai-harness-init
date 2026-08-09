@@ -83,11 +83,20 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
 
 ## 6. Risiken und offene Punkte
 
-- **Der Vergleich braucht beide Bäume, das Repo lässt nur einen zu.** Die Ziel-Prozedur rechnet mit
-  `diff -r` über zwei `<tag>`-Verzeichnisse; `harness/tools/baseline-verify.sh` bricht bei mehr als
-  einem ab ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)).
-  Der Diff läuft darum **außerhalb des Arbeitsbaums**. Das ist eine Abweichung von der Prozedur in
-  der Ausführung, nicht in der Sache — sie gehört in die Closure-Notiz.
+- **Der Vergleich braucht Zugriff auf beide Formen, nicht zwei Verzeichnisse.** Die Ziel-Prozedur
+  zeigt `diff -r` über zwei `<tag>`-Verzeichnisse — das ist ihr Mittel. Verlangt ist, dass die Form
+  verglichen wird und die alte erreichbar bleibt, bis der Review durch ist. Genau diesen Zugriff
+  sichert [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
+  zu: *„ein Tag zur Zeit (Ersetzen), Historie liegt in git"*. Der Diff läuft deshalb über
+  Tree-Operanden statt über zwei Verzeichnisse, ohne Entpacken — `git diff
+  <Tausch-Commit>^:.harness/baseline/v3.5.2/templates <Tausch-Commit>:.harness/baseline/v5.3.1/templates`.
+  Am letzten Re-Vendor dieses Repos vorgeführt (`ce4b611`, `v3.5.1` → `v3.5.2`): 15 Dateien,
+  +47/−41, und weder vor noch nach dem Commit lag ein zweites `<tag>`-Verzeichnis im Baum.
+  `harness/tools/baseline-verify.sh` ist damit kein Hindernis, sondern schützt die Eindeutigkeit,
+  auf der dieser Zugriff beruht.
+- **Handgriff: der Tausch-Commit muss benannt sein.** Ohne ihn hat der Vergleich keine alte Seite.
+  Er entsteht in [slice-081](slice-081-baum-tauschen-pin-ziehen.md) und steht zum
+  Ausführungszeitpunkt als jüngster Eintrag in `git log --oneline -- .harness/baseline/`.
 - **`Ersetzt-Baseline-Regel` über rund zwanzig Einträge ist die größte Einzelposition der Welle.**
   Reißt sie die Sitzung, wird geteilt, nicht gedehnt.
 - **Die Verzeichnis-Form des Adaptions-Blocks bleibt außen vor** (Welle §6). Wer sie hier
