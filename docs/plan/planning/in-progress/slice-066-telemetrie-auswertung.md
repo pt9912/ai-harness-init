@@ -270,6 +270,7 @@ dem zweiten Steering-Loop-Eintrag unten. `make gates` grün.
 | Posten | Träger |
 |---|---|
 | Eine repo-weite Hard Rule und ihr Adaptions-Eintrag sind im Implementations-Kontext dieses Slice in Kraft gesetzt worden, ohne Übergabe an eine zweite Rolle | [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md), Proposed |
+| Ob [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) angenommen wird, hängt an einem einzigen lebenden Artefakt: die Statusspalte des ADR-Index. Der zweite Verweis auf sie steht in dieser Notiz und wird mit ihr zum Zeitdokument | [ADR-Index](../../adr/README.md), Statusspalte |
 | Zwei Mengenangaben in einer Commit-Message treffen den Baum nicht (die Zeilenzahlen der `Makefile`-Kürzung und die Zahl der `make help`-Einträge vor der Reparatur). Die Historie wird nicht umgeschrieben; die gemessenen Werte stehen im Review-Bericht | verfallen, mit Beleg |
 | Ein nicht existierender Ablageort liefert dieselbe wohlgeformte leere Bilanz wie ein leerer — `filepath.Glob` unterscheidet beides nicht, und unter `make span-report` maskiert das vorangestellte `mkdir -p` den Fall | [slice-071](../open/slice-071-cache-zaehler-getrennt.md) |
 | *„Bestand: 3 Sitzung(en)"* nennt die Ströme des Ablageorts, nicht die Streuung der Summe — zwei tragen Zähler, und der weitaus größte Teil stammt aus einer | [slice-071](../open/slice-071-cache-zaehler-getrennt.md) |

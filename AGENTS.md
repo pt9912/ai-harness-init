@@ -141,11 +141,15 @@ entscheidet der Slice, der die Tool-Ebene entscheidet — nicht diese Sektion.
 
 **Cutoff — ab Einführung, kein Nachrüsten.** Gebunden ist der Kommentar, der
 geschrieben oder geändert wird; der **Bestand ist kein Arbeitsauftrag**. Er ist
-gemessen, nicht geschätzt: von den 212 getrackten `*.go`/`*.sh`/`*.awk`/`Makefile`/
-`Dockerfile` außerhalb von `internal/emit/templates/` tragen **73** mindestens eine
-Kommentarzeile mit Befund-Kennung oder Herkunfts-Prosa (2026-08-09). Ein Maßstab,
-der diesen Bestand mitprüfte, wäre dauerhaft rot und entwertete die Regel, statt
-sie zu tragen — dieselbe Begründung trägt den Cutoff in
+gemessen, nicht geschätzt — jede Zahl mit ihrem Kommando, beide über denselben
+Pathspec, der den Geltungsbereich oben abbildet (Stand 2026-08-09):
+`git ls-files '*.go' '*.sh' '*.awk' '*Makefile' 'Dockerfile' ':!internal/emit/templates' ':!.harness/baseline' | wc -l` → **212** Dateien im Prüfbereich; davon
+`git grep -lE '^[[:space:]]*(#|//).*Review-Befund' -- '*.go' '*.sh' '*.awk' '*Makefile' 'Dockerfile' ':!internal/emit/templates' ':!.harness/baseline' | wc -l` → **36** mit einer Befund-Kennung im Kommentar (63 Zeilen).
+**Untergrenze, mit Absicht:** die zweite Falsch-Klasse dieser Sektion — Prosa über
+abwesenden Text — ist ein Urteil, kein Muster; sie hier zu beziffern hieße, ein
+Muster als Kriterium auszugeben, das keines ist (§3.6). Schon die Untergrenze
+trägt den Cutoff: ein Maßstab über diesen Bestand wäre dauerhaft rot und
+entwertete die Regel, statt sie zu tragen — dieselbe Begründung trägt ihn in
 [`MR-015`](harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler). Wer eine solche Zeile ohnehin anfasst, zieht sie nach;
 wer sie stehen lässt, bricht nichts.
 
