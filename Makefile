@@ -142,7 +142,9 @@ ci-lint: ## GitHub-Actions-Workflows linten (actionlint) im gepinnten Image — 
 # Verifiziert die vendored Baseline netzlos, in zwei Schritten: `sha256sum -c`
 # über SHA256SUMS fängt geänderte und gelöschte Dateien, ein Vollständigkeits-
 # Check zusätzlich eingelegte — für die ist `sha256sum -c` blind, es prüft nur
-# Gelistetes. Kein curl, kein Netz, deshalb IN gates (MR-007).
+# Gelistetes. Kein curl, kein Netz, deshalb IN gates (MR-007). Die Logik liegt in
+# harness/tools/, damit shell-lint sie deckt — dieses Ziel laeuft in gates, sein
+# Skript darf also nicht ungeprueft sein.
 baseline-verify: ## Vendored Baseline netzlos verifizieren (Integrität + Vollständigkeit) — IN gates
 	@bash harness/tools/baseline-verify.sh
 
@@ -152,7 +154,9 @@ baseline-verify: ## Vendored Baseline netzlos verifizieren (Integrität + Vollst
 # kanonisch als BASELINE_ZIP_SHA256 und dupliziert in .d-check.yml; beide koppelt
 # test/sources-pin.bats fail-closed. Braucht Netz, deshalb NICHT in gates
 # (LH-QA-01). Prueft NUR das Asset des gepinnten Tags — die Tag-Achse prueft
-# baseline-freshness. Exit: 0 = kein Drift, !=0 = Alarm.
+# baseline-freshness. Exit: 0 = kein Drift, !=0 = Alarm. Die sechs --disable-Flags
+# isolieren den Lauf auf `sources`: die Doku-Module deckt docs-check ab, und ein
+# zweiter Lauf ueber ihnen erzeugte nur Doppel-Befunde.
 regelwerk-check: ## Upstream-Content-Drift des Baseline-ZIP (d-check sources, Netz) — Maintenance/CI, NICHT in gates
 	docker run --rm -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable sources --disable links --disable anchors --disable ids --disable matrix --disable codepaths --disable spans
 	@echo "Hinweis: prueft NUR das Asset von $(BASELINE_TAG). Ein NEUER Tag upstream bleibt hier unsichtbar — 'make baseline-freshness' prueft die Release-Liste (slice-018, MR-007)."
@@ -162,7 +166,9 @@ regelwerk-check: ## Upstream-Content-Drift des Baseline-ZIP (d-check sources, Ne
 # regelwerk-check (Asset-Hash) nicht sieht. Read-only, mutiert nichts. Braucht
 # Netz, deshalb NICHT in gates (LH-QA-01). Skript-Exit: 0 = aktuell, 1 =
 # veraltet, 2 = Fetch-Fehler; `make` kollabiert jeden Nonzero auf sein Exit 2 —
-# welcher Fall vorliegt, sagt die Meldung.
+# welcher Fall vorliegt, sagt die Meldung. Die Logik liegt in harness/tools/
+# (shell-lint deckt sie), Fetch und Vergleich sind getrennt — der Vergleicher ist
+# damit ohne Netz testbar.
 baseline-freshness: ## Neueren Upstream-Tag als BASELINE_TAG melden (read-only) — Maintenance/CI, NICHT in gates
 	@BASELINE_TAG='$(BASELINE_TAG)' RELEASES_LATEST_URL='https://github.com/pt9912/ai-harness-course/releases/latest' bash harness/tools/baseline-freshness.sh
 
