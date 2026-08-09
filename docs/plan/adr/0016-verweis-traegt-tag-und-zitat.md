@@ -60,7 +60,7 @@ git grep -h "\.harness/baseline/v3\.5\.2/" -- <dieselben Pathspecs> \
   | sed -E 's/\]\([^)]*\)//g' | grep -o "\.harness/baseline/v3\.5\.2/[^ )\`]*" | wc -l
 # -> 17   STILLE Haelfte, Inline-Nennungen
 #         harness/conventions.md 7 · ADR-0012 3 · ADR-0014 2 · je 1 in
-#         spec/spezifikation.md, ADR-0011, ADR-0015 und zwei Plandateien
+#         spec/spezifikation.md und ADR-0011 sowie drei Plandateien
 ```
 
 **Nenner 2 — was das Doku-Gate liest, und er ist größer.** `scan.ignore` führt weder
@@ -103,8 +103,8 @@ vendored Baum werden aufgelöst.
 der Punkt vor `harness` fehlt, und ein Pfad `.harness/…` fällt damit aus dem Prüfbereich.
 [ADR-0011](0011-telemetrie-erfassung-policy.md), [ADR-0012](0012-haupt-kontext-ohne-token-bilanz.md)
 und [ADR-0014](0014-aufgehobener-eintrag-kopf-statt-rumpf.md) tragen zusammen **6** solcher
-Nennungen. ([ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) steht auf *Proposed*; was für
-sie gilt, sagt Festlegung 3.)
+Nennungen. [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) trägt **keine** — sie steht auf
+*Proposed*, und für ein Artefakt, das noch geschrieben wird, gilt Festlegung 3 statt des Cutoffs.
 
 **Und eine fünfte Accepted-ADR, die keiner der beiden Nenner sieht.**
 [ADR-0007](0007-bootstrap-phasen.md) nennt `.harness/baseline/<tag>/` — mit **Platzhalter, ohne
@@ -153,8 +153,11 @@ Vier Stellen sagen etwas, und alle vier sind einschlägig:
    *„`Ersetzt-Baseline-Regel` nennt **genau eine** Regel der Baseline … als Link mit
    Abschnitts-Anker in die vendored Fassung; **ein Datei-Link benennt keine Regel**."* Das
    Beispiel ist ein `<tag>`-gescopter lokaler Pfad. **Kein Widerspruch zu Festlegung 2:** der
-   Adaptions-Eintrag ist ein **lebendes** Artefakt (er wandert bei Auflösung per `git mv` nach
-   `done/`), und dort erlaubt Festlegung 2 den lokalen Pfad ausdrücklich. Die zweite Satzhälfte
+   Adaptions-Eintrag ist ein **lebendes** Artefakt — in diesem Repo belegt an
+   [`MR-020`](../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf):
+   ein aufgehobener Eintrag wird **am Ort bearbeitet** (Kopf und Zeiger bleiben, der Rumpf
+   entfällt), und genau das kann ein eingefrorenes Artefakt nicht. Dort erlaubt Festlegung 2 den
+   lokalen Pfad ausdrücklich. Die zweite Satzhälfte
    **stützt** sie sogar: dass ein Datei-Link ohne Abschnitts-Anker keine Regel benennt, ist
    *Eigenschaft statt Adresse* in der Formulierung der Baseline. Dasselbe Template führt den Tag
    zudem als **eigenes Feld** (`Ausgelöst durch Baseline-Stand: <tag>`) — den Tag als Datum zu
@@ -288,15 +291,13 @@ dieser ADR verläuft damit nicht am Verweis-*Ziel*, sondern an der **Änderbarke
   reproduziert. Ohne Träger an diesem Übergang entsteht die verbotene Form fortlaufend neu, und
   jede Aufräumaktion wäre eine Momentaufnahme.
 
-**Der erste Anwendungsfall ist benannt, nicht offengelassen:**
-[ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) steht auf *Proposed* und trägt eine
-Inline-Nennung in der von Festlegung 2 verbotenen Form. Sie ist **stumm** — kein Gate sieht sie —
-und ihre Zitate überstehen den Sprung (gemessen, whitespace-normalisiert: je 1 Treffer bei
-`v3.5.2` und `v5.3.0`). Trotzdem greift Träger (a), nicht der Cutoff aus Festlegung 1: ein
-Proposed-Artefakt ist kein Bestand, sondern wird geschrieben. **Der Beleg wird vor der Annahme in
-die Form gebracht.** Eine Ausnahme für den ersten Anwendungsfall wäre die Regel, die es nicht
-gäbe — und sie wäre teuer erkauft: nach der Annahme ist derselbe Satz durch §3.4 unerreichbar,
-und die Kosten steigen von einer Zeile auf eine Folge-ADR.
+**Der Fall eines noch nicht angenommenen ADR ist entschieden, nicht offengelassen:** Ein
+Proposed-Artefakt ist **kein Bestand**, sondern wird geschrieben — der Cutoff aus Festlegung 1
+deckt es nicht, Träger (a) bindet es. Sein Beleg wird vor der Annahme in die Form gebracht, und
+zwar aus einem Kosten-Grund: nach der Annahme ist derselbe Satz durch §3.4 unerreichbar, und der
+Preis steigt von einer Zeile auf eine Folge-ADR. Gemessen am heutigen Bestand trägt **kein**
+Proposed-ADR die verbotene Form
+(`grep -c '\.harness/baseline/v[0-9]' docs/plan/adr/0015-*.md` → 0).
 
 **Der Träger kann einen Sensor haben — gemessen, gegen die naheliegende Gegenbehauptung.** Zum
 Accept-Zeitpunkt steht der Baum noch, also hat `links` über einen verbotenen Verweis nichts zu

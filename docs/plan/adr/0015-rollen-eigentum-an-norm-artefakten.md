@@ -40,14 +40,25 @@ Suche über `commit` und über `AGENTS\.md` mit Rollen-Filter):
 - §Rollen-Sequenz für eine Welle, Closure-Schritt 3b (*„Verkörperung | Planner → Architect →
   Planner"*) regelt den **Steering-Loop-Weg** in eine verkörperte Regel. Er stand bereits bei
   `v5.3.0` und ist zu `v5.3.1` byte-gleich. Eine Norm-Änderung, die **außerhalb** dieses Wegs
-  entsteht — etwa ein Eintrag des Adaptions-Blocks aus dem Freshness-Audit nach Modul 2 —, fällt
+  entsteht — etwa ein Eintrag des Adaptions-Blocks aus dem Freshness-Audit (Regelwerk `v5.3.1`, `modul-02-harness-bootstrap.md` §Freshness-Audit der vendored Baseline) —, fällt
   nicht darunter; jene Prozedur nennt **keine** Rolle.
 
-### Was die Baseline dagegen sehr wohl regelt
+### Die Commit-Konstruktion: dieses Repo hat sie zuerst, die Baseline zieht nach
 
-`grundlagen-source-precedence.md` §Spec-Stratifizierung (`v5.3.1`) trägt die Konstruktion, auf der
+Die Konstruktion, auf die sich Festlegung 2 stützt, ist eine **eigene Setzung dieses Repos**:
 [`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
-in diesem Repo beruht, im Wortlaut:
+vom 2026-07-26. **Die adoptierte Baseline `v3.5.2` trägt sie nicht** — nicht in einem anderen
+Modul, sondern gar nicht:
+
+```sh
+git grep -lE 'Fallen Auftraggeber- und Entwickler-Rolle zusammen' v3.5.2 -- lab/regelwerk
+# -> leer
+for T in v3.5.2 v3.6.0 v3.7.0 v3.8.0 v4.0.0 v4.1.0; do … ls-tree … grundlagen-source-precedence; done
+# -> erst ab v4.1.0 existiert die Datei ueberhaupt
+```
+
+Erst die **Ziel**-Fassung führt sie, in `grundlagen-source-precedence.md` §Spec-Stratifizierung
+(`v5.3.1`), im Wortlaut:
 
 > *„Fallen Auftraggeber- und Entwickler-Rolle zusammen, fehlt nicht der Vorgang, sondern nur seine
 > Ticket-Form … der annehmende Akt ist die Entscheidung, die vor der Umsetzung fällt. Was die
@@ -56,13 +67,22 @@ in diesem Repo beruht, im Wortlaut:
 > Change Request ändert in einem eigenen Commit ausschließlich das Lastenheft und liegt vor dem
 > Slice, der ihn umsetzt … Nachträglich ablesbar an `git log -- spec/lastenheft.md`."*
 
-**Damit ist beides schon gesetzt:** dass die Anweisung eine legitime Quelle ist, deren annehmender
-Akt der Umsetzung vorausgeht — und dass der Commit ihr Träger ist. Auch die fehlende Mechanik
-steht dort: *„Ein Sensor dafür existiert nicht (kein d-check-Modul prüft, welche Dateien ein
-Commit zusammen anfasst); es bleibt ein Review-Griff."*
+Dort steht auch die fehlende Mechanik: *„Ein Sensor dafür existiert nicht (kein d-check-Modul
+prüft, welche Dateien ein Commit zusammen anfasst); es bleibt ein Review-Griff."*
 
-**Der Geltungsbereich ist aber `spec/lastenheft.md`** — das einzige Artefakt mit einem externen
-Change-Request-Weg. Für die übrigen Norm-Artefakte sagt die Baseline nichts.
+**Was daraus für diese ADR folgt — die Herkunftsrichtung gehört benannt.** Am **Ist-Stand** ist
+[`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+die Quelle, nicht ein Nachzügler zur Baseline; die Baseline bestätigt die Konstruktion erst mit
+der Re-Baseline. Diese ADR **hängt damit an keiner noch nicht gelandeten Fassung**: sie steht auf
+einer eigenen, seit 2026-07-26 geltenden Setzung, und der Baseline-Beleg kommt hinzu, statt zu
+tragen. Umgekehrt gilt: Wer
+[`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+beim Adaptions-Durchgang für gegenstandslos hält, muss den Tag prüfen — vor `v4.1.0` ist er es
+nicht.
+
+**In beiden Fassungen ist der Geltungsbereich `spec/lastenheft.md`** — das einzige Artefakt mit
+einem externen Change-Request-Weg. Für die übrigen Norm-Artefakte sagt weder die adoptierte noch
+die Ziel-Fassung etwas.
 
 ### Der Anlass, gemessen
 
@@ -102,14 +122,14 @@ driftet.
 Abweichung von der Baseline *besteht*, ist eine Architektur-Frage, und der gemessene Fall belegt,
 was ihre Beantwortung in einer anderen Rolle kostet. Die Hard Rules sind derselbe Gegenstand eine
 Ebene allgemeiner. Beide sind normativ wie eine ADR, nur ohne deren Immutabilität — und für die
-ADR spricht Modul 8 genau diese Dreiteilung aus.
+ADR spricht `modul-08-agentenrollen.md` §Rollen-Regeln genau diese Dreiteilung aus (oben zitiert).
 
 **2. Die Commit-Konstruktion der Baseline gilt für diese zwei Artefakte.** Eine Änderung an ihnen
 landet in einem **eigenen Commit**, der **ausschließlich** Artefakte derselben schreibenden Rolle
 berührt und die Rolle in seiner Message nennt; die Anweisung, die sie auslöst, bleibt legitime
 **Quelle**, ihr Ausgang im laufenden Kontext ist ein **Übergabe-Artefakt**, nicht der Norm-Text.
-Das ist kein neuer Mechanismus, sondern der Satz aus `grundlagen-source-precedence.md`
-§Spec-Stratifizierung, angewandt auf zwei Artefakte, für die die Baseline ihn nicht ausspricht.
+Das ist kein neuer Mechanismus, sondern die Setzung aus [`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+— ab `v4.1.0` auch die der Baseline —, angewandt auf zwei Artefakte, für die beide sie nicht aussprechen.
 
 **Cutoff: geprüft wird ab dem Commit, der diese ADR annimmt.** Die Historie wird nicht
 nachgezogen — dieselbe Begründung wie in
@@ -124,11 +144,11 @@ irgendein drittes Artefakt.
 
 | Option | Pro | Contra |
 |---|---|---|
-| A — **nichts tun**, die Klasse als viertes Einzel-Finding führen | kein neuer Mechanismus | Modul 10 §Pflege verlangt nach der dritten Wiederholung einen Träger. Der Preis steht schon im Pflicht-Lesepfad: eine erfundene Baseline-Abweichung in [`AGENTS.md`](../../../AGENTS.md) §3 und in einem Adaptions-Eintrag |
+| A — **nichts tun**, die Klasse als viertes Einzel-Finding führen | kein neuer Mechanismus | Regelwerk `v3.5.2`, `modul-10-review-harness.md` §Ziel-Form: Reviewer-Skill, Punkt *Pflege (Steering-Loop)* (*„bei dreimaligem gleichem Finding Klassifikation schärfen / Folge-ADR bzw. `AGENTS.md`-Update / Gate"*) verlangt nach der dritten Wiederholung einen Träger. Der Preis steht schon im Pflicht-Lesepfad: eine erfundene Baseline-Abweichung in [`AGENTS.md`](../../../AGENTS.md) §3 und in einem Adaptions-Eintrag |
 | B — **Verbot**: kein rollen-fremdes Artefakt im Implementations-Kontext | kürzest formulierbar | alle drei Fälle entstanden aus realem Bedarf auf ausdrückliche Anweisung. Eine Regel, die nur verbietet und keinen Weg nennt, wird unter Druck ein viertes Mal gebrochen |
 | **C — schreibende Rolle für die zwei unbesetzten Artefakte + Commit-Konstruktion (gewählt)** | schließt genau die Lücke, die über alle 26 Regelwerk-Dateien gemessen offen ist; übernimmt eine Konstruktion, die die Baseline für das Lastenheft schon formuliert, statt eine zu erfinden; die Einhaltung ist an `git` ablesbar | kostet pro Norm-Änderung einen Kontext-Wechsel und einen eigenen Commit; und die Baseline selbst sagt, dass kein Sensor das prüft |
-| D — Träger als **Lerneintrag** in der Closure-Notiz | billigster Weg | gemessen wirkungslos: die drei kanonischen Lehr-Formen stehen 57-mal in 32 Dateien unter `docs/plan/planning/done/`, und das Wort *Lerneintrag* kommt in [`AGENTS.md`](../../../AGENTS.md), [`harness/conventions.md`](../../../harness/conventions.md), [`harness/README.md`](../../../harness/README.md) und `.harness/skills/reviewer.md` **nullmal** vor (eigene Zählung, alle vier bestätigt) |
-| E — **auf die Baseline warten**, weil Closure-Schritt 3b die Frage streift | kein eigener Norm-Text; die Baseline pflegt sich selbst | 3b deckt nur den Steering-Loop-Weg; der Freshness-Audit nach Modul 2, aus dem Adaptions-Einträge entstehen, nennt **keine** Rolle. Und die Tabelle, die `AGENTS.md` einer Rolle zuordnet, führt eine **andere Achse** — sie als Eigentum zu lesen kehrte die Frage um |
+| D — Träger als **Lerneintrag** in der Closure-Notiz | billigster Weg | gemessen wirkungslos: unter `docs/plan/planning/done/` stehen **114** Lehr-Vorkommen in **76** Dateien (`git grep -c 'Steering-Loop-Lerneintrag\|Lerneintrag\|Lehre:' -- 'docs/plan/planning/done/*.md'`), und das Wort *Lerneintrag* kommt in [`AGENTS.md`](../../../AGENTS.md), [`harness/conventions.md`](../../../harness/conventions.md), [`harness/README.md`](../../../harness/README.md) und `.harness/skills/reviewer.md` **nullmal** vor (`grep -c` je Datei, alle vier selbst gefahren) |
+| E — **auf die Baseline warten**, weil Closure-Schritt 3b (`modul-08-agentenrollen.md` §Rollen-Sequenz für eine Welle) die Frage streift | kein eigener Norm-Text; die Baseline pflegt sich selbst | 3b deckt nur den Steering-Loop-Weg; der Freshness-Audit nach Modul 2, aus dem Adaptions-Einträge entstehen, nennt **keine** Rolle. Und die Tabelle, die `AGENTS.md` einer Rolle zuordnet, führt eine **andere Achse** — sie als Eigentum zu lesen kehrte die Frage um |
 
 ## Konsequenzen
 
@@ -186,5 +206,6 @@ der ein Commit-Zuschnitt rot wird. Behauptet wird hier **kein** Gate
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-08-09 | **Proposed** | Architect-Verdikt auf eine Reviewer-Eskalation nach Modul 10 §Pflege; Anlass war die dritte gemessene Instanz derselben Rollen-Klasse in einem einzigen Slice, die zweite davon mit einer falschen Baseline-Aussage als materialisiertem Schaden |
+| 2026-08-09 | **Proposed** | Architect-Verdikt auf eine Reviewer-Eskalation nach `modul-10-review-harness.md` §Ziel-Form: Reviewer-Skill, Punkt *Pflege (Steering-Loop)*; Anlass war die dritte gemessene Instanz derselben Rollen-Klasse in einem einzigen Slice, die zweite davon mit einer falschen Baseline-Aussage als materialisiertem Schaden |
 | 2026-08-09 | Verengt, weiter **Proposed** | Gegenprüfung über **alle 26** Regelwerk-Dateien von `v5.3.1` statt nur `modul-08`: zwei der drei angenommenen Reste sind **gefallen** — die Anweisung als Quelle und der Commit als Träger stehen wörtlich in `grundlagen-source-precedence.md` §Spec-Stratifizierung, samt der Feststellung, dass kein Sensor sie prüft. Offen bleibt allein ihr **Geltungsbereich**: die Baseline sagt beides für `spec/lastenheft.md` und benennt für `AGENTS.md` und den Konventionsspeicher **keine** schreibende Rolle; die eine Tabelle, die `AGENTS.md` einer Rolle zuordnet, führt die Achse *„welche Artefaktklasse führt welche Rolle"*, nicht Eigentum. Die neunzeilige Eigentums-Karte ist damit entfallen — sieben ihrer Zeilen schrieben fremde Quellen ab, und mit ihr entfällt die Alterungs-Last, die sie selbst als Negativ-Konsequenz führte. Der Beleg in §Kontext steht in der Form aus [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) Festlegung 2 |
+| 2026-08-09 | Belege korrigiert, weiter **Proposed** | Bestätigungsrunde über alle drei ADRs, `docs/reviews/2026-08-09-adr-0015-0016-0017-bestaetigungsrunde.md`. Der **Kern ist bestätigt**: die Artefaktklassen-Tabelle weist kein Eigentum zu, die Lücke ist real. Korrigiert ist die **Herkunftsrichtung** von Festlegung 2 — die Konstruktion steht seit 2026-07-26 als [`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) im Repo; die adoptierte `v3.5.2` trägt sie **gar nicht**, die Baseline führt sie erst ab `v4.1.0`. Fünf Baseline-Belege stehen jetzt in der Form aus [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) Festlegung 2, und die nicht reproduzierbare Zahl in Option D ist durch eine mit ihrem Kommando ersetzt |
