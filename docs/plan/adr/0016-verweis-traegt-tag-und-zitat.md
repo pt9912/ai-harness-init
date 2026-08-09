@@ -128,8 +128,65 @@ vendored Baum werden aufgelöst. Die **stille** Hälfte dagegen sieht kein Senso
 `.harness/…` fällt damit aus dem Prüfbereich. [ADR-0011](0011-telemetrie-erfassung-policy.md),
 [ADR-0012](0012-haupt-kontext-ohne-token-bilanz.md) und
 [ADR-0014](0014-aufgehobener-eintrag-kopf-statt-rumpf.md) tragen zusammen **6** solcher
-Nennungen. ([ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) steht auf *Proposed* und fällt
-nicht unter §3.4.)
+Nennungen. ([ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) steht auf *Proposed*; was für
+sie gilt, sagt Festlegung 3.)
+
+### Gegen die Ziel-Fassung `v5.3.0` gehalten — gemessen, nicht vertagt
+
+Diese Frage gehört **vor** das Einfrieren: eine Folgepflicht, die erst nach der Annahme greift,
+könnte an einer §3.4-immutablen ADR nichts mehr bewirken. Suchraum: **alle** 26 Regelwerk- und
+25 Template-Dateien der Ziel-Fassung.
+
+```sh
+git grep -nEi 'vendor|\.harness/baseline|<tag>|verbatim|Zitat|zitier|Fundstelle|Belegstelle|Zeilennummer|Verweis-Form|Referenz-Form' \
+  v5.3.0 -- lab/regelwerk lab/templates | wc -l          # -> 64 Treffer, einzeln gelesen
+```
+
+**Eine allgemeine Verweis-Form für vendored Bäume schreibt `v5.3.0` nicht vor.** Die beiden
+Stellen, an denen sie stehen müsste, tun es nicht: `modul-04-adrs.md` trägt die Accepted-Hard-Rule
+im **selben Wortlaut** wie die gepinnte Fassung (*„Eine ADR mit Status `Accepted` wird nicht
+inhaltlich überschrieben."*) und kein Wort über Verweise; `grundlagen-referenz-richtung.md` führt
+drei Abschnitte, alle über **wer wen referenzieren darf** (SDP), keinen über die Form.
+
+**Aber vier Stellen sagen etwas, und alle vier sind für diese Entscheidung einschlägig:**
+
+1. **Für *eine* Artefakt-Klasse schreibt `v5.3.0` sehr wohl eine Form vor** — den
+   Adaptions-Eintrag (`templates/harness/conventions/MR-NNN-titel.template.md`):
+   *„`Ersetzt-Baseline-Regel` nennt **genau eine** Regel der Baseline … als Link mit
+   Abschnitts-Anker in die vendored Fassung; **ein Datei-Link benennt keine Regel**."* Das
+   Beispiel ist ein `<tag>`-gescopter lokaler Pfad. **Kein Widerspruch zu Festlegung 2:** der
+   Adaptions-Eintrag ist ein **lebendes** Artefakt (er wandert bei Auflösung per `git mv` nach
+   `done/`), und dort erlaubt Festlegung 2 den lokalen Pfad ausdrücklich. Die zweite Hälfte des
+   Satzes **stützt** sie sogar: dass ein Datei-Link ohne Abschnitts-Anker keine Regel benennt,
+   ist *Eigenschaft statt Adresse* in der Formulierung der Baseline. Dasselbe Template führt den
+   Tag zudem als **eigenes Feld** (`Ausgelöst durch Baseline-Stand: <tag>`) — den Tag als Datum
+   zu tragen statt als Pfad-Segment ist genau Festlegung 2, Teil eins.
+2. **`grundlagen-harness-dateien.md`: *„Der Zeiger ist kein Zitat. Ein Template, das den
+   Normtext ausschreibt, führt ihn ein zweites Mal — und zwei Fassungen driften."*** Diese Regel
+   zieht die **Grenze** von Festlegung 2, und sie gehört ausgesprochen: Das Drift-Argument setzt
+   ein Artefakt voraus, das **aktuell bleiben soll**. Ein unveränderliches Artefakt soll das
+   nicht — sein Zitat ist durch den Tag datiert und driftet per Konstruktion nicht, es *bleibt*
+   bei seinem Stand. Daraus folgt beides: **Zitat im unveränderlich werdenden Artefakt, Zeiger im
+   lebenden.** Festlegung 2 ist **kein** Freibrief, Normtext in Templates oder lebende Artefakte
+   zu kopieren; dort gilt die Baseline-Regel unverändert.
+3. **Die Ziel-Prozedur verlangt genau die Gate-Lage, die dieses Repo schon hat.** Der
+   Freshness-Audit in `modul-02-harness-bootstrap.md` sagt zum Formcheck: *„den erledigt das
+   Doku-Gate: Die vendored Baseline liegt im Repo, ihre Dateien sind **gültige Link-Ziele** …
+   Einmal prüfen, dass `.harness/baseline/` im Prüfumfang liegt; danach automatisch."* Verlangt
+   ist Auflösbarkeit als **Ziel** — und genau das ist oben rot gesehen (erfundener Anker im
+   gepinnten Baum → `anchor-missing`). Verlangt ist **nicht** `.harness` in `codepaths.roots`;
+   die Option E unten bleibt damit auch gegen die Ziel-Fassung verworfen.
+4. **Eine Kollision, die nicht in diese ADR gehört, aber benannt sein muss.** Dieselbe Prozedur
+   setzt für den Form-Vergleich voraus, dass **beide** Tag-Verzeichnisse vorübergehend
+   nebeneinander liegen: *„Weil der Vendoring-Pfad `<tag>`-gescopt ist, liegen alte und neue Form
+   nebeneinander … Das alte Verzeichnis fällt erst, wenn der Review durch ist."*
+   [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
+   setzt „ein Tag zur Zeit", und `make baseline-verify` färbt bei zwei Tag-Verzeichnissen rot —
+   belegt, nicht vermutet: der bats-Fall *„verify: zwei `<tag>`-Verzeichnisse → rot (Setzung: ein
+   Tag zur Zeit)"* läuft in `make gates` mit. **Das ist eine Prozedur-Kollision der Migration,
+   keine Verweis-Frage**; sie gehört in den Form-Vergleichs-Durchgang der Welle. Diese ADR löst
+   sie nicht und tut nicht so — sie korrigiert nur ihre eigene Option C, die den *transienten*
+   Fall bisher mit dem *dauerhaften* vermengte.
 
 ## Entscheidung
 
@@ -149,7 +206,9 @@ gibt — und weil die einzige Korrektur, zu der ein mechanischer Lauf greifen w�
 ersetzen), an Zeile 129 nachweislich eine falsche Aussage erzeugte.
 
 **Cutoff, wie ihn [`AGENTS.md`](../../../AGENTS.md) §3.7 führt:** gebunden ist der Verweis, der
-geschrieben oder geändert wird. Der Bestand ist **kein Arbeitsauftrag**.
+geschrieben oder geändert wird. Der Bestand ist **kein Arbeitsauftrag**. **Bestand ist, was §3.4
+bereits eingefroren hat** — ein Artefakt auf *Proposed* wird noch geschrieben und fällt unter
+Festlegung 3, nicht unter diesen Cutoff.
 
 **2. Form eines Belegs in einem Artefakt, das unveränderlich wird.** Ein solches Artefakt —
 eine ADR ab *Accepted*, ein Rollen-Report, eine Closure-Notiz, jedes Artefakt, das nach Abschluss
@@ -165,11 +224,26 @@ einer eingefügten Zeile. Das ist dieselbe Regel, die
 [ADR-0014](0014-aufgehobener-eintrag-kopf-statt-rumpf.md) eine Ebene tiefer für den
 Adaptions-Block gezogen hat: **Eigenschaft statt Adresse.**
 
+**Was „verbatim" heißt: der Wortlaut ohne Auszeichnung, Whitespace normalisiert.** Nicht die
+Quell-Bytes. Gemessen am ersten realen Fall — [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md)
+zitiert *„keine Rolle springt rückwärts in eine vorhergehende, ohne Übergabe-Artefakt"*, die
+Quelle schreibt `ohne *Übergabe-Artefakt*` und bricht den Satz über zwei Zeilen um; gegen den
+whitespace-normalisierten Quelltext beider Tags gehalten: **mit** Auszeichnung je 1 Treffer,
+**ohne** je 0. Drei Gründe für die Wahl: die Auszeichnung der Quelle trägt im zitierenden Text
+keine Bedeutung mehr; der erste reale Anwendungsfall ist substanziell einwandfrei und fiele unter
+einer byte-exakten Regel; und weil die Quelle umbricht, muss ohnehin jede Regel Whitespace
+normalisieren — wer das tut, hat „Text statt Bytes" bereits zugestanden.
+
 **Was Festlegung 2 nicht verbietet: den tag-losen Platzhalter in einer Layout-Beschreibung.**
 Gebunden ist der **Beleg** — der Verweis, der eine Regelwerks-Aussage stützt —, nicht die Nennung
 eines Pfad-Musters. Der Unterschied ist am Tag ablesbar: ein Beleg nennt einen konkreten Tag,
 sonst belegt er nichts; eine Layout-Beschreibung nennt keinen, sonst beschriebe sie einen
 Einzelfall. [ADR-0007](0007-bootstrap-phasen.md) ist der Ist-Beleg für die erlaubte Seite.
+
+**Und sie ist kein Freibrief zum Ausschreiben von Normtext.** In **lebenden** Artefakten und in
+Templates gilt die Baseline-Regel *„Der Zeiger ist kein Zitat"* unverändert: dort führte eine
+zweite Fassung zur Drift. Festlegung 2 greift nur, wo Drift per Konstruktion ausgeschlossen ist —
+im Artefakt, das eingefroren wird.
 
 **Der lokale Pfad bleibt erlaubt — in änderbaren Artefakten.** In
 [`AGENTS.md`](../../../AGENTS.md), `harness/conventions.md`, den Spec-Straten, `CLAUDE.md` und
@@ -186,6 +260,16 @@ dieser ADR verläuft damit nicht am Verweis-*Ziel*, sondern an der **Änderbarke
   aus **Kopf-Metadaten von Rollen-Reports** — einer Konvention, die sich mit jedem Report
   reproduziert. Ohne Träger an diesem Übergang entsteht die verbotene Form fortlaufend neu, und
   jede Aufräumaktion wäre eine Momentaufnahme.
+
+**Der erste Anwendungsfall ist benannt, nicht offengelassen:**
+[ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) steht auf *Proposed* und trägt eine
+Inline-Nennung in der von Festlegung 2 verbotenen Form. Sie ist **stumm** — kein Gate sieht sie —
+und ihre Zitate überstehen den Sprung (gemessen, whitespace-normalisiert: je 1 Treffer bei
+`v3.5.2` und `v5.3.0`). Trotzdem greift Träger (a), nicht der Cutoff aus Festlegung 1: ein
+Proposed-Artefakt ist kein Bestand, sondern wird geschrieben. **Der Beleg wird vor der Annahme in
+die Form gebracht.** Eine Ausnahme für den ersten Anwendungsfall wäre die Regel, die es nicht
+gäbe — und sie wäre teuer erkauft: nach der Annahme ist derselbe Satz durch §3.4 unerreichbar,
+und die Kosten der Änderung steigen von einer Zeile auf eine Folge-ADR.
 
 **Der Träger kann einen Sensor haben — gemessen, gegen die naheliegende Gegenbehauptung.** Zum
 Accept-Zeitpunkt steht der Baum noch, also hat `links` über einen verbotenen Verweis nichts zu
@@ -280,12 +364,12 @@ die Adresse aufzulösen, verstößt gegen die Begründung dieser Festlegung.
 | Option | Pro | Contra |
 |---|---|---|
 | A — nichts entscheiden | kein Aufwand | der Tausch entscheidet die Frage faktisch, und zwar in Richtung „stumm falsch": drei Accepted-ADRs trügen eine unauflösbare Aussage ohne Sensor, und die naheliegende Reparatur (Tag-String ersetzen) verstieße gegen §3.4 **und** erzeugte an Zeile 129 ein falsches Zitat |
-| B — Link-Check-Ausnahme für alle Ziele unter `.harness/baseline/` | vier ADRs auf einen Schlag grün, eine Zeile Config | nimmt die **16** heute gate-sichtbaren Links in `spec/spezifikation.md` (12) und `harness/conventions.md` (4) mit aus der Prüfung — also genau den einzigen Sensor, der den Bump zwingt, sie nachzuziehen. Eine Senkung, deren Geltungsbereich um Faktor 16 größer ist als ihr Anlass, und die mit jedem neuen Baseline-Verweis weiter wächst: kein Boden |
-| C — beide Bäume nebeneinander vendoren | jeder Verweis bleibt auflösbar, keine Senkung | bricht [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) („ein Tag zur Zeit"); `make baseline-verify` bricht bei zwei Tag-Verzeichnissen ab. Der Baum wüchse mit jedem Bump, und „die adoptierte Baseline" wäre keine Menge von eins mehr — die Reproduzierbarkeits-Klammer aus [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) verlöre ihren Sinn |
+| B — Link-Check-Ausnahme für alle Ziele unter `.harness/baseline/` | vier ADRs auf einen Schlag grün, eine Zeile Config | nimmt die **16** heute gate-sichtbaren Links in `spec/spezifikation.md` (12) und `harness/conventions.md` (4) mit aus der Prüfung — also genau den einzigen Sensor, der den Bump zwingt, sie nachzuziehen. Eine Senkung, deren Geltungsbereich um Faktor 16 größer ist als ihr Anlass, und die mit jedem neuen Baseline-Verweis weiter wächst: kein Boden. Sie widerspricht zudem der Ziel-Prozedur, die den Formcheck ausdrücklich dem Doku-Gate zuweist |
+| C — beide Bäume **dauerhaft** nebeneinander vendoren | jeder Verweis bleibt auflösbar, keine Senkung | der Baum wüchse mit jedem Bump, und „die adoptierte Baseline" wäre keine Menge von eins mehr — die Reproduzierbarkeits-Klammer aus [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) verlöre ihren Sinn, und [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) fiele. **Abzugrenzen vom transienten Fall:** die Ziel-Prozedur *verlangt* beide Bäume während des Form-Vergleichs und lässt den alten danach fallen — das ist eine Migrations-Frage mit eigener Kollision (Kontext oben, Punkt 4), kein Gegenargument gegen die Verwerfung des **dauerhaften** Nebeneinanders |
 | D — Alias/Umleitung, die den Tag-Wechsel absorbiert | ein Pfad, der jeden Tausch überlebt; keine Config-Senkung | er überlebt ihn, **indem er lügt**: die ADR sagt `v3.5.2`, die Platte liefert `v5.3.0`. Gemessen an `modul-07-carveouts.md` Zeile 129 — bei `v3.5.2` *„Slice schlägt Memo"*, bei `v5.3.0` unverwandter Text: der Alias verwandelte einen toten Link in ein falsches Zitat, also einen lauten Fehler in einen stummen. Für den einen realen Fall trägt er ohnehin nicht: `grundlagen-konventionen.md` existiert bei `v5.3.0` nicht mehr |
-| E — `codepaths.roots` um `.harness` erweitern | die stille Hälfte bekäme einen Sensor; eine Zeile Config | **gemessen, verworfen** — siehe unten: 44 Befunde am heutigen Bestand, keiner aus der gesuchten Klasse, und die Klassen sind strukturell unauflösbar |
+| E — `codepaths.roots` um `.harness` erweitern | die stille Hälfte bekäme einen Sensor; eine Zeile Config | **gemessen, verworfen** — siehe unten: 44 Befunde am heutigen Bestand, keiner aus der gesuchten Klasse, und die Klassen sind strukturell unauflösbar. Die Ziel-Prozedur verlangt es auch nicht: sie will die Baseline als **Link-Ziel** im Prüfumfang, und das ist sie |
 | F — [ADR-0013](0013-technik-stratum-als-zielort.md) mit einer Folge-ADR superseden | formal die von §3.4 vorgesehene Bahn | die Entscheidung hat sich nicht geändert; ein Supersede für einen kaputten Pfad ist ADR-Inflation und macht aus einem Doku-Defekt einen Entscheidungs-Vorgang. Der Preis ist zudem groß: **16** Verweis-Vorkommen aus **10** lebenden Dateien zeigen auf ADR-0013, und `matrix.status` verbietet Verweise auf superseded ADRs |
-| **G — gewählt: Bestands-Aussage aussprechen · Zukunft an Tag und Zitat binden · extensional geschlossene Senkung für eine Datei · vier Zeitdokument-Adressen auflösen** | trennt die drei Defekte, die alle anderen Optionen vermischen — *unauflösbar*, *unwahr* und *unbewacht*; die Senkung hat mit §3.5 eine Schranke statt einer Prognose; die Zukunftsregel hat zwei Träger, und einer davon ist mit einem gemessenen Gegenbeispiel mechanisierbar | die stille Hälfte bleibt unbewacht, und diese ADR baut den Sensor nicht; der datei-weite Ausschluss ist gröber als nötig, weil `links` keinen referenz-weiten Knopf hat; drei Zeitdokumente werden angefasst, wenn auch nur an ihren Adressen |
+| **G — gewählt: Bestands-Aussage aussprechen · Zukunft an Tag und Zitat binden · extensional geschlossene Senkung für eine Datei · vier Zeitdokument-Adressen auflösen** | trennt die drei Defekte, die alle anderen Optionen vermischen — *unauflösbar*, *unwahr* und *unbewacht*; die Senkung hat mit §3.5 eine Schranke statt einer Prognose; die Zukunftsregel hat zwei Träger, und einer davon ist mit einem gemessenen Gegenbeispiel mechanisierbar; sie ist gegen die Ziel-Fassung gehalten, nicht auf sie vertagt | die stille Hälfte bleibt unbewacht, und diese ADR baut den Sensor nicht; der datei-weite Ausschluss ist gröber als nötig, weil `links` keinen referenz-weiten Knopf hat; drei Zeitdokumente werden angefasst, wenn auch nur an ihren Adressen |
 
 ### Option E im Detail — die Messung, die sie verwirft
 
@@ -314,6 +398,8 @@ geschlossen: `codepaths.roots` nimmt den Punkt nicht auf.**
   Supersede, kein Byte, keine Kaskade über `matrix.status`.
 - **Positiv:** Die Frage ist **vor** dem Tausch beantwortet, und zwar für **21** Befunde statt
   für 17. Der ausführende Slice erbt keine §3.5-Entscheidung, die er nicht treffen darf.
+- **Positiv:** Die Entscheidung ist **vor dem Einfrieren** gegen die Ziel-Fassung gehalten, nicht
+  danach. Was `v5.3.0` zur Verweis-Form sagt, steht oben mit Kommando und Fundstelle.
 - **Positiv:** Die Senkung trifft eine namentlich genannte Datei, und ihr Wachstum ist nicht
   prognostiziert, sondern durch §3.5 verstellt.
 - **Negativ:** Die **stille Hälfte bleibt stumm.** 17 Inline-Nennungen, davon 6 in
@@ -339,11 +425,7 @@ geschlossen: `codepaths.roots` nimmt den Punkt nicht auf.**
   nachführen — Zahl, Klassifikation und die Grenze aus Festlegung 4;
   (e) die vier Adressen aus Festlegung 5 auflösen.
   **Diese ADR ändert keine Konfiguration und kein Zeitdokument.**
-- **Folgepflicht 2 (der Adaptions-Durchgang der Re-Baseline):** prüfen, ob die Ziel-Fassung des
-  Regelwerks selbst eine Verweis-Form für vendored Bäume vorschreibt. Tut sie es, ist diese
-  Entscheidung gegen sie zu halten; weicht sie ab, ist die Abweichung im Adaptions-Block zu
-  deklarieren.
-- **Folgepflicht 3 (offen, eigener Slice):** die zwei Sensoren aus der Fitness Function unten.
+- **Folgepflicht 2 (offen, eigener Slice):** die zwei Sensoren aus der Fitness Function unten.
   Sie sind hier **nicht** gebaut.
 
 ## Fitness Function (falls maschinell prüfbar)
@@ -352,7 +434,7 @@ geschlossen: `codepaths.roots` nimmt den Punkt nicht auf.**
 
 | Tooling | Regel | Make-Target |
 |---|---|---|
-| d-check `links` + `anchors` | Ein Markdown-Link in den vendored Baum löst auf, Ziel **und** Anker — auch wenn `scan.ignore` den Baum als Quelle ausnimmt | `make docs-check` |
+| d-check `links` + `anchors` | Ein Markdown-Link in den vendored Baum löst auf, Ziel **und** Anker — auch wenn `scan.ignore` den Baum als Quelle ausnimmt. Das ist zugleich der Formcheck, den die Ziel-Prozedur dem Doku-Gate zuweist | `make docs-check` |
 | d-check `baseline-verify` | Es existiert genau **ein** Tag-Verzeichnis, integer und vollständig — die Mechanik hinter [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache), auf der Festlegung 1 fußt | `make baseline-verify` |
 
 Nach Festlegung 4 sieht der erste die eine ausgenommene Datei nicht mehr. Das ist der
@@ -377,10 +459,19 @@ deklarierte Preis, keine Eigenschaft.
    alten Tag zeigen. **Was er nicht fängt:** die 6 Nennungen in Accepted-ADRs; dort gibt
    Festlegung 1 ihm nichts zu tun.
 
-**Nicht aktiviert und ausdrücklich kein Gate:** d-checks verbatim-Modul `citations` feuert nur
-auf `d-check:cite`-Direktiven ([`MR-011`](../../../harness/conventions.md#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines));
-das Repo trägt null davon, und für ein Zitat aus einem nicht mehr vendored Tag könnte es per
-Konstruktion nichts sagen ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+**Und ausdrücklich *nicht* d-checks `citations`-Modul.** Es wäre das naheliegende Werkzeug für
+die Zitat-Hälfte; es ist es nicht, und zwar aus einem gemessenen Grund. Seine Direktive ist
+**zeilenbereichs-adressiert** — das Werkzeug nennt die Form in seiner eigenen Fehlermeldung:
+*„erwartet `d-check:cite <pfad>:<von>-<bis>`"*. Damit trüge jedes Zitat genau die Adresse, deren
+Verfall diese ADR trägt; Zeile 129 ist der Beleg, dass ein Zeilenbereich einen Tag-Sprung nicht
+übersteht. Dazu ein zweiter, davon unabhängiger Befund: das Modul ist **fail-closed** und bricht
+den ganzen Lauf ab, sobald irgendwo eine syntaktisch unvollständige Direktive steht — gemessen
+bricht es heute an einer **Prosa-Erwähnung** in `docs/plan/planning/done/slice-015-zitat-sensor.md`,
+also an einem Zeitdokument, das über das Modul *schreibt*. Beide Befunde zusammen: es ist hier
+kein Kandidat, und es wird nicht als einer geführt
+([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+**Ungemessen geblieben** ist, ob es Auszeichnung normalisiert — das ließe sich nur feststellen,
+indem man jenes Zeitdokument ändert, und Festlegung 5 gibt dafür keinen Grund her.
 
 **Nicht mechanisierbar:** ob ein Beleg das *richtige* Zitat führt, ist ein Urteil. Der Form-Sensor
 sieht, dass eine Adresse fehlt — nicht, ob das, was stattdessen dasteht, die Quelle trifft.
@@ -393,6 +484,10 @@ sieht, dass eine Adresse fehlt — nicht, ob das, was stattdessen dasteht, die Q
 - **Wenn `links` einen referenz-weiten Ausschluss bekommt** *(feedforward — eine Tool-Version,
   kein Sensor)*: dann ist der datei-weite `scan.ignore`-Eintrag durch den präzisen zu ersetzen,
   und der Preis über fünf Module entfällt.
+- **Wenn eine künftige Baseline eine Verweis-Form für vendored Bäume vorschreibt**
+  *(feedforward — eine Textänderung upstream, kein Sensor; `v5.3.0` tut es nicht, siehe Kontext)*:
+  dann bindet sie unabhängig von ihrer Rezeption hier, und diese Entscheidung ist gegen den neuen
+  Wortlaut neu zu begründen oder als Abweichung zu deklarieren.
 - **Wenn ein neues Zeitdokument einen tag-gepinnten Baseline-Link trägt** *(sichtbar, sobald der
   Form-Sensor gebaut ist — vorher nur im Report-Review)*: dann trägt Festlegung 3 (b) nicht, und
   die Frage ist die nach der Report-Vorlage, nicht nach einer weiteren Ausnahme.
@@ -411,3 +506,4 @@ sieht, dass eine Adresse fehlt — nicht, ob das, was stattdessen dasteht, die Q
 |---|---|---|
 | 2026-08-09 | **Proposed** | Architect-Verdikt zur Tag-Wechsel-Frage der Re-Baseline `v3.5.2` → `v5.3.0`; Anlass war die Messung, dass ein mechanischer Tag-Tausch an einer Zeilen-Referenz ein falsches Zitat erzeugte |
 | 2026-08-09 | Überarbeitet, weiter **Proposed** | Bestätigungsrunde zur Gate-Senkung, `docs/reviews/2026-08-09-adr-0016-festlegung-4-bestaetigungsrunde.md` (2 HIGH). Der Ist-Bestand zählte lebende Artefakte, der Gate zählt mehr — Tausch gefahren: **21** statt 17 Befunde, vier davon in drei Zeitdokumenten, die keine Festlegung trug (neue Festlegung 5). Die Senkung ist von einer intensionalen Aufnahme-Regel auf eine **extensional geschlossene** Liste umgestellt; ihr Preis ist über alle fünf Module beziffert und [`MR-001`](../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) als Zähl-Ort in die Folgepflicht genommen. Festlegung 3 bekommt den Report-/Closure-Abschluss als zweiten Träger. **Widerlegt:** dass an diesem Träger *per Konstruktion* kein Sensor stehen könne — gemessen steht `links` dort grün, ein Form-Sensor rot. Nebenbefund am Bestand: [ADR-0007](0007-bootstrap-phasen.md) nennt den Pfad tag-los und ist deshalb gar nicht betroffen |
+| 2026-08-09 | Überarbeitet, weiter **Proposed** | Auftraggeber-Einwand vor der Annahme: die Prüfung gegen die Ziel-Fassung stand als Folgepflicht und wäre nach dem Einfrieren wirkungslos gewesen. Sie ist **vorgezogen und gemessen** (64 Treffer über alle 26 Regelwerk- und 25 Template-Dateien von `v5.3.0`, einzeln gelesen): eine allgemeine Verweis-Form schreibt die Ziel-Fassung nicht vor, wohl aber eine für den Adaptions-Eintrag — ohne Widerspruch, weil der lebt. Zwei Baseline-Regeln sind aufgenommen: *„ein Datei-Link benennt keine Regel"* stützt Festlegung 2, *„Der Zeiger ist kein Zitat"* begrenzt sie auf unveränderliche Artefakte. Festlegung 2 definiert *verbatim* (Wortlaut ohne Auszeichnung, Whitespace normalisiert), Festlegung 3 entscheidet [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) als ersten Anwendungsfall, Option C trennt den transienten vom dauerhaften Fall, und `citations` ist als Werkzeug **verworfen** statt als Kandidat geführt |
