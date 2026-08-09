@@ -58,21 +58,15 @@ der Rest aus vier ADRs und drei Plan-Dateien. Gemessen mit
 `git grep -o "\.harness/baseline/v3\.5\.2/[^ )]*" -- ':!.harness/baseline' ':!docs/reviews' ':!docs/plan/planning/done'`
 (Zeitdokumente ausgenommen — sie bleiben stehen, §6).
 
-**Festlegung — die Migration läuft nach der Prozedur der Ziel-Fassung** (`v5.3.1`, Modul 2
-§*Freshness-Audit der vendored Baseline*), nicht nach der gepinnten. Drei Gründe, und der erste
-trägt allein: die gepinnte `v3.5.2` **beschreibt diesen Fall nicht** — sie nennt drei
-Eigenschaften des Audits und keinen Adaptions-Durchgang, während die Ziel-Fassung sieben
-Eigenschaften und für den Durchgang **fünf Ausgänge** setzt. Der `v3.5.2` zu folgen hieße daher
-nicht, einer älteren Regel zu folgen, sondern gar keiner. Zweitens ist die Ziel-Prozedur die
-einzige, die den Fall überhaupt kennt. Drittens ist sie auf einen Befund **aus diesem Repo**
-entstanden — die Klasse „adoptiert, aber nie umgesetzt", die den Trigger von
-[welle-09](welle-09-modul-15-konformitaet.md) stellte.
+**Die Migration läuft nach der Prozedur der Ziel-Fassung** (`v5.3.1`, Modul 2 §*Freshness-Audit
+der vendored Baseline*), nicht nach der gepinnten. Entschieden und begründet ist das in
+[ADR-0018](../adr/0018-ziel-fassung-regiert-die-migration.md) — samt der Grenze, dass die Wahl
+der *Prozedur* gilt und nicht dem Ist-Zustand, und dass sie keinen einzelnen `MR`-Eintrag
+vorentscheidet. Die drei Durchgänge des Closure-Kriteriums (§3) und der Zuschnitt der Slices
+082–084 folgen den Eigenschaften jener Prozedur.
 
-**Die Grenze dieser Festlegung gehört dazu:** sie gilt für die *Prozedur der Migration*, nicht
-für den Ist-Zustand. Bis der Baum getauscht ist, ist `v3.5.2` die adoptierte Baseline und bleibt
-für jede Konformitäts-Frage maßgeblich — dieser Plan entsteht darum per `cp` aus deren
-`welle.template.md`, nicht aus der neuen. Wer das umdreht, misst den Ist-Zustand an einer
-Fassung, die dieses Repo nicht adoptiert hat.
+**Was daraus für diesen Plan folgt:** bis der Baum getauscht ist, ist `v3.5.2` die adoptierte
+Baseline — dieser Plan entsteht darum per `cp` aus deren `welle.template.md`, nicht aus der neuen.
 
 ## 2. Trigger (Welle startet)
 
@@ -100,8 +94,9 @@ wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
 - **Durchgang 1 — Adaptionen:** jeder der **24** Einträge von
   [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) bis
   [`MR-023`](../../../harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung)
-  trägt genau einen
-  der fünf Ausgänge mit Beleg. Vollständigkeit heißt hier **Inventar gegen Abdeckung**
+  trägt genau einen der fünf Ausgänge mit Beleg, **und jeder Auflösungs-Trigger ist abgefragt**
+  (heute **23** von 24 — *„Ein Trigger, den niemand abfragt, ist kein Wächter."*).
+  Vollständigkeit heißt hier **Inventar gegen Abdeckung**
   (`grep -c '^### MR-' harness/conventions.md` als Nenner), nicht „die auffälligen" — dieselbe
   Lücke, an der die Roadmap zwei kuratierte Listen führt.
 - **Durchgang 2 — Form:** die Referenz-Form ist gegen die alte gehalten und die Pflichtfelder der
