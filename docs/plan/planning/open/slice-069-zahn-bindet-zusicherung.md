@@ -61,11 +61,12 @@ Prüfbereichs ([slice-070](slice-070-comment-claims-pruefbereich.md)).
   intaktem Feld `ok`, mit falschem `fails-at` ein **Befund**. Mindestens eine der fünf
   historischen Instanzen ist nachzustellen und muss unter dem neuen Treiber **rot** werden —
   ein Sensor, der seine eigene Fund-Geschichte nicht reproduziert, ist unbelegt.
-- [ ] **(3) Die Migration der 134 Bestands-Fälle ist ENTSCHIEDEN, nicht angefangen.** Drei
+- [ ] **(3) Die Migration der Bestands-Fälle ist ENTSCHIEDEN, nicht angefangen.** Drei
   Wege stehen offen: rückwirkend für alle, nur für neue Fälle, oder ein Vollständigkeits-Zähler
   („N von M Fällen tragen `fails-at`"). Die Wahl gehört begründet in
   [`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)
-  — samt der ehrlichen Größe: **ein Feld je Fall bei 134 Fällen**. Wird nicht rückwirkend
+  — samt der ehrlichen Größe: **ein Feld je Fall über den gesamten Bestand von
+  `test/mutations/`**, dessen Umfang beim Entscheiden ausgezählt wird. Wird nicht rückwirkend
   migriert, ist das eine **deklarierte Abweichung mit Auflösungs-Trigger**, keine stille
   Teilmenge.
 - [ ] `make gates` grün; der Vollauf `make mutate` grün über die CI (`.github/workflows/ci.yml`,
@@ -81,7 +82,7 @@ Prüfbereichs ([slice-070](slice-070-comment-claims-pruefbereich.md)).
 | `test/mutations/` | neu + ggf. update | der Zahn aus DoD (2); der Umfang der Bestands-Migration entscheidet DoD (3) |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | die Festlegung aus DoD (3) in [`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) |
 
-**Ist-Messung vor dem Code** (Modul 9 §4): wie viele der 134 Fälle nennen einen Wächter, der
+**Ist-Messung vor dem Code** (Modul 9 §4): wie viele Fälle des Bestands nennen einen Wächter, der
 **mehr als eine** Zusicherung trägt? Das ist die Größe des realen Risikos — heute geschätzt,
 nicht gezählt.
 
@@ -115,7 +116,7 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
 - **Der Fehlschlag-Text ist an die Formulierung eines Tests gebunden.** Wird eine
   Fehlermeldung umformuliert, meldet der Treiber „rot, aber falscher Grund" — laut statt still,
   also fail-closed und richtig herum, aber es ist laufende Pflege.
-- **134 Fälle sind viel.** Die ehrliche Größe steht in DoD (3); sie zu verschweigen wäre der
+- **Der Bestand ist dreistellig.** Die ehrliche Größe steht in DoD (3); sie zu verschweigen wäre der
   Weg, auf dem eine Teilmenge wie eine Vollständigkeit aussieht.
 - **Der Treiber bewacht sich selbst nur teilweise** — das steht in seinem eigenen Kopf
   (`test/mutate-driver.bats` + Fall 09 decken `failure_form`, nicht die übrigen

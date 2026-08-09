@@ -1,10 +1,11 @@
 // Package report rechnet aus den geschriebenen Spans eine Token-Bilanz je Rolle.
 //
 // Der Gegenstand ist NUR der Bestand unter dem Ablageort — kein Transkript, keine
-// Quelle ausserhalb des Repos (ADR-0011 Alternative D). Die Bilanz rechnet ueber
-// SUBAGENTEN-Laeufe: der Haupt-Kontext traegt dauerhaft keine Zaehler, und das ist
-// als permanente Abweichung entschieden (ADR-0012). Deshalb nennt jede Ausgabe
-// dieses Pakets ihren Nenner — siehe Text.
+// Quelle ausserhalb des Repos. Der Ablageort ist der gitignorierte Zustands-Bereich
+// ausserhalb des versionierten Baums (ADR-0011 Festlegung 3). Die Bilanz rechnet
+// ueber SUBAGENTEN-Laeufe: der Haupt-Kontext traegt dauerhaft keine Zaehler, und
+// das ist als permanente Abweichung entschieden (ADR-0012). Deshalb nennt jede
+// Ausgabe dieses Pakets ihren Nenner — siehe Text.
 package report
 
 import (

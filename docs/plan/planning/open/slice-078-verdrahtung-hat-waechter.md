@@ -50,7 +50,7 @@ es.
 - `.claude/settings.json` verdrahtet **fünf** Ereignisse — `PreToolUse`, `PostToolUse`,
   `PostToolUseFailure`, `SubagentStart`, `Stop` — in **sechs** Hook-Einträgen (`PreToolUse`
   trägt zwei: Command-Guard und Agent-Guard).
-- `test/mutations/` führt **135** Fälle. **Keiner** fasst `.claude/settings.json` an. Der einzige
+- **Kein** Fall unter `test/mutations/` fasst `.claude/settings.json` an. Der einzige
   Fall über einer `settings.json` ist `32-enforce-settings-wires-guard.sh`, und seine
   `files:`-Zeile zeigt auf `internal/emit/templates/enforce/settings.json` — die **emittierte**
   Vorlage.
@@ -81,9 +81,10 @@ neue Idee, sondern dieselbe Zusicherung eine Ebene weiter.
   Wächter unterscheidet sie nicht; er prüft eine Datei, nicht einen Prozess.
 - [ ] **(2) Die Zähne, je Ausfall-Form einer, rot gesehen.** Ein Fall in `test/mutations/`
   entfernt einen Ereignis-Block, ein zweiter biegt ein Kommando auf einen anderen Pfad um; beide
-  müssen den Wächter aus DoD (1) rot färben. Nummernkreis: die nächsten freien sind **140+**
-  (135 Fälle, höchste vergebene Nummer **139**, gemessen 2026-08-08). Ein nie angelegter Fall
-  erzeugt kein Rot — die Verdrahtung wäre dann weiter eine Absicht.
+  müssen den Wächter aus DoD (1) rot färben. **Nummernkreis:** die zwei Fälle schließen an die
+  höchste vergebene Nummer unter `test/mutations/` an — sie wird beim Anlegen ausgezählt, nicht
+  aus diesem Plan übernommen. Ein nie angelegter Fall erzeugt kein Rot — die Verdrahtung wäre
+  dann weiter eine Absicht.
 - [ ] `make gates` grün, `make mutate` ohne Befund.
 - [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -93,7 +94,7 @@ neue Idee, sondern dieselbe Zusicherung eine Ebene weiter.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `test/` (bats) | neu | der Wächter aus DoD (1); dieselbe Klasse wie `test/agent-guard.bats` und `test/guard.bats`, die die Hook-**Skripte** prüfen — hier ihre **Verdrahtung** |
-| `test/mutations/` | neu | die zwei Zähne aus DoD (2), Nummern 140+ |
+| `test/mutations/` | neu | die zwei Zähne aus DoD (2), Nummern im Anschluss an die höchste vergebene |
 | [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | §5 Abweichung 5 (3)(b) sagt heute *„für die Verdrahtung dieses Repos prüft keine etwas"* und zählt fünf Prüfstellen aus. Mit diesem Slice ist der Satz falsch und die Zählung überholt — er wird mitgezogen, nicht danebengestellt |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update, **falls** Frage A so ausgeht | nur wenn die Soll-Menge dort als Artefakt lebt; führt der Wächter sie selbst, bleibt [`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) unberührt — eine zweite Liste ist der Defekt, nicht die Lösung |
 

@@ -133,8 +133,9 @@ eingehende Links im Zug danach; Closure-Notiz mit Steering-Loop-Eintrag.
   der ohnehin niemandem auffällt. Wer nachzieht, prüft zuerst die Aufrufer.
 - **Die Zahl-Bedeutungen sind nur so gut wie ihre Erhebung** (Frage B). Zwei gemessene Familien
   sind zwei, nicht alle.
-- **Nicht in diesem Slice:** das **Mutations-Fall-Format** (`# files:` / `# expect:`, gemessen
-  je **144** reale Vorkommen; `# verify:` dagegen nur **2**) — es erfüllt die Aufnahme-Regel und
+- **Nicht in diesem Slice:** das **Mutations-Fall-Format** (`# files:` und `# expect:` trägt
+  **jeder** Fall unter `test/mutations/`, `# verify:` nur einzelne) — es erfüllt die
+  Aufnahme-Regel und
   lebt heute allein im Parser von [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh),
   aber [slice-069](slice-069-zahn-bindet-zusicherung.md) fügt ihm ein Kopf-Feld hinzu. Es jetzt
   festzuschreiben hieße, eine Festlegung zu schreiben, die ihr eigener Nachfolger umschreibt;

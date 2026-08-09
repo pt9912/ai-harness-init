@@ -201,22 +201,28 @@ sondern im Nicht-Gate-Verify-Absatz von [`AGENTS.md`](../../../../AGENTS.md) §4
 [`harness/README.md`](../../../../harness/README.md). Sie liest ausschließlich Spans, read-only
 und netzlos.
 
-**Sensoren.** `make mutate`: **145 ok, 0 Befund(e)**, davon zehn (`test/mutations/140`–`149`) auf
-den Auswerter, jeder mit seinem namentlich erwarteten Wächter rot. Der Lauf trägt bis hierher —
-die 145 Fälle zielen auf 37 Dateien, und von denen hat sich seit dem Lauf keine geändert
-(Schnittmenge der `# files:`-Ziele mit den seither geänderten Pfaden: leer). `make gates` grün.
+**Sensoren.** `make mutate` läuft mit `145 ok, 0 Befund(e)` über den Baum, den der Abschluss-Commit erzeugt;
+zehn seiner Fälle (`test/mutations/140`–`149`) zielen auf den Auswerter, jeder färbt seinen
+namentlich erwarteten Wächter rot. **Die Deckung reicht bis an den Move, und das ist eine
+Eigenschaft, kein Zufall:** was seit dem Lauf noch angefasst wurde, sind Plan-Artefakte, und
+**kein** Mutations-Fall trägt einen `docs/`-Pfad in seiner `# files:`-Zeile — der Prüfbereich des
+Sensors und die geänderten Dateien sind disjunkt. Welche Fälle ein Lauf nach einer **Code**-
+Änderung mindestens tragen muss, sagt dieselbe Schnittmenge, dann nicht leer: der Prüfumfang aus
+dem zweiten Steering-Loop-Eintrag unten. `make gates` grün.
 
 **Was anders lief.**
 
 1. **Geliefert ist mehr, als §3 vorsieht — an fünf Positionen.** Die `report`-Stage im
    `Dockerfile` folgt zwingend aus *Auswertung als eigenes Kommando* plus Docker-only, hat aber
-   eine eigene Begründung und keine Plan-Zeile. Vier der fünf `Makefile`-Hunks betreffen
+   eine eigene Begründung und keine Plan-Zeile. Drei der fünf `Makefile`-Hunks betreffen
    `span-report` nicht, sondern kürzen Kommentare und reparieren `make help`. Statt der vier
    geplanten Zähne stehen zehn Mutations-Fälle und zehn Go-Tests. Zwei Planner-Artefakte liegen
    im selben Commit-Bereich. Und eine **neue Hard Rule** ([`AGENTS.md`](../../../../AGENTS.md)
    §3.7) samt ihrem Adaptions-Eintrag
    ([`MR-022`](../../../../harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline))
-   ist unter diesem Slice entstanden — eine repo-weite Setzung, die keine DoD-Zeile verlangt hat.
+   ist unter diesem Slice entstanden — eine repo-weite Setzung ohne DoD-Zeile und ohne Übergabe
+   an eine zweite Rolle. Wem ein solches Artefakt gehört, entscheidet
+   [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) (Proposed).
    **§3 bleibt der Stand vor dem Code und wird nicht nachgezogen:** eine Tabelle, die im
    Nachhinein zur Lieferung passend gemacht wird, sagt nichts mehr darüber, was geplant war.
 
@@ -235,9 +241,9 @@ die 145 Fälle zielen auf 37 Dateien, und von denen hat sich seit dem Lauf keine
 **Steering-Loop-Einträge.**
 
 1. **Benannte Spec-Lücke — ein Lerneintrag hat keinen vorgeschriebenen Träger und bleibt darum
-   liegen, wo ihn niemand liest.** Gemessen über die Notizen unter `done/`: die drei kanonischen
-   Formen (*geschärfte Regel* · *neuer Sensor* · *benannte Spec-Lücke*) kommen dort **57**-mal
-   vor, verteilt auf **32** Dateien. Das Wort *Lerneintrag* kommt in
+   liegen, wo ihn niemand liest.** Gemessen über die Notizen unter `done/`, Stand 2026-08-09: die
+   drei kanonischen Formen (*geschärfte Regel* · *neuer Sensor* · *benannte Spec-Lücke*) kommen
+   dort **57**-mal vor, verteilt auf **32** Dateien — der Bestand wächst mit jedem Abschluss. Das Wort *Lerneintrag* kommt in
    [`AGENTS.md`](../../../../AGENTS.md), [`harness/conventions.md`](../../../../harness/conventions.md),
    [`harness/README.md`](../../../../harness/README.md) und dem Reviewer-Skill **null**mal vor,
    und die Vor-jeder-Änderung-Leseliste aus `CLAUDE.md` führt an `done/` vorbei. Der Beleg steht
@@ -263,8 +269,7 @@ die 145 Fälle zielen auf 37 Dateien, und von denen hat sich seit dem Lauf keine
 
 | Posten | Träger |
 |---|---|
-| Vier Sätze im `Makefile` sind ersatzlos entfallen, die die Kopplung dreier Ziele an `shell-lint` und die Isolierung des Regelwerk-Prüfbereichs begründen — zwei der fünf Klassen, die [`AGENTS.md`](../../../../AGENTS.md) §3.7 als tragend führt | dieser Slice, offen |
-| Der Kommentar von `test/mutations/145` begründet sein Zusatz-Rot mit dem Nenner; ausgelöst wird es von der Zusicherung auf den leeren Rollennamen | dieser Slice, offen |
+| Eine repo-weite Hard Rule und ihr Adaptions-Eintrag sind im Implementations-Kontext dieses Slice in Kraft gesetzt worden, ohne Übergabe an eine zweite Rolle | [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md), Proposed |
 | Zwei Mengenangaben in einer Commit-Message treffen den Baum nicht (die Zeilenzahlen der `Makefile`-Kürzung und die Zahl der `make help`-Einträge vor der Reparatur). Die Historie wird nicht umgeschrieben; die gemessenen Werte stehen im Review-Bericht | verfallen, mit Beleg |
 | Ein nicht existierender Ablageort liefert dieselbe wohlgeformte leere Bilanz wie ein leerer — `filepath.Glob` unterscheidet beides nicht, und unter `make span-report` maskiert das vorangestellte `mkdir -p` den Fall | [slice-071](../open/slice-071-cache-zaehler-getrennt.md) |
 | *„Bestand: 3 Sitzung(en)"* nennt die Ströme des Ablageorts, nicht die Streuung der Summe — zwei tragen Zähler, und der weitaus größte Teil stammt aus einer | [slice-071](../open/slice-071-cache-zaehler-getrennt.md) |

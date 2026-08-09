@@ -106,7 +106,9 @@ compile: ## Schnelles Compile-Feedback (Dockerfile compile-Stage, ohne Tests/Lin
 
 # Emittiert die Doc-Gate-Baseline in ein tmp-Repo und laesst dort das emittierte
 # docs-check real laufen. Braucht Host-Docker und ggf. einen Netz-Pull, deshalb
-# NICHT in gates (die bleiben offline-schlank, LH-QA-01).
+# NICHT in gates (die bleiben offline-schlank, LH-QA-01). Die Logik liegt in
+# harness/tools/, damit shell-lint sie deckt — der Rezeptkoerper hier liegt
+# ausserhalb von dessen Pruefbereich.
 smoke: ## Emit-Smoke: Doc-Gate in tmp-Repo emittieren + emittiertes docs-check real gruen (Host-Docker) — NICHT in gates
 	@GO_VERSION='$(GO_VERSION)' bash harness/tools/smoke.sh
 
