@@ -55,7 +55,7 @@ Abweichung 5 (3)(b) hält fest, dass der `PreToolUse`-Guard aus
 unter einem Rollen-Typ durchlief, obwohl der Guard ihn hätte ablehnen müssen.
 
 **Was er ausdrücklich nicht leistet:** die Token-Bilanz. Deren Abdeckungszahl
-([slice-066](../in-progress/slice-066-telemetrie-auswertung.md) DoD (1)) misst **innerhalb** der
+([slice-066](../done/slice-066-telemetrie-auswertung.md) DoD (1)) misst **innerhalb** der
 erfassten Menge, wie viele Läufe Zähler trugen; dieser Slice misst, ob die erfasste Menge
 vollständig ist. Zwei Fragen, zwei Zahlen — die zweite ist die, die kein Span beantwortet.
 
@@ -100,7 +100,7 @@ vollständig ist. Zwei Fragen, zwei Zahlen — die zweite ist die, die kein Span
 ## 3. Plan (vor Code)
 
 **Was heute vorliegt, gemessen am 2026-08-08:** `SubagentStart` ist verdrahtet (unter
-[slice-066](../in-progress/slice-066-telemetrie-auswertung.md), Schlüsselmenge in
+[slice-066](../done/slice-066-telemetrie-auswertung.md), Schlüsselmenge in
 [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5)
 und erzeugt je Spawn einen Span mit `agent_type`, `agent` und `session` im Strom des gestarteten
 Agenten. Was fehlt, ist die Brücke zur Aufrufer-Seite — nicht die Beobachtung des Starts.
@@ -118,7 +118,7 @@ Agenten. Was fehlt, ist die Brücke zur Aufrufer-Seite — nicht die Beobachtung
 | # | Frage | Warum sie den Schnitt entscheidet |
 |---|---|---|
 | A | Welche **Korrelations-Achse**? | Kandidat 1: die Protokoll-Zeile aus [slice-074](slice-074-agent-vor-aufruf-protokoll.md) — sie entsteht auf der **Aufrufer**-Seite und trägt `tool_use_id`, denselben Wert wie der `Agent`-Span; die Paarung wäre eine Kennungs-Gleichheit. Kandidat 2: eine Erweiterung der Start-Seite, damit der Spawn seinen `tool_use_id` selbst mitführt — sie kostet Verdrahtung und hängt an einer Payload, die dieses Repo nicht bestimmt. Kandidat 3: Sitzung plus Zeitfenster — die schwächste, und sie wäre als Einschränkung zu schreiben. **Die Antwort entscheidet, ob dieser Slice hinter [slice-074](slice-074-agent-vor-aufruf-protokoll.md) steht oder neben ihm** |
-| B | **Form** des Sensors: `bash`+`awk` wie die übrigen `harness/tools/`-Prüfer oder ein Go-Kommando ([`ADR-0003`](../../adr/0003-go-native-binaries.md))? | Er liest JSONL-Ströme; liest er zusätzlich die Protokoll-Zeile aus [slice-074](slice-074-agent-vor-aufruf-protokoll.md), liegt die Nähe zu deren Auswertungsregel, liest er nur Spans, die Nähe zum Auswerter aus [slice-066](../in-progress/slice-066-telemetrie-auswertung.md). Zwei Prüfer über derselben Datei mit zwei JSON-Politiken sind die Form, die auseinanderdriftet |
+| B | **Form** des Sensors: `bash`+`awk` wie die übrigen `harness/tools/`-Prüfer oder ein Go-Kommando ([`ADR-0003`](../../adr/0003-go-native-binaries.md))? | Er liest JSONL-Ströme; liest er zusätzlich die Protokoll-Zeile aus [slice-074](slice-074-agent-vor-aufruf-protokoll.md), liegt die Nähe zu deren Auswertungsregel, liest er nur Spans, die Nähe zum Auswerter aus [slice-066](../done/slice-066-telemetrie-auswertung.md). Zwei Prüfer über derselben Datei mit zwei JSON-Politiken sind die Form, die auseinanderdriftet |
 
 **Welle oder nicht — der Test aus [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) Setzung 1**
 
@@ -174,11 +174,11 @@ eigenem Move-Commit, eingehende Links im Zug danach; Closure-Notiz mit Steering-
   hat ein Ereignis, der Abschluss des Subagenten keines; ein Zeit-Schwellwert ist eine Konvention
   und keine Messung. Wer ihn setzt, schreibt seinen Wert und seinen Grund dazu.
 - **Zwei Zahlen über derselben Fläche verwechseln sich leicht.** Die Abdeckungszahl aus
-  [slice-066](../in-progress/slice-066-telemetrie-auswertung.md) misst innerhalb der erfassten
+  [slice-066](../done/slice-066-telemetrie-auswertung.md) misst innerhalb der erfassten
   Menge, dieses Ziel misst deren Vollständigkeit. Beide Ausgaben nennen ihre Bezugsmenge, sonst
   liest sich die eine als die andere.
 - **Nicht in diesem Slice:** die Token-Bilanz
-  ([slice-066](../in-progress/slice-066-telemetrie-auswertung.md)), das Vor-Aufruf-Protokoll
+  ([slice-066](../done/slice-066-telemetrie-auswertung.md)), das Vor-Aufruf-Protokoll
   ([slice-074](slice-074-agent-vor-aufruf-protokoll.md)), die Entscheidung des Guards (sie bleibt,
   wie [slice-060](../done/slice-060-rollen-achse.md) sie gesetzt hat) und jede Emission ins Ziel
   (slice-062/063).

@@ -84,7 +84,7 @@ Vordergrund-Läufen** an.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| Auswertung (Go, eigenes Kommando) | neu oder update | der Cache-Abschnitt der Ausgabe; dieselbe Linie wie der Emitter — Docker-only gebaut ([`ADR-0003`](../../adr/0003-go-native-binaries.md)), **kein** Subkommando des Produkt-Binaries, damit slice-062 nicht vorweggenommen wird. Ob das Kommando hier entsteht oder schon steht, entscheidet die Reihenfolge gegen [slice-066](../in-progress/slice-066-telemetrie-auswertung.md) |
+| Auswertung (Go, eigenes Kommando) | neu oder update | der Cache-Abschnitt der Ausgabe; dieselbe Linie wie der Emitter — Docker-only gebaut ([`ADR-0003`](../../adr/0003-go-native-binaries.md)), **kein** Subkommando des Produkt-Binaries, damit slice-062 nicht vorweggenommen wird. Ob das Kommando hier entsteht oder schon steht, entscheidet die Reihenfolge gegen [slice-066](../done/slice-066-telemetrie-auswertung.md) |
 | `Makefile` | update | das `make`-Ziel der Auswertung, falls es noch keines gibt. **Kein Gate:** eine Rechnung prüft nichts, und ein Gate über einem Bericht wäre eines über leerem Prüfbereich ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) |
 | [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | die Festlegung aus DoD (2) — Namen, Counter-Form, Ort der Division, Auflösungs-Trigger — in §5 neben Abweichung 1, die die Cache-Counter-Regeln bereits verlinkt. **Kein Adaptions-Eintrag:** eine adoptierte Modul-Regel umzusetzen ist keine Abweichung von ihr, und dass das Label `model.version` nur im Vordergrund vorliegt, steht dort schon als Abweichung 1 |
 | `test/` + `test/mutations/` | neu | der Zahn aus DoD (1) |
@@ -93,7 +93,7 @@ Vordergrund-Läufen** an.
 
 | # | Frage | Warum sie den Schnitt entscheidet |
 |---|---|---|
-| A | ~~Summiert die Rechnung **eine Sitzung** oder den **Bestand**?~~ **BEANTWORTET (2026-08-03): der Bestand** — übernommen, nicht neu entschieden | Im Ablageort liegen Ströme mehrerer Sitzungen, und `make span-clean` ändert den Bestand erneut. Dieselbe Frage stellt [slice-066](../in-progress/slice-066-telemetrie-auswertung.md) (dort Frage B); **jener lief zuerst und hat sie entschieden** — Begründung und Messung stehen dort, hier gilt die Antwort. Was dieser Slice davon mitträgt: die Ausgabe nennt **Sitzungszahl und Zeitraum**, weil `span-clean` die Basis zurücksetzt — zwei Ausgaben über verschieden großen Beständen wären nicht vergleichbar |
+| A | ~~Summiert die Rechnung **eine Sitzung** oder den **Bestand**?~~ **BEANTWORTET (2026-08-03): der Bestand** — übernommen, nicht neu entschieden | Im Ablageort liegen Ströme mehrerer Sitzungen, und `make span-clean` ändert den Bestand erneut. Dieselbe Frage stellt [slice-066](../done/slice-066-telemetrie-auswertung.md) (dort Frage B); **jener lief zuerst und hat sie entschieden** — Begründung und Messung stehen dort, hier gilt die Antwort. Was dieser Slice davon mitträgt: die Ausgabe nennt **Sitzungszahl und Zeitraum**, weil `span-clean` die Basis zurücksetzt — zwei Ausgaben über verschieden großen Beständen wären nicht vergleichbar |
 
 ## 4. Trigger
 
@@ -136,7 +136,7 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
   Ablageorts**, nicht die **Streuung der Summe** — beides fällt auseinander, sobald ein Strom
   keine Zähler trägt oder einer die Summe dominiert. Wer den Nenner druckt, druckt beides oder
   benennt, welches er meint.
-- **Nicht in diesem Slice:** die Token-Bilanz je Rolle ([slice-066](../in-progress/slice-066-telemetrie-auswertung.md)),
+- **Nicht in diesem Slice:** die Token-Bilanz je Rolle ([slice-066](../done/slice-066-telemetrie-auswertung.md)),
   die Rollen-Achse ([slice-060](../done/slice-060-rollen-achse.md)) und die Tool-Ebene
   (slice-062/063).
 

@@ -163,7 +163,7 @@ Closure-Notiz mit Steering-Loop-Eintrag.
 - **Nicht in diesem Slice:** die Ausgabeform der Hooks (slice-067), die Fall-Granularität des
   Mutations-Treibers ([slice-069](slice-069-zahn-bindet-zusicherung.md)), der Prüfbereich von
   `comment-claims` ([slice-070](slice-070-comment-claims-pruefbereich.md)) und jeder Sensor über
-  der **Telemetrie** ([slice-066](../in-progress/slice-066-telemetrie-auswertung.md),
+  der **Telemetrie** ([slice-066](../done/slice-066-telemetrie-auswertung.md),
   [slice-074](slice-074-agent-vor-aufruf-protokoll.md),
   [slice-077](slice-077-verlorener-lauf-sichtbar.md)).
 

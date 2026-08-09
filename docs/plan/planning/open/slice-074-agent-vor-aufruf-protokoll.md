@@ -373,7 +373,7 @@ eigenem Move-Commit, eingehende Links im Zug danach; Closure-Notiz mit Steering-
 - **Nicht in diesem Slice:** die Entscheidung des Guards (sie bleibt, wie
   [slice-060](../done/slice-060-rollen-achse.md) sie gesetzt hat); die veraltete
   Ausgabeform des Nachbar-Guards (slice-067); die Rechnung über die Zähler
-  ([slice-066](../in-progress/slice-066-telemetrie-auswertung.md),
+  ([slice-066](../done/slice-066-telemetrie-auswertung.md),
   [slice-071](slice-071-cache-zaehler-getrennt.md)); jede Emission ins Ziel (slice-062/063); und
   jede Ausweitung des Span-Schemas.
 
