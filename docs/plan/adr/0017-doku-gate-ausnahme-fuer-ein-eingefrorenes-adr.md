@@ -1,6 +1,6 @@
 # ADR-0017: Der Doku-Gate lässt ein eingefrorenes ADR aus — namentlich, nicht als Klasse
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-08-09
 
@@ -46,6 +46,9 @@ sauber):
 ```
 d-check: 309 Datei(en) geprüft, 21 Befund(e)     # alle target-missing
 ```
+
+Tragend ist die **Befund**-Zahl und ihre Verteilung; die geprüfte Datei-Zahl ist der
+Markdown-Bestand des Repos zum Lauf-Zeitpunkt und wächst mit ihm.
 
 Davon liegt **genau einer** in einer Datei, die [`AGENTS.md`](../../../AGENTS.md) §3.4
 eingefroren hat: [ADR-0013](0013-technik-stratum-als-zielort.md). 16 liegen in lebenden
@@ -108,23 +111,44 @@ die vier bestehenden Einträge auch, von denen jeder seine Begründung im Kommen
 ## Konsequenzen
 
 **Der Preis, gemessen über alle Module — nicht nur über `links`.** `scan.ignore` liest die Datei
-**nicht mehr**; die geprüfte Datei-Zahl fällt um eins (308 → 307 im Sonden-Lauf). Betroffen sind
-fünf aktive Module:
+**nicht mehr**; die geprüfte Datei-Zahl fällt um **genau eins**. Tragend ist dieser Delta, nicht
+ein Absolutwert-Paar — der Nenner ist der Markdown-Bestand des Repos, der Delta ist die Wirkung
+des Eintrags. Betroffen sind fünf aktive Module:
 
 | Modul | was die Datei verliert | gemessen mit |
 |---|---|---|
 | `links` / `anchors` | 27 Link-Vorkommen über 12 Ziele, 5 anker-tragend (4 davon repo-intern) | `grep -oE '\]\([^)]+\)'` |
-| `ids` | 18 Kennungs-Nennungen (8 eindeutig) unter der Linkpflicht | `grep -oE 'ADR-[0-9]{4}\|LH-[A-Z]{2}-[0-9]{2}\|MR-[0-9]{3}'` |
-| `codepaths` (samt `check-lines`) | 4 eindeutige Inline-Code-Pfade | `grep -oE '`(\.{1,2}/\|spec/\|docs/\|harness/)[^`]*`'` |
+| `ids` | 18 Kennungs-Nennungen (8 eindeutig) unter der Linkpflicht | `grep -oE` über die drei Kennungs-Muster |
+| `codepaths` (samt `check-lines`) | 4 eindeutige Inline-Code-Pfade | `grep -oE` über die Inline-Code-Pfade |
 | `matrix` | die Datei als **Quelle**, inklusive des Verbots, auf superseded ADRs zu zeigen | — |
+
+Die Kommandos ausgeschrieben — eine Tabellenzelle trägt das Pipe-Zeichen nicht; jede Zeile nennt,
+was **sie** ausgibt:
+
+```sh
+F=docs/plan/adr/0013-technik-stratum-als-zielort.md
+grep -oE '\]\([^)]+\)' "$F" | wc -l                                       # 27  Link-Vorkommen
+grep -oE '\]\([^)]+\)' "$F" | sort -u | wc -l                             # 12  eindeutige Ziele
+grep -oE '\]\([^)]+\)' "$F" | sort -u | grep -c '#'                       #  5  davon anker-tragend
+grep -oE 'ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}' "$F" | wc -l      # 18  Kennungs-Nennungen
+grep -oE 'ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}' "$F" | sort -u | wc -l   #  8  eindeutig
+grep -oE '`(\.{1,2}/|spec/|docs/|harness/)[^`]*`' "$F" | sort -u | wc -l   #  4  Inline-Code-Pfade
+```
 
 **Entlastend, ebenfalls gemessen:** `scan.ignore` wirkt **quellenseitig**. Eingehende Links,
 eingehende Anker und `matrix.status` über eingehende Verweise auf die ausgenommene Datei bleiben
 vollständig bewacht — dieselbe Sonde, die das für den vendored Baum zeigt (Link auf den gepinnten
 Tag: kein Befund; erfundener Anker: `anchor-missing`), zeigt es hier. Der Preis wächst also
-**nicht** mit den **16** Verweis-Vorkommen aus **10** lebenden Dateien, die *auf*
+**nicht** mit den **22** Verweis-Vorkommen aus **11** lebenden Dateien, die *auf*
 [ADR-0013](0013-technik-stratum-als-zielort.md) zeigen, sondern bleibt auf ihre 27 ausgehenden
-begrenzt.
+begrenzt. Die eingehende Seite, ebenfalls mit ihrem Kommando — und sie wächst mit jedem neuen
+Verweis, während die 27 an einer §3.4-immutablen Datei feststehen:
+
+```sh
+P=(':!.harness/baseline' ':!docs/reviews' ':!docs/plan/planning/done')
+git grep -oE '\]\([^)]*0013-technik-stratum-als-zielort\.md[^)]*\)' -- "${P[@]}" | wc -l   # 22
+git grep -lE '\]\([^)]*0013-technik-stratum-als-zielort\.md[^)]*\)' -- "${P[@]}" | wc -l   # 11
+```
 
 - **Positiv:** `make gates` bleibt nach dem Tausch grün, ohne dass ein eingefrorenes Artefakt
   angefasst wird.
@@ -187,3 +211,4 @@ ADR-Zeiger im Kommentar. **Diese ADR baut ihn nicht**, und sie behauptet ihn nic
 |---|---|---|
 | 2026-08-09 | **Proposed** | Architect-Entscheid zur Gate-Lage der Re-Baseline `v3.5.2` → `v5.3.0`. Auslöser: der gefahrene Tausch meldet 21 `target-missing`, davon genau einen in einem nach §3.4 eingefrorenen Artefakt — ein Befund, den keine Regel des Repos beheben darf |
 | 2026-08-09 | Überarbeitet, weiter **Proposed** | Ziel-Stand `v5.3.1`. Gezogen ist genau ein vorwärts gerichteter Zeiger (die Ziel-Fassung in Option B); die Freshness-Audit-Aussage trägt, weil `modul-02-harness-bootstrap.md` im Delta byte-gleich ist. Die Sonden-Beschreibung nennt weiter `v5.3.0`, weil das der Name ist, unter dem der Lauf stattfand |
+| 2026-08-09 | **Accepted** | Annahme durch den Auftraggeber nach der Bestätigungsrunde `docs/reviews/2026-08-09-adr-0015-0016-0017-bestaetigungsrunde.md` (extensionale Schließung bestätigt, kein blockierender Befund); ab hier immutabel ([`AGENTS.md`](../../../AGENTS.md) §3.4) — spätere Schärfungen als neue ADR mit *Supersedes*. Voraussetzung erfüllt: [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) ist mit derselben Runde angenommen. Vor dem Wechsel gezogen: die **zwei unvereinbaren Datei-Zahlen** — der Nenner eines `d-check`-Laufs ist der Markdown-Bestand des Repos und altert, tragend sind die Befund-Zahl und der Delta *um genau eins*; beide selbst nachgefahren (Tausch: 311 Dateien, 21 Befunde; Eintrag: 311 → 310). Dazu stehen die Preis-Kommandos ausgeschrieben, weil eine Tabellenzelle das Pipe-Zeichen nicht trägt und die gedruckte Form wörtlich kopiert **0** lieferte, und die eingehende Seite trägt ihre gemessene Zahl (**22** aus **11** statt 16 aus 10) |
