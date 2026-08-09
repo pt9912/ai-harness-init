@@ -54,7 +54,7 @@ gegen einen lokalen Kurs-Klon, `git ls-tree -r --name-only <tag> lab/regelwerk |
 Damit verschwinden Pfade, auf die dieses Repo **34-mal aus 9 lebenden Artefakten** zeigt —
 13-mal aus [`spec/spezifikation.md`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder),
 11-mal aus [`harness/conventions.md`](../../../harness/conventions.md#mr-000--baseline-aussage),
-der Rest aus fünf ADRs und zwei Plan-Dateien. Gemessen mit
+der Rest aus vier ADRs und drei Plan-Dateien. Gemessen mit
 `git grep -o "\.harness/baseline/v3\.5\.2/[^ )]*" -- ':!.harness/baseline' ':!docs/reviews' ':!docs/plan/planning/done'`
 (Zeitdokumente ausgenommen — sie bleiben stehen, §6).
 
@@ -141,10 +141,13 @@ gegenstandslos wird, kein neues Pflichtfeld mehr braucht.
 
 - **Wird blockiert von:** [welle-09](welle-09-modul-15-konformitaet.md) — sie misst gegen Modul 15
   in der gepinnten Fassung (§2).
-- **Blockiert:** jeden Slice, der den vendored Baum zitiert. Heute ist das genau einer
-  ([slice-071](open/slice-071-cache-zaehler-getrennt.md), gemessen mit
-  `git grep -l '\.harness/baseline/v3\.5\.2/' -- docs/plan/planning/open docs/plan/planning/next`);
-  er gehört zu welle-09 und ist damit ohnehin vor dieser Welle fällig.
+- **Blockiert:** jeden Slice **außerhalb** dieser Welle, der den vendored Baum zitiert. Heute ist
+  das genau einer ([slice-071](open/slice-071-cache-zaehler-getrennt.md)); er gehört zu welle-09
+  und ist damit ohnehin vor dieser Welle fällig. Das Kommando
+  `git grep -l '\.harness/baseline/v3\.5\.2/' -- docs/plan/planning/open docs/plan/planning/next`
+  nennt daneben [slice-083](open/slice-083-form-vergleich-pflichtfelder.md) — der liegt **in**
+  dieser Welle und nennt den alten Tag als Tree-Operanden der Vor-Tausch-Seite, nicht als Zeiger
+  auf einen Baum, der stehen bleiben müsste.
 - **Innerhalb der Welle:** 080 → 081 → {082 → 083, 084} → 085. 084 hängt nur am getauschten Baum,
   nicht am Adaptions-Durchgang: sein Gegenstand ist der Bestand, nicht die Änderung.
 

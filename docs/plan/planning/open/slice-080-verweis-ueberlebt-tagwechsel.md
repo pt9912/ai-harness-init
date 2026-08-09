@@ -26,9 +26,10 @@ unveränderlich; das Doku-Gate verlangt auflösbare Link-Ziele. Vier Accepted-AD
 vendored Baum ([`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md),
 [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md),
 [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md),
-[`ADR-0014`](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md); die fünfte,
-[`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md), steht auf *Proposed* und
-fällt nicht unter §3.4). Verschwindet der Pfad, kollidieren zwei Regeln an einem Artefakt, das
+[`ADR-0014`](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md)). Die fünfte
+Accepted-ADR, [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md), nennt den Baum
+an **keiner** Stelle (`git grep -c '\.harness/baseline'` über ihre Datei → 0) und ist von der
+Frage nicht berührt. Verschwindet der Pfad, kollidieren zwei Regeln an einem Artefakt, das
 keine von beiden ändern darf.
 
 **Und die Kollision ist kleiner und zugleich schlimmer als sie aussieht — beides gemessen**
