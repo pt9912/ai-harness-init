@@ -163,6 +163,66 @@ den Grundlagen. Mit der Re-Baseline ist gegen die Upstream-Fassung zu halten
 **Ein Wächter existiert nicht:** `make comment-claims` prüft, ob ein genannter
 Sensor existiert, nicht, worüber ein Kommentar spricht.
 
+### 3.8 Hard Rules und Adaptions-Block schreibt der Architect
+
+Die Hard Rules dieser Datei (§3) und der Adaptions-Block in
+[`harness/conventions.md`](harness/conventions.md) werden vom **Architect** geschrieben. Eine
+Änderung an ihnen landet in einem **eigenen Commit**, der ausschließlich Artefakte derselben
+schreibenden Rolle berührt — ADRs und diese zwei — und die Rolle in seiner Message nennt.
+Gebunden ist das **Schreiben**; **gelesen** werden beide von jeder Rolle uneingeschränkt.
+
+**Über andere Norm-Artefakte sagt diese Regel nichts.** Wo eine Quelle die schreibende Rolle
+benennt, gilt sie unverändert; wo keine sie benennt, bleibt die Frage offen. Eine Übersicht, die
+fremde Zuordnungen abschriebe, wäre eine zweite Fassung, die driftet.
+
+**Falsch:** eine Anweisung im laufenden Implementations-Kontext dadurch erfüllen, dass derselbe
+Lauf die Hard Rule und den Adaptions-Eintrag schreibt.
+**Richtig:** die Anweisung ist die **Quelle**; was der laufende Kontext liefert, ist ein
+**Übergabe-Artefakt**, und der Norm-Text entsteht im Architect-Lauf.
+
+**Falsch:** die Norm-Änderung im Commit des Slice mitnehmen, der sie ausgelöst hat.
+**Richtig:** eigener Commit, nur Architect-Artefakte, Rolle in der Message — nachträglich an
+`git log --stat` ablesbar.
+
+**Warum diese zwei, und warum der Architect.** Für die ADR spricht das Regelwerk die Dreiteilung
+aus (`v3.5.2`, `modul-08-agentenrollen.md` §Rollen-Regeln: *„ADR-Änderung: Architect schreibt;
+Reviewer prüft auf Konsistenz; Implementer liest als Constraint"*). Der Adaptions-Block ist das
+Abweichungs-Register — ob eine Abweichung von der Baseline **besteht**, ist eine
+Architektur-Frage —, die Hard Rules sind derselbe Gegenstand eine Ebene allgemeiner; beide sind
+normativ wie eine ADR, nur ohne deren Immutabilität (§3.4). Dass für diese zwei **keine** Quelle
+eine schreibende Rolle benennt, ist über die adoptierte wie über die Ziel-Fassung gemessen:
+[ADR-0015](docs/plan/adr/0015-rollen-eigentum-an-norm-artefakten.md) §Kontext, die auch die
+Abwägung trägt. Die Regel füllt damit eine Lücke, statt von der Baseline abzuweichen — deshalb
+steht zu ihr **kein** Eintrag im Adaptions-Block
+([`MR-000`](harness/conventions.md#mr-000--baseline-aussage)).
+
+**Begründung (gemessen, nicht postuliert):** In einem einzigen Slice wurde dreimal ein Artefakt
+einer anderen Rolle im Implementations-Kontext geändert, und die Klasse bewegte sich **aufwärts** —
+Definition of Done, Roadmap, repo-weite Norm. Der dritte Fall setzte eine Hard Rule samt
+Adaptions-Eintrag in Kraft, die eine Baseline-Abweichung behauptete, die es nicht gibt: gemessen
+gegen einen Tag, den zwei Releases überholt hatten, und ohne die Mess-Version zu nennen. Ein
+zweiter Kontext hätte das in einem `git show`-Lauf gefunden — genau die Eigenschaft, für die
+Rollen-Trennung existiert.
+
+**Cutoff — ab der Annahme von [ADR-0015](docs/plan/adr/0015-rollen-eigentum-an-norm-artefakten.md),
+kein Nachrüsten.** Gebunden ist die Norm-Änderung, die geschrieben wird; der **Bestand ist kein
+Arbeitsauftrag**, und ein Maßstab über ihn wäre dauerhaft rot — gemessen, nicht geschätzt
+(Stand 2026-08-09): `git log --format=%H -- AGENTS.md harness/conventions.md | wc -l` → **100**
+Commits berühren eine der zwei Dateien; davon tragen **89** daneben Dateien außerhalb der
+Architect-Artefakte (dieselbe Commit-Liste, je Commit
+`git show --pretty=format: --name-only "$c" | grep -cvE '^(AGENTS|harness/conventions)\.md$|^docs/plan/adr/|^$'`,
+gezählt die Nicht-Null-Ausgaben). **Obergrenze, mit Absicht:** `git` sieht Dateien, nicht
+Abschnitte — ein Commit, der allein §6 dieser Datei berührt, zählt mit, obwohl die Regel ihn nicht
+bindet.
+
+**Geltungsbereich: dieses Repo.** Was ein **emittiertes** Repo an Eigentums-Aussagen bekommt,
+entscheidet der Slice, der die Tool-Ebene entscheidet — nicht diese Sektion.
+
+**Ein Wächter existiert nicht.** Kein Modul des Doku-Gates liest Commits (`.d-check.yml` führt
+`links, anchors, ids, matrix, codepaths, spans`), und `make mutate` kennt zwei Fehlschlag-Formen —
+`--- FAIL:` der Go-Stufe, `not ok N` der bats-Stufe —, keine, in der ein Commit-Zuschnitt rot
+wird. Die Regel liegt im Feedforward-Quadranten: benannt, nicht geschlossen; ihr Träger ist der
+Rollen-Wechsel vor der Änderung, nicht ein Gate danach.
 
 ## 4. Quality Gates
 
