@@ -1076,7 +1076,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   [`MR-022`](#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline) sieht beim
   Baseline-Bump zwei Zweige vor — *deckt sie sich* → Aufhebung durch einen Nachfolger und
   Rückführung von §3.7 auf den Baseline-Abschnitt; *weicht sie ab* → die Abweichung bleibt.
-  Für den beschlossenen Ziel-Stand `v5.3.0` ist der **erste** Zweig hiermit vorab gemessen:
+  Für den beschlossenen Ziel-Stand `v5.3.1` ist der **erste** Zweig hiermit vorab gemessen — die Messung lief gegen `v5.3.0`, und beide Quellen (`templates/AGENTS.template.md`, `grundlagen-harness-dateien.md`) sind im Delta zu `v5.3.1` byte-gleich:
   der Adaptions-Durchgang der Re-Baseline hat ihn nicht mehr zu entscheiden, sondern zu
   vollziehen. Dann fällt [`MR-022`](#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)
   **vollständig** und behält nach

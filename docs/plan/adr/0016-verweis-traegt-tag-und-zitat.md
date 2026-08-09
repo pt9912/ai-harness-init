@@ -127,7 +127,7 @@ Inhaltsänderung**: er ließe die ADR etwas zitieren, was die Quelle nicht sagt.
 Referenzen unterscheidet, ist nicht Glück, sondern Form — die eine nennt neben der Zeilennummer
 das **Zitat**, die andere nur die **Adresse**.
 
-### Gegen die Ziel-Fassung `v5.3.0` gehalten
+### Gegen die Ziel-Fassung gehalten
 
 Diese Frage gehört **vor** das Einfrieren: eine Folgepflicht, die erst nach der Annahme griffe,
 könnte an einer §3.4-immutablen ADR nichts mehr bewirken. Suchraum: **alle** 26 Regelwerk- und
@@ -181,6 +181,37 @@ Vier Stellen sagen etwas, und alle vier sind einschlägig:
    Tag zur Zeit)"* läuft in `make gates` mit. **Das ist eine Prozedur-Kollision der Migration,
    keine Verweis-Frage**; sie gehört in den Form-Vergleichs-Durchgang der Welle. Diese ADR löst
    sie nicht und tut nicht so.
+
+**Die Messung oben lief gegen `v5.3.0`; adoptiert wird `v5.3.1`. Sie trägt weiter — nachgewiesen
+über den Delta, nicht über eine Wiederholung.** Der vendored Delta ist vollständig überschaubar,
+und jede geänderte Zeile ist gelesen:
+
+```sh
+git diff --stat v5.3.0 v5.3.1 -- lab/regelwerk lab/templates
+# -> 7 Dateien, 14 Einfuegungen, 13 Loeschungen
+git diff -U0 v5.3.0 v5.3.1 -- lab/regelwerk lab/templates | grep -cE '^[+-]#{1,6} '
+# -> 0   keine einzige Ueberschrift im Delta: alle Anker halten
+```
+
+| Was sich ändert | Dateien | Regel-Wirkung |
+|---|---|---|
+| Werkzeugname `check-references` → **Referenz-Richtungs-Gate** | 4 Regelwerk-Dateien + das ADR-Template | keine — ein Name weicht der Eigenschaft, dieselbe Bewegung, die Festlegung 2 verlangt. Kostet dieses Repo nichts: `git grep -c 'check-references' -- ':!.harness/baseline'` → **0** eigene Vorkommen |
+| Stand-Zeile (Kurs-Welle 71 → 72) | `README.md` | keine — Metadatum |
+| Paraphrase-Reparatur der Artefaktklassen-Tabelle | `modul-08-agentenrollen.md`, Zeilen 150–159 | die **Spiegelung** gewinnt die Exklusivität zurück, die sie verloren hatte (*„genau die Artefaktklasse"*, *„und das ist meistens kein Skill"*). Gegen die kanonische Kurs-Quelle ändert sich damit nichts; gegen den vorigen Spiegel-Text ist es eine Schärfung |
+
+**Keine der tragenden Quellen dieser ADR ist berührt** — `modul-07-carveouts.md` (die Zeile-129-
+Messung), `grundlagen-harness-dateien.md` (*„Der Zeiger ist kein Zitat"*),
+`modul-04-adrs.md`, `modul-02-harness-bootstrap.md` und
+`templates/harness/conventions/MR-NNN-titel.template.md` erscheinen im Delta nicht und sind damit
+byte-gleich (`git diff --name-only v5.3.0 v5.3.1 -- <die fünf>` → leer). Auch die Verbatim-Messung
+in Festlegung 2 trägt: `modul-08-agentenrollen.md` ist in den Zeilen 1–149 byte-gleich, und das
+Zitat steht dort in Zeile 37.
+
+**Was daraus folgt und was nicht.** Die Aussage *„eine allgemeine Verweis-Form schreibt die
+Ziel-Fassung nicht vor"* gilt für `v5.3.1` mit: der Delta fügt keine Regel hinzu. Die
+64-Treffer-Lektüre wird dafür **nicht** wiederholt — sie ist datiert und wahr, und ein
+vollständiger Delta ohne neue Regel ist der kürzere Beweis. **Grenze:** dieser Nachweis deckt nur
+den Schritt `v5.3.0` → `v5.3.1`. Für einen weiteren Bump gilt er nicht.
 
 ## Entscheidung
 
@@ -297,7 +328,7 @@ Nachziehen gegen sich selbst stellte.
 |---|---|---|
 | A — nichts entscheiden | kein Aufwand | der Tausch entscheidet die Frage faktisch, und zwar in Richtung „stumm falsch": drei Accepted-ADRs trügen eine unauflösbare Aussage ohne Sensor, und die naheliegende Reparatur (Tag-String ersetzen) verstieße gegen §3.4 **und** erzeugte an Zeile 129 ein falsches Zitat |
 | B — beide Bäume **dauerhaft** nebeneinander vendoren | jeder Verweis bleibt auflösbar, keine Senkung nötig | der Baum wüchse mit jedem Bump, und „die adoptierte Baseline" wäre keine Menge von eins mehr — die Reproduzierbarkeits-Klammer aus [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) verlöre ihren Sinn, [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) fiele. **Abzugrenzen vom transienten Fall:** die Ziel-Prozedur *verlangt* beide Bäume während des Form-Vergleichs und lässt den alten danach fallen (Kontext, Punkt 4) — das ist kein Gegenargument gegen die Verwerfung des **dauerhaften** Nebeneinanders |
-| C — Alias/Umleitung, die den Tag-Wechsel absorbiert | ein Pfad, der jeden Tausch überlebt | er überlebt ihn, **indem er lügt**: die ADR sagt `v3.5.2`, die Platte liefert `v5.3.0`. Gemessen an `modul-07-carveouts.md` Zeile 129 — bei `v3.5.2` *„Slice schlägt Memo"*, bei `v5.3.0` unverwandter Text: der Alias verwandelte einen toten Link in ein falsches Zitat, also einen lauten Fehler in einen stummen. Für den einen realen Fall trägt er ohnehin nicht: `grundlagen-konventionen.md` existiert bei `v5.3.0` nicht mehr |
+| C — Alias/Umleitung, die den Tag-Wechsel absorbiert | ein Pfad, der jeden Tausch überlebt | er überlebt ihn, **indem er lügt**: die ADR sagt `v3.5.2`, die Platte liefert `v5.3.0`. Gemessen an `modul-07-carveouts.md` Zeile 129 — bei `v3.5.2` *„Slice schlägt Memo"*, bei `v5.3.0` unverwandter Text: der Alias verwandelte einen toten Link in ein falsches Zitat, also einen lauten Fehler in einen stummen. Für den einen realen Fall trägt er ohnehin nicht: `grundlagen-konventionen.md` existiert in der Ziel-Fassung nicht mehr |
 | D — `codepaths.roots` um `.harness` erweitern, um die stille Hälfte zu bewachen | 17 Inline-Nennungen bekämen einen Sensor; eine Zeile Config | **gemessen, verworfen** (Sonde: Root gesetzt, `make docs-check`, Config zurückgenommen): **44 `codepath-missing` in 17 Dateien**, davon **null** aus der gesuchten Klasse — der gepinnte Tag existiert ja noch. Die vier Klassen sind strukturell: **20**× der mit [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) entfernte Regelwerk-Cache (10 davon im lebenden `harness/conventions.md`), **10**× historische Tags in Zeitdokumenten, **11**× Pfade im **emittierten** Zielrepo, **3**× **Vorwärts-Verweise** auf den Baum, den der Tausch erst anlegt. Die letzte ist der Killer und nicht wegkonfigurierbar: `codepaths` kann *„soll existieren"* nicht von *„wird existieren"* unterscheiden, und eine Ausnahmeliste trüge den Tag-String, der laut Makefile-Kommentar allein in `BASELINE_TAG` leben soll — ~44 Einträge, bei jedem Bump neu zu pflegen, dauerhaft rot auf genau den Artefakten, deren Aufgabe es ist, abwesende Pfade zu nennen. Die Ziel-Fassung verlangt es auch nicht (Kontext, Punkt 3) |
 | E — [ADR-0013](0013-technik-stratum-als-zielort.md) mit einer Folge-ADR superseden | formal die von §3.4 vorgesehene Bahn | die Entscheidung hat sich nicht geändert; ein Supersede für einen kaputten Pfad ist ADR-Inflation und macht aus einem Doku-Defekt einen Entscheidungs-Vorgang. Der Preis ist zudem groß: **16** Verweis-Vorkommen aus **10** lebenden Dateien zeigen auf ADR-0013, und `matrix.status` verbietet Verweise auf superseded ADRs |
 | **G — gewählt: Bestands-Aussage aussprechen · Zukunft an Tag und Zitat binden · Zeitdokument-Adressen auflösen** | trennt die zwei Defekte, die alle anderen Optionen vermischen — *unauflösbar* und *unwahr*; die Regel hat zwei Träger, und einer davon ist mit einem gemessenen Gegenbeispiel mechanisierbar; sie ist gegen die Ziel-Fassung gehalten, nicht auf sie vertagt | die stille Hälfte bleibt unbewacht, und diese ADR baut den Sensor nicht; sie erzeugt eine Gate-Senkung als Folgeentscheidung ([ADR-0017](0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md)); Zeitdokumente werden angefasst, wenn auch nur an ihren Adressen |
@@ -309,7 +340,7 @@ Nachziehen gegen sich selbst stellte.
 - **Positiv:** Die Frage ist **vor** dem Tausch beantwortet, und zwar für **21** Befunde statt
   für 17.
 - **Positiv:** Die Entscheidung ist **vor dem Einfrieren** gegen die Ziel-Fassung gehalten. Was
-  `v5.3.0` zur Verweis-Form sagt, steht im Kontext mit Kommando und Fundstelle.
+  die Ziel-Fassung zur Verweis-Form sagt, steht im Kontext mit Kommando und Fundstelle.
 - **Negativ:** Die **stille Hälfte bleibt stumm.** 17 Inline-Nennungen, davon 6 in
   Accepted-ADRs, sehen nach dem Tausch auf einen Baum, den es nicht gibt, und **kein Gate meldet
   das** — heute nicht und nach dieser Entscheidung nicht. Wer die Nennung liest, ohne den
@@ -324,7 +355,7 @@ Nachziehen gegen sich selbst stellte.
   Aufwand.
 - **Folgepflicht 1 (der Slice, der den Baum tauscht):** die **16** gate-sichtbaren Links in den
   Spec-Straten und im Adaptions-Block auf den neuen Tag **und die neuen Dateinamen** ziehen —
-  `grundlagen-konventionen.md` ist bei `v5.3.0` in sechs Dateien zerlegt, ein reiner Tag-Tausch
+  `grundlagen-konventionen.md` ist bei `v5.3.1` in sechs Dateien zerlegt, ein reiner Tag-Tausch
   reicht dort nicht, und **jeder Anker wird einzeln geprüft statt per `sed` über den Tag-String**
   (die Lehre aus Zeile 129); die lebenden Inline-Nennungen ebenso; die Zeitdokument-Adressen nach
   Festlegung 4 auflösen. **Diese ADR ändert keine Datei.**
@@ -376,7 +407,7 @@ sieht, dass eine Adresse fehlt — nicht, ob das, was stattdessen dasteht, die Q
 ## Re-Evaluierungs-Trigger
 
 - **Wenn eine künftige Baseline eine Verweis-Form für vendored Bäume vorschreibt**
-  *(feedforward — eine Textänderung upstream, kein Sensor; `v5.3.0` tut es nicht, siehe Kontext)*:
+  *(feedforward — eine Textänderung upstream, kein Sensor; die adoptierte Ziel-Fassung tut es nicht, siehe Kontext)*:
   dann bindet sie unabhängig von ihrer Rezeption hier, und diese Entscheidung ist gegen den neuen
   Wortlaut neu zu begründen oder als Abweichung zu deklarieren.
 - **Wenn ein neues Zeitdokument einen tag-gepinnten Baseline-Link trägt** *(sichtbar, sobald der
@@ -399,3 +430,4 @@ sieht, dass eine Adresse fehlt — nicht, ob das, was stattdessen dasteht, die Q
 | 2026-08-09 | Überarbeitet, weiter **Proposed** | Bestätigungsrunde zur Gate-Senkung, `docs/reviews/2026-08-09-adr-0016-festlegung-4-bestaetigungsrunde.md` (2 HIGH). Der Ist-Bestand zählte lebende Artefakte, der Gate zählt mehr — Tausch gefahren: **21** statt 17 Befunde, vier davon in drei Zeitdokumenten. Die Senkung von einer intensionalen Aufnahme-Regel auf eine extensional geschlossene Liste umgestellt, ihr Preis über alle fünf Module beziffert, [`MR-001`](../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) als Zähl-Ort aufgenommen. Festlegung 3 bekommt den Report-/Closure-Abschluss als zweiten Träger. **Widerlegt:** dass an diesem Träger *per Konstruktion* kein Sensor stehen könne |
 | 2026-08-09 | Überarbeitet, weiter **Proposed** | Auftraggeber-Einwand vor der Annahme: die Prüfung gegen die Ziel-Fassung stand als Folgepflicht und wäre nach dem Einfrieren wirkungslos gewesen. Sie ist **vorgezogen und gemessen** (64 Treffer über alle 26 Regelwerk- und 25 Template-Dateien von `v5.3.0`, einzeln gelesen). Zwei Baseline-Regeln aufgenommen: *„ein Datei-Link benennt keine Regel"* stützt Festlegung 2, *„Der Zeiger ist kein Zitat"* begrenzt sie auf unveränderliche Artefakte. *Verbatim* definiert, [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) als erster Anwendungsfall entschieden, `citations` als Werkzeug verworfen |
 | 2026-08-09 | Überarbeitet, weiter **Proposed** | Auftraggeber-Entscheid: die Gate-Senkung ist eine andere Art Entscheidung und lebt als [ADR-0017](0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) — mit ihrem Preis, ihrer extensionalen Grenze und ihren Triggern; die Kopplung steht in beiden Köpfen. Die Zeitdokument-Festlegung auf ihre Regel reduziert, die vier Adressen an die Ausführung abgegeben. Sechs mess-tragende Abschnitte zu **zwei** zusammengelegt und die Verwerfung von Option D in die Alternativen-Tabelle gefaltet — **ohne Verlust einer Messung**; 509 → 401 Zeilen |
+| 2026-08-09 | Überarbeitet, weiter **Proposed** | Der adoptierte Ziel-Stand der Welle ist `v5.3.1`. Die Prüfung gegen die Ziel-Fassung wird **nicht wiederholt**, sondern über den Delta geschlossen: 7 Dateien, **0** Überschriften im Delta (alle Anker halten), keine der fünf tragenden Quellen dieser ADR berührt, `modul-08-agentenrollen.md` in den Zeilen 1–149 byte-gleich. Gezogen sind nur die vorwärts gerichteten Zeiger; die datierten Messungen gegen `v5.3.0` bleiben stehen, weil sie wahr sind |
