@@ -1047,6 +1047,66 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   [`MR-000`](#mr-000--baseline-aussage) bleibt unangetastet, seine übrigen Setzungen gelten
   fort.
 
+### MR-023 — Die Platzierung der Kommentar-Regel ist keine Abweichung
+
+- **Datum:** 2026-08-09
+- **Geltungsbereich:** [`MR-022`](#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)
+  **Punkt 2** (*Platzierung*) und die entsprechende Aussage in
+  [`AGENTS.md`](../AGENTS.md) §3.7. **Nicht** berührt: Punkt 1 (der Vorgriff), die
+  Geltungsbereichs-Zeile und der Auflösungs-Trigger jenes Eintrags — sie binden fort.
+- **Adaption:** [`MR-022`](#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)
+  **Punkt 2 wird aufgehoben.** Er führt die Platzierung der Kommentar-Regel als Hard Rule
+  als Abweichung gegenüber dem Kurs; eine solche Abweichung besteht nicht. Gegen den Tag
+  `v5.3.0` gemessen (2026-08-09, `git show` gegen einen lokalen Kurs-Klon): die AGENTS-Vorlage
+  trägt dort im Hard-Rules-Block **dieselbe Nummer und denselben Titel** — *3.7 Ein Kommentar
+  beschreibt, was da ist* —, mit denselben fünf Klassen und denselben zwei
+  Falsch/Richtig-Paaren, und der Grundlagen-Abschnitt nennt die Regel ausdrücklich
+  *„Hard Rule"*. Die Platzierung dieses Repos ist gegen den neueren Stand **konform**. Die
+  erste Hälfte des Satzes — die Regel steht upstream in den Grundlagen und wird aus dem
+  Implementierungs-Modul referenziert — trifft zu; sie war nie die Abweichung.
+- **Der Rumpf bleibt stehen, weil dies eine Teil-Aufhebung ist.**
+  [`ADR-0014`](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) Festlegung 2 (a)
+  lässt den Rumpf nur bei **vollständiger** Aufhebung fallen; hier bindet sein Rest.
+- **Punkt 1 bleibt richtig, selbst nachgezählt (2026-08-09).** Die adoptierte Baseline
+  `v3.5.2` führt die Regel nicht: im vendored Baum gibt es kein Grundlagen-Dokument zu den
+  Harness-Dateien, und
+  `.harness/baseline/v3.5.2/templates/AGENTS.template.md` endet bei §3.6. Der Vorgriff ist
+  also weiterhin einer, und der Eintrag bleibt der Ort, an dem er deklariert ist.
+- **Was das für den Auflösungs-Trigger des aufgehobenen Punktes bedeutet.**
+  [`MR-022`](#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline) sieht beim
+  Baseline-Bump zwei Zweige vor — *deckt sie sich* → Aufhebung durch einen Nachfolger und
+  Rückführung von §3.7 auf den Baseline-Abschnitt; *weicht sie ab* → die Abweichung bleibt.
+  Für den beschlossenen Ziel-Stand `v5.3.0` ist der **erste** Zweig hiermit vorab gemessen:
+  der Adaptions-Durchgang der Re-Baseline hat ihn nicht mehr zu entscheiden, sondern zu
+  vollziehen. Dann fällt [`MR-022`](#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)
+  **vollständig** und behält nach
+  [`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf) Kopf und
+  Zeiger. Offen bleibt dabei die Frage, die dieser Eintrag nicht beantwortet: ob der hier
+  gekürzte Wortlaut die Upstream-Semantik vollständig trägt — das ist eine Textprüfung, keine
+  Platzierungsfrage.
+- **Begründung — warum ein neuer Eintrag und keine Korrektur im Rumpf.** Die vendored Vorlage
+  (`.harness/baseline/v3.5.2/templates/harness/conventions.template.md`, Kommentar über dem
+  Adaptions-Block) lässt für akzeptierte Einträge genau diesen Weg zu: *„nur neue Einträge
+  oder explizite Aufhebungen via neuen MR"*. Dieser Block ist ihn bereits dreimal gegen
+  [`MR-000`](#mr-000--baseline-aussage) gegangen. Ein **Sachfehler** ist dabei kein eigener
+  Vorgang und braucht keine eigene Regel: entweder kann der Punkt ersatzlos entfallen — dann
+  Aufhebung, wie hier —, oder an seiner Stelle muss etwas Richtiges binden — dann trägt es
+  der aufhebende Eintrag. In beiden Fällen bleibt der Rumpf unangetastet.
+- **Wie der Fehler entstand, als Eigenschaft und nicht als Erzählung: eine Messung ohne
+  Versionsangabe.** Gemessen wurde gegen `v5.1.0`, wo die Regel nicht existiert; geschrieben
+  wurde die Aussage, als `v5.3.0` galt. Eine Aussage über die Baseline nennt darum den Tag,
+  gegen den sie gemessen ist — [`AGENTS.md`](../AGENTS.md) §3.7 führt ihn seit diesem Eintrag
+  mit.
+- **Kein Wächter, und das gehört dazu.** Kein Sensor dieses Repos liest den Upstream-Baum:
+  `make regelwerk-check` prüft den Hash des gepinnten Assets, `make baseline-freshness` nur,
+  dass ein neuerer Tag existiert. Die Aussage ist gegen einen lokalen Kurs-Klon
+  reproduzierbar, nicht gegen ein Gate.
+- **Auflösungs-Trigger:** gebunden an
+  [`MR-022`](#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline). Mit dessen
+  vollständiger Aufhebung bei der Re-Baseline ist auch dieser Eintrag gegenstandslos und wird
+  nach [`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf) auf Kopf
+  und Zeiger zurückgeführt.
+
 ## Modus-Deklaration pro Sub-Area
 
 | Sub-Area | Modus | Begründung | Graduation |

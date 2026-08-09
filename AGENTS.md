@@ -133,14 +133,31 @@ Herkunft in **ein** auflösbares Feld ([`LH-*`](spec/lastenheft.md),
 [`ADR-*`](docs/plan/adr/)). Was daneben steht, liest jeder Lauf mit und bezahlt
 es mit Kontext.
 
-**Herkunft und Reichweite, ehrlich:** die adoptierte Baseline führt diese Regel
-**nicht** — sie ist in einem der Releases nach dem gepinnten Stand entstanden.
-Diese Sektion ist ein **Vorgriff** darauf und weicht zudem in der Platzierung ab
-(upstream steht die Regel in den Grundlagen und wird aus dem
-Implementierungs-Modul referenziert, nicht als Hard Rule). Beides ist als
-[`MR-022`](harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline) deklariert; mit der Re-Baseline ist gegen die Upstream-Fassung
-zu halten. **Ein Wächter existiert nicht:** `make comment-claims` prüft, ob ein
-genannter Sensor existiert, nicht, worüber ein Kommentar spricht.
+**Geltungsbereich:** Code, Konfiguration und Skripte, **die dieses Repo besitzt**.
+Ausgenommen ist `.harness/baseline/` — ein committet vendored Fremd-Blob, den
+[`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) nicht anfasst und den das Doc-Gate aus demselben Grund
+per `scan.ignore` ausnimmt. Was ein **emittiertes** Repo an Regeln bekommt,
+entscheidet der Slice, der die Tool-Ebene entscheidet — nicht diese Sektion.
+
+**Cutoff — ab Einführung, kein Nachrüsten.** Gebunden ist der Kommentar, der
+geschrieben oder geändert wird; der **Bestand ist kein Arbeitsauftrag**. Er ist
+gemessen, nicht geschätzt: von den 212 getrackten `*.go`/`*.sh`/`*.awk`/`Makefile`/
+`Dockerfile` außerhalb von `internal/emit/templates/` tragen **73** mindestens eine
+Kommentarzeile mit Befund-Kennung oder Herkunfts-Prosa (2026-08-09). Ein Maßstab,
+der diesen Bestand mitprüfte, wäre dauerhaft rot und entwertete die Regel, statt
+sie zu tragen — dieselbe Begründung trägt den Cutoff in
+[`MR-015`](harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler). Wer eine solche Zeile ohnehin anfasst, zieht sie nach;
+wer sie stehen lässt, bricht nichts.
+
+**Herkunft, mit Mess-Stand:** die adoptierte Baseline `v3.5.2` führt diese Regel
+**nicht** — diese Sektion ist ein **Vorgriff** auf einen späteren Kurs-Stand und als
+[`MR-022`](harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline) deklariert. Gegen den Tag `v5.3.0` gemessen (2026-08-09, lokaler
+Kurs-Klon) steht sie dort an derselben Stelle wie hier: als Hard Rule mit derselben
+Nummer und demselben Titel im Hard-Rules-Block der AGENTS-Vorlage, ausgeschrieben in
+den Grundlagen. Mit der Re-Baseline ist gegen die Upstream-Fassung zu halten
+([`MR-023`](harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung)).
+**Ein Wächter existiert nicht:** `make comment-claims` prüft, ob ein genannter
+Sensor existiert, nicht, worüber ein Kommentar spricht.
 
 
 ## 4. Quality Gates
