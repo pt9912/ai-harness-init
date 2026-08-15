@@ -97,56 +97,75 @@ Alle Messungen dieses Abschnitts stehen in
 (Zeitdokument, jede Zahl gilt an ihrem Datum). Hier steht, was sie **entscheiden**, nicht was sie
 sind.
 
-### Die Vertragsänderung — und die Beleglage genauer als der Anlass
+### Was das Werkzeug tut — und die Beleglage genauer als der Anlass
 
-Der Grund für Festlegung 1 ist kein Abwägen von Nutzen gegen Kosten, sondern eine **Änderung des
-Eingabe-Vertrags**. Zwei Enden — und sie sind **nicht von derselben Art**; das gehört in denselben
-Satz wie der Befund:
+Der Grund für Festlegung 1 ist kein Abwägen von Nutzen gegen Kosten, sondern eine **Änderung im
+Verhalten des Agenten-Werkzeugs**. Zwei Enden — und sie sind **nicht von derselben Art**; das
+gehört in denselben Satz wie der Befund:
 
 - **2026-07-29 war der Vordergrund herstellbar, und das ist an der Payload gemessen.**
   `tool_input` trug über vier echte Aufrufe die Schlüssel `subagent_type`, `prompt`, `description`
   **und** `run_in_background`; ein Rollen-Typ mit `true` wurde abgelehnt, derselbe Typ mit `false`
   lief unmittelbar davor durch — und die `usage`-Zähler lagen an diesem Tag in der `tool_response`
   eines Vordergrund-Aufrufs (`docs/reviews/2026-08-02-span-schema-messreihen.md` §1, §2 und §3).
-- **2026-08-15 ist er es nicht mehr — und dieses Ende ist keine Payload-Beobachtung.** Beobachtet
-  ist eine **Ablehnung**: die Probe fiel in den letzten Zweig der damaligen Guard-Fassung, und
-  dieser Zweig feuerte für **jeden** Wert, der nicht `false` war — für `true` genauso wie für ein
-  fehlendes Feld (`git show 60e4370:.claude/hooks/pretooluse-agent-guard.sh`, die zwei letzten
-  Zeilen: `[ "$rib" = "false" ] && exit 0`, danach `emit_deny`). **Gemessen ist damit genau eines:
-  kein Aufruf trug `run_in_background: false`.** Dass das Feld ganz *fehlte*, folgt nicht aus
-  dieser Beobachtung, sondern aus der **Schema-Selbstauskunft** desselben Laufs (`prompt`,
-  `description`, `subagent_type`, `model`, `isolation`, keine zusätzlichen Felder). Die Rohpayload
-  ist an dem Tag nicht ausgeworfen worden.
+- **2026-08-15 ist er es nicht mehr — und dieses Ende trennt drei Aussagen, die leicht für eine
+  gehalten werden.** Der Schalter ist **sendbar**: ein `Agent`-Aufruf, der
+  `run_in_background: false` neben den geführten Feldern trägt, wird angenommen — keine
+  Schema-Verletzung, kein Validierungsfehler. Er ist **nicht wirksam**: derselbe Lauf startet
+  dennoch asynchron, und sein `Agent`-Span trägt dieselbe Gestalt wie jeder andere
+  Hintergrund-Lauf des Tages — `model_version`, `duration_ms: 3`, kein `spawned_role`, keine
+  Zähler. Und er **erreicht den Hook nicht**: dort stand `ABSENT`. Diese dritte Beobachtung ist
+  vom 2026-08-10 und heute **ohne neuen Abnehmer** nicht wiederholbar — sie kam aus dem Zweig,
+  den Festlegung 1 entfernt.
+  Die drei Zeilen stehen mit je eigenem Beleg im Nachtrag (§7) des Mess-Dokuments; die
+  Rohpayload ist an keinem der Tage ausgeworfen worden.
 
 **Was die vendored Werkzeug-Doku dazu NICHT beiträgt — hier nachgemessen.** Ihre
 `Agent`-Eingabetabelle führt vier Felder (`prompt`, `description`, `subagent_type`, `model`), und
 sie führte **dieselben vier schon beim Vendoring**: gegen den Vendoring-Commit gehalten
 (`git show 73a4d86:docs/user/claude-hooks-referenz.md`, Abschnitt *Agent*) ist die Tabelle
 unverändert. Ein `run_in_background` hat für `Agent` **nie** darin gestanden. Die Tabelle kann
-eine Vertragsänderung deshalb weder belegen noch widerlegen — sie sagt heute, was sie damals
+eine solche Änderung deshalb weder belegen noch widerlegen — sie sagt heute, was sie damals
 sagte, als der Schalter nachweislich wirkte. **Was sie sehr wohl belegt**, steht eine Tabelle
 weiter, in der Beschreibung des Antwort-Feldes `status`: *„Ab v2.1.198 werden Subagenten
 standardmäßig im Hintergrund ausgeführt, daher erzeugt ein weggelassenes `run_in_background` auch
 `"async_launched"`"* — der Hintergrund ist der **Standard**, ein weggelassener Schalter also kein
 Versehen des Aufrufers. Der Beleg für die Änderung selbst ist die Payload-Messung von 2026-07-29
-gegen die Ablehnung und die Schema-Selbstauskunft vom 2026-08-15, nicht die Doku.
+gegen die drei Beobachtungen oben, nicht die Doku. **Und eine Auskunft trägt hier gar nichts:**
+dass das Eingabe-Schema *„keine zusätzlichen Felder zulässt"*, ist eine Selbstauskunft, und sie
+ist am 2026-08-15 widerlegt — der Aufruf mit dem zusätzlichen Feld wurde angenommen. Was ein
+Schema **führt**, sagt nichts darüber, was das Werkzeug **annimmt** oder **befolgt**: drei
+Fragen, drei Beobachtungen.
 
 **Die Grenze dieser Beleglage, benannt statt geglättet.** Für Festlegung 1 reicht, was gemessen
-ist: der Guard sah eine Payload ohne `run_in_background: false`, und eine Bedingung, die keine
-Payload mehr erfüllt, verweigert alles und schützt nichts. Ungemessen bleiben **zwei** Aussagen,
-und jede hat ihre eigene Sonde:
+ist: **kein Aufruf trug am Hook `run_in_background: false`** — jede Rollen-Probe fiel in den
+letzten Zweig der damaligen Guard-Fassung, und der feuerte für jeden Wert außer `false`
+(`git show 60e4370:.claude/hooks/pretooluse-agent-guard.sh`, die zwei letzten Zeilen:
+`[ "$rib" = "false" ] && exit 0`, danach `emit_deny`). Eine Bedingung, die keine Payload mehr
+erfüllt, verweigert alles und schützt nichts. Der tragende Grund heißt damit **gesendet, ohne
+Wirkung, und beim Hook nicht angekommen** — nicht *„nicht mehr sendbar"*. Offen bleibt danach
+**eine** Frage:
 
-- *Das Modell sendet den Schalter nicht mehr.* **Sonde:** im `PreToolUse`-Hook die
-  **Schlüsselmenge** von `tool_input` auswerfen — nur die Namen, keine Werte
-  ([ADR-0011](0011-telemetrie-erfassung-policy.md) Festlegung 2) — und gegen die vier vom
-  2026-07-29 halten. Sie unterscheidet ein fehlendes Feld von `true`; der Deny-Text konnte das
-  nicht. Repo-lokal, in `bash` + `awk` wie der vorhandene Extraktor.
-- *Der Schalter ist überhaupt nicht mehr sendbar.* **Sonde:** das Feld **nach** dem Modell
-  einsetzen und beobachten, ob das Werkzeug es annimmt. Das ist die Messung aus Festlegung 4; sie
-  entscheidet dieselbe Frage von der anderen Seite und ist deshalb dort geführt, nicht hier.
+- *Nimmt ein Feld, das ein Hook per `updatedInput` **nach** dem Modell einsetzt, denselben Weg?*
+  Die Beobachtung oben legt nahe, dass das Werkzeug den Wert nicht liest — sie entscheidet es
+  nicht: die Sonde des Modells und die Einspeisung am Hook setzen an verschiedenen Stellen der
+  Kette an. Das ist die Messung aus Festlegung 4, dort geführt und nicht hier; für Alternative D
+  unten macht sie den ganzen Unterschied.
 
-Für Alternative D unten macht die zweite den ganzen Unterschied: sie setzt das Feld nach dem
-Modell ein und umgeht dessen Schema.
+**Eine Beobachtung ist außerdem nachzuholen, weil ihr Zeuge gefallen ist.** Dass der Wert den
+Hook nicht erreicht, ist am 2026-08-10 gesehen worden, und der Zweig, der ihn las, ist mit der
+Senkung weg. **Die Sonde ist billiger als die Frage aussieht:**
+[`harness/tools/extract-agent-call.awk`](../../../harness/tools/extract-agent-call.awk) liest
+`tool_input.run_in_background` bei **jedem** Agenten-Aufruf und gibt ihn als erste seiner zwei
+Zeilen aus (`true`, `false` oder `ABSENT`); der Guard nimmt seit der Senkung nur noch die zweite.
+Es fehlt der **Abnehmer**, nicht die Messung. Wer breiter messen will, wirft die
+**Schlüsselmenge** von `tool_input` aus — nur die Namen, keine Werte, wie die Messreihe vom
+2026-07-29 (*„nur Feldnamen und Wertlängen, nie Werte"*). Sie ist die Präzedenz für eine
+Namens-Messung; [ADR-0011](0011-telemetrie-erfassung-policy.md) Festlegung 2 ist es **nicht** —
+ihre Zeile für das Agenten-Werkzeug lässt in den Span *„nur Name und Status — keine Argumente"*.
+Sie bindet damit nicht die Messung, sondern ihre **Verstetigung**: was aus ihr dauerhaft in einen
+Span soll, verlangt eine Änderung der Positiv-Liste und damit eine Folge-ADR. Getragen ist die
+Beobachtung als Folgepflicht 5.
 
 **Dieser Architect-Lauf kann das Tool-Schema nicht nachmessen:** ein Subagent führt das
 `Agent`-Werkzeug nicht. Nachgemessen ist hier, was repo-lokal messbar ist — die Doku-Historie
@@ -224,7 +243,8 @@ Messung.
 
 Kippt eine, kippt die Entscheidung; alle drei stehen unten als Re-Evaluierungs-Trigger.
 
-- **(a)** Das Agenten-Werkzeug bietet keine anforderbare Vordergrund-Form mehr an.
+- **(a)** Das Agenten-Werkzeug bietet keine **wirksam** anforderbare Vordergrund-Form mehr an —
+  das Feld wird angenommen und ändert nichts (2026-08-15 gemessen).
 - **(b)** Kein Hook-Ereignis trägt die Zähler. `SubagentStop` trägt `agent_type`,
   `agent_transcript_path` und `last_assistant_message`, **keine** `usage` — das ist der vendored
   Doku entnommen, hier **nicht** gemessen, und dieses Repo hat das Ereignis nicht verdrahtet
@@ -241,10 +261,11 @@ Festlegungen:
 **1. Der Guard entscheidet die AUFRUFFORM — lesbar oder nicht —, und die Betriebsart ist kein
 Gegenstand mehr.** Vier fail-closed-Zweige bleiben: fehlendes `awk`, fehlender Extraktor,
 Parse-Zweifel und fehlender Subagent-Typ. Ein lesbarer Typ läuft durch, auch ein Rollen-Typ.
-**Der tragende Grund ist die Vertragsänderung, nicht eine Abwägung:** eine Bedingung, die kein
-Aufruf mehr erfüllen kann, ist keine strenge Durchsetzung, sondern ein **Ausfall** — sie
-verweigert alles und schützt nichts. Ein Guard, der auf ein Feld prüft, das der Vertrag nicht
-mehr führt, misst nicht mehr die Wirklichkeit, sondern seine eigene Entstehungszeit.
+**Der tragende Grund ist das geänderte Verhalten des Werkzeugs, nicht eine Abwägung:** der
+Schalter ist sendbar, er bleibt wirkungslos, und beim Hook kam er nicht an — eine Bedingung, die
+kein Aufruf mehr erfüllen kann, ist keine strenge Durchsetzung, sondern ein **Ausfall**: sie
+verweigert alles und schützt nichts. Ein Guard, der auf einen Wert prüft, der ihn nicht mehr
+erreicht, misst nicht mehr die Wirklichkeit, sondern seine eigene Entstehungszeit.
 
 **2. Der Guard führt keine verweigernde Rollen-Frage mehr.** Die Ableitung *„ein Typ ist eine
 Rolle, wenn `.claude/agents/<name>.md` existiert"* fällt mit der Betriebsart-Forderung — sie hatte
@@ -274,9 +295,12 @@ vendored Doku sagt dazu: *„Ändert die Tool-Eingabeparameter vor der Ausführu
 gesamte Eingabeobjekt, daher müssen Sie unveränderte Felder zusammen mit geänderten einbeziehen.
 Kombinieren Sie mit `"allow"`, um automatisch zu genehmigen, oder mit `"ask"`, um die geänderte
 Eingabe dem Benutzer zu zeigen."* **Ob das Agenten-Werkzeug ein so eingespeistes
-`run_in_background` befolgt, hat niemand geprüft.** Seit das Modell das Feld nicht mehr senden
-kann, ist das der einzige denkbare Weg zurück in den Vordergrund, der nicht am fremden Vertrag
-hängt — denn er setzt das Feld **nach** dem Modell ein.
+`run_in_background` befolgt, hat niemand geprüft.** Vom **Modell** gesendet befolgt es das Feld
+nicht — das ist gemessen. Damit ist der negative Ausgang wahrscheinlicher geworden, nicht
+entschieden: die Einspeisung am Hook setzt an einer anderen Stelle der Kette an. Sie ist der
+einzige verbliebene Weg zurück in den Vordergrund, der nicht am fremden Vertrag hängt — denn sie
+setzt das Feld **nach** dem Modell ein. Dass ein Ausgang wahrscheinlicher ist, ist kein Grund,
+ihn vorwegzunehmen; Festlegung 3 bindet beide.
 
 **Die Messung, die ihn entscheidet, in einer Zeile:** ein Hook auf `Agent` gibt die Eingabe
 unverändert zurück und ergänzt `run_in_background: false`; entschieden ist der Weg an genau einer
@@ -288,7 +312,10 @@ gehört vorher benannt, weil er die Verstetigung mitbestimmt: die Doku nennt zwe
 erklärt das Feld für `"defer"` als ignoriert — `"allow"` überspringt für **jeden**
 Agenten-Aufruf das Permission-System, `"ask"` fragt bei jedem nach. Beides ist eine Entscheidung
 über die Durchsetzung und nicht nebenbei zu treffen; die Messung selbst ist davon nicht betroffen,
-ihre Verstetigung sehr wohl.
+ihre Verstetigung sehr wohl. **Und die Beobachtung entscheidet den Weg, nicht den Carveout:** der
+Span eines zurückgenommenen Messaufbaus löst
+[CO-002](../carveouts/CO-002-token-achse-je-rolle.md) nicht auf — dessen Schwelle steht dort und
+verlangt die committete Mechanik dazu.
 
 ## Verglichene Alternativen
 
@@ -303,8 +330,13 @@ ihre Verstetigung sehr wohl.
 ## Konsequenzen
 
 - **Positiv:** die sechs Rollen sind wieder startbar, und die Rollen-Achse der Telemetrie trägt
-  weiter — für die sechs **notierten** Rollen gemessen, nicht gehofft (oben); ihre Grenze steht
-  vier Punkte tiefer.
+  weiter. **Gemessen ist sie am 2026-08-15 für fünf der sechs Rollen:** `agent_role` steht im
+  Span-Bestand mit `architect`, `implementer`, `planner`, `reviewer` und `verifier`; für
+  `validator` trägt sie **kein einziger** Span, und am 2026-08-15 selbst sind es drei Rollen. Was
+  für alle sechs trägt, ist die **Ableitung** im Emitter, nicht eine Beobachtung — ihre Grenze
+  steht vier Punkte tiefer. Der Bestand liegt gitignored und maschinenlokal; die **Gestalt** ist
+  die Aussage, nicht die Zahl
+  (`grep -ho '"agent_role":"[^"]*"' .harness/state/spans/*.jsonl | sort | uniq -c`).
 - **Positiv:** der Guard sagt jetzt, was er entscheidet. Sein Kopf behauptet keine Telemetrie-
   Wirkung mehr, die er nicht herstellen kann.
 - **Negativ, und das ist der Preis:** die Token-Bilanz je Rolle hat keinen Eingang mehr; die
@@ -357,6 +389,15 @@ ihre Verstetigung sehr wohl.
   führt heute keinen Agent-Guard (oben gemessen). Bekommt sie je einen, gilt diese Grenze dort
   unverändert — sie ist keine Eigenschaft unseres Aufbaus, sondern der Mechanik — und gehört dort
   **genannt**, nicht stillschweigend mitgeliefert.
+- **Folgepflicht 5 — nachmessen, was der Hook in `tool_input` sieht.** Die Beobachtung, dass der
+  Schalter dort nicht ankommt, stammt vom 2026-08-10 und ist ohne Abnehmer nicht wiederholbar
+  (§Kontext). Sie gehört dem Slice aus Festlegung 2, der das Vor-Aufruf-Protokoll baut: er
+  zeichnet dieses Feld ohnehin auf, und der Extraktor gibt es unverändert aus — eine Zeile mehr,
+  keine zweite Verdrahtung. Der Wert ist die einzige repo-lokale Beobachtung, die den tragenden
+  Grund von Festlegung 1 **widerlegen** könnte: stünde dort `false`, wäre die Bedingung des alten
+  Guards erfüllbar gewesen. Er macht zugleich den ersten Re-Evaluierungs-Trigger unten überhaupt
+  beobachtbar. Die Bedingung ist eine **Eigenschaft**, keine Adresse; diese ADR benennt sie und
+  schreibt den Slice nicht.
 
 ## Fitness Function (falls maschinell prüfbar)
 
@@ -381,9 +422,12 @@ Beobachtung durch Wiedervorlage, nicht durch Sensor.
 
 ## Re-Evaluierungs-Trigger
 
-- **Wenn das Eingabe-Schema von `Agent` wieder eine Vordergrund-Form anbietet** *(feedforward —
-  fremder Vertrag, kein Sensor; die Payload-Fläche wächst belegbar: vier gemessene Aufrufe zeigten
-  fünf undokumentierte Schlüssel)*: dann fällt Annahme (a), Festlegung 1 ist neu zu prüfen und
+- **Wenn `Agent` wieder eine WIRKSAME Vordergrund-Form anbietet** *(feedforward — fremder
+  Vertrag, kein Sensor; die Payload-Fläche wächst belegbar: vier gemessene Aufrufe zeigten fünf
+  undokumentierte Schlüssel)*: **die bloße Annahme des Feldes ist es nicht** — die ist gemessen
+  und wirkungslos. Beobachtbar ist der Trigger an zweierlei zusammen: der Wert erreicht den Hook
+  (Folgepflicht 5), **und** ein so gestarteter Lauf trägt die Zähler. Dann fällt Annahme (a),
+  Festlegung 1 ist neu zu prüfen und
   [CO-002](../carveouts/CO-002-token-achse-je-rolle.md) aufzulösen.
 - **Wenn ein Hook-Ereignis die Zähler trägt** *(feedforward — nur sichtbar, wer das Ereignis
   verdrahtet und seine Schlüsselmenge misst)*: dann fällt Annahme (b), und der Träger wechselt,
@@ -404,3 +448,4 @@ Beobachtung durch Wiedervorlage, nicht durch Sensor.
 |---|---|---|
 | 2026-08-15 | **Proposed** | Architect-Auftrag zur bereits vollzogenen Senkung `83cf01d`. Grundlage ist die Messung in [`docs/reviews/2026-08-15-agent-guard-tool-vertrag.md`](../../reviews/2026-08-15-agent-guard-tool-vertrag.md); der Eintritt in die blockierte Schleife war eine Auftraggeber-Entscheidung |
 | 2026-08-15 | **Überarbeitet, weiter Proposed** | Die Beleglage von Festlegung 1 trennt jetzt zwei Arten von Beleg — Payload-Messung (2026-07-29) gegen Ablehnung plus Schema-Selbstauskunft (2026-08-15) —, und die zwei ungemessenen Aussagen tragen je ihre Sonde. Die Reihenfolge-Prämisse ist auf den Agenten-Weg verengt: der uncommittete Weg des Auftraggebers steht als offen und ungeprüft da und ist Teil der Berufungslast. Der [`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)-Bezug ist als **Analogie** gekennzeichnet, der reale Fußabdruck ist die Commit-Reihenfolge `60e4370` → `83cf01d`. Die Fitness Function sagt **Durchlass** statt Rollen-Achse; deren Träger — die notierte Liste im Emitter — steht als Grenze in den Konsequenzen |
+| 2026-08-15 | **Überarbeitet, weiter Proposed** | Der tragende Grund von Festlegung 1 heißt, was gemessen ist: der Schalter ist **sendbar und wirkungslos**, und beim Hook kam er nicht an — drei getrennte, je datierte Aussagen. Die Prämisse von Festlegung 4 ist damit gemessen statt ungemessen; offen bleibt allein der Weg über `updatedInput`. Die zweite offene Beobachtung — was der Hook in `tool_input` sieht — trägt **Folgepflicht 5** und hängt am Slice aus Festlegung 2; der erste Re-Evaluierungs-Trigger verlangt **Wirksamkeit** statt Annahme des Feldes. Die Positiv-Konsequenz nennt die fünf Rollen, für die die Achse am Bestand steht, und die eine, für die sie es nicht tut |

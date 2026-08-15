@@ -26,10 +26,11 @@ Zuordnung der Arbeit zu einer Rolle.
 [slice-086](../planning/open/slice-086-vordergrund-per-updatedinput.md) — er fährt die Messung aus
 Festlegung 4 von [ADR-0019](../adr/0019-agent-guard-prueft-die-aufrufform.md) und **bindet beide
 Ausgänge dieses Carveouts**: hält der Weg, folgt die Entscheidung über seine Verstetigung samt
-Permission-Folge in einer Folge-ADR, und erst danach löst sich dieser Carveout auf; hält er nicht,
-kippt die Modul-7-Frage 2 auf *Nein* und der Carveout ist in eine Folge-ADR zu überführen. Ein
-negatives Ergebnis ist damit kein Fehlschlag, sondern der zweite Ausgang. Der Planner hat ihn
-geschnitten; über beide Ausgänge entscheidet der Architect.
+Permission-Folge in einer Folge-ADR; hält er nicht, kippt die Modul-7-Frage 2 auf *Nein* und der
+Carveout ist in eine Folge-ADR zu überführen. Ein negatives Ergebnis ist damit kein Fehlschlag,
+sondern der zweite Ausgang. **Der Messaufbau selbst löst diesen Carveout nicht auf** — er wird
+nach dem Lauf zurückgenommen; was ihn auflöst, ist **eine** Schwelle, und sie steht unten. Der
+Planner hat ihn geschnitten; über beide Ausgänge entscheidet der Architect.
 
 ---
 
@@ -38,10 +39,12 @@ geschnitten; über beide Ausgänge entscheidet der Architect.
 **Die Zähler stehen in keiner Payload mehr, die dieses Repo erreichen kann — das ist eine
 technische Werkzeuggrenze, kein „noch nicht geschafft".** Sie liegen ausschließlich in der
 `tool_response` eines **Vordergrund**-`Agent`-Aufrufs. Der Vordergrund war bis zum 2026-07-29
-anforderbar (`run_in_background: false`, an einem echten Aufruf gemessen); am 2026-08-15 führt das
-Eingabe-Schema von `Agent` das Feld nicht mehr und lässt keine zusätzlichen Felder zu, und
-Subagenten starten seit v2.1.198 standardmäßig im Hintergrund. Ein Hintergrund-Lauf gibt sofort
-nach dem Start zurück; seine Antwort trägt weder Zähler noch `agentType`. Die Messreihe steht in
+anforderbar (`run_in_background: false`, an einem echten Aufruf gemessen); am 2026-08-15 ist er es
+nicht mehr — **und nicht deshalb, weil der Schalter fehlte:** ein Aufruf **mit** dem Feld wird
+angenommen und startet dennoch im Hintergrund (gemessen), und beim Hook kam der Wert nie als
+`false` an (2026-08-10 beobachtet). Subagenten starten seit v2.1.198 standardmäßig im
+Hintergrund. Ein Hintergrund-Lauf gibt sofort nach dem Start zurück; seine Antwort trägt weder
+Zähler noch `agentType`. Die Messreihe steht in
 [`docs/reviews/2026-08-15-agent-guard-tool-vertrag.md`](../../reviews/2026-08-15-agent-guard-tool-vertrag.md),
 die Entscheidung, die daraus folgt, in
 [ADR-0019](../adr/0019-agent-guard-prueft-die-aufrufform.md).
@@ -63,9 +66,19 @@ keinen Gegenstand hätte.
 
 ## Auflösungs-Trigger
 
-**Beobachtbar am Bestand, nicht an einer Absicht:** ein `Agent`-Span trägt wieder `spawned_role`
-**und** alle vier `usage`-Zähler (`input_tokens`, `output_tokens`, `cache_creation_input_tokens`,
-`cache_read_input_tokens`).
+**Eine Schwelle, beobachtbar am Bestand und nicht an einer Absicht:** ein `Agent`-Span trägt
+wieder `spawned_role` **und** alle vier `usage`-Zähler (`input_tokens`, `output_tokens`,
+`cache_creation_input_tokens`, `cache_read_input_tokens`) — **und die Mechanik, die ihn erzeugt
+hat, liegt committet im Baum**, ist also auf einem anderen Checkout ohne Zusatzwissen
+nachzufahren.
+
+**Warum die zweite Hälfte zur Schwelle gehört und keine zweite ist.** Der Weg zurück wird zuerst
+in einem **uncommitteten** Messaufbau gefahren, der danach zurückgenommen wird. Sein Span bleibt
+im gitignorierten, maschinenlokalen Bestand liegen und erfüllte die erste Hälfte ab da dauerhaft
+— während kein Checkout mehr etwas herstellt, was Zähler trägt. Ohne die zweite Hälfte löste
+dieser Carveout sich an dem Tag auf, an dem seine Frage **gestellt** wird, statt an dem, an dem
+sie beantwortet ist. Beurteilbar ohne Rückfrage bleibt sie: die `Agent`-Zeile lesen, und im Baum
+nachsehen, ob die Mechanik, die sie erzeugt hat, dort steht.
 
 **Abgelesen wird das an der `Agent`-Zeile des Span-Bestands selbst, nicht an der Abdeckungszeile
 von `make span-report`** — die beiden sind nicht dieselbe Bedingung. Der Bericht zählt einen Lauf
@@ -83,10 +96,14 @@ Drei Wege führen zu diesem Bestand, und sie sind verschieden nah:
 1. **Die `updatedInput`-Messung trägt** (der Weg in unserer Hand,
    [slice-086](../planning/open/slice-086-vordergrund-per-updatedinput.md)): ein
    `PreToolUse`-Hook setzt `run_in_background: false` in die Tool-Argumente ein, und der so
-   gestartete Lauf liefert die Zähler. Dann ist zusätzlich die Permission-Folge zu entscheiden
-   (`updatedInput` wirkt nur mit `"allow"` oder `"ask"`) — eine Folge-ADR, kein Federstrich.
-2. **Das Eingabe-Schema von `Agent` bietet wieder eine Vordergrund-Form an** (fremder Vertrag,
-   kein Sensor; die Payload-Fläche wächst belegbar).
+   gestartete Lauf liefert die Zähler. **Die Schwelle ist damit noch nicht erreicht** — der
+   Messaufbau geht zurück, und erst die Permission-Folge, entschieden in einer Folge-ADR
+   (`updatedInput` wirkt nur mit `"allow"` oder `"ask"`), bringt eine committete Mechanik in den
+   Baum. Weg 1 ist der einzige der drei, bei dem zwischen Beobachtung und Schwelle noch eine
+   Entscheidung liegt; die zwei fremden Wege tragen sie, sobald sie eintreten.
+2. **`Agent` bietet wieder eine WIRKSAME Vordergrund-Form an** (fremder Vertrag, kein Sensor; die
+   Payload-Fläche wächst belegbar). Dass ein gesendetes Feld **angenommen** wird, ist es nicht —
+   das ist gemessen und wirkungslos.
 3. **Ein Hook-Ereignis trägt die Zähler** (fremder Vertrag; heute trägt keines sie, gelesen in der
    vendored Doku, nicht gemessen).
 
@@ -116,8 +133,9 @@ im Kopf behalten.
 ## Verifikation (nach Auflösung)
 
 - [ ] Mindestens ein `Agent`-Span im Bestand trägt `spawned_role` **und** alle vier
-      `usage`-Zähler — am Span gelesen, nicht an der Abdeckungszeile; `make span-report` steht
-      danebengehalten, seine Abdeckungszahl ist dann > 0.
+      `usage`-Zähler — am Span gelesen, nicht an der Abdeckungszeile —, **und die Mechanik, die
+      ihn erzeugt hat, liegt committet im Baum**; `make span-report` steht danebengehalten, seine
+      Abdeckungszahl ist dann > 0.
 - [ ] Die Erfassungs-Zusagen in `spec/spezifikation.md` §5 sind auf den wiederhergestellten Weg
       nachgezogen — samt der Frage, ob die Vordergrund-Form wieder **erzwungen** wird.
 - [ ] `make gates` grün ohne Ausnahme.
@@ -130,3 +148,4 @@ im Kopf behalten.
 |---|---|---|
 | 2026-08-15 | Angelegt — Werkzeug-Wahl nach Modul 7, Ausgang *Carveout* | [ADR-0019](../adr/0019-agent-guard-prueft-die-aufrufform.md) Festlegung 3 |
 | 2026-08-15 | Folge-Slice geschnitten; der Trigger wird am Span gelesen, nicht an der Abdeckungszeile; beide Zeiger der Geltungs-Konfiguration stehen | [slice-086](../planning/open/slice-086-vordergrund-per-updatedinput.md) |
+| 2026-08-15 | Trigger auf **eine** Schwelle gezogen — der Span **und** die committete Mechanik, die ihn erzeugt; der Span eines zurückgenommenen Messaufbaus erfüllt sie nicht. Die Begründung nennt den gemessenen Grund: der Schalter ist sendbar und wirkungslos | [ADR-0019](../adr/0019-agent-guard-prueft-die-aufrufform.md) §Kontext |
