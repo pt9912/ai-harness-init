@@ -63,9 +63,12 @@ geschrieben.** Aus denselben Spans wie die Token-Bilanz, aber mit einer anderen 
   nicht nur im Code.** Welche drei Zähler geführt werden, unter welchen Namen, in welcher
   Counter-Form und **wo die Division läuft** — eine einzelne `cache.hit_ratio` reicht
   ausdrücklich nicht, weil sie Kosten- und Sicherheits-Indikator vermischt. Sie trifft die
-  [Aufnahme-Regel](../../../../spec/spezifikation.md#aufnahme-regel) auf allen drei Achsen und
-  setzt fort, was Abweichung 1 dort bereits verlangt: die Zähler sind für Vordergrund-Läufe
-  erfasst und dürfen **nicht** als unerreichbar geführt werden. **Auflösungs-Trigger, als
+  [Aufnahme-Regel](../../../../spec/spezifikation.md#aufnahme-regel) auf allen drei Achsen.
+  **Sie regelt die Rechnung, nicht die Erreichbarkeit der Zähler:** dass die `usage` eines
+  Vordergrund-Aufrufs nicht mehr entsteht, führt Abweichung 1 dort als
+  [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) — eine zweite Aussage darüber an
+  dieser Stelle wäre der zweite Ort, der driftet. Was hier festgelegt wird, gilt für den
+  Bestand, sobald die Zähler wieder ankommen. **Auflösungs-Trigger, als
   beobachtbare Bedingung und ohne Planungs-Kennung im bindenden Text:** Namen, Counter-Form und
   Ort der Division werden neu entschieden, **sobald dieses Repo eine Metrik-Senke bekommt** — dann
   wandert die Division dorthin und die Namen folgen deren Konvention. Bis dahin gilt die
@@ -79,8 +82,16 @@ geschrieben.** Aus denselben Spans wie die Token-Bilanz, aber mit einer anderen 
 **Voraussetzung, die [slice-060](../done/slice-060-rollen-achse.md) liefert:** die
 `Agent`-Spans tragen `spawned_role` (normalisiert), `resolvedModel` und die `usage` mit ihren
 vier Zählern — zwei davon sind die Cache-Zähler, `resolvedModel` ist das Pflicht-Label
-`model.version`. **Gemessen am 2026-07-29:** diese Felder kommen **nur bei
-Vordergrund-Läufen** an.
+`model.version`. **Diese Felder kommen nur bei Vordergrund-Läufen an, und der Vordergrund ist
+nicht mehr anforderbar** ([`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md)): die
+Erfassung steht unverändert und nimmt die Zähler, sobald sie wieder ankommen — heute stünde die
+Rechnung über einem Bestand ohne Eingang.
+
+**Was daraus für den Zuschnitt folgt, und es ist eine Trennung, keine Vertagung:** DoD (2) ist
+heute entscheidbar — Namen, Counter-Form und Ort der Division sind eine **Festlegung** und
+brauchen keinen Bestand. DoD (1) ist eine **Rechnung** und braucht einen. Der Eintritt fragt
+deshalb den Carveout ab (§4); fällt seine Auflösung negativ aus, wird dieser Slice auf DoD (2)
+zurückgeschnitten, statt eine Rechnung über leerem Bestand zu planen.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
@@ -98,7 +109,11 @@ Vordergrund-Läufen** an.
 ## 4. Trigger
 
 **`open` → `next`:** [slice-060](../done/slice-060-rollen-achse.md) ist **done** — vorher
-trägt kein Span eine Rolle, und `agent.role` ist eines der drei Pflicht-Labels aus DoD (1).
+trägt kein Span eine Rolle, und `agent.role` ist eines der drei Pflicht-Labels aus DoD (1) —
+**und [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) ist entschieden:** aufgelöst
+(der Bestand trägt wieder Zähler, die Rechnung hat einen Eingang) oder in eine Folge-ADR
+überführt (dann bleibt von diesem Slice die Festlegung aus DoD (2)). Die Messung, die das
+entscheidet, ist [slice-086](slice-086-vordergrund-per-updatedinput.md).
 
 **`next` → `in-progress`:** WIP-Limit; dazu **Frage A entschieden**.
 
@@ -107,8 +122,9 @@ Rückführungen:
 - `in-progress` → `next`: falls die Namensgebung ohne Metrik-Senke nicht festlegbar ist — dann
   ist zuerst zu entscheiden, wofür die Namen gelten, und der Slice zerfällt in Festlegung und
   Rechnung.
-- `in-progress` → `open`: falls der erfasste Bestand keine Cache-Zähler trägt (kein
-  Vordergrund-`Agent`-Lauf darin) — dann stünde die Rechnung über leerem Bestand.
+- `in-progress` → `open`: falls der erfasste Bestand die Cache-Zähler wieder verliert — dann
+  stünde die Rechnung über leerem Bestand. Das ist keine Hypothese mehr, sondern der Zustand,
+  den der Eintritt oben abfragt.
 
 ## 5. Closure-Trigger
 
@@ -120,7 +136,9 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
 
 - **Die Hit-Rate ist eine Verhältniszahl über der erfassten Teilmenge.** Sie rechnet über
   dieselben `Agent`-Spans wie die Token-Bilanz und deckt damit dieselben Läufe ab — die
-  Vordergrund-Läufe. Was sie über den Haupt-Kontext sagt, ist nichts
+  Vordergrund-Läufe, die es bis zur Auflösung von
+  [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) nicht gibt. Was sie über den
+  Haupt-Kontext sagt, ist nichts
   ([`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md)).
 - **Zwei gelieferte Zähler, drei geführte Namen.** Der dritte Name ruht auf `input_tokens` aus
   derselben `usage` — kein eigener Cache-Zähler, sondern die Größe, gegen die der Miss-Spike

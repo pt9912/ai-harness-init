@@ -172,13 +172,20 @@ Emitter läuft an `PostToolUse`/`PostToolUseFailure` — und seit dem 2026-08-08
 Korrelations-Achsen. Der `PreToolUse`-Guard, den eine frühere Fassung hier als Erfassungsort
 nannte, ist es **nicht** — er entscheidet und behält nichts.
 
-**Zu slice-066 und slice-071 (der Auswertung):** die Rohdaten sind real vorhanden, und die
-Quelle ist **gemessen** statt vermutet — ein `Agent`-Aufruf im **Vordergrund** trägt in
-`tool_response` ein `usage`-Objekt mit getrennten Hit-/Miss-Zählern
-(`cache_read_input_tokens` vs. `cache_creation_input_tokens`), also genau die Trennung, auf der
-Modul 15 besteht. **Nicht** aus Sitzungs-Transkripten — beide Slices schließen jeden Zugriff
-außerhalb des Repos aus. Das bequeme Argument „kein Gegenstand" ist damit ausgeschlossen; offen
-ist die Zuordnung zur **Rolle** (slice-060), nicht die Datenlage. **Was die Zahlen NICHT
+**Zu slice-066 und slice-071 (der Auswertung):** die Trennung, auf der Modul 15 besteht, liegt
+im `usage`-Objekt der `tool_response` eines **Vordergrund**-`Agent`-Aufrufs — getrennte
+Hit-/Miss-Zähler (`cache_read_input_tokens` vs. `cache_creation_input_tokens`), am 2026-07-29
+an echten Aufrufen gemessen. **Nicht** aus Sitzungs-Transkripten — beide Slices schließen jeden
+Zugriff außerhalb des Repos aus. **Der Vordergrund ist seit dem 2026-08-15 nicht mehr
+anforderbar; die Datenlage ist damit selbst der offene Punkt** und wird als
+[`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md) geführt — mit zwei Ausgängen und der
+Messung, die sie entscheidet ([slice-086](open/slice-086-vordergrund-per-updatedinput.md)).
+**„Kein Gegenstand" trägt trotzdem nicht:** die Festlegung, welche Zähler unter welchen Namen
+und in welcher Counter-Form geführt werden, ist ohne Bestand entscheidbar (slice-071 DoD (2));
+am Bestand hängt die Rechnung, nicht die Festlegung. **Für das Closure-Kriterium dieser Welle
+ändert der Ausfall nichts:** die Zelle *Token-Attribution × Repo* trägt für den Hintergrund-Teil
+den Wert *deklariert* — Geltungsbereich, Begründung und Auflösungs-Trigger stehen im Carveout —,
+und ob daraus *Sensor* oder *ADR-Verdikt* wird, entscheidet jene Messung. **Was die Zahlen NICHT
 abdecken**, steht in [`ADR-0012`](../adr/0012-haupt-kontext-ohne-token-bilanz.md): der
 Haupt-Kontext trägt keine, dauerhaft — deshalb nennt jede Bilanz aus diesem Bestand ihren
 Nenner (slice-066 DoD (2)).

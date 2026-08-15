@@ -45,7 +45,7 @@ Ausschluss-Notiz darin trüge ein, was sie ausschließt.
 alles grün: die Guards laufen nicht mehr, die Spans hören auf zu entstehen, und kein Sensor sagt
 es.
 
-**Der Ist-Zustand, gemessen am 2026-08-08:**
+**Der Ist-Zustand, gemessen am 2026-08-15 (alle drei Zeilen neu gefahren):**
 
 - `.claude/settings.json` verdrahtet **fünf** Ereignisse — `PreToolUse`, `PostToolUse`,
   `PostToolUseFailure`, `SubagentStart`, `Stop` — in **sechs** Hook-Einträgen (`PreToolUse`
@@ -54,9 +54,11 @@ es.
   Fall über einer `settings.json` ist `32-enforce-settings-wires-guard.sh`, und seine
   `files:`-Zeile zeigt auf `internal/emit/templates/enforce/settings.json` — die **emittierte**
   Vorlage.
-- **Die Hooks selbst sind bewacht, ihre Verdrahtung nicht:** vier Fälle (`117`, `118`, `119`,
-  `139`) mutieren `.claude/hooks/pretooluse-agent-guard.sh`. Ein Skript, das niemand aufruft,
-  besteht jeden dieser Fälle.
+- **Die Hooks selbst sind bewacht, ihre Verdrahtung nicht:** **zwei** Fälle (`139`, `150`)
+  mutieren `.claude/hooks/pretooluse-agent-guard.sh` (`grep -l pretooluse-agent-guard
+  test/mutations/*.sh`). Ein Skript, das niemand aufruft, besteht jeden dieser Fälle — und die
+  Zahl ist das schwächere Argument von beiden: sie sinkt, sobald ein Guard-Zweig entfällt, ohne
+  dass die Lücke kleiner würde.
 
 **Die Lücke ist älter als der jüngste Block.** `PostToolUse` und `PostToolUseFailure` stehen seit
 slice-059 ungeschützt, die zwei `PreToolUse`-Einträge und `Stop` noch länger; `SubagentStart` hat

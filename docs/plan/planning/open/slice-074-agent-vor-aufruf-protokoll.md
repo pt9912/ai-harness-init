@@ -26,6 +26,10 @@ die Hook-Mechanik dieses Repos, in der der zweite Eintrag verdrahtet wird.
 [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) — der Satz über
 den **Tool-Build** im gepinnten Image; das Protokoll bleibt bei `bash` + `awk`, kein `jq`, kein
 `node`, und ausdrücklich auch kein gebautes Binär (§6).
+[`ADR-0019`](../../adr/0019-agent-guard-prueft-die-aufrufform.md) — Festlegung 2 übergibt diesem
+Slice die **nicht entscheidende** Rollen-Frage samt ihren zwei Constraints (§3); Festlegung 1
+nimmt dem Guard die Betriebsart als Gegenstand und ändert damit den Wert, den das Protokoll für
+sie aufzeichnet.
 
 **Bewusst KEINE `LH-FA`-Kennung.** Geprüft: die funktionalen Anforderungen betreffen das
 **emittierte** Zielprojekt; dieser Slice legt eine Dogfood-Diagnostik an und emittiert nichts
@@ -44,9 +48,10 @@ eine Ausschluss-Notiz darin trüge ein, was sie ausschließt.
 entscheidbar, ob der Hook einen Aufruf überhaupt gesehen hat — und eine Auswertungsregel stellt
 die Frage von sich aus, statt auf ihr nächstes Auftreten zu warten.**
 
-**Der Anlass, und er ist eingegrenzt, nicht geklärt.** Ein Aufruf unter einem **Rollen**-Typ ist
-durchgelaufen, obwohl der Guard aus [slice-060](../done/slice-060-rollen-achse.md)
-verdrahtet ist und ihn hätte ablehnen müssen. Drei Beobachtungen grenzen die Ursache ein:
+**Der Anlass, und er ist eingegrenzt, nicht geklärt.** Am 2026-08-01 ist ein Aufruf unter einem
+**Rollen**-Typ durchgelaufen, obwohl der damals verdrahtete Guard aus
+[slice-060](../done/slice-060-rollen-achse.md) ihn hätte ablehnen müssen. Drei Beobachtungen
+grenzen die Ursache ein:
 
 1. **Der Guard scheidet aus.** Die Fassung vor der letzten Änderung lehnt dieselbe Aufrufform mit
    demselben Grund ab, direkt gefahren über den regulären Extraktor-Pfad; eine Sonde mit exakt
@@ -75,6 +80,15 @@ Hook, seine Zähne und die Auswertungsregel; **das Warten bildet nicht den Kern*
 **Was er ausdrücklich nicht leistet:** den bereits gelaufenen Aufruf erklären. Für ihn existiert
 keine Zeile, und es kann keine mehr entstehen. Der Slice macht das **nächste** Auftreten
 entscheidbar, nicht das vergangene.
+
+**Der Anlass ist datiert, die Lücke nicht.** Seit [`ADR-0019`](../../adr/0019-agent-guard-prueft-die-aufrufform.md)
+Festlegung 1 entscheidet der Guard die **Aufrufform**, nicht die Betriebsart; ein durchgelaufener
+Rollen-Typ ist damit der Normalfall und kein Befund mehr, und die Gestalt *Vordergrund-Dauer mit
+Zählern* aus Beobachtung 2 entsteht überhaupt nicht mehr
+([`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md)). **Beobachtung 3 ist davon
+unberührt**, und sie allein trägt diesen Slice: was der Hook gesehen hat, steht nirgends — für
+die vier verbliebenen fail-closed-Zweige so wenig wie für den Pass-Fall. Ein `PreToolUse`-Deny
+ist im Span-Bestand nach wie vor unsichtbar.
 
 ## 2. Definition of Done
 
@@ -149,11 +163,11 @@ entscheidbar, nicht das vergangene.
 
 | # | Aussage | Belegklasse |
 |---|---|---|
-| 1 | `PreToolUse` feuert für `Agent`, und `tool_input` trägt `subagent_type` und `run_in_background` schon **vor** dem Lauf | **gemessen** — [slice-060](../done/slice-060-rollen-achse.md) §3 Zeile 8, an einer echten Sonde mit `"matcher": "Agent"` |
+| 1 | `PreToolUse` feuert für `Agent`, und `tool_input` trägt `subagent_type` schon **vor** dem Lauf | **gemessen** — [slice-060](../done/slice-060-rollen-achse.md) §3 Zeile 8, an einer echten Sonde mit `"matcher": "Agent"`. **`run_in_background` lag am 2026-07-29 in derselben Payload; am 2026-08-15 führt das Eingabe-Schema von `Agent` das Feld nicht mehr** ([`ADR-0019`](../../adr/0019-agent-guard-prueft-die-aufrufform.md)) — für die Feld-Tabelle unten heißt das: der aufgezeichnete Wert ist heute `ABSENT`, und das ist die Beobachtung, nicht ein Ausfall des Hooks |
 | 2 | `PreToolUse`-Hooks erhalten `tool_name`, `tool_input` **und `tool_use_id`** | **dokumentiert, nicht gemessen** — `docs/user/claude-hooks-referenz.md` §PreToolUse-Eingabe. Die Sonde protokollierte den Wert nicht; damit ist die Korrelations-Achse gelesen und nicht belegt |
 | 3 | Der Span führt `tool_use_id` als **Pflichtfeld**, mit der Incident-Frage *„welche Ereignisse gehören zu einem Aufruf?"* | **läuft** — [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 Feldtabelle |
 | 4 | Dass Vor- und Nachereignis desselben Aufrufs **denselben** Wert tragen | **weder gemessen noch dokumentiert-verglichen** — die Referenz sagt es für die zwei Nach-Ereignisse, für das Paar Vor↔Nach steht es nirgends |
-| 5 | Das dokumentierte Eingabe-Schema von `Agent` führt `prompt`, `description`, `subagent_type`, `model` — **kein** `run_in_background`, obwohl die Messung es zeigt | **gelesen + gemessen, und sie widersprechen sich** — der Grund, weshalb der Guard *fehlend* wie *Hintergrund* behandelt |
+| 5 | Das dokumentierte Eingabe-Schema von `Agent` führt `prompt`, `description`, `subagent_type`, `model` — **kein** `run_in_background` | **gelesen + gemessen, und sie stimmen inzwischen überein** — der Widerspruch, aus dem der Guard *fehlend* wie *Hintergrund* behandelte, ist mit der Aufrufform-Entscheidung entfallen ([`ADR-0019`](../../adr/0019-agent-guard-prueft-die-aufrufform.md) Festlegung 1). Damit trägt das Protokoll die Betriebsart **beobachtend**, nicht mehr als Vorbedingung einer Entscheidung |
 
 **Zeile 4 ist die einzige echte Vorbedingung, und sie wird beim ersten Aufruf nach der
 Verdrahtung beantwortet — nicht beim nächsten Vorfall.** Der Hook ist seine eigene Sonde: er
@@ -170,7 +184,8 @@ schwächer als eine Kennungs-Gleichheit, und wer sie nimmt, schreibt das dazu.
 | `tool_use_id` | *Welchem Span gehört diese Zeile?* — **die** Korrelations-Achse; ohne sie belegt das Protokoll nur, dass irgendwann etwas lief | undurchsichtige Kennung des Werkzeugs, im Zeichensatz gebunden wie der Typname |
 | `session` | *Welchem Strom?* — der Span-Bestand liegt je Sitzung und Agent getrennt; ohne sie ist die Rückfall-Achse mehrdeutig | Kennung |
 | `subagent_type` | *Welcher Typ wurde angefordert?* — der erste der beiden Werte, aus denen der Guard entscheidet; ohne ihn ist nicht rekonstruierbar, ob eine Rolle startete | roh, aber **durch den bestehenden Extraktor auf `[A-Za-z0-9_:-]+` gebunden**, sonst `?` |
-| `run_in_background` | *In welcher Betriebsart?* — der zweite Wert; die Betriebsart ist der Grund, aus dem eine Antwort ohne Zähler zurückkommt | genau drei Werte: `true`, `false`, `ABSENT` |
+| `run_in_background` | *In welcher Betriebsart?* — die Betriebsart ist der Grund, aus dem eine Antwort ohne Zähler zurückkommt. Der Wert ist heute konstant `ABSENT`, und **genau deshalb bleibt das Feld**: ein `true` oder `false` in einer künftigen Zeile ist die Beobachtung, dass das Eingabe-Schema den Schalter wieder führt — der erste Re-Evaluierungs-Trigger von [`ADR-0019`](../../adr/0019-agent-guard-prueft-die-aufrufform.md), der sonst niemandem auffällt | genau drei Werte: `true`, `false`, `ABSENT` |
+| Rollen-Zugehörigkeit | *War der angeforderte Typ eine Rolle dieses Repos?* — die Frage, die der Guard nicht mehr stellt; ohne sie ist am Protokoll nicht ablesbar, ob ein Rollen-Lauf startete | abgeleitet aus der Existenz von `.claude/agents/<name>.md`, genau zwei Werte; der rohe Typname bleibt **daneben** stehen, nicht ersetzt (nächster Abschnitt) |
 
 **Warum der Typname ROH und nicht gegen `.claude/agents/` normalisiert wird** — die naheliegende
 Härtung wäre hier die falsche. Eine Normalisierung bildete jeden Wert auf *Rolle* oder *keine
@@ -182,6 +197,34 @@ unsichtbar, deretwegen das Protokoll entsteht. Die Bindung an eine feste Form le
 **bestehende** Extraktor, der denselben Wert schon heute zu einem Pfad macht und bei jedem anderen
 Zeichen verweigert — der Wert ist damit *durch Konstruktion* von fester Form, nicht durch eine
 neue Zusage.
+
+### Die protokollierende Rollen-Frage — und warum sie hier steht, nicht im Guard
+
+[`ADR-0019`](../../adr/0019-agent-guard-prueft-die-aufrufform.md) Festlegung 2 nimmt dem Guard die
+**verweigernde** Rollen-Frage und übergibt diesem Slice die Entscheidung, ob eine **nicht
+entscheidende** — protokollieren statt verweigern — entsteht. **Sie entsteht, und sie entsteht in
+diesem Hook, nicht als Zweig im Guard.** Der Grund ist die Ausgabe-Zusage des Nachbarn: sein
+Pass-Fall ist an **keine Ausgabe** gebunden, ein rein protokollierender Zweig dort färbte also
+genau den bats-Fall rot, den Festlegung 1 als Wächter führt. Dieser Hook schreibt seine Zeile
+ohnehin vor jeder anderen Arbeit; die Frage kostet dort ein abgeleitetes Feld statt einer neuen
+Politik.
+
+Zwei Constraints binden sie, beide aus der Entscheidung übernommen:
+
+1. **Der Zweig entscheidet die Aufrufform nicht.** Er hat keinen Ausgang, der einen Aufruf
+   verhindert oder erlaubt — dieselbe Zusage, die DoD (1) für den ganzen Hook gibt: Exit 0, leere
+   Ausgabe, kein `permissionDecision`, unter keiner Bedingung. Eine **verweigernde** Rollen-Frage
+   kehrt nur über eine Folge-ADR zurück, nicht über diesen Slice.
+2. **Er unterliegt [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 2 wie
+   jede andere Erfassung.** Die Positiv-Liste gilt unverändert; abgeleitet wird aus dem Typnamen
+   und dem Verzeichnis, nicht aus dem Inhalt der Payload.
+
+**Was sie in der Zeile ist:** ein abgeleiteter Wert **neben** dem rohen Typnamen, nicht an seiner
+Stelle. Die Ableitung ist dieselbe, die der Guard verloren hat — existiert
+`.claude/agents/<name>.md`? —, und sie ist hier ungefährlich, weil an ihr nichts hängt. Der
+Beinahe-Treffer bleibt am rohen Namen sichtbar, und die Frage *„war das eine Rolle?"* wird
+beantwortbar. **Kein vierter DoD-Punkt:** das Feld gehört in die Liste aus DoD (2) und trägt dort
+seine Incident-Frage wie jedes andere.
 
 **Geprüft und ABGELEHNT, damit die Liste nicht durch Weglassen entsteht:** `agent_id` — die
 Zuordnung läuft über `tool_use_id`, den Strom trägt `session`. `prompt_id` (*„welche Aufrufe
@@ -371,7 +414,8 @@ eigenem Move-Commit, eingehende Links im Zug danach; Closure-Notiz mit Steering-
   damit ein Sensor, dessen Lauf an einer Prozess-Regel hängt — schwächer als ein Gate, und der
   Unterschied gehört benannt, nicht überspielt.
 - **Nicht in diesem Slice:** die Entscheidung des Guards (sie bleibt, wie
-  [slice-060](../done/slice-060-rollen-achse.md) sie gesetzt hat); die veraltete
+  [`ADR-0019`](../../adr/0019-agent-guard-prueft-die-aufrufform.md) Festlegung 1 sie gesetzt hat
+  — die protokollierende Rollen-Frage aus §3 rührt sie nicht an); die veraltete
   Ausgabeform des Nachbar-Guards (slice-067); die Rechnung über die Zähler
   ([slice-066](../done/slice-066-telemetrie-auswertung.md),
   [slice-071](slice-071-cache-zaehler-getrennt.md)); jede Emission ins Ziel (slice-062/063); und
