@@ -122,7 +122,7 @@ nachgezogen.
 | `Read` | `path` — **kein** Fingerabdruck (er wäre auf einem gelesenen Pfad ein Bestätigungs-Orakel ohne Incident-Frage) |
 | `Bash` | `program` (erstes Token nach übersprungenen `NAME=WERT`-Präfixen) + `argc` |
 | `BashOutput` | **nichts** — seine Eingabe ist eine Shell-Kennung, keine Kommandozeile |
-| `Agent` | `spawned_role` + die vier `usage`-Zähler + `total_tokens` + `total_duration_ms` + `total_tool_use_count` + `model_version` — **neun Werte aus sechs Schlüsseln**, alle aus `tool_response` und alle nach der **Positiv-Liste** (nächster Punkt). **Kein** `path`, `program`, `argc`, `bytes`, `sha256_16`: aus `Agent`s `tool_input` erreicht nichts den Span (dort liegen `subagent_type`, `prompt`, `description`, `run_in_background`; `ToolInput` in `internal/span/span.go` führt genau drei Felder) |
+| `Agent` | `spawned_role` + die vier `usage`-Zähler + `total_tokens` + `total_duration_ms` + `total_tool_use_count` + `model_version` — **neun Werte aus sechs Schlüsseln**, alle aus `tool_response` und alle nach der **Positiv-Liste** (nächster Punkt). **Kein** `path`, `program`, `argc`, `bytes`, `sha256_16`: aus `Agent`s `tool_input` erreicht nichts den Span (dort liegen `subagent_type`, `prompt` und `description`; `ToolInput` in `internal/span/span.go` führt genau drei Felder) |
 | **jedes andere** | **nichts** — der fail-closed Default |
 
 Die Werkzeug-Achse ist der Werkzeug-**Name**, nicht die Gestalt der Antwort; bewacht von
@@ -155,23 +155,25 @@ Daraus fünf Festlegungen:
    **strukturelle** Schranke; Wert und Begründung stehen in
    [§3](#3-defaults-und-konstanten). Was sie nicht erfüllt, wird **verworfen, nicht
    gekürzt**.
-5. **Die Zähler kommen nur im Vordergrund an.** Ein Hintergrund-Lauf liefert weder Zähler
-   noch `agentType`, dafür u. a. `agentId`, `isAsync`, `outputFile` und `canReadOutputFile`
-   (gemessen); die Erfassung ist insoweit konstruktiv unvollständig. Den Vordergrund
-   **herstellt** hier ein `PreToolUse`-Hook, der den Start **verweigert**: der Guard
-   `.claude/hooks/pretooluse-agent-guard.sh`, und er tut es für **Rollen**-Typen. **Dass das
-   der einzige Weg wäre, steht hier nicht** — die vendored Hooks-Referenz
+5. **Die Zähler kommen nur im Vordergrund an — und der Vordergrund ist nicht mehr
+   anforderbar.** Ein Hintergrund-Lauf liefert weder Zähler noch `agentType`, dafür u. a.
+   `agentId`, `isAsync`, `outputFile` und `canReadOutputFile` (gemessen); die Erfassung ist
+   insoweit konstruktiv unvollständig. **Herstellbar war der Vordergrund bis zum 2026-07-29:**
+   `tool_input` trug damals `run_in_background`, und ein Hook konnte den Start ohne diesen
+   Schalter verweigern. Am **2026-08-15** führt das Eingabe-Schema von `Agent` das Feld nicht
+   mehr und lässt keine zusätzlichen Felder zu; Subagenten starten standardmäßig im
+   Hintergrund. Damit ist die Verbrauchs-Achse ohne Quelle — geführt als
+   [`CO-002`](../docs/plan/carveouts/CO-002-token-achse-je-rolle.md), gemessen in
+   [`docs/reviews/2026-08-15-agent-guard-tool-vertrag.md`](../docs/reviews/2026-08-15-agent-guard-tool-vertrag.md).
+   **Ein zweiter Weg ist benannt und ungemessen** — die vendored Hooks-Referenz
    [`docs/user/claude-hooks-referenz.md`](../docs/user/claude-hooks-referenz.md) führt für
    dasselbe Ereignis ein `updatedInput`, das die Tool-Argumente **vor** der Ausführung
-   ersetzt und sich ausdrücklich mit `"allow"` kombinieren lässt; ein Hook könnte den
-   Schalter also **umschreiben** statt abzulehnen. **Gemessen ist dieser zweite Weg nicht:**
-   ob das Agenten-Werkzeug ein umgeschriebenes `run_in_background` befolgt, hat niemand
-   geprüft. Er steht hier als benannte, ungeprüfte Alternative — wer abwägt, ob die
-   Telemetrie den Preis der Vordergrund-Bedingung wert ist (sie kostet Parallelität), soll
-   nicht zwischen „verweigern" und „aufgeben" wählen müssen, weil ein dritter Weg ungenannt
-   blieb. Die **Regel** dazu — wie ein Rollen-Lauf zu starten ist — steht als
-   **Start-Konvention** im nächsten Punkt; hier steht nur ihre Folge für die Erfassung. Was
-   der Guard nicht herstellt, steht als **Abweichung 5** unten.
+   ersetzt und sich ausdrücklich mit `"allow"` kombinieren lässt: ein Hook könnte den Schalter
+   **einsetzen**, statt ihn vom Aufrufer zu verlangen. Ob das Agenten-Werkzeug ein so
+   eingespeistes `run_in_background` befolgt, hat niemand geprüft; seit das Modell es nicht
+   mehr senden kann, ist es der einzige Weg zurück, der nicht am fremden Vertrag hängt. Die
+   Messung und ihre zwei Ausgänge führt derselbe Carveout. Was der Guard **heute** nicht
+   herstellt, steht als **Abweichung 5** unten.
 
 Die Positiv-Liste selbst ist bewacht: `TestNoResponseFreetextReachesSpan` (keines der vier
 Freitext-Felder erreicht die Zeile, je mit eigenem Kanarienvogel) · Fälle 123, 124, 125, 126;
@@ -192,15 +194,17 @@ nicht in ein Gedächtnis. Wer Rollen-Arbeit an einen Subagenten gibt, startet ih
    **verweist** in ihrem `Agent`-Eintrag nur auf diese Seite und trägt den Satz nicht. Er
    steht hier als **fremde Zusage**, nicht als Repo-Beleg — wer ihn nachprüfen will, findet
    im Repo nichts, woran.
-2. **im VORDERGRUND** — `run_in_background: false`; das entscheidet, **WIE** er läuft.
-   **Belegklasse: gemessen, und zusätzlich repo-lokal dokumentiert.** Gemessen ist, dass ein
-   Hintergrund-Lauf keine Verbrauchs-Achse trägt — im Einzelnen in **Abweichung 5**, hier
-   nicht wiederholt. Dokumentiert ist dasselbe in der Hooks-Referenz: ihr `Agent`-Eintrag
-   führt den Hintergrund als **Standard** und sagt, die Antwort eines
-   Hintergrund-Subagenten trage keine Nutzungsfelder, sondern `status: "async_launched"`,
-   `agentId`, `description`, `prompt`, `outputFile` und `resolvedModel`. Zwei unabhängige
-   Belege für dieselbe Bedingung — und der einzige Punkt dieser Konvention, für den das
-   gilt.
+2. **im HINTERGRUND — nicht als Wahl, sondern als einzige Betriebsart.** Das Eingabe-Schema
+   von `Agent` führt kein `run_in_background`; es gibt keine zweite Form, unter der ein
+   Rollen-Lauf starten könnte, und deshalb steht hier eine Beschreibung, wo eine Regel stünde,
+   wenn es etwas zu entscheiden gäbe. **Belegklasse: gemessen (2026-08-15), und zusätzlich
+   repo-lokal dokumentiert.** Ein Hintergrund-Lauf trägt keine
+   Verbrauchs-Achse — im Einzelnen in **Abweichung 5**, hier nicht wiederholt —, und die
+   Hooks-Referenz führt den Hintergrund als **Standard**, dessen Antwort keine Nutzungsfelder
+   trägt, sondern `status: "async_launched"`, `agentId`, `description`, `prompt`, `outputFile`
+   und `resolvedModel`. Die Folge für die Erfassung führt
+   [`CO-002`](../docs/plan/carveouts/CO-002-token-achse-je-rolle.md). **Die Konvention hat
+   damit nur noch Bedingung 1** — der Typ ist weiter zu wählen, die Betriebsart nicht mehr.
 
 **Die zwei Bedingungen sind UNABHÄNGIG — gemessen, nicht angenommen.** Ein per @-Erwähnung
 angeforderter Lauf **ohne** ausdrücklichen Schalter lief im **Hintergrund**. Der Hook feuert
@@ -208,36 +212,39 @@ angeforderter Lauf **ohne** ausdrücklichen Schalter lief im **Hintergrund**. De
 das Werkzeug gab sofort nach dem Start zurück, wie es die Hooks-Referenz für
 Hintergrund-Subagenten beschreibt. Genau darum trägt die Beobachtung etwas: feuerte der Hook
 beim Start, stünden bei jedem Lauf drei Millisekunden da und sie wäre leer. Die @-Erwähnung
-wählt den **Typ**, nicht die **Betriebsart**. Wer nur Bedingung 1 einhält, bekommt **keine
-Zahl** — und je nach Typ auch keinen Span: bei einem **Rollen**-Typ verweigert der Guard den
-Start, sobald der Aufruf ihn mit diesem Typ erreicht, und ein geblockter Aufruf hinterlässt
-keinen Span; bei jedem anderen Typ läuft der Aufruf durch, und seine Antwort trägt weder
-Zähler noch `agentType`, also auch kein `spawned_role`. „Die Rolle und keine Zahl" trifft
-damit keinen der beiden Fälle: die Rolle kommt aus `agentType`, und das fehlt im
-Hintergrund.
+wählt den **Typ**, nicht die **Betriebsart** — und seit die Betriebsart nicht mehr wählbar
+ist, wählt sie das Einzige, was noch zu wählen ist. **Die Folge, für jeden Typ dieselbe:**
+der Aufruf läuft durch, und seine Antwort trägt weder Zähler noch `agentType`, also auch kein
+`spawned_role`. „Die Rolle und keine Zahl" trifft ihn nicht: die Rolle des gestarteten Laufs
+kommt aus `agentType`, und das fehlt im Hintergrund — sie steht dafür in **jeder** Zeile des
+Subagenten-Stroms, aus `agent_type`/`agent_role` der Payload *innerhalb* des Laufs (gemessen
+am 2026-08-15). Was ausfällt, ist das Kosten-Aggregat des Aufrufs, nicht die Zuordnung der
+Arbeit zu einer Rolle.
 
 **Was diese Konvention ERZWINGT und was sie nur behauptet** — beides gehört in denselben
 Punkt, sonst liest sich die Regel breiter als ihr Sensor
 ([`AGENTS.md`](../AGENTS.md) §3.6):
 
-- **Für Bedingung 2 gibt es einen Wächter, und seine Zusage reicht genau so weit wie seine
-  Entscheidung: der `PreToolUse`-Guard `.claude/hooks/pretooluse-agent-guard.sh` lehnt einen
-  Aufruf ab, den er mit erkennbarem Rollen-Typ und ohne `run_in_background: false` sieht.**
-  **Was damit NICHT zugesagt ist — und der Unterschied ist der ganze Punkt:** dass jeder
-  Rollen-Lauf am Ende Zähler trägt. Der Guard entscheidet über die **Aufrufform**, die ihm
-  der Hook vor dem Start vorlegt; über den Ausgang des Laufs entscheidet er nicht mit, und
-  der Bestand dieses Repos trägt einen `Agent`-Span eines **Rollen**-Typs, der von den neun
-  Werten nur `model_version` führt. Ableitung der Rollen-Liste, fail-closed-Politik bei
-  fehlendem Schalter und fehlendem Typ, Dauer-Sensoren und **Grenzen** stehen in
-  **Abweichung 5**; kurz: er greift nur für Typen mit einer Datei in `.claude/agents/`, er
-  sieht nur den Start, und er kann fehlen oder abgeschaltet sein.
+- **Für Bedingung 2 gibt es keinen Wächter mehr, weil es nichts zu bewachen gibt.** Der
+  `PreToolUse`-Guard `.claude/hooks/pretooluse-agent-guard.sh` entscheidet die **Aufrufform**
+  — lesbar oder nicht —, und die Betriebsart ist kein Gegenstand: fehlendes `awk`, fehlender
+  Extraktor, Parse-Zweifel und fehlender Subagent-Typ sind seine vier fail-closed-Zweige, ein
+  lesbarer Typ läuft durch. Eine Forderung nach einer Betriebsart, die kein Aufruf mehr
+  tragen kann, verweigerte alles und schützte nichts. **Was damit NICHT zugesagt ist — und
+  der Unterschied war schon vorher der ganze Punkt:** dass ein Rollen-Lauf am Ende Zähler
+  trägt. Der Guard sieht den Start, nicht den Ausgang; der Bestand dieses Repos trägt
+  `Agent`-Spans von **Rollen**-Typen, die von den neun Werten nur `model_version` führen. Die
+  Ausfall-Achse führt [`CO-002`](../docs/plan/carveouts/CO-002-token-achse-je-rolle.md),
+  fail-closed-Politik, Dauer-Sensoren und **Grenzen** stehen in **Abweichung 5**; kurz: er
+  greift für jeden Agenten-Aufruf, den der Hook sieht, er sieht nur den Start, und er kann
+  fehlen oder abgeschaltet sein.
 - **Bedingung 1 ist NICHT durchgesetzt — und der Grund trägt nur für einen Teil der
-  Payload.** `tool_input` trägt die Schlüssel `subagent_type`, `prompt`, `description` und
-  `run_in_background`; das dokumentierte Eingabe-Schema in der Hooks-Referenz nennt darüber
-  hinaus nur `model`. Für die **typisierten** Schlüssel — `subagent_type`,
-  `run_in_background`, `model` — ist die Sache entschieden: sie führen den Typ und die
-  Betriebsart, nicht den Weg der Anforderung; ein per @-Erwähnung angeforderter Rollen-Typ
-  und ein sprachlich delegierter kommen **in ihnen** identisch an. Für `prompt` und
+  Payload.** `tool_input` trug am 2026-07-29 die Schlüssel `subagent_type`, `prompt`,
+  `description` und `run_in_background`; der letzte ist seither aus dem Eingabe-Schema
+  verschwunden (2026-08-15), das darüber hinaus nur `model` und `isolation` nennt. Für die
+  **typisierten** Schlüssel — `subagent_type`, `model` — ist die Sache entschieden: sie führen
+  den Typ und das Modell, nicht den Weg der Anforderung; ein per @-Erwähnung angeforderter
+  Rollen-Typ und ein sprachlich delegierter kommen **in ihnen** identisch an. Für `prompt` und
   `description` ist sie es **nicht**: das sind Freitext-Felder des Aufrufers, und dieselbe
   Messung erfasste ausdrücklich **nur Feldnamen und Wertlängen, nie Werte**. Ob sich eine
   @-Erwähnung im `prompt` niederschlägt, ist damit in **keine** Richtung gemessen — die
@@ -349,16 +356,19 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
   dieses Repos über die **Aufbewahrung**, nicht über das Schema; sie steht hier, weil sie
   denselben Gegenstand betrifft.
 
-1. **Cache-Status ist für Subagenten-Läufe im Vordergrund erfasst — für den Haupt-Kontext
-   und für Hintergrund-Läufe bleibt er unerreichbar.** Das ist der Rest-Zustand; die
-   Abweichung ist **verkleinert, nicht aufgehoben**. **Erfasst** sind
-   `cache_creation_input_tokens` und `cache_read_input_tokens` aus dem `usage`-Objekt der
-   `tool_response` eines Vordergrund-`Agent`-Aufrufs — ohne Transkript und ohne Zugriff
-   außerhalb des Repos. Eine Auswertung, die die Cache-Hit-Rate aus
+1. **Cache-Status ist unerreichbar — für den Haupt-Kontext dauerhaft, für Subagenten-Läufe,
+   seit der Vordergrund nicht mehr anforderbar ist.** Die Abweichung war **verkleinert** und
+   ist es nicht mehr; der Grund liegt nicht im Schema, sondern in der Payload, die es füllen
+   müsste. **Erfassbar** sind `cache_creation_input_tokens` und `cache_read_input_tokens` aus
+   dem `usage`-Objekt der `tool_response` eines Vordergrund-`Agent`-Aufrufs — ohne Transkript
+   und ohne Zugriff außerhalb des Repos —, und genau diese Antwort entsteht nicht mehr
+   ([`CO-002`](../docs/plan/carveouts/CO-002-token-achse-je-rolle.md); die Erfassung selbst
+   steht unverändert und nimmt die Zähler, sobald sie wieder ankommen). Eine Auswertung, die
+   die Cache-Hit-Rate aus
    [Modul 15 §Cache-Counter-Regeln](../.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md#cache-counter-regeln)
-   rechnet, findet für Subagenten-Läufe die **Zähler** vor — Erzeugung und Lesung getrennt,
-   wie das Modul es fordert (*„Eine einzelne Metrik `cache.hit_ratio` reicht nicht"*) — und
-   darf die Größe **nicht** als unerreichbar führen. **Vollständig ist die Rechnung damit
+   rechnet, fände die **Zähler** getrennt nach Erzeugung und Lesung vor, wie das Modul es
+   fordert (*„Eine einzelne Metrik `cache.hit_ratio` reicht nicht"*) — heute findet sie für
+   keinen Lauf welche. **Vollständig ist die Rechnung damit
    nicht, und das gehört in denselben Satz:** das Modul verlangt zu den Zählern die Labels
    `slice.id`, `agent.role` und `model.version`; das Rollen-Label liegt nur vor, wenn
    `spawned_role` gefüllt ist — bei einem `general-purpose`-Subagenten fehlt es, und der
@@ -469,31 +479,31 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
       `agentType`. Es gibt keinen Teilwert, aus dem ein Zähler folgte. Der einzige Zeiger auf
       mehr — `outputFile` — führt auf einen Freitext-Bestand außerhalb der Payload und ist
       aus demselben Grund ausgeschlossen wie das Transkript in Abweichung 1.
-   2. **Vermeidbar? Für die Aufrufform, die der Guard sieht, ja — und nur für sie.** Der
-      `PreToolUse`-Guard `.claude/hooks/pretooluse-agent-guard.sh` lehnt einen Agenten-Typ,
-      für den `.claude/agents/<name>.md` existiert, im Hintergrund ab; ein **fehlender**
-      Schalter gilt dabei als Hintergrund, weil die Abwesenheit der gemessene Normalfall ist,
-      und ein **fehlender Typ** als unlesbarer Aufruf, weil der Hook an `"matcher": "Agent"`
-      hängt und deshalb keinen Nicht-Agenten-Aufruf sieht: ohne Typ ist nicht entscheidbar,
-      ob eine Rolle startet. Beide Antworten sind dieselbe — verweigern —, und das ist keine
-      Selbstverständlichkeit, sondern die Stelle, an der ein Guard still durchlässig wird.
-      Bewacht von `test/agent-guard.bats` (in `make test`) und den Fällen 117, 118, 119
-      und 139.
+   2. **Vermeidbar? Nein — der Weg, der sie vermied, ist geschlossen.** Vermieden wurde die
+      Lücke, solange ein Aufruf die Vordergrund-Form tragen konnte und der
+      `PreToolUse`-Guard `.claude/hooks/pretooluse-agent-guard.sh` jeden Rollen-Typ ohne sie
+      abwies. Seit das Eingabe-Schema von `Agent` den Schalter nicht mehr führt, wies dieselbe
+      Bedingung **jeden** Rollen-Lauf ab und verhinderte damit nicht die Lücke, sondern die
+      Arbeit; sie ist gefallen ([`CO-002`](../docs/plan/carveouts/CO-002-token-achse-je-rolle.md)).
+      Was der Guard weiter entscheidet, ist die **Lesbarkeit** der Aufrufform: ein **fehlender
+      Typ** gilt als unlesbarer Aufruf, weil der Hook an `"matcher": "Agent"` hängt und
+      deshalb keinen Nicht-Agenten-Aufruf sieht — ohne Typ ist die Form geraten, nicht
+      gelesen. Das ist keine Selbstverständlichkeit, sondern die Stelle, an der ein Guard
+      still durchlässig wird. Bewacht von `test/agent-guard.bats` (in `make test`) und den
+      Fällen 139 und 150.
    3. **Was er nicht deckt — und erst das ist die Abweichung.** (a) Ein Typ **ohne** Datei in
       `.claude/agents/` ist keine Rolle: `general-purpose`, `Explore` und die übrigen
-      eingebauten Typen laufen im Hintergrund durch, **absichtlich** — sie tragen ohnehin
-      keine Rolle in den Span. In ihre `Agent`-Spans gelangt von den neun Werten
+      eingebauten Typen tragen ohnehin keine Rolle in den Span. In ihre `Agent`-Spans gelangt
+      von den neun Werten
       **höchstens einer**: `resolvedModel` steht auch in der Hintergrund-Antwort (gemessen),
       läuft aber durch die strukturelle Schranke aus [§3](#3-defaults-und-konstanten) — hat
       der Wert deren Gestalt nicht, fehlt `model_version` ganz (das Feld ist `omitempty`).
-      Die **acht** Werte an `usage`/`total*`/`agentType` fehlen in jedem Fall. **Die Zeile
-      selbst ist abgeleitet, nicht beobachtet:** sie folgt aus der Payload-Messung und aus
-      dem Code — was sie entschiede, ist ein `Agent`-Span aus einem Hintergrund-Lauf eines
-      Typs **ohne** Datei in `.claude/agents/`, und ein solcher liegt nicht vor. Ihre
-      **Gestalt** liegt inzwischen im Bestand: ein `Agent`-Span, der von den neun Werten
-      genau `model_version` trägt und keinen der acht. Er stammt von einem **Rollen**-Typ und
-      gehört damit zu (c); die Zeile hier — über einen Typ **ohne** Datei in
-      `.claude/agents/` — bleibt abgeleitet. Wer die Zeile zur Definition einer
+      Die **acht** Werte an `usage`/`total*`/`agentType` fehlen in jedem Fall. **Die Zeile ist
+      seit dem 2026-08-15 beobachtet, nicht mehr nur abgeleitet:** der Bestand trägt den Span,
+      der sie entscheidet — ein `Agent`-Span aus dem Hintergrund-Lauf eines Typs **ohne** Datei
+      in `.claude/agents/` (`general-purpose`), der von den neun Werten genau `model_version`
+      führt und keinen der acht. Dieselbe Gestalt tragen die Spans der **Rollen**-Typen
+      desselben Tages: (a) und (c) beschreiben damit einen Fall, nicht zwei. Wer die Zeile zur Definition einer
       Abdeckungszahl heranzieht, hängt sie an die **Zähler** und nicht an „irgendein
       erfasster Wert": jener Span trägt einen erfassten Wert und ist trotzdem ein zählerloser
       Lauf. (b) Der Guard ist eine Verdrahtung in `.claude/settings.json`; er kann fehlen,
