@@ -22,11 +22,14 @@ Hook-Payload *innerhalb* des Subagenten, ist von der Betriebsart unabhängig und
 (gemessen am 2026-08-15). Der Ausfall betrifft das **Kosten-Aggregat des Aufrufs**, nicht die
 Zuordnung der Arbeit zu einer Rolle.
 
-**Folge-Slice:** noch nicht geschnitten — fällig als **Folgepflicht 3** von
-[ADR-0019](../adr/0019-agent-guard-prueft-die-aufrufform.md); Gegenstand ist die
-`updatedInput`-Messung aus deren Festlegung 4. Solange er nicht in `docs/plan/planning/` liegt,
-ist dieser Carveout nach Modul 7 *de facto* permanent und gehört in eine ADR statt hierher. Der
-Planner schneidet ihn; über den negativen Ausgang entscheidet der Architect.
+**Folge-Slice:**
+[slice-086](../planning/open/slice-086-vordergrund-per-updatedinput.md) — er fährt die Messung aus
+Festlegung 4 von [ADR-0019](../adr/0019-agent-guard-prueft-die-aufrufform.md) und **bindet beide
+Ausgänge dieses Carveouts**: hält der Weg, folgt die Entscheidung über seine Verstetigung samt
+Permission-Folge in einer Folge-ADR, und erst danach löst sich dieser Carveout auf; hält er nicht,
+kippt die Modul-7-Frage 2 auf *Nein* und der Carveout ist in eine Folge-ADR zu überführen. Ein
+negatives Ergebnis ist damit kein Fehlschlag, sondern der zweite Ausgang. Der Planner hat ihn
+geschnitten; über beide Ausgänge entscheidet der Architect.
 
 ---
 
@@ -61,10 +64,24 @@ keinen Gegenstand hätte.
 ## Auflösungs-Trigger
 
 **Beobachtbar am Bestand, nicht an einer Absicht:** ein `Agent`-Span trägt wieder `spawned_role`
-und die vier `usage`-Zähler — ablesbar an `make span-report`, dessen Abdeckungszeile dann eine
-Zahl größer 0 führt. Drei Wege führen dorthin, und sie sind verschieden nah:
+**und** alle vier `usage`-Zähler (`input_tokens`, `output_tokens`, `cache_creation_input_tokens`,
+`cache_read_input_tokens`).
 
-1. **Die `updatedInput`-Messung trägt** (der Weg in unserer Hand, Folgepflicht 3 der ADR): ein
+**Abgelesen wird das an der `Agent`-Zeile des Span-Bestands selbst, nicht an der Abdeckungszeile
+von `make span-report`** — die beiden sind nicht dieselbe Bedingung. Der Bericht zählt einen Lauf
+schon als gedeckt, wenn **ein** Zähler gesetzt ist (`internal/report/report.go` kehrt erst zurück,
+wenn Eingabe- **und** Ausgabe-Zähler fehlen), und er fragt nach der Rolle gar nicht: ein Span mit
+`usage` und leerem `spawned_role` hebt die Abdeckungszahl über 0 und wandert im selben Durchlauf
+in den Sammelposten, wo er anteilig nach Tool-Calls **geschätzt** verteilt wird. Die
+Abdeckungszeile ist damit ein **notwendiges, kein hinreichendes** Zeichen: steht sie auf 0, ist
+der Trigger sicher nicht erreicht; steht sie über 0, ist am Span nachzusehen, ob beide Teile da
+sind. Wer nur die Zahl liest, löst diesen Carveout auf, während die Achse *je Rolle* weiter
+geschätzt statt gemessen wäre — also genau der Titel offen bliebe.
+
+Drei Wege führen zu diesem Bestand, und sie sind verschieden nah:
+
+1. **Die `updatedInput`-Messung trägt** (der Weg in unserer Hand,
+   [slice-086](../planning/open/slice-086-vordergrund-per-updatedinput.md)): ein
    `PreToolUse`-Hook setzt `run_in_background: false` in die Tool-Argumente ein, und der so
    gestartete Lauf liefert die Zähler. Dann ist zusätzlich die Permission-Folge zu entscheiden
    (`updatedInput` wirkt nur mit `"allow"` oder `"ask"`) — eine Folge-ADR, kein Federstrich.
@@ -84,16 +101,23 @@ behauptet, temporär zu sein.
 
 Es gibt keine Gate-Konfiguration mit einer Ausnahme — der Ausfall liegt im Werkzeug, nicht in
 unserer Verdrahtung. Was es gibt, sind die zwei Stellen, an denen er beschrieben wird; beide
-tragen den Zeiger auf diesen Carveout **noch nicht** (Folgepflichten 1 und 2 der ADR):
+tragen den Zeiger auf diesen Carveout (Folgepflichten 1 und 2 der ADR sind an ihnen vollzogen):
 
 | Datei | Zeile/Section | Wert |
 |---|---|---|
-| `.claude/hooks/pretooluse-agent-guard.sh` | Kopf-Kommentar, Absatz *„DIE BETRIEBSART PRUEFT ER NICHT"* | zeigt auf die Messung im Review-Dokument; ein `CO-002`-Zeiger fehlt |
-| `spec/spezifikation.md` | §5, Abweichung 5 samt START-KONVENTION und Wächter-Absatz | beschreibt den Stand vor `83cf01d`; Nachzug samt `CO-002`-Zeiger steht aus |
+| `.claude/hooks/pretooluse-agent-guard.sh` | Kopf-Kommentar, Absatz *„DIE BETRIEBSART PRUEFT ER NICHT"* | zeigt auf die Messung im Review-Dokument **und** auf diesen Carveout (*„Gefuehrt wird dieser Ausfall als docs/plan/carveouts/CO-002-token-achse-je-rolle.md — dort stehen Geltungsbereich, Aufloesungs-Trigger und die Messung, die ihn entscheidet"*) |
+| `spec/spezifikation.md` | §5 an fünf Stellen: fünfter Punkt der Erfassungs-Liste · START-KONVENTION · Wächter-Absatz · Abweichung 1 (Cache-Zähler) · Abweichung 5 | beschreibt den Stand **nach** `83cf01d` und zeigt an jeder dieser Stellen hierher; die START-KONVENTION führt nur noch Bedingung 1 |
+
+**Die Prüfung dieser Tabelle ist ein Kommando, keine Erinnerung:**
+`grep -n "CO-002" .claude/hooks/pretooluse-agent-guard.sh spec/spezifikation.md` — verschwindet ein
+Zeiger, ist die Ausnahme an dieser Stelle unbegründet, und die Zeile gehört hier korrigiert statt
+im Kopf behalten.
 
 ## Verifikation (nach Auflösung)
 
-- [ ] `make span-report` weist für mindestens einen `Agent`-Lauf Zähler aus (Abdeckungszeile > 0).
+- [ ] Mindestens ein `Agent`-Span im Bestand trägt `spawned_role` **und** alle vier
+      `usage`-Zähler — am Span gelesen, nicht an der Abdeckungszeile; `make span-report` steht
+      danebengehalten, seine Abdeckungszahl ist dann > 0.
 - [ ] Die Erfassungs-Zusagen in `spec/spezifikation.md` §5 sind auf den wiederhergestellten Weg
       nachgezogen — samt der Frage, ob die Vordergrund-Form wieder **erzwungen** wird.
 - [ ] `make gates` grün ohne Ausnahme.
@@ -105,3 +129,4 @@ tragen den Zeiger auf diesen Carveout **noch nicht** (Folgepflichten 1 und 2 der
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-08-15 | Angelegt — Werkzeug-Wahl nach Modul 7, Ausgang *Carveout* | [ADR-0019](../adr/0019-agent-guard-prueft-die-aufrufform.md) Festlegung 3 |
+| 2026-08-15 | Folge-Slice geschnitten; der Trigger wird am Span gelesen, nicht an der Abdeckungszeile; beide Zeiger der Geltungs-Konfiguration stehen | [slice-086](../planning/open/slice-086-vordergrund-per-updatedinput.md) |
