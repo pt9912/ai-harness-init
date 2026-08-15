@@ -11,17 +11,18 @@
 #
 # Und die dritte Ebene: dass DIESE Tests Zaehne haben, steht als staendiger Fall in
 # test/mutations/ (AGENTS.md 3.6 — `make mutate` faehrt sie, ein gruener `make test`
-# allein sagt darueber nichts). Rot-Gegenbeispiele: test/mutations 117 (Rollen-Frage
-# weg -> der Guard lehnt alles ab) · 118 (Namensliste statt Ableitung — der einzige
-# Fall, der abgeleitet von kopiert unterscheidet) · 119 (fehlender Schalter
-# fail-open) · 120 (Zeichensatz des Typnamens gelockert) · 121/122 (Eltern-Pruefung
-# des Key-Stacks weg, je fuer subagent_type und run_in_background) · 139 (fehlender
-# Typ fail-open).
+# allein sagt darueber nichts). Rot-Gegenbeispiele: test/mutations 120 (Zeichensatz
+# des Typnamens gelockert) · 121/122 (Eltern-Pruefung des Key-Stacks weg, je fuer
+# subagent_type und run_in_background) · 139 (fehlender Typ fail-open) · 150 (ein
+# Rollen-Typ wird wieder abgewiesen).
 #
-# Deckt: die Unterscheidung Rolle/Nicht-Rolle · fehlender Schalter gilt als
-# Hintergrund · fehlender Typ gilt als unlesbarer Aufruf · Parse-Zweifel ->
-# verweigern · der Fehlmatch, den ein Regex-Griff machen wuerde · die ABLEITUNG der
-# Rollen-Liste aus dem Verzeichnis.
+# Deckt: fehlender Typ gilt als unlesbarer Aufruf · Parse-Zweifel -> verweigern ·
+# ein lesbarer Typ laeuft durch, auch ein Rollen-Typ · der Fehlmatch, den ein
+# Regex-Griff machen wuerde.
+#
+# Der Extraktor liest weiterhin BEIDE Felder, und seine Faelle stehen unveraendert:
+# `run_in_background` ist aus dem Eingabe-Schema von `Agent` verschwunden, aus dem
+# Extraktor nicht. Was der Guard davon liest, ist der Typ.
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
@@ -127,37 +128,18 @@ assert_passed() {
   [ "$(sed -n '2p' <<<"$output")" = "ABSENT" ]
 }
 
-# ---------- Guard: die Unterscheidung ----------
+# ---------- Guard: lesbar oder nicht ----------
 
-@test "guard: Rolle im Hintergrund -> DENY" {
-  run guard '{"tool_name":"Agent","tool_input":{"subagent_type":"reviewer","run_in_background":true}}'
-  assert_denied
-}
-
-@test "guard: Rolle ohne Schalter -> DENY (Abwesenheit gilt als Hintergrund)" {
-  run guard '{"tool_name":"Agent","tool_input":{"subagent_type":"reviewer","prompt":"x"}}'
-  assert_denied
-}
-
-@test "guard: Rolle im Vordergrund -> PASS" {
-  run guard '{"tool_name":"Agent","tool_input":{"subagent_type":"reviewer","run_in_background":false}}'
+# Die Aufrufform, die es heute gibt: ein Typ, kein Schalter. Sie muss durchlaufen —
+# und zwar fuer jeden Typ, den es gibt, denn die Betriebsart ist nicht mehr
+# waehlbar (Messung: docs/reviews/2026-08-15-agent-guard-tool-vertrag.md).
+@test "guard: lesbarer Typ ohne Schalter -> PASS" {
+  run guard '{"tool_name":"Agent","tool_input":{"subagent_type":"general-purpose","prompt":"x"}}'
   assert_passed
 }
 
-# Die Kehrseite, und der Unterschied zur Wegwerf-Sonde vom 2026-07-29: die hat
-# JEDEN Agent-Aufruf ohne expliziten Vordergrund abgelehnt.
-@test "guard: general-purpose im Hintergrund -> PASS (keine Rolle)" {
-  run guard '{"tool_name":"Agent","tool_input":{"subagent_type":"general-purpose","run_in_background":true}}'
-  assert_passed
-}
-
-@test "guard: Explore im Hintergrund -> PASS (keine Rolle)" {
-  run guard '{"tool_name":"Agent","tool_input":{"subagent_type":"Explore","run_in_background":true}}'
-  assert_passed
-}
-
-@test "guard: erfundener Typ im Hintergrund -> PASS (keine Datei, keine Rolle)" {
-  run guard '{"tool_name":"Agent","tool_input":{"subagent_type":"gibt-es-nicht","run_in_background":true}}'
+@test "guard: erfundener Typ -> PASS (der Guard fuehrt keine Typ-Liste)" {
+  run guard '{"tool_name":"Agent","tool_input":{"subagent_type":"gibt-es-nicht","prompt":"x"}}'
   assert_passed
 }
 
@@ -167,61 +149,29 @@ assert_passed() {
 }
 
 # Der Guard haengt an "matcher": "Agent" — jeder Aufruf, den er sieht, ist ein
-# Agenten-Aufruf. Fehlt darin der Typ, ist nicht entscheidbar, ob eine Rolle startet.
-# Der Schalter steht hier auf false, damit allein die ABWESENHEIT des Typs die
-# Ablehnung traegt: mit `false` wuerde selbst ein Rollen-Typ durchlaufen.
-# Gegenrichtung sind die PASS-Faelle darueber — ein VORHANDENER Nicht-Rollen-Typ
-# laeuft weiter durch, der Guard lehnt also nicht pauschal ab.
+# Agenten-Aufruf. Fehlt darin der Typ, ist die Aufrufform nicht gelesen, sondern
+# geraten. Gegenrichtung sind die PASS-Faelle darueber — ein VORHANDENER Typ laeuft
+# durch, der Guard lehnt also nicht pauschal ab.
 @test "guard: Agent-Aufruf ohne Subagent-Typ -> DENY (fail-closed)" {
-  run guard '{"tool_name":"Agent","tool_input":{"prompt":"x","run_in_background":false}}'
+  run guard '{"tool_name":"Agent","tool_input":{"prompt":"x"}}'
   assert_denied
 }
 
-# ---------- die ABLEITUNG, nicht die Kopie ----------
+# ---------- die Rollen laufen ----------
 
-# Der Guard traegt keine Rollen-Liste; er prueft, ob .claude/agents/<name>.md
-# existiert. Dieser Test faehrt die Ableitung ueber JEDE Datei im Verzeichnis:
-# kommt eine Rolle hinzu, ist sie automatisch gedeckt; verschwindet eine, faellt
-# es hier auf. Eine hart notierte Namensliste waere die vierte Kopie, die
-# slice-060 gerade vermeidet.
-@test "guard: JEDER Typ in .claude/agents/ wird im Hintergrund abgelehnt" {
+# Der Zahn unter der Aenderung, die den Guard von der Betriebsart geloest hat:
+# KEIN Typ aus .claude/agents/ darf abgewiesen werden. Der Test faehrt ueber JEDE
+# Datei im Verzeichnis — kommt eine Rolle hinzu, ist sie automatisch gedeckt.
+# Rot wird er, sobald irgendein Zweig einen Rollen-Typ wieder verweigert
+# (test/mutations/150-agentguard-rolle-abgewiesen.sh).
+@test "guard: JEDER Typ in .claude/agents/ laeuft durch" {
   local n=0
   for f in "$REPO"/.claude/agents/*.md; do
     local name
     name="$(basename "$f" .md)"
-    run guard "{\"tool_name\":\"Agent\",\"tool_input\":{\"subagent_type\":\"$name\",\"run_in_background\":true}}"
-    assert_denied || { echo "Rolle $name wurde NICHT abgelehnt"; return 1; }
+    run guard "{\"tool_name\":\"Agent\",\"tool_input\":{\"subagent_type\":\"$name\",\"prompt\":\"x\"}}"
+    assert_passed || { echo "Rolle $name wurde abgewiesen"; return 1; }
     n=$((n + 1))
   done
   [ "$n" -ge 6 ] || { echo "erwartet >=6 Rollen-Dateien, gefunden $n"; return 1; }
-}
-
-@test "guard: JEDER Typ in .claude/agents/ laeuft im Vordergrund durch" {
-  for f in "$REPO"/.claude/agents/*.md; do
-    local name
-    name="$(basename "$f" .md)"
-    run guard "{\"tool_name\":\"Agent\",\"tool_input\":{\"subagent_type\":\"$name\",\"run_in_background\":false}}"
-    assert_passed || { echo "Rolle $name wurde faelschlich abgelehnt"; return 1; }
-  done
-}
-
-# Und der Zahn zur Ableitung selbst: eine Fixture-Rolle, die es im Repo NICHT
-# gibt. Der Guard muss sie ablehnen, ohne dass eine Zeile Code sie kennt. Eine
-# hart notierte Namensliste — die Kopie, die slice-060 vermeidet — wuerde genau
-# hier rot. Der bats-Lauf mountet das Repo read-only, deshalb die Naht
-# AGENT_GUARD_AGENTS_DIR (im Guard begruendet).
-@test "guard: eine ERFUNDENE Rolle im Fixture-Verzeichnis wird abgelehnt (Ableitung, keine Kopie)" {
-  mkdir -p "$BATS_TEST_TMPDIR/agents"
-  : >"$BATS_TEST_TMPDIR/agents/frisch-erfunden.md"
-  AGENT_GUARD_AGENTS_DIR="$BATS_TEST_TMPDIR/agents" \
-    run guard '{"tool_name":"Agent","tool_input":{"subagent_type":"frisch-erfunden","run_in_background":true}}'
-  assert_denied
-}
-
-@test "guard: im Fixture-Verzeichnis ist reviewer KEINE Rolle mehr -> PASS" {
-  mkdir -p "$BATS_TEST_TMPDIR/agents"
-  : >"$BATS_TEST_TMPDIR/agents/frisch-erfunden.md"
-  AGENT_GUARD_AGENTS_DIR="$BATS_TEST_TMPDIR/agents" \
-    run guard '{"tool_name":"Agent","tool_input":{"subagent_type":"reviewer","run_in_background":true}}'
-  assert_passed
 }

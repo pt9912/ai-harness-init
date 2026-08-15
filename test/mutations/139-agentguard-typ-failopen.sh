@@ -3,16 +3,13 @@
 # expect: guard: Agent-Aufruf ohne Subagent-Typ -> DENY (fail-closed)
 #
 # Laesst einen Agenten-Aufruf ohne lesbaren Subagent-Typ wieder durch — fail-open
-# statt fail-closed, und damit die entgegengesetzte Antwort zu der, die derselbe
-# Guard zwoelf Zeilen tiefer auf den fehlenden Schalter gibt.
+# statt fail-closed, und damit die letzte Unterscheidung, die dieser Guard trifft.
 #
 # Der Hook haengt an "matcher": "Agent"; jeder Aufruf, den er sieht, ist ein
-# Agenten-Aufruf. Mit dieser Mutation entscheidet er bei unlesbarem Typ auf "kein
-# Rollen-Aufruf" und laesst ihn laufen — ein Rollen-Lauf, dessen Typ den Extraktor
-# nicht erreicht, startet dann in der Betriebsart des Aufrufers. Im Hintergrund
-# traegt seine Antwort weder Nutzungszaehler noch agentType; die Rollen-Achse der
-# Telemetrie bliebe leer, ohne dass irgendetwas rot wird (slice-060, MR-018) — die
-# lautlose Variante des Schadens, dieselbe wie bei Fall 119.
+# Agenten-Aufruf. Mit dieser Mutation gilt eine Payload, aus der der Extraktor
+# keinen Typ holt, als gelesen — der Guard antwortet dann auf eine Aufrufform, die
+# er nicht kennt, mit Durchlassen statt mit Verweigern, ohne dass irgendetwas rot
+# wird. Die Gegenrichtung faehrt Fall 150: dort verweigert er, was er kennt.
 #
 # Rot wird in test/agent-guard.bats „Agent-Aufruf ohne Subagent-Typ -> DENY". Die
 # uebrigen guard-Faelle bleiben gruen: sie tragen alle einen Typ, und keiner von
