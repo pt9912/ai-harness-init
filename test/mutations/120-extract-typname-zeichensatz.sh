@@ -4,12 +4,12 @@
 #
 # Lockert den Zeichensatz des Typnamens um Punkt und Schraegstrich.
 #
-# Der Guard baut aus `subagent_type` einen PFAD (`.claude/agents/<name>.md`) — das
-# ist der Grund fuer die Strenge, nicht Kosmetik. Mit der Lockerung ist
-# `../../etc/passwd` ein zulaessiger Typname; die Existenzfrage zeigte dann auf einen
-# Ort ausserhalb des Verzeichnisses, und ob der Aufruf als Rolle gilt, entschiede
-# eine fremde Datei. Der Extraktor muss hier verweigern (exit 3, fail-closed), nicht
-# tolerant sein.
+# Der Wert kommt aus fremder Payload, und der Extraktor gibt ihn an Aufrufer weiter,
+# die ihn in einen Pfad setzen duerfen — das ist der Grund fuer die Strenge, nicht
+# Kosmetik. Mit der Lockerung ist `../../etc/passwd` ein zulaessiger Typname, und
+# jeder Abnehmer, der daraus einen Pfad baut, zeigt aus seinem Verzeichnis heraus.
+# Die Schranke gehoert deshalb zum Wert und nicht zu einem einzelnen Abnehmer: der
+# Extraktor verweigert hier (exit 3, fail-closed), statt tolerant zu sein.
 #
 # Rot wird in test/agent-guard.bats „Pfad-Ausbruch im Typnamen -> exit 3".
 #

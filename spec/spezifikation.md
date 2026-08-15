@@ -170,10 +170,12 @@ Daraus fünf Festlegungen:
    dasselbe Ereignis ein `updatedInput`, das die Tool-Argumente **vor** der Ausführung
    ersetzt und sich ausdrücklich mit `"allow"` kombinieren lässt: ein Hook könnte den Schalter
    **einsetzen**, statt ihn vom Aufrufer zu verlangen. Ob das Agenten-Werkzeug ein so
-   eingespeistes `run_in_background` befolgt, hat niemand geprüft; seit das Modell es nicht
-   mehr senden kann, ist es der einzige Weg zurück, der nicht am fremden Vertrag hängt. Die
-   Messung und ihre zwei Ausgänge führt derselbe Carveout. Was der Guard **heute** nicht
-   herstellt, steht als **Abweichung 5** unten.
+   eingespeistes `run_in_background` befolgt, hat niemand geprüft. **Vom Aufrufer gesendet
+   wirkt es nicht** — ein Aufruf mit dem Feld wird angenommen und startet dennoch im
+   Hintergrund (2026-08-15 gemessen, Nachtrag §7 des Mess-Dokuments); die Einspeisung am Hook
+   setzt an anderer Stelle der Kette an und ist damit nicht mitentschieden. Die Messung und
+   ihre zwei Ausgänge führt derselbe Carveout. Was der Guard **heute** nicht herstellt, steht
+   als **Abweichung 5** unten.
 
 Die Positiv-Liste selbst ist bewacht: `TestNoResponseFreetextReachesSpan` (keines der vier
 Freitext-Felder erreicht die Zeile, je mit eigenem Kanarienvogel) · Fälle 123, 124, 125, 126;
@@ -195,10 +197,13 @@ nicht in ein Gedächtnis. Wer Rollen-Arbeit an einen Subagenten gibt, startet ih
    steht hier als **fremde Zusage**, nicht als Repo-Beleg — wer ihn nachprüfen will, findet
    im Repo nichts, woran.
 2. **im HINTERGRUND — nicht als Wahl, sondern als einzige Betriebsart.** Das Eingabe-Schema
-   von `Agent` führt kein `run_in_background`; es gibt keine zweite Form, unter der ein
-   Rollen-Lauf starten könnte, und deshalb steht hier eine Beschreibung, wo eine Regel stünde,
-   wenn es etwas zu entscheiden gäbe. **Belegklasse: gemessen (2026-08-15), und zusätzlich
-   repo-lokal dokumentiert.** Ein Hintergrund-Lauf trägt keine
+   von `Agent` führt kein `run_in_background`, und ein trotzdem mitgesendetes Feld ändert
+   nichts: der Aufruf wird angenommen, der Lauf startet im Hintergrund. Es gibt damit keine
+   zweite Form, unter der ein Rollen-Lauf starten könnte, und deshalb steht hier eine
+   Beschreibung, wo eine Regel stünde, wenn es etwas zu entscheiden gäbe. **Belegklasse: die
+   Wirkungslosigkeit ist gemessen (2026-08-15, Nachtrag §7 des Mess-Dokuments); dass das Feld
+   den Hook nicht erreicht, ist am 2026-08-10 gemessen und heute nicht wiederholbar — der
+   Zweig, der es las, ist gefallen.** Ein Hintergrund-Lauf trägt keine
    Verbrauchs-Achse — im Einzelnen in **Abweichung 5**, hier nicht wiederholt —, und die
    Hooks-Referenz führt den Hintergrund als **Standard**, dessen Antwort keine Nutzungsfelder
    trägt, sondern `status: "async_launched"`, `agentId`, `description`, `prompt`, `outputFile`
