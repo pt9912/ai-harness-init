@@ -15,7 +15,9 @@ gezeigt, nicht als Treiber.
 **[welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)**, geschnitten am 2026-07-28.
 
 **Slices:** geschnitten sind `slice-059` (Erfassung) · `slice-060` (Rollen-Achse) ·
-`slice-066` (Token-Bilanz) · `slice-071` (Cache-Rechnung) · `slice-068` (Rollen-Arbeit läuft als
+`slice-066` (Token-Bilanz) · `slice-071` (Cache-Festlegung; die Rechnung liegt hinter dem
+Auflösungs-Trigger von [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) und ist nicht
+geschnitten) · `slice-068` (Rollen-Arbeit läuft als
 Rolle);
 `slice-061`–`slice-064` sind in §4 der Welle benannt, aber **nicht** geschnitten (cp-Disziplin). Ihr Lifecycle-Zustand ist ihr Verzeichnis, nicht diese Zeile.
 

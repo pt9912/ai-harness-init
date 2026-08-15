@@ -15,7 +15,8 @@ Setzung 1 geprüft, alle drei Fragen samt Antwort in §3.
 sondern die Größe, die den Bauweg entscheidet (§3, *Splice statt Serialisierung*).
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) — dieser
 Slice liefert eine **Beobachtung**, keinen Wächter, und behauptet keinen: nichts aus ihm geht in
-`make gates`, und die Sonde bleibt nicht stehen (§2, DoD (1)).
+`make gates` — **auch keine Fixture unter `test/`** (§3, *Berührte Dateien*) —, und die Sonde
+bleibt nicht stehen (§2, DoD (1)).
 [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) (**Accepted**) — Festlegung 2 nennt den
 Prompt als das, was nie ins Log darf. Die Sonde reicht ihn durch, und genau deshalb steht die
 Nicht-Aufzeichnung als Zusage in DoD (1).
@@ -58,9 +59,9 @@ Form entscheidet eine Folge-ADR, nicht dieser Schnitt.
   `permissionDecision: "ask"` und `updatedInput` zurück; `updatedInput` ist das **unveränderte**
   Eingabeobjekt plus `"run_in_background": false`. Gebaut in `bash` + `awk`
   ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
-  **Nach dem Lauf ist der Arbeitsbaum sauber** — die Verdrahtung in `.claude/settings.json` und
-  die Hook-Datei sind zurückgenommen, `git status` ist leer und `make gates` grün; die
-  Permission-Lage des Repos ist dieselbe wie vorher.
+  **Nach dem Lauf ist der Arbeitsbaum sauber** — die Verdrahtung in `.claude/settings.json`, die
+  Hook-Datei **und die Fixture** sind zurückgenommen, `git status` ist leer und `make gates` grün;
+  die Permission-Lage des Repos ist dieselbe wie vorher.
 
   **Der Prompt wird durchgereicht, nicht gelesen und nirgends festgehalten**
   ([`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 2): die Sonde schreibt
@@ -68,6 +69,12 @@ Form entscheidet eine Folge-ADR, nicht dieser Schnitt.
   ist stdout an das Werkzeug. Belegt wird das an einer Fixture, deren `prompt` eine Markierung
   trägt: nach einem Sonden-Lauf über diese Fixture findet die Markierung sich in keiner Datei
   unterhalb des Repos wieder.
+
+  **Das Gegenbeispiel läuft in derselben Sitzung, nicht in einem Dauer-Fall**
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.6): eine Sonden-Variante, die die Markierung in eine
+  Datei schreibt, wird von derselben Suche **gefunden** — erst danach zählt der Fund-freie Lauf.
+  Beide Läufe stehen mit Kommando und Ergebnis im Zeitdokument aus DoD (2). Ein stehender Fall
+  hätte nach der Rücknahme keinen Prüfgegenstand mehr (§3, *Berührte Dateien*).
 - [ ] **(2) Die eine Beobachtung steht mit ihrem Kommando in einem Zeitdokument unter
   `docs/reviews/`** — und sie wird **am Span gelesen, nicht an einer Abdeckungszahl.** Geprüft
   wird die `Agent`-Zeile des Laufs im Span-Bestand auf `spawned_role` **und** alle vier Zähler
@@ -180,8 +187,8 @@ Span-Emitter bekommt, ist die Frage neu zu stellen — dann gäbe es dort einen 
 | `.claude/hooks/` | **temporär**, nicht committet | die Sonde aus DoD (1); sie verschwindet mit dem Lauf, ihr Text steht im Zeitdokument aus DoD (2) und ist von dort reproduzierbar |
 | `.claude/settings.json` | **temporär**, nicht committet | der dritte `PreToolUse`-Eintrag für die Dauer der Messung. Der bestehende Agent-Guard läuft weiter und schweigt im Pass-Fall; die Vorrangregel (`deny` > `defer` > `ask` > `allow`) lässt die `ask`-Entscheidung der Sonde stehen |
 | `docs/reviews/<datum>-updatedinput-messung.md` | neu | das Zeitdokument aus DoD (2) — Kommando, Kontroll-Beobachtung, Ergebnis, Sondentext. Zeitdokument: jede Zahl gilt an ihrem Datum |
-| `test/` | neu | die Fixture aus DoD (1) — Markierung im `prompt`, Prüfung auf Wohlgeformtheit der Ausgabe und darauf, dass die Sonde in keine Datei schreibt |
-| `Makefile`, `.d-check.yml`, `spec/` | **unverändert** | kein Gate, keine Zusage, keine Spec-Festlegung — eine Beobachtung ist keines von beidem ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) |
+| die Fixture aus DoD (1), **neben der Sonde** | **temporär**, nicht committet — und **nicht** unter `test/` | `make test-bats` fährt `bats test/` über das **ganze** Verzeichnis; jede dort abgelegte Datei liefe damit in `make test` und in `make gates` — der Zusage aus dem Bezugs-Block genau entgegen. Dazu verschwindet ihr Prüfgegenstand nach DoD (1) planmäßig: ein stehender Fall wäre danach rot oder vakuös grün, und `make mutate` hätte für ihn keinen Fall. Die Fixture teilt deshalb die Lebensdauer der Sonde; ihr Text, das Kommando und beide Läufe des Gegenbeispiels stehen im Zeitdokument aus DoD (2) und sind von dort reproduzierbar |
+| `Makefile`, `.d-check.yml`, `spec/`, `test/` | **unverändert** | kein Gate, keine Zusage, keine Spec-Festlegung — eine Beobachtung ist nichts davon ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) |
 
 ## 4. Trigger
 
@@ -244,6 +251,6 @@ Kontroll-Beobachtung, unklarer Span), nicht eine unwillkommene.
 
 ## 8. Sub-Area-Modus-Begründung
 
-Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example): `.claude/hooks/`,
-`docs/reviews/` und `test/` gehören zum Greenfield-Bestand; der Modus steht in der
+Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example): `.claude/hooks/` und
+`docs/reviews/` gehören zum Greenfield-Bestand; der Modus steht in der
 Modus-Deklaration von [`harness/conventions.md`](../../../../harness/conventions.md).
