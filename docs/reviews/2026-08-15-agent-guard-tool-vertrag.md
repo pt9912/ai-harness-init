@@ -127,3 +127,33 @@ startbar, und jede Arbeit, die eine dieser Rollen verlangt, steht.
 Durchsetzung, und `AGENTS.md` §3.5 verlangt dafür eine ADR; ADRs schreibt der Architect (§3.8),
 den derselbe Guard blockiert. Die Schleife lässt sich nicht von innen aufschneiden — der
 Eintritt ist eine Auftraggeber-Entscheidung, die Klasse, die `MR-015` regelt.
+
+## 7. Nachtrag desselben Tages: der Schalter ist sendbar und wirkungslos
+
+§2 sagt, was das Eingabe-Schema **führt**. Es sagt nicht, was das Werkzeug **annimmt**, und
+beides fällt auseinander.
+
+Ein `Agent`-Aufruf, der `run_in_background: false` neben den geführten Feldern trägt, wurde am
+2026-08-15 **nicht abgewiesen**: keine Schema-Verletzung, kein Validierungsfehler. Der Lauf
+startete dennoch asynchron, und sein Span (`17:46:53Z`) trägt dieselbe Gestalt wie jeder andere
+Hintergrund-Lauf des Tages — `duration_ms: 3`, `model_version`, kein `spawned_role`, keine
+Zähler. Das Feld zu senden ändert nichts, was von hier aus beobachtbar wäre.
+
+**Drei Aussagen, die auseinanderzuhalten sind, und die diese Messung trennt:**
+
+| Aussage | Stand | Beleg |
+|---|---|---|
+| Der Schalter ist **sendbar** | **ja** | dieser Nachtrag, 2026-08-15 — der Aufruf wurde angenommen |
+| Der Schalter ist **wirksam** | **nein** | dieser Nachtrag, 2026-08-15 — der Lauf startete im Hintergrund |
+| Der Schalter **erreicht den Hook** | **nein** | 2026-08-10 — der Guard las `ABSENT` |
+
+Die dritte Zeile ist heute nicht wiederholbar: der Zweig, der sie beobachtete, ist gefallen.
+
+**Für die Entscheidung ändert das nichts** — die Bedingung wies jeden Rollen-Lauf ab, gleich ob
+das Feld unsendbar oder nur wirkungslos ist. **Für ihren Grund ändert es alles:** tragend ist
+nicht *„nicht mehr sendbar"*, sondern *„gesendet, ohne Wirkung, und beim Hook nicht angekommen"*.
+
+**Was weiterhin offen ist:** ob ein Feld, das ein Hook per `updatedInput` **nach** dem Modell
+einsetzt, denselben Weg nimmt. Diese Beobachtung legt nahe, dass das Werkzeug den Wert nicht
+liest; sie entscheidet es nicht — die Sonde des Modells und die Einspeisung am Hook setzen an
+verschiedenen Stellen der Kette an.
