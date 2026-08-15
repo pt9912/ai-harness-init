@@ -108,7 +108,11 @@ END {
 
   if (!sawobj) exit 3                      # kein Objekt -> kein/kaputtes JSON -> verweigern
   if (instr == 1 || depth != 0) exit 3     # abgeschnitten/unbalanciert -> verweigern
-  # Der Typname wird zum Pfadbestandteil: strenger Zeichensatz, sonst verweigern.
+  # Strenger Zeichensatz fuer den Typnamen, sonst verweigern: der Wert stammt aus
+  # fremder Payload, und der Extraktor gibt ihn an Aufrufer weiter, die ihn in einen
+  # Pfad setzen duerfen. Der heutige Abnehmer tut es nicht mehr; die Schranke gehoert
+  # zum Wert, nicht zu einem Abnehmer. Sensor: test/agent-guard.bats,
+  # "extract: Pfad-Ausbruch im Typnamen -> exit 3"; Dauer-Sensor test/mutations/120.
   if (stfound && stval !~ /^[A-Za-z0-9_:-]+$/) exit 3
 
   printf "%s\n", (ribfound ? ribval : "ABSENT")

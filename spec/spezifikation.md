@@ -489,8 +489,11 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
       Typ** gilt als unlesbarer Aufruf, weil der Hook an `"matcher": "Agent"` hängt und
       deshalb keinen Nicht-Agenten-Aufruf sieht — ohne Typ ist die Form geraten, nicht
       gelesen. Das ist keine Selbstverständlichkeit, sondern die Stelle, an der ein Guard
-      still durchlässig wird. Bewacht von `test/agent-guard.bats` (in `make test`) und den
-      Fällen 139 und 150.
+      still durchlässig wird. Bewacht von `test/agent-guard.bats` (in `make test`) und Fall
+      139 — er macht den fehlenden Typ fail-open, und der DENY-Fall wird rot. Die
+      **Gegenrichtung** — kein Rollen-Typ wird abgewiesen — bewacht Fall 150 an einem anderen
+      bats-Fall; die zwei Zusagen zeigen in entgegengesetzte Richtungen und teilen sich
+      deshalb keinen Wächter.
    3. **Was er nicht deckt — und erst das ist die Abweichung.** (a) Ein Typ **ohne** Datei in
       `.claude/agents/` ist keine Rolle: `general-purpose`, `Explore` und die übrigen
       eingebauten Typen tragen ohnehin keine Rolle in den Span. In ihre `Agent`-Spans gelangt
