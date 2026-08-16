@@ -1,4 +1,4 @@
-# Slice slice-087: Emittierte Doku-Tische behaupten nur Init-invariante Ziele
+# Slice slice-087: Kein emittiertes Dokument behauptet ein nicht Init-invariantes `make`-Ziel
 
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
 Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
@@ -43,41 +43,57 @@ die Arbeit).
 
 ## 1. Ziel
 
-**Ein frisch gebootstrapptes Ziel behauptet in seinen zwei Doku-Tischen nur noch `make`-Ziele, die
-die Init-Phase selbst schreibt — in jeder Bootstrap-Variante, und ein Wächter hält die Eigenschaft
-fest.**
+**Kein emittiertes Dokument behauptet im frisch gebootstrappten Ziel noch ein `make`-Ziel, das die
+Init-Phase nicht selbst schreibt — in jeder Bootstrap-Variante, und ein Wächter hält die
+Eigenschaft fest.**
 
-**Der Bestand, gemessen (2026-08-16, `grep -noE 'make [a-z][a-z0-9-]+'` über
-`.harness/baseline/v3.5.2/templates/AGENTS.template.md` und
-`.harness/baseline/v3.5.2/templates/harness/README.template.md`):** **20 Nennungen** von **9
-verschiedenen** Zielen. **Zwei** davon schreibt die Init-Phase selbst — `gates` und `help`
-(6 Nennungen). **Sieben** nicht (14 Nennungen), und sie zerfallen in zwei ungleiche Hälften:
+**Der Gegenstand ist der Dokument-Satz, nicht eine Aufzählung von Fundorten.** Welche Dokumente
+`internal/emit` ins Ziel schreibt und wie viele davon überhaupt ein `make`-Ziel nennen, steht
+gemessen in [`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) Festlegung 4(e)
+(2026-08-16) — **verwiesen, nicht abgeschrieben**: eine zweite Fassung derselben Zählung driftet
+mit dem nächsten Baseline-Sprung, und die Bedingung hängt nicht an ihr. **Drei** Dokumente
+verletzen die Bedingung heute, und sie sind der Gegenstand dieses Slice:
 
-| Anspruch | existiert wo? | Beleg |
-|---|---|---|
-| `arch-check`, `ci`, `coverage-gate`, `coverage-gate-critical`, `fullbuild` | in **keiner** Variante — auch `arch-check` nicht, wenn ein Arch-Gate emittiert wird, denn das Target heißt dort `a-check` | `grep -rnoE '^(coverage-gate\|fullbuild\|ci\|arch-check):' internal/gen internal/emit` → **kein Treffer** |
-| `lint`, `test` | **nur** mit `--lang`, im Code-Gate-Fragment `harness/mk/<lang>.mk` | [`internal/gen/golang.go`](../../../../internal/gen/golang.go) und [`internal/gen/cpp.go`](../../../../internal/gen/cpp.go) definieren je `test`, `lint`, `build` |
+| Emittiertes Dokument | Anspruch | existiert wo? | Beleg |
+|---|---|---|---|
+| `AGENTS.md`, `harness/README.md` — die zwei Gate-**Tabellen**, zusammen 20 Nennungen von 9 Zielen (2026-08-16, `grep -noE 'make [a-z][a-z0-9-]+'` über die zwei Vorlagen) | `arch-check`, `ci`, `coverage-gate`, `coverage-gate-critical`, `fullbuild` | in **keiner** Variante — auch `arch-check` nicht, wenn ein Arch-Gate emittiert wird, denn das Target heißt dort `a-check` | `grep -rnoE '^(coverage-gate\|fullbuild\|ci\|arch-check):' internal/gen internal/emit` → **kein Treffer**; Positivkontrolle mit `(test\|lint\|build)` → sechs Treffer |
+| dieselben zwei | `lint`, `test` | **nur** mit `--lang`, im Code-Gate-Fragment `harness/mk/<lang>.mk` | [`internal/gen/golang.go`](../../../../internal/gen/golang.go) und [`internal/gen/cpp.go`](../../../../internal/gen/cpp.go) definieren je `test`, `lint`, `build` |
+| `.harness/skills/closure-note-reviewer.md` — **Prosa, keine Tabelle**, zwei Nennungen | `verify-closure-notes` | in **keiner** Variante, und auch in diesem Repo nicht | `grep -rn verify-closure-notes --include='*.go' --include='*.mk' --include='*.sh' --include='Makefile' .` → **0 Zeilen**, rc 1; Positivkontrolle mit `record-gates` → **19 Dateien** |
 
-**Warum die zweite Hälfte mitmuss, obwohl sie „meistens" wahr ist.** Sie ist die teurere: eine
+**Zum dritten Dokument gehört, wo seine Nennungen liegen** — sonst repariert die Umsetzung die
+falsche. Die vendored Vorlage nennt das Ziel **dreimal**; die erste Nennung steht im
+`> **Template-Hinweis.**`-Blockquote und fällt beim Emit ohnehin weg
+([`internal/emit/templates.go`](../../../../internal/emit/templates.go), `StripHintBlock` schneidet
+genau diesen führenden Blockquote). Die zwei **übrigen** überleben und stehen im emittierten
+Artefakt: einmal in der `Gilt für:`-Zeile und einmal als Pflicht-Eingang des Reviewers
+(*„das Ergebnis von `make verify-closure-notes` für denselben Stand"*). Der Skill ist seit
+slice-030 als Singleton in-scope — `inScope` ist dort ausdrücklich als **Regel** geschrieben, nicht
+als Allowlist, und genau darum kann der Dokument-Satz wachsen, ohne dass jemand eine Liste pflegt.
+
+**Warum `lint`/`test` mitmüssen, obwohl sie „meistens" wahr sind.** Sie sind die teurere Hälfte
+der Gate-Tabellen-Ansprüche: eine
 Behauptung, die in *einer* Variante zutrifft, macht jeden Befund über sie **unentscheidbar**. Die
 sechs Sonden aus
 [`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) §Kontext zeigen es an der Ausgabe des
 Trägers — heutiger Tisch: **13 Befunde, davon 4 falsch**; die naheliegende Teil-Reparatur (nur die
 fünf nirgends existierenden entfernen): **4 Befunde, alle vier falsch**; wahr und falsch sind
-**byte-gleich**; nur der Init-invariante Tisch schweigt in **beiden** Varianten. Wer nur die erste
-Hälfte repariert, erzeugt den Fehler also erst — und `exempt-targets: [lint, test]` hilft nicht
+**byte-gleich**; nur der Init-invariante Tisch schweigt in **beiden** Varianten. Wer nur die
+nirgends existierenden fünf entfernt, erzeugt den Fehler also erst — und `exempt-targets: [lint, test]` hilft nicht
 (dieselbe Sonde, unverändert 4 Befunde: die Ausnahmeliste greift auf der Vollständigkeits-Richtung,
 nicht auf Richtung 1).
 
-**Was der Slice damit herstellt, ist eine Eigenschaft, keine Liste:** die Menge der behaupteten
-Ziele ist eine Teilmenge der Menge, die die Init-Phase definiert. Beide Mengen schreibt dasselbe
-Werkzeug; die Invariante ist deshalb prüfbar, ohne dass jemand eine Datei-Liste pflegt.
+**Was der Slice damit herstellt, ist eine Eigenschaft, keine Liste:** über den **ganzen**
+emittierten Dokument-Satz ist die Menge der behaupteten Ziele eine Teilmenge der Menge, die die
+Init-Phase definiert. Beide Mengen schreibt dasselbe Werkzeug; die Invariante ist deshalb prüfbar,
+ohne dass jemand eine Datei-Liste pflegt. **Der Gegenstand ist deshalb die Eigenschaft und nicht
+die drei Fundorte:** ein Wächter, der die zwei Gate-Tabellen aufzählt, schweigt zum dritten
+Dokument und ist beim vierten wieder falsch — und beide Fehler sind still.
 
 ## 2. Definition of Done
 
-- [ ] **(1) Die zwei emittierten Doku-Tische behaupten nach der Emission nur noch Init-invariante
-  Ziele — belegt an einem frisch gebootstrappten Ziel, in beiden Bootstrap-Varianten.** Die
-  sieben Ansprüche fallen **emit-seitig**, nicht in der vendored Vorlage: die Kurs-Vorlagen
+- [ ] **(1) Kein emittiertes Dokument behauptet nach der Emission noch ein nicht Init-invariantes
+  `make`-Ziel — belegt an einem frisch gebootstrappten Ziel, in beiden Bootstrap-Varianten.** Die
+  Ansprüche fallen **emit-seitig**, nicht in der vendored Vorlage: die Kurs-Vorlagen
   gehören dem Kurs ([welle-09](../welle-09-modul-15-konformitaet.md) §6,
   [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)),
   und die Baseline ist nach [`AGENTS.md`](../../../../AGENTS.md) §3.4 unveränderlich. Die Form ist
@@ -88,12 +104,16 @@ Werkzeug; die Invariante ist deshalb prüfbar, ohne dass jemand eine Datei-Liste
   ([`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed));
   die Zusage ist die Eigenschaft, nicht der Handgriff.
 - [ ] **(2) Ein netzloser Wächter hält die Eigenschaft, und er ist rot gesehen.** Ein Go-Test über
-  dem emittierten Vorlagen-Inhalt hält **jede** `make`-Nennung der zwei Doku-Tische gegen die
+  dem emittierten Inhalt hält **jede** `make`-Nennung **jedes emittierten Dokuments** gegen die
   Ziel-Menge der Init-Phase und wird rot, sobald eine Nennung nicht darin liegt; dazu ein
   `test/mutations/`-Fall ([`AGENTS.md`](../../../../AGENTS.md) §3.6), der genau das einmal rot
-  färbt. **Er prüft die Eigenschaft, nicht die sieben Namen** — sonst bindet er den heutigen
-  Bestand statt der Regel, und die nächste Emissions-Phase, die ein Ziel mitbringt, liefe still an
-  ihm vorbei.
+  färbt. **Er prüft zwei Eigenschaften und keine zwei Listen** — weder die Namen der Ziele noch die
+  Namen der Dokumente. Die Dokument-Seite ist dabei bereits als Regel geschrieben und nicht
+  nachzubauen: [`internal/emit/templates.go`](../../../../internal/emit/templates.go) klassifiziert
+  mit `inScope` und liefert die Ziel-Relpfade über `TemplateTargets` — wer die Menge dort abholt,
+  bekommt ein neu hinzugekommenes Dokument automatisch mit. Zählt der Wächter stattdessen Fundorte
+  auf, bindet er den heutigen Bestand statt der Regel: das vierte Dokument und die nächste
+  Emissions-Phase, die ein Ziel mitbringt, liefen still an ihm vorbei.
 - [ ] `make gates` grün.
 - [ ] Doku-Update für den berührten öffentlichen Vertrag — **erwartet unberührt**:
   [`spec/lastenheft.md`](../../../../spec/lastenheft.md) wird von diesem Slice **erfüllt**, nicht
@@ -116,7 +136,7 @@ seinen eigenen Vertrag. Dieselbe Klasse wie
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| [`internal/emit/templates.go`](../../../../internal/emit/templates.go) | update | die emit-seitige Neutralisierung der sieben Ansprüche; die Roadmap-Vorlage macht die Form vor |
+| [`internal/emit/templates.go`](../../../../internal/emit/templates.go) | update | die emit-seitige Neutralisierung in **allen** verletzenden Dokumenten — die zwei Gate-Tabellen **und** den Closure-Note-Reviewer-Skill; dieselbe Datei schreibt beide, und die Roadmap-Vorlage macht die Form vor |
 | `test/` (Go-Test + `test/mutations/`-Fall) | neu | der Wächter aus DoD (2) und sein rot gesehener Gegenfall |
 | `.harness/baseline/v3.5.2/templates/**` | **unverändert** | die vendored Baseline ist nach [`AGENTS.md`](../../../../AGENTS.md) §3.4 unveränderlich; ein Befund dort ist ein Upstream-Befund ([welle-09](../welle-09-modul-15-konformitaet.md) §6) |
 | [`spec/lastenheft.md`](../../../../spec/lastenheft.md), [`docs/plan/adr/`](../../adr/) | **unverändert** | keine Anforderung wird bewegt, keine Entscheidung getroffen — die trifft `slice-062` |
@@ -128,8 +148,34 @@ Die Zahlen oben sind aus dem **Vorlagen- und Emissions-Bestand** gerechnet, nich
 gebootstrappten Ziel gemessen. Vor dem ersten Handgriff sind sie dort neu zu fahren — sie hängen
 am vendored Stand, und der wandert mit jeder Baseline ([welle-10](../welle-10-re-baseline.md)
 zielt bereits auf einen anderen Tag). Ein Baseline-Sprung kann Ansprüche auflösen **oder**
-hinzufügen; die Eigenschaft aus DoD (2) überlebt beides, eine abgeschriebene Sieben-Namen-Liste
-nicht.
+hinzufügen; die Eigenschaft aus DoD (2) überlebt beides, eine abgeschriebene Namensliste nicht.
+
+### Vorfrage, die diese Umsetzung mitmisst — und was an ihr hängt
+
+**Sieht das Modul `targets` eine `make`-Nennung in Prosa, außerhalb einer Tabelle?** Das ist
+**ungemessen**, und die Messung ist dieser Vorarbeit ausdrücklich zugewiesen
+([`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) Festlegung 4(d): *„ob das Modul eine
+Prosa-Nennung außerhalb einer Tabelle überhaupt sieht, ist ungemessen … die Messung gehört zur
+Vorarbeit aus 4(e)"*). Sie ist hier **benannt, nicht gefahren**: sie gehört an das gepinnte Image
+in einer Wegwerf-Kopie außerhalb dieses Repos, wie die sechs Sonden der Entscheidung, und damit an
+den Lauf, der ohnehin dort misst. Dieselbe Klasse steht als offene Frage schon in der Roadmap
+(*ob `targets` eine Aufzählung innerhalb einer Prosa-Zeile erreicht*) — es ist eine Eigenschaft
+des Trägers, keine Eigenschaft unserer Dokumente.
+
+**Woran sie hängt, und woran nicht.** **Nicht** an der Arbeit dieses Slice: das dritte Dokument
+behauptet ein Ziel, das in keiner Variante existiert, und das ist unter jedem Ausgang der Messung
+falsch. Sie entscheidet allein, ob `doc-tables:` den Skill je decken **könnte**:
+
+- **Sieht das Modul die Prosa-Nennung**, dann ist das dritte Vergleichs-Ziel des Regelwerks
+  (*Skill-Dateien*) für `slice-063` erreichbar, und die Lücke, die
+  [`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) Festlegung 4(e) als *still* benennt —
+  ein Verstoß im Skill, den `doc-targets` nicht meldet —, ist per Konfiguration schließbar statt
+  nur per Wächter. Dann ist auch zu prüfen, ob der emittierte `doc-tables:`-Satz um den Skill
+  wächst; das ist `slice-063`, nicht dieser Slice.
+- **Sieht es sie nicht**, ist die Bedingung aus 4(e) dauerhaft breiter als der Träger, der sie
+  später prüft. Dann ist der Wächter aus DoD (2) für dieses Dokument der **einzige** mögliche
+  Träger, und das ist keine Lücke, sondern der Grund, warum DoD (2) über den Dokument-Satz läuft
+  und nicht über `doc-tables:`.
 
 ## 4. Trigger
 
@@ -152,12 +198,14 @@ verschiebt es. Der Preis der Mitgliedschaft ist benannt: die Welle schließt sp�
 
 Rückführungen:
 
-- `in-progress` → `next`: falls die Neutralisierung der zwei Hälften zwei verschiedene
-  Mechanismen braucht (etwa: fünf Zeilen streichen, aber `lint`/`test` an die Sprach-Phase
-  binden) und der Wächter aus DoD (2) damit einen dritten Liefergegenstand bekäme.
-- `in-progress` → `open`: falls sich zeigt, dass ein Doku-Tisch ohne die sieben Ansprüche seine
-  Aufgabe nicht mehr erfüllt — dann ist zu **entscheiden**, was ein emittierter Gate-Tisch dem
-  Adopter zeigt, und das ist eine ADR-Frage, keine Emissions-Frage.
+- `in-progress` → `next`: falls die Neutralisierung mehr als einen Mechanismus braucht (etwa:
+  Tabellenzeilen streichen, `lint`/`test` an die Sprach-Phase binden, die Prosa-Nennungen des
+  Skills anders behandeln als Tabellenzellen) und der Wächter aus DoD (2) damit einen weiteren
+  Liefergegenstand bekäme.
+- `in-progress` → `open`: falls sich zeigt, dass ein emittiertes Dokument ohne seine Ansprüche
+  seine Aufgabe nicht mehr erfüllt — dann ist zu **entscheiden**, was ein emittierter Gate-Tisch
+  dem Adopter zeigt und wovon ein emittierter Skill seinen Pflicht-Eingang bezieht, und das ist
+  eine ADR-Frage, keine Emissions-Frage.
 
 ## 5. Closure-Trigger
 
@@ -168,12 +216,17 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
 
 ## 6. Risiken und offene Punkte
 
-- **Der sprachlose Zustand ist im Voll-Smoke nur ein Zwischenstand — gemessen.**
-  [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) bootstrappt zwei
-  Repos (`--lang go` und sprachlos), fährt aber im sprachlosen anschließend `add-lang go` (zweimal,
-  Mono-Repo-Schritt). Ein Beleg, der erst danach greift, misst die sprachlose Variante **nie**.
-  Wer hier oder in `slice-063` einen Zahn setzt, setzt ihn deshalb **vor** dem `add-lang`-Schritt
-  — sonst behauptet der Beleg eine Varianten-Klammer, die er nicht hat.
+- **Die Lücke im Voll-Smoke ist nicht die fehlende Variante, sondern die Platzierung — gemessen.**
+  [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) bootstrappt **vier**
+  tmp-Repos; die zwei, die hier zählen, sind `tmprepo` (`--lang go`, `:43`) und `tmprepo_doc`
+  (**sprachlos**, `:156`) — die anderen zwei sind `--arch`-Varianten mit Sprache (`:521`, `:562`).
+  Der sprachlose Zustand wird ausdrücklich geprüft (`make gates` auf `tmprepo_doc`, `:160`), ist
+  danach aber nur ein **Zwischenstand**: `:212-213` zieht dort zweimal `add-lang go` nach
+  (Mono-Repo-Schritt), später `add-lang cpp` und die Arch-Achse. Ein Beleg, der erst danach
+  greift, misst die sprachlose Variante **nie**. Wer hier oder in `slice-063` einen Zahn setzt,
+  setzt ihn deshalb **vor** dem `add-lang`-Schritt — sonst behauptet der Beleg eine
+  Varianten-Klammer, die er nicht hat. Ein drittes tmp-Repo zu bauen wäre die falsche Antwort: die
+  zweite Variante ist da, sie wird nur zu spät gemessen.
 - **Die Eigenschaft bindet auch jede spätere Emissions-Phase, und der Träger dafür ist der
   Wächter, nicht dieser Text.**
   [`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) Festlegung 4(c) verlangt, dass eine
@@ -182,6 +235,13 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
   Init-Phase nicht mehr wachsen. Als Prosa wäre das eine Regel ohne Feedback-Quadrant; als
   Teilmengen-Test aus DoD (2) fällt sie beim nächsten Verstoß rot auf. **Das ist der Grund, warum
   DoD (2) die Eigenschaft prüft und nicht die Namen.**
+- **Für das dritte Dokument gibt es im Ziel keinen Träger, und das bleibt so — auch nach
+  `slice-063`.** `doc-tables:` nennt nach
+  [`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) Festlegung 4(d) zwei Dateien, und ob
+  das Modul eine Prosa-Nennung überhaupt sieht, ist die Vorfrage aus §3. Ein Verstoß im
+  Closure-Note-Reviewer-Skill bliebe für `doc-targets` deshalb **still**. Der Wächter aus DoD (2)
+  ist damit für dieses Dokument nicht die zweite Absicherung, sondern die einzige — und das ist
+  der Grund, warum er über den Dokument-Satz läuft und nicht über die Konfiguration des Trägers.
 - **Was dieser Slice ausdrücklich NICHT tut.** Die Doc-Gate-Konfiguration im Ziel (der
   `targets:`-Block) und die zwei Beleg-Richtungen gehören `slice-063`; die Entscheidung darüber
   `slice-062`; die zwei `codepath-missing`-Stellen der emittierten Vorlagen-Prosa gehören
