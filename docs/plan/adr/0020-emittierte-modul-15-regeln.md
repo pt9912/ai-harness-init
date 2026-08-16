@@ -1,6 +1,6 @@
 # ADR-0020: Vom Observability-Modul geht nur die Doku-Konsistenz-Regel ins Ziel — als Konfiguration eines bereits mitgelieferten, advisory Trägers; die drei übrigen Blöcke bleiben permanent draußen
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-08-16
 
@@ -46,12 +46,13 @@ tool-generierte Gate-Fragment, in dem der Träger verbatim liegt),
 sie ab)
 
 **Nicht tragend, und darum ausdrücklich benannt:**
-[ADR-0019](0019-agent-guard-prueft-die-aufrufform.md) steht auf *Proposed*. Diese Entscheidung
-ruht an keiner Stelle auf ihr: was Festlegung 2 braucht — dass die emittierte Ebene keine
-Agenten-Telemetrie führt und kein emittiertes Artefakt `.claude/agents/` liest —, ist unten
+[ADR-0019](0019-agent-guard-prueft-die-aufrufform.md) entscheidet den Agent-Guard **dieses** Repos
+— dieselbe Achse, ein anderer Gegenstand. Diese Entscheidung ruht an keiner Stelle auf ihr: was
+Festlegung 2 braucht — dass die emittierte Ebene keine Agenten-Telemetrie führt und kein
+emittiertes Artefakt `.claude/agents/` liest —, ist unten
 **hier** gemessen und steht **hier**. Wird jene Entscheidung verworfen oder neu geschnitten,
-fällt aus dieser keine Aussage weg; es fällt ein Hinweis weg. Eine Folgepflicht-Nummer eines
-noch nicht angenommenen Artefakts wird deshalb nirgends fortgeschrieben.
+fällt aus dieser keine Aussage weg; es fällt ein Hinweis weg. Eine Folgepflicht-Nummer jener
+Entscheidung wird hier deshalb nirgends fortgeschrieben.
 
 **Schärft:**
 [`architecture.md §5 Idempotenz, Fragment-Assembly und Resume`](../../../spec/architecture.md#5-idempotenz-fragment-assembly-und-resume)
@@ -439,8 +440,14 @@ dieser Zellen**, und das ist bewusst: ein Carveout hat nach Modul 7 genau **zwei
 nach seiner Auflösung einen Verweis auf ein abgeschlossenes Artefakt und keine Auskunft darüber, ob
 die Zelle offen oder erledigt ist. Hier zeigt die Zelle stattdessen auf die **Frage**, die er
 stellt — *trägt ein `Agent`-Span wieder Rolle und Zähler?* —, und beide Ausgänge dieser Frage sind
-unten Re-Evaluierungs-Trigger. Wo die Antwort steht, ist am Zustand ablesbar: im Carveout unter
-`done/`, oder in der Folge-ADR, die ihn überführt.
+unten Re-Evaluierungs-Trigger. **Wo die Antwort steht, ist am Zustand ablesbar — und der Zustand
+hat drei Formen, nicht zwei:** der Carveout unter `done/`, aufgelöst; die Folge-ADR, die ihn
+überführt; **oder der Carveout weiter aktiv, während die Antwort schon vorliegt.** Der dritte ist
+der Fall der positiven Messung: seine Schwelle verlangt neben dem Span die committete Mechanik, die
+ihn erzeugt, und die hängt an einer Permission-Entscheidung, die eine Folge-ADR trifft — ein
+zurückgenommener Messaufbau löst ihn nicht auf. In diesem Zustand steht die Antwort im Zeitdokument
+des Slice, der die Messung gefahren hat, und der Zustand des Carveouts allein trennt ihn nicht von
+*„Frage offen"*. Wer das **Zähler-Glied** dieser Festlegung prüft, liest deshalb beides.
 
 **4. Der Doku-Konsistenz-Block wird emittiert, ohne neues Artefakt. Die Konfiguration nennt genau
 den Datei-Satz, den die emittierende Phase selbst schreibt — und der emittierte Doku-Tisch
@@ -505,11 +512,37 @@ behauptet genau die Ziele, die dieselbe Phase definiert.** Träger ist das berei
 - **(e) Reihenfolge — quantifiziert über alle Varianten *und* über den ganzen emittierten
   Dokument-Satz:** der Block geht **nicht** mit, solange ein emittiertes Dokument ein `make`-Ziel
   behauptet, das in **irgendeiner** Variante der emittierenden Phase fehlt. **Welcher Satz das ist,
-  ist eine Regel und keine Aufzählung** — darum hält die Bedingung sich selbst vollständig, auch
-  wenn ein Dokument hinzukommt: `internal/emit` schreibt jede `*.template.md` des vendored Satzes
-  als Singleton ins Ziel (ohne die wiederkehrenden Vorlagen, die zwei derivativen Indizes und die
-  Root-README-Vorlage), dazu die tool-autorierte Root-`README.md` und die drei Workflow-Commands
-  unter `.claude/commands/`. Was driften kann, sind die Zahlen unten, nicht die Bedingung.
+  ist eine Regel und keine Aufzählung** — darum hält die Bedingung sich über die Dokumente, die das
+  Werkzeug dem Ziel als **eigene** schreibt, selbst vollständig, auch wenn eines hinzukommt:
+  `internal/emit` schreibt jede `*.template.md` des vendored Satzes als Singleton ins Ziel (ohne
+  die wiederkehrenden Vorlagen, die zwei derivativen Indizes und die Root-README-Vorlage), dazu die
+  Root-`README.md` — sie kommt aus derselben vendored `project-readme.template.md`, nur mit eigenem
+  Ziel-Namen und eigenem Emit-Schritt — und die drei Workflow-Commands unter `.claude/commands/`.
+  Was driften kann, sind die Zahlen unten, nicht die Bedingung.
+  **Was der Satz NICHT enthält, und warum das keine Auslassung ist:** die **vendored Baseline**,
+  die das Werkzeug nach dem Kontext oben vollständig ins Ziel legt (`.harness/baseline/<tag>/` mit
+  `regelwerk/` und `templates/`). Sie ist **derivativer Kurs-Inhalt und im Ziel nicht
+  repo-autoritativ**: keine Emissions-Phase autoriert sie, sie gehört dem Kurs, und der Prozess
+  **referenziert** ihre Ausfüll-Vorlagen, statt sie zu besitzen
+  ([`MR-008`](../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
+  — die fünf wiederkehrenden Vorlagen werden aus genau diesem Grund nicht emittiert). Es ist
+  dieselbe Klasse, aus der **dieses** Repo `.harness/baseline/**` per `scan.ignore` aus seinem
+  Doc-Gate nimmt, und die emittierte `.d-check.yml` nimmt im Ziel `.harness/**` ebenso aus — kein
+  Doku-Gate liest diesen Baum, hier so wenig wie dort. **Ohne den Ausschluss wäre die Bedingung
+  nicht erfüllbar, und das ist gemessen:** der Baum trägt `make`-Ansprüche, die in **keiner**
+  Bootstrap-Variante existieren — `welle.template.md` nennt `make fullbuild`,
+  `NNNN-titel.template.md` nennt `make arch-check` (das emittierte Arch-Gate heißt `a-check`), und
+  neun `regelwerk/`-Module nennen `fullbuild`, `arch-check`, `coverage-gate-critical`, `build`,
+  `verify`, `test-determinism` (2026-08-16 ausgezählt) —, und **eine Korrektur in diesem Baum ist
+  kein Weg**: er ist auf beiden Ebenen byte-verifiziert — `baseline-verify` prüft ihn gegen
+  `SHA256SUMS`, hier wie im Ziel, wo das emittierte Baseline-Fragment das Rezept an `GATE_CHECKS`
+  hängt (`internal/emit/baseline.go`). Wer den Anspruch dort heilte, färbte den Gate rot.
+  **Die Grenze wird damit benannt, nicht geschlossen:** wer eine Ausfüll-Vorlage aus diesem Baum in
+  ein lebendes Plan-Dokument seines Repos kopiert, trägt einen Anspruch auf ein Ziel hinein, das
+  dort in keiner Variante existiert. Das ist dieselbe
+  [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Klasse
+  eine Ebene weiter — außerhalb dieser Bedingung, außerhalb ihres Trägers, und ohne einen Griff,
+  der sie schlösse, solange der Baum unverändert mitgeht.
   **Gemessen am 2026-08-16 über diesen Satz** (Hinweis-Blöcke wie beim Emit entfernt; gezählt sind
   **benannte** Ziele, nicht `make`-Zeichenketten — `.claude/commands/implement-slice.md` zitiert
   das Muster `make verify-*` und behauptet damit kein Ziel): **sieben** emittierte Dokumente nennen
@@ -700,7 +733,7 @@ existiert in jedem Ziel.
 
 | Tooling | Regel | Make-Target |
 |---|---|---|
-| `make full-smoke` | Im frisch gebootstrappten Ziel läuft `make gates` grün, **und** das emittierte `make doc-targets` meldet **null Befunde in beiden Bootstrap-Varianten** (sprachlos wie `--lang go` — Sonden E/F sind der Nachbau derselben Zusage außerhalb des Repos), **und** es meldet eine eingebrachte, targetlose `make`-Zeile als `gate-phantom` und schweigt nach ihrer Rücknahme — die zwei Richtungen, die die Welle für die Tool-Spalte verlangt, plus die Varianten-Klammer, ohne die ein falscher Befund von einem wahren nicht zu unterscheiden ist. **Geschuldet, nicht geliefert:** diese Entscheidung schreibt die Begründung, der Nachweis gehört dem Slice, der ihn führt — und die Lücke ist nicht die fehlende Variante, sondern die **Platzierung**: `harness/tools/full-smoke.sh` bootstrappt **zwei** tmp-Repos (`--lang go` und sprachlos) und fährt im sprachlosen `make gates`, **bevor** er dort `add-lang go` nachzieht; ein Zahn nach diesem Schritt misst die sprachlose Variante nie | `make full-smoke` |
+| `make full-smoke` | Im frisch gebootstrappten Ziel läuft `make gates` grün, **und** das emittierte `make doc-targets` meldet **null Befunde in beiden Bootstrap-Varianten** (sprachlos wie `--lang go` — Sonden E/F sind der Nachbau derselben Zusage außerhalb des Repos), **und** es meldet eine eingebrachte, targetlose `make`-Zeile als `gate-phantom` und schweigt nach ihrer Rücknahme — die zwei Richtungen, die die Welle für die Tool-Spalte verlangt, plus die Varianten-Klammer, ohne die ein falscher Befund von einem wahren nicht zu unterscheiden ist. **Geschuldet, nicht geliefert:** diese Entscheidung schreibt die Begründung, der Nachweis gehört dem Slice, der ihn führt — und die Lücke ist nicht die fehlende Variante, sondern die **Platzierung**: `harness/tools/full-smoke.sh` bootstrappt **vier** tmp-Repos (2026-08-16 gezählt); die zwei, die hier zählen, sind `tmprepo` (`--lang go`, `:43`) und `tmprepo_doc` (**sprachlos**, `:156`) — die anderen zwei sind `--arch`-Varianten mit Sprache (`:521`, `:562`). Im sprachlosen fährt der Smoke `make gates`, **bevor** er dort `add-lang go` nachzieht; ein Zahn nach diesem Schritt misst die sprachlose Variante nie | `make full-smoke` |
 | `make test` | Für die drei permanenten Nicht-Emissionen je ein Wächter über der **Abwesenheit** im gebootstrappten Ziel — kein `.claude/agents/`, kein Span-Emitter, kein Token-Bericht —, gebaut wie der bestehende Abwesenheits-Wächter in `internal/emit/enforce_test.go` und je einmal rot gesehen. **Geschuldet, nicht geliefert** (Folgepflicht 6); bis dahin trägt die Verbindlichkeit diese Entscheidung, nicht ein Sensor | `make test`, `make mutate` |
 
 ## Re-Evaluierungs-Trigger
@@ -747,3 +780,4 @@ existiert in jedem Ziel.
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-08-16 | **Proposed** | Architect-Verdikt zu den zwei Auftraggeber-Setzungen desselben Tages: die Erfassung geht nicht mit, Block 4 bekommt kein neues Artefakt. Diese Entscheidung begründet sie, führt die drei Nicht-Emissionen durch den Trichter aus Modul 7 — er fällt auf *permanent*, weil die Schwelle *„Erfassung ohne Kompilat"* an fünf abgezählten Ausgängen scheitert —, entscheidet die Kopplung der Doku-Gate-Konfiguration an die Fragment-Assembly als Invariante zwischen Anspruchs- und Datei-Menge (sechs Sonden gegen das gepinnte Image) und entkräftet die konditionale Emission |
+| 2026-08-16 | **Accepted** | Annahme durch den Auftraggeber nach drei dokumentierten Runden — [`2026-08-16-adr-0020-bestaetigungsrunde.md`](../../reviews/2026-08-16-adr-0020-bestaetigungsrunde.md), [`2026-08-16-adr-0020-bestaetigungsrunde-runde-2.md`](../../reviews/2026-08-16-adr-0020-bestaetigungsrunde-runde-2.md) und der Konvergenzrunde über beide ADRs [`2026-08-16-adr-0019-0020-konvergenzrunde.md`](../../reviews/2026-08-16-adr-0019-0020-konvergenzrunde.md); ab hier immutabel ([`AGENTS.md`](../../../AGENTS.md) §3.4) — spätere Schärfungen als neue ADR mit *Supersedes*. **Kein Zellwert ist in den drei Runden angegriffen worden**; beanstandet waren die Sätze, mit denen sie begründet sind. Vor dem Einfrieren gezogen: die Fitness Function nennt die **vier** tmp-Repos des Voll-Smokes und die zwei, die die Varianten-Klammer tragen; 4(e) nennt den **Grund**, aus dem die vendored Baseline außerhalb des Dokument-Satzes steht — derivativer, im Ziel nicht repo-autoritativer Kurs-Inhalt, den beide Doc-Gates per `scan.ignore` ausnehmen — samt der Grenze, die dieser Ausschluss offenlässt; die Ablesbarkeit der Antwort hinter [CO-002](../carveouts/CO-002-token-achse-je-rolle.md) nennt ihren **dritten** Zustand (Messung positiv, Carveout weiter aktiv, Permission-Folge offen); die Root-`README.md` steht bei ihrer Vorlage statt bei den tool-autorierten Artefakten; und der Bezug auf [ADR-0019](0019-agent-guard-prueft-die-aufrufform.md) trägt keine Status-Angabe mehr — beide Entscheidungen sind mit demselben Beschluss angenommen |

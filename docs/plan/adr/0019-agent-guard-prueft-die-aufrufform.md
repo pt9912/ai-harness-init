@@ -1,6 +1,6 @@
 # ADR-0019: Der Agent-Guard prüft die Aufrufform, nicht die Betriebsart
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-08-15
 
@@ -114,7 +114,10 @@ gehört in denselben Satz wie der Befund:
   Schema-Verletzung, kein Validierungsfehler. Er ist **nicht wirksam**: derselbe Lauf startet
   dennoch asynchron, und sein `Agent`-Span trägt dieselbe Gestalt wie jeder andere
   Hintergrund-Lauf des Tages — `model_version`, `duration_ms: 3`, kein `spawned_role`, keine
-  Zähler. Und er **erreicht den Hook nicht**: dort stand `ABSENT`. Diese dritte Beobachtung ist
+  Zähler. Und **am Hook stand `ABSENT`**: der Guard las an diesem Schlüssel keinen Wert. Das ist
+  eine Aussage über die **Lesung**, nicht über den Aufrufer — `ABSENT` ist die Ausgabe des
+  Extraktors für einen **fehlenden Schlüssel** in `tool_input`, und sie unterscheidet nicht, ob das
+  Feld nie gesendet oder gesendet und vor dem Hook verworfen wurde. Diese dritte Beobachtung ist
   vom 2026-08-10 und heute **ohne neuen Abnehmer** nicht wiederholbar — sie kam aus dem Zweig,
   den Festlegung 1 entfernt.
   Die drei Zeilen stehen mit je eigenem Beleg im Nachtrag (§7) des Mess-Dokuments; die
@@ -138,12 +141,16 @@ Schema **führt**, sagt nichts darüber, was das Werkzeug **annimmt** oder **bef
 Fragen, drei Beobachtungen.
 
 **Die Grenze dieser Beleglage, benannt statt geglättet.** Für Festlegung 1 reicht, was gemessen
-ist: **kein Aufruf trug am Hook `run_in_background: false`** — jede Rollen-Probe fiel in den
-letzten Zweig der damaligen Guard-Fassung, und der feuerte für jeden Wert außer `false`
+ist: **die Rollen-Probe vom 2026-08-15 trug am Hook kein `run_in_background: false`** — sie fiel in
+den letzten Zweig der damaligen Guard-Fassung, und der feuerte für jeden Wert außer `false`
 (`git show 60e4370:.claude/hooks/pretooluse-agent-guard.sh`, die zwei letzten Zeilen:
-`[ "$rib" = "false" ] && exit 0`, danach `emit_deny`). Eine Bedingung, die keine Payload mehr
-erfüllt, verweigert alles und schützt nichts. Der tragende Grund heißt damit **gesendet, ohne
-Wirkung, und beim Hook nicht angekommen** — nicht *„nicht mehr sendbar"*. Offen bleibt danach
+`[ "$rib" = "false" ] && exit 0`, danach `emit_deny`). **Gemessen ist diese eine Probe, und
+quantifiziert wird über sie**, nicht über alle Aufrufe: Nicht-Rollen-Typen erreichten den
+Betriebsart-Zweig gar nicht, über ihren Wert ist nichts bekannt, und der Aufruf vom 17:46:53Z lief,
+als der lesende Zweig schon gefallen war. Ob je ein Aufruf den Wert am Hook trug, entscheidet erst
+Folgepflicht 5. Für die Senkung genügt, was die Probe zeigt: die Bedingung wies den Aufruf ab, den
+sie regeln sollte, und sie schützte dabei nichts. Der tragende Grund heißt damit **gesendet, ohne
+Wirkung, und am Hook nicht gelesen** — nicht *„nicht mehr sendbar"*. Offen bleibt danach
 **eine** Frage:
 
 - *Nimmt ein Feld, das ein Hook per `updatedInput` **nach** dem Modell einsetzt, denselben Weg?*
@@ -152,9 +159,9 @@ Wirkung, und beim Hook nicht angekommen** — nicht *„nicht mehr sendbar"*. Of
   Kette an. Das ist die Messung aus Festlegung 4, dort geführt und nicht hier; für Alternative D
   unten macht sie den ganzen Unterschied.
 
-**Eine Beobachtung ist außerdem nachzuholen, weil ihr Zeuge gefallen ist.** Dass der Wert den
-Hook nicht erreicht, ist am 2026-08-10 gesehen worden, und der Zweig, der ihn las, ist mit der
-Senkung weg. **Die Sonde ist billiger als die Frage aussieht:**
+**Eine Beobachtung ist außerdem nachzuholen, weil ihr Zeuge gefallen ist.** Dass der Guard an
+diesem Schlüssel `ABSENT` las, ist am 2026-08-10 gesehen worden, und der Zweig, der ihn las, ist
+mit der Senkung weg. **Die Sonde ist billiger als die Frage aussieht:**
 [`harness/tools/extract-agent-call.awk`](../../../harness/tools/extract-agent-call.awk) liest
 `tool_input.run_in_background` bei **jedem** Agenten-Aufruf und gibt ihn als erste seiner zwei
 Zeilen aus (`true`, `false` oder `ABSENT`); der Guard nimmt seit der Senkung nur noch die zweite.
@@ -173,20 +180,21 @@ oben und der Span-Bestand unten.
 
 ### Was ausfällt — und was nicht (am 2026-08-15 selbst gemessen)
 
-Der Span-Bestand liegt gitignored und maschinenlokal; die Zahlen gelten diesem Tag und dieser
-Maschine, die **Gestalt** ist die Aussage. Drei `Agent`-Spans des Tages, dazu drei
-`SubagentStart`-Ereignisse zu denselben drei Zeitstempeln in derselben Sitzung
-(15:38:17Z · 16:06:10Z · 16:08:11Z) — eine saubere Paarung, kein Rest:
+Der Span-Bestand liegt gitignored und maschinenlokal; die **Gestalt** ist die Aussage, nicht die
+Anzahl — die hängt daran, wie viele Läufe der Tag trug, und ist an keinem zweiten Ort
+nachzuzählen.
+Die Gestalt ist eine **saubere Paarung ohne Rest, in beide Richtungen**: zu jedem `Agent`-Span des
+Tages steht ein `SubagentStart`-Ereignis mit demselben Zeitstempel in derselben Sitzung, und zu
+jedem `SubagentStart` ein `Agent`-Span.
 
-- **Der `Agent`-Span trägt von den neun erfassten Werten genau einen:** `model_version`. Kein
-  `spawned_role`, keiner der vier `usage`-Zähler, kein `total_tokens`, `total_duration_ms`,
-  `total_tool_use_count`. Seine `duration_ms` sind 6 · 3 · 3 — die Dauer des **Aufrufs**, nicht
-  die des Laufs.
+- **Jeder dieser `Agent`-Spans trägt von den neun erfassten Werten genau einen:** `model_version`.
+  Kein `spawned_role`, keiner der vier `usage`-Zähler, kein `total_tokens`, `total_duration_ms`,
+  `total_tool_use_count`. Ihre `duration_ms` liegen im einstelligen Millisekunden-Bereich — das ist
+  die Dauer des **Aufrufs**, nicht die des Laufs.
 - **Der zugehörige Subagenten-Strom trägt den Typ in jeder Zeile:** `agent_type` steht schon im
-  `SubagentStart` (zweimal `architect`, einmal `general-purpose`) und in jedem Span des Laufs — im
-  Lauf, in dem diese ADR entsteht, in **allen** seinen Spans zum Zeitpunkt der Messung. `agent_role`
-  steht daneben, aber es trägt **nicht dasselbe**: gefüllt, wo der Typ eine Rolle ist, und leer bei
-  `general-purpose`, weil die Ableitung Nicht-Rollen auf leer normalisiert.
+  `SubagentStart` — für Rollen-Typen wie für `general-purpose` — und in jedem Span des Laufs.
+  `agent_role` steht daneben, aber es trägt **nicht dasselbe**: gefüllt, wo der Typ eine Rolle ist,
+  und leer bei `general-purpose`, weil die Ableitung Nicht-Rollen auf leer normalisiert.
 
 **Damit fällt genau eine Achse aus, und die andere trägt.** Die Rollen-Achse stammt aus der
 Hook-Payload *innerhalb* des Subagenten und ist von der Betriebsart unabhängig; der Ausfall
@@ -262,10 +270,11 @@ Festlegungen:
 Gegenstand mehr.** Vier fail-closed-Zweige bleiben: fehlendes `awk`, fehlender Extraktor,
 Parse-Zweifel und fehlender Subagent-Typ. Ein lesbarer Typ läuft durch, auch ein Rollen-Typ.
 **Der tragende Grund ist das geänderte Verhalten des Werkzeugs, nicht eine Abwägung:** der
-Schalter ist sendbar, er bleibt wirkungslos, und beim Hook kam er nicht an — eine Bedingung, die
-kein Aufruf mehr erfüllen kann, ist keine strenge Durchsetzung, sondern ein **Ausfall**: sie
-verweigert alles und schützt nichts. Ein Guard, der auf einen Wert prüft, der ihn nicht mehr
-erreicht, misst nicht mehr die Wirklichkeit, sondern seine eigene Entstehungszeit.
+Schalter ist sendbar, er bleibt wirkungslos, und am Hook stand `ABSENT` — eine Bedingung, die von
+keiner gemessenen Payload erfüllt wurde, ist keine strenge Durchsetzung, sondern ein **Ausfall**:
+sie verweigert die Läufe, die sie regeln sollte, und schützt dabei nichts. Ein Guard, der auf einen
+Wert prüft, den er nicht zu sehen bekommt, misst nicht mehr die Wirklichkeit, sondern seine eigene
+Entstehungszeit.
 
 **2. Der Guard führt keine verweigernde Rollen-Frage mehr.** Die Ableitung *„ein Typ ist eine
 Rolle, wenn `.claude/agents/<name>.md` existiert"* fällt mit der Betriebsart-Forderung — sie hatte
@@ -390,7 +399,7 @@ verlangt die committete Mechanik dazu.
   unverändert — sie ist keine Eigenschaft unseres Aufbaus, sondern der Mechanik — und gehört dort
   **genannt**, nicht stillschweigend mitgeliefert.
 - **Folgepflicht 5 — nachmessen, was der Hook in `tool_input` sieht.** Die Beobachtung, dass der
-  Schalter dort nicht ankommt, stammt vom 2026-08-10 und ist ohne Abnehmer nicht wiederholbar
+  Guard dort `ABSENT` las, stammt vom 2026-08-10 und ist ohne Abnehmer nicht wiederholbar
   (§Kontext). Sie gehört dem Slice aus Festlegung 2, der das Vor-Aufruf-Protokoll baut: er
   zeichnet dieses Feld ohnehin auf, und der Extraktor gibt es unverändert aus — eine Zeile mehr,
   keine zweite Verdrahtung. Der Wert ist die einzige repo-lokale Beobachtung, die den tragenden
@@ -448,4 +457,5 @@ Beobachtung durch Wiedervorlage, nicht durch Sensor.
 |---|---|---|
 | 2026-08-15 | **Proposed** | Architect-Auftrag zur bereits vollzogenen Senkung `83cf01d`. Grundlage ist die Messung in [`docs/reviews/2026-08-15-agent-guard-tool-vertrag.md`](../../reviews/2026-08-15-agent-guard-tool-vertrag.md); der Eintritt in die blockierte Schleife war eine Auftraggeber-Entscheidung |
 | 2026-08-15 | **Überarbeitet, weiter Proposed** | Die Beleglage von Festlegung 1 trennt jetzt zwei Arten von Beleg — Payload-Messung (2026-07-29) gegen Ablehnung plus Schema-Selbstauskunft (2026-08-15) —, und die zwei ungemessenen Aussagen tragen je ihre Sonde. Die Reihenfolge-Prämisse ist auf den Agenten-Weg verengt: der uncommittete Weg des Auftraggebers steht als offen und ungeprüft da und ist Teil der Berufungslast. Der [`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)-Bezug ist als **Analogie** gekennzeichnet, der reale Fußabdruck ist die Commit-Reihenfolge `60e4370` → `83cf01d`. Die Fitness Function sagt **Durchlass** statt Rollen-Achse; deren Träger — die notierte Liste im Emitter — steht als Grenze in den Konsequenzen |
-| 2026-08-15 | **Überarbeitet, weiter Proposed** | Der tragende Grund von Festlegung 1 heißt, was gemessen ist: der Schalter ist **sendbar und wirkungslos**, und beim Hook kam er nicht an — drei getrennte, je datierte Aussagen. Die Prämisse von Festlegung 4 ist damit gemessen statt ungemessen; offen bleibt allein der Weg über `updatedInput`. Die zweite offene Beobachtung — was der Hook in `tool_input` sieht — trägt **Folgepflicht 5** und hängt am Slice aus Festlegung 2; der erste Re-Evaluierungs-Trigger verlangt **Wirksamkeit** statt Annahme des Feldes. Die Positiv-Konsequenz nennt die fünf Rollen, für die die Achse am Bestand steht, und die eine, für die sie es nicht tut |
+| 2026-08-15 | **Überarbeitet, weiter Proposed** | Der tragende Grund von Festlegung 1 heißt, was gemessen ist: der Schalter ist **sendbar und wirkungslos**, und am Hook stand `ABSENT` — drei getrennte, je datierte Aussagen. Die Prämisse von Festlegung 4 ist damit gemessen statt ungemessen; offen bleibt allein der Weg über `updatedInput`. Die zweite offene Beobachtung — was der Hook in `tool_input` sieht — trägt **Folgepflicht 5** und hängt am Slice aus Festlegung 2; der erste Re-Evaluierungs-Trigger verlangt **Wirksamkeit** statt Annahme des Feldes. Die Positiv-Konsequenz nennt die fünf Rollen, für die die Achse am Bestand steht, und die eine, für die sie es nicht tut |
+| 2026-08-16 | **Accepted** | Annahme durch den Auftraggeber nach drei dokumentierten Runden — [`2026-08-15-adr-0019-bestaetigungsrunde.md`](../../reviews/2026-08-15-adr-0019-bestaetigungsrunde.md), [`2026-08-15-adr-0019-bestaetigungsrunde-runde-2.md`](../../reviews/2026-08-15-adr-0019-bestaetigungsrunde-runde-2.md) und der Konvergenzrunde über beide ADRs [`2026-08-16-adr-0019-0020-konvergenzrunde.md`](../../reviews/2026-08-16-adr-0019-0020-konvergenzrunde.md); ab hier immutabel ([`AGENTS.md`](../../../AGENTS.md) §3.4) — spätere Schärfungen als neue ADR mit *Supersedes*. Der blockierende Befund der dritten Runde lag **nicht** in dieser ADR, sondern im Spec-Stratum, und ist dort behoben (`393ffaa`). Vor dem Einfrieren gezogen: die Paarung von `Agent`-Span und `SubagentStart` steht als **Gestalt** statt als Anzahl (die hängt daran, wie viele Läufe der Tag trug); die Beleglage von Festlegung 1 quantifiziert über **eine** gemessene Rollen-Probe statt über alle Aufrufe, und was ein anderer Aufruf am Hook trug, entscheidet Folgepflicht 5; die dritte tragende Aussage heißt **am Hook stand `ABSENT`** — die Lesung des Guards, die nicht unterscheidet, ob das Feld nie gesendet oder vor dem Hook verworfen wurde |
