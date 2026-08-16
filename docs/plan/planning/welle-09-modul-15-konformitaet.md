@@ -165,8 +165,8 @@ nur noch, was wirklich ausgeschlossen ist.
 | slice-071 | Repo | **Cache-Festlegung**: die drei Counter getrennt, mit allen vier Angaben je Counter, im Spec-Stratum (Block 3) — setzt auf slice-060 auf. Er legt für die Matrix-Zelle *Cache-Counter × Repo* den Wert **deklariert** fest: die **Rechnung** hat keinen Eingang, ihr Auflösungs-Trigger ist der von [`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md), und die Festlegung sagt, was gerechnet wird, sobald er fällt | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | slice-068 | Repo | **Rollen-Arbeit läuft als Rolle**: die Konvention wird vollständig (was, nicht nur wie) + die Berichtsgröße, an der sie ablesbar ist — legt für die Matrix-Zelle *Token-Attribution × Repo* fest, dass ihre Belegart **zweigeteilt** ist: der Hintergrund-Teil trägt „deklariert" mit Auflösungs-Trigger, der Haupt-Kontext das „ADR-Verdikt" aus [`ADR-0012`](../adr/0012-haupt-kontext-ohne-token-bilanz.md) ohne Trigger. Die Haupt-Kontext-Abweichung selbst hat slice-060 DoD (3) geliefert | keine `LH-*` (Dogfood-Prozessebene; im Slice begründet) |
 | slice-061 | Repo | **Doku-Konsistenz**: behauptete Befehle existieren (Block 4) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| slice-062 | **Tool** | **Entscheidung**: welche Modul-15-Regeln gehören in den emittierten Harness? (ADR + CR) | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
-| slice-063 | **Tool** | **Emission**: das Entschiedene emittieren, out-of-the-box grün belegt | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
+| slice-062 | **Tool** | **Entscheidung**: welche Modul-15-Regeln gehören in den emittierten Harness? (**nur** ADR — kein CR, gemessen in dessen §3) | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
+| slice-063 | **Tool** | **Beleg**: den mitgelieferten Träger von Block 4 im frischen Ziel wirksam machen und in beiden Richtungen belegen | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
 | slice-064 | beide | **Die Baseline-Aussage geradeziehen** + begrenzte Bestands-Stichprobe | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 
 **Die Reihenfolge ist die Aussage.** Erst die **Erfassung**, dann die Auswertung: ohne Spans hat
@@ -222,19 +222,26 @@ verstößt gegen die eigene Regel „nichts behaupten, was nicht läuft". Die Re
 berührt den Adopter-Vertrag und damit das Lastenheft — nach
 [`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
 bewegt das nur ein **Change Request des Auftraggebers**, in eigenem Commit **vor** dem
-umsetzenden Slice. **Die Entscheidung ist am 2026-08-16 gefallen** und steht mit ihren
-Begründungen in [slice-062](open/slice-062-emittierte-modul-15-regeln.md): (a) ein Ziel-Repo
-bekommt **keinen** Span-Emitter — mit Auflösungs-Trigger; (b) die emittierte `.d-check.yml`
-(heute `[links, anchors]`) zieht das `targets`-Modul **nicht** nach — Block 4 geht als
-bash+awk-Check ins Ziel; (c) drei Nicht-Emissionen tragen je einen Trigger, die Rollen-Typen
-unter `.claude/agents/` gehen **nicht** mit. Der Slice liefert **ADR + CR**. Was die ADR trägt,
-sind die drei Nicht-Emissionen samt Triggern und die offene Form von Block 4 (Bericht oder Gate);
-eine neue Artefakt-Klasse mit Sicherheitsfläche (redigierte Tool-Argumente) entsteht im Ziel
-**nicht** — der Span-Emitter geht nicht mit.
+umsetzenden Slice. **Die Entscheidung ist am 2026-08-16 in zwei Setzungen gefallen** und steht
+mit ihren Begründungen in [slice-062](open/slice-062-emittierte-modul-15-regeln.md): (a) ein
+Ziel-Repo bekommt **keinen** Span-Emitter — mit Auflösungs-Trigger; (b) Block 4 bekommt **kein
+neues Artefakt** — Träger ist das advisory `make doc-targets`, das mit `d-check.mk` ohnehin ins
+Ziel geht; (c) drei Nicht-Emissionen tragen je einen Trigger, die Rollen-Typen unter
+`.claude/agents/` gehen **nicht** mit. **Der Slice liefert die ADR — und keinen CR:** ohne neues
+Artefakt wächst keine Anforderung, damit hat der Fußabdruck aus
+[`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+Setzung 2/3 keinen Gegenstand (am Volltext beider Kandidaten gemessen, slice-062 §3). Was die ADR
+trägt, sind die drei Nicht-Emissionen samt Triggern und die zwei Fragen, die am Träger hängen —
+ob ein Wächter außerhalb von `make gates` den Wert *emittiert* verdient, und ob die Zelle ihn
+trägt, solange der Träger im Ziel wirkungslos ist. Eine neue Artefakt-Klasse mit Sicherheitsfläche
+(redigierte Tool-Argumente) entsteht im Ziel **nicht** — der Span-Emitter geht nicht mit.
 
-**Zu slice-063 (Tool, Emission):** liefert nur, was 062 entschieden hat — und belegt es dort, wo
-es zählt: `make full-smoke`, out-of-the-box grün im frisch gebootstrappten Ziel. Emittierte
-Artefakte tragen **keine** Quell-Repo-Identität (die Lehre aus slice-031/032/033).
+**Zu slice-063 (Tool, Beleg):** liefert keinen Mechanismus, sondern den Beleg für den, der schon
+da ist — beide Richtungen aus §3, im frisch gebootstrappten Ziel: `make gates` out-of-the-box
+grün **und** ein eingeschmuggelter Drift, der `make doc-targets` mit der benannten Befund-Art
+`gate-phantom` rot färbt, samt Rücknahme. Dazwischen liegt die Konfiguration, die den Träger
+überhaupt reden lässt (slice-062 §6). Emittierte Artefakte tragen **keine** Quell-Repo-Identität
+(die Lehre aus slice-031/032/033).
 
 **Zu slice-064 — bewusst BEGRENZT.** Er liefert zwei Dinge und **nicht** eine Inventur aller 21
 Regelwerk-Abschnitte: (a) unser
@@ -267,7 +274,11 @@ Die Entscheidung liegt als [`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.
   kein anderer Kandidat wartet auf sie.
 - **Wird blockiert von:** nichts. Der Hebel ist bereits bezahlt — das gepinnte d-check-Image
   aktiviert **6 von 18** Modulen, und `targets` liegt als `make doc-targets` in
-  [`d-check.mk`](../../../d-check.mk) fertig und unverdrahtet vor.
+  [`d-check.mk`](../../../d-check.mk) fertig vor. **„Fertig" heißt hier: lauffähig, nicht
+  wirksam.** Das Modul wertet erst mit einem `targets:`-Block der Konfiguration aus, und den
+  führt weder [`.d-check.yml`](../../../.d-check.yml) noch die emittierte Vorlage (gemessen,
+  slice-062 §6). Block 4 kostet auf beiden Ebenen denselben Handgriff: Konfigurations-Block plus
+  Zahn, nicht Neubau.
 
 ## 6. Out-of-Scope für diese Welle
 
