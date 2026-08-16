@@ -1,6 +1,6 @@
 # Roadmap
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-08-09.
+**Status:** Aktiv. **Letzte Änderung:** 2026-08-16.
 
 **Format-Regel:** Die Roadmap ist eine Reihenfolge von **Wellen**,
 keine Reihenfolge von Terminen (siehe
@@ -18,8 +18,8 @@ gezeigt, nicht als Treiber.
 `slice-066` (Token-Bilanz) · `slice-071` (Cache-Festlegung; die Rechnung liegt hinter dem
 Auflösungs-Trigger von [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) und ist nicht
 geschnitten) · `slice-068` (Rollen-Arbeit läuft als
-Rolle);
-`slice-061`–`slice-064` sind in §4 der Welle benannt, aber **nicht** geschnitten (cp-Disziplin). Ihr Lifecycle-Zustand ist ihr Verzeichnis, nicht diese Zeile.
+Rolle) · `slice-062` (Tool-Ebene, Entscheidung: ADR + CR);
+`slice-061`, `slice-063` und `slice-064` sind in §4 der Welle benannt, aber **nicht** geschnitten (cp-Disziplin). Ihr Lifecycle-Zustand ist ihr Verzeichnis, nicht diese Zeile.
 
 **Trigger:** Nutzer-Befund — Modul 15 ist seit `554cade` adoptiert und in keinem Block umgesetzt.
 Herleitung und die zwei Korrekturen am Schnitt stehen im Closure-Log (2026-07-28).

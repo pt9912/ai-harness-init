@@ -124,9 +124,9 @@ Modul-15-Block-4.
 
 ## 4. Slices in dieser Welle
 
-Geschnitten sind slice-059 (**done**), slice-060, slice-066, slice-068 und slice-071; die übrigen
-bekommen ihre Datei per `cp`, wenn sie an der Reihe sind (cp-Disziplin — ein leeres `open/` ist
-ehrlicher als eine driftende Vorplanung).
+Geschnitten sind slice-059 (**done**), slice-060, slice-066, slice-068, slice-071 und slice-062;
+die übrigen bekommen ihre Datei per `cp`, wenn sie an der Reihe sind (cp-Disziplin — ein leeres
+`open/` ist ehrlicher als eine driftende Vorplanung).
 
 **Warum die Rollen-Achse ein eigener Slice vor der Auswertung ist:** `agent_role` ist heute in
 **jedem** Span leer. Eine Token-Bilanz hätte damit genau zwei namenlose Eimer —
@@ -222,10 +222,15 @@ verstößt gegen die eigene Regel „nichts behaupten, was nicht läuft". Die Re
 berührt den Adopter-Vertrag und damit das Lastenheft — nach
 [`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
 bewegt das nur ein **Change Request des Auftraggebers**, in eigenem Commit **vor** dem
-umsetzenden Slice. Zu entscheiden ist mindestens: (a) bekommt ein Ziel-Repo einen Span-Emitter,
-(b) zieht die emittierte `.d-check.yml` (heute `[links, anchors]`) das `targets`-Modul nach,
-(c) welche Nicht-Emission wird begründet statt vergessen. Ein ADR ist wahrscheinlich, weil eine
-neue Artefakt-Klasse mit Sicherheitsfläche (redigierte Tool-Argumente) im Ziel entsteht.
+umsetzenden Slice. **Die Entscheidung ist am 2026-08-16 gefallen** und steht mit ihren
+Begründungen in [slice-062](open/slice-062-emittierte-modul-15-regeln.md): (a) ein Ziel-Repo
+bekommt **keinen** Span-Emitter — mit Auflösungs-Trigger; (b) die emittierte `.d-check.yml`
+(heute `[links, anchors]`) zieht das `targets`-Modul **nicht** nach — Block 4 geht als
+bash+awk-Check ins Ziel; (c) drei Nicht-Emissionen tragen je einen Trigger, die Rollen-Typen
+unter `.claude/agents/` gehen **nicht** mit. Der Slice liefert **ADR + CR**. Was die ADR trägt,
+sind die drei Nicht-Emissionen samt Triggern und die offene Form von Block 4 (Bericht oder Gate);
+eine neue Artefakt-Klasse mit Sicherheitsfläche (redigierte Tool-Argumente) entsteht im Ziel
+**nicht** — der Span-Emitter geht nicht mit.
 
 **Zu slice-063 (Tool, Emission):** liefert nur, was 062 entschieden hat — und belegt es dort, wo
 es zählt: `make full-smoke`, out-of-the-box grün im frisch gebootstrappten Ziel. Emittierte
@@ -243,9 +248,12 @@ Welle verlöre genau das, was sie in §6 von sich selbst verlangt.
 
 **Wann [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) geradegezogen wird — nicht erst am Ende.** Die als überzogen gemessene Fassung
 steht bis dahin in [`harness/conventions.md`](../../../harness/conventions.md), und der
-CR-/ADR-Autor von slice-062 liest sie, um die emittierte Ebene zu beurteilen. Die Korrektur ist
-darum **Vorbedingung für slice-062**, auch wenn sie in slice-064 dokumentiert wird — oder sie
-wandert vor. Das entscheidet der Planner beim Schnitt von 062, nicht dieser Plan im Voraus.
+CR-/ADR-Autor von slice-062 liest sie, um die emittierte Ebene zu beurteilen. **Der Schnitt von
+slice-062 hat entschieden (2026-08-16): keine Vorbedingung.** Die Begründung der ADR ruht auf dem
+vendored Vorlagen-Wortlaut — der primären Quelle, die die Baseline-Aussage selbst eingrenzt (§1) —
+und nicht auf unserer überzogenen Fassung; damit hängt slice-062 an keiner fremden Korrektur, und
+Modul 5 §Ziel-Form („kein Slice wartet auf den nächsten") bleibt gewahrt. Der Nebenbefund bleibt
+bei slice-064.
 
 **ADR-Bedarf — vor slice-059, nicht bei slice-062** (Plan-Review-Befund): Schema, Datenfluss und
 Sicherheitsfläche werden faktisch im **Dogfood-Slice** entschieden, nicht erst bei der Emission.
