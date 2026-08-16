@@ -112,21 +112,34 @@ Modul-15-Block-4.
   [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Falle eine Ebene weiter. Verlangt sind daher **beide** Richtungen, wie in welle-08
   etabliert: (a) das frisch gebootstrappte Ziel ist out-of-the-box grün (Lehre aus slice-028),
   **und** (b) ein Gegenbeispiel im Ziel wird **rot gesehen** — für einen emittierten Span-Emitter
-  etwa: er läuft, und ein Lauf ohne Pflicht-Feld fällt auf.
+  etwa: er läuft, und ein Lauf ohne Pflicht-Feld fällt auf. **Wen diese Pflicht trifft, sagt der
+  Zellwert:** sie gilt jeder Zelle, die *emittiert* trägt — nach dem Schnitt von slice-062 ist das
+  **eine**, *Doku-Konsistenz-Drift × Tool*. Die drei übrigen tragen *ADR-Verdikt*, und für den
+  Wert ist nach der Tabelle oben **kein** Sensor und kein Ziel-Beleg geschuldet: seine
+  Verbindlichkeit trägt die Entscheidung. Wer für sie einen Ziel-Beleg verlangt, verlangt den
+  Beleg einer **Abwesenheit** aus einem Smoke, der Anwesenheit prüft. **Und der Beleg der einen
+  Zelle ist über die Bootstrap-Varianten zu klammern:** ein Ergebnis aus *einer* Variante deckt
+  die andere nicht, weil `--lang` optional ist ([`ADR-0007`](../adr/0007-bootstrap-phasen.md)) —
+  wahr und falsch sind an der Ausgabe des Trägers sonst nicht zu unterscheiden (slice-062 §6).
 - `make gates` und `make mutate` grün; jeder neue Wächter hat seinen `test/mutations/`-Fall
   ([`AGENTS.md`](../../../AGENTS.md) §3.6).
 - Carveout-Audit (Modul 7): [`CO-001`](../carveouts/CO-001-bats-shell-lint.md) **und**
   [`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md) geprüft, neue Carveouts dokumentiert
   oder begründet keine. Der zweite steht hier nicht als Beiwerk: er trägt den Auflösungs-Trigger
-  **zweier** Zellen dieser Matrix (§4), und sein Zustand entscheidet, ob sie *deklariert* oder
-  *ADR-Verdikt* führen.
+  **zweier** Zellen der **Repo**-Spalte (*Token-Attribution × Repo* Hintergrund-Teil und
+  *Cache-Counter × Repo*, §4), und sein Zustand entscheidet, ob sie *deklariert* oder
+  *ADR-Verdikt* führen. **Für die Tool-Spalte ist er das ausdrücklich nicht** (slice-062 §3): dort
+  ist er die **Vorbedingung** eines Glieds, und die Zellen zeigen auf die Frage, die er stellt,
+  statt auf ihn — ein Carveout endet nach Modul 7 in beiden Ausgängen in `done/`, und eine Zelle,
+  die auf ein abgeschlossenes Artefakt als offenen Trigger zeigt, sagt nicht mehr, ob sie offen
+  oder erledigt ist. Das Audit liest die Tool-Zellen deshalb **nicht** gegen seinen Zustand.
 - Closure-Notiz in `welle-09-results.md` mit Steering-Loop-Eintrag.
 
 ## 4. Slices in dieser Welle
 
-Geschnitten sind slice-059 (**done**), slice-060, slice-066, slice-068, slice-071 und slice-062;
-die übrigen bekommen ihre Datei per `cp`, wenn sie an der Reihe sind (cp-Disziplin — ein leeres
-`open/` ist ehrlicher als eine driftende Vorplanung).
+Geschnitten sind slice-059 (**done**), slice-060, slice-066, slice-068, slice-071, slice-062 und
+slice-087; die übrigen bekommen ihre Datei per `cp`, wenn sie an der Reihe sind (cp-Disziplin —
+ein leeres `open/` ist ehrlicher als eine driftende Vorplanung).
 
 **Warum die Rollen-Achse ein eigener Slice vor der Auswertung ist:** `agent_role` ist heute in
 **jedem** Span leer. Eine Token-Bilanz hätte damit genau zwei namenlose Eimer —
@@ -166,7 +179,8 @@ nur noch, was wirklich ausgeschlossen ist.
 | slice-068 | Repo | **Rollen-Arbeit läuft als Rolle**: die Konvention wird vollständig (was, nicht nur wie) + die Berichtsgröße, an der sie ablesbar ist — legt für die Matrix-Zelle *Token-Attribution × Repo* fest, dass ihre Belegart **zweigeteilt** ist: der Hintergrund-Teil trägt „deklariert" mit Auflösungs-Trigger, der Haupt-Kontext das „ADR-Verdikt" aus [`ADR-0012`](../adr/0012-haupt-kontext-ohne-token-bilanz.md) ohne Trigger. Die Haupt-Kontext-Abweichung selbst hat slice-060 DoD (3) geliefert | keine `LH-*` (Dogfood-Prozessebene; im Slice begründet) |
 | slice-061 | Repo | **Doku-Konsistenz**: behauptete Befehle existieren (Block 4) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | slice-062 | **Tool** | **Entscheidung**: welche Modul-15-Regeln gehören in den emittierten Harness? (**nur** ADR — kein CR, gemessen in dessen §3) | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
-| slice-063 | **Tool** | **Beleg**: den mitgelieferten Träger von Block 4 im frischen Ziel wirksam machen und in beiden Richtungen belegen | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
+| [slice-087](open/slice-087-emittierte-doku-tische-init-invariant.md) | **Tool** | **Vorarbeit**: die emittierten Doku-Tische behaupten nur noch Init-invariante `make`-Ziele — sieben Ansprüche fallen emit-seitig, ein Wächter hält die Eigenschaft. Ohne ihn ist die Zelle *Doku-Konsistenz-Drift × Tool* nicht belegbar (unten) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| slice-063 | **Tool** | **Beleg**: den mitgelieferten Träger von Block 4 im frischen Ziel wirksam machen und in beiden Richtungen belegen — setzt auf [slice-087](open/slice-087-emittierte-doku-tische-init-invariant.md) auf | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
 | slice-064 | beide | **Die Baseline-Aussage geradeziehen** + begrenzte Bestands-Stichprobe | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 
 **Die Reihenfolge ist die Aussage.** Erst die **Erfassung**, dann die Auswertung: ohne Spans hat
@@ -224,24 +238,61 @@ berührt den Adopter-Vertrag und damit das Lastenheft — nach
 bewegt das nur ein **Change Request des Auftraggebers**, in eigenem Commit **vor** dem
 umsetzenden Slice. **Die Entscheidung ist am 2026-08-16 in zwei Setzungen gefallen** und steht
 mit ihren Begründungen in [slice-062](open/slice-062-emittierte-modul-15-regeln.md): (a) ein
-Ziel-Repo bekommt **keinen** Span-Emitter — mit Auflösungs-Trigger; (b) Block 4 bekommt **kein
-neues Artefakt** — Träger ist das advisory `make doc-targets`, das mit `d-check.mk` ohnehin ins
-Ziel geht; (c) drei Nicht-Emissionen tragen je einen Trigger, die Rollen-Typen unter
-`.claude/agents/` gehen **nicht** mit. **Der Slice liefert die ADR — und keinen CR:** ohne neues
-Artefakt wächst keine Anforderung, damit hat der Fußabdruck aus
+Ziel-Repo bekommt **keinen** Span-Emitter; (b) Block 4 bekommt **kein neues Artefakt** — Träger
+ist das advisory `make doc-targets`, das mit `d-check.mk` ohnehin ins Ziel geht; (c) die
+Rollen-Typen unter `.claude/agents/` gehen **nicht** mit. **Der Slice liefert die ADR — und
+keinen CR:** ohne neues Artefakt wächst keine Anforderung, damit hat der Fußabdruck aus
 [`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
 Setzung 2/3 keinen Gegenstand (am Volltext beider Kandidaten gemessen, slice-062 §3). Was die ADR
-trägt, sind die drei Nicht-Emissionen samt Triggern und die zwei Fragen, die am Träger hängen —
-ob ein Wächter außerhalb von `make gates` den Wert *emittiert* verdient, und ob die Zelle ihn
-trägt, solange der Träger im Ziel wirkungslos ist. Eine neue Artefakt-Klasse mit Sicherheitsfläche
-(redigierte Tool-Argumente) entsteht im Ziel **nicht** — der Span-Emitter geht nicht mit.
+trägt, sind die drei Nicht-Emissionen samt ihrem Trichter-Ausgang und die zwei Fragen, die am
+Träger hängen — ob ein Wächter außerhalb von `make gates` den Wert *emittiert* verdient, und ob
+die Zelle ihn trägt, solange der Träger im Ziel wirkungslos ist. Eine neue Artefakt-Klasse mit
+Sicherheitsfläche (redigierte Tool-Argumente) entsteht im Ziel **nicht** — der Span-Emitter geht
+nicht mit.
+
+**Die drei Nicht-Emissionen tragen *ADR-Verdikt*, nicht *nicht emittiert mit Trigger* — und das
+ist eine Aussage über die Dauer, nicht über die Setzung.** Die Schwelle, die die Frage wieder
+öffnete, wäre *die Erfassung läuft ohne Kompilat*; ihre Ausgänge sind in
+[slice-062](open/slice-062-emittierte-modul-15-regeln.md) §3 abgezählt und zu — der handgeführte
+Scanner ist in **diesem** Repo gebaut und gemessen gescheitert
+([slice-059](done/slice-059-telemetrie-erfassung-hook.md)), das Schema lässt sich nicht
+verkleinern, weil der polymorphe Wert genau die *ok/fehlgeschlagen*-Unterscheidung trägt, und die
+übrigen drei ändern eine *Accepted*-ADR oder liegen bei einem fremden Vertrag. Modul-7-Frage 2
+fällt damit auf *Nein*, der Auflösungs-Trigger entfällt, und an seine Stelle treten
+Re-Evaluierungs-Trigger. **Für das Closure heißt das:** die drei Zellen sind mit dem
+**Accepted**-Zustand der ADR belegt, nicht mit einem Ziel-Beleg — der Wert ist nach §3 in beiden
+Spalten zulässig (Präzedenz [`ADR-0012`](../adr/0012-haupt-kontext-ohne-token-bilanz.md)), und die
+Tool-Spalte ist damit vollständig belegbar: drei Zellen über die Entscheidung, eine über
+[slice-087](open/slice-087-emittierte-doku-tische-init-invariant.md) → `slice-063`.
+
+**Zu [slice-087](open/slice-087-emittierte-doku-tische-init-invariant.md) (Tool, Vorarbeit) — und
+warum er Mitglied ist.** Die Emission von Block 4 hängt an einer Bedingung, die nicht die
+Doc-Gate-Konfiguration betrifft, sondern die emittierten Doku-Tische: sie dürfen nur Ziele
+behaupten, die die **Init-Phase selbst** schreibt. Gemessen ist der Grund, nicht vermutet — der
+heutige Tisch erzeugt im Ziel **13 Befunde, davon 4 falsch**; die naheliegende Teil-Reparatur
+erzeugt **4 Befunde, alle falsch**; wahre und falsche Meldung sind **byte-gleich**; nur der
+invariante Tisch schweigt in **beiden** Bootstrap-Varianten. Der Befund selbst besteht unabhängig
+von Modul 15 (die Ansprüche verletzen
+[`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) auch ohne
+jede Konfiguration), aber **die Welle kann ohne ihn nicht schließen** — und ein Closure-Trigger,
+der auf ein Nicht-Mitglied ohne Eintritts-Trigger zeigt, ist keine Bedingung, sondern eine
+Verschiebung. Er ist deshalb Mitglied statt wellenlos. Die Reihenfolge folgt daraus und ist die
+einzige, die trägt: **Entscheidung (slice-062) · Vorarbeit (slice-087) · Beleg (slice-063)** —
+wobei die Vorarbeit auf die Entscheidung **nicht** wartet (sie ist ohne sie lieferbar), der Beleg
+aber auf beide.
 
 **Zu slice-063 (Tool, Beleg):** liefert keinen Mechanismus, sondern den Beleg für den, der schon
 da ist — beide Richtungen aus §3, im frisch gebootstrappten Ziel: `make gates` out-of-the-box
 grün **und** ein eingeschmuggelter Drift, der `make doc-targets` mit der benannten Befund-Art
 `gate-phantom` rot färbt, samt Rücknahme. Dazwischen liegt die Konfiguration, die den Träger
-überhaupt reden lässt (slice-062 §6). Emittierte Artefakte tragen **keine** Quell-Repo-Identität
-(die Lehre aus slice-031/032/033).
+überhaupt reden lässt (slice-062 §6). **Zwei Bedingungen, die beim ersten Schnitt noch nicht
+standen:** sein Eintritt fragt
+[slice-087](open/slice-087-emittierte-doku-tische-init-invariant.md) ab, nicht nur slice-062 — vor
+der Vorarbeit meldet der Träger Grundrauschen, und ein Beleg, der immer rot ist, ist keiner. Und
+er schuldet **beide** Bootstrap-Varianten: `make full-smoke` bootstrappt heute zwar zwei Repos
+(`--lang go` und sprachlos), fährt im sprachlosen aber anschließend `add-lang go` — ein Zahn, der
+erst danach greift, misst die sprachlose Variante nie und gehört deshalb **vor** diesen Schritt.
+Emittierte Artefakte tragen **keine** Quell-Repo-Identität (die Lehre aus slice-031/032/033).
 
 **Zu slice-064 — bewusst BEGRENZT.** Er liefert zwei Dinge und **nicht** eine Inventur aller 21
 Regelwerk-Abschnitte: (a) unser
@@ -301,6 +352,14 @@ Die Entscheidung liegt als [`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.
   vendored Baseline; sie gehören dem Kurs, nicht uns. Wenn dort etwas fehlt, ist das ein
   Upstream-Befund — kein Grund, eine repo-eigene Kopie zu pflegen (die
   [`MR-008`](../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)-Linie).
+- **Die drei Wächter über den emittierten Abwesenheiten** — *kein `.claude/agents/`*, *kein
+  Span-Emitter*, *kein Token-Bericht* im gebootstrappten Ziel. Sie sind **kein** Closure-Kriterium
+  dieser Welle, und der Grund steht in §3: der Wert *ADR-Verdikt* verlangt keinen Sensor, sondern
+  eine Entscheidung. **Undenkbar sind sie trotzdem nicht** — `internal/emit/enforce_test.go`
+  bewacht heute eine Abwesenheit im Ziel ohne jede geschlossene Datei-Liste, und ein Wächter
+  dieser drei hat exakt dieselbe Gestalt. Sie sind darum als **Folgepflicht der Entscheidung**
+  geführt, nicht als offener Punkt dieses Plans: ihr Träger ist die ADR, die sie schuldet, und die
+  bleibt lesbar, wenn diese Welle geschlossen ist.
 - **Die übrigen Achsen des Roadmap-Kandidaten** (`vcs`/`commits`-Module, Closure-Notiz-Sensor,
   Release-Text-Check, DoD-Punkte-Zähler). Sie bleiben Kandidaten; diese Welle nimmt nur, was
   Modul-15-Konformität wirklich verlangt. Wer mehr hineinzieht, verliert das Closure-Kriterium.

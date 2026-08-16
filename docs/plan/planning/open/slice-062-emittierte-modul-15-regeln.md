@@ -6,7 +6,9 @@ wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
 **Welle:** [welle-09](../welle-09-modul-15-konformitaet.md) — die **Tool**-Ebene,
-Entscheidungsteil. Den Beleg liefert `slice-063`; er ist benannt, nicht geschnitten.
+Entscheidungsteil. Die Vorarbeit liefert
+[slice-087](slice-087-emittierte-doku-tische-init-invariant.md), den Beleg danach `slice-063`;
+jener ist benannt, nicht geschnitten.
 
 **Bezug:**
 [`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) (die
@@ -35,9 +37,10 @@ der ersten Nicht-Emission stammt),
 [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) (die permanente Grenze der
 Token-Achse),
 [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) (das Gefäß folgt dem Gegenstand —
-der Grund, warum die Trigger **nicht** ins Lastenheft wandern),
-[`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) (der Auflösungs-Trigger zweier
-Zellen — verwiesen, nicht abgeschrieben).
+der Grund, warum eine permanente Nicht-Umsetzung in die ADR und nicht ins Lastenheft gehört),
+[`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) (die **Vorbedingung** eines Glieds
+zweier Zellen — verwiesen, nicht abgeschrieben, und ausdrücklich **kein** Auflösungs-Trigger von
+Zellen dieser Matrix, §3).
 Regelwerk-Quellen: `.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md` (die vier
 Regelblöcke) und `.harness/baseline/v3.5.2/regelwerk/modul-13-quality-gates.md`
 (§Hard Rule Doku-Disziplin, die der emittierte Check durchsetzt).
@@ -48,14 +51,18 @@ Regelblöcke) und `.harness/baseline/v3.5.2/regelwerk/modul-13-quality-gates.md`
 
 ## 1. Ziel
 
-**Die Tool-Spalte der Modul-15-Matrix bekommt ihre vier Werte — je Nicht-Emission mit
-beobachtbarem Auflösungs-Trigger, und für Block 4 mit dem Träger, der im Ziel schon liegt.**
+**Die Tool-Spalte der Modul-15-Matrix bekommt ihre vier Werte — je Nicht-Emission mit dem
+Trichter-Ausgang aus Modul 7, und für Block 4 mit dem Träger, der im Ziel schon liegt.**
 
 **Die Entscheidung ist gefallen und geht diesem Slice voraus** (Auftraggeber, 2026-08-16, zwei
 Setzungen desselben Tages;
 [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
 Setzung 1). Dieser Slice **trifft** sie nicht — er schreibt sie in das eine Gefäß, das sie tragen
-kann: eine **ADR** für Geltungsbereich, Begründung und Trigger. **Ein zweites Gefäß hat keinen
+kann: eine **ADR** für Geltungsbereich, Begründung und Dauer. **Die Dauer ist dabei keine zweite
+Setzung, sondern ihre ehrliche Frist:** was der Auftraggeber als *„geht nicht mit"* gesetzt hat,
+heißt nach dem Trichter *„geht nicht mit, bis ein fremder Vertrag sich ändert"* — und nicht
+*„vorerst nicht"*. Die Alternative wäre der Trigger, der Temporalität behauptet und sie nicht
+einlösen kann. **Ein zweites Gefäß hat keinen
 Gegenstand:** Block 4 bekommt **kein neues Artefakt**, damit wächst keine Anforderung, und ein
 Change Request ohne Vertragsänderung ist keiner (gemessen in §3). Was der Slice zusätzlich
 leistet, ist die Grenze: er benennt, was die ADR noch zu **entscheiden** hat und was sie nur noch
@@ -66,29 +73,39 @@ die Zellen und der Wert, den dieser Slice ihnen festlegt:
 
 | Zelle der Closure-Matrix | Wert, den dieser Slice festlegt |
 |---|---|
-| *Span-/Audit-Attribut-Regeln × Tool* (Block 1) — **zwei Abweichungen in einer Zelle**, darum je Abweichung ein Wert ([welle-09](../welle-09-modul-15-konformitaet.md) §3): (a) die **Erfassung**, (b) die **Rollen-Typen** unter `.claude/agents/`, denn `agent.role` ist ein Pflichtfeld genau dieses Blocks | (a) **nicht emittiert** mit Trigger T1 · (b) **nicht emittiert** mit Trigger T3 (§3) |
-| *Token-Attribution × Tool* (Block 2) | **nicht emittiert**; Trigger ist der von [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) |
-| *Cache-Counter × Tool* (Block 3) | **nicht emittiert**; **derselbe** Trigger, kein zweiter |
-| *Doku-Konsistenz-Drift × Tool* (Block 4) | **emittiert**, Träger ist das bereits mitgelieferte `make doc-targets` — der Wert ist hier **festgelegt**, nicht belegt: `emittiert` verlangt nach [welle-09](../welle-09-modul-15-konformitaet.md) §3 *im Ziel vorhanden **und dort rot gesehen***, und beide Richtungen liefert erst `slice-063` |
+| *Span-/Audit-Attribut-Regeln × Tool* (Block 1) — **zwei Abweichungen in einer Zelle**, darum je Abweichung ein Wert ([welle-09](../welle-09-modul-15-konformitaet.md) §3): (a) die **Erfassung**, (b) die **Rollen-Typen** unter `.claude/agents/`, denn `agent.role` ist ein Pflichtfeld genau dieses Blocks | **ADR-Verdikt** für **beide** — sie sind nicht zwei Fragen, sondern eine mit einem Pflichtfeld: ohne Erfassung im Ziel hat die Rolle dort keinen Abnehmer, und dass die Erfassung nicht mitgeht, ist permanent (§3) |
+| *Token-Attribution × Tool* (Block 2) | **ADR-Verdikt** |
+| *Cache-Counter × Tool* (Block 3) | **ADR-Verdikt** |
+| *Doku-Konsistenz-Drift × Tool* (Block 4) | **emittiert**, Träger ist das bereits mitgelieferte `make doc-targets` — der Wert ist hier **festgelegt**, nicht belegt: `emittiert` verlangt nach [welle-09](../welle-09-modul-15-konformitaet.md) §3 *im Ziel vorhanden **und dort rot gesehen***, und beide Richtungen liefert erst `slice-063`. **Mit benanntem Gegen-Ausgang**, damit ein gescheiterter Beleg keine leere Zelle hinterlässt: lässt sich der Drift im Ziel nicht rot sehen, fällt die Zelle auf *nicht emittiert*, und ihr Auflösungs-Trigger ist dann der konfigurierte Träger — dieser eine liegt, anders als die drei oben, **in unserer Hand** |
+
+**Warum drei Zellen *ADR-Verdikt* tragen und nicht *nicht emittiert* mit Trigger** — die Dauer
+ändert sich, nicht die Setzung. Ein Trigger behauptet eine Frist; die einzige Schwelle, die die
+Frage wieder öffnete, wäre *die Erfassung läuft ohne Kompilat*, und ihre Ausgänge sind abgezählt
+und zu (§3). Die Zellen zeigen deshalb auf die **Re-Evaluierungs-Trigger** der Entscheidung — sie
+werden **bemerkt**, nicht herbeigeführt. [welle-09](../welle-09-modul-15-konformitaet.md) §3 lässt
+den Wert in **beiden** Spalten zu (*„permanent ist eine Eigenschaft der Abweichung, nicht der
+Ebene"*); die Präzedenz der Nachbarspalte ist
+[`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md).
 
 Die Frage, die [slice-060](../done/slice-060-rollen-achse.md) ausdrücklich hierher übergeben hat
-(Frage B: gehen die Rollen-Typen in die Ziel-Repos mit?), ist damit beantwortet — **nein**, mit
-Trigger. Ihr einziger belegter Zweck ist die Rollen-Achse der Telemetrie; ohne Erfassung im Ziel
-hat sie dort keinen Abnehmer.
+(Frage B: gehen die Rollen-Typen in die Ziel-Repos mit?), ist damit beantwortet — **nein, und
+dauerhaft**. Ihr einziger belegter Zweck ist die Rollen-Achse der Telemetrie; ohne Erfassung im
+Ziel hat sie dort keinen Abnehmer, und ein rollen-benannter Lauf ohne Span misst nichts.
 
 ## 2. Definition of Done
 
-- [ ] **(1) Eine ADR trägt die vier Werte der Tool-Spalte — Accepted, mit je einem beobachtbaren
-  Auflösungs-Trigger je Nicht-Emission und mit dem Träger von Block 4.** Für jede der drei
-  Nicht-Emissionen stehen die drei Angaben, die
-  [welle-09](../welle-09-modul-15-konformitaet.md) §3 für den Wert *nicht emittiert* verlangt:
-  **Geltungsbereich · Begründung · Auflösungs-Trigger**, und der Trigger ist eine am Bestand
-  ablesbare Schwelle, keine Absicht (T1–T3 in §3). Der Trigger der Blöcke 2 und 3 wird
-  **verwiesen**, nicht wiederholt: er ist der von
-  [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md), und eine zweite Fassung wäre die
-  zweite Wahrheit, die driftet. Für Block 4 hält die ADR den Träger fest — `make doc-targets`,
-  advisory, verbatim aus dem gepinnten Image — und entscheidet die zwei Fragen, die daran
-  hängen: **(a)** ob ein Wächter, der **nicht** in `make gates` des Ziels hängt, den Matrix-Wert
+- [ ] **(1) Eine ADR trägt die vier Werte der Tool-Spalte — Accepted, mit dem Trichter-Ausgang je
+  Nicht-Emission und mit dem Träger von Block 4.** Für jede der drei Nicht-Emissionen stehen
+  **Geltungsbereich und Begründung**, und für jede ist der Trichter aus Modul 7 **beide Fragen
+  weit** beantwortet (§3): fällt Frage 2 auf *Nein*, entfällt der Auflösungs-Trigger, die Zelle
+  trägt **ADR-Verdikt**, und an seine Stelle treten die **Re-Evaluierungs-Trigger** der ADR — am
+  Bestand ablesbar, aber von niemandem herbeiführbar. Was
+  [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) dabei ist, gehört ausdrücklich
+  benannt: **Vorbedingung** eines Glieds, **kein** Auflösungs-Trigger dieser Zellen — verwiesen,
+  nicht abgeschrieben, denn eine zweite Fassung derselben Schwelle wäre die zweite Wahrheit, die
+  driftet, und ein Carveout endet nach Modul 7 in **beiden** Ausgängen in `done/`. Für Block 4
+  hält die ADR den Träger fest — `make doc-targets`, advisory, verbatim aus dem gepinnten Image —
+  und entscheidet die zwei Fragen, die daran hängen: **(a)** ob ein Wächter, der **nicht** in `make gates` des Ziels hängt, den Matrix-Wert
   *emittiert* nach [welle-09](../welle-09-modul-15-konformitaet.md) §3 verdienen kann — er endet
   auf Befund mit Exit 1, *rot gesehen* und *im Gate-Lauf* sind also zweierlei, und die Antwort
   entscheidet zugleich, wie
@@ -97,8 +114,12 @@ hat sie dort keinen Abnehmer.
   heute **wirkungslos** und die zwei Hindernisse dazwischen sind gemessen (§6). Ebenfalls in der
   ADR: die Entkräftung der konditionalen Emission nach dem
   [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)-Muster
-  (§6) und die Folgepflicht, dass `slice-063` nichts emittiert, was der Dogfood nicht selbst
-  fährt.
+  (§6), die Folgepflicht, dass `slice-063` nichts emittiert, was der Dogfood nicht selbst
+  fährt, und die **Reihenfolge-Bedingung über alle Bootstrap-Varianten**: der `targets:`-Block
+  geht erst mit, wenn kein emittiertes Dokument mehr ein Ziel behauptet, das *irgendeiner*
+  Variante fehlt. Diese Bedingung ist die Eintritts-Bedingung von `slice-063` und der Gegenstand
+  von [slice-087](slice-087-emittierte-doku-tische-init-invariant.md) — sie steht hier, weil sie
+  die Emission bindet, und dort, weil sie dort geleistet wird.
 - [ ] `make gates` grün.
 - [ ] Doku-Update für den berührten öffentlichen Vertrag — **er ist nicht berührt**, gemessen in
   §3: [`spec/lastenheft.md`](../../../../spec/lastenheft.md) bleibt unverändert, belegt per
@@ -116,7 +137,7 @@ nicht an der Prosa.
 |---|---|---|
 | **Planner** | diese Datei; der Nachzug in [welle-09](../welle-09-modul-15-konformitaet.md) §4 und in der [Roadmap](../in-progress/roadmap.md) | mit dem Schnitt |
 | **Architect** | die ADR aus DoD (1) und der ADR-Index | **eigener** Commit, nur Artefakte der schreibenden Rolle, Rolle in der Message ([`AGENTS.md`](../../../../AGENTS.md) §3.8) |
-| **Implementer** (`slice-063`) | die emittierte Doc-Gate-Konfiguration, `harness/tools/full-smoke.sh` | berührt **weder** ADR **noch** Lastenheft |
+| **Implementer** ([slice-087](slice-087-emittierte-doku-tische-init-invariant.md), dann `slice-063`) | zuerst die emit-seitige Neutralisierung der emittierten Doku-Tische samt Wächter, danach die emittierte Doc-Gate-Konfiguration und die zwei Beleg-Richtungen in [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | berührt **weder** ADR **noch** Lastenheft; die Reihenfolge ist keine Vorliebe, sondern die Bedingung aus DoD (1) |
 
 **Weder die ADR noch dieser Slice ändern `LH-*` — sie referenzieren nur**
 ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler),
@@ -171,33 +192,63 @@ eine Vertragsklausel auf Zeit ist ein Widerspruch in sich. Das Gefäß folgt dem
 versehene Nicht-Umsetzung gehört in die ADR, die auch Trigger führen darf. Dieses Argument steht
 unabhängig vom Ausgang oben — es trüge auch dann, wenn ein CR daneben stünde.
 
-### Die drei Auflösungs-Trigger
+### Warum keine Auflösungs-Trigger, sondern drei ADR-Verdikte
 
-Jeder ist eine **Schwelle am Bestand**, keine Absicht — und jeder ist ohne Rückfrage beurteilbar.
+**Der Trichter aus Modul 7 (§Werkzeug-Wahl bei Diskrepanz) ist beide Fragen weit zu gehen**, und
+die Plan-Ebene hält hier nur fest, welchen Ausgang er nimmt — die Begründung schuldet die ADR.
 
-**T1 — Block 1, Erfassung.** *Die Erfassung dieses Repos läuft ohne Kompilat:* `make span-check`
-ist grün, ohne dass zuvor `make span-emit-build` gelaufen ist und ohne dass im gitignorierten
-Zustandsbereich ein Binär liegt. Dann trägt die Erfassung dasselbe Budget wie der Command-Guard
-([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren): bash+awk,
-[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)), und der Grund
-der Nicht-Emission fällt: ein **sprachloses** Ziel bekäme keinen Code mehr, bevor seine eigene
-Doc-Chain und sein Sprach-ADR ihn rechtfertigen — die Inversion, gegen die
-[`ADR-0007`](../../adr/0007-bootstrap-phasen.md) entschieden hat.
+**Frage 1 (Granularität) leitet nicht auf die BF-Sub-Area-Markierung.** Ihr Symptom-Muster ist
+*„Code existiert vor Doku"*; hier ist es **invertiert** — das vollständig emittierte Regelwerk
+existiert vor jedem Träger, und ein frisch gebootstrapptes Ziel ist der reinste Greenfield-Fall,
+den dieses Werkzeug erzeugen kann. Der Träger passt zudem nicht: der Adaptions-Block registriert
+Abweichungen **dieses** Repos von seiner Baseline, und die emittierte Ebene ist keine Sub-Area
+dieses Repos, sondern ein fremdes Repo, das wir nicht betreiben.
 
-**T2 — Blöcke 2 und 3.** Der Trigger ist der von
-[`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md), und es gibt **keinen zweiten**.
-Beide Blöcke hängen am selben Eingang wie die Repo-Seite: solange kein `Agent`-Span Zähler
-trägt, trüge auch ein emittierter Bericht nie eine Zahl. **Ein zweiter, eigener Trigger wäre die
-Stelle, an der die zwei Ebenen auseinanderlaufen** — darum steht hier der Verweis und nicht die
-Schwelle. **Und der zweite Ausgang gehört mitgedacht:** fällt die Messung hinter
-[`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) negativ aus und wird der Carveout in
-eine Folge-ADR überführt, wechseln **diese beiden Zellen mit** — von *nicht emittiert* auf
-**ADR-Verdikt**, denn permanent ist eine Eigenschaft der Abweichung, nicht der Ebene.
+**Frage 2 (Temporalität) fällt auf *Nein*, und das ist die ganze Änderung gegenüber dem ersten
+Schnitt.** Die Schwelle, die die Frage wieder öffnete, hieße *die Erfassung läuft ohne Kompilat*.
+Sie ist am Bestand ablesbar — und nicht ernst zu erreichen. **Ihre Ausgänge sind abgezählt, und
+keiner steht in unserer Hand:**
 
-**T3 — die Rollen-Typen.** *Block 1 wird emittiert*, ablesbar am Ziel und nicht an einem
-Vorsatz: ein frisch gebootstrapptes Ziel schreibt bei einem Tool-Call einen Span — die Form von
-Beleg, die `make full-smoke` für die Tool-Ebene führt. Erst dann hat die Rollen-Achse im Ziel
-einen Abnehmer, und erst dann ist zu entscheiden, ob die Typen aus `.claude/agents/` mitgehen.
+1. **Handgeführter Scanner in einer vorhandenen Laufzeit** — in **diesem Repo gebaut und gemessen
+   gescheitert**. Der Grund steht als Kopfkommentar in `internal/span/span.go` und in
+   [slice-059](../done/slice-059-telemetrie-erfassung-hook.md): die awk-Fassung erkannte `error`
+   nur als Top-Level-String und meldete `ok` für einen **fehlgeschlagenen** Aufruf. Der Fehler ist
+   nicht handwerklich, sondern die Kombination — die Lücken eines handgeführten Scanners sind
+   **still**, und ein fail-open Emitter hat gegen Stille keine Kompensation.
+2. **Den Emitter fail-closed machen** — änderte
+   [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 6, die **Accepted** ist.
+3. **Das Schema so verkleinern, dass kein polymorpher Wert bleibt** — geht nicht: der polymorphe
+   Wert **ist** `error`, also genau die Unterscheidung *gelungen/fehlgeschlagen*. Das Feld, das
+   den Parser erzwingt, ist das einzige, das nicht wegfallen kann.
+4. **Roh speichern, später auswerten** — die Redaktion gehört zur **Erfassung**
+   ([`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md): *„kein Byte fremden Inhalts"*).
+5. **Eine vorhandene Laufzeit mit echtem Parser** — ein Container-Start je Tool-Call ist in
+   derselben *Accepted*-Quelle mit 300–700 ms als praktisch ausgeschlossen beziffert.
+
+**Was bleibt, sind fremde Verträge** — das Agenten-Werkzeug führt seine Telemetrie selbst, oder
+ein Hook-Ereignis liefert eine Form ohne eigenen Parser. Beides kann eintreten; niemand von uns
+führt es herbei. Ein Auflösungs-Trigger wäre damit die Frist, die niemand einlösen kann — nach
+Modul 7 die permanente Ausnahme, die behauptet, temporär zu sein. Die Zellen tragen deshalb
+**ADR-Verdikt** und zeigen auf **Re-Evaluierungs-Trigger**.
+
+**Die zwei abgeleiteten Zellen folgen mit, und ihre Kopplung ist zu benennen, nicht zu
+verdoppeln.**
+
+- **Die Rollen-Typen** hängen an Block 1: `agent.role` ist Pflichtfeld genau dieses Blocks, ohne
+  Erfassung im Ziel hat die Rolle dort keinen Abnehmer, und **ohne Abnehmer wären die sechs
+  Dateien eine Behauptung** — die Klasse, die
+  [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) eine
+  Ebene höher verbietet. Rollenlos wird das Ziel dadurch nicht: es bekommt die Workflow-Commands
+  und den Reviewer-Skill; was fehlt, ist allein der rollen-benannte **Span**.
+- **Token-Attribution und Cache-Counter** hängen an einer **Konjunktion**: Zähler *und* Erfassung
+  im Ziel. Das zweite Glied ist nach dem Obigen permanent verschlossen, also ist die Konjunktion
+  keine Schwelle. [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) ist die
+  **Vorbedingung des ersten Glieds** und ausdrücklich **kein** Auflösungs-Trigger dieser Zellen:
+  ein Carveout endet nach Modul 7 in **beiden** Ausgängen in `done/` — aufgelöst per `git mv` oder
+  in eine Folge-ADR überführt —, und eine Zelle, die auf ein abgeschlossenes Artefakt als offenen
+  Trigger zeigt, gibt keine Auskunft mehr darüber, ob sie offen oder erledigt ist. Die Zelle zeigt
+  stattdessen auf die **Frage**, die er stellt: *trägt ein `Agent`-Span wieder Rolle und Zähler?*
+  Beide Ausgänge dieser Frage sind Re-Evaluierungs-Trigger der ADR.
 
 ### Dateien
 
@@ -205,7 +256,7 @@ einen Abnehmer, und erst dann ist zu entscheiden, ob die Typen aus `.claude/agen
 |---|---|---|
 | [`docs/plan/adr/`](../../adr/) | neu | die ADR aus DoD (1) samt Index-Eintrag; Architect-Commit |
 | [`spec/lastenheft.md`](../../../../spec/lastenheft.md) | **unverändert** | keine Anforderung wird bewegt (gemessen oben); der Nachweis ist `git diff --stat` über den ganzen Slice, nicht eine Zusicherung in Prosa |
-| `internal/emit/**`, `harness/tools/full-smoke.sh`, `test/mutations/` | **unverändert** | der Beleg und die Konfiguration des Trägers sind `slice-063`. Ein Slice, der entscheidet **und** belegt, hätte den Beleg im selben Lauf wie die Entscheidung — genau die Trennung, die [welle-09](../welle-09-modul-15-konformitaet.md) mit *Erprobung → Entscheidung → Emission* zieht |
+| `internal/emit/**`, [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh), `test/mutations/` | **unverändert** | die Neutralisierung der Doku-Tische ist [slice-087](slice-087-emittierte-doku-tische-init-invariant.md), der Beleg und die Konfiguration des Trägers sind `slice-063`. Ein Slice, der entscheidet **und** belegt, hätte den Beleg im selben Lauf wie die Entscheidung — genau die Trennung, die [welle-09](../welle-09-modul-15-konformitaet.md) mit *Erprobung → Entscheidung → Emission* zieht |
 
 ## 4. Trigger
 
@@ -240,10 +291,13 @@ Rückführungen:
   sie die Konfiguration des Trägers selbst festlegt (§6, zweites Hindernis) — dann sind
   Entscheidung und Konfigurations-Entwurf zwei Schnitte, und der zweite braucht die Messung an
   einem frisch gebootstrappten Ziel, die dieser Slice bewusst nicht führt.
-- `in-progress` → `open`: falls
-  [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) währenddessen negativ entschieden
-  wird. Dann tragen zwei Zellen **ADR-Verdikt** statt *nicht emittiert*, und das ist eine andere
-  ADR-Frage als die hier gestellte.
+- `in-progress` → `open`: falls einer der fünf abgezählten Ausgänge zu T1 währenddessen fällt —
+  etwa weil das Agenten-Werkzeug seine Telemetrie selbst führt. Dann trägt Frage 2 des Trichters
+  wieder *Ja*, drei Zellen wechseln von **ADR-Verdikt** zurück auf *nicht emittiert mit
+  Auflösungs-Trigger*, und das ist eine andere ADR-Frage als die hier gestellte. **Der Ausgang von
+  [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) ist es dagegen NICHT:** er berührt
+  nur das zweite Glied der Konjunktion; das erste bleibt geschlossen, und die zwei Zellen bleiben,
+  wo sie sind.
 
 ## 5. Closure-Trigger
 
@@ -287,16 +341,19 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
   aber der Bestand, den die Messung fand, ist unverändert falsch: die zwei Vorlagen, die ein Ziel
   bei Init bekommt (`.harness/baseline/v3.5.2/templates/AGENTS.template.md` und
   `.harness/baseline/v3.5.2/templates/harness/README.template.md`), behaupten in ihren
-  Gate-Tabellen **15 Zeilen** mit **9 verschiedenen** `make`-Zielen,
-  davon existieren im frischen Ziel **fünf** nicht: `arch-check`, `coverage-gate`,
-  `coverage-gate-critical`, `ci`, `fullbuild` — `arch-check` auch dann, wenn ein Arch-Gate
-  emittiert wird, denn das Target heißt dort `a-check`. **Ohne `--lang` sind es sieben**, weil
-  der Aggregator dann auch `lint` und `test` nicht kennt
-  ([`internal/emit/makefile.go`](../../../../internal/emit/makefile.go): `gates`, `help`,
-  `record-gates` plus die Fragmente). Die Zahl ist aus den Emissions-Quellen **gerechnet**, nicht
-  an einem frischen Ziel gemessen — wer auf ihr aufbaut, misst sie dort zuerst nach.
+  Gate-Tabellen **20 Nennungen** von **9 verschiedenen** `make`-Zielen (2026-08-16 neu ausgezählt:
+  `grep -noE 'make [a-z][a-z0-9-]+'`; die frühere Angabe *15 Zeilen* zählte Tabellenzeilen, nicht
+  Nennungen). **Init-invariant sind zwei** — `gates` und `help`. **Sieben nicht**, und sie
+  zerfallen in zwei ungleiche Hälften: `arch-check`, `ci`, `coverage-gate`,
+  `coverage-gate-critical` und `fullbuild` existieren in **keiner** Variante (`arch-check` auch
+  dann nicht, wenn ein Arch-Gate emittiert wird — das Target heißt dort `a-check`), `lint` und
+  `test` **nur** mit `--lang`, im Code-Gate-Fragment `harness/mk/<lang>.mk`
+  ([`internal/gen/golang.go`](../../../../internal/gen/golang.go),
+  [`internal/gen/cpp.go`](../../../../internal/gen/cpp.go)). Die Zahlen sind aus den
+  Emissions-Quellen **gerechnet**, nicht an einem frischen Ziel gemessen — wer auf ihnen aufbaut,
+  misst sie dort zuerst nach.
   [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)
-  (*laut falsch schlägt leise falsch*) ist damit nicht erledigt, sondern verschoben: die fünf
+  (*laut falsch schlägt leise falsch*) ist damit nicht erledigt, sondern verschoben: die sieben
   Behauptungen bleiben ein Befund mit eigenem Schnitt, unten.
 - **„Gar nicht" ist nicht die einzige Alternative zu „immer" — auch das schuldet die ADR.**
   [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) emittiert
@@ -310,40 +367,58 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
   gebootstrappte Ziel out-of-the-box grün **und** (b) einen im Ziel **rot gesehenen** Drift — eine
   behauptete Zeile ohne Target, gemeldet als `gate-phantom`, und die Rücknahme danach. Beides
   hängt an den zwei Hindernissen oben: ohne `targets:`-Block ist Richtung (b) nicht erreichbar
-  (der Träger schweigt), und solange die fünf Behauptungen im emittierten Bestand stehen, ist
+  (der Träger schweigt), und solange die sieben Behauptungen im emittierten Bestand stehen, ist
   Richtung (a) für **`make doc-targets` selbst** nicht zeigbar — `make gates` bleibt grün, der
   Träger meldet Grundrauschen. Der Beleg wäre dann „rot, und zwar immer", und das ist keiner.
-- **Die fünf Behauptungen sind ein eigener Schnitt, und der ist weder hier noch in `slice-063`
-  richtig aufgehoben.** Sie sind ein Befund **unabhängig** von Modul 15: die emittierten Dateien
+  **Dazu kommt eine Varianten-Klammer:** der Beleg ist in **beiden** Bootstrap-Varianten zu
+  führen, und im sprachlosen Ziel **vor** dessen `add-lang`-Schritt — sonst misst er die Variante
+  nie, die er zu decken behauptet
+  ([slice-087](slice-087-emittierte-doku-tische-init-invariant.md) §6, am Voll-Smoke gemessen).
+- **Die sieben Behauptungen sind ein eigener Schnitt — und er ist jetzt Mitglied dieser Welle,
+  nicht wellenlos.** Sie sind ein Befund **unabhängig** von Modul 15: die emittierten Dateien
   sind heute falsch, ob sie jemand prüft oder nicht, und sie verletzen die erste Hälfte von
   [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
   (*„Jeder emittierte Gate-Target läuft auf frischem Checkout"*), die deren Messmethode
-  (`make gates`, Exit 0) nicht sieht. Ihr Ort ist deshalb **ein eigener, wellenloser Slice**, aus
-  drei Gründen: (1) er hat schon einen zweiten Abnehmer —
-  [slice-073](slice-073-emittierte-doc-gate-module.md) DoD (3) führt *„die zwei Vorlagen-Stellen
-  sind emit-seitig neutralisiert oder upstream gefallen"* als **Auflösungs-Trigger** seiner
-  `codepaths`-Nicht-Emission, und das ist dieselbe Klasse Befund an denselben zwei Vorlagen;
-  (2) er liegt in einer anderen Vertikale — die Kurs-Vorlagen sind nach
+  (`make gates`, Exit 0) nicht sieht. **Was sich gegenüber dem ersten Schnitt geändert hat:** sie
+  sind nicht mehr nur ein Nebenbefund, sondern die **Vorbedingung** der Emission von Block 4 —
+  ohne sie ist die Zelle *Doku-Konsistenz-Drift × Tool* nicht belegbar, und ein Closure-Trigger
+  dieser Welle hinge an einem Nicht-Mitglied ohne Eintritts-Trigger. Der Schnitt liegt deshalb als
+  [slice-087](slice-087-emittierte-doku-tische-init-invariant.md) in `open/` und **in** dieser
+  Welle. Die drei Gründe, die ihn von diesem Slice und von `slice-063` trennen, tragen weiter:
+  (1) er liegt in einer anderen Vertikale — die Kurs-Vorlagen sind nach
   [welle-09](../welle-09-modul-15-konformitaet.md) §6 ausdrücklich **nicht** unser Gegenstand,
   und der Ausweg ist die emit-seitige Neutralisierung, die
   [`internal/emit/templates.go`](../../../../internal/emit/templates.go) für die Roadmap-Vorlage
   bereits vormacht (die Kurs-Korrektur bleibt durch die immutable vendored Baseline versperrt,
-  [`AGENTS.md`](../../../../AGENTS.md) §3.4); (3) in `slice-063` gäbe er einen zweiten
-  Liefergegenstand neben dem Beleg. **Keine Auftraggeber-Frage:** er bewegt keine Anforderung,
-  sondern stellt eine bestehende her — und er ist damit dieselbe Klasse wie
-  [slice-073](slice-073-emittierte-doc-gate-module.md), der aus demselben Grund ohne Welle und
-  ohne Change Request geführt wird
-  ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
-  Setzung 2: reaktiv, aus einer Messung am Bestand). Geschnitten wird er, wenn er an der Reihe
-  ist — ein leeres `open/` ist ehrlicher als eine driftende Vorplanung.
+  [`AGENTS.md`](../../../../AGENTS.md) §3.4); (2) in `slice-063` gäbe er einen zweiten
+  Liefergegenstand neben dem Beleg; (3) **keine Auftraggeber-Frage** — er bewegt keine
+  Anforderung, sondern stellt eine bestehende her. Der frühere dritte Grund — *er habe in
+  [slice-073](slice-073-emittierte-doc-gate-module.md) DoD (3) schon einen zweiten Abnehmer* —
+  **trägt nicht** und ist zurückgenommen: dessen Auflösungs-Trigger nennt zwei
+  `codepath-missing`-Stellen der emittierten AGENTS- und Konventions-Datei, die Gate-Ansprüche
+  liegen in der AGENTS-Vorlage und der Vorlage von
+  [`harness/README.md`](../../../../harness/README.md). Dieselbe Klasse und derselbe Ausweg,
+  aber andere Befund-Art und nur **eine** gemeinsame Vorlage — wer sie gleichsetzt, hakt eine
+  fremde Nicht-Emission an einer Messung ab, die sie nicht getroffen hat.
 - **Nicht in diesem Slice:** der Beleg selbst (`slice-063`), die Repo-Seite von Block 4
   (`slice-061`), die emittierte Modul-Liste von `.d-check.yml`
   ([slice-073](slice-073-emittierte-doc-gate-module.md) — sie nimmt `targets` ausdrücklich
-  nicht), die Neutralisierung der fünf Behauptungen (eigener Schnitt, s. o.), die Rechnung hinter
+  nicht), die Neutralisierung der sieben Behauptungen
+  ([slice-087](slice-087-emittierte-doku-tische-init-invariant.md)), die Rechnung hinter
   [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md), und jede Migration für bereits
   gebootstrappte Ziele: die emittierten Konfigurationen sind *skip-if-present*
   ([`ADR-0007`](../../adr/0007-bootstrap-phasen.md)), ein bestehendes Ziel bekommt nichts davon —
   auch keinen `targets:`-Block.
+- **Ebenfalls nicht hier, und ausdrücklich benannt statt vergessen: die drei
+  Abwesenheits-Wächter.** Drei Zellen tragen *ADR-Verdikt*, und dieser Wert verlangt nach
+  [welle-09](../welle-09-modul-15-konformitaet.md) §3 **keinen** Sensor — die Verbindlichkeit
+  trägt die Entscheidung. Baubar ist er trotzdem, und das ist eine Feststellung, keine Vermutung:
+  `internal/emit/enforce_test.go` bewacht bereits eine **Abwesenheit** im gebootstrappten Ziel
+  ohne jede geschlossene Datei-Liste (`os.Stat` nach `Bootstrap`, `t.Errorf`, wenn der Pfad
+  existiert). Ein Wächter über *kein `.claude/agents/`*, *kein Span-Emitter*, *kein Token-Bericht*
+  hat exakt diese Gestalt. Er ist damit **weder Closure-Bedingung dieser Welle noch dieses
+  Slice**, sondern Folgepflicht der Entscheidung — sein Träger ist die ADR, die ihn schuldet, und
+  nicht eine Zeile in einem Plan, der schließt.
 
 ## 7. Closure-Notiz (nach `done/`)
 
