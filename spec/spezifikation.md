@@ -161,8 +161,8 @@ Daraus fünf Festlegungen:
    insoweit konstruktiv unvollständig. **Herstellbar war der Vordergrund bis zum 2026-07-29:**
    `tool_input` trug damals `run_in_background`, und ein Hook konnte den Start ohne diesen
    Schalter verweigern. Am **2026-08-15** führt das Eingabe-Schema von `Agent` das Feld nicht
-   mehr und lässt keine zusätzlichen Felder zu; Subagenten starten standardmäßig im
-   Hintergrund. Damit ist die Verbrauchs-Achse ohne Quelle — geführt als
+   mehr, und ein trotzdem gesendetes wird angenommen, bleibt aber wirkungslos; Subagenten
+   starten standardmäßig im Hintergrund. Damit ist die Verbrauchs-Achse ohne Quelle — geführt als
    [`CO-002`](../docs/plan/carveouts/CO-002-token-achse-je-rolle.md), gemessen in
    [`docs/reviews/2026-08-15-agent-guard-tool-vertrag.md`](../docs/reviews/2026-08-15-agent-guard-tool-vertrag.md).
    **Ein zweiter Weg ist benannt und ungemessen** — die vendored Hooks-Referenz
