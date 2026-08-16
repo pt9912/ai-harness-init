@@ -110,11 +110,16 @@ das Gegenteil: *kein Slice wartet auf den nächsten*.
 **Die Rechnung ist deshalb nicht Gegenstand dieses Slice und auch kein zweiter offener Slice
 daneben.** Ihr Träger ist der Carveout: eine bewusste Nicht-Umsetzung mit Geltungsbereich,
 Begründung und Auflösungs-Trigger ist genau das Instrument, das Modul 7 dafür vorsieht. Fällt
-der Trigger von [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) positiv — der Bestand
-trägt wieder `spawned_role` und alle vier Zähler —, wird die Rechnung geschnitten, und mit ihr
-ihr Zahn. Fällt er negativ, hat sie nie einen Gegenstand, und der Carveout geht in eine
-Folge-ADR über. **Was heute daraus folgt, ist ein leeres `open/` statt einer Vorplanung, die auf
-einen Zustand zeigt, den es womöglich nie gibt** — dieselbe Linie, mit der
+der Trigger von [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) positiv, wird die
+Rechnung geschnitten, und mit ihr ihr Zahn. **Was „positiv" heißt, steht dort und nur dort**
+(§Auflösungs-Trigger): **eine** Schwelle mit **zwei** Gliedern — hier verwiesen statt
+abgeschrieben, weil eine zweite Fassung derselben Schwelle von ihr wegdriftet. Für diesen
+Schnitt zählt daran, was das zweite Glied verhindert: ein Span, den ein zurückgenommener
+Messaufbau hinterlassen hat, erfüllt die Schwelle **nicht** — solange kein Checkout mehr
+herstellt, was Zähler trägt, hat die Rechnung ihren Eingang nicht. Fällt er negativ, hat sie nie
+einen Gegenstand, und der Carveout geht in eine Folge-ADR über. **Was heute daraus folgt, ist ein
+leeres `open/` statt einer Vorplanung, die auf einen Zustand zeigt, den es womöglich nie
+gibt** — dieselbe Linie, mit der
 [welle-09](../welle-09-modul-15-konformitaet.md) §4 ihre ungeschnittenen Slices führt.
 
 | Datei / Komponente | Änderungs-Art | Begründung |

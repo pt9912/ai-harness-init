@@ -108,12 +108,23 @@ Dokument und ist beim vierten wieder falsch — und beide Fehler sind still.
   Ziel-Menge der Init-Phase und wird rot, sobald eine Nennung nicht darin liegt; dazu ein
   `test/mutations/`-Fall ([`AGENTS.md`](../../../../AGENTS.md) §3.6), der genau das einmal rot
   färbt. **Er prüft zwei Eigenschaften und keine zwei Listen** — weder die Namen der Ziele noch die
-  Namen der Dokumente. Die Dokument-Seite ist dabei bereits als Regel geschrieben und nicht
-  nachzubauen: [`internal/emit/templates.go`](../../../../internal/emit/templates.go) klassifiziert
-  mit `inScope` und liefert die Ziel-Relpfade über `TemplateTargets` — wer die Menge dort abholt,
-  bekommt ein neu hinzugekommenes Dokument automatisch mit. Zählt der Wächter stattdessen Fundorte
-  auf, bindet er den heutigen Bestand statt der Regel: das vierte Dokument und die nächste
-  Emissions-Phase, die ein Ziel mitbringt, liefen still an ihm vorbei.
+  Namen der Dokumente. **Die Dokument-Seite ist bereits als Regel geschrieben und nicht
+  nachzubauen — aber sie steht an drei Emittern, nicht an einem, und die Menge ist deren
+  Vereinigung:** [`internal/emit/templates.go`](../../../../internal/emit/templates.go)
+  klassifiziert mit `inScope` und liefert über `TemplateTargets` die Ziel-Relpfade der aus dem
+  Vorlagen-Satz abgeleiteten Singletons; die Root-`README.md` kommt aus
+  [`internal/emit/readme.go`](../../../../internal/emit/readme.go) (`RootReadmePath` — `inScope`
+  schließt ihre Vorlage ausdrücklich aus, sie hat einen eigenen Emit-Schritt); die
+  Workflow-Commands kommen aus
+  [`internal/emit/commands.go`](../../../../internal/emit/commands.go) (`CommandPaths()`, aus dem
+  tool-eigenen eingebetteten Satz). Wer die Menge allein bei `TemplateTargets` abholt, deckt den
+  Vorlagen-Satz und lässt genau die Dokumente aus, die keiner trägt — die Zählung dazu führt §1.
+  Jede der drei Quellen bleibt dabei eine **Regel**: ein neu hinzugekommenes Dokument fließt mit,
+  ohne dass jemand eine Liste pflegt. Die Grenze ist benannt und liegt bei einem **weiteren
+  Emitter** — er fiele wieder heraus, und genau darum hängt die Quellen-Angabe an den Emittern
+  und nicht an Dateinamen. Zählt der Wächter stattdessen Fundorte auf, bindet er den heutigen
+  Bestand statt der Regel: das vierte Dokument und die nächste Emissions-Phase, die ein Ziel
+  mitbringt, liefen still an ihm vorbei.
 - [ ] `make gates` grün.
 - [ ] Doku-Update für den berührten öffentlichen Vertrag — **erwartet unberührt**:
   [`spec/lastenheft.md`](../../../../spec/lastenheft.md) wird von diesem Slice **erfüllt**, nicht
