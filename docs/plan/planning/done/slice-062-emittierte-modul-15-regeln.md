@@ -458,7 +458,7 @@ dort keinen Abnehmer.
 Architect-Artefakte, Rolle in der Message. [`AGENTS.md`](../../../../AGENTS.md) §3.8 bindet auf
 **Rollen**-Granularität, nicht auf ADR-Granularität, und ist erfüllt; derselbe Commit trägt
 [`ADR-0019`](../../adr/0019-agent-guard-prueft-die-aufrufform.md) mit und entsperrt damit
-[slice-086](../open/slice-086-vordergrund-per-updatedinput.md). Wer den Liefergegenstand dieses
+[slice-086](../in-progress/slice-086-vordergrund-per-updatedinput.md). Wer den Liefergegenstand dieses
 Slice in der Historie sucht, findet ihn nicht allein — für die Closure-Buchführung festgehalten,
 nicht als Fund.
 

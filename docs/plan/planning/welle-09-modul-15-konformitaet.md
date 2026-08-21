@@ -201,7 +201,7 @@ an echten Aufrufen gemessen. **Nicht** aus Sitzungs-Transkripten — beide Slice
 Zugriff außerhalb des Repos aus. **Der Vordergrund ist seit dem 2026-08-15 nicht mehr
 anforderbar; die Datenlage ist damit selbst der offene Punkt** und wird als
 [`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md) geführt — mit zwei Ausgängen und der
-Messung, die sie entscheidet ([slice-086](open/slice-086-vordergrund-per-updatedinput.md)).
+Messung, die sie entscheidet ([slice-086](in-progress/slice-086-vordergrund-per-updatedinput.md)).
 **„Kein Gegenstand" trägt trotzdem nicht:** die Festlegung, welche Zähler unter welchen Namen
 und in welcher Counter-Form geführt werden, ist ohne Bestand entscheidbar (slice-071 DoD (1));
 am Bestand hängt die Rechnung, nicht die Festlegung.
