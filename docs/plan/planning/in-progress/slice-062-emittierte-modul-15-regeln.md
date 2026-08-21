@@ -7,7 +7,7 @@ wechselt nur durch `git mv`, siehe
 
 **Welle:** [welle-09](../welle-09-modul-15-konformitaet.md) — die **Tool**-Ebene,
 Entscheidungsteil. Die Vorarbeit liefert
-[slice-087](slice-087-emittierte-doku-tische-init-invariant.md), den Beleg danach `slice-063`;
+[slice-087](../open/slice-087-emittierte-doku-tische-init-invariant.md), den Beleg danach `slice-063`;
 jener ist benannt, nicht geschnitten.
 
 **Bezug:**
@@ -118,7 +118,7 @@ Ziel hat sie dort keinen Abnehmer, und ein rollen-benannter Lauf ohne Span misst
   fährt, und die **Reihenfolge-Bedingung über alle Bootstrap-Varianten**: der `targets:`-Block
   geht erst mit, wenn kein emittiertes Dokument mehr ein Ziel behauptet, das *irgendeiner*
   Variante fehlt. Diese Bedingung ist die Eintritts-Bedingung von `slice-063` und der Gegenstand
-  von [slice-087](slice-087-emittierte-doku-tische-init-invariant.md) — sie steht hier, weil sie
+  von [slice-087](../open/slice-087-emittierte-doku-tische-init-invariant.md) — sie steht hier, weil sie
   die Emission bindet, und dort, weil sie dort geleistet wird.
 - [ ] `make gates` grün.
 - [ ] Doku-Update für den berührten öffentlichen Vertrag — **er ist nicht berührt**, gemessen in
@@ -137,7 +137,7 @@ nicht an der Prosa.
 |---|---|---|
 | **Planner** | diese Datei; der Nachzug in [welle-09](../welle-09-modul-15-konformitaet.md) §4 und in der [Roadmap](../in-progress/roadmap.md) | mit dem Schnitt |
 | **Architect** | die ADR aus DoD (1) und der ADR-Index | **eigener** Commit, nur Artefakte der schreibenden Rolle, Rolle in der Message ([`AGENTS.md`](../../../../AGENTS.md) §3.8) |
-| **Implementer** ([slice-087](slice-087-emittierte-doku-tische-init-invariant.md), dann `slice-063`) | zuerst die emit-seitige Neutralisierung **jedes** emittierten Dokuments, das ein nicht Init-invariantes `make`-Ziel behauptet, samt Wächter über den Dokument-Satz, danach die emittierte Doc-Gate-Konfiguration und die zwei Beleg-Richtungen in [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | berührt **weder** ADR **noch** Lastenheft; die Reihenfolge ist keine Vorliebe, sondern die Bedingung aus DoD (1) |
+| **Implementer** ([slice-087](../open/slice-087-emittierte-doku-tische-init-invariant.md), dann `slice-063`) | zuerst die emit-seitige Neutralisierung **jedes** emittierten Dokuments, das ein nicht Init-invariantes `make`-Ziel behauptet, samt Wächter über den Dokument-Satz, danach die emittierte Doc-Gate-Konfiguration und die zwei Beleg-Richtungen in [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | berührt **weder** ADR **noch** Lastenheft; die Reihenfolge ist keine Vorliebe, sondern die Bedingung aus DoD (1) |
 
 **Weder die ADR noch dieser Slice ändern `LH-*` — sie referenzieren nur**
 ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler),
@@ -170,7 +170,7 @@ Auftraggeber-Setzung vom 2026-08-16 stehen lässt: **kein neues Artefakt**.
   mit den Artefakten"*) wird von einer Konfiguration des Trägers **erfüllt**, nicht geändert:
   die Artefakte, die sie prüfen würde, entstehen beim Bootstrap. Das ist ein **Anheben** nach
   [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
-  — dieselbe Einordnung, die [slice-073](slice-073-emittierte-doc-gate-module.md) §3 für seine
+  — dieselbe Einordnung, die [slice-073](../open/slice-073-emittierte-doc-gate-module.md) §3 für seine
   Modul-Liste gemessen hat.
 - [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) ist **erfüllt,
   nicht geändert**, und diesmal ohne Zutun: es kommt nichts hinzu, das ein Budget verbrauchen
@@ -253,7 +253,7 @@ verdoppeln.**
 |---|---|---|
 | [`docs/plan/adr/`](../../adr/) | neu | die ADR aus DoD (1) samt Index-Eintrag; Architect-Commit |
 | [`spec/lastenheft.md`](../../../../spec/lastenheft.md) | **unverändert** | keine Anforderung wird bewegt (gemessen oben); der Nachweis ist `git diff --stat` über den ganzen Slice, nicht eine Zusicherung in Prosa |
-| `internal/emit/**`, [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh), `test/mutations/` | **unverändert** | die Neutralisierung der emittierten Dokumente ist [slice-087](slice-087-emittierte-doku-tische-init-invariant.md), der Beleg und die Konfiguration des Trägers sind `slice-063`. Ein Slice, der entscheidet **und** belegt, hätte den Beleg im selben Lauf wie die Entscheidung — genau die Trennung, die [welle-09](../welle-09-modul-15-konformitaet.md) mit *Erprobung → Entscheidung → Emission* zieht |
+| `internal/emit/**`, [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh), `test/mutations/` | **unverändert** | die Neutralisierung der emittierten Dokumente ist [slice-087](../open/slice-087-emittierte-doku-tische-init-invariant.md), der Beleg und die Konfiguration des Trägers sind `slice-063`. Ein Slice, der entscheidet **und** belegt, hätte den Beleg im selben Lauf wie die Entscheidung — genau die Trennung, die [welle-09](../welle-09-modul-15-konformitaet.md) mit *Erprobung → Entscheidung → Emission* zieht |
 
 ## 4. Trigger
 
@@ -353,7 +353,7 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
   Befund steht in einem dritten emittierten Dokument — `.harness/skills/closure-note-reviewer.md`
   behauptet zweimal `make verify-closure-notes`, ein Ziel, das in keiner Bootstrap-Variante und
   auch in diesem Repo nicht existiert. Der Gegenstand ist deshalb der **Dokument-Satz** und keine
-  Aufzählung von Fundorten ([slice-087](slice-087-emittierte-doku-tische-init-invariant.md) §1).
+  Aufzählung von Fundorten ([slice-087](../open/slice-087-emittierte-doku-tische-init-invariant.md) §1).
   [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)
   (*laut falsch schlägt leise falsch*) ist damit nicht erledigt, sondern verschoben: die
   Behauptungen bleiben ein Befund mit eigenem Schnitt, unten.
@@ -375,7 +375,7 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
   **Dazu kommt eine Varianten-Klammer:** der Beleg ist in **beiden** Bootstrap-Varianten zu
   führen, und im sprachlosen Ziel **vor** dessen `add-lang`-Schritt — sonst misst er die Variante
   nie, die er zu decken behauptet
-  ([slice-087](slice-087-emittierte-doku-tische-init-invariant.md) §6, am Voll-Smoke gemessen).
+  ([slice-087](../open/slice-087-emittierte-doku-tische-init-invariant.md) §6, am Voll-Smoke gemessen).
 - **Die Behauptungen sind ein eigener Schnitt — und er ist Mitglied dieser Welle, nicht
   wellenlos.** Sie sind ein Befund **unabhängig** von Modul 15: die emittierten Dateien
   sind heute falsch, ob sie jemand prüft oder nicht, und sie verletzen die erste Hälfte von
@@ -385,7 +385,7 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
   Block 4** — ohne sie ist die Zelle *Doku-Konsistenz-Drift × Tool* nicht belegbar, und ein
   Closure-Trigger dieser Welle hinge an einem Nicht-Mitglied ohne Eintritts-Trigger. Der Schnitt
   liegt deshalb als
-  [slice-087](slice-087-emittierte-doku-tische-init-invariant.md) in `open/` und **in** dieser
+  [slice-087](../open/slice-087-emittierte-doku-tische-init-invariant.md) in `open/` und **in** dieser
   Welle. Drei Gründe trennen ihn von diesem Slice und von `slice-063`:
   (1) er liegt in einer anderen Vertikale — die Kurs-Vorlagen sind nach
   [welle-09](../welle-09-modul-15-konformitaet.md) §6 ausdrücklich **nicht** unser Gegenstand,
@@ -395,7 +395,7 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
   [`AGENTS.md`](../../../../AGENTS.md) §3.4); (2) in `slice-063` gäbe er einen zweiten
   Liefergegenstand neben dem Beleg; (3) **keine Auftraggeber-Frage** — er bewegt keine
   Anforderung, sondern stellt eine bestehende her. **Kein Grund ist dagegen, dass
-  [slice-073](slice-073-emittierte-doc-gate-module.md) DoD (3) ihn schon abnähme** — das trägt
+  [slice-073](../open/slice-073-emittierte-doc-gate-module.md) DoD (3) ihn schon abnähme** — das trägt
   nicht: dessen Auflösungs-Trigger nennt zwei
   `codepath-missing`-Stellen der emittierten AGENTS- und Konventions-Datei, die Gate-Ansprüche
   liegen in der AGENTS-Vorlage und der Vorlage von
@@ -404,9 +404,9 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
   fremde Nicht-Emission an einer Messung ab, die sie nicht getroffen hat.
 - **Nicht in diesem Slice:** der Beleg selbst (`slice-063`), die Repo-Seite von Block 4
   (`slice-061`), die emittierte Modul-Liste von `.d-check.yml`
-  ([slice-073](slice-073-emittierte-doc-gate-module.md) — sie nimmt `targets` ausdrücklich
+  ([slice-073](../open/slice-073-emittierte-doc-gate-module.md) — sie nimmt `targets` ausdrücklich
   nicht), die Neutralisierung der Behauptungen im emittierten Dokument-Satz
-  ([slice-087](slice-087-emittierte-doku-tische-init-invariant.md)), die Rechnung hinter
+  ([slice-087](../open/slice-087-emittierte-doku-tische-init-invariant.md)), die Rechnung hinter
   [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md), und jede Migration für bereits
   gebootstrappte Ziele: die emittierten Konfigurationen sind *skip-if-present*
   ([`ADR-0007`](../../adr/0007-bootstrap-phasen.md)), ein bestehendes Ziel bekommt nichts davon —
