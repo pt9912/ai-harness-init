@@ -94,7 +94,7 @@ Ziel hat sie dort keinen Abnehmer, und ein rollen-benannter Lauf ohne Span misst
 
 ## 2. Definition of Done
 
-- [ ] **(1) Eine ADR trägt die vier Werte der Tool-Spalte — Accepted, mit dem Trichter-Ausgang je
+- [x] **(1) Eine ADR trägt die vier Werte der Tool-Spalte — Accepted, mit dem Trichter-Ausgang je
   Nicht-Emission und mit dem Träger von Block 4.** Für jede der drei Nicht-Emissionen stehen
   **Geltungsbereich und Begründung**, und für jede ist der Trichter aus Modul 7 **beide Fragen
   weit** beantwortet (§3): fällt Frage 2 auf *Nein*, entfällt der Auflösungs-Trigger, die Zelle
@@ -120,11 +120,11 @@ Ziel hat sie dort keinen Abnehmer, und ein rollen-benannter Lauf ohne Span misst
   Variante fehlt. Diese Bedingung ist die Eintritts-Bedingung von `slice-063` und der Gegenstand
   von [slice-087](../open/slice-087-emittierte-doku-tische-init-invariant.md) — sie steht hier, weil sie
   die Emission bindet, und dort, weil sie dort geleistet wird.
-- [ ] `make gates` grün.
-- [ ] Doku-Update für den berührten öffentlichen Vertrag — **er ist nicht berührt**, gemessen in
+- [x] `make gates` grün.
+- [x] Doku-Update für den berührten öffentlichen Vertrag — **er ist nicht berührt**, gemessen in
   §3: [`spec/lastenheft.md`](../../../../spec/lastenheft.md) bleibt unverändert, belegt per
   `git diff --stat`.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -424,7 +424,117 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Was gilt.** Die Tool-Spalte der Modul-15-Matrix trägt ihre vier Werte, und ihr Gefäß ist
+[`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) — *Accepted*, damit nach
+[`AGENTS.md`](../../../../AGENTS.md) §3.4 eingefroren. Drei Zellen tragen **ADR-Verdikt**, in
+Block 1 für **beide** Abweichungen: die Erfassung und die Rollen-Typen unter `.claude/agents/`.
+Die vierte, *Doku-Konsistenz-Drift × Tool*, trägt **emittiert** mit `make doc-targets` als Träger
+— **festgelegt, nicht belegt**, mit benanntem Gegen-Ausgang. An die Stelle der Auflösungs-Trigger
+treten die Re-Evaluierungs-Trigger der ADR: sie werden bemerkt, nicht herbeigeführt. Damit ist
+auch die Frage beantwortet, die [slice-060](../done/slice-060-rollen-achse.md) hierher übergeben
+hat — die Rollen-Typen gehen **nicht** mit, und dauerhaft: ohne Erfassung im Ziel hat `agent.role`
+dort keinen Abnehmer.
+
+**Zwei beobachtbare Closure-Kriterien.**
+
+1. **Der Liefergegenstand liegt eingefroren vor.**
+   [`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) führt den Status *Accepted* und die
+   vier Werte in einer Tabelle; die Index-Zeile in [`docs/plan/adr/README.md`](../../adr/README.md)
+   trägt denselben Status. Der Closure-Trigger (§5) verlangt *„Accepted nach Review (Modul 10) mit
+   ausgestelltem Verdikt"*: drei Runden haben je ein Verdikt ausgestellt, alle drei liegen als
+   Zeitdokumente unter [`docs/reviews/`](../../../reviews/), und die blockierende Menge der letzten
+   Runde ist **vor** dem Einfrieren gezogen.
+2. **Die Verifikation (Modul 11) bestätigt die DoD mit selbst gefahrenen Sensoren.**
+   [Report](../../../reviews/2026-08-21-slice-062-verify.md): `make gates` Exit 0
+   (`baseline-verify: v3.5.2 OK — 42 Dateien`, `d-check: … 0 Befund(e)`, bats ohne `not ok`,
+   `comment-claims: … 0 Befund(e)`, `span-check` ok); die acht Bestandteile von DoD (1) einzeln in
+   der ADR aufgesucht; die vier blockierenden MEDIUM der letzten Runde per
+   `git show --unified=0 325411c` **unabhängig nachgemessen** (sieben Hunks, blockierende Menge
+   vollständig gedeckt), und die einzige Zahl darin am Bestand nachgerechnet. DoD (3) in beide
+   Richtungen: `git log --stat --since=2026-08-16 -- spec/lastenheft.md` leer, jüngste Berührung
+   des Vertrags-Stratums am 2026-07-28 — neunzehn Tage vor dem Schnitt.
+
+**Wo der Liefergegenstand in der Historie liegt.** In `325411c`: drei Dateien, alle
+Architect-Artefakte, Rolle in der Message. [`AGENTS.md`](../../../../AGENTS.md) §3.8 bindet auf
+**Rollen**-Granularität, nicht auf ADR-Granularität, und ist erfüllt; derselbe Commit trägt
+[`ADR-0019`](../../adr/0019-agent-guard-prueft-die-aufrufform.md) mit und entsperrt damit
+[slice-086](../open/slice-086-vordergrund-per-updatedinput.md). Wer den Liefergegenstand dieses
+Slice in der Historie sucht, findet ihn nicht allein — für die Closure-Buchführung festgehalten,
+nicht als Fund.
+
+**Was der Slice nicht deckt.**
+
+- **Die vierte Zelle ist festgelegt, nicht belegt.** *emittiert* verlangt nach
+  [welle-09](../welle-09-modul-15-konformitaet.md) §3 *im Ziel vorhanden **und dort rot gesehen***;
+  beide Hälften stehen aus. Der Gegen-Ausgang ist benannt, damit ein ausbleibender Beleg keine
+  leere Zelle hinterlässt.
+- **Kein Sensor über den drei Nicht-Emissionen.** Für *ADR-Verdikt* ist keiner geschuldet — die
+  Verbindlichkeit trägt die Entscheidung. Baubar ist er trotzdem; er ist Folgepflicht der ADR,
+  nicht Closure-Bedingung.
+- **Nichts an der emittierten Ebene selbst.** Kein Emissions-Pfad, kein Wächter, keine
+  Mutations-Datei wurde berührt — deshalb tragen `make mutate`, `make smoke` und `make full-smoke`
+  über diesen Slice nichts aus und stehen im Closure-Trigger der **Welle**, nicht in dem dieses
+  Slice.
+
+**Steering-Loop-Eintrag — geschärfte Regel.**
+
+**Ein Lifecycle-Trigger nennt ein Ereignis. Steht in der Zeile `next → in-progress` nur das
+WIP-Limit, steht dort eine Bedingung — sie sagt, wann der Übergang *erlaubt* ist, nicht wann er
+*fällig* ist.** Schreibt zusätzlich eine **fremde Rolle** den einzigen Liefergegenstand, fällt der
+Eintritt hinter dessen Fertigstellung, und `in-progress` deckt null Minuten der Arbeit ab, die es
+benennt.
+
+**Gemessen an diesem Slice, nicht postuliert.** Der Schnitt legte die Datei am 2026-08-16 um 13:09
+in `open/` (`430f358`). Der Liefergegenstand entstand und wurde geprüft zwischen 13:55 (`3e1939e`,
+*Proposed*) und 19:34 (`325411c`, *Accepted*) — die Slice-Datei lag diese fünf Stunden und
+39 Minuten in `open/`, samt der drei Fortschreibungen, die der Plan darin erhielt (`6b27edf`
+13:31, `af73707` 17:37, `0b6c676` 18:43). Die drei
+Lifecycle-Commits `f74e267` (`open → next`), `c1c1d49` (`next → in-progress`) und `ed11fab`
+(Link-Reconciliation) tragen alle den 2026-08-21, 15:27 — **dieselbe Minute**, fünf Tage nachdem
+der Liefergegenstand eingefroren war.
+
+**Was daran nicht Buchführung ist.** §4 weist zwei Rückführungen aus `in-progress` aus. Beim
+Eintritt konnte keine von beiden den Liefergegenstand noch bewegen: eine Accepted-ADR ist nach
+[`AGENTS.md`](../../../../AGENTS.md) §3.4 immutabel, jeder Ausgang wäre eine **neue** ADR gewesen.
+Ein Zustand, dessen Rückkanten beim Eintritt unerreichbar sind, ist keine Station der State
+Machine, sondern ein Stempel. Das WIP-Limit hat dabei nichts bewacht: `git ls-tree` über
+`docs/plan/planning/in-progress/` liefert bei `3e1939e` wie bei `325411c` **nur die Roadmap** —
+das Limit war frei, während die Arbeit lief, und wurde erst fünf Tage später in Anspruch genommen.
+
+**Anwendung, prüfbar am Text:** Wer in §3 die Spalte *Wer was schreibt* führt und den einzigen
+Liefergegenstand in eine **fremde** Rollen-Zeile setzt, formuliert die `next → in-progress`-Zeile
+als **Ereignis dieser Rolle, das vor ihrem Ergebnis liegt** — für eine ADR: *sie existiert als
+Proposed*. Das WIP-Limit steht daneben, als Bedingung. Die Probe ist eine Frage an den eigenen
+Entwurf: **welches Ereignis lässt diesen Zustand beginnen, und liegt es vor dem Closure-Trigger?**
+Fällt die Antwort mit dem Closure-Trigger zusammen — hier trug *die ADR ist Accepted* beides —,
+ist der Zustand leer, bevor er betreten wird.
+
+**Ebene und Träger, benannt statt behauptet.** Die Regel gilt der **Repo**-Ebene, als
+Planner-Disziplin beim Schnitt; über den emittierten Harness sagt sie nichts. **Kein Sensor sieht
+sie:** ihr Prüfbereich wäre der Abstand zwischen dem `next → in-progress`-Commit und den Commits
+am Liefergegenstand, und **welche** Datei der Liefergegenstand ist, steht nur in Prosa (§3). Ihr
+Träger ist deshalb der nächste Schnitt derselben Bauart — im heutigen Bestand
+[slice-082](../open/slice-082-adaptions-durchgang.md), dessen §3 zwei Norm-Artefakte in die
+Architect-Zeile legt und dessen §4 für `next → in-progress` kein Ereignis nennt. Ohne diesen Griff
+bleibt der Eintrag ein Satz in einer Datei, die niemand wieder liest.
+
+**Offen, mit Träger.**
+
+| Posten | Träger |
+|---|---|
+| *Doku-Konsistenz-Drift × Tool* trägt einen Wert, dessen **beide** Hälften geschuldet bleiben (vorhanden · rot gesehen) | `slice-063`, dessen Eintritt [slice-087](../open/slice-087-emittierte-doku-tische-init-invariant.md) abfragt. Bleibt der Beleg aus, greift der Gegen-Ausgang: die Zelle fällt auf *nicht emittiert*, und ihr Auflösungs-Trigger ist der konfigurierte Träger |
+| Die drei Abwesenheits-Wächter (kein `.claude/agents/`, kein Span-Emitter, kein Token-Bericht im Ziel) | Folgepflicht der ADR. Nach [welle-09](../welle-09-modul-15-konformitaet.md) §3 **kein** Closure-Kriterium: der Wert *ADR-Verdikt* verlangt keinen Sensor |
+| [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) bleibt offen — Vorbedingung des **Zähler-Glieds**, ausdrücklich **kein** Auflösungs-Trigger der Tool-Zellen | das Carveout-Audit der Wellen-Closure (Modul 7), nicht dieser Slice |
+| Festlegung 3 der ADR führt keine mit `Geltungsbereich:` beschriftete Zeile; der Bereich ist aus ihrem Text eindeutig und an Festlegung 1 gekoppelt | keiner. Eine Nachschärfung wäre nach [`AGENTS.md`](../../../../AGENTS.md) §3.4 eine neue ADR mit *Supersedes* und stünde in keinem Verhältnis zum Mangel |
+
+**Gates.** `make gates` **Exit 0**: `baseline-verify: v3.5.2 OK — 42 Dateien (Integritaet +
+Vollstaendigkeit, netzlos)`, `d-check: 325 Datei(en) geprüft, 0 Befund(e)`, `1..143` bats ohne
+`not ok`, `comment-claims: 40 Datei(en) geprueft, 0 Befund(e)`, `span-check: Emitter vorhanden,
+ein Span geschrieben, Ablageort git-ignoriert`. `make mutate` ist über diesen Slice ohne Aussage
+und nicht gefahren — gemessen, nicht plausibilisiert: die Vereinigung der Dateien über **alle**
+Commits dieses Slice (Schnitt, Fortschreibungen, die vier Architect-Commits, die drei
+Lifecycle-Commits, diese Closure) liegt **vollständig** unter `docs/plan/`, und von den **37**
+eindeutigen `# files:`-Zielen in `test/mutations/` liegt **keines** darin (`comm -12` → 0 Zeilen).
 
 ## 8. Sub-Area-Modus-Begründung
 

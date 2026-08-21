@@ -137,9 +137,10 @@ Modul-15-Block-4.
 
 ## 4. Slices in dieser Welle
 
-Geschnitten sind slice-059 (**done**), slice-060, slice-066, slice-068, slice-071, slice-062 und
-slice-087; die übrigen bekommen ihre Datei per `cp`, wenn sie an der Reihe sind (cp-Disziplin —
-ein leeres `open/` ist ehrlicher als eine driftende Vorplanung).
+Geschnitten sind slice-059, slice-060, slice-062, slice-066 und slice-068 — diese fünf in
+`done/` — sowie slice-071 und slice-087 in `open/`; die übrigen bekommen ihre Datei per `cp`, wenn
+sie an der Reihe sind (cp-Disziplin — ein leeres `open/` ist ehrlicher als eine driftende
+Vorplanung). **Der Zustand ist das Verzeichnis, nicht diese Zeile.**
 
 **Warum die Rollen-Achse ein eigener Slice vor der Auswertung ist:** `agent_role` ist heute in
 **jedem** Span leer. Eine Token-Bilanz hätte damit genau zwei namenlose Eimer —
@@ -261,7 +262,7 @@ verweist auf sie, statt sie zu doppeln): jeder Ausgang steht auf seinem eigenen 
 einzeln widerlegbar, und eine zweite Fassung hier driftete an genau der Stelle, an der der
 Trichter-Ausgang hängt. Modul-7-Frage 2 fällt auf *Nein*, der Auflösungs-Trigger entfällt, und an
 seine Stelle treten Re-Evaluierungs-Trigger. **Für das Closure heißt das:** die drei Zellen sind mit dem
-**Accepted**-Zustand der ADR belegt, nicht mit einem Ziel-Beleg — der Wert ist nach §3 in beiden
+**Accepted**-Zustand von [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) belegt, nicht mit einem Ziel-Beleg — der Wert ist nach §3 in beiden
 Spalten zulässig (Präzedenz [`ADR-0012`](../adr/0012-haupt-kontext-ohne-token-bilanz.md)), und die
 Tool-Spalte ist damit vollständig belegbar: drei Zellen über die Entscheidung, eine über
 [slice-087](open/slice-087-emittierte-doku-tische-init-invariant.md) → `slice-063`.

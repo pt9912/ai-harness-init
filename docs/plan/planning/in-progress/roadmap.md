@@ -1,6 +1,6 @@
 # Roadmap
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-08-16.
+**Status:** Aktiv. **Letzte Änderung:** 2026-08-21.
 
 **Format-Regel:** Die Roadmap ist eine Reihenfolge von **Wellen**,
 keine Reihenfolge von Terminen (siehe
@@ -14,12 +14,14 @@ gezeigt, nicht als Treiber.
 
 **[welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)**, geschnitten am 2026-07-28.
 
-**Slices:** geschnitten sind `slice-059` (Erfassung) · `slice-060` (Rollen-Achse) ·
-`slice-066` (Token-Bilanz) · `slice-071` (Cache-Festlegung; die Rechnung liegt hinter dem
+**Slices:** in `done/` liegen `slice-059` (Erfassung) · `slice-060` (Rollen-Achse) ·
+`slice-066` (Token-Bilanz) · `slice-068` (Rollen-Arbeit läuft als Rolle) ·
+`slice-062` (Tool-Ebene, Entscheidung: **nur** ADR — kein CR, weil kein neues Artefakt
+ins Ziel geht und damit keine Anforderung wächst; der Wert der vierten Matrix-Zelle ist
+festgelegt, sein Ziel-Beleg bleibt Schuld der Welle). Geschnitten und offen sind
+`slice-071` (Cache-Festlegung; die Rechnung liegt hinter dem
 Auflösungs-Trigger von [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) und ist nicht
-geschnitten) · `slice-068` (Rollen-Arbeit läuft als
-Rolle) · `slice-062` (Tool-Ebene, Entscheidung: **nur** ADR — kein CR, weil kein neues Artefakt
-ins Ziel geht und damit keine Anforderung wächst) ·
+geschnitten) ·
 [`slice-087`](../open/slice-087-emittierte-doku-tische-init-invariant.md) (Tool-Ebene, Vorarbeit:
 kein emittiertes Dokument behauptet noch ein nicht Init-invariantes `make`-Ziel — heute verletzen
 das drei Dokumente, die zwei Gate-Tabellen und der Closure-Note-Reviewer-Skill;
