@@ -238,7 +238,7 @@ berührt den Adopter-Vertrag und damit das Lastenheft — nach
 [`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
 bewegt das nur ein **Change Request des Auftraggebers**, in eigenem Commit **vor** dem
 umsetzenden Slice. **Die Entscheidung ist am 2026-08-16 in zwei Setzungen gefallen** und steht
-mit ihren Begründungen in [slice-062](in-progress/slice-062-emittierte-modul-15-regeln.md): (a) ein
+mit ihren Begründungen in [slice-062](done/slice-062-emittierte-modul-15-regeln.md): (a) ein
 Ziel-Repo bekommt **keinen** Span-Emitter; (b) Block 4 bekommt **kein neues Artefakt** — Träger
 ist das advisory `make doc-targets`, das mit `d-check.mk` ohnehin ins Ziel geht; (c) die
 Rollen-Typen unter `.claude/agents/` gehen **nicht** mit. **Der Slice liefert die ADR — und
@@ -257,7 +257,7 @@ ist eine Aussage über die Dauer, nicht über die Setzung.** Die Schwelle, die d
 handgeführte Scanner ist in **diesem** Repo gebaut und gemessen gescheitert
 ([slice-059](done/slice-059-telemetrie-erfassung-hook.md)), die übrigen scheitern an der Natur des
 Gegenstands, an getroffenen Entscheidungen dieses Repos oder liegen bei einem fremden Vertrag. **Die
-Abzählung selbst führt die ADR** ([slice-062](in-progress/slice-062-emittierte-modul-15-regeln.md) §3
+Abzählung selbst führt die ADR** ([slice-062](done/slice-062-emittierte-modul-15-regeln.md) §3
 verweist auf sie, statt sie zu doppeln): jeder Ausgang steht auf seinem eigenen Argument und ist
 einzeln widerlegbar, und eine zweite Fassung hier driftete an genau der Stelle, an der der
 Trichter-Ausgang hängt. Modul-7-Frage 2 fällt auf *Nein*, der Auflösungs-Trigger entfällt, und an

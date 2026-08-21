@@ -87,7 +87,7 @@ den Wert in **beiden** Spalten zu (*„permanent ist eine Eigenschaft der Abweic
 Ebene"*); die Präzedenz der Nachbarspalte ist
 [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md).
 
-Die Frage, die [slice-060](../done/slice-060-rollen-achse.md) ausdrücklich hierher übergeben hat
+Die Frage, die [slice-060](slice-060-rollen-achse.md) ausdrücklich hierher übergeben hat
 (Frage B: gehen die Rollen-Typen in die Ziel-Repos mit?), ist damit beantwortet — **nein, und
 dauerhaft**. Ihr einziger belegter Zweck ist die Rollen-Achse der Telemetrie; ohne Erfassung im
 Ziel hat sie dort keinen Abnehmer, und ein rollen-benannter Lauf ohne Span misst nichts.
@@ -431,7 +431,7 @@ Block 1 für **beide** Abweichungen: die Erfassung und die Rollen-Typen unter `.
 Die vierte, *Doku-Konsistenz-Drift × Tool*, trägt **emittiert** mit `make doc-targets` als Träger
 — **festgelegt, nicht belegt**, mit benanntem Gegen-Ausgang. An die Stelle der Auflösungs-Trigger
 treten die Re-Evaluierungs-Trigger der ADR: sie werden bemerkt, nicht herbeigeführt. Damit ist
-auch die Frage beantwortet, die [slice-060](../done/slice-060-rollen-achse.md) hierher übergeben
+auch die Frage beantwortet, die [slice-060](slice-060-rollen-achse.md) hierher übergeben
 hat — die Rollen-Typen gehen **nicht** mit, und dauerhaft: ohne Erfassung im Ziel hat `agent.role`
 dort keinen Abnehmer.
 
