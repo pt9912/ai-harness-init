@@ -145,7 +145,11 @@ Modul-15-Block-4.
   [`MR-016`](../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
   Setzung 2 lässt für wellenlose Arbeit auch keinen Roadmap-Eintrag zu). **Prüfkommando statt
   Erinnerung:** `grep -n '^\*\*Status:' docs/plan/carveouts/CO-002-token-achse-je-rolle.md` zeigt
-  den Verdikt-Status, nicht `Aktiv`.
+  den Verdikt-Status, nicht `Aktiv`. **Jeder Zellwert steht an zwei Fundorten** — hier und in der
+  **definierenden** Slice-Zeile der §4-Tabelle, auf die der Punkt *Je Regelblock UND je Ebene*
+  oben ausdrücklich verweist. Wer einen ändert, findet beide:
+  `grep -n 'Token-Attribution × Repo\|Cache-Counter × Repo' docs/plan/planning/welle-09-modul-15-konformitaet.md`
+  — der Treffer auf der Zeile des Kommandos ist das Kommando selbst und zählt nicht mit.
 - **Zwei lebende Planungs-Artefakte führen die aufgehobene Schwelle noch als offen und sind vor
   dem Abschluss zu ziehen — Planner, an lebendem Plan.** Die Roadmap schreibt für slice-071 *„die
   Rechnung liegt hinter dem Auflösungs-Trigger von `CO-002`"*, und
@@ -206,8 +210,8 @@ nur noch, was wirklich ausgeschlossen ist.
 | slice-059 | Repo | **Erfassung**: Spans per Agenten-Hook (Block 1) | [`MR-002`](../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) |
 | slice-060 | Repo | **Rollen-Achse**: rollen-benannte Agenten-Typen + Nutzungstelemetrie der Subagenten | [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) |
 | slice-066 | Repo | **Auswertung**: Token-Bilanz je Rolle, die ihren Nenner nennt (Block 2) — setzt auf slice-060 auf | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
-| slice-071 | Repo | **Cache-Festlegung**: die drei Counter getrennt, mit allen vier Angaben je Counter, im Spec-Stratum (Block 3) — setzt auf slice-060 auf. Er schrieb der Matrix-Zelle *Cache-Counter × Repo* den Wert **deklariert** zu, weil die **Rechnung** keinen Eingang hat und ihr Auflösungs-Trigger der von [`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md) war; diesen Trigger gibt es nach [`ADR-0021`](../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) nicht mehr — die Zelle trägt **ADR-Verdikt** (§3), und ob das Spec-Stratum die Festlegung ohne Rechnung trägt, ist die Architect-Frage aus seinem eigenen §4 | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
-| slice-068 | Repo | **Rollen-Arbeit läuft als Rolle**: die Konvention wird vollständig (was, nicht nur wie) + die Berichtsgröße, an der sie ablesbar ist — legt für die Matrix-Zelle *Token-Attribution × Repo* fest, dass ihre Belegart **zweigeteilt** ist: der Hintergrund-Teil trägt „deklariert" mit Auflösungs-Trigger, der Haupt-Kontext das „ADR-Verdikt" aus [`ADR-0012`](../adr/0012-haupt-kontext-ohne-token-bilanz.md) ohne Trigger. Die Haupt-Kontext-Abweichung selbst hat slice-060 DoD (3) geliefert | keine `LH-*` (Dogfood-Prozessebene; im Slice begründet) |
+| slice-071 | Repo | **Cache-Festlegung**: die drei Counter getrennt, mit allen vier Angaben je Counter, im Spec-Stratum (Block 3) — setzt auf slice-060 auf. Er legt für die Matrix-Zelle *Cache-Counter × Repo* fest, **was gerechnet wird**; ihren Wert trägt sie als **ADR-Verdikt** — die **Rechnung** hat keinen Eingang, und einen Auflösungs-Trigger dafür gibt es nach [`ADR-0021`](../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) nicht mehr ([`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md) trug ihn). Ob das Spec-Stratum die Festlegung ohne Rechnung trägt, ist die Architect-Frage aus seinem eigenen §4 | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-068 | Repo | **Rollen-Arbeit läuft als Rolle**: die Konvention wird vollständig (was, nicht nur wie) + die Berichtsgröße, an der sie ablesbar ist — legt für die Matrix-Zelle *Token-Attribution × Repo* fest, dass ihre Belegart **zweigeteilt** ist: **beide Teile tragen ADR-Verdikt**, aus zwei verschiedenen ADRs und je **ohne** Auflösungs-Trigger — der Hintergrund-Teil das aus [`ADR-0021`](../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md), der Haupt-Kontext das aus [`ADR-0012`](../adr/0012-haupt-kontext-ohne-token-bilanz.md). Die Haupt-Kontext-Abweichung selbst hat slice-060 DoD (3) geliefert | keine `LH-*` (Dogfood-Prozessebene; im Slice begründet) |
 | slice-061 | Repo | **Doku-Konsistenz**: behauptete Befehle existieren (Block 4) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | slice-062 | **Tool** | **Entscheidung**: welche Modul-15-Regeln gehören in den emittierten Harness? (**nur** ADR — kein CR, gemessen in dessen §3) | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
 | [slice-087](open/slice-087-emittierte-doku-tische-init-invariant.md) | **Tool** | **Vorarbeit**: **kein** emittiertes Dokument behauptet noch ein nicht Init-invariantes `make`-Ziel — die Ansprüche fallen emit-seitig, ein Wächter hält die Eigenschaft über den **Dokument-Satz**. Betroffen sind heute **drei** Dokumente: die zwei Gate-Tabellen und der Closure-Note-Reviewer-Skill (unten). Ohne ihn ist die Zelle *Doku-Konsistenz-Drift × Tool* nicht belegbar | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
@@ -365,8 +369,15 @@ Die Entscheidung liegt als [`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.
 
 - **Blockiert:** nichts. Diese Welle liefert Sensoren und Deklarationen, keine Nutzer-Fähigkeit;
   kein anderer Kandidat wartet auf sie.
-- **Wird blockiert von:** nichts. Der Hebel ist bereits bezahlt — das gepinnte d-check-Image
-  aktiviert **6 von 18** Modulen, und `targets` liegt als `make doc-targets` in
+- **Wird blockiert von:** **zwei Bedingungen aus §3**, beide an fremden Vorgängen und beide vor
+  der Ergebnis-Notiz zu erfüllen. **(1) Reihenfolge:** der Kopf von
+  [`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md) trägt den Verdikt-Status, bevor die
+  Zellen gesetzt werden — geschrieben wird er von einem Slice, der **kein Mitglied** dieser Welle
+  ist; Prüfkommando in §3. **(2) Eine fällige Architect-Frage:** ob das Spec-Stratum die
+  Cache-Festlegung ohne Rechnung trägt — an ihrer Beantwortung hängt der Eintritt von
+  [slice-071](open/slice-071-cache-zaehler-getrennt.md) und damit das Kriterium *„alle Slices
+  dieser Welle in `done/`"*. **Werkzeugseitig blockiert nichts:** Der Hebel ist bereits bezahlt —
+  das gepinnte d-check-Image aktiviert **6 von 18** Modulen, und `targets` liegt als `make doc-targets` in
   [`d-check.mk`](../../../d-check.mk) fertig vor. **„Fertig" heißt hier: lauffähig, nicht
   wirksam.** Das Modul wertet erst mit einem `targets:`-Block der Konfiguration aus, und den
   führt weder [`.d-check.yml`](../../../.d-check.yml) noch die emittierte Vorlage (gemessen,

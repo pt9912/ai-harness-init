@@ -83,8 +83,9 @@ Eine Zusage reicht nur so weit wie ihr Sensor
       **Kein `git mv`, ein Commit** — ein `carveouts/done/` entsteht nicht.
 
       **Rot färbt ihn** — drei Kommandos über
-      `docs/plan/carveouts/CO-002-token-achse-je-rolle.md`, jedes deckt genau die Änderung, neben
-      der es steht, und jedes trifft heute genau **1** Zeile (`grep -c` mit demselben Muster):
+      `docs/plan/carveouts/CO-002-token-achse-je-rolle.md`. **Die ersten zwei decken je die
+      Änderung, neben der sie stehen; das dritte ist eine Gegenprobe und deckt seine nicht**
+      (Begründung unten). Jedes trifft heute genau **1** Zeile (`grep -c`, dasselbe Muster):
       `grep -n 'zu verschieben'` → **leer (Exit 1)**; `grep -n '^## Verifikation'` → **leer
       (Exit 1)**; `grep -n 'd-check:ignore'` → **leer (Exit 1)** als Gegenprobe **auf einen der
       fünf Haken**. Sie deckt die Streichung des Abschnitts **nicht**: die Direktive steht heute
@@ -256,7 +257,7 @@ Träger nur hier, läge die Reihenfolge nach dem Abschluss allein in einem Zeitd
 |---|---|---|---|
 | [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) | update (vier Stellen), **kein** `git mv` | Implementer | Status · `Letzte Prüfung` und Geschichte-Zeile · Handlungs-Anweisung raus und Vorspann-Satz rein · Abschnitt *Verifikation* ganz raus. **Ein** Commit — es gibt nur den Rewrite |
 | [`docs/plan/carveouts/README.md`](../../carveouts/README.md) | update (eine Stelle) | Implementer | §Aktiv verliert die Zeile, ein eigener Abschnitt für den permanenten Übergang bekommt sie — der Index ist die Übersicht, nicht eine zweite Quelle |
-| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update (fünf Stellen in §5), Adresse **unverändert** | Implementer — **schreibende Rolle offen** | die offene Frage fällt, der Zustand bleibt im Indikativ; keine ADR-Verlinkung (s. o.). Die Folgepflicht nennt einen *Spec-Eigentümer*; `ls .claude/agents/` führt **sechs** Rollen und keine dieses Namens, und [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1 lässt die schreibende Rolle für dieses Artefakt ausdrücklich **offen**. Vor dem Eintritt zu klären, nicht im Lauf zu entscheiden |
+| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update (fünf Stellen in §5), Adresse **unverändert** | Implementer; die Eigentumsfrage ist **offen, aber keine Eintritts-Bedingung** | die offene Frage fällt, der Zustand bleibt im Indikativ; keine ADR-Verlinkung (s. o.). Die Folgepflicht nennt einen *Spec-Eigentümer*; `ls .claude/agents/` führt **sechs** Rollen und keine dieses Namens, und [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1 weist **zwei** Artefakte zu und lässt die übrigen ausdrücklich offen — *offen* heißt unentschieden, nicht gesperrt. Geschrieben wird das Stratum im Slice; die Messung dazu und die benannte Lücke stehen in §6 |
 | [`.claude/hooks/pretooluse-agent-guard.sh`](../../../../.claude/hooks/pretooluse-agent-guard.sh) | update (Kopf-Kommentar), Zeiger **unverändert** | Implementer | ein Kommentar beschreibt, was da ist ([`AGENTS.md`](../../../../AGENTS.md) §3.7): die Messung ist gefahren, nicht ausstehend |
 | `test/mutations/` (ein neuer Fall) | neu | Implementer | der Zahn zu Festlegung 2; Eigenschaft in DoD (3), Nummer beim Anlegen die nächste freie |
 | `internal/span/response.go`, `internal/span/response_test.go` | **unverändert** | — | der neue Fall mutiert sie zur Laufzeit; wer sie ändert, verschiebt die Zusage, statt ihren Zahn zu bauen |
@@ -285,10 +286,9 @@ Rückführungen:
 - `in-progress` → `open`: die fünf Spec-Stellen lassen sich **nicht** ohne Verweis auf das Verdikt
   formulieren, weil eine von ihnen die Begründung mitträgt statt nur den Zustand. Dann ist zuerst
   zu entscheiden, was das Vertrags-Stratum an dieser Stelle überhaupt sagen soll — kein Nachzug,
-  sondern eine Frage an die Rolle, die dieses Stratum schreibt. **Welche das ist, ist offen**
-  ([`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1: wo keine
-  Quelle eine schreibende Rolle benennt, bleibt die Frage offen); zu klären ist sie vor dem
-  Eintritt, nicht im Lauf.
+  sondern eine **Architektur-Frage**, und ihr Adressat ist der **Architect**. Eine Rollen-Zuweisung
+  für das Stratum ist dafür nicht verlangt: die Frage betrifft den **Inhalt** von Rang 2, nicht
+  sein Eigentum.
 - `in-progress` → `next`: der fällige Mutations-Fall erweist sich als eigener Gegenstand (die
   Mutation trifft mehr als einen Eintrag der Positiv-Liste, oder der Test hält sie nicht). Dann
   trennt ein Re-Schnitt den **geschriebenen Übergang samt Zeigern** vom **Zahn**; beide sind
@@ -369,6 +369,16 @@ nicht mit *grün* erfüllt, sondern erst mit dem Abgleich am Text.
   **kein Link**: `grep -rn 'CO-002-token-achse-je-rolle\.md#' --include='*.md' .` → **leer
   (Exit 1)**, kein Verweis zielt auf einen Abschnitt des Stubs. Der Prosa-Verweis zeigt danach
   trotzdem ins Leere und gehört in denselben Architect-Lauf.
+- **Für das Technik-Stratum weist keine Quelle eine schreibende Rolle zu — und das hält den Slice
+  nicht auf.** [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1
+  weist **zwei** Artefakte zu und lässt die übrigen ausdrücklich offen; im Regelwerk steht dazu
+  nichts (`grep -rniE 'wer (schreibt|pflegt|besitzt).*(spec|stratum)|schreibende rolle' .harness/baseline/v3.5.2/regelwerk/`
+  → **leer, Exit 1**). *Offen* heißt **unentschieden, nicht gesperrt**, und die gelebte Praxis ist
+  messbar: `git log --oneline -- spec/spezifikation.md` → **16** Commits;
+  `git log --format='%s' -- spec/spezifikation.md` davon **9** mit Slice-Präfix
+  (`grep -c '^slice-'`) und **0** in der Rollen-Commit-Form (`grep -c '^Rolle '`). Der Slice
+  braucht die Zuordnung deshalb **nicht** als Vorbedingung; er nennt die Lücke, und geschlossen
+  wird sie, wenn jemand sie entscheidet — als eigene ADR, nicht nebenbei.
 - **Der Stub verliert mit `## Verifikation (nach Auflösung)` eine Sektion der vendored Ziel-Form.**
   Die Streichung ordnet die ADR an und ist damit bindend; benannt gehört, was daraus folgt:
   `.d-check.yml` führt kein Modul, das Carveout-Struktur prüft, und die Begründung für den
@@ -379,8 +389,9 @@ nicht mit *grün* erfüllt, sondern erst mit dem Abgleich am Text.
   [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) selbst (immutabel ab
   *Accepted*); die zwei Planner-Posten aus §3 (Matrix-Zellen und Audit-Regel — welle-09-Closure);
   der Eintrag im Adaptions-Block, den die Entscheidung ausdrücklich **nicht** anordnet (Architect —
-  nichts zu tun); die Klärung, welche Rolle das Technik-Stratum schreibt (offen nach
-  [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1); die
+  nichts zu tun); die Klärung, welche Rolle das Technik-Stratum schreibt — nach
+  [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1 offen, und
+  **keine Eintritts-Bedingung dieses Slice** (Datei-Tabelle in §3); die
   Erlaubnis-Frage zum Transkript als Quelle (Auftraggeber); und der Geltungsbereich von
   [`AGENTS.md`](../../../../AGENTS.md) §3.7 für verbatim abgelegten Skript-Text (Architect,
   eigener Lauf).
