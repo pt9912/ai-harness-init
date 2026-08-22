@@ -33,7 +33,7 @@ gepinnte, die das Repo adoptiert hat, oder die Ziel-Fassung, die es adoptieren w
 Antworten sind vertretbar formulierbar, und solange sie nicht entschieden ist, entscheidet sie
 faktisch der Lauf, der zuerst anfängt.
 
-Der laufende Sprung ist `v3.5.2` → `v5.3.1`. Adoptiert ist heute `v3.5.2`
+Der laufende Sprung ist `v3.5.2` → `v5.9.0`. Adoptiert ist heute `v3.5.2`
 ([`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage), Adoptions-Erklärung;
 vendored nach [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)).
 
@@ -49,7 +49,7 @@ wie man merkt**, dass ein neuer Tag existiert. Was danach zu tun ist, steht in e
 *„Ein neuer Tag löst einen Review aus (Re-Vendoring mit eigenem Diff), keinen stillen
 Auto-Bump."*
 
-**Ziel, `v5.3.1`, `modul-02-harness-bootstrap.md`, §Freshness-Audit der vendored Baseline
+**Ziel, `v5.9.0`, `modul-02-harness-bootstrap.md`, §Freshness-Audit der vendored Baseline
 (Schritt 2):** *„Der Freshness-Audit hat sieben Eigenschaften"*. Die ersten drei sind die der
 gepinnten Fassung; die vier neuen sind der Vorgang selbst — der Durchgang durch die
 Adaptions-Liste (*„Der Review geht durch die Adaptions-Liste, nicht nur durch den Diff"*, mit
@@ -66,22 +66,25 @@ nicht.
 
 ### Dass der Freshness-Audit überhaupt das zuständige Werkzeug ist, sagt die Ziel-Fassung selbst
 
-`v5.3.1`, `grundlagen-bootstrap.md`, §Modus pro Sub-Area: Greenfield vs Brownfield: *„Wer eine
+`v5.9.0`, `grundlagen-bootstrap.md`, §Modus pro Sub-Area: Greenfield vs Brownfield: *„Wer eine
 Regelwerks-Migration für einen Brownfield-Fall hält, weil dort „Inventur des Bestands" steht,
 greift zum falschen Werkzeug: BF regelt, ob Code oder Doku führt — bei einer Migration sind beide
 längst da und stimmen miteinander überein; abweichen kann das Artefakt von der adoptierten Norm.
 Für diese Achse ist der Freshness-Audit zuständig …, nicht die Modus-Wahl."* Die gepinnte Fassung
 führt diese Zuordnung nicht; ihre Grundlagen liegen in `grundlagen-konventionen.md`, das in der
-Ziel-Fassung in sechs Dateien zerfällt.
+Ziel-Fassung in **sechs** Dateien zerfällt
+(`comm -13 <(git ls-tree --name-only v3.5.2 lab/regelwerk/ | grep grundlagen | xargs -n1 basename | sort) <(git ls-tree --name-only v5.9.0 lab/regelwerk/ | grep grundlagen | xargs -n1 basename | sort) | wc -l`
+→ **6**, lokaler Kurs-Klon).
 
 ### Keine der beiden Fassungen beantwortet die Frage dieser ADR
 
 Gesucht wurde in **beiden** Tags über Regelwerk **und** Templates nach einer Meta-Regel, welche
 Fassung während eines Wechsels gilt (Suchbegriffe: *welche Fassung · maßgeblich · regiert ·
 gepinnte Fassung · alte Fassung · Prozedur · Migration · Re-Vendor · Bump · adoptiert · Adoption ·
-Übergang · Reihenfolge des Wechsels*; 33 Treffer bei `v3.5.2`, 63 bei `v5.3.1`, gelesen). Die
-einzigen Aussagen über Normativität gelten dem Verhältnis Spiegel ↔ Kurs, nicht dem Verhältnis
-gepinnt ↔ Ziel.
+Übergang · Reihenfolge des Wechsels*; 33 Treffer bei `v3.5.2`, 63 bei `v5.3.1`, gelesen — die
+Suche lief am 2026-08-09 gegen **diese zwei** Tags und bleibt als Aussage über sie stehen; den
+Schritt auf `v5.9.0` deckt der Delta-Nachweis darunter). Die einzigen Aussagen über Normativität
+gelten dem Verhältnis Spiegel ↔ Kurs, nicht dem Verhältnis gepinnt ↔ Ziel.
 
 Daraus folgt zweierlei. Erstens ist diese Entscheidung eine **Lücke**, keine Abweichung — sie
 weicht von keiner Baseline-Regel ab, weil keine existiert, und schuldet deshalb **keinen** Eintrag
@@ -89,15 +92,84 @@ im Adaptions-Block ([`MR-000`](../../../harness/conventions.md#mr-000--baseline-
 Zweitens ist die naheliegende Gegenposition — *„das Repo hat `v3.5.2` adoptiert, also gilt
 `v3.5.2`"* — an dieser Stelle leer: sie verweist auf eine Regel, die es dort nicht gibt.
 
+### Der Zielstand ist von `v5.3.1` auf `v5.9.0` gezogen — der Aufpreis ist gemessen
+
+Die Messungen dieses Abschnitts liefen gegen `v5.3.1`. Sie tragen weiter — nachgewiesen über den
+Delta, nicht über eine Wiederholung. Das ist die Form, die
+[ADR-0016](0016-verweis-traegt-tag-und-zitat.md) §Kontext eine Fassung früher für denselben
+Vorgang gewählt hat; ihr eigener Nachweis deckt ausdrücklich nur den Schritt, den er misst.
+
+```sh
+git diff --shortstat v3.5.2 v5.3.1 -- lab/regelwerk lab/templates
+# -> 52 files changed, 3471 insertions(+), 1297 deletions(-)
+git diff --shortstat v3.5.2 v5.9.0 -- lab/regelwerk lab/templates
+# -> 53 files changed, 3845 insertions(+), 1367 deletions(-)
+git diff --shortstat v5.3.1 v5.9.0 -- lab/regelwerk lab/templates
+# -> 27 files changed, 438 insertions(+), 134 deletions(-)   <- der Aufpreis
+```
+
+Der Aufpreis ist rund ein Zehntel des Gesamt-Deltas — der Sprung wird größer, nicht anders.
+
+**Die gewählte Prozedur behält ihre Form.** `modul-02-harness-bootstrap.md` ändert sich in
+**einem** Hunk (`git diff v5.3.1 v5.9.0 -- lab/regelwerk/modul-02-harness-bootstrap.md | grep -c '^@@'`
+→ **1**, über +13/−4 Zeilen). Der Abschnitt heißt unverändert §Freshness-Audit der vendored
+Baseline (Schritt 2), führt unverändert das Zahlwort *„sieben Eigenschaften"* — gegengeprüft an
+den Aufzählungspunkten selbst
+(`git show v5.9.0:lab/regelwerk/modul-02-harness-bootstrap.md | sed -n '/^#### Freshness-Audit/,/^#### Gate-Fragment/p' | grep -c '^\* \*\*'`
+→ **7**) — und unverändert **fünf** Ausgänge, die Festlegung 4 einzeln beim Namen nennt
+(Handzählung über diese fünf Namen, kein Kommando zählt sie).
+
+**Der eine Hunk trifft den fünften Ausgang.** *widerspricht* bekommt eine zweite Verzweigung —
+das Repo kann die neue Regel statt ihrer Fortgeltung auch **übernehmen** — und dazu die
+Abgrenzung `MR` ↔ Carveout. **Diese ADR liest das nicht vor** (Festlegung 4, erster Punkt); sie
+hält fest, dass die gewählte Quelle an dieser Stelle gewachsen ist, und überlässt die Deutung
+dem Durchgang, der sie anwendet.
+
+**Keine tragende Quelle dieser ADR verliert ihren Wortlaut.** `grundlagen-bootstrap.md` erscheint
+im Aufpreis-Delta nicht und ist damit byte-gleich
+(`git diff --name-only v5.3.1 v5.9.0 -- lab/regelwerk/grundlagen-bootstrap.md` → leer). In
+`modul-04-adrs.md` bleibt die zitierte Hard Rule unberührt — der Delta setzt einen Punkt
+**davor**, keine Zeile des Zitats erscheint in ihm
+(`git diff v5.3.1 v5.9.0 -- lab/regelwerk/modul-04-adrs.md | grep -c '^[+-].*Accepted. wird nicht inhaltlich'`
+→ **0**). Auch die vier Begriffe der Gegenprobe oben führt die Ziel-Fassung weiter, und der
+gepinnte Baum führt keinen von ihnen — je Begriff die Zahl der Dateien, die ihn führen:
+
+```sh
+for t in 'fünf Ausgänge' 'Adaptions-Liste' 'gegenstandslos' 'Rückbau ist ein neuer Eintrag'; do
+  for tag in v5.9.0 v3.5.2; do echo -n "$tag/$t: "; git grep -c "$t" "$tag" -- lab/regelwerk | wc -l; done
+done
+# -> v5.9.0: 1, 1, 2, 1     v3.5.2: 0, 0, 0, 0
+```
+
+**Und die Frage dieser ADR beantwortet auch `v5.9.0` nicht.** Die Lektüre von oben wird dafür
+nicht wiederholt; geprüft ist der Delta — dieselben dreizehn Suchbegriffe, nur über die
+**hinzugefügten** Zeilen:
+
+```sh
+git diff v5.3.1 v5.9.0 -- lab/regelwerk lab/templates | grep '^+' | grep -cE \
+  'welche Fassung|maßgeblich|regiert|gepinnte Fassung|alte Fassung|Prozedur|Migration|Re-Vendor|Bump|adoptiert|Adoption|Übergang|Reihenfolge des Wechsels'
+# -> 10
+```
+
+**Zehn** Zeilen, alle gelesen. Sie tragen vier der Begriffe (*Übergang*, *Prozedur*, *Bump*,
+*adoptiert*) und sprechen von Slice-Lifecycle, Closure-Prozedur und dem Version-Bump der
+Spezifikation. Eine Meta-Regel darüber, welche Fassung einen Wechsel regiert, ist nicht darunter.
+**Grenze:** dieser Nachweis deckt den Schritt `v5.3.1` → `v5.9.0`. Für einen weiteren Bump gilt
+er nicht, und die Gegenprobe teilt die Grenze der Gegenprobe oben — sie ist ein Negativ aus
+aufgezählten Zeichenketten.
+
 ## Entscheidung
 
 **Wir wählen Option E: für diesen Sprung regiert die Prozedur der Ziel-Fassung; allgemein gilt
 nicht „stets die Ziel-Fassung", sondern ein Kriterium, das jeder Sprung neu misst.** Vier
 Festlegungen.
 
-**1. Für den Sprung `v3.5.2` → `v5.3.1` ist die Migrations-Prozedur der Freshness-Audit der
-Ziel-Fassung** (`v5.3.1`, `modul-02-harness-bootstrap.md`, §Freshness-Audit der vendored Baseline
+**1. Für den Sprung `v3.5.2` → `v5.9.0` ist die Migrations-Prozedur der Freshness-Audit der
+Ziel-Fassung** (`v5.9.0`, `modul-02-harness-bootstrap.md`, §Freshness-Audit der vendored Baseline
 (Schritt 2)) — mit seinen sieben Eigenschaften, seinen drei Durchgängen und seinen fünf Ausgängen.
+**Die drei Durchgänge sind drei dieser sieben Eigenschaften** — Adaptions-Liste, Form-Vergleich,
+Stichprobe — und damit eine Lesart dieser ADR; *„drei Durchgänge"* ist kein Zahlwort
+der Quelle, *„sieben Eigenschaften"* und *„fünf Ausgänge"* sind es.
 
 Der Grund ist die Messung im Kontext, und der erste trägt allein: die gepinnte Fassung
 **beschreibt diesen Fall nicht**. Ihr zu folgen hieße nicht, einer älteren Regel zu folgen,
@@ -132,14 +204,17 @@ eine Vermutung.
 - **Sie deutet die fünf Ausgänge nicht.** Was *gegenstandslos*, *bleibt gültig*, *teilweise
   überholt*, *Bezug ist entfallen* und *widerspricht* bedeuten, sagt die Baseline; diese ADR fügt
   dem nichts hinzu und zieht nichts ab. Sie wählt die Quelle, sie liest sie nicht vor.
-- **Sie entscheidet keinen einzelnen Eintrag des Adaptions-Blocks.** Jeder der heute **24**
-  Einträge (`grep -c '^### MR-' harness/conventions.md`) bekommt seinen Ausgang **einzeln, mit
-  eigenem Beleg**. Eine Pauschale wäre auch gegen die gewählte Prozedur selbst, deren Frage
+- **Sie entscheidet keinen einzelnen Eintrag des Adaptions-Blocks.** **Jeder** Eintrag bekommt
+  seinen Ausgang **einzeln, mit eigenem Beleg** — am 2026-08-22 sind es **26**
+  (`grep -c '^### MR-' harness/conventions.md`); die Zahl **wandert** mit jedem neuen Eintrag
+  und ist kein Erwartungswert
+  ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). Eine Pauschale wäre auch gegen die gewählte Prozedur selbst, deren Frage
   ausdrücklich pro Eintrag gestellt wird: *„Frage pro Eintrag in `harness/conventions.md`: Regelt
   die neue Fassung das, wofür diese Adaption angelegt wurde?"*
 - **Der Adaptions-Durchgang erfasst ADRs nicht.** Sein Gegenstand ist der Eintrag in
   `harness/conventions.md`, nicht die ADR, die ihn begründet. Für ADRs gilt
-  [`AGENTS.md`](../../../AGENTS.md) §3.4 und dieselbe Regel in der Ziel-Fassung (`v5.3.1`,
+  [`AGENTS.md`](../../../AGENTS.md) §3.4 und dieselbe Regel in der Ziel-Fassung (`v5.9.0`,
   `modul-04-adrs.md`, §Hard Rule für Accepted-ADRs: *„Eine ADR mit Status `Accepted` wird nicht
   inhaltlich überschrieben."*). Wo die Prozedur ADRs überhaupt nennt, tut sie es im
   **Form**-Durchgang und stellt bestehende Instanzen frei: *„Für wiederkehrende Templates (ADR,
@@ -157,7 +232,8 @@ eine Vermutung.
 weicht von der Disziplin-Regel der vendored Vorlage ab; die tragende
 [ADR-0014](0014-aufgehobener-eintrag-kopf-statt-rumpf.md) nennt das in ihrer Alternativen-Tabelle
 *„eine Lockerung der Baseline-Disziplin"*. Die Ziel-Fassung **verschärft** an genau dieser Stelle
-(*„Rückbau ist ein neuer Eintrag, kein Edit"*) und benennt für genau diese Konstellation einen
+(`v5.9.0`, `modul-02-harness-bootstrap.md`, §Freshness-Audit der vendored Baseline (Schritt 2):
+*„Rückbau ist ein neuer Eintrag, kein Edit"*) und benennt für genau diese Konstellation einen
 Ausgang: *„War die Adaption eine Lockerung und die neue Baseline verschärft, ist die richtige
 Antwort ein Carveout mit Auflösungs-Trigger (Modul 7), keine stille Dauer-`MR`."* Die gepinnte
 Fassung führt weder die Verschärfung noch den Ausgang.
@@ -185,7 +261,7 @@ weder in Richtung Carveout noch in Richtung Fortbestand.
 - **Positiv:** Die drei Durchgänge des Wellen-Closure-Kriteriums haben eine benannte, zitierte
   Quelle statt einer Plausibilität.
 - **Positiv:** Die Grenze *Prozedur ≠ Ist-Maßstab* ist entschieden, bevor der erste Durchgang
-  läuft. Ohne sie wäre der naheliegende Fehler, den Bestand gegen `v5.3.1` zu messen, obwohl das
+  läuft. Ohne sie wäre der naheliegende Fehler, den Bestand gegen `v5.9.0` zu messen, obwohl das
   Repo `v3.5.2` adoptiert hat.
 - **Negativ:** Die Migration läuft nach einem Text, den dieses Repo noch nicht adoptiert hat. Das
   ist unbequem und beabsichtigt; es verlangt von jedem Lauf, die Rollen der zwei Fassungen
@@ -197,8 +273,13 @@ weder in Richtung Carveout noch in Richtung Fortbestand.
   **Kein Sensor.** Kein Gate liest, nach welcher Fassung ein Durchgang gelaufen ist. Träger sind
   der Zeiger im Wellenplan und der Review der Durchgangs-Ergebnisse.
 - **Folgepflicht (Planner-Eigentum):** Der Wellenplan ersetzt seine Festlegung durch einen Zeiger
-  auf diese ADR und behält nur, was Plan-Sache ist. **Diese ADR ändert keine Datei außer sich
-  selbst und dem ADR-Index.**
+  auf diese ADR und behält nur, was Plan-Sache ist. Mit dem Retarget kommt hinzu: er führt den
+  alten Zielstand am 2026-08-22 an **10** Stellen, seinen Titel eingeschlossen
+  (`grep -c 'v5\.3\.1' docs/plan/planning/welle-10-re-baseline.md`); die Zahl **wandert** mit dem
+  Plan und ist kein Erwartungswert
+  ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). Das Nachziehen ist Planner-Sache. **Diese ADR ändert keine Datei außer sich selbst und dem
+  ADR-Index.**
 - **Folgepflicht (Adaptions-Durchgang):** Die
   [`MR-020`](../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)-Konstellation
   aus dem Kontext ist dort zu **entscheiden**, nicht zu übernehmen — Fortbestand, Carveout mit
@@ -243,3 +324,4 @@ des Durchgangs, nicht seine normative Quelle.
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-08-09 | **Proposed** | Architect-Verdikt zur Frage, welche Regelwerks-Fassung die Re-Baseline `v3.5.2` → `v5.3.1` regiert. Die Festlegung stand bis dahin im Wellenplan der Re-Baseline und damit unter Planner-Eigentum auf Rang 5 der Source Precedence; Anlass war die Frage nach ihrem Urheber, die dort kein Gefäß hatte |
+| 2026-08-22 | Zielstand auf `v5.9.0` gezogen, weiter **Proposed** | Entscheidung des Auftraggebers: die Re-Baseline zielt auf `v5.9.0` statt `v5.3.1`. Anlass ist der Stand upstream — `make baseline-freshness` meldet VERALTET, gepinnt `v3.5.2`, latest `v5.9.0` (die latest-Angabe **wandert** mit jedem Release und ist kein Erwartungswert, [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2) — bei einem Aufpreis von rund einem Zehntel des Gesamt-Deltas (§*Der Zielstand ist … gezogen*). Die ADR steht auf *Proposed*; [`AGENTS.md`](../../../AGENTS.md) §3.4 bindet ab *Accepted*, weshalb hier retargetet und **keine** Folge-ADR geschrieben wird — später wäre dieselbe Bewegung eine Folge-ADR mit `Supersedes`. **Festlegung 3 gilt für diesen Lauf selbst:** ihr Kriterium hängt an der **gepinnten** Fassung, und die bleibt `v3.5.2` — ihr erster Fall greift unverändert, während die Ziel-Seite neu gemessen wurde, genau wie sie es verlangt. Der dritte Re-Evaluierungs-Trigger ist **nicht** gefeuert: er setzt eine laufende Welle voraus, und es ist kein Durchgang gelaufen — die Slices der Re-Baseline-Welle liegen sämtlich in `docs/plan/planning/open/`, rückwirkend verliert also keine Messlatte ihren Gegenstand. **Ziel-Aussagen sind gezogen, Mess-Zeitbezüge auf `v5.3.1` stehen geblieben** — eine Messung, die gegen `v5.3.1` lief, würde durch einen Tag-Tausch zu einem Lauf, den niemand gefahren hat |
