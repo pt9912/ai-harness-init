@@ -22,8 +22,14 @@ die Messung ist eine Momentaufnahme dieses Datums und dieser Werkzeug-Fassung.
 
 ## 1. Messaufbau (temporär, uncommittet, vollständig zurückgenommen)
 
-Drei Artefakte, alle nach Abschluss entfernt; `git status` ist leer, die Permission-Lage ist
-dieselbe wie vorher:
+Drei Artefakte, alle nach Abschluss entfernt; `git status` ist leer, und die **committete**
+Permission-Lage (`.claude/settings.json`, Hook-Liste) ist dieselbe wie vorher. **Über die maschinenlokale
+`.claude/settings.local.json` sagt `git status` nichts** — sie ist global gitignored
+(`git check-ignore -v` → `~/.config/git/ignore`) und ohne Historie. Gemessen am 2026-08-22: ihr
+letzter Eintrag in `permissions.allow` ist `"Agent"` (ein pauschales Allow für das Agenten-Werkzeug),
+mtime `2026-08-21 16:43:31 +0200` — dieselbe Sekunde wie der `Agent`-Aufruf von Lauf 0 (§5). Ob der
+Eintrag von der Messung stammt, ist ohne Vorher-Stand nicht entscheidbar; er ist hier benannt, nicht
+zurückgenommen, und gehört dem Auftraggeber. Die drei Artefakte:
 
 1. `.claude/hooks/pretooluse-updatedinput-sonde.sh` — die Sonde (Text in §2/§6).
 2. `.claude/hooks/sonde-fixture-agent-payload.json` — die Fixture (Text in §3).
