@@ -51,7 +51,7 @@ sie gehört in einen eigenen Schnitt mit eigenem False-Positive-Risiko, nicht in
 
 Jeder Punkt nennt das Kommando, das ihn rot färbt, **und welchen Teil der Zusage dieses Kommando
 deckt** — eine Zusage reicht nur so weit wie ihr Sensor
-([slice-086](../done/slice-086-vordergrund-per-updatedinput.md) §7). Wo kein Gate-Lauf rot wird,
+([slice-086](slice-086-vordergrund-per-updatedinput.md) §7). Wo kein Gate-Lauf rot wird,
 steht das hier, statt dass ein Kommando die Lücke verdeckt.
 
 - [x] **(1) Der Pin steht auf v0.62.0 an allen fünf Orten, die ihn führen — gleichzeitig.**
@@ -223,7 +223,7 @@ das Image ist lokal inspizierbar (`--print-mk` gefahren, Manifest-Digest gelesen
 Slice wartet.
 
 **`next` → `in-progress`: WIP-Limit frei** — konkret: nach der Closure von
-[slice-086](../done/slice-086-vordergrund-per-updatedinput.md), dem einzigen Slice, der
+[slice-086](slice-086-vordergrund-per-updatedinput.md), dem einzigen Slice, der
 `in-progress/` heute belegt. `ls docs/plan/planning/in-progress/` ist das Prüfkommando; es zeigt
 danach nur noch die Roadmap.
 
@@ -263,7 +263,7 @@ Link-Reconciliation-Commit — beim Eintritt (`open` → `next` → `in-progress
 `done/`. Betroffen sind die eigenen `../`-Links dieser Datei **und** jeder eingehende Verweis.
 **Prüfkommando statt Erinnerung:** `make docs-check` nach jedem Move; solange es rot ist, ist der
 Zug nicht fertig. Der Grund steht gemessen in
-[slice-086](../done/slice-086-vordergrund-per-updatedinput.md) §7: dort war der Zug beim
+[slice-086](slice-086-vordergrund-per-updatedinput.md) §7: dort war der Zug beim
 Eintritts-Move nötig und im Plan nicht vorgesehen.
 
 ## 6. Risiken und offene Punkte
@@ -271,7 +271,7 @@ Eintritts-Move nötig und im Plan nicht vorgesehen.
 - **Elf Minors auf einmal sind kein „inerter Bump", bis der Lauf es sagt.** Die bisherigen Sprünge
   dieser Linie waren ein bis vier Minors; hier liegen elf dazwischen, und die Befundklassen können
   sich in jedem geändert haben. Die 0-Befund-Differenz ist deshalb **DoD-Punkt**, nicht Annahme —
-  dieselbe Lehre wie in [slice-021](../done/slice-021-dcheck-pin-v0511.md): *„inert" ist zu messen*.
+  dieselbe Lehre wie in [slice-021](slice-021-dcheck-pin-v0511.md): *„inert" ist zu messen*.
 - **Fünf Pin-Orte, zwei Rollen.** Vier Orte trägt der Implementer, den fünften der Architect
   ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Wer den Architect-Anteil in den Implementer-Commit
   nimmt, verletzt die Regel — und wer ihn ganz vergisst, hinterlässt eine §Baseline-Zeile, die
@@ -518,7 +518,7 @@ diesen Griff bliebe der Eintrag ein Satz in einer Datei, die niemand wieder lies
   deckt vom MR-Eintrag die Existenz der Überschrift und die Auflösbarkeit des Ankers; die Version,
   die beide nennen, deckt es nicht — mit Sonde belegt, oben unter *Was der Slice nicht deckt*
   eingeordnet. Das ist der Anwendungsfall der Regel aus
-  [slice-086](../done/slice-086-vordergrund-per-updatedinput.md) §7 (*eine Zusage reicht nur so
+  [slice-086](slice-086-vordergrund-per-updatedinput.md) §7 (*eine Zusage reicht nur so
   weit wie ihr Sensor*), keine neue Regel; DoD (1) sagt die Grenze inzwischen selbst.
 - **Ein Beleg-Lauf, der vorher wie nachher `0` liefert, ist in der Lockerungsrichtung
   informationsleer.** Der Trockenlauf trägt eine Richtung — über diesem Korpus entsteht kein neuer
