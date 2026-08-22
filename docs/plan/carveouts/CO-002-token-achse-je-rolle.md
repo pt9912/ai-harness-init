@@ -128,7 +128,7 @@ tragen den Zeiger auf diesen Carveout (Folgepflichten 1 und 2 der ADR sind an ih
 
 | Datei | Zeile/Section | Wert |
 |---|---|---|
-| `.claude/hooks/pretooluse-agent-guard.sh` | Kopf-Kommentar, Absatz *„DIE BETRIEBSART PRUEFT ER NICHT"* | zeigt auf die Messung im Review-Dokument **und** auf diesen Carveout (*„Gefuehrt wird dieser Ausfall als docs/plan/carveouts/CO-002-token-achse-je-rolle.md — dort stehen Geltungsbereich, Aufloesungs-Trigger und die Messung, die ihn entscheidet"*) |
+| `.claude/hooks/pretooluse-agent-guard.sh` | Kopf-Kommentar, Absatz *„DIE BETRIEBSART PRUEFT ER NICHT"* | zeigt auf **zwei** Mess-Dokumente — den Werkzeug-Vertrag (`docs/reviews/2026-08-15-agent-guard-tool-vertrag.md`) und den `updatedInput`-Weg (`docs/reviews/2026-08-21-updatedinput-messung.md`) — **und** auf diesen Carveout (*„Gefuehrt wird dieser Ausfall als docs/plan/carveouts/CO-002-token-achse-je-rolle.md — dort stehen Geltungsbereich, Aufloesungs-Trigger und die Messung, die ihn entscheidet"*) |
 | `spec/spezifikation.md` | §5 an fünf Stellen: fünfter Punkt der Erfassungs-Liste · START-KONVENTION · Wächter-Absatz · Abweichung 1 (Cache-Zähler) · Abweichung 5 | beschreibt den Stand **nach** `83cf01d` und zeigt an jeder dieser Stellen hierher; die START-KONVENTION führt nur noch Bedingung 1 |
 
 **Die Prüfung dieser Tabelle ist ein Kommando, keine Erinnerung:**

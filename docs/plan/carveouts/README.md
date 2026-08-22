@@ -18,9 +18,10 @@ Formalisierung 2026-07-21, Roadmap §Backlog Cluster E).
 ## Permanent — in eine ADR übergeführt
 
 Nicht aufgelöst, sondern entschieden: der Trigger tritt nicht ein, und die Einordnung steht in
-einer ADR. Diese Carveouts bleiben an ihrer Adresse liegen — wer wissen will, ob einer von ihnen
-noch aktiv ist, liest den **Status** im Kopf des Dokuments, nicht das Verzeichnis. Die Begründung
-steht an genau einem Ort, der ADR.
+einer ADR. **Was daraus für den Ort folgt, steht nicht hier, sondern in der ADR, die den
+jeweiligen Carveout überführt** — je Fall entschieden, mit seiner eigenen Messung. Für den Eintrag
+unten ist der Ort **belassen**: die Datei liegt weiter neben den aktiven, und ob sie eine von
+ihnen ist, sagt der **Status** in ihrem Kopf. Die Begründung steht an genau einem Ort, der ADR.
 
 | ID | Titel | Übergeführt in | Übergeführt am |
 |---|---|---|---|

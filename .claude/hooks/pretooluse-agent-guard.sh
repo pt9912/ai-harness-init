@@ -10,10 +10,12 @@
 # Rollen-Agenten abgewiesen. Der Vertrag samt Gegenprobe ist gemessen in
 # docs/reviews/2026-08-15-agent-guard-tool-vertrag.md; dort steht auch, was der
 # Hintergrund-Lauf an Telemetrie kostet: die Rollen-Achse traegt weiter, das
-# Kosten-Aggregat des Aufrufs faellt aus. ER SETZT DIE BETRIEBSART AUCH NICHT EIN:
-# ein per `updatedInput` nach dem Modell eingesetztes `run_in_background: false`
-# wird uebernommen, und der Lauf startet trotzdem im Hintergrund — gemessen am
-# 2026-08-21 in docs/reviews/2026-08-21-updatedinput-messung.md. Gefuehrt wird dieser
+# Kosten-Aggregat des Aufrufs faellt aus. ER SETZT DIE BETRIEBSART AUCH NICHT EIN, UND
+# DIESER WEG IST GEFAHREN: ein Hook, der `run_in_background: false` per `updatedInput`
+# nach dem Modell einsetzt, stellt die Vordergrund-Form nicht her — der so gestartete
+# Lauf lief im Hintergrund (2026-08-21, docs/reviews/2026-08-21-updatedinput-messung.md).
+# Dass die Hook-Ausgabe dabei uebernommen wurde, ist eine SICHT am Dialog und im Repo
+# nicht nachpruefbar; dasselbe Dokument fuehrt das als Grenze. Gefuehrt wird dieser
 # Ausfall als docs/plan/carveouts/CO-002-token-achse-je-rolle.md — dort stehen
 # Geltungsbereich, Aufloesungs-Trigger und die Messung, die ihn entscheidet; wie sie
 # ausgegangen ist, sagt der Status im Kopf jener Datei.

@@ -165,14 +165,19 @@ Daraus fünf Festlegungen:
    starten standardmäßig im Hintergrund. Damit ist die Verbrauchs-Achse ohne Quelle — geführt als
    [`CO-002`](../docs/plan/carveouts/CO-002-token-achse-je-rolle.md), gemessen in
    [`docs/reviews/2026-08-15-agent-guard-tool-vertrag.md`](../docs/reviews/2026-08-15-agent-guard-tool-vertrag.md).
-   **Der zweite Weg ist gemessen, und er trägt nicht.** Die vendored Hooks-Referenz
-   [`docs/user/claude-hooks-referenz.md`](../docs/user/claude-hooks-referenz.md) führt für
-   dasselbe Ereignis ein `updatedInput`, das die Tool-Argumente **vor** der Ausführung
+   **Der zweite Weg ist gefahren, und er stellt die Vordergrund-Form nicht her.** Die vendored
+   Hooks-Referenz [`docs/user/claude-hooks-referenz.md`](../docs/user/claude-hooks-referenz.md)
+   führt für dasselbe Ereignis ein `updatedInput`, das die Tool-Argumente **vor** der Ausführung
    ersetzt und sich ausdrücklich mit `"allow"` kombinieren lässt: ein Hook kann den Schalter
-   **einsetzen**, statt ihn vom Aufrufer zu verlangen. Am **2026-08-21** ist das gefahren — das
-   eingesetzte Eingabeobjekt wird übernommen, und der Lauf startet trotzdem im Hintergrund
+   **einsetzen**, statt ihn vom Aufrufer zu verlangen. Am **2026-08-21** ist das gefahren, und der
+   so gestartete Lauf lief im **Hintergrund**
    ([`docs/reviews/2026-08-21-updatedinput-messung.md`](../docs/reviews/2026-08-21-updatedinput-messung.md));
    damit bleibt es beim Satz oben, denn ein Hintergrund-Lauf liefert keine Zähler.
+   **Belegklasse, zweigeteilt: der AUSGANG ist gemessen, die Übernahme der Hook-Ausgabe ist eine
+   SICHT.** Dass das Werkzeug das eingesetzte Eingabeobjekt annahm, ist am Dialog gesehen und mit
+   den Mitteln dieses Repos **nicht belegbar** — dasselbe Dokument führt es als Grenze. Ob das
+   Feld dabei vor dem Start entfernt oder beim Start übergangen wird, ist von außen nicht zu
+   unterscheiden; für die Erfassung ist es dasselbe.
    **Vom Aufrufer gesendet wirkt es ebenso wenig** — ein Aufruf mit dem Feld wird angenommen und
    startet dennoch im Hintergrund (2026-08-15 gemessen, Nachtrag §7 des Mess-Dokuments). Was der
    Guard **heute** nicht herstellt, steht als **Abweichung 5** unten.
