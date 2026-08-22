@@ -1,19 +1,20 @@
 # d-check.mk — Doku-Referenz-Gate via d-check. Abgeleitet aus `d-check --print-mk`
-# (v0.51.1) und adaptiert (MR-010/MR-011/MR-012):
+# (v0.62.0) und adaptiert (MR-010/MR-011/MR-012/MR-024):
 #   * das Befund-Gate heißt `docs-check` statt `doc-check` (Ziel-Form-/modul-13-
 #     Konsistenz; als EINZIGES Target in `make gates` + AGENTS/README behauptet);
-#   * DCHECK_DIGEST ist auf den v0.51.1-Release-Digest GEPINNT (das Tool liefert es
+#   * DCHECK_DIGEST ist auf den v0.62.0-Release-Digest GEPINNT (das Tool liefert es
 #     leer) — strikte Reproduzierbarkeit (LH-QA-02);
 #   * die advisory-Targets (`doc-trace`/`doc-doctor`/…) bleiben verbatim vom Tool und
 #     sind NICHT als Gate behauptet — verfügbar wie `regelwerk-check`, kein
-#     halluziniertes Gate (LH-QA-01). Die opt-in-Module `citations` (18., v0.50.0) und
-#     `sources` (19., Netz, v0.51.0) sind NICHT aktiviert; die fünf fokussierten
-#     advisory-Recipes disablen beide (verbatim vom Tool). Die Zeilenreferenz-Prüfung
+#     halluziniertes Gate (LH-QA-01). Die opt-in-Module `citations` (18., v0.50.0),
+#     `sources` (19., Netz, v0.51.0) und `structure` (20., v0.62.0, Target
+#     `doc-structure`) sind NICHT aktiviert; die sechs fokussierten advisory-Recipes
+#     disablen alle drei (verbatim vom Tool). Die Zeilenreferenz-Prüfung
 #     `codepaths.check-lines` ist in `.d-check.yml` aktiviert (additive Härtung, MR-011).
 # Einbinden: `include d-check.mk`; eine eigene .d-check.yml danebenlegen. Neu-Erzeugung:
 # `d-check --print-mk`, dann `doc-check`→`docs-check` re-adaptieren und DCHECK_DIGEST pinnen.
-DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.51.1
-DCHECK_DIGEST ?= sha256:fede3d027b2ebc1dd8534460853e57b67cc7a9a182cad2e2138c8eebf7a2d03c
+DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.62.0
+DCHECK_DIGEST ?= sha256:3996a593b9cb71aa3bcb4f3ddf8f637e7409db31b3a2dac7eedc28d65814cacf
 # TRACE_FLAGS: optionale Flags für die RTM-Targets (z. B. --json).
 TRACE_FLAGS ?=
 
@@ -46,23 +47,27 @@ doc-repair: ## Reparatur-Patch (unified diff) auf stdout, git-apply-rein (DC-FA-
 
 .PHONY: doc-immutable
 doc-immutable: ## Doc-/ADR-Immutabilität via git-Diff (Modul vcs); RANGE=base..head oder STAGED=1 (DC-FA-VCS-001)
-	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable vcs --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable commits --disable planning --disable tracked --disable targets --disable citations --disable sources $(if $(STAGED),--staged,--range $(RANGE))
+	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable vcs --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable commits --disable planning --disable tracked --disable targets --disable citations --disable sources --disable structure $(if $(STAGED),--staged,--range $(RANGE))
 
 .PHONY: doc-commits
 doc-commits: ## Commit-Message-Traceability via Modul commits; RANGE=base..head (DC-FA-COMMITS-001)
-	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable commits --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable planning --disable tracked --disable targets --disable citations --disable sources --range $(RANGE)
+	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable commits --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable planning --disable tracked --disable targets --disable citations --disable sources --disable structure --range $(RANGE)
 
 .PHONY: doc-planning
 doc-planning: ## Planning-Lifecycle-Konsistenz (Roadmap <-> in-progress) via Modul planning; hermetisch, ohne Range (DC-FA-PLAN-001)
-	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable planning --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable tracked --disable targets --disable citations --disable sources
+	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable planning --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable tracked --disable targets --disable citations --disable sources --disable structure
 
 .PHONY: doc-tracked
 doc-tracked: ## Getrackt-Status aufloesbarer Referenz-Ziele via Modul tracked; braucht .git im Mount, ohne Range (DC-FA-TRK-001)
-	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable tracked --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable targets --disable citations --disable sources
+	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable tracked --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable targets --disable citations --disable sources --disable structure
 
 .PHONY: doc-targets
 doc-targets: ## Deklarations-Konsistenz Doku<->Build-Targets via Modul targets; hermetisch, ohne Range (DC-FA-TGT-001)
-	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable targets --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable tracked --disable citations --disable sources
+	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable targets --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable tracked --disable citations --disable sources --disable structure
+
+.PHONY: doc-structure
+doc-structure: ## Struktur-Invarianten innerhalb der Dokumente via Modul structure; hermetisch, ohne Range (DC-FA-STRUCT-001)
+	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable structure --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable tracked --disable targets --disable citations --disable sources
 
 .PHONY: doc-help
 doc-help: ## diese Liste der docs-check-/doc-*-Targets
