@@ -75,7 +75,7 @@ Form entscheidet eine Folge-ADR, nicht dieser Schnitt.
   Datei schreibt, wird von derselben Suche **gefunden** — erst danach zählt der Fund-freie Lauf.
   Beide Läufe stehen mit Kommando und Ergebnis im Zeitdokument aus DoD (2). Ein stehender Fall
   hätte nach der Rücknahme keinen Prüfgegenstand mehr (§3, *Berührte Dateien*).
-- [ ] **(2) Die eine Beobachtung steht mit ihrem Kommando in einem Zeitdokument unter
+- [x] **(2) Die eine Beobachtung steht mit ihrem Kommando in einem Zeitdokument unter
   `docs/reviews/`** — und sie wird **am Span gelesen, nicht an einer Abdeckungszahl.** Geprüft
   wird die `Agent`-Zeile des Laufs im Span-Bestand auf `spawned_role` **und** alle vier Zähler
   (`input_tokens`, `output_tokens`, `cache_creation_input_tokens`, `cache_read_input_tokens`);
@@ -88,7 +88,7 @@ Form entscheidet eine Folge-ADR, nicht dieser Schnitt.
   `run_in_background: false` steht, ist belegt, dass die Hook-Ausgabe wohlgeformt war und
   übernommen wurde — fehlt sie, misst der Lauf die eigene Sonde und nicht das Werkzeug, und die
   Messung ist zu wiederholen statt zu deuten.
-- [ ] **(3) Die Übergabe ist ausgestellt, für den Ausgang, der eingetreten ist.** Der Slice endet
+- [x] **(3) Die Übergabe ist ausgestellt, für den Ausgang, der eingetreten ist.** Der Slice endet
   mit einem benannten Auftrag an den Architect, nicht mit einem Befund:
   - **Positiv** — die wiederhergestellte Vordergrund-Form **und ihre Permission-Folge** gehören in
     eine Folge-ADR; erst danach wird verdrahtet, und erst danach löst sich
@@ -100,9 +100,9 @@ Form entscheidet eine Folge-ADR, nicht dieser Schnitt.
   Beide Zweige berühren Artefakte, die dieser Slice nicht schreibt: die ADR gehört dem Architect,
   der Status-Wechsel und der `git mv` des Carveouts dem Implementer. Was der Slice liefert, ist
   die **entscheidbare Frage samt Beobachtung**.
-- [ ] `make gates` grün, `make mutate` ohne Befund.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] `make gates` grün, `make mutate` ohne Befund.
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -247,7 +247,166 @@ Kontroll-Beobachtung, unklarer Span), nicht eine unwillkommene.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Was gilt.** Der Weg über `PreToolUse`-`updatedInput` stellt die Vordergrund-Form **nicht** her.
+Die Hook-Ausgabe war wohlgeformt und wurde als Entscheidung angenommen, das ersetzte Eingabeobjekt
+trug `"run_in_background": false` — und der `Agent`-Span des so gestarteten Laufs führt weder
+`spawned_role` noch einen der vier `usage`-Zähler. Das ist der **zweite** der beiden Ausgänge, die
+§1 gebunden hat, und er erfüllt die DoD wie der erste: entschieden ist die Frage, nicht
+herbeigeführt der Wunsch. Das Gefäß des Ergebnisses ist
+[`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) (*Proposed*) — Modul-7-Frage 2
+kippt auf *Nein*, [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) wird übergeführt statt
+verlängert, und die Verstetigung, die dieser Slice ausdrücklich **nicht** getan hat, fällt dort als
+Festlegung 4 ganz aus: es gibt nichts zu verstetigen.
+
+**Zwei beobachtbare Closure-Kriterien.**
+
+1. **Die Messung ist einmal real gefahren, und ihr Beleg hält dem Nachfahren stand.** Das
+   Zeitdokument [`docs/reviews/2026-08-21-updatedinput-messung.md`](../../../reviews/2026-08-21-updatedinput-messung.md)
+   trägt Sondentext, Fixture, beide Läufe des Gegenbeispiels, den Kontroll-Lauf und den negativen
+   Ausgang ohne Abschwächung. Der Closure-Trigger (§5) verlangt *„Review konform (Modul 10) mit
+   ausgestelltem Verdikt"*: drei Runden haben je ein Verdikt ausgestellt
+   ([Runde 1](../../../reviews/2026-08-22-slice-086-review.md),
+   [Runde 2](../../../reviews/2026-08-22-slice-086-bestaetigungsrunde.md),
+   [Runde 3](../../../reviews/2026-08-22-slice-086-verdikt-runde.md)), die ersten zwei blockierend,
+   die dritte **frei**; die blockierende Menge jeder Runde ist vor dem nächsten Verdikt gezogen.
+   Über alle drei Runden hat keine Befund-Klasse ein drittes Mal gefeuert.
+2. **Die Verifikation (Modul 11) bestätigt die DoD mit selbst gefahrenen Sensoren.**
+   [Report](../../../reviews/2026-08-22-slice-086-verify.md): DoD (2)–(5) bestätigt, DoD (1) in vier
+   von fünf Teilzusagen. Der Verifier hat `make gates` **zweimal** und `make mutate` selbst
+   gefahren, die fünf Zahlen des Span-Bestands einzeln reproduziert, die drei zitierten Span-Zeilen
+   byte-gleich gegengelesen und den Splice aus dem Dokument extrahiert und nachgefahren — bis auf
+   die Byte-Zahl `304`, die er nicht übernommen, sondern nachgerechnet hat.
+
+Dazu die Übergabe aus DoD (3): sie ist **eingegangen**, nicht nur ausgestellt —
+[`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) nennt die Messung als ihre
+Annahme (d), samt Ablese-Ort und Re-Evaluierungs-Trigger.
+
+**Die eine Teilzusage, die nicht bestätigt ist — und warum der Slice trotzdem schließt.** DoD (1)
+sagt zu, *„die Permission-Lage des Repos ist dieselbe wie vorher"*, und bietet als Sensor
+`git status` an. Der Sensor kann die Zusage strukturell nicht tragen: die Datei, die die
+repo-lokale Permission-Lage führt, ist über eine Ignorier-Regel außerhalb des Repos ausgeblendet
+und war nie versioniert (`git check-ignore -v`, `git log --all -- … | wc -l` → 0). Messbar ist
+dagegen ihr Inhalt: `"Agent"` — ein pauschales Allow für **jeden** Subagenten-Aufruf — steht als
+**letzter** Eintrag der `allow`-Liste, und die Datei wurde in der Sekunde des ersten Mess-Aufrufs
+geschrieben. Dass dieser Eintrag aus **diesem** Slice stammt, ist nicht messbar, weil es keinen
+Vorher-Stand gibt; genau das ist der Befund. Das DoD-Kästchen (1) bleibt deshalb **offen** — die
+Zusage ist breiter als jeder Sensor, den der Slice anbietet. Sie kippt das Messergebnis nicht: ein
+`Agent`-Allow erklärt keinen fehlenden Zähler, und der `ask`-Dialog ist im Zeitdokument als
+erschienen berichtet. Sie trifft die **Rücknahme**, nicht die **Beobachtung** — und der
+Closure-Trigger (§5) bindet die Beobachtung. Die Entscheidung über den Eintrag selbst liegt beim
+Auftraggeber und steht unten mit Träger.
+
+**Wo der Liefergegenstand in der Historie liegt.** Das Werkstück ist `31a7908`, seine vier Nachzüge
+sind `b875ac0`, `2c2aeff`, `2acd074` und `49d7797`; die drei Verdikte tragen `ec687cb`, `3588e97`,
+`74ac235`, die Verifikation `9f0e952`. Die Lifecycle-Commits `6c4c321` (`open → next`) und
+`c874ae9` (`next → in-progress`) sind reine Moves, `3f27b7c` ist der Link-Zug danach. Wer den
+Slice sucht, findet ihn über zehn Commits verteilt und **nicht** in der Roadmap:
+`grep -c 'slice-086' docs/plan/planning/in-progress/roadmap.md` → **0**, wie es
+[`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
+Setzung 2 verlangt; Setzung 3 lässt auch die Closure spurlos an ihr vorbeigehen. Der Zustand ist
+das Verzeichnis.
+
+**Was der Slice nicht deckt.**
+
+- **Die Kontroll-Beobachtung ist mit den Mitteln dieses Repos prinzipiell nicht belegbar.** Kein
+  Span trägt sie, ein Screenshot ist kein Artefakt, und die Datei außerhalb, die sie trüge, ist
+  als Quelle ausgeschlossen ([`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md)
+  Festlegung 2). Das ist eine Eigenschaft des Gegenstands, keine Lücke des Dokuments: jeder weitere
+  Träger, auf den ein Beleg geschoben würde, ist entweder leer oder gesperrt. Sie steht im
+  Zeitdokument als Grenze und geht mit der Übergabe weiter.
+- **Kein Wächter, keine Fixture, kein Gate-Eintrag.** Nichts aus diesem Slice geht in `make gates`
+  ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)); die
+  Vereinigung seiner Dateien liegt vollständig unter `docs/`. `make gates` und `make mutate` sind
+  darum **Belege des Zustands**, nicht Belege über den Liefergegenstand.
+- **[`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) bewegt er nicht.** Weder Status noch
+  `git mv`: der Carveout gehört dem Implementer des Folge-Schnitts, die Entscheidung dem Architect.
+  Der Slice liefert die entscheidbare Frage samt Beobachtung, sonst nichts — und hat sich daran
+  gehalten (die drei Zeilen, die er in `CO-002` bewegt hat, ersetzen ein Pfadsegment, keine
+  Aussage).
+
+**Steering-Loop-Eintrag — geschärfte Regel.**
+
+**Eine DoD-Zusage reicht nur so weit wie der Sensor, den sie selbst benennt. Wer keinen benennen
+kann, schreibt die Zusage auf das ein, was der genannte Sensor sieht — oder markiert sie als
+sensorlos und nennt ihren Träger.** Eine Zusage, die breiter ist als ihr Sensor, ist im Gate-Bild
+unsichtbar: sie ist nicht rot, weil nichts sie prüft.
+
+**Gemessen an diesem Slice, nicht postuliert.** DoD (1) nannte `git status` als Beleg der
+Rücknahme. Der Prüfbereich dieses Sensors ist der **getrackte** Baum; die Datei, die die
+Permission-Lage trägt, liegt außerhalb davon. Was diese Lücke **nicht** gesehen hat, ist der Punkt:
+drei Review-Runden mit neun Befunden über zwei Tage, zwei `make gates`-Läufe (Exit 0), ein
+`make mutate` über 143 Fälle (0 Befunde) und ein grüner CI-Lauf über vier Jobs — alle grün, alle
+gegen etwas anderes gerichtet. Gefunden hat sie **eine** Rolle, und zwar die, deren Gegenstand
+genau der Abgleich *Zusage gegen Ist* ist (Modul 11). Der Slice hat den Sensor nicht falsch
+gefahren; er hat eine Zusage geschrieben, für die es keinen gab.
+
+**Anwendung, prüfbar am Text:** Zu jedem DoD-Punkt gehört das Kommando, das ihn rot färben würde
+([`AGENTS.md`](../../../../AGENTS.md) §3.6 eine Ebene früher — nicht erst beim Wächter, schon beim
+Schnitt). Die Probe ist eine Frage an den eigenen Entwurf: **welcher Prüfbereich deckt diesen
+Satz, und liegt der Gegenstand darin?** Fällt die Antwort auf „kein Kommando", ist die Zusage zu
+verengen, bis eines existiert — oder sie steht als *ohne Sensor* da, mit benanntem Träger. Beides
+ist zulässig; unzulässig ist der dritte Fall, in dem ein vorhandener Sensor genannt wird, der den
+Gegenstand nicht sieht.
+
+**Ebene und Träger, benannt statt behauptet.** Die Regel gilt der **Repo**-Ebene, als
+Planner-Disziplin beim Schnitt; über den emittierten Harness sagt sie nichts (dort entscheidet der
+Slice, der die Tool-Ebene entscheidet, was an DoD-Form mitgeht). **Kein Sensor sieht sie:**
+`make comment-claims` prüft vier Pfad-Muster über Go, Shell und Hooks und damit **kein** Markdown,
+und `docs-check` prüft Links, Anker, Kennungen, Matrix, Codepfade und Spans — **keine
+Behauptungen**. Ihr Träger ist deshalb der nächste Schnitt derselben Hand, und der liegt vor:
+[slice-088](../open/slice-088-dcheck-pin-v0620.md) und
+[slice-089](../open/slice-089-carveout-co-002-ueberfuehren.md) sind im selben Planner-Lauf
+geschnitten, und in beiden trägt **jeder** slice-eigene DoD-Punkt sein Kommando im Text. Ohne
+diesen Griff bliebe der Eintrag ein Satz in einer Datei, die niemand wieder liest.
+
+**Drei Beobachtungen, die keine Regel werden — mit ihrem Ort.**
+
+- **Ein Zeitdokument, das seinen Marker verbatim abdruckt, macht die eigene Marker-Suche per
+  Konstruktion fündig.** Die Suche, mit der das Dokument seine Nicht-Aufzeichnung belegte, lieferte
+  am Bestand einen Treffer: das Dokument selbst. Der Reviewer hat daraus die Klasse *ein Beleg, den
+  das Kommando im Dokument nicht (mehr) herstellt* gemacht und sie als Steering-Signal ausgestellt;
+  im Dokument ist sie gezogen, indem die Suche den Zitat-Fall am Fundort benennt und trennt. Das
+  ist die Lehre eines **Dokument-Typs**, nicht des Schnitts — sie gehört an die Ziel-Form eines
+  Zeitdokuments, wenn dieses Repo je eine schreibt.
+- **Die Hook-*Liste* einer Sitzung friert beim Session-Start ein; der Hook-*Befehl* wird bei jedem
+  Feuern frisch von Platte gelesen.** Ein mid-session verdrahteter Hook feuert in derselben Sitzung
+  nicht (Lauf 0), ein geänderter Hook-Text dagegen sofort (Kontroll-Lauf). Jeder künftige
+  Messaufbau an `.claude/settings.json` braucht eine **danach** gestartete Sitzung. Steht als
+  Nebenbefund im Zeitdokument; hier ohne Träger, weil es keine zweite Stelle gibt, die ihn heute
+  bräuchte.
+- **Der Eintritts-Move braucht denselben Link-Zug wie der Move nach `done/`.** §5 schreibt ihn nur
+  für `done/`; gebraucht wurde er zweimal, weil der Slice durch drei Verzeichnisse gewandert ist
+  (`3f27b7c`). Das ist ein Plan-Defekt, kein Implementations-Defekt, und er trifft **jeden**
+  wellenlosen Slice dieser Bauart. **Was der Planner daran selbst ändert:** in
+  [slice-088](../open/slice-088-dcheck-pin-v0620.md) und
+  [slice-089](../open/slice-089-carveout-co-002-ueberfuehren.md) nennt §5 den Link-Zug für **beide**
+  Moves samt Prüfkommando.
+
+**Offen, mit Träger.**
+
+| Posten | Träger |
+|---|---|
+| [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) steht *Proposed*; erst *Accepted* bindet ihre fünf Festlegungen | Architect, über Review-Runden (Modul 10) mit ausgestelltem Verdikt |
+| Die Folgepflichten 1–5 der ADR (Carveout nach `done/`, sechs Zeiger, zwei Matrix-Zellen, Audit-Gegenstand, Mutations-Fall) | [slice-089](../open/slice-089-carveout-co-002-ueberfuehren.md) — geschnitten, Eintritt hängt an *Accepted* |
+| `"Agent"` als letzter `allow`-Eintrag der maschinenlokalen Permission-Datei neben der committeten | **Auftraggeber.** [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Festlegung 4 bindet den **committeten** Stand; die gitignorierte Datei gehört ihm, und kein Sensor dieses Repos liest sie |
+| Die drei Transkript-Zahlen, die eine Prüfhandlung committet im Baum abgelegt hat (`3588e97`) | **Auftraggeber** (die Öffnung des Transkripts als Quelle ist seine Erlaubnis) **und Architect** |
+| [`AGENTS.md`](../../../../AGENTS.md) §3.7 §Geltungsbereich sagt nichts zu verbatim abgelegtem **Skript-Text in Dokumentation** | **Architect**, eigener Lauf und eigener Commit (§3.8) |
+| Der Rang zwischen [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 3 und der Anordnung, am Span abzulesen | in [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Festlegung 3 als Klassen-Unterscheidung entschieden — erledigt mit deren Annahme, nicht vorher |
+| Neun Verweise in fünf Plan-Dateien zeigen auf `in-progress/` und brechen mit dem Move: [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) (3), [slice-088](../open/slice-088-dcheck-pin-v0620.md) (3), [slice-089](../open/slice-089-carveout-co-002-ueberfuehren.md) (1), [welle-09](../welle-09-modul-15-konformitaet.md) (1), [slice-062](../done/slice-062-emittierte-modul-15-regeln.md) (1); dazu **ein** Link im Kopf des Verifikations-Reports — die übrigen sieben Nennungen in den Zeitdokumenten stehen in Inline-Code und fallen unter die `docs/reviews/**`-Ausnahme des `codepaths`-Moduls | der Link-Zug nach dem `git mv` (eigener Commit, Hard Rule 3.3) — `grep -rn 'planning/in-progress/slice-086' --include='*.md' docs` findet sie, `make docs-check` bestätigt den Zug |
+
+**Gates.** Der Verifikations-Lauf auf `2acd074`: `make gates` **Exit 0** —
+`baseline-verify: v3.5.2 OK — 42 Dateien`, `d-check: 329 Datei(en) geprüft, 0 Befund(e)`,
+`1..143` bats ohne `not ok`, `comment-claims: 40 Datei(en) geprueft, 0 Befund(e)`, `span-check`
+ok —, `make mutate` **Exit 0** mit `143 ok, 0 Befund(e)`. CI auf demselben Stand grün über vier
+Jobs (`gh run view 32554104446` → `"conclusion":"success"`, `headSha` `2acd074…`, je `success` für
+`gates`, `smoke`, `full-smoke`, `mutate`). `make full-smoke` hat der Verifier **nicht** selbst
+gefahren und das begründet: der Emissions-Pfad ist in diesem Slice unberührt
+(`git diff --name-only f93f08d..2acd074 | grep -v '^docs/' | wc -l` → 0), der CI-Beleg trägt
+deshalb weiter.
+
+Über diese Notiz selbst — sie ist nach jenen Läufen entstanden — trägt der Doku-Gate:
+`make docs-check` → `d-check: 333 Datei(en) geprüft, 0 Befund(e)`, Exit 0 (getrennt erhoben). Der
+volle `make gates`-Lauf gehört zum Commit dieser Notiz, nicht zu ihr.
 
 ## 8. Sub-Area-Modus-Begründung
 
