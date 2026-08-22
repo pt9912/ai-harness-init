@@ -49,7 +49,7 @@ sie gehört in einen eigenen Schnitt mit eigenem False-Positive-Risiko, nicht in
 ## 2. Definition of Done
 
 Jeder Punkt nennt das Kommando, das ihn rot färbt — eine Zusage reicht nur so weit wie ihr Sensor
-([slice-086](../in-progress/slice-086-vordergrund-per-updatedinput.md) §7).
+([slice-086](../done/slice-086-vordergrund-per-updatedinput.md) §7).
 
 - [ ] **(1) Der Pin steht auf v0.62.0 an allen fünf Orten, die ihn führen — gleichzeitig.**
       [`d-check.mk`](../../../../d-check.mk) (`DCHECK_IMAGE`, `DCHECK_DIGEST`, Kopfkommentar),
@@ -162,7 +162,7 @@ das Image ist lokal inspizierbar (`--print-mk` gefahren, Manifest-Digest gelesen
 Slice wartet.
 
 **`next` → `in-progress`: WIP-Limit frei** — konkret: nach der Closure von
-[slice-086](../in-progress/slice-086-vordergrund-per-updatedinput.md), dem einzigen Slice, der
+[slice-086](../done/slice-086-vordergrund-per-updatedinput.md), dem einzigen Slice, der
 `in-progress/` heute belegt. `ls docs/plan/planning/in-progress/` ist das Prüfkommando; es zeigt
 danach nur noch die Roadmap.
 
@@ -191,7 +191,7 @@ Link-Reconciliation-Commit — beim Eintritt (`open` → `next` → `in-progress
 `done/`. Betroffen sind die eigenen `../`-Links dieser Datei **und** jeder eingehende Verweis.
 **Prüfkommando statt Erinnerung:** `make docs-check` nach jedem Move; solange es rot ist, ist der
 Zug nicht fertig. Der Grund steht gemessen in
-[slice-086](../in-progress/slice-086-vordergrund-per-updatedinput.md) §7: dort war der Zug beim
+[slice-086](../done/slice-086-vordergrund-per-updatedinput.md) §7: dort war der Zug beim
 Eintritts-Move nötig und im Plan nicht vorgesehen.
 
 ## 6. Risiken und offene Punkte

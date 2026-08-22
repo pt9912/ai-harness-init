@@ -23,7 +23,7 @@ Hook-Payload *innerhalb* des Subagenten, ist von der Betriebsart unabhängig und
 Zuordnung der Arbeit zu einer Rolle.
 
 **Folge-Slice:**
-[slice-086](../planning/in-progress/slice-086-vordergrund-per-updatedinput.md) — er fährt die Messung aus
+[slice-086](../planning/done/slice-086-vordergrund-per-updatedinput.md) — er fährt die Messung aus
 Festlegung 4 von [ADR-0019](../adr/0019-agent-guard-prueft-die-aufrufform.md) und **bindet beide
 Ausgänge dieses Carveouts**: hält der Weg, folgt die Entscheidung über seine Verstetigung samt
 Permission-Folge in einer Folge-ADR; hält er nicht, kippt die Modul-7-Frage 2 auf *Nein* und der
@@ -94,7 +94,7 @@ geschätzt statt gemessen wäre — also genau der Titel offen bliebe.
 Drei Wege führen zu diesem Bestand, und sie sind verschieden nah:
 
 1. **Die `updatedInput`-Messung trägt** (der Weg in unserer Hand,
-   [slice-086](../planning/in-progress/slice-086-vordergrund-per-updatedinput.md)): ein
+   [slice-086](../planning/done/slice-086-vordergrund-per-updatedinput.md)): ein
    `PreToolUse`-Hook setzt `run_in_background: false` in die Tool-Argumente ein, und der so
    gestartete Lauf liefert die Zähler. **Die Schwelle ist damit noch nicht erreicht** — der
    Messaufbau geht zurück, und erst die Permission-Folge, entschieden in einer Folge-ADR
@@ -147,5 +147,5 @@ im Kopf behalten.
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-08-15 | Angelegt — Werkzeug-Wahl nach Modul 7, Ausgang *Carveout* | [ADR-0019](../adr/0019-agent-guard-prueft-die-aufrufform.md) Festlegung 3 |
-| 2026-08-15 | Folge-Slice geschnitten; der Trigger wird am Span gelesen, nicht an der Abdeckungszeile; beide Zeiger der Geltungs-Konfiguration stehen | [slice-086](../planning/in-progress/slice-086-vordergrund-per-updatedinput.md) |
+| 2026-08-15 | Folge-Slice geschnitten; der Trigger wird am Span gelesen, nicht an der Abdeckungszeile; beide Zeiger der Geltungs-Konfiguration stehen | [slice-086](../planning/done/slice-086-vordergrund-per-updatedinput.md) |
 | 2026-08-15 | Trigger auf **eine** Schwelle gezogen — der Span **und** die committete Mechanik, die ihn erzeugt; der Span eines zurückgenommenen Messaufbaus erfüllt sie nicht. Die Begründung nennt den gemessenen Grund: der Schalter ist sendbar und wirkungslos | [ADR-0019](../adr/0019-agent-guard-prueft-die-aufrufform.md) §Kontext |

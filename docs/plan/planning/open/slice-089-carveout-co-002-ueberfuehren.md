@@ -48,7 +48,7 @@ verschiebt eine Datei und baut einen Zahn.
 ## 2. Definition of Done
 
 Jeder Punkt nennt das Kommando, das ihn rot färbt — eine Zusage reicht nur so weit wie ihr Sensor
-([slice-086](../in-progress/slice-086-vordergrund-per-updatedinput.md) §7).
+([slice-086](../done/slice-086-vordergrund-per-updatedinput.md) §7).
 
 - [ ] **(1) Der Carveout liegt in `done/`, mit dem Status aus Festlegung 5, und der Index führt ihn
       dort.** [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) trägt
