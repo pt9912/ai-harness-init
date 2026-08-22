@@ -202,14 +202,16 @@ nicht in ein Gedächtnis. Wer Rollen-Arbeit an einen Subagenten gibt, startet ih
    steht hier als **fremde Zusage**, nicht als Repo-Beleg — wer ihn nachprüfen will, findet
    im Repo nichts, woran.
 2. **im HINTERGRUND — nicht als Wahl, sondern als einzige Betriebsart.** Das Eingabe-Schema
-   von `Agent` führt kein `run_in_background`, und ein Feld dieses Namens ändert nichts — weder
-   vom Aufrufer mitgesendet noch am Hook eingesetzt: der Aufruf wird angenommen, der Lauf
-   startet im Hintergrund. Es gibt damit keine zweite Form, unter der ein Rollen-Lauf starten
-   könnte, und deshalb steht hier eine Beschreibung, wo eine Regel stünde, wenn es etwas zu
-   entscheiden gäbe. **Belegklasse: die Wirkungslosigkeit ist gemessen — die gesendete Form am
-   2026-08-15 (Nachtrag §7 des Mess-Dokuments), die am Hook eingesetzte am 2026-08-21; dass das
-   Feld den Hook nicht erreicht, ist am 2026-08-10 gemessen und heute nicht wiederholbar — der
-   Zweig, der es las, ist gefallen.** Ein Hintergrund-Lauf trägt keine
+   von `Agent` führt kein `run_in_background`, und ein Feld dieses Namens ändert am Ausgang
+   nichts — weder vom Aufrufer mitgesendet noch per Hook-Ausgabe eingesetzt: der Aufruf wird
+   angenommen, der Lauf startet im Hintergrund. Es gibt damit keine zweite Form, unter der ein
+   Rollen-Lauf starten könnte, und deshalb steht hier eine Beschreibung, wo eine Regel stünde,
+   wenn es etwas zu entscheiden gäbe. **Belegklasse, zweigeteilt wie in Punkt 5 oben: gemessen
+   ist in beiden Versuchsarmen der AUSGANG — die Übernahme der Hook-Ausgabe ist eine SICHT.**
+   Der Ausgang ist für die gesendete Form am 2026-08-15 gemessen (Nachtrag §7 des
+   Mess-Dokuments), für die per Hook-Ausgabe eingesetzte am 2026-08-21; dass das Feld den Hook
+   nicht erreicht, ist am 2026-08-10 gemessen und heute nicht wiederholbar — der Zweig, der es
+   las, ist gefallen. Ein Hintergrund-Lauf trägt keine
    Verbrauchs-Achse — im Einzelnen in **Abweichung 5**, hier nicht wiederholt —, und die
    Hooks-Referenz führt den Hintergrund als **Standard**, dessen Antwort keine Nutzungsfelder
    trägt, sondern `status: "async_launched"`, `agentId`, `description`, `prompt`, `outputFile`
