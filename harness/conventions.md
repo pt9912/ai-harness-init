@@ -453,8 +453,9 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Netzlosigkeit auf Container-Ebene, [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)/[`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten));
   (b) **`DCHECK_IMAGE` (Tag) + `DCHECK_DIGEST` (Override, sticht den Tag)** statt des inline
   gepinnten `D_CHECK_IMAGE` aus [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile) —
-  Re-Pin ist eine `DCHECK_DIGEST`-Zeile; (c) das **volle** Target-Set (elf Targets) lebt
-  tool-generiert im Repo, die Recipe-Form pflegt d-check.
+  Re-Pin ist eine `DCHECK_DIGEST`-Zeile; (c) das **volle** Target-Set lebt tool-generiert im
+  Repo, die Recipe-Form pflegt d-check — seine Größe wächst mit dem Tool und steht mit ihrem
+  Kommando in Setzung 2.
 - **Setzung 1 — Namens-Adaption `doc-check` → `docs-check`.** Nur das Befund-Gate wird umbenannt:
   Ziel-Form-`Makefile`, Regelwerk `modul-13` und der bestehende Repo-Stand nennen es `docs-check`
   (mit „s"); `--print-mk` erzeugt `doc-check`. Bei jeder Neu-Erzeugung sind es vier kleine,
@@ -463,12 +464,16 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   das umbenannte Haupt-Target gelistet wird). Die advisory-Targets bleiben sonst **verbatim**
   (`doc-`-Präfix).
 - **Setzung 2 — nur `docs-check` ist ein *behaupteter* Gate ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).** `d-check.mk`
-  bringt zehn advisory/opt-in-Targets mit (`doc-trace`/`doc-complete`/`doc-doctor`/`doc-repair`/
-  `doc-immutable`/`doc-commits`/`doc-planning`/`doc-tracked`/`doc-targets`/`doc-help`). Nur
-  `docs-check` steht in `make gates`, [`AGENTS.md`](../AGENTS.md) §4 und [`harness/README.md`](README.md)
-  §Sensors — die übrigen sind **verfügbar, aber nicht als Gate behauptet**, exakt wie
-  `regelwerk-check` (Makefile-Target, nicht in `gates`). Kein halluziniertes Gate: „behauptet" ≠
-  „vorhanden".
+  führt **zwölf** Targets (`grep -cE '^docs?-[a-z-]+:' d-check.mk` → **12**; `make doc-help` listet
+  dieselben zwölf). Genau eines davon, `docs-check`, steht in `make gates`,
+  [`AGENTS.md`](../AGENTS.md) §4 und [`harness/README.md`](README.md) §Sensors; die übrigen **elf**
+  sind advisory/opt-in (`doc-trace`/`doc-complete`/`doc-doctor`/`doc-repair`/`doc-immutable`/
+  `doc-commits`/`doc-planning`/`doc-tracked`/`doc-targets`/`doc-structure`/`doc-help`) — also
+  **verfügbar, aber nicht als Gate behauptet**, exakt wie `regelwerk-check` (Makefile-Target, nicht
+  in `gates`). Kein halluziniertes Gate: „behauptet" ≠ „vorhanden". Die Aufzählung **ist** die
+  Grenzziehung: ein Target, das in ihr fehlt, ist weder als behauptet noch als advisory
+  ausgewiesen — deshalb ist sie an den Re-Pin gebunden (§Auflösungs-Trigger) und nicht an das
+  Datum dieses Eintrags.
 - **Setzung 3 — `d-check.mk` (tool-eigener Name) statt `harness.mk`.** Der Rename trägt den Namen,
   den `--print-mk` selbst vergibt (Herkunft ist selbst-dokumentiert) und macht die Neu-Erzeugung
   mechanisch (`d-check --print-mk` → `d-check.mk`). Er ist ein **reiner git-mv-Commit vor** dem
@@ -482,8 +487,10 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   machte; das tool-generierte Fragment beseitigt die Drift-Klasse „Hand-mk hinkt d-check nach" und
   stellt das volle, aktuelle Target-Set bereit.
 - **Auflösungs-Trigger:** permanent; bei d-check-Release `d-check --print-mk` neu erzeugen,
-  `doc-check`→`docs-check` re-adaptieren, `DCHECK_DIGEST` neu pinnen. Maintenance-Override
-  (Dry-Run) via `DCHECK_DIGEST=…`/`DCHECK_IMAGE=…`, nicht mehr `D_CHECK_IMAGE=…`.
+  `doc-check`→`docs-check` re-adaptieren, `DCHECK_DIGEST` neu pinnen und die Target-Aufzählung in
+  Setzung 2 gegen `make doc-help` abgleichen — das Set wächst mit dem Tool, die Aufzählung nur von
+  Hand. Maintenance-Override (Dry-Run) via `DCHECK_DIGEST=…`/`DCHECK_IMAGE=…`, nicht mehr
+  `D_CHECK_IMAGE=…`.
 
 ### MR-011 — Zitat-Verifikation via d-check adoptiert (check-lines)
 
@@ -1134,16 +1141,51 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   `d-check: 333 Datei(en) geprüft, 0 Befund(e)`, Exit 0 — **byte-gleich** mit dem v0.51.1-Lauf über
   denselben Baum (333/0, Exit 0; der `diff` beider Ausgaben ist leer): **0-Befund-Differenz über
   elf Minors**. Einzige inhaltliche `--print-mk`-Fragment-Differenz zu v0.51.1: das neue Target
-  `doc-structure` (elf → zwölf Targets) und je ein zusätzliches `--disable structure` in den
-  bestehenden fokussierten advisory-Recipes — verbatim vom Tool, wie damals `--disable sources`;
-  die vier Handgriffe der Re-Adaption stehen in [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert).
-- **Woran die Inertheit hängt — und woran nicht.** Nicht allein am opt-in-Charakter der
-  Neuzugänge: das **aktive** Modul `spans` hat in dieser Spanne eine dritte Befundklasse bekommen
-  (`fence-unclosed` — eine Fence-Öffnung ohne Schluss bis zum Dateiende, v0.53.0), und das
-  ebenfalls aktive `links` einen neuen opt-in-Schlüssel (`resolve-from` für wandernde Quellorte,
-  v0.60.0; hier **nicht** gesetzt, seine Adoption ist eine eigene Entscheidung). Dass beides über
-  diesem Baum nichts findet, sagt der Lauf, nicht die `modules:`-Liste — genau die Grenze, die
-  [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile) zieht.
+  `doc-structure` (elf → zwölf Targets, [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert)
+  §Setzung 2) und je ein zusätzliches `--disable structure` in den bestehenden fokussierten
+  advisory-Recipes — verbatim vom Tool, wie damals `--disable sources`; die vier Handgriffe der
+  Re-Adaption stehen in [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert).
+- **Was dieser Lauf trägt — und was nicht.** Er trägt **eine** Richtung: über diesem Korpus
+  entsteht kein neuer Befund. In der **Gegenrichtung** ist er über einer 0-Befund-Basis
+  informationsleer — eine weggefallene Befundklasse erzeugt dieselbe Ausgabe wie eine unveränderte,
+  `333/0` bleibt `333/0`. „Der Sprung senkt keine Strenge" folgt also **nicht** aus dem
+  Trockenlauf; das ist eine Aussage über die Regelmodule und wird an ihnen belegt.
+- **Strenge-Bilanz der elf Minors, an den aktiven Modulen gemessen.** Aktiv sind sechs
+  (`.d-check.yml`: `modules: [links, anchors, ids, matrix, codepaths, spans]`); `sources` läuft
+  daneben allein im Maintenance-Target `regelwerk-check`, ausdrücklich **nicht** in `gates`. Gegen
+  den lokalen d-check-Klon über `v0.51.1..v0.62.0` gemessen berühren **zwei** der elf Minors ein
+  aktives Modul, **beide in Richtung mehr Strenge**: (a) **v0.53.0** gibt `spans` die dritte
+  Befundklasse `fence-unclosed` (Fence-Öffnung ohne Schluss bis zum Dateiende) — der Diff der
+  Regeldatei dieses Moduls ist rein additiv, `git diff v0.51.1..v0.62.0` zählt dort **null**
+  entfernte Zeilen; Anlass war ein ausgelieferter stiller Grün-Pfad, hinter dem Gates grün
+  meldeten, ohne geprüft zu haben, und dieses Repo stand auf v0.51.1. Dass die Klasse über diesem
+  Baum nicht feuert, sagt der Trockenlauf, nicht die `modules:`-Liste — genau die Grenze, die
+  [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile) zieht. (b) **v0.60.0** gibt `links`
+  den opt-in-Schlüssel `resolve-from` für wandernde Quellorte; hier **nicht** gesetzt, und ohne ihn
+  prüft er über einer leeren Gruppenliste — seine Adoption ist eine eigene Entscheidung. Die
+  Regeldateien von `ids`, `codepaths` und `matrix` sind über die Spanne **unverändert**
+  (`git diff --numstat v0.51.1..v0.62.0` → keine Zeile je Datei); `anchors` ist umgebaut, aber
+  nicht in seiner Antwort: Slug- und Anker-Erkennung sind in geteilte Funktionen gezogen, damit
+  `versions`, `pins` und `citations` **ihr** folgen (CHANGELOG `[0.58.0]`).
+- **Die ausgewiesenen Lockerungen liegen sämtlich in Modulen, die dieses Repo nicht fährt.** Der
+  d-check-CHANGELOG benennt Lockerungen wörtlich; über `[0.52.0]`…`[0.62.0]` sind es zweimal
+  `closure-note-boilerplate` („findet weniger", „es ist eine **Lockerung**", `[0.56.0]`) und zwei
+  weggefallene Falsch-Rot in `planning` (`[0.58.0]`) — beides `planning`/`planning.closure`, hier
+  nicht aktiviert — sowie in `[0.58.0]` je ein „findet weniger" bei `citations`, `pins` und
+  `versions`, ebenfalls nicht aktiviert. Der einzige Fall an einer **geteilten** Lexik („die
+  Fence-Lexik trimmt an allen fünf Konsumenten identisch … Wer hier Befunde verliert, verliert
+  Fehlmessungen", `[0.53.0]`) ist am Klon nachgezählt: bewegt hat sich der Trimmer allein im Modul
+  `planning` (unicode-weites `TrimSpace` → Space und Tab); die übrigen vier Konsumenten — darunter
+  die Vorverarbeitung, aus der **alle** hier aktiven Module lesen — trimmten schon vor v0.53.0
+  Space und Tab. `sources` bekam in `[0.52.0]` eine Herkunfts-Korrektur an seiner Befund-Meldung;
+  sie greift nur unter `--config`, und `--config` fährt dieses Repo nicht.
+- **Kein ADR nötig ([`AGENTS.md`](../AGENTS.md) §3.5).** §3.5 verlangt einen ADR für **Senkungen**.
+  Gemessen senkt der Sprung an keinem aktiven Modul und hebt an einem (`spans`) — „Anheben →
+  Steering-Loop, kein ADR nötig" hält
+  [`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) fest. Diese Bilanz hängt
+  an der **Versions-Differenz der Regelmodule**, nicht am Trockenlauf; sie ist gegen einen lokalen
+  d-check-Klon aus CHANGELOG und `git diff` reproduzierbar, nicht gegen ein Gate — kein Modul
+  dieses Repos vergleicht Befund**klassen** zweier d-check-Versionen.
 - **Emitter-Pin gekoppelt (Tier-1-Drift).** `internal/emit`s `DefaultImage`/`DefaultDigest` zieht
   per go-test mit (`TestDefaultImage_MatchesCanonical`/`TestDefaultDigest_MatchesCanonical` lesen
   `d-check.mk`); die emittierte Starter-Config bleibt `modules: [links, anchors]`
@@ -1151,7 +1193,9 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Das Gate-Fragment des Ziels entsteht zur Bootstrap-Zeit live per `--print-mk` aus dem gepinnten
   Image; `make full-smoke` ist der Lauf, der das emittierte Gate mit ihm fährt.
 - **Auflösungs-Trigger:** permanent; bei d-check-Release `d-check --print-mk` neu erzeugen + Digest
-  neu pinnen ([`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert) §Auflösungs-Trigger).
+  neu pinnen ([`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert) §Auflösungs-Trigger) und
+  die Strenge-Bilanz über die neue Spanne neu ziehen — der Trockenlauf allein beantwortet die
+  §3.5-Frage nicht.
 
 ## Modus-Deklaration pro Sub-Area
 
