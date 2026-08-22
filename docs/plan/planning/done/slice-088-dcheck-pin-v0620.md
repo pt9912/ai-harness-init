@@ -507,7 +507,7 @@ beim nächsten Re-Pin gegen `make doc-help` abgleichen; (b) den Schreib-Fall tr�
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 1, die die Zahl an ihr Kommando bindet, bevor sie sich vervielfältigen kann; (c) den
 Zieh-Fall trägt der nächste Schnitt derselben Bauart, und er liegt geschnitten vor:
-[slice-089](../next/slice-089-carveout-co-002-ueberfuehren.md) DoD (2) zieht **sechs** Zeiger auf
+[slice-089](../in-progress/slice-089-carveout-co-002-ueberfuehren.md) DoD (2) zieht **sechs** Zeiger auf
 denselben Gegenstand und nennt als rot färbendes Kommando genau eine Fundort-Suche
 (`grep -n 'CO-002' spec/spezifikation.md .claude/hooks/pretooluse-agent-guard.sh` → **leer**). Ohne
 diesen Griff bliebe der Eintrag ein Satz in einer Datei, die niemand wieder liest.
