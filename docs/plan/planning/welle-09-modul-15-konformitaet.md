@@ -123,16 +123,44 @@ Modul-15-Block-4.
   wahr und falsch sind an der Ausgabe des Trägers sonst nicht zu unterscheiden (slice-062 §6).
 - `make gates` und `make mutate` grün; jeder neue Wächter hat seinen `test/mutations/`-Fall
   ([`AGENTS.md`](../../../AGENTS.md) §3.6).
-- Carveout-Audit (Modul 7): [`CO-001`](../carveouts/CO-001-bats-shell-lint.md) **und**
-  [`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md) geprüft, neue Carveouts dokumentiert
-  oder begründet keine. Der zweite steht hier nicht als Beiwerk: er trägt den Auflösungs-Trigger
-  **zweier** Zellen der **Repo**-Spalte (*Token-Attribution × Repo* Hintergrund-Teil und
-  *Cache-Counter × Repo*, §4), und sein Zustand entscheidet, ob sie *deklariert* oder
-  *ADR-Verdikt* führen. **Für die Tool-Spalte ist er das ausdrücklich nicht** (slice-062 §3): dort
-  ist er die **Vorbedingung** des **Zähler-Glieds**, und die Zellen zeigen auf die Frage, die er stellt,
-  statt auf ihn — ein Carveout endet nach Modul 7 in beiden Ausgängen in `done/`, und eine Zelle,
-  die auf ein abgeschlossenes Artefakt als offenen Trigger zeigt, sagt nicht mehr, ob sie offen
-  oder erledigt ist. Das Audit liest die Tool-Zellen deshalb **nicht** gegen seinen Zustand.
+- **Carveout-Audit (Modul 7) — es liest den STATUS, nicht das Verzeichnis.**
+  [`CO-001`](../carveouts/CO-001-bats-shell-lint.md) **und**
+  [`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md) geprüft, neue Carveouts dokumentiert oder
+  begründet keine. **Der Ort trägt die Aussage *aktiv* nicht mehr:** ein übergeführter Carveout
+  bleibt an seiner Adresse liegen, `ls docs/plan/carveouts/CO-*.md | wc -l` zählt deshalb weiter
+  **2** — diese Zahl bewegt sich mit der Überführung **nicht**. Wer *aktiv* von *entschieden*
+  trennen will, liest den Kopf: `grep -n '^\*\*Status:' docs/plan/carveouts/CO-*.md`. Ein Audit,
+  das einen übergeführten Carveout als *„weiterhin aktiv"* bestätigt, bestätigt eine Entscheidung
+  als offene Frage.
+- **Die zwei Zellen der Repo-Spalte, die an [`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md)
+  hingen, tragen *ADR-Verdikt*:** *Token-Attribution × Repo* (Hintergrund-Teil) und
+  *Cache-Counter × Repo* (§4). Der Ausfall ist in
+  [`ADR-0021`](../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) als **permanent** entschieden
+  — kein Auflösungs-Trigger, an seine Stelle treten deren Re-Evaluierungs-Trigger; genau der Wert,
+  den die Tabelle oben unter *ADR-Verdikt* führt. **Die Reihenfolge gehört zum Kriterium:** der
+  Kopf des Stubs trägt den Verdikt-Status, **bevor** die Ergebnis-Notiz die Zellen setzt — sonst
+  liest das Audit *Aktiv* und schreibt *deklariert* gegen eine angenommene ADR. Geschrieben wird
+  der Status vom Slice, der Folgepflicht 1 jener ADR vollzieht
+  ([slice-089](open/slice-089-carveout-co-002-ueberfuehren.md), **kein Mitglied dieser Welle** —
+  [`MR-016`](../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
+  Setzung 2 lässt für wellenlose Arbeit auch keinen Roadmap-Eintrag zu). **Prüfkommando statt
+  Erinnerung:** `grep -n '^\*\*Status:' docs/plan/carveouts/CO-002-token-achse-je-rolle.md` zeigt
+  den Verdikt-Status, nicht `Aktiv`.
+- **Zwei lebende Planungs-Artefakte führen die aufgehobene Schwelle noch als offen und sind vor
+  dem Abschluss zu ziehen — Planner, an lebendem Plan.** Die Roadmap schreibt für slice-071 *„die
+  Rechnung liegt hinter dem Auflösungs-Trigger von `CO-002`"*, und
+  [slice-071](open/slice-071-cache-zaehler-getrennt.md) nennt den Carveout auf **10** Zeilen
+  (`grep -c 'CO-002' docs/plan/planning/open/slice-071-cache-zaehler-getrennt.md`); wie viele davon
+  die Schwelle als **offen** führen, trennt kein Kommando — das ist von Hand zu lesen. **Und seine
+  Rückführung ist ausgelöst:** sein §4 nennt für den Fall, dass `CO-002` **negativ** entschieden
+  wird, eine **Architect-Frage** — ob das Spec-Stratum die Cache-Festlegung ohne Rechnung trägt.
+  Sie ist heute fällig, sie gehört dem **Architect**, und das Kriterium *„alle Slices dieser Welle
+  in `done/`"* hängt an ihrer Beantwortung.
+- **Für die Tool-Spalte ist der Carveout weiterhin ausdrücklich nicht der Träger** (slice-062 §3):
+  dort ist er die **Vorbedingung** des **Zähler-Glieds**, und die Zellen zeigen auf die Frage, die
+  er stellt, statt auf ihn — eine Zelle, die auf einen fremden Auflösungs-Trigger als offenen
+  Trigger zeigt, sagt nicht mehr, ob sie offen oder erledigt ist. Das Audit liest die Tool-Zellen
+  deshalb **nicht** gegen seinen Zustand.
 - Closure-Notiz in `welle-09-results.md` mit Steering-Loop-Eintrag.
 
 ## 4. Slices in dieser Welle
@@ -160,9 +188,11 @@ Slice zusammen waren es mehr Zusagen, als Modul 5 §Ziel-Form einem Schnitt zuge
 Nenner-Angabe aus [`ADR-0012`](../adr/0012-haupt-kontext-ohne-token-bilanz.md) hätte als vierter
 DoD-Punkt danebengestanden. Keiner der beiden wartet auf den anderen: beide setzen auf slice-060
 auf, nicht aufeinander. **Was sie unterscheidet, ist der Eingang:** Block 2 hat seine Rechnung
-gebaut, solange die Zähler ankamen, und trägt deshalb einen Zahn; Block 3 hat die Festlegung und
-bekommt seinen Zahn mit der Rechnung, die hinter dem Auflösungs-Trigger von
-[`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md) liegt.
+gebaut, solange die Zähler ankamen, und trägt deshalb einen Zahn; Block 3 hat die Festlegung, und
+sein Zahn hinge an einer Rechnung, deren Eingang nach
+[`ADR-0021`](../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) **dauerhaft** ausbleibt — einen
+Auflösungs-Trigger von [`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md), hinter dem sie
+läge, gibt es nicht mehr.
 
 **Beide Ebenen sind drin — Repo und Tool.** Die erste Fassung dieses Plans schob die Tool-Ebene
 unter „aufgeschoben"; auf Nutzer-Entscheidung vom 2026-07-28 gehört sie zur Welle (slice-062/063).
@@ -176,7 +206,7 @@ nur noch, was wirklich ausgeschlossen ist.
 | slice-059 | Repo | **Erfassung**: Spans per Agenten-Hook (Block 1) | [`MR-002`](../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) |
 | slice-060 | Repo | **Rollen-Achse**: rollen-benannte Agenten-Typen + Nutzungstelemetrie der Subagenten | [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) |
 | slice-066 | Repo | **Auswertung**: Token-Bilanz je Rolle, die ihren Nenner nennt (Block 2) — setzt auf slice-060 auf | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
-| slice-071 | Repo | **Cache-Festlegung**: die drei Counter getrennt, mit allen vier Angaben je Counter, im Spec-Stratum (Block 3) — setzt auf slice-060 auf. Er legt für die Matrix-Zelle *Cache-Counter × Repo* den Wert **deklariert** fest: die **Rechnung** hat keinen Eingang, ihr Auflösungs-Trigger ist der von [`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md), und die Festlegung sagt, was gerechnet wird, sobald er fällt | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-071 | Repo | **Cache-Festlegung**: die drei Counter getrennt, mit allen vier Angaben je Counter, im Spec-Stratum (Block 3) — setzt auf slice-060 auf. Er schrieb der Matrix-Zelle *Cache-Counter × Repo* den Wert **deklariert** zu, weil die **Rechnung** keinen Eingang hat und ihr Auflösungs-Trigger der von [`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md) war; diesen Trigger gibt es nach [`ADR-0021`](../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) nicht mehr — die Zelle trägt **ADR-Verdikt** (§3), und ob das Spec-Stratum die Festlegung ohne Rechnung trägt, ist die Architect-Frage aus seinem eigenen §4 | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | slice-068 | Repo | **Rollen-Arbeit läuft als Rolle**: die Konvention wird vollständig (was, nicht nur wie) + die Berichtsgröße, an der sie ablesbar ist — legt für die Matrix-Zelle *Token-Attribution × Repo* fest, dass ihre Belegart **zweigeteilt** ist: der Hintergrund-Teil trägt „deklariert" mit Auflösungs-Trigger, der Haupt-Kontext das „ADR-Verdikt" aus [`ADR-0012`](../adr/0012-haupt-kontext-ohne-token-bilanz.md) ohne Trigger. Die Haupt-Kontext-Abweichung selbst hat slice-060 DoD (3) geliefert | keine `LH-*` (Dogfood-Prozessebene; im Slice begründet) |
 | slice-061 | Repo | **Doku-Konsistenz**: behauptete Befehle existieren (Block 4) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | slice-062 | **Tool** | **Entscheidung**: welche Modul-15-Regeln gehören in den emittierten Harness? (**nur** ADR — kein CR, gemessen in dessen §3) | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
@@ -199,9 +229,11 @@ im `usage`-Objekt der `tool_response` eines **Vordergrund**-`Agent`-Aufrufs — 
 Hit-/Miss-Zähler (`cache_read_input_tokens` vs. `cache_creation_input_tokens`), am 2026-07-29
 an echten Aufrufen gemessen. **Nicht** aus Sitzungs-Transkripten — beide Slices schließen jeden
 Zugriff außerhalb des Repos aus. **Der Vordergrund ist seit dem 2026-08-15 nicht mehr
-anforderbar; die Datenlage ist damit selbst der offene Punkt** und wird als
-[`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md) geführt — mit zwei Ausgängen und der
-Messung, die sie entscheidet ([slice-086](done/slice-086-vordergrund-per-updatedinput.md)).
+anforderbar, und die Messung dazu ist gefahren und negativ**
+([slice-086](done/slice-086-vordergrund-per-updatedinput.md)): von den zwei Ausgängen, die
+[`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md) führte, ist der **zweite** genommen — der
+Ausfall ist in [`ADR-0021`](../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) **permanent**
+entschieden, und der Carveout ist dorthin übergeführt, ohne seine Adresse zu verlassen.
 **„Kein Gegenstand" trägt trotzdem nicht:** die Festlegung, welche Zähler unter welchen Namen
 und in welcher Counter-Form geführt werden, ist ohne Bestand entscheidbar (slice-071 DoD (1));
 am Bestand hängt die Rechnung, nicht die Festlegung.
@@ -210,16 +242,18 @@ am Bestand hängt die Rechnung, nicht die Festlegung.
 und für jedes einzeln gezeigt:**
 
 - *Je Regelblock und je Ebene ein belegter Zustand.* Betroffen sind **zwei** Zellen, und beide
-  tragen **deklariert**: *Token-Attribution × Repo* für den Hintergrund-Teil (slice-068 DoD (3))
-  und *Cache-Counter × Repo* für die Rechnung, die keinen Eingang hat (slice-071). Geltungsbereich,
-  Begründung und Auflösungs-Trigger stehen für beide im Carveout; ob daraus *Sensor* oder
-  *ADR-Verdikt* wird, entscheidet dieselbe Messung. Das Carveout-Audit aus §3 liest ihn deshalb
-  mit.
-- *Alle Slices dieser Welle in `done/`.* slice-071 ist auf die **Festlegung** zugeschnitten und
-  hängt an keiner fremden Entscheidung mehr; sein Eintritt fragt allein slice-060 ab. Die
-  **Rechnung** ist kein Mitglied dieser Welle: sie liegt hinter dem Auflösungs-Trigger und wird
-  geschnitten, wenn er fällt — eine deklarierte Nicht-Umsetzung ist ein zulässiger Endzustand
-  dieser Welle, ihre spätere Auflösung ist es nicht.
+  tragen **ADR-Verdikt**: *Token-Attribution × Repo* für den Hintergrund-Teil (slice-068 DoD (3))
+  und *Cache-Counter × Repo* für die Rechnung, die keinen Eingang hat (slice-071). Geltungsbereich
+  und Begründung stehen in
+  [`ADR-0021`](../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md); einen Auflösungs-Trigger gibt
+  es nicht mehr, an seiner Stelle stehen deren Re-Evaluierungs-Trigger. Das Carveout-Audit aus §3
+  liest dafür den **Status** des Stubs, nicht sein Verzeichnis.
+- *Alle Slices dieser Welle in `done/`.* slice-071 ist auf die **Festlegung** zugeschnitten, aber
+  seine Grundlage hat sich bewegt: seine eigene Rückführung nennt für den negativen Ausgang eine
+  **Architect-Frage**, und die ist vor seinem Eintritt zu beantworten (Closure-Trigger oben). Die **Rechnung** ist
+  kein Mitglied dieser Welle und wird es nicht mehr: sie lag hinter einem Auflösungs-Trigger, den
+  [`ADR-0021`](../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) aufgehoben hat. Eine
+  Nicht-Umsetzung mit **ADR-Verdikt** ist ein zulässiger Endzustand dieser Welle.
 
 **Was die Zahlen NICHT abdecken**, steht in
 [`ADR-0012`](../adr/0012-haupt-kontext-ohne-token-bilanz.md): der

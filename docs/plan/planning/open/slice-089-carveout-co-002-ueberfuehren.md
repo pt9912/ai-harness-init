@@ -15,9 +15,11 @@ verbindet, ist eine **Reihenfolge**, und die steht in §6.
 [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) — die Entscheidung, deren
 Folgepflichten dieser Slice vollzieht: Festlegung 5 lässt den Carveout an seiner Adresse und legt
 den Übergang in seinen **Status**. Von den sieben Folgepflichten trägt dieser Slice **drei** — den
-geschriebenen Übergang in Stub und Index, die sechs Zeiger, den fälligen Mutations-Fall; die zwei
-weiteren Planner-Posten liegen ausdrücklich außerhalb (§3). **Der Slice nennt die ADR; die ADR
-nennt ihn nicht.**
+geschriebenen Übergang in Stub und Index, die sechs Zeiger, den fälligen Mutations-Fall. Die zwei
+weiteren Planner-Posten liegen ausdrücklich außerhalb (§3); die verbleibenden zwei verlangen heute
+keine Arbeit und stehen deshalb **benannt** statt weggelassen — die emittierte Ebene ist nicht
+berührt (Datei-Tabelle in §3), und ein Adaptions-Eintrag ist ausdrücklich **nicht** angeordnet
+(§6). **Der Slice nennt die ADR; die ADR nennt ihn nicht.**
 [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) — der Gegenstand: ein Carveout, dessen
 Trigger nach der Messung nur noch im fremden Vertrag liegt und der damit *de facto* permanent ist.
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) — der
@@ -34,9 +36,10 @@ was da ist).
 
 ## 1. Ziel
 
-**Nach diesem Slice steht der Ausfall der Verbrauchs-Achse je Rolle an genau einem Ort entschieden
-— in der ADR —, und der Carveout sagt an seiner eigenen Adresse, dass er dorthin übergeführt ist.
-Keine Stelle im Repo führt die Messung noch als ausstehend.**
+**Nach diesem Slice trägt der Carveout an seiner eigenen Adresse den Verdikt-Status, sein
+Index-Eintrag steht unter dem permanenten Übergang, und die sechs Stellen, die auf ihn zeigen,
+führen die Messung nicht mehr als ausstehend.** Das Verdikt selbst steht an genau einem Ort — in
+der ADR.
 
 Ein Carveout sagt zu, temporär zu sein; seinen Trigger führt er als erreichbare Bedingung. Nach der
 Messung ist der eine erreichbare Weg ausgefallen, und was bleibt, liegt im fremden Vertrag. Ein
@@ -44,6 +47,15 @@ Carveout, der so stehen bliebe, wäre die permanente Ausnahme, die behauptet, te
 genau die Doku-Drift, die Carveouts verhindern sollen. **Träger dieser Aussage ist ab hier der
 Status, nicht das Verzeichnis:** der Stub bleibt liegen, wo er liegt, und wird zur **Weiche** auf
 das Verdikt.
+
+**Was das Ziel NICHT umfasst — eine Grenze des Schnitts, keine Auslassung.** Eine
+`CO-002`-Nennung tragen heute **13** lebende Dateien
+(`git ls-files | xargs grep -ln 'CO-002' | grep -vc -e '^docs/reviews/' -e '^docs/plan/planning/done/' -e '^\.harness/baseline/'`;
+die Zahl wandert mit dem Bestand und ist **kein** Erwartungswert,
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2). Sechs Zeilen in zwei davon deckt DoD (2), Stub und Index deckt DoD (1) — **die übrigen
+deckt dieser Slice nicht**, und zwei von ihnen führen die Schwelle nach dem Vollzug weiter als
+**offen**: die Roadmap und ein fremder Slice-Plan in `open/`. Beide stehen mit Träger in §6.
 
 **Was er ausdrücklich NICHT tut: entscheiden.** Er ändert keine ADR, er formuliert keine neue
 Begründung und er importiert das Verdikt nicht an einen zweiten Ort — *„ein zweiter Ort driftet"*
@@ -74,8 +86,12 @@ Eine Zusage reicht nur so weit wie ihr Sensor
       `docs/plan/carveouts/CO-002-token-achse-je-rolle.md`, jedes deckt genau die Änderung, neben
       der es steht, und jedes trifft heute genau **1** Zeile (`grep -c` mit demselben Muster):
       `grep -n 'zu verschieben'` → **leer (Exit 1)**; `grep -n '^## Verifikation'` → **leer
-      (Exit 1)**; `grep -n 'd-check:ignore'` → **leer (Exit 1)** als Gegenprobe, weil die Direktive
-      in der letzten Zeile des gestrichenen Abschnitts steht. Dazu `make docs-check` →
+      (Exit 1)**; `grep -n 'd-check:ignore'` → **leer (Exit 1)** als Gegenprobe **auf einen der
+      fünf Haken**. Sie deckt die Streichung des Abschnitts **nicht**: die Direktive steht heute
+      auf Zeile **142** (`grep -n 'd-check:ignore'`), der Abschnitt beginnt bei **133** und der
+      folgende `## Geschichte` steht bei **145** (`grep -n '^## '`, dieselbe Datei) — ein leeres
+      `d-check:ignore` ist also auch mit einem Stand vereinbar, in dem Überschrift und vier Haken
+      stehen bleiben. Die Streichung deckt `grep -n '^## Verifikation'`. Dazu `make docs-check` →
       `0 Befund(e)`, Exit 0; die Datei-Zahl derselben Ausgabezeile wandert mit dem
       Markdown-Bestand und ist **kein** Erwartungswert
       ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
@@ -109,15 +125,21 @@ Eine Zusage reicht nur so weit wie ihr Sensor
       es nach dem Nachzug, weil sich keine Adresse bewegt, und rot, sobald eine der zwei
       versperrten Formen im Spec-Stratum steht.
 
-      **Kein Kommando deckt**, ob ein Satz seine Aussage wirklich nachgezogen hat: `grep` zählt
-      Zeilen, keine Tempora. Träger ist die Verifikation am Text.
+      **Kein Kommando deckt den Gegenstand dieses Punktes.** Das Rot-Kommando misst allein die
+      **Über**-Löschung: es ist heute grün, nach einem korrekten Nachzug grün — und nach **null**
+      Handgriffen ebenfalls grün. `make docs-check` deckt die Verbots-, nicht die Gebots-Seite. Ob
+      eine Aussage wirklich gezogen ist, entscheidet allein der Abgleich am Text; Träger ist die
+      Verifikation (Modul 11), nicht ein Gate.
 - [ ] **(3) Der fällige Mutations-Fall färbt den Wächter rot, der die neun Werte hält.**
       Beschrieben als **Eigenschaft, nicht als Adresse**: ein Fall unter `test/mutations/`, der
       einen Eintrag der Positiv-Liste aus `responseKeys()` in `internal/span/response.go`
       **entfernt** und dabei `TestNoResponseFreetextReachesSpan` in
       `internal/span/response_test.go` rot färbt. **Nicht** `TestOnlyAgentToolGetsResponseValues`:
-      der hält die **Werkzeug-Achse** und in seiner Gegenprobe vier der neun Werte — die zwei
-      Cache-Zähler gehören nicht dazu, und ihr Entfernen lässt ihn grün. Die vorhandenen Fälle
+      der hält die **Werkzeug-Achse** und in seiner Gegenprobe **vier** der neun Werte
+      (`SpawnedRole`, `TotalTokens`, `InputTokens`, `ModelVersion`) — die zwei Cache-Zähler gehören
+      nicht dazu, und ihr Entfernen lässt ihn grün. **Die vier sind an der Gegenprobe gelesen, nicht
+      gezählt: kein Kommando trennt sie.** Die **neun** dagegen liefert
+      `grep -c 'path: \[\]string' internal/span/response.go` → **9**. Die vorhandenen Fälle
       decken diese Richtung nicht: `grep -ln 'responseKeys' test/mutations/*.sh` → **leer
       (Exit 1)**, und `test/mutations/133-span-werkzeugachse-geweitet.sh` **weitet** die
       Werkzeug-Achse, statt aus der Liste zu entfernen. Die Nummer ist beim Anlegen die nächste
@@ -199,17 +221,18 @@ Die Entscheidung verteilt zwei weitere Folgepflichten an den **Planner**: die zw
 Repo-Spalte (*Token-Attribution × Repo*, Hintergrund-Teil, und *Cache-Counter × Repo*) tragen
 künftig **ADR-Verdikt** statt *deklariert*, und das Carveout-Audit muss den **Status** lesen statt
 des Verzeichnisses — sonst zählt es weiter zwei aktive Carveouts und bestätigte eine entschiedene
-Sache als offene Frage. Beide liegen **außerhalb** dieses Slice, aus drei Gründen, die je für sich
-tragen:
+Sache als offene Frage. Beide liegen **außerhalb** dieses Slice; der erste Grund unten gilt allein
+Folgepflicht 3, die zwei folgenden tragen für beide:
 
-- **Die Zellen haben heute keinen Gegenstand.** Sie entstehen mit der Ergebnis-Notiz der Welle, und
-  die gibt es nicht: `ls docs/plan/planning/done/ | grep -c 'welle-09-results'` → **0**. Ein
-  DoD-Punkt darauf zwänge diesen Slice, die Closure einer fremden Welle zu eröffnen — oder er wäre
-  nicht prüfbar.
-- **Ihr Auslöser ist nicht dieser Slice, sondern die Annahme der ADR.** Der Satz im Wellen-Plan,
-  der für **beide** Carveout-Ausgänge `done/` voraussetzt, ist mit dem Statuswechsel falsch
-  geworden — vor diesem Slice und unabhängig von ihm. Ein Nachzug daran gehört dem Wellen-Plan als
-  lebendem Planner-Artefakt, nicht einem Slice, der einen anderen Gegenstand vollzieht.
+- **Die Zellen haben heute keinen Gegenstand — das gilt Folgepflicht 3.** Sie entstehen mit der
+  Ergebnis-Notiz der Welle, und die gibt es nicht:
+  `ls docs/plan/planning/done/ | grep -c 'welle-09-results'` → **0**. Ein DoD-Punkt darauf zwänge
+  diesen Slice, die Closure einer fremden Welle zu eröffnen — oder er wäre nicht prüfbar.
+  **Für Folgepflicht 4 trägt der Grund nicht:** die Audit-Regel hat einen Gegenstand, sie steht im
+  §3 des Wellen-Plans. Sie liegt aus den zwei folgenden Gründen außerhalb, nicht aus diesem.
+- **Ihr Auslöser ist nicht dieser Slice, sondern die Annahme der ADR.** Beide binden mit dem
+  Statuswechsel, nicht mit dem Vollzug hier. Was am Wellen-Plan daran hängt, gehört ihm als
+  lebendem Planner-Artefakt — nicht einem Slice, der einen anderen Gegenstand vollzieht.
 - **Der Slice wäre sonst Quelle und Sensor derselben Aussage.** Das Audit **liest** den Status, den
   DoD (1) **schreibt**. Wer beides in einen Slice legt, prüft seine eigene Änderung mit ihr selbst.
 
@@ -217,12 +240,15 @@ Dazu die harte Schranke aus Modul 5: dieser Slice trägt bereits **drei** slice-
 jeder mit seinem Rot-Kommando. Ein vierter hieße nicht, dass die DoD länger sein muss, sondern dass
 der Schnitt falsch ist.
 
-**Wo sie landen, mit Träger statt bloßer Ablage:** die zwei Zellen und die Audit-Regel gehören in
-die **Closure von [welle-09](../welle-09-modul-15-konformitaet.md)** — dort entstehen die Zellen,
-dort läuft das Audit. Der Nachzug des Satzes, der `done/` voraussetzt, ist **Planner-Arbeit am
-lebenden Wellen-Plan** und seit der Annahme der ADR fällig; spätestens die Closure zieht ihn, sonst
-prüft sie gegen einen Satz, den die Entscheidung aufgehoben hat. Die Reihenfolge, die daraus für
-**diesen** Slice folgt, steht in §6.
+**Wo sie landen — und der Träger steht dort, nicht nur hier:** die zwei Zellen und die Audit-Regel
+gehören in die **Closure von [welle-09](../welle-09-modul-15-konformitaet.md)**; dort entstehen die
+Zellen, dort läuft das Audit. **Der Wellen-Plan führt sie selbst:** sein Closure-Trigger verlangt
+das Audit am **Status** statt am Verzeichnis, nennt für die zwei Zellen den Wert *ADR-Verdikt* und
+schreibt die **Reihenfolge** — Kopf-Status vor den Zellen — samt Prüfkommando dorthin, wo sie
+eingehalten werden muss. Prüfbar statt zugesagt:
+`grep -q '0021' docs/plan/planning/welle-09-modul-15-konformitaet.md` → **Exit 0**. Stünde der
+Träger nur hier, läge die Reihenfolge nach dem Abschluss allein in einem Zeitdokument unter
+`done/`. Die Folge für **diesen** Slice steht in §6.
 
 ### Berührte Dateien
 
@@ -230,12 +256,15 @@ prüft sie gegen einen Satz, den die Entscheidung aufgehoben hat. Die Reihenfolg
 |---|---|---|---|
 | [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) | update (vier Stellen), **kein** `git mv` | Implementer | Status · `Letzte Prüfung` und Geschichte-Zeile · Handlungs-Anweisung raus und Vorspann-Satz rein · Abschnitt *Verifikation* ganz raus. **Ein** Commit — es gibt nur den Rewrite |
 | [`docs/plan/carveouts/README.md`](../../carveouts/README.md) | update (eine Stelle) | Implementer | §Aktiv verliert die Zeile, ein eigener Abschnitt für den permanenten Übergang bekommt sie — der Index ist die Übersicht, nicht eine zweite Quelle |
-| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update (fünf Stellen in §5), Adresse **unverändert** | Spec-Eigentümer + Implementer | die offene Frage fällt, der Zustand bleibt im Indikativ; keine ADR-Verlinkung (s. o.) |
+| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update (fünf Stellen in §5), Adresse **unverändert** | Implementer — **schreibende Rolle offen** | die offene Frage fällt, der Zustand bleibt im Indikativ; keine ADR-Verlinkung (s. o.). Die Folgepflicht nennt einen *Spec-Eigentümer*; `ls .claude/agents/` führt **sechs** Rollen und keine dieses Namens, und [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1 lässt die schreibende Rolle für dieses Artefakt ausdrücklich **offen**. Vor dem Eintritt zu klären, nicht im Lauf zu entscheiden |
 | [`.claude/hooks/pretooluse-agent-guard.sh`](../../../../.claude/hooks/pretooluse-agent-guard.sh) | update (Kopf-Kommentar), Zeiger **unverändert** | Implementer | ein Kommentar beschreibt, was da ist ([`AGENTS.md`](../../../../AGENTS.md) §3.7): die Messung ist gefahren, nicht ausstehend |
 | `test/mutations/` (ein neuer Fall) | neu | Implementer | der Zahn zu Festlegung 2; Eigenschaft in DoD (3), Nummer beim Anlegen die nächste freie |
 | `internal/span/response.go`, `internal/span/response_test.go` | **unverändert** | — | der neue Fall mutiert sie zur Laufzeit; wer sie ändert, verschiebt die Zusage, statt ihren Zahn zu bauen |
 | [`docs/plan/adr/`](../../adr/) | **unverändert** | — | eine ADR ist ab *Accepted* immutabel ([`AGENTS.md`](../../../../AGENTS.md) §3.4); dieser Slice vollzieht, er entscheidet nicht |
-| [welle-09](../welle-09-modul-15-konformitaet.md) | **unverändert** | — | die zwei Matrix-Zellen und die Audit-Regel gehören der Closure jener Welle (s. o.), nicht diesem Slice |
+| [welle-09](../welle-09-modul-15-konformitaet.md) | **unverändert durch diesen Slice** | Planner (eigener Vorgang) | die zwei Matrix-Zellen und die Audit-Regel gehören der Closure jener Welle; ihr Träger steht dort (s. o.), und der Vollzug fällt mit der Closure an |
+| [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** | — | sie führt für slice-071 einen Auflösungs-Trigger, den die Entscheidung aufgehoben hat; der Nachzug ist Planner-Arbeit am lebenden Plan und gehört zur welle-09-Closure (§6) |
+| [slice-071](slice-071-cache-zaehler-getrennt.md) | **unverändert** | — | fremder Slice-Plan; seine Rückführung ist ausgelöst, und die Frage dahinter gehört dem Architect (§6) |
+| `internal/emit/` | **unverändert** | — | die emittierte Ebene ist von der Entscheidung nicht berührt und führt heute weder Span-Emitter noch Agent-Guard; bekommt sie je einen, gilt die Grenze dort und gehört dort **genannt** |
 
 ## 4. Trigger
 
@@ -255,8 +284,11 @@ Rückführungen:
 
 - `in-progress` → `open`: die fünf Spec-Stellen lassen sich **nicht** ohne Verweis auf das Verdikt
   formulieren, weil eine von ihnen die Begründung mitträgt statt nur den Zustand. Dann ist zuerst
-  zu entscheiden, was das Vertrags-Stratum an dieser Stelle überhaupt sagen soll — eine Frage an
-  den Spec-Eigentümer, kein Nachzug.
+  zu entscheiden, was das Vertrags-Stratum an dieser Stelle überhaupt sagen soll — kein Nachzug,
+  sondern eine Frage an die Rolle, die dieses Stratum schreibt. **Welche das ist, ist offen**
+  ([`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1: wo keine
+  Quelle eine schreibende Rolle benennt, bleibt die Frage offen); zu klären ist sie vor dem
+  Eintritt, nicht im Lauf.
 - `in-progress` → `next`: der fällige Mutations-Fall erweist sich als eigener Gegenstand (die
   Mutation trifft mehr als einen Eintrag der Positiv-Liste, oder der Test hält sie nicht). Dann
   trennt ein Re-Schnitt den **geschriebenen Übergang samt Zeigern** vom **Zahn**; beide sind
@@ -278,7 +310,8 @@ nachdem sein §5 den Zug nur für `done/` schrieb und er zweimal gebraucht wurde
 
 **Betroffen ist die eingehende Menge**, denn sie nennt das Quellverzeichnis im Pfad:
 `grep -rn ']([^)]*open/slice-089-carveout-co-002-ueberfuehren\.md)' --include='*.md' docs` → heute
-**5** Zeilen in **2** Dateien, beide unter `docs/plan/planning/done/`. Das ist eine
+**6** Zeilen in **3** Dateien — zwei Zeitdokumente unter `docs/plan/planning/done/` und der
+Wellen-Plan. Das ist eine
 **Bestandsaufnahme, kein Erwartungswert** — jedes neue Dokument, das auf diesen Slice zeigt, hebt
 die Zahl
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
@@ -311,20 +344,46 @@ nicht mit *grün* erfüllt, sondern erst mit dem Abgleich am Text.
   Mitgliedschaft.** Deren Carveout-Audit liest den Zustand des Stubs. Schlösse die Welle, bevor
   dieser Slice gelandet ist, läse es *Aktiv* und schriebe die zwei Zellen als *deklariert* — falsch
   gegen eine angenommene ADR. Die Bedingung ist prüfbar und schmal: der Kopf des Stubs trägt den
-  Verdikt-Status, bevor die Ergebnis-Notiz der Welle die Zellen setzt. Sie gehört dem Planner jener
-  Closure, nicht diesem Slice.
+  Verdikt-Status, bevor die Ergebnis-Notiz der Welle die Zellen setzt. Sie steht als Bedingung in
+  deren Closure-Trigger und gehört dem Planner jener Closure, nicht diesem Slice.
 - **`test/mutations/` ist kein Gate.** Der neue Fall läuft in `make mutate`, nicht in `make gates`;
   er behauptet keinen neuen Wächter, sondern prüft die Zähne eines vorhandenen
   ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
   `make mutate` läuft pro Push in CI
   ([`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)).
+- **Zwei lebende Planungs-Artefakte führen die Schwelle nach dem Vollzug weiter als offen.** Die
+  [Roadmap](../in-progress/roadmap.md) — Source Precedence Rang 5 — schreibt für slice-071 *„die
+  Rechnung liegt hinter dem Auflösungs-Trigger von `CO-002`"*, und
+  [slice-071](slice-071-cache-zaehler-getrennt.md) nennt den Carveout auf **10** Zeilen
+  (`grep -c 'CO-002' docs/plan/planning/open/slice-071-cache-zaehler-getrennt.md`). **Wie viele
+  davon die Schwelle als offen führen, trennt kein Kommando** — das ist von Hand zu lesen. Beide
+  sind **Planner**-Arbeit am lebenden Plan und keine Zeile dieses Slice; der Wellen-Plan führt sie
+  als vor seinem Abschluss zu ziehen.
+- **Die Rückführung von slice-071 ist ausgelöst.** Sein §4 nennt für den Fall, dass `CO-002`
+  **negativ** entschieden wird, ausdrücklich eine **Architect-Frage**: ob das Spec-Stratum die
+  Cache-Festlegung ohne Rechnung trägt, oder ob die Zelle *Cache-Counter × Repo* auf *ADR-Verdikt*
+  wechselt. Die Bedingung ist mit der Annahme der ADR erfüllt, die Frage damit **fällig** — und sie
+  gehört dem **Architect**. Dieser Slice benennt sie und fasst slice-071 nicht an.
+- **Eine Folge in die andere Richtung:** slice-071 §6 zeigt auf die Verifikations-Liste des Stubs
+  als den Ort, an den eine fehlende Zeile gehört — DoD (1) streicht diese Liste. Es bricht dabei
+  **kein Link**: `grep -rn 'CO-002-token-achse-je-rolle\.md#' --include='*.md' .` → **leer
+  (Exit 1)**, kein Verweis zielt auf einen Abschnitt des Stubs. Der Prosa-Verweis zeigt danach
+  trotzdem ins Leere und gehört in denselben Architect-Lauf.
+- **Der Stub verliert mit `## Verifikation (nach Auflösung)` eine Sektion der vendored Ziel-Form.**
+  Die Streichung ordnet die ADR an und ist damit bindend; benannt gehört, was daraus folgt:
+  `.d-check.yml` führt kein Modul, das Carveout-Struktur prüft, und die Begründung für den
+  fehlenden Adaptions-Eintrag gilt der **Ablage**-Frage, nicht der Sektion. Ein späterer
+  Ziel-Form-Abgleich sieht damit eine Abweichung ohne Register-Eintrag. **Dieser Slice entscheidet
+  das nicht** — Träger wäre ein Architect-Lauf.
 - **Nicht in diesem Slice:** jede Änderung an
   [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) selbst (immutabel ab
   *Accepted*); die zwei Planner-Posten aus §3 (Matrix-Zellen und Audit-Regel — welle-09-Closure);
   der Eintrag im Adaptions-Block, den die Entscheidung ausdrücklich **nicht** anordnet (Architect —
-  nichts zu tun); die Erlaubnis-Frage zum Transkript als Quelle (Auftraggeber); und der
-  Geltungsbereich von [`AGENTS.md`](../../../../AGENTS.md) §3.7 für verbatim abgelegten
-  Skript-Text (Architect, eigener Lauf).
+  nichts zu tun); die Klärung, welche Rolle das Technik-Stratum schreibt (offen nach
+  [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1); die
+  Erlaubnis-Frage zum Transkript als Quelle (Auftraggeber); und der Geltungsbereich von
+  [`AGENTS.md`](../../../../AGENTS.md) §3.7 für verbatim abgelegten Skript-Text (Architect,
+  eigener Lauf).
 
 ## 7. Closure-Notiz (nach `done/`)
 
