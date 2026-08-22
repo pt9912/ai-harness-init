@@ -11,7 +11,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Regelwerk + Templates:** `v3.5.2` committet vendored
   (`.harness/baseline/v3.5.2/`, [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
   `regelwerk/README.md`: **Kurs-Welle 34 · 2026-07-24**.
-- **d-check:** Image v0.51.1 (Digest in d-check.mk, [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert), [`MR-011`](#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines), [`MR-012`](#mr-012--d-check-pin-v0511-sources-verfügbar))
+- **d-check:** Image v0.62.0 (Digest in d-check.mk, [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert), [`MR-011`](#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines), [`MR-012`](#mr-012--d-check-pin-v0511-sources-verfügbar), [`MR-024`](#mr-024--d-check-pin-v0620-structure-verfügbar))
 - **Datum der Adoption:** 2026-06-13 (Templates-Stand damals: `templates-v4`).
   **Re-Baseline auf `v3.1.0`:** 2026-07-17 (slice-011/012); **auf `v3.5.0`:** 2026-07-19 (slice-019);
   **auf `v3.5.1`:** 2026-07-24 (slice-043); **auf `v3.5.2`:** 2026-07-26 (slice-049,
@@ -1106,6 +1106,52 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   vollständiger Aufhebung bei der Re-Baseline ist auch dieser Eintrag gegenstandslos und wird
   nach [`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf) auf Kopf
   und Zeiger zurückgeführt.
+
+### MR-024 — d-check-Pin v0.62.0 (structure verfügbar)
+
+- **Datum:** 2026-08-22
+- **Geltungsbereich:** `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`, Kopfkommentar),
+  `internal/emit/emit.go` (emittierter Default-Pin), `Makefile` (das Tag-Beispiel im Kommentar
+  über `DCHECK_TAG`), §Baseline-Version; setzt [`MR-012`](#mr-012--d-check-pin-v0511-sources-verfügbar) fort.
+- **Adaption:** Das gepinnte d-check-Image springt **v0.51.1 → v0.62.0** — **elf** Minor-Releases
+  (v0.52.0 vom 2026-08-09 bis v0.62.0 vom 2026-08-21, die bislang größte Spanne dieser Linie).
+  Digest `sha256:3996a593b9cb71aa3bcb4f3ddf8f637e7409db31b3a2dac7eedc28d65814cacf`, **dreifach
+  belegt**: lokaler RepoDigest (`docker inspect`) · `docker buildx imagetools inspect` ·
+  Release-Body v0.62.0 ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Der **lebende** Pin steht in `d-check.mk`
+  und, daran gekoppelt, in `internal/emit/emit.go`; hier steht, wogegen er belegt ist.
+- **Zweck: `structure` wird verfügbar, nicht aktiviert.** Das opt-in-Modul `structure` — das 20.,
+  Struktur-Invarianten **innerhalb** eines Dokuments, mit dem advisory-Target `doc-structure` —
+  liegt mit diesem Pin im Repo, wie `sources` es mit
+  [`MR-012`](#mr-012--d-check-pin-v0511-sources-verfügbar) wurde. **Aktiviert ist es nicht**
+  (`grep -c structure .d-check.yml` → **0**); leer aktiviert wäre es ein Phantom-Gate
+  ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)), und ob dieses Repo eine Struktur-Prüfung will, ist eine Frage an
+  Prüfbereich und Strenge — ein eigener Schnitt mit eigenem False-Positive-Risiko. Ausgeliefert
+  ist das Modul samt Target seit **v0.57.0** (2026-08-15), gemessen am lokalen d-check-Klon
+  (`git ls-tree v0.57.0` führt die Regel-Datei des Moduls, `v0.56.0` nicht; der CHANGELOG-Eintrag
+  „das 20. Regelmodul" steht unter `[0.57.0]`); v0.62.0 ist der Stand, mit dem es **hier** ankommt.
+- **Trockenlauf vor dem Pin (Pflicht, belegt — [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile)-Muster).** v0.62.0 per Digest gegen den
+  unveränderten Baum mit unveränderter `.d-check.yml`, netzlos (`--network none`):
+  `d-check: 333 Datei(en) geprüft, 0 Befund(e)`, Exit 0 — **byte-gleich** mit dem v0.51.1-Lauf über
+  denselben Baum (333/0, Exit 0; der `diff` beider Ausgaben ist leer): **0-Befund-Differenz über
+  elf Minors**. Einzige inhaltliche `--print-mk`-Fragment-Differenz zu v0.51.1: das neue Target
+  `doc-structure` (elf → zwölf Targets) und je ein zusätzliches `--disable structure` in den
+  bestehenden fokussierten advisory-Recipes — verbatim vom Tool, wie damals `--disable sources`;
+  die vier Handgriffe der Re-Adaption stehen in [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert).
+- **Woran die Inertheit hängt — und woran nicht.** Nicht allein am opt-in-Charakter der
+  Neuzugänge: das **aktive** Modul `spans` hat in dieser Spanne eine dritte Befundklasse bekommen
+  (`fence-unclosed` — eine Fence-Öffnung ohne Schluss bis zum Dateiende, v0.53.0), und das
+  ebenfalls aktive `links` einen neuen opt-in-Schlüssel (`resolve-from` für wandernde Quellorte,
+  v0.60.0; hier **nicht** gesetzt, seine Adoption ist eine eigene Entscheidung). Dass beides über
+  diesem Baum nichts findet, sagt der Lauf, nicht die `modules:`-Liste — genau die Grenze, die
+  [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile) zieht.
+- **Emitter-Pin gekoppelt (Tier-1-Drift).** `internal/emit`s `DefaultImage`/`DefaultDigest` zieht
+  per go-test mit (`TestDefaultImage_MatchesCanonical`/`TestDefaultDigest_MatchesCanonical` lesen
+  `d-check.mk`); die emittierte Starter-Config bleibt `modules: [links, anchors]`
+  ([`MR-017`](#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)) — dort ist `structure` so wenig aktiviert wie `sources` oder `citations`.
+  Das Gate-Fragment des Ziels entsteht zur Bootstrap-Zeit live per `--print-mk` aus dem gepinnten
+  Image; `make full-smoke` ist der Lauf, der das emittierte Gate mit ihm fährt.
+- **Auflösungs-Trigger:** permanent; bei d-check-Release `d-check --print-mk` neu erzeugen + Digest
+  neu pinnen ([`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert) §Auflösungs-Trigger).
 
 ## Modus-Deklaration pro Sub-Area
 
