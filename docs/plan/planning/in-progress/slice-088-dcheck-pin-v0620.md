@@ -149,8 +149,8 @@ steht das hier, statt dass ein Kommando die Lücke verdeckt.
       ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
       Setzung 2) — sie wächst mit jedem angelegten Dokument und färbte den Punkt rot, ohne dass am
       Pin etwas gebrochen wäre: dieselbe Kette meldete am 2026-08-22 nacheinander **333**
-      (Trockenlauf in `d239099`), **335** (Verdikt-Runde) und **336** (`make docs-check` an dem
-      Stand, den diese Datei beschreibt, Exit 0). Der Lauf ist im Slice zu **wiederholen**, nicht zu
+      (Trockenlauf in `d239099`), **335** (Verdikt-Runde), **336** (Gate-Lauf der Verifikation über
+      `a89ece4`) und **337** (`make docs-check` an dem Stand, den diese Datei beschreibt, Exit 0). Der Lauf ist im Slice zu **wiederholen**, nicht zu
       übernehmen: eine Messung vom Vortag gilt für den Baum vom Vortag.
 - [x] `make gates` grün; dazu `make smoke`, `make full-smoke` und `make mutate` — der Emitter-Pin
       wandert ins **emittierte** Repo, und nur der Voll-Smoke fährt dessen Gate mit v0.62.0.
@@ -357,7 +357,7 @@ Die Linie
 [`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)/[`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)/[`MR-012`](../../../../harness/conventions.md#mr-012--d-check-pin-v0511-sources-verfügbar)
 ist fortgesetzt und nicht erweitert.
 
-**Drei beobachtbare Closure-Kriterien.**
+**Vier beobachtbare Closure-Kriterien.**
 
 1. **Der Pin steht, an jedem Ort einzeln gemessen.** Die drei Code-Orte:
    `grep -n 'v0\.51\.1\|fede3d02' d-check.mk Makefile internal/emit/emit.go` → **leer**, Exit 1.
@@ -394,15 +394,18 @@ ist fortgesetzt und nicht erweitert.
    führt, liegt vor:
    `grep -c 'Eine Zahl im Text steht neben dem Kommando, das sie liefert' harness/conventions.md`
    → **1** und `grep -c 'fällig beim nächsten d-check-Pin-Sprung' harness/conventions.md` → **1**.
+4. **Die Verifikation (Modul 11) bestätigt die DoD mit selbst gefahrenen Sensoren.**
+   [Report](../../../reviews/2026-08-22-slice-088-verify.md) (`4663bc9`): **DoD (1)–(5) bestätigt,
+   DoD (6) bestätigt mit einem nicht blockierenden Befund am Beleg des Steering-Loop-Eintrags.** Der
+   Verifier hat `make gates`, `make mutate`, `make smoke`, `make full-smoke` und
+   `make freshness-dcheck` selbst gefahren, zwölf Mess-Aussagen dieser Notiz einzeln nachgezählt und
+   vier Rot-/Grün-Sonden in einer isolierten Kopie außerhalb des Repos gegen die Abdeckungsgrenzen
+   gesetzt, die DoD (1) für sich selbst zieht.
 
-**Was zum Closure-Trigger noch aussteht.** §5 verlangt zusätzlich *„Verifikation (Modul 11)
-bestätigt die DoD"*. Die Sensoren sind gefahren und grün; ihre **Bestätigung durch eine zweite
-Rolle** ist der letzte Schritt und steht unten mit Träger. Aus demselben Grund stehen die Läufe im
-Abschnitt *Gates* mit ihrem Kommando und ihrem Fundort da, statt zitiert zu werden.
-
-**Wo der Liefergegenstand in der Historie liegt.** `git log --oneline --grep='slice-088' | wc -l`
-zählt am Stand `04067d7` **15** Commits — eine Zahl, die mit den Closure-Commits weiter steigt und
-darum kein Erwartungswert ist. Der Schnitt liegt in `251e9ca`; das Werkstück in `d239099`
+**Wo der Liefergegenstand in der Historie liegt.**
+`git log --oneline --grep='slice-088' 04067d7 | wc -l` zählt **15** Commits — der Stand gehört ins
+Kommando, denn ohne ihn wandert die Zahl mit jedem Closure-Commit weiter und ist kein
+Erwartungswert. Der Schnitt liegt in `251e9ca`; das Werkstück in `d239099`
 (`d-check.mk` aus `--print-mk` v0.62.0 samt den vier
 [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)-Handgriffen,
 der Emitter-Pin in [`internal/emit/emit.go`](../../../../internal/emit/emit.go), das Tag-Beispiel im
@@ -458,11 +461,26 @@ advisory-Recipes disablen `structure`"* stand an **vier** Fundorten: im Kopfkomm
 dieses Plans und in seiner DoD (2). Sie fiel **zweimal in Folge an verschiedenen Orten**: R1-HIGH-1
 traf den Kopfkommentar (gezogen in `5e96bd4`), R2-MEDIUM-1 denselben Satz in §3 (gezogen in
 `cc7d3bf`, zusammen mit DoD (2)). Erst die dritte Runde konnte die Fundort-Suche leer melden —
-`grep -n 'jedem fokussierten' d-check.mk Makefile harness/conventions.md <Slice-Plan>` → **Exit 1**,
-heute erneut gefahren, und `grep -c -- '--enable' d-check.mk` → **6** gegen
-`grep -- '--enable' d-check.mk | grep -c -- '--disable structure'` → **5** an allen vier Orten
-deckungsgleich. **Nicht die Reparatur war langsam, sondern ihre Reichweite:**
-`git log -1 --format='%ad' --date=format:'%H:%M'` liest für den Befund `c89612f` und für seine
+über die drei Artefakte, die die falsche Fassung tragen konnten:
+`grep -n 'jedem fokussierten' d-check.mk Makefile harness/conventions.md` → **leer, Exit 1**,
+heute erneut gefahren. **Diesen Plan nimmt die Suche nicht mit, und das ist ihre Bedingung, kein
+Auslassen:** er zitiert die getilgte Formulierung in der Kommandozeile darüber, und mit ihm als
+vierter Datei liefert dasselbe Kommando **Exit 0 mit genau einem Treffer — der Zeile, auf der es
+selbst steht** (ebenfalls gefahren). Eine Suche nach einer getilgten Formulierung wird in dem
+Dokument, das die Formulierung zitiert, per Konstruktion fündig; wer den Zitat-Fall nicht am
+Fundort benennt, legt einen Treffer vor, der das Gegenteil dessen belegt, was er zeigen soll —
+derselbe Griff wie in
+[der Messung zu slice-086](../../../reviews/2026-08-21-updatedinput-messung.md) §4.
+Deckungsgleich sind die vier Fundorte in **Quantor und Zahl, nicht in viermal derselben Zahl**: die
+Zahlen tragen zwei davon — der Kopfkommentar von [`d-check.mk`](../../../../d-check.mk)
+(*„von den sechs … disablen FUENF"*) und §3 dieses Plans (*„fünf der sechs"*), beide gegen
+`grep -c -- '--enable' d-check.mk` → **6** und
+`grep -- '--enable' d-check.mk | grep -c -- '--disable structure'` → **5** gemessen —, während
+DoD (2) für die Zählung auf §3 verweist und
+[`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar) den
+Quantor ohne Zahl führt (*„in den bestehenden fokussierten advisory-Recipes"*).
+**Nicht die Reparatur war langsam, sondern ihre Reichweite:**
+`git log -1 --format='%ad' --date=format:'%H:%M' <sha>` liest für den Befund `c89612f` und für seine
 Korrektur `5e96bd4` **dieselbe** Minute (11:20) — und bis zum freien Verdikt `3fa27b2` (12:03)
 brauchte es trotzdem zwei weitere Runden, weil die falsche Fassung nach dem Fix am gemeldeten Ort
 in §3 wörtlich stehenblieb: `git show cc7d3bf` zieht sie dort und schärft DoD (2) im selben Zug
@@ -521,34 +539,37 @@ diesen Griff bliebe der Eintrag ein Satz in einer Datei, die niemand wieder lies
 
 | Posten | Träger |
 |---|---|
-| Die Bestätigung der DoD durch Modul 11 — die nicht gate-getragenen Kommandos der DoD (1) und (2) laufen in keiner Kette: die Rest-Suche `grep -n 'v0\.51\.1\|fede3d02' …`, `make freshness-dcheck` (netzgebunden) und `grep -n 'Image v0\.62\.0' harness/conventions.md` | **Verifier** (Modul 11), mit eigenem Prüf-Artefakt und eigenem Eingabe-Kontext; die Verdikt-Runde hat sie ausdrücklich nicht vorgenommen |
+| Die Bestätigung der DoD durch Modul 11 und die nicht gate-getragenen Kommandos der DoD (1)/(2) — die Rest-Suche `grep -n 'v0\.51\.1\|fede3d02' …`, `make freshness-dcheck` (netzgebunden) und `grep -n 'Image v0\.62\.0' harness/conventions.md` | **erledigt** mit `4663bc9`: der Verifier hat sie mit eigenem Prüf-Artefakt selbst gefahren; für die Buchführung festgehalten, nicht als offener Posten |
+| Die `--print-mk`-Fixture [`internal/emit/testdata/raw-print-mk.txt`](../../../../internal/emit/testdata/raw-print-mk.txt) trägt die v0.46.0-Form: `grep -cE '^docs?-[a-z-]+:' internal/emit/testdata/raw-print-mk.txt` → **11** Targets gegen `grep -cE '^docs?-[a-z-]+:' d-check.mk` → **12** im heutigen Fragment, `grep -c 'doc-structure\|disable structure' internal/emit/testdata/raw-print-mk.txt` → **0** (Exit 1) | **Planner**, eigener Schnitt: ob eine sechzehn Minors alte Fixture die Adaptions-Logik noch repräsentiert. Kein Pin-Ort und kein DoD-Bruch — sie ist Parser-Eingang von `TestAdaptMK_Fixture`, und das Ziel-Fragment entsteht zur Bootstrap-Zeit aus dem gepinnten Image |
 | Die Entscheidung aus [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) §Auflösungs-Trigger: eigener hermetischer Prüfer · Adoption eines d-check-Moduls für die Form · bewusste Permanenz | **Auftraggeber** / Planner (Schnitt-Entscheidung). Davor gehört ein **Probelauf**: heute liegt nur der Modul-Vertrag vor, kein Ergebnis an diesem Repo. Fällig beim nächsten d-check-Pin-Sprung, früher, sobald `grep -c 'structure' .d-check.yml` über **0** steigt |
 | R1-INFO-1 — für die `modules:`-Liste der Dogfood-[`.d-check.yml`](../../../../.d-check.yml) gibt es keinen Sensor; ein unkonfiguriertes Modul ist am Gate-Ausgang von echtem Grün nicht zu unterscheiden | **Planner**, eigener Schnitt. Der Prüfbereich ist zu entscheiden, bevor ein Wächter entsteht — sonst friert er eine Liste ein, die noch wandert |
 | R1-LOW-3 — `.mk`-Dateien liegen außerhalb des `ids`-Prüfbereichs; die baren `MR-`-Kennungen in [`d-check.mk`](../../../../d-check.mk) erzeugen nie einen Befund | **Architect**, benannt für einen künftigen Schnitt; keine Aktion in diesem Slice |
 | Die Version im MR-Titel wird gelesen, nicht gemessen — für die **Wert**-Hälfte steht kein Kommando | keiner, und das ist entschieden: [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) sagt für Weg (b) ausdrücklich, dass der Wert ungedeckt bleibt. Ein Träger entstünde nur mit Weg (a) |
 | R2-INFO-1 — [`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar) stützte seine Lockerungs-Hälfte auf eine CHANGELOG-Aufzählung, die upstream selbst als offen ausweist | **erledigt** mit `04067d7`: `grep -c 'Welches der zwei Beine die Bilanz trägt' harness/conventions.md` → **1**. Für die Buchführung festgehalten, nicht als offener Posten |
 
-**Gates.** Der Gate-Lauf zu diesem Stand ist über seinen Stempel an den Baum gebunden, nicht über
-eine Erinnerung: `bash harness/tools/working-tree-hash.sh` und `.harness/state/gates-passed.diffsha`
-waren über dem Baum von `04067d7` byte-gleich (`09132937…`), und `record-gates` schreibt den Stempel
-nur als **letzter** Prerequisite grüner Gates
-([`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)).
-Dieser Lauf meldete `make gates` **Exit 0** — `baseline-verify: v3.5.2 OK — 42 Dateien`,
-`d-check: 336 Datei(en) geprüft, 0 Befund(e)`, `1..143` bats ohne `not ok`,
-`comment-claims: 40 Datei(en) geprueft, 0 Befund(e)`, `span-check` ok —, dazu `make smoke`
-**Exit 0** (emittiertes `docs-check`: 12 Dateien, 0 Befunde), `make full-smoke` **Exit 0**, wobei das
-**emittierte** Gate nachweislich gegen `d-check@sha256:3996a593…` lief, und `make mutate`
-**Exit 0** mit `143 ok, 0 Befund(e)`. Diese vier Läufe sind in dieser Notiz **nicht wiederholt**;
-sie gehören dem Stand, den der Stempel bindet, und ihre Bestätigung ist Modul-11-Territorium.
+**Gates.** Der [Verifikations-Lauf](../../../reviews/2026-08-22-slice-088-verify.md) auf `a89ece4`
+hat sie selbst gefahren, Exit-Codes getrennt erhoben: `make gates` **Exit 0** —
+`baseline-verify: v3.5.2 OK — 42 Dateien`, `d-check: 336 Datei(en) geprüft, 0 Befund(e)`,
+`1..143` bats (`grep -c '^ok '` → 143, `grep -c '^not ok'` → 0),
+`comment-claims: 40 Datei(en) geprueft, 0 Befund(e)`, `span-check` ok —, dazu `make mutate`
+**Exit 0** mit `143 ok, 0 Befund(e)`, `make smoke` **Exit 0** (emittiertes `docs-check`:
+12 Dateien, 0 Befunde) und `make full-smoke` **Exit 0**, wobei das **emittierte** Gate nachweislich
+gegen `d-check@sha256:3996a593…` lief (`grep -c '3996a593' <log>` → **7** Recipe-Zeilen des
+emittierten `docs-check`). Der Stempel band den Lauf an den Baum, nicht an eine Erinnerung:
+`bash harness/tools/working-tree-hash.sh` und `.harness/state/gates-passed.diffsha` waren
+byte-gleich (`4d85066…`), und `record-gates` schreibt ihn nur als **letzter** Prerequisite grüner
+Gates ([`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)).
+Diese vier Läufe sind in dieser Notiz **nicht wiederholt**; sie gehören dem Stand, den der Stempel
+bindet.
 
 Selbst gefahren und über den Baum, von dem sie sprechen: `make docs-check` →
-`d-check: 336 Datei(en) geprüft, 0 Befund(e)`, Exit 0 (getrennt erhoben; das Rezept zeigt den
+`d-check: 337 Datei(en) geprüft, 0 Befund(e)`, Exit 0 (getrennt erhoben; das Rezept zeigt den
 Digest `sha256:3996a593…` in seiner Kommandozeile) und `make freshness-dcheck` →
 *„d-check: aktuell — gepinnt und latest sind beide v0.62.0."*, Exit 0 — der Sensor, der den Slice
 geöffnet hat, schließt ihn. Die Dateizahl ist dabei **kein** Erwartungswert
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2): dieselbe Kette meldete am 2026-08-22 nacheinander 333, 335 und 336, ohne dass am Pin
-etwas gebrochen wäre. Diese Notiz macht den Stempel ungültig; der volle `make gates`-Lauf gehört zum
+Setzung 2): dieselbe Kette meldete am 2026-08-22 nacheinander 333, 335, 336 und 337, ohne dass am
+Pin etwas gebrochen wäre. Diese Notiz macht den Stempel ungültig; der volle `make gates`-Lauf gehört zum
 Commit, der sie trägt, nicht zu ihr.
 
 ## 8. Sub-Area-Modus-Begründung
