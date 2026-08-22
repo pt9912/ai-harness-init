@@ -39,8 +39,9 @@ Sprung ist die Fortsetzung der
 [`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)/[`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)/[`MR-012`](../../../../harness/conventions.md#mr-012--d-check-pin-v0511-sources-verfügbar)-Linie
 und nichts darüber hinaus.
 
-**Was der Slice ausdrücklich NICHT tut: das neue Modul `structure` aktivieren.** v0.62.0 bringt es
-als 20. Modul samt eigenem advisory-Target mit; es wird **verfügbar**, wie `sources` es mit
+**Was der Slice ausdrücklich NICHT tut: das Modul `structure` aktivieren.** Ausgeliefert ist es
+seit **v0.57.0** — das 20. Regelmodul samt zwölftem `--print-mk`-Target `doc-structure`; mit
+v0.62.0 kommt es **hier** an. Es wird damit **verfügbar**, wie `sources` es mit
 [`MR-012`](../../../../harness/conventions.md#mr-012--d-check-pin-v0511-sources-verfügbar) wurde.
 Ob dieses Repo eine Struktur-Prüfung will, ist eine Frage an den Prüfbereich und an die Strenge —
 sie gehört in einen eigenen Schnitt mit eigenem False-Positive-Risiko, nicht in einen Pin
@@ -48,8 +49,10 @@ sie gehört in einen eigenen Schnitt mit eigenem False-Positive-Risiko, nicht in
 
 ## 2. Definition of Done
 
-Jeder Punkt nennt das Kommando, das ihn rot färbt — eine Zusage reicht nur so weit wie ihr Sensor
-([slice-086](../done/slice-086-vordergrund-per-updatedinput.md) §7).
+Jeder Punkt nennt das Kommando, das ihn rot färbt, **und welchen Teil der Zusage dieses Kommando
+deckt** — eine Zusage reicht nur so weit wie ihr Sensor
+([slice-086](../done/slice-086-vordergrund-per-updatedinput.md) §7). Wo kein Gate-Lauf rot wird,
+steht das hier, statt dass ein Kommando die Lücke verdeckt.
 
 - [ ] **(1) Der Pin steht auf v0.62.0 an allen fünf Orten, die ihn führen — gleichzeitig.**
       [`d-check.mk`](../../../../d-check.mk) (`DCHECK_IMAGE`, `DCHECK_DIGEST`, Kopfkommentar),
@@ -61,14 +64,34 @@ Jeder Punkt nennt das Kommando, das ihn rot färbt — eine Zusage reicht nur so
       `sha256:3996a593b9cb71aa3bcb4f3ddf8f637e7409db31b3a2dac7eedc28d65814cacf`
       ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
 
-      **Rot färbt ihn zweierlei:** `make test` über
-      [`internal/emit/emit_test.go`](../../../../internal/emit/emit_test.go)
-      (`TestDefaultImage_MatchesCanonical`/`TestDefaultDigest_MatchesCanonical` lesen
-      [`d-check.mk`](../../../../d-check.mk) und fallen, wenn der Emitter-Pin nachhinkt) und die
-      Rest-Suche `grep -rn 'v0\.51\.1\|fede3d02' --exclude-dir=.git --exclude-dir=docs
-      --exclude-dir=.harness .` → **leer**. Der Ausschluss von `docs/` ist kein Beiwerk: dieser
-      Plan führt die alte Version selbst, und eine Suche, die ihn mitliest, wird per Konstruktion
-      fündig.
+      **Fünf Orte, fünf Kommandos — keines deckt alle, und nur zwei laufen in `make gates`:**
+
+      - `grep -n 'v0\.51\.1\|fede3d02' d-check.mk Makefile internal/emit/emit.go` → **leer**
+        (Exit 1) deckt die drei Code-Orte: jeder stehengebliebene Tag und jeder stehengebliebene
+        Digest ist ein Treffer. Die Suche ist auf genau diese drei Dateien beschränkt, weil eine
+        Suche über den Baum **korrekterweise** nie leer wird — die alte Version steht als
+        Fixture-String in
+        [`test/component-freshness.bats`](../../../../test/component-freshness.bats), als
+        eingefrorener Zeitbezug im Vorgänger-Eintrag und als Ausgangspunkt im neuen Eintrag der
+        [`harness/conventions.md`](../../../../harness/conventions.md); der Sprung **heißt**
+        v0.51.1 → v0.62.0. Wer diese drei Klassen mitliest, misst nicht den Pin. Handlauf: kein
+        Gate fährt ihn.
+      - `make test` über [`internal/emit/emit_test.go`](../../../../internal/emit/emit_test.go)
+        deckt **einen** Ort, als einziger davon gate-getragen:
+        `TestDefaultImage_MatchesCanonical`/`TestDefaultDigest_MatchesCanonical` lesen
+        `DCHECK_IMAGE`/`DCHECK_DIGEST` aus [`d-check.mk`](../../../../d-check.mk) und fallen, wenn
+        der Emitter-Pin nachhinkt. Was sie **nicht** sehen: zwei gleich alte Werte.
+      - `make freshness-dcheck` deckt genau diese Blindstelle — es vergleicht den Tag aus
+        [`d-check.mk`](../../../../d-check.mk) gegen den neuesten Release und meldet *VERALTET*,
+        solange dort v0.51.1 steht. Netzgebunden und nicht in `make gates`; es ist der Sensor, der
+        diesen Slice ausgelöst hat, und derselbe Lauf schließt ihn ab.
+      - `grep -n 'Image v0\.62\.0' harness/conventions.md` → **eine** Zeile deckt die
+        §Baseline-Zeile. Handlauf.
+      - `make docs-check` deckt den neuen MR-Eintrag — **sofern** die §Baseline-Zeile ihn als
+        Anker-Link nennt: das `anchors`-Modul meldet `anchor-missing`, wenn die verlinkte
+        Überschrift fehlt (hermetisch in beide Richtungen gemessen — ohne Eintrag ein Befund bei
+        Exit 1, mit Eintrag null Befunde bei Exit 0). Diese Kopplung ist der Grund, den Eintrag
+        von der §Baseline-Zeile aus zu **verlinken** statt ihn nur anzulegen.
 
       **Der [`harness/conventions.md`](../../../../harness/conventions.md)-Anteil gehört dem
       Architect** ([`AGENTS.md`](../../../../AGENTS.md) §3.8): §Baseline-Zeile und MR-Eintrag
@@ -82,18 +105,36 @@ Jeder Punkt nennt das Kommando, das ihn rot färbt — eine Zusage reicht nur so
       **verbatim vom Tool** — auch das neue Target `doc-structure` und das neue
       `--disable structure` in den fokussierten advisory-Recipes.
 
-      **Rot färbt ihn:** `grep -c 'structure' .d-check.yml` → **0** (das Modul steht in keiner
-      `modules:`-Liste) und `grep -n 'docs-check' d-check.mk` → nicht leer;
-      [`AGENTS.md`](../../../../AGENTS.md) §4 und [`harness/README.md`](../../../../harness/README.md)
-      §Sensors bekommen **keinen** neuen Gate-Namen
-      ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+      **Gebrochen ist die Zusage, sobald eines von dreien eintritt:** `structure` steht in der
+      `modules:`-Liste von [`.d-check.yml`](../../../../.d-check.yml)
+      (`grep -c 'structure' .d-check.yml` zählt **0** — jede Zahl darüber ist der Bruch);
+      `doc-structure` taucht in [`AGENTS.md`](../../../../AGENTS.md) §4 oder
+      [`harness/README.md`](../../../../harness/README.md) §Sensors auf (heute in beiden kein
+      Treffer — ein dort behaupteter Gate-Name ist genau die Halluzination, die
+      [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
+      ausschließt); oder `docs-check` verschwindet aus [`d-check.mk`](../../../../d-check.mk)
+      (`grep -n 'docs-check' d-check.mk` → vier Zeilen), womit die Re-Adaption zurückgefallen wäre.
+
+      **Für die Modul-Liste dieses Repos gibt es keinen Sensor.** `grep -rn 'd-check.yml' test/`
+      liefert zwei Treffer, und keiner trägt sie:
+      [`test/sources-pin.bats`](../../../../test/sources-pin.bats) koppelt den `sources`-Pin an
+      `BASELINE_ZIP_SHA256`, [`test/mutations/04-inscope-filterregel.sh`](../../../../test/mutations/04-inscope-filterregel.sh)
+      nennt die Datei als Beispiel für die **emittierte** Seite. Die einzigen
+      Modul-Listen-Assertionen im Repo
+      ([`internal/emit/emit_test.go`](../../../../internal/emit/emit_test.go),
+      [`internal/emit/templates_test.go`](../../../../internal/emit/templates_test.go)) halten die
+      emittierte Starter-Config fest, nicht die eigene. Der Punkt ist damit ein Handlauf — die
+      Lücke ist benannt, der Träger gehört in einen eigenen Schnitt (§6).
 - [ ] **(3) Der Pflicht-Trockenlauf ist gefahren und seine Befund-Differenz steht im Closure-Beleg**
       ([`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)-Muster,
       netzlos, `--network none`): v0.62.0 gegen den **unveränderten** Baum mit unveränderter
-      [`.d-check.yml`](../../../../.d-check.yml), Exit-Code getrennt erhoben. Erwartet und am
-      2026-08-22 vorab gemessen: `d-check: 330 Datei(en) geprüft, 0 Befund(e)`, Exit 0 — **0-Befund-
-      Differenz** zum v0.51.1-Stand. Der Lauf ist im Slice zu **wiederholen**, nicht zu übernehmen:
-      eine Messung vom Vortag gilt für den Baum vom Vortag.
+      [`.d-check.yml`](../../../../.d-check.yml), Exit-Code getrennt erhoben. Erwartet ist eine
+      **Differenz, keine Zahl**: beide Versionen liefern über demselben Baum `0 Befund(e)` bei
+      Exit 0, und der `diff` der beiden Ausgaben ist leer. Die mitlaufende Dateizahl ist
+      ausdrücklich **kein** Erwartungswert — sie wächst mit jedem angelegten Dokument (am
+      2026-08-22 innerhalb eines Tages von 330 auf 334) und färbte den Punkt rot, ohne dass am Pin
+      etwas gebrochen wäre. Der Lauf ist im Slice zu **wiederholen**, nicht zu übernehmen: eine
+      Messung vom Vortag gilt für den Baum vom Vortag.
 - [ ] `make gates` grün; dazu `make smoke`, `make full-smoke` und `make mutate` — der Emitter-Pin
       wandert ins **emittierte** Repo, und nur der Voll-Smoke fährt dessen Gate mit v0.62.0.
 - [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
@@ -109,7 +150,7 @@ Die Vorab-Messung ist read-only gefahren und steht hier, damit der Schnitt entsc
 `docs-check` gegen das erzeugte `doc-check` samt dem erweiterten `doc-help`-Grep, (c) ein **neues
 Modul** `structure` — ein neues Target `doc-structure` und ein zusätzliches `--disable structure`
 in jedem fokussierten advisory-Recipe. Der Trockenlauf über den unveränderten Baum liefert
-`330 Datei(en) geprüft, 0 Befund(e)`, Exit 0.
+`0 Befund(e)`, Exit 0.
 
 **Der Slice wiederholt beides.** Ein Ergebnis von gestern belegt den Baum von gestern; die
 explizite `modules:`-Liste in [`.d-check.yml`](../../../../.d-check.yml) immunisiert gegen neue
@@ -208,6 +249,15 @@ Eintritts-Move nötig und im Plan nicht vorgesehen.
   entschiedenen Prüfbereich ist entweder ein Phantom-Gate oder eine Befundflut; beides ist eine
   Änderung an der Gate-Strenge und gehört nach
   [`AGENTS.md`](../../../../AGENTS.md) §3.5 in eine eigene Entscheidung.
+- **„`structure` ist nicht aktiviert" hat im Repo keinen Träger — offener Punkt.** Die Aussage ruht
+  auf einer Zeile in [`.d-check.yml`](../../../../.d-check.yml), die kein Test liest. Wer das Modul
+  versuchsweise aktiviert und die Änderung stehen lässt, wird von keinem Gate gestellt: `structure`
+  ist heute unkonfiguriert, und über unkonfiguriertem Prüfbereich meldet es Grün — `make
+  doc-structure` fährt es und liefert `0 Befund(e)`, Exit 0, ohne eine Regel angewandt zu haben.
+  Am Gate-Ausgang ist dieser Fall nicht von echtem Grün zu unterscheiden, und genau das schließt
+  [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) aus.
+  Dieser Slice benennt die Lücke und schließt sie nicht; ein Träger für die Modul-Liste ist ein
+  eigener Schnitt.
 - **Der Emitter-Pin ist ein öffentlicher Vertrag.** Er landet in fremden Repos. `make smoke` allein
   belegt ihn nicht — es prüft die Emission, nicht den Lauf des emittierten Gates; das tut
   `make full-smoke`. Wer nur den ersten fährt, hat den Pin behauptet, nicht belegt.
