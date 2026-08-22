@@ -8,10 +8,10 @@ import "strings"
 // die andere vergisst. Ueberschreibbar beim Bootstrap (SKEL_GO_VERSION, cmd) — der
 // Generator selbst bleibt deterministisch: gleiche version -> byte-identische
 // Ausgabe.
-const DefaultGoVersion = "1.26.5"
+const DefaultGoVersion = "1.27.0"
 
 // golangciVersion ist der gepinnte golangci-lint-Tag des generierten Skeletts.
-const golangciVersion = "v2.12.2"
+const golangciVersion = "v2.13.1"
 
 // goProfile ist das Go-SKELETT fuer die gegebene Go-Version (ADR-0003 Docker-only):
 // Go-Gates als Dockerfile-Stages; dazu go.mod + .golangci.yml und ein baubares

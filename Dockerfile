@@ -4,14 +4,14 @@
 # digest-gepinnt (LH-QA-02, Reproduzierbarkeit). Hier (slice-001a): deps + test
 # (go test, slice-001a) und compile / lint / build (slice-001b).
 #
-# GO_VERSION + GOLANGCI_LINT_VERSION spiegeln das Schwester-Repo a-check (1.26.4 /
-# v2.12.2); die Base-Digests sind dieselben wie dort. Kein Host-go/-golangci-lint
-# (Docker-only, ADR-0003) — die Aufrufe leben hier im Dockerfile, nicht im Bash.
-ARG GO_VERSION=1.26.5
-ARG GOLANGCI_LINT_VERSION=v2.12.2
+# GO_VERSION + GOLANGCI_LINT_VERSION sind die Toolchain-Pins dieses Repos; jeder Base-Tag ist
+# per @sha256 auf seinen Manifest-Digest gepinnt (Drift melden make freshness-go/-golangci).
+# Kein Host-go/-golangci-lint (Docker-only, ADR-0003) — die Aufrufe leben hier im Dockerfile, nicht im Bash.
+ARG GO_VERSION=1.27.0
+ARG GOLANGCI_LINT_VERSION=v2.13.1
 
 # ---- deps ------------------------------------------------------------------
-FROM golang:${GO_VERSION}@sha256:3aff6657219a4d9c14e27fb1d8976c49c29fddb70ba835014f477e1c70636647 AS deps
+FROM golang:${GO_VERSION}@sha256:65b6f280bf050ec5af12716857e8ea8439d694dbba8f31ceeb7630670071f2bb AS deps
 WORKDIR /src
 ENV GOFLAGS="-mod=readonly -buildvcs=false" \
     GOMODCACHE=/go/pkg/mod \
@@ -54,7 +54,7 @@ COPY . .
 RUN CGO_ENABLED=0 go build -o /tmp/ai-harness-init ./cmd/ai-harness-init
 
 # ---- lint ------------------------------------------------------------------
-FROM golangci/golangci-lint:${GOLANGCI_LINT_VERSION}@sha256:5cceeef04e53efe1470638d4b4b4f5ceefd574955ab3941b2d9a68a8c9ad5240 AS lint
+FROM golangci/golangci-lint:${GOLANGCI_LINT_VERSION}@sha256:d371321370bf2907bd13a8f6f8baff0e0ca7438d76fdf636b281eadf7e2305e3 AS lint
 WORKDIR /src
 ENV GOFLAGS="-buildvcs=false"
 COPY --from=deps /go/pkg/mod /go/pkg/mod

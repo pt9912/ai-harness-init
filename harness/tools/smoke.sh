@@ -24,7 +24,7 @@
 # Go-Gates in EINEM Lauf) — das ist slice-024 (LH-FA-01 Happy-Path).
 set -euo pipefail
 
-GO_VERSION="${GO_VERSION:-1.26.4}"
+GO_VERSION="${GO_VERSION:-1.27.0}"
 tmpbin="$(mktemp -d)"
 tmprepo="$(mktemp -d)"
 cleanup() { rm -rf "$tmpbin" "$tmprepo"; }

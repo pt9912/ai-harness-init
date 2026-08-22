@@ -12,8 +12,8 @@ ACTIONLINT_IMAGE ?= rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520
 # Go-Toolchain-Version (Dockerfile-Stages, a-check gespiegelt); der Base-Digest
 # steht digest-gepinnt im Dockerfile (LH-QA-02). Go-Gates leben im Makefile
 # (NICHT d-check.mk) und treiben Dockerfile-Stages via `docker build --target`.
-GO_VERSION ?= 1.26.5
-GOLANGCI_LINT_VERSION ?= v2.12.2
+GO_VERSION ?= 1.27.0
+GOLANGCI_LINT_VERSION ?= v2.13.1
 
 # Vendored Baseline (MR-007): Regelwerk UND Templates liegen committet unter
 # .harness/baseline/$(BASELINE_TAG)/{regelwerk,templates}/ + SHA256SUMS —

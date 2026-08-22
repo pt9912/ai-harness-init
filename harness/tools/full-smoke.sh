@@ -18,7 +18,7 @@
 # gehoert an DoD-Verify/CI/Wellen-Closure. Logik in harness/tools/ (shell-lint deckt sie).
 set -euo pipefail
 
-GO_VERSION="${GO_VERSION:-1.26.4}"
+GO_VERSION="${GO_VERSION:-1.27.0}"
 tmpbin="$(mktemp -d)"
 tmprepo="$(mktemp -d)"
 tmprepo_doc="$(mktemp -d)"
