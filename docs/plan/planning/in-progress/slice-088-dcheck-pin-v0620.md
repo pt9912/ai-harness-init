@@ -54,7 +54,7 @@ deckt** — eine Zusage reicht nur so weit wie ihr Sensor
 ([slice-086](../done/slice-086-vordergrund-per-updatedinput.md) §7). Wo kein Gate-Lauf rot wird,
 steht das hier, statt dass ein Kommando die Lücke verdeckt.
 
-- [ ] **(1) Der Pin steht auf v0.62.0 an allen fünf Orten, die ihn führen — gleichzeitig.**
+- [x] **(1) Der Pin steht auf v0.62.0 an allen fünf Orten, die ihn führen — gleichzeitig.**
       [`d-check.mk`](../../../../d-check.mk) (`DCHECK_IMAGE`, `DCHECK_DIGEST`, Kopfkommentar),
       [`Makefile`](../../../../Makefile) (das Tag-Beispiel im Kommentar über `DCHECK_TAG`),
       [`internal/emit/emit.go`](../../../../internal/emit/emit.go) (`DefaultImage`/`DefaultDigest`)
@@ -64,7 +64,10 @@ steht das hier, statt dass ein Kommando die Lücke verdeckt.
       `sha256:3996a593b9cb71aa3bcb4f3ddf8f637e7409db31b3a2dac7eedc28d65814cacf`
       ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
 
-      **Fünf Orte, fünf Kommandos — keines deckt alle, und nur zwei laufen in `make gates`:**
+      **Fünf Orte, fünf Kommandos — keines deckt alle, und nur zwei laufen in `make gates`.** Die
+      zwei sind an der Kette selbst gezählt, nicht aus der Liste abgeleitet:
+      `grep '^gates:' Makefile | tr ' ' '\n' | grep -c -x -e docs-check -e test` → **2**; die
+      übrigen drei Kommandos stehen in keiner Gate-Kette und sind unten als Handläufe markiert.
 
       - `grep -n 'v0\.51\.1\|fede3d02' d-check.mk Makefile internal/emit/emit.go` → **leer**
         (Exit 1) deckt die drei Code-Orte: jeder stehengebliebene Tag und jeder stehengebliebene
@@ -77,7 +80,8 @@ steht das hier, statt dass ein Kommando die Lücke verdeckt.
         v0.51.1 → v0.62.0. Wer diese drei Klassen mitliest, misst nicht den Pin. Handlauf: kein
         Gate fährt ihn.
       - `make test` über [`internal/emit/emit_test.go`](../../../../internal/emit/emit_test.go)
-        deckt **einen** Ort, als einziger davon gate-getragen:
+        deckt **einen** Ort, als eines der zwei gate-getragenen Kommandos dieser Liste (das
+        andere ist `make docs-check`, fünfter Spiegelstrich):
         `TestDefaultImage_MatchesCanonical`/`TestDefaultDigest_MatchesCanonical` lesen
         `DCHECK_IMAGE`/`DCHECK_DIGEST` aus [`d-check.mk`](../../../../d-check.mk) und fallen, wenn
         der Emitter-Pin nachhinkt. Was sie **nicht** sehen: zwei gleich alte Werte.
@@ -105,7 +109,7 @@ steht das hier, statt dass ein Kommando die Lücke verdeckt.
       Architect** ([`AGENTS.md`](../../../../AGENTS.md) §3.8): §Baseline-Zeile und MR-Eintrag
       landen in einem **eigenen** Commit, der nur Artefakte dieser Rolle berührt und die Rolle in
       seiner Message nennt.
-- [ ] **(2) `d-check.mk` ist frisch aus `--print-mk` (v0.62.0) erzeugt und re-adaptiert; das neue
+- [x] **(2) `d-check.mk` ist frisch aus `--print-mk` (v0.62.0) erzeugt und re-adaptiert; das neue
       Modul `structure` ist verfügbar, aber NICHT aktiviert.** Die
       [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)-Handgriffe
       sind vollzogen (`doc-check` → `docs-check` als Target **und** im Hilfetext, `doc-help`-Grep
@@ -135,20 +139,23 @@ steht das hier, statt dass ein Kommando die Lücke verdeckt.
       [`internal/emit/templates_test.go`](../../../../internal/emit/templates_test.go)) halten die
       emittierte Starter-Config fest, nicht die eigene. Der Punkt ist damit ein Handlauf — die
       Lücke ist benannt, der Träger gehört in einen eigenen Schnitt (§6).
-- [ ] **(3) Der Pflicht-Trockenlauf ist gefahren und seine Befund-Differenz steht im Closure-Beleg**
+- [x] **(3) Der Pflicht-Trockenlauf ist gefahren und seine Befund-Differenz steht im Closure-Beleg**
       ([`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)-Muster,
       netzlos, `--network none`): v0.62.0 gegen den **unveränderten** Baum mit unveränderter
       [`.d-check.yml`](../../../../.d-check.yml), Exit-Code getrennt erhoben. Erwartet ist eine
       **Differenz, keine Zahl**: beide Versionen liefern über demselben Baum `0 Befund(e)` bei
       Exit 0, und der `diff` der beiden Ausgaben ist leer. Die mitlaufende Dateizahl ist
-      ausdrücklich **kein** Erwartungswert — sie wächst mit jedem angelegten Dokument (am
-      2026-08-22 innerhalb eines Tages von 330 auf 334) und färbte den Punkt rot, ohne dass am Pin
-      etwas gebrochen wäre. Der Lauf ist im Slice zu **wiederholen**, nicht zu übernehmen: eine
-      Messung vom Vortag gilt für den Baum vom Vortag.
-- [ ] `make gates` grün; dazu `make smoke`, `make full-smoke` und `make mutate` — der Emitter-Pin
+      ausdrücklich **kein** Erwartungswert
+      ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+      Setzung 2) — sie wächst mit jedem angelegten Dokument und färbte den Punkt rot, ohne dass am
+      Pin etwas gebrochen wäre: dieselbe Kette meldete am 2026-08-22 nacheinander **333**
+      (Trockenlauf in `d239099`), **335** (Verdikt-Runde) und **336** (`make docs-check` an dem
+      Stand, den diese Datei beschreibt, Exit 0). Der Lauf ist im Slice zu **wiederholen**, nicht zu
+      übernehmen: eine Messung vom Vortag gilt für den Baum vom Vortag.
+- [x] `make gates` grün; dazu `make smoke`, `make full-smoke` und `make mutate` — der Emitter-Pin
       wandert ins **emittierte** Repo, und nur der Voll-Smoke fährt dessen Gate mit v0.62.0.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -239,6 +246,17 @@ Review konform (Modul 10) mit ausgestelltem Verdikt; Verifikation (Modul 11) bes
 `make gates`, `make smoke`, `make full-smoke` und `make mutate` grün; Closure-Notiz mit
 Steering-Loop-Eintrag.
 
+**Die Klasse aus §6 muss diese Datei verlassen haben, bevor die Datei nach `done/` geht — und das
+ist ein Prüfkommando, keine Erinnerung.** Mit der Closure wird der Plan ein Zeitdokument; was allein
+in ihm steht, schlägt kein Lauf wieder auf. Closure-Kriterium ist deshalb ein Träger **außerhalb**
+dieser Datei, im Adaptions-Block, geschrieben vom **Architect**
+([`AGENTS.md`](../../../../AGENTS.md) §3.8):
+`grep -c 'Eine Zahl im Text steht neben dem Kommando, das sie liefert' harness/conventions.md`
+→ **1**, und der Eintrag führt einen Auflösungs-Trigger, der den nächsten Lauf benennt, der ihn zieht
+(`grep -c 'fällig beim nächsten d-check-Pin-Sprung' harness/conventions.md` → **1**). Liefert eines
+der beiden **0**, ist der Slice nicht abschlussreif — die Frage wäre dann gestellt und nicht
+übergeben, und §6 liefe in genau die Ablage, die er selbst als untauglich benennt.
+
 **Der Link-Zug gehört zu BEIDEN Moves, nicht nur zum letzten.** Jeder `git mv` ist ein eigener,
 reiner Move-Commit ([`AGENTS.md`](../../../../AGENTS.md) §3.3); **nach jedem** folgt der
 Link-Reconciliation-Commit — beim Eintritt (`open` → `next` → `in-progress`) wie beim Abgang nach
@@ -275,7 +293,9 @@ Eintritts-Move nötig und im Plan nicht vorgesehen.
   belegt ihn nicht — es prüft die Emission, nicht den Lauf des emittierten Gates; das tut
   `make full-smoke`. Wer nur den ersten fährt, hat den Pin behauptet, nicht belegt.
 - **Eine Zahl im Fließtext, die ihr danebenstehendes Kommando nicht liefert, hat in diesem Repo
-  keinen Sensor — offener Punkt über diesen Slice hinaus.** Die Klasse trifft jede Prosa-Behauptung
+  keinen Sensor — die Pflicht dagegen trägt ein Register-Eintrag
+  ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)),
+  kein Gate.** Die Klasse trifft jede Prosa-Behauptung
   neben ihrem Beleg-Kommando, in Plänen wie in Register-Einträgen; ihr Schaden ist nicht die
   falsche Ziffer, sondern was ein Lauf daraus macht, der sie nachzählt: entweder ein falsches Rot
   an einem korrekten Gegenstand oder die Gewohnheit, ausgewiesene Messungen gar nicht erst
@@ -295,19 +315,241 @@ Eintritts-Move nötig und im Plan nicht vorgesehen.
   ihrem Kommando im selben Abschnitt); den **Wert** gegen den Lauf zu halten kann keines von ihnen,
   weil keines einen Lauf fährt.
 
-  **Träger, solange kein Sensor existiert:** ein Eintrag im Adaptions-Block von
-  [`harness/conventions.md`](../../../../harness/conventions.md), geschrieben vom **Architect**
-  ([`AGENTS.md`](../../../../AGENTS.md) §3.8) — erkennbar daran, dass sein §Auflösungs-Trigger den
-  nächsten Lauf benennt, der ihn zieht, so wie die Pin-Linie ihre Einträge beim nächsten Re-Pin
-  zieht. Ohne diesen Träger lebt die Klasse nur in Zeitdokumenten, die kein Lauf wieder aufschlägt.
-  **Offen, und hier nicht entschieden:** ob der Sensor einen eigenen Schnitt bekommt — ein
-  hermetischer Prüfer in der Bauart von `make comment-claims`, mit Markdown im Prüfbereich — oder
-  ob die Adoption von `structure` genügt. Dieser Slice entscheidet sie nicht; er
-  stellt sie und bewegt seinen eigenen Prüfbereich nicht.
+  **Der Träger steht, solange kein Sensor existiert:**
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  im Adaptions-Block, geschrieben vom **Architect** ([`AGENTS.md`](../../../../AGENTS.md) §3.8) —
+  `grep -c 'Eine Zahl im Text steht neben dem Kommando, das sie liefert' harness/conventions.md`
+  → **1**. Der Eintrag setzt zweierlei: die Zahl
+  steht im selben Absatz wie das Kommando, das **genau sie** ausgibt, und wer sie schreibt, hat es
+  über dem Baum gefahren, von dem sie spricht (Setzung 1); eine Zahl, die mit dem Artefakt
+  mitwandert, taugt nicht als Erwartungswert und wird gekennzeichnet oder durch ein Kriterium
+  ersetzt, das den Gegenstand misst statt sein Umfeld (Setzung 2). Sein Geltungsbereich ist eng und
+  gemessen — **75** lebende repo-eigene Markdown-Dateien
+  (`git ls-files '*.md' ':!docs/reviews/**' ':!docs/plan/planning/done/**' ':!.harness/baseline/**' | wc -l`);
+  Zeitdokumente, vendored Baseline und Templates liegen draußen, und der Cutoff gilt ab
+  Einführung: gebunden ist die Zahl, die geschrieben oder geändert wird, der Bestand ist kein
+  Arbeitsauftrag.
+
+  **Die Entscheidung ist damit übergeben, nicht mehr nur gestellt.** Welcher der drei Wege gilt —
+  ein eigener hermetischer Prüfer in der Bauart von `make comment-claims` mit Markdown im
+  Prüfbereich, die Adoption eines d-check-Moduls für die **Form** bei ausdrücklich ungedecktem
+  **Wert**, oder bewusste Permanenz im Feedforward-Quadranten —, steht als Auflösungs-Trigger im
+  Eintrag selbst und wird beim **nächsten d-check-Pin-Sprung fällig**
+  (`grep -c 'fällig beim nächsten d-check-Pin-Sprung' harness/conventions.md` → **1**); früher,
+  sobald `grep -c 'structure' .d-check.yml` über **0** steigt. Das Ereignis meldet sich selbst:
+  `make freshness-dcheck` steht dann auf *VERALTET*, und der Slice, der den Pin zieht, schlägt den
+  Adaptions-Block ohnehin auf. Dieser Slice entscheidet die Frage nicht und bewegt seinen eigenen
+  Prüfbereich nicht; er sorgt dafür, dass sie nicht mit ihm in die Ablage geht (§5).
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Was gilt.** Das gepinnte d-check-Image steht auf **v0.62.0** — an allen fünf Orten, die den Pin
+führen, mit dem dreifach belegten Digest
+`sha256:3996a593b9cb71aa3bcb4f3ddf8f637e7409db31b3a2dac7eedc28d65814cacf`. Das Modul `structure`
+ist damit **verfügbar und nicht aktiviert**, und kein neuer Gate-Name ist entstanden. Der Sensor,
+der den Slice ausgelöst hat, meldet ihn selbst geschlossen: `make freshness-dcheck` →
+*„d-check: aktuell — gepinnt und latest sind beide v0.62.0."*, Exit 0. Das Gefäß des Ergebnisses
+ist [`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar) —
+Pin, Trockenlauf, und die Strenge-Bilanz **an der Quell-Differenz der Regeldateien** statt am
+0-zu-0-Lauf; die Lehre dieses Slice trägt
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert).
+Die Linie
+[`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)/[`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)/[`MR-012`](../../../../harness/conventions.md#mr-012--d-check-pin-v0511-sources-verfügbar)
+ist fortgesetzt und nicht erweitert.
+
+**Drei beobachtbare Closure-Kriterien.**
+
+1. **Der Pin steht, an jedem Ort einzeln gemessen.** Die drei Code-Orte:
+   `grep -n 'v0\.51\.1\|fede3d02' d-check.mk Makefile internal/emit/emit.go` → **leer**, Exit 1.
+   Der vierte, die §Baseline-Zeile: `grep -c 'Image v0\.62\.0' harness/conventions.md` → **1**. Der
+   fünfte, der MR-Eintrag, liegt im Architect-Commit `d678de7` und trägt seit `c53d849` das Bein,
+   auf dem seine Strenge-Bilanz ruht
+   (`grep -c 'Welches der zwei Beine die Bilanz trägt' harness/conventions.md` → **1**). Dass
+   `structure` verfügbar und **nicht** aktiviert ist, tragen zwei Kommandos:
+   `grep -c 'structure' .d-check.yml` → **0** (Exit 1) und
+   `grep -c 'doc-structure' AGENTS.md harness/README.md` → je **0** — kein behaupteter Gate-Name
+   ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+   Die Re-Adaption steht: `grep -c '^docs-check:' d-check.mk` → **1**,
+   `grep -c -- '--enable' d-check.mk` → **6**, davon
+   `grep -- '--enable' d-check.mk | grep -c -- '--disable structure'` → **5**.
+2. **Der Trockenlauf ist im Slice gefahren, und die Differenz ist die Aussage, nicht die Zahl.**
+   Beide Digests über **denselben** Baum, netzlos (`--network none`), Exit-Code getrennt erhoben:
+   im Werkstück-Commit `d239099` über dem Baum `f961b4e` je `333 Datei(en) geprüft, 0 Befund(e)`,
+   Exit 0, `diff` der Ausgaben leer; in der Verdikt-Runde über dem Baum `cc7d3bf` unabhängig
+   wiederholt, je `335 Datei(en) geprüft, 0 Befund(e)`, Exit 0, `diff` leer. Die Dateizahl ist
+   zwischen beiden Läufen gewandert, die **Differenz** nicht — genau das hat DoD (3) zugesagt und
+   die mitwandernde Zahl ausdrücklich ausgenommen
+   ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+   Setzung 2).
+3. **Das Review ist frei, nach drei Runden mit je ausgestelltem Verdikt — und die Klasse, die es
+   gefunden hat, hat einen Träger außerhalb dieser Datei.**
+   [Runde 1](../../../reviews/2026-08-22-slice-088-review.md) (`c89612f`, 1 HIGH / 3 MEDIUM /
+   3 LOW / 1 INFO, blockierend) → [Runde 2](../../../reviews/2026-08-22-slice-088-bestaetigungsrunde.md)
+   (`f65e2fa`, alle acht aufgelöst, 1 MEDIUM / 2 LOW / 1 INFO neu, blockierend) →
+   [Runde 3](../../../reviews/2026-08-22-slice-088-verdikt-runde.md) (`3fa27b2`, **frei**, 2 LOW).
+   Über die drei Runden zählt
+   `grep -h '^### \(HIGH\|MEDIUM\|LOW\|INFO\)-' docs/reviews/2026-08-22-slice-088-*.md | wc -l`
+   → **14** Findings; die blockierende Menge jeder Runde ist vor dem nächsten Verdikt gezogen
+   (`abe01f4`, `cc7d3bf`), keine Kategorie ist gestiegen. Der Träger, den §5 als Closure-Kriterium
+   führt, liegt vor:
+   `grep -c 'Eine Zahl im Text steht neben dem Kommando, das sie liefert' harness/conventions.md`
+   → **1** und `grep -c 'fällig beim nächsten d-check-Pin-Sprung' harness/conventions.md` → **1**.
+
+**Was zum Closure-Trigger noch aussteht.** §5 verlangt zusätzlich *„Verifikation (Modul 11)
+bestätigt die DoD"*. Die Sensoren sind gefahren und grün; ihre **Bestätigung durch eine zweite
+Rolle** ist der letzte Schritt und steht unten mit Träger. Aus demselben Grund stehen die Läufe im
+Abschnitt *Gates* mit ihrem Kommando und ihrem Fundort da, statt zitiert zu werden.
+
+**Wo der Liefergegenstand in der Historie liegt.** `git log --oneline --grep='slice-088' | wc -l`
+zählt am Stand `04067d7` **15** Commits — eine Zahl, die mit den Closure-Commits weiter steigt und
+darum kein Erwartungswert ist. Der Schnitt liegt in `251e9ca`; das Werkstück in `d239099`
+(`d-check.mk` aus `--print-mk` v0.62.0 samt den vier
+[`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)-Handgriffen,
+der Emitter-Pin in [`internal/emit/emit.go`](../../../../internal/emit/emit.go), das Tag-Beispiel im
+[`Makefile`](../../../../Makefile)-Kommentar), seine zwei Korrekturen in `1f3f6e6` (`structure` kam
+mit v0.57.0, nicht mit v0.62.0) und `5e96bd4` (fünf von sechs Recipes). Der Architect-Anteil liegt
+in `d678de7` (der Pin-Eintrag), `c53d849` (zwölf Targets in
+[`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert), die
+Strenge an der Quell-Differenz) und `04067d7`
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+samt dem tragenden Bein der Bilanz); die drei Verdikte in `c89612f`, `f65e2fa`, `3fa27b2`;
+die zwei Planner-Nachzüge in `abe01f4` und `cc7d3bf`. Die Lifecycle-Commits `3ea7a64`
+(`open → next`) und `6551545` (`next → in-progress`) sind reine Moves, `6766cf2` und `f961b4e` die
+Link-Züge danach. Wer den Slice sucht, findet ihn über diese Commits und **nicht** in der Roadmap:
+`grep -c 'slice-088' docs/plan/planning/in-progress/roadmap.md` → **0** (Exit 1), wie
+[`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
+Setzung 2 es verlangt; Setzung 3 lässt auch die Closure spurlos an ihr vorbeigehen. Der Zustand ist
+das Verzeichnis.
+
+**Was der Slice nicht deckt.**
+
+- **Die Richtigkeit der Version im MR-Titel trägt kein Kommando.** Stehen Anker-Link und
+  Überschrift gemeinsam auf einer falschen Version, löst der Anker auf, `make docs-check` bleibt
+  grün, und der §Baseline-Handlauf ebenfalls, weil er die §Baseline-Zeile liest und nicht die
+  Überschrift. Die Verdikt-Runde hat das mit einer Sonde am HEAD reproduziert (beide Seiten auf
+  `v0.61.0`, Lauf grün bei Exit 0). Die Lücke ist in DoD (1) benannt und bleibt offen; sie ist die
+  **Wert**-Hälfte, die auch
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  für seinen Weg (b) ausdrücklich ungedeckt lässt.
+- **Die Modul-Liste der Dogfood-[`.d-check.yml`](../../../../.d-check.yml) liest kein Test.** Wer
+  `structure` versuchsweise aktiviert und die Änderung stehen lässt, wird von keinem Gate gestellt:
+  über unkonfiguriertem Prüfbereich meldet das Modul Grün, und am Gate-Ausgang ist dieser Fall von
+  echtem Grün nicht zu unterscheiden. Benannt in §6, hier nicht geschlossen.
+- **`.mk`-Dateien liegen außerhalb des `ids`-Prüfbereichs.** Die baren `MR-`-Kennungen im Kopf von
+  [`d-check.mk`](../../../../d-check.mk) erzeugen nie einen Befund; kein Handgriff dieses Slice
+  ändert daran etwas.
+- **Kein Modul wurde aktiviert und keine Strenge gesenkt.** Der Slice berührt
+  [`AGENTS.md`](../../../../AGENTS.md) §3.5 nicht — die Bilanz dazu hängt an der Versions-Differenz
+  der Regelmodule und steht in
+  [`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar),
+  nicht hier.
+
+**Steering-Loop-Eintrag — geschärfte Regel.**
+
+**Eine gemessene Aussage lebt so oft, wie sie geschrieben wurde. Ihre Korrektur ist erst fertig,
+wenn die Fundort-Suche über die lebenden Artefakte leer ist — ein Fix an einem Ort ist keiner.**
+Wer den gemeldeten Fundort repariert, hat den Befund beantwortet, nicht die Aussage; der zweite
+Fundort widerlegt danach den ersten, und beide stehen im Repo nebeneinander.
+
+**Gemessen an diesem Slice, nicht postuliert.** Die Aussage *„wie viele der fokussierten
+advisory-Recipes disablen `structure`"* stand an **vier** Fundorten: im Kopfkommentar von
+[`d-check.mk`](../../../../d-check.mk), in
+[`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar), in §3
+dieses Plans und in seiner DoD (2). Sie fiel **zweimal in Folge an verschiedenen Orten**: R1-HIGH-1
+traf den Kopfkommentar (gezogen in `5e96bd4`), R2-MEDIUM-1 denselben Satz in §3 (gezogen in
+`cc7d3bf`, zusammen mit DoD (2)). Erst die dritte Runde konnte die Fundort-Suche leer melden —
+`grep -n 'jedem fokussierten' d-check.mk Makefile harness/conventions.md <Slice-Plan>` → **Exit 1**,
+heute erneut gefahren, und `grep -c -- '--enable' d-check.mk` → **6** gegen
+`grep -- '--enable' d-check.mk | grep -c -- '--disable structure'` → **5** an allen vier Orten
+deckungsgleich. **Nicht die Reparatur war langsam, sondern ihre Reichweite:**
+`git log -1 --format='%ad' --date=format:'%H:%M'` liest für den Befund `c89612f` und für seine
+Korrektur `5e96bd4` **dieselbe** Minute (11:20) — und bis zum freien Verdikt `3fa27b2` (12:03)
+brauchte es trotzdem zwei weitere Runden, weil die falsche Fassung nach dem Fix am gemeldeten Ort
+in §3 wörtlich stehenblieb: `git show cc7d3bf` zieht sie dort und schärft DoD (2) im selben Zug
+nach.
+
+**Anwendung, prüfbar am Text:** Wer eine gemessene Aussage korrigiert, nennt im selben Zug die
+**Fundort-Suche** und ihr Ergebnis — ein Muster, das die Aussage trifft, über die **lebenden**
+Artefakte; Zeitdokumente bleiben draußen, sonst wird die Suche per Konstruktion fündig und beweist
+nichts. Die Probe ist eine Frage an den eigenen Commit: **an wie vielen Orten steht dieser Satz,
+und welches Kommando zeigt, dass keiner übrig ist?** Fällt die Antwort auf „ich habe die gemeldete
+Stelle geändert", ist die Korrektur nicht fertig, sondern der nächste Befund.
+
+**Ebene und Träger, benannt statt behauptet.** Die Regel gilt der **Repo**-Ebene, für jede Rolle,
+die eine gemessene Aussage schreibt oder zieht; über den emittierten Harness sagt sie nichts.
+**Kein Sensor sieht sie:** `make comment-claims` führt in seinem Prüfbereich **null**
+Markdown-Dateien
+(`git ls-files 'internal/*.go' 'internal/**/*.go' 'cmd/**/*.go' 'harness/tools/*.sh' '.claude/hooks/*.sh' | grep -c '\.md$'`
+→ **0**, Exit 1), und `make docs-check` prüft Links, Anker, Kennungen, Matrix, Codepfade und
+Spans — kein Modul vergleicht zwei Prosa-Stellen miteinander. **Zwei Träger stehen, ein dritter ist
+benannt:** (a) den Fundort-Fall dieses Slice trägt
+[`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)
+§Auflösungs-Trigger, der seit `c53d849` einen **fünften** Handgriff führt — die Target-Aufzählung
+beim nächsten Re-Pin gegen `make doc-help` abgleichen; (b) den Schreib-Fall trägt
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 1, die die Zahl an ihr Kommando bindet, bevor sie sich vervielfältigen kann; (c) den
+Zieh-Fall trägt der nächste Schnitt derselben Bauart, und er liegt geschnitten vor:
+[slice-089](../open/slice-089-carveout-co-002-ueberfuehren.md) DoD (2) zieht **sechs** Zeiger auf
+denselben Gegenstand und nennt als rot färbendes Kommando genau eine Fundort-Suche
+(`grep -n 'CO-002' spec/spezifikation.md .claude/hooks/pretooluse-agent-guard.sh` → **leer**). Ohne
+diesen Griff bliebe der Eintrag ein Satz in einer Datei, die niemand wieder liest.
+
+**Drei Beobachtungen, die keine Regel werden — mit ihrem Ort.**
+
+- **Eine Abdeckungs-Zusage, die nur Existenz prüft, ist keine über Richtigkeit.** `make docs-check`
+  deckt vom MR-Eintrag die Existenz der Überschrift und die Auflösbarkeit des Ankers; die Version,
+  die beide nennen, deckt es nicht — mit Sonde belegt, oben unter *Was der Slice nicht deckt*
+  eingeordnet. Das ist der Anwendungsfall der Regel aus
+  [slice-086](../done/slice-086-vordergrund-per-updatedinput.md) §7 (*eine Zusage reicht nur so
+  weit wie ihr Sensor*), keine neue Regel; DoD (1) sagt die Grenze inzwischen selbst.
+- **Ein Beleg-Lauf, der vorher wie nachher `0` liefert, ist in der Lockerungsrichtung
+  informationsleer.** Der Trockenlauf trägt eine Richtung — über diesem Korpus entsteht kein neuer
+  Befund —, und er kann nicht zeigen, dass eine Regel weniger findet. Die §3.5-Frage brauchte
+  deshalb das zweite Bein, die Quell-Differenz der Regeldateien. Getragen wird das bereits, in
+  [`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar)
+  §Auflösungs-Trigger (*„an der Quell-Differenz der Regeldateien, nicht an der
+  CHANGELOG-Aufzählung"*); hier steht es als Beobachtung mit Zeiger.
+- **Die Klasse, die diesen Slice über drei Runden begleitet hat, ist nicht mehr seine.** *Eine Zahl
+  im Fließtext, die ihr danebenstehendes Kommando nicht liefert* trägt seit `04067d7` der
+  Adaptions-Block
+  ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)),
+  mit gemessener Begründung, engem Geltungsbereich, Cutoff und einem Auflösungs-Trigger, der fällig
+  wird statt zu mahnen. Für diesen Slice bleibt sie eine Beobachtung mit Zeiger — die Entscheidung
+  über ihren Sensor steht unten in der Tabelle.
+
+**Offen, mit Träger.**
+
+| Posten | Träger |
+|---|---|
+| Die Bestätigung der DoD durch Modul 11 — die nicht gate-getragenen Kommandos der DoD (1) und (2) laufen in keiner Kette: die Rest-Suche `grep -n 'v0\.51\.1\|fede3d02' …`, `make freshness-dcheck` (netzgebunden) und `grep -n 'Image v0\.62\.0' harness/conventions.md` | **Verifier** (Modul 11), mit eigenem Prüf-Artefakt und eigenem Eingabe-Kontext; die Verdikt-Runde hat sie ausdrücklich nicht vorgenommen |
+| Die Entscheidung aus [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) §Auflösungs-Trigger: eigener hermetischer Prüfer · Adoption eines d-check-Moduls für die Form · bewusste Permanenz | **Auftraggeber** / Planner (Schnitt-Entscheidung). Davor gehört ein **Probelauf**: heute liegt nur der Modul-Vertrag vor, kein Ergebnis an diesem Repo. Fällig beim nächsten d-check-Pin-Sprung, früher, sobald `grep -c 'structure' .d-check.yml` über **0** steigt |
+| R1-INFO-1 — für die `modules:`-Liste der Dogfood-[`.d-check.yml`](../../../../.d-check.yml) gibt es keinen Sensor; ein unkonfiguriertes Modul ist am Gate-Ausgang von echtem Grün nicht zu unterscheiden | **Planner**, eigener Schnitt. Der Prüfbereich ist zu entscheiden, bevor ein Wächter entsteht — sonst friert er eine Liste ein, die noch wandert |
+| R1-LOW-3 — `.mk`-Dateien liegen außerhalb des `ids`-Prüfbereichs; die baren `MR-`-Kennungen in [`d-check.mk`](../../../../d-check.mk) erzeugen nie einen Befund | **Architect**, benannt für einen künftigen Schnitt; keine Aktion in diesem Slice |
+| Die Version im MR-Titel wird gelesen, nicht gemessen — für die **Wert**-Hälfte steht kein Kommando | keiner, und das ist entschieden: [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) sagt für Weg (b) ausdrücklich, dass der Wert ungedeckt bleibt. Ein Träger entstünde nur mit Weg (a) |
+| R2-INFO-1 — [`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar) stützte seine Lockerungs-Hälfte auf eine CHANGELOG-Aufzählung, die upstream selbst als offen ausweist | **erledigt** mit `04067d7`: `grep -c 'Welches der zwei Beine die Bilanz trägt' harness/conventions.md` → **1**. Für die Buchführung festgehalten, nicht als offener Posten |
+
+**Gates.** Der Gate-Lauf zu diesem Stand ist über seinen Stempel an den Baum gebunden, nicht über
+eine Erinnerung: `bash harness/tools/working-tree-hash.sh` und `.harness/state/gates-passed.diffsha`
+waren über dem Baum von `04067d7` byte-gleich (`09132937…`), und `record-gates` schreibt den Stempel
+nur als **letzter** Prerequisite grüner Gates
+([`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)).
+Dieser Lauf meldete `make gates` **Exit 0** — `baseline-verify: v3.5.2 OK — 42 Dateien`,
+`d-check: 336 Datei(en) geprüft, 0 Befund(e)`, `1..143` bats ohne `not ok`,
+`comment-claims: 40 Datei(en) geprueft, 0 Befund(e)`, `span-check` ok —, dazu `make smoke`
+**Exit 0** (emittiertes `docs-check`: 12 Dateien, 0 Befunde), `make full-smoke` **Exit 0**, wobei das
+**emittierte** Gate nachweislich gegen `d-check@sha256:3996a593…` lief, und `make mutate`
+**Exit 0** mit `143 ok, 0 Befund(e)`. Diese vier Läufe sind in dieser Notiz **nicht wiederholt**;
+sie gehören dem Stand, den der Stempel bindet, und ihre Bestätigung ist Modul-11-Territorium.
+
+Selbst gefahren und über den Baum, von dem sie sprechen: `make docs-check` →
+`d-check: 336 Datei(en) geprüft, 0 Befund(e)`, Exit 0 (getrennt erhoben; das Rezept zeigt den
+Digest `sha256:3996a593…` in seiner Kommandozeile) und `make freshness-dcheck` →
+*„d-check: aktuell — gepinnt und latest sind beide v0.62.0."*, Exit 0 — der Sensor, der den Slice
+geöffnet hat, schließt ihn. Die Dateizahl ist dabei **kein** Erwartungswert
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2): dieselbe Kette meldete am 2026-08-22 nacheinander 333, 335 und 336, ohne dass am Pin
+etwas gebrochen wäre. Diese Notiz macht den Stempel ungültig; der volle `make gates`-Lauf gehört zum
+Commit, der sie trägt, nicht zu ihr.
 
 ## 8. Sub-Area-Modus-Begründung
 
