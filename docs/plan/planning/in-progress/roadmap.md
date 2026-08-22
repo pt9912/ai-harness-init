@@ -1,6 +1,6 @@
 # Roadmap
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-08-21.
+**Status:** Aktiv. **Letzte Änderung:** 2026-08-22.
 
 **Format-Regel:** Die Roadmap ist eine Reihenfolge von **Wellen**,
 keine Reihenfolge von Terminen (siehe
@@ -45,6 +45,16 @@ jedes andere weiterzuliefern.
 in `done/`, weil deren Closure-Kriterium gegen Modul 15 in der gepinnten Fassung misst. Slices:
 `slice-080` bis `slice-085`. Trigger und Closure-Kriterien stehen in der Plan-Datei, nicht hier.
 
+**[welle-11 — Träger-Aussage der emittierten Ebene](../welle-11-traeger-aussage.md)**, geschnitten
+am 2026-08-22 — **geplant, nicht aktuell, und die dritte in der Reihe**: sie steht hinter
+[welle-10](../welle-10-re-baseline.md) und damit mittelbar hinter
+[welle-09](../welle-09-modul-15-konformitaet.md). **Trigger:** welle-10 liegt in `done/`. Der Grund
+ist tragend, nicht ordnend — jede Messung dieser Welle läuft über den vendored Baum, und welle-10
+tauscht genau ihn; der Freshness-Audit wächst upstream zudem von drei auf sieben Eigenschaften
+([`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md)). Slices: `slice-090` bis
+`slice-092`, alle drei geschnitten und in `open/`. Closure-Kriterium und die drei Architect-Runden
+zur Emissions-Frage stehen in der Plan-Datei, nicht hier.
+
 Prospektive Kandidaten (nur mit **beobachtbarem Trigger**, Modul 6). **Diese Tabelle führt nur, was
 *noch nicht* geschnitten ist** — ein geschnittener Slice steht unter *Aktuelle Welle*, sonst wird
 derselbe Stand an zwei Orten gepflegt und einer davon altert (real passiert mit slice-047/048):
@@ -80,10 +90,19 @@ flowchart LR
     W6[welle-06<br/>Freshness]
     W7[welle-07<br/>Arch-Achse]
     W8[welle-08<br/>cpp × hexslice]
+    W9[welle-09<br/>Modul-15-Konformität]
+    W10[welle-10<br/>Re-Baseline]
+    W11[welle-11<br/>Träger-Aussage]
     W1 --> W2 --> W3 --> W4 --> W5
     W5 -.-> W6
     W5 --> W7 --> W8
+    W8 --> W9 --> W10 --> W11
 ```
+
+Die drei Kanten `W9 → W10 → W11` sind **Trigger-Kanten**, keine Themen-Nähe: welle-10 misst gegen
+Modul 15 in der gepinnten Fassung und darf den Baum darum nicht vorher tauschen; welle-11 misst
+über den Baum, den welle-10 tauscht. Ohne die Kanten wären beide Phantom-Wellen im Sinne von
+Modul 6.
 
 ## Abgeschlossene Wellen
 
