@@ -354,7 +354,7 @@ Slice, der die Tool-Ebene entscheidet, was an DoD-Form mitgeht). **Kein Sensor s
 `make comment-claims` prüft vier Pfad-Muster über Go, Shell und Hooks und damit **kein** Markdown,
 und `docs-check` prüft Links, Anker, Kennungen, Matrix, Codepfade und Spans — **keine
 Behauptungen**. Ihr Träger ist deshalb der nächste Schnitt derselben Hand, und der liegt vor:
-[slice-088](../open/slice-088-dcheck-pin-v0620.md) und
+[slice-088](../next/slice-088-dcheck-pin-v0620.md) und
 [slice-089](../open/slice-089-carveout-co-002-ueberfuehren.md) sind im selben Planner-Lauf
 geschnitten, und in beiden trägt **jeder** slice-eigene DoD-Punkt sein Kommando im Text. Ohne
 diesen Griff bliebe der Eintrag ein Satz in einer Datei, die niemand wieder liest.
@@ -378,7 +378,7 @@ diesen Griff bliebe der Eintrag ein Satz in einer Datei, die niemand wieder lies
   für `done/`; gebraucht wurde er zweimal, weil der Slice durch drei Verzeichnisse gewandert ist
   (`3f27b7c`). Das ist ein Plan-Defekt, kein Implementations-Defekt, und er trifft **jeden**
   wellenlosen Slice dieser Bauart. **Was der Planner daran selbst ändert:** in
-  [slice-088](../open/slice-088-dcheck-pin-v0620.md) und
+  [slice-088](../next/slice-088-dcheck-pin-v0620.md) und
   [slice-089](../open/slice-089-carveout-co-002-ueberfuehren.md) nennt §5 den Link-Zug für **beide**
   Moves samt Prüfkommando.
 
@@ -392,7 +392,7 @@ diesen Griff bliebe der Eintrag ein Satz in einer Datei, die niemand wieder lies
 | Die drei Transkript-Zahlen, die eine Prüfhandlung committet im Baum abgelegt hat (`3588e97`) | **Auftraggeber** (die Öffnung des Transkripts als Quelle ist seine Erlaubnis) **und Architect** |
 | [`AGENTS.md`](../../../../AGENTS.md) §3.7 §Geltungsbereich sagt nichts zu verbatim abgelegtem **Skript-Text in Dokumentation** | **Architect**, eigener Lauf und eigener Commit (§3.8) |
 | Der Rang zwischen [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 3 und der Anordnung, am Span abzulesen | in [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Festlegung 3 als Klassen-Unterscheidung entschieden — erledigt mit deren Annahme, nicht vorher |
-| Neun Verweise in fünf Plan-Dateien zeigen auf `in-progress/` und brechen mit dem Move: [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) (3), [slice-088](../open/slice-088-dcheck-pin-v0620.md) (3), [slice-089](../open/slice-089-carveout-co-002-ueberfuehren.md) (1), [welle-09](../welle-09-modul-15-konformitaet.md) (1), [slice-062](../done/slice-062-emittierte-modul-15-regeln.md) (1); dazu **ein** Link im Kopf des Verifikations-Reports — die übrigen sieben Nennungen in den Zeitdokumenten stehen in Inline-Code und fallen unter die `docs/reviews/**`-Ausnahme des `codepaths`-Moduls | der Link-Zug nach dem `git mv` (eigener Commit, Hard Rule 3.3) — `grep -rn 'planning/in-progress/slice-086' --include='*.md' docs` findet sie, `make docs-check` bestätigt den Zug |
+| Neun Verweise in fünf Plan-Dateien zeigen auf `in-progress/` und brechen mit dem Move: [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) (3), [slice-088](../next/slice-088-dcheck-pin-v0620.md) (3), [slice-089](../open/slice-089-carveout-co-002-ueberfuehren.md) (1), [welle-09](../welle-09-modul-15-konformitaet.md) (1), [slice-062](../done/slice-062-emittierte-modul-15-regeln.md) (1); dazu **ein** Link im Kopf des Verifikations-Reports — die übrigen sieben Nennungen in den Zeitdokumenten stehen in Inline-Code und fallen unter die `docs/reviews/**`-Ausnahme des `codepaths`-Moduls | der Link-Zug nach dem `git mv` (eigener Commit, Hard Rule 3.3) — `grep -rn 'planning/in-progress/slice-086' --include='*.md' docs` findet sie, `make docs-check` bestätigt den Zug |
 
 **Gates.** Der Verifikations-Lauf auf `2acd074`: `make gates` **Exit 0** —
 `baseline-verify: v3.5.2 OK — 42 Dateien`, `d-check: 329 Datei(en) geprüft, 0 Befund(e)`,
