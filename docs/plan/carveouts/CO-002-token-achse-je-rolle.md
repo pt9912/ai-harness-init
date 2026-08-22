@@ -1,9 +1,12 @@
 # CO-002: Der `Agent`-Span trägt keine Token-Achse je Rolle
 
-**Status:** Aktiv.
+**Status:** Permanent — übergeführt in
+[ADR-0021](../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md).
 
-**Datum angelegt:** 2026-08-15. **Letzte Prüfung:** 2026-08-15 (Anlage — der Ausfall ist am
-selben Tag am Span-Bestand gemessen, die Zahlen stehen in
+**Datum angelegt:** 2026-08-15. **Letzte Prüfung:** 2026-08-22 (Überführung — die Messung aus
+Weg 1 ist gefahren und negativ, ihr Zeitdokument ist
+[`docs/reviews/2026-08-21-updatedinput-messung.md`](../../reviews/2026-08-21-updatedinput-messung.md);
+die Zahlen der Anlage stehen unverändert in
 [ADR-0019](../adr/0019-agent-guard-prueft-die-aufrufform.md) §Kontext).
 
 **Betroffenes Gate:** **keines — und das ist die erste Aussage dieses Carveouts.** Betroffen ist
@@ -66,6 +69,10 @@ keinen Gegenstand hätte.
 
 ## Auflösungs-Trigger
 
+**Diese Schwelle ist keine offene Bedingung mehr — wie sie ausgegangen ist, sagt der Status im
+Kopf dieses Dokuments.** Was hier steht, ist die Frage, die beantwortet wurde; sie wartet auf
+nichts mehr.
+
 **Eine Schwelle, beobachtbar am Bestand und nicht an einer Absicht:** ein `Agent`-Span trägt
 wieder `spawned_role` **und** alle vier `usage`-Zähler (`input_tokens`, `output_tokens`,
 `cache_creation_input_tokens`, `cache_read_input_tokens`) — **und die Mechanik, die ihn erzeugt
@@ -110,9 +117,8 @@ Drei Wege führen zu diesem Bestand, und sie sind verschieden nah:
 **Der zweite Ausgang gehört in denselben Trigger:** fällt die Messung aus Weg 1 negativ aus,
 bleiben nur die zwei fremden Wege, und die Antwort auf Modul-7-Frage 2 kippt auf *Nein*. Dann ist
 dieser Carveout **in eine Folge-ADR zu überführen** (`Status: Permanent — übergeführt in
-ADR-<NNNN>`) und nach `done/` zu verschieben, damit die Werkzeug-Wahl-Spur lesbar bleibt. Ein
-Carveout, der nach einer negativen Messung stehen bliebe, wäre die permanente Ausnahme, die
-behauptet, temporär zu sein.
+ADR-<NNNN>`). Ein Carveout, der nach einer negativen Messung stehen bliebe, wäre die permanente
+Ausnahme, die behauptet, temporär zu sein.
 
 ## Geltungs-Konfiguration
 
@@ -130,18 +136,6 @@ tragen den Zeiger auf diesen Carveout (Folgepflichten 1 und 2 der ADR sind an ih
 Zeiger, ist die Ausnahme an dieser Stelle unbegründet, und die Zeile gehört hier korrigiert statt
 im Kopf behalten.
 
-## Verifikation (nach Auflösung)
-
-- [ ] Mindestens ein `Agent`-Span im Bestand trägt `spawned_role` **und** alle vier
-      `usage`-Zähler — am Span gelesen, nicht an der Abdeckungszeile —, **und die Mechanik, die
-      ihn erzeugt hat, liegt committet im Baum**; `make span-report` steht danebengehalten, seine
-      Abdeckungszahl ist dann > 0.
-- [ ] Die Erfassungs-Zusagen in `spec/spezifikation.md` §5 sind auf den wiederhergestellten Weg
-      nachgezogen — samt der Frage, ob die Vordergrund-Form wieder **erzwungen** wird.
-- [ ] `make gates` grün ohne Ausnahme.
-- [ ] Datei wird nach `docs/plan/carveouts/done/` bewegt (reiner `git mv`). <!-- d-check:ignore (done/ entsteht erst bei erster Carveout-Auflösung) -->
-- [ ] Folge-Slice geschlossen oder explizit dokumentiert.
-
 ## Geschichte
 
 | Datum | Ereignis | Verweis |
@@ -149,3 +143,4 @@ im Kopf behalten.
 | 2026-08-15 | Angelegt — Werkzeug-Wahl nach Modul 7, Ausgang *Carveout* | [ADR-0019](../adr/0019-agent-guard-prueft-die-aufrufform.md) Festlegung 3 |
 | 2026-08-15 | Folge-Slice geschnitten; der Trigger wird am Span gelesen, nicht an der Abdeckungszeile; beide Zeiger der Geltungs-Konfiguration stehen | [slice-086](../planning/done/slice-086-vordergrund-per-updatedinput.md) |
 | 2026-08-15 | Trigger auf **eine** Schwelle gezogen — der Span **und** die committete Mechanik, die ihn erzeugt; der Span eines zurückgenommenen Messaufbaus erfüllt sie nicht. Die Begründung nennt den gemessenen Grund: der Schalter ist sendbar und wirkungslos | [ADR-0019](../adr/0019-agent-guard-prueft-die-aufrufform.md) §Kontext |
+| 2026-08-22 | **Übergeführt** — die Messung aus Weg 1 ist gefahren und negativ; der Status trägt den Übergang, die Adresse bleibt. Die Handlungs-Anweisung im Auflösungs-Trigger und die Verifikations-Checkliste sind damit aufgehoben | [ADR-0021](../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Festlegung 5 |

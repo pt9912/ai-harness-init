@@ -10,9 +10,13 @@
 # Rollen-Agenten abgewiesen. Der Vertrag samt Gegenprobe ist gemessen in
 # docs/reviews/2026-08-15-agent-guard-tool-vertrag.md; dort steht auch, was der
 # Hintergrund-Lauf an Telemetrie kostet: die Rollen-Achse traegt weiter, das
-# Kosten-Aggregat des Aufrufs faellt aus. Gefuehrt wird dieser Ausfall als
-# docs/plan/carveouts/CO-002-token-achse-je-rolle.md — dort stehen Geltungsbereich,
-# Aufloesungs-Trigger und die Messung, die ihn entscheidet.
+# Kosten-Aggregat des Aufrufs faellt aus. ER SETZT DIE BETRIEBSART AUCH NICHT EIN:
+# ein per `updatedInput` nach dem Modell eingesetztes `run_in_background: false`
+# wird uebernommen, und der Lauf startet trotzdem im Hintergrund — gemessen am
+# 2026-08-21 in docs/reviews/2026-08-21-updatedinput-messung.md. Gefuehrt wird dieser
+# Ausfall als docs/plan/carveouts/CO-002-token-achse-je-rolle.md — dort stehen
+# Geltungsbereich, Aufloesungs-Trigger und die Messung, die ihn entscheidet; wie sie
+# ausgegangen ist, sagt der Status im Kopf jener Datei.
 #
 # Reines bash + awk, KEIN node/jq (LH-QA-03): der Extraktor
 # (harness/tools/extract-agent-call.awk) zieht zwei Felder aus der Hook-stdin-JSON,
