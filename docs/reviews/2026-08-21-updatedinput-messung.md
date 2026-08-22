@@ -170,7 +170,7 @@ Dateien; ohne die zitierenden Zeitdokumente leer (Exit 1).
 ## 5. Die Läufe
 
 **Wo gelesen wird.** Der Span-Bestand liegt unter `.harness/state/spans/` — gitignored,
-maschinenlokal, je (Sitzung, Agent) ein Strom (Plan §3); jedes Span-Zitat unten steht mit dem
+maschinenlokal, je (Sitzung, Agent) ein Strom (ADR-0011 Festlegung 3); jedes Span-Zitat unten steht mit dem
 Kommando, das es liest. Eindeutiger Fundschlüssel einer Zeile ist die `tool_use_id`, nicht die
 Sequenznummer — `seq` ist je Strom vergeben und kommt in einer Sitzung mehrfach vor. Tageszählung
 über den ganzen Bestand (2026-08-22 gelesen):
@@ -184,8 +184,12 @@ $ grep -h '"tool":"Agent"' .harness/state/spans/*.jsonl | grep '"ts":"2026-08-21
 ```
 
 Sechs `Agent`-Spans am Messtag, keiner mit Rolle oder Zähler. Dass der Emitter beides schreiben
-**kann**, zeigt derselbe Bestand: `grep -h 'spawned_role' .harness/state/spans/*.jsonl | head -1`
-liefert eine Zeile vom 2026-08-03 mit `spawned_role` **und** allen vier Zählern.
+**kann**, zeigt derselbe Bestand (2026-08-22 gezählt):
+`grep -h 'spawned_role' .harness/state/spans/*.jsonl | wc -l` → **89** Zeilen tragen
+`spawned_role`, und dieselben 89 tragen alle vier Zähler
+(`… | grep input_tokens | grep output_tokens | grep cache_creation_input_tokens | grep -c cache_read_input_tokens`
+→ 89); die jüngste stammt vom 2026-08-09 (`… | grep -o '"ts":"[^"]*"' | sort | tail -1`), keine
+vom Messtag.
 
 ### Lauf 0 — verdrahtete Sitzung, Sonde feuert nicht (Wiederholung statt Deutung)
 
@@ -286,46 +290,42 @@ Beobachtet (Screenshot-belegt), in derselben offenen Sitzung `d3ef8106…`:
 ```
 
 **Was von der Übernahme im Repo nachfahrbar ist — und was nicht.** Die Übernahme ist eine
-Sicht-Beobachtung am Dialog und an der Fertigmeldung; der Span trägt nach ADR-0011 weder
-`description` noch Betriebsart und kann sie nicht stützen. Eine maschinenlesbare Spur liegt
-**außerhalb des Repos**: das Sitzungs-Transkript `~/.claude/projects/<projekt>/d3ef8106-….jsonl` —
-eine maschinenlokale Fremddatei mit dem Prompt, nach ADR-0011 Festlegung 2 keine Telemetrie-Quelle
-und hier **nur gezählt, nicht gelesen** (2026-08-22):
-
-```
-$ grep -o '"description":"SONDE-KONTROLLE-9d4b"' <transkript> | wc -l
-1          # der aufgezeichnete Aufruf trägt die ersetzte Eingabe
-$ grep -o '"run_in_background"' <transkript> | wc -l
-0          # der Schlüssel steht in keinem der zwei aufgezeichneten Agent-Aufrufe
-```
-
-Beide Zahlen hängen an dieser Maschine; **reproduzierbar ohne sie** ist die Beobachtung durch
-Wiederholung: die Kontroll-Fassung in einer danach gestarteten Sitzung verdrahten und die
-Tool-Zeile des Dialogs lesen.
+Sicht-Beobachtung am Dialog und an der Fertigmeldung. Im Repo trägt sie nichts: der Span führt
+nach ADR-0011 weder `description` noch Betriebsart; ein Screenshot ist kein Artefakt dieses Repos;
+und die einzige Datei, die den ausgeführten Aufruf mit seiner Eingabe aufzeichnet — das
+Sitzungs-Transkript — ist **als Quelle ausgeschlossen** (`spec/spezifikation.md` §5 Abweichung 1:
+*„der `transcript_path` wird deshalb weder erfasst noch gelesen"*, Abweichung 5; ADR-0012
+Alternative D; ADR-0019 Annahme (c) — die Umkehr ist dort eine Erlaubnis des Auftraggebers, kein
+Sensor) und wird hier weder gelesen noch gezählt. **Reproduzierbar ist die Beobachtung allein durch
+Wiederholung:** die Kontroll-Fassung in einer danach gestarteten Sitzung verdrahten und die
+Tool-Zeile des Dialogs lesen. Das ist eine Eigenschaft des Gegenstands, nicht dieses Dokuments —
+sie steht in §7 als Grenze und geht mit §8 an den Architect.
 
 ## 7. Ergebnis und Grenzen
 
 **Die eine Beobachtung, am Span gelesen:** Der `Agent`-Span eines Laufs, dessen Eingabe per
-`updatedInput` nachweislich ersetzt wurde und `"run_in_background": false` trug, führt weder
+`updatedInput` nachweislich ersetzt wurde — durch eine Hook-Ausgabe, die `"run_in_background":
+false` trug —, führt weder
 `spawned_role` noch `input_tokens`, `output_tokens`, `cache_creation_input_tokens` oder
 `cache_read_input_tokens`. **Der Weg über `PreToolUse`-`updatedInput` stellt die Vordergrund-Form
 nicht her.**
 
 Grenzen, benannt:
 
-- Ob das Feld vor dem Start aus der Eingabe gestrippt oder beim Start ignoriert wird, ist am Span
-  nicht unterscheidbar; die Transkript-Zählung aus §6 (Schlüssel im aufgezeichneten Aufruf: 0) ist
-  mit *gestrippt* verträglich, entscheidet es aber nicht — für den Vertrag gleichwertig: es wirkt
-  nicht.
+- Ob das Feld vor dem Start aus der Eingabe gestrippt oder beim Start ignoriert wird, ist von
+  außen nicht unterscheidbar — für den Vertrag gleichwertig: es wirkt nicht.
 - Momentaufnahme: gilt am 2026-08-21 für die Werkzeug-Fassung der zitierten Span-Zeilen. Ändert
   das Agenten-Werkzeug seinen Vertrag, ist die Messung neu zu fahren.
 - Der `make span-report` steht daneben, nicht an Stelle der Span-Lektüre: er zählt einen Lauf
   schon mit einem gesetzten Zähler als gedeckt und fragt nicht nach der Rolle.
-- **Die Kontroll-Beobachtung — dass `updatedInput` übernommen wurde — ist repo-extern.** Sie
-  stützt sich auf die Sicht am Dialog und auf eine Zählung im maschinenlokalen Transkript (§6);
-  keine Datei im Repo und kein Span trägt sie. Sie ist die einzige Gegenkraft gegen ein Negativ
-  aus der falschen Ursache (Plan §6) und steht deshalb hier als Grenze: wer sie nicht glaubt,
-  wiederholt den Kontroll-Lauf, statt den Span zu deuten.
+- **Die Kontroll-Beobachtung — dass `updatedInput` übernommen wurde — ist mit den Mitteln
+  dieses Repos prinzipiell nicht belegbar.** Sie stützt sich auf die Sicht am Dialog und an der
+  Fertigmeldung; kein Span trägt sie, ein Screenshot ist kein Artefakt, und die Datei außerhalb,
+  die sie trüge, ist als Quelle ausgeschlossen (§6). Das ist eine Eigenschaft des Gegenstands:
+  jeder weitere Träger, auf den ein Beleg geschoben würde, ist entweder leer oder gesperrt. Sie
+  ist die einzige Gegenkraft gegen ein Negativ aus der falschen Ursache (Plan §6) und steht
+  deshalb hier als Grenze: wer sie nicht glaubt, wiederholt den Kontroll-Lauf, statt den Span zu
+  deuten.
 - **Der Span ist hier Ablese-Ort, obwohl eine aktive ADR ihm den Beleg-Status abspricht.**
   ADR-0011 Festlegung 3 sagt *„Kein Beleg-Status. Ein Span ist kein Review-Gegenstand und keine
   Quelle für eine Zusage im Sinne von AGENTS.md §3.6"*; ADR-0019 Festlegung 4 und CO-002 ordnen
@@ -354,7 +354,9 @@ Beobachtung, sonst nichts.
 **Mit in die Übergabe — ein Punkt, den die Folge-ADR zu tragen hat und dieser Slice nur benennt:**
 der Rang zwischen ADR-0011 Festlegung 3 (*kein Beleg-Status* des Spans) und ADR-0019 Festlegung 4 /
 CO-002 (der Span als Ablese-Ort der Messung). Die Beobachtung dieses Dokuments steht auf drei
-Span-Zeilen eines gitignorierten Bestands ohne Prüfsumme und auf einer Transkript-Zählung
-außerhalb des Repos (§6, §7). Ob das eine permanente Entscheidung tragen darf — oder ob die
-Entscheidung auf dem steht, was unabhängig davon gilt: das Feld ist im Eingabe-Schema nicht
-geführt, und beide fremden Wege sind unverändert —, sagt der Architect, nicht dieses Dokument.
+Span-Zeilen eines gitignorierten Bestands ohne Prüfsumme — und ihre Kontroll-Beobachtung, die
+Übernahme von `updatedInput`, ist mit den Mitteln dieses Repos **prinzipiell nicht belegbar** (§6,
+§7: der Span trägt sie nicht, ein Screenshot ist kein Artefakt, das Transkript ist als Quelle
+ausgeschlossen). Ob das eine permanente Entscheidung tragen darf — oder ob die Entscheidung auf
+dem steht, was unabhängig davon gilt: das Feld ist im Eingabe-Schema nicht geführt, und beide
+fremden Wege sind unverändert —, sagt der Architect, nicht dieses Dokument.
