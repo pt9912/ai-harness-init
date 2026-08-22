@@ -1179,6 +1179,18 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   die Vorverarbeitung, aus der **alle** hier aktiven Module lesen — trimmten schon vor v0.53.0
   Space und Tab. `sources` bekam in `[0.52.0]` eine Herkunfts-Korrektur an seiner Befund-Meldung;
   sie greift nur unter `--config`, und `--config` fährt dieses Repo nicht.
+- **Welches der zwei Beine die Bilanz trägt.** Die CHANGELOG-Aufzählung ist **bestätigend, nicht
+  tragend**: upstream weist sie selbst als unvollständig aus — *„**Diese Aufzählung ist offen** —
+  sie nennt die gemessenen Fälle, nicht alle möglichen; in drei Review-Runden ist sie dreimal
+  unvollständig gewesen."* (`[0.58.0]`, am lokalen d-check-Klon:
+  `awk '/^## \[0\.58\.0\]/,/^## \[0\.57\.0\]/' CHANGELOG.md`). Eine Liste, die ihre eigene
+  Vollständigkeit bestreitet, kann die §3.5-Frage nicht beantworten. **Tragend ist das andere
+  Bein:** die Quell-Differenz über die Regeldateien der aktiven Module
+  (`git diff --numstat v0.51.1..v0.62.0 -- <Regeldatei>`, Bullet oben) — sie ist geschlossen, weil
+  sie den Bestand misst statt eine Aufzählung zu lesen. Wer die Bilanz auf die schnellere Hälfte
+  verkürzt — CHANGELOG nach „findet weniger" durchsuchen, Modul zuordnen, fertig —, bekommt über
+  einer Spanne mit **nicht ausgewiesener** Lockerung an einem aktiven Modul ein grünes Ergebnis
+  ohne Deckung.
 - **Kein ADR nötig ([`AGENTS.md`](../AGENTS.md) §3.5).** §3.5 verlangt einen ADR für **Senkungen**.
   Gemessen senkt der Sprung an keinem aktiven Modul und hebt an einem (`spans`) — „Anheben →
   Steering-Loop, kein ADR nötig" hält
@@ -1194,8 +1206,118 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Image; `make full-smoke` ist der Lauf, der das emittierte Gate mit ihm fährt.
 - **Auflösungs-Trigger:** permanent; bei d-check-Release `d-check --print-mk` neu erzeugen + Digest
   neu pinnen ([`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert) §Auflösungs-Trigger) und
-  die Strenge-Bilanz über die neue Spanne neu ziehen — der Trockenlauf allein beantwortet die
-  §3.5-Frage nicht.
+  die Strenge-Bilanz über die neue Spanne neu ziehen — **an der Quell-Differenz der Regeldateien**,
+  nicht an der CHANGELOG-Aufzählung; der Trockenlauf allein beantwortet die §3.5-Frage nicht.
+
+### MR-025 — Eine Zahl im Text steht neben dem Kommando, das sie liefert
+
+- **Datum:** 2026-08-22
+- **Geltungsbereich:** die **lebenden**, repo-eigenen Markdown-Artefakte — gemessen
+  `git ls-files '*.md' ':!docs/reviews/**' ':!docs/plan/planning/done/**' ':!.harness/baseline/**' | wc -l`
+  → **75** von **377** Markdown-Dateien im Index (`git ls-files '*.md' | wc -l`). Draußen liegen,
+  jeweils mit Grund: `docs/reviews/**` und `docs/plan/planning/done/**` — **262** Dateien
+  (`git ls-files 'docs/reviews/*.md' 'docs/plan/planning/done/*.md' | wc -l`), **Zeitdokumente**,
+  die eine Messung zu ihrem Datum festhalten und darum nicht nachgezogen werden;
+  `.harness/baseline/**` — **40** Dateien (`git ls-files '.harness/baseline/**/*.md' | wc -l`),
+  committet vendored Fremd-Bestand, den dieses Repo spiegelt statt schreibt
+  ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); und
+  `**/*.template.md`, Ziel-Form-Vorlagen mit Platzhaltern statt Aussagen
+  ([`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) §`scan.ignore`).
+  **Dieses Repo, nicht das emittierte:** was ein emittiertes Repo an Beleg-Regeln bekommt,
+  entscheidet der Slice, der die Tool-Ebene entscheidet.
+- **Setzung 1 — die Zahl und ihr Kommando stehen beieinander, und das Kommando ist gefahren.**
+  Eine Zahl, die als **Messwert** auftritt — Erwartungswert, Bruch-Kriterium, Beleg —, trägt im
+  selben Absatz das Kommando, das **genau sie** ausgibt, und wer sie schreibt, hat es über dem
+  Baum gefahren, von dem sie spricht. Liefert kein Kommando sie — Fremdquelle, Zählung von Hand,
+  Beobachtung an einer Oberfläche —, steht **das** dabei; ein ungefähr passendes Kommando
+  danebenzustellen ist der Fehler, nicht die Lücke. Zahlen ohne Messwert-Rolle (Versionen, Daten,
+  Aufzählungen im Fließtext) bindet die Setzung nicht.
+- **Setzung 2 — ein Erwartungswert misst seinen Gegenstand, nicht sein Umfeld.** Eine Zahl, die
+  mit dem Artefakt mitwandert — die Dateizahl eines Gate-Laufs, die Trefferzahl über einen
+  wachsenden Baum, die Vorkommen-Zahl in einer Datei, deren Kopf noch bearbeitet wird —, taugt
+  nicht als Erwartungswert: sie bricht, ohne dass am Gegenstand etwas bricht. Sie wird entweder
+  ausdrücklich als **kein** Erwartungswert gekennzeichnet oder durch ein Kriterium ersetzt, das
+  den Gegenstand selbst misst (`grep -c '^docs-check:' d-check.mk` statt der Zahl aller
+  `docs-check`-Vorkommen derselben Datei). Musterfall ist die Dateizahl des Doku-Gates: am
+  2026-08-22 meldet `make docs-check` → `336 Datei(en) geprüft, 0 Befund(e)`, Exit 0, und jedes
+  neu angelegte Dokument erhöht sie.
+- **Begründung (gemessen, nicht postuliert):** Die Klasse — *eine Zahl im Fließtext, die ihr
+  danebenstehendes Kommando nicht liefert* — ist über **zwei** Slices und **sechs** Review-Runden
+  wiederholt gemeldet worden. Der Nenner ist mechanisch:
+  `grep -h '^### \(HIGH\|MEDIUM\|LOW\|INFO\)-' docs/reviews/2026-08-22-slice-08*.md | wc -l` →
+  **29** Findings über sieben Dateien. **Zehn** davon tragen diese Klasse — **Untergrenze, mit
+  Absicht:** die Zugehörigkeit ist ein Urteil, kein Muster, und sie mechanisch zu beziffern hieße,
+  ein Muster als Kriterium auszugeben, das keines ist ([`AGENTS.md`](../AGENTS.md) §3.6). Die
+  Fundorte liegen in Planungs-Text, in einer Commit-Message und in einem Mess-Zeitdokument — drei
+  Artefakt-Arten und mehr als eine schreibende Rolle. **Zwei** der zehn entstehen in demselben
+  Commit, der die Klasse an anderer Stelle behebt: `git show abe01f4` (**eine** Datei, ein
+  Slice-Plan) streicht in einem DoD-Punkt eine mitwandernde Dateizahl als Erwartungswert und setzt
+  in einem anderen zwei Zahlen, die ihre danebenstehenden Kommandos nicht liefern. Der Befund ist damit
+  nicht die Wiederholung, sondern die fehlende **Trägerschaft**: was allein in Zeitdokumenten
+  steht, schlägt kein Lauf wieder auf.
+- **Was der Schaden ist.** Nicht die falsche Ziffer, sondern was ein Lauf aus ihr macht, der sie
+  nachzählt: entweder ein falsches Rot an einem korrekten Gegenstand oder die Gewohnheit,
+  ausgewiesene Messungen gar nicht erst nachzuzählen. Die zweite Wirkung ist die teurere — sie
+  entwertet jede Zahl im Repo, auch die richtigen.
+- **Kein Wächter, und das gehört dazu — die Setzung liegt im Feedforward-Quadranten.** Der
+  nächstliegende Kandidat deckt sie in **zwei** Achsen nicht: `make comment-claims` bildet seinen
+  Prüfbereich im Rezept aus vier `git ls-files`-Mustern, und keines trifft eine Markdown-Datei
+  (`git ls-files 'internal/*.go' 'internal/**/*.go' 'cmd/**/*.go' 'harness/tools/*.sh' '.claude/hooks/*.sh' | grep -c '\.md$'`
+  → **0**, Exit 1); dieser Ausschluss ist **dauerhaft** ([`AGENTS.md`](../AGENTS.md) §4
+  Ausschluss 2, [`harness/README.md`](README.md) §*Was `comment-claims` nicht deckt* Punkt 2 —
+  „(2) und (3) sind permanent"). Und er prüft die **Existenz** eines genannten Sensors, nicht
+  seinen Wert.
+- **Drei Kandidaten liegen im Bestand; ihre Eignung ist ungeprüft.** `citations` und
+  `codepaths.check-lines`
+  ([`MR-011`](#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines)) binden Text an eine
+  **Datei-Spanne**; `structure` — mit dem Pin aus
+  [`MR-024`](#mr-024--d-check-pin-v0620-structure-verfügbar) verfügbar, nicht aktiviert
+  (`grep -c 'structure' .d-check.yml` → **0**) — bindet Abschnitte an **Struktur-Invarianten**.
+  Das ist aus ihren Modul-Verträgen gelesen und an diesem Repo **nicht** erprobt; daraus folgt
+  bestenfalls, dass eines von ihnen die **Form** fordern könnte (Zahl und Kommando im selben
+  Abschnitt). Den **Wert** gegen einen Lauf zu halten kann keines, denn keines fährt einen Lauf:
+  `git grep -ln 'os/exec' v0.62.0 -- 'internal/*.go' 'internal/**/*.go' 'cmd/**/*.go' ':!*_test.go'`
+  am lokalen d-check-Klon ist **leer** (Exit 1) — ohne die Test-Ausnahme bleibt genau ein
+  Akzeptanztest übrig, kein Produktionspfad.
+- **Cutoff — ab diesem Eintrag, kein Nachrüsten.** Gebunden ist die Zahl, die geschrieben oder
+  geändert wird; der **Bestand ist kein Arbeitsauftrag**. Seine Fläche ist gemessen: **66** der
+  75 lebenden Markdown-Dateien nennen mindestens ein Kommando
+  (`git grep -lE '(make [a-z-]+|grep -|docker run|git (grep|ls-files|show|log|diff))' -- '*.md' ':!docs/reviews/**' ':!docs/plan/planning/done/**' ':!.harness/baseline/**' | wc -l`).
+  Das ist die **Obergrenze der Fläche**, keine Zahl von Verstößen — wie viele Zahlen dort ihr
+  Kommando nicht liefern, sagt kein Kommando, weil die Zugehörigkeit ein Urteil ist. Ein Maßstab
+  über diesen Bestand wäre dauerhaft rot und entwertete die Setzung, statt sie zu tragen —
+  dieselbe Begründung trägt den Cutoff in
+  [`MR-015`](#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) und in
+  [`AGENTS.md`](../AGENTS.md) §3.7. Wer eine solche Zeile ohnehin anfasst, zieht sie nach; wer sie
+  stehen lässt, bricht nichts.
+- **Kein ADR nötig ([`AGENTS.md`](../AGENTS.md) §3.5).** §3.5 verlangt einen ADR für **Senkungen**.
+  Beide Setzungen sind eine **Verschärfung** — eine zusätzliche Beleg-Pflicht, eine engere Form
+  des Erwartungswerts —, und „Anheben → Steering-Loop, kein ADR nötig" hält
+  [`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) fest.
+- **Warum der Adaptions-Block und nicht der Hard-Rule-Katalog.** Eine Hard Rule ist permanent;
+  diese Setzung ist es ausdrücklich nicht — sie trägt einen Sensor-Vorbehalt und einen fälligen
+  Trigger, und beides hat im Katalog keinen Platz. Ob sie nach
+  [`AGENTS.md`](../AGENTS.md) §3 gehört, entscheidet der Slice, der ihren Sensor baut; dieselbe
+  Grenzziehung trifft
+  [`MR-015`](#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) für seine
+  eigene Setzung. Die Baseline `v3.5.2` kennt die Klasse als **Harness-Lüge** dem Begriff nach
+  (`.harness/baseline/v3.5.2/regelwerk/grundlagen-konventionen.md` §Kernbegriffe: *„Der Harness
+  behauptet eine Kontrolle, die real nicht (mehr) greift"*), führt aber keine Regel über den Beleg
+  einer Zahl in Prosa — die Setzung füllt eine Lücke, statt von der Baseline abzuweichen.
+- **Auflösungs-Trigger:** **nicht permanent — fällig beim nächsten d-check-Pin-Sprung.** Das
+  Ereignis ist beobachtbar und meldet sich selbst: `make freshness-dcheck` steht auf *VERALTET*, und der
+  Slice, der den Pin zieht, schlägt diesen Block ohnehin auf
+  ([`MR-024`](#mr-024--d-check-pin-v0620-structure-verfügbar) §Auflösungs-Trigger führt ihn
+  hierher). Fällig ist dann eine **Entscheidung**, keine Erinnerung, und es sind drei: **(a)** ein
+  eigener hermetischer Prüfer in der Bauart von `make comment-claims`, mit Markdown im
+  Prüfbereich — dann wandert die Setzung in den Feedback-Quadranten und dieser Eintrag nach
+  [`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf) auf Kopf und
+  Zeiger; **(b)** Adoption eines d-check-Moduls, das die **Form** trägt — dann sagt dieser Eintrag
+  ausdrücklich, dass der **Wert** ungedeckt bleibt; **(c)** bewusste **Permanenz** im
+  Feedforward-Quadranten — dann steht sie hier als Entscheidung, nicht als Rest. Die Vorfrage zu
+  (b) beantwortet das `os/exec`-Kommando oben, am neuen Tag wiederholt: solange es leer bleibt,
+  fährt kein Modul einen Lauf. **Früher fällig**, sobald `grep -c 'structure' .d-check.yml` über
+  **0** steigt — wer das Modul aktiviert, entscheidet die Form-Hälfte mit und trägt sie hier nach.
 
 ## Modus-Deklaration pro Sub-Area
 
