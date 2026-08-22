@@ -13,7 +13,7 @@ Hintergrund-Start: das Tool kehrt in Millisekunden zurück, und der `Agent`-Span
 `spawned_role` noch einen der vier Zähler. Der Splice-Lauf (§5) zeigt dasselbe Span-Bild; ob
 **seine** gespleißte Ausgabe übernommen wurde, ist nicht beobachtet (der Dialog zeigt die rohe
 Eingabe nicht) — wohlgeformt ist sie offline (§4). Das Feld ist im Eingabe-Schema des Werkzeugs
-nicht mehr geführt und bleibt in einem nachweislich übernommenen `updatedInput` wirkungslos.
+nicht mehr geführt und bleibt in einem übernommenen `updatedInput` wirkungslos (die Übernahme ist per Sicht am Dialog belegt, §6 — nicht am Span).
 
 Alle Läufe dieses Dokuments unter `model_version: claude-opus-5[1m]` (aus den Span-Zeilen);
 die Messung ist eine Momentaufnahme dieses Datums und dieser Werkzeug-Fassung.
@@ -294,7 +294,7 @@ Sicht-Beobachtung am Dialog und an der Fertigmeldung. Im Repo trägt sie nichts:
 nach ADR-0011 weder `description` noch Betriebsart; ein Screenshot ist kein Artefakt dieses Repos;
 und die einzige Datei, die den ausgeführten Aufruf mit seiner Eingabe aufzeichnet — das
 Sitzungs-Transkript — ist **als Quelle ausgeschlossen** (`spec/spezifikation.md` §5 Abweichung 1:
-*„der `transcript_path` wird deshalb weder erfasst noch gelesen"*, Abweichung 5; ADR-0012
+*„der `transcript_path` wird deshalb weder erfasst noch gelesen"*, Abweichung 6; ADR-0012
 Alternative D; ADR-0019 Annahme (c) — die Umkehr ist dort eine Erlaubnis des Auftraggebers, kein
 Sensor) und wird hier weder gelesen noch gezählt. **Reproduzierbar ist die Beobachtung allein durch
 Wiederholung:** die Kontroll-Fassung in einer danach gestarteten Sitzung verdrahten und die
@@ -304,7 +304,7 @@ sie steht in §7 als Grenze und geht mit §8 an den Architect.
 ## 7. Ergebnis und Grenzen
 
 **Die eine Beobachtung, am Span gelesen:** Der `Agent`-Span eines Laufs, dessen Eingabe per
-`updatedInput` nachweislich ersetzt wurde — durch eine Hook-Ausgabe, die `"run_in_background":
+`updatedInput` ersetzt wurde (per Sicht am Dialog belegt, §6) — durch eine Hook-Ausgabe, die `"run_in_background":
 false` trug —, führt weder
 `spawned_role` noch `input_tokens`, `output_tokens`, `cache_creation_input_tokens` oder
 `cache_read_input_tokens`. **Der Weg über `PreToolUse`-`updatedInput` stellt die Vordergrund-Form
