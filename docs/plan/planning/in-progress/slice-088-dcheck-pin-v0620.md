@@ -87,11 +87,19 @@ steht das hier, statt dass ein Kommando die Lücke verdeckt.
         diesen Slice ausgelöst hat, und derselbe Lauf schließt ihn ab.
       - `grep -n 'Image v0\.62\.0' harness/conventions.md` → **eine** Zeile deckt die
         §Baseline-Zeile. Handlauf.
-      - `make docs-check` deckt den neuen MR-Eintrag — **sofern** die §Baseline-Zeile ihn als
-        Anker-Link nennt: das `anchors`-Modul meldet `anchor-missing`, wenn die verlinkte
-        Überschrift fehlt (hermetisch in beide Richtungen gemessen — ohne Eintrag ein Befund bei
-        Exit 1, mit Eintrag null Befunde bei Exit 0). Diese Kopplung ist der Grund, den Eintrag
-        von der §Baseline-Zeile aus zu **verlinken** statt ihn nur anzulegen.
+      - `make docs-check` deckt vom neuen MR-Eintrag die **Existenz der Überschrift und die
+        Auflösbarkeit des Ankers**, nicht die Version, die beide nennen — und das **nur, sofern**
+        die §Baseline-Zeile ihn als Anker-Link nennt: das `anchors`-Modul meldet
+        `anchor-missing`, wenn die verlinkte Überschrift fehlt (hermetisch in beide Richtungen
+        gemessen — ohne Eintrag ein Befund bei Exit 1, mit Eintrag null Befunde bei Exit 0).
+        Diese Kopplung ist der Grund, den Eintrag von der §Baseline-Zeile aus zu **verlinken**
+        statt ihn nur anzulegen. **Die Richtigkeit der Version trägt hier kein Kommando:** stehen
+        Anker-Link und Überschrift gemeinsam auf einer falschen Version, löst der Anker auf und
+        der Lauf bleibt grün; der §Baseline-Handlauf eine Zeile darüber bleibt es ebenfalls, denn
+        er liest die §Baseline-Zeile und nicht die Überschrift. Das ist dieselbe Klasse wie die
+        Blindstelle von `make test` — zwei Werte, die zueinander stimmen und zur Welt nicht —,
+        nur schließt sie hier kein zweites Kommando: die Version im MR-Titel wird gelesen, nicht
+        gemessen.
 
       **Der [`harness/conventions.md`](../../../../harness/conventions.md)-Anteil gehört dem
       Architect** ([`AGENTS.md`](../../../../AGENTS.md) §3.8): §Baseline-Zeile und MR-Eintrag
@@ -103,7 +111,7 @@ steht das hier, statt dass ein Kommando die Lücke verdeckt.
       sind vollzogen (`doc-check` → `docs-check` als Target **und** im Hilfetext, `doc-help`-Grep
       auf `docs?-`, `DCHECK_DIGEST` gepinnt, adaptierter Kopfkommentar). Alles Übrige ist
       **verbatim vom Tool** — auch das neue Target `doc-structure` und das neue
-      `--disable structure` in den fokussierten advisory-Recipes.
+      `--disable structure` in den **bestehenden** fokussierten advisory-Recipes (§3 zählt sie).
 
       **Gebrochen ist die Zusage, sobald eines von dreien eintritt:** `structure` steht in der
       `modules:`-Liste von [`.d-check.yml`](../../../../.d-check.yml)
@@ -113,10 +121,12 @@ steht das hier, statt dass ein Kommando die Lücke verdeckt.
       Treffer — ein dort behaupteter Gate-Name ist genau die Halluzination, die
       [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
       ausschließt); oder `docs-check` verschwindet aus [`d-check.mk`](../../../../d-check.mk)
-      (`grep -n 'docs-check' d-check.mk` → vier Zeilen), womit die Re-Adaption zurückgefallen wäre.
+      (`grep -c '^docs-check:' d-check.mk` → **1**, und die **0** ist der Bruch — die
+      Re-Adaption wäre zurückgefallen; die Gesamtzahl der `docs-check`-Vorkommen taugt nicht als
+      Erwartungswert, sie wandert mit dem Kopfkommentar).
 
-      **Für die Modul-Liste dieses Repos gibt es keinen Sensor.** `grep -rn 'd-check.yml' test/`
-      liefert zwei Treffer, und keiner trägt sie:
+      **Für die Modul-Liste dieses Repos gibt es keinen Sensor.** `grep -rl 'd-check.yml' test/`
+      nennt **zwei** Dateien (`grep -rn` zeigt darin sieben Zeilen), und keine trägt sie:
       [`test/sources-pin.bats`](../../../../test/sources-pin.bats) koppelt den `sources`-Pin an
       `BASELINE_ZIP_SHA256`, [`test/mutations/04-inscope-filterregel.sh`](../../../../test/mutations/04-inscope-filterregel.sh)
       nennt die Datei als Beispiel für die **emittierte** Seite. Die einzigen
@@ -149,8 +159,11 @@ Die Vorab-Messung ist read-only gefahren und steht hier, damit der Schnitt entsc
 **strukturgleich**; die Differenzen sind (a) Tag- und Digest-Zeile, (b) unsere Adaption
 `docs-check` gegen das erzeugte `doc-check` samt dem erweiterten `doc-help`-Grep, (c) ein **neues
 Modul** `structure` — ein neues Target `doc-structure` und ein zusätzliches `--disable structure`
-in jedem fokussierten advisory-Recipe. Der Trockenlauf über den unveränderten Baum liefert
-`0 Befund(e)`, Exit 0.
+in **fünf der sechs** fokussierten advisory-Recipes; das sechste **ist** `doc-structure`, es
+enabled sein Modul, statt es abzuwählen. Am v0.62.0-Fragment gezählt:
+`grep -c -- '--enable' d-check.mk` → **6** Recipes, davon mit `--disable structure`
+(`grep -- '--enable' d-check.mk | grep -c -- '--disable structure'`) → **5**. Der Trockenlauf
+über den unveränderten Baum liefert `0 Befund(e)`, Exit 0.
 
 **Der Slice wiederholt beides.** Ein Ergebnis von gestern belegt den Baum von gestern; die
 explizite `modules:`-Liste in [`.d-check.yml`](../../../../.d-check.yml) immunisiert gegen neue
@@ -261,6 +274,36 @@ Eintritts-Move nötig und im Plan nicht vorgesehen.
 - **Der Emitter-Pin ist ein öffentlicher Vertrag.** Er landet in fremden Repos. `make smoke` allein
   belegt ihn nicht — es prüft die Emission, nicht den Lauf des emittierten Gates; das tut
   `make full-smoke`. Wer nur den ersten fährt, hat den Pin behauptet, nicht belegt.
+- **Eine Zahl im Fließtext, die ihr danebenstehendes Kommando nicht liefert, hat in diesem Repo
+  keinen Sensor — offener Punkt über diesen Slice hinaus.** Die Klasse trifft jede Prosa-Behauptung
+  neben ihrem Beleg-Kommando, in Plänen wie in Register-Einträgen; ihr Schaden ist nicht die
+  falsche Ziffer, sondern was ein Lauf daraus macht, der sie nachzählt: entweder ein falsches Rot
+  an einem korrekten Gegenstand oder die Gewohnheit, ausgewiesene Messungen gar nicht erst
+  nachzuzählen. **Gemessen ist die Lücke, nicht vermutet:** `make comment-claims` lässt **jede**
+  Markdown-Datei dauerhaft außerhalb seines Prüfbereichs
+  ([`AGENTS.md`](../../../../AGENTS.md) §4) und prüft ohnehin, ob ein genannter Sensor
+  **existiert**, nicht, ob eine Behauptung stimmt; kein Modul des Doku-Gates führt ein Kommando aus,
+  gegen dessen Ausgabe eine Zahl im Text stehen könnte.
+
+  **Kandidaten liegen im Bestand, ihre Eignung ist ungeprüft.** `citations` und
+  `codepaths.check-lines`
+  ([`MR-011`](../../../../harness/conventions.md#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines))
+  binden Text an eine **Datei-Spanne**; `structure`, mit diesem Pin verfügbar, bindet Abschnitte an
+  **Struktur-Invarianten** (verbotenes/gefordertes Muster, geforderte Marken). Alle drei sind
+  hermetisch und lesen Dateien — aus ihren Modul-Verträgen gelesen, nicht an diesem Repo erprobt.
+  Daraus folgt bestenfalls, dass `structure` die **Form** fordern könnte (eine Zahl nur zusammen mit
+  ihrem Kommando im selben Abschnitt); den **Wert** gegen den Lauf zu halten kann keines von ihnen,
+  weil keines einen Lauf fährt.
+
+  **Träger, solange kein Sensor existiert:** ein Eintrag im Adaptions-Block von
+  [`harness/conventions.md`](../../../../harness/conventions.md), geschrieben vom **Architect**
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8) — erkennbar daran, dass sein §Auflösungs-Trigger den
+  nächsten Lauf benennt, der ihn zieht, so wie die Pin-Linie ihre Einträge beim nächsten Re-Pin
+  zieht. Ohne diesen Träger lebt die Klasse nur in Zeitdokumenten, die kein Lauf wieder aufschlägt.
+  **Offen, und hier nicht entschieden:** ob der Sensor einen eigenen Schnitt bekommt — ein
+  hermetischer Prüfer in der Bauart von `make comment-claims`, mit Markdown im Prüfbereich — oder
+  ob die Adoption von `structure` genügt. Dieser Slice entscheidet sie nicht; er
+  stellt sie und bewegt seinen eigenen Prüfbereich nicht.
 
 ## 7. Closure-Notiz (nach `done/`)
 
