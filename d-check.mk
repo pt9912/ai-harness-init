@@ -7,7 +7,7 @@
 #   * die advisory-Targets (`doc-trace`/`doc-doctor`/…) bleiben verbatim vom Tool und
 #     sind NICHT als Gate behauptet — verfügbar wie `regelwerk-check`, kein
 #     halluziniertes Gate (LH-QA-01). Die opt-in-Module `citations` (18., v0.50.0),
-#     `sources` (19., Netz, v0.51.0) und `structure` (20., v0.62.0, Target
+#     `sources` (19., Netz, v0.51.0) und `structure` (20., v0.57.0, Target
 #     `doc-structure`) sind NICHT aktiviert; die sechs fokussierten advisory-Recipes
 #     disablen alle drei (verbatim vom Tool). Die Zeilenreferenz-Prüfung
 #     `codepaths.check-lines` ist in `.d-check.yml` aktiviert (additive Härtung, MR-011).
