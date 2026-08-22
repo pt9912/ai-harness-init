@@ -8,9 +8,11 @@
 #     sind NICHT als Gate behauptet — verfügbar wie `regelwerk-check`, kein
 #     halluziniertes Gate (LH-QA-01). Die opt-in-Module `citations` (18., v0.50.0),
 #     `sources` (19., Netz, v0.51.0) und `structure` (20., v0.57.0, Target
-#     `doc-structure`) sind NICHT aktiviert; die sechs fokussierten advisory-Recipes
-#     disablen alle drei (verbatim vom Tool). Die Zeilenreferenz-Prüfung
-#     `codepaths.check-lines` ist in `.d-check.yml` aktiviert (additive Härtung, MR-011).
+#     `doc-structure`) sind NICHT aktiviert; von den sechs fokussierten advisory-Recipes
+#     disablen FUENF alle drei (verbatim vom Tool) — das sechste IST `doc-structure` und
+#     enabled sein Modul, wie jedes advisory-Target ohne Platz in `make gates`.
+#     Die Zeilenreferenz-Prüfung `codepaths.check-lines` ist in `.d-check.yml`
+#     aktiviert (additive Härtung, MR-011).
 # Einbinden: `include d-check.mk`; eine eigene .d-check.yml danebenlegen. Neu-Erzeugung:
 # `d-check --print-mk`, dann `doc-check`→`docs-check` re-adaptieren und DCHECK_DIGEST pinnen.
 DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.62.0
