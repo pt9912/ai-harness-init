@@ -125,8 +125,13 @@ Folge-Slice, ist der Carveout de facto permanent — dann gehört er nicht in `c
 
 ### Wohin der Carveout danach gehört — gemessen, bevor entschieden
 
-**Vier Stellen sprechen über den Ort, und keine schreibt diesen Fall vor.** Drei stehen im
-Regelwerk, die vierte im Carveout selbst. Regelwerk `v3.5.2`,
+**Fünf Stellen sprechen über den Ort, und keine schreibt diesen Fall vor.** Vier stehen im
+Regelwerk, die fünfte im Carveout selbst. **Die Abzählung ist prüfbar statt behauptet:** §Ziel-Form
+führt genau **vier** Bullets (*„Operative Regeln, die das Template nicht selbst erzwingt"*), und
+zwei davon sprechen über den Ort — der **erste** (Pflicht-Header, unten disponiert) und der
+**vierte** (`git mv` bei der Auflösung); die zwei dazwischen betreffen die **Form** des
+Auflösungs-Triggers und den `# CO-<NNN>`-Kommentar in einer Gate-Konfiguration und nennen keinen
+Ablageort. Dazu kommen §Werkzeug-Wahl bei Diskrepanz und §Carveout-Audit-Slice. Regelwerk `v3.5.2`,
 `modul-07-carveouts.md` §Carveout-Audit-Slice nennt für den permanenten Übergang **nur** das
 Ziel-Artefakt: *„Drei Status-Übergänge je Carveout: aufgelöst (Trigger eingetreten → `git mv` nach
 `done/`), permanent (Trigger nie → ADR), weiterhin aktiv (Trigger sinnvoll → `Letzte
@@ -140,11 +145,39 @@ Verzeichnis."* §Werkzeug-Wahl bei Diskrepanz spricht vom **leeren** Stub: *„D
 der beiden Fälle: er wird nicht **aufgelöst** — sein Trigger tritt nie ein —, und er ist kein
 **leerer** Stub, sondern ein gelebtes, vielfach adressiertes Artefakt.
 
+**Der erste Bullet der §Ziel-Form ist der einzige Regelwerks-Satz, der `carveouts/` und *permanent*
+zusammen nennt — er greift hier nach seiner Logik, nicht nach seinem Buchstaben, und das gehört
+gesagt.** Verbatim: *„Sechs Pflicht-Header-Felder: Status · Datum angelegt · Letzte Prüfung ·
+betroffenes Gate · Geltungsbereich · Folge-Slice. Fehlt der Folge-Slice, ist der Carveout de facto
+permanent — dann gehört er nicht in `carveouts/`, sondern über den Trichter unten in eine ADR."*
+Dieselbe Disposition hat [ADR-0012](0012-haupt-kontext-ohne-token-bilanz.md) §Kontext für denselben
+Satz vorgemacht, mit derselben Wendung. Drei Gründe, jeder am Wortlaut prüfbar:
+
+1. **Sein Vordersatz trifft nicht zu.** Die Bedingung ist *„Fehlt der Folge-Slice"* — ein
+   **Form**-Mangel des Kopfes, und der Satz steht in genau dem Bullet, der die sechs Pflicht-Felder
+   aufzählt. [`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md) hat das Feld **gefüllt**, der
+   Slice ist gelaufen und hat den zweiten Ausgang geliefert (oben, §Der Folge-Slice-Test). Die
+   Permanenz dieses Carveouts folgt nicht aus einem fehlenden Folge-Slice, sondern aus einer
+   gefahrenen Messung und aus Trichter-Frage 2.
+2. **Sein Nachsatz ist hier bereits vollzogen.** Er ordnet an, **was zu tun ist**: *„über den
+   Trichter unten in eine ADR"*. Genau das ist geschehen — der Trichter ist mit beiden Fragen in
+   der Reihenfolge des Moduls gefahren, und diese ADR ist sein Ergebnis. Wer den Satz auf diesen
+   Fall anwendet, bekommt diese Entscheidung, keinen Widerspruch zu ihr.
+3. **Als Ablage-Regel gelesen widerspräche er sich selbst.** Das Ziel, das dasselbe Modul für einen
+   abgeschlossenen Carveout vorsieht, ist `carveouts/done/` — ein **Unterverzeichnis von
+   `carveouts/`**. Eine Lesart, unter der `carveouts/done/` das *„gehört nicht in `carveouts/`"*
+   erfüllt und `carveouts/` es verletzt, behandelt denselben Pfad-Präfix zugleich als innen und
+   außen. Als **Werkzeug**-Aussage — *„das gehört nicht in die Werkzeug-Klasse Carveout, sondern in
+   eine ADR"* — ist der Satz widerspruchsfrei, und nur diese Lesart deckt sich mit dem Bullet, in
+   dem er steht, und mit dem Ort, auf den er selbst verweist: *„über den Trichter unten"* ist
+   §Werkzeug-Wahl bei Diskrepanz, der Abschnitt, der über **Werkzeuge** entscheidet.
+
 **Das Ergebnis dieser Lesung ist ein Negativbefund, und er ist das erste und tragende Bein dieser
 Entscheidung:** im Regelwerk steht **kein** Satz, der für einen **gelebten, übergeführten**
 Carveout ein Verzeichnis vorschreibt. §Carveout-Audit-Slice nennt für *permanent* nur das
-Ziel-Artefakt, §Ziel-Form spricht von der **Auflösung**, §Werkzeug-Wahl vom **leeren** Stub — und
-die Leere ist dort kausal begründet (*„Inhalt ganz aufgegangen"*). **Die Klammer der §Ziel-Form,
+Ziel-Artefakt, §Ziel-Form spricht im vierten Bullet von der **Auflösung** und im ersten von der
+**Werkzeug-Klasse** (soeben disponiert), §Werkzeug-Wahl vom **leeren** Stub — und die Leere ist
+dort kausal begründet (*„Inhalt ganz aufgegangen"*). **Die Klammer der §Ziel-Form,
 *„plus Gate-Ausnahme entfernen, `make gates` grün ohne Ausnahmen"*, ist deshalb hier keine
 Bedingung des Moves** — sie gehört zur Auflösung, und sie hat hier nicht einmal einen Gegenstand:
 [`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md) führt als betroffenes Gate ausdrücklich
@@ -153,7 +186,7 @@ eine Regel ins Repo, die im Regelwerk nicht steht — und der nächste, der eine
 **auflöst**, während der Gate aus fremdem Grund rot ist, könnte sie zitieren und die Datei liegen
 lassen. Genau das nennt derselbe Satz *„eine zweite Lüge"*.
 
-**Die vierte Stelle steht im Carveout selbst, und sie ordnet den Move an.** Sein
+**Die fünfte Stelle steht im Carveout selbst, und sie ordnet den Move an.** Sein
 Auflösungs-Trigger sagt für genau diesen Ausgang: *„Dann ist dieser Carveout **in eine Folge-ADR
 zu überführen** (`Status: Permanent — übergeführt in ADR-<NNNN>`) **und nach `done/` zu
 verschieben**, damit die Werkzeug-Wahl-Spur lesbar bleibt."* Und seine Verifikations-Checkliste
@@ -429,10 +462,13 @@ eigenen Abschnitt für den permanenten Übergang.
 Messung — und die zwei tun Verschiedenes.**
 
 - **Die Quelle lässt den Ort offen.** Im Regelwerk steht **kein** Satz, der für einen gelebten,
-  übergeführten Carveout ein Verzeichnis vorschreibt (die drei Stellen sind oben je verbatim
-  gelesen). Das ist die **Erlaubnis** — und nur sie; §Ziel-Forms Klammer *„`make gates` grün ohne
-  Ausnahmen"* gehört zur **Auflösung** und wird hier ausdrücklich **nicht** als Move-Bedingung in
-  Anspruch genommen (Kontext oben).
+  übergeführten Carveout ein Verzeichnis vorschreibt — alle **vier** Bullets der §Ziel-Form sind
+  dafür gelesen, dazu §Werkzeug-Wahl und §Carveout-Audit-Slice, jede Ort-Aussage verbatim (Kontext
+  oben). Das ist die **Erlaubnis** — und nur sie. Die zwei Sätze, die man dagegen halten könnte,
+  sind dort ausdrücklich disponiert: §Ziel-Forms Klammer *„`make gates` grün ohne Ausnahmen"*
+  gehört zur **Auflösung** und wird hier **nicht** als Move-Bedingung in Anspruch genommen, und der
+  erste Bullet (*„dann gehört er nicht in `carveouts/`"*) spricht über die **Werkzeug-Klasse**, mit
+  einem Vordersatz, der hier nicht zutrifft, und einem Nachsatz, den diese ADR **vollzieht**.
 - **Die Messung entscheidet innerhalb dieses offenen Raums.** Der reine Move macht **18**
   eingehende Verweise in zwei nach [`AGENTS.md`](../../../AGENTS.md) §3.4 eingefrorenen ADRs zu
   `target-missing` (Kommando oben). Das ist keine Erlaubnis, sondern der **positive Grund** für
@@ -455,6 +491,18 @@ fallen. Mit ihnen fällt die Checkliste als Ganzes — Regelwerk `v3.5.2`, `modu
 Architektur-Folgen"*; die Architektur-Folgen stehen als Folgepflichten unten, und der Stub trägt
 sie nicht ein zweites Mal. **Ohne diesen Schritt trüge die Weiche die Anweisung, die diese
 Festlegung verbietet** — sichtbar für keinen Sensor, weil sie keinen Link bricht.
+
+**Die erste Hälfte desselben Zitats — *„Trigger fällt weg"* — wird nicht als Löschung vollzogen,
+und der Grund gehört hierher.** Sie heißt: es **wartet nichts mehr** auf diese Schwelle; an ihre
+Stelle treten die Re-Evaluierungs-Trigger dieser ADR (Festlegung 1). Sie heißt **nicht**, dass der
+Abschnitt `## Auflösungs-Trigger` aus dem Stub verschwindet, und dagegen spricht ein handfester
+Grund: **diese ADR zitiert ihn zweimal verbatim** (§Der zweite Ausgang war vorgesehen), und
+[ADR-0019](0019-agent-guard-prueft-die-aufrufform.md) führt seine zwei Ausgänge; eine Löschung
+machte Zitate zweier ab dann immutabler ADRs quellenlos. Was den Leser trennt, ist der **Status**
+im Kopf desselben Dokuments — und damit er dort nicht erst gesucht werden muss, bekommt der
+Abschnitt einen Vorspann-Satz, der auf ihn zeigt (Folgepflicht 1, Änderung (3)). Die **Schwelle**
+bleibt damit lesbar als das, was sie ist: die Frage, die diese ADR beantwortet hat, nicht eine
+offene Bedingung.
 
 **Ein zweiter Ort für das Verdikt entsteht nicht.** Der Stub bleibt eine **Weiche**, keine zweite
 Fassung: er beschreibt die Diskrepanz und zeigt auf diese ADR
@@ -554,21 +602,32 @@ nächste Fall wird einzeln entschieden, mit seiner eigenen Messung.
   [`docs/plan/carveouts/CO-002-token-achse-je-rolle.md`](../carveouts/CO-002-token-achse-je-rolle.md)
   **vier** Stellen, und die letzten zwei sind die, die man beim Statuswechsel übersieht: (1) der
   Status aus Festlegung 5, (2) ein aktuelles `Letzte Prüfung`-Datum und eine Geschichte-Zeile,
-  (3) die `done/`-Anweisung im Auflösungs-Trigger — *„und nach `done/` zu verschieben"* — fällt,
-  (4) der Abschnitt *Verifikation (nach Auflösung)* fällt als Ganzes, samt seinem `git mv`-Haken
-  und dessen `d-check:ignore`-Direktive; an seine Stelle tritt ein Zeiger auf die Folgepflichten
-  dieser ADR (Festlegung 5, letzter Absatz). An
+  (3) im Abschnitt `## Auflösungs-Trigger` fällt die Handlungs-Anweisung *„und nach `done/` zu
+  verschieben"*, und der Abschnitt bekommt einen Vorspann-Satz, der auf den Status im Kopf zeigt —
+  der Abschnitt selbst **bleibt**, weil diese ADR ihn zitiert (Festlegung 5, letzter Absatz),
+  (4) der Abschnitt `## Verifikation (nach Auflösung)` fällt **als Ganzes** — mit **allen fünf**
+  Haken (`awk '/^## Verifikation/,/^## Geschichte/' <datei> | grep -c '^- \[ \]'` → 5), unter
+  ihnen der `git mv`-Haken samt `d-check:ignore`-Direktive: seine Bedingungen gelten einer
+  Auflösung, die diese ADR ausschließt. An
   [`docs/plan/carveouts/README.md`](../carveouts/README.md) eine Stelle: der Eintrag wandert aus
   *Aktiv* in einen eigenen Abschnitt für den permanenten Übergang. **Die Zwei-Commit-Auflage
   entfällt** — [`AGENTS.md`](../../../AGENTS.md) §3.3 greift bei Move **und** Rewrite; hier gibt es
   nur den Rewrite. **Drei Prüfkommandos nach dem Vollzug**, weil die dritte und vierte Änderung
-  keinen Link brechen und deshalb von keinem Gate gesehen werden:
+  keinen Link brechen und deshalb von keinem Gate gesehen werden — **jedes deckt genau die
+  Änderung, neben der es steht**, und für (4) ist das die Überschrift, nicht eine ihrer Zeilen:
   über [`docs/plan/carveouts/CO-002-token-achse-je-rolle.md`](../carveouts/CO-002-token-achse-je-rolle.md)
   `grep -n 'zu verschieben'` → **leer (Exit 1)** für (3),
-  `grep -n 'carveouts/done'` → **leer (Exit 1)** für (4); über dasselbe Ziel
-  `grep -n 'd-check:ignore'` → **leer (Exit 1)**. Heute trifft **jedes der drei genau eine Zeile**
-  — die drei, die fallen —, und ein breiteres Muster taugt nicht: `grep -n 'done/'` über dieselbe
-  Datei trifft zusätzlich drei Verweise auf ein abgeschlossenes Planungs-Artefakt, die bleiben.
+  `grep -n '^## Verifikation'` → **leer (Exit 1)** für (4); über dasselbe Ziel
+  `grep -n 'd-check:ignore'` → **leer (Exit 1)** als Gegenprobe zu (4), weil die Direktive in
+  seiner letzten Zeile steht. Heute trifft **jedes der drei genau eine Zeile** — und dass ein
+  Kommando auf den `git mv`-Haken allein (4) **nicht** deckte, ist gefahren, nicht behauptet: löscht
+  man in einer Wegwerf-Kopie **nur** diese eine Zeile, steht `grep -c 'carveouts/done'` auf **0**
+  und `grep -c 'd-check:ignore'` auf **0**, während `grep -c '^## Verifikation'` auf **1** steht und
+  der Abschnitt noch **4** Haken trägt
+  (`awk '/^## Verifikation/,/^## Geschichte/' <datei> | grep -c '^- \[ \]'`). Ein breiteres Muster
+  taugt umgekehrt auch nicht:
+  `grep -n 'done/'` über dieselbe Datei trifft zusätzlich drei Verweise auf ein abgeschlossenes
+  Planungs-Artefakt, die bleiben.
   Dazu `make docs-check` → **`0 Befund(e)`, Exit 0**, über genau dieser Form in einer
   Wegwerf-Kopie außerhalb des Baums gefahren. Die Datei-Zahl derselben d-check-Ausgabezeile wandert mit dem
   Markdown-Bestand und ist **kein** Erwartungswert
@@ -622,15 +681,26 @@ nächste Fall wird einzeln entschieden, mit seiner eigenen Messung.
   führt heute weder Span-Emitter noch Agent-Guard (im `Schärft`-Kopf gemessen). Bekommt sie je
   einen, gilt diese Grenze dort unverändert — sie ist keine Eigenschaft unseres Aufbaus, sondern der
   Mechanik — und gehört dort **genannt**, nicht stillschweigend mitgeliefert.
-- **Folgepflicht 7 — die Ablage-Abweichung gehört ins Abweichungs-Register; Architect.** Wer
-  `modul-07-carveouts.md` liest und danach einen übergeführten Carveout im aktiven Verzeichnis
-  findet, muss den Grund im **Adaptions-Block** von
-  [`harness/conventions.md`](../../../harness/conventions.md) finden — das ist der Ort, an dem
-  dieses Repo führt, wo es von der Baseline abweicht, und eine ADR ersetzt ihn nicht. Der Eintrag
-  nennt die Setzung (*das Verzeichnis ist kein Träger der Aussage „aktiv"; der Status ist es*),
-  ihren Anlass (die 18 unbehebbaren Verweise) und diese ADR als Entscheidung. **Er entsteht in einem
-  eigenen Architect-Lauf und einem eigenen Commit** ([`AGENTS.md`](../../../AGENTS.md) §3.8); diese
-  ADR schreibt ihn nicht.
+- **Folgepflicht 7 — KEIN Eintrag im Adaptions-Block, und das ist entschieden, nicht vergessen;
+  Architect.** Der Block registriert **Abweichungen** von der adoptierten Baseline
+  ([`MR-021`](../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+  §Begründung: *„Der Adaptions-Block registriert Abweichungen von der adoptierten Baseline."*). Die
+  Ablage eines **gelebten, übergeführten** Carveouts ist im Regelwerk nicht geregelt — das ist der
+  Negativbefund des Inventars oben, über alle vier Bullets der §Ziel-Form samt §Werkzeug-Wahl und
+  §Carveout-Audit-Slice gelesen, und der eine Satz, der `carveouts/` und *permanent* zusammen nennt,
+  ist dort disponiert. **Eine Lücke, keine Abweichung** — und für eine Lücke sieht
+  [`AGENTS.md`](../../../AGENTS.md) §3.8 ausdrücklich **keinen** Eintrag vor: *„Die Regel füllt
+  damit eine Lücke, statt von der Baseline abzuweichen — deshalb steht zu ihr kein Eintrag im
+  Adaptions-Block"*, mit
+  [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) als Beleg. Ein Eintrag
+  behauptete eine Baseline-Aussage, von der abgewichen würde, und die gibt es nicht.
+  **Was der Eintrag geleistet hätte, leistet der Index:** wer im aktiven Verzeichnis einen Carveout
+  mit Verdikt-Status findet, liest die Auskunft im Abschnitt aus Folgepflicht 1 und folgt dem
+  Zeiger hierher. **Diese Folgepflicht ist damit eine Anweisung an den nächsten Architect-Lauf, der
+  die Abweichung formulieren wollte:** er fände im Regelwerk nichts, wovon abgewichen wird, und
+  das ist kein Versehen. Sollte eine spätere Baseline den Fall regeln, ist die Frage neu zu
+  stellen — dann steht der Vergleich an, den [ADR-0016](0016-verweis-traegt-tag-und-zitat.md)
+  Festlegung 2 für jeden Regelwerks-Beleg verlangt.
 
 ## Fitness Function (falls maschinell prüfbar)
 
@@ -721,5 +791,5 @@ dem Carveout** (Konsequenzen).
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-08-22 | Überarbeitet, weiter **Proposed** | Der **Ort** des Carveouts ist entschieden statt mitgeschrieben. Die Begründung steht auf zwei Beinen mit verschiedener Aufgabe: das Regelwerk **schreibt für einen gelebten, übergeführten Carveout kein Verzeichnis vor** (drei Stellen je verbatim gelesen — das ist die Erlaubnis), und die Messung entscheidet innerhalb dieses offenen Raums (**18** eingehende Verweise in zwei nach [`AGENTS.md`](../../../AGENTS.md) §3.4 eingefrorenen ADRs würde der Move zu `target-missing` machen — das ist der Grund für die Wahl). Die Klammer *„`make gates` grün ohne Ausnahmen"* wird ausdrücklich **nicht** als Move-Bedingung in Anspruch genommen; sie gehört zur Auflösung und hat hier keinen Gegenstand. Zwei Ort-Anweisungen im Carveout selbst sind namentlich aufgehoben und in Folgepflicht 1 mit Prüfkommando geführt. Die Fitness Function nennt den Wächter, der die neun Werte **wirklich** hält, und den, der nur die Werkzeug-Achse hält; beide Mutationen sind gefahren. Annahme (d) trägt ihr Kommando im eigenen Text und als eindeutigen Fundschlüssel die `tool_use_id`. Wandernde Summen stehen nicht mehr im Text — weder aus dem Span-Bestand noch aus einem d-check-Lauf. Gegenlage: [`docs/reviews/2026-08-22-adr-0021-bestaetigungsrunde.md`](../../reviews/2026-08-22-adr-0021-bestaetigungsrunde.md) und [`docs/reviews/2026-08-22-adr-0021-bestaetigungsrunde-runde-2.md`](../../reviews/2026-08-22-adr-0021-bestaetigungsrunde-runde-2.md) |
+| 2026-08-22 | Überarbeitet, weiter **Proposed** | Der **Ort** des Carveouts ist entschieden statt mitgeschrieben. Die Begründung steht auf zwei Beinen mit verschiedener Aufgabe: das Regelwerk **schreibt für einen gelebten, übergeführten Carveout kein Verzeichnis vor** — alle vier Bullets der §Ziel-Form samt §Werkzeug-Wahl und §Carveout-Audit-Slice gelesen, und die zwei Sätze, die man dagegen halten könnte, sind **disponiert** statt übergangen (die Klammer *„`make gates` grün ohne Ausnahmen"* gehört zur Auflösung; der Pflicht-Header-Satz greift nach seiner Logik, nicht nach seinem Buchstaben — sein Vordersatz trifft nicht zu, seinen Nachsatz vollzieht diese ADR, und als Ablage-Regel widerspräche er sich selbst, weil `carveouts/done/` ein Unterverzeichnis von `carveouts/` ist) —, und die Messung entscheidet darin (**18** eingehende Verweise in zwei nach [`AGENTS.md`](../../../AGENTS.md) §3.4 eingefrorenen ADRs würde der Move zu `target-missing` machen). Daraus folgt für die Ablage-Frage **Lücke, nicht Abweichung** — Folgepflicht 7 ordnet deshalb **keinen** Adaptions-Eintrag an und sagt, warum. Zwei Ort-Anweisungen im Carveout selbst sind namentlich aufgehoben; das Prüfkommando zu (4) sieht den ganzen Abschnitt, nicht eine seiner Zeilen, und dass der Abschnitt `## Auflösungs-Trigger` **bleibt**, ist begründet statt unterlassen. Die Fitness Function nennt den Wächter, der die neun Werte **wirklich** hält, und den, der nur die Werkzeug-Achse hält; beide Mutationen sind gefahren. Annahme (d) trägt ihr Kommando im eigenen Text und als eindeutigen Fundschlüssel die `tool_use_id`. Wandernde Summen stehen nicht mehr im Text. Gegenlage: [`docs/reviews/2026-08-22-adr-0021-bestaetigungsrunde.md`](../../reviews/2026-08-22-adr-0021-bestaetigungsrunde.md), [`docs/reviews/2026-08-22-adr-0021-bestaetigungsrunde-runde-2.md`](../../reviews/2026-08-22-adr-0021-bestaetigungsrunde-runde-2.md) und [`docs/reviews/2026-08-22-adr-0021-verdikt-runde.md`](../../reviews/2026-08-22-adr-0021-verdikt-runde.md) |
 | 2026-08-22 | **Proposed** | Übergabe an den Architect aus dem negativen Ausgang der Messung: [`docs/reviews/2026-08-21-updatedinput-messung.md`](../../reviews/2026-08-21-updatedinput-messung.md) §7/§8. Der Trichter aus Modul 7 ist mit derselben Frage-Reihenfolge gefahren wie in [ADR-0019](0019-agent-guard-prueft-die-aufrufform.md); Frage 2 kippt auf *Nein*, weil der Weg, der sie auf *Ja* stellte, gefahren und negativ ist. Mit in die Übergabe kam der Rang zwischen [ADR-0011](0011-telemetrie-erfassung-policy.md) Festlegung 3 und [ADR-0019](0019-agent-guard-prueft-die-aufrufform.md) Festlegung 4 — er steht als Festlegung 3, nicht als Korrektur an einer der beiden ([`AGENTS.md`](../../../AGENTS.md) §3.4) |
