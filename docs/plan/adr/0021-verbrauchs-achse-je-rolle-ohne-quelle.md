@@ -125,7 +125,8 @@ Folge-Slice, ist der Carveout de facto permanent — dann gehört er nicht in `c
 
 ### Wohin der Carveout danach gehört — gemessen, bevor entschieden
 
-**Modul 7 spricht über den Ort nicht in einer Stimme.** Regelwerk `v3.5.2`,
+**Vier Stellen sprechen über den Ort, und keine schreibt diesen Fall vor.** Drei stehen im
+Regelwerk, die vierte im Carveout selbst. Regelwerk `v3.5.2`,
 `modul-07-carveouts.md` §Carveout-Audit-Slice nennt für den permanenten Übergang **nur** das
 Ziel-Artefakt: *„Drei Status-Übergänge je Carveout: aufgelöst (Trigger eingetreten → `git mv` nach
 `done/`), permanent (Trigger nie → ADR), weiterhin aktiv (Trigger sinnvoll → `Letzte
@@ -139,6 +140,29 @@ Verzeichnis."* §Werkzeug-Wahl bei Diskrepanz spricht vom **leeren** Stub: *„D
 der beiden Fälle: er wird nicht **aufgelöst** — sein Trigger tritt nie ein —, und er ist kein
 **leerer** Stub, sondern ein gelebtes, vielfach adressiertes Artefakt.
 
+**Das Ergebnis dieser Lesung ist ein Negativbefund, und er ist das erste und tragende Bein dieser
+Entscheidung:** im Regelwerk steht **kein** Satz, der für einen **gelebten, übergeführten**
+Carveout ein Verzeichnis vorschreibt. §Carveout-Audit-Slice nennt für *permanent* nur das
+Ziel-Artefakt, §Ziel-Form spricht von der **Auflösung**, §Werkzeug-Wahl vom **leeren** Stub — und
+die Leere ist dort kausal begründet (*„Inhalt ganz aufgegangen"*). **Die Klammer der §Ziel-Form,
+*„plus Gate-Ausnahme entfernen, `make gates` grün ohne Ausnahmen"*, ist deshalb hier keine
+Bedingung des Moves** — sie gehört zur Auflösung, und sie hat hier nicht einmal einen Gegenstand:
+[`CO-002`](../carveouts/CO-002-token-achse-je-rolle.md) führt als betroffenes Gate ausdrücklich
+*„keines"*, es gibt keine Gate-Ausnahme zu entfernen. Wer sie zur Move-Bedingung erklärte, schriebe
+eine Regel ins Repo, die im Regelwerk nicht steht — und der nächste, der einen Carveout wirklich
+**auflöst**, während der Gate aus fremdem Grund rot ist, könnte sie zitieren und die Datei liegen
+lassen. Genau das nennt derselbe Satz *„eine zweite Lüge"*.
+
+**Die vierte Stelle steht im Carveout selbst, und sie ordnet den Move an.** Sein
+Auflösungs-Trigger sagt für genau diesen Ausgang: *„Dann ist dieser Carveout **in eine Folge-ADR
+zu überführen** (`Status: Permanent — übergeführt in ADR-<NNNN>`) **und nach `done/` zu
+verschieben**, damit die Werkzeug-Wahl-Spur lesbar bleibt."* Und seine Verifikations-Checkliste
+führt einen Haken *„Datei wird nach docs/plan/carveouts/done/ bewegt (reiner git mv)"* samt
+einer `d-check:ignore`-Direktive für ein Verzeichnis, das nicht entsteht. Beides ist **kein
+Regelwerks-Satz**, sondern die Erwartung, die der Carveout an seinen eigenen Ausgang schrieb, als
+der Ausgang noch offen war. Beides wird von Festlegung 5 aufgehoben; Folgepflicht 1 führt es
+ausdrücklich als Änderung, damit die Weiche nicht die Anweisung trägt, die diese ADR verbietet.
+
 **Was der Move kostet, ist gefahren, nicht geschätzt** (2026-08-22, Wegwerf-Kopie außerhalb des
 Baums, derselbe digest-gepinnte d-check wie in `make docs-check`; der Arbeitsbaum blieb unberührt):
 
@@ -150,25 +174,49 @@ docker run --rm --network none -v /tmp/probe:/repo:ro \
   ghcr.io/pt9912/d-check@sha256:3996a593b9cb71aa3bcb4f3ddf8f637e7409db31b3a2dac7eedc28d65814cacf
 ```
 
-→ **79 Befund(e)**, Exit 1, **alle `target-missing`**. Tragend ist die Verteilung, nicht die Summe:
-**18 liegen in zwei nach [`AGENTS.md`](../../../AGENTS.md) §3.4 eingefrorenen ADRs** — 13 in
-[ADR-0019](0019-agent-guard-prueft-die-aufrufform.md), 5 in
-[ADR-0020](0020-emittierte-modul-15-regeln.md) —, **6 in dieser ADR**, die mit ihrer Annahme in
-denselben Zustand tritt, und 55 in lebenden Artefakten, die nachzuziehen wären. Die 18 sind von
-**keiner Rolle dieses Repos** behebbar: die Reparatur *in* der Datei wäre eine Textänderung, und
-§3.4 verbietet sie. Damit ist die Bedingung, unter der §Ziel-Form den Move überhaupt verlangt —
-*„`make gates` grün ohne Ausnahmen"* —, für diesen Carveout **nicht erfüllbar**: grün bliebe der
-Gate nur **mit** einer neuen Ausnahme.
+Der Lauf endet mit Exit 1, und **jeder** seiner Befunde ist ein `target-missing`
+(`awk -F'\t' 'NF>1{print $NF}' <ausgabe> | sort -u` → eine Zeile). **Die Summe des Laufs steht
+hier bewusst nicht.** Sie zählt die Verweise **jedes** lebenden Artefakts mit — auch die dieser
+ADR und die der Review-Dokumente, die über sie geschrieben werden — und wächst mit jeder Runde;
+als Erwartungswert taugt sie deshalb nicht
+([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2, dieselbe Vorsicht wie bei der Datei-Zahl in Folgepflicht 1). **Tragend ist die
+Teilmenge, die niemand nachziehen darf**, und sie hat ihr eigenes Kommando über derselben
+Ausgabe:
 
-**Der präzise Knopf fehlt weiter, und das ist am gepinnten Werkzeug nachgemessen**
-(`d-check --print-config` gegen denselben Digest, 2026-08-22). `links` trägt inzwischen **eine**
-Options-Sektion — `resolve-from` —, und sie **verschärft**, statt auszunehmen: sie verlangt, dass
-die Links einer Datei von **jedem** Ort einer Verzeichnis-Gruppe auflösen. Über
-`dirs: [docs/plan/carveouts, docs/plan/carveouts/done]` gefahren, steigt der Stand von 79 auf
-**82 Befund(e)**. `codepaths.ignore-refs` wirkt referenz-weit, aber nur im Modul `codepaths`: mit
-`docs/plan/carveouts/**` darin bleibt der Stand bei **79 Befund(e)** — die Befunde entstehen im
-Modul `links`. Es bleibt allein `scan.ignore`, **datei-weit über alle Module**, wie
-[ADR-0017](0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) es für ihren Fall gemessen hat.
+```sh
+grep -cE '^docs/plan/adr/(0019|0020)-' <ausgabe>   # 18
+grep -cE '^docs/plan/adr/0019-'        <ausgabe>   # 13
+grep -cE '^docs/plan/adr/0020-'        <ausgabe>   #  5
+```
+
+**18 Befunde liegen in zwei nach [`AGENTS.md`](../../../AGENTS.md) §3.4 eingefrorenen ADRs** — 13
+in [ADR-0019](0019-agent-guard-prueft-die-aufrufform.md), 5 in
+[ADR-0020](0020-emittierte-modul-15-regeln.md). **Diese Zahl wandert nicht**: beide Dateien sind
+immutabel, ihre ausgehenden Verweise stehen fest. Der Rest verteilt sich auf lebende Artefakte —
+dort ist Nachziehen die normale Arbeit —, und ein Teil auf diese ADR selbst, die mit ihrer Annahme
+in denselben Zustand tritt. Die 18 sind von **keiner Rolle dieses Repos** behebbar: die Reparatur
+*in* der Datei wäre eine Textänderung, und §3.4 verbietet sie.
+
+**Der präzise Knopf fehlt weiter — und der Grund ist struktureller Art, nicht der eines
+Zahlen-Deltas** (`d-check --print-config` gegen denselben Digest, 2026-08-22; die Sonden je in
+derselben Wegwerf-Kopie). `links` trägt inzwischen **eine** Options-Sektion, `resolve-from`, und
+sie ist **quellenseitig**: sie verlangt, dass die Links der Dateien **in** einer Verzeichnis-Gruppe
+von **jedem** Ort der Gruppe auflösen (*„Dateien hier muessen von JEDEM Ort der Gruppe aufloesen
+(>= 2)"*). Die 18 Befunde sind aber **eingehende** Verweise aus Dateien **außerhalb** jeder solchen
+Gruppe — sie liegen konstruktiv außerhalb ihrer Reichweite. Das ist gemessen, nicht abgeleitet:
+mit `dirs: [docs/plan/carveouts, docs/plan/carveouts/done]` **und** mit derselben Option plus
+`fixed-dirs: [docs/plan/adr]` — der Variante, die für wandernde Ziele gebaut ist — bleiben die 18
+in beiden Läufen **unverändert** stehen (`grep -cE '^docs/plan/adr/(0019|0020)-'` → 18). Die
+Option **fügt** dabei eine neue Befundart hinzu, `link-position-dependent`
+(`grep -c 'link-position-dependent' <ausgabe>` → 3), und **alle** ihre Treffer liegen auf
+[CO-001](../carveouts/CO-001-bats-shell-lint.md) und dem Carveout-Index — einem Carveout, der mit
+dieser Entscheidung nichts zu tun hat; auf `CO-002` keiner. `codepaths.ignore-refs` ist referenz-weit,
+aber **modul-lokal**: die Befunde entstehen im Modul `links`, und mit
+`docs/plan/carveouts/**` unter `codepaths` bleiben sie sämtlich stehen — auch die 18. **Innerhalb
+von `links` gibt es keinen Ausschluss.** Es bleibt allein `scan.ignore`, **datei-weit über alle
+Module**, wie [ADR-0017](0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) es für ihren Fall
+gemessen hat. Diese Begründung überlebt einen Werkzeug-Sprung; ein Zahlen-Delta täte es nicht.
 
 **Drei Wege, und der Preis des zweiten ist beziffert:**
 
@@ -176,7 +224,7 @@ Modul `links`. Es bleibt allein `scan.ignore`, **datei-weit über alle Module**,
 |---|---|---|
 | **1 — Move, Befunde stehen lassen** | `make docs-check` und mit ihm `make gates` dauerhaft rot, für niemanden behebbar | scheidet aus. Ein Dauer-Rot erzieht dazu, Rot zu übersehen, und entwertet die übrigen Befunde desselben Laufs — [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) eine Ebene tiefer, in [ADR-0017](0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) für denselben Fall schon so entschieden |
 | **2 — Move plus `scan.ignore` für die zwei eingefrorenen ADRs** | zwei Dateien verlassen den Gate **ganz**, über alle sechs Module (Zahlen unten) | scheidet aus. [ADR-0017](0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) hat den Maßstab gesetzt — *„kleinstmöglicher Prüfbereichs-Verlust für das Problem"* — und ihn für **eine** Datei mit **27** Link-Vorkommen bezahlt, weil ihr Auslöser **unvermeidbar** war: die Baseline **muss** ihren Tag wechseln. Hier ist der Auslöser **wählbar**: eine Ablage-Konvention. Dafür zwei der größten und jüngsten ADRs dauerhaft aus dem Gate zu nehmen, kehrt das Verhältnis um; und jeder Eintrag löste [`AGENTS.md`](../../../AGENTS.md) §3.5 erneut aus (*„jeder zusätzliche Eintrag ist eine neue Senkung"*) |
-| **3 — der Ort bleibt, der Status trägt den Übergang (gewählt)** | die Ablage weicht von der Lesart ab, die §Ziel-Form für die **Auflösung** vorschreibt; das Verzeichnis hört auf, Träger der Aussage *aktiv* zu sein | `make docs-check` bleibt grün — über genau dieser Form gefahren (Wegwerf-Kopie, Status-Zeile und Index-Abschnitt gesetzt): **0 Befund(e)**, Exit 0. Keine Gate-Senkung, kein `.d-check.yml`-Eintrag, kein §3.5-Vorgang |
+| **3 — der Ort bleibt, der Status trägt den Übergang (gewählt)** | das Verzeichnis hört auf, Träger der Aussage *aktiv* zu sein — wer sie liest, liest den Status; und die zwei Ort-Anweisungen im Carveout selbst müssen mit aufgehoben werden, sonst trägt die Weiche die Anweisung, die diese ADR verbietet | `make docs-check` bleibt grün — über genau dieser Form gefahren (Wegwerf-Kopie, Status-Zeile und Index-Abschnitt gesetzt): **0 Befund(e)**, Exit 0. Keine Gate-Senkung, kein `.d-check.yml`-Eintrag, kein §3.5-Vorgang |
 
 Der Preis von Weg 2, mit seinen Kommandos — je Datei, weil eine Summe über zwei Dateien die
 Eindeutigkeit der zweiten Spalte verlöre:
@@ -287,10 +335,15 @@ Kippt eine, kippt die Entscheidung; alle vier stehen unten als Re-Evaluierungs-T
   **Kommando** — es gehört hierher und nicht allein ins Zeitdokument (Festlegung 3, zweite
   Bedingung); es ist am 2026-08-21 über den Bestand jener Sitzung gefahren und in **diesem**
   Architect-Lauf nicht wiederholt, weil ein Subagent das `Agent`-Werkzeug nicht führt:
-  `grep -h '"tool":"Agent"' .harness/state/spans/*.jsonl | tail -1` — die Zeile des Laufs trägt
-  weder `spawned_role` noch einen der vier Zähler. Auf einem fremden Checkout gibt dasselbe
-  Kommando nichts aus; das ist keine Lücke der Angabe, sondern die Natur des Ablese-Orts
-  (Festlegung 3, letzter Absatz). Gestützt ist die Ablesung auf eine Kontroll-Beobachtung, die im
+  `grep -h '"tool_use_id":"toolu_0181irqRbg1FHcsrfRaBmpA1"' .harness/state/spans/*.jsonl` — **eine**
+  Zeile, und sie trägt weder `spawned_role` noch einen der vier Zähler. **Der Schlüssel ist die
+  `tool_use_id`, nicht Zeit oder Reihenfolge**, und das ist kein Detail: der Bestand wird nach
+  [`spec/spezifikation.md`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
+  **Abweichung 4** nie aufgeräumt und trägt viele `Agent`-Zeilen aus vielen Sitzungen; ein Glob
+  mit `tail -1` griffe irgendeine davon heraus, und `seq` ist je Strom vergeben und deshalb nicht
+  eindeutig. **Auf einem fremden Checkout gibt dasselbe Kommando nichts aus** — der Bestand ist
+  gitignoriert und maschinenlokal, die Zeile dort also nicht auffindbar; das ist keine Lücke der
+  Angabe, sondern die Natur des Ablese-Orts (Festlegung 3, letzter Absatz). Gestützt ist die Ablesung auf eine Kontroll-Beobachtung, die im
   Repo keinen Träger hat. Sie ist eine **Annahme im Sinne von Festlegung 3**, kein Beleg.
 
 ## Entscheidung
@@ -367,23 +420,41 @@ Durchsetzung ([`AGENTS.md`](../../../AGENTS.md) §3.5). Ein **uncommitteter** Me
 davon unberührt; er ist geübte Praxis und war es auch hier.
 
 **5. Der Carveout wird übergeführt, und seine Adresse bleibt — das Verdikt steht allein hier.**
-Regelwerk `v3.5.2`, `modul-07-carveouts.md` §Werkzeug-Wahl bei Diskrepanz für den ADR-Pfad: *„ADR:
-Trigger fällt weg, Checkliste reduziert auf die Architektur-Folgen"*. Der Stub trägt künftig
-`Status: Permanent — übergeführt in ADR-0021`, ein aktuelles `Letzte Prüfung`-Datum und eine
-Geschichte-Zeile; [`docs/plan/carveouts/README.md`](../carveouts/README.md) führt ihn aus *Aktiv*
-heraus in einen eigenen Abschnitt für den permanenten Übergang. Was von der
-Verifikations-Checkliste bleibt, sind die Architektur-Folgen; sie stehen unten als Folgepflichten.
+Der Stub trägt künftig `Status: Permanent — übergeführt in ADR-0021`, ein aktuelles
+`Letzte Prüfung`-Datum und eine Geschichte-Zeile;
+[`docs/plan/carveouts/README.md`](../carveouts/README.md) führt ihn aus *Aktiv* heraus in einen
+eigenen Abschnitt für den permanenten Übergang.
 
-**Er wandert nicht nach `done/`, und der Grund ist gemessen.** Der reine Move erzeugt **79** tote
-Verweise, **18** davon in zwei nach [`AGENTS.md`](../../../AGENTS.md) §3.4 eingefrorenen ADRs
-(Kommando und Verteilung im Kontext oben). Die Bedingung, unter der §Ziel-Form den Move verlangt —
-*„`make gates` grün ohne Ausnahmen"* —, ist damit für diesen Carveout nicht erfüllbar; grün bliebe
-der Gate nur mit einer datei-weiten Senkung über zwei der größten ADRs, und die stünde in keinem
-Verhältnis zu ihrem Anlass (Weg 2 oben, mit seinem Preis). **Was den Ort ersetzt, ist der Status,
-nicht das Verzeichnis:** aktiv ist ab hier ein Carveout, dessen Status es sagt. Das Verzeichnis
-`docs/plan/carveouts/` hört auf, Träger dieser Aussage zu sein — wer sie liest, liest den Kopf des
-Dokuments und den Index. **Für [CO-001](../carveouts/CO-001-bats-shell-lint.md) ändert das nichts**: sein Ausgang ist offen, und er wandert
-bei seiner Auflösung nach `done/` wie vorgesehen.
+**Er wandert nicht nach `done/`. Der Grund steht auf einem Bein aus der Quelle und einem aus der
+Messung — und die zwei tun Verschiedenes.**
+
+- **Die Quelle lässt den Ort offen.** Im Regelwerk steht **kein** Satz, der für einen gelebten,
+  übergeführten Carveout ein Verzeichnis vorschreibt (die drei Stellen sind oben je verbatim
+  gelesen). Das ist die **Erlaubnis** — und nur sie; §Ziel-Forms Klammer *„`make gates` grün ohne
+  Ausnahmen"* gehört zur **Auflösung** und wird hier ausdrücklich **nicht** als Move-Bedingung in
+  Anspruch genommen (Kontext oben).
+- **Die Messung entscheidet innerhalb dieses offenen Raums.** Der reine Move macht **18**
+  eingehende Verweise in zwei nach [`AGENTS.md`](../../../AGENTS.md) §3.4 eingefrorenen ADRs zu
+  `target-missing` (Kommando oben). Das ist keine Erlaubnis, sondern der **positive Grund** für
+  die Wahl: von den drei offenen Wegen ist dieser der einzige, der `make gates` grün lässt, **ohne**
+  eine Gate-Senkung zu kaufen — und die 18 sind der Beleg, dass die beiden anderen genau das
+  kosten würden.
+
+**Was den Ort ersetzt, ist der Status, nicht das Verzeichnis:** aktiv ist ab hier ein Carveout,
+dessen Status es sagt. Das Verzeichnis `docs/plan/carveouts/` hört auf, Träger dieser Aussage zu
+sein — wer sie liest, liest den Kopf des Dokuments und den Index. **Für
+[CO-001](../carveouts/CO-001-bats-shell-lint.md) ändert das nichts**: sein Ausgang ist offen, und
+er wandert bei seiner Auflösung nach `done/` wie vorgesehen.
+
+**Zwei Anweisungen im Carveout selbst werden damit aufgehoben, und sie stehen hier namentlich.**
+Sein Auflösungs-Trigger ordnet für diesen Ausgang neben der Überführung *„und nach `done/` zu
+verschieben"* an; seine Verifikations-Checkliste führt den Haken *„Datei wird nach
+docs/plan/carveouts/done/ bewegt (reiner git mv)"* samt `d-check:ignore`-Direktive. Beide
+fallen. Mit ihnen fällt die Checkliste als Ganzes — Regelwerk `v3.5.2`, `modul-07-carveouts.md`
+§Werkzeug-Wahl bei Diskrepanz: *„ADR: Trigger fällt weg, Checkliste reduziert auf die
+Architektur-Folgen"*; die Architektur-Folgen stehen als Folgepflichten unten, und der Stub trägt
+sie nicht ein zweites Mal. **Ohne diesen Schritt trüge die Weiche die Anweisung, die diese
+Festlegung verbietet** — sichtbar für keinen Sensor, weil sie keinen Link bricht.
 
 **Ein zweiter Ort für das Verdikt entsteht nicht.** Der Stub bleibt eine **Weiche**, keine zweite
 Fassung: er beschreibt die Diskrepanz und zeigt auf diese ADR
@@ -479,15 +550,28 @@ nächste Fall wird einzeln entschieden, mit seiner eigenen Messung.
   `v3.5.2`, `modul-07-carveouts.md` §Carveout-Audit-Slice verteilt die Arbeit ausdrücklich:
   *„Architect entscheidet bei „permanent" über die ADR-Überführung, Implementer führt `git mv` und
   Config-Updates aus."* Auszuführen ist hier **kein `git mv`** (Festlegung 5), sondern eine
-  reine Inhaltsänderung an zwei Dateien:
+  reine Inhaltsänderung an zwei Dateien. An
   [`docs/plan/carveouts/CO-002-token-achse-je-rolle.md`](../carveouts/CO-002-token-achse-je-rolle.md)
-  bekommt den Status aus Festlegung 5, ein aktuelles `Letzte Prüfung`-Datum und eine Geschichte-Zeile;
-  [`docs/plan/carveouts/README.md`](../carveouts/README.md) führt ihn aus *Aktiv* heraus in einen
-  eigenen Abschnitt. **Die Zwei-Commit-Auflage entfällt damit** — [`AGENTS.md`](../../../AGENTS.md)
-  §3.3 greift bei Move **und** Rewrite; hier gibt es nur den Rewrite. **Grün nach dem Vollzug ist
-  `make docs-check`**, und das ist über genau dieser Form gefahren (Wegwerf-Kopie außerhalb des
-  Baums, Status-Zeile und Index-Abschnitt gesetzt): **`0 Befund(e)`, Exit 0**. Die Datei-Zahl
-  derselben Ausgabezeile wandert mit dem Markdown-Bestand und ist **kein** Erwartungswert
+  **vier** Stellen, und die letzten zwei sind die, die man beim Statuswechsel übersieht: (1) der
+  Status aus Festlegung 5, (2) ein aktuelles `Letzte Prüfung`-Datum und eine Geschichte-Zeile,
+  (3) die `done/`-Anweisung im Auflösungs-Trigger — *„und nach `done/` zu verschieben"* — fällt,
+  (4) der Abschnitt *Verifikation (nach Auflösung)* fällt als Ganzes, samt seinem `git mv`-Haken
+  und dessen `d-check:ignore`-Direktive; an seine Stelle tritt ein Zeiger auf die Folgepflichten
+  dieser ADR (Festlegung 5, letzter Absatz). An
+  [`docs/plan/carveouts/README.md`](../carveouts/README.md) eine Stelle: der Eintrag wandert aus
+  *Aktiv* in einen eigenen Abschnitt für den permanenten Übergang. **Die Zwei-Commit-Auflage
+  entfällt** — [`AGENTS.md`](../../../AGENTS.md) §3.3 greift bei Move **und** Rewrite; hier gibt es
+  nur den Rewrite. **Drei Prüfkommandos nach dem Vollzug**, weil die dritte und vierte Änderung
+  keinen Link brechen und deshalb von keinem Gate gesehen werden:
+  über [`docs/plan/carveouts/CO-002-token-achse-je-rolle.md`](../carveouts/CO-002-token-achse-je-rolle.md)
+  `grep -n 'zu verschieben'` → **leer (Exit 1)** für (3),
+  `grep -n 'carveouts/done'` → **leer (Exit 1)** für (4); über dasselbe Ziel
+  `grep -n 'd-check:ignore'` → **leer (Exit 1)**. Heute trifft **jedes der drei genau eine Zeile**
+  — die drei, die fallen —, und ein breiteres Muster taugt nicht: `grep -n 'done/'` über dieselbe
+  Datei trifft zusätzlich drei Verweise auf ein abgeschlossenes Planungs-Artefakt, die bleiben.
+  Dazu `make docs-check` → **`0 Befund(e)`, Exit 0**, über genau dieser Form in einer
+  Wegwerf-Kopie außerhalb des Baums gefahren. Die Datei-Zahl derselben d-check-Ausgabezeile wandert mit dem
+  Markdown-Bestand und ist **kein** Erwartungswert
   ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2).
 - **Folgepflicht 2 — die sechs Zeiger behalten ihre Adresse, ihre Aussage wird nachgezogen;
@@ -575,7 +659,9 @@ make test-go
 #   TestOnlyAgentToolGetsResponseValues bleibt GRUEN — er misst eine andere Eigenschaft.
 
 # Zeile 4 der Tabelle — den Stub verschieben (Kommando im Kontext oben):
-#   79 Befund(e), Exit 1, alle target-missing.
+#   Exit 1, alle Befunde target-missing; davon 18 in den zwei eingefrorenen ADRs
+#   (grep -cE '^docs/plan/adr/(0019|0020)-'). Die Summe des Laufs wandert und steht
+#   deshalb nirgends in dieser ADR — MR-025 Setzung 2.
 ```
 
 **Was diese Zeilen NICHT leisten.** (1) Sie binden, dass die Erfassung **bereit bleibt** — nicht,
@@ -635,5 +721,5 @@ dem Carveout** (Konsequenzen).
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-08-22 | Überarbeitet, weiter **Proposed** | Der **Ort** des Carveouts ist entschieden statt mitgeschrieben: der reine Move nach `done/` erzeugt gemessen 79 tote Verweise, 18 davon in zwei nach [`AGENTS.md`](../../../AGENTS.md) §3.4 eingefrorenen ADRs, und der präzise d-check-Knopf fehlt weiter (am gepinnten Digest nachgemessen) — Festlegung 5 hält die Adresse fest und legt die Aussage *aktiv* auf den Status. Die Fitness Function nennt den Wächter, der die neun Werte **wirklich** hält, und den, der nur die Werkzeug-Achse hält; beide Mutationen sind gefahren. Annahme (d) trägt ihr Kommando im eigenen Text, Festlegung 3 einen dritten Punkt zum Review-Gegenstand, und die Preis-Konsequenz nennt keine Zahl aus einem maschinenlokalen Bestand mehr. Gegenlage: [`docs/reviews/2026-08-22-adr-0021-bestaetigungsrunde.md`](../../reviews/2026-08-22-adr-0021-bestaetigungsrunde.md) |
+| 2026-08-22 | Überarbeitet, weiter **Proposed** | Der **Ort** des Carveouts ist entschieden statt mitgeschrieben. Die Begründung steht auf zwei Beinen mit verschiedener Aufgabe: das Regelwerk **schreibt für einen gelebten, übergeführten Carveout kein Verzeichnis vor** (drei Stellen je verbatim gelesen — das ist die Erlaubnis), und die Messung entscheidet innerhalb dieses offenen Raums (**18** eingehende Verweise in zwei nach [`AGENTS.md`](../../../AGENTS.md) §3.4 eingefrorenen ADRs würde der Move zu `target-missing` machen — das ist der Grund für die Wahl). Die Klammer *„`make gates` grün ohne Ausnahmen"* wird ausdrücklich **nicht** als Move-Bedingung in Anspruch genommen; sie gehört zur Auflösung und hat hier keinen Gegenstand. Zwei Ort-Anweisungen im Carveout selbst sind namentlich aufgehoben und in Folgepflicht 1 mit Prüfkommando geführt. Die Fitness Function nennt den Wächter, der die neun Werte **wirklich** hält, und den, der nur die Werkzeug-Achse hält; beide Mutationen sind gefahren. Annahme (d) trägt ihr Kommando im eigenen Text und als eindeutigen Fundschlüssel die `tool_use_id`. Wandernde Summen stehen nicht mehr im Text — weder aus dem Span-Bestand noch aus einem d-check-Lauf. Gegenlage: [`docs/reviews/2026-08-22-adr-0021-bestaetigungsrunde.md`](../../reviews/2026-08-22-adr-0021-bestaetigungsrunde.md) und [`docs/reviews/2026-08-22-adr-0021-bestaetigungsrunde-runde-2.md`](../../reviews/2026-08-22-adr-0021-bestaetigungsrunde-runde-2.md) |
 | 2026-08-22 | **Proposed** | Übergabe an den Architect aus dem negativen Ausgang der Messung: [`docs/reviews/2026-08-21-updatedinput-messung.md`](../../reviews/2026-08-21-updatedinput-messung.md) §7/§8. Der Trichter aus Modul 7 ist mit derselben Frage-Reihenfolge gefahren wie in [ADR-0019](0019-agent-guard-prueft-die-aufrufform.md); Frage 2 kippt auf *Nein*, weil der Weg, der sie auf *Ja* stellte, gefahren und negativ ist. Mit in die Übergabe kam der Rang zwischen [ADR-0011](0011-telemetrie-erfassung-policy.md) Festlegung 3 und [ADR-0019](0019-agent-guard-prueft-die-aufrufform.md) Festlegung 4 — er steht als Festlegung 3, nicht als Korrektur an einer der beiden ([`AGENTS.md`](../../../AGENTS.md) §3.4) |
