@@ -52,8 +52,9 @@ am 2026-08-22 — **geplant, nicht aktuell, und die dritte in der Reihe**: sie s
 ist tragend, nicht ordnend — jede Messung dieser Welle läuft über den vendored Baum, und welle-10
 tauscht genau ihn; der Freshness-Audit wächst upstream zudem von drei auf sieben Eigenschaften
 ([`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md)). Slices: `slice-090` bis
-`slice-092`, alle drei geschnitten und in `open/`. Closure-Kriterium und die drei Architect-Runden
-zur Emissions-Frage stehen in der Plan-Datei, nicht hier.
+`slice-092`, alle drei geschnitten und in `open/`. Closure-Kriterium und der Stand der
+Emissions-Frage nach [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
+stehen in der Plan-Datei, nicht hier.
 
 Prospektive Kandidaten (nur mit **beobachtbarem Trigger**, Modul 6). **Diese Tabelle führt nur, was
 *noch nicht* geschnitten ist** — ein geschnittener Slice steht unter *Aktuelle Welle*, sonst wird

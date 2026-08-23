@@ -41,9 +41,9 @@ gefahren am 2026-08-22:
 |---|---|---|---|
 | **Modul 2** §*Freshness-Audit der vendored Baseline* | `harness/tools/baseline-freshness.sh` + `harness/tools/component-freshness.sh`, `make baseline-freshness`, Nachtlauf | **fehlt ganz** — kein Ziel, keine Zeile | `grep -rni 'freshness' --exclude-dir=.git --exclude-dir=baseline . \| wc -l` → **0**; Gegenprobe im mitgelieferten Baum: `grep -rlni 'freshness' .harness/baseline/v3.5.2/regelwerk/ \| wc -l` → **2** |
 | **`make`-Ansprüche des vendored Baums** (Modul 7/11/13/15 + Grundlagen) | hier gibt es die Ziele teils, teils nicht | **5** Regelwerk-Dateien nennen ein Ziel, das in **keiner** Variante existiert; **2** wiederkehrende Vorlagen tragen es beim `cp` in ein lebendes Dokument | `grep -rlE 'make (arch-check\|coverage-gate\|coverage-gate-critical\|fullbuild\|test-determinism\|verify)\b' .harness/baseline/v3.5.2/regelwerk/ \| wc -l` |
-| **Modul 15**, Erfassung · Token-Attribution · Cache-Counter | `span-emit`, `make span-report`, `.claude/agents/` | **entschieden**, permanent nicht emittiert ([`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) Festlegungen 1–3) | `ls .claude/` im Ziel → `commands hooks settings.json` |
+| **Modul 15**, Erfassung · Token-Attribution · Cache-Counter | `span-emit`, `make span-report`, `.claude/agents/` | **entschieden, geht mit** ([`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegungen 1, 3–5 für Träger und Rollen-Typen, Festlegung 8 für Token-Attribution/Cache-Counter als Auswertung ohne Bilanz) — **noch nicht umgesetzt** | `ls .claude/` im Ziel → `commands hooks settings.json`, unverändert seit der Messung vom 2026-08-22: kein Slice legt den Träger bisher ab (`grep -rn 'claude/agents' --include=*.go . \| wc -l` → **0**) |
 | **Modul 15**, Doku-Konsistenz-Drift | `make docs-check` + `.d-check.yml` | Träger `doc-targets` liegt bei, ist **nicht aktiviert** — Gegenstand von [welle-09](welle-09-modul-15-konformitaet.md), nicht dieser Welle | `grep -m1 '^modules:' .d-check.yml` → `modules: [links, anchors]`; `grep -c 'targets' .d-check.yml` → **0** |
-| **Modul 8**, Rollen-Trennung | `.claude/agents/` (6 Dateien) | **entschieden**, permanent nicht emittiert ([`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) Festlegung 2) | dasselbe `ls .claude/` |
+| **Modul 8**, Rollen-Trennung | `.claude/agents/` (6 Dateien) | **entschieden, geht mit** ([`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 3 — generische, aus Dogfood und Regelwerk abgeleitete Fassung, `skip-if-present`) — **noch nicht umgesetzt** | dasselbe `ls .claude/`, unverändert seit der Messung vom 2026-08-22 |
 
 **Zwei Posten der Ausgangs-Lage haben die Messung nicht überlebt, und das ändert den Schnitt.**
 
@@ -69,62 +69,21 @@ gefahren am 2026-08-22:
    liest, vermisst ihren Träger nicht** — `harness/tools/mutate.sh` und `test/mutations/` sind
    deshalb kein vierter Slice (§6).
 
-### Kontext: drei Architect-Runden zur Emissions-Frage, die bisher nur in Chat-Antworten lebten
+### Kontext: die Emissions-Frage ist entschieden
 
-Diese sechs Befunde sind **keine Arbeit dieser Welle**. Sie stehen hier, weil
-[`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) ab *Accepted* immutabel ist
-([`AGENTS.md`](../../../AGENTS.md) §3.4) und über die Distributions-Frage nur einen Satz führt —
-ein späterer Lauf fände die Runden sonst nirgends.
-
-- **Sieben Transport-Wege sind abgezählt; die Zahl liefert kein Kommando, die Suchmethode ist
-  prüfbar.** Sie entstand von Hand aus einem Sweep über die Mechaniken, die dieses Repo betreibt,
-  gekreuzt mit vier Zeitpunkten (Bau · Release · Bootstrap · Laufzeit des Ziels) — nachvollziehbar
-  ist die Methode, nicht die Ziffer
-  ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-  Setzung 1, Fall *Zählung von Hand*). **Weg 3 — digest-gepinntes OCI-Image, Binär per
-  `docker create`/`docker cp` heraus — trägt mechanisch:** `docker` steht in
-  [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)-AC
-  *Minimal* auf der erlaubten Seite (*„über `bash + git + docker` hinaus nichts"*), und das Ziel
-  fährt ohnehin ein digest-gepinntes Image — `grep -n 'DCHECK_DIGEST ?=' d-check.mk` im Sonden-Repo
-  zeigt die gepinnte Referenz, die `docs-check` startet.
-- **Zwei Kosten-Zuschreibungen aus [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md)
-  Festlegung 1 sind korrigiert.** *„Eigene Plattform-Matrix"* ist **überzeichnet**:
-  `grep -n 'RELEASE_PLATFORMS' Makefile` zeigt eine Variable, und
-  `grep -n 'TARGET_OS\|TARGET_ARCH' Dockerfile` zeigt, dass die Bau-Stufe die Zielplattform bereits
-  als Argument nimmt — eine zweite Matrix entstünde nicht, es wären dieselben Achsen. *„Eigene
-  Distribution"* trifft für den Fetch-Weg zu; für den Image-Weg trägt auf der **Ziel**-Seite das
-  `d-check`-Muster, **auf unserer Seite existiert der Kanal aber nicht**:
-  `grep -rnE 'docker push|ghcr\.io|registry' .github/workflows/*.yml` ist leer (Exit 1).
-- **Warum es trotzdem keine Folge-ADR gab.** Weg 3 verletzt
-  [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) **Folgepflicht 1** (*„der Beleg emittiert
-  nichts, was der Dogfood nicht selbst fährt"*) — der Dogfood **baut** den Emitter, das Ziel
-  extrahierte ihn; das sind zwei Wege, und nur einer ist hier erprobt. Und **Folgepflicht 5** macht
-  die Emission zum **Adopter-Vertrag** (Schema · Redaktion · Ablageort) mit drei gemessenen Lücken:
-  im Ziel **kein Leser** (`grep -rn 'span-report\|span-emit' Makefile harness/mk/*.mk d-check.mk`
-  im Sonden-Repo ist leer, Exit 1), **keine Rotation**
-  (`grep -rn 'rotat\|retention\|prune' internal/span/*.go` ist leer, Exit 1) und die Redaktion
-  fremden Codes, für die [`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.md) nur den Dogfood
-  entschieden hat.
-- **Ein Muster, das erst die Abzählung sichtbar macht.** Jeder Kanal, dessen Inhalt unser eigenes
-  **Release** erzeugt, ist von unserem Vor-Release-Smoke **nicht erreichbar**:
-  [`harness/tools/full-smoke.sh`](../../../harness/tools/full-smoke.sh) baut das Werkzeug mit
-  `make artifact` aus dem **Arbeitsbaum**. Was erst der Release-Lauf erzeugt, sieht der Smoke, der
-  vor ihm läuft, per Konstruktion nie — dieselbe Klasse wie der Release-Text aus slice-050, den
-  kein Gate dieses Repos erreicht.
-- **Der `agent_role`-Einwand ist erledigt.** Die sechs Rollen-Dateien kosten
-  `cat .claude/agents/*.md | wc -c` → **10.376** Byte, und die Achse trägt gemessen (slice-060,
-  slice-066). Der Einwand war nie ihr Preis, sondern ihr fehlender Abnehmer im Ziel — und der hängt
-  einseitig: **kippt [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) Festlegung 1, kippt
-  Festlegung 2 mit** (dort ausgeschrieben: *„Die Zelle folgt Festlegung 1, und die Kopplung ist
-  einseitig"*).
-- **Der offene Change Request, präzise benannt.** Er trifft **nicht**
-  [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) oder
-  [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) — beide **halten**
-  für den Image-Weg, weil `docker` in ihrem Budget steht. Es fehlt eine Anforderung **überhaupt**:
-  der CR wäre **additiv**, eine neue `LH-FA-*` für die emittierte Erfassungsschicht samt ihrer
-  Policy-Hälfte (Schema · Redaktion · Ablageort · Rotation). Eigentümer ist der **Auftraggeber**
-  ([`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)).
-  Solange er offen ist, ist die Modul-15-Emission **kein Wellen-Gegenstand** (§6).
+[`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) ist *Accepted* und
+beantwortet, wie die Erfassungsschicht ins Ziel kommt: der Träger ist das laufende Produkt-Binär,
+kopiert in den gitignorierten Zustands-Bereich des Ziels; Schreiber und Auswertung sind seine
+Unterkommandos, die Rollen-Typen gehen generisch mit (Weg G). Sie revidiert aus
+[`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) die Festlegungen 1 und 2 vollständig sowie
+das Erfassungs-Glied ihrer Festlegung 3 und führt die Abzählung der Transportwege neu — **verwiesen,
+nicht abgeschrieben**, dieselbe Regel wie bei einem bereits gesetzten Zellwert (§3). Namentlich
+korrigiert: das digest-gepinnte OCI-Image (`docker create`/`docker cp`), das hier zuvor als
+mechanisch tragfähiger Weg stand, ist dort als Alternative **E** verworfen — Grund und Beleg stehen
+in ihrer Alternativen-Tabelle, nicht hier. Der additive Change Request, der diese Frage bis zu
+ihrer Annahme offenhielt, ist angenommen
+([`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren), Lastenheft
+0.19.0). Warum die Umsetzung trotzdem nicht Gegenstand dieser Welle ist, steht in §6.
 
 ## 2. Trigger (Welle startet)
 
@@ -161,8 +120,10 @@ erst wahr, wenn alle drei Slices liegen: 090 und 091 setzen je einen Wert, 092 s
 - **Je Regelblock genau ein Wert, und der Wert-Vorrat ist geschlossen:** *Träger kommt mit* ·
   *Träger liegt bei, ist nicht verdrahtet* · *kommt nicht mit — Grund und Dauer benannt*. Eine
   leere Zelle ist ein offener Closure-Trigger, kein „passt schon". Wo
-  [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) den Wert bereits gesetzt hat, wird er
-  **verwiesen, nicht abgeschrieben** — eine zweite Fassung derselben Entscheidung driftet.
+  [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) oder
+  [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) den Wert bereits
+  gesetzt hat, wird er **verwiesen, nicht abgeschrieben** — eine zweite Fassung derselben
+  Entscheidung driftet.
 - **Beide Richtungen im `full-smoke`, über beide Bootstrap-Varianten geklammert:** (a) die Aussage
   steht im frisch gebootstrappten Ziel out-of-the-box, sprachlos **und** mit `--lang go`; (b) ihre
   emit-seitige Rücknahme wird **rot gesehen**. Nur (a) wäre die
@@ -232,34 +193,41 @@ Der Wert *Träger kommt mit* für Modul 10 wird in 092 gesetzt, nicht erarbeitet
   [welle-09](welle-09-modul-15-konformitaet.md), die welle-10 blockiert.
 - **Blockiert:** keine geplante Welle. Sie ist die letzte der drei in der Reihe.
 - **Innerhalb der Welle:** {090, 091} → 092.
-- **Eine Eintritts-Vorfrage gehört dem Architect, und sie ist heute unbeantwortet.**
-  [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) §Konsequenzen schreibt zum Halbsatz *„und
-  das Ziel erfährt es nicht"*: *„eine Deklaration im Ziel wäre ein Artefakt, und genau das ist hier
-  ausgeschlossen — die Grenze wird benannt, nicht geschlossen."* **Zu entscheiden ist, ob
-  *Artefakt* dort die neue Datei meint oder jede Aussage.** Die Messung stützt die erste Lesart:
-  die Entscheidung heißt *„nur Block 4, **ohne neues Artefakt**"*, und ein Satz in einem Dokument,
-  das das Ziel ohnehin bekommt, lässt weder die Aufzählung aus
-  [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) noch das
-  Budget aus [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) wachsen.
-  Trägt die zweite Lesart, braucht diese Welle eine Folge-ADR, und slice-092 ist blockiert. **Der
-  Planner entscheidet das nicht** — [`AGENTS.md`](../../../AGENTS.md) §3.4 macht die ADR ab
-  *Accepted* immutabel, ihre Auslegung ist eine Architektur-Frage. Die Frage ist vor dem Eintritt
-  von 092 zu stellen, nicht vor dem Schnitt: 090 und 091 hängen nicht an ihr, weil sie über
-  Modul 2 bzw. über `make`-Ansprüche sprechen und nicht über die drei Modul-15-Blöcke, die
-  [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) entschieden hat.
+- **Die Eintritts-Vorfrage, die dem Architect gehörte, ist gegenstandslos geworden.** Sie fragte,
+  ob *Artefakt* im Halbsatz *„und das Ziel erfährt es nicht"*
+  ([`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) §Konsequenzen) die neue Datei meint oder
+  jede Aussage — eine Wahl, die nur bestand, solange die drei Modul-15-Blöcke im Ziel als
+  **Abwesenheit** zu deklarieren waren.
+  [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) kehrt das um: für
+  Träger und Rollen-Typen entscheidet sie *geht mit*, für Token-Attribution/Cache-Counter eine
+  Auswertung ohne Bilanz (§1) — nicht mehr als Abwesenheit zu benennen. Die Lesart-Wahl entfällt
+  damit, nicht weil sie beantwortet wurde, sondern weil ihr Gegenstand sich aufgelöst hat.
+  [slice-092](open/slice-092-traeger-inventur.md) führt diese Vorfrage weiterhin als eigenen
+  Blocker in seinem §6 und seine DoD (3) noch die alte Grenze *„kein neues Artefakt"* — das ist
+  Slice-Bestand, den ein eigener Nachzug der Slices dieser Welle zieht, nicht dieser.
 - **Nicht abhängig, aber benachbart:** slice-087 räumt dieselbe Fehlerklasse in den **lebenden**
   emittierten Doku-Tischen. Wer beide gleichzeitig anfasst, erzeugt einen Konflikt in
   `internal/emit`; die Trigger-Reihenfolge (§2) verhindert das.
 
 ## 6. Out-of-Scope für diese Welle
 
-- **Die Emission der Modul-15-Erfassungsschicht** — Span-Emitter, Rollen-Typen, Token-Bericht.
-  Sie ist in [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) Festlegungen 1–3 als
-  **permanent** entschieden, und der Weg, der sie mechanisch trüge, verlangt eine Anforderung, die
-  es nicht gibt. **Benannter Posten mit Eigentümer: der additive Change Request liegt beim
-  Auftraggeber** ([`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler));
-  die drei Runden, die dorthin führten, stehen in §1. Solange er offen ist, setzt diese Welle für
-  diese Blöcke nur den **Wert** aus der ADR, sie stellt die Entscheidung nicht neu.
+- **Die Emission der Modul-15-Erfassungsschicht** — Träger, Schreiber und Auswertung als
+  Unterkommandos, Rollen-Typen, Feldlisten-Dokument.
+  [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) hat entschieden,
+  dass sie ins Ziel geht (Festlegungen 1, 3–5, 8), und revidiert damit
+  [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) Festlegungen 1 und 2 sowie das
+  Erfassungs-Glied ihrer Festlegung 3 — der additive Change Request, der das auslöste, ist
+  angenommen ([`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren),
+  Lastenheft 0.19.0). **Das setzt diese Welle nicht frei:** ihr eigenes Ziel bindet sie auf eine
+  Aussage *„als Text in bereits emittierten Dokumenten, ohne ein neues Artefakt"* (§1) — der
+  Träger, der Hook-Wrapper, die generische Rollen-Fassung und das Feldlisten-Dokument sind aber
+  genau die neuen Artefakte, die [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
+  verlangt. Die Umsetzung bleibt darum out-of-scope — nicht mehr, weil eine Anforderung fehlt,
+  sondern weil sie eine eigene Welle ist
+  ([`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Folgepflicht 5
+  nennt nur den Nachzug dieses Wellen-Plans als ihre eigene Plan-Arbeit, nicht die Umsetzung
+  selbst). Was diese Welle stattdessen liefert: die Träger-Tabelle in §1 trägt für die betroffenen
+  Blöcke den neuen **Wert** — geht mit, noch nicht umgesetzt.
 - **Die Aktivierung von `doc-targets` im Ziel** (Modul 15, Block 4). Sie gehört
   [welle-09](welle-09-modul-15-konformitaet.md), ist dort geschnitten (slice-063 auf slice-087) und
   in [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) Festlegungen 4/5 entschieden. Diese
