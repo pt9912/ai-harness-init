@@ -134,7 +134,11 @@ abnahmebindend führt.
 
 ### Was die Entscheidung auslöst
 
-Das Observability-Modul der adoptierten Baseline führt vier Regelblöcke; drei davon —
+Das Observability-Modul der adoptierten Baseline `v3.5.2` führt vier Regelblöcke —
+`modul-15-observability.md` trägt sie als die Abschnitte §Span-/Audit-Attribut-Regeln,
+§Token-Attributions-Regeln, §Cache-Counter-Regeln und §Doku-Konsistenz-Drift-Regeln
+(`grep -n '^### ' .harness/baseline/v3.5.2/regelwerk/modul-15-observability.md` → sieben
+Abschnitte, davon diese vier mit Regelblock-Charakter). Drei davon —
 Span-/Audit-Attribute, Token-Attribution, Cache-Counter — gingen bis hierher **nicht** ins Ziel,
 und ihre Zellen der Konformitäts-Matrix trugen *ADR-Verdikt*: permanent, in einer ADR entschieden,
 ohne Auflösungs-Trigger. Der Vertrag verlangt heute das Gegenteil.
@@ -302,21 +306,36 @@ den Bootstrap **ausführt**; mehr sagt ein laufendes Bild nicht. Gebraucht wird 
 Re-Evaluierungs-Trigger — nicht als Beweis. Die Lücke schließt auch
 [`LH-QA-04`](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) nicht: seine Messmethode sagt
 für die drei Start-Smoke-Plattformen ausdrücklich, der Start-Smoke belege, *„dass das Binary auf
-der Plattform läuft — nicht, dass ein Bootstrap dort durchläuft"*. Der tragende Grund von
-Festlegung 1 ist damit **keine Einzigkeit** — Alternative F teilt die vier Eigenschaften — und
-kein Beweis über die Hook-Plattform, sondern die **Ersparnis**, die keiner anderen
-Herkunfts-Klasse offensteht: über den Bootstrap-Host verfügt das Werkzeug im Moment der Emission
-ohne Herleitung, ohne Rateschritt und ohne zweiten Kanal. Wo diese Ersparnis nicht reicht, trägt
-Alternative F — und genau dorthin führt der Trigger zu Annahme (a).
+der Plattform läuft — nicht, dass ein Bootstrap dort durchläuft"*.
+
+**Der tragende Grund ist der Preis, und das ist keine Verlegenheit.** Die vier Eigenschaften oben
+wählen die **Herkunfts-Klasse**, nicht ihr Mitglied: Alternative F teilt sie vollständig. Zwischen
+den beiden entscheidet allein, was jede kostet — und F kostet drei Dinge, die G nicht kostet. Ihre
+Einbettung verlangt die Datei zur Übersetzungszeit **jeder** Stufe, also einen committeten
+Platzhalter, der aussieht wie ein Träger und keiner ist;
+[`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) verlangt Schreiber
+**und** Auswertung, also zwei solcher Blobs; und der Produkt-Bau hinge am Emitter-Bau derselben
+Plattform. G legt statt dessen nichts an, was es nicht ohnehin gibt. Was F dafür bietet — ein
+Träger, der **konstruktiv** kein Repo bootstrappen kann —, ist der Gegenposten, und er ist unten
+als Contra von G benannt.
+
+**Was Annahme (a) trägt und was nicht.** Fällt sie, weil Bootstrap-Host und Hook-Plattform
+auseinanderfallen, dann fällt sie für **F ebenso** — sein eingebettetes Binär hat dieselbe
+Plattform-Bindung. Der Trigger unten sagt darum nicht *„dann F"*, sondern stellt die
+Plattform-Frage neu und macht **D, E und F** verfügbar; welcher von ihnen dann trägt, entscheidet
+die Folge-Entscheidung und nicht diese.
 
 **Warum das die Phasen-Ordnung nicht invertiert — der Punkt, an dem die abgelöste Begründung
 hing.** [ADR-0007](0007-bootstrap-phasen.md) verwirft, dem Ziel **Code vor seiner eigenen
 Doc-Chain und vor seinem Sprach-ADR** zu geben; die Sprachwahl ist eine ADR-Entscheidung des
 Adopters. Der Träger ist **nicht der Code des Ziels**: er wird dort nicht übersetzt, er verlangt
 keine Toolchain, er trifft keine Sprach-Aussage, und er liegt außerhalb des versionierten Baums.
-Nach dem Init hat das Ziel weiterhin kein Sprach-Fragment, kein Manifest und kein Skelett — die
-Eigenschaft, die der bestehende Abwesenheits-Wächter in `internal/emit/enforce_test.go` bereits
-hält. Was [ADR-0007](0007-bootstrap-phasen.md) verbietet, ist ein **Bauschritt** im Ziel; das ist
+Nach dem Init hat das Ziel weiterhin kein Sprach-Fragment, kein Manifest und kein Skelett. Bewacht
+ist davon **das erste Glied**: der Abwesenheits-Wächter in `internal/emit/enforce_test.go` prüft,
+dass `EnforcePaths` kein `blocked/`-Fragment trägt und dass `Enforce` sprachlos keines anlegt. Für
+Manifest und Skelett hält ihn nichts (`grep -rn 'go\.mod\|Skelett\|Manifest' internal/emit/*_test.go`
+→ leer, Exit 1); dass beide ausbleiben, folgt aus der Konstruktion dieser Entscheidung und ist
+keine gemessene Zusage. Was [ADR-0007](0007-bootstrap-phasen.md) verbietet, ist ein **Bauschritt** im Ziel; das ist
 Alternative B, nicht dieser Weg.
 
 **2. Schreiber und Auswertung sind Unterkommandos desselben Trägers — und der Dogfood fährt
@@ -498,10 +517,15 @@ Konjunktion. Die Glieder stehen heute verschieden:
   dort genannt, nicht stillschweigend mitgeliefert."* Der tragende Grund jener Entscheidung liegt
   im **fremden Vertrag**: sie zählt die zwei verbliebenen Wege dort ab und stellt fest, *„Kein
   Aufwand dieses Repos bringt eines von beiden herbei."* Das Agenten-Werkzeug ist auf der
-  emittierten Ebene dasselbe; ein Adopter-Bestand trägt Verbrauchs-Zähler genau dann, wenn einer
-  jener zwei fremden Wege trägt — und dann trägt er sie hier ebenso. Diese Entscheidung sagt
-  darum über einen Adopter **nichts** zu, was jene nicht schon über die Mechanik gesagt hat, und
-  sie revidiert daran nichts.
+  emittierten Ebene dasselbe; trägt ein Adopter-Bestand Verbrauchs-Zähler, dann trägt einer jener
+  zwei fremden Wege — und das ist die Richtung, auf die es ankommt, denn sie macht eine
+  Folge-Entscheidung fällig. **Die Rückrichtung gilt nicht ohne Zusatz:** jene Entscheidung knüpft
+  jeden der zwei Wege an eine weitere Bedingung — eine Vordergrund-Form *„wirkt nur, wenn jemand
+  sie liest"*, und ein Ereignis muss verdrahtet sein —, und ob ein Adopter sie erfüllt, entscheidet
+  er, nicht diese ADR. Was hier und dort zusammenhängt, hält
+  [ADR-0020](0020-emittierte-modul-15-regeln.md) Folgepflicht 1: der Beleg emittiert nichts, was
+  der Dogfood nicht selbst fährt. Diese Entscheidung sagt darum über einen Adopter **nichts** zu,
+  was jene nicht schon über die Mechanik gesagt hat, und sie revidiert daran nichts.
 
 **Daraus die Festlegung:** emittiert wird der **Leser**, nicht die **Zahl**. Die Auswertung nennt
 ihre **Abdeckung zuerst** und meldet über einem Bestand ohne Zähler ihre Leere; sie behauptet
@@ -590,11 +614,16 @@ Kommando, nicht die Aufhängung.
 - **Folgepflicht 4 — [`architecture.md §5`](../../../spec/architecture.md#5-idempotenz-fragment-assembly-und-resume)
   nachziehen:** die Emissions-Mechanik legt erstmals ein **ausführbares** Artefakt ab, und die
   Klassen-Tabelle bekommt eine Zeile außerhalb des versionierten Baums.
-- **Folgepflicht 5 — der Wellen-Plan der Träger-Aussage wird an zwei Stellen falsch.** Seine
-  Träger-Tabelle führt für die Modul-15-Blöcke den Wert *„entschieden, permanent nicht emittiert"*,
-  und sein Out-of-Scope begründet den Ausschluss der Modul-15-Emission mit einem Change Request,
-  *„solange er offen ist"* — er ist angenommen. Das Nachziehen ist **Plan-Arbeit**, nicht Teil
-  dieser Entscheidung.
+- **Folgepflicht 5 — der Wellen-Plan der Träger-Aussage wird falsch, und zwar als Eigenschaft, nicht
+  an einer Adresse.** Betroffen ist **jede** Zeile, die einen Wert *„entschieden, permanent nicht
+  emittiert"* aus einer hier revidierten Festlegung ableitet — das sind die Modul-15-Blöcke aus
+  Festlegung 1 **und** die Rollen-Trennung aus Festlegung 2, die Festlegung 3 dieser Entscheidung
+  umkehrt —, und **jede** Stelle, die den Ausschluss der Modul-15-Emission mit einem Change Request
+  begründet, *„solange er offen ist"*; er ist angenommen. Das Kommando, das die Menge heute zeigt:
+  `grep -niE 'permanent nicht emittiert|solange er offen ist' docs/plan/planning/welle-11-traeger-aussage.md`
+  — die Trefferzahl wandert mit dem Plan und ist **kein** Erwartungswert
+  ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). Das Nachziehen ist **Plan-Arbeit**, nicht Teil dieser Entscheidung.
 - **Folgepflicht 6 — die drei Abwesenheits-Wächter der abgelösten Entscheidung werden
   Anwesenheits-Wächter.** Sie waren dort geschuldet und nicht geliefert; gebaut werden jetzt die
   umgekehrten. Ein Wächter, der eine Abwesenheit prüft, die es nicht mehr geben soll, ist kein
@@ -602,7 +631,11 @@ Kommando, nicht die Aufhängung.
 - **Folgepflicht 7 — der ADR-Index bekommt bei der Annahme die Teil-Revisions-Annotation** an der
   abgelösten Entscheidung, in der dort geübten Form. Bis dahin nennt der Index diese Entscheidung
   als *Proposed* und ihren Umfang; eine Revision, die noch nicht beschlossen ist, wird nicht als
-  vollzogen ausgewiesen.
+  vollzogen ausgewiesen. **Betroffen ist jede Index-Zeile, deren Zusammenfassung eine hier
+  revidierte Aussage trägt** — auch die der Entscheidung, die den emittierten Fall vorentschieden
+  hat: ihre Zeile schließt heute mit *„Die emittierte Ebene ist nicht berührt"* und zeigt für den
+  Grund auf eine Entscheidung, die nach der Annahme in drei Festlegungen revidiert ist. Der Index
+  ist ein **lebendes** Artefakt; dort kostet der Nachzug eine Zeile, keine Folge-ADR.
 - **Folgepflicht 8 — die Kommentare, die die heutige Trennung begründen, beschreiben danach eine
   Konstruktion, die es nicht mehr gibt.** Betroffen ist **jede** Stelle, die die getrennten
   Bau-Stufen begründet, nicht nur die, die einen Plan-Schnitt als Entscheidungs-Ort nennt: die
@@ -633,9 +666,9 @@ Kommando, nicht die Aufhängung.
 | `make full-smoke` | **Der Träger schreibt im Ziel.** Im frisch gebootstrappten tmp-Repo erzeugt der abgelegte Träger aus einer synthetischen Payload einen Span, und `git check-ignore` im Ziel bestätigt dessen Ablageort — der Nachbau dessen, was `span-check` hier für den Dogfood leistet. **Geschuldet, nicht geliefert.** Die Klammer über **beide** Bootstrap-Varianten (sprachlos und mit Sprache) gehört dazu: die Erfassung ist sprach-agnostisch, ein Zahn in nur einer Variante belegte das nicht | `make full-smoke` |
 | `make test` · `make mutate` | **Die Zusage aus [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), mit ihrem Gegenbeispiel.** Scheitert die Platzierung des Trägers, trägt die emittierte `.claude/settings.json` **keinen** Erfassungs-Hook, es liegt **kein** Wrapper, und der Bootstrap endet erfolgreich. **Rot zu sehen ist:** die Kopplung aufheben — den Hook-Eintrag unbedingt schreiben —, dann muss der Wächter fallen. Ohne dieses Rot ist die Zusage eine Absicht. **Geschuldet, nicht geliefert** | `make test`, `make mutate` |
 | `make test` · `make mutate` | **Die fail-open-Konstruktion am neuen Einstiegspunkt.** Ein Träger, dessen innere Arbeit fehlschlägt, endet mit Exit 0 und leerem stdout — auch das seiner Kindprozesse; die Klemme zu entfernen färbt rot. Die Zähne existieren, sie hängen am alten Programm (Folgepflicht 2) | `make test`, `make mutate` |
-| `make test` | **Die Anwesenheits-Wächter.** Nach dem Bootstrap liegen im Ziel Träger, Wrapper, Rollen-Typen und die Feldliste; die Prüfung hat die Gestalt des bestehenden Abwesenheits-Wächters in `internal/emit/enforce_test.go`, nur umgekehrt, und jede ist einmal rot zu sehen, indem das Artefakt probeweise weggelassen wird. **Geschuldet, nicht geliefert** (Folgepflicht 6) | `make test`, `make mutate` |
+| `make test` | **Die Anwesenheits-Wächter — im Zweig, in dem die Emission gelingt.** Nach einem Bootstrap, dessen Träger-Platzierung durchläuft, liegen im Ziel Träger, Wrapper, Rollen-Typen und die Feldliste; die Prüfung hat die Gestalt des bestehenden Abwesenheits-Wächters in `internal/emit/enforce_test.go`, nur umgekehrt, und jede ist einmal rot zu sehen, indem das Artefakt probeweise weggelassen wird. **Die Bedingung gehört in den Wächter, nicht in seinen Namen:** im Zweig aus Festlegung 5(a) fehlen Träger, Wrapper und Hook-Eintrag zulässig, und ein unbedingt formulierter Anwesenheits-Wächter fiele dort — gegen die Zeile darüber, die genau dieses Ausbleiben zusagt. Die **Feldliste** entsteht mit dem Träger (Festlegung 7 erzeugt sie aus ihm) und teilt darum seinen Zweig. **Geschuldet, nicht geliefert** (Folgepflicht 6) | `make test`, `make mutate` |
 | `make test` | **Die Feldliste im Ziel ist der Ausdruck des Trägers.** Das emittierte Dokument ist byte-gleich mit dem, was der Träger über sein eigenes Schema ausgibt; ein Feld, das erfasst wird und dort fehlt, färbt rot. Damit ist die Drift konstruktiv ausgeschlossen statt per Regel verboten. **Geschuldet, nicht geliefert** — das Dokument entsteht erst mit Festlegung 7, und ein Sensor darüber existiert nicht (`grep -rln 'Feldliste' internal/emit/*.go` → leer, Exit 1) | `make test` |
-| `make full-smoke` | **Die Auswertung meldet ihre Leere — und nennt die Grenze, nicht nur den Zustand.** Über einem Bestand ohne Verbrauchs-Zähler nennt sie ihre Abdeckung, weist **keine** Bilanz aus und sagt, dass die Zähler an der Mechanik des Agenten-Werkzeugs hängen; eine Ausgabe, die über leerem Bestand eine Zahl trägt, ist der Befund — und ebenso eine, die die Leere ohne ihren Grund meldet. **Rot zu sehen ist:** den Grund-Satz aus der Ausgabe nehmen, dann muss der Wächter fallen; ohne dieses Rot ist die Einlösung von [ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Folgepflicht 6 eine Absicht ([`AGENTS.md`](../../../AGENTS.md) §3.6). **Geschuldet, nicht geliefert** | `make full-smoke` |
+| `make full-smoke` | **Die Auswertung meldet ihre Leere — und nennt die Grenze, nicht nur den Zustand.** Über einem Bestand ohne Verbrauchs-Zähler nennt sie ihre Abdeckung, weist **keine** Bilanz aus und sagt, dass die Zähler an der Mechanik des Agenten-Werkzeugs hängen; eine Ausgabe, die über leerem Bestand eine Zahl trägt, ist der Befund — und ebenso eine, die die Leere ohne ihren Grund meldet. **Rot zu sehen ist:** den Grund-Satz aus der Ausgabe nehmen, dann muss der Wächter fallen; ohne dieses Rot ist die Einlösung von [ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Folgepflicht 6 eine Absicht ([`AGENTS.md`](../../../AGENTS.md) §3.6). **Der Mutations-Treiber erreicht dieses Target heute nicht:** `failure_form` in `harness/tools/mutate.sh` führt Muster für `test`, `test-go`, `test-bats`, `smoke` und `ci-lint` und bricht sonst ab (`sed -n 's/^# verify: //p' test/mutations/*.sh \| sort \| uniq -c` → je einmal `ci-lint` und `smoke`; für `make smoke` wurde dieselbe Lücke einmal ausdrücklich geschlossen, für `full-smoke` nicht). Wer diese Zeile einlöst, schuldet darum **beides**: den Wächter und ein Fehlschlag-Muster für `full-smoke` — sonst bleibt der Fall ungelistet, und ungelistet heißt nach [`AGENTS.md`](../../../AGENTS.md) §3.6 unbewacht. **Der stehende Nenn-Ort der Zeile darunter hängt dagegen an `make test` · `make mutate` und ist ohne diese Vorarbeit erreichbar; die Asymmetrie ist der Grund, warum die Grenze zwei Orte hat und nicht einen.** **Geschuldet, nicht geliefert** | `make full-smoke` |
 | `make test` · `make mutate` | **Das Feldlisten-Dokument führt seine zwei Grenzen stehend.** Es nennt, dass die emittierte Ebene keinen Wächter über die Aufrufform des Agenten-Werkzeugs führt und dass die Verbrauchs-Zähler aus der Mechanik nicht kommen (Festlegung 7); fehlt einer der zwei Sätze im emittierten Dokument, färbt der Wächter rot. Das ist der Ort, der auch dann trägt, wenn niemand die Auswertung ruft. **Geschuldet, nicht geliefert** | `make test`, `make mutate` |
 | — | **Nicht maschinell prüfbar, und darum hier ohne Zeile:** dass ein Adopter seine Rollen-Typen unter den kanonischen Namen führt. Das ist die Grenze aus [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) §Benannte Grenze; sie wird ausgesprochen, nicht bewacht | — |
 
@@ -667,9 +700,11 @@ Kommando, nicht die Aufhängung.
   dorthin.
 - **Wenn ein Bootstrap für eine andere Plattform ausgeführt wird als die, auf der die Hooks
   laufen** *(feedforward — an einem Ziel ablesbar, dessen Träger sich nicht ausführen lässt)*:
-  Annahme (a) fällt, und mit ihr die Ersparnis, auf der Festlegung 1 ruht — der Bootstrap-Host
-  sagt dann nichts mehr über die Hook-Plattform. Die Plattform-Frage ist dann wieder zu stellen,
-  und die Wege D, E und F werden verfügbar.
+  Annahme (a) fällt, und mit ihr die Grundlage, auf der Festlegung 1 ruht — der Bootstrap-Host
+  sagt dann nichts mehr über die Hook-Plattform. Sie fällt für **alle** Wege der ersten
+  Herkunfts-Klasse zugleich, Alternative F eingeschlossen; der Preis-Vergleich, der zwischen ihnen
+  entschied, ist damit gegenstandslos. Die Plattform-Frage ist neu zu stellen, und die Wege D, E
+  und F werden verfügbar.
 - **Wenn der Zustands-Bereich des Ziels nicht mehr gitignored oder nicht beschreibbar ist**
   *(feedforward — eine Änderung an der emittierten Durchsetzung, kein Sensor)*: Annahme (b) fällt;
   Träger-Ort und Ablageort sind gemeinsam neu zu wählen, weil sonst jeder Span den Gate-Nachweis
