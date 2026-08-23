@@ -68,7 +68,7 @@ Jeder Punkt nennt das Kommando, das ihn rot färbt — und wo keines existiert, 
 Eine Zusage reicht nur so weit wie ihr Sensor
 ([slice-086](../done/slice-086-vordergrund-per-updatedinput.md) §7).
 
-- [ ] **(1) Der Übergang ist geschrieben, nicht verschoben — vier Änderungen am Stub, eine am
+- [x] **(1) Der Übergang ist geschrieben, nicht verschoben — vier Änderungen am Stub, eine am
       Index, ein Commit.** An [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md): der Status
       aus Festlegung 5 (`Status: Permanent — übergeführt in` gefolgt von der Kennung
       [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md)); ein aktuelles
@@ -102,7 +102,7 @@ Eine Zusage reicht nur so weit wie ihr Sensor
       kein Modul von `.d-check.yml` liest, ob ein Satz **ergänzt** wurde oder welchen Status ein
       Kopf trägt. Ein Gate, das den Stub an seiner Adresse duldet, sagt nichts darüber, dass er
       dort richtig steht. Träger ist die Verifikation am Text (Modul 11).
-- [ ] **(2) Die sechs Zeiger behalten ihre Adresse; gezogen wird ihre Aussage.** Fünf stehen in
+- [x] **(2) Die sechs Zeiger behalten ihre Adresse; gezogen wird ihre Aussage.** Fünf stehen in
       [`spec/spezifikation.md`](../../../../spec/spezifikation.md) §5 (fünfter Punkt der
       Erfassungs-Liste, START-KONVENTION, Wächter-Absatz zu deren Bedingung 2, Abweichung 1,
       Abweichung 5), der sechste im Kopf von
@@ -131,7 +131,7 @@ Eine Zusage reicht nur so weit wie ihr Sensor
       Handgriffen ebenfalls grün. `make docs-check` deckt die Verbots-, nicht die Gebots-Seite. Ob
       eine Aussage wirklich gezogen ist, entscheidet allein der Abgleich am Text; Träger ist die
       Verifikation (Modul 11), nicht ein Gate.
-- [ ] **(3) Der fällige Mutations-Fall färbt den Wächter rot, der die neun Werte hält.**
+- [x] **(3) Der fällige Mutations-Fall färbt den Wächter rot, der die neun Werte hält.**
       Beschrieben als **Eigenschaft, nicht als Adresse**: ein Fall unter `test/mutations/`, der
       einen Eintrag der Positiv-Liste aus `responseKeys()` in `internal/span/response.go`
       **entfernt** und dabei `TestNoResponseFreetextReachesSpan` in
@@ -151,9 +151,9 @@ Eine Zusage reicht nur so weit wie ihr Sensor
       die da sind; ohne diesen Fall bleibt alles grün, und Festlegung 2 der ADR bleibt eine Absicht
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Genau deshalb steht er als **eigener** DoD-Punkt
       und nicht als Nebensatz von (1).
-- [ ] `make gates` grün, `make mutate` ohne Befund.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] `make gates` grün, `make mutate` ohne Befund.
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -398,7 +398,251 @@ nicht mit *grün* erfüllt, sondern erst mit dem Abgleich am Text.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Was gilt.** [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) trägt an seiner
+unveränderten Adresse den Verdikt-Status: `grep -n '^\*\*Status:' docs/plan/carveouts/CO-002-token-achse-je-rolle.md`
+gibt `3:**Status:** Permanent — übergeführt in` aus, die Kennung
+[`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) steht in der Folgezeile. Die
+zwei Ort-Anweisungen, die der Stub an seinen eigenen Ausgang schrieb, als der Ausgang noch offen
+war, sind aufgehoben — `grep -n 'zu verschieben'` und `grep -n '^## Verifikation'` über derselben
+Datei sind beide **leer (Exit 1)**. Der Abschnitt `## Auflösungs-Trigger` steht, damit die zwei
+ADRs, die ihn verbatim zitieren, ihre Quelle behalten; sein erster Satz zeigt auf den Status im
+Kopf. Der Index [`docs/plan/carveouts/README.md`](../../carveouts/README.md) führt den Eintrag in
+einem eigenen Abschnitt statt unter `## Aktiv` — `grep -n '^## '` über der Datei zählt **3**
+Abschnitte (*Aktiv* · *Permanent — in eine ADR übergeführt* · *Aufgelöst*); die Zahl wandert mit
+dem Bestand und ist **kein** Erwartungswert
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2).
+
+Die sechs Zeiger stehen unverändert an ihrer Adresse —
+`grep -n 'CO-002' spec/spezifikation.md .claude/hooks/pretooluse-agent-guard.sh | wc -l` → **6**,
+je Datei `grep -c` → **5** und **1** — und keiner führt die Messung mehr als ausstehend. Ein
+zweiter Ort für das Verdikt ist nicht entstanden: `grep -c 'ADR-0' spec/spezifikation.md` → **1**,
+und dieser eine Treffer steht in §7 Historie, einem der Abschnitte, die `matrix.exclude-sections`
+in [`.d-check.yml`](../../../../.d-check.yml) ausnimmt. Der fällige Zahn existiert als
+`test/mutations/151-span-positivliste-eintrag-entfernt.sh`: er entfernt einen Eintrag der
+Positiv-Liste, die `grep -c 'path: \[\]string' internal/span/response.go` → **9** zählt, und färbt
+`TestNoResponseFreetextReachesSpan` rot.
+
+**Der Closure-Trigger aus §5, Kriterium für Kriterium.**
+
+1. **DoD vollständig.** Die Punkte (1)–(3) sind der Gegenstand, (4)–(6) die Rahmenpunkte; die
+   Belege stehen oben und unten.
+2. **Review konform (Modul 10), mit ausgestelltem Verdikt in jeder Runde.**
+   [Runde 1](../../../reviews/2026-08-22-slice-089-review.md) (`fd4ec7d`): **blockierend**,
+   0 HIGH · 3 MEDIUM · 1 LOW · 2 INFO —
+   `grep -c '^### F-' docs/reviews/2026-08-22-slice-089-review.md` → **6**.
+   [Runde 2](../../../reviews/2026-08-22-slice-089-bestaetigungsrunde.md) (`c2e6851`): **frei**,
+   die zwei blockierenden MEDIUM an ihrem Gegenstand erledigt, ein neuer LOW —
+   `grep -c '^### B-' docs/reviews/2026-08-22-slice-089-bestaetigungsrunde.md` → **1**. Keine
+   Kategorie ist gestiegen.
+3. **Verifikation (Modul 11) bestätigt die DoD.**
+   [Report](../../../reviews/2026-08-23-slice-089-verify.md) (`7436327`): **DoD (1)–(5) bestätigt,
+   ohne Befund.** Der Verifier hat `make gates` und `make mutate` selbst gefahren und vier Sonden
+   in einer Wegwerf-Kopie außerhalb des Repos gegen die Abdeckungsgrenzen gesetzt, die der Plan
+   für sich selbst zieht.
+4. **`make gates` und `make mutate` grün.** Belege unten unter *Gates*.
+5. **Closure-Notiz mit Steering-Loop-Eintrag.** Diese Notiz; der Eintrag steht unten.
+
+**Wo der Liefergegenstand in der Historie liegt.** `git log --oneline --grep='slice-089' 7436327`
+zählt **20** Commits — der Stand gehört ins Kommando, sonst wandert die Zahl mit jedem weiteren
+Commit und ist kein Erwartungswert. Die Sache selbst liegt in **drei**: `83b3f83` schreibt den
+Übergang, die sechs Zeiger und den Mutations-Fall; `d3409b3` zieht die Gattungs-Behauptung des
+Index und die Belegklasse an zwei Fundorten; `89450fa` dieselbe Belegklasse am dritten. Die
+Verdikte liegen in `fd4ec7d` und `c2e6851`, die Verifikation in `7436327`. Die Lifecycle-Commits
+`d332b9c` (`open → next`) und `7053494` (`next → in-progress`) sind reine Moves, `abbefcb` und
+`fa4a05d` die Link-Züge danach. Wer den Slice sucht, findet ihn über diese Commits und **nicht**
+in der Roadmap: `grep -c 'slice-089' docs/plan/planning/in-progress/roadmap.md` → **0** (Exit 1),
+wie [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
+Setzung 2 es für wellenlose Arbeit verlangt; Setzung 3 lässt auch die Closure spurlos an ihr
+vorbeigehen. Der Zustand ist das Verzeichnis.
+
+**Was der Slice nicht deckt — die Grenzen, die er für sich selbst gezogen hat.**
+
+- **Der Vorspann-Satz im Stub hat keinen Sensor.** Alle drei `grep`-Kommandos aus DoD (1) können
+  leer sein, während er fehlt, und `make docs-check` bleibt dabei grün. Er steht, und der Beleg
+  dafür ist der Abgleich am Text, nicht ein Lauf.
+- **Das Rot-Kommando von DoD (2) misst die Über-Löschung, nicht den Nachzug.** Die sechs Zeilen
+  sind vor dem Vollzug vollzählig, nach dem Vollzug vollzählig und nach **null** Handgriffen
+  ebenfalls. Was der Punkt zusagt, entscheidet allein der Abgleich am Text; der Plan sagt das
+  selbst, und genau dort liegt der Steering-Loop-Eintrag.
+- **Die zwei Matrix-Zellen und die Audit-Regel liegen außerhalb.** Sie entstehen mit der
+  Ergebnis-Notiz von [welle-09](../welle-09-modul-15-konformitaet.md), und ihr Träger steht dort,
+  nicht hier: `grep -c '0021' docs/plan/planning/welle-09-modul-15-konformitaet.md` → **7**, und
+  die Zeilen der Slice-Tabelle zu slice-071 und slice-068 tragen den Wert *ADR-Verdikt*.
+- **Die emittierte Ebene ist nicht berührt.** `grep -rn 'CO-002' internal/emit/` → **leer
+  (Exit 1)**; bekommt das emittierte Repo je einen Span-Emitter oder einen Agent-Guard, gilt die
+  Grenze dort und gehört dort **genannt**.
+
+**Steering-Loop-Eintrag — geschärfte Regel.**
+
+**Wo der Sensor die Adresse misst und der Gegenstand die Aussage ist, schuldet der DoD-Punkt die
+Aussagen-Menge: aufgezählt und mit ihrer Richtung, nicht nur beziffert.** Ein Punkt, der von sich
+selbst sagt *„Kein Kommando deckt den Gegenstand"*, hat die Lücke damit **benannt** und noch nichts
+über sie **gesagt**. Die Zeiger-Menge zu nennen ist die leichte Hälfte — ein `grep` liefert sie;
+die schwere ist die Menge der Sätze, die an diesen Zeigern etwas behaupten, und was mit ihnen
+geschehen soll.
+
+**Gemessen an diesem Slice.** DoD (2) nannte die Zeiger-Menge exakt und mit Kommando: sechs Zeilen
+in zwei Dateien. Sie stimmte nach dem ersten Vollzug und war in keiner Runde ein Befund. Die
+Aussagen-Seite nannte der Punkt in **einer** Richtung — *„Es fällt jeder Satz, der eine Messung als
+ausstehend führt"* — und in **keiner** Menge. Sie brauchte drei Durchgänge und drei Rollen:
+
+| Durchgang | Was offen war | Commit |
+|---|---|---|
+| Vollzug | — die sechs Zeiger stehen, die offene Frage ist weg | `83b3f83` |
+| Review Runde 1, F-2 | die Belegklasse fehlt an zwei Fundorten (Erfassungs-Punkt 5, Hook-Kopf) | `d3409b3` |
+| Review Runde 2, B-1 | dieselbe Belegklasse fehlt am dritten Fundort (START-KONVENTION) | `89450fa` |
+| Verifikation, D-2 | der Plan verlangt für alle drei nur *fallen*; nötig war *fallen und einordnen* | — die Lücke, die dieser Eintrag schließt |
+
+Über die zwei Runden und die Verifikation stehen **neun** Posten:
+`grep -c '^### F-' docs/reviews/2026-08-22-slice-089-review.md` → **6**,
+`grep -c '^### B-' docs/reviews/2026-08-22-slice-089-bestaetigungsrunde.md` → **1**,
+`grep -c '^\*\*D-[12] ' docs/reviews/2026-08-23-slice-089-verify.md` → **2**. **Vier** davon —
+F-2, F-4, B-1, D-2 — sitzen auf der Aussagen-Seite, **keiner** auf der Zeiger-Seite. Die Zuordnung
+ist ein **Urteil, kein Muster**, und steht deshalb als Untergrenze
+([`AGENTS.md`](../../../../AGENTS.md) §3.6); mechanisch ist allein der Nenner.
+
+**Warum die drei Additive kein Ausbruch aus dem Plan waren.** Dazugekommen ist an allen drei
+Stellen die Belegklasse: der **Ausgang** des Versuchs ist gemessen, die **Übernahme** der
+Hook-Ausgabe ist eine Sicht am Dialog. [`AGENTS.md`](../../../../AGENTS.md) §3.6 lässt keine
+Zusage zu, die breiter ist als ihr Beleg, und das Mess-Dokument führt genau diese Grenze selbst
+([`2026-08-21-updatedinput-messung.md`](../../../reviews/2026-08-21-updatedinput-messung.md) §7).
+Ein DoD-Punkt, der nur vom Fallen spricht, verbietet die Einordnung dem Wortlaut nach — die
+höherrangige Quelle setzt sich durch, und der Plan hatte den Konflikt erzeugt, statt ihn zu
+entscheiden.
+
+**Dieselbe Regel auf der Reviewer-Seite, ebenfalls gemessen.** Runde 1 zitierte für die Form der
+Belegklasse zwei Nachbarsätze derselben Spec-Sektion als Muster der guten Form. Der dritte Fundort
+lag fünfundzwanzig Zeilen darunter und trug die ungeteilte Fassung. **Eine Stelle, die ein Review
+als Muster zitiert, ist damit nicht geprüft** — der Befund nennt einen **Fundort**, die Sache hat
+eine **Fundmenge**.
+
+**Der Träger, den [slice-088](../done/slice-088-dcheck-pin-v0620.md) §7 für genau diesen Fall
+vergeben hat, hat zur Hälfte getragen.** Er wies den *Zieh-Fall* seiner Regel — *eine gemessene
+Aussage lebt so oft, wie sie geschrieben wurde* — diesem Slice zu, mit DoD (2) als Griff und dessen
+Fundort-Suche als Kommando. Für die **Adresse** ist die Zuweisung eingelöst: die Suche hielt alle
+sechs Zeiger, ohne einen Befund. Für die **Aussage** hielt sie nichts, weil sie Zeiger zählt. Ein
+Träger, der aus einem Kommando besteht, trägt so weit wie das Kommando reicht — dieselbe Grenze,
+die [slice-086](../done/slice-086-vordergrund-per-updatedinput.md) §7 als *eine Zusage reicht nur
+so weit wie ihr Sensor* formuliert, hier auf den **Träger** angewandt statt auf die Zusage.
+
+**Träger dieser Regel — benannt, weil eine Notiz in `done/` keiner ist.** Was in einer
+geschlossenen Slice-Datei steht, schlägt kein Lauf wieder auf, und das ist am Bestand messbar: von
+den `done/`-Plänen mit einer Closure-Notiz
+(`grep -l '^## 7\. Closure-Notiz' docs/plan/planning/done/*.md | wc -l` → **78**) wird der
+überwiegende Teil aus keinem lebenden Artefakt heraus überhaupt genannt — **56**, gezählt über
+denselben Prüfbereich, den
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+für *lebend* definiert:
+
+```sh
+live=$(git ls-files '*.md' ':!docs/reviews/**' ':!docs/plan/planning/done/**' ':!.harness/baseline/**')
+for f in $(grep -l '^## 7\. Closure-Notiz' docs/plan/planning/done/*.md); do
+  grep -qF "$(basename "$f")" $live || echo "$f"; done | wc -l
+```
+
+Beide Zahlen wandern mit dem Bestand und sind **kein** Erwartungswert; die Aussage ist das
+Verhältnis, nicht die Ziffer — und *genannt* ist noch nicht *gelesen*, die Zahl ist damit die
+freundliche Obergrenze. Der Gegenstand dieser Regel ist der **Schnitt**; gelesen wird sie nur, wenn
+sie dort liegt, wo geschnitten wird. Drei Orte kommen in Frage:
+
+- **Der Adaptions-Block in [`harness/conventions.md`](../../../../harness/conventions.md)** — der
+  Ort für eine Verschärfung, die einen Sensor-Vorbehalt trägt. Geschrieben vom **Architect**
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8,
+  [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1). **Das ist der
+  vergebene Träger.** Ein ADR braucht er nicht: die Regel **hebt** eine Anforderung an und senkt
+  keine Schwelle ([`AGENTS.md`](../../../../AGENTS.md) §3.5).
+- **[`.claude/commands/plan-welle.md`](../../../../.claude/commands/plan-welle.md)** — der
+  Anweisungssatz, den ein Planner-Lauf beim Schnitt tatsächlich liest, und damit der wirksamste
+  Ort. Er scheidet nicht inhaltlich aus, sondern weil keine Quelle sagt, wer ihn schreibt (s. u.).
+- **Der nächste Schnitt derselben Bauart** — die Form, die hier zur Hälfte getragen hat. Als
+  **alleiniger** Träger ausgeschlossen, mit dem Grund im Absatz darüber.
+
+**Fällig ist der Eintrag beobachtbar, nicht nach Kalender:** beim nächsten Slice, dessen DoD-Punkt
+von sich selbst sagt, dass kein Kommando seinen Gegenstand deckt. Das Ereignis meldet sich —
+`grep -rn 'Kein Kommando deckt' docs/plan/planning/open docs/plan/planning/next docs/plan/planning/in-progress docs/plan/planning/*.md`
+findet die Punkte, die die Aufzählung schulden. Über den lebenden Plänen ist die Suche mit dem
+Abgang dieser Datei **leer (Exit 1)**; ihr erster Treffer danach ist der Auslöser.
+
+**Zweiter Eintrag — eine Prüfhandlung, und wo ihr Träger endet.**
+
+**Eine Sensor-Zahl ist gemeldet, wenn die Zeile vorliegt, die sie ausgibt — nicht, wenn der Lauf
+sie ausgeben wird.** Bei `make mutate` trennt die zwei Zustände ein Wort:
+[`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) schreibt eine **Kopf**zeile vor
+dem ersten Fall und eine **Summen**zeile nach dem letzten, und beide tragen dieselbe erste Zahl.
+Beide Quellzeilen zeigt
+`grep -n 'mutate: \${#cases\[@\]} Faelle\|mutate: \$pass_count ok' harness/tools/mutate.sh`; ihre
+Ausgabe lautet
+
+```
+mutate: 144 Faelle (je ein voller make-test-Zyklus, das dauert)
+mutate: 144 ok, 0 Befund(e)
+```
+
+Unterscheidend ist erst `grep -nE '^mutate: [0-9]+ ok, [0-9]+ Befund'` über dem Protokoll. Ein
+Muster, das beide Zeilen trifft, liest aus einem **laufenden** Protokoll eine Zahl, die über den
+Ausgang nichts sagt — und wer daraus grün abnimmt, hat über einem Sensor abgenommen, dessen
+verbleibende Fälle noch einen Befund liefern können.
+
+**Träger:** die Sache trägt
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 1 bereits — *„wer sie schreibt, hat es über dem Baum gefahren, von dem sie spricht"*. Was
+sie **nicht** trägt, ist der Fundort: ihr Geltungsbereich sind die lebenden, repo-eigenen
+Markdown-Artefakte, und die Zahl stand in einer Übergabe an einen Rollen-Lauf. Der Posten geht an
+den **Architect** und braucht keine neue Erinnerung — derselbe Eintrag führt einen
+Auflösungs-Trigger, der ohnehin fällig wird (nächster d-check-Pin-Sprung, früher sobald
+`grep -c 'structure' .d-check.yml` über **0** steigt). Mitzuentscheiden ist dort: gilt die Setzung
+auch für Commit- und Übergabe-Nachrichten? Ihre eigene Begründung zählt einen Fundort in einer
+Commit-Message bereits mit, ihr Geltungsbereich nennt die Gattung nicht.
+
+**Keinen Träger bekommt der Weg über das Skript, und der Grund ist gemessen:** die zwei Zeilen sind
+bereits unterscheidbar — `Faelle` gegen `ok, … Befund(e)`. Mehrdeutig war nicht die Ausgabe,
+sondern der Zeitpunkt des Lesens; ein Handgriff am Skript verschöbe das Problem, statt es zu
+treffen.
+
+**Benannte Spec-Lücke — für die Rollen-Anweisungssätze weist keine Quelle eine schreibende Rolle
+zu, und diesmal hält das einen Träger auf.** `ls .claude/agents/ | wc -l` → **6** Rollen-Dateien,
+`ls .claude/commands/ | wc -l` → **3** Anweisungssätze;
+[`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1 weist **zwei**
+Artefakte zu — [`AGENTS.md`](../../../../AGENTS.md) §3 und den Adaptions-Block — und sagt über die
+übrigen ausdrücklich nichts
+(`grep -c 'Über die übrigen Norm-Artefakte trifft diese ADR' docs/plan/adr/0015-rollen-eigentum-an-norm-artefakten.md`
+→ **1**). §6 dieses Plans benennt dieselbe Lücke für das Technik-Stratum; das ist der **zweite**
+gemessene Fall in einem Slice — und der erste, in dem die Lücke die Wahl des Trägers bestimmt: der
+wirksamste Ort für die Regel oben ist der Anweisungssatz, den ein Planner-Lauf beim Schnitt liest,
+und geschrieben wird er nicht, weil ihn niemand besitzt. *Offen* heißt weiter unentschieden, nicht
+gesperrt; entschieden wird es in einer **eigenen ADR** (Architect), nicht nebenbei.
+
+**Offen, mit Träger.**
+
+| Posten | Träger |
+|---|---|
+| Die zwei Matrix-Zellen (*Token-Attribution × Repo*, Hintergrund-Teil, und *Cache-Counter × Repo*) auf *ADR-Verdikt*, und das Carveout-Audit liest den **Status** statt des Verzeichnisses | **Closure von [welle-09](../welle-09-modul-15-konformitaet.md)** (Planner). Der Wellen-Plan führt beides selbst, samt der Reihenfolge Kopf-Status vor den Zellen |
+| Die Roadmap-Zeile zu slice-071 und [slice-071](../open/slice-071-cache-zaehler-getrennt.md) selbst führen die aufgehobene Schwelle weiter als offen | **Closure von [welle-09](../welle-09-modul-15-konformitaet.md)** (Planner). Kein DoD-Punkt dieses Slice fordert sie. `grep -c 'CO-002' docs/plan/planning/open/slice-071-cache-zaehler-getrennt.md` → **10** Zeilen; wie viele davon die Schwelle als offen führen, trennt kein Kommando |
+| Die Architect-Frage aus slice-071 §4 — trägt das Spec-Stratum die Cache-Festlegung ohne Rechnung, oder wechselt die Zelle auf *ADR-Verdikt*? — und der Prosa-Verweis in seinem §6 auf die gestrichene Verifikations-Liste des Stubs | **Architect**, eigener Lauf; ausgelöst mit der Annahme der ADR. Ein Link bricht dabei nicht: `grep -rn 'CO-002-token-achse-je-rolle\.md#' --include='*.md' .` → **leer (Exit 1)** |
+| Die geschärfte Regel oben braucht ihren Eintrag im Adaptions-Block | **Architect**; fällig beim nächsten DoD-Punkt, der seinen Gegenstand als ungedeckt ausweist — auffindbar mit der Suche oben |
+| Gilt [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) auch für Commit- und Übergabe-Nachrichten? | **Architect**, an dessen bereits fälligem Auflösungs-Trigger — kein neuer Termin |
+| Wer die Rollen-Anweisungssätze unter `.claude/` schreibt, und wer das Technik-Stratum | **Architect**, eigene ADR. Zwei gemessene Fälle in diesem Slice |
+| Dem Stub fehlt die Sektion `## Verifikation (nach Auflösung)` der vendored Ziel-Form, und [`.d-check.yml`](../../../../.d-check.yml) führt kein Modul, das Carveout-Struktur prüft — ein späterer Ziel-Form-Abgleich sieht eine Abweichung ohne Register-Eintrag | **Architect**, benannt für einen künftigen Schnitt. Der ausdrücklich **nicht** angeordnete Adaptions-Eintrag gilt der **Ablage**-Frage, nicht der Sektion |
+| Die Zeitmarke `83cf01d` in der Geltungs-Konfiguration des Stubs benennt den Guard-Stand; die fünf Spec-Stellen tragen seit `89450fa` zusätzlich ein zweites Datum | **kein Träger, und das ist entschieden**: der Satz bleibt wahr, kein DoD-Punkt und keine Folgepflicht adressiert die Zelle. Wer die Tabelle das nächste Mal anfasst, zieht die Marke mit |
+| Die *„vier der neun"* in der Begründung des Mutations-Falls tragen ihre Beleg-Grenze nicht mit | **kein Träger, und das ist entschieden**: die vier sind an der Gegenprobe **gelesen**, kein Kommando trennt sie, und DoD (3) sagt das selbst; [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) bindet Shell-Skripte nicht |
+
+**Gates.** Der [Verifikations-Lauf](../../../reviews/2026-08-23-slice-089-verify.md) hat sie über
+dem Baum bei `89450fa` selbst gefahren, Exit-Codes getrennt erhoben: `make gates` **Exit 0** und
+`make mutate` **Exit 0** mit `mutate: 144 ok, 0 Befund(e)`, Fall 151 unter seiner eigenen Mutation
+rot gesehen. Über dem Baum bei `7436327` — den Verifikations-Report eingerechnet — ist `make gates`
+hier wiederholt, **Exit 0**: `baseline-verify: v3.5.2 OK — 42 Dateien`,
+`d-check: 350 Datei(en) geprüft, 0 Befund(e)`, golangci-lint `0 issues.`, bats `1..143` mit
+`grep -cE '^ok [0-9]+'` → **143** und `grep -cE '^not ok'` → **0**,
+`comment-claims: 40 Datei(en) geprueft, 0 Befund(e)`, `span-check` grün. Der Stempel band den Lauf
+an den Baum, nicht an eine Erinnerung: `bash harness/tools/working-tree-hash.sh` und
+`.harness/state/gates-passed.diffsha` waren danach byte-gleich, und `record-gates` schreibt ihn nur
+als **letzter** Prerequisite grüner Gates
+([`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)).
+Die Dateizahl des Doku-Gates wandert mit dem Markdown-Bestand und ist **kein** Erwartungswert
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2). Diese Notiz, der `done/`-Move und der Link-Zug danach verschieben den Stempel erneut;
+der Lauf, der ihn wieder bindet, gehört zu ihnen.
 
 ## 8. Sub-Area-Modus-Begründung
 
