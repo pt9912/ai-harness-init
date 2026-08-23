@@ -230,3 +230,31 @@ TestZwei'"
     [ -n "$output" ]
   done
 }
+
+# Der WERTEBEREICH, nicht die heutige Verzweigung: narrow_sensor waehlt den Sensor
+# JEDES Falls ohne eigenen `# verify:`-Kopf, und wer diese Wahl trifft, verteilt
+# Laufzeit auf Faelle, die sie nirgends geschrieben stehen haben. Ein teurer Modus
+# gehoert deshalb in einen ausdruecklichen Kopf, nie in diese Auswahl. Gemessen wird
+# ueber die echte Eingabe-Menge — alle `# expect:`-Zeilen des Fall-Verzeichnisses —
+# plus die Rand-Eingaben, die auf den vollen Satz zurueckfallen muessen.
+@test "driver: narrow_sensor liefert NUR Werte aus {test, test-go, test-bats}" {
+  run bash -c '
+    source "$1" 2>/dev/null || true
+    ausserhalb() {
+      case "$2" in
+        test | test-go | test-bats) ;;
+        *) printf "ausserhalb des Wertebereichs: [%s] -> [%s]\n" "$1" "$2" ;;
+      esac
+    }
+    while IFS= read -r expect; do
+      ausserhalb "$expect" "$(narrow_sensor "$expect")"
+    done < <(
+      sed -n "s/^# expect: //p" "$2"/test/mutations/*.sh
+      printf "%s\n" "" "Test" "TestX" "testklein" "full-smoke" "smoke: FEHLER"
+    )
+    mehrzeilig="$(printf "TestEins\nTestZwei\n")"
+    ausserhalb "mehrzeilig" "$(narrow_sensor "$mehrzeilig")"
+  ' _ "$DRIVER" "$REPO"
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}

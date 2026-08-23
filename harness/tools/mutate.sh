@@ -57,6 +57,20 @@
 # umzuschreiben statt zu kommentieren haelt den Kopf ehrlich. Nicht-Gate-Verify neben
 # `make smoke`, gebunden an DoD-Verify/Closure (LH-QA-01).
 #
+# PREIS EINES `# verify: full-smoke`-FALLS, damit die naechste Zusage ihn kennt, bevor
+# sie ihn ausloest: der Modus bootstrappt in tmp-Repos und faehrt dort echte
+# Docker-Gates. Der Gruen-Vorlauf faehrt jeden benutzten Modus EINMAL, danach faehrt
+# jeder Fall seinen eigenen Lauf — der erste solche Fall kostet also zwei Laeufe, jeder
+# weitere einen. Gemessen am 2026-08-23 auf dieser Maschine mit
+# `/usr/bin/time -f 'FULLSMOKE_SECONDS=%e' make full-smoke`: unmutiert 90.00 s und
+# 136.16 s, beide Exit 0 — zwei Laeufe ueber denselben Baum, dazwischen hat ein
+# `make mutate` den Docker-Cache umgewaelzt. Der Cache-Zustand ist damit der groessere
+# Posten als der Baum, und eine einzelne Zahl waere hier eine Genauigkeit, die es nicht
+# gibt. Mit der Mutation von test/mutations/152 53.32 s, Exit 2 (dasselbe Kommando ueber
+# dem mutierten Baum): ein Fall-Lauf bricht am getroffenen Waechter ab und ist darum
+# kuerzer als der vollstaendige Vorlauf. Wer den Aufschlag gegen die Gesamtlaufzeit
+# halten will, rechnet ihn aus diesen Werten.
+#
 # ISOLATION: der Baum wird EINMAL pro Lauf nach ausserhalb des Repos kopiert; Seds
 # und Sensor-Laeufe treffen nur diese Kopie. Ausserhalb, weil ein Verzeichnis UNTER
 # dem Repo ungetrackt im Working Tree laege und den MR-003-Stop-Hook-Hash verschoebe.
@@ -230,6 +244,14 @@ failure_form() {
     test-go)  printf '%s' '--- FAIL:' ;;                # nur die Go-Stufe
     test-bats) printf '%s' 'not ok [0-9]+' ;;           # nur die bats-Stufe
     smoke)   printf '%s' 'smoke: FEHLER' ;;            # harness/tools/smoke.sh
+    # Gross-/Kleinschreibung und der Praefix sind hier tragend, nicht kosmetisch: ein
+    # GRUENER full-smoke-Lauf faerbt Teil-Gates absichtlich rot und druckt deren Ausgabe,
+    # darunter die Zeile `full-smoke: absichtlicher Schicht-Fehler`. Ueber einem gruenen
+    # Lauf gemessen (2026-08-23, `make full-smoke >fs.log 2>&1`, Exit 0):
+    # `grep -cE 'full-smoke: FEHLER' fs.log` -> 0, `grep -cEi 'full-smoke.*fehler' fs.log`
+    # -> 3. Ein weiter gefasstes Muster waere damit schon im Bestehen erfuellt und
+    # Bedingung 4 wirkungslos.
+    full-smoke) printf '%s' 'full-smoke: FEHLER' ;;    # harness/tools/full-smoke.sh
     ci-lint) printf '%s' ':[0-9]+:[0-9]+:' ;;          # actionlint file:line:col: (nur bei Fehler)
     *)       return 1 ;;
   esac
