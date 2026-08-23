@@ -186,7 +186,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
 | `test/mutate-driver.bats` | update | der **Wertebereich** von `narrow_sensor` aus DoD 3. Dort liegen bereits **4** Fälle über dieselbe Funktion (`grep -c '^@test "driver: narrow_sensor' test/mutate-driver.bats`) — sie prüfen die einzelnen Zuordnungen, keiner den Bereich |
 | [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | **unverändert** | der Wächter, gegen den der Fall zielt, existiert bereits; ihn zu bauen wäre ein anderer Slice. Er wird nur **vorübergehend** zahnlos gemacht, um DoD 1 rot zu sehen, und danach zurückgenommen |
 | [`docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) | **unverändert** | *Accepted*, immutabel ([`AGENTS.md`](../../../../AGENTS.md) §3.4). Sie wird als Constraint gelesen, nicht nachgezogen |
-| [`docs/plan/planning/open/slice-092-traeger-inventur.md`](slice-092-traeger-inventur.md), [`docs/plan/planning/welle-11-traeger-aussage.md`](../welle-11-traeger-aussage.md) | **unverändert in diesem Lauf** | beide beschreiben heute einen wahren Zustand; sie werden zur Closure dieses Slice nachgezogen, und zwar vom Planner, dem sie gehören (§6) |
+| [`docs/plan/planning/open/slice-092-traeger-inventur.md`](../open/slice-092-traeger-inventur.md), [`docs/plan/planning/welle-11-traeger-aussage.md`](../welle-11-traeger-aussage.md) | **unverändert in diesem Lauf** | beide beschreiben heute einen wahren Zustand; sie werden zur Closure dieses Slice nachgezogen, und zwar vom Planner, dem sie gehören (§6) |
 | [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** | wellenlose Arbeit wird dort nicht geführt ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) Setzung 2/3) |
 
 **Die Wahl des Wächters ist nicht frei — sie hat ein Kriterium und eine mechanische Probe.** Der
@@ -247,7 +247,7 @@ Falls; `make full-smoke` grün; Closure-Notiz mit Steering-Loop-Lerneintrag in e
   [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) **bleibt
   stehen** (*Accepted*, [`AGENTS.md`](../../../../AGENTS.md) §3.4; eine Korrektur wäre eine
   Folge-ADR mit Supersedes, kein Slice-Nebenprodukt); die Zeilen in
-  [slice-092](slice-092-traeger-inventur.md) (DoD 2 und §6) und in
+  [slice-092](../open/slice-092-traeger-inventur.md) (DoD 2 und §6) und in
   [welle-11](../welle-11-traeger-aussage.md) (§3, Closure-Trigger) sind **lebende Plan-Artefakte**
   und werden zur Closure dieses Slice nachgezogen. Sie jetzt zu ändern hieße, eine heute wahre
   Aussage vorab falsch zu machen.
