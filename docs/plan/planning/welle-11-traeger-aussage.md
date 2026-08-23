@@ -136,10 +136,21 @@ erst wahr, wenn alle drei Slices liegen: 090 und 091 setzen je einen Wert, 092 s
   das Budget aus [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) auch;
   ohne diese Schranke wäre die Welle ein Change Request
   ([`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)).
-  Prüfbar an der Ziel-Pfad-Liste des Emits (`TestTemplates_Layout`-Muster in
-  `internal/emit/templates_test.go`), nicht an einer Beteuerung.
+  Prüfbar am geschlossenen Vergleich in `internal/emit/templates_test.go`
+  (`TestTemplates_EmittierterBestandVollstaendig`), nicht an einer Beteuerung — und **nicht** an
+  `TestTemplates_Layout`: der prüft `os.Stat`-Listen und bleibt grün, wenn ein Pfad hinzukommt, der
+  in keiner von ihnen steht. Die Grenze des Vergleichs gehört dazu: er deckt die
+  Kurs-Vorlagen-Schicht, während `EnforcePaths` und `CommandPaths` Enthaltensein prüfen statt
+  Vollständigkeit — eine geschlossene Liste des **gesamten** emittierten Datei-Satzes existiert
+  nicht.
 - **`make gates` grün** *und* `make full-smoke`; jeder neue Wächter hat seinen
-  `test/mutations/`-Fall ([`AGENTS.md`](../../../AGENTS.md) §3.6).
+  `test/mutations/`-Fall ([`AGENTS.md`](../../../AGENTS.md) §3.6). **Mit einer Grenze, die der
+  Treiber setzt:** ein Wächter, der **allein** an `make full-smoke` hängt, kann heute keinen Fall
+  bekommen — `failure_form` in `harness/tools/mutate.sh` führt Fehlschlag-Muster für `test`,
+  `test-go`, `test-bats`, `smoke` und `ci-lint` und bricht sonst ab
+  (`grep -c 'full-smoke' harness/tools/mutate.sh` → **0**). Wer einen solchen Wächter zusagt,
+  schuldet darum **beides**: ihn und ein Muster für `full-smoke`; sonst bleibt sein Fall
+  ungelistet, und ungelistet heißt unbewacht.
 - **Carveout-Audit (Modul 7)** über den Bestand in `docs/plan/carveouts/` — gelesen wird der
   `Status:`-Kopf, nicht das Verzeichnis (`grep -n '^\*\*Status:' docs/plan/carveouts/CO-*.md`).
 - **Closure-Notiz `welle-11-results.md`** mit Steering-Loop-Eintrag.
@@ -202,9 +213,9 @@ Der Wert *Träger kommt mit* für Modul 10 wird in 092 gesetzt, nicht erarbeitet
   Träger und Rollen-Typen entscheidet sie *geht mit*, für Token-Attribution/Cache-Counter eine
   Auswertung ohne Bilanz (§1) — nicht mehr als Abwesenheit zu benennen. Die Lesart-Wahl entfällt
   damit, nicht weil sie beantwortet wurde, sondern weil ihr Gegenstand sich aufgelöst hat.
-  [slice-092](open/slice-092-traeger-inventur.md) führt diese Vorfrage weiterhin als eigenen
-  Blocker in seinem §6 und seine DoD (3) noch die alte Grenze *„kein neues Artefakt"* — das ist
-  Slice-Bestand, den ein eigener Nachzug der Slices dieser Welle zieht, nicht dieser.
+  [slice-092](open/slice-092-traeger-inventur.md) ist darauf gezogen: die Vorfrage steht dort nicht
+  mehr als Blocker, und an die Stelle der alten Grenze ist die Eigenschaft getreten, dass keine
+  Zelle die Abwesenheit eines Trägers behauptet, den derselbe Lauf ablegt.
 - **Nicht abhängig, aber benachbart:** slice-087 räumt dieselbe Fehlerklasse in den **lebenden**
   emittierten Doku-Tischen. Wer beide gleichzeitig anfasst, erzeugt einen Konflikt in
   `internal/emit`; die Trigger-Reihenfolge (§2) verhindert das.
