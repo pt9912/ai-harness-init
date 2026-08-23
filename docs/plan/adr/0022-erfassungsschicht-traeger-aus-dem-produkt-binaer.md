@@ -522,10 +522,10 @@ Konjunktion. Die Glieder stehen heute verschieden:
   Folge-Entscheidung fällig. **Die Rückrichtung gilt nicht ohne Zusatz:** jene Entscheidung knüpft
   jeden der zwei Wege an eine weitere Bedingung — eine Vordergrund-Form *„wirkt nur, wenn jemand
   sie liest"*, und ein Ereignis muss verdrahtet sein —, und ob ein Adopter sie erfüllt, entscheidet
-  er, nicht diese ADR. Was hier und dort zusammenhängt, hält
-  [ADR-0020](0020-emittierte-modul-15-regeln.md) Folgepflicht 1: der Beleg emittiert nichts, was
-  der Dogfood nicht selbst fährt. Diese Entscheidung sagt darum über einen Adopter **nichts** zu,
-  was jene nicht schon über die Mechanik gesagt hat, und sie revidiert daran nichts.
+  er, nicht diese ADR. Gemeinsam ist beiden Ebenen allein die **Mechanik**, aus der die Zähler
+  kommen müssten; mehr braucht die Aussage nicht, und mehr behauptet sie nicht. Diese Entscheidung
+  sagt darum über einen Adopter **nichts** zu, was jene nicht schon über die Mechanik gesagt hat,
+  und sie revidiert daran nichts.
 
 **Daraus die Festlegung:** emittiert wird der **Leser**, nicht die **Zahl**. Die Auswertung nennt
 ihre **Abdeckung zuerst** und meldet über einem Bestand ohne Zähler ihre Leere; sie behauptet
@@ -661,6 +661,17 @@ Kommando, nicht die Aufhängung.
 
 ## Fitness Function (falls maschinell prüfbar)
 
+**Eine Grenze gilt für jede Zeile unten, deren Target ausschließlich `make full-smoke` ist —
+unabhängig davon, welche Zusage sie trägt.** Der Mutations-Treiber dieses Repos erreicht dieses
+Target nicht: `failure_form` in `harness/tools/mutate.sh` führt Fehlschlag-Muster für `test`,
+`test-go`, `test-bats`, `smoke` und `ci-lint` und bricht sonst mit *„unbekanntes `# verify:`"* ab
+(Bestand: `sed -n 's/^# verify: //p' test/mutations/*.sh | sort | uniq -c` → je einmal `ci-lint`
+und `smoke`; für `make smoke` wurde dieselbe Lücke einmal ausdrücklich geschlossen, für
+`full-smoke` nicht). Wer eine solche Zeile einlöst, schuldet darum **beides**: den Wächter und ein
+Fehlschlag-Muster für `full-smoke` — sonst bleibt ihr Fall ungelistet, und ungelistet heißt nach
+[`AGENTS.md`](../../../AGENTS.md) §3.6 unbewacht. Zeilen, die an `make test` · `make mutate`
+hängen, sind davon nicht berührt.
+
 | Tooling | Regel | Make-Target |
 |---|---|---|
 | `make full-smoke` | **Der Träger schreibt im Ziel.** Im frisch gebootstrappten tmp-Repo erzeugt der abgelegte Träger aus einer synthetischen Payload einen Span, und `git check-ignore` im Ziel bestätigt dessen Ablageort — der Nachbau dessen, was `span-check` hier für den Dogfood leistet. **Geschuldet, nicht geliefert.** Die Klammer über **beide** Bootstrap-Varianten (sprachlos und mit Sprache) gehört dazu: die Erfassung ist sprach-agnostisch, ein Zahn in nur einer Variante belegte das nicht | `make full-smoke` |
@@ -668,7 +679,7 @@ Kommando, nicht die Aufhängung.
 | `make test` · `make mutate` | **Die fail-open-Konstruktion am neuen Einstiegspunkt.** Ein Träger, dessen innere Arbeit fehlschlägt, endet mit Exit 0 und leerem stdout — auch das seiner Kindprozesse; die Klemme zu entfernen färbt rot. Die Zähne existieren, sie hängen am alten Programm (Folgepflicht 2) | `make test`, `make mutate` |
 | `make test` | **Die Anwesenheits-Wächter — im Zweig, in dem die Emission gelingt.** Nach einem Bootstrap, dessen Träger-Platzierung durchläuft, liegen im Ziel Träger, Wrapper, Rollen-Typen und die Feldliste; die Prüfung hat die Gestalt des bestehenden Abwesenheits-Wächters in `internal/emit/enforce_test.go`, nur umgekehrt, und jede ist einmal rot zu sehen, indem das Artefakt probeweise weggelassen wird. **Die Bedingung gehört in den Wächter, nicht in seinen Namen:** im Zweig aus Festlegung 5(a) fehlen Träger, Wrapper und Hook-Eintrag zulässig, und ein unbedingt formulierter Anwesenheits-Wächter fiele dort — gegen die Zeile darüber, die genau dieses Ausbleiben zusagt. Die **Feldliste** entsteht mit dem Träger (Festlegung 7 erzeugt sie aus ihm) und teilt darum seinen Zweig. **Geschuldet, nicht geliefert** (Folgepflicht 6) | `make test`, `make mutate` |
 | `make test` | **Die Feldliste im Ziel ist der Ausdruck des Trägers.** Das emittierte Dokument ist byte-gleich mit dem, was der Träger über sein eigenes Schema ausgibt; ein Feld, das erfasst wird und dort fehlt, färbt rot. Damit ist die Drift konstruktiv ausgeschlossen statt per Regel verboten. **Geschuldet, nicht geliefert** — das Dokument entsteht erst mit Festlegung 7, und ein Sensor darüber existiert nicht (`grep -rln 'Feldliste' internal/emit/*.go` → leer, Exit 1) | `make test` |
-| `make full-smoke` | **Die Auswertung meldet ihre Leere — und nennt die Grenze, nicht nur den Zustand.** Über einem Bestand ohne Verbrauchs-Zähler nennt sie ihre Abdeckung, weist **keine** Bilanz aus und sagt, dass die Zähler an der Mechanik des Agenten-Werkzeugs hängen; eine Ausgabe, die über leerem Bestand eine Zahl trägt, ist der Befund — und ebenso eine, die die Leere ohne ihren Grund meldet. **Rot zu sehen ist:** den Grund-Satz aus der Ausgabe nehmen, dann muss der Wächter fallen; ohne dieses Rot ist die Einlösung von [ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Folgepflicht 6 eine Absicht ([`AGENTS.md`](../../../AGENTS.md) §3.6). **Der Mutations-Treiber erreicht dieses Target heute nicht:** `failure_form` in `harness/tools/mutate.sh` führt Muster für `test`, `test-go`, `test-bats`, `smoke` und `ci-lint` und bricht sonst ab (`sed -n 's/^# verify: //p' test/mutations/*.sh \| sort \| uniq -c` → je einmal `ci-lint` und `smoke`; für `make smoke` wurde dieselbe Lücke einmal ausdrücklich geschlossen, für `full-smoke` nicht). Wer diese Zeile einlöst, schuldet darum **beides**: den Wächter und ein Fehlschlag-Muster für `full-smoke` — sonst bleibt der Fall ungelistet, und ungelistet heißt nach [`AGENTS.md`](../../../AGENTS.md) §3.6 unbewacht. **Der stehende Nenn-Ort der Zeile darunter hängt dagegen an `make test` · `make mutate` und ist ohne diese Vorarbeit erreichbar; die Asymmetrie ist der Grund, warum die Grenze zwei Orte hat und nicht einen.** **Geschuldet, nicht geliefert** | `make full-smoke` |
+| `make full-smoke` | **Die Auswertung meldet ihre Leere — und nennt die Grenze, nicht nur den Zustand.** Über einem Bestand ohne Verbrauchs-Zähler nennt sie ihre Abdeckung, weist **keine** Bilanz aus und sagt, dass die Zähler an der Mechanik des Agenten-Werkzeugs hängen; eine Ausgabe, die über leerem Bestand eine Zahl trägt, ist der Befund — und ebenso eine, die die Leere ohne ihren Grund meldet. **Rot zu sehen ist:** den Grund-Satz aus der Ausgabe nehmen, dann muss der Wächter fallen; ohne dieses Rot ist die Einlösung von [ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Folgepflicht 6 eine Absicht ([`AGENTS.md`](../../../AGENTS.md) §3.6) — und für dieses Target gilt die Grenze über der Tabelle. **Der stehende Nenn-Ort der Zeile darunter hängt dagegen an `make test` · `make mutate` und ist ohne jene Vorarbeit erreichbar; diese Asymmetrie ist der Grund, warum die Grenze aus [ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Folgepflicht 6 zwei Orte hat und nicht einen.** **Geschuldet, nicht geliefert** | `make full-smoke` |
 | `make test` · `make mutate` | **Das Feldlisten-Dokument führt seine zwei Grenzen stehend.** Es nennt, dass die emittierte Ebene keinen Wächter über die Aufrufform des Agenten-Werkzeugs führt und dass die Verbrauchs-Zähler aus der Mechanik nicht kommen (Festlegung 7); fehlt einer der zwei Sätze im emittierten Dokument, färbt der Wächter rot. Das ist der Ort, der auch dann trägt, wenn niemand die Auswertung ruft. **Geschuldet, nicht geliefert** | `make test`, `make mutate` |
 | — | **Nicht maschinell prüfbar, und darum hier ohne Zeile:** dass ein Adopter seine Rollen-Typen unter den kanonischen Namen führt. Das ist die Grenze aus [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) §Benannte Grenze; sie wird ausgesprochen, nicht bewacht | — |
 
