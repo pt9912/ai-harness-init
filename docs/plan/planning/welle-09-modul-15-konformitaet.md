@@ -141,7 +141,7 @@ Modul-15-Block-4.
   Kopf des Stubs trägt den Verdikt-Status, **bevor** die Ergebnis-Notiz die Zellen setzt — sonst
   liest das Audit *Aktiv* und schreibt *deklariert* gegen eine angenommene ADR. Geschrieben wird
   der Status vom Slice, der Folgepflicht 1 jener ADR vollzieht
-  ([slice-089](in-progress/slice-089-carveout-co-002-ueberfuehren.md), **kein Mitglied dieser Welle** —
+  ([slice-089](done/slice-089-carveout-co-002-ueberfuehren.md), **kein Mitglied dieser Welle** —
   [`MR-016`](../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
   Setzung 2 lässt für wellenlose Arbeit auch keinen Roadmap-Eintrag zu). **Prüfkommando statt
   Erinnerung:** `grep -n '^\*\*Status:' docs/plan/carveouts/CO-002-token-achse-je-rolle.md` zeigt

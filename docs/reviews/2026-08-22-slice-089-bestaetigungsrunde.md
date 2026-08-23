@@ -20,7 +20,7 @@ beim Start (`git status --porcelain` → leer).
   0 HIGH · 3 MEDIUM · 1 LOW · 2 INFO, merge-blockierend wegen F-1 und F-2
 - **Diff:** `fd4ec7d..d3409b3`, dazu `git show d3409b3` im Volltext
 - **Slice-Plan:**
-  [slice-089](../plan/planning/in-progress/slice-089-carveout-co-002-ueberfuehren.md)
+  [slice-089](../plan/planning/done/slice-089-carveout-co-002-ueberfuehren.md)
 - **Die ADR:** [ADR-0021](../plan/adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md)
   (**Accepted**) — Festlegung 5, Festlegung 3, Folgepflichten 1/2/7, §Die Kontroll-Beobachtung ist
   prinzipiell nicht belegbar, §Entscheidung vierter Posten (der Gattungs-Vorbehalt), Annahme (d).

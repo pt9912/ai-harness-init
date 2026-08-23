@@ -66,7 +66,7 @@ Begründung und er importiert das Verdikt nicht an einen zweiten Ort — *„ein
 
 Jeder Punkt nennt das Kommando, das ihn rot färbt — und wo keines existiert, steht **das** dabei.
 Eine Zusage reicht nur so weit wie ihr Sensor
-([slice-086](../done/slice-086-vordergrund-per-updatedinput.md) §7).
+([slice-086](slice-086-vordergrund-per-updatedinput.md) §7).
 
 - [x] **(1) Der Übergang ist geschrieben, nicht verschoben — vier Änderungen am Stub, eine am
       Index, ein Commit.** An [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md): der Status
@@ -305,7 +305,7 @@ Plan-Datei dagegen wandert dreimal: `open` → `next`, `next` → `in-progress` 
 `done/`. Jeder ist ein eigener, **reiner** Move-Commit
 ([`AGENTS.md`](../../../../AGENTS.md) §3.3); **nach jedem** folgt der
 Link-Reconciliation-Commit. Der Eintritts-Move braucht ihn genauso wie der Abgang — dieselbe Lehre,
-die [slice-086](../done/slice-086-vordergrund-per-updatedinput.md) §7 als Plan-Defekt benannt hat,
+die [slice-086](slice-086-vordergrund-per-updatedinput.md) §7 als Plan-Defekt benannt hat,
 nachdem sein §5 den Zug nur für `done/` schrieb und er zweimal gebraucht wurde.
 
 **Betroffen ist die eingehende Menge**, denn sie nennt das Quellverzeichnis im Pfad:
@@ -517,13 +517,13 @@ lag fünfundzwanzig Zeilen darunter und trug die ungeteilte Fassung. **Eine Stel
 als Muster zitiert, ist damit nicht geprüft** — der Befund nennt einen **Fundort**, die Sache hat
 eine **Fundmenge**.
 
-**Der Träger, den [slice-088](../done/slice-088-dcheck-pin-v0620.md) §7 für genau diesen Fall
+**Der Träger, den [slice-088](slice-088-dcheck-pin-v0620.md) §7 für genau diesen Fall
 vergeben hat, hat zur Hälfte getragen.** Er wies den *Zieh-Fall* seiner Regel — *eine gemessene
 Aussage lebt so oft, wie sie geschrieben wurde* — diesem Slice zu, mit DoD (2) als Griff und dessen
 Fundort-Suche als Kommando. Für die **Adresse** ist die Zuweisung eingelöst: die Suche hielt alle
 sechs Zeiger, ohne einen Befund. Für die **Aussage** hielt sie nichts, weil sie Zeiger zählt. Ein
 Träger, der aus einem Kommando besteht, trägt so weit wie das Kommando reicht — dieselbe Grenze,
-die [slice-086](../done/slice-086-vordergrund-per-updatedinput.md) §7 als *eine Zusage reicht nur
+die [slice-086](slice-086-vordergrund-per-updatedinput.md) §7 als *eine Zusage reicht nur
 so weit wie ihr Sensor* formuliert, hier auf den **Träger** angewandt statt auf die Zusage.
 
 **Träger dieser Regel — benannt, weil eine Notiz in `done/` keiner ist.** Was in einer
