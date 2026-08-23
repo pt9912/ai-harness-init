@@ -42,18 +42,22 @@ Idempotenz-Klassifikation; beide tragen Festlegung 4),
 [ADR-0011](0011-telemetrie-erfassung-policy.md) (**Accepted** — die Erfassungs-Policy; ihre
 **Festlegung 5** macht die Festlegungen 1–4 und 6 zum Adopter-Vertrag, sobald das **Ob** durch
 einen Change Request entschieden ist, und genau das ist geschehen),
-[ADR-0012](0012-haupt-kontext-ohne-token-bilanz.md) (**Accepted** — *jede Bilanz aus diesen
-Spans nennt ihren Nenner*; die Präzedenz, auf der die emittierte Auswertung steht),
+[ADR-0012](0012-haupt-kontext-ohne-token-bilanz.md) (**Accepted** — *„Jede Token-Bilanz aus
+diesen Spans ist eine Bilanz über SUBAGENTEN-Läufe und nennt ihren Nenner"*; die Präzedenz, auf
+der die emittierte Auswertung steht),
 [ADR-0013](0013-technik-stratum-als-zielort.md) (**Accepted** — das Gefäß folgt dem Gegenstand;
-ihre Folgepflicht 3 fragt nach dem Zielort der Feldtabelle im Zielrepo, und Festlegung 7
-beantwortet sie),
+ihr Re-Evaluierungs-Trigger stellt die Frage nach dem Zielort der Feldtabelle im Zielrepo für den
+Fall, dass Spans emittiert werden, und Festlegung 7 beantwortet sie — Folgepflicht 3 dort *„hält
+die heutige Antwort fest, nicht die künftige"*),
 [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) (**Accepted** — die Form der Regelwerks-Belege
 unten: Tag, Dateiname, Abschnitt, Zitat),
 [ADR-0020](0020-emittierte-modul-15-regeln.md) (**Accepted** — die abgelöste Entscheidung; ihr
 Umfang steht unten),
 [ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) (**Accepted** — das **Zähler-Glied**
-bleibt im Dogfood verschlossen; Festlegung 8 zieht daraus **nicht** dieselbe Folge für die
-emittierte Ebene),
+bleibt ohne Quelle, und ihre **Folgepflicht 6** entscheidet den Fall, den diese Entscheidung
+herbeiführt: *„Bekommt sie je einen, gilt diese Grenze dort unverändert — sie ist keine
+Eigenschaft unseres Aufbaus, sondern der Mechanik — und gehört dort genannt, nicht stillschweigend
+mitgeliefert."* Festlegung 8 löst sie ein und revidiert aus jener Entscheidung nichts),
 [CO-002](../carveouts/CO-002-token-achse-je-rolle.md) (die Vorbedingung des Zähler-Glieds —
 verwiesen, nicht abgeschrieben),
 [`MR-003`](../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)
@@ -82,24 +86,35 @@ sie ab)
   [ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) auf eigenem, *Accepted* entschiedenem
   Grund. Was aus dem Bruch der Konjunktion folgt, entscheidet Festlegung 8 — und zwar
   **verschieden für den Träger und für die Zahl**.
-- **Folgepflicht 6** und die zweite Zeile ihrer Fitness Function (*je ein Wächter über der
-  Abwesenheit von `.claude/agents/`, Span-Emitter und Token-Bericht im Ziel*) — sie ruhen auf den
-  Festlegungen 1–3 und fallen mit ihnen. An ihre Stelle treten **Anwesenheits**-Wächter.
+- **Folgepflicht 6** und die zweite Zeile ihrer Fitness Function — sie verlangen je einen
+  Wächter über der **Abwesenheit** von `.claude/agents/`, Span-Emitter und Token-Bericht im Ziel,
+  ruhen auf den Festlegungen 1–3 und fallen mit ihnen. An ihre Stelle treten
+  **Anwesenheits**-Wächter.
 
 **Nicht revidiert, und darum ausdrücklich benannt:**
 
 - **Festlegung 4 und Festlegung 5** (Doku-Konsistenz-Block, `targets:`-Konfiguration, advisory
   Träger) — unberührt, samt den Folgepflichten 2, 3 und 4.
 - **Festlegung 6** (*„Die Erfassung wird auch nicht KONDITIONAL emittiert"*) — sie gilt
-  **fort** und trägt jetzt die **unbedingte** Emission: ihr Befund war, dass der Prüfbereich der
-  Telemetrie *„in jedem Ziel"* existiert und es deshalb keine strukturelle Bedingung gibt, die
-  Ziele trennt. Derselbe Satz schließt gestern *„nur für manche"* aus und heute ebenso.
+  **fort**, und ihr Befund **stützt** die unbedingte Emission, ohne sie zu tragen: der Prüfbereich
+  der Telemetrie existiert *„in jedem Ziel"*, es gibt also keine strukturelle Bedingung, die Ziele
+  trennt. Derselbe Satz schließt *„nur für manche"* in beide Richtungen aus. **Getragen** wird die
+  Unbedingtheit von Festlegung 1 dieser Entscheidung (Geltungsbereich: jede Bootstrap-Variante) —
+  eine eingefrorene Festlegung, die die Nicht-Emission nie getragen hat, trägt auch ihr Gegenteil
+  nicht.
 - **Folgepflicht 1** (*„der Beleg emittiert nichts, was der Dogfood nicht selbst fährt"*) — sie
   ist nicht abgelöst, sondern **bindet diese Entscheidung**; Festlegung 2 und Folgepflicht 1
   unten lösen sie ein.
 - **Folgepflicht 5** (*„wird der Erfassungs-Block je emittiert, ist die Policy ein
   Adopter-Vertrag"*) — nicht revidiert, sondern **fällig**; Festlegung 6 und Festlegung 7 leisten
   sie.
+
+**Aus [ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) wird nichts revidiert — ihre
+Folgepflicht 6 wird eingelöst.** Sie hat den Fall, den diese Entscheidung herbeiführt, selbst
+entschieden: bekommt die emittierte Ebene je einen Emitter, gilt die Grenze dort *„unverändert"*
+und gehört dort *„genannt, nicht stillschweigend mitgeliefert"*. Festlegung 8 nennt sie,
+Festlegung 7 gibt ihr den stehenden Ort. Kein Satz jener Entscheidung wird umgestoßen, und keiner
+wird für die emittierte Ebene abgeschwächt.
 
 **Schärft:**
 [`spec/spezifikation.md §5 Metriken und Tracing-Felder`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder)
@@ -233,14 +248,18 @@ Gemessen am Emissions-Pfad, gelesen statt an einem frischen Ziel gefahren:
 
 Kippt eine, kippt die Entscheidung; alle vier stehen unten als Re-Evaluierungs-Trigger.
 
-- **(a)** Das Produkt-Binär läuft auf der Plattform, auf der auch der Hook läuft. Der Beweis ist
-  sein eigener Lauf — es bootstrappt gerade. Fällt das (ein Bootstrap über eine Fernverbindung in
-  ein Repo einer anderen Plattform), fällt der tragende Grund von Festlegung 1.
+- **(a)** Der Bootstrap-Host und die Plattform, auf der die Hooks laufen, sind derselbe Ort.
+  Belegt ist davon **nur die erste Hälfte** — der Lauf des Produkt-Binärs belegt seine
+  Lauffähigkeit dort, wo es gerade bootstrappt; die Identität beider Orte ist Annahme, nicht
+  Beweis. Fällt sie (ein Bootstrap über eine Fernverbindung in ein Repo einer anderen Plattform),
+  fällt der tragende Grund von Festlegung 1.
 - **(b)** Der Zustands-Bereich des Ziels ist beschreibbar und bleibt gitignored. Fällt das, sind
   Ablageort **und** Träger-Ort neu zu wählen.
 - **(c)** Der Aufschlag je Tool-Call bleibt unter der Schwelle aus
-  [ADR-0011](0011-telemetrie-erfassung-policy.md) (*50 ms im Median*). **Hier nicht gemessen** —
-  die Messung ist unten geschuldet, und ihr Ausgang ist der Trennungs-Trigger.
+  [ADR-0011](0011-telemetrie-erfassung-policy.md) (*50 ms im Median*). **Hier nicht gemessen**,
+  und ein Sensor darüber existiert nicht
+  (`grep -niE 'latenz|latency|median|bench' Makefile d-check.mk` → leer, Exit 1). Die Messung
+  steht als **Folgepflicht 9**; ihr Ausgang ist der Trennungs-Trigger.
 - **(d)** Das Agenten-Werkzeug liest seine Hook-Konfiguration weiter aus einer Datei im Repo und
   startet Hook-Programme als eigene Prozesse. Fällt das, fällt die Verdrahtung, nicht die Policy.
 
@@ -253,19 +272,19 @@ Unterkommandos. Acht Festlegungen; die vier Zellen der Tool-Spalte tragen danach
 | Modul-15-Regelblock | Wert der Tool-Zelle | Festlegung |
 |---|---|---|
 | Span-/Audit-Attribute (die Erfassung samt ihrem Pflichtfeld Rolle) | **emittiert** — Schreiber und Rollen-Typen, Beleg geschuldet | 1, 3, 4, 5 |
-| Token-Attribution | **emittiert** — als Auswertung, die ihre Abdeckung nennt; **keine** Bilanz zugesagt | 8 |
-| Cache-Counter | **emittiert** — dieselbe Auswertung, dieselbe Abdeckungs-Aussage | 8 |
+| Token-Attribution | **emittiert** — als Auswertung, die ihre Abdeckung nennt; **keine** Bilanz zugesagt, und die Grenze aus [ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) gilt im Ziel unverändert und wird dort genannt | 8 |
+| Cache-Counter | **emittiert** — dieselbe Auswertung, dieselbe Abdeckungs-Aussage, dieselbe genannte Grenze | 8 |
 | Doku-Konsistenz-Drift | unverändert — [ADR-0020](0020-emittierte-modul-15-regeln.md) Festlegungen 4 und 5 | — |
 
-**1. Der Träger ist das ausführbare Bild, das zur Bootstrap-Zeit nachweislich auf der
-Zielplattform läuft — das Produkt-Binär selbst.** Geltungsbereich: die emittierte Ebene, jede
+**1. Der Träger ist das ausführbare Bild, dessen Lauffähigkeit auf dem Bootstrap-Host der Lauf
+selbst belegt — das Produkt-Binär.** Geltungsbereich: die emittierte Ebene, jede
 Bootstrap-Variante. Der Bootstrap kopiert es in den gitignorierten Zustands-Bereich des Ziels.
 Vier Eigenschaften folgen daraus **konstruktiv**, nicht als Zusage:
 
 - **Keine zweite Plattform-Matrix.** Der Träger *ist* die Matrix aus
   [`LH-QA-04`](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix). Jeder andere Weg muss die
-  Plattform des Ziels erst herleiten oder raten; hier ist sie bewiesen, weil das Bild gerade
-  läuft.
+  Plattform des Ziels erst herleiten, raten oder über einen zweiten Kanal treffen; hier liegt sie
+  vor, weil das Bild gerade läuft.
 - **Kein zweiter Vertriebskanal.** [ADR-0003](0003-go-native-binaries.md) hat die Vertriebsform
   entschieden und ein eigenes OCI-Image als *Vertriebsmittel* ausdrücklich verworfen; diese
   Entscheidung fügt keinen hinzu.
@@ -276,6 +295,19 @@ Vier Eigenschaften folgen daraus **konstruktiv**, nicht als Zusage:
   jemand es zusichert.** *Dieselbe Tool-Version → derselbe Träger* ist bei einer Kopie eine
   Tautologie — und das ist hier ein Vorzug, kein Mangel: eine Eigenschaft, die niemand herstellen
   muss, kann auch niemand brechen.
+
+**Was der Lauf belegt, und was er nicht belegt.** Belegt ist die Lauffähigkeit auf dem Host, der
+den Bootstrap **ausführt**; mehr sagt ein laufendes Bild nicht. Gebraucht wird sie dort, wo die
+**Hooks** laufen, und dass beides derselbe Ort ist, steht als **Annahme (a)** mit
+Re-Evaluierungs-Trigger — nicht als Beweis. Die Lücke schließt auch
+[`LH-QA-04`](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) nicht: seine Messmethode sagt
+für die drei Start-Smoke-Plattformen ausdrücklich, der Start-Smoke belege, *„dass das Binary auf
+der Plattform läuft — nicht, dass ein Bootstrap dort durchläuft"*. Der tragende Grund von
+Festlegung 1 ist damit **keine Einzigkeit** — Alternative F teilt die vier Eigenschaften — und
+kein Beweis über die Hook-Plattform, sondern die **Ersparnis**, die keiner anderen
+Herkunfts-Klasse offensteht: über den Bootstrap-Host verfügt das Werkzeug im Moment der Emission
+ohne Herleitung, ohne Rateschritt und ohne zweiten Kanal. Wo diese Ersparnis nicht reicht, trägt
+Alternative F — und genau dorthin führt der Trigger zu Annahme (a).
 
 **Warum das die Phasen-Ordnung nicht invertiert — der Punkt, an dem die abgelöste Begründung
 hing.** [ADR-0007](0007-bootstrap-phasen.md) verwirft, dem Ziel **Code vor seiner eigenen
@@ -300,16 +332,23 @@ verhandelbar nennt (*„Der Emitter gibt auf stdout nichts aus"*, *„Sein Exit-
 geklemmt"*). Ein unerprobter Einstiegspunkt ist genau die Stelle, an der eine fail-open-Zusage
 still bricht.
 
-**Der Umbau schrumpft die Konstruktion, statt sie zu vergrößern:** zwei Bau-Stufen und ein
-Make-Ziel entfallen, ein Programm bleibt. Die Auswertung wechselt dabei vom Container auf den
-Host — im Ziel gibt es keine Bau-Stufe, aus der sie laufen könnte, und ein Adopter soll für einen
-Bericht keinen Container starten müssen.
+**Der Umbau schrumpft die Konstruktion, statt sie zu vergrößern:** die **zwei** Bau-Stufen des
+getrennten Wegs entfallen (`grep -nE '^FROM .* AS (span|report)$' Dockerfile` → zwei Zeilen), und
+das Bau-Ziel, das den Emitter heute aus einer eigenen Stage auf den Host holt, verliert seinen
+Gegenstand (`grep -c '^span-emit-build:' Makefile` → **1**). Ein Programm bleibt. Die Auswertung
+wechselt dabei vom Container auf den Host — im Ziel gibt es keine Bau-Stufe, aus der sie laufen
+könnte, und ein Adopter soll für einen Bericht keinen Container starten müssen.
 
 **3. Die Rollen-Typen gehen mit — generisch, Tool-als-Quelle, `skip-if-present`.**
 Geltungsbereich: `.claude/agents/` im Ziel. Emittiert wird **nicht** die Kopie der sechs Dateien
 dieses Repos: sie tragen dessen Slices, Konventionen und Befunde. Emittiert wird eine generische,
-aus Dogfood und Kurs-Modul 8 abgeleitete Fassung — dieselbe Herkunftsklasse wie die
-Durchsetzungs-Mechanik und die Workflow-Commands. Die **Idempotenz-Klasse folgt den Commands**
+aus Dogfood und Regelwerk abgeleitete Fassung — dieselbe Herkunftsklasse wie die
+Durchsetzungs-Mechanik und die Workflow-Commands. Dass eine solche Fassung überhaupt möglich ist,
+sagt das Regelwerk selbst (`v3.5.2`, `modul-08-agentenrollen.md` §Rollen-Regeln): *„Rollen-Trennung
+ist Kontext-Trennung, nicht Personen-Trennung. Eine Person kann mehrere Rollen spielen — aber nicht
+im selben Kontextfenster, sonst wiederholen sich blinde Flecken."* Ein Rollen-Typ trägt danach
+einen **Kontext-Zuschnitt**, keinen Repo-Inhalt; genau das macht die generische Fassung tragfähig
+und die Kopie unserer sechs Dateien falsch. Die **Idempotenz-Klasse folgt den Commands**
 (`skip-if-present`, [ADR-0007](0007-bootstrap-phasen.md) Festlegung 3): ein Rollen-Typ ist ein
 Text, den der Adopter an sein Repo anpasst; ein Re-Lauf, der ihn zurücksetzte, wäre derselbe
 Clobber, den jene Entscheidung für die Commands ausgeschlossen hat.
@@ -341,7 +380,7 @@ Stellen, an denen er zerfällt. Die Idempotenz-Klassen je Artefakt:
 |---|---|---|
 | der Träger im gitignorierten Zustands-Bereich | **konvergent**, nie geprunt | reine tool-erzeugte Infrastruktur; ein Re-Lauf heilt Drift und zieht eine neue Tool-Version nach |
 | der Hook-Wrapper unter `.claude/hooks/` | **konvergent** | dieselbe Klasse wie die übrigen Hook-Skripte in [ADR-0007](0007-bootstrap-phasen.md) Festlegung 3 |
-| `.claude/settings.json` | **konvergent** (unverändert) | tool-eigen; der Erfassungs-Block darin entsteht nur unter der Bedingung aus Festlegung 5 — ein Re-Lauf, der ihn nicht setzen kann, **entfernt** ihn, damit die Konfiguration die Wirklichkeit beschreibt |
+| `.claude/settings.json` | **konvergent** (unverändert) | tool-eigen; der Erfassungs-Block darin entsteht nur unter der Bedingung aus Festlegung 5 — ein Re-Lauf, der ihn nicht setzen kann, **entfernt** ihn, damit die Konfiguration die Wirklichkeit beschreibt. **Neu an der Klasse, und darum ausgesprochen:** der kanonische Inhalt hängt hier erstmals an einem **Laufzeit-Ausgang**; zwei Läufe derselben Tool-Version erzeugen verschiedene Bytes, wenn die Ablage des Trägers beim einen gelingt und beim anderen nicht. Das ist gewollt — es trägt die [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Zusage aus Festlegung 5 —, und [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) bindet die Bytes damit an dieselbe Tool-Version **und** denselben Ausgang, nicht an die Version allein |
 | die Rollen-Typen unter `.claude/agents/` | **skip-if-present** | Adopter-adaptierter Text, Klasse wie die Commands (Festlegung 3) |
 | die Feldliste im geprüften Doku-Bereich | **konvergent** | tool-generiert, verbatim abgelegt (Festlegung 7) |
 | das Aufräum- und Berichts-Fragment im Gate-Fragment-Verzeichnis des Ziels | **konvergent** | tool-eigenes Gate-Fragment, Muster [`MR-010`](../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert) |
@@ -407,7 +446,8 @@ Vier Stücke entscheidet jene Quelle **nicht**, und sie stehen darum hier:
    *„ein `make`-Ziel, kein Automatismus"* für den Dogfood;
    [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) macht daraus
    eine **Zusage** samt ausgesprochener **Nicht**-Zusage (*„Eine automatische Rotation ist nicht
-   Teil der Zusage"*). Das Ziel bekommt das Kommando und den Satz, dass sein Bestand ohne dessen
+   Teil der Zusage — ein Löschpfad in einem fail-open-Hook über fremden Daten wäre der teurere
+   Fehlerfall."*). Das Ziel bekommt das Kommando und den Satz, dass sein Bestand ohne dessen
    Aufruf unbegrenzt wächst.
 3. **Die ausgesprochene Nicht-Zusage über den Bestand.** Das Bedrohungsmodell jener Quelle ruht
    auf einer bekannten Vertrauensgrenze (*„Wer sie lesen kann, kann auch die Dateien lesen"*) —
@@ -418,9 +458,11 @@ Vier Stücke entscheidet jene Quelle **nicht**, und sie stehen darum hier:
    3 und 8.
 
 **7. Die Feldliste lebt im Ziel als tool-generiertes Dokument im geprüften Doku-Bereich — nicht
-im Technik-Stratum des Adopters.** Das beantwortet die offene Frage aus
-[ADR-0013](0013-technik-stratum-als-zielort.md) Folgepflicht 3 mit **Nein**, und zwar aus dem
-Grund jener Entscheidung selbst: das Gefäß folgt dem Gegenstand. Das Technik-Stratum des Ziels ist
+im Technik-Stratum des Adopters.** Das beantwortet mit **Nein** die Frage, die
+[ADR-0013](0013-technik-stratum-als-zielort.md) in ihrem Re-Evaluierungs-Trigger für genau diesen
+Fall offengelassen hat — *„Wenn Spans emittiert werden … dann ist zu entscheiden, ob das Zielrepo
+die Feldtabelle in seinem Technik-Stratum mitbekommt"* —, und zwar aus dem Grund jener
+Entscheidung selbst: das Gefäß folgt dem Gegenstand. Das Technik-Stratum des Ziels ist
 `skip-if-present` und gehört dem Adopter — eine Tabelle, die wir dort hineinschrieben, könnte ein
 Re-Lauf nie nachziehen und driftete mit der ersten Schema-Änderung. Der Zielort ist stattdessen
 ein **tool-eigenes, konvergentes** Dokument, und es wird **aus dem Träger erzeugt**, nicht von
@@ -431,8 +473,13 @@ ist Drift zwischen erfasstem und dokumentiertem Feld **konstruktiv** ausgeschlos
 Regel verboten. Es liegt im vom Doku-Gate des Ziels **geprüften** Bereich (nicht unter
 `.harness/**`, das die emittierte `.d-check.yml` ausnimmt): der Baum dort ist derivativer,
 nicht repo-autoritativer Inhalt, die Feldliste dagegen ist eine **Aussage an den Adopter**.
-Sie trägt zugleich, was die abgelöste Folgepflicht 5 dort **genannt** haben wollte: dass die
-emittierte Ebene keinen Wächter über die Aufrufform des Agenten-Werkzeugs führt.
+Sie trägt zugleich die zwei Grenzen, die dort **genannt** gehören und die kein Sensor hält: dass
+die emittierte Ebene keinen Wächter über die Aufrufform des Agenten-Werkzeugs führt — das verlangt
+die abgelöste Folgepflicht 5 (*„Zugleich gehört dort genannt, dass die emittierte Ebene keinen
+Agent-Guard führt"*) —, und dass die Verbrauchs-Zähler aus der Mechanik des Agenten-Werkzeugs
+nicht kommen, was
+[ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Folgepflicht 6 verlangt und Festlegung 8
+ausführt. Beide gehören hierher, weil sie auch dann gelten, wenn niemand die Auswertung ruft.
 
 **8. Token-Attribution und Cache-Counter: das Erfassungs-Glied fällt, das Zähler-Glied nicht —
 emittiert wird die Auswertung, nicht die Bilanz.** Die abgelöste Festlegung 3 hing an einer
@@ -440,15 +487,21 @@ Konjunktion. Die Glieder stehen heute verschieden:
 
 - **Das Erfassungs-Glied** (*erfasst das Ziel überhaupt?*) ist mit Festlegung 1 **wahr**. Es ist
   damit revidiert, und mit ihm der Satz *„ein Ziel, das nicht erfasst, hat nichts zu verrechnen"*.
-- **Das Zähler-Glied** (*trägt ein `Agent`-Span Rolle und Zähler?*) ist im Dogfood
-  **verschlossen**, und zwar seit [ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) auf
-  eigenem, *Accepted* entschiedenem Grund statt als Vorbedingung eines Carveouts. Es wird hier
-  **nicht** revidiert.
-- **Die Folge für die emittierte Ebene ist aber nicht dieselbe, und das ist der Kern.**
-  [ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) sagt selbst, die emittierte Ebene sei
-  **nicht berührt**; ihre Permanenz ruht auf der committeten Berechtigungs-Lage **dieses** Repos.
-  Was ein fremdes Repo an Zählern erhält, entscheidet dessen eigene Lage — wir wissen es nicht und
-  dürfen es weder zusagen noch ausschließen.
+- **Das Zähler-Glied** (*trägt ein `Agent`-Span Rolle und Zähler?*) ist **verschlossen**, und
+  zwar seit [ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) auf eigenem, *Accepted*
+  entschiedenem Grund statt als Vorbedingung eines Carveouts. Entschieden ist es dort für den
+  Dogfood; sein Grund hängt nicht am Dogfood. Es wird hier **nicht** revidiert.
+- **Die Grenze gilt im Ziel unverändert, und sie gehört dort genannt — das ist der Kern.**
+  [ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Folgepflicht 6 hat genau den Fall
+  vorentschieden, den diese Entscheidung herbeiführt: *„Bekommt sie je einen, gilt diese Grenze
+  dort unverändert — sie ist keine Eigenschaft unseres Aufbaus, sondern der Mechanik — und gehört
+  dort genannt, nicht stillschweigend mitgeliefert."* Der tragende Grund jener Entscheidung liegt
+  im **fremden Vertrag**: sie zählt die zwei verbliebenen Wege dort ab und stellt fest, *„Kein
+  Aufwand dieses Repos bringt eines von beiden herbei."* Das Agenten-Werkzeug ist auf der
+  emittierten Ebene dasselbe; ein Adopter-Bestand trägt Verbrauchs-Zähler genau dann, wenn einer
+  jener zwei fremden Wege trägt — und dann trägt er sie hier ebenso. Diese Entscheidung sagt
+  darum über einen Adopter **nichts** zu, was jene nicht schon über die Mechanik gesagt hat, und
+  sie revidiert daran nichts.
 
 **Daraus die Festlegung:** emittiert wird der **Leser**, nicht die **Zahl**. Die Auswertung nennt
 ihre **Abdeckung zuerst** und meldet über einem Bestand ohne Zähler ihre Leere; sie behauptet
@@ -457,6 +510,16 @@ Voll-Emission verwarf** (*„ein Bericht, der nie eine Zahl trägt, ist die Gate
 Kennzahl"*): gelogen hätte ein Bericht, der eine Bilanz behauptet; ein Bericht, der seinen Nenner
 und seine Abdeckung nennt, ist genau das Gegenteil — die Form, die
 [ADR-0012](0012-haupt-kontext-ohne-token-bilanz.md) für den Dogfood erzwungen hat.
+
+**Eine leere Bilanz ist noch keine genannte Grenze — deshalb zwei Orte statt einem.** Eine
+Abdeckungs-Zeile über einem Bestand ohne Zähler meldet einen **Zustand** und lässt offen, ob er
+morgen anders ist; die Folgepflicht verlangt die **Grenze**: dass die Zähler an der Mechanik des
+Agenten-Werkzeugs hängen und kein Lauf des Adopters sie herbeiführt. Sie wird darum an zwei Orten
+gesagt — (i) von der Auswertung selbst, die dort, wo sie ihre Leere meldet, deren **Grund** nennt
+und ihn von einem bloß leeren Bestand unterscheidet, und (ii) vom emittierten
+Feldlisten-Dokument aus Festlegung 7, das sie **stehend** führt, auch wenn niemand die Auswertung
+ruft. Die Einlösung von [ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Folgepflicht 6
+ist damit ein **Ergebnis** dieser Entscheidung, kein Nebenprodukt ihrer Ausgabe-Form.
 
 **Und die Auswertung wird im Ziel nicht verdrahtet.** Sie prüft nichts und färbt nichts rot; ein
 Gate über ihr wäre eines über leerem Prüfbereich
@@ -474,7 +537,7 @@ Kommando, nicht die Aufhängung.
 | D — **Release-Asset über das Netz holen** | ein Artefakt je Plattform, unabhängig vom Produkt-Binär | zweiter Vertriebskanal samt Prüfsummen-Mechanik; eine Verfügbarkeits-Abhängigkeit im Bootstrap; und das Asset einer Version existiert nicht, bevor sie veröffentlicht ist — der Beleg liefe gegen ein fremdes |
 | E — **veröffentlichtes, digest-gepinntes OCI-Bild** + `docker create`/`docker cp` | **der Mechanismus, den der Dogfood heute selbst fährt** (`harness/tools/artifact-copy.sh`, gerufen aus dem Rezept, das in `make gates` steht); digest-gepinnt und damit reproduzierbar | verlangt genau das **eigene OCI-Image als Vertriebsmittel**, auf das [ADR-0003](0003-go-native-binaries.md) verzichtet hat, mit derselben Begründung, die dort steht (*native Binaries sind bereits plattformübergreifend*); das Bild eines Standes kann **nicht** von dem Stand erzeugt werden, der es verbraucht — der Beleg prüfte einen fremden, früheren Träger, und *„was ins Ziel geht, ist hier erprobt"* hielte nicht; ob `docker create` über ein Bild fremder Architektur trägt, ist hier **ungemessen** |
 | F — **eigenes Emitter-Binär, ins Produkt-Binär eingebettet** | dieselben vier Konstruktions-Eigenschaften wie G; der Träger kann **konstruktiv** kein Repo bootstrappen — die kleinste Fähigkeitsfläche | der Produkt-Bau hängt am Emitter-Bau derselben Plattform, und die Einbettung verlangt die Datei zur Übersetzungszeit **jeder** Stufe — also einen committeten Platzhalter, der aussieht wie ein Träger und keiner ist; [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) verlangt Schreiber **und** Auswertung, also zwei Blobs. Gleiche Eigenschaften, höherer Preis |
-| **G — der Träger IST das Produkt-Binär: Selbst-Kopie in den gitignorierten Zustands-Bereich, Schreiber und Auswertung als Unterkommandos (gewählt)** | die Plattform ist bewiesen statt hergeleitet; kein zweiter Kanal, kein Netz, kein Bauschritt, keine zweite Matrix; [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) durch Konstruktion; der Dogfood kann **denselben** Einstiegspunkt fahren, womit Folgepflicht 1 der abgelösten Entscheidung eingelöst statt umgangen wird; die Konstruktion schrumpft um zwei Bau-Stufen | der Hook startet je Tool-Call das Produkt-Binär — die Schwelle aus [ADR-0011](0011-telemetrie-erfassung-policy.md) bindet und ist **hier nicht gemessen**; der abgelegte Träger trägt die Bootstrap-Fähigkeit mit sich, die Alternative F konstruktiv ausschlösse |
+| **G — der Träger IST das Produkt-Binär: Selbst-Kopie in den gitignorierten Zustands-Bereich, Schreiber und Auswertung als Unterkommandos (gewählt)** | die Plattform des Bootstrap-Hosts liegt vor, statt hergeleitet, geraten oder über einen zweiten Kanal getroffen zu werden (die Identität mit der Hook-Plattform ist Annahme (a), nicht Beweis); kein zweiter Kanal, kein Netz, kein Bauschritt, keine zweite Matrix; [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) durch Konstruktion; der Dogfood kann **denselben** Einstiegspunkt fahren, womit Folgepflicht 1 der abgelösten Entscheidung eingelöst statt umgangen wird; die Konstruktion schrumpft um die zwei Bau-Stufen des getrennten Wegs (`grep -nE '^FROM .* AS (span|report)$' Dockerfile` → zwei Zeilen) | der Hook startet je Tool-Call das Produkt-Binär — die Schwelle aus [ADR-0011](0011-telemetrie-erfassung-policy.md) bindet und ist **hier nicht gemessen**; der abgelegte Träger trägt die Bootstrap-Fähigkeit mit sich, die Alternative F konstruktiv ausschlösse |
 
 ## Konsequenzen
 
@@ -487,9 +550,9 @@ Kommando, nicht die Aufhängung.
   statt größer.
 - **Negativ, und das ist der Preis:** der Hook startet je Tool-Call ein größeres Programm. Die
   Schwelle steht fest ([ADR-0011](0011-telemetrie-erfassung-policy.md): *50 ms im Median*, und
-  *„nicht die Grenze zu erhöhen, sondern der Umfang zu senken"*), die **Messung ist geschuldet**,
-  und ihr negativer Ausgang hat eine benannte Antwort: Alternative F trägt dieselben
-  Eigenschaften mit getrenntem Einstiegspunkt.
+  *„nicht die Grenze zu erhöhen, sondern der Umfang zu senken"*), die Messung steht als
+  **Folgepflicht 9**, und ihr negativer Ausgang hat eine benannte Antwort: Alternative F trägt
+  dieselben Eigenschaften mit getrenntem Einstiegspunkt.
 - **Negativ:** der Träger liegt gitignored. Ein frischer Klon des Adopter-Repos hat ihn nicht und
   erfasst still nichts, bis jemand das Werkzeug erneut laufen lässt. Die Auswertung macht es
   sichtbar, ein Gate darf es nicht (Festlegung 5(c)) — **die Grenze ist benannt, nicht
@@ -497,14 +560,26 @@ Kommando, nicht die Aufhängung.
 - **Negativ:** der abgelegte Träger kann ein Repo bootstrappen. Der Zugewinn eines konstruktiven
   Ausschlusses wäre gering — wer den Träger startet, hat das Binär ohnehin —, aber er ist **kein
   Nichts**, und die Abwägung steht in der Tabelle, nicht im Kommentar.
+- **Grenze:** die Verbrauchs-Zähler kommen im Ziel so wenig an wie hier, und der Grund liegt in
+  der **Mechanik** des Agenten-Werkzeugs, nicht in unserem Aufbau
+  ([ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md)). Die emittierte Auswertung trägt
+  darum einen Leser ohne Zahl — und sagt, warum. Das ist keine Folge dieser Entscheidung, sondern
+  eine Feststellung jener, die hier eingelöst statt weitergereicht wird.
 - **Grenze:** die Rollen-Achse im Ziel ruht auf den kanonischen Rollennamen und auf
   Adopter-Disziplin. Das ist keine Folge dieser Entscheidung, sondern die Grenze, die
   [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) selbst
   ausspricht; sie steht im emittierten Feldlisten-Dokument, damit sie dort steht, wo sie anfällt.
 - **Folgepflicht 1 — der Dogfood zieht den Einstiegspunkt nach.** Emitter und Auswertung werden
-  Unterkommandos, die zwei Bau-Stufen und das Bau-Ziel entfallen, die Hook-Konfiguration dieses
+  Unterkommandos, die zwei Bau-Stufen des getrennten Wegs entfallen
+  (`grep -nE '^FROM .* AS (span|report)$' Dockerfile` → zwei Zeilen) und mit ihnen der Gegenstand
+  des Bau-Ziels (`grep -c '^span-emit-build:' Makefile` → **1**), die Hook-Konfiguration dieses
   Repos ruft denselben Einstiegspunkt wie das Ziel. Ohne diesen Nachzug emittierte der Beleg
-  einen Einstiegspunkt, den der Dogfood nie ausführt.
+  einen Einstiegspunkt, den der Dogfood nie ausführt. **Die Reihenfolge ist gegenüber
+  [ADR-0020](0020-emittierte-modul-15-regeln.md) Folgepflicht 1 in ihren ersten zwei Gliedern
+  umgekehrt, und das ist benannt statt übersehen:** dort steht *„Erprobung → Entscheidung →
+  Emission"*, hier fällt die Entscheidung vor der Erprobung. Gebunden ist von jener Folgepflicht
+  die **Emission** (*„der Beleg emittiert nichts, was der Dogfood nicht selbst fährt"*), und die
+  kommt nach diesem Nachzug — die Sache ist eingelöst, die Abfolge der ersten zwei Glieder nicht.
 - **Folgepflicht 2 — die Mutations-Fälle folgen dem Einstiegspunkt.** Die Zähne aus
   [ADR-0011](0011-telemetrie-erfassung-policy.md) (Klemme entfernt ⇒ rot; stdout gebrochen ⇒ rot)
   hängen heute am alten Programm. Wandern sie nicht mit, ist die fail-open-Konstruktion genau an
@@ -529,9 +604,27 @@ Kommando, nicht die Aufhängung.
   als *Proposed* und ihren Umfang; eine Revision, die noch nicht beschlossen ist, wird nicht als
   vollzogen ausgewiesen.
 - **Folgepflicht 8 — die Kommentare, die die heutige Trennung begründen, beschreiben danach eine
-  Konstruktion, die es nicht mehr gibt.** Sie nennen als Entscheidungs-Ort einen Plan-Schnitt; die
-  Entscheidung ist hier gefallen, und wer die Stelle anfasst, zieht den Kommentar nach
-  ([`AGENTS.md`](../../../AGENTS.md) §3.7).
+  Konstruktion, die es nicht mehr gibt.** Betroffen ist **jede** Stelle, die die getrennten
+  Bau-Stufen begründet, nicht nur die, die einen Plan-Schnitt als Entscheidungs-Ort nennt: die
+  Begründung an der Auswertungs-Stufe nennt keinen und trägt zusätzlich einen Satz, den
+  Festlegung 2 eigenständig falsch macht — die Auswertung wechselt auf den Host und bekommt im
+  Ziel genau einen Leser. Wer die Folgepflicht über ein Erkennungsmerkmal statt über die
+  Eigenschaft abarbeitet, findet die zweite Stelle nicht. Die Entscheidung ist hier gefallen, und
+  wer die Stelle anfasst, zieht den Kommentar nach ([`AGENTS.md`](../../../AGENTS.md) §3.7).
+- **Folgepflicht 9 — der Aufschlag je Tool-Call wird gemessen, bevor die Schwelle als gehalten
+  gilt.** Annahme (c) ist ungemessen, und ein Trennungs-Trigger ohne Messung feuert nie.
+  Geschuldet ist eine Messung des **Medians** des Hook-Aufschlags über einen realen Lauf, gegen
+  die Schwelle aus [ADR-0011](0011-telemetrie-erfassung-policy.md) gehalten und gegen den heutigen
+  getrennten Emitter als Vergleichspunkt — mit ihrem **Kommando im Text**, damit sie nachgefahren
+  werden kann ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)).
+  Ein Sensor dafür existiert nicht
+  (`grep -niE 'latenz|latency|median|bench' Makefile d-check.mk` → leer, Exit 1); solange er
+  fehlt, trägt die Verbindlichkeit diese Entscheidung, nicht ein Gate — und **keine**
+  Fitness-Function-Zeile nennt ihn, weil eine Zeile über einem nicht existierenden Target genau
+  der halluzinierte Gate wäre, den
+  [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
+  ausschließt. Fällt die Messung negativ aus, ist die Antwort Alternative F, nicht eine höhere
+  Schwelle.
 
 ## Fitness Function (falls maschinell prüfbar)
 
@@ -541,21 +634,31 @@ Kommando, nicht die Aufhängung.
 | `make test` · `make mutate` | **Die Zusage aus [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), mit ihrem Gegenbeispiel.** Scheitert die Platzierung des Trägers, trägt die emittierte `.claude/settings.json` **keinen** Erfassungs-Hook, es liegt **kein** Wrapper, und der Bootstrap endet erfolgreich. **Rot zu sehen ist:** die Kopplung aufheben — den Hook-Eintrag unbedingt schreiben —, dann muss der Wächter fallen. Ohne dieses Rot ist die Zusage eine Absicht. **Geschuldet, nicht geliefert** | `make test`, `make mutate` |
 | `make test` · `make mutate` | **Die fail-open-Konstruktion am neuen Einstiegspunkt.** Ein Träger, dessen innere Arbeit fehlschlägt, endet mit Exit 0 und leerem stdout — auch das seiner Kindprozesse; die Klemme zu entfernen färbt rot. Die Zähne existieren, sie hängen am alten Programm (Folgepflicht 2) | `make test`, `make mutate` |
 | `make test` | **Die Anwesenheits-Wächter.** Nach dem Bootstrap liegen im Ziel Träger, Wrapper, Rollen-Typen und die Feldliste; die Prüfung hat die Gestalt des bestehenden Abwesenheits-Wächters in `internal/emit/enforce_test.go`, nur umgekehrt, und jede ist einmal rot zu sehen, indem das Artefakt probeweise weggelassen wird. **Geschuldet, nicht geliefert** (Folgepflicht 6) | `make test`, `make mutate` |
-| `make test` | **Die Feldliste im Ziel ist der Ausdruck des Trägers.** Das emittierte Dokument ist byte-gleich mit dem, was der Träger über sein eigenes Schema ausgibt; ein Feld, das erfasst wird und dort fehlt, färbt rot. Damit ist die Drift konstruktiv ausgeschlossen statt per Regel verboten | `make test` |
-| `make full-smoke` | **Die Auswertung meldet ihre Leere.** Über einem Bestand ohne Verbrauchs-Zähler nennt sie ihre Abdeckung und weist **keine** Bilanz aus; eine Ausgabe, die über leerem Bestand eine Zahl trägt, ist der Befund. **Geschuldet, nicht geliefert** | `make full-smoke` |
+| `make test` | **Die Feldliste im Ziel ist der Ausdruck des Trägers.** Das emittierte Dokument ist byte-gleich mit dem, was der Träger über sein eigenes Schema ausgibt; ein Feld, das erfasst wird und dort fehlt, färbt rot. Damit ist die Drift konstruktiv ausgeschlossen statt per Regel verboten. **Geschuldet, nicht geliefert** — das Dokument entsteht erst mit Festlegung 7, und ein Sensor darüber existiert nicht (`grep -rln 'Feldliste' internal/emit/*.go` → leer, Exit 1) | `make test` |
+| `make full-smoke` | **Die Auswertung meldet ihre Leere — und nennt die Grenze, nicht nur den Zustand.** Über einem Bestand ohne Verbrauchs-Zähler nennt sie ihre Abdeckung, weist **keine** Bilanz aus und sagt, dass die Zähler an der Mechanik des Agenten-Werkzeugs hängen; eine Ausgabe, die über leerem Bestand eine Zahl trägt, ist der Befund — und ebenso eine, die die Leere ohne ihren Grund meldet. **Rot zu sehen ist:** den Grund-Satz aus der Ausgabe nehmen, dann muss der Wächter fallen; ohne dieses Rot ist die Einlösung von [ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Folgepflicht 6 eine Absicht ([`AGENTS.md`](../../../AGENTS.md) §3.6). **Geschuldet, nicht geliefert** | `make full-smoke` |
+| `make test` · `make mutate` | **Das Feldlisten-Dokument führt seine zwei Grenzen stehend.** Es nennt, dass die emittierte Ebene keinen Wächter über die Aufrufform des Agenten-Werkzeugs führt und dass die Verbrauchs-Zähler aus der Mechanik nicht kommen (Festlegung 7); fehlt einer der zwei Sätze im emittierten Dokument, färbt der Wächter rot. Das ist der Ort, der auch dann trägt, wenn niemand die Auswertung ruft. **Geschuldet, nicht geliefert** | `make test`, `make mutate` |
 | — | **Nicht maschinell prüfbar, und darum hier ohne Zeile:** dass ein Adopter seine Rollen-Typen unter den kanonischen Namen führt. Das ist die Grenze aus [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) §Benannte Grenze; sie wird ausgesprochen, nicht bewacht | — |
 
 ## Re-Evaluierungs-Trigger
 
 - **Wenn der Aufschlag je Tool-Call die Schwelle aus
-  [ADR-0011](0011-telemetrie-erfassung-policy.md) reißt** *(feedback — eine Messung mit
-  festgelegter Schwelle, kein Gefühl)*: Annahme (c) fällt. Die Antwort ist **nicht**, die Schwelle
-  zu heben — jene Quelle sagt es selbst —, sondern den Umfang zu senken oder den Einstiegspunkt zu
-  trennen; Alternative F steht dafür bereit und trägt dieselben vier Konstruktions-Eigenschaften.
-- **Wenn ein Adopter-Bestand Verbrauchs-Zähler trägt** *(feedback — an der Ausgabe der emittierten
-  Auswertung ablesbar)*: dann trägt sie eine Bilanz, und das widerspricht nichts — Festlegung 8
-  sagt eine Abdeckung zu, keine Leere. Fällig wird dann die Frage, ob die emittierte Auswertung
-  dieselbe Aufteilung des Sammelpostens braucht, die
+  [ADR-0011](0011-telemetrie-erfassung-policy.md) reißt** *(feedforward, bis ein Slice den Sensor
+  baut — dieselbe Einordnung, die jene Quelle für dieselbe Schwelle führt; heute existiert kein
+  Sensor: `grep -niE 'latenz|latency|median|bench' Makefile d-check.mk` → leer, Exit 1)*:
+  Annahme (c) fällt. **Wer es merkt:** die Messung aus Folgepflicht 9 — ohne sie merkt es niemand,
+  und der Trigger feuert nie. Die Antwort ist **nicht**, die Schwelle zu heben — jene Quelle sagt
+  es selbst —, sondern den Umfang zu senken oder den Einstiegspunkt zu trennen; Alternative F
+  steht dafür bereit und trägt dieselben vier Konstruktions-Eigenschaften.
+- **Wenn ein Adopter-Bestand Verbrauchs-Zähler trägt** *(feedforward — fremder Vertrag, kein
+  Sensor dieses Repos; sichtbar wird es, wer die emittierte Auswertung ruft und ihre
+  Abdeckungs-Zeile liest)*: dann hat einer der zwei Wege im fremden Vertrag getragen, die
+  [ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) abgezählt hat — und weil die Mechanik
+  auf beiden Ebenen dieselbe ist, ist damit deren erster bzw. zweiter Re-Evaluierungs-Trigger
+  ausgelöst, für den Dogfood wie für das Ziel. Fällig ist dann **zuerst** die Wiederaufnahme jener
+  Entscheidung durch eine Folge-ADR — sie ist *Accepted* und wird nicht nachgebessert
+  ([`AGENTS.md`](../../../AGENTS.md) §3.4) —, **dann** der Nachzug der zwei Orte, an denen
+  Festlegung 8 die Grenze nennt, weil sie damit falsch geworden wäre, und **erst dann** die Frage,
+  ob die emittierte Auswertung dieselbe Aufteilung des Sammelpostens braucht, die
   [ADR-0012](0012-haupt-kontext-ohne-token-bilanz.md) für den Dogfood entschieden hat.
 - **Wenn das Agenten-Werkzeug seine Hook-Oberfläche oder seinen Konfigurations-Ort ändert**
   *(feedforward — fremder Vertrag, bemerkt, nicht herbeigeführt)*: Annahme (d) fällt. Auf der
@@ -564,8 +667,9 @@ Kommando, nicht die Aufhängung.
   dorthin.
 - **Wenn ein Bootstrap für eine andere Plattform ausgeführt wird als die, auf der die Hooks
   laufen** *(feedforward — an einem Ziel ablesbar, dessen Träger sich nicht ausführen lässt)*:
-  Annahme (a) fällt, und mit ihr das tragende Argument von Festlegung 1. Dann ist die
-  Plattform-Frage wieder zu stellen, und die Wege D, E und F werden verfügbar.
+  Annahme (a) fällt, und mit ihr die Ersparnis, auf der Festlegung 1 ruht — der Bootstrap-Host
+  sagt dann nichts mehr über die Hook-Plattform. Die Plattform-Frage ist dann wieder zu stellen,
+  und die Wege D, E und F werden verfügbar.
 - **Wenn der Zustands-Bereich des Ziels nicht mehr gitignored oder nicht beschreibbar ist**
   *(feedforward — eine Änderung an der emittierten Durchsetzung, kein Sensor)*: Annahme (b) fällt;
   Träger-Ort und Ablageort sind gemeinsam neu zu wählen, weil sonst jeder Span den Gate-Nachweis
@@ -584,4 +688,4 @@ Kommando, nicht die Aufhängung.
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-08-23 | **Proposed** | Architect-Verdikt zur angenommenen Anforderung [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) (Lastenheft 0.19.0): sie steht auf Rang 1 und verlangt, was die abgelöste Entscheidung als permanent ausgeschlossen hatte. Diese Entscheidung führt die Abzählung der Wege über ein Kriterium statt über eine Liste, wählt den Träger als das ausführbare Bild, dessen Zielplattform bewiesen statt hergeleitet ist, bindet Hook-Eintrag und Träger aneinander, löst die Konjunktion aus Festlegung 3 der abgelösten Entscheidung **getrennt für Träger und Zahl** auf und vollzieht den Adopter-Vertrag, den [ADR-0011](0011-telemetrie-erfassung-policy.md) Festlegung 5 für genau diesen Fall vorentschieden hat |
+| 2026-08-23 | **Proposed** | Architect-Verdikt zur angenommenen Anforderung [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) (Lastenheft 0.19.0): sie steht auf Rang 1 und verlangt, was die abgelöste Entscheidung als permanent ausgeschlossen hatte. Diese Entscheidung führt die Abzählung der Wege über ein Kriterium statt über eine Liste, wählt den Träger als das ausführbare Bild, dessen Lauffähigkeit auf dem Bootstrap-Host der Lauf selbst belegt — die Identität dieses Hosts mit der Hook-Plattform steht als Annahme mit Trigger, nicht als Beweis —, bindet Hook-Eintrag und Träger aneinander, löst die Konjunktion aus Festlegung 3 der abgelösten Entscheidung **getrennt für Träger und Zahl** auf und vollzieht den Adopter-Vertrag, den [ADR-0011](0011-telemetrie-erfassung-policy.md) Festlegung 5 für genau diesen Fall vorentschieden hat |
