@@ -338,7 +338,8 @@ als Contra von G benannt.
 **Was Annahme (a) trägt und was nicht.** Fällt sie, weil Bootstrap-Host und Hook-Plattform
 auseinanderfallen, dann fällt sie für **F ebenso** — sein eingebettetes Binär hat dieselbe
 Plattform-Bindung. Der Trigger unten sagt darum nicht *„dann F"*, sondern stellt die
-Plattform-Frage neu; **der Weg, der sie ohne diese Annahme beantwortet, ist Alternative H**.
+Plattform-Frage neu; **der Weg, der sie überhaupt stellbar macht, ist Alternative H** — beantwortet
+ist sie damit nicht, wie der nächste Absatz zeigt.
 
 **Warum G und nicht H — und was H wirklich löst.** Alternative H trägt alle Plattform-Binaries in
 **einem** Asset; damit hängt das abzulegende Bild nicht mehr am **Bau**, und ein Ziel könnte einen
