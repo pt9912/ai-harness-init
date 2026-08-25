@@ -32,7 +32,7 @@ Festlegung 1 wählt den Träger, Festlegung 4 den Aufruf-Ort und die Idempotenz-
 Festlegung 5 koppelt Träger, Wrapper und Hook-Eintrag und schließt den ziel-seitigen Wächter aus;
 Folgepflicht 4 begleicht dieser Slice ganz, von Folgepflicht 6 die zwei Anwesenheits-Wächter über
 Träger und Wrapper — die über den Rollen-Typen und der Feldliste bringen
-[slice-097](../next/slice-097-rollen-typen-gehen-mit.md) und
+[slice-097](../in-progress/slice-097-rollen-typen-gehen-mit.md) und
 [slice-098](../open/slice-098-feldliste-ist-ausdruck-des-traegers.md) mit),
 [`ADR-0007`](../../adr/0007-bootstrap-phasen.md) (**Accepted** — Festlegung 1 gibt die Phase,
 Festlegung 3 die Idempotenz-Klassifikation, Festlegung 5 den Checkpoint, durch den ein Re-Lauf den
@@ -134,7 +134,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       Hook-Eintrag in `.claude/settings.json` — Richtung: kein neuer Pfad, sondern ein **Block in
       einer bestehenden Datei**; seine Anwesenheit ist eine Inhalts-, keine Existenz-Aussage, und
       ein Existenz-Wächter darüber wäre dauerhaft grün. **Nicht in dieser Menge:** die Rollen-Typen
-      (unbedingt, [slice-097](../next/slice-097-rollen-typen-gehen-mit.md)) und die Feldliste (teilt den
+      (unbedingt, [slice-097](../in-progress/slice-097-rollen-typen-gehen-mit.md)) und die Feldliste (teilt den
       Zweig des Trägers, [slice-098](../open/slice-098-feldliste-ist-ausdruck-des-traegers.md)) — sie
       bringen ihre Wächter selbst mit.
       **Rot:** `make test` plus je ein `test/mutations/`-Fall mit `# verify: test-go`, der das
@@ -358,7 +358,7 @@ Mutations-Fälle `155`–`162`. `ab0e855` und `603a6f8` sind die reinen Lifecycl
   jener Entscheidung nennt Anwesenheits-Wächter für **Träger, Wrapper, Rollen-Typen und die
   Feldliste**; geliefert sind die ersten beiden plus der Hook-Eintrag. Die anderen zwei schließt
   DoD (3) ausdrücklich aus und verweist auf
-  [slice-097](../next/slice-097-rollen-typen-gehen-mit.md) und
+  [slice-097](../in-progress/slice-097-rollen-typen-gehen-mit.md) und
   [slice-098](../open/slice-098-feldliste-ist-ausdruck-des-traegers.md); §Bezug trägt die Teilung
   jetzt. **Ob die Folgepflicht damit als eingelöst gilt, vermerkt nicht diese Notiz** — eine
   *Accepted*-Entscheidung wird gelesen, nicht nachgetragen ([`AGENTS.md`](../../../../AGENTS.md)

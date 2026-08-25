@@ -50,7 +50,7 @@ Setzung 2). Jedes Kriterium hat in dieser Welle genau einen zuständigen Slice; 
 | Akzeptanzkriterium | zuständig | Art der Erfüllung |
 |---|---|---|
 | Happy Path — Span-Zeile mit voller Pflicht-Spalte | [slice-096](done/slice-096-traeger-liegt-im-ziel.md) | gebaut und im `full-smoke` gesehen |
-| Rolle besetzt | [slice-097](next/slice-097-rollen-typen-gehen-mit.md) | gebaut (der Typ ist der Träger der Achse) |
+| Rolle besetzt | [slice-097](in-progress/slice-097-rollen-typen-gehen-mit.md) | gebaut (der Typ ist der Träger der Achse) |
 | Betrieb fail-open, Umfang fail-closed | [slice-094](done/slice-094-ein-programm-ein-einstiegspunkt.md) | **konstruktiv geerbt** — dasselbe Programm, dieselbe Klemme; die Zähne wandern auf den neuen Einstiegspunkt |
 | Redaktion — was zugesagt ist und was nicht | [slice-098](open/slice-098-feldliste-ist-ausdruck-des-traegers.md) | gebaut (die Feldliste **ist** die geschlossene Liste, die das Kriterium verlangt) |
 | Aufbewahrung — Kommando ohne Automatik | [slice-099](open/slice-099-leser-und-aufraeum-kommando.md) | gebaut |
@@ -155,7 +155,7 @@ Der Zustand jedes Slice ist sein Lifecycle-Verzeichnis, hier nicht gespiegelt.
 | [slice-094](done/slice-094-ein-programm-ein-einstiegspunkt.md) | Ein Programm, ein Einstiegspunkt: Schreiber und Auswertung werden Unterkommandos | [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 2 |
 | [slice-095](done/slice-095-hook-aufschlag-gemessen.md) | Der Aufschlag je Tool-Call ist gemessen, und der Trennungs-Trigger kann feuern | [`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.md) |
 | [slice-096](done/slice-096-traeger-liegt-im-ziel.md) | Der Träger liegt im Ziel — oder es liegt begründet nichts | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
-| [slice-097](next/slice-097-rollen-typen-gehen-mit.md) | Die Rollen-Typen gehen mit: generisch, Tool-als-Quelle, `skip-if-present` | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) |
+| [slice-097](in-progress/slice-097-rollen-typen-gehen-mit.md) | Die Rollen-Typen gehen mit: generisch, Tool-als-Quelle, `skip-if-present` | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) |
 | [slice-098](open/slice-098-feldliste-ist-ausdruck-des-traegers.md) | Die Feldliste im Ziel ist der Ausdruck des Trägers und führt ihre Grenzen stehend | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
 | [slice-099](open/slice-099-leser-und-aufraeum-kommando.md) | Der Leser nennt seine Abdeckung zuerst, und der Bestand hat ein Aufräum-Kommando | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
 
@@ -175,7 +175,7 @@ sein negativer Ausgang nach
 Alternative F herbeiführt: einen **anderen** Träger. Nach der Emission gemessen wäre dieselbe Zahl
 ein Abriss-Trigger statt einer Konstruktions-Eingabe.
 
-**[slice-097](next/slice-097-rollen-typen-gehen-mit.md) hängt an nichts und ist einzeln nützlich.**
+**[slice-097](in-progress/slice-097-rollen-typen-gehen-mit.md) hängt an nichts und ist einzeln nützlich.**
 Die Rollen-Typen sind nicht bloß der Füllstoff für `agent.role`: die emittierten
 Workflow-Commands fahren die Rollen-Sequenz im Ziel bereits, *„was fehlt, ist der **Typ**, unter
 dem eine Rolle startbar ist"*. Ein Ziel mit Typen und ohne Träger kann seine Rollen starten; ein

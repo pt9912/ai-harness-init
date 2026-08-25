@@ -182,7 +182,7 @@ Steering-Loop-Eintrag.
   toter Verweis darin färbt sein `make gates` rot, und er kann ihn nicht heilen: das Dokument ist
   **konvergent**, ein Re-Lauf setzt es zurück. Es darf darum keine relativen Verweise tragen, die
   nur in diesem Repo aufgehen — dieselbe Falle wie bei den Rollen-Typen
-  ([slice-097](../next/slice-097-rollen-typen-gehen-mit.md) DoD 3), hier aber schärfer, weil die
+  ([slice-097](../in-progress/slice-097-rollen-typen-gehen-mit.md) DoD 3), hier aber schärfer, weil die
   `skip-if-present`-Ausweichmöglichkeit fehlt.
 - **Ein frischer Klon hat den Träger nicht, aber das Dokument schon.** Es ist committet, er ist
   gitignored. Der Leser findet dann eine Feldliste über einer Erfassung, die gerade nicht läuft —
