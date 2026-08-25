@@ -373,9 +373,11 @@ Architect-Lauf nachgezogen.
 **Was die Reparatur toter Verweise ab jetzt heißt: die Adresse wird ersetzt, nicht die Klammer
 entfernt.** Wird `[label](pfad)` zu `` `pfad` ``, ist der Doku-Gate wieder grün und die Referenz
 weiterhin tot — der `links`-Modul greift auf die Klammer-Form, und der über `docs/` und `harness/`
-aktive `codepaths`-Modul (`sed -n '/^codepaths:/,/^ *roots:/p' .d-check.yml`) hat diese Zeilen
-nicht gemeldet: `make docs-check` → `372 Datei(en) geprüft, 0 Befund(e)`, während unter seinen
-Wurzeln Pfade als Inline-Code standen, die es nicht gibt. Wo keine neue Adresse existiert, gehört
+aktive `codepaths`-Modul (`sed -n '/^codepaths:/,/^ *roots:/p' .d-check.yml`) meldet diese Zeilen
+nicht: `make docs-check` → `372 Datei(en) geprüft, 0 Befund(e)`, während unter der Wurzel
+`harness/` weiterhin ein Pfad als Inline-Code steht, den es nicht gibt
+(`grep -n 'cmd/span-emit' harness/conventions.md` → **1** Zeile; `ls -d cmd/span-emit` → Exit 2).
+Wo keine neue Adresse existiert, gehört
 die **Aussage** umgeschrieben; wo eine existiert, gehört sie eingesetzt. Ein Sensor für diese Form
 ist hier **nicht** vergeben, und der Grund ist die Abgrenzung: Inline-Code trägt in diesen
 Artefakten auch Kommandos, Feldnamen, Marker und `make`-Ziele; ein Wächter, der Pfade darunter
