@@ -36,11 +36,44 @@ chmod 755 "$tmprepo_cpphex"
 # 0700-Mount nicht traversieren. Ein echtes Adopter-Git-Repo hat 0755.
 chmod 755 "$tmprepo"
 
+# slice-097 (LH-FA-10 / ADR-0022 Festlegung 3): DIE ROLLEN-TYPEN LIEGEN IM ZIEL.
+# Sechs Dateien unter .claude/agents/, je eine kanonische Rolle, und jede fuehrt ihren
+# Rollen-Namen im Frontmatter — dieser Name ist der Vertrag zur Rollen-Achse: die
+# Erfassung besetzt sie nur bei einer der sechs, jeder andere Wert ergibt ein leeres
+# Feld.
+#
+# WOZU DIESE PRUEFUNG NEBEN DEM `make gates` DES ZIELS: jener Lauf scannt die Typ-Dateien
+# mit (die emittierte .d-check.yml faehrt links/anchors ueber roots: ["."]) und faellt
+# ueber einem toten relativen Verweis darin. Ueber einem LEEREN .claude/agents/ faellt er
+# nicht — er bliebe gruen und pruefte nichts. Erst die Anwesenheit macht sein Gruen zur
+# Aussage ueber die Typ-Dateien.
+#
+# Aufgerufen fuer BEIDE Bootstrap-Varianten: die Rollen-Sequenz ist sprach-agnostisch,
+# und ein Zahn in nur einer Variante belegte das nicht.
+rollen_typen_im_ziel() {
+	local repo="$1" label="$2" role f
+	for role in planner architect implementer reviewer verifier validator; do
+		f="$repo/.claude/agents/$role.md"
+		if [ ! -f "$f" ]; then
+			echo "full-smoke: FEHLER — Rollen-Typ fehlt ($label): .claude/agents/$role.md (slice-097)" >&2
+			exit 1
+		fi
+		if ! grep -qxF "name: $role" "$f"; then
+			echo "full-smoke: FEHLER — Rollen-Typ ($label) ohne 'name: $role' im Frontmatter — die Rollen-Achse bliebe leer (slice-097)" >&2
+			exit 1
+		fi
+	done
+	echo "full-smoke: Rollen-Typen im Ziel ($label): 6 kanonische Typen unter .claude/agents/, je mit ihrem Namen im Kopf."
+}
+
 echo "full-smoke: 1/3 natives Release-Binary auf den Host extrahieren (make artifact) ..."
 make artifact DEST="$tmpbin" GO_VERSION="$GO_VERSION"
 
 echo "full-smoke: 2/3 Bootstrap (--lang go --name full-smoke) in ein leeres tmp-Repo ..."
 ( cd "$tmprepo" && "$tmpbin/ai-harness-init" --lang go --name full-smoke )
+
+# Vor dem Gate-Lauf, damit dessen Gruen eine Aussage ueber die Typ-Dateien ist (slice-097).
+rollen_typen_im_ziel "$tmprepo" "--lang go"
 
 # slice-031: ein echter Adopter bootstrappt IN sein git-Repo. Der Gate-Nachweis
 # (record-gates -> working-tree-hash, jetzt letztes gates-Prerequisite) braucht
@@ -252,6 +285,9 @@ fi
 # tmp-Repo (der --lang-go-Lauf oben bleibt der One-Shot).
 echo "full-smoke: doc-only Bootstrap (OHNE --lang) in ein zweites tmp-Repo ..."
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" --name full-smoke-doc )
+# slice-097, zweite Variante: die Rollen-Typen sind sprach-agnostisch und UNBEDINGT —
+# sie haengen an keinem Laufzeit-Ausgang. Auch hier vor dem Gate-Lauf.
+rollen_typen_im_ziel "$tmprepo_doc" "sprachlos"
 git init -q "$tmprepo_doc"
 echo "full-smoke: doc-only im Ziel: make -j gates (docs-check + baseline-verify + record-gates, KEIN Code-Gate) ..."
 doc_rc=0
@@ -846,9 +882,16 @@ grep -F -- 'lateral-adapter' <<<"$lateral_out" | sed -n '1,2s/^/full-smoke:   /p
 # slice-038 (ADR-0007 Idempotenz-Klassifikation): ein ZWEITER Init-Lauf ist IDEMPOTENT
 # (Exit 0 statt Kollisions-Refuse). Konvergente Dateien (tool-Infra) werden kanonisch neu
 # geschrieben (heilen Drift); skip-if-present-Dateien (Adopter-Boden) bleiben unberuehrt.
-echo "full-smoke: Idempotenz — README driften (skip-if-present) + Makefile driften (konvergent), dann 2. Init-Lauf ..."
+echo "full-smoke: Idempotenz — README + Rollen-Typ driften (skip-if-present) + Makefile driften (konvergent), dann 2. Init-Lauf ..."
 printf '\n# adopter-gewachsen\n' >> "$tmprepo/README.md"   # skip-if-present: MUSS bleiben
 readme_before="$(cat "$tmprepo/README.md")"
+# slice-097 (ADR-0022 Festlegung 4, ADR-0007 Festlegung 3): ein Rollen-Typ ist ein Text,
+# den der Adopter an sein Repo anpasst — dieselbe Klasse wie die Commands. Ein Re-Lauf,
+# der ihn zurueckschriebe, naehme dem Adopter genau die Anpassung, fuer die die Klasse
+# gewaehlt ist. Der eingefuegte Satz steht am Ort einer echten Adaption (unter dem
+# ANPASSEN-Marker), nicht in einer Nebendatei.
+printf '\nDeine Rolle liest zusaetzlich das Betriebshandbuch.\n' >> "$tmprepo/.claude/agents/planner.md"
+agent_before="$(cat "$tmprepo/.claude/agents/planner.md")"
 printf '\n# drift\n' >> "$tmprepo/Makefile"                # konvergent: MUSS geheilt werden
 idem_rc=0
 ( cd "$tmprepo" && "$tmpbin/ai-harness-init" --lang go --name full-smoke ) || idem_rc=$?
@@ -858,6 +901,10 @@ if [ "$idem_rc" -ne 0 ]; then
 fi
 if [ "$(cat "$tmprepo/README.md")" != "$readme_before" ]; then
 	echo "full-smoke: FEHLER — 2. Lauf clobberte README.md (skip-if-present verletzt, slice-038)." >&2
+	exit 1
+fi
+if [ "$(cat "$tmprepo/.claude/agents/planner.md")" != "$agent_before" ]; then
+	echo "full-smoke: FEHLER — 2. Lauf clobberte .claude/agents/planner.md (skip-if-present verletzt, slice-097)." >&2
 	exit 1
 fi
 if grep -q '# drift' "$tmprepo/Makefile"; then
@@ -895,3 +942,4 @@ echo "full-smoke: OK — ARCH-GATE KONDITIONAL (slice-046/LH-FA-07): --arch hexs
 echo "full-smoke: OK — ARCH-GATE ROBUST (slice-046, Review F-1/F-2): ZWEI hexSlice-Module koexistieren (kein doppelter include, kein 'overriding recipe', beide Gates laufen), und mit gesetztem A_CHECK_IMAGE (Adopter-Override) bleibt das Gate verdrahtet und gruen."
 echo "full-smoke: OK — DRITTES LAYOUT (slice-058/ADR-0010): add-lang go apps/hexagonal --arch hexagonal dropt core/port/adapter{driven,driving} in den Pfaden der Familien-Konvention (nicht das --print-config-Geruest), make -j gates uebersetzt+lintet sie real und faehrt ihr a-check mit; cpp+hexagonal ist fail-fast Exit 2. ZAEHNE mit Regel-NAMEN: core->driven = app-impurity, driving->driven = lateral-adapter."
 echo "full-smoke: OK — IDEMPOTENT (slice-038): 2. Init-Lauf Exit 0, README (skip-if-present) unberuehrt, Makefile-Drift (konvergent) geheilt; sprachloser Re-Lauf prunt kein add-lang-Fragment (kein Prune)."
+echo "full-smoke: OK — ROLLEN-TYPEN (slice-097/LH-FA-10): 6 kanonische Typen unter .claude/agents/ in BEIDEN Bootstrap-Varianten, je mit ihrem Namen im Kopf; das make gates des Ziels laeuft ueber ihnen gruen; der 2. Init-Lauf laesst einen adopter-geaenderten Typ unberuehrt (skip-if-present)."

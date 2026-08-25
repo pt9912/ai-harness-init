@@ -354,11 +354,11 @@ func bootstrap(targetDir, lang, name, arch string, src sources, stdout, stderr i
 }
 
 // emitAll fuehrt die Emit-Schritte (Phase 3) aus: Doc-Gate, Verifier, Templates, README,
-// Durchsetzung, Commands und den Aggregator (immer) — und nur mit Sprache die Skelett-
-// Verdrahtung. Jeder Emitter traegt seine Idempotenz-Klasse (slice-038): konvergent
-// (Enforce/Makefile/BaselineVerify/DocGate-Fragmente) oder skip-if-present (Templates/
-// README/Commands/Skelett). Erste fehlgeschlagene Stufe gewinnt; bootstrap druckt den
-// Fehler einmal. DocGate zuerst (Docker-Lauf = reales Fehlerrisiko).
+// Durchsetzung, Commands, Rollen-Typen und den Aggregator (immer) — und nur mit Sprache
+// die Skelett-Verdrahtung. Jeder Emitter traegt seine Idempotenz-Klasse (slice-038):
+// konvergent (Enforce/Makefile/BaselineVerify/DocGate-Fragmente) oder skip-if-present
+// (Templates/README/Commands/Rollen-Typen/Skelett). Erste fehlgeschlagene Stufe gewinnt;
+// bootstrap druckt den Fehler einmal. DocGate zuerst (Docker-Lauf = reales Fehlerrisiko).
 //
 // notice ist der Kanal fuer einen Schritt, der AUSFAELLT, ohne den Bootstrap zu
 // beenden — heute nur die Erfassungsschicht (ADR-0022 Festlegung 5a): scheitert die
@@ -390,6 +390,13 @@ func emitAll(targetDir, skelDir, tag, name, lang, version, arch string, hasLang 
 	}
 	// Workflow-Commands (slice-033): die Slash-Command-Anleitung, sprach-agnostisch.
 	if err := emit.Commands(targetDir); err != nil {
+		return err
+	}
+	// Rollen-Typen (slice-097, LH-FA-10 / ADR-0022 Festlegung 3): die sechs kanonischen
+	// Typen unter .claude/agents/, unter denen eine Rolle startbar ist. UNBEDINGT und
+	// sprach-agnostisch — sie haengen an keinem Laufzeit-Ausgang, anders als Traeger,
+	// Wrapper und Hook-Eintrag aus Enforce oben.
+	if err := emit.Agents(targetDir); err != nil {
 		return err
 	}
 	// Aggregator-Root-Makefile (slice-035, Init-Emitter) — IMMER, auch sprachlos: sie
