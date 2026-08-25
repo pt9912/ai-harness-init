@@ -456,12 +456,21 @@ func main() {
 	// tragend, nicht Stil: `span-emit` traegt seine Klemme selbst (ADR-0011
 	// Festlegung 6), und was VOR ihr liegt, deckt sie nicht — der os.Getwd()-Zweig
 	// unten endet mit einer Zeile auf stderr und Exit 1, und an einem Hook waere das
-	// ein Beobachter, der ueber den Lauf mitentscheidet.
+	// ein Beobachter, der ueber den Lauf mitentscheidet. Vor dem Flag-Parsing steht
+	// der Zweig wie `add-lang` (run()): beide tragen Positionsargumente, der Init
+	// nur Flags.
 	//
-	// Vor dem Flag-Parsing wie `add-lang` (run()): beide tragen Positionsargumente,
-	// der Init nur Flags. Bewacht von
-	// test/mutations/154-unterkommando-routing-vertauscht.sh gegen
-	// TestClampSurvivesBrokenPayload.
+	// Ein Zahn bewacht hier genau eine Eigenschaft, und das ist das ROUTING: zeigt
+	// `span-emit` auf die Auswertung, faellt TestClampSurvivesBrokenPayload. Der Fall
+	// dazu ist test/mutations/154-unterkommando-routing-vertauscht.sh.
+	//
+	// GRENZE, benannt statt verschwiegen: die POSITION haelt kein Waechter. Wer
+	// diesen Block hinter os.Getwd() schiebt, laesst `make test-go` und `make
+	// span-check` gruen — gemessen am 2026-08-25 in einem eigenen Arbeitsbaum, beide
+	// Exit 0. Die Go-Tests rufen spanEmit() und run() direkt statt den Prozess, und
+	// span-check laeuft aus einem lesbaren Arbeitsverzeichnis, in dem os.Getwd() nie
+	// scheitert. Ein Zahn dafuer braeuchte einen Lauf des gebauten Binaers gegen ein
+	// GELOESCHTES Arbeitsverzeichnis — Kandidat, kein Bestand.
 	if len(os.Args) > 1 {
 		switch os.Args[1] {
 		case "span-emit":

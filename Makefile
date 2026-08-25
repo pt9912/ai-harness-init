@@ -34,7 +34,7 @@ BASELINE_TAG ?= v3.5.2
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 2af45aad2777cadf26127066c9a2dc43f7111ee2687e44fe2eceb95c6c0a1925
 
-.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims host-bin span-check span-clean span-report baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate
+.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.62.0 -> v0.62.0). Aus
@@ -252,14 +252,36 @@ span-clean: ## Span-Bestaende entfernen (ausdruecklich, kein Automatismus)
 
 # Rechnet die Token-Bilanz je Rolle aus dem Span-Bestand. Bericht, kein Gate.
 #
-# Laeuft auf dem HOST als Unterkommando des Traegers (ADR-0022 Festlegung 2), nicht
-# mehr im Container ueber einem gemounteten Bestand: es gibt keine Bau-Stufe mehr, aus
-# der er laufen koennte, und fuer einen Bericht soll niemand einen Container starten
-# muessen. Netzlos ist er dadurch nicht weniger — er liest nur den Bestand. Das
-# vorangestellte `mkdir -p` ist mit dem Container-Mount entfallen; ohne Bestand nennt
-# der Bericht seinen leeren Nenner.
+# Der Bericht selbst laeuft auf dem HOST als Unterkommando des Traegers (ADR-0022
+# Festlegung 2), nicht mehr im Container ueber einem gemounteten Bestand: es gibt keine
+# Bau-Stufe mehr, aus der er laufen koennte. Netzlos ist er dadurch nicht weniger — er
+# liest nur den Bestand.
+#
+# DER PREREQUISITE STARTET EINEN CONTAINER, und zwar immer: `host-bin` baut den Traeger
+# im gepinnten Image (ADR-0003 laesst keinen Host-Bau zu). Wer den Bericht ohne
+# Container-Start will, ruft `$(HOST_BIN) span-report` direkt — dann gilt der Traeger,
+# der liegt, statt eines frisch gebauten. Ohne Bestand nennt der Bericht seinen leeren
+# Nenner.
 span-report: host-bin ## Token-Bilanz je Rolle aus dem Span-Bestand — NICHT in gates (Bericht, kein Sensor)
 	@$(HOST_BIN) span-report
+
+# Misst den Aufschlag je Tool-Call: die Wanduhr-Zeit EINES Traeger-Aufrufs, gegen die
+# Schwelle aus ADR-0011 (50 ms im Median). Die Schuld steht als ADR-0022 Folgepflicht 9.
+#
+# MESSUNG, KEIN GATE — deshalb NICHT in `gates` und in keiner Prerequisite-Kette. Ein
+# Latenz-Gate misst auf einem geteilten Runner die Auslastung des Nachbarn mit; es waere
+# rot ohne Befund und gruen ohne Deckung.
+#
+# OHNE Prerequisite auf host-bin, aus demselben Grund wie bei span-check: gemessen wird
+# der Traeger, DER LIEGT — der, den der Hook je Tool-Call wirklich ruft —, nicht einer,
+# den die Messung sich unmittelbar davor selbst baut. Dazu kommt, dass der
+# Vergleichspunkt ein FREMDES Binary ist (der getrennte Emitter, der vor dem
+# Zusammenlegen auf einen Einstiegspunkt lief): HOOK_OVERHEAD_CMD traegt deshalb die
+# ganze Aufrufzeile, statt sie im Rezept festzuschreiben.
+HOOK_OVERHEAD_CMD ?= $(HOST_BIN) span-emit
+
+hook-overhead: ## Aufschlag je Tool-Call messen (Median, ADR-0011-Schwelle) — NICHT in gates (Messung, kein Sensor)
+	@bash harness/tools/hook-overhead.sh $(HOOK_OVERHEAD_CMD)
 
 record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh
