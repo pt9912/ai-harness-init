@@ -18,15 +18,20 @@ gezeigt, nicht als Treiber.
 `slice-066` (Token-Bilanz) · `slice-068` (Rollen-Arbeit läuft als Rolle) ·
 `slice-062` (Tool-Ebene, Entscheidung: **nur** ADR — kein CR, weil kein neues Artefakt
 ins Ziel geht und damit keine Anforderung wächst; der Wert der vierten Matrix-Zelle ist
-festgelegt, sein Ziel-Beleg bleibt Schuld der Welle). Geschnitten und offen sind
+festgelegt, sein Ziel-Beleg bleibt Schuld der Welle) ·
+[`slice-087`](../in-progress/slice-087-emittierte-doku-tische-init-invariant.md) (Tool-Ebene, Vorarbeit:
+kein emittiertes Dokument behauptet noch ein nicht Init-invariantes `make`-Ziel, in beiden
+Bootstrap-Varianten und von einem netzlosen Wächter gehalten — Eintritts-Bedingung des Belegs).
+Geschnitten und offen ist
 `slice-071` (Cache-Festlegung; die Rechnung liegt hinter dem
 Auflösungs-Trigger von [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) und ist nicht
-geschnitten) ·
-[`slice-087`](../in-progress/slice-087-emittierte-doku-tische-init-invariant.md) (Tool-Ebene, Vorarbeit:
-kein emittiertes Dokument behauptet noch ein nicht Init-invariantes `make`-Ziel — heute verletzen
-das drei Dokumente, die zwei Gate-Tabellen und der Closure-Note-Reviewer-Skill;
-Eintritts-Bedingung des Belegs);
+geschnitten);
 `slice-061`, `slice-063` und `slice-064` sind in §4 der Welle benannt, aber **nicht** geschnitten (cp-Disziplin). Ihr Lifecycle-Zustand ist ihr Verzeichnis, nicht diese Zeile.
+**Mit `slice-063` geht eine Messung, die sonst keinen Besitzer hat:** ob das Modul `targets` eine
+`make`-Nennung in Prosa außerhalb einer Tabelle überhaupt sieht
+([`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) Festlegung 4(d)). Sie entscheidet
+allein, ob `doc-tables:` den emittierten Closure-Note-Reviewer-Skill je decken **könnte**, und
+gehört an den Lauf, der den `targets:`-Block im Ziel konfiguriert.
 
 **Trigger:** Nutzer-Befund — Modul 15 ist seit `554cade` adoptiert und in keinem Block umgesetzt.
 Herleitung und die zwei Korrekturen am Schnitt stehen im Closure-Log (2026-07-28).
