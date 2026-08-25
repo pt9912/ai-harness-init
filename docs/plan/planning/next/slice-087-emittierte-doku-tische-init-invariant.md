@@ -141,7 +141,7 @@ kein Change Request nach
 [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
 (er bewegt eine Anforderung — hier bewegt sich keine), sondern die Reparatur eines Bestands gegen
 seinen eigenen Vertrag. Dieselbe Klasse wie
-[slice-073](slice-073-emittierte-doc-gate-module.md): reaktiv, aus einer Messung am Bestand.
+[slice-073](../open/slice-073-emittierte-doc-gate-module.md): reaktiv, aus einer Messung am Bestand.
 
 ### Dateien
 
@@ -256,13 +256,13 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
 - **Was dieser Slice ausdrücklich NICHT tut.** Die Doc-Gate-Konfiguration im Ziel (der
   `targets:`-Block) und die zwei Beleg-Richtungen gehören `slice-063`; die Entscheidung darüber
   `slice-062`; die zwei `codepath-missing`-Stellen der emittierten Vorlagen-Prosa gehören
-  [slice-073](slice-073-emittierte-doc-gate-module.md) — **dieselbe Klasse Befund** (eine
+  [slice-073](../open/slice-073-emittierte-doc-gate-module.md) — **dieselbe Klasse Befund** (eine
   emittierte Vorlage behauptet, was im Ziel nicht existiert) und derselbe Ausweg
   (emit-seitige Neutralisierung), aber **andere Befund-Art** und nur **eine** gemeinsame Vorlage:
   jene Stellen liegen in der emittierten AGENTS- und der emittierten Konventions-Datei, die
   Gate-Ansprüche in der AGENTS-Vorlage und der Vorlage von
   [`harness/README.md`](../../../../harness/README.md). **Der Auflösungs-Trigger von
-  [slice-073](slice-073-emittierte-doc-gate-module.md) DoD (3) fällt hier also NICHT** — wer das
+  [slice-073](../open/slice-073-emittierte-doc-gate-module.md) DoD (3) fällt hier also NICHT** — wer das
   annimmt, hakt eine fremde Nicht-Emission an einer Messung ab, die sie nicht getroffen hat.
 - **Die Migration bereits gebootstrappter Ziele bleibt offen.** Emittierte Dokumente sind
   *skip-if-present*/konvergent je nach Klasse ([`ADR-0007`](../../adr/0007-bootstrap-phasen.md));
