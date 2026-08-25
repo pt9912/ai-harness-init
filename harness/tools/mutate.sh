@@ -85,6 +85,9 @@ BACKUP=""
 # Bis prepare_isolation() sie anlegt, ist er leer; run_case laeuft NIE gegen $REPO.
 WORK=""
 ISO_ROOT=""
+# PRERUN_LOG_DIR: das mktemp-Verzeichnis, in dem der Gruen-Vorlauf sein Protokoll
+# fuehrt. Leer, bis green_prerun es anlegt; cleanup() raeumt es weg.
+PRERUN_LOG_DIR=""
 # HOST_BEFORE: Fingerabdruck der Mutations-Ziele im HOST-Baum vor dem Lauf (run_case
 # vergleicht mitten im Lauf dagegen).
 HOST_BEFORE=""
@@ -167,6 +170,28 @@ prepare_isolation() {
   printf '%s' "$dest"
 }
 
+# prepare_prerun_log legt das Verzeichnis fuer das Protokoll des Gruen-Vorlaufs an und
+# liefert den Pfad der Log-Datei darin — dasselbe mktemp-Muster, das run_case fuer sein
+# Sensor-Log benutzt, und dieselbe Ortsregel wie isolation_path: ein Ziel UNTER dem Repo
+# faellt fail-closed. Wohin `mktemp -d` zeigt, entscheidet $TMPDIR; im Repo laege das
+# Protokoll ungetrackt im Working Tree und verschoebe mitten im Lauf den
+# MR-003-Nachweis-Stempel, den harness/tools/working-tree-hash.sh ueber getrackte UND
+# untrackte Dateien rechnet.
+#
+# Ohne Zugriff auf die Globalen: das Verzeichnis traegt der Aufrufer in PRERUN_LOG_DIR
+# ein, damit cleanup() es findet. So faehrt test/mutate-driver.bats die Ortsregel, ohne
+# dass der EXIT-trap des gesourcten Treibers das Messobjekt vorher wegraeumt.
+prepare_prerun_log() {
+  local dir
+  dir="$(mktemp -d)" || return 1
+  case "$dir" in
+    "$REPO" | "$REPO"/*)
+      echo "mutate: ABBRUCH — das Vorlauf-Protokoll laege im Repo ($dir)." >&2
+      rm -rf "$dir"; return 1 ;;
+  esac
+  printf '%s' "$dir/prerun.log"
+}
+
 # require_isolated ist die fail-closed Schranke VOR jedem Zugriff auf $WORK. Ohne sie
 # haengt „run_case laeuft nie gegen $REPO" allein an der Aufruf-Reihenfolge: `cd ""` ist
 # in bash Exit 0 OHNE Wirkung, ein leeres $WORK liesse also alle `cd "$WORK"`-Stellen
@@ -185,6 +210,8 @@ cleanup() {
   # Die Isolation liegt ausserhalb des Repos: sie wegzuwerfen kann den Host-Baum
   # nicht beruehren — auch nicht bei einem Abbruch mitten in einer Mutation.
   [ -n "$ISO_ROOT" ] && rm -rf "$ISO_ROOT"
+  # Auch das Vorlauf-Protokoll liegt ausserhalb des Repos (prepare_prerun_log).
+  [ -n "$PRERUN_LOG_DIR" ] && rm -rf "$PRERUN_LOG_DIR"
   [ -n "$HAVE_LOCK" ] && rmdir "$LOCK" 2>/dev/null
   return 0
 }
@@ -256,6 +283,14 @@ failure_form() {
     *)       return 1 ;;
   esac
 }
+
+# show_tail zeigt die letzten Zeilen des Sensor-Logs $1 eingerueckt auf stderr. Das Log
+# wird gleich danach weggeraeumt, ein Pfad-Zeiger in der Meldung ginge also ins Leere —
+# die Zeilen selbst nicht (Review-Befund slice-026 N-5, zweite Haelfte von F-8).
+# Zwei Aufrufer: der Fall-Pfad in run_case und der Abbruch des Gruen-Vorlaufs. In beiden
+# ist die Meldung sonst die vollstaendige Evidenz des Laufs, und ein Exit-Code allein
+# sagt nicht, was der Sensor gesehen hat.
+show_tail() { sed -e 's/^/    | /' <(tail -n 12 "$1") >&2; }
 
 run_case() {
   local case_file="$1"
@@ -382,10 +417,6 @@ run_case() {
     restore
     return
   fi
-  # Bei einem Befund die letzten Zeilen des Sensor-Laufs zeigen: restore() loescht
-  # das Log gleich danach, und eine Ein-Zeilen-Meldung ohne Kontext ist schwer zu
-  # diagnostizieren (Review-Befund slice-026 N-5, zweite Haelfte von F-8).
-  show_tail() { sed -e 's/^/    | /' <(tail -n 12 "$out") >&2; }
   # Nur FEHLSCHLAG-Zeilen zaehlen. bats druckt jeden Testnamen AUCH beim Bestehen
   # ("ok 21 emittiert: eingelegter SYMLINK"), ein blosses grep auf den Namen war
   # damit fuer jeden bats-Fall unter allen Bedingungen erfuellt — Bedingung 4 war
@@ -393,7 +424,7 @@ run_case() {
   # Fehlschlag-Form ist eine Aussage — und sie ist je Sensor eine andere.
   if ! grep -E -- "$form" "$out" | grep -qF -- "$expect"; then
     report_fail "$name" "rot, aber '$expect' faellt nicht — falscher Grund"
-    show_tail
+    show_tail "$out"
     restore
     return
   fi
@@ -401,6 +432,48 @@ run_case() {
   printf 'mutate: ok      %-42s %s\n' "$name" "-> $expect rot"
   pass_count=$((pass_count + 1))
   restore
+}
+
+# green_prerun faehrt jeden uebergebenen Modus EINMAL, bevor die erste Mutation laeuft
+# (Review-Befund slice-026 F-6). Ohne ihn wuerde jeder Fall auf einem bereits roten
+# Baum "bestehen" — aus dem falschen Grund. Der Fall ist nicht theoretisch: waehrend des
+# Reviews faerbte ein paralleler mutate-Lauf im selben Arbeitsbaum die Tests rot.
+# Je Sensor, den irgendein Fall benutzt — sonst liefe ein smoke-Fall auf einem bereits
+# roten smoke los und "bestuende".
+#
+# Der Lauf jedes Modus geht in ein Protokoll, und der Abbruch zeigt dessen letzte
+# Zeilen. Ein Vorlauf, der beide Stroeme des Sensors verwirft, laesst als Evidenz einen
+# Exit-Code und einen Satz zurueck; welcher Zustand den Sensor rot gemacht hat, steht
+# dann in keinem Protokoll (test/mutate-driver.bats haelt beide Stroeme).
+#
+# Ausser $WORK und dieser Liste braucht die Funktion keinen Zustand aus main — so faehrt
+# test/mutate-driver.bats sie mit einem make-Stub auf $PATH, ohne echten Sensor-Lauf.
+green_prerun() {
+  local m log
+  log="$(prepare_prerun_log)" || return 1
+  PRERUN_LOG_DIR="$(dirname "$log")"
+  for m in "$@"; do
+    # Erst die Zulassung, dann der Lauf: ein vertippter Modus liefe sonst als
+    # `make <tippfehler>` und wuerde als "Baum ist rot" gemeldet — eine
+    # irrefuehrende Diagnose fuer einen Kopf-Fehler (Review-Befund slice-026 N-4).
+    if ! failure_form "$m" >/dev/null; then
+      echo "mutate: ABBRUCH — unbekannter '# verify: $m' in test/mutations/." >&2
+      echo "  Erlaubt ist, wofuer failure_form ein Fehlschlag-Muster kennt." >&2
+      return 1
+    fi
+    echo "mutate: Gruen-Vorlauf make $m (muss VOR der ersten Mutation gruen sein)"
+    if ! ( cd "$WORK" && make "$m" ) >"$log" 2>&1; then
+      # Gemessen ist dieser eine Lauf: dieser Modus, diese Kopie, keine Mutation,
+      # Exit != 0. Woran er lag, steht in den Zeilen darunter — die Meldung nennt es
+      # nicht, weil der Treiber es nicht misst.
+      echo "mutate: ABBRUCH — make $m ist in der isolierten Kopie ohne Mutation rot." >&2
+      echo "  Ein Fall gegen diesen Sensor waere danach ebenfalls rot, aber nicht" >&2
+      echo "  wegen SEINER Mutation." >&2
+      echo "  Die letzten Zeilen von make $m:" >&2
+      show_tail "$log"
+      return 1
+    fi
+  done
 }
 
 # Hauptteil gekapselt, damit test/mutate-driver.bats die Funktionen SOURCEN
@@ -456,31 +529,15 @@ main() {
   require_isolated || exit 1
   echo "mutate: isolierte Kopie unter $WORK — der Host-Baum wird NICHT veraendert."
 
-  # GRUEN-VORLAUF vor der ersten Mutation (Review-Befund slice-026 F-6). Ohne ihn
-  # wuerde jeder Fall auf einem bereits roten Baum "bestehen" — aus dem falschen
-  # Grund. Der Fall ist nicht theoretisch: waehrend des Reviews faerbte ein
-  # paralleler mutate-Lauf im selben Arbeitsbaum die Tests rot.
-  # Je Sensor, den irgendein Fall benutzt — sonst liefe ein smoke-Fall auf einem
-  # bereits roten smoke los und "bestuende".
-  modes="$(sed -n 's/^# verify: //p' "$CASES_DIR"/*.sh | LC_ALL=C sort -u)"
-  [ -n "$modes" ] || modes=""
-  for m in test $modes; do
-    # Erst die Zulassung, dann der Lauf: ein vertippter Modus liefe sonst als
-    # `make <tippfehler>` und wuerde als "Baum ist rot" gemeldet — eine
-    # irrefuehrende Diagnose fuer einen Kopf-Fehler (Review-Befund slice-026 N-4).
-    if ! failure_form "$m" >/dev/null; then
-      echo "mutate: ABBRUCH — unbekannter '# verify: $m' in test/mutations/." >&2
-      echo "  Erlaubt ist, wofuer failure_form ein Fehlschlag-Muster kennt." >&2
-      exit 1
-    fi
-    echo "mutate: Gruen-Vorlauf make $m (muss VOR der ersten Mutation gruen sein)"
-    if ! ( cd "$WORK" && make "$m" ) >/dev/null 2>&1; then
-      echo "mutate: ABBRUCH — make $m ist schon ohne Mutation rot." >&2
-      echo "  Auf rotem Baum ist jeder Fall bedeutungslos: er waere rot, aber nicht" >&2
-      echo "  wegen SEINER Mutation. Erst den Baum gruen bekommen." >&2
-      exit 1
-    fi
-  done
+  # Die Modus-Liste des Gruen-Vorlaufs, als Array an green_prerun. `test` steht immer
+  # vorn: jeder Fall ohne eigenen `# verify:`-Kopf bekommt seinen Sensor von
+  # narrow_sensor, und dessen Wertebereich {test, test-go, test-bats} liegt darin.
+  local -a mode_list=(test)
+  local mode
+  while IFS= read -r mode; do
+    if [ -n "$mode" ]; then mode_list+=("$mode"); fi
+  done < <(sed -n 's/^# verify: //p' "$CASES_DIR"/*.sh | LC_ALL=C sort -u)
+  green_prerun "${mode_list[@]}" || exit 1
 
   echo "mutate: ${#cases[@]} Faelle (je ein voller make-test-Zyklus, das dauert)"
   for c in "${cases[@]}"; do

@@ -186,6 +186,55 @@ setup() {
   [ "$status" -ne 0 ]
 }
 
+# --- Gruen-Vorlauf (slice-100) ------------------------------------------------
+# Bricht der Vorlauf ab, ist seine Meldung die vollstaendige Evidenz des Laufs: das Log
+# des Sensors ist danach weg, und ein zweiter Lauf stellt den Zustand nicht her, der ihn
+# rot gemacht hat. Sie traegt darum die letzten Zeilen des roten Modus.
+#
+# Geprueft werden BEIDE Stroeme, weil `>/dev/null 2>&1` zwei Umleitungen sind: ein
+# Gegenbeispiel fuer eine von beiden liesse offen, ob der andere Strom weiter
+# verschwindet. Bei `make full-smoke` steht die tragende Zeile auf stderr, der Kontext
+# davor auf stdout — wer nur einen faengt, faengt die halbe Diagnose.
+@test "driver: der abgebrochene Gruen-Vorlauf zeigt stdout UND stderr des roten Modus" {
+  local iso stub
+  iso="$(mktemp -d)"; stub="$iso/bin"
+  mkdir -p "$iso/kopie" "$stub"
+  # Ein make-Stub statt eines echten Sensor-Laufs: er druckt je eine unterscheidbare
+  # Marke in jeden Strom und faellt. So kostet der Fall keinen Docker-Lauf und trennt
+  # die zwei Stroeme sauber.
+  cat >"$stub/make" <<'STUB'
+#!/usr/bin/env bash
+printf '%s\n' 'VORLAUF-MARKE-STDOUT'
+printf '%s\n' 'VORLAUF-MARKE-STDERR' >&2
+exit 1
+STUB
+  chmod +x "$stub/make"
+  run env "PATH=$stub:$PATH" bash -c "source '$DRIVER' 2>/dev/null || true
+    WORK='$iso/kopie'
+    green_prerun test"
+  rm -rf "$iso"
+  [ "$status" -ne 0 ]
+  grep -qF 'VORLAUF-MARKE-STDOUT' <<<"$output"
+  grep -qF 'VORLAUF-MARKE-STDERR' <<<"$output"
+}
+
+# Das Protokoll des Vorlaufs liegt AUSSERHALB des Repos — dieselbe Ortsregel wie fuer
+# die isolierte Kopie und aus demselben Grund: harness/tools/working-tree-hash.sh rechnet
+# den MR-003-Stempel ueber getrackte UND untrackte Dateien, und der Vorlauf schreibt sein
+# Log mitten im Lauf. Der Fingerabdruck aus Bedingung 5 faengt das nicht — er deckt die
+# Mutations-Zieldateien, nicht neue Dateien im Arbeitsbaum.
+@test "driver: das Protokoll des Gruen-Vorlaufs liegt AUSSERHALB des Repos" {
+  local log dir
+  log="$(bash -c "source '$DRIVER' 2>/dev/null || true; prepare_prerun_log")"
+  [ -n "$log" ]
+  case "$log" in
+    "$REPO" | "$REPO"/*) return 1 ;;   # im Repo -> Befund
+  esac
+  dir="$(dirname "$log")"
+  [ -d "$dir" ]
+  rm -rf "$dir"
+}
+
 @test "driver: das smoke-Muster trifft Fehlschlag-Zeilen, NICHT Fortschritts-Zeilen" {
   local form
   form="$(bash -c "source '$DRIVER' 2>/dev/null || true; failure_form smoke")"
