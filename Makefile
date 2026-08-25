@@ -34,7 +34,7 @@ BASELINE_TAG ?= v3.5.2
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 2af45aad2777cadf26127066c9a2dc43f7111ee2687e44fe2eceb95c6c0a1925
 
-.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims span-emit-build span-check span-clean span-report baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate
+.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims host-bin span-check span-clean span-report baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.62.0 -> v0.62.0). Aus
@@ -212,33 +212,37 @@ freshness-cpp: ## Neueres ubuntu-LTS als DefaultCppVersion melden (read-only, Qu
 	@pinned=$$(sed -n 's/.*DefaultCppVersion = "\([0-9.]*\)".*/\1/p' internal/gen/cpp.go); \
 	  CPP_PINNED="$$pinned" bash harness/tools/cpp-freshness.sh
 
-# Der Span-Emitter ist ein HOST-Binary: der Hook ruft ihn je Tool-Call, ein
-# Container-Start je Aufruf waere um zwei Groessenordnungen teurer als der Emitter
-# selbst. Gebaut wird er trotzdem Docker-only im gepinnten Image (ADR-0003) und
-# danach herausgeholt, wie bei `make artifact`. Er liegt im gitignorierten
-# Zustands-Bereich, damit er den working-tree-hash nicht verschiebt (MR-003).
-SPAN_BIN := .harness/state/bin/span-emit
+# Der Traeger ist ein HOST-Binary: der Hook ruft ihn je Tool-Call, ein Container-Start
+# je Aufruf waere um zwei Groessenordnungen teurer als der Schreiber selbst. Gebaut
+# wird er trotzdem Docker-only im gepinnten Image (ADR-0003) und danach herausgeholt,
+# wie bei `make artifact`. Er liegt im gitignorierten Zustands-Bereich, damit er den
+# working-tree-hash nicht verschiebt (MR-003).
+#
+# Es ist das PRODUKT-Binary, nicht ein zweites daneben (ADR-0022 Festlegung 2):
+# Schreiber und Auswertung sind seine Unterkommandos, und der Hook dieses Repos ruft
+# damit denselben Einstiegspunkt, den ein Zielrepo bekommt.
+HOST_BIN := .harness/state/bin/ai-harness-init
 
-# Plattform des Aufrufers, abgeleitet fuer den Bau des Emitters: er laeuft auf dem
+# Plattform des Aufrufers, abgeleitet fuer den Bau des Traegers: er laeuft auf dem
 # HOST, gebaut wird er im gepinnten Linux-Image. Ohne diese Ableitung entstuende
 # immer ein Linux-ELF, und `make gates` waere auf einem macOS-Host rot ohne
 # inhaltlichen Defekt. Dieselben Schalter wie die Plattform-Matrix (LH-QA-04), nur
 # auf genau eine Plattform gerichtet.
-SPAN_OS   := $(shell uname -s | tr 'A-Z' 'a-z')
-SPAN_ARCH := $(shell uname -m | sed -e 's/^x86_64$$/amd64/' -e 's/^aarch64$$/arm64/')
+HOST_OS   := $(shell uname -s | tr 'A-Z' 'a-z')
+HOST_ARCH := $(shell uname -m | sed -e 's/^x86_64$$/amd64/' -e 's/^aarch64$$/arm64/')
 
-span-emit-build: ## Span-Emitter fuer die HOST-Plattform bauen — Docker-only (ADR-0003)
+host-bin: ## Traeger (Produkt-Binary) fuer die HOST-Plattform in den Zustands-Bereich legen — Docker-only (ADR-0003)
 	docker build --build-arg GO_VERSION=$(GO_VERSION) \
-		--build-arg TARGET_OS=$(SPAN_OS) --build-arg TARGET_ARCH=$(SPAN_ARCH) \
-		--target span -t ai-harness-init:span .
-	@bash harness/tools/artifact-copy.sh ai-harness-init:span "$(dir $(SPAN_BIN))" "$(notdir $(SPAN_BIN))" /out/span-emit
+		--build-arg TARGET_OS=$(HOST_OS) --build-arg TARGET_ARCH=$(HOST_ARCH) \
+		--target build -t ai-harness-init:host .
+	@bash harness/tools/artifact-copy.sh ai-harness-init:host "$(dir $(HOST_BIN))" "$(notdir $(HOST_BIN))"
 
-# OHNE Prerequisite auf span-emit-build, und das ist tragend: mit ihm koennte das
-# Ziel den Fehlt-Fall, den es prueft, nie melden — der Bau liefe unmittelbar davor.
-# Einzeln gefahren misst es wirklich, ob der Emitter da ist. In `gates` steht der
-# Bau als eigenes Glied davor, dort gilt also beides: vorhanden UND funktionsfaehig.
-span-check: ## Emitter vorhanden UND funktionsfaehig (der Fehlt-Fall) — IN gates
-	@bash harness/tools/span-check.sh "$(SPAN_BIN)"
+# OHNE Prerequisite auf host-bin, und das ist tragend: mit ihm koennte das Ziel den
+# Fehlt-Fall, den es prueft, nie melden — der Bau liefe unmittelbar davor. Einzeln
+# gefahren misst es wirklich, ob der Traeger da ist. In `gates` steht der Bau als
+# eigenes Glied davor, dort gilt also beides: vorhanden UND funktionsfaehig.
+span-check: ## `span-emit` vorhanden UND funktionsfaehig (der Fehlt-Fall) — IN gates
+	@bash harness/tools/span-check.sh "$(HOST_BIN)"
 
 # Aufgeraeumt wird ausdruecklich, nie nebenbei (ADR-0011 Festlegung 3): ob eine
 # andere Sitzung noch laeuft, ist nicht entscheidbar — also raeumt niemand fremden
@@ -247,11 +251,15 @@ span-clean: ## Span-Bestaende entfernen (ausdruecklich, kein Automatismus)
 	@rm -rf .harness/state/spans && echo "span-clean: .harness/state/spans entfernt"
 
 # Rechnet die Token-Bilanz je Rolle aus dem Span-Bestand. Bericht, kein Gate.
-# Bestand read-only gemountet, netzlos; laeuft auch ueber leerem Verzeichnis.
-span-report: ## Token-Bilanz je Rolle aus dem Span-Bestand — NICHT in gates (Bericht, kein Sensor)
-	@mkdir -p .harness/state/spans
-	@docker build --build-arg GO_VERSION=$(GO_VERSION) --target report -t ai-harness-init:report . >/dev/null
-	@docker run --rm --network none -v "$(CURDIR)/.harness/state/spans:/spans:ro" ai-harness-init:report
+#
+# Laeuft auf dem HOST als Unterkommando des Traegers (ADR-0022 Festlegung 2), nicht
+# mehr im Container ueber einem gemounteten Bestand: es gibt keine Bau-Stufe mehr, aus
+# der er laufen koennte, und fuer einen Bericht soll niemand einen Container starten
+# muessen. Netzlos ist er dadurch nicht weniger — er liest nur den Bestand. Das
+# vorangestellte `mkdir -p` ist mit dem Container-Mount entfallen; ohne Bestand nennt
+# der Bericht seinen leeren Nenner.
+span-report: host-bin ## Token-Bilanz je Rolle aus dem Span-Bestand — NICHT in gates (Bericht, kein Sensor)
+	@$(HOST_BIN) span-report
 
 record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh
@@ -259,4 +267,4 @@ record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
 # Die Reihenfolge ist tragend: baseline-verify als ERSTER Prerequisite — steht die
 # vendored Baseline nicht, ist jede Aussage der Folge-Gates über sie wertlos.
 # record-gates als LETZTER — der Nachweis entsteht nur nach grünen Gates (MR-002).
-gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims span-emit-build span-check record-gates ## alle aktuell lauffähigen Gates + Nachweis
+gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims host-bin span-check record-gates ## alle aktuell lauffähigen Gates + Nachweis

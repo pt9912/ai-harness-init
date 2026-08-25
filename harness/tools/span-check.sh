@@ -1,33 +1,40 @@
 #!/usr/bin/env bash
 # span-check.sh — Gate zum FEHLT-FALL der Telemetrie-Erfassung (slice-059).
 #
-# WARUM ES DIESES GATE GIBT. Der Emitter ist ein KOMPILIERTES Artefakt, und ein
+# WARUM ES DIESES GATE GIBT. Der Schreiber ist ein KOMPILIERTES Artefakt, und ein
 # solches kann fehlen — auf einem frischen Checkout, nach `make clean`, nach einem
 # Wechsel der Plattform. Dann entsteht GAR KEIN Strom, und genau das sieht die
 # Folgenummer prinzipiell nicht: sie macht Luecken sichtbar, indem eine Nummer
-# beansprucht und die Zeile dann vermisst wird — wo nie ein Emitter lief, wird auch
+# beansprucht und die Zeile dann vermisst wird — wo nie ein Schreiber lief, wird auch
 # nie eine beansprucht. Der stille TOTALausfall ist damit schlimmer als der
 # Teilverlust, gegen den die Nummern eingefuehrt wurden. Dieses Gate macht aus ihm
 # ein rotes Gate.
 #
+# GEPRUEFT WIRD DER TRAEGER MIT SEINEM UNTERKOMMANDO. Der Schreiber ist
+# `<traeger> span-emit` (ADR-0022 Festlegung 2) — derselbe Einstiegspunkt, den der Hook
+# dieses Repos ruft und den ein Zielrepo bekommt. Das Argument ist deshalb der Pfad des
+# TRAEGERS; das Unterkommando steht hier, weil es der Gegenstand der Pruefung ist und
+# nicht die Wahl des Aufrufers.
+#
 # WAS ES ZUSICHERT, GENAU. Einzeln gefahren (`make span-check`) meldet es einen
-# fehlenden Emitter rot — das ist der Fehlt-Fall. In `make gates` steht
-# `span-emit-build` als eigenes Glied DAVOR; die Zusicherung dort lautet also: nach
-# einem Gate-Lauf ist der Emitter vorhanden UND belegt funktionsfaehig. Sie lautet
-# NICHT "ein Gate-Lauf meldet den fehlenden Emitter" — das kann er nicht, weil er ihn
-# unmittelbar vorher baut. Die frueher hier stehende Fassung liess das Gate von seinem
-# eigenen Bau abhaengen und behauptete trotzdem das Melden (Review-Befund MEDIUM-1).
+# fehlenden Traeger rot — das ist der Fehlt-Fall. In `make gates` steht `host-bin` als
+# eigenes Glied DAVOR; die Zusicherung dort lautet also: nach einem Gate-Lauf ist der
+# Schreiber vorhanden UND belegt funktionsfaehig. Sie lautet NICHT "ein Gate-Lauf
+# meldet den fehlenden Schreiber" — das kann er nicht, weil er ihn unmittelbar vorher
+# baut. Die frueher hier stehende Fassung liess das Gate von seinem eigenen Bau
+# abhaengen und behauptete trotzdem das Melden (Review-Befund MEDIUM-1).
 #
 # ES PRUEFT DREI DINGE, und das dritte ist der Grund, warum es hier und nicht in
 # einem Go-Test steht:
 #   1. Das Binary ist da und ausfuehrbar.
-#   2. Es erzeugt fuer eine synthetische Payload einen Span mit den Pflichtfeldern,
-#      endet mit 0 und schreibt nichts auf stdout (ADR-0011 Festlegung 6).
+#   2. Sein Unterkommando `span-emit` erzeugt fuer eine synthetische Payload einen
+#      Span mit den Pflichtfeldern, endet mit 0 und schreibt nichts auf stdout
+#      (ADR-0011 Festlegung 6).
 #   3. Der real geschriebene Pfad ist von git IGNORIERT — gemessen mit
 #      `git check-ignore` am echten Repo, nicht an einer Textstelle. Ein Span im
 #      getrackten Baum verschoebe den working-tree-hash bei jedem Tool-Call, und der
 #      Stop-Hook blockierte sich selbst (MR-003, Review-Befund MEDIUM-4). Die andere
-#      Haelfte dieser Eigenschaft — dass der Emitter nur dorthin schreibt — misst
+#      Haelfte dieser Eigenschaft — dass der Schreiber nur dorthin schreibt — misst
 #      TestSpansLandInStateDir.
 #      GRENZE, benannt statt verschwiegen: diese dritte Pruefung ist selbst UNBEWACHT.
 #      Ein Mutations-Fall kann sie nicht fangen, weil das ENTFERNEN einer Pruefung den
@@ -37,12 +44,12 @@
 #      (Review Runde 2 zu HIGH-4). Ein echter Waechter braeuchte einen Lauf gegen ein
 #      Repo, dessen .gitignore den Ablageort NICHT deckt — Kandidat, kein Bestand.
 #
-# PLATTFORM: der Emitter wird FUER DEN HOST gebaut (`make span-emit-build` leitet
-# GOOS/GOARCH aus `uname` ab und reicht sie ins gepinnte Linux-Image). Eine fruehere
-# Fassung baute ohne die Schalter, erzeugte also immer ein Linux-ELF, und dieses Gate
-# waere auf einem macOS-Host mit "exec format error" rot gewesen — ohne inhaltlichen
-# Defekt (Review-Befund MEDIUM-2). Die Meldung unten nennt diesen Fall trotzdem
-# ausdruecklich: bleibt eine Plattform-Kombination uebrig, soll der Lauf nicht raten.
+# PLATTFORM: der Traeger wird FUER DEN HOST gebaut (`make host-bin` leitet GOOS/GOARCH
+# aus `uname` ab und reicht sie ins gepinnte Linux-Image). Eine fruehere Fassung baute
+# ohne die Schalter, erzeugte also immer ein Linux-ELF, und dieses Gate waere auf einem
+# macOS-Host mit "exec format error" rot gewesen — ohne inhaltlichen Defekt
+# (Review-Befund MEDIUM-2). Die Meldung unten nennt diesen Fall trotzdem ausdruecklich:
+# bleibt eine Plattform-Kombination uebrig, soll der Lauf nicht raten.
 #
 # GEMESSEN am 2026-07-29, weil "die Schalter sind gesetzt" auf einem Linux-Host nichts
 # beweist — mit und ohne sie entsteht dort dasselbe Binary:
@@ -55,14 +62,14 @@
 set -euo pipefail
 
 BIN="${1:-}"
-[ -n "$BIN" ] || { echo "span-check: Aufruf: span-check.sh <pfad-zum-emitter>" >&2; exit 2; }
+[ -n "$BIN" ] || { echo "span-check: Aufruf: span-check.sh <pfad-zum-traeger>" >&2; exit 2; }
 
 cd "$(git rev-parse --show-toplevel)"
 
 fail() { echo "span-check: BEFUND — $*" >&2; exit 1; }
 
 # --- 1. Vorhanden ------------------------------------------------------------
-[ -x "$BIN" ] || fail "der Emitter fehlt oder ist nicht ausfuehrbar: $BIN (make span-emit-build)"
+[ -x "$BIN" ] || fail "der Traeger fehlt oder ist nicht ausfuehrbar: $BIN (make host-bin)"
 
 # --- 2. Funktionsfaehig ------------------------------------------------------
 # Eigener Strom-Name, damit der Gate-Lauf keinen echten Sitzungs-Strom anfasst.
@@ -94,13 +101,13 @@ trap 'rm -f "$file" ".harness/state/spans/$stream.seq" ".harness/state/spans/.$s
 # Here-String statt Pipe: schluepft der Emitter vor dem Lesen heraus, kostete eine
 # Pipe unter `pipefail` ein EPIPE und damit eine irrefuehrende Fehlermeldung.
 rc=0
-out="$("$BIN" <<<"$payload")" || rc=$?
+out="$("$BIN" span-emit <<<"$payload")" || rc=$?
 if [ "$rc" = 126 ]; then
-  fail "der Emitter laesst sich nicht ausfuehren (Exit 126) — gebaut fuer eine andere Plattform als diesen Host? '$(uname -s)/$(uname -m)'"
+  fail "der Traeger laesst sich nicht ausfuehren (Exit 126) — gebaut fuer eine andere Plattform als diesen Host? '$(uname -s)/$(uname -m)'"
 elif [ "$rc" != 0 ]; then
-  fail "der Emitter endete mit Exit $rc (ein Hook blockt damit den Tool-Call)"
+  fail "der Traeger endete mit Exit $rc (ein Hook blockt damit den Tool-Call)"
 fi
-[ -z "$out" ] || fail "der Emitter schrieb auf stdout — dort liegt der Entscheidungs-Kanal: $out"
+[ -z "$out" ] || fail "der Schreiber schrieb auf stdout — dort liegt der Entscheidungs-Kanal: $out"
 
 [ -s "$file" ] || fail "kein Span geschrieben ($file fehlt oder ist leer)"
 
@@ -120,4 +127,4 @@ done
 git check-ignore -q "$file" ||
   fail "der Span liegt im GETRACKTEN Baum ($file) — jeder Tool-Call verschoebe den working-tree-hash"
 
-echo "span-check: Emitter vorhanden, ein Span geschrieben, Ablageort git-ignoriert"
+echo "span-check: Traeger vorhanden, span-emit hat einen Span geschrieben, Ablageort git-ignoriert"

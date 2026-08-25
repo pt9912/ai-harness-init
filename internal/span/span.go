@@ -12,8 +12,9 @@
 //
 // ZWEI EIGENSCHAFTEN SIND NICHT VERHANDELBAR (ADR-0011 Festlegung 6): stdout bleibt
 // leer (dort liegt bei Hooks der ENTSCHEIDUNGS-Kanal) und der Exit-Code ist 0. Beides
-// stellt cmd/span-emit her — dieses Paket gibt Fehler normal zurueck, damit sie
-// TESTBAR sind, statt sie hier schon zu schlucken.
+// stellt das Unterkommando `span-emit` des Traegers her (cmd/ai-harness-init) —
+// dieses Paket gibt Fehler normal zurueck, damit sie TESTBAR sind, statt sie hier
+// schon zu schlucken.
 package span
 
 import (

@@ -108,7 +108,7 @@ steht das dabei (Modul 5 §Ziel-Form: ≤ 3;
       entscheidet …"* — Richtung: die Entscheidung **ist gefallen**, die Begründung verliert ihren
       Gegenstand; zusätzlich nennt sie einen Slice als Entscheidungs-Ort, was ohnehin keine
       haltbare Adressierung ist.
-      **(b)** [`cmd/span-report/main.go`](../../../../cmd/span-report/main.go): *„EIGENES Binary,
+      **(b)** `cmd/span-report/main.go`: *„EIGENES Binary,
       KEIN Subkommando von ai-harness-init"* — dieselbe Richtung, ebenfalls mit einem Slice als
       Entscheidungs-Ort. Die Datei verschwindet mit dem Umbau; der Satz darf nicht in das
       Unterkommando mitwandern.
@@ -144,7 +144,7 @@ deren Gegenstands-Satz nennt das Binär, das mit diesem Slice verschwindet.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | [`cmd/ai-harness-init`](../../../../cmd/ai-harness-init) — zwei Unterkommandos | update | Festlegung 2: ein Träger trägt beide, ohne dass ein zweites Artefakt entsteht |
-| [`cmd/span-emit`](../../../../cmd/span-emit) und [`cmd/span-report`](../../../../cmd/span-report) | refactor | die Klemme und der Bilanz-Einstieg wandern; die Kommentar-Köpfe wandern **nicht** mit (DoD 3) |
+| `cmd/span-emit` und `cmd/span-report` | refactor | die Klemme und der Bilanz-Einstieg wandern; die Kommentar-Köpfe wandern **nicht** mit (DoD 3) |
 | [`Dockerfile`](../../../../Dockerfile) — die Stufen `span` und `report` | refactor | Festlegung 2: die zwei Stufen entfallen. Die Plattform-Schalter der Emitter-Stufe gehören in die verbleibende Stufe, sonst bricht [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) |
 | [`Makefile`](../../../../Makefile) — `span-emit-build`, `span-check`, `span-report` | update | das Bau-Ziel verliert seinen Gegenstand; `span-report` verliert seinen Container und läuft auf dem Host |
 | [`.claude/settings.json`](../../../../.claude/settings.json) und [`.claude/hooks`](../../../../.claude/hooks) | update | der Hook dieses Repos ruft denselben Einstiegspunkt wie das Ziel — die Sache, die Folgepflicht 1 verlangt |

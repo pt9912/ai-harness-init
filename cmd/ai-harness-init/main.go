@@ -36,6 +36,8 @@ const usage = `ai-harness-init — bootstrappt ein Git-Repo mit dem AI-Harness-P
 Verwendung:
   ai-harness-init [--lang <sprache>] [--arch <arch>] [--name <name>]
   ai-harness-init add-lang <sprache> <pfad> [--arch <arch>]
+  ai-harness-init span-emit
+  ai-harness-init span-report [<ablageort>]
 
 Der Init-Lauf ist IDEMPOTENT (ADR-0007): ein zweiter Lauf ist Exit 0 — tool-eigene
 Infrastruktur wird kanonisch neu geschrieben (heilt Drift), adopter-gefuellte Dateien
@@ -56,6 +58,17 @@ Subkommando add-lang <sprache> <pfad>:
   Fuegt einem bereits gebootstrappten Repo ein Sprachmodul hinzu (WIEDERHOLBAR, Mono-Repo):
   Skelett unter <pfad> + Code-Gate-Fragment harness/mk/<modul>.mk + blocked/<sprache>.
   <pfad>=. verortet am Repo-Root.
+
+Subkommando span-emit:
+  Liest eine Hook-Payload von stdin und schreibt EINEN Span in den gitignorierten
+  Zustands-Bereich (.harness/state/spans/ unter der Repo-Wurzel). stdout bleibt leer,
+  der Exit-Code ist auf 0 geklemmt (ADR-0011) — ein Hook darf den Lauf, den er
+  beobachtet, nicht blockieren.
+
+Subkommando span-report [<ablageort>]:
+  Rechnet aus dem Span-Bestand eine Token-Bilanz je Rolle auf stdout. Ohne Argument
+  der Ablageort unter der Repo-Wurzel des Arbeitsverzeichnisses. Ein Bericht, kein
+  Gate: er prueft nichts und faerbt nichts rot.
 
 Umgebung (bewusster Opt-in-Override der gepinnten Werte — LH-QA-02):
   COURSE_TAG        Kurs-Version für die Baseline (Regelwerk + Templates)
@@ -85,6 +98,11 @@ type sources struct {
 // und die Netz-Quellen sind injiziert, damit die Fehler- und Emit-Pfade ohne
 // Prozess-Exit, ohne CWD-Mutation und ohne Netz testbar sind. Exit-Codes:
 // 0 = Erfolg, 2 = Aufruf-/Argument-Fehler (Usage), 1 = Emit-Fehler zur Laufzeit.
+//
+// GRENZE: die zwei ERFASSUNGS-Unterkommandos (`span-emit`, `span-report`) erreichen
+// diese Funktion nicht — main() zweigt sie vorher ab, weil die Klemme des Schreibers
+// den ganzen Prozess ueberdecken muss. Wer run() direkt mit einem ihrer Namen ruft,
+// landet im Init-Pfad.
 func run(args []string, targetDir string, src sources, stdout, stderr io.Writer) int {
 	// Subkommando-Dispatch (slice-037): `add-lang <sprache> <pfad>` ist der wiederholbare
 	// Mono-Repo-Pfad; alles andere ist der Default-Init. Die Unterscheidung steht VOR dem
@@ -432,6 +450,28 @@ func callExitCode(err error) int {
 }
 
 func main() {
+	// UNTERKOMMANDO-ZWEIG DER ERFASSUNG, und er steht als ERSTE Anweisung des
+	// Prozesses (ADR-0022 Festlegung 2: ein Traeger, zwei Unterkommandos; der Hook
+	// dieses Repos ruft denselben Einstiegspunkt wie ein Zielrepo). Die Stelle ist
+	// tragend, nicht Stil: `span-emit` traegt seine Klemme selbst (ADR-0011
+	// Festlegung 6), und was VOR ihr liegt, deckt sie nicht — der os.Getwd()-Zweig
+	// unten endet mit einer Zeile auf stderr und Exit 1, und an einem Hook waere das
+	// ein Beobachter, der ueber den Lauf mitentscheidet.
+	//
+	// Vor dem Flag-Parsing wie `add-lang` (run()): beide tragen Positionsargumente,
+	// der Init nur Flags. Bewacht von
+	// test/mutations/154-unterkommando-routing-vertauscht.sh gegen
+	// TestClampSurvivesBrokenPayload.
+	if len(os.Args) > 1 {
+		switch os.Args[1] {
+		case "span-emit":
+			spanEmit(os.Stdin)
+			return
+		case "span-report":
+			os.Exit(spanReport(os.Args[2:], os.Stdout, os.Stderr))
+		}
+	}
+
 	wd, err := os.Getwd()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Fehler: Arbeitsverzeichnis nicht bestimmbar:", err)

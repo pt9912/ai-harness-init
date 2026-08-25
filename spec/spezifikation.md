@@ -58,8 +58,11 @@ die es beantwortet, und dem Wächter, der seine Zusicherung hält; dazu je erkl�
 Abweichung vom Pflicht-Minimum eine Begründung. Ein Feld ohne Incident-Frage wird
 nicht erfasst.
 
-**Gegenstand** sind die Spans, die `cmd/span-emit` je Tool-Call in den gitignorierten
-Zustands-Bereich schreibt (Logik in `internal/span/`).
+**Gegenstand** sind die Spans, die das Unterkommando `span-emit` des Trägers je
+Tool-Call in den gitignorierten Zustands-Bereich schreibt (Einstiegspunkt in
+`cmd/ai-harness-init/span_emit.go`, Logik in `internal/span/`). Der Träger ist das
+Produkt-Binär selbst; Schreiber und Auswertung sind seine Unterkommandos, und der Hook
+dieses Repos ruft denselben Einstiegspunkt, den ein Zielrepo bekommt.
 
 **Das Schema ist GESCHLOSSEN.** Erfasst wird, was hier steht; jedes andere Feld einer
 künftigen Payload wird **nicht** still mitgeschrieben. Wer eines aufnimmt, trägt es hier
@@ -598,7 +601,7 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
 **was** ein Zahn bindet; sie nennt die Wächter deshalb mehrfach, wo sie mehreres zusagen.
 
 - **Die Eigenschaften des Emitters als Prozess:** `internal/span/span_test.go` und
-  `cmd/span-emit/main_test.go` (Klemme und stumme Ausgabe als Prozess-Eigenschaft,
+  `cmd/ai-harness-init/span_emit_test.go` (Klemme und stumme Ausgabe als Prozess-Eigenschaft,
   fail-closed Default an fremden Werkzeug-Namen, kein Payload-Inhalt im Span, vergebene statt
   abgeleitete Folgenummer, Nebenläufigkeit, Modus, Strom-Trennung, Ableitung von
   `slice`/`requirement`/`branch`), `make span-check` (Emitter vorhanden **und**
@@ -616,6 +619,13 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
   der Vorgänger-Fassung legte den Strom lautlos still) und
   `test/mutations/115-span-ergebnis-inhalt.sh` (**kein Freitext** aus dem Ergebnis — für
   jedes Werkzeug die Länge, darüber hinaus nur die Positiv-Liste bei `Agent`).
+- **Der Einstiegspunkt selbst:** `TestClampSurvivesBrokenPayload`,
+  `TestEmitWritesSpanFromHook` und `TestSubkommandoRouting_ReportSchreibtBilanz` messen den
+  Träger als **Prozess** — mit dem Unterkommando als Argument, so wie der Hook ihn ruft.
+  Zahn: `test/mutations/154-unterkommando-routing-vertauscht.sh` (der `span-emit`-Zweig auf
+  die Auswertung umgehängt). Er ist nötig, weil kein eigenes Binär mehr trennt, was läuft:
+  seit die zwei Unterkommandos in einem Träger liegen, entscheidet allein der Zweig, und ein
+  falsch geroutetes `span-emit` sieht im Betrieb aus wie Erfolg.
 - **Die Erfassung aus `tool_response`, Zusicherung für Zusicherung:**
   1. `TestNoResponseFreetextReachesSpan` — **keines der vier gemessenen Freitext-Felder
      erreicht die Zeile**, je mit eigenem Kanarienvogel. Zähne:

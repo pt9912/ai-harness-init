@@ -22,8 +22,10 @@
 # Die Kompensation gehoert ins Werkzeug, nicht in den Aufrufer.
 #
 # Aufruf: artifact-copy.sh <image> <ziel-verzeichnis> <ziel-dateiname> [<quell-pfad>]
-# Der Quell-Pfad im Image ist optional und steht auf /out/ai-harness-init, solange
-# niemand etwas anderes nennt (slice-059 holt so /out/span-emit aus der span-Stage).
+# Der Quell-Pfad im Image ist optional und steht auf /out/ai-harness-init. Alle
+# heutigen Aufrufer (`artifact`, `release-artifacts`, `host-bin`) holen genau diese
+# Datei aus der build-Stage; der Parameter bleibt, weil er die Kopplung an EINEN
+# Pfadnamen vermeidet.
 set -euo pipefail
 
 img="${1:-}"
