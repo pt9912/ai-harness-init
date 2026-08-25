@@ -197,7 +197,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
 Kommando nur eine Hälfte einer Zusage erreicht, steht die andere Hälfte mit ihrem eigenen
 Gegenbeispiel daneben.
 
-- [ ] **(1) Ein abgebrochener Grün-Vorlauf zeigt die letzten Zeilen des Modus, der rot war — in
+- [x] **(1) Ein abgebrochener Grün-Vorlauf zeigt die letzten Zeilen des Modus, der rot war — in
       derselben Form, in der der Fall-Pfad sie schon zeigt.** Der Fall-Pfad hat das Werkzeug
       bereits: `show_tail` schreibt zwölf eingerückte Zeilen des Sensor-Logs nach `stderr`
       (`grep -c 'show_tail()' harness/tools/mutate.sh` → **1**); es steht heute lokal in `run_case`
@@ -212,18 +212,24 @@ Gegenbeispiel daneben.
       **Rot A (`stdout`):** ein Fall in [`test/mutate-driver.bats`](../../../../test/mutate-driver.bats)
       über die aus `main` herausgelöste Vorlauf-Funktion, mit einem `make`-Stub auf `$PATH`, der
       eine Marker-Zeile nach `stdout` **und** eine nach `stderr` druckt und Exit 1 liefert; der Fall
-      verlangt **beide** Marker in der Ausgabe des Abbruchs. Rot gesehen, indem allein
-      `>/dev/null` an der Aufruf-Stelle wiederhergestellt wird → der `stdout`-Marker fehlt.
-      **Rot B (`stderr`):** derselbe Fall, rot gesehen, indem allein `2>/dev/null` gesetzt wird →
-      der `stderr`-Marker fehlt. A und B sind nacheinander zu fahren; ein einziger Eingriff, der
-      beide Ströme gleichzeitig wegnimmt, belegt keine der zwei Hälften einzeln.
+      verlangt **beide** Marker in der Ausgabe des Abbruchs. Die Aufruf-Stelle trägt beide
+      Umleitungen in einem Ausdruck (`) >"$log" 2>&1`), und genau daran hängt, wie eine Hälfte
+      einzeln wegzunehmen ist. **Rot gesehen mit `>/dev/null 2>"$log"`:** `stderr` läuft weiter
+      ins Protokoll, der `stdout`-Marker fehlt, der Fall fällt an der `stdout`-Assertion.
+      **Rot B (`stderr`):** derselbe Fall, rot gesehen mit `>"$log" 2>/dev/null` — der
+      `stdout`-Marker steht, der `stderr`-Marker fehlt, der Fall fällt an der zweiten Assertion.
+      **`>/dev/null 2>&1` ist keiner der beiden Eingriffe, sondern der volle Revert.** `2>&1`
+      dupliziert das **aktuelle** Ziel von `fd1`; zeigt das auf `/dev/null`, verschwinden beide
+      Ströme, und die Log-Datei entsteht gar nicht erst. Ein solcher Lauf fällt an der ersten
+      Assertion, weil sie die erste ist — nicht, weil ihre Hälfte fehlte —, und belegt darum
+      keine von beiden. A und B sind nacheinander zu fahren.
       **Rot C (Gegenprobe über den echten Pfad, einmalig):** den ersten und billigsten Modus der
       Schleife absichtlich rot machen — eine Zeile in einem Go- oder bats-Test, sodass `make test`
       fällt — und `make mutate` fahren. Mit der heutigen Fassung endet der Lauf mit dem
       Abbruch-Satz und **null** Zeilen des Sensors; mit der neuen stehen die zwölf Zeilen darunter.
       Ohne diese Richtung wäre nur belegt, dass die herausgelöste Funktion isoliert trägt, nicht
       dass der reale Lauf sie erreicht. Der Eingriff wird danach zurückgenommen.
-- [ ] **(2) Der Abbruch behauptet nur, was der Treiber gemessen hat: dass dieser Modus rot war —
+- [x] **(2) Der Abbruch behauptet nur, was der Treiber gemessen hat: dass dieser Modus rot war —
       nicht, dass der Baum es ist.** Heute schließt der Satz *„Erst den Baum gruen bekommen"* eine
       Ursache aus, die der Treiber nicht ausschließen kann; im Referenz-Lauf fuhr derselbe Commit im
       Nachbar-Job grün durch denselben Sensor (§1, Punkt 3). Das ist
@@ -236,7 +242,7 @@ Gegenbeispiel daneben.
       wäre die erste Falsch-Klasse aus §3.6: er prüfte die heutige Formulierung statt der
       Eigenschaft und könnte unter keiner sinnvollen Mutation rot werden. Diese Hälfte trägt das
       Review, nicht ein Gate.
-- [ ] **(3) Das Protokoll des Vorlaufs liegt außerhalb des Repos.** Der Treiber sagt in seiner
+- [x] **(3) Das Protokoll des Vorlaufs liegt außerhalb des Repos.** Der Treiber sagt in seiner
       ersten Ausgabezeile zu, den Host-Baum nicht anzufassen; sein eigener Beleg dafür — der
       Fingerabdruck aus Bedingung 5 — deckt **nur** die Mutations-Zieldateien
       (`grep -c 'target_fingerprint' harness/tools/mutate.sh` → **4**), eine neue Datei im
@@ -244,18 +250,32 @@ Gegenbeispiel daneben.
       zählt untrackte Dateien mit (`grep -c 'exclude-standard' harness/tools/working-tree-hash.sh`
       → **2**), ein Log im Repo verschöbe also mitten im Lauf den Nachweis-Stempel aus
       [`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung).
-      **Rot:** ein Fall in [`test/mutate-driver.bats`](../../../../test/mutate-driver.bats), der den
-      Log-Pfad gegen `$REPO` hält — dieselbe Bauart wie die bestehenden Fälle über die Lage
-      relativ zum Repo (`grep '^@test' test/mutate-driver.bats | grep -ci 'repo'` → **3** von
-      `grep -c '^@test' test/mutate-driver.bats` → **18**). Rot gesehen, indem das Log probeweise
-      unter `$REPO` angelegt wird.
+      **Die Zusage hat zwei Bruchstellen und darum zwei Wächter in
+      [`test/mutate-driver.bats`](../../../../test/mutate-driver.bats) — einen für die Lage, einen
+      für die Schranke.** Sie sind dieselbe Bauart wie die übrigen Fälle über die Lage relativ zum
+      Repo (`grep '^@test' test/mutate-driver.bats | grep -ci 'repo'` → **5** von
+      `grep -c '^@test' test/mutate-driver.bats` → **21**).
+      **Rot Lage** (*das Protokoll des Gruen-Vorlaufs liegt AUSSERHALB des Repos*): der Fall hält
+      den zurückgegebenen Pfad gegen `$REPO` und benutzt das echte `mktemp`; rot gesehen, indem
+      der Aufruf `mktemp -d` zu `mktemp -d -p "$REPO"` wird.
+      **Rot Schranke** (*prepare_prerun_log VERWEIGERT ein Protokoll unter dem Repo*): der Fall
+      stellt mit einem `mktemp`-Stub auf `$PATH` erst die Bedingung her, unter der der
+      `case`-Zweig überhaupt greift, und verlangt Status ≠ 0 **und** die Meldung; rot gesehen auf
+      zwei Wegen — `case`-Block entfernt (Status 0 statt ≠ 0) und Meldungs-Wortlaut geändert (der
+      Marker fehlt).
+      **Keiner der beiden ersetzt den anderen, und das ist in beiden Richtungen zu messen.** Der
+      Schranken-Fall stubbt `mktemp` und ist gegen jede Änderung am `mktemp`-Aufruf blind; der
+      Lage-Fall benutzt das echte `mktemp` und erreicht den `case`-Zweig nie, weil ein `mktemp -d`
+      ohne `-p` unter `$TMPDIR` landet und damit nie unter `$REPO`. Ein einziger Fall belegte
+      darum entweder die Lage oder die Schranke — nie beide, und welche von beiden, sähe man ihm
+      nicht an.
 
 ## 3. Plan (vor Code)
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) | update | die Vorlauf-Schleife aus `main` in eine Funktion herausheben (dieselbe Kapselung, die `main` schon trägt, damit bats sourcen kann); den Sensor-Lauf in ein `mktemp`-Log schreiben statt nach `/dev/null`; `show_tail` aus `run_case` herausheben und im Abbruch-Zweig aufrufen; den Abbruch-Satz auf das einschränken, was gemessen ist (DoD 1–3) |
-| [`test/mutate-driver.bats`](../../../../test/mutate-driver.bats) | update | der Fall aus DoD 1 mit `make`-Stub und zwei Strom-Markern, der Fall aus DoD 3 über den Log-Pfad. Beide sourcen den Treiber wie die 18 bestehenden Fälle |
+| [`test/mutate-driver.bats`](../../../../test/mutate-driver.bats) | update | der Fall aus DoD 1 mit `make`-Stub und zwei Strom-Markern, dazu die zwei Fälle aus DoD 3 — einer über die Lage des Log-Pfads, einer über die Schranke, die sie erzwingt. Alle sourcen den Treiber wie die übrigen Fälle der Datei (`grep -c '^@test' test/mutate-driver.bats` → **21**) |
 | `test/mutations/` | **unverändert** | dieser Slice fügt keinen Mutations-Fall hinzu. Der Wächter aus DoD 1 lebt in `make test-bats`, und `narrow_sensor` wählt dafür die schmalste Stufe — ein eigener Mutations-Fall wäre der Zahn **über** dem Zahn und gehört, wenn überhaupt, in einen eigenen Schnitt |
 | [`.github/workflows/ci.yml`](../../../../.github/workflows/ci.yml) | **unverändert** | die vier Jobs laufen auf vier Runnern (§1, Punkt 1); es gibt nichts zu sequenzieren. Ein Satz *„hier steht kein `needs:`, weil …"* wäre Konjunktiv über die verworfene Alternative und damit genau das, was [`AGENTS.md`](../../../../AGENTS.md) §3.7 als erste Falsch-Klasse führt — die Abwägung steht in §1 dieses Plans, nicht im Workflow |
 | [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | **unverändert** | der Sensor ist nicht der Gegenstand. Er wird für DoD 1 Rot C **nicht** angefasst; rot gemacht wird der billigste Modus der Schleife |
@@ -363,7 +383,210 @@ Beziehung hat.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Was gilt.** Bricht der Grün-Vorlauf von `make mutate` ab, stehen die letzten zwölf Zeilen des
+Sensors, der rot war, im selben Protokoll — und der Abbruch-Satz nennt Modus, Ort und Zustand
+statt einer Ursache. Der Vorlauf ist eine eigene Funktion, die aus `main` nur `$WORK` und die
+Modus-Liste bezieht; sie legt das Protokoll per `mktemp` außerhalb des Repos an und reicht es im
+Abbruch-Zweig an dasselbe `show_tail`, das der Fall-Pfad benutzt
+(`grep -c 'show_tail()' harness/tools/mutate.sh` → **1** Definition,
+`grep -c '^ *show_tail ' harness/tools/mutate.sh` → **2** Aufrufer,
+`grep -c 'tail -n 12' harness/tools/mutate.sh` → **1**). Von den Stellen, die eine Ausgabe nach
+`/dev/null 2>&1` schicken, ist genau die aus dem Vorlauf verschwunden
+(`grep -c '>/dev/null 2>&1' harness/tools/mutate.sh` → **1**; der verbliebene Treffer ist die
+Bestands-Stelle am `sha256sum -c`, die §3 ausdrücklich stehen lässt). Die Ursachen-Behauptung
+*„Erst den Baum gruen bekommen"* steht in keinem Code- und keinem Konfigurations-Artefakt mehr;
+die **2** verbliebenen Zeilen stehen in diesem Plan und zitieren die alte Ausgabe
+(`git grep -n 'Erst den Baum gruen' -- '*.sh' '*.bats' '*.md' '*.yml' ':(exclude)docs/reviews' | wc -l`).
+Alle Zahlen wandern mit dem Bestand und sind **kein** Erwartungswert
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2).
+
+**Die zwei Hälften von DoD 1 trennen sich nur durch zwei getrennte Ziele.** `) >"$log" 2>&1` trägt
+beide Umleitungen in einem Ausdruck, und `2>&1` dupliziert das **aktuelle** Ziel von `fd1`: wer
+allein `>/dev/null` zurücksetzt, nimmt beide Ströme, das Protokoll entsteht gar nicht, und der
+Lauf fällt an der ersten Assertion, weil sie die erste ist. Belegt ist die Zusage darum mit
+`>/dev/null 2>"$log"` für `stdout` und `>"$log" 2>/dev/null` für `stderr`; jeder Eingriff fällt an
+der Assertion seiner eigenen Hälfte, beide sind einzeln gefahren und stehen mit ihrer Ausgabe im
+[Verifikations-Report](../../../reviews/2026-08-25-slice-100-verify.md) §2.1 und §2.2.
+
+**DoD 3 ist mit zwei Wächtern erfüllt, weil Lage und Schranke zwei Zusagen sind.** Der Lage-Fall
+hält den zurückgegebenen Pfad gegen `$REPO` und benutzt das echte `mktemp`; der Schranken-Fall
+stellt mit einem `mktemp`-Stub auf `$PATH` erst die Bedingung her, unter der der `case`-Zweig
+greift. **Keiner ersetzt den anderen, und das ist in beiden Richtungen gemessen** (Verifikation
+§3.3): `case`-Block entfernt → Schranken-Fall rot, Lage-Fall grün; `mktemp -d` → `mktemp -d -p
+"$REPO"` → Lage-Fall rot, Schranken-Fall grün; Meldungs-Wortlaut geändert → Schranken-Fall rot an
+seiner zweiten Assertion. Und die Schranke ist kein toter Code: `make mutate` läuft **nicht** in
+Docker (`grep -n '^mutate:' -A2 Makefile` → `@bash harness/tools/mutate.sh`, kein `docker run`),
+sondern auf dem schreibbaren Checkout — der `:ro`-Mount, unter dem ein Repo-Pfad strukturell
+unmöglich ist, ist eine Eigenschaft des `test-bats`-Ziels, nicht des Treibers.
+
+**Der Closure-Trigger aus §5, Kriterium für Kriterium.**
+
+1. **DoD (1)–(3) erfüllt, jeder mit gefahrenem Kommando.** Bestätigt im
+   [Verifikations-Report](../../../reviews/2026-08-25-slice-100-verify.md) §3.1–§3.3, mit **15**
+   eigenen Läufen (`grep -c '^| L[0-9]' docs/reviews/2026-08-25-slice-100-verify.md`).
+2. **Die drei Rot aus DoD 1 mit ihrer Ausgabe, nicht nur ihrem Ergebnis.** Dort §2.1–§2.3, jedes
+   im echten `bats`-Image, jedes an genau der Assertion seiner Hälfte. Rot C ist über den echten
+   `make mutate`-Pfad in **beiden** Fassungen gefahren: **12** Sensor-Zeilen mit dem neuen
+   Treiber, **0** mit dem Stand davor.
+3. **`make gates` grün, `make mutate` grün einschließlich der neuen bats-Fälle.** Belege unten
+   unter *Gates*; `make mutate` mit `147 ok, 0 Befund(e)` und den drei neuen Fällen einzeln als
+   `ok 110`–`ok 112`.
+4. **Review konform (Modul 10).** [Code-Review](../../../reviews/2026-08-25-slice-100-review.md)
+   (`71b6aba`): **blockierend**,
+   `grep -c '^### \(HIGH\|MEDIUM\|LOW\|INFO\)-' docs/reviews/2026-08-25-slice-100-review.md` →
+   **3** (1 HIGH · 2 MEDIUM). Der HIGH ist an der Sache behoben (`c44519d`), die
+   [Bestätigungsrunde](../../../reviews/2026-08-25-slice-100-bestaetigungsrunde.md) (`a44195a`)
+   ist **frei** mit `grep -c '^### \(HIGH\|MEDIUM\|LOW\|INFO\)-' …` → **1**, einem LOW am Plan.
+5. **Closure-Notiz mit Steering-Loop-Eintrag.** Diese Notiz; der Eintrag steht unten.
+6. **Kein grüner CI-Lauf als Beleg.** Eingehalten — hier wird keiner geführt. Was der Slice
+   liefert, zeigt sich an einem Lauf, der **abbricht**, und den stellt niemand auf Zuruf her.
+
+**Wo der Liefergegenstand in der Historie liegt.** `git log --oneline --grep='slice-100' 1b7292a`
+zählt **8** Commits — der Stand gehört ins Kommando, sonst wandert die Zahl mit jedem weiteren.
+Die Sache liegt in **zwei**: `241db77` (der Vorlauf schreibt und zeigt) und `c44519d` (die
+Ortsregel bekommt ihren zweiten Wächter), zusammen zwei Dateien
+(`git diff --stat 4f83687 1b7292a -- . ':(exclude)docs/reviews'` →
+`2 files changed, 165 insertions(+), 30 deletions(-)`). Die Verdikte liegen in `71b6aba`,
+`a44195a` und `1b7292a`; `f2a8870` und `4f83687` sind reine Lifecycle-Moves, `1c60c64` der
+Schnitt. Wer den Slice sucht, findet ihn über diese Commits und **nicht** in der Roadmap:
+`grep -c 'slice-100' docs/plan/planning/in-progress/roadmap.md` → **0** (Exit 1), wie
+[`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
+Setzung 2 es für wellenlose Arbeit verlangt; Setzung 3 lässt auch die Closure spurlos an ihr
+vorbeigehen. Der Zustand ist das Verzeichnis.
+
+**Was anders lief als geplant.** Der Schnitt hielt DoD 3 für den kleinen Punkt — *ein* Fall über
+den Log-Pfad, dieselbe Bauart wie die bestehenden. Er war der einzige, der einen ganzen
+Review-Zyklus kostete, und der Grund liegt in der Konstruktion des Nachweises, nicht im Umfang:
+ein Fall, der nur das **Ergebnis** von `prepare_prerun_log` prüft, bleibt grün, wenn man die
+Schranke ersatzlos entfernt, weil `mktemp -d` ohne `-p` unter `$TMPDIR` landet und damit ohnehin
+nie unter `$REPO`. Der Punkt hat zwei Bruchstellen wie DoD 1 — der Plan hat das nur bei DoD 1
+gesehen.
+
+**Was der Slice nicht deckt — die Grenzen, die er für sich selbst zieht.**
+
+- **Die eigentliche Zusage bleibt eine CI-Eigenschaft.** Die drei Rot belegen den **Mechanismus**;
+  ob zwölf Zeilen im konkreten Abbruch dort **ausreichen**, entscheidet erst der nächste Abbruch.
+  §6 führt das als Grenze, und die Closure hebt sie nicht auf.
+- **Der Abbruch-Zweig für einen unbekannten `# verify:`-Modus ist unbewacht.**
+  `grep -n 'green_prerun' test/mutate-driver.bats` → **1** Aufrufer, und er ruft mit dem bekannten
+  Modus `test`; der Zweig, der einen vertippten Modus meldet, wird von keinem Fall erreicht. Er
+  ist mit diesem Slice entstanden — Träger unten.
+- **Der Abbruch-Satz ist nicht in jeder Lesart nur Messung.** Sein zweiter Satz — *„Ein Fall gegen
+  diesen Sensor waere danach ebenfalls rot"* — ist eine Folgerung im Konjunktiv, kein Messwert;
+  er stand wortgleich schon vor dem Slice. DoD 2 zielt auf die **Baum**-Behauptung, und die ist
+  weg. Die strengere Lesart *„jeder Satz der Meldung ist eine Messung"* ist hier **nicht** belegt
+  und wird auch nicht behauptet.
+- **Die Ortsangabe der Meldung gilt über die Aufruf-Reihenfolge.** `green_prerun` prüft die
+  Isolation nicht selbst; `require_isolated` steht im Produkt-Pfad davor
+  (`grep -c 'require_isolated' harness/tools/mutate.sh` → **3**, davon **1** Aufrufstelle). Als
+  einzeln aufrufbare Funktion — genau der Zweck der Herauslösung — druckt sie *„in der isolierten
+  Kopie"* auch für ein ungeprüftes `$WORK`. Das ist die Bauart des Moduls; `run_case` verhält sich
+  genauso.
+- **Die CI-Zahlen bleiben fremdbelegt.** Runner-IDs, Verdikt-Quote und Job-Laufzeiten in §1 sind
+  `gh api`-Werte; die Verifikation lief netzlos und hat sie nicht nachgemessen. Sie tragen die
+  **Abwägung**, kein DoD-Punkt hängt an ihnen.
+
+**Steering-Loop-Eintrag — geschärfte Regel.**
+
+**Ein Rot-Beleg gilt für den Eingriff, den er wirklich gemacht hat — und was ein Eingriff bewegt,
+wird gemessen, nicht gelesen.**
+
+**Zwei Instanzen in diesem Slice, in entgegengesetzte Richtungen.** DoD 1 nannte einen Eingriff,
+der wie **eine** Änderung aussah und **zwei** war: `>/dev/null` an der Aufruf-Stelle
+zurückzusetzen nimmt wegen `2>&1` beide Ströme, und die eine Hälfte, die er zu isolieren
+beanspruchte, isolierte er nicht. DoD 3 wurde mit einem Eingriff rot gesehen, der **zwei**
+Änderungen war und für **eine** gelesen wurde: der Guard entfernt *und* der Pfad ins Repo gelegt.
+Der erste belegte keine der zwei Hälften einzeln, der zweite belegte die **Wirkung** statt der
+**Schranke**. Beides fiel erst auf, als jemand **eine** Änderung machte und hinsah — nur den
+`case`-Block entfernt, den Pfad gelassen; der Fall blieb grün.
+
+**Warum das nicht der Eintrag aus
+[slice-094](../done/slice-094-ein-programm-ein-einstiegspunkt.md) ist.** Dort geht es um die
+**Reichweite** eines Nachweises: eine Zusage mit einem *und* hat zwei Bruchstellen, und wer eine
+davon rot sieht, hat [`AGENTS.md`](../../../../AGENTS.md) §3.6 formal erfüllt, während die andere
+ungelistet bleibt. Hier war die Reichweite richtig — der Fall verlangte beide Hälften — und der
+**Gegenstand** falsch: der Eingriff bewegte etwas anderes als das, woran die Zusage hängt. Ein
+Nachweis kann vollständig sein und trotzdem die falsche Sache messen. Das ist eine Ebene unter der
+Reichweite, und erst beide Fassungen zusammen sagen: *ein Rot deckt genau die Zusage, an der es
+steht, und nur dann, wenn sein Eingriff genau sie bewegt.*
+
+**In `test/mutations/` hat diese Regel eine mechanische Gestalt, und sie liegt hier offen.** Ein
+Fall dieses Verzeichnisses **ist** ein Eingriff, geschrieben als `sed`-Anker. Fall 72 nennt seinen
+Anker `^      return 1$` im Kommentar *„einmalig, geprueft"*; er trifft **3** Stellen
+(`grep -c '^      return 1$' harness/tools/mutate.sh`), zwei davon sind mit diesem Slice
+entstanden. Die Einmaligkeit war ein Bestandszufall — sechs Leerzeichen sind
+Verschachtelungstiefe, keine Eigenschaft des bewachten Verhaltens. Fall 77 im selben Verzeichnis
+macht die haltbare Form vor: er bindet seinen Anker an einen **Bereich** statt an ein Layout. Auf
+Fall 72 übertragen ist das `/^isolation_path()/,/^}/` als Adressbereich des `sed`; darin trifft
+derselbe Anker genau **1** Stelle
+(`isolation_path()/,/^}/p' harness/tools/mutate.sh | grep -c '^      return 1$'`), und
+zwar deshalb, weil die Funktion die Grenze zieht — nicht, weil der Bestand gerade so aussieht.
+Der Vorschlag trägt; er ist eine Konstruktion statt einer Beobachtung.
+
+**Träger.** Der Eintrag bekommt zwei, und keiner von beiden ist die Form, in der diese Sorte
+Eintrag bisher vergeben wurde.
+
+**Warum nicht *„Träger: der Architect"*.** Die Form ist an diesem Repo gemessen **kein** Träger.
+Wörtlich vergeben ist sie in **3** Closure-Notizen unter `done/`
+(`git grep -l 'Träger: der Architect' -- 'docs/plan/planning/done/*.md' | wc -l`) — eine
+**Untergrenze**, denn ob eine weitere Notiz dasselbe in anderer Formulierung tut, ist ein Urteil
+und kein Muster ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+führt dieselbe Lage in ihrer Begründung). Keiner der drei Adressaten hat sich bewegt:
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+trägt **2** Setzungen statt der angekündigten dritten
+(`sed -n '/^### .* — Eine Zahl im Text steht neben dem Kommando/,/^### /p' harness/conventions.md | grep -c '^- \*\*Setzung'`),
+[`AGENTS.md`](../../../../AGENTS.md) §3.6 zählt weiterhin vier Zusage-Träger und nennt den
+Review-Report nicht
+(`sed -n '/^### 3.6/,/^### 3.7/p' AGENTS.md | grep -c 'Doc-Kommentar, Test-Name, DoD-Punkt, Commit-Message'`
+→ **1**), und der §3.6-Block bewegte sich zuletzt am **2026-08-08**
+(`git log -L '/^### 3.6/,/^### 3.7/:AGENTS.md' --format='%h %ad' --date=short | grep -E '^[0-9a-f]{7} ' | head -1`).
+Die **Zuständigkeit** war nie die Lücke — sie steht in
+[`AGENTS.md`](../../../../AGENTS.md) §3.8 und
+[`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1. Es fehlte der
+**Termin**, und ein Termin entsteht in diesem Repo durch einen Schnitt, nicht durch eine Nennung.
+Eine vierte Nennung wäre die vierte Notiz in `done/`, die kein Lauf wieder aufschlägt.
+
+**Träger 1 — [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md), neu
+geschnitten.** Er gibt den drei unerlösten Postens und diesem vierten einen Termin und lässt jeden
+einzeln **entscheiden** — übernommen, anders gefasst oder mit Grund abgelehnt. Er entscheidet den
+Inhalt nicht vor: die Regel schreibt der Architect. **Auslöser:** sein `open` → `next` steht offen,
+sobald das WIP-Limit es zulässt; er wartet auf nichts.
+
+**Träger 2 — [slice-069](../open/slice-069-zahn-bindet-zusicherung.md) für die mechanische
+Hälfte.** Er ist der Slice, dessen Gegenstand die Aussage eines Mutations-Falls über sich selbst
+ist, und er fährt [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) **und** den
+Bestand von `test/mutations/`. Fall 72, der Kommentar-Nachzug aus V-1 und der unbewachte
+Vorlauf-Zweig stehen jetzt in **seiner** Datei, nicht nur hier. **Auslöser:** seine eigene
+`open` → `next`-Bedingung ist erfüllt — [slice-060](../done/slice-060-rollen-achse.md) ist `done`.
+
+**Offen, mit Träger.**
+
+| Posten | Träger |
+|---|---|
+| Der Anker von `test/mutations/72-mutate-isolation-im-repo.sh` trifft **3** Stellen und nennt sich *„einmalig, geprueft"*; der Bereichsanker `/^isolation_path()/,/^}/` macht die Einmaligkeit zur Konstruktion | **[slice-069](../open/slice-069-zahn-bindet-zusicherung.md)** — §3 seiner Plan-Tabelle führt `test/mutations/` bereits als `update`, und seine Ist-Messung zählt ohnehin über denselben Bestand. Der Posten steht in seiner Datei |
+| Der Kommentar über dem Abbruch-Zweig sagt *„Woran er lag, steht in den Zeilen darunter"*, während §6 dieses Plans genau das einschränkt (*„Zwölf Zeilen können zu wenig sein"*) | **[slice-069](../open/slice-069-zahn-bindet-zusicherung.md)**, als Kommentar-Nachzug nach [`AGENTS.md`](../../../../AGENTS.md) §3.7 — er fährt genau diese Datei. Der Satz ist **neu** mit diesem Slice und damit gebunden, kein Bestand; er gehört auf das eingeschränkt, was der Tail hält |
+| Der Vorlauf-Zweig für einen unbekannten `# verify:`-Modus hat keinen Fall | **[slice-069](../open/slice-069-zahn-bindet-zusicherung.md)** — sein DoD (2) verlangt, dass der Zahn des Sensors der Sensor selbst ist; dieser Zweig ist genau eine solche Stelle. Er ist mit diesem Slice entstanden und nicht mit ihm bewacht worden |
+| Die drei unerlösten Norm-Postens aus [slice-087](../done/slice-087-emittierte-doku-tische-init-invariant.md), [slice-093](../done/slice-093-mutations-treiber-erreicht-full-smoke.md) und [slice-094](../done/slice-094-ein-programm-ein-einstiegspunkt.md) plus die Schärfung oben | **[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md)** — neu geschnitten, weil die bisherige Trägerschaft gemessen nicht getragen hat |
+| Ob zwölf Zeilen im CI-Abbruch die Ursache zeigen, und welche Gegenmaßnahme der `mutate`-Job bekommt | **kein neuer `open/`-Eintrag, und das ist entschieden** — §6 führt den Folge-Slice mit einem **beobachtbaren** Trigger: der nächste Abbruch im Grün-Vorlauf, dessen Protokoll die Ursache nennt. Ihn jetzt zu schneiden hieße, aus einer Vermutungsliste zu wählen |
+| Der zweite Satz des Abbruchs ist eine Folgerung, keine Messung | **kein Träger, und das ist entschieden** — er stand wortgleich vor dem Slice, DoD 2 zielt auf die Baum-Behauptung, und die ist weg. Wird die strengere Lesart je zum Gegenstand, ist der Ort dieser Satz |
+| *„in der isolierten Kopie"* gilt über die Aufruf-Reihenfolge, nicht über eine eigene Prüfung | **kein Träger, und das ist entschieden** — Bauart des Moduls, `run_case` verhält sich genauso, und `require_isolated` beschreibt sich selbst als die eine Schranke davor |
+| Die CI-Zahlen in §1 bleiben fremdbelegt | **kein Träger, und das ist entschieden** — sie tragen die Abwägung, kein DoD-Punkt hängt an ihnen, und eine netzlose Verifikation kann sie nicht nachmessen |
+
+**Gates.** Die [Verifikation](../../../reviews/2026-08-25-slice-100-verify.md) hat sie über dem
+Baum bei `a44195a` selbst gefahren, die Exit-Codes getrennt erhoben: `make gates` **Exit 0**
+(`baseline-verify: v3.5.2 OK — 42 Dateien`, `d-check: 375 Datei(en) geprüft, 0 Befund(e)`, bats
+`1..147` mit **147** `ok` und **0** `not ok`, `comment-claims: 40 Datei(en) geprueft, 0
+Befund(e)`, `span-check` grün), `make mutate` **Exit 0** mit `mutate: 147 ok, 0 Befund(e)` über
+fünf Vorlauf-Modi, `make shell-lint` **Exit 0** ohne Suppression. Der Stempel band den Lauf an den
+Baum, nicht an eine Erinnerung: `bash harness/tools/working-tree-hash.sh` und
+`.harness/state/gates-passed.diffsha` waren danach byte-gleich, und `record-gates` schreibt ihn
+nur als **letzter** Prerequisite grüner Gates
+([`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)).
+Die Dateizahl des Doku-Gates wandert mit dem Markdown-Bestand und ist **kein** Erwartungswert
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2). Diese Notiz, der `done/`-Move und der Link-Zug danach verschieben den Stempel erneut;
+der Lauf, der ihn wieder bindet, gehört zu ihnen.
 
 ## 8. Sub-Area-Modus-Begründung
 
@@ -395,8 +618,8 @@ Wächter, dieselbe Sub-Area über beide Achsen.
   [`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung),
   an dem DoD 3 hängt. Die letzten beiden tragen die zwei Punkte, die dieser Slice überhaupt
   unterscheidbar machen.
-- **Phase-Reife:** Phase 4 (Qualität). Der Sensor läuft, hat 18 eigene bats-Fälle
-  (`grep -c '^@test' test/mutate-driver.bats` → **18**) und einen mechanischen Pro-Push-Auslöser
+- **Phase-Reife:** Phase 4 (Qualität). Der Sensor läuft, hat eigene bats-Fälle
+  (`grep -c '^@test' test/mutate-driver.bats` → **21**) und einen mechanischen Pro-Push-Auslöser
   ([`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)). Was
   fehlt, ist nicht Reife, sondern Auskunft im Fehlerfall.
 - **Evidenz-/Diskrepanz-Risiko:** niedrig, und das ist gemessen statt angenommen — der Treiber
@@ -408,8 +631,12 @@ Wächter, dieselbe Sub-Area über beide Achsen.
   Vorlaufs, die mit dem Code auseinanderläuft: der Kopf von `harness/tools/mutate.sh` führt fünf
   nummerierte Fail-closed-Bedingungen
   (`sed -n '1,80p' harness/tools/mutate.sh | grep -cE '^#   [0-9]\. '` → **5**), und der
-  Grün-Vorlauf ist keine davon. Er kommt an vier Stellen vor
-  (`grep -c 'Gruen-Vorlauf' harness/tools/mutate.sh` → **4**): dreimal als Kommentar über seine
-  Existenz und seinen Preis, einmal als die Fortschritts-Zeile, die der Lauf druckt — keine davon
-  sagt etwas darüber zu, was der Abbruch zeigt. Graduation-Trigger entfällt; die Sub-Area ist
-  bereits GF.
+  Grün-Vorlauf ist keine davon. Er kommt an **8** Stellen vor
+  (`grep -c 'Gruen-Vorlauf' harness/tools/mutate.sh`): **7** Kommentare
+  (`grep -n 'Gruen-Vorlauf' harness/tools/mutate.sh | grep -c ':[[:space:]]*#'`) über seine
+  Existenz, seinen Preis, den Ort seines Protokolls und die zwei Aufrufer von `show_tail`, dazu
+  **1** Fortschritts-Zeile, die der Lauf druckt
+  (`grep -c 'echo "mutate: Gruen-Vorlauf' harness/tools/mutate.sh`). Wo diese Kommentare von der
+  Auskunft des Abbruchs sprechen, beschreiben sie die Fassung, die im Baum steht — Verhalten und
+  Beschreibung sind in einem Zug entstanden, und keine Doku-Aussage über die Auskunft des Vorlaufs
+  läuft mit dem Code auseinander. Graduation-Trigger entfällt; die Sub-Area ist bereits GF.
