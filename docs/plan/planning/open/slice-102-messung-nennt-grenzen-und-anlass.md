@@ -11,7 +11,7 @@ Setzung 1, hier beantwortet: **(1) Bündel?** Nein — vier Sätze an einem Arte
 einzeln lieferbar, auf keinen zweiten Slice wartend. **(2) Gemeinsames Closure-Kriterium?** Nein —
 jedes denkbare wäre die Abschrift der eigenen DoD. **(3) Auslöser reaktiv oder gewollt?** Reaktiv:
 drei Befunde der Verifikation und einer des Reviews zu
-[slice-095](../in-progress/slice-095-hook-aufschlag-gemessen.md), alle am **Text** der Messung,
+[slice-095](../done/slice-095-hook-aufschlag-gemessen.md), alle am **Text** der Messung,
 keiner am Gemessenen. Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das Verzeichnis.

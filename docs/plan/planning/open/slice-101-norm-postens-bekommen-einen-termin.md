@@ -80,7 +80,7 @@ den er wirklich gemacht hat — und was ein Eingriff bewegt, wird gemessen, nich
 adressiert dieselbe Regel und hat dieselbe Herkunft: eine Closure hat ihn formuliert, gemessen und
 niemandem gegeben, der ihn ausführt.
 
-**Und ein fünfter aus [slice-095](../in-progress/slice-095-hook-aufschlag-gemessen.md):** *wo der
+**Und ein fünfter aus [slice-095](../done/slice-095-hook-aufschlag-gemessen.md):** *wo der
 Gegenstand eine Zahl ist, tritt an die Stelle des rot gesehenen Gegenbeispiels die Frage nach der
 Richtung — welche Vereinfachung der Methode verschöbe die Zahl auf die Seite, die die
 Schlussfolgerung stützt, und tut sie es?* **Woran er als weiterer Posten erkannt ist:** er
@@ -152,7 +152,7 @@ dabei, statt sich hinter einem anderen zu verstecken.
       Tabelle in §1; jeder **übernommene** Posten bewegt genau einen dieser Werte, und der neue
       Wert gehört mit seinem Kommando in die Closure-Notiz. Für den vierten und den fünften
       Posten ([slice-100](../done/slice-100-vorlauf-nennt-den-grund.md),
-      [slice-095](../in-progress/slice-095-hook-aufschlag-gemessen.md)) gilt dasselbe Kommando wie
+      [slice-095](../done/slice-095-hook-aufschlag-gemessen.md)) gilt dasselbe Kommando wie
       für den Reichweiten-Posten: der §3.6-Block bewegt sich oder nicht.
       **Ein abgelehnter oder aufgeschobener Posten bewegt keinen Wert** — dann trägt DoD (1) ihn
       mit seinem Grund, und die Closure-Notiz sagt ausdrücklich, dass hier **nichts** gemessen

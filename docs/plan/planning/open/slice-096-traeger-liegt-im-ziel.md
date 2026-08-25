@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
 **Welle:** [welle-12](../welle-12-erfassungsschicht-emittieren.md) — der Wertträger der Welle. Er
-läuft nach [slice-095](../in-progress/slice-095-hook-aufschlag-gemessen.md), weil dessen Ausgang den Träger
+läuft nach [slice-095](../done/slice-095-hook-aufschlag-gemessen.md), weil dessen Ausgang den Träger
 bestätigt oder ihn durch einen anderen ersetzt.
 
 **Bezug:**
@@ -159,7 +159,7 @@ bekommt eine Zeile außerhalb des versionierten Baums.
 
 ## 4. Trigger
 
-**`open` → `next`:** [slice-095](../in-progress/slice-095-hook-aufschlag-gemessen.md) liegt in `done/` **und**
+**`open` → `next`:** [slice-095](../done/slice-095-hook-aufschlag-gemessen.md) liegt in `done/` **und**
 seine Messung hält die Schwelle aus
 [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md). Beide Hälften sind ohne Rückfrage
 beurteilbar: die Plan-Datei liegt in `done/`, und die Zahl steht dort mit ihrem Kommando neben der
