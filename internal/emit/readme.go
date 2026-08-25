@@ -31,6 +31,13 @@ func RootReadme(src fs.FS, targetDir, name string) error {
 	if err != nil {
 		return fmt.Errorf("%s lesen: %w", rootReadmeSource, err)
 	}
-	out := []byte(stampName(StripHintBlock(string(content)), name))
-	return writeSkipIfPresent(targetDir, RootReadmePath, out, 0o644)
+	// Dieselbe Ziel-Neutralisierung wie die Singletons (slice-087): die Vorlage
+	// stammt aus demselben vendored Kurs-Satz, ihr Ziel-Name ist der einzige
+	// Unterschied.
+	targets, err := InitInvariantTargets()
+	if err != nil {
+		return err
+	}
+	body := NeutralizeMakeClaims(stampName(StripHintBlock(string(content)), name), targets)
+	return writeSkipIfPresent(targetDir, RootReadmePath, []byte(body), 0o644)
 }

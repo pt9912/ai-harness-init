@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/fs"
 	"path"
+	"regexp"
 	"sort"
 	"strings"
 )
@@ -213,8 +214,12 @@ func Templates(src fs.FS, targetDir, name string) error {
 // Fuelle-wenn-Inhalt-da). Zusaetzlich werden die tool-definierten
 // Struktur-Verzeichnisse via .gitkeep gehalten (structureGitkeeps).
 func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
+	targets, err := InitInvariantTargets()
+	if err != nil {
+		return nil, err
+	}
 	out := map[string][]byte{}
-	err := fs.WalkDir(src, ".", func(rel string, d fs.DirEntry, walkErr error) error {
+	err = fs.WalkDir(src, ".", func(rel string, d fs.DirEntry, walkErr error) error {
 		if walkErr != nil {
 			return walkErr
 		}
@@ -233,6 +238,10 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 			return fmt.Errorf("template %s lesen: %w", rel, readErr)
 		}
 		body := stampName(StripHintBlock(string(content)), name)
+		// Jedes Singleton geht durch die Ziel-Neutralisierung: der Vorlagen-Satz
+		// gehoert dem Kurs (MR-008) und liegt unveraenderlich vendored (AGENTS 3.4),
+		// die Ansprueche fallen darum emit-seitig (slice-087, LH-QA-01).
+		body = NeutralizeMakeClaims(body, targets)
 		if rel == roadmapTemplate {
 			// Die Roadmap MUSS emittiert bleiben (stark inbound-verlinkt), traegt aber
 			// eine gate-unsichere Beispielzeile — emit-seitig neutralisieren (§6 b).
@@ -309,6 +318,122 @@ const roadmapDoneLink = "[`welle-NN-results.md`](../done/welle-NN-results.md)"
 // `make smoke` (Tier-2, NICHT in make gates), das gegen den realen Satz emittiert.
 func NeutralizeRoadmap(s string) string {
 	return strings.ReplaceAll(s, roadmapDoneLink, "`welle-NN-results.md`")
+}
+
+// makeTargetPlaceholder tritt an die Stelle einer Ziel-Nennung, die im
+// gebootstrappten Repo kein Ziel trifft. Die Form stammt aus dem Vorlagen-Satz
+// selbst (harness/README.template.md fuehrt „`<make-target-1>`, `<make-target-2>`"
+// fuer noch nicht behauptete Ziele): die Zeile bleibt als Form-Beispiel stehen und
+// nennt nur kein Ziel mehr. Sie steht im emittierten Bestand durchgaengig in
+// Inline-Code — ausserhalb davon liest ein Markdown-Renderer sie als Tag.
+const makeTargetPlaceholder = "<make-target>"
+
+// makeClaimPattern erfasst eine `make <ziel>`-Nennung samt einem unmittelbar
+// folgenden Stern. Der Stern trennt Muster von Anspruch: `make verify-*` nennt
+// ein Muster und damit kein Ziel (ADR-0020 Festlegung 4(e)).
+//
+// BREIT mit Absicht, und das kostet etwas: das Muster liest jedes Kleinwort nach
+// `make ` als Ziel-Namen, auch eines im Fliesstext. Die enge Alternative — nur
+// Nennungen in Inline-Code — liesse einen Anspruch ausserhalb der Backticks
+// stehen, und der waere ein stilles falsches Gate (LH-QA-01); ein verstuemmeltes
+// Wort ist dagegen im emittierten Text sichtbar. Das ist die fail-closed-Richtung
+// aus MR-017. Der vendored Satz `v3.5.2` traegt kein solches Wort: alle
+// `make `-Nennungen der Vorlagen und der Workflow-Commands sind Ziel-Nennungen
+// oder die Muster-Nennung mit Stern.
+const makeClaimPattern = `make ([a-z][a-z0-9-]*)(\*?)`
+
+// makeRulePattern erfasst eine Ziel-Definition am Zeilenanfang eines
+// Make-Fragments; gateCheckPattern erfasst die Ziele, die ein Fragment an
+// GATE_CHECKS haengt. Beides ist noetig: das Rezept von `docs-check` liegt im zur
+// Bootstrap-Zeit erzeugten d-check.mk, das Doc-Gate-Fragment traegt allein die
+// GATE_CHECKS-Kante.
+const (
+	makeRulePattern  = `(?m)^([a-z][a-z0-9-]*):`
+	gateCheckPattern = `(?m)^GATE_CHECKS[ \t]*\+=[ \t]*(.+)$`
+)
+
+// initFragments liefert den Inhalt der Make-Fragmente, die die Init-Phase in JEDER
+// Bootstrap-Variante schreibt: den Root-Aggregator (makefile.go), das
+// Baseline-Fragment (baseline.go), das Doc-Gate-Fragment (emit.go) und jedes
+// `.mk` der Durchsetzungsschicht (enforce.go). Der Durchsetzungs-Teil kommt aus
+// enforceFiles(), damit ein dort neu hinzukommendes Fragment mitfliesst.
+func initFragments() ([]string, error) {
+	out := []string{aggregatorMakefile, baselineMk, docGateMk}
+	for _, f := range enforceFiles() {
+		if !strings.HasSuffix(f.dst, ".mk") {
+			continue
+		}
+		content, err := enforceFS.ReadFile(f.src)
+		if err != nil {
+			return nil, fmt.Errorf("init-fragment %s lesen: %w", f.src, err)
+		}
+		out = append(out, string(content))
+	}
+	return out, nil
+}
+
+// InitInvariantTargets liefert sortiert die Make-Ziele, die die Init-Phase in
+// jeder Bootstrap-Variante ins Ziel schreibt — aus den Fragmenten GELESEN, nicht
+// aufgezaehlt: ein Fragment, das ein Ziel dazunimmt, waechst mit.
+//
+// AUSSERHALB der Menge liegen die Ziele der SPRACH-Phase (harness/mk/<lang>.mk:
+// test, lint, build) und des konditionalen Arch-Gates (a-check) — beide fehlen in
+// mindestens einer Bootstrap-Variante und sind darum nicht init-invariant.
+//
+// GRENZE: d-check.mk entsteht erst zur Bootstrap-Zeit aus `d-check --print-mk`
+// und liegt hier nicht vor. Aus ihm traegt die Menge allein `docs-check` ueber die
+// GATE_CHECKS-Kante des Doc-Gate-Fragments; die advisory `doc-*`-Rezepte fehlen.
+// Die Menge ist damit ENGER als die reale Ziel-Menge eines Bootstraps — die
+// fail-closed-Richtung aus MR-017: ein Anspruch auf `doc-links` wuerde
+// neutralisiert, obwohl das Ziel im Ziel-Repo existiert.
+func InitInvariantTargets() ([]string, error) {
+	fragments, err := initFragments()
+	if err != nil {
+		return nil, err
+	}
+	makeRule := regexp.MustCompile(makeRulePattern)
+	gateCheck := regexp.MustCompile(gateCheckPattern)
+	seen := map[string]bool{}
+	for _, frag := range fragments {
+		for _, m := range makeRule.FindAllStringSubmatch(frag, -1) {
+			seen[m[1]] = true
+		}
+		for _, m := range gateCheck.FindAllStringSubmatch(frag, -1) {
+			for _, t := range strings.Fields(m[1]) {
+				seen[t] = true
+			}
+		}
+	}
+	targets := make([]string, 0, len(seen))
+	for t := range seen {
+		targets = append(targets, t)
+	}
+	sort.Strings(targets)
+	return targets, nil
+}
+
+// NeutralizeMakeClaims ersetzt jede `make <ziel>`-Nennung eines emittierten
+// Dokuments durch makeTargetPlaceholder, sofern <ziel> nicht in targets liegt —
+// die emit-seitige Neutralisierung aus slice-087, dieselbe Form wie
+// NeutralizeRoadmap. Eine Muster-Nennung mit Stern bleibt unveraendert.
+//
+// Deckungs-Grenze (ehrlich): rot faerbt eine verlorene Wirkung
+// TestEmittierteDokumente_NurInitInvarianteZiele gegen eine anspruchstragende
+// Fixture. Was ein KUENFTIGER Kurs-Stand an neuen Anspruechen mitbringt, faengt
+// kein Test hier — es faengt die Regel selbst, die ueber Namen nicht verfuegt.
+func NeutralizeMakeClaims(s string, targets []string) string {
+	known := make(map[string]bool, len(targets))
+	for _, t := range targets {
+		known[t] = true
+	}
+	makeClaim := regexp.MustCompile(makeClaimPattern)
+	return makeClaim.ReplaceAllStringFunc(s, func(m string) string {
+		g := makeClaim.FindStringSubmatch(m)
+		if g[2] != "" || known[g[1]] {
+			return m
+		}
+		return makeTargetPlaceholder
+	})
 }
 
 // stampName ersetzt den <Projektname>-Platzhalter, falls ein Name gesetzt ist.
