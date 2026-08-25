@@ -490,8 +490,8 @@ die sechs `wrapper:`-Fälle —, `comment-claims: 41 Datei(en) geprueft, 0 Befun
 dazu `make mutate` **Exit 0** mit `mutate: 155 ok, 0 Befund(e)`, `make full-smoke` **Exit 0** mit
 der neuen OK-Zeile über beide Varianten sowie `make test-go`, `make shell-lint` und `make smoke`
 **Exit 0**. Die zwei teuren Sensoren stehen damit **fremdbelegt** hier — von einer Rolle mit
-frischem Kontext erhoben, nicht von dieser. **Nach der Closure, über dem Baum bei `aead672`** —
-Notiz, `done/`-Move und Link-Zug eingerechnet —: `make gates` **Exit 0** mit
+frischem Kontext erhoben, nicht von dieser. **Nach der Closure, über dem Baum, den sie
+hinterlässt** — Notiz, `done/`-Move und Link-Zug eingerechnet —: `make gates` **Exit 0** mit
 `d-check: 383 Datei(en) geprüft, 0 Befund(e)`, `baseline-verify: v3.5.2 OK — 42 Dateien`,
 golangci-lint `0 issues.`, `1..153` ohne ein `not ok`,
 `comment-claims: 41 Datei(en) geprueft, 0 Befund(e)` und grünem `span-check`; danach sind
@@ -506,7 +506,8 @@ Die Dateizahl des Doku-Gates wandert mit dem Markdown-Bestand und ist **kein** E
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2). Der Unterschied zwischen **381** und **383** sind zwei Markdown-Dateien: der
 Verifikations-Bericht und der mit dieser Closure geschnittene
-[slice-103](../open/slice-103-traeger-waechter-decken-was-sie-sagen.md).
+[slice-103](../open/slice-103-traeger-waechter-decken-was-sie-sagen.md). Jede weitere Zeile an
+dieser Notiz verschiebt den Stempel erneut; der Lauf, der ihn wieder bindet, gehört zu ihr.
 
 ## 8. Sub-Area-Modus-Begründung
 
