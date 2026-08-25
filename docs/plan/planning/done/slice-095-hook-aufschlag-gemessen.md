@@ -188,10 +188,12 @@ Setzung 2).
 
 **Die Spanne des Verfahrens ist breiter als die einer Sitzung, und jede Zahl gehört neben ihre
 Last.** Über alle **unabhängigen** Träger-Läufe zu diesem Slice liegt der Median bei **2,6 bis
-3,6 ms**: 2,6 ms im Review (`SAMPLES=50 make hook-overhead`), 2,7 · 2,8 · 2,9 · 3,6 ms in der
+3,6 ms**: 2,6 ms im Review (`SAMPLES=50 make hook-overhead`, **ohne Last-Angabe** berichtet — der
+untere Rand der Spanne trägt seine Bedingung also nicht), 2,7 · 2,8 · 2,9 · 3,6 ms in der
 Verifikation (`make hook-overhead`, der 2,9er als `SAMPLES=815 make hook-overhead`; loadavg 4,17 ·
-3,17 · 3,23 · 4,16). Der 2,9-ms-Lauf lief bei loadavg 3,23 und damit **innerhalb** der
-Bedingungen, unter denen der Skript-Kopf seine engere Spanne führt. Die ±0,05 ms des
+3,17 · 3,23 · 4,16, in dieser Reihenfolge). Der 2,9-ms-Lauf lief bei loadavg 3,23 und damit
+**innerhalb** der Bedingungen, unter denen der Skript-Kopf seine engere Spanne führt; der
+3,6-ms-Lauf bei 4,16 lag außerhalb. Die ±0,05 ms des
 Umsetzungs-Laufs sind die Streuung **einer** Sitzung, nicht die des Verfahrens. **Die
 Schlussfolgerung trägt über die ganze Spanne:** der schlechteste gesehene Median liegt um Faktor
 **13,9** unter der Schwelle (`awk 'BEGIN{printf "%.3f\n", 50/3.6}'`), und dieselbe Streuung ist
