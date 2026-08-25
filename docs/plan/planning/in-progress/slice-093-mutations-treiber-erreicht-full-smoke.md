@@ -116,7 +116,9 @@ Fall für `full-smoke` gab es nie.
   Namen führt und ein Implementierungsdetail misst. Unabhängig davon ist die ADR *Accepted* und
   damit immutabel (§3.4); ihre Zeilen umzuhängen wäre eine Folge-ADR, kein Slice.
 - **(D) Die Lücke stehen lassen und an einer Stelle statt an dreien benennen.** Verworfen, weil es
-  das Problem nicht anfasst. Von den drei Stellen ist eine *Accepted* und unveränderlich — und
+  das Problem nicht anfasst. Gezählt sind hier die Artefakte, für die die Lücke der **Gegenstand**
+  ist; die Eigenschaft und ihr Kommando stehen in §6. Von diesen dreien ist eine *Accepted* und
+  unveränderlich — und
   ausgerechnet sie ist die, die die Pflicht ausspricht (*„schuldet darum beides: den Wächter und
   ein Fehlschlag-Muster"*). „An einer Stelle" ist damit der heutige Zustand minus zwei Zeilen:
   dieselbe Schranke, weniger Buchhaltung, und die Zusage bleibt unlistbar.
@@ -131,20 +133,27 @@ Schnitt-Entscheidung je Zusage — und der gemessene Preis gehört dorthin, wo s
 Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 5 §Ziel-Form: ≤ 3;
 [`AGENTS.md`](../../../../AGENTS.md) §3.6). Wo kein Kommando existiert, steht das dabei.
 
-- [ ] **(1) Ein Fall in `test/mutations/` mit `# verify: full-smoke` läuft im Standard-`make
+- [x] **(1) Ein Fall in `test/mutations/` mit `# verify: full-smoke` läuft im Standard-`make
       mutate` mit und meldet seinen Wächter als rot gesehen.** Der Punkt ist selbstbezüglich —
       der Slice erweitert den Sensor, mit dem er belegt wird —, deshalb hängen **zwei** Rot-Läufe
       daran, und beide gehören mit ihrer Ausgabe in die Verify-Notiz, nicht nur ihr Ergebnis.
       **Rot (der Wächter hat Zähne):** den Wächter, auf den der Fall zielt, in
-      [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) zahnlos machen
-      (seine Bedingung auf wahr setzen) → `make mutate` meldet *„make full-smoke blieb GRUEN —
-      '<expect>' hat keine Zaehne mehr"*.
+      [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) **als Ganzes**
+      zahnlos machen → `make mutate` meldet *„make full-smoke blieb GRUEN — '<expect>' hat keine
+      Zaehne mehr"*. **Als Ganzes** ist der tragende Teil: ein Wächter dieser Bauart ist ein
+      **Schranken-Paar** plus die Beleg-Zeile danach — die erste Schranke fängt das grün
+      gebliebene Teil-Gate, die zweite das rote **ohne** den erwarteten Befund, und die Beleg-Zeile
+      fällt unter `pipefail`, wenn der Befund fehlt (`sed -n '/ZAEHNE, Teil 2/,/ZAEHNE, Teil 3/p'
+      harness/tools/full-smoke.sh | grep -c '^if '` → **2**). Fällt nur die erste Schranke, bleibt
+      `make full-smoke` **rot** — mit *„Lint-Gate rot, aber ohne den erwarteten Schicht-Befund"* —,
+      und der Treiber meldet *„falscher Grund"* statt *„blieb GRUEN"*: derselbe Exit, eine andere
+      Aussage, und der Punkt wäre damit nicht belegt.
       **Rot (Gegenprobe: ohne die Erweiterung bricht es ab, es läuft nicht durch):** den
       `full-smoke)`-Arm aus `failure_form` entfernen → der Lauf endet **vor dem ersten Fall** mit
       *„mutate: ABBRUCH — unbekannter `# verify: full-smoke` in test/mutations/."*, weil der
       Grün-Vorlauf jeden benutzten Modus vorab gegen `failure_form` hält. Ohne diese zweite
       Richtung wäre nur belegt, dass irgendetwas rot wird, nicht dass die Erweiterung es trägt.
-- [ ] **(2) Das Fehlschlag-Muster trifft ausschließlich bei Fehlschlag — gemessen an der Ausgabe
+- [x] **(2) Das Fehlschlag-Muster trifft ausschließlich bei Fehlschlag — gemessen an der Ausgabe
       eines grünen Laufs, nicht behauptet.** Bedingung 4 des Treibers (*rot aus dem falschen Grund
       ist kein Beleg*) ist sonst wirkungslos; genau daran hing das bats-Muster einmal, weil `ok`
       auch im Bestehen gedruckt wird.
@@ -160,7 +169,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       **Ein stehender Sensor dafür existiert nicht** — für das bereits geführte `smoke: FEHLER`
       ebensowenig; die Prüfung ist einmalig und gehört in die Verify-Notiz. Das steht hier statt
       einer Zusage.
-- [ ] **(3) Der teure Sensor wird nur auf ausdrückliche Nennung gefahren — und sein Preis steht
+- [x] **(3) Der teure Sensor wird nur auf ausdrückliche Nennung gefahren — und sein Preis steht
       dort, wo die nächste Nennung geschrieben wird.** Ein Fall ohne `# verify:`-Kopf bekommt
       seinen Sensor aus der `# expect:`-Zeile; lieferte diese Wahl je `full-smoke`, zahlten
       schlagartig alle Fälle ohne eigenen Kopf einen Preis, den niemand geschrieben hat
@@ -186,7 +195,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
 | `test/mutate-driver.bats` | update | der **Wertebereich** von `narrow_sensor` aus DoD 3. Dort liegen bereits **4** Fälle über dieselbe Funktion (`grep -c '^@test "driver: narrow_sensor' test/mutate-driver.bats`) — sie prüfen die einzelnen Zuordnungen, keiner den Bereich |
 | [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | **unverändert** | der Wächter, gegen den der Fall zielt, existiert bereits; ihn zu bauen wäre ein anderer Slice. Er wird nur **vorübergehend** zahnlos gemacht, um DoD 1 rot zu sehen, und danach zurückgenommen |
 | [`docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) | **unverändert** | *Accepted*, immutabel ([`AGENTS.md`](../../../../AGENTS.md) §3.4). Sie wird als Constraint gelesen, nicht nachgezogen |
-| [`docs/plan/planning/open/slice-092-traeger-inventur.md`](../open/slice-092-traeger-inventur.md), [`docs/plan/planning/welle-11-traeger-aussage.md`](../welle-11-traeger-aussage.md) | **unverändert in diesem Lauf** | beide beschreiben heute einen wahren Zustand; sie werden zur Closure dieses Slice nachgezogen, und zwar vom Planner, dem sie gehören (§6) |
+| [`docs/plan/planning/open/slice-092-traeger-inventur.md`](../open/slice-092-traeger-inventur.md), [`docs/plan/planning/welle-11-traeger-aussage.md`](../welle-11-traeger-aussage.md) | **unverändert in diesem Lauf** | beide beschreiben heute einen wahren Zustand; ihr Nachzug gehört dem Planner, dem sie gehören, und steht mit Träger und Trigger in §6 und §7 |
 | [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** | wellenlose Arbeit wird dort nicht geführt ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) Setzung 2/3) |
 
 **Die Wahl des Wächters ist nicht frei — sie hat ein Kriterium und eine mechanische Probe.** Der
@@ -241,27 +250,61 @@ Falls; `make full-smoke` grün; Closure-Notiz mit Steering-Loop-Lerneintrag in e
   existiert noch nicht und gehört dem Umsetzungs-Slice. Was dieser Slice ändert, ist die andere
   Hälfte der Schuld: die Grenze über der Fitness-Tabelle verlangt vom Einlösenden **beides**, den
   Wächter *und* ein Fehlschlag-Muster. Danach schuldet er nur noch den Wächter.
-- **Drei Stellen sprechen heute über die Lücke; nach diesem Slice beschreiben zwei einen Zustand,
-  den es nicht mehr gibt.** Die Menge ist vollständig aufgezählt, jeder Ort mit seiner Behandlung:
-  die Grenze in
-  [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) **bleibt
-  stehen** (*Accepted*, [`AGENTS.md`](../../../../AGENTS.md) §3.4; eine Korrektur wäre eine
-  Folge-ADR mit Supersedes, kein Slice-Nebenprodukt); die Zeilen in
-  [slice-092](../open/slice-092-traeger-inventur.md) (DoD 2 und §6) und in
-  [welle-11](../welle-11-traeger-aussage.md) (§3, Closure-Trigger) sind **lebende Plan-Artefakte**
-  und werden zur Closure dieses Slice nachgezogen. Sie jetzt zu ändern hieße, eine heute wahre
-  Aussage vorab falsch zu machen.
-- **Der gemessene Preis ist eine Untergrenze.** Die 91.36 s stammen aus einem **unmutierten**
-  Lauf bei warmem Docker-Cache — das ist exakt der Preis des Grün-Vorlaufs. Der Fall selbst
-  mutiert eine Quelldatei und erzwingt damit den Neubau, den `make artifact` in `full-smoke`
-  anstößt; sein Lauf ist teurer. Um wieviel, misst der Implementer
-  am fertigen Fall — eine Schätzung dazu stünde hier ohne Kommando.
+- **Fünf lebende Artefakte zählen die Zulassungs-Liste des Treibers auf; mit dem neuen Arm ist
+  jede dieser Aufzählungen unvollständig.** Gezählt wird über eine **benannte Eigenschaft**, denn
+  ohne sie ist die Zahl nicht prüfbar, sondern nur bestreitbar. Die Eigenschaft: *ein lebendes,
+  repo-eigenes Markdown-Artefakt, das die Modi von `failure_form` in einer Zeile aufzählt* — der
+  Prüfbereich ist der von
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert).
+  Das Kommando gibt genau diese Menge aus (Stand 2026-08-23):
+
+  ```sh
+  grep -rlE 'test-bats.*ci-lint' $(git ls-files '*.md' ':!docs/reviews/**' \
+    ':!docs/plan/planning/done/**' ':!.harness/baseline/**' ':!*slice-093-*')
+  ```
+
+  → **5** Dateien. Der letzte Ausschluss nimmt diese Datei heraus: sie **zitiert** das Muster,
+  statt die Modi aufzuzählen, und liegt damit außerhalb der Eigenschaft, über die gezählt wird.
+  Die Teilung in ihre zwei Behandlungs-Klassen ist ebenso mechanisch, weil nur die eine Klasse
+  daneben `full-smoke` nennt:
+
+  - **Drei, für die die Lücke der Gegenstand ist** (dieselbe Liste, `| xargs grep -l 'full-smoke'`
+    → **3**). Die Grenze in
+    [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) **bleibt
+    stehen** — *Accepted* und damit immutabel ([`AGENTS.md`](../../../../AGENTS.md) §3.4; eine
+    Korrektur wäre eine Folge-ADR mit Supersedes, kein Slice-Nebenprodukt). Die Zeilen in
+    [slice-092](../open/slice-092-traeger-inventur.md) (DoD 2 und §6) und in
+    [welle-11](../welle-11-traeger-aussage.md) (§3, Closure-Trigger) sind lebende Plan-Artefakte
+    des Planners; ihr Nachzug ist **Folgepflicht mit Träger** (§7).
+  - **Zwei, für die die Aufzählung nur der Beleg ist** (dieselbe Liste,
+    `| xargs grep -L 'full-smoke'` → **2**).
+    [slice-072](../open/slice-072-adr-verweist-nicht-auf-lifecycle.md) §4 und
+    [slice-075](../open/slice-075-regelwerk-verweis-linkpflicht.md) §4 begründen mit ihr, dass
+    kein Fall in `test/mutations/` einen `docs-check`-Wächter binden kann. **Diese Aussage bleibt
+    wahr** — einen `docs-check`-Arm gibt es weiterhin nicht
+    (`grep -c 'docs-check)' harness/tools/mutate.sh` → **0**); überholt ist allein ihr
+    Beleg-Satz. Fremde Slices: der Nachzug gehört ihrem eigenen Schnitt, nicht diesem (§7).
+
+  **Warum die Eigenschaft vor der Zahl steht.** Über *„wer spricht über die `full-smoke`-Lücke"*
+  gezählt sind es drei, über *„wer zählt die Modi auf"* fünf. Beide Sätze sind mit einem Kommando
+  belegbar und widersprechen einander nur, solange keiner sagt, worüber er zählt.
+- **Der gemessene Preis ist der des Grün-Vorlaufs — der Fall-Lauf liegt darunter, nicht darüber.**
+  Ein Fall-Lauf bricht am getroffenen Wächter ab, statt bis zum Ende durchzulaufen: über demselben
+  Baum am 2026-08-23, `/usr/bin/time -f 'FULLSMOKE_SECONDS=%e' make full-smoke` → **89.66 s** bei
+  Exit 0 unmutiert gegen **48.56 s** bei Exit 2 mit der Mutation aus
+  `test/mutations/152-cpp-lint-schichtfilter.sh`. Der Vorlauf ist damit der teure Teil, und er
+  fällt **einmal** je Lauf an, nicht je Fall. Was daraus **nicht** folgt: dass jeder künftige Fall
+  billiger sei. Die Ersparnis hängt daran, wie weit vorn im Skript der getroffene Wächter steht —
+  ein Wächter am Ende zahlt nahezu den vollen Lauf. Beide Zahlen gelten für diese Maschine und
+  diesen Cache-Zustand; sie sind eine Größenordnung, kein Vertrag.
 - **Der kalte Cache ist der ungünstige Fall, und er trifft CI.** Dort laufen `full-smoke` und
   `mutate` als **getrennte** Jobs (`grep -n 'full-smoke\|mutate' .github/workflows/ci.yml`), die
   Wanduhr des Workflows wächst also nur um das, was der `mutate`-Job zulegt — nicht um die Summe.
-- **Was der Arm nicht leistet.** 73 Fehlschlag-Stellen in
-  [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) stehen 0 Fällen
-  gegenüber (§1, mit Kommando). Der Arm macht den **ersten** möglich; er inventarisiert nicht, und
+- **Was der Arm nicht leistet.** **73** Fehlschlag-Stellen in
+  [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh)
+  (`grep -c 'full-smoke: FEHLER' harness/tools/full-smoke.sh` → **73**) stehen **einem** Fall
+  gegenüber (`grep -l '^# verify: full-smoke' test/mutations/*.sh | wc -l` → **1**,
+  Stand 2026-08-23). Der Arm macht den **ersten** möglich; er inventarisiert nicht, und
   aus *ungelistet* folgt **nicht**, dass die jeweilige Eigenschaft anderswo ungeprüft wäre — viele
   dieser Stellen prüfen dieselbe Eigenschaft wie ein `make test`- oder `make smoke`-Wächter, der
   seinen Fall längst hat. Eine Regel *„jede Stelle bekommt einen Fall"* wäre eine andere
@@ -273,7 +316,155 @@ Falls; `make full-smoke` grün; Closure-Notiz mit Steering-Loop-Lerneintrag in e
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Was gilt.** Der Mutations-Treiber führt `full-smoke` als Modus, und ein Fall belegt im
+Standard-Lauf, dass dieser Modus wirklich rot färbt.
+[`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) trägt den Arm in seiner einzigen
+Zulassungs-Quelle — `sed -n '/^failure_form()/,/^}/p' harness/tools/mutate.sh | grep -cE
+'^[[:space:]]+[a-z*-]+\)'` → **7** Arme —, `test/mutations/152-cpp-lint-schichtfilter.sh` ist der
+Fall dazu (`grep -l '^# verify: full-smoke' test/mutations/*.sh | wc -l` → **1** von
+`ls test/mutations/*.sh | wc -l` → **145**), und
+[`test/mutate-driver.bats`](../../../../test/mutate-driver.bats) hält den teuren Sensor aus der
+impliziten Wahl (`grep -c '^@test "driver: narrow_sensor' test/mutate-driver.bats` → **5**, davon
+einer über den Wertebereich statt über eine Zuordnung). Alle vier Zahlen wandern mit dem Bestand
+und sind **kein** Erwartungswert
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2).
+
+**Die bewachte Eigenschaft lebt wirklich nur im Voll-E2E, und das ist gemessen statt behauptet.**
+Der Fall verankert den `HeaderFilterRegex` der emittierten `.clang-tidy` am Zeilenanfang, wo er
+den absoluten Container-Pfad nie trifft. Unter dieser Mutation bleiben `make test` (Exit 0) und
+`make smoke` (Exit 0) grün, `make full-smoke` wird rot (Exit 2) — die Probe, die §3 der Wahl des
+Wächters voranstellt, in beiden Richtungen gefahren. Damit ist `full-smoke` die schmalste
+ausreichende Stufe für diesen Fall und nicht die bequemste.
+
+**Der Closure-Trigger aus §5, Kriterium für Kriterium.**
+
+1. **DoD (1)–(3) erfüllt, jeder mit gefahrenem Kommando.** Bestätigt im
+   [Verifikations-Report](../../../reviews/2026-08-23-slice-093-verify.md) §2.1–§2.3.
+2. **Die beiden Rot-Läufe aus DoD 1 mit ihrer Ausgabe.** Die Gegenprobe (entfernter Arm → Abbruch
+   vor dem ersten Fall) steht dort im Volltext. Der Zahnlos-Lauf ist in seiner **Zählaussage**
+   fremdbelegt und als solche ausgewiesen; sein **Kern** — der zahnlos gemachte Wächter lässt
+   `make full-smoke` grün — ist mit zwei eigenen Sonden gemessen. Eine davon zeigt, dass der
+   Wächter ein Schranken-Paar ist; DoD (1) nennt das Rezept seitdem am Wächter statt an einer
+   seiner Bedingungen.
+3. **`make gates` grün, `make mutate` grün einschließlich des neuen Falls, `make full-smoke`
+   grün.** Belege unten unter *Gates*.
+4. **Review konform (Modul 10).** [Code-Review](../../../reviews/2026-08-23-slice-093-review.md)
+   (`8333424`): **frei**, 0 HIGH · 0 MEDIUM · 1 LOW · 0 INFO
+   (`grep -c '^### F-' docs/reviews/2026-08-23-slice-093-review.md` → **1**). Das LOW sitzt am
+   Plan, nicht am Code, und ist in §6 eingearbeitet.
+5. **Closure-Notiz mit Steering-Loop-Eintrag.** Diese Notiz; der Eintrag steht unten.
+
+**Wo der Liefergegenstand in der Historie liegt.** `git log --oneline --grep='slice-093' 5df80cb`
+zählt **7** Commits — der Stand gehört ins Kommando, sonst wandert die Zahl mit jedem weiteren
+Commit. Die Sache selbst liegt in **einem**: `569eec7` (`git show --stat 569eec7` → drei Dateien,
+`3 files changed, 67 insertions(+)`). Die Verdikte liegen in `8333424` und `5df80cb`; `0b19c10`
+und `268fe2f` sind reine Lifecycle-Moves, `87cfb6b` der Link-Zug danach. Wer den Slice sucht,
+findet ihn über diese Commits und **nicht** in der Roadmap:
+`grep -c 'slice-093' docs/plan/planning/in-progress/roadmap.md` → **0** (Exit 1), wie
+[`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
+Setzung 2 es für wellenlose Arbeit verlangt; Setzung 3 lässt auch die Closure spurlos an ihr
+vorbeigehen. Der Zustand ist das Verzeichnis.
+
+**Was der Slice nicht deckt — die Grenzen, die er für sich selbst gezogen hat.**
+
+- **Eine Zahl bleibt fremdbelegt.** Dass der Zahnlos-Lauf **genau einen** Befund über 145 Fälle
+  meldet, stammt aus dem Protokoll des Implementers. Wer sie selbst sehen will, zahlt einen
+  weiteren vollen Lauf der Größenordnung `MUTATE_SECONDS=1128.69`. Der Kern der Zusage hängt nicht
+  daran; die Zählung tut es.
+- **Der Wertebereichs-Test misst über eine gesampelte Eingabemenge**, nicht über alle möglichen
+  Zeichenketten: die realen `# expect:`-Zeilen des Bestands
+  (`sed -n 's/^# expect: //p' test/mutations/*.sh | wc -l` → **145**) plus Rand-Eingaben. Eine
+  künftige Verzweigung, die `full-smoke` nur für eine Eingabe außerhalb dieser Menge liefert,
+  bliebe unsichtbar. Er deckt damit jeden Fall, den der Bestand wirklich hat — nicht mehr.
+- **Der neue bats-Fall hat selbst keinen stehenden Mutations-Fall.** Der einzige Fall, der
+  `narrow_sensor` mutiert (`grep -ln 'narrow_sensor' test/mutations/*.sh` → genau eine Datei),
+  liefert einen Wert **innerhalb** des Bereichs und ließe ihn grün. Das ist die
+  *Haltbarkeits*-Seite, die [`AGENTS.md`](../../../../AGENTS.md) §3.6 ausdrücklich als
+  kuratiert-unvollständig führt.
+- **Die Laufzeit-Angabe im Kopf des Treibers hat keinen Sensor.** `make comment-claims` prüft, ob
+  ein genannter Sensor **existiert**, nicht ob eine Sekundenzahl stimmt. DoD (3) sagt das selbst.
+- **Der Arm inventarisiert nicht.** 73 Fehlschlag-Stellen, ein Fall (§6, mit Kommando). Eine Regel
+  *„jede Stelle bekommt einen Fall"* wäre ein anderer Schnitt mit einem anderen Preis.
+
+**Steering-Loop-Eintrag — geschärfte Regel.**
+
+**Eine Mengen-Aussage nennt die Eigenschaft, über die sie zählt, bevor sie ihre Zahl nennt.** Ohne
+die Eigenschaft ist die Zahl nicht prüfbar, sondern nur bestreitbar: zwei Leser konstruieren zwei
+Prädikate, beide belegen ihres mit einem Kommando, und beide Zahlen stimmen, ohne dass die
+Artefakte übereinstimmen.
+
+**Gemessen an diesem Slice.** §6 trug den Satz *„Die Menge ist vollständig aufgezählt"* über drei
+Orte. Über *„wer spricht über die `full-smoke`-Lücke"* gezählt sind es drei, über *„wer zählt die
+Modi von `failure_form` auf"* fünf; die Differenz sind
+[slice-072](../open/slice-072-adr-verweist-nicht-auf-lifecycle.md) und
+[slice-075](../open/slice-075-regelwerk-verweis-linkpflicht.md), deren eigentliche Aussage — es
+gibt keinen `docs-check`-Modus — **wahr bleibt**, während ihr Beleg-Satz überholt ist. Erst die
+geschriebene Eigenschaft macht die Menge mechanisch, und dann fällt auch ihre Teilung mechanisch:
+das Kommando in §6 gibt die fünf aus, `| xargs grep -l 'full-smoke'` trennt sie in drei und zwei.
+
+**Was [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 1 dabei nicht leistet.** Sie bindet die Zahl an ein Kommando, das *„genau sie"* ausgibt —
+und „genau sie" wird gegen das Prädikat des Schreibenden geprüft. Wo das Prädikat ungeschrieben
+bleibt, lässt sich zu **jeder** der beiden Zahlen ein passendes Kommando nachreichen; die Setzung
+schlägt nicht an, weil formal nichts fehlt. Die Verschärfung setzt eine Stufe davor an: erst das
+Prädikat, dann das Kommando, dann die Zahl.
+
+**Träger: der Architect, als dritte Setzung in
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)**
+([`AGENTS.md`](../../../../AGENTS.md) §3.8,
+[`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1). Ein ADR braucht
+sie nicht: sie **hebt** eine Beleg-Anforderung an und senkt keine Schwelle
+([`AGENTS.md`](../../../../AGENTS.md) §3.5;
+[`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
+hält *„Anheben → Steering-Loop"* fest). Eine neue Erinnerung braucht sie ebenfalls nicht: derselbe
+Eintrag führt einen Auflösungs-Trigger, der ohnehin fällig wird — nächster d-check-Pin-Sprung,
+früher sobald `grep -c 'structure' .d-check.yml` über **0** steigt.
+
+**Warum diese Notiz kein Träger ist.** Was in einer geschlossenen Slice-Datei steht, schlägt kein
+Lauf wieder auf; das ist am Bestand gemessen und in
+[slice-089](../done/slice-089-carveout-co-002-ueberfuehren.md) §7 mit Kommando und Nenner
+ausgeschrieben.
+**Und der Auslöser meldet sich nicht von selbst:** eine Phrase-Suche wie
+`grep -rn 'vollständig aufgezählt' …` findet nur die eine Formulierung und ist keine Aussage über
+die Menge der Vollständigkeits-Behauptungen — genau der Fehler, den die Regel behandelt. Der
+Auslöser ist deshalb der Architect-Lauf am Auflösungs-Trigger, nicht eine Suche.
+
+**Kein zweiter Eintrag für das Rot-Rezept, und das ist entschieden.** Dass ein Rot-Rezept den
+**Wächter** benennen muss und nicht eine seiner Bedingungen — ein Wächter, der auch *rot aus dem
+falschen Grund* fängt, ist mindestens ein Paar —, ist an **einem** Fall gemessen, und der Sensor
+selbst unterscheidet die zwei Zustände bereits: der Treiber meldet *„blieb GRUEN"* und *„falscher
+Grund"* als verschiedene Ausgänge. Der Fehlgriff saß im Rezept, nicht im Werkzeug; die Korrektur
+steht in DoD (1), wo der nächste Leser dieser Konstruktion hinsieht. **Trigger für die
+Eskalation:** ein zweiter Slice, dessen Rot-Rezept eine Bedingung statt eines Wächters benennt —
+dann gehört die Sache in denselben Architect-Lauf, an
+[`AGENTS.md`](../../../../AGENTS.md) §3.6.
+
+**Offen, mit Träger.**
+
+| Posten | Träger |
+|---|---|
+| [slice-092](../open/slice-092-traeger-inventur.md) (Zeilen 124 und 211) und [welle-11](../welle-11-traeger-aussage.md) (Zeile 151) führen `grep -c 'full-smoke' harness/tools/mutate.sh` → **0**; seit `569eec7` gibt dasselbe Kommando **7** aus | **Planner**, eigener Lauf, sofort fällig. Beide gehören ihm; das Kommando aus §6 nennt sie |
+| [slice-072](../open/slice-072-adr-verweist-nicht-auf-lifecycle.md) §4 und [slice-075](../open/slice-075-regelwerk-verweis-linkpflicht.md) §4 belegen eine wahre Aussage mit einer überholten Aufzählung | **ihr eigener Schnitt** — fremde Slices, und ihre Trigger-Aussage bricht nicht. Wer sie aufschlägt, zieht den Beleg-Satz nach |
+| Die dritte Setzung in [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) | **Architect**, an dessen bereits fälligem Auflösungs-Trigger — kein neuer Termin |
+| Die Grenze über der Fitness-Tabelle von [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) zählt die Modi ohne `full-smoke` auf | **kein Träger, und das ist entschieden**: *Accepted* und damit immutabel ([`AGENTS.md`](../../../../AGENTS.md) §3.4). Ihre **Pflicht** — Wächter *und* Fehlschlag-Muster — ist zur Hälfte eingelöst; wer die zwei Zeilen liefert, schuldet nur noch den Wächter |
+| Die Zählaussage des Zahnlos-Laufs bleibt fremdbelegt | **kein Träger, und das ist entschieden**: der Kern ist eigenständig gemessen, die Zählung kostet einen weiteren vollen Lauf, und kein DoD-Punkt fordert sie |
+| 73 Fehlschlag-Stellen, ein Fall | **kein Träger, und das ist entschieden**: §6 sagt selbst, dass eine Inventur ein anderer Schnitt mit einem anderen Preis wäre |
+
+**Gates.** Der [Verifikations-Lauf](../../../reviews/2026-08-23-slice-093-verify.md) hat sie über
+dem Baum bei `8333424` selbst gefahren, Exit-Codes getrennt erhoben: `make gates` **Exit 0**
+(`baseline-verify: v3.5.2 OK — 42 Dateien`, `d-check: 360 Datei(en) geprüft, 0 Befund(e)`, bats
+`1..144` mit **144** `ok` und **0** `not ok`, `comment-claims: 40 Datei(en) geprueft, 0
+Befund(e)`, `span-check` grün), `make mutate` **Exit 0** mit `mutate: 145 ok, 0 Befund(e)` und dem
+neuen Fall in Zeile 68, `make full-smoke` **Exit 0** über dem byte-gleichen Baum. Der Stempel band
+den Lauf an den Baum, nicht an eine Erinnerung:
+`bash harness/tools/working-tree-hash.sh` und `.harness/state/gates-passed.diffsha` waren danach
+byte-gleich, und `record-gates` schreibt ihn nur als **letzter** Prerequisite grüner Gates
+([`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)).
+Die Dateizahl des Doku-Gates wandert mit dem Markdown-Bestand und ist **kein** Erwartungswert
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2). Diese Notiz, der `done/`-Move und der Link-Zug danach verschieben den Stempel erneut;
+der Lauf, der ihn wieder bindet, gehört zu ihnen.
 
 ## 8. Sub-Area-Modus-Begründung
 
