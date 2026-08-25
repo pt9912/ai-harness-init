@@ -235,6 +235,35 @@ STUB
   rm -rf "$dir"
 }
 
+# Die Verweigerung selbst: ein Log-Ziel UNTER dem Repo muss FALLEN. Der Fall darueber
+# misst die Lage, die `mktemp -d` liefert, und erreicht den case-Zweig nie — unter dem
+# hier geltenden $TMPDIR zeigt `mktemp -d` nach /tmp, und im bats-Container ist das Repo
+# als /code zusaetzlich :ro gemountet, ein Verzeichnis darunter entstuende dort gar
+# nicht. Ein mktemp-Stub auf $PATH stellt die Bedingung her, unter der die Schranke
+# greift: dieselbe Technik wie der make-Stub im Vorlauf-Fall oben, und dieselbe Paarung
+# aus Lage und Verweigerung wie bei isolation_path.
+@test "driver: prepare_prerun_log VERWEIGERT ein Protokoll unter dem Repo" {
+  local iso stub
+  iso="$(mktemp -d)"; stub="$iso/bin"
+  mkdir -p "$stub" "$iso/baum/tmp.vorlauf"
+  # Der Stub liefert ein Verzeichnis unter dem $REPO, das der Aufruf unten setzt. Beide
+  # liegen im mktemp-Sandkasten, nicht im echten Baum — die Schranke raeumt ihr Argument
+  # weg, und das darf nur den Sandkasten treffen.
+  cat >"$stub/mktemp" <<STUB
+#!/usr/bin/env bash
+printf '%s\n' '$iso/baum/tmp.vorlauf'
+STUB
+  chmod +x "$stub/mktemp"
+  run env "PATH=$stub:$PATH" bash -c "source '$DRIVER' 2>/dev/null || true
+    REPO='$iso/baum'
+    prepare_prerun_log"
+  rm -rf "$iso"
+  [ "$status" -ne 0 ]
+  # Der Status allein traegt die Aussage nicht: ein gescheitertes `mktemp -d` faellt an
+  # derselben Stelle mit demselben Status. Erst die Meldung trennt die Schranke davon.
+  grep -qF 'das Vorlauf-Protokoll laege im Repo' <<<"$output"
+}
+
 @test "driver: das smoke-Muster trifft Fehlschlag-Zeilen, NICHT Fortschritts-Zeilen" {
   local form
   form="$(bash -c "source '$DRIVER' 2>/dev/null || true; failure_form smoke")"
