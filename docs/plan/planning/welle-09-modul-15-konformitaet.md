@@ -214,8 +214,8 @@ nur noch, was wirklich ausgeschlossen ist.
 | slice-068 | Repo | **Rollen-Arbeit läuft als Rolle**: die Konvention wird vollständig (was, nicht nur wie) + die Berichtsgröße, an der sie ablesbar ist — legt für die Matrix-Zelle *Token-Attribution × Repo* fest, dass ihre Belegart **zweigeteilt** ist: **beide Teile tragen ADR-Verdikt**, aus zwei verschiedenen ADRs und je **ohne** Auflösungs-Trigger — der Hintergrund-Teil das aus [`ADR-0021`](../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md), der Haupt-Kontext das aus [`ADR-0012`](../adr/0012-haupt-kontext-ohne-token-bilanz.md). Die Haupt-Kontext-Abweichung selbst hat slice-060 DoD (3) geliefert | keine `LH-*` (Dogfood-Prozessebene; im Slice begründet) |
 | slice-061 | Repo | **Doku-Konsistenz**: behauptete Befehle existieren (Block 4) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | slice-062 | **Tool** | **Entscheidung**: welche Modul-15-Regeln gehören in den emittierten Harness? (**nur** ADR — kein CR, gemessen in dessen §3) | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
-| [slice-087](in-progress/slice-087-emittierte-doku-tische-init-invariant.md) | **Tool** | **Vorarbeit**: **kein** emittiertes Dokument behauptet noch ein nicht Init-invariantes `make`-Ziel — die Ansprüche fallen emit-seitig, ein Wächter hält die Eigenschaft über den **Dokument-Satz**. Betroffen sind heute **drei** Dokumente: die zwei Gate-Tabellen und der Closure-Note-Reviewer-Skill (unten). Ohne ihn ist die Zelle *Doku-Konsistenz-Drift × Tool* nicht belegbar | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| slice-063 | **Tool** | **Beleg**: den mitgelieferten Träger von Block 4 im frischen Ziel wirksam machen und in beiden Richtungen belegen — setzt auf [slice-087](in-progress/slice-087-emittierte-doku-tische-init-invariant.md) auf | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
+| [slice-087](done/slice-087-emittierte-doku-tische-init-invariant.md) | **Tool** | **Vorarbeit**: **kein** emittiertes Dokument behauptet noch ein nicht Init-invariantes `make`-Ziel — die Ansprüche fallen emit-seitig, ein Wächter hält die Eigenschaft über den **Dokument-Satz**. Betroffen sind heute **drei** Dokumente: die zwei Gate-Tabellen und der Closure-Note-Reviewer-Skill (unten). Ohne ihn ist die Zelle *Doku-Konsistenz-Drift × Tool* nicht belegbar | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| slice-063 | **Tool** | **Beleg**: den mitgelieferten Träger von Block 4 im frischen Ziel wirksam machen und in beiden Richtungen belegen — setzt auf [slice-087](done/slice-087-emittierte-doku-tische-init-invariant.md) auf | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
 | slice-064 | beide | **Die Baseline-Aussage geradeziehen** + begrenzte Bestands-Stichprobe | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 
 **Die Reihenfolge ist die Aussage.** Erst die **Erfassung**, dann die Auswertung: ohne Spans hat
@@ -303,9 +303,9 @@ seine Stelle treten Re-Evaluierungs-Trigger. **Für das Closure heißt das:** di
 **Accepted**-Zustand von [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) belegt, nicht mit einem Ziel-Beleg — der Wert ist nach §3 in beiden
 Spalten zulässig (Präzedenz [`ADR-0012`](../adr/0012-haupt-kontext-ohne-token-bilanz.md)), und die
 Tool-Spalte ist damit vollständig belegbar: drei Zellen über die Entscheidung, eine über
-[slice-087](in-progress/slice-087-emittierte-doku-tische-init-invariant.md) → `slice-063`.
+[slice-087](done/slice-087-emittierte-doku-tische-init-invariant.md) → `slice-063`.
 
-**Zu [slice-087](in-progress/slice-087-emittierte-doku-tische-init-invariant.md) (Tool, Vorarbeit) — und
+**Zu [slice-087](done/slice-087-emittierte-doku-tische-init-invariant.md) (Tool, Vorarbeit) — und
 warum er Mitglied ist.** Die Emission von Block 4 hängt an einer Bedingung, die nicht die
 Doc-Gate-Konfiguration betrifft, sondern die **emittierten Dokumente**: keines von ihnen darf ein
 Ziel behaupten, das die **Init-Phase** nicht selbst schreibt. **Die Bedingung ist eine Regel über
@@ -332,7 +332,7 @@ grün **und** ein eingeschmuggelter Drift, der `make doc-targets` mit der benann
 `gate-phantom` rot färbt, samt Rücknahme. Dazwischen liegt die Konfiguration, die den Träger
 überhaupt reden lässt (slice-062 §6). **Zwei Bedingungen hängen an ihm, und beide sind
 gemessen:** sein Eintritt fragt
-[slice-087](in-progress/slice-087-emittierte-doku-tische-init-invariant.md) ab, nicht nur slice-062 — vor
+[slice-087](done/slice-087-emittierte-doku-tische-init-invariant.md) ab, nicht nur slice-062 — vor
 der Vorarbeit meldet der Träger Grundrauschen, und ein Beleg, der immer rot ist, ist keiner. Und
 er schuldet **beide** Bootstrap-Varianten: `make full-smoke` fährt heute beide (`--lang go` und
 sprachlos), zieht im sprachlosen Repo aber anschließend `add-lang go` nach — die Lücke ist deshalb
