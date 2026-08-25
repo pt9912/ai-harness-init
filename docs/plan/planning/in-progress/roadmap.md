@@ -12,7 +12,19 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
-**[welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)**, geschnitten am 2026-07-28.
+**[welle-12 — Erfassungsschicht emittieren](../welle-12-erfassungsschicht-emittieren.md)**,
+geschnitten am 2026-08-25, **aktuell seit 2026-08-25**. Beide Trigger sind erfüllt (Plan-Datei §2,
+dort gemessen), und sie steht **neben** der Reihe welle-09 → welle-10 → welle-11, nicht hinter ihr.
+Zielmeilenstein **M6**. Slices: `slice-094` bis `slice-099`, alle sechs geschnitten und in `open/`;
+Reihenfolge und Trigger stehen in der Plan-Datei, nicht hier.
+
+**[welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)**, geschnitten am 2026-07-28
+— **angefangen, nicht abschließbar**: ihre Closure hängt an drei Mitgliedern, die §4 der Welle
+benennt und die nie geschnitten wurden
+(`ls docs/plan/planning/*/ | grep -cE '^slice-(061|063|064)-'` → **0**). Ohne sie bleiben zwei
+Zellen der Konformitäts-Matrix leer, und §3 der Welle nennt eine leere Zelle einen offenen Trigger.
+Ihre geschnittenen Mitglieder liegen sämtlich in `done/`; was fehlt, ist eigene Arbeit, keine
+fremde Vorbedingung.
 
 **Slices:** in `done/` liegen `slice-059` (Erfassung) · `slice-060` (Rollen-Achse) ·
 `slice-066` (Token-Bilanz) · `slice-068` (Rollen-Arbeit läuft als Rolle) ·
@@ -60,16 +72,6 @@ tauscht genau ihn; der Freshness-Audit wächst upstream zudem von drei auf siebe
 `slice-092`, alle drei geschnitten und in `open/`. Closure-Kriterium und der Stand der
 Emissions-Frage nach [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
 stehen in der Plan-Datei, nicht hier.
-
-**[welle-12 — Erfassungsschicht emittieren](../welle-12-erfassungsschicht-emittieren.md)**,
-geschnitten am 2026-08-25 — **geplant, und die einzige der geplanten Wellen, deren Trigger heute
-schon erfüllt ist**. Sie steht **neben** der Reihe welle-09 → welle-10 → welle-11, nicht hinter
-ihr: **Trigger:** [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
-liegt *Accepted* vor **und** [slice-093](../done/slice-093-mutations-treiber-erreicht-full-smoke.md)
-liegt in `done/` — beides ist es. Dass keine der drei Wellen der Reihe Vorbedingung ist, steht in
-der Plan-Datei **gemessen** statt vermutet (dort §2). Zielmeilenstein **M6**. Slices:
-`slice-094` bis `slice-099`, alle sechs geschnitten und in `open/`. Closure-Kriterium in der
-Plan-Datei, nicht hier.
 
 Prospektive Kandidaten (nur mit **beobachtbarem Trigger**, Modul 6). **Diese Tabelle führt nur, was
 *noch nicht* geschnitten ist** — ein geschnittener Slice steht unter *Aktuelle Welle*, sonst wird
