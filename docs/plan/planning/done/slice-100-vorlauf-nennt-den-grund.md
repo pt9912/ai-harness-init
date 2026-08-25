@@ -394,9 +394,10 @@ Abbruch-Zweig an dasselbe `show_tail`, das der Fall-Pfad benutzt
 `/dev/null 2>&1` schicken, ist genau die aus dem Vorlauf verschwunden
 (`grep -c '>/dev/null 2>&1' harness/tools/mutate.sh` → **1**; der verbliebene Treffer ist die
 Bestands-Stelle am `sha256sum -c`, die §3 ausdrücklich stehen lässt). Die Ursachen-Behauptung
-*„Erst den Baum gruen bekommen"* steht in keinem Code- und keinem Konfigurations-Artefakt mehr;
-die **2** verbliebenen Zeilen stehen in diesem Plan und zitieren die alte Ausgabe
-(`git grep -n 'Erst den Baum gruen' -- '*.sh' '*.bats' '*.md' '*.yml' ':(exclude)docs/reviews' | wc -l`).
+*„Erst den Baum gruen bekommen"* steht in keinem Skript und keiner Konfiguration mehr:
+`git grep -c 'Erst den Baum gruen' -- '*.sh' '*.bats' '*.yml' 'Makefile' | wc -l` → **0**. Wo der
+Satz noch auftaucht, zitiert ihn ein Dokument — dieser Plan und die Review-Berichte —, und eine
+Suche nach der getilgten Formulierung wird in genau diesen Zitaten fündig, nicht am Gegenstand.
 Alle Zahlen wandern mit dem Bestand und sind **kein** Erwartungswert
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2).
@@ -529,7 +530,7 @@ Eintrag bisher vergeben wurde.
 
 **Warum nicht *„Träger: der Architect"*.** Die Form ist an diesem Repo gemessen **kein** Träger.
 Wörtlich vergeben ist sie in **3** Closure-Notizen unter `done/`
-(`git grep -l 'Träger: der Architect' -- 'docs/plan/planning/done/*.md' | wc -l`) — eine
+(`git grep -l '^\*\*Träger: der Architect' -- 'docs/plan/planning/done/*.md' | wc -l`) — eine
 **Untergrenze**, denn ob eine weitere Notiz dasselbe in anderer Formulierung tut, ist ein Urteil
 und kein Muster ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 führt dieselbe Lage in ihrer Begründung). Keiner der drei Adressaten hat sich bewegt:

@@ -57,7 +57,7 @@ wo ihn der nächste Lauf findet.**
 ### Die Ausgangslage: drei vergebene Postens, kein bewegtes Artefakt
 
 Drei Closure-Notizen unter `docs/plan/planning/done/` vergeben die Trägerschaft wörtlich an den
-Architect (`git grep -l 'Träger: der Architect' -- 'docs/plan/planning/done/*.md' | wc -l` → **3**:
+Architect (`git grep -l '^\*\*Träger: der Architect' -- 'docs/plan/planning/done/*.md' | wc -l` → **3**:
 [slice-087](../done/slice-087-emittierte-doku-tische-init-invariant.md),
 [slice-093](../done/slice-093-mutations-treiber-erreicht-full-smoke.md),
 [slice-094](../done/slice-094-ein-programm-ein-einstiegspunkt.md)). Die Zahl ist eine
@@ -145,7 +145,7 @@ dabei, statt sich hinter einem anderen zu verstecken.
       wird, steht wieder an dem Ort, den kein Lauf aufschlägt — der Fehler, den dieser Slice
       behandelt, in seiner eigenen Ausführung wiederholt.
       **Rot:** `git diff --stat <basis> -- docs/plan/planning/done/` liefert eine nicht-leere
-      Ausgabe; heute ist der Prüfbereich **45** Dateien mit einem Steering-Loop-Eintrag
+      Ausgabe; heute ist der Prüfbereich **46** Dateien mit einem Steering-Loop-Eintrag
       (`grep -rl 'Steering-Loop-Eintrag' docs/plan/planning/done/*.md | wc -l`).
 
 ## 3. Plan (vor Code)
