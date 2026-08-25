@@ -77,14 +77,30 @@ Prüfbereichs ([slice-070](slice-070-comment-claims-pruefbereich.md)).
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `harness/tools/mutate.sh` | update | Kopf-Parsing um das neue Feld, Bedingung 4 auf den Fehlschlag-Text |
-| `test/mutate-driver.bats` | update | die neue Bedingung als bats-Fall — der Treiber ist heute nur teilweise bewacht, und das steht in seinem eigenen Kopf |
-| `test/mutations/` | neu + ggf. update | der Zahn aus DoD (2); der Umfang der Bestands-Migration entscheidet DoD (3) |
+| `harness/tools/mutate.sh` | update | Kopf-Parsing um das neue Feld, Bedingung 4 auf den Fehlschlag-Text. **Zugewiesener Kommentar-Nachzug** ([`AGENTS.md`](../../../../AGENTS.md) §3.7): der Kommentar über dem Abbruch-Zweig des Grün-Vorlaufs sagt *„Woran er lag, steht in den Zeilen darunter"* und verspricht damit, was `tail -n 12` nicht hält — bei einem Abbruch mitten in einem Docker-Build steht die Ursache nicht zwangsläufig in den letzten zwölf Zeilen. Der Satz gehört auf das eingeschränkt, was der Tail trägt; er steht an derselben Datei, die dieser Slice ohnehin anfasst |
+| `test/mutate-driver.bats` | update | die neue Bedingung als bats-Fall — der Treiber ist heute nur teilweise bewacht, und das steht in seinem eigenen Kopf. Dazu ein Fall für den Vorlauf-Zweig, der einen unbekannten `# verify:`-Modus meldet: `grep -n 'green_prerun' test/mutate-driver.bats` → **1** Aufrufer, und er ruft mit dem bekannten Modus `test`; der Meldezweig wird von keinem Fall erreicht |
+| `test/mutations/` | neu + ggf. update | der Zahn aus DoD (2); der Umfang der Bestands-Migration entscheidet DoD (3). Dazu der Anker von `test/mutations/72-mutate-isolation-im-repo.sh` (siehe unten) |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | die Festlegung aus DoD (3) in [`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) |
 
-**Ist-Messung vor dem Code** (Modul 9 §4): wie viele Fälle des Bestands nennen einen Wächter, der
-**mehr als eine** Zusicherung trägt? Das ist die Größe des realen Risikos — heute geschätzt,
-nicht gezählt.
+**Ist-Messung vor dem Code** (Modul 9 §4), zwei Fragen an denselben Bestand: **(a)** wie viele
+Fälle nennen einen Wächter, der **mehr als eine** Zusicherung trägt? Das ist die Größe des realen
+Risikos — heute geschätzt, nicht gezählt. **(b)** wie viele Fälle tragen einen `sed`-Anker, der
+**mehr als eine** Zeile trifft? Diese zweite Frage ist die Spiegelseite der ersten: dort deckt der
+Wächter mehr ab, als der Fall behauptet, hier bewegt der Eingriff mehr, als der Fall behauptet.
+
+**Ein Fall des Bestands trägt (b) bereits belegt.**
+`test/mutations/72-mutate-isolation-im-repo.sh` sedet den Anker `^      return 1$` und nennt ihn
+im Kommentar *„einmalig, geprueft"*; er trifft **3** Stellen
+(`grep -c '^      return 1$' harness/tools/mutate.sh`). Der Fall bleibt für seinen eigenen Zweck
+grün — seine Bedingung 4 verlangt nur den erwarteten Wächter in der Fehlschlag-Ausgabe —, aber die
+Einmaligkeit war ein Bestandszufall: sechs Leerzeichen sind Verschachtelungstiefe, keine
+Eigenschaft des bewachten Verhaltens, und die nächste Verzweigung auf dieser Tiefe bricht sie
+erneut. `test/mutations/77-mutate-abbruch.sh` macht im selben Verzeichnis die
+haltbare Form vor: er bindet seinen Anker an einen **Bereich** statt an ein Layout. Auf Fall 72
+übertragen ist das `/^isolation_path()/,/^}/` als Adressbereich des `sed`; darin trifft derselbe
+Anker genau **1** Stelle
+(`sed -n '/^isolation_path()/,/^}/p' harness/tools/mutate.sh | grep -c '^      return 1$'`), und
+zwar weil die Funktion die Grenze zieht — nicht, weil der Bestand gerade so aussieht.
 
 ## 4. Trigger
 
