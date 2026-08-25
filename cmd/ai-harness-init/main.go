@@ -340,7 +340,7 @@ func bootstrap(targetDir, lang, name, arch string, src sources, stdout, stderr i
 		Image:  envOr("DCHECK_IMAGE", emit.DefaultImage),
 		Digest: envOr("DCHECK_DIGEST", emit.DefaultDigest),
 	}
-	if err := emitAll(targetDir, skelDir, tag, name, lang, version, arch, hasLang, opts, src.archMK); err != nil {
+	if err := emitAll(targetDir, skelDir, tag, name, lang, version, arch, hasLang, opts, src.archMK, stderr); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
@@ -359,7 +359,11 @@ func bootstrap(targetDir, lang, name, arch string, src sources, stdout, stderr i
 // (Enforce/Makefile/BaselineVerify/DocGate-Fragmente) oder skip-if-present (Templates/
 // README/Commands/Skelett). Erste fehlgeschlagene Stufe gewinnt; bootstrap druckt den
 // Fehler einmal. DocGate zuerst (Docker-Lauf = reales Fehlerrisiko).
-func emitAll(targetDir, skelDir, tag, name, lang, version, arch string, hasLang bool, opts emit.Options, archMK emit.PrintMK) error {
+//
+// notice ist der Kanal fuer einen Schritt, der AUSFAELLT, ohne den Bootstrap zu
+// beenden — heute nur die Erfassungsschicht (ADR-0022 Festlegung 5a): scheitert die
+// Ablage des Traegers, nennt Enforce dort den Grund und gibt keinen Fehler zurueck.
+func emitAll(targetDir, skelDir, tag, name, lang, version, arch string, hasLang bool, opts emit.Options, archMK emit.PrintMK, notice io.Writer) error {
 	if err := emit.DocGate(context.Background(), targetDir, opts); err != nil {
 		return err
 	}
@@ -376,7 +380,12 @@ func emitAll(targetDir, skelDir, tag, name, lang, version, arch string, hasLang 
 	// Durchsetzung (slice-031/032): Gate-Nachweis + Stop-Hook + Command-Guard + awk +
 	// .harness/.gitignore. SPRACH-AGNOSTISCH (slice-037): der Guard traegt den Boden
 	// gebacken; das Sprach-Set (blocked/<lang>) droppt wireLang unten, nicht Enforce.
-	if err := emit.Enforce(targetDir); err != nil {
+	//
+	// UND DIE ERFASSUNG (slice-096, ADR-0022 Festlegung 4): Traeger, Hook-Wrapper und
+	// Erfassungs-Block teilen diese eine Emissionsstelle, weil sie EINE Entscheidung
+	// sind. Scheitert die Ablage, schreibt Enforce keinen der drei, nennt den Grund auf
+	// notice und gibt kein Fehler zurueck — der Bootstrap endet erfolgreich.
+	if err := emit.Enforce(targetDir, notice); err != nil {
 		return err
 	}
 	// Workflow-Commands (slice-033): die Slash-Command-Anleitung, sprach-agnostisch.

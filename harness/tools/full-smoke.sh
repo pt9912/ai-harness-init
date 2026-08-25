@@ -102,6 +102,104 @@ if [ "$recomputed" != "$(cat "$stamp_file")" ]; then
 	exit 1
 fi
 
+# slice-096 (LH-FA-10 / ADR-0022 Festlegung 1 und 5): DER TRAEGER LIEGT IM ZIEL.
+# Der Nachbau dessen, was `make span-check` fuer den DOGFOOD leistet — am gebootstrappten
+# ZIEL und ueber den Weg, den das Agenten-Werkzeug dort wirklich nimmt:
+#   (a) der Traeger liegt im gitignorierten Zustands-Bereich und ist ausfuehrbar,
+#   (b) die emittierte .claude/settings.json ruft den WRAPPER, nie den Traeger direkt —
+#       eine Konfiguration, die direkt auf den gitignorierten Ort zeigte, waere ein Hook
+#       auf ein fehlendes Programm, sobald ein frischer Klon ihn nicht mitbringt,
+#   (c) der Wrapper erzeugt aus einer synthetischen Payload einen Span mit der VOLLEN
+#       Pflicht-Spalte (spec/spezifikation.md §5) — nicht mit einer Auswahl,
+#   (d) `git check-ignore` IM ZIEL bestaetigt dessen Ablageort: ein Span im getrackten
+#       Baum verschoebe dort den working-tree-hash bei jedem Tool-Call (MR-003),
+#   (e) ohne Traeger schweigt der Wrapper und endet mit 0 — der Fall des frischen Klons.
+#
+# Nur der ECHTE Lauf kann das zeigen: das laufende Bild eines Go-Testlaufs ist das
+# Test-Binary und taugt nicht als Traeger. Aufgerufen wird die Pruefung fuer BEIDE
+# Bootstrap-Varianten — die Erfassung ist sprach-agnostisch, ein Zahn in nur einer
+# Variante belegte das nicht.
+#
+# Rot-Gegenbeispiel: test/mutations/160 legt den Traeger ohne Ausfuehrungsrecht ab.
+traeger_im_ziel() {
+	local repo="$1" kennung="$2"
+	local carrier="$repo/.harness/state/bin/ai-harness-init"
+	local wrapper="$repo/.claude/hooks/span-emit.sh"
+
+	if [ ! -x "$carrier" ]; then
+		echo "full-smoke: FEHLER — $kennung: der Traeger fehlt oder ist nicht ausfuehrbar (.harness/state/bin/ai-harness-init) — der Hook startet ihn je Tool-Call (slice-096)." >&2
+		exit 1
+	fi
+	if [ ! -x "$wrapper" ]; then
+		echo "full-smoke: FEHLER — $kennung: der Hook-Wrapper fehlt oder ist nicht ausfuehrbar (.claude/hooks/span-emit.sh) — er entsteht mit dem Traeger (slice-096)." >&2
+		exit 1
+	fi
+	local hook_missing="" marker
+	for marker in '"PostToolUse"' '"PostToolUseFailure"' '"SubagentStart"' '.claude/hooks/span-emit.sh'; do
+		if ! grep -qF -- "$marker" "$repo/.claude/settings.json"; then
+			hook_missing="$hook_missing [$marker]"
+		fi
+	done
+	if [ -n "$hook_missing" ]; then
+		echo "full-smoke: FEHLER — $kennung: die emittierte settings.json traegt den Erfassungs-Eintrag nicht:$hook_missing (slice-096)." >&2
+		exit 1
+	fi
+	if grep -qF -- '.harness/state/bin' "$repo/.claude/settings.json"; then
+		echo "full-smoke: FEHLER — $kennung: settings.json zeigt DIREKT auf den gitignorierten Ablageort statt auf den Wrapper (LH-QA-01)." >&2
+		exit 1
+	fi
+
+	# Eigener Strom-Name je Variante, damit die zwei Laeufe einander nie ueberschreiben.
+	local stream="fullsmoke$kennung"
+	local payload="{\"hook_event_name\":\"PostToolUse\",\"tool_name\":\"Bash\",\"tool_use_id\":\"tu_fs\",\"session_id\":\"$stream\",\"tool_input\":{\"command\":\"make gates\"}}"
+	local span_out="" span_rc=0
+	span_out="$( cd "$repo" && CLAUDE_PROJECT_DIR="$repo" bash "$wrapper" <<<"$payload" )" || span_rc=$?
+	if [ "$span_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: der Erfassungs-Hook endete mit Exit $span_rc — ein Nicht-Null-Hook blockt den Tool-Call, den er beobachten soll (ADR-0011 Festlegung 6)." >&2
+		exit 1
+	fi
+	if [ -n "$span_out" ]; then
+		echo "full-smoke: FEHLER — $kennung: der Erfassungs-Hook schrieb auf stdout — dort liegt der Entscheidungs-Kanal: [$span_out]" >&2
+		exit 1
+	fi
+	local file=".harness/state/spans/$stream.jsonl"
+	if [ ! -s "$repo/$file" ]; then
+		echo "full-smoke: FEHLER — $kennung: kein Span im Ziel ($file fehlt oder ist leer) — der abgelegte Traeger schreibt nicht (LH-FA-10 Happy Path)." >&2
+		exit 1
+	fi
+	# Die VOLLE Pflicht-Spalte, dieselbe Liste wie in harness/tools/span-check.sh: eine
+	# Auswahl liesse ausgerechnet die Felder ungeprueft, die zuletzt hinzukamen.
+	local line feld
+	line="$(cat "$repo/$file")"
+	for feld in '"seq":1' '"ts":' '"event":' '"tool":"Bash"' '"tool_use_id":"tu_fs"' \
+	            '"session":' '"agent":' '"agent_type":' '"agent_role":' '"slice":' '"requirement":' \
+	            '"adr":' '"branch":' '"commit":' '"status":"ok"' '"program":"make"'; do
+		if ! grep -qF -- "$feld" <<<"$line"; then
+			echo "full-smoke: FEHLER — $kennung: Pflichtfeld fehlt im Span des Ziels: $feld — $line" >&2
+			exit 1
+		fi
+	done
+	if ! ( cd "$repo" && git check-ignore -q "$file" ); then
+		echo "full-smoke: FEHLER — $kennung: der Span liegt im GETRACKTEN Baum des Ziels ($file) — jeder Tool-Call verschoebe dort den working-tree-hash (MR-003)." >&2
+		exit 1
+	fi
+
+	# (e) Ohne Traeger schweigt der Wrapper. Danach zuruecknehmen — der Rest des Smokes
+	# laeuft auf dem heilen Stand (dieselbe Disziplin wie bei den Zaehne-Beweisen unten).
+	mv "$carrier" "$carrier.beiseite"
+	local leer_out="" leer_rc=0
+	leer_out="$( cd "$repo" && CLAUDE_PROJECT_DIR="$repo" bash "$wrapper" <<<"$payload" 2>&1 )" || leer_rc=$?
+	mv "$carrier.beiseite" "$carrier"
+	if [ "$leer_rc" -ne 0 ] || [ -n "$leer_out" ]; then
+		echo "full-smoke: FEHLER — $kennung: ohne Traeger endet der Wrapper mit Exit $leer_rc und der Ausgabe [$leer_out] — er soll schweigen und mit 0 enden (slice-096)." >&2
+		exit 1
+	fi
+	rm -rf "${repo:?}/.harness/state/spans"
+	echo "full-smoke: OK — $kennung: Traeger + Wrapper + Hook-Eintrag liegen im Ziel; der Hook schrieb einen Span mit voller Pflicht-Spalte an einem git-ignorierten Ort und schweigt ohne Traeger."
+}
+
+traeger_im_ziel "$tmprepo" "golang"
+
 # slice-032 (LH-FA-06/LH-QA-03): der emittierte Command-Guard muss real greifen —
 # nicht nur praesent sein. Wir fuettern ihn mit Hook-JSON: die go-Toolchain (BLOCKED-
 # Set --lang go) wird geblockt, ein make-Target durchgelassen. Dieser full-smoke-Schritt
@@ -202,6 +300,11 @@ if [ -e "$tmprepo_doc/tools/harness/blocked" ]; then
 	echo "full-smoke: FEHLER — sprachloser Init legte tools/harness/blocked/ an (soll nur mit --lang; slice-036)." >&2
 	exit 1
 fi
+
+# slice-096, zweite Variante: die Erfassung ist SPRACH-AGNOSTISCH — sie beobachtet
+# Werkzeug-Aufrufe, und die entstehen auch in einem Ziel ohne Skelett. Dieselbe Pruefung
+# wie oben: ein Zahn in nur einer Variante liesse die andere ungemessen.
+traeger_im_ziel "$tmprepo_doc" "sprachlos"
 
 # slice-037 (LH-FA-04/ADR-0007): add-lang ergaenzt dem gebootstrappten (hier: sprachlosen)
 # Repo ein Sprachmodul WIEDERHOLBAR (Mono-Repo). Zwei Aufrufe (apps/api + apps/web) am

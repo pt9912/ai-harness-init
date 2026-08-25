@@ -1,8 +1,16 @@
 package emit_test
 
 import (
+	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"io"
 	"os"
+	"path"
 	"path/filepath"
+	"reflect"
+	"sort"
 	"strings"
 	"testing"
 
@@ -18,7 +26,7 @@ import (
 // dieselbe Menge wie der Emit (Phase 4), sonst Teil-Bootstrap-Luecke.
 func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Enforce(dir); err != nil {
+	if err := emit.Enforce(dir, io.Discard); err != nil {
 		t.Fatalf("Enforce: %v", err)
 	}
 	for _, rel := range emit.EnforcePaths() {
@@ -61,7 +69,7 @@ func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 // eine leere Zusage — Claude ruft den Stop-Hook, make ruft record-gates.
 func TestEnforce_ScriptsExecutable(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Enforce(dir); err != nil {
+	if err := emit.Enforce(dir, io.Discard); err != nil {
 		t.Fatalf("Enforce: %v", err)
 	}
 	for _, rel := range []string{
@@ -262,7 +270,7 @@ func TestEnforce_Convergent(t *testing.T) {
 		t.Fatalf("vorbereiten: %v", err)
 	}
 	// konvergent: kein Refuse, kanonisch neu (Drift geheilt).
-	if err := emit.Enforce(dir); err != nil {
+	if err := emit.Enforce(dir, io.Discard); err != nil {
 		t.Fatalf("Enforce (konvergent darf nicht refusen): %v", err)
 	}
 	if got := mustReadString(t, dst); got == "adopter-modifiziert" {
@@ -274,5 +282,221 @@ func TestEnforce_Convergent(t *testing.T) {
 	}
 	if info.Mode().Perm()&0o111 == 0 {
 		t.Errorf("nach konvergentem Re-Lauf Mode %v — richtiger Inhalt in nicht ausfuehrbarer Datei (L2)", info.Mode().Perm())
+	}
+}
+
+// captureHookInventory liest den BESTAND unter .claude/hooks/ im gebootstrappten Ziel.
+// Gemessen wird das Praefix samt Bestand, nicht ein geratener Dateiname: eine
+// Stichprobe auf einen Namen, den der Emit nie schreibt, koennte unter keiner Mutation
+// rot werden (AGENTS.md §3.6).
+func captureHookInventory(t *testing.T, dir string) []string {
+	t.Helper()
+	entries, err := os.ReadDir(filepath.Join(dir, filepath.FromSlash(".claude/hooks")))
+	if err != nil {
+		t.Fatalf(".claude/hooks lesen: %v", err)
+	}
+	names := make([]string, 0, len(entries))
+	for _, e := range entries {
+		names = append(names, e.Name())
+	}
+	sort.Strings(names)
+	return names
+}
+
+func sha256Of(t *testing.T, file string) string {
+	t.Helper()
+	data, err := os.ReadFile(file)
+	if err != nil {
+		t.Fatalf("%s lesen: %v", file, err)
+	}
+	sum := sha256.Sum256(data)
+	return hex.EncodeToString(sum[:])
+}
+
+// TestEnforce_ErfassungLiegtMitDemTraeger (LH-FA-10, ADR-0022 Festlegung 1/4/5):
+// laeuft die Traeger-Ablage durch, liegen im Ziel ALLE DREI — der Traeger im
+// gitignorierten Zustands-Bereich, der Hook-Wrapper unter .claude/hooks/ und der
+// Erfassungs-Block in .claude/settings.json.
+//
+// DIE BEDINGUNG STEHT IM WAECHTER, nicht in seinem Namen: der Zweig wird am notice-Kanal
+// ABGELESEN, nicht unterstellt. Im Zweig aus Festlegung 5(a) fehlen die drei ZULAESSIG —
+// dort misst TestEnforce_KeineErfassungOhneTraeger. Meldet notice hier etwas, ist die
+// Umgebung nicht der Gelingens-Zweig, und der Test sagt das laut statt still zu ueberspringen.
+//
+// Rot-Gegenbeispiele: test/mutations/156 (Traeger nicht abgelegt) · 157 (Wrapper
+// nicht emittiert) · 158 (Erfassungs-Block nie gesetzt).
+func TestEnforce_ErfassungLiegtMitDemTraeger(t *testing.T) {
+	dir := t.TempDir()
+	var notice bytes.Buffer
+	if err := emit.Enforce(dir, &notice); err != nil {
+		t.Fatalf("Enforce: %v", err)
+	}
+	if notice.Len() != 0 {
+		t.Fatalf("die Traeger-Ablage scheiterte in dieser Umgebung — der Gelingens-Zweig ist hier nicht messbar: %s", notice.String())
+	}
+
+	// (a) Der Traeger: seine Adresse ist der Ablageort, und er ist das LAUFENDE Bild —
+	// nicht irgendeine Datei mit dem richtigen Namen (ADR-0022 Festlegung 1).
+	image, err := os.Executable()
+	if err != nil {
+		t.Fatalf("os.Executable: %v", err)
+	}
+	carrier := filepath.Join(dir, filepath.FromSlash(emit.CarrierPath(image)))
+	info, err := os.Stat(carrier)
+	if err != nil {
+		t.Fatalf("der Traeger liegt nicht am Ablageort %s: %v", emit.CarrierPath(image), err)
+	}
+	if info.Mode().Perm()&0o111 == 0 {
+		t.Errorf("der Traeger liegt mit Mode %v — der Hook startet ihn je Tool-Call", info.Mode().Perm())
+	}
+	if got, want := sha256Of(t, carrier), sha256Of(t, image); got != want {
+		t.Errorf("der abgelegte Traeger ist nicht das laufende Bild (sha256 %s statt %s)", got, want)
+	}
+
+	// (b) Der Wrapper: der VOLLE Bestand unter dem Praefix gegen die erwartete Liste.
+	want := []string{"pretooluse-command-guard.sh", "span-emit.sh", "stop-require-gates.sh"}
+	if got := captureHookInventory(t, dir); !reflect.DeepEqual(got, want) {
+		t.Errorf(".claude/hooks/ traegt %v, erwartet %v", got, want)
+	}
+
+	// (c) Der Hook-Eintrag: eine INHALTS-Aussage ueber eine bestehende Datei — die drei
+	// verdrahteten Ereignisse und der Ruf auf den Wrapper (spec/spezifikation.md §5).
+	settings := mustReadString(t, filepath.Join(dir, filepath.FromSlash(".claude/settings.json")))
+	if !json.Valid([]byte(settings)) {
+		t.Fatalf("die emittierte settings.json ist kein gueltiges JSON:\n%s", settings)
+	}
+	for _, marker := range []string{
+		`"PostToolUse"`, `"PostToolUseFailure"`, `"SubagentStart"`,
+		`.claude/hooks/span-emit.sh`,
+	} {
+		if !strings.Contains(settings, marker) {
+			t.Errorf("settings.json traegt den Erfassungs-Eintrag %q nicht:\n%s", marker, settings)
+		}
+	}
+	// Der Erfassungs-Hook ruft den WRAPPER, nie den Traeger direkt: eine Konfiguration,
+	// die direkt auf den gitignorierten Ablageort zeigte, waere ein Hook auf ein
+	// fehlendes Programm, sobald ein frischer Klon ihn nicht mitbringt (LH-QA-01).
+	if strings.Contains(settings, emit.CarrierPath(image)) {
+		t.Errorf("settings.json zeigt direkt auf den Ablageort des Traegers statt auf den Wrapper:\n%s", settings)
+	}
+}
+
+// TestEnforce_KeineErfassungOhneTraeger (LH-QA-01 woertlich, ADR-0022 Festlegung 5a):
+// scheitert die Ablage des Traegers, wird WEDER Traeger NOCH Wrapper NOCH Hook-Eintrag
+// geschrieben, der Bootstrap nennt den Grund und endet ERFOLGREICH — das Ziel ist ohne
+// Erfassung vollstaendig.
+//
+// Das Scheitern wird HERGESTELLT, nicht abgewartet: der Ablageort wird durch eine Datei
+// blockiert, wo ein Verzeichnis entstehen muesste. Ein Fehlerzweig, den kein Test
+// erreicht, ist der unerprobte Pfad, an dem fail-open-Zusagen still brechen.
+//
+// Rot-Gegenbeispiel: test/mutations/155 hebt die Kopplung auf und schreibt den
+// Hook-Eintrag unbedingt.
+func TestEnforce_KeineErfassungOhneTraeger(t *testing.T) {
+	dir := t.TempDir()
+	blocker := filepath.Join(dir, filepath.FromSlash(".harness/state/bin"))
+	if err := os.MkdirAll(filepath.Dir(blocker), 0o755); err != nil {
+		t.Fatalf("vorbereiten: %v", err)
+	}
+	if err := os.WriteFile(blocker, []byte("kein Verzeichnis\n"), 0o644); err != nil {
+		t.Fatalf("vorbereiten: %v", err)
+	}
+
+	var notice bytes.Buffer
+	if err := emit.Enforce(dir, &notice); err != nil {
+		t.Fatalf("der Bootstrap muss ohne Erfassung ERFOLGREICH enden, bekam: %v", err)
+	}
+
+	// Der Grund steht da — eine stille Degradierung waere dieselbe Klasse wie ein
+	// halluzinierter Gate: das Ziel behauptete Erfassung, die niemand ablegte.
+	if notice.Len() == 0 {
+		t.Error("der Bootstrap nennt den Grund nicht — LH-FA-10 verlangt: begruendet nichts abgelegt")
+	}
+
+	// Kein Traeger.
+	image, err := os.Executable()
+	if err != nil {
+		t.Fatalf("os.Executable: %v", err)
+	}
+	// Geprueft wird die ABWESENHEIT, nicht ein bestimmter Fehler: der blockierte
+	// Ablageort liefert ENOTDIR, ein leeres Ziel ENOENT — beide heissen „da liegt
+	// kein Traeger", und os.IsNotExist trifft nur den zweiten.
+	if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(emit.CarrierPath(image)))); err == nil {
+		t.Error("ohne gelungene Ablage liegt trotzdem ein Traeger am Ablageort")
+	}
+
+	// Kein Wrapper — wieder der VOLLE Bestand, nicht eine Stichprobe.
+	want := []string{"pretooluse-command-guard.sh", "stop-require-gates.sh"}
+	if got := captureHookInventory(t, dir); !reflect.DeepEqual(got, want) {
+		t.Errorf(".claude/hooks/ traegt ohne Traeger %v, erwartet %v", got, want)
+	}
+
+	// Kein Hook-Eintrag — und die uebrige Durchsetzung steht unveraendert.
+	settings := mustReadString(t, filepath.Join(dir, filepath.FromSlash(".claude/settings.json")))
+	for _, verboten := range []string{"PostToolUse", "SubagentStart", "span-emit"} {
+		if strings.Contains(settings, verboten) {
+			t.Errorf("settings.json traegt ohne Traeger den Erfassungs-Eintrag %q — genau der Hook auf ein fehlendes Programm, den LH-QA-01 ausschliesst:\n%s", verboten, settings)
+		}
+	}
+	for _, noetig := range []string{"stop-require-gates.sh", "pretooluse-command-guard.sh"} {
+		if !strings.Contains(settings, noetig) {
+			t.Errorf("ohne Traeger fehlt auch %q — der Ausfall der Erfassung darf die Durchsetzung nicht mitnehmen", noetig)
+		}
+	}
+}
+
+// TestEnforce_WrapperSuchtDenAblageort koppelt die zwei Haelften, die getrennt driften
+// koennen: der Emitter LEGT den Traeger an einen Ort, der Wrapper SUCHT ihn dort. Ein
+// Wrapper, der woanders sucht, schwiege dauerhaft — und schweigen ist genau seine
+// erlaubte Betriebsart, der Ausfall bliebe also unsichtbar.
+//
+// Rot-Gegenbeispiel: test/mutations/159 nimmt der Ziel-Adresse die Windows-Endung.
+func TestEnforce_WrapperSuchtDenAblageort(t *testing.T) {
+	wrapper := string(emit.EnforceFile(".claude/hooks/span-emit.sh"))
+	if wrapper != "" {
+		t.Fatal("EnforceFile liefert den Wrapper — er gehoert nicht in enforceFiles(), sondern in die an den Traeger gekoppelte Menge")
+	}
+	dir := t.TempDir()
+	var notice bytes.Buffer
+	if err := emit.Enforce(dir, &notice); err != nil {
+		t.Fatalf("Enforce: %v", err)
+	}
+	if notice.Len() != 0 {
+		t.Fatalf("die Traeger-Ablage scheiterte in dieser Umgebung: %s", notice.String())
+	}
+	wrapper = mustReadString(t, filepath.Join(dir, filepath.FromSlash(".claude/hooks/span-emit.sh")))
+	// BEIDE Namen, die CarrierPath erzeugen kann — der Wrapper laeuft auch dort, wo das
+	// Bild `.exe` heisst (LH-QA-04).
+	for _, image := range []string{"/pfad/ai-harness-init", "/pfad/ai-harness-init.exe"} {
+		if rel := emit.CarrierPath(image); !strings.Contains(wrapper, path.Base(rel)) {
+			t.Errorf("der Wrapper sucht %q nicht — der Emitter legt den Traeger genau dorthin:\n%s", path.Base(rel), wrapper)
+		}
+	}
+	if !strings.Contains(wrapper, "/.harness/state/bin") {
+		t.Errorf("der Wrapper sucht nicht im gitignorierten Zustands-Bereich:\n%s", wrapper)
+	}
+	// Das Unterkommando ist der Einstiegspunkt, den auch der Dogfood faehrt (ADR-0022
+	// Festlegung 2); ein anderer Name liesse den Traeger ohne Span zurueckkehren.
+	if !strings.Contains(wrapper, "span-emit") {
+		t.Errorf("der Wrapper ruft den Traeger nicht mit `span-emit`:\n%s", wrapper)
+	}
+}
+
+// TestCarrierPath_NimmtDieEndungMit: der Ziel-Name ist fest, die Endung des laufenden
+// Bildes wandert mit. Ohne sie bekaeme ein Windows-Ziel eine Datei, die es nicht starten
+// kann (LH-QA-04) — und der Plattform-Dateiname des Release-Assets darf umgekehrt NICHT
+// mitwandern, sonst faende der Wrapper den Traeger nicht.
+//
+// Rot-Gegenbeispiel: test/mutations/159.
+func TestCarrierPath_NimmtDieEndungMit(t *testing.T) {
+	for _, fall := range []struct{ image, want string }{
+		{"/tmp/ai-harness-init", ".harness/state/bin/ai-harness-init"},
+		{"/tmp/ai-harness-init-linux-amd64", ".harness/state/bin/ai-harness-init"},
+		{`C:\tools\ai-harness-init-windows-amd64.exe`, ".harness/state/bin/ai-harness-init.exe"},
+		{"/tmp/ai-harness-init.EXE", ".harness/state/bin/ai-harness-init.EXE"},
+	} {
+		if got := emit.CarrierPath(fall.image); got != fall.want {
+			t.Errorf("CarrierPath(%q) = %q, erwartet %q", fall.image, got, fall.want)
+		}
 	}
 }

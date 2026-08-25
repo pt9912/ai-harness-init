@@ -197,6 +197,30 @@ byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
   Sprach-Renderers bildet dessen reale Erfüllungs-Form ab; eine Kante aus einer anderen
   Sprache zu übernehmen oder zu streichen, färbt das Gate des generierten Skeletts rot.
   Das Schicht-Layout selbst bleibt über alle Sprachen dasselbe.
+- **Ein ausführbares Artefakt, und eine Klasse außerhalb des versionierten Baums.** Die
+  Emission legt nicht nur Text ab: der **Träger** der Erfassung ist das laufende
+  Produkt-Binär selbst, kopiert in den gitignorierten Zustands-Bereich des Ziels
+  (`.harness/state/`). Er ist **konvergent** und wird **nie geprunt**, steht aber in
+  keiner Emit-Pfad-Liste — sein Ort liegt außerhalb des versionierten Baums, und der
+  Gate-Nachweis des Ziels listet mit `--exclude-standard` und bleibt von ihm unberührt.
+  Der Hook zeigt **nicht** auf ihn, sondern auf einen **committeten Wrapper** unter
+  `.claude/hooks/`, konvergent wie die übrigen Hook-Skripte: ein frischer Klon des
+  Adopter-Repos trägt den gitignorierten Träger nicht, und eine Konfiguration, die
+  direkt auf ihn zeigte, wäre ein Hook auf ein fehlendes Programm
+  ([`LH-QA-01`](lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) — nur
+  zeitversetzt. Der Wrapper schweigt und endet erfolgreich, wenn der Träger fehlt.
+- **Der kanonische Inhalt einer konvergenten Datei hängt hier erstmals an einem
+  Laufzeit-Ausgang.** Träger, Wrapper und der Erfassungs-Block in
+  `.claude/settings.json` entstehen **gemeinsam oder gar nicht**: scheitert die Ablage
+  des Trägers, wird keiner der drei geschrieben, der Bootstrap nennt den Grund und endet
+  erfolgreich, und das Ziel ist ohne Erfassung vollständig
+  ([`LH-FA-10`](lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)). Ein Re-Lauf, der
+  den Block nicht setzen kann, schreibt die Datei ohne ihn — die Konfiguration
+  beschreibt die Wirklichkeit, und das ist Konvergenz, kein Prune. Zwei Läufe
+  **derselben** Tool-Version erzeugen deshalb verschiedene Bytes, wenn die Ablage beim
+  einen gelingt und beim anderen nicht:
+  [`LH-QA-02`](lastenheft.md#lh-qa-02--reproduzierbarkeit) bindet sie damit an Version
+  **und** Ausgang, nicht an die Version allein.
 - **Guard-Boden + Union:** der Command-Guard trägt ein universelles BLOCKED-Set
   (apt/pip/npm/cargo) **im Skript gebacken** — er ist nie fail-open, auch bei
   fehlendem `tools/harness/blocked/`. Er liest zusätzlich `tools/harness/blocked/*`
