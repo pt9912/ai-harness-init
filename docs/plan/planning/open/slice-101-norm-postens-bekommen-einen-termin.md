@@ -8,7 +8,7 @@ wechselt nur durch `git mv`, siehe
 **Welle:** ohne Welle (Harness-Wartung, reaktiv). Die drei Fragen aus
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 1, hier beantwortet: **(1) Bündel?** Nein — ein Durchgang über eine abgeschlossene Liste
-von vier Postens; er ist einzeln lieferbar und wartet auf keinen zweiten Slice. **(2) Gemeinsames
+von fünf Postens; er ist einzeln lieferbar und wartet auf keinen zweiten Slice. **(2) Gemeinsames
 Closure-Kriterium?** Nein — jedes denkbare wäre die Abschrift seiner eigenen DoD. **(3) Auslöser
 reaktiv oder gewollt?** Reaktiv: drei vergebene Postens sind gemessen nicht eingelöst (§1). Kein
 Fähigkeits-Sprung — das Werkzeug lernt nichts Neues, es geht um die Regeln, nach denen dieses Repo
@@ -30,8 +30,8 @@ mit eigener Abwägung.
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (eine
 Regel, die einen Träger benennt, der nie eintrifft, sagt einen Mechanismus zu, der nicht läuft —
 dieselbe Klasse eine Ebene über dem Gate, auf der Dogfood-Ebene),
-[`AGENTS.md`](../../../../AGENTS.md) §3.6 (die Regel, an der drei der vier Postens hängen),
-[`AGENTS.md`](../../../../AGENTS.md) §3.5 (alle vier **heben** eine Beleg-Anforderung an; eine
+[`AGENTS.md`](../../../../AGENTS.md) §3.6 (die Regel, an der vier der fünf Postens hängen),
+[`AGENTS.md`](../../../../AGENTS.md) §3.5 (alle fünf **heben** eine Beleg-Anforderung an; eine
 Anhebung braucht kein ADR — die Prüfung dieser Eigenschaft je Posten gehört in den Lauf),
 [`AGENTS.md`](../../../../AGENTS.md) §3.8 und
 [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1 (Hard Rules und
@@ -39,7 +39,7 @@ Adaptions-Block schreibt der Architect — dieser Slice liefert den Termin, nich
 [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
 (*„Gate-Anheben → Steering-Loop"* — der Weg, den diese Postens genommen haben),
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-(einer der vier Postens ist ihre dritte Setzung; zugleich die Regel, nach der jede Zahl unten neben
+(einer der fünf Postens ist ihre dritte Setzung; zugleich die Regel, nach der jede Zahl unten neben
 ihrem Kommando steht),
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 (Verortung).
@@ -80,6 +80,23 @@ den er wirklich gemacht hat — und was ein Eingriff bewegt, wird gemessen, nich
 adressiert dieselbe Regel und hat dieselbe Herkunft: eine Closure hat ihn formuliert, gemessen und
 niemandem gegeben, der ihn ausführt.
 
+**Und ein fünfter aus [slice-095](../in-progress/slice-095-hook-aufschlag-gemessen.md):** *wo der
+Gegenstand eine Zahl ist, tritt an die Stelle des rot gesehenen Gegenbeispiels die Frage nach der
+Richtung — welche Vereinfachung der Methode verschöbe die Zahl auf die Seite, die die
+Schlussfolgerung stützt, und tut sie es?* **Woran er als weiterer Posten erkannt ist:** er
+adressiert dieselbe Regel wie die Postens zwei bis vier
+([`AGENTS.md`](../../../../AGENTS.md) §3.6), er **hebt** wie sie eine Beleg-Anforderung an, und er
+hat dieselbe Herkunft — eine Closure, die ihn formuliert, gemessen und niemandem gegeben hat.
+Verschieden ist die **Achse**: jene drei handeln von einem Rot-Beleg (seine Träger · seine
+Reichweite · sein Gegenstand), dieser vom Fall, in dem es **kein** Rot gibt und mit Grund keines
+geben soll. Die Regel greift dort nicht — eine Feststellung über einen Messwert hat keine
+Bruchstelle —, und danach verlangt nichts mehr einen Beleg zweiter Ordnung. Der gemessene Anlass:
+die naheliegendste Verzerrung einer nachgebauten Latenz-Messung, das Weglassen der teuersten
+Arbeit des gemessenen Programms, wurde geprüft und ausgeschlossen — an **43** von **47**
+betroffenen Aufrufen einer 200er-Stichprobe
+([Verifikation](../../../reviews/2026-08-25-slice-095-verify.md) §4.3). Diese Probe kam von
+**einer** Rolle und stand in keinem Vorbericht; ohne Regel bleibt sie ein Zufall des Laufs.
+
 ### Was gemessen fehlt, ist der Termin — nicht die Zuständigkeit
 
 Die Zuständigkeit steht seit dem 2026-08-09 fest
@@ -93,7 +110,7 @@ nicht eingetreten ist (der nächste d-check-Pin-Sprung, `grep -c 'structure' .d-
 Schnitt: der Lifecycle bewegt Slices, nicht Nennungen.
 
 **Was dieser Slice ausdrücklich nicht tut: den Regeltext vorentscheiden.** Er stellt her, dass
-jeder der vier Postens **einzeln** entschieden wird, und benennt die vier zulässigen Ausgänge. Ob
+jeder der fünf Postens **einzeln** entschieden wird, und benennt die vier zulässigen Ausgänge. Ob
 eine Schärfung in die Regel wandert, anders gefasst wird oder mit Grund fällt, entscheidet der
 Architect am Text — das ist
 [`AGENTS.md`](../../../../AGENTS.md) §3.8, und ein Planner, der es vorwegnähme, verschöbe nur die
@@ -103,7 +120,7 @@ Stelle, an der die Regel unbelegt entsteht.
 
 - **(A) Ein Durchgang, der jeden Posten einzeln entscheidet — gewählt.** Er ist der einzige Weg,
   der die gemessene Ursache trifft: die Postens sind formuliert und begründet, es fehlt der Lauf.
-  Der Preis ist ein Slice; der Gewinn ist, dass die vier Schärfungen entweder gelten oder mit
+  Der Preis ist ein Slice; der Gewinn ist, dass die fünf Schärfungen entweder gelten oder mit
   einem Grund nicht gelten, statt weiter in Zeitdokumenten zu stehen.
 - **(B) Die Postens weiter dem Architect nennen, mit besserem Auflösungs-Trigger.** Verworfen —
   die Form ist dreimal vergeben und nullmal eingelöst (§1). Ein vierter Trigger unterscheidet sich
@@ -111,7 +128,7 @@ Stelle, an der die Regel unbelegt entsteht.
 - **(C) Einen Sensor bauen, der offene Postens meldet.** Verworfen für **diesen** Schnitt, und
   nicht wegen des Aufwands: die Menge *„Posten, dessen Träger sich nicht bewegt hat"* ist ein
   Urteil über Fließtext, kein Muster — ein Wächter darüber brauchte erst ein Kriterium. Das ist
-  ein eigener Gegenstand mit eigener Abwägung, und er wird billiger, wenn erst einmal vier Postens
+  ein eigener Gegenstand mit eigener Abwägung, und er wird billiger, wenn erst einmal fünf Postens
   ihren Ausgang haben und man sieht, welche Form die Ausgänge tatsächlich annehmen.
 
 ## 2. Definition of Done
@@ -120,26 +137,27 @@ Drei slice-eigene Punkte (Modul 5 §Ziel-Form: ≤ 3;
 [`AGENTS.md`](../../../../AGENTS.md) §3.6). Wo kein Kommando einen Punkt rot färbt, steht das
 dabei, statt sich hinter einem anderen zu verstecken.
 
-- [ ] **(1) Jeder der vier Postens trägt genau einen von vier Ausgängen, und keiner bleibt
+- [ ] **(1) Jeder der fünf Postens trägt genau einen von vier Ausgängen, und keiner bleibt
       „genannt".** Die vier Ausgänge: **übernommen** (die Regel trägt die Schärfung) ·
       **anders gefasst** (sie gilt, aber in anderer Formulierung oder an anderer Stelle) ·
       **abgelehnt** mit Grund · **aufgeschoben** mit einem Auflösungs-Trigger, der ein
       beobachtbares Ereignis nennt. Bei den ersten beiden steht der Ausgang im Norm-Artefakt
       selbst, bei den letzten beiden in §7 dieses Slice.
       **Kein Kommando färbt „jeder Posten hat einen Ausgang" rot, und das ist der Befund, keine
-      Vertagung.** Die Menge der Postens ist ein Urteil über vier Closure-Notizen; das Kommando in
+      Vertagung.** Die Menge der Postens ist ein Urteil über fünf Closure-Notizen; das Kommando in
       §1 liefert die **Untergrenze**, nicht die Menge. Diese Hälfte trägt das Review. Was **je
       übernommenem Posten** rot färbt, steht in DoD (2).
 - [ ] **(2) Was übernommen wird, ist am lebenden Artefakt messbar — je Posten ein Kommando, das
       heute den alten Wert liefert.** Die drei Kommandos und ihre heutigen Werte stehen in der
       Tabelle in §1; jeder **übernommene** Posten bewegt genau einen dieser Werte, und der neue
-      Wert gehört mit seinem Kommando in die Closure-Notiz. Für den vierten Posten
-      ([slice-100](../done/slice-100-vorlauf-nennt-den-grund.md)) gilt dasselbe Kommando wie für
-      den Reichweiten-Posten: der §3.6-Block bewegt sich oder nicht.
+      Wert gehört mit seinem Kommando in die Closure-Notiz. Für den vierten und den fünften
+      Posten ([slice-100](../done/slice-100-vorlauf-nennt-den-grund.md),
+      [slice-095](../in-progress/slice-095-hook-aufschlag-gemessen.md)) gilt dasselbe Kommando wie
+      für den Reichweiten-Posten: der §3.6-Block bewegt sich oder nicht.
       **Ein abgelehnter oder aufgeschobener Posten bewegt keinen Wert** — dann trägt DoD (1) ihn
       mit seinem Grund, und die Closure-Notiz sagt ausdrücklich, dass hier **nichts** gemessen
       wurde, statt das Ausbleiben als Erfolg zu lesen.
-- [ ] **(3) Die vier Herkunfts-Notizen bleiben unangetastet.** `done/` ist Zeitdokument
+- [ ] **(3) Die fünf Herkunfts-Notizen bleiben unangetastet.** `done/` ist Zeitdokument
       ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
       §Geltungsbereich); ein Ausgang, der als Nachtrag in eine geschlossene Datei geschrieben
       wird, steht wieder an dem Ort, den kein Lauf aufschlägt — der Fehler, den dieser Slice
@@ -152,17 +170,17 @@ dabei, statt sich hinter einem anderen zu verstecken.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| [`AGENTS.md`](../../../../AGENTS.md) | update, **soweit übernommen** | §3.6 trägt drei der vier Postens. Der Text ist Architect-Arbeit ([`AGENTS.md`](../../../../AGENTS.md) §3.8, [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1); dieser Slice liefert die Liste und den Termin |
+| [`AGENTS.md`](../../../../AGENTS.md) | update, **soweit übernommen** | §3.6 trägt vier der fünf Postens. Der Text ist Architect-Arbeit ([`AGENTS.md`](../../../../AGENTS.md) §3.8, [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1); dieser Slice liefert die Liste und den Termin |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update, **soweit übernommen** | die dritte Setzung von [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert), derselbe Vorbehalt |
 | `docs/plan/planning/done/` | **unverändert** | Zeitdokumente ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) §Geltungsbereich). DoD (3) macht daraus eine Zusage mit eigenem Rot |
-| `docs/plan/adr/` | **unverändert** | alle vier Postens **heben** eine Beleg-Anforderung an; eine Anhebung ist kein ADR ([`AGENTS.md`](../../../../AGENTS.md) §3.5, [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)). Ergibt der Lauf, dass ein Posten in Wahrheit eine **Senkung** enthält, greift die Rückführung aus §4 |
+| `docs/plan/adr/` | **unverändert** | alle fünf Postens **heben** eine Beleg-Anforderung an; eine Anhebung ist kein ADR ([`AGENTS.md`](../../../../AGENTS.md) §3.5, [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)). Ergibt der Lauf, dass ein Posten in Wahrheit eine **Senkung** enthält, greift die Rückführung aus §4 |
 | `test/mutations/` | **unverändert** | die Regeln liegen im Feedforward-Quadranten; [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) sagt das über sich selbst und misst, dass `make comment-claims` keine Markdown-Datei im Prüfbereich hat. Ein Wächter über Regeltext ist Weg (C) aus §1 und ein eigener Schnitt |
 | [`.harness/baseline`](../../../../.harness/baseline) und die emittierte Ebene | **unverändert** | die emittierte `AGENTS.md` kommt aus der vendored Vorlage, nicht aus dieser Datei (Kopfzeile *Ebene*) |
 | [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** | wellenlose Arbeit wird dort nicht geführt ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) Setzung 2/3) |
 
 **Die Liste der Postens gehört an den Anfang des Laufs, nicht an sein Ende.** Sie steht in §1 mit
-drei Kommandos und vier Herkunfts-Notizen; wer sie erweitert, erweitert sie **vor** der ersten
-Entscheidung und schreibt dazu, woran er den fünften erkannt hat. Ein Posten, der während des
+drei Kommandos und fünf Herkunfts-Notizen; wer sie erweitert, erweitert sie **vor** der ersten
+Entscheidung und schreibt dazu, woran er den weiteren erkannt hat. Ein Posten, der während des
 Laufs auftaucht und still mitentschieden wird, macht aus der abgeschlossenen Liste eine offene.
 
 ## 4. Trigger
@@ -177,7 +195,7 @@ Die zwei Rückführungen, vorab benannt:
 
 - **`in-progress` → `next` (zu groß):** wenn sich beim Lesen zeigt, dass ein Posten nicht in die
   bestehende Regel passt, sondern eine eigene Setzung mit eigener Begründung verlangt. Dann sind
-  es zwei Slices — einer für die drei, die zusammengehören, und einer für den vierten.
+  es zwei Slices — einer für die, die dieselbe Regel tragen, und einer für den, der es nicht tut.
 - **`in-progress` → `open` (blockiert):** wenn ein Posten bei genauem Hinsehen eine **Senkung**
   enthält statt einer Anhebung. Dann verlangt er ein ADR ([`AGENTS.md`](../../../../AGENTS.md)
   §3.5), und der Slice wartet darauf, statt die Regel am ADR vorbei zu ändern.
@@ -190,7 +208,7 @@ aufgeschobenem der Grund; Review konform (Modul 10); Verifikation bestätigt (Mo
 Steering-Loop-Eintrag in einer der drei Formen (geschärfte Regel · neuer Sensor · benannte
 Spec-Lücke).
 
-**Ausdrücklich nicht Teil des Closure-Triggers: dass alle vier Postens übernommen werden.** Ein
+**Ausdrücklich nicht Teil des Closure-Triggers: dass alle fünf Postens übernommen werden.** Ein
 Durchgang, dessen Erfolgskriterium die Übernahme ist, kann nur noch übernehmen; die Ablehnung mit
 Grund ist ein vollwertiger Ausgang, und ohne sie wäre die Entscheidung vorweggenommen.
 
@@ -202,16 +220,16 @@ Grund ist ein vollwertiger Ausgang, und ohne sie wäre die Entscheidung vorwegge
   `make docs-check` prüft Form, nicht Aussage. Was hier grün wird, ist die **Form** — dass jeder
   Posten einen Ausgang trägt —, nicht die Güte der Regel.
 - **Die Menge der Postens ist ein Urteil, keine Messung.** Das Kommando in §1 liefert die
-  Untergrenze über eine Formulierung. Wer eine fünfte Notiz derselben Klasse findet, hat recht und
+  Untergrenze über eine Formulierung. Wer eine weitere Notiz derselben Klasse findet, hat recht und
   nicht das Kommando; §3 sagt, wann sie noch aufgenommen werden kann.
-- **Ein Durchgang, der vier Postens auf einmal entscheidet, kann sie einander angleichen.** Drei
+- **Ein Durchgang, der fünf Postens auf einmal entscheidet, kann sie einander angleichen.** Vier
   hängen an derselben Regel, und die Versuchung ist, aus ihnen einen Satz zu machen. Sie sind
   verschieden: einer erweitert die **Träger** einer Zusage, einer ihre **Reichweite**, einer den
-  **Gegenstand** ihres Nachweises. Wer sie zusammenzieht, verliert genau die Unterscheidung, für
-  die drei Closures je einen Beleg geliefert haben.
+  **Gegenstand** ihres Nachweises, einer die **Richtung** seines Fehlers. Wer sie zusammenzieht,
+  verliert genau die Unterscheidung, für die vier Closures je einen Beleg geliefert haben.
 - **Der Slice kann seine eigene Lehre wiederholen.** Sein Ergebnis ist Regeltext, und Regeltext
   ohne Träger ist der Befund, den er behandelt. Die Closure-Notiz gehört deshalb daraufhin gelesen,
-  ob sie einen fünften Posten vergibt — und wenn ja, an wen.
+  ob sie einen weiteren Posten vergibt — und wenn ja, an wen.
 - **`make gates` deckt den Gegenstand nur formal.** Der Doku-Gate prüft Kennungen, Anker und Pfade;
   eine falsch geschärfte Regel wäre grün. Das ist keine Lücke dieses Slice, sondern die Grenze der
   Ebene, auf der er arbeitet.

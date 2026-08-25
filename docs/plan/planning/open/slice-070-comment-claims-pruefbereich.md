@@ -58,6 +58,27 @@ Nur (1) heilt ein `git add`; (2) und (3) sind **permanent**.
 Fenster von **zwölf** Zeichen zwischen Verb und Verneinung. Der `Makefile:83`-Fall braucht
 **dreizehn** — die Ausnahme verfehlt ihn um ein Zeichen und erzeugt so einen Falsch-Treffer.
 
+**Ein dritter Defekt derselben Datei, und er verengt die gemeldete Null noch einmal: die
+Erkennung von Behauptungen ist an die Kleinschreibung gebunden.** Das `CLAIM`-Muster
+(`grep -n '^CLAIM=' harness/tools/comment-claims.sh`) wird case-sensitiv angewandt, während
+dieses Repo Kommentar-Überschriften in Versalien und Sätze mit Großbuchstaben schreibt. An
+**einem** Block gemessen, nur das eine Wort variiert: `BEWACHT` grün · `Bewacht` grün ·
+`bewacht` rot. **Die Reichweite ist keine Vermutung**: über genau dem Prüfbereich, den der
+Sensor selbst scannt, tragen **23** Kommentarzeilen in **10** Dateien eine Claim-Formulierung
+ausschließlich in einer Schreibweise, die das Muster nicht erkennt — nach Abzug der Zeilen, die
+auch case-insensitiv unter die `NEGATION`-Ausnahme fallen. **17** davon liegen in
+`internal/span/*.go`, `internal/report/report.go` und `cmd/ai-harness-init/span_emit.go`, also
+im Telemetrie-Kern, dessen Zusagen dieses Gate am dringendsten tragen soll. Der
+Reproduktionsweg — zwei `awk`-Läufe über denselben Dateisatz, einmal mit `IGNORECASE=1`, einmal
+ohne, und `comm -23` über die sortierten Trefferlisten — steht ausgeschrieben in
+[F-1 des slice-095-Code-Reviews](../../../reviews/2026-08-25-slice-095-review.md); die
+[Verifikation](../../../reviews/2026-08-25-slice-095-verify.md) §5.3 hat beide Zahlen auf die
+Einheit bestätigt. Alle drei wandern mit dem Bestand und sind **kein** Erwartungswert
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2). Solange das Muster nicht greift, bleibt `block_claim` null, und die Klasse *„Zusage
+ohne Sensor"* ist an diesen Stellen unsichtbar — heute ohne Schaden, weil überall noch ein
+Sensor danebensteht, aber ohne Wächter für den Tag, an dem einer davon verschwindet.
+
 ## 2. Definition of Done
 
 - [ ] **(1) Der Prüfbereich und die gemeldete Zahl sagen dasselbe.** Entweder wächst der
@@ -66,11 +87,14 @@ Fenster von **zwölf** Zeichen zwischen Verb und Verneinung. Der `Makefile:83`-F
   Vollständigkeits-Behauptung, gegen die dieser Slice steht. **Achse (1) ist gesondert zu
   entscheiden:** untrackte Dateien mitzuprüfen ist billig und schließt die gemessene Lücke,
   ändert aber das Verhältnis zum Stempel — das gehört begründet, nicht nebenbei.
-- [ ] **(2) Das Negations-Fenster ist entschieden, nicht geraten.** Zwölf Zeichen sind eine
-  Zahl ohne Herleitung. Entweder eine begründete Weite, oder eine andere Erkennung der
-  Verneinung. **Der Zahn ist der `Makefile:83`-Fall selbst** — er ist bis dahin **nicht** zu
-  entschärfen: ihn umzuformulieren entfernte das Gegenbeispiel, an dem die Entscheidung
-  gemessen wird.
+- [ ] **(2) Die Erkennung ist entschieden, nicht geraten — beide Seiten.** *Verneinung:* zwölf
+  Zeichen sind eine Zahl ohne Herleitung; entweder eine begründete Weite, oder eine andere
+  Erkennung der Verneinung. **Der Zahn ist der `Makefile:83`-Fall selbst** — er ist bis dahin
+  **nicht** zu entschärfen: ihn umzuformulieren entfernte das Gegenbeispiel, an dem die
+  Entscheidung gemessen wird. *Schreibweise:* die Kleinschreibungs-Bindung des `CLAIM`-Musters
+  trägt gemessen **23** Zeilen in **10** Dateien (§1); sie fällt oder sie bleibt mit Grund —
+  Schweigen nicht. Wer sie aufhebt, erbt die Befunde, die dabei sichtbar werden, und die
+  Ist-Messung aus §3 zählt sie **vor** der Entscheidung.
 - [ ] **(3) Beide Änderungen haben je einen rot gesehenen Zahn**
   ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Für den Prüfbereich heißt das: eine Datei, die
   **vor** der Änderung stillschweigend durchfiel, muss **nach** ihr einen Befund erzeugen —
@@ -94,6 +118,10 @@ entstehen dabei? Der `Makefile:83`-Fall ist einer; ob `harness/tools/*.awk`,
 `internal/emit/templates/` und `test/` weitere tragen, ist heute **nicht gemessen** (für die
 `.awk`-Dateien wurde einmal `0 Befunde` gemessen — eine Aussage über heute, nicht über die
 Abdeckung). Ein Bereich, der beim Anschalten hundert Befunde wirft, ist ein anderer Slice.
+**Dieselbe Frage stellt sich für die Schreibweise:** die **23** heute unerkannten Zeilen aus §1
+sind der Ort, an dem beim Aufheben der Bindung Befunde entstehen — sie tragen nach heutigem
+Stand alle einen Sensor, aber das ist eine Aussage über heute und keine über die Abdeckung. Die
+Zählung gehört vor die Entscheidung aus DoD (2), nicht hinter sie.
 
 ## 4. Trigger
 
