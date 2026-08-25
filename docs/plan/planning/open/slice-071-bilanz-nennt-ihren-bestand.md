@@ -47,8 +47,8 @@ von *nichts zu finden*, und die Bestandszeile benennt die Menge, die sie zählt.
   `filepath.Glob` (`grep -c 'filepath.Glob' internal/report/report.go` → **1**). Über einem
   fehlenden Verzeichnis meldet der Aufruf weder Treffer noch Fehler: `Aggregiere` kehrt mit einer
   leeren Bilanz zurück, `Schreibe` formt sie zu *„Keine Rolle traegt Token."*, und
-  `cmd/span-report/main.go` endet über den Erfolgs-Zweig.
-  Der Ablageort ist ein **Argument** (`grep -c 'dir = args\[0\]' cmd/span-report/main.go` → **1**),
+  `cmd/ai-harness-init/span_report.go` endet über den Erfolgs-Zweig.
+  Der Ablageort ist ein **Argument** (`grep -c 'return args\[0\], nil' cmd/ai-harness-init/span_report.go` → **1**),
   also ein Wert, den ein Aufrufer vertippen kann; das vorangestellte `mkdir -p` des `make`-Ziels
   (`grep -c 'mkdir -p .harness/state/spans' Makefile` → **1**) deckt allein den einen Pfad, den es
   selbst mountet, und maskiert den Fall dort.
@@ -86,7 +86,7 @@ Zwei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       [slice-079](slice-079-exit-code-vertrag.md); eine zweite Festlegung daneben driftete von ihr
       weg, noch bevor die erste steht.
       **Rot:** ein Go-Test über [`internal/report`](../../../../internal/report/report.go) und
-      `cmd/span-report/main.go` mit einem Pfad, den es nicht gibt —
+      `cmd/ai-harness-init/span_report.go` mit einem Pfad, den es nicht gibt —
       er fällt, sobald die Ausgabe wieder die eines leeren Bestands ist; dazu ein
       `test/mutations/`-Fall, der die Unterscheidung entfernt und dieses Rot erwartet.
 - [ ] **(2) Die Bestandszeile nennt die Menge, die sie zählt.** `Bestand: <n> Sitzung(en)` sagt,
@@ -135,8 +135,8 @@ und ein Bericht, der nichts prüft, wird durch eine ehrlichere Ausgabe kein Wäc
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | [`internal/report/report.go`](../../../../internal/report/report.go) | update | die zwei Angaben aus §2: der fehlende Ablageort wird vom leeren getrennt, und die Bestandszeile nennt ihre Bezugsmenge |
-| `cmd/span-report/main.go` | update | der Ablageort kommt hier als Argument herein; ob die Unterscheidung dort oder im Paket ausgesprochen wird, entscheidet der Zuschnitt (oben) |
-| `internal/report/report_test.go`, `cmd/span-report/main_test.go` | update | die zwei Zähne aus §2, je einer je Angabe |
+| `cmd/ai-harness-init/span_report.go` | update | der Ablageort kommt hier als Argument herein; ob die Unterscheidung dort oder im Paket ausgesprochen wird, entscheidet der Zuschnitt (oben) |
+| `internal/report/report_test.go`, `cmd/ai-harness-init/span_report_test.go` | update | die zwei Zähne aus §2, je einer je Angabe |
 | `test/mutations/` | neu | zwei Fälle, je einer je Angabe — ohne sie wären beide Punkte eine Absicht ([`AGENTS.md`](../../../../AGENTS.md) §3.6) |
 | [`Makefile`](../../../../Makefile) | **unverändert** | das `mkdir -p` bleibt: es legt den Pfad an, den das Ziel gleich darauf als Volume mountet. Es zu entfernen bräche den Mount, statt den Fall sichtbar zu machen — der Fall entsteht am **Argument**, nicht an diesem einen Pfad (§1) |
 | [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) | **unverändert** | Begründung oben |
