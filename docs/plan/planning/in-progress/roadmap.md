@@ -1,6 +1,6 @@
 # Roadmap
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-08-22.
+**Status:** Aktiv. **Letzte Änderung:** 2026-08-25.
 
 **Format-Regel:** Die Roadmap ist eine Reihenfolge von **Wellen**,
 keine Reihenfolge von Terminen (siehe
@@ -56,6 +56,16 @@ tauscht genau ihn; der Freshness-Audit wächst upstream zudem von drei auf siebe
 Emissions-Frage nach [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
 stehen in der Plan-Datei, nicht hier.
 
+**[welle-12 — Erfassungsschicht emittieren](../welle-12-erfassungsschicht-emittieren.md)**,
+geschnitten am 2026-08-25 — **geplant, und die einzige der geplanten Wellen, deren Trigger heute
+schon erfüllt ist**. Sie steht **neben** der Reihe welle-09 → welle-10 → welle-11, nicht hinter
+ihr: **Trigger:** [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
+liegt *Accepted* vor **und** [slice-093](../done/slice-093-mutations-treiber-erreicht-full-smoke.md)
+liegt in `done/` — beides ist es. Dass keine der drei Wellen der Reihe Vorbedingung ist, steht in
+der Plan-Datei **gemessen** statt vermutet (dort §2). Zielmeilenstein **M6**. Slices:
+`slice-094` bis `slice-099`, alle sechs geschnitten und in `open/`. Closure-Kriterium in der
+Plan-Datei, nicht hier.
+
 Prospektive Kandidaten (nur mit **beobachtbarem Trigger**, Modul 6). **Diese Tabelle führt nur, was
 *noch nicht* geschnitten ist** — ein geschnittener Slice steht unter *Aktuelle Welle*, sonst wird
 derselbe Stand an zwei Orten gepflegt und einer davon altert (real passiert mit slice-047/048):
@@ -79,6 +89,8 @@ derselbe Stand an zwei Orten gepflegt und einer davon altert (real passiert mit 
 | M4 — Arch-Gate integriert (a-check, [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) | [welle-07-arch-achse](../done/welle-07-arch-achse.md) | ein Skelett trägt hexSlice-Schichten (`domain`/`application`/`ports`/`adapters`) **und** der a-check-Emitter ist gebaut → a-check wird emittiert + aktiv (sonst [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Verstoß über leerem Prüfbereich) | **erreicht** (welle-07 geschlossen 2026-07-25; `make full-smoke` belegt beide Richtungen real) |
 | M5 — **erstes Release** (`v0.1.0` mit vorgefertigten Binaries für die sechs Plattformen) | ohne Welle: [slice-049](../done/slice-049-baseline-bump-v3.5.2.md) → [slice-050](../done/slice-050-doku-nachzug-release.md) (Doku-Nachzug **+** Tag) | drei Schritte in dieser Reihenfolge (Nutzer-Entscheidung 2026-07-25): (1) Re-Baseline v3.5.2, damit `v0.1.0` keinen veralteten Regelwerks-Stand ausliefert — **erledigt 2026-07-26 (slice-049)** · (2) **geschnitten als slice-050:** Doku-Nachzug — [README](../../../../README.md) und [Benutzerhandbuch](../../../user/benutzerhandbuch.md) behaupten noch „keine vorgefertigten Release-Binaries", der Installations-Abschnitt kennt nur den Bau aus Quelle · (3) Tag `v0.1.0` mit grünem `release`-Lauf und sechs Assets | **erreicht (2026-07-26)** — Tag `v0.1.0` gepusht, `release`-Lauf **8/8 Jobs grün** (Bau, sechs Plattform-Start-Smokes, `publish`), **sechs** Assets am Release gezählt und dreifach gegen die `matrix` gleichgesetzt. **Extern beobachtbar** im Sinne von Modul 6: das Release ist öffentlich abrufbar. **Ein Mangel reist mit:** der getaggte Quellstand verneint in FAQ und Anhang seinen eigenen Release — im Release-Text offengelegt, ohne Force nicht im Tag reparierbar ([slice-050](../done/slice-050-doku-nachzug-release.md) §7 A-1). **Mit `v0.1.1` (2026-07-27) ist der Mangel erledigt:** der Tag trägt die korrigierte Doku, gemessen am Tag selbst (`git show v0.1.1:docs/user/benutzerhandbuch.md \| grep -c "Derzeit nicht\|keine Release-Versionsnummer"` → 0, im Vorgänger-Tag → 2); `release`-Lauf 8/8 Jobs grün, sechs Assets, sha256 6/6 gegen die CI-Artefakte |
 
+| M6 — **die emittierte Ebene belegt ihre eigenen Läufe** ([`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)) | [welle-12](../welle-12-erfassungsschicht-emittieren.md) | ein frisch gebootstrapptes Ziel schreibt bei einem Werkzeug-Aufruf einen Span mit besetzter Rollen-Achse, führt eine lesbare Feldliste und einen Leser samt Aufräum-Kommando — **oder** legt begründet nichts davon ab und bleibt out-of-the-box grün; beide Zweige im `make full-smoke` über beide Bootstrap-Varianten | **offen** — der erste Meilenstein seit M5, der eine Nutzer-Fähigkeit des Werkzeugs trägt statt eine Konformität des Dogfoods. Der Weg ist in [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) entschieden (*Accepted*); offen ist die Umsetzung |
+
 ## Abhängigkeitsgraph
 
 ```mermaid
@@ -94,16 +106,24 @@ flowchart LR
     W9[welle-09<br/>Modul-15-Konformität]
     W10[welle-10<br/>Re-Baseline]
     W11[welle-11<br/>Träger-Aussage]
+    W12[welle-12<br/>Erfassungsschicht emittieren]
     W1 --> W2 --> W3 --> W4 --> W5
     W5 -.-> W6
     W5 --> W7 --> W8
     W8 --> W9 --> W10 --> W11
+    A0022([ADR-0022 Accepted<br/>+ slice-093 done]) --> W12
 ```
 
 Die drei Kanten `W9 → W10 → W11` sind **Trigger-Kanten**, keine Themen-Nähe: welle-10 misst gegen
 Modul 15 in der gepinnten Fassung und darf den Baum darum nicht vorher tauschen; welle-11 misst
 über den Baum, den welle-10 tauscht. Ohne die Kanten wären beide Phantom-Wellen im Sinne von
 Modul 6.
+
+**`W12` hat bewusst keine Kante aus der Reihe.** Ihr Trigger ist kein Wellen-Zustand, sondern eine
+angenommene Entscheidung plus ein geschlossener Slice — beides erfüllt. Eine Kante `W11 → W12`
+wäre eine Themen-Nähe ohne tragenden Grund; welche der beiden startbaren Wellen (welle-09 als
+aktuelle, welle-12 als geplante mit erfülltem Trigger) zuerst weiterläuft, entscheidet diese
+Roadmap, nicht die Plan-Datei.
 
 ## Abgeschlossene Wellen
 
