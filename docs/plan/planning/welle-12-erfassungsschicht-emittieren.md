@@ -139,7 +139,7 @@ alle sechs Slices liegen: keiner von ihnen erfüllt mehr als drei der zehn Zeile
   allein an `make full-smoke` hängt, bekommt einen mit `# verify: full-smoke` (§2).
 - **Der Trennungs-Trigger der Entscheidung ist scharf.** Die Messung aus
   [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Folgepflicht 9
-  liegt vor ([slice-095](open/slice-095-hook-aufschlag-gemessen.md)), mit ihrem Kommando im Text.
+  liegt vor ([slice-095](next/slice-095-hook-aufschlag-gemessen.md)), mit ihrem Kommando im Text.
   Ohne sie feuert der Re-Evaluierungs-Trigger zu Annahme (c) nie — eine Welle, die den Träger
   ablegt und seinen Preis ungemessen lässt, schließt über einer offenen Annahme.
 - **Carveout-Audit (Modul 7)** über den Bestand in `docs/plan/carveouts/` — gelesen wird der
@@ -153,7 +153,7 @@ Der Zustand jedes Slice ist sein Lifecycle-Verzeichnis, hier nicht gespiegelt.
 | Slice | Titel | Bezug |
 |---|---|---|
 | [slice-094](done/slice-094-ein-programm-ein-einstiegspunkt.md) | Ein Programm, ein Einstiegspunkt: Schreiber und Auswertung werden Unterkommandos | [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 2 |
-| [slice-095](open/slice-095-hook-aufschlag-gemessen.md) | Der Aufschlag je Tool-Call ist gemessen, und der Trennungs-Trigger kann feuern | [`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.md) |
+| [slice-095](next/slice-095-hook-aufschlag-gemessen.md) | Der Aufschlag je Tool-Call ist gemessen, und der Trennungs-Trigger kann feuern | [`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.md) |
 | [slice-096](open/slice-096-traeger-liegt-im-ziel.md) | Der Träger liegt im Ziel — oder es liegt begründet nichts | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
 | [slice-097](open/slice-097-rollen-typen-gehen-mit.md) | Die Rollen-Typen gehen mit: generisch, Tool-als-Quelle, `skip-if-present` | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) |
 | [slice-098](open/slice-098-feldliste-ist-ausdruck-des-traegers.md) | Die Feldliste im Ziel ist der Ausdruck des Trägers und führt ihre Grenzen stehend | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
@@ -167,7 +167,7 @@ Einstiegspunkt trägt genau die zwei Eigenschaften, die
 Exit-Code hart auf 0, stdout leer —, und ein unerprobter Einstiegspunkt ist die Stelle, an der eine
 fail-open-Zusage **still** bricht. Was danach ins Ziel geht, ist hier gefahren.
 
-**Danach [slice-095](open/slice-095-hook-aufschlag-gemessen.md), und diese Stelle ist eine
+**Danach [slice-095](next/slice-095-hook-aufschlag-gemessen.md), und diese Stelle ist eine
 Entscheidung, keine Reihenfolge-Bequemlichkeit.** Der Aufschlag ist erst messbar, wenn der Hook
 dieses Repos das Produkt-Binär ruft — das tut er nach 094. Und er ist **vor** 096 zu messen, weil
 sein negativer Ausgang nach

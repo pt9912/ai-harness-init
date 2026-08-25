@@ -7,7 +7,7 @@ wechselt nur durch `git mv`, siehe
 
 **Welle:** [welle-12](../welle-12-erfassungsschicht-emittieren.md) — er steht zwischen
 [slice-094](../done/slice-094-ein-programm-ein-einstiegspunkt.md) und
-[slice-096](slice-096-traeger-liegt-im-ziel.md), weil sein Ausgang eine Konstruktions-Eingabe für
+[slice-096](../open/slice-096-traeger-liegt-im-ziel.md), weil sein Ausgang eine Konstruktions-Eingabe für
 alles ist, was danach ins Ziel geht.
 
 **Bezug:**
@@ -44,7 +44,7 @@ ist ein Ergebnis, das eine eigene Prüfsitzung verdient. Als vierter Punkt an
 **Warum sie hier steht und nicht am Ende der Welle.** Der Aufschlag ist erst messbar, wenn der Hook
 dieses Repos das Produkt-Binär ruft; das tut er nach
 [slice-094](../done/slice-094-ein-programm-ein-einstiegspunkt.md). Und er ist **vor**
-[slice-096](slice-096-traeger-liegt-im-ziel.md) zu messen, weil sein negativer Ausgang eine benannte
+[slice-096](../open/slice-096-traeger-liegt-im-ziel.md) zu messen, weil sein negativer Ausgang eine benannte
 Antwort hat: **Alternative F** — ein eigenes Emitter-Binär, ins Produkt-Binär eingebettet, mit
 denselben vier Konstruktions-Eigenschaften und getrenntem Einstiegspunkt. Das ist ein **anderer
 Träger**. Nach der Emission gemessen wäre dieselbe Zahl ein Abriss-Trigger statt einer
@@ -90,8 +90,8 @@ Kommando** rot; das steht dabei statt einer Zusage
       (Alternative F); dann geht ein **Befund an den Architect**, weil eine *Accepted*-Entscheidung
       nicht nachgebessert, sondern durch eine Folge-Entscheidung abgelöst wird
       ([`AGENTS.md`](../../../../AGENTS.md) §3.4) — und
-      [slice-096](slice-096-traeger-liegt-im-ziel.md) bis
-      [slice-099](slice-099-leser-und-aufraeum-kommando.md) warten auf sie.
+      [slice-096](../open/slice-096-traeger-liegt-im-ziel.md) bis
+      [slice-099](../open/slice-099-leser-und-aufraeum-kommando.md) warten auf sie.
       **Rot:** `make gates` — das Mess-Kommando wird als `make`-Ziel abgelegt und ist damit im
       Prüfbereich von `make comment-claims`, das prüft, ob ein in einem Kommentar **genannter**
       Sensor existiert (`sed -n '133,134p' Makefile`); ein Verweis auf ein Ziel, das es nicht gibt,

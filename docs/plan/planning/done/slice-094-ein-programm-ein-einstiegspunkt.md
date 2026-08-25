@@ -222,7 +222,7 @@ Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   Rückwirkung auf den Rest.
 - **Offen und nicht in diesem Slice:** ob der zusammengelegte Einstiegspunkt die Schwelle aus
   [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) hält. Das misst
-  [slice-095](../open/slice-095-hook-aufschlag-gemessen.md); fällt die Messung negativ aus, ist die Antwort
+  [slice-095](../next/slice-095-hook-aufschlag-gemessen.md); fällt die Messung negativ aus, ist die Antwort
   Alternative F — ein getrennter Einstiegspunkt —, und dieser Slice wird teilweise rückgebaut. Das
   ist der bewusst gewählte Preis dafür, dass die Messung erst nach dem Umbau möglich ist: gemessen
   werden kann nur, was läuft.
@@ -331,7 +331,7 @@ einem Wegwerf-`Dockerfile` mit defekter, unbeteiligter Stage: `--target good` �
 - **Ob der zusammengelegte Einstiegspunkt die Schwelle aus
   [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) hält, ist ungemessen.** Das war schon
   bei Schnitt so gewollt (§6) und ist der Gegenstand von
-  [slice-095](../open/slice-095-hook-aufschlag-gemessen.md); fällt die Messung negativ aus, wird
+  [slice-095](../next/slice-095-hook-aufschlag-gemessen.md); fällt die Messung negativ aus, wird
   dieser Slice teilweise rückgebaut.
 
 **Steering-Loop-Eintrag — geschärfte Regel.**
@@ -389,8 +389,8 @@ d-check-Pin bewegt, nicht in diesen Slice.
 | Posten | Träger |
 |---|---|
 | Die Kopplung `.claude/settings.json` ↔ `HOST_BIN` ist unbewacht; das Gegenbeispiel ist rot gesehen worden, indem es grün blieb | **[slice-078](../open/slice-078-verdrahtung-hat-waechter.md)** — sein DoD (1) fordert genau diesen Wächter samt der Richtung *„Kommando umgebogen"*. Die gemessene Kopplung und ihr Gegenbeispiel stehen jetzt in **seiner** Datei, nicht nur hier |
-| Der Positions-Kommentar am Unterkommando-Zweig in `cmd/ai-harness-init/main.go` nennt Fall 154 als Wächter; der bewacht das Routing, nicht die Position | **[slice-095](../open/slice-095-hook-aufschlag-gemessen.md)**, als Kommentar-Nachzug nach [`AGENTS.md`](../../../../AGENTS.md) §3.7 — er fährt genau diesen Einstiegspunkt. Der Satz ist **neu** mit diesem Slice und damit gebunden, kein Bestand. Die Position ist nicht bewachbar; sie gehört als Grenze benannt, wie `harness/tools/span-check.sh` es zweimal vormacht |
-| Der Kopf von `span-report` im [`Makefile`](../../../../Makefile) sagt *„fuer einen Bericht soll niemand einen Container starten muessen"*, während das Rezept über `host-bin` einen startet — der Satz gilt dem Ziel, nicht dem Dogfood | **[slice-095](../open/slice-095-hook-aufschlag-gemessen.md)**, derselbe Nachzug |
+| Der Positions-Kommentar am Unterkommando-Zweig in `cmd/ai-harness-init/main.go` nennt Fall 154 als Wächter; der bewacht das Routing, nicht die Position | **[slice-095](../next/slice-095-hook-aufschlag-gemessen.md)**, als Kommentar-Nachzug nach [`AGENTS.md`](../../../../AGENTS.md) §3.7 — er fährt genau diesen Einstiegspunkt. Der Satz ist **neu** mit diesem Slice und damit gebunden, kein Bestand. Die Position ist nicht bewachbar; sie gehört als Grenze benannt, wie `harness/tools/span-check.sh` es zweimal vormacht |
+| Der Kopf von `span-report` im [`Makefile`](../../../../Makefile) sagt *„fuer einen Bericht soll niemand einen Container starten muessen"*, während das Rezept über `host-bin` einen startet — der Satz gilt dem Ziel, nicht dem Dogfood | **[slice-095](../next/slice-095-hook-aufschlag-gemessen.md)**, derselbe Nachzug |
 | [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption) nennt `cmd/span-emit/` als Ort des kompilierten Harness-Tools | **Architect** — der Adaptions-Block gehört ihm ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Es ist eine Adresse, keine Begründung der getrennten Konstruktion; DoD (3) trifft sie nicht |
 | `docs/plan/planning/in-progress/roadmap.md` nennt `span-emit-build` in einer **datierten** Drift-Beobachtung | **kein Träger, und das ist entschieden** — eine datierte Beobachtung hält den Stand ihres Tages fest, wie [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) §Geltungsbereich es für Zeitdokumente vorsieht |
 | Ein verwaistes Binär unter dem alten Namen im Zustands-Bereich derer, die das alte Bau-Ziel gefahren haben | **kein Träger, und das ist entschieden** — der Ort ist gitignoriert (`git check-ignore -v .harness/state/bin` → `.gitignore:5:.harness/state/`), ein erneutes `make host-bin` stellt den Stand her, und kein Rezept und kein Hook liest den alten Namen mehr |
@@ -398,7 +398,7 @@ d-check-Pin bewegt, nicht in diesen Slice.
 
 **Folge-Slices: keine neuen `open/`-Einträge.** Jeder offene Posten oben hat einen bestehenden
 Träger oder eine begründete Ablehnung; ein neuer Schnitt entstünde nur, wenn die Messung aus
-[slice-095](../open/slice-095-hook-aufschlag-gemessen.md) negativ ausfällt — dann ist die Antwort
+[slice-095](../next/slice-095-hook-aufschlag-gemessen.md) negativ ausfällt — dann ist die Antwort
 Alternative F und damit ein anderer Träger, keine Fortsetzung dieses Slice.
 
 **Gates.** Die [Verifikation](../../../reviews/2026-08-25-slice-094-verify.md) hat sie über dem
