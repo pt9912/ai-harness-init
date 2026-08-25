@@ -15,8 +15,10 @@ gezeigt, nicht als Treiber.
 **[welle-12 — Erfassungsschicht emittieren](../welle-12-erfassungsschicht-emittieren.md)**,
 geschnitten am 2026-08-25, **aktuell seit 2026-08-25**. Beide Trigger sind erfüllt (Plan-Datei §2,
 dort gemessen), und sie steht **neben** der Reihe welle-09 → welle-10 → welle-11, nicht hinter ihr.
-Zielmeilenstein **M6**. Slices: `slice-094` bis `slice-099`, alle sechs geschnitten und in `open/`;
-Reihenfolge und Trigger stehen in der Plan-Datei, nicht hier.
+Zielmeilenstein **M6**. Slices: `slice-094` bis `slice-099`, alle sechs geschnitten
+(`ls docs/plan/planning/*/slice-09[4-9]*.md | wc -l` → **6**, mitwandernd). Ihr Zustand ist ihr
+Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt; Reihenfolge und Trigger stehen in der
+Plan-Datei, nicht hier.
 
 **[welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)**, geschnitten am 2026-07-28
 — **angefangen, nicht abschließbar**: ihre Closure hängt an drei Mitgliedern, die §4 der Welle
