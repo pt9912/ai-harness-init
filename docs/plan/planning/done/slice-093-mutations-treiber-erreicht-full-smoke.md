@@ -345,14 +345,14 @@ ausreichende Stufe für diesen Fall und nicht die bequemste.
    vor dem ersten Fall) steht dort im Volltext. Der Zahnlos-Lauf ist in seiner **Zählaussage**
    fremdbelegt und als solche ausgewiesen; sein **Kern** — der zahnlos gemachte Wächter lässt
    `make full-smoke` grün — ist mit zwei eigenen Sonden gemessen. Eine davon zeigt, dass der
-   Wächter ein Schranken-Paar ist; DoD (1) nennt das Rezept seitdem am Wächter statt an einer
-   seiner Bedingungen.
+   Wächter ein Schranken-Paar ist; das Rot-Rezept in DoD (1) benennt darum den Wächter als Ganzes
+   und nicht eine seiner Bedingungen.
 3. **`make gates` grün, `make mutate` grün einschließlich des neuen Falls, `make full-smoke`
    grün.** Belege unten unter *Gates*.
 4. **Review konform (Modul 10).** [Code-Review](../../../reviews/2026-08-23-slice-093-review.md)
    (`8333424`): **frei**, 0 HIGH · 0 MEDIUM · 1 LOW · 0 INFO
    (`grep -c '^### F-' docs/reviews/2026-08-23-slice-093-review.md` → **1**). Das LOW sitzt am
-   Plan, nicht am Code, und ist in §6 eingearbeitet.
+   Plan, nicht am Code; §6 trägt die gemessene Kostenrichtung.
 5. **Closure-Notiz mit Steering-Loop-Eintrag.** Diese Notiz; der Eintrag steht unten.
 
 **Wo der Liefergegenstand in der Historie liegt.** `git log --oneline --grep='slice-093' 5df80cb`
@@ -434,7 +434,7 @@ Auslöser ist deshalb der Architect-Lauf am Auflösungs-Trigger, nicht eine Such
 **Wächter** benennen muss und nicht eine seiner Bedingungen — ein Wächter, der auch *rot aus dem
 falschen Grund* fängt, ist mindestens ein Paar —, ist an **einem** Fall gemessen, und der Sensor
 selbst unterscheidet die zwei Zustände bereits: der Treiber meldet *„blieb GRUEN"* und *„falscher
-Grund"* als verschiedene Ausgänge. Der Fehlgriff saß im Rezept, nicht im Werkzeug; die Korrektur
+Grund"* als verschiedene Ausgänge. Der Fehlgriff saß im Rezept, nicht im Werkzeug — und das Rezept
 steht in DoD (1), wo der nächste Leser dieser Konstruktion hinsieht. **Trigger für die
 Eskalation:** ein zweiter Slice, dessen Rot-Rezept eine Bedingung statt eines Wächters benennt —
 dann gehört die Sache in denselben Architect-Lauf, an
