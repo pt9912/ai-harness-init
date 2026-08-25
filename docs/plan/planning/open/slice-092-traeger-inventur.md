@@ -119,10 +119,9 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       indem die Aussage emit-seitig zurückgenommen wird.
       **Ein Mutations-Fall existiert für diesen Punkt nicht, und das steht hier statt einer
       Zusage:** der Treiber kennt `full-smoke` nicht — `failure_form` in
-      [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) führt fünf Modi (`test`,
-      `test-go`, `test-bats`, `smoke`, `ci-lint`) und bricht sonst ab
-      (`grep -c 'full-smoke' harness/tools/mutate.sh` → **0**). Wer den Fall trotzdem will,
-      schuldet zuerst den Treiber-Arm; solange er fehlt, ist dieser Punkt in `make mutate`
+      [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) führt den Modus
+      (`grep -c 'full-smoke' harness/tools/mutate.sh` → **7**, mitwandernd), der Fall ist also
+      anlegbar und läuft im Standard-`make mutate` mit; solange keiner angelegt ist, ist dieser Punkt in `make mutate`
       **ungelistet**, und ungelistet heißt nach [`AGENTS.md`](../../../../AGENTS.md) §3.6
       unbewacht.
 - [ ] **(3) Keine Zelle behauptet die Abwesenheit eines Trägers, den derselbe Lauf ablegt.**
@@ -206,13 +205,12 @@ DoD (1)–(3) erfüllt mit gefahrenen Kommandos, `make gates` grün, `make full-
   desselben Laufs widerlegt. Die Gegenrichtung — ein behaupteter Träger, den es nicht gibt, oder
   ein falsch zugeordneter — bleibt offen; ein Sensor darüber wäre der Doku-Konsistenz-Agent aus
   Modul 15, der hier ausdrücklich nicht Gegenstand ist.
-- **Ein Punkt bleibt in `make mutate` ungelistet, und das ist gemessen.** DoD (2) hängt allein an
-  `make full-smoke`, für das der Mutations-Treiber kein Fehlschlag-Muster führt
-  (`grep -c 'full-smoke' harness/tools/mutate.sh` → **0**). Zwei Ausgänge, beide außerhalb dieses
-  Schnitts: ein `full-smoke`-Arm in
-  [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) — Gate-*Anheben* nach dem
-  [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)-Muster,
-  und je Fall ein voller Bootstrap-Lauf —, oder der Verzicht mit dieser Zeile als Beleg.
+- **DoD (2) hängt allein an `make full-smoke` — der Treiber erreicht ihn.** `failure_form` in
+  [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) führt den Modus
+  (`grep -c 'full-smoke' harness/tools/mutate.sh` → **7**, mitwandernd), der Fall ist damit
+  anlegbar und läuft im Standard-Lauf mit. Was bleibt, ist sein **Preis**: der Grün-Vorlauf fährt
+  `make full-smoke` einmal mit, und der ist die Untergrenze — der Fall-Lauf selbst liegt darunter,
+  weil er am getroffenen Wächter abbricht.
 - **Die Inventur altert mit dem Baum.** Sie steht deshalb hinter
   [welle-10](../welle-10-re-baseline.md) (§2 der Welle) und nennt ihren Nenner als Kommando, nicht
   als Ziffer. Kommt upstream ein Abschnitt hinzu, meldet der Wächter die Differenz — das ist der

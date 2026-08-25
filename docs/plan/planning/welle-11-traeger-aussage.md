@@ -144,13 +144,10 @@ erst wahr, wenn alle drei Slices liegen: 090 und 091 setzen je einen Wert, 092 s
   Vollständigkeit — eine geschlossene Liste des **gesamten** emittierten Datei-Satzes existiert
   nicht.
 - **`make gates` grün** *und* `make full-smoke`; jeder neue Wächter hat seinen
-  `test/mutations/`-Fall ([`AGENTS.md`](../../../AGENTS.md) §3.6). **Mit einer Grenze, die der
-  Treiber setzt:** ein Wächter, der **allein** an `make full-smoke` hängt, kann heute keinen Fall
-  bekommen — `failure_form` in `harness/tools/mutate.sh` führt Fehlschlag-Muster für `test`,
-  `test-go`, `test-bats`, `smoke` und `ci-lint` und bricht sonst ab
-  (`grep -c 'full-smoke' harness/tools/mutate.sh` → **0**). Wer einen solchen Wächter zusagt,
-  schuldet darum **beides**: ihn und ein Muster für `full-smoke`; sonst bleibt sein Fall
-  ungelistet, und ungelistet heißt unbewacht.
+  `test/mutations/`-Fall ([`AGENTS.md`](../../../AGENTS.md) §3.6). Ein Wächter, der **allein**
+  an `make full-smoke` hängt, bekommt seinen Fall: `failure_form` in `harness/tools/mutate.sh`
+  führt den Modus (`grep -c 'full-smoke' harness/tools/mutate.sh` → **7**, mitwandernd), und
+  `make mutate` fährt ihn im Standard-Lauf mit.
 - **Carveout-Audit (Modul 7)** über den Bestand in `docs/plan/carveouts/` — gelesen wird der
   `Status:`-Kopf, nicht das Verzeichnis (`grep -n '^\*\*Status:' docs/plan/carveouts/CO-*.md`).
 - **Closure-Notiz `welle-11-results.md`** mit Steering-Loop-Eintrag.
