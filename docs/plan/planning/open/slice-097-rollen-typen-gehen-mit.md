@@ -62,7 +62,7 @@ Wrapper und Hook-Eintrag; als zweig-teilend ausgewiesen ist allein die Feldliste
 entsteht mit dem Träger … und teilt darum seinen Zweig"*). Die Rollen-Typen stehen in **keiner** der
 beiden Aufzählungen — sie sind Text, sie hängen an keinem Laufzeit-Ausgang, und sie werden darum
 **unbedingt** emittiert. Daraus folgt der Schnitt: dieser Slice wartet auf
-[slice-096](../next/slice-096-traeger-liegt-im-ziel.md) nicht.
+[slice-096](../in-progress/slice-096-traeger-liegt-im-ziel.md) nicht.
 
 **Warum die Kopie unserer sechs Dateien falsch wäre.** `ls -1 .claude/agents/ | wc -l` → **6**
 (mitwandernd); dieselbe Sechser-Zuordnung notiert der Emitter (`sed -n '182,189p'
@@ -179,7 +179,7 @@ Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   ausspricht — sie wird gesagt, nicht bewacht, und ihr stehender Ort ist
   [slice-098](slice-098-feldliste-ist-ausdruck-des-traegers.md).
 - **Ohne Träger bleibt der Nutzen halb.** Die Typen machen Rollen startbar, aber niemand erfasst
-  ihre Läufe, solange [slice-096](../next/slice-096-traeger-liegt-im-ziel.md) nicht liegt. Das ist ein
+  ihre Läufe, solange [slice-096](../in-progress/slice-096-traeger-liegt-im-ziel.md) nicht liegt. Das ist ein
   **Zwischenstand, kein Widerspruch**: die Typen behaupten nichts über Erfassung, und wer sie liest,
   liest keine Zusage, die nicht gilt.
 - **Berührung mit [slice-092](slice-092-traeger-inventur.md), falls jener zuerst liegt.** Seine

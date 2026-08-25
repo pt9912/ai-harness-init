@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
 **Welle:** [welle-12](../welle-12-erfassungsschicht-emittieren.md) — er läuft nach
-[slice-096](../next/slice-096-traeger-liegt-im-ziel.md), weil das Dokument **aus** dem Träger erzeugt wird
+[slice-096](../in-progress/slice-096-traeger-liegt-im-ziel.md), weil das Dokument **aus** dem Träger erzeugt wird
 und seinen Emissions-Zweig teilt. Er hängt **nicht** an
 [slice-099](slice-099-leser-und-aufraeum-kommando.md).
 
@@ -117,7 +117,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
 - [ ] **(3) Das Dokument teilt den Zweig des Trägers und liegt im geprüften Bereich der
       Ziel-Doku.** Es entsteht mit dem Träger; scheitert dessen Ablage, entsteht es **nicht** — ein
       unbedingt formulierter Wächter fiele im Zweig aus Festlegung 5(a) und stünde gegen die Zusage
-      aus [slice-096](../next/slice-096-traeger-liegt-im-ziel.md) DoD (2). Es liegt **nicht** unter
+      aus [slice-096](../in-progress/slice-096-traeger-liegt-im-ziel.md) DoD (2). Es liegt **nicht** unter
       `.harness/**`, das die emittierte `.d-check.yml` ausnimmt, sondern dort, wo das Doku-Gate des
       Ziels es liest — und es hält dieses Gate.
       **Rot:** `make full-smoke` über beide Bootstrap-Varianten — das gebootstrappte Ziel fährt sein
@@ -141,7 +141,7 @@ Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · Doku-Upda
 
 ## 4. Trigger
 
-**`open` → `next`:** [slice-096](../next/slice-096-traeger-liegt-im-ziel.md) liegt in `done/` — erst dann
+**`open` → `next`:** [slice-096](../in-progress/slice-096-traeger-liegt-im-ziel.md) liegt in `done/` — erst dann
 gibt es einen Träger, aus dem das Dokument erzeugt wird, und einen Zweig, den es teilen kann.
 Beobachtbar ohne Rückfrage: die Plan-Datei liegt in `done/`. **`next` → `in-progress`:** WIP-Limit
 frei. **Nicht Trigger:** [slice-099](slice-099-leser-und-aufraeum-kommando.md) — die beiden hängen
