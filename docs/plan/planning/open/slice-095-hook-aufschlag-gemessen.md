@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
 **Welle:** [welle-12](../welle-12-erfassungsschicht-emittieren.md) — er steht zwischen
-[slice-094](slice-094-ein-programm-ein-einstiegspunkt.md) und
+[slice-094](../next/slice-094-ein-programm-ein-einstiegspunkt.md) und
 [slice-096](slice-096-traeger-liegt-im-ziel.md), weil sein Ausgang eine Konstruktions-Eingabe für
 alles ist, was danach ins Ziel geht.
 
@@ -38,12 +38,12 @@ heutigen getrennten Emitter als Vergleichspunkt — und das Mess-Kommando steht 
 kein Artefakt: sie ändert nichts am Verhalten des Repos und wird auch von nichts erzwungen. Ihr
 Wert liegt darin, dass sie eine getroffene Entscheidung entweder trägt oder umstößt — und beides
 ist ein Ergebnis, das eine eigene Prüfsitzung verdient. Als vierter Punkt an
-[slice-094](slice-094-ein-programm-ein-einstiegspunkt.md) angehängt bräche sie dessen Schnitt
+[slice-094](../next/slice-094-ein-programm-ein-einstiegspunkt.md) angehängt bräche sie dessen Schnitt
 (Modul 5 §Ziel-Form: ≤ 3) und verschwände hinter einem Umbau.
 
 **Warum sie hier steht und nicht am Ende der Welle.** Der Aufschlag ist erst messbar, wenn der Hook
 dieses Repos das Produkt-Binär ruft; das tut er nach
-[slice-094](slice-094-ein-programm-ein-einstiegspunkt.md). Und er ist **vor**
+[slice-094](../next/slice-094-ein-programm-ein-einstiegspunkt.md). Und er ist **vor**
 [slice-096](slice-096-traeger-liegt-im-ziel.md) zu messen, weil sein negativer Ausgang eine benannte
 Antwort hat: **Alternative F** — ein eigenes Emitter-Binär, ins Produkt-Binär eingebettet, mit
 denselben vier Konstruktions-Eigenschaften und getrenntem Einstiegspunkt. Das ist ein **anderer
@@ -112,7 +112,7 @@ Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · Doku-Upda
 
 ## 4. Trigger
 
-**`open` → `next`:** [slice-094](slice-094-ein-programm-ein-einstiegspunkt.md) liegt in `done/` —
+**`open` → `next`:** [slice-094](../next/slice-094-ein-programm-ein-einstiegspunkt.md) liegt in `done/` —
 erst dann ruft der Hook dieses Repos den Einstiegspunkt, dessen Aufschlag gemessen werden soll.
 Beobachtbar ohne Rückfrage: die Plan-Datei liegt in `done/`. **`next` → `in-progress`:** WIP-Limit
 frei.
@@ -133,7 +133,7 @@ Befund an den Architect —, Closure-Notiz in §7 mit Steering-Loop-Eintrag.
 ## 6. Risiken und offene Punkte
 
 - **Die Messung kann die Entscheidung umstoßen, und das ist ihr Zweck.** Fällt sie negativ aus,
-  steht [slice-094](slice-094-ein-programm-ein-einstiegspunkt.md) teilweise zum Rückbau und die
+  steht [slice-094](../next/slice-094-ein-programm-ein-einstiegspunkt.md) teilweise zum Rückbau und die
   Welle wartet auf eine Folge-ADR. Das ist kein Risiko des Slice, sondern der Grund, ihn früh zu
   fahren: derselbe Ausgang nach der Emission kostet vier Slices statt einen.
 - **Eine Zahl ohne genannte Bedingungen ist nicht nachfahrbar.** Host, Auslastung, Kaltstart gegen
@@ -141,7 +141,7 @@ Befund an den Architect —, Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   misst die nächste Messung etwas anderes und niemand merkt es
   ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)).
 - **Der Vergleichspunkt verschwindet mit dem Slice davor.** Nach
-  [slice-094](slice-094-ein-programm-ein-einstiegspunkt.md) gibt es den getrennten Emitter nicht
+  [slice-094](../next/slice-094-ein-programm-ein-einstiegspunkt.md) gibt es den getrennten Emitter nicht
   mehr im Arbeitsbaum; er ist über einen ausgecheckten Vorgänger-Stand zu messen. Wer das erst beim
   Messen merkt, hat nur noch die absolute Zahl — und die beantwortet die Frage *„was hat der Umbau
   gekostet?"* nicht.

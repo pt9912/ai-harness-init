@@ -193,7 +193,7 @@ Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   Rückwirkung auf den Rest.
 - **Offen und nicht in diesem Slice:** ob der zusammengelegte Einstiegspunkt die Schwelle aus
   [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) hält. Das misst
-  [slice-095](slice-095-hook-aufschlag-gemessen.md); fällt die Messung negativ aus, ist die Antwort
+  [slice-095](../open/slice-095-hook-aufschlag-gemessen.md); fällt die Messung negativ aus, ist die Antwort
   Alternative F — ein getrennter Einstiegspunkt —, und dieser Slice wird teilweise rückgebaut. Das
   ist der bewusst gewählte Preis dafür, dass die Messung erst nach dem Umbau möglich ist: gemessen
   werden kann nur, was läuft.

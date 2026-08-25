@@ -7,7 +7,7 @@ wechselt nur durch `git mv`, siehe
 
 **Welle:** [welle-12](../welle-12-erfassungsschicht-emittieren.md) — er hat **keine** Vorbedingung
 innerhalb der Welle und darf parallel zu
-[slice-094](slice-094-ein-programm-ein-einstiegspunkt.md) und
+[slice-094](../next/slice-094-ein-programm-ein-einstiegspunkt.md) und
 [slice-095](slice-095-hook-aufschlag-gemessen.md) laufen.
 
 **Bezug:**

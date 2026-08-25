@@ -51,7 +51,7 @@ Setzung 2). Jedes Kriterium hat in dieser Welle genau einen zuständigen Slice; 
 |---|---|---|
 | Happy Path — Span-Zeile mit voller Pflicht-Spalte | [slice-096](open/slice-096-traeger-liegt-im-ziel.md) | gebaut und im `full-smoke` gesehen |
 | Rolle besetzt | [slice-097](open/slice-097-rollen-typen-gehen-mit.md) | gebaut (der Typ ist der Träger der Achse) |
-| Betrieb fail-open, Umfang fail-closed | [slice-094](open/slice-094-ein-programm-ein-einstiegspunkt.md) | **konstruktiv geerbt** — dasselbe Programm, dieselbe Klemme; die Zähne wandern auf den neuen Einstiegspunkt |
+| Betrieb fail-open, Umfang fail-closed | [slice-094](next/slice-094-ein-programm-ein-einstiegspunkt.md) | **konstruktiv geerbt** — dasselbe Programm, dieselbe Klemme; die Zähne wandern auf den neuen Einstiegspunkt |
 | Redaktion — was zugesagt ist und was nicht | [slice-098](open/slice-098-feldliste-ist-ausdruck-des-traegers.md) | gebaut (die Feldliste **ist** die geschlossene Liste, die das Kriterium verlangt) |
 | Aufbewahrung — Kommando ohne Automatik | [slice-099](open/slice-099-leser-und-aufraeum-kommando.md) | gebaut |
 | Leser — Abdeckung zuerst, Leere gemeldet | [slice-099](open/slice-099-leser-und-aufraeum-kommando.md) | gebaut |
@@ -65,7 +65,7 @@ Beweislast, keine Ausrede.** Ein konstruktiv geerbtes Kriterium hat keinen eigen
 weil es keine neue Zusage ist: dasselbe Programm, das hier seit
 [`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.md) fail-open geklemmt läuft, läuft im Ziel.
 Was dabei **wandert**, ist der Einstiegspunkt — und genau der bekommt seinen Zahn
-([slice-094](open/slice-094-ein-programm-ein-einstiegspunkt.md) DoD 2). Die *ausgesprochene*
+([slice-094](next/slice-094-ein-programm-ein-einstiegspunkt.md) DoD 2). Die *ausgesprochene*
 Grenze ist die, die
 [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) §Benannte Grenze
 selbst als unbewachbar führt; ein Wächter dafür wäre einer über einem fremden Vertrag.
@@ -152,14 +152,14 @@ Der Zustand jedes Slice ist sein Lifecycle-Verzeichnis, hier nicht gespiegelt.
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-094](open/slice-094-ein-programm-ein-einstiegspunkt.md) | Ein Programm, ein Einstiegspunkt: Schreiber und Auswertung werden Unterkommandos | [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 2 |
+| [slice-094](next/slice-094-ein-programm-ein-einstiegspunkt.md) | Ein Programm, ein Einstiegspunkt: Schreiber und Auswertung werden Unterkommandos | [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 2 |
 | [slice-095](open/slice-095-hook-aufschlag-gemessen.md) | Der Aufschlag je Tool-Call ist gemessen, und der Trennungs-Trigger kann feuern | [`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.md) |
 | [slice-096](open/slice-096-traeger-liegt-im-ziel.md) | Der Träger liegt im Ziel — oder es liegt begründet nichts | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
 | [slice-097](open/slice-097-rollen-typen-gehen-mit.md) | Die Rollen-Typen gehen mit: generisch, Tool-als-Quelle, `skip-if-present` | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) |
 | [slice-098](open/slice-098-feldliste-ist-ausdruck-des-traegers.md) | Die Feldliste im Ziel ist der Ausdruck des Trägers und führt ihre Grenzen stehend | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
 | [slice-099](open/slice-099-leser-und-aufraeum-kommando.md) | Der Leser nennt seine Abdeckung zuerst, und der Bestand hat ein Aufräum-Kommando | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
 
-**Zuerst läuft [slice-094](open/slice-094-ein-programm-ein-einstiegspunkt.md), und der Grund steht
+**Zuerst läuft [slice-094](next/slice-094-ein-programm-ein-einstiegspunkt.md), und der Grund steht
 in der Entscheidung selbst.** Ihre Folgepflicht 1 bindet die Emission an den Dogfood: *„ohne diesen
 Nachzug emittierte der Beleg einen Einstiegspunkt, den der Dogfood nie ausführt"*. Der
 Einstiegspunkt trägt genau die zwei Eigenschaften, die
