@@ -7,7 +7,7 @@ wechselt nur durch `git mv`, siehe
 
 **Welle:** [welle-12](../welle-12-erfassungsschicht-emittieren.md) — er steht zwischen
 [slice-094](../done/slice-094-ein-programm-ein-einstiegspunkt.md) und
-[slice-096](../in-progress/slice-096-traeger-liegt-im-ziel.md), weil sein Ausgang eine Konstruktions-Eingabe für
+[slice-096](../done/slice-096-traeger-liegt-im-ziel.md), weil sein Ausgang eine Konstruktions-Eingabe für
 alles ist, was danach ins Ziel geht.
 
 **Bezug:**
@@ -44,7 +44,7 @@ ist ein Ergebnis, das eine eigene Prüfsitzung verdient. Als vierter Punkt an
 **Warum sie hier steht und nicht am Ende der Welle.** Der Aufschlag ist erst messbar, wenn der Hook
 dieses Repos das Produkt-Binär ruft; das tut er nach
 [slice-094](../done/slice-094-ein-programm-ein-einstiegspunkt.md). Und er ist **vor**
-[slice-096](../in-progress/slice-096-traeger-liegt-im-ziel.md) zu messen, weil sein negativer Ausgang eine benannte
+[slice-096](../done/slice-096-traeger-liegt-im-ziel.md) zu messen, weil sein negativer Ausgang eine benannte
 Antwort hat: **Alternative F** — ein eigenes Emitter-Binär, ins Produkt-Binär eingebettet, mit
 denselben vier Konstruktions-Eigenschaften und getrenntem Einstiegspunkt. Das ist ein **anderer
 Träger**. Nach der Emission gemessen wäre dieselbe Zahl ein Abriss-Trigger statt einer
@@ -90,7 +90,7 @@ Kommando** rot; das steht dabei statt einer Zusage
       (Alternative F); dann geht ein **Befund an den Architect**, weil eine *Accepted*-Entscheidung
       nicht nachgebessert, sondern durch eine Folge-Entscheidung abgelöst wird
       ([`AGENTS.md`](../../../../AGENTS.md) §3.4) — und
-      [slice-096](../in-progress/slice-096-traeger-liegt-im-ziel.md) bis
+      [slice-096](../done/slice-096-traeger-liegt-im-ziel.md) bis
       [slice-099](../open/slice-099-leser-und-aufraeum-kommando.md) warten auf sie.
       **Rot:** `make docs-check` — der Ablageort des Mess-Skripts steht in
       [`AGENTS.md`](../../../../AGENTS.md) §4 und in
@@ -207,7 +207,7 @@ einem Programm, das um Faktor **2,4** gewachsen ist
 **Was daraus folgt — und das ist der Zweck des Slice.** **Annahme (c) von
 [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) ist gemessen
 statt vermutet, Alternative F ist nicht herbeigeführt, und
-[slice-096](../in-progress/slice-096-traeger-liegt-im-ziel.md) bis
+[slice-096](../done/slice-096-traeger-liegt-im-ziel.md) bis
 [slice-099](../open/slice-099-leser-und-aufraeum-kommando.md) sind nicht blockiert.** Der negative
 Zweig ist korrekt **nicht** gebaut: `git diff --stat f29524c^ f29524c -- docs/plan/adr/` → leer,
 kein Befund an den Architect fällig. **Ob die Folgepflicht 9 jener Entscheidung damit als

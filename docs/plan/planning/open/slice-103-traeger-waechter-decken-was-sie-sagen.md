@@ -131,7 +131,7 @@ Artefakt und keine Schnittstelle.
 
 ## 4. Trigger
 
-**`open` → `next`:** [slice-096](../in-progress/slice-096-traeger-liegt-im-ziel.md) liegt in
+**`open` → `next`:** [slice-096](../done/slice-096-traeger-liegt-im-ziel.md) liegt in
 `done/` — vorher existieren die Wächter nicht, über die dieser Slice misst. Die Bedingung ist ohne
 Rückfrage prüfbar: die Plan-Datei liegt bei den geschlossenen Slices. **`next` → `in-progress`:**
 WIP-Limit frei.
