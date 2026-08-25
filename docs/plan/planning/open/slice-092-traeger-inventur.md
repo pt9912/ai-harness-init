@@ -139,8 +139,8 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       Der Sensor misst damit **Adressen**, der Gegenstand sind **Aussagen**; die Aussagen-Menge,
       aufgezählt und mit ihrer Richtung — jede steht heute auf *kommt nicht mit* samt
       Auflösungs-Trigger und geht auf *Träger kommt mit*, sobald ihre Adresse erscheint:
-      **(a)** Modul 15 §Erfassung → Präfix `.claude/hooks/`, heute mit **zwei** Einträgen
-      (`grep -c '".claude/hooks/' internal/emit/enforce.go` → **2**). Der Träger selbst liegt
+      **(a)** Modul 15 §Erfassung → Präfix `.claude/hooks/`, heute mit **drei** Einträgen
+      (`grep -c '".claude/hooks/' internal/emit/enforce.go` → **3**). Der Träger selbst liegt
       gitignored und steht in keiner Pfad-Liste; die Adresse ist sein committeter Zwilling, der
       Hook-Wrapper, an den
       [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
