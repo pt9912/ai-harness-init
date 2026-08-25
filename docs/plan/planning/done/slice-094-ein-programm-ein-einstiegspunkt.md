@@ -121,9 +121,12 @@ steht das dabei (Modul 5 §Ziel-Form: ≤ 3;
       Gegenstand ist die **Aussage** — die Menge steht darum hier, aufgezählt und mit ihrer
       Richtung. Die Eigenschaft, über die gezählt wird: *eine Zeile in einem lebenden Bau- oder
       Quell-Artefakt, die das eigene Binär gegen ein Unterkommando begründet oder eine Eigenschaft
-      der getrennten Konstruktion behauptet.* Suchhilfe, kein Kriterium:
-      `grep -rniE 'kein[e]? subkommando|eigenes binary' Dockerfile Makefile cmd/ internal/ harness/`
-      → **4** Zeilen in **2** Dateien (mitwandernd).
+      der getrennten Konstruktion behauptet.* Suchhilfe, kein Kriterium — und die Menge ist die des
+      **Vorzustands**, darum steht sie an einem Stand statt an einem wandernden Bestand:
+      `git grep -niE 'kein[e]? subkommando|eigenes binary' 9bed2d7^ -- Dockerfile Makefile cmd/ internal/ harness/`
+      → **4** Zeilen in **2** Dateien. Dieselbe Suche über den Arbeitsbaum
+      (`grep -rniE 'kein[e]? subkommando|eigenes binary' Dockerfile Makefile cmd/ internal/ harness/`)
+      → **0** Treffer, Exit 1; das ist die erfüllte Seite des Punktes.
       **(a)** [`Dockerfile`](../../../../Dockerfile), Emitter-Stufe: *„EIGENE Stage und EIGENES
       Binary, KEIN Subkommando von ai-harness-init: ob der EMITTIERTE Harness einen Emitter bekommt,
       entscheidet …"* — Richtung: die Entscheidung **ist gefallen**, die Begründung verliert ihren
