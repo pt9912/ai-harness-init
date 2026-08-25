@@ -27,9 +27,10 @@ rot gesehenen Wächter — und die **bestehende** Cache-Zusage darf ihren nicht 
 Go-Testlauf bekommt einen wirksamen Prozess- und Speicher-Deckel, ohne dass der Container
 etwas vom Host gemountet bekommt.
 
-**Der Anlass ist real und nicht hypothetisch** (slice-059, 2026-07-28): ein Test in
-`cmd/span-emit/main_test.go` startete sich selbst als Kind-Prozess, um eine
-Prozess-Eigenschaft zu messen. Solange die Klemme im Emitter stand, endete das Kind in
+**Der Anlass ist real und nicht hypothetisch** (slice-059, 2026-07-28): ein Test des
+Span-Emitters startete sich selbst als Kind-Prozess, um eine Prozess-Eigenschaft zu
+messen. Er tut es weiterhin, aus `cmd/ai-harness-init/span_emit_test.go`.
+Solange die Klemme im Emitter stand, endete das Kind in
 `os.Exit(0)`. Mutation 107 nahm die Klemme weg — und damit kehrte `main()` bei gültiger
 Payload normal zurück, das Kind lief in den Test-Rumpf weiter und startete das nächste
 Kind. Unbegrenzt. Der Mutations-Lauf legte den Arbeitsrechner lahm.
@@ -141,7 +142,7 @@ Closure-Notiz mit Steering-Loop-Eintrag.
   der Ist-Messung ist der Beleg, dass das hier kein theoretisches Risiko ist. Deshalb
   verlangt DoD (1) die Messung und nicht die Flag-Zeile.
 - **Der zu enge Deckel.** Der Go-Testlauf startet selbst Prozesse (Compiler, Testbinaries,
-  der Kind-Prozess in `cmd/span-emit/main_test.go`). Ein knapper Wert macht den Gate
+  der Kind-Prozess aus `cmd/ai-harness-init/span_emit_test.go`). Ein knapper Wert macht den Gate
   flatterig — und ein flatteriger Gate wird abgeschaltet.
 - **Die Cache-Zusage ist der eigentliche Arbeitsanteil**, nicht der Deckel. Sie ist heute
   zweistufig belegt; wer nur die Flags umstellt, lässt einen Wächter still ins Leere

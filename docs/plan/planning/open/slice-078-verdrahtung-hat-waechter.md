@@ -60,6 +60,17 @@ es.
   Zahl ist das schwächere Argument von beiden: sie sinkt, sobald ein Guard-Zweig entfällt, ohne
   dass die Lücke kleiner würde.
 
+**Drei der Einträge hängen an einem Pfad, den der Bau beliefert — und diese Kopplung hat ihr
+Gegenbeispiel bereits.** `grep -c 'state/bin/ai-harness-init span-emit' .claude/settings.json` →
+**3** (mitwandernd) zeigen auf denselben Ablageort, den `grep -n '^HOST_BIN :=' Makefile` nennt;
+zeigt einer davon woanders hin, entsteht kein Span, keine Meldung und kein rotes Gate. Gemessen im
+Verifikations-Lauf zu slice-094 und hier als **fremdbelegt** ausgewiesen
+([Bericht](../../../reviews/2026-08-25-slice-094-verify.md), Lauf L12): die drei Einträge in einer
+Kopie außerhalb des Repos auf einen gelöschten Pfad zurückgestellt — einzige abweichende Datei —,
+dann `make gates` in der Kopie → **Exit 0**, mit denselben Zahlen wie der ungestörte Lauf. Das ist
+genau die zweite Richtung aus DoD (1) (*Kommando umgebogen*); ihr rotes Gegenbeispiel muss also
+nicht erst gesucht werden.
+
 **Die Lücke ist älter als der jüngste Block.** `PostToolUse` und `PostToolUseFailure` stehen seit
 slice-059 ungeschützt, die zwei `PreToolUse`-Einträge und `Stop` noch länger; `SubagentStart` hat
 sie um einen sechsten Eintrag verbreitert, nicht erzeugt. Ein Wächter, der nur den zuletzt
