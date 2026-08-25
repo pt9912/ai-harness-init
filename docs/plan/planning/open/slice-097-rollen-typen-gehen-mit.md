@@ -8,7 +8,7 @@ wechselt nur durch `git mv`, siehe
 **Welle:** [welle-12](../welle-12-erfassungsschicht-emittieren.md) — er hat **keine** Vorbedingung
 innerhalb der Welle und darf parallel zu
 [slice-094](../done/slice-094-ein-programm-ein-einstiegspunkt.md) und
-[slice-095](../next/slice-095-hook-aufschlag-gemessen.md) laufen.
+[slice-095](../in-progress/slice-095-hook-aufschlag-gemessen.md) laufen.
 
 **Bezug:**
 [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) (*„Die
