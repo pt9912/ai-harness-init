@@ -481,13 +481,21 @@ gespiegelt"*). Eine Fortschritts-Zeile wäre eine zweite Fassung derselben Aussa
 sobald der nächste Move sie nicht mitnimmt. Was die Welle-Datei aus diesem Move bekommt, sind
 gezogene Link-Ziele — nichts sonst.
 
-**Gates.** Selbst gefahren über dem Baum bei `5ef8fb7`, vor dieser Notiz: `make gates` **Exit 0**
-(`baseline-verify: v3.5.2 OK — 42 Dateien`, `d-check: 381 Datei(en) geprüft, 0 Befund(e)`,
+**Gates.** Zwei Läufe über zwei Bäumen, jeder mit seinem Erheber. **Vor der Closure, über dem Baum
+bei `6f860af`:** die [Verifikation](../../../reviews/2026-08-25-slice-096-verify.md) fuhr `make gates`
+**Exit 0** (`baseline-verify: v3.5.2 OK — 42 Dateien`, `d-check: 381 Datei(en) geprüft, 0 Befund(e)`,
 golangci-lint `0 issues.`, bats `1..153` ohne ein einziges `not ok` — darunter `ok 148`–`ok 153`,
 die sechs `wrapper:`-Fälle —, `comment-claims: 41 Datei(en) geprueft, 0 Befund(e)`,
 `span-check: Traeger vorhanden, span-emit hat einen Span geschrieben, Ablageort git-ignoriert`),
-`make mutate` **Exit 0** mit `mutate: 155 ok, 0 Befund(e)`, `make full-smoke` **Exit 0** mit der
-neuen OK-Zeile über beide Varianten, `make test-go`, `make shell-lint` und `make smoke` **Exit 0**.
+dazu `make mutate` **Exit 0** mit `mutate: 155 ok, 0 Befund(e)`, `make full-smoke` **Exit 0** mit
+der neuen OK-Zeile über beide Varianten sowie `make test-go`, `make shell-lint` und `make smoke`
+**Exit 0**. Die zwei teuren Sensoren stehen damit **fremdbelegt** hier — von einer Rolle mit
+frischem Kontext erhoben, nicht von dieser. **Nach der Closure, über dem Baum bei `aead672`** —
+Notiz, `done/`-Move und Link-Zug eingerechnet —: `make gates` **Exit 0** mit
+`d-check: 383 Datei(en) geprüft, 0 Befund(e)`, `baseline-verify: v3.5.2 OK — 42 Dateien`,
+golangci-lint `0 issues.`, `1..153` ohne ein `not ok`,
+`comment-claims: 41 Datei(en) geprueft, 0 Befund(e)` und grünem `span-check`; danach sind
+`bash harness/tools/working-tree-hash.sh` und `.harness/state/gates-passed.diffsha` byte-gleich.
 Der Stempel band den Lauf an den Baum, nicht an eine Erinnerung: `record-gates` schreibt ihn nur
 als **letzter** Prerequisite grüner Gates
 ([`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)),
@@ -496,8 +504,9 @@ Span-Bestand also unberührt
 ([`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)).
 Die Dateizahl des Doku-Gates wandert mit dem Markdown-Bestand und ist **kein** Erwartungswert
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2). Diese Notiz, der `done/`-Move und der Link-Zug danach verschieben den Stempel erneut;
-der Lauf, der ihn wieder bindet, gehört zu ihnen.
+Setzung 2). Der Unterschied zwischen **381** und **383** sind zwei Markdown-Dateien: der
+Verifikations-Bericht und der mit dieser Closure geschnittene
+[slice-103](../open/slice-103-traeger-waechter-decken-was-sie-sagen.md).
 
 ## 8. Sub-Area-Modus-Begründung
 
