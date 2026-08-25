@@ -75,7 +75,7 @@ in ihrer eigenen Begründung für dieselbe Lage trifft.
 | [`AGENTS.md`](../../../../AGENTS.md) §3.6 insgesamt (Reichweite eines Rot-Kommandos) | ein bewegter Block | letzte Bewegung **2026-08-08** | `git log -L '/^### 3.6/,/^### 3.7/:AGENTS.md' --format='%h %ad' --date=short \| grep -E '^[0-9a-f]{7} ' \| head -1` |
 
 Dazu kommt der vierte Posten aus
-[slice-100](../in-progress/slice-100-vorlauf-nennt-den-grund.md): *ein Rot-Beleg gilt für den Eingriff,
+[slice-100](../done/slice-100-vorlauf-nennt-den-grund.md): *ein Rot-Beleg gilt für den Eingriff,
 den er wirklich gemacht hat — und was ein Eingriff bewegt, wird gemessen, nicht gelesen.* Er
 adressiert dieselbe Regel und hat dieselbe Herkunft: eine Closure hat ihn formuliert, gemessen und
 niemandem gegeben, der ihn ausführt.
@@ -134,7 +134,7 @@ dabei, statt sich hinter einem anderen zu verstecken.
       heute den alten Wert liefert.** Die drei Kommandos und ihre heutigen Werte stehen in der
       Tabelle in §1; jeder **übernommene** Posten bewegt genau einen dieser Werte, und der neue
       Wert gehört mit seinem Kommando in die Closure-Notiz. Für den vierten Posten
-      ([slice-100](../in-progress/slice-100-vorlauf-nennt-den-grund.md)) gilt dasselbe Kommando wie für
+      ([slice-100](../done/slice-100-vorlauf-nennt-den-grund.md)) gilt dasselbe Kommando wie für
       den Reichweiten-Posten: der §3.6-Block bewegt sich oder nicht.
       **Ein abgelehnter oder aufgeschobener Posten bewegt keinen Wert** — dann trägt DoD (1) ihn
       mit seinem Grund, und die Closure-Notiz sagt ausdrücklich, dass hier **nichts** gemessen

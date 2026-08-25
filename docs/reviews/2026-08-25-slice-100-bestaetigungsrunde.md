@@ -21,7 +21,7 @@ ist **unverändert** (`git diff 71b6aba..c44519d -- harness/tools/mutate.sh | wc
 - **Runde-1-Report:** [`docs/reviews/2026-08-25-slice-100-review.md`](2026-08-25-slice-100-review.md)
   (1 HIGH / 2 MEDIUM) — die zu bestätigende Befundmenge.
 - **Slice-Plan:**
-  [slice-100](../plan/planning/in-progress/slice-100-vorlauf-nennt-den-grund.md) (aktuelle Fassung
+  [slice-100](../plan/planning/done/slice-100-vorlauf-nennt-den-grund.md) (aktuelle Fassung
   gelesen, insbesondere DoD (1)).
 - **ADR:** keine referenziert, keine berührt.
 - **Hard Rules:** `AGENTS.md` §3.2, §3.6, §3.7.
