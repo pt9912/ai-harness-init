@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
 **Welle:** [welle-12](../welle-12-erfassungsschicht-emittieren.md) — er läuft nach
-[slice-096](slice-096-traeger-liegt-im-ziel.md), weil das Fragment auf den Träger zeigt und der
+[slice-096](../next/slice-096-traeger-liegt-im-ziel.md), weil das Fragment auf den Träger zeigt und der
 Leser dessen Bestand liest. Er hängt **nicht** an
 [slice-098](slice-098-feldliste-ist-ausdruck-des-traegers.md).
 
@@ -137,7 +137,7 @@ Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · Doku-Upda
 
 ## 4. Trigger
 
-**`open` → `next`:** [slice-096](slice-096-traeger-liegt-im-ziel.md) liegt in `done/` — erst dann
+**`open` → `next`:** [slice-096](../next/slice-096-traeger-liegt-im-ziel.md) liegt in `done/` — erst dann
 gibt es im Ziel einen Träger, auf den das Fragment zeigt, und einen Bestand, den der Leser liest.
 Beobachtbar ohne Rückfrage: die Plan-Datei liegt in `done/`. **`next` → `in-progress`:** WIP-Limit
 frei. **Nicht Trigger:** [slice-098](slice-098-feldliste-ist-ausdruck-des-traegers.md) — die beiden
@@ -164,7 +164,7 @@ Varianten, `make mutate` grün mit den neuen Fällen, Closure-Notiz in §7 mit S
   entweder eine Entschuldigung oder eine Anklage — beides falsch.
 - **Ein leerer Bestand und eine Erfassung, die nicht läuft, sehen beim Leser gleich aus.** Ein
   frischer Klon hat den Träger nicht (der Preis aus
-  [slice-096](slice-096-traeger-liegt-im-ziel.md) §6), und der Leser meldet dann dieselbe Leere wie
+  [slice-096](../next/slice-096-traeger-liegt-im-ziel.md) §6), und der Leser meldet dann dieselbe Leere wie
   bei einem Repo, das nur noch nichts getan hat. Das ist die Stelle, an der *„der Verlust wird beim
   LESER sichtbar"* seine Grenze hat — die Abdeckungs-Zeile sollte beide Fälle unterscheiden, und
   ob sie es kann, entscheidet der Implementer am Bestand, nicht dieser Plan.

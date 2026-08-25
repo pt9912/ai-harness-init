@@ -130,8 +130,8 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       Hook-Eintrag in `.claude/settings.json` — Richtung: kein neuer Pfad, sondern ein **Block in
       einer bestehenden Datei**; seine Anwesenheit ist eine Inhalts-, keine Existenz-Aussage, und
       ein Existenz-Wächter darüber wäre dauerhaft grün. **Nicht in dieser Menge:** die Rollen-Typen
-      (unbedingt, [slice-097](slice-097-rollen-typen-gehen-mit.md)) und die Feldliste (teilt den
-      Zweig des Trägers, [slice-098](slice-098-feldliste-ist-ausdruck-des-traegers.md)) — sie
+      (unbedingt, [slice-097](../open/slice-097-rollen-typen-gehen-mit.md)) und die Feldliste (teilt den
+      Zweig des Trägers, [slice-098](../open/slice-098-feldliste-ist-ausdruck-des-traegers.md)) — sie
       bringen ihre Wächter selbst mit.
       **Rot:** `make test` plus je ein `test/mutations/`-Fall mit `# verify: test-go`, der das
       Artefakt probeweise weglässt.
@@ -201,7 +201,7 @@ Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   Grenze ist **benannt, nicht geschlossen**: ein ziel-seitiger Anwesenheits-Wächter ist
   ausgeschlossen, weil er jeden Klon out-of-the-box rot machte und
   [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) bräche. Sichtbar wird
-  der Zustand beim **Leser** ([slice-099](slice-099-leser-und-aufraeum-kommando.md)), nicht beim
+  der Zustand beim **Leser** ([slice-099](../open/slice-099-leser-und-aufraeum-kommando.md)), nicht beim
   Schreiber; wiederhergestellt wird der Träger durch einen erneuten Tool-Lauf.
 - **Der `span-check`-Wächter dieses Repos geht nicht mit.** Hier heilt ihn ein Bau, im Ziel könnte
   ihn nichts heilen. Wer ihn mitgibt, baut den Klon-rot-Fall, den der vorige Punkt ausschließt.
@@ -211,7 +211,7 @@ Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   sie stellbar und verlangt eine Plattform-Angabe, die
   [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) heute in keinem seiner
   Akzeptanzkriterien kennt.
-- **Berührung mit [slice-092](slice-092-traeger-inventur.md), falls jener zuerst liegt.** Sein
+- **Berührung mit [slice-092](../open/slice-092-traeger-inventur.md), falls jener zuerst liegt.** Sein
   Wächter färbt rot, sobald das Präfix `.claude/hooks/` über seinen gepinnten Bestand hinauswächst,
   während seine Inventur-Zelle noch Abwesenheit behauptet. Das ist **gewollte Reibung**: sie
   erzwingt den Blick auf die Inventur. Wer sie für einen Fehlalarm hält, hat den Wächter
