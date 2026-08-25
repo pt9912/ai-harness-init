@@ -11,7 +11,7 @@ Setzung 1, hier beantwortet: **(1) Bündel?** Nein — Quelle, Ableitungen und Z
 **einem** Schnitt; er wartet auf keinen zweiten Slice und keiner wartet auf ihn. **(2) Gemeinsames
 Closure-Kriterium?** Nein — jedes denkbare wäre die Abschrift seiner eigenen DoD. **Auch nicht in
 [welle-12](../welle-12-erfassungsschicht-emittieren.md):** deren Abdeckungs-Tabelle führt die Zeile
-*„Rolle besetzt"* als von [slice-097](../in-progress/slice-097-rollen-typen-gehen-mit.md) geliefert; dieser
+*„Rolle besetzt"* als von [slice-097](../done/slice-097-rollen-typen-gehen-mit.md) geliefert; dieser
 Slice füllt keine Zelle und leert keine. **(3) Auslöser reaktiv oder gewollt?** Reaktiv — eine
 gemessene Lücke am Dogfood-Sensor, kein Fähigkeits-Sprung: das Werkzeug lernt nichts, was es nicht
 schon kann, und das Ziel bekommt keine Datei, die es nicht schon bekommt. Nach
@@ -67,7 +67,7 @@ Literale nebeneinander schreibt.* Kommando und Stand:
 | [`internal/span/emit.go`](../../../../internal/span/emit.go), `roleFromAgentType()` | die Abbildung des Trägers — sie entscheidet, ob `agent.role` besetzt ist oder leer |
 | [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh), die Schleife in `rollen_typen_im_ziel()` | der Voll-E2E-Sensor — er prüft Anwesenheit und Frontmatter-Namen im gebootstrappten Ziel |
 
-**Den dritten hat [slice-097](../in-progress/slice-097-rollen-typen-gehen-mit.md) selbst angelegt**,
+**Den dritten hat [slice-097](../done/slice-097-rollen-typen-gehen-mit.md) selbst angelegt**,
 und er ist der einzige der drei, den **kein** Sensor hält:
 `grep -l '^# files:.*full-smoke' test/mutations/*.sh` → **leer**. Streicht man eine Rolle aus seiner
 Schleife, bleiben `make shell-lint`, `make comment-claims`, `make docs-check` und `make test-go`
@@ -162,7 +162,7 @@ Steering-Loop-Lerneintrag.
 | [`internal/emit/agents.go`](../../../../internal/emit/agents.go) | update | die eine Quelle. **Hier bekommt `AgentFile()` seinen Aufrufer oder fällt:** `grep -rn 'AgentFile' --include=*.go . \| wc -l` → **1**, die Definition selbst; ihr Doc-Kommentar nennt eine Nutzung *„(fuer Tests/Inspektion)"*, die es nicht gibt ([`AGENTS.md`](../../../../AGENTS.md) §3.7). Der Bestands-Nachweis aus DoD (1) braucht genau diesen Zugriff — die Zeile steht hier und nicht in §6, weil ein Posten ohne Ort in der Plan-Tabelle in diesem Repo gemessen wirkungslos bleibt |
 | [`internal/span/emit.go`](../../../../internal/span/emit.go) | update | `roleFromAgentType` leitet ab statt zu wiederholen. **Kein Import-Zyklus im Weg:** `grep -rn 'ai-harness-init/internal/span' internal/emit/*.go \| wc -l` → **0** und `grep -rn 'ai-harness-init/internal/emit' internal/span/*.go \| wc -l` → **0**; heute kennt keines der zwei Pakete das andere, beide Richtungen sind offen. Welche gewählt wird, ist Frage A |
 | [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | update | der dritte Fundort verliert seine eigene Liste (Klausel iii) |
-| [`internal/emit/agents_test.go`](../../../../internal/emit/agents_test.go) | update | zwei Ein-Zeilen-Korrekturen aus der Closure von [slice-097](../in-progress/slice-097-rollen-typen-gehen-mit.md): der Klassen-Kommentar beziffert die Emissions-Menge unter `docs/plan/` mit *zwei* (gemessen **6**), und das `richtung`-Feld derselben Klasse sagt *„unter `docs/plan/`"*, während sein Muster nur `planning\|adr` deckt. Die Datei wird für DoD (1) ohnehin angefasst |
+| [`internal/emit/agents_test.go`](../../../../internal/emit/agents_test.go) | update | zwei Ein-Zeilen-Korrekturen aus der Closure von [slice-097](../done/slice-097-rollen-typen-gehen-mit.md): der Klassen-Kommentar beziffert die Emissions-Menge unter `docs/plan/` mit *zwei* (gemessen **6**), und das `richtung`-Feld derselben Klasse sagt *„unter `docs/plan/`"*, während sein Muster nur `planning\|adr` deckt. Die Datei wird für DoD (1) ohnehin angefasst |
 | `test/mutations/` <!-- d-check:ignore (geplante Dateien) --> | neu | die Zähne aus DoD (1)–(3); Nummern im Anschluss an die höchste vergebene (`ls -1 test/mutations/*.sh \| wc -l` → **157**, beim Anlegen neu auszuzählen) |
 | [`internal/span/response_test.go`](../../../../internal/span/response_test.go) | **unverändert** | §Die Grenze: die Tabelle hält den Vertrag samt seiner zehn Verneinungen und leitet nichts ab |
 | [`docs/plan/adr`](../../adr) | **unverändert** | [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 3 lässt die Kopplung *benannt, nicht geschlossen*; sie auszuführen ist keine neue Entscheidung, und eine *Accepted*-ADR wird nicht nachgetragen ([`AGENTS.md`](../../../../AGENTS.md) §3.4) |
@@ -181,7 +181,7 @@ Steering-Loop-Lerneintrag.
 der Termin, den dieser Slice trägt.** Frage A und B aus §3 sind ohne Vorarbeit eines anderen Slice
 entscheidbar; der Gegenstand liegt vollständig in diesem Repo, berührt keine Anforderung und keine
 Entscheidung und hängt an keiner Welle. Er wartet insbesondere **nicht** auf den `done/`-Zug von
-[slice-097](../in-progress/slice-097-rollen-typen-gehen-mit.md): der dritte Fundort liegt bereits im
+[slice-097](../done/slice-097-rollen-typen-gehen-mit.md): der dritte Fundort liegt bereits im
 Baum, und die Messung in §1 gilt über ihm.
 
 **Was dieser Slice ausdrücklich nicht ist: eine Nennung.** Die drei Postens, die er aufnimmt —

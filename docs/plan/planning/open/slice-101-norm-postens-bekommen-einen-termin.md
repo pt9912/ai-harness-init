@@ -98,7 +98,7 @@ betroffenen Aufrufen einer 200er-Stichprobe
 **einer** Rolle und stand in keinem Vorbericht; ohne Regel bleibt sie ein Zufall des Laufs.
 
 **Und ein sechster aus
-[slice-097](../in-progress/slice-097-rollen-typen-gehen-mit.md):** *der Text, mit dem ein Wächter
+[slice-097](../done/slice-097-rollen-typen-gehen-mit.md):** *der Text, mit dem ein Wächter
 seinen Treffer begründet, ist Teil des Wächters — er wird ausschließlich im Rot ausgegeben, also
 gehört zu „rot gesehen" das Lesen der Meldung und die Prüfung, ob ihre Begründung auf die Sache
 zutrifft.* **Woran er als weiterer Posten erkannt ist:** er adressiert dieselbe Regel
@@ -177,7 +177,7 @@ dabei, statt sich hinter einem anderen zu verstecken.
       Wert gehört mit seinem Kommando in die Closure-Notiz. Für den vierten, den fünften und den
       sechsten Posten ([slice-100](../done/slice-100-vorlauf-nennt-den-grund.md),
       [slice-095](../done/slice-095-hook-aufschlag-gemessen.md),
-      [slice-097](../in-progress/slice-097-rollen-typen-gehen-mit.md)) gilt dasselbe Kommando wie
+      [slice-097](../done/slice-097-rollen-typen-gehen-mit.md)) gilt dasselbe Kommando wie
       für den Reichweiten-Posten: der §3.6-Block bewegt sich oder nicht.
       **Ein abgelehnter oder aufgeschobener Posten bewegt keinen Wert** — dann trägt DoD (1) ihn
       mit seinem Grund, und die Closure-Notiz sagt ausdrücklich, dass hier **nichts** gemessen
