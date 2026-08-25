@@ -242,7 +242,7 @@ Kontroll-Beobachtung, unklarer Span), nicht eine unwillkommene.
 - **Nicht in diesem Slice:** die Verstetigung des Weges und ihre Permission-Folge (Folge-ADR); das
   Vor-Aufruf-Protokoll und die protokollierende Rollen-Frage
   ([slice-074](../open/slice-074-agent-vor-aufruf-protokoll.md)); die Rechnung über die Zähler
-  ([slice-071](../open/slice-071-cache-zaehler-getrennt.md)); jede Änderung an
+  ([slice-071](../open/slice-071-bilanz-nennt-ihren-bestand.md)); jede Änderung an
   [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) selbst.
 
 ## 7. Closure-Notiz (nach `done/`)

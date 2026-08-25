@@ -473,7 +473,7 @@ Behebung ist der Umzug, nicht ein weiterer Satz.
 | ein Fall bindet einen Wächter-**Namen**, nicht seine **Zusicherung** | [slice-069](../open/slice-069-zahn-bindet-zusicherung.md) |
 | der veraltete Top-Level-`decision`-Pfad des Nachbar-Guards | [slice-067](../open/slice-067-pretooluse-ausgabeform.md) |
 | die Sonde, die „der Hook lief" von „er feuerte nie" trennt | [slice-074](../open/slice-074-agent-vor-aufruf-protokoll.md) |
-| die Rechnung über den erfassten Werten (Bilanz, Cache-Zähler, Abdeckungszahl) | [slice-066](slice-066-telemetrie-auswertung.md) · [slice-071](../open/slice-071-cache-zaehler-getrennt.md) · [slice-068](slice-068-rollen-arbeit-laeuft-als-rolle.md) |
+| die Rechnung über den erfassten Werten (Bilanz, Cache-Zähler, Abdeckungszahl) | [slice-066](slice-066-telemetrie-auswertung.md) · [slice-071](../open/slice-071-bilanz-nennt-ihren-bestand.md) · [slice-068](slice-068-rollen-arbeit-laeuft-als-rolle.md) |
 
 ## 8. Sub-Area-Modus-Begründung
 

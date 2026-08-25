@@ -417,9 +417,9 @@ eigenem Move-Commit, eingehende Links im Zug danach; Closure-Notiz mit Steering-
   [`ADR-0019`](../../adr/0019-agent-guard-prueft-die-aufrufform.md) Festlegung 1 sie gesetzt hat
   — die protokollierende Rollen-Frage aus §3 rührt sie nicht an); die veraltete
   Ausgabeform des Nachbar-Guards (slice-067); die Rechnung über die Zähler
-  ([slice-066](../done/slice-066-telemetrie-auswertung.md),
-  [slice-071](slice-071-cache-zaehler-getrennt.md)); jede Emission ins Ziel (slice-062/063); und
-  jede Ausweitung des Span-Schemas.
+  ([slice-066](../done/slice-066-telemetrie-auswertung.md)) und die Angaben, die ihre Ausgabe
+  über den eigenen Bestand macht ([slice-071](slice-071-bilanz-nennt-ihren-bestand.md)); jede
+  Emission ins Ziel (slice-062/063); und jede Ausweitung des Span-Schemas.
 
 ## 7. Closure-Notiz (nach `done/`)
 

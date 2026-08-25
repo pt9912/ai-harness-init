@@ -136,13 +136,17 @@ gegenstandslos wird, kein neues Pflichtfeld mehr braucht.
 
 - **Wird blockiert von:** [welle-09](welle-09-modul-15-konformitaet.md) — sie misst gegen Modul 15
   in der gepinnten Fassung (§2).
-- **Blockiert:** jeden Slice **außerhalb** dieser Welle, der den vendored Baum zitiert. Heute ist
-  das genau einer ([slice-071](open/slice-071-cache-zaehler-getrennt.md)); er gehört zu welle-09
-  und ist damit ohnehin vor dieser Welle fällig. Das Kommando
-  `git grep -l '\.harness/baseline/v3\.5\.2/' -- docs/plan/planning/open docs/plan/planning/next`
-  nennt daneben [slice-083](open/slice-083-form-vergleich-pflichtfelder.md) — der liegt **in**
-  dieser Welle und nennt den alten Tag als Tree-Operanden der Vor-Tausch-Seite, nicht als Zeiger
-  auf einen Baum, der stehen bleiben müsste.
+- **Blockiert:** jeden Slice **außerhalb** dieser Welle, der den vendored Baum zitiert. **Wer das
+  ist, sagt ein Kommando, keine Liste hier** — die Menge wandert mit jedem Schnitt, und eine
+  Aufzählung im Plan altert zwischen Schnitt und Ausführung
+  ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2):
+  `git grep -l '\.harness/baseline/v3\.5\.2/' -- docs/plan/planning/open docs/plan/planning/next`.
+  Von den Treffern ist **einer** ausdrücklich nicht gemeint:
+  [slice-083](open/slice-083-form-vergleich-pflichtfelder.md) liegt **in** dieser Welle und nennt
+  den alten Tag als Tree-Operanden der Vor-Tausch-Seite, nicht als Zeiger auf einen Baum, der
+  stehen bleiben müsste. Der Rest ist vor dieser Welle fällig oder auf den neuen Tag zu ziehen —
+  entschieden wird das je Treffer beim Lauf, nicht hier.
 - **Innerhalb der Welle:** 080 → 081 → {082 → 083, 084} → 085. 084 hängt nur am getauschten Baum,
   nicht am Adaptions-Durchgang: sein Gegenstand ist der Bestand, nicht die Änderung.
 

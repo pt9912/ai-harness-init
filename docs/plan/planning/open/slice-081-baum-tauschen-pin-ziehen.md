@@ -49,18 +49,24 @@ unter jedem anderen Zielnamen fällt dieselbe Zahl.
   `docs/reviews/2026-07-26-slice-050-impl-review-runde-5.md` und
   `docs/reviews/2026-07-26-slice-050-verification.md`.
 
-Dazu **17 stumme** Inline-Nennungen. **11 davon sind lebend** —
-[`harness/conventions.md`](../../../../harness/conventions.md#mr-000--baseline-aussage) 7 und je 1
-in [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder),
-[slice-071](slice-071-cache-zaehler-getrennt.md),
-[slice-083](slice-083-form-vergleich-pflichtfelder.md) und
-[welle-09](../welle-09-modul-15-konformitaet.md). **Gezogen werden davon 8**, die der beiden
-erstgenannten Dateien: slice-071 und welle-09 liegen zum Ausführungszeitpunkt in `done/` und sind
-dann Zeitdokumente, und slice-083 nennt den alten Tag als **Tree-Operanden der Vor-Tausch-Seite**
-— also genau die Adresse, die der Tausch nicht anfassen darf. Die übrigen **6**
-stehen in Accepted-ADRs ([ADR-0011](../../adr/0011-telemetrie-erfassung-policy.md) 1,
-[ADR-0012](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) 3,
-[ADR-0014](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) 2) und bleiben unberührt.
+Dazu die **stummen** Inline-Nennungen — die, die keinen Link tragen und deshalb von keinem
+`target-missing` gefunden werden. **Ihre Menge wandert mit jedem Schnitt und steht deshalb nicht
+als Zahl hier, sondern als Kommando**
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2), zu fahren beim Lauf, nicht beim Schnitt:
+`grep -rn '\.harness/baseline/v3\.5\.2/' --include='*.md' . | grep -v '^\./\.harness/' | grep -v ']('`.
+**Was mit einem Treffer geschieht, entscheidet seine Klasse, und die vier Klassen sind fest:**
+[`harness/conventions.md`](../../../../harness/conventions.md#mr-000--baseline-aussage) und
+[`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) werden
+**gezogen** (lebende Norm-Artefakte). **Unberührt** bleiben Accepted-ADRs
+([ADR-0011](../../adr/0011-telemetrie-erfassung-policy.md),
+[ADR-0012](../../adr/0012-haupt-kontext-ohne-token-bilanz.md),
+[ADR-0014](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md);
+[`AGENTS.md`](../../../../AGENTS.md) §3.4) und alles unter `done/` und `docs/reviews/` —
+Zeitdokumente. **Unberührt bleibt auch**
+[slice-083](slice-083-form-vergleich-pflichtfelder.md): er nennt den alten Tag als
+**Tree-Operanden der Vor-Tausch-Seite** — genau die Adresse, die der Tausch nicht anfassen darf.
+Jeder übrige lebende Plan wird **gezogen**.
 
 Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventionen.md` heißen.
 

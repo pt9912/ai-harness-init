@@ -31,7 +31,7 @@ Runde **zum ersten Mal Gegenstand**. Baum sauber beim Start.
   [`spec/spezifikation.md`](../../spec/spezifikation.md) §5,
   `.claude/hooks/pretooluse-agent-guard.sh`,
   [`docs/plan/planning/in-progress/roadmap.md`](../plan/planning/in-progress/roadmap.md),
-  [slice-071](../plan/planning/open/slice-071-cache-zaehler-getrennt.md),
+  [slice-071](../plan/planning/open/slice-071-bilanz-nennt-ihren-bestand.md),
   [`harness/conventions.md`](../../harness/conventions.md)
   [`MR-016`](../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird),
   [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)

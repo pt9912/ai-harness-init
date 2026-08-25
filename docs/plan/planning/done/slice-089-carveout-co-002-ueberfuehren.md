@@ -264,7 +264,7 @@ Träger nur hier, läge die Reihenfolge nach dem Abschluss allein in einem Zeitd
 | [`docs/plan/adr/`](../../adr/) | **unverändert** | — | eine ADR ist ab *Accepted* immutabel ([`AGENTS.md`](../../../../AGENTS.md) §3.4); dieser Slice vollzieht, er entscheidet nicht |
 | [welle-09](../welle-09-modul-15-konformitaet.md) | **unverändert durch diesen Slice** | Planner (eigener Vorgang) | die zwei Matrix-Zellen und die Audit-Regel gehören der Closure jener Welle; ihr Träger steht dort (s. o.), und der Vollzug fällt mit der Closure an |
 | [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** | — | sie führt für slice-071 einen Auflösungs-Trigger, den die Entscheidung aufgehoben hat; der Nachzug ist Planner-Arbeit am lebenden Plan und gehört zur welle-09-Closure (§6) |
-| [slice-071](../open/slice-071-cache-zaehler-getrennt.md) | **unverändert** | — | fremder Slice-Plan; seine Rückführung ist ausgelöst, und die Frage dahinter gehört dem Architect (§6) |
+| [slice-071](../open/slice-071-bilanz-nennt-ihren-bestand.md) | **unverändert** | — | fremder Slice-Plan; seine Rückführung ist ausgelöst, und die Frage dahinter gehört dem Architect (§6) |
 | `internal/emit/` | **unverändert** | — | die emittierte Ebene ist von der Entscheidung nicht berührt und führt heute weder Span-Emitter noch Agent-Guard; bekommt sie je einen, gilt die Grenze dort und gehört dort **genannt** |
 
 ## 4. Trigger
@@ -354,7 +354,7 @@ nicht mit *grün* erfüllt, sondern erst mit dem Abgleich am Text.
 - **Zwei lebende Planungs-Artefakte führen die Schwelle nach dem Vollzug weiter als offen.** Die
   [Roadmap](../in-progress/roadmap.md) — Source Precedence Rang 5 — schreibt für slice-071 *„die
   Rechnung liegt hinter dem Auflösungs-Trigger von `CO-002`"*, und
-  [slice-071](../open/slice-071-cache-zaehler-getrennt.md) nennt den Carveout auf **10** Zeilen
+  [slice-071](../open/slice-071-bilanz-nennt-ihren-bestand.md) nennt den Carveout auf **10** Zeilen
   (`grep -c 'CO-002' docs/plan/planning/open/slice-071-cache-zaehler-getrennt.md`). **Wie viele
   davon die Schwelle als offen führen, trennt kein Kommando** — das ist von Hand zu lesen. Beide
   sind **Planner**-Arbeit am lebenden Plan und keine Zeile dieses Slice; der Wellen-Plan führt sie
@@ -618,7 +618,7 @@ gesperrt; entschieden wird es in einer **eigenen ADR** (Architect), nicht nebenb
 | Posten | Träger |
 |---|---|
 | Die zwei Matrix-Zellen (*Token-Attribution × Repo*, Hintergrund-Teil, und *Cache-Counter × Repo*) auf *ADR-Verdikt*, und das Carveout-Audit liest den **Status** statt des Verzeichnisses | **Closure von [welle-09](../welle-09-modul-15-konformitaet.md)** (Planner). Der Wellen-Plan führt beides selbst, samt der Reihenfolge Kopf-Status vor den Zellen |
-| Die Roadmap-Zeile zu slice-071 und [slice-071](../open/slice-071-cache-zaehler-getrennt.md) selbst führen die aufgehobene Schwelle weiter als offen | **Closure von [welle-09](../welle-09-modul-15-konformitaet.md)** (Planner). Kein DoD-Punkt dieses Slice fordert sie. `grep -c 'CO-002' docs/plan/planning/open/slice-071-cache-zaehler-getrennt.md` → **10** Zeilen; wie viele davon die Schwelle als offen führen, trennt kein Kommando |
+| Die Roadmap-Zeile zu slice-071 und [slice-071](../open/slice-071-bilanz-nennt-ihren-bestand.md) selbst führen die aufgehobene Schwelle weiter als offen | **Closure von [welle-09](../welle-09-modul-15-konformitaet.md)** (Planner). Kein DoD-Punkt dieses Slice fordert sie. `grep -c 'CO-002' docs/plan/planning/open/slice-071-cache-zaehler-getrennt.md` → **10** Zeilen; wie viele davon die Schwelle als offen führen, trennt kein Kommando |
 | Die Architect-Frage aus slice-071 §4 — trägt das Spec-Stratum die Cache-Festlegung ohne Rechnung, oder wechselt die Zelle auf *ADR-Verdikt*? — und der Prosa-Verweis in seinem §6 auf die gestrichene Verifikations-Liste des Stubs | **Architect**, eigener Lauf; ausgelöst mit der Annahme der ADR. Ein Link bricht dabei nicht: `grep -rn 'CO-002-token-achse-je-rolle\.md#' --include='*.md' .` → **leer (Exit 1)** |
 | Die geschärfte Regel oben braucht ihren Eintrag im Adaptions-Block | **Architect**; fällig beim nächsten DoD-Punkt, der seinen Gegenstand als ungedeckt ausweist — auffindbar mit der Suche oben |
 | Gilt [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) auch für Commit- und Übergabe-Nachrichten? | **Architect**, an dessen bereits fälligem Auflösungs-Trigger — kein neuer Termin |
