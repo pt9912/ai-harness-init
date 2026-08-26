@@ -202,6 +202,38 @@ unter Druck. Messpunkte unter verschiedenem Cache-Zustand sind darum nicht ohne 
 vergleichbar; für diese Reihe wurde derselbe N in zwei Fenstern gegengeprüft und der Unterschied
 lag bei 3–4 %, also weit unter dem N=1→N=4-Effekt.
 
+### Messprotokoll — jeder Lauf mit seiner Zeit
+
+Eine Momentaufnahme sagt nicht, ob die Laufzeit wächst. Diese Tabelle wird bei **jedem**
+gemessenen `mutate`-Lauf um eine Zeile ergänzt; jede Zeile nennt ihre Quelle, damit sie
+nachprüfbar bleibt. Die Zeiten sind Maschinen- und Cache-Zustände, **keine Erwartungswerte** —
+eine wachsende Zahl ist erst dann ein Befund, wenn die Fall-Zahl nicht mitgewachsen ist.
+
+| Datum | Fälle | Treiber | N | Wanduhr | s/Fall | Quelle |
+|---|---|---|---|---|---|---|
+| 2026-08-25 | 157 | sequentiell | 1 | 1166,43 s | 7,43 | Verifikation `slice-097` §1.1 |
+| 2026-08-26 | 176 | sequentiell | 1 | 1252,55 s | 7,12 | Umsetzung `slice-098` |
+| 2026-08-26 | 176 | sequentiell | 1 | 1199 s | 6,81 | Verifikation `slice-098` |
+| 2026-08-26 | 165 | sequentiell | 1 | 1214,5 s | 7,36 | Prototyp-Quervergleich (Fremdlast, nicht Teil der Reihe) |
+| 2026-08-26 | 165 | **dynamisch** | 1 | **1164,0 s** | 7,05 | Prototyp, Reihe, Kontrollpunkt |
+| 2026-08-26 | 165 | **dynamisch** | 4 | **438,3 s** | 2,66 | Prototyp, Reihe |
+| 2026-08-26 | 165 | **dynamisch** | 6 | 406,5 s | 2,46 | Prototyp, Reihe |
+| 2026-08-26 | 165 | **dynamisch** | 8 | 381,6 s | 2,31 | Prototyp, Reihe |
+
+Kommando für jede Zeile: `/usr/bin/time -f 'MUTATE_SECONDS=%e' make mutate`, die Fall-Zahl aus
+`ls -1 test/mutations/*.sh | wc -l`. Die Spalte `s/Fall` ist Wanduhr ÷ Fälle und dient nur dem
+Vergleich zwischen Läufen verschiedener Bestandsgröße.
+
+**Was die Reihe über die Zeit zeigt und eine Momentaufnahme nicht gezeigt hätte:** Der Preis
+**je Fall** liegt bei allen sequentiellen Läufen zwischen 6,81 und 7,43 s — er ist über zwei
+Tage und drei Bestandsgrößen **stabil**. Die Wanduhr wuchs von 1166 auf 1253 s allein deshalb,
+weil der Bestand von 157 auf 176 Fälle wuchs. Ohne diese Tabelle wäre das Wachstum als
+Verschlechterung lesbar gewesen; mit ihr ist es die erwartete Folge von mehr Abdeckung.
+
+**Und der Kontrollpunkt trägt:** der dynamische Treiber bei N=1 kostet 7,05 s je Fall und liegt
+damit mitten im Band der sequentiellen Läufe. Der Umbau ist gratis, die Beschleunigung kommt
+allein aus der Parallelität.
+
 ### Der Bauplan, soweit er gemessen ist
 
 Aus [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) selbst gelesen:
