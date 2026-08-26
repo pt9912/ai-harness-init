@@ -8,7 +8,7 @@ wechselt nur durch `git mv`, siehe
 **Welle:** [welle-12](../welle-12-erfassungsschicht-emittieren.md) — er läuft nach
 [slice-096](../done/slice-096-traeger-liegt-im-ziel.md), weil das Dokument **aus** dem Träger erzeugt wird
 und seinen Emissions-Zweig teilt. Er hängt **nicht** an
-[slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md).
+[slice-099](../done/slice-099-leser-und-aufraeum-kommando.md).
 
 **Bezug:**
 [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) (§Redaktion:
@@ -144,7 +144,7 @@ Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · Doku-Upda
 **`open` → `next`:** [slice-096](../done/slice-096-traeger-liegt-im-ziel.md) liegt in `done/` — erst dann
 gibt es einen Träger, aus dem das Dokument erzeugt wird, und einen Zweig, den es teilen kann.
 Beobachtbar ohne Rückfrage: die Plan-Datei liegt in `done/`. **`next` → `in-progress`:** WIP-Limit
-frei. **Nicht Trigger:** [slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md) — die beiden hängen
+frei. **Nicht Trigger:** [slice-099](../done/slice-099-leser-und-aufraeum-kommando.md) — die beiden hängen
 nicht aneinander und dürfen parallel laufen.
 
 **Rückführungen, vorab benannt.** `in-progress` → `next`, wenn das Dokument mehr trägt als Feldliste
@@ -373,7 +373,7 @@ Also entscheidet diese Closure, und sie sagt, was sie getan hat.
   Gate-Sicherheit, kein `make`-Ziel wegen
   [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) —, aber
   die Folge stand nirgends. Ihr Ort ist
-  [slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md), wo Leser und Aufräum-Kommando
+  [slice-099](../done/slice-099-leser-und-aufraeum-kommando.md), wo Leser und Aufräum-Kommando
   zusammenkommen.
 - **Der Abgleich im Voll-E2E-Sensor deckt die geschriebene Zeile, nicht die Tabelle.** Die
   synthetische Nutzlast ist ein Kommando-Aufruf; sie bringt **17** der **32** Feldnamen in den
@@ -494,7 +494,7 @@ Setzung 2).
 
 **Die Welle bekommt keinen Fortschritts-Eintrag.** Der Zustand jedes Slice ist sein
 Lifecycle-Verzeichnis; §4 der Welle sagt es, und die Roadmap sagt es noch einmal. Offen bleibt allein
-[slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md).
+[slice-099](../done/slice-099-leser-und-aufraeum-kommando.md).
 
 **Gates.** Eigener Lauf über dem Baum, den diese Closure hinterlässt — Notiz, die drei neuen Slices
 und die vier nachgezogenen Pläne eingerechnet, und über dem Verifikations-Nachtrag: `make gates`

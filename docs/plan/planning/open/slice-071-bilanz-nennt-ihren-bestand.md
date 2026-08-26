@@ -25,7 +25,7 @@ dieselbe Klasse eine Ebene neben dem Gate),
 Go-Binary und wird Docker-only gebaut),
 [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) (§Leser: *„Die
 Auswertung nennt ihre **Abdeckung zuerst** und meldet damit ihre eigene Leere"* — dieselbe Ausgabe
-läuft seit [slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md) im Ziel).
+läuft seit [slice-099](../done/slice-099-leser-und-aufraeum-kommando.md) im Ziel).
 
 **Die `LH-FA`-Kennung stand hier zuerst als ausdrücklicher Ausschluss, und der ist widerlegt.** Der
 Grund war, die Ausgabe sei die eines Dogfood-Berichts, der nichts emittiert. Das gilt nicht mehr:
@@ -76,7 +76,7 @@ nicht.
 
 ### Zwei Lagen kamen dazu, und sie liegen in derselben Ausgabe
 
-Die Verifikation von [slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md) hat an einem
+Die Verifikation von [slice-099](../done/slice-099-leser-und-aufraeum-kommando.md) hat an einem
 selbst gebootstrappten Ziel zwei weitere Stellen gemessen, an denen dieselbe Ausgabe über ihren
 eigenen Fall etwas sagt, das für ihn nicht gilt. Beide gehören hierher, weil sie dieselbe Datei,
 dieselbe Frage und dieselbe Lagen-Trennung betreffen.
@@ -160,7 +160,7 @@ Closure-Kriterium?* Nein — was hier wahr wird, wird mit der Definition of Done
 Wellen-Trigger schriebe sie ab. (3) *Auslöser reaktiv oder gewollt?* **Reaktiv:** die ersten zwei
 Angaben sind beim Bau des Auswerters aufgefallen und stehen in dessen Closure-Notiz unter *Offen,
 mit Träger* ([slice-066](../done/slice-066-telemetrie-auswertung.md) §7); die zwei Lagen aus §1 hat
-die Verifikation von [slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md) an einem
+die Verifikation von [slice-099](../done/slice-099-leser-und-aufraeum-kommando.md) an einem
 gebootstrappten Ziel gemessen. Nach Setzung 2 bekommt dieser Slice deshalb **keinen**
 Roadmap-Eintrag; sein Zustand ist das Verzeichnis.
 

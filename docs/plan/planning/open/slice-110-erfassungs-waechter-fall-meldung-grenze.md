@@ -114,7 +114,7 @@ Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · Doku-Upda
 ## 4. Trigger
 
 **`open` → `next`:** keine Vorbedingung außerhalb dieses Slice — der bewachte Bestand ist gebaut
-und abgeschlossen ([slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md)), und keine
+und abgeschlossen ([slice-099](../done/slice-099-leser-und-aufraeum-kommando.md)), und keine
 Entscheidung steht aus. Beobachtbar ohne Rückfrage: die sechs Kommandos aus §1 laufen und liefern
 die dort genannten Werte. **`next` → `in-progress`:** WIP-Limit frei.
 

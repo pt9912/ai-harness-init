@@ -102,7 +102,7 @@ betroffenen Aufrufen einer 200er-Stichprobe
 
 **Und ein sechster aus
 [slice-097](../done/slice-097-rollen-typen-gehen-mit.md), hier in der weiteren Fassung, die
-[slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md) gemessen hat:** *der Text, mit dem
+[slice-099](../done/slice-099-leser-und-aufraeum-kommando.md) gemessen hat:** *der Text, mit dem
 ein Artefakt seinen Fall begründet, ist Teil dessen, was es zusagt — ein Wächter über seiner
 **Anwesenheit** belegt die Zeichenkette, nicht die Ursache; zu „rot gesehen" gehört deshalb das
 Lesen der Begründung und die Prüfung, ob sie auf den Zustand zutrifft, der sie ausgelöst hat.*
@@ -128,7 +128,7 @@ mitwandernd. Keine davon liest ein grüner Lauf.
 
 **Warum dieser Posten heute weiter gefasst ist als bei seiner Formulierung — gemessen, nicht
 umformuliert.** Seine erste Fassung setzte voraus, die Begründung werde *„ausschließlich im Rot"*
-ausgegeben. Der Lauf zu [slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md) hat **drei**
+ausgegeben. Der Lauf zu [slice-099](../done/slice-099-leser-und-aufraeum-kommando.md) hat **drei**
 Instanzen derselben Klasse in **einem** Slice gefunden
 (`grep -c '^### V-.*(MEDIUM)' docs/reviews/2026-08-26-slice-099-verify.md` → **3**, mitwandernd),
 und **zwei** davon liegen im **grünen** Pfad: es sind Sätze, die das emittierte Produkt einem
@@ -207,7 +207,7 @@ ein Wächter darüber hängen könnte, existiert nicht: `grep -rn 'verify-closur
 Regel **plus** ein Sensor statt einer Regel allein. **Den Sensor entwirft dieser Posten nicht;** er
 stellt fest, dass die Kosten dafür einmal gemessen gehören, bevor die Regel entscheidet.
 
-**Und ein neunter aus [slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md) — der erste,
+**Und ein neunter aus [slice-099](../done/slice-099-leser-und-aufraeum-kommando.md) — der erste,
 der nicht aus einer Formulierung, sondern aus einer Wiederholung kommt:** *die Plan-Tabelle §3
 nennt, was ein Slice liefert; sie muss auch die **bestehende gemeinsame Stelle** nennen, die ein
 neuer Wächter bewegen muss, um dort anzusetzen.* **Woran er als weiterer Posten erkannt ist:** er
@@ -223,7 +223,7 @@ gleichem Finding Klassifikation schärfen / Folge-ADR bzw. `AGENTS.md`-Update / 
 (`grep -n 'dreimaligem gleichem Finding' .harness/baseline/v3.5.2/regelwerk/modul-10-review-harness.md`).
 Die Reihe: [slice-097](../done/slice-097-rollen-typen-gehen-mit.md) sauber ·
 [slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md) einmal (eine Datei) ·
-[slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md) erneut, diesmal **fünf** Dateien
+[slice-099](../done/slice-099-leser-und-aufraeum-kommando.md) erneut, diesmal **fünf** Dateien
 außerhalb der Tabelle. Gemeinsam ist allen: es sind **Test-Infrastruktur-Umbauten**, die ein neuer
 Wächter erzwingt — eine Signatur, die von `[]string` auf `map[string]string` wechselt, ein
 extrahierter Helfer, eine re-verankerte Mutation.
@@ -231,7 +231,7 @@ extrahierter Helfer, eine re-verankerte Mutation.
 **Warum eine Regel und kein Sensor — und diesmal ist die Antwort gemessen, nicht geschätzt.** Die
 naheliegende Mechanik wäre, die Dateiliste eines Umsetzungs-Commits gegen die Pfade der §3-Tabelle
 zu halten. Sie trägt nicht: die Zellen nennen **Komponenten**, nicht Dateien — von den fünf Zeilen
-in [slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md) §3 ist genau **eine** ein
+in [slice-099](../done/slice-099-leser-und-aufraeum-kommando.md) §3 ist genau **eine** ein
 Dateipfad, die übrigen sind Verzeichnisse oder Verzeichnis-plus-Zweck. Ein Präfix-Vergleich wäre
 für alle fünf ungenannten Dateien **grün** (sie liegen sämtlich unter `internal/emit` bzw.
 `test/mutations/`), ein Vergleich auf exakte Pfade für fast jede Zeile **rot**. Das ist genau das
@@ -305,7 +305,7 @@ dabei, statt sich hinter einem anderen zu verstecken.
       an §3.6/§3.7. Sein Kommando ist deshalb ein anderes —
       `grep -c '^### MR-' harness/conventions.md` → heute **26** —, und wenn er stattdessen in eine
       bestehende Regel wandert, gilt wieder das Kommando ihres Blocks.
-      Für den **neunten** ([slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md)) gilt
+      Für den **neunten** ([slice-099](../done/slice-099-leser-und-aufraeum-kommando.md)) gilt
       dasselbe Kommando wie für den achten: sein Ausgang ist ein Eintrag im Adaptions-Block über
       die Form der Plan-Tabelle §3, keine Änderung an §3.6/§3.7. **Seine zweite Hälfte ist eine
       Messung am nächsten Slice, nicht am Norm-Text:** wird er übernommen, trägt der erste danach

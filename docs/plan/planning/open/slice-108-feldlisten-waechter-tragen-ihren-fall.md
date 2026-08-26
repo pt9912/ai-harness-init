@@ -175,7 +175,7 @@ statt seiner eine Grenze auszusprechen.
 der Termin, den dieser Slice trägt.** Die acht Wächter liegen im Baum, die Messung in §1 gilt über
 ihm, und keine Entscheidung und keine Anforderung ist zu klären. Er wartet insbesondere **nicht**
 auf die Closure von [welle-12](../welle-12-erfassungsschicht-emittieren.md) und nicht auf
-[slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md).
+[slice-099](../done/slice-099-leser-und-aufraeum-kommando.md).
 
 **Was dieser Slice ausdrücklich nicht ist: eine Nennung.** Acht unbewachte Wächter sind in einer
 Verifikation gemessen und benannt worden; ein Träger ohne Termin ist in diesem Repo dreimal

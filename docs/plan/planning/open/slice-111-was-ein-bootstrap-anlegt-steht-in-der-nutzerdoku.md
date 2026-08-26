@@ -46,7 +46,7 @@ Vier geschlossene Slices haben den emittierten Satz erweitert
 ([slice-096](../done/slice-096-traeger-liegt-im-ziel.md),
 [slice-097](../done/slice-097-rollen-typen-gehen-mit.md),
 [slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md),
-[slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md)). Die zwei lebenden Beschreibungen
+[slice-099](../done/slice-099-leser-und-aufraeum-kommando.md)). Die zwei lebenden Beschreibungen
 haben sich seither nicht bewegt:
 `git log -1 --format='%h %ad' --date=short -- docs/user/benutzerhandbuch.md README.md` → **9a4ad3b
 2026-07-28** (slice-058, mitwandernd).
@@ -69,7 +69,7 @@ Setzung 2).
 Form, die Vollständigkeit anbietet, ohne sie zu behaupten. Sein Kommentar zu `harness/mk/` lautet <!-- d-check:ignore (Pfad im Zielrepo, nicht in diesem) -->
 heute *„Prüf-Bausteine: Doc-Gate, Regelwerk-Prüfung, Schutz-Hooks"* (`grep -n 'Prüf-Bausteine'
 docs/user/benutzerhandbuch.md`); seit
-[slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md) liegt dort ein Fragment, das keines
+[slice-099](../done/slice-099-leser-und-aufraeum-kommando.md) liegt dort ein Fragment, das keines
 der drei ist — es prüft nichts, es berichtet und räumt auf, und es sagt das über sich selbst. Ein
 Adopter, der zwei neue `make`-Ziele in seinem `make help` findet, die sein Handbuch nicht kennt,
 liest entweder das Handbuch als veraltet oder die Ziele als fremd. Beides ist ein Verlust an
