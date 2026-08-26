@@ -59,33 +59,64 @@ Der Umbau ist nicht der Lieferwert; die Aufschlüsselung ist es. Ohne sie ist je
 
 | Größe | Wert | Kommando |
 |---|---|---|
-| Fälle insgesamt | **157** | `ls -1 test/mutations/*.sh \| wc -l` |
-| Fälle mit **eigenem** `# verify:`-Kopf | **8** | `grep -l '^# verify:' test/mutations/*.sh \| wc -l` |
-| davon auf `full-smoke` | **2** | `grep -l '^# verify: full-smoke' test/mutations/*.sh \| wc -l` |
+| Fälle insgesamt | **176** | `ls -1 test/mutations/*.sh \| wc -l` |
+| Fälle mit **eigenem** `# verify:`-Kopf | **27** | `grep -l '^# verify:' test/mutations/*.sh \| wc -l` |
+| davon auf `full-smoke` | **4** | `grep -l '^# verify: full-smoke' test/mutations/*.sh \| wc -l` |
 | Modi des Grün-Vorlaufs | **6** (`ci-lint`, `full-smoke`, `smoke`, `test`, `test-bats`, `test-go`) | `{ echo test; sed -n 's/^# verify: //p' test/mutations/*.sh; } \| LC_ALL=C sort -u` |
 | Zeilen des Treibers | **566** | `wc -l < harness/tools/mutate.sh` |
 
 **Die übrigen 149 Fälle bekommen ihren Sensor zur Laufzeit** aus dem `# expect:`-Kopf
 (`narrow_sensor` in [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh): leer oder
 mehrzeilig → `test`, `Test[A-Z]*` → `test-go`, sonst → `test-bats`). Die Abbildung ist **statisch
-nachrechenbar**, und nachgerechnet ergibt sie die Fall-Verteilung: **115** `test-go` · **38**
-`test-bats` · **2** `full-smoke` · **1** `smoke` · **1** `ci-lint` (Summe **157**; die Schleife über
+nachrechenbar**, und nachgerechnet ergibt sie die Fall-Verteilung: **132** `test-go` · **38**
+`test-bats` · **4** `full-smoke` · **1** `smoke` · **1** `ci-lint` (Summe **176**; die Schleife über
 `test/mutations/*.sh`, die je Fall den eigenen `# verify:`-Kopf nimmt und sonst `narrow_sensor`
 nachbildet, steht in §3 als Ausgangspunkt der Messung).
 
-**Nicht vorliegend: die Zeit.** `make mutate` braucht **1166,43** Sekunden für die **157** Fälle —
-**fremdbelegt**, gemessen von der
-[Verifikation zu slice-097](../../../reviews/2026-08-25-slice-097-verify.md) §1.1 mit
-`/usr/bin/time -f 'MUTATE_SECONDS=%e' make mutate`, nicht von diesem Schnitt erhoben und ein
-Maschinen- und Cache-Zustand, kein Erwartungswert. Was **fehlt**, ist die Aufschlüsselung: **Zeit je
-Fall, gruppiert nach Sensor**.
+**Die Zeit je Sensor liegt vor, die Zeit je Fall nicht.** Der Stückpreis jedes Sensors ist eigen
+erhoben — jedes Ziel zweimal hintereinander im Repo gefahren und der **zweite** Wert genommen, weil
+`mutate` denselben Sensor wiederholt in derselben Kopie ruft und damit den eingeschwungenen Preis
+mit warmem Docker-Cache zahlt, nicht den ersten mit kaltem Build:
 
-**Fall-Verteilung und Zeit-Verteilung sind nicht dasselbe, und darin liegt der ganze Punkt.** Ein
-`full-smoke`-Fall bootstrappt zwei tmp-Repos und fährt in jedem ein volles `make gates`; ein
-`test-go`-Fall fährt einen Go-Testlauf. **2** von **157** Fällen können damit einen zweistelligen
-Prozentsatz der Zeit tragen — oder einen vernachlässigbaren. Wer das nicht gemessen hat, weiß
-nicht, ob Sharding (viele Fälle parallel) oder Tier-Korrektur (die teuren Fälle auf eine schmalere
-Stufe ziehen) der größere Hebel ist, und baut die teurere Hälfte zuerst.
+| Sensor | s je Lauf | Kommando |
+|---|---|---|
+| `ci-lint` | **0,5** | `for i in 1 2; do s=$(date +%s%N); make ci-lint >/dev/null 2>&1; echo $(( ($(date +%s%N)-s)/1000000 ))ms; done` |
+| `test-go` | **5,5** | dasselbe mit `make test-go` |
+| `test-bats` | **8,7** | dasselbe mit `make test-bats` |
+| `smoke` | **10,1** | `/usr/bin/time -f '%e' make smoke` |
+| `full-smoke` | **88,3** | `/usr/bin/time -f '%e' make full-smoke` (81,78 und 94,91; Mittel) |
+
+Über die Fall-Verteilung ergibt das die **Zeit-Verteilung**, und sie beantwortet die Frage, die
+dieser Abschnitt stellt:
+
+| Sensor | Fälle | Summe s | Anteil |
+|---|---|---|---|
+| `test-go` | 132 | 726 | **51 %** |
+| `full-smoke` | 4 | 353 | **25 %** |
+| `test-bats` | 38 | 331 | **23 %** |
+| `smoke` | 1 | 10 | 1 % |
+| `ci-lint` | 1 | 0 | 0 % |
+
+**Vier von 176 Fällen tragen ein Viertel der Zeit** — ein `full-smoke`-Fall kostet so viel wie
+sechzehn `test-go`-Fälle. Damit ist Frage A entschieden: **Teilung nach Sensor allein genügt
+nicht**, denn 132 Fälle blieben in einem Shard. Und Tier-Korrektur allein genügt ebenso wenig, denn
+die 132 `test-go`-Fälle tragen die andere Hälfte. Der Hebel ist die **dynamische Zuweisung an
+Worker** mit einer Warteschlange, die **absteigend nach Stückpreis** sortiert ist — was hier
+dasselbe ist wie nach Sensor gruppiert, weil der Preis je Sensor konstant ist. Die teuersten Fälle
+starten zuerst und hängen nicht am Ende nach.
+
+Das Modell trifft den realen Lauf auf **88 %**: modelliert **1420** s gegen gemessene **1252,6** s
+(`/usr/bin/time -f 'MUTATE_SECONDS=%e' make mutate` über **176** Fälle). Die Differenz ist die
+Sicherung und Wiederherstellung je Fall plus der wärmere Cache in der isolierten Kopie. Die frühere
+Angabe von **1166,43** s galt für **157** Fälle und ist fremdbelegt aus der
+[Verifikation zu slice-097](../../../reviews/2026-08-25-slice-097-verify.md) §1.1 — beide Zahlen
+sind Maschinen- und Cache-Zustände, keine Erwartungswerte.
+
+**Was weiterhin fehlt: die Zeit je *Fall*.** Der Stückpreis ist je Sensor erhoben, nicht je Fall —
+ein einzelner Ausreißer **innerhalb** eines Sensors bliebe darin unsichtbar. DoD (1) baut die
+Zeitnahme in den Treiber, und wer sie baut, prüft zuerst, ob die gemessene Verteilung mit dieser
+modellierten übereinstimmt; tut sie es nicht, ist eine der beiden falsch, und das ist ein Befund
+vor jeder Teilung.
 
 ### Der Bauplan, soweit er gemessen ist
 
