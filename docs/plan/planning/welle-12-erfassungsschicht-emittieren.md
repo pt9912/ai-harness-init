@@ -52,13 +52,13 @@ Setzung 2). Jedes Kriterium hat in dieser Welle genau einen zuständigen Slice; 
 | Happy Path — Span-Zeile mit voller Pflicht-Spalte | [slice-096](done/slice-096-traeger-liegt-im-ziel.md) | gebaut und im `full-smoke` gesehen |
 | Rolle besetzt | [slice-097](done/slice-097-rollen-typen-gehen-mit.md) | gebaut (der Typ ist der Träger der Achse) |
 | Betrieb fail-open, Umfang fail-closed | [slice-094](done/slice-094-ein-programm-ein-einstiegspunkt.md) | **konstruktiv geerbt** — dasselbe Programm, dieselbe Klemme; die Zähne wandern auf den neuen Einstiegspunkt |
-| Redaktion — was zugesagt ist und was nicht | [slice-098](open/slice-098-feldliste-ist-ausdruck-des-traegers.md) | gebaut (die Feldliste **ist** die geschlossene Liste, die das Kriterium verlangt) |
+| Redaktion — was zugesagt ist und was nicht | [slice-098](next/slice-098-feldliste-ist-ausdruck-des-traegers.md) | gebaut (die Feldliste **ist** die geschlossene Liste, die das Kriterium verlangt) |
 | Aufbewahrung — Kommando ohne Automatik | [slice-099](open/slice-099-leser-und-aufraeum-kommando.md) | gebaut |
 | Leser — Abdeckung zuerst, Leere gemeldet | [slice-099](open/slice-099-leser-und-aufraeum-kommando.md) | gebaut |
 | Reproduzierbar ([`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) | [slice-096](done/slice-096-traeger-liegt-im-ziel.md) | **konstruktiv** — eine Kopie ist bei gleicher Tool-Version dieselbe Datei; keine Zusicherung, die jemand herstellen muss |
 | Minimal/netzlos ([`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)) | [slice-096](done/slice-096-traeger-liegt-im-ziel.md) | **konstruktiv** — kein Netz, kein Bauschritt, kein zweiter Kanal |
 | Kein Halluzinat ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) | [slice-096](done/slice-096-traeger-liegt-im-ziel.md) | gebaut, mit **rot gesehenem Gegenbeispiel** |
-| Benannte Grenze — kein Wächter über die Aufrufform | [slice-098](open/slice-098-feldliste-ist-ausdruck-des-traegers.md) | **ausgesprochen**, nicht bewacht — die Grenze steht stehend im Feldlisten-Dokument |
+| Benannte Grenze — kein Wächter über die Aufrufform | [slice-098](next/slice-098-feldliste-ist-ausdruck-des-traegers.md) | **ausgesprochen**, nicht bewacht — die Grenze steht stehend im Feldlisten-Dokument |
 
 **Zwei Zeilen tragen *konstruktiv geerbt* und eine *ausgesprochen* — das ist eine Aussage über die
 Beweislast, keine Ausrede.** Ein konstruktiv geerbtes Kriterium hat keinen eigenen neuen Wächter,
@@ -156,7 +156,7 @@ Der Zustand jedes Slice ist sein Lifecycle-Verzeichnis, hier nicht gespiegelt.
 | [slice-095](done/slice-095-hook-aufschlag-gemessen.md) | Der Aufschlag je Tool-Call ist gemessen, und der Trennungs-Trigger kann feuern | [`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.md) |
 | [slice-096](done/slice-096-traeger-liegt-im-ziel.md) | Der Träger liegt im Ziel — oder es liegt begründet nichts | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
 | [slice-097](done/slice-097-rollen-typen-gehen-mit.md) | Die Rollen-Typen gehen mit: generisch, Tool-als-Quelle, `skip-if-present` | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) |
-| [slice-098](open/slice-098-feldliste-ist-ausdruck-des-traegers.md) | Die Feldliste im Ziel ist der Ausdruck des Trägers und führt ihre Grenzen stehend | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
+| [slice-098](next/slice-098-feldliste-ist-ausdruck-des-traegers.md) | Die Feldliste im Ziel ist der Ausdruck des Trägers und führt ihre Grenzen stehend | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
 | [slice-099](open/slice-099-leser-und-aufraeum-kommando.md) | Der Leser nennt seine Abdeckung zuerst, und der Bestand hat ein Aufräum-Kommando | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
 
 **Zuerst läuft [slice-094](done/slice-094-ein-programm-ein-einstiegspunkt.md), und der Grund steht
@@ -182,7 +182,7 @@ dem eine Rolle startbar ist"*. Ein Ziel mit Typen und ohne Träger kann seine Ro
 Ziel mit Träger und ohne Typen führt eine Achse, die dauerhaft leer bleibt. Der Slice darf darum
 jederzeit laufen — auch parallel zu 094/095.
 
-**[slice-098](open/slice-098-feldliste-ist-ausdruck-des-traegers.md) und
+**[slice-098](next/slice-098-feldliste-ist-ausdruck-des-traegers.md) und
 [slice-099](open/slice-099-leser-und-aufraeum-kommando.md) warten auf 096, und der Trigger ist
 benannt.** 098 wird **aus** dem Träger erzeugt und teilt seinen Emissions-Zweig; 099 legt ein
 Fragment ab, das auf den Träger zeigt. Beide vor 096 gebaut ergäben ein Dokument ohne Quelle und

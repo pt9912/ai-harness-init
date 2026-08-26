@@ -8,7 +8,7 @@ wechselt nur durch `git mv`, siehe
 **Welle:** [welle-12](../welle-12-erfassungsschicht-emittieren.md) — er läuft nach
 [slice-096](../done/slice-096-traeger-liegt-im-ziel.md), weil das Fragment auf den Träger zeigt und der
 Leser dessen Bestand liest. Er hängt **nicht** an
-[slice-098](slice-098-feldliste-ist-ausdruck-des-traegers.md).
+[slice-098](../next/slice-098-feldliste-ist-ausdruck-des-traegers.md).
 
 **Bezug:**
 [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) (§Leser:
@@ -56,7 +56,7 @@ Zähler meldet einen **Zustand** und lässt offen, ob er morgen anders ist. Die 
 andere Aussage: dass die Zähler an der Mechanik hängen und kein Lauf des Adopters sie herbeiführt.
 Sie steht darum an **zwei** Orten — hier beim Leser, der sie dort nennt, wo er seine Leere meldet,
 und stehend im Feldlisten-Dokument
-([slice-098](slice-098-feldliste-ist-ausdruck-des-traegers.md)), das auch dann trägt, wenn niemand
+([slice-098](../next/slice-098-feldliste-ist-ausdruck-des-traegers.md)), das auch dann trägt, wenn niemand
 den Leser ruft.
 
 **Das Aufräum-Kommando ist eine Zusage mit ausgesprochener Nicht-Zusage.** Das Ziel bekommt das
@@ -140,7 +140,7 @@ Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · Doku-Upda
 **`open` → `next`:** [slice-096](../done/slice-096-traeger-liegt-im-ziel.md) liegt in `done/` — erst dann
 gibt es im Ziel einen Träger, auf den das Fragment zeigt, und einen Bestand, den der Leser liest.
 Beobachtbar ohne Rückfrage: die Plan-Datei liegt in `done/`. **`next` → `in-progress`:** WIP-Limit
-frei. **Nicht Trigger:** [slice-098](slice-098-feldliste-ist-ausdruck-des-traegers.md) — die beiden
+frei. **Nicht Trigger:** [slice-098](../next/slice-098-feldliste-ist-ausdruck-des-traegers.md) — die beiden
 hängen nicht aneinander und dürfen parallel laufen.
 
 **Rückführungen, vorab benannt.** `in-progress` → `next`, wenn der Leser über die Abdeckungs-Aussage

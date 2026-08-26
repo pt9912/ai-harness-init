@@ -8,7 +8,7 @@ wechselt nur durch `git mv`, siehe
 **Welle:** [welle-12](../welle-12-erfassungsschicht-emittieren.md) — er läuft nach
 [slice-096](../done/slice-096-traeger-liegt-im-ziel.md), weil das Dokument **aus** dem Träger erzeugt wird
 und seinen Emissions-Zweig teilt. Er hängt **nicht** an
-[slice-099](slice-099-leser-und-aufraeum-kommando.md).
+[slice-099](../open/slice-099-leser-und-aufraeum-kommando.md).
 
 **Bezug:**
 [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) (§Redaktion:
@@ -144,7 +144,7 @@ Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · Doku-Upda
 **`open` → `next`:** [slice-096](../done/slice-096-traeger-liegt-im-ziel.md) liegt in `done/` — erst dann
 gibt es einen Träger, aus dem das Dokument erzeugt wird, und einen Zweig, den es teilen kann.
 Beobachtbar ohne Rückfrage: die Plan-Datei liegt in `done/`. **`next` → `in-progress`:** WIP-Limit
-frei. **Nicht Trigger:** [slice-099](slice-099-leser-und-aufraeum-kommando.md) — die beiden hängen
+frei. **Nicht Trigger:** [slice-099](../open/slice-099-leser-und-aufraeum-kommando.md) — die beiden hängen
 nicht aneinander und dürfen parallel laufen.
 
 **Rückführungen, vorab benannt.** `in-progress` → `next`, wenn das Dokument mehr trägt als Feldliste
