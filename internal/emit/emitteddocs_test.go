@@ -92,22 +92,16 @@ func claimSet(t *testing.T) fs.FS {
 	return out
 }
 
-// TestEmittierteDokumente_NurInitInvarianteZiele haelt die Eigenschaft aus
-// slice-087 fest: ueber dem GANZEN emittierten Dokument-Satz ist die Menge der
-// behaupteten `make`-Ziele eine Teilmenge der Ziel-Menge, die die Init-Phase in
-// jeder Bootstrap-Variante schreibt (LH-QA-01, ADR-0020 Festlegung 4(e)).
+// emitDokumentSatz emittiert den GANZEN Dokument-Satz nach t.TempDir() und liefert das
+// Verzeichnis. EINE Stelle fuer die Emitter-Liste, weil zwei Waechter denselben Satz
+// lesen: die Ziel-Ansprueche hier und die Gate-Tabellen in erfassung_test.go. Zwei
+// Listen driften, und die zweite bliebe gruen, waehrend die erste waechst.
 //
-// Weder die Ziele noch die Dokumente sind aufgezaehlt: die Ziel-Menge liest
-// emit.InitInvariantTargets aus den Fragmenten, der Dokument-Satz entsteht durch
-// einen echten Emit ins Zielverzeichnis. GRENZE, benannt: gedeckt sind die fuenf
-// Emitter, die heute Dokumente schreiben (Templates, RootReadme, Commands,
-// Agents, FieldList) — ein SECHSTER fiele heraus, bis er hier steht.
-//
-// Agents und FieldList stehen hier, weil ihre Dokumente denselben Weg ins Ziel gehen
-// wie die uebrigen: sie landen im geprueften Bereich, und ein Anspruch auf ein Ziel,
-// das die Init-Phase nicht schreibt, waere dort dasselbe halluzinierte Gate (LH-QA-01).
-func TestEmittierteDokumente_NurInitInvarianteZiele(t *testing.T) {
-	src := claimSet(t)
+// GRENZE, benannt: gedeckt sind die fuenf Emitter, die heute Dokumente schreiben
+// (Templates, RootReadme, Commands, Agents, FieldList) — ein SECHSTER fiele heraus, bis
+// er hier steht.
+func emitDokumentSatz(t *testing.T, src fs.FS) string {
+	t.Helper()
 	dir := t.TempDir()
 	if err := emit.Templates(src, dir, "Demo"); err != nil {
 		t.Fatalf("Templates: %v", err)
@@ -124,6 +118,26 @@ func TestEmittierteDokumente_NurInitInvarianteZiele(t *testing.T) {
 	if err := emit.FieldList(dir); err != nil {
 		t.Fatalf("FieldList: %v", err)
 	}
+	return dir
+}
+
+// TestEmittierteDokumente_NurInitInvarianteZiele haelt die Eigenschaft aus
+// slice-087 fest: ueber dem GANZEN emittierten Dokument-Satz ist die Menge der
+// behaupteten `make`-Ziele eine Teilmenge der Ziel-Menge, die die Init-Phase in
+// jeder Bootstrap-Variante schreibt (LH-QA-01, ADR-0020 Festlegung 4(e)).
+//
+// Weder die Ziele noch die Dokumente sind aufgezaehlt: die Ziel-Menge liest
+// emit.InitInvariantTargets aus den Fragmenten, der Dokument-Satz entsteht durch
+// einen echten Emit ins Zielverzeichnis. GRENZE, benannt: gedeckt sind die fuenf
+// Emitter, die heute Dokumente schreiben (Templates, RootReadme, Commands,
+// Agents, FieldList) — ein SECHSTER fiele heraus, bis er hier steht.
+//
+// Agents und FieldList stehen hier, weil ihre Dokumente denselben Weg ins Ziel gehen
+// wie die uebrigen: sie landen im geprueften Bereich, und ein Anspruch auf ein Ziel,
+// das die Init-Phase nicht schreibt, waere dort dasselbe halluzinierte Gate (LH-QA-01).
+func TestEmittierteDokumente_NurInitInvarianteZiele(t *testing.T) {
+	src := claimSet(t)
+	dir := emitDokumentSatz(t, src)
 
 	targets, err := emit.InitInvariantTargets()
 	if err != nil {

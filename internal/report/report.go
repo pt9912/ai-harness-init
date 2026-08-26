@@ -48,7 +48,18 @@ type Bilanz struct {
 	Sitzungen   int
 	Von         string
 	Bis         string
+	// Zeilen ist die Zahl der nicht-leeren Zeilen des Bestands — auch der nicht
+	// lesbaren. Sie unterscheidet zwei Leeren, die sonst gleich aussehen: einen
+	// Bestand OHNE ZEILE (es wurde nichts erfasst) von einem Bestand mit Zeilen und
+	// ohne Verbrauchs-Zaehler. Nur die zweite Leere hat ihren Grund in der Mechanik
+	// des Agenten-Werkzeugs; die erste kommt von einem Traeger, der nicht liegt.
+	Zeilen int
 }
+
+// TraegtZaehler ist wahr, wenn mindestens ein Subagenten-Lauf des Bestands
+// Verbrauchs-Zaehler trug — die Bedingung, unter der eine Bilanz eine Rechnung ist
+// und keine Behauptung ueber leerem Grund.
+func (b Bilanz) TraegtZaehler() bool { return b.MitZaehlern > 0 }
 
 // SammelpostenAnteil ist der Anteil der Bilanz, der auf der Splitting-Regel ruht
 // statt auf einer Messung.
@@ -89,6 +100,9 @@ func Aggregiere(dir string) (Bilanz, error) {
 			if strings.TrimSpace(zeile) == "" {
 				continue
 			}
+			// VOR dem Parsen gezaehlt: gemessen wird, ob ueberhaupt etwas erfasst
+			// wurde. Eine unlesbare Zeile ist ein Bestand, kein fehlender Traeger.
+			b.Zeilen++
 			var s span.Span
 			if json.Unmarshal([]byte(zeile), &s) != nil {
 				continue
@@ -232,30 +246,102 @@ func verteileRest(rollen []Rolle, sammelposten int64) {
 	}
 }
 
-// Schreibe gibt die Bilanz als Text aus.
+// nennerZeile sagt, WORUEBER gerechnet wird: der Haupt-Kontext traegt dauerhaft keine
+// Zaehler, jede Bilanz ist eine ueber Subagenten-Laeufe (ADR-0012).
+const nennerZeile = "Token-Bilanz je Rolle — gerechnet ueber Subagenten-Laeufe, nicht ueber den Lauf.\n"
+
+// summenZeile sagt, WAS summiert wird. `total_tokens` ist eine andere Groesse — dort
+// laufen die Cache-Lesungen mit, ein eigener Gegenstand mit eigenen Regeln (Modul 15
+// §Cache-Counter-Regeln).
+const summenZeile = "Summiert: input_tokens + output_tokens (ohne Cache-Lesungen).\n"
+
+// abdeckungsZeile nennt, wie viel des Bestands ueberhaupt Zaehler trug — MIT seiner
+// Bezugsmenge und mit der Zahl der gelesenen Zeilen. Ein nackter Prozentsatz sagt nicht,
+// worueber er rechnet.
+func abdeckungsZeile(b Bilanz) string {
+	return fmt.Sprintf("Abdeckung: %d von %d Agent-Laeufen trugen Verbrauchs-Zaehler; gelesen wurden %d Zeile(n).\n",
+		b.MitZaehlern, b.AgentLaeufe, b.Zeilen)
+}
+
+// kopf liefert die drei Kopfzeilen — DIE ABDECKUNG ZUERST (LH-FA-10 §Leser: "Die
+// Auswertung nennt ihre Abdeckung zuerst und meldet damit ihre eigene Leere").
+// Die Reihenfolge ist der Vertrag, nicht Geschmack: wer die erste Zeile liest, weiss,
+// worueber die folgenden sprechen. Eine Abdeckung am Ende erreicht den nicht, der nach
+// der ersten Zahl aufhoert zu lesen.
+// Bewacht von TestSchreibe_AbdeckungStehtZuerst.
+func kopf(b Bilanz) string { return abdeckungsZeile(b) + nennerZeile + summenZeile }
+
+// keineBilanz ist die Feststellung ueber einen Bestand ohne Verbrauchs-Zaehler.
+const keineBilanz = "Keine Bilanz: der Bestand traegt keine Verbrauchs-Zaehler.\n"
+
+// grundDerZaehler ist die GRENZE hinter dieser Leere (ADR-0021 Folgepflicht 6, ADR-0022
+// Festlegung 8). Der Zustand allein liesse offen, ob er morgen anders ist; dieser Satz
+// sagt, dass kein Lauf ihn aendert — er beschreibt einen FREMDEN Vertrag, nicht diesen
+// Aufbau.
+const grundDerZaehler = "Die Verbrauchs-Zaehler kommen aus der Mechanik des Agenten-Werkzeugs nicht: sie erreichen\n" +
+	"eine Zeile nur, wenn das Werkzeug sie im Ergebnis eines Subagenten-Aufrufs mitliefert. Kein\n" +
+	"Lauf dieses Repos fuehrt sie herbei — das ist keine Eigenschaft dieses Aufbaus, sondern der\n" +
+	"Mechanik. Ein Bestand ohne Zaehler ist deshalb der Normalfall und kein Defekt.\n"
+
+// leereDerZaehler meldet die Leere SAMT ihrem Grund. Die zwei Stuecke stehen getrennt,
+// weil sie zwei Aussagen sind: die eine ueber diesen Bestand, die andere ueber die
+// Mechanik.
 //
-// Drei Angaben stehen NEBEN den Rollen-Zeilen und sind je einzeln bewacht, weil
-// jede von ihnen etwas anderes sagt (ADR-0012: "Drei Groessen, drei Angaben"):
-// der NENNER (worueber gerechnet wird), der SAMMELPOSTEN-ANTEIL (worauf die
-// Rechnung ruht) und die ABDECKUNG (wie viel des Bestands Zaehler trug).
+// DER GRUND-SATZ HAT KEINEN GO-WAECHTER, und das ist eine Wahl: die Zusage ist, dass ein
+// ADOPTER ihn in seinem Repo liest. Gemessen wird sie deshalb dort, wo dieser Weg endet —
+// harness/tools/full-smoke.sh laesst den Leser im gebootstrappten Ziel ueber dessen
+// eigenem Bestand laufen. Rot-Gegenbeispiel: test/mutations/176-leser-grund-satz-weg.sh.
+func leereDerZaehler() string { return keineBilanz + grundDerZaehler }
+
+// leereDesBestands meldet einen Bestand OHNE JEDE ZEILE — und sagt ausdruecklich, dass
+// das keine Aussage ueber die Verbrauchs-Zaehler ist.
+//
+// DIE UNTERSCHEIDUNG IST DER PUNKT: ohne Zeile gibt es nichts, was Zaehler tragen
+// koennte. Wer beide Leeren gleich meldete, gaebe der Mechanik des Agenten-Werkzeugs die
+// Schuld an einer Leere, die von einem Traeger kommt, der nicht liegt — im zweiten Fall
+// waere die Meldung schlicht falsch.
+// Bewacht von TestSchreibe_LeererBestandNenntSeineLeere.
+const leereDesBestands = "Kein Bestand: gelesen wurde keine Zeile.\n" +
+	"Das ist KEINE Aussage ueber die Verbrauchs-Zaehler, sondern ueber die Erfassung: sie laeuft\n" +
+	"ueber ein Programm im gitignorierten Zustands-Bereich — ein frischer Klon hat es nicht, und\n" +
+	"ein Aufraeum-Lauf nimmt es weg. Liegt es, entsteht die erste Zeile beim naechsten\n" +
+	"Werkzeug-Aufruf.\n"
+
+// Schreibe gibt die Bilanz als Text aus — die ABDECKUNG ZUERST, danach die Lage.
+//
+// DREI LAGEN, DREI AUSGABEN, und die Unterscheidung ist selbst die Aussage:
+//   - kein Bestand         -> es wurde nichts erfasst; ueber die Zaehler sagt das nichts,
+//   - Bestand ohne Zaehler -> KEINE Bilanz, und der Grund steht dabei,
+//   - Bestand mit Zaehlern -> die Bilanz.
+//
+// Drei Angaben tragen die Ausgabe unabhaengig von den Rollen-Zeilen, und jede sagt
+// etwas anderes (ADR-0012: "Drei Groessen, drei Angaben"): die ABDECKUNG (wie viel des
+// Bestands Zaehler trug) und der NENNER (worueber gerechnet wird) stehen im Kopf, der
+// SAMMELPOSTEN-ANTEIL (worauf die Rechnung ruht) bei der Bilanz.
 // Bewacht von TestSchreibe_NennerStehtDrin, TestSchreibe_SammelpostenAnteilStehtDrin
 // und TestSchreibe_AbdeckungStehtDrin.
 func Schreibe(b Bilanz) string {
 	var sb strings.Builder
 
-	// Der Nenner steht in der ERSTEN Zeile und nicht in einer Fussnote: ein
-	// Prozentsatz aus diesen Zahlen ist ein Anteil an der erfassten Teilmenge.
-	sb.WriteString("Token-Bilanz je Rolle — gerechnet ueber Subagenten-Laeufe, nicht ueber den Lauf.\n")
-
-	// Gezaehlt werden input_tokens + output_tokens. `total_tokens` ist eine andere
-	// Groesse — dort laufen die Cache-Lesungen mit, ein eigener Gegenstand mit
-	// eigenen Regeln (Modul 15 §Cache-Counter-Regeln).
-	sb.WriteString("Summiert: input_tokens + output_tokens (ohne Cache-Lesungen).\n")
+	sb.WriteString(kopf(b))
 
 	if b.Sitzungen > 0 {
 		fmt.Fprintf(&sb, "Bestand: %d Sitzung(en), %s bis %s\n", b.Sitzungen, b.Von, b.Bis)
 	}
 	sb.WriteString("\n")
+
+	// Ohne Zaehler wird KEINE Bilanz ausgewiesen — keine Rollen-Zeile, keine groesste
+	// Rolle, kein Sammelposten. Eine Zeile mit einer Null ueber leerem Grund ist eine
+	// Rechnung, die nicht stattgefunden hat (LH-FA-10 §Leser).
+	// Bewacht von TestSchreibe_OhneZaehlerKeineBilanz.
+	switch {
+	case b.Zeilen == 0:
+		sb.WriteString(leereDesBestands)
+		return sb.String()
+	case !b.TraegtZaehler():
+		sb.WriteString(leereDerZaehler())
+		return sb.String()
+	}
 
 	if len(b.Rollen) == 0 || b.Gesamt == 0 {
 		sb.WriteString("Keine Rolle traegt Token.\n")
@@ -284,7 +370,6 @@ func Schreibe(b Bilanz) string {
 		fmt.Fprintf(&sb, "Sammelposten: %d Token NICHT verteilt — keine Rolle traegt Tool-Calls. "+
 			"Sie stehen in keiner Zeile oben und sind in der Summe NICHT enthalten.\n", b.Sammelposten)
 	}
-	fmt.Fprintf(&sb, "Abdeckung: %d von %d Agent-Laeufen trugen Zaehler\n", b.MitZaehlern, b.AgentLaeufe)
 
 	return sb.String()
 }

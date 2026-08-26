@@ -47,6 +47,10 @@ func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 		".claude/hooks/pretooluse-command-guard.sh",
 		"tools/harness/extract-command.awk",
 		"harness/mk/enforce.mk",
+		// Aufraeum- und Berichts-Fragment (slice-099): UNBEDINGT, also im
+		// Kollisions-Pre-Flight — anders als Wrapper und Feldliste, die den Zweig des
+		// Traegers teilen.
+		"harness/mk/erfassung.mk",
 	}
 	got := strings.Join(emit.EnforcePaths(), "\n")
 	for _, w := range want {

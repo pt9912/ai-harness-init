@@ -158,7 +158,10 @@ func TestSchreibe_SammelpostenAnteilStehtDrin(t *testing.T) {
 	// Verteilt: true — dieser Zahn gilt dem VERTEILTEN Fall. Den unverteilten
 	// bewacht TestSchreibe_UnverteilterSammelpostenStehtAusserhalb, und er darf
 	// gerade keinen Prozentsatz tragen.
-	text := report.Schreibe(report.Bilanz{Sammelposten: 50, Gesamt: 200, Verteilt: true})
+	// MitZaehlern/Zeilen gesetzt, weil eine Bilanz nur ueber einem Bestand MIT
+	// Verbrauchs-Zaehlern ausgewiesen wird — ohne sie meldete die Ausgabe zu Recht
+	// ihre Leere, und dieser Zahn traefe den falschen Zweig.
+	text := report.Schreibe(report.Bilanz{Sammelposten: 50, Gesamt: 200, Verteilt: true, MitZaehlern: 1, Zeilen: 4})
 	if !strings.Contains(text, "Sammelposten:") {
 		t.Fatalf("Sammelposten-Zeile fehlt:\n%s", text)
 	}
@@ -172,12 +175,101 @@ func TestSchreibe_SammelpostenAnteilStehtDrin(t *testing.T) {
 // Dauer-Sensor: test/mutations/142-report-abdeckung-entfernt.sh
 func TestSchreibe_AbdeckungStehtDrin(t *testing.T) {
 	t.Parallel()
-	text := report.Schreibe(report.Bilanz{MitZaehlern: 72, AgentLaeufe: 95})
+	text := report.Schreibe(report.Bilanz{MitZaehlern: 72, AgentLaeufe: 95, Zeilen: 300})
 	if !strings.Contains(text, "Abdeckung:") {
 		t.Fatalf("Abdeckungs-Zeile fehlt:\n%s", text)
 	}
 	if !strings.Contains(text, "72 von 95") {
 		t.Fatalf("Abdeckung ohne Bezugsmenge:\n%s", text)
+	}
+}
+
+// ZAHN 4 (slice-099 DoD (1)): die Abdeckung steht ZUERST — in der ersten Zeile, nicht
+// in einer Fussnote (LH-FA-10 §Leser: "Die Auswertung nennt ihre Abdeckung zuerst und
+// meldet damit ihre eigene Leere"). Wer nach der ersten Zahl aufhoert zu lesen, hat
+// dann die Aussage ueber den Nenner gesehen und nicht eine Zahl ohne ihn.
+// Dauer-Sensor: test/mutations/173-leser-abdeckung-nicht-zuerst.sh
+func TestSchreibe_AbdeckungStehtZuerst(t *testing.T) {
+	t.Parallel()
+	text := report.Schreibe(report.Bilanz{MitZaehlern: 3, AgentLaeufe: 9, Zeilen: 40, Gesamt: 100,
+		Rollen: []report.Rolle{{Name: "planner", Direkt: 100}}})
+	erste, _, _ := strings.Cut(text, "\n")
+	if !strings.HasPrefix(erste, "Abdeckung:") {
+		t.Fatalf("die erste Zeile ist nicht die Abdeckung, sondern %q:\n%s", erste, text)
+	}
+}
+
+// ZAHN 5 (slice-099 DoD (1)): ueber einem Bestand OHNE Verbrauchs-Zaehler wird KEINE
+// Bilanz ausgewiesen. Eine Rollen-Zeile mit einer Null ist eine Rechnung, die nicht
+// stattgefunden hat — genau die Gate-Luege als Kennzahl, die ADR-0022 Festlegung 8
+// ausschliesst.
+//
+// Der Bestand ist NICHT leer (Zeilen > 0): das ist der Fall, in dem erfasst wurde und
+// die Zaehler trotzdem fehlen. Den leeren Bestand misst der Zahn darunter.
+// Dauer-Sensor: test/mutations/174-leser-bilanz-ohne-zaehler.sh
+func TestSchreibe_OhneZaehlerKeineBilanz(t *testing.T) {
+	t.Parallel()
+	text := report.Schreibe(report.Bilanz{
+		AgentLaeufe: 4, MitZaehlern: 0, Zeilen: 40,
+		Rollen: []report.Rolle{{Name: "planner", ToolCalls: 12}, {Name: "reviewer", ToolCalls: 3}},
+	})
+	for _, verboten := range []string{"planner", "reviewer", "Groesste Rolle", "Sammelposten:"} {
+		if strings.Contains(text, verboten) {
+			t.Errorf("ueber einem Bestand ohne Zaehler steht %q in der Ausgabe — das ist eine Bilanz:\n%s", verboten, text)
+		}
+	}
+	if !strings.Contains(text, "Keine Bilanz:") {
+		t.Errorf("die Ausgabe sagt nicht, dass sie keine Bilanz ausweist:\n%s", text)
+	}
+}
+
+// ZAHN 6 (slice-099 DoD (1)): ein LEERER Bestand wird anders gemeldet als ein Bestand
+// ohne Verbrauchs-Zaehler. Beide sehen beim Leser gleich aus, und genau das ist die
+// Falle: ohne Zeile gibt es nichts, was Zaehler tragen koennte — die Leere kommt dann
+// von einem Traeger, der nicht liegt, nicht von der Mechanik des Agenten-Werkzeugs.
+// Wer beide gleich meldete, gaebe im zweiten Fall eine falsche Begruendung
+// (ADR-0022 Festlegung 8: "und ihn von einem bloss leeren Bestand unterscheidet").
+// Dauer-Sensor: test/mutations/175-leser-leere-ohne-unterscheidung.sh
+func TestSchreibe_LeererBestandNenntSeineLeere(t *testing.T) {
+	t.Parallel()
+	leer := report.Schreibe(report.Bilanz{Zeilen: 0})
+	ohneZaehler := report.Schreibe(report.Bilanz{Zeilen: 40, AgentLaeufe: 4})
+
+	if !strings.Contains(leer, "Kein Bestand:") {
+		t.Errorf("der leere Bestand meldet seine Leere nicht als solche:\n%s", leer)
+	}
+	if !strings.Contains(leer, "KEINE Aussage ueber die Verbrauchs-Zaehler") {
+		t.Errorf("der leere Bestand grenzt sich nicht gegen den Zaehler-Fall ab:\n%s", leer)
+	}
+	if strings.Contains(leer, "Keine Bilanz:") {
+		t.Errorf("der leere Bestand traegt die Meldung des zaehlerlosen Bestands — beide Leeren sind dieselbe geworden:\n%s", leer)
+	}
+	// Die Gegenprobe traegt zwei Bruchstellen, und jede bekommt ihre eigene Meldung:
+	// der zaehlerlose Bestand darf sich weder wie ein leerer melden noch die Aussage
+	// verlieren, dass er keine Bilanz ausweist. Eine gemeinsame Meldung waere in einem
+	// der zwei Faelle die falsche Begruendung.
+	if strings.Contains(ohneZaehler, "Kein Bestand:") {
+		t.Errorf("der zaehlerlose Bestand meldet sich wie ein leerer:\n%s", ohneZaehler)
+	}
+	if !strings.Contains(ohneZaehler, "Keine Bilanz:") {
+		t.Errorf("der zaehlerlose Bestand sagt nicht, dass er keine Bilanz ausweist — die Gegenprobe zum leeren Bestand misst dann nichts:\n%s", ohneZaehler)
+	}
+}
+
+// Der Bestand zaehlt JEDE nicht-leere Zeile, auch die unlesbare: gemessen wird, ob
+// ueberhaupt erfasst wurde. Ohne diese Lesart meldete ein Bestand aus lauter kaputten
+// Zeilen "kein Bestand" — und der Leser gaebe einem fehlenden Traeger die Schuld an
+// einem Schreibfehler.
+func TestAggregiere_ZeilenZaehltAuchUnlesbare(t *testing.T) {
+	t.Parallel()
+	dir := schreibeBestand(t, agentSpan("planner", 10, 5), "{kaputt", "")
+
+	b, err := report.Aggregiere(dir)
+	if err != nil {
+		t.Fatalf("Aggregiere: %v", err)
+	}
+	if b.Zeilen != 2 {
+		t.Fatalf("Zeilen = %d, erwartet 2 (die Agent-Zeile und die kaputte, nicht die leere)", b.Zeilen)
 	}
 }
 
@@ -225,7 +317,7 @@ func TestAggregiere_SpawnSpanZaehltNichtAlsToolCall(t *testing.T) {
 // Dauer-Sensor: test/mutations/148-report-unverteilt-als-verteilt.sh
 func TestSchreibe_UnverteilterSammelpostenStehtAusserhalb(t *testing.T) {
 	t.Parallel()
-	text := report.Schreibe(report.Bilanz{Sammelposten: 150, Gesamt: 0, Verteilt: false})
+	text := report.Schreibe(report.Bilanz{Sammelposten: 150, Gesamt: 0, Verteilt: false, MitZaehlern: 1, Zeilen: 4})
 	if strings.Contains(text, "anteilig nach Tool-Calls verteilt") {
 		t.Fatalf("behauptet eine Verteilung, die nicht stattfand:\n%s", text)
 	}

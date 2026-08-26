@@ -353,12 +353,20 @@ const (
 )
 
 // initFragments liefert den Inhalt der Make-Fragmente, die die Init-Phase in JEDER
-// Bootstrap-Variante schreibt: den Root-Aggregator (makefile.go), das
+// Bootstrap-Variante schreibt, JE ZIEL-RELPFAD: den Root-Aggregator (makefile.go), das
 // Baseline-Fragment (baseline.go), das Doc-Gate-Fragment (emit.go) und jedes
 // `.mk` der Durchsetzungsschicht (enforce.go). Der Durchsetzungs-Teil kommt aus
 // enforceFiles(), damit ein dort neu hinzukommendes Fragment mitfliesst.
-func initFragments() ([]string, error) {
-	out := []string{aggregatorMakefile, baselineMk, docGateMk}
+//
+// Der Pfad ist der Schluessel, weil die Waechter der Nicht-Verdrahtung sagen muessen,
+// IN WELCHER Datei ein Ziel auftaucht — "irgendwo in der Kette" ist kein Befund, den
+// jemand beheben kann.
+func initFragments() (map[string]string, error) {
+	out := map[string]string{
+		MakefilePath:   aggregatorMakefile,
+		BaselineMkPath: baselineMk,
+		DocGateMkPath:  docGateMk,
+	}
 	for _, f := range enforceFiles() {
 		if !strings.HasSuffix(f.dst, ".mk") {
 			continue
@@ -367,10 +375,24 @@ func initFragments() ([]string, error) {
 		if err != nil {
 			return nil, fmt.Errorf("init-fragment %s lesen: %w", f.src, err)
 		}
-		out = append(out, string(content))
+		out[f.dst] = string(content)
 	}
 	return out, nil
 }
+
+// InitFragments liefert dieselbe Menge je Ziel-Relpfad — die Make-Quellen, die die
+// Init-Phase in JEDER Bootstrap-Variante ins Ziel schreibt.
+//
+// Exportiert fuer die Waechter der NICHT-Verdrahtung (slice-099): sie muessen die Kette
+// DES ZIELS lesen. Eine im Test gepflegte Dateiliste waere die zweite Fassung, die
+// driftet — ein neu hinzukommendes Fragment fiele aus ihr heraus, und der Waechter
+// bliebe gruen, waehrend die Verdrahtung entstuende.
+//
+// GRENZE, dieselbe wie bei InitInvariantTargets: `d-check.mk` entsteht erst zur
+// Bootstrap-Zeit aus `d-check --print-mk` und liegt hier nicht vor; aus ihm traegt die
+// Menge allein die GATE_CHECKS-Kante des Doc-Gate-Fragments. Die Ziele der SPRACH-Phase
+// liegen ebenfalls ausserhalb — sie kommen aus gen.CodeGateFragment.
+func InitFragments() (map[string]string, error) { return initFragments() }
 
 // InitInvariantTargets liefert sortiert die Make-Ziele, die die Init-Phase in
 // jeder Bootstrap-Variante ins Ziel schreibt — aus den Fragmenten GELESEN, nicht

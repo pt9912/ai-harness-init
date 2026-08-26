@@ -233,6 +233,176 @@ fi
 echo "full-smoke: Feldlisten-Ortswahl belegt (toter Verweis im Dokument faerbt das docs-check des Ziels rot, danach zurueckgenommen):"
 grep -E "$FELDLISTE_REL:[0-9]+" <<<"$feldzahn_out" | sed -n '1,2s/^/full-smoke:   /p'
 
+# slice-099 (LH-FA-10 §Leser und §Aufbewahrung / ADR-0022 Festlegung 8 und 6 Stueck 2):
+# DER LESER LAEUFT IM ZIEL UEBER DESSEN EIGENEM BESTAND, UND DAS AUFRAEUM-KOMMANDO IST DA.
+#
+# Nur ein echter Lauf kann das zeigen. Ein Go-Waechter misst den Text des Fragments; ob
+# das gebootstrappte Repo mit `make span-report` wirklich beim Leser ankommt, entscheidet
+# die Kette Aggregator -> Fragment -> abgelegter Traeger -> Bestand, und die gibt es nur
+# hier. Der GRUND-SATZ hat aus demselben Grund keinen Go-Waechter: die Zusage ist, dass
+# ein Adopter ihn in seinem Repo liest.
+#
+# VIER SCHRITTE, VIER AUSSAGEN:
+#   (a) das `gates` des Ziels haengt an keinem der beiden Ziele — gemessen an SEINER
+#       Kette (make -n), nicht an unserer Vorstellung davon,
+#   (b) ueber dem eben geschriebenen Bestand nennt der Leser seine ABDECKUNG ZUERST,
+#       weist KEINE Bilanz aus und nennt den GRUND seiner Leere,
+#   (c) das Fragment sagt, was es nicht zusagt: ohne Aufruf waechst der Bestand
+#       unbegrenzt,
+#   (d) `make span-clean` entfernt den Bestand, und danach meldet der Leser die LEERE
+#       DES BESTANDS — nicht dieselbe Meldung wie in (b).
+#
+# Rot-Gegenbeispiel: test/mutations/176 nimmt den Grund-Satz aus der Ausgabe.
+leser_und_aufraeumen_im_ziel() {
+	local repo="$1" kennung="$2"
+	local spans="$repo/.harness/state/spans"
+	local frag="$repo/harness/mk/erfassung.mk"
+	local grund="Die Verbrauchs-Zaehler kommen aus der Mechanik des Agenten-Werkzeugs nicht"
+
+	# (a) Die Kette DES ZIELS. `make -n` druckt, was `gates` faehrt, ohne es zu fahren.
+	local kette_out="" kette_rc=0
+	kette_out="$( make --no-print-directory -C "$repo" -n gates 2>&1 )" || kette_rc=$?
+	if [ "$kette_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: die gates-Kette des Ziels ist nicht lesbar (make -n gates, Exit $kette_rc):" >&2
+		printf '%s\n' "$kette_out" >&2
+		exit 1
+	fi
+	if grep -qE 'span-(report|clean)' <<<"$kette_out"; then
+		echo "full-smoke: FEHLER — $kennung: die gates-Kette des Ziels nennt span-report/span-clean — ein Gate ueber einem Bericht ist eines ueber leerem Pruefbereich (LH-QA-01, slice-099)." >&2
+		grep -nE 'span-(report|clean)' <<<"$kette_out" >&2
+		exit 1
+	fi
+
+	# (b) Der Leser ueber dem echten Bestand des Ziels.
+	if [ -z "$(find "$spans" -name '*.jsonl' -type f 2>/dev/null | head -n 1)" ]; then
+		echo "full-smoke: FEHLER — $kennung: kein Bestand im Ziel, bevor der Leser laeuft — dieser Zahn misst dann den leeren Fall (slice-099)." >&2
+		exit 1
+	fi
+	local bericht="" bericht_rc=0
+	bericht="$( make --no-print-directory -C "$repo" span-report 2>&1 )" || bericht_rc=$?
+	if [ "$bericht_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: make span-report im Ziel endet mit Exit $bericht_rc — ein Bericht faerbt nichts rot (slice-099):" >&2
+		printf '%s\n' "$bericht" >&2
+		exit 1
+	fi
+	local erste
+	erste="$(sed -n '1p' <<<"$bericht")"
+	case "$erste" in
+	Abdeckung:*) ;;
+	*)
+		echo "full-smoke: FEHLER — $kennung: der Leser nennt seine Abdeckung nicht ZUERST; erste Zeile: [$erste] (LH-FA-10 §Leser, slice-099)." >&2
+		printf '%s\n' "$bericht" >&2
+		exit 1
+		;;
+	esac
+	# Leerraum-normalisiert, damit der Zeilenumbruch der Ausgabe den Vergleich nicht traegt.
+	local flach
+	flach="$(tr -s '[:space:]' ' ' <<<"$bericht")"
+	if ! grep -qF -- "$grund" <<<"$flach"; then
+		echo "full-smoke: FEHLER — $kennung: der Leser meldet seine Leere OHNE ihren Grund — die Abdeckungs-Zeile nennt einen Zustand, erst der Satz nennt die Grenze (ADR-0021 Folgepflicht 6, slice-099). Ausgabe:" >&2
+		printf '%s\n' "$bericht" >&2
+		exit 1
+	fi
+	if ! grep -qF -- "Keine Bilanz:" <<<"$flach"; then
+		echo "full-smoke: FEHLER — $kennung: der Leser sagt nicht, dass er keine Bilanz ausweist (slice-099). Ausgabe:" >&2
+		printf '%s\n' "$bericht" >&2
+		exit 1
+	fi
+	if grep -qF -- "Groesste Rolle" <<<"$flach"; then
+		echo "full-smoke: FEHLER — $kennung: der Leser weist ueber einem Bestand OHNE Verbrauchs-Zaehler eine Bilanz aus (slice-099). Ausgabe:" >&2
+		printf '%s\n' "$bericht" >&2
+		exit 1
+	fi
+
+	# (c) Die Nicht-Zusage steht im Ziel geschrieben, nicht nur in unserem Kopf.
+	if [ ! -f "$frag" ]; then
+		echo "full-smoke: FEHLER — $kennung: das Aufraeum- und Berichts-Fragment fehlt im Ziel (harness/mk/erfassung.mk, slice-099)." >&2
+		exit 1
+	fi
+	local fragflach
+	fragflach="$(tr -s '[:space:]' ' ' <"$frag")"
+	if ! grep -qF -- "OHNE DIESEN AUFRUF WAECHST DER BESTAND UNBEGRENZT." <<<"$fragflach"; then
+		echo "full-smoke: FEHLER — $kennung: das Ziel sagt nicht, dass sein Bestand ohne den Aufruf unbegrenzt waechst (LH-FA-10 §Aufbewahrung, slice-099)." >&2
+		exit 1
+	fi
+
+	# (d) Aufraeumen — ausdruecklich, und danach ist der Bestand weg.
+	local clean_out="" clean_rc=0
+	clean_out="$( make --no-print-directory -C "$repo" span-clean 2>&1 )" || clean_rc=$?
+	if [ "$clean_rc" -ne 0 ] || [ -e "$spans" ]; then
+		echo "full-smoke: FEHLER — $kennung: make span-clean endet mit Exit $clean_rc oder laesst den Bestand liegen (slice-099):" >&2
+		printf '%s\n' "$clean_out" >&2
+		exit 1
+	fi
+	local leer="" leer_rc2=0
+	leer="$( make --no-print-directory -C "$repo" span-report 2>&1 )" || leer_rc2=$?
+	local leerflach
+	leerflach="$(tr -s '[:space:]' ' ' <<<"$leer")"
+	# ZWEI BEDINGUNGEN, ZWEI MELDUNGEN: ein Absturz des Berichts und eine Ausgabe ohne
+	# die Leere-Meldung sind verschiedene Fehler, und eine gemeinsame Kopfzeile waere in
+	# einem der beiden Faelle die falsche Begruendung.
+	if [ "$leer_rc2" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: make span-report ueber dem geraeumten Bestand endet mit Exit $leer_rc2 — ein Bericht faerbt nichts rot (slice-099):" >&2
+		printf '%s\n' "$leer" >&2
+		exit 1
+	fi
+	if ! grep -qF -- "Kein Bestand:" <<<"$leerflach"; then
+		echo "full-smoke: FEHLER — $kennung: ueber dem geraeumten Bestand meldet der Leser nicht dessen Leere (slice-099):" >&2
+		printf '%s\n' "$leer" >&2
+		exit 1
+	fi
+	if grep -qF -- "$grund" <<<"$leerflach"; then
+		echo "full-smoke: FEHLER — $kennung: der LEERE Bestand bekommt die Begruendung des zaehlerlosen — ohne Zeile gibt es nichts, was Zaehler tragen koennte (slice-099):" >&2
+		printf '%s\n' "$leer" >&2
+		exit 1
+	fi
+
+	# (e) DIE VIERTE LAGE, und sie liegt VOR den drei Lagen des Lesers: der Traeger
+	# fehlt. Dann startet das Fragment das Go-Programm gar nicht — es meldet die
+	# Abwesenheit selbst, statt auf ein fehlendes Programm zu zeigen (LH-QA-01). Ein
+	# frischer Klon des Adopter-Repos ist genau dieser Fall.
+	#
+	# NUR HIER MESSBAR: die Schleife liegt im Makefile-Rezept, kein Go-Test faehrt make.
+	# Der Traeger wird beiseitegelegt und danach zurueckgeholt — dieselbe Disziplin wie
+	# bei den uebrigen Zaehne-Beweisen.
+	#
+	# Der ZWEITE Satz ist der tragende: ohne ihn liest ein Adopter die Stille als Aussage
+	# ueber seinen Bestand, waehrend sie eine ueber den Leser ist.
+	# Rot-Gegenbeispiel: test/mutations/186-bericht-ohne-leser-schweigt-falsch.sh.
+	local carrier="$repo/.harness/state/bin/ai-harness-init"
+	if [ ! -x "$carrier" ]; then
+		echo "full-smoke: FEHLER — $kennung: der Traeger liegt nicht, bevor er beiseitegelegt wird — dieser Zahn misst dann den falschen Zweig (slice-099)." >&2
+		exit 1
+	fi
+	mv "$carrier" "$carrier.beiseite"
+	local ohne="" ohne_rc=0
+	ohne="$( make --no-print-directory -C "$repo" span-report 2>&1 )" || ohne_rc=$?
+	mv "$carrier.beiseite" "$carrier"
+	if [ "$ohne_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: ohne Traeger endet make span-report mit Exit $ohne_rc — ein fehlender Leser ist kein Fehler des Repos (slice-099):" >&2
+		printf '%s\n' "$ohne" >&2
+		exit 1
+	fi
+	local ohneflach fehlt="" satz
+	ohneflach="$(tr -s '[:space:]' ' ' <<<"$ohne")"
+	for satz in "der Traeger liegt nicht" \
+	            "das ist KEINE Aussage ueber den Bestand, sondern ueber den Leser" \
+	            "ein erneuter Lauf des Werkzeugs legt ihn wieder ab"; do
+		grep -qF -- "$satz" <<<"$ohneflach" || fehlt="$fehlt [$satz]"
+	done
+	if [ -n "$fehlt" ]; then
+		echo "full-smoke: FEHLER — $kennung: ohne Traeger sagt make span-report nicht, was fehlt und was das NICHT heisst:$fehlt (slice-099). Ausgabe:" >&2
+		printf '%s\n' "$ohne" >&2
+		exit 1
+	fi
+	if grep -qF -- "Abdeckung:" <<<"$ohneflach"; then
+		echo "full-smoke: FEHLER — $kennung: ohne Traeger meldet make span-report eine Abdeckung — dann laeuft ein Leser, den es nicht gibt (slice-099):" >&2
+		printf '%s\n' "$ohne" >&2
+		exit 1
+	fi
+	echo "full-smoke: Leser + Aufraeum-Kommando im Ziel ($kennung): Abdeckung zuerst, keine Bilanz, Grund genannt; span-clean raeumt; der geraeumte Bestand meldet seine eigene Leere, und ohne Traeger meldet das Ziel den fehlenden Leser."
+}
+
 # slice-096 (LH-FA-10 / ADR-0022 Festlegung 1 und 5): DER TRAEGER LIEGT IM ZIEL.
 # Der Nachbau dessen, was `make span-check` fuer den DOGFOOD leistet — am gebootstrappten
 # ZIEL und ueber den Weg, den das Agenten-Werkzeug dort wirklich nimmt:
@@ -318,6 +488,10 @@ traeger_im_ziel() {
 	# Abgleich mit der Feldliste gehoert deshalb an diese Stelle, statt eine zweite Zeile
 	# eigens dafuer zu erzeugen.
 	feldliste_deckt_die_zeile "$repo" "$kennung" "$line"
+	# slice-099: hier liegt ein ECHTER Bestand des Ziels — genau der Gegenstand, ueber
+	# dem der emittierte Leser laufen soll. Er raeumt am Ende auf; danach ist der
+	# Bestand weg, und der Rest dieser Funktion braucht ihn nicht mehr.
+	leser_und_aufraeumen_im_ziel "$repo" "$kennung"
 
 	# (e) Ohne Traeger schweigt der Wrapper. Danach zuruecknehmen — der Rest des Smokes
 	# laeuft auf dem heilen Stand (dieselbe Disziplin wie bei den Zaehne-Beweisen unten).

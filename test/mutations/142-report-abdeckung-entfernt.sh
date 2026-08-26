@@ -11,5 +11,5 @@
 # Abweichung in spec/spezifikation.md §5). Ohne beide Zahlen sieht der Leser eine
 # unvollstaendige Erhebung fuer eine vollstaendige an.
 set -euo pipefail
-sed -i 's@Abdeckung: %d von %d Agent-Laeufen trugen Zaehler@Abdeckung: %d Agent-Laeufe trugen Zaehler@' internal/report/report.go
-sed -i 's@b.MitZaehlern, b.AgentLaeufe)@b.MitZaehlern)@' internal/report/report.go
+sed -i 's@Abdeckung: %d von %d Agent-Laeufen trugen Verbrauchs-Zaehler@Abdeckung: %d Agent-Laeufe trugen Verbrauchs-Zaehler@' internal/report/report.go
+sed -i 's@b.MitZaehlern, b.AgentLaeufe, b.Zeilen)@b.MitZaehlern, b.Zeilen)@' internal/report/report.go

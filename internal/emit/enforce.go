@@ -54,6 +54,10 @@ func enforceFiles() []enforceFile {
 		// `gates: record-gates` leben im Root-Aggregator (gen), weil sie GATE_CHECKS
 		// erst nach dem Glob-Include vollstaendig sehen. Sprach-agnostisch, verbatim.
 		{"templates/enforce/enforce.mk", "harness/mk/enforce.mk", 0o644},
+		// Aufraeum- und Berichts-Fragment der Erfassungsschicht (slice-099): zwei
+		// Kommandos, kein Gate. Es steht hier und nicht in captureFiles(), weil es an
+		// keinem Laufzeit-Ausgang haengt — die Begruendung traegt erfassung.go.
+		erfassungFile(),
 		// Command-Guard (slice-032): bash+awk, kein node/jq (LH-QA-03). Der Guard
 		// (0755) referenziert den awk-Extraktor unter tools/harness/ — beide
 		// gehoeren in denselben Emit, sonst laeuft der Guard fail-closed ins Leere.
