@@ -78,7 +78,7 @@ die generische Fassung tragfähig und die Kopie falsch.
 der Agenten-Typ eine der sechs kanonischen Rollen **nennt**; benennt der Adopter seine Typen um,
 bleibt das Feld **leer**, und leer heißt *unbekannt*, nie *rollenlos*. Ein Wächter darüber wäre
 einer über einem fremden Vertrag; die Grenze wird ausgesprochen — ihr stehender Ort ist das
-Feldlisten-Dokument aus [slice-098](../next/slice-098-feldliste-ist-ausdruck-des-traegers.md), nicht dieser
+Feldlisten-Dokument aus [slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md), nicht dieser
 Slice.
 
 ## 2. Definition of Done
@@ -184,7 +184,7 @@ Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   `agent.role` leer. Das ist **keine Folge dieses Slice**, sondern die Grenze, die
   [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) selbst
   ausspricht — sie wird gesagt, nicht bewacht, und ihr stehender Ort ist
-  [slice-098](../next/slice-098-feldliste-ist-ausdruck-des-traegers.md).
+  [slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md).
 - **Ohne Träger bleibt der Nutzen halb.** Die Typen machen Rollen startbar, aber niemand erfasst
   ihre Läufe, solange [slice-096](../done/slice-096-traeger-liegt-im-ziel.md) nicht liegt. Das ist ein
   **Zwischenstand, kein Widerspruch**: die Typen behaupten nichts über Erfassung, und wer sie liest,

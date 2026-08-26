@@ -137,7 +137,7 @@ Rückfrage prüfbar: die Plan-Datei liegt bei den geschlossenen Slices. **`next`
 WIP-Limit frei.
 
 **Eine Reihenfolge-Empfehlung, keine Abhängigkeit.** Läuft dieser Slice **vor**
-[slice-098](../next/slice-098-feldliste-ist-ausdruck-des-traegers.md), baut jener seinen bedingten
+[slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md), baut jener seinen bedingten
 Anwesenheits-Wächter auf einer Konstruktion, die ihre Erwartung nicht aus dem mutierten Gegenstand
 zieht. Läuft er danach, ist dieselbe Konstruktion an zwei Stellen zu ziehen statt an einer. Keine
 Reihenfolge bricht etwas; die zweite kostet einen Durchgang mehr.
