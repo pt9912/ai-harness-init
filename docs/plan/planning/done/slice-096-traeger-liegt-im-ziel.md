@@ -205,7 +205,7 @@ Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   Grenze ist **benannt, nicht geschlossen**: ein ziel-seitiger Anwesenheits-Wächter ist
   ausgeschlossen, weil er jeden Klon out-of-the-box rot machte und
   [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) bräche. Sichtbar wird
-  der Zustand beim **Leser** ([slice-099](../next/slice-099-leser-und-aufraeum-kommando.md)), nicht beim
+  der Zustand beim **Leser** ([slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md)), nicht beim
   Schreiber; wiederhergestellt wird der Träger durch einen erneuten Tool-Lauf.
 - **Der `span-check`-Wächter dieses Repos geht nicht mit.** Hier heilt ihn ein Bau, im Ziel könnte
   ihn nichts heilen. Wer ihn mitgibt, baut den Klon-rot-Fall, den der vorige Punkt ausschließt.
@@ -384,7 +384,7 @@ Mutations-Fälle `155`–`162`. `ab0e855` und `603a6f8` sind die reinen Lifecycl
   ziel-seitiger Anwesenheits-Wächter ist ausgeschlossen, weil er jeden Klon out-of-the-box rot
   machte und [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) bräche.
   Sichtbar wird der Zustand beim Leser
-  ([slice-099](../next/slice-099-leser-und-aufraeum-kommando.md)), nicht beim Schreiber.
+  ([slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md)), nicht beim Schreiber.
 - **Zwei Assertions der Träger-Wächter haben kein `test/mutations/`-Gegenstück.** Die
   Träger-Abwesenheit im Fehlerzweig (`:425`) und die sha256-Identität des abgelegten Trägers
   (`:353`). Beide haben Zähne — die zweite fällt unter `io.Copy(out, src)` → `io.CopyN(out, src, 16)`,
@@ -456,7 +456,7 @@ oder mit Grund gar nicht entsteht, entscheidet der Lauf an dem Skript. Eine Sch�
 | Der Zeiger vom Kommentar auf den Fall ist mechanisch prüfbar und ungeprüft; `_test[.]go` liegt permanent außerhalb von `make comment-claims` | **[slice-070](../open/slice-070-comment-claims-pruefbereich.md)** — der Steering-Loop-Eintrag oben |
 | Ein `# expect:`-Kopf nennt den Wächter, an dem der Treiber misst, nicht die Menge der Wächter, die der Eingriff fällt — an **2** von **3** Fällen gemessen | **[slice-069](../open/slice-069-zahn-bindet-zusicherung.md)** — sein DoD (1) hebt den Kopf von **Wächter**- auf **Zusicherungs**-Granularität; die Messung oben ist eine Eingabe für genau diese Entscheidung, und sie sagt: die Achse *„welcher Wächter"* ist neben der Achse *„welche Assertion"* zu entscheiden |
 | *„`make gates` des Ziels ist grün"* ist im Fehlerzweig argumentiert, nicht gelaufen | **[slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md)** — seine §3-Zeile zu [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) nennt *„beide Varianten, beide Zweige"*; dahinter steht der Closure-Trigger von [welle-12](../welle-12-erfassungsschicht-emittieren.md), der das frische Ziel **in beiden Zweigen** grün sehen will |
-| Der Kommentar der emittierten `.harness/.gitignore` nennt nur den Gate-Stempel, während dort der Träger und die Span-Ströme liegen | **[slice-099](../next/slice-099-leser-und-aufraeum-kommando.md)** — er baut das Aufräum-Kommando über genau diesem Bestand; wer sagt, wie man ihn räumt, sagt auch, was er enthält. Es ist **emittierter** Text, also die Tool-Ebene, nicht der Dogfood |
+| Der Kommentar der emittierten `.harness/.gitignore` nennt nur den Gate-Stempel, während dort der Träger und die Span-Ströme liegen | **[slice-099](../in-progress/slice-099-leser-und-aufraeum-kommando.md)** — er baut das Aufräum-Kommando über genau diesem Bestand; wer sagt, wie man ihn räumt, sagt auch, was er enthält. Es ist **emittierter** Text, also die Tool-Ebene, nicht der Dogfood |
 | Die Windows-Achse | **kein Träger, und das ist entschieden** — sie zu fahren hieße, fremde Plattformen zuzusagen; die Grenze ist im Skript-Kopf des Wrappers und hier benannt |
 | Annahme (a): Bootstrap-Host und Hook-Plattform sind derselbe Ort | **kein Träger, und das ist entschieden** — [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) führt sie mit Re-Evaluierungs-Trigger; fällt sie, ist der Ausgang die Plattform-Frage (Alternative H), nicht dieser Slice |
 | Ein frischer Klon erfasst still nichts | **kein Träger, und das ist entschieden** — §6 dieses Plans und §6 der Welle schließen den ziel-seitigen Wächter aus, weil er [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) bräche |
