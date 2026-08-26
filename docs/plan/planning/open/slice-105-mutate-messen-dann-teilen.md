@@ -202,6 +202,49 @@ unter Druck. Messpunkte unter verschiedenem Cache-Zustand sind darum nicht ohne 
 vergleichbar; für diese Reihe wurde derselbe N in zwei Fenstern gegengeprüft und der Unterschied
 lag bei 3–4 %, also weit unter dem N=1→N=4-Effekt.
 
+### Der Aufschlag ist Verdrängung, nicht Aufteilung — und damit ist die Begrenzung je Worker die nächste Frage
+
+Rechnet man aus Wanduhr je Fall und mittlerer Last die **Kern-Sekunden je Fall** zurück
+(Last ÷ Worker-Zahl als Verbrauch je Worker, mal Wanduhr je Fall), ergibt die Reihe:
+
+| N | s/Fall (`test-go`) | Load Mittel | Load je Worker | Kern-s je Fall | Aufschlag |
+|---|---|---|---|---|---|
+| 1 | 5,34 | 8,7 | 8,70 | **46,5** | 0 % |
+| 4 | 8,92 | 26,4 | 6,60 | **58,9** | **+27 %** |
+| 6 | 12,91 | 40,1 | 6,68 | **86,3** | **+86 %** |
+| 8 | 16,96 | 43,9 | 5,49 | **93,1** | **+100 %** |
+
+**Das unterscheidet zwei Erklärungen, die bis hierher gleich aussahen.** Wäre der
+Effizienzverlust bloße **Aufteilung** — dieselbe Arbeit, auf mehr Worker verteilt —, blieben
+die Kern-Sekunden je Fall konstant bei 46,5. Sie tun es nicht: Bei N=8 kostet derselbe Fall
+**doppelt so viel Rechenzeit** wie bei N=1. Der Aufschlag ist also **Verdrängung** —
+CPU-Caches, Kontextwechsel, Speicherbandbreite —, und Verdrängung ist im Gegensatz zu
+Aufteilung angreifbar.
+
+**Die obere Schranke des Gewinns**, falls eine Begrenzung den Aufschlag vollständig beseitigte:
+
+| N | heute | Schranke | weiterer Gewinn |
+|---|---|---|---|
+| 4 | 438,3 s | 345,9 s | 21 % |
+| 6 | 406,5 s | 218,9 s | 46 % |
+| 8 | 381,6 s | 190,5 s | 50 % |
+
+**Drei Vorbehalte, die diese Rechnung nicht trägt** — sie ist ein Modell aus gemessenen Zahlen,
+keine Messung:
+
+1. **Die Load ist kein CPU-Verbrauch.** Sie zählt auch Prozesse im ununterbrechbaren Warten auf
+   Ein-/Ausgabe, und Docker-Builds tun viel davon. „Kern-Sekunden" ist hier ein Schätzer nach
+   oben.
+2. **Eine Kern-Begrenzung beseitigt nur einen Teil.** Speicherbandbreite teilen sich die Worker
+   weiterhin; `GOMAXPROCS` ändert daran nichts.
+3. **Sie kostet auch etwas.** Zwischen zwei Fällen sichert und stellt ein Worker wieder her — in
+   dieser Zeit läge Kapazität brach, die er heute an die Nachbarn abgibt.
+
+**Das Experiment ist billig und gehört zu DoD (1):** ein Build-Argument, das `GOMAXPROCS` auf
+20 ÷ N setzt (heute ist nichts gesetzt — `grep -rn 'GOMAXPROCS' Dockerfile Makefile harness/mk/*.mk`
+ist leer, jeder Container sieht alle Kerne), dann dieselbe Reihe erneut. Vier Läufe, und die
+Kern-Sekunden-Spalte sagt danach, welcher Anteil wirklich Verdrängung war.
+
 ### Messprotokoll — jeder Lauf mit seiner Zeit
 
 Eine Momentaufnahme sagt nicht, ob die Laufzeit wächst. Diese Tabelle wird bei **jedem**
