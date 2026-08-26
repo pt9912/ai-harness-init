@@ -91,7 +91,7 @@ Kommando** rot; das steht dabei statt einer Zusage
       nicht nachgebessert, sondern durch eine Folge-Entscheidung abgelöst wird
       ([`AGENTS.md`](../../../../AGENTS.md) §3.4) — und
       [slice-096](../done/slice-096-traeger-liegt-im-ziel.md) bis
-      [slice-099](../open/slice-099-leser-und-aufraeum-kommando.md) warten auf sie.
+      [slice-099](../next/slice-099-leser-und-aufraeum-kommando.md) warten auf sie.
       **Rot:** `make docs-check` — der Ablageort des Mess-Skripts steht in
       [`AGENTS.md`](../../../../AGENTS.md) §4 und in
       [`harness/README.md`](../../../../harness/README.md) §Sensors, und beide Zeilen liegen im
@@ -208,7 +208,7 @@ einem Programm, das um Faktor **2,4** gewachsen ist
 [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) ist gemessen
 statt vermutet, Alternative F ist nicht herbeigeführt, und
 [slice-096](../done/slice-096-traeger-liegt-im-ziel.md) bis
-[slice-099](../open/slice-099-leser-und-aufraeum-kommando.md) sind nicht blockiert.** Der negative
+[slice-099](../next/slice-099-leser-und-aufraeum-kommando.md) sind nicht blockiert.** Der negative
 Zweig ist korrekt **nicht** gebaut: `git diff --stat f29524c^ f29524c -- docs/plan/adr/` → leer,
 kein Befund an den Architect fällig. **Ob die Folgepflicht 9 jener Entscheidung damit als
 eingelöst gilt, vermerkt nicht diese Notiz** — eine *Accepted*-Entscheidung wird nicht

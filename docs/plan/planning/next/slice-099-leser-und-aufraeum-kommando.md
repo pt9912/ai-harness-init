@@ -179,7 +179,7 @@ Varianten, `make mutate` grün mit den neuen Fällen, Closure-Notiz in §7 mit S
   eine Rotation nachrüsten will, stößt
   [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) §Aufbewahrung
   um — das ist ein Change Request, kein Slice.
-- **Berührung mit [slice-092](slice-092-traeger-inventur.md), falls jener zuerst liegt.** Seine
+- **Berührung mit [slice-092](../open/slice-092-traeger-inventur.md), falls jener zuerst liegt.** Seine
   Zellen für Modul 15 §Token-Attribution und §Cache-Counter nennen als Adresse das
   Gate-Fragment-Verzeichnis des Ziels; sobald dieser Slice dort ablegt, färbt sein Wächter rot —
   **gewollt**, denn genau dann sind die Zellen zu ziehen.

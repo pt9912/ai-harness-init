@@ -53,8 +53,8 @@ Setzung 2). Jedes Kriterium hat in dieser Welle genau einen zuständigen Slice; 
 | Rolle besetzt | [slice-097](done/slice-097-rollen-typen-gehen-mit.md) | gebaut (der Typ ist der Träger der Achse) |
 | Betrieb fail-open, Umfang fail-closed | [slice-094](done/slice-094-ein-programm-ein-einstiegspunkt.md) | **konstruktiv geerbt** — dasselbe Programm, dieselbe Klemme; die Zähne wandern auf den neuen Einstiegspunkt |
 | Redaktion — was zugesagt ist und was nicht | [slice-098](done/slice-098-feldliste-ist-ausdruck-des-traegers.md) | gebaut (die Feldliste **ist** die geschlossene Liste, die das Kriterium verlangt) |
-| Aufbewahrung — Kommando ohne Automatik | [slice-099](open/slice-099-leser-und-aufraeum-kommando.md) | gebaut |
-| Leser — Abdeckung zuerst, Leere gemeldet | [slice-099](open/slice-099-leser-und-aufraeum-kommando.md) | gebaut |
+| Aufbewahrung — Kommando ohne Automatik | [slice-099](next/slice-099-leser-und-aufraeum-kommando.md) | gebaut |
+| Leser — Abdeckung zuerst, Leere gemeldet | [slice-099](next/slice-099-leser-und-aufraeum-kommando.md) | gebaut |
 | Reproduzierbar ([`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) | [slice-096](done/slice-096-traeger-liegt-im-ziel.md) | **konstruktiv** — eine Kopie ist bei gleicher Tool-Version dieselbe Datei; keine Zusicherung, die jemand herstellen muss |
 | Minimal/netzlos ([`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)) | [slice-096](done/slice-096-traeger-liegt-im-ziel.md) | **konstruktiv** — kein Netz, kein Bauschritt, kein zweiter Kanal |
 | Kein Halluzinat ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) | [slice-096](done/slice-096-traeger-liegt-im-ziel.md) | gebaut, mit **rot gesehenem Gegenbeispiel** |
@@ -157,7 +157,7 @@ Der Zustand jedes Slice ist sein Lifecycle-Verzeichnis, hier nicht gespiegelt.
 | [slice-096](done/slice-096-traeger-liegt-im-ziel.md) | Der Träger liegt im Ziel — oder es liegt begründet nichts | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
 | [slice-097](done/slice-097-rollen-typen-gehen-mit.md) | Die Rollen-Typen gehen mit: generisch, Tool-als-Quelle, `skip-if-present` | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) |
 | [slice-098](done/slice-098-feldliste-ist-ausdruck-des-traegers.md) | Die Feldliste im Ziel ist der Ausdruck des Trägers und führt ihre Grenzen stehend | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
-| [slice-099](open/slice-099-leser-und-aufraeum-kommando.md) | Der Leser nennt seine Abdeckung zuerst, und der Bestand hat ein Aufräum-Kommando | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
+| [slice-099](next/slice-099-leser-und-aufraeum-kommando.md) | Der Leser nennt seine Abdeckung zuerst, und der Bestand hat ein Aufräum-Kommando | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
 
 **Zuerst läuft [slice-094](done/slice-094-ein-programm-ein-einstiegspunkt.md), und der Grund steht
 in der Entscheidung selbst.** Ihre Folgepflicht 1 bindet die Emission an den Dogfood: *„ohne diesen
@@ -183,7 +183,7 @@ Ziel mit Träger und ohne Typen führt eine Achse, die dauerhaft leer bleibt. De
 jederzeit laufen — auch parallel zu 094/095.
 
 **[slice-098](done/slice-098-feldliste-ist-ausdruck-des-traegers.md) und
-[slice-099](open/slice-099-leser-und-aufraeum-kommando.md) warten auf 096, und der Trigger ist
+[slice-099](next/slice-099-leser-und-aufraeum-kommando.md) warten auf 096, und der Trigger ist
 benannt.** 098 wird **aus** dem Träger erzeugt und teilt seinen Emissions-Zweig; 099 legt ein
 Fragment ab, das auf den Träger zeigt. Beide vor 096 gebaut ergäben ein Dokument ohne Quelle und
 ein Fragment ohne Ziel — die
@@ -228,7 +228,7 @@ denen dieselbe Stelle warnt.
   den Blick auf die Inventur. Keine Reihenfolge bricht etwas; beide kosten eine bewusste Zeile.
 - **Eine Schuld an [welle-09](welle-09-modul-15-konformitaet.md), hier benannt statt später
   entdeckt.** Diese Welle legt ein **Init-invariantes** Gate-Fragment und neue emittierte
-  `make`-Ziele ab ([slice-099](open/slice-099-leser-und-aufraeum-kommando.md)). Nach
+  `make`-Ziele ab ([slice-099](next/slice-099-leser-und-aufraeum-kommando.md)). Nach
   [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 4
   gehören sie in den `targets:`-Satz aus
   [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) Festlegung 4 — **nach dem Kriterium, nicht
