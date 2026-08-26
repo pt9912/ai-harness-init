@@ -14,7 +14,7 @@ Reaktiv: ein gemessener Widerspruch zwischen zwei *Accepted*-Entscheidungen, der
 Rang 1 und dem laufenden Träger (§1). Kein Fähigkeits-Sprung — das Werkzeug lernt nichts, was es
 nicht schon kann. **Auch nicht in [welle-12](../welle-12-erfassungsschicht-emittieren.md):** deren
 Abdeckungs-Tabelle führt die Zeile *„Redaktion — was zugesagt ist und was nicht"* als von
-[slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md) geliefert, und
+[slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md) geliefert, und
 [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) nennt den
 Fingerabdruck selbst als eine der Ableitungen — das Kriterium ist in **jedem** Ausgang erfüllt.
 Dieser Slice füllt keine Zelle und leert keine. Nach
@@ -82,7 +82,7 @@ steht das Feld im Ausdruck des Trägers über sein eigenes Schema:
 `b=<scratch>/bin/ai-harness-init; p=$(mktemp -d); (cd "$p" && "$b" --name probe >/dev/null); grep -c 'sha256_16' "$p/harness/erfassung-feldliste.md"`
 → **1** (der Träger stammt aus `make artifact DEST=<scratch>/bin`, Docker-only). Damit ist der
 Widerspruch nicht papieren: **er steht seit
-[slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md) geschrieben im Repo
+[slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md) geschrieben im Repo
 eines Adopters.**
 
 ### Warum das nicht durch Lesen aufzulösen ist
@@ -158,7 +158,7 @@ Feldzeile fällt mit der Erfassung.
 | [`docs/plan/adr`](../../adr) | **neu**, soweit Ausgang (a) oder (b) | die Korrektur einer *Accepted*-Entscheidung ist eine neue Entscheidung ([`AGENTS.md`](../../../../AGENTS.md) §3.4); ihr Text ist Architect-Arbeit ([`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1) |
 | [`spec/lastenheft.md`](../../../../spec/lastenheft.md) | **unverändert** | Rang 1 nennt den Fingerabdruck; keine interne Quelle ändert `LH-*` ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)). Verlangt der Lauf Ausgang (b), greift die Rückführung aus §4 |
 | [`internal/span/emit.go`](../../../../internal/span/emit.go) | **unverändert**, außer bei Ausgang (b) | der Träger tut heute, was Rang 1 sagt; gemessen wird die Aussage über ihn, nicht sein Verhalten |
-| [`internal/span/fieldlist.go`](../../../../internal/span/fieldlist.go) | **unverändert**, außer bei Ausgang (b) | fällt das Feld, fällt sein Eintrag — und zwar erzwungen: [slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md) hat die zwei Richtungen so gebaut, dass ein Eintrag ohne Feld die Erzeugung abbricht. Hier ist der konstruktive Ausschluss der Drift zum ersten Mal ein Werkzeug und keine Zusage |
+| [`internal/span/fieldlist.go`](../../../../internal/span/fieldlist.go) | **unverändert**, außer bei Ausgang (b) | fällt das Feld, fällt sein Eintrag — und zwar erzwungen: [slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md) hat die zwei Richtungen so gebaut, dass ein Eintrag ohne Feld die Erzeugung abbricht. Hier ist der konstruktive Ausschluss der Drift zum ersten Mal ein Werkzeug und keine Zusage |
 | `docs/plan/planning/done/` | **unverändert** | Zeitdokumente ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) §Geltungsbereich); ein Ausgang, der als Nachtrag in eine geschlossene Datei geschrieben wird, steht wieder an dem Ort, den kein Lauf aufschlägt |
 | [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** | wellenlose Arbeit wird dort nicht geführt ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) Setzung 2/3) |
 
@@ -231,7 +231,7 @@ Grund ist ein vollwertiger Ausgang, und ohne sie wäre das Ergebnis vorweggenomm
 - **Der Widerspruch ist älter als der Slice, der ihn sichtbar macht.** Der Träger schreibt den
   Fingerabdruck, seit es ihn gibt; neu ist allein, dass die Aussage darüber **im Repo eines
   Adopters** steht. Wer daraus einen Fehler von
-  [slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md) macht, sucht am
+  [slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md) macht, sucht am
   falschen Ende — jener Slice hat den Widerspruch geleistet, nicht verursacht.
 - **`make gates` deckt den Gegenstand nicht.** Der Doku-Gate prüft Kennungen, Anker und Pfade;
   zwei Entscheidungen, die einander widersprechen, sind grün. Das ist keine Lücke dieses Schnitts,

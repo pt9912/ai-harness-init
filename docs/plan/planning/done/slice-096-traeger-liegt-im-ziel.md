@@ -33,7 +33,7 @@ Festlegung 5 koppelt Träger, Wrapper und Hook-Eintrag und schließt den ziel-se
 Folgepflicht 4 begleicht dieser Slice ganz, von Folgepflicht 6 die zwei Anwesenheits-Wächter über
 Träger und Wrapper — die über den Rollen-Typen und der Feldliste bringen
 [slice-097](../done/slice-097-rollen-typen-gehen-mit.md) und
-[slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md) mit),
+[slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md) mit),
 [`ADR-0007`](../../adr/0007-bootstrap-phasen.md) (**Accepted** — Festlegung 1 gibt die Phase,
 Festlegung 3 die Idempotenz-Klassifikation, Festlegung 5 den Checkpoint, durch den ein Re-Lauf den
 Träger heilt),
@@ -135,7 +135,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       einer bestehenden Datei**; seine Anwesenheit ist eine Inhalts-, keine Existenz-Aussage, und
       ein Existenz-Wächter darüber wäre dauerhaft grün. **Nicht in dieser Menge:** die Rollen-Typen
       (unbedingt, [slice-097](../done/slice-097-rollen-typen-gehen-mit.md)) und die Feldliste (teilt den
-      Zweig des Trägers, [slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md)) — sie
+      Zweig des Trägers, [slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md)) — sie
       bringen ihre Wächter selbst mit.
       **Rot:** `make test` plus je ein `test/mutations/`-Fall mit `# verify: test-go`, der das
       Artefakt probeweise weglässt.
@@ -359,7 +359,7 @@ Mutations-Fälle `155`–`162`. `ab0e855` und `603a6f8` sind die reinen Lifecycl
   Feldliste**; geliefert sind die ersten beiden plus der Hook-Eintrag. Die anderen zwei schließt
   DoD (3) ausdrücklich aus und verweist auf
   [slice-097](../done/slice-097-rollen-typen-gehen-mit.md) und
-  [slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md); §Bezug trägt die Teilung
+  [slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md); §Bezug trägt die Teilung
   jetzt. **Ob die Folgepflicht damit als eingelöst gilt, vermerkt nicht diese Notiz** — eine
   *Accepted*-Entscheidung wird gelesen, nicht nachgetragen ([`AGENTS.md`](../../../../AGENTS.md)
   §3.4).
@@ -455,7 +455,7 @@ oder mit Grund gar nicht entsteht, entscheidet der Lauf an dem Skript. Eine Sch�
 | `TestEnforce_WrapperSuchtDenAblageort` leitet seine Erwartung aus `emit.CarrierPath()` ab und bleibt darum unter `159` grün; der Kommentar nennt trotzdem `159` | **[slice-103](../open/slice-103-traeger-waechter-decken-was-sie-sagen.md)** — dieselbe Frage, dieselbe Datei: ein Wächter, dessen Erwartung aus der mutierten Funktion stammt, misst nicht, was sein Kommentar sagt |
 | Der Zeiger vom Kommentar auf den Fall ist mechanisch prüfbar und ungeprüft; `_test[.]go` liegt permanent außerhalb von `make comment-claims` | **[slice-070](../open/slice-070-comment-claims-pruefbereich.md)** — der Steering-Loop-Eintrag oben |
 | Ein `# expect:`-Kopf nennt den Wächter, an dem der Treiber misst, nicht die Menge der Wächter, die der Eingriff fällt — an **2** von **3** Fällen gemessen | **[slice-069](../open/slice-069-zahn-bindet-zusicherung.md)** — sein DoD (1) hebt den Kopf von **Wächter**- auf **Zusicherungs**-Granularität; die Messung oben ist eine Eingabe für genau diese Entscheidung, und sie sagt: die Achse *„welcher Wächter"* ist neben der Achse *„welche Assertion"* zu entscheiden |
-| *„`make gates` des Ziels ist grün"* ist im Fehlerzweig argumentiert, nicht gelaufen | **[slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md)** — seine §3-Zeile zu [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) nennt *„beide Varianten, beide Zweige"*; dahinter steht der Closure-Trigger von [welle-12](../welle-12-erfassungsschicht-emittieren.md), der das frische Ziel **in beiden Zweigen** grün sehen will |
+| *„`make gates` des Ziels ist grün"* ist im Fehlerzweig argumentiert, nicht gelaufen | **[slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md)** — seine §3-Zeile zu [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) nennt *„beide Varianten, beide Zweige"*; dahinter steht der Closure-Trigger von [welle-12](../welle-12-erfassungsschicht-emittieren.md), der das frische Ziel **in beiden Zweigen** grün sehen will |
 | Der Kommentar der emittierten `.harness/.gitignore` nennt nur den Gate-Stempel, während dort der Träger und die Span-Ströme liegen | **[slice-099](../open/slice-099-leser-und-aufraeum-kommando.md)** — er baut das Aufräum-Kommando über genau diesem Bestand; wer sagt, wie man ihn räumt, sagt auch, was er enthält. Es ist **emittierter** Text, also die Tool-Ebene, nicht der Dogfood |
 | Die Windows-Achse | **kein Träger, und das ist entschieden** — sie zu fahren hieße, fremde Plattformen zuzusagen; die Grenze ist im Skript-Kopf des Wrappers und hier benannt |
 | Annahme (a): Bootstrap-Host und Hook-Plattform sind derselbe Ort | **kein Träger, und das ist entschieden** — [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) führt sie mit Re-Evaluierungs-Trigger; fällt sie, ist der Ausgang die Plattform-Frage (Alternative H), nicht dieser Slice |
@@ -465,7 +465,7 @@ oder mit Grund gar nicht entsteht, entscheidet der Lauf an dem Skript. Eine Sch�
 **Folge-Slices: ein neuer `open/`-Eintrag —
 [slice-103](../open/slice-103-traeger-waechter-decken-was-sie-sagen.md).** Alles Übrige hat einen
 bestehenden Träger oder eine begründete Ablehnung. **Warum ein eigener Schnitt und kein Anhängsel
-an [slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md):** jener trägt bereits
+an [slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md):** jener trägt bereits
 drei DoD-Punkte über einem anderen Gegenstand, und ein Posten ohne eigenen DoD-Punkt ist genau die
 Form, die dieses Repo als wirkungslos gemessen hat. **Die Welle bekommt ihn nicht:** er liefert
 kein Akzeptanzkriterium von

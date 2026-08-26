@@ -15,7 +15,7 @@ eine gemessene Doppelung und eine gemessen unrichtige Zutat (§1). Kein Fähigke
 Adopter bekommt dasselbe Dokument an derselben Stelle. **Auch nicht in
 [welle-12](../welle-12-erfassungsschicht-emittieren.md):** deren Zeilen *„Redaktion"* und
 *„Benannte Grenze"* sind mit
-[slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md) geliefert und bleiben
+[slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md) geliefert und bleiben
 es — dieser Slice ändert den **Wortlaut** zweier Aussagen, nicht die Frage, ob das Kriterium
 erfüllt ist. Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
@@ -64,7 +64,7 @@ steht einmal statt zweimal, und kein Satz behauptet über den Bestand mehr, als 
 
 Die **Mengen** sind konstruktiv gehalten: `SchemaFields()` liest den `Span`-Typ, und ein Feld ohne
 Eintrag bricht die Erzeugung ab — dafür gibt es zwei Wächter und zwei Fälle
-([slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md) DoD (1)). Der
+([slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md) DoD (1)). Der
 **Wortlaut** ist an nichts gebunden. Zwei Bestände, zwei Kommandos:
 
 - `grep -c '{Field: "' internal/span/fieldlist.go` → **32** Einträge im Träger.

@@ -123,7 +123,7 @@ Wächter-Datei (`grep -cE 't\.(Fatalf|Errorf|Fatal|Error)\(' internal/emit/agent
 mitwandernd. Keine davon liest ein grüner Lauf.
 
 **Und ein siebter aus
-[slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md):** *ein Kommentar, der
+[slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md):** *ein Kommentar, der
 die **Kopplung** einer bewachten Menge beschreibt, ist eine stehende Anweisung an den, der diese
 Menge erweitert — wer ihr ein Element hinzufügt, liest den Kommentar an der Stelle, die sie
 bewacht, und kein Gate stellt ihn zu.* **Woran er als weiterer Posten erkannt ist:** er **hebt** wie
@@ -161,7 +161,7 @@ die Klasse also nicht einmal auf zwei Treffern — derselbe Grund, aus dem Weg (
 Schnitt verworfen ist.
 
 **Und ein achter, ebenfalls aus
-[slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md):** *ein Beleg deckt den
+[slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md):** *ein Beleg deckt den
 Baum, über dem er erhoben wurde — die Closure vergleicht ihn mit dem, der geschlossen wird, statt
 die Gleichheit zu unterstellen.* **Woran er als weiterer Posten erkannt ist:** er **hebt** wie die
 sieben anderen eine Beleg-Anforderung an, und er hat dieselbe Herkunft — eine Closure hat ihn
@@ -246,7 +246,7 @@ dabei, statt sich hinter einem anderen zu verstecken.
       [slice-095](../done/slice-095-hook-aufschlag-gemessen.md),
       [slice-097](../done/slice-097-rollen-typen-gehen-mit.md)) gilt dasselbe Kommando wie
       für den Reichweiten-Posten: der §3.6-Block bewegt sich oder nicht. Für den **siebten**
-      ([slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md)) ist es ein
+      ([slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md)) ist es ein
       anderer Block: `git log -L '/^### 3.7/,/^### 3.8/:AGENTS.md' --format='%h %ad' --date=short | grep -E '^[0-9a-f]{7} ' | head -1`
       — er hängt an §3.7, nicht an §3.6.
       Für den **achten** (ebenda) bewegt sich **keiner** der bisherigen Werte: er ist der erste

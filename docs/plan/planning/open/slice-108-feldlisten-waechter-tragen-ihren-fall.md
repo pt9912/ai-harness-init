@@ -14,7 +14,7 @@ Reaktiv: acht gebaute Wächter ohne Fall (§1). **Auch nicht in
 [welle-12](../welle-12-erfassungsschicht-emittieren.md):** er liefert **kein** Akzeptanzkriterium
 von [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) — die
 Zeilen *„Redaktion"* und *„Benannte Grenze"* sind mit
-[slice-098](../in-progress/slice-098-feldliste-ist-ausdruck-des-traegers.md) geliefert, und die
+[slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md) geliefert, und die
 **Haltbarkeit** eines Dogfood-Zahns ist kein Kriterium jener Anforderung. Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das Verzeichnis.
