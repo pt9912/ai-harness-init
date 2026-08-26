@@ -216,7 +216,13 @@ func Enforce(targetDir string, notice io.Writer) error {
 			return err
 		}
 	}
-	return nil
+	// DIE FELDLISTE TEILT DEN ZWEIG DES TRAEGERS (ADR-0022 Festlegung 5(a) und 7): sie ist
+	// sein Ausdruck ueber sein eigenes Schema und entsteht deshalb mit ihm. Ein Ziel ohne
+	// abgelegten Traeger erfasst nichts, und eine Liste ueber einer Erfassung, die dort
+	// nicht liegt, waere eine Aussage ueber ein fehlendes Programm — dieselbe Klasse wie
+	// der Hook-Eintrag, den der Fehlerzweig ausdruecklich ausspart. Beide Zweige messen
+	// TestFeldliste_LiegtMitDemTraeger und TestFeldliste_KeineFeldlisteOhneTraeger.
+	return FieldList(targetDir)
 }
 
 // enforceContent liefert den zu schreibenden Inhalt einer eingebetteten Quelle. Alle

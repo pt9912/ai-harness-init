@@ -66,6 +66,77 @@ rollen_typen_im_ziel() {
 	echo "full-smoke: Rollen-Typen im Ziel ($label): 6 kanonische Typen unter .claude/agents/, je mit ihrem Namen im Kopf."
 }
 
+# slice-098 (LH-FA-10 / ADR-0022 Festlegung 7 und 5(a)): DIE FELDLISTE LIEGT IM GEPRUEFTEN
+# DOKU-BEREICH DES ZIELS UND FUEHRT IHRE GRENZEN STEHEND.
+#
+# Zwei Gegenstaende in einer Datei, und der zweite ist kein Anhang: die Tabelle sagt, WAS
+# erfasst wird; die drei Saetze sagen, wie wenig darueber zugesagt ist. Sie gelten auch
+# dann, wenn niemand eine Auswertung ruft — deshalb stehen sie im Dokument und nicht nur
+# in deren Ausgabe.
+#
+# VOR dem Gate-Lauf aufgerufen, aus demselben Grund wie bei den Rollen-Typen: ueber einer
+# FEHLENDEN Datei bliebe das `make gates` des Ziels gruen und pruefte nichts. Erst die
+# Anwesenheit macht sein Gruen zur Aussage ueber dieses Dokument.
+FELDLISTE_REL="harness/erfassung-feldliste.md"
+feldliste_im_ziel() {
+	local repo="$1" label="$2"
+	local doc="$repo/$FELDLISTE_REL"
+	if [ ! -f "$doc" ]; then
+		echo "full-smoke: FEHLER — $label: die Feldliste liegt nicht im GEPRUEFTEN Doku-Bereich des Ziels (erwartet $FELDLISTE_REL). Dort liest das Doku-Gate des Ziels sie; unter .harness/** nimmt die emittierte .d-check.yml sie aus (slice-098)." >&2
+		exit 1
+	fi
+	# Der Backtick steht in einer VARIABLEN: in einfachen Anfuehrungszeichen liest der
+	# Shell-Lint ihn als beabsichtigte Kommando-Substitution, in doppelten waere er eine.
+	# Die Umformulierung ist der Weg, den AGENTS.md §3.2 laesst — eine Inline-Suppression
+	# nicht.
+	local bt zeilen
+	bt='`'
+	zeilen="$(grep -cE "^[|] ${bt}[a-z0-9_]+${bt} [|] (Pflicht|Optional) [|]" "$doc" || true)"
+	if [ "$zeilen" -lt 1 ]; then
+		echo "full-smoke: FEHLER — $label: die Feldliste traegt keine einzige Feld-Zeile — eine Ueberschrift ohne Liste sagt nicht, was erfasst wird (slice-098)." >&2
+		exit 1
+	fi
+	# Leerraum-normalisiert vergleichen: WO das Dokument umbricht, ist gleichgueltig; WAS
+	# es sagt, nicht. Ohne die Normalisierung braeche jeder Zeilenumbruch mitten in einem
+	# Satz den Vergleich, und der Waechter haenge an der Textbreite statt an der Aussage.
+	local flach fehlend="" satz
+	flach="$(tr -s '[:space:]' ' ' <"$doc")"
+	for satz in "Über die Aufrufform des Agenten-Werkzeugs führt diese Ebene keinen Wächter" \
+	            "Die Verbrauchs-Zähler kommen aus der Mechanik des Agenten-Werkzeugs nicht" \
+	            "Über den Bestand ist nichts zugesagt"; do
+		grep -qF -- "$satz" <<<"$flach" || fehlend="$fehlend [$satz]"
+	done
+	if [ -n "$fehlend" ]; then
+		echo "full-smoke: FEHLER — $label: die Feldliste fuehrt eine Grenze nicht, die kein Sensor haelt:$fehlend (slice-098)." >&2
+		exit 1
+	fi
+	echo "full-smoke: Feldliste im Ziel ($label): $FELDLISTE_REL mit $zeilen Feld-Zeilen und den drei stehenden Grenz-Saetzen."
+}
+
+# slice-098, die inhaltliche Haelfte: WAS DER TRAEGER SCHREIBT, STEHT AUCH IN DER LISTE.
+# Gemessen wird gegen eine ECHTE Span-Zeile aus dem Ziel, nicht gegen eine zweite Liste im
+# Skript — jedes Feld, das die Zeile fuehrt, braucht seine Tabellen-Zeile. Ein Feld, das
+# erfasst wird und dort fehlt, ist genau die Drift, die ADR-0022 Festlegung 7 konstruktiv
+# ausschliesst.
+feldliste_deckt_die_zeile() {
+	local repo="$1" label="$2" line="$3"
+	local doc="$repo/$FELDLISTE_REL"
+	local feld fehlend="" gemessen=0
+	for feld in $(grep -oE '"[a-z0-9_]+":' <<<"$line" | tr -d '":' | sort -u); do
+		gemessen=$((gemessen + 1))
+		grep -qF -- "| \`$feld\` |" "$doc" || fehlend="$fehlend [$feld]"
+	done
+	if [ "$gemessen" -eq 0 ]; then
+		echo "full-smoke: FEHLER — $label: aus der Span-Zeile des Ziels liess sich kein Feldname lesen — der Abgleich mit der Feldliste misst nichts (slice-098)." >&2
+		exit 1
+	fi
+	if [ -n "$fehlend" ]; then
+		echo "full-smoke: FEHLER — $label: der Traeger schreibt Felder, die seine Feldliste nicht fuehrt:$fehlend — das Ziel erfasst mehr, als es lesbar sagt (slice-098)." >&2
+		exit 1
+	fi
+	echo "full-smoke: Feldliste deckt die Zeile ($label): alle $gemessen Feldnamen der geschriebenen Span-Zeile haben ihre Zeile in $FELDLISTE_REL."
+}
+
 echo "full-smoke: 1/3 natives Release-Binary auf den Host extrahieren (make artifact) ..."
 make artifact DEST="$tmpbin" GO_VERSION="$GO_VERSION"
 
@@ -74,6 +145,8 @@ echo "full-smoke: 2/3 Bootstrap (--lang go --name full-smoke) in ein leeres tmp-
 
 # Vor dem Gate-Lauf, damit dessen Gruen eine Aussage ueber die Typ-Dateien ist (slice-097).
 rollen_typen_im_ziel "$tmprepo" "--lang go"
+# Aus demselben Grund vor dem Gate-Lauf: das Dokument liegt im geprueften Bereich (slice-098).
+feldliste_im_ziel "$tmprepo" "--lang go"
 
 # slice-031: ein echter Adopter bootstrappt IN sein git-Repo. Der Gate-Nachweis
 # (record-gates -> working-tree-hash, jetzt letztes gates-Prerequisite) braucht
@@ -134,6 +207,31 @@ if [ "$recomputed" != "$(cat "$stamp_file")" ]; then
 	echo "  selbst (fehlt/greift .harness/.gitignore nicht? zaehlt der Stempel in den Hash?) (slice-031)." >&2
 	exit 1
 fi
+
+# ZAEHNE zur Ortswahl aus slice-098 (AGENTS.md §3.6): dass die Feldliste DA ist, sagt noch
+# nicht, dass das Doku-Gate des Ziels sie LIEST — genau das unterscheidet den geprueften
+# Bereich von .harness/**, das die emittierte .d-check.yml ausnimmt. Ein toter relativer
+# Verweis im Dokument MUSS das docs-check des Ziels roetten, und der Befund muss diese
+# Datei nennen. Danach zuruecknehmen: die Datei ist konvergent, aber der Rest des Smokes
+# laeuft auf dem heilen Stand (dieselbe Disziplin wie beim Arch-Gate-Zahn unten).
+feld_doc="$tmprepo/$FELDLISTE_REL"
+cp "$feld_doc" "$feld_doc.orig"
+printf '\n[toter Verweis](./gibt-es-nicht.md)\n' >>"$feld_doc"
+feldzahn_rc=0
+feldzahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || feldzahn_rc=$?
+mv "$feld_doc.orig" "$feld_doc"
+if [ "$feldzahn_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — ein toter Verweis in $FELDLISTE_REL laesst das docs-check des Ziels GRUEN: das Dokument liegt ausserhalb des geprueften Bereichs (slice-098/AGENTS.md §3.6)." >&2
+	printf '%s\n' "$feldzahn_out" >&2
+	exit 1
+fi
+if ! grep -qE "$FELDLISTE_REL:[0-9]+.*target-missing" <<<"$feldzahn_out"; then
+	echo "full-smoke: FEHLER — docs-check des Ziels rot, aber ohne Befund AUF der Feldliste (rot aus falschem Grund? slice-098). Ausgabe:" >&2
+	printf '%s\n' "$feldzahn_out" >&2
+	exit 1
+fi
+echo "full-smoke: Feldlisten-Ortswahl belegt (toter Verweis im Dokument faerbt das docs-check des Ziels rot, danach zurueckgenommen):"
+grep -E "$FELDLISTE_REL:[0-9]+" <<<"$feldzahn_out" | sed -n '1,2s/^/full-smoke:   /p'
 
 # slice-096 (LH-FA-10 / ADR-0022 Festlegung 1 und 5): DER TRAEGER LIEGT IM ZIEL.
 # Der Nachbau dessen, was `make span-check` fuer den DOGFOOD leistet — am gebootstrappten
@@ -216,6 +314,10 @@ traeger_im_ziel() {
 		echo "full-smoke: FEHLER — $kennung: der Span liegt im GETRACKTEN Baum des Ziels ($file) — jeder Tool-Call verschoebe dort den working-tree-hash (MR-003)." >&2
 		exit 1
 	fi
+	# slice-098: hier — und nur hier — liegt eine ECHTE Span-Zeile des Ziels vor. Der
+	# Abgleich mit der Feldliste gehoert deshalb an diese Stelle, statt eine zweite Zeile
+	# eigens dafuer zu erzeugen.
+	feldliste_deckt_die_zeile "$repo" "$kennung" "$line"
 
 	# (e) Ohne Traeger schweigt der Wrapper. Danach zuruecknehmen — der Rest des Smokes
 	# laeuft auf dem heilen Stand (dieselbe Disziplin wie bei den Zaehne-Beweisen unten).
@@ -288,6 +390,9 @@ echo "full-smoke: doc-only Bootstrap (OHNE --lang) in ein zweites tmp-Repo ..."
 # slice-097, zweite Variante: die Rollen-Typen sind sprach-agnostisch und UNBEDINGT —
 # sie haengen an keinem Laufzeit-Ausgang. Auch hier vor dem Gate-Lauf.
 rollen_typen_im_ziel "$tmprepo_doc" "sprachlos"
+# slice-098, zweite Variante: die Feldliste beschreibt eine sprach-agnostische Erfassung
+# und teilt darum keinen --lang-Zweig. Ein Zahn in nur einer Variante belegte das nicht.
+feldliste_im_ziel "$tmprepo_doc" "sprachlos"
 git init -q "$tmprepo_doc"
 echo "full-smoke: doc-only im Ziel: make -j gates (docs-check + baseline-verify + record-gates, KEIN Code-Gate) ..."
 doc_rc=0
@@ -882,7 +987,7 @@ grep -F -- 'lateral-adapter' <<<"$lateral_out" | sed -n '1,2s/^/full-smoke:   /p
 # slice-038 (ADR-0007 Idempotenz-Klassifikation): ein ZWEITER Init-Lauf ist IDEMPOTENT
 # (Exit 0 statt Kollisions-Refuse). Konvergente Dateien (tool-Infra) werden kanonisch neu
 # geschrieben (heilen Drift); skip-if-present-Dateien (Adopter-Boden) bleiben unberuehrt.
-echo "full-smoke: Idempotenz — README + Rollen-Typ driften (skip-if-present) + Makefile driften (konvergent), dann 2. Init-Lauf ..."
+echo "full-smoke: Idempotenz — README + Rollen-Typ driften (skip-if-present) + Makefile + Feldliste driften (konvergent), dann 2. Init-Lauf ..."
 printf '\n# adopter-gewachsen\n' >> "$tmprepo/README.md"   # skip-if-present: MUSS bleiben
 readme_before="$(cat "$tmprepo/README.md")"
 # slice-097 (ADR-0022 Festlegung 4, ADR-0007 Festlegung 3): ein Rollen-Typ ist ein Text,
@@ -893,6 +998,10 @@ readme_before="$(cat "$tmprepo/README.md")"
 printf '\nDeine Rolle liest zusaetzlich das Betriebshandbuch.\n' >> "$tmprepo/.claude/agents/planner.md"
 agent_before="$(cat "$tmprepo/.claude/agents/planner.md")"
 printf '\n# drift\n' >> "$tmprepo/Makefile"                # konvergent: MUSS geheilt werden
+# Die Feldliste ist konvergent wie das Makefile, und das Dokument sagt es selbst („Ein
+# erneuter Lauf des Werkzeugs schreibt diese Datei kanonisch neu."). Hier steht der
+# Beleg dafuer, dass der Satz im emittierten Text zutrifft.
+printf '\n<!-- von Hand geaendert -->\n' >> "$tmprepo/$FELDLISTE_REL"  # konvergent: MUSS geheilt werden
 idem_rc=0
 ( cd "$tmprepo" && "$tmpbin/ai-harness-init" --lang go --name full-smoke ) || idem_rc=$?
 if [ "$idem_rc" -ne 0 ]; then
@@ -909,6 +1018,10 @@ if [ "$(cat "$tmprepo/.claude/agents/planner.md")" != "$agent_before" ]; then
 fi
 if grep -q '# drift' "$tmprepo/Makefile"; then
 	echo "full-smoke: FEHLER — 2. Lauf heilte die Makefile-Drift NICHT (konvergent verletzt, slice-038)." >&2
+	exit 1
+fi
+if grep -qF -- '<!-- von Hand geaendert -->' "$tmprepo/$FELDLISTE_REL"; then
+	echo "full-smoke: FEHLER — 2. Lauf heilte die Drift in $FELDLISTE_REL NICHT: das Dokument sagt zu, dass ein erneuter Lauf es kanonisch neu schreibt, und dieser Lauf tat es nicht (konvergent verletzt)." >&2
 	exit 1
 fi
 
@@ -943,3 +1056,4 @@ echo "full-smoke: OK — ARCH-GATE ROBUST (slice-046, Review F-1/F-2): ZWEI hexS
 echo "full-smoke: OK — DRITTES LAYOUT (slice-058/ADR-0010): add-lang go apps/hexagonal --arch hexagonal dropt core/port/adapter{driven,driving} in den Pfaden der Familien-Konvention (nicht das --print-config-Geruest), make -j gates uebersetzt+lintet sie real und faehrt ihr a-check mit; cpp+hexagonal ist fail-fast Exit 2. ZAEHNE mit Regel-NAMEN: core->driven = app-impurity, driving->driven = lateral-adapter."
 echo "full-smoke: OK — IDEMPOTENT (slice-038): 2. Init-Lauf Exit 0, README (skip-if-present) unberuehrt, Makefile-Drift (konvergent) geheilt; sprachloser Re-Lauf prunt kein add-lang-Fragment (kein Prune)."
 echo "full-smoke: OK — ROLLEN-TYPEN (slice-097/LH-FA-10): 6 kanonische Typen unter .claude/agents/ in BEIDEN Bootstrap-Varianten, je mit ihrem Namen im Kopf; das make gates des Ziels laeuft ueber ihnen gruen; der 2. Init-Lauf laesst einen adopter-geaenderten Typ unberuehrt (skip-if-present)."
+echo "full-smoke: OK — FELDLISTE (slice-098/LH-FA-10): $FELDLISTE_REL liegt in BEIDEN Bootstrap-Varianten im geprueften Doku-Bereich, fuehrt die drei stehenden Grenz-Saetze und deckt jeden Feldnamen der real geschriebenen Span-Zeile; ein toter Verweis darin faerbt das docs-check des Ziels rot (Ortswahl belegt); ein 2. Init-Lauf heilt eine von Hand geaenderte Fassung (konvergent, die einzige Zusage des Dokuments ueber sich selbst)."

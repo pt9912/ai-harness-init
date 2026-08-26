@@ -99,9 +99,13 @@ func claimSet(t *testing.T) fs.FS {
 //
 // Weder die Ziele noch die Dokumente sind aufgezaehlt: die Ziel-Menge liest
 // emit.InitInvariantTargets aus den Fragmenten, der Dokument-Satz entsteht durch
-// einen echten Emit ins Zielverzeichnis. GRENZE, benannt: gedeckt sind die drei
-// Emitter, die heute Dokumente schreiben (Templates, RootReadme, Commands) — ein
-// VIERTER Emitter fiele heraus, bis er hier steht.
+// einen echten Emit ins Zielverzeichnis. GRENZE, benannt: gedeckt sind die fuenf
+// Emitter, die heute Dokumente schreiben (Templates, RootReadme, Commands,
+// Agents, FieldList) — ein SECHSTER fiele heraus, bis er hier steht.
+//
+// Agents und FieldList stehen hier, weil ihre Dokumente denselben Weg ins Ziel gehen
+// wie die uebrigen: sie landen im geprueften Bereich, und ein Anspruch auf ein Ziel,
+// das die Init-Phase nicht schreibt, waere dort dasselbe halluzinierte Gate (LH-QA-01).
 func TestEmittierteDokumente_NurInitInvarianteZiele(t *testing.T) {
 	src := claimSet(t)
 	dir := t.TempDir()
@@ -113,6 +117,12 @@ func TestEmittierteDokumente_NurInitInvarianteZiele(t *testing.T) {
 	}
 	if err := emit.Commands(dir); err != nil {
 		t.Fatalf("Commands: %v", err)
+	}
+	if err := emit.Agents(dir); err != nil {
+		t.Fatalf("Agents: %v", err)
+	}
+	if err := emit.FieldList(dir); err != nil {
+		t.Fatalf("FieldList: %v", err)
 	}
 
 	targets, err := emit.InitInvariantTargets()
