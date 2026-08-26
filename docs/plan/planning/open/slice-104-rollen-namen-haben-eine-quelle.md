@@ -1,4 +1,4 @@
-# Slice slice-104: Die Rollen-Namen haben eine Quelle — drei Fundorte leiten ab, die Test-Tabelle bleibt unabhängig
+# Slice slice-104: Die Rollen-Namen haben eine Quelle — die Fundorte des Produktionsbestands leiten ab, die Test-Tabelle bleibt unabhängig
 
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
 Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
@@ -18,12 +18,20 @@ schon kann, und das Ziel bekommt keine Datei, die es nicht schon bekommt. Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das Verzeichnis.
 
-**Ebene: die Quelle des Werkzeugs, kein neues emittiertes Artefakt.** Zwei der drei Fundorte liegen
-im Go-Bestand, der als Produkt-Binär ins Ziel kopiert wird; der dritte,
-[`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh), geht **nicht** mit
+**Ebene: die Quelle des Werkzeugs — und ein emittierter Text, der die Namen mitschreibt.** Drei
+der vier Fundorte liegen im Go-Bestand, der als Produkt-Binär ins Ziel kopiert wird; der eine
+außerhalb, [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh), geht **nicht**
+mit
 (`ls internal/emit/templates/full-smoke* internal/emit/templates/*/full-smoke* 2>/dev/null | wc -l`
-→ **0**). Was sich für einen Adopter ändert: **nichts** — er bekommt dieselben sechs Typ-Dateien
-unter denselben Namen. Geändert wird, an wie vielen Stellen dieses Repo diese Namen **schreibt**.
+→ **0**). Der Adopter bekommt weiterhin dieselben sechs Typ-Dateien unter denselben Namen.
+**Was hinzukommt:** einer der drei Go-Fundorte schreibt die Namen in einen Satz, der **im Zielrepo
+steht** — `grep -n 'planner' internal/span/fieldlist.go` → Zeile **120**, und dieselbe Zeile im
+frisch gebootstrappten Ziel:
+`b=<scratch>/bin/ai-harness-init; p=$(mktemp -d); (cd "$p" && "$b" --name probe >/dev/null); grep -n 'planner' "$p/harness/erfassung-feldliste.md"`
+→ Zeile **74**. Eine Ableitung, die die Namen anders formatiert, ändert damit **die Bytes einer
+Adopter-Datei**. Das ist keine Sperre — die Datei ist konvergent, und
+`TestFeldliste_LiegtVerbatimImZiel` hält Ausdruck und abgelegte Datei zusammen —, aber es gehört
+vor Frage C in §3 und nicht hinter sie.
 
 **Bezug:**
 [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) (**Accepted** —
@@ -38,7 +46,7 @@ er steht, ist ein zweiter Ort, an dem er falsch werden kann),
 Klasse, gegen die Klausel (i) der schließenden Eigenschaft gerichtet ist: ein Wächter über einem
 leeren Bestand ist grün und prüft nichts),
 [`AGENTS.md`](../../../../AGENTS.md) §3.6 (*wer keinen Fall in `test/mutations/` hat, ist
-unbewacht* — der dritte Fundort hat keinen, gemessen in §1),
+unbewacht* — der Voll-E2E-Sensor hat keinen, gemessen in §1),
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 (jede Zahl unten steht neben dem Kommando, das sie liefert, und wandert mit ihrem Bestand),
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
@@ -54,33 +62,43 @@ unbewacht* — der dritte Fundort hat keinen, gemessen in §1),
 die Abbildung des Trägers und der Voll-E2E-Sensor leiten ihn ab, statt ihn zu wiederholen — und die
 Aussage darüber wird über einem nachweislich **nicht-leeren** Bestand gemessen.**
 
-### Die Ausgangslage: drei Fundorte, einer davon neu
+### Die Ausgangslage: vier Fundorte, zwei davon neu
 
 Die Eigenschaft, über die gezählt wird: *eine Zeile im Produktionsbestand, die die sechs Namen als
 Literale nebeneinander schreibt.* Kommando und Stand:
-`grep -rn 'planner.*architect.*implementer' --include='*.go' --include='*.sh' . | grep -v '_test.go'`
-→ **3**, mitwandernd:
+`grep -rn 'planner.*architect.*implementer' --include='*.go' --include='*.sh' . | grep -v '_test.go' | cut -d: -f1 | sort | uniq -c`
+→ **4** Dateien, mitwandernd:
 
 | Fundort | Rolle der Zeile |
 |---|---|
 | [`internal/emit/agents.go`](../../../../internal/emit/agents.go), `canonicalRoles()` | die Quelle der Emission — aus ihr entstehen Dateiname und eingebettete Vorlage je Typ |
 | [`internal/span/emit.go`](../../../../internal/span/emit.go), `roleFromAgentType()` | die Abbildung des Trägers — sie entscheidet, ob `agent.role` besetzt ist oder leer |
 | [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh), die Schleife in `rollen_typen_im_ziel()` | der Voll-E2E-Sensor — er prüft Anwesenheit und Frontmatter-Namen im gebootstrappten Ziel |
+| [`internal/span/fieldlist.go`](../../../../internal/span/fieldlist.go), der Grenz-Satz `limitAgentGuard` | der **einzige Fundort, dessen Text ins Zielrepo emittiert wird** — er nennt die sechs Namen als Bedingung dafür, wann `agent_role` besetzt ist |
 
-**Den dritten hat [slice-097](../done/slice-097-rollen-typen-gehen-mit.md) selbst angelegt**,
-und er ist der einzige der drei, den **kein** Sensor hält:
+**Der vierte ist zugleich der ungebundenste.** `grep -c "planner" internal/span/fieldlist_test.go internal/emit/fieldlist_test.go`
+→ **0** und **0**; der Wächter über diesem Satz (`TestFeldliste_GrenzeAufrufform`) hält drei
+Textstücke, von denen keines die Namen enthält
+(`sed -n '/func TestFeldliste_GrenzeAufrufform/,/^}/p' internal/emit/fieldlist_test.go | grep -c 'planner'`
+→ **0**). Wird eine Rolle umbenannt, bleibt die Liste im Repo des Adopters stehen, und **kein**
+Sensor sagt es.
+
+**Den Voll-E2E-Sensor hat [slice-097](../done/slice-097-rollen-typen-gehen-mit.md) selbst
+angelegt**, und über seiner Schleife liegt **kein** Fall:
 `grep -l '^# files:.*full-smoke' test/mutations/*.sh` → **leer**. Streicht man eine Rolle aus seiner
 Schleife, bleiben `make shell-lint`, `make comment-claims`, `make docs-check` und `make test-go`
 **alle grün** — gemessen in der [Verifikation zu slice-097](../../../reviews/2026-08-25-slice-097-verify.md)
 §1.3 (Sonde P9) und hier als **fremdbelegt** ausgewiesen, nicht als eigener Lauf. Nach
 [`AGENTS.md`](../../../../AGENTS.md) §3.6 ist er damit unbewacht.
 
-**Ein vierter Fundort existiert und bleibt, wo er ist** — siehe §Die Grenze unten.
+**Ein fünfter Fundort existiert und bleibt, wo er ist** — die Test-Tabelle, siehe §Die Grenze
+unten. Sie fällt nicht unter das Kommando oben, weil es `_test.go` ausnimmt.
 
 ### Die schließende Eigenschaft, in drei Klauseln
 
 Nicht der Umbau macht den Slice fertig, sondern diese Eigenschaft. Sie ist **am gebootstrappten
-Ziel** formuliert, weil dort alle drei Fundorte zusammenlaufen:
+Ziel** formuliert, weil die Fundorte dort zusammenlaufen — drei von ihnen als Datei im Ziel, der
+vierte als der Sensor, der über sie liest:
 
 1. **(i) Der Typ-Bestand des Ziels ist nicht leer und deckungsgleich mit dem einen geschriebenen
    Namens-Satz.** Bindet die Quelle **und** die Verdrahtung, die sie aufruft: fällt der Aufruf aus
@@ -90,11 +108,17 @@ Ziel** formuliert, weil dort alle drei Fundorte zusammenlaufen:
 3. **(iii) Für diese Prüfung führt der Voll-E2E-Sensor keine eigene Namensliste.** Bindet
    [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh).
 
+**Die drei Klauseln sind über drei Fundorten formuliert; der vierte ist von keiner benannt.** Was
+ihn dennoch bindet, ist DoD (1): die Zahl aus dieser Sektion muss auf **1** stehen, und ein Satz im
+emittierten Dokument, der die sechs Literale schreibt, ist ein Ort des Produktionsbestands wie jeder
+andere. **Wie** er ableitet, entscheidet Frage C in §3 — sie steht dort und nicht hier, weil sie
+die Bytes einer Adopter-Datei berührt und damit den Schnitt, nicht das Kriterium.
+
 **Warum die naheliegende Ein-Satz-Fassung nicht reicht — zwei gemessene Löcher.** Die Fassung
 *„jeder emittierte Typ-Name normalisiert über die Abbildung des Trägers auf ein nicht-leeres
-Rollen-Feld"* trifft die Sache, bindet aber nur zwei der drei Fundorte:
+Rollen-Feld"* trifft die Sache, bindet aber nur zwei Fundorte:
 
-- **Sie lässt den dritten frei.** Die Schleife in
+- **Sie lässt den Voll-E2E-Sensor frei.** Die Schleife in
   [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) ist weder ein emittierter
   Typ-Name noch die Abbildung des Trägers; nimmt man ihr eine Rolle, bleibt der Satz wahr. Deshalb
   Klausel (iii).
@@ -114,7 +138,7 @@ Literal-Tabelle: `sed -n '/cases := map\[string\]string{/,/^\t}$/p' internal/spa
 übrigen **zehn** sind **Verneinungen** — `general-purpose`, der Leerstring, ein Großbuchstabe, ein
 angehängtes Leerzeichen, eine Zahl, `null`, ein Objekt, eine Liste.
 
-**Diese Tabelle ist der vierte Fundort, und der Träger sammelt sie nicht ein.** Ein Test, der seine
+**Diese Tabelle ist der fünfte Fundort, und der Träger sammelt sie nicht ein.** Ein Test, der seine
 Erwartung aus dem geprüften Code ableitet, ist zirkulär: er kann unter keiner Mutation der Quelle
 rot werden, und genau diese Bauart hat dieses Repo schon einmal gemessen — ein Wächter, dessen
 Erwartung aus der mutierten Funktion stammte, blieb unter seinem eigenen Fall grün
@@ -161,19 +185,21 @@ Steering-Loop-Lerneintrag.
 |---|---|---|
 | [`internal/emit/agents.go`](../../../../internal/emit/agents.go) | update | die eine Quelle. **Hier bekommt `AgentFile()` seinen Aufrufer oder fällt:** `grep -rn 'AgentFile' --include=*.go . \| wc -l` → **1**, die Definition selbst; ihr Doc-Kommentar nennt eine Nutzung *„(fuer Tests/Inspektion)"*, die es nicht gibt ([`AGENTS.md`](../../../../AGENTS.md) §3.7). Der Bestands-Nachweis aus DoD (1) braucht genau diesen Zugriff — die Zeile steht hier und nicht in §6, weil ein Posten ohne Ort in der Plan-Tabelle in diesem Repo gemessen wirkungslos bleibt |
 | [`internal/span/emit.go`](../../../../internal/span/emit.go) | update | `roleFromAgentType` leitet ab statt zu wiederholen. **Kein Import-Zyklus im Weg:** `grep -rn 'ai-harness-init/internal/span' internal/emit/*.go \| wc -l` → **0** und `grep -rn 'ai-harness-init/internal/emit' internal/span/*.go \| wc -l` → **0**; heute kennt keines der zwei Pakete das andere, beide Richtungen sind offen. Welche gewählt wird, ist Frage A |
-| [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | update | der dritte Fundort verliert seine eigene Liste (Klausel iii) |
+| [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | update | der Voll-E2E-Sensor verliert seine eigene Liste (Klausel iii) |
+| [`internal/span/fieldlist.go`](../../../../internal/span/fieldlist.go), der Grenz-Satz `limitAgentGuard` | update | der vierte Fundort (§1) — er schreibt die sechs Literale in einen Text, der **im Zielrepo** steht, und ist an nichts gebunden (`grep -c "planner" internal/span/fieldlist_test.go internal/emit/fieldlist_test.go` → **0** und **0**). Die Form seiner Ableitung ist Frage C, weil sie die Bytes einer Adopter-Datei berührt |
 | [`internal/emit/agents_test.go`](../../../../internal/emit/agents_test.go) | update | zwei Ein-Zeilen-Korrekturen aus der Closure von [slice-097](../done/slice-097-rollen-typen-gehen-mit.md): der Klassen-Kommentar beziffert die Emissions-Menge unter `docs/plan/` mit *zwei* (gemessen **6**), und das `richtung`-Feld derselben Klasse sagt *„unter `docs/plan/`"*, während sein Muster nur `planning\|adr` deckt. Die Datei wird für DoD (1) ohnehin angefasst |
-| `test/mutations/` <!-- d-check:ignore (geplante Dateien) --> | neu | die Zähne aus DoD (1)–(3); Nummern im Anschluss an die höchste vergebene (`ls -1 test/mutations/*.sh \| wc -l` → **157**, beim Anlegen neu auszuzählen) |
+| `test/mutations/` <!-- d-check:ignore (geplante Dateien) --> | neu | die Zähne aus DoD (1)–(3); Nummern im Anschluss an die höchste vergebene (`ls -1 test/mutations/*.sh \| wc -l` → **165**, beim Anlegen neu auszuzählen) |
 | [`internal/span/response_test.go`](../../../../internal/span/response_test.go) | **unverändert** | §Die Grenze: die Tabelle hält den Vertrag samt seiner zehn Verneinungen und leitet nichts ab |
 | [`docs/plan/adr`](../../adr) | **unverändert** | [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 3 lässt die Kopplung *benannt, nicht geschlossen*; sie auszuführen ist keine neue Entscheidung, und eine *Accepted*-ADR wird nicht nachgetragen ([`AGENTS.md`](../../../../AGENTS.md) §3.4) |
 | [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** | wellenlose Arbeit wird dort nicht geführt ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) Setzung 2/3) |
 
-**Offen, vor dem Code zu entscheiden — beide entscheiden den Schnitt, nicht nur den Stil:**
+**Offen, vor dem Code zu entscheiden — alle drei entscheiden den Schnitt, nicht nur den Stil:**
 
 | # | Frage | Warum sie den Schnitt entscheidet |
 |---|---|---|
 | A | **Wer leitet von wem ab: liest der Träger die Quelle des Emitters, oder liest der Emitter die Abbildung des Trägers?** | Beide Richtungen sind heute frei (Messung oben). *Emitter → Träger* macht die Emission von der Erfassung abhängig, obwohl die Rollen-Typen ausdrücklich **keinen** Laufzeit-Ausgang haben ([`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 5(a)); *Träger → Emitter* macht die Erfassung von einer Vorlagen-Liste abhängig. Ein drittes, gemeinsames Paket ist die dritte Antwort und der teuerste Schnitt |
 | B | **Woraus leitet der Voll-E2E-Sensor seine Liste ab?** | Aus dem **Ziel** wäre zirkulär (§Die Grenze). Aus `internal/emit/templates/agents/` ist ein Vergleich zweier verschiedener Bäume und damit eine echte Aussage. Aus einem Unterkommando des Trägers wäre die stärkste Fassung — sie kostet aber ein neues Stück öffentlicher Oberfläche, und die gehört begründet, nicht nebenbei |
+| C | **In welcher Form leitet der emittierte Grenz-Satz seine Namensliste ab?** | Er ist der einzige Fundort, dessen Text **ins Zielrepo geht**: `grep -n 'planner' internal/span/fieldlist.go` → Zeile **120**, dieselbe Liste im gebootstrappten Ziel → Zeile **74** (Kommando in §Ebene). Eine Ableitung, die anders formatiert — andere Reihenfolge, andere Trenner, andere Auszeichnung —, ändert die **Bytes einer Adopter-Datei**; die ist konvergent, ein Re-Lauf zieht sie nach, und `TestFeldliste_LiegtVerbatimImZiel` hält Ausdruck und Datei zusammen. Die Frage ist damit nicht, **ob** er ableitet (DoD (1) verlangt es), sondern ob der Satz danach noch derselbe Satz ist — und das ist eine Leser-Entscheidung, keine Formatierungsfrage |
 
 ## 4. Trigger
 
@@ -181,7 +207,7 @@ Steering-Loop-Lerneintrag.
 der Termin, den dieser Slice trägt.** Frage A und B aus §3 sind ohne Vorarbeit eines anderen Slice
 entscheidbar; der Gegenstand liegt vollständig in diesem Repo, berührt keine Anforderung und keine
 Entscheidung und hängt an keiner Welle. Er wartet insbesondere **nicht** auf den `done/`-Zug von
-[slice-097](../done/slice-097-rollen-typen-gehen-mit.md): der dritte Fundort liegt bereits im
+[slice-097](../done/slice-097-rollen-typen-gehen-mit.md): die Schleife des Voll-E2E-Sensors liegt bereits im
 Baum, und die Messung in §1 gilt über ihm.
 
 **Was dieser Slice ausdrücklich nicht ist: eine Nennung.** Die drei Postens, die er aufnimmt —
@@ -228,7 +254,7 @@ benannte Spec-Lücke).
   gehört vor den Code.
 - **Zwei Zähne kosten `full-smoke`-Laufzeit.** DoD (2) und (3) verlangen Fälle auf der teuersten
   Stufe des Treibers; heute tragen `grep -l '^# verify: full-smoke' test/mutations/*.sh | wc -l` →
-  **2** Fälle diesen Modus. Dass das teuer ist, ist kein Grund für eine schmalere Stufe — es ist der
+  **3** Fälle diesen Modus. Dass das teuer ist, ist kein Grund für eine schmalere Stufe — es ist der
   Gegenstand von [slice-105](slice-105-mutate-messen-dann-teilen.md), und die zwei Slices sind
   voneinander unabhängig: keiner wartet auf den anderen.
 - **Der Slice berührt die Rollen-Achse, ohne sie zu verbreitern.** Er schließt eine Kopplung im
@@ -262,7 +288,7 @@ Eine Sub-Area, kein zweiter Block: drei Dateien, **ein** Gegenstand — der Satz
 und eine Frage, nämlich wo er geschrieben steht. Das Inklusionskriterium trägt über alle drei
 Achsen: eigener Bestand, eigener Sensor, eigene Konvention.
 
-- **Modus:** GF. Alle drei Fundorte sind in diesem Repo entstanden und von Anfang an gegen den Kurs
+- **Modus:** GF. Alle vier Fundorte sind in diesem Repo entstanden und von Anfang an gegen den Kurs
   geführt; es gibt keinen vorgefundenen Bestand, gegen den zu inventarisieren wäre.
 - **Konventionen-Dichte:** hoch. [`AGENTS.md`](../../../../AGENTS.md) §3.6 (wer keinen Fall hat, ist
   unbewacht) trägt DoD (2) und (3),

@@ -58,6 +58,38 @@ Nur (1) heilt ein `git add`; (2) und (3) sind **permanent**.
 Fenster von **zwölf** Zeichen zwischen Verb und Verneinung. Der `Makefile:83`-Fall braucht
 **dreizehn** — die Ausnahme verfehlt ihn um ein Zeichen und erzeugt so einen Falsch-Treffer.
 
+**Eine vierte Verengung, und sie liegt INNERHALB einer Datei, die als „geprüft" gezählt wird.**
+Der Roh-String-Zustand des Skripts hängt allein an der **Backtick-Parität**: eine Zeile mit
+ungerader Backtick-Zahl kippt ihn, und jede folgende Zeile gilt als emittierter Inhalt und wird
+übersprungen, bis (falls je) eine weitere ungerade Zeile zurückkippt
+(`sed -n '/Roh-String-Zustand VOR der/,/next }/p' harness/tools/comment-claims.sh`). Der
+Kommentar-Kopf begründet die Ausnahme mit **Go-Roh-Strings**, die emittierten Inhalt tragen — die
+Parität weiß davon nichts. **Die Fläche, mit ihrer Eigenschaft vor der Zahl:** *eine Zeile mit
+ungerader Backtick-Zahl in einer Datei, die `make comment-claims` selbst scannt.* Kommando über
+genau dem Prüfbereich des Ziels:
+
+```
+files=$(git ls-files 'internal/*.go' 'internal/**/*.go' 'cmd/**/*.go' | grep -v '_test[.]go'; \
+        git ls-files 'harness/tools/*.sh' '.claude/hooks/*.sh')
+echo "$files" | xargs awk 'BEGIN{BT=sprintf("%c",96)} {n=gsub(BT,BT); if(n%2==1){c++; f[FILENAME]++}} \
+                           END{print "Dateien="length(f), "Zeilen="c}'
+```
+
+→ **11** Dateien mit zusammen **121** Zeilen, von `echo "$files" | wc -l` → **44** geprüften.
+**Drei der elf sind Shell-Dateien** (`harness/tools/full-smoke.sh`, `harness/tools/go-freshness.sh`,
+`.claude/hooks/pretooluse-command-guard.sh`) — dort gibt es keinen Go-Roh-String, den die Ausnahme
+meinen könnte, und der Zustandsautomat läuft trotzdem.
+
+**Und er greift heute schon, gemessen statt vermutet.** Dieselbe Schleife, um die
+Claim-Erkennung erweitert (Kommentarzeile · `CLAIM`-Muster · nicht unter `NEGATION` · im
+Roh-Zustand), liefert **2** übersprungene Zusage-Zeilen: `internal/gen/gen.go:73` und
+`harness/tools/full-smoke.sh:639`. **Beide wären heute kein Befund** — ihr Kommentar-Block nennt
+einen Sensor (`TestGenerateArch_LangSpecificArchRejected` bzw. `full-smoke`) —, aber **angesehen
+hat sie der Gate nie**, und die Meldezeile zählt ihre Dateien trotzdem als geprüft. Alle Zahlen
+wandern mit dem Bestand
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2).
+
 **Ein dritter Defekt derselben Datei, und er verengt die gemeldete Null noch einmal: die
 Erkennung von Behauptungen ist an die Kleinschreibung gebunden.** Das `CLAIM`-Muster
 (`grep -n '^CLAIM=' harness/tools/comment-claims.sh`) wird case-sensitiv angewandt, während
@@ -87,6 +119,11 @@ Sensor danebensteht, aber ohne Wächter für den Tag, an dem einer davon verschw
   Vollständigkeits-Behauptung, gegen die dieser Slice steht. **Achse (1) ist gesondert zu
   entscheiden:** untrackte Dateien mitzuprüfen ist billig und schließt die gemessene Lücke,
   ändert aber das Verhältnis zum Stempel — das gehört begründet, nicht nebenbei.
+  **Die vierte Verengung zählt hierher, nicht zu (2):** eine Datei, deren Rest der
+  Roh-String-Zustand überspringt, wird als geprüft **gezählt** und ist es nicht (§1, **2**
+  übersprungene Zusage-Zeilen). Die Parität fällt als Zustandsträger, oder die Meldezeile sagt,
+  wieviele Zeilen sie ausgelassen hat — Schweigen auch hier nicht. **Für Shell-Dateien ist die
+  Frage keine:** die Ausnahme meint Go-Roh-Strings, und in `*.sh` gibt es keine.
 - [ ] **(2) Die Erkennung ist entschieden, nicht geraten — beide Seiten.** *Verneinung:* zwölf
   Zeichen sind eine Zahl ohne Herleitung; entweder eine begründete Weite, oder eine andere
   Erkennung der Verneinung. **Der Zahn ist der `Makefile:83`-Fall selbst** — er ist bis dahin
@@ -118,6 +155,11 @@ entstehen dabei? Der `Makefile:83`-Fall ist einer; ob `harness/tools/*.awk`,
 `internal/emit/templates/` und `test/` weitere tragen, ist heute **nicht gemessen** (für die
 `.awk`-Dateien wurde einmal `0 Befunde` gemessen — eine Aussage über heute, nicht über die
 Abdeckung). Ein Bereich, der beim Anschalten hundert Befunde wirft, ist ein anderer Slice.
+**Für die vierte Verengung ist diese Messung schon gefahren** (§1): **2** heute übersprungene
+Zusage-Zeilen, beide mit einem Sensor im selben Block — die Achse bringt also **null** neue
+Befunde mit und ist die billigste der vier. Das ist eine Aussage über heute und keine über die
+Abdeckung: sie sagt nichts darüber, was ein künftiger Kommentar hinter einer der **121** Zeilen
+verbirgt.
 **Dieselbe Frage stellt sich für die Schreibweise:** die **23** heute unerkannten Zeilen aus §1
 sind der Ort, an dem beim Aufheben der Bindung Befunde entstehen — sie tragen nach heutigem
 Stand alle einen Sensor, aber das ist eine Aussage über heute und keine über die Abdeckung. Die
@@ -128,13 +170,24 @@ Zählung gehört vor die Entscheidung aus DoD (2), nicht hinter sie.
 **`open` → `next`:** [slice-060](../done/slice-060-rollen-achse.md) ist **done** —
 WIP-Limit, und slice-060 schreibt weiter Kommentare in den Prüfbereich.
 
-**`next` → `in-progress`:** WIP-Limit; dazu die Ist-Messung aus §3, weil sie über den Schnitt
-entscheidet.
+**`next` → `in-progress`: nichts blockiert ihn außer dem WIP-Limit — und das ist der Termin, den
+dieser Slice trägt.** Die Ist-Messung aus §3 entscheidet über den Schnitt und ist für die vierte
+Achse bereits gefahren (§1); für die übrigen drei gehört sie in den ersten Lauf, nicht vor ihn.
+
+**Was dieser Slice ausdrücklich nicht ist: eine Nennung.** Vier Verengungen desselben Gate-Skripts
+sind in vier Runden gemessen und benannt worden; ein Träger ohne Termin ist in diesem Repo dreimal
+vergeben und nullmal eingelöst worden
+([slice-101](slice-101-norm-postens-bekommen-einen-termin.md) §1, dort mit Kommando). Der Termin
+ist dieser Schnitt — nicht die nächste Runde, die dieselbe Zeile wiederfindet.
 
 Rückführungen:
 
 - `in-progress` → `next`: falls die Ist-Messung viele Bestands-Befunde zeigt — dann trennt ein
-  Re-Slice die Bereichs-Erweiterung von deren Abarbeitung.
+  Re-Slice die Bereichs-Erweiterung von deren Abarbeitung. **Ebenso, wenn die vier Achsen
+  auseinanderlaufen:** wächst der Bereich, ändert sich die Erkennung und fällt der Zustandsträger
+  in **einem** Diff, ist er in einer Review-Sitzung nicht mehr prüfbar — die Schwelle aus Modul 5
+  §Ziel-Form. Dann trägt ein Schnitt den **Umfang** (Achse 1 und die Parität) und einer die
+  **Erkennung** (Negations-Fenster und Schreibweise).
 - `in-progress` → `open`: falls sich zeigt, dass die Erweiterung auf Markdown eine andere
   Erkennung braucht als die auf Quelltext. Dann ist erst die Form zu entscheiden.
 
