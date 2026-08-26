@@ -118,6 +118,90 @@ Zeitnahme in den Treiber, und wer sie baut, prüft zuerst, ob die gemessene Vert
 modellierten übereinstimmt; tut sie es nicht, ist eine der beiden falsch, und das ist ein Befund
 vor jeder Teilung.
 
+### Die Reihe über die Worker-Zahlen — gemessen an einem Prototyp
+
+Erhoben an einer Wegwerf-Kopie des Repos auf dem Stand `1213edb` (**165** Fälle), mit einem
+Treiber, der die Fälle **dynamisch** aus einer gemeinsamen Warteschlange an N Worker gibt.
+Alle vier Punkte aus **einem** Fenster; jeder Punkt ist ein vollständiger Lauf und endete
+`165 ok, 0 Befund(e)`.
+
+| N | Wanduhr | Beschleunigung | Load Mittel/Max | Fremdlast-Proben | Exit |
+|---|---|---|---|---|---|
+| 1 | **1164,0 s** | 1,00× | 8,7 / 15,9 | 4/73 | 0 |
+| 4 | **438,3 s** | **2,66×** | 26,4 / 38,6 | 11/27 | 0 |
+| 6 | **406,5 s** | 2,86× | 40,1 / 55,0 | 19/25 | 0 |
+| 8 | **381,6 s** | 3,05× | 43,9 / 69,9 | 19/23 | 0 |
+
+Kommando je Punkt: `/usr/bin/time -f '%e' make mutate` mit gesetzter Worker-Zahl, die
+Fremdlast-Proben über das Arbeitsverzeichnis fremder Prozesse
+(`readlink -f /proc/<pid>/cwd`). Die Fremdlast war durchweg ein anderes Repo auf demselben
+Docker-Daemon; sie wächst über die Reihe und bremst die **späteren** Punkte, verkleinert die
+gezeigte Beschleunigung also.
+
+**Die Empfehlung ist N=4.** N=6 und N=8 liegen 6–7 % darunter, und das ist die Größenordnung
+zweier Wiederholbarkeiten; N=8 bringt bei doppelter Worker-Zahl **13 %**.
+
+**Warum die Beschleunigung bei 2,66× steht und nicht bei 4:** die Arbeit war nie sequentiell.
+Ein *einzelner* Worker erzeugt schon Load **8,7** auf **20** Kernen (`nproc` → 20), denn
+`make test-go` fährt `go test ./...` über **7** Pakete
+(`find . -name '*.go' -not -path './.harness/*' -printf '%h\n' | sort -u | wc -l` → 7), und
+die Go-Werkzeugkette übersetzt und testet nebenläufig. Daraus folgt die Sättigungsgrenze
+direkt: 20 ÷ 8,7 ≈ **2,3** Worker. Wir fügen keine Parallelität hinzu, wir verteilen
+vorhandene um.
+
+**Die Fall-Arbeit wächst dabei um Faktor 2,5** (1048,7 s bei N=1 auf 2611,7 s bei N=8);
+`test-go` steigt je Fall von 5,34 s auf 16,96 s. Die Effizienz fällt auf **34 %**.
+
+| Sensor | N=1 | N=4 | N=6 | N=8 |
+|---|---|---|---|---|
+| `test-go` (122 Fälle) | 5,34 | 8,92 | 12,91 | 16,96 |
+| `test-bats` (38) | 8,92 | 9,87 | 10,60 | 10,48 |
+| `full-smoke` (3) | 18,65 | 24,08 | 38,75 | 46,21 |
+| Fall-Arbeit gesamt | 1048,7 | 1540,3 | 2100,0 | 2611,7 |
+| Vorlauf-Summe | 104,2 | 164,9 | 251,5 | 311,3 |
+
+**Der Umbau selbst kostet nichts.** N=1 mit dem neuen Treiber: 1164,0 s über 165 Fälle =
+**7,05 s je Fall**. Der alte sequentielle Treiber: 1252,6 s über 176 Fälle = **7,12 s je
+Fall**. Warteschlange, Mutex und Zeitnahme sind innerhalb der Messgenauigkeit gratis — dafür
+war der N=1-Punkt als Kontrolle da.
+
+**Zwei untere Schranken, und die zweite bindet früher.** Der längste Einzelfall dauert
+**46,00 s** (`152-cpp-lint-schichtfilter`) — nicht die 88 s eines *grünen* `full-smoke`-Laufs,
+weil ein Fall, der rot werden soll, am getroffenen Wächter abbricht. Die härtere Schranke ist
+die **serielle Spur**: 152,8 s bei N=1, 290,5 s bei N=8 — dort sind das **76 %** der Wanduhr.
+
+**Die serielle Spur ist eine Korrektheits-Auflage, keine Bequemlichkeit.** `smoke`,
+`full-smoke` und `gates` laufen über `make artifact`, und `artifact-copy.sh` holt das Binär
+mit `docker create`/`docker cp` **aus** dem Tag `ai-harness-init:build`, also **nach** dem Bau.
+Zwei gleichzeitige Läufe über verschieden mutierten Bäumen könnten einander das Binär
+unterschieben — stilles Grün. Diese Modi laufen darum seriell.
+
+**Ein Trockenlauf-Kriterium dafür genügt nicht**, und das ist gemessen:
+`make -n smoke | grep -c artifact-copy.sh` → **0**, obwohl `smoke.sh:37` `make artifact`
+**innen** ruft; `make -n` endet bei `bash harness/tools/smoke.sh`. Das Kriterium meldete
+ausgerechnet für die zwei gefährlichsten Modi „sicher". Die Zuordnung muss den
+Treiberskripten eine Ebene tief folgen und fail-closed sein.
+
+**Offen, nicht gemessen: die Begrenzung je Worker.** Weder `GOMAXPROCS` noch `--cpus`/`cpuset`
+noch `-p` an `go test` sind gesetzt (`grep -rn 'GOMAXPROCS' Dockerfile Makefile harness/mk/*.mk`
+→ leer) — jeder Container sieht alle 20 Kerne und verhält sich, als gehöre ihm die Maschine.
+Ob eine Begrenzung auf 20 ÷ N Kerne die Wanduhr senkt oder nur die Last glättet, ist offen; die
+Gesamtarbeit bleibt gleich.
+
+**Ein flakiger Fall wird durch Parallelisierung flakiger.** In einem verworfenen Fenster meldete
+N=8 `152-cpp-lint-schichtfilter` als *„make full-smoke blieb GRUEN — hat keine Zaehne mehr"*.
+Kein Tag-Rennen, sondern der bekannte Nichtdeterminismus unter Last verschärft; im sauberen
+Fenster grün. Das schärft die Reihenfolge-Bedingung aus §4: Parallelität macht den offenen
+Befund nicht nur schwerer zuordenbar, sondern **häufiger**.
+
+**Ein zweiter Störer neben der Fremdlast: die Cache-Verdrängung.** Der Docker-Zustand am Ende
+der Reihe: **372** Images / **109,9 GB** (76 % verwaist), Build-Cache **2161** Einträge /
+**63,91 GB** (`docker system df`). Ein gestörter `full-smoke`-Lauf verlor **91** `CACHED`-Treffer
+bei *weniger* gebauten Bildern (315 → 224 bei 52 → 50) — BuildKits Garbage Collection verdrängt
+unter Druck. Messpunkte unter verschiedenem Cache-Zustand sind darum nicht ohne Weiteres
+vergleichbar; für diese Reihe wurde derselbe N in zwei Fenstern gegengeprüft und der Unterschied
+lag bei 3–4 %, also weit unter dem N=1→N=4-Effekt.
+
 ### Der Bauplan, soweit er gemessen ist
 
 Aus [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) selbst gelesen:
