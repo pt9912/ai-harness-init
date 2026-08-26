@@ -262,6 +262,7 @@ eine wachsende Zahl ist erst dann ein Befund, wenn die Fall-Zahl nicht mitgewach
 | 2026-08-26 | 165 | **dynamisch** | 4 | **438,3 s** | 2,66 | Prototyp, Reihe |
 | 2026-08-26 | 165 | **dynamisch** | 6 | 406,5 s | 2,46 | Prototyp, Reihe |
 | 2026-08-26 | 165 | **dynamisch** | 8 | 381,6 s | 2,31 | Prototyp, Reihe |
+| 2026-08-26 | 179 | sequentiell | 1 | 1326,26 s | 7,41 | Verifikation `slice-099` §1.1 |
 
 Kommando für jede Zeile: `/usr/bin/time -f 'MUTATE_SECONDS=%e' make mutate`, die Fall-Zahl aus
 `ls -1 test/mutations/*.sh | wc -l`. Die Spalte `s/Fall` ist Wanduhr ÷ Fälle und dient nur dem
@@ -269,9 +270,18 @@ Vergleich zwischen Läufen verschiedener Bestandsgröße.
 
 **Was die Reihe über die Zeit zeigt und eine Momentaufnahme nicht gezeigt hätte:** Der Preis
 **je Fall** liegt bei allen sequentiellen Läufen zwischen 6,81 und 7,43 s — er ist über zwei
-Tage und drei Bestandsgrößen **stabil**. Die Wanduhr wuchs von 1166 auf 1253 s allein deshalb,
-weil der Bestand von 157 auf 176 Fälle wuchs. Ohne diese Tabelle wäre das Wachstum als
-Verschlechterung lesbar gewesen; mit ihr ist es die erwartete Folge von mehr Abdeckung.
+Tage und **vier** Bestandsgrößen **stabil**. Die Wanduhr wuchs von 1166 über 1253 auf 1326 s
+allein deshalb, weil der Bestand von 157 über 176 auf 179 Fälle wuchs. Ohne diese Tabelle wäre das
+Wachstum als Verschlechterung lesbar gewesen; mit ihr ist es die erwartete Folge von mehr
+Abdeckung.
+
+**Die jüngste Zeile prüft die Aussage, statt sie zu bestätigen — und sie trägt.** 7,41 s je Fall
+liegt **innerhalb** des seit zwei Tagen genannten Bandes, nicht an seiner Kante darüber hinaus:
+das Band bleibt **unverändert** 6,81 bis 7,43 s, seine Obergrenze steht weiter beim ältesten Lauf
+(2026-08-25, 157 Fälle). **Was die Zeile nicht liefert, ist die Aufschlüsselung nach Sensor** —
+der Treiber protokolliert je Fall nur `ok <name> -> <expect> rot`, keine Dauer; die Klippe aus
+§Der Bauplan bleibt damit ungemessen und die Teilung nach Sensor eine Konstruktions-Entscheidung,
+keine Messfolge.
 
 **Und der Kontrollpunkt trägt:** der dynamische Treiber bei N=1 kostet 7,05 s je Fall und liegt
 damit mitten im Band der sequentiellen Läufe. Der Umbau ist gratis, die Beschleunigung kommt

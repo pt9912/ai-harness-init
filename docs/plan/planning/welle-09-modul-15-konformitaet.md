@@ -409,6 +409,19 @@ Die Entscheidung liegt als [`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.
   führt weder [`.d-check.yml`](../../../.d-check.yml) noch die emittierte Vorlage (gemessen,
   slice-062 §6). Block 4 kostet auf beiden Ebenen denselben Handgriff: Konfigurations-Block plus
   Zahn, nicht Neubau.
+  **Der Inhalt des Blocks ist inzwischen um ein Fragment gewachsen, und das gehört hier notiert
+  statt später entdeckt.** [welle-12](welle-12-erfassungsschicht-emittieren.md) hat mit
+  [slice-099](in-progress/slice-099-leser-und-aufraeum-kommando.md) ein **Init-invariantes**
+  Gate-Fragment samt zwei emittierten `make`-Zielen abgelegt; nach
+  [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 4
+  gehören sie nach dem Kriterium aus
+  [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) Festlegung 4 in genau diesen Satz. Der
+  Stand ist unverändert **null** (`grep -c 'targets' .d-check.yml` und
+  `grep -c 'targets' internal/emit/templates/d-check.yml` → je **0**, mitwandernd) — es liegt
+  **keine** Verletzung vor, weil es nichts gibt, dem etwas hinzuzufügen wäre. Fällig wird die
+  Aufnahme mit dem Block; wer ihn baut, wendet das Kriterium auf den dann vorliegenden Bestand an
+  und findet die neuen Ziele von selbst. Träger ist `slice-063` (§4, *Beleg*), nicht ein neuer
+  Schnitt.
 
 ## 6. Out-of-Scope für diese Welle
 
