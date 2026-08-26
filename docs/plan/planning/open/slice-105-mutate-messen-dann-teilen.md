@@ -192,16 +192,23 @@ der Grund, aus dem dieser Slice existiert.
 
 ### Die Reihenfolge-Bedingung — sie steht hier, nicht als Nebensatz
 
-**DoD (2) und (3) beginnen erst, wenn der offene Nichtdeterminismus in `make full-smoke` einen
-Ausgang hat.** Der Befund: `full-smoke` fällt in der CI **sporadisch** im hexagonalen C++-Modul,
-während es im Grün-Vorlauf **desselben** Laufs grün ist. Er ist heute undiagnostiziert.
+**DoD (2) und (3) beginnen erst, wenn der offene Befund an `make full-smoke` einen Ausgang hat.**
+Der Befund: `make full-smoke` ist in der CI rot geworden, während derselbe Sensor im **selben** Lauf
+an anderer Stelle grün war — am 2026-08-25 im Job `full-smoke` rot und im Grün-Vorlauf des
+`mutate`-Jobs grün, am 2026-08-25 zuvor genau umgekehrt. **Getroffen hat das Go-Hexagonal-Modul**
+(`test-apps-hex` und `lint-apps-hex`), nicht das C++-Modul; dessen Bilder wurden im selben Protokoll
+fertig gebaut. Die Ursache im belegten Fall ist eine ausgehende Anfrage, die nicht mit 2xx
+beantwortet wurde. Träger des Befundes ist
+[slice-106](slice-106-rotes-ci-traegt-seinen-ausgang.md); dort stehen die Messungen mit ihren
+Kommandos.
 
-**Warum das die Reihenfolge bestimmt und nicht bloß unangenehm ist.** Parallelität ist die zweite
-Quelle nichtdeterministischen Verhaltens in genau diesem Werkzeug. Zieht man sie hinein, bevor die
-erste erklärt ist, ist der nächste sporadische Fehlschlag nicht mehr zuordenbar: er kann aus dem
-C++-Modul kommen oder aus einem Shard-Rennen, und beide Hypothesen kosten dann je einen eigenen
-Diagnose-Lauf über einem Sensor, der über **20** Minuten braucht. Ein Sensor, dessen Fehlschläge
-niemand mehr zuordnen kann, wird abgeschaltet oder ignoriert — beides ist teurer als das Warten.
+**Warum das die Reihenfolge bestimmt und nicht bloß unangenehm ist.** Parallelität fügt diesem
+Werkzeug eine zweite Quelle von Fehlschlägen hinzu, die nicht am geprüften Baum liegen. Zieht man
+sie hinein, bevor die erste einen Ausgang hat, ist der nächste Fehlschlag nicht mehr zuordenbar: er
+kann aus einer fremden Leitung kommen oder aus einem Shard-Rennen, und beide Hypothesen kosten dann
+je einen eigenen Diagnose-Lauf über einem Sensor, der über **20** Minuten braucht. Ein Sensor,
+dessen Fehlschläge niemand mehr zuordnen kann, wird abgeschaltet oder ignoriert — beides ist teurer
+als das Warten.
 
 **Beobachtbar, ohne Rückfrage entscheidbar: der Befund trägt einen der vier Ausgänge** —
 **diagnostiziert** (Ursache benannt, mit Sensor oder Grenze) · **als Umgebungs-Eigenschaft
@@ -209,6 +216,17 @@ ausgewiesen** (nicht der Baum, sondern der Runner; mit dem Beleg dafür) · **ab
 **aufgeschoben** mit einem Auflösungs-Trigger, der ein beobachtbares Ereignis nennt. Dieselbe
 Ausgangs-Menge, die [slice-101](slice-101-norm-postens-bekommen-einen-termin.md) für offene Postens
 setzt — und aus demselben Grund: *„genannt"* ist keiner davon.
+
+**Delta zum Abnahme-Kriterium (2026-08-26), ausgewiesen statt eingearbeitet.** Der Ausgang
+*„als Umgebungs-Eigenschaft ausgewiesen"* ist oben mit *„nicht der Baum, sondern der Runner"*
+erläutert. Gemessen ist die Umgebung im belegten Fall **nicht der Runner**, sondern eine
+**ausgehende HTTP-Abhängigkeit**: die Jobs `gates` und `smoke` desselben Laufs lösten dasselbe
+gepinnte Bild fehlerfrei auf, also lag es nicht an der Maschine. Der **Umfang** des Ausgangs bleibt
+unverändert — er verlangt weiterhin den Beleg statt der Plausibilität; verschoben ist nur, worauf
+der Beleg zeigen darf. Wer das Kriterium anwendet, wendet die weitere Fassung an:
+*nicht der geprüfte Baum, sondern die Umgebung des Laufs — Maschine oder Leitung —, mit dem Beleg
+dafür.* Die Messungen stehen in
+[slice-106](slice-106-rotes-ci-traegt-seinen-ausgang.md) §1.
 
 **Ist die Bedingung beim Erreichen von DoD (1) nicht erfüllt, greift `in-progress` → `next`:** der
 Slice wird in Messung und Teilung zerschnitten, die Messung landet in `done/`, die Teilung wartet.
@@ -250,9 +268,9 @@ zählt, ist die **Aufschlüsselung** und die **Vollständigkeit**, nicht die err
 - **Der Grün-Vorlauf kann leise ungenau werden.** Sobald ein Shard das Grün eines anderen
   übernimmt, sagt der Sensor nicht mehr, was seine Abbruch-Meldung behauptet. Das ist keine
   Optimierung, sondern eine Senkung — §4 führt sie als Blocker, nicht als Abwägung.
-- **Zwei Nichtdeterminismus-Quellen in einem Werkzeug sind nicht additiv, sondern multiplikativ in
-  der Diagnose.** Das ist der ganze Inhalt der Reihenfolge-Bedingung; sie hier zu wiederholen wäre
-  eine zweite Fassung, die driftet — sie steht in §4.
+- **Zwei Quellen für ein Rot, das nicht am geprüften Baum liegt, sind in der Diagnose nicht
+  additiv, sondern multiplikativ.** Das ist der ganze Inhalt der Reihenfolge-Bedingung; sie hier zu
+  wiederholen wäre eine zweite Fassung, die driftet — sie steht in §4.
 - **Der Treiber wird länger, und seine Sensor-Ebene ist bats.** `wc -l < harness/tools/mutate.sh` →
   **566** heute. Wächst er deutlich, ohne dass
   [`test/mutate-driver.bats`](../../../../test/mutate-driver.bats) mitwächst, entsteht genau die
