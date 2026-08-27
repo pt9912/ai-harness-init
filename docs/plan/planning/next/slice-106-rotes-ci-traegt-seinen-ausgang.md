@@ -9,7 +9,7 @@ wechselt nur durch `git mv`, siehe
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 1, hier beantwortet: **(1) Bündel?** Nein — ein Durchgang über eine abgeschlossene, gemessene
 Menge von Fehlschlägen; er ist einzeln lieferbar, und seine Aussage stimmt ohne einen zweiten Slice.
-Dass [slice-105](slice-105-mutate-messen-dann-teilen.md) auf sein Ergebnis wartet, ist eine
+Dass [slice-105](../open/slice-105-mutate-messen-dann-teilen.md) auf sein Ergebnis wartet, ist eine
 **Abhängigkeit**, kein Bündel: ein Bündel verlangt, dass beide **zusammen** landen. **(2)
 Gemeinsames Closure-Kriterium?** Nein — jedes denkbare wäre die Abschrift seiner eigenen DoD. **(3)
 Auslöser reaktiv oder gewollt?** Reaktiv: ein Sensor ist rot, und niemand besitzt das Rot. Kein
@@ -242,7 +242,7 @@ für Plan-Texte).
       (Ursache benannt, mit Sensor oder Grenze) · **als Umgebungs-Eigenschaft ausgewiesen** (mit dem
       Beleg, nicht der Plausibilität) · **abgelehnt** mit Grund · **aufgeschoben** mit einem
       Auflösungs-Trigger, der ein beobachtbares Ereignis nennt. Dieselbe Ausgangs-Menge, die
-      [slice-101](slice-101-norm-postens-bekommen-einen-termin.md) für offene Norm-Postens setzt.
+      [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) für offene Norm-Postens setzt.
       **Kein Kommando färbt die Zuordnung rot, und das ist der Befund, keine Vertagung.** Welcher
       Klasse ein Fehlschlag angehört, ist ein Urteil über Protokolltext. Was **mechanisch** ist, ist
       der **Nenner**: liefert
@@ -317,10 +317,10 @@ Gegenstand liegt vollständig in diesem Repo, er berührt die emittierte Ebene n
 keiner Welle. Die Messungen aus §1 sind gefahren; was fehlt, ist die Entscheidung und ihr Träger im
 Sensor.
 
-**Was dieser Slice freigibt.** [slice-105](slice-105-mutate-messen-dann-teilen.md) macht seine
+**Was dieser Slice freigibt.** [slice-105](../open/slice-105-mutate-messen-dann-teilen.md) macht seine
 DoD (2) und (3) davon abhängig, dass der Befund an `make full-smoke` einen der vier Ausgänge trägt.
 Genau das ist DoD (1) hier. Die Reihenfolge ist damit gerichtet, aber nicht verschränkt: dieser
-Slice landet allein, [slice-105](slice-105-mutate-messen-dann-teilen.md) danach.
+Slice landet allein, [slice-105](../open/slice-105-mutate-messen-dann-teilen.md) danach.
 
 **Der aufgeschobene Ausgang und sein beobachtbarer Trigger — K4.** Der `mutate`-Fehlschlag vom
 2026-08-25T06:08 bleibt ohne Ursache, weil der Treiber die Ausgabe des roten Vorlaufs an dieser
