@@ -74,14 +74,14 @@ Der Lieferwert ist nicht die Reparatur. Ein 502 einer fremden Registry ist nicht
 kein Schnitt macht ihn zu einem. Der Lieferwert ist, dass ein rotes `make full-smoke` von sich aus
 sagt, welcher der beiden Fälle vorliegt.
 
-### Der Bestand: acht rote Läufe, gemessen statt erinnert
+### Der Bestand: elf rote Läufe, gemessen statt erinnert
 
 **Das Fenster, mit seiner Eigenschaft vor der Zahl** — *ein Lauf des `ci`-Workflows, ausgelöst durch
-`push`, den die GitHub-API heute noch führt*: **254** Läufe zwischen **2026-07-20T17:40:53Z** und
-**2026-08-25T21:38:54Z**
+`push`, den die GitHub-API heute noch führt*: **262** Läufe zwischen **2026-07-20T17:40:53Z** und
+**2026-08-27T06:10:26Z**
 (`gh run list --workflow=ci --limit 300 --json event,conclusion --jq '[.[]|select(.event=="push")]|length'`
 und `gh run list --workflow=ci --limit 300 --json createdAt --jq '[.[].createdAt]|(min+"  bis  "+max)'`).
-Ihre Ausgänge: **201** `success` · **45** `cancelled` · **8** `failure`
+Ihre Ausgänge: **204** `success` · **47** `cancelled` · **11** `failure`
 (`gh run list --workflow=ci --limit 300 --json event,conclusion --jq '[.[]|select(.event=="push")|.conclusion]|group_by(.)|map({k:.[0],n:length})'`).
 
 **Keine dieser Zahlen ist ein Erwartungswert.** Sie wandern mit jedem Push, und die API hält ihr
@@ -89,11 +89,19 @@ Fenster nur begrenzt: Läufe vor dem 2026-07-20 sind nicht mehr abrufbar, ihre P
 nicht. Was hier gemessen wird, ist eine **Momentaufnahme über ein endliches Fenster** — und genau
 das ist ein Grund, den Befund jetzt zu entscheiden statt später.
 
-Die acht, jeder mit dem Job, der rot wurde
-(`gh run view <run> --json jobs --jq '.jobs[]|select(.conclusion=="failure")|.name'`):
+Die elf, jeder mit dem Job, der rot wurde
+(`gh run view <run> --json jobs --jq '.jobs[]|select(.conclusion=="failure")|.name'`). **Zwölf
+Zeilen für elf Läufe:** der Lauf `32981552921` trägt **zwei** rote Jobs, und sie gehören
+verschiedenen Klassen an (dasselbe Kommando über diesen Lauf → `gates` und `mutate`). Die
+Zuordnungs-Einheit ist damit der **Job**, nicht der Lauf — der Nenner der DoD zählt Läufe und ist
+deshalb eine Untergrenze für die Zahl der Zeilen, nie eine Obergrenze.
 
 | Zeitpunkt | Lauf | roter Job | die Zeile, die den Ausgang entscheidet |
 |---|---|---|---|
+| 2026-08-26T19:28 | `33005323228` | `gates` | `d-check: 403 Datei(en) geprüft, 1 Befund(e)`, der eine Befund `target-missing` auf einen Verweis nach `../../../../.harness/state/bin` <!-- d-check:ignore (verbatim gespiegelte Protokollzeile: der Befund IST, dass dieses Ziel gitignoriert ist; ein auflösbarer Pfad daraus machte das Zitat unwahr) --> aus einer `done/`-Notiz |
+| 2026-08-26T18:46 | `33001548628` | `gates` | dieselbe Zeile, `d-check: 400 Datei(en) geprüft, 1 Befund(e)` |
+| 2026-08-26T14:52 | `32981552921` | `mutate` | `mutate: BEFUND  169-feldliste-grenze-bestand-weg  rot, aber 'TestFeldliste_GrenzeUeberDenBestand' faellt nicht — falscher Grund`, zwei Zeilen darunter `unexpected status from HEAD request to https://registry-1.docker.io/v2/docker/dockerfile/manifests/1.7: 502 Bad Gateway` |
+| 2026-08-26T14:38 | `32981552921` | `gates` | dieselbe Zeile, `d-check: 399 Datei(en) geprüft, 1 Befund(e)` |
 | 2026-08-25T13:41 | `32854817497` | `full-smoke` | `unexpected status from HEAD request to https://registry-1.docker.io/…/golang/manifests/1.27.0: 502 Bad Gateway` |
 | 2026-08-25T06:08 | `32815700451` | `mutate` | `ABBRUCH — make full-smoke ist schon ohne Mutation rot.` — **ohne** die Ausgabe des roten Modus |
 | 2026-08-25T03:35 | `32805781361` | `gates` | `d-check: 368 Datei(en) geprüft, 19 Befund(e)`, alle `target-missing` |
@@ -108,22 +116,46 @@ Die Zeilen stammen aus den Job-Protokollen, je Job über
 
 ### Vier Klassen, nicht eine — und nicht drei
 
-**(K1) Eine ausgehende HTTP-Abhängigkeit antwortete non-2xx.** Zwei Vorfälle, **zwei verschiedene
-Hosts**: am 2026-08-25 die Docker-Registry beim Auflösen des gepinnten `golang:1.27.0`
+**(K1) Eine ausgehende HTTP-Abhängigkeit antwortete non-2xx.** Drei Vorfälle, **zwei verschiedene
+Hosts** und **drei verschiedene angeforderte Artefakte**: am 2026-08-25 die Docker-Registry beim
+Auflösen des gepinnten `golang:1.27.0`
 (`gh api repos/:owner/:repo/actions/jobs/97824094857/logs | grep -c '502 Bad Gateway'` → **4**
 Zeilen), am 2026-07-28 der Release-Asset-Abruf des damaligen `baseline-fetch`
 (`gh api repos/:owner/:repo/actions/jobs/90194069383/logs | grep -c '502 Bad Gateway'` → **0**, mit
 `grep -c 'HTTP 502'` → **1** — dieselbe Sache in anderer Schreibweise, und genau daran hängt, dass
-kein Muster über beide Vorfälle greift). **Getragen.**
+kein Muster über beide Vorfälle greift), und am 2026-08-26 dieselbe Registry beim Auflösen von
+`docker/dockerfile:1.7` — diesmal **innerhalb von `make mutate`**
+(`gh api repos/:owner/:repo/actions/jobs/98219369372/logs | grep -c '502 Bad Gateway'` → **1**).
+**Getragen.**
+
+**Der dritte Vorfall teilt die Klasse an ihrem Sensor, nicht an ihrer Ursache.** DoD (2) bindet den
+Ausgang *„als Umgebungs-Eigenschaft ausgewiesen"* an die Bedingung, dass **der Lauf es selbst
+sagt**. Für `make full-smoke` ist das dieser Slice; `make mutate` sagt es nicht, und die zwei
+Muster, die den Vorfall erkannt hätten, sind nachgemessen — dieselbe Protokolldatei durch
+`grep -cE '(^|[[:space:]])> (\[internal\] load metadata for|resolve image config for )'` → **1**
+und durch `grep -cE 'unexpected status from [A-Z]+ request to https?://'` → **1**, gegen
+`grep -c 'einordnen\|full-smoke-ausgang' harness/tools/mutate.sh` → **0** (Exit 1). Nicht der
+Einordner ist zu eng, sondern seine Reichweite: derselbe Ausfall trägt in `full-smoke` einen
+Ausgang und in `mutate` keinen.
 
 **(K2) Der reine Move-Commit lässt Verweise auf den alten Pfad zurück.** Drei Vorfälle, alle im
 `gates`-Job, alle `target-missing`. **Getragen.**
 
-**(K3) Der Sensor hat einen echten Defekt gefunden.** Zwei Vorfälle: die Kennungs-Link-Pflicht am
-2026-07-23 (`LH-QA-01` bar im Text, `id-unlinked`) und die fehlende C++-Gate-Ausführung nach <!-- d-check:ignore (dieselbe verbatim gespiegelte Kennung: der Befund IST ihre Unverlinktheit) -->
-`add-lang cpp` am selben Tag. **Nicht getragen** — Ausgang **abgelehnt**: das ist kein Befund über
-die CI, sondern ihr Zweck. Ein Slice, der dies mitträgt, erklärte funktionierende Sensoren zum
-Problem.
+**(K3) Der Sensor hat einen echten Defekt gefunden.** Fünf Vorfälle: die Kennungs-Link-Pflicht am
+2026-07-23 (`LH-QA-01` bar im Text, `id-unlinked`), die fehlende C++-Gate-Ausführung nach <!-- d-check:ignore (dieselbe verbatim gespiegelte Kennung: der Befund IST ihre Unverlinktheit) -->
+`add-lang cpp` am selben Tag, und am 2026-08-26 dreimal derselbe Verweis aus einer `done/`-Notiz
+auf einen Pfad, den `git` ignoriert. **Nicht getragen** — Ausgang **abgelehnt**: das ist kein
+Befund über die CI, sondern ihr Zweck. Ein Slice, der dies mitträgt, erklärte funktionierende
+Sensoren zum Problem.
+
+**Die drei vom 2026-08-26 tragen daneben eine zweite Beobachtung, und die ist kein Rot der CI,
+sondern ein Grün auf dem Host.** Der Verweis ist getilgt (`git show --stat c4a0c03` → **1** Datei,
+**1** Einfügung, **1** Löschung), das Rot damit erledigt. Was bleibt, ist die Bedingung, unter der
+`make docs-check` ihn lokal **nicht** sah: das Ziel liegt im gitignorierten Zustands-Bereich und
+existiert im Arbeitsbaum, sobald ein früherer Lauf ihn angelegt hat. Diese Hälfte ist **kein**
+Gegenstand dieses Slice — sie betrifft den Prüfbereich des Doku-Gates, nicht die Ausgabe eines
+Sensors — und hat einen eigenen Träger
+([slice-116](../open/slice-116-doku-gate-urteilt-ueber-den-getrackten-bestand.md)).
 
 **(K4) `mutate` bricht ab, weil `full-smoke` in der isolierten Kopie schon ohne Mutation rot war —
 und der Grund steht in keinem Protokoll.** Ein Vorfall. **Getragen**, aber als **aufgeschoben mit
@@ -237,7 +269,7 @@ das dabei und wird begründet, statt ein Kommando zu erfinden
 ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) gilt auch
 für Plan-Texte).
 
-- [ ] **(1) Jeder rote Lauf des Fensters trägt genau einen von vier Ausgängen, und die Klasse ist
+- [x] **(1) Jeder rote Lauf des Fensters trägt genau einen von vier Ausgängen, und die Klasse ist
       mit der Protokollzeile benannt, die sie entscheidet.** Die vier Ausgänge: **diagnostiziert**
       (Ursache benannt, mit Sensor oder Grenze) · **als Umgebungs-Eigenschaft ausgewiesen** (mit dem
       Beleg, nicht der Plausibilität) · **abgelehnt** mit Grund · **aufgeschoben** mit einem
@@ -251,7 +283,7 @@ für Plan-Texte).
       Auch dieser Nenner ist **kein Gate**: er braucht Netz und das Retentions-Fenster der API —
       dieselbe Begründung, aus der `make hook-overhead` eine Messung ist und kein Sensor. Diese
       Hälfte trägt das Review.
-- [ ] **(2) Der Ausgang „Umgebungs-Eigenschaft" wird nur getragen, wenn `make full-smoke` selbst
+- [x] **(2) Der Ausgang „Umgebungs-Eigenschaft" wird nur getragen, wenn `make full-smoke` selbst
       sagt, welcher Fall vorliegt.** Der Lauf unterscheidet in seiner **eigenen Ausgabe** *„eine
       ausgehende Anfrage nach einem gepinnten Artefakt wurde nicht mit 2xx beantwortet"* von *„der
       geprüfte Baum ist rot"*. Bis er das tut, bleibt K1 **aufgeschoben**, nicht ausgewiesen: eine
@@ -267,7 +299,7 @@ für Plan-Texte).
       Host-Artefakt-Bau, nicht den Bau im emittierten Repo, an dem der gemessene Vorfall hing —
       welche der **90** Manifest-Auflösungen die Unterscheidung abdeckt, gehört gemessen, nicht
       angenommen.
-- [ ] **(3) Das Rot des reinen Move-Commits ist als erwartete Eigenschaft ausgewiesen, mit dem
+- [x] **(3) Das Rot des reinen Move-Commits ist als erwartete Eigenschaft ausgewiesen, mit dem
       Kriterium, das es von einem echten Defekt trennt.** Das Kriterium: **jeder** Befund des Laufs
       nennt die verschobene Datei — als Ziel auf ihrem alten Pfad oder als Quelle in ihr selbst.
       Nennt ein Befund etwas anderes, ist das Rot **nicht** strukturell und geht in Klasse K3.
@@ -389,7 +421,295 @@ funktionierende Sensoren waren.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Was gilt.** Ein fehlgeschlagener Abschnitt von `make full-smoke` nennt in der Ausgabe des Laufs
+seinen Ausgang: **LEITUNG**, wenn eine ausgehende Anfrage nach einem gepinnten Artefakt nicht mit
+2xx beantwortet wurde — mit der Zeile, die das trägt, und der Nummer des Musters, das griff —,
+sonst **BAUM**, mit der Zahl der gelesenen Zeilen und dem Satz *„wird zugerechnet"*. Beide Ausgänge
+enden mit demselben Exit-Code; ein eigener wäre die Einladung zur Senkung, die
+[`AGENTS.md`](../../../../AGENTS.md) §3.5 an ein ADR bindet. **Wofür die Unterscheidung gilt, steht
+als Kriterium und nicht als Fundstellen-Liste da** — eingeordnet ist jeder Abschnitt, der ein Bild
+anfordern kann —, und das Kriterium hat einen Wächter:
+`grep -c '^@test' test/full-smoke-ausgang.bats` → **9**, davon zwei über der Abdeckung. Der Bestand
+an Mutations-Fällen steht bei `ls -1 test/mutations/*.sh | wc -l` → **183**, die höchste vergebene
+Nummer bei `ls -1 test/mutations/*.sh | sed -n 's#.*/\([0-9]*\)-.*#\1#p' | sort -n | tail -1` →
+**190**. Alle drei Zahlen wandern mit ihrem Bestand und sind **kein** Erwartungswert
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2).
+
+**Die Gleichung, die die Zusage trägt, über dem Baum dieser Closure selbst gefahren:**
+`grep -cE '\|\| [a-z_0-9]+=\$\?$' harness/tools/full-smoke.sh` → **33** (A), dieselbe Liste durch
+`grep -cE ' -n |span-clean|bash "\$wrapper"'` → **5** (B) und durch
+`grep -c 'tmpbin/ai-harness-init'` → **6** (C), gegen
+`grep -cE '^[[:space:]]*einordnen "' harness/tools/full-smoke.sh` → **24** (D). **33 − 5 − 6 = 22**
+und **24 − 2 = 22**.
+
+**Der Closure-Trigger aus §5, Kriterium für Kriterium.**
+
+1. **DoD (1)–(3) erfüllt, mit gefahrenen Kommandos.** DoD (2) und (3) sind von der
+   [Verifikation](../../../reviews/2026-08-27-slice-106-verify.md) über beiden Rot-Zuständen
+   bestätigt; DoD (1) fiel dort an seinem eigenen Nenner und ist mit dieser Closure geschlossen
+   (nächster Absatz).
+2. **Jeder rote Lauf des Fensters trägt seinen Ausgang samt entscheidender Protokollzeile.**
+   Erfüllt über **elf** Läufe in **zwölf** Zeilen. §5 verlangt es für *„jeder der acht"* — die Zahl
+   dort bleibt stehen, denn sie ist der Maßstab, und wer elf einordnet, hat acht eingeordnet.
+3. **Der nicht auflösbare Pin ist einmal rot gesehen und hat den unterscheidenden Satz getragen.**
+   Fremdbelegt: [Verifikation](../../../reviews/2026-08-27-slice-106-verify.md) §3.1 gibt beide
+   Meldungen wörtlich wieder, aus zwei selbst hergestellten Zuständen (R1 LEITUNG, R2 BAUM).
+4. **Frage A, B und C sind beantwortet** — unten in dieser Notiz, nicht in §3. §5 verlangt sie
+   *„im Plan"*; sie stehen damit in der Plan-Datei, aber in ihrem Closure-Abschnitt statt in einem
+   Vor-Code-Abschnitt. Eine Vor-Code-Tabelle nachträglich mit dem Ergebnis zu füllen, machte aus
+   einer offenen Frage eine erfundene Voraussicht.
+5. **Die Beschreibung in [`harness/README.md`](../../../../harness/README.md) ist gezogen.** Der
+   Nicht-Gate-Verify-Absatz trägt beide Ausgänge und dieselben vier Zählausdrücke wie der Sensor
+   selbst; ein zweiter Satz daneben wäre die Drift-Konstruktion.
+6. **Review konform (Modul 10).**
+   [Code-Review](../../../reviews/2026-08-27-slice-106-review.md): *nicht formal frei*,
+   `grep -c '^### F-' docs/reviews/2026-08-27-slice-106-review.md` → **4** (0 HIGH · 3 MEDIUM ·
+   1 LOW). F-2 ist behoben, F-3 hat seit `ae00252` einen Wächter, F-1 und F-4 stehen unten als
+   Delta.
+7. **Verifikation (Modul 11).**
+   [Bericht](../../../reviews/2026-08-27-slice-106-verify.md): *nicht frei, solange DoD (1) offen
+   ist*, `grep -cE '^### 6\.[0-9]+ B-' docs/reviews/2026-08-27-slice-106-verify.md` → **8**
+   Beobachtungen. B-1 ist mit dieser Closure erledigt, B-5 ist behoben, B-2/B-4/B-7 haben unten
+   einen Träger, B-3 ist bis auf einen benannten Rest geschlossen, B-6 steht als Delta, B-8 hat
+   einen eigenen Schnitt.
+8. **`make gates` grün.** Eigener Lauf, Belege unten unter *Gates*.
+9. **`git mv` nach `done/` als eigener Move-Commit** und **Closure-Notiz mit
+   Steering-Loop-Eintrag** — diese Notiz; der Eintrag steht unten.
+
+**Die Liste in §1 ist ein Register, kein Maßstab — deshalb ist sie ergänzt worden.**
+[slice-097](../done/slice-097-rollen-typen-gehen-mit.md) §7 hat die Grenze gezogen: eine
+**Tatsachenbehauptung über die Welt** wird korrigiert, sobald sie widerlegt ist — sie war nie
+Maßstab, sondern Begründung; ein **Abnahme-Kriterium samt seinem Rot-Kommando** wird nicht
+korrigiert, sondern als Delta ausgewiesen. Die Liste ist das erste: sie behauptet, welche Läufe rot
+waren, und diese Behauptung ist heute widerlegbar und widerlegt worden
+(`gh run list --workflow=ci --limit 300 --json event,conclusion --jq '[.[]|select(.event=="push" and .conclusion=="failure")]|length'`
+→ **11**). Sie ist zudem ausdrücklich als fortzuschreibend geschnitten — §3 sagt, ein neuer roter
+Lauf werde **vor** der ersten Einordnung aufgenommen. Ergänzt sind vier Zeilen über drei Läufe; die
+Fenster-Zahlen sind mit ihren Kommandos neu erhoben. **Nicht angepasst ist der Maßstab:** §2 lässt
+sein Nenner-Kommando unverändert, §5 seine Acht. Ein Kriterium, das man am Ende an das Ergebnis
+anpasst, hört auf, eines zu sein.
+
+**Das Delta ist damit nicht die Zahl, sondern der Zeitpunkt.** §3 verlangt die Aufnahme **vor** der
+ersten Einordnung; erfolgt ist sie bei der Closure. Der Grund ist benennbar und wiederholbar: die
+Liste hat kein Kommando, das ihre Unvollständigkeit rot färbt — der Nenner ist eine Netz-Abfrage
+über ein Retentions-Fenster und ausdrücklich kein Gate (§2). Wo nur eine Rolle nachzählt, zählt sie
+am Ende nach. **Was daraus folgt, steht unten als Posten, nicht als Vorsatz.**
+
+**Der Ausgang je Klasse, mit dem Grund.**
+
+- **K1 — eine ausgehende HTTP-Abhängigkeit antwortete non-2xx (drei Vorfälle).** Zwei davon liegen
+  in `make full-smoke`: Ausgang **als Umgebungs-Eigenschaft ausgewiesen**, und der Ausweis ist der
+  Sensor selbst — das ist die Lieferung dieses Slice. Der Fetch-Punkt des Vorfalls vom 2026-07-28
+  existiert nicht mehr
+  ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache);
+  `git grep -c 'baseline-fetch' -- Makefile harness/` → leer, Exit 1). Der dritte liegt in
+  `make mutate`: Ausgang **aufgeschoben**, und nicht ausgewiesen, weil DoD (2) den Ausweis an die
+  Bedingung bindet, dass **der Lauf es selbst sagt** — `make mutate` sagt es nicht. **Der
+  Auflösungs-Trigger, ohne Rückfrage entscheidbar:** der erste Fehlschlag in `make mutate`, der
+  `AUSGANG LEITUNG` in seiner Ausgabe trägt; möglich wird er mit
+  [slice-115](../open/slice-115-jeder-sensor-sagt-seinen-ausgang.md), für den dieser Vorfall der
+  Anlass ist.
+- **K2 — der reine Move-Commit lässt Verweise auf den alten Pfad zurück (drei Vorfälle).** Ausgang
+  **als Eigenschaft ausgewiesen, mit entscheidbarem Kriterium**: jeder Befund nennt die verschobene
+  Datei, als Ziel auf ihrem alten Pfad oder als Quelle in ihr selbst. Belegt an drei Läufen statt
+  einem ([Verifikation](../../../reviews/2026-08-27-slice-106-verify.md) §4) — und das Kriterium
+  trennt gemessen auch nach unten: die drei roten `gates`-Läufe vom 2026-08-26 erfüllen es **nicht**
+  und sind auch keine Move-Folge.
+- **K3 — der Sensor hat einen echten Defekt gefunden (fünf Vorfälle).** Ausgang **abgelehnt**: das
+  ist kein Befund über die CI, sondern ihr Zweck. Die drei vom 2026-08-26 tragen daneben eine
+  Beobachtung über einen **grünen** Lauf auf dem Host; sie ist nicht Gegenstand dieses Slice und hat
+  einen eigenen Träger
+  ([slice-116](../open/slice-116-doku-gate-urteilt-ueber-den-getrackten-bestand.md)).
+- **K4 — `mutate` bricht ab, weil `full-smoke` in der isolierten Kopie schon ohne Mutation rot war
+  (ein Vorfall).** Ausgang **aufgeschoben**, unverändert. Der Trigger aus §4 ist **nicht**
+  eingetreten: der `mutate`-Fehlschlag vom 2026-08-26 hat eine andere Form — dasselbe Protokoll
+  durch `grep -c 'ABBRUCH'` → **0** (Exit 1) gegen `grep -c 'BEFUND'` → **1**. Ein Abbruch der in §4
+  genannten Form ist im Fenster nicht wieder aufgetreten.
+
+**Frage A, B und C — die Antworten, die der Lauf getroffen hat.**
+
+- **A (woran erkennt der Sensor die nicht beantwortete Anfrage?)** An der Ausgabe des Bau-Werkzeugs,
+  über **vier** Muster, und jedes steht neben dem Lauf, an dem es gemessen wurde
+  (`sed -n '/^MUSTER=(/,/^)/p' harness/tools/full-smoke-ausgang.sh | grep -c "^\s*'"` → **4**). Die
+  enge Form aus Weg (C) — die Bilder vorher holen — ist **nicht** gebaut: sie hätte den Fehlschlag
+  an eine Stelle verlegt, die wir besitzen, aber sie deckt nur die Bilder ab, die dieser Baum kennt,
+  und der Lauf fordert auch die des **emittierten** Repos an. Der Preis der gewählten Form steht in
+  §6 und im Kopf des Einordners: ändert ein Bau-Werkzeug seinen Wortlaut, fällt die Einordnung auf
+  BAUM zurück — rot bleibt rot, die Aussage wird unschärfer, nie beschönigender.
+- **B (deckt die Unterscheidung alle Fetch-Punkte oder einen?)** Sie deckt sie als **Kriterium**,
+  nicht als Liste: eingeordnet ist jeder Abschnitt, der ein Bild anfordern kann, und die Probe
+  darauf ist die Gleichung oben. Ausdrücklich **nicht** gedeckt sind die Paketquellen der C++-Kette
+  — ein `apt`-Paket ist kein gepinntes Artefakt und fällt in den BAUM-Ausgang; das steht im Kopf des
+  Einordners. Die Rückführung aus §4 (*„jeder der 90 Fetch-Punkte einzeln"*) ist damit **nicht**
+  gezogen worden, und der Grund ist der Wechsel der Bezugsgröße: 90 Auflösungen liegen hinter 22
+  eingeordneten Abschnitten.
+- **C (bekommt K2 einen Sensor oder eine Feststellung?)** Eine **Feststellung mit Kriterium**. Ein
+  Wächter darüber hätte ein CI-Protokoll als Prüfgegenstand, das keine `make`-Stufe kennt; das
+  Kriterium dagegen ist ohne Urteil entscheidbar und hat sich an vier Läufen bewährt — an drei nach
+  oben, an dreien nach unten.
+
+**Vier Plan-vs-Code-Deltas — benannt, nicht geglättet.**
+
+- **(1) Das Rot-Kommando von DoD (2) misst nichts, und es bleibt stehen.**
+  `make build GO_VERSION=9.99.9-gibt-es-nicht` → **EXIT=0** in **1,30 s** (eigener Lauf; die vierte
+  unabhängige Messung nach Implementer, Review und Verifikation). Der Grund steht in der Ausgabe des
+  Laufs selbst: `grep -n '^FROM golang:' Dockerfile` → Zeile **14**, und dort steht der Digest hinter
+  dem Tag — der Tag-Text wandert durch und entscheidet nichts. Wirksam ist die Variable über das
+  **emittierte** Fragment (`grep -n 'FROM golang:' internal/gen/golang.go` → Zeile **882**, ohne
+  Digest, mit Begründung im Code), und genau dort setzt `test/mutations/189` an. **Die Bedingung ist
+  erfüllt, ihr Kommando nicht** — und das Kommando wird nicht nachgezogen: es ist Teil des Maßstabs,
+  an dem der Lauf gemessen wurde.
+- **(2) Zwei neue Artefakte fehlen in der §3-Tabelle:**
+  [`harness/tools/full-smoke-ausgang.sh`](../../../../harness/tools/full-smoke-ausgang.sh) und
+  `test/full-smoke-ausgang.bats`.
+  `git show --name-status --format= f959912 ae00252 | sort -u` führt **9** Zeilen über **8**
+  Dateien; §3 nennt für zwei davon keine Zelle. Die Tabelle wird **nicht** ergänzt — sie ist die
+  Vor-Code-Aussage, und ein nachträglicher Eintrag machte aus einer Auslassung eine Voraussicht.
+- **(3) Die Fragen A/B/C sind im Code beantwortet worden, nicht im Plan.** Ihre Antworten stehen
+  oben in dieser Notiz; §3 bleibt unverändert.
+- **(4) Die nicht-mechanische Hälfte von DoD (1) hat nicht der Träger getragen, den der Plan
+  benennt.** §2 sagt *„Diese Hälfte trägt das Review"*; das Review vom 2026-08-27 ist ein
+  **Code**-Review gegen den Diff und hat den Nenner nicht erhoben. Gefunden hat die Lücke die
+  Verifikation, eingeordnet hat sie diese Closure. Der Plan hat damit einer Rolle eine Aufgabe
+  gegeben, die außerhalb ihres Gegenstands liegt — ein Befund über den **Schnitt**, nicht über die
+  Rolle.
+
+**Was der Slice nicht deckt — die Grenzen, die er für sich selbst zieht.**
+
+- **Die Einordnung reicht so weit wie ihr Aufrufer.** `make mutate` fordert dieselben Bilder an und
+  ruft den Einordner nicht (`grep -c 'einordnen\|full-smoke-ausgang' harness/tools/mutate.sh` → **0**,
+  Exit 1). Gemessen ist, dass der Ausfall vom 2026-08-26 dort als *Befund über einen Wächter*
+  erschien, den es nicht gab.
+- **LEITUNG trägt seine Grenze nicht in der Meldung, BAUM tut es.** Der Kopf des Einordners schreibt
+  für BAUM aus, was der Ausgang **nicht** sagt (`grep -c 'WAS DER BAUM-AUSGANG NICHT SAGT' harness/tools/full-smoke-ausgang.sh`
+  → **1**); eine entsprechende Zeile für LEITUNG gibt es nicht (dieselbe Datei durch
+  `grep -c 'WAS DER LEITUNG-AUSGANG NICHT SAGT'` → **0**, Exit 1). Der einzige End-zu-Ende-Beleg der
+  Unterscheidung ist ausgerechnet ein Baum-Defekt: `test/mutations/189` schreibt einen nicht
+  vergebenen Tag in das emittierte Fragment, und der Sensor sagt LEITUNG. Der Satz ist nicht falsch
+  — er beobachtet, dass die Anfrage nicht mit 2xx beantwortet wurde —, aber ein selbst gesetzter,
+  nicht auflösbarer Pin liest sich für den nächsten Leser als Registry-Aussetzer.
+- **Der Abdeckungs-Wächter misst Anwesenheit, nicht Identität.** Selbst gemessen auf einer
+  isolierten Kopie außerhalb des Repos: eine Zeile umgeschrieben, sodass eine Einordnung die Ausgabe
+  eines **anderen** Abschnitts übergibt (`einordnen "make -j gates im Ziel (--lang go)"` bekommt
+  `$artefakt_out` statt `$gates_out`) — `make test-bats` **EXIT=0**, `make shell-lint` **EXIT=0**,
+  `make comment-claims` `46 Datei(en) geprueft, 0 Befund(e)`. Dieselbe Kopie mit der **entfernten**
+  Zeile fällt dagegen sofort und lesbar: `not ok 71 … 22 make-Stufen geprueft, ohne Einordnung:
+  [Zeile 217]` und `not ok 72 … A=33 B=5 C=6 D=23 -> A-B-C=22 gegen D-2=21`. Der Wächter deckt
+  **beide** Drift-Richtungen der Menge und **keine** Drift innerhalb eines Abschnitts.
+- **Was CI grün meldet, sagt nichts über die Fläche daneben.** Kein Kriterium dieses Slice verlangt,
+  dass die CI danach grün ist (§5); erfüllt ist die **Einordnung**, nicht die Farbe.
+
+**Steering-Loop-Eintrag — geschärfte Regel.**
+
+**Ein Kommando, das in demselben Artefakt steht, dessen Bestand es misst, zählt seine eigene
+Erwähnung mit. Die Zahl gehört deshalb erhoben, **nachdem** das Kommando geschrieben ist, und mit
+genau der Fassung, die dort steht — die Reihenfolge *Kommando schreiben, dann messen* ist keine
+Sorgfalt, sondern die Bedingung, unter der die Zahl überhaupt gilt.**
+
+**Der gemessene Anlass.** Der Kopf von
+[`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) trägt die Probe auf die
+Abdeckungs-Zusage als Gleichung; ihr letzter Term ist eine Zählung der Einordnungen in derselben
+Datei. Mit dem Aufschreiben der Gleichung enthielt die Datei den gesuchten String ein zusätzliches
+Mal: `grep -c 'einordnen "' harness/tools/full-smoke.sh` → **25**, während die Menge, über die die
+Zusage spricht, **24** Elemente hat — die 25. Fundstelle ist Zeile **47**, die Gleichung selbst
+(`grep -n 'einordnen "' harness/tools/full-smoke.sh | head -1`). Behoben ist es durch einen Anker:
+`grep -cE '^[[:space:]]*einordnen "' harness/tools/full-smoke.sh` → **24**, weil die Kommentarzeile
+mit `#` beginnt. Gefunden hat es kein Gate, sondern das erneute Fahren des Kommandos **nach** dem
+Schreiben.
+
+**Warum das nicht der Einzelfall ist, mit der Menge vor der Zahl.** Die Eigenschaft: *ein Kommando,
+dessen Prüfbereich den Text enthält, der es zitiert*. **Zwei** Fundorte tragen sie mit Beleg —
+dieser hier und der Watcher-Selbstmatch in
+[slice-045a](../done/slice-045a-hexslice-go-renderer.md) §7
+(`grep -c 'Watcher-Selbstmatch' docs/plan/planning/done/slice-045a-hexslice-go-renderer.md` → **1**:
+ein `pgrep -f`-Muster, das die eigene Prozesszeile traf und den Watcher nie terminieren ließ). Ein
+dritter Fall — eine Fenster-Prüfung, die `make gates` in ihrer eigenen Kommandozeile traf — ist aus
+der Übergabe berichtet; **für ihn liefert kein Kommando einen Fundort**, und das steht hier, statt
+ein ungefähr passendes danebenzustellen
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 1). **Untergrenze, mit Absicht:** ob eine Zählung ihre eigene Erwähnung trifft, ist ein
+Urteil über den Prüfbereich und kein Muster.
+
+**Warum ausgerechnet dieser Eintrag, und nicht die zwei anderen Kandidaten.** Der Implementer hat
+ein **drittes** Rot gefahren, das niemand verlangt hatte — den zweiten Meldungs-Zweig seiner
+Gleichung, mit der Begründung, eine nie im Rot gelesene Fehlermeldung sei genau die Klasse dieses
+Slice. Das ist die Anwendung des **sechsten** Postens von
+[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) auf einen frisch geschriebenen
+Wächter und damit ein **Beleg**, dass jener Posten trägt — kein neuer Lerneintrag, sondern das
+Gegenteil eines fehlenden Trägers. Der Selbsttreffer dagegen hat in der Postens-Liste **keine**
+Achse: die Postens zwei bis acht handeln von den Trägern eines Rot-Belegs, seiner Reichweite, seinem
+Gegenstand, der Richtung seines Fehlers, seiner Ausgabe, der Anweisung im Quelltext und dem Baum,
+über dem er erhoben wurde; der neunte von der Form der Plan-Tabelle. Keiner handelt von der
+**Rückwirkung des Messens auf das Gemessene** — und die entsteht hier nicht zufällig, sondern durch
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 1 selbst, die Zahl und Kommando in dasselbe Artefakt zwingt. Eine Regel, die ihre eigene
+Fehlerquelle erzeugt, gehört um deren Behandlung ergänzt.
+
+**Träger: [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) — als zehnter Posten,
+ausdrücklich nicht *„der Architect"*.** Jener Slice ist für diese Klasse geschnitten, trägt seinen
+Termin selbst und verlangt in §3, dass ein weiterer Posten **vor** der ersten Entscheidung
+aufgenommen wird und dabei steht, woran er erkannt ist. Er ist dort eingetragen; **der Regeltext
+wird hier nicht vorentschieden**, er entsteht im Architect-Lauf
+([`AGENTS.md`](../../../../AGENTS.md) §3.8,
+[`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1).
+
+**Der neunte Posten von [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) ist
+geschärft, nicht verdoppelt.** Er verlangte bisher, die Plan-Tabelle §3 nenne auch die *bestehende
+gemeinsame Stelle*, die ein neuer Wächter bewegen muss. Delta (2) oben ist die **vierte** Instanz
+derselben Symptom-Klasse und die **erste**, die der Posten in seiner bisherigen Fassung nicht fängt:
+die zwei fehlenden Dateien sind **neu angelegt**, keine bewegte Bestandsstelle — und die eine von
+ihnen ist der Träger der Sache selbst. Ein zehnter Posten für denselben Adressaten (die Form des
+Plans), denselben Ausgang (ein Eintrag im Adaptions-Block) und dasselbe Kommando in dessen DoD (2)
+wäre eine Zweitfassung, die driftet; geschärft ist deshalb der vorhandene.
+
+**Offen, mit Träger.**
+
+| Posten | Träger |
+|---|---|
+| `make mutate` fordert dieselben gepinnten Bilder an und ruft den Einordner nicht; der Ausfall vom 2026-08-26 erschien dort als Befund über einen Wächter, den es nicht gab | **[slice-115](../open/slice-115-jeder-sensor-sagt-seinen-ausgang.md)** — Anlass, DoD (1) und der aufgeschobene K1-Ausgang |
+| LEITUNG trägt seine Grenze nirgends, BAUM trägt sie in der Meldung; der einzige End-zu-Ende-Beleg der Unterscheidung ist ein Baum-Defekt | **[slice-115](../open/slice-115-jeder-sensor-sagt-seinen-ausgang.md)** — dieselbe Datei, dieselbe Frage |
+| Der Abdeckungs-Wächter prüft, **dass** eingeordnet wird, nicht **welche** Ausgabe; eine falsch verdrahtete Zeile lässt drei Sensoren grün (oben gemessen) | **[slice-115](../open/slice-115-jeder-sensor-sagt-seinen-ausgang.md)** — die Prüfschleife liegt fertig in der [Verifikation](../../../reviews/2026-08-27-slice-106-verify.md) §3.3 |
+| `make docs-check` sieht einen Verweis auf einen gitignorierten Pfad lokal nicht, sobald ein früherer Lauf das Ziel angelegt hat; drei der elf roten Läufe gehen darauf zurück | **[slice-116](../open/slice-116-doku-gate-urteilt-ueber-den-getrackten-bestand.md)** |
+| Die Menge des Abdeckungs-Kriteriums altert an einer Stelle, die das Kriterium nicht sieht: eine künftige **bare** `make`-Zeile unter `set -e` läge außerhalb von A, forderte ein Bild an und ließe die Gleichung unverändert wahr | **[slice-115](../open/slice-115-jeder-sensor-sagt-seinen-ausgang.md)** — als §3-Zelle des Wächters, der ohnehin angefasst wird; heute ist die Lücke leer, **fremdbelegt** über alle `make `-Zeilen des Sensors ([Verifikation](../../../reviews/2026-08-27-slice-106-verify.md) §3.3: keine ausführende ohne eigenen Exit-Code) |
+| Ein Kommando, das seine eigene Erwähnung mitzählt | **[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md)** — der Steering-Loop-Eintrag oben, dort als zehnter Posten eingetragen |
+| Die Plan-Tabelle §3 nennt auch die Dateien, die der Lauf **neu anlegt** | **[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md)** — der neunte Posten, dort geschärft |
+| Die Vollständigkeit der Ausgangs-Liste hat kein Kommando, das sie rot färbt — der Nenner braucht Netz und ein Retentions-Fenster | **kein Träger, und das ist entschieden** — §2 sagt es selbst, und ein Gate über einer fremden API wäre eines, das ohne Befund rot wird ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) |
+| Ob ein Adopter dieselbe Unterscheidung bekommt | **kein Träger, und das ist entschieden** — der Sensor geht in kein Zielrepo (Kopfzeile *Ebene*); was die emittierte Ebene bekommt, entscheidet der Slice, der die Tool-Ebene entscheidet |
+
+**Folge-Slices: zwei neue `open/`-Einträge.**
+[slice-115](../open/slice-115-jeder-sensor-sagt-seinen-ausgang.md) (jeder Sensor, der gepinnte
+Bilder anfordert, nennt seinen Ausgang — und der Wächter misst, welche Ausgabe eingeordnet wird) und
+[slice-116](../open/slice-116-doku-gate-urteilt-ueber-den-getrackten-bestand.md) (der Doku-Gate
+urteilt über den getrackten Bestand, nicht über die Rückstände eines früheren Laufs). **Beide sind
+wellenlos** — die drei Fragen aus
+[`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
+Setzung 1 sind in ihren Kopfzeilen einzeln beantwortet; die Roadmap bekommt daher keinen Eintrag
+(ebenda Setzung 2/3).
+
+**Was [slice-105](../open/slice-105-mutate-messen-dann-teilen.md) damit bekommt.** Seine DoD (2) und
+(3) hängen daran, dass der Befund an `make full-smoke` einen der vier Ausgänge trägt. Er trägt zwei:
+**ausgewiesen** für den Teil, der in `full-smoke` liegt, **aufgeschoben** für den Teil, der in
+`mutate` liegt. Die Sperre ist damit gelöst; welche Reihenfolge zwischen
+[slice-105](../open/slice-105-mutate-messen-dann-teilen.md) und
+[slice-115](../open/slice-115-jeder-sensor-sagt-seinen-ausgang.md) sinnvoll ist, entscheidet nicht
+diese Notiz — beide fassen `harness/tools/mutate.sh` an, und das ist eine Beobachtung, keine
+Reihenfolge.
+
+**Gates.** Eigener Lauf über dem Baum, den diese Closure hinterlässt — Notiz, Listen-Ergänzung, die
+Schärfung in [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) und die zwei
+geschnittenen Slices eingerechnet: `make gates` **EXIT=0**,
+`baseline-verify: v3.5.2 OK — 42 Dateien`, `d-check: 411 Datei(en) geprüft, 0 Befund(e)`,
+golangci-lint `0 issues.`, bats `grep -c '^ok '` → **162** und `grep -c '^not ok'` → **0**,
+`comment-claims: 46 Datei(en) geprueft, 0 Befund(e)`, `span-check` grün; danach sind
+`bash harness/tools/working-tree-hash.sh` und `.harness/state/gates-passed.diffsha` byte-gleich. Die
+Dateizahl des Doku-Gates wandert mit dem Markdown-Bestand und ist **kein** Erwartungswert
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2); jede weitere Zeile an dieser Notiz verschiebt den Stempel, und der Lauf, der ihn wieder
+bindet, gehört zu ihr. **Fremdbelegt** und ausdrücklich nicht von dieser Rolle erhoben: `make
+full-smoke` (**EXIT=0**, 88,10 s) und `make mutate` (**183 ok, 0 Befund(e)**) — die zwei teuren
+Sensoren stehen in der [Verifikation](../../../reviews/2026-08-27-slice-106-verify.md) §1.1 und in
+der Message von `ae00252`.
 
 ## 8. Sub-Area-Modus-Begründung
 
