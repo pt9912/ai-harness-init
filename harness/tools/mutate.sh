@@ -50,8 +50,10 @@
 #      ABBRUCH. Die Isolation ist dann gebrochen (oder es wurde parallel editiert);
 #      beides macht jede weitere Messung wertlos.
 #
-# NICHT in `make gates` — der Grund ist die LAUFZEIT (ein voller `make test`-Zyklus
-# je Fall, gemessen rund 7 s bei warmem Cache; bei 70+ Faellen eine Viertelstunde).
+# NICHT in `make gates` — der Grund ist die LAUFZEIT: je Fall ein voller Sensor-Lauf,
+# und die Fall-Menge waechst mit jedem bewachten Waechter. Was der Lauf HEUTE kostet,
+# sagt er selbst am Ende (`report_times`), statt es hier als Zahl zu behaupten, die mit
+# dem Bestand wandert.
 # Der frueher hier stehende Grund („dieser Sensor veraendert den Arbeitsbaum") ist
 # mit slice-047 entfallen und wurde ERSETZT, nicht ergaenzt — eine gewanderte Grenze
 # umzuschreiben statt zu kommentieren haelt den Kopf ehrlich. Nicht-Gate-Verify neben
@@ -71,11 +73,27 @@
 # kuerzer als der vollstaendige Vorlauf. Wer den Aufschlag gegen die Gesamtlaufzeit
 # halten will, rechnet ihn aus diesen Werten.
 #
-# ISOLATION: der Baum wird EINMAL pro Lauf nach ausserhalb des Repos kopiert; Seds
-# und Sensor-Laeufe treffen nur diese Kopie. Ausserhalb, weil ein Verzeichnis UNTER
+# ISOLATION: der Baum wird JE WORKER nach ausserhalb des Repos kopiert; Seds und
+# Sensor-Laeufe treffen nur diese Kopien. Ausserhalb, weil ein Verzeichnis UNTER
 # dem Repo ungetrackt im Working Tree laege und den MR-003-Stop-Hook-Hash verschoebe.
 # Der Treiber BELEGT die Unversehrtheit selbst — je Fall zwischen Mutation und Restore,
 # und einmal ueber alle Ziele am Ende —, statt sie zuzusagen.
+#
+# PARALLEL, DYNAMISCH ZUGETEILT: MUTATE_JOBS Worker ziehen ihre Faelle aus einer
+# gemeinsamen Warteschlange, statt einen fest zugeteilten Block abzuarbeiten. Ein
+# statischer Schnitt taugt hier nicht — die Fall-Kosten streuen um mehr als eine
+# Groessenordnung (eine bats-Stufe gegen einen full-smoke-Lauf), und der Worker mit dem
+# teuren Block bestimmte allein die Wanduhr-Zeit, waehrend die uebrigen leerliefen.
+#
+# DAS VERDIKT HAENGT NICHT AN DER WORKER-ZAHL, und das ist die Bedingung, unter der
+# MUTATE_JOBS ueberhaupt eine Stellschraube sein darf (LH-QA-02): dieselbe Fall-Menge,
+# dasselbe Ergebnis, egal ueber wie viele Worker sie lief. Getragen wird das von drei
+# Eigenschaften, nicht von Zuversicht — jeder Worker faehrt den Gruen-Vorlauf jedes Modus
+# in SEINER Kopie (green_prerun, faul); der zusammengefuehrte Bericht BELEGT, dass jede
+# Fall-ID genau einmal gelaufen ist (merge_report), statt es aus „alle Worker sind
+# zurueck" zu folgern; und die Modi, deren Urteil an einem geteilten Docker-Tag haengt,
+# laufen in EINER Spur (is_heavy_mode). Ein Worker, der stirbt, und ein Fall, den die
+# Warteschlange nie ausgibt, sind beide ein Befund.
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -94,6 +112,32 @@ HOST_BEFORE=""
 
 LOCK="$REPO/.harness/state/mutate.lock"
 HAVE_LOCK=""
+
+# JOBS ist die Zahl der Worker; jeder traegt eine eigene isolierte Kopie. Der Default ist
+# eine ZEIT-Stellschraube, keine Verdikt-Stellschraube (s. Kopf): 4, weil die Reihe ueber
+# N=1/4/6/8 bei N=4 den Sprung bringt und N=6/8 nur noch 6-7 % daraufsetzen. Ein FESTER
+# Default statt einer Ableitung aus `nproc`: leitete er sich aus der Maschine ab, waeren
+# zwei Laeufe auf zwei Maschinen in ihrer Wanduhr nicht mehr vergleichbar — und
+# Vergleichbarkeit ist genau das, wofuer die Zeiten erhoben werden.
+JOBS="${MUTATE_JOBS:-4}"
+# RUN_DIR sammelt Warteschlangen, Cursor, Fall-Protokolle und Statuszeilen EINES Laufs.
+# Es liegt unter ISO_ROOT, also ausserhalb des Repos — dieselbe Ortsregel wie fuer die
+# Kopien und aus demselben Grund (MR-003-Stempel ueber getrackte UND untrackte Dateien).
+RUN_DIR=""
+# WORKER_ID steht in den Meldungen, die ein Worker ausserhalb eines Falls schreibt.
+# Leer im Elternprozess.
+WORKER_ID=""
+# CASE_NAMES bildet die Fall-NUMMER auf den Fall-NAMEN ab (1-basiert). merge_report
+# braucht den Namen fuer Faelle, die kein Ergebnis geliefert haben — deren Statuszeile
+# fehlt ja gerade, und eine Meldung mit blosser Nummer waere keine Adresse.
+declare -a CASE_NAMES=()
+# CASE_MODES bildet die Fall-NUMMER auf ihren Sensor-Modus ab (1-basiert). Die Modi
+# werden in einem ERSTEN Durchgang erhoben: erst die vollstaendige Modus-Menge sagt,
+# welche Spur ein Fall bekommt.
+declare -a CASE_MODES=()
+# HEAVY_MODES ist die serielle Spur, einmal je Lauf erhoben (is_heavy_mode). Leer
+# heisst: kein Modus teilt sich einen Tag ueber den Bau hinaus.
+HEAVY_MODES=" "
 
 restore() {
   [ -n "$BACKUP" ] || return 0
@@ -381,6 +425,10 @@ run_case() {
     # ABBRUCH statt Weiterlaufen (F-4): ist die Isolation gebrochen, mutieren die
     # Folgefaelle weiter gegen den Host — und ein Host-Restore gibt es nicht, das
     # Backup liegt in der Kopie. Lieber laut stehenbleiben.
+    #
+    # Die Flagge ZUERST, dann der eigene Abbruch: `exit 1` beendet nur DIESEN Worker;
+    # die uebrigen zoegen ohne sie weiter Faelle und mutierten weiter gegen den Host.
+    abort_run
     echo "mutate: ABBRUCH — der Host-Baum ist betroffen; Folgefaelle wuerden ihn weiter mutieren." >&2
     echo "  Betroffen: ${file_list[*]}" >&2
     restore
@@ -450,6 +498,11 @@ run_case() {
 # test/mutate-driver.bats sie mit einem make-Stub auf $PATH, ohne echten Sensor-Lauf.
 green_prerun() {
   local m log
+  # Ein Worker ruft diese Funktion je Modus ERNEUT (fauler Vorlauf, s. worker_main).
+  # Das Protokoll des vorigen Aufrufs faellt dabei weg, statt bis zum Lauf-Ende
+  # liegenzubleiben — sonst haelt ein Worker so viele Verzeichnisse offen, wie er Modi
+  # beruehrt hat, und cleanup() kennt nur das letzte.
+  [ -n "$PRERUN_LOG_DIR" ] && rm -rf "$PRERUN_LOG_DIR"
   log="$(prepare_prerun_log)" || return 1
   PRERUN_LOG_DIR="$(dirname "$log")"
   for m in "$@"; do
@@ -474,6 +527,416 @@ green_prerun() {
       return 1
     fi
   done
+}
+
+# --- Warteschlange ----------------------------------------------------------
+# Die Zuteilung ist DYNAMISCH: ein Worker zieht seinen naechsten Fall, wenn er frei ist.
+# Traeger ist ein Cursor (eine Datei mit der naechsten Zeilennummer) unter einem
+# mkdir-Mutex — dieselbe atomare, portable Mechanik wie der Lauf-Lock in main(), und
+# ohne flock/jq/node/python (LH-QA-03). Ein FIFO waere kuerzer, aber zeilenweises Lesen
+# durch MEHRERE Leser ist nicht garantiert atomar; der Cursor braucht diese Zusage nicht.
+# Sensor: test/mutate-driver.bats „driver: die Warteschlange gibt jeden Eintrag genau
+# einmal und meldet dann leer" — und, falls die Zuteilung doch danebengeht, die zweite
+# Achse der Zusammenfuehrung (merge_report, „mehr als einmal gezogen").
+
+# elapsed rechnet die Differenz zweier `date +%s.%N`-Marken in Sekunden. awk, weil bash
+# keine Gleitkomma-Arithmetik kennt.
+elapsed() { awk -v a="$1" -v b="$2" 'BEGIN { printf "%.2f", b - a }'; }
+
+# abort_run legt die Flagge, an der JEDER Worker vor seinem naechsten Zug haengenbleibt.
+# Ohne sie stoppte ein Isolations-Bruch nur den Worker, der ihn entdeckt.
+abort_run() {
+  [ -n "$RUN_DIR" ] && : >"$RUN_DIR/abort"
+  return 0
+}
+
+# queue_new legt die Warteschlange <name> aus den Zeilen auf stdin an und setzt ihren
+# Cursor auf den ersten Eintrag.
+queue_new() {
+  local name="$1"
+  cat >"$RUN_DIR/$name.queue"
+  printf '1\n' >"$RUN_DIR/$name.cursor"
+}
+
+# QUEUE_LOCK_TRIES x 0,05 s ist die Geduld eines Wartenden am Mutex. Sie ist eine
+# FAIL-CLOSED-Schranke, kein Komfort: stirbt ein Worker, waehrend er den Mutex haelt,
+# wartete ohne sie jeder andere ewig — der Lauf saehe aus wie ein langsamer Lauf und
+# lieferte nie ein Ergebnis. Mit ihr bricht der Wartende ab und der Lauf wird rot.
+# Bemessen am teuersten Fall (ein full-smoke-Lauf), damit ein LANGSAMER Halter nicht
+# faelschlich fuer einen toten gehalten wird — der Halter gibt den Mutex frei, BEVOR er
+# seinen Fall faehrt, dieser Wert ist also um Groessenordnungen zu grosszuegig.
+QUEUE_LOCK_TRIES=6000
+
+# queue_take zieht den naechsten Eintrag der Warteschlange <name> und druckt ihn.
+# Status: 0 = Eintrag geliefert, 1 = Schlange leer, 2 = Mutex-Zeitueberschreitung,
+# 3 = ein anderer Worker hat den Lauf abgebrochen.
+queue_take() {
+  local name="$1"
+  local lock="$RUN_DIR/$name.lock" tries=0 pos line
+  if [ -e "$RUN_DIR/abort" ]; then
+    echo "mutate: Worker $WORKER_ID zieht nicht weiter — ein anderer Worker hat den Lauf abgebrochen." >&2
+    return 3
+  fi
+  until mkdir "$lock" 2>/dev/null; do
+    tries=$((tries + 1))
+    if [ "$tries" -gt "$QUEUE_LOCK_TRIES" ]; then
+      echo "mutate: ABBRUCH — Worker $WORKER_ID wartet seit $((tries / 20)) s auf den Warteschlangen-Mutex ($lock)." >&2
+      echo "  Gemessen ist die Wartezeit, nicht ihr Grund; sicher ist nur, dass dieser Lauf" >&2
+      echo "  kein vollstaendiges Ergebnis mehr liefern kann." >&2
+      return 2
+    fi
+    sleep 0.05
+  done
+  pos="$(cat "$RUN_DIR/$name.cursor")"
+  line="$(sed -n "${pos}p" "$RUN_DIR/$name.queue")"
+  printf '%s\n' "$((pos + 1))" >"$RUN_DIR/$name.cursor"
+  rmdir "$lock"
+  [ -n "$line" ] || return 1
+  printf '%s' "$line"
+}
+
+# case_mode liefert den Sensor-Modus eines Falls nach derselben Regel, die run_case
+# anwendet: ein ausdruecklicher `# verify:`-Kopf schlaegt die Ableitung aus `# expect:`.
+# Ein MEHRFACHER Kopf ergibt hier '-' statt eines Modus: run_case meldet ihn als Befund,
+# bevor ein Sensor laeuft, ein Gruen-Vorlauf dafuer haette also keinen Gegenstand.
+case_mode() {
+  local v
+  v="$(sed -n 's/^# verify: //p' "$1")"
+  case "$v" in
+    "") narrow_sensor "$(sed -n 's/^# expect: //p' "$1")" ;;
+    *"
+"*) printf '%s' '-' ;;
+    *) printf '%s' "$v" ;;
+  esac
+}
+
+# mode_rank ist der Sortierschluessel der Warteschlange: TEUERSTE MODI ZUERST
+# (longest-processing-time-first). Zwei Wirkungen, beide tragend. (a) Ein Fall ist nicht
+# teilbar; laeuft der teuerste zufaellig spaet an, haengt ein Worker allein nach, waehrend
+# die uebrigen leerlaufen — die Wanduhr richtet sich dann nach dem Nachzuegler statt nach
+# dem Durchschnitt. (b) Gleiche Modi liegen dabei von selbst beieinander, weil die Kosten
+# je SENSOR konstant sind: absteigend nach Kosten sortieren IST nach Sensor gruppieren.
+# Ein Worker beruehrt darum typisch ein bis zwei Modi, und jeder Wechsel kostet ihn einen
+# Gruen-Vorlauf in seiner Kopie.
+#
+# Die REIHENFOLGE ist die Zusage, nicht die Zahl dahinter: welcher Modus wirklich wie
+# teuer ist, misst der Lauf selbst und schreibt es in report_times. Weicht die dortige
+# Reihenfolge von dieser ab, gehoert diese Funktion nachgezogen — der Rang ist eine
+# Annahme ueber die Kosten, und report_times ist ihre Messung.
+mode_rank() {
+  case "$1" in
+    full-smoke) printf '%s' '1' ;;
+    test) printf '%s' '2' ;;
+    smoke) printf '%s' '3' ;;
+    test-bats) printf '%s' '4' ;;
+    test-go) printf '%s' '5' ;;
+    ci-lint) printf '%s' '6' ;;
+    *) printf '%s' '9' ;;
+  esac
+}
+
+# plan_self_contained entscheidet, ob das Urteil des Modus <1> vollstaendig in dem
+# steckt, was `make -n` zeigt. Nur dann duerfen zwei Worker den Modus GLEICHZEITIG
+# fahren; sonst gehoert er in die serielle Spur (is_heavy_mode).
+#
+# WORUM ES GEHT: `docker build` und `docker run` tragen ihr Urteil in ihrem eigenen
+# Exit-Code. Zwei Worker duerfen denselben Image-Tag ueberschreiben, weil danach niemand
+# ihn liest — jeder Build hat seinen eigenen Kontext, und der ist die Kopie des Workers.
+# `harness/tools/artifact-copy.sh` bricht das: es holt das Binary mit
+# `docker create`/`docker cp` AUS dem Tag, also NACH dem Bau. Liefen zwei Worker
+# gleichzeitig durch ein solches Ziel, koennte der eine das Binary des anderen
+# extrahieren — verschiedene Mutationen, falsches Urteil, und zwar eines, das still
+# GRUEN meldet.
+#
+# DAS KRITERIUM IST DIE DELEGATION, NICHT DIE ZEILENFORM. Ein Plan, der ausschliesslich
+# `docker build`/`docker run` ausfuehrt, ist vollstaendig gelesen. Ein Plan, der in ein
+# Skript oder ein anderes Werkzeug abbiegt, ist es NICHT — was dort geschieht, steht
+# nicht im Plan, und ein Treiber, der es dort nachschlaegt, bindet sich an die Gestalt
+# fremder Zeilen. Genau daran ist der erste Entwurf zerbrochen: er suchte
+# `artifact-copy.sh` eine Ebene tiefer ueber `^[[:space:]]*make ` in den Treiberskripten
+# und verfehlte `full-smoke` in dem Moment, in dem eine fremde Aenderung
+# `make artifact …` in eine Kommando-Substitution setzte (`x="$( make artifact … )"`) —
+# der gefaehrlichste Modus galt danach als sicher, und kein Sensor sagte es.
+#
+# FAIL-CLOSED in beide Richtungen: ein Trockenlauf, der nicht auswertbar ist, und jede
+# Zeile, die kein `docker build`/`docker run` ist, machen den Modus seriell.
+# Falsch-seriell kostet Zeit, falsch-parallel kostet ein Urteil.
+#
+# GRENZE, benannt statt zugedeckt: gemessen wird EINMAL je Lauf, ueber dem HOST-Baum und
+# vor der ersten Mutation. Ein Fall, der das Makefile so mutiert, dass sein Modus danach
+# ein Bild ueber den Tag zurueckliest, liefe in der Spur, die vor seiner Mutation galt.
+# Kein Fall in test/mutations/ tut das; wer den ersten schreibt, faellt hierunter.
+# DER TROCKENLAUF LAEUFT OHNE DIE MAKE-UMGEBUNG SEINES AUFRUFERS, und das ist nicht
+# Kosmetik. `make mutate` ruft diesen Treiber aus einer Rezeptur; ein `make` darin ist ein
+# SUB-make und schaltet `--print-directory` von selbst ein. Gemessen, aus einer Rezeptur
+# heraus (`sonde: <TAB> @make -n test-go`):
+#   make[1]: Verzeichnis „…" wird betreten
+#   docker build --no-cache-filter test … --target test -t ai-harness-init:test .
+#   make[1]: Verzeichnis „…" wird verlassen
+# Die zwei Rahmenzeilen sind kein docker-Aufruf — JEDER Modus fiel damit in die serielle
+# Spur, und der ganze Lauf lief auf einem Worker. Dieselbe Funktion, aus einer normalen
+# Shell gerufen, sagte das Gegenteil: die Zuordnung haing an der Umgebung des Aufrufers
+# statt am Ziel. `env -u …` plus `--no-print-directory` macht den Trockenlauf davon
+# unabhaengig — er sieht aus wie ein Aufruf von der Kommandozeile.
+plan_self_contained() {
+  local mode="$1" plan line
+  plan="$( cd "$REPO" && env -u MAKEFLAGS -u MAKELEVEL -u MFLAGS \
+    make --no-print-directory -n "$mode" 2>/dev/null )" || return 1
+  [ -n "$plan" ] || return 1
+  while IFS= read -r line; do
+    # Leere Zeilen und Kommentar-Echos des Trockenlaufs tragen kein Kommando.
+    case "$line" in
+      "" | "#"*) continue ;;
+    esac
+    # Fuehrende Variablen-Zuweisungen (`GO_VERSION='…' bash …`) gehoeren zum Kommando
+    # und werden uebersprungen, bis das erste Wort ohne '=' kommt.
+    local -a words
+    read -r -a words <<<"$line"
+    local w=0
+    while [ "$w" -lt "${#words[@]}" ]; do
+      case "${words[$w]}" in
+        *=*) w=$((w + 1)) ;;
+        *) break ;;
+      esac
+    done
+    [ "${words[$w]:-}" = "docker" ] || return 1
+    case "${words[$((w + 1))]:-}" in
+      build | run) ;;
+      *) return 1 ;;
+    esac
+  done <<<"$plan"
+  return 0
+}
+
+# is_heavy_mode fragt die einmal je Lauf erhobene Spur ab (main fuellt HEAVY_MODES).
+is_heavy_mode() {
+  grep -qF " $1 " <<<"$HEAVY_MODES"
+}
+
+# --- Worker -----------------------------------------------------------------
+worker_cleanup() {
+  restore
+  [ -n "$PRERUN_LOG_DIR" ] && rm -rf "$PRERUN_LOG_DIR"
+  return 0
+}
+
+# worker_main ist EIN Worker: eigene Kopie, eigener Vorlauf-Zustand, eigene Protokolle.
+# Aufruf: worker_main <id> <schon-gruene-modi> <schlange>...
+#
+# GRUEN-VORLAUF FAUL, je Worker UND Modus: der Worker faehrt den Vorlauf eines Modus
+# erst, wenn er den ersten Fall dieses Modus zieht — und dann in SEINER Kopie. Das ist
+# gegenueber dem sequentiellen Treiber strikt MEHR Deckung, nicht weniger: der fuhr
+# green_prerun EINMAL vor allen Faellen und vertraute danach durchgehend auf restore().
+# Hier belegt jeder Worker seine eigene Kopie fuer jeden Modus, den er faehrt.
+# Sensor: test/mutate-driver.bats „driver: ein Worker BRICHT AB, wenn sein Gruen-Vorlauf
+# in SEINER Kopie rot ist"; der Zahn dazu ist test/mutations/192.
+worker_main() {
+  local id="$1" seen="$2"
+  shift 2
+  WORKER_ID="$id"
+  WORK="$ISO_ROOT/w$id/repo"
+  # Die fail-closed-Schranke gilt JE WORKER, nicht einmal fuer den Lauf: jeder Worker
+  # setzt sein eigenes $WORK, und ein leeres oder repo-internes liesse SEINE Seds im
+  # cwd des Treibers laufen (Review F-1).
+  require_isolated || return 1
+  # Alle Temp-Dateien dieses Workers (Fall-Backups, Vorlauf-Protokolle, die tmp-Repos
+  # der Smokes) liegen unter seiner Kopie. Ein hart abgebrochener Worker laesst damit
+  # nichts liegen, was das cleanup() des Elternteils nicht ohnehin mit ISO_ROOT wegraeumt.
+  TMPDIR="$ISO_ROOT/w$id/tmp"
+  export TMPDIR
+  mkdir -p "$TMPDIR"
+  trap 'worker_cleanup' EXIT INT TERM
+
+  local queue rc line idx mode case_file log t0 t1 pt0 pt1 fc0 st
+  for queue in "$@"; do
+    while :; do
+      rc=0
+      line="$(queue_take "$queue")" || rc=$?
+      case "$rc" in
+        0) ;;
+        1) break ;;
+        *) return "$rc" ;;
+      esac
+      IFS=$'\t' read -r idx mode case_file <<<"$line"
+      # Der Zug wird protokolliert, BEVOR der Fall laeuft: stirbt der Worker mitten im
+      # Fall, ist der Zug belegt und die fehlende Statuszeile faellt als Befund auf.
+      # Sensor: test/mutate-driver.bats „driver: merge_report FAELLT, wenn ein Fall ohne
+      # Ergebnis geblieben ist"; der Zahn dazu ist test/mutations/193.
+      printf '%s\n' "$idx" >>"$RUN_DIR/draws.$id"
+
+      # Marker-Grep als Here-String, nicht `printf | grep -q`: unter pipefail bricht
+      # ein grep, das frueh aussteigt, die Pipe mit EPIPE — und der Treffer saehe wie
+      # ein Fehlschlag aus.
+      if [ "$mode" != "-" ] && ! grep -qF " $mode " <<<" $seen "; then
+        pt0="$(date +%s.%N)"
+        if ! green_prerun "$mode" >>"$RUN_DIR/prerun.$id.log" 2>&1; then
+          echo "mutate: ABBRUCH — Worker $id: der Gruen-Vorlauf 'make $mode' ist in SEINER Kopie ohne Mutation rot." >&2
+          echo "  Jeder Fall dieses Modus waere danach ebenfalls rot, aber nicht wegen SEINER Mutation." >&2
+          cat "$RUN_DIR/prerun.$id.log" >&2
+          abort_run
+          return 1
+        fi
+        pt1="$(date +%s.%N)"
+        printf '%s\t%s\t%s\n' "$id" "$mode" "$(elapsed "$pt0" "$pt1")" >>"$RUN_DIR/prerun.times.$id"
+        seen="$seen $mode"
+      fi
+
+      # Die Ausgabe des Falls geht in SEINE eigene Datei — merge_report setzt sie in
+      # Fall-Reihenfolge zusammen, unabhaengig davon, wie die Laeufe verschraenkt waren.
+      log="$RUN_DIR/case.$idx.log"
+      fc0="$fail_count"
+      t0="$(date +%s.%N)"
+      { run_case "$case_file"; } >"$log" 2>&1
+      t1="$(date +%s.%N)"
+      # Das Urteil kommt aus dem Zaehler, den run_case selbst fuehrt — nicht aus einem
+      # zweiten Kriterium daneben, das mit ihm auseinanderlaufen koennte.
+      if [ "$fail_count" -gt "$fc0" ]; then st="BEFUND"; else st="OK"; fi
+      printf '%s\t%s\t%s\t%s\t%s\n' \
+        "$idx" "$(basename "$case_file" .sh)" "$st" "$mode" "$(elapsed "$t0" "$t1")" \
+        >"$RUN_DIR/status.$idx"
+      # FORTSCHRITT auf Deskriptor 3, in der Reihenfolge des Laufs — nicht der Bericht.
+      # Der entsteht erst am Ende (merge_report), und ohne diese Zeile schwiege ein Lauf
+      # ueber Minuten vollstaendig: an einem stummen Sensor ist nicht unterscheidbar, ob
+      # er arbeitet oder haengt. Bewusst getrennt vom Bericht, dessen Reihenfolge gerade
+      # NICHT vom Scheduler abhaengen darf.
+      printf 'mutate: [w%s] %-42s %s (%s s)\n' "$id" "$(basename "$case_file" .sh)" "$st" "$(elapsed "$t0" "$t1")" >&3
+    done
+  done
+  return 0
+}
+
+# --- Zusammenfuehrung -------------------------------------------------------
+# merge_report setzt die Fall-Protokolle in FALL-Reihenfolge zusammen und BELEGT die
+# Vollstaendigkeit. Die Zeilenfolge des Berichts haengt damit nicht daran, wie die Laeufe
+# verschraenkt waren; ein Bericht, den der Scheduler umsortiert, waere als Sensor-Ausgabe
+# nicht vergleichbar (LH-QA-02).
+#
+# Drei Wege in ein stilles Gruen sind hier zugehalten, jeder mit eigener Meldung:
+#   1. ein Fall OHNE Statuszeile (Worker gestorben, Fall nie gezogen)   -> Befund,
+#   2. eine Fall-ID MEHR ALS EINMAL gezogen (Cursor-Defekt)             -> Befund,
+#   3. die Zahl der gelaufenen Faelle weicht von der Zahl der FALL-DATEIEN ab -> Befund.
+# Der dritte ist nicht redundant: 1 und 2 messen gegen die Warteschlange, 3 gegen das
+# Verzeichnis. Waere die Warteschlange selbst unvollstaendig gebaut worden, waeren 1 und 2
+# still gruen — genau die Konstruktion, gegen die dieser Sensor antritt.
+merge_report() {
+  local total="$1" i st_line st
+  for ((i = 1; i <= total; i++)); do
+    if [ -f "$RUN_DIR/case.$i.log" ]; then cat "$RUN_DIR/case.$i.log"; fi
+  done
+
+  # (1) Statuszeilen, in Fall-Reihenfolge, und die Faelle ohne eine solche. Die Liste
+  # wird GEKUERZT, aber ihre Laenge genannt: ein Abbruch laesst leicht dreistellig viele
+  # Faelle ohne Ergebnis, und eine Meldung, die man nicht mehr liest, ist keine.
+  local missing="" missing_n=0 gelaufen=0
+  for ((i = 1; i <= total; i++)); do
+    if [ ! -f "$RUN_DIR/status.$i" ]; then
+      missing_n=$((missing_n + 1))
+      if [ "$missing_n" -le 12 ]; then missing="$missing ${CASE_NAMES[$i]}"; fi
+      continue
+    fi
+    st_line="$(cat "$RUN_DIR/status.$i")"
+    # Nur das Urteil wird hier gebraucht; Name, Modus und Zeit stehen im Bericht
+    # (report_times) und in der Statuszeile selbst.
+    IFS=$'\t' read -r _ _ st _ _ <<<"$st_line"
+    gelaufen=$((gelaufen + 1))
+    if [ "$st" = "BEFUND" ]; then
+      fail_count=$((fail_count + 1))
+    else
+      pass_count=$((pass_count + 1))
+    fi
+  done
+  if [ "$missing_n" -gt 0 ]; then
+    if [ "$missing_n" -gt 12 ]; then missing="$missing … (${missing_n} insgesamt)"; fi
+    report_fail "vollstaendigkeit" "ohne Ergebnis geblieben:$missing — ein Worker ist gestorben oder die Warteschlange hat den Fall nie ausgegeben"
+  fi
+
+  # (2) Jede gezogene ID GENAU EINMAL. Gemessen an den Zug-Protokollen der Worker, nicht
+  # an den Statusdateien: die tragen die ID im NAMEN, ein Doppelzug ueberschriebe die
+  # Datei und bliebe damit unsichtbar.
+  #
+  # nullglob, weil ein Glob OHNE Treffer sonst als Literal an `cat` geht: das scheitert,
+  # unter `pipefail` faellt die ganze Pipe, und die Zuweisung reisst unter `set -e` den
+  # Bericht ab — ausgerechnet in dem Fall, in dem KEIN Worker je gezogen hat und die
+  # Meldung am noetigsten waere.
+  local doppelt
+  local -a draw_files
+  shopt -s nullglob
+  draw_files=("$RUN_DIR"/draws.*)
+  shopt -u nullglob
+  if [ "${#draw_files[@]}" -gt 0 ]; then
+    doppelt="$(cat "${draw_files[@]}" | LC_ALL=C sort -n | uniq -d | tr '\n' ' ')"
+  else
+    doppelt=""
+    report_fail "vollstaendigkeit" "kein einziger Worker hat ein Zug-Protokoll hinterlassen — der Lauf hat nichts gemessen"
+  fi
+  if [ -n "${doppelt// /}" ]; then
+    # Die Meldung nennt, was GEMESSEN ist — dieselbe Nummer mehrfach ausgegeben —, nicht
+    # den Mechanismus dahinter. Der kann ein nicht fortgeschriebener Cursor sein oder ein
+    # ausgefallener Mutex (dann lesen mehrere Worker denselben Stand, und der Cursor
+    # stimmt trotzdem); der Treiber unterscheidet das nicht und behauptet es darum nicht.
+    report_fail "vollstaendigkeit" "mehr als einmal gezogen (Fall-Nummern): $doppelt — die Warteschlange hat dieselbe Nummer mehrfach ausgegeben und teilt damit nicht mehr zu"
+  fi
+
+  # (3) Zahl der gelaufenen Faelle gegen die Zahl der Fall-DATEIEN.
+  local unvollstaendig=""
+  if [ "$gelaufen" -ne "$total" ]; then
+    report_fail "vollstaendigkeit" "$gelaufen von $total Fall-Dateien haben ein Ergebnis — der Lauf ist unvollstaendig"
+    unvollstaendig=1
+  fi
+  # Die BESTAETIGUNG faellt weg, sobald eine der drei Pruefungen angeschlagen hat. Ein
+  # Lauf, der „jede Fall-ID genau einmal gezogen" meldet und daneben einen fehlenden Fall
+  # als Befund fuehrt, sagt in derselben Ausgabe beides — und die Bestaetigung ist die
+  # Zeile, die man zuerst glaubt.
+  if [ -z "$unvollstaendig" ] && [ "$missing_n" -eq 0 ] && [ -z "${doppelt// /}" ]; then
+    echo "mutate: Vollstaendigkeit — $gelaufen von $total Fall-Dateien mit Ergebnis, jede Fall-ID genau einmal gezogen."
+  fi
+}
+
+# report_times ist die Zeit-Aufschluesselung: je Fall eine Dauer, je Sensor Summe und
+# ANTEIL an der Fall-Arbeit. Sie ist MESSUNG, kein Urteil ueber einen Waechter — die
+# Zahlen haengen an der Maschine und an dem, was sonst auf ihr laeuft; ein Schwellenwert
+# darueber waere rot ohne Befund und gruen ohne Deckung (LH-QA-01).
+#
+# UEBER IHRE EIGENE VOLLSTAENDIGKEIT urteilt sie aber sehr wohl, und darum nennt sie
+# ihren Nenner: Anteile ueber einer Teilmenge sind Anteile an etwas anderem als dem, was
+# die Ueberschrift sagt. Weicht die Zahl der Faelle mit Dauer von der Zahl der
+# Fall-Dateien ab, gibt es KEINE Bilanz, sondern einen Befund.
+report_times() {
+  local total="$1"
+  local -a status_files prerun_files
+  # Dieselbe nullglob-Vorsicht wie in merge_report: ein leerer Glob ginge als Literal an
+  # `cat` und risse unter `pipefail`/`set -e` den Bericht ab.
+  shopt -s nullglob
+  status_files=("$RUN_DIR"/status.*)
+  prerun_files=("$RUN_DIR"/prerun.times.*)
+  shopt -u nullglob
+  local n=0
+  if [ "${#status_files[@]}" -gt 0 ]; then n="${#status_files[@]}"; fi
+  if [ "$n" -ne "$total" ]; then
+    report_fail "zeit-bilanz" "$n von $total Fall-Dateien tragen eine Dauer — eine Bilanz ueber einer Teilmenge nennt Anteile, die nicht gelten"
+    return 0
+  fi
+
+  echo "mutate: Zeit je Sensor ueber $n von $total Fall-Dateien (Summe / Anteil / Mittel / laengster Fall, Sekunden):"
+  cat "${status_files[@]}" | awk -F'\t' '
+    { n[$4]++; s[$4] += $5; g += $5; if ($5 + 0 > m[$4] + 0) { m[$4] = $5; mn[$4] = $2 } }
+    END {
+      for (k in n)
+        printf "  %-12s n=%-4d summe=%9.1f anteil=%5.1f%% mittel=%6.2f max=%7.2f (%s)\n",
+               k, n[k], s[k], (g > 0 ? 100 * s[k] / g : 0), s[k] / n[k], m[k], mn[k]
+    }
+  ' | LC_ALL=C sort
+  if [ "${#prerun_files[@]}" -gt 0 ]; then
+    echo "mutate: Gruen-Vorlaeufe (Worker, Modus, Sekunden) — der Preis der Aufteilung:"
+    cat "${prerun_files[@]}" | LC_ALL=C sort | sed -e 's/^/  /'
+  fi
+  echo "mutate: Zeit je Fall, absteigend (alle $n):"
+  cat "${status_files[@]}" | LC_ALL=C sort -t"$(printf '\t')" -k5,5gr \
+    | awk -F'\t' '{ printf "  %8.2f s  %-42s %s\n", $5, $2, $4 }'
+  cat "${status_files[@]}" | awk -F'\t' '
+    { s += $5; if ($5 + 0 > m + 0) { m = $5; mn = $2 } }
+    END { printf "mutate: untere Schranke jeder Parallelisierung = laengster Einzelfall: %.2f s (%s); Fall-Arbeit gesamt %.1f s\n", m, mn, s }
+  '
 }
 
 # Hauptteil gekapselt, damit test/mutate-driver.bats die Funktionen SOURCEN
@@ -501,6 +964,18 @@ main() {
   fi
   HAVE_LOCK=1
 
+  # Fail-closed auf die Worker-Zahl. Ohne diese Schranke liefe eine unsinnige Vorgabe
+  # (leer, 0, Text) auf null Worker hinaus: die Warteschlange bliebe voll, kein Fall
+  # liefe, und der Lauf faende seinen Befund erst in der Zusammenfuehrung — als
+  # Vollstaendigkeits-Meldung statt als das, was er ist, ein Aufruf-Fehler.
+  case "$JOBS" in
+    "" | *[!0-9]*) JOBS=0 ;;
+  esac
+  if [ "$JOBS" -lt 1 ]; then
+    echo "mutate: ABBRUCH — MUTATE_JOBS ist keine Worker-Zahl >= 1 (gelesen: '${MUTATE_JOBS:-}')." >&2
+    exit 1
+  fi
+
   [ -d "$CASES_DIR" ] || { echo "mutate: $CASES_DIR fehlt" >&2; exit 1; }
 
   # ISOLATION: den Baum EINMAL nach ausserhalb des Repos kopieren. Ab hier trifft
@@ -525,24 +1000,141 @@ main() {
     exit 1
   fi
   ISO_ROOT="$(mktemp -d)"
-  WORK="$(prepare_isolation "$ISO_ROOT")"
-  require_isolated || exit 1
-  echo "mutate: isolierte Kopie unter $WORK — der Host-Baum wird NICHT veraendert."
+  RUN_DIR="$ISO_ROOT/run"
+  mkdir -p "$RUN_DIR"
+  # Deskriptor 3 ist die Fortschritts-Ausgabe des Laufs. Die Worker leiten stdout und
+  # stderr je in eine eigene Datei um — der Bericht muss deterministisch bleiben —, ihre
+  # Fortschrittszeile soll aber den Aufrufer erreichen und nicht die Datei. Er wird HIER
+  # geoeffnet und nicht im Kopf der Datei: test/mutate-driver.bats sourct den Treiber,
+  # und bats fuehrt auf Deskriptor 3 seine eigene Ausgabe.
+  exec 3>&2
 
-  # Die Modus-Liste des Gruen-Vorlaufs, als Array an green_prerun. `test` steht immer
-  # vorn: jeder Fall ohne eigenen `# verify:`-Kopf bekommt seinen Sensor von
-  # narrow_sensor, und dessen Wertebereich {test, test-go, test-bats} liegt darin.
-  local -a mode_list=(test)
-  local mode
-  while IFS= read -r mode; do
-    if [ -n "$mode" ]; then mode_list+=("$mode"); fi
-  done < <(sed -n 's/^# verify: //p' "$CASES_DIR"/*.sh | LC_ALL=C sort -u)
-  green_prerun "${mode_list[@]}" || exit 1
-
-  echo "mutate: ${#cases[@]} Faelle (je ein voller make-test-Zyklus, das dauert)"
-  for c in "${cases[@]}"; do
-    run_case "$c"
+  # Die Fall-Nummer ist die Stelle des Falls in der SORTIERTEN Datei-Liste. Sie ist der
+  # Schluessel, an dem der Bericht wieder in Fall-Reihenfolge kommt — und die Groesse,
+  # gegen die die Vollstaendigkeit gemessen wird. 1-basiert, damit sie mit den
+  # Zeilennummern der Warteschlange zusammenfaellt.
+  local total="${#cases[@]}" i mode rank
+  CASE_NAMES=()
+  CASE_MODES=()
+  for ((i = 1; i <= total; i++)); do
+    CASE_NAMES[i]="$(basename "${cases[$((i - 1))]}" .sh)"
   done
+
+  # Modus je Fall, und die Zulassung EINMAL vorab statt erst beim Ziehen: ein vertippter
+  # `# verify:`-Kopf soll den Lauf sofort anhalten, nicht nach zwanzig Minuten Arbeit.
+  # Quelle der erlaubten Modi bleibt failure_form — keine zweite Liste (N-2).
+  local used_modes=" "
+  for ((i = 1; i <= total; i++)); do
+    mode="$(case_mode "${cases[$((i - 1))]}")"
+    if [ "$mode" != "-" ] && ! failure_form "$mode" >/dev/null; then
+      echo "mutate: ABBRUCH — unbekannter '# verify: $mode' in test/mutations/." >&2
+      echo "  Erlaubt ist, wofuer failure_form ein Fehlschlag-Muster kennt." >&2
+      exit 1
+    fi
+    if ! grep -qF " $mode " <<<"$used_modes"; then used_modes="$used_modes$mode "; fi
+    CASE_MODES[i]="$mode"
+  done
+
+  # Welche Modi duerfen NICHT nebeneinander laufen? Einmal je Lauf gemessen, bevor die
+  # erste Kopie steht — die Antwort entscheidet, welche Faelle sich einen Docker-Tag
+  # teilen duerfen, und eine falsche Antwort hier ist ein falsches Urteil dort.
+  # Der Pseudo-Modus '-' hat keinen Sensor-Lauf und darum keine Spur.
+  for mode in $used_modes; do
+    [ "$mode" = "-" ] && continue
+    if ! plan_self_contained "$mode"; then HEAVY_MODES="$HEAVY_MODES$mode "; fi
+  done
+  if [ -n "${HEAVY_MODES// /}" ]; then
+    echo "mutate: serielle Spur fuer:${HEAVY_MODES% } — ihr Plan besteht nicht nur aus docker-Aufrufen, ihr Urteil ist damit nicht vollstaendig gelesen."
+  fi
+
+  # Zwei Warteschlangen: die schwere laeuft in EINER Spur, die leichte leeren alle
+  # Worker dynamisch. Der Rang steht beim Sortieren vorn und faellt danach weg; die
+  # Schlange traegt Nummer, Modus und Fall-Datei.
+  local heavy_lines="" light_lines="" line
+  for ((i = 1; i <= total; i++)); do
+    mode="${CASE_MODES[$i]}"
+    rank="$(mode_rank "$mode")"
+    line="$(printf '%s\t%s\t%s\t%s' "$rank" "$i" "$mode" "${cases[$((i - 1))]}")"
+    if [ "$mode" != "-" ] && is_heavy_mode "$mode"; then
+      heavy_lines="$heavy_lines$line"$'\n'
+    else
+      light_lines="$light_lines$line"$'\n'
+    fi
+  done
+  printf '%s' "$heavy_lines" | LC_ALL=C sort | cut -f2- | queue_new heavy
+  printf '%s' "$light_lines" | LC_ALL=C sort | cut -f2- | queue_new light
+
+  # Je Worker eine eigene Kopie. prepare_isolation ist dieselbe Mechanik wie zuvor, nur
+  # JOBS-mal gerufen; require_isolated haelt fuer jede einzelne.
+  local j
+  for ((j = 1; j <= JOBS; j++)); do
+    mkdir -p "$ISO_ROOT/w$j"
+    WORK="$(prepare_isolation "$ISO_ROOT/w$j")"
+    require_isolated || exit 1
+  done
+  echo "mutate: $JOBS isolierte Kopie(n) unter $ISO_ROOT — der Host-Baum wird NICHT veraendert."
+
+  # DAS BILD EINMAL VOR DEM FORK. `make test-go` uebersetzt die deps- und warm-Stufen
+  # des Dockerfile; ohne diesen Lauf konkurrierten JOBS gleichzeitige Builds um denselben
+  # BuildKit-Cache und uebersetzten die Standardbibliothek mehrfach. Es ist zugleich ein
+  # vollwertiger Gruen-Vorlauf fuer Kopie 1 — derselbe Modus, dieselbe Kopie, keine
+  # Mutation —, deshalb startet Worker 1 mit test-go als bereits gruen gesehen.
+  # Uebersprungen, wenn kein Fall eine Go-Stufe faehrt: dann gaebe es nichts vorzuwaermen.
+  local warm_seen=""
+  if grep -qF " test-go " <<<"$used_modes" || grep -qF " test " <<<"$used_modes"; then
+    WORK="$ISO_ROOT/w1/repo"
+    require_isolated || exit 1
+    echo "mutate: Bild einmal vor dem Fork (Kopie 1) — sonst baeuten $JOBS Worker dieselben Stufen gleichzeitig."
+    green_prerun test-go || exit 1
+    warm_seen="test-go"
+  fi
+
+  echo "mutate: $total Faelle auf $JOBS Worker, dynamisch aus einer gemeinsamen Warteschlange."
+  local -a pids=()
+  for ((j = 1; j <= JOBS; j++)); do
+    # Worker 1 leert ERST die schwere Spur (sie ist die untere Schranke des Laufs) und
+    # geht dann in die leichte. Alle uebrigen fahren nur die leichte.
+    if [ "$j" -eq 1 ]; then
+      ( rc=0; worker_main "$j" "$warm_seen" heavy light || rc=$?
+        printf '%s\n' "$rc" >"$RUN_DIR/worker.$j.done"; exit "$rc" ) \
+        >"$RUN_DIR/worker.$j.log" 2>&1 &
+    else
+      ( rc=0; worker_main "$j" "" light || rc=$?
+        printf '%s\n' "$rc" >"$RUN_DIR/worker.$j.done"; exit "$rc" ) \
+        >"$RUN_DIR/worker.$j.log" 2>&1 &
+    fi
+    pids+=("$!")
+  done
+
+  # EIN WORKER, DER STIRBT, MACHT DEN LAUF ROT — hier faellt es auf. Die Marker-Datei
+  # unterscheidet dabei, WAS gemessen ist: liegt sie, hat der Worker seinen eigenen Rumpf
+  # zu Ende gefuehrt und seinen Status selbst gemeldet (sein Protokoll sagt, warum);
+  # fehlt sie, ist er unterwegs ausgestiegen. Warum, misst der Treiber nicht — und
+  # behauptet es darum auch nicht.
+  local k pid wrc
+  for ((k = 0; k < ${#pids[@]}; k++)); do
+    pid="${pids[$k]}"
+    wrc=0
+    wait "$pid" || wrc=$?
+    if [ "$wrc" -ne 0 ]; then
+      if [ -f "$RUN_DIR/worker.$((k + 1)).done" ]; then
+        report_fail "worker-$((k + 1))" "Worker kehrte mit Status $wrc zurueck — sein Anteil an der Fall-Menge ist unvollstaendig"
+      else
+        report_fail "worker-$((k + 1))" "Worker endete mit Status $wrc OHNE Abschluss-Marke, ist also nicht bis zum Ende seines Rumpfes gekommen — sein Anteil an der Fall-Menge ist unvollstaendig"
+      fi
+    fi
+  done
+
+  # Die Ausgabe, die ein Worker AUSSERHALB eines Falls geschrieben hat (Vorlauf-Abbruch,
+  # Mutex-Zeitueberschreitung), in Worker-Reihenfolge — sie erklaert die Befunde oben.
+  for ((j = 1; j <= JOBS; j++)); do
+    if [ -s "$RUN_DIR/worker.$j.log" ]; then
+      echo "mutate: --- Worker $j ---" >&2
+      sed -e 's/^/    | /' "$RUN_DIR/worker.$j.log" >&2
+    fi
+  done
+
+  merge_report "$total"
 
   # FUENFTE Bedingung, fail-closed: die Mutations-Ziele im Host-Baum sind nach dem Lauf
   # byte-gleich. Sie faengt ein LIEGENGEBLIEBENES Residuum. Den symmetrischen Rueckfall
@@ -556,6 +1148,7 @@ main() {
     report_fail "host-baum" "eine Mutations-Zieldatei im HOST-Baum hat sich geaendert — entweder greift die Isolation nicht, oder es wurde parallel editiert"
   fi
 
+  report_times "$total"
   echo "mutate: $pass_count ok, $fail_count Befund(e)"
   [ "$fail_count" -eq 0 ]
 }

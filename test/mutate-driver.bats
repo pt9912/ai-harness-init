@@ -336,3 +336,275 @@ TestZwei'"
   [ "$status" -eq 0 ]
   [ -z "$output" ]
 }
+
+# --- Warteschlange, Spur und Zusammenfuehrung (slice-105) ----------------------
+# Der Treiber teilt seine Faelle auf mehrere Worker auf. Damit entsteht eine neue Klasse
+# von stillem Gruen, die es sequentiell nicht gab: ein Lauf, der weniger geprueft hat als
+# er meldet — weil ein Worker starb, weil die Warteschlange einen Fall nie ausgab, oder
+# weil zwei Worker einander ein gebautes Bild unterschoben. Die Faelle hier sind die
+# Zaehne dagegen, und sie sind hermetisch: kein Docker, kein echter Sensor-Lauf.
+
+# --- Die serielle Spur --------------------------------------------------------
+# plan_self_contained entscheidet, ob zwei Worker einen Modus GLEICHZEITIG fahren
+# duerfen. Ein falsches "ja" ist ein falsches Urteil, und zwar ein still gruenes: der
+# eine Worker extrahierte das Binary des anderen aus demselben Tag. Der Vorgaenger
+# dieses Kriteriums las die Treiberskripte nach `make <ziel>`-Zeilen ab und verfehlte
+# `make full-smoke`, sobald eine fremde Aenderung den Aufruf in eine
+# Kommando-Substitution setzte. Geprueft wird darum die EIGENSCHAFT (ist der Plan
+# vollstaendig gelesen?), nicht die Gestalt einer Zeile.
+#
+# Der make-Stub liefert den Plan: dieselbe Technik wie beim Vorlauf-Fall oben.
+plan_stub() {
+  PS_ISO="$(mktemp -d)"
+  mkdir -p "$PS_ISO/bin" "$PS_ISO/repo"
+  cat >"$PS_ISO/bin/make" <<STUB
+#!/usr/bin/env bash
+# Bildet nach, was GNU make in einem SUB-make wirklich tut: liegt MAKELEVEL in der
+# Umgebung, rahmt make seinen Plan mit Verzeichnis-Zeilen ein — es sei denn,
+# --no-print-directory steht dabei. Genau diese zwei Zeilen sind kein docker-Aufruf.
+rahmen=0
+[ -n "\${MAKELEVEL:-}" ] && rahmen=1
+for a in "\$@"; do [ "\$a" = "--no-print-directory" ] && rahmen=0; done
+[ "\$rahmen" = 1 ] && printf 'make[1]: Verzeichnis wird betreten\n'
+printf '%s' "\$PLAN_TEXT"
+[ "\$rahmen" = 1 ] && printf '\nmake[1]: Verzeichnis wird verlassen\n'
+exit \${PLAN_RC:-0}
+STUB
+  chmod +x "$PS_ISO/bin/make"
+}
+
+# Ruft plan_self_contained mit gestubtem Plan. \$1 = Plantext, \$2 = Exit des Trockenlaufs.
+plan_urteil() {
+  PLAN_TEXT="$1" PLAN_RC="${2:-0}" env "PATH=$PS_ISO/bin:$PATH" bash -c "
+    source '$DRIVER' 2>/dev/null || true
+    REPO='$PS_ISO/repo'
+    if plan_self_contained irgendein-modus; then echo LEICHT; else echo SCHWER; fi"
+}
+
+# Dasselbe, aber MIT der make-Umgebung eines Aufrufers, der selbst aus einer Rezeptur
+# kommt — der reale Fall, denn `make mutate` ruft den Treiber aus einem Rezept.
+plan_urteil_im_submake() {
+  PLAN_TEXT="$1" PLAN_RC="${2:-0}" MAKELEVEL=1 MAKEFLAGS=w \
+    env "PATH=$PS_ISO/bin:$PATH" bash -c "
+    source '$DRIVER' 2>/dev/null || true
+    REPO='$PS_ISO/repo'
+    if plan_self_contained irgendein-modus; then echo LEICHT; else echo SCHWER; fi"
+}
+@test "driver: ein Plan aus lauter docker-Aufrufen darf parallel laufen" {
+  plan_stub
+  run plan_urteil 'docker build --no-cache-filter test --target test -t ai-harness-init:test .'
+  [ "$output" = "LEICHT" ]
+  run plan_urteil 'docker run --rm --network none -v "/x":/code:ro -w /code bats/bats test/
+docker build --target test -t ai-harness-init:test .'
+  [ "$output" = "LEICHT" ]
+  rm -rf "$PS_ISO"
+}
+
+# DER KERN: ein Plan, der in ein Skript abbiegt, ist NICHT vollstaendig gelesen — egal
+# wie der Aufruf dort drin aussieht. Genau diese Gestalt-Unabhaengigkeit fehlte dem
+# Vorgaenger.
+@test "driver: ein Plan, der in ein Skript abbiegt, ist SCHWER — unabhaengig von der Zeilenform darin" {
+  plan_stub
+  run plan_urteil "GO_VERSION='1.27.0' bash harness/tools/full-smoke.sh"
+  [ "$output" = "SCHWER" ]
+  run plan_urteil 'bash harness/tools/smoke.sh'
+  [ "$output" = "SCHWER" ]
+  rm -rf "$PS_ISO"
+}
+
+# Fail-closed: was der Treiber nicht lesen kann, faehrt er seriell. Falsch-seriell
+# kostet Zeit, falsch-parallel kostet ein Urteil.
+@test "driver: ein unlesbarer oder leerer Trockenlauf ist SCHWER (fail-closed)" {
+  plan_stub
+  run plan_urteil 'docker build --target test .' 2
+  [ "$output" = "SCHWER" ]
+  run plan_urteil ''
+  [ "$output" = "SCHWER" ]
+  rm -rf "$PS_ISO"
+}
+
+# Ein docker-Unterkommando, das ein gebautes Bild ZURUECKLIEST, ist genau der Fall, um
+# den es geht — `build` und `run` sind die einzigen, deren Urteil im eigenen Exit-Code
+# steckt.
+@test "driver: ein docker-Aufruf, der kein build/run ist, ist SCHWER" {
+  plan_stub
+  run plan_urteil 'docker create --name x ai-harness-init:build'
+  [ "$output" = "SCHWER" ]
+  rm -rf "$PS_ISO"
+}
+
+# --- Die Warteschlange --------------------------------------------------------
+# Sie ist die dynamische Zuteilung. Gibt sie einen Eintrag ZWEIMAL aus, laeuft ein Fall
+# doppelt und ein anderer nie; gibt sie einen nie aus, ist der Lauf unvollstaendig. Beide
+# Wege enden im stillen Gruen, wenn niemand nachzaehlt.
+@test "driver: die Warteschlange gibt jeden Eintrag genau einmal und meldet dann leer" {
+  local dir
+  dir="$(mktemp -d)"
+  run bash -c "source '$DRIVER' 2>/dev/null || true
+    RUN_DIR='$dir'
+    printf 'a\nb\n' | queue_new light
+    queue_take light; echo
+    queue_take light; echo
+    rc=0; queue_take light || rc=\$?; echo \"leer-status=\$rc\""
+  rm -rf "$dir"
+  [ "${lines[0]}" = "a" ]
+  [ "${lines[1]}" = "b" ]
+  [ "${lines[2]}" = "leer-status=1" ]
+}
+
+# Die Abbruch-Flagge ist der Weg, auf dem EIN sterbender Worker den GANZEN Lauf anhaelt.
+# Ohne sie zoegen die uebrigen weiter — bei einem Isolations-Bruch mutierten sie dabei
+# weiter gegen den Host.
+@test "driver: nach abort_run zieht kein Worker mehr einen Fall" {
+  local dir
+  dir="$(mktemp -d)"
+  run bash -c "source '$DRIVER' 2>/dev/null || true
+    RUN_DIR='$dir'
+    printf 'a\nb\n' | queue_new light
+    abort_run
+    rc=0; queue_take light || rc=\$?; echo \"status=\$rc\""
+  rm -rf "$dir"
+  grep -qF 'status=3' <<<"$output"
+  grep -qF 'hat den Lauf abgebrochen' <<<"$output"
+}
+
+# --- Die Zusammenfuehrung -----------------------------------------------------
+# merge_report ist die Stelle, an der „alle Worker sind zurueck" NICHT als Beleg gilt.
+# Er zaehlt gegen zwei verschiedene Groessen: die Zug-Protokolle (hat jemand doppelt
+# gezogen?) und das Fall-Verzeichnis (hat jeder Fall ein Ergebnis?).
+mr_fixture() {
+  MR_DIR="$(mktemp -d)"
+  local i
+  for i in 1 2 3; do
+    printf 'mutate: ok      fall-%s\n' "$i" >"$MR_DIR/case.$i.log"
+    printf '%s\tfall-%s\tOK\ttest-go\t1.00\n' "$i" "$i" >"$MR_DIR/status.$i"
+  done
+  printf '1\n2\n3\n' >"$MR_DIR/draws.1"
+}
+
+mr_lauf() {
+  bash -c "source '$DRIVER' 2>/dev/null || true
+    RUN_DIR='$MR_DIR'
+    CASE_NAMES=('' fall-1 fall-2 fall-3)
+    merge_report 3
+    echo \"befunde=\$fail_count ok=\$pass_count\""
+}
+
+@test "driver: merge_report bestaetigt Vollstaendigkeit nur, wenn jeder Fall ein Ergebnis hat" {
+  mr_fixture
+  run mr_lauf
+  rm -rf "$MR_DIR"
+  grep -qF 'Vollstaendigkeit — 3 von 3 Fall-Dateien mit Ergebnis' <<<"$output"
+  grep -qF 'befunde=0 ok=3' <<<"$output"
+}
+
+# DoD (3): ein Shard, der abstuerzt, haengt oder nichts meldet, faerbt den Gesamtlauf rot
+# — er verkuerzt ihn nicht. Der Fall stellt genau das her: die Statuszeile eines Falls
+# fehlt.
+@test "driver: merge_report FAELLT, wenn ein Fall ohne Ergebnis geblieben ist" {
+  mr_fixture
+  rm "$MR_DIR/status.2"
+  run mr_lauf
+  rm -rf "$MR_DIR"
+  grep -qF 'ohne Ergebnis geblieben: fall-2' <<<"$output"
+  grep -qF '2 von 3 Fall-Dateien haben ein Ergebnis' <<<"$output"
+  ! grep -qF 'Vollstaendigkeit — ' <<<"$output"
+  grep -qF 'ok=2' <<<"$output"
+}
+
+# Der zweite Weg: ein Cursor, der nicht fortschreibt, gibt denselben Fall zweimal aus.
+# Die Statusdatei traegt die Nummer im NAMEN und wuerde ueberschrieben — sichtbar ist der
+# Doppelzug nur im Zug-Protokoll.
+@test "driver: merge_report FAELLT bei einer mehr als einmal gezogenen Fall-Nummer" {
+  mr_fixture
+  printf '2\n' >>"$MR_DIR/draws.2"
+  run mr_lauf
+  rm -rf "$MR_DIR"
+  grep -qF 'mehr als einmal gezogen (Fall-Nummern): 2' <<<"$output"
+  ! grep -qF 'Vollstaendigkeit — ' <<<"$output"
+}
+
+@test "driver: merge_report FAELLT, wenn kein Worker je gezogen hat" {
+  mr_fixture
+  rm "$MR_DIR"/draws.*
+  run mr_lauf
+  rm -rf "$MR_DIR"
+  grep -qF 'kein einziger Worker hat ein Zug-Protokoll hinterlassen' <<<"$output"
+}
+
+# --- Die Zeit-Aufschluesselung ------------------------------------------------
+# DoD (1): die Bilanz nennt ihren Nenner. Anteile ueber einer Teilmenge sind Anteile an
+# etwas anderem als dem, was die Ueberschrift sagt — darum gibt es sie unvollstaendig
+# gar nicht, sondern nur als Befund.
+@test "driver: report_times nennt Anteil je Sensor und seinen Nenner" {
+  mr_fixture
+  printf '2\tfall-2\tOK\tfull-smoke\t9.00\n' >"$MR_DIR/status.2"
+  run bash -c "source '$DRIVER' 2>/dev/null || true
+    RUN_DIR='$MR_DIR'
+    report_times 3"
+  rm -rf "$MR_DIR"
+  grep -qF 'Zeit je Sensor ueber 3 von 3 Fall-Dateien' <<<"$output"
+  grep -qE 'full-smoke +n=1 +summe= +9\.0 anteil= 81\.8%' <<<"$output"
+  grep -qE 'test-go +n=2 +summe= +2\.0 anteil= 18\.2%' <<<"$output"
+  grep -qF 'laengster Einzelfall: 9.00 s (fall-2)' <<<"$output"
+}
+
+@test "driver: report_times FAELLT statt eine Bilanz ueber einer Teilmenge auszugeben" {
+  mr_fixture
+  rm "$MR_DIR/status.3"
+  run bash -c "source '$DRIVER' 2>/dev/null || true
+    RUN_DIR='$MR_DIR'
+    report_times 3
+    echo \"befunde=\$fail_count\""
+  rm -rf "$MR_DIR"
+  grep -qF '2 von 3 Fall-Dateien tragen eine Dauer' <<<"$output"
+  ! grep -qF 'Zeit je Sensor ueber' <<<"$output"
+  ! grep -qF 'anteil=' <<<"$output"
+  grep -qF 'befunde=1' <<<"$output"
+}
+
+# --- Der Gruen-Vorlauf je Worker ----------------------------------------------
+# DoD (2): jeder Worker belegt den Sensor in SEINER Kopie, bevor er dessen ersten Fall
+# faehrt. Ist er dort ohne Mutation rot, waere jeder Fall danach rot — und zwar nicht
+# wegen seiner Mutation. Der Worker bricht dann ab UND legt die Abbruch-Flagge, damit
+# kein anderer weiterzieht.
+@test "driver: ein Worker BRICHT AB, wenn sein Gruen-Vorlauf in SEINER Kopie rot ist" {
+  local iso stub
+  iso="$(mktemp -d)"; stub="$iso/bin"
+  mkdir -p "$stub" "$iso/w7/repo" "$iso/run"
+  cat >"$stub/make" <<'STUB'
+#!/usr/bin/env bash
+printf '%s\n' 'VORLAUF-KOPIE-ROT'
+exit 1
+STUB
+  chmod +x "$stub/make"
+  run env "PATH=$stub:$PATH" bash -c "source '$DRIVER' 2>/dev/null || true
+    ISO_ROOT='$iso'; RUN_DIR='$iso/run'
+    printf '1\ttest-go\t/kein/fall.sh\n' | queue_new light
+    rc=0; worker_main 7 '' light || rc=\$?
+    echo \"status=\$rc\"
+    [ -e '$iso/run/abort' ] && echo 'ABBRUCH-FLAGGE LIEGT'" 3>&2
+  rm -rf "$iso"
+  grep -qF 'Worker 7: der Gruen-Vorlauf' <<<"$output"
+  grep -qF 'in SEINER Kopie ohne Mutation rot' <<<"$output"
+  grep -qF 'VORLAUF-KOPIE-ROT' <<<"$output"
+  grep -qF 'status=1' <<<"$output"
+  grep -qF 'ABBRUCH-FLAGGE LIEGT' <<<"$output"
+}
+
+# DIE ZUORDNUNG DARF NICHT AN DER UMGEBUNG DES AUFRUFERS HAENGEN, und dieser Fall ist
+# nicht theoretisch: `make mutate` ruft den Treiber aus einer Rezeptur, ein `make` darin
+# ist ein SUB-make und schaltet `--print-directory` von selbst ein. Beim ersten Lauf ueber
+# der echten Fall-Menge fiel damit JEDER Modus in die serielle Spur — dieselbe Funktion
+# hatte aus einer normalen Shell gerufen das Gegenteil gesagt. Der make-Stub bildet genau
+# diesen Unterschied nach; der Zahn dazu ist test/mutations/195.
+@test "driver: die Spur-Zuordnung ist dieselbe, ob aus einer Shell oder aus einem Sub-make gerufen" {
+  local plan ohne mit
+  plan='docker build --no-cache-filter test --target test -t ai-harness-init:test .'
+  plan_stub
+  ohne="$(plan_urteil "$plan")"
+  mit="$(plan_urteil_im_submake "$plan")"
+  rm -rf "$PS_ISO"
+  [ "$ohne" = "LEICHT" ]
+  [ "$mit" = "LEICHT" ]
+}

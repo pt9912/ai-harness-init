@@ -118,8 +118,15 @@ smoke: ## Emit-Smoke: Doc-Gate in tmp-Repo emittieren + emittiertes docs-check r
 full-smoke: ## Voll-E2E: Bootstrap in tmp-Repo -> dort make gates out-of-the-box gruen (Host-Docker) — NICHT in gates
 	@GO_VERSION='$(GO_VERSION)' bash harness/tools/full-smoke.sh
 
+# MUTATE_JOBS ist die Worker-Zahl des Treibers und eine ZEIT-Stellschraube, keine
+# Verdikt-Stellschraube: dieselbe Fall-Menge liefert dasselbe Ergebnis, ueber wie viele
+# Worker sie auch lief (LH-QA-02) — der Treiber belegt das je Lauf mit seiner
+# Vollstaendigkeits-Zeile, statt es zuzusagen. Der DEFAULT steht im Skript, nicht hier:
+# eine zweite Vorgabe waere eine zweite Quelle, und die CI ruft `make mutate` bar
+# (MR-014, .github/workflows/ci.yml) — sie faehrt damit genau dieselbe Aufteilung wie
+# ein lokaler Lauf ohne Vorgabe.
 mutate: ## Mutations-Sensor fuer AGENTS 3.6: faerbt jede Mutation ihren Waechter rot? — NICHT in gates
-	@bash harness/tools/mutate.sh
+	@MUTATE_JOBS='$(MUTATE_JOBS)' bash harness/tools/mutate.sh
 
 # shellcheck über die harness-eigenen Shell-Hooks/-Helfer. .bats ist
 # ausgenommen (shellcheck parst die @test-Syntax nicht); .awk ist kein Shell.
