@@ -28,7 +28,7 @@ Setzung 2). Der Haken an DoD (3) jenes Slice steht deshalb **nicht**, und dieser
 Grund, aus dem er trotzdem in `done/` liegt (Modul 5 §Closure-Regeln).
 
 **Folge-Slice:**
-[slice-117](../planning/next/slice-117-lauf-ohne-ende-faerbt-rot.md) — seine DoD (1) **ist** der
+[slice-117](../planning/in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) — seine DoD (1) **ist** der
 Auflösungs-Trigger unten; DoD (3) desselben Slice zieht die zweite, heute unbewachte Zeitschranke
 (`QUEUE_LOCK_TRIES`) mit. Geschnitten hat ihn der Planner in der Closure zu
 [slice-105](../planning/done/slice-105-mutate-messen-dann-teilen.md).
@@ -87,10 +87,10 @@ entscheidbar, drei Bedingungen — alle drei müssen gelten:
    endet **ohne** `timeout` von außen mit Exit ≠ 0 und benennt den Worker.
 3. `grep -rln 'QUEUE_LOCK_TRIES' test/ | wc -l` liefert **≥ 1** — die zweite, ältere Schranke ist
    dann nicht mehr die einzige unbewachte
-   ([slice-117](../planning/next/slice-117-lauf-ohne-ende-faerbt-rot.md) DoD 3).
+   ([slice-117](../planning/in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) DoD 3).
 
 **Der zweite Ausgang, und er ist gleichwertig:** zeigt die Bemessungs-Frage aus
-[slice-117](../planning/next/slice-117-lauf-ohne-ende-faerbt-rot.md) §3 Frage B, dass jede
+[slice-117](../planning/in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) §3 Frage B, dass jede
 tragfähige Schranke auf einem langsamen Runner regelmäßig ohne Befund auslöst, kippt Modul-7-Frage 2
 auf *Nein*: dann ist die Zusage *„hängt"* nicht temporär offen, sondern dauerhaft nicht zu halten,
 und der Carveout gehört in eine ADR übergeführt (`Status: Permanent — übergeführt in ADR-<NNNN>`).
@@ -104,7 +104,7 @@ es gibt, sind zwei Stellen, an denen der offene Posten sichtbar ist:
 | Datei | Zeile/Section | Wert |
 |---|---|---|
 | [`slice-105-mutate-messen-dann-teilen.md`](../planning/done/slice-105-mutate-messen-dann-teilen.md) | §2 DoD (3) | Haken **nicht** gesetzt; §7 nennt `CO-003` als Träger |
-| [`slice-117-lauf-ohne-ende-faerbt-rot.md`](../planning/next/slice-117-lauf-ohne-ende-faerbt-rot.md) | §2 DoD (1) und (3) | der Auflösungs-Trigger als Abnahme-Kriterium |
+| [`slice-117-lauf-ohne-ende-faerbt-rot.md`](../planning/in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) | §2 DoD (1) und (3) | der Auflösungs-Trigger als Abnahme-Kriterium |
 
 ## Verifikation (nach Auflösung)
 
@@ -112,7 +112,7 @@ es gibt, sind zwei Stellen, an denen der offene Posten sichtbar ist:
 - [ ] `make gates` grün ohne Ausnahme, `make mutate` ohne Befund.
 - [ ] Datei wird nach `docs/plan/carveouts/done/` bewegt (reiner `git mv`). <!-- d-check:ignore (done/ entsteht erst bei erster Carveout-Auflösung) -->
 - [ ] Der Index in [`README.md`](README.md) zieht mit — Zeile aus *Aktiv* entfernt, unter *Aufgelöst* eingetragen.
-- [ ] Folge-Slice [slice-117](../planning/next/slice-117-lauf-ohne-ende-faerbt-rot.md) geschlossen oder explizit dokumentiert.
+- [ ] Folge-Slice [slice-117](../planning/in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) geschlossen oder explizit dokumentiert.
 
 ## Geschichte
 
