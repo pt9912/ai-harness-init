@@ -414,7 +414,7 @@ als das Warten.
 **diagnostiziert** (Ursache benannt, mit Sensor oder Grenze) · **als Umgebungs-Eigenschaft
 ausgewiesen** (nicht der Baum, sondern der Runner; mit dem Beleg dafür) · **abgelehnt** mit Grund ·
 **aufgeschoben** mit einem Auflösungs-Trigger, der ein beobachtbares Ereignis nennt. Dieselbe
-Ausgangs-Menge, die [slice-101](slice-101-norm-postens-bekommen-einen-termin.md) für offene Postens
+Ausgangs-Menge, die [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) für offene Postens
 setzt — und aus demselben Grund: *„genannt"* ist keiner davon.
 
 **Delta zum Abnahme-Kriterium (2026-08-26), ausgewiesen statt eingearbeitet.** Der Ausgang

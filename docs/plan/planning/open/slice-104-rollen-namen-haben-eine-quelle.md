@@ -255,7 +255,7 @@ benannte Spec-Lücke).
 - **Zwei Zähne kosten `full-smoke`-Laufzeit.** DoD (2) und (3) verlangen Fälle auf der teuersten
   Stufe des Treibers; heute tragen `grep -l '^# verify: full-smoke' test/mutations/*.sh | wc -l` →
   **3** Fälle diesen Modus. Dass das teuer ist, ist kein Grund für eine schmalere Stufe — es ist der
-  Gegenstand von [slice-105](slice-105-mutate-messen-dann-teilen.md), und die zwei Slices sind
+  Gegenstand von [slice-105](../next/slice-105-mutate-messen-dann-teilen.md), und die zwei Slices sind
   voneinander unabhängig: keiner wartet auf den anderen.
 - **Der Slice berührt die Rollen-Achse, ohne sie zu verbreitern.** Er schließt eine Kopplung im
   Werkzeug; die Grenze, dass ein umbenannter Typ im Ziel ein **leeres** Feld ergibt, bleibt

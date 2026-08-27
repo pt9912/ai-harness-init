@@ -225,7 +225,7 @@ Gegenstand liegt vollständig in diesem Repo, er berührt die emittierte Ebene n
 keiner Welle. Die Messungen aus §1 sind gefahren.
 
 **Eine Beobachtung zur Reihenfolge, kein Zuständiger.**
-[slice-105](slice-105-mutate-messen-dann-teilen.md) fasst dasselbe Skript an, und
+[slice-105](../next/slice-105-mutate-messen-dann-teilen.md) fasst dasselbe Skript an, und
 [slice-114](slice-114-jede-aussage-hat-einen-abschnitt.md) dieselbe
 [`harness/README.md`](../../../../harness/README.md). Keiner der drei ist Vorbedingung des anderen —
 wer zweiter läuft, misst gegen den Stand, den der erste hinterlässt, und das ist eine Tatsache über

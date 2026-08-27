@@ -144,7 +144,7 @@ Steering-Loop-Eintrag.
   aber dann steht dieser Satz geschrieben.
 - **(d) kann teuer werden.** Ein Zahn über der **Wahrheit** des Wiederablage-Satzes braucht einen
   zweiten Init-Lauf nach einer Träger-Wegnahme — ein `full-smoke`-Fall, und genau diese Klasse
-  misst [slice-105](slice-105-mutate-messen-dann-teilen.md) als Klippe. Die ausgesprochene Grenze
+  misst [slice-105](../next/slice-105-mutate-messen-dann-teilen.md) als Klippe. Die ausgesprochene Grenze
   ist der billigere Ausgang und muss nicht der schlechtere sein.
 - **(e) ist eine vorbestehende Grenze der gesamten Emit-Test-Infrastruktur**, nicht ein Defekt
   dieses Wächters. Wer sie hier zu schließen versucht, schneidet einen anderen Slice.
