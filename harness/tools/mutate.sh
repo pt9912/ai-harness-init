@@ -120,6 +120,18 @@ HAVE_LOCK=""
 # zwei Laeufe auf zwei Maschinen in ihrer Wanduhr nicht mehr vergleichbar — und
 # Vergleichbarkeit ist genau das, wofuer die Zeiten erhoben werden.
 JOBS="${MUTATE_JOBS:-4}"
+
+# require_positive_int ist die fail-closed-Pruefung fuer JEDE von aussen gesetzte Zahl des
+# Treibers — EINE Quelle fuer beide Vorgaben, weil zwei getrennt gepflegte Pruefungen genau
+# die Drift-Konstruktion sind, die dieses Repo an failure_form schon einmal beseitigt hat.
+# Leer, nicht-numerisch, negativ, gebrochen und null fallen alle durch: nichts davon ist
+# eine Worker-Zahl, und nichts davon ist eine Sekundenzahl.
+require_positive_int() {
+  case "$1" in
+    "" | *[!0-9]*) return 1 ;;
+  esac
+  [ "$1" -ge 1 ]
+}
 # RUN_DIR sammelt Warteschlangen, Cursor, Fall-Protokolle und Statuszeilen EINES Laufs.
 # Es liegt unter ISO_ROOT, also ausserhalb des Repos — dieselbe Ortsregel wie fuer die
 # Kopien und aus demselben Grund (MR-003-Stempel ueber getrackte UND untrackte Dateien).
@@ -271,6 +283,9 @@ TOTAL=""
 # Signal-Zweig sie beenden koennen.
 declare -a WORKER_PIDS=()
 SIGNAL_SEEN=""
+# BERICHT_GEFAHREN steht, sobald der regulaere Bericht durch ist — on_signal wiederholt ihn
+# dann nicht.
+BERICHT_GEFAHREN=""
 
 # stop_workers beendet die noch laufenden Worker und wartet begrenzt auf ihr Ende.
 #
@@ -307,9 +322,23 @@ stop_workers() {
 # dieses `exit` ausgeloest wird; RUN_DIR steht dem Bericht darum noch zur Verfuegung.
 on_signal() {
   local sig="$1"
-  # Ein zweites Signal waehrend des Berichts soll nicht einen zweiten Bericht ausloesen.
-  [ -n "$SIGNAL_SEEN" ] && exit 130
+  # Ein zweites Signal waehrend des Berichts bricht OHNE Bericht ab — und sagt das. Die
+  # Zeile davor hat zugesagt, dass berichtet wird; sie stillschweigend zu brechen waere eine
+  # Ausgabe, die ihrer eigenen widerspricht, also genau das, wogegen DoD (2) steht.
+  if [ -n "$SIGNAL_SEEN" ]; then
+    echo "mutate: zweites $sig waehrend des Berichts — Abbruch OHNE Bericht." >&2
+    exit 130
+  fi
   SIGNAL_SEEN=1
+  # NACH einem regulaeren Bericht wird nicht noch einmal berichtet: merge_report und
+  # report_times zaehlen in pass_count/fail_count weiter, und ein zweiter Lauf ueber
+  # denselben Statusdateien verdoppelte die Bilanz. Gemessen ohne diese Schranke:
+  # `4 ok` ueber ZWEI Faellen, direkt unter „2 von 2 Fall-Dateien mit Ergebnis".
+  if [ -n "$BERICHT_GEFAHREN" ]; then
+    echo "mutate: ABBRUCH — $sig nach dem Bericht; er steht oben und wird nicht wiederholt." >&2
+    stop_workers
+    exit 130
+  fi
   echo "mutate: ABBRUCH — $sig empfangen. Berichtet wird, was bis hierher gemessen ist." >&2
   stop_workers
   if [ -n "$RUN_DIR" ] && [ -d "$RUN_DIR" ] && [ -n "$TOTAL" ]; then
@@ -587,7 +616,26 @@ green_prerun() {
       return 1
     fi
     echo "mutate: Gruen-Vorlauf make $m (muss VOR der ersten Mutation gruen sein)"
-    if ! ( cd "$WORK" && make "$m" ) >"$log" 2>&1; then
+    # DIE SCHRANKE GILT AUCH HIER, und dieser Zweig ist der einzige Ort, an dem sie greifen
+    # MUSS statt zu koennen: der Vorwaermlauf vor dem Fork laeuft, bevor es Worker gibt —
+    # await_workers hat dort nichts zu bewachen. Gemessen ohne diese Zeile: ein Haenger im
+    # Vorwaermlauf endete NUR durch ein `timeout` von aussen (Exit 137 nach 45 s) und
+    # hinterliess keinen Bericht. Es ist der erste Docker-Build des Laufs, also der Ort, an
+    # dem ein Haenger am ehesten entsteht.
+    # `timeout` schickt TERM an `make`; dessen Kinder ueberleben es, dieselbe benannte
+    # Grenze wie bei stop_workers.
+    local rc=0
+    ( cd "$WORK" && timeout "$STALL_SECONDS" make "$m" ) >"$log" 2>&1 || rc=$?
+    if [ "$rc" -eq 124 ]; then
+      # Gemessen ist die ueberschrittene Schranke, nicht ein rotes Gate — die Meldung
+      # darunter behauptete sonst einen Defekt im Baum, den niemand gemessen hat.
+      echo "mutate: ABBRUCH — der Gruen-Vorlauf 'make $m' hat die Zeitschranke von $STALL_SECONDS s ueberschritten." >&2
+      echo "  Gemessen ist die Ueberschreitung, nicht ihr Grund." >&2
+      echo "  Die letzten Zeilen von make $m:" >&2
+      show_tail "$log"
+      return 1
+    fi
+    if [ "$rc" -ne 0 ]; then
       # Gemessen ist dieser eine Lauf: dieser Modus, diese Kopie, keine Mutation,
       # Exit != 0. Woran er lag, steht in den Zeilen darunter — die Meldung nennt es
       # nicht, weil der Treiber es nicht misst.
@@ -783,17 +831,21 @@ plan_self_contained() {
 # --- Die Zeitschranke -------------------------------------------------------
 # STALL_SECONDS begrenzt die STILLE des Laufs, nicht seine Dauer — und das ist der ganze
 # Entwurf. Eine Schranke um den einzelnen Fall muesste je Modus verschieden sein (der
-# teuerste Fall kostet 67,84 s, ein ci-lint-Fall 1,15 s), eine um die Gesamtlaufzeit
-# muesste 570 s hier und 1299 s in der CI decken. Stille bedeutet auf beiden Maschinen
+# teuerste Fall kostet 56,20 s, ein ci-lint-Fall 0,73 s), eine um die Gesamtlaufzeit
+# muesste 648,70 s hier und 1299 s in der CI decken. Stille bedeutet auf beiden Maschinen
 # dasselbe: ein langsamer Runner macht LANGSAMER Fortschritt, ein Haenger macht KEINEN.
 #
-# DER WERT kommt aus der laengsten LEGITIMEN Stille, und die ist kein Fall, sondern ein
-# Gruen-Vorlauf: `full-smoke` brauchte 123,84 s (Maximum der dritten Spalte in
-# `sed -n '/Gruen-Vorlaeufe/,/Zeit je Fall/p'` ueber einem Lauf-Protokoll). 900 s ist das
-# 7,3-fache davon und rund das 3-fache der in der CI erwarteten (dort ist der Lauf je Fall
-# 2,4x langsamer). Bewusst grosszuegig: ein Haenger ist UNBEGRENZT, also loest ihn jede
-# endliche Schranke aus, waehrend eine knappe Schranke einen langsamen Runner roetet — und
-# ein Sensor, der ohne Befund rot wird, senkt seine eigene Aussage (LH-QA-01).
+# DER WERT kommt aus der laengsten LEGITIMEN Stille, und die ist WEDER ein Fall NOCH ein
+# Gruen-Vorlauf allein, sondern beide zusammen: der Zug wird protokolliert, BEVOR der Vorlauf
+# laeuft (s. worker_main), also liegen Vorlauf und Fall in EINER Stille. Ueber dem Protokoll
+# eines Laufs sind das das Maximum der dritten Spalte von
+# `sed -n '/Gruen-Vorlaeufe/,/Zeit je Fall/p'` plus der `laengster Einzelfall`-Wert —
+# gemessen 110,83 + 56,20 = 167,03 s. 900 s ist damit das 5,39-fache der laengsten legitimen
+# Stille, nicht das 7,3-fache des Vorlaufs allein; die frueher hier stehende Herleitung mass
+# die kleinere der beiden Groessen. In der CI ist der Lauf je Fall 2,4x langsamer.
+# Bewusst grosszuegig: ein Haenger ist UNBEGRENZT, also loest ihn jede endliche Schranke aus,
+# waehrend eine knappe Schranke einen langsamen Runner roetet — und ein Sensor, der ohne
+# Befund rot wird, senkt seine eigene Aussage (LH-QA-01).
 # NICHT gedeckt: ein Fall, der langsamer als die Schranke, aber endlich ist. Heute gibt es
 # keinen; wer den ersten schreibt, faellt hierunter.
 # Die Vorgabe steht HIER und nicht im Makefile — dieselbe Begruendung wie bei MUTATE_JOBS:
@@ -847,6 +899,40 @@ await_workers() {
   done
 }
 
+# collect_workers bringt den Lauf zu Ende: erst die Zeitschranke, dann das Einsammeln.
+#
+# BEIDE TEILE SIND EINE ZUSAGE, und darum stehen sie in EINER Funktion. DoD (1) von
+# slice-117 lautet „ein Worker, der nicht zurueckkommt, faerbt den Lauf VON SELBST rot" —
+# das haelt weder `await_workers` allein noch `wait` allein: ohne die Schranke davor
+# blockiert `wait` unbegrenzt, und ohne die `kill` IN stop_workers kehrt `wait` auch nach
+# abgelaufener Schranke nicht zurueck. Getrennt gepruefte Teile sind hier gruen, waehrend
+# das Ganze haengt — genau so ist der erste Entwurf durch den Review gefallen.
+#
+# Sensor: test/mutate-driver.bats „driver: das Einsammeln endet OHNE Hilfe von aussen". Er
+# faehrt diese Funktion unter `timeout` und verlangt, dass `timeout` NICHT gebraucht wird —
+# Status 124 ist rot. Damit misst er das ENDEN und nicht den Rueckgabewert einer
+# Teilfunktion. Der Zahn dazu ist test/mutations/202.
+collect_workers() {
+  local -a wpids=("$@")
+  local k wrc
+  await_workers "${wpids[@]}" || :
+  for ((k = 0; k < ${#wpids[@]}; k++)); do
+    wrc=0
+    wait "${wpids[$k]}" || wrc=$?
+    if [ "$wrc" -ne 0 ]; then
+      # Die Marker-Datei unterscheidet, WAS gemessen ist: liegt sie, hat der Worker seinen
+      # eigenen Rumpf zu Ende gefuehrt und seinen Status selbst gemeldet; fehlt sie, ist er
+      # unterwegs ausgestiegen. Warum, misst der Treiber nicht — und behauptet es nicht.
+      if [ -f "$RUN_DIR/worker.$((k + 1)).done" ]; then
+        report_fail "worker-$((k + 1))" "Worker kehrte mit Status $wrc zurueck — sein Anteil an der Fall-Menge ist unvollstaendig"
+      else
+        report_fail "worker-$((k + 1))" "Worker endete mit Status $wrc OHNE Abschluss-Marke, ist also nicht bis zum Ende seines Rumpfes gekommen — sein Anteil an der Fall-Menge ist unvollstaendig"
+      fi
+    fi
+  done
+  return 0
+}
+
 # is_heavy_mode fragt die einmal je Lauf erhobene Spur ab (main fuellt HEAVY_MODES).
 is_heavy_mode() {
   grep -qF " $1 " <<<"$HEAVY_MODES"
@@ -857,6 +943,26 @@ worker_cleanup() {
   restore
   [ -n "$PRERUN_LOG_DIR" ] && rm -rf "$PRERUN_LOG_DIR"
   return 0
+}
+
+# worker_on_signal ist der Signal-Zweig DES WORKERS und existiert aus demselben Grund wie
+# on_signal im Elternprozess: ein Handler, der ZURUECKKEHRT, laesst bash den Lauf an der
+# unterbrochenen Stelle wieder aufnehmen.
+#
+# Beim Worker traf das mitten in run_case. Lagen EXIT, INT und TERM auf worker_cleanup,
+# dann raeumte ein TERM das Fall-Backup weg — darin liegt verify.log —, kehrte zurueck, und
+# run_case las danach eine geloeschte Datei: der Fall meldete `rot, aber '<expect>' faellt
+# nicht — falscher Grund`. Ein FALSCHES Fall-Urteil, und zwar OHNE Signal von aussen, denn
+# das TERM schickt stop_workers selbst, sobald die Zeitschranke greift. Gegen eine
+# identische Fixture gemessen, die ohne den Abbruch `ok` meldet; der Worker zog danach sogar
+# noch einen weiteren Fall.
+# Sensor: test/mutate-driver.bats „driver: ein Worker unter TERM meldet KEIN Fall-Urteil";
+# der Zahn dazu ist test/mutations/201.
+worker_on_signal() {
+  case "$1" in
+    INT) exit 130 ;;
+    *) exit 143 ;;
+  esac
 }
 
 # worker_done setzt die Abschluss-Marke: dieser Worker hat seinen Rumpf zu Ende gefuehrt
@@ -912,7 +1018,9 @@ worker_main() {
   TMPDIR="$ISO_ROOT/w$id/tmp"
   export TMPDIR
   mkdir -p "$TMPDIR"
-  trap 'worker_cleanup' EXIT INT TERM
+  trap 'worker_cleanup' EXIT
+  trap 'worker_on_signal INT' INT
+  trap 'worker_on_signal TERM' TERM
 
   local queue rc line idx mode case_file log t0 t1 pt0 pt1 fc0 st
   for queue in "$@"; do
@@ -1201,11 +1309,20 @@ main() {
   # (leer, 0, Text) auf null Worker hinaus: die Warteschlange bliebe voll, kein Fall
   # liefe, und der Lauf faende seinen Befund erst in der Zusammenfuehrung — als
   # Vollstaendigkeits-Meldung statt als das, was er ist, ein Aufruf-Fehler.
-  case "$JOBS" in
-    "" | *[!0-9]*) JOBS=0 ;;
-  esac
-  if [ "$JOBS" -lt 1 ]; then
+  if ! require_positive_int "$JOBS"; then
     echo "mutate: ABBRUCH — MUTATE_JOBS ist keine Worker-Zahl >= 1 (gelesen: '${MUTATE_JOBS:-}')." >&2
+    exit 1
+  fi
+
+  # Dieselbe fail-closed-Schranke fuer die ZEIT-Vorgabe, und sie ist noetiger als die oben:
+  # eine unsinnige Worker-Zahl faellt sofort auf, eine unsinnige Zeitschranke schaltet
+  # LAUTLOS die Zusage von DoD (1) ab. Gemessen ohne diese Pruefung: `MUTATE_STALL_SECONDS=abc`
+  # ergab 15 Arithmetik-Fehler und NULL Zeitschranken-Befunde — der Lauf lief weiter, als
+  # gaebe es keine Schranke. `=0` kehrte das Gegenteil hervor und roetete einen gruenen Lauf.
+  if ! require_positive_int "$STALL_SECONDS"; then
+    echo "mutate: ABBRUCH — MUTATE_STALL_SECONDS ist keine Sekundenzahl >= 1 (gelesen: '${MUTATE_STALL_SECONDS:-}')." >&2
+    echo "  Eine Vorgabe unterhalb der laengsten legitimen Stille roetet einen gesunden Lauf;" >&2
+    echo "  die Vorgabe des Treibers und ihre Herleitung stehen bei STALL_SECONDS." >&2
     exit 1
   fi
 
@@ -1342,26 +1459,7 @@ main() {
   # zu Ende gefuehrt und seinen Status selbst gemeldet (sein Protokoll sagt, warum);
   # fehlt sie, ist er unterwegs ausgestiegen. Warum, misst der Treiber nicht — und
   # behauptet es darum auch nicht.
-  # ERST die Zeitschranke, DANN das Einsammeln. `wait` allein kennt keine Schranke: ein
-  # Worker, der nicht zurueckkommt, liesse den Lauf ohne Zutun von aussen nie enden — und
-  # ein Sensor, der schweigend haengt, ist von einem langsamen nicht zu unterscheiden.
-  # Greift die Schranke, sind die Worker danach beendet, `wait` kehrt zurueck, und die
-  # fehlenden Faelle fallen unten in der Zusammenfuehrung als Befund auf.
-  await_workers "${pids[@]}" || :
-
-  local k pid wrc
-  for ((k = 0; k < ${#pids[@]}; k++)); do
-    pid="${pids[$k]}"
-    wrc=0
-    wait "$pid" || wrc=$?
-    if [ "$wrc" -ne 0 ]; then
-      if [ -f "$RUN_DIR/worker.$((k + 1)).done" ]; then
-        report_fail "worker-$((k + 1))" "Worker kehrte mit Status $wrc zurueck — sein Anteil an der Fall-Menge ist unvollstaendig"
-      else
-        report_fail "worker-$((k + 1))" "Worker endete mit Status $wrc OHNE Abschluss-Marke, ist also nicht bis zum Ende seines Rumpfes gekommen — sein Anteil an der Fall-Menge ist unvollstaendig"
-      fi
-    fi
-  done
+  collect_workers "${pids[@]}"
 
   # Die Ausgabe, die ein Worker AUSSERHALB eines Falls geschrieben hat (Vorlauf-Abbruch,
   # Mutex-Zeitueberschreitung), in Worker-Reihenfolge — sie erklaert die Befunde oben.
@@ -1387,6 +1485,7 @@ main() {
   fi
 
   report_times "$total"
+  BERICHT_GEFAHREN=1
   echo "mutate: $pass_count ok, $fail_count Befund(e)"
   [ "$fail_count" -eq 0 ]
 }

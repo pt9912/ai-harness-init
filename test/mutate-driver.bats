@@ -693,7 +693,7 @@ STUB
     trap - EXIT INT TERM
     RUN_DIR='$root/run'
     STALL_SECONDS=1
-    sleep 20 & p=\$!
+    sleep 20 </dev/null >/dev/null 2>&1 & p=\$!
     WORKER_PIDS=(\$p)
     await_workers \$p || echo \"schranke=\$?\"
     kill \$p 2>/dev/null || :
@@ -715,7 +715,7 @@ STUB
     trap - EXIT INT TERM
     RUN_DIR='$root/run'
     STALL_SECONDS=3
-    ( sleep 2; printf '2\n' >>'$root/run/draws.1'; sleep 2 ) & p=\$!
+    ( sleep 2; printf '2\n' >>'$root/run/draws.1'; sleep 2 ) </dev/null >/dev/null 2>&1 & p=\$!
     WORKER_PIDS=(\$p)
     await_workers \$p && echo 'ohne-schranke'
     echo \"befunde=\$fail_count\""
@@ -770,4 +770,110 @@ STUB
   grep -qF 'ohne Ergebnis geblieben: fall-2' <<<"$output"
   ! grep -qF 'kein einziger Worker hat ein Zug-Protokoll hinterlassen' <<<"$output"
   ! grep -qF 'NACH-DEM-SIGNAL-WEITERGELAUFEN' <<<"$output"
+}
+
+# --- Das Enden als Eigenschaft -------------------------------------------------
+# DoD (1) sagt zu, dass ein Worker, der nicht zurueckkommt, den Lauf VON SELBST rot faerbt.
+# Weder await_workers' Rueckgabewert noch stop_workers' kill-Zeilen belegen das einzeln:
+# ohne die Schranke blockiert `wait` unbegrenzt, ohne die kill kehrt es auch nach
+# abgelaufener Schranke nicht zurueck — getrennt gepruefte Teile sind gruen, waehrend das
+# Ganze haengt. Der frueheste Entwurf dieses Tests raeumte den Testprozess selbst weg und
+# maskierte damit genau die Wirkung, die er belegen sollte.
+# `timeout` ist hier DETEKTOR, nicht Hilfsmittel: die Zusage ist, dass es NICHT gebraucht
+# wird. Status 124 heisst, der Lauf haette ohne Hilfe von aussen nicht geendet.
+@test "driver: das Einsammeln endet OHNE Hilfe von aussen" {
+  local root
+  root="$(mktemp -d)"
+  mkdir -p "$root/run"
+  printf '1\n' >"$root/run/draws.1"
+  run timeout 30 bash -c "source '$DRIVER' 2>/dev/null || true
+    trap - EXIT INT TERM
+    RUN_DIR='$root/run'
+    STALL_SECONDS=2
+    sleep 45 </dev/null >/dev/null 2>&1 & p=\$!
+    WORKER_PIDS=(\$p)
+    collect_workers \$p
+    kill -0 \$p 2>/dev/null && echo 'WORKER-LEBT-NOCH' || echo 'worker-beendet'
+    echo \"befunde=\$fail_count\""
+  rm -rf "$root"
+  [ "$status" -ne 124 ]
+  grep -qF 'worker-beendet' <<<"$output"
+  ! grep -qF 'WORKER-LEBT-NOCH' <<<"$output"
+  grep -qE 'befunde=[1-9]' <<<"$output"
+}
+
+# Der Worker-Trap hatte denselben Defekt, den dieser Slice im Elternprozess behebt: EXIT,
+# INT und TERM lagen auf worker_cleanup, das ZURUECKKEHRT. Ein TERM — von stop_workers
+# selbst geschickt, sobald die Schranke greift — raeumte damit mitten in run_case das
+# Fall-Backup weg und liess run_case danach in eine geloeschte Datei greifen: ein FALSCHES
+# Fall-Urteil ohne jedes Signal von aussen.
+
+# DoD (1) haengt an einer Zahl, die von aussen gesetzt werden kann. Ohne fail-closed-Pruefung
+# schaltet eine unsinnige Vorgabe die Zusage LAUTLOS ab — gemessen: `abc` ergab 15
+# Arithmetik-Fehler und null Zeitschranken-Befunde.
+@test "driver: eine unsinnige MUTATE_STALL_SECONDS-Vorgabe BRICHT AB, statt die Schranke abzuschalten" {
+  # Gegen eine echte Treiber-KOPIE ausserhalb des Repos: der Treiber leitet $REPO aus seinem
+  # eigenen Ort ab, legt seinen Lock also im Temp-Baum an und beruehrt das Repo nicht.
+  # Gefahren wird der ganze Weg — Vorgabe, Pruefung, Abbruch —, nicht nur die Pruefung:
+  # eine Pruefung, die niemand ruft, ist gruen.
+  local root
+  root="$(mktemp -d)"
+  mkdir -p "$root/harness/tools"
+  cp "$DRIVER" "$root/harness/tools/mutate.sh"
+  local bad
+  for bad in abc 0 -5 1.5 "3 4"; do
+    run env MUTATE_STALL_SECONDS="$bad" bash "$root/harness/tools/mutate.sh"
+    [ "$status" -ne 0 ]
+    grep -qF 'keine Sekundenzahl' <<<"$output"
+  done
+  # Eine LEERE Vorgabe ist keine unsinnige: `${MUTATE_STALL_SECONDS:-900}` behandelt sie wie
+  # ungesetzt und faellt auf die Vorgabe des Treibers zurueck — dasselbe Verhalten wie bei
+  # MUTATE_JOBS. Der Test haelt das fest, statt es zu bestrafen.
+  run env MUTATE_STALL_SECONDS="" bash "$root/harness/tools/mutate.sh"
+  ! grep -qF "keine Sekundenzahl" <<<"$output"
+  # Eine gueltige Vorgabe kommt an dieser Schranke VORBEI (sonst prueft der Test nur, dass
+  # der Treiber immer abbricht) und faellt erst am fehlenden Fall-Verzeichnis.
+  run env MUTATE_STALL_SECONDS=42 bash "$root/harness/tools/mutate.sh"
+  [ "$status" -ne 0 ]
+  ! grep -qF 'keine Sekundenzahl' <<<"$output"
+  rm -rf "$root"
+}
+# Der Worker-Trap hatte denselben Defekt, den dieser Slice im Elternprozess behebt: EXIT, INT
+# und TERM lagen auf worker_cleanup, das ZURUECKKEHRT. Das TERM schickt stop_workers selbst,
+# sobald die Zeitschranke greift — der Abbruch-Pfad erzeugte damit ein FALSCHES Fall-Urteil
+# ohne jedes Signal von aussen: worker_cleanup raeumt das Fall-Backup weg, verify.log liegt
+# darin, und run_case las danach eine geloeschte Datei.
+# Gefahren wird worker_main SELBST, damit SEINE trap-Zeilen unter Messung stehen. Ein Test,
+# der die Traps eigenhaendig setzt, misst worker_on_signal und laesst die Verdrahtung frei —
+# so ist der erste Entwurf dieses Zahns durch `make mutate` gefallen.
+@test "driver: ein Worker unter TERM meldet KEIN Fall-Urteil" {
+  local iso stub
+  iso="$(mktemp -d)"; stub="$iso/bin"
+  mkdir -p "$stub" "$iso/w7/repo" "$iso/run"
+  # Der Sensor-Lauf des Falls dauert kurz an; das TERM trifft waehrenddessen ein und wird
+  # von bash danach zugestellt — genau die Lage, in der der Handler frueher zurueckkehrte.
+  printf '#!/usr/bin/env bash\nsleep 3\n' >"$stub/make"
+  chmod +x "$stub/make"
+  # `# files:` nennt eine Datei, die es im ECHTEN Repo gibt: run_case rechnet den
+  # Host-Fingerabdruck ueber sie, bevor es den Sensor faehrt.
+  cp "$REPO/Makefile" "$iso/w7/repo/Makefile"
+  cat >"$iso/fall.sh" <<'FALL'
+#!/usr/bin/env bash
+# files: Makefile
+# verify: test-go
+# expect: TestNieErreicht
+sed -i '1i # mutiert' Makefile
+FALL
+  run timeout 25 env "PATH=$stub:$PATH" bash -c "source '$DRIVER' 2>/dev/null || true
+    ISO_ROOT='$iso'; RUN_DIR='$iso/run'
+    printf '1\ttest-go\t$iso/fall.sh\n' | queue_new light
+    ( sleep 1; kill -TERM \$\$ ) </dev/null >/dev/null 2>&1 &
+    rc=0; worker_main 7 'test-go' light || rc=\$?
+    echo \"NACH-DEM-WORKER-WEITERGELAUFEN status=\$rc\"" 3>&2
+  local status_da="nein"
+  [ -f "$iso/run/status.1" ] && status_da="ja"
+  rm -rf "$iso"
+  [ "$status" -eq 143 ]
+  ! grep -qF 'NACH-DEM-WORKER-WEITERGELAUFEN' <<<"$output"
+  [ "$status_da" = "nein" ]
 }

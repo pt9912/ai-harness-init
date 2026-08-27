@@ -10,4 +10,4 @@
 # Das ist der Zahn zu slice-117 DoD (3), erste Haelfte: die Schranke stand seit slice-105
 # allein auf ihrem Kommentar.
 set -euo pipefail
-sed -i '658s/      return 2/      return 1/' harness/tools/mutate.sh
+sed -i 's/^      return 2$/      return 1/' harness/tools/mutate.sh
