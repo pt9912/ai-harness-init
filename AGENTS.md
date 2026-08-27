@@ -224,6 +224,32 @@ entscheidet der Slice, der die Tool-Ebene entscheidet — nicht diese Sektion.
 wird. Die Regel liegt im Feedforward-Quadranten: benannt, nicht geschlossen; ihr Träger ist der
 Rollen-Wechsel vor der Änderung, nicht ein Gate danach.
 
+### 3.9 Docker-only
+
+Kein Host-Paketmanager und keine Host-Toolchain. Checks, Builds und Gates laufen
+über `make`, das die gepinnten Images fährt; der Host braucht `git`, `docker` und
+GNU `make`, sonst nichts ([`LH-QA-03`](spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten),
+[`ADR-0003`](docs/plan/adr/0003-go-native-binaries.md)).
+
+**Falsch:** die Go-Toolchain, `pip`, `npm`, `cargo`, `apt` oder `brew` in der
+Befehlsposition — auch in einer Sub-Shell, auch nur lesend.
+**Richtig:** das `make`-Ziel, das den Schritt fährt. Fehlt eines, ist **das** der
+Befund; der Host ist nicht der Ausweg.
+
+**Begründung:** Reproduzierbar ist ein Lauf über das gepinnte Image, nicht über den
+Host ([`LH-QA-02`](spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) — ein Host-Lauf
+liefert ein Ergebnis, das CI nicht wiederholt, und verlegt das Debugging auf den
+Unterschied statt auf den Fehler.
+
+**Grenze des Feedback-Quadranten, und sie ist zweifach.** Durchgesetzt wird die Regel
+vom PreToolUse-Guard, den `.claude/settings.json` verdrahtet: er prüft die
+Befehlsposition jedes Kommando-Segments und schlägt bei Parse-Zweifel fail-closed zu.
+Er deckt Paketmanager und Host-Toolchains und benennt seine Grenze selbst — *„Bewusst
+NICHT geprueft: andere Interpreter …; der Guard ist ein Stolperdraht …, KEINE
+Sandbox"*. Und er hängt an einem Agenten: `.codex/hooks.json` führt allein den
+SessionStart-Injektor. Wo der Guard nicht läuft oder nicht greift, trägt allein
+dieser Abschnitt.
+
 ## 4. Quality Gates
 
 | Target | Zweck |
@@ -240,13 +266,10 @@ Rollen-Wechsel vor der Änderung, nicht ein Gate danach.
 | `make span-check` | Der Träger ist vorhanden **und** sein Unterkommando `span-emit` erzeugt für eine synthetische Payload einen Span, dessen Ablageort `git check-ignore` bestätigt (Schema: [`spec/spezifikation.md`](spec/spezifikation.md#5-metriken-und-tracing-felder) §5) |
 | `make gates` | alle aktuell lauffähigen Gates |
 
-Der Dogfood-Go-Gate-Stack ist **vollständig**: `make lint` / `make build` / `make test` (Go via Dockerfile-Stages, slice-001a/b) neben `docs-check` / `shell-lint` / `baseline-verify`. **Nicht behauptet**: das Architektur-Gate (a-check, [`LH-FA-07`](spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) — der Dogfood ist **flach**, hier hätte a-check einen leeren Prüfbereich ([`LH-QA-01`](spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). **Emittiert wird es trotzdem** (slice-046, emitted-only): ein Zielrepo mit einem **schichten-tragenden** Layout — heute `--arch hexslice` (go, cpp) oder `--arch hexagonal` (go) — bekommt `.a-check.yml` + `a-check.mk` + sein Gate-Fragment und fährt a-check in seinem `make gates` mit; ein flaches Ziel bekommt keines. Welche Layouts das sind, entscheidet **keine Namensliste**, sondern die strukturelle Frage, ob das Layout eine geprüfte Schicht trägt. Belegt in `make full-smoke` (beide Richtungen + ein verbotener Import, der das emittierte Gate rot färbt), nicht hier.
-
-**Nicht-Gate-Verify** (verfügbar, aber **nicht** in `make gates` — wie `regelwerk-check`/`baseline-freshness`): `make smoke` fährt den Tier-2-Emit-Smoke (slice-002) — emittiert die Doc-Gate-Baseline in ein tmp-Repo und lässt das emittierte `docs-check` real laufen. Host-Docker + ggf. Netz-Pull, darum an DoD-Verify/CI/Wellen-Closure, nicht im offline-schlanken `make gates`. `make full-smoke` ist der **Voll-E2E-Smoke** (slice-024): Bootstrap in ein tmp-Repo, dann dort der **zusammengeführte** `make gates` ([`MR-010`](harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert): docs-check + Go-Gates) — der Happy-Path-Beweis ([`LH-FA-01`](spec/lastenheft.md#lh-fa-01--repo-bootstrappen)), dass ein frisch gebootstrapptes Repo out-of-the-box grün fährt (die Nutzer-Sicht, die `make smoke` mit seinen getrennten Schritten bewusst nicht nimmt); ebenfalls Host-Docker/Netz, an DoD-Verify/CI/Closure. `make span-report` rechnet aus dem Span-Bestand eine **Token-Bilanz je Rolle** — ein **Bericht, kein Sensor**: er prüft nichts, färbt nichts rot und gehört darum in keine der beiden Gate-Tabellen ([`LH-QA-01`](spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Er liest den Bestand read-only und netzlos; seine Ausgabe nennt ihren **Nenner** (Subagenten-Läufe, nicht der Lauf — [ADR-0012](docs/plan/adr/0012-haupt-kontext-ohne-token-bilanz.md)), den **Sammelposten-Anteil** und die **Abdeckungszahl mit Bezugsmenge**. `make mutate` ist der Mutations-Sensor zu §3.6 (slice-026): er färbt jeden gelisteten Wächter absichtlich rot und meldet den, der grün bleibt. Je Fall läuft **nur der Sensor, dessen Rot erwartet wird** (aus der `# expect:`-Zeile abgeleitet; im Zweifel beide — slice-056). Je Fall läuft **nur der Sensor, dessen Rot erwartet wird** — abgeleitet aus der `# expect:`-Zeile, im Zweifel (leer, mehrdeutig) beide Stufen (slice-056). Er arbeitet gegen eine **isolierte Kopie außerhalb des Repos** — der Arbeitsbaum wird nie verändert, parallele Gate-/Test-Läufe sind unbedenklich, und ein Abbruch lässt **im Arbeitsbaum** kein Residuum zurück (außerhalb bleiben ein Temp-Verzeichnis und, nach hartem Kill, das Lock-Verzeichnis liegen — Letzteres bewusst fail-closed). Der Lauf misst das mit: er vergleicht die Mutations-Zieldateien im Arbeitsbaum vor, **während** und nach dem Lauf (nur diese Dateien — nicht den ganzen Baum, damit paralleles Arbeiten den Lauf nicht rötet). Jede Mutation kostet einen Sensor-Lauf (`make test-go` **oder** `make test-bats`, bei unklarer Erwartung beide) — auch er gehört an DoD-Verify/Closure.
-
-`make hook-overhead` **misst** den Aufschlag je Tool-Call: die Wanduhr-Zeit **eines** Träger-Aufrufs, gegen die Schwelle aus [ADR-0011](docs/plan/adr/0011-telemetrie-erfassung-policy.md) (*50 ms im Median*); die Schuld dafür steht als Folgepflicht 9 in [ADR-0022](docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md). **Eine Messung, kein Sensor** — sie prüft nichts, färbt nichts rot und steht darum in keiner der zwei Gate-Tabellen ([`LH-QA-01`](spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)): ein Latenz-Gate misst auf einem geteilten Runner die Auslastung des Nachbarn mit und wäre rot ohne Befund. `harness/tools/hook-overhead.sh` spielt dafür eine **reale** Folge von Tool-Calls aus dem Span-Bestand nach (Ereignis-Art, Werkzeug-Mischung, Reihenfolge und Ergebnis-Größe je Aufruf); ohne Bestand bricht es ab, statt eine Folge zu erfinden. Der gemessene Stand samt Bedingungen und Kommandos steht im Kopf jenes Skripts — **hier nicht**, weil die Zahl dem Host gilt, auf dem sie entstand.
-
-**CI** ([`MR-014`](harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions), slice-027): GitHub Actions fährt `make gates` + `make smoke` + `make mutate` pro Push/PR auf frischem Klon (schließt die [`MR-003`](harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)-Restlücke, gibt `make mutate` seinen Pro-Push-Auslöser); die Netz-Sensoren nur nächtlich. Die CI ruft **nur `make`-Targets**. **Was CI prüft, ist genau der Inhalt dieser Targets — nichts darüber hinaus;** ein grüner Lauf ist keine Aussage über ungetestete Flächen.
+Die Beschreibung dieser Ziele — was jedes prüft, was es **nicht** prüft, und welche
+außerhalb von `make gates` stehen (`smoke`, `full-smoke`, `mutate`, `span-report`,
+`hook-overhead`) — steht in [`harness/README.md`](harness/README.md), dem Harness-Einstieg
+(Source Precedence §2, Rang 8). Sie steht dort und nicht hier: Eine Aussage hat einen Ort.
 
 ## 5. Dokumentations-Regeln
 
