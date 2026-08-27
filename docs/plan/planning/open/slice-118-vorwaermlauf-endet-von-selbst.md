@@ -9,7 +9,7 @@ wechselt nur durch `git mv`, siehe
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 1: **(1) Bündel?** Nein — ein Block in einer Datei und seine bats-Ebene. **(2) Gemeinsames
 Closure-Kriterium?** Nein. **(3) Auslöser reaktiv oder gewollt?** Reaktiv: eine Grenze, die
-[slice-117](../in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) im Treiber **benannt** und dort mit
+[slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md) im Treiber **benannt** und dort mit
 ihrer Messung hinterlegt hat. Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap.
@@ -57,12 +57,12 @@ Gegenprobe).
 
 ### Zwei Auflagen, beide aus einem gemessenen Rückbau
 
-[slice-117](../in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) hat diesen Ort schon einmal
+[slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md) hat diesen Ort schon einmal
 geschlossen — mit `timeout "$STALL_SECONDS" make "$m"` — und die Zeile wieder zurückgebaut. Was
 dabei gemessen wurde, ist die Auflage für den nächsten Versuch:
 
 1. **Keine Wanduhr.** Die Zeile war eine **Dauer**-Schranke um einen Modus-Lauf, während der Entwurf
-   des Treibers **Stille** begrenzt; [slice-117](../in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) §3
+   des Treibers **Stille** begrenzt; [slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md) §3
    Frage A hat Dauer-Schranken **vor dem Code** verworfen, weil sie je Modus verschieden bemessen
    sein müssten und auf einem langsamen Runner rot ohne Befund werden.
 2. **Der Vorlauf bleibt in der Prozessgruppe des Treibers.** Gemessen: mit `timeout` lag der Treiber
@@ -80,7 +80,7 @@ Worker und **sein Kind** erben Deskriptor 3, und der Treiber schließt ihn für 
 (`grep -c '3>&-' harness/tools/mutate.sh` → **0**). Gemessen blieb eine Pipeline **25,00 s** bzw.
 **135,85 s** nach der Schlusszeile des Treibers offen, weil das verwaiste Enkelkind dieselbe Pipe
 hielt (beide Zahlen aus den zwei Verifikations-Runden zu
-[slice-117](../in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md)). Die bats-Ebene desselben Slice hat den
+[slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md)). Die bats-Ebene desselben Slice hat den
 Kanal für **ihre** Hintergrund-Prozesse bereits geschlossen
 (`grep -c '3>&- 4>&-' test/mutate-driver.bats` → **4**) — der Treiber nicht. Das ist dieselbe
 Konstruktions-Frage wie Auflage 2: wohin die Kinder des Treibers gehören.
@@ -127,19 +127,19 @@ Steering-Loop-Lerneintrag.
 | [`test/mutate-driver.bats`](../../../../test/mutate-driver.bats) | update | die Sensor-Ebene des Treibers; `grep -c '^@test' test/mutate-driver.bats` → **48** beim Anlegen. Die neuen Fälle gehören dorthin, nicht in einen zweiten Sensor |
 | `test/mutations/` <!-- d-check:ignore (geplante Dateien) --> | neu | die Zähne aus DoD (1) und (3); Nummern im Anschluss an die höchste vergebene (`ls -1 test/mutations/*.sh \| sed -n 's#.*/\([0-9]*\)-.*#\1#p' \| sort -n \| tail -1` → **205**, beim Anlegen neu auszuzählen) |
 | [`harness/README.md`](../../../../harness/README.md) | update | der Nicht-Gate-Verify-Absatz nennt heute beide Grenzen als Grenzen (`grep -c 'Vorwärmlauf' harness/README.md` → **1**); schließt der Slice sie, zieht der Absatz mit |
-| [`docs/plan/carveouts/CO-003-mutate-ohne-zeitschranke.md`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) | update **oder** unverändert | der Carveout führt diesen Slice als Folge-Slice; ob er hier aufgelöst wird, hängt an seiner Bedingung 1, und die ist eine Architect-Entscheidung ([slice-117](../in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) §7 Übergabe) |
+| [`docs/plan/carveouts/CO-003-mutate-ohne-zeitschranke.md`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) | update **oder** unverändert | der Carveout führt diesen Slice als Folge-Slice; ob er hier aufgelöst wird, hängt an seiner Bedingung 1, und die ist eine Architect-Entscheidung ([slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md) §7 Übergabe) |
 | [`.github/workflows/ci.yml`](../../../../.github/workflows/ci.yml) | **unverändert** | eine `timeout-minutes`-Zeile wäre eine zweite Schranke an einem Ort, den ein lokaler Lauf nicht sieht ([`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)) |
 | [`docs/plan/adr`](../../adr) | **unverändert** | die Änderung **hebt** eine Zusage an und senkt keine Schwelle ([`AGENTS.md`](../../../../AGENTS.md) §3.5) |
 
 **Drei Fragen, die vor dem Code zu beantworten sind — die Antworten gehören in diesen Plan, nicht in
 den Kommentar.** Die Lehre steht in
 [slice-105](../done/slice-105-mutate-messen-dann-teilen.md) und ist in
-[slice-117](../in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) eingelöst worden.
+[slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md) eingelöst worden.
 
 | # | Frage — und warum sie den Schnitt entscheidet |
 |---|---|
 | A | **Woran misst eine Schranke Fortschritt an einer Stelle, an der es noch keine Worker gibt?** Der Vorwärmlauf schreibt keine Zug-Protokolle und keine Statusdateien — die zwei Größen, aus denen `progress_count` seinen Stand bildet. Ohne eine dritte Größe bleibt nur die Wanduhr, und die ist durch Auflage 1 verworfen |
-| B | **Wohin gehören die Kinder des Treibers?** Eine eigene Prozessgruppe je Worker löst DoD (3) und die Waisen-Frage in einem Zug — nimmt aber denselben Weg, der in [slice-117](../in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) als Regression gemessen wurde, wenn sie den Vorlauf einschließt. Die Antwort muss beide Richtungen nennen |
+| B | **Wohin gehören die Kinder des Treibers?** Eine eigene Prozessgruppe je Worker löst DoD (3) und die Waisen-Frage in einem Zug — nimmt aber denselben Weg, der in [slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md) als Regression gemessen wurde, wenn sie den Vorlauf einschließt. Die Antwort muss beide Richtungen nennen |
 | C | **Was meldet der Lauf, wenn die Schranke greift?** Der Treiber misst die Überschreitung, nicht ihren Grund — die Meldung darf nur sagen, was gemessen ist ([`AGENTS.md`](../../../../AGENTS.md) §3.7). Ob sie den Modus, die Größe oder beides nennt, entscheidet, was ein späterer Leser damit anfangen kann |
 
 ## 4. Trigger
@@ -188,7 +188,7 @@ Zahl als Abnahme-Kriterium wäre auf einem geteilten Runner rot ohne Befund
 - **Die bats-Stufe ist teuer.** Sie trägt im letzten Protokoll **52,6 %** der Fall-Arbeit
   (`sed -n '/Zeit je Sensor/,/Gruen-Vorlaeufe/p'` über einem `make mutate`-Protokoll). Ein neuer
   Fall, der auf Wanduhr-Ereignisse wartet, kostet **jeden** `test-bats`-Mutationsfall seine Dauer;
-  der Posten ist in [slice-117](../in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) §7 mit seinem
+  der Posten ist in [slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md) §7 mit seinem
   Auflösungs-Trigger geführt.
 
 ## 7. Closure-Notiz (nach `done/`)

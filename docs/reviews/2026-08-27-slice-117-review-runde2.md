@@ -21,7 +21,7 @@ dazu die beiden Report-Dateien der ersten Runde.
   (1496 Zeilen), `test/mutate-driver.bats` in den geänderten Bereichen und beide Vorfassungen
   (`git show 6020941:…`, `git show 6020941^:…`).
 - **Slice-Plan:**
-  [slice-117](../plan/planning/in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) — §1 Lage 1/2,
+  [slice-117](../plan/planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) — §1 Lage 1/2,
   §2 DoD (1)–(3), §3 Plan-Tabelle + Mitnahme-Liste + die **vor dem Code** entschiedenen Fragen
   A/B/C, §4 Trigger, §5 Closure-Trigger.
 - **Vorherige Findings am gleichen Modul:**

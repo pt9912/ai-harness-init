@@ -2,7 +2,7 @@
 
 **Status:** Aktiv.
 
-**Datum angelegt:** 2026-08-27. **Letzte Prüfung:** 2026-08-27 (Audit in der Closure zu [slice-117](../planning/in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) — Modul-7-Übergang *weiterhin aktiv*).
+**Datum angelegt:** 2026-08-27. **Letzte Prüfung:** 2026-08-27 (Audit in der Closure zu [slice-117](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) — Modul-7-Übergang *weiterhin aktiv*).
 
 **Betroffenes Gate:** **keines — und das ist die erste Aussage dieses Carveouts.** Betroffen ist
 `make mutate`: ein Nicht-Gate-Verify, das **nicht** in `make gates` läuft, aber pro Push als
@@ -48,11 +48,11 @@ Carveout ist der Grund, aus dem er trotzdem in `done/` liegt (Modul 5 §Closure-
 **Folge-Slice:**
 [slice-118](../planning/open/slice-118-vorwaermlauf-endet-von-selbst.md) — er trägt den offenen Teil
 (der Vorwärmlauf vor dem Fork). Den gedeckten Teil hat
-[slice-117](../planning/in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) geliefert: seine DoD (1)
+[slice-117](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) geliefert: seine DoD (1)
 ist der Auflösungs-Trigger unten, seine DoD (3) hat `QUEUE_LOCK_TRIES` bezahnt. Geschnitten hat den
 ersten der Planner in der Closure zu
 [slice-105](../planning/done/slice-105-mutate-messen-dann-teilen.md), den zweiten in der Closure zu
-[slice-117](../planning/in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md).
+[slice-117](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md).
 
 ---
 
@@ -108,10 +108,10 @@ entscheidbar, drei Bedingungen — alle drei müssen gelten:
    endet **ohne** `timeout` von außen mit Exit ≠ 0 und benennt den Worker.
 3. `grep -rln 'QUEUE_LOCK_TRIES' test/ | wc -l` liefert **≥ 1** — die zweite, ältere Schranke ist
    dann nicht mehr die einzige unbewachte
-   ([slice-117](../planning/in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) DoD 3).
+   ([slice-117](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) DoD 3).
 
 **Der zweite Ausgang, und er ist gleichwertig:** zeigt die Bemessungs-Frage aus
-[slice-117](../planning/in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) §3 Frage B, dass jede
+[slice-117](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) §3 Frage B, dass jede
 tragfähige Schranke auf einem langsamen Runner regelmäßig ohne Befund auslöst, kippt Modul-7-Frage 2
 auf *Nein*: dann ist die Zusage *„hängt"* nicht temporär offen, sondern dauerhaft nicht zu halten,
 und der Carveout gehört in eine ADR übergeführt (`Status: Permanent — übergeführt in ADR-<NNNN>`).
@@ -125,7 +125,7 @@ es gibt, sind drei Stellen, an denen der offene Posten sichtbar ist:
 | Datei | Zeile/Section | Wert |
 |---|---|---|
 | [`slice-105-mutate-messen-dann-teilen.md`](../planning/done/slice-105-mutate-messen-dann-teilen.md) | §2 DoD (3) | Haken **nicht** gesetzt; §7 nennt `CO-003` als Träger |
-| [`slice-117-lauf-ohne-ende-faerbt-rot.md`](../planning/in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) | §2 DoD (1) und (3) | der Auflösungs-Trigger als Abnahme-Kriterium |
+| [`slice-117-lauf-ohne-ende-faerbt-rot.md`](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) | §2 DoD (1) und (3) | der Auflösungs-Trigger als Abnahme-Kriterium |
 | [`slice-118-vorwaermlauf-endet-von-selbst.md`](../planning/open/slice-118-vorwaermlauf-endet-von-selbst.md) | §2 DoD (1) | der offene Teil — der Vorwärmlauf vor dem Fork |
 
 ## Verifikation (nach Auflösung)
@@ -133,12 +133,12 @@ es gibt, sind drei Stellen, an denen der offene Posten sichtbar ist:
 - [ ] Die drei Trigger-Bedingungen oben sind erfüllt, jede mit ihrem Kommando gefahren.
 - [ ] `make gates` grün ohne Ausnahme, `make mutate` ohne Befund.
 - [ ] Datei wird nach `docs/plan/carveouts/done/` bewegt (reiner `git mv`). <!-- d-check:ignore (done/ entsteht erst bei erster Carveout-Auflösung) -->
-- [ ] Folge-Slice [slice-118](../planning/open/slice-118-vorwaermlauf-endet-von-selbst.md) geschlossen oder explizit dokumentiert (der Vorgänger [slice-117](../planning/in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) ist geschlossen — §7 dort).
-- [ ] Folge-Slice [slice-117](../planning/in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) geschlossen oder explizit dokumentiert.
+- [ ] Folge-Slice [slice-118](../planning/open/slice-118-vorwaermlauf-endet-von-selbst.md) geschlossen oder explizit dokumentiert (der Vorgänger [slice-117](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) ist geschlossen — §7 dort).
+- [ ] Folge-Slice [slice-117](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) geschlossen oder explizit dokumentiert.
 
 ## Geschichte
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-08-27 | Angelegt (Closure zu slice-105; DoD (3) für einen der drei Ausfall-Wege ohne rot gesehenes Gegenbeispiel) | [slice-105](../planning/done/slice-105-mutate-messen-dann-teilen.md) §7 |
-| 2026-08-27 | Audit in der Closure zu slice-117 — Modul-7-Übergang *weiterhin aktiv*: Bedingung 2 und 3 erfüllt und gefahren, Bedingung 1 misst ihren Gegenstand nicht (vier Fundstellen, alle Kommentar), offen bleibt der Vorwärmlauf vor dem Fork. Trigger-Änderung an den Architect übergeben | [slice-117](../planning/in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) §7 |
+| 2026-08-27 | Audit in der Closure zu slice-117 — Modul-7-Übergang *weiterhin aktiv*: Bedingung 2 und 3 erfüllt und gefahren, Bedingung 1 misst ihren Gegenstand nicht (vier Fundstellen, alle Kommentar), offen bleibt der Vorwärmlauf vor dem Fork. Trigger-Änderung an den Architect übergeben | [slice-117](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) §7 |

@@ -9,7 +9,7 @@ wechselt nur durch `git mv`, siehe
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 1: **(1) Bündel?** Nein — ein Zähl-Schritt am bestehenden Sensor. **(2) Gemeinsames
 Closure-Kriterium?** Nein. **(3) Auslöser reaktiv oder gewollt?** Reaktiv: der
-Steering-Loop-Eintrag aus [slice-117](../in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) §7. Nach
+Steering-Loop-Eintrag aus [slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md) §7. Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap.
 
@@ -40,7 +40,7 @@ einem Schnitt, der entschieden ist, statt dass ein Maßstab über dem Bestand da
 
 `make mutate` prüft die **Haltbarkeit** der Zähne, die in `test/mutations/` **gelistet** sind. Über
 eine Stelle **ohne** Fall sagt er nichts — und genau diese Lage ist in
-[slice-117](../in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) dreimal in einem Commit eingetreten:
+[slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md) dreimal in einem Commit eingetreten:
 drei Reparaturen ohne Fall, jede einzeln neutralisiert, und die bats-Ebene blieb jedes Mal
 vollständig grün (**187 ok / 0 not ok**, in
 [Review](../../../reviews/2026-08-27-slice-117-review-runde2.md) §2 B-1 und in
@@ -154,7 +154,7 @@ schreiben.
 DoD (1)–(3) erfüllt mit gefahrenen Kommandos; die Zählung ist **einmal gegen einen hergestellten
 Zustand rot gesehen** (ein Fall, dessen `# expect:`-Ziel nicht mehr existiert); Frage A, B und C
 sind mit ihrer Begründung **im Plan** beantwortet; mindestens eine der drei Instanzen aus
-[slice-117](../in-progress/slice-117-lauf-ohne-ende-faerbt-rot.md) ist nachgestellt und wird von der neuen
+[slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md) ist nachgestellt und wird von der neuen
 Zählung **benannt** — ein Sensor, der seine eigene Fund-Geschichte nicht reproduziert, ist unbelegt;
 Review konform (Modul 10); Verifikation bestätigt (Modul 11); `make gates` grün; `make mutate` ohne
 Befund; `git mv` nach `done/` als eigener Move-Commit; Closure-Notiz mit Steering-Loop-Eintrag.
