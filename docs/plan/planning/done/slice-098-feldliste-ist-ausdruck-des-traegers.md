@@ -195,7 +195,7 @@ Steering-Loop-Eintrag.
 werkzeug-erzeugtes Dokument von **89** Zeilen, das **32** Feld-Zeilen und **drei** stehende
 Grenz-Sätze trägt. Gemessen an einem Ziel, das dieser Lauf selbst gebootstrappt hat — der Träger
 dafür ist der laufende (`make artifact DEST=<scratch>/bin`, Docker-only; `sha256sum` über ihm und
-über [`.harness/state/bin/ai-harness-init`](../../../../.harness/state/bin) → **derselbe** Wert,
+über `.harness/state/bin/ai-harness-init` → **derselbe** Wert,
 `56ce658b97c6405a60a1…`):
 
 ```
