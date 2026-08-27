@@ -291,4 +291,7 @@ kein Slice sie versehentlich mitschneidet und kein Review sie als Lücke meldet.
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Welle-Abschluss füllen. Verweis auf welle-12-results.md. -->
+Geschlossen. Was gelernt wurde, steht in [welle-12-results.md](done/welle-12-results.md) —
+geliefert, was funktionierte, was anders lief, die Steering-Loop-Einträge samt der Bilanz dessen,
+was **nicht** geliefert wurde, der Carveout-Audit und die Verifikations-Belege. Meilenstein **M6**
+ist mit dieser Welle erreicht, mit zwei dort benannten Grenzen des Belegs.
