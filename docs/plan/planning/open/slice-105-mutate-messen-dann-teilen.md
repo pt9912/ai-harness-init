@@ -399,7 +399,7 @@ an anderer Stelle grün war — am 2026-08-25 im Job `full-smoke` rot und im Gr�
 (`test-apps-hex` und `lint-apps-hex`), nicht das C++-Modul; dessen Bilder wurden im selben Protokoll
 fertig gebaut. Die Ursache im belegten Fall ist eine ausgehende Anfrage, die nicht mit 2xx
 beantwortet wurde. Träger des Befundes ist
-[slice-106](../next/slice-106-rotes-ci-traegt-seinen-ausgang.md); dort stehen die Messungen mit ihren
+[slice-106](../in-progress/slice-106-rotes-ci-traegt-seinen-ausgang.md); dort stehen die Messungen mit ihren
 Kommandos.
 
 **Warum das die Reihenfolge bestimmt und nicht bloß unangenehm ist.** Parallelität fügt diesem
@@ -426,7 +426,7 @@ unverändert — er verlangt weiterhin den Beleg statt der Plausibilität; versc
 der Beleg zeigen darf. Wer das Kriterium anwendet, wendet die weitere Fassung an:
 *nicht der geprüfte Baum, sondern die Umgebung des Laufs — Maschine oder Leitung —, mit dem Beleg
 dafür.* Die Messungen stehen in
-[slice-106](../next/slice-106-rotes-ci-traegt-seinen-ausgang.md) §1.
+[slice-106](../in-progress/slice-106-rotes-ci-traegt-seinen-ausgang.md) §1.
 
 **Ist die Bedingung beim Erreichen von DoD (1) nicht erfüllt, greift `in-progress` → `next`:** der
 Slice wird in Messung und Teilung zerschnitten, die Messung landet in `done/`, die Teilung wartet.
