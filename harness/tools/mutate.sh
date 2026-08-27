@@ -200,12 +200,15 @@ isolation_path() {
   printf '%s' "$dest"
 }
 
-# prepare_isolation kopiert den Host-Baum EINMAL pro Lauf an diesen Ort. Die Kopie IST
+# prepare_isolation kopiert den Host-Baum JE WORKER an diesen Ort — main() ruft sie
+# JOBS-mal, jede Kopie traegt genau einen Worker. Die Kopie IST
 # das Repo — inklusive `.git`: `make ci-lint` faehrt actionlint, und das bricht ohne
 # git-Projektwurzel ab („no project was found in any parent directories"). Der erste
 # Entwurf sparte `.git` aus; der Gruen-Vorlauf fing es. Ausgeschlossen bleibt nur
 # `.harness/state/` (Laufzustand, gitignored, enthaelt den Lock DIESES Laufs). tar statt
-# rsync/cp -a: tar ist im Repo ohnehin die Sicherungs-Mechanik (LH-QA-03). 8,0 MB.
+# rsync/cp -a: tar ist im Repo ohnehin die Sicherungs-Mechanik (LH-QA-03). Der Platzbedarf
+# ist der der Kopie MAL JOBS: `du -sh --exclude=./.harness/state .` -> 51M (2026-08-27),
+# davon 39M `.git`, das `make ci-lint` braucht.
 prepare_isolation() {
   local dest
   dest="$(isolation_path "$1")" || return 1
@@ -720,6 +723,34 @@ worker_cleanup() {
   return 0
 }
 
+# worker_done setzt die Abschluss-Marke: dieser Worker hat seinen Rumpf zu Ende gefuehrt
+# und meldet seinen Status SELBST. Sie steht an jedem BEABSICHTIGTEN Ausgang von
+# worker_main und an keinem sonst — daran unterscheidet main(), ob ein Worker berichtet
+# hat oder unterwegs ausgestiegen ist (ein Signal, der Isolations-Abbruch in run_case,
+# oder `set -e` an einem Kommando, das niemand fuer fehlschlagbar hielt).
+worker_done() {
+  printf '%s\n' "$1" >"$RUN_DIR/worker.$WORKER_ID.done"
+}
+
+# spawn_worker startet EINEN Worker in seiner eigenen Subshell und im Hintergrund; `$!`
+# des Aufrufers traegt danach seine PID.
+#
+# DER AUFRUF STEHT HIER UND NICHT IN main(), aus zwei Gruenden. Erstens ist die FORM des
+# Aufrufs tragend: `worker_main … || rc=$?` setzt `set -e` fuer den GESAMTEN Rumpf aus —
+# fuer die Schleife, fuer green_prerun und fuer run_case —, weil bash errexit in jedem
+# Kommando eines `||`-Kontextes aussetzt, und zwar bis in die gerufenen Funktionen hinein.
+# Ein gescheitertes Schreiben (volle Platte) brach den Worker damit nicht ab; er lief
+# weiter und hinterliess die leere Statusdatei, die status_line_valid heute faengt.
+# Zweitens misst test/mutate-driver.bats damit GENAU die Form, die der Lauf faehrt: eine
+# im Test nachgebaute Subshell prueft die Form des Tests, nicht die des Treibers.
+# Sensor: test/mutate-driver.bats „driver: ein Worker BRICHT AB, wenn er seinen Zug nicht
+# protokollieren kann"; der Zahn dazu ist test/mutations/197.
+spawn_worker() {
+  local id="$1" seen="$2"
+  shift 2
+  ( worker_main "$id" "$seen" "$@" ) >"$RUN_DIR/worker.$id.log" 2>&1 &
+}
+
 # worker_main ist EIN Worker: eigene Kopie, eigener Vorlauf-Zustand, eigene Protokolle.
 # Aufruf: worker_main <id> <schon-gruene-modi> <schlange>...
 #
@@ -738,7 +769,7 @@ worker_main() {
   # Die fail-closed-Schranke gilt JE WORKER, nicht einmal fuer den Lauf: jeder Worker
   # setzt sein eigenes $WORK, und ein leeres oder repo-internes liesse SEINE Seds im
   # cwd des Treibers laufen (Review F-1).
-  require_isolated || return 1
+  require_isolated || { worker_done 1; return 1; }
   # Alle Temp-Dateien dieses Workers (Fall-Backups, Vorlauf-Protokolle, die tmp-Repos
   # der Smokes) liegen unter seiner Kopie. Ein hart abgebrochener Worker laesst damit
   # nichts liegen, was das cleanup() des Elternteils nicht ohnehin mit ISO_ROOT wegraeumt.
@@ -755,7 +786,7 @@ worker_main() {
       case "$rc" in
         0) ;;
         1) break ;;
-        *) return "$rc" ;;
+        *) worker_done "$rc"; return "$rc" ;;
       esac
       IFS=$'\t' read -r idx mode case_file <<<"$line"
       # Der Zug wird protokolliert, BEVOR der Fall laeuft: stirbt der Worker mitten im
@@ -774,6 +805,7 @@ worker_main() {
           echo "  Jeder Fall dieses Modus waere danach ebenfalls rot, aber nicht wegen SEINER Mutation." >&2
           cat "$RUN_DIR/prerun.$id.log" >&2
           abort_run
+          worker_done 1
           return 1
         fi
         pt1="$(date +%s.%N)"
@@ -802,22 +834,74 @@ worker_main() {
       printf 'mutate: [w%s] %-42s %s (%s s)\n' "$id" "$(basename "$case_file" .sh)" "$st" "$(elapsed "$t0" "$t1")" >&3
     done
   done
+  worker_done 0
   return 0
 }
 
 # --- Zusammenfuehrung -------------------------------------------------------
+# status_line_valid prueft, ob <1> die Statuszeile des Falls <2> IST: fuenf Tab-Felder —
+# Fall-Nummer, Fall-Name, Urteil, Modus, Dauer —, die Nummer die erwartete, das Urteil
+# eines der zwei geschriebenen, die Dauer eine Zahl.
+#
+# WARUM DER INHALT GEPRUEFT WIRD UND NICHT NUR, DASS DIE DATEI DA IST: `>"$f"` legt die
+# Datei an, BEVOR es schreibt. Ein Worker, der zwischen Anlegen und Schreiben stirbt —
+# Signal, volle Platte —, hinterlaesst eine LEERE Statusdatei. Eine Vollstaendigkeit ueber
+# `[ -f ]` zaehlt sie als Ergebnis, das leere Urteil faellt in den else-Zweig, und der
+# verlorene Fall gilt als BESTANDEN. Am echten Treiber gemessen, bevor diese Pruefung
+# stand: `Vollstaendigkeit — 3 von 3 Fall-Dateien mit Ergebnis, jede Fall-ID genau einmal
+# gezogen` neben `ok=3` bei zwei gelaufenen Faellen, und daneben eine Bilanz, die `3 von 3`
+# ueberschreibt und ueber `n=2` rechnet. Das ist das stille Gruen, gegen das dieser Sensor
+# antritt, im Sensor selbst.
+# Sensor: test/mutate-driver.bats „driver: eine LEERE Statusdatei zaehlt NICHT als
+# Ergebnis"; der Zahn dazu ist test/mutations/196.
+status_line_valid() {
+  local line="$1" idx="$2"
+  local -a f
+  # Der Status von `read` wird abgefangen, obwohl das Here-String einen Zeilenumbruch
+  # anhaengt und er darum 0 ist: eine Zusage, die nur durch den Aufrufkontext gilt, ist
+  # keine (dieselbe Begruendung wie bei require_isolated).
+  IFS=$'\t' read -r -a f <<<"$line" || true
+  [ "${#f[@]}" -eq 5 ] || return 1
+  [ "${f[0]}" = "$idx" ] || return 1
+  case "${f[2]}" in
+    OK | BEFUND) ;;
+    *) return 1 ;;
+  esac
+  case "${f[4]}" in
+    "" | *[!0-9.]*) return 1 ;;
+  esac
+  return 0
+}
+
+# collect_status druckt die GUELTIGEN Statuszeilen in Fall-Reihenfolge. EINE Quelle fuer
+# beide Leser: die Vollstaendigkeit (merge_report) und die Bilanz (report_times) duerfen
+# nicht ueber verschiedenen Mengen rechnen — zwei getrennt gepflegte Pruefungen sind die
+# Drift-Konstruktion, die dieses Repo an failure_form schon einmal beseitigt hat (N-2).
+collect_status() {
+  local total="$1" i line
+  for ((i = 1; i <= total; i++)); do
+    [ -f "$RUN_DIR/status.$i" ] || continue
+    line="$(cat "$RUN_DIR/status.$i")"
+    status_line_valid "$line" "$i" || continue
+    printf '%s\n' "$line"
+  done
+}
+
 # merge_report setzt die Fall-Protokolle in FALL-Reihenfolge zusammen und BELEGT die
 # Vollstaendigkeit. Die Zeilenfolge des Berichts haengt damit nicht daran, wie die Laeufe
 # verschraenkt waren; ein Bericht, den der Scheduler umsortiert, waere als Sensor-Ausgabe
 # nicht vergleichbar (LH-QA-02).
 #
-# Drei Wege in ein stilles Gruen sind hier zugehalten, jeder mit eigener Meldung:
-#   1. ein Fall OHNE Statuszeile (Worker gestorben, Fall nie gezogen)   -> Befund,
-#   2. eine Fall-ID MEHR ALS EINMAL gezogen (Cursor-Defekt)             -> Befund,
-#   3. die Zahl der gelaufenen Faelle weicht von der Zahl der FALL-DATEIEN ab -> Befund.
-# Der dritte ist nicht redundant: 1 und 2 messen gegen die Warteschlange, 3 gegen das
-# Verzeichnis. Waere die Warteschlange selbst unvollstaendig gebaut worden, waeren 1 und 2
+# Vier Wege in ein stilles Gruen sind hier zugehalten, jeder mit eigener Meldung:
+#   1. ein Fall OHNE Statusdatei (Worker gestorben, Fall nie gezogen)   -> Befund,
+#   2. eine Statusdatei OHNE lesbares Urteil (Worker starb beim Schreiben) -> Befund,
+#   3. eine Fall-ID MEHR ALS EINMAL gezogen (Cursor-Defekt)             -> Befund,
+#   4. die Zahl der gelaufenen Faelle weicht von der Zahl der FALL-DATEIEN ab -> Befund.
+# Der vierte ist nicht redundant: 1 bis 3 messen gegen die Warteschlange, 4 gegen das
+# Verzeichnis. Waere die Warteschlange selbst unvollstaendig gebaut worden, waeren 1 bis 3
 # still gruen — genau die Konstruktion, gegen die dieser Sensor antritt.
+# 1 und 2 sind getrennt, weil sie VERSCHIEDENES messen: dort fehlt die Datei, hier ihr
+# Inhalt. Eine gemeinsame Meldung nennte einen Grund, den der Treiber nicht gemessen hat.
 merge_report() {
   local total="$1" i st_line st
   for ((i = 1; i <= total; i++)); do
@@ -827,7 +911,7 @@ merge_report() {
   # (1) Statuszeilen, in Fall-Reihenfolge, und die Faelle ohne eine solche. Die Liste
   # wird GEKUERZT, aber ihre Laenge genannt: ein Abbruch laesst leicht dreistellig viele
   # Faelle ohne Ergebnis, und eine Meldung, die man nicht mehr liest, ist keine.
-  local missing="" missing_n=0 gelaufen=0
+  local missing="" missing_n=0 unlesbar="" unlesbar_n=0 gelaufen=0
   for ((i = 1; i <= total; i++)); do
     if [ ! -f "$RUN_DIR/status.$i" ]; then
       missing_n=$((missing_n + 1))
@@ -835,6 +919,11 @@ merge_report() {
       continue
     fi
     st_line="$(cat "$RUN_DIR/status.$i")"
+    if ! status_line_valid "$st_line" "$i"; then
+      unlesbar_n=$((unlesbar_n + 1))
+      if [ "$unlesbar_n" -le 12 ]; then unlesbar="$unlesbar ${CASE_NAMES[$i]}"; fi
+      continue
+    fi
     # Nur das Urteil wird hier gebraucht; Name, Modus und Zeit stehen im Bericht
     # (report_times) und in der Statuszeile selbst.
     IFS=$'\t' read -r _ _ st _ _ <<<"$st_line"
@@ -848,6 +937,10 @@ merge_report() {
   if [ "$missing_n" -gt 0 ]; then
     if [ "$missing_n" -gt 12 ]; then missing="$missing … (${missing_n} insgesamt)"; fi
     report_fail "vollstaendigkeit" "ohne Ergebnis geblieben:$missing — ein Worker ist gestorben oder die Warteschlange hat den Fall nie ausgegeben"
+  fi
+  if [ "$unlesbar_n" -gt 0 ]; then
+    if [ "$unlesbar_n" -gt 12 ]; then unlesbar="$unlesbar … (${unlesbar_n} insgesamt)"; fi
+    report_fail "vollstaendigkeit" "ohne lesbares Urteil:$unlesbar — die Statusdatei ist da, traegt aber keine Statuszeile; gemessen ist das, nicht der Grund dafuer"
   fi
 
   # (2) Jede gezogene ID GENAU EINMAL. Gemessen an den Zug-Protokollen der Worker, nicht
@@ -887,7 +980,7 @@ merge_report() {
   # Lauf, der „jede Fall-ID genau einmal gezogen" meldet und daneben einen fehlenden Fall
   # als Befund fuehrt, sagt in derselben Ausgabe beides — und die Bestaetigung ist die
   # Zeile, die man zuerst glaubt.
-  if [ -z "$unvollstaendig" ] && [ "$missing_n" -eq 0 ] && [ -z "${doppelt// /}" ]; then
+  if [ -z "$unvollstaendig" ] && [ "$missing_n" -eq 0 ] && [ "$unlesbar_n" -eq 0 ] && [ -z "${doppelt// /}" ]; then
     echo "mutate: Vollstaendigkeit — $gelaufen von $total Fall-Dateien mit Ergebnis, jede Fall-ID genau einmal gezogen."
   fi
 }
@@ -903,22 +996,26 @@ merge_report() {
 # Fall-Dateien ab, gibt es KEINE Bilanz, sondern einen Befund.
 report_times() {
   local total="$1"
-  local -a status_files prerun_files
+  local -a prerun_files
   # Dieselbe nullglob-Vorsicht wie in merge_report: ein leerer Glob ginge als Literal an
   # `cat` und risse unter `pipefail`/`set -e` den Bericht ab.
   shopt -s nullglob
-  status_files=("$RUN_DIR"/status.*)
   prerun_files=("$RUN_DIR"/prerun.times.*)
   shopt -u nullglob
-  local n=0
-  if [ "${#status_files[@]}" -gt 0 ]; then n="${#status_files[@]}"; fi
+  # Der Nenner sind die ZEILEN, ueber die gleich gerechnet wird — nicht die Zahl der
+  # Statusdateien. Beides lief frueher auseinander: eine leere Datei zaehlte im Nenner mit
+  # und fehlte in der Summe, worauf die Ueberschrift `n von total` behauptete, waehrend die
+  # Bilanz darunter ueber weniger rechnete (s. status_line_valid).
+  local rows n=0
+  rows="$(collect_status "$total")"
+  if [ -n "$rows" ]; then n="$(printf '%s\n' "$rows" | wc -l)"; fi
   if [ "$n" -ne "$total" ]; then
     report_fail "zeit-bilanz" "$n von $total Fall-Dateien tragen eine Dauer — eine Bilanz ueber einer Teilmenge nennt Anteile, die nicht gelten"
     return 0
   fi
 
   echo "mutate: Zeit je Sensor ueber $n von $total Fall-Dateien (Summe / Anteil / Mittel / laengster Fall, Sekunden):"
-  cat "${status_files[@]}" | awk -F'\t' '
+  printf '%s\n' "$rows" | awk -F'\t' '
     { n[$4]++; s[$4] += $5; g += $5; if ($5 + 0 > m[$4] + 0) { m[$4] = $5; mn[$4] = $2 } }
     END {
       for (k in n)
@@ -931,9 +1028,9 @@ report_times() {
     cat "${prerun_files[@]}" | LC_ALL=C sort | sed -e 's/^/  /'
   fi
   echo "mutate: Zeit je Fall, absteigend (alle $n):"
-  cat "${status_files[@]}" | LC_ALL=C sort -t"$(printf '\t')" -k5,5gr \
+  printf '%s\n' "$rows" | LC_ALL=C sort -t"$(printf '\t')" -k5,5gr \
     | awk -F'\t' '{ printf "  %8.2f s  %-42s %s\n", $5, $2, $4 }'
-  cat "${status_files[@]}" | awk -F'\t' '
+  printf '%s\n' "$rows" | awk -F'\t' '
     { s += $5; if ($5 + 0 > m + 0) { m = $5; mn = $2 } }
     END { printf "mutate: untere Schranke jeder Parallelisierung = laengster Einzelfall: %.2f s (%s); Fall-Arbeit gesamt %.1f s\n", m, mn, s }
   '
@@ -1095,13 +1192,9 @@ main() {
     # Worker 1 leert ERST die schwere Spur (sie ist die untere Schranke des Laufs) und
     # geht dann in die leichte. Alle uebrigen fahren nur die leichte.
     if [ "$j" -eq 1 ]; then
-      ( rc=0; worker_main "$j" "$warm_seen" heavy light || rc=$?
-        printf '%s\n' "$rc" >"$RUN_DIR/worker.$j.done"; exit "$rc" ) \
-        >"$RUN_DIR/worker.$j.log" 2>&1 &
+      spawn_worker "$j" "$warm_seen" heavy light
     else
-      ( rc=0; worker_main "$j" "" light || rc=$?
-        printf '%s\n' "$rc" >"$RUN_DIR/worker.$j.done"; exit "$rc" ) \
-        >"$RUN_DIR/worker.$j.log" 2>&1 &
+      spawn_worker "$j" "" light
     fi
     pids+=("$!")
   done

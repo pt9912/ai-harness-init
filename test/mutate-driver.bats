@@ -608,3 +608,73 @@ STUB
   [ "$ohne" = "LEICHT" ]
   [ "$mit" = "LEICHT" ]
 }
+
+# --- Die Statuszeile ----------------------------------------------------------
+# `>"$f"` legt die Datei an, BEVOR es schreibt. Ein Worker, der dazwischen stirbt —
+# Signal, volle Platte —, hinterlaesst eine LEERE Statusdatei. Solange die
+# Vollstaendigkeit ueber `[ -f ]` ging, zaehlte sie als Ergebnis, und das leere Urteil
+# fiel in den else-Zweig: der verlorene Fall galt als BESTANDEN, waehrend der Lauf
+# daneben seine Vollstaendigkeit bestaetigte. Beide Achsen werden hier gefahren, weil
+# beide es behaupteten — die Vollstaendigkeit und die Bilanz.
+@test "driver: eine LEERE Statusdatei zaehlt NICHT als Ergebnis" {
+  mr_fixture
+  : >"$MR_DIR/status.2"
+  run mr_lauf
+  rm -rf "$MR_DIR"
+  grep -qF 'ohne lesbares Urteil: fall-2' <<<"$output"
+  ! grep -qF 'Vollstaendigkeit — ' <<<"$output"
+  grep -qF 'ok=2' <<<"$output"
+}
+
+# Eine Statuszeile, die auf den falschen Fall zeigt, ist ebenso wenig sein Ergebnis wie
+# gar keine: die Nummer im Dateinamen und die im Inhalt muessen dieselbe sein.
+@test "driver: eine Statuszeile mit fremder Fall-Nummer zaehlt NICHT als Ergebnis" {
+  mr_fixture
+  printf '9\tfall-2\tOK\ttest-go\t1.00\n' >"$MR_DIR/status.2"
+  run mr_lauf
+  rm -rf "$MR_DIR"
+  grep -qF 'ohne lesbares Urteil: fall-2' <<<"$output"
+  ! grep -qF 'Vollstaendigkeit — ' <<<"$output"
+}
+
+# Die Bilanz nennt als Nenner die ZEILEN, ueber die sie rechnet — nicht die Zahl der
+# Statusdateien. Liefen beide auseinander, ueberschrieb `n von total` eine Summe ueber
+# weniger, und die Anteile waeren Anteile an etwas anderem.
+@test "driver: report_times rechnet ueber gueltige ZEILEN, nicht ueber Dateien" {
+  mr_fixture
+  : >"$MR_DIR/status.2"
+  run bash -c "source '$DRIVER' 2>/dev/null || true
+    RUN_DIR='$MR_DIR'
+    report_times 3
+    echo \"befunde=\$fail_count\""
+  rm -rf "$MR_DIR"
+  grep -qF '2 von 3 Fall-Dateien tragen eine Dauer' <<<"$output"
+  ! grep -qF 'Zeit je Sensor' <<<"$output"
+  grep -qF 'befunde=1' <<<"$output"
+}
+
+# --- Der Worker unter `set -e` ------------------------------------------------
+# Die AUFRUFFORM traegt hier eine Eigenschaft: `worker_main … || rc=$?` setzt errexit
+# fuer den ganzen Rumpf aus, bis in run_case hinein — bash tut das in jedem Kommando
+# eines `||`-Kontextes. Ein gescheitertes Schreiben brach den Worker dann nicht ab; er
+# lief weiter und hinterliess genau die leere Statusdatei aus dem Test darueber.
+# Gefahren wird darum spawn_worker SELBST und keine im Test nachgebaute Subshell: sonst
+# pruefte der Test seine eigene Form. Der Zug wird unschreibbar gemacht, indem an seiner
+# Stelle ein VERZEICHNIS liegt — das braucht keinen Sensor-Lauf und keine volle Platte.
+@test "driver: ein Worker BRICHT AB, wenn er seinen Zug nicht protokollieren kann" {
+  local root
+  root="$(mktemp -d)"
+  mkdir -p "$root/run" "$root/w1/repo" "$root/run/draws.1"
+  printf '1\ttest-go\t/nicht/vorhanden.sh\n' >"$root/run/light.queue"
+  printf '1\n' >"$root/run/light.cursor"
+  run bash -c "source '$DRIVER' 2>/dev/null || true
+    trap - EXIT INT TERM
+    ISO_ROOT='$root'; RUN_DIR='$root/run'
+    exec 3>/dev/null
+    spawn_worker 1 'test-go' light
+    wait \$! || echo \"worker-status=\$?\"
+    [ -f '$root/run/worker.1.done' ] && echo 'MARKE-DA' || echo 'MARKE-FEHLT'"
+  rm -rf "$root"
+  grep -qE 'worker-status=[1-9]' <<<"$output"
+  grep -qF 'MARKE-FEHLT' <<<"$output"
+}
