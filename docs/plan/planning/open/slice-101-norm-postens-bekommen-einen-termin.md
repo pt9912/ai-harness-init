@@ -231,7 +231,7 @@ neuer Wächter erzwingt — eine Signatur, die von `[]string` auf `map[string]st
 extrahierter Helfer, eine re-verankerte Mutation.
 
 **Die vierte Instanz hat die Fassung des Postens geweitet, und sie war der Gegenbeleg zu seiner
-eigenen Begründung.** [slice-106](../in-progress/slice-106-rotes-ci-traegt-seinen-ausgang.md) ist
+eigenen Begründung.** [slice-106](../done/slice-106-rotes-ci-traegt-seinen-ausgang.md) ist
 der erste danach geschnittene Slice mit einem neuen Wächter — genau die Messung, die DoD (2) unten
 verlangt. Außerhalb seiner §3-Tabelle liegen **zwei** Dateien
 (`git show --name-status --format= f959912 ae00252 | sort -u` → **9** Zeilen über **8** Dateien,
@@ -256,7 +256,7 @@ stille Grün, gegen das
 geschrieben ist — ein Wächter, der grün ist, weil er die falsche Frage stellt.
 
 **Und ein zehnter aus
-[slice-106](../in-progress/slice-106-rotes-ci-traegt-seinen-ausgang.md):** *ein Kommando, das in
+[slice-106](../done/slice-106-rotes-ci-traegt-seinen-ausgang.md):** *ein Kommando, das in
 demselben Artefakt steht, dessen Bestand es misst, zählt seine eigene Erwähnung mit — die Zahl
 gehört deshalb erhoben, **nachdem** das Kommando geschrieben ist, und mit genau der Fassung, die
 dort steht.* **Woran er als weiterer Posten erkannt ist:** er **hebt** wie die neun anderen eine
@@ -370,10 +370,10 @@ dabei, statt sich hinter einem anderen zu verstecken.
       Messung am nächsten Slice, nicht am Norm-Text:** wird er übernommen, trägt der erste danach
       geschnittene Slice mit einem neuen Wächter eine §3-Zeile für jede Datei, die er anlegt oder
       bewegt. Diese Messung ist **einmal gefahren** und **rot** ausgegangen: in
-      [slice-106](../in-progress/slice-106-rotes-ci-traegt-seinen-ausgang.md) fehlen zwei neu
+      [slice-106](../done/slice-106-rotes-ci-traegt-seinen-ausgang.md) fehlen zwei neu
       angelegte Dateien in der Tabelle (§1). Ein zweiter Slice nach der Übernahme misst, ob die
       Regel wirkt.
-      Für den **zehnten** ([slice-106](../in-progress/slice-106-rotes-ci-traegt-seinen-ausgang.md))
+      Für den **zehnten** ([slice-106](../done/slice-106-rotes-ci-traegt-seinen-ausgang.md))
       gilt wieder das Kommando des ersten Postens
       (`sed -n '/^### .* — Eine Zahl im Text steht neben dem Kommando/,/^### /p' harness/conventions.md | grep -c '^- \*\*Setzung'`
       → heute **2**): sein Ausgang ist eine weitere Setzung in

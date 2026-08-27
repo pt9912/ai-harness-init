@@ -72,7 +72,7 @@ In allen dreien ist es **derselbe** Befund: `target-missing` auf einen Verweis a
 `docs/plan/planning/done/slice-098-feldliste-ist-ausdruck-des-traegers.md` in den gitignorierten
 Zustands-Bereich (`gh api repos/:owner/:repo/actions/jobs/<job>/logs | grep 'target-missing'`, je
 Job **eine** Zeile). Das sind **drei von elf** roten Läufen des Fensters, das
-[slice-106](../in-progress/slice-106-rotes-ci-traegt-seinen-ausgang.md) §1 führt.
+[slice-106](../done/slice-106-rotes-ci-traegt-seinen-ausgang.md) §1 führt.
 
 ### Warum der Host es nicht sah — und warum die naheliegende Erklärung falsch ist
 

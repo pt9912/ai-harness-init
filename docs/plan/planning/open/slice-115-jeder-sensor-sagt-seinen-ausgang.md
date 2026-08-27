@@ -101,7 +101,7 @@ Setzung 2).
 ### Der zweite Befund: der Wächter prüft Anwesenheit, nicht Identität
 
 Seit `ae00252` hat die Abdeckungs-Zusage von
-[slice-106](../in-progress/slice-106-rotes-ci-traegt-seinen-ausgang.md) einen Wächter. Er zählt die
+[slice-106](../done/slice-106-rotes-ci-traegt-seinen-ausgang.md) einen Wächter. Er zählt die
 Abschnitte aus dem Sensor-Text auf und verlangt je Abschnitt eine Einordnung im Fenster bis zum
 nächsten. **Was er prüft, ist die Anwesenheit der Zeile** — nicht, welche Ausgabe sie übergibt:
 `grep -n 'einordnen \"' test/full-smoke-ausgang.bats` zeigt das Prüfmuster als
@@ -137,7 +137,7 @@ Tag in das emittierte Fragment; der Fehler liegt vollständig im Baum, und der S
 zu Recht, denn die Anfrage wurde nicht mit 2xx beantwortet. Genau dieser Fall ist zugleich der
 **einzige** End-zu-Ende-Beleg, den die Unterscheidung hat. Ein falsch getippter Pin liest sich damit
 für den nächsten Leser als Registry-Aussetzer — die Ausrede, die
-[slice-106](../in-progress/slice-106-rotes-ci-traegt-seinen-ausgang.md) §6 als Risiko benennt.
+[slice-106](../done/slice-106-rotes-ci-traegt-seinen-ausgang.md) §6 als Risiko benennt.
 
 ### Die Abwägung: drei Wege, einer gewählt
 
@@ -150,7 +150,7 @@ für den nächsten Leser als Registry-Aussetzer — die Ausrede, die
   beide nur im Rot gelesen werden.
 - **(C) Den Ausgang über den Exit-Code tragen.** Verworfen aus
   [`AGENTS.md`](../../../../AGENTS.md) §3.5 heraus, mit derselben Begründung wie in
-  [slice-106](../in-progress/slice-106-rotes-ci-traegt-seinen-ausgang.md): ein eigener Code lädt
+  [slice-106](../done/slice-106-rotes-ci-traegt-seinen-ausgang.md): ein eigener Code lädt
   dazu ein, den Leitungs-Fall durchzuwinken, und das ist eine Schwellen-Senkung.
 
 ## 2. Definition of Done
@@ -163,7 +163,7 @@ für Plan-Texte).
 - [ ] **(1) Ein rotes `make mutate` nennt seinen Ausgang in der eigenen Ausgabe, an jeder Stelle,
       an der eine Sensor-Ausgabe vorliegt.** Welche Stellen das sind, ist gemessen und im Skript
       benannt — als **Kriterium** wie in
-      [slice-106](../in-progress/slice-106-rotes-ci-traegt-seinen-ausgang.md), nicht als
+      [slice-106](../done/slice-106-rotes-ci-traegt-seinen-ausgang.md), nicht als
       Fundstellen-Liste. Der Exit-Code bleibt in beiden Fällen ungleich null.
       **Rot:** `make mutate ACTIONLINT_IMAGE=ghcr.io/pt9912/gibt-es-diesen-namen-nicht:v0` über einer
       isolierten Kopie — der Grün-Vorlauf des Modus `ci-lint` scheitert dann an der Auflösung
