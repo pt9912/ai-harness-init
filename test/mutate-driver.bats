@@ -678,3 +678,96 @@ STUB
   grep -qE 'worker-status=[1-9]' <<<"$output"
   grep -qF 'MARKE-FEHLT' <<<"$output"
 }
+
+# --- Die Zeitschranke ---------------------------------------------------------
+# DoD (1) aus slice-117: ein Worker, der nicht zurueckkommt, faerbt den Lauf VON SELBST
+# rot. `wait` allein kennt keine Schranke — ein haengender Lauf ist von einem langsamen
+# nicht zu unterscheiden, und lokal beendet ihn niemand. Gemessen wird STILLE, nicht
+# Dauer: hier zieht und beendet niemand einen Fall, waehrend ein Prozess weiterlaeuft.
+@test "driver: ein Lauf ohne Fortschritt endet an der Zeitschranke" {
+  local root
+  root="$(mktemp -d)"
+  mkdir -p "$root/run"
+  printf '1\n' >"$root/run/draws.1"
+  run bash -c "source '$DRIVER' 2>/dev/null || true
+    trap - EXIT INT TERM
+    RUN_DIR='$root/run'
+    STALL_SECONDS=1
+    sleep 20 & p=\$!
+    WORKER_PIDS=(\$p)
+    await_workers \$p || echo \"schranke=\$?\"
+    kill \$p 2>/dev/null || :
+    echo \"befunde=\$fail_count\""
+  rm -rf "$root"
+  grep -qF 'schranke=1' <<<"$output"
+  grep -qF 'Noch laufend: Worker 1' <<<"$output"
+  grep -qF 'befunde=1' <<<"$output"
+}
+
+# Ein Fortschritts-Ereignis setzt die Uhr zurueck — sonst roetete die Schranke jeden Lauf,
+# der laenger als sie dauert, und das waere ein Sensor, der ohne Befund rot wird.
+@test "driver: Fortschritt setzt die Zeitschranke zurueck" {
+  local root
+  root="$(mktemp -d)"
+  mkdir -p "$root/run"
+  printf '1\n' >"$root/run/draws.1"
+  run bash -c "source '$DRIVER' 2>/dev/null || true
+    trap - EXIT INT TERM
+    RUN_DIR='$root/run'
+    STALL_SECONDS=3
+    ( sleep 2; printf '2\n' >>'$root/run/draws.1'; sleep 2 ) & p=\$!
+    WORKER_PIDS=(\$p)
+    await_workers \$p && echo 'ohne-schranke'
+    echo \"befunde=\$fail_count\""
+  rm -rf "$root"
+  grep -qF 'ohne-schranke' <<<"$output"
+  grep -qF 'befunde=0' <<<"$output"
+}
+
+# DoD (3): JEDE Zeitschranke des Treibers traegt einen Zahn. Diese hier stand seit
+# slice-105 allein auf ihrem Kommentar — `grep -rln 'QUEUE_LOCK_TRIES' test/` war leer.
+@test "driver: queue_take gibt an QUEUE_LOCK_TRIES auf, statt ewig zu warten" {
+  local root
+  root="$(mktemp -d)"
+  mkdir -p "$root/run/light.lock"
+  printf '1\ttest-go\tegal\n' >"$root/run/light.queue"
+  printf '1\n' >"$root/run/light.cursor"
+  run bash -c "source '$DRIVER' 2>/dev/null || true
+    trap - EXIT INT TERM
+    RUN_DIR='$root/run'
+    QUEUE_LOCK_TRIES=2
+    WORKER_ID=7
+    queue_take light || echo \"status=\$?\""
+  rm -rf "$root"
+  grep -qF 'status=2' <<<"$output"
+  grep -qF 'wartet seit' <<<"$output"
+  grep -qF 'Worker 7' <<<"$output"
+}
+
+# --- Der Signal-Zweig ---------------------------------------------------------
+# DoD (2): der Bericht eines abgebrochenen Laufs sagt nichts, was seine eigene Ausgabe
+# widerlegt. Frueher loeschte der gemeinsame Handler ISO_ROOT — RUN_DIR liegt darin —,
+# kehrte zurueck, und merge_report rechnete ueber ein geloeschtes Verzeichnis: „kein
+# einziger Worker hat ein Zug-Protokoll hinterlassen" stand dann unter Faellen mit Urteil.
+# Gefahren wird das ECHTE Signal gegen die trap-Verdrahtung des Treibers, nicht ein
+# direkter Aufruf von on_signal: sonst bliebe die Verdrahtung ungeprueft.
+@test "driver: ein Signal berichtet, BEVOR aufgeraeumt wird" {
+  local root
+  root="$(mktemp -d)"
+  mkdir -p "$root/run"
+  printf 'mutate: ok      fall-1\n' >"$root/run/case.1.log"
+  printf '1\tfall-1\tOK\ttest-go\t1.00\n' >"$root/run/status.1"
+  printf '1\n' >"$root/run/draws.1"
+  run bash -c "source '$DRIVER' 2>/dev/null || true
+    ISO_ROOT='$root'
+    RUN_DIR='$root/run'
+    TOTAL=2
+    CASE_NAMES=('' fall-1 fall-2)
+    kill -INT \$\$
+    echo 'NACH-DEM-SIGNAL-WEITERGELAUFEN'"
+  rm -rf "$root"
+  [ "$status" -eq 130 ]
+  grep -qF 'ohne Ergebnis geblieben: fall-2' <<<"$output"
+  ! grep -qF 'kein einziger Worker hat ein Zug-Protokoll hinterlassen' <<<"$output"
+  ! grep -qF 'NACH-DEM-SIGNAL-WEITERGELAUFEN' <<<"$output"
+}

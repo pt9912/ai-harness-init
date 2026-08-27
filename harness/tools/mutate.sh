@@ -262,10 +262,79 @@ cleanup() {
   [ -n "$HAVE_LOCK" ] && rmdir "$LOCK" 2>/dev/null
   return 0
 }
+
+# TOTAL ist die Fall-Zahl des Laufs; on_signal braucht sie, um denselben Bericht zu fahren
+# wie ein regulaeres Ende. Leer, bis main() sie kennt — dann berichtet ein Signal nichts,
+# weil es nichts zu berichten gibt.
+TOTAL=""
+# WORKER_PIDS traegt die laufenden Worker, damit sowohl die Zeitschranke als auch der
+# Signal-Zweig sie beenden koennen.
+declare -a WORKER_PIDS=()
+SIGNAL_SEEN=""
+
+# stop_workers beendet die noch laufenden Worker und wartet begrenzt auf ihr Ende.
+#
+# GRENZE, benannt statt zugedeckt: das Signal geht an den Worker, NICHT an dessen Kinder.
+# Ein `make`, das im Worker haengt, ueberlebt ihn und muss von Hand gefunden werden — die
+# Worker laufen in keiner eigenen Prozessgruppe, und eine einzufuehren waere ein eigener
+# Schnitt. Was dieser Treiber zusagt, ist, dass SEIN Lauf endet, nicht dass er jedes von
+# ihm gestartete Kind einsammelt.
+stop_workers() {
+  local pid k noch
+  [ "${#WORKER_PIDS[@]}" -eq 0 ] && return 0
+  for pid in "${WORKER_PIDS[@]}"; do
+    kill -TERM "$pid" 2>/dev/null || :
+  done
+  # Fuenf Sekunden Frist, damit ein Worker seinen EXIT-trap (restore) noch fahren kann;
+  # danach hart. Ein Worker, der auch das nicht schafft, haelt den Lauf nicht auf.
+  for ((k = 0; k < 20; k++)); do
+    noch=""
+    for pid in "${WORKER_PIDS[@]}"; do
+      if kill -0 "$pid" 2>/dev/null; then noch=1; fi
+    done
+    [ -z "$noch" ] && return 0
+    sleep 0.25
+  done
+  for pid in "${WORKER_PIDS[@]}"; do
+    kill -KILL "$pid" 2>/dev/null || :
+  done
+  return 0
+}
+
+# on_signal ist der Signal-Zweig: berichten, DANN aufraeumen. Er BEENDET den Lauf, statt
+# zurueckzukehren — genau das ist der Unterschied zum frueheren gemeinsamen Handler
+# (s. den Kommentar an den trap-Zeilen). Das Aufraeumen macht der EXIT-trap, der durch
+# dieses `exit` ausgeloest wird; RUN_DIR steht dem Bericht darum noch zur Verfuegung.
+on_signal() {
+  local sig="$1"
+  # Ein zweites Signal waehrend des Berichts soll nicht einen zweiten Bericht ausloesen.
+  [ -n "$SIGNAL_SEEN" ] && exit 130
+  SIGNAL_SEEN=1
+  echo "mutate: ABBRUCH — $sig empfangen. Berichtet wird, was bis hierher gemessen ist." >&2
+  stop_workers
+  if [ -n "$RUN_DIR" ] && [ -d "$RUN_DIR" ] && [ -n "$TOTAL" ]; then
+    merge_report "$TOTAL"
+    report_times "$TOTAL"
+    echo "mutate: $pass_count ok, $fail_count Befund(e) — ABGEBROCHEN, keine vollstaendige Messung." >&2
+  fi
+  exit 130
+}
 # Bei Abbruch (Ctrl-C, Kill) die Isolation wegraeumen. Der Host-Baum braucht keine
 # Wiederherstellung mehr — er wurde nie veraendert (slice-047). Ein SIGKILL laesst
 # hoechstens ein Temp-Verzeichnis ausserhalb des Repos liegen, kein Residuum im Baum.
-trap 'cleanup' EXIT INT TERM
+# DER SIGNAL-ZWEIG IST VOM EXIT-ZWEIG GETRENNT, und das ist keine Kosmetik. Stand hier
+# frueher `trap 'cleanup' EXIT INT TERM`, dann loeschte ein Ctrl-C das ISO_ROOT — und
+# RUN_DIR liegt DARIN —, kehrte mit 0 zurueck, und main() lief in merge_report weiter, das
+# nun ueber ein geloeschtes Verzeichnis rechnete. Der Bericht meldete dann „kein einziger
+# Worker hat ein Zug-Protokoll hinterlassen" vier Zeilen unter Faellen, die ihr Urteil
+# schon gedruckt hatten: eine Ausgabe, die ihrer eigenen Ausgabe widerspricht.
+# Ein Signal-Handler, der ZURUECKKEHRT, statt zu beenden, ist die Ursache — bash nimmt den
+# Lauf danach an der unterbrochenen Stelle wieder auf.
+# Sensor: test/mutate-driver.bats „driver: ein Signal berichtet, BEVOR aufgeraeumt wird";
+# der Zahn dazu ist test/mutations/200.
+trap 'cleanup' EXIT
+trap 'on_signal INT' INT
+trap 'on_signal TERM' TERM
 
 
 fail_count=0
@@ -711,6 +780,73 @@ plan_self_contained() {
   return 0
 }
 
+# --- Die Zeitschranke -------------------------------------------------------
+# STALL_SECONDS begrenzt die STILLE des Laufs, nicht seine Dauer — und das ist der ganze
+# Entwurf. Eine Schranke um den einzelnen Fall muesste je Modus verschieden sein (der
+# teuerste Fall kostet 67,84 s, ein ci-lint-Fall 1,15 s), eine um die Gesamtlaufzeit
+# muesste 570 s hier und 1299 s in der CI decken. Stille bedeutet auf beiden Maschinen
+# dasselbe: ein langsamer Runner macht LANGSAMER Fortschritt, ein Haenger macht KEINEN.
+#
+# DER WERT kommt aus der laengsten LEGITIMEN Stille, und die ist kein Fall, sondern ein
+# Gruen-Vorlauf: `full-smoke` brauchte 123,84 s (Maximum der dritten Spalte in
+# `sed -n '/Gruen-Vorlaeufe/,/Zeit je Fall/p'` ueber einem Lauf-Protokoll). 900 s ist das
+# 7,3-fache davon und rund das 3-fache der in der CI erwarteten (dort ist der Lauf je Fall
+# 2,4x langsamer). Bewusst grosszuegig: ein Haenger ist UNBEGRENZT, also loest ihn jede
+# endliche Schranke aus, waehrend eine knappe Schranke einen langsamen Runner roetet — und
+# ein Sensor, der ohne Befund rot wird, senkt seine eigene Aussage (LH-QA-01).
+# NICHT gedeckt: ein Fall, der langsamer als die Schranke, aber endlich ist. Heute gibt es
+# keinen; wer den ersten schreibt, faellt hierunter.
+# Die Vorgabe steht HIER und nicht im Makefile — dieselbe Begruendung wie bei MUTATE_JOBS:
+# eine zweite Vorgabe waere eine zweite Quelle.
+# Sensor: test/mutate-driver.bats „driver: ein Lauf ohne Fortschritt endet an der
+# Zeitschranke"; der Zahn dazu ist test/mutations/199.
+STALL_SECONDS="${MUTATE_STALL_SECONDS:-900}"
+
+# progress_count zaehlt die Fortschritts-EREIGNISSE des Laufs: jede Zeile eines
+# Zug-Protokolls (ein Fall wurde gezogen) und jede Statusdatei (ein Fall ist fertig).
+# Beide zusammen, weil je eines allein eine Luecke laesst — ein Worker, der lange an einem
+# teuren Fall sitzt, hat gezogen und noch nichts abgeschlossen.
+progress_count() {
+  local n=0 f
+  shopt -s nullglob
+  for f in "$RUN_DIR"/draws.*; do n=$((n + $(wc -l <"$f"))); done
+  for f in "$RUN_DIR"/status.*; do n=$((n + 1)); done
+  shopt -u nullglob
+  printf '%s' "$n"
+}
+
+# await_workers wartet, bis alle Worker von selbst zurueck sind — oder bis der Lauf
+# STILLSTEHT. Aufruf: await_workers <pid>...; die Worker-NUMMER ist die Stelle in dieser
+# Liste, denn die Meldung muss den Worker benennen und nicht seine PID.
+# Rueckgabe: 0 = alle zurueck, 1 = die Schranke hat gegriffen.
+await_workers() {
+  local -a wpids=("$@")
+  local last cur marke alive k
+  last="$(progress_count)"
+  marke="$SECONDS"
+  while :; do
+    alive=""
+    for ((k = 0; k < ${#wpids[@]}; k++)); do
+      if kill -0 "${wpids[$k]}" 2>/dev/null; then alive="$alive $((k + 1))"; fi
+    done
+    [ -z "$alive" ] && return 0
+    cur="$(progress_count)"
+    if [ "$cur" != "$last" ]; then
+      last="$cur"
+      marke="$SECONDS"
+    fi
+    if [ "$((SECONDS - marke))" -ge "$STALL_SECONDS" ]; then
+      # Gemessen ist die STILLE, nicht ihr Grund: der Treiber weiss nicht, ob der Worker
+      # haengt, sein Sensor haengt oder die Maschine steht. Die Meldung sagt darum, was
+      # gemessen ist, und benennt die Worker, die noch laufen.
+      report_fail "zeitschranke" "seit $STALL_SECONDS s hat kein Worker einen Fall gezogen oder abgeschlossen — der Lauf steht. Noch laufend: Worker$alive"
+      stop_workers
+      return 1
+    fi
+    sleep 2
+  done
+}
+
 # is_heavy_mode fragt die einmal je Lauf erhobene Spur ab (main fuellt HEAVY_MODES).
 is_heavy_mode() {
   grep -qF " $1 " <<<"$HEAVY_MODES"
@@ -1111,6 +1247,7 @@ main() {
   # gegen die die Vollstaendigkeit gemessen wird. 1-basiert, damit sie mit den
   # Zeilennummern der Warteschlange zusammenfaellt.
   local total="${#cases[@]}" i mode rank
+  TOTAL="$total"
   CASE_NAMES=()
   CASE_MODES=()
   for ((i = 1; i <= total; i++)); do
@@ -1197,6 +1334,7 @@ main() {
       spawn_worker "$j" "" light
     fi
     pids+=("$!")
+    WORKER_PIDS+=("$!")
   done
 
   # EIN WORKER, DER STIRBT, MACHT DEN LAUF ROT — hier faellt es auf. Die Marker-Datei
@@ -1204,6 +1342,13 @@ main() {
   # zu Ende gefuehrt und seinen Status selbst gemeldet (sein Protokoll sagt, warum);
   # fehlt sie, ist er unterwegs ausgestiegen. Warum, misst der Treiber nicht — und
   # behauptet es darum auch nicht.
+  # ERST die Zeitschranke, DANN das Einsammeln. `wait` allein kennt keine Schranke: ein
+  # Worker, der nicht zurueckkommt, liesse den Lauf ohne Zutun von aussen nie enden — und
+  # ein Sensor, der schweigend haengt, ist von einem langsamen nicht zu unterscheiden.
+  # Greift die Schranke, sind die Worker danach beendet, `wait` kehrt zurueck, und die
+  # fehlenden Faelle fallen unten in der Zusammenfuehrung als Befund auf.
+  await_workers "${pids[@]}" || :
+
   local k pid wrc
   for ((k = 0; k < ${#pids[@]}; k++)); do
     pid="${pids[$k]}"
