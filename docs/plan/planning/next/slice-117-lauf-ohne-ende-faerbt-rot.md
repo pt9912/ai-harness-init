@@ -189,7 +189,7 @@ worden:
 **Beginn (`open` → `next`): nichts blockiert.** Der Gegenstand liegt vollständig in einer Datei und
 ihrer bats-Ebene; keine fremde Sperre steht davor.
 
-**Die Reihenfolge gegenüber [slice-115](slice-115-jeder-sensor-sagt-seinen-ausgang.md):** beide
+**Die Reihenfolge gegenüber [slice-115](../open/slice-115-jeder-sensor-sagt-seinen-ausgang.md):** beide
 fassen [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) an, und beide handeln
 davon, dass ein Lauf seinen Ausgang **selbst** nennt. Das ist eine Beobachtung, keine Reihenfolge —
 wer zuerst läuft, entscheidet die Priorisierung, nicht dieser Plan. **Was hier ausdrücklich nicht
