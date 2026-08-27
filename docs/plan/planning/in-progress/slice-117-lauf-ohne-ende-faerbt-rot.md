@@ -176,7 +176,47 @@ worden:
    dasselbe Protokoll eine Zeile darüber eine serielle Spur meldet und der Code zwei Schlangen
    anlegt.
 
-**Offen, vor dem Code zu entscheiden:**
+**Vor dem Code entschieden — die Antworten stehen hier, nicht im Kommentar.** Dass sie hier stehen,
+ist die Lehre aus [slice-105](../done/slice-105-mutate-messen-dann-teilen.md): dort lagen die
+Begründungen zu B und C im `Makefile`- und Skript-Kommentar, und der Closure-Trigger, der sie *„mit
+ihrer Begründung im Plan"* verlangte, war damit nicht erfüllt.
+
+**A — die Schranke sitzt um `wait`, misst aber Fortschritt statt Dauer.** Beide angebotenen Orte
+haben denselben Fehler: sie bemessen eine **Wanduhr**. Um `run_case` müsste sie je Modus verschieden
+sein (der längste Einzelfall kostet **67,84 s**, ein `ci-lint`-Fall **1,15 s** — beide aus
+`sed -n '/Zeit je Sensor/,/Gruen-Vorlaeufe/p'` über dem Protokoll zu `0e76c77`), und jede dieser
+Zahlen wäre auf einem langsamen Runner eine eigene Fehlschlag-Quelle. Um `wait` müsste sie die
+**Gesamtlaufzeit** decken, und die schwankt zwischen **570,37 s** hier und **1299 s** in der CI
+(derselbe Bestand, `0e76c77`). Gemessen wird darum **Stille**: vergeht mehr als die Schranke, ohne
+dass irgendein Worker einen Fall zieht oder abschließt, ist der Lauf hängengeblieben. Ein
+langsamer Runner macht **langsamer** Fortschritt, aber er macht welchen; ein Hänger macht keinen.
+Damit ist die Schranke eine Aussage über den **Lauf** (sie kennt alle Worker und benennt den
+schuldigen), ohne je Modus bemessen zu sein.
+
+**B — ihr Wert kommt aus der längsten *legitimen* Stille, mal einem Sicherheitsfaktor.** Die
+längste Lücke ohne Fortschritts-Ereignis ist **kein** Fall, sondern ein Grün-Vorlauf: `full-smoke`
+brauchte **123,84 s** (`sed -n '/Gruen-Vorlaeufe/,/Zeit je Fall/p'` über demselben Protokoll,
+Maximum der dritten Spalte; im Lauf davor 102,28 s). Die CI ist je Fall **2,4×** langsamer
+(6,74 gegen 2,80 s je Fall, beide Zahlen mit ihren Kommandos in
+[slice-105](../done/slice-105-mutate-messen-dann-teilen.md) §1), was dort rund **300 s** erwarten
+lässt. Die Schranke steht auf **900 s** — das **7,3-fache** der hier gemessenen und rund das
+**3-fache** der in der CI erwarteten legitimen Stille. Sie ist mit Absicht großzügig: ein Hänger
+ist **unbegrenzt**, also löst jede endliche Schranke ihn aus, während eine knappe Schranke einen
+langsamen Runner rötet — und ein Sensor, der ohne Befund rot wird, senkt seine eigene Aussage
+([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+**Was diese Bemessung nicht deckt:** einen Fall, der *langsamer als die Schranke, aber endlich* ist.
+Ein solcher Fall existiert heute nicht (der teuerste ist 67,84 s); wer den ersten schreibt, fällt
+hierunter.
+
+**C — die Fälle mit Urteil werden berichtet, aber als Meldung, nicht als Bilanz.** Verschweigen wäre
+eine Ausgabe, die weniger sagt, als der Lauf gemessen hat; eine **Bilanz** über ihnen wäre der
+Anteils-Nenner über einer Teilmenge, den [slice-105](../done/slice-105-mutate-messen-dann-teilen.md)
+DoD (1) ausschließt. Beides ist schon gebaut und bleibt: `merge_report` nennt je Fall sein Urteil
+und die übrigen als *„ohne Ergebnis geblieben"*, `report_times` verweigert die Bilanz mit einem
+Befund. Dieser Slice ändert daran nichts — er sorgt nur dafür, dass beide **überhaupt laufen**,
+bevor das Aufräumen ihre Datenbasis löscht.
+
+Die Fragen im Wortlaut, gegen die oben entschieden wurde:
 
 | # | Frage | Warum sie den Schnitt entscheidet |
 |---|---|---|
