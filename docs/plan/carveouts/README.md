@@ -14,6 +14,7 @@ Formalisierung 2026-07-21, Roadmap §Backlog Cluster E).
 | ID | Titel | Betroffenes Gate | Angelegt |
 |---|---|---|---|
 | [CO-001](CO-001-bats-shell-lint.md) | shell-lint deckt die bats-Dateien nicht ab | `shell-lint` | 2026-07-21 |
+| [CO-003](CO-003-mutate-ohne-zeitschranke.md) | `make mutate` hat keine Zeitschranke — ein hängender Worker färbt den Lauf nicht rot | keines (`make mutate` ist Nicht-Gate-Verify) | 2026-08-27 |
 
 ## Permanent — in eine ADR übergeführt
 
