@@ -283,9 +283,13 @@ TOTAL=""
 # Signal-Zweig sie beenden koennen.
 declare -a WORKER_PIDS=()
 SIGNAL_SEEN=""
-# BERICHT_GEFAHREN steht, sobald der regulaere Bericht durch ist — on_signal wiederholt ihn
+# BERICHT_BEGONNEN steht, sobald der regulaere Bericht BEGINNT — nicht, sobald er durch ist.
+# Der Unterschied ist gemessen: das Berichtsfenster ist bei 196 Faellen 0,94 s breit, bei 400
+# Faellen 7,74 s, und ein Signal DARIN traf frueher auf eine noch leere Flagge und loeste
+# einen zweiten Bericht aus — `800 ok` ueber 400 Faellen, Vollstaendigkeitszeile zweimal.
+# on_signal wiederholt ihn
 # dann nicht.
-BERICHT_GEFAHREN=""
+BERICHT_BEGONNEN=""
 
 # stop_workers beendet die noch laufenden Worker und wartet begrenzt auf ihr Ende.
 #
@@ -330,12 +334,18 @@ on_signal() {
     exit 130
   fi
   SIGNAL_SEEN=1
-  # NACH einem regulaeren Bericht wird nicht noch einmal berichtet: merge_report und
-  # report_times zaehlen in pass_count/fail_count weiter, und ein zweiter Lauf ueber
-  # denselben Statusdateien verdoppelte die Bilanz. Gemessen ohne diese Schranke:
-  # `4 ok` ueber ZWEI Faellen, direkt unter „2 von 2 Fall-Dateien mit Ergebnis".
-  if [ -n "$BERICHT_GEFAHREN" ]; then
-    echo "mutate: ABBRUCH — $sig nach dem Bericht; er steht oben und wird nicht wiederholt." >&2
+  # WAEHREND ODER NACH dem regulaeren Bericht wird nicht noch einmal berichtet: merge_report
+  # und report_times zaehlen in pass_count/fail_count weiter, und ein zweiter Lauf ueber
+  # denselben Statusdateien verdoppelt die Bilanz — gemessen `800 ok` ueber 400 Faellen mit
+  # doppelter Vollstaendigkeitszeile. Dass die Meldung „kann unvollstaendig sein" einraeumt,
+  # ist kein Vorbehalt, sondern das Gemessene: traf das Signal MITTEN in den Bericht, steht
+  # er nur zum Teil oben, und eine Zusage auf Vollstaendigkeit waere hier falsch.
+  # Sensor: test/mutate-driver.bats „driver: ein Signal wiederholt einen begonnenen Bericht
+  # NICHT"; der Zahn dazu ist test/mutations/204. WAS DER ZAHN NICHT DECKT, ist der ORT der
+  # Flagge in main() — dass sie VOR dem ersten Bericht-Kommando steht, ist an gefahrenen
+  # Laeufen gemessen, nicht von einem Sensor gehalten.
+  if [ -n "$BERICHT_BEGONNEN" ]; then
+    echo "mutate: ABBRUCH — $sig waehrend oder nach dem Bericht; er wird nicht wiederholt und kann unvollstaendig sein." >&2
     stop_workers
     exit 130
   fi
@@ -616,25 +626,22 @@ green_prerun() {
       return 1
     fi
     echo "mutate: Gruen-Vorlauf make $m (muss VOR der ersten Mutation gruen sein)"
-    # DIE SCHRANKE GILT AUCH HIER, und dieser Zweig ist der einzige Ort, an dem sie greifen
-    # MUSS statt zu koennen: der Vorwaermlauf vor dem Fork laeuft, bevor es Worker gibt —
-    # await_workers hat dort nichts zu bewachen. Gemessen ohne diese Zeile: ein Haenger im
-    # Vorwaermlauf endete NUR durch ein `timeout` von aussen (Exit 137 nach 45 s) und
-    # hinterliess keinen Bericht. Es ist der erste Docker-Build des Laufs, also der Ort, an
-    # dem ein Haenger am ehesten entsteht.
-    # `timeout` schickt TERM an `make`; dessen Kinder ueberleben es, dieselbe benannte
-    # Grenze wie bei stop_workers.
+    # KEINE ZEITSCHRANKE UM DIESEN LAUF, und das ist eine Entscheidung, keine Luecke.
+    # Hier stand eine (`timeout "$STALL_SECONDS" make "$m"`), und sie ist zurueckgebaut:
+    # sie war eine DAUER-Schranke um einen Modus-Lauf, waehrend der Entwurf dieses Treibers
+    # STILLE begrenzt (s. STALL_SECONDS) — Plan §3 Frage A hat Dauer-Schranken vor dem Code
+    # ausdruecklich verworfen, weil sie je Modus verschieden bemessen sein muessten und auf
+    # einem langsamen Runner rot ohne Befund werden. Dazu kam eine gemessene Regression:
+    # `timeout` legt sich in eine eigene Prozessgruppe, worauf der Docker-Build dem Ctrl-C
+    # des Aufrufers entkam (bei 6020941 lag `make` in der Treiber-PGID und starb).
+    #
+    # OFFEN BLEIBT DAMIT: ein Haenger im VORWAERMLAUF vor dem Fork. Dort gibt es keine
+    # Worker: await_workers bewacht ihn nicht, und der Lauf endet nur durch Zutun von
+    # aussen — gemessen Exit 137 nach 50,01 s, ohne Bericht. Das ist eine benannte Grenze
+    # mit eigenem Traeger, keine stille: wer sie schliesst, braucht eine Schranke, die
+    # Fortschritt misst statt Wanduhr, und das ist ein eigener Schnitt.
     local rc=0
-    ( cd "$WORK" && timeout "$STALL_SECONDS" make "$m" ) >"$log" 2>&1 || rc=$?
-    if [ "$rc" -eq 124 ]; then
-      # Gemessen ist die ueberschrittene Schranke, nicht ein rotes Gate — die Meldung
-      # darunter behauptete sonst einen Defekt im Baum, den niemand gemessen hat.
-      echo "mutate: ABBRUCH — der Gruen-Vorlauf 'make $m' hat die Zeitschranke von $STALL_SECONDS s ueberschritten." >&2
-      echo "  Gemessen ist die Ueberschreitung, nicht ihr Grund." >&2
-      echo "  Die letzten Zeilen von make $m:" >&2
-      show_tail "$log"
-      return 1
-    fi
+    ( cd "$WORK" && make "$m" ) >"$log" 2>&1 || rc=$?
     if [ "$rc" -ne 0 ]; then
       # Gemessen ist dieser eine Lauf: dieser Modus, diese Kopie, keine Mutation,
       # Exit != 0. Woran er lag, steht in den Zeilen darunter — die Meldung nennt es
@@ -831,18 +838,21 @@ plan_self_contained() {
 # --- Die Zeitschranke -------------------------------------------------------
 # STALL_SECONDS begrenzt die STILLE des Laufs, nicht seine Dauer — und das ist der ganze
 # Entwurf. Eine Schranke um den einzelnen Fall muesste je Modus verschieden sein (der
-# teuerste Fall kostet 56,20 s, ein ci-lint-Fall 0,73 s), eine um die Gesamtlaufzeit
-# muesste 648,70 s hier und 1299 s in der CI decken. Stille bedeutet auf beiden Maschinen
+# teuerste Fall kostet 80,24 s, ein ci-lint-Fall 0,64 s), eine um die Gesamtlaufzeit
+# muesste 744,07 s hier und 1299 s in der CI decken. Stille bedeutet auf beiden Maschinen
 # dasselbe: ein langsamer Runner macht LANGSAMER Fortschritt, ein Haenger macht KEINEN.
 #
 # DER WERT kommt aus der laengsten LEGITIMEN Stille, und die ist WEDER ein Fall NOCH ein
-# Gruen-Vorlauf allein, sondern beide zusammen: der Zug wird protokolliert, BEVOR der Vorlauf
-# laeuft (s. worker_main), also liegen Vorlauf und Fall in EINER Stille. Ueber dem Protokoll
-# eines Laufs sind das das Maximum der dritten Spalte von
-# `sed -n '/Gruen-Vorlaeufe/,/Zeit je Fall/p'` plus der `laengster Einzelfall`-Wert —
-# gemessen 110,83 + 56,20 = 167,03 s. 900 s ist damit das 5,39-fache der laengsten legitimen
-# Stille, nicht das 7,3-fache des Vorlaufs allein; die frueher hier stehende Herleitung mass
-# die kleinere der beiden Groessen. In der CI ist der Lauf je Fall 2,4x langsamer.
+# Gruen-Vorlauf allein, sondern beide zusammen und IM SELBEN MODUS: der Zug wird
+# protokolliert, BEVOR der Vorlauf laeuft (s. worker_main), also liegen Vorlauf und Fall in
+# EINER Stille — und ein Worker faehrt den Vorlauf eines Modus genau dann, wenn er dessen
+# ersten Fall zieht. Ueber einem Lauf-Protokoll ist das je Modus das Maximum der dritten
+# Spalte von `sed -n '/Gruen-Vorlaeufe/,/Zeit je Fall/p'` plus das Maximum derselben Modus-
+# Spalte in `sed -n '/Zeit je Fall, absteigend/,/untere Schranke/p'`; die schlechteste
+# Paarung ist `full-smoke` mit 95,26 + 53,71 = 148,97 s. 900 s ist damit das 6,04-fache der
+# laengsten legitimen Stille. Zwei frueher hier stehende Herleitungen waren kleiner: eine
+# mass nur den Vorlauf, die naechste addierte den teuersten Fall EINES ANDEREN Modus hinzu.
+# In der CI ist der Lauf je Fall 2,4x langsamer.
 # Bewusst grosszuegig: ein Haenger ist UNBEGRENZT, also loest ihn jede endliche Schranke aus,
 # waehrend eine knappe Schranke einen langsamen Runner roetet — und ein Sensor, der ohne
 # Befund rot wird, senkt seine eigene Aussage (LH-QA-01).
@@ -909,8 +919,12 @@ await_workers() {
 # das Ganze haengt — genau so ist der erste Entwurf durch den Review gefallen.
 #
 # Sensor: test/mutate-driver.bats „driver: das Einsammeln endet OHNE Hilfe von aussen". Er
-# faehrt diese Funktion unter `timeout` und verlangt, dass `timeout` NICHT gebraucht wird —
-# Status 124 ist rot. Damit misst er das ENDEN und nicht den Rueckgabewert einer
+# faehrt diese Funktion unter `timeout` und verlangt, dass `timeout` NICHT gebraucht wird.
+# WORAN das rot wird, ist gemessen und nicht angenommen: im gepinnten bats-Image ist
+# `timeout` BusyBox und liefert bei Ablauf 143, NICHT die 124 von GNU coreutils. Rot faerbt
+# darum die Zusage „der Worker ist danach beendet", nicht ein Status-Vergleich. Der Test
+# fuehrt beide, damit er auf beiden Fassungen misst. Damit misst er das ENDEN und nicht den
+# Rueckgabewert einer
 # Teilfunktion. Der Zahn dazu ist test/mutations/202.
 collect_workers() {
   local -a wpids=("$@")
@@ -1470,6 +1484,9 @@ main() {
     fi
   done
 
+  # Die Flagge steht VOR dem ersten Bericht-Kommando, nicht nach dem letzten: ein Signal
+  # INNERHALB des Berichtsfensters soll den Bericht nicht ein zweites Mal starten.
+  BERICHT_BEGONNEN=1
   merge_report "$total"
 
   # FUENFTE Bedingung, fail-closed: die Mutations-Ziele im Host-Baum sind nach dem Lauf
@@ -1485,7 +1502,6 @@ main() {
   fi
 
   report_times "$total"
-  BERICHT_GEFAHREN=1
   echo "mutate: $pass_count ok, $fail_count Befund(e)"
   [ "$fail_count" -eq 0 ]
 }

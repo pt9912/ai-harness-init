@@ -693,7 +693,7 @@ STUB
     trap - EXIT INT TERM
     RUN_DIR='$root/run'
     STALL_SECONDS=1
-    sleep 20 </dev/null >/dev/null 2>&1 & p=\$!
+    sleep 20 </dev/null >/dev/null 2>&1 3>&- 4>&- & p=\$!
     WORKER_PIDS=(\$p)
     await_workers \$p || echo \"schranke=\$?\"
     kill \$p 2>/dev/null || :
@@ -715,7 +715,7 @@ STUB
     trap - EXIT INT TERM
     RUN_DIR='$root/run'
     STALL_SECONDS=3
-    ( sleep 2; printf '2\n' >>'$root/run/draws.1'; sleep 2 ) </dev/null >/dev/null 2>&1 & p=\$!
+    ( sleep 2; printf '2\n' >>'$root/run/draws.1'; sleep 2 ) </dev/null >/dev/null 2>&1 3>&- 4>&- & p=\$!
     WORKER_PIDS=(\$p)
     await_workers \$p && echo 'ohne-schranke'
     echo \"befunde=\$fail_count\""
@@ -790,13 +790,16 @@ STUB
     trap - EXIT INT TERM
     RUN_DIR='$root/run'
     STALL_SECONDS=2
-    sleep 45 </dev/null >/dev/null 2>&1 & p=\$!
+    sleep 45 </dev/null >/dev/null 2>&1 3>&- 4>&- & p=\$!
     WORKER_PIDS=(\$p)
     collect_workers \$p
     kill -0 \$p 2>/dev/null && echo 'WORKER-LEBT-NOCH' || echo 'worker-beendet'
     echo \"befunde=\$fail_count\""
   rm -rf "$root"
+  # Beide Fassungen von `timeout`: GNU liefert 124, BusyBox 143 — im gepinnten Image ist
+  # es BusyBox. Der Test fuehrt beide, damit er nicht auf einer Fassung stumm wird.
   [ "$status" -ne 124 ]
+  [ "$status" -ne 143 ]
   grep -qF 'worker-beendet' <<<"$output"
   ! grep -qF 'WORKER-LEBT-NOCH' <<<"$output"
   grep -qE 'befunde=[1-9]' <<<"$output"
@@ -867,7 +870,7 @@ FALL
   run timeout 25 env "PATH=$stub:$PATH" bash -c "source '$DRIVER' 2>/dev/null || true
     ISO_ROOT='$iso'; RUN_DIR='$iso/run'
     printf '1\ttest-go\t$iso/fall.sh\n' | queue_new light
-    ( sleep 1; kill -TERM \$\$ ) </dev/null >/dev/null 2>&1 &
+    ( sleep 1; kill -TERM \$\$ ) </dev/null >/dev/null 2>&1 3>&- 4>&- &
     rc=0; worker_main 7 'test-go' light || rc=\$?
     echo \"NACH-DEM-WORKER-WEITERGELAUFEN status=\$rc\"" 3>&2
   local status_da="nein"
@@ -876,4 +879,47 @@ FALL
   [ "$status" -eq 143 ]
   ! grep -qF 'NACH-DEM-WORKER-WEITERGELAUFEN' <<<"$output"
   [ "$status_da" = "nein" ]
+}
+
+# DoD (2): der Bericht eines abgebrochenen Laufs sagt nichts, was seine eigene Ausgabe
+# widerlegt. Ein Signal, das WAEHREND des Berichts eintrifft, loeste frueher einen zweiten
+# aus — gemessen `800 ok` ueber 400 Faellen mit doppelter Vollstaendigkeitszeile.
+@test "driver: ein Signal wiederholt einen begonnenen Bericht NICHT" {
+  local root
+  root="$(mktemp -d)"
+  mkdir -p "$root/run"
+  printf 'mutate: ok      fall-1\n' >"$root/run/case.1.log"
+  printf '1\tfall-1\tOK\ttest-go\t1.00\n' >"$root/run/status.1"
+  printf '1\n' >"$root/run/draws.1"
+  run bash -c "source '$DRIVER' 2>/dev/null || true
+    ISO_ROOT='$root'; RUN_DIR='$root/run'
+    TOTAL=1; CASE_NAMES=('' fall-1)
+    BERICHT_BEGONNEN=1
+    kill -INT \$\$
+    echo 'NACH-DEM-SIGNAL-WEITERGELAUFEN'"
+  rm -rf "$root"
+  [ "$status" -eq 130 ]
+  grep -qF 'wird nicht wiederholt' <<<"$output"
+  ! grep -qF 'Vollstaendigkeit — ' <<<"$output"
+  ! grep -qF 'NACH-DEM-SIGNAL-WEITERGELAUFEN' <<<"$output"
+}
+
+# Ein ZWEITES Signal waehrend des Berichts bricht ohne Bericht ab — und sagt das. Die Zeile
+# davor hat zugesagt, dass berichtet wird; sie stillschweigend zu brechen waere eine Ausgabe,
+# die ihrer eigenen widerspricht.
+@test "driver: ein zweites Signal sagt, dass es OHNE Bericht abbricht" {
+  local root
+  root="$(mktemp -d)"
+  mkdir -p "$root/run"
+  run bash -c "source '$DRIVER' 2>/dev/null || true
+    ISO_ROOT='$root'; RUN_DIR='$root/run'
+    TOTAL=1; CASE_NAMES=('' fall-1)
+    SIGNAL_SEEN=1
+    kill -TERM \$\$
+    echo 'NACH-DEM-SIGNAL-WEITERGELAUFEN'"
+  rm -rf "$root"
+  [ "$status" -eq 130 ]
+  grep -qF 'zweites TERM' <<<"$output"
+  grep -qF 'OHNE Bericht' <<<"$output"
+  ! grep -qF 'NACH-DEM-SIGNAL-WEITERGELAUFEN' <<<"$output"
 }
