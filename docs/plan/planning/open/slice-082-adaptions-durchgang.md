@@ -21,26 +21,41 @@ Durchgang läuft, und die Grenze, dass sie keinen einzelnen Eintrag vorentscheid
 
 ## 1. Ziel
 
-Jeder der **24** Einträge des Adaptions-Blocks ist **einzeln** geprüft
+**Jeder** Eintrag des Adaptions-Blocks ist **einzeln** geprüft
 ([ADR-0018](../../adr/0018-ziel-fassung-regiert-die-migration.md): *„einzeln, mit eigenem
 Beleg"*) und trägt zwei Antworten, jede mit Beleg. Die Prozedur stellt zwei Fragen, und sie
-liegen auf verschiedenen Achsen.
+liegen auf verschiedenen Achsen. **Wie viele Einträge das sind, sagt ein Kommando, keine Zahl in
+diesem Plan** — die Menge wandert mit jedem neuen Eintrag und ist kein Erwartungswert
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2): `grep -c '^### MR-' harness/conventions.md` → am 2026-08-27 **27**.
 
 **Achse 1 — die Bewegung der Baseline.** Die Frage stellt die Prozedur selbst: *Regelt die neue
 Fassung das, wofür diese Adaption angelegt wurde?* — ausdrücklich eine Frage an das **Delta der
 neuen Fassung**, nicht an den Zustand der Baseline. Die Antwort ist genau einer der **fünf
-Ausgänge**, wie Modul 2 der Ziel-Fassung (`v5.3.1`) sie benennt (§*Freshness-Audit der vendored
+Ausgänge**, wie Modul 2 der Ziel-Fassung (`v5.12.0`) sie benennt (§*Freshness-Audit der vendored
 Baseline*, vierte Eigenschaft): **gegenstandslos** → Rückbau · **bleibt gültig** → stehen lassen
 (Normalfall) · **teilweise überholt** → durch eine engere Nachfolgerin ablösen · **Bezug
-entfallen** (die Baseline regelt das Thema gar nicht mehr) · **widerspricht** der neuen Fassung —
-dann gilt die Adaption weiter, aber der Widerspruch gehört benannt.
+entfallen** (die Baseline regelt das Thema gar nicht mehr) · **widerspricht** der neuen Fassung.
 
-**Ein Zweig innerhalb dieser fünf, kein sechster Ausgang:** *„War die Adaption eine Lockerung und
-die neue Baseline verschärft, ist die richtige Antwort ein Carveout mit Auflösungs-Trigger
-(Modul 7), keine stille Dauer-`MR`."* Er entscheidet nicht, **ob** die Adaption weitergilt, sondern
-in welcher **Form** — befristet und mit abfragbarem Trigger statt als Dauerzustand. Ein Eintrag,
-der einer Verschärfung standhalten soll, ohne das zu tragen, ist die stille Dauer-`MR`, die der
-Satz meint.
+**Der fünfte Ausgang ist der einzige mit einer Wahl, und er hat zwei Zweige.** Die Ziel-Fassung
+schreibt beide aus: *„Entweder die Adaption gilt in ihrem Geltungsbereich weiter — dann gehört der
+Widerspruch benannt, sonst adoptiert das Repo eine Regel, die es nicht befolgt —, oder das Repo
+**übernimmt** die neue Regel."* Übernehmen ist ein Rückbau wie bei *gegenstandslos*, aus dem
+umgekehrten Grund: *„Bei gegenstandslos hat die Baseline dem Repo recht gegeben, hier gibt das
+Repo der Baseline recht."* Der Unterschied gehört in die `Begründung` des Nachfolge-Eintrags, weil
+er eine **Entscheidung** ist und kein Befund. **Der Durchgang darf ihn also nicht als Befund
+verbuchen** — wer bei *widerspricht* nur „gilt weiter" notiert, hat eine Wahl übersprungen, keine
+Messung abgeschlossen.
+
+**Zwei Zweige innerhalb der fünf, kein sechster Ausgang.** Erstens die Abgrenzung `MR` ↔ Carveout:
+will das Repo übernehmen, kann es aber noch nicht, ist das keine `MR` mehr — *„Eine Adaption sagt
+‚diese Regel gilt hier nicht', ein Carveout sagt ‚sie gilt, wir erfüllen sie noch nicht'"*,
+befristet, mit Auflösungs-Trigger und Folge-Slice (Modul 7). Zweitens: *„War die Adaption eine
+Lockerung und die neue Baseline verschärft, ist die richtige Antwort ein Carveout mit
+Auflösungs-Trigger (Modul 7), keine stille Dauer-`MR`."* Beide entscheiden nicht, **ob** die
+Adaption weitergilt, sondern in welcher **Form** — befristet und mit abfragbarem Trigger statt als
+Dauerzustand. Ein Eintrag, der einer Verschärfung standhalten soll, ohne das zu tragen, ist die
+stille Dauer-`MR`, die der Satz meint.
 
 **Achse 2 — der eigene Bedarf.** Ein Eintrag kann seinen Grund verlieren, ohne dass die Baseline
 sich bewegt; auf Achse 1 käme er als *„bleibt gültig"* heraus — dem Normalfall — und stünde
@@ -56,17 +71,21 @@ längst erfüllt ist: Ein Trigger, den niemand abfragt, ist kein Wächter."*
 
 ## 2. Definition of Done
 
-- [ ] **Achse 1 — alle 24** Einträge tragen genau einen der fünf Ausgänge mit Beleg;
+- [ ] **Achse 1 — jeder** Eintrag trägt genau einen der fünf Ausgänge mit Beleg;
       Vollständigkeit als **Inventar gegen Abdeckung** (`grep -c '^### MR-' harness/conventions.md`
-      ist der Nenner), nicht als Trefferliste. `permanent`-Einträge sind mitgeprüft: *permanent*
+      ist der Nenner), nicht als Trefferliste. Fällt ein Eintrag auf **widerspricht**, steht am
+      Beleg, **welcher der zwei Zweige** gewählt wurde — weiter gelten und benennen, oder
+      übernehmen (§1). `permanent`-Einträge sind mitgeprüft: *permanent*
       heißt „kein automatischer Auflösungs-Trigger", nicht „unauflösbar". Wo die Adaption eine
       **Lockerung** war und die neue Fassung an derselben Stelle **verschärft**, ist die Antwort ein
       **Carveout mit Auflösungs-Trigger** (Modul 7), keine stille Dauer-`MR`.
 - [ ] **Achse 2 — jeder Auflösungs-Trigger ist abgefragt**, und die Antwort steht am Eintrag:
       Bedingung eingetreten oder nicht, Eintrag weiter gebraucht oder nicht — bei *gebraucht*
       übernommen, sonst durch einen Nachfolger aufgelöst. Nenner ist auch hier ein Kommando,
-      nicht die Zahl: `grep -c '^- \*\*Auflösungs-Trigger' harness/conventions.md` → heute **23**
-      von 24. Der eine ohne Trigger
+      nicht die Zahl: `grep -c '^- \*\*Auflösungs-Trigger' harness/conventions.md` → am 2026-08-27
+      **26** gegen **27** Einträge; beide Zahlen **wandern** und sind keine Erwartungswerte
+      ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+      Setzung 2). Der eine ohne Trigger
       ([`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung))
       ist kein Ausreißer, sondern bereits aufgehoben; ihn trägt allein Achse 1.
 - [ ] **Was der Durchgang schreibt, hat die Form der Ziel-Prozedur:** ein Rückbau ist ein **neuer
@@ -135,16 +154,29 @@ DoD vollständig, Closure-Notiz geschrieben.
     entscheidet der Text, nicht die Vermutung.
   - [`MR-022`](../../../../harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)
     mit [`MR-023`](../../../../harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung):
-    der Ausgang ist dort vorab gemessen und vom Durchgang zu vollziehen. Zwei Stücke fehlen ihm
-    trotzdem — die **Textprüfung**, die
+    **die Vorab-Messung trägt bis zum Zielstand nicht, und das ist ein Posten dieses Durchgangs,
+    keine Fußnote.**
+    [`MR-023`](../../../../harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung)
+    misst den ersten Zweig von
+    [`MR-022`](../../../../harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)
+    gegen `v5.3.1` vorab; dorthin ist `templates/AGENTS.template.md` **nicht** byte-gleich
+    (`git diff --shortstat v5.3.1 v5.12.0 -- lab/templates/AGENTS.template.md` → **1 Datei,
+    +12/−6**, lokaler Kurs-Klon), und §3.7 wächst dort um einen Absatz (*„Zustandsfelder
+    ebenso"*), während Nummer, Titel, die fünf Klassen und die zwei Falsch/Richtig-Paare
+    unverändert stehen. **Ob der Zweig weiter zutrifft, misst dieser Durchgang gegen den
+    Zielstand** — die Vorab-Messung wird nicht fortgeschrieben, sie wird ersetzt. Zwei weitere
+    Stücke fehlen ihm — die **Textprüfung**, die
     [`MR-023`](../../../../harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung)
     ausdrücklich offen lässt (trägt der hiesige Wortlaut die Upstream-Semantik?), und die Form des
-    Vollzugs, die am ersten Punkt dieser Liste hängt.
+    Vollzugs, die am ersten Punkt dieser Liste hängt. **Der Nachtrag ist ein neuer Eintrag, kein
+    Edit** an
+    [`MR-023`](../../../../harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung) —
+    und er entsteht im Architect-Lauf ([`AGENTS.md`](../../../../AGENTS.md) §3.8, §3 dieses Plans).
   - [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage), deren
     **2-Strata**-Aussage sich mit dem Technik-Stratum aus
     [`AGENTS.md`](../../../../AGENTS.md) §2 reibt — der Durchgang ist der Ort, an dem das
     auffällt.
-- **24 Einträge mit je zwei Fragen sind die Obergrenze einer Review-Sitzung.** Wird sie gerissen,
+- **Der Bestand mit je zwei Fragen ist die Obergrenze einer Review-Sitzung.** Wird sie gerissen,
   ist der Schnitt falsch; dann wird geteilt, nicht die Sitzung gedehnt — geteilt wird **die
   Liste, nicht die Achsen**: beide Fragen an einen Eintrag werden an demselben Text beantwortet,
   und wer sie trennt, liest ihn zweimal.

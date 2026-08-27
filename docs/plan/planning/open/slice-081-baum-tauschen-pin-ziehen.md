@@ -21,7 +21,7 @@ und 2 — der `scan.ignore`-Eintrag und der Nachtrag in
 
 ## 1. Ziel
 
-`.harness/baseline/v5.3.1/` ist der **einzige** vendored Baum, der Tag steht an jedem Ort, der ihn
+`.harness/baseline/v5.12.0/` ist der **einzige** vendored Baum, der Tag steht an jedem Ort, der ihn
 mechanisch trägt — **und kein lebender Verweis zeigt mehr in den alten.**
 
 Der mechanische Teil ist klein und eng gekoppelt: `BASELINE_TAG` und `BASELINE_ZIP_SHA256` im
@@ -72,8 +72,8 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
 
 ## 2. Definition of Done
 
-- [ ] `.harness/baseline/v5.3.1/` ist das **einzige** `<tag>`-Verzeichnis, und `make baseline-verify`
-      meldet `v5.3.1 OK — 51 Dateien` (heute: `v3.5.2 OK — 42 Dateien`). Der alte Tag steht danach
+- [ ] `.harness/baseline/v5.12.0/` ist das **einzige** `<tag>`-Verzeichnis, und `make baseline-verify`
+      meldet `v5.12.0 OK — 51 Dateien` (heute: `v3.5.2 OK — 42 Dateien`). Der alte Tag steht danach
       an **keiner** der fünf mechanischen Stellen mehr (`Makefile` ×2, `internal/fetch` ×2,
       `.d-check.yml`). **Nicht** in Scope: die auf `v3.5.2` gepinnten Kurs-URLs in den
       Lifecycle-Köpfen bestehender Slices — sie sind Instanzen einer alten Vorlage und werden nach
@@ -138,7 +138,7 @@ DoD vollständig, `make gates` nach dem Tausch grün, Closure-Notiz geschrieben.
 ## 6. Risiken und offene Punkte
 
 - **Der Zwischenzustand ist real und gehört benannt.** Nach diesem Slice steht der Pin auf
-  `v5.3.1`, während [`AGENTS.md`](../../../../AGENTS.md) §3.7,
+  `v5.12.0`, während [`AGENTS.md`](../../../../AGENTS.md) §3.7,
   [`MR-022`](../../../../harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)
   und [`MR-023`](../../../../harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung)
   weiter über `v3.5.2` sprechen. Diese Sätze sind **datierte Messungen**, keine Links — kein Gate
@@ -156,10 +156,14 @@ DoD vollständig, `make gates` nach dem Tausch grün, Closure-Notiz geschrieben.
   damit die Eindeutigkeit, auf der dieser Zugriff beruht.
 - **Der mechanische Tag-Tausch macht aus einem toten Link ein falsches Zitat.** Gemessen an
   Zeile 129 von `modul-07-carveouts.md`: bei `v3.5.2` steht dort *„Slice schlägt Memo"*, bei
-  `v5.3.1` ein unverwandter Satz über die Aufgaben des Implementers. Ein `sed` über den Tag-String
+  `v5.12.0` ein unverwandter Satz über die Aufgaben des Implementers
+  (`for t in v3.5.2 v5.12.0; do git show $t:lab/regelwerk/modul-07-carveouts.md | sed -n '129p'; done`
+  gegen einen lokalen Kurs-Klon). Ein `sed` über den Tag-String
   färbt den Gate grün und verschiebt den Fehler von *laut* nach *stumm* — deshalb verlangt die DoD
   die Anker-Einzelprüfung. `grundlagen-konventionen.md` ist der Fall, an dem das auffällt (bei
-  `v5.3.1` in sechs Dateien zerlegt); die 15 Links auf `modul-15-observability.md` und
+  `v5.12.0` in sechs Dateien zerlegt,
+  `comm -13 <(git ls-tree -r --name-only v3.5.2 -- lab/regelwerk | xargs -n1 basename | sort) <(git ls-tree -r --name-only v5.12.0 -- lab/regelwerk | xargs -n1 basename | sort) | grep -c grundlagen`
+  → **6**); die 15 Links auf `modul-15-observability.md` und
   `modul-08-agentenrollen.md` sind der Fall, an dem es nicht auffällt.
 - **`BASELINE_ZIP_SHA256` kommt aus dem Asset, nicht aus dem Baum.** Ein aus dem entpackten
   Verzeichnis gerechneter Hash belegt die Herkunft nicht; die Gegenprobe ist

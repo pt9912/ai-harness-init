@@ -96,7 +96,7 @@ DoD vollständig, ADR *Accepted*, Closure-Notiz geschrieben.
   sie einen.** Ob `codepaths.roots` um `.harness` erweiterbar ist, ohne den Prüfbereich
   aufzublähen, ist **ungemessen**.
 - **Was hier entschieden wird, gilt über den Anlass hinaus:** dieselbe Frage stellt sich bei
-  jedem künftigen Bump. Eine Entscheidung, die nur `v3.5.2` → `v5.3.1` regelt, ist keine.
+  jedem künftigen Bump. Eine Entscheidung, die nur `v3.5.2` → `v5.12.0` regelt, ist keine.
 
 ## 7. Closure-Notiz (nach `done/`)
 

@@ -24,10 +24,11 @@ kann die **Struktur** der Artefakte ändern, und dafür gibt es kein Trigger-Fel
 könnte.
 
 Der Umfang ist gemessen: die Templates wachsen **21 → 25** (neu: `observations`,
-`reconciliation`, `welle-results`, ein Eintrags-Template für den Adaptions-Block), und die
-Vorlagen der Singletons ändern sich substanziell — `conventions.template.md` um 122,
-`AGENTS.template.md` um 95, die Spec-Vorlagen um 43 bis 76 Zeilen
-(`git diff --stat v3.5.2 v5.3.1 -- lab/templates/` gegen einen lokalen Kurs-Klon).
+`reconciliation`, `welle-results`, `MR-NNN-titel` als Eintrags-Template für den Adaptions-Block),
+und die Vorlagen der Singletons ändern sich substanziell — `conventions.template.md` um 136,
+`AGENTS.template.md` um 103, die Spec-Vorlagen um 64 bis 80 Zeilen; über alle Vorlagen **24
+Dateien, +1073/−359**
+(`git diff --stat v3.5.2 v5.12.0 -- lab/templates/` gegen einen lokalen Kurs-Klon).
 
 **Der schwerste Einzelpunkt ist ein neues Pflichtfeld:** die Pflichtgliederung des
 Adaptions-Blocks verlangt je Eintrag `Ersetzt-Baseline-Regel` — **genau eine** Regel der Baseline,
@@ -89,7 +90,9 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   sichert [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
   zu: *„ein Tag zur Zeit (Ersetzen), Historie liegt in git"*. Der Diff läuft deshalb über
   Tree-Operanden statt über zwei Verzeichnisse, ohne Entpacken — `git diff
-  <Tausch-Commit>^:.harness/baseline/v3.5.2/templates <Tausch-Commit>:.harness/baseline/v5.3.1/templates`.
+  <Tausch-Commit>^:.harness/baseline/v3.5.2/templates <Tausch-Commit>:.harness/baseline/v5.12.0/templates`.
+  **`v3.5.2` steht hier als Tree-Operand der Vor-Tausch-Seite, nicht als Zeiger auf einen Baum,
+  der stehen bleiben müsste** — er wandert mit dem Zielstand nicht mit.
   Am letzten Re-Vendor dieses Repos vorgeführt (`ce4b611`, `v3.5.1` → `v3.5.2`): 15 Dateien,
   +47/−41, und weder vor noch nach dem Commit lag ein zweites `<tag>`-Verzeichnis im Baum.
   `harness/tools/baseline-verify.sh` ist damit kein Hindernis, sondern schützt die Eindeutigkeit,

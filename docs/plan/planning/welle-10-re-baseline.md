@@ -1,4 +1,4 @@
-# Welle welle-10: Re-Baseline `v3.5.2` → `v5.3.1`
+# Welle welle-10: Re-Baseline `v3.5.2` → `v5.12.0`
 
 **Lifecycle:** Die aktive Welle liegt flach unter `docs/plan/planning/`; bei
 Closure wandert diese Datei per `git mv` nach `done/` (neben ihre
@@ -13,37 +13,67 @@ Status-Feld. Ob eine flache Welle *aktuell* oder *geplant* ist, sagt die Roadmap
 
 ## 1. Welle-Ziel
 
-Die adoptierte Baseline steht auf `v5.3.1`, **und jede Aussage dieses Repos über sie ist gegen
-diesen Stand gemessen.** Der Pin ist davon der kleinste Teil.
+**Ziel-Zustand, nicht Ist-Zustand:** die adoptierte Baseline steht auf `v5.12.0`, **und jede
+Aussage dieses Repos über sie ist gegen diesen Stand gemessen.** Der Pin ist davon der kleinste
+Teil.
 
-**Der Zielstand ist beweglich, aber nicht beliebig** — und die Regel dafür gehört in den Plan,
-nicht in den Dateinamen. Er wandert, wenn in ihm ein **gemessener Defekt** liegt, der eine
-Entscheidung dieses Repos berührt; **nicht**, weil ein neuerer Tag existiert. *„Immer das
-Neueste"* wäre kein Kriterium, sondern ein Abonnement: jeder Kurs-Tag zöge einen Plan-Umbau nach
-sich, und der Zielstand hörte auf, eine Entscheidung zu sein. Ein Tag, dessen Delta dieses Repo
-nicht berührt, bewegt ihn also nicht.
+**Der Zielstand ist beweglich, und wen die Regel darüber bindet, ist entschieden.** Die Regel
+gehört in den Plan, nicht in den Dateinamen — binden kann ein Plan aber nur, wen er adressiert.
 
-Für `v5.3.1` trifft beides zu. Der `regelwerk/`-Spiegel gibt `modul-08-agentenrollen.md` unter
-`v5.3.0` an vier Stellen **paraphrasiert** statt quelltreu wieder und verliert dabei die
-Exklusivität (*„genau die Artefaktklasse"*) und die Pointe des Abschnitts (*„meistens kein
-Skill"*); `v5.3.1` stellt den Quelltext her. Getroffen sind wir, weil
+**Adressiert sind die Rollen dieses Repos.** Ein Lauf hier bewegt den Zielstand nur, wenn in ihm
+ein **gemessener Defekt** liegt, der eine Entscheidung dieses Repos berührt; **nicht**, weil ein
+neuerer Tag existiert. `make baseline-freshness` ist damit ein Auslöser für einen Review, kein
+Auftrag zum Nachziehen — wortgleich in der gepinnten wie in der Ziel-Fassung, je
+`modul-02-harness-bootstrap.md` §*Freshness-Audit der vendored Baseline (Schritt 2)*: *„Ein neuer
+Tag löst einen **Review** aus (Re-Vendoring mit eigenem Diff), keinen stillen Auto-Bump."*
+(`for t in v3.5.2 v5.12.0; do git show $t:lab/regelwerk/modul-02-harness-bootstrap.md | grep -A1 'Ein neuer Tag löst einen'; done`
+→ zweimal derselbe Zweizeiler, lokaler Kurs-Klon). Ohne diese
+Grenze wäre der Zielstand ein Abonnement statt einer Entscheidung: jeder Kurs-Tag zöge einen
+Plan-Umbau nach sich, und auch ein Tag, dessen Delta dieses Repo nicht berührt, bewegte ihn.
+
+**Nicht adressiert ist der Auftraggeber.** Welche Fassung dieses Repo adoptieren *will*, ist keine
+Ableitung aus einer Messung, sondern derselbe Akt wie die Adoption selbst; eine repo-interne Regel
+kann ihn nicht binden, sondern nur **belegpflichtig** machen. Der Preis einer Setzung ist deshalb
+kein Defekt, sondern ein Nachweis je Schritt — Aufpreis, berührte tragende Quellen, und ob eine
+Messung dieses Plans dabei bricht. Adressierung und Begründung stehen in
+[ADR-0018](../adr/0018-ziel-fassung-regiert-die-migration.md) §*Wer den Zielstand bewegt*; die
+Nachweise der Setzungen führt dieselbe ADR (§*Der Zielstand ist … gezogen*). Dieser Plan doppelt
+beides nicht — er trägt, was aus dem Zielstand für den Schnitt folgt.
+
+**Ein solcher Defekt ist gemessen, und er trennt `v5.3.0` von `v5.3.1`.** Der
+`regelwerk/`-Spiegel gibt `modul-08-agentenrollen.md` unter `v5.3.0` an vier Stellen
+**paraphrasiert** statt quelltreu wieder und verliert dabei die Exklusivität (*„genau die
+Artefaktklasse"*) und die Pointe des Abschnitts (*„meistens kein Skill"*); `v5.3.1` stellt den
+Quelltext her. Getroffen sind wir, weil
 [ADR-0015](../adr/0015-rollen-eigentum-an-norm-artefakten.md) ihr Rollen-Eigentum aus genau
 diesem Modul herleitet — die Kurs-Regel dahinter lautet *Didaktik weglassen, Operatives quelltreu
-übernehmen, nie paraphrasieren.*
+übernehmen, nie paraphrasieren.* **Der Zielstand trägt die Reparatur weiter**, der gepinnte Baum
+nicht: `for tag in v5.12.0 v3.5.2; do git grep -c 'genau die Artefaktklasse' $tag -- lab/regelwerk/modul-08-agentenrollen.md; done`
+liefert **eine** Zeile (`v5.12.0:…:1`) und für `v3.5.2` keine; dasselbe mit *meistens kein Skill*
+(lokaler Kurs-Klon).
 
-**Was der Wechsel kostet, ist gemessen.** Im vendored Ausschnitt ändert `v5.3.0` → `v5.3.1`
+**Was die Reparatur kostete, ist gemessen.** Im vendored Ausschnitt ändert `v5.3.0` → `v5.3.1`
 **7 Dateien um +14/−13 Zeilen**
 (`git diff --shortstat v5.3.0 v5.3.1 -- lab/regelwerk lab/templates`, lokaler Kurs-Klon);
-die Dateizahl bleibt **26 + 25 = 51**. Der Roh-Diff über `lab/` zählt **80** Dateien und geht
-glatt auf: **73** entfallen auf `lab/example`, das dieses Repo nicht vendort, die übrigen **7**
-sind die oben genannten. **Keine Messung dieses Plans bricht:**
-`modul-07-carveouts.md` — Träger der Zitat-Probe aus §6 von
-[slice-081](open/slice-081-baum-tauschen-pin-ziehen.md) — ist zwischen beiden Tags byte-gleich,
-und der einzige Hunk in `modul-08` liegt außerhalb des Closure-Schritts 3b.
+die Dateizahl bleibt **26 + 25 = 51**, auch am Zielstand
+(`for d in lab/regelwerk lab/templates; do git ls-tree -r --name-only v5.12.0 -- $d | wc -l; done`
+→ **26 25**). **Keine Messung dieses Plans bricht bis zum Zielstand** — nachgewiesen an ihren zwei
+Trägern, nicht durch Wiederholung: `modul-07-carveouts.md`, Träger der Zitat-Probe aus §6 von
+[slice-081](open/slice-081-baum-tauschen-pin-ziehen.md), ist zwischen `v5.3.0` und `v5.12.0`
+byte-gleich, `modul-15-observability.md`, Träger des Ordnungs-Arguments aus §2, zwischen `v5.3.1`
+und `v5.12.0` (`git diff --name-only v5.3.0 v5.12.0 -- lab/regelwerk/modul-07-carveouts.md`
+und `git diff --name-only v5.3.1 v5.12.0 -- lab/regelwerk/modul-15-observability.md` → beide
+leer). `modul-08-agentenrollen.md` wächst dagegen weiter — **6** Hunks von `v5.3.1` zum Zielstand
+(`git diff v5.3.1 v5.12.0 -- lab/regelwerk/modul-08-agentenrollen.md | grep -c '^@@'`); was davon
+den Adaptions-Durchgang trifft, entscheidet [slice-082](open/slice-082-adaptions-durchgang.md).
 
-Der Sprung ist **strukturell, nicht additiv**. Elf Releases, zwei Major-Bumps über drei
-Major-Serien; das Regelwerk wächst von 21 auf 26 Dateien, aber die Rechnung ist `−3 +8` (gemessen
-gegen einen lokalen Kurs-Klon, `git ls-tree -r --name-only <tag> lab/regelwerk | wc -l`):
+Der Sprung ist **strukturell, nicht additiv**. Zwischen gepinnt und Ziel liegen **20** Releases mit
+zwei Major-Bumps über drei Major-Serien
+(`git tag --sort=v:refname | awk '/^v3\.5\.2$/{f=1;next} f{print} /^v5\.12\.0$/{exit}' | wc -l`,
+lokaler Kurs-Klon); das Regelwerk wächst von 21 auf 26 Dateien, aber die Rechnung ist `−3 +8` —
+je ein `comm` über die Basenamen beider Tags, `-23` für die entfallenen, `-13` für die neuen
+(`comm -23 <(git ls-tree -r --name-only v3.5.2 -- lab/regelwerk | xargs -n1 basename | sort) <(git ls-tree -r --name-only v5.12.0 -- lab/regelwerk | xargs -n1 basename | sort) | wc -l`
+→ **3**, mit `-13` → **8**):
 
 - `grundlagen-konventionen.md` **zerfällt in sechs** Grundlagen-Dateien (`-begriffe`,
   `-bootstrap`, `-harness-dateien`, `-referenz-richtung`, `-source-precedence`, `-traceability`),
@@ -51,35 +81,49 @@ gegen einen lokalen Kurs-Klon, `git ls-tree -r --name-only <tag> lab/regelwerk |
 - die Templates wachsen 21 → 25 (neu: `observations`, `reconciliation`, `welle-results`, und ein
   Eintrags-Template für den Adaptions-Block).
 
-Damit verschwinden Pfade, auf die dieses Repo **34-mal aus 9 lebenden Artefakten** zeigt —
-13-mal aus [`spec/spezifikation.md`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder),
-11-mal aus [`harness/conventions.md`](../../../harness/conventions.md#mr-000--baseline-aussage),
-der Rest aus vier ADRs und drei Plan-Dateien. Gemessen mit
-`git grep -o "\.harness/baseline/v3\.5\.2/[^ )]*" -- ':!.harness/baseline' ':!docs/reviews' ':!docs/plan/planning/done'`
-(Zeitdokumente ausgenommen — sie bleiben stehen, §6).
+Damit verschwinden Pfade, auf die dieses Repo aus **lebenden** Artefakten zeigt. **Ihre Menge
+wandert mit jedem Schnitt und ist kein Erwartungswert**
+([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2): am 2026-08-27 sind es **56** Nennungen in **14** Dateien, die schwersten
+[`harness/conventions.md`](../../../harness/conventions.md#mr-000--baseline-aussage) (14) und
+[`spec/spezifikation.md`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder) (13).
+Gemessen mit
+`git grep -o "\.harness/baseline/v3\.5\.2/[^ )]*" -- ':!.harness/baseline' ':!docs/reviews' ':!docs/plan/planning/done'`,
+für die Nennungen mit `| wc -l`, für die Dateien mit `| cut -d: -f1 | sort -u | wc -l`, für die
+Aufschlüsselung mit `| cut -d: -f1 | sort | uniq -c | sort -rn` (Zeitdokumente ausgenommen — sie
+bleiben stehen, §6).
 
-**Die Migration läuft nach der Prozedur der Ziel-Fassung** (`v5.3.1`, Modul 2 §*Freshness-Audit
-der vendored Baseline*), nicht nach der gepinnten. Entschieden und begründet ist das in
-[ADR-0018](../adr/0018-ziel-fassung-regiert-die-migration.md) — samt der Grenze, dass die Wahl
-der *Prozedur* gilt und nicht dem Ist-Zustand, und dass sie keinen einzelnen `MR`-Eintrag
-vorentscheidet. Die drei Durchgänge des Closure-Kriteriums (§3) und der Zuschnitt der Slices
-082–084 folgen den Eigenschaften jener Prozedur.
+**Welche Regelwerks-Fassung diese Migration regiert, entscheidet nicht dieser Plan.** Es
+entscheidet [ADR-0018](../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 1; dort
+stehen die Wahl, ihre Begründung und ihre vier Grenzen. **Plan-Sache ist allein die Folge:** die
+drei Durchgänge des Closure-Kriteriums (§3) und der Zuschnitt der Slices 082–084 sind aus
+Eigenschaften der dort gewählten Prozedur gebaut und haben außerhalb von ihr keine Quelle. Fällt
+die Wahl anders aus, fällt dieser Schnitt mit ihr.
 
-**Was daraus für diesen Plan folgt:** bis der Baum getauscht ist, ist `v3.5.2` die adoptierte
-Baseline — dieser Plan entsteht darum per `cp` aus deren `welle.template.md`, nicht aus der neuen.
+**Was daraus für diesen Plan folgt:** bis der Baum getauscht ist, bleibt `v3.5.2` die adoptierte
+Baseline und für jede Konformitäts-Frage maßgeblich
+([ADR-0018](../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 2) — dieser Plan
+entsteht darum per `cp` aus deren `welle.template.md`, nicht aus der neuen.
 
 ## 2. Trigger (Welle startet)
 
 - **`make baseline-freshness` meldet VERALTET** — der Sensor ist in jedem Lauf seiner sichtbaren
-  Historie rot, der älteste vom 2026-07-24; gepinnt ist `v3.5.2`, upstream steht `v5.3.1`. Der
-  Auslöser ist damit beobachtbar und real eingetreten, nicht angesetzt.
+  Historie rot, der älteste vom 2026-07-24; am 2026-08-27 meldet er `gepinnt: v3.5.2` und
+  `latest: v5.12.0` (`make baseline-freshness`; die `latest`-Angabe **wandert** mit jedem Release
+  und ist kein Erwartungswert,
+  [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). Der Auslöser ist damit beobachtbar und real eingetreten, nicht angesetzt. Was er
+  auslöst, ist ein Review, kein Nachziehen des Zielstands (§1).
 - **[welle-09](welle-09-modul-15-konformitaet.md) liegt in `done/`.** Ihr Closure-Kriterium misst
   gegen **Modul 15 in der `v3.5.2`-Fassung**; ein Tausch während der Welle zöge ihr die Messlatte
   unter den Füßen weg. Die Reihenfolge steht aus Ordnungs-, nicht aus Risiko-Gründen: das Delta
   jenes Moduls ist gemessen (`git diff v3.5.2 v5.3.1 -- lab/regelwerk/modul-15-observability.md`
   → +7/−2 Zeilen in zwei Absätzen) und **bestätigt** beide Ergebnisse jener Welle — die
   Token-Attribution rechnet upstream ausdrücklich „auf Kontexte, nicht auf Personen", und die
-  Rollen sind die aus Modul 8, „festgelegt durch das gestartete Rollen-Artefakt".
+  Rollen sind die aus Modul 8, „festgelegt durch das gestartete Rollen-Artefakt". Die Messung lief
+  gegen `v5.3.1` und trägt bis zum Zielstand, ohne wiederholt zu werden: die Datei ist zwischen
+  `v5.3.1` und `v5.12.0` byte-gleich (§1), das Delta gegen den gepinnten Baum damit dasselbe
+  (`git diff --shortstat v3.5.2 v5.12.0 -- lab/regelwerk/modul-15-observability.md` → **+7/−2**).
 
 ## 3. Closure-Trigger (Welle schließt)
 
@@ -87,18 +131,19 @@ Die Welle schließt, wenn **die drei Durchgänge der Ziel-Prozedur je einen Bele
 wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
 
 - **Alle Slices dieser Welle in `done/`.**
-- **Der Pin ist vollzogen:** `.harness/baseline/v5.3.1/` ist das **einzige** `<tag>`-Verzeichnis
+- **Der Pin ist vollzogen:** `.harness/baseline/v5.12.0/` ist das **einzige** `<tag>`-Verzeichnis
   ([`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache):
   ein Tag zur Zeit), `make baseline-verify` grün über **51** statt 42 Dateien (26 Regelwerk + 25
-  Templates).
-- **Durchgang 1 — Adaptionen:** jeder der **24** Einträge von
-  [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) bis
-  [`MR-023`](../../../harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung)
-  trägt genau einen der fünf Ausgänge mit Beleg, **und jeder Auflösungs-Trigger ist abgefragt**
-  (heute **23** von 24 — *„Ein Trigger, den niemand abfragt, ist kein Wächter."*).
-  Vollständigkeit heißt hier **Inventar gegen Abdeckung**
-  (`grep -c '^### MR-' harness/conventions.md` als Nenner), nicht „die auffälligen" — dieselbe
-  Lücke, an der die Roadmap zwei kuratierte Listen führt.
+  Templates) — heute meldet dasselbe Ziel `v3.5.2 OK — 42 Dateien` (`make baseline-verify`), die
+  51 sind der Bestand des Ziel-Tags (§1).
+- **Durchgang 1 — Adaptionen:** **jeder** Eintrag des Adaptions-Blocks trägt genau einen der fünf
+  Ausgänge mit Beleg, **und jeder Auflösungs-Trigger ist abgefragt** (*„Ein Trigger, den niemand
+  abfragt, ist kein Wächter."*). Vollständigkeit heißt hier **Inventar gegen Abdeckung**, nicht
+  „die auffälligen" — dieselbe Lücke, an der die Roadmap zwei kuratierte Listen führt. **Die
+  Bezugsmenge ist ein Kommando, keine Zahl**, weil sie mit jedem neuen Eintrag wandert
+  ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2): `grep -c '^### MR-' harness/conventions.md` → am 2026-08-27 **27**, davon mit
+  Auflösungs-Trigger `grep -c '^- \*\*Auflösungs-Trigger' harness/conventions.md` → **26**.
 - **Durchgang 2 — Form:** die Referenz-Form ist gegen die alte gehalten und die Pflichtfelder der
   neuen Gliederung stehen in den Singleton-Artefakten.
 - **Durchgang 3 — Stichprobe gegen den Bestand:** ein Abschnitt **ohne** Delta ist geprüft und
@@ -156,8 +201,11 @@ gegenstandslos wird, kein neues Pflichtfeld mehr braucht.
   `conventions`-Verzeichnis, aufgelöste in dessen `done/`. Die Ziel-Baseline nennt sie
   **Default**, die Form selbst aber ausdrücklich **Wahl**; die Einzeldatei bleibt damit konform
   und schuldet keinen `MR`-Eintrag. Der Grund, den die Baseline für den Default nennt, trifft hier
-  trotzdem zu — `wc -l harness/conventions.md` → **1124** Zeilen, die jeder Agentenlauf liest, mit
-  wachsendem Anteil aufgelöster Einträge. Das ist ein Roadmap-Kandidat mit eigenem Trigger, keine
+  trotzdem zu — `wc -l harness/conventions.md` → am 2026-08-27 **1402** Zeilen, die jeder
+  Agentenlauf liest, mit wachsendem Anteil aufgelöster Einträge; die Zahl **wächst** mit jedem
+  Eintrag und ist kein Erwartungswert
+  ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). Das ist ein Roadmap-Kandidat mit eigenem Trigger, keine
   Fracht dieser Welle: der Umzug zöge **jede** `MR-`Kennung des Repos auf einen neuen Pfad, und
   die sind nach [`MR-001`](../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
   linkpflichtig.

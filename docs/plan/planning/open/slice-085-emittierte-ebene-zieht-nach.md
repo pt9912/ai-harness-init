@@ -18,7 +18,7 @@ wechselt nur durch `git mv`, siehe
 
 ## 1. Ziel
 
-Was ein **frisch gebootstrapptes Zielrepo** bekommt, steht auf `v5.3.1` — und die emittierten
+Was ein **frisch gebootstrapptes Zielrepo** bekommt, steht auf `v5.12.0` — und die emittierten
 Artefakte, die die Struktur des Regelwerks benennen, nennen keine Datei, die es dort nicht gibt.
 
 **Die Ebene ist die Pointe.** Der Tag ist der Emissions-Kanal: `internal/fetch/baseline.go`
@@ -31,9 +31,9 @@ Ziel-Formen des Regelwerks benennen; `implement-slice` allein trägt 28 solcher 
 ## 2. Definition of Done
 
 - [ ] `make smoke` **und** `make full-smoke` sind mit dem neuen `DefaultTag` grün — ein frisch
-      gebootstrapptes Zielrepo fährt mit `v5.3.1` out-of-the-box grün
+      gebootstrapptes Zielrepo fährt mit `v5.12.0` out-of-the-box grün
       ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)).
-- [ ] Die emittierten Artefakte nennen keine Regelwerks-Datei, die es in `v5.3.1` nicht gibt —
+- [ ] Die emittierten Artefakte nennen keine Regelwerks-Datei, die es in `v5.12.0` nicht gibt —
       geprüft als **Inventar gegen Abdeckung** (Nennungen gegen den Dateibestand des neuen Baums),
       nicht als Trefferliste.
 - [ ] Wo ein emittierter Text eine Prozedur beschreibt, die die neue Fassung geändert hat
