@@ -191,19 +191,16 @@ ein Negativ aus aufgezählten Zeichenketten.
 ### Wer den Zielstand bewegt — und wen die Defekt-Regel des Wellenplans bindet
 
 Beide Züge — `v5.3.1` → `v5.9.0` und `v5.9.0` → `v5.12.0` — gehen auf eine **Setzung des
-Auftraggebers** zurück, nicht auf einen gemessenen Defekt im bisherigen Zielstand. Der Wellenplan
-führt dafür eine Regel, die das dem Wortlaut nach ausschließt
-(`docs/plan/planning/welle-10-re-baseline.md`, §1 Welle-Ziel): *„Er wandert, wenn in ihm ein
-**gemessener Defekt** liegt, der eine Entscheidung dieses Repos berührt; **nicht**, weil ein
-neuerer Tag existiert."* Zweimal angewandt und zweimal überholt — eine Regel, die so läuft,
-beschreibt entweder etwas anderes als ihren Anwendungsfall, oder sie ist falsch.
+Auftraggebers** zurück, nicht auf einen gemessenen Defekt im bisherigen Zielstand. Eine Regel, die
+die Bewegung des Zielstands an einen gemessenen Defekt knüpft, trägt der Wellenplan
+(`docs/plan/planning/welle-10-re-baseline.md`, §1 Welle-Ziel). Ob sie die beiden Züge ausschließt,
+hängt daran, **wen** sie bindet — und das ist die Frage dieses Abschnitts.
 
-**Sie beschreibt etwas anderes: sie ist an die Rollen adressiert, nicht an den Auftraggeber.**
-Ihr Ertrag ist, dass kein Lauf im Repo den Zielstand einer Release-Liste nachführt — der stille
-Auto-Bump eine Ebene höher, den Festlegung 3 schon für die Wahl der Prozedur abwehrt. Welche
-Fassung dieses Repo adoptieren **will**, ist dagegen keine Ableitung aus einer Messung, sondern
-dieselbe Art Akt wie die Adoption selbst —
-[`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) heißt nicht umsonst
+**Sie bindet die Rollen dieses Repos, nicht den Auftraggeber.** Ihr Ertrag ist, dass kein Lauf im
+Repo den Zielstand einer Release-Liste nachführt — der stille Auto-Bump eine Ebene höher, den
+Festlegung 3 schon für die Wahl der Prozedur abwehrt. Welche Fassung dieses Repo adoptieren
+**will**, ist dagegen keine Ableitung aus einer Messung, sondern dieselbe Art Akt wie die Adoption
+selbst — [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) heißt nicht umsonst
 Adoptions-*Erklärung*. Eine repo-interne Regel kann diesen Akt nicht binden; sie kann ihn nur
 belegpflichtig machen.
 
@@ -335,17 +332,12 @@ weder in Richtung Carveout noch in Richtung Fortbestand.
 - **Negativ / [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6):**
   **Kein Sensor.** Kein Gate liest, nach welcher Fassung ein Durchgang gelaufen ist. Träger sind
   der Zeiger im Wellenplan und der Review der Durchgangs-Ergebnisse.
-- **Folgepflicht (Planner-Eigentum):** Der Wellenplan ersetzt seine Festlegung durch einen Zeiger
-  auf diese ADR und behält nur, was Plan-Sache ist. Mit dem Retarget kommt hinzu: er nennt am
-  2026-08-27 an **10** Stellen `v5.3.1`, seinen Titel eingeschlossen, und den beschlossenen
-  Zielstand an **keiner**
-  (`for t in 'v5\.3\.1' 'v5\.9\.0' 'v5\.12\.0'; do grep -c "$t" docs/plan/planning/welle-10-re-baseline.md; done`
-  → **10 · 0 · 0**); die Zahlen **wandern** mit dem Plan und sind keine Erwartungswerte
-  ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-  Setzung 2). Dazu gehört seine Regel darüber, wann der Zielstand wandert: **dass** sie die Rollen
-  im Repo bindet und nicht den Auftraggeber, steht in §*Wer den Zielstand bewegt*; wie ein Plan
-  das formuliert, ist Plan-Sache. Das Nachziehen ist Planner-Sache. **Diese ADR ändert keine Datei
-  außer sich selbst und dem ADR-Index.**
+- **Folgepflicht (Planner-Eigentum) — eingelöst:** Der Wellenplan trägt an der Stelle seiner
+  Festlegung einen Zeiger auf Festlegung 1 und behält nur, was Plan-Sache ist: den Zuschnitt der
+  drei Durchgänge und der Slices, die aus Eigenschaften der gewählten Prozedur gebaut sind. Dazu
+  gehört seine Regel darüber, wann der Zielstand wandert — **dass** sie die Rollen im Repo bindet
+  und nicht den Auftraggeber, steht in §*Wer den Zielstand bewegt*; wie ein Plan das formuliert,
+  ist Plan-Sache. **Diese ADR ändert keine Datei außer sich selbst und dem ADR-Index.**
 - **Folgepflicht (Adaptions-Durchgang):** Die
   [`MR-020`](../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)-Konstellation
   aus dem Kontext ist dort zu **entscheiden**, nicht zu übernehmen — Fortbestand, Carveout mit
@@ -404,3 +396,4 @@ des Durchgangs, nicht seine normative Quelle.
 | 2026-08-09 | **Proposed** | Architect-Verdikt zur Frage, welche Regelwerks-Fassung die Re-Baseline `v3.5.2` → `v5.3.1` regiert. Die Festlegung stand bis dahin im Wellenplan der Re-Baseline und damit unter Planner-Eigentum auf Rang 5 der Source Precedence; Anlass war die Frage nach ihrem Urheber, die dort kein Gefäß hatte |
 | 2026-08-22 | Zielstand auf `v5.9.0` gezogen, weiter **Proposed** | Entscheidung des Auftraggebers: die Re-Baseline zielt auf `v5.9.0` statt `v5.3.1`. Anlass ist der Stand upstream — `make baseline-freshness` meldet VERALTET, gepinnt `v3.5.2`, latest `v5.9.0` (die latest-Angabe **wandert** mit jedem Release und ist kein Erwartungswert, [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2) — bei einem Aufpreis von rund einem Zehntel des Gesamt-Deltas (§*Der Zielstand ist … gezogen*). Die ADR steht auf *Proposed*; [`AGENTS.md`](../../../AGENTS.md) §3.4 bindet ab *Accepted*, weshalb hier retargetet und **keine** Folge-ADR geschrieben wird — später wäre dieselbe Bewegung eine Folge-ADR mit `Supersedes`. **Festlegung 3 gilt für diesen Lauf selbst:** ihr Kriterium hängt an der **gepinnten** Fassung, und die bleibt `v3.5.2` — ihr erster Fall greift unverändert, während die Ziel-Seite neu gemessen wurde, genau wie sie es verlangt. Der dritte Re-Evaluierungs-Trigger ist **nicht** gefeuert: er setzt eine laufende Welle voraus, und es ist kein Durchgang gelaufen — die Slices der Re-Baseline-Welle liegen sämtlich in `docs/plan/planning/open/`, rückwirkend verliert also keine Messlatte ihren Gegenstand. **Ziel-Aussagen sind gezogen, Mess-Zeitbezüge auf `v5.3.1` stehen geblieben** — eine Messung, die gegen `v5.3.1` lief, würde durch einen Tag-Tausch zu einem Lauf, den niemand gefahren hat |
 | 2026-08-27 | Zielstand auf `v5.12.0` gezogen, weiter **Proposed** | Entscheidung des Auftraggebers: die Re-Baseline zielt auf `v5.12.0` statt `v5.9.0`. Der Aufpreis ist **10 Dateien, +172/−16** — rund **3,5 %** des Gesamt-Deltas, nach rund einem Zehntel beim Schritt davor —, und die Dateizahl des vendored Baums bleibt **26 + 25 = 51** (§*Der Zielstand ist … gezogen*; beide Angaben **wandern** mit dem Upstream-Stand und sind keine Erwartungswerte, [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2). Die ADR steht auf *Proposed*; [`AGENTS.md`](../../../AGENTS.md) §3.4 bindet ab *Accepted*, weshalb hier retargetet und **keine** Folge-ADR geschrieben wird — später wäre dieselbe Bewegung eine Folge-ADR mit `Supersedes`. **Festlegung 1 ist unberührt:** ihre Quelle `modul-02-harness-bootstrap.md` ist zwischen `v5.9.0` und `v5.12.0` byte-gleich, womit sieben Eigenschaften und fünf Ausgänge unverändert tragen. **Erster Re-Evaluierungs-Trigger:** die **gepinnte** Fassung bleibt `v3.5.2`, der erste Fall von Festlegung 3 greift unverändert. **Zweiter:** nicht gefeuert — die dreizehn Suchbegriffe über die hinzugefügten Zeilen des Schritts finden **6** Zeilen, alle gelesen, keine eine Meta-Regel über die regierende Fassung. **Dritter:** nicht gefeuert — es ist kein Durchgang gelaufen, die sechs Slices der Re-Baseline-Welle liegen sämtlich in `docs/plan/planning/open/` (`find docs/plan/planning -name 'slice-08[0-5]-*' -path '*/open/*' | wc -l` → **6** von **6**). **Ziel-Aussagen sind gezogen, Mess-Zeitbezüge auf `v5.3.1` und `v5.9.0` stehen geblieben** — eine Messung, die gegen `v5.3.1` oder `v5.9.0` lief, würde durch einen Tag-Tausch zu einem Lauf, den niemand gefahren hat. **Anlass ist eine Setzung, kein gemessener Defekt** — was das für die Ziel-Regel des Wellenplans heißt, entscheidet §*Wer den Zielstand bewegt* |
+| 2026-08-27 | Folgepflicht (Planner-Eigentum) eingelöst, weiter **Proposed** | Der Wellenplan ersetzt seine Festlegung durch einen Zeiger auf Festlegung 1 und ist auf den beschlossenen Zielstand gezogen (Planner-Lauf `b650730`). Der Zeiger, den §Konsequenzen als einen der zwei Träger der sensorlosen Regel nennt, steht damit als Zustand statt als Pflicht. **Der Nachweis über den Plan zeigt seither auf ihn, statt ihn zu zitieren:** ein Plan ist nicht tag-gepinnt, sein Wortlaut wandert mit seiner nächsten Fassung, und die Zitat-Form aus [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) gilt Quellen, deren Tag ihn festhält. Aus demselben Grund trägt die Folgepflicht **keine Zählung** über den Plan mehr: eine eingefrorene Zahl über einem lebenden Artefakt wird wieder falsch — und sie wird es lautlos, wenn ihr Betrag stehen bleibt und ihre Bedeutung kippt ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2) |
