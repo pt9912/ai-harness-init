@@ -224,7 +224,7 @@ einem bestehenden erzeugt. Was offen bleibt, in Klassen statt als Liste:
   (`git diff --diff-filter=A --name-only de536bc 3f2da7e -- test/mutations/ | wc -l`). Dazu wirft
   der Grün-Vorlauf sein Protokoll bei Erfolg weg; ein
   grüner Lauf belegt also nicht, dass die neuen Zähne im `full-smoke` gelaufen sind. Träger:
-  [slice-105](../next/slice-105-mutate-messen-dann-teilen.md) — **erst messen, dann teilen** — und
+  [slice-105](../in-progress/slice-105-mutate-messen-dann-teilen.md) — **erst messen, dann teilen** — und
   [slice-106](../done/slice-106-rotes-ci-traegt-seinen-ausgang.md) für das Rot der CI, das heute
   keinen Ausgang trägt.
 - **Fünf Norm-Postens ohne Termin, aus dieser Welle.** Sie liegen in
@@ -359,7 +359,7 @@ Setzung 1 und darum **nicht** in der Roadmap (Setzung 2):
 | [slice-102](../open/slice-102-messung-nennt-grenzen-und-anlass.md) | die Messung nennt ihre Grenzen und ihren Anlass |
 | [slice-103](../open/slice-103-traeger-waechter-decken-was-sie-sagen.md) | die Träger-Wächter decken, was sie sagen |
 | [slice-104](../open/slice-104-rollen-namen-haben-eine-quelle.md) | die Rollen-Namen haben eine Quelle statt vier Fundorte |
-| [slice-105](../next/slice-105-mutate-messen-dann-teilen.md) | `make mutate` wird erst gemessen, dann geteilt |
+| [slice-105](../in-progress/slice-105-mutate-messen-dann-teilen.md) | `make mutate` wird erst gemessen, dann geteilt |
 | [slice-106](../done/slice-106-rotes-ci-traegt-seinen-ausgang.md) | jedes Rot der CI trägt einen Ausgang |
 | [slice-107](../open/slice-107-inhalts-hash-traegt-eine-entscheidung.md) | der Inhalts-Hash bekommt seine Entscheidung |
 | [slice-108](../open/slice-108-feldlisten-waechter-tragen-ihren-fall.md) | die Feldlisten-Wächter tragen ihren Fall oder ihre Grenze |
