@@ -18,6 +18,44 @@
 # gehoert an DoD-Verify/CI/Wellen-Closure. Logik in harness/tools/ (shell-lint deckt sie).
 set -euo pipefail
 
+HIER="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# einordnen sagt fuer einen fehlgeschlagenen Abschnitt, welcher der zwei Ausgaenge
+# vorliegt: eine ausgehende Anfrage nach einem gepinnten Artefakt blieb unbeantwortet
+# (LEITUNG) oder der gepruefte Baum ist rot (BAUM). Der Aufruf steht NEBEN der
+# FEHLER-Zeile des Abschnitts, nicht an ihrer Stelle: jene nennt den
+# Pruefgegenstand, diese die Herkunft des Rots. Der Exit-Code aendert sich durch die
+# Einordnung nicht.
+#
+# ABDECKUNG — ein KRITERIUM statt einer Aufzaehlung: eingeordnet ist jeder Abschnitt,
+# der ein Bild anfordern kann. Das ist die Eigenschaft, um die es geht; eine Liste von
+# Fundstellen veraltet mit der naechsten eingefuegten Stufe, das Kriterium nicht.
+#
+# Die Menge, ueber der es gilt, ist mechanisch abgegrenzt — ein Abschnitt fuehrt seinen
+# eigenen Exit-Code:
+#   (A) grep -cE '\|\| [a-z_0-9]+=\$\?$' harness/tools/full-smoke.sh
+# Drei Formen darin fordern KEIN Bild an, und zwar nachpruefbar: der Trockenlauf (make -n
+# fuehrt kein Rezept aus), make span-clean (sein Rezept im Ziel ist rm -rf plus echo) und
+# der Hook-Wrapper (ein Shell-Skript, das das Host-Binaer startet und docker nicht nennt):
+#   (B) … | grep -cE ' -n |span-clean|bash "\$wrapper"'
+# Der Rest teilt sich in make-Stufen und Aufrufe des Werkzeugs:
+#   (C) … | grep -c 'tmpbin/ai-harness-init'
+# JEDE make-Stufe dieser Restmenge traegt eine Einordnung, dazu die zwei Werkzeug-Aufrufe,
+# die als erste ein noch nicht lokal liegendes Bild anfordern (d-check beim ersten
+# Bootstrap, a-check beim ersten --arch-Modul). Die Probe auf das Kriterium ist eine
+# Gleichung und kein Nachzaehlen:
+#   A - B - C  ==  grep -cE '^[[:space:]]*einordnen "' harness/tools/full-smoke.sh  -  2
+#
+# NICHT eingeordnet sind die uebrigen Werkzeug-Aufrufe. Sie koennen nur dieselben zwei
+# Bilder anfordern — das Werkzeug hat genau einen Docker-Aufrufpunkt (printMK in
+# internal/emit/emit.go, geteilt von d-check und a-check) —, und die liegen nach den zwei
+# Erstbezuegen lokal. Sie laufen unter set -e und brechen ohne eigene Meldung ab.
+#
+# Die Muster, ihre Messung und ihre Grenzen stehen im Kopf des gerufenen Skripts.
+einordnen() {
+	bash "$HIER/full-smoke-ausgang.sh" "$1" <<<"$2" >&2
+}
+
 GO_VERSION="${GO_VERSION:-1.27.0}"
 tmpbin="$(mktemp -d)"
 tmprepo="$(mktemp -d)"
@@ -138,10 +176,30 @@ feldliste_deckt_die_zeile() {
 }
 
 echo "full-smoke: 1/3 natives Release-Binary auf den Host extrahieren (make artifact) ..."
-make artifact DEST="$tmpbin" GO_VERSION="$GO_VERSION"
+# Die Ausgabe wird EINGEFANGEN und danach gedruckt, statt zu stroemen: nur eingefangen
+# steht sie der Einordnung zur Verfuegung. Unter pipefail traegt der Zuweisungs-Exit
+# den Exit der make-Stufe.
+artefakt_rc=0
+artefakt_out="$( make artifact DEST="$tmpbin" GO_VERSION="$GO_VERSION" 2>&1 )" || artefakt_rc=$?
+printf '%s\n' "$artefakt_out"
+if [ "$artefakt_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — make artifact ist NICHT Exit 0: das Release-Binary kam nicht auf den Host (Exit $artefakt_rc)." >&2
+	einordnen "make artifact (Host-Bau und Extraktion des Release-Binaers)" "$artefakt_out"
+	exit 1
+fi
 
 echo "full-smoke: 2/3 Bootstrap (--lang go --name full-smoke) in ein leeres tmp-Repo ..."
-( cd "$tmprepo" && "$tmpbin/ai-harness-init" --lang go --name full-smoke )
+# ERSTER AUFRUF DES WERKZEUGS und damit die erste Anfrage nach dem d-check-Bild: das
+# Werkzeug erzeugt das Doku-Gate-Fragment aus dessen --print-mk-Ausgabe. Auf einem
+# frischen Laeufer liegt das Bild nicht lokal.
+init_rc=0
+init_out="$( cd "$tmprepo" && "$tmpbin/ai-harness-init" --lang go --name full-smoke 2>&1 )" || init_rc=$?
+printf '%s\n' "$init_out"
+if [ "$init_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — der Bootstrap (--lang go) ist NICHT Exit 0 (Exit $init_rc)." >&2
+	einordnen "Bootstrap --lang go (das Werkzeug holt d-check fuer --print-mk)" "$init_out"
+	exit 1
+fi
 
 # Vor dem Gate-Lauf, damit dessen Gruen eine Aussage ueber die Typ-Dateien ist (slice-097).
 rollen_typen_im_ziel "$tmprepo" "--lang go"
@@ -160,6 +218,7 @@ gates_out="$( make -j -C "$tmprepo" gates 2>&1 )" || gates_rc=$?
 printf '%s\n' "$gates_out"
 if [ "$gates_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates im emittierten Repo ist NICHT Exit 0 (LH-FA-01 Happy-Path verletzt)." >&2
+	einordnen "make -j gates im Ziel (--lang go)" "$gates_out"
 	exit 1
 fi
 
@@ -228,6 +287,7 @@ fi
 if ! grep -qE "$FELDLISTE_REL:[0-9]+.*target-missing" <<<"$feldzahn_out"; then
 	echo "full-smoke: FEHLER — docs-check des Ziels rot, aber ohne Befund AUF der Feldliste (rot aus falschem Grund? slice-098). Ausgabe:" >&2
 	printf '%s\n' "$feldzahn_out" >&2
+	einordnen "make docs-check im Ziel (Feldlisten-Zahn)" "$feldzahn_out"
 	exit 1
 fi
 echo "full-smoke: Feldlisten-Ortswahl belegt (toter Verweis im Dokument faerbt das docs-check des Ziels rot, danach zurueckgenommen):"
@@ -283,6 +343,7 @@ leser_und_aufraeumen_im_ziel() {
 	if [ "$bericht_rc" -ne 0 ]; then
 		echo "full-smoke: FEHLER — $kennung: make span-report im Ziel endet mit Exit $bericht_rc — ein Bericht faerbt nichts rot (slice-099):" >&2
 		printf '%s\n' "$bericht" >&2
+		einordnen "make span-report im Ziel ($kennung)" "$bericht"
 		exit 1
 	fi
 	local erste
@@ -344,6 +405,7 @@ leser_und_aufraeumen_im_ziel() {
 	if [ "$leer_rc2" -ne 0 ]; then
 		echo "full-smoke: FEHLER — $kennung: make span-report ueber dem geraeumten Bestand endet mit Exit $leer_rc2 — ein Bericht faerbt nichts rot (slice-099):" >&2
 		printf '%s\n' "$leer" >&2
+		einordnen "make span-report ueber dem geraeumten Bestand ($kennung)" "$leer"
 		exit 1
 	fi
 	if ! grep -qF -- "Kein Bestand:" <<<"$leerflach"; then
@@ -381,6 +443,7 @@ leser_und_aufraeumen_im_ziel() {
 	if [ "$ohne_rc" -ne 0 ]; then
 		echo "full-smoke: FEHLER — $kennung: ohne Traeger endet make span-report mit Exit $ohne_rc — ein fehlender Leser ist kein Fehler des Repos (slice-099):" >&2
 		printf '%s\n' "$ohne" >&2
+		einordnen "make span-report ohne Traeger ($kennung)" "$ohne"
 		exit 1
 	fi
 	local ohneflach fehlt="" satz
@@ -574,6 +637,7 @@ doc_out="$( make -j -C "$tmprepo_doc" gates 2>&1 )" || doc_rc=$?
 printf '%s\n' "$doc_out"
 if [ "$doc_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — sprachloser make gates ist NICHT Exit 0 (doc-only-Gate verletzt, LH-FA-01/slice-035)." >&2
+	einordnen "make -j gates im sprachlosen Ziel" "$doc_out"
 	exit 1
 fi
 # Die sprach-agnostischen Checks MUESSEN laufen (docs-check + baseline-verify) ...
@@ -641,6 +705,7 @@ addlang_out="$( make -j -C "$tmprepo_doc" gates 2>&1 )" || addlang_rc=$?
 printf '%s\n' "$addlang_out"
 if [ "$addlang_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang ist NICHT Exit 0 (Mono-Repo-Modul kaputt, slice-037)." >&2
+	einordnen "make -j gates nach add-lang go (apps/api + apps/web)" "$addlang_out"
 	exit 1
 fi
 # Beide modul-scoped Go-Gates MUESSEN gelaufen sein: die --target-Echos (Go-Gate lief) UND
@@ -688,6 +753,7 @@ cpp_out="$( make -j -Otarget -C "$tmprepo_doc" gates 2>&1 )" || cpp_rc=$?
 printf '%s\n' "$cpp_out"
 if [ "$cpp_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang cpp ist NICHT Exit 0 (C++-Gate kaputt, slice-039)." >&2
+	einordnen "make -j gates nach add-lang cpp (apps/engine)" "$cpp_out"
 	exit 1
 fi
 # Das cpp-Gate MUSS real gelaufen sein: der modul-scoped Build (apps-engine:test, Kontext
@@ -716,7 +782,17 @@ fi
 # emittierte .golangci.yml-Lint auf dem Schichten-Code. Ein flaches Modul (--arch flat)
 # traegt hier KEINE hexagon-Schicht — die Achse wirkt.
 echo "full-smoke: add-lang go apps/hex --arch hexslice ins Mono-Repo (Arch-Achse, slice-045b) ..."
-( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang go apps/hex --arch hexslice )
+# ERSTES --arch-MODUL und damit die erste Anfrage nach dem a-check-Bild: das Werkzeug
+# erzeugt das Arch-Gate-Fragment aus dessen --print-mk-Ausgabe. Auf einem frischen
+# Laeufer liegt das Bild nicht lokal.
+hexadd_rc=0
+hexadd_out="$( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang go apps/hex --arch hexslice 2>&1 )" || hexadd_rc=$?
+printf '%s\n' "$hexadd_out"
+if [ "$hexadd_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — add-lang go apps/hex --arch hexslice ist NICHT Exit 0 (Exit $hexadd_rc)." >&2
+	einordnen "add-lang --arch hexslice (das Werkzeug holt a-check fuer --print-mk)" "$hexadd_out"
+	exit 1
+fi
 for rel in apps/hex/internal/hexagon/domain/example/greeting.go \
            apps/hex/internal/hexagon/application/example/greet/handler.go \
            apps/hex/internal/adapters/inbound/cli/example/cli.go \
@@ -745,6 +821,7 @@ hex_out="$( make -j -Otarget -C "$tmprepo_doc" gates 2>&1 )" || hex_rc=$?
 printf '%s\n' "$hex_out"
 if [ "$hex_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang --arch hexslice ist NICHT Exit 0 (hexSlice-Code uebersetzt/lintet nicht, slice-045b)." >&2
+	einordnen "make -j gates nach add-lang go --arch hexslice (apps/hex)" "$hex_out"
 	exit 1
 fi
 hex_missing=""
@@ -807,6 +884,7 @@ fi
 if ! grep -qE 'core-impurity|wrong-direction' <<<"$teeth_out"; then
 	echo "full-smoke: FEHLER — Arch-Gate rot, aber ohne Richtungs-Befund (rot aus falschem Grund? slice-046). Ausgabe:" >&2
 	printf '%s\n' "$teeth_out" >&2
+	einordnen "make a-check-apps-hex (Arch-Gate-Zahn, go)" "$teeth_out"
 	exit 1
 fi
 echo "full-smoke: Arch-Gate-Zaehne belegt (verbotener Domain->Adapter-Import faerbt a-check rot, danach zurueckgenommen):"
@@ -844,6 +922,7 @@ cpphex_out="$( make -j -Otarget -C "$tmprepo_doc" gates 2>&1 )" || cpphex_rc=$?
 printf '%s\n' "$cpphex_out"
 if [ "$cpphex_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang cpp --arch hexslice ist NICHT Exit 0 (C++-hexSlice uebersetzt/lintet nicht, slice-053)." >&2
+	einordnen "make -j gates nach add-lang cpp --arch hexslice (apps/cpphex)" "$cpphex_out"
 	exit 1
 fi
 cpphex_missing=""
@@ -871,6 +950,7 @@ fi
 if ! grep -qF -- 'full-smoke: absichtlicher Schicht-Fehler' <<<"$cppteeth_out"; then
 	echo "full-smoke: FEHLER — C++-Build rot, aber nicht wegen der Schicht-Datei (rot aus falschem Grund?). Ausgabe:" >&2
 	printf '%s\n' "$cppteeth_out" >&2
+	einordnen "make build-apps-cpphex (C++-Schicht-Zahn)" "$cppteeth_out"
 	exit 1
 fi
 echo "full-smoke: C++-Schicht-Zaehne belegt (Fehler in der Domain-Schicht faerbt den Modul-Build rot, danach zurueckgenommen):"
@@ -900,6 +980,7 @@ fi
 if ! grep -qF -- 'bugprone-branch-clone' <<<"$cpplint_out"; then
 	echo "full-smoke: FEHLER — Lint-Gate rot, aber ohne den erwarteten Schicht-Befund (rot aus falschem Grund?). Ausgabe:" >&2
 	printf '%s\n' "$cpplint_out" >&2
+	einordnen "make lint-apps-cpphex (C++-Lint-Zahn)" "$cpplint_out"
 	exit 1
 fi
 echo "full-smoke: C++-Lint-Zaehne belegt (bugprone-Verstoss in der Domain-Schicht faerbt den Lint-Gate rot, danach zurueckgenommen):"
@@ -925,6 +1006,7 @@ fi
 if ! grep -qE 'core-impurity|wrong-direction' <<<"$cpparch_out"; then
 	echo "full-smoke: FEHLER — cpp-Arch-Gate rot, aber ohne Richtungs-Befund (rot aus falschem Grund? slice-054). Ausgabe:" >&2
 	printf '%s\n' "$cpparch_out" >&2
+	einordnen "make a-check-apps-cpphex (Arch-Gate-Zahn, cpp)" "$cpparch_out"
 	exit 1
 fi
 echo "full-smoke: C++-Arch-Gate-Zaehne belegt (verbotener Domain->Adapter-Include faerbt a-check rot, danach zurueckgenommen):"
@@ -949,6 +1031,7 @@ roothex_out="$( make -C "$tmprepo_hex" a-check 2>&1 )" || roothex_rc=$?
 printf '%s\n' "$roothex_out"
 if [ "$roothex_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make a-check am Root-Modul ist NICHT Exit 0 (Schicht-Config falsch verortet oder Baseline-Verzeichnis nicht traversierbar? slice-046/LH-FA-07)." >&2
+	einordnen "make a-check am go-Root-Modul" "$roothex_out"
 	exit 1
 fi
 # Das Gate haengt auch WIRKLICH im Aggregator (nicht nur als Einzel-Target erreichbar):
@@ -990,6 +1073,7 @@ cpproot_out="$( make -j -Otarget -C "$tmprepo_cpphex" gates 2>&1 )" || cpproot_r
 printf '%s\n' "$cpproot_out"
 if [ "$cpproot_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates am cpp-Root-Modul ist NICHT Exit 0 (Include-Pfad am Root? Schicht-Config falsch verortet? slice-054)." >&2
+	einordnen "make -j gates am cpp-Root-Modul" "$cpproot_out"
 	exit 1
 fi
 # Das Arch-Gate muss im Lauf WIRKLICH vorgekommen sein — der Mount ist der Beleg, nicht
@@ -1014,6 +1098,7 @@ override_out="$( A_CHECK_IMAGE="$override_ref" make -C "$tmprepo_hex" a-check 2>
 if [ "$override_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — mit gesetztem A_CHECK_IMAGE ist das Arch-Gate weg oder rot (keyt der include-once-Waechter auf den Adopter-Override? Review F-1). rc=$override_rc" >&2
 	printf '%s\n' "$override_out" >&2
+	einordnen "make a-check mit gesetztem A_CHECK_IMAGE" "$override_out"
 	exit 1
 fi
 
@@ -1035,6 +1120,7 @@ two_out="$( make -j -Otarget -C "$tmprepo_doc" gates 2>&1 )" || two_rc=$?
 if [ "$two_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates mit ZWEI hexSlice-Modulen ist NICHT Exit 0 (doppelter include? slice-046/Review F-2). rc=$two_rc" >&2
 	printf '%s\n' "$two_out" >&2
+	einordnen "make -j gates mit zwei hexSlice-Modulen" "$two_out"
 	exit 1
 fi
 if grep -qF -- "overriding recipe" <<<"$two_out"; then
@@ -1103,6 +1189,7 @@ hexagonal_out="$( make -j -Otarget -C "$tmprepo_doc" gates 2>&1 )" || hexagonal_
 if [ "$hexagonal_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates mit dem hexagonalen Modul ist NICHT Exit 0 (Schichten-Code uebersetzt/lintet nicht, slice-058)." >&2
 	printf '%s\n' "$hexagonal_out" >&2
+	einordnen "make -j gates mit dem hexagonalen Modul (apps/hexagonal)" "$hexagonal_out"
 	exit 1
 fi
 hexagonal_missing=""
@@ -1131,6 +1218,7 @@ fi
 if ! grep -qF -- 'app-impurity' <<<"$impurity_out"; then
 	echo "full-smoke: FEHLER — Arch-Gate rot, aber NICHT als app-impurity (rot aus falschem Grund; traegt der Kern noch role: app? ADR-0010). Ausgabe:" >&2
 	printf '%s\n' "$impurity_out" >&2
+	einordnen "make a-check-apps-hexagonal (Zahn 1, app-impurity)" "$impurity_out"
 	exit 1
 fi
 echo "full-smoke: hexagonal-Zahn 1 belegt (core -> driven faerbt a-check als app-impurity rot, danach zurueckgenommen):"
@@ -1153,6 +1241,7 @@ fi
 if ! grep -qF -- 'lateral-adapter' <<<"$lateral_out"; then
 	echo "full-smoke: FEHLER — Arch-Gate rot, aber NICHT als lateral-adapter (tragen beide Adapter-Schichten noch role: adapter? ADR-0010). Ausgabe:" >&2
 	printf '%s\n' "$lateral_out" >&2
+	einordnen "make a-check-apps-hexagonal (Zahn 2, lateral-adapter)" "$lateral_out"
 	exit 1
 fi
 echo "full-smoke: hexagonal-Zahn 2 belegt (driving -> driven faerbt a-check als lateral-adapter rot, danach zurueckgenommen):"
