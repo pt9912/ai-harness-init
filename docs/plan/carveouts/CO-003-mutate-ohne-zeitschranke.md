@@ -9,7 +9,7 @@
 eigener CI-Job fährt
 ([`MR-014`](../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)). Gesenkt
 ist keine Gate-Schwelle. Offen ist eine **Zusage**: der dritte der drei Ausfall-Wege, die
-[slice-105](../planning/in-progress/slice-105-mutate-messen-dann-teilen.md) §2 DoD (3) nennt — *„ein
+[slice-105](../planning/done/slice-105-mutate-messen-dann-teilen.md) §2 DoD (3) nennt — *„ein
 Shard, der abstürzt, **hängt** oder nichts meldet, färbt den Gesamtlauf rot"* —, hat kein rot
 gesehenes Gegenbeispiel und kann keines haben, solange nichts rot wird
 ([`AGENTS.md`](../../../AGENTS.md) §3.6). Wer diesen Carveout mit
@@ -31,7 +31,7 @@ Grund, aus dem er trotzdem in `done/` liegt (Modul 5 §Closure-Regeln).
 [slice-117](../planning/open/slice-117-lauf-ohne-ende-faerbt-rot.md) — seine DoD (1) **ist** der
 Auflösungs-Trigger unten; DoD (3) desselben Slice zieht die zweite, heute unbewachte Zeitschranke
 (`QUEUE_LOCK_TRIES`) mit. Geschnitten hat ihn der Planner in der Closure zu
-[slice-105](../planning/in-progress/slice-105-mutate-messen-dann-teilen.md).
+[slice-105](../planning/done/slice-105-mutate-messen-dann-teilen.md).
 
 ---
 
@@ -47,7 +47,7 @@ der ohne Befund rot wird, ist genau die Klasse, gegen die
 Unterschied ist gemessen und nicht geschätzt: derselbe Sensor über denselben **188** Fällen bei
 N=4 kostet **2,80 s je Fall** auf dem Host und **6,74 s je Fall** im CI-Job (beide Zahlen mit ihren
 Kommandos in
-[slice-105](../planning/in-progress/slice-105-mutate-messen-dann-teilen.md) §1). Die Zahl zu raten hätte
+[slice-105](../planning/done/slice-105-mutate-messen-dann-teilen.md) §1). Die Zahl zu raten hätte
 den Sensor beschädigt, den der Slice gerade repariert hat.
 
 **Warum das Offene erträglich ist.** Die Richtung ist **nicht** *still grün*, und das ist der
@@ -103,7 +103,7 @@ es gibt, sind zwei Stellen, an denen der offene Posten sichtbar ist:
 
 | Datei | Zeile/Section | Wert |
 |---|---|---|
-| [`slice-105-mutate-messen-dann-teilen.md`](../planning/in-progress/slice-105-mutate-messen-dann-teilen.md) | §2 DoD (3) | Haken **nicht** gesetzt; §7 nennt `CO-003` als Träger |
+| [`slice-105-mutate-messen-dann-teilen.md`](../planning/done/slice-105-mutate-messen-dann-teilen.md) | §2 DoD (3) | Haken **nicht** gesetzt; §7 nennt `CO-003` als Träger |
 | [`slice-117-lauf-ohne-ende-faerbt-rot.md`](../planning/open/slice-117-lauf-ohne-ende-faerbt-rot.md) | §2 DoD (1) und (3) | der Auflösungs-Trigger als Abnahme-Kriterium |
 
 ## Verifikation (nach Auflösung)
@@ -118,4 +118,4 @@ es gibt, sind zwei Stellen, an denen der offene Posten sichtbar ist:
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-08-27 | Angelegt (Closure zu slice-105; DoD (3) für einen der drei Ausfall-Wege ohne rot gesehenes Gegenbeispiel) | [slice-105](../planning/in-progress/slice-105-mutate-messen-dann-teilen.md) §7 |
+| 2026-08-27 | Angelegt (Closure zu slice-105; DoD (3) für einen der drei Ausfall-Wege ohne rot gesehenes Gegenbeispiel) | [slice-105](../planning/done/slice-105-mutate-messen-dann-teilen.md) §7 |

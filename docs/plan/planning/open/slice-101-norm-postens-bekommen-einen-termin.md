@@ -299,7 +299,7 @@ Setzung 1). **Untergrenze, mit Absicht:** ob eine Zählung ihre eigene Erwähnun
 Urteil über den Prüfbereich und kein Muster.
 
 **Und ein elfter aus
-[slice-105](../in-progress/slice-105-mutate-messen-dann-teilen.md):** *eine Vollständigkeits-Zusage
+[slice-105](../done/slice-105-mutate-messen-dann-teilen.md):** *eine Vollständigkeits-Zusage
 misst die Menge, über die sie spricht, nicht den Behälter, in dem diese Menge liegt — wer „N von M"
 schreibt, zählt N aus den Einträgen, die er wirklich gelesen hat, und M aus dem Bestand, gegen den
 er zusagt.* **Woran er als weiterer Posten erkannt ist:** er adressiert dieselbe Regel wie die
@@ -419,7 +419,7 @@ dabei, statt sich hinter einem anderen zu verstecken.
       **Wird er zusammen mit dem ersten übernommen, bewegt sich derselbe Wert zweimal** — dann
       gehört in die Closure, **welche** Setzung welcher Posten ist, statt einer Zahl, die beide
       trägt.
-      Für den **elften** ([slice-105](../in-progress/slice-105-mutate-messen-dann-teilen.md)) gilt
+      Für den **elften** ([slice-105](../done/slice-105-mutate-messen-dann-teilen.md)) gilt
       wieder das Kommando des Reichweiten-Postens: der §3.6-Block bewegt sich oder nicht. **Er
       trifft damit denselben Wert wie der zweite bis sechste** — auch hier gehört in die Closure,
       welche Bewegung welcher Posten ist, statt einer Zahl für sechs.

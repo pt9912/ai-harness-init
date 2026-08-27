@@ -101,7 +101,7 @@ Verifikation hat den Go-Wächter unter genau diesem `sed` fallen sehen (§1.3, S
 **fremdbelegt**). Zwei Eigenschaften, zwei Stufen — und die Kosten sind nicht nebensächlich:
 `grep -l '^# verify: full-smoke' test/mutations/*.sh | wc -l` → **3** Fälle tragen heute den
 teuren Modus, und die Gesamtdauer des Treibers ist der Gegenstand von
-[slice-105](../in-progress/slice-105-mutate-messen-dann-teilen.md). Die zwei Slices sind voneinander unabhängig:
+[slice-105](../done/slice-105-mutate-messen-dann-teilen.md). Die zwei Slices sind voneinander unabhängig:
 keiner wartet auf den anderen.
 
 ### Die Abgrenzung: was hier **nicht** entschieden wird
@@ -118,7 +118,7 @@ keiner wartet auf den anderen.
   **Wächter-Namens** trägt, ist [slice-069](slice-069-zahn-bindet-zusicherung.md) DoD (1). Dieser
   Slice legt Fälle in der heute geltenden Form an und migriert nichts.
 - **Die Laufzeit des Treibers.** Sie gehört
-  [slice-105](../in-progress/slice-105-mutate-messen-dann-teilen.md); hier wird die **Stufe je Fall** begründet,
+  [slice-105](../done/slice-105-mutate-messen-dann-teilen.md); hier wird die **Stufe je Fall** begründet,
   nicht die Aufteilung des Laufs.
 
 ## 2. Definition of Done
@@ -212,7 +212,7 @@ Gründen rot wird — und ein Fall, der aus zwei Gründen rot wird, bindet keine
   fährt.** Die Gesamtdauer ist gemessen und **fremdbelegt**: **1199 s** über **164** Fälle
   ([Verifikation](../../../reviews/2026-08-26-slice-098-verify.md) §1.1, Lauf L3). Dass das teuer
   ist, ist **kein** Grund für eine schmalere Stufe — es ist der Gegenstand von
-  [slice-105](../in-progress/slice-105-mutate-messen-dann-teilen.md). Umgekehrt gilt DoD (2): eine teure Stufe
+  [slice-105](../done/slice-105-mutate-messen-dann-teilen.md). Umgekehrt gilt DoD (2): eine teure Stufe
   ohne Eigenschaft, die sie verlangt, ist bezahlte Gewohnheit.
 - **Ein Fall kann die Zusage verschieben, statt sie zu binden.** Wer für
   `TestFeldliste_LiegtVerbatimImZiel` den Ausdruck **und** die Datei zugleich mutiert, hält beide
