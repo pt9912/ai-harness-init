@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # pretooluse-command-guard — blockt Host-Paketmanager und Host-Toolchains
 # (go/pip/npm/cargo/...); ai-harness-init baut make/Docker-only (AGENTS.md
-# Hard Rule 3.1, ADR-0003; Emission- und Guard-Modell ADR-0004; conventions
+# Hard Rule 3.9, ADR-0003; Emission- und Guard-Modell ADR-0004; conventions
 # MR-002/MR-003).
 #
 # Reines bash + awk, KEIN node/jq/OCI (LH-QA-03, LH-FA-06): der awk-Extraktor
@@ -35,12 +35,12 @@ emit_block() {
   cat <<'JSON'
 {
   "decision": "block",
-  "reason": "ai-harness-init is make/Docker-only (AGENTS.md Hard Rule 3.1, ADR-0003/ADR-0004). Use make targets; do not install or run host package managers or host toolchains (apt/brew/pip/npm/cargo/go/...). On parse doubt the guard fails closed."
+  "reason": "ai-harness-init is make/Docker-only (AGENTS.md Hard Rule 3.9, ADR-0003/ADR-0004). Use make targets; do not install or run host package managers or host toolchains (apt/brew/pip/npm/cargo/go/...). On parse doubt the guard fails closed."
 }
 JSON
 }
 
-# Host-Go: ADR-0003 + AGENTS Hard Rule 3.1; Paketmanager: AGENTS Hard Rule 3.1.
+# Host-Go: ADR-0003 + AGENTS Hard Rule 3.9; Paketmanager: AGENTS Hard Rule 3.9.
 BLOCKED="apt apt-get brew pip pip3 pipx npm pnpm yarn npx corepack cargo rustup gem conda go gofmt golangci-lint staticcheck"
 PREFIXES="sudo env command exec nice time xargs eval"
 SHELLS="bash sh zsh dash ksh"
