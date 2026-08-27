@@ -21,7 +21,7 @@ angeführt ist slice-027, obwohl auch er wellenlos lief:
 zählt ihn ausdrücklich zu den drei Fähigkeits-Sprüngen, die Frage 3 heute anders entschiede. Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das Verzeichnis.
-[welle-12](../welle-12-erfassungsschicht-emittieren.md) bleibt unberührt — sie führt die
+[welle-12](welle-12-erfassungsschicht-emittieren.md) bleibt unberührt — sie führt die
 Erfassungsschicht, nicht den Mutations-Treiber.
 
 **Bezug:**
@@ -281,7 +281,7 @@ Gegenbeispiel daneben.
 | [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | **unverändert** | der Sensor ist nicht der Gegenstand. Er wird für DoD 1 Rot C **nicht** angefasst; rot gemacht wird der billigste Modus der Schleife |
 | [`harness/README.md`](../../../../harness/README.md), [`AGENTS.md`](../../../../AGENTS.md) | **unverändert** | beide beschreiben `make mutate` als Nicht-Gate-Verify; sein Vertrag ändert sich nicht. Was sich ändert, ist die Auskunft im Fehlerfall — kein öffentlicher Vertrag |
 | [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** | wellenlose Arbeit wird dort nicht geführt ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) Setzung 2/3) |
-| [`docs/plan/planning/welle-12-erfassungsschicht-emittieren.md`](../welle-12-erfassungsschicht-emittieren.md) | **unverändert** | anderer Gegenstand; dieser Slice hängt an keiner Welle |
+| [`docs/plan/planning/welle-12-erfassungsschicht-emittieren.md`](welle-12-erfassungsschicht-emittieren.md) | **unverändert** | anderer Gegenstand; dieser Slice hängt an keiner Welle |
 
 **Die Menge der Zeilen, an denen der Grund verschwindet, ist gemessen und klein.**
 `grep -c '>/dev/null 2>&1' harness/tools/mutate.sh` → **2**. Die zweite ist **nicht** dieselbe
@@ -305,7 +305,7 @@ liegt vollständig in diesem Repo — eine Schleife in
 [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) und ihr Wächter in
 [`test/mutate-driver.bats`](../../../../test/mutate-driver.bats). Er berührt die emittierte Ebene
 nicht, hängt an keiner Welle und wartet insbesondere **nicht** auf
-[welle-12](../welle-12-erfassungsschicht-emittieren.md), deren Trigger auf der Erfassungsschicht
+[welle-12](welle-12-erfassungsschicht-emittieren.md), deren Trigger auf der Erfassungsschicht
 steht. Er wartet auch **nicht** auf den nächsten roten CI-Lauf: die Auskunft, die er herstellt, ist
 unabhängig davon, wann sie das nächste Mal gebraucht wird.
 

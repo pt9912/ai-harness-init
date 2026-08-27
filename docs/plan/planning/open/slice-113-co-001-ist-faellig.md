@@ -203,7 +203,7 @@ mit Steering-Loop-Eintrag.
 - **Die Audit-Frage bleibt offen, auch wenn dieser Slice schließt.** Dass drei Audits nach der
   **Welle** statt nach dem **Bestand** fragten, ist ein Befund über die Audit-Methode, nicht über
   diesen Carveout. Er wird hier benannt und **nicht** mitgeschnitten; sein Ort ist die
-  Closure-Notiz von [welle-12](../welle-12-erfassungsschicht-emittieren.md), die ihn gefunden hat.
+  Closure-Notiz von [welle-12](../done/welle-12-erfassungsschicht-emittieren.md), die ihn gefunden hat.
 
 ## 7. Closure-Notiz (nach `done/`)
 

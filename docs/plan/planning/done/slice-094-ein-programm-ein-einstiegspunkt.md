@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-12](../welle-12-erfassungsschicht-emittieren.md) — der erste Slice der Welle. Er
+**Welle:** [welle-12](welle-12-erfassungsschicht-emittieren.md) — der erste Slice der Welle. Er
 geht der Emission voraus, weil
 [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Folgepflicht 1 die
 Emission an den Dogfood bindet.
@@ -179,7 +179,7 @@ deren Gegenstands-Satz nennt das Binär, das mit diesem Slice verschwindet.
 
 ## 4. Trigger
 
-**`open` → `next`:** der Trigger von [welle-12](../welle-12-erfassungsschicht-emittieren.md) ist
+**`open` → `next`:** der Trigger von [welle-12](welle-12-erfassungsschicht-emittieren.md) ist
 erfüllt — er ist es heute (dort §2, mit Kommandos). Dieser Slice wartet auf keinen anderen.
 **`next` → `in-progress`:** WIP-Limit frei.
 

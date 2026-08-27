@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-12](../welle-12-erfassungsschicht-emittieren.md) — er läuft nach
+**Welle:** [welle-12](welle-12-erfassungsschicht-emittieren.md) — er läuft nach
 [slice-096](../done/slice-096-traeger-liegt-im-ziel.md), weil das Dokument **aus** dem Träger erzeugt wird
 und seinen Emissions-Zweig teilt. Er hängt **nicht** an
 [slice-099](../done/slice-099-leser-und-aufraeum-kommando.md).
@@ -483,7 +483,7 @@ und [slice-109](../open/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md) (je
 Feldliste hat ihre Quelle). **Alle drei sind wellenlos** — die drei Fragen aus
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 1 sind in ihren Kopfzeilen einzeln beantwortet, und keiner füllt oder leert eine Zelle der
-Abdeckungs-Tabelle von [welle-12](../welle-12-erfassungsschicht-emittieren.md): die Zeilen
+Abdeckungs-Tabelle von [welle-12](welle-12-erfassungsschicht-emittieren.md): die Zeilen
 *„Redaktion"* und *„Benannte Grenze"* sind mit diesem Slice geliefert, und
 [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) nennt den
 Fingerabdruck selbst, sodass auch

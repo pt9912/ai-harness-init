@@ -1,6 +1,6 @@
 # welle-12-erfassungsschicht-emittieren — Results-Notiz
 
-**Welle:** [welle-12 — Erfassungsschicht emittieren](../welle-12-erfassungsschicht-emittieren.md).
+**Welle:** [welle-12 — Erfassungsschicht emittieren](welle-12-erfassungsschicht-emittieren.md).
 **Abschluss-Beleg statt Datum:** alle sechs Slices in `done/`, `make gates` Exit 0, `make mutate`
 **179 ok / 0**, `make full-smoke` Exit 0 über beide Bootstrap-Varianten, der Carveout-Audit unten
 mit **einem** eingetretenen Trigger, dieser Beleg-Text. Die Zahlen stehen mit ihren Kommandos in

@@ -110,7 +110,7 @@ und ein Termin; wo kein Kommando rot färbt, steht das dabei statt einer Zusage
 - [ ] **(3) Ein bestehender Ablauf nennt den Anlass, die Messung erneut zu fahren.** *Bestehend*
       heißt: ein Ablauf, den dieses Repo ohnehin fährt und dessen Artefakt er dabei aufschlägt —
       naheliegend die Closure-Kriterien von
-      [welle-12](../welle-12-erfassungsschicht-emittieren.md) §3, die der Wellen-Abschluss Punkt
+      [welle-12](../done/welle-12-erfassungsschicht-emittieren.md) §3, die der Wellen-Abschluss Punkt
       für Punkt liest. Der Anlass ist ein **beobachtbares Ereignis** (der Träger wächst · die
       Erfassungsschicht geht ins Ziel), kein Kalendertag und keine Schwelle.
       **Kein Kommando färbt ihn rot, und das ist die Wahl:** ein Gate daraus zu machen ist genau
@@ -126,7 +126,7 @@ Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · Doku-Upda
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | [`harness/tools/hook-overhead.sh`](../../../../harness/tools/hook-overhead.sh) — nur der Kopf | update | DoD (1) und (2). Ein Kommentar-Nachzug nach [`AGENTS.md`](../../../../AGENTS.md) §3.7 braucht einen Lauf, der die Datei anfasst; die Sätze sind hier billig und sonst ohne Träger |
-| [`welle-12`](../welle-12-erfassungsschicht-emittieren.md) §3 | update | DoD (3): der Wellen-Abschluss liest die Closure-Kriterien Punkt für Punkt — ein Artefakt mit eigenem Termin |
+| [`welle-12`](../done/welle-12-erfassungsschicht-emittieren.md) §3 | update | DoD (3): der Wellen-Abschluss liest die Closure-Kriterien Punkt für Punkt — ein Artefakt mit eigenem Termin |
 | [`Makefile`](../../../../Makefile), [`AGENTS.md`](../../../../AGENTS.md) §4, [`harness/README.md`](../../../../harness/README.md) §Sensors | **unverändert** | die Zeiger stimmen und sind durch `codepaths` gehalten; der Gegenstand ist der Kopf, auf den sie zeigen |
 | `test/mutations/` | **unverändert** | der Gegenstand ist Prosa und ein Termin; ein Fall darüber bräuchte erst ein Kriterium (§6) |
 | `docs/plan/adr/` | **unverändert** | keine Schwelle wird bewegt und keine Entscheidung revidiert — der Slice **benennt**, was eine *Accepted*-Entscheidung über sich selbst schon sagt ([`AGENTS.md`](../../../../AGENTS.md) §3.4) |

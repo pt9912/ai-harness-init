@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-12](../welle-12-erfassungsschicht-emittieren.md) — er steht zwischen
+**Welle:** [welle-12](welle-12-erfassungsschicht-emittieren.md) — er steht zwischen
 [slice-094](../done/slice-094-ein-programm-ein-einstiegspunkt.md) und
 [slice-096](../done/slice-096-traeger-liegt-im-ziel.md), weil sein Ausgang eine Konstruktions-Eingabe für
 alles ist, was danach ins Ziel geht.

@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-12](../welle-12-erfassungsschicht-emittieren.md) — er hat **keine** Vorbedingung
+**Welle:** [welle-12](welle-12-erfassungsschicht-emittieren.md) — er hat **keine** Vorbedingung
 innerhalb der Welle und darf parallel zu
 [slice-094](../done/slice-094-ein-programm-ein-einstiegspunkt.md) und
 [slice-095](../done/slice-095-hook-aufschlag-gemessen.md) laufen.
@@ -148,7 +148,7 @@ Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · Doku-Upda
 
 ## 4. Trigger
 
-**`open` → `next`:** der Trigger von [welle-12](../welle-12-erfassungsschicht-emittieren.md) ist
+**`open` → `next`:** der Trigger von [welle-12](welle-12-erfassungsschicht-emittieren.md) ist
 erfüllt — er ist es heute (dort §2). Dieser Slice wartet auf **keinen** anderen; der Grund steht in
 §1 (der unbedingte Zweig, aus Festlegung 5(a) abgelesen). **`next` → `in-progress`:** WIP-Limit
 frei.
@@ -392,7 +392,7 @@ Quelle, und die drei Produktions-Fundorte leiten aus ihr ab) und
 dann geteilt). **Beide sind wellenlos** — die drei Fragen aus
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 1 sind in ihren Kopfzeilen einzeln beantwortet. Sie füllen **keine** Zeile der
-Abdeckungs-Tabelle von [welle-12](../welle-12-erfassungsschicht-emittieren.md): die Zeile
+Abdeckungs-Tabelle von [welle-12](welle-12-erfassungsschicht-emittieren.md): die Zeile
 *„Rolle besetzt"* ist mit diesem Slice geliefert, und Sensor-Wartung am Dogfood ist kein
 Akzeptanzkriterium von
 [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren). Die Roadmap

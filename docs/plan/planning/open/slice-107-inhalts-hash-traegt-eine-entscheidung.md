@@ -12,7 +12,7 @@ lieferbar, und kein zweiter Slice wartet auf ihn. **(2) Gemeinsames Closure-Krit
 jedes denkbare wäre die Abschrift seiner eigenen DoD. **(3) Auslöser reaktiv oder gewollt?**
 Reaktiv: ein gemessener Widerspruch zwischen zwei *Accepted*-Entscheidungen, der Anforderung auf
 Rang 1 und dem laufenden Träger (§1). Kein Fähigkeits-Sprung — das Werkzeug lernt nichts, was es
-nicht schon kann. **Auch nicht in [welle-12](../welle-12-erfassungsschicht-emittieren.md):** deren
+nicht schon kann. **Auch nicht in [welle-12](../done/welle-12-erfassungsschicht-emittieren.md):** deren
 Abdeckungs-Tabelle führt die Zeile *„Redaktion — was zugesagt ist und was nicht"* als von
 [slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md) geliefert, und
 [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) nennt den
@@ -177,7 +177,7 @@ Gegenstand ein Durchgang über die Tabelle und nicht ein Satz — dann greift di
 **Beginn (`open` → `next` → `in-progress`): nichts blockiert ihn außer dem WIP-Limit — und das ist
 der Termin, den dieser Slice trägt.** Alle vier Quellen liegen im Baum, der Widerspruch ist über
 ihnen gemessen (§1), und keine Vorarbeit eines anderen Slice fehlt. Er wartet insbesondere **nicht**
-auf die Closure von [welle-12](../welle-12-erfassungsschicht-emittieren.md): das Kriterium
+auf die Closure von [welle-12](../done/welle-12-erfassungsschicht-emittieren.md): das Kriterium
 *„Redaktion"* ist in jedem der drei Ausgänge erfüllt.
 
 **Was dieser Slice ausdrücklich nicht ist: eine Nennung.** Die Form *„Träger: der Architect"* ist

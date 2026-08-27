@@ -11,7 +11,7 @@ Setzung 1, hier beantwortet: **(1) Bündel?** Nein — der Gegenstand ist **ein*
 Moduls und die zwei Dateien, die ihn heute abweichend ausschreiben; der Slice ist einzeln lieferbar
 und wartet auf keinen zweiten. **(2) Gemeinsames Closure-Kriterium?** Nein — jedes denkbare wäre
 die Abschrift seiner eigenen DoD. **(3) Auslöser reaktiv oder gewollt?** Reaktiv: die Closure von
-[welle-12](../welle-12-erfassungsschicht-emittieren.md) hat den Schritt gelesen und seinen
+[welle-12](../done/welle-12-erfassungsschicht-emittieren.md) hat den Schritt gelesen und seinen
 Sensor nicht gefunden. Kein Fähigkeits-Sprung — das Werkzeug lernt nichts Neues, es geht um die
 Regeln, nach denen dieses Repo seine Wellen schließt. Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
@@ -104,7 +104,7 @@ Gate"*, und sein Ziel steht in keiner Prerequisite-Kette
 eines Programms misst, beantwortet die Frage aus Modul 12 nicht — *hat das Modell wiederholt, was
 im Golden Set steht?* — und kann sie auch bei besserem Willen nicht beantworten.
 
-**Was [welle-12](../welle-12-erfassungsschicht-emittieren.md) daran geändert hat:** sie hat
+**Was [welle-12](../done/welle-12-erfassungsschicht-emittieren.md) daran geändert hat:** sie hat
 den **Rohstoff** ins Ziel gebracht, nicht den Mechanismus. Ein gebootstrapptes Repo führt seit ihr
 einen eigenen Span-Bestand mit Rollen-Achse. Das ist die Menge, aus der ein Golden Set gezogen
 würde — es ersetzt es nicht.

@@ -11,7 +11,7 @@ Setzung 1, hier beantwortet: **(1) Bündel?** Nein — ein Durchgang über eine 
 aufgezählte Menge von Wächtern; einzeln lieferbar. **(2) Gemeinsames Closure-Kriterium?** Nein —
 jedes denkbare wäre die Abschrift seiner eigenen DoD. **(3) Auslöser reaktiv oder gewollt?**
 Reaktiv: acht gebaute Wächter ohne Fall (§1). **Auch nicht in
-[welle-12](../welle-12-erfassungsschicht-emittieren.md):** er liefert **kein** Akzeptanzkriterium
+[welle-12](../done/welle-12-erfassungsschicht-emittieren.md):** er liefert **kein** Akzeptanzkriterium
 von [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) — die
 Zeilen *„Redaktion"* und *„Benannte Grenze"* sind mit
 [slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md) geliefert, und die
@@ -174,7 +174,7 @@ statt seiner eine Grenze auszusprechen.
 **Beginn (`open` → `next` → `in-progress`): nichts blockiert ihn außer dem WIP-Limit — und das ist
 der Termin, den dieser Slice trägt.** Die acht Wächter liegen im Baum, die Messung in §1 gilt über
 ihm, und keine Entscheidung und keine Anforderung ist zu klären. Er wartet insbesondere **nicht**
-auf die Closure von [welle-12](../welle-12-erfassungsschicht-emittieren.md) und nicht auf
+auf die Closure von [welle-12](../done/welle-12-erfassungsschicht-emittieren.md) und nicht auf
 [slice-099](../done/slice-099-leser-und-aufraeum-kommando.md).
 
 **Was dieser Slice ausdrücklich nicht ist: eine Nennung.** Acht unbewachte Wächter sind in einer

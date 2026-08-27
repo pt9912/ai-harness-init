@@ -12,7 +12,7 @@ lieferbar. **(2) Gemeinsames Closure-Kriterium?** Nein — jedes wäre die Absch
 DoD. **(3) Auslöser reaktiv oder gewollt?** Reaktiv: drei Assertions eines gebauten Wächter-Satzes
 sind ohne Fall oder ohne wirksames Rot (§1). Er liefert **kein** Akzeptanzkriterium von
 [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) und gehört
-deshalb nicht in [welle-12](../welle-12-erfassungsschicht-emittieren.md). Nach
+deshalb nicht in [welle-12](../done/welle-12-erfassungsschicht-emittieren.md). Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das Verzeichnis.
 

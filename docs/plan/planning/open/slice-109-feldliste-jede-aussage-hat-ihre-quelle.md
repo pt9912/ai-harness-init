@@ -13,7 +13,7 @@ ein Schnitt; kein zweiter Slice wartet auf ihn. **(2) Gemeinsames Closure-Kriter
 denkbare wäre die Abschrift seiner eigenen DoD. **(3) Auslöser reaktiv oder gewollt?** Reaktiv:
 eine gemessene Doppelung und eine gemessen unrichtige Zutat (§1). Kein Fähigkeits-Sprung — der
 Adopter bekommt dasselbe Dokument an derselben Stelle. **Auch nicht in
-[welle-12](../welle-12-erfassungsschicht-emittieren.md):** deren Zeilen *„Redaktion"* und
+[welle-12](../done/welle-12-erfassungsschicht-emittieren.md):** deren Zeilen *„Redaktion"* und
 *„Benannte Grenze"* sind mit
 [slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md) geliefert und bleiben
 es — dieser Slice ändert den **Wortlaut** zweier Aussagen, nicht die Frage, ob das Kriterium
@@ -187,7 +187,7 @@ Stichprobe aus §1 zeigt **eine** Divergenz; das ist eine Untergrenze, kein Befu
 der Termin, den dieser Slice trägt.** Beide Fassungen liegen im Baum, die Messungen aus §1 gelten
 über ihm, Frage A und B sind ohne Vorarbeit eines anderen Slice entscheidbar. Er wartet
 insbesondere **nicht** auf die Closure von
-[welle-12](../welle-12-erfassungsschicht-emittieren.md) und **nicht** auf
+[welle-12](../done/welle-12-erfassungsschicht-emittieren.md) und **nicht** auf
 [slice-108](slice-108-feldlisten-waechter-tragen-ihren-fall.md): jener gibt bestehenden Wächtern
 ihre Fälle, dieser ändert den Text, den sie halten. Laufen sie in beliebiger Reihenfolge, kostet
 die zweite Runde einen Abgleich der berührten Fall-Köpfe — sie brechen einander nicht.

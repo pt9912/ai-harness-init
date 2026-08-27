@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-12](../welle-12-erfassungsschicht-emittieren.md) — er läuft nach
+**Welle:** [welle-12](welle-12-erfassungsschicht-emittieren.md) — er läuft nach
 [slice-096](../done/slice-096-traeger-liegt-im-ziel.md), weil das Fragment auf den Träger zeigt und der
 Leser dessen Bestand liest. Er hängt **nicht** an
 [slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md).
@@ -466,7 +466,7 @@ Erfassungs-Ausgabe tragen ihren Fall, ihre Meldung und ihre Grenze) und
 Bootstrap anlegt, steht in der Nutzer-Doku). **Beide sind wellenlos** — die drei Fragen aus
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 1 sind in ihren Kopfzeilen einzeln beantwortet, und keiner füllt oder leert eine Zelle der
-Abdeckungs-Tabelle von [welle-12](../welle-12-erfassungsschicht-emittieren.md): die Zeilen
+Abdeckungs-Tabelle von [welle-12](welle-12-erfassungsschicht-emittieren.md): die Zeilen
 *„Aufbewahrung"* und *„Leser"* sind mit diesem Slice geliefert. Die Roadmap bekommt daher keinen
 Eintrag ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2).
@@ -474,7 +474,7 @@ Setzung 2).
 **Die Welle bekommt keinen Fortschritts-Eintrag, aber sie wird mit diesem Zug schließbar.** Der
 Zustand jedes Slice ist sein Lifecycle-Verzeichnis; §4 der Welle sagt es. Mit dem Move dieser Datei
 liegen alle sechs Mitglieder in `done/`, und damit ist das erste Closure-Kriterium aus
-[welle-12](../welle-12-erfassungsschicht-emittieren.md) §3 erfüllt. Was die Wellen-Closure danach
+[welle-12](welle-12-erfassungsschicht-emittieren.md) §3 erfüllt. Was die Wellen-Closure danach
 noch verlangt, ist ihre eigene Arbeit und nicht die dieses Slice: Carveout-Audit über
 `docs/plan/carveouts/`, die Results-Notiz mit eigenem Steering-Loop-Eintrag, der `git mv` der
 Welle-Datei und die Fortschreibung der Roadmap samt Meilenstein **M6**.

@@ -10,7 +10,7 @@ wechselt nur durch `git mv`, siehe
 Setzung 1, hier beantwortet: **(1) Bündel?** Nein — Quelle, Ableitungen und Zähne landen in
 **einem** Schnitt; er wartet auf keinen zweiten Slice und keiner wartet auf ihn. **(2) Gemeinsames
 Closure-Kriterium?** Nein — jedes denkbare wäre die Abschrift seiner eigenen DoD. **Auch nicht in
-[welle-12](../welle-12-erfassungsschicht-emittieren.md):** deren Abdeckungs-Tabelle führt die Zeile
+[welle-12](../done/welle-12-erfassungsschicht-emittieren.md):** deren Abdeckungs-Tabelle führt die Zeile
 *„Rolle besetzt"* als von [slice-097](../done/slice-097-rollen-typen-gehen-mit.md) geliefert; dieser
 Slice füllt keine Zelle und leert keine. **(3) Auslöser reaktiv oder gewollt?** Reaktiv — eine
 gemessene Lücke am Dogfood-Sensor, kein Fähigkeits-Sprung: das Werkzeug lernt nichts, was es nicht
