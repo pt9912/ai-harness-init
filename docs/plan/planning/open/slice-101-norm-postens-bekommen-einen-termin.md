@@ -343,10 +343,30 @@ Die Zuständigkeit steht seit dem 2026-08-09 fest
 [`AGENTS.md`](../../../../AGENTS.md) §3.8 anlegt) und ist in
 [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1 verankert: Hard
 Rules und Adaptions-Block schreibt der Architect. Was den drei Postens fehlt, ist ein **Anlass zu
-laufen**. Zwei von ihnen tragen einen Auflösungs-Trigger, der an ein Ereignis gebunden ist, das
-nicht eingetreten ist (der nächste d-check-Pin-Sprung, `grep -c 'structure' .d-check.yml` über
-**0** — heute **0**); der dritte trägt keinen. In diesem Repo entsteht ein Anlass durch einen
-Schnitt: der Lifecycle bewegt Slices, nicht Nennungen.
+laufen**. Zwei von ihnen tragen einen Auflösungs-Trigger, der an ein Ereignis gebunden ist; der
+dritte trägt keinen. In diesem Repo entsteht ein Anlass durch einen Schnitt: der Lifecycle bewegt
+Slices, nicht Nennungen.
+
+**Eines der zwei Ereignisse ist inzwischen eingetreten, und der Posten hat sich trotzdem nicht
+bewegt — das ist der schärfste Beleg für Weg (A) unten.**
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+§Auflösungs-Trigger ist der **einzige** nicht permanente Eintrag des Adaptions-Blocks
+(`grep -c 'nicht permanent' harness/conventions.md` → **1**) und macht sich am
+d-check-Pin-Sprung fällig. Der ist am 2026-08-28 mit
+[slice-122](../in-progress/slice-122-d-check-pin-v0650.md) gezogen worden
+(`grep -n '^DCHECK_IMAGE' d-check.mk` → `v0.65.0`, `make freshness-dcheck` → Exit 0). **Der
+Trigger benennt seinen eigenen Träger**, und der hat nicht getragen: *„der Slice, der den Pin
+zieht, schlägt diesen Block ohnehin auf"* — er tat es nicht.
+`git grep -c 'MR-025' 3ce4ea3 -- '*slice-122-*.md'` ist **leer**, Exit 1 <!-- d-check:ignore (zitiertes Kommando, kein Verweis auf den Eintrag) -->
+über den Plan; `git log -1 --format=%B 3ce4ea3 | grep -c 'MR-025'` → **0** <!-- d-check:ignore (zitiertes Kommando, kein Verweis auf den Eintrag) -->
+über die Umsetzungs-Message. Beide sind **an `3ce4ea3` festgemacht**: der Plan trägt seit seiner
+Closure-Notiz den Eintrag selbst, ein Lauf über dem heutigen Baum fände sich also selbst.
+Aufgefallen ist es einer **zweiten Rolle** (Modul 10,
+[Review](../../../reviews/2026-08-28-slice-122-review.md) MEDIUM-2), nicht dem schreibenden Lauf.
+Das zweite Ereignis steht weiter aus (`grep -c 'structure' .d-check.yml` → **0**). Damit ist Weg
+(B) nicht mehr nur unbelegt, sondern **einmal gemessen widerlegt**: ein Auflösungs-Trigger, der
+seinen Träger selbst benennt, ist gefeuert und hat nichts ausgelöst. Was er hinterlässt, ist eine
+**fällige Entscheidung ohne Termin** — genau der Gegenstand dieses Slice.
 
 **Was dieser Slice ausdrücklich nicht tut: den Regeltext vorentscheiden.** Er stellt her, dass
 jeder der elf Postens **einzeln** entschieden wird, und benennt die vier zulässigen Ausgänge. Ob

@@ -61,6 +61,43 @@ Bestand — bats-Titel aus
 | davon **ohne** Fall | `comm -23 <titel> <expects> \| wc -l` | **167** |
 | in `test/mutate-driver.bats` allein | dieselbe Rechnung über nur dieser Datei | **33** von **48** |
 
+**Die Bezugsmenge hat zwei Schichten, und die Tabelle oben misst nur eine.** `make mutate` bindet
+seine Fälle über `# expect:` an **beide** Stufen — die bats-Stufe (`not ok N`) und die Go-Stufe
+(`--- FAIL:`). Von den `# expect:`-Zielen ist die Mehrheit gar kein bats-Titel:
+`grep -h '^# expect:' test/mutations/*.sh | sed 's/^# expect: *//' | sort -u | wc -l` → **171**
+eindeutige Ziele, davon `… | grep -c '^Test'` → **109** Go-Testnamen. Über der Go-Stufe gerechnet —
+Funktionen aus
+`git grep -h '^func Test' -- '*_test.go' | sed 's/^func \(Test[A-Za-z0-9_]*\).*/\1/' | sort -u`,
+verglichen per `comm -23` mit denselben Zielen:
+
+| Menge | Kommando | Stand |
+|---|---|---|
+| Go-Testfunktionen (eindeutig, im Index) | `… \| wc -l` über der Funktions-Liste | **226** |
+| davon **ohne** Fall | `comm -23 <gotests> <expects> \| wc -l` | **117** |
+
+**Der gemessene Anlass für diese zweite Schicht liegt in
+[slice-122](../in-progress/slice-122-d-check-pin-v0650.md)**, und er ist die unbequeme Sorte: der
+Wächter, an dem dessen DoD (1) ihr Rot holt — die Kopplung des gelebten d-check-Pins an den
+emittierten Default —, hat selbst keinen Fall.
+`grep -rn 'MatchesCanonical' test/mutations/` → leer (Exit 1), während **drei** Geschwister
+derselben Klasse je einen führen
+(`grep -rln 'PinsMatchRepo\|MatchesMakefile\|PinsProducingRef' test/mutations/` →
+`01-baseline-pin-kopplung.sh`, `18-gen-pin-drift.sh`, `66-archgate-pin.sh`). Zwei Rollen haben ihn
+unabhängig gemeldet ([Review](../../../reviews/2026-08-28-slice-122-review.md) MEDIUM-4,
+[Verifikation](../../../reviews/2026-08-28-slice-122-verify.md) V-8); die Lücke ist **älter als
+jener Slice** und hat drei Pin-Sprünge überlebt. Ein Wächter, der nur bats-Titel zählt, hätte sie
+in keinem der drei gemeldet — **deshalb steht sie hier und nicht als eigener Schnitt**: ein
+einzelner nachgereichter Fall schlösse diese eine Stelle und ließe die übrigen der **117**
+unsichtbar. Die Zahl ist eine **mitwandernde**: jeder neue Go-Test hebt sie, ohne dass am
+Gegenstand etwas bricht — sie taugt als Fläche, nicht als Erwartungswert
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2).
+
+**Welche der zwei Schichten der Sensor trägt, ist damit Teil der Entscheidung aus DoD (2)** und
+keine Formulierungsfrage: DoD (1) unten nennt die bats-Schicht, weil sie zuerst gemessen war. Die
+Asymmetrie der zwei Bestände gehört in die Abwägung — **167** von **189** auf der bats-Stufe gegen
+**117** von **226** auf der Go-Stufe.
+
 **Ein Maßstab über diesem Bestand wäre dauerhaft rot** — und eine Regel, deren Maßstab dauerhaft
 rot ist, trägt nicht, sie wird umgangen. Dieselbe Begründung trägt den Cutoff in
 [`AGENTS.md`](../../../../AGENTS.md) §3.7. Der Schnitt ist deshalb **Gegenstand** dieses Slice und
