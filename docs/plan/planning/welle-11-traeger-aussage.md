@@ -97,12 +97,16 @@ ihrer Annahme offenhielt, ist angenommen
   Freshness-Audit führen* (**Proposed** — welcher Tag am Ende steht, ist dort noch offen; dass der
   Abschnitt **wächst**, ist gegen beide erwogenen Zielstände gemessen und trägt den Trigger
   unabhängig vom Ausgang). Eine Aussage über den Audit, die vor dem Tausch entsteht, beschriebe
-  eine Prozedur, die das Ziel danach nicht mehr liest. Dasselbe Argument zog welle-10 gegenüber
-  welle-09; es zieht hier eine Stufe weiter.
-- **Damit ist [welle-09](welle-09-modul-15-konformitaet.md) mittelbar Vorbedingung** (sie blockiert
-  welle-10). Das ist kein zweiter Trigger, sondern eine Folge des ersten — und es ist die
-  Abgrenzung, die den Schnitt sauber hält: die `make`-Ansprüche der **lebenden** emittierten
-  Doku-Tische gehören slice-087, die des **vendored Baums** dieser Welle (§4).
+  eine Prozedur, die das Ziel danach nicht mehr liest. **Das ist ein Risiko-Grund, und er
+  unterscheidet diese Kante von der, die vor welle-10 stand:** jene schützte eine Messlatte, deren
+  Text sich als unbewegt erwies, und ist am 2026-08-28 aufgelöst
+  ([welle-10](welle-10-re-baseline.md) §2). Diese hier trägt einen Gegenstand, der sich beim
+  Tausch **real** ändert.
+- **[welle-09](welle-09-modul-15-konformitaet.md) ist keine Vorbedingung dieser Welle** — weder
+  unmittelbar noch mittelbar, seit sie welle-10 nicht mehr blockiert. Die Abgrenzung zu ihr bleibt
+  und hält den Schnitt sauber: die `make`-Ansprüche der **lebenden** emittierten Doku-Tische
+  gehören slice-087, die des **vendored Baums** dieser Welle (§4). Eine Abgrenzung ist keine
+  Reihenfolge.
 
 ## 3. Closure-Trigger (Welle schließt)
 
@@ -196,10 +200,10 @@ Der Wert *Träger kommt mit* für Modul 10 wird in 092 gesetzt, nicht erarbeitet
 
 ## 5. Abhängigkeiten
 
-- **Wird blockiert von:** [welle-10](welle-10-re-baseline.md) — sie tauscht den Baum, über den
-  jede Messung dieser Welle läuft (§2). Mittelbar damit auch von
-  [welle-09](welle-09-modul-15-konformitaet.md), die welle-10 blockiert.
-- **Blockiert:** keine geplante Welle. Sie ist die letzte der drei in der Reihe.
+- **Wird blockiert von:** [welle-10](welle-10-re-baseline.md), und **nur** von ihr — sie tauscht
+  den Baum, über den jede Messung dieser Welle läuft (§2). Die mittelbare Bindung an
+  [welle-09](welle-09-modul-15-konformitaet.md) ist mit deren Kante entfallen.
+- **Blockiert:** keine geplante Welle. Sie ist die letzte der Reihe.
 - **Innerhalb der Welle:** {090, 091} → 092.
 - **Die Eintritts-Vorfrage, die dem Architect gehörte, ist gegenstandslos geworden.** Sie fragte,
   ob *Artefakt* im Halbsatz *„und das Ziel erfährt es nicht"*

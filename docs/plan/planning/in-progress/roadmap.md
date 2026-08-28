@@ -1,6 +1,6 @@
 # Roadmap
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-08-27.
+**Status:** Aktiv. **Letzte Änderung:** 2026-08-28.
 
 **Format-Regel:** Die Roadmap ist eine Reihenfolge von **Wellen**,
 keine Reihenfolge von Terminen (siehe
@@ -12,8 +12,27 @@ gezeigt, nicht als Treiber.
 
 ## Aktuelle Welle
 
+**[welle-10 — Re-Baseline `v3.5.2` → `v5.12.0`](../welle-10-re-baseline.md)**, geschnitten am
+2026-08-09, in *Aktuelle Welle* gehoben am 2026-08-28 — **startbar, weil ihr Trigger jetzt allein
+der Freshness-Sensor ist**: die Kante aus [welle-09](../welle-09-modul-15-konformitaet.md) ist
+aufgelöst (Drift-Log unten; die drei Messungen stehen in §2 der Plan-Datei, nicht hier).
+
+**Slices:** `slice-080` bis `slice-085`, sämtlich geschnitten;
+[`slice-080`](../next/slice-080-verweis-ueberlebt-tagwechsel.md) liegt in `next/` und ist der
+erste — er entscheidet, wie ein Verweis in den `<tag>`-gescopten Baum den Tag-Wechsel übersteht,
+**bevor** getauscht wird. Ihr Lifecycle-Zustand ist ihr Verzeichnis, nicht diese Zeile.
+
+**Trigger:** `make baseline-freshness` meldet VERALTET (`gepinnt: v3.5.2`, `latest: v5.12.0`) —
+real eingetreten, in jedem Lauf seiner sichtbaren Historie rot.
+
+**Closure-Kriterium:** **drei Durchgänge der Ziel-Prozedur mit je einem Beleg** — Adaptionen ·
+Form · Stichprobe gegen den Bestand —, dazu der vollzogene Pin (`.harness/baseline/v5.12.0/` als
+einziges `<tag>`-Verzeichnis, `make baseline-verify` grün über 51 statt 42 Dateien) und die drei
+Sensoren außerhalb der Gates, weil der Tag der Emissions-Kanal ist. Nicht der Pin ist der
+Gegenstand, sondern die Durchgänge; Einzelheiten in der Plan-Datei.
+
 **[welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)**, geschnitten am 2026-07-28
-— **angefangen, nicht abschließbar**: ihre Closure hängt an drei Mitgliedern, die §4 der Welle
+— **angefangen, ruhend, nicht abschließbar**: ihre Closure hängt an drei Mitgliedern, die §4 der Welle
 benennt und die nie geschnitten wurden
 (`ls docs/plan/planning/*/ | grep -cE '^slice-(061|063|064)-'` → **0**). Ohne sie bleiben zwei
 Zellen der Konformitäts-Matrix leer, und §3 der Welle nennt eine leere Zelle einen offenen Trigger.
@@ -49,31 +68,29 @@ Trigger. Zwei Ebenen, weil das Tool das Regelwerk ins Ziel
 emittiert: nur die Dogfood-Seite zu schließen hieße, ein Repo zu reparieren und die Lücke an
 jedes andere weiterzuliefern.
 
-**Nach dem welle-12-Abschluss ist welle-09 die einzige aktuelle Welle, und keine rückt nach — die
-mechanische Nachfolge aus Modul 6 Schritt 5 greift hier nicht.** Der Schritt sagt, *„die erste
-Zeile aus Nächste Wellen wird zur neuen Aktuellen Welle"*; er setzt voraus, dass diese Zeile
-startbar ist. Das ist sie nicht: der Trigger von [welle-10](../welle-10-re-baseline.md) verlangt
-[welle-09](../welle-09-modul-15-konformitaet.md) in `done/` — geprüft ohne Rückfrage an
-`ls -1 docs/plan/planning/done/welle-09-*.md 2>/dev/null | wc -l` → **0** —, und welle-09 hängt
-an drei nie geschnittenen Mitgliedern (oben). Eine Welle trotzdem zu heben, machte sie zur
-Phantom-Welle im Sinne von Modul 6; die Abhängigkeit ist eine gerichtete Kante im Graphen unten,
-kein Ordnungswunsch. **Was den Zustand löst, ist eigene Arbeit an welle-09** — `slice-061`,
-`slice-063`, `slice-064` schneiden —, nicht eine Umplanung; deshalb steht zu diesem Abschluss auch
-kein Eintrag im Drift-Log (kein Trigger hat sich bewegt, kein Schnitt ist neu gefasst).
+**Warum dieser Abschnitt zwei Wellen trägt, und warum welle-09 nicht nach unten wandert.** Die
+drei Abschnitte von Modul 6 sind nach Zustand geschnitten, nicht nach Anzahl: *Nächste Wellen* ist
+die **Vorschau**, *Abgeschlossene Wellen* das Closure-Log. welle-09 passt in keinen von beiden —
+sechs ihrer Mitglieder liegen in `done/`, sie ist also keine Vorschau, und sie ist nicht
+geschlossen. Sie bleibt darum hier und trägt ihren Zustand: **angefangen und ruhend**, weil an ihr
+niemand arbeiten kann, ohne zuerst drei Slices zu schneiden. Gearbeitet wird an welle-10; das ist
+die Reihenfolge, die dieser Abschnitt aussagt.
+
+**Und die Nachfolge ist keine mechanische mehr, sondern eine gemessene.** Modul 6 Schritt 5 sagt
+*„die erste Zeile aus Nächste Wellen wird zur neuen Aktuellen Welle"* und setzt voraus, dass diese
+Zeile **startbar** ist. Für welle-10 galt das bis zum 2026-08-28 nicht — ihr Trigger verlangte
+welle-09 in `done/`. Diese Kante ist aufgelöst, und zwar an ihrem eigenen Grund: sie stand, um die
+Messlatte von welle-09 zu schützen, und dieser Schutz hat keinen Gegenstand mehr (Drift-Log unten,
+Messungen in §2 der Plan-Datei). Was den Zustand von **welle-09** löst, bleibt unverändert eigene
+Arbeit — `slice-061`, `slice-063`, `slice-064` schneiden —, und keine Umplanung erledigt das.
 
 ## Nächste Wellen
 
-**[welle-10 — Re-Baseline `v3.5.2` → `v5.12.0`](../welle-10-re-baseline.md)**, geschnitten am
-2026-08-09 — **geplant, nicht aktuell**: ihr Trigger verlangt [welle-09](../welle-09-modul-15-konformitaet.md)
-in `done/`, weil deren Closure-Kriterium gegen Modul 15 in der gepinnten Fassung misst. Slices:
-`slice-080` bis `slice-085`. Trigger und Closure-Kriterien stehen in der Plan-Datei, nicht hier.
-Der Zielstand steht dort ebenfalls, samt der Regel darüber, wen sie bindet — er ist eine
-Entscheidung, kein Dateiname.
-
 **[welle-11 — Träger-Aussage der emittierten Ebene](../welle-11-traeger-aussage.md)**, geschnitten
-am 2026-08-22 — **geplant, nicht aktuell, und die dritte in der Reihe**: sie steht hinter
-[welle-10](../welle-10-re-baseline.md) und damit mittelbar hinter
-[welle-09](../welle-09-modul-15-konformitaet.md). **Trigger:** welle-10 liegt in `done/`. Der Grund
+am 2026-08-22 — **geplant, nicht aktuell, und die einzige Zeile dieser Vorschau**: sie steht hinter
+[welle-10](../welle-10-re-baseline.md), und **nur** hinter ihr; die mittelbare Reihung über
+[welle-09](../welle-09-modul-15-konformitaet.md) ist mit deren Kante entfallen.
+**Trigger:** welle-10 liegt in `done/`. Der Grund
 ist tragend, nicht ordnend — jede Messung dieser Welle läuft über den vendored Baum, und welle-10
 tauscht genau ihn; der Freshness-Audit wächst upstream zudem von drei auf sieben Eigenschaften
 ([`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md)). Slices: `slice-090` bis
@@ -124,21 +141,28 @@ flowchart LR
     W1 --> W2 --> W3 --> W4 --> W5
     W5 -.-> W6
     W5 --> W7 --> W8
-    W8 --> W9 --> W10 --> W11
+    W8 --> W9
+    W10 --> W11
     A0022([ADR-0022 Accepted<br/>+ slice-093 done]) --> W12
 ```
 
-Die drei Kanten `W9 → W10 → W11` sind **Trigger-Kanten**, keine Themen-Nähe: welle-10 misst gegen
-Modul 15 in der gepinnten Fassung und darf den Baum darum nicht vorher tauschen; welle-11 misst
-über den Baum, den welle-10 tauscht. Ohne die Kanten wären beide Phantom-Wellen im Sinne von
-Modul 6.
+**Von der Kette `W9 → W10 → W11` ist eine Kante übrig, und das ist eine Messung, kein Aufräumen.**
+`W10 → W11` steht: jede Messung von welle-11 läuft über den vendored Baum, und welle-10 tauscht
+genau ihn — ohne die Kante wäre welle-11 eine Phantom-Welle im Sinne von Modul 6.
+`W9 → W10` ist am 2026-08-28 **entfallen**: sie schützte die Messlatte von welle-09 vor dem
+Tausch, und der Text, den sie schützte, ist in zwei seiner vier Regelblöcke bereits gemessene
+Grundlage einer angenommenen Entscheidung dieses Repos (Drift-Log unten; die drei Messungen führt
+[welle-10](../welle-10-re-baseline.md) §2). **welle-09 steht damit ohne ausgehende Kante** — sie
+blockiert nichts und wird von nichts blockiert; was ihr fehlt, ist eigene Arbeit.
 
 **`W12` hat bewusst keine Kante aus der Reihe, und der Verzicht hat sich ausgezahlt.** Ihr Trigger
 war kein Wellen-Zustand, sondern eine angenommene Entscheidung plus ein geschlossener Slice. Eine
 Kante `W11 → W12` wäre eine Themen-Nähe ohne tragenden Grund gewesen — sie hätte welle-12 hinter
-eine Reihe gestellt, deren erste Welle bis heute an drei ungeschnittenen Mitgliedern hängt. Die
-Reihe `W9 → W10 → W11` ist damit die einzige Kette der Roadmap, und keine ihrer Wellen ist heute
-startbar; was das für die Nachfolge bedeutet, steht unter *Aktuelle Welle*.
+eine Reihe gestellt, deren erste Welle bis heute an drei ungeschnittenen Mitgliedern hängt. **Und
+sie hätte die Auflösung von `W9 → W10` mitbezahlt**: eine Kante, die keine Messung trägt, blockiert
+so lange, bis jemand sie prüft — welle-12 lief stattdessen und lieferte mit
+[`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) genau die Messung,
+die jene Kante schließlich aufhob.
 
 ## Abgeschlossene Wellen
 
@@ -162,6 +186,7 @@ Abschlüsse, keine Nummernfolge.
 
 | Datum | Was wurde geändert? | Warum? |
 |---|---|---|
+| 2026-08-28 | **Die Trigger-Kante [welle-09](../welle-09-modul-15-konformitaet.md) → [welle-10](../welle-10-re-baseline.md) ist aufgelöst; welle-10 steht in *Aktuelle Welle*, welle-09 bleibt dort als angefangen und ruhend.** Die Kante fällt aus dem Abhängigkeitsgraphen, `W10 → W11` bleibt (dort tragend begründet, nicht ordnend). [`slice-080`](../next/slice-080-verweis-ueberlebt-tagwechsel.md) ist nach `next/` priorisiert. **Der Grund steht nicht nur hier, sondern an der Stelle der Kante** — [welle-10](../welle-10-re-baseline.md) §2 führt die drei Messungen aus, §5 nennt die Welle unblockiert, und [welle-09](../welle-09-modul-15-konformitaet.md) §1 bekommt die **benannte Mess-Grundlage**, die der Tausch ihr schuldet. **Nicht mitgezogen:** die Werte der Tool-Spalte in welle-09 §3/§4 — sie sind seit [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) überholt, das ist **keine** Folge dieser Auflösung, und der Nachzug ist in welle-09 §1 als eigene Planner-Sitzung benannt statt hier nebenbei erledigt | **Die Kante stand aus Ordnungs-, nicht aus Risiko-Gründen — und die Ordnung hat keinen Gegenstand mehr.** Sie schützte die Messlatte von welle-09 vor dem Baseline-Tausch; drei Messungen heben den Schutz auf (lokaler Kurs-Klon, Kommandos in [welle-10](../welle-10-re-baseline.md) §2). **(1)** Das Delta trifft **zwei der vier** Regelblöcke, nicht einen: §Span-/Audit-Attribut-Regeln und §Token-Attributions-Regeln geändert, §Cache-Counter-Regeln und §Doku-Konsistenz-Drift-Regeln byte-gleich — die bisherige Begründung war über den zweiten Block geführt, während die Zahl `+7/−2` beide deckt. **(2)** Keine Zelle der 4 × 2-Matrix bewegt sich: die im zweiten Block entfallene Rollen-Aufzählung zitiert kein lebendes Artefakt dieses Repos (`git grep -c 'Planner · Architect · Implementer · Reviewer · Verifier' -- ':!.harness/baseline' ':!docs/reviews' ':!docs/plan/planning/done'` → kein Treffer), und die **neue** Regel des ersten Blocks (*„Der Emissions-Pfad ist Repo-Entscheidung … Mitzunehmen ist das Schema, nicht das Setup"*) bestätigt kein Ergebnis jener Welle, sondern stützt deren Out-of-Scope-Grenze, die bislang allein auf [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 4 ruhte. **(3) Und das ist der tragende Punkt:** [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) aus der geschlossenen [welle-12](../done/welle-12-erfassungsschicht-emittieren.md) liest **beide** geänderten Stellen verbatim und entscheidet gegen sie — der Ziel-Text ist vor dem Tausch gemessene Grundlage einer angenommenen Entscheidung dieses Repos. Eine Kante, die welle-09 vor genau diesem Text schützen soll, schützt sie vor einem Stand, gegen den hier bereits entschieden wurde. **Was die Kante nie war:** eine Aussage über den Fortschritt von welle-09 — deren Closure hängt unverändert an `slice-061`, `slice-063`, `slice-064` (`ls docs/plan/planning/*/ \| grep -cE '^slice-(061\|063\|064)-'` → **0**), und keines der drei berührt den vendored Baum |
 | 2026-08-27 | **Zielstand von [welle-10](../welle-10-re-baseline.md) auf `v5.12.0` gezogen** — in zwei Schritten nachgeholt, der Plan stand noch auf `v5.3.1`. Mitgezogen sind die offenen Slices `slice-080`–`slice-083` und `slice-085`; **`slice-084` nennt den alten Zielstand nirgends** (`grep -c 'v5\.3\.1' docs/plan/planning/open/slice-084-stichprobe-gegen-bestand.md` → **0**) und bleibt unberührt. Die §1-Regel über die Bewegung des Zielstands ist **neu formuliert**, und die Festlegung über die regierende Regelwerks-Fassung ist im Plan durch einen **Zeiger** auf [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 1 ersetzt | **Zwei Setzungen des Auftraggebers**, keine gemessenen Defekte: `v5.3.1` → `v5.9.0` (2026-08-22) und `v5.9.0` → `v5.12.0` (2026-08-27); die Nachweise je Schritt führt [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) §*Der Zielstand ist … gezogen*. **Die §1-Regel war zweimal angewandt und zweimal überholt** — sie beschreibt etwas anderes als ihren Anwendungsfall: sie bindet die **Rollen dieses Repos** (kein Lauf hier führt den Zielstand einer Release-Liste nach), nicht den Auftraggeber, dessen Adoptions-Akt eine repo-interne Regel nur belegpflichtig machen kann. Entschieden ist das in [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) §*Wer den Zielstand bewegt*; die Formulierung bleibt Plan-Sache ([`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md)), und der Zeiger löst deren Folgepflicht (Planner-Eigentum) ein. **Der Aufpreis ist gemessen und klein:** `git diff --shortstat v5.9.0 v5.12.0 -- lab/regelwerk lab/templates` → **10 Dateien, +172/−16** gegen ein Gesamt-Delta von **53 Dateien, +4005/−1371** (`git diff --shortstat v3.5.2 v5.12.0 -- …`, lokaler Kurs-Klon) — rund **3,5 %**. **Zwei Aussagen des Plans überleben wörtlich**, beide über die Byte-Gleichheit ihrer Träger belegt statt wiederholt: das Closure-Kriterium `51` Dateien (26 + 25, unverändert seit `v5.3.1`) und das Ordnungs-Argument gegen [welle-09](../welle-09-modul-15-konformitaet.md) (`modul-15-observability.md` byte-gleich `v5.3.1` ↔ `v5.12.0`, Delta gegen den gepinnten Baum weiter **+7/−2**). **Ein Schnitt-Posten kam dazu:** der fünfte Ausgang *widerspricht* hat am Zielstand einen zweiten Zweig (**übernehmen**) samt Abgrenzung `MR` ↔ Carveout — `slice-082` führte nur den ersten und trägt jetzt beide, dazu den Posten, dass die Vorab-Messung von [`MR-023`](../../../../harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung) bis zum Zielstand **nicht** trägt. **Mess-Zeitbezüge auf `v5.3.0`/`v5.3.1` sind stehen geblieben** — eine Messung, die gegen jenen Tag lief, würde durch einen Tag-Tausch zu einem Lauf, den niemand gefahren hat |
 | 2026-08-25 | **`slice-071` neu geschnitten und aus [welle-09](../welle-09-modul-15-konformitaet.md) genommen.** Die Cache-Festlegung fällt; der Slice trägt ab jetzt die zwei Angaben, die `make span-report` über seinen eigenen Bestand schuldig bleibt — ein fehlender Ablageort ist von einem leeren nicht zu unterscheiden, und die Bestandszeile nennt ihre Bezugsmenge nicht. Wellenlos nach [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) Setzung 1, deshalb ohne laufende Zeile in diesem Dokument (Setzung 2). **welle-09 hat damit keinen geschnittenen offenen Slice mehr; ihre Closure haengt allein an `slice-061`, `slice-063` und `slice-064`, die dort als Mitglieder benannt und noch nicht geschnitten sind** | **Die Festlegung hatte einen Adressaten, und der ist entfallen.** [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Festlegung 1 stellt die Verbrauchs-Achse je Rolle **permanent ohne Quelle** — kein Auflösungs-Trigger, kein Folge-Slice —, und damit wird die **Rechnung** nie geschnitten, für die Namen, Counter-Form und Ort der Division hätten gelten sollen. Drei dieser vier Angaben hob die Festlegung selbst wieder auf, sobald ein Leser für sie entstünde: ihr eigener Auflösungs-Trigger ließ sie neu entscheiden, *sobald dieses Repo eine Metrik-Senke bekommt*. Die vierte — die drei Pflicht-Labels — steht bereits in [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 Abweichung 1. Was die Matrix-Zelle *Cache-Counter × Repo* braucht, liefert die ADR selbst (Folgepflicht 3: **ADR-Verdikt**), nicht die Festlegung. Die Präzedenz [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) trägt nur die halbe Strecke: ihre Nenner-Pflicht stand ebenfalls vor ihrer Rechnung — aber die Rechnung kam, weil ihre Folgepflicht 4 einen Slice dafür benannte. **Verworfen ist der Slice trotzdem nicht:** [slice-066](../done/slice-066-telemetrie-auswertung.md) §7 weist ihm zwei Posten des **laufenden** Auswerters als Träger zu; die brauchen keinen Bestand und tragen den neuen Schnitt |
 | 2026-08-16 | **Drei Zellen der Tool-Spalte tragen *ADR-Verdikt* statt *nicht emittiert mit Auflösungs-Trigger*, und die Vorarbeit am emittierten Dokument-Satz ist als [`slice-087`](../done/slice-087-emittierte-doku-tische-init-invariant.md) **Mitglied** von [welle-09](../welle-09-modul-15-konformitaet.md) geschnitten** (vorher: wellenlos, ungeschnitten, „wenn er an der Reihe ist"). Reihenfolge der Tool-Ebene damit: Entscheidung (`slice-062`) · Vorarbeit (`slice-087`) · Beleg (`slice-063`) | **Zur Dauer:** die Schwelle *„die Erfassung läuft ohne Kompilat"* ist nicht ernst zu erreichen — ihre Ausgänge sind abgezählt, und die Abzählung führt die ADR (der Plan verweist auf sie, statt sie zu doppeln): der handgeführte Scanner ist in diesem Repo **gebaut und gemessen gescheitert** ([slice-059](../done/slice-059-telemetrie-erfassung-hook.md): die awk-Fassung meldete `ok` für einen fehlgeschlagenen Aufruf), die übrigen scheitern an der Natur des Gegenstands, an getroffenen Entscheidungen dieses Repos oder liegen bei einem fremden Vertrag. Modul-7-Frage 2 fällt auf *Nein*; ein Trigger wäre die Frist, die niemand einlösen kann. Die Auftraggeber-Setzung ist unberührt — es fällt ihre Frist, nicht sie. **Zur Mitgliedschaft:** die Emission von Block 4 hängt an der Vorarbeit (kein emittiertes Dokument darf ein nicht Init-invariantes Ziel behaupten; gemessen: heutiger Tisch 13 Befunde, davon 4 falsch — Teil-Reparatur 4 Befunde, **alle** falsch — invarianter Tisch 0 Befunde in beiden Varianten). Damit hing das Closure-Kriterium der Welle an einem **Nicht-Mitglied ohne Eintritts-Trigger**, und das ist keine Bedingung, sondern ihre Verschiebung. **Die Vorarbeit ist eine Regel über den Dokument-Satz, keine Aufzählung:** die zwei Gate-Tabellen tragen 7 nicht init-invariante Ziele (`lint`/`test` nur mit `--lang` — eine Behauptung, die in *einer* Variante zutrifft, macht jeden Befund über sie unentscheidbar), der emittierte Closure-Note-Reviewer-Skill behauptet zweimal `make verify-closure-notes`, das nirgends existiert |

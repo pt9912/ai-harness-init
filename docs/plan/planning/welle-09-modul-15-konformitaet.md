@@ -23,6 +23,33 @@ einer ADR, dass die Abweichung permanent ist; und nichts dazwischen.** Die beide
 „Nichts dazwischen" ist der Kern: der heutige Zustand ist auf beiden Ebenen weder Umsetzung noch
 Entscheidung, sondern Schweigen.
 
+**Die Mess-Grundlage ist zu benennen, weil der Pfad sie nicht mehr nennt.**
+`modul-15-observability.md` liegt `<tag>`-gescopt im vendored Baum; nach
+[welle-10](welle-10-re-baseline.md) löst derselbe Pfad auf einen Text auf, der sich in **zwei der
+vier** Regelblöcke von der Fassung unterscheidet, gegen die diese Welle geschnitten wurde —
+§Span-/Audit-Attribut-Regeln und §Token-Attributions-Regeln geändert, §Cache-Counter-Regeln und
+§Doku-Konsistenz-Drift-Regeln byte-gleich (Kommando in
+[welle-10](welle-10-re-baseline.md) §2). **Maßgeblich ist der Bestand, nicht der Schnitt-Tag:**
+die vier Blöcke tragen in beiden Fassungen dieselben Überschriften in derselben Reihenfolge, und
+**keine Zelle der Matrix unten bewegt sich durch den Tausch** — die entfallene Rollen-Aufzählung
+des zweiten Blocks zitiert kein lebendes Artefakt dieses Repos, und die neue Regel des ersten
+(*„Der Emissions-Pfad ist Repo-Entscheidung … Mitzunehmen ist das Schema, nicht das Setup"*)
+stützt die Grenze aus §6, statt eine Zelle zu ändern. Beides ist ebenda gemessen, mit Kommando.
+
+**Was sich unabhängig vom Tausch bewegt hat, gehört hier notiert statt später entdeckt.** Die
+Werte der **Tool**-Spalte setzt seit
+[`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) (**Accepted**, aus
+der geschlossenen [welle-12](done/welle-12-erfassungsschicht-emittieren.md)) deren
+Entscheidungs-Tabelle: sie revidiert die Festlegungen 1–3 von
+[`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md)
+(`grep -c '^- \*\*Festlegung [123]\*\*' docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md`
+→ **3**) und führt für **drei** der vier Tool-Zellen den Wert *emittiert* statt *ADR-Verdikt*
+(`grep -c '^| .* \*\*emittiert\*\* —' docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md`
+→ **3**). §3 und §4 unten sind auf diesen Stand **nicht** nachgezogen. Das ist keine Folge des
+Baseline-Tauschs und wird von ihm auch nicht nebenbei erledigt: welchen Ziel-Beleg jede der drei
+Zellen nach [welle-12](done/welle-12-erfassungsschicht-emittieren.md) noch schuldet, ist eine
+Planner-Sitzung über acht Festlegungen, keine Zeilenkorrektur.
+
 **Warum beide Ebenen in dieselbe Welle gehören.** Das Tool emittiert das **vollständige
 Regelwerk** ins Ziel — Modul 15 inklusive. Ein bootstrappedes Repo bekommt also dieselben Regeln
 und dieselbe Leere. Würden wir nur die Dogfood-Seite schließen, reparierten wir **ein** Repo und

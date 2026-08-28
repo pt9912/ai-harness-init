@@ -60,7 +60,7 @@ die Dateizahl bleibt **26 + 25 = 51**, auch am Zielstand
 → **26 25**). **Keine Messung dieses Plans bricht bis zum Zielstand** — nachgewiesen an ihren zwei
 Trägern, nicht durch Wiederholung: `modul-07-carveouts.md`, Träger der Zitat-Probe aus §6 von
 [slice-081](open/slice-081-baum-tauschen-pin-ziehen.md), ist zwischen `v5.3.0` und `v5.12.0`
-byte-gleich, `modul-15-observability.md`, Träger des Ordnungs-Arguments aus §2, zwischen `v5.3.1`
+byte-gleich, `modul-15-observability.md`, Träger der Kanten-Messung aus §2, zwischen `v5.3.1`
 und `v5.12.0` (`git diff --name-only v5.3.0 v5.12.0 -- lab/regelwerk/modul-07-carveouts.md`
 und `git diff --name-only v5.3.1 v5.12.0 -- lab/regelwerk/modul-15-observability.md` → beide
 leer). `modul-08-agentenrollen.md` wächst dagegen weiter — **6** Hunks von `v5.3.1` zum Zielstand
@@ -114,16 +114,48 @@ entsteht darum per `cp` aus deren `welle.template.md`, nicht aus der neuen.
   [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2). Der Auslöser ist damit beobachtbar und real eingetreten, nicht angesetzt. Was er
   auslöst, ist ein Review, kein Nachziehen des Zielstands (§1).
-- **[welle-09](welle-09-modul-15-konformitaet.md) liegt in `done/`.** Ihr Closure-Kriterium misst
-  gegen **Modul 15 in der `v3.5.2`-Fassung**; ein Tausch während der Welle zöge ihr die Messlatte
-  unter den Füßen weg. Die Reihenfolge steht aus Ordnungs-, nicht aus Risiko-Gründen: das Delta
-  jenes Moduls ist gemessen (`git diff v3.5.2 v5.3.1 -- lab/regelwerk/modul-15-observability.md`
-  → +7/−2 Zeilen in zwei Absätzen) und **bestätigt** beide Ergebnisse jener Welle — die
-  Token-Attribution rechnet upstream ausdrücklich „auf Kontexte, nicht auf Personen", und die
-  Rollen sind die aus Modul 8, „festgelegt durch das gestartete Rollen-Artefakt". Die Messung lief
-  gegen `v5.3.1` und trägt bis zum Zielstand, ohne wiederholt zu werden: die Datei ist zwischen
-  `v5.3.1` und `v5.12.0` byte-gleich (§1), das Delta gegen den gepinnten Baum damit dasselbe
-  (`git diff --shortstat v3.5.2 v5.12.0 -- lab/regelwerk/modul-15-observability.md` → **+7/−2**).
+- **Auf [welle-09](welle-09-modul-15-konformitaet.md) wartet diese Welle nicht, und der Grund
+  steht an der Stelle der Kante statt nur im Drift-Log.** Die Kante schützte die Messlatte jener
+  Welle: ihr Closure-Kriterium misst gegen `modul-15-observability.md`, und ein Tausch während der
+  Welle zöge ihr diesen Text unter den Füßen weg. **Drei Messungen nehmen dem Schutz seinen
+  Gegenstand** (lokaler Kurs-Klon):
+
+  1. **Das Delta trifft zwei der vier Regelblöcke.**
+     `git diff --shortstat v3.5.2 v5.12.0 -- lab/regelwerk/modul-15-observability.md` → **+7/−2**
+     in **einem** Hunk (dasselbe Kommando ohne `--shortstat`, `| grep -c '^@@'` → **1**). Je Block
+     gehalten, liegt die Änderung in §Span-/Audit-Attribut-Regeln und §Token-Attributions-Regeln;
+     §Cache-Counter-Regeln und §Doku-Konsistenz-Drift-Regeln sind byte-gleich:
+     `for b in 'Span-/Audit-Attribut-Regeln' 'Token-Attributions-Regeln' 'Cache-Counter-Regeln' 'Doku-Konsistenz-Drift-Regeln'; do for t in v3.5.2 v5.12.0; do git show "$t:lab/regelwerk/modul-15-observability.md" | awk -v h="### $b" '$0==h{f=1;next} /^### /{f=0} f' > "/tmp/blk-$t"; done; printf '%s: ' "$b"; diff -q /tmp/blk-v3.5.2 /tmp/blk-v5.12.0 >/dev/null && echo gleich || echo GEAENDERT; done`
+     → vier Zeilen, die ersten beiden `GEAENDERT`, die letzten beiden `gleich`.
+  2. **Keine Zelle der 4 × 2-Matrix jener Welle bewegt sich durch den Tausch** — je geändertem
+     Block gezeigt, nicht über die Zahl behauptet. **Block 2** verliert die feste
+     Rollen-Aufzählung zugunsten von *„attribuiert wird damit auf **Kontexte**, nicht auf
+     Personen; die Rollen sind die aus Modul 8, festgelegt durch das gestartete
+     Rollen-Artefakt"*; kein lebendes Artefakt dieses Repos zitiert die entfallene Aufzählung
+     (`git grep -c 'Planner · Architect · Implementer · Reviewer · Verifier' -- ':!.harness/baseline' ':!docs/reviews' ':!docs/plan/planning/done'`
+     → kein Treffer), es hängt also keine Messung an ihr, und der Ersatz benennt genau den Träger,
+     den jene Welle gebaut hat. **Block 1** bekommt eine **neue** Regel: *„Der Emissions-Pfad ist
+     Repo-Entscheidung (Exporter, Collector, Sampling, Aufbewahrung): Mitzunehmen ist das
+     **Schema**, nicht das Setup."* Sie bestätigt kein Ergebnis jener Welle — sie stützt deren
+     **Grenze**: §6 dort stellt den Observability-*Stack* out-of-scope und trug das bislang allein
+     auf [`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.md) Festlegung 4.
+  3. **Der Ziel-Text ist bereits gemessene Grundlage einer angenommenen Entscheidung dieses
+     Repos.** [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) aus der
+     geschlossenen [welle-12](done/welle-12-erfassungsschicht-emittieren.md) liest **beide**
+     geänderten Stellen verbatim
+     (`grep -c 'Emissions-Pfad ist Repo-Entscheidung\|Kontexte, nicht auf Personen' docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md`
+     → **2**) und löst sie auf: die Block-1-Regel als Scheinwiderspruch, den
+     [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) auf Rang 1
+     der Source Precedence entscheidet, die Block-2-Fassung als **Stütze** ihrer Festlegung 3.
+     Der Teil des neuen Textes, der dieses Repo berührt, ist damit **vor** dem Tausch gelesen und
+     entschieden — nicht durch ihn. Eine Kante, die jene Welle vor genau diesem Text schützen
+     soll, schützt sie vor einem Stand, gegen den hier bereits entschieden wurde.
+
+  **Was die Kante nicht war: eine Aussage über den Fortschritt jener Welle.** Deren Closure hängt
+  an drei Mitgliedern ohne Datei (`ls docs/plan/planning/*/ | grep -cE '^slice-(061|063|064)-'`
+  → **0**), und keines von ihnen berührt den vendored Baum. Der Tausch nimmt ihr nichts und gibt
+  ihr nichts; er läuft an ihr vorbei. Was er ihr **schuldet** — eine benannte Mess-Grundlage —
+  steht in [welle-09](welle-09-modul-15-konformitaet.md) §1.
 
 ## 3. Closure-Trigger (Welle schließt)
 
@@ -179,8 +211,10 @@ gegenstandslos wird, kein neues Pflichtfeld mehr braucht.
 
 ## 5. Abhängigkeiten
 
-- **Wird blockiert von:** [welle-09](welle-09-modul-15-konformitaet.md) — sie misst gegen Modul 15
-  in der gepinnten Fassung (§2).
+- **Wird blockiert von:** nichts. Die Kante aus
+  [welle-09](welle-09-modul-15-konformitaet.md) besteht nicht mehr; die Messungen, die sie
+  aufheben, stehen in §2. Der Trigger dieser Welle ist damit allein der Freshness-Sensor, und der
+  ist real eingetreten.
 - **Blockiert:** jeden Slice **außerhalb** dieser Welle, der den vendored Baum zitiert. **Wer das
   ist, sagt ein Kommando, keine Liste hier** — die Menge wandert mit jedem Schnitt, und eine
   Aufzählung im Plan altert zwischen Schnitt und Ausführung
