@@ -51,7 +51,7 @@ stimmt — und ist teurer, als der Satz klingt. **Gemessen gegen eine Kopie auß
    `vcs` → **0**, und genau das ist der offene Punkt aus Messung 1.
 3. **Der Trockenlauf ist nicht geteilt.** Jedes Modul brauchte seinen eigenen Lauf mit seiner eigenen
    Config; der Pin-Trockenlauf aus
-   [slice-122](open/slice-122-d-check-pin-v0650.md) fährt die sechs **aktiven** Module und sagt über
+   [slice-122](in-progress/slice-122-d-check-pin-v0650.md) fährt die sechs **aktiven** Module und sagt über
    die vier Kandidaten nichts. Genau deshalb liegt der Pin **nicht** in dieser Welle.
 4. **Zwei der vier sind in CI blind.** `grep -c 'fetch-depth' .github/workflows/ci.yml` → **0** bei
    vier `actions/checkout`-Zeilen (repo-weit sieben). Voreinstellung ist Tiefe **1**; ein
@@ -78,7 +78,7 @@ Setzung 1 geprüft, alle drei Fragen beantwortet:
 
 ## 2. Trigger (Welle startet)
 
-- **[slice-122](open/slice-122-d-check-pin-v0650.md) liegt in `done/`.** Beobachtbar ohne Rückfrage:
+- **[slice-122](in-progress/slice-122-d-check-pin-v0650.md) liegt in `done/`.** Beobachtbar ohne Rückfrage:
   `ls docs/plan/planning/done/slice-122-*.md`. Der Grund ist **tragend, nicht ordnend** — die
   Adoptions-Entscheidungen dieser Welle werden gegen das Verhalten eines Moduls getroffen, und das
   Verhalten hängt an der Version. Alle Messungen in §1 sind bereits gegen `v0.65.0` gefahren; sie
@@ -135,7 +135,7 @@ legen ergäbe sechs — *„der Schnitt ist falsch"*, nicht *„die DoD ist län
 
 ## 5. Abhängigkeiten
 
-- **Wird blockiert von:** [slice-122](open/slice-122-d-check-pin-v0650.md) (Pin, tragend) und
+- **Wird blockiert von:** [slice-122](in-progress/slice-122-d-check-pin-v0650.md) (Pin, tragend) und
   [welle-10](welle-10-re-baseline.md) (WIP, ordnend) — beide mit ihrer Begründung in §2.
 - **Blockiert:** nichts. [welle-11](welle-11-traeger-aussage.md) hängt an
   [welle-10](welle-10-re-baseline.md), nicht an dieser Welle; die Reihung ist damit
@@ -160,7 +160,7 @@ legen ergäbe sechs — *„der Schnitt ist falsch"*, nicht *„die DoD ist län
   ([`MR-001`](../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids):
   Anheben → Steering-Loop). Stellt sich in einem Slice heraus, dass die Adoption nur durch eine
   Lockerung woanders grün wird, ist das ein ADR und damit ein Rückführungs-Grund, kein Zwischenschritt.
-- **Der Pin selbst** ([slice-122](open/slice-122-d-check-pin-v0650.md)) — Trigger, nicht Mitglied.
+- **Der Pin selbst** ([slice-122](in-progress/slice-122-d-check-pin-v0650.md)) — Trigger, nicht Mitglied.
 
 ## 7. Closure-Notiz
 
