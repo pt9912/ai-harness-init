@@ -201,7 +201,7 @@ Planner-Teil seit dem 2026-08-28; offen ist allein der Implementer-Teil.
 ## Verifikation (nach Auflösung)
 
 - [x] Die Trigger-Bedingungen oben sind erfüllt, jede mit ihrem Kommando gefahren (2026-08-28).
-- [ ] `make gates` grün ohne Ausnahme, `make mutate` ohne Befund — über dem Baum, der den Move trägt.
+- [x] `make gates` grün ohne Ausnahme, `make mutate` ohne Befund — über dem Baum, der den Move trägt. Gefahren 2026-08-28 über `48c2063`: gates EXIT=0 (`d-check` 422/0, `comment-claims` 46/0, bats 189 ok), `make mutate` **198 ok, 0 Befund(e)**, 788,76 s. Der Haken selbst ändert an beiden nichts — kein Mutations-Ziel liegt unter `docs/` (`sed -n 's/^# files: //p' test/mutations/*.sh | tr ' ' '\n' | sort -u | grep -c '^docs/'` → **0**).
 - [x] Datei wird nach `docs/plan/carveouts/done/` bewegt (reiner `git mv`). Vollzogen 2026-08-28. <!-- d-check:ignore (done/ entsteht erst bei erster Carveout-Auflösung) -->
 - [x] Der Index in [`README.md`](../README.md) zieht mit. Zeile aus *Aktiv* nach *Aufgelöst* verschoben, 2026-08-28.
 - [x] Der Haken an [slice-105](../../planning/done/slice-105-mutate-messen-dann-teilen.md) §2 DoD (3) ist gesetzt (2026-08-28; §Geltungs-Konfiguration nennt das Kommando) — die zweite Alternative dieses Punktes, die begründete Auslassung, entfällt damit.
