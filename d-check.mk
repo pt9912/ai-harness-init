@@ -13,6 +13,20 @@
 #     enabled sein Modul, wie jedes advisory-Target ohne Platz in `make gates`.
 #     Die Zeilenreferenz-Prüfung `codepaths.check-lines` ist in `.d-check.yml`
 #     aktiviert (additive Härtung, MR-011).
+# VERENGUNG MIT v0.65.0, zwei Achsen, an einer Sonde gemessen statt dem CHANGELOG
+# geglaubt: ein `d-check:ignore` unterdrueckt nur noch, wenn es (a) in einem echten
+# HTML-Kommentar steht UND (b) nicht in Inline-Code eingeschlossen ist. Vier Lagen ueber
+# einem toten Codepath, beide Digests, Kopie ausserhalb des Repos:
+#   `<!-- d-check:ignore -->`     v0.62.0 unterdrueckt | v0.65.0 unterdrueckt
+#   blanke Prosa `d-check:ignore` v0.62.0 unterdrueckt | v0.65.0 MELDET
+#   Kommentar in Inline-Code      v0.62.0 unterdrueckt | v0.65.0 MELDET
+#   ohne Marker (Kontrolle)       beide melden
+# UEBER DIESEM BAUM KOSTET DAS NICHTS, und der Grund ist nicht „wir fuehren keine solchen
+# Marker" — 71 der 242 Marker-Zeilen stehen nicht in Kommentar-Form
+# (`grep -rn 'd-check:ignore' --include='*.md' . | grep -v '.harness/baseline'`, davon
+# `grep -c '<!--[^>]*d-check:ignore'`). Keine davon traegt: sie sind Prosa UEBER den Marker,
+# nicht Marker. Dass die Menge ueberhaupt traegt, ist gegengemessen — mit entwerteten
+# Markern melden BEIDE Versionen `432 Datei(en), 26 Befund(e)`, identisch.
 # Einbinden: `include d-check.mk`; eine eigene .d-check.yml danebenlegen. Neu-Erzeugung:
 # `d-check --print-mk`, dann `doc-check`→`docs-check` re-adaptieren und DCHECK_DIGEST pinnen.
 DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.65.0
