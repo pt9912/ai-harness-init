@@ -4,7 +4,7 @@
 
 | Feld | Wert |
 |---|---|
-| **Rolle** | Verifier (Modul 11, [`modul-11-verification.md`](../../.harness/baseline/v3.5.2/regelwerk/modul-11-verification.md)) — frischer Kontext, getrennt von Implementation und Review |
+| **Rolle** | Verifier (Modul 11, `modul-11-verification.md`) — frischer Kontext, getrennt von Implementation und Review |
 | **Prüfachse** | **nicht** Stil/Qualität (Review-Achse), sondern: hält die **DoD-Behauptung**? „Behauptung ohne Bestätigung ist die häufigste Verifier-Lücke" |
 | **Gegenstand** | `in-progress/slice-050-doku-nachzug-release.md` §2 (DoD, 8 Punkte) · §3 (Plan) · §5 (Closure-Trigger) · §6 (Risiken) |
 | **Range** | `63236d3..HEAD`, `HEAD` = `9326b2a` — **zwölf** Commits, davon **acht slice-eigen** (`813418c` `38b60ed` `0c31697` `a4dac1f` `321b849` `3780d21` `85e3c26` `9326b2a`) und **vier** Lastenheft-CR-/Korrektur-Commits nach `MR-015` (`30f0fcd` `614351e` `7314b7c` `9964041`) |

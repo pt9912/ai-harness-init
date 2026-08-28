@@ -555,10 +555,10 @@ Closure-Notiz mit Steering-Loop-Eintrag.
   Zeile `branch`/`commit` der Feldtabelle in
   [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
   nennt sie die **dritte** Korrelations-Achse und zitiert dafür die Mindestfeld-Liste aus
-  [Modul 15 §Span-/Audit-Attribut-Regeln](../../../../.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
+  Modul 15 §Span-/Audit-Attribut-Regeln
   (*Slice/PR/Agent-Rolle*) — dort ist der PR der **zweite** Posten. Die `adr`-Zeile darüber trägt
   dieselbe Formel zu Recht: sie zitiert die Liste aus
-  [§Kernidee](../../../../.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md#kernidee-modul-15)
+  §Kernidee
   (`slice.id`, `requirement.id`, `adr.id`, `agent.role`), und `adr.id` ist dort die dritte. **Nicht
   in §3 Schritt 5:** dessen Umfang sind die zwei in §1 vorab inventarisierten Wortlaute (a) und
   (c); für jede weitere auffallende Aussage verlangt Schritt 2 die **Benennung** und

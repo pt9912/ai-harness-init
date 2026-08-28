@@ -7,7 +7,7 @@
 | **Review-Art** | Code-Review (Modul 10) — fertiger Diff gegen Plan, Spec, Hard Rules |
 | **Gegenstand** | `7314b7c` · `85e3c26` · der reale Release-Text von `v0.1.0` (`gh release view v0.1.0 --json body`) |
 | **Skill-Version** | [`.harness/skills/reviewer.md`](../../.harness/skills/reviewer.md) 1.4.0 |
-| **Baseline** | Agents-Regelwerk v3.5.2, [`modul-10-review-harness.md`](../../.harness/baseline/v3.5.2/regelwerk/modul-10-review-harness.md) |
+| **Baseline** | Agents-Regelwerk v3.5.2, `modul-10-review-harness.md` |
 | **Modell** | Claude Opus 5 (1M context) |
 | **Runde** | 5 — Runden 1–4 je NICHT KONFORM; Runde 4: 0 HIGH, 1 MEDIUM (S-1), 3 LOW (S-2/S-3/S-4) |
 | **Kontext frisch** | ja — kein Kontext aus den Runden 1–4 übernommen; alle Aussagen unten sind in dieser Sitzung neu gemessen |

@@ -337,7 +337,7 @@ const makeTargetPlaceholder = "<make-target>"
 // Nennungen in Inline-Code — liesse einen Anspruch ausserhalb der Backticks
 // stehen, und der waere ein stilles falsches Gate (LH-QA-01); ein verstuemmeltes
 // Wort ist dagegen im emittierten Text sichtbar. Das ist die fail-closed-Richtung
-// aus MR-017. Der vendored Satz `v3.5.2` traegt kein solches Wort: alle
+// aus MR-017. Der vendored Satz `v5.12.0` traegt kein solches Wort: alle
 // `make `-Nennungen der Vorlagen und der Workflow-Commands sind Ziel-Nennungen
 // oder die Muster-Nennung mit Stern.
 const makeClaimPattern = `make ([a-z][a-z0-9-]*)(\*?)`

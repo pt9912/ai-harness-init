@@ -58,10 +58,10 @@ enc() { printf '%s' "$1" | awk -f "$ENCODER"; }
   mkdir -p "$tmp/harness/tools" "$tmp/.harness/baseline/vTESTTAG-1a2b/regelwerk"
   cp "$INJECT" "$tmp/harness/tools/"
   cp "$ENCODER" "$tmp/harness/tools/"
-  printf '# Modul-Index INDEXTEST-7f3a\n- [Konventionen](grundlagen-konventionen.md)\n' \
+  printf '# Modul-Index INDEXTEST-7f3a\n- [Harness-Dateien](grundlagen-harness-dateien.md)\n' \
     > "$tmp/.harness/baseline/vTESTTAG-1a2b/regelwerk/README.md"
-  printf '# Konventionen MODULTEST-9c2b\n' \
-    > "$tmp/.harness/baseline/vTESTTAG-1a2b/regelwerk/grundlagen-konventionen.md"
+  printf '# Harness-Dateien MODULTEST-9c2b\n' \
+    > "$tmp/.harness/baseline/vTESTTAG-1a2b/regelwerk/grundlagen-harness-dateien.md"
   run bash "$tmp/harness/tools/sessionstart-inject-regelwerk.sh"
   [ "$status" -eq 0 ]
   printf '%s' "$output" | grep -q '"hookEventName":"SessionStart"'
@@ -97,7 +97,7 @@ enc() { printf '%s' "$1" | awk -f "$ENCODER"; }
   cp "$INJECT" "$tmp/harness/tools/"
   cp "$ENCODER" "$tmp/harness/tools/"
   printf '# nur ein Modul, kein Index\n' \
-    > "$tmp/.harness/baseline/vTESTTAG-1a2b/regelwerk/grundlagen-konventionen.md"
+    > "$tmp/.harness/baseline/vTESTTAG-1a2b/regelwerk/grundlagen-harness-dateien.md"
   run bash "$tmp/harness/tools/sessionstart-inject-regelwerk.sh"
   [ "$status" -eq 0 ]
   printf '%s' "$output" | grep -q '"hookEventName":"SessionStart"'

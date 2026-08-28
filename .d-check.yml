@@ -14,7 +14,18 @@ scan:
   # target-missing, alle aus dieser Ursache. Sie liegt committet im Repo, damit die
   # Plaene sie NETZLOS zitieren koennen (die Linie aus MR-007) — geprueft wird sie
   # nicht, denn wir schreiben sie nicht.
-  ignore: ["**/*.template.md", ".tmp/**", ".harness/baseline/**", "docs/user/claude-hooks-referenz.md"]
+  # docs/plan/adr/0013-technik-stratum-als-zielort.md: ANDERE Klasse als die drei
+  # darueber. Die Datei ist repo-autoritativ und wird trotzdem nicht geprueft — sie
+  # traegt einen Markdown-Link in den vendored Baum unter dem Tag, den der Re-Baseline-
+  # Tausch abgeloest hat. Der Link meldet target-missing, und AGENTS.md 3.4 sperrt die
+  # Reparatur: die ADR steht auf Accepted. Ein Befund, den niemand beheben darf, haelt
+  # make gates dauerhaft rot und erzieht dazu, Rot zu ueberlesen (LH-QA-01 eine Ebene
+  # tiefer). Der Ausschluss wirkt datei-weit ueber alle fuenf Module, weil links und
+  # anchors keine Options-Sektion tragen — der referenz-weite Knopf existiert nicht.
+  # GRENZE, keine Regel: der Eintrag ist EXTENSIONAL GESCHLOSSEN auf genau diese eine
+  # Datei (ADR-0017). Jeder weitere Eintrag ist eine neue Senkung nach AGENTS.md 3.5
+  # und braucht seine eigene ADR — auch dann, wenn er dieselbe Bedingung erfuellt.
+  ignore: ["**/*.template.md", ".tmp/**", ".harness/baseline/**", "docs/user/claude-hooks-referenz.md", "docs/plan/adr/0013-technik-stratum-als-zielort.md"]
 modules: [links, anchors, ids, matrix, codepaths, spans]
 # Kennungen sind linkpflichtig (auch in Inline-Code, link-policy: always) —
 # "klickbar zur Quelle" als gemessenes Property. Literal-schwere Artefakte
@@ -75,6 +86,6 @@ codepaths:
 # Makefile-BASELINE_ZIP_SHA256 (MR-007; gemessen 0 Drift). test/sources-pin.bats koppelt beide
 # fail-closed (in gates) — Re-Baseline muss beide Pins bewegen.
 sources:
-  - url: https://github.com/pt9912/ai-harness-course/releases/download/v3.5.2/lab-regelwerk.zip
-    sha256: 2af45aad2777cadf26127066c9a2dc43f7111ee2687e44fe2eceb95c6c0a1925
+  - url: https://github.com/pt9912/ai-harness-course/releases/download/v5.12.0/lab-regelwerk.zip
+    sha256: c91b62bd1ccde3b913027af26258216505f0d783e2ab0e237df0e03af6135e04
     unpack: none
