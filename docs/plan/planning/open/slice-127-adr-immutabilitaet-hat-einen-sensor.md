@@ -170,6 +170,18 @@ Befund, Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   Änderung in der Range, ohne dass der Kern sich bewegt. Ob das Modul das trennt, ist **nicht
   gemessen** — es ist eine Frage an die Umsetzung und steht hier als offener Punkt, nicht als
   Annahme.
+- **Das Rot ist herstellbar — gemessen, aber über ein anderes Modul.** `immutable` ist das
+  hermetische Geschwister von `vcs`: es hasht den normalisierten Kern einer Datei gegen einen
+  Marker in ihr, ohne `.git` und ohne Range. Gegen eine Kopie außerhalb des Repos
+  (`git archive aa32e1f`, netzlos, Mount `:ro`, Image `v0.65.0` per Digest) meldet ein absichtlich
+  falscher `immutable: sha256:0000…`-Marker auf
+  [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) **`core-drift`** — ein Befund,
+  wo `vcs` in vier Formen null lieferte (§1). Das **ersetzt die Zusage dieses Slice nicht**: der
+  Gegenstand hier ist der Commit, der eine angenommene ADR ändert, nicht ein Marker, den jemand
+  von Hand pflegt, und `immutable` bräuchte in jeder ADR einen gesetzten und nachgezogenen Hash.
+  Es engt aber die Ursachensuche ein: die Immutabilitäts-Fähigkeit des Images ist vorhanden und
+  wird rot — offen ist die **Range-Achse**, nicht die Fähigkeit. Herkunft der Messung:
+  [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §6.
 
 ## 7. Closure-Notiz (nach `done/`)
 

@@ -94,7 +94,18 @@ DoD vollständig, ADR *Accepted*, Closure-Notiz geschrieben.
   aus der Prüfung. Das ist eine Senkung mit weit größerem Geltungsbereich als der Anlass.
 - **Die stille Hälfte hat keinen Wächter, und der Slice darf sie nicht so behandeln, als hätte
   sie einen.** Ob `codepaths.roots` um `.harness` erweiterbar ist, ohne den Prüfbereich
-  aufzublähen, ist **ungemessen**.
+  aufzublähen, ist **ungemessen**. Ein **zweiter Weg ist gemessen** und liegt näher: das
+  d-check-Modul `versions` (`DC-FA-VER-001`, im gepinnten Image vorhanden, in
+  [`.d-check.yml`](../../../../.d-check.yml) nicht aktiviert) bindet jeden Versions-Pin an die
+  aktuelle Version seines Paares. Trockenlauf gegen eine Kopie außerhalb des Repos
+  (`git archive aa32e1f`, netzlos, Mount `:ro`, Image `v0.65.0` per Digest) mit
+  `pin-pattern: 'baseline/(v[0-9]+\.[0-9]+\.[0-9]+)'` gegen einen Span mit `v5.12.0`,
+  Zeitdokumente ausgenommen: **58 Befunde über 16 Dateien**, alle `version-stale` — darunter
+  **alle vier** oben genannten Accepted-ADRs, also auch die **drei**, die in der Tabelle als
+  *stumm* stehen. Das entscheidet den Konflikt nicht; es zeigt, dass die stille Hälfte **messbar**
+  ist, bevor die ADR über sie urteilt. Der Wächter bleibt ein eigener Slice (§4), und die
+  Ableitung steht in [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §6, die das Modul aus
+  ihrem eigenen Zuschnitt hierher verweist.
 - **Was hier entschieden wird, gilt über den Anlass hinaus:** dieselbe Frage stellt sich bei
   jedem künftigen Bump. Eine Entscheidung, die nur `v3.5.2` → `v5.12.0` regelt, ist keine.
 

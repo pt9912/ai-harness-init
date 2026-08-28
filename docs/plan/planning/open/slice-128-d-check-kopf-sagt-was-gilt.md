@@ -62,27 +62,35 @@ Zeitdokument abzulegen, das kein Lauf wieder aufschlägt.
    `grep -n '^### MR-024' harness/conventions.md` <!-- d-check:ignore (zitiertes Kommando, kein Verweis) --> →
    `### MR-024 — d-check-Pin v0.62.0 (structure verfügbar)` <!-- d-check:ignore (zitierte Ausgabe, kein Verweis) -->. Der Zeiger zeigt damit auf
    die Begründung des Vorgängers, während die Zeile darüber `v0.65.0` sagt.
-2. **Die Dateizahl im Kopf ist eine mitwandernde Zahl und steht als Erwartungswert da.**
-   `sed -n '29p' d-check.mk` → *„mit entwerteten Markern melden BEIDE Versionen
-   `432 Datei(en), 26 Befund(e)`, identisch."* Über dem Baum, der diese Zeile einführt
-   (`be6348c`), sind es **434**: Kopie außerhalb des Repos aus `git archive be6348c`, alle Marker
-   in getracktem Markdown außerhalb der vendored Baseline entwertet, dann beide Digests netzlos
-   mit `:ro` — beide melden `434 Datei(en) geprüft, 26 Befund(e)`, `diff` der sortierten Ausgaben
-   leer. Die Zahl steigt seither weiter; sie ist hier **Befund, nicht Erwartungswert**. Die **26** misst
-   den Gegenstand (die Marker-Menge trägt, und beide Versionen sehen dieselbe), die **432** misst
-   den Baum ringsum und wächst mit jeder neuen Datei —
-   [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-   Setzung 2 nennt genau diesen Fall („die Dateizahl eines Gate-Laufs").
-   **Dieselbe Zeile trägt kein Kommando** (Setzung 1); die zwei Zahlen der Zeilen 25–28 tragen
-   eines, und es reproduziert **über dem Baum, für den es geschrieben wurde** —
-   `grep -rn 'd-check:ignore' --include='*.md' . | grep -v '.harness/baseline'` nach `wc -l` →
-   **242**, derselbe Strom nach `grep -c '<!--[^>]*d-check:ignore'` → **171**, Differenz **71** wie
-   im Kopf behauptet (gemessen über `be6348c`; auch diese zwei wachsen mit jedem Dokument, das den
-   Marker erwähnt). Sein `grep -v` schneidet zudem **inhaltlich** statt über den Pfad:
-   `git grep -n 'd-check:ignore' be6348c -- '*.md' ':!.harness/baseline' | grep -c 'harness/baseline'`
-   → **7** Zeilen fallen heraus, weil sie den Pfad *erwähnen*, nicht weil sie in ihm liegen; nach
-   Datei (`… | cut -d: -f2 | sort | uniq -c`) sind es **3** in `docs/plan/planning/done/`, **3** in
-   `docs/reviews/` und **1** im Slice-Plan zum Pin selbst.
+2. **Drei Zahl-Stellen im Kopf, und der Fehler sitzt im Kommando, nicht im Zählen.**
+   **(a) Zeile 29.** `sed -n '29p' d-check.mk` → *„mit entwerteten Markern melden BEIDE Versionen
+   `432 Datei(en), 26 Befund(e)`, identisch."* Die Zeile trägt kein Kommando
+   ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+   Setzung 1), und **beide** Zahlen wandern. Gegenmessung, zweimal gefahren — Kopie außerhalb des
+   Repos aus `git archive <ref>`, alle Marker in getracktem Markdown außerhalb der vendored
+   Baseline entwertet, dann der gepinnte Digest netzlos mit `:ro`: über `be6348c` (140
+   Marker-Dateien) `434 Datei(en) geprüft, 26 Befund(e)`, über `aa32e1f` (142)
+   `435 Datei(en) geprüft, 37 Befund(e)`; Kontrolle über dieselbe Kopie **ohne** Entwertung
+   `435 Datei(en) geprüft, 0 Befund(e)`. Die **432** lag schon über `be6348c` um zwei daneben, und
+   die **26** misst **nicht** den Gegenstand, sondern die Zahl der Marker, die gerade tragen — sie
+   wächst mit jedem neuen Marker so, wie die Dateizahl mit jeder neuen Datei wächst
+   ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+   Setzung 2, „die Dateizahl eines Gate-Laufs").
+   **(b) Zeile 25** sagt *„71 der 242 Marker-Zeilen"*. Über `be6348c`, dem Baum, für den die Zeile
+   geschrieben wurde, sind es **75 von 249**:
+   `git grep -n 'd-check:ignore' be6348c -- '*.md' ':!.harness/baseline' | wc -l` → **249**,
+   derselbe Strom nach `grep -c '<!--[^>]*d-check:ignore'` → **174**. Dieselben zwei Kommandos mit
+   `aa32e1f` statt `be6348c` → **268** und **184**, also **84 von 268**.
+   **(c) Zeile 26–28** führt das Kommando mit, das die Zahlen aus (b) liefern soll — und genau
+   dieses Kommando ist der Grund, warum sie falsch sind: sein `grep -v '.harness/baseline'`
+   schneidet **inhaltlich** statt über den Pfad. Wie viel es zu viel verwirft, sagt
+   `git grep -n 'd-check:ignore' aa32e1f -- '*.md' ':!.harness/baseline' | grep -c 'harness/baseline'`
+   → **12** Zeilen (über `be6348c`: **7**), die den Pfad *erwähnen*, statt in ihm zu liegen; nach
+   Datei (`… | grep 'harness/baseline' | cut -d: -f2 | sort | uniq -c`) zwei in
+   [`harness/conventions.md`](../../../../harness/conventions.md), drei in `docs/reviews/` und fünf
+   in `docs/plan/planning/`, davon zwei in diesem Plan.
+   **Die Klasse ist größer als die drei Stellen:** eine Zahl neben ihrem Kommando ist erst belegt,
+   wenn das **Kommando** stimmt. (b) trägt eines, reproduziert damit — und ist trotzdem falsch.
 3. **Zwei Abgrenzungen sagen weniger, als der Baum tut.** (a) Zeile 11 sagt, `sources` sei
    *„NICHT aktiviert"* — das gilt für `make gates`, nicht für das Repo:
    `grep -n 'enable sources' Makefile` → **1** Treffer (`Makefile:170`, das Rezept von
@@ -114,14 +122,16 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       `grep -c '^### MR-... — d-check-Pin v0\.65\.0' harness/conventions.md` **0** liefert — dann
       zeigt der Zeiger wieder auf eine fremde Begründung. Der Punkt ist **erst prüfbar**, wenn der
       Eintrag existiert (§4).
-- [ ] **(2) Jede Zahl im Kopf misst den Kopf, und ihr Kommando steht daneben.** Die Dateizahl aus
-      Zeile 29 ist entweder gestrichen, ausdrücklich als **kein** Erwartungswert gekennzeichnet
-      oder durch ein Kriterium ersetzt, das den Gegenstand misst; die Befundzahl **26** behält ihr
-      Kommando, und das `grep -v` der Zeilen 25–28 schneidet über den Pfad statt über den Inhalt.
-      **Rot:** eine Zahl im Kopf, die ein Lauf über einem gewachsenen Baum widerlegt, ohne dass am
-      Gegenstand etwas bricht — heute reproduzierbar als **432** gegen gemessene **434**
+- [ ] **(2) Jede Zahl im Kopf misst den Kopf, und das Kommando daneben liefert genau sie.** Für
+      **jede** der drei Zahl-Stellen — Zeile 25, Zeile 26–28, Zeile 29 — gilt eines: gestrichen, an
+      einen benannten Baum-Stand gebunden, oder durch ein Kriterium ersetzt, das den Gegenstand
+      misst. Wo ein Kommando danebensteht, schneidet es über den Pfad statt über den Inhalt.
+      **Rot:** eine Zahl im Kopf, die ein Lauf widerlegt, ohne dass am Gegenstand etwas bricht —
+      über `aa32e1f` dreifach reproduzierbar: **432/26** gegen gemessene **435/37**, **71 von 242**
+      gegen **84 von 268**, und ein `grep -v`, das **12** Zeilen wegen ihres Textes statt wegen
+      ihres Pfades verwirft
       ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-      Setzung 2).
+      Setzung 1 und 2).
 - [ ] **(3) Die zwei Abgrenzungen sagen, was gilt.** Die `sources`-Zeile nennt den Lauf, der das
       Modul fährt; die Neu-Erzeugungs-Zeile nennt alle vier Handgriffe oder zeigt auf die Stelle,
       die sie abzählt.

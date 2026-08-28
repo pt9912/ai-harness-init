@@ -151,11 +151,71 @@ legen ergäbe sechs — *„der Schnitt ist falsch"*, nicht *„die DoD ist län
   [`spec/lastenheft.md`](../../../spec/lastenheft.md), (6) Closure-Notiz-Pflicht, (7) veröffentlichte
   Artefakte außerhalb von git, (8) der DoD-Punkte-Zähler — alle vier sind **Eigenbauten**, keine
   Adoption. Sie bleiben als Kandidaten-Zeile in der Roadmap stehen.
-- **Die Module `tracked`, `structure`, `citations`, `sources`, `external`.** Sie liegen im selben
-  Image und sind nicht Teil der gemessenen sechs Regeln. `tracked` ist der interessanteste
-  Grenzfall — es berührt
+- **Die zehn nicht adoptierten Module des Images — vollständig aufgezählt, nicht beispielhaft.**
+  Das gepinnte Image führt **20** verfügbare Module
+  (`--print-config`, dann `grep -m1 '^# Verfügbar:' | tr ',' '\n' | wc -l`),
+  [`.d-check.yml`](../../../.d-check.yml) aktiviert **sechs**
+  (`grep -m1 '^modules:' .d-check.yml | tr ',' '\n' | wc -l`), diese Welle nimmt **vier** (§4) —
+  **zehn** bleiben draußen. Eine Liste, die nur einen Teil davon nennt, gibt eine Auswahl als
+  Vollzähligkeit aus; darum stehen hier alle zehn.
+
+  **Fünf liegen neben den gemessenen sechs Regeln:** `tracked`, `structure`, `citations`,
+  `sources`, `external`. `tracked` ist der interessanteste Grenzfall — es berührt
   [slice-116](open/slice-116-doku-gate-urteilt-ueber-den-getrackten-bestand.md); die Klärung gehört
   dorthin und nicht hierher (§1 dieses Slice misst die Frage, diese Welle nicht).
+
+  **Die anderen fünf bleiben mit gemessenem Grund draußen** — Kopie außerhalb des Repos aus
+  `git archive aa32e1f`, netzlos, Mount `:ro`, Image `v0.65.0` per Digest, je ein Lauf
+  `--enable <modul>` über den unveränderten Baum:
+
+  - **`hostpaths` — das einzige der fünf, das heute rot führe.** Ohne jeden Config-Block:
+    `435 Datei(en) geprüft, 22 Befund(e)`, Exit 1; **alle 22** liegen in `docs/reviews/**`, über
+    **14** Dateien. Ausnehmen lässt es sich nicht: das Modul kennt laut `--print-config` allein
+    `prefixes`, kein `exempt-paths`, und der Zeilen-Marker greift nicht — Marker auf eine gemeldete
+    Zeile gesetzt: unverändert **22**; denselben Hostpfad aus derselben Zeile entfernt: **21**.
+    Bliebe `scan.ignore` auf `docs/reviews/**` — das blendete die sechs aktiven Module auf demselben
+    Baum mit aus, also eine Senkung und damit eine ADR
+    ([`AGENTS.md`](../../../AGENTS.md) §3.5, s. den nächsten Punkt). Ein Modul, das rot führt und
+    dessen Adoption an einer Senkung hängt, ist ein **eigener Kandidat**, kein Mitglied einer Welle,
+    deren Identität die vier gemessenen Achsen sind.
+  - **`versions` — der Sensor existiert, sein Gegenstand liegt woanders.** Ohne Block
+    `0 Befund(e)`. Mit einem Block auf den d-check-Pin (`pin-pattern` auf
+    `ghcr\.io/pt9912/d-check:(v…)`, `current-from` auf einen eigens angelegten Markdown-Span) und
+    den vom Tool vorgeschlagenen Zeitdokument-Ausnahmen ebenfalls **0**; ohne die Ausnahmen **19**,
+    davon **1** in `done/` und **18** in `docs/reviews/**` — keiner in einem lebenden Artefakt.
+    Entscheidend ist die Sonde: den gelebten Pin in [`d-check.mk`](../../../d-check.mk) auf
+    `v0.11.0` gedreht → **`0 Befund(e)`**; dieselbe Zahl zusätzlich in
+    [`AGENTS.md`](../../../AGENTS.md) → **1 Befund**, `version-stale`. Das Modul liest Markdown und
+    ist damit **blind für die Datei, die den Pin trägt**; es hält Zweitfassungen gegen eine
+    Markdown-Autorität. Eine solche Autorität neu anzulegen verschöbe die unbewachte Kante, statt
+    sie zu schließen.
+    **Wohin es gehört, ist gemessen:** sein großer lebender Gegenstand in diesem Repo ist der
+    **Baseline-Tag**, nicht der d-check-Pin. `pin-pattern: 'baseline/(v…)'` gegen einen Span mit
+    `v5.12.0` meldet **58 Befunde über 16 Dateien**, darunter **alle vier** Accepted-ADRs aus
+    [slice-080](next/slice-080-verweis-ueberlebt-tagwechsel.md) — also auch die **drei**, die dort
+    als *stumm* gemessen sind. `versions` ist damit ein Kandidat für die **stille Hälfte** jenes
+    Slice in [welle-10](welle-10-re-baseline.md); die Messung steht dort in §6, nicht nur hier.
+  - **`pins` und `immutable` — der Gegenstand muss erst geschrieben werden.** Beide melden ohne
+    Block `0 Befund(e)`, und das ist keine Config-Lücke, sondern eine leere Marker-Menge:
+    `git grep -c 'dpin: sha256:' -- '*.md' ':!.harness/baseline' | wc -l` → **0**, dasselbe mit
+    `'immutable: sha256:'` → **0**. Adoption hieße, Marker von Hand zu setzen — dieselbe
+    Eigenbau-Klasse wie die Achsen (5)–(8) oben, nur mit geliefertem Prüfer.
+    **`immutable` trägt trotzdem einen Befund für diese Welle:** ein absichtlich falscher
+    `immutable: sha256:0000…`-Marker auf einer Accepted-ADR meldet **`core-drift`** — das
+    hermetische Geschwister genau der Zusage, für die
+    [slice-127](open/slice-127-adr-immutabilitaet-hat-einen-sensor.md) mit `vcs` in vier Formen kein
+    Rot herstellen konnte. Das Rot ist also **herstellbar**, nur nicht über die Range; der Hinweis
+    steht in slice-127 §6 und ändert dessen Zuschnitt nicht.
+  - **`diagrams` — bewacht eine Kennung.** Ohne Block `0 Befund(e)`; mit `fences: [mermaid]` und
+    einem Muster auf die vierstellige ADR-Kennung ebenfalls **0**, und die Kontrolle färbt rot: die
+    eine Kennung im Fence von [`roadmap.md`](in-progress/roadmap.md) Zeile 162 auf eine nicht
+    vergebene Nummer gedreht → **1 Befund**, `diagram-id-undefined`.
+    Gegenstand ist **genau eine** Kennung in **einem** der **vier** mermaid-Fences dieses Repos
+    (`git grep -c 'mermaid$' -- '*.md' ':!.harness/baseline'` → `roadmap.md:1`, `architecture.md:3`);
+    `defined-in` muss zudem eine **Datei** sein — ein Verzeichnis quittiert das Tool mit
+    `diagrams.patterns[0].defined-in ist keine Datei`, der Wächter liefe also gegen den ADR-Index
+    statt gegen die ADR-Dateien. Kein Bündel-Bezug und kein Schuldenstand: S-Kandidat für die
+    Doc-Gate-Härtungs-Zeile der Roadmap.
 - **Jede Senkung einer bestehenden Schwelle.** Diese Welle **hebt** nur
   ([`MR-001`](../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids):
   Anheben → Steering-Loop). Stellt sich in einem Slice heraus, dass die Adoption nur durch eine
