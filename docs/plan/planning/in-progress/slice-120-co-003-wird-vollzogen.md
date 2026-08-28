@@ -20,18 +20,18 @@ bleibt unberührt. Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das Verzeichnis.
 
-**Warum das nicht derselbe Slice ist wie [slice-113](slice-113-co-001-ist-faellig.md).** Beide
+**Warum das nicht derselbe Slice ist wie [slice-113](../open/slice-113-co-001-ist-faellig.md).** Beide
 vollziehen eine fällige Carveout-Auflösung, beide bewegen eine Datei nach `done/` und gleichen
 Links ab — die Frage ist gestellt und wird hier beantwortet, nicht vorausgesetzt. Drei gemessene
 Unterschiede tragen die Trennung:
 
-1. **Der Gegenstand ist ein anderer.** [slice-113](slice-113-co-001-ist-faellig.md) **baut**: er
+1. **Der Gegenstand ist ein anderer.** [slice-113](../open/slice-113-co-001-ist-faellig.md) **baut**: er
    öffnet einen Gate-Prüfbereich, wählt zwischen zwei Techniken, fährt einen Trockenlauf über
    `git ls-files 'test/*.bats' | wc -l` → **16** Dateien und braucht dafür einen eigenen
    `test/mutations/`-Fall. Dieser Slice baut nichts: die Sache ist mit
    [slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md) gebaut, es fehlt die
    Verzeichnis-Position.
-2. **Der Ausgang ist ein anderer.** [slice-113](slice-113-co-001-ist-faellig.md) §2 DoD (3) lässt
+2. **Der Ausgang ist ein anderer.** [slice-113](../open/slice-113-co-001-ist-faellig.md) §2 DoD (3) lässt
    **zwei** Ausgänge zu — Auflösung **oder** Neufassung mit einem Trigger, der noch nicht
    eingetreten ist —, weil die Technik-Wahl vor dem Trockenlauf offen ist. Hier ist der Trigger
    entschieden; es gibt einen Ausgang.
@@ -47,7 +47,7 @@ Unterschiede tragen die Trennung:
 drei slice-eigenen DoD-Punkten aufeinander, und Modul 5 §Ziel-Form sagt zu dieser Lage nicht *„die
 DoD wird länger"*, sondern *„der Schnitt ist falsch"* (≤ 3). Der Preis stünde daneben: ein
 `git mv`, für den nichts mehr offen ist, hinge am Ausgang eines Trockenlaufs, dessen Befund-Zahl
-niemand kennt — [slice-113](slice-113-co-001-ist-faellig.md) §4 benennt dafür ausdrücklich zwei
+niemand kennt — [slice-113](../open/slice-113-co-001-ist-faellig.md) §4 benennt dafür ausdrücklich zwei
 Rückführungen. Ein fälliger Carveout, der auf eine offene Technik-Wahl wartet, ist genau die
 De-facto-Permanenz, gegen die Modul 7 den Carveout-Audit stellt.
 
@@ -142,7 +142,7 @@ Trennung hat `ba5c07f` gemessen und mit einer Gegenprobe belegt.
   zum 2026-08-28.
 - **Den Hänger im Vorwärmlauf vor dem Fork.** Er liegt seit derselben Prüfung außerhalb des
   Geltungsbereichs und hat mit
-  [slice-118](slice-118-vorwaermlauf-endet-von-selbst.md) einen eigenen Träger; er blockiert die
+  [slice-118](../open/slice-118-vorwaermlauf-endet-von-selbst.md) einen eigenen Träger; er blockiert die
   Auflösung nicht.
 
 ## 2. Definition of Done
@@ -246,7 +246,7 @@ blockierenden Befund, Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   die drei Treffer aus `git grep -lni 'carveout' -- harness/tools/ test/` betreffen sämtlich den
   **emittierten** Index, nicht unser Register. Getragen wird die Aussage heute vom
   Welle-Closure-Audit, also von einer Rolle. Dieser Slice schneidet den Sensor **nicht** mit; er
-  ist größer als er, und [slice-113](slice-113-co-001-ist-faellig.md) §6 hat dieselbe Frage aus
+  ist größer als er, und [slice-113](../open/slice-113-co-001-ist-faellig.md) §6 hat dieselbe Frage aus
   der Audit-Richtung offen.
 - **Der Carveout ist Architect-Eigentum, und der Implementer fasst ihn trotzdem an.** Die
   Zuweisung kommt aus Modul 7 §Carveout-Audit-Slice, nicht aus der Bequemlichkeit des Zugs — sie
