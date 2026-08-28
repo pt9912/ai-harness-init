@@ -55,6 +55,27 @@ Wert aus [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) (
 nicht aus einer Festlegung im Spec-Stratum — der Slice, der sie schreiben sollte, ist ohne Adressat
 und neu geschnitten (Closure-Log unten, 2026-08-25).
 `slice-061`, `slice-063` und `slice-064` sind in §4 der Welle benannt, aber **nicht** geschnitten (cp-Disziplin) — **an ihnen und nur an ihnen hängt die Closure**. Ihr Lifecycle-Zustand ist ihr Verzeichnis, nicht diese Zeile.
+**Zwei von ihnen sind heute schneidbar, `slice-063` nicht — am 2026-08-28 entschieden und
+vertagt.** Seine definierende Zeile steht in §4 der Welle, und der Umfang seiner Beleg-Schuld in
+§3; **beide führen die Tool-Spalte auf dem Stand vor**
+[`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md), die die Welle in
+ihrem §1 selbst benennt. Zwei gemessene Folgen: §3 sagt, die Ziel-Beleg-Pflicht treffe **eine**
+Zelle — sie gelte jeder Zelle mit dem Wert `emittiert`, und das sei nach dem Schnitt von
+`slice-062` allein *Doku-Konsistenz-Drift × Tool*, während die drei übrigen `ADR-Verdikt` trügen —,
+während
+`grep -c '^| .* \*\*emittiert\*\* —' docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md`
+→ **3** genau diese drei auf *emittiert — Beleg geschuldet* setzt; und Festlegung 7 jener ADR legt
+ein tool-generiertes Dokument in den **geprüften Doku-Bereich des Ziels**, dessen Aufnahme in den
+`targets:`-Satz [slice-099](../done/slice-099-leser-und-aufraeum-kommando.md) als **V-13**
+ausdrücklich `slice-063` zuweist. Wer ihn aus §4 schneidet, schneidet zu klein und in eine
+Closure, die er nicht erreicht. **Träger ist die Planner-Sitzung, die
+[welle-09](../welle-09-modul-15-konformitaet.md) §1 benennt** — *„eine Planner-Sitzung über acht
+Festlegungen, keine Zeilenkorrektur"* —, und ihr Ausgang ist die Vorbedingung des Schnitts.
+**Die Vertagung gilt einem Slice, nicht der Welle:** `slice-061` steht in der **Repo**-Spalte, die
+[`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) nicht anfasst, und
+der Gegenstand von `slice-064` ist die Baseline-Aussage aus
+[`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage), kein Zellwert der
+Tool-Spalte. Beide sind heute schneidbar.
 **Mit `slice-063` geht eine Messung, die sonst keinen Besitzer hat:** ob das Modul `targets` eine
 `make`-Nennung in Prosa außerhalb einer Tabelle überhaupt sieht
 ([`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) Festlegung 4(d)). Sie entscheidet
@@ -88,6 +109,9 @@ welle-09 in `done/`. Diese Kante ist aufgelöst, und zwar an ihrem eigenen Grund
 Messlatte von welle-09 zu schützen, und dieser Schutz hat keinen Gegenstand mehr (Drift-Log unten,
 Messungen in §2 der Plan-Datei). Was den Zustand von **welle-09** löst, bleibt unverändert eigene
 Arbeit — `slice-061`, `slice-063`, `slice-064` schneiden —, und keine Umplanung erledigt das.
+**Für `slice-063` geht dem Schnitt eine eigene Planner-Sitzung voraus** (oben): seine zwei
+definierenden Abschnitte sind auf
+[`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) nicht nachgezogen.
 
 ## Nächste Wellen
 
