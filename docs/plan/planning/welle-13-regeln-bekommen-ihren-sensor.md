@@ -225,7 +225,7 @@ ist falsch"*, nicht *„die DoD ist länger"*.
     **Der zweite Gegenstand — der Baseline-Tag — ist entschieden, und zwar dagegen.**
     [ADR-0023](../adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) Festlegung 3 verwirft das
     Modul als Wächter der **stillen Hälfte** jenes Verweis-Bestands, den
-    [slice-080](in-progress/slice-080-verweis-ueberlebt-tagwechsel.md) misst: das Modul urteilt
+    [slice-080](done/slice-080-verweis-ueberlebt-tagwechsel.md) misst: das Modul urteilt
     über **Zeichenketten-Frische, nicht über Verweis-Auflösung** — ein Link **ins Leere** unter
     dem aktuellen Tag lässt es schweigen, eine Nennung, die niemand auflösen soll, färbt es rot —,
     es trennt Adresse, datierte Aussage und Operand nicht, und der autoritative Pin steht in einer

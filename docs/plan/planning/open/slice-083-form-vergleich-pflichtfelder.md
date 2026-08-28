@@ -121,7 +121,7 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   Lese-Pflicht fällt zwischen sie.** Dieser Durchgang **entscheidet** darum nur, ob das Register
   adoptiert wird; verlangt es eigene Arbeit, wird es nach [welle-10](../welle-10-re-baseline.md)
   §6 ein Slice in `open/`, keine Fracht dieses Slice. **Der Anlass ist gemessen und liegt in
-  diesem Repo:** [slice-080](../in-progress/slice-080-verweis-ueberlebt-tagwechsel.md) §7 hält zwei
+  diesem Repo:** [slice-080](../done/slice-080-verweis-ueberlebt-tagwechsel.md) §7 hält zwei
   Fälle fest, in denen eine Beobachtung über ein **lebendes** Artefakt nur in einer
   Commit-Message stand und neunzehn Tage später neu gemacht werden musste.
 
