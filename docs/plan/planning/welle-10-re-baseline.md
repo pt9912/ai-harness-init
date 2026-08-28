@@ -180,28 +180,61 @@ wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
   neuen Gliederung stehen in den Singleton-Artefakten.
 - **Durchgang 3 — Stichprobe gegen den Bestand:** ein Abschnitt **ohne** Delta ist geprüft und
   sein Ausgang verbucht. Er läuft unabhängig vom Ergebnis der Tag-Frage.
-- **`make gates` grün** *und* die drei Sensoren außerhalb der Gates — `make smoke`,
-  `make full-smoke`, `make mutate`. Sie gehören hier ins Kriterium, weil der Tag der
-  **Emissions-Kanal** ist (`internal/fetch/baseline.go` `DefaultTag`): ein frisch gebootstrapptes
-  Zielrepo zieht genau diesen Baum ([`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)).
+- **`make gates` grün — und zwar ohne offenen Carveout auf einem Gate dieser Welle.** Der Zusatz
+  ist nicht kosmetisch: zwischen [slice-081](in-progress/slice-081-baum-tauschen-pin-ziehen.md) und
+  [slice-130](open/slice-130-emitter-entscheidet-jedes-neue-template.md) trägt
+  [`CO-004`](../carveouts/CO-004-emitter-klassifikation-offen.md) zwei rote bats-Fälle auf einem
+  Trigger. Ein Welle-Grün, das diesen Carveout mitzählte, hieße *„grün, außer wo wir nicht
+  hinsehen"*. Die Welle schließt erst, wenn er in `carveouts/done/` liegt.
+- **Die drei Sensoren außerhalb der Gates** — `make smoke`, `make full-smoke`, `make mutate`. Sie
+  gehören hier ins Kriterium, weil der Tag der **Emissions-Kanal** ist
+  (`internal/fetch/baseline.go` `DefaultTag`): ein frisch gebootstrapptes Zielrepo zieht genau
+  diesen Baum ([`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)).
 - **Closure-Notiz `welle-10-results.md`** mit Steering-Loop-Eintrag.
 
 ## 4. Slices in dieser Welle
 
 Der Zustand jedes Slice ist sein Lifecycle-Verzeichnis, hier nicht gespiegelt.
 
-Die Reihenfolge ist tragend: **080 entscheidet, 081 vollzieht, 082–084 sind die drei Durchgänge
-der Prozedur, 085 zieht die emittierte Ebene nach.** 080 liegt vor 081, weil der Tausch sonst an
-einer Frage vorbeiläuft, die er selbst aufwirft.
+Die Reihenfolge ist tragend: **080 entscheidet, 081 vollzieht, 130 und 131 räumen ab, was der
+Vollzug an unbeantworteten Fragen hinterlässt, 082–084 sind die drei Durchgänge der Prozedur, 085
+zieht die emittierte Ebene nach.** 080 liegt vor 081, weil der Tausch sonst an einer Frage
+vorbeiläuft, die er selbst aufwirft.
 
 | Slice | Titel | Bezug |
 |---|---|---|
 | slice-080 | Ein Verweis in die vendored Baseline überlebt den Tag-Wechsel | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | slice-081 | Baum tauschen, Pin ziehen, Verweise nachziehen | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| slice-130 | Der Emitter entscheidet über jedes neue Template | [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) |
+| slice-131 | Eine Präsens-Aussage über die Baseline ist gegen den gepinnten Stand gemessen | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| slice-132 | Der Adaptions-Block trägt seinen datierten Beleg ohne totes Ziel | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | slice-082 | Adaptions-Durchgang: jeder Eintrag bekommt seinen Ausgang | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | slice-083 | Form-Vergleich: Pflichtfelder und umbenannte Sektionen | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | slice-084 | Stichprobe gegen den Bestand, nicht gegen das Delta | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | slice-085 | Die emittierte Ebene zieht nach | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) |
+
+**130, 131 und 132 sind beim Schnitt der Welle nicht vorgesehen gewesen, und der Grund gehört an
+diese Stelle statt in eine Fußnote: der Plan hat den vendored Baum als Verweis-**Ziel**
+inventarisiert, nicht als **Eingabe** — und den Verweis als Adresse, nicht als Träger einer
+Aussage.** `make test` liest den Inhalt des Baums (`test/courseset-fixture.bats`), die Verweise auf
+ihn tragen neben der Adresse ein Zitat oder eine daraus gezogene Zahl, und einer von ihnen ist nur
+über den **abgelösten** Stand wahr und darf deshalb gar nicht gezogen werden. Nichts davon fällt
+unter „Pin" oder „Verweis nachziehen". Alle drei hängen am getauschten Baum und an nichts sonst.
+Sie stehen vor 082, weil ein Adaptions-Durchgang über einem Bestand, dessen Zahlen noch gegen den
+alten Baum gemessen sind, seine eigene Grundlage nicht kennt.
+
+**Zwei Carveouts halten den Zwischenzustand sichtbar statt still:**
+[`CO-004`](../carveouts/CO-004-emitter-klassifikation-offen.md) (Gate `test`, Folge-Slice 130) und
+[`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md) (Gate `docs-check`, Folge-Slice
+132). Beide sind extensional geschlossen, und der zweite hat **keine** Gate-Konfiguration, weil das
+Modul `links` am Pin `v0.65.0` keine Referenz-Ausnahme kennt — dort bleibt der Gate rot, und der
+Carveout ist der einzige Träger der Begründung.
+
+**130 ist nicht der aus [slice-085](open/slice-085-emittierte-ebene-zieht-nach.md)
+herausgeschnittene Teil.** Dessen Plan führt `internal/emit/templates/commands/`, die übrigen
+emittierten Vorlagen und den Reviewer-Skill — den **Text** der emittierten Artefakte. Welche
+Vorlagen überhaupt emittiert werden, steht dort an keiner Stelle; 130 füllt eine Lücke, statt 085
+zu teilen. 085 bleibt unverändert und behält seinen Trigger.
 
 **Die vierte und fünfte Eigenschaft der Ziel-Prozedur sind auf 082/083 verteilt, nicht
 zusammengelegt** — der Adaptions-Durchgang fragt *„regelt die neue Fassung das, wofür dieser
@@ -226,8 +259,11 @@ gegenstandslos wird, kein neues Pflichtfeld mehr braucht.
   den alten Tag als Tree-Operanden der Vor-Tausch-Seite, nicht als Zeiger auf einen Baum, der
   stehen bleiben müsste. Der Rest ist vor dieser Welle fällig oder auf den neuen Tag zu ziehen —
   entschieden wird das je Treffer beim Lauf, nicht hier.
-- **Innerhalb der Welle:** 080 → 081 → {082 → 083, 084} → 085. 084 hängt nur am getauschten Baum,
-  nicht am Adaptions-Durchgang: sein Gegenstand ist der Bestand, nicht die Änderung.
+- **Innerhalb der Welle:** 080 → 081 → {130, 131, 132} → {082 → 083, 084} → 085. 084 hängt nur am
+  getauschten Baum, nicht am Adaptions-Durchgang: sein Gegenstand ist der Bestand, nicht die
+  Änderung. 130, 131 und 132 hängen ebenso nur am getauschten Baum und sind untereinander unabhängig;
+  ihre Reihenfolge entscheidet, wer das WIP-Limit zuerst bekommt, nicht der Plan. 132 verlangt
+  zusätzlich einen **Architect**-Lauf: seine Liefer-Punkte liegen in dessen Artefakten.
 
 ## 6. Out-of-Scope für diese Welle
 

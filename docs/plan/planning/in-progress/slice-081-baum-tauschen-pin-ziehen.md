@@ -81,7 +81,23 @@ Setzung 2), zu fahren beim Lauf, nicht beim Schnitt:
 Zeitdokumente. **Unberührt bleibt auch**
 [slice-083](../open/slice-083-form-vergleich-pflichtfelder.md): er nennt den alten Tag als
 **Tree-Operanden der Vor-Tausch-Seite** — genau die Adresse, die der Tausch nicht anfassen darf.
-Jeder übrige lebende Plan wird **gezogen**.
+
+**Und diese Ausnahme ist keine Einzelfall-Ausnahme, sondern eine Klasse.** Eine lebende Plandatei
+nennt den Tag meist als **Operanden eines Kommandos, dessen Ergebnis im selben Satz zitiert wird**
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 1). Für sie gilt: **Adresse und Ergebnis hängen zusammen und werden gemeinsam gezogen
+oder gemeinsam stehen gelassen** — ein `sed` über den Tag-String allein ließe das Kommando gegen
+einen anderen Baum laufen als die Zahl daneben behauptet, und macht damit aus einem toten Link ein
+falsches Zitat (dasselbe Muster wie unter §6, nur ohne Link).
+
+**Damit trägt der Tausch eine Klasse, nach der keine der vier fragt: die Adresse hält, das Zitat
+oder die Folgerung bricht.** Sie ist gemessen, nicht vermutet — drei Fälle in `slice-114`, dazu
+**vier** von sechs nachgefahrenen Operanden-Messungen in lebenden Plandateien, deren Ergebnis sich
+gegen den neuen Baum bewegt. Ihr Ausgang ist **kein** Teil dieses Slice: er ist als
+[slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) geschnitten, der die
+Sortierung je Treffer führt und die Regel dahinter an einen Ort bringt. Was **hier** bleibt, ist
+die Feststellung, dass die vier Klassen die Frage nach der Auflösbarkeit stellen und nicht die
+nach der Wahrheit.
 
 Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventionen.md` heißen.
 
@@ -112,7 +128,25 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
       bats-Fälle über `.d-check.yml` ↔ `Makefile` (`sources-url` trägt den aktuellen
       `BASELINE_TAG`, `sources-sha256` gleicht `BASELINE_ZIP_SHA256` —
       [`MR-013`](../../../../harness/conventions.md#mr-013--regelwerk-check-auf-d-check-sources-tool-statt-skript)).
-- [ ] `make gates` grün.
+- [ ] **`make gates` läuft, und dieser Slice hinterlässt keinen unzugeordneten Befund.** Das ist
+      der Abnahme-Punkt, nicht *„grün"* — und der Unterschied ist gemessen, nicht formuliert: die
+      Farbe des Gates hängt nach dem Tausch an **zwei** Entscheidungen, die beide außerhalb dieses
+      Slice liegen und beide einer anderen Rolle gehören. Jeder verbleibende Befund trägt darum
+      einen Carveout mit Folge-Slice, und beide sind **extensional geschlossen**:
+      [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) (zwei Fälle in
+      `test/courseset-fixture.bats`; ihr Grün setzt die Klassen-Entscheidung über vier neue
+      Vorlagen voraus — [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md))
+      und [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) (**eine** Referenz
+      in [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+      Punkt 2, deren Satz nur über den abgelösten Stand wahr ist —
+      [slice-132](../open/slice-132-adaptions-block-ohne-totes-ziel.md)). **Jeder andere Befund
+      bleibt Bedingung dieses Punktes.** Der Weg ist der, den Baseline-Regelwerk
+      `modul-05-planning-harness.md` §Closure- und Lerneintrag-Regeln ausdrücklich offenlässt:
+      *„Ein Slice darf bei rotem Gate nur mit dokumentiertem Carveout (Modul 7) in `done/` landen,
+      der den roten Gate-Status auf Trigger schaltet."* **Warum nicht die Rückführung:** `→ next`
+      trifft nicht (die Verweis-Arbeit hat keine Sitzung gesprengt, sie ist gefahren und belegt),
+      und `→ open` fröre bei einem WIP-Limit von 1 die ganze Welle auf einer Entscheidung ein, die
+      ein anderer Slice trägt.
 - [ ] Doku-Update: die Baseline-Zeilen in `harness/conventions.md` §Baseline und der
       Herkunfts-Absatz in `docs/user/benutzerhandbuch.md` nennen den neuen Tag.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -184,6 +218,23 @@ DoD vollständig, `make gates` nach dem Tausch grün, Closure-Notiz geschrieben.
 - **`BASELINE_ZIP_SHA256` kommt aus dem Asset, nicht aus dem Baum.** Ein aus dem entpackten
   Verzeichnis gerechneter Hash belegt die Herkunft nicht; die Gegenprobe ist
   `make regelwerk-check` (Netz, außerhalb der Gates).
+- **Der vendored Baum ist nicht nur Verweis-Ziel, sondern Eingabe eines Gates.** `make test`
+  liest über `test/courseset-fixture.bats` den **Inhalt** des Template-Satzes, nicht seinen Pfad;
+  der Tausch stellt dort vier Klassen-Fragen, die dieser Slice nicht beantwortet. — **Ausgang:**
+  eingetreten → [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) mit Folge-Slice
+  [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md).
+- **Ein Verweis, der bewusst nicht gezogen wird, hat am Doku-Gate keinen Ort.** Der Beleg in
+  [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+  Punkt 2 ist nur über den abgelösten Stand wahr und steht unter der Append-only-Regel des
+  Blocks; das Modul `links` kennt am Pin `v0.65.0` **keine** Referenz-Ausnahme, und `scan.ignore`
+  wirkt datei-weit. — **Ausgang:** eingetreten →
+  [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) mit Folge-Slice
+  [slice-132](../open/slice-132-adaptions-block-ohne-totes-ziel.md).
+- **Die vier Verweis-Klassen aus §1 fragen nach Auflösbarkeit, nicht nach Wahrheit.** Ein Verweis,
+  dessen Datei und Anker halten, kann ein Zitat oder eine daraus gezogene Zahl tragen, die der
+  neue Stand nicht mehr deckt — bei grünem Gate. — **Ausgang:** eingetreten → Folge-Slice
+  [slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md); die drei
+  gate-sichtbaren Fälle in `slice-114` sind in diesem Zug bereits behoben.
 
 ## 7. Closure-Notiz (nach `done/`)
 

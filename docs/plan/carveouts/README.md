@@ -14,6 +14,8 @@ Formalisierung 2026-07-21, Roadmap §Backlog Cluster E).
 | ID | Titel | Betroffenes Gate | Angelegt |
 |---|---|---|---|
 | [CO-001](CO-001-bats-shell-lint.md) | shell-lint deckt die bats-Dateien nicht ab | `shell-lint` | 2026-07-21 |
+| [CO-004](CO-004-emitter-klassifikation-offen.md) | Der Emitter hat für vier neue Vorlagen keine Klasse | `test` (bats-Stufe) | 2026-08-28 |
+| [CO-005](CO-005-adaptions-block-datierter-beleg.md) | Ein datierter Beleg im Adaptions-Block hat kein auflösbares Ziel | `docs-check` (Modul `links`) | 2026-08-28 |
 
 ## Permanent — in eine ADR übergeführt
 

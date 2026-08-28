@@ -22,9 +22,9 @@ Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das 
 bildet `templates/harness/README.template.md` auf `harness/README.md` im Ziel ab, indem es die
 Endung tauscht (`internal/emit/templates.go:291-299`;
 `grep -c 'TrimSuffix(rel, ".template.md")' internal/emit/templates.go` → **1**). Ein Adopter
-bekommt damit **6 799** Zeichen
-(`wc -c < .harness/baseline/v3.5.2/templates/harness/README.template.md`), abzüglich des
-gestrippten Hinweis-Blocks — nicht die **14 681** dieses Repos (`wc -c < harness/README.md`). Was
+bekommt damit **7 322** Zeichen
+(`wc -c < .harness/baseline/v5.12.0/templates/harness/README.template.md`), abzüglich des
+gestrippten Hinweis-Blocks — nicht die **16 161** dieses Repos (`wc -c < harness/README.md`). Was
 hier bewegt wird, geht **nicht** mit; die emittierte Ebene ist von diesem Befund nicht betroffen,
 und genau das ist der Grund, aus dem er hier so lange unbemerkt bleiben konnte.
 
@@ -61,36 +61,36 @@ ausdrücklich **keine** Erwartungswerte über den Bestand),
 
 ## 1. Ziel
 
-**Der Harness-Einstieg trägt die sieben Abschnitte, die seine Pflichtgliederung vorsieht, und je
+**Der Harness-Einstieg trägt die acht Abschnitte, die seine Pflichtgliederung vorsieht, und je
 Werkzeug eine Zeile — die Grenzen eines Werkzeugs stehen im Kopf des Werkzeugs, nicht im Einstieg.**
 
 ### Der gemessene Anlass: dreißig Änderungen, kein neuer Abschnitt
 
 `harness/README.md` entstand am 2026-06-13 im Bootstrap-Commit `d30db38` mit **2 058** Zeichen
-(`git show d30db38:harness/README.md | wc -c`) und misst am 2026-08-27 **14 681**
-(`wc -c < harness/README.md`) — das **Siebenfache** über **30** Commits
+(`git show d30db38:harness/README.md | wc -c`) und misst am 2026-08-28 **16 161**
+(`wc -c < harness/README.md`) — fast das **Achtfache** über **34** Commits
 (`git log --format=%H -- harness/README.md | wc -l`). **Beide Zahlen wandern mit der Datei und
 sind keine Erwartungswerte** ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2); sie datieren den Anlass, sie messen ihn nicht ab. Was **nicht** wandert: in derselben
 Zeit hat sich die Liste der Abschnitte **nicht um eine Zeile** bewegt —
 `diff <(git show d30db38:harness/README.md | grep '^## ') <(grep '^## ' harness/README.md) | wc -l`
 → **0**. Jede Änderung seit dem Anlege-Commit ist in einen bestehenden Abschnitt gegangen, und die
-meisten in denselben: `## Sensors (Feedback-Gates)` misst **12 603** Zeichen
-(`awk '/^## Sensors/{f=1} /^## Traceability/{f=0} f' harness/README.md | wc -c`) — **86 %** der
+meisten in denselben: `## Sensors (Feedback-Gates)` misst **14 083** Zeichen
+(`awk '/^## Sensors/{f=1} /^## Traceability/{f=0} f' harness/README.md | wc -c`) — **87 %** der
 Datei.
 
-Die Ziel-Form ist kleiner und hat **mehr** Zeilen: die Vorlage misst **6 799** Zeichen auf **141**
-Zeilen (`wc -l -c .harness/baseline/v3.5.2/templates/harness/README.template.md`), unsere Fassung
-**14 681** auf **86** (`wc -l -c harness/README.md`). Der Unterschied liegt nicht in der Tabelle,
+Die Ziel-Form ist kleiner und hat **mehr** Zeilen: die Vorlage misst **7 322** Zeichen auf **154**
+Zeilen (`wc -l -c .harness/baseline/v5.12.0/templates/harness/README.template.md`), unsere Fassung
+**16 161** auf **86** (`wc -l -c harness/README.md`). Der Unterschied liegt nicht in der Tabelle,
 sondern in der Prosa daneben. Im Abschnitt `## Sensors` steht bei uns eine Tabelle von **1 874**
-Zeichen neben **10 529** Zeichen Prosa, in der Vorlage **458** neben **1 158** — je ein Kommando
+Zeichen neben **11 983** Zeichen Prosa, in der Vorlage **458** neben **1 158** — je ein Kommando
 für beide Hälften:
 
 ```
 sec() { awk '/^## Sensors/{f=1} /^## Traceability/{f=0} f' "$1"; }
-vor=.harness/baseline/v3.5.2/templates/harness/README.template.md
+vor=.harness/baseline/v5.12.0/templates/harness/README.template.md
 tp() { awk '/^[[:space:]]*\|/{t+=length+1;next}{p+=length+1}END{print t,p}'; }
-sec harness/README.md | tp        # -> 1874 10529   (Tabelle, Prosa)
+sec harness/README.md | tp        # -> 1874 11983   (Tabelle, Prosa)
 sec "$vor"            | tp        # ->  458  1158
 sec harness/README.md | grep -c '^| `make'   # -> 11   (Ziele in der Tabelle)
 sec "$vor"            | grep -c '^| `make'   # ->  8
@@ -98,10 +98,10 @@ sec "$vor"            | grep -c '^| `make'   # ->  8
 
 **Die Tabelle ist um Zeilen gewachsen, die Prosa um Absätze.** Die Tabelle trägt heute **11**
 Ziele statt der **8** der Vorlage (die zwei letzten Zeilen des Blocks oben) und bleibt dabei die
-Form, die sie war: eine Zeile, ein Werkzeug, ein Vertrag. Die Prosa ist auf das **Neunfache**
+Form, die sie war: eine Zeile, ein Werkzeug, ein Vertrag. Die Prosa ist auf das **Zehnfache**
 gewachsen und hat dafür keine Struktur bekommen — sie hat **eine Zeile**:
 `awk '{if(length>m)m=length}END{print m}' harness/README.md` →
-**4 593** Zeichen, gegenüber **311** als längster Zeile der Vorlage (dasselbe Kommando über die
+**6 047** Zeichen, gegenüber **311** als längster Zeile der Vorlage (dasselbe Kommando über die
 Vorlage). In diesem einen Absatz stehen **sieben** verschiedene `make`-Aufrufe
 (`sed -n '70p' harness/README.md | grep -o 'make [a-z-]*' | sort -u | wc -l`): vier beschriebene
 Nicht-Gate-Werkzeuge und drei Erwähnungen innerhalb der Beschreibung.
@@ -114,19 +114,23 @@ nicht.
 
 ### Die fehlende Sektion ist kein zweiter Befund, sondern derselbe
 
-Die Pflichtgliederung des Einstiegs steht im vendored Regelwerk und nennt **sieben** Abschnitte
-([`grundlagen-konventionen.md` §harness/README.md als Einstiegspunkt](../../../../.harness/baseline/v3.5.2/regelwerk/grundlagen-konventionen.md#harnessreadmemd-als-einstiegspunkt)).
-Unsere Datei führt **sechs**; genau einer fehlt, und es ist `## Safety and scope boundaries`:
+Die Pflichtgliederung des Einstiegs steht im vendored Regelwerk und nennt **acht** Abschnitte
+([`grundlagen-harness-dateien.md` §harness/README.md als Einstiegspunkt](../../../../.harness/baseline/v5.12.0/regelwerk/grundlagen-harness-dateien.md#harnessreadmemd-als-einstiegspunkt)).
+Unsere Datei führt **sechs**; **zwei** fehlen, und sie sind verschiedener Art:
+`## Safety and scope boundaries` ist ein **Ort für vorhandene Sätze**, `## Leseordnung` ist
+**neuer Text** — die Baseline nennt sie *„die Menschen-Hälfte des Einstiegs"* und deckelt sie bei
+*„drei bis fünf geordnete Zeiger"*.
 
 ```
 for s in "Purpose" "Source precedence" "Guides" "Sensors" "Traceability" \
-         "Safety and scope boundaries" "Minimal agent workflow"; do
+         "Safety and scope boundaries" "Minimal agent workflow" "Leseordnung"; do
   grep -q "^## $s" harness/README.md || echo "fehlt: $s"
 done
 ```
 
-→ eine Zeile Ausgabe. Dasselbe Kommando über
-`.harness/baseline/v3.5.2/templates/harness/README.template.md` gibt **nichts** aus.
+→ zwei Zeilen Ausgabe. Dasselbe Kommando über
+`.harness/baseline/v5.12.0/templates/harness/README.template.md` gibt **nichts** aus — die Vorlage
+des gepinnten Stands trägt alle acht.
 
 Der Abschnitt war **nie** da: `git log -S'Safety and scope boundaries' -- harness/README.md` ist
 leer, und `git grep -c 'Safety and scope' -- '*.md' ':!.harness/baseline/**'` findet im lebenden
@@ -134,6 +138,14 @@ Bestand **keinen** Treffer (Exit 1). Die Datei wurde also nicht aus der Vorlage 
 nachgebaut — das ist die Klasse, die
 [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
 adressiert.
+
+**`## Leseordnung` fehlt aus einem anderen Grund: den Abschnitt gibt es in der adoptierten
+Fassung erst seit dem Sprung.** Er kam mit dem Baum, den
+[slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) getauscht hat, und ist damit
+**keine** Drift dieses Repos, sondern eine neue Pflicht. Der Nachweis steht neben der Pflicht
+selbst: `diff <(git show <Tausch-Commit>^:.harness/baseline/v3.5.2/templates/harness/README.template.md | grep '^## ') <(grep '^## ' .harness/baseline/v5.12.0/templates/harness/README.template.md)`
+→ genau eine Zeile `> ## Leseordnung`. Für die Arbeit dieses Slice ändert das nichts an der
+Ziel-Form und alles an der Herkunft der zwei Punkte: einer ist Rückbau, einer ist Nachzug.
 
 **Und die Aussagen, die dort stehen müssten, sind nicht verloren — sie stehen im falschen
 Abschnitt.** Der `## Sensors`-Block trägt heute mindestens drei Sätze, die Reichweite abgrenzen
@@ -163,7 +175,7 @@ halten kann. Sie hat keine. Alle drei Kandidaten sind gemessen, keiner trägt:
 
   Eine Markdown-Tabellenzeile lässt sich nicht umbrechen — die Schranke verlangte dort, den
   Vertrag zu kürzen, und würde abgeschaltet. Umgekehrt ist sie mit **einer Enter-Taste** erfüllt:
-  der 4 593-Zeichen-Absatz unterschreitet jede Schranke, sobald ihn jemand umbricht, ohne dass
+  der 6 047-Zeichen-Absatz unterschreitet jede Schranke, sobald ihn jemand umbricht, ohne dass
   sich ein Wort ändert. Dass das kein Gedankenspiel ist, misst dieselbe Klasse an einer
   umgebrochenen Datei — `AGENTS.md` hat als längste Zeile **716** Zeichen
   (`awk '{if(length>m)m=length}END{print m}' AGENTS.md`) und trägt trotzdem einen Prosa-Block von
@@ -189,9 +201,9 @@ halten kann. Sie hat keine. Alle drei Kandidaten sind gemessen, keiner trägt:
   Zusage weiter als ihre Abdeckung ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 - **(b) Das Verhältnis unserer Fassung zu ihrer Vorlage.** Nicht trennscharf, und der
   Gegenbeleg ist der wichtigste Konventionsspeicher selbst: `harness/conventions.md` misst am
-  2026-08-28 **132 869** Zeichen gegen **10 363** der Vorlage
-  (`wc -c harness/conventions.md .harness/baseline/v3.5.2/templates/harness/conventions.template.md`)
-  — **mehr als das Zwölffache**, und zwar **konstruktionsbedingt**: die Vorlage liefert den Adaptions-Block
+  2026-08-28 **132 869** Zeichen gegen **8 785** der Vorlage
+  (`wc -c harness/conventions.md .harness/baseline/v5.12.0/templates/harness/conventions.template.md`)
+  — **mehr als das Fünfzehnfache**, und zwar **konstruktionsbedingt**: die Vorlage liefert den Adaptions-Block
   leer, und jede Adaption ist ein Eintrag. **Der Faktor wandert mit jedem Eintrag und ist kein
   Erwartungswert** ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2); was das Kriterium verwirft, ist die Bauart, nicht die Ziffer — der Nenner ist
@@ -247,7 +259,7 @@ der sieben weglassen.
 
 ### Regel für Neues oder Migration: eine Migration, über genau ein Artefakt
 
-**Migration.** Eine Regel, die nur Künftiges bindet, ließe 14 681 Zeichen stehen — und diese
+**Migration.** Eine Regel, die nur Künftiges bindet, ließe 16 161 Zeichen stehen — und diese
 Zeichen werden nicht einmal bezahlt, sondern bei **jedem** Lauf: `harness/README.md` ist Schritt 1
 des Minimal Agent Workflow in [`AGENTS.md`](../../../../AGENTS.md) §6 **und** in der Datei selbst.
 Dazu kommt der Beleg aus dem Anlass: die Datei ist unter allen Regeln gewachsen, die dieses Repo
@@ -285,7 +297,12 @@ Setzung 2) — die Bezugsmenge dieser Abgabe ist der Eintrags-Zähler, nicht sei
 Ihre Masse ist **nicht** ein Absatz, sondern eine
 Eintrags-Zahl — und dafür gibt es eine Form, die nicht erfunden werden muss: das Regelwerk stellt
 sie ausdrücklich frei (*„ihre Form (Einzeldatei vs. Verzeichnis, ADR-artig vs. Prosa) ist Wahl"*,
-[`grundlagen-konventionen.md` §harness/conventions.md als Konventionsspeicher](../../../../.harness/baseline/v3.5.2/regelwerk/grundlagen-konventionen.md#harnessconventionsmd-als-konventionsspeicher)),
+[`grundlagen-harness-dateien.md` §harness/conventions.md als Konventionsspeicher](../../../../.harness/baseline/v5.12.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)),
+**nennt aber am gepinnten Stand die Verzeichnis-Form als Default** — *„Ein Eintrag je Datei …
+Der **Default** ist die Verzeichnis-Form, weil sie mit der Adaptions-Zahl nicht mitwächst"*,
+mit `harness/conventions/MR-<NNN>-<titel>.md` als Ort und `conventions/done/` als Ziel der
+aufgelösten Einträge. Die Freistellung trägt also weiter, und der Default zeigt in die
+Gegenrichtung unserer Einzeldatei —
 und das Nachbar-Repo d-check fährt sie: Index plus ein Verzeichnis mit einer Datei je Eintrag,
 aufgelöste Einträge in einem eigenen `done/`. Gegen einen lokalen Klon gemessen (2026-08-27,
 Wurzel in `$DC`):
@@ -326,20 +343,20 @@ ls "$DC/harness/conventions/done" | wc -l      # -> 23
    der Doku-Gate gar nicht liest (`scan.ignore` in [`.d-check.yml`](../../../../.d-check.yml)).
    Der Umzug hätte damit eine Vorfrage, die vor ihm zu beantworten ist — mit einem Trockenlauf,
    nicht mit einer Modul-Beschreibung.
-4. **Er ist an unserem Pin nicht regelkonform herstellbar.** `v3.5.2` liefert **keine** Vorlage
-   für einen Einzeleintrag: `ls .harness/baseline/v3.5.2/templates/harness/` nennt zwei Dateien
-   und kein `conventions/`-Verzeichnis. Je Eintrag eine neue Datei zu schreiben hieße, sie
-   hand-zu-modellieren — genau das, was
-   [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
-   ausschließt. Der Stand, den der Nutzer anstrebt, liefert sie — dieselbe Klon-Wurzel wie oben:
-
-   ```
-   ls "$DC/.harness/baseline/v5.12.0/templates/harness/conventions/"   # -> MR-NNN-titel.template.md
-   ```
+4. **Die Vorlage für einen Einzeleintrag liegt seit dem Sprung vendored vor — der vierte Grund
+   ist damit nicht mehr die fehlende Vorlage, sondern die Reichweite des Umzugs.** Der gepinnte
+   Baum trägt sie: `ls .harness/baseline/v5.12.0/templates/harness/conventions/`
+   → `MR-NNN-titel.template.md`. Ein `cp` je Eintrag ist damit regelkonform
+   ([`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)),
+   und der Umzug ist herstellbar, statt an der Vorlage zu scheitern. Was bleibt, ist sein Umfang:
+   je Eintrag eine Datei, jeder Eintrag mit den sechs Pflichtfeldern der Vorlage, und der Index
+   trägt danach Zeilen statt Rümpfe — eine eigene Sitzung mit eigenem Gegenstand, nicht ein
+   Nebenprodukt dieses Slice.
 
 **Damit ist die Abgabe präzise:** an den Architect geht die **Entscheidung**, ob der
 Adaptions-Block ein Verzeichnis wird — mit den Zahlen oben, dem Anker-Mechanismus und dem Befund,
-dass die Vorlage dafür erst mit der Re-Baseline vendored vorliegt. Ein repo-internes CR-Format gibt
+dass die Vorlage dafür vendored vorliegt und der Default des gepinnten Stands in dieselbe Richtung
+zeigt. Ein repo-internes CR-Format gibt
 es dafür nicht und soll es nicht geben:
 [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
 adoptiert wörtlich *„kein `CR-*`-ID-Schema, keine eigene Datei, kein Gate"* und regelt den
@@ -348,40 +365,51 @@ adoptiert wörtlich *„kein `CR-*`-ID-Schema, keine eigene Datei, kein Gate"* u
 *„die Anweisung ist die Quelle; was der laufende Kontext liefert, ist ein Übergabe-Artefakt, und
 der Norm-Text entsteht im Architect-Lauf."* Dieser Abschnitt **ist** dieses Artefakt.
 
-### Warum der Slice nicht auf die Re-Baseline wartet
+### Was die Re-Baseline an diesem Slice bewegt hat
 
-Die Gliederung, die er herstellt, überlebt sie. Zwischen der gepinnten Vorlage und der des
-angestrebten Stands unterscheidet sich der Abschnitts-Satz um **eine hinzugefügte** Zeile
-(`## Leseordnung`) und sonst um nichts — gegen den lokalen Klon gemessen (2026-08-27):
+**Die Ziel-Form ist gewachsen, der Gegenstand nicht.** Der Abschnitts-Satz der Vorlage
+unterscheidet sich zwischen dem abgelösten und dem gepinnten Stand um **eine hinzugefügte** Zeile
+(`## Leseordnung`) und sonst um nichts — messbar ohne zweiten Baum, weil die alte Seite als
+Tree-Operand in `git` liegt (dieselbe Zugriffsform, die
+[slice-083](slice-083-form-vergleich-pflichtfelder.md) für den ganzen Form-Vergleich nutzt):
 
 ```
-diff <(grep '^## ' .harness/baseline/v3.5.2/templates/harness/README.template.md) \
-     <(grep '^## ' "$DC/.harness/baseline/v5.12.0/templates/harness/README.template.md")
+diff <(git show <Tausch-Commit>^:.harness/baseline/v3.5.2/templates/harness/README.template.md | grep '^## ') \
+     <(grep '^## ' .harness/baseline/v5.12.0/templates/harness/README.template.md)
 ```
 
-→ eine Zeile `> ## Leseordnung`, Exit 1. Die sieben Pflicht-Abschnitte stehen dort unverändert.
-Wer sie heute herstellt, arbeitet der Re-Baseline vor, statt gegen sie — im Unterschied zur
-Verzeichnis-Frage aus dem vorigen Abschnitt, die auf ihre Vorlage **wartet**.
+→ eine Zeile `> ## Leseordnung`, Exit 1. Die sieben bisherigen Pflicht-Abschnitte stehen
+unverändert; keiner ist umbenannt, keiner entfallen. Die Arbeit dieses Slice wächst damit um
+**einen** Abschnitt und keine Zeile Umbau — im Unterschied zur Verzeichnis-Frage aus dem vorigen
+Abschnitt, deren Vorlage mit demselben Sprung überhaupt erst vendored vorliegt.
 
 ## 2. Definition of Done
 
-Drei slice-eigene Punkte
-([`modul-05-planning-harness.md` §Ziel-Form: Slice](../../../../.harness/baseline/v3.5.2/regelwerk/modul-05-planning-harness.md#ziel-form-slice):
-*„≤ 3 DoD-Punkte"*). Wo kein Kommando einen Punkt rot färbt, steht das dabei, statt sich hinter
-einem anderen zu verstecken.
+Drei Liefer-Punkte
+([`modul-05-planning-harness.md` §Ziel-Form: Slice](../../../../.harness/baseline/v5.12.0/regelwerk/modul-05-planning-harness.md#ziel-form-slice):
+*„≤ 3 Liefer-Punkte"*). Der gepinnte Stand zählt sie selbst ab — *„gezählt wird nur, was mit dem
+Umfang wächst … Nicht gezählt: Gate-Läufe, Closure-Notiz, Register, Risiko-Ausgänge"* —, und damit
+ist die Trennung, die dieser Plan unten als *Standard-Punkte der Vorlage* führt, die Regel selbst
+und keine Auslegung mehr. Wo kein Kommando einen Punkt rot färbt, steht das dabei, statt sich
+hinter einem anderen zu verstecken.
 
 - [ ] **(1) Die Gliederung ist vollständig, und die Sätze, die in den neuen Abschnitt gehören,
-      sind dorthin gezogen — nicht dupliziert.** Das Kommando aus §1 über die sieben
-      Pflicht-Abschnitte gibt **nichts** mehr aus (heute: eine Zeile). Jeder Satz, der dabei nach
-      `## Safety and scope boundaries` wandert, verschwindet an seiner alten Stelle; der Nachweis
-      ist ein `git diff`, in dem jede hinzugefügte Zeile dieses Abschnitts eine gelöschte Zeile
-      im Sensors-Block hat. **Rot färbt nur die halbe Zusage:** dass der Abschnitt existiert, sagt
-      das Kommando; dass nichts danebengestellt statt gezogen wurde, trägt das Review.
+      sind dorthin gezogen — nicht dupliziert.** Das Kommando aus §1 über die **acht**
+      Pflicht-Abschnitte gibt **nichts** mehr aus (heute: zwei Zeilen). Die zwei fehlenden
+      Abschnitte entstehen auf verschiedenen Wegen, und der Nachweis unterscheidet sie: Jeder
+      Satz, der nach `## Safety and scope boundaries` wandert, verschwindet an seiner alten
+      Stelle — Nachweis ist ein `git diff`, in dem jede hinzugefügte Zeile dieses Abschnitts eine
+      gelöschte Zeile im Sensors-Block hat. `## Leseordnung` ist dagegen **neuer** Text und hat
+      keine Herkunft im Bestand; für ihn gilt der Deckel der Vorlage — *„Drei bis fünf geordnete
+      Zeiger genügen; eine Leseordnung, die alles nennt, ist keine"*. **Rot färbt nur die halbe
+      Zusage:** dass beide Abschnitte existieren, sagt das Kommando; dass beim einen nichts
+      danebengestellt statt gezogen wurde und der andere keine Vollaufzählung ist, trägt das
+      Review.
 - [ ] **(2) Je Werkzeug eine Zeile im Einstieg, die Grenzen im Kopf des Werkzeugs — und der
       Einstieg misst danach in der Größenordnung seiner Vorlage.** Die Prosa des Abschnitts
-      `## Sensors` misst höchstens **2 500** Zeichen (heute **10 529**, Vorlage **1 158** — die
+      `## Sensors` misst höchstens **2 500** Zeichen (heute **11 983**, Vorlage **1 158** — die
       zwei Kommandos stehen in §1), und die längste Zeile der Datei liegt unter **800** Zeichen
-      (heute **4 593**, Vorlage **311**). **Beide Werte sind Abnahme-Kriterien dieses einen Laufs
+      (heute **6 047**, Vorlage **311**). **Beide Werte sind Abnahme-Kriterien dieses einen Laufs
       und ausdrücklich keine Erwartungswerte über den Bestand**
       ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
       Setzung 2): sie wandern mit jedem neuen Werkzeug mit, und kein Sensor hält sie nach dem
@@ -473,7 +501,7 @@ anderen Lauf.
 - **Der größte Absatz gehört gerade einem anderen Lauf.** slice-106 schreibt an derselben Zeile
   und an `harness/tools/full-smoke*.sh`. §4 macht daraus eine Trigger-Bedingung; wer sie
   übergeht, produziert einen Konflikt in einer Datei, die jeder Lauf liest.
-- **Verschieben kann heimlich löschen.** Ein Satz, der von 4 593 Zeichen auf eine Tabellenzeile
+- **Verschieben kann heimlich löschen.** Ein Satz, der von 6 047 Zeichen auf eine Tabellenzeile
   schrumpft, verliert Inhalt — die Frage ist nur, ob absichtlich. Die Zuordnungs-Liste aus §3 ist
   die einzige Stelle, an der das sichtbar wird; sie ersetzt kein Review, sie ermöglicht es.
 - **Ein Skript-Kopf ist kein Ablageort für alles.** `make comment-claims` prüft dort die
@@ -481,7 +509,7 @@ anderen Lauf.
   ([`AGENTS.md`](../../../../AGENTS.md) §3.6 nennt genau diese Grenze). Ein Satz, der im Einstieg
   falsch war, ist im Kopf des Werkzeugs nicht richtiger — nur besser platziert.
 - **Die Rückführung hält nichts fest.** Die Datei ist unter allen bisherigen Regeln um das
-  Siebenfache gewachsen; nichts an diesem Slice hindert den nächsten Anhang. Das ist der Grund
+  Achtfache gewachsen; nichts an diesem Slice hindert den nächsten Anhang. Das ist der Grund
   für die Abgabe aus §1 und gehört in die Closure-Notiz, statt als gelöst zu gelten.
 - **`structure` könnte die Gliederung nicht halten.** Der Trockenlauf ist Teil des Laufs, sein
   Ergebnis gehört nach §7 — auch und gerade, wenn es negativ ist. Ein negatives Ergebnis ist ein
