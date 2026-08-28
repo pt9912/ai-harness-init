@@ -339,7 +339,7 @@ ist ein Urteil über den Zusammenhang von Zähler und Zusage, kein Muster — de
 Weg (C) unten für **diesen** Schnitt verworfen ist.
 
 **Und ein zwölfter aus
-[slice-128](../in-progress/slice-128-d-check-kopf-sagt-was-gilt.md):** *die Pflicht, eine Zahl
+[slice-128](../done/slice-128-d-check-kopf-sagt-was-gilt.md):** *die Pflicht, eine Zahl
 neben das Kommando zu stellen, das sie liefert, bindet nach ihrem eigenen Kommando nur **lebende
 Markdown-Artefakte** — an einem Kommentar in Code oder Konfiguration greift sie nicht, auch dann
 nicht, wenn eine Adaption genau diesen Kommentar als ihren Geltungsbereich führt.* **Woran er als
@@ -491,7 +491,7 @@ dabei, statt sich hinter einem anderen zu verstecken.
       wieder das Kommando des Reichweiten-Postens: der §3.6-Block bewegt sich oder nicht. **Er
       trifft damit denselben Wert wie der zweite bis sechste** — auch hier gehört in die Closure,
       welche Bewegung welcher Posten ist, statt einer Zahl für sechs.
-      Für den **zwölften** ([slice-128](../in-progress/slice-128-d-check-kopf-sagt-was-gilt.md))
+      Für den **zwölften** ([slice-128](../done/slice-128-d-check-kopf-sagt-was-gilt.md))
       trägt der Setzungs-Zähler des ersten Postens **nicht**: sein Gegenstand ist der
       §Geltungsbereich, und der kann sich ändern, ohne dass eine Setzung hinzukommt. Sein Kommando
       ist deshalb die Bewegung des Blocks selbst —
