@@ -353,7 +353,7 @@ bewegt — das ist der schärfste Beleg für Weg (A) unten.**
 §Auflösungs-Trigger ist der **einzige** nicht permanente Eintrag des Adaptions-Blocks
 (`grep -c 'nicht permanent' harness/conventions.md` → **1**) und macht sich am
 d-check-Pin-Sprung fällig. Der ist am 2026-08-28 mit
-[slice-122](../in-progress/slice-122-d-check-pin-v0650.md) gezogen worden
+[slice-122](../done/slice-122-d-check-pin-v0650.md) gezogen worden
 (`grep -n '^DCHECK_IMAGE' d-check.mk` → `v0.65.0`, `make freshness-dcheck` → Exit 0). **Der
 Trigger benennt seinen eigenen Träger**, und der hat nicht getragen: *„der Slice, der den Pin
 zieht, schlägt diesen Block ohnehin auf"* — er tat es nicht.

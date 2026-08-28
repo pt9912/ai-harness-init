@@ -76,7 +76,7 @@ verglichen per `comm -23` mit denselben Zielen:
 | davon **ohne** Fall | `comm -23 <gotests> <expects> \| wc -l` | **117** |
 
 **Der gemessene Anlass für diese zweite Schicht liegt in
-[slice-122](../in-progress/slice-122-d-check-pin-v0650.md)**, und er ist die unbequeme Sorte: der
+[slice-122](../done/slice-122-d-check-pin-v0650.md)**, und er ist die unbequeme Sorte: der
 Wächter, an dem dessen DoD (1) ihr Rot holt — die Kopplung des gelebten d-check-Pins an den
 emittierten Default —, hat selbst keinen Fall.
 `grep -rn 'MatchesCanonical' test/mutations/` → leer (Exit 1), während **drei** Geschwister

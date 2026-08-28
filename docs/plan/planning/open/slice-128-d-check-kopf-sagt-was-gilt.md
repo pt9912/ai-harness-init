@@ -43,14 +43,14 @@ Kopf über die aktiven Gates sagt, muss auf frischem Checkout stimmen).
 sagen als der Baum darunter, sagen dasselbe — und die Zahlen darin messen den Kopf, nicht den
 Baum, der um ihn herum wächst.**
 
-### Warum das ein eigener Schnitt ist und kein Rest von [slice-122](../in-progress/slice-122-d-check-pin-v0650.md)
+### Warum das ein eigener Schnitt ist und kein Rest von [slice-122](../done/slice-122-d-check-pin-v0650.md)
 
 Eine der drei Aussagen kann **erst nachziehen, wenn ein fremdes Artefakt existiert**: der
 Rang-Zeiger in Zeile 2 nennt die Adaptions-Einträge, die den jeweiligen Sprung tragen, und für
 `v0.65.0` gibt es noch keinen. Der Eintrag ist Architect-Eigentum
 ([`AGENTS.md`](../../../../AGENTS.md) §3.8), die Zeile nicht — das ist eine echte
 Reihenfolge-Abhängigkeit, keine Auslassung. Sie an
-[slice-122](../in-progress/slice-122-d-check-pin-v0650.md) zu hängen hieße, einen fertigen Pin auf
+[slice-122](../done/slice-122-d-check-pin-v0650.md) zu hängen hieße, einen fertigen Pin auf
 einen fremden Lauf warten zu lassen; sie nur in dessen Closure-Notiz zu nennen hieße, sie in einem
 Zeitdokument abzulegen, das kein Lauf wieder aufschlägt.
 
