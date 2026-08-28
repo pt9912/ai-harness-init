@@ -107,7 +107,7 @@ committet (`ba5c07f`, *„32 Verweise ueber 6 Dateien, zwei Formen"*). Dieser Mo
 
 | Richtung | Fläche | Kommando |
 |---|---|---|
-| **ausgehend** (die Links der Datei selbst) | **40** Ziele, alle relativ | `grep -o '](\([^)]*\))' docs/plan/carveouts/done/CO-003-mutate-ohne-zeitschranke.md \| grep -vc '](http'` |
+| **ausgehend** (die Links der Datei selbst) | **40** Ziele, alle relativ — Stand des Schnitts; beim Move waren es **45**, an HEAD **47** | `git show 32f12dd:docs/plan/carveouts/CO-003-mutate-ohne-zeitschranke.md \| grep -o '](\([^)]*\))' \| grep -vc '](http'`; für die zwei anderen Stände `dbe5e50:…/done/…` bzw. der Pfad ohne `git show` |
 | **eingehend**, Form *Markdown-Link* | **20** Vorkommen über **6** Dateien | `grep -rho '](\([^)]*\)CO-003-mutate-ohne-zeitschranke\.md)' --include='*.md' docs/ \| wc -l`; die Datei-Zahl über `grep -rlo …` derselben Form |
 | **eingehend**, alle Nennungen | **8** Dateien | `grep -rln 'CO-003' --include='*.md' . \| grep -v '^./.harness' \| grep -v 'CO-003-mutate' \| wc -l` |
 
@@ -202,7 +202,7 @@ Steering-Loop-Lerneintrag.
 **Beginn (`open` → `next` → `in-progress`): eine Bedingung, und sie ist ohne Rückfrage
 entscheidbar.** Das Pflicht-Feld `Folge-Slice` in
 [`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) nennt heute keine ID —
-`grep -c 'slice-120' docs/plan/carveouts/done/CO-003-mutate-ohne-zeitschranke.md` → **0**; der Carveout
+`git show 32f12dd:docs/plan/carveouts/CO-003-mutate-ohne-zeitschranke.md | grep -c 'slice-120'` → **0**; der Carveout
 erklärt dieses Feld selbst zu *„der offenen Stelle dieses Carveouts"*. Es zu füllen ist
 Architect-Arbeit, weil der Carveout Architect-Eigentum ist. **Der Slice beginnt, wenn dasselbe
 Kommando ≥ 1 liefert.** Der Grund ist nicht Formalismus: Modul 7 schreibt *„jeder temporäre

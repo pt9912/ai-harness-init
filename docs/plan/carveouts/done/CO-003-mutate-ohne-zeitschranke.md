@@ -191,7 +191,7 @@ etwas; was der Vollzug dort anfasst, ist der Link auf diese Datei, nicht die Aus
 Modul 7 verteilt die Auflösung über drei Rollen, und das ist Absicht: *„Planner identifiziert die
 fälligen Carveouts, Architect entscheidet bei ‚permanent' über die ADR-Überführung, Implementer
 führt `git mv` und Config-Updates aus."* Der Architect-Teil ist mit dieser Prüfung erledigt, der
-Planner-Teil seit dem 2026-08-28; offen ist allein der Implementer-Teil.
+Planner-Teil seit dem 2026-08-28, der Implementer-Teil seit demselben Tag — beides ist vollzogen.
 
 | An | Was | Warum nicht hier |
 |---|---|---|
@@ -227,3 +227,4 @@ Zähl-Bedingung, die ihn dazu brächte, zählt offene Punkte, statt ihre Tatsach
 | 2026-08-27 | Audit in der Closure zu slice-117 — Modul-7-Übergang *weiterhin aktiv*: Bedingung 2 und 3 erfüllt und gefahren, Bedingung 1 misst ihren Gegenstand nicht, offen bleibt der Vorwärmlauf vor dem Fork. Trigger-Änderung an den Architect übergeben | [slice-117](../../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) §7 |
 | 2026-08-28 | Architect-Entscheidung: die Wort-Bedingung gestrichen (in beide Richtungen falsch, gemessen an zwei Ständen), der Geltungsbereich am Subjekt der DoD geschärft (*Shard*, nicht Vorwärmlauf), zweiter Ausgang verneint. Modul-7-Übergang **aufgelöst** — Trigger eingetreten, Vollzug ausstehend und übergeben | diese Datei, §Auflösungs-Trigger und §Übergabe |
 | 2026-08-28 | Folge-Slice eingetragen: der Vollzug ist als [slice-120](../../planning/in-progress/slice-120-co-003-wird-vollzogen.md) geschnitten, das Pflicht-Feld trägt seine ID. Der Haken an [slice-105](../../planning/done/slice-105-mutate-messen-dann-teilen.md) §2 DoD (3) steht seit demselben Tag und ist in der Verifikations-Checkliste gesetzt — er hängt nicht am Ort dieser Datei und wartet darum nicht auf den Move | diese Datei, §Folge-Slice und §Verifikation |
+| 2026-08-28 | **Vollzogen**: `git mv` nach `done/`, Index von *Aktiv* nach *Aufgelöst*, 72 Verweise in beide Richtungen gezogen, Checkliste vollständig gehakt. Der Status-Kopf sagt seither *Aufgelöst* | [slice-120](../../planning/in-progress/slice-120-co-003-wird-vollzogen.md) |
