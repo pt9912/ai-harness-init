@@ -45,24 +45,8 @@ Entscheidung sagt, sagt ihre Datei; dieser Index zeigt auf sie.
   der Revision und die revidierende ADR; begründet wird sie dort.
 - **`Bezug` ist voll verlinkt und darum lang** — Kennungen sind linkpflichtig
   ([`MR-001`](../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)).
-- **Kein Gate hält diese Form.** Keines der in `.d-check.yml` aktivierten Module
-  vergleicht eine Zelle mit der Überschrift der Datei, auf die sie zeigt. Von
-  Hand, und stumm nur bei Deckungsgleichheit:
-
-  ```sh
-  d=docs/plan/adr
-  awk -F'|' -v d="$d" '/^\| \[ADR-/{
-    c=$2; t=$3
-    gsub(/^[ \t]+|[ \t]+$/,"",t)
-    match(c, /\([0-9][0-9][0-9][0-9]-[^)]+\)/)
-    f = d "/" substr(c, RSTART+1, RLENGTH-2)
-    if ((getline h < f) <= 0) h = "<unlesbar>"
-    close(f)
-    sub(/^# ADR-[0-9][0-9][0-9][0-9]: /, "", h)
-    gsub(/\]\([^)]*\)/,"]",t); gsub(/[][`]/,"",t); gsub(/[][`]/,"",h)
-    if (t != h) { print "DRIFT " f "\n  Zelle: " t "\n  H1:    " h; n++ }
-  } END{ exit n>0 }' "$d/README.md"
-  ```
-
-  Fehlt einer Überschrift das `ADR-NNNN: `-Präfix, bleibt es im Vergleich stehen
-  und der Fall wird gemeldet — nicht übersprungen.
+- **Kein Sensor hält die Titel-Regel.** Keines der in `.d-check.yml`
+  aktivierten Module vergleicht eine Zelle mit der `# `-Überschrift der Datei,
+  auf die sie zeigt, und kein `make`-Ziel tut es. Eine Schranke auf die
+  Zellenlänge misst etwas anderes: kurz ist nicht gleich. Wer eine Überschrift
+  ändert, zieht die Zelle von Hand nach.
