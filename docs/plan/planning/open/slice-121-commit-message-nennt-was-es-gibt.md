@@ -174,7 +174,7 @@ Steering-Loop-Lerneintrag.
 |---|---|---|
 | `harness/tools/` — ein neues Skript | neu | der Sensor; hermetisch wie `harness/tools/comment-claims.sh`, das dafür das Muster liefert |
 | [`Makefile`](../../../../Makefile) | update | das Ziel. **Ob es in `gates` läuft, entscheidet DoD (2)** — ein Vor-Commit-Sensor gehört möglicherweise nicht dorthin |
-| [`.claude/hooks/`](../../../../.claude/hooks) | offen | falls der Ort ein PreToolUse-Griff auf `git commit -F` ist; dann berührt der Slice [`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) und die Grenze des Guards, die dieser selbst benennt |
+| [`.claude/hooks/`](../../../../.claude/hooks) | offen, **aber nicht mehr unbekannt** | falls der Ort ein PreToolUse-Griff auf `git commit -F` ist; dann berührt der Slice [`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) und die Grenze des Guards, die dieser selbst benennt. **Den Ort baut [slice-126](slice-126-commit-message-traegt-eine-kennung.md)** — siehe die Trigger-Notiz in §4 |
 | `test/` | neu | der bats-Fall, den DoD (3) mit einem `test/mutations/`-Fall belegt |
 | [`harness/README.md`](../../../../harness/README.md) | update | was das Ziel prüft und was **nicht** — der Harness-Einstieg ist der Ort dieser Aussage, nicht [`AGENTS.md`](../../../../AGENTS.md) |
 | [`AGENTS.md`](../../../../AGENTS.md), [`harness/conventions.md`](../../../../harness/conventions.md) | **nicht durch diesen Slice** | Hard Rules und Adaptions-Block schreibt der Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8); die Norm-Frage ist als Übergabe gestellt |
@@ -188,6 +188,21 @@ von [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steh
 der Sensor prüft eine Auflösbarkeit, keine Regel-Zugehörigkeit, und er ist auch dann nützlich, wenn
 die Norm unverändert bleibt. Entscheidet der Architect **gegen** eine Ausweitung, ändert das an DoD
 (1)–(3) nichts; entscheidet er **dafür**, bekommt der Sensor eine Quelle und keine neue Aufgabe.
+
+**Soll nach [slice-126](slice-126-commit-message-traegt-eine-kennung.md) — der Träger ist geteilt,
+die Eigenschaft nicht.** Beim Schnitt von [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md)
+wurde geprüft, ob dieser Slice und die Verdrahtung von d-checks Modul `commits` derselbe Gegenstand
+sind. **Sind sie nicht**, und das ist gemessen: `commits` prüft die **Anwesenheit** einer Kennung
+(`commit-untraceable`), nicht die **Auflösbarkeit** eines Hex-Tokens — eine Message-Datei, die
+`0f8d1a1` und eine gültige Kennung trägt, passiert es mit **Exit 0** (gegen eine Kopie außerhalb des
+Repos, Image `v0.65.0`, `--commit-msg <datei>`). **Gemeinsam ist der Ort:** dieselbe
+`--commit-msg`-Form nimmt eine Message-Datei entgegen, **bevor** der Commit existiert, und meldet
+gegen einen Pseudo-Commit `pending` — genau der Vor-Commit-Griff, den §6 unten noch als
+präzedenzlos führt. Daraus folgt keine Zusammenlegung (sechs slice-eigene DoD-Punkte, und Modul 5
+§Ziel-Form nennt das *„der Schnitt ist falsch"*), sondern eine **Reihenfolge**: läuft dieser Slice
+nach [slice-126](slice-126-commit-message-traegt-eine-kennung.md), erbt er einen entschiedenen Ort
+statt einen zweiten zu erfinden. **Zwingend ist das nicht** — die DoD (1)–(3) bleiben ohne 126
+herstellbar; wer vorzieht, baut den Träger selbst und begründet, warum.
 
 **Rückführungen, vorab benannt:**
 
@@ -214,10 +229,13 @@ mit Steering-Loop-Eintrag.
   Suppression, deren Grund als Nächstes veraltet; wer es mit einem Muster löst
   (*„in Anführungszeichen zählt nicht"*), baut einen Wächter ohne Zähne. Die Frage gehört in DoD
   (2) und ist dort mit ihrer Zahl gestellt, nicht hier weggewunken.
-- **Ein Vor-Commit-Sensor hat in diesem Repo keinen Präzedenzfall.** `make gates` läuft **nach**
-  der Änderung, der Stop-Hook prüft einen Baum-Hash, der PreToolUse-Guard prüft eine
-  Befehlszeile — keiner davon nimmt eine Datei entgegen, die noch kein Commit ist. Der Ort ist
-  darum eine echte Wahl und nicht eine Formalie.
+- **Ein Vor-Commit-Sensor hat in diesem Repo keinen Präzedenzfall — im gepinnten Image aber
+  schon.** `make gates` läuft **nach** der Änderung, der Stop-Hook prüft einen Baum-Hash, der
+  PreToolUse-Guard prüft eine Befehlszeile; keiner davon nimmt eine Datei entgegen, die noch kein
+  Commit ist. **Das gilt weiterhin für dieses Repo, nicht mehr für das Werkzeug:** d-checks
+  `--commit-msg <datei|->` tut genau das. Der Ort bleibt eine echte Wahl — aber es ist jetzt eine
+  Wahl **zwischen** einem Eigenbau und einer Adoption, nicht mehr eine ohne Vorbild
+  ([slice-126](slice-126-commit-message-traegt-eine-kennung.md) §1).
 - **Der Sensor deckt eine von fünf gemessenen Instanzen der Klasse.** Das steht so in §1 und muss
   auch in der Meldung stehen: ein Ziel, das *„Commit-Message geprüft"* ausgibt, behauptet mehr, als
   es hält. Was es prüft, ist eine Auflösbarkeit.
