@@ -116,7 +116,7 @@ der Norm-Text entsteht im Architect-Lauf und in eigenem Commit. Was der Durchgan
 
 ## 4. Trigger
 
-[slice-081](slice-081-baum-tauschen-pin-ziehen.md) liegt in `done/` — der neue Baum ist im Repo,
+[slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) liegt in `done/` — der neue Baum ist im Repo,
 sonst misst der Durchgang gegen eine Fassung, die hier nicht liegt.
 
 Rückführungen: `in-progress` → `next`, wenn mehr als zwei Einträge eigene Umsetzung verlangen

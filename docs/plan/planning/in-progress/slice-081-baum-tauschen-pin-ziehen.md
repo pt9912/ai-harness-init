@@ -79,7 +79,7 @@ Setzung 2), zu fahren beim Lauf, nicht beim Schnitt:
 [ADR-0014](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md);
 [`AGENTS.md`](../../../../AGENTS.md) §3.4) und alles unter `done/` und `docs/reviews/` —
 Zeitdokumente. **Unberührt bleibt auch**
-[slice-083](slice-083-form-vergleich-pflichtfelder.md): er nennt den alten Tag als
+[slice-083](../open/slice-083-form-vergleich-pflichtfelder.md): er nennt den alten Tag als
 **Tree-Operanden der Vor-Tausch-Seite** — genau die Adresse, die der Tausch nicht anfassen darf.
 Jeder übrige lebende Plan wird **gezogen**.
 
@@ -143,7 +143,7 @@ die `scan.ignore`-Aufnahme ist eine Gate-Senkung, und die trägt nach
 Rückführungen: `in-progress` → `next`, wenn das Nachziehen der Verweise für sich eine Sitzung
 sprengt (dann trennt der Schnitt Mechanik und Verweise). `in-progress` → `open`, wenn die
 Anker-Einzelprüfung ergibt, dass die Ziel-Fassung eine belegte Aussage nicht mehr trägt — das ist
-eine Inhaltsfrage für [slice-082](slice-082-adaptions-durchgang.md), kein Pfad-Tausch. Die zwei
+eine Inhaltsfrage für [slice-082](../open/slice-082-adaptions-durchgang.md), kein Pfad-Tausch. Die zwei
 Sensoren aus der Fitness Function von [ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md)
 sind **nicht** die Bedingung: sie sind dort ausdrücklich einem eigenen Slice zugewiesen.
 
@@ -158,13 +158,13 @@ DoD vollständig, `make gates` nach dem Tausch grün, Closure-Notiz geschrieben.
   [`MR-022`](../../../../harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)
   und [`MR-023`](../../../../harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung)
   weiter über `v3.5.2` sprechen. Diese Sätze sind **datierte Messungen**, keine Links — kein Gate
-  sieht sie. Sie fallen mit [slice-082](slice-082-adaptions-durchgang.md). Der Preis dafür, den
+  sieht sie. Sie fallen mit [slice-082](../open/slice-082-adaptions-durchgang.md). Der Preis dafür, den
   Adaptions-Durchgang nicht in denselben Slice zu packen: das Repo trägt zwischen 081 und 082 eine
   Aussage, deren Bezug gewechselt hat.
 - **Nach diesem Slice liegt die alte Form nur noch in der Historie — das ist die Zusage von
   [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache),
   nicht ihr Preis.** *„Ein Tag zur Zeit (Ersetzen), Historie liegt in git"*: der Form-Vergleich aus
-  [slice-083](slice-083-form-vergleich-pflichtfelder.md) holt die alte Seite dort, mit
+  [slice-083](../open/slice-083-form-vergleich-pflichtfelder.md) holt die alte Seite dort, mit
   Tree-Operanden statt zwei Verzeichnissen. Was er dafür braucht, ist **der Commit, der den Baum
   getauscht hat** — er steht als jüngster Eintrag in `git log --oneline -- .harness/baseline/`,
   derselben Abfrage, die heute die drei bisherigen Re-Vendors auflistet.
