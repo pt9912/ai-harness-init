@@ -9,7 +9,7 @@ wechselt nur durch `git mv`, siehe
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 1: **(1) Bündel?** Nein — ein Sensor, ein Prüfbereich. **(2) Gemeinsames
 Closure-Kriterium?** Nein. **(3) Auslöser reaktiv oder gewollt?** Reaktiv: der
-Steering-Loop-Eintrag aus [slice-120](../in-progress/slice-120-co-003-wird-vollzogen.md) §7. Nach
+Steering-Loop-Eintrag aus [slice-120](../done/slice-120-co-003-wird-vollzogen.md) §7. Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das Verzeichnis.
 
@@ -55,7 +55,7 @@ bevor der Commit steht, mit Token und Fundstelle in der Meldung.**
 
 ### Der gemessene Anlass
 
-[slice-120](../in-progress/slice-120-co-003-wird-vollzogen.md) hat in **einer** Message drei
+[slice-120](../done/slice-120-co-003-wird-vollzogen.md) hat in **einer** Message drei
 Tatsachenbehauptungen getragen, die jede ein einziges Kommando widerlegt hätte: einen Commit-Verweis
 auf `0f8d1a1`, den es nicht gibt (der Move ist `dbe5e50`); eine Aussage über den eigenen Diff, die
 das `--stat` desselben Commits widerlegt; und eine Rechnung über einen Bestand, den

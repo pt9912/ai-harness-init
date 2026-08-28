@@ -31,4 +31,4 @@ ihnen ist, sagt der **Status** in ihrem Kopf. Die Begründung steht an genau ein
 
 | ID | Titel | Angelegt | Aufgelöst | Wodurch |
 |---|---|---|---|---|
-| [CO-003](done/CO-003-mutate-ohne-zeitschranke.md) | `make mutate` hatte keine Zeitschranke — ein hängender Worker färbte den Lauf nicht rot | 2026-08-27 | 2026-08-28 | [slice-117](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) baute die Schranke, [slice-120](../planning/in-progress/slice-120-co-003-wird-vollzogen.md) vollzog ihn |
+| [CO-003](done/CO-003-mutate-ohne-zeitschranke.md) | `make mutate` hatte keine Zeitschranke — ein hängender Worker färbte den Lauf nicht rot | 2026-08-27 | 2026-08-28 | [slice-117](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) baute die Schranke, [slice-120](../planning/done/slice-120-co-003-wird-vollzogen.md) vollzog ihn |

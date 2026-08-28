@@ -2,7 +2,7 @@
 
 **Status:** **Aufgelöst** — der Modul-7-Übergang ist vollzogen, und der Ort sagt es: diese Datei
 liegt in `done/`, der Index führt sie unter *Aufgelöst*. Vollzogen am 2026-08-28 durch
-[slice-120](../../planning/in-progress/slice-120-co-003-wird-vollzogen.md); der Auflösungs-Trigger
+[slice-120](../../planning/done/slice-120-co-003-wird-vollzogen.md); der Auflösungs-Trigger
 war seit dem 2026-08-27 eingetreten (Letzte Prüfung unten), gebaut hat ihn
 [slice-117](../../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md).
 [CO-001](../CO-001-bats-shell-lint.md) steht weiter bei *Auflösung fällig* — sein Vollzug ist
@@ -59,7 +59,7 @@ Abschluss-Marken-Zweig in `main()`, der zweite über die drei Vollständigkeits-
   `grep -c 'Vorwärmlauf vor dem Fork' harness/README.md` → **1**). Eine benannte Lücke mit Träger
   ist ein `open/`-Slice, kein Carveout.
 
-**Folge-Slice:** [slice-120](../../planning/in-progress/slice-120-co-003-wird-vollzogen.md) — der
+**Folge-Slice:** [slice-120](../../planning/done/slice-120-co-003-wird-vollzogen.md) — der
 **Vollzug** der Auflösung: `git mv` nach `done/`, Index und Link-Abgleich in beide Richtungen
 (§Übergabe unten). Sein Beginn-Trigger liest dieses Feld (dort §4), und darin liegt der Grund,
 aus dem hier eine ID steht und keine Absichtserklärung: Modul 7 verlangt einen *„Folge-Slice mit
@@ -195,7 +195,7 @@ Planner-Teil seit dem 2026-08-28, der Implementer-Teil seit demselben Tag — be
 
 | An | Was | Warum nicht hier |
 |---|---|---|
-| **Planner** — **erledigt am 2026-08-28** | den Vollzug schneiden ([slice-120](../../planning/in-progress/slice-120-co-003-wird-vollzogen.md); Muster: [slice-113](../../planning/open/slice-113-co-001-ist-faellig.md) für [CO-001](../CO-001-bats-shell-lint.md)) und über den Haken an [slice-105](../../planning/done/slice-105-mutate-messen-dann-teilen.md) §2 DoD (3) entscheiden — er steht (§Geltungs-Konfiguration) | Schnitte und `docs/plan/planning/**` gehören dem Planner |
+| **Planner** — **erledigt am 2026-08-28** | den Vollzug schneiden ([slice-120](../../planning/done/slice-120-co-003-wird-vollzogen.md); Muster: [slice-113](../../planning/open/slice-113-co-001-ist-faellig.md) für [CO-001](../CO-001-bats-shell-lint.md)) und über den Haken an [slice-105](../../planning/done/slice-105-mutate-messen-dann-teilen.md) §2 DoD (3) entscheiden — er steht (§Geltungs-Konfiguration) | Schnitte und `docs/plan/planning/**` gehören dem Planner |
 | **Implementer** | `git mv` nach `done/`, Index nachziehen, Link-Abgleich über die eingehenden Verweise — **9** Dateien (`grep -rln 'CO-003' --include='*.md' . \| grep -v '^./.harness' \| grep -v 'CO-003-mutate' \| wc -l`; mitwandernd, **kein** Erwartungswert), davon **4** unter `docs/plan/planning/` und **4** unter `docs/reviews/` (dieselbe Form über dem jeweiligen Pfad) | der Move ist ein eigener Commit ([`AGENTS.md`](../../../../AGENTS.md) §3.3), und der Link-Abgleich fasst Dateien an, die anderen Rollen gehören |
 
 ## Verifikation (nach Auflösung)
@@ -226,5 +226,5 @@ Zähl-Bedingung, die ihn dazu brächte, zählt offene Punkte, statt ihre Tatsach
 | 2026-08-27 | Angelegt (Closure zu slice-105; DoD (3) für einen der drei Ausfall-Wege ohne rot gesehenes Gegenbeispiel) | [slice-105](../../planning/done/slice-105-mutate-messen-dann-teilen.md) §7 |
 | 2026-08-27 | Audit in der Closure zu slice-117 — Modul-7-Übergang *weiterhin aktiv*: Bedingung 2 und 3 erfüllt und gefahren, Bedingung 1 misst ihren Gegenstand nicht, offen bleibt der Vorwärmlauf vor dem Fork. Trigger-Änderung an den Architect übergeben | [slice-117](../../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) §7 |
 | 2026-08-28 | Architect-Entscheidung: die Wort-Bedingung gestrichen (in beide Richtungen falsch, gemessen an zwei Ständen), der Geltungsbereich am Subjekt der DoD geschärft (*Shard*, nicht Vorwärmlauf), zweiter Ausgang verneint. Modul-7-Übergang **aufgelöst** — Trigger eingetreten, Vollzug ausstehend und übergeben | diese Datei, §Auflösungs-Trigger und §Übergabe |
-| 2026-08-28 | Folge-Slice eingetragen: der Vollzug ist als [slice-120](../../planning/in-progress/slice-120-co-003-wird-vollzogen.md) geschnitten, das Pflicht-Feld trägt seine ID. Der Haken an [slice-105](../../planning/done/slice-105-mutate-messen-dann-teilen.md) §2 DoD (3) steht seit demselben Tag und ist in der Verifikations-Checkliste gesetzt — er hängt nicht am Ort dieser Datei und wartet darum nicht auf den Move | diese Datei, §Folge-Slice und §Verifikation |
-| 2026-08-28 | **Vollzogen**: `git mv` nach `done/`, Index von *Aktiv* nach *Aufgelöst*, 72 Verweise in beide Richtungen gezogen, Checkliste vollständig gehakt. Der Status-Kopf sagt seither *Aufgelöst* | [slice-120](../../planning/in-progress/slice-120-co-003-wird-vollzogen.md) |
+| 2026-08-28 | Folge-Slice eingetragen: der Vollzug ist als [slice-120](../../planning/done/slice-120-co-003-wird-vollzogen.md) geschnitten, das Pflicht-Feld trägt seine ID. Der Haken an [slice-105](../../planning/done/slice-105-mutate-messen-dann-teilen.md) §2 DoD (3) steht seit demselben Tag und ist in der Verifikations-Checkliste gesetzt — er hängt nicht am Ort dieser Datei und wartet darum nicht auf den Move | diese Datei, §Folge-Slice und §Verifikation |
+| 2026-08-28 | **Vollzogen**: `git mv` nach `done/`, Index von *Aktiv* nach *Aufgelöst*, 72 Verweise in beide Richtungen gezogen, Checkliste vollständig gehakt. Der Status-Kopf sagt seither *Aufgelöst* | [slice-120](../../planning/done/slice-120-co-003-wird-vollzogen.md) |
