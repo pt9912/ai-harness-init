@@ -437,12 +437,25 @@ liegt vor den anderen beiden, und die Reihenfolge ist Teil der Zusage.
       **Rot:** ein Shard, dessen Sensor in seiner eigenen Kopie **ohne** Mutation rot ist, bricht
       ab und sagt es — nachgestellt, indem in der Kopie eines Shards der Sensor vorab rot gemacht
       wird. Der Gesamtlauf darf das nicht als Befund eines Falls ausgeben.
-- [ ] **(3) Der zusammengeführte Bericht ist vollständig oder rot — nie still grün.** Die berichtete
+- [x] **(3) Der zusammengeführte Bericht ist vollständig oder rot — nie still grün.** Die berichtete
       Fall-Zahl steht gegen `ls -1 test/mutations/*.sh | wc -l`; ein Shard, der abstürzt, hängt oder
       nichts meldet, färbt den Gesamtlauf rot.
       **Rot:** ein absichtlich kaputter Shard, **einmal gefahren und rot gesehen** — die Bedingung
       aus §1, ohne die die parallele Fassung nicht als Sensor gilt. Dazu ein `test/mutations/`-Fall,
       der die Zusammenführung um einen Shard bringt.
+      **Erfüllt seit dem 2026-08-27, festgestellt am 2026-08-28 — nicht zur Closure dieses
+      Slice.** *Abstürzt* und *nichts meldet* waren damals rot gesehen, *hängt* nicht; diesen Rest
+      trug [`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md). Die Schranke
+      `STALL_SECONDS` und ihre zwei Fälle `199`/`202` kommen aus
+      [slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md); rot gesehen **ohne Zutun von
+      außen** ist der hergestellte Hänger am 2026-08-27 in der
+      [Verifikation Runde 2](../../../reviews/2026-08-27-slice-117-verify-runde2.md) §2.1 —
+      Exit 1 nach 17,27 s, mit der Meldung, die den noch laufenden Worker benennt. Die zwei Zahlen
+      sind Lesungen aus jenem Lauf und aus keinem Kommando dieses Baums
+      ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+      Setzung 1). Dass der Trigger eingetreten ist, hat der Architect am 2026-08-28 entschieden;
+      der **Vollzug** der Carveout-Auflösung ist ein eigener Slice und berührt diesen Punkt nicht
+      mehr.
 
 Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · `make mutate` ohne Befund ·
 Doku-Update, falls ein öffentlicher Vertrag berührt ist · Closure-Notiz mit
@@ -592,9 +605,10 @@ Setzung 2).
 1. **DoD (1) und (2) erfüllt, mit gefahrenen Kommandos; DoD (3) für zwei seiner drei Ausfall-Arten.**
    Die [Verifikation](../../../reviews/2026-08-27-slice-105-verify.md) hat (1) und (3) als
    *teilweise* bewertet — beide an derselben fail-open-Auswertung, die `0e76c77` geschlossen hat
-   (unten). Was danach offen bleibt, ist **ein Wort**: *hängt*. Der Haken an (3) steht deshalb
-   **nicht**, und das ist die Aussage, kein Versäumnis; getragen wird der Rest von
-   [`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md).
+   (unten). Was danach offen bleibt, ist **ein Wort**: *hängt*. Der Haken an (3) steht zu dieser
+   Closure deshalb **nicht**, und das ist die Aussage, kein Versäumnis; getragen wird der Rest von
+   [`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) — bis zum 2026-08-28. Seither
+   steht er; wodurch und wann, sagt §2 an Ort und Stelle.
 2. **Die Aufschlüsselung liegt vor, ihr Nenner steht neben `ls -1 test/mutations/*.sh | wc -l`.**
    Der Lauf nach dem Fix schreibt `Zeit je Sensor ueber 190 von 190 Fall-Dateien`; der Bestand
    daneben ist **190**. Seit `0e76c77` zählt der Nenner die **Zeilen**, über die die Bilanz
