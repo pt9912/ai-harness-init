@@ -352,9 +352,9 @@ Zeitdokument.
 | Posten | Herkunft | Ausgang |
 |---|---|---|
 | [`harness/conventions.md`](../../../../harness/conventions.md) §Baseline sagt weiter `Image v0.62.0` | Review MEDIUM-3, Verifikation V-6 | **Architect-Übergabe** unten, samt korrigierter Zwei-Achsen-Tabelle; zusätzlich als Posten in [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) verankert |
-| Rang-Zeiger `d-check.mk:2` nennt keinen Eintrag für `v0.65.0` | Review LOW-1 | **[slice-128](../open/slice-128-d-check-kopf-sagt-was-gilt.md)** DoD (1) — mit dem Beginn-Trigger *„der Eintrag existiert"*; echte Reihenfolge-Abhängigkeit |
-| Die Dateizahl `432` im Kopf von `d-check.mk` misst den Baum, nicht den Kopf (heute **434**) | dieser Lauf | **[slice-128](../open/slice-128-d-check-kopf-sagt-was-gilt.md)** DoD (2) |
-| Kopf-Aussagen zu `sources` und zur Neu-Erzeugung sagen weniger als der Baum tut | Review INFO-2 | **[slice-128](../open/slice-128-d-check-kopf-sagt-was-gilt.md)** DoD (3) — derselbe Kommentarblock, ein Lauf |
+| Rang-Zeiger `d-check.mk:2` nennt keinen Eintrag für `v0.65.0` | Review LOW-1 | **[slice-128](../in-progress/slice-128-d-check-kopf-sagt-was-gilt.md)** DoD (1) — mit dem Beginn-Trigger *„der Eintrag existiert"*; echte Reihenfolge-Abhängigkeit |
+| Die Dateizahl `432` im Kopf von `d-check.mk` misst den Baum, nicht den Kopf (heute **434**) | dieser Lauf | **[slice-128](../in-progress/slice-128-d-check-kopf-sagt-was-gilt.md)** DoD (2) |
+| Kopf-Aussagen zu `sources` und zur Neu-Erzeugung sagen weniger als der Baum tut | Review INFO-2 | **[slice-128](../in-progress/slice-128-d-check-kopf-sagt-was-gilt.md)** DoD (3) — derselbe Kommentarblock, ein Lauf |
 | [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)-Entscheidung ist fällig | Review MEDIUM-2 | **Architect-Übergabe** unten (Vorfragen hier neu gemessen) + [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) als Termin-Träger |
 | `TestDefaultDigest_MatchesCanonical`/`TestDefaultImage_MatchesCanonical` ohne Fall in `test/mutations/` | Review MEDIUM-4, Verifikation V-8 | **[slice-119](../open/slice-119-zusage-ohne-fall-wird-sichtbar.md)**, dessen Bezugsmenge dieser Lauf um die Go-Stufe erweitert hat — **kein** eigener Schnitt, Begründung unten |
 | `ids` hatte keine Richtungs-Messung | Review MEDIUM-1, Verifikation V-5 | **erledigt** — hier neu gemessen, Tabelle in DoD (3) |
