@@ -43,7 +43,7 @@ Eintrag — die Regel, an der der neue Prüfbereich sofort hängt),
 
 **`shell-lint` liest die Logik in den bats-Dateien, und
 [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) liegt danach in
-`docs/plan/carveouts/done/` — oder der Lauf sagt, welche der zwei im Carveout genannten Techniken <!-- d-check:ignore (done/ entsteht erst bei erster Carveout-Auflösung) -->
+`docs/plan/carveouts/done/` — oder der Lauf sagt, welche der zwei im Carveout genannten Techniken
 warum nicht trägt, und der Carveout wird mit diesem Grund neu gefasst statt stillschweigend
 verlängert.**
 
