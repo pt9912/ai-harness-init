@@ -1,8 +1,8 @@
 # d-check.mk — Doku-Referenz-Gate via d-check. Abgeleitet aus `d-check --print-mk`
-# (v0.62.0) und adaptiert (MR-010/MR-011/MR-012/MR-024):
+# (v0.65.0) und adaptiert (MR-010/MR-011/MR-012/MR-024):
 #   * das Befund-Gate heißt `docs-check` statt `doc-check` (Ziel-Form-/modul-13-
 #     Konsistenz; als EINZIGES Target in `make gates` + AGENTS/README behauptet);
-#   * DCHECK_DIGEST ist auf den v0.62.0-Release-Digest GEPINNT (das Tool liefert es
+#   * DCHECK_DIGEST ist auf den v0.65.0-Release-Digest GEPINNT (das Tool liefert es
 #     leer) — strikte Reproduzierbarkeit (LH-QA-02);
 #   * die advisory-Targets (`doc-trace`/`doc-doctor`/…) bleiben verbatim vom Tool und
 #     sind NICHT als Gate behauptet — verfügbar wie `regelwerk-check`, kein
@@ -15,8 +15,8 @@
 #     aktiviert (additive Härtung, MR-011).
 # Einbinden: `include d-check.mk`; eine eigene .d-check.yml danebenlegen. Neu-Erzeugung:
 # `d-check --print-mk`, dann `doc-check`→`docs-check` re-adaptieren und DCHECK_DIGEST pinnen.
-DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.62.0
-DCHECK_DIGEST ?= sha256:3996a593b9cb71aa3bcb4f3ddf8f637e7409db31b3a2dac7eedc28d65814cacf
+DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.65.0
+DCHECK_DIGEST ?= sha256:5ea03abe7918381c68203d8ac078a78d0d4ab91b5478e87c66b5a7b4fda41288
 # TRACE_FLAGS: optionale Flags für die RTM-Targets (z. B. --json).
 TRACE_FLAGS ?=
 
