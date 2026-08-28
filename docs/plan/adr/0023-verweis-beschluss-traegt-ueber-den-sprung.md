@@ -1,6 +1,6 @@
 # ADR-0023: Der Verweis-Beschluss trägt über den Sprung, und Zeichenketten-Frische ist nicht sein Wächter
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-08-28
 
@@ -14,10 +14,10 @@ adoptiert wird), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluz
 bewachen schien, und dem Grund, warum es das nicht tut),
 [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) (der Beschluss, der hier neu gehalten wird),
 [ADR-0017](0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) (die Senkung, die er kostet),
-[ADR-0018](0018-ziel-fassung-regiert-die-migration.md) (die **vorgeschlagene** Prozedur für den
-Sprung: sie steht seit dem 2026-08-09 auf `Proposed` und regiert erst mit ihrer Annahme — was
-diese ADR von ihr übernimmt, ist der Zielstand `v5.12.0` als **Mess-Operand**, und jede Messung
-unten nennt ihren Tag selbst)
+[ADR-0018](0018-ziel-fassung-regiert-die-migration.md) (die Prozedur für den Sprung: am
+2026-08-28 **Accepted** und damit geltend, angenommen im selben Commit wie diese ADR — was diese
+ADR von ihr übernimmt, ist der Zielstand `v5.12.0` als **Mess-Operand**, und jede Messung unten
+nennt ihren Tag selbst)
 
 **Schärft:** — Prozess-ADR ohne Spec-Stratum: sie regelt die **Form** eines Verweises auf die
 vendored Baseline und die **Wächter-Frage** darüber, nicht den Inhalt eines Spec-Dokuments.
@@ -56,8 +56,9 @@ nimmt **genau eine namentlich genannte Datei** auf, extensional geschlossen.
 **Erstens: vier der fünf tragenden Quellen jener Begründung sind seither geändert.** Jene
 Begründung maß gegen `v5.3.0` und schloss von dort über einen vollständig gelesenen Delta auf den
 adoptierten Stand `v5.3.1` — zwei benachbarte Kurs-Tags. **Bezugspunkt hier ist `v5.3.1`**, das
-Ende jener Schließung und der bis heute protokollierte Zielstand
-([ADR-0018](0018-ziel-fassung-regiert-die-migration.md), `Proposed`). Ab dort misst derselbe
+Ende jener Schließung und der Zielstand, von dem aus
+[ADR-0018](0018-ziel-fassung-regiert-die-migration.md) ihre zwei Züge protokolliert
+(`v5.3.1` → `v5.9.0` → `v5.12.0`). Ab dort misst derselbe
 Ausschnitt **31 Dateien, +609/−149 Zeilen**
 (`git diff --shortstat v5.3.1 v5.12.0 -- lab/regelwerk lab/templates`, lokaler Kurs-Klon); ab
 `v5.3.0`, dem Stand, gegen den jene Sonden liefen, sind es **33 Dateien, +622/−161**
@@ -437,7 +438,7 @@ darum beantwortet gehört, nicht übergangen.** Vier Prüfungen, jede mit ihrem 
 | Option | Pro | Contra |
 |---|---|---|
 | A — nichts entscheiden, der Vorgänger-Beschluss gilt einfach weiter | kein Aufwand, kein neues Artefakt | er nennt seine Grenze selbst (*„Für einen weiteren Bump gilt er nicht."*), und **vier von fünf** seiner tragenden Quellen sind seither geändert. Wer nichts entscheidet, adoptiert eine Begründung, deren Quellen er nicht gelesen hat — und lässt zugleich die `versions`-Messung als stummen Widerspruch stehen |
-| B — [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) superseden und neu schreiben | die von [`AGENTS.md`](../../../AGENTS.md) §3.4 vorgesehene Bahn für eine Korrektur | die Entscheidung hat sich **nicht geändert**; ein Supersede für eine nachgehaltene Begründung ist ADR-Inflation. **Gemessen, nicht geschätzt:** der Statuswechsel allein erzeugt **23 `matrix-inactive` über 9 Dateien** (Sonde in einer Kopie außerhalb des Repos über dem Commit `363421c` — dem Bestand **ohne** diese ADR, die es nur gibt, weil der Supersede verworfen wurde: Status-Zeile auf *Superseded* gesetzt, Doku-Gate gefahren). In ADR-Dateien liegen davon **15**, über **sieben** Dateien; **12 über sechs** liegen in *Accepted*-ADRs, die §3.4 einfriert — dort wäre die Reparatur in keiner erlaubt. Die siebte ist [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) mit drei Befunden: sie steht auf `Proposed`, ist nicht eingefroren und zählt in den zwölf darum nicht mit. Alle diese Zahlen wandern mit dem Verweis-Bestand ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2) |
+| B — [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) superseden und neu schreiben | die von [`AGENTS.md`](../../../AGENTS.md) §3.4 vorgesehene Bahn für eine Korrektur | die Entscheidung hat sich **nicht geändert**; ein Supersede für eine nachgehaltene Begründung ist ADR-Inflation. **Gemessen, nicht geschätzt:** der Statuswechsel allein erzeugt **23 `matrix-inactive` über 9 Dateien** (Sonde in einer Kopie außerhalb des Repos über dem Commit `363421c` — dem Bestand **ohne** diese ADR, die es nur gibt, weil der Supersede verworfen wurde: Status-Zeile auf *Superseded* gesetzt, Doku-Gate gefahren). In ADR-Dateien liegen davon **15**, über **sieben** Dateien. Zum Stand der Sonde lagen **12 über sechs** in *Accepted*-ADRs, die §3.4 einfriert — dort wäre die Reparatur in keiner erlaubt; die siebte war [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) mit drei Befunden, damals `Proposed` und darum nicht mitgezählt. **Mit ihrer Annahme am 2026-08-28 sind es 15 über sieben:** die Sonde ist unberührt, sie misst den Verweis-Bestand; der Status entscheidet nur, welcher Teil ihres Ergebnisses unreparierbar ist — und das ist jetzt der ganze. Alle diese Zahlen wandern mit dem Verweis-Bestand ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2) |
 | C — `versions` adoptieren, die betroffenen Accepted-ADRs per `exempt-paths` freistellen | die 36 stillen Nennungen bekämen einen Sensor; eine Config-Sektion | **gemessen, verworfen:** der Sensor misst die falsche Eigenschaft (2 × 2-Sonde), trennt die drei Klassen nicht und verlangte auf zweien eine falsch machende Änderung. Die Ausnahmeliste trüge sechs Accepted-ADRs plus zwei Zeitdokument-Bäume, wüchse mit jedem Artefakt, das über den alten Tag **schreibt**, und nähme die freigestellten Dateien datei-weit aus jeder künftigen Prüfung desselben Moduls |
 | D — `versions` adoptieren, ohne Zeitdokument-Ausnahme | keine Ausnahmeliste zu pflegen | **gemessen:** **284 Befunde über 119 Dateien**, davon **226** in Zeitdokumenten (Beträge wandern, [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2) — also der Auftrag, genau die Sätze nachzuziehen, die [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) Festlegung 4 stehen lässt (*„Kein Satz ändert sich"*). Ein Gate, dessen Befunde man nicht beheben darf, erzieht dazu, Rot zu übersehen |
 | **E — gewählt: neu halten statt fortschreiben · das Modul mit Kriterium verwerfen · die stille Hälfte benennen** | trennt die zwei Fragen, die alle anderen Optionen vermischen — *gilt die Begründung noch?* und *gibt es jetzt einen Wächter?*; die Verwerfung steht auf einer 2 × 2-Messung statt auf einer Werkzeug-Beschreibung; sie hinterlässt ein **Kriterium**, das den nächsten Kandidaten bindet; sie ändert an zwei angenommenen ADRs kein Byte | die stille Hälfte bleibt unbewacht, und diese ADR baut keinen Sensor; sie kostet einen zweiten Lauf gegen die Ziel-Fassung bei **jedem** künftigen Bump; und sie fügt dem ADR-Bestand ein Artefakt hinzu, das eine bestehende Entscheidung bestätigt statt eine neue zu treffen — der Preis dafür, dass §3.4 die Bestätigung nicht in die alte Datei lässt |
@@ -546,9 +547,11 @@ anderen schon.
 ## Re-Evaluierungs-Trigger
 
 - **Wenn die Ziel-Fassung erneut bewegt wird** *(feedforward — eine Entscheidung über den
-  Zielstand, kein Sensor; wer sie trifft und wie sie adressiert wird, soll
-  [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) regeln — sie steht auf `Proposed` und
-  regiert erst mit ihrer Annahme, bis dahin ist der Zielstand eine Setzung des Auftraggebers)*:
+  Zielstand, kein Sensor; wer sie trifft und wie sie adressiert wird, regelt
+  [ADR-0018](0018-ziel-fassung-regiert-die-migration.md), seit dem 2026-08-28 **Accepted**: die
+  Bewegung ist eine Setzung des Auftraggebers, die repo-interne Regel darüber bindet die Rollen
+  dieses Repos, und ab dem Umschlag trägt jede weitere Bewegung eine Folge-ADR mit
+  `Supersedes`)*:
   dann ist die Messung „vier von fünf tragenden Quellen geändert / vier Zitate überleben" gegen
   den neuen Tag neu zu fahren, und der Delta der bewegten Quellen ist wieder zu **lesen**. Sie
   ist tag-gebunden und kein Erwartungswert.
@@ -581,3 +584,4 @@ anderen schon.
 |---|---|---|
 | 2026-08-28 | **Proposed** | Architect-Verdikt zur Tag-Wechsel-Frage vor dem Tausch des vendored Baums. Anlass war eine Messung, die eine planende Rolle nachgetragen hatte: das Modul `versions` meldet die stille Hälfte. Nachgemessen ergab sie **sechs** getroffene Accepted-ADRs — zwei mehr, als eine Suche mit Folgepfad findet, weil das `pin-pattern` des Moduls den Tag auch ohne ihn fängt — und die 2 × 2-Sonde zeigte, dass das Modul Zeichenketten-Frische misst, nicht Verweis-Auflösung |
 | 2026-08-28 | Überarbeitet, weiter **Proposed** | Vor der Annahme geschärft, an sechs Stellen: der Bezug auf [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) nennt deren `Proposed`-Status, statt sie als geltend zu führen — dieselbe Unterscheidung, die die Supersede-Sonde in Zeile B der Alternativen trifft. Alle Bestands-Zahlen tragen ihre **Mess-Basis** (ein benannter Commit) und die Kennzeichnung als Nicht-Erwartungswerte ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2). Der Delta der vier bewegten tragenden Quellen ist **vollständig gelesen** statt über ein Muster erschlossen — 4 Dateien, +90/−11 —, und er enthält zwei Verweis-Form-Regeln für das Adaptions-Register, von denen die eine dem Muster entgeht; die Grenze des Suchraums steht damit an einem Fall statt abstrakt. Der Re-Evaluierungs-Trigger zum Werkzeug ist auf das eingeschränkt, was ein Release bewegt: einen der drei Gründe von Festlegung 3 und eine Hälfte des dritten. Die Fitness Function nennt die **zweite** Richtung der Sensor-Deckung — der ungebaute Form-Sensor aus [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) färbte nach seiner dortigen Eigenschaft drei ADRs rot, und er fällt damit unter Festlegung 4. Und die Delta-Messung nennt beide Tags, gegen die sie gehalten werden kann, mit dem Betrag für jeden |
+| 2026-08-28 | **Accepted** | **Entscheidung des Auftraggebers vom 2026-08-28, vollzogen in der Architect-Rolle** — im selben Commit wie die Annahme von [ADR-0018](0018-ziel-fassung-regiert-die-migration.md). Dass **keine** Quelle dieses Repos und keine der vendored Baseline einen annehmenden Akteur benennt, ist dort gemessen und wird hier nicht gedoppelt. **Der `Proposed`-Vorbehalt aus der Zeile darüber ist damit gegenstandslos und an vier Stellen gezogen:** Bezug, Bezugspunkt in §Kontext, Zeile B der Alternativen und erster Re-Evaluierungs-Trigger. Zeile B trägt die Folge als Zahl: die Supersede-Sonde über `363421c` misst den Verweis-Bestand und ist unberührt, aber ihre **12 über sechs** unreparierbaren Befunde sind mit der Annahme von [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) **15 über sieben** — die Verwerfung von Option B wird dadurch teurer zu widerrufen, nicht billiger. Was jetzt fällig wird, steht in §Konsequenzen als Folgepflichten 1 bis 3 und gehört den planenden und umsetzenden Rollen; diese ADR ändert dabei keine Datei außer sich und dem Index |
