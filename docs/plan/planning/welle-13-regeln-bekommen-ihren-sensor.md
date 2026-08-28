@@ -192,7 +192,7 @@ legen ergäbe sechs — *„der Schnitt ist falsch"*, nicht *„die DoD ist län
     **Wohin es gehört, ist gemessen:** sein großer lebender Gegenstand in diesem Repo ist der
     **Baseline-Tag**, nicht der d-check-Pin. `pin-pattern: 'baseline/(v…)'` gegen einen Span mit
     `v5.12.0` meldet **58 Befunde über 16 Dateien**, darunter **alle vier** Accepted-ADRs aus
-    [slice-080](next/slice-080-verweis-ueberlebt-tagwechsel.md) — also auch die **drei**, die dort
+    [slice-080](in-progress/slice-080-verweis-ueberlebt-tagwechsel.md) — also auch die **drei**, die dort
     als *stumm* gemessen sind. `versions` ist damit ein Kandidat für die **stille Hälfte** jenes
     Slice in [welle-10](welle-10-re-baseline.md); die Messung steht dort in §6, nicht nur hier.
   - **`pins` und `immutable` — der Gegenstand muss erst geschrieben werden.** Beide melden ohne
