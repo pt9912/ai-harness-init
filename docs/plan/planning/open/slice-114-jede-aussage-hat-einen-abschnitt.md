@@ -201,9 +201,9 @@ halten kann. Sie hat keine. Alle drei Kandidaten sind gemessen, keiner trägt:
   Zusage weiter als ihre Abdeckung ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 - **(b) Das Verhältnis unserer Fassung zu ihrer Vorlage.** Nicht trennscharf, und der
   Gegenbeleg ist der wichtigste Konventionsspeicher selbst: `harness/conventions.md` misst am
-  2026-08-28 **132 869** Zeichen gegen **8 785** der Vorlage
+  2026-08-28 **148 721** Zeichen gegen **8 785** der Vorlage
   (`wc -c harness/conventions.md .harness/baseline/v5.12.0/templates/harness/conventions.template.md`)
-  — **mehr als das Fünfzehnfache**, und zwar **konstruktionsbedingt**: die Vorlage liefert den Adaptions-Block
+  — **mehr als das Sechzehnfache**, und zwar **konstruktionsbedingt**: die Vorlage liefert den Adaptions-Block
   leer, und jede Adaption ist ein Eintrag. **Der Faktor wandert mit jedem Eintrag und ist kein
   Erwartungswert** ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2); was das Kriterium verwirft, ist die Bauart, nicht die Ziffer — der Nenner ist

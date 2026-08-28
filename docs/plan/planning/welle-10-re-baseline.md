@@ -196,15 +196,18 @@ wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
 
 Der Zustand jedes Slice ist sein Lifecycle-Verzeichnis, hier nicht gespiegelt.
 
-Die Reihenfolge ist tragend: **080 entscheidet, 081 vollzieht, 130 und 131 räumen ab, was der
-Vollzug an unbeantworteten Fragen hinterlässt, 082–084 sind die drei Durchgänge der Prozedur, 085
-zieht die emittierte Ebene nach.** 080 liegt vor 081, weil der Tausch sonst an einer Frage
-vorbeiläuft, die er selbst aufwirft.
+Die Reihenfolge ist tragend: **080 entscheidet, 081 vollzieht, 133, 130, 131 und 132 räumen ab, was
+der Vollzug an gebrochenen Zusagen und unbeantworteten Fragen hinterlässt, 082–084 sind die drei
+Durchgänge der Prozedur, 085 zieht die emittierte Ebene nach.** 080 liegt vor 081, weil der Tausch
+sonst an einer Frage vorbeiläuft, die er selbst aufwirft. **133 liegt vor 130**, weil dessen
+Nachweis über beide Ursachen zugleich läuft und ohne 133 unter keiner korrekten Ausführung grün
+werden kann.
 
 | Slice | Titel | Bezug |
 |---|---|---|
 | slice-080 | Ein Verweis in die vendored Baseline überlebt den Tag-Wechsel | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | slice-081 | Baum tauschen, Pin ziehen, Verweise nachziehen | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| slice-133 | Der emittierte Baum trägt keine Platzhalter-Links | [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) |
 | slice-130 | Der Emitter entscheidet über jedes neue Template | [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) |
 | slice-131 | Eine Präsens-Aussage über die Baseline ist gegen den gepinnten Stand gemessen | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | slice-132 | Der Adaptions-Block trägt seinen datierten Beleg ohne totes Ziel | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
@@ -213,22 +216,46 @@ vorbeiläuft, die er selbst aufwirft.
 | slice-084 | Stichprobe gegen den Bestand, nicht gegen das Delta | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | slice-085 | Die emittierte Ebene zieht nach | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) |
 
-**130, 131 und 132 sind beim Schnitt der Welle nicht vorgesehen gewesen, und der Grund gehört an
-diese Stelle statt in eine Fußnote: der Plan hat den vendored Baum als Verweis-**Ziel**
+**130, 131, 132 und 133 sind beim Schnitt der Welle nicht vorgesehen gewesen, und der Grund gehört
+an diese Stelle statt in eine Fußnote: der Plan hat den vendored Baum als Verweis-**Ziel**
 inventarisiert, nicht als **Eingabe** — und den Verweis als Adresse, nicht als Träger einer
 Aussage.** `make test` liest den Inhalt des Baums (`test/courseset-fixture.bats`), die Verweise auf
 ihn tragen neben der Adresse ein Zitat oder eine daraus gezogene Zahl, und einer von ihnen ist nur
 über den **abgelösten** Stand wahr und darf deshalb gar nicht gezogen werden. Nichts davon fällt
-unter „Pin" oder „Verweis nachziehen". Alle drei hängen am getauschten Baum und an nichts sonst.
+unter „Pin" oder „Verweis nachziehen". Alle vier hängen am getauschten Baum und an nichts sonst.
 Sie stehen vor 082, weil ein Adaptions-Durchgang über einem Bestand, dessen Zahlen noch gegen den
 alten Baum gemessen sind, seine eigene Grundlage nicht kennt.
 
-**Zwei Carveouts halten den Zwischenzustand sichtbar statt still:**
+**Die Lücke hat eine dritte Ebene, und sie ist die teuerste: der Baum ist auch die Eingabe des
+Emissions-Kanals.** `internal/fetch/baseline.go` `DefaultTag` zeigt nach dem Tausch auf den neuen
+Satz, und damit wechselt ohne eine Zeile in `internal/emit/`, was ein frisch gebootstrapptes
+Zielrepo bekommt. Gemessen: `make smoke` meldet am Stand `26aec2c`
+`23 Datei(en) geprüft, 10 Befund(e)`, über dem Vor-Tausch-Stand
+(`T=$(mktemp -d); git archive c6cc56f | tar -x -C "$T"; cd "$T" && make smoke`)
+`19 Datei(en) geprüft, 0 Befund(e)` bei Exit 0 — **keine Erwartungswerte**
+([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2). Gebrochen sind
+[`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und
+[`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), beide Rang 1.
+**Das trägt kein Carveout, sondern zwei Slices:** eine Rang-1-Zusage wird nicht ausgenommen — ein
+Carveout steht in keinem Rang und dürfte nach `grundlagen-source-precedence.md` §Vollständigkeit
+verweisen, ausführen und ausbuchstabieren, aber nichts festlegen —, und der Trichter aus
+`modul-07-carveouts.md` §Werkzeug-Wahl führt bei dieser Häufung ohnehin nicht auf Carveout. **7**
+Befunde trägt [slice-133](open/slice-133-emittierter-baum-ohne-platzhalter-links.md) (Platzhalter-
+Links in drei schon vorher emittierten Singletons), **3** trägt
+[slice-130](open/slice-130-emitter-entscheidet-jedes-neue-template.md) (sie lösen sich mit der
+Klassen-Entscheidung). Die Aufteilung ist je Befund an seiner Vorlagen-Zeile erhoben, nicht über
+die Summe geschlossen; die Tabelle steht in slice-133 §1.
+
+**Zwei Carveouts halten den Zwischenzustand der Gates sichtbar statt still:**
 [`CO-004`](../carveouts/CO-004-emitter-klassifikation-offen.md) (Gate `test`, Folge-Slice 130) und
 [`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md) (Gate `docs-check`, Folge-Slice
-132). Beide sind extensional geschlossen, und der zweite hat **keine** Gate-Konfiguration, weil das
-Modul `links` am Pin `v0.65.0` keine Referenz-Ausnahme kennt — dort bleibt der Gate rot, und der
-Carveout ist der einzige Träger der Begründung.
+132). Beide sind extensional geschlossen, und **keiner** von beiden deckt den Vertragsbruch oben —
+`CO-004` grenzt das in seinem Kopf ausdrücklich ab. Der zweite hat **keine**
+Gate-Konfiguration, weil das Modul `links` am Pin `v0.65.0` keine Referenz-Ausnahme kennt; dort
+bleibt der Gate rot, und der Carveout ist der einzige Träger der Begründung. Beim ersten ist die
+Nennung im Gate-Output **möglich, aber nicht gesetzt** (`git grep -c 'CO-004' -- test/ .d-check.yml
+Makefile` → kein Treffer) — ein offener Posten, den slice-081 §2 DoD (4) als solchen führt.
 
 **130 ist nicht der aus [slice-085](open/slice-085-emittierte-ebene-zieht-nach.md)
 herausgeschnittene Teil.** Dessen Plan führt `internal/emit/templates/commands/`, die übrigen
@@ -259,11 +286,14 @@ gegenstandslos wird, kein neues Pflichtfeld mehr braucht.
   den alten Tag als Tree-Operanden der Vor-Tausch-Seite, nicht als Zeiger auf einen Baum, der
   stehen bleiben müsste. Der Rest ist vor dieser Welle fällig oder auf den neuen Tag zu ziehen —
   entschieden wird das je Treffer beim Lauf, nicht hier.
-- **Innerhalb der Welle:** 080 → 081 → {130, 131, 132} → {082 → 083, 084} → 085. 084 hängt nur am
-  getauschten Baum, nicht am Adaptions-Durchgang: sein Gegenstand ist der Bestand, nicht die
-  Änderung. 130, 131 und 132 hängen ebenso nur am getauschten Baum und sind untereinander unabhängig;
-  ihre Reihenfolge entscheidet, wer das WIP-Limit zuerst bekommt, nicht der Plan. 132 verlangt
-  zusätzlich einen **Architect**-Lauf: seine Liefer-Punkte liegen in dessen Artefakten.
+- **Innerhalb der Welle:** 080 → 081 → {133 → 130, 131, 132} → {082 → 083, 084} → 085. 084 hängt
+  nur am getauschten Baum, nicht am Adaptions-Durchgang: sein Gegenstand ist der Bestand, nicht die
+  Änderung. 131 und 132 hängen ebenso nur am getauschten Baum und sind von den übrigen unabhängig;
+  ihre Reihenfolge entscheidet, wer das WIP-Limit zuerst bekommt, nicht der Plan. **133 → 130 ist
+  dagegen tragend, nicht ordnend:** DoD (3) von 130 führt den Nachweis über **beide** Ursachen des
+  Vertragsbruchs, und über einem Baum, in dem die sieben Platzhalter-Befunde noch stehen, kann er
+  auch bei vier richtig entschiedenen Vorlagen nicht grün werden. 132 verlangt zusätzlich einen
+  **Architect**-Lauf: seine Liefer-Punkte liegen in dessen Artefakten.
 
 ## 6. Out-of-Scope für diese Welle
 

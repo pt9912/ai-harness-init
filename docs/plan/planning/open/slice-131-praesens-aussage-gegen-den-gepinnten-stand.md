@@ -70,20 +70,33 @@ dass der Pfad ein reiner Navigations-Zeiger ist.
 
 ### Der Rest ist gemessen, und er ist zur Hälfte falsch
 
-Außerhalb von `slice-114` stehen **11** Nennungen des abgelösten Tags in **6** lebenden
-Plandateien. **Die Menge wandert mit jedem Schnitt und ist kein Erwartungswert**
+**11** Nennungen des abgelösten Tags stehen in **6** lebenden Plandateien als **Pfad-Operand eines
+Kommandos**, das gegen den Baum läuft, den dieses Repo heute ausliefert. **Die Menge wandert mit
+jedem Schnitt und ist kein Erwartungswert**
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2) — sie wird beim Lauf neu erhoben, nicht hier übernommen:
 
 ```
 git grep -n '\.harness/baseline/v3\.5\.2/' \
   -- docs/plan/planning/open docs/plan/planning/next docs/plan/planning/in-progress \
-     'docs/plan/planning/welle-*.md' | grep -v slice-083
+     'docs/plan/planning/welle-*.md' | grep -v 'git show' | grep -v slice-083
 ```
 
-`slice-083` steht nicht darin und bleibt es: er nennt den alten Tag als **Tree-Operanden der
-Vor-Tausch-Seite** — genau die Adresse, die der Tausch nicht anfassen darf
-([welle-10](../welle-10-re-baseline.md) §5).
+**Die zwei Filter sind der Gegenstand dieses Slice, nicht sein Kleingedrucktes** — sie trennen die
+Nennung, die der Tausch **ziehen muss**, von der, die er **nicht anfassen darf**:
+
+- `grep -v slice-083` — [slice-083](slice-083-form-vergleich-pflichtfelder.md) nennt den alten Tag
+  als **Tree-Operanden der Vor-Tausch-Seite** ([welle-10](../welle-10-re-baseline.md) §5).
+- `grep -v 'git show'` — **dieselbe Klasse, und sie ist größer als ein Slice.** Ein
+  `git show <ref>:.harness/baseline/v3.5.2/…` adressiert einen **Baum in der Historie**, nicht das
+  Arbeitsverzeichnis; der Pfad bleibt nach dem Tausch richtig und wird durch ein Nachziehen des
+  Tags **falsch**. Gegenprobe, wer heute dazugehört:
+  `git grep -n '\.harness/baseline/v3\.5\.2/' -- docs/plan/planning/open docs/plan/planning/next docs/plan/planning/in-progress 'docs/plan/planning/welle-*.md' | grep 'git show' | cut -d: -f1 | sort | uniq -c`
+  → `slice-114` (2), **`slice-131` (1)**, `slice-132` (1), `slice-133` (1). Der zweite Treffer ist
+  **diese Datei**: das Kommando findet sich selbst, weil der Filter, den es abdruckt, das gesuchte
+  Muster enthält. Das ist kein Messfehler, sondern die Form — wer die Zeile abzieht, zieht einen
+  echten Tree-Operanden ab. Ein Filter, der nur `slice-083` nennt, hält die Klasse dagegen für
+  einen Einzelfall und zählt die übrigen zu den elf.
 
 **Jede der 11 ist ein Kommando mit zitiertem Ergebnis, und jede spricht im Präsens über den Baum,
 den dieses Repo ausliefert.** Sechs davon gegen den gepinnten Stand nachgefahren — vier Ergebnisse

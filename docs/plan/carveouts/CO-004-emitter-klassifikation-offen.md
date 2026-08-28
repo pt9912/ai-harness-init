@@ -6,12 +6,26 @@
 
 **Betroffenes Gate:** `test` (bats-Stufe) und damit `gates`.
 
-**Geltungsbereich:** **zwei benannte Fälle** in `test/courseset-fixture.bats` — *„fixture:
-courseSet() bildet den realen Template-Satz vollstaendig ab"* und *„fixture: der reale Satz
-liefert genau N in-scope-Templates"*. **Extensional geschlossen:** jeder weitere rote Fall in
-dieser oder einer anderen Datei fällt **nicht** unter diesen Carveout und ist eine eigene
-Entscheidung ([`AGENTS.md`](../../../AGENTS.md) §3.5). Der dritte Fall derselben Datei — *„die
-fuenf wiederkehrenden Templates existieren real"* — ist grün und bleibt es.
+**Geltungsbereich:** **zwei benannte Fälle** in `test/courseset-fixture.bats`, hier mit dem
+Wortlaut, unter dem sie auffindbar sind (`grep -n '^@test' test/courseset-fixture.bats`) —
+*„fixture: courseSet() bildet den realen Template-Satz vollstaendig ab"* (Z. 53) und *„fixture:
+der reale Satz liefert genau 17 in-scope-Templates"* (Z. 71). Die **17** im Fallnamen ist der
+Stand vor dem Tausch und wandert mit der Entscheidung des Folge-Slice; sie steht hier, weil sie
+Teil des Namens ist, nicht als Erwartungswert. **Extensional geschlossen:** jeder weitere rote
+Fall in dieser oder einer anderen Datei fällt **nicht** unter diesen Carveout und ist eine eigene
+Entscheidung ([`AGENTS.md`](../../../AGENTS.md) §3.5). Der dritte Fall derselben Datei — *„fixture:
+die fuenf wiederkehrenden Templates existieren real"* (Z. 87) — ist grün und bleibt es.
+
+**Nicht Geltungsbereich, und die Abgrenzung ist der wichtigste Satz dieses Kopfes:** die zehn
+Befunde, die `make smoke` im **emittierten** Baum meldet, fallen **nicht** unter diesen Carveout.
+Sie brechen [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und
+[`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) — Rang 1 der
+Source Precedence —, und eine Rang-1-Zusage wird nicht durch einen Carveout ausgenommen, sondern
+durch Reparatur eingelöst; die Begründung führt
+[slice-133](../planning/open/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1. Ihre Träger
+sind zwei Slices, nicht diese Datei: **sieben** Befunde
+[slice-133](../planning/open/slice-133-emittierter-baum-ohne-platzhalter-links.md), **drei**
+[slice-130](../planning/open/slice-130-emitter-entscheidet-jedes-neue-template.md).
 
 **Folge-Slice:** [slice-130](../planning/open/slice-130-emitter-entscheidet-jedes-neue-template.md)
 — er entscheidet je Vorlage die Klasse und löst diesen Carveout mit seinem Abschluss auf.
@@ -32,21 +46,35 @@ Emit-Fixture am realen Template-Satz fest und stellt bei jedem Zugang eine Frage
 durchzulassen: *„gehoert er in scope, und wenn ja, ist er Singleton oder wiederkehrend
 (`emit.isRecurring`)?"* Mit dem Baum-Tausch aus
 [slice-081](../planning/in-progress/slice-081-baum-tauschen-pin-ziehen.md) sind **vier** Vorlagen
-neu — `observations`, `reconciliation`, `welle-results` und der Adaptions-Eintrag
-der Adaptions-Eintrag `MR-NNN-titel` —, und die in-scope-Zahl geht von 17 auf 21
+neu — `observations`, `reconciliation`, `welle-results` und `MR-NNN-titel`, der Adaptions-Eintrag
+—, und die in-scope-Zahl geht von 17 auf 21
 (`find .harness/baseline/*/templates -type f | sed 's|.*/templates/||' | grep '\.template\.md$' | grep -v '^project-readme\.template\.md$' | wc -l`).
 
+**Die vier werden heute schon emittiert — das ist gemessen, nicht vorhergesagt.** `emit.inScope`
+ist default-true und wirkt am **realen** Vorlagen-Satz; `courseSet()` ist die Test-Fixture, nicht
+der Emissions-Pfad. Der emittierte Bestand steht deshalb bereits auf **23** Dateien mit
+**10** Befunden (`make smoke` am Stand `26aec2c`) gegen **19** Dateien und **0** Befunde über dem
+Vor-Tausch-Stand (`T=$(mktemp -d); git archive c6cc56f | tar -x -C "$T"; cd "$T" && make smoke`) —
+beide Zahlen wandern mit dem Vorlagen-Satz und sind **keine Erwartungswerte**
+([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2). Unter den zehn Befunden stehen die drei, die an diesen vier Vorlagen hängen — im
+**gebootstrappten Zielrepo**, hier `<ziel>/`, nicht in diesem:
+`<ziel>/docs/plan/planning/welle-results.md:67` und `:83` sowie
+`<ziel>/harness/conventions/MR-NNN-titel.md:15`.
+Die Zusage aus
+[`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), der emittierte
+Stand sei *„out-of-the-box gate-sicher"*, **ist damit gebrochen** — und zwar unabhängig von jeder
+Entscheidung dieses Carveouts. Was hier ausgenommen ist, ist der rote `test`-Gate; der
+Vertragsbruch ist es **nicht** (Kopf, §Nicht Geltungsbereich).
+
 **Das Grün ist nicht durch Nachziehen der Fixture zu haben.** Wer die vier Pfade in `courseSet()`
-einträgt, färbt beide roten Fälle grün und `TestTemplates_EmittierterBestandVollstaendig` rot —
-denn `emit.inScope` ist default-true, die vier würden also als gestempelte Singletons emittiert.
-Wer sie daraufhin in die Erwartungsliste aufnimmt, hat die Entscheidung getroffen, ohne sie zu
-treffen. Sie ist **nachweislich falsch**: `welle-results` trüge am flachen Emissions-Ort
-`](../observations.md)` und der Adaptions-Eintrag `](../conventions.md#mr-<NNN>)` samt
-`<tag>`-Platzhalter — beides liest das emittierte Doku-Gate
-(`internal/emit/templates/d-check.yml`: `modules: [links, anchors]`, `scan.ignore` nimmt nur
-`**/*.template.md`, `.tmp/**`, `.harness/**` aus). Die Zusage aus
-[`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), der
-emittierte Stand sei *„out-of-the-box gate-sicher"*, fiele damit.
+einträgt, färbt beide roten Fälle grün und `TestTemplates_EmittierterBestandVollstaendig` rot; wer
+sie daraufhin in die Erwartungsliste aufnimmt, hat die Entscheidung getroffen, ohne sie zu treffen
+— und schreibt den heutigen Ist-Zustand als Soll fest, statt ihn zu prüfen. Dass er falsch ist,
+zeigen dieselben drei Befundzeilen: `welle-results` trägt am flachen Emissions-Ort
+`](../observations.md)`, `MR-NNN-titel` einen `<tag>`-Platzhalter im Baseline-Pfad. Beides liest
+das emittierte Doku-Gate (`internal/emit/templates/d-check.yml`: `modules: [links, anchors]`,
+`scan.ignore` nimmt nur `**/*.template.md`, `.tmp/**`, `.harness/**` aus).
 
 **Warum die Ausnahme und nicht der Slice.** Die Entscheidung ist ein eigener Gegenstand mit
 eigener Ebene: sie ändert, was ein **gebootstrapptes Zielrepo** bekommt
@@ -83,24 +111,41 @@ entstanden ist. Der Trigger fragt nach der **Entscheidung**, nicht nach der Farb
 
 ## Geltungs-Konfiguration
 
-**Die Ausnahme senkt die Strenge nicht — sie macht das Rot benannt.** Die beiden Fälle bleiben
-scharf: sie vergleichen weiter den vollen Ist-Bestand und die volle Zahl. Was hinzukommt, ist die
-Kennung in ihrer Fehlermeldung, damit der rote Lauf seinen Grund und seinen Folge-Slice nennt
-statt nur einen Diff (Modul 7: *„Die Gate-Konfiguration nennt die `CO-<NNN>` im Gate-Output"*).
-Ein Ausschluss der Fälle wäre eine Schwellen-Senkung und nach
-[`AGENTS.md`](../../../AGENTS.md) §3.5 eine eigene Entscheidung — dieser Carveout erteilt sie
+**Es gibt heute keine — und anders als bei
+[`CO-005`](CO-005-adaptions-block-datierter-beleg.md) ist das kein Werkzeug-Befund, sondern ein
+offener Posten.** Gemessen, nicht angenommen: `git grep -c 'CO-004\|CO-005' -- test/ .d-check.yml
+Makefile` liefert **keinen Treffer**, und der rote Lauf gibt `not ok 40` / `not ok 41` ohne jede
+Kennung aus. Modul 7 verlangt *„Die Gate-Konfiguration nennt die `CO-<NNN>` im Gate-Output — sonst
+ist die Ausnahme eine stille Senkung ohne Begründung … sichtbar sein muss sie in jedem Fall."*
+Für die bats-Stufe ist das **erfüllbar** — eine Fehlermeldung ist Text, den ein Fall schreibt.
+`CO-005` steht anders da: dort trägt das Modul `links` am gepinnten Pin **keinen** Ort, an dem es
+ginge. Zwei Carveouts, zwei Antworten, und der Unterschied liegt im Werkzeug, nicht in der
+Sorgfalt.
+
+**Was daraus folgt, und für wen.** Die Verdrahtung liegt in `test/courseset-fixture.bats` und ist
+**Implementer**-Arbeit; dieser Carveout beschreibt sie, er stellt sie nicht her. Solange sie
+fehlt, ist die Modul-7-Pflicht **offen** — die Ausnahme ist über diese Datei begründet, aber nicht
+über den Gate-Output sichtbar. Der Posten ist deshalb Bedingung des Abnahme-Punktes von
+[slice-081](../planning/in-progress/slice-081-baum-tauschen-pin-ziehen.md) §2 DoD (4) und nicht in
+eine Fußnote verschoben.
+
+**Die Ausnahme senkt die Strenge nicht.** Die beiden Fälle bleiben scharf: sie vergleichen weiter
+den vollen Ist-Bestand und die volle Zahl, und die Config bleibt unberührt — `make test` bleibt
+rot. Ein Ausschluss der Fälle wäre eine Schwellen-Senkung und nach
+[`AGENTS.md`](../../../AGENTS.md) §3.5 eine eigene Entscheidung; dieser Carveout erteilt sie
 **nicht**.
 
 | Datei | Zeile/Section | Wert |
 |---|---|---|
-| `test/courseset-fixture.bats` | Fehlermeldung des Falls *„courseSet() bildet den realen Template-Satz vollstaendig ab"* | nennt `CO-004` und den Folge-Slice; die Vergleichsmenge bleibt unverändert |
-| `test/courseset-fixture.bats` | Fehlermeldung des Falls *„der reale Satz liefert genau N in-scope-Templates"* | dito; die erwartete Zahl bleibt die bisherige, bis [slice-130](../planning/open/slice-130-emitter-entscheidet-jedes-neue-template.md) sie mit der Entscheidung bewegt |
+| — | — | heute keine. Die Fehlermeldungen der Fälle Z. 53 und Z. 71 nennen `CO-004` **nicht**; die Nennung ist möglich, aber nicht gesetzt (Begründung oben, Kommando gefahren) |
 
 ## Verifikation (nach Auflösung)
 
 
-- [ ] Die `CO-004`-Nennung ist aus beiden Fehlermeldungen entfernt — die Ausnahme verschwindet mit
-      ihrem Grund, statt als tote Kennung stehen zu bleiben.
+- [ ] `git grep -c 'CO-004' -- test/ .d-check.yml Makefile` ist leer — trägt die Gate-Ausgabe die
+      Kennung bis dahin (§Geltungs-Konfiguration: heute nicht), verschwindet sie mit ihrem Grund,
+      statt als tote Kennung stehen zu bleiben; trägt sie sie nie, ist der Punkt beim Anlauf schon
+      erfüllt und **das** ist der Befund, nicht ein Haken.
 - [ ] `make gates` grün ohne Ausnahme.
 - [ ] Datei wird nach `docs/plan/carveouts/done/` bewegt (reiner `git mv`).
 - [ ] Index-Zeile in [`README.md`](README.md) von *Aktiv* nach *Aufgelöst* umgehängt, mit Datum und

@@ -67,30 +67,64 @@ ihre eigene Vervielfältigung etwas anderes:
 | `.harness/baseline/v5.12.0/templates/docs/plan/planning/welle-results.template.md` | *„Kopiere nach `docs/plan/planning/done/welle-<NN>-results.md`"* — **eine je Welle** |
 | `.harness/baseline/v5.12.0/templates/harness/conventions/MR-NNN-titel.template.md` | *„Vorlage für **einen** Adaptions-Eintrag … Ein Eintrag je Datei"* — **eine je Adaption** |
 
-### Ohne Entscheidung emittiert das Tool vier gestempelte Singletons — und zwei davon sind kaputt
+### Das Tool emittiert die vier bereits als gestempelte Singletons — und zwei davon sind kaputt
 
 `emit.inScope` ist bewusst **Regel statt Allowlist**: *„ein upstream neu hinzugekommenes Template
 fliesst damit automatisch mit"*. Das trägt die **Vollständigkeit** und beantwortet die
 Klassen-Frage nicht — `isRecurring` und `isDerivativeIndex` zählen namentlich auf, alles übrige
-wird Singleton. Ohne Zutun entstehen also vier neue `.md`-Ziele im Bootstrap-Ergebnis.
+wird Singleton. Die Regel wirkt am **realen** Vorlagen-Satz, nicht an `courseSet()`; die vier neuen
+`.md`-Ziele stehen deshalb **seit dem Tausch** im Bootstrap-Ergebnis, ohne dass eine Entscheidung
+gefallen wäre.
 
-**Zwei von ihnen trügen dann einen Verweis, der am emittierten Ort nicht auflöst** — an den
-Vorlagen gemessen, nicht hochgerechnet:
+**Drei Befunde hängen daran, und sie sind gemessen, nicht hochgerechnet.** `make smoke` am Stand
+`26aec2c` meldet `23 Datei(en) geprüft, 10 Befund(e)`; über dem Vor-Tausch-Stand
+(`T=$(mktemp -d); git archive c6cc56f | tar -x -C "$T"; cd "$T" && make smoke`) sind es
+`19 Datei(en) geprüft, 0 Befund(e)` bei Exit 0. Beide Zahlen wandern mit dem Vorlagen-Satz und sind
+**keine Erwartungswerte**
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2). Von den zehn gehören **drei** hierher:
 
-```
-for f in docs/plan/planning/welle-results harness/conventions/MR-NNN-titel; do
-  grep -oE '\]\([^)]*\)' ".harness/baseline/v5.12.0/templates/$f.template.md"; done
-```
+`<ziel>/` meint das **gebootstrappte Zielrepo**, nicht dieses — die Ebenen-Trennung aus dem
+Abschnitt unten, schon in der Tabelle:
 
-→ `](../observations.md)` aus `welle-results` — am vorgesehenen Ort `planning/done/` löst er auf,
-als flaches `planning/welle-results.md` zeigt er auf ein eine `observations.md` neben `docs/plan/`, das es nicht
-gibt — sowie `](../conventions.md#mr-<NNN>)` und ein `<tag>`-Platzhalter im Baseline-Pfad aus dem
-Adaptions-Eintrag. Das **emittierte** Doku-Gate liest sie: `internal/emit/templates/d-check.yml`
-führt `modules: [links, anchors]` und nimmt per `scan.ignore` nur `**/*.template.md`, `.tmp/**`
-und `.harness/**` aus — die transformierten `.md`-Ziele stehen im Prüfbereich. Damit fiele die
-Zusage aus [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3),
-der emittierte Stand sei *„out-of-the-box gate-sicher"*: dieselbe Klasse, die der Voll-Smoke von
-slice-024 an den derivativen Indexen gefunden hat.
+| Emittierte Datei · Ziel | Vorlage |
+|---|---|
+| `<ziel>/docs/plan/planning/welle-results.md:67` → `](observations.template.md)` | `welle-results.template.md` |
+| `<ziel>/docs/plan/planning/welle-results.md:83` → `](../observations.md)` | `welle-results.template.md` |
+| `<ziel>/harness/conventions/MR-NNN-titel.md:15` → `](…/baseline/<tag>/regelwerk/grundlagen-referenz-richtung.md#…)` | `MR-NNN-titel.template.md` |
+
+Am vorgesehenen Ort `planning/done/` löst `](../observations.md)` auf; als flaches
+`planning/welle-results.md` zeigt er auf eine `observations.md` neben `docs/plan/`, die es nicht
+gibt. Dazu der `<tag>`-Platzhalter im Baseline-Pfad des Adaptions-Eintrags. Das **emittierte**
+Doku-Gate liest beides: `internal/emit/templates/d-check.yml` führt `modules: [links, anchors]` und
+nimmt per `scan.ignore` nur `**/*.template.md`, `.tmp/**` und `.harness/**` aus — die
+transformierten `.md`-Ziele stehen im Prüfbereich.
+
+**Die Zusage aus
+[`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), der
+emittierte Stand sei *„out-of-the-box gate-sicher"*, ist damit gebrochen** — dieselbe Klasse, die
+der Voll-Smoke von slice-024 an den derivativen Indexen gefunden hat. Sie wird **repariert, nicht
+ausgenommen**: eine Rang-1-Zusage wird von keinem Carveout suspendiert, und der Trichter aus
+Baseline-Regelwerk `modul-07-carveouts.md` §Werkzeug-Wahl führt bei dieser Häufung ohnehin nicht
+auf Carveout (Begründung in
+[slice-133](slice-133-emittierter-baum-ohne-platzhalter-links.md) §1).
+
+**Diese drei lösen sich mit der Klassen-Entscheidung, nicht durch Link-Arbeit.** Fällt
+`welle-results.template.md` auf *wiederkehrend*, wird sie als `.template.md` emittiert und fällt
+unter `scan.ignore` des emittierten Gates — beide Befunde verschwinden, ohne dass ein Link
+angefasst wurde. Genau deshalb liegen sie hier und nicht in slice-133.
+
+### Die anderen sieben gehören nicht hierher
+
+Die verbleibenden **7** der zehn Befunde stammen aus **drei Vorlagen, die schon vor dem Tausch im
+Satz lagen und schon vor dem Tausch als Singletons emittiert wurden** — `roadmap.template.md`,
+`…/harness/README.template.md`, `…/harness/conventions.template.md`. Ihre Rümpfe tragen neuerdings
+**Platzhalter-Links** (`](<pfad>)`, `](../<welle-NN-titel>.md)`,
+`](conventions/MR-<NNN>-<titel>.md)`); keine Klassen-Entscheidung bewegt sie, weil
+[`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) alle drei
+namentlich als Singletons führt. Träger ist
+[slice-133](slice-133-emittierter-baum-ohne-platzhalter-links.md), der **vor** diesem Slice läuft.
+Ein Lauf hier, der die sieben mitnimmt, hat den Schnitt verlassen, nicht ihn erfüllt.
 
 ### Die Ebene ist die Pointe
 
@@ -123,7 +157,13 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [ ] **(3) Die Gate-Sicherheit des Bootstrap-Ergebnisses ist gemessen, nicht behauptet.**
       `make smoke` **und** `make full-smoke` sind grün; der zweite ist der einzige Lauf, der ein
       emittiertes Repo gegen sein eigenes Doku-Gate hält. Beide ziehen das Asset aus dem Netz und
-      stehen darum außerhalb von `make gates` — sie gehören an den DoD-Verify.
+      stehen darum außerhalb von `make gates` — sie gehören an den DoD-Verify. **Dieser Punkt trägt
+      den gemeinsamen Nachweis für beide Ursachen** und ist damit der Ort, an dem
+      [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und
+      [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) wieder
+      eingelöst sind; er setzt [slice-133](slice-133-emittierter-baum-ohne-platzhalter-links.md)
+      voraus (§4). Bleibt er rot, ist **vor** dem Nachziehen einer Erwartung zu prüfen, welche der
+      beiden Ursachen die Befunde trägt — ein Grün durch Anpassen einer Zahl ist keines.
 - [ ] `make gates` grün — **ohne** die Ausnahme aus
       [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md); der Carveout ist damit
       aufgelöst und seine Datei per `git mv` in `carveouts/done/`, die Index-Zeile umgehängt.
@@ -164,9 +204,13 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) liegt in `done/` — der Satz,
-über den entschieden wird, steht dann fest und wechselt während der Entscheidung nicht. Das
-WIP-Limit wird mit demselben Übergang frei.
+[slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) **und**
+[slice-133](slice-133-emittierter-baum-ohne-platzhalter-links.md) liegen in `done/`. Der erste
+stellt den Satz fest, über den entschieden wird; der zweite räumt die **sieben** Befunde weg, die
+nicht an der Klassen-Frage hängen — ohne ihn ist DoD (3) unerfüllbar, weil `make smoke` dann auch
+bei vier richtig entschiedenen Vorlagen rot bliebe. Ein Kriterium, das unter keiner korrekten
+Ausführung dieses Slice grün werden kann, ist keine Abnahme, sondern eine Falle
+([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 

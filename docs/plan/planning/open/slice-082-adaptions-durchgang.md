@@ -79,6 +79,16 @@ längst erfüllt ist: Ein Trigger, den niemand abfragt, ist kein Wächter."*
       heißt „kein automatischer Auflösungs-Trigger", nicht „unauflösbar". Wo die Adaption eine
       **Lockerung** war und die neue Fassung an derselben Stelle **verschärft**, ist die Antwort ein
       **Carveout mit Auflösungs-Trigger** (Modul 7), keine stille Dauer-`MR`.
+      **Der Ausgang ist nicht alles, was ein Eintrag trägt.** Viele nennen daneben eine **Messung
+      mit ihrem Kommando** — Geltungsbereich, Ist-Messung, Beleg —, und deren Operand ist oft der
+      vendored Baum. Wechselt der Baum, kann der Ausgang *bleibt gültig* lauten, während die Zahl
+      daneben falsch ist und ihr Kommando nicht mehr läuft: ein grüner Ausgang über einem falschen
+      Beleg. Je Eintrag ist deshalb **beides** zu beantworten — der Ausgang **und**, ob seine
+      Messungen gegen den gepinnten Stand noch reproduzieren. Diese Hälfte hat sonst keinen Träger:
+      [slice-131](slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) schließt
+      `harness/conventions.md` ausdrücklich aus, und
+      [slice-132](slice-132-adaptions-block-ohne-totes-ziel.md) behandelt nur die **Adresse** einer
+      einzelnen Referenz. Kein Gate sieht sie: eine Messung in Inline-Code ist kein Link.
 - [ ] **Achse 2 — jeder Auflösungs-Trigger ist abgefragt**, und die Antwort steht am Eintrag:
       Bedingung eingetreten oder nicht, Eintrag weiter gebraucht oder nicht — bei *gebraucht*
       übernommen, sonst durch einen Nachfolger aufgelöst. Nenner ist auch hier ein Kommando,

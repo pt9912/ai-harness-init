@@ -102,9 +102,11 @@ mit **30** Einträgen und einem Index von **182** Zeilen
 wandern mit ihrem Bestand und sind keine Erwartungswerte**
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2). Dagegen steht die Reichweite: `git grep -oE 'conventions\.md#mr-[a-z0-9-]+' -- '*.md'`
-zählt **1 572** Verweise, davon **533** in lebenden Artefakten (dieselbe Suche mit
+zählt am 2026-08-28 **1 602** Verweise, davon **563** in lebenden Artefakten (dieselbe Suche mit
 `':!docs/reviews/**' ':!docs/plan/planning/done/**' ':!.harness/baseline/**'`) und **0** außerhalb
-von Markdown (mit `-- ':!*.md'`). [welle-10](../welle-10-re-baseline.md) §6 stellt den Umzug
+von Markdown (mit `-- ':!*.md'`). **Diese zwei wandern schneller als die vier oben** — jeder
+geschnittene Slice und jeder Review-Report bewegt sie, und `git grep` liest den Arbeitsbaum: ein
+Lauf einer anderen Rolle, der parallel schreibt, verschiebt sie zwischen Messung und Lektüre. [welle-10](../welle-10-re-baseline.md) §6 stellt den Umzug
 deshalb ausdrücklich **out-of-scope**.
 
 **Eine Vorfrage, die bisher als ungeprüft galt, ist beantwortet.** Ob der Pin einen expliziten

@@ -38,15 +38,31 @@ Regel ersetzt, ist nach dieser Fassung ein **Fork**, keine Adaption. Das trifft 
 
 ## 2. Definition of Done
 
-- [ ] Der Form-Diff ist gefahren und je **Singleton** ([`AGENTS.md`](../../../../AGENTS.md),
-      [`harness/conventions.md`](../../../../harness/conventions.md),
-      [`harness/README.md`](../../../../harness/README.md), die drei `spec/`-Dateien) mit Ausgang
+- [ ] Der Form-Diff ist gefahren und je **ausgefülltem Artefakt dieser Ebene** mit Ausgang
       protokolliert: **neues Pflichtfeld · umbenannte Sektion · optional** (keine Nacharbeit). Ob
       ein Feld Pflicht ist, entscheidet die **Pflichtgliederung im Regelwerk**, nicht die Feldzahl
-      im Template.
-- [ ] `Ersetzt-Baseline-Regel` steht in jedem **überlebenden** Adaptions-Eintrag und nennt genau
-      eine Baseline-Regel als Anker-Link; wo keine benannt werden kann, ist der Eintrag als
-      **Fork** entschieden — nicht stillschweigend belassen.
+      im Template. Die Menge sind die Singletons ([`AGENTS.md`](../../../../AGENTS.md),
+      [`harness/conventions.md`](../../../../harness/conventions.md),
+      [`harness/README.md`](../../../../harness/README.md), die drei `spec/`-Dateien) **und
+      `.harness/skills/reviewer.md`** — auch er entsteht per `cp` aus einer vendored Vorlage, deren
+      Ziel-Form der neue Stand geändert hat, und auch bei ihm sieht das kein Gate. Sein Delta ist
+      benannt: Kopf und Versions-Kommentar erklären `v3.5.2` zur Baseline (`grep -n 'v3\.5\.2'
+      .harness/skills/reviewer.md`), und `modul-10-review-harness.md` führt im Output-Schema ein
+      **sechstes** Feld `klasse`, das der Skill nicht hat. **Der Zuschnitt ist korrigiert, nicht
+      gewachsen:** [slice-085](slice-085-emittierte-ebene-zieht-nach.md) führte den Skill in §3, und
+      das war eine Ebenen-Verwechslung — dort geht es um das **emittierte** Repo, hier um die
+      ausgefüllten Artefakte **dieses**. Dieselbe Trennung, die der Absatz unter der Plan-Tabelle
+      für die Commands zieht.
+- [ ] `Ersetzt-Baseline-Regel` steht in **jedem** Adaptions-Eintrag — den überlebenden **wie den
+      unter dem neuen Stand geschriebenen** — und nennt genau eine Baseline-Regel als Anker-Link;
+      wo keine benannt werden kann, ist der Eintrag als **Fork** entschieden, nicht stillschweigend
+      belassen. Die zweite Hälfte ist nicht theoretisch: Einträge, die **nach** dem Tausch
+      entstehen, sind keine überlebenden und fielen aus einer Fassung heraus, die nur diese nennt —
+      ein Kriterium, das den Rückstand wachsen lässt, den es abbauen soll. Die heutige Menge liefert
+      ein Kommando, keine Zahl im Text
+      ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+      Setzung 2): `grep -c '^### MR-' harness/conventions.md` gegen
+      `grep -c 'Ersetzt-Baseline-Regel' harness/conventions.md`.
 - [ ] Die **wiederkehrenden** Templates sind append-only behandelt: neue Instanzen folgen der neuen
       Form, bestehende werden nicht rückwirkend umgeschrieben. Eingeschlossen:
       [`/close-welle`](../../../../.claude/commands/close-welle.md) zieht die Results-Notiz künftig
@@ -62,7 +78,8 @@ Regel ersetzt, ist nach dieser Fassung ein **Fork**, keine Adaption. Das trifft 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | das neue Pflichtfeld je überlebendem Eintrag |
-| [`AGENTS.md`](../../../../AGENTS.md), [`harness/README.md`](../../../../harness/README.md), `spec/` | update | Singleton-Nacharbeit, soweit Pflicht |
+| [`AGENTS.md`](../../../../AGENTS.md), [`harness/README.md`](../../../../harness/README.md), `spec/` | update | Singleton-Nacharbeit, soweit Pflicht. Bei `harness/README.md` fällt darunter die **Bindung-Spalte** der Sensors-Tabelle: `grundlagen-harness-dateien.md` §harness/README.md als Einstiegspunkt verlangt, dass sie auf die `CO-<NNN>`-ID verweist, und heute tut sie es bei **keinem** aktiven Carveout (`grep -c 'CO-00' harness/README.md`). Das ist **kein** Delta des neuen Stands — die Zeile steht wortgleich schon in `v3.5.2` —, sondern eine nie übernommene Baseline-Regel; Modul 7 ordnet den punktuellen Fund dieser Art ausdrücklich der *„Übernahme im nächsten Slice"* zu |
+| `.harness/skills/reviewer.md` | update | Kopf und Versions-Kommentar nennen `v3.5.2`; das Output-Schema führt fünf Felder gegen sechs der neuen Ziel-Form. Die **schreibende Rolle** benennt keine Quelle ([`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) §Kontext — dieselbe offene Frage wie beim Technik-Stratum); der Slice klärt sie als Erstes oder gibt den Punkt als Übergabe hinaus |
 | [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) | update | die `cp`-Quelle der Results-Notiz existiert jetzt |
 
 Die **emittierte** Fassung derselben Commands gehört zu

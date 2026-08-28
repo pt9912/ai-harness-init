@@ -128,25 +128,48 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
       bats-Fälle über `.d-check.yml` ↔ `Makefile` (`sources-url` trägt den aktuellen
       `BASELINE_TAG`, `sources-sha256` gleicht `BASELINE_ZIP_SHA256` —
       [`MR-013`](../../../../harness/conventions.md#mr-013--regelwerk-check-auf-d-check-sources-tool-statt-skript)).
-- [ ] **`make gates` läuft, und dieser Slice hinterlässt keinen unzugeordneten Befund.** Das ist
-      der Abnahme-Punkt, nicht *„grün"* — und der Unterschied ist gemessen, nicht formuliert: die
-      Farbe des Gates hängt nach dem Tausch an **zwei** Entscheidungen, die beide außerhalb dieses
-      Slice liegen und beide einer anderen Rolle gehören. Jeder verbleibende Befund trägt darum
-      einen Carveout mit Folge-Slice, und beide sind **extensional geschlossen**:
-      [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) (zwei Fälle in
-      `test/courseset-fixture.bats`; ihr Grün setzt die Klassen-Entscheidung über vier neue
-      Vorlagen voraus — [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md))
-      und [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) (**eine** Referenz
-      in [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
-      Punkt 2, deren Satz nur über den abgelösten Stand wahr ist —
-      [slice-132](../open/slice-132-adaptions-block-ohne-totes-ziel.md)). **Jeder andere Befund
-      bleibt Bedingung dieses Punktes.** Der Weg ist der, den Baseline-Regelwerk
-      `modul-05-planning-harness.md` §Closure- und Lerneintrag-Regeln ausdrücklich offenlässt:
-      *„Ein Slice darf bei rotem Gate nur mit dokumentiertem Carveout (Modul 7) in `done/` landen,
-      der den roten Gate-Status auf Trigger schaltet."* **Warum nicht die Rückführung:** `→ next`
-      trifft nicht (die Verweis-Arbeit hat keine Sitzung gesprengt, sie ist gefahren und belegt),
-      und `→ open` fröre bei einem WIP-Limit von 1 die ganze Welle auf einer Entscheidung ein, die
-      ein anderer Slice trägt.
+- [ ] **Jeder rote Sensor dieses Slice trägt einen benannten Ausgang — Carveout *oder* Slice —,
+      und keiner bleibt unzugeordnet.** Das ist der Abnahme-Punkt, nicht *„`make gates` grün"* —
+      und der Unterschied ist gemessen, nicht formuliert: die Farbe hängt nach dem Tausch an
+      Entscheidungen, die außerhalb dieses Slice liegen und anderen Rollen gehören. **Der Punkt
+      zählt drei Sensoren, nicht einen** — dass er zuerst nur `make gates` nannte, war die Lücke,
+      durch die der Bruch unten unbemerkt blieb:
+      [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
+      führt als **Messmethode** wörtlich den Smoke-Test, und der läuft ausdrücklich **nicht** in
+      `make gates`.
+      1. **`make gates`** — zwei Befunde, beide mit **extensional geschlossenem** Carveout:
+         [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) (zwei Fälle in
+         `test/courseset-fixture.bats`; ihr Grün setzt die Klassen-Entscheidung über vier neue
+         Vorlagen voraus — [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md))
+         und [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) (**eine**
+         Referenz in
+         [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+         Punkt 2, deren Satz nur über den abgelösten Stand wahr ist —
+         [slice-132](../open/slice-132-adaptions-block-ohne-totes-ziel.md)). Der Weg ist der, den
+         Baseline-Regelwerk `modul-05-planning-harness.md` §Closure- und Lerneintrag-Regeln
+         ausdrücklich offenlässt: *„Ein Slice darf bei rotem Gate nur mit dokumentiertem Carveout
+         (Modul 7) in `done/` landen, der den roten Gate-Status auf Trigger schaltet."*
+      2. **`make smoke` / `make full-smoke`** — **10** Befunde im emittierten Baum, gemessen und
+         gegen den Vor-Stand gehalten (§6). Sie brechen
+         [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und
+         [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) und
+         tragen **keinen** Carveout — eine Rang-1-Zusage wird nicht ausgenommen, sondern repariert
+         (Begründung über den Trichter aus Modul 7 §Werkzeug-Wahl in
+         [slice-133](../open/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1). Zugeordnet
+         sind sie zwei Slices derselben Welle: **7** an
+         [slice-133](../open/slice-133-emittierter-baum-ohne-platzhalter-links.md), **3** an
+         [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md), aufgeteilt je
+         Befund an seiner Vorlagen-Zeile. [welle-10](../welle-10-re-baseline.md) §3 führt beide
+         Läufe im Closure-Kriterium — die Welle schließt nicht über diesem Rot.
+      3. **Die Modul-7-Pflicht von `CO-004` ist offen und benannt.** Die Gate-Ausgabe nennt die
+         Kennung nicht (`git grep -c 'CO-004' -- test/ .d-check.yml Makefile` → kein Treffer); die
+         Verdrahtung liegt in `test/` und ist Implementer-Arbeit. Offen **benannt** erfüllt diesen
+         Punkt, offen **verschwiegen** nicht.
+
+      **Jeder Befund außerhalb dieser drei bleibt Bedingung dieses Punktes.** **Warum nicht die
+      Rückführung:** `→ next` trifft nicht (die Verweis-Arbeit hat keine Sitzung gesprengt, sie ist
+      gefahren und belegt), und `→ open` fröre bei einem WIP-Limit von 1 die ganze Welle auf
+      Entscheidungen ein, die andere Slices tragen.
 - [ ] Doku-Update: die Baseline-Zeilen in `harness/conventions.md` §Baseline und der
       Herkunfts-Absatz in `docs/user/benutzerhandbuch.md` nennen den neuen Tag.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -183,7 +206,13 @@ sind **nicht** die Bedingung: sie sind dort ausdrücklich einem eigenen Slice zu
 
 ## 5. Closure-Trigger
 
-DoD vollständig, `make gates` nach dem Tausch grün, Closure-Notiz geschrieben.
+DoD vollständig — insbesondere §2 (4) in seiner Fassung mit **drei** Sensoren —, und Closure-Notiz
+mit Steering-Loop-Lerneintrag geschrieben. **Nicht** *„`make gates` grün"*: dieser Slice schließt
+über zwei Carveouts mit Folge-Slice und über einem `smoke`-Rot, das zwei Slices derselben Welle
+tragen. Ein Closure-Kriterium, das hier Grün verlangte, verlangte etwas, das die DoD ausdrücklich
+verwirft — und der Abschluss richtete sich danach, welche der beiden Stellen zuerst gelesen wird.
+Das Grün ist Kriterium der **Welle**, nicht dieses Slice
+([welle-10](../welle-10-re-baseline.md) §3).
 
 ## 6. Risiken und offene Punkte
 
@@ -195,6 +224,18 @@ DoD vollständig, `make gates` nach dem Tausch grün, Closure-Notiz geschrieben.
   sieht sie. Sie fallen mit [slice-082](../open/slice-082-adaptions-durchgang.md). Der Preis dafür, den
   Adaptions-Durchgang nicht in denselben Slice zu packen: das Repo trägt zwischen 081 und 082 eine
   Aussage, deren Bezug gewechselt hat.
+- **Ein Träger des Zwischenzustands ist kein Dokument, sondern ein Werkzeug: `.harness/skills/reviewer.md`.**
+  Sein Kopf erklärt *„Agents-Regelwerk v3.5.2 (Kurs-Welle 34)"* zur Baseline (`grep -c 'v3\.5\.2'
+  .harness/skills/reviewer.md` → **4** Zeilen), und sein Output-Schema führt **fünf** Felder, wo
+  `modul-10-review-harness.md` am gepinnten Stand **sechs** verlangt (`klasse`, Z. 72). Das ist
+  dieselbe Klasse wie die Sätze oben — Präsens-Aussage gegen einen Stand, den es nicht mehr gibt —,
+  aber es wiegt schwerer: die anderen werden gelesen, dieser **steuert die Rolle, die die übrigen
+  Befunde dieser Welle findet**. Kein Gate sieht ihn; `.d-check.yml` liest keine Skill-Metadaten.
+  — **Ausgang:** eingetreten → [slice-083](../open/slice-083-form-vergleich-pflichtfelder.md) §2 (1),
+  dem Form-Durchgang dieser Welle. **Nicht** slice-085: dort geht es um das **emittierte** Repo,
+  hier um ein ausgefülltes Artefakt dieses — zwei Ebenen, zwei Verträge. Der Preis bis dahin ist
+  benannt und nicht wegverhandelt: jeder Review zwischen 081 und 083 läuft auf einem Skill, dessen
+  Kopf über seine eigene Grundlage irrt, und muss das im Report selbst ausweisen.
 - **Nach diesem Slice liegt die alte Form nur noch in der Historie — das ist die Zusage von
   [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache),
   nicht ihr Preis.** *„Ein Tag zur Zeit (Ersetzen), Historie liegt in git"*: der Form-Vergleich aus
@@ -223,6 +264,33 @@ DoD vollständig, `make gates` nach dem Tausch grün, Closure-Notiz geschrieben.
   der Tausch stellt dort vier Klassen-Fragen, die dieser Slice nicht beantwortet. — **Ausgang:**
   eingetreten → [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) mit Folge-Slice
   [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md).
+- **Der vendored Baum ist zugleich die Eingabe des Emissions-Kanals, und der trägt eine
+  Rang-1-Zusage.** `internal/fetch/baseline.go` `DefaultTag` zeigt nach dem Tausch auf den neuen
+  Satz; was ein frisch gebootstrapptes Zielrepo bekommt, wechselt damit **ohne** eine Zeile in
+  `internal/emit/`. Gemessen, nicht befürchtet: `make smoke` meldet am Stand `26aec2c`
+  `23 Datei(en) geprüft, 10 Befund(e)`, über dem Vor-Tausch-Stand
+  (`T=$(mktemp -d); git archive c6cc56f | tar -x -C "$T"; cd "$T" && make smoke`)
+  `19 Datei(en) geprüft, 0 Befund(e)` bei Exit 0 — **keine Erwartungswerte**
+  ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). Damit brechen
+  [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und
+  [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3).
+  **Dieses Risiko stand vor dem Lauf nicht hier** — der Plan hat den Baum als Verweis-Ziel und als
+  Test-Eingabe inventarisiert, nicht als Emissions-Eingabe; dieselbe Lücke, die
+  [welle-10](../welle-10-re-baseline.md) §4 für die drei Nachzügler benennt, eine Ebene weiter.
+  — **Ausgang:** eingetreten → **kein Carveout, sondern Reparatur** (eine Rang-1-Zusage wird nicht
+  ausgenommen; der Trichter aus Modul 7 §Werkzeug-Wahl führt bei dieser Häufung nicht auf
+  Carveout — Begründung in
+  [slice-133](../open/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1): **7** Befunde →
+  [slice-133](../open/slice-133-emittierter-baum-ohne-platzhalter-links.md), **3** →
+  [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md).
+- **Der einzige Sensor dieser Klasse liegt außerhalb von `make gates`, und das steht seit
+  slice-028 im Code.** Der Doc-Kommentar von `NeutralizeRoadmap` sagt es selbst: *„diese reale
+  Drift faengt allein `make smoke` (Tier-2, NICHT in make gates)"*. Ein Abnahme-Punkt, der nur
+  `make gates` nennt, kann den Bruch darum nicht sehen — er hat ihn hier auch nicht gesehen.
+  — **Ausgang:** eingetreten → §2 DoD (4) zählt drei Sensoren statt einen; ob ein Wächter
+  **innerhalb** der Gates baubar ist, entscheidet
+  [slice-133](../open/slice-133-emittierter-baum-ohne-platzhalter-links.md) §2 (3).
 - **Ein Verweis, der bewusst nicht gezogen wird, hat am Doku-Gate keinen Ort.** Der Beleg in
   [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
   Punkt 2 ist nur über den abgelösten Stand wahr und steht unter der Append-only-Regel des
