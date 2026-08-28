@@ -81,31 +81,48 @@ nützliche Ort ist die **Message-Datei vor dem Commit**: dieses Repo committet �
 
 ### Die Fläche, mit ihrer Eigenschaft vor der Zahl
 
-Die Eigenschaft: *ein Token in einer Commit-Message, das wie ein Kurz-Hash aussieht und keinen
-Commit bezeichnet*. Über die ganze Historie gezählt — Kandidaten je Message aus
-`git log -1 --format='%B' <c> | grep -oE '\b[0-9a-f]{7,40}\b'`, jeder gegen
-`git cat-file -e <t>^{commit}`:
+Die Eigenschaft: *ein Token in einer Commit-Message, das wie ein Kurz-Hash aussieht und **kein
+Objekt dieses Repos** bezeichnet*. Kandidaten je Message aus
+`git log -1 --format='%B' <c> | grep -oE '\b[0-9a-f]{7,40}\b'`; je Token erst
+`git cat-file -e "$t^{commit}"`, und wenn das fehlschlägt, `git cat-file -t "$t"`. Alles unten ist
+an **`ea1106b`** gemessen und mit `git log --format='%H' ea1106b` erhoben — die Historie wächst
+vorne, der gemessene Teil steht fest:
 
 | Menge | Kommando | Stand |
 |---|---|---|
-| Commits gesamt | `git rev-list --count HEAD` | **1060** |
-| davon mit mindestens einem Hex-Token in der Message | Schleife über `git log --format=%H`, je `grep -qoE '\b[0-9a-f]{7,40}\b'` | **217** |
-| nicht auflösbare Token, roh | dieselbe Schleife, je Token `git cat-file -e "$t^{commit}"` | **55** über **46** Commits |
-| dieselben, ohne reine Dezimalzahlen | zusätzlich `grep -qE '^[0-9]+$'` ausgeschlossen | **46** über **39** Commits |
-| **davon genau 7-stellig** | dieselbe Liste, `awk 'length($2)==7'` | **6** über **5** Commits, **4** eindeutige Token |
+| Commits gesamt | `git rev-list --count ea1106b` | **1063** |
+| davon mit mindestens einem Hex-Token in der Message | Schleife wie oben, Commits mit ≥ 1 Kandidat | **219** |
+| Token, die einen **Commit** bezeichnen | `git cat-file -e "$t^{commit}"` trifft | **305** |
+| Token, die ein **anderes Objekt** bezeichnen | `git cat-file -t "$t"` trifft danach | **5** über **3** Commits, sämtlich `blob` |
+| Token, die **gar nichts** bezeichnen | beides schlägt fehl | **52** |
+| dieselben, ohne reine Dezimalzahlen | zusätzlich `$3 !~ /^[0-9]+$/` | **43** über **37** Commits, **28** eindeutige Token |
+| **davon genau 7-stellig** | dieselbe Liste, `awk '$2==7'` über die Längen-Spalte | **4** über **4** Commits, **2** eindeutige Token |
 
-**Die Verteilung nach Länge entscheidet den Schnitt, und sie ist eindeutig**
-(`cut -d' ' -f2 <miss-liste> | awk '{print length($0)}' | sort -n | uniq -c`): **6**× siebenstellig,
-**37**× achtstellig, je **1**× zehn-, siebzehn- und vierzigstellig. Die 37 achtstelligen sind
-**Digest-Fragmente** — Bild- und Asset-Hashes aus Pin-Commits (`3996a593`, `fede3d02`, `2af45aad`
-und Geschwister), keine Commit-Verweise. Ein Sensor über `[0-9a-f]{7,40}` sähe also **40** von
-**46** Token an, die er nicht meint. **Siebenstellig ist die Kurzform, die dieses Repo schreibt**
-(`git log --oneline -1 | cut -d' ' -f1` → `75ba487`), und in dieser Achse ist die Fläche klein und
-benennbar: **4** tote Token in **5** Commits, davon **3** ursprüngliche Fehler (`48c2063`,
-`37a263f`, `9326b2a`) und **2** Läufe, die einen davon als **Befund zitieren** (`ba619d6`,
-`75ba487`). Alle Zahlen wandern mit der Historie und sind **kein** Erwartungswert
-([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2); die Historie wächst nur vorne, der gemessene Teil steht fest.
+**Zwei Verteilungen entscheiden den Schnitt, und keine davon ist die Länge allein.**
+
+1. **Nach Länge** (`awk '$4=="NICHTS" && $3 !~ /^[0-9]+$/{print $2}' … | sort -n | uniq -c`):
+   **4**× siebenstellig, **36**× achtstellig, je **1**× zehn-, siebzehn- und vierzigstellig. Die 36
+   achtstelligen sind **Digest-Fragmente** — Bild- und Asset-Hashes aus Pin-Commits (`3996a593`,
+   `fede3d02`, `2af45aad` und Geschwister), keine Commit-Verweise. Ein Sensor über
+   `[0-9a-f]{7,40}` sähe also **39** von **43** Token an, die er nicht meint.
+2. **Nach Objekt-Typ**, und diese Achse ist die überraschende: **5** Token bezeichnen einen
+   **Blob** statt eines Commits — korrekte Aussagen über den Baum, etwa *„identischer Blob
+   `d280f39`"*. **Drei von ihnen sind siebenstellig** (`63e77bd`, `c4da8e0`, `d280f39`); die
+   Kurzhash-Länge trennt sie also **nicht**. Wer nur gegen `^{commit}` prüft, färbt sie rot und
+   liegt falsch.
+
+**Siebenstellig ist die Kurzform, die dieses Repo schreibt**
+(`git log --oneline -1 ea1106b | cut -d' ' -f1` → `ea1106b`), und in dieser Achse ist die Fläche
+klein und benennbar: **2** eindeutige tote Token in **4** Commits — `0f8d1a1` (in `48c2063`
+begangen, in `ba619d6` und `75ba487` als **Befund zitiert**) und `964e0b1` (in `9326b2a`). Also
+**2** ursprüngliche Fehler und **2** Läufe, die einen davon korrekt benennen.
+
+**Die Objekt-Typ-Achse ist keine Feinheit, sondern der Unterschied zwischen Sensor und Fehlalarm.**
+Ein Wächter, der allein gegen `^{commit}` prüft, weist `63e77bd` und `c4da8e0` als tot aus — und
+der Commit, der sie nennt (`37a263f`, *„von 8864708^ (c4da8e0… bzw. 63e77bd…)"*), hat recht: es
+sind Blobs. Aufgefallen ist das beim Handlauf dieses Sensors über die Commit-Messages der Closure,
+die ihn geschnitten hat; die Klasse, für die dieser Slice existiert, ist damit an ihm selbst
+eingetreten und einmal rot gesehen worden.
 
 ### Was dieser Slice nicht liefert, und warum das kein Rest ist
 
@@ -131,14 +148,16 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       **Rot:** eine Message-Datei mit `0f8d1a1` → Exit ≠ 0, Ausgabe nennt `0f8d1a1` und seine
       Zeile; dieselbe Datei mit `dbe5e50` statt dessen → Exit 0. Beide Läufe gehören in den
       Umsetzungs-Commit, nicht in die Zusage.
-- [ ] **(2) Der Prüfbereich ist entschieden, und die Entscheidung trägt ihre Zahl.** Zu
-      entscheiden ist die **Token-Achse** (siebenstellig gegen `{7,40}`) und der **Cutoff** — ob
-      der Sensor nur die zu prüfende Message-Datei liest oder eine Commit-Spanne, und ab wo. Ein
-      Maßstab über der ganzen Historie wäre an **5** Commits dauerhaft rot, darunter **2**, die
-      einen Befund korrekt zitieren.
-      **Rot:** der Sensor meldet über einem Bestand, den er nicht ändern kann, einen Befund — oder
-      er lässt die 37 Digest-Fragmente durch, weil er sie gar nicht erst ansieht, ohne dass die
-      Meldung das sagt. Beide Male senkt er seine eigene Aussage
+- [ ] **(2) Der Prüfbereich ist entschieden, und die Entscheidung trägt ihre Zahl.** Drei Achsen
+      sind zu entscheiden, jede mit ihrer Messung aus §1: die **Token-Länge** (siebenstellig gegen
+      `{7,40}` — dort sind **36** von **43** Digest-Fragmente), die **Objekt-Auflösung**
+      (`^{commit}` gegen `cat-file -t` — **5** Token bezeichnen einen Blob, **3** davon
+      siebenstellig) und der **Cutoff** (nur die zu prüfende Message-Datei oder eine Commit-Spanne,
+      und ab wo). Ein Maßstab über der ganzen Historie wäre an **4** Commits dauerhaft rot,
+      darunter **2**, die einen Befund korrekt zitieren.
+      **Rot:** der Sensor meldet über einem Bestand, den er nicht ändern kann, einen Befund; oder
+      er färbt eine Blob-Referenz rot; oder er lässt die Digest-Fragmente durch, ohne dass die
+      Meldung sagt, dass er sie nicht ansieht. Jedes Mal senkt er seine eigene Aussage
       ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 - [ ] **(3) Der Wächter hat seinen Zahn.** Ein `test/mutations/`-Fall entfernt die
       Auflösungs-Prüfung und färbt den benannten Test rot.
@@ -191,7 +210,7 @@ mit Steering-Loop-Eintrag.
 
 - **Der Sensor kann die Sprache nicht von der Sache trennen.** Ein Lauf, der einen toten Hash
   korrekt **als Befund zitiert**, sieht für ihn aus wie einer, der ihn begeht — in der gemessenen
-  Fläche sind das **2** von **5** Commits. Wer das mit einer Ausnahme-Liste löst, baut die
+  Fläche sind das **2** von **4** Commits. Wer das mit einer Ausnahme-Liste löst, baut die
   Suppression, deren Grund als Nächstes veraltet; wer es mit einem Muster löst
   (*„in Anführungszeichen zählt nicht"*), baut einen Wächter ohne Zähne. Die Frage gehört in DoD
   (2) und ist dort mit ihrer Zahl gestellt, nicht hier weggewunken.

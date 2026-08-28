@@ -426,16 +426,18 @@ Begründung eine als Fundort führt.
 → **kein Treffer** (Exit 1).
 
 **Die Fläche, mit ihrer Eigenschaft vor der Zahl, und der Cutoff gehört in den Schnitt.** Die
-Eigenschaft: *ein Token in einer Message, das wie ein Kurz-Hash aussieht und keinen Commit
-bezeichnet*. Über die ganze Historie: **1060** Commits (`git rev-list --count HEAD`), **217** mit
-einem Hex-Token in der Message, **55** nicht auflösbare Token über **46** Commits, ohne reine
-Dezimalzahlen **46** über **39**. **Die Längen-Verteilung entscheidet den Schnitt:** **37** der 46
-sind achtstellig und damit **Digest-Fragmente** aus Pin-Commits, keine Commit-Verweise. In der
-siebenstelligen Achse — der Kurzform, die dieses Repo schreibt — sind es **6** Vorkommen über **5**
-Commits, davon **3** ursprüngliche Fehler und **2** Läufe, die einen davon als Befund **zitieren**.
-Ein Maßstab über der ganzen Historie wäre also an fünf Commits dauerhaft rot, zwei davon zu
-Unrecht; welche Achse und welcher Cutoff, ist deshalb **DoD-Punkt des Slice und nicht seine
-Voraussetzung** — dieselbe Begründung, mit der
+Eigenschaft: *ein Token in einer Message, das wie ein Kurz-Hash aussieht und **kein Objekt dieses
+Repos** bezeichnet*. An `ea1106b` gemessen: **1063** Commits (`git rev-list --count ea1106b`),
+**219** mit einem Hex-Token in der Message; davon bezeichnen **305** Token einen Commit, **5** einen
+**Blob** und **52** gar nichts — ohne reine Dezimalzahlen **43** über **37** Commits. **Zwei
+Verteilungen entscheiden den Schnitt, und die Länge ist nur die eine:** **36** der 43 sind
+achtstellige **Digest-Fragmente** aus Pin-Commits, keine Commit-Verweise; und **3** der **5**
+Blob-Referenzen sind **siebenstellig**, so dass die Kurzhash-Länge sie nicht trennt — wer allein
+gegen `^{commit}` prüft, färbt korrekte Aussagen rot. In der siebenstelligen Achse bleiben **2**
+eindeutige tote Token in **4** Commits, davon **2** ursprüngliche Fehler und **2** Läufe, die einen
+davon als Befund **zitieren**. Ein Maßstab über der ganzen Historie wäre also an vier Commits
+dauerhaft rot, zwei davon zu Unrecht; welche Achse und welcher Cutoff, ist deshalb **DoD-Punkt des
+Slice und nicht seine Voraussetzung** — dieselbe Begründung, mit der
 [`AGENTS.md`](../../../../AGENTS.md) §3.7 seinen Cutoff trägt.
 
 **Träger:
@@ -443,8 +445,20 @@ Voraussetzung** — dieselbe Begründung, mit der
 Zahlen oben als Ausgangslage, dem Cutoff als eigenem DoD-Punkt und der Ortsfrage — ein Sensor für
 eine Message muss **vor** dem Commit greifen, sonst meldet er rot an einem Gegenstand, den niemand
 mehr grün machen kann. Der Slice deckt **eine** der fünf gemessenen Instanzen; das steht in seinem
-§1 und gehört in seine Meldung. Ein Lerneintrag, der nur hier stünde, würde nie wieder gelesen —
-der Träger ist der Grund, aus dem dieser Eintrag ein Eintrag ist und keine Beobachtung.
+§1 und gehört in seine Meldung.
+
+**Der Handlauf gegen die Messages dieser Closure hat schon einen Befund geliefert, und zwar am
+Schnitt selbst.** Über die drei Commits dieses Zugs gefahren, meldet die Prüfung zwei Token —
+`d280f39` und `e05a42f37e11f7b0faf85d3593560c8cab388c7a` —, und beide sind **Blobs**, die diese
+Notiz korrekt als Blobs bezeichnet. Daraus folgt die Objekt-Typ-Achse, die
+[slice-121](../open/slice-121-commit-message-nennt-was-es-gibt.md) §2 DoD (2) jetzt als eigene
+Entscheidung führt, und sie räumt zugleich eine Fehl-Klassifikation in der ersten Zählung aus:
+`63e77bd` und `c4da8e0` aus `37a263f` sind keine toten Verweise, sondern Blobs, und die Message,
+die sie nennt, hat recht. **Damit ist der Eintrag nicht nur begründet, sondern einmal rot gesehen**
+([`AGENTS.md`](../../../../AGENTS.md) §3.6) — an dem Artefakt, das ihn vorschlägt.
+
+Ein Lerneintrag, der nur hier stünde, würde nie wieder gelesen — der Träger ist der Grund, aus dem
+dieser Eintrag ein Eintrag ist und keine Beobachtung.
 
 ### Übergaben an den Architect — drei
 
