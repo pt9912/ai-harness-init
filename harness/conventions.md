@@ -11,7 +11,11 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Regelwerk + Templates:** `v3.5.2` committet vendored
   (`.harness/baseline/v3.5.2/`, [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
   `regelwerk/README.md`: **Kurs-Welle 34 · 2026-07-24**.
-- **d-check:** Image v0.62.0 (Digest in d-check.mk, [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert), [`MR-011`](#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines), [`MR-012`](#mr-012--d-check-pin-v0511-sources-verfügbar), [`MR-024`](#mr-024--d-check-pin-v0620-structure-verfügbar))
+- **d-check:** der lebende Pin steht in `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`) und, per
+  go-Test daran gekoppelt, in `internal/emit/emit.go` — hier steht keine zweite Fassung davon
+  ([`MR-027`](#mr-027--d-check-pin-v0650-ignore-marker-in-zwei-achsen-verengt) §Kein Wächter).
+  Die Sprünge dieser Linie führen [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile),
+  [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert), [`MR-011`](#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines), [`MR-012`](#mr-012--d-check-pin-v0511-sources-verfügbar), [`MR-024`](#mr-024--d-check-pin-v0620-structure-verfügbar) und [`MR-027`](#mr-027--d-check-pin-v0650-ignore-marker-in-zwei-achsen-verengt).
 - **Datum der Adoption:** 2026-06-13 (Templates-Stand damals: `templates-v4`).
   **Re-Baseline auf `v3.1.0`:** 2026-07-17 (slice-011/012); **auf `v3.5.0`:** 2026-07-19 (slice-019);
   **auf `v3.5.1`:** 2026-07-24 (slice-043); **auf `v3.5.2`:** 2026-07-26 (slice-049,
@@ -489,7 +493,18 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Auflösungs-Trigger:** permanent; bei d-check-Release `d-check --print-mk` neu erzeugen,
   `doc-check`→`docs-check` re-adaptieren, `DCHECK_DIGEST` neu pinnen und die Target-Aufzählung in
   Setzung 2 gegen `make doc-help` abgleichen — das Set wächst mit dem Tool, die Aufzählung nur von
-  Hand. Maintenance-Override (Dry-Run) via `DCHECK_DIGEST=…`/`DCHECK_IMAGE=…`, nicht mehr
+  Hand. **Dazu gehört die Fixture** `internal/emit/testdata/raw-print-mk.txt`, an der
+  `TestAdaptMK_Fixture` dieselben vier Handgriffe prüft: sie friert eine ältere Tool-Ausgabe ein,
+  und nachzuziehen ist nicht ihre Zeilenzahl, sondern ob `AdaptMK` an der **frischen** Ausgabe
+  noch greift. Das misst je ein `grep -c` über der frischen `--print-mk`-Ausgabe für die fünf
+  Anker, an denen die Funktion hängt — `DCHECK_IMAGE ?=`, `.PHONY: doc-check`, `doc-check:` am
+  Zeilenanfang, die **leere** `DCHECK_DIGEST ?=`-Zeile und `'^doc-[a-z-]+:`; steht jeder genau
+  einmal (über v0.65.0 am 2026-08-28 alle fünf **1**, wie in der Fixture), kostet ihr Alter
+  nichts. Fehlt einer, ist die Fixture zu erneuern, denn dann trifft der Test eine Form, die das
+  Tool nicht mehr liefert. Ein **stilles** Grün ist das in keinem Fall: `AdaptMK` bricht auf drei
+  der vier Handgriffe hart ab (Rename, `doc-help`-Grep, Digest-Pin) und auf dem fehlenden Anker
+  dazu; der vierte Handgriff — der Adopter-Kopf — kann nicht fehlschlagen, weil der Rumpf erst am
+  Anker beginnt. Maintenance-Override (Dry-Run) via `DCHECK_DIGEST=…`/`DCHECK_IMAGE=…`, nicht mehr
   `D_CHECK_IMAGE=…`.
 
 ### MR-011 — Zitat-Verifikation via d-check adoptiert (check-lines)
@@ -1214,15 +1229,17 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Datum:** 2026-08-22
 - **Geltungsbereich:** die **lebenden**, repo-eigenen Markdown-Artefakte — gemessen
   `git ls-files '*.md' ':!docs/reviews/**' ':!docs/plan/planning/done/**' ':!.harness/baseline/**' | wc -l`
-  → **75** von **377** Markdown-Dateien im Index (`git ls-files '*.md' | wc -l`). Draußen liegen,
-  jeweils mit Grund: `docs/reviews/**` und `docs/plan/planning/done/**` — **262** Dateien
+  → **108** von **476** Markdown-Dateien im Index (`git ls-files '*.md' | wc -l`). Draußen liegen,
+  jeweils mit Grund: `docs/reviews/**` und `docs/plan/planning/done/**` — **328** Dateien
   (`git ls-files 'docs/reviews/*.md' 'docs/plan/planning/done/*.md' | wc -l`), **Zeitdokumente**,
   die eine Messung zu ihrem Datum festhalten und darum nicht nachgezogen werden;
   `.harness/baseline/**` — **40** Dateien (`git ls-files '.harness/baseline/**/*.md' | wc -l`),
   committet vendored Fremd-Bestand, den dieses Repo spiegelt statt schreibt
   ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); und
   `**/*.template.md`, Ziel-Form-Vorlagen mit Platzhaltern statt Aussagen
-  ([`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) §`scan.ignore`).
+  ([`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) §`scan.ignore`). **Alle
+  vier Zahlen sind keine Erwartungswerte** — sie wandern mit dem Bestand und messen ihn, nicht den
+  Geltungsbereich (Setzung 2 an sich selbst angelegt); der Geltungsbereich sind die vier Kommandos.
   **Dieses Repo, nicht das emittierte:** was ein emittiertes Repo an Beleg-Regeln bekommt,
   entscheidet der Slice, der die Tool-Ebene entscheidet.
 - **Setzung 1 — die Zahl und ihr Kommando stehen beieinander, und das Kommando ist gefahren.**
@@ -1276,15 +1293,16 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Das ist aus ihren Modul-Verträgen gelesen und an diesem Repo **nicht** erprobt; daraus folgt
   bestenfalls, dass eines von ihnen die **Form** fordern könnte (Zahl und Kommando im selben
   Abschnitt). Den **Wert** gegen einen Lauf zu halten kann keines, denn keines fährt einen Lauf:
-  `git grep -ln 'os/exec' v0.62.0 -- 'internal/*.go' 'internal/**/*.go' 'cmd/**/*.go' ':!*_test.go'`
+  `git grep -ln 'os/exec' v0.65.0 -- 'internal/*.go' 'internal/**/*.go' 'cmd/**/*.go' ':!*_test.go'`
   am lokalen d-check-Klon ist **leer** (Exit 1) — ohne die Test-Ausnahme bleibt genau ein
   Akzeptanztest übrig, kein Produktionspfad.
 - **Cutoff — ab diesem Eintrag, kein Nachrüsten.** Gebunden ist die Zahl, die geschrieben oder
-  geändert wird; der **Bestand ist kein Arbeitsauftrag**. Seine Fläche ist gemessen: **66** der
-  75 lebenden Markdown-Dateien nennen mindestens ein Kommando
+  geändert wird; der **Bestand ist kein Arbeitsauftrag**. Seine Fläche ist gemessen: **95** der
+  **108** lebenden Markdown-Dateien nennen mindestens ein Kommando
   (`git grep -lE '(make [a-z-]+|grep -|docker run|git (grep|ls-files|show|log|diff))' -- '*.md' ':!docs/reviews/**' ':!docs/plan/planning/done/**' ':!.harness/baseline/**' | wc -l`).
-  Das ist die **Obergrenze der Fläche**, keine Zahl von Verstößen — wie viele Zahlen dort ihr
-  Kommando nicht liefern, sagt kein Kommando, weil die Zugehörigkeit ein Urteil ist. Ein Maßstab
+  Das ist die **Obergrenze der Fläche** und **kein Erwartungswert** — keine Zahl von Verstößen,
+  und mit dem Bestand wandernd: wie viele Zahlen dort ihr Kommando nicht liefern, sagt kein
+  Kommando, weil die Zugehörigkeit ein Urteil ist. Ein Maßstab
   über diesen Bestand wäre dauerhaft rot und entwertete die Setzung, statt sie zu tragen —
   dieselbe Begründung trägt den Cutoff in
   [`MR-015`](#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) und in
@@ -1294,30 +1312,59 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Beide Setzungen sind eine **Verschärfung** — eine zusätzliche Beleg-Pflicht, eine engere Form
   des Erwartungswerts —, und „Anheben → Steering-Loop, kein ADR nötig" hält
   [`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) fest.
-- **Warum der Adaptions-Block und nicht der Hard-Rule-Katalog.** Eine Hard Rule ist permanent;
-  diese Setzung ist es ausdrücklich nicht — sie trägt einen Sensor-Vorbehalt und einen fälligen
-  Trigger, und beides hat im Katalog keinen Platz. Ob sie nach
-  [`AGENTS.md`](../AGENTS.md) §3 gehört, entscheidet der Slice, der ihren Sensor baut; dieselbe
-  Grenzziehung trifft
-  [`MR-015`](#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) für seine
-  eigene Setzung. Die Baseline `v3.5.2` kennt die Klasse als **Harness-Lüge** dem Begriff nach
+- **Der Ort ist offen, die Verbindlichkeit nicht.** Hierher gestellt hat die Setzung ihre
+  Befristung: eine Hard Rule ist permanent, ein Eintrag mit fälligem Trigger nicht. Diese Hälfte
+  des Grundes ist mit dem Auflösungs-Trigger unten entfallen, und die andere Hälfte — der
+  Sensor-Vorbehalt — trennt nicht, denn [`AGENTS.md`](../AGENTS.md) §3.7 und §3.8 tragen denselben
+  Vorbehalt im Katalog. Nach [`AGENTS.md`](../AGENTS.md) §3.8 gehört eine Regel, die eine **Lücke
+  füllt** statt von der Baseline abzuweichen, ohnehin nicht in den Adaptions-Block, und diese
+  Setzung füllt eine: die Baseline `v3.5.2` kennt die Klasse als **Harness-Lüge** dem Begriff nach
   (`.harness/baseline/v3.5.2/regelwerk/grundlagen-konventionen.md` §Kernbegriffe: *„Der Harness
   behauptet eine Kontrolle, die real nicht (mehr) greift"*), führt aber keine Regel über den Beleg
-  einer Zahl in Prosa — die Setzung füllt eine Lücke, statt von der Baseline abzuweichen.
-- **Auflösungs-Trigger:** **nicht permanent — fällig beim nächsten d-check-Pin-Sprung.** Das
-  Ereignis ist beobachtbar und meldet sich selbst: `make freshness-dcheck` steht auf *VERALTET*, und der
-  Slice, der den Pin zieht, schlägt diesen Block ohnehin auf
-  ([`MR-024`](#mr-024--d-check-pin-v0620-structure-verfügbar) §Auflösungs-Trigger führt ihn
-  hierher). Fällig ist dann eine **Entscheidung**, keine Erinnerung, und es sind drei: **(a)** ein
-  eigener hermetischer Prüfer in der Bauart von `make comment-claims`, mit Markdown im
-  Prüfbereich — dann wandert die Setzung in den Feedback-Quadranten und dieser Eintrag nach
-  [`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf) auf Kopf und
-  Zeiger; **(b)** Adoption eines d-check-Moduls, das die **Form** trägt — dann sagt dieser Eintrag
-  ausdrücklich, dass der **Wert** ungedeckt bleibt; **(c)** bewusste **Permanenz** im
-  Feedforward-Quadranten — dann steht sie hier als Entscheidung, nicht als Rest. Die Vorfrage zu
-  (b) beantwortet das `os/exec`-Kommando oben, am neuen Tag wiederholt: solange es leer bleibt,
-  fährt kein Modul einen Lauf. **Früher fällig**, sobald `grep -c 'structure' .d-check.yml` über
-  **0** steigt — wer das Modul aktiviert, entscheidet die Form-Hälfte mit und trägt sie hier nach.
+  einer Zahl in Prosa. Die Verlegung nach [`AGENTS.md`](../AGENTS.md) §3 hat einen eigenen Preis —
+  hier bleiben nach [`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
+  Kopf und Zeiger, der Rumpf wird dort **angehängt**, nicht eingeschoben
+  ([`MR-026`](#mr-026--die-hard-rule-nummer-ist-eine-adresse-keine-baseline-entsprechung)
+  Setzung 2) — und wird deshalb nicht beiläufig mitgenommen. Bis sie fällt, gilt die Setzung von
+  hier: der Adaptions-Block ist normativ wie eine ADR, nur ohne deren Immutabilität
+  ([`AGENTS.md`](../AGENTS.md) §3.8). Dieselbe Grenzziehung trifft
+  [`MR-015`](#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) für seine
+  eigene Setzung.
+- **Auflösungs-Trigger: keiner — die Setzung ist permanent und liegt bewusst im
+  Feedforward-Quadranten.** Von den drei Wegen, die beim d-check-Pin-Sprung zur Wahl standen, ist
+  keiner gangbar, und beide Absagen sind gemessen. **(a) Ein eigener hermetischer Prüfer** müsste
+  entscheiden, ob eine Zahl in einer **Messwert-Rolle** steht, und das ist ein Urteil, kein Muster
+  (Begründung oben, zweimal). Das nächstliegende mechanisierbare Surrogat — eine fett gesetzte
+  Zahl, in deren Absatz kein Kommando steht — trifft über den lebenden Markdown-Bestand **228**
+  Absätze mit fetter Zahl, davon **30** ohne Kommando im selben Absatz (ein `awk` mit `RS=""` über
+  die Dateiliste des §Geltungsbereichs, Zahl-Muster `\*\*[0-9][0-9.]*\*\*`, Kommando-Muster wie im
+  Cutoff-Bullet; **keine Erwartungswerte**, beide wandern mit dem Bestand). Die **30** sind
+  gelesen: sie führen ADR-Nummern, das Wort **Accepted** aus einer Historie-Tabelle,
+  Zeilenspannen und Zahlen, deren Kommando einen Absatz weiter steht. **10** von ihnen liegen in
+  `docs/plan/adr/` (dieselbe Ausgabe durch `grep -c '^docs/plan/adr/'`), verteilt auf sechs
+  Dateien, von denen **fünf** `**Status:** Accepted` tragen
+  (`grep -m1 '^\*\*Status:\*\*' <datei>` je Datei) — ein Wächter dieser Bauart stünde auf
+  unveränderlichen Artefakten dauerhaft rot ([`AGENTS.md`](../AGENTS.md) §3.4), und die einzige
+  Abhilfe dafür wäre eine Ausnahme wie
+  [`ADR-0017`](../docs/plan/adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md). **(b) Ein
+  d-check-Modul, das die Form trägt**, deckt den **Wert** nicht: die Vorfrage ist am neuen Tag
+  wiederholt und unverändert — das `os/exec`-Kommando oben ist über `v0.65.0` leer (Exit 1), kein
+  Modul fährt einen Lauf. Und die Form allein trägt die Setzung nicht, denn eine Zahl mit einem
+  falschen Kommando daneben erfüllt sie. Aktiviert eine spätere Entscheidung ein Modul, das die
+  Form fordern kann (heute keines: `grep -c 'structure' .d-check.yml` → **0**, Exit 1), ist die
+  Form-Hälfte hier nachzutragen; an der Permanenz ändert das nichts, solange der Wert ungedeckt
+  bleibt. **(c) Bleibt** — und steht hier als Entscheidung, nicht als Rest.
+- **Ihr Träger ist der Rollen-Wechsel, nicht ein Gate — und ein Trigger, der auf einen fremden
+  Lauf zeigt, ist keiner.** Der Sprung auf `v0.65.0` ist erfolgt; die Planungsdateien des
+  Pin-Commits nennen diesen Eintrag nicht. `git grep -c 'MR-025' 3ce4ea3 -- '*slice-122-*.md'`
+  ist leer (Exit 1), während dieselbe Suche über die Kennung des Vorgänger-Sprungs **5** Treffer
+  in einer Datei liefert, und `git log -1 --format=%B 3ce4ea3 | grep -c 'MR-025'` → **0**. Die
+  Messung hängt an `3ce4ea3`, nicht am heutigen Baum — über diesem fände sie sich selbst.
+  Gefunden hat die Klasse in genau jenem Lauf etwas anderes: zwei getrennte Kontexte, Review nach
+  Modul 10 und Verifikation nach Modul 11, meldeten **unabhängig** dieselbe falsche Zeile
+  ([Review](../docs/reviews/2026-08-28-slice-122-review.md) HIGH-1,
+  [Verifikation](../docs/reviews/2026-08-28-slice-122-verify.md) V-2). Das ist die
+  Trägerschaft, die diese Setzung hat.
 
 ### MR-026 — Die Hard-Rule-Nummer ist eine Adresse, keine Baseline-Entsprechung
 
@@ -1384,6 +1431,133 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   — *„keine inhaltlichen Adaptionen ggü. Baseline-Default"*.
   [`MR-000`](#mr-000--baseline-aussage) bleibt unangetastet, seine übrigen Setzungen gelten
   fort.
+
+### MR-027 — d-check-Pin v0.65.0 (Ignore-Marker in zwei Achsen verengt)
+
+- **Datum:** 2026-08-28
+- **Geltungsbereich:** `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`, Kopfkommentar),
+  `internal/emit/emit.go` (emittierter Default-Pin), `Makefile` (das Tag-Beispiel im Kommentar
+  über `DCHECK_TAG`), §Baseline; setzt
+  [`MR-024`](#mr-024--d-check-pin-v0620-structure-verfügbar) fort.
+- **Adaption:** Das gepinnte d-check-Image springt **v0.62.0 → v0.65.0**. Digest
+  `sha256:5ea03abe7918381c68203d8ac078a78d0d4ab91b5478e87c66b5a7b4fda41288`, **dreifach belegt**
+  und jedes Bein hier gefahren: lokaler RepoDigest
+  (`docker image inspect --format '{{index .RepoDigests 0}}' ghcr.io/pt9912/d-check:v0.65.0`),
+  Registry (`docker buildx imagetools inspect ghcr.io/pt9912/d-check:v0.65.0`, Zeile `Digest:`)
+  und der Release-Body als Fremdquelle
+  (`gh release view v0.65.0 --repo pt9912/d-check --json body -q .body`, daraus die
+  `sha256:`-Zeichenkette) — alle drei mit demselben Wert
+  ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Der **lebende** Pin steht
+  in `d-check.mk` und, daran gekoppelt, in `internal/emit/emit.go`; hier steht, wogegen er
+  belegt ist.
+- **Zweck: der Zeilen-Marker `d-check:ignore` verengt sich, in zwei Achsen.** Ab v0.65.0
+  unterdrückt er einen Befund nur noch, wenn er **(a)** in einem echten HTML-Kommentar steht
+  (**Form**) **und (b)** nicht in Inline-Code eingeschlossen ist (**Lage**). An einer Sonde
+  außerhalb des Repos gemessen statt dem CHANGELOG geglaubt — vier Marker-Lagen über einem toten
+  Codepath und über einer unverlinkten Kennung, beide Digests, netzlos, Mount `:ro`; `codepaths`
+  und `ids` antworten in allen vier Lagen gleich:
+
+  | Lage des Markers | `v0.62.0` | `v0.65.0` |
+  |---|---|---|
+  | echter HTML-Kommentar, `<!-- d-check:ignore -->` | unterdrückt | unterdrückt |
+  | blanke Prosa, Marker ohne Kommentar | unterdrückt | **meldet** |
+  | Kommentar-Form in Inline-Code eingeschlossen | unterdrückt | **meldet** |
+  | ohne Marker (Kontrolle) | meldet | meldet |
+
+  Die Kontrollzeile färbt unter beiden Versionen — der Aufbau misst seinen Gegenstand und nicht
+  seine eigene Untauglichkeit. Die Summen der Sonde: `3 Datei(en) geprüft, 2 Befund(e)` gegen
+  `3 Datei(en) geprüft, 6 Befund(e)`, beide Exit 1, je Modul **zwei** zusätzliche Meldungen aus
+  den zwei entwerteten Lagen; die Befundmenge von `v0.62.0` ist **echte Teilmenge** der von
+  `v0.65.0`.
+- **An der Quelle bestätigt, nicht nur am Verhalten.** Am lokalen d-check-Klon trägt
+  `git show v0.65.0:internal/hexagon/core/rules/ids.go` beide Bedingungen in **einer** Funktion
+  `markerLines` — `commentMarkerRe` für die Form, `stripInlineCodeByLine` für die Lage (Zeilen
+  **161** und **182** derselben Ausgabe, `grep -n 'commentMarkerRe = \|stripped := stripInlineCodeByLine'`)
+  —, und `codepaths.go` konsumiert dieselbe Funktion
+  (`git show v0.65.0:internal/hexagon/core/rules/codepaths.go | grep -n 'markers := markerLines'`
+  → **64**). Die zwei Module reagieren identisch, weil es **eine** Änderung an **einer**
+  geteilten Stelle ist, nicht zwei zufällig gleichlautende.
+- **Strenge-Bilanz an der Quell-Differenz, nicht an der CHANGELOG-Aufzählung
+  ([`MR-024`](#mr-024--d-check-pin-v0620-structure-verfügbar)-Muster).** Aktiv sind sechs Module
+  (`grep -m1 '^modules:' .d-check.yml` → `links, anchors, ids, matrix, codepaths, spans`). Über
+  `v0.62.0..v0.65.0` bewegen sich am Klon genau **zwei** ihrer Regeldateien, und **beide
+  verlieren Zeilen**: `git diff --numstat v0.62.0..v0.65.0 -- internal/hexagon/core/rules/ids.go`
+  → **35/11**, dasselbe Kommando für `codepaths.go` → **28/6**. Für `links.go`, `anchors.go`,
+  `matrix.go` und `spans.go` gibt es **keine** Zeile aus. Entfernte Zeilen an einem aktiven Modul
+  sind der Grund, die Bilanz nicht am Trockenlauf zu ziehen.
+- **Trockenlauf vor dem Pin (Pflicht, belegt —
+  [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile)-Muster).** Beide Digests netzlos
+  (`--network none`) gegen eine Kopie des Baums außerhalb des Repos (`git archive b3d6dcc`),
+  Mount `:ro`, unveränderte `.d-check.yml`: beide `d-check: 435 Datei(en) geprüft, 0 Befund(e)`,
+  Exit 0, `diff` der zwei Ausgaben leer. **Die Dateizahl ist kein Erwartungswert** — sie wächst
+  mit jedem Dokument
+  ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2);
+  tragend sind die **0** und die leere `diff`-Ausgabe.
+- **Was dieser Lauf trägt — und was nicht.** Er trägt **eine** Richtung, und in ihr ist er
+  diesmal die ganze Antwort: kein Marker, den v0.65.0 nicht mehr beachtet, unterdrückt über
+  diesem Korpus einen Befund — das sagt die **0** unter v0.65.0 unmittelbar. Der Grund ist
+  ausdrücklich **nicht**, dass das Repo keine solchen Marker führte: von den Marker-Zeilen in
+  getracktem Markdown außerhalb der vendored Baseline stehen **84** von **268** **nicht** in
+  Kommentar-Form — `git grep -h 'd-check:ignore' -- '*.md' ':!.harness/baseline/**' | wc -l`
+  für die Gesamtzahl, derselbe Strom durch `grep -c '<!--[^>]*d-check:ignore'` → **184** für die
+  Kommentar-Form. **Keine Erwartungswerte:** alle drei wachsen mit jedem Dokument, das den Marker
+  erwähnt. Sie tragen nur nichts — es ist Prosa *über* den Marker. Die **Baseline gehört per
+  Pathspec ausgenommen, nicht per Zeilen-Filter**: ein nachgeschaltetes
+  `grep -v '.harness/baseline'` verwirft auch Treffer, die den Baseline-Pfad bloß im Text nennen,
+  und liegt über diesem Bestand um **12** Zeilen zu niedrig (derselbe Strom durch
+  `grep -c '\.harness/baseline'`). In der **Gegenrichtung** ist der Lauf über einer
+  0-Befund-Basis **informationsleer**: eine weggefallene Befundklasse erzeugt dieselbe Ausgabe
+  wie eine unveränderte.
+- **Die Gegenrichtung, auf einer Nicht-Null-Basis gemessen.** Dieselbe Kopie, alle Marker in
+  getracktem Markdown außerhalb der vendored Baseline entwertet
+  (`find . -name '*.md' -not -path './.harness/baseline/*' -print0 | xargs -0 grep -l 'd-check:ignore'`
+  → **142** Dateien, darin per `sed -i` die Zeichenkette ersetzt; Restzähler danach **0**), dann
+  beide Digests: **beide** melden `435 Datei(en) geprüft, 37 Befund(e)`, Exit 1, `diff` der
+  sortierten Ausgaben ist **leer**, und die Klassen decken sich je Version
+  (`grep -v '^d-check:' <ausgabe> | awk -F'\t' '{print $NF}' | sort | uniq -c` → **15**
+  `codepath-missing`, **22** `id-unlinked`). Auf einer Basis, auf der ein Wegfall sichtbar
+  geworden wäre, fällt nichts weg. **Tragend sind die Gleichheit der zwei Mengen und die leere
+  `diff`-Ausgabe**, nicht die Datei- oder Befundzahl — beide wandern mit dem Baum.
+- **Kein ADR nötig ([`AGENTS.md`](../AGENTS.md) §3.5).** §3.5 verlangt einen ADR für
+  **Senkungen**. Gemessen verengt der Sprung an zwei aktiven Modulen und senkt an keinem; die
+  zwei Läufe oben sind die zwei Richtungen dieser Aussage, und keiner von beiden ist der
+  Trockenlauf allein. „Anheben → Steering-Loop, kein ADR nötig" hält
+  [`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) fest.
+- **Das Gate-Fragment ändert sich in genau einer Zeile.** `--print-mk` unter beiden Digests,
+  netzlos: je **68** Zeilen (`wc -l`), und `diff` der zwei Ausgaben führt **genau eine** Zeile —
+  `DCHECK_IMAGE ?= …:v0.62.0` → `…:v0.65.0`. Die Target-Aufzählung aus
+  [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert) Setzung 2 bleibt damit inhaltlich
+  stehen (`grep -cE '^docs?-[a-z-]+:' <fragment>` → **12** über beide Ausgaben und über
+  `d-check.mk`); abgeglichen ist sie trotzdem, weil ihr Auflösungs-Trigger den Abgleich verlangt
+  und nicht sein Ergebnis. `diff <frische v0.65.0-Ausgabe> d-check.mk | grep -c '^[0-9]'` → **4**
+  Hunks: genau die vier Handgriffe aus
+  [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert) Setzung 1.
+- **Emitter-Pin gekoppelt (Tier-1-Drift).** `internal/emit`s `DefaultImage`/`DefaultDigest` zieht
+  per go-Test mit (`TestDefaultImage_MatchesCanonical`/`TestDefaultDigest_MatchesCanonical` lesen
+  `d-check.mk`); die emittierte Starter-Config bleibt `modules: [links, anchors]`
+  ([`MR-017`](#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)) — dieser Sprung
+  bewegt eine Versions-Referenz, keine Prüfbereichs-Entscheidung.
+- **Der Sprung ist nicht nur Wartung, und der Grund steht hier, weil er sonst nirgends stünde.**
+  d-checks `[0.65.0]` behebt **vierzehn** behebbare HIGH-CVEs im ausgelieferten Image (neun
+  `golang.org/x/crypto`, vier `golang.org/x/net`, eine `go-git`) — gelesen am lokalen Klon mit
+  `awk '/^## \[0\.65\.0\]/,/^## \[0\.64\.0\]/' CHANGELOG.md`, also **Fremdquelle**, nicht hier
+  gemessen. Kein Gate dieses Repos scannt das gepinnte Fremd-Image, und
+  `make freshness-dcheck` sagt „ein neuer Tag ist da", nicht „der gepinnte ist verwundbar".
+- **Kein Wächter über einer Versions-Nennung in Prosa, und das gehört dazu.** Keines der sechs
+  aktiven Module hält eine solche Nennung gegen den lebenden Pin
+  (`grep -c 'versions\|pins' .d-check.yml` → **0**, Exit 1). Das gelieferte Modul mit genau
+  diesem Vertrag ist `versions` (`DC-FA-VER-001`: *„jeder Versions-Pin muss die aktuelle Version
+  seines Paares tragen, sonst Befund `version-stale`"* —
+  `git show v0.65.0:internal/hexagon/core/rules/versions.go` am lokalen Klon); es liegt im
+  gepinnten Image und ist **nicht** adoptiert. Solange kein Wächter zwei Fassungen
+  zusammenhält, führt §Baseline die Version deshalb nicht als zweite Fassung, sondern zeigt auf
+  den lebenden Ort.
+- **Auflösungs-Trigger:** permanent; bei d-check-Release `d-check --print-mk` neu erzeugen +
+  Digest neu pinnen ([`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert)
+  §Auflösungs-Trigger) und die Strenge-Bilanz über die neue Spanne neu ziehen — **an der
+  Quell-Differenz der Regeldateien** und, wo ein aktives Modul Zeilen **verliert**, zusätzlich an
+  einer Gegenmessung auf **Nicht-Null-Basis**; der Trockenlauf allein beantwortet die
+  §3.5-Frage in keiner der beiden Richtungen.
 
 ## Modus-Deklaration pro Sub-Area
 
