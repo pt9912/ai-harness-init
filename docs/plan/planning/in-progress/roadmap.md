@@ -18,7 +18,7 @@ der Freshness-Sensor ist**: die Kante aus [welle-09](../welle-09-modul-15-konfor
 aufgelöst (Drift-Log unten; die drei Messungen stehen in §2 der Plan-Datei, nicht hier).
 
 **Slices:** `slice-080` bis `slice-085`, sämtlich geschnitten;
-[`slice-080`](../in-progress/slice-080-verweis-ueberlebt-tagwechsel.md) liegt in `next/` und ist der
+[`slice-080`](../in-progress/slice-080-verweis-ueberlebt-tagwechsel.md) ist der
 erste — er entscheidet, wie ein Verweis in den `<tag>`-gescopten Baum den Tag-Wechsel übersteht,
 **bevor** getauscht wird. Ihr Lifecycle-Zustand ist ihr Verzeichnis, nicht diese Zeile.
 

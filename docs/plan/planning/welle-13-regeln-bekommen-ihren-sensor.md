@@ -211,7 +211,7 @@ ist falsch"*, nicht *„die DoD ist länger"*.
     ([`AGENTS.md`](../../../AGENTS.md) §3.5, s. den nächsten Punkt). Ein Modul, das rot führt und
     dessen Adoption an einer Senkung hängt, ist ein **eigener Kandidat**, kein Mitglied einer Welle,
     deren Identität die gemessenen Achsen des Kandidaten sind.
-  - **`versions` — der Sensor existiert, sein Gegenstand liegt woanders.** Ohne Block
+  - **`versions` — gemessen und als Wächter verworfen, nicht aufgeschoben.** Ohne Block
     `0 Befund(e)`. Mit einem Block auf den d-check-Pin (`pin-pattern` auf
     `ghcr\.io/pt9912/d-check:(v…)`, `current-from` auf einen eigens angelegten Markdown-Span) und
     den vom Tool vorgeschlagenen Zeitdokument-Ausnahmen ebenfalls **0**; ohne die Ausnahmen **19**,
@@ -222,12 +222,21 @@ ist falsch"*, nicht *„die DoD ist länger"*.
     ist damit **blind für die Datei, die den Pin trägt**; es hält Zweitfassungen gegen eine
     Markdown-Autorität. Eine solche Autorität neu anzulegen verschöbe die unbewachte Kante, statt
     sie zu schließen.
-    **Wohin es gehört, ist gemessen:** sein großer lebender Gegenstand in diesem Repo ist der
-    **Baseline-Tag**, nicht der d-check-Pin. `pin-pattern: 'baseline/(v…)'` gegen einen Span mit
-    `v5.12.0` meldet **58 Befunde über 16 Dateien**, darunter **alle vier** Accepted-ADRs aus
-    [slice-080](in-progress/slice-080-verweis-ueberlebt-tagwechsel.md) — also auch die **drei**, die dort
-    als *stumm* gemessen sind. `versions` ist damit ein Kandidat für die **stille Hälfte** jenes
-    Slice in [welle-10](welle-10-re-baseline.md); die Messung steht dort in §6, nicht nur hier.
+    **Der zweite Gegenstand — der Baseline-Tag — ist entschieden, und zwar dagegen.**
+    [ADR-0023](../adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) Festlegung 3 verwirft das
+    Modul als Wächter der **stillen Hälfte** jenes Verweis-Bestands, den
+    [slice-080](in-progress/slice-080-verweis-ueberlebt-tagwechsel.md) misst: das Modul urteilt
+    über **Zeichenketten-Frische, nicht über Verweis-Auflösung** — ein Link **ins Leere** unter
+    dem aktuellen Tag lässt es schweigen, eine Nennung, die niemand auflösen soll, färbt es rot —,
+    es trennt Adresse, datierte Aussage und Operand nicht, und der autoritative Pin steht in einer
+    Zeile, die es nicht liest (`grep -c '^BASELINE_TAG' Makefile` → **1**, kein Markdown).
+    **Es wird darum auch nicht als Kandidat geführt**
+    ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) — ein
+    Modul, das die falsche Eigenschaft misst, ist kein Wächter im Wartestand. Was die Entscheidung
+    hinterlässt, ist kein Slice, sondern ein **Kriterium**: ein Sensor über einem `<tag>`-gescopten
+    Bestand wird nur adoptiert, wenn er die drei Klassen an je einem Ist-Beleg trennt. Bestand,
+    Kommandos und Status der Entscheidung stehen in der ADR und im
+    [ADR-Index](../adr/README.md), nicht zusätzlich hier.
   - **`pins` und `immutable` — der Gegenstand muss erst geschrieben werden.** Beide melden ohne
     Block `0 Befund(e)`, und das ist keine Config-Lücke, sondern eine leere Marker-Menge:
     `git grep -c 'dpin: sha256:' -- '*.md' ':!.harness/baseline' | wc -l` → **0**, dasselbe mit

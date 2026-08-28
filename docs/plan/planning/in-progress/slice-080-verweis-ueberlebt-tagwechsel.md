@@ -26,11 +26,21 @@ unveränderlich; das Doku-Gate verlangt auflösbare Link-Ziele. Vier Accepted-AD
 vendored Baum ([`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md),
 [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md),
 [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md),
-[`ADR-0014`](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md)). Die fünfte
-Accepted-ADR, [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md), nennt den Baum
-an **keiner** Stelle (`git grep -c '\.harness/baseline'` über ihre Datei → 0) und ist von der
-Frage nicht berührt. Verschwindet der Pfad, kollidieren zwei Regeln an einem Artefakt, das
-keine von beiden ändern darf.
+[`ADR-0014`](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md)) — gezählt über das Muster
+**mit Folgepfad**: `git grep -lE 'baseline/v3\.5\.2/' -- 'docs/plan/adr/*.md' | wc -l` → **4**.
+Auf den **bloßen Verzeichnisnamen** sind es **sechs** Dateien mit zusammen **neun** Zeilen
+(dasselbe Kommando ohne den abschließenden Schrägstrich → **6**; mit `-hE` statt `-lE` → **9**;
+dieselbe Liste durch `xargs grep -l '^\*\*Status:\*\* Accepted' | wc -l` → **6**, also durchweg
+*Accepted*): dazu kommen [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) und
+[`ADR-0017`](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md), die das Verzeichnis
+als **Operand ihrer eigenen Umbenennungs-Sonde** nennen — ein mechanischer Tag-Tausch machte diese
+zwei Sätze *falsch*, statt sie ins Leere zeigen zu lassen. Beide Zahlen zählen Verschiedenes und
+sind **keine Erwartungswerte**; sie wandern mit dem ADR-Bestand
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2). [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) nennt den Baum an
+**keiner** Stelle (`git grep -c '\.harness/baseline' -- 'docs/plan/adr/0015-*.md'` → kein Treffer,
+Exit 1) und ist von der Frage nicht berührt. Verschwindet der Pfad, kollidieren zwei Regeln an
+einem Artefakt, das keine von beiden ändern darf.
 
 **Und die Kollision ist kleiner und zugleich schlimmer als sie aussieht — beides gemessen**
 (Sonde im Arbeitsbaum, `make docs-check`, zurückgenommen):
@@ -94,18 +104,17 @@ DoD vollständig, ADR *Accepted*, Closure-Notiz geschrieben.
   aus der Prüfung. Das ist eine Senkung mit weit größerem Geltungsbereich als der Anlass.
 - **Die stille Hälfte hat keinen Wächter, und der Slice darf sie nicht so behandeln, als hätte
   sie einen.** Ob `codepaths.roots` um `.harness` erweiterbar ist, ohne den Prüfbereich
-  aufzublähen, ist **ungemessen**. Ein **zweiter Weg ist gemessen** und liegt näher: das
-  d-check-Modul `versions` (`DC-FA-VER-001`, im gepinnten Image vorhanden, in
+  aufzublähen, ist **ungemessen**. Der eine Kandidat, der dafür gemessen wurde, ist **verworfen**:
+  das d-check-Modul `versions` (`DC-FA-VER-001`, im gepinnten Image vorhanden, in
   [`.d-check.yml`](../../../../.d-check.yml) nicht aktiviert) bindet jeden Versions-Pin an die
-  aktuelle Version seines Paares. Trockenlauf gegen eine Kopie außerhalb des Repos
-  (`git archive aa32e1f`, netzlos, Mount `:ro`, Image `v0.65.0` per Digest) mit
-  `pin-pattern: 'baseline/(v[0-9]+\.[0-9]+\.[0-9]+)'` gegen einen Span mit `v5.12.0`,
-  Zeitdokumente ausgenommen: **58 Befunde über 16 Dateien**, alle `version-stale` — darunter
-  **alle vier** oben genannten Accepted-ADRs, also auch die **drei**, die in der Tabelle als
-  *stumm* stehen. Das entscheidet den Konflikt nicht; es zeigt, dass die stille Hälfte **messbar**
-  ist, bevor die ADR über sie urteilt. Der Wächter bleibt ein eigener Slice (§4), und die
-  Ableitung steht in [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §6, die das Modul aus
-  ihrem eigenen Zuschnitt hierher verweist.
+  aktuelle Version seines Paares und misst damit **Zeichenketten-Frische, nicht
+  Verweis-Auflösung** — es trennt Adresse, datierte Aussage und Operand nicht, und sein
+  zeilengenauer Ausweg ist eine Textänderung, die [`AGENTS.md`](../../../../AGENTS.md) §3.4 auf
+  den **sechs** Accepted-ADRs aus §1 verbietet. Die Sonden, die das zeigen, die Bestandszahlen
+  beider Adoptions-Wege und das Kriterium für den nächsten Kandidaten trägt
+  [`ADR-0023`](../../adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) Festlegung 3. Was der
+  Trockenlauf belegt, bleibt richtig und bleibt weniger, als es zunächst schien: die stille Hälfte
+  ist **messbar** — bewacht ist sie nicht, und keine Entscheidung dieses Slice macht sie es.
 - **Was hier entschieden wird, gilt über den Anlass hinaus:** dieselbe Frage stellt sich bei
   jedem künftigen Bump. Eine Entscheidung, die nur `v3.5.2` → `v5.12.0` regelt, ist keine.
 
