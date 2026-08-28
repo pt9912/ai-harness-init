@@ -418,15 +418,15 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
    **Prozess**-Entscheidung, nach der sich das Feld **ohne** Änderung an der Erfassung füllt.
 
    **Die kanonischen Namen der Agenten-Typen:** `planner` · `architect` · `implementer` ·
-   `reviewer` · `verifier` · `validator`.
-   [Modul 8](../.harness/baseline/v3.5.2/regelwerk/modul-08-agentenrollen.md#rollen-sequenz-für-einen-slice)
-   nennt die dritte Rolle *Implementation*; als **Bezeichner** gilt `implementer` — kurz,
-   gleichförmig mit den übrigen fünf und bereits im Code. Die Abweichung ist eine
-   Schreibweise, keine Rollen-Änderung, und sie steht hier, damit sie nicht im Code lebt.
+   `reviewer` · `verifier` · `validator`. Es sind die sechs Rollen-Namen aus
+   [Modul 8](../.harness/baseline/v5.12.0/regelwerk/modul-08-agentenrollen.md#rollen-sequenz-für-einen-slice),
+   kleingeschrieben. Die Kleinschreibung ist die **Bezeichner**-Form und trifft alle sechs
+   gleich; sie sagt über keine einzelne Rolle etwas aus. Der Wert steht hier, weil er eine
+   technische Festlegung ist — nicht im Code.
 
    **Was auch dann nicht abgedeckt ist:** der Haupt-Strom trägt keinen Agenten-Typ (`agent`
    und `agent_type` sind dort strukturell leer) und wechselt innerhalb einer Sitzung
-   zwischen Planer und Implementation. Ableitbar aus bereits erfassten Feldern sind zwei
+   zwischen Planung und Implementierung. Ableitbar aus bereits erfassten Feldern sind zwei
    Signale — das `slice`-Feld (Lifecycle-Verzeichnis, WIP-Limit 1) und das Schreibziel
    (`docs/plan/` gegen Code-Pfade).
 
@@ -739,3 +739,4 @@ festgelegt ist.
 |---|---|---|
 | 2026-08-01 | Initial | — |
 | 2026-08-02 | §5 nimmt das Span-Schema auf (Feldtabelle mit Sensor-Spalte, Werkzeug-Liste, Positiv-Liste, Start-Konvention, sechs erklärte Abweichungen, Wächter-Bindungen); §3 nimmt die strukturelle Schranke um `model_version` auf | [`ADR-0013`](../docs/plan/adr/0013-technik-stratum-als-zielort.md) |
+| 2026-08-28 | §5: Der Absatz über die kanonischen Agenten-Typ-Namen nennt keine Abweichung mehr — der adoptierte Baseline-Stand `v5.12.0` schreibt die dritte Rolle `Implementer` statt `Implementation`, womit die sechs Bezeichner die sechs Rollen-Namen des Moduls in Kleinschreibung sind. Der Wert selbst ist unverändert | [`ADR-0023`](../docs/plan/adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) |
