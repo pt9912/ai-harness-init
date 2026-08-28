@@ -178,7 +178,12 @@ dabei, statt sich hinter einem anderen zu verstecken.
       **Ausgang (1) — die Abweichung wird deklariert:** der Adaptions-Block trägt einen Eintrag,
       der Modul 6 Schritt 1 nennt und sagt, welche Sensoren ihn hier tragen.
       **Rot heute:** `sed -n '/^## Adaptions-Block$/,/^## Modus-Deklaration/p' harness/conventions.md | grep -c 'Modul 12'`
-      → **0**, und `grep -c '^### MR-' harness/conventions.md` → heute **27**.
+      → **0**, gehalten gegen den Nenner `grep -c '^### MR-' harness/conventions.md` — der Block
+      ist nicht leer, und **keiner** seiner Einträge nennt Modul 12. Der Nenner **wandert** und
+      steht deshalb als Kommando, nicht als Zahl
+      ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+      Setzung 2): ein neuer Eintrag über einen fremden Gegenstand darf diesen DoD-Punkt nicht
+      bewegen.
       **Ausgang (2) — Modul 12 wird als adoptiert-aber-nicht-umgesetzt geführt:** die Roadmap
       bekommt den Gegenstand als Kandidat oder Welle mit beobachtbarem Trigger.
       **Rot heute:** `grep -ci 'modul 12\|replay' docs/plan/planning/in-progress/roadmap.md` → **0**.
@@ -263,7 +268,9 @@ ein Norm-Artefakt berührt:
 
 - **Modus:** GF
 - **Konventionen-Dichte:** hoch — der Adaptions-Block führt
-  `grep -c '^### MR-' harness/conventions.md` → **27** Einträge in einheitlicher Form (Datum ·
+  seine Einträge (`grep -c '^### MR-' harness/conventions.md` — der Wert wandert und steht darum
+  als Kommando, [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2) sämtlich in einheitlicher Form (Datum ·
   Geltungsbereich · Adaption · Begründung · Auflösungs-Trigger); die Anleitung folgt der
   Fünf-Schritte-Form aus Modul 6.
 - **Phase-Reife:** Phase 2 (Planung) — der Gegenstand ist die Closure-Prozedur selbst, und sie

@@ -188,11 +188,14 @@ halten kann. Sie hat keine. Alle drei Kandidaten sind gemessen, keiner trägt:
   *„eine Aussage hat einen eigenen Absatz"* zu und prüfte *„kein Block über N Zeichen"*: eine
   Zusage weiter als ihre Abdeckung ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 - **(b) Das Verhältnis unserer Fassung zu ihrer Vorlage.** Nicht trennscharf, und der
-  Gegenbeleg ist der wichtigste Konventionsspeicher selbst: `harness/conventions.md` misst
-  **113 657** Zeichen gegen **10 363** der Vorlage
+  Gegenbeleg ist der wichtigste Konventionsspeicher selbst: `harness/conventions.md` misst am
+  2026-08-28 **132 869** Zeichen gegen **10 363** der Vorlage
   (`wc -c harness/conventions.md .harness/baseline/v3.5.2/templates/harness/conventions.template.md`)
-  — das **Elffache**, und zwar **konstruktionsbedingt**: die Vorlage liefert den Adaptions-Block
-  leer, und jede Adaption ist ein Eintrag (`grep -c '^### MR-' harness/conventions.md` → **27**).
+  — **mehr als das Zwölffache**, und zwar **konstruktionsbedingt**: die Vorlage liefert den Adaptions-Block
+  leer, und jede Adaption ist ein Eintrag. **Der Faktor wandert mit jedem Eintrag und ist kein
+  Erwartungswert** ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2); was das Kriterium verwirft, ist die Bauart, nicht die Ziffer — der Nenner ist
+  `grep -c '^### MR-' harness/conventions.md`.
   Ein Kriterium, das das Abweichungs-Register für seine Abweichungen rot färbt, wird abgeschaltet.
   Dazu kommt: Artefakte ohne Vorlage — die Nutzer-Doku unter `docs/user/` — haben gar keinen
   Nenner.
@@ -274,9 +277,12 @@ bewegt das Artefakt und liefert die Messreihe; er formuliert keine Setzung.
 ### Was dieser Slice abgibt und warum er es nicht selbst schreibt
 
 Derselbe Befund hat einen zweiten Gegenstand, und er ist **nicht** derselbe Slice.
-`harness/conventions.md` misst **1 402** Zeilen und **113 657** Zeichen
-(`wc -l -c harness/conventions.md`) bei **27** Einträgen
-(`grep -c '^### MR-' harness/conventions.md`). Ihre Masse ist **nicht** ein Absatz, sondern eine
+`harness/conventions.md` misst am 2026-08-28 **1 635** Zeilen und **132 869** Zeichen
+(`wc -l -c harness/conventions.md`) bei **29** Einträgen
+(`grep -c '^### MR-' harness/conventions.md`). **Beide Zahlen wandern mit dem Register und sind
+keine Erwartungswerte** ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2) — die Bezugsmenge dieser Abgabe ist der Eintrags-Zähler, nicht sein heutiger Wert.
+Ihre Masse ist **nicht** ein Absatz, sondern eine
 Eintrags-Zahl — und dafür gibt es eine Form, die nicht erfunden werden muss: das Regelwerk stellt
 sie ausdrücklich frei (*„ihre Form (Einzeldatei vs. Verzeichnis, ADR-artig vs. Prosa) ist Wahl"*,
 [`grundlagen-konventionen.md` §harness/conventions.md als Konventionsspeicher](../../../../.harness/baseline/v3.5.2/regelwerk/grundlagen-konventionen.md#harnessconventionsmd-als-konventionsspeicher)),
@@ -299,21 +305,30 @@ ls "$DC/harness/conventions/done" | wc -l      # -> 23
    ein **Behälter**; hier ist die Einheit der **Absatz**, und für ihn gibt es keinen Behälter.
    Ein Slice, der beides trüge, hätte zwei Ziel-Formen und mehr als drei DoD-Punkte.
 3. **Der Umzug hat einen Wächter, dieser Slice hat keinen** — und das ist der Unterschied, der
-   ihn billig macht. **1 272** Verweise zeigen im Index auf `conventions.md#mr-…`
-   (`git grep -oE 'conventions\.md#mr-[a-z0-9-]+' -- '*.md' | wc -l`), davon **379** in lebenden
-   Artefakten (dieselbe Suche mit `':!docs/reviews/**' ':!docs/plan/planning/done/**' ':!.harness/baseline/**'`),
-   auf **27** eindeutige Anker (`… | sort -u | wc -l`), und **0** außerhalb von Markdown
-   (dieselbe Suche mit `-- ':!*.md'`). Jeder einzelne davon wird von `make docs-check` gehalten;
+   ihn billig macht. Wie viele Verweise auf `conventions.md#mr-…` zeigen, sagt
+   `git grep -oE 'conventions\.md#mr-[a-z0-9-]+' -- '*.md' | wc -l`, und wie viele davon in
+   lebenden Artefakten stehen, dieselbe Suche mit
+   `':!docs/reviews/**' ':!docs/plan/planning/done/**' ':!.harness/baseline/**'`. **Beide Zahlen
+   stehen hier nicht:** sie wandern mit **jeder** Datei des Repos, nicht mit dem Gegenstand, und
+   wären damit keine Erwartungswerte
+   ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+   Setzung 2) — die Bezugsmenge der Anker liefert der Nenner oben
+   (`grep -c '^### MR-' harness/conventions.md`), je Eintrag einer. **Tragend ist die eine Zahl,
+   die sich nicht bewegen darf:** außerhalb von Markdown liegen **0** Verweise (dieselbe Suche mit
+   `-- ':!*.md'`) — der Umzug bleibt damit eine reine Markdown-Bewegung.
+   Jeder einzelne Verweis wird von `make docs-check` gehalten;
    d-check löst das im eigenen Repo mit einem expliziten `<a id>` je Index-Zeile. **Ob unser Pin
    einen HTML-Anker als Link-Ziel auflöst, ist hier ungeprüft** — und das ist eine Messung, keine
-   Vorsicht: `git grep -l '<a id=' -- '*.md'` findet **7** Dateien, und der einzige dieser Anker,
+   Vorsicht: `git grep -l '<a id=' -- '*.md' ':!docs/plan/planning/open/slice-114-*.md'` findet
+   **7** Dateien — **ohne** den Ausschluss **8**, weil diese Datei ihr eigenes Suchmuster
+   enthält und sich selbst findet. Der einzige dieser Anker,
    auf den überhaupt verlinkt wird (`werkzeug-wahl`), liegt in der vendored Baseline, deren Links
    der Doku-Gate gar nicht liest (`scan.ignore` in [`.d-check.yml`](../../../../.d-check.yml)).
    Der Umzug hätte damit eine Vorfrage, die vor ihm zu beantworten ist — mit einem Trockenlauf,
    nicht mit einer Modul-Beschreibung.
 4. **Er ist an unserem Pin nicht regelkonform herstellbar.** `v3.5.2` liefert **keine** Vorlage
    für einen Einzeleintrag: `ls .harness/baseline/v3.5.2/templates/harness/` nennt zwei Dateien
-   und kein `conventions/`-Verzeichnis. 27 Einträge in 27 neue Dateien zu schreiben hieße, sie
+   und kein `conventions/`-Verzeichnis. Je Eintrag eine neue Datei zu schreiben hieße, sie
    hand-zu-modellieren — genau das, was
    [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
    ausschließt. Der Stand, den der Nutzer anstrebt, liefert sie — dieselbe Klon-Wurzel wie oben:

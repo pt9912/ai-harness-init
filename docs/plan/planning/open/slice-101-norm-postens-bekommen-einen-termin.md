@@ -468,7 +468,9 @@ dabei, statt sich hinter einem anderen zu verstecken.
       Für den **achten** (ebenda) bewegt sich **keiner** der bisherigen Werte: er ist der erste
       Posten, dessen Ausgang ein neuer Eintrag im Adaptions-Block sein kann statt einer Änderung
       an §3.6/§3.7. Sein Kommando ist deshalb ein anderes —
-      `grep -c '^### MR-' harness/conventions.md` → heute **26** —, und wenn er stattdessen in eine
+      `grep -c '^### MR-' harness/conventions.md`, dessen Wert **wandert** und darum hier nicht
+      steht ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+      Setzung 2) —, und wenn er stattdessen in eine
       bestehende Regel wandert, gilt wieder das Kommando ihres Blocks.
       Für den **neunten** ([slice-099](../done/slice-099-leser-und-aufraeum-kommando.md)) gilt
       dasselbe Kommando wie für den achten: sein Ausgang ist ein Eintrag im Adaptions-Block über
