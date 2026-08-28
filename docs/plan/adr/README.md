@@ -31,35 +31,38 @@ Entscheidung sagt, sagt ihre Datei; dieser Index zeigt auf sie.
 
 ## Konventionen
 
-- **Die Spalte `Titel` ist die `# `-Überschrift der verlinkten Datei**, ohne
-  ihr `ADR-NNNN: `-Präfix und im Wortlaut unverändert. Sie trägt keine
-  Zusammenfassung, keine Messung und keinen Beleg — was eine Entscheidung
-  begründet, steht in ihr. Nachbauen:
+- ADRs sind nach `Accepted` **immutable** ([`AGENTS.md`](../../../AGENTS.md)
+  §3.4); eine Korrektur ist eine Folge-ADR mit `Supersedes`. Auch dieser Index
+  bessert nicht nach, was in der Quelle nicht mehr änderbar ist.
+- **`Titel` ist die `# `-Überschrift der verlinkten Datei**, ohne ihr
+  `ADR-NNNN: `-Präfix und im Wortlaut unverändert — keine Zusammenfassung, keine
+  Messung, kein Beleg. Enthält die Überschrift eine Kennung, wird sie in der
+  Zelle verlinkt ([`MR-001`](../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids));
+  am Wortlaut ändert das nichts.
+- **`Status` trägt einen Satz nur für die eine Aussage, die nirgends sonst stehen
+  kann:** dass eine spätere ADR diese hier ganz oder in Teilen abgelöst hat —
+  nachtragen kann eine `Accepted`-ADR das nicht. Genannt werden der **Umfang**
+  der Revision und die revidierende ADR; begründet wird sie dort.
+- **`Bezug` ist voll verlinkt und darum lang** — Kennungen sind linkpflichtig
+  ([`MR-001`](../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)).
+- **Kein Gate hält diese Form.** Keines der in `.d-check.yml` aktivierten Module
+  vergleicht eine Zelle mit der Überschrift der Datei, auf die sie zeigt. Von
+  Hand, und stumm nur bei Deckungsgleichheit:
 
   ```sh
-  for f in docs/plan/adr/[0-9][0-9][0-9][0-9]-*.md; do
-    sed -n '1s/^# ADR-[0-9]\{4\}: //p' "$f"
-  done
+  d=docs/plan/adr
+  awk -F'|' -v d="$d" '/^\| \[ADR-/{
+    c=$2; t=$3
+    gsub(/^[ \t]+|[ \t]+$/,"",t)
+    match(c, /\([0-9][0-9][0-9][0-9]-[^)]+\)/)
+    f = d "/" substr(c, RSTART+1, RLENGTH-2)
+    if ((getline h < f) <= 0) h = "<unlesbar>"
+    close(f)
+    sub(/^# ADR-[0-9][0-9][0-9][0-9]: /, "", h)
+    gsub(/\]\([^)]*\)/,"]",t); gsub(/[][`]/,"",t); gsub(/[][`]/,"",h)
+    if (t != h) { print "DRIFT " f "\n  Zelle: " t "\n  H1:    " h; n++ }
+  } END{ exit n>0 }' "$d/README.md"
   ```
 
-  Steht in der Überschrift eine Kennung, wird sie in der Zelle verlinkt — die
-  Link-Pflicht des `ids`-Moduls gilt auch hier; am Wortlaut ändert das nichts.
-- **Die Spalte `Status` trägt einen Satz nur für die eine Aussage, die nirgends
-  sonst stehen kann:** dass eine spätere ADR diese hier ganz oder in Teilen
-  abgelöst hat. Eine `Accepted`-ADR kann das nicht nachtragen
-  ([`AGENTS.md`](../../../AGENTS.md) §3.4) — der Vorwärts-Zeiger von der
-  abgelösten zur ablösenden Entscheidung existiert nur hier. Genannt werden der
-  **Umfang** der Revision und die revidierende ADR; begründet wird sie dort.
-- **Die Spalte `Bezug` ist voll verlinkt und darum lang.** Jede Kennung ist
-  linkpflichtig (`ids`, `link-policy: always` in `.d-check.yml`); diese Länge
-  ist eine Gate-Folge, keine Formfrage.
-- **Was in einer ADR nicht mehr geändert werden darf, wird hier nicht
-  nachgebessert.** Eine Korrektur an einer `Accepted`-ADR ist eine Folge-ADR mit
-  `Supersedes` ([`AGENTS.md`](../../../AGENTS.md) §3.4). Dieser Index ist die
-  einzige Datei des Verzeichnisses, die §3.4 nicht einfriert; ohne diese Zeile
-  sammelt sich in ihm, was die Regel in der Quelle verbietet.
-- **Kein Gate hält diese Form.** Die in `.d-check.yml` aktivierten Module prüfen
-  Verweise und Kennungen; keines vergleicht eine Tabellenzelle mit der
-  Überschrift der Datei, auf die sie zeigt. Die Eigenschaft, die ein Wächter
-  messen müsste, ist diese Gleichheit — nicht die Zellenlänge, die nur ihr
-  Symptom ist.
+  Fehlt einer Überschrift das `ADR-NNNN: `-Präfix, bleibt es im Vergleich stehen
+  und der Fall wird gemeldet — nicht übersprungen.
