@@ -17,10 +17,13 @@ gezeigt, nicht als Treiber.
 der Freshness-Sensor ist**: die Kante aus [welle-09](../welle-09-modul-15-konformitaet.md) ist
 aufgelöst (Drift-Log unten; die drei Messungen stehen in §2 der Plan-Datei, nicht hier).
 
-**Slices:** `slice-080` bis `slice-085`, sämtlich geschnitten;
-[`slice-080`](../in-progress/slice-080-verweis-ueberlebt-tagwechsel.md) ist der
-erste — er entscheidet, wie ein Verweis in den `<tag>`-gescopten Baum den Tag-Wechsel übersteht,
-**bevor** getauscht wird. Ihr Lifecycle-Zustand ist ihr Verzeichnis, nicht diese Zeile.
+**Slices:** `slice-080` bis `slice-085`, sämtlich geschnitten.
+[`slice-080`](../in-progress/slice-080-verweis-ueberlebt-tagwechsel.md) war der erste, und **seine
+Frage ist entschieden**: [`ADR-0023`](../../adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md)
+ist *Accepted* und hält den Beschluss aus
+[`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) gegen den Zielstand — der Tausch läuft
+damit nicht an einer offenen Frage vorbei. Ihr Lifecycle-Zustand ist ihr Verzeichnis, nicht diese
+Zeile.
 
 **Trigger:** `make baseline-freshness` meldet VERALTET (`gepinnt: v3.5.2`, `latest: v5.12.0`) —
 real eingetreten, in jedem Lauf seiner sichtbaren Historie rot.

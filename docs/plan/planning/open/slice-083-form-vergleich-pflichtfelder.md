@@ -104,6 +104,26 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   Reißt sie die Sitzung, wird geteilt, nicht gedehnt.
 - **Die Verzeichnis-Form des Adaptions-Blocks bleibt außen vor** (Welle §6). Wer sie hier
   mitnimmt, zieht jede `MR`-Kennung des Repos auf einen neuen Pfad — und die sind linkpflichtig.
+- **Eine der vier neuen Vorlagen ist keine Form, sondern ein Ort mit zwei Lese-Schritten, und die
+  drei DoD-Punkte oben fangen sie nicht.** `observations` ist das **Beobachtungs-Register**: die
+  Ziel-Fassung führt es in `v5.12.0`, `modul-05-planning-harness.md`, §Lifecycle als State
+  Machine — *„`done` ist kein Endzustand der Information: Die Beobachtungen aus §7 sind bei der
+  Slice-Closure ins Beobachtungs-Register eingetragen und werden von dort weitergelesen"* — und
+  hängt es in `v5.12.0`, `templates/docs/plan/planning/slice.template.md` an einen **DoD-Punkt je
+  Slice**: *„Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder <!-- d-check:ignore (Pfad im Zitat der Ziel-Vorlage, existiert in diesem Repo nicht) -->
+  Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7
+  notiert."* Die gepinnte Fassung kennt den Begriff nicht
+  (`git grep -l 'Beobachtungs-Register' v3.5.2 -- lab/regelwerk lab/templates | wc -l` → **0**,
+  Exit 1; dasselbe für `v5.12.0` → **18** Dateien, lokaler Kurs-Klon; beide Beträge wandern mit
+  dem Kurs-Stand, [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). **Die drei DoD-Punkte oben decken Singleton-Form, das Pflichtfeld und die
+  Append-only-Behandlung wiederkehrender Vorlagen — eine neue Artefakt-Klasse mit eigener
+  Lese-Pflicht fällt zwischen sie.** Dieser Durchgang **entscheidet** darum nur, ob das Register
+  adoptiert wird; verlangt es eigene Arbeit, wird es nach [welle-10](../welle-10-re-baseline.md)
+  §6 ein Slice in `open/`, keine Fracht dieses Slice. **Der Anlass ist gemessen und liegt in
+  diesem Repo:** [slice-080](../in-progress/slice-080-verweis-ueberlebt-tagwechsel.md) §7 hält zwei
+  Fälle fest, in denen eine Beobachtung über ein **lebendes** Artefakt nur in einer
+  Commit-Message stand und neunzehn Tage später neu gemacht werden musste.
 
 ## 7. Closure-Notiz (nach `done/`)
 

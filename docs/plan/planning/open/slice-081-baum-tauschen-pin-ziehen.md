@@ -13,7 +13,12 @@ wechselt nur durch `git mv`, siehe
 [ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md) (dieser Slice ist ihre Folgepflicht 1),
 [ADR-0017](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) (ihre Folgepflichten 1
 und 2 — der `scan.ignore`-Eintrag und der Nachtrag in
-[`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)).
+[`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)),
+[ADR-0023](../../adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) (ihre **Folgepflicht 1** —
+neuer Tag **und** neuer Dateiname, Anker einzeln, die Ausnahme aus
+[ADR-0017](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) dabei vollzogen; und
+ihre **Folgepflicht 3** — die Klassen sind eine **Sortier-Aufgabe je Treffer**, keine Liste, die
+zwischen Schnitt und Ausführung altert).
 
 **Autor:** Planner. **Datum:** 2026-08-09.
 
@@ -37,9 +42,19 @@ zurückbenannt, Ergebnis `309 Datei(en) geprüft, 21 Befund(e)`, alle `target-mi
 Die Sonde lief gegen den damaligen Zielnamen; der Befund hängt am **alten** Tag, nicht am neuen —
 unter jedem anderen Zielnamen fällt dieselbe Zahl.
 
-- **16 werden nachgezogen** —
+**Der Betrag ist datiert und wandert; die Klassen binden.** Am 2026-08-28 sind es **24** über
+**vier** statt drei Fundorte — der Zuwachs liegt vollständig in einer **lebenden Plandatei**, die
+es zum Zeitpunkt der Sonde nicht gab. Erhoben ohne Gate-Lauf, weil `target-missing` genau diese
+Form findet:
+`git grep -oE '\]\([^)]*\.harness/baseline/v3\.5\.2/[^)]*\)' -- ':!.harness/baseline' | wc -l`
+→ **24**, mit `| cut -d: -f1 | sort | uniq -c | sort -rn` die Verteilung. **Kein Erwartungswert**
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2) — beim Lauf neu zu erheben, wie bei den stummen Nennungen unten.
+
+- **Die Links in lebende Artefakte werden nachgezogen** —
   [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) 12,
-  [`harness/conventions.md`](../../../../harness/conventions.md#mr-000--baseline-aussage) 4.
+  [`harness/conventions.md`](../../../../harness/conventions.md#mr-000--baseline-aussage) 4 und
+  eine lebende Plandatei mit 3.
 - **1 bleibt byte-gleich** — [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) ist
   Accepted und damit unveränderlich ([`AGENTS.md`](../../../../AGENTS.md) §3.4). Sie wird nicht
   repariert; ihre Datei tritt als einziger neuer `scan.ignore`-Eintrag aus dem Doku-Gate
@@ -78,8 +93,9 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
       `.d-check.yml`). **Nicht** in Scope: die auf `v3.5.2` gepinnten Kurs-URLs in den
       Lifecycle-Köpfen bestehender Slices — sie sind Instanzen einer alten Vorlage und werden nach
       der Append-only-Logik nicht rückwirkend umgeschrieben.
-- [ ] Die **21** gate-sichtbaren Befunde tragen je den Ausgang ihrer Klasse aus
-      [ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md): **16** Links zeigen auf den neuen
+- [ ] **Jeder** gate-sichtbare Befund trägt den Ausgang seiner Klasse aus
+      [ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md) — die **Menge** wird beim Lauf
+      erhoben, nicht aus §1 übernommen: die Links in **lebende** Artefakte zeigen auf den neuen
       Baum — neuer Tag **und** neuer Dateiname, **jeder Anker einzeln gegen die Zieldatei geprüft,
       kein `sed` über den Tag-String**; **1** ([`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md))
       bleibt byte-gleich und ihre Datei ist **der einzige neue** `scan.ignore`-Eintrag in
