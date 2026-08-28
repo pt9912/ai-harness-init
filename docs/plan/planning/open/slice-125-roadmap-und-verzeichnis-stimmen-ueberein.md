@@ -52,12 +52,30 @@ Digest), jeweils mit den Flags aus [`d-check.mk`](../../../../d-check.mk):
 | dieselbe Config **plus** `waves: {dir: docs/plan/planning}` | **3 Befunde**: zusätzlich `wave-drift` und `wave-preview-exists` auf `welle-09`, Exit 1 |
 
 **Der erste Befund ist echt.** *Aktuelle Welle* nennt welle-10, und
-`ls docs/plan/planning/in-progress/` führt allein `roadmap.md` — kein Slice. Nach der Invariante ist
-das Drift; nach
+`ls docs/plan/planning/in-progress/` führte zu diesem Stand allein `roadmap.md` — kein Slice. Nach
+der Invariante ist das Drift; nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2 ist es korrekt, weil der Abschnitt **die Welle** trägt und nicht den Lifecycle-Zustand
 ihrer Slices. **Beide haben recht, und genau deshalb ist dieser Slice eine Entscheidung und keine
 Konfiguration.**
+
+**Und er ist flüchtig — das ist die zweite Hälfte derselben Beobachtung.** Über `fccc627`
+(`git archive HEAD | tar -x -C <kopie>`, sonst dieselbe Kopie außerhalb des Repos, netzlos, Mount
+`:ro`, Image `v0.65.0` per Digest) meldet dasselbe Profil `0 Befund(e)`, Exit 0: `in-progress/`
+trägt seit dem Start von welle-10 einen Slice, und damit stimmt die Invariante wieder. Mit
+`waves: {dir: docs/plan/planning}` sind es **2** Befunde (`wave-drift` auf Zeile 13,
+`wave-preview-exists` auf welle-09), mit zusätzlich `mode: many` **3** (`wave-drift` je auf
+welle-11 und welle-13, dazu dieselbe Vorschau-Zeile). **Ein Befund, der mit dem Wochentag kommt und
+geht, taugt nicht als Abnahme-Kriterium** — was dieser Slice belegen muss, ist nicht *„der Befund
+ist weg"*, sondern *„die Invariante kann in der gewählten Sektion überhaupt driften"*. Das ist der
+Grund für die Form von DoD (2).
+
+**Die zweite Fähigkeit desselben Moduls liegt außerhalb dieses Slice.** `planning` trägt neben der
+Lifecycle-Invariante die **Closure-Notiz-Prüfung** (opt-in über `closure.dir`, fünf eigene
+Grund-Codes); sie hat einen anderen Gegenstand (den Ruheort statt der laufenden Arbeit), eine
+andere Aufruf-Empfehlung und eigene Entscheidungen. Sie ist als
+[slice-129](slice-129-closure-notiz-hat-einen-sensor.md) geschnitten. **Beide Slices konfigurieren
+denselben Schlüsselbaum** — sie können in beliebiger Reihenfolge laufen, aber nicht gleichzeitig.
 
 ### Die zwei Fragen, die vor dem Config-Block beantwortet sein müssen
 
@@ -86,9 +104,12 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       Ruhe-Marker trägt (oder umgekehrt) → `make docs-check` fällt und nennt Datei, Zeile und
       `planning-drift`. Der unveränderte Baum bleibt grün. **Bleibt der unveränderte Baum nicht
       grün, ist DoD (2) nicht erledigt** — beide Läufe gehören in den Umsetzungs-Commit.
-- [ ] **(2) Der heute vorliegende `planning-drift` ist aufgelöst, und die Auflösung ist eine
-      Entscheidung mit Begründung — nicht eine Config, die den Befund wegdefiniert.** Aufgeschrieben
-      ist, was in diesem Repo *aktiv* heißt und warum die gewählte Sektion die Invariante trägt.
+- [ ] **(2) Die gewählte Sektion kann driften, und das ist vorgeführt — nicht behauptet.** Ein
+      `planning-drift` liegt je nach Tagesstand vor oder nicht (§1); abzunehmen ist deshalb nicht
+      sein Verschwinden, sondern dass die Invariante über der gewählten Sektion **beide** Zustände
+      annehmen kann. Aufgeschrieben ist, was in diesem Repo *aktiv* heißt und warum die gewählte
+      Sektion die Invariante trägt; liegt beim Start ein Befund vor, ist er als Entscheidung
+      aufgelöst und nicht wegdefiniert.
       **Rot:** die Auflösung besteht darin, `heading` auf eine Sektion zu zeigen, in der die
       Invariante trivial gilt (z. B. eine, die nie einen Marker trägt) — dann prüft das Modul über
       einer Menge, die nicht driften kann, und der Gate ist wieder das stille Grün aus §1

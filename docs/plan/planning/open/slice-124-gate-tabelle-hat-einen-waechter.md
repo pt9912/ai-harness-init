@@ -89,6 +89,55 @@ Derselbe Lauf mit `targets:`-Block über den **unveränderten** Baum
   Antwort ist `makefiles: [Makefile, d-check.mk]` — und dass die Probe das falsch hatte, ist der
   beste vorhandene Beleg, dass der Config-Block eine **Entscheidung** ist und keine Formsache.
 
+### Der Prüfbereich ist die **Tabellenzeile**, und das gilt in beide Richtungen
+
+Der Modul-Vertrag grenzt seinen Gegenstand enger ab, als sein Name nahelegt: geprüft wird *„jedes
+in einer Doku-**Tabellenzeile** behauptete `make X`"*, und *„Tabellenzeilen zählen nur außerhalb
+von Code-Blöcken"*. Was das für dieses Repo heißt, ist gemessen — Kopie außerhalb des Repos,
+netzlos, Mount `:ro`, Image `v0.65.0` per Digest, Stand `fccc627`
+(`git archive HEAD | tar -x -C <kopie>`), Config `makefiles: [Makefile, d-check.mk]`,
+`doc-tables: [AGENTS.md, harness/README.md]`, `authority: AGENTS.md`, je Lauf
+`docker run --rm --network none -v <kopie>:/repo:ro ghcr.io/pt9912/d-check@<digest> --config <profil> --enable targets`:
+
+| An [`harness/README.md`](../../../../harness/README.md) angehängt | `gate-phantom`? |
+|---|---|
+| ein Prosa-Satz mit `` `make phantom-prosa` `` | **nein** — 30 Befunde, unverändert |
+| eine Aufzählungs-Zeile mit `` `make phantom-liste` `` | **nein** — 30 Befunde, unverändert |
+| eine **Tabellenzeile** mit `` `make phantom-tabelle` `` | **ja** — 31 Befunde, gemeldet auf der angehängten Zeile |
+| dieselbe Tabellenzeile in einem Code-Block | **nein** — 30 Befunde, unverändert |
+
+**Und die Autoritäts-Richtung liest denselben Ausschnitt.** Mit
+`authority: harness/README.md` — der Datei, in der die Nicht-Gate-Verifies **stehen** — melden
+`smoke`, `full-smoke`, `mutate`, `span-clean`, `span-report` und `hook-overhead` weiterhin
+`gate-undocumented`. Ihre Beschreibung dort ist Prosa; für das Modul sind sie undokumentiert.
+Genau **diese sechs** sind die Ziele, die
+`grep -oE 'make [a-z][a-z0-9-]*' harness/README.md | sort -u` (**17** genannte) und
+`grep -E '^\| \`make ' harness/README.md | grep -oE 'make [a-z][a-z0-9-]*' | sort -u` (**11** in
+Tabellenzeilen) unterscheidet.
+
+**Das ist die eigentliche Entscheidung dieses Slice, und sie ist unangenehm.**
+[`AGENTS.md`](../../../../AGENTS.md) §4 verweist für *„was jedes Ziel prüft und was es nicht
+prüft"* ausdrücklich auf [`harness/README.md`](../../../../harness/README.md), und dort steht die
+Antwort für die Nicht-Gate-Verifies in Prosa. Die sechs in `exempt-targets` zu legen hieße, sie als
+*„ohne Doku-Pflicht"* zu führen, obwohl sie dokumentiert sind — eine Ausnahme, die das Gegenteil
+dessen behauptet, was der Fall ist. Sie in Tabellenzeilen zu heben, macht sie in **beiden**
+Richtungen sichtbar, kostet aber eine Umformung der Doku, die niemand wegen des Sensors verlangt
+hat.
+
+**Drei Randbedingungen, die die Wahl einschränken — jede gemessen, keine geraten:**
+
+- `authority` ist **eine** Datei, keine Liste: `authority: [AGENTS.md, harness/README.md]` bricht
+  mit `cannot unmarshal !!seq into string`. Die Vollständigkeits-Quelle ist also **ein** Dokument;
+  jedes weitere `doc-tables`-Dokument prüft nur die Phantom-Richtung.
+- `exempt-targets` ist **exakt, kein Glob**: `exempt-targets: ["freshness-*"]` ändert die Befundzahl
+  nicht (30 vor wie nach). Die vier `freshness-*`-Ziele stehen einzeln in der Liste oder gar nicht.
+- Die Zahl der Ausnahmen ist **größer** als die Probe von `1f5741f` sagt. Mit der oben als richtig
+  benannten Quelle `makefiles: [Makefile, d-check.mk]` meldet der unveränderte Baum **30**
+  `gate-undocumented` und **0** `gate-phantom` — die zwei Phantome sind weg, dafür kommen die
+  **elf** `doc-*`-Ziele aus [`d-check.mk`](../../../../d-check.mk) dazu
+  (`grep -c '^doc-' d-check.mk` → **11**). Die Korrektur der einen Config-Zeile verschiebt die
+  Arbeit von 19 auf 30 Entscheidungen.
+
 ## 2. Definition of Done
 
 Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 5 §Ziel-Form: ≤ 3).
@@ -101,12 +150,21 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       [`AGENTS.md`](../../../../AGENTS.md) → `make docs-check` fällt und nennt Datei, Zeile und
       `gate-phantom`. Der Lauf **ohne** die Zeile bleibt grün. Beide gehören in den
       Umsetzungs-Commit.
-- [ ] **(2) Die 21 Befunde sind aufgelöst — jeder als Doku-Nachzug oder als begründete Ausnahme,
-      keiner als stille Liste.** Für jede `exempt-targets`-Zeile steht neben ihr, **warum** das
-      Target keine Doku-Pflicht hat; für `docs-check` ist die `makefiles`-Quelle korrigiert statt
-      das Target ausgenommen.
-      **Rot:** ein `exempt-targets`-Eintrag ohne Begründung, oder eine Liste, die statt der 19
-      benannten Targets ein Muster führt — beides macht den Gate über der Ausnahme-Menge blind, und
+- [ ] **(2) Jeder Befund des gewählten Config-Blocks ist aufgelöst — als Doku-Nachzug oder als
+      begründete Ausnahme, keiner als stille Liste; und die sechs in Prosa dokumentierten Ziele
+      sind ausdrücklich entschieden.** Für jede `exempt-targets`-Zeile steht neben ihr, **warum**
+      das Target keine Doku-Pflicht hat; für `docs-check` ist die `makefiles`-Quelle korrigiert
+      statt das Target ausgenommen. Die Befundzahl folgt aus dieser Korrektur und ist **kein**
+      Erwartungswert: mit `makefiles: [Makefile]` waren es 21, mit
+      `makefiles: [Makefile, d-check.mk]` sind es 30
+      ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+      Setzung 2).
+      **Rot:** ein `exempt-targets`-Eintrag ohne Begründung; eine Liste, die statt der benannten
+      Targets ein Muster führt (es wirkt ohnehin nicht — die Liste ist exakt, §1); **oder** eine
+      Ausnahme für eines der sechs Ziele, die
+      [`harness/README.md`](../../../../harness/README.md) in Prosa beschreibt, ohne dass daneben
+      steht, dass sie dokumentiert **sind** und nur außerhalb des Prüfbereichs liegen. Alle drei
+      machen den Gate über der Ausnahme-Menge blind, und
       genau davor steht
       [`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)
       §Kein Rückfall auf stilles Grün. Mechanisch rot wird der Punkt, wenn nach der Kuratierung ein
@@ -172,10 +230,19 @@ aus DoD (3).
   Artefakten. Dieser Slice fasst nur §4 an — und das ist eine Grenze, die niemand mechanisch prüft
   (kein Modul des Doku-Gates liest Commits oder Abschnitts-Eigentum). Sie hängt am Rollen-Wechsel,
   nicht an einem Sensor.
-- **Ein zweiter, stiller Prüfbereich entsteht mit `doc-tables`.** Wird
-  [`harness/README.md`](../../../../harness/README.md) dort geführt, aber nicht als `authority`,
-  prüft das Modul in **eine** Richtung (Phantom), nicht in beide. Was das bedeutet, gehört
-  aufgeschrieben, sonst liest die nächste Runde „die Tabellen sind bewacht" und meint beide.
+- **Ein zweiter, stiller Prüfbereich entsteht mit `doc-tables` — und er ist nicht wählbar, sondern
+  erzwungen.** `authority` nimmt genau **eine** Datei (§1: die Listenform bricht mit Exit 2). Die
+  zweite `doc-tables`-Datei wird damit in **eine** Richtung geprüft (Phantom), nicht in beide. Was
+  das bedeutet, gehört aufgeschrieben, sonst liest die nächste Runde „die Tabellen sind bewacht"
+  und meint beide.
+- **Die größere Blindstelle ist die Prosa, und sie bleibt nach diesem Slice bestehen.** Ein
+  halluziniertes Ziel in einem Fließtext-Satz oder in einer Aufzählung ist für das Modul unsichtbar
+  (§1, vier Sonden). Der Slice kann sie nicht schließen — er kann sie nur **benennen**, so wie
+  `make comment-claims` seine „N Datei(en) geprueft"-Zeile führt. Eine Formulierung wie „die
+  Gate-Nennungen sind bewacht" wäre nach diesem Slice falsch; richtig ist „die Gate-Nennungen **in
+  Tabellenzeilen** sind bewacht". Ohne diesen Zusatz schließt der Slice die halluzinierten Gates in
+  der Tabelle und lässt sie in der Prosa offen — dieselbe Klasse, gegen die er antritt
+  ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 - **Der Befund `gate-phantom` auf `docs-check` ist ein Warnschuss für die ganze Welle.** Er kam aus
   einer Config, die eine plausible Annahme traf (`makefiles: [Makefile]`) und damit an einem
   **richtigen** Doku-Eintrag rot wurde. Eine Adoption, die solche Befunde durch Ausnahmen statt

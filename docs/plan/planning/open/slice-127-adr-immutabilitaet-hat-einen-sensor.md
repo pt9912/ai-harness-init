@@ -51,10 +51,9 @@ Datei-Klasse ab, `immutable-when` markiert ab welcher Kopfzeile der **Base**-Sta
 ist, `exclude-sections` nimmt nicht zum Kern zählende Abschnitte heraus, und `head-allow` erlaubt
 genau den Status-Übergang `Accepted` → `Superseded by ADR-NNNN`.
 
-**Dieser Slice ist der unsicherste der Welle, und das ist gemessen — nicht geahnt.** Für die drei
-anderen Module ließ sich beim Schnitt je ein Rot herstellen; **für `vcs` nicht.** Gegen eine Kopie
-außerhalb des Repos (Stand `1f5741f`, netzlos, `:ro`, Image `v0.65.0` per Digest), Flags aus
-[`d-check.mk`](../../../../d-check.mk), wurde in einem Wegwerf-Klon ein Kernsatz an eine ADR mit
+**Die naheliegende Probe erreicht den Sensor nicht, und das ist gemessen — nicht geahnt.** Gegen
+eine Kopie außerhalb des Repos (Stand `1f5741f`, netzlos, `:ro`, Image `v0.65.0` per Digest), Flags
+aus [`d-check.mk`](../../../../d-check.mk), wurde in einem Wegwerf-Klon ein Kernsatz an eine ADR mit
 `**Status:** Accepted` angehängt und committet. Ergebnis in **allen vier** Formen
 `425 Datei(en) geprüft, 0 Befund(e)`, **Exit 0**:
 
@@ -65,44 +64,79 @@ außerhalb des Repos (Stand `1f5741f`, netzlos, `:ro`, Image `v0.65.0` per Diges
 | `--range <c>^..<c>` genau über den Änderungs-Commit | derselbe Block | 0 Befunde, Exit 0 |
 | `--staged` mit gestagter Kern-Änderung | derselbe Block | 0 Befunde, Exit 0 |
 
-**Was das heißt und was nicht.** Es heißt **nicht**, dass das Modul kaputt ist — die naheliegenden
-Ursachen sind eine Config, die danebenzielt (Kopfzeilen-Form, `paths`-Glob, Kern-Begriff), oder
-eine Range-Semantik, die anders gemeint ist als hier geraten. Es heißt: **die Zusage dieses Slice
-hat beim Schneiden kein Gegenbeispiel bekommen**, und nach
-[`AGENTS.md`](../../../../AGENTS.md) §3.6 ist sie damit nicht fertig, sondern offen. Der erste
-Schritt der Umsetzung ist deshalb **nicht** die Konfiguration, sondern die Herstellung genau dieses
-Rots — notfalls gegen die Quelle des Moduls im lokalen d-check-Klon.
+### Das Rot ist herstellbar, und die Ursache ist `exclude-sections`
 
-**Der Default-Vorschlag ist der Ausgangspunkt, nicht die Antwort.** `--print-config` schlägt
-`immutable-when: '^\*\*Status:\*\* Accepted'` und
-`head-allow: '^\*\*Status:\*\* (Accepted|Superseded by ADR-[0-9]{4})'` vor; die geprüfte ADR trägt
-`**Status:** Accepted` wörtlich (`grep -m1 '^\*\*Status:\*\*'`), und trotzdem blieb der Lauf grün.
-Welche Abschnitte als „nicht zum Kern" gelten, ist ebenfalls offen —
-[`.d-check.yml`](../../../../.d-check.yml) führt für `matrix` bereits
-`exclude-sections: [Historie, "7. Historie", Geschichte]`, und ob `vcs` dieselbe Liste braucht, ist
-zu prüfen, nicht zu übernehmen.
+Die vier grünen Läufe hängen an **einer** Eigenschaft der Probe: der Kernsatz wurde jeweils **ans
+Dateiende** angehängt. Jede ADR dieses Repos endet mit `## Geschichte` — gemessen über alle
+Kandidaten (`ls docs/plan/adr/[0-9]*.md | wc -l` → **23**; davon mit `## Geschichte` als letzter
+`##`-Überschrift: **23**, gezählt über `grep -E '^## ' <datei> | tail -1` je Datei). Der
+Default-Block nimmt genau diesen Abschnitt mit `exclude-sections: [Geschichte]` aus dem Kern.
+**Angehängt wurde also außerhalb dessen, was das Modul schützt** — die Probe hat den Sensor nie
+erreicht.
+
+Gemessen in einem Wegwerf-Klon außerhalb des Repos (`git clone <repo> <klon>`, Stand `fccc627`),
+netzlos, Mount `:ro`, Image `v0.65.0` per Digest, Config aus `--print-config` mit
+`paths: ["docs/plan/adr/[0-9]*.md"]`, je Lauf
+`docker run --rm --network none -v <klon>:/repo:ro ghcr.io/pt9912/d-check@<digest> --config <profil> --enable vcs --range <base>..<head>`:
+
+| Commit in der Range | Ergebnis |
+|---|---|
+| ein Satz **ans Dateiende** von `0003-go-native-binaries.md` (Abschnitt `## Geschichte`) | `417 Datei(en) geprüft, 0 Befund(e)`, Exit 0 |
+| **derselbe Satz in `## Entscheidung`** | **1** × `core-drift-vcs` auf `docs/plan/adr/0003-go-native-binaries.md:3`, Exit 1 |
+
+**Damit ist die offene Frage dieses Slice beantwortet, bevor er beginnt:** das Modul ist scharf,
+die Config zielt richtig, und der Carveout-Pfad aus
+[welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §3 wird für `vcs` nicht gebraucht.
+
+### Und der Default-Vorschlag färbt die erlaubte Korrektur rot
+
+`--print-config` schlägt `head-allow: '^\*\*Status:\*\* (Accepted|Superseded by ADR-[0-9]{4})'`
+vor. Die gelebte Form dieses Repos ist ein **Link**, keine bare Kennung: die zwei superseded ADRs
+tragen `**Status:** Superseded by [ADR-0003](0003-go-native-binaries.md)` bzw. dieselbe Form mit
+[`ADR-0005`](../../adr/0005-ziel-repo-distribution.md)
+(`grep -h -m1 '^\*\*Status:\*\*' docs/plan/adr/0*.md | sort | uniq -c` →
+**19** × `Accepted`, **2** × `Proposed`, je **1** × der zwei Supersede-Zeilen). Im selben Klon
+gemessen: ein Commit, der `**Status:** Accepted` auf die gelebte Klammer-Form dreht, meldet mit dem
+Default-`head-allow` **1** × `core-drift-vcs`; mit
+`head-allow: '^\*\*Status:\*\* (Accepted|Superseded by \[ADR-[0-9]{4}\])'` meldet derselbe Commit
+**0 Befunde**. **Der Default blockiert also genau die Korrektur-Form, die
+[`AGENTS.md`](../../../../AGENTS.md) §3.4 vorschreibt** — das ist der Gegenstand von DoD (2), und
+er ist jetzt ein gefahrener Beleg statt einer Vermutung.
+
+**Was offen bleibt.** Ob `vcs` dieselbe `exclude-sections`-Liste braucht, die
+[`.d-check.yml`](../../../../.d-check.yml) für `matrix` führt
+(`exclude-sections: [Historie, "7. Historie", Geschichte]`), ist zu prüfen und nicht zu übernehmen:
+`Geschichte` auszunehmen ist die Voraussetzung dafür, dass der Sensor überhaupt anschlägt, wo er
+soll — es ist zugleich der Abschnitt, in dem eine ADR ihre Fortschreibung führt. Was dort stehen
+darf, ohne die Immutabilität zu verletzen, entscheidet dieser Slice mit.
 
 ## 2. Definition of Done
 
 Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 5 §Ziel-Form: ≤ 3).
 
-- [ ] **(1) Eine Änderung am Kern einer angenommenen ADR färbt den Lauf rot.** **Dieser Punkt ist
-      der Ausgang des Slice, nicht sein Abschluss** — beim Schneiden ließ er sich in vier Formen
-      **nicht** herstellen (§1). Ist er nicht herstellbar, ist der Slice nicht erfüllt, und die
-      Rückführung greift.
-      **Rot:** in einem Wegwerf-Klon einen Satz im Kern einer `Accepted`-ADR ändern und committen →
-      der Lauf über diese Range fällt und nennt Datei und Befund. Der Lauf über denselben Bereich
-      **ohne** diese Änderung bleibt grün. Beide gehören in den Umsetzungs-Commit.
+- [ ] **(1) Eine Änderung am Kern einer angenommenen ADR färbt den Lauf rot — und eine Änderung in
+      einem ausgenommenen Abschnitt nicht.** Beide Hälften gehören zusammen: die zweite ist der
+      Grund, warum die naheliegende Probe grün blieb (§1), und ohne sie wüsste niemand, wie weit
+      die Zusage reicht.
+      **Rot:** in einem Wegwerf-Klon einen Satz in `## Entscheidung` einer `Accepted`-ADR ändern
+      und committen → der Lauf über diese Range fällt mit `core-drift-vcs` und nennt Datei und
+      Zeile. Derselbe Satz in `## Geschichte` bleibt grün, und der Lauf über den unveränderten
+      Bereich ebenfalls. Alle drei gehören in den Umsetzungs-Commit.
 - [ ] **(2) Der erlaubte Supersede-Übergang bleibt grün, und das ist belegt.** `head-allow` und
       `exclude-sections` sind gegen den **realen** ADR-Bestand gesetzt, nicht gegen den
-      Default-Vorschlag.
-      **Rot:** einen `Accepted` → `Superseded by ADR-NNNN`-Übergang commiten → der Lauf muss **grün**
-      bleiben. Wird er rot, ist die Konfiguration falsch und der Gate blockiert genau die
-      Korrektur-Form, die [`AGENTS.md`](../../../../AGENTS.md) §3.4 vorschreibt.
-- [ ] **(3) Der Lauf fällt, wenn ihm die Range fehlt — statt grün zu melden.** Die Kopplung an
-      [slice-123](slice-123-ci-sieht-die-historie.md) ist hergestellt und einmal gesehen.
-      **Rot:** denselben Lauf in einem Klon der Tiefe 1 fahren → Exit ≠ 0 mit einer Meldung über die
-      fehlende Historie. Ohne diese Hälfte ist der Sensor in CI fail-open, und ein fail-open Sensor
+      Default-Vorschlag — der die gelebte Klammer-Form nachweislich rot färbt (§1).
+      **Rot:** einen Übergang auf die gelebte Form
+      `**Status:** Superseded by [ADR-NNNN](NNNN-titel.md)` commiten → der Lauf muss **grün**
+      bleiben. Wird er rot, blockiert der Gate genau die Korrektur-Form, die
+      [`AGENTS.md`](../../../../AGENTS.md) §3.4 vorschreibt.
+- [ ] **(3) Der Lauf fällt, wenn seine Range nichts hergibt — statt grün zu melden.** Die Kopplung
+      an [slice-123](slice-123-ci-sieht-die-historie.md) ist hergestellt und einmal gesehen. **Die
+      unauflösbare Range ist dabei nicht der Fall, der zählt:** sie bricht schon heute fail-closed
+      ab (`--range HEAD~1..HEAD` in einem Klon der Tiefe 1 → `d-check: error: Range-Basis "HEAD~1"
+      nicht auflösbar: object not found`, Exit 2). Der gefährliche Fall ist die **auflösbare, aber
+      leere** Range — `--range HEAD..HEAD` meldet im selben Klon `0 Befund(e)`, Exit 0.
+      **Rot:** den Lauf mit einer leeren Range fahren → Exit ≠ 0 mit einer Meldung, dass die Range
+      keinen Commit enthält. Ohne diese Hälfte ist der Sensor fail-open, und ein fail-open Sensor
       ist schlechter als keiner, weil er eine Zusage trägt.
 
 Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · `make mutate` ohne Befund ·
@@ -153,11 +187,16 @@ Befund, Closure-Notiz in §7 mit Steering-Loop-Eintrag.
 
 ## 6. Risiken und offene Punkte
 
-- **Die Muster sind ungemessen, und darauf steht der ganze Slice.** `immutable-when` und
-  `head-allow` sind hier aus `--print-config` übernommen, nicht gegen den Bestand geprüft. Trifft
-  das Muster die Kopfzeile nicht, ist das Modul **still** — die stille-Grün-Klasse, diesmal nicht
-  durch eine fehlende Config, sondern durch eine, die danebenzielt. Erste Handlung der Umsetzung
-  ist deshalb eine Messung, keine Konfiguration.
+- **Von den drei Mustern ist eines gemessen, eines widerlegt, eines offen.** `immutable-when`
+  trifft die Kopfzeile (§1: das Rot entsteht), `head-allow` in der Default-Form trifft die gelebte
+  Supersede-Zeile **nicht** (§1: sie färbt rot), und `paths` ist über genau eine Datei geprüft, nicht
+  über die Klasse. Ein Muster, das die Kopfzeile nicht trifft, macht das Modul **still** — die
+  stille-Grün-Klasse, nicht durch eine fehlende Config, sondern durch eine, die danebenzielt.
+- **Der Kern-Begriff ist eine Entscheidung über `## Geschichte`, und sie schneidet in beide
+  Richtungen.** Ohne `exclude-sections: [Geschichte]` würde jede Fortschreibung einer angenommenen
+  ADR rot; mit ihr ist ein Absatz, der dort statt in einer neuen ADR landet, unbewacht. Welche der
+  beiden Fehlformen dieses Repo lieber trägt, gehört aufgeschrieben — der Sensor entscheidet es
+  sonst stillschweigend.
 - **Die legitime Supersede-Lineage darf nicht zum Fehlalarm werden.**
   [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
   hält fest, dass sie über Inline-Code + `d-check:ignore` gelöst ist — das deckt `ids`, **nicht**
@@ -170,18 +209,16 @@ Befund, Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   Änderung in der Range, ohne dass der Kern sich bewegt. Ob das Modul das trennt, ist **nicht
   gemessen** — es ist eine Frage an die Umsetzung und steht hier als offener Punkt, nicht als
   Annahme.
-- **Das Rot ist herstellbar — gemessen, aber über ein anderes Modul.** `immutable` ist das
-  hermetische Geschwister von `vcs`: es hasht den normalisierten Kern einer Datei gegen einen
-  Marker in ihr, ohne `.git` und ohne Range. Gegen eine Kopie außerhalb des Repos
-  (`git archive aa32e1f`, netzlos, Mount `:ro`, Image `v0.65.0` per Digest) meldet ein absichtlich
-  falscher `immutable: sha256:0000…`-Marker auf
-  [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) **`core-drift`** — ein Befund,
-  wo `vcs` in vier Formen null lieferte (§1). Das **ersetzt die Zusage dieses Slice nicht**: der
-  Gegenstand hier ist der Commit, der eine angenommene ADR ändert, nicht ein Marker, den jemand
-  von Hand pflegt, und `immutable` bräuchte in jeder ADR einen gesetzten und nachgezogenen Hash.
-  Es engt aber die Ursachensuche ein: die Immutabilitäts-Fähigkeit des Images ist vorhanden und
-  wird rot — offen ist die **Range-Achse**, nicht die Fähigkeit. Herkunft der Messung:
-  [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §6.
+- **Das hermetische Geschwister bleibt eine Alternative, keine Notlösung mehr.** `immutable` hasht
+  den normalisierten Kern einer Datei gegen einen Marker in ihr, ohne `.git` und ohne Range; gegen
+  eine Kopie außerhalb des Repos (`git archive aa32e1f`, netzlos, Mount `:ro`, Image `v0.65.0` per
+  Digest) meldet ein absichtlich falscher `immutable: sha256:0000…`-Marker auf
+  [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) **`core-drift`**
+  ([welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §6). Der Gegenstand ist ein **anderer**:
+  hier der Commit, der eine angenommene ADR ändert, dort ein Marker, den jemand von Hand setzt und
+  nachzieht — in **23** Dateien (`ls docs/plan/adr/[0-9]*.md | wc -l`). Wird `vcs` in der Umsetzung
+  aus einem anderen Grund untragbar, ist `immutable` der benannte Ausweichpfad und nicht ein
+  spontaner.
 
 ## 7. Closure-Notiz (nach `done/`)
 

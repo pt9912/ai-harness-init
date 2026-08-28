@@ -1,4 +1,4 @@
-# Welle welle-13: Vier Regeln, die nur im Feedforward-Quadranten leben, bekommen ihren Sensor
+# Welle welle-13: Fünf Regeln, die nur im Feedforward-Quadranten leben, bekommen ihren Sensor
 
 **Lifecycle:** Die aktive Welle liegt flach unter `docs/plan/planning/`; bei
 Closure wandert diese Datei per `git mv` nach `done/` (neben ihre
@@ -16,14 +16,16 @@ Welle einen Eintrag bekommt.
 
 ## 1. Welle-Ziel
 
-**Vier Regeln dieses Repos, die heute nur als Text existieren, tragen am Ende einen verdrahteten
+**Fünf Regeln dieses Repos, die heute nur als Text existieren, tragen am Ende einen verdrahteten
 Sensor — und keiner dieser Sensoren meldet grün, weil er nichts prüft.**
 
-Die Welle ist der Schnitt-Vorschlag zu den Achsen **(1)–(4)** des Roadmap-Kandidaten *Regeln ohne
-Feedback-Quadrant schließen*. Sie nimmt **nicht** den ganzen Kandidaten: dessen Achsen (5)–(8) sind
-Eigenbauten, (7) liegt außerhalb von git, und (1) ist bereits am 2026-07-28 nach
-[welle-09](welle-09-modul-15-konformitaet.md) eingefaltet worden. Was hier landet, ist die Hälfte,
-die der Kandidat selbst als *„bereits bezahlt"* führt — vier Regelmodule im gepinnten d-check-Image.
+Die Welle ist der Schnitt-Vorschlag zu den Achsen **(1)–(4)** und **(6)** des Roadmap-Kandidaten
+*Regeln ohne Feedback-Quadrant schließen*. Sie nimmt **nicht** den ganzen Kandidaten: dessen Achsen
+(5), (7) und (8) sind Eigenbauten, (7) liegt außerhalb von git, und (1) ist bereits am 2026-07-28
+nach [welle-09](welle-09-modul-15-konformitaet.md) eingefaltet worden. Was hier landet, ist die
+Hälfte, die der Kandidat selbst als *„bereits bezahlt"* führt — vier Regelmodule im gepinnten
+d-check-Image, dazu eine zweite Fähigkeit eines davon, die der Kandidat für einen Eigenbau hielt
+(§6).
 
 ### Der Hebel, und wo er kleiner ist als angenommen
 
@@ -37,18 +39,29 @@ stimmt — und ist teurer, als der Satz klingt. **Gemessen gegen eine Kopie auß
    [`AGENTS.md`](../../../AGENTS.md) und **ohne** `targets:`-Block antwortet die Flag-Kombination aus
    [`d-check.mk`](../../../d-check.mk) `d-check: 425 Datei(en) geprüft, 0 Befund(e)`, Exit 0. Derselbe
    Baum **mit** Block: **21 Befunde**.
-   **Für `vcs` gilt der Nachweis nicht** — dort blieb der Lauf in **vier** Formen grün, auch **mit**
-   Config-Block und über einer Range, die eine Kern-Änderung an einer `Accepted`-ADR enthält. Ob
-   das Modul inert ist oder die Config danebenzielt, ist **offen**;
-   [slice-127](open/slice-127-adr-immutabilitaet-hat-einen-sensor.md) §1 führt die vier Läufe und
-   macht die Herstellung dieses Rots zu seinem Ausgang.
+   **Für `vcs` brauchte der Nachweis eine zweite Runde, und sie liegt vor.** Der Lauf blieb in
+   **vier** Formen grün, auch **mit** Config-Block und über einer Range mit einer Kern-Änderung an
+   einer `Accepted`-ADR — weil die Probe den Satz **ans Dateiende** hängte und damit in
+   `## Geschichte`, den der Default-Block über `exclude-sections` aus dem Kern nimmt. Derselbe Satz
+   in `## Entscheidung` meldet `core-drift-vcs`, Exit 1
+   ([slice-127](open/slice-127-adr-immutabilitaet-hat-einen-sensor.md) §1 führt beide Läufe).
+   **Damit ist keines der vier Module ohne Rot**, und der Carveout-Pfad aus §3 wird für `vcs` nicht
+   gebraucht.
 2. **Die Adoptions-Schuld ist real und je Modul verschieden** — jede Zahl aus dem Lauf des jeweiligen
    `doc-*`-Ziels mit gesetztem Config-Block über den **unveränderten** Baum:
    `targets` → **21** (19 × `gate-undocumented`, 2 × `gate-phantom`);
    `planning` → **1** (`planning-drift` auf [`roadmap.md`](in-progress/roadmap.md) Zeile 13);
    `planning` mit der `waves`-Fähigkeit → **3** (zusätzlich `wave-drift` und `wave-preview-exists`
    auf `welle-09`); `commits` über `--range HEAD~20..HEAD` → **2** (`commit-untraceable`);
-   `vcs` → **0**, und genau das ist der offene Punkt aus Messung 1.
+   `vcs` → **0** über den unveränderten Baum, und das ist hier die richtige Zahl: das Modul urteilt
+   über Commits, nicht über einen Bestand;
+   `planning` mit der `closure`-Fähigkeit → **0** über die 86 Slice-Notizen des Ruheorts, **16**
+   über alle 104 seiner Dateien (§6).
+   **Alle diese Zahlen hängen an ihrem Stand und sind keine Erwartungswerte** — der `planning`-Wert
+   der Lifecycle-Invariante etwa ist über `fccc627` **0**, weil `in-progress/` seit dem Start von
+   welle-10 einen Slice trägt
+   ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+   Setzung 2; der erste Schritt jeder Umsetzung ist, sie neu zu fahren).
 3. **Der Trockenlauf ist nicht geteilt.** Jedes Modul brauchte seinen eigenen Lauf mit seiner eigenen
    Config; der Pin-Trockenlauf aus
    [slice-122](done/slice-122-d-check-pin-v0650.md) fährt die sechs **aktiven** Module und sagt über
@@ -90,7 +103,7 @@ Setzung 1 geprüft, alle drei Fragen beantwortet:
 
 ## 3. Closure-Trigger (Welle schließt)
 
-- Alle fünf Slices liegen in `done/`.
+- Alle sechs Slices liegen in `done/`.
 - `make gates` grün — **mit** den neu aufgenommenen Modulen in der Modul-Liste, nicht daneben.
 - **Jedes neu verdrahtete Modul ist einmal rot gesehen worden**, mit dem Kommando, das es rot
   färbt, im jeweiligen Umsetzungs-Commit ([`AGENTS.md`](../../../AGENTS.md) §3.6). **Ein Modul, für
@@ -117,21 +130,25 @@ Verzeichnisse (dieselbe zweite Wahrheit, die beim Slice retired wurde). -->
 | [slice-125](open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) | Roadmap und Lifecycle-Verzeichnis widersprechen sich nicht mehr still (Modul `planning`, Achse 4) | [`MR-016`](../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) |
 | [slice-126](open/slice-126-commit-message-traegt-eine-kennung.md) | Eine Commit-Message ohne Kennung wird rot, und zwar vor dem Commit (Modul `commits`, Achse 3) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-127](open/slice-127-adr-immutabilitaet-hat-einen-sensor.md) | Hard Rule 3.4 bekommt ihren Sensor (Modul `vcs`, Achse 2) | [`AGENTS.md`](../../../AGENTS.md) §3.4 |
+| [slice-129](open/slice-129-closure-notiz-hat-einen-sensor.md) | Die Closure-Notiz-Pflicht bekommt ihren Sensor (Modul `planning`, zweite Fähigkeit, Achse 6) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 
-**Die Reihenfolge ist nicht beliebig, und nur eine Kante ist hart.**
+**Die Reihenfolge ist nicht beliebig, eine Kante ist hart und eine ist ein Ausschluss.**
 [slice-123](open/slice-123-ci-sieht-die-historie.md) geht **[slice-126](open/slice-126-commit-message-traegt-eine-kennung.md)
 und [slice-127](open/slice-127-adr-immutabilitaet-hat-einen-sensor.md) voraus**: beide lesen
-Historie, und ohne die Tiefen-Entscheidung aus 123 wären sie in CI blind und grün — ein fail-open
-Sensor ist schlechter als keiner, weil er eine Zusage trägt. Die zwei hermetischen
+Historie, und ohne die Range-Entscheidung aus 123 wären sie in CI blind und grün — ein fail-open
+Sensor ist schlechter als keiner, weil er eine Zusage trägt. Die drei hermetischen
 ([slice-124](open/slice-124-gate-tabelle-hat-einen-waechter.md),
-[slice-125](open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)) hängen an nichts und
-können zuerst oder parallel laufen.
+[slice-125](open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md),
+[slice-129](open/slice-129-closure-notiz-hat-einen-sensor.md)) hängen an nichts und können zuerst
+laufen. **Nicht gleichzeitig laufen dürfen 125 und 129:** beide konfigurieren dasselbe Modul in
+demselben Schlüsselbaum — die Reihenfolge ist frei, die Parallelität nicht.
 
-**Warum fünf und nicht drei.** Der Roadmap-Kandidat schätzt *„zwei bis drei Slices"*. Die Schätzung
-ist von vor der Messung: sie unterstellt, Adoption sei je Modul eine Config-Zeile. §1 Messung 2
-zeigt vier verschiedene Adoptions-Schulden mit vier verschiedenen Entscheidungen, und Modul 5
-§Ziel-Form deckelt einen Slice bei **drei** eigenen DoD-Punkten. Zwei Module in einen Slice zu
-legen ergäbe sechs — *„der Schnitt ist falsch"*, nicht *„die DoD ist länger"*.
+**Warum sechs und nicht drei.** Der Roadmap-Kandidat schätzt *„zwei bis drei Slices"*. Die
+Schätzung ist von vor der Messung: sie unterstellt, Adoption sei je Modul eine Config-Zeile. §1
+Messung 2 zeigt vier verschiedene Adoptions-Schulden mit vier verschiedenen Entscheidungen, dazu
+kommt die zweite Fähigkeit von `planning` (§6, Achse 6), und Modul 5 §Ziel-Form deckelt einen Slice
+bei **drei** eigenen DoD-Punkten. Zwei Module in einen Slice zu legen ergäbe sechs — *„der Schnitt
+ist falsch"*, nicht *„die DoD ist länger"*.
 
 ## 5. Abhängigkeiten
 
@@ -147,10 +164,26 @@ legen ergäbe sechs — *„der Schnitt ist falsch"*, nicht *„die DoD ist län
 
 ## 6. Out-of-Scope für diese Welle
 
-- **Die Achsen (5)–(8) des Roadmap-Kandidaten.** (5) Co-Change um
-  [`spec/lastenheft.md`](../../../spec/lastenheft.md), (6) Closure-Notiz-Pflicht, (7) veröffentlichte
-  Artefakte außerhalb von git, (8) der DoD-Punkte-Zähler — alle vier sind **Eigenbauten**, keine
-  Adoption. Sie bleiben als Kandidaten-Zeile in der Roadmap stehen.
+- **Die Achsen (5), (7) und (8) des Roadmap-Kandidaten.** (5) Co-Change um
+  [`spec/lastenheft.md`](../../../spec/lastenheft.md), (7) veröffentlichte Artefakte außerhalb von
+  git, (8) der DoD-Punkte-Zähler — alle drei sind **Eigenbauten**, keine Adoption. Sie bleiben als
+  Kandidaten-Zeile in der Roadmap stehen.
+- **Achse (6) ist es nicht — sie ist hier drin.** Die Closure-Notiz-Pflicht galt als vierter
+  Eigenbau; das gepinnte Image liefert sie als **zweite Fähigkeit** des Moduls `planning` (opt-in
+  über `closure.dir`), mit fünf eigenen Grund-Codes: `closure-note-missing`, `-thin`,
+  `-boilerplate`, `-placeholder`, `-ambiguous`. Damit ist sie dieselbe Klasse wie die vier
+  gemessenen Achsen — Trockenlauf, Config-Block, Verdrahtung — und liegt als
+  [slice-129](open/slice-129-closure-notiz-hat-einen-sensor.md) in dieser Welle. **Ihre
+  Adoptions-Schuld ist die kleinste der Welle und die Messung dazu die kürzeste:** über den
+  86 Slice-Notizen in [`done/`](done) (`ls docs/plan/planning/done/slice-*.md | wc -l`) meldet der
+  Lauf `0 Befund(e)`, Exit 0, und dieselbe Kopie mit **einer** auf einen Satz gekürzten Notiz
+  meldet **1** × `closure-note-thin` — die Null ist gemessen, nicht leer. Über der **Welle**-Ebene
+  (`glob: '*.md'`, alle 104 Dateien) sind es **16** Befunde, und die sind eine Struktur-Aussage
+  über unsere zweiteilige Wellen-Closure, kein Rückstand (Einzelheiten in slice-129 §1).
+  **Draußen bleibt von Achse (6) die Skill-Datei** `.harness/skills/closure-note-reviewer.md`
+  (`ls .harness/skills/ | wc -l` → **1**, während
+  `grep -c 'closure-note-reviewer' internal/emit/templates.go` → **1** sie in jedes Ziel-Repo
+  emittiert) — eine Dogfood-Lücke ohne Gate-Charakter; sie bleibt beim Kandidaten.
 - **Die zehn nicht adoptierten Module des Images — vollständig aufgezählt, nicht beispielhaft.**
   Das gepinnte Image führt **20** verfügbare Module
   (`--print-config`, dann `grep -m1 '^# Verfügbar:' | tr ',' '\n' | wc -l`),
@@ -177,7 +210,7 @@ legen ergäbe sechs — *„der Schnitt ist falsch"*, nicht *„die DoD ist län
     Baum mit aus, also eine Senkung und damit eine ADR
     ([`AGENTS.md`](../../../AGENTS.md) §3.5, s. den nächsten Punkt). Ein Modul, das rot führt und
     dessen Adoption an einer Senkung hängt, ist ein **eigener Kandidat**, kein Mitglied einer Welle,
-    deren Identität die vier gemessenen Achsen sind.
+    deren Identität die gemessenen Achsen des Kandidaten sind.
   - **`versions` — der Sensor existiert, sein Gegenstand liegt woanders.** Ohne Block
     `0 Befund(e)`. Mit einem Block auf den d-check-Pin (`pin-pattern` auf
     `ghcr\.io/pt9912/d-check:(v…)`, `current-from` auf einen eigens angelegten Markdown-Span) und
@@ -199,13 +232,13 @@ legen ergäbe sechs — *„der Schnitt ist falsch"*, nicht *„die DoD ist län
     Block `0 Befund(e)`, und das ist keine Config-Lücke, sondern eine leere Marker-Menge:
     `git grep -c 'dpin: sha256:' -- '*.md' ':!.harness/baseline' | wc -l` → **0**, dasselbe mit
     `'immutable: sha256:'` → **0**. Adoption hieße, Marker von Hand zu setzen — dieselbe
-    Eigenbau-Klasse wie die Achsen (5)–(8) oben, nur mit geliefertem Prüfer.
-    **`immutable` trägt trotzdem einen Befund für diese Welle:** ein absichtlich falscher
+    Eigenbau-Klasse wie die Achsen (5), (7) und (8) oben, nur mit geliefertem Prüfer.
+    **`immutable` bleibt als benannter Ausweichpfad geführt:** ein absichtlich falscher
     `immutable: sha256:0000…`-Marker auf einer Accepted-ADR meldet **`core-drift`** — das
-    hermetische Geschwister genau der Zusage, für die
-    [slice-127](open/slice-127-adr-immutabilitaet-hat-einen-sensor.md) mit `vcs` in vier Formen kein
-    Rot herstellen konnte. Das Rot ist also **herstellbar**, nur nicht über die Range; der Hinweis
-    steht in slice-127 §6 und ändert dessen Zuschnitt nicht.
+    hermetische Geschwister derselben Zusage, die
+    [slice-127](open/slice-127-adr-immutabilitaet-hat-einen-sensor.md) über `vcs` trägt. Gebraucht
+    wird es dort nicht: das Rot über die Range ist hergestellt (Messung 1). Der Hinweis steht in
+    slice-127 §6 und ändert dessen Zuschnitt nicht.
   - **`diagrams` — bewacht eine Kennung.** Ohne Block `0 Befund(e)`; mit `fences: [mermaid]` und
     einem Muster auf die vierstellige ADR-Kennung ebenfalls **0**, und die Kontrolle färbt rot: die
     eine Kennung im Fence von [`roadmap.md`](in-progress/roadmap.md) Zeile 162 auf eine nicht

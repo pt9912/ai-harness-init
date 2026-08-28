@@ -45,10 +45,25 @@ dieser Datei (`grep -c 'uses: actions/checkout' .github/workflows/ci.yml` → **
 `.github/workflows/*.yml` → **7**). Die Voreinstellung von `actions/checkout` ist Tiefe **1**.
 
 **Was daraus folgt, ist nicht „der Sensor findet weniger", sondern „der Sensor findet nichts und
-sagt es nicht".** Ein Modul, das eine Commit-Range prüft, bekommt auf einem Klon der Tiefe 1 keine
-Range — es meldet 0 Befunde und Exit 0. Das ist die Klasse, die
+sagt es nicht" — aber nur in einer der beiden Formen, und die Unterscheidung ist der Kern dieses
+Slice.** Gemessen in einem Klon der Tiefe 1
+(`git clone --depth 1 file://<repo> <klon>`, `git log --oneline | wc -l` → **1**), netzlos, Mount
+`:ro`, Image `v0.65.0` per Digest, Modul `vcs` mit gesetztem Config-Block:
+
+| Range | Ergebnis |
+|---|---|
+| `--range HEAD~1..HEAD` (Basis nicht im Klon) | `d-check: error: Range-Basis "HEAD~1" nicht auflösbar: object not found`, **Exit 2** |
+| `--range HEAD..HEAD` (auflösbar, leer) | `417 Datei(en) geprüft, 0 Befund(e)`, **Exit 0** |
+| `--staged` ohne gestagte Änderung | `417 Datei(en) geprüft, 0 Befund(e)`, **Exit 0** |
+
+**Das Werkzeug ist gegen die unauflösbare Basis fail-closed; blind und grün wird es über der
+auflösbaren, aber leeren Range** — und genau die entsteht in CI, wenn ein Workflow die Basis aus
+einem Push-Ereignis ableitet und auf einem flachen Klon nur einen Commit vorfindet. Das ist die
+Klasse, die
 [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
-Setzung 3 benennt und die dieses Repo schon einmal bezahlt hat.
+Setzung 3 benennt und die dieses Repo schon einmal bezahlt hat. **Der Wächter dieses Slice prüft
+darum die Range, nicht die Klon-Tiefe:** eine Tiefen-Prüfung ließe den leeren Fall durch, und ein
+`fetch-depth: 0` allein ist eine Zusage ohne Gegenbeispiel.
 
 ### Warum das ein eigener Slice ist und keine YAML-Zeile in zwei anderen
 
@@ -70,13 +85,16 @@ Entscheidung, und sie ist DoD (2).
 
 Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 5 §Ziel-Form: ≤ 3).
 
-- [ ] **(1) Ein history-lesender Schritt ohne ausreichende Historie fällt, statt grün zu melden.**
-      Der Wächter prüft die Verfügbarkeit der Range **vor** dem Modul-Lauf und nennt beim Rot, was
-      fehlt (Tiefe, angeforderte Range).
-      **Rot:** in einem flachen Klon (`git clone --depth 1` gegen eine lokale Kopie, oder
-      `git fetch --depth 1` im Wegwerf-Bereich) den Schritt fahren → Exit ≠ 0 mit dieser Meldung.
-      Ohne den Wächter meldet derselbe Lauf heute **0 Befunde, Exit 0** — das ist das
-      Gegenbeispiel, und es gehört einmal gesehen.
+- [ ] **(1) Ein history-lesender Schritt, dessen Range nichts hergibt, fällt — statt grün zu
+      melden.** Der Wächter prüft **vor** dem Modul-Lauf, dass die Range auflösbar **und nicht
+      leer** ist, und nennt beim Rot, was fehlt (Tiefe, angeforderte Range, Zahl der enthaltenen
+      Commits).
+      **Rot:** in einem flachen Klon (`git clone --depth 1` gegen eine lokale Kopie) den Schritt
+      mit einer **leeren** Range fahren → Exit ≠ 0 mit dieser Meldung. Ohne den Wächter meldet
+      derselbe Lauf `0 Befund(e)`, Exit 0 (§1) — das ist das Gegenbeispiel, und es gehört einmal
+      gesehen. Die unauflösbare Basis ist **nicht** der Fall: sie bricht schon ohne Wächter mit
+      Exit 2 ab, und ein Wächter, der nur sie fängt, prüft eine Eigenschaft, die das Werkzeug
+      bereits hält.
 - [ ] **(2) Die Checkouts, die Historie brauchen, tragen `fetch-depth: 0`, und die anderen nicht —
       mit der Begründung neben der Zeile.** Entschieden und aufgeschrieben ist, **welche** der
       sieben `actions/checkout`-Stellen betroffen sind und warum die übrigen bei Tiefe 1 bleiben.
