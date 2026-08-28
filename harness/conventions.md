@@ -8,9 +8,10 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ## Baseline
 
 - **Konvention:** AI-Harness-Kurs
-- **Regelwerk + Templates:** `v3.5.2` committet vendored
-  (`.harness/baseline/v3.5.2/`, [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
-  `regelwerk/README.md`: **Kurs-Welle 34 · 2026-07-24**.
+- **Regelwerk + Templates:** `v5.12.0` committet vendored
+  (`.harness/baseline/v5.12.0/`, [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
+  `regelwerk/README.md`: **Kurs-Welle 98 · 2026-08-26**
+  (`sed -n '3p' .harness/baseline/v5.12.0/regelwerk/README.md`).
 - **d-check:** der lebende Pin steht in `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`) und, per
   go-Test daran gekoppelt, in `internal/emit/emit.go` — hier steht keine zweite Fassung davon
   ([`MR-027`](#mr-027--d-check-pin-v0650-ignore-marker-in-zwei-achsen-verengt) §Kein Wächter).
@@ -19,18 +20,32 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Datum der Adoption:** 2026-06-13 (Templates-Stand damals: `templates-v4`).
   **Re-Baseline auf `v3.1.0`:** 2026-07-17 (slice-011/012); **auf `v3.5.0`:** 2026-07-19 (slice-019);
   **auf `v3.5.1`:** 2026-07-24 (slice-043); **auf `v3.5.2`:** 2026-07-26 (slice-049,
-  Normativ-Delta in [`MR-015`](#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) entschieden).
+  Normativ-Delta in [`MR-015`](#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) entschieden);
+  **auf `v5.12.0`:** 2026-08-28 (slice-081). Die Prozedur für diesen Sprung steht in
+  [`ADR-0018`](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md), der
+  Verweis-Beschluss ist in
+  [`ADR-0023`](../docs/plan/adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) gegen genau
+  diesen Zielstand neu gehalten. **Wie viele Upstream-Releases dazwischenliegen, steht hier
+  nicht:** die Zahl ist nur am lokalen Kurs-Klon zu messen, und kein Kommando dieses Repos gibt
+  sie aus ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 1).
 
 ## Adoptierte Konventions-Quellen
 
-- **Extern (Kurs, kanonisch):** <https://github.com/pt9912/ai-harness-course/tree/v3.5.2/kurs/de>
-  — auf den Tag `v3.5.2` gepinnt, **nicht** `main`-floating
-  ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit); Erreichbarkeit
-  am 2026-07-26 per `curl` belegt — das Release-Asset `lab-regelwerk.zip` gefetcht + sha256-verifiziert). Ersetzt die frühere
+- **Extern (Kurs, kanonisch):** <https://github.com/pt9912/ai-harness-course/tree/v5.12.0/kurs/de>
+  — auf den Tag `v5.12.0` gepinnt, **nicht** `main`-floating
+  ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Der Ladeweg ist am
+  2026-08-28 belegt, nicht behauptet: das Release-Asset `lab-regelwerk.zip` dieses Tags wurde
+  containerisiert **zweimal unabhängig** geladen und trug beide Male denselben sha256, der als
+  `BASELINE_ZIP_SHA256` gepinnt ist (`grep -m1 '^BASELINE_ZIP_SHA256' Makefile`); netzlos
+  nachprüfbar ist daraus der Baum — `make baseline-verify` →
+  `baseline-verify: v5.12.0 OK — 51 Dateien (Integritaet + Vollstaendigkeit, netzlos)`. **Die
+  Dateizahl ist kein Erwartungswert** ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2) — sie wandert mit dem Asset; tragend ist das `OK`. Ersetzt die frühere
   `raw…/main/…/agents-regelwerk.md`-Monolith-URL, die **404** liefert (der Monolith
   existiert upstream seit v2.0.0 nicht mehr — die Module leben unter `/kurs/de/`).
 - **In-Repo (verkörperte Form):** die committet vendored Baseline
-  `.harness/baseline/v3.5.2/{regelwerk,templates}/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — die
+  `.harness/baseline/v5.12.0/{regelwerk,templates}/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — die
   präsente, netzlose Sicht auf die kanonische Quelle; bei Konflikt gilt der Kurs.
 
 ## Adaptions-Block
@@ -868,7 +883,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Adaption:** Das Repo führt das **Technik-Stratum**. `spec/spezifikation.md` steht als
   eigener **Rang 2** zwischen Vertrag (Rang 1) und Sicht (Rang 3); die nachfolgenden Ränge
   verschieben sich um eins. Damit ist das Stratum **deklariert** — der Kurs
-  ([`grundlagen-konventionen.md` §Spec-Straten](../.harness/baseline/v3.5.2/regelwerk/grundlagen-konventionen.md#spec-straten-mehr-als-ein-spec-dokument))
+  ([`grundlagen-referenz-richtung.md` §Spec-Straten](../.harness/baseline/v5.12.0/regelwerk/grundlagen-referenz-richtung.md#spec-straten-mehr-als-ein-spec-dokument))
   verlangt die Deklaration hier und nennt ein undeklariertes Spec-Dokument *„nicht normativ
   zitierbar“*.
 - **Hebt die 2-Strata-Klausel aus [`MR-000`](#mr-000--baseline-aussage) auf** —
@@ -883,7 +898,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   steht in Dokumenten, die ab *Accepted* nicht mehr geändert werden dürfen
   ([`AGENTS.md`](../AGENTS.md) §3.4). Zwei Abweichungen von der Vorlagen-Form: §5 trägt die
   Drei-Spalten-Gestalt, die
-  [`modul-15-observability.md`](../.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md)
+  [`modul-15-observability.md`](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md)
   vorschreibt (Feld · Pflicht/Optional · Incident-Frage) statt der Vorlagen-Spalten
   *Span · Pflicht-Attribute · Quelle* — die Vorlage verweist an dieser Stelle selbst auf das
   Modul, und der vorhandene Bestand trägt bereits diese drei Spalten; und vor §3 steht ein
@@ -984,7 +999,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Was als Delta bleibt, und damit den Gegenstand dieses Blocks trifft — zwei Posten:**
   1. **Die Sensor-Spalte ist eine dritte Abweichung von der Vorlagen-Form.** §5 trägt jetzt vier
      Spalten (Feld · Pflicht · Incident-Frage · **Sensor**) statt der drei, die
-     [`modul-15-observability.md`](../.harness/baseline/v3.5.2/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
+     [`modul-15-observability.md`](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
      vorschreibt. Grund: eine Zusicherung ohne benannten Wächter ist nach
      [`AGENTS.md`](../AGENTS.md) §3.6 unbelegt, und die Bindung wächst mit ihrem Gegenstand wie
      die Zeile selbst. [`MR-019`](#mr-019--technik-stratum-als-rang-2-der-source-precedence) zählt
@@ -1617,6 +1632,192 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Auflösungs-Trigger:** permanent für die Form. Die Grenze fällt neu an, sobald `ids.patterns`
   ein Slice-Muster führt — dann ist zuerst zu entscheiden, was mit den Nummern geschieht, deren
   Nicht-Auflösen heute ein Beleg ist.
+
+### MR-029 — Der `scan.ignore`-Zensus wandert, und sein dritter Grund ist keine Scoping-Aussage
+
+- **Datum:** 2026-08-28
+- **Wirksamkeits-Anlass:** slice-081 — derselbe Lauf, der den Eintrag in `.d-check.yml` gesetzt
+  hat ([`MR-028`](#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt)).
+- **Geltungsbereich:** `scan.ignore` in `.d-check.yml`, und **nur** dieser Posten von
+  [`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids). Dessen übrige
+  Setzungen — die Modul-Aktivierung `matrix`/`spans`, `ids` mit `link-policy: always`, das
+  `MR`-Pattern — bleiben unangetastet und gelten fort.
+- **Löst auf:** die Zensus-Aussage aus
+  [`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) — *„`scan.ignore` führt
+  heute vier Einträge, aus zwei Gründen"* samt der Klassifikation *„beide sind Scoping, keine
+  Gate-Lockerung …"*. Jener Eintrag bleibt unangetastet; seine Zahl und seine Klassifikation sind
+  ab hier überholt, und **hier** steht der geltende Stand.
+- **Ausgelöst durch:** [`ADR-0017`](../docs/plan/adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md)
+  §Konsequenzen, Folgepflicht 2 — fällig geworden mit dem Baseline-Stand `v5.12.0`, der den dort
+  vorausgesetzten Tausch wirklich gefahren hat.
+- **Adaption — der Zensus, mit dem Kommando, das ihn ausgibt.** `scan.ignore` führt **fünf**
+  Einträge: `grep -m1 '^  ignore:' .d-check.yml | grep -o '"[^"]*"' | wc -l` → **5**. Sie stehen
+  aus **drei** Gründen, und der dritte ist von anderer Klasse als die zwei davor:
+  1. **Vendored Fremd-Dokumente** — dieses Repo *spiegelt* sie, statt sie zu schreiben:
+     `.harness/baseline/**` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache))
+     und `docs/user/claude-hooks-referenz.md`. **Scoping:** der Prüfumfang schrumpft nicht um
+     Bestand, den dieses Repo autoritativ schreibt.
+  2. **Kein Fließtext** — `**/*.template.md` sind Ziel-Form-Vorlagen mit Platzhaltern statt
+     Verweisen, `.tmp/**` ist Wegwerf-Bestand. **Scoping:** beide tragen keine Aussage, die
+     veralten könnte.
+  3. **Ein eingefrorenes, repo-autoritatives Artefakt** —
+     `docs/plan/adr/0013-technik-stratum-als-zielort.md`. **Hier stimmt *Scoping* nicht mehr:**
+     diese Datei schreibt das Repo selbst, und sie verlässt den Gate ganz, über alle aktiven
+     Module. Der Eintrag ist eine **Senkung** nach [`AGENTS.md`](../AGENTS.md) §3.5 und
+     ausschließlich durch
+     [`ADR-0017`](../docs/plan/adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md)
+     autorisiert. Grund dort: die Datei trägt einen Markdown-Link in den vendored Baum unter dem
+     abgelösten Tag, [`AGENTS.md`](../AGENTS.md) §3.4 sperrt die Reparatur, und ein Befund, den
+     niemand beheben darf, hält `make gates` dauerhaft rot
+     ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) eine
+     Ebene tiefer).
+- **Die Aufnahme-Grenze, verbatim aus der Entscheidung, die sie setzt.**
+  [`ADR-0017`](../docs/plan/adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md)
+  §Entscheidung: *„Das ist eine Aufnahme-Grenze, keine Aufnahme-Regel: jeder zusätzliche Eintrag
+  ist eine neue Senkung und löst `AGENTS.md` §3.5 erneut aus — auch dann, wenn er dieselbe
+  Bedingung erfüllt wie dieser."* Die Liste ist **extensional geschlossen**: Punkt 3 deckt genau
+  eine namentlich genannte Datei, nicht ihre Klasse. Ein zweites eingefrorenes Artefakt mit
+  gebrochenem Baseline-Link braucht eine eigene ADR.
+- **Der Preis, selbst nachgefahren (2026-08-28).** Sonde über einer isolierten Kopie des
+  Index-Baums außerhalb des Repos (`git ls-files -z | tar --null -T - -cf -`, entpackt in ein
+  temporäres Verzeichnis), gepinntes Image, `--network none`, Mount `:ro`, einziger Unterschied
+  der fünfte Eintrag: ohne ihn `d-check: 441 Datei(en) geprüft, 9 Befund(e)`, mit ihm
+  `d-check: 440 Datei(en) geprüft, 8 Befund(e)`. **Tragend ist der Delta — je genau eins —, nicht
+  das Absolutwert-Paar:** der Nenner ist der Markdown-Bestand des Repos und wandert mit ihm
+  ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2).
+  Der eine erkaufte Befund ist der unbehebbare.
+- **Warum ein neuer Eintrag und keine Korrektur in
+  [`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) — die Folgepflicht
+  verlangt eine Wirkung, nicht einen Mechanismus.**
+  [`ADR-0017`](../docs/plan/adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) nennt
+  jenen Eintrag als den Ort, an dem Zahl, Klassifikation und Grenze zu lesen sein müssen. Die
+  Append-only-Disziplin verbietet, sie *dort hinein* zu schreiben — und sie tut es am adoptierten
+  Stand schärfer als am abgelösten. `v3.5.2` sagte *„keine nachträglichen inhaltlichen Änderungen
+  an akzeptierten Einträgen — nur neue Einträge oder explizite Aufhebungen via neuen MR"*
+  (`.harness/baseline/v3.5.2/templates/harness/conventions.template.md`, Kommentar über dem
+  Adaptions-Block; die Zeile existiert am neuen Stand nicht mehr). `v5.12.0` sagt
+  *„Einträge werden nie überschrieben"*
+  ([`grundlagen-harness-dateien.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
+  §harness/conventions.md als Konventionsspeicher) und benennt diesen Fall eigens:
+  *„Rückbau ist ein neuer Eintrag, kein Edit — eine aufgelöste `MR-<NNN>` wird nicht
+  überschrieben, sondern bekommt einen Nachfolger, der sie auflöst und den Baseline-Stand nennt,
+  der den Trigger gefeuert hat. Die alte Zeile ist die historisch korrekte Aussage über den
+  damaligen Zustand"*
+  ([`modul-02-harness-bootstrap.md`](../.harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md)).
+  Der Satz in [`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) ist die
+  richtige Aussage über den 13. Juni; ihn zu überschreiben löschte, **wann** die Klassifikation
+  noch stimmte. **Dieses Repo hat den Fall bereits einmal so entschieden:**
+  [`MR-021`](#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+  lässt die Zahl *„zwei Abweichungen von der Vorlagen-Form"* in
+  [`MR-019`](#mr-019--technik-stratum-als-rang-2-der-source-precedence) stehen und schreibt
+  daneben, dass sie überholt ist. Die Folgepflicht ist damit **erfüllt, nicht umgangen** — nur
+  der Ort ist der Nachfolger statt des Originals.
+- **Wo der nächste Antragsteller die Grenze liest, steht sie zweimal.** Nicht nur hier, sondern
+  im Kommentar über `scan.ignore` in `.d-check.yml` selbst — an der Stelle, an der ein sechster
+  Eintrag entstünde. Das ist Absicht: ein Register wird gelesen, wenn man es sucht, ein
+  Config-Kommentar, wenn man die Zeile anfasst.
+- **Kein Wächter, und das gehört dazu.** Kein Modul aus `modules:` der `.d-check.yml` hält die
+  `scan.ignore`-Liste gegen die in ADRs autorisierten Einträge; [`AGENTS.md`](../AGENTS.md) §3.5
+  hat keinen Sensor. Das steht in
+  [`ADR-0017`](../docs/plan/adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md)
+  §Fitness Function so und wird hier nicht anders behauptet
+  ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Träger ist
+  der Rollen-Wechsel vor der Änderung.
+- **Auflösungs-Trigger:** Der Zensus wandert mit der Liste — ein sechster Eintrag ist ein eigener
+  §3.5-Vorgang mit eigener ADR und löst diesen Eintrag ab. Die **Klassifikation** fällt neu an,
+  sobald `links` einen referenz-weiten Ausschluss bekommt: dann ersetzt der präzise Knopf den
+  datei-weiten Eintrag, Punkt 3 entfällt, und der Zensus steht wieder auf zwei Gründen. Am
+  heutigen Pin gibt es ihn nicht, und auch der Zeilen-Marker ist keiner: eine Sonde außerhalb des
+  Repos — eine Datei mit drei gebrochenen Links, einer ohne Marker, einer mit
+  `<!-- d-check:ignore -->` auf derselben Zeile, einer mit dem Marker in der Zeile davor,
+  `modules: [links, anchors]` — meldet **alle drei**
+  (`d-check: 1 Datei(en) geprüft, 3 Befund(e)`). `d-check:ignore` deckt `links` **nicht**;
+  [`MR-027`](#mr-027--d-check-pin-v0650-ignore-marker-in-zwei-achsen-verengt) misst ihn an `ids`
+  und `codepaths`.
+
+### MR-030 — Der Rollen-Name der Baseline und der Bezeichner fallen zusammen
+
+- **Datum:** 2026-08-28
+- **Wirksamkeits-Anlass:** slice-081.
+- **Geltungsbereich:** Punkt 2 der Liste *„Was als Delta bleibt"* in
+  [`MR-021`](#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+  und der Absatz über die kanonischen Agenten-Typ-Namen in
+  [`spec/spezifikation.md`](../spec/spezifikation.md#5-metriken-und-tracing-felder) §5. **Nicht**
+  Punkt 1 desselben Eintrags — die vierte Spalte (`Sensor`) weicht weiter von der
+  Modul-Vorschrift ab und bindet fort.
+- **Löst auf:** die Abweichung *„`implementer` statt Implementation"*. Sie hat keinen Gegenstand
+  mehr.
+- **Ausgelöst durch Baseline-Stand:** `v5.12.0`. Der abgelöste Stand schrieb
+  `participant I as Implementation`, der adoptierte schreibt `participant I as Implementer` —
+  `grep -c 'participant I as Implementer' .harness/baseline/v5.12.0/regelwerk/modul-08-agentenrollen.md`
+  → **1**.
+- **Sachstand, gemessen statt behauptet.** Die sechs Rollen-Namen des Moduls sind
+  kleingeschrieben Zeichen für Zeichen die sechs Bezeichner des Technik-Stratums — die Ausgabe
+  dieses Vergleichs ist **leer**:
+
+  ```sh
+  diff <(grep -oE 'participant [A-Za-z]+ as [A-Za-z]+' .harness/baseline/v5.12.0/regelwerk/modul-08-agentenrollen.md | awk '{print tolower($4)}' | sort -u) \
+       <(grep -A1 'kanonischen Namen der Agenten-Typen' spec/spezifikation.md | grep -oE '`[a-z]+`' | tr -d '`' | sort -u)
+  ```
+
+  Was bleibt, ist die **Kleinschreibung**, und sie trifft alle sechs gleich — eine
+  Bezeichner-Konvention, keine Aussage über die dritte Rolle. Der kleingeschriebene Bezeichner
+  kommt im Regelwerk selbst nicht vor
+  (`grep -rl 'implementer' .harness/baseline/v5.12.0/regelwerk/ | wc -l` → **0**); es gibt also
+  auch keine Modul-Schreibweise, von der er abwiche.
+- **Der Wert bleibt, wo er steht.** Die Zielort-Setzung aus
+  [`MR-021`](#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben) —
+  technische Festlegung ins Stratum — ist unberührt: die sechs kanonischen Namen stehen weiter in
+  [`spec/spezifikation.md`](../spec/spezifikation.md#5-metriken-und-tracing-felder) §5. Was dort
+  entfällt, ist allein der **Abweichungs**-Satz; er benannte eine Differenz, die es nicht mehr
+  gibt.
+- **[`MR-021`](#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+  wird nicht angefasst — und sein Verweis wird nicht nachgezogen.** Der Rumpf bleibt, weil dies
+  eine Teil-Aufhebung ist:
+  [`ADR-0014`](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) Festlegung 2 (a)
+  lässt ihn nur bei **vollständiger** Aufhebung fallen — *„bei Teil-Aufhebung bleibt der Rumpf,
+  weil sein Rest bindet"*. Und der Markdown-Link jenes Punktes bleibt auf dem alten Tag stehen:
+  der Satz um ihn herum sagt, das Modul nenne die dritte Rolle *Implementation*, und das ist
+  **über `v3.5.2` wahr**. Ein Tag-Tausch machte daraus eine Aussage, die die Quelle nicht
+  hergibt — bei grünem Gate, also von *laut* nach *stumm*. Genau diese Klasse verwirft
+  [`ADR-0016`](../docs/plan/adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 1, und
+  [`ADR-0023`](../docs/plan/adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) hält den
+  Beschluss gegen genau diesen Zielstand neu. Der Verweis ist eine **datierte Aussage**
+  (Klasse 2), kein Navigations-Zeiger.
+- **Was das kostet, und es wird hier nicht kleingeredet.** Diese eine Zeile bleibt ein
+  `target-missing`-Befund von `make docs-check` — in einem **lebenden** Artefakt, dauerhaft, ohne
+  dass jemand sie richtig beheben kann. Die Ausnahme aus
+  [`ADR-0017`](../docs/plan/adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) deckt sie
+  **nicht**: jene ist extensional auf eine Datei geschlossen, und ein Eintrag für diese Datei
+  nähme ihre **254** Link-Vorkommen über **68** eindeutige Ziele mit aus der Prüfung —
+  `grep -oE '\]\([^)]+\)' harness/conventions.md | wc -l` und derselbe Strom durch
+  `sort -u | wc -l`, **keine Erwartungswerte**
+  ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2), sie
+  wachsen mit jedem Verweis. Der Zeilen-Marker deckt sie ebenfalls nicht: `d-check:ignore` wirkt
+  auf `ids` und `codepaths`, nicht auf `links`
+  ([`MR-029`](#mr-029--der-scanignore-zensus-wandert-und-sein-dritter-grund-ist-keine-scoping-aussage)
+  §Auflösungs-Trigger, dort an einer Sonde gemessen).
+- **Die strukturelle Ursache ist benannt, nicht behoben: dieser Block läuft in der Inline-Form.**
+  Ein akzeptierter Eintrag ist eine **unveränderliche Region in einer änderbaren Datei** — diesen
+  Fall kennt [`ADR-0016`](../docs/plan/adr/0016-verweis-traegt-tag-und-zitat.md) nicht: dort
+  verläuft die Linie *„an der Änderbarkeit der Quelle"*, und `harness/conventions.md` steht
+  namentlich auf der änderbaren Seite, deren lokaler Pfad ein *„Navigations-Zeiger"* ist und wo
+  *„der Bump zieht ihn nach"* gilt. In der **Verzeichnis-Form**, die der adoptierte Stand zum
+  Default macht, gäbe es die Kollision nicht: jeder Eintrag läge in einer eigenen Datei unter
+  *harness/conventions/*, und mit dem Eintreten seines Auflösungs-Triggers wanderte er nach
+  *conventions/done/* — dieselbe Zeitdokument-Klasse, für die
+  [`ADR-0016`](../docs/plan/adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 4 das Entfallen
+  der Adresse bei stehenbleibendem Text bereits regelt. Die Migration ist ein eigener Slice und
+  wird hier weder vollzogen noch beschlossen.
+- **Kein Wächter, und die Lücke ist die Regel selbst.** Zu welcher Klasse eine Nennung des alten
+  Tags gehört, steht im Satz um sie herum und nicht in der Zeichenkette;
+  [`ADR-0023`](../docs/plan/adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) Festlegung 3
+  verwirft den nächstliegenden Kandidaten mit gemessener Begründung und gibt die stille Hälfte
+  ausdrücklich als **unbewacht** aus. Träger ist der Rollen-Wechsel vor der Änderung.
+- **Auflösungs-Trigger:** permanent als Sachstands-Feststellung — eine aufgelöste Abweichung löst
+  sich nicht ein zweites Mal auf. Neu zu entscheiden ist der Gegenstand erst, wenn ein künftiger
+  Baseline-Stand die dritte Rolle wieder anders schreibt als die übrigen fünf; dann ist die
+  Differenz gegen den dann geltenden Tag zu messen und als neuer Eintrag zu führen.
 
 ## Modus-Deklaration pro Sub-Area
 
