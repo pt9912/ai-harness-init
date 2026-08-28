@@ -27,9 +27,9 @@ real eingetreten, in jedem Lauf seiner sichtbaren Historie rot.
 
 **Closure-Kriterium:** **drei Durchgänge der Ziel-Prozedur mit je einem Beleg** — Adaptionen ·
 Form · Stichprobe gegen den Bestand —, dazu der vollzogene Pin (`.harness/baseline/v5.12.0/` als
-einziges `<tag>`-Verzeichnis, `make baseline-verify` grün über 51 statt 42 Dateien) und die drei
-Sensoren außerhalb der Gates, weil der Tag der Emissions-Kanal ist. Nicht der Pin ist der
-Gegenstand, sondern die Durchgänge; Einzelheiten in der Plan-Datei.
+einziges `<tag>`-Verzeichnis, `make baseline-verify` grün über dessen vollständigen Bestand) und
+die drei Sensoren außerhalb der Gates, weil der Tag der Emissions-Kanal ist. Nicht der Pin ist der
+Gegenstand, sondern die Durchgänge; die Bezugsmengen samt ihren Kommandos stehen in der Plan-Datei.
 
 **[welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)**, geschnitten am 2026-07-28
 — **angefangen, ruhend, nicht abschließbar**: ihre Closure hängt an drei Mitgliedern, die §4 der Welle
@@ -71,8 +71,10 @@ jedes andere weiterzuliefern.
 **Warum dieser Abschnitt zwei Wellen trägt, und warum welle-09 nicht nach unten wandert.** Die
 drei Abschnitte von Modul 6 sind nach Zustand geschnitten, nicht nach Anzahl: *Nächste Wellen* ist
 die **Vorschau**, *Abgeschlossene Wellen* das Closure-Log. welle-09 passt in keinen von beiden —
-sechs ihrer Mitglieder liegen in `done/`, sie ist also keine Vorschau, und sie ist nicht
-geschlossen. Sie bleibt darum hier und trägt ihren Zustand: **angefangen und ruhend**, weil an ihr
+**sechs** ihrer Mitglieder liegen in `done/`
+(`ls docs/plan/planning/done/ | grep -cE 'slice-(059|060|062|066|068|087)-'`), sie ist also keine
+Vorschau, und sie ist nicht geschlossen. Sie bleibt darum hier und trägt ihren Zustand:
+**angefangen und ruhend**, weil an ihr
 niemand arbeiten kann, ohne zuerst drei Slices zu schneiden. Gearbeitet wird an welle-10; das ist
 die Reihenfolge, die dieser Abschnitt aussagt.
 
