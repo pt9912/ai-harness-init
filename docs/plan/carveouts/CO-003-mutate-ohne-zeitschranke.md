@@ -1,12 +1,13 @@
 # CO-003: `make mutate` hat keine Zeitschranke — ein hängender Worker färbt den Lauf nicht rot
 
 **Status:** Aktiv — **Auflösung fällig**, nicht offen: der Auflösungs-Trigger ist eingetreten
-(Letzte Prüfung unten). Die Datei liegt weiter hier und nicht in `done/`, weil eine Auflösung erst
-gilt, wenn sie **vollzogen** ist — `git mv`, Index, Link-Abgleich über die eingehenden Verweise
-und der Haken an [slice-105](../planning/done/slice-105-mutate-messen-dann-teilen.md)
-§2 DoD (3). Der Vollzug liegt bei anderen Rollen (Modul 7 §Carveout-Audit-Slice: *„Implementer
-führt `git mv` und Config-Updates aus"*); die Übergabe steht unten. Dieselbe Lage trägt
-[CO-001](CO-001-bats-shell-lint.md) seit dem 2026-08-27.
+(Letzte Prüfung unten), und der Vollzug ist als
+[slice-120](../planning/open/slice-120-co-003-wird-vollzogen.md) geschnitten. Die Datei liegt
+weiter hier und nicht in `done/`, weil eine Auflösung erst gilt, wenn sie **vollzogen** ist —
+`git mv`, Index und Link-Abgleich über die eingehenden Verweise. Dieser Rest liegt bei einer
+anderen Rolle (Modul 7 §Carveout-Audit-Slice: *„Implementer führt `git mv` und Config-Updates
+aus"*); die Übergabe steht unten. Dieselbe Lage trägt [CO-001](CO-001-bats-shell-lint.md) seit dem
+2026-08-27.
 
 **Datum angelegt:** 2026-08-27. **Letzte Prüfung:** 2026-08-28 (Architect-Entscheidung über den
 Trigger, aus [slice-117](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) §7 übergeben.
@@ -59,17 +60,26 @@ Abschluss-Marken-Zweig in `main()`, der zweite über die drei Vollständigkeits-
   `grep -c 'Vorwärmlauf vor dem Fork' harness/README.md` → **1**). Eine benannte Lücke mit Träger
   ist ein `open/`-Slice, kein Carveout.
 
-**Folge-Slice:** **noch zu schneiden** — der **Vollzug** der Auflösung (§Übergabe unten). Das
-Muster steht daneben: [CO-001](CO-001-bats-shell-lint.md) ist in derselben Lage und hat dafür
-[slice-113](../planning/open/slice-113-co-001-ist-faellig.md). Schneiden ist Planner-Arbeit
-(Modul 7 §Carveout-Audit-Slice: *„Planner identifiziert die fälligen Carveouts"*); bis der Schnitt
-steht, ist **dieses Feld die offene Stelle dieses Carveouts** — nicht sein Trigger.
-[slice-118](../planning/open/slice-118-vorwaermlauf-endet-von-selbst.md) ist **nicht** dieser
-Slice: er trägt den Hänger im Vorwärmlauf vor dem Fork, der seit dieser Prüfung außerhalb des
-Geltungsbereichs liegt. Den Vorgänger-Schnitt
-[slice-117](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) hat der Planner in der Closure
-zu [slice-105](../planning/done/slice-105-mutate-messen-dann-teilen.md) gesetzt; er hat den
-Gegenstand geliefert.
+**Folge-Slice:** [slice-120](../planning/open/slice-120-co-003-wird-vollzogen.md) — der
+**Vollzug** der Auflösung: `git mv` nach `done/`, Index und Link-Abgleich in beide Richtungen
+(§Übergabe unten). Sein Beginn-Trigger liest dieses Feld (dort §4), und darin liegt der Grund,
+aus dem hier eine ID steht und keine Absichtserklärung: Modul 7 verlangt einen *„Folge-Slice mit
+ID, der das Auflösen plant. Slice schlägt Memo."*
+
+Zwei Slices stehen daneben, und keiner von beiden ist dieser:
+
+- [slice-113](../planning/open/slice-113-co-001-ist-faellig.md) ist das **Muster**, nicht der
+  Zwilling — derselbe Zug für [CO-001](CO-001-bats-shell-lint.md), aber mit **zwei** Ausgängen:
+  seine DoD (3) führt *„Bei Auflösung"* und *„Bei Nicht-Auflösung"* nebeneinander, weil dort eine
+  Technik-Wahl offen ist. Hier ist der Trigger entschieden, und es gibt einen Ausgang.
+- [slice-118](../planning/open/slice-118-vorwaermlauf-endet-von-selbst.md) trägt den Hänger im
+  Vorwärmlauf **vor** dem Fork — seit der Prüfung vom 2026-08-28 außerhalb des Geltungsbereichs,
+  mit eigenem Träger, und er blockiert die Auflösung nicht.
+
+Geschnitten hat den Vollzug der Planner (Modul 7 §Carveout-Audit-Slice: *„Planner identifiziert
+die fälligen Carveouts"*); den Vorgänger-Schnitt
+[slice-117](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md), der den Gegenstand geliefert
+hat, ebenfalls.
 
 ---
 
@@ -166,12 +176,14 @@ nicht: die Änderung **hebt** eine Zusage an und senkt keine Schwelle
 ## Geltungs-Konfiguration
 
 Keine Gate-Konfiguration trägt eine Ausnahme für diesen Carveout — es gibt nichts auszunehmen. Was
-es gibt, sind drei Stellen, an denen der Posten sichtbar ist — zwei davon arbeitet der
-Vollzug ab, die dritte liegt außerhalb des Geltungsbereichs:
+es gibt, sind drei Stellen, an denen der Posten sichtbar ist. Offen ist an keiner von ihnen noch
+etwas; was der Vollzug dort anfasst, ist der Link auf diese Datei, nicht die Aussage der Zeile
+(`for f in done/slice-105 done/slice-117 open/slice-118; do grep -c '](\([^)]*\)CO-003-mutate-ohne-zeitschranke\.md)' docs/plan/planning/$f-*.md; done`
+→ **6**, **7** und **1**; mitwandernd, **kein** Erwartungswert):
 
 | Datei | Zeile/Section | Wert |
 |---|---|---|
-| [`slice-105-mutate-messen-dann-teilen.md`](../planning/done/slice-105-mutate-messen-dann-teilen.md) | §2 DoD (3) | Haken **nicht** gesetzt; §7 nennt `CO-003` als Träger. Der Haken ist fällig — die Entscheidung über ein `done/`-Zeitdokument gehört dem Planner |
+| [`slice-105-mutate-messen-dann-teilen.md`](../planning/done/slice-105-mutate-messen-dann-teilen.md) | §2 DoD (3) | Haken **gesetzt** — `grep -c '^- \[x\] \*\*(3)' docs/plan/planning/done/slice-105-mutate-messen-dann-teilen.md` → **1**. Er steht seit dem 2026-08-28; *wodurch* und *wann* sagt der Punkt an Ort und Stelle, Kriteriumstext und Rot-Kommando unangetastet. Bis dahin trug `CO-003` das eine Wort, das offen war |
 | [`slice-117-lauf-ohne-ende-faerbt-rot.md`](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) | §2 DoD (1) und (3) | der Auflösungs-Trigger als Abnahme-Kriterium; beide erfüllt (§7 dort) |
 | [`slice-118-vorwaermlauf-endet-von-selbst.md`](../planning/open/slice-118-vorwaermlauf-endet-von-selbst.md) | §2 DoD (1) | der Vorwärmlauf vor dem Fork — **außerhalb** des Geltungsbereichs, eigener Träger |
 
@@ -179,12 +191,13 @@ Vollzug ab, die dritte liegt außerhalb des Geltungsbereichs:
 
 Modul 7 verteilt die Auflösung über drei Rollen, und das ist Absicht: *„Planner identifiziert die
 fälligen Carveouts, Architect entscheidet bei ‚permanent' über die ADR-Überführung, Implementer
-führt `git mv` und Config-Updates aus."* Der Architect-Teil ist mit dieser Prüfung erledigt.
+führt `git mv` und Config-Updates aus."* Der Architect-Teil ist mit dieser Prüfung erledigt, der
+Planner-Teil seit dem 2026-08-28; offen ist allein der Implementer-Teil.
 
 | An | Was | Warum nicht hier |
 |---|---|---|
-| **Planner** | den Vollzug schneiden (Muster: [slice-113](../planning/open/slice-113-co-001-ist-faellig.md) für [CO-001](CO-001-bats-shell-lint.md)) und über den Haken an [slice-105](../planning/done/slice-105-mutate-messen-dann-teilen.md) §2 DoD (3) entscheiden | Schnitte und `docs/plan/planning/**` gehören dem Planner |
-| **Implementer** | `git mv` nach `done/`, Index nachziehen, Link-Abgleich über die eingehenden Verweise — **8** Dateien (`grep -rln 'CO-003' --include='*.md' . \| grep -v '^./.harness' \| grep -v 'CO-003-mutate' \| wc -l`; mitwandernd, **kein** Erwartungswert), davon **3** unter `docs/plan/planning/` und **4** unter `docs/reviews/` (dieselbe Form über dem jeweiligen Pfad) | der Move ist ein eigener Commit ([`AGENTS.md`](../../../AGENTS.md) §3.3), und der Link-Abgleich fasst Dateien an, die anderen Rollen gehören |
+| **Planner** — **erledigt am 2026-08-28** | den Vollzug schneiden ([slice-120](../planning/open/slice-120-co-003-wird-vollzogen.md); Muster: [slice-113](../planning/open/slice-113-co-001-ist-faellig.md) für [CO-001](CO-001-bats-shell-lint.md)) und über den Haken an [slice-105](../planning/done/slice-105-mutate-messen-dann-teilen.md) §2 DoD (3) entscheiden — er steht (§Geltungs-Konfiguration) | Schnitte und `docs/plan/planning/**` gehören dem Planner |
+| **Implementer** | `git mv` nach `done/`, Index nachziehen, Link-Abgleich über die eingehenden Verweise — **9** Dateien (`grep -rln 'CO-003' --include='*.md' . \| grep -v '^./.harness' \| grep -v 'CO-003-mutate' \| wc -l`; mitwandernd, **kein** Erwartungswert), davon **4** unter `docs/plan/planning/` und **4** unter `docs/reviews/` (dieselbe Form über dem jeweiligen Pfad) | der Move ist ein eigener Commit ([`AGENTS.md`](../../../AGENTS.md) §3.3), und der Link-Abgleich fasst Dateien an, die anderen Rollen gehören |
 
 ## Verifikation (nach Auflösung)
 
@@ -192,9 +205,20 @@ führt `git mv` und Config-Updates aus."* Der Architect-Teil ist mit dieser Prü
 - [ ] `make gates` grün ohne Ausnahme, `make mutate` ohne Befund — über dem Baum, der den Move trägt.
 - [ ] Datei wird nach `docs/plan/carveouts/done/` bewegt (reiner `git mv`). <!-- d-check:ignore (done/ entsteht erst bei erster Carveout-Auflösung) -->
 - [ ] Der Index in [`README.md`](README.md) zieht mit.
-- [ ] Der Haken an [slice-105](../planning/done/slice-105-mutate-messen-dann-teilen.md) §2 DoD (3) ist gesetzt oder seine Auslassung ausdrücklich begründet.
+- [x] Der Haken an [slice-105](../planning/done/slice-105-mutate-messen-dann-teilen.md) §2 DoD (3) ist gesetzt (2026-08-28; §Geltungs-Konfiguration nennt das Kommando) — die zweite Alternative dieses Punktes, die begründete Auslassung, entfällt damit.
 - [x] Folge-Slice [slice-117](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) geschlossen (§7 dort).
 - [x] [slice-118](../planning/open/slice-118-vorwaermlauf-endet-von-selbst.md) explizit dokumentiert — er trägt den Teil, der außerhalb des Geltungsbereichs liegt, und blockiert die Auflösung nicht.
+
+**Warum vier Haken stehen und drei nicht — die Trennlinie ist der Ort.** Ein Punkt bekommt seinen
+Haken, wenn seine Tatsache feststeht, nicht wenn die Datei umzieht; die Überschrift nennt den
+**spätesten** Zeitpunkt, nicht den frühesten. Die drei offenen sind genau die, deren Wahrheit **am
+Ort** hängt — sie sind erst über dem Baum wahr, der den Move trägt, und Modul 7
+§Carveout-Audit-Slice weist diesen Zug dem Implementer zu (*„`git mv` und Config-Updates"*). Die
+vier gesetzten hängen nicht am Ort: sie sind über diesem Baum wahr, und jede ihrer Tatsachen ist
+oben belegt. Wer den Haken an
+[slice-105](../planning/done/slice-105-mutate-messen-dann-teilen.md) dennoch dem Vollzug
+überließe, setzte ihn dort für eine Tatsache, die mit dem Move nichts zu tun hat — und die
+Zähl-Bedingung, die ihn dazu brächte, zählt offene Punkte, statt ihre Tatsachen zu prüfen.
 
 ## Geschichte
 
@@ -203,3 +227,4 @@ führt `git mv` und Config-Updates aus."* Der Architect-Teil ist mit dieser Prü
 | 2026-08-27 | Angelegt (Closure zu slice-105; DoD (3) für einen der drei Ausfall-Wege ohne rot gesehenes Gegenbeispiel) | [slice-105](../planning/done/slice-105-mutate-messen-dann-teilen.md) §7 |
 | 2026-08-27 | Audit in der Closure zu slice-117 — Modul-7-Übergang *weiterhin aktiv*: Bedingung 2 und 3 erfüllt und gefahren, Bedingung 1 misst ihren Gegenstand nicht, offen bleibt der Vorwärmlauf vor dem Fork. Trigger-Änderung an den Architect übergeben | [slice-117](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) §7 |
 | 2026-08-28 | Architect-Entscheidung: die Wort-Bedingung gestrichen (in beide Richtungen falsch, gemessen an zwei Ständen), der Geltungsbereich am Subjekt der DoD geschärft (*Shard*, nicht Vorwärmlauf), zweiter Ausgang verneint. Modul-7-Übergang **aufgelöst** — Trigger eingetreten, Vollzug ausstehend und übergeben | diese Datei, §Auflösungs-Trigger und §Übergabe |
+| 2026-08-28 | Folge-Slice eingetragen: der Vollzug ist als [slice-120](../planning/open/slice-120-co-003-wird-vollzogen.md) geschnitten, das Pflicht-Feld trägt seine ID. Der Haken an [slice-105](../planning/done/slice-105-mutate-messen-dann-teilen.md) §2 DoD (3) steht seit demselben Tag und ist in der Verifikations-Checkliste gesetzt — er hängt nicht am Ort dieser Datei und wartet darum nicht auf den Move | diese Datei, §Folge-Slice und §Verifikation |
