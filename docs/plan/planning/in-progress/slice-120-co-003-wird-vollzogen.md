@@ -13,7 +13,7 @@ Sache bereits gebaut ist; der Slice ist einzeln lieferbar und wartet auf keinen 
 trägt einen eingetretenen Trigger"* — das ist die **Konjunktion** zweier unabhängiger DoDs und
 keine Bedingung, die erst aus dem Zusammenwirken entsteht. **(3) Auslöser reaktiv oder gewollt?**
 Reaktiv: der Auflösungs-Trigger von
-[`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) ist eingetreten, vom Architect am
+[`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) ist eingetreten, vom Architect am
 2026-08-28 als eingetreten entschieden, und offen ist allein der **Vollzug**. Kein
 Fähigkeits-Sprung — es entsteht kein Sensor, keine Gate-Ausnahme fällt, die emittierte Ebene
 bleibt unberührt. Nach
@@ -38,7 +38,7 @@ Unterschiede tragen die Trennung:
 3. **Die Fläche ist eine andere.** Eingehende Links auf den jeweiligen Carveout:
    `grep -rho '](\([^)]*\)CO-001-bats-shell-lint\.md)' --include='*.md' docs/ | wc -l` → **32**
    über **17** Dateien (`grep -rlo …` derselben Form), gegen **20** über **6** für
-   [`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) (§1). Alle vier Zahlen wandern
+   [`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) (§1). Alle vier Zahlen wandern
    mit ihrem Bestand und sind **kein** Erwartungswert
    ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
    Setzung 2).
@@ -56,7 +56,7 @@ die Planungs-Artefakte unter `docs/plan/`. Was ein emittiertes Repo an Carveout-
 entscheidet der Slice, der die Tool-Ebene entscheidet — nicht dieser.
 
 **Bezug:**
-[`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) (der Carveout selbst; sein
+[`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) (der Carveout selbst; sein
 §Übergabe-Block verteilt den Vollzug auf Planner und Implementer),
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 (Verortung),
@@ -76,14 +76,14 @@ DoD (2) macht daraus einen Schritt in der Reihenfolge).
 
 ## 1. Ziel
 
-**[`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) liegt in
+**[`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) liegt in
 `docs/plan/carveouts/done/`, sein Kopf und der Carveout-Index sagen dasselbe wie sein Ort, und <!-- d-check:ignore (done/ entsteht erst bei erster Carveout-Auflösung) -->
 kein Verweis zeigt ins Leere — in beide Richtungen.**
 
 ### Die Ausgangslage: entschieden ist der Trigger, offen ist der Vollzug
 
-[`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) steht auf *Aktiv — Auflösung
-fällig* (`grep -c '^\*\*Status:\*\* Aktiv' docs/plan/carveouts/CO-003-mutate-ohne-zeitschranke.md`
+[`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) steht auf *Aktiv — Auflösung
+fällig* (`grep -c '^\*\*Status:\*\* Aktiv' docs/plan/carveouts/done/CO-003-mutate-ohne-zeitschranke.md`
 → **1**). Der Architect hat am 2026-08-28 entschieden: die Wort-Bedingung gestrichen, die
 verbleibenden zwei Bedingungen eingetreten, der zweite Ausgang (Überführung in eine ADR) verneint;
 Modul-7-Übergang *aufgelöst*. Was fehlt, ist die Handlung, die Modul 7 §Carveout-Audit-Slice dem
@@ -92,7 +92,7 @@ aussteht, sagt die Verzeichnis-Position das Gegenteil der Entscheidung, und ein 
 Ort seiner Aussage widerspricht, ist genau die Doku-Drift, gegen die der Mechanismus steht.
 
 **Eine Gate-Ausnahme ist nicht auszubauen, und das ist gemessen, nicht angenommen.**
-[`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) §Geltungs-Konfiguration sagt es
+[`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) §Geltungs-Konfiguration sagt es
 selbst — *„Keine Gate-Konfiguration trägt eine Ausnahme für diesen Carveout"* —, und der Kopf
 nennt als betroffenes Gate **keines**: `make mutate` ist Nicht-Gate-Verify. Der Slice fasst
 darum weder [`Makefile`](../../../../Makefile) noch [`.d-check.yml`](../../../../.d-check.yml) an.
@@ -107,7 +107,7 @@ committet (`ba5c07f`, *„32 Verweise ueber 6 Dateien, zwei Formen"*). Dieser Mo
 
 | Richtung | Fläche | Kommando |
 |---|---|---|
-| **ausgehend** (die Links der Datei selbst) | **40** Ziele, alle relativ | `grep -o '](\([^)]*\))' docs/plan/carveouts/CO-003-mutate-ohne-zeitschranke.md \| grep -vc '](http'` |
+| **ausgehend** (die Links der Datei selbst) | **40** Ziele, alle relativ | `grep -o '](\([^)]*\))' docs/plan/carveouts/done/CO-003-mutate-ohne-zeitschranke.md \| grep -vc '](http'` |
 | **eingehend**, Form *Markdown-Link* | **20** Vorkommen über **6** Dateien | `grep -rho '](\([^)]*\)CO-003-mutate-ohne-zeitschranke\.md)' --include='*.md' docs/ \| wc -l`; die Datei-Zahl über `grep -rlo …` derselben Form |
 | **eingehend**, alle Nennungen | **8** Dateien | `grep -rln 'CO-003' --include='*.md' . \| grep -v '^./.harness' \| grep -v 'CO-003-mutate' \| wc -l` |
 
@@ -188,7 +188,7 @@ Steering-Loop-Lerneintrag.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| [`docs/plan/carveouts/CO-003-mutate-ohne-zeitschranke.md`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) | `git mv` **und** update, in **zwei** Commits | der Move nach `done/`; danach Kopf, Verifikations-Checkliste und die 40 ausgehenden Ziele. Getrennt, sonst fällt die Rename-Detection unter die Similarity-Schwelle ([`AGENTS.md`](../../../../AGENTS.md) §3.3) |
+| [`docs/plan/carveouts/done/CO-003-mutate-ohne-zeitschranke.md`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) | `git mv` **und** update, in **zwei** Commits | der Move nach `done/`; danach Kopf, Verifikations-Checkliste und die 40 ausgehenden Ziele. Getrennt, sonst fällt die Rename-Detection unter die Similarity-Schwelle ([`AGENTS.md`](../../../../AGENTS.md) §3.3) |
 | [`docs/plan/carveouts/README.md`](../../carveouts/README.md) | update | der Index: die Zeile wandert von *Aktiv* nach *Aufgelöst*. Der Abschnitt trägt heute `_(noch keine)_` |
 | die **6** Dateien mit eingehendem Link (§1) | update | **20** Vorkommen; darunter zwei Review-Berichte unter `docs/reviews/`, für die die `links`-Prüfung **nicht** ausgenommen ist |
 | `docs/reviews/2026-08-27-slice-117-verify.md` und `docs/reviews/2026-08-27-slice-117-verify-runde2.md` | **unverändert** | keine Link-Form, gemessen; die Inline-Code-Nennung deckt `codepaths.exempt-paths` ([`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)) |
@@ -201,8 +201,8 @@ Steering-Loop-Lerneintrag.
 
 **Beginn (`open` → `next` → `in-progress`): eine Bedingung, und sie ist ohne Rückfrage
 entscheidbar.** Das Pflicht-Feld `Folge-Slice` in
-[`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) nennt heute keine ID —
-`grep -c 'slice-120' docs/plan/carveouts/CO-003-mutate-ohne-zeitschranke.md` → **0**; der Carveout
+[`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) nennt heute keine ID —
+`grep -c 'slice-120' docs/plan/carveouts/done/CO-003-mutate-ohne-zeitschranke.md` → **0**; der Carveout
 erklärt dieses Feld selbst zu *„der offenen Stelle dieses Carveouts"*. Es zu füllen ist
 Architect-Arbeit, weil der Carveout Architect-Eigentum ist. **Der Slice beginnt, wenn dasselbe
 Kommando ≥ 1 liefert.** Der Grund ist nicht Formalismus: Modul 7 schreibt *„jeder temporäre

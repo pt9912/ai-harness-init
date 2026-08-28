@@ -38,7 +38,7 @@ dazu die beiden Report-Dateien der ersten Runde.
   (`git show 9b9866b | grep -E '^\+' | grep -oE 'ADR-[0-9]{4}' | sort -u` → nur `ADR-0003`, und
   das steht in einer Zeile des mitcommitteten Round-1-Reports, nicht im Code). Keine superseded
   ADR im Spiel.
-- **Register:** [`CO-003`](../plan/carveouts/CO-003-mutate-ohne-zeitschranke.md), Status **Aktiv**
+- **Register:** [`CO-003`](../plan/carveouts/done/CO-003-mutate-ohne-zeitschranke.md), Status **Aktiv**
   — sein Geltungsbereich ist die Zusage, die dieser Diff einlösen soll.
 - **Hard Rules:** `AGENTS.md` §3.1, §3.2, §3.3, §3.5, §3.6, §3.7, §3.8, §3.9 — jede unten mit
   eigenem Kommando.
@@ -466,7 +466,7 @@ Ich habe `make mutate` **nicht** gestartet (Auflage 1). Aus
 - **Quelle:**
   [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2 (mitwandernde Zahlen); Reviewer-Anker *„Doku-Drift"*
-- **Pfad:** [`docs/plan/carveouts/CO-003-mutate-ohne-zeitschranke.md`](../plan/carveouts/CO-003-mutate-ohne-zeitschranke.md)
+- **Pfad:** [`docs/plan/carveouts/done/CO-003-mutate-ohne-zeitschranke.md`](../plan/carveouts/done/CO-003-mutate-ohne-zeitschranke.md)
   §Geltungsbereich gegen `harness/tools/mutate.sh:628`
 - **Befund:** Der Carveout sagt *„Nicht gedeckt ist hängt: `main()` wartet mit `wait "$pid"` ohne
   Zeitschranke (`grep -c 'timeout' harness/tools/mutate.sh` → **0** …, mitwandernd — `MR-025`

@@ -77,7 +77,7 @@ andere ist.** Ein hängender Lauf liefert **kein** Ergebnis, also auch kein fals
 Wartezeit und ein blockierter Lock. In der CI beendet GitHubs Job-Voreinstellung (360 Minuten) den
 Job und meldet ihn als Fehlschlag — **dokumentiert, von diesem Repo nicht gemessen**; lokal endet
 er nie. Getragen wird die Zusage damit heute von der Umgebung, nicht vom Treiber, und genau das ist
-[`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md).
+[`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md).
 
 ### Lage 2: unter Ctrl-C widerspricht der Bericht seiner eigenen Fortschritts-Ausgabe
 
@@ -143,7 +143,7 @@ Steering-Loop-Lerneintrag.
 | [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) | update | Zeitschranke um das Warten auf die Worker (DoD 1); Trennung von Signal- und EXIT-Zweig im `trap`, damit der Bericht vor dem Wegräumen entsteht (DoD 2). `wc -l < harness/tools/mutate.sh` → **1252** heute; wächst er, wächst die bats-Ebene mit |
 | [`test/mutate-driver.bats`](../../../../test/mutate-driver.bats) | update | die Sensor-Ebene des Treibers; `grep -c '^@test' test/mutate-driver.bats` → **39** heute. Die neuen Fälle gehören dorthin, nicht in einen zweiten Sensor |
 | `test/mutations/` <!-- d-check:ignore (geplante Dateien) --> | neu | die Zähne aus DoD (1)–(3); Nummern im Anschluss an die höchste vergebene (`ls -1 test/mutations/*.sh \| sed -n 's#.*/\([0-9]*\)-.*#\1#p' \| sort -n \| tail -1` → **197**, beim Anlegen neu auszuzählen) |
-| [`docs/plan/carveouts/CO-003-mutate-ohne-zeitschranke.md`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) | `git mv` nach `done/` **oder** update | DoD (1) ist sein Auflösungs-Trigger; der Move ist ein eigener Commit ([`AGENTS.md`](../../../../AGENTS.md) §3.3), und der Index in [`docs/plan/carveouts/README.md`](../../carveouts/README.md) zieht mit |
+| [`docs/plan/carveouts/done/CO-003-mutate-ohne-zeitschranke.md`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) | `git mv` nach `done/` **oder** update | DoD (1) ist sein Auflösungs-Trigger; der Move ist ein eigener Commit ([`AGENTS.md`](../../../../AGENTS.md) §3.3), und der Index in [`docs/plan/carveouts/README.md`](../../carveouts/README.md) zieht mit |
 | [`.github/workflows/ci.yml`](../../../../.github/workflows/ci.yml) | **unverändert**, sofern (1) im Treiber liegt | eine `timeout-minutes`-Zeile im Workflow wäre eine **zweite** Schranke an einem Ort, den ein lokaler Lauf nicht sieht — die CI ruft ausschließlich `make`-Targets ([`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)) |
 | [`docs/plan/adr`](../../adr) | **unverändert** | die Änderung **hebt** eine Zusage an und senkt keine Schwelle; eine Anhebung braucht kein ADR ([`AGENTS.md`](../../../../AGENTS.md) §3.5) |
 | [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** | wellenlose Arbeit wird dort nicht geführt ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) Setzung 2/3) |
@@ -250,7 +250,7 @@ statt die Zahl zu raten.
 DoD (1)–(3) erfüllt mit gefahrenen Kommandos; der hergestellte Hänger ist **einmal ohne Signal von
 außen rot gesehen**; der abgebrochene Lauf ist **einmal gefahren** und sein Bericht gegen sein
 eigenes Protokoll gehalten; Frage A, B und C sind mit ihrer Begründung im Plan beantwortet;
-[`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) ist aufgelöst (`git mv` nach `done/`,
+[`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) ist aufgelöst (`git mv` nach `done/`,
 Index gezogen) **oder** mit neuem Trigger und neuem Prüfdatum ausdrücklich bestätigt;
 [`harness/README.md`](../../../../harness/README.md) trägt die Schranke, falls sie den
 Nicht-Gate-Verify-Absatz berührt; Review konform (Modul 10); Verifikation bestätigt (Modul 11);
@@ -344,7 +344,7 @@ davon in Befehlsposition. Die Überschrift des Punktes und seine Aufzählung sag
 | der hergestellte Hänger einmal **ohne Signal von außen** rot gesehen | **erfüllt** | Verifikations-Runde 2, Exit 1 nach 17,27 s; der Pfad seither byte-gleich (Kommando oben) |
 | der abgebrochene Lauf einmal gefahren, Bericht gegen sein eigenes Protokoll gehalten | **erfüllt** | vier Läufe in Runde 2; dazu die zwei Arme oben |
 | Frage A, B, C mit Begründung **im Plan** | **erfüllt** | `be87307`, direkter Elternteil des ersten Code-Commits |
-| [`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) aufgelöst **oder** mit neuem Trigger bestätigt | **weder noch — und der Grund ist ein Befund** | seine Bedingung 1 misst ihren Gegenstand nicht (unten); der Carveout bleibt **aktiv**, mit Prüfdatum und Folge-Slice |
+| [`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) aufgelöst **oder** mit neuem Trigger bestätigt | **weder noch — und der Grund ist ein Befund** | seine Bedingung 1 misst ihren Gegenstand nicht (unten); der Carveout bleibt **aktiv**, mit Prüfdatum und Folge-Slice |
 | [`harness/README.md`](../../../../harness/README.md) trägt die Schranke | **erfüllt** | `grep -c 'MUTATE_STALL_SECONDS' harness/README.md` → **1**; der Absatz nennt die Schranke, ihre Stellschraube und ihre zwei Grenzen |
 | Review konform (Modul 10) · Verifikation bestätigt (Modul 11) | **zwei Runden je** | vier Berichte unter `docs/reviews/`, alle vier als Eingabe gelesen |
 | `make gates` grün | **erfüllt** | eigener Lauf, unten |
@@ -399,7 +399,7 @@ diesem Baum mit dem Kommando, das ihn liefert.
 | Die verwaiste **Enkel-Instanz erbt Deskriptor 3** und hält die Ausgabe-Pipeline des Aufrufers offen | im Treiber unbehoben (`grep -c '3>&-' harness/tools/mutate.sh` → **0**), in den bats-Fällen behoben (`grep -c '3>&- 4>&-' test/mutate-driver.bats` → **4**); gemessen 25,00 s bzw. 135,85 s nach der Schlusszeile | **diagnostiziert** (Ursache: `exec 3>&2` in `main()`, über den Worker an dessen Kind vererbt) und **aufgeschoben**. Träger [slice-118](../open/slice-118-vorwaermlauf-endet-von-selbst.md): dessen DoD (2) entscheidet die Prozessgruppen-Frage für die Kinder des Treibers, und dieselbe Entscheidung schliesst den offenen Kanal |
 | Die **bats-Stufe ist teurer geworden** | `docker run … bats/bats@sha256:e8f1… test/` mit Wanduhr: **16,18 s** am Plan-Commit (`git worktree` auf `be87307`) gegen **24,53 s** hier; im Protokoll trägt `test-bats` **52,6 %** der Fall-Arbeit bei n=56 (`sed -n '/Zeit je Sensor/,/Gruen-Vorlaeufe/p'`) | **diagnostiziert und aufgeschoben**, s. den eigenen Abschnitt unten |
 | §3.7-**Prosa über abwesenden Text** ist gewachsen | `grep -cE 'erste[rn]? Entwurf\|frueheste[rn]? Entwurf\|Vorgaenger\|frueher hier stehende\|die frueher' harness/tools/mutate.sh test/mutate-driver.bats` → **6** an `be87307`, **10** hier; dazu eine Stelle derselben Klasse, die kein Muster fasst (`grep -n 'Hier stand' harness/tools/mutate.sh` → **1**) | **diagnostiziert und aufgeschoben.** Mitnahme 3 dieses Plans ist in die Gegenrichtung gelaufen: der Cutoff bindet die neu geschriebene Zeile, und geschrieben wurden vier. Auflösungs-Trigger ist der nächste Zug an diesem Block — [slice-118](../open/slice-118-vorwaermlauf-endet-von-selbst.md) fasst ihn an |
-| [`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) **Bedingung 1 misst ihren Gegenstand nicht** | `grep -c 'timeout' harness/tools/mutate.sh` → **4**, `grep -n` zeigt alle vier als Kommentar (630, 635, 922, 924); `sed -n '/^await_workers()/,/^}/p' harness/tools/mutate.sh \| grep -c 'timeout'` → **0**, dasselbe über `collect_workers` → **0** | **Übergabe an den Architect** (unten). Der Carveout bleibt aktiv; ein Haken auf dieser Zahl wäre ein grüner Beleg für eine andere Sache |
+| [`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) **Bedingung 1 misst ihren Gegenstand nicht** | `grep -c 'timeout' harness/tools/mutate.sh` → **4**, `grep -n` zeigt alle vier als Kommentar (630, 635, 922, 924); `sed -n '/^await_workers()/,/^}/p' harness/tools/mutate.sh \| grep -c 'timeout'` → **0**, dasselbe über `collect_workers` → **0** | **Übergabe an den Architect** (unten). Der Carveout bleibt aktiv; ein Haken auf dieser Zahl wäre ein grüner Beleg für eine andere Sache |
 | Der Wächter *„Fortschritt setzt die Zeitschranke zurueck"* hat keinen Zahn | `grep -rl '^# expect: driver: Fortschritt setzt die Zeitschranke zurueck$' test/mutations/ \| wc -l` → **0** | **aufgeschoben.** Träger [slice-119](../open/slice-119-zusage-ohne-fall-wird-sichtbar.md) — er macht genau diese Klasse zählbar |
 | Die **Fünf-Sekunden-Frist** in `stop_workers` und der harte `kill` danach haben keinen Fall | `grep -rn 'k < 20\|kill -KILL' test/mutations/ \| wc -l` → **0** | **aufgeschoben.** Träger [slice-119](../open/slice-119-zusage-ohne-fall-wird-sichtbar.md); die Frist trägt im Kommentar eine fail-closed-Zusage (*„haelt den Lauf nicht auf"*) und ist damit dieselbe Klasse |
 | Der **Ort** der Bericht-Flagge in `main()` ist von keinem Sensor gehalten | `grep -rn 'BERICHT_BEGONNEN' test/` → **2** Zeilen: der bats-Fall setzt die Flagge selbst, der Mutations-Fall nimmt den Zweig — keine misst, wo `main()` sie setzt | **aufgeschoben.** Träger [slice-119](../open/slice-119-zusage-ohne-fall-wird-sichtbar.md) |
@@ -479,7 +479,7 @@ ist und keine Beobachtung.
 
 ### Übergabe an den Architect — eine
 
-**[`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) Bedingung 1 prüft die Anwesenheit
+**[`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) Bedingung 1 prüft die Anwesenheit
 eines Wortes; ihr Gegenstand ist eine Eigenschaft.** Sie lautet *„`grep -c 'timeout'
 harness/tools/mutate.sh` liefert > 0, und die Fundstelle ist die Schranke, die das Warten auf die
 Worker begrenzt"*. Gemessen liefert sie an diesem Baum **4** — aus vier Kommentarzeilen, von denen
@@ -510,7 +510,7 @@ Setzung 2 — ihr Zustand ist das Verzeichnis, nicht die Roadmap):
   **Fortschritt**, nicht Wanduhr, und der Vorlauf bleibt in der Prozessgruppe des Treibers.
 - [slice-119](../open/slice-119-zusage-ohne-fall-wird-sichtbar.md) — der Steering-Loop-Eintrag oben.
 
-**Ein Register-Eintrag.** [`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) bleibt
+**Ein Register-Eintrag.** [`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) bleibt
 **aktiv** und trägt den Modul-7-Übergang *weiterhin aktiv*: Prüfdatum, Ergebnis in der Geschichte,
 Folge-Slice auf [slice-118](../open/slice-118-vorwaermlauf-endet-von-selbst.md) umgestellt. Was der
 Slice an seinem Gegenstand geschlossen hat, steht dort mit seinem Kommando; was offen bleibt, ist

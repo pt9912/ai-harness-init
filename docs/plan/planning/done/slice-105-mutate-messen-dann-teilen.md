@@ -445,7 +445,7 @@ liegt vor den anderen beiden, und die Reihenfolge ist Teil der Zusage.
       der die Zusammenführung um einen Shard bringt.
       **Erfüllt seit dem 2026-08-27, festgestellt am 2026-08-28 — nicht zur Closure dieses
       Slice.** *Abstürzt* und *nichts meldet* waren damals rot gesehen, *hängt* nicht; diesen Rest
-      trug [`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md). Die Schranke
+      trug [`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md). Die Schranke
       `STALL_SECONDS` und ihre zwei Fälle `199`/`202` kommen aus
       [slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md); rot gesehen **ohne Zutun von
       außen** ist der hergestellte Hänger am 2026-08-27 in der
@@ -607,7 +607,7 @@ Setzung 2).
    *teilweise* bewertet — beide an derselben fail-open-Auswertung, die `0e76c77` geschlossen hat
    (unten). Was danach offen bleibt, ist **ein Wort**: *hängt*. Der Haken an (3) steht zu dieser
    Closure deshalb **nicht**, und das ist die Aussage, kein Versäumnis; getragen wird der Rest von
-   [`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) — bis zum 2026-08-28. Seither
+   [`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) — bis zum 2026-08-28. Seither
    steht er; wodurch und wann, sagt §2 an Ort und Stelle.
 2. **Die Aufschlüsselung liegt vor, ihr Nenner steht neben `ls -1 test/mutations/*.sh | wc -l`.**
    Der Lauf nach dem Fix schreibt `Zeit je Sensor ueber 190 von 190 Fall-Dateien`; der Bestand
@@ -722,7 +722,7 @@ die §4 für den `full-smoke`-Befund gesetzt hat und die
 
 | Posten | Ausgang | Träger |
 |---|---|---|
-| **DoD (3) sagt *„hängt"* zu, und dafür existiert kein Sensor** (B-1). `wait "$pid"` ohne Zeitschranke; `grep -c 'timeout' harness/tools/mutate.sh` → **0**, `grep -c 'timeout-minutes' .github/workflows/ci.yml` → **0**. Zwei Hänger hergestellt, beide endeten nur an einem Signal von außen | **aufgeschoben**, mit dem Auflösungs-Trigger in [`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) §Auflösungs-Trigger (drei prüfbare Bedingungen). **Diagnostiziert ist die Ursache**, offen ist die **Bemessung** — und die zu raten hätte den Sensor beschädigt | [`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) + [slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md) DoD (1) |
+| **DoD (3) sagt *„hängt"* zu, und dafür existiert kein Sensor** (B-1). `wait "$pid"` ohne Zeitschranke; `grep -c 'timeout' harness/tools/mutate.sh` → **0**, `grep -c 'timeout-minutes' .github/workflows/ci.yml` → **0**. Zwei Hänger hergestellt, beide endeten nur an einem Signal von außen | **aufgeschoben**, mit dem Auflösungs-Trigger in [`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) §Auflösungs-Trigger (drei prüfbare Bedingungen). **Diagnostiziert ist die Ursache**, offen ist die **Bemessung** — und die zu raten hätte den Sensor beschädigt | [`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) + [slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md) DoD (1) |
 | **Unter Ctrl-C widerspricht der Bericht seiner eigenen Ausgabe** (B-4). `cleanup()` löscht `$ISO_ROOT` samt Laufverzeichnis und kehrt mit 0 zurück; `merge_report` rechnet danach über ein gelöschtes Verzeichnis | **aufgeschoben**. Beobachtbarer Auflösungs-Trigger: ein Lauf mit Signal, dessen Bericht dieselbe Zahl an Fällen mit Ergebnis nennt wie sein eigenes Protokoll an `OK`/`BEFUND`-Zeilen. **Nicht blockierend, mit Grund:** die Richtung ist rot, nicht grün — unwahr ist der Text, nicht das Urteil | [slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md) DoD (2) |
 | **`mode_rank` ist nicht nachgezogen** (F-7/B-7). Ihr Kommentar nennt `report_times` als ihren Sensor und sagt zu, sie nachzuziehen; gemessen steht `smoke` im Rang vor `test-bats` und `test-go` | **diagnostiziert.** Die Zusage ist an eine Größe gebunden, die sie nicht tragen kann: `smoke` hat **n=1** und streut zwischen zwei Läufen desselben Tages um Faktor **6,7** (1,91 s gegen 12,88 s, `mittel=`-Spalte). Praktisch folgenlos — die Ränge wirken nur **innerhalb** einer Spur, und dort sortieren beide Läufe richtig. Nachzuziehen ist eher die Zusage als die Zahl | [slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md) §3 Mitnahme 1 |
 | **Die Begründung zur vierten `merge_report`-Prüfung trifft nicht zu** (B-5). Der Kommentar sagt *„1 bis 3 messen gegen die Warteschlange"*; die Schleife von 1 und 2 läuft `for ((i = 1; i <= total; i++))`, und `total` kommt aus dem Verzeichnis | **diagnostiziert** — statisch nachgelesen, nicht erschlossen. Die Redundanz ist real und harmlos; falsch ist ihre Begründung ([`AGENTS.md`](../../../../AGENTS.md) §3.7) | [slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md) §3 Mitnahme 2 |
@@ -776,7 +776,7 @@ dieses Slice *„nicht verhandelbar"* schreibt.
 **Was der Slice nicht deckt — die Grenzen, die er für sich selbst zieht.**
 
 - **Ein hängender Worker beendet den Lauf nicht.** Oben als Posten, in
-  [`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) als Register.
+  [`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) als Register.
 - **[`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) ist über *zwei*
   Worker-Zahlen belegt, nicht über alle.** Was die Aussage trägt, ist nicht die Wiederholung,
   sondern die Vollständigkeits-Zeile, die jeder Lauf für sich selbst rechnet — der Unterschied
@@ -850,7 +850,7 @@ fällt, entscheidet der Architect am Text. Diese Closure hat weder §3 von
 [slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md) (ein Lauf, der nicht zu Ende kommt,
 färbt sich selbst rot; und ein abgebrochener sagt nichts, was seine eigene Ausgabe widerlegt) —
 und ein neuer Carveout,
-[`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md), im Index von
+[`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md), im Index von
 [`docs/plan/carveouts/README.md`](../../carveouts/README.md) eingetragen. **Warum ein Carveout und
 nicht nur ein Slice:** Modul 5 lässt den Übergang nach `done/` mit einem offenen Posten nur mit
 **dokumentiertem Carveout** zu, und der Modul-7-Trichter führt hierher — eine **einzelne**,
@@ -865,7 +865,7 @@ Setzung 1 sind in seiner Kopfzeile einzeln beantwortet; die Roadmap bekommt dahe
 Messprotokoll in §1, der elfte Posten in
 [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md),
 [slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md),
-[`CO-003`](../../carveouts/CO-003-mutate-ohne-zeitschranke.md) und der Carveout-Index eingerechnet:
+[`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) und der Carveout-Index eingerechnet:
 `make gates` **EXIT=0**, `baseline-verify: v3.5.2 OK — 42 Dateien`,
 `d-check: 415 Datei(en) geprüft, 0 Befund(e)`, golangci-lint `0 issues.`, bats
 `grep -c '^ok '` → **180** und `grep -c '^not ok'` → **0**,
