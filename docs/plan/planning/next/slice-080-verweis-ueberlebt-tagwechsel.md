@@ -69,7 +69,7 @@ nicht die laute.
 | `docs/plan/adr/README.md` | update | Index wächst mit der ADR ([`AGENTS.md`](../../../../AGENTS.md) §5) |
 
 Kein Code, keine Gate-Config: die Umsetzung liegt bei
-[slice-081](slice-081-baum-tauschen-pin-ziehen.md).
+[slice-081](../open/slice-081-baum-tauschen-pin-ziehen.md).
 
 ## 4. Trigger
 

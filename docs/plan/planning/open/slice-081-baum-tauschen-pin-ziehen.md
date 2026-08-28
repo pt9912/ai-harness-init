@@ -116,7 +116,7 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
 
 ## 4. Trigger
 
-[slice-080](slice-080-verweis-ueberlebt-tagwechsel.md) liegt in `done/`, und
+[slice-080](../next/slice-080-verweis-ueberlebt-tagwechsel.md) liegt in `done/`, und
 [ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md) **wie**
 [ADR-0017](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) sind *Accepted* — die
 Festlegung, wie ein Verweis den Tag-Wechsel übersteht, und die Ausnahme, die den Doku-Gate dabei
