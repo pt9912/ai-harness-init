@@ -220,8 +220,19 @@ werden kann.
 | slice-132 | Der Adaptions-Block trägt seinen datierten Beleg ohne totes Ziel | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | slice-082 | Adaptions-Durchgang: jeder Eintrag bekommt seinen Ausgang | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | slice-083 | Form-Vergleich: Pflichtfelder und umbenannte Sektionen | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-136 | Die Roadmap trägt die Ziel-Form (Singleton, den 083 nicht führt) | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | slice-084 | Stichprobe gegen den Bestand, nicht gegen das Delta | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | slice-085 | Die emittierte Ebene zieht nach | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) |
+
+**136 ist der fünfte Nachzügler, und sein Grund ist ein anderer als der der vier davor: nicht eine
+übersehene Eingabe, sondern ein übersehenes Artefakt.** Durchgang 2 oben verlangt die Pflichtfelder
+der neuen Gliederung **in den Singleton-Artefakten**; die extensionale Menge in
+[slice-083](open/slice-083-form-vergleich-pflichtfelder.md) §2 führt die Roadmap nicht
+(`grep -c 'roadmap' docs/plan/planning/open/slice-083-form-vergleich-pflichtfelder.md` → **0**),
+obwohl sie eines ist und ihre Ziel-Form im getauschten Baum den ersten Abschnitt umbenannt hat. Der
+Slice hängt an keinem anderen der Welle und läuft in beliebiger Reihenfolge; er trägt eine
+Vorbedingung außerhalb — [slice-125](open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)
+misst gegen die Sektion, die er umbenennt.
 
 **130, 131, 132 und 133 sind beim Schnitt der Welle nicht vorgesehen gewesen, und der Grund gehört
 an diese Stelle statt in eine Fußnote: der Plan hat den vendored Baum als Verweis-**Ziel**
