@@ -198,6 +198,13 @@ Gebunden ist das **Schreiben**; **gelesen** werden beide von jeder Rolle uneinge
 benennt, gilt sie unverändert; wo keine sie benennt, bleibt die Frage offen. Eine Übersicht, die
 fremde Zuordnungen abschriebe, wäre eine zweite Fassung, die driftet.
 
+**Eine dieser offenen Fragen ist beantwortet, und zwar nicht hier:** ein derivatives Register
+gehört der Rolle, die seine Originale schreibt — [ADR-0024](docs/plan/adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md).
+Für den ADR-Index ([`docs/plan/adr/README.md`](docs/plan/adr/README.md)) ist das der **Architect**;
+er ist damit eines der *Artefakte derselben schreibenden Rolle*, die der Commit-Zuschnitt oben
+verlangt, auch wenn dessen Aufzählung ihn nicht nennt. Wo die Ableitung endet und was sie offen
+lässt, steht in der Entscheidung — hier steht der Zeiger, nicht ihr Text.
+
 **Falsch:** eine Anweisung im laufenden Implementations-Kontext dadurch erfüllen, dass derselbe
 Lauf die Hard Rule und den Adaptions-Eintrag schreibt.
 **Richtig:** die Anweisung ist die **Quelle**; was der laufende Kontext liefert, ist ein

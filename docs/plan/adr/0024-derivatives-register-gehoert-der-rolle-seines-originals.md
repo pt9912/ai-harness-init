@@ -1,6 +1,6 @@
 # ADR-0024: Ein derivatives Register gehört der Rolle, die sein Original schreibt
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-08-29
 
@@ -50,15 +50,16 @@ schreiben ihn Architect-Läufe, und das ist keine Auswahl aus vielen: von den Co
 Datei berühren, tragen die mit Rollen-Präfix **ausnahmslos** denselben —
 
 ```sh
-git log --format='%s' -- docs/plan/adr/README.md | wc -l                     # 65
-git log --format='%s' -- docs/plan/adr/README.md | grep -oE '^Rolle [A-Za-zÄÖÜäöü]+' | sort | uniq -c   # 26 Rolle Architect
-git log --format='%s' -- docs/plan/adr/README.md | grep -cv '^Rolle '        # 39
+git log --format='%s' 3360c2e -- docs/plan/adr/README.md | wc -l                     # 66
+git log --format='%s' 3360c2e -- docs/plan/adr/README.md | grep -oE '^Rolle [A-Za-zÄÖÜäöü]+' | sort | uniq -c   # 27 Rolle Architect
+git log --format='%s' 3360c2e -- docs/plan/adr/README.md | grep -cv '^Rolle '        # 39
 ```
 
-**Keine Erwartungswerte** ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2): alle drei wandern mit jedem Commit, und die **39** ohne Präfix sind kein Gegenbeleg —
-die Rollen-Benennung in der Message ist jünger als die Datei. Tragend ist, dass unter den
-benannten **keine zweite Rolle** vorkommt.
+**Die Mess-Basis steht im Kommando** ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 1): über `HEAD` wandern alle drei mit jedem Commit, der den Index berührt — auch mit dem,
+der diese ADR annimmt —, über `3360c2e` gibt jedes Kommando genau die Zahl daneben aus. Die **39**
+ohne Präfix sind kein Gegenbeleg: die Rollen-Benennung in der Message ist jünger als die Datei.
+Tragend ist, dass unter den benannten **keine zweite Rolle** vorkommt.
 
 **Praxis ist keine Zuständigkeit.** Genau das ist der Fehler, den
 [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) §Der Anlass an drei Fällen gemessen hat:
@@ -166,7 +167,7 @@ grenzt sie ab und beantwortet sie nicht); die Rolle für ein Register mit gemisc
 
 | Option | Pro | Contra |
 |---|---|---|
-| A — **nichts tun**, die Frage bleibt offen wie in [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) | kein neuer Mechanismus; die Lücke ist benannt statt still | der offene Slice zum ADR-Index führt sie unter seinen Risiken mit dem Ausgang *„Übergabe an den Architect, mit Adresse"* — ohne Adresse bleibt er blockiert oder schreibt ohne Quelle. Und der Bestand zeigt, wohin das führt: **26** Läufe haben die Datei mit Rollen-Namen geschrieben, ohne dass eine Quelle sie autorisierte |
+| A — **nichts tun**, die Frage bleibt offen wie in [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) | kein neuer Mechanismus; die Lücke ist benannt statt still | der offene Slice zum ADR-Index führt sie unter seinen Risiken mit dem Ausgang *„Übergabe an den Architect, mit Adresse"* — ohne Adresse bleibt er blockiert oder schreibt ohne Quelle. Und der Bestand zeigt, wohin das führt: **27** Läufe haben die Datei mit Rollen-Namen geschrieben, ohne dass eine Quelle sie autorisierte (§Kontext, dasselbe Kommando, Mess-Basis `3360c2e`) |
 | B — den **ADR-Index namentlich** dem Architect zuschreiben | kürzest formulierbar; deckt den einzigen akuten Fall | die nächste Register-Frage beginnt von vorn, und die Antwort wäre eine Liste — genau die *„zweite Fassung, die driftet"*, die [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) verwirft |
 | **C — Ableitung aus den Originalen (gewählt)** | beantwortet die Klasse mit **einer** Regel und ohne Liste; die Antwort ist am Artefakt selbst ablesbar, nicht in einer Tabelle nachzuschlagen; der offene Fall (gemischte Originale) fällt sichtbar heraus, statt still falsch beantwortet zu werden | die Ableitung braucht eine Vorfrage — *ist diese Aussage Projektion oder Projektionsregel, oder ist sie gegenstandsbezogen?* —, und die ist ein Urteil; für gemischte Originale liefert sie nichts |
 | D — dem **Planner** zuschreiben, weil der Index unter `docs/plan/` liegt | der Pfad ist ohne Nachdenken ablesbar | der Pfad ist keine Rolle. Die Zellen projizieren `# `-Überschrift und `Status:`-Kopffeld von ADR-Dateien; ob eine solche Zelle stimmt, beurteilt die Rolle, die die ADR schreibt. Und **kein** Commit des Bestands trägt diesen Rollen-Namen |
@@ -178,9 +179,9 @@ grenzt sie ab und beantwortet sie nicht); die Rolle für ein Register mit gemisc
 - **Positiv:** die Frage *„durfte dieser Lauf das schreiben?"* ist für eine ganze Klasse vor der
   Änderung beantwortbar, ohne dass ein Register von Zuordnungen entsteht, das driftet.
 - **Positiv:** das Zuständigkeits-Risiko des offenen Slice zum ADR-Index bekommt seinen Ausgang
-  *entfallen* — die Antwort steht in einer Quelle, nicht in der Praxis. **Fällig wird das mit der
-  Annahme, nicht mit dieser Fassung:** solange diese ADR auf `Proposed` steht, ist sie keine
-  Quelle, auf die ein Slice sich stützt.
+  *entfallen* — die Antwort steht in einer Quelle, nicht in der Praxis. **Diese ADR ist die
+  Quelle:** ihr Status ist `Accepted`, ein Slice stützt sich auf sie. Den Ausgang in seinen Text
+  zu ziehen, ist ein Posten des **Planners** — diese ADR schreibt keine Plan-Datei.
 - **Negativ, und das ist der Preis:** für ein Register mit gemischten Originalen liefert die
   Ableitung nichts (Festlegung 2). Der `docs/plan/carveouts/README.md` ist gemessen einer; wer
   ihn anfasst, steht vor derselben offenen Frage wie vor dieser ADR.
@@ -189,15 +190,15 @@ grenzt sie ab und beantwortet sie nicht); die Rolle für ein Register mit gemisc
   *derivativ* nennt und seine Projektionsregel ausschreibt, macht sie leicht; eines ohne beides
   macht sie schwer.
 - **Negativ:** **kein Wächter**, siehe unten.
-- **Folgepflicht 1 — der Zeiger im Briefing, fällig mit der Annahme.** Der **Architect** setzt in
+- **Folgepflicht 1 — der Zeiger im Briefing, mit der Annahme eingelöst.** Der **Architect** setzt in
   [`AGENTS.md`](../../../AGENTS.md) §3.8 einen Zeiger auf diese ADR, keine zweite Fassung ihres
   Textes — die Hard Rule bleibt der Ort für *wer schreibt die Hard Rules*, diese ADR der Ort für
   *wer schreibt ein derivatives Register*. Eine neue Hard-Rule-Nummer entsteht dafür **nicht**:
   eine Aussage hat einen Ort, und der Zeiger kostet eine Zeile statt einer Nummer, die
   [`MR-026`](../../../harness/conventions.md#mr-026--die-hard-rule-nummer-ist-eine-adresse-keine-baseline-entsprechung)
-  Setzung 2 anhängen müsste. **Heute ist er nicht gesetzt** (`grep -c 'ADR-0024' AGENTS.md` → **0**,
-  Exit 1) — eine Hard Rule, die auf ein `Proposed`-Artefakt zeigt, machte es über die Hintertür
-  bindend.
+  Setzung 2 anhängen müsste. Er steht im selben Commit wie diese Annahme
+  (`grep -c 'ADR-0024' AGENTS.md` → **1**, wandert mit dem Text) und löst dort zugleich die
+  Aufzählung *„ADRs und diese zwei"* auf, die den Index nicht nennt.
 - **Folgepflicht 2 — kein Eintrag im Adaptions-Block.** Die Regel weicht von der Baseline nicht
   ab, sie füllt eine Lücke; ein Eintrag dort wäre eine erfundene Abweichung und verstieße gegen
   den Zweck, den [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) dem Block
@@ -246,4 +247,5 @@ Träger ist der Rollen-Wechsel vor der Änderung.
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-08-29 | **Proposed** | Architect-Lauf; Anlass ist die offene Zuständigkeits-Frage aus slice-134 §3/§6 |
-| 2026-08-29 | Überarbeitet, weiter **Proposed** | Reviewer-Runde [`2026-08-29-adr-0024-mr-031-032-review.md`](../../reviews/2026-08-29-adr-0024-mr-031-032-review.md), Verdikt *NICHT KONFORM*. Zwei Befunde treffen diese Datei. Der **Status** stand auf `Accepted`, ohne dass der Acceptance-Trigger der Baseline (`grundlagen-bootstrap.md` §Trigger-Klassen: *„Phase-Übergang via Sign-off"*) stattgefunden hatte; die Begründung *„Repo-Praxis"* ist gegen den Bestand messbar falsch — von **24** ADRs tragen **19** eine `Proposed`-Zeile, die fünf ohne sie sind der Bootstrap-Tag und diese Datei (`ls docs/plan/adr/0*.md \| wc -l`, `grep -lE '^\| [0-9]{4}-[0-9]{2}-[0-9]{2} \| \*{0,2}Proposed' docs/plan/adr/0*.md \| wc -l`, beide wandern). Und **Festlegung 1 schloss ihren eigenen Anwendungsfall aus**: die Ausschluss-Bedingung hing an der Datei (*„Trägt ein Artefakt daneben eigene Setzungen, ist es kein derivatives Register"*), und beide Register dieses Repos tragen Prosa neben der Tabelle. Die Bedingung hängt jetzt an der **Aussage**, die Vorfrage-Antwort für den ADR-Index ist am Text gelesen und benannt, die Datei-Variante steht als verworfene Option F. Der Zeiger in [`AGENTS.md`](../../../AGENTS.md) §3.8 ist zurückgenommen und mit der Annahme fällig |
+| 2026-08-29 | Überarbeitet, weiter **Proposed** | Reviewer-Runde [`2026-08-29-adr-0024-mr-031-032-review.md`](../../reviews/2026-08-29-adr-0024-mr-031-032-review.md), Verdikt *NICHT KONFORM*. Zwei Befunde treffen diese Datei. Der **Status** stand auf `Accepted`, ohne dass der Acceptance-Trigger der Baseline (`grundlagen-bootstrap.md` §Trigger-Klassen: *„Phase-Übergang via Sign-off"*) stattgefunden hatte; die Begründung *„Repo-Praxis"* ist gegen den Bestand messbar falsch — von **24** ADRs tragen **20** eine `Proposed`-Zeile, und die vier ohne sie sind sämtlich vom Bootstrap-Tag 2026-06-13 (`ls docs/plan/adr/0*.md \| wc -l`, `grep -lE '^\| [0-9]{4}-[0-9]{2}-[0-9]{2} \| \*{0,2}Proposed' docs/plan/adr/0*.md \| wc -l`, beide wandern). Und **Festlegung 1 schloss ihren eigenen Anwendungsfall aus**: die Ausschluss-Bedingung hing an der Datei (*„Trägt ein Artefakt daneben eigene Setzungen, ist es kein derivatives Register"*), und beide Register dieses Repos tragen Prosa neben der Tabelle. Die Bedingung hängt jetzt an der **Aussage**, die Vorfrage-Antwort für den ADR-Index ist am Text gelesen und benannt, die Datei-Variante steht als verworfene Option F. Der Zeiger in [`AGENTS.md`](../../../AGENTS.md) §3.8 ist zurückgenommen und mit der Annahme fällig |
+| 2026-08-29 | **Accepted** | **Entscheidung des Auftraggebers vom 2026-08-29, vollzogen in der Architect-Rolle.** Der Acceptance-Trigger der Baseline ist eingetreten — `grundlagen-bootstrap.md` §Trigger-Klassen führt ihn mit dem Beispiel *„ADR-Review-Runde abgeschlossen → bindend"*, und die Runde ist die aus der Zeile darüber. Dass **keine** Quelle dieses Repos und keine der vendored Baseline einen annehmenden Akteur benennt, ist in [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) gemessen und wird hier nicht gedoppelt. **Der `Proposed`-Vorbehalt aus der Zeile darüber ist damit gegenstandslos und an drei Stellen gezogen:** der zweite Positiv-Punkt in §Konsequenzen sowie Titel und Schluss-Satz von Folgepflicht 1. Die **drei** sind von Hand gezählt — welche Stelle einen Vorbehalt trägt, ist ein Urteil und kein Muster ([`AGENTS.md`](../../../AGENTS.md) §3.6); mechanisch nachprüfbar ist die Folge: `awk '/^## Geschichte/{exit} /Proposed/' docs/plan/adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md \| wc -l` → **0**, das Wort steht nur noch in dieser Tabelle. Vor dem Umschlag sind alle abgedruckten Kommandos nachgefahren; drei Werte über `docs/plan/adr/README.md` bewegen sich mit **jedem** Commit an dieser Datei — auch mit dem, der diese ADR annimmt — und tragen darum ihre **Mess-Basis** `3360c2e` im Kommando selbst, statt im selben Zug zu veralten, in dem §3.4 sie einfriert. Was jetzt fällig wird, gehört dem **Planner**: der offene Slice zum ADR-Index bekommt für sein Zuständigkeits-Risiko den Ausgang *entfallen*, und diese ADR schreibt ihn nicht. Sie ändert keine Datei außer sich, dem Index und dem Briefing |
