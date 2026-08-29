@@ -31,13 +31,16 @@ func RootReadme(src fs.FS, targetDir, name string) error {
 	if err != nil {
 		return fmt.Errorf("%s lesen: %w", rootReadmeSource, err)
 	}
-	// Dieselbe Ziel-Neutralisierung wie die Singletons (slice-087): die Vorlage
-	// stammt aus demselben vendored Kurs-Satz, ihr Ziel-Name ist der einzige
-	// Unterschied.
+	// Dieselben zwei Neutralisierungen wie bei den Singletons: die Vorlage stammt aus
+	// demselben vendored Kurs-Satz, ihr Ziel-Name ist der einzige Unterschied. Der
+	// Pointer-Abschnitt der heutigen Vorlage traegt keinen Platzhalter-Link; die Regel
+	// steht hier, weil sie ueber die Form verfuegt und nicht ueber den heutigen Stand
+	// (MR-017: fail-closed fuer emittierte Pruefbereiche).
 	targets, err := InitInvariantTargets()
 	if err != nil {
 		return err
 	}
 	body := NeutralizeMakeClaims(stampName(StripHintBlock(string(content)), name), targets)
+	body = NeutralizePlaceholderLinks(body)
 	return writeSkipIfPresent(targetDir, RootReadmePath, []byte(body), 0o644)
 }

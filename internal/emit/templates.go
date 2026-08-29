@@ -242,6 +242,9 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 		// gehoert dem Kurs (MR-008) und liegt unveraenderlich vendored (AGENTS 3.4),
 		// die Ansprueche fallen darum emit-seitig (slice-087, LH-QA-01).
 		body = NeutralizeMakeClaims(body, targets)
+		// Dieselbe Lage eine Stelle weiter: ein Link, dessen Ziel-Pfad einen
+		// <…>-Platzhalter traegt, zeigt im frischen Repo auf keine Datei.
+		body = NeutralizePlaceholderLinks(body)
 		if rel == roadmapTemplate {
 			// Die Roadmap MUSS emittiert bleiben (stark inbound-verlinkt), traegt aber
 			// eine gate-unsichere Beispielzeile — emit-seitig neutralisieren (§6 b).
@@ -312,10 +315,12 @@ const roadmapDoneLink = "[`welle-NN-results.md`](../done/welle-NN-results.md)"
 // AGENTS 3.4). Ohne den Marker unveraendert. Deckungs-Grenze (ehrlich): geht der
 // Neutralisierungs-Effekt VERLOREN (Logik-Regression), faengt es
 // TestTemplates_RoadmapGateSafe (kein `](../done/` im emittierten Ziel) gegen die
-// courseSet()-Fixture. Aendert dagegen der KURS die Link-Form upstream, bleibt dieser
-// Test gruen — die Fixture traegt den alten Wortlaut, und courseset-fixture.bats
-// gleicht nur den Datei-BESTAND ab, keinen Inhalt; diese reale Drift faengt allein
-// `make smoke` (Tier-2, NICHT in make gates), das gegen den realen Satz emittiert.
+// courseSet()-Fixture. Aendert dagegen der KURS diesen Wortlaut upstream, bleibt dieser
+// Test gruen — die Fixture traegt den alten Marker, und courseset-fixture.bats gleicht
+// vom Inhalt allein die Platzhalter-Pfad-FORM ab, keinen Wortlaut; diese reale Drift
+// faengt allein `make smoke` (Tier-2, NICHT in make gates), das gegen den realen Satz
+// emittiert. Ein Ziel wie `../<welle-NN>/results.md` traegt dagegen einen Platzhalter
+// im Pfad und faellt unter NeutralizePlaceholderLinks, ohne diesen Marker zu brauchen.
 func NeutralizeRoadmap(s string) string {
 	return strings.ReplaceAll(s, roadmapDoneLink, "`welle-NN-results.md`")
 }
@@ -455,6 +460,58 @@ func NeutralizeMakeClaims(s string, targets []string) string {
 			return m
 		}
 		return makeTargetPlaceholder
+	})
+}
+
+// placeholderLinkPattern erfasst einen Markdown-Inline-Link samt Ziel. Der Link-TEXT
+// steht auf EINER Zeile (`\n` ist ausgeschlossen), das ZIEL traegt weder Klammern noch
+// Leerraum — die Form, in der der Vorlagen-Satz seine Verweise fuehrt. Die
+// Zeilen-Schranke haelt den Text-Teil kurz: eine offene eckige Klammer im Fliesstext
+// bindet nur bis zum Zeilenende, nicht bis zum naechsten `](…)` weiter unten.
+const placeholderLinkPattern = `\[([^\[\]\n]*)\]\(([^()\s]*)\)`
+
+// placeholderPattern erfasst einen <…>-Platzhalter. Angelegt wird er am PFAD-Teil
+// des Ziels (vor dem `#`): ueber die Aufloesbarkeit eines Links entscheidet der
+// Pfad. Ein Platzhalter allein im Anker laesst den Link auf eine reale Datei zeigen —
+// ueber den Anker urteilt im Zielrepo das anchors-Modul des Doc-Gates.
+const placeholderPattern = `<[^<>]*>`
+
+// NeutralizePlaceholderLinks nimmt jedem Markdown-Link, dessen Ziel-PFAD einen
+// <…>-Platzhalter traegt, die Link-Syntax: der Link-Text bleibt VERBATIM stehen, das
+// Ziel faellt weg. Die Zeile bleibt damit als Form-Beispiel erhalten und traegt keinen
+// toten Link — dieselbe Bauart wie NeutralizeRoadmap, nur ueber eine FORM statt ueber
+// einen Wortlaut. Der emittierte Stand ist out-of-the-box gate-sicher (LH-FA-02); der
+// Vorlagen-Satz gehoert dem Kurs und liegt unveraenderlich vendored (AGENTS 3.4), die
+// Reparatur faellt darum emit-seitig.
+//
+// Was die Regel HAELT: eine Vorlage, die upstream mit einem <…>-Ziel neu dazukommt,
+// faellt ohne Codeaenderung darunter — die Regel verfuegt ueber keinen Namen und keinen
+// Wortlaut.
+//
+// Was sie NICHT haelt, vier Grenzen:
+//  1. Ein Ziel in einer anderen Platzhalter-Schreibweise ({{…}}, @@…@@, %…%) bleibt
+//     stehen. Im emittierten Baum sieht diese Form allein `make smoke`, und der laeuft
+//     ausserhalb von `make gates`.
+//  2. Ein Platzhalter allein im ANKER (`../conventions.md#mr-<NNN>`) bleibt stehen.
+//  3. Ein Link, dessen Text ueber einen Zeilenumbruch geht oder dessen Ziel Leerraum
+//     bzw. Klammern traegt, bleibt stehen (s. placeholderLinkPattern).
+//  4. Der Link-Text bleibt unveraendert. Traegt er selbst die Gestalt eines HTML-Tags
+//     (`<welle-NN-titel>`), liest ein Markdown-Renderer ihn als Tag — dieselbe Form,
+//     die der Vorlagen-Satz in seinen Tabellen ohnehin fuehrt.
+//
+// Rot faerbt eine verlorene Wirkung TestTemplates_KeinPlatzhalterLinkImEmittiertenSatz
+// gegen die courseSet()-Fixture; dass die Fixture die Formen des REALEN Satzes
+// ueberhaupt traegt, haelt test/courseset-fixture.bats fest.
+func NeutralizePlaceholderLinks(s string) string {
+	link := regexp.MustCompile(placeholderLinkPattern)
+	placeholder := regexp.MustCompile(placeholderPattern)
+	return link.ReplaceAllStringFunc(s, func(m string) string {
+		g := link.FindStringSubmatch(m)
+		pfad, _, _ := strings.Cut(g[2], "#")
+		if !placeholder.MatchString(pfad) {
+			return m
+		}
+		return g[1]
 	})
 }
 

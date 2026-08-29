@@ -20,6 +20,15 @@ import (
 func courseSet() fs.FS {
 	hint := "> **Template-Hinweis.** Vorlage.\n\n"
 	body := "# <Projektname>\n\nInhalt.\n"
+	// Der reale Satz fuehrt Links, deren ZIEL-PFAD einen <…>-Platzhalter traegt, in
+	// zwei Formen, die ein Markdown-Parser verschieden liest: spitz (das ganze Ziel
+	// steht in spitzen Klammern) und eingebettet (der Platzhalter steht im Pfad).
+	// Beide liegen hier, dazu die Gegenprobe mit Platzhalter allein im ANKER — die
+	// bleibt nach dem Emit stehen, weil ihr Pfad aufloest. Dass die Fixture die
+	// Formen des realen Satzes fuehrt, haelt test/courseset-fixture.bats fest.
+	spitz := "\n1. [<zuerst — z. B. `AGENTS.md`>](<pfad>)\n"
+	eingebettet := "\n- [<welle-NN-titel>](../<welle-NN-titel>.md)\n"
+	nurAnker := "\n[`MR-<NNN>`](../conventions.md#mr-<NNN>)\n"
 	f := func(s string) *fstest.MapFile { return &fstest.MapFile{Data: []byte(s)} }
 	return fstest.MapFS{
 		// in scope — Singletons
@@ -27,8 +36,8 @@ func courseSet() fs.FS {
 		"spec/lastenheft.template.md":           f(hint + body),
 		"spec/architecture.template.md":         f(hint + body),
 		"spec/spezifikation.template.md":        f(hint + body),
-		"harness/README.template.md":            f(hint + body),
-		"harness/conventions.template.md":       f(hint + body),
+		"harness/README.template.md":            f(hint + body + spitz),
+		"harness/conventions.template.md":       f(hint + body + nurAnker),
 		"docs/plan/adr/README.template.md":      f(hint + body),
 		"docs/plan/carveouts/README.template.md": f(hint + body),
 		"docs/plan/planning/README.template.md": f(hint + body),
@@ -37,7 +46,7 @@ func courseSet() fs.FS {
 		".harness/skills/closure-note-reviewer.template.md": f(hint + body),
 		// Roadmap traegt die gate-unsichere "Abgeschlossene Wellen"-Beispielzeile
 		// (broken ../done/-Link) — NeutralizeRoadmap muss sie beim Emit entschaerfen.
-		"docs/plan/planning/roadmap.template.md": f(hint + "# Roadmap\n\n| <welle-NN> | YYYY-MM-DD | [`welle-NN-results.md`](../done/welle-NN-results.md) |\n"),
+		"docs/plan/planning/roadmap.template.md": f(hint + "# Roadmap\n" + eingebettet + "\n| <welle-NN> | YYYY-MM-DD | [`welle-NN-results.md`](../done/welle-NN-results.md) |\n"),
 		// in scope — Wiederkehrende (LH-FA-02 0.8.0: NICHT emittiert, referenziert
 		// aus der vendored Baseline) und derivative Indexe (nicht emittiert)
 		"docs/plan/adr/NNNN-titel.template.md":       f(hint + body),
@@ -47,7 +56,7 @@ func courseSet() fs.FS {
 		"docs/reviews/review-report.template.md":     f(hint + body),
 		// AUSSER Scope — jede Zeile ein eigener Grund, s. emit.inScope
 		"README.md":                                    f("# Set-Index\n"),
-		"project-readme.template.md":                   f(hint + body),
+		"project-readme.template.md":                   f(hint + body + spitz),
 		".d-check.yml":                                 f("modules: [links]\n"),
 		"Makefile":                                     f("all:\n\t@true\n"),
 	}
@@ -544,5 +553,173 @@ func TestTemplates_RoadmapGateSafe(t *testing.T) {
 	}
 	if strings.Contains(string(got), "Template-Hinweis") {
 		t.Error("emittierte Roadmap traegt noch den Template-Hinweis-Block")
+	}
+}
+
+// platzhalterZiele liest die Link-Ziele eines Dokuments, deren PFAD-Teil (vor dem
+// `#`) einen <…>-Platzhalter traegt — bewusst OHNE die Regexp der Emit-Seite: es
+// zerlegt am `](`, liest bis zur schliessenden Klammer und prueft zeichenweise. Die
+// Erfassung ist von der Emit-Seite unabhaengig; ein Loch in deren Regel faellt damit
+// hier auf.
+func platzhalterZiele(doc string) []string {
+	var out []string
+	for _, teil := range strings.Split(doc, "](")[1:] {
+		ziel, _, zu := strings.Cut(teil, ")")
+		if !zu || strings.ContainsAny(ziel, " \t\n") {
+			continue // kein geschlossenes, zusammenhaengendes Ziel an dieser Stelle
+		}
+		pfad, _, _ := strings.Cut(ziel, "#")
+		auf := strings.IndexByte(pfad, '<')
+		if auf < 0 || !strings.Contains(pfad[auf:], ">") {
+			continue
+		}
+		out = append(out, ziel)
+	}
+	return out
+}
+
+// TestNeutralizePlaceholderLinks prueft die pure Neutralisierung an beiden Formen,
+// die der Vorlagen-Satz fuehrt, und an ihren zwei Raendern: ein Platzhalter allein im
+// ANKER laesst den Link stehen (der Pfad loest auf), ein Ziel ohne Platzhalter
+// ebenfalls. Gemessen wird die ganze Ausgabe, nicht eine Teil-Zeichenkette: der
+// Link-Text ueberlebt VERBATIM, und damit behaelt die Zeile ihr Form-Beispiel.
+func TestNeutralizePlaceholderLinks(t *testing.T) {
+	for _, tc := range []struct {
+		name, in, want string
+	}{
+		{
+			"spitzes Ziel (ganzes Ziel in spitzen Klammern)",
+			"1. [<zuerst — z. B. `AGENTS.md` §Hard Rules>](<pfad>)\n",
+			"1. <zuerst — z. B. `AGENTS.md` §Hard Rules>\n",
+		},
+		{
+			"eingebetteter Platzhalter im Pfad",
+			"- [<welle-NN-titel>](../<welle-NN-titel>.md)\n",
+			"- <welle-NN-titel>\n",
+		},
+		{
+			"zwei Links in einer Zeile, beide getroffen",
+			"| [\\<NNN\\>](conventions/done/MR-<NNN>-<titel>.md) | [MR-\\<NNN\\>](conventions/MR-<NNN>-<titel>.md) |\n",
+			"| \\<NNN\\> | MR-\\<NNN\\> |\n",
+		},
+		{
+			"Platzhalter im Pfad, Anker daneben",
+			"[`x`](../../.harness/baseline/<tag>/regelwerk/x.md#ein-anker)\n",
+			"`x`\n",
+		},
+		{
+			"Platzhalter NUR im Anker — der Pfad loest auf, der Link bleibt",
+			"[`MR-<NNN>`](../conventions.md#mr-<NNN>)\n",
+			"[`MR-<NNN>`](../conventions.md#mr-<NNN>)\n",
+		},
+		{
+			"ohne Platzhalter unveraendert",
+			"[`AGENTS.md`](AGENTS.md) und [x](../y/z.md)\n",
+			"[`AGENTS.md`](AGENTS.md) und [x](../y/z.md)\n",
+		},
+		{
+			"Ziel mit Leerraum bleibt stehen",
+			"[t](<mein pfad>)\n",
+			"[t](<mein pfad>)\n",
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := emit.NeutralizePlaceholderLinks(tc.in); got != tc.want {
+				t.Errorf("NeutralizePlaceholderLinks:\n got %q\nwant %q", got, tc.want)
+			}
+		})
+	}
+}
+
+// TestTemplates_KeinPlatzhalterLinkImEmittiertenSatz ist die Wiring-Probe: ueber dem
+// GANZEN emittierten Dokument-Satz (Singletons + Root-README) traegt kein Dokument
+// mehr ein Link-Ziel, dessen Pfad einen <…>-Platzhalter fuehrt. Gemessen wird der
+// Ist-Bestand mit einem eigenen Scanner (platzhalterZiele), nicht mit der Emit-Regexp.
+//
+// Zwei Vorbedingungen, ohne die der Waechter ueber leerem Eingang liefe: die Quelle
+// traegt den Fall ueberhaupt, und der Lauf hat wirklich Dokumente gelesen. Dazu die
+// Gegenrichtung: die neutralisierte Zeile steht als Form-Beispiel noch da — das ist
+// der Rest, den der Adopter behaelt, und er gehoert mitgemessen.
+func TestTemplates_KeinPlatzhalterLinkImEmittiertenSatz(t *testing.T) {
+	src := courseSet()
+	var inQuelle int
+	if err := fs.WalkDir(src, ".", func(rel string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return err
+		}
+		content, readErr := fs.ReadFile(src, rel)
+		if readErr != nil {
+			return readErr
+		}
+		inQuelle += len(platzhalterZiele(string(content)))
+		return nil
+	}); err != nil {
+		t.Fatalf("Quell-Satz lesen: %v", err)
+	}
+	if inQuelle == 0 {
+		t.Fatalf("die Fixture traegt keinen Platzhalter-Link — der Waechter misst nichts")
+	}
+
+	dir := t.TempDir()
+	if err := emit.Templates(src, dir, "X"); err != nil {
+		t.Fatalf("Templates: %v", err)
+	}
+	if err := emit.RootReadme(src, dir, "X"); err != nil {
+		t.Fatalf("RootReadme: %v", err)
+	}
+
+	var dokumente int
+	if err := filepath.WalkDir(dir, func(p string, d os.DirEntry, err error) error {
+		if err != nil || d.IsDir() || !strings.HasSuffix(p, ".md") {
+			return err
+		}
+		content, readErr := os.ReadFile(p)
+		if readErr != nil {
+			return readErr
+		}
+		dokumente++
+		rel, _ := filepath.Rel(dir, p)
+		for _, ziel := range platzhalterZiele(string(content)) {
+			t.Errorf("emittiertes Dokument %s verlinkt %q — ein Platzhalter-Pfad trifft im frischen Repo keine Datei", filepath.ToSlash(rel), ziel)
+		}
+		return nil
+	}); err != nil {
+		t.Fatalf("emittierten Satz lesen: %v", err)
+	}
+	if dokumente == 0 {
+		t.Fatalf("kein emittiertes Dokument gelesen — der Waechter lief ueber leerem Bestand")
+	}
+
+	roadmap, err := os.ReadFile(filepath.Join(dir, "docs/plan/planning/in-progress/roadmap.md"))
+	if err != nil {
+		t.Fatalf("roadmap.md lesen: %v", err)
+	}
+	if !strings.Contains(string(roadmap), "<welle-NN-titel>") {
+		t.Errorf("der Link-TEXT der neutralisierten Zeile fehlt in der emittierten Roadmap — die Zeile bleibt als Form-Beispiel stehen, sie faellt nicht weg:\n%s", roadmap)
+	}
+}
+
+// TestTemplates_NeuerPlatzhalterLinkOhneCodeaenderung misst die Reichweite der Regel
+// an einer Vorlage, die der Code NICHT kennt: sie kommt mit einem frei erfundenen
+// Platzhalter-Namen dazu, den kein Marker und keine Liste nennt. Die Neutralisierung
+// erfasst sie trotzdem, weil sie ueber die FORM verfuegt — das ist der Unterschied zu
+// NeutralizeRoadmap, die einen Wortlaut kennt und beim naechsten Zugang danebengreift.
+func TestTemplates_NeuerPlatzhalterLinkOhneCodeaenderung(t *testing.T) {
+	src := courseSet().(fstest.MapFS)
+	src["spec/glossar.template.md"] = &fstest.MapFile{Data: []byte(
+		"# <Projektname>\n\n- [<begriff>](glossar/<begriff>.md)\n")}
+	dir := t.TempDir()
+	if err := emit.Templates(src, dir, "X"); err != nil {
+		t.Fatalf("Templates: %v", err)
+	}
+	got, err := os.ReadFile(filepath.Join(dir, "spec/glossar.md"))
+	if err != nil {
+		t.Fatalf("glossar.md lesen: %v", err)
+	}
+	if ziele := platzhalterZiele(string(got)); len(ziele) != 0 {
+		t.Errorf("die neue Vorlage traegt im Ziel noch %v — die Regel greift nur ueber bekannte Namen", ziele)
+	}
+	if !strings.Contains(string(got), "<begriff>") {
+		t.Errorf("der Link-Text der neuen Vorlage fehlt im Ziel — die Zeile wurde geloescht statt entschaerft:\n%s", got)
 	}
 }
