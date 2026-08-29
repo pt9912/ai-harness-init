@@ -102,8 +102,25 @@ längst erfüllt ist: Ein Trigger, den niemand abfragt, ist kein Wächter."*
       Eintrag, kein Edit**, und nennt den Baseline-Stand, der den Trigger gefeuert hat. Welche
       Gestalt der aufgehobene Eintrag danach behält, hängt am Ausgang von
       [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
-      — er ist selbst ein Fall dieses Durchgangs (§6) und wird **vor dem ersten Rückbau**
-      entschieden. Am Ende trägt
+      — er ist selbst ein Fall dieses Durchgangs (§6). **Die Frage ist nicht mehr vorausschauend:
+      die erste Teil-Ablösung ist bereits vollzogen** —
+      [slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) hat die Zensus-Aussage von
+      [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
+      durch einen Nachfolger abgelöst, und das Original trägt keinen Zeiger auf ihn. Ob es einen
+      bekommt, ist hier zu entscheiden, und der Bestand gibt **zwei** Antworten statt einer:
+      `grep -c 'HISTORIE — ' harness/conventions.md` → am 2026-08-29 **2** Einträge mit einer
+      Kopf-Marke auf ihren Nachfolger, und
+      `awk '/^### .* — Technik-Stratum als Rang 2/,/^### .* — Aufgehobener Eintrag/' harness/conventions.md | grep -c 'HISTORIE'`
+      → **0** für den Eintrag, der ohne sie steht, obwohl eine Zahl in ihm überholt ist
+      ([`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+      schreibt neben sie, statt sie zu markieren — dieselbe Präzedenz, auf die sich der
+      Nachfolger von
+      [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
+      beruft).
+      Beide Zahlen wandern mit dem Block
+      ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+      Setzung 2). Der Durchgang entscheidet die Form **einmal** und wendet sie auf den Bestand an;
+      eine dritte Präzedenz entsteht nicht. Am Ende trägt
       [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) den Stand, den der
       Durchgang ergibt, und die Re-Baseline-Zeile in §Baseline nennt diesen Slice als Ort des
       Normativ-Deltas — wie sie es für die vier vorigen Re-Baselines tut.

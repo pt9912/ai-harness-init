@@ -52,7 +52,12 @@ Regel ersetzt, ist nach dieser Fassung ein **Fork**, keine Adaption. Das trifft 
       gewachsen:** [slice-085](slice-085-emittierte-ebene-zieht-nach.md) führte den Skill in §3, und
       das war eine Ebenen-Verwechslung — dort geht es um das **emittierte** Repo, hier um die
       ausgefüllten Artefakte **dieses**. Dieselbe Trennung, die der Absatz unter der Plan-Tabelle
-      für die Commands zieht.
+      für die Commands zieht. **Die Aufzählung ist extensional, und ein Artefakt ist ausdrücklich
+      nicht darin:** `docs/plan/adr/README.md` ist ebenfalls ein ausgefülltes Artefakt dieser
+      Ebene mit vendored Ziel-Form, aber seine Abweichungen von ihr stammen **nicht** aus dem
+      Delta dieses Sprungs — sie standen schon am abgelösten Stand offen. Er trägt deshalb
+      [slice-134](slice-134-adr-index-traegt-die-ziel-form.md), und dieser Slice zieht ihn nicht
+      mit hinein.
 - [ ] `Ersetzt-Baseline-Regel` steht in **jedem** Adaptions-Eintrag — den überlebenden **wie den
       unter dem neuen Stand geschriebenen** — und nennt genau eine Baseline-Regel als Anker-Link;
       wo keine benannt werden kann, ist der Eintrag als **Fork** entschieden, nicht stillschweigend

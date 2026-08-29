@@ -186,10 +186,17 @@ wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
   [`CO-004`](../carveouts/CO-004-emitter-klassifikation-offen.md) zwei rote bats-Fälle auf einem
   Trigger. Ein Welle-Grün, das diesen Carveout mitzählte, hieße *„grün, außer wo wir nicht
   hinsehen"*. Die Welle schließt erst, wenn er in `carveouts/done/` liegt.
-- **Die drei Sensoren außerhalb der Gates** — `make smoke`, `make full-smoke`, `make mutate`. Sie
-  gehören hier ins Kriterium, weil der Tag der **Emissions-Kanal** ist
+- **Die drei Sensoren außerhalb der Gates** — `make smoke`, `make full-smoke`, `make mutate`. Die
+  ersten beiden gehören hier ins Kriterium, weil der Tag der **Emissions-Kanal** ist
   (`internal/fetch/baseline.go` `DefaultTag`): ein frisch gebootstrapptes Zielrepo zieht genau
-  diesen Baum ([`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)).
+  diesen Baum ([`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)). **Beim
+  dritten ist der Grund ein anderer, und er ist der Grund, warum er hier steht und nicht bloß
+  mitläuft:** `make mutate` fährt vor der ersten Mutation je Sensor-Modus einen Grün-Vorlauf und
+  bricht den Worker fail-closed ab, wenn der Modus schon ohne Mutation rot ist. Solange einer der
+  beiden anderen rot ist, misst er deshalb **nichts** — nicht weniger, sondern null Fälle —, und
+  ein grüner Lauf hier ist zugleich der Beleg, dass diese Kopplung wieder aufgelöst ist. Verlangt
+  ist er darum in der Form, die er selbst ausgibt: `mutate: N ok, 0 Befund(e)` **mit** der
+  Vollständigkeits-Zeile über **allen** Fall-Dateien, nicht ein Exit-Code.
 - **Closure-Notiz `welle-10-results.md`** mit Steering-Loop-Eintrag.
 
 ## 4. Slices in dieser Welle
@@ -256,6 +263,37 @@ Gate-Konfiguration, weil das Modul `links` am Pin `v0.65.0` keine Referenz-Ausna
 bleibt der Gate rot, und der Carveout ist der einzige Träger der Begründung. Beim ersten ist die
 Nennung im Gate-Output **möglich, aber nicht gesetzt** (`git grep -c 'CO-004' -- test/ .d-check.yml
 Makefile` → kein Treffer) — ein offener Posten, den slice-081 §2 DoD (4) als solchen führt.
+
+**Die Reihenfolge hat einen Preis, und er heißt: ab 081 ist die CI kein Signal — für drei ihrer
+Jobs bis 130, für den vierten bis 132.** Der Workflow fährt vier Jobs
+(`awk '/^jobs:/{f=1;next} f&&/^  [a-z][a-z-]*:$/{n++} END{print n}' .github/workflows/ci.yml` →
+am 2026-08-29 **4**: `gates`, `smoke`, `full-smoke`, `mutate`), und alle vier hängen an **einer**
+Ursachenkette. Wer welchen zurückgibt, ist keine Schätzung, sondern steht in den Trägern: `smoke`
+und `full-smoke` an [slice-133](open/slice-133-emittierter-baum-ohne-platzhalter-links.md) **und**
+[slice-130](open/slice-130-emitter-entscheidet-jedes-neue-template.md) (7 + 3 Befunde); `mutate`
+an denselben zwei, weil sein Grün-Vorlauf genau diese Modi fährt; `make gates` an
+[slice-130](open/slice-130-emitter-entscheidet-jedes-neue-template.md)
+([`CO-004`](../carveouts/CO-004-emitter-klassifikation-offen.md)) **und**
+[slice-132](open/slice-132-adaptions-block-ohne-totes-ziel.md)
+([`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md)). Der teuerste Posten dabei
+ist nicht das Rot, sondern der blinde Fleck darunter: `mutate` läuft in diesem Fenster über
+**null** Fälle, die Haltbarkeits-Prüfung der **gelisteten** Wächter aus
+[`AGENTS.md`](../../../AGENTS.md) §3.6 findet also nicht statt.
+
+**Ein Zwischenziel, das `main` früher grün zurückgibt, wird hier nicht geschnitten — und der
+Grund ist der Rang, nicht der Aufwand.** Der kürzeste Weg zu einem grünen `make gates` liefe über
+[slice-132](open/slice-132-adaptions-block-ohne-totes-ziel.md) **vor** 133 und 130: er ist von
+beiden unabhängig (§5). Er brächte aber ein grünes Gate, während der Bruch von
+[`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)/[`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
+— Rang 1 — länger offen stünde, und genau das Grün wäre die Farbe, die den Bruch nicht sieht (er
+liegt außerhalb der Gates, deshalb steht er in §3 eigens). Kürzer als *133 → 130* ist kein Weg zu
+haben: die Kante ist tragend, nicht ordnend (§5). Die Reihenfolge bleibt damit, wie sie oben
+steht; **was sich ändert, ist nur, dass der Preis benannt ist statt unterstellt.**
+
+**Wer im roten Fenster liest, ist damit ebenfalls benannt:** nicht die CI — sie ist rot, egal was
+sich bewegt —, sondern der **DoD-Verify** von 133 und 130, der beide Läufe je Befund hält, und
+das Closure-Kriterium dieser Welle (§3). Ein Regressions-Signal aus dem Fenster gibt es nicht;
+das ist eine Lücke mit Träger, keine mit Sensor.
 
 **130 ist nicht der aus [slice-085](open/slice-085-emittierte-ebene-zieht-nach.md)
 herausgeschnittene Teil.** Dessen Plan führt `internal/emit/templates/commands/`, die übrigen
