@@ -484,6 +484,12 @@ const placeholderPattern = `<[^<>]*>`
 // Vorlagen-Satz gehoert dem Kurs und liegt unveraenderlich vendored (AGENTS 3.4), die
 // Reparatur faellt darum emit-seitig.
 //
+// Emit-seitig und NICHT im emittierten Pruefbereich (templates/d-check.yml): ein
+// scan.ignore dort naehme dem Adopter die Meldung, ohne den Link zu heilen — sein
+// frisches Repo truege weiter einen Verweis ins Leere, nur unsichtbar. MR-017 verlangt
+// fuer emittierte Pruefbereiche die fail-closed-Richtung, und ein Ausschluss ist die
+// andere.
+//
 // Was die Regel HAELT: eine Vorlage, die upstream mit einem <…>-Ziel neu dazukommt,
 // faellt ohne Codeaenderung darunter — die Regel verfuegt ueber keinen Namen und keinen
 // Wortlaut.
@@ -500,8 +506,11 @@ const placeholderPattern = `<[^<>]*>`
 //     die der Vorlagen-Satz in seinen Tabellen ohnehin fuehrt.
 //
 // Rot faerbt eine verlorene Wirkung TestTemplates_KeinPlatzhalterLinkImEmittiertenSatz
-// gegen die courseSet()-Fixture; dass die Fixture die Formen des REALEN Satzes
-// ueberhaupt traegt, haelt test/courseset-fixture.bats fest.
+// gegen die courseSet()-Fixture; dass die Fixture jede Platzhalter-Pfad-FORM des REALEN
+// Satzes fuehrt, haelt test/courseset-fixture.bats fest. Ob diese Regel einen realen
+// Link ERREICHT, misst dagegen kein Gate: dafuer braeuchte EIN Lauf den realen Satz und
+// diese Regel zugleich, und keiner in `make gates` hat beides. Ein Link nach Grenze 1
+// oder 3 faellt darum allein `make smoke` auf, ausserhalb von `make gates`.
 func NeutralizePlaceholderLinks(s string) string {
 	link := regexp.MustCompile(placeholderLinkPattern)
 	placeholder := regexp.MustCompile(placeholderPattern)

@@ -108,11 +108,15 @@ in_scope() {
 }
 
 # platzhalter_formen liest aus stdin die FORMEN der Links, deren ZIEL-PFAD (der
-# Teil vor dem `#`) einen <…>-Platzhalter fuehrt: `spitz` — das ganze Ziel steht
-# in spitzen Klammern, `](<pfad>)` — und `eingebettet` — der Platzhalter steht im
-# Pfad, `](../<welle-NN-titel>.md)`. Ein Markdown-Parser liest die zwei
-# verschieden, und eine Erfassung, die nur eine kennt, laesst die andere im
-# emittierten Baum stehen.
+# Teil vor dem `#`) einen <…>-Platzhalter fuehrt. Zwei Formen, die ein
+# Markdown-Parser verschieden liest:
+#   spitz       — das GANZE Ziel steht in spitzen Klammern, `](<pfad>)`. Das ist
+#                 eine Angle-Bracket-Destination; ihr Inhalt IST der Pfad.
+#   eingebettet — der Platzhalter steht im Ziel-Text, `](../<welle-NN-titel>.md)`.
+#                 Das Ziel wird Zeichen fuer Zeichen gelesen.
+# Die Bedingung liest das GANZE Ziel, nicht sein erstes Zeichen: `](<NNNN>-<titel>.md)`
+# beginnt mit `<` und endet dort nicht — keine Angle-Bracket-Destination, also
+# eingebettet. Der Fall test/mutations/209 haelt diese Bedingung fest.
 #
 # Der Anker bleibt aussen vor: ueber die Aufloesbarkeit eines Links entscheidet
 # der Pfad, und emit.NeutralizePlaceholderLinks zieht dieselbe Grenze.
@@ -122,7 +126,7 @@ platzhalter_formen() {
         ziel = substr($0, 3, length($0) - 3)
         sub(/#.*$/, "", ziel)
         if (ziel !~ /<[^<>]*>/) next
-        print (substr(ziel, 1, 1) == "<") ? "spitz" : "eingebettet"
+        print (ziel ~ /^<[^<>]*>$/) ? "spitz" : "eingebettet"
       }' \
     | LC_ALL=C sort -u
 }
@@ -135,11 +139,29 @@ fixture_formen() {
   fixture_body | platzhalter_formen
 }
 
-# Die INHALTS-Achse dieses Waechters, und die einzige. Sie schliesst die Luecke,
-# die der Doc-Kommentar von emit.NeutralizeRoadmap benennt: die Emit-Tests laufen
-# gegen courseSet(), also gegen einen Nachbau — kommt upstream eine Link-Form
-# hinzu, die der Nachbau nicht fuehrt, bleiben sie gruen, waehrend das
-# gebootstrappte Repo einen toten Link traegt.
+# Die INHALTS-Achse dieses Waechters, und die einzige. Sie haelt fest, dass
+# courseSet() jede Platzhalter-Pfad-Form fuehrt, die der reale Satz fuehrt: die
+# Emit-Tests laufen gegen die Fixture, und ueber eine Form, die dort fehlt, sagen
+# sie nichts — waehrend das gebootstrappte Repo den Link traegt.
+#
+# Die Richtung ist real ⊆ Fixture, mit Absicht. Eine Form, die die Fixture fuehrt
+# und der reale Satz nicht (mehr), ist Ueber-Deckung: die Emit-Tests sagen dann
+# mehr als noetig, nicht weniger. Sie faellt hier deshalb nicht auf.
+#
+# Neben TestTemplates_KeinPlatzhalterLinkImEmittiertenSatz steht er nicht umsonst:
+# dessen Leerlauf-Sperre feuert erst, wenn die Fixture JEDEN Platzhalter-Link
+# verliert; dieser Test feuert schon beim Verlust EINES der zwei Eimer.
+#
+# GRENZE, und sie ist eng. Verglichen wird ein Vokabular aus GENAU ZWEI Formen,
+# nicht die Links selbst: fuehrt die Fixture beide, kann keine Hinzufuegung upstream
+# diesen Test mehr roeten, denn jeder <…>-Pfad-Link faellt in einen der zwei Eimer.
+# Ein Platzhalter in einer anderen Schreibweise ({{…}}, @@…@@) faellt schon
+# durch den <…>-Filter, ein Link mit Leerraum oder Klammern im Ziel durch den
+# Scanner. OB emit.NeutralizePlaceholderLinks einen realen Link ERREICHT, misst
+# dieser Test nicht — und kein Gate misst es: dafuer braeuchte EIN Lauf den realen
+# Satz UND die Emit-Regel, und keiner in `make gates` hat beides (die go-test-Stufe
+# sieht .harness/ nicht, s. .dockerignore; diese Stufe sieht die Regel nicht).
+# Diese Reste sieht allein `make smoke`, ausserhalb von `make gates`.
 @test "fixture: courseSet() fuehrt jede Platzhalter-Pfad-Form des realen Satzes" {
   [ -d "$REAL" ] || { echo "vendored templates/ fehlt: $REAL"; return 1; }
   local real fix fehlend form

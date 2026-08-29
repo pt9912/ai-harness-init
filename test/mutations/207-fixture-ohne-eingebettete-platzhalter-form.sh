@@ -2,9 +2,12 @@
 # files: internal/emit/templates_test.go
 # expect: courseSet() fuehrt jede Platzhalter-Pfad-Form
 #
-# Die Fixture verliert die EINGEBETTETE Platzhalter-Form (Platzhalter im Pfad) und
-# behaelt nur die spitze — genau die Lage, in der die Emit-Tests gruen bleiben,
+# Die Fixture verliert die EINGEBETTETE Platzhalter-Form (Platzhalter im Ziel-Text)
+# und behaelt nur die spitze — genau die Lage, in der die Emit-Tests gruen bleiben,
 # waehrend der reale Vorlagen-Satz eine Form fuehrt, ueber die sie nichts sagen.
-# Das ist der Weg, auf dem der Baum-Tausch tote Links ins Zielrepo trug.
+#
+# Die Zeilen-Adresse begrenzt den Tausch auf den courseSet()-Rumpf: dasselbe Muster
+# steht in derselben Datei ein zweites Mal, als Eingabe eines Falls von
+# TestNeutralizePlaceholderLinks. Mutiert wird die Fixture, und nur sie.
 set -euo pipefail
-sed -i 's|\[<welle-NN-titel>\](\.\./<welle-NN-titel>\.md)|[welle-NN-titel](../welle-NN-titel.md)|' internal/emit/templates_test.go
+sed -i '/^func courseSet(/,/^}/ s|\[<welle-NN-titel>\](\.\./<welle-NN-titel>\.md)|[welle-NN-titel](../welle-NN-titel.md)|' internal/emit/templates_test.go
