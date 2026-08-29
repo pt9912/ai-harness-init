@@ -290,10 +290,29 @@ HOOK_OVERHEAD_CMD ?= $(HOST_BIN) span-emit
 hook-overhead: ## Aufschlag je Tool-Call messen (Median, ADR-0011-Schwelle) — NICHT in gates (Messung, kein Sensor)
 	@bash harness/tools/hook-overhead.sh $(HOOK_OVERHEAD_CMD)
 
-record-gates: ## Gate-Nachweis schreiben (Working-Tree-Hash für den Stop-Hook)
+# ORDNUNGSKANTE: die Checks hängen AN record-gates, sie stehen nicht daneben. `make`
+# baut ein Ziel, dessen Voraussetzung gefallen ist, auch unter `-k` nicht — über einem
+# roten Check entsteht damit kein Nachweis, während `-k` weiterhin JEDES rote Ziel
+# meldet. Stünden die Checks daneben (`gates: <checks> record-gates`), schriebe
+# `make -k gates` den Stempel über rotem Stand. Wächter: test/gate-nachweis-kante.bats.
+#
+# Die Reihenfolge der Voraussetzungen ist tragend: baseline-verify als ERSTER — steht
+# die vendored Baseline nicht, ist jede Aussage der Folge-Gates über sie wertlos.
+# Serielles `make` baut sie in dieser Reihenfolge ab; `-j` tut es nicht (Grenze unten).
+#
+# GRENZE — was die Kante NICHT nimmt, je Weg das, was er wirklich bricht:
+#   * `make -i` (--ignore-errors): ein gefallener Check gilt make als gelungen, die
+#     Voraussetzung steht damit, das Rezept läuft. Der Nachweis entsteht über rotem
+#     Stand — der eine Weg, der das Loch offen lässt.
+#   * `make -j`: eine Kante sagt „hängt ab von", nicht „läuft danach". Der Nachweis
+#     bleibt gedeckt (make baut kein Ziel mit gefallener Voraussetzung); was fällt, ist
+#     die baseline-verify-zuerst-Zusage oben.
+#   * das ERGEBNIS liest die Kante nicht: `make` gibt dem Rezept keinen Ergebnis-Kanal.
+#     Sie bindet die Reihenfolge, nicht den Ausgang; ein Nachweis über den Ausgang
+#     verlangte eine Quittung je Check.
+# KEIN vierter Weg ist `make record-gates`: die Kante zieht dort dieselben Checks mit,
+# der direkte Aufruf ist mit `make gates` deckungsgleich.
+record-gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims host-bin span-check ## Checks + Gate-Nachweis (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh
 
-# Die Reihenfolge ist tragend: baseline-verify als ERSTER Prerequisite — steht die
-# vendored Baseline nicht, ist jede Aussage der Folge-Gates über sie wertlos.
-# record-gates als LETZTER — der Nachweis entsteht nur nach grünen Gates (MR-002).
-gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims host-bin span-check record-gates ## alle aktuell lauffähigen Gates + Nachweis
+gates: record-gates ## alle aktuell lauffähigen Gates + Nachweis
