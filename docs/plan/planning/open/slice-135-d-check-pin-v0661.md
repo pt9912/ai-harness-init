@@ -303,7 +303,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 **Start** (`next` → `in-progress`): **das WIP-Limit von 1 ist frei** —
 `ls docs/plan/planning/in-progress/ | grep -c '^slice-'` liefert **0**. Am 2026-08-29 liefert es
-**1**, den laufenden [slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md); das
+**1**, den laufenden [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md); das
 WIP-Limit ist eine harte Größe und kein Vorschlag (Baseline-Regelwerk
 `modul-05-planning-harness.md` §Trigger je Lifecycle-Übergang und WIP-Limit). Eine inhaltliche
 Vorbedingung hat dieser Slice **nicht**: die Auslöse-Bedingung ist heute erfüllt

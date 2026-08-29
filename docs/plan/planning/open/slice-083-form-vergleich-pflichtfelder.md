@@ -120,7 +120,7 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   `harness/tools/baseline-verify.sh` ist damit kein Hindernis, sondern schützt die Eindeutigkeit,
   auf der dieser Zugriff beruht.
 - **Handgriff: der Tausch-Commit muss benannt sein.** Ohne ihn hat der Vergleich keine alte Seite.
-  Er entsteht in [slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) und steht zum
+  Er entsteht in [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) und steht zum
   Ausführungszeitpunkt als jüngster Eintrag in `git log --oneline -- .harness/baseline/`.
 - **`Ersetzt-Baseline-Regel` über rund zwanzig Einträge ist die größte Einzelposition der Welle.**
   Reißt sie die Sitzung, wird geteilt, nicht gedehnt.

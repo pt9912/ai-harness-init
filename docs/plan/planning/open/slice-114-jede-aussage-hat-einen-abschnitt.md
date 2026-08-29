@@ -141,7 +141,7 @@ adressiert.
 
 **`## Leseordnung` fehlt aus einem anderen Grund: den Abschnitt gibt es in der adoptierten
 Fassung erst seit dem Sprung.** Er kam mit dem Baum, den
-[slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) getauscht hat, und ist damit
+[slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) getauscht hat, und ist damit
 **keine** Drift dieses Repos, sondern eine neue Pflicht. Der Nachweis steht neben der Pflicht
 selbst: `diff <(git show <Tausch-Commit>^:.harness/baseline/v3.5.2/templates/harness/README.template.md | grep '^## ') <(grep '^## ' .harness/baseline/v5.12.0/templates/harness/README.template.md)`
 → genau eine Zeile `> ## Leseordnung`. Für die Arbeit dieses Slice ändert das nichts an der

@@ -43,7 +43,7 @@ statt in jedem Lauf neu erfunden zu werden.**
 
 ### Die Klasse, die keine der bisherigen ist: die Adresse hält, die Folgerung bricht
 
-[slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) §1 nennt seine Klassen fest —
+[slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) §1 nennt seine Klassen fest —
 nachgezogen · byte-gleich · Adresse entfällt · Operand bleibt stehen. **Alle fragen nach der
 Auflösbarkeit eines Pfades.** Der Tausch hat eine Frage gestellt, die keine von ihnen beantwortet:
 **was der Satz neben dem Pfad behauptet.** Die Klasse trägt hier deshalb keine Ordnungszahl,
@@ -177,7 +177,7 @@ Aussagen-Berührung steht hier gar nicht.
 | [slice-083](slice-083-form-vergleich-pflichtfelder.md) | **unverändert** | Tree-Operand der Vor-Tausch-Seite; das Ziehen zerstörte die Messung ([welle-10](../welle-10-re-baseline.md) §5) |
 | `docs/plan/adr/**` | **unverändert** | Accepted und damit unveränderlich ([`AGENTS.md`](../../../../AGENTS.md) §3.4); die Verweis-Form dort regelt [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 1, und sie heilt den Bestand nicht |
 | `docs/reviews/**`, `docs/plan/planning/done/**` | **unverändert** | Zeitdokumente — die richtige Aussage über ihren Stand |
-| [`harness/conventions.md`](../../../../harness/conventions.md), [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | **unverändert** | Architect-Eigentum bzw. Rang 2; ihre Nennungen zieht [slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md), nicht dieser Slice |
+| [`harness/conventions.md`](../../../../harness/conventions.md), [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | **unverändert** | Architect-Eigentum bzw. Rang 2; ihre Nennungen zieht [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md), nicht dieser Slice |
 | Ort der Sortier-Regel (ADR oder Adaptions-Eintrag) | **Übergabe** | wer die Verweis-Form schreibt, steht in [`AGENTS.md`](../../../../AGENTS.md) §3.8 — nicht der Implementer dieses Slice |
 
 ## 4. Trigger
@@ -187,7 +187,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) liegt in `done/` — vorher steht
+[slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) liegt in `done/` — vorher steht
 der Stand, gegen den nachgemessen wird, nicht fest.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**

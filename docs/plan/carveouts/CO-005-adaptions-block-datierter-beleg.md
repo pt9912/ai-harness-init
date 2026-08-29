@@ -112,4 +112,4 @@ Befund-Zeile → [`MR-021`](../../../harness/conventions.md#mr-021--das-span-sch
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-08-28 | Angelegt — der Baum-Tausch macht einen datierten Beleg im Adaptions-Block unauflösbar, und keiner der drei Werkzeug-Auswege trägt | [slice-081](../planning/in-progress/slice-081-baum-tauschen-pin-ziehen.md) |
+| 2026-08-28 | Angelegt — der Baum-Tausch macht einen datierten Beleg im Adaptions-Block unauflösbar, und keiner der drei Werkzeug-Auswege trägt | [slice-081](../planning/done/slice-081-baum-tauschen-pin-ziehen.md) |

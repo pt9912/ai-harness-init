@@ -47,7 +47,7 @@ gebootstrapptes Zielrepo bekommt, ist bei seinem ersten Gate-Lauf grün.**
 seinen Zweck selbst: ein neuer Eintrag ist *„die Frage, die der geloeschte skel-drift-Waechter
 stellte: gehoert er in scope, und wenn ja, ist er Singleton oder wiederkehrend
 (`emit.isRecurring`)?"* — gestellt, *„statt das Neue still als Singleton zu behandeln"*. Mit dem
-Baum-Tausch aus [slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) ist sie gestellt:
+Baum-Tausch aus [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) ist sie gestellt:
 die Zahl der in-scope-Vorlagen geht von **17** auf **21**.
 
 ```
@@ -204,7 +204,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) **und**
+[slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) **und**
 [slice-133](slice-133-emittierter-baum-ohne-platzhalter-links.md) liegen in `done/`. Der erste
 stellt den Satz fest, über den entschieden wird; der zweite räumt die **sieben** Befunde weg, die
 nicht an der Klassen-Frage hängen — ohne ihn ist DoD (3) unerfüllbar, weil `make smoke` dann auch

@@ -60,7 +60,7 @@ smoke: FEHLER — emittiertes docs-check meldet Befunde (nicht out-of-the-box ga
 Gegen den Vor-Tausch-Stand gehalten, gleiche Maschine, gleiche gepinnten Images
 (`T=$(mktemp -d); git archive c6cc56f | tar -x -C "$T"; cd "$T" && make smoke`):
 `d-check: 19 Datei(en) geprüft, 0 Befund(e)`, Exit 0. **Der Baum-Tausch aus
-[slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) ist die Ursache, nicht eine
+[slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) ist die Ursache, nicht eine
 Vorlast.** Beide Zahlen wandern mit dem Vorlagen-Satz und sind **keine Erwartungswerte**
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2); tragend ist die Aufteilung darunter, nicht die Ziffer.
@@ -223,7 +223,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) liegt in `done/` — der
+[slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) liegt in `done/` — der
 Vorlagen-Satz, dessen Platzhalter neutralisiert werden, steht dann fest und wechselt während der
 Arbeit nicht. Das WIP-Limit wird mit demselben Übergang frei. Dieser Slice läuft **vor**
 [slice-130](slice-130-emitter-entscheidet-jedes-neue-template.md): er trägt sieben der zehn

@@ -23,7 +23,7 @@ Artefakte, die die Struktur des Regelwerks benennen, nennen keine Datei, die es 
 
 **Die Ebene ist die Pointe.** Der Tag ist der Emissions-Kanal: `internal/fetch/baseline.go`
 `DefaultTag` entscheidet, welchen Baum ein Zielrepo zieht. Der Dogfood-Tausch aus
-[slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) verschiebt ihn mit — **was für dieses Repo gilt,
+[slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) verschiebt ihn mit — **was für dieses Repo gilt,
 ist damit noch keine Aussage über das emittierte.** Emittiert werden unter anderem drei
 Workflow-Commands (`plan-welle`, `close-welle`, `implement-slice`), die ihrerseits Module und
 Ziel-Formen des Regelwerks benennen; `implement-slice` allein trägt 28 solcher Nennungen.

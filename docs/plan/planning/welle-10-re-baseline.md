@@ -59,7 +59,7 @@ die Dateizahl bleibt **26 + 25 = 51**, auch am Zielstand
 (`for d in lab/regelwerk lab/templates; do git ls-tree -r --name-only v5.12.0 -- $d | wc -l; done`
 → **26 25**). **Keine Messung dieses Plans bricht bis zum Zielstand** — nachgewiesen an ihren zwei
 Trägern, nicht durch Wiederholung: `modul-07-carveouts.md`, Träger der Zitat-Probe aus §6 von
-[slice-081](in-progress/slice-081-baum-tauschen-pin-ziehen.md), ist zwischen `v5.3.0` und `v5.12.0`
+[slice-081](done/slice-081-baum-tauschen-pin-ziehen.md), ist zwischen `v5.3.0` und `v5.12.0`
 byte-gleich, `modul-15-observability.md`, Träger der Kanten-Messung aus §2, zwischen `v5.3.1`
 und `v5.12.0` (`git diff --name-only v5.3.0 v5.12.0 -- lab/regelwerk/modul-07-carveouts.md`
 und `git diff --name-only v5.3.1 v5.12.0 -- lab/regelwerk/modul-15-observability.md` → beide
@@ -181,7 +181,7 @@ wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
 - **Durchgang 3 — Stichprobe gegen den Bestand:** ein Abschnitt **ohne** Delta ist geprüft und
   sein Ausgang verbucht. Er läuft unabhängig vom Ergebnis der Tag-Frage.
 - **`make gates` grün — und zwar ohne offenen Carveout auf einem Gate dieser Welle.** Der Zusatz
-  ist nicht kosmetisch: zwischen [slice-081](in-progress/slice-081-baum-tauschen-pin-ziehen.md) und
+  ist nicht kosmetisch: zwischen [slice-081](done/slice-081-baum-tauschen-pin-ziehen.md) und
   [slice-130](open/slice-130-emitter-entscheidet-jedes-neue-template.md) trägt
   [`CO-004`](../carveouts/CO-004-emitter-klassifikation-offen.md) zwei rote bats-Fälle auf einem
   Trigger. Ein Welle-Grün, das diesen Carveout mitzählte, hieße *„grün, außer wo wir nicht

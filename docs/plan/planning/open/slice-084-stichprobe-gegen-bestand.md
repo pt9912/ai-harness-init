@@ -57,7 +57,7 @@ Adoptions-Prüfung sieht bei jeder Re-Baseline nur das Delta, nie den Bestand.
 
 ## 4. Trigger
 
-[slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) liegt in `done/`. **Nicht** abhängig vom
+[slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) liegt in `done/`. **Nicht** abhängig vom
 Adaptions-Durchgang: sein Gegenstand ist die Änderung, dieser hier prüft den Bestand.
 
 Rückführungen: `in-progress` → `next`, wenn der gewählte Abschnitt mehrere Artefakte gleichzeitig

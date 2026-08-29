@@ -107,7 +107,7 @@ nimmt ein **Gate** aus, und hier hängt an keinem der Posten eines — kein Modu
 **Er ist auch nicht die Stichprobe.** Die führt
 [slice-084](slice-084-stichprobe-gegen-bestand.md) — *ein* Abschnitt pro Audit, rotierend, mit
 belegter Wahl. Dieser Fund ist ihr **Ergebnis-Typ**, nicht ihre Ausführung: er fiel bei der
-Verifikation von [slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) an, weil dort
+Verifikation von [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) an, weil dort
 der ADR-Index über vier Commits umgeschrieben wurde, ohne dass ein Plan-Posten ihn führte. Die
 Rotation aus 084 bleibt davon unberührt und darf diesen Abschnitt nicht als *„schon geprüft"*
 abziehen.
@@ -207,7 +207,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **Start** (`next` → `in-progress`): das **WIP-Limit von 1 ist frei** —
 `ls docs/plan/planning/in-progress/ | grep -c '^slice-'` liefert **0**, gelesen auf dem
 Hauptzweig (am 2026-08-29 liefert es **1**, den laufenden
-[slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md)). Eine inhaltliche Vorbedingung
+[slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md)). Eine inhaltliche Vorbedingung
 hat dieser Slice **nicht**: die Ziel-Form liegt
 vendored im Baum und wechselt bis dahin nicht ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache):
 ein Tag zur Zeit). Insbesondere wartet er **nicht** auf

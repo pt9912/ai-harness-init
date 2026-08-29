@@ -45,7 +45,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-07-carveouts.md`
 Emit-Fixture am realen Template-Satz fest und stellt bei jedem Zugang eine Frage, statt ihn still
 durchzulassen: *„gehoert er in scope, und wenn ja, ist er Singleton oder wiederkehrend
 (`emit.isRecurring`)?"* Mit dem Baum-Tausch aus
-[slice-081](../planning/in-progress/slice-081-baum-tauschen-pin-ziehen.md) sind **vier** Vorlagen
+[slice-081](../planning/done/slice-081-baum-tauschen-pin-ziehen.md) sind **vier** Vorlagen
 neu — `observations`, `reconciliation`, `welle-results` und `MR-NNN-titel`, der Adaptions-Eintrag
 —, und die in-scope-Zahl geht von 17 auf 21
 (`find .harness/baseline/*/templates -type f | sed 's|.*/templates/||' | grep '\.template\.md$' | grep -v '^project-readme\.template\.md$' | wc -l`).
@@ -82,7 +82,7 @@ eigener Ebene: sie ändert, was ein **gebootstrapptes Zielrepo** bekommt
 [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3),
 [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)), berührt mit
 `internal/emit/` eine Schicht, die
-[slice-081](../planning/in-progress/slice-081-baum-tauschen-pin-ziehen.md) nicht führt, und wäre
+[slice-081](../planning/done/slice-081-baum-tauschen-pin-ziehen.md) nicht führt, und wäre
 dort ein vierter Liefer-Punkt — nach Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice *„zu groß"*. Das WIP-Limit von 1 verbietet zugleich, beide Slices nebeneinander
 in `in-progress/` zu halten. Übrig bleibt der Weg, den dasselbe Modul ausdrücklich offenlässt:
@@ -126,7 +126,7 @@ Sorgfalt.
 **Implementer**-Arbeit; dieser Carveout beschreibt sie, er stellt sie nicht her. Solange sie
 fehlt, ist die Modul-7-Pflicht **offen** — die Ausnahme ist über diese Datei begründet, aber nicht
 über den Gate-Output sichtbar. Der Posten ist deshalb Bedingung des Abnahme-Punktes von
-[slice-081](../planning/in-progress/slice-081-baum-tauschen-pin-ziehen.md) §2 DoD (4) und nicht in
+[slice-081](../planning/done/slice-081-baum-tauschen-pin-ziehen.md) §2 DoD (4) und nicht in
 eine Fußnote verschoben.
 
 **Die Ausnahme senkt die Strenge nicht.** Die beiden Fälle bleiben scharf: sie vergleichen weiter
@@ -156,4 +156,4 @@ rot. Ein Ausschluss der Fälle wäre eine Schwellen-Senkung und nach
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-08-28 | Angelegt — der Baum-Tausch stellt dem Emitter vier unbeantwortete Klassen-Fragen | [slice-081](../planning/in-progress/slice-081-baum-tauschen-pin-ziehen.md) |
+| 2026-08-28 | Angelegt — der Baum-Tausch stellt dem Emitter vier unbeantwortete Klassen-Fragen | [slice-081](../planning/done/slice-081-baum-tauschen-pin-ziehen.md) |

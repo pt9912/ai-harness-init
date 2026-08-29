@@ -104,7 +104,7 @@ längst erfüllt ist: Ein Trigger, den niemand abfragt, ist kein Wächter."*
       [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
       — er ist selbst ein Fall dieses Durchgangs (§6). **Die Frage ist nicht mehr vorausschauend:
       die erste Teil-Ablösung ist bereits vollzogen** —
-      [slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) hat die Zensus-Aussage von
+      [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) hat die Zensus-Aussage von
       [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
       durch einen Nachfolger abgelöst, und das Original trägt keinen Zeiger auf ihn. Ob es einen
       bekommt, ist hier zu entscheiden, und der Bestand gibt **zwei** Antworten statt einer:
@@ -143,7 +143,7 @@ der Norm-Text entsteht im Architect-Lauf und in eigenem Commit. Was der Durchgan
 
 ## 4. Trigger
 
-[slice-081](../in-progress/slice-081-baum-tauschen-pin-ziehen.md) liegt in `done/` — der neue Baum ist im Repo,
+[slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) liegt in `done/` — der neue Baum ist im Repo,
 sonst misst der Durchgang gegen eine Fassung, die hier nicht liegt.
 
 Rückführungen: `in-progress` → `next`, wenn mehr als zwei Einträge eigene Umsetzung verlangen
