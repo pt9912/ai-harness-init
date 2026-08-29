@@ -279,7 +279,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **Start** (`next` → `in-progress`): **das WIP-Limit ist frei**, also
 `ls docs/plan/planning/in-progress/slice-*.md | wc -l` → **0**. Am 2026-08-29 liefert dasselbe
 Kommando **1**:
-[slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) hält es. Eine
+[slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) hält es. Eine
 **fachliche** Vorbedingung hat dieser Slice **nicht**. Insbesondere wartet er **nicht** auf
 [slice-083](slice-083-form-vergleich-pflichtfelder.md): dessen §6 hat die Entscheidung benannt,
 seine drei DoD-Punkte tragen sie nicht, und Modul 5 lässt keinen vierten zu — die Vertagung hat
@@ -340,7 +340,7 @@ dasteht.
   allgemeine Eigentums-Frage bleibt daneben stehen. — **Ausgang:** weiter offen → an den Architect
   gemeldet; die Bearbeitung dieses Slice hängt nicht an ihr.
 - **Die Treffermenge aus DoD (2) bewegt sich zwischen Schnitt und Ausführung.** Jeder neue `cp`
-  vergrößert sie; [slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md)
+  vergrößert sie; [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md)
   liegt heute in `in-progress/` und ist bis dahin womöglich ein Zeitdokument in `done/`. Genau
   darum steht in der DoD ein Kommando und keine Dateiliste. — **Ausgang:** entfallen, wenn die
   Menge zum Ausführungszeitpunkt gemessen und vollständig abgearbeitet ist.

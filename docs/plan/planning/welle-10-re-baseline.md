@@ -259,7 +259,7 @@ Setzung 2). Gebrochen sind
 Carveout steht in keinem Rang und dürfte nach `grundlagen-source-precedence.md` §Vollständigkeit
 verweisen, ausführen und ausbuchstabieren, aber nichts festlegen —, und der Trichter aus
 `modul-07-carveouts.md` §Werkzeug-Wahl führt bei dieser Häufung ohnehin nicht auf Carveout. **8**
-Befunde hat [slice-133](in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md)
+Befunde hat [slice-133](done/slice-133-emittierter-baum-ohne-platzhalter-links.md)
 weggenommen (Platzhalter-Links, sieben davon in drei schon vorher emittierten Singletons), **2**
 trägt [slice-130](open/slice-130-emitter-entscheidet-jedes-neue-template.md) (sie lösen sich mit
 der Klassen-Entscheidung). Die Aufteilung ist je Befund an seiner Vorlagen-Zeile erhoben, nicht
@@ -287,7 +287,7 @@ Jobs bis 130, für den vierten bis 132.** Der Workflow fährt vier Jobs
 (`awk '/^jobs:/{f=1;next} f&&/^  [a-z][a-z-]*:$/{n++} END{print n}' .github/workflows/ci.yml` →
 am 2026-08-29 **4**: `gates`, `smoke`, `full-smoke`, `mutate`), und alle vier hängen an **einer**
 Ursachenkette. Wer welchen zurückgibt, ist keine Schätzung, sondern steht in den Trägern: `smoke`
-und `full-smoke` an [slice-133](in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) **und**
+und `full-smoke` an [slice-133](done/slice-133-emittierter-baum-ohne-platzhalter-links.md) **und**
 [slice-130](open/slice-130-emitter-entscheidet-jedes-neue-template.md) (8 + 2 Befunde); `mutate`
 an denselben zwei, weil sein Grün-Vorlauf genau diese Modi fährt; `make gates` an
 [slice-130](open/slice-130-emitter-entscheidet-jedes-neue-template.md)
@@ -298,7 +298,7 @@ ist nicht das Rot, sondern der blinde Fleck darunter: `mutate` läuft in diesem 
 **null** Fälle, die Haltbarkeits-Prüfung der **gelisteten** Wächter aus
 [`AGENTS.md`](../../../AGENTS.md) §3.6 findet also nicht statt.
 
-**Mit [slice-133](in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) ist keiner der
+**Mit [slice-133](done/slice-133-emittierter-baum-ohne-platzhalter-links.md) ist keiner der
 vier Jobs zurück, und dieser Satz steht hier, weil sein Abschluss sonst falsch gelesen wird.**
 `make full-smoke` am Stand `66459c7` endet mit Exit **2** und
 `full-smoke: FEHLER — make gates im emittierten Repo ist NICHT Exit 0 (LH-FA-01 Happy-Path

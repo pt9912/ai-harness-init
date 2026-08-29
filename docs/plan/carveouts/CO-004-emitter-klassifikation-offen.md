@@ -3,7 +3,7 @@
 **Status:** Aktiv.
 
 **Datum angelegt:** 2026-08-28. **Letzte Prüfung:** 2026-08-29 (Closure
-[slice-133](../planning/in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md): Deckung
+[slice-133](../planning/done/slice-133-emittierter-baum-ohne-platzhalter-links.md): Deckung
 unverändert, Buchhaltung nachgezogen — s. §Geschichte).
 
 **Betroffenes Gate:** `test` (bats-Stufe) und damit `gates`.
@@ -19,7 +19,7 @@ Entscheidung ([`AGENTS.md`](../../../AGENTS.md) §3.5). Die beiden anderen Fäll
 sind grün und bleiben es: *„fixture: die fuenf wiederkehrenden Templates existieren real"* (Z. 93)
 und *„fixture: courseSet() fuehrt jede Platzhalter-Pfad-Form des realen Satzes"* (Z. 165, der
 Inhalts-Wächter aus
-[slice-133](../planning/in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md)). Die
+[slice-133](../planning/done/slice-133-emittierter-baum-ohne-platzhalter-links.md)). Die
 Zeilenangaben wandern mit der Datei und sind keine Erwartungswerte
 ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2); der **Wortlaut** ist der Geltungsbereich, nicht die Zeile. Die Fall-**Nummern** des
@@ -32,9 +32,9 @@ Sie brechen [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen
 [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) — Rang 1 der
 Source Precedence —, und eine Rang-1-Zusage wird nicht durch einen Carveout ausgenommen, sondern
 durch Reparatur eingelöst; die Begründung führt
-[slice-133](../planning/in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1. Ihre Träger
+[slice-133](../planning/done/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1. Ihre Träger
 sind zwei Slices, nicht diese Datei: **acht** Befunde hat
-[slice-133](../planning/in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md)
+[slice-133](../planning/done/slice-133-emittierter-baum-ohne-platzhalter-links.md)
 weggenommen, **zwei** trägt
 [slice-130](../planning/open/slice-130-emitter-entscheidet-jedes-neue-template.md). Gemessen mit
 demselben Kommando über zwei Ständen: `make smoke` am Stand `26aec2c`
@@ -85,7 +85,7 @@ Setzung 2). Unter jenen zehn standen drei, die an diesen vier Vorlagen hingen �
 **gebootstrappten Zielrepo**, hier `<ziel>/`, nicht in diesem:
 `<ziel>/docs/plan/planning/welle-results.md:67` und `:83` sowie
 `<ziel>/harness/conventions/MR-NNN-titel.md:15`. Der dritte ist mit
-[slice-133](../planning/in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md)
+[slice-133](../planning/done/slice-133-emittierter-baum-ohne-platzhalter-links.md)
 gefallen, weil sein Ziel-Pfad `<tag>` trug und die Form-Regel keine Namen kennt; **zwei** stehen
 noch (`make smoke` am Stand `66459c7`), und sie tragen keinen `<…>`-Platzhalter, lösen sich also
 nur über die Klasse.
@@ -185,4 +185,4 @@ rot. Ein Ausschluss der Fälle wäre eine Schwellen-Senkung und nach
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-08-28 | Angelegt — der Baum-Tausch stellt dem Emitter vier unbeantwortete Klassen-Fragen | [slice-081](../planning/done/slice-081-baum-tauschen-pin-ziehen.md) |
-| 2026-08-29 | Geprüft, **nicht** aufgelöst: die Deckung ist unverändert (die zwei roten Fälle tragen weiter ihren Wortlaut, `make -k gates` hat keinen roten Fall daneben), die Buchhaltung ist nachgezogen — `8`/`2` statt `7`/`3`, verschobene Zeilenangaben, ein vierter grüner Fall in derselben Datei | [slice-133](../planning/in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) §7 |
+| 2026-08-29 | Geprüft, **nicht** aufgelöst: die Deckung ist unverändert (die zwei roten Fälle tragen weiter ihren Wortlaut, `make -k gates` hat keinen roten Fall daneben), die Buchhaltung ist nachgezogen — `8`/`2` statt `7`/`3`, verschobene Zeilenangaben, ein vierter grüner Fall in derselben Datei | [slice-133](../planning/done/slice-133-emittierter-baum-ohne-platzhalter-links.md) §7 |

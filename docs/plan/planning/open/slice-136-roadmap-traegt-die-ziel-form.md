@@ -21,7 +21,7 @@ Singleton-Artefakten**, und die Roadmap ist eines — in der extensionalen Menge
 **Ebene: Dogfood, nicht emittiert.** Gegenstand ist die Roadmap **dieses** Repos. Die emittierte
 Ebene hat denselben Gegenstand unter einem anderen Vertrag und einen anderen Träger: was ein
 Zielrepo als Roadmap bekommt, entscheidet
-[slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md), und ein frisch
+[slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md), und ein frisch
 gebootstrapptes Repo hat eine leere Roadmap ohne Welle, über die dieser Slice etwas aussagen
 könnte.
 
@@ -334,7 +334,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 **Start** (`next` → `in-progress`): **`in-progress/` trägt keinen Slice mehr** — beobachtbar ohne
 Rückfrage: `ls docs/plan/planning/in-progress/ | grep -c '^slice-'` → **0**. Heute steht dort
-[slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md), und das
+[slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md), und das
 WIP-Limit ist **1**; dieser Slice startet deshalb **nicht** mit seinem Schnitt.
 
 **Eine Reihenfolge-Bindung innerhalb der Welle gibt es nicht.** Der Slice hängt an keinem der vier

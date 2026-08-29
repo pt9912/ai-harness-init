@@ -86,7 +86,7 @@ Setzung 2). **Der Anlauf-Stand ist nicht der Schnitt-Stand:** dasselbe Kommando 
 `66459c7` `23 Datei(en) geprüft, 2 Befund(e)` — gleicher Nenner, also ist nichts aus dem
 Prüfbereich gefallen. Von den zehn gehören heute **zwei** hierher, und die dritte Zeile der Tabelle
 unten ist mit
-[slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) gefallen:
+[slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) gefallen:
 
 `<ziel>/` meint das **gebootstrappte Zielrepo**, nicht dieses — die Ebenen-Trennung aus dem
 Abschnitt unten, schon in der Tabelle:
@@ -95,7 +95,7 @@ Abschnitt unten, schon in der Tabelle:
 |---|---|
 | `<ziel>/docs/plan/planning/welle-results.md:67` → `](observations.template.md)` | `welle-results.template.md` |
 | `<ziel>/docs/plan/planning/welle-results.md:83` → `](../observations.md)` | `welle-results.template.md` |
-| ~~`<ziel>/harness/conventions/MR-NNN-titel.md:15` → `](…/baseline/<tag>/regelwerk/grundlagen-referenz-richtung.md#…)`~~ — **gefallen** mit [slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md): sein Ziel-Pfad trug `<tag>`, und die dortige Neutralisierung kennt die **Form** und keine Namen | `MR-NNN-titel.template.md` |
+| ~~`<ziel>/harness/conventions/MR-NNN-titel.md:15` → `](…/baseline/<tag>/regelwerk/grundlagen-referenz-richtung.md#…)`~~ — **gefallen** mit [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md): sein Ziel-Pfad trug `<tag>`, und die dortige Neutralisierung kennt die **Form** und keine Namen | `MR-NNN-titel.template.md` |
 
 Am vorgesehenen Ort `planning/done/` löst `](../observations.md)` auf; als flaches
 `planning/welle-results.md` zeigt er auf eine `observations.md` neben `docs/plan/`, die es nicht
@@ -116,7 +116,7 @@ der Voll-Smoke von slice-024 an den derivativen Indexen gefunden hat. Sie wird *
 ausgenommen**: eine Rang-1-Zusage wird von keinem Carveout suspendiert, und der Trichter aus
 Baseline-Regelwerk `modul-07-carveouts.md` §Werkzeug-Wahl führt bei dieser Häufung ohnehin nicht
 auf Carveout (Begründung in
-[slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1).
+[slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1).
 
 **Diese zwei lösen sich mit der Klassen-Entscheidung, nicht durch Link-Arbeit.** Fällt
 `welle-results.template.md` auf *wiederkehrend*, wird sie als `.template.md` emittiert und fällt
@@ -132,7 +132,7 @@ Satz lagen und schon vor dem Tausch als Singletons emittiert wurden** — `roadm
 `](conventions/MR-<NNN>-<titel>.md)`); keine Klassen-Entscheidung bewegt sie, weil
 [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) alle drei
 namentlich als Singletons führt. **Weggenommen hat
-[slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) acht** — die
+[slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) acht** — die
 sieben plus den einen der Tabelle oben, dessen Ziel-Pfad dieselbe Form trug; seine
 Neutralisierung kennt die Form und keine Namen, und darum reicht ihre Wirkung über die
 Ursachen-Einteilung hinaus. Ein Lauf hier, der eine dieser Fundstellen mitnimmt, hat den Schnitt
@@ -173,7 +173,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       den gemeinsamen Nachweis für beide Ursachen** und ist damit der Ort, an dem
       [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und
       [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) wieder
-      eingelöst sind; er setzt [slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md)
+      eingelöst sind; er setzt [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md)
       voraus (§4). Bleibt er rot, ist **vor** dem Nachziehen einer Erwartung zu prüfen, welche der
       beiden Ursachen die Befunde trägt — ein Grün durch Anpassen einer Zahl ist keines.
 - [ ] `make gates` grün — **ohne** die Ausnahme aus
@@ -217,7 +217,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 **Start** (`next` → `in-progress`):
 [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) **und**
-[slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) liegen in `done/`. Der erste
+[slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) liegen in `done/`. Der erste
 stellt den Satz fest, über den entschieden wird; der zweite räumt die **acht** Befunde weg, die
 nicht an der Klassen-Frage hängen — ohne ihn ist DoD (3) unerfüllbar, weil `make smoke` dann auch
 bei vier richtig entschiedenen Vorlagen rot bliebe. Sein Beitrag ist gefahren und gemessen —
