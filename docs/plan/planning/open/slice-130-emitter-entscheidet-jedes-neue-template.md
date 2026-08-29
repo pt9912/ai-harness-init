@@ -107,7 +107,7 @@ der Voll-Smoke von slice-024 an den derivativen Indexen gefunden hat. Sie wird *
 ausgenommen**: eine Rang-1-Zusage wird von keinem Carveout suspendiert, und der Trichter aus
 Baseline-Regelwerk `modul-07-carveouts.md` §Werkzeug-Wahl führt bei dieser Häufung ohnehin nicht
 auf Carveout (Begründung in
-[slice-133](../next/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1).
+[slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1).
 
 **Diese drei lösen sich mit der Klassen-Entscheidung, nicht durch Link-Arbeit.** Fällt
 `welle-results.template.md` auf *wiederkehrend*, wird sie als `.template.md` emittiert und fällt
@@ -123,7 +123,7 @@ Satz lagen und schon vor dem Tausch als Singletons emittiert wurden** — `roadm
 `](conventions/MR-<NNN>-<titel>.md)`); keine Klassen-Entscheidung bewegt sie, weil
 [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) alle drei
 namentlich als Singletons führt. Träger ist
-[slice-133](../next/slice-133-emittierter-baum-ohne-platzhalter-links.md), der **vor** diesem Slice läuft.
+[slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md), der **vor** diesem Slice läuft.
 Ein Lauf hier, der die sieben mitnimmt, hat den Schnitt verlassen, nicht ihn erfüllt.
 
 ### Die Ebene ist die Pointe
@@ -161,7 +161,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       den gemeinsamen Nachweis für beide Ursachen** und ist damit der Ort, an dem
       [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und
       [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) wieder
-      eingelöst sind; er setzt [slice-133](../next/slice-133-emittierter-baum-ohne-platzhalter-links.md)
+      eingelöst sind; er setzt [slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md)
       voraus (§4). Bleibt er rot, ist **vor** dem Nachziehen einer Erwartung zu prüfen, welche der
       beiden Ursachen die Befunde trägt — ein Grün durch Anpassen einer Zahl ist keines.
 - [ ] `make gates` grün — **ohne** die Ausnahme aus
@@ -205,7 +205,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 **Start** (`next` → `in-progress`):
 [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) **und**
-[slice-133](../next/slice-133-emittierter-baum-ohne-platzhalter-links.md) liegen in `done/`. Der erste
+[slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) liegen in `done/`. Der erste
 stellt den Satz fest, über den entschieden wird; der zweite räumt die **sieben** Befunde weg, die
 nicht an der Klassen-Frage hängen — ohne ihn ist DoD (3) unerfüllbar, weil `make smoke` dann auch
 bei vier richtig entschiedenen Vorlagen rot bliebe. Ein Kriterium, das unter keiner korrekten
