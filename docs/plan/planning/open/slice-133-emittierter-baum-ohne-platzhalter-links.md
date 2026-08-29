@@ -31,7 +31,7 @@ nie, und dieser Slice ändert es nicht (Rang 1; Baseline verbatim in
 [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler):
 *„weder ADR noch Slice dürfen `LH-*` je ändern — sie referenzieren nur"*).
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-08-28.
 
@@ -111,7 +111,7 @@ lösen sich **mit ihrer Klassen-Entscheidung**, nicht durch Link-Arbeit: fällt
 `welle-results.template.md` auf *wiederkehrend*, wird sie als `.template.md` emittiert und fällt
 damit unter `scan.ignore` des emittierten Gates — beide Befunde verschwinden, ohne dass ein Link
 angefasst wurde. Ihr Träger ist
-[slice-130](slice-130-emitter-entscheidet-jedes-neue-template.md).
+[slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md).
 
 ### Warum das keine Ausnahme ist, sondern eine Reparatur
 
@@ -143,8 +143,18 @@ Ursache A gefallen ist, wörtlich:
 > diese reale Drift faengt allein `make smoke` (Tier-2, NICHT in make gates)."*
 
 Eingetreten ist die **zweite** Variante: der alte Marker
-`[`welle-NN-results.md`](../done/welle-NN-results.md)` steht unverändert in beiden Bäumen
-(`grep -c` je Tag → **1** und **1**), die Neutralisierung feuert also weiter — die neue Fassung hat
+`roadmapDoneLink` steht unverändert in der `roadmap`-Vorlage beider Bäume — in `v3.5.2` über
+`c6cc56f` je **1**, in `v5.12.0` im Arbeitsbaum je **1**. Der Marker wird aus der Konstanten
+gelesen statt abgeschrieben, damit die Messung ihm folgt, wenn er sich ändert:
+
+```
+R=docs/plan/planning/roadmap.template.md
+M=$(grep -m1 'roadmapDoneLink =' internal/emit/templates.go | cut -d'"' -f2)
+git show "c6cc56f:.harness/baseline/v3.5.2/templates/$R" | grep -cF "$M"
+grep -cF "$M" ".harness/baseline/v5.12.0/templates/$R"
+```
+
+Die Neutralisierung feuert also weiter — die neue Fassung hat
 **daneben** einen zweiten Platzhalter-Link gesetzt, den kein Marker kennt. Eine Neutralisierung,
 die einen **Wortlaut** kennt statt einer **Form**, deckt den nächsten Zugang nicht. Welche der
 beiden Bauarten dieser Slice wählt — Marker je Fundstelle oder Regel über die Platzhalter-Form —,
@@ -167,7 +177,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       die Summe.** `make smoke` meldet für `docs/plan/planning/in-progress/roadmap.md`,
       `harness/README.md` und `harness/conventions.md` **keinen** Befund mehr. Die Restmenge ist
       **kein** Erfolgskriterium dieses Slice: sie ist die Ursache B und trägt
-      [slice-130](slice-130-emitter-entscheidet-jedes-neue-template.md) — ein Lauf, der beide
+      [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md) — ein Lauf, der beide
       Klassen zugleich grün meldet, ist ein Hinweis, dass eine Klasse anders aufgelöst wurde als
       hier beschrieben, und gehört nachgesehen statt abgehakt.
 - [ ] **(2) Die Neutralisierung ist rot gesehen, und ihre Deckungs-Grenze steht am Code.**
@@ -215,7 +225,7 @@ Aussagen-Berührung steht hier gar nicht.
 | `internal/emit/templates/d-check.yml` | **offen — Entscheidung im Slice** | die zweite mögliche Bauart wäre eine Regel im **emittierten** Prüfbereich statt im Emitter. Sie ist nach [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed) belegpflichtig und wäre ein Ausschluss im Zielrepo, den der Adopter erbt — der Slice begründet, welche Ebene trägt, statt beide anzufassen |
 | `.harness/baseline/v5.12.0/templates/` | **unverändert** | committet vendored Fremd-Blob; ein Edit dort wäre ein Fork und bräche [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache). Der Kurs-Fix wäre die SSoT-Lösung und ist hier nicht verfügbar — dieselbe Lage, die der Kommentar von `NeutralizeRoadmap` schon beschreibt |
 | [`spec/lastenheft.md`](../../../../spec/lastenheft.md) | **unverändert** | Rang 1. Der Sollzustand steht bereits dort; dieser Slice stellt ihn her. Erwiese sich die Zusage als so nicht haltbar, verlässt die Frage den Slice als Übergabe (§6) — sie wird nicht hier geschrieben ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)) |
-| `internal/emit/templates/commands/`, `.harness/skills/` | **unverändert** | der **Text** der emittierten Artefakte ist Gegenstand von [slice-085](slice-085-emittierte-ebene-zieht-nach.md) |
+| `internal/emit/templates/commands/`, `.harness/skills/` | **unverändert** | der **Text** der emittierten Artefakte ist Gegenstand von [slice-085](../open/slice-085-emittierte-ebene-zieht-nach.md) |
 
 ## 4. Trigger
 
@@ -226,7 +236,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) liegt in `done/` — der
 Vorlagen-Satz, dessen Platzhalter neutralisiert werden, steht dann fest und wechselt während der
 Arbeit nicht. Das WIP-Limit wird mit demselben Übergang frei. Dieser Slice läuft **vor**
-[slice-130](slice-130-emitter-entscheidet-jedes-neue-template.md): er trägt sieben der zehn
+[slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md): er trägt sieben der zehn
 Befunde und ist von der Klassen-Entscheidung unabhängig, während deren DoD (3) den **gemeinsamen**
 Nachweis führt und ihn erst danach führen kann.
 
