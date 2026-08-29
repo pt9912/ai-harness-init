@@ -22,9 +22,9 @@ Sie brechen [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen
 [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) — Rang 1 der
 Source Precedence —, und eine Rang-1-Zusage wird nicht durch einen Carveout ausgenommen, sondern
 durch Reparatur eingelöst; die Begründung führt
-[slice-133](../planning/open/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1. Ihre Träger
+[slice-133](../planning/next/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1. Ihre Träger
 sind zwei Slices, nicht diese Datei: **sieben** Befunde
-[slice-133](../planning/open/slice-133-emittierter-baum-ohne-platzhalter-links.md), **drei**
+[slice-133](../planning/next/slice-133-emittierter-baum-ohne-platzhalter-links.md), **drei**
 [slice-130](../planning/open/slice-130-emitter-entscheidet-jedes-neue-template.md).
 
 **Folge-Slice:** [slice-130](../planning/open/slice-130-emitter-entscheidet-jedes-neue-template.md)

@@ -248,7 +248,7 @@ Setzung 2). Gebrochen sind
 Carveout steht in keinem Rang und dürfte nach `grundlagen-source-precedence.md` §Vollständigkeit
 verweisen, ausführen und ausbuchstabieren, aber nichts festlegen —, und der Trichter aus
 `modul-07-carveouts.md` §Werkzeug-Wahl führt bei dieser Häufung ohnehin nicht auf Carveout. **7**
-Befunde trägt [slice-133](open/slice-133-emittierter-baum-ohne-platzhalter-links.md) (Platzhalter-
+Befunde trägt [slice-133](next/slice-133-emittierter-baum-ohne-platzhalter-links.md) (Platzhalter-
 Links in drei schon vorher emittierten Singletons), **3** trägt
 [slice-130](open/slice-130-emitter-entscheidet-jedes-neue-template.md) (sie lösen sich mit der
 Klassen-Entscheidung). Die Aufteilung ist je Befund an seiner Vorlagen-Zeile erhoben, nicht über
@@ -269,7 +269,7 @@ Jobs bis 130, für den vierten bis 132.** Der Workflow fährt vier Jobs
 (`awk '/^jobs:/{f=1;next} f&&/^  [a-z][a-z-]*:$/{n++} END{print n}' .github/workflows/ci.yml` →
 am 2026-08-29 **4**: `gates`, `smoke`, `full-smoke`, `mutate`), und alle vier hängen an **einer**
 Ursachenkette. Wer welchen zurückgibt, ist keine Schätzung, sondern steht in den Trägern: `smoke`
-und `full-smoke` an [slice-133](open/slice-133-emittierter-baum-ohne-platzhalter-links.md) **und**
+und `full-smoke` an [slice-133](next/slice-133-emittierter-baum-ohne-platzhalter-links.md) **und**
 [slice-130](open/slice-130-emitter-entscheidet-jedes-neue-template.md) (7 + 3 Befunde); `mutate`
 an denselben zwei, weil sein Grün-Vorlauf genau diese Modi fährt; `make gates` an
 [slice-130](open/slice-130-emitter-entscheidet-jedes-neue-template.md)

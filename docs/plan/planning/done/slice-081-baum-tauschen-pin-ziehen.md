@@ -190,9 +190,9 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
          [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) und
          tragen **keinen** Carveout — eine Rang-1-Zusage wird nicht ausgenommen, sondern repariert
          (Begründung über den Trichter aus Modul 7 §Werkzeug-Wahl in
-         [slice-133](../open/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1). Zugeordnet
+         [slice-133](../next/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1). Zugeordnet
          sind sie zwei Slices derselben Welle: **7** an
-         [slice-133](../open/slice-133-emittierter-baum-ohne-platzhalter-links.md), **3** an
+         [slice-133](../next/slice-133-emittierter-baum-ohne-platzhalter-links.md), **3** an
          [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md), aufgeteilt je
          Befund an seiner Vorlagen-Zeile. [welle-10](../welle-10-re-baseline.md) §3 führt beide
          Läufe im Closure-Kriterium — die Welle schließt nicht über diesem Rot.
@@ -215,7 +215,7 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
          Erwartungswert).
          **Sein Ausgang ist kein eigener, und genau das ist die Feststellung:** dieser Sensor hat
          keine eigene Ursache, sondern die der Sensoren 1 und 2. Er ist damit denselben zwei
-         Slices zugeordnet — [slice-133](../open/slice-133-emittierter-baum-ohne-platzhalter-links.md)
+         Slices zugeordnet — [slice-133](../next/slice-133-emittierter-baum-ohne-platzhalter-links.md)
          und [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md) —, nicht
          einem dritten Artefakt daneben. **Kein weiterer Carveout**, und das folgt aus dem
          Trichter, nicht aus Bequemlichkeit: Frage 1 (Granularität) trifft auf dieselbe Häufung im
@@ -381,8 +381,8 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
   — **Ausgang:** eingetreten → **kein Carveout, sondern Reparatur** (eine Rang-1-Zusage wird nicht
   ausgenommen; der Trichter aus Modul 7 §Werkzeug-Wahl führt bei dieser Häufung nicht auf
   Carveout — Begründung in
-  [slice-133](../open/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1): **7** Befunde →
-  [slice-133](../open/slice-133-emittierter-baum-ohne-platzhalter-links.md), **3** →
+  [slice-133](../next/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1): **7** Befunde →
+  [slice-133](../next/slice-133-emittierter-baum-ohne-platzhalter-links.md), **3** →
   [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md).
 - **Der einzige Sensor dieser Klasse liegt außerhalb von `make gates`, und das steht seit
   slice-028 im Code.** Der Doc-Kommentar von `NeutralizeRoadmap` sagt es selbst: *„diese reale
@@ -390,7 +390,7 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
   `make gates` nennt, kann den Bruch darum nicht sehen — er hat ihn hier auch nicht gesehen.
   — **Ausgang:** eingetreten → §2 DoD (4) zählt vier Sensoren statt einen; ob ein Wächter
   **innerhalb** der Gates baubar ist, entscheidet
-  [slice-133](../open/slice-133-emittierter-baum-ohne-platzhalter-links.md) §2 (3).
+  [slice-133](../next/slice-133-emittierter-baum-ohne-platzhalter-links.md) §2 (3).
 - **Ein roter Sensor kann einen zweiten mitreißen, und der zweite sieht dann gar nichts mehr.**
   `make mutate` hat keine eigene Ursache: sein Grün-Vorlauf fährt dieselben Modi, die die zwei
   Befund-Klassen oben rot halten, und bricht fail-closed ab, bevor die erste Mutation läuft. Die
@@ -400,7 +400,7 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
   Schnitt nicht inventarisiert war, ist dieselbe Lücke wie oben, eine Ebene weiter:** der Plan
   hat je Sensor gefragt, ob er rot wird, nicht, welcher Sensor einen anderen als **Vorbedingung**
   fährt. — **Ausgang:** eingetreten → §2 DoD (4) Sensor 4, zugeordnet
-  [slice-133](../open/slice-133-emittierter-baum-ohne-platzhalter-links.md) und
+  [slice-133](../next/slice-133-emittierter-baum-ohne-platzhalter-links.md) und
   [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md); die Rückkehr prüft
   [welle-10](../welle-10-re-baseline.md) §3, den Preis der Reihenfolge benennt dort §4.
 - **Ein Verweis, der bewusst nicht gezogen wird, hat am Doku-Gate keinen Ort.** Der Beleg in
@@ -500,7 +500,7 @@ innerhalb der Gates existiert nicht.**
 geht ohne Rest auf, und sie trifft je Befund an seiner Vorlagen-Zeile: **7** stammen aus **vor**
 diesem Slice emittierten Vorlagen — der Roadmap-, der Harness-Einstiegs- und der
 Konventionsspeicher-Vorlage
-([slice-133](../open/slice-133-emittierter-baum-ohne-platzhalter-links.md)) —, **3** aus zweien der
+([slice-133](../next/slice-133-emittierter-baum-ohne-platzhalter-links.md)) —, **3** aus zweien der
 vier neuen, der Wellen-Ergebnis- und der Adaptions-Eintrags-Vorlage
 ([slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md)); die Fundorte stehen
 Zeile für Zeile in der Smoke-Ausgabe. `make full-smoke` zeigt dieselben zehn und endet mit
@@ -633,7 +633,7 @@ Alle **elf** Punkte tragen ihre `— **Ausgang:**`-Zeile in §6 selbst
 [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md), einmal
 [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) mit
 [slice-132](../open/slice-132-adaptions-block-ohne-totes-ziel.md), dreimal
-[slice-133](../open/slice-133-emittierter-baum-ohne-platzhalter-links.md) (zweimal davon zusammen
+[slice-133](../next/slice-133-emittierter-baum-ohne-platzhalter-links.md) (zweimal davon zusammen
 mit slice-130), einmal [slice-083](../open/slice-083-form-vergleich-pflichtfelder.md), einmal
 [slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) —,
 **zwei entfallen** mit Begründung (der `sed`-Fabrikations-Fall und die Hash-Herkunft),
@@ -659,7 +659,7 @@ zehn Smoke-Befunde) · [slice-131](../open/slice-131-praesens-aussage-gegen-den-
 (Präsens-Aussage gegen den gepinnten Stand) ·
 [slice-132](../open/slice-132-adaptions-block-ohne-totes-ziel.md) (löst
 [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md)) ·
-[slice-133](../open/slice-133-emittierter-baum-ohne-platzhalter-links.md) (sieben der zehn
+[slice-133](../next/slice-133-emittierter-baum-ohne-platzhalter-links.md) (sieben der zehn
 Smoke-Befunde; läuft **vor** slice-130). Vorbestehend und unverändert zuständig:
 [slice-082](../open/slice-082-adaptions-durchgang.md) (Adaptions-Durchgang) und
 [slice-083](../open/slice-083-form-vergleich-pflichtfelder.md) (Form-Durchgang).
