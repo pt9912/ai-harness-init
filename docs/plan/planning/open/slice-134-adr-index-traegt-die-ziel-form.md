@@ -24,8 +24,8 @@ etwas herausfindet: ein Posten der Ziel-Form, der weder übernommen noch als Abw
 ist, ist keines von beidem.
 [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
 (die Link-Pflicht, an der die `Bezug`-Spalte des Index hängt),
-[ADR-0015](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) (§Kontext — dieselbe offene
-Frage eine Stelle weiter: für dieses Artefakt benennt keine Quelle die schreibende Rolle, §6).
+[ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md) (die
+schreibende Rolle dieses Artefakts, abgeleitet statt zugewiesen — §3).
 
 **Berührte Spec-Stellen:** — Dieser Slice berührt keine. Der ADR-Index ist eine **derivative
 Sicht** auf `docs/plan/adr/` und steht in keiner der beiden Precedence-Listen; was eine
@@ -138,15 +138,18 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       **schon einen Ort haben**, und wie weit, ist gemessen statt geschätzt:
       - Die `**Schärft:**`-Aufwärts-Deklaration ist **vollständig befolgt** — sie steht in jeder
         ADR-Datei (`grep -l '^\*\*Schärft:\*\*' docs/plan/adr/0*.md | wc -l` gegen
-        `ls docs/plan/adr/0*.md | wc -l` → am 2026-08-29 **23** zu **23**; beide Zahlen wachsen
+        `ls docs/plan/adr/0*.md | wc -l` → am 2026-08-29 **24** zu **24**; beide Zahlen wachsen
         mit jeder neuen ADR,
         [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
         Setzung 2). Hier geht es allein darum, ob der Index sie **wiederholt**.
       - Die Index-Pflicht ist nur **teilweise** anderswo getragen:
         [`AGENTS.md`](../../../../AGENTS.md) §5 sagt *„Neue ADRs aktualisieren den ADR-Index."*
-        (`grep -c 'ADR-Index' AGENTS.md` → am 2026-08-29 **1**) — das deckt den **neuen**
-        Eintrag, nicht den späteren `Accepted`-Wechsel und nicht das *Datum* (§1). Was fehlt, ist
-        also nicht nur eine Wiederholung, sondern ein Stück Regel.
+        (`grep -c 'Neue ADRs aktualisieren den ADR-Index' AGENTS.md` → am 2026-08-29 **1**) — das
+        deckt den **neuen** Eintrag, nicht den späteren `Accepted`-Wechsel und nicht das *Datum*
+        (§1). Was fehlt, ist also nicht nur eine Wiederholung, sondern ein Stück Regel. Die
+        weiteren Nennungen des Index in derselben Datei (`grep -c 'ADR-Index' AGENTS.md` → am
+        2026-08-29 **3**) setzen keine: eine nennt ihn als Beispiel für ein Zustandsfeld (§3.7),
+        eine ist der Eigentums-Zeiger aus §3.
       **Dagegen steht *„eine Aussage hat einen Ort"*, dafür die Ziel-Form** — die Entscheidung ist
       je Bullet zu treffen und zu begründen, nicht offen zu lassen. **Eine dritte Antwort — die
       Frage nicht stellen — ist ausgeschlossen**, denn genau so entstand der heutige Zustand.
@@ -179,15 +182,22 @@ Aussagen-Berührung steht hier gar nicht.
 | `.harness/baseline/v5.12.0/templates/` | **unverändert** | committet vendored Fremd-Blob; ein Edit wäre ein Fork und bräche [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
 | `.d-check.yml` | **unverändert** | der Slice baut keinen Wächter; ob einer baubar ist, ist eine benannte Frage, kein Liefer-Punkt (§6) |
 
-**Die schreibende Rolle ist ungeklärt, und das steht hier statt in einer Fußnote.**
-[`AGENTS.md`](../../../../AGENTS.md) §3.8 bindet ausdrücklich nur die Hard Rules und den
-Adaptions-Block an den Architect und sagt daneben: *„Über andere Norm-Artefakte sagt diese Regel
-nichts. … wo keine sie benennt, bleibt die Frage offen."* Für diese Datei benennt keine Quelle
-eine (`git grep -n 'adr/README' AGENTS.md harness/conventions.md` → kein Treffer). **Faktisch**
-schreiben sie Architect-Läufe: `git log --format='%s' -- docs/plan/adr/README.md | head -4` nennt
-viermal *„Rolle Architect"*. Praxis ist keine Zuständigkeit — der Slice klärt sie zuerst oder gibt
-den Punkt als Übergabe hinaus, wie es
-[slice-083](slice-083-form-vergleich-pflichtfelder.md) §3 für den Reviewer-Skill vorsieht.
+**Die schreibende Rolle ist der Architect, und das steht hier statt in einer Fußnote.**
+[ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md) leitet sie
+für ein derivatives Register aus dessen Originalen ab: der Index projiziert `docs/plan/adr/0*.md`,
+ADRs schreibt der Architect — also schreibt er auch den Index.
+[`AGENTS.md`](../../../../AGENTS.md) §3.8 trägt den Zeiger dorthin
+(`git grep -n 'adr/README' AGENTS.md harness/conventions.md` → der Treffer steht in §3.8). Wer
+diesen Slice ausführt, tut es in der **Architect**-Rolle; den **Rolleninhaber** setzt das nicht —
+das Kopffeld `Verantwortlich:` füllt der Trigger `open → next` (§4).
+
+**Über den Inhalt entscheidet die ADR nichts** — welche Posten der Ziel-Form der Index übernimmt,
+trägt dieser Slice; das sagt sie selbst (§Was hier NICHT entschieden ist). Ihre Ableitung reicht
+über Projektion und Projektionsregel und endet an einer bindenden Aussage ohne Original. Für den
+`## Konventionen`-Abschnitt ist am Text geprüft, dass er keine solche trägt — das ist der
+Prüfstein für die Entscheidung aus §2 (2): ein übernommener Bullet, der die Wiedergabe einer
+ADR-Zeile regelt, bleibt in der Deckung; einer, der etwas über den Gegenstand setzt, verlässt sie
+und gehörte dann nicht in den Index.
 
 ## 4. Trigger
 
@@ -210,9 +220,13 @@ ein Tag zur Zeit). Insbesondere wartet er **nicht** auf
   einen der zwei Bullets bedeutet, dass **die Regel selbst** (nicht ihre Wiedergabe im Index) zu
   schreiben ist — dann trennt der Schnitt die Übernahme in den Index von der Norm-Arbeit, denn
   die liegt in fremden Artefakten und in einer fremden Rolle (§3).
-- `in-progress` → `open` (blockiert — Carveout?): wenn die Zuständigkeits-Frage aus §3 vor der
-  ersten Zeile beantwortet werden muss und die Antwort nicht in diesem Lauf fällt. Ein Carveout
-  entsteht dabei nicht: es gibt kein Gate, das auszunehmen wäre (§1).
+- `in-progress` → `open` (blockiert — Carveout?): **einen Blocker kann dieser Plan nicht vorab
+  benennen.** Die zwei Kandidaten, die dafür in Frage kamen, sind beide vor dem Start beantwortet:
+  die Ziel-Form liegt vendored im Baum und wechselt nicht, und die schreibende Rolle ist gesetzt
+  (§3). Die Entscheidungen aus §2 fallen im Lauf selbst und blockieren ihn nicht. Der Übergang
+  behält damit nur seinen Baseline-Trigger — *„Blocker, Priorität offen"* — und wer ihn zieht,
+  benennt den Blocker im `git mv`. Ein Carveout entstünde auch dann nicht: es gibt kein Gate, das
+  auszunehmen wäre (§1).
 
 ## 5. Closure-Trigger
 
@@ -246,11 +260,23 @@ dasteht.
   Werkzeug-Frage an `d-check`, keine Grenze** — die Datei ist ein Nachbar-Repo, nicht ein
   Fremd-Produkt. — **Ausgang:** <entfallen: der Slice baut ihn und benennt seine Grenze |
   eingetreten: Folge-Slice mit der Anforderung an das Werkzeug, benannt und adressiert>
-- **Die Zuständigkeit für diese Datei ist offen (§3), und der Slice kann sie nicht selbst
-  setzen.** Wer sie setzt, setzt sie für eine Klasse von Artefakten, nicht für eine Datei — das
-  ist der Gegenstand von [ADR-0015](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) und
-  nicht der eines Slice. — **Ausgang:** <entfallen: die Antwort stand schon in einer Quelle, die
-  der Lauf gefunden hat | eingetreten: Übergabe an den Architect, mit Adresse>
+- **Die Zuständigkeit für diese Datei war offen, und der Slice kann sie nicht selbst setzen.**
+  Wer sie setzt, setzt sie für eine Klasse von Artefakten, nicht für eine Datei — das ist der
+  Gegenstand einer ADR und nicht der eines Slice. — **Ausgang: entfallen**, gestrichen mit
+  Begründung: [ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)
+  ist seit `b1b1ab7` `Accepted` und beantwortet die **Klasse** — genau so, wie dieser Punkt es
+  verlangte, und ausdrücklich nicht als Zuschreibung für diese eine Datei (dort verworfene
+  Option B). Für den ADR-Index ist die Rolle damit der Architect (§3). **Die Antwort ist nach dem
+  Schnitt dieses Slice entstanden**, über die Übergabe, die dieser Punkt als Weg benannte; der Weg
+  ist nicht der Ausgang. Eine **offene** Übergabe wäre *eingetreten* und bräuchte einen Träger —
+  Carveout oder Folge-Slice mit ID —, eine **beantwortete** lässt das Risiko wegfallen; welches
+  von beidem gilt, entscheidet der Status der Entscheidung, nicht der Hergang. Ein Träger ist
+  darum nicht zu benennen: es ist nichts mehr aufzufangen. **Und der Ausgang steht vor dem
+  Start**, weil die Regel dieser Sektion ihn an den Übergang nach `done/` als **Untergrenze**
+  bindet: *„Ein Slice geht nicht nach `done/`, während ein Risiko ohne Ausgang dasteht"* verbietet
+  einen Zustand, kein früheres Eintragen. Ihr Prüfstein — *„ob das Risiko wirklich nicht mehr
+  eintreten kann"* — ist hier schon entschieden und wandert nicht zurück: eine angenommene ADR ist
+  immutabel ([`AGENTS.md`](../../../../AGENTS.md) §3.4).
 - **Der Fund kann nicht der einzige seiner Klasse sein.** *„Nie übernommen und nie geändert"* ist
   unsichtbar, solange niemand gegen die Vorlage hält; ein zweiter Fund derselben Art würde nicht
   diesen Slice größer machen, sondern die
