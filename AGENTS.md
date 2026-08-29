@@ -114,10 +114,12 @@ prüft, ist ein stilles Grün im Gate — §3.1 eine Ebene tiefer. Die Regel ist
 
 ### 3.7 Ein Kommentar beschreibt, was da ist
 
-Gilt für Code, Konfiguration und Skripte. Ein Kommentar trägt eine der fünf
-Klassen — **Zusage · Kopplung · Abgrenzung · Rang-Zeiger · Grenze** — und
-schreibt an den, der die Stelle *ändert*, nicht an den, der die Entscheidung
-*trifft*.
+Gilt für Code, Konfiguration und Skripte — und für **Zustandsfelder** (unten). Ein
+Kommentar trägt eine der fünf Klassen — **Zusage · Kopplung · Abgrenzung ·
+Rang-Zeiger · Grenze** — und schreibt an den, der die Stelle *ändert*, nicht an
+den, der die Entscheidung *trifft*. Ausgeschrieben — Leser-Modell, Adressaten- und
+Zeitform-Test, die drei Klassen, die herausfallen — steht die Regel im
+Baseline-Regelwerk `grundlagen-harness-dateien.md` §Was ein Kommentar trägt.
 
 **Falsch:** „Ohne dieses Feld behauptete die Ausgabe eine Verteilung, die nicht
 stattgefunden hat" — Konjunktiv über die verworfene Alternative.
@@ -128,15 +130,26 @@ konnte" — Indikativ über den Zustand.
 Text.
 **Richtig:** die geltende Zusage nennen; die vorige hält `git`.
 
+**Zustandsfelder ebenso.** Eine `Stand`- oder `Status`-Zelle — Roadmap-Faden,
+Meilenstein-Tabelle, ADR-Index, Register — nennt den **Zustand** und den Beleg als
+auflösbaren Anker, nicht die Chronik, wie er zustande kam. Eine Begründung des
+Zustands (*gestrichen — tritt nicht mehr auf, weil …*) ist Zustand, keine Chronik.
+Das Drift-Log der Roadmap (§Historische Trigger-Verschiebungen) trägt nur
+Umplanungen; eine Schließung trägt das Closure-Log (§Abgeschlossene Wellen), und
+zwei Logs derselben Sache driften.
+
 **Begründung:** Die Abwägung gehört in die ADR, die Historie in `git`, die
 Herkunft in **ein** auflösbares Feld ([`LH-*`](spec/lastenheft.md),
-[`ADR-*`](docs/plan/adr/)). Was daneben steht, liest jeder Lauf mit und bezahlt
-es mit Kontext.
+[`ADR-*`](docs/plan/adr/), `· seit welle-<NN>`). Was daneben steht, liest jeder
+Lauf mit und bezahlt es mit Kontext.
 
-**Geltungsbereich:** Code, Konfiguration und Skripte, **die dieses Repo besitzt**.
-Ausgenommen ist `.harness/baseline/` — ein committet vendored Fremd-Blob, den
+**Geltungsbereich:** Code, Konfiguration, Skripte **und die Zustandsfelder der
+lebenden Register**, soweit **dieses Repo sie besitzt**. Ausgenommen ist
+`.harness/baseline/` — ein committet vendored Fremd-Blob, den
 [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) nicht anfasst und den das Doc-Gate aus demselben Grund
-per `scan.ignore` ausnimmt. Was ein **emittiertes** Repo an Regeln bekommt,
+per `scan.ignore` ausnimmt. **Lebend** ist ein Register, das der Prozess
+fortschreibt; ein Zeitdokument (`docs/reviews/**`, `docs/plan/planning/done/**`)
+ist Chronik von Beruf und keines. Was ein **emittiertes** Repo an Regeln bekommt,
 entscheidet der Slice, der die Tool-Ebene entscheidet — nicht diese Sektion.
 
 **Cutoff — ab Einführung, kein Nachrüsten.** Gebunden ist der Kommentar, der
@@ -153,15 +166,25 @@ entwertete die Regel, statt sie zu tragen — dieselbe Begründung trägt ihn in
 [`MR-015`](harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler). Wer eine solche Zeile ohnehin anfasst, zieht sie nach;
 wer sie stehen lässt, bricht nichts.
 
-**Herkunft, mit Mess-Stand:** die adoptierte Baseline `v3.5.2` führt diese Regel
-**nicht** — diese Sektion ist ein **Vorgriff** auf einen späteren Kurs-Stand und als
-[`MR-022`](harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline) deklariert. Gegen den Tag `v5.3.0` gemessen (2026-08-09, lokaler
-Kurs-Klon) steht sie dort an derselben Stelle wie hier: als Hard Rule mit derselben
-Nummer und demselben Titel im Hard-Rules-Block der AGENTS-Vorlage, ausgeschrieben in
-den Grundlagen. Mit der Re-Baseline ist gegen die Upstream-Fassung zu halten
-([`MR-023`](harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung)).
+**Für die Zustandsfeld-Hälfte gilt derselbe Cutoff, ab dem 2026-08-29.** Gebunden
+ist die Zelle, die geschrieben oder geändert wird. **Eine Zahl steht hier nicht:**
+ob eine Zelle Chronik trägt, ist wie die zweite Falsch-Klasse ein Urteil und kein
+Muster — ein `grep` zählte Zellen, nicht Verstöße, und gäbe damit ein Muster als
+Kriterium aus, das keines ist (§3.6).
+
+**Herkunft, mit Mess-Stand:** die adoptierte Baseline `v5.12.0` **führt** diese
+Regel — als Hard Rule mit derselben Nummer und demselben Titel im Hard-Rules-Block
+der AGENTS-Vorlage
+(`grep -c '^### 3\.7 Ein Kommentar beschreibt, was da ist$' .harness/baseline/v5.12.0/templates/AGENTS.template.md` → **1**)
+und ausgeschrieben in
+`grep -c '^### Was ein Kommentar trägt — Code, Konfiguration, Skripte$' .harness/baseline/v5.12.0/regelwerk/grundlagen-harness-dateien.md` → **1**.
+Was hier über die Vorlage hinaus steht — Geltungsbereich, Cutoff und die
+Wächter-Aussage —, ergänzt sie, ohne sie einzuschränken; die Deckung ist gegen den
+adoptierten Stand gehalten und in
+[`MR-031`](harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline) protokolliert.
 **Ein Wächter existiert nicht:** `make comment-claims` prüft, ob ein genannter
-Sensor existiert, nicht, worüber ein Kommentar spricht.
+Sensor existiert, nicht, worüber ein Kommentar spricht — und keine Markdown-Datei
+liegt in seinem Prüfbereich, also auch kein Zustandsfeld.
 
 ### 3.8 Hard Rules und Adaptions-Block schreibt der Architect
 

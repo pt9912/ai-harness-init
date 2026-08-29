@@ -52,6 +52,10 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 ### MR-000 — Baseline-Aussage
 
+> **ÜBERHOLT: die 2-Strata-Klausel → [`MR-019`](#mr-019--technik-stratum-als-rang-2-der-source-precedence).** Die übrigen Setzungen dieses Eintrags gelten fort.
+>
+> **ÜBERHOLT: die Blankett-Klausel „keine inhaltlichen Adaptionen ggü. Baseline-Default", punktweise → `grep -n Blankett-Klausel harness/conventions.md`.** Die Ausnahmen sind eine **offene Menge** — jeder spätere Eintrag kann eine hinzufügen —, darum steht hier das Kommando, das sie ausgibt, und kein Link auf einen von mehreren. Wo kein Eintrag sie ausnimmt, gilt die Klausel fort; das ID-Schema und die Verzeichniskonvention dieses Eintrags sind unberührt.
+
 - **Datum:** 2026-06-13
 - **Geltungsbereich:** gesamtes Repo
 - **Adaption:** keine inhaltlichen Adaptionen ggü. Baseline-Default.
@@ -62,6 +66,8 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Auflösungs-Trigger:** permanent.
 
 ### MR-001 — Doc-Gate-Schärfung (matrix + Link-Pflicht + Anker-IDs)
+
+> **ÜBERHOLT: die Zensus-Aussage zu `scan.ignore` samt ihrer Klassifikation → [`MR-029`](#mr-029--der-scanignore-zensus-wandert-und-sein-dritter-grund-ist-keine-scoping-aussage).** Die übrigen Setzungen dieses Eintrags gelten fort.
 
 - **Datum:** 2026-06-13
 - **Geltungsbereich:** `.d-check.yml` (Doc-Referenz-Gate)
@@ -876,6 +882,8 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 ### MR-019 — Technik-Stratum als Rang 2 der Source Precedence
 
+> **ÜBERHOLT: die Zahl „zwei Abweichungen von der Vorlagen-Form" → [`MR-021`](#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben).** Die übrigen Setzungen dieses Eintrags gelten fort.
+
 - **Datum:** 2026-08-01
 - **Geltungsbereich:** [`spec/spezifikation.md`](../spec/spezifikation.md),
   [`AGENTS.md`](../AGENTS.md) §2, [`harness/README.md`](README.md) §Source precedence,
@@ -972,6 +980,8 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 ### MR-021 — Das Span-Schema zieht ins Technik-Stratum, sein Eintrag wird aufgehoben
 
+> **ÜBERHOLT: Punkt 2 der Liste „Was als Delta bleibt" → [`MR-030`](#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen).** Die übrigen Setzungen dieses Eintrags gelten fort.
+
 - **Datum:** 2026-08-02
 - **Geltungsbereich:** [`MR-018`](#mr-018--span-schema-der-telemetrie-erfassung) sowie die
   Abschnitte [3](../spec/spezifikation.md#3-defaults-und-konstanten) und
@@ -1053,6 +1063,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ### MR-022 — Kommentar-Regel als Vorgriff auf eine neuere Baseline
 
 - **Datum:** 2026-08-08
+- **Aufgehoben durch [`MR-031`](#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline).** Der Vorgriff ist eingeholt: die adoptierte Baseline `v5.12.0` führt die Regel. Die Regel selbst steht in [`AGENTS.md`](../AGENTS.md) §3.7, ihre Deckung gegen die Upstream-Fassung samt der offenen Textprüfung in [`MR-031`](#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline); den Rumpf trägt `git`.
 - **Geltungsbereich:** [`AGENTS.md`](../AGENTS.md) §3.7. Betrifft Kommentare in Code,
   Konfiguration und Skripten dieses Repos — **nicht** die emittierte Ebene: was ein Zielrepo
   an Regeln bekommt, entscheidet der Slice, der die Tool-Ebene entscheidet.
@@ -1087,6 +1098,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ### MR-023 — Die Platzierung der Kommentar-Regel ist keine Abweichung
 
 - **Datum:** 2026-08-09
+- **Aufgehoben durch [`MR-031`](#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline).** Sein Gegenstand war die Teil-Aufhebung von [`MR-022`](#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline); mit dessen vollständiger Aufhebung hat er keinen. Die Textprüfung, die er ausdrücklich offenließ, und der Mess-Stand gegen `v5.12.0` stehen in [`MR-031`](#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline); den Rumpf trägt `git`.
 - **Geltungsbereich:** [`MR-022`](#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)
   **Punkt 2** (*Platzierung*) und die entsprechende Aussage in
   [`AGENTS.md`](../AGENTS.md) §3.7. **Nicht** berührt: Punkt 1 (der Vorgriff), die
@@ -1818,6 +1830,354 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   sich nicht ein zweites Mal auf. Neu zu entscheiden ist der Gegenstand erst, wenn ein künftiger
   Baseline-Stand die dritte Rolle wieder anders schreibt als die übrigen fünf; dann ist die
   Differenz gegen den dann geltenden Tag zu messen und als neuer Eintrag zu führen.
+
+### MR-031 — Die Kommentar-Regel steht in der adoptierten Baseline
+
+- **Datum:** 2026-08-29
+- **Wirksamkeits-Anlass:** slice-081 — der Baum-Tausch, mit dem der Auflösungs-Trigger von
+  [`MR-022`](#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline) feuerte. slice-082 §3
+  weist den Vollzug einem Architect-Lauf zu ([`AGENTS.md`](../AGENTS.md) §3.8); dieser Eintrag
+  ist sein Ergebnis.
+- **Geltungsbereich:** [`MR-022`](#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)
+  und [`MR-023`](#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung) je
+  **vollständig**, dazu [`AGENTS.md`](../AGENTS.md) §3.7. **Nicht** die emittierte Ebene: was ein
+  Zielrepo an Kommentar-Regeln bekommt, entscheidet der Slice, der die Tool-Ebene entscheidet.
+- **Ersetzt-Baseline-Regel:** keine. Dieser Eintrag setzt **keine** Abweichung, er baut zwei
+  zurück. Nach dem Wortlaut der Eintrags-Vorlage — *„Ein Eintrag, der keine benannte Regel
+  ersetzt, ist ein **Fork**, keine Adaption"* — ist er damit ein Fork; die Einordnung wird hier
+  ausgesprochen, nicht bestritten. Was daraus für den Block folgt — ob ein Rückbau-Eintrag hier
+  stehen darf oder anderswohin gehört —, entscheidet slice-083 §2 für den ganzen Block und nicht
+  dieser Eintrag für sich.
+- **Adaption:** [`AGENTS.md`](../AGENTS.md) §3.7 ist keine Abweichung mehr, sondern die
+  repo-lokale Fassung einer Baseline-Regel: die Vorlage des adoptierten Standes führt sie unter
+  derselben Nummer und demselben Titel, der Grundlagen-Abschnitt schreibt sie aus, und §3.7 zeigt
+  seit diesem Eintrag dorthin. Die zwei Einträge, die sie als *Vorgriff* und als
+  *Platzierungs-Abweichung* führten, sind vollständig aufgehoben.
+- **Begründung:** Ein Vorgriff hört auf, einer zu sein, sobald der Stand da ist, auf den er
+  vorgriff. Bliebe er stehen, führte der Block eine Abweichung, die es nicht gibt — dieselbe
+  Klasse von Schaden, gegen die
+  [`MR-023`](#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung) entstand, nur mit
+  umgekehrtem Vorzeichen.
+- **Löst auf:** beide Einträge, vollständig.
+  [`MR-022`](#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline) deklarierte die Regel
+  als **Vorgriff** auf einen Kurs-Stand, den die adoptierte Baseline nicht führte;
+  [`MR-023`](#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung) hob dessen Punkt 2
+  auf und ließ eine Textprüfung offen. Beide Gegenstände sind fort. Nach
+  [`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf) behalten sie Nummer,
+  Überschrift wörtlich, `Datum` und eine Zeiger-Zeile; den Rumpf trägt `git`. **Das ist die heute
+  geltende Form**, und sie bleibt richtig, falls der Adaptions-Durchgang
+  [`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf) selbst ablöst: der
+  Rumpf liegt in `git`, gleich welche Form danach gilt.
+- **Ausgelöst durch Baseline-Stand:** `v5.12.0`. Die AGENTS-Vorlage führt die Regel als Hard Rule
+  mit derselben Nummer und demselben Titel
+  (`grep -c '^### 3\.7 Ein Kommentar beschreibt, was da ist$' .harness/baseline/v5.12.0/templates/AGENTS.template.md`
+  → **1**), ausgeschrieben trägt sie der Grundlagen-Abschnitt
+  (`grep -c '^### Was ein Kommentar trägt — Code, Konfiguration, Skripte$' .harness/baseline/v5.12.0/regelwerk/grundlagen-harness-dateien.md`
+  → **1**). Damit ist der Trigger aus
+  [`MR-022`](#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline) in seinem **ersten**
+  Zweig eingetreten — *deckt sie sich* —, und zwar gemessen am adoptierten Baum, nicht vorab.
+- **Die Textprüfung, die [`MR-023`](#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung)
+  offenließ — gefahren, mit Ausgang.** Ihre Frage: *trägt der hiesige Wortlaut die
+  Upstream-Semantik?* Die Antwort ist **nein an drei Posten** (die Liste unten zählt sie auf), und
+  alle drei sind **übernommen**; keiner bleibt als Abweichung stehen. Ein Kommando misst beide
+  Seiten:
+
+  ```sh
+  for p in 'Zustandsfeld' 'seit welle-' 'grundlagen-harness-dateien'; do
+    printf '%-28s AGENTS.md=%s Vorlage=%s\n' "$p" \
+      "$(grep -c "$p" AGENTS.md)" \
+      "$(grep -c "$p" .harness/baseline/v5.12.0/templates/AGENTS.template.md)"
+  done
+  ```
+
+  **Keine Erwartungswerte** ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2) — die Zahlen wandern mit beiden Texten; tragend ist, dass keine der drei Zeilen links
+  auf **0** steht.
+  1. **Die Zustandsfeld-Hälfte.** Die Vorlage bindet dieselbe Regel auf `Stand`-/`Status`-Zellen
+     und nennt sie schon in der Geltungszeile. §3.7 trägt sie jetzt als eigenen Absatz, mit den
+     Orten dieses Repos (Roadmap-Faden, Meilenstein-Tabelle, ADR-Index) und der Trennung
+     Drift-Log ↔ Closure-Log.
+  2. **Der dritte Herkunfts-Anker `· seit welle-<NN>`.** Er fehlte in der Aufzählung der
+     Begründung. Dieses Repo fährt Wellen-Betrieb
+     ([`MR-016`](#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)), also greift er.
+  3. **Der Zeiger auf den Grundlagen-Abschnitt.** Die Vorlage nennt ihn; §3.7 nannte ihn nicht und
+     war damit die einzige Fassung der Regel im Repo — genau die zweite Fassung, die driftet.
+- **Was über die Vorlage hinaus stehen bleibt, und warum es keine Abweichung ist.** Drei Stücke:
+  der **Geltungsbereich** (`.harness/baseline/` ausgenommen, ein Zeitdokument ist kein lebendes
+  Register, die emittierte Ebene entscheidet ein anderer Slice), der **Cutoff** und die
+  **Wächter-Aussage** *„`make comment-claims` prüft, ob ein genannter Sensor existiert, nicht,
+  worüber ein Kommentar spricht"*. Keines schränkt die Baseline-Regel ein — die Baseline sagt über
+  den Bestand nichts, verlangt also kein Nachrüsten, und einen Sensor behauptet keines von beiden.
+  Eine Ergänzung ohne Einschränkung ist keine Adaption;
+  [`MR-000`](#mr-000--baseline-aussage) wird für diesen Punkt nicht ausgenommen.
+- **Was hinter der Vorlage zurückbleibt: der zweite Träger fehlt — eine Lücke, keine Adaption.**
+  Der Grundlagen-Abschnitt nennt für **beide** Hälften zwei Träger: *„Träger aller drei ist das
+  Briefing … plus der HIGH-Eintrag Kommentar trägt keine der fünf Klassen im Reviewer-Skill …"*
+  — die zwei ausgelassenen Klammern nennen die Ziel-Form-Pfade der Vorlagen — und, für
+  Zustandsfelder, *„ist das eine Chronik?" ist ein Urteil — Träger sind das Briefing (§3.7) und
+  der HIGH-Eintrag Zustandsfeld trägt Chronik im Reviewer-Skill."* Der zweite existiert im Repo
+  für **keine** der beiden Hälften:
+
+  ```sh
+  grep -c 'Kommentar trägt keine' .harness/skills/reviewer.md                                                      # 0
+  grep -c 'Zustandsfeld' .harness/skills/reviewer.md                                                               # 0
+  grep -c 'Kommentar trägt keine' .harness/baseline/v5.12.0/templates/.harness/skills/reviewer.template.md          # 1
+  grep -c 'Zustandsfeld trägt Chronik' .harness/baseline/v5.12.0/templates/.harness/skills/reviewer.template.md     # 1
+  ```
+
+  **Keine Erwartungswerte** ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2) — alle vier wandern; tragend ist, dass die zwei oberen **0** sind. §3.7 trägt die
+  Regel im Repo damit **allein**, und dieser Eintrag beansprucht für den fehlenden zweiten Träger
+  **keine** Deckung. Geschlossen wird die Lücke am Reviewer-Skill; den führt slice-083 §2
+  namentlich, samt der Feststellung, dass für ihn keine Quelle eine schreibende Rolle benennt.
+- **Zwei allgemeine Sätze aus dem Rumpf von
+  [`MR-023`](#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung) binden weiter —
+  hier steht, wo.** [`ADR-0014`](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md)
+  Festlegung 2 (b) lässt einen Rumpf nur fallen, wenn jede bindende Aussage einen bindenden Ort
+  hat oder als *ersatzlos* mit Grund verzeichnet ist. Zwei Sätze jenes Rumpfs galten über seinen
+  Gegenstand hinaus:
+  1. *„Ein Sachfehler ist dabei kein eigener Vorgang und braucht keine eigene Regel: entweder kann
+     der Punkt ersatzlos entfallen … oder an seiner Stelle muss etwas Richtiges binden — dann
+     trägt es der aufhebende Eintrag. In beiden Fällen bleibt der Rumpf unangetastet."*
+     **Bindender Ort:** [`ADR-0014`](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md)
+     Festlegung 2 (a) und (b) — dieselbe Regel eine Ebene höher, als aktive ADR und damit stärker
+     gebunden als hier.
+  2. *„Eine Aussage über die Baseline nennt darum den Tag, gegen den sie gemessen ist."*
+     **Bindender Ort:** [`MR-033`](#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist),
+     wo der Satz wörtlich als Setzung 1 steht. Ein bestehender Ort trägt ihn nicht:
+     [`ADR-0016`](../docs/plan/adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 2 bindet die
+     Beleg-Form in Artefakten, *die unveränderlich werden*, und stellt
+     [`AGENTS.md`](../AGENTS.md) und diese Datei ausdrücklich auf die änderbare Seite; das
+     Pflichtfeld `Ausgelöst durch Baseline-Stand` der Eintrags-Vorlage greift nur zusammen mit
+     `Löst auf`. Übrig bliebe genau die Klasse, in der der Fehler entstand — eine
+     Baseline-Aussage in einem lebenden Artefakt.
+
+  **Ersatzlos entfällt nichts.** Der übrige Rumpf hatte seinen Gegenstand in
+  [`MR-022`](#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline) Punkt 2 und in einer
+  Vorab-Messung gegen einen Tag, der nie adoptiert wurde; er fällt mit dem Gegenstand, nicht gegen
+  eine fortbestehende Bindung.
+- **Die Vorab-Messung ist ersetzt, nicht fortgeschrieben.**
+  [`MR-023`](#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung) maß den ersten
+  Zweig gegen `v5.3.0` und erklärte ihn für `v5.3.1`; adoptiert wurde `v5.12.0`. Die zwei
+  Kommandos oben laufen gegen den Baum, der im Repo liegt — eine Messung gegen einen Tag, der nie
+  adoptiert wurde, trägt hier nichts.
+- **Kein Wächter, und das gehört dazu.** Kein Sensor dieses Repos hält [`AGENTS.md`](../AGENTS.md)
+  §3.7 gegen die Vorlage: kein Modul aus `modules:` der `.d-check.yml` vergleicht zwei
+  Markdown-Abschnitte, und `.harness/baseline/**` steht ohnehin in `scan.ignore`
+  ([`MR-029`](#mr-029--der-scanignore-zensus-wandert-und-sein-dritter-grund-ist-keine-scoping-aussage)).
+  `make comment-claims` hat keine Markdown-Datei im Prüfbereich. Auch der fehlende zweite Träger
+  ist unbewacht: kein Ziel liest den Reviewer-Skill gegen seine Vorlage. Die Kommandos oben sind
+  reproduzierbar, gefahren werden sie von keinem Gate. Träger ist der Form-Vergleich der
+  Re-Baseline (slice-083 für die Singleton-Form und für den Skill) und der Rollen-Wechsel vor der
+  Änderung.
+- **Auflösungs-Trigger:** permanent als Sachstands-Feststellung — ein eingeholter Vorgriff wird
+  nicht ein zweites Mal eingeholt. Neu anzufassen ist der Gegenstand erst, wenn ein künftiger
+  Baseline-Stand §3.7 ändert; dann ist gegen den dann geltenden Tag zu messen und als neuer
+  Eintrag zu führen.
+
+### MR-032 — Ein überholter Eintrag trägt eine Kopf-Marke auf seinen Nachfolger
+
+- **Datum:** 2026-08-29
+- **Wirksamkeits-Anlass:** slice-081 — dort entstand die erste Teil-Ablösung dieses Blocks
+  ([`MR-029`](#mr-029--der-scanignore-zensus-wandert-und-sein-dritter-grund-ist-keine-scoping-aussage)),
+  und ihr Vorgänger blieb ohne Zeiger. slice-082 §2 (3) führt die Form als **einmal zu
+  entscheidenden** Posten; entschieden ist sie hier, weil dieser Block dem Architect gehört
+  ([`AGENTS.md`](../AGENTS.md) §3.8). **Der Bestands-Durchgang jenes Slice ist damit nicht
+  vorweggenommen:** gesetzt sind hier nur die Marken, die kein Zeichen eines bestehenden Eintrags
+  ersetzen; was in der älteren `HISTORIE`-Beschriftung liegt, bleibt liegen (unten).
+- **Geltungsbereich:** die **Form** eines Eintrags dieses Blocks, dessen Aussage ein späterer
+  Eintrag ablöst. **Nicht** `docs/plan/adr/` — dort gilt [`AGENTS.md`](../AGENTS.md) §3.4
+  unverändert; **nicht** die emittierte Ebene.
+- **Ersetzt-Baseline-Regel:**
+  [`grundlagen-harness-dateien.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
+  §harness/conventions.md als Konventionsspeicher — *„Der Zustand ist die Verzeichnis-Position,
+  kein Status-Feld."*
+- **Adaption:** Der Zustand *überholt* bekommt in diesem Block einen Träger im Text — eine
+  Blockquote-Zeile im Kopf des überholten Eintrags —, weil die Verzeichnis-Position, die ihn in
+  der Baseline trägt, hier nicht existiert.
+- **Begründung:** Wer auf dem Vorgänger landet, erfährt sonst nichts. Gemessen ist der Fall:
+  [`MR-029`](#mr-029--der-scanignore-zensus-wandert-und-sein-dritter-grund-ist-keine-scoping-aussage)
+  löste eine Aussage von [`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
+  ab, und [`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) — der Eintrag,
+  den jeder Lauf zuerst liest — sagte sie weiter unwidersprochen.
+- **Setzung 1 — die Form ist eine Zeile, und sie wird gesetzt, nicht getauscht.** Direkt unter der
+  Überschrift, vor der Feldliste, steht eine Blockquote-Zeile in dieser Gestalt:
+
+  ```text
+  > **ÜBERHOLT: <Reichweite> → <Ziel>.** <Fortgeltung, optional>
+  ```
+
+  `<Reichweite>` ist die abgelöste Aussage, benannt — oder *dieser Eintrag*, wenn alles fällt.
+  `<Ziel>` ist die Anker-Adresse des ablösenden Eintrags, wie sie jeder Verweis
+  auf eine Adaption trägt. Nehmen **mehrere** spätere Einträge dieselbe Aussage punktweise aus und
+  ist die Menge offen, tritt an die Stelle des Links das **Kommando**, das die Menge ausgibt: ein
+  Link auf einen von mehreren behauptete eine Rangfolge, die es nicht gibt, und eine Liste von
+  Links müsste bei jedem weiteren Eintrag nachgezogen werden. `<Fortgeltung>` sagt in einem Satz,
+  was am Eintrag weiter bindet. Weitere Blockquote-Zeilen sind frei.
+
+  **Sonst wird am Eintrag nichts geändert:** der Rumpf bleibt wörtlich, kein Satz wird
+  nachgezogen, keine Adresse getauscht — **und eine Marke, die in einer früheren Beschriftung
+  schon dasteht, wird nicht umgeschrieben.** Sie zu ersetzen wäre genau das Überschreiben, das die
+  Ziel-Form ausschließt; die Form bindet die Marke, die **gesetzt** wird.
+- **Setzung 2 — warum das Setzen kein Überschreiben ist.** Die Ziel-Form sagt *„Einträge werden
+  nie überschrieben"*. Die Marke ersetzt keine Aussage des Eintrags; sie tritt daneben und nennt
+  seinen **Zustand**. Diesen Zustand trägt die Baseline in ihrer **Default-Form** ohne einen
+  einzigen Zeichenwechsel im Eintrag: dort liegt jede Adaption in einer eigenen Datei, und mit dem
+  Eintreten ihres Triggers wandert sie nach `conventions/done/` — *„Der Zustand ist die
+  Verzeichnis-Position, kein Status-Feld."* Dieses Repo führt den Block **inline**; eine Position
+  gibt es nicht, also braucht der Zustand einen Träger im Text.
+- **Setzung 3 — wer sie setzt und wann.** Der **ablösende** Eintrag setzt sie in derselben
+  Änderung, in der er entsteht. Ein Nachfolger ohne Marke am Vorgänger ist unvollständig.
+- **Setzung 4 — wann sie fällig ist und wann nicht.** Fällig, wenn ein späterer Eintrag eine
+  Aussage **namentlich** ablöst oder für überholt erklärt. **Nicht** fällig, wo ein Eintrag von
+  vornherein eine datierte Momentaufnahme ist, deren lebender Wert anderswo deklariert steht: die
+  d-check-Pin-Kette ist dieser Fall — §Baseline nennt den lebenden Pin und führt die Kette, und
+  ein Pin-Eintrag löst keine Aussage ab, sondern datiert einen Sprung. Und **nicht** fällig macht
+  sie ein Satz, der einem anderen Eintrag zusagt, er werde nicht **korrigiert**: einen solchen
+  Satz löst die Marke nicht ab, sie hält ihn ein — siehe die Auslegung unten.
+- **Die Nicht-Anfassen-Sätze dieses Blocks werden nicht aufgehoben, sondern in ihrer Reichweite
+  ausgesprochen.** Sechs Sätze sagen über einen anderen Eintrag, er bleibe *unangetastet* bzw.
+  werde *nicht angefasst*: in
+  [`MR-019`](#mr-019--technik-stratum-als-rang-2-der-source-precedence),
+  [`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf) und
+  [`MR-026`](#mr-026--die-hard-rule-nummer-ist-eine-adresse-keine-baseline-entsprechung) über
+  [`MR-000`](#mr-000--baseline-aussage), in
+  [`MR-021`](#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben) über
+  [`MR-019`](#mr-019--technik-stratum-als-rang-2-der-source-precedence), in
+  [`MR-029`](#mr-029--der-scanignore-zensus-wandert-und-sein-dritter-grund-ist-keine-scoping-aussage)
+  über [`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) und in
+  [`MR-030`](#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen) über
+  [`MR-021`](#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben).
+  Was sie schützen, ist der **Rumpf**: keine Korrektur, kein nachgezogener Satz, keine getauschte
+  Adresse. Genau das lässt die Marke unberührt (Setzung 2) — sie ist damit **erfüllt, nicht
+  aufgehoben**, und keiner der sechs Einträge bekommt deswegen eine Marke.
+  [`MR-029`](#mr-029--der-scanignore-zensus-wandert-und-sein-dritter-grund-ist-keine-scoping-aussage)
+  sagt den Grund selbst: *„ihn zu überschreiben löschte, wann die Klassifikation noch stimmte"* —
+  die Marke löscht davon nichts, sie sagt daneben, dass es nicht mehr stimmt. Diese Auslegung
+  steht hier und nur hier; die sechs Einträge werden dafür nicht angefasst.
+
+  **Die Menge ist gelesen, nicht gegrept.** Ein zeilenweises Muster findet sie nicht vollständig —
+  der Satz in
+  [`MR-021`](#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+  bricht zwischen *nicht* und *angefasst* um. Absatzweise gelesen liefert
+  `awk 'BEGIN{RS=""} /unangetastet|nicht[[:space:]]+angefasst/ {n++} END{print n}' harness/conventions.md`
+  die **Kandidaten**; welche davon ein Satz über einen anderen Eintrag sind, ist ein Urteil, kein
+  Muster ([`AGENTS.md`](../AGENTS.md) §3.6) — die Zahl der Kandidaten wandert mit dem Block
+  ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2).
+- **Warum `ÜBERHOLT` und nicht `HISTORIE`.** *Historie* ist das falsche Wort für ein Zustandsfeld:
+  die Marke nennt den **Zustand** und den Beleg, nicht die Chronik
+  ([`AGENTS.md`](../AGENTS.md) §3.7, Zustandsfeld-Hälfte); die Chronik hält `git`. Das ist der
+  ganze Grund. **Ein Zensus-Argument steht hier bewusst nicht:** eine Zählung der gesetzten Marken
+  (`grep -c '^> \*\*ÜBERHOLT: ' harness/conventions.md`) misst, wie oft die Beschriftung gewählt
+  wurde, nicht, ob die Wahl richtig war — und die Zahl im anderen Instrument
+  (`grep -c '^- \*\*Aufgehoben durch ' harness/conventions.md`) hängt von der Beschriftung
+  überhaupt nicht ab. Beide Zahlen wandern
+  ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2).
+- **Zwei Beschriftungen liegen im Bestand, und sie bleiben liegen.**
+  [`MR-004`](#mr-004--sessionstart-regelwerk-injektor) und
+  [`MR-006`](#mr-006--regelwerk-cache-als-split-modul-verzeichnis) tragen ihre Marke
+  in der älteren Beschriftung `HISTORIE` (`grep -c '^> \*\*HISTORIE' harness/conventions.md`; die Zahl wandert).
+  Sie werden **nicht** umgeschrieben — Setzung 1 bindet die Marke, die gesetzt wird, und ein
+  Tausch wäre ein Überschreiben. Der Preis ist benannt: bis zu einem Durchgang, der die zwei
+  Einträge aus einem eigenen Grund anfasst, findet man Marken über **zwei** Muster statt über
+  eines. Der Zuschnitt dieses Durchgangs liegt bei slice-082 §2 (3).
+- **Zwei Instrumente, zwei Fälle, und sie werden nicht zusammengelegt.** **Teil-Ablösung** → Rumpf
+  bleibt, Kopf-Marke; [`ADR-0014`](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md)
+  Festlegung 2 (a) lässt den Rumpf nur bei **vollständiger** Aufhebung fallen. **Vollständige
+  Aufhebung** → Nummer, Überschrift wörtlich, `Datum` und eine `Aufgehoben durch`-Zeile, Rumpf
+  entfällt ([`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)). Ein
+  Eintrag trägt genau eines von beiden.
+- **Kein Wächter, und das gehört dazu.** Kein Modul aus `modules:` der `.d-check.yml` liest, ob
+  ein Eintrag, dessen Aussage abgelöst ist, eine Marke trägt — `links` prüft Link-Ziele, `ids` die
+  drei Muster —, und die Fälligkeit aus Setzung 4 ist ein **Urteil, kein Muster**
+  ([`AGENTS.md`](../AGENTS.md) §3.6). Ein `grep` zählt gesetzte Marken, nicht fehlende.
+  Träger ist der Rollen-Wechsel vor der Änderung.
+- **Auflösungs-Trigger:** die Migration dieses Blocks in die **Verzeichnis-Form**, die der
+  adoptierte Stand zum Default macht und die
+  [`MR-030`](#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen) als eigenen,
+  noch ungeschnittenen Vorgang benennt. Dann trägt die Verzeichnis-Position den Zustand, und die
+  Marke wird gegenstandslos.
+- **Hebt die Blankett-Klausel aus [`MR-000`](#mr-000--baseline-aussage) für diesen Punkt auf**
+  — *„keine inhaltlichen Adaptionen ggü. Baseline-Default"*.
+  [`MR-000`](#mr-000--baseline-aussage) behält seinen Rumpf wörtlich; dass die Klausel punktweise
+  ausgenommen ist, sagt seit diesem Eintrag seine Kopf-Marke, und seine übrigen Setzungen gelten
+  fort.
+
+### MR-033 — Eine Aussage über die Baseline nennt den Tag, gegen den sie gemessen ist
+
+- **Datum:** 2026-08-29
+- **Wirksamkeits-Anlass:** die vollständige Aufhebung von
+  [`MR-023`](#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung) durch
+  [`MR-031`](#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline). Der Satz stand in
+  jenem Rumpf und band über dessen Gegenstand hinaus;
+  [`ADR-0014`](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) Festlegung 2 (b)
+  verlangt für ihn einen bindenden Ort oder einen Vermerk *ersatzlos mit Grund*. Dies ist der Ort.
+- **Geltungsbereich:** die **lebenden**, repo-eigenen Markdown-Artefakte — derselbe Ausschnitt,
+  den [`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  §Geltungsbereich über vier Kommandos definiert; er steht hier nicht ein zweites Mal, weil zwei
+  Fassungen desselben Ausschnitts driften. **Dieses Repo, nicht das emittierte:** was ein
+  emittiertes Repo an Beleg-Regeln bekommt, entscheidet der Slice, der die Tool-Ebene entscheidet.
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**.
+  Dieselbe Einordnung und dieselbe offene Folge wie bei
+  [`MR-031`](#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline): was daraus für den
+  Block folgt, entscheidet slice-083 §2.
+- **Setzung 1, wörtlich aus dem aufgehobenen Rumpf übernommen:** *„Eine Aussage über die Baseline
+  nennt darum den Tag, gegen den sie gemessen ist."* Wer schreibt, die Baseline führe etwas oder
+  führe es nicht, sage es so oder anders, nennt den Stand, an dem er nachgesehen hat — im selben
+  Absatz und nicht implizit über den gerade gepinnten Tag. Ein Kommando, dessen Pfad den Tag
+  enthält, erfüllt die Setzung; ein Satz ohne Tag erfüllt sie nicht.
+- **Setzung 2 — was die Setzung nicht verlangt.** Sie verlangt keine bestimmte Verweis-Form. Wo
+  ein Artefakt unveränderlich wird, gilt daneben
+  [`ADR-0016`](../docs/plan/adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 2 mit ihren drei
+  Teilen; wo es lebt, genügt der Tag. Und sie bindet die **Aussage über die Baseline**, nicht jede
+  Nennung eines Pfad-Musters: eine Layout-Beschreibung nennt keinen Tag, sonst beschriebe sie
+  einen Einzelfall — die Unterscheidung ist dieselbe, die
+  [`ADR-0016`](../docs/plan/adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 2 zwischen Beleg
+  und Layout zieht.
+- **Adaption:** Die Eintrags-Vorlage verlangt den Baseline-Stand als Pflichtfeld nur zusammen mit
+  `Löst auf`. Hier gilt er für jede Baseline-Aussage in einem lebenden Artefakt dieses Repos,
+  unabhängig von Feld und Datei.
+- **Begründung (gemessen, nicht postuliert):** Der Schaden ist eingetreten und protokolliert. Eine
+  Hard Rule samt Adaptions-Eintrag wurde in Kraft gesetzt auf eine behauptete Baseline-Abweichung,
+  die es nicht gab — *„gemessen gegen einen Tag, den zwei Releases überholt hatten, und ohne die
+  Mess-Version zu nennen"* ([`AGENTS.md`](../AGENTS.md) §3.8 §Begründung, wo derselbe Vorfall die
+  Rollen-Trennung trägt). Ohne den Tag ist eine Baseline-Aussage nicht falsch, sondern
+  **unprüfbar**: der Baum unter `.harness/baseline/` wandert mit jeder Re-Baseline, und ein Leser
+  kann nicht unterscheiden, ob eine Aussage am heutigen Stand gemessen wurde oder an einem, den
+  niemand mehr sehen kann.
+- **Warum ein eigener Eintrag und nicht ein Satz in
+  [`MR-031`](#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline).** Die Setzung hat
+  einen anderen Gegenstand als jener Eintrag; unter dessen Überschrift fände sie niemand, der sie
+  sucht. Eine Aussage hat einen Ort.
+- **Der Ort ist offen, die Verbindlichkeit nicht.** Wie
+  [`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) §*Der Ort ist
+  offen* für seine Schwester-Setzung festhält, gehört eine Regel, die eine **Lücke füllt** statt
+  von der Baseline abzuweichen, nach [`AGENTS.md`](../AGENTS.md) §3.8 nicht in diesen Block. Bis
+  über den Block entschieden ist (slice-083 §2), gilt die Setzung von hier: er ist normativ wie
+  eine ADR, nur ohne deren Immutabilität.
+- **Cutoff — ab diesem Eintrag, kein Nachrüsten.** Gebunden ist die Baseline-Aussage, die
+  geschrieben oder geändert wird; der **Bestand ist kein Arbeitsauftrag**. Seine Fläche ist
+  gemessen, nicht geschätzt:
+  `git grep -l 'Baseline' -- '*.md' ':!docs/reviews/**' ':!docs/plan/planning/done/**' ':!.harness/baseline/**' ':!*.template.md' | wc -l`
+  nennt die lebenden Markdown-Dateien, in denen das Wort überhaupt vorkommt. Das ist die
+  **Obergrenze der Fläche** und **kein Erwartungswert**
+  ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2) —
+  keine Zahl von Verstößen: wie viele dieser Dateien eine Aussage ohne Tag tragen, sagt kein
+  Kommando, weil die Zugehörigkeit ein Urteil ist ([`AGENTS.md`](../AGENTS.md) §3.6). Ein Maßstab
+  über diesen Bestand wäre dauerhaft rot und entwertete die Setzung, statt sie zu tragen —
+  dieselbe Begründung trägt den Cutoff in
+  [`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) und in
+  [`AGENTS.md`](../AGENTS.md) §3.7.
+- **Kein Wächter, und das gehört dazu.** Kein Modul aus `modules:` der `.d-check.yml` prüft, ob
+  ein Satz über die Baseline einen Tag nennt; `links` prüft Auflösbarkeit, `ids` drei Kennungs-
+  Muster. `make comment-claims` hat keine Markdown-Datei in seinem Prüfbereich. Die Setzung liegt
+  im Feedforward-Quadranten; ihr Träger ist der Rollen-Wechsel vor der Änderung und die
+  Review-Runde danach — der Vorfall aus der Begründung ist von einem zweiten Kontext gefunden
+  worden, nicht von einem Gate.
+- **Auflösungs-Trigger:** permanent. Ein Tag, gegen den gemessen wurde, hört nicht auf, die
+  Prüfbarkeit zu tragen. Fällt die Setzung, dann durch Verlegung nach
+  [`AGENTS.md`](../AGENTS.md) §3 — dann bleiben hier nach
+  [`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf) Kopf und Zeiger.
 
 ## Modus-Deklaration pro Sub-Area
 
