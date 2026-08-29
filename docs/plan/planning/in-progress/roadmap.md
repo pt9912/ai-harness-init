@@ -46,7 +46,7 @@ Beim ersten ist die Kennung im Gate-Output möglich, aber nicht gesetzt — ein 
 `slice-081` §2 DoD (4) führt. **Die Welle schließt erst, wenn beide in `carveouts/done/` liegen** —
 ein Welle-Grün, das sie mitzählte, hieße *„grün, außer wo wir nicht hinsehen"*.
 
-**Außerhalb der Gates liegt die zweite Sorte, und sie trägt keinen Carveout.** `make smoke` meldet
+**Außerhalb der Gates liegt die zweite Sorte, und sie trägt keinen Carveout.** `make smoke` meldete
 **10** Befunde im emittierten Baum (`23 Datei(en) geprüft, 10 Befund(e)` am Stand `26aec2c` gegen
 `19 Datei(en) geprüft, 0 Befund(e)` über `c6cc56f` — keine Erwartungswerte,
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
@@ -54,8 +54,13 @@ Setzung 2). Gebrochen sind [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01-
 und [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), Rang 1 der
 Source Precedence. **Eine Rang-1-Zusage wird repariert, nicht ausgenommen:** ein Carveout steht in
 keinem Rang und darf nichts festlegen, und der Werkzeug-Trichter aus Modul 7 führt bei einer
-Häufung ohnehin nicht auf ihn. Getragen wird der Bruch von zwei Slices — **7** Befunde
-`slice-133`, **3** `slice-130` —, und
+Häufung ohnehin nicht auf ihn. Getragen wird der Bruch von zwei Slices: **8** Befunde hat
+`slice-133` weggenommen (die sieben Platzhalter-Links der schon vorher emittierten Singletons plus
+einen, dessen Ziel dieselbe Form trug — die gebaute Regel kennt die **Form** und keine Namen),
+**2** trägt `slice-130`. Dasselbe Kommando am Stand `66459c7`:
+`23 Datei(en) geprüft, 2 Befund(e)`, gleicher Nenner.
+**[`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) bleibt bis `slice-130`
+gebrochen** (`make full-smoke; echo $?` → **2**), und
 [welle-10](../welle-10-re-baseline.md) §3 führt `make smoke` und `make full-smoke` im
 Closure-Kriterium.
 

@@ -2,30 +2,54 @@
 
 **Status:** Aktiv.
 
-**Datum angelegt:** 2026-08-28. **Letzte Prüfung:** 2026-08-28 (angelegt).
+**Datum angelegt:** 2026-08-28. **Letzte Prüfung:** 2026-08-29 (Closure
+[slice-133](../planning/in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md): Deckung
+unverändert, Buchhaltung nachgezogen — s. §Geschichte).
 
 **Betroffenes Gate:** `test` (bats-Stufe) und damit `gates`.
 
 **Geltungsbereich:** **zwei benannte Fälle** in `test/courseset-fixture.bats`, hier mit dem
 Wortlaut, unter dem sie auffindbar sind (`grep -n '^@test' test/courseset-fixture.bats`) —
-*„fixture: courseSet() bildet den realen Template-Satz vollstaendig ab"* (Z. 53) und *„fixture:
-der reale Satz liefert genau 17 in-scope-Templates"* (Z. 71). Die **17** im Fallnamen ist der
+*„fixture: courseSet() bildet den realen Template-Satz vollstaendig ab"* (Z. 59) und *„fixture:
+der reale Satz liefert genau 17 in-scope-Templates"* (Z. 77). Die **17** im Fallnamen ist der
 Stand vor dem Tausch und wandert mit der Entscheidung des Folge-Slice; sie steht hier, weil sie
 Teil des Namens ist, nicht als Erwartungswert. **Extensional geschlossen:** jeder weitere rote
 Fall in dieser oder einer anderen Datei fällt **nicht** unter diesen Carveout und ist eine eigene
-Entscheidung ([`AGENTS.md`](../../../AGENTS.md) §3.5). Der dritte Fall derselben Datei — *„fixture:
-die fuenf wiederkehrenden Templates existieren real"* (Z. 87) — ist grün und bleibt es.
+Entscheidung ([`AGENTS.md`](../../../AGENTS.md) §3.5). Die beiden anderen Fälle derselben Datei
+sind grün und bleiben es: *„fixture: die fuenf wiederkehrenden Templates existieren real"* (Z. 93)
+und *„fixture: courseSet() fuehrt jede Platzhalter-Pfad-Form des realen Satzes"* (Z. 165, der
+Inhalts-Wächter aus
+[slice-133](../planning/in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md)). Die
+Zeilenangaben wandern mit der Datei und sind keine Erwartungswerte
+([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2); der **Wortlaut** ist der Geltungsbereich, nicht die Zeile. Die Fall-**Nummern** des
+Laufs — `not ok 40` und `not ok 41` — sind davon unberührt.
 
-**Nicht Geltungsbereich, und die Abgrenzung ist der wichtigste Satz dieses Kopfes:** die zehn
-Befunde, die `make smoke` im **emittierten** Baum meldet, fallen **nicht** unter diesen Carveout.
+**Nicht Geltungsbereich, und die Abgrenzung ist der wichtigste Satz dieses Kopfes:** die
+Befunde, die `make smoke` im **emittierten** Baum meldet — beim Anlegen zehn, am Stand `66459c7`
+zwei —, fallen **nicht** unter diesen Carveout.
 Sie brechen [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und
 [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) — Rang 1 der
 Source Precedence —, und eine Rang-1-Zusage wird nicht durch einen Carveout ausgenommen, sondern
 durch Reparatur eingelöst; die Begründung führt
 [slice-133](../planning/in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1. Ihre Träger
-sind zwei Slices, nicht diese Datei: **sieben** Befunde
-[slice-133](../planning/in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md), **drei**
-[slice-130](../planning/open/slice-130-emitter-entscheidet-jedes-neue-template.md).
+sind zwei Slices, nicht diese Datei: **acht** Befunde hat
+[slice-133](../planning/in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md)
+weggenommen, **zwei** trägt
+[slice-130](../planning/open/slice-130-emitter-entscheidet-jedes-neue-template.md). Gemessen mit
+demselben Kommando über zwei Ständen: `make smoke` am Stand `26aec2c`
+`23 Datei(en) geprüft, 10 Befund(e)`, am Stand `66459c7` `23 Datei(en) geprüft, 2 Befund(e)` —
+gleicher Nenner, also ist nichts aus dem Prüfbereich gefallen. **Acht statt der sieben, mit denen
+der Schnitt rechnete, und der Grund ist die Bauart:** die Neutralisierung trägt die
+Platzhalter-**Form** und verfügt über keine Namen, also fiel `<ziel>/harness/conventions/MR-NNN-titel.md`
+mit — ein Befund der Ursache B, der dieselbe Form trug. **Der Entscheidungs-Gegenstand von
+slice-130 ist davon unberührt:** die Klassen-Weichen sind über die ganze slice-133-Kette
+unangetastet
+(`git diff 3ea5ae2^ 66459c7 -- internal/emit/templates.go | grep -cE '^[+-][^+-].*func (inScope|isRecurring|isDerivativeIndex)'`
+→ **0**), `MR-NNN-titel.template.md` wird weiterhin als Singleton emittiert, und die zwei
+verbliebenen Befunde stehen beide in `<ziel>/docs/plan/planning/welle-results.md` (`:67`, `:83`).
+Wer die Differenz als Regression liest, sucht einen Fehler, den es nicht gibt; wer sie als
+*„schon erledigt"* liest, lässt die Klassen-Entscheidung fallen, die davon unberührt ist.
 
 **Folge-Slice:** [slice-130](../planning/open/slice-130-emitter-entscheidet-jedes-neue-template.md)
 — er entscheidet je Vorlage die Klasse und löst diesen Carveout mit seinem Abschluss auf.
@@ -57,10 +81,14 @@ der Emissions-Pfad. Der emittierte Bestand steht deshalb bereits auf **23** Date
 Vor-Tausch-Stand (`T=$(mktemp -d); git archive c6cc56f | tar -x -C "$T"; cd "$T" && make smoke`) —
 beide Zahlen wandern mit dem Vorlagen-Satz und sind **keine Erwartungswerte**
 ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2). Unter den zehn Befunden stehen die drei, die an diesen vier Vorlagen hängen — im
+Setzung 2). Unter jenen zehn standen drei, die an diesen vier Vorlagen hingen — im
 **gebootstrappten Zielrepo**, hier `<ziel>/`, nicht in diesem:
 `<ziel>/docs/plan/planning/welle-results.md:67` und `:83` sowie
-`<ziel>/harness/conventions/MR-NNN-titel.md:15`.
+`<ziel>/harness/conventions/MR-NNN-titel.md:15`. Der dritte ist mit
+[slice-133](../planning/in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md)
+gefallen, weil sein Ziel-Pfad `<tag>` trug und die Form-Regel keine Namen kennt; **zwei** stehen
+noch (`make smoke` am Stand `66459c7`), und sie tragen keinen `<…>`-Platzhalter, lösen sich also
+nur über die Klasse.
 Die Zusage aus
 [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), der emittierte
 Stand sei *„out-of-the-box gate-sicher"*, **ist damit gebrochen** — und zwar unabhängig von jeder
@@ -137,7 +165,7 @@ rot. Ein Ausschluss der Fälle wäre eine Schwellen-Senkung und nach
 
 | Datei | Zeile/Section | Wert |
 |---|---|---|
-| — | — | heute keine. Die Fehlermeldungen der Fälle Z. 53 und Z. 71 nennen `CO-004` **nicht**; die Nennung ist möglich, aber nicht gesetzt (Begründung oben, Kommando gefahren) |
+| — | — | heute keine. Die Fehlermeldungen der zwei Fälle des Geltungsbereichs (Z. 59 und Z. 77) nennen `CO-004` **nicht**; die Nennung ist möglich, aber nicht gesetzt (Begründung oben, Kommando gefahren) |
 
 ## Verifikation (nach Auflösung)
 
@@ -157,3 +185,4 @@ rot. Ein Ausschluss der Fälle wäre eine Schwellen-Senkung und nach
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-08-28 | Angelegt — der Baum-Tausch stellt dem Emitter vier unbeantwortete Klassen-Fragen | [slice-081](../planning/done/slice-081-baum-tauschen-pin-ziehen.md) |
+| 2026-08-29 | Geprüft, **nicht** aufgelöst: die Deckung ist unverändert (die zwei roten Fälle tragen weiter ihren Wortlaut, `make -k gates` hat keinen roten Fall daneben), die Buchhaltung ist nachgezogen — `8`/`2` statt `7`/`3`, verschobene Zeilenangaben, ein vierter grüner Fall in derselben Datei | [slice-133](../planning/in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) §7 |

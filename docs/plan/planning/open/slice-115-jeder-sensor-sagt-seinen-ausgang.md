@@ -114,7 +114,14 @@ Host-Baum unberührt): eine Einordnung bekommt die Ausgabe eines **anderen** Abs
 `make test-bats` **EXIT=0**, `make shell-lint` **EXIT=0**,
 `make comment-claims` `46 Datei(en) geprueft, 0 Befund(e)`. Dieselbe Kopie mit der **entfernten**
 Zeile fällt dagegen sofort und lesbar (`not ok 71 … ohne Einordnung: [Zeile 217]` und
-`not ok 72 … A=33 B=5 C=6 D=23 -> A-B-C=22 gegen D-2=21`).
+`not ok 72 … A=33 B=5 C=6 D=23 -> A-B-C=22 gegen D-2=21`). **Die zwei Fall-Nummern sind das
+Protokoll jenes Laufs, kein Erwartungswert**
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2): bats zählt über alle `test/*.bats` in Sortier-Reihenfolge durch, und jeder eingefügte
+Fall verschiebt alles danach — `slice-133` hat **einen** auf Position `43` gesetzt
+(`git grep -c '^@test' 3ea5ae2^ -- 'test/' | awk -F: '{s+=$NF} END{print s}'` → **189** gegen
+dasselbe Kommando auf `HEAD` → **190**), seither meldet `make test-bats` `1..190`, und dieselbe
+Sonde landet eine Nummer höher. Wer sie nachstellt, liest die **Namen**, nicht die Zahlen.
 
 **Der Wächter deckt beide Drift-Richtungen der Menge und keine Drift innerhalb eines Abschnitts.**
 Die stärkere Prüfung ist schon einmal gefahren worden: die

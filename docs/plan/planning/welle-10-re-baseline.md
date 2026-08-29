@@ -258,12 +258,19 @@ Setzung 2). Gebrochen sind
 **Das trägt kein Carveout, sondern zwei Slices:** eine Rang-1-Zusage wird nicht ausgenommen — ein
 Carveout steht in keinem Rang und dürfte nach `grundlagen-source-precedence.md` §Vollständigkeit
 verweisen, ausführen und ausbuchstabieren, aber nichts festlegen —, und der Trichter aus
-`modul-07-carveouts.md` §Werkzeug-Wahl führt bei dieser Häufung ohnehin nicht auf Carveout. **7**
-Befunde trägt [slice-133](in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) (Platzhalter-
-Links in drei schon vorher emittierten Singletons), **3** trägt
-[slice-130](open/slice-130-emitter-entscheidet-jedes-neue-template.md) (sie lösen sich mit der
-Klassen-Entscheidung). Die Aufteilung ist je Befund an seiner Vorlagen-Zeile erhoben, nicht über
-die Summe geschlossen; die Tabelle steht in slice-133 §1.
+`modul-07-carveouts.md` §Werkzeug-Wahl führt bei dieser Häufung ohnehin nicht auf Carveout. **8**
+Befunde hat [slice-133](in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md)
+weggenommen (Platzhalter-Links, sieben davon in drei schon vorher emittierten Singletons), **2**
+trägt [slice-130](open/slice-130-emitter-entscheidet-jedes-neue-template.md) (sie lösen sich mit
+der Klassen-Entscheidung). Die Aufteilung ist je Befund an seiner Vorlagen-Zeile erhoben, nicht
+über die Summe geschlossen; die Tabelle steht in slice-133 §1. **Der Schnitt rechnete mit sieben
+und zwei bis drei**, weil er nach Ursachen teilte; die gebaute Neutralisierung trägt die
+Platzhalter-**Form** und kennt keine Namen, also nahm sie einen Befund der zweiten Ursache mit.
+Dasselbe Kommando über dem Stand `66459c7`: `make smoke` → `23 Datei(en) geprüft, 2 Befund(e)`,
+gleicher Nenner. Der **Entscheidungs**-Gegenstand von slice-130 ist unberührt — die Klassen-Weichen
+sind über die ganze slice-133-Kette unangetastet
+(`git diff 3ea5ae2^ 66459c7 -- internal/emit/templates.go | grep -cE '^[+-][^+-].*func (inScope|isRecurring|isDerivativeIndex)'`
+→ **0**).
 
 **Zwei Carveouts halten den Zwischenzustand der Gates sichtbar statt still:**
 [`CO-004`](../carveouts/CO-004-emitter-klassifikation-offen.md) (Gate `test`, Folge-Slice 130) und
@@ -281,7 +288,7 @@ Jobs bis 130, für den vierten bis 132.** Der Workflow fährt vier Jobs
 am 2026-08-29 **4**: `gates`, `smoke`, `full-smoke`, `mutate`), und alle vier hängen an **einer**
 Ursachenkette. Wer welchen zurückgibt, ist keine Schätzung, sondern steht in den Trägern: `smoke`
 und `full-smoke` an [slice-133](in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) **und**
-[slice-130](open/slice-130-emitter-entscheidet-jedes-neue-template.md) (7 + 3 Befunde); `mutate`
+[slice-130](open/slice-130-emitter-entscheidet-jedes-neue-template.md) (8 + 2 Befunde); `mutate`
 an denselben zwei, weil sein Grün-Vorlauf genau diese Modi fährt; `make gates` an
 [slice-130](open/slice-130-emitter-entscheidet-jedes-neue-template.md)
 ([`CO-004`](../carveouts/CO-004-emitter-klassifikation-offen.md)) **und**
@@ -290,6 +297,19 @@ an denselben zwei, weil sein Grün-Vorlauf genau diese Modi fährt; `make gates`
 ist nicht das Rot, sondern der blinde Fleck darunter: `mutate` läuft in diesem Fenster über
 **null** Fälle, die Haltbarkeits-Prüfung der **gelisteten** Wächter aus
 [`AGENTS.md`](../../../AGENTS.md) §3.6 findet also nicht statt.
+
+**Mit [slice-133](in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) ist keiner der
+vier Jobs zurück, und dieser Satz steht hier, weil sein Abschluss sonst falsch gelesen wird.**
+`make full-smoke` am Stand `66459c7` endet mit Exit **2** und
+`full-smoke: FEHLER — make gates im emittierten Repo ist NICHT Exit 0 (LH-FA-01 Happy-Path
+verletzt)`. Der Lauf erreicht das Zielrepo — die Netz-Bedingung war erfüllt, der Treiber ordnet
+den Fehlschlag selbst zu (`AUSGANG BAUM`) — und fällt dort an genau **einem** Teil-Ziel
+(`make full-smoke 2>&1 | grep -cE '^make\[1\]: \*\*\* \['` → **1**, `docs-check`), mit den zwei
+Befunden, die [slice-130](open/slice-130-emitter-entscheidet-jedes-neue-template.md) trägt.
+**[`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) ist damit weiterhin
+gebrochen; die Closure dieser Welle darf slice-133 nicht als Beleg für den Happy Path führen** —
+eingelöst wird er erst mit slice-130 DoD (3), das den gemeinsamen Nachweis über beide Ursachen
+führt.
 
 **Ein Zwischenziel, das `main` früher grün zurückgibt, wird hier nicht geschnitten — und der
 Grund ist der Rang, nicht der Aufwand.** Der kürzeste Weg zu einem grünen `make gates` liefe über
@@ -340,7 +360,7 @@ gegenstandslos wird, kein neues Pflichtfeld mehr braucht.
   Änderung. 131 und 132 hängen ebenso nur am getauschten Baum und sind von den übrigen unabhängig;
   ihre Reihenfolge entscheidet, wer das WIP-Limit zuerst bekommt, nicht der Plan. **133 → 130 ist
   dagegen tragend, nicht ordnend:** DoD (3) von 130 führt den Nachweis über **beide** Ursachen des
-  Vertragsbruchs, und über einem Baum, in dem die sieben Platzhalter-Befunde noch stehen, kann er
+  Vertragsbruchs, und über einem Baum, in dem die Platzhalter-Befunde noch stehen, kann er
   auch bei vier richtig entschiedenen Vorlagen nicht grün werden. 132 verlangt zusätzlich einen
   **Architect**-Lauf: seine Liefer-Punkte liegen in dessen Artefakten.
 

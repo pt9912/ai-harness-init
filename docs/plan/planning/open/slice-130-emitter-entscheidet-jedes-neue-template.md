@@ -76,13 +76,17 @@ wird Singleton. Die Regel wirkt am **realen** Vorlagen-Satz, nicht an `courseSet
 `.md`-Ziele stehen deshalb **seit dem Tausch** im Bootstrap-Ergebnis, ohne dass eine Entscheidung
 gefallen wäre.
 
-**Drei Befunde hängen daran, und sie sind gemessen, nicht hochgerechnet.** `make smoke` am Stand
+**Zwei Befunde hängen daran, und sie sind gemessen, nicht hochgerechnet.** `make smoke` am Stand
 `26aec2c` meldet `23 Datei(en) geprüft, 10 Befund(e)`; über dem Vor-Tausch-Stand
 (`T=$(mktemp -d); git archive c6cc56f | tar -x -C "$T"; cd "$T" && make smoke`) sind es
 `19 Datei(en) geprüft, 0 Befund(e)` bei Exit 0. Beide Zahlen wandern mit dem Vorlagen-Satz und sind
 **keine Erwartungswerte**
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2). Von den zehn gehören **drei** hierher:
+Setzung 2). **Der Anlauf-Stand ist nicht der Schnitt-Stand:** dasselbe Kommando liefert am Stand
+`66459c7` `23 Datei(en) geprüft, 2 Befund(e)` — gleicher Nenner, also ist nichts aus dem
+Prüfbereich gefallen. Von den zehn gehören heute **zwei** hierher, und die dritte Zeile der Tabelle
+unten ist mit
+[slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) gefallen:
 
 `<ziel>/` meint das **gebootstrappte Zielrepo**, nicht dieses — die Ebenen-Trennung aus dem
 Abschnitt unten, schon in der Tabelle:
@@ -91,11 +95,16 @@ Abschnitt unten, schon in der Tabelle:
 |---|---|
 | `<ziel>/docs/plan/planning/welle-results.md:67` → `](observations.template.md)` | `welle-results.template.md` |
 | `<ziel>/docs/plan/planning/welle-results.md:83` → `](../observations.md)` | `welle-results.template.md` |
-| `<ziel>/harness/conventions/MR-NNN-titel.md:15` → `](…/baseline/<tag>/regelwerk/grundlagen-referenz-richtung.md#…)` | `MR-NNN-titel.template.md` |
+| ~~`<ziel>/harness/conventions/MR-NNN-titel.md:15` → `](…/baseline/<tag>/regelwerk/grundlagen-referenz-richtung.md#…)`~~ — **gefallen** mit [slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md): sein Ziel-Pfad trug `<tag>`, und die dortige Neutralisierung kennt die **Form** und keine Namen | `MR-NNN-titel.template.md` |
 
 Am vorgesehenen Ort `planning/done/` löst `](../observations.md)` auf; als flaches
 `planning/welle-results.md` zeigt er auf eine `observations.md` neben `docs/plan/`, die es nicht
-gibt. Dazu der `<tag>`-Platzhalter im Baseline-Pfad des Adaptions-Eintrags. Das **emittierte**
+gibt. Der `<tag>`-Platzhalter im Baseline-Pfad des Adaptions-Eintrags stand daneben und ist fort;
+**die Klassen-Frage von `MR-NNN-titel.template.md` ist davon unberührt** — die Vorlage wird
+weiterhin als Singleton emittiert, und die Weichen `inScope`/`isRecurring`/`isDerivativeIndex` sind
+über die ganze slice-133-Kette unangetastet
+(`git diff 3ea5ae2^ 66459c7 -- internal/emit/templates.go | grep -cE '^[+-][^+-].*func (inScope|isRecurring|isDerivativeIndex)'`
+→ **0**). Was dieser Slice dadurch verliert, ist ein Befund, kein Entscheidungs-Gegenstand. Das **emittierte**
 Doku-Gate liest beides: `internal/emit/templates/d-check.yml` führt `modules: [links, anchors]` und
 nimmt per `scan.ignore` nur `**/*.template.md`, `.tmp/**` und `.harness/**` aus — die
 transformierten `.md`-Ziele stehen im Prüfbereich.
@@ -109,22 +118,25 @@ Baseline-Regelwerk `modul-07-carveouts.md` §Werkzeug-Wahl führt bei dieser Hä
 auf Carveout (Begründung in
 [slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1).
 
-**Diese drei lösen sich mit der Klassen-Entscheidung, nicht durch Link-Arbeit.** Fällt
+**Diese zwei lösen sich mit der Klassen-Entscheidung, nicht durch Link-Arbeit.** Fällt
 `welle-results.template.md` auf *wiederkehrend*, wird sie als `.template.md` emittiert und fällt
 unter `scan.ignore` des emittierten Gates — beide Befunde verschwinden, ohne dass ein Link
 angefasst wurde. Genau deshalb liegen sie hier und nicht in slice-133.
 
-### Die anderen sieben gehören nicht hierher
+### Die anderen acht gehören nicht hierher
 
-Die verbleibenden **7** der zehn Befunde stammen aus **drei Vorlagen, die schon vor dem Tausch im
+**7** der zehn Befunde stammen aus **drei Vorlagen, die schon vor dem Tausch im
 Satz lagen und schon vor dem Tausch als Singletons emittiert wurden** — `roadmap.template.md`,
 `…/harness/README.template.md`, `…/harness/conventions.template.md`. Ihre Rümpfe tragen neuerdings
 **Platzhalter-Links** (`](<pfad>)`, `](../<welle-NN-titel>.md)`,
 `](conventions/MR-<NNN>-<titel>.md)`); keine Klassen-Entscheidung bewegt sie, weil
 [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) alle drei
-namentlich als Singletons führt. Träger ist
-[slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md), der **vor** diesem Slice läuft.
-Ein Lauf hier, der die sieben mitnimmt, hat den Schnitt verlassen, nicht ihn erfüllt.
+namentlich als Singletons führt. **Weggenommen hat
+[slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) acht** — die
+sieben plus den einen der Tabelle oben, dessen Ziel-Pfad dieselbe Form trug; seine
+Neutralisierung kennt die Form und keine Namen, und darum reicht ihre Wirkung über die
+Ursachen-Einteilung hinaus. Ein Lauf hier, der eine dieser Fundstellen mitnimmt, hat den Schnitt
+verlassen, nicht ihn erfüllt.
 
 ### Die Ebene ist die Pointe
 
@@ -206,9 +218,12 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **Start** (`next` → `in-progress`):
 [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) **und**
 [slice-133](../in-progress/slice-133-emittierter-baum-ohne-platzhalter-links.md) liegen in `done/`. Der erste
-stellt den Satz fest, über den entschieden wird; der zweite räumt die **sieben** Befunde weg, die
+stellt den Satz fest, über den entschieden wird; der zweite räumt die **acht** Befunde weg, die
 nicht an der Klassen-Frage hängen — ohne ihn ist DoD (3) unerfüllbar, weil `make smoke` dann auch
-bei vier richtig entschiedenen Vorlagen rot bliebe. Ein Kriterium, das unter keiner korrekten
+bei vier richtig entschiedenen Vorlagen rot bliebe. Sein Beitrag ist gefahren und gemessen —
+`make smoke` am Stand `66459c7` meldet `23 Datei(en) geprüft, 2 Befund(e)`, und beide Befunde
+stehen in `<ziel>/docs/plan/planning/welle-results.md`; DoD (3) ist damit erreichbar geworden. Die
+Trigger-Bedingung selbst bleibt die **Verzeichnis-Position**, nicht diese Messung. Ein Kriterium, das unter keiner korrekten
 Ausführung dieses Slice grün werden kann, ist keine Abnahme, sondern eine Falle
 ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
