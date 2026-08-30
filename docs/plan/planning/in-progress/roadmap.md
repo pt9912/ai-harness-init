@@ -35,44 +35,48 @@ Stand wahr. Die dritte Ebene ist die teuerste: der Baum ist auch die Eingabe des
 **Emissions-Kanals**, und dort hängt eine Rang-1-Zusage. Die Begründungen stehen in §4 der
 Plan-Datei.
 
-**Der Zwischenstand ist rot und benannt, nicht rot und still — und von seinen zwei Sorten ist eine
-noch da.** Auf den **Gates** hält ihn ein Carveout:
-[`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) auf `docs-check`
-(Folge-Slice `slice-132`). Er hat **keine** Gate-Konfiguration: das Modul `links` kennt am
-Pin `v0.65.0` keine Referenz-Ausnahme, `d-check:ignore` deckt es nicht (Sonde), und `scan.ignore`
-wirkt datei-weit. Dort bleibt der Gate rot, und der Carveout ist der einzige Träger der Begründung.
-`make -k gates` (keep-going — ohne das Flag verdeckt der erste Abbruch die übrigen Ziele) meldet
-genau **ein** rotes Ziel, und `make docs-check` nennt darin die Referenz, deren Geltungsbereich
-`CO-005` in seinem Kopf abgrenzt. **Die Welle schließt erst, wenn er in `carveouts/done/` liegt** —
-ein Welle-Grün, das ihn mitzählte, hieße *„grün, außer wo wir nicht hinsehen"*.
-[`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) trägt nichts mehr: er liegt
-in `carveouts/done/`, `make test-bats` läuft ohne `not ok`, und mit ihm ist der Posten *Kennung im
-Gate-Output* aus `slice-081` §2 DoD (4) gegenstandslos geworden — die Ausnahme, die er hätte
-benennen sollen, gab es in Test oder Config nie
+**Die zwei Sorten des Zwischenstands sind fort, und beide sind gemessen.** Auf den **Gates** ist
+`make gates` Exit **0** — `d-check: 473 Datei(en) geprüft, 0 Befund(e)`, `1..198` ohne `not ok`,
+`baseline-verify: v5.12.0 OK — 51 Dateien`.
+[`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) und
+[`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) liegen beide in
+`carveouts/done/`. Die zwei unbehebbaren Referenzen, die den Gate rot hielten, sind auf der
+**Referenz-Achse** ausgenommen und nicht repariert
+([`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md),
+[`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md)): die geprüfte Datei-Zahl steht
+mit und ohne die Ventile auf demselben Wert — zwei Läufe über demselben Baum, `473 … 0 Befund(e)`
+gegen `473 … 2 Befund(e)` —, und `test/ignore-refs-restbreite.bats` hält in `make gates` fest, dass
+kein Paar mehr als einen Link stumm schaltet. Mit
+[`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) ist der Posten *Kennung im
+Gate-Output* aus `slice-081` §2 DoD (4) gegenstandslos — die Ausnahme, die er hätte benennen
+sollen, gab es in Test oder Config nie
 (`git grep -c 'CO-004' -- test/ .d-check.yml Makefile` → kein Treffer).
 
-**Die zweite Sorte lag außerhalb der Gates und trug keinen Carveout.** `make smoke` meldete
-**10** Befunde im emittierten Baum (`23 Datei(en) geprüft, 10 Befund(e)` am Stand `26aec2c` gegen
-`19 Datei(en) geprüft, 0 Befund(e)` über `c6cc56f` — keine Erwartungswerte,
-[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2). Gebrochen sind [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)
-und [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), Rang 1 der
-Source Precedence. **Eine Rang-1-Zusage wird repariert, nicht ausgenommen:** ein Carveout steht in
-keinem Rang und darf nichts festlegen, und der Werkzeug-Trichter aus Modul 7 führt bei einer
-Häufung ohnehin nicht auf ihn. Getragen wird der Bruch von zwei Slices: **8** Befunde hat
-`slice-133` weggenommen (die sieben Platzhalter-Links der schon vorher emittierten Singletons plus
-einen, dessen Ziel dieselbe Form trug — die gebaute Regel kennt die **Form** und keine Namen),
-**2** trägt `slice-130`. Dasselbe Kommando am Stand `66459c7`:
-`23 Datei(en) geprüft, 2 Befund(e)`, gleicher Nenner.
-**Im Arbeitsbaum ist der Bruch behoben, die Closure steht aus.** `make smoke` meldet
-`d-check: 20 Datei(en) geprüft, 0 Befund(e)`, Exit 0; der Nenner fällt von 23 auf 20, weil drei
-Vorlagen nicht mehr emittiert werden, und keine Erwartung ist dabei nachgezogen worden.
-`slice-130` liegt weiter in `in-progress/` — sein Zustand ist das Verzeichnis, nicht diese Zeile.
-[welle-10](../welle-10-re-baseline.md) §3 führt `make smoke` und `make full-smoke` im
-Closure-Kriterium; der zweite braucht Netz und ist hier nicht gemessen.
+**Außerhalb der Gates hing eine Rang-1-Zusage, und sie ist eingelöst.**
+[`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und
+[`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) waren im
+emittierten Baum gebrochen; getragen hat die Reparatur `slice-133` (die Platzhalter-Form) und
+`slice-130` (die Klassen-Entscheidung), beide in `done/`. `make smoke` meldet heute
+`d-check: 20 Datei(en) geprüft, 0 Befund(e)` bei Exit **0**, und der Lauf endet mit
+*„smoke: OK"*. **Keine Erwartungswerte**
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2) — alle Beträge oben wandern mit dem Baum.
+[welle-10](../welle-10-re-baseline.md) §3 verlangt **drei** Sensoren außerhalb der Gates; `make
+full-smoke` (Netz) und `make mutate` (Voll-Lauf) sind hier **nicht** gemessen, und ihr Beleg ist
+Sache der Welle-Closure.
 
-**Trigger:** `make baseline-freshness` meldet VERALTET (`gepinnt: v3.5.2`, `latest: v5.12.0`) —
-real eingetreten, in jedem Lauf seiner sichtbaren Historie rot.
+**Was die Welle noch offen hat, ist ihre eigene Substanz und kein Zwischenstand.** Sechs ihrer elf
+Slices liegen nicht in `done/` — `slice-131`, `slice-082`, `slice-083`, `slice-136`, `slice-084`,
+`slice-085` —, und an dreien von ihnen hängen die drei Durchgänge des Closure-Kriteriums. Die
+Verzeichnisse sagen es, nicht diese Zeile
+(`for s in 080 081 082 083 084 085 130 131 132 133 136; do ls docs/plan/planning/*/slice-$s-*.md; done`).
+Zwei Carveouts sind weiter aktiv (`ls docs/plan/carveouts/CO-*.md` → `CO-001`, `CO-002`); ob einer
+davon unter das Welle-Kriterium *„ohne offenen Carveout auf einem Gate dieser Welle"* fällt, liest
+die Closure an dem Kommando ab, das die Welle-Datei dafür nennt.
+
+**Trigger:** der Freshness-Sensor `make baseline-freshness` — **eingetreten**, und der Pin, den er
+verlangte, ist vollzogen: `ls -d .harness/baseline/*/` führt genau **ein** Tag-Verzeichnis, und es
+ist `v5.12.0`.
 
 **Closure-Kriterium:** **drei Durchgänge der Ziel-Prozedur mit je einem Beleg** — Adaptionen ·
 Form · Stichprobe gegen den Bestand —, dazu der vollzogene Pin (`.harness/baseline/v5.12.0/` als
