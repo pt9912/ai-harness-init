@@ -24,7 +24,11 @@ hier zerrissen),
 **Berührte Spec-Stellen:** `—`. Der Slice bewegt Plan-Artefakte und keine Spec-Stelle; die
 Verweis-**Form** entscheidet eine ADR, nicht ein Spec-Stratum.
 
-**Verantwortlich:** —
+**Verantwortlich:** Planner (pt9912) — die berührte Menge sind lebende Plan- und Welle-Dateien;
+der Ort der Sortier-Regel aus DoD (3) ist nach §3 eine **Übergabe** an den Architect
+([`AGENTS.md`](../../../../AGENTS.md) §3.8) und wechselt den Halter nicht. Das Feld weicht damit
+von der Default-Besetzung ab, die Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als
+State Machine nennt.
 
 **Autor:** Planner. **Datum:** 2026-08-28.
 

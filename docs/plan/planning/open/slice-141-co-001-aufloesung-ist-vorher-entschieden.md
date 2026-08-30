@@ -36,9 +36,9 @@ Entscheidung schreibt der Architect — dieser Slice ist geschnitten, nicht ausg
 **Berührte Spec-Stellen:** `—`. Der Slice bewegt eine Architektur-Entscheidung und eine
 Gate-Config-Frage, keine Spec-Stelle.
 
-**Verantwortlich:** — bis zur Priorisierung. Der Liefergegenstand ist eine ADR, und die schreibt
-nach [`AGENTS.md`](../../../../AGENTS.md) §3.8 der **Architect**; das Feld weicht damit bei der
-Priorisierung von der Default-Besetzung ab, die Baseline-Regelwerk `modul-05-planning-harness.md`
+**Verantwortlich:** Architect (pt9912). Der Liefergegenstand ist eine ADR, und die schreibt
+nach [`AGENTS.md`](../../../../AGENTS.md) §3.8 der **Architect**; das Feld weicht damit von der
+Default-Besetzung ab, die Baseline-Regelwerk `modul-05-planning-harness.md`
 §Lifecycle als State Machine nennt.
 
 **Autor:** Planner. **Datum:** 2026-08-30.

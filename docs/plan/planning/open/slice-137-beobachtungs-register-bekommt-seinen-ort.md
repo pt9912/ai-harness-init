@@ -84,7 +84,10 @@ Artefakt des Planungs-Harness und steht in keinem der drei Spec-Straten; was das
 (Baseline-Regelwerk `grundlagen-referenz-richtung.md`
 §Referenz-Richtung (SDP), `grundlagen-source-precedence.md` §ID-Schema als Klammer).
 
-**Verantwortlich:** —
+**Verantwortlich:** Planner (pt9912) — jeder Liefergegenstand aus §3 ist ein Planungs-Artefakt:
+die Register-Datei, die lebenden Plandateien und die drei Anweisungssätze unter
+`.claude/commands/`. Das Feld weicht damit von der Default-Besetzung ab, die Baseline-Regelwerk
+`modul-05-planning-harness.md` §Lifecycle als State Machine nennt.
 
 **Autor:** Planner. **Datum:** 2026-08-29.
 
