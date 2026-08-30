@@ -307,12 +307,13 @@ hook-overhead: ## Aufschlag je Tool-Call messen (Median, ADR-0011-Schwelle) — 
 # `make -W <check>`. Nicht in diesen zwei Klassen, sondern an der Reihenfolgen-Zusage
 # oben: `make -j`. Jeder dieser Wege ist einzeln an einem synthetischen Makefile
 # derselben Kantenform gemessen; Kommando und Ausgabe stehen im Kopf des Wächters —
-# Hälfte (a) die Wege über den Aufruf, Hälfte (b) die zwei, die ohne Flag auskommen,
-# weil ihr Ort DIESE Datei ist. Dass es keinen weiteren Weg gibt, steht hier NICHT: die
-# Menge ist nicht gemessen, und `make` kennt mehr Schalter als diese Liste.
-# Hälfte (b) misst vier Schreibweisen; ob heute eine von ihnen hier steht, messen diese
-# zwei Kommandos. Auf genau jene vier sind ihre Muster eingestellt — über jede weitere
-# Schreibweise desselben Weges sagen sie nichts:
+# Hälfte (a) die Wege über den Aufruf, Hälfte (b) die zwei, die ohne Flag auskommen.
+# Dass es keinen weiteren Weg gibt, steht hier NICHT: die Menge ist nicht gemessen, und
+# `make` kennt mehr Schalter als diese Liste.
+# Hälfte (b) misst vier Schreibweisen; ob eine von ihnen in den unten genannten Dateien
+# steht, messen diese zwei Kommandos. Welche Dateien `make` liest, messen sie nicht —
+# in einer eingebundenen Datei wirken beide Wege gleich. Auf genau jene vier sind ihre
+# Muster eingestellt — über jede weitere Schreibweise desselben Weges sagen sie nichts:
 #   `sed -n '/^ *\.IGNORE/p' Makefile d-check.mk | wc -l` -> 0
 #   `sed -n '/^\t[@+-]*-/p' Makefile d-check.mk | wc -l` -> 0
 # GESCHLOSSEN, gemessen: `make record-gates` ist mit `make gates` deckungsgleich — die
