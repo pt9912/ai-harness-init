@@ -214,43 +214,73 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **(1) Die Frage ist entschieden, und die Entscheidung liegt als Artefakt vor, nicht als
+- [x] **(1) Die Frage ist entschieden, und die Entscheidung liegt als Artefakt vor, nicht als
       Prosa.** Eine `observations.md` liegt flach unter `docs/plan/planning/`, entstanden per `cp`
       aus `.harness/baseline/v5.12.0/templates/docs/plan/planning/observations.template.md` mit
       `diff -q` als Provenienz-Beleg **vor** dem Füllen; Template-Hinweis und Bedienhinweise sind
       gestrippt, beide Tabellen tragen `— keine —`, und keine Kennung ist erfunden
       (`grep -c 'BEO-[0-9]'` über die neue Datei → **0**). **Der Bestand ist nicht übertragen** —
       der Grund steht in §1 und stammt aus der Ziel-Form, nicht aus dem Aufwand.
-- [ ] **(2) Kein lebender Plan widerspricht der Entscheidung mehr.** Die Menge ist ein Kommando,
+      **Erfüllt auf `1f3b490`**, und der Commit ist die Adresse der Zusage: der Punkt beschreibt
+      den **Anfangs**zustand, den die Schreib-Pflicht desselben Plans anschließend verlässt (§7,
+      erster Lerneintrag). `git show 1f3b490:docs/plan/planning/observations.md | grep -c 'BEO-[0-9]'`
+      → **0**.
+- [x] **(2) Kein lebender Plan widerspricht der Entscheidung mehr.** Die Menge ist ein Kommando,
       keine Liste, weil sie zwischen Schnitt und Ausführung wächst:
       `grep -rl '§Das Beobachtungs-Register (vorhandene' docs/plan/planning/{open,next,in-progress}/`
       — jede Treffer-Datei trägt danach in §2, §7 und §8 den entschiedenen Stand statt der
       Vertagung. **`docs/plan/planning/done/` und `docs/reviews/` bleiben unangetastet**: sie sind
       Zeitdokumente und beschreiben ihren Stand richtig.
-- [ ] **(3) Jeder der drei Schritte des Registers hat einen Träger in einem Anweisungssatz dieses
+      **Erfüllt für neun fremde Dateien in vier Klassen** — DoD-Punkt, §8-Block, zwei auf die
+      Abwesenheit konditionierte Risiko-Ausgänge und ein `d-check:ignore`-Marker, dessen
+      Begründung *„existiert in diesem Repo nicht"* falsch geworden ist; er ist gefallen, und
+      `codepaths` prüft den Pfad wieder. Die Gegenprobe ist leer:
+      `grep -rn 'führt \*\*kein\*\* Beobachtungs-Register\|führt \*\*keines\*\*\|führt keines von beiden' docs/plan/planning/{open,next}/*.md`
+      → kein Treffer. **Nicht** nachgeholt und benannt statt verschwiegen: die eigentliche Sichtung
+      je Plan — sie verlangt das Urteil, ob eine Registerzeile eine Sub-Area *dieses* Slice
+      berührt, und das ist eine Inhalts-Entscheidung pro Datei. Sie steht in jedem der neun Blöcke
+      als **offener** Schritt.
+- [x] **(3) Jeder der drei Schritte des Registers hat einen Träger in einem Anweisungssatz dieses
       Repos.** Schreib-Schritt (Slice-Closure), Lese-Schritt (Welle-Closure, 3×-Übertritt) und
       Sichtungs-Schritt (Slice-Planung, §8 des Plans) stehen in den Abschnitten von
       [`.claude/commands/`](../../../../.claude/commands/), die die **Planner**-Rolle bereits
       führen — heute nennt keine der drei Dateien das Register (Messung in §1). Zu jedem Schritt
       gehört, was er bei **null** Beobachtungen tut; die leere Antwort ist die häufigste.
-- [ ] `make gates` bringt **keinen Befund hervor, der diesem Slice zuzurechnen ist**. Die Zusage
+      **Erfüllt:** `grep -c 'observations\.md' .claude/commands/*.md` → je **1** über drei Dateien,
+      und jede der drei nennt ihren Null-Fall. Die drei Schritte verweisen aufeinander: der
+      Schreib-Schritt nennt `/close-welle` als Ziel des 3×-Übertritts, der Lese-Schritt nennt
+      `/plan-welle` als Zuständigen für alles darunter. **Kein Gate deckt das** — ein
+      Anweisungssatz ist Text für einen Agentenlauf, und kein Modul liest ihn; der Träger ist die
+      Rolle, nicht ein Sensor danach.
+- [x] `make gates` bringt **keinen Befund hervor, der diesem Slice zuzurechnen ist**. Die Zusage
       ist bewusst so und nicht „grün" formuliert: der Lauf trägt zum Schnitt-Zeitpunkt zwei offene
       Carveouts ([`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) auf `test`,
       [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) auf `docs-check`), und
       beide sind fremde Posten mit eigenen Folge-Slices. Verlangt ist der **Vorher-Nachher-Vergleich
       derselben Ausgabe** — dieselben Befunde, dieselbe Zurechnung, bei `docs-check` eine geprüfte
       Datei mehr.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist — hier keiner: die emittierte Ebene
-      hat eigene Träger (Kopf, §6).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: das Repo hat keinen Brownfield-Bootstrap und führt keines; das Item
+      **Erfüllt, und der Vergleich ist gegenstandslos geworden:** beide Carveouts liegen inzwischen
+      in `carveouts/done/`, und `make gates` endet mit **Exit 0**. Ein grüner Lauf trägt keinen
+      Befund, der irgendwem zuzurechnen wäre — das ist stärker als der Vergleich, den der Punkt
+      verlangt, und darum ist es so notiert statt umgedeutet. `docs-check` zählt **475** statt
+      **473** Dateien, zwei mehr: das Register und slice-144.
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist — hier keiner: die emittierte Ebene
+      hat eigene Träger (Kopf, §6). Gegenprobe:
+      `git diff --stat 313c997..HEAD -- spec/ internal/emit/ | wc -l` → **0**.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag — §7, zwei Einträge, beide Form *geschärfte
+      Regel*.
+- [x] Reconciliation-Register: das Repo hat keinen Brownfield-Bootstrap und führt keines; das Item
       entfällt.
-- [ ] Beobachtungs-Register fortgeschrieben — **ab diesem Slice ist das Item echt**: neue
+- [x] Beobachtungs-Register fortgeschrieben — **ab diesem Slice ist das Item echt**: neue
       `BEO-<NNN>` oder Zähler +1 mit Beleg, und *keine Beobachtung angefallen* ist ebenfalls eine
       Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+      **Erfüllt: sieben neue Kennungen**, keine erhöht (es gab keine). Je Zeile stimmt die Zahl der
+      Belege mit dem Zähler überein, und alle sechs Belege von `BEO-001` liegen in `done/`.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen) — sechs von
+      sechs, dreimal *entfallen*, dreimal *weiter offen* auf je eine Registerzeile.
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste Welle-Closure — dieses
-      Repo fährt Wellen-Betrieb, und die liest auch Slices ohne Wellen-Zugehörigkeit.
+      Repo fährt Wellen-Betrieb, und die liest auch Slices ohne Wellen-Zugehörigkeit. **Offen mit
+      Absicht:** das Item liegt bei einer anderen Closure, nicht bei dieser.
 
 ## 3. Plan (vor Code)
 
@@ -319,34 +349,57 @@ dasteht.
   Register, ist sie eine Abweichung vom Baseline-Default und braucht einen Adaptions-Eintrag, den
   nach [`AGENTS.md`](../../../../AGENTS.md) §3.8 der **Architect** in einem eigenen Commit
   schreibt. Dieser Slice schriebe ihn nicht; er ginge zurück nach `open/` (§4). —
-  **Ausgang:** eingetreten (Übergabe an den Architect, Slice zurück nach `open/`) | entfallen: die
-  Übernahme steht.
+  **Ausgang: entfallen.** Die Übernahme steht, und sie hat kein Norm-Artefakt gekostet:
+  `git log --format=%h 313c997..HEAD -- harness/conventions.md AGENTS.md docs/plan/adr/ | wc -l`
+  → **0** über die gesamte Commit-Kette dieses Slice. Das ist genau die Asymmetrie aus §1 — die
+  Übernahme eines Baseline-Defaults erzeugt nach
+  [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) keinen Eintrag. Der Zweig
+  ist für diesen Slice geschlossen, nicht vertagt.
 - **Der Zähler startet bei null, und das kostet etwas Benennbares.** Eine Klasse, die in den
-  **88** geschlossenen Slices bereits dreimal aufgetreten ist, erreicht die Schwelle nicht von
+  geschlossenen Slices bereits dreimal aufgetreten ist, erreicht die Schwelle nicht von
   selbst; sichtbar wird sie erst beim vierten Mal. Der Preis ist gewollt (§1), aber er ist keiner,
-  den man verschweigt. — **Ausgang:** weiter offen → als `BEO-<NNN>` im Register notieren, sobald
-  die erste solche Klasse wieder auftritt, mit ihren historischen Belegen aus `done/`.
+  den man verschweigt. — **Ausgang: weiter offen** → [`BEO-005`](../observations.md) im Register.
+  Der vorformulierte Weg ist zugleich **einmal gegangen**: `BEO-001` trägt sechs Belege aus
+  `done/`, und sie sind über einen Literal-Grep auf **eine** Klasse gefunden, nicht über eine
+  Inventur (`grep -rl 'Beobachtungs-Register' docs/plan/planning/done/slice-*.md | wc -l` → **6**,
+  je Datei nachgesehen). Offen bleibt die allgemeine Hälfte: für jede andere Klasse beginnt der
+  Zähler beim nächsten Auftreten.
 - **Die maschinelle Hälfte der Register-Paarung bleibt unbewacht, und das ist benannt statt
   verschwiegen.** Kein Modul der beiden gemessenen d-check-Stände deckt sie (§1, Messung 3); die
-  adoptierbare Hälfte kostet einen Eintrag im Adaptions-Block. — **Ausgang:** weiter offen →
-  Folge-Slice in `open/`, geschnitten bei der Closure dieses Slice, mit dem beobachtbaren Trigger
-  *die erste `BEO-<NNN>` ist vergeben* (davor liefe er über einem leeren Prüfbereich,
-  [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-  Die zweite Hälfte ist eine **Anforderung an d-check**, nicht an dieses Repo, und gehört dorthin
-  gemeldet.
+  adoptierbare Hälfte kostet einen Eintrag im Adaptions-Block. — **Ausgang: weiter offen** →
+  [`BEO-006`](../observations.md) im Register, und ausdrücklich **nicht** als Folge-Slice: Modul 5
+  führt *weiter offen* auf das Register und den Folge-Slice auf *eingetreten*. Der vorformulierte
+  Ausgang nannte einen Folge-Slice und war darin falsch — die Verwechslung ist der zweite
+  Lerneintrag in §7. Der genannte Trigger *die erste `BEO-<NNN>` ist vergeben* ist mit dieser
+  Closure **erreicht**, und die Begründung hat sich damit verschoben: nicht mehr der leere
+  Prüfbereich hält den Sensor auf
+  ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)),
+  sondern der Preis — ein viertes `ids`-Pattern kostet einen Eintrag im Adaptions-Block und damit
+  einen Architect-Lauf. Die Messung ist in diesem Lauf selbst wiederholt und nicht abgeschrieben:
+  `--print-config | grep -ci 'observation'` → **0** über den gepinnten Digest und **0** über den
+  von [slice-135](../open/slice-135-d-check-pin-v0661.md) angezielten. Die zweite Hälfte bleibt eine
+  **Anforderung an d-check** und gehört dorthin gemeldet.
 - **Wer die Anweisungssätze unter `.claude/commands/` schreiben darf, sagt keine Quelle.**
   [ADR-0015](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) besetzt zwei Norm-Artefakte und
   lässt die Frage für alle übrigen ausdrücklich offen;
   [ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md) zeigt, wie
   dieses Repo eine solche Lücke schließt — mit einer ADR, also Architect-Arbeit. DoD (3) bindet
   sich deshalb auf die Abschnitte, die die **Planner**-Rolle bereits im Titel führen; die
-  allgemeine Eigentums-Frage bleibt daneben stehen. — **Ausgang:** weiter offen → an den Architect
-  gemeldet; die Bearbeitung dieses Slice hängt nicht an ihr.
+  allgemeine Eigentums-Frage bleibt daneben stehen. — **Ausgang: weiter offen** →
+  [`BEO-007`](../observations.md) im Register. Die Bindung hat gehalten:
+  `grep -l 'Planner' .claude/commands/*.md | wc -l` → **3** von **3**, jede geschriebene Stelle
+  liegt in einem Abschnitt, den die Rolle bereits führt. Umgangen ist damit die Frage, nicht
+  gelöst — und sie gehört an den Architect, nicht in eine weitere Planner-Runde.
 - **Die Treffermenge aus DoD (2) bewegt sich zwischen Schnitt und Ausführung.** Jeder neue `cp`
   vergrößert sie; [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md)
   liegt heute in `in-progress/` und ist bis dahin womöglich ein Zeitdokument in `done/`. Genau
-  darum steht in der DoD ein Kommando und keine Dateiliste. — **Ausgang:** entfallen, wenn die
-  Menge zum Ausführungszeitpunkt gemessen und vollständig abgearbeitet ist.
+  darum steht in der DoD ein Kommando und keine Dateiliste. — **Ausgang: entfallen**, die Menge ist
+  zum Ausführungszeitpunkt gemessen und vollständig abgearbeitet. Der vorhergesagte Zuwachs ist
+  eingetreten: beim Schnitt zählte das Kommando **sieben** Dateien, bei der Ausführung
+  `grep -rl '§Das Beobachtungs-Register (vorhandene' docs/plan/planning/{open,next,in-progress}/ | wc -l`
+  → **11**. Neun davon sind fremde Pläne und nachgezogen, die zehnte ist diese Datei selbst, die
+  elfte der mit dieser Closure geschnittene [slice-144](../open/slice-144-lifecycle-move-zieht-seine-verweise-nach.md).
+  Und slice-133 liegt tatsächlich in `done/` — die Vorhersage traf zu.
 - **Die Registerdatei vergrößert den Doku-Prüfbereich, und ihr Inhalt ist erst nach dem Strippen
   bekannt.** Die Vorlage trägt **0** Markdown-Links
   (`grep -oE '\]\([^)]+\)' .harness/baseline/v5.12.0/templates/docs/plan/planning/observations.template.md | wc -l`)
@@ -354,10 +407,18 @@ dasteht.
   (`grep -coE 'LH-[A-Z]{2}-[0-9]{2}|ADR-[0-9]{4}|MR-[0-9]{3}' .harness/baseline/v5.12.0/templates/docs/plan/planning/observations.template.md`),
   womit nach dem
   Strippen nichts übrig bleibt, worüber die Module `links`, `anchors` und `ids` urteilen könnten.
-  Das ist eine Aussage über die **Vorlage**, nicht über die gefüllte Datei. — **Ausgang:**
-  entfallen, wenn `make docs-check` nach dem Anlegen genau den vorbestehenden Befund meldet und
-  eine Datei mehr zählt | eingetreten: der neue Befund wird behoben, nicht ausgenommen.
-
+  Das ist eine Aussage über die **Vorlage**, nicht über die gefüllte Datei. — **Ausgang:
+  entfallen**, mit einer Korrektur an der vorformulierten Bedingung. `make docs-check` meldete vor
+  dem Anlegen `473 Datei(en) geprüft, 0 Befund(e)` und danach
+  `474 Datei(en) geprüft, 0 Befund(e)`: eine Datei mehr, kein Befund mehr. **Der „vorbestehende
+  Befund" der Bedingung existiert nicht** — [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md)
+  und [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) liegen inzwischen in
+  `carveouts/done/`, und der Lauf ist grün statt 462/1. Die **gefüllte** Datei ist längst nicht mehr
+  link- und kennungsfrei — `grep -oE '\]\([^)]+\)' docs/plan/planning/observations.md | wc -l` →
+  **11** und
+  `grep -coE 'LH-[A-Z]{2}-[0-9]{2}|ADR-[0-9]{4}|MR-[0-9]{3}' docs/plan/planning/observations.md` →
+  **3** —, und alle lösen auf. Beide Beträge wandern mit dem Register und sind keine
+  Erwartungswerte.
 ## 7. Closure-Notiz
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
@@ -368,8 +429,87 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-<!-- Erst nach Abschluss füllen. Vor dem `git mv` nach done/; das letzte
-DoD-Item in §2 prüft die nächste Welle-Closure. -->
+**Geliefert:** das stehende Beobachtungs-Register
+([`observations.md`](../observations.md), leer angelegt und mit dieser Closure auf sieben Zeilen
+gefüllt), neun nachgezogene lebende Plandateien, und je ein Träger für die drei Schritte des
+Registers in den drei Anweisungssätzen unter
+[`.claude/commands/`](../../../../.claude/commands/).
+
+- **Was hat funktioniert:** die Trennung von **Anlegen** und **Füllen** in zwei Commits. Der
+  Anlege-Commit ist gegen DoD (1) messbar — `grep -c 'BEO-[0-9]'` über die neue Datei → **0** —,
+  der Closure-Commit erfüllt die Schreib-Pflicht, die das Register selbst vorschreibt. Beide
+  Zusagen sind wahr, und sie sind es zu verschiedenen Zeitpunkten; ohne die Trennung hätte eine
+  von beiden weichen müssen.
+- **Was hat funktioniert:** die Vorhersage des sechsten Risikos. `make docs-check` sprang beim
+  Anlegen von `473 Datei(en), 0 Befund(e)` auf `474 Datei(en), 0 Befund(e)` — eine Datei mehr,
+  kein Befund mehr, genau wie vorformuliert.
+- **Was ging anders als geplant — die Überführungs-Frage ist geprüft und mit *nein* beantwortet,
+  und zwar über den vollen Bestand.** Die Prüfung lautete: passt der Gegenstand eines offenen
+  Slice **vollständig** in eine Registerzeile? Gemessen über alle **48** offenen Slices zum
+  Zeitpunkt der Prüfung (`ls docs/plan/planning/open/slice-*.md | wc -l`): **48** tragen
+  mindestens einen DoD-Liefer-Punkt, **48** eine Plan-Tabelle in §3 (die kleinste mit vier
+  Zeilen), **48** mindestens ein benanntes Risiko in §6 (das dünnste mit drei). Eine Registerzeile
+  hat sechs Spalten und darunter keine für einen **Träger** — kein Plan, keine DoD, keine
+  Datei-Liste. **Null überführt.** `open/` ist damit nicht geschrumpft, sondern um **eins**
+  gewachsen: der geschnittene
+  [slice-144](../open/slice-144-lifecycle-move-zieht-seine-verweise-nach.md). Der Befund selbst ist
+  nicht verloren — er steht als [`BEO-002`](../observations.md) im Register und wird von dort
+  weitergelesen.
+- **Was ging anders als geplant:** der Vorher-Nachher-Vergleich aus dem `gates`-DoD-Punkt ist
+  gegenstandslos geworden. Der Plan rechnete mit zwei offenen Carveouts auf `test` und
+  `docs-check`; beide liegen inzwischen in
+  [`carveouts/done/`](../../carveouts/done/), und `make gates` endet mit **Exit 0**. Ein grüner
+  Lauf trägt keinen Befund, der irgendwem zuzurechnen wäre — das ist stärker als der Vergleich,
+  den der Punkt verlangt hat, und darum ist er so notiert statt umgedeutet.
+- **Steering-Loop-Eintrag — Form: geschärfte Regel.** *Eine DoD-Zusage über einen **Zustand**
+  nennt den Commit, auf dem sie gilt — sonst misst sie einen Zustand, den derselbe Prozess wieder
+  verlässt.* DoD (1) verlangt wörtlich `grep -c 'BEO-[0-9]'` → **0** über die neue Datei; die
+  Closure-Pflicht desselben Plans verlangt eine neue `BEO-<NNN>`. Beide sind richtig, und
+  gemeinsam sind sie nur über die **Commit-Achse** erfüllbar. Aufgelöst ist das nicht durch
+  Umschreiben der DoD — das wäre die Zusage an das Ergebnis anpassen —, sondern durch zwei
+  Commits: `1f3b490` erfüllt (1), `5ec2d5f` erfüllt die Pflicht. **Der Prüfsatz beim Schneiden:**
+  beschreibt dieser DoD-Punkt einen Zustand, den der Slice selbst noch ändert? Dann gehört der
+  Zeitpunkt in den Punkt.
+- **Steering-Loop-Eintrag — Form: geschärfte Regel.** *Der Risiko-Ausgang „weiter offen" ist kein
+  Folge-Slice.* Modul 5 führt die drei Ausgänge als geschlossene Menge: *eingetreten* → Carveout
+  oder Folge-Slice · *entfallen* → gestrichen mit Begründung · *weiter offen* → **Register**.
+  Dieser Plan hatte drei seiner sechs Risiken auf *„weiter offen → Folge-Slice"* vorformuliert —
+  und war damit im Recht, solange kein Register existierte: es war der einzige Weg. Mit dem
+  Register wird aus der Verwechslung eine **Wahl**, und sie ist die Ursache des Rückstaus:
+  `for f in docs/plan/planning/done/slice-*.md; do awk '/^## 7\./,0' "$f" | grep -qi 'Folge-Slice' && echo "$f"; done | wc -l`
+  → **65** von **92** geschlossenen Slices nennen in ihrem Closure-Block einen Folge-Slice. **Der
+  Prüfsatz:** *eingetreten* heißt „schiefgegangen, jemand muss ran"; *weiter offen* heißt „steht
+  weiter da, wird gezählt". Wer beides als Folge-Slice ausgibt, kauft für jede Beobachtung einen
+  Termin. Drei Risiken dieses Slice sind danach umgestellt worden — auf `BEO-005`, `BEO-006` und
+  `BEO-007` statt auf drei neue Dateien in `open/`.
+- **Beobachtungs-Register ([`observations.md`](../observations.md)):** **sieben neue Kennungen**,
+  keine erhöht (es gab keine). `BEO-001` (`*`, 6×, Belege slice-080, slice-081, slice-130,
+  slice-132, slice-133, slice-138) steht beim Erstauftreten bereits **über** der Schwelle und ist
+  mit diesem Slice **verkörpert**; `BEO-002` bis `BEO-007` (je `*`, 1×, Beleg slice-137) stehen
+  offen. Je Zeile stimmt die Zahl der Belege mit dem Zähler überein, und alle sechs Belege von
+  `BEO-001` liegen in `done/`.
+- **Folge-Slices:** [slice-144](../open/slice-144-lifecycle-move-zieht-seine-verweise-nach.md) —
+  der Lifecycle-Move zieht seine Verweise nach; Träger von `BEO-003`. Genau einer, und er ist der
+  einzige, der künftige Schnitte **reduziert**. Die drei Posten, die ein früherer Zuschnitt zu
+  Folge-Slices gemacht hätte, sind Registerzeilen geworden (zweiter Lerneintrag).
+- **Übergaben an den Architect — drei, keine davon in diesem Lauf geschrieben:** `BEO-004` (die
+  Modus-Deklaration führt nur `*`, damit unterscheidet die Sub-Area-Spalte nichts), `BEO-006` (ein
+  viertes `ids`-Pattern für `BEO-\d{3}` kostet einen Eintrag im Adaptions-Block) und `BEO-007`
+  (wer die Anweisungssätze unter `.claude/commands/` schreiben darf). Alle drei berühren
+  Norm-Artefakte, die nach [`AGENTS.md`](../../../../AGENTS.md) §3.8 der Architect schreibt —
+  benannt statt geschrieben, und `git log --format=%h 313c997..HEAD -- harness/conventions.md AGENTS.md docs/plan/adr/ | wc -l`
+  → **0** belegt es für die ganze Kette.
+- **Risiken aus §6 — ERFÜLLT**, sechs von sechs, je genau einer: dreimal *entfallen* (mit
+  Begründung und Messung), dreimal *weiter offen* (je auf eine Registerzeile). Kein *eingetreten*,
+  kein Carveout.
+- **Drei Paarungen (Anker · Folge-Slice · Register):** prüft die nächste Welle-Closure. Dieses Repo
+  fährt Wellen-Betrieb ([welle-10](../welle-10-re-baseline.md) liegt in *Aktuelle Welle*), und die
+  liest auch Slices ohne Wellen-Zugehörigkeit. Ihr Lese-Schritt findet `BEO-001` bereits
+  verkörpert vor — die Zeile bleibt mit Vermerk stehen, sie wird nicht gestrichen.
+- **Verifikation:** `make gates` → **Exit 0**. `make docs-check` über die Kette: **473**/0 (vor dem
+  Move) → **473**/24 (nach dem reinen Move) → **473**/0 (nach dem Link-Abgleich) → **474**/0 (nach
+  dem Anlegen des Registers) → **475**/0 (nach dem Schnitt von slice-144). Jede Zahl stammt aus dem
+  Lauf, der neben ihr steht.
 
 ## 8. Sub-Area-Modus-Begründung
 
@@ -395,7 +535,9 @@ Datei an und schreibt drei Anweisungssätze fort, er baut keine Konventions-Dich
 eigene Zeile in der Deklaration trüge.
 
 **Vorgelagert — offene Beobachtungen sichten:** **keine Treffer, und der Grund ist der Gegenstand
-dieses Slice** — ein Register, das gesichtet werden könnte, existiert nicht
-(`find docs/plan -iname '*observation*' | wc -l` → **0**). Dies ist der letzte Slice dieses Repos,
-der diese Antwort mit dieser Begründung geben kann; ab seiner Closure ist die leere Tabelle die
-Antwort, nicht die fehlende Datei.
+dieses Slice** — beim Sichtungs-Schritt gab es kein Register, das gesichtet werden könnte. Es
+entsteht mit diesem Slice ([`observations.md`](../observations.md), angelegt mit `— keine —` in
+beiden Tabellen), und die Zeilen, die es heute führt, stammen aus seiner Closure — aus dem
+**Schreib**-Schritt also, nicht aus dem Sichtungs-Schritt. Dies ist der letzte Slice dieses Repos,
+der diese Antwort mit dieser Begründung geben kann; ab dem nächsten ist die Tabelle die Antwort,
+nicht die fehlende Datei.
