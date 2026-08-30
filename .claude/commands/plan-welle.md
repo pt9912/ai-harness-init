@@ -50,6 +50,16 @@ Lies den Adaptions-Block („MR-Block") in `harness/conventions.md`; die planung
 
 ## Slices bereitstellen
 
+**Vor jedem neuen Slice-Plan: das Beobachtungs-Register sichten** (`docs/plan/planning/observations.md`)
+— der **Sichtungs**-Schritt aus Modul 5, *Zwei Schritte vor der Modus-Begründung*, und für alles
+**unter** 3× der einzige Leser: die Welle-Closure liest nur, was die Schwelle erreicht hat. Berührt
+eine Sub-Area des neuen Slice eine Registerzeile, gehört ihr **Zähler-Stand** in das Kriterium
+*Evidenz-/Diskrepanz-Risiko* in §8 des Plans — und erreicht der Eintrag **mit diesem Slice** 3×,
+ist er keine Notiz mehr, sondern eine Lücke mit eigenem Folge-Slice. **Keine Treffer sind ebenfalls
+eine Antwort** und werden in §8 notiert; trägt die Tabelle `— keine —`, lautet die Antwort genau
+das — nicht *„geprüft"* und nicht gar nichts. Gelesen wird der **gemergte** Stand: das Register ist
+beim Lesen so alt wie der letzte Merge.
+
 6. Existiert ein Slice der Welle noch nicht, ihn **per `cp` aus `slice.template.md`** anlegen
    (`docs/plan/planning/open/slice-<NN>-<titel>.md`), dann füllen. Nie hand-authoren.
 
