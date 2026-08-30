@@ -14,7 +14,6 @@ Formalisierung 2026-07-21, Roadmap §Backlog Cluster E).
 | ID | Titel | Betroffenes Gate | Angelegt |
 |---|---|---|---|
 | [CO-001](CO-001-bats-shell-lint.md) | shell-lint deckt die bats-Dateien nicht ab | `shell-lint` | 2026-07-21 |
-| [CO-004](CO-004-emitter-klassifikation-offen.md) | Der Emitter hat für vier neue Vorlagen keine Klasse | `test` (bats-Stufe) | 2026-08-28 |
 | [CO-005](CO-005-adaptions-block-datierter-beleg.md) | Ein datierter Beleg im Adaptions-Block hat kein auflösbares Ziel | `docs-check` (Modul `links`) | 2026-08-28 |
 
 ## Permanent — in eine ADR übergeführt
@@ -34,3 +33,4 @@ ihnen ist, sagt der **Status** in ihrem Kopf. Die Begründung steht an genau ein
 | ID | Titel | Angelegt | Aufgelöst | Wodurch |
 |---|---|---|---|---|
 | [CO-003](done/CO-003-mutate-ohne-zeitschranke.md) | `make mutate` hatte keine Zeitschranke — ein hängender Worker färbte den Lauf nicht rot | 2026-08-27 | 2026-08-28 | [slice-117](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) baute die Schranke, [slice-120](../planning/done/slice-120-co-003-wird-vollzogen.md) vollzog ihn |
+| [CO-004](CO-004-emitter-klassifikation-offen.md) | Der Emitter hatte für vier neue Vorlagen keine Klasse | 2026-08-28 | 2026-08-30 | [slice-130](../planning/in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) entschied die vier Klassen; der `git mv` nach `done/` steht als eigener Commit aus, bis dahin zeigt der Link auf den alten Ort |

@@ -47,6 +47,9 @@ func courseSet() fs.FS {
 		// Roadmap traegt die gate-unsichere "Abgeschlossene Wellen"-Beispielzeile
 		// (broken ../done/-Link) — NeutralizeRoadmap muss sie beim Emit entschaerfen.
 		"docs/plan/planning/roadmap.template.md": f(hint + "# Roadmap\n" + eingebettet + "\n| <welle-NN> | YYYY-MM-DD | [`welle-NN-results.md`](../done/welle-NN-results.md) |\n"),
+		// in scope, Singleton: das Beobachtungs-Register ist die stehende Datei des
+		// Steering Loops, eine je Repo (emit.planTemplates, Weichen-Kommentar).
+		"docs/plan/planning/observations.template.md": f(hint + body),
 		// in scope — Wiederkehrende (LH-FA-02 0.8.0: NICHT emittiert, referenziert
 		// aus der vendored Baseline) und derivative Indexe (nicht emittiert)
 		"docs/plan/adr/NNNN-titel.template.md":       f(hint + body),
@@ -54,6 +57,13 @@ func courseSet() fs.FS {
 		"docs/plan/planning/welle.template.md":       f(hint + body),
 		"docs/plan/carveouts/carveout.template.md":   f(hint + body),
 		"docs/reviews/review-report.template.md":     f(hint + body),
+		// mit v5.12.0 dazugekommen, ebenfalls wiederkehrend: eine je Welle bzw. eine
+		// je Adaption (emit.isRecurring nennt die Ziel-Pfade beider)
+		"docs/plan/planning/welle-results.template.md": f(hint + body),
+		"harness/conventions/MR-NNN-titel.template.md": f(hint + body),
+		// in scope, aber modus-gebunden: das Reconciliation-Register braucht nur ein
+		// Repo aus dem Brownfield-Bootstrap (emit.isBrownfieldOnly)
+		"docs/plan/planning/reconciliation.template.md": f(hint + body),
 		// AUSSER Scope — jede Zeile ein eigener Grund, s. emit.inScope
 		"README.md":                                    f("# Set-Index\n"),
 		"project-readme.template.md":                   f(hint + body + spitz),
@@ -184,7 +194,7 @@ func TestTemplates_StampAndStrip(t *testing.T) {
 	}
 }
 
-// TestTemplates_RecurringNichtEmittiert: die fuenf wiederkehrenden Templates werden
+// TestTemplates_RecurringNichtEmittiert: die sieben wiederkehrenden Templates werden
 // ab 0.8.0 (LH-FA-02, ADR-0005) NICHT mehr emittiert — weder co-located als
 // .template.md (alte 0.7.0-Form) noch transformiert als .md. Sie liegen aus dem Fetch
 // vendored und werden von dort je Artefakt kopiert (wie im Dogfood). Geprueft werden
@@ -207,12 +217,16 @@ func TestTemplates_RecurringNichtEmittiert(t *testing.T) {
 		"docs/plan/planning/welle.template.md",
 		"docs/plan/carveouts/carveout.template.md",
 		"docs/reviews/review-report.template.md",
+		"docs/plan/planning/welle-results.template.md",
+		"harness/conventions/MR-NNN-titel.template.md",
 		// transformierte .md-Form (falls die isRecurring-Weiche auf Singleton faellt)
 		"docs/plan/adr/NNNN-titel.md",
 		"docs/plan/planning/slice.md",
 		"docs/plan/planning/welle.md",
 		"docs/plan/carveouts/carveout.md",
 		"docs/reviews/review-report.md",
+		"docs/plan/planning/welle-results.md",
+		"harness/conventions/MR-NNN-titel.md",
 	} {
 		if _, err := os.Stat(filepath.Join(dir, rel)); err == nil {
 			t.Errorf("wiederkehrendes Template emittiert (darf nicht, 0.8.0): %s", rel)
@@ -221,11 +235,12 @@ func TestTemplates_RecurringNichtEmittiert(t *testing.T) {
 }
 
 // TestTemplates_EmittierterBestandVollstaendig ist der Kern von slice-022b/028: die
-// gefetchte Quelle traegt den VOLLEN Kurs-Satz (21 Dateien); emittiert werden ab
-// slice-030 genau 16 — 10 Singletons (8 + die 2 Durchsetzungs-Skills, LH-FA-06/ADR-0006)
-// plus 6 .gitkeep der Struktur-Verzeichnisse; wiederkehrende Vorlagen bleiben ununemittiert.
-// Geprueft wird der Ist-Bestand VOLLSTAENDIG — was nicht in der Erwartung steht,
-// darf nicht da sein.
+// gefetchte Quelle traegt den VOLLEN Kurs-Satz; emittiert wird daraus je Vorlage
+// genau eine Klasse — Singleton -> .md, sonst nichts (isRecurring /
+// isDerivativeIndex / isBrownfieldOnly), dazu die .gitkeep der
+// Struktur-Verzeichnisse. Geprueft wird der Ist-Bestand VOLLSTAENDIG — was nicht in
+// der Erwartung steht, darf nicht da sein. Die Liste `want` unten IST die
+// Erwartung; eine Zahl daneben waere eine zweite Fassung, die driftet.
 //
 // Die Vorgaenger-Fassung hiess AusserScopeNichtEmittiert und stat'te die
 // QUELL-Namen (`README.md`, `project-readme.template.md`, …). Der Emitter
@@ -242,10 +257,14 @@ func TestTemplates_EmittierterBestandVollstaendig(t *testing.T) {
 		t.Fatalf("Templates: %v", err)
 	}
 	want := []string{
-		// 10 Singletons -> .md (8 + die 2 Durchsetzungs-Skills, slice-030)
+		// Singletons -> .md (inkl. der 2 Durchsetzungs-Skills, slice-030)
 		"AGENTS.md",
 		"docs/plan/planning/README.md",
 		"docs/plan/planning/in-progress/roadmap.md",
+		// Das Beobachtungs-Register: eine stehende Datei je Repo, leer angefangen.
+		// Faellt sie in eine der drei Nicht-Emit-Weichen, fehlt sie hier und der Test
+		// wird rot — der Zahn der Singleton-Entscheidung aus slice-130.
+		"docs/plan/planning/observations.md",
 		"harness/README.md",
 		"harness/conventions.md",
 		"spec/architecture.md",
@@ -253,7 +272,7 @@ func TestTemplates_EmittierterBestandVollstaendig(t *testing.T) {
 		"spec/spezifikation.md",
 		".harness/skills/reviewer.md",
 		".harness/skills/closure-note-reviewer.md",
-		// 6 .gitkeep der Struktur-Verzeichnisse
+		// .gitkeep der Struktur-Verzeichnisse
 		"docs/plan/adr/.gitkeep",
 		"docs/plan/carveouts/.gitkeep",
 		"docs/plan/planning/done/.gitkeep",

@@ -74,34 +74,43 @@ in_scope() {
   }
 }
 
-@test "fixture: der reale Satz liefert genau 17 in-scope-Templates" {
-  # Die Zahl ist kein Selbstzweck: von 17 in-scope-Templates emittiert der Tool genau
-  # 10 als Singletons (8 + die 2 Durchsetzungs-Skills seit slice-030); 2 derivative Indexe
-  # (emit.isDerivativeIndex) und 5 wiederkehrende (emit.isRecurring) bleiben ununemittiert.
-  # Bewegt sich die Zahl, hat upstream etwas hinzugefuegt oder entfernt — und die
-  # Aufzaehlungen brauchen dann eine Entscheidung, statt das Neue still als Singleton
-  # zu behandeln.
+@test "fixture: der reale Satz liefert genau 21 in-scope-Templates" {
+  # Die Zahl ist kein Selbstzweck: von 21 in-scope-Templates emittiert der Tool genau
+  # 11 als Singletons (inkl. der 2 Durchsetzungs-Skills seit slice-030 und des
+  # Beobachtungs-Registers seit slice-130); ununemittiert bleiben 2 derivative Indexe
+  # (emit.isDerivativeIndex), 7 wiederkehrende (emit.isRecurring) und 1 modus-gebundenes
+  # Register (emit.isBrownfieldOnly). Bewegt sich die Zahl, hat upstream etwas
+  # hinzugefuegt oder entfernt — und die Aufzaehlungen brauchen dann eine Entscheidung,
+  # statt das Neue still als Singleton zu behandeln.
   local n
   n="$(real_paths | in_scope | wc -l | tr -d ' ')"
-  [ "$n" -eq 17 ] || {
-    echo "in-scope-Templates: $n, erwartet 17"
+  [ "$n" -eq 21 ] || {
+    echo "in-scope-Templates: $n, erwartet 21"
     real_paths | in_scope
     return 1
   }
 }
 
-@test "fixture: die fuenf wiederkehrenden Templates existieren real" {
+@test "fixture: die sieben wiederkehrenden Templates existieren real" {
   # emit.isRecurring zaehlt sie namentlich auf (LH-FA-02). Ab 0.8.0 werden sie NICHT
   # emittiert, sondern aus der vendored Baseline je Artefakt kopiert (ADR-0005) —
   # verschwindet einer upstream, bricht genau dieses referenzierte Modell (der Nutzer
   # findet die Vorlage nicht mehr im vendored Satz).
+  #
+  # Die Liste spiegelt emit.isRecurring, nicht die Menge der ununemittierten Vorlagen:
+  # die derivativen Indexe und das Reconciliation-Register stehen bewusst nicht hier,
+  # sie haengen an eigenen Weichen. Faellt eine Vorlage upstream ganz weg, faengt das
+  # ohnehin schon der Satz-Abgleich oben — diese Liste faengt den Fall, dass Fixture
+  # und realer Satz sie GEMEINSAM verlieren.
   local rel
   for rel in \
     docs/plan/adr/NNNN-titel.template.md \
     docs/plan/planning/slice.template.md \
     docs/plan/planning/welle.template.md \
     docs/plan/carveouts/carveout.template.md \
-    docs/reviews/review-report.template.md
+    docs/reviews/review-report.template.md \
+    docs/plan/planning/welle-results.template.md \
+    harness/conventions/MR-NNN-titel.template.md
   do
     [ -f "$REAL/$rel" ] || { echo "wiederkehrendes Template fehlt real: $rel"; return 1; }
   done

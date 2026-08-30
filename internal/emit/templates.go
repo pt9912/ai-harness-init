@@ -10,17 +10,36 @@ import (
 	"strings"
 )
 
-// isRecurring markiert die fuenf wiederkehrenden Templates (LH-FA-02, ab 0.8.0):
+// isRecurring markiert die sieben wiederkehrenden Templates (LH-FA-02, ab 0.8.0):
 // sie werden NICHT (mehr) emittiert. Sie liegen aus dem Fetch bereits vendored unter
 // .harness/baseline/<tag>/templates/ und werden von dort je Artefakt kopiert (wie im
 // Dogfood, ADR-0005) — eine co-located .md-Kopie waere Redundanz und widerspraeche
 // der emittierten AGENTS.md, die genau dieses referenzierte Modell beschreibt (der
 // Selbstwiderspruch, den slice-024s Voll-Smoke aufdeckte). Sie ist per .d-check.yml
 // (scan.ignore **/*.template.md) zwar gate-neutral, aber eben ueberfluessig.
+//
+// WIEDERKEHREND heisst hier: die Vorlage nennt ihren Ziel-Pfad mit einem
+// Platzhalter darin, es gibt also mehr als ein Ziel je Repo. Wer einen Eintrag
+// dazunimmt, sagt genau das zu. Die zwei mit v5.12.0 dazugekommenen sagen es
+// selbst, jede in ihrem Template-Hinweis:
+//
+//	welle-results.template.md — "Kopiere nach docs/plan/planning/done/
+//	  welle-<NN>-results.md": eine je Welle, neben die Welle-Plan-Datei, die
+//	  ihrerseits aus welle.template.md kommt und schon hier steht.
+//	MR-NNN-titel.template.md — "Kopiere nach harness/conventions/
+//	  MR-<NNN>-<titel>.md … Ein Eintrag je Datei": eine je Adaption, dieselbe
+//	  Form wie der ADR-Eintrag NNNN-titel.template.md.
+//
+// GRENZE: die namentliche Aufzaehlung in LH-FA-02 ("ADR · slice · welle ·
+// carveout · review-report") fuehrt diese zwei nicht. Sie ist damit unvollstaendig
+// — das Lastenheft ist Rang 1 der Source Precedence und wird nicht vom Emit
+// fortgeschrieben; kein Gate sieht die Luecke, weil docs-check Kennungen und Links
+// prueft, nicht die Vollstaendigkeit einer Aufzaehlung.
 func isRecurring(base string) bool {
 	switch base {
 	case "NNNN-titel.template.md", "slice.template.md", "welle.template.md",
-		"carveout.template.md", "review-report.template.md":
+		"carveout.template.md", "review-report.template.md",
+		"welle-results.template.md", "MR-NNN-titel.template.md":
 		return true
 	}
 	return false
@@ -40,6 +59,39 @@ func isDerivativeIndex(rel string) bool {
 		return true
 	}
 	return false
+}
+
+// isBrownfieldOnly markiert die Vorlage, deren Anlass ein Bootstrap-MODUS ist:
+// docs/plan/planning/reconciliation.template.md traegt das Register des Rueckbaus
+// und sagt in ihrem Template-Hinweis selbst "Ein reines Greenfield-Repo braucht die
+// Datei nicht". Sie wird NICHT emittiert.
+//
+// Der Bootstrap kennt den Modus des Zielrepos nicht — das Werkzeug hat dafuer kein
+// Flag (cmd/ai-harness-init/main.go fuehrt --lang, --name, --arch). Entschieden ist
+// nach dem Fehlerbild (MR-017), und beide Richtungen kosten etwas:
+//
+//	emittiert — jedes frische Repo traegt ein Register, das die mitemittierte
+//	  docs/plan/planning/README.md ihm abspricht ("Greenfield-Repos haben die Datei
+//	  nicht"). Das ist derselbe Selbstwiderspruch IM emittierten Stand, an dem
+//	  slice-024s Voll-Smoke die wiederkehrenden Vorlagen entschied. Dazu faellt beim
+//	  Strippen des Hinweis-Blocks genau der Satz weg, der die Bedingung nennt: der
+//	  Greenfield-Adopter saehe die Datei, aber nicht mehr ihren Vorbehalt.
+//	nicht emittiert — der Brownfield-Adopter legt die Datei selbst an. Still ist das
+//	  nicht: dieselbe README nennt sie samt Bedingung im Ziel-Repo, und das Register
+//	  entsteht ohnehin erst im Rueckbau (Baseline-Regelwerk
+//	  modul-02-harness-bootstrap.md §Das Reconciliation-Register: "beim Bootstrap-Ende
+//	  ist es im Gegenteil voll"), also nach dem Emit.
+//
+// Warum eine eigene Weiche und nicht eine der beiden daneben: isRecurring sagt
+// "mehr als ein Ziel je Repo" zu, hier gibt es genau eines; isDerivativeIndex sagt
+// "aus vorhandenen Originalen abgeleitet" zu, dieses Register ist aus nichts
+// abgeleitet. Beide Namen waeren fuer diesen Eintrag falsch.
+//
+// GRENZE: LH-FA-02 fuehrt diese Disposition nicht — es nennt Singletons,
+// Wiederkehrende, derivative Indexe, .gitkeeps und die nie kopierte Set-Index-README.
+// Das Lastenheft ist Rang 1 und wird nicht vom Emit fortgeschrieben.
+func isBrownfieldOnly(rel string) bool {
+	return rel == "docs/plan/planning/reconciliation.template.md"
 }
 
 // (Bis slice-026 haing checkRoot an dem HART VERDRAHTETEN Namen
@@ -171,9 +223,10 @@ func TemplateTargets(src fs.FS, name string) ([]string, error) {
 	return targets, nil
 }
 
-// Templates legt die Template-Baseline zweiklassig in targetDir ab (LH-FA-02):
-// Singletons -> <ziel>.md (Template-Hinweis-Block gestrippt, <Projektname>
-// gestempelt), Wiederkehrende -> co-located .template.md (verbatim). name leer ->
+// Templates legt die Template-Baseline in targetDir ab (LH-FA-02): geschrieben
+// werden die Singletons -> <ziel>.md (Template-Hinweis-Block gestrippt,
+// <Projektname> gestempelt). Was NICHT geschrieben wird und warum, steht an den
+// drei Weichen isRecurring / isDerivativeIndex / isBrownfieldOnly. name leer ->
 // <Projektname> bleibt Platzhalter (Content-Urteil des Menschen). Ohne force wird
 // eine vorhandene Zieldatei nicht ueberschrieben (LH-FA-01 Boundary-AC).
 //
@@ -209,10 +262,10 @@ func Templates(src fs.FS, targetDir, name string) error {
 }
 
 // planTemplates klassifiziert den Quell-Baum in Ziel-Pfad -> Inhalt (LH-FA-02 0.8.0).
-// Emittiert werden nur die Singletons; wiederkehrende Vorlagen und derivative Indexe
-// bleiben ununemittiert (referenziert aus der vendored Baseline bzw.
-// Fuelle-wenn-Inhalt-da). Zusaetzlich werden die tool-definierten
-// Struktur-Verzeichnisse via .gitkeep gehalten (structureGitkeeps).
+// Emittiert werden nur die Singletons; wiederkehrende Vorlagen, derivative Indexe und
+// das Brownfield-Register bleiben ununemittiert (referenziert aus der vendored
+// Baseline, Fuelle-wenn-Inhalt-da bzw. modus-gebunden). Zusaetzlich werden die
+// tool-definierten Struktur-Verzeichnisse via .gitkeep gehalten (structureGitkeeps).
 func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 	targets, err := InitInvariantTargets()
 	if err != nil {
@@ -226,11 +279,23 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 		if d.IsDir() || !inScope(rel) {
 			return nil
 		}
-		// Wiederkehrende Vorlagen und derivative Indexe NICHT emittieren (ADR-0005):
-		// die Wiederkehrenden liegen aus dem Fetch vendored und werden von dort je
-		// Artefakt kopiert; die Indexe sind Fuelle-wenn-Inhalt-da (broken
-		// Platzhalter-Links in einem frischen Repo).
-		if isRecurring(path.Base(rel)) || isDerivativeIndex(rel) {
+		// Wiederkehrende Vorlagen, derivative Indexe und das Brownfield-Register
+		// NICHT emittieren (ADR-0005): die Wiederkehrenden liegen aus dem Fetch
+		// vendored und werden von dort je Artefakt kopiert; die Indexe sind
+		// Fuelle-wenn-Inhalt-da (broken Platzhalter-Links in einem frischen Repo);
+		// das Reconciliation-Register entsteht erst im Rueckbau eines
+		// Brownfield-Bootstraps.
+		//
+		// WER HIER EINE VORLAGE NICHT EINTRAEGT, ENTSCHEIDET "Singleton" — das ist
+		// die Voreinstellung, und fuer docs/plan/planning/observations.template.md
+		// ist sie die richtige: das Beobachtungs-Register ist die stehende Datei des
+		// Steering Loops ("Kopiere nach docs/plan/planning/observations.md", ein Ziel
+		// je Repo, ohne Platzhalter im Pfad), und seine leere Tabelle ist laut
+		// Baseline-Regelwerk modul-06-roadmap.md §Das Beobachtungs-Register "die, mit
+		// der jedes Repo anfaengt". Ein Repo ohne die Datei haette keine
+		// Vergabestelle fuer BEO-<NNN> und keinen Ort fuer den Sichtungs-Schritt der
+		// Slice-Planung.
+		if isRecurring(path.Base(rel)) || isDerivativeIndex(rel) || isBrownfieldOnly(rel) {
 			return nil
 		}
 		content, readErr := fs.ReadFile(src, rel)
