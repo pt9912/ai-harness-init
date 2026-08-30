@@ -175,8 +175,25 @@ Drei slice-eigene Punkte (Modul 5 §Ziel-Form: ≤ 3;
 
 ## 4. Trigger
 
-**Beginn (`open` → `next` → `in-progress`): nichts blockiert ihn außer dem WIP-Limit.** Der
+**Beginn (`open` → `next` → `in-progress`): das WIP-Limit ist frei **und**
+[slice-141](../next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) liegt in `done/`.** Der
 Auflösungs-Trigger des Carveouts ist eingetreten; damit ist der Slice fällig, nicht bloß möglich.
+
+**Warum die zweite Bedingung.** Der `git mv` aus DoD (3) bricht zwei Pfad-Links in
+[`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md), und deren Quelldatei ist
+eingefroren:
+
+```sh
+grep -c '^\*\*Status:\*\* Accepted' docs/plan/adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md          # 1
+grep -cE '\]\(\.\./carveouts/(done/)?CO-001[^)]*\)' docs/plan/adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md  # 2
+```
+
+[`AGENTS.md`](../../../../AGENTS.md) §3.4 sperrt die Reparatur am Ziel; ein Lauf, der den Move
+ohne vorherige Entscheidung vollzieht, erzeugt einen Befund, den niemand beheben darf.
+[slice-141](../next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) entscheidet das
+Instrument. **Ein Wächter für diese Reihenfolge existiert nicht** — kein Modul des Doku-Gates
+liest Lifecycle-Reihenfolgen —, und das steht hier, statt einen zu behaupten
+([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 
 **Rückführungen, vorab benannt:**
 
