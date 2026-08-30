@@ -296,12 +296,12 @@ und `full-smoke` an [slice-133](done/slice-133-emittierter-baum-ohne-platzhalter
 an denselben zwei, weil sein Grün-Vorlauf genau diese Modi fährt; `make gates` an
 [slice-130](done/slice-130-emitter-entscheidet-jedes-neue-template.md)
 ([`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md)) **und**
-[slice-132](open/slice-132-adaptions-block-ohne-totes-ziel.md)
+[slice-132](next/slice-132-adaptions-block-ohne-totes-ziel.md)
 ([`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md)). **Was davon heute noch steht,
 ist gemessen und nicht abgeleitet:** `make -k gates` hat genau **ein** rotes Ziel, `docs-check` —
 die `make gates`-Kante hängt damit allein an
 [`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md) und
-[slice-132](open/slice-132-adaptions-block-ohne-totes-ziel.md), nicht mehr an
+[slice-132](next/slice-132-adaptions-block-ohne-totes-ziel.md), nicht mehr an
 [`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md). `make smoke` meldet
 `d-check: 20 Datei(en) geprüft, 0 Befund(e)` bei Exit 0, `make test-bats` liefert `1..196` ohne
 `not ok`. **`full-smoke` und `mutate` sind hier nicht gefahren** — der erste braucht Netz, der
@@ -314,7 +314,7 @@ Haltbarkeits-Prüfung der **gelisteten** Wächter aus
 Modi** — der Treiber kennt ihn gar nicht (`grep -c 'docs-check' harness/tools/mutate.sh` → **0**,
 und `grep -h '^# verify:' test/mutations/*.sh | sort -u` führt ihn nicht). Der blinde Fleck endet
 also mit `smoke`, `full-smoke` und den Test-Stufen, nicht mit
-[slice-132](open/slice-132-adaptions-block-ohne-totes-ziel.md).
+[slice-132](next/slice-132-adaptions-block-ohne-totes-ziel.md).
 
 **Mit [slice-133](done/slice-133-emittierter-baum-ohne-platzhalter-links.md) ist keiner der
 vier Jobs zurück, und dieser Satz steht hier, weil sein Abschluss sonst falsch gelesen wird.**
@@ -333,7 +333,7 @@ Closure dieser Welle liest ihn dort. Im Arbeitsbaum ist die Reparatur da (`make 
 
 **Ein Zwischenziel, das `main` früher grün zurückgibt, wird hier nicht geschnitten — und der
 Grund ist der Rang, nicht der Aufwand.** Der kürzeste Weg zu einem grünen `make gates` liefe über
-[slice-132](open/slice-132-adaptions-block-ohne-totes-ziel.md) **vor** 133 und 130: er ist von
+[slice-132](next/slice-132-adaptions-block-ohne-totes-ziel.md) **vor** 133 und 130: er ist von
 beiden unabhängig (§5). Er brächte aber ein grünes Gate, während der Bruch von
 [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)/[`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
 — Rang 1 — länger offen stünde, und genau das Grün wäre die Farbe, die den Bruch nicht sieht (er

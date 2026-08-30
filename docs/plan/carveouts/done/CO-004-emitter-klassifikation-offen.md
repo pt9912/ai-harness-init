@@ -189,7 +189,7 @@ rot. Ein Ausschluss der Fälle wäre eine Schwellen-Senkung und nach
       meldet `1..196` ohne `not ok`, `make test` ist damit grün, und keine Konfiguration nimmt einen
       Fall aus. **Was daneben rot bleibt, gehört nicht hierher:** `docs-check` fällt unter
       [`CO-005`](../CO-005-adaptions-block-datierter-beleg.md) (Träger
-      [slice-132](../../planning/open/slice-132-adaptions-block-ohne-totes-ziel.md)) — ein anderer Carveout,
+      [slice-132](../../planning/next/slice-132-adaptions-block-ohne-totes-ziel.md)) — ein anderer Carveout,
       eine andere Ursache, und dieser hier ist extensional geschlossen (Kopf, §Geltungsbereich).
 - [x] Datei wird nach `docs/plan/carveouts/done/` bewegt (reiner `git mv`) — vollzogen am
       2026-08-30: der Move als eigener Commit, der Link-Abgleich der Verweise als zweiter

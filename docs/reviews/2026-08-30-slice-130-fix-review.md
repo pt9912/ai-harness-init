@@ -42,7 +42,7 @@ make -k gates      # -> genau EIN rotes Ziel
 `d-check: 464 Datei(en) geprüft, 1 Befund(e)`, und der Befund ist
 `harness/conventions.md:1019 … target-missing` =
 [`CO-005`](../plan/carveouts/CO-005-adaptions-block-datierter-beleg.md), Träger
-[slice-132](../plan/planning/open/slice-132-adaptions-block-ohne-totes-ziel.md) — erwartet rot.
+[slice-132](../plan/planning/next/slice-132-adaptions-block-ohne-totes-ziel.md) — erwartet rot.
 Über dem Log desselben Laufs: `grep -cE '^ok ' <log>` → **196**,
 `grep -cE '^not ok ' <log>` → **0**, `1..196`; `comment-claims: 46 Datei(en) geprueft, 0 Befund(e)`;
 `baseline-verify: v5.12.0 OK — 51 Dateien`; `span-check` grün. Gelaufen sind alle elf Ziele
