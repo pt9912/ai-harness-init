@@ -27,6 +27,24 @@ scan:
   # und braucht seine eigene ADR — auch dann, wenn er dieselbe Bedingung erfuellt.
   ignore: ["**/*.template.md", ".tmp/**", ".harness/baseline/**", "docs/user/claude-hooks-referenz.md", "docs/plan/adr/0013-technik-stratum-als-zielort.md"]
 modules: [links, anchors, ids, matrix, codepaths, spans]
+# ignore-refs (referenz-weit, geteilt seit d-check 0.49.0 — links, anchors und codepaths
+# honorieren denselben Top-Level-Schluessel): nimmt benannte Referenzen aus, keine Datei.
+# in und refs sind je auf einen Dateinamen geschnitten; aus der Pruefung faellt nur, was beide
+# gemeinsam treffen. harness/conventions.md traegt einen Markdown-Link in den abgeloesten
+# Baseline-Baum: der Satz um ihn herum ist nur ueber jenen Stand wahr, die adoptierte Baseline
+# sagt an derselben Zeile das Gegenteil, und der Rumpf des Eintrags ist append-only eingefroren.
+# Warum daraus eine Ausnahme folgt und keine Reparatur, steht in ADR-0026.
+# Der Eintrag laesst die Datei im Pruefbereich — die gepruefte Datei-Zahl bewegt sich durch ihn
+# nicht. Wie viele Referenzen ein Paar wirklich stumm schaltet, misst weder diese Config noch
+# docs-check: ein zu breiter Eintrag ist genauso gruen wie ein enger. Das misst
+# test/ignore-refs-restbreite.bats (in make gates) — mehr als ein Link je Paar faerbt rot.
+# GRENZE, keine Regel: EXTENSIONAL GESCHLOSSEN auf dieses eine Paar (ADR-0026). Jeder weitere
+# Eintrag, jedes weitere Glob und jede Verbreiterung auf ein Verzeichnis ist eine neue Senkung
+# nach AGENTS.md 3.5 und braucht ihre eigene ADR — auch dann, wenn sie dieselbe Bedingung
+# erfuellt.
+ignore-refs:
+  - in: "harness/conventions.md"
+    refs: [".harness/baseline/v3.5.2/regelwerk/modul-08-agentenrollen.md"]
 # Kennungen sind linkpflichtig (auch in Inline-Code, link-policy: always) —
 # "klickbar zur Quelle" als gemessenes Property. Literal-schwere Artefakte
 # (Review-Reports, CHANGELOG) ausgenommen.
