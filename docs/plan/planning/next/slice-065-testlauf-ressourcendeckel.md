@@ -17,6 +17,8 @@ bleibt gepinnt und hermetisch),
 dieser Linie), [`AGENTS.md`](../../../../AGENTS.md) §3.6 (die neue Grenze braucht ihren
 rot gesehenen Wächter — und die **bestehende** Cache-Zusage darf ihren nicht verlieren).
 
+**Verantwortlich:** Implementer (pt9912).
+
 **Autor:** ai-harness-init-Team (pt9912). **Datum:** 2026-07-29.
 
 ---
@@ -105,21 +107,35 @@ wirkungslos und darf sie nicht scheinbar abdecken.
 
 ## 4. Trigger
 
-**`open` → `next`:** der Schnitt steht und die Ist-Messung liegt vor (beides seit
-2026-07-29). **Die erste Fassung dieser Zeile band den Übergang an die Schließung von
-slice-059 „wegen des WIP-Limits" — das war falsch:** das WIP-Limit gilt für
-`in-progress/`, nicht für `next/`. Zwei verschiedene Übergänge in einer Bedingung, und
-der Slice lag dadurch länger in `open/`, als die Regel verlangt (vom Auftraggeber
-zweimal angemerkt).
+Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
+§Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**`next` → `in-progress`:** *hier* greift das WIP-Limit — slice-059 muss geschlossen
-sein. Zweite Bedingung: der Zahlen-Bedarf aus der Zeile „Zahlenwahl" ist gemessen
-(`pids-limit`, `memory` aus dem realen Bedarf des Testlaufs, nicht geraten).
+**`open` → `next`:** der Schnitt steht, die Ist-Messung aus §3 liegt vor, und
+`Verantwortlich:` ist gesetzt. Das WIP-Limit gehört **nicht** hierher: es gilt für
+`in-progress/`.
 
-**Dringlichkeit, ehrlich:** der auslösende Defekt ist behoben, die Klasse ist offen —
-und seit dem 2026-07-29 liegt mit `harness/tools/agent-watch.sh` ein **unbewachtes**
-Artefakt im Repo, dessen Verankerung zu diesem Slice gehört. Das ist eine stehende
-Schuld, kein Wunsch.
+**`next` → `in-progress`:** zwei Bedingungen, und die zweite ist heute die bindende.
+
+1. **Das WIP-Limit ist frei** — `ls docs/plan/planning/in-progress/slice-*.md | wc -l`
+   → **0** (2026-08-30, mitwandernd). Erfüllt.
+2. **Der Slice hält die Größen-Regel.** Baseline-Regelwerk
+   `modul-05-planning-harness.md` §Ziel-Form: Slice lässt **≤ 3 Liefer-Punkte** zu; §2
+   führt **4** (`awk '/^## 2\. Definition of Done/,/^## 3\./' <diese Datei> | grep -cE
+   '^- \[[ x]\] \*\*\([0-9]+\)'` → **4**), und §3 trägt mit der Verankerung von
+   `harness/tools/agent-watch.sh` einen fünften Gegenstand, der mit dem Umfang wächst.
+   **Nicht erfüllt.** Der Ausgang ist der Re-Schnitt — Deckel und Wächter (DoD 1/2/3)
+   gegen Melder-Verankerung —, und `next/` ist der Ort, an dem ein zu großer Slice
+   darauf wartet (dasselbe Ziel, das die Rückführung `in-progress → next` ansteuert).
+
+**Die Zahlenwahl ist keine Vorbedingung.** `pids-limit` und `memory` stehen in §3 als
+**Entscheidung des Laufs**, aus dem realen Bedarf des Testlaufs gemessen; eine Messung,
+die den Testumbau voraussetzt, kann nicht vor ihm stehen (Baseline-Regelwerk
+`modul-06-roadmap.md` §Roadmap-Regeln, dritter Punkt — ein Trigger, der ein Ergebnis
+seines eigenen Gegenstands ist, ist zirkulär).
+
+**Dringlichkeit:** der auslösende Defekt ist behoben, die Klasse ist offen, und
+`harness/tools/agent-watch.sh` liegt unbewacht im Repo
+(`grep -rl 'agent-watch' Makefile test/ | wc -l` → **0**, 2026-08-30, mitwandernd).
 
 Rückführungen:
 
