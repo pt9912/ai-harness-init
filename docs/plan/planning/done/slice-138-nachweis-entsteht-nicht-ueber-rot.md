@@ -252,7 +252,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       deckt und wer den Lauf trägt, steht in §7 (*Der Haken zu (3)*).
 - [x] `make gates` bringt **keinen Befund hervor, der diesem Slice zuzurechnen ist** — der Lauf
       trägt zum Schnitt-Zeitpunkt zwei offene Carveouts
-      ([`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) auf `test`,
+      ([`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) auf `test`,
       [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) auf `docs-check`),
       beide fremde Posten mit eigenen Folge-Slices. Verlangt ist der Vorher-Nachher-Vergleich
       derselben Ausgabe.
@@ -316,7 +316,7 @@ Posten. Drei Gründe, jeder nachprüfbar:
    der Zeit seit [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md).
 2. **Alle drei Fundorte stammen aus der Arbeit am emittierten Baum** — slice-081,
    [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) und
-   [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) —, und slice-130 liegt in
+   [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) —, und slice-130 liegt in
    derselben Ecke. Der nächste Lauf, der `-k` braucht, ist absehbar der, dessen Nachweis dann
    wieder nicht deckt.
 3. **Der Nachweis ist die Voraussetzung jeder Closure, auch der von slice-130.** Ein Stempel, der
@@ -355,7 +355,7 @@ fremden Lauf.
 
 **Drei der vier Kriterien sind erfüllt, das dritte nicht — und diese Closure läuft trotzdem.**
 Der `make mutate`-Lauf ist heute nicht herstellbar; er hängt an
-[`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md), also an genau dem fremden Lauf,
+[`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md), also an genau dem fremden Lauf,
 den der Satz oben von den Closure-Kriterien fernhalten wollte. Die Abweichung samt Ersatz,
 Deckungsgrenze und Träger steht in §7 (*Der Haken zu (3)*); sie steht dort und nicht hier, weil ein
 Kriterium, das man bei seiner eigenen Anwendung umschreibt, keines ist.
@@ -568,7 +568,7 @@ von der Verifikation unabhängig nachgestellt — für sie ist deren Protokoll *
 führt denselben Lauf als Closure-Kriterium. Er ist **heute nicht herstellbar**: `green_prerun`
 fährt jeden benutzten Modus einmal und bricht fail-closed ab, solange einer rot ist
 (*„mutate: ABBRUCH — make $m ist in der isolierten Kopie ohne Mutation rot"*), und `test-bats`
-**ist** rot durch [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md)
+**ist** rot durch [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md)
 (`not ok 40`/`41` in meinem Lauf). Einen Einzelfall-Modus gibt es nicht:
 `command grep -c 'MUTATE_CASES' harness/tools/mutate.sh` → **0**, Exit 1.
 
@@ -595,7 +595,7 @@ Ausgabe, beide Stände von mir gefahren:
 | Ziel | `b22f330` | `ef22f72` | Zurechnung |
 |---|---|---|---|
 | `docs-check` | `457 Datei(en) geprüft, 1 Befund(e)` | `462 Datei(en) geprüft, 1 Befund(e)` | dieselbe Zeile: `harness/conventions.md:1019 … target-missing` = [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) |
-| `test-bats` | `1..190`, `not ok 40`/`41` | `1..195`, `not ok 40`/`41` | dieselben zwei = [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md); je `command grep -cE '^not ok '` → **2** |
+| `test-bats` | `1..190`, `not ok 40`/`41` | `1..195`, `not ok 40`/`41` | dieselben zwei = [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md); je `command grep -cE '^not ok '` → **2** |
 | übrige acht | — | grün | — |
 
 `command grep -cE '^not ok ' <log>` → **2**, keine dritte rote Zeile. Grün und selbst gesehen:

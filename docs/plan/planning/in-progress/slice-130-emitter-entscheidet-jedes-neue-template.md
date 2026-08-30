@@ -179,7 +179,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       voraus (§4). Bleibt er rot, ist **vor** dem Nachziehen einer Erwartung zu prüfen, welche der
       beiden Ursachen die Befunde trägt — ein Grün durch Anpassen einer Zahl ist keines.
 - [ ] `make gates` grün — **ohne** die Ausnahme aus
-      [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md); der Carveout ist damit
+      [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md); der Carveout ist damit
       aufgelöst und seine Datei per `git mv` in `carveouts/done/`, die Index-Zeile umgehängt.
 - [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -206,7 +206,7 @@ Aussagen-Berührung steht hier gar nicht.
 | `internal/emit/templates_test.go` | update | `courseSet()` spiegelt den realen Satz; `TestTemplates_EmittierterBestandVollstaendig` trägt den vollständigen Soll-Bestand |
 | `test/courseset-fixture.bats` | update | der Wächter, der die Frage gestellt hat: Fixture-Abgleich und in-scope-Zahl |
 | `test/mutations/` | ggf. neu | je Entscheidung ein rot färbender Fall, soweit die vorhandenen ihn nicht schon tragen ([`AGENTS.md`](../../../../AGENTS.md) §3.6) |
-| [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) | **auflösen** (`git mv` nach `done/`) | die Ausnahme fällt mit der Entscheidung; Auflösen ohne Verschiebung wäre die zweite Lüge (Modul 7) |
+| [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) | **auflösen** (`git mv` nach `done/`) | die Ausnahme fällt mit der Entscheidung; Auflösen ohne Verschiebung wäre die zweite Lüge (Modul 7) |
 | [`spec/lastenheft.md`](../../../../spec/lastenheft.md) | **unverändert** | Rang 1 der Source Precedence. Berührt eine Entscheidung die Aufzählung in [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), verlässt sie den Slice als Übergabe (§6), statt hier geschrieben zu werden |
 | `internal/emit/templates/commands/`, `.harness/skills/` | **unverändert** | der **Text** der emittierten Artefakte ist Gegenstand von [slice-085](../open/slice-085-emittierte-ebene-zieht-nach.md); hier geht es um die **Menge** |
 | eine `observations.md` unter `docs/plan/planning/`, `…/reconciliation.md` | **unverändert** | ob **dieses** Repo die Register führt, ist eine Dogfood-Frage mit eigenem Eigentümer |
@@ -238,7 +238,7 @@ Ausführung dieses Slice grün werden kann, ist keine Abnahme, sondern eine Fall
   Aufzählung in [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
   ändern müsste. Das Lastenheft ist Rang 1 und wird nicht im Implementations-Kontext
   fortgeschrieben; die Frage geht dann hinaus, und
-  [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) bleibt bis zur Antwort
+  [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) bleibt bis zur Antwort
   bestehen — mit nachgetragener *Letzte Prüfung*, nicht stillschweigend.
 
 ## 5. Closure-Trigger

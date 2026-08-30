@@ -183,7 +183,7 @@ wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
 - **`make gates` grün — und zwar ohne offenen Carveout auf einem Gate dieser Welle.** Der Zusatz
   ist nicht kosmetisch: zwischen [slice-081](done/slice-081-baum-tauschen-pin-ziehen.md) und
   [slice-130](in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) trägt
-  [`CO-004`](../carveouts/CO-004-emitter-klassifikation-offen.md) zwei rote bats-Fälle auf einem
+  [`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md) zwei rote bats-Fälle auf einem
   Trigger. Ein Welle-Grün, das diesen Carveout mitzählte, hieße *„grün, außer wo wir nicht
   hinsehen"*. Die Welle schließt erst, wenn er in `carveouts/done/` liegt.
 - **Die drei Sensoren außerhalb der Gates** — `make smoke`, `make full-smoke`, `make mutate`. Die
@@ -273,7 +273,7 @@ sind über die ganze slice-133-Kette unangetastet
 → **0**).
 
 **Zwei Carveouts halten den Zwischenzustand der Gates sichtbar statt still:**
-[`CO-004`](../carveouts/CO-004-emitter-klassifikation-offen.md) (Gate `test`, Folge-Slice 130) und
+[`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md) (Gate `test`, Folge-Slice 130) und
 [`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md) (Gate `docs-check`, Folge-Slice
 132). Beide sind extensional geschlossen, und **keiner** von beiden deckt den Vertragsbruch oben —
 `CO-004` grenzt das in seinem Kopf ausdrücklich ab. Der zweite hat **keine**
@@ -291,7 +291,7 @@ und `full-smoke` an [slice-133](done/slice-133-emittierter-baum-ohne-platzhalter
 [slice-130](in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) (8 + 2 Befunde); `mutate`
 an denselben zwei, weil sein Grün-Vorlauf genau diese Modi fährt; `make gates` an
 [slice-130](in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md)
-([`CO-004`](../carveouts/CO-004-emitter-klassifikation-offen.md)) **und**
+([`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md)) **und**
 [slice-132](open/slice-132-adaptions-block-ohne-totes-ziel.md)
 ([`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md)). Der teuerste Posten dabei
 ist nicht das Rot, sondern der blinde Fleck darunter: `mutate` läuft in diesem Fenster über

@@ -36,7 +36,7 @@ Stand wahr. Die dritte Ebene ist die teuerste: der Baum ist auch die Eingabe des
 Plan-Datei.
 
 **Der Zwischenstand ist rot und benannt, nicht rot und still — und er hat zwei Sorten.** Auf den
-**Gates** halten ihn zwei Carveouts: [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md)
+**Gates** halten ihn zwei Carveouts: [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md)
 auf `test` (Folge-Slice `slice-130`) und
 [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) auf `docs-check`
 (Folge-Slice `slice-132`). Der zweite hat **keine** Gate-Konfiguration: das Modul `links` kennt am

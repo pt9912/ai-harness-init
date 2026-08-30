@@ -195,7 +195,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Folge-Slice. Eine dritte Antwort — die Frage nicht stellen — ist ausgeschlossen
       ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 - [x] `make gates` grün, soweit die Welle es zulässt — die offenen Carveouts
-      [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) und
+      [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) und
       [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) bleiben bis zu ihren
       eigenen Folge-Slices bestehen und sind **nicht** Gegenstand dieses Slice.
 - [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist —
@@ -453,7 +453,7 @@ und `test-bats`. `docs-check`: `d-check: 456 Datei(en) geprüft, 1 Befund(e)`, u
 `harness/conventions.md:1019 → ../.harness/baseline/v3.5.2/regelwerk/modul-08-agentenrollen.md#… · target-missing`
 — [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md), vom Slice unabhängig.
 `test-bats`: `1..190` mit `not ok 40` und `not ok 41`, Zeichen für Zeichen die zwei Fallnamen aus
-[`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md); `ok 42` und der neue `ok 43`
+[`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md); `ok 42` und der neue `ok 43`
 sind grün. **Kein roter Fall außerhalb der Carveouts.** Grün und selbst gesehen:
 `baseline-verify: v5.12.0 OK — 51 Dateien`, `lint`, `build`, `test-go`, `shell-lint`, `ci-lint`,
 `comment-claims: 46 Datei(en) geprueft, 0 Befund(e)`, `host-bin`,
@@ -561,12 +561,12 @@ Eintrag ist **gezählt, nicht verkörpert**
 | Der Kommentar definiert `spitz` als *„das ganze Ziel"*, der Code prüft das erste Zeichen | Review `HIGH-2` | **erledigt** in `6967691` — heute `print (ziel ~ /^<[^<>]*>$/) ? "spitz" : "eingebettet"`, und Fall `209` hält die Bedingung fest; hier A/B gefahren (DoD (2)) |
 | Vier lebende Artefakte führen die Aufteilung `7`/`3` | Review `MEDIUM-1`, Verifikation `V-3` | **erledigt in diesem Zug** — `CO-004`, `slice-130`, `welle-10` und die Roadmap tragen jetzt `8`/`2` mit dem Grund (die Form-Regel kennt keine Namen); dazu die verschobenen Zeilenangaben in `CO-004` |
 | `internal/emit/readme.go` steht nicht in der Plan-Tabelle | Review `LOW-1`, Verifikation `V-5` | **hier vermerkt**, §3 unangetastet (*Was ging anders als geplant*); der Termin für die Regel liegt bei [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md), neunter Posten |
-| Der Kopf von Fall `207` beschreibt eine Mutation, der `sed` erreicht zwei Zeilen | Review `LOW-2` | **weiter offen, ohne eigenen Schnitt** — für das Verdikt des Treibers folgenlos (`narrow_sensor` wählt `test-bats`, die Go-Stufe läuft nicht), und der Fall wird beim Fall von [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) ohnehin zum ersten Mal mechanisch gefahren. Sein Ort ist dann [slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md)s Lauf, nicht dieser |
+| Der Kopf von Fall `207` beschreibt eine Mutation, der `sed` erreicht zwei Zeilen | Review `LOW-2` | **weiter offen, ohne eigenen Schnitt** — für das Verdikt des Treibers folgenlos (`narrow_sensor` wählt `test-bats`, die Go-Stufe läuft nicht), und der Fall wird beim Fall von [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) ohnehin zum ersten Mal mechanisch gefahren. Sein Ort ist dann [slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md)s Lauf, nicht dieser |
 | Die Ebenen-Entscheidung (Emitter ↔ emittierter Prüfbereich) ist unbelegt | Review `LOW-3` | **erledigt** in `6967691` — die Begründung steht am Code; Risiko 2 in §6 trägt die Messung |
 | `CO-004` zitiert verschobene Zeilennummern | Review `LOW-4` | **erledigt in diesem Zug** — `command grep -n '^@test' test/courseset-fixture.bats` → `59`, `77`, `93`, `165`; die Fall-**Nummern** `not ok 40`/`41` waren und bleiben richtig |
 | `slice-115` zitiert `not ok 71`/`72` aus einer datierten Sonde | Review `LOW-4`, zweiter Fundort | **als Protokoll kenntlich gemacht**, nicht korrigiert — die Zahlen sind das Ergebnis **jenes** Laufs; die Einfügung dieses Slice verschiebt jede bats-Nummer ab `44` um eins, und das steht jetzt dort |
 | Die Zusagen dieses Slice liegen zur Hälfte außerhalb von `make comment-claims` | Verifikation `V-4` | **weiter offen, benannt** — der Prüfbereich ist Gegenstand von [slice-070](../open/slice-070-comment-claims-pruefbereich.md); die Richtigkeit der bats-Stelle hängt heute an einem Rollen-Durchgang und an keinem Sensor |
-| `make mutate` ist der einzige Sensor dieses Slice ohne mechanischen Lauf | Verifikation `V-6` | **weiter offen, mit Träger** — der Abbruch hängt an [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md), dessen Folge-Slice [slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) ist; ich habe den tragenden Arm des Ersatzes selbst gefahren (DoD (2)) |
+| `make mutate` ist der einzige Sensor dieses Slice ohne mechanischen Lauf | Verifikation `V-6` | **weiter offen, mit Träger** — der Abbruch hängt an [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md), dessen Folge-Slice [slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) ist; ich habe den tragenden Arm des Ersatzes selbst gefahren (DoD (2)) |
 | Antwort (b) ohne Folge-Slice | Verifikation `V-2` | **entschieden: (b) gestrichen** (DoD (3) oben) |
 | Risiko 3 hat keinen gültigen vorformulierten Ausgang | Verifikation `V-1` | **entschieden: weiter offen** (§6), mit dem Register-Träger [slice-137](../open/slice-137-beobachtungs-register-bekommt-seinen-ort.md) |
 

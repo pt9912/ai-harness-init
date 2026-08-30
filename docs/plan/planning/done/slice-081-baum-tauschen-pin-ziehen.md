@@ -173,7 +173,7 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
       ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
       Setzung 2).
       1. **`make gates`** — zwei Befunde, beide mit **extensional geschlossenem** Carveout:
-         [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) (zwei Fälle in
+         [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) (zwei Fälle in
          `test/courseset-fixture.bats`; ihr Grün setzt die Klassen-Entscheidung über vier neue
          Vorlagen voraus — [slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md))
          und [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) (**eine**
@@ -207,7 +207,7 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
          Mutation rot."*); die Warteschlange gibt die teuersten Modi zuerst aus (`mode_rank`), und
          ein abbrechender Worker lässt seinen Rest liegen. Rot sind genau die Modi, die die
          Sensoren 1 und 2 tragen — alles, was `test-bats` fährt (die zwei Fälle aus
-         [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md); auch der
+         [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md); auch der
          fail-closed-Voll-Satz `test` enthält sie) und alles, was den emittierten Baum fährt
          (`smoke`, `full-smoke`). Am Stand `06a640a` endet der Lauf deshalb mit `0 ok` und
          `vollstaendigkeit … 0 von 198 Fall-Dateien haben ein Ergebnis` (`make mutate`; die
@@ -362,7 +362,7 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
 - **Der vendored Baum ist nicht nur Verweis-Ziel, sondern Eingabe eines Gates.** `make test`
   liest über `test/courseset-fixture.bats` den **Inhalt** des Template-Satzes, nicht seinen Pfad;
   der Tausch stellt dort vier Klassen-Fragen, die dieser Slice nicht beantwortet. — **Ausgang:**
-  eingetreten → [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) mit Folge-Slice
+  eingetreten → [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) mit Folge-Slice
   [slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md).
 - **Der vendored Baum ist zugleich die Eingabe des Emissions-Kanals, und der trägt eine
   Rang-1-Zusage.** `internal/fetch/baseline.go` `DefaultTag` zeigt nach dem Tausch auf den neuen
@@ -492,7 +492,7 @@ ist heute neu erhoben statt übernommen. `make -k gates` (keep-going, damit der 
 `docs-check` mit `452 Datei(en) geprüft, 1 Befund(e)` =
 [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) und `test-bats` mit
 `not ok 40` / `not ok 41` bei **189** Fällen (`grep -cE '^(ok|not ok)'` über dieselbe Ausgabe) =
-[`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md). Grün sind
+[`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md). Grün sind
 `baseline-verify` · `lint` · `build` · `shell-lint` · `ci-lint` · `host-bin` · `span-check` und
 `comment-claims` (`comment-claims: 46 Datei(en) geprueft, 0 Befund(e)`). **Ein dritter Rot-Zustand
 innerhalb der Gates existiert nicht.**
@@ -510,7 +510,7 @@ Zeile für Zeile in der Smoke-Ausgabe. `make full-smoke` zeigt dieselben zehn un
 (`ls test/mutations/*.sh | wc -l` → **198**, kein Erwartungswert); die Abbruchgründe nennen die
 Ursache wörtlich und es ist keine eigene: *„der Gruen-Vorlauf 'make full-smoke' ist in SEINER Kopie
 ohne Mutation rot"* (Worker 1) und *„… 'make test-bats' …"* (Worker 2 bis 4) — also die Sensoren 2
-und 1. Die Modul-7-Pflicht von [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md)
+und 1. Die Modul-7-Pflicht von [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md)
 ist offen **und benannt**: `git grep -c 'CO-004' -- test/ .d-check.yml Makefile` findet nichts, und
 der Carveout sagt das über sich selbst.
 
@@ -629,7 +629,7 @@ notieren, hieße einen geschlossenen Kreis ein zweites Mal aufzuschreiben.
 Alle **elf** Punkte tragen ihre `— **Ausgang:**`-Zeile in §6 selbst
 (`sed -n '/^## 6\./,/^## 7\./p' <diese Datei> | grep -c '\*\*Ausgang:\*\*'` → **11**):
 **sieben eingetreten** mit Carveout oder Folge-Slice — einmal
-[`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) mit
+[`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) mit
 [slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md), einmal
 [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) mit
 [slice-132](../open/slice-132-adaptions-block-ohne-totes-ziel.md), dreimal
@@ -654,7 +654,7 @@ oben benannt.
 ### Folge-Slices — jeder ist eine Datei in `open/`
 
 [slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) (vier neue Vorlagen
-klassifizieren; löst [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) und drei der
+klassifizieren; löst [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) und drei der
 zehn Smoke-Befunde) · [slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md)
 (Präsens-Aussage gegen den gepinnten Stand) ·
 [slice-132](../open/slice-132-adaptions-block-ohne-totes-ziel.md) (löst
