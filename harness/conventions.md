@@ -1816,14 +1816,29 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
      ([`MR-016`](#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)), also greift er.
   3. **Der Zeiger auf den Grundlagen-Abschnitt.** Die Vorlage nennt ihn; §3.7 nannte ihn nicht und
      war damit die einzige Fassung der Regel im Repo — genau die zweite Fassung, die driftet.
-- **Was über die Vorlage hinaus stehen bleibt, und warum es keine Abweichung ist.** Drei Stücke:
+- **Was über die Vorlage hinaus stehen bleibt, und warum es keine Abweichung ist.** Vier Stücke:
   der **Geltungsbereich** (`.harness/baseline/` ausgenommen, ein Zeitdokument ist kein lebendes
-  Register, die emittierte Ebene entscheidet ein anderer Slice), der **Cutoff** und die
-  **Wächter-Aussage** *„`make comment-claims` prüft, ob ein genannter Sensor existiert, nicht,
-  worüber ein Kommentar spricht"*. Keines schränkt die Baseline-Regel ein — die Baseline sagt über
-  den Bestand nichts, verlangt also kein Nachrüsten, und einen Sensor behauptet keines von beiden.
-  Eine Ergänzung ohne Einschränkung ist keine Adaption;
-  [`MR-000`](#mr-000--baseline-aussage) wird für diesen Punkt nicht ausgenommen.
+  Register, die emittierte Ebene entscheidet ein anderer Slice), der **Cutoff**, die
+  **Quellen-Klausel** (*„Beschrieben wird die Stelle, nicht der Vorgang, der sie erzeugt hat"* —
+  ein Kommentar sitzt in keinem Rang der Source Precedence und trägt darum nicht den Grund einer
+  Entscheidung) und die **Wächter-Aussage** *„`make comment-claims` prüft, ob ein genannter Sensor
+  existiert, nicht, worüber ein Kommentar spricht"*. Keines schränkt die Baseline-Regel ein — die
+  Baseline sagt über den Bestand nichts, verlangt also kein Nachrüsten; einen Sensor behauptet
+  keine der beiden Fassungen; und die Quellen-Klausel wendet die Baseline-Hard-Rule *„Wer Herkunft
+  nennt, nennt sie als **ein** auflösbares Feld … und nie als Absatz"* an, statt sie zu verengen:
+  Sie nimmt keine der fünf Klassen weg und keine der dort genannten Anker-Formen — `· seit
+  welle-<NN>` und, für wellenlos verkörperte Regeln, `· seit slice-<NNN>` bleiben zulässig.
+
+  ```sh
+  grep -c 'nennt sie als \*\*ein\*\* auflösbares Feld' .harness/baseline/v5.12.0/regelwerk/grundlagen-harness-dateien.md   # Hard-Rule-Satz, den die Klausel anwendet
+  grep -c 'seit slice-<NNN>'                           .harness/baseline/v5.12.0/regelwerk/grundlagen-traceability.md      # die Anker-Form, die erhalten bleibt
+  grep -c 'Rang-Zeiger'                                AGENTS.md                                                          # die Klasse, die nicht wegfällt
+  ```
+
+  **Keine Erwartungswerte** ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2) — tragend ist, dass keine der drei Zeilen auf **0** steht. Eine Ergänzung ohne
+  Einschränkung ist keine Adaption; [`MR-000`](#mr-000--baseline-aussage) wird für diesen Punkt
+  nicht ausgenommen.
 - **Was hinter der Vorlage zurückbleibt: der zweite Träger fehlt — eine Lücke, keine Adaption.**
   Der Grundlagen-Abschnitt nennt für **beide** Hälften zwei Träger: *„Träger aller drei ist das
   Briefing … plus der HIGH-Eintrag Kommentar trägt keine der fünf Klassen im Reviewer-Skill …"*

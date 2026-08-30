@@ -121,6 +121,17 @@ den, der die Entscheidung *trifft*. Ausgeschrieben — Leser-Modell, Adressaten-
 Zeitform-Test, die drei Klassen, die herausfallen — steht die Regel im
 Baseline-Regelwerk `grundlagen-harness-dateien.md` §Was ein Kommentar trägt.
 
+**Beschrieben wird die Stelle, nicht der Vorgang, der sie erzeugt hat.** Die
+Source Precedence (§2) ist geschlossen —
+`sed -n '/^## 2\. Kanonische Quellen/,/^## 3\. Harte Regeln/p' AGENTS.md | grep -cE '^[0-9]+\. '`
+→ **8** Ränge —, und ein Kommentar sitzt in keinem davon. Trägt er trotzdem den
+*Grund* einer Entscheidung — eine Befund-Kennung, eine Slice-Nummer als Erzählung,
+das Protokoll eines Laufs —, dann liest der nächste Lauf ihn als Beleg und beruft
+sich auf eine Quelle, die kein Rang deckt. Herkunft steht darum als **ein**
+auflösbares Feld in den Formen der Begründung unten und sonst gar nicht. **Ein
+Sensor-Name ist keine Herkunft:** er nennt etwas, das jetzt läuft, und gehört zur
+Zusage — das Protokoll seines Laufs gehört nicht dazu.
+
 **Falsch:** „Ohne dieses Feld behauptete die Ausgabe eine Verteilung, die nicht
 stattgefunden hat" — Konjunktiv über die verworfene Alternative.
 **Richtig:** „Verteilt ist wahr, wenn die Splitting-Regel angewendet werden
@@ -129,6 +140,17 @@ konnte" — Indikativ über den Zustand.
 **Falsch:** „die frühere Fassung prüfte nur die Länge" — beschreibt abwesenden
 Text.
 **Richtig:** die geltende Zusage nennen; die vorige hält `git`.
+
+**Falsch:** „… gebrochen, Review-Befund slice-022b N-4. Die Prüfung fällt darum
+auf den Satz zurück" — eine Befund-Kennung als Grund. Sie löst nach
+`docs/reviews/**` auf, einem Zeitdokument in keinem Rang.
+**Richtig:** die Zusage nennen und den Sensor, der sie hält; wer sie ausgelöst
+hat, hält `git`.
+
+**Falsch:** „Was hier und heute REAL rot gesehen wurde, ist `core-impurity`" — das
+Protokoll eines Laufs, im Perfekt und an ein Datum gebunden.
+**Richtig:** „`core-impurity` deckt diesen Fall" — der Sensor im Indikativ; dass
+er einmal rot gesehen wurde, verlangt §3.6 als **Handlung**, nicht als Kommentar.
 
 **Zustandsfelder ebenso.** Eine `Stand`- oder `Status`-Zelle — Roadmap-Faden,
 Meilenstein-Tabelle, ADR-Index, Register — nennt den **Zustand** und den Beleg als
@@ -140,8 +162,9 @@ zwei Logs derselben Sache driften.
 
 **Begründung:** Die Abwägung gehört in die ADR, die Historie in `git`, die
 Herkunft in **ein** auflösbares Feld ([`LH-*`](spec/lastenheft.md),
-[`ADR-*`](docs/plan/adr/), `· seit welle-<NN>`). Was daneben steht, liest jeder
-Lauf mit und bezahlt es mit Kontext.
+[`ADR-*`](docs/plan/adr/), `· seit welle-<NN>`, wellenlos `· seit slice-<NNN>`).
+Was daneben steht, liest jeder Lauf mit und bezahlt es zweifach: mit Kontext, und
+mit dem Risiko, als Quelle gelesen zu werden, die in keinem Rang steht.
 
 **Geltungsbereich:** Code, Konfiguration, Skripte **und die Zustandsfelder der
 lebenden Register**, soweit **dieses Repo sie besitzt**. Ausgenommen ist
@@ -152,25 +175,42 @@ fortschreibt; ein Zeitdokument (`docs/reviews/**`, `docs/plan/planning/done/**`)
 ist Chronik von Beruf und keines. Was ein **emittiertes** Repo an Regeln bekommt,
 entscheidet der Slice, der die Tool-Ebene entscheidet — nicht diese Sektion.
 
-**Cutoff — ab Einführung, kein Nachrüsten.** Gebunden ist der Kommentar, der
-geschrieben oder geändert wird; der **Bestand ist kein Arbeitsauftrag**. Er ist
-gemessen, nicht geschätzt — jede Zahl mit ihrem Kommando, beide über denselben
-Pathspec, der den Geltungsbereich oben abbildet (Stand 2026-08-09):
-`git ls-files '*.go' '*.sh' '*.awk' '*Makefile' 'Dockerfile' ':!internal/emit/templates' ':!.harness/baseline' | wc -l` → **212** Dateien im Prüfbereich; davon
-`git grep -lE '^[[:space:]]*(#|//).*Review-Befund' -- '*.go' '*.sh' '*.awk' '*Makefile' 'Dockerfile' ':!internal/emit/templates' ':!.harness/baseline' | wc -l` → **36** mit einer Befund-Kennung im Kommentar (63 Zeilen).
-**Untergrenze, mit Absicht:** die zweite Falsch-Klasse dieser Sektion — Prosa über
-abwesenden Text — ist ein Urteil, kein Muster; sie hier zu beziffern hieße, ein
-Muster als Kriterium auszugeben, das keines ist (§3.6). Schon die Untergrenze
-trägt den Cutoff: ein Maßstab über diesen Bestand wäre dauerhaft rot und
+**Cutoff — ab Einführung, kein Nachrüsten; für die Quellen-Klausel oben ab dem
+2026-08-30.** Gebunden ist der Kommentar, der geschrieben oder geändert wird; der
+**Bestand ist kein Arbeitsauftrag dieser Sektion**. Er ist gemessen, nicht
+geschätzt — jede Zahl neben dem Kommando, das sie ausgibt, alle über denselben
+Pathspec, der den Geltungsbereich oben abbildet (Stand 2026-08-30):
+
+```sh
+PS=( '*.go' '*.sh' '*.awk' '*Makefile' 'Dockerfile' ':!internal/emit/templates' ':!.harness/baseline' )
+git ls-files "${PS[@]}" | wc -l                                                                   # 289 Dateien im Prüfbereich
+git grep -lE '^[[:space:]]*(#|//).*Review-Befund' -- "${PS[@]}" | wc -l                           #  38 mit Befund-Kennung
+git grep -cE '^[[:space:]]*(#|//).*Review-Befund' -- "${PS[@]}" | awk -F: '{s+=$NF} END{print s}' #  65 solche Zeilen
+git grep -lE '^[[:space:]]*(#|//).*slice-[0-9]'  -- "${PS[@]}" | wc -l                            # 124 mit Slice-Nummer
+git grep -cE '^[[:space:]]*(#|//).*slice-[0-9]'  -- "${PS[@]}" | awk -F: '{s+=$NF} END{print s}'  # 464 solche Zeilen
+git grep -lE '· seit (welle|slice)-'             -- "${PS[@]}" | wc -l                            #   0 in der zulässigen Feld-Form
+```
+
+**Keine Erwartungswerte** ([`MR-025`](harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2) — die Zahlen wandern mit dem Baum. **Zwei Klassen sind gezählt, zwei
+nicht:** Befund-Kennung und Slice-Nummer sind **Muster** und darum zählbar;
+Chronik-Prosa (*„Bis slice-026 hing …"*) und Lauf-Protokoll (*„hier und heute rot
+gesehen"*) sind **Urteile** — sie hier zu beziffern hieße, ein Muster als
+Kriterium auszugeben, das keines ist (§3.6). Die Zahlen oben sind darum kein
+Gesamtmaß des Bestands, sondern der Ausschnitt, den ein `grep` trifft. Schon
+dieser Ausschnitt trägt den Cutoff: ein Maßstab über ihn wäre dauerhaft rot und
 entwertete die Regel, statt sie zu tragen — dieselbe Begründung trägt ihn in
-[`MR-015`](harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler). Wer eine solche Zeile ohnehin anfasst, zieht sie nach;
-wer sie stehen lässt, bricht nichts.
+[`MR-015`](harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler).
+Wer eine solche Zeile ohnehin anfasst, zieht sie nach; wer sie stehen lässt,
+bricht nichts. Ob der Bestand darüber hinaus geräumt wird, entscheidet ein
+Planungs-Schnitt und nicht diese Sektion: die vier Klassen überlappen in derselben
+Zeile, und wer eine Zeile räumt, muss sie lesen.
 
 **Für die Zustandsfeld-Hälfte gilt derselbe Cutoff, ab dem 2026-08-29.** Gebunden
 ist die Zelle, die geschrieben oder geändert wird. **Eine Zahl steht hier nicht:**
-ob eine Zelle Chronik trägt, ist wie die zweite Falsch-Klasse ein Urteil und kein
-Muster — ein `grep` zählte Zellen, nicht Verstöße, und gäbe damit ein Muster als
-Kriterium aus, das keines ist (§3.6).
+ob eine Zelle Chronik trägt, ist wie die zwei Urteils-Klassen oben ein Urteil und
+kein Muster — ein `grep` zählte Zellen, nicht Verstöße, und gäbe damit ein Muster
+als Kriterium aus, das keines ist (§3.6).
 
 **Herkunft, mit Mess-Stand:** die adoptierte Baseline `v5.12.0` **führt** diese
 Regel — als Hard Rule mit derselben Nummer und demselben Titel im Hard-Rules-Block
@@ -178,13 +218,24 @@ der AGENTS-Vorlage
 (`grep -c '^### 3\.7 Ein Kommentar beschreibt, was da ist$' .harness/baseline/v5.12.0/templates/AGENTS.template.md` → **1**)
 und ausgeschrieben in
 `grep -c '^### Was ein Kommentar trägt — Code, Konfiguration, Skripte$' .harness/baseline/v5.12.0/regelwerk/grundlagen-harness-dateien.md` → **1**.
-Was hier über die Vorlage hinaus steht — Geltungsbereich, Cutoff und die
-Wächter-Aussage —, ergänzt sie, ohne sie einzuschränken; die Deckung ist gegen den
-adoptierten Stand gehalten und in
+Was hier über die Vorlage hinaus steht — Geltungsbereich, Cutoff, Quellen-Klausel
+und die Wächter-Aussage —, ergänzt sie, ohne sie einzuschränken. Die
+Quellen-Klausel ist die **Anwendung** der Baseline-Hard-Rule *„Wer Herkunft nennt,
+nennt sie als **ein** auflösbares Feld … und nie als Absatz"*
+(`grep -c 'nennt sie als \*\*ein\*\* auflösbares Feld' .harness/baseline/v5.12.0/regelwerk/grundlagen-harness-dateien.md` → **1**):
+Sie nimmt keine der fünf Klassen weg und keine der dort genannten Anker-Formen —
+`· seit slice-<NNN>` steht in der Begründung ausdrücklich, weil
+`grundlagen-traceability.md` §Herkunfts-Anker ihn für wellenlos verkörperte Regeln
+verlangt. Die Deckung ist gegen den adoptierten Stand gehalten und in
 [`MR-031`](harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline) protokolliert.
 **Ein Wächter existiert nicht:** `make comment-claims` prüft, ob ein genannter
 Sensor existiert, nicht, worüber ein Kommentar spricht — und keine Markdown-Datei
-liegt in seinem Prüfbereich, also auch kein Zustandsfeld.
+liegt in seinem Prüfbereich, also auch kein Zustandsfeld. Für die zwei zählbaren
+Klassen wäre ein Sensor **baubar** — die Kommandos oben sind er beinahe schon —,
+gebaut ist er nicht; ihn hier zu behaupten wäre §3.1 eine Ebene tiefer. Den
+zweiten Träger, den die Baseline nennt, führt
+[`MR-031`](harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline)
+als gemessene Lücke.
 
 ### 3.8 Hard Rules und Adaptions-Block schreibt der Architect
 
