@@ -180,7 +180,7 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
          Referenz in
          [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
          Punkt 2, deren Satz nur über den abgelösten Stand wahr ist —
-         [slice-132](../next/slice-132-adaptions-block-ohne-totes-ziel.md)). Der Weg ist der, den
+         [slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md)). Der Weg ist der, den
          Baseline-Regelwerk `modul-05-planning-harness.md` §Closure- und Lerneintrag-Regeln
          ausdrücklich offenlässt: *„Ein Slice darf bei rotem Gate nur mit dokumentiertem Carveout
          (Modul 7) in `done/` landen, der den roten Gate-Status auf Trigger schaltet."*
@@ -409,7 +409,7 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
   Blocks; das Modul `links` kennt am Pin `v0.65.0` **keine** Referenz-Ausnahme, und `scan.ignore`
   wirkt datei-weit. — **Ausgang:** eingetreten →
   [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) mit Folge-Slice
-  [slice-132](../next/slice-132-adaptions-block-ohne-totes-ziel.md).
+  [slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md).
 - **Die vier Verweis-Klassen aus §1 fragen nach Auflösbarkeit, nicht nach Wahrheit.** Ein Verweis,
   dessen Datei und Anker halten, kann ein Zitat oder eine daraus gezogene Zahl tragen, die der
   neue Stand nicht mehr deckt — bei grünem Gate. — **Ausgang:** eingetreten → Folge-Slice
@@ -632,7 +632,7 @@ Alle **elf** Punkte tragen ihre `— **Ausgang:**`-Zeile in §6 selbst
 [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) mit
 [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md), einmal
 [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) mit
-[slice-132](../next/slice-132-adaptions-block-ohne-totes-ziel.md), dreimal
+[slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md), dreimal
 [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) (zweimal davon zusammen
 mit slice-130), einmal [slice-083](../open/slice-083-form-vergleich-pflichtfelder.md), einmal
 [slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) —,
@@ -657,7 +657,7 @@ oben benannt.
 klassifizieren; löst [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) und drei der
 zehn Smoke-Befunde) · [slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md)
 (Präsens-Aussage gegen den gepinnten Stand) ·
-[slice-132](../next/slice-132-adaptions-block-ohne-totes-ziel.md) (löst
+[slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) (löst
 [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md)) ·
 [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) (sieben der zehn
 Smoke-Befunde; läuft **vor** slice-130). Vorbestehend und unverändert zuständig:

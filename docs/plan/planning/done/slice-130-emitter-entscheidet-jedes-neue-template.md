@@ -185,7 +185,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       rot, an genau einem Ziel, und dessen Ursache ist
       [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) — ein fremder,
       dokumentierter Carveout mit eigenem Träger
-      ([slice-132](../next/slice-132-adaptions-block-ohne-totes-ziel.md)), den dieser Slice nicht
+      ([slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md)), den dieser Slice nicht
       auflösen kann. Warum der Satzanfang unter keiner korrekten Ausführung dieses Slice erreichbar
       war und worauf der Haken stattdessen gesetzt ist, steht in §7 (*Der Haken zu (4)*).
 - [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
@@ -425,7 +425,7 @@ verdeckt der erste Abbruch die übrigen zehn Ziele), Exit **2**, und genau **ein
 `harness/conventions.md:1019 → ../.harness/baseline/v3.5.2/regelwerk/modul-08-agentenrollen.md#rollen-sequenz-für-einen-slice · target-missing`
 bei `d-check: 468 Datei(en) geprüft, 1 Befund(e)` — Zeichen für Zeichen der Geltungsbereich von
 [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md), dessen Träger
-[slice-132](../next/slice-132-adaptions-block-ohne-totes-ziel.md) in `open/` liegt. Ein Slice, der
+[slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) in `open/` liegt. Ein Slice, der
 diesen Befund mitnähme, hätte den Schnitt verlassen.
 
 **Worauf der Haken stattdessen ruht** — die Ausnahme-Hälfte des Satzes, und die ist ganz erfüllt:
@@ -636,7 +636,7 @@ benannten fremden Carveouts.
 Ausnahme aus `CO-004`"*. `CO-005` bestand zu diesem Zeitpunkt bereits
 (`git log --format='%h %ad' --date=short --diff-filter=A -1 -- docs/plan/carveouts/CO-005-adaptions-block-datierter-beleg.md`
 → `26aec2c 2026-08-28`, dasselbe Datum wie das Autoren-Feld dieses Plans) und wird von
-[slice-132](../next/slice-132-adaptions-block-ohne-totes-ziel.md) getragen, nicht von hier. Die
+[slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) getragen, nicht von hier. Die
 beiden Nachbar-Slices zeigen, dass die Form verfügbar war:
 [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) §2 schreibt *„soweit die
 Welle es zulässt"* und nennt beide Carveouts,
@@ -764,7 +764,7 @@ damit der nächste Planner-Lauf sie findet.
 `make -k gates`, `make smoke` und `make full-smoke` sind über dem Arbeitsbaum dieser Closure
 gefahren und oben zitiert. **`make gates` grün ist kein Closure-Kriterium dieses Slice** — das eine
 rote Ziel gehört [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) und damit
-[slice-132](../next/slice-132-adaptions-block-ohne-totes-ziel.md). `make mutate` ist **nicht**
+[slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md). `make mutate` ist **nicht**
 gefahren, mit Grund statt aus Bequemlichkeit: dieser Zug ändert keine Zeile Code
 (`git diff --name-only HEAD -- internal/ test/ | wc -l` → **0**), und über demselben Code-Inhalt
 liegt ein protokollierter Lauf mit `213 ok, 0 Befund(e)`. Ein dritter Review-Durchgang nach Modul 10

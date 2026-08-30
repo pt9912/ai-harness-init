@@ -22,7 +22,7 @@ unter `.harness/` liegen außerhalb von `codepaths.roots` (`[spec, docs, harness
 still — `make docs-check` meldet **1** Befund, während die zweite Zählung am 2026-08-30 **14**
 liefert.
 
-**Folge-Slice:** [slice-132](../planning/next/slice-132-adaptions-block-ohne-totes-ziel.md) — er
+**Folge-Slice:** [slice-132](../planning/in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) — er
 trägt die Entscheidung an ihre schreibende Rolle und löst diesen Carveout mit seinem Abschluss auf.
 
 Regeln: Baseline-Regelwerk `modul-07-carveouts.md` §Ziel-Form: Carveout — ein
@@ -83,7 +83,7 @@ der Trichter ihn richtig: Übernahme im nächsten Slice, oder Carveout mit Aufl�
 eine BF-Markierung setzte *Code führt, Doku folgt* und trifft nicht zu. *Temporalität:* der
 Trigger hängt an genau einer Entscheidung mit benannter schreibender Rolle, nicht an einem
 unabsehbaren Umbau — also Carveout und keine ADR. **Sollte die Klasse wachsen**, kippt die erste
-Antwort; das führt [slice-132](../planning/next/slice-132-adaptions-block-ohne-totes-ziel.md) §6
+Antwort; das führt [slice-132](../planning/in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) §6
 als Risiko mit Ausgang.
 
 **Warum die Ausnahme und nicht das schnelle Grün.** Der Befund ist **richtig**: er meldet, dass
@@ -96,7 +96,7 @@ Klasse überhaupt sichtbar macht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-07-carveouts.md`
 §Ziel-Form: Carveout — konkret und prüfbar. „Wenn Zeit ist" ist kein Trigger.
 
-**[slice-132](../planning/next/slice-132-adaptions-block-ohne-totes-ziel.md) liegt in `done/`** —
+**[slice-132](../planning/in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) liegt in `done/`** —
 und damit gilt beides zugleich, geprüft mit **zwei** Läufen von `make docs-check` — einem mit dem
 Config-Stand nach der Auflösung, einem mit dem davor: die Zeile wird nicht mehr gemeldet, **und**
 beide Läufe melden dieselbe Dateizahl. Prüfbar ohne Rückfrage, ohne eine gemerkte Zahl.
@@ -116,7 +116,7 @@ Ausnahme eine stille Senkung ohne Begründung"* —, und ein Top-Level-`ignore-r
 entscheidet dieser Carveout nicht:** er lockert die Prüfung auf der Referenz-Achse und ist damit
 eine Senkung nach [`AGENTS.md`](../../../AGENTS.md) §3.5, die eine ADR braucht — das ist der
 Gegenstand von DoD (1) in
-[slice-132](../planning/next/slice-132-adaptions-block-ohne-totes-ziel.md), nicht dieser Datei.
+[slice-132](../planning/in-progress/slice-132-adaptions-block-ohne-totes-ziel.md), nicht dieser Datei.
 
 **Solange keiner gesetzt ist, gilt das Gegenteil eines leisen Ausschlusses:** **`make docs-check`
 bleibt rot**, und diese Datei ist der einzige Träger der Begründung. Wer den roten Lauf sieht,
@@ -126,7 +126,7 @@ Befund-Zeile → [`MR-021`](../../../harness/conventions.md#mr-021--das-span-sch
 
 | Datei | Zeile/Section | Wert |
 |---|---|---|
-| [`.d-check.yml`](../../../.d-check.yml) | Top-Level `ignore-refs` | **nicht gesetzt.** Der Schlüssel trägt die Ausnahme (`in` + `refs`, gemessen); ihn zu setzen ist eine Senkung nach [`AGENTS.md`](../../../AGENTS.md) §3.5 und verlangt die ADR aus [slice-132](../planning/next/slice-132-adaptions-block-ohne-totes-ziel.md) DoD (1) |
+| [`.d-check.yml`](../../../.d-check.yml) | Top-Level `ignore-refs` | **nicht gesetzt.** Der Schlüssel trägt die Ausnahme (`in` + `refs`, gemessen); ihn zu setzen ist eine Senkung nach [`AGENTS.md`](../../../AGENTS.md) §3.5 und verlangt die ADR aus [slice-132](../planning/in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) DoD (1) |
 
 ## Verifikation (nach Auflösung)
 
@@ -149,4 +149,4 @@ Befund-Zeile → [`MR-021`](../../../harness/conventions.md#mr-021--das-span-sch
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-08-28 | Angelegt — der Baum-Tausch macht einen datierten Beleg im Adaptions-Block unauflösbar, und keiner der drei Werkzeug-Auswege trägt | [slice-081](../planning/done/slice-081-baum-tauschen-pin-ziehen.md) |
-| 2026-08-30 | Geprüft — der Befund steht (`468 … 1 Befund(e)`), die Werkzeug-Aussage der Zeile darüber nicht: ein **referenz-weites** Ventil trägt am Pin `v0.65.0`, seit `[0.49.0]` als Top-Level-Schlüssel. Geltungsbereich auf die Markdown-Links verengt, Geltungs-Konfiguration von *existiert nicht* auf *nicht gesetzt*, Auflösungs-Trigger vom leeren Config-Diff auf die unverschobene Dateizahl | [slice-132](../planning/next/slice-132-adaptions-block-ohne-totes-ziel.md) |
+| 2026-08-30 | Geprüft — der Befund steht (`468 … 1 Befund(e)`), die Werkzeug-Aussage der Zeile darüber nicht: ein **referenz-weites** Ventil trägt am Pin `v0.65.0`, seit `[0.49.0]` als Top-Level-Schlüssel. Geltungsbereich auf die Markdown-Links verengt, Geltungs-Konfiguration von *existiert nicht* auf *nicht gesetzt*, Auflösungs-Trigger vom leeren Config-Diff auf die unverschobene Dateizahl | [slice-132](../planning/in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) |
