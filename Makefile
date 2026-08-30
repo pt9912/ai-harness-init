@@ -293,43 +293,28 @@ hook-overhead: ## Aufschlag je Tool-Call messen (Median, ADR-0011-Schwelle) — 
 # ORDNUNGSKANTE: die Checks hängen AN record-gates, sie stehen nicht daneben. `make`
 # baut ein Ziel, dessen Voraussetzung gefallen ist, auch unter `-k` nicht — über einem
 # roten Check entsteht damit kein Nachweis, während `-k` weiterhin JEDES rote Ziel
-# meldet. Stünden die Checks daneben (`gates: <checks> record-gates`), schriebe
-# `make -k gates` den Stempel über rotem Stand. Wächter: test/gate-nachweis-kante.bats.
+# meldet. Wächter: test/gate-nachweis-kante.bats.
 #
-# Die Reihenfolge der Voraussetzungen ist tragend: baseline-verify als ERSTER — steht
-# die vendored Baseline nicht, ist jede Aussage der Folge-Gates über sie wertlos.
-# Serielles `make` baut sie in dieser Reihenfolge ab; `-j` tut es nicht (Grenze unten).
-# Bewacht sind beide Hälften dieser Liste — ihr Bestand und ihr erster Eintrag — in
-# derselben bats-Datei: wer hier einen Check einträgt oder streicht, trägt ihn dort mit.
+# Die Reihenfolge der Voraussetzungen ist tragend: baseline-verify als ERSTER — warum,
+# sagt Zusage 5 im Kopf des Wächters. Serielles `make` baut sie in dieser Reihenfolge
+# ab; `-j` tut es nicht. Bewacht sind beide Hälften dieser Liste — ihr Bestand und ihr
+# erster Eintrag — in derselben bats-Datei: wer hier einen Check einträgt oder streicht,
+# trägt ihn dort mit.
 #
-# GRENZE — was die Kante nicht nimmt. Die Aufzählung führt die Wege, die GEMESSEN sind:
-# je einzeln an einem synthetischen Makefile derselben Kantenform, und Kommando wie
-# Ausgabe stehen im Kopf von test/gate-nachweis-kante.bats — dort tragen Hälfte (a) die
-# Wege über den Aufruf, Hälfte (b) die zwei, die ohne Flag auskommen. Dass es keinen
-# weiteren gibt, steht hier NICHT: die Menge ist nicht gemessen, und `make` kennt mehr
-# Schalter als diese Liste.
-#   * Ein gefallener Check gilt make als GELUNGEN: die Voraussetzung steht, das Rezept
-#     läuft, der Nachweis entsteht über rotem Stand — und der Lauf endet mit Exit 0.
-#     Gemessen sind: `make -i`, `MAKEFLAGS=i` aus der Umgebung, eine `.IGNORE:`-Zeile
-#     und ein `-` im Rezept-Präfix eines Checks. Die zwei letzteren brauchen kein
-#     Flag am Aufruf — ihr Ort ist diese Datei; heute steht dort keines von beiden
-#     (`sed -n '/^ *\.IGNORE/p' Makefile d-check.mk | wc -l` -> 0 und
-#     `sed -n '/^\t[@+-]*-/p' Makefile d-check.mk | wc -l` -> 0). Die zwei Muster decken
-#     die vier Schreibweisen, die Hälfte (b) dort einzeln misst: `.IGNORE:` mit und ohne
-#     führendes Leerzeichen, das `-` an beiden Stellen des Präfix-Bündels (`@-` wie
-#     `-@`). Der Wächter über der Kante liest nur Voraussetzungen, keine Rezept-Zeilen
-#     und keine Sonderziele.
-#   * Der Check läuft GAR NICHT: `make -o <check>` (--old-file) und `make -W <check>`
-#     (--what-if). Die zwei bedeuten Verschiedenes; an dieser Kantenform wirken sie
-#     gleich, je einzeln gemessen — make überspringt den Check, die Voraussetzung gilt
-#     als erfüllt, das Rezept läuft, Exit 0.
-#   * `make -j`: eine Kante sagt „hängt ab von", nicht „läuft danach". Der Nachweis
-#     bleibt gedeckt (make baut kein Ziel mit gefallener Voraussetzung); was fällt, ist
-#     die baseline-verify-zuerst-Zusage oben — beides gemessen, `-j4` und `-j4 -k` für
-#     die Deckung, ein Lauf mit verzögerter erster Voraussetzung für die Reihenfolge.
-# KEIN WEG, sondern die Struktur-Grenze der Kante: das ERGEBNIS liest sie nicht — `make`
-# gibt dem Rezept keinen Ergebnis-Kanal. Sie bindet die Reihenfolge, nicht den Ausgang;
-# ein Nachweis über den Ausgang verlangte eine Quittung je Check.
+# GRENZE — was die Kante nicht nimmt, in zwei Klassen: ein gefallener Check gilt make
+# als GELUNGEN — `make -i`, `MAKEFLAGS=i` aus der Umgebung, eine `.IGNORE:`-Zeile, ein
+# `-` im Rezept-Präfix eines Checks — oder der Check läuft GAR NICHT: `make -o <check>`,
+# `make -W <check>`. Nicht in diesen zwei Klassen, sondern an der Reihenfolgen-Zusage
+# oben: `make -j`. Jeder dieser Wege ist einzeln an einem synthetischen Makefile
+# derselben Kantenform gemessen; Kommando und Ausgabe stehen im Kopf des Wächters —
+# Hälfte (a) die Wege über den Aufruf, Hälfte (b) die zwei, die ohne Flag auskommen,
+# weil ihr Ort DIESE Datei ist. Dass es keinen weiteren Weg gibt, steht hier NICHT: die
+# Menge ist nicht gemessen, und `make` kennt mehr Schalter als diese Liste.
+# Hälfte (b) misst vier Schreibweisen; ob heute eine von ihnen hier steht, messen diese
+# zwei Kommandos. Auf genau jene vier sind ihre Muster eingestellt — über jede weitere
+# Schreibweise desselben Weges sagen sie nichts:
+#   `sed -n '/^ *\.IGNORE/p' Makefile d-check.mk | wc -l` -> 0
+#   `sed -n '/^\t[@+-]*-/p' Makefile d-check.mk | wc -l` -> 0
 # GESCHLOSSEN, gemessen: `make record-gates` ist mit `make gates` deckungsgleich — die
 # Kante zieht dort dieselben Checks mit (`diff <(make -n gates) <(make -n record-gates)`
 # ist leer).

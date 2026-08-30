@@ -12,8 +12,8 @@
 # GRENZE — dieses Rezept kann über rotem Stand laufen: make lässt sich sagen, dass ein
 # gefallener Check gelungen ist oder dass ein Check gar nicht erst läuft, und ein Aufruf
 # an make vorbei (`bash harness/tools/record-gates.sh`) kennt ohnehin keinen Check.
-# WELCHE Aufrufe und Schreibweisen das sind, steht hier nicht, sondern gemessen im
-# Makefile neben der Kante. Eine Kurzform hier wäre eine zweite gepflegte Liste
+# WELCHE Aufrufe und Schreibweisen das sind, steht hier nicht, sondern mit Kommando und
+# Ausgabe im Kopf jenes Wächters. Eine Kurzform hier wäre eine zweite gepflegte Liste
 # derselben Sache, und zwei Listen driften. Dass jene Liste abgeschlossen wäre, steht
 # auch dort nicht.
 set -euo pipefail
