@@ -242,7 +242,7 @@ Gate-Nachweis-Pfad — Kontext-Eskalation nach `.harness/skills/reviewer.md`.
 - **quelle:** `.harness/skills/reviewer.md` §Kontext-Eskalation; adoptiertes
   `modul-10-review-harness.md` §Ziel-Form, Absatz *Pflege (Steering-Loop)*
 - **pfad:** die vier Reports unter `docs/reviews/` zu diesem Slice; Träger für das Register:
-  `docs/plan/planning/in-progress/slice-137-beobachtungs-register-bekommt-seinen-ort.md`
+  `docs/plan/planning/done/slice-137-beobachtungs-register-bekommt-seinen-ort.md`
 - **befund:** Die Wanderung geht weiter, und sie hat diesmal das Medium gewechselt: gezählte Liste
   (`a25e33c`) → Beleg-Zeiger (`02d3637`) → Instrument innerhalb eines Weges (`d949090`) → **Ort der
   Messung + zwei Vollständigkeitsaussagen in der Commit-Message** (hier). Der Richtungswechsel der

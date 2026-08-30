@@ -582,7 +582,7 @@ eingelöst, nicht fortgeschrieben.
 einer stillen Auslassung.** Eine `observations.md` unter `docs/plan/planning/` existiert nicht
 (`ls docs/plan/planning/observations.md` → `Datei oder Verzeichnis nicht gefunden`). Der Wegfall
 ist keine Nachlässigkeit, sondern der heutige Zustand des Repos, und er hat seit dem 2026-08-29
-einen Träger: [slice-137](../in-progress/slice-137-beobachtungs-register-bekommt-seinen-ort.md) legt das
+einen Träger: [slice-137](../done/slice-137-beobachtungs-register-bekommt-seinen-ort.md) legt das
 Register an. Das Reconciliation-Register entfällt aus einem anderen und dauerhaften Grund: dieses
 Repo hat keinen Brownfield-Bootstrap.
 

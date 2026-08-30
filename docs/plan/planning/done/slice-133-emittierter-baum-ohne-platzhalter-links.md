@@ -313,7 +313,7 @@ dasteht.
   *weiter offen* an das **Beobachtungs-Register**, und das Repo führt keines
   (`ls docs/plan/planning/observations.md` → `Datei oder Verzeichnis nicht gefunden`). Sein Träger
   ist seit dem 2026-08-29 geschnitten:
-  [slice-137](../in-progress/slice-137-beobachtungs-register-bekommt-seinen-ort.md). Bis der läuft, ist
+  [slice-137](../done/slice-137-beobachtungs-register-bekommt-seinen-ort.md). Bis der läuft, ist
   dieser Absatz der Ort — das ist die Grenze, nicht die Erledigung.
 - **Die drei Ziele sind Singletons, die der Adopter danach selbst füllt.** Eine Neutralisierung,
   die eine Zeile **löscht** statt sie zu entschärfen, nimmt ihm das Form-Beispiel — genau das, was
@@ -471,7 +471,7 @@ verlangt.
 (`ls docs/plan/planning/observations.md` → `Datei oder Verzeichnis nicht gefunden`); der Wegfall
 ist keine Auslassung, sondern die Folge einer Dogfood-Entscheidung, die dieser Slice nicht trifft
 (§1). **Seit dem 2026-08-29 hat sie einen Träger:**
-[slice-137](../in-progress/slice-137-beobachtungs-register-bekommt-seinen-ort.md) legt das Register an und
+[slice-137](../done/slice-137-beobachtungs-register-bekommt-seinen-ort.md) legt das Register an und
 gibt jedem seiner drei Schritte einen Ort. Das Reconciliation-Register entfällt aus einem anderen
 Grund und dauerhaft: das Repo hat keinen Brownfield-Bootstrap.
 
@@ -568,7 +568,7 @@ Eintrag ist **gezählt, nicht verkörpert**
 | Die Zusagen dieses Slice liegen zur Hälfte außerhalb von `make comment-claims` | Verifikation `V-4` | **weiter offen, benannt** — der Prüfbereich ist Gegenstand von [slice-070](../open/slice-070-comment-claims-pruefbereich.md); die Richtigkeit der bats-Stelle hängt heute an einem Rollen-Durchgang und an keinem Sensor |
 | `make mutate` ist der einzige Sensor dieses Slice ohne mechanischen Lauf | Verifikation `V-6` | **weiter offen, mit Träger** — der Abbruch hängt an [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md), dessen Folge-Slice [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md) ist; ich habe den tragenden Arm des Ersatzes selbst gefahren (DoD (2)) |
 | Antwort (b) ohne Folge-Slice | Verifikation `V-2` | **entschieden: (b) gestrichen** (DoD (3) oben) |
-| Risiko 3 hat keinen gültigen vorformulierten Ausgang | Verifikation `V-1` | **entschieden: weiter offen** (§6), mit dem Register-Träger [slice-137](../in-progress/slice-137-beobachtungs-register-bekommt-seinen-ort.md) |
+| Risiko 3 hat keinen gültigen vorformulierten Ausgang | Verifikation `V-1` | **entschieden: weiter offen** (§6), mit dem Register-Träger [slice-137](../done/slice-137-beobachtungs-register-bekommt-seinen-ort.md) |
 
 ### Folge-Slices
 

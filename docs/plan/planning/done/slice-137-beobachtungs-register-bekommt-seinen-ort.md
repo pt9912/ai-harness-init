@@ -178,7 +178,7 @@ sie nicht**, aus drei gemessenen Gründen:
    [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
    verbietet und den dieses Repo beim Meilenstein M4 schon einmal ausdrücklich abgewartet hat
    (der Trigger dort verlangt den gefüllten Prüfbereich **vor** der Aktivierung,
-   [`roadmap.md`](roadmap.md) §Meilensteine).
+   [`roadmap.md`](../in-progress/roadmap.md) §Meilensteine).
 2. **Die adoptierbare Hälfte kostet ein fremdes Norm-Artefakt.** Sie wäre ein viertes
    `ids`-Pattern (`BEO-\d{3}` auf die Registerdatei, `link-policy: always`) — und der `ids`-Block
    ist in
