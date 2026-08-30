@@ -111,7 +111,7 @@ lösen sich **mit ihrer Klassen-Entscheidung**, nicht durch Link-Arbeit: fällt
 `welle-results.template.md` auf *wiederkehrend*, wird sie als `.template.md` emittiert und fällt
 damit unter `scan.ignore` des emittierten Gates — beide Befunde verschwinden, ohne dass ein Link
 angefasst wurde. Ihr Träger ist
-[slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md).
+[slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md).
 
 ### Warum das keine Ausnahme ist, sondern eine Reparatur
 
@@ -177,7 +177,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       die Summe.** `make smoke` meldet für `docs/plan/planning/in-progress/roadmap.md`,
       `harness/README.md` und `harness/conventions.md` **keinen** Befund mehr. Die Restmenge ist
       **kein** Erfolgskriterium dieses Slice: sie ist die Ursache B und trägt
-      [slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md) — ein Lauf, der beide
+      [slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) — ein Lauf, der beide
       Klassen zugleich grün meldet, ist ein Hinweis, dass eine Klasse anders aufgelöst wurde als
       hier beschrieben, und gehört nachgesehen statt abgehakt.
 - [x] **(2) Die Neutralisierung ist rot gesehen, und ihre Deckungs-Grenze steht am Code.**
@@ -236,7 +236,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) liegt in `done/` — der
 Vorlagen-Satz, dessen Platzhalter neutralisiert werden, steht dann fest und wechselt während der
 Arbeit nicht. Das WIP-Limit wird mit demselben Übergang frei. Dieser Slice läuft **vor**
-[slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md): er trägt sieben der zehn
+[slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md): er trägt sieben der zehn
 Befunde und ist von der Klassen-Entscheidung unabhängig, während deren DoD (3) den **gemeinsamen**
 Nachweis führt und ihn erst danach führen kann.
 
@@ -385,7 +385,7 @@ nicht zugleich grün — aber **ein** Befund der Klasse B ist mitgefallen
 gemessen und nicht erzählt: die Klassen-Weichen sind über die **ganze** Kette unangetastet
 (`git diff 3ea5ae2^ HEAD -- internal/emit/templates.go | command grep -cE '^[+-][^+-].*func (inScope|isRecurring|isDerivativeIndex)'`
 → **0**), und die zwei verbliebenen Befunde tragen **kein** `<…>` — sie sind die Klasse, die
-[slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md) mit seiner
+[slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) mit seiner
 Klassen-Entscheidung auflöst. Die Form-Regel greift also **breiter als die Ursachen-Einteilung des
 Plans**; das ist die Konsequenz der gewählten Bauart und zieht eine Buchhaltung nach sich (unten).
 
@@ -561,19 +561,19 @@ Eintrag ist **gezählt, nicht verkörpert**
 | Der Kommentar definiert `spitz` als *„das ganze Ziel"*, der Code prüft das erste Zeichen | Review `HIGH-2` | **erledigt** in `6967691` — heute `print (ziel ~ /^<[^<>]*>$/) ? "spitz" : "eingebettet"`, und Fall `209` hält die Bedingung fest; hier A/B gefahren (DoD (2)) |
 | Vier lebende Artefakte führen die Aufteilung `7`/`3` | Review `MEDIUM-1`, Verifikation `V-3` | **erledigt in diesem Zug** — `CO-004`, `slice-130`, `welle-10` und die Roadmap tragen jetzt `8`/`2` mit dem Grund (die Form-Regel kennt keine Namen); dazu die verschobenen Zeilenangaben in `CO-004` |
 | `internal/emit/readme.go` steht nicht in der Plan-Tabelle | Review `LOW-1`, Verifikation `V-5` | **hier vermerkt**, §3 unangetastet (*Was ging anders als geplant*); der Termin für die Regel liegt bei [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md), neunter Posten |
-| Der Kopf von Fall `207` beschreibt eine Mutation, der `sed` erreicht zwei Zeilen | Review `LOW-2` | **weiter offen, ohne eigenen Schnitt** — für das Verdikt des Treibers folgenlos (`narrow_sensor` wählt `test-bats`, die Go-Stufe läuft nicht), und der Fall wird beim Fall von [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) ohnehin zum ersten Mal mechanisch gefahren. Sein Ort ist dann [slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md)s Lauf, nicht dieser |
+| Der Kopf von Fall `207` beschreibt eine Mutation, der `sed` erreicht zwei Zeilen | Review `LOW-2` | **weiter offen, ohne eigenen Schnitt** — für das Verdikt des Treibers folgenlos (`narrow_sensor` wählt `test-bats`, die Go-Stufe läuft nicht), und der Fall wird beim Fall von [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) ohnehin zum ersten Mal mechanisch gefahren. Sein Ort ist dann [slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md)s Lauf, nicht dieser |
 | Die Ebenen-Entscheidung (Emitter ↔ emittierter Prüfbereich) ist unbelegt | Review `LOW-3` | **erledigt** in `6967691` — die Begründung steht am Code; Risiko 2 in §6 trägt die Messung |
 | `CO-004` zitiert verschobene Zeilennummern | Review `LOW-4` | **erledigt in diesem Zug** — `command grep -n '^@test' test/courseset-fixture.bats` → `59`, `77`, `93`, `165`; die Fall-**Nummern** `not ok 40`/`41` waren und bleiben richtig |
 | `slice-115` zitiert `not ok 71`/`72` aus einer datierten Sonde | Review `LOW-4`, zweiter Fundort | **als Protokoll kenntlich gemacht**, nicht korrigiert — die Zahlen sind das Ergebnis **jenes** Laufs; die Einfügung dieses Slice verschiebt jede bats-Nummer ab `44` um eins, und das steht jetzt dort |
 | Die Zusagen dieses Slice liegen zur Hälfte außerhalb von `make comment-claims` | Verifikation `V-4` | **weiter offen, benannt** — der Prüfbereich ist Gegenstand von [slice-070](../open/slice-070-comment-claims-pruefbereich.md); die Richtigkeit der bats-Stelle hängt heute an einem Rollen-Durchgang und an keinem Sensor |
-| `make mutate` ist der einzige Sensor dieses Slice ohne mechanischen Lauf | Verifikation `V-6` | **weiter offen, mit Träger** — der Abbruch hängt an [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md), dessen Folge-Slice [slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md) ist; ich habe den tragenden Arm des Ersatzes selbst gefahren (DoD (2)) |
+| `make mutate` ist der einzige Sensor dieses Slice ohne mechanischen Lauf | Verifikation `V-6` | **weiter offen, mit Träger** — der Abbruch hängt an [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md), dessen Folge-Slice [slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) ist; ich habe den tragenden Arm des Ersatzes selbst gefahren (DoD (2)) |
 | Antwort (b) ohne Folge-Slice | Verifikation `V-2` | **entschieden: (b) gestrichen** (DoD (3) oben) |
 | Risiko 3 hat keinen gültigen vorformulierten Ausgang | Verifikation `V-1` | **entschieden: weiter offen** (§6), mit dem Register-Träger [slice-137](../open/slice-137-beobachtungs-register-bekommt-seinen-ort.md) |
 
 ### Folge-Slices
 
 **Keiner neu.** Die verbliebenen zwei Befunde trägt
-[slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md), der ohnehin unmittelbar
+[slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md), der ohnehin unmittelbar
 nach diesem Slice läuft; die zwei *weiter offen*-Posten oben zeigen auf bestehende Pläne.
 
 ### Übergabe — ein Bau-Problem mit drei Fundstellen und einem vorbereiteten Ort
@@ -601,7 +601,7 @@ Closure-Notiz.
 verletzt)`. Das ist kein Versäumnis dieses Slice: seine DoD (1) schließt die Restmenge ausdrücklich
 aus. Es ist der Grund, warum die [welle-10](../welle-10-re-baseline.md)-Closure diesen Slice
 **nicht** als Beleg für den Happy Path führen darf — eingelöst wird er erst mit
-[slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md) DoD (3), das den
+[slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) DoD (3), das den
 **gemeinsamen** Nachweis führt. Derselbe Satz steht in welle-10 §4, damit er dort gelesen wird und
 nicht nur hier.
 

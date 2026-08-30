@@ -36,7 +36,7 @@ durch Reparatur eingelöst; die Begründung führt
 sind zwei Slices, nicht diese Datei: **acht** Befunde hat
 [slice-133](../planning/done/slice-133-emittierter-baum-ohne-platzhalter-links.md)
 weggenommen, **zwei** trägt
-[slice-130](../planning/next/slice-130-emitter-entscheidet-jedes-neue-template.md). Gemessen mit
+[slice-130](../planning/in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md). Gemessen mit
 demselben Kommando über zwei Ständen: `make smoke` am Stand `26aec2c`
 `23 Datei(en) geprüft, 10 Befund(e)`, am Stand `66459c7` `23 Datei(en) geprüft, 2 Befund(e)` —
 gleicher Nenner, also ist nichts aus dem Prüfbereich gefallen. **Acht statt der sieben, mit denen
@@ -51,7 +51,7 @@ verbliebenen Befunde stehen beide in `<ziel>/docs/plan/planning/welle-results.md
 Wer die Differenz als Regression liest, sucht einen Fehler, den es nicht gibt; wer sie als
 *„schon erledigt"* liest, lässt die Klassen-Entscheidung fallen, die davon unberührt ist.
 
-**Folge-Slice:** [slice-130](../planning/next/slice-130-emitter-entscheidet-jedes-neue-template.md)
+**Folge-Slice:** [slice-130](../planning/in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md)
 — er entscheidet je Vorlage die Klasse und löst diesen Carveout mit seinem Abschluss auf.
 
 Regeln: Baseline-Regelwerk `modul-07-carveouts.md` §Ziel-Form: Carveout — ein
@@ -128,7 +128,7 @@ ADR.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-07-carveouts.md`
 §Ziel-Form: Carveout — konkret und prüfbar. „Wenn Zeit ist" ist kein Trigger.
 
-**[slice-130](../planning/next/slice-130-emitter-entscheidet-jedes-neue-template.md) liegt in
+**[slice-130](../planning/in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) liegt in
 `done/`.** Damit trägt jede der vier Vorlagen eine Klasse an der Weiche in
 `internal/emit/templates.go`, `TestTemplates_EmittierterBestandVollstaendig` hält den vollen
 Ist-Bestand, und `make test` ist ohne Ausnahme grün. Prüfbar ohne Rückfrage: ein `ls` über
