@@ -14,15 +14,22 @@
 # (.dockerignore), die go-test-Stage sieht den realen Baum also gar nicht. Genau
 # der Grund, aus dem schon der geloeschte Waechter hier lag.
 #
-# Zwei Achsen: der DATEIBESTAND (jede Vorlage des realen Satzes liegt in der
-# Fixture) und vom INHALT genau eine — die Platzhalter-Pfad-FORM. Weiter geht der
-# Abgleich nicht: einen WORTLAUT vergleicht er nicht, und die Transformationen
-# (Hinweis-Strip, Namens-Stempel, verbatim) pruefen die Emit-Tests gegen die
-# Fixture — die dieser Test ehrlich haelt.
+# Drei Achsen. Zwei messen die Fixture gegen den realen Satz: der DATEIBESTAND
+# (jede Vorlage des realen Satzes liegt in der Fixture) und vom INHALT genau eine
+# — die Platzhalter-Pfad-FORM. Weiter geht dieser Abgleich nicht: einen WORTLAUT
+# vergleicht er nicht, und die Transformationen (Hinweis-Strip, Namens-Stempel,
+# verbatim) pruefen die Emit-Tests gegen die Fixture — die dieser Test ehrlich
+# haelt.
+#
+# Die dritte Achse misst nicht die Fixture, sondern die KLASSIFIKATION: die
+# namentliche Aufzaehlung in emit.isRecurring gegen die Definition, die ihr
+# Kommentar ausspricht (Ziel-Pfad mit <…>-Platzhalter). Gegenstand ist der reale
+# Satz und internal/emit/templates.go, die Fixture kommt darin nicht vor.
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
   FIXTURE_SRC="$REPO/internal/emit/templates_test.go"
+  EMIT_SRC="$REPO/internal/emit/templates.go"
   # vendored Baseline: genau ein <tag>-Verzeichnis (MR-007 "ein Tag zur Zeit").
   REAL="$(echo "$REPO"/.harness/baseline/*/templates)"
 }
@@ -114,6 +121,92 @@ in_scope() {
   do
     [ -f "$REAL/$rel" ] || { echo "wiederkehrendes Template fehlt real: $rel"; return 1; }
   done
+}
+
+# kopiere_ziel liest den Ziel-Pfad aus dem Template-Hinweis einer Vorlage: den
+# ersten Backtick-Pfad hinter dem Wort "Kopiere" im fuehrenden Blockquote.
+#
+# Das `> `-Praefix faellt ZEILENWEISE weg, bevor die Zeilen zusammenlaufen. Ohne
+# das stuende es mitten im Pfad, sobald der Satz umbricht — bei
+# .harness/skills/closure-note-reviewer.template.md tut er das.
+kopiere_ziel() {
+  awk '/^>/ { inb = 1; sub(/^>[ \t]?/, ""); buf = buf " " $0; next }
+       inb  { exit }
+       END  { print buf }' "$1" \
+    | grep -oE 'Kopiere[^`]*`[^`]+`' \
+    | head -1 \
+    | sed 's/.*`\(.*\)`/\1/'
+}
+
+# wiederkehrend_real leitet die wiederkehrenden Vorlagen aus dem REALEN Satz ab:
+# wiederkehrend ist, wessen Ziel-Pfad einen <…>-Platzhalter fuehrt (mehr als ein
+# Ziel je Repo). Ausgegeben wird der BASENAME — emit.isRecurring schaltet auf ihm
+# (planTemplates ruft sie mit path.Base(rel)).
+#
+# Eine Vorlage ohne Kopiere-Satz gaebe eine leere Ableitung und damit ein stilles
+# "nicht wiederkehrend". Sie wird stattdessen als Zeile OHNE-ZIEL:<pfad> ausgegeben
+# und faellt dem Vergleich unten auf — laut statt still.
+wiederkehrend_real() {
+  local rel ziel
+  while read -r rel; do
+    ziel="$(kopiere_ziel "$REAL/$rel")"
+    if [ -z "$ziel" ]; then
+      echo "OHNE-ZIEL:$rel"
+    else
+      case "$ziel" in *'<'*'>'*) echo "${rel##*/}" ;; esac
+    fi
+  done < <(real_paths | in_scope) | LC_ALL=C sort
+}
+
+# wiederkehrend_code liest die namentliche Aufzaehlung aus dem RUMPF von
+# emit.isRecurring. Die Begrenzung auf den Rumpf ist tragend: der Kommentar
+# darueber nennt dieselben Dateinamen im Fliesstext, und ohne sie zaehlte der
+# Waechter die Begruendung als Eintrag.
+wiederkehrend_code() {
+  awk '/^func isRecurring\(/ { infn = 1 } infn && /^}/ { infn = 0 } infn' "$EMIT_SRC" \
+    | grep -oE '"[^"]+\.template\.md"' \
+    | tr -d '"' \
+    | LC_ALL=C sort
+}
+
+# Die dritte Achse. Der Kommentar an emit.isRecurring spricht eine DEFINITION aus
+# ("die Vorlage nennt ihren Ziel-Pfad mit einem Platzhalter darin"), der Code haelt
+# daneben eine NAMENSLISTE. Dieser Test haelt beide aneinander, und zwar gegen den
+# realen Satz statt gegen die Fixture.
+#
+# Was ohne ihn durchginge: ein Baseline-Bump, der in einem Template-Hinweis den
+# Ziel-Pfad von fest auf platzhalterhaltig aendert (oder umgekehrt), laesst
+# Datei-Bestand und in-scope-Zahl unberuehrt — die zwei Achsen oben bleiben gruen,
+# und der Emitter liefe still gegen seine eigene Definition. Der Fall
+# test/mutations/219 faehrt genau das.
+#
+# GRENZE, zweifach. (1) Verglichen werden BASENAMEN, weil emit.isRecurring auf dem
+# Basenamen schaltet; teilten sich zwei Vorlagen einen Basenamen und waere nur eine
+# wiederkehrend, saehe das weder dieser Test noch der Emitter — die Grenze liegt in
+# der Signatur, nicht hier. (2) Gelesen wird der Quelltext der Aufzaehlung, nicht
+# das Verhalten von isRecurring: die go-test-Stufe sieht .harness/ nicht
+# (.dockerignore), ein Lauf mit realem Satz UND Emit-Regel existiert in `make gates`
+# nicht. Dieselbe Begruendung traegt schon die Fixture-Achse oben.
+@test "fixture: emit.isRecurring fuehrt genau die Vorlagen mit Platzhalter im Ziel-Pfad" {
+  [ -d "$REAL" ] || { echo "vendored templates/ fehlt: $REAL"; return 1; }
+  local real code
+  code="$(wiederkehrend_code)"
+  # Eine leere Extraktion waere ein Waechter, der nur zufaellig rot faerbt.
+  [ -n "$code" ] || {
+    echo "isRecurring-Rumpf in $EMIT_SRC nicht gefunden oder keine Namen extrahiert —"
+    echo "Parser gebrochen? Ohne die Liste misst dieser Test nichts."
+    return 1
+  }
+  real="$(wiederkehrend_real)"
+  diff <(printf '%s\n' "$real") <(printf '%s\n' "$code") || {
+    echo "DRIFT: emit.isRecurring und die Ziel-Pfade des realen Satzes sagen Verschiedenes."
+    echo "  '<' nur aus dem realen Satz abgeleitet, '>' nur in der Aufzaehlung."
+    echo "  Eine Zeile OHNE-ZIEL:<pfad> heisst: diese Vorlage nennt keinen Kopiere-Satz,"
+    echo "  die Ableitung steht fuer sie ohne Grundlage da."
+    echo "  Ein Treffer links ist die Frage: ist die Vorlage jetzt wiederkehrend"
+    echo "  (Eintrag in emit.isRecurring) oder hat upstream ihren Ziel-Pfad geaendert?"
+    return 1
+  }
 }
 
 # platzhalter_formen liest aus stdin die FORMEN der Links, deren ZIEL-PFAD (der

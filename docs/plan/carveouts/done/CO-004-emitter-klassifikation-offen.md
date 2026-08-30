@@ -1,13 +1,13 @@
 # CO-004: Der Emitter hat für vier neue Vorlagen keine Klasse
 
-**Status:** **Aufgelöst** — der Auflösungs-Trigger ist eingetreten: jede der vier Vorlagen trägt
-eine Klasse an einer Weiche in `internal/emit/templates.go`, und die zwei Fälle des
-Geltungsbereichs sind grün (`make test-bats` am 2026-08-30: `1..195`, kein `not ok`). **Der
-Modul-7-Vollzug steht noch aus** und ist ein eigener Commit: der `git mv` nach
-`docs/plan/carveouts/done/` und der Link-Abgleich danach — Move und Inhalt gehören getrennt
-([`AGENTS.md`](../../../../AGENTS.md) §3.3). Bis dahin sagt der **Ort** noch *aktiv*, während
-Status und Index *aufgelöst* sagen; welche Haken unten deshalb offen stehen, sagt der Absatz
-nach der Checkliste.
+**Status:** **Aufgelöst** — der Modul-7-Übergang ist vollzogen, und der Ort sagt es: diese Datei
+liegt in `done/`, der Index führt sie unter *Aufgelöst*. Der Auflösungs-Trigger ist eingetreten:
+jede der vier Vorlagen trägt eine Klasse an einer Weiche in `internal/emit/templates.go`, und die
+zwei Fälle des Geltungsbereichs sind grün (`make test-bats` am 2026-08-30: `1..196`, kein
+`not ok`; die Plan-Zahl wandert mit dem Test-Bestand und ist kein Erwartungswert
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2)). Welcher Haken unten aus welchem Grund noch offen steht, sagt der Absatz nach der
+Checkliste.
 
 **Datum angelegt:** 2026-08-28. **Letzte Prüfung:** 2026-08-30 (Auflösung durch
 [slice-130](../../planning/in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md):
@@ -186,22 +186,23 @@ rot. Ein Ausschluss der Fälle wäre eine Schwellen-Senkung und nach
       Modul-7-Pflicht *„die Kennung im Gate-Output"* blieb über die ganze Standzeit offen, obwohl
       sie für die bats-Stufe erfüllbar war.
 - [x] `make gates` grün ohne Ausnahme — für **dieses** Gate. Gefahren 2026-08-30: die bats-Stufe
-      meldet `1..195` ohne `not ok`, `make test` ist damit grün, und keine Konfiguration nimmt einen
+      meldet `1..196` ohne `not ok`, `make test` ist damit grün, und keine Konfiguration nimmt einen
       Fall aus. **Was daneben rot bleibt, gehört nicht hierher:** `docs-check` fällt unter
       [`CO-005`](../CO-005-adaptions-block-datierter-beleg.md) (Träger
       [slice-132](../../planning/open/slice-132-adaptions-block-ohne-totes-ziel.md)) — ein anderer Carveout,
       eine andere Ursache, und dieser hier ist extensional geschlossen (Kopf, §Geltungsbereich).
-- [ ] Datei wird nach `docs/plan/carveouts/done/` bewegt (reiner `git mv`).
+- [x] Datei wird nach `docs/plan/carveouts/done/` bewegt (reiner `git mv`) — vollzogen am
+      2026-08-30: der Move als eigener Commit, der Link-Abgleich der Verweise als zweiter
+      ([`AGENTS.md`](../../../../AGENTS.md) §3.3).
 - [x] Index-Zeile in [`README.md`](../README.md) von *Aktiv* nach *Aufgelöst* umgehängt, mit Datum und
-      auflösendem Slice (2026-08-30). Ihr Link zeigt auf den **heutigen** Ort; er zieht mit dem
-      Move nach, im selben Zug wie die übrigen Verweise auf diese Datei.
+      auflösendem Slice (2026-08-30). Ihr Link zeigt auf `done/`, wie die übrigen Verweise auf diese
+      Datei — der Move und ihr Nachziehen liegen in getrennten Commits.
 - [ ] Folge-Slice geschlossen oder explizit dokumentiert.
 
-**Warum zwei Haken stehen und zwei nicht — die Trennlinie ist dieselbe wie bei
-[`CO-003`](CO-003-mutate-ohne-zeitschranke.md): der Ort und die Rolle.** Gehakt ist, was über
-**diesem** Baum wahr ist und je mit seinem Kommando belegt. Offen ist der `git mv` — er ist ein
-eigener Commit ([`AGENTS.md`](../../../../AGENTS.md) §3.3) und macht erst den Ort wahr, den der
-Status-Kopf schon nennt. Offen ist ebenso der Folge-Slice:
+**Warum drei Haken stehen und einer nicht — die Trennlinie ist die Rolle, wie bei
+[`CO-003`](CO-003-mutate-ohne-zeitschranke.md).** Gehakt ist, was über **diesem** Baum wahr ist und
+je mit seinem Kommando belegt; dazu gehört seit dem 2026-08-30 der `git mv`, der den Ort wahr macht,
+den der Status-Kopf nennt. Offen ist der Folge-Slice:
 [slice-130](../../planning/in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) liegt bei
 dieser Auflösung in `in-progress/`, und seine Closure schreibt der **Planner**, nicht der Lauf, der
 den Code geschrieben hat (Baseline-Regelwerk `modul-08-agentenrollen.md`). Damit steht auch die
@@ -216,3 +217,4 @@ prüft der zweite Absatz des Triggers ein.
 | 2026-08-28 | Angelegt — der Baum-Tausch stellt dem Emitter vier unbeantwortete Klassen-Fragen | [slice-081](../../planning/done/slice-081-baum-tauschen-pin-ziehen.md) |
 | 2026-08-29 | Geprüft, **nicht** aufgelöst: die Deckung ist unverändert (die zwei roten Fälle tragen weiter ihren Wortlaut, `make -k gates` hat keinen roten Fall daneben), die Buchhaltung ist nachgezogen — `8`/`2` statt `7`/`3`, verschobene Zeilenangaben, ein vierter grüner Fall in derselben Datei | [slice-133](../../planning/done/slice-133-emittierter-baum-ohne-platzhalter-links.md) §7 |
 | 2026-08-30 | **Aufgelöst, Vollzug ausstehend.** Die vier Klassen sind entschieden und stehen an den Weichen: `welle-results` und `MR-NNN-titel` wiederkehrend (`emit.isRecurring`), `reconciliation` modus-gebunden (`emit.isBrownfieldOnly`, neue Weiche), `observations` Singleton (Voreinstellung, am Weichen-Kommentar belegt). Beide Fälle des Geltungsbereichs sind grün und tragen dabei **neue Namen**: aus *„genau 17 in-scope-Templates"* wurde *„genau 21"*, aus *„die fuenf wiederkehrenden Templates existieren real"* wurde *„die sieben"* — der Wortlaut oben ist der von 2026-08-28 | [slice-130](../../planning/in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) |
+| 2026-08-30 | **Vollzogen**: `git mv` nach `done/` als eigener Commit, der Link-Abgleich der Verweise als zweiter, Index-Zeile unter *Aufgelöst*. Status-Kopf, Checkliste und Index-Zelle sagen seither dasselbe wie der Ort | [slice-130](../../planning/in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) |

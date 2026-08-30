@@ -23,6 +23,15 @@ import (
 // dazunimmt, sagt genau das zu. Die zwei mit v5.12.0 dazugekommenen sagen es
 // selbst, jede in ihrem Template-Hinweis:
 //
+// Dass die Liste unten und diese Definition dasselbe meinen, misst
+// test/courseset-fixture.bats ("emit.isRecurring fuehrt genau die Vorlagen mit
+// Platzhalter im Ziel-Pfad") gegen den REALEN vendored Satz, nicht gegen die
+// Fixture: er liest je Vorlage den Kopiere-Satz ihres Template-Hinweises und
+// haelt die abgeleitete Menge gegen den Rumpf dieser Funktion. Ohne ihn faengt
+// kein Sensor den Fall, dass upstream einen Ziel-Pfad umschreibt und die Liste
+// hier stehen bleibt — Datei-Bestand und in-scope-Zahl bleiben dabei unberuehrt
+// (test/mutations/219 faehrt genau diese Drift).
+//
 //	welle-results.template.md — "Kopiere nach docs/plan/planning/done/
 //	  welle-<NN>-results.md": eine je Welle, neben die Welle-Plan-Datei, die
 //	  ihrerseits aus welle.template.md kommt und schon hier steht.
@@ -67,20 +76,37 @@ func isDerivativeIndex(rel string) bool {
 // Datei nicht". Sie wird NICHT emittiert.
 //
 // Der Bootstrap kennt den Modus des Zielrepos nicht — das Werkzeug hat dafuer kein
-// Flag (cmd/ai-harness-init/main.go fuehrt --lang, --name, --arch). Entschieden ist
-// nach dem Fehlerbild (MR-017), und beide Richtungen kosten etwas:
+// Flag (cmd/ai-harness-init/main.go fuehrt --lang, --name, --arch), und LH-FA-01
+// setzt in beiden Happy-Path-Kriterien ein LEERES Git-Repo voraus. Entschieden ist
+// entlang der Prozedur, die die Baseline fuer diese Datei selbst vorschreibt:
 //
-//	emittiert — jedes frische Repo traegt ein Register, das die mitemittierte
-//	  docs/plan/planning/README.md ihm abspricht ("Greenfield-Repos haben die Datei
-//	  nicht"). Das ist derselbe Selbstwiderspruch IM emittierten Stand, an dem
-//	  slice-024s Voll-Smoke die wiederkehrenden Vorlagen entschied. Dazu faellt beim
-//	  Strippen des Hinweis-Blocks genau der Satz weg, der die Bedingung nennt: der
-//	  Greenfield-Adopter saehe die Datei, aber nicht mehr ihren Vorbehalt.
-//	nicht emittiert — der Brownfield-Adopter legt die Datei selbst an. Still ist das
-//	  nicht: dieselbe README nennt sie samt Bedingung im Ziel-Repo, und das Register
-//	  entsteht ohnehin erst im Rueckbau (Baseline-Regelwerk
-//	  modul-02-harness-bootstrap.md §Das Reconciliation-Register: "beim Bootstrap-Ende
-//	  ist es im Gegenteil voll"), also nach dem Emit.
+//	Erzeugt wird sie im Rueckbau, nicht im Skelett-Kopierschritt. Baseline-Regelwerk
+//	  modul-02-harness-bootstrap.md legt docs/plan/planning/reconciliation.md in
+//	  BF-Schritt 8 an ("Diskrepanz-Schock"), also nach der Code-Inventur und nach dem
+//	  Vendoren der Skelette (BF-Schritt 3 / GF-Schritt 2); die GF-Schritttabelle nennt
+//	  die Datei ueberhaupt nicht. Ein Emit legte sie VOR dem Schritt an, der sie
+//	  fuellt — §Das Reconciliation-Register sagt dazu "beim Bootstrap-Ende ist es im
+//	  Gegenteil voll".
+//	Emittiert widerspraeche der emittierte Stand sich selbst: die mitemittierte
+//	  docs/plan/planning/README.md spricht dem frischen Repo die Datei ab
+//	  ("Greenfield-Repos haben die Datei nicht"). Das ist derselbe Selbstwiderspruch
+//	  IM emittierten Stand, an dem slice-024s Voll-Smoke die wiederkehrenden Vorlagen
+//	  entschied.
+//	Nicht emittiert bleibt nichts unausgesprochen: dieselbe README nennt die Datei
+//	  samt ihrer Bedingung im Ziel-Repo, und der Brownfield-Adopter legt sie dort an,
+//	  wo die Prozedur sie ohnehin verlangt.
+//
+// GRENZE gegen den Set-Index des vendored Satzes: sein §"Ein- vs. wiederkehrende
+// Templates" (.harness/baseline/<tag>/templates/README.md) fuehrt reconciliation
+// unter den SINGLETONS, seit v5.12.0 und dort gezielt gesetzt. Diese Weiche
+// widerspricht ihm nicht auf derselben Achse — die zwei Lebenszyklen dort
+// beantworten, WIE sich eine Vorlage vervielfaeltigt (ein Ziel je Repo, Vorlage
+// danach verworfen; gegenueber: Vorlage bleibt co-located), nicht, OB ein gegebenes
+// Repo dieses Ziel hat. Eine geschlossene Taxonomie ist die Liste ebenfalls nicht:
+// derivative Indexe, Planning-Index, welle-results und MR-NNN-titel stehen in
+// keinem der beiden Eimer. Ob daraus dennoch eine Abweichung im Sinne des
+// Adaptions-Blocks folgt, ist eine Architektur-Frage (AGENTS 3.8) und hier nicht
+// entschieden.
 //
 // Warum eine eigene Weiche und nicht eine der beiden daneben: isRecurring sagt
 // "mehr als ein Ziel je Repo" zu, hier gibt es genau eines; isDerivativeIndex sagt
