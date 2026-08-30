@@ -67,7 +67,7 @@ Wächter hält beide gegeneinander, statt die Deckung zu unterstellen.**
 **Erstens: die namentliche Aufzählung ist kürzer als der Code.** Die Anforderung führt **fünf
 wiederkehrende** Vorlagen, `emit.isRecurring` **sieben wiederkehrende** — dieselbe Menge, zwei
 Stände. Der Befund stammt aus dem Review-Durchgang zu
-[slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md), dessen §6
+[slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md), dessen §6
 Risiko 1 als Ausgang eine nachzutragende Slice-ID verlangt; **dieser Slice ist sie.** Beide Mengen
 mit ihrem Kommando — die Aufzählung ist über zwei Zeilen umbrochen, das Kommando zieht sie deshalb
 erst zusammen:

@@ -278,7 +278,7 @@ lässt `adr/`, `carveouts/` und die Zeitdokumente ausdrücklich stehen (§3).
 **Vorgelagert — offene Beobachtungen sichten:** das Repo führt **kein**
 Beobachtungs-Register — eine `observations.md` unter `docs/plan/planning/` existiert nicht. Keine
 Treffer, und der Grund ist die fehlende Datei, nicht ein leeres Register; ob sie entsteht,
-hängt an [slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) und einer
+hängt an [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md) und einer
 Dogfood-Frage daneben.
 
 Alle berührten Sub-Areas GF: `docs/` gehört zum Greenfield-Bestand; der Modus steht in der

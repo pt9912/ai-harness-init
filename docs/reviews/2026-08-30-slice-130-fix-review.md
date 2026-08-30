@@ -25,7 +25,7 @@ Vorherige Findings am gleichen Modul: [Review slice-130](2026-08-30-slice-130-re
 [Review slice-138](2026-08-30-slice-138-fix3-review.md),
 [Review slice-133](2026-08-29-slice-133-review.md) — die dort wiederkehrende Klasse ist
 *Grenz-/Vollständigkeitsaussage ohne gemessene Menge*; sie kehrt hier wieder (MEDIUM-2, LOW-1).
-Slice-Plan: [`slice-130`](../plan/planning/in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md).
+Slice-Plan: [`slice-130`](../plan/planning/done/slice-130-emitter-entscheidet-jedes-neue-template.md).
 
 **Bindende Vorentscheidungen (nicht Gegenstand dieses Laufs).**
 `a6d436c` (Architect) entscheidet: `isBrownfieldOnly` ist **keine** Abweichung, kein `MR`,
@@ -227,7 +227,7 @@ Nach dem Schreiben dieses Reports erneut `make docs-check`: `465 Datei(en) gepr�
 - **kategorie:** INFO
 - **quelle:** Slice-Plan §6 Risiko 3 ·
   [`MR-017`](../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)
-- **pfad:** `docs/plan/planning/in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md:278-282`
+- **pfad:** `docs/plan/planning/done/slice-130-emitter-entscheidet-jedes-neue-template.md:278-282`
 - **befund:** Die Entfernung der `MR-017`-Nennung aus dem Weichen-Kommentar (LOW-1 des
   Vor-Reviews) ist **korrekt und korrekt getrennt**: `MR-017` begrenzt sich selbst auf
   *„jede vom Tool **emittierte** Gate-Konfiguration … also jeder **Prüfbereich**"*

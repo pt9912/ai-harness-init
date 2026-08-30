@@ -51,7 +51,7 @@ Wellen-Zugehörigkeit.
 
 **Ebene: Dogfood, nicht emittiert.** Gegenstand ist das Planning-Layout **dieses** Repos. Was ein
 frisch gebootstrapptes Zielrepo an Registern und Anweisungssätzen bekommt, ist ein anderer Vertrag
-mit eigenen Trägern: [slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) entscheidet
+mit eigenen Trägern: [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md) entscheidet
 über jede neue Vorlage des getauschten Baums,
 [slice-085](slice-085-emittierte-ebene-zieht-nach.md) zieht die emittierten Commands nach. Heute
 trägt die emittierte Ebene zum Register **nichts**

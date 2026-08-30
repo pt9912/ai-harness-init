@@ -264,7 +264,7 @@ verweisen, ausführen und ausbuchstabieren, aber nichts festlegen —, und der T
 `modul-07-carveouts.md` §Werkzeug-Wahl führt bei dieser Häufung ohnehin nicht auf Carveout. **8**
 Befunde hat [slice-133](done/slice-133-emittierter-baum-ohne-platzhalter-links.md)
 weggenommen (Platzhalter-Links, sieben davon in drei schon vorher emittierten Singletons), **2**
-trägt [slice-130](in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) (sie lösen sich mit
+trägt [slice-130](done/slice-130-emitter-entscheidet-jedes-neue-template.md) (sie lösen sich mit
 der Klassen-Entscheidung). Die Aufteilung ist je Befund an seiner Vorlagen-Zeile erhoben, nicht
 über die Summe geschlossen; die Tabelle steht in slice-133 §1. **Der Schnitt rechnete mit sieben
 und zwei bis drei**, weil er nach Ursachen teilte; die gebaute Neutralisierung trägt die
@@ -292,9 +292,9 @@ Jobs bis 130, für den vierten bis 132.** Der Workflow fährt vier Jobs
 am 2026-08-29 **4**: `gates`, `smoke`, `full-smoke`, `mutate`), und alle vier hängen an **einer**
 Ursachenkette. Wer welchen zurückgibt, ist keine Schätzung, sondern steht in den Trägern: `smoke`
 und `full-smoke` an [slice-133](done/slice-133-emittierter-baum-ohne-platzhalter-links.md) **und**
-[slice-130](in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) (8 + 2 Befunde); `mutate`
+[slice-130](done/slice-130-emitter-entscheidet-jedes-neue-template.md) (8 + 2 Befunde); `mutate`
 an denselben zwei, weil sein Grün-Vorlauf genau diese Modi fährt; `make gates` an
-[slice-130](in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md)
+[slice-130](done/slice-130-emitter-entscheidet-jedes-neue-template.md)
 ([`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md)) **und**
 [slice-132](open/slice-132-adaptions-block-ohne-totes-ziel.md)
 ([`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md)). **Was davon heute noch steht,
@@ -323,7 +323,7 @@ vier Jobs zurück, und dieser Satz steht hier, weil sein Abschluss sonst falsch 
 verletzt)`. Der Lauf erreicht das Zielrepo — die Netz-Bedingung war erfüllt, der Treiber ordnet
 den Fehlschlag selbst zu (`AUSGANG BAUM`) — und fällt dort an genau **einem** Teil-Ziel
 (`make full-smoke 2>&1 | grep -cE '^make\[1\]: \*\*\* \['` → **1**, `docs-check`), mit den zwei
-Befunden, die [slice-130](in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) trägt.
+Befunden, die [slice-130](done/slice-130-emitter-entscheidet-jedes-neue-template.md) trägt.
 **Der Beleg für den Happy Path von
 [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) hängt an slice-130 DoD (3),
 nicht an slice-133** — jener Punkt führt den gemeinsamen Nachweis über beide Ursachen, und die

@@ -58,7 +58,7 @@ ist einzeln lieferbar.
 HTML-Kommentar steht statt im Blockquote.**
 
 Der Befund stammt aus dem Review-Durchgang zu
-[slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md); dessen §6 verlangt
+[slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md); dessen §6 verlangt
 für jeden übergebenen Posten eine Slice-ID, und **dieser Slice ist sie** — für den
 `StripHintBlock`-Posten und den `BEDIENHINWEIS`-Posten zugleich, weil beide dieselbe Ursache haben
 (unten gemessen: jeder Bedienhinweis im emittierten Baum steht **in** einem HTML-Kommentar, nicht
@@ -167,7 +167,7 @@ Aussagen-Berührung steht hier gar nicht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [slice-130](../in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md)
+**Start** (`next` → `in-progress`): [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md)
 liegt in `done/`. Der Grund ist **tragend, nicht ordnend**: jener Slice entscheidet, welche Vorlage
 überhaupt emittiert wird, und der Prüfbereich dieses Slice ist genau die Ergebnis-Menge. Läuft er
 davor, misst dieser Slice über einem Satz, den der andere noch verändert.

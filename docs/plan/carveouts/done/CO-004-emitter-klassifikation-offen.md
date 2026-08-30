@@ -10,7 +10,7 @@ Setzung 2)). Welcher Haken unten aus welchem Grund noch offen steht, sagt der Ab
 Checkliste.
 
 **Datum angelegt:** 2026-08-28. **Letzte Prüfung:** 2026-08-30 (Auflösung durch
-[slice-130](../../planning/in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md):
+[slice-130](../../planning/done/slice-130-emitter-entscheidet-jedes-neue-template.md):
 Klassen entschieden, Wächter grün, Sensoren gefahren — s. §Geschichte). **Vorherige Prüfung:**
 2026-08-29 (Closure
 [slice-133](../../planning/done/slice-133-emittierter-baum-ohne-platzhalter-links.md): Deckung
@@ -46,7 +46,7 @@ durch Reparatur eingelöst; die Begründung führt
 sind zwei Slices, nicht diese Datei: **acht** Befunde hat
 [slice-133](../../planning/done/slice-133-emittierter-baum-ohne-platzhalter-links.md)
 weggenommen, **zwei** trägt
-[slice-130](../../planning/in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md). Gemessen mit
+[slice-130](../../planning/done/slice-130-emitter-entscheidet-jedes-neue-template.md). Gemessen mit
 demselben Kommando über zwei Ständen: `make smoke` am Stand `26aec2c`
 `23 Datei(en) geprüft, 10 Befund(e)`, am Stand `66459c7` `23 Datei(en) geprüft, 2 Befund(e)` —
 gleicher Nenner, also ist nichts aus dem Prüfbereich gefallen. **Acht statt der sieben, mit denen
@@ -61,7 +61,7 @@ verbliebenen Befunde stehen beide in `<ziel>/docs/plan/planning/welle-results.md
 Wer die Differenz als Regression liest, sucht einen Fehler, den es nicht gibt; wer sie als
 *„schon erledigt"* liest, lässt die Klassen-Entscheidung fallen, die davon unberührt ist.
 
-**Folge-Slice:** [slice-130](../../planning/in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md)
+**Folge-Slice:** [slice-130](../../planning/done/slice-130-emitter-entscheidet-jedes-neue-template.md)
 — er entscheidet je Vorlage die Klasse und löst diesen Carveout mit seinem Abschluss auf.
 
 Regeln: Baseline-Regelwerk `modul-07-carveouts.md` §Ziel-Form: Carveout — ein
@@ -138,7 +138,7 @@ ADR.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-07-carveouts.md`
 §Ziel-Form: Carveout — konkret und prüfbar. „Wenn Zeit ist" ist kein Trigger.
 
-**[slice-130](../../planning/in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) liegt in
+**[slice-130](../../planning/done/slice-130-emitter-entscheidet-jedes-neue-template.md) liegt in
 `done/`.** Damit trägt jede der vier Vorlagen eine Klasse an der Weiche in
 `internal/emit/templates.go`, `TestTemplates_EmittierterBestandVollstaendig` hält den vollen
 Ist-Bestand, und `make test` ist ohne Ausnahme grün. Prüfbar ohne Rückfrage: ein `ls` über
@@ -203,7 +203,7 @@ rot. Ein Ausschluss der Fälle wäre eine Schwellen-Senkung und nach
 [`CO-003`](CO-003-mutate-ohne-zeitschranke.md).** Gehakt ist, was über **diesem** Baum wahr ist und
 je mit seinem Kommando belegt; dazu gehört seit dem 2026-08-30 der `git mv`, der den Ort wahr macht,
 den der Status-Kopf nennt. Offen ist der Folge-Slice:
-[slice-130](../../planning/in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) liegt bei
+[slice-130](../../planning/done/slice-130-emitter-entscheidet-jedes-neue-template.md) liegt bei
 dieser Auflösung in `in-progress/`, und seine Closure schreibt der **Planner**, nicht der Lauf, der
 den Code geschrieben hat (Baseline-Regelwerk `modul-08-agentenrollen.md`). Damit steht auch die
 wörtliche Trigger-Bedingung oben — *„slice-130 liegt in `done/`"* — noch aus; eingetreten und
@@ -216,5 +216,5 @@ prüft der zweite Absatz des Triggers ein.
 |---|---|---|
 | 2026-08-28 | Angelegt — der Baum-Tausch stellt dem Emitter vier unbeantwortete Klassen-Fragen | [slice-081](../../planning/done/slice-081-baum-tauschen-pin-ziehen.md) |
 | 2026-08-29 | Geprüft, **nicht** aufgelöst: die Deckung ist unverändert (die zwei roten Fälle tragen weiter ihren Wortlaut, `make -k gates` hat keinen roten Fall daneben), die Buchhaltung ist nachgezogen — `8`/`2` statt `7`/`3`, verschobene Zeilenangaben, ein vierter grüner Fall in derselben Datei | [slice-133](../../planning/done/slice-133-emittierter-baum-ohne-platzhalter-links.md) §7 |
-| 2026-08-30 | **Aufgelöst, Vollzug ausstehend.** Die vier Klassen sind entschieden und stehen an den Weichen: `welle-results` und `MR-NNN-titel` wiederkehrend (`emit.isRecurring`), `reconciliation` modus-gebunden (`emit.isBrownfieldOnly`, neue Weiche), `observations` Singleton (Voreinstellung, am Weichen-Kommentar belegt). Beide Fälle des Geltungsbereichs sind grün und tragen dabei **neue Namen**: aus *„genau 17 in-scope-Templates"* wurde *„genau 21"*, aus *„die fuenf wiederkehrenden Templates existieren real"* wurde *„die sieben"* — der Wortlaut oben ist der von 2026-08-28 | [slice-130](../../planning/in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) |
-| 2026-08-30 | **Vollzogen**: `git mv` nach `done/` als eigener Commit, der Link-Abgleich der Verweise als zweiter, Index-Zeile unter *Aufgelöst*. Status-Kopf, Checkliste und Index-Zelle sagen seither dasselbe wie der Ort | [slice-130](../../planning/in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) |
+| 2026-08-30 | **Aufgelöst, Vollzug ausstehend.** Die vier Klassen sind entschieden und stehen an den Weichen: `welle-results` und `MR-NNN-titel` wiederkehrend (`emit.isRecurring`), `reconciliation` modus-gebunden (`emit.isBrownfieldOnly`, neue Weiche), `observations` Singleton (Voreinstellung, am Weichen-Kommentar belegt). Beide Fälle des Geltungsbereichs sind grün und tragen dabei **neue Namen**: aus *„genau 17 in-scope-Templates"* wurde *„genau 21"*, aus *„die fuenf wiederkehrenden Templates existieren real"* wurde *„die sieben"* — der Wortlaut oben ist der von 2026-08-28 | [slice-130](../../planning/done/slice-130-emitter-entscheidet-jedes-neue-template.md) |
+| 2026-08-30 | **Vollzogen**: `git mv` nach `done/` als eigener Commit, der Link-Abgleich der Verweise als zweiter, Index-Zeile unter *Aufgelöst*. Status-Kopf, Checkliste und Index-Zelle sagen seither dasselbe wie der Ort | [slice-130](../../planning/done/slice-130-emitter-entscheidet-jedes-neue-template.md) |
