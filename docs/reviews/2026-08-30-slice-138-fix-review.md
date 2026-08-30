@@ -5,7 +5,7 @@
 | **Rolle** | Reviewer (Modul 8/10) — frischer Kontext, getrennt von Implementation, Architektur und Planung |
 | **Review-Art** | Code-Review — Diff gegen Plan, aktive ADRs und Hard Rules. **Nicht** DoD-Abhakung (Verifier, Modul 11) |
 | **Gegenstand** | `git show 5a75f97` — fünf Dateien, `114/18` (`git show --stat 5a75f97`); Vorlauf `07dc762` → Review `a25e33c` → Fix `5a75f97` |
-| **Plan** | `docs/plan/planning/in-progress/slice-138-nachweis-entsteht-nicht-ueber-rot.md` |
+| **Plan** | `docs/plan/planning/done/slice-138-nachweis-entsteht-nicht-ueber-rot.md` |
 | **Bindende ADRs** | keine — der Diff nennt keine ADR-ID, `docs/plan/adr/` ist nicht berührt (`git show --name-only --format='' 5a75f97 \| grep -cE '^docs/plan/adr/'` → **0**) |
 | **Anforderungen** | keine `LH-*`-Kennung (der Plan prüft `LH-QA-01` und verwirft sie: dort geht es um den **emittierten** Gate-Target). Berührt sind `AGENTS.md` §3.2 · §3.3 · §3.5 · §3.6 · §3.7 · §3.8 · §3.9 und `MR-002` · `MR-003` · `MR-025` |
 | **Vorherige Findings am gleichen Modul** | `docs/reviews/2026-08-29-slice-138-review.md` (0 HIGH / 3 MEDIUM / 2 LOW / 3 INFO), davor `docs/reviews/2026-08-29-slice-133-review.md` |
@@ -134,7 +134,7 @@ getrackten Dateien außerhalb des Arbeitsbaums (unmutiert · 210 · 211 · 212 �
   gehört in einen eigenen Zug"*), Plan §6 (jedes Risiko trägt einen Ausgang) — Rollen-Verweis:
   **Planner**
 - **pfad:** Commit-Message `5a75f97`, Absatz *„.IGNORE und das '-'-Praefix waeren strukturell
-  schliessbar … Geht als Kandidat an den Planner"*; Gegenstand `docs/plan/planning/in-progress/slice-138-nachweis-entsteht-nicht-ueber-rot.md` §6
+  schliessbar … Geht als Kandidat an den Planner"*; Gegenstand `docs/plan/planning/done/slice-138-nachweis-entsteht-nicht-ueber-rot.md` §6
 - **befund:** Die Fix-Runde hat zwei Mechanismen gefunden, die **im `Makefile` selbst** leben und
   darum strukturell schließbar wären. Sie **nicht** zu bauen ist plan-konform (§1 schneidet das
   ausdrücklich weg). Der Kandidat steht damit heute nur in einer Commit-Message; §6 des Plans führt

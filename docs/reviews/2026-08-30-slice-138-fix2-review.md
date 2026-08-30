@@ -5,7 +5,7 @@
 | **Rolle** | Reviewer (Modul 8/10) — frischer Kontext, getrennt von Implementation, Architektur und Planung |
 | **Review-Art** | Code-Review — Diff gegen Plan, aktive ADRs und Hard Rules. **Nicht** DoD-Abhakung (Verifier, Modul 11) |
 | **Gegenstand** | `git show f275092` — drei Dateien, `70/32` (`git show --stat f275092`); Kette `07dc762` → `a25e33c` → `5a75f97` → `02d3637` → `f275092` |
-| **Plan** | `docs/plan/planning/in-progress/slice-138-nachweis-entsteht-nicht-ueber-rot.md` |
+| **Plan** | `docs/plan/planning/done/slice-138-nachweis-entsteht-nicht-ueber-rot.md` |
 | **Bindende ADRs** | keine — der Diff nennt keine ADR-ID, `docs/plan/adr/` ist nicht berührt (`git show --name-only --format='' f275092 \| grep -cE '^docs/plan/adr/'` → **0**) |
 | **Anforderungen** | keine `LH-*`-Kennung (Plan §1 prüft `LH-QA-01` und verwirft sie: dort geht es um den **emittierten** Gate-Target). Berührt sind `AGENTS.md` §3.2 · §3.3 · §3.6 · §3.7 · §3.8 · §3.9 und `MR-002` · `MR-025` |
 | **Vorherige Findings am gleichen Modul** | `docs/reviews/2026-08-29-slice-138-review.md` (0/3/2/3) · `docs/reviews/2026-08-30-slice-138-fix-review.md` (0/1/4/3) |
@@ -121,7 +121,7 @@ Schreibweisen, die im Diff **nicht** vorkommen (`\t -`, `\t- `, `\t @-`, `\t\t-`
 - **quelle:** [`AGENTS.md`](../../AGENTS.md) §3.6; §3.7 §Geltungsbereich (*„ein Zeitdokument
   (`docs/reviews/**`, `docs/plan/planning/done/**`) ist Chronik von Beruf"*)
 - **pfad:** `Makefile:296-297` und `test/gate-nachweis-kante.bats:11-14`; Messung heute in
-  `docs/plan/planning/in-progress/slice-138-nachweis-entsteht-nicht-ueber-rot.md` §1
+  `docs/plan/planning/done/slice-138-nachweis-entsteht-nicht-ueber-rot.md` §1
 - **befund:** Beide Stellen tragen die Aussage *„Stünden die Checks daneben (`gates: <checks>
   record-gates`), schriebe `make -k gates` den Stempel über rotem Stand"*. Der Kopf des Wächters
   misst die **Form mit Kante** (`"" -k` → `0/2 0/2`), die **flache** Gegenprobe misst er nicht; im
@@ -165,7 +165,7 @@ Schreibweisen, die im Diff **nicht** vorkommen (`\t -`, `\t- `, `\t @-`, `\t\t-`
 - **quelle:** Plan §6 (jedes Risiko trägt einen Ausgang) und Plan §1 (*„Baut ein Lauf sie trotzdem,
   ist das eine Härtung mit eigenem Auslöser und gehört in einen eigenen Zug"*) — Rollen-Verweis:
   **Planner**
-- **pfad:** `docs/plan/planning/in-progress/slice-138-nachweis-entsteht-nicht-ueber-rot.md` §6 (sechs
+- **pfad:** `docs/plan/planning/done/slice-138-nachweis-entsteht-nicht-ueber-rot.md` §6 (sechs
   Risiken, keines davon dieses) und §7 (leer)
 - **befund:** Dass `.IGNORE:` und das `-`-Rezept-Präfix **strukturell** prüfbar wären, steht seit
   diesem Commit dauerhaft im Code (`test/gate-nachweis-kante.bats:74-79`) statt nur in einer

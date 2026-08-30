@@ -5,7 +5,7 @@
 | **Rolle** | Reviewer (Modul 8/10) — frischer Kontext, getrennt von Implementation, Architektur und Planung |
 | **Review-Art** | Code-Review — Diff gegen Plan, aktive ADRs und Hard Rules. **Nicht** DoD-Abhakung (Verifier, Modul 11) |
 | **Gegenstand** | `git show 434d4fa` — zwei Dateien, `22/37` (`git show --stat 434d4fa`); Kette `07dc762` → `a25e33c` → `5a75f97` → `02d3637` → `f275092` → `d949090` → `434d4fa` |
-| **Plan** | `docs/plan/planning/in-progress/slice-138-nachweis-entsteht-nicht-ueber-rot.md` |
+| **Plan** | `docs/plan/planning/done/slice-138-nachweis-entsteht-nicht-ueber-rot.md` |
 | **Bindende ADRs** | keine — der Diff nennt keine ADR-ID, `docs/plan/adr/` ist unberührt (`git show --name-only --format='' 434d4fa \| grep -cE '^docs/plan/adr/'` → **0**) |
 | **Anforderungen** | keine `LH-*`-Kennung (Plan §1 prüft `LH-QA-01` und verwirft sie — dort geht es um den **emittierten** Gate-Target). Berührt: [`AGENTS.md`](../../AGENTS.md) §3.2 · §3.3 · §3.6 · §3.7 · §3.8 · §3.9, `MR-002`, `MR-025` |
 | **Vorherige Findings am gleichen Modul** | `docs/reviews/2026-08-29-slice-138-review.md` (0/3/2/3) · `docs/reviews/2026-08-30-slice-138-fix-review.md` (0/1/4/3) · `docs/reviews/2026-08-30-slice-138-fix2-review.md` (0/1/2/4) |
@@ -187,7 +187,7 @@ Gate-Nachweis-Pfad — Kontext-Eskalation nach `.harness/skills/reviewer.md`.
   (`docs/reviews/**`, `docs/plan/planning/done/**`) ist Chronik von Beruf"*)
 - **pfad:** gestrichen aus `Makefile` (`git show 434d4fa -- Makefile`, Zeilen `-KEIN WEG, sondern die
   Struktur-Grenze der Kante …`); Rest-Vorkommen: `harness/tools/record-gates.sh:6-7` und
-  `docs/plan/planning/in-progress/slice-138-…md:167-168`, `:329-331`, `:373`
+  `docs/plan/planning/done/slice-138-…md:167-168`, `:329-331`, `:373`
 - **befund:** Der gestrichene Absatz sagte, dass die Kante **die Reihenfolge bindet, nicht den
   Ausgang**, und dass ein Ergebnis-Nachweis eine Quittung je Check verlangte. Die **Mechanik**-Hälfte
   überlebt in `record-gates.sh:6-7` (*„`make` gibt dem Rezept keinen Ergebnis-Kanal"*); die
@@ -205,7 +205,7 @@ Gate-Nachweis-Pfad — Kontext-Eskalation nach `.harness/skills/reviewer.md`.
 
 - **kategorie:** INFO
 - **quelle:** Plan §2 DoD (2) — Rollen-Verweis: **Verifier** (Abhaken) bzw. **Planner** (Zuschnitt)
-- **pfad:** `docs/plan/planning/in-progress/slice-138-…md` §2 DoD (2) gegen Commit-Message `434d4fa`,
+- **pfad:** `docs/plan/planning/done/slice-138-…md` §2 DoD (2) gegen Commit-Message `434d4fa`,
   Absatz *LOW-1*
 - **befund:** Die Message begründet das Stehenlassen aller sieben Weg-Namen damit, *„DoD (2) woertlich
   verlangt, dass jeder nicht geschlossene Weg als Grenze danebensteht"*. DoD (2) bindet wörtlich:
@@ -225,7 +225,7 @@ Gate-Nachweis-Pfad — Kontext-Eskalation nach `.harness/skills/reviewer.md`.
 - **quelle:** Plan §6 (jedes Risiko trägt einen Ausgang) und Plan §1 (*„Baut ein Lauf sie trotzdem,
   ist das eine Härtung mit eigenem Auslöser und gehört in einen eigenen Zug"*) — Rollen-Verweis:
   **Planner**
-- **pfad:** `docs/plan/planning/in-progress/slice-138-…md` §6 (sechs Risiken, keines davon dieses),
+- **pfad:** `docs/plan/planning/done/slice-138-…md` §6 (sechs Risiken, keines davon dieses),
   §7 (leer); Commit-Message `434d4fa`, Absatz *Uebergaben*
 - **befund:** Die Message übergibt zwei Posten an den Planner (`comment-claims` misst seine eigene
   Sensor-Nennung nicht; `.IGNORE:`/`-`-Präfix als Härtungs-Kandidat). Beide Übergaben existieren
