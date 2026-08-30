@@ -132,7 +132,7 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   Machine — *„`done` ist kein Endzustand der Information: Die Beobachtungen aus §7 sind bei der
   Slice-Closure ins Beobachtungs-Register eingetragen und werden von dort weitergelesen"* — und
   hängt es in `v5.12.0`, `templates/docs/plan/planning/slice.template.md` an einen **DoD-Punkt je
-  Slice**: *„Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder <!-- d-check:ignore (Pfad im Zitat der Ziel-Vorlage, existiert in diesem Repo nicht) -->
+  Slice**: *„Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder
   Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7
   notiert."* Die gepinnte Fassung kennt den Begriff nicht
   (`git grep -l 'Beobachtungs-Register' v3.5.2 -- lab/regelwerk lab/templates | wc -l` → **0**,

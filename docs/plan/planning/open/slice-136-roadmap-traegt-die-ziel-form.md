@@ -292,10 +292,10 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       steht auf Rang 5 der Source Precedence, aber als derivative Sicht, und dieser Slice ändert
       keine Welle-Datei inhaltlich.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (die `observations.md` neben den Wellen): das Repo führt **keines** —
-      die Datei existiert nicht (`ls docs/plan/planning/observations.md`). Das Item entfällt nicht
-      still, sondern mit diesem Grund; er wird in §7 notiert. Dasselbe gilt für das
-      Reconciliation-Register: das Repo hat keinen Brownfield-Bootstrap.
+- [ ] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
+      [`observations.md`](../observations.md) — *keine Beobachtung angefallen* ist ebenfalls eine
+      Antwort und wird in §7 notiert. Das Reconciliation-Register entfällt dauerhaft: dieses Repo
+      hat keinen Brownfield-Bootstrap.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt
       Wellen-Betrieb, sie werden also von der nächsten Welle-Closure geprüft, nicht hier.
@@ -426,9 +426,9 @@ Backticks).
   *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
   Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
   verkörpert.)*
-- **Beobachtungs-Register (die `observations.md` neben den Wellen):** das Repo führt keines — die
-  Datei existiert nicht. Kein leeres Register, sondern ein fehlendes; der Grund steht hier statt im
-  stillen Auslassen.
+- **Beobachtungs-Register (`observations.md` neben den Wellen):** <neue `BEO-<NNN>` mit Beleg |
+  Zähler +1 an einer vorhandenen Kennung | keine Beobachtung angefallen — und dann steht genau das
+  hier, statt dass die Zeile fehlt>.
 - **Wächter-Entscheidung (DoD 3), wörtlich für den nächsten Leser:** <Marker-Hälfte: …
   Listen-Hälfte: … — je gebaut oder mit Grund und Folge-Slice nicht gebaut>. Diese Zeile ist die,
   die [slice-125](slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) später liest.
@@ -461,9 +461,10 @@ und ADRs zusammen und vermischte drei Regel-Lagen in einem Block — dieselbe Be
 [slice-134](slice-134-adr-index-traegt-die-ziel-form.md) für `docs/plan/adr/` zieht, hier für die
 Nachbar-Sub-Area.
 
-**Vorgelagert — offene Beobachtungen sichten:** das Repo führt **kein** Beobachtungs-Register —
-eine `observations.md` unter `docs/plan/planning/` existiert nicht. Keine Treffer, und der Grund
-ist die fehlende Datei, nicht ein leeres Register; er wird in §7 notiert.
+**Vorgelagert — offene Beobachtungen sichten:** die Sichtung ist **offen** — sie ist vor der
+Bearbeitung gegen [`observations.md`](../observations.md) zu fahren, und ihr Ergebnis gehört ins
+Kriterium *Evidenz-/Diskrepanz-Risiko* unten. Sie steht hier nicht als Ergebnis, weil der Stand des
+Registers zwischen Schnitt und Bearbeitung wandert.
 
 Alle berührten Sub-Areas GF: `docs/plan/` gehört zum Greenfield-Bestand; der Modus steht in der
 Modus-Deklaration von [`harness/conventions.md`](../../../../harness/conventions.md). Der

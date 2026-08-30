@@ -165,10 +165,9 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [ ] Reconciliation-Register: das Repo hat keinen Brownfield-Bootstrap und führt keines; das Item
       entfällt mit diesem Grund, nicht still.
-- [ ] Beobachtungs-Register: eine `observations.md` unter `docs/plan/planning/` existiert nicht
-      (`ls docs/plan/planning/observations.md` → kein Treffer); ob sie entsteht, entscheidet
-      [slice-137](../in-progress/slice-137-beobachtungs-register-bekommt-seinen-ort.md). Bis dahin entfällt das
-      Item mit diesem Grund, und was aufgefallen ist, steht in §7.
+- [ ] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
+      [`observations.md`](../observations.md) — *keine Beobachtung angefallen* ist ebenfalls eine
+      Antwort und wird in §7 notiert.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste Welle-Closure — dieses
       Repo fährt Wellen-Betrieb, und die liest auch Slices ohne Wellen-Zugehörigkeit.
@@ -249,8 +248,7 @@ dasteht.
   ist ein Rang-Zeiger und zulässig; einer, der die Begründung **wiederholt**, ist die Quelle in
   keinem Rang, gegen die [`AGENTS.md`](../../../../AGENTS.md) §3.7 geschrieben ist. Die Grenze ist
   eine Urteilsfrage, kein Muster. — **Ausgang:** <entfallen: je Weiche ein Zeiger, keine zweite
-  Fassung | weiter offen: → Beobachtung, sobald das Repo ein Register führt
-  ([slice-137](../in-progress/slice-137-beobachtungs-register-bekommt-seinen-ort.md))>
+  Fassung | weiter offen: → als `BEO-<NNN>` im Register>
 
 ## 7. Closure-Notiz
 
@@ -284,10 +282,10 @@ Tests, eigene Ziel-Form — drei von drei Achsen) und `test/` (eigener Zuschnitt
 Werkzeugkette — zwei von drei). Beide erfüllen die Schwelle ≥ 2; keine ist zu grob geschnitten.
 `spec/` ist **nicht** berührt: der Slice liest die Datei, ändert sie aber nicht (§3).
 
-**Vorgelagert — offene Beobachtungen sichten:** das Repo führt **kein** Beobachtungs-Register —
-eine `observations.md` unter `docs/plan/planning/` existiert nicht, und ob sie entsteht, entscheidet
-[slice-137](../in-progress/slice-137-beobachtungs-register-bekommt-seinen-ort.md). Keine Treffer, und der Grund ist
-die fehlende Datei, nicht ein leeres Register.
+**Vorgelagert — offene Beobachtungen sichten:** die Sichtung ist **offen** — sie ist vor der
+Bearbeitung gegen [`observations.md`](../observations.md) zu fahren, und ihr Ergebnis gehört ins
+Kriterium *Evidenz-/Diskrepanz-Risiko* unten. Sie steht hier nicht als Ergebnis, weil der Stand des
+Registers zwischen Schnitt und Bearbeitung wandert.
 
 Alle berührten Sub-Areas GF: `internal/emit/` und `test/` gehören zum Greenfield-Bestand; der Modus
 steht in der Modus-Deklaration von

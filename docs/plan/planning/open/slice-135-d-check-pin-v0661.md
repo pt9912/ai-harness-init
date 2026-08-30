@@ -268,10 +268,10 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt
       [`harness/README.md`](../../../../harness/README.md) bewegen sich nicht (§1 Messung 3, `12`
       Targets vor wie nach).
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (die `observations.md` neben den Wellen): das Repo führt **keines** —
-      die Datei existiert nicht (`ls docs/plan/planning/` nennt sie nicht). Das Item entfällt nicht
-      still, sondern mit diesem Grund; er wird in §7 notiert. Dasselbe gilt für das
-      Reconciliation-Register: das Repo hat keinen Brownfield-Bootstrap.
+- [ ] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
+      [`observations.md`](../observations.md) — *keine Beobachtung angefallen* ist ebenfalls eine
+      Antwort und wird in §7 notiert. Das Reconciliation-Register entfällt dauerhaft: dieses Repo
+      hat keinen Brownfield-Bootstrap.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt
       Wellen-Betrieb, sie werden also von der nächsten Welle-Closure geprüft, nicht hier (auch für
@@ -461,10 +461,10 @@ Setzung 1), der Emitter ist repo-eigener Go-Code mit Tests — verschiedene Rege
 verschiedene Änderungs-Art, gemeinsamer Wert nur über die zwei Kopplungstests. Beide erfüllen die
 Schwelle ≥ 2 von 3 Achsen.
 
-**Vorgelagert — offene Beobachtungen sichten:** das Repo führt **kein** Beobachtungs-Register —
-eine `observations.md` unter `docs/plan/planning/` existiert nicht (`ls docs/plan/planning/`
-nennt vier Verzeichnisse, eine `README.md` und vier Welle-Pläne). Keine Treffer, und der Grund ist
-die fehlende Datei, nicht ein leeres Register; er wird in §7 notiert.
+**Vorgelagert — offene Beobachtungen sichten:** die Sichtung ist **offen** — sie ist vor der
+Bearbeitung gegen [`observations.md`](../observations.md) zu fahren, und ihr Ergebnis gehört ins
+Kriterium *Evidenz-/Diskrepanz-Risiko* unten. Sie steht hier nicht als Ergebnis, weil der Stand des
+Registers zwischen Schnitt und Bearbeitung wandert.
 
 Alle berührten Sub-Areas GF; der Modus steht in der Modus-Deklaration von
 [`harness/conventions.md`](../../../../harness/conventions.md). Der Modus-Begründungsblock

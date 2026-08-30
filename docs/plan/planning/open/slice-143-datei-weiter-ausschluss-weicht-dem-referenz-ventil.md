@@ -175,10 +175,10 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [ ] `make gates` grün.
 - [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-/Reconciliation-Register: das Repo führt keines von beiden; das Item entfällt
-      mit diesem Grund und wird in §7 notiert, nicht still übergangen. Träger für das
-      Beobachtungs-Register ist [slice-137](../in-progress/slice-137-beobachtungs-register-bekommt-seinen-ort.md);
-      das Reconciliation-Register entfällt dauerhaft — dieses Repo hat keinen Brownfield-Bootstrap.
+- [ ] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
+      [`observations.md`](../observations.md) — *keine Beobachtung angefallen* ist ebenfalls eine
+      Antwort und wird in §7 notiert. Das Reconciliation-Register entfällt dauerhaft: dieses Repo
+      hat keinen Brownfield-Bootstrap.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste Welle-Closure, nicht
       dieser Slice — dieses Repo fährt Wellen-Betrieb, und das gilt auch für wellenlose Slices.
@@ -302,7 +302,7 @@ Wurzelverzeichnis. Beide fallen unter den Eintrag `*` (gesamtes Repo) der Modus-
 **alle berührten Sub-Areas GF**, der Modus-Begründungsblock entfällt damit nach dem
 *Umfang*-Absatz oben.
 
-**Vorgelagert — offene Beobachtungen sichten:** keine Treffer, und der Grund ist die fehlende
-Datei, nicht ein leeres Register (`find docs/plan -iname '*observation*' | wc -l` → **0**). Der
-Träger für seine Entstehung ist
-[slice-137](../in-progress/slice-137-beobachtungs-register-bekommt-seinen-ort.md).
+**Vorgelagert — offene Beobachtungen sichten:** die Sichtung ist **offen** — sie ist vor der
+Bearbeitung gegen [`observations.md`](../observations.md) zu fahren, und ihr Ergebnis gehört ins
+Kriterium *Evidenz-/Diskrepanz-Risiko* unten. Sie steht hier nicht als Ergebnis, weil der Stand des
+Registers zwischen Schnitt und Bearbeitung wandert.

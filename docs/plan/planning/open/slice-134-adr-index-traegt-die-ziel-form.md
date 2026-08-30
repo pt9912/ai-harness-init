@@ -158,10 +158,10 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       **keiner**: er ist derivativ, und keine ADR-Datei wird von diesem Slice angefasst
       ([`AGENTS.md`](../../../../AGENTS.md) §3.4).
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (die `observations.md` neben den Wellen): das Repo führt **keines** —
-      die Datei existiert nicht. Das Item entfällt nicht still, sondern mit diesem Grund; er wird
-      in §7 notiert. Dasselbe gilt für das Reconciliation-Register: das Repo hat keinen
-      Brownfield-Bootstrap.
+- [ ] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
+      [`observations.md`](../observations.md) — *keine Beobachtung angefallen* ist ebenfalls eine
+      Antwort und wird in §7 notiert. Das Reconciliation-Register entfällt dauerhaft: dieses Repo
+      hat keinen Brownfield-Bootstrap.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt
       Wellen-Betrieb, sie werden also von der nächsten Welle-Closure geprüft, nicht hier (auch
@@ -318,9 +318,10 @@ Zuschnitt mit eigener ID-Reihe, eigene Ziel-Form, eigene Regel-Lage über
 und der Schnitt ist nicht zu grob: `docs/plan/` als Ganzes trüge Planung, Carveouts und ADRs
 zusammen und vermischte drei Regel-Lagen in einem Block.
 
-**Vorgelagert — offene Beobachtungen sichten:** das Repo führt **kein** Beobachtungs-Register —
-eine `observations.md` unter `docs/plan/planning/` existiert nicht. Keine Treffer, und der Grund
-ist die fehlende Datei, nicht ein leeres Register; er wird in §7 notiert.
+**Vorgelagert — offene Beobachtungen sichten:** die Sichtung ist **offen** — sie ist vor der
+Bearbeitung gegen [`observations.md`](../observations.md) zu fahren, und ihr Ergebnis gehört ins
+Kriterium *Evidenz-/Diskrepanz-Risiko* unten. Sie steht hier nicht als Ergebnis, weil der Stand des
+Registers zwischen Schnitt und Bearbeitung wandert.
 
 Alle berührten Sub-Areas GF: `docs/plan/` gehört zum Greenfield-Bestand; der Modus steht in der
 Modus-Deklaration von [`harness/conventions.md`](../../../../harness/conventions.md). Der

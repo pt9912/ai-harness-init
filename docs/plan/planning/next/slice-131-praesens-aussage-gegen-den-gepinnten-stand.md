@@ -159,8 +159,10 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [ ] `make gates` grün.
 - [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-/Reconciliation-Register: das Repo führt keines von beiden; das Item entfällt
-      mit diesem Grund und wird in §7 notiert, nicht still übergangen.
+- [ ] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
+      [`observations.md`](../observations.md) — *keine Beobachtung angefallen* ist ebenfalls eine
+      Antwort und wird in §7 notiert. Das Reconciliation-Register entfällt dauerhaft: dieses Repo
+      hat keinen Brownfield-Bootstrap.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die
       [welle-10](../welle-10-re-baseline.md)-Closure, nicht dieser Slice — das Repo fährt
@@ -233,7 +235,7 @@ dasteht.
   einem Sensor über Kommando-Ergebnis-Paare>
 - **Kein Gate sieht diese Klasse.** `docs-check` prüft Auflösbarkeit, nicht Wahrheit; die
   11 Nennungen tragen keinen Markdown-Link und lagen deshalb bei grünem Gate falsch da. —
-  **Ausgang:** <weiter offen: Beobachtung, sobald das Repo ein Register führt |
+  **Ausgang:** <weiter offen: als `BEO-<NNN>` im Register |
   eingetreten: slice-NNN, der einen Sensor baut>
 - **Die Regel aus DoD (3) hat keinen Eigentümer, solange die ADR-Frage offen ist.**
   [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) ist Accepted und damit
@@ -279,11 +281,10 @@ Refactor ohne neue Sub-Area-Berührung entfällt er ganz. Die beiden
 Sie ist nicht zu grob: der Slice fasst innerhalb von ihr nur lebende Plandateien an und
 lässt `adr/`, `carveouts/` und die Zeitdokumente ausdrücklich stehen (§3).
 
-**Vorgelagert — offene Beobachtungen sichten:** das Repo führt **kein**
-Beobachtungs-Register — eine `observations.md` unter `docs/plan/planning/` existiert nicht. Keine
-Treffer, und der Grund ist die fehlende Datei, nicht ein leeres Register; ob sie entsteht,
-hängt an [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md) und einer
-Dogfood-Frage daneben.
+**Vorgelagert — offene Beobachtungen sichten:** die Sichtung ist **offen** — sie ist vor der
+Bearbeitung gegen [`observations.md`](../observations.md) zu fahren, und ihr Ergebnis gehört ins
+Kriterium *Evidenz-/Diskrepanz-Risiko* unten. Sie steht hier nicht als Ergebnis, weil der Stand des
+Registers zwischen Schnitt und Bearbeitung wandert.
 
 Alle berührten Sub-Areas GF: `docs/` gehört zum Greenfield-Bestand; der Modus steht in der
 Modus-Deklaration von [`harness/conventions.md`](../../../../harness/conventions.md). Der
