@@ -5,8 +5,8 @@ liegt in `done/`, der Index führt sie unter *Aufgelöst*. Der Auflösungs-Trigg
 [`.d-check.yml`](../../../../.d-check.yml) trägt den Top-Level-`ignore-refs`-Eintrag, den
 [`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) autorisiert, die
 Befund-Zeile wird nicht mehr gemeldet, und die Dateizahl steht mit und ohne den Eintrag auf
-demselben Wert. Welcher Haken unten aus welchem Grund offen steht, sagt der Absatz nach der
-Checkliste.
+demselben Wert. Die Verifikations-Checkliste unten ist vollständig gehakt; der Absatz danach sagt,
+welcher Befund **nicht** zu diesem Carveout gehört und wo er entschieden ist.
 
 **Datum angelegt:** 2026-08-28. **Letzte Prüfung:** 2026-08-30 (Auflösung durch
 [slice-132](../../planning/in-progress/slice-132-adaptions-block-ohne-totes-ziel.md): Eintrag
@@ -152,27 +152,36 @@ Befund-Zeile → [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-
       `refs: [".harness/baseline/v3.5.2/regelwerk/modul-07-carveouts.md"]` liefern je
       `469 Datei(en) geprüft, 1 Befund(e)`), und die Ausnahme trägt
       [`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md).
-- [ ] `make gates` grün ohne Ausnahme.
+- [x] `make gates` grün ohne Ausnahme. Gefahren 2026-08-30, Exit **0** über dem Baum der
+      slice-132-Closure: `d-check: 473 Datei(en) geprüft, 0 Befund(e)`, `1..198` ohne `not ok`,
+      `baseline-verify: v5.12.0 OK — 51 Dateien`,
+      `comment-claims: 46 Datei(en) geprueft, 0 Befund(e)`. Der zweite Befund, der den Gate nach
+      dem Move dieser Datei rot hielt — die Adresse in
+      [`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) —, ist unter
+      [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) ausgenommen und nicht
+      repariert; das eingefrorene Artefakt bleibt unberührt.
 - [x] Datei wird nach `docs/plan/carveouts/done/` bewegt (reiner `git mv`) — vollzogen am
       2026-08-30: der Move als eigener Commit, der Link-Abgleich der Verweise als zweiter
       ([`AGENTS.md`](../../../../AGENTS.md) §3.3).
 - [x] Index-Zeile in [`README.md`](../README.md) von *Aktiv* nach *Aufgelöst* umgehängt, mit Datum und
       auflösendem Slice (2026-08-30). Ihr Link zeigt auf `done/`, wie die übrigen Verweise auf diese
       Datei — der Move und ihr Nachziehen liegen in getrennten Commits.
-- [ ] Folge-Slice geschlossen oder explizit dokumentiert.
+- [x] Folge-Slice geschlossen oder explizit dokumentiert —
+      [slice-132](../../planning/in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) trägt
+      seine Closure-Notiz mit drei Steering-Loop-Einträgen, und kein DoD-Punkt steht mehr offen
+      (`grep -c '^- \[ \]' docs/plan/planning/*/slice-132-adaptions-block-ohne-totes-ziel.md` →
+      **0**). Sein Zustand ist sein Verzeichnis.
 
-**Warum vier Haken stehen und zwei nicht.** Gehakt ist, was über **diesem** Baum wahr ist und je mit
-seinem Kommando belegt. Offen ist der Folge-Slice: die Closure von
-[slice-132](../../planning/in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) schreibt der
-**Planner**, nicht der Lauf, der die Config geschrieben hat (Baseline-Regelwerk
-`modul-08-agentenrollen.md`). Offen ist auch `make gates` — und der Grund liegt **nicht** in diesem
-Carveout: `make docs-check` meldet eine Zeile in
-[`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) selbst, deren
-Adresse auf den alten Ort dieser Datei zeigt. Der `git mv` oben hat sie gebrochen; heilen darf sie
-nur die Rolle, der eine *Accepted* ADR gehört ([`AGENTS.md`](../../../../AGENTS.md) §3.4 und §3.8).
-Der Gegenstand dieses Carveouts — der Beleg in
+**Alle sechs Haken stehen, und jeder ist über diesem Baum belegt.** Der Gegenstand dieses
+Carveouts — der Beleg in
 [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
-Punkt 2 — ist fort und kehrt nicht zurück.
+Punkt 2 — ist fort und kehrt nicht zurück. Der zweite Befund, der `make gates` nach dem Move
+dieser Datei rot hielt, gehört **nicht** zu diesem Carveout: er liegt in
+[`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) selbst, deren
+Adresse auf den alten Ort dieser Datei zeigt, und in einem *Accepted*-Artefakt darf ihn niemand
+heilen ([`AGENTS.md`](../../../../AGENTS.md) §3.4 und §3.8). Er trägt darum seine eigene
+Entscheidung — [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) nimmt die Referenz
+aus und lässt das Artefakt unberührt.
 ## Geschichte
 
 | Datum | Ereignis | Verweis |
