@@ -14,20 +14,30 @@ verschieden.
 jemand handeln kann),
 [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
 [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) (Festlegung 4 — *Adresse entfällt,
-Text bleibt* — ist der eine Kandidat; sie ist für **Zeitdokumente** geschrieben, und ob ein
-append-only-Eintrag in einer lebenden Datei einer ist, ist die offene Frage),
+Text bleibt* — ist für **Zeitdokumente** geschrieben; dass ein append-only-Eintrag in einer
+lebenden Datei keines ist, hält §1 fest),
+[`ADR-0023`](../../adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) (Festlegung 1 hält
+[`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) gegen den Zielstand neu),
 [`ADR-0017`](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) (ihre Feststellung,
 es gebe kein `links.ignore-refs`, ist gegen d-check `v0.62.0` gemessen und für den heutigen Pin
 **nachgemessen**, nicht übernommen — §1),
 [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
 (der Eintrag, der den Beleg trägt),
+[`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen)
+(der Eintrag, der ihn überholt und den Befund als dauerhaft ausweist),
+[`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
+(die Form, die den Rumpf des überholten Eintrags einfriert),
 [`AGENTS.md`](../../../../AGENTS.md) §3.8 (den Adaptions-Block schreibt der Architect — dieser
 Slice ist geschnitten, nicht ausgeführt vom Planner).
 
 **Berührte Spec-Stellen:** `—`. Der Slice bewegt ein Norm-Artefakt und eine Gate-Config-Frage,
 keine Spec-Stelle.
 
-**Verantwortlich:** —
+**Verantwortlich:** Architect (pt9912) — der Liefergegenstand ist Norm-Text im Adaptions-Block,
+und den schreibt nach [`AGENTS.md`](../../../../AGENTS.md) §3.8 der Architect. Das Feld weicht
+damit von der Default-Besetzung ab, die Baseline-Regelwerk `modul-05-planning-harness.md`
+§Lifecycle als State Machine nennt (*„den Rolleninhaber der Implementer-Rolle"*); Begründung und
+Commit-Zuschnitt über beide beteiligten Rollen stehen in §3.
 
 **Autor:** Planner. **Datum:** 2026-08-28.
 
@@ -43,7 +53,7 @@ ist einzeln lieferbar.
 **Ein Eintrag des Adaptions-Blocks darf einen Beleg tragen, der auf einen abgelösten
 Baseline-Stand datiert ist, ohne dass `make docs-check` dauerhaft rot bleibt.**
 
-### Der Befund: ein Link, der bewusst nicht gezogen wurde, und keiner der drei Auswege trägt
+### Der Befund: ein Link, der bewusst nicht gezogen wurde, und ein Ventil, das ihn stummschaltet
 
 [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
 Punkt 2 hält fest, dass die Baseline die dritte Rolle *Implementation* nennt, während dieses Repo
@@ -51,7 +61,7 @@ den Bezeichner `implementer` führt. **Der Satz ist nur über den abgelösten St
 an derselben Zeile beider Bäume:
 
 ```
-git show <Tausch-Commit>^:.harness/baseline/v3.5.2/regelwerk/modul-08-agentenrollen.md | grep 'participant I as'
+git show b902b60^:.harness/baseline/v3.5.2/regelwerk/modul-08-agentenrollen.md | grep 'participant I as'
 grep 'participant I as' .harness/baseline/v5.12.0/regelwerk/modul-08-agentenrollen.md
 ```
 
@@ -65,62 +75,169 @@ Eintrag steht zugleich unter der Append-only-Regel des gepinnten Stands
 
 **Die drei naheliegenden Auswege sind gemessen, nicht vermutet** — alle drei gegen den heutigen
 Pin `v0.65.0`, nicht gegen den Stand, unter dem
-[`ADR-0017`](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) entschieden hat:
+[`ADR-0017`](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) entschieden hat.
+**Der erste trägt**, und das ist gegen den Pin gemessen und mit zwei roten Gegenproben belegt:
 
 | Ausweg | Messung | Ergebnis |
 |---|---|---|
-| `links.ignore-refs` je Referenz | `--print-config` des gepinnten Digests | **existiert nicht** — `links` trägt genau eine Option (`resolve-from`); `ignore-refs` und `exempt-paths` stehen unter `codepaths` bzw. `ids`/`matrix`/`diagrams`/`versions` |
+| **Top-Level `ignore-refs`** mit `in`/`refs`/`keep` | Sonde in [`.d-check.yml`](../../../../.d-check.yml): `in: "harness/conventions.md"`, `refs: [".harness/baseline/v3.5.2/**"]`, ein `make docs-check`, Sonde zurückgenommen | **trägt** — `468 Datei(en) geprüft, 0 Befund(e)` gegen `468 … 1 Befund(e)` ohne Sonde. **Die Dateizahl bleibt 468**: das Ventil sitzt auf der Referenz-Achse, nicht auf der Datei-Achse. Beide Skopen sind an einer roten Gegenprobe belegt — mit `in: "AGENTS.md"` und mit `refs: [".harness/baseline/v9.9.9/**"]` kehrt der Befund je zurück |
 | Zeilen-Ventil `<!-- d-check:ignore -->` | Sonde in einer eigenen Plandatei: zwei gebrochene Links, einer mit Marker im echten HTML-Kommentar, ein `make docs-check`, Sonde zurückgenommen | **deckt `links` nicht** — beide Zeilen als `target-missing` gemeldet |
 | `scan.ignore` auf die Datei | Config-Kommentar in [`.d-check.yml`](../../../../.d-check.yml): *„prunt den Abstieg"* | wirkt **datei-weit** — nähme den ganzen Konventionsspeicher aus dem Prüfbereich, mit allen Einträgen und deren Links; das ist eine Senkung nach [`AGENTS.md`](../../../../AGENTS.md) §3.5 und tauscht einen sichtbaren Befund gegen einen blinden Fleck |
 
-### Zwei Kandidaten, und die Wahl ist eine Architektur-Entscheidung
+**Das Ventil ist ein Release älter als der Pin, und der Name, unter dem man es sucht, ist nicht
+der, unter dem es steht.** Der d-check-CHANGELOG führt es unter `[0.49.0] — 2026-07-18`:
+*„das bisher modul-lokale `codepaths.ignore-refs` wird zur **querschnittlichen**
+Top-Level-Fähigkeit, die `links`, `anchors` und `codepaths` gemeinsam honorieren"*, mit den
+Feldern `in` (Glob auf die Quelldatei), `refs` (Globs auf das aufgelöste Ziel) und `keep`
+(Ausnahmen, reihenfolge-unabhängig); der modul-lokale Schlüssel bleibt Alias
+(`grep -n 'ignore-refs' /Development/d-check/CHANGELOG.md`, lokaler Klon — `0.49.0` liegt vor dem
+Pin `v0.65.0`). **Wer unter `links:` nach `ignore-refs` sucht, findet nichts und schließt falsch:**
+`--print-config` gibt eine kommentierte Beispiel-Config aus, keine Schema-Liste — Abwesenheit
+darin ist keine Abwesenheit der Option. Dieselbe Klasse wie eine Trefferliste, die als
+Vollständigkeitsaussage gelesen wird.
+
+**Was das Ventil ist und was es nicht ist.** Es nimmt keine Datei aus dem Prüfbereich — die
+Dateizahl bleibt bei 468 —, sondern schaltet **benannte Referenzen aus benannten Quelldateien**
+stumm. Das ist trotzdem eine Lockerung auf der Referenz-Achse und damit eine Senkung nach
+[`AGENTS.md`](../../../../AGENTS.md) §3.5, die ihr eigenes Gefäß braucht; genau das hält der
+Config-Kommentar zum bestehenden `scan.ignore`-Eintrag für seinen Fall schon fest
+(*„Jeder weitere Eintrag ist eine neue Senkung nach AGENTS.md 3.5 und braucht seine eigene ADR"*).
+Der Unterschied zu `scan.ignore` ist die **Reichweite**: dort fielen sämtliche Verweise der Datei
+mit, hier fällt, was `in` **und** `refs` gemeinsam treffen — an zwei roten Gegenproben belegt.
+
+### Drei Kandidaten — einer ist seit dem 2026-08-28 verstellt, einer ist gemessen verfügbar
+
+**Die Entscheidung liegt bereits in einem Architect-Artefakt, und sie widerspricht dem Carveout.**
+[`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen)
+steht seit `d72e6dd` (2026-08-28 19:01) im Block,
+[`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) entstand mit `26aec2c`
+(19:20) — beide Zeitstempel liefert `git log --format='%h %ci' -1 <ref>`. Der Carveout führt den
+Befund als **temporär mit Auflösungs-Trigger**, der Eintrag als **dauerhaft**. Was der Eintrag
+sagt, trifft beide Kandidaten unten:
+
+- **Der Verweis ist eine datierte Aussage, kein Navigations-Zeiger.**
+  [`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen)
+  ordnet ihn wörtlich so ein und nimmt ihn damit aus
+  [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 2 heraus, deren *„der
+  Bump zieht ihn nach"* nur für Navigations-Zeiger gilt.
+- **Festlegung 4 bleibt bei den Zeitdokumenten.**
+  [`ADR-0023`](../../adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) Festlegung 1 hält
+  [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegungen 1 bis 4 gegen den
+  Zielstand `v5.12.0` neu und fasst die vierte als *„ein Verweis in einem Zeitdokument verliert
+  seine Adresse, nicht seinen Text"*. Ein Inline-Eintrag in einer lebenden Datei ist keines —
+  genau die Kollision, die
+  [`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen)
+  als *„unveränderliche Region in einer änderbaren Datei"* benennt und die
+  [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) nach demselben Eintrag nicht kennt.
+- **Der Rumpf ist eingefroren, und die Kopf-Marke steht schon.**
+  [`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
+  Setzung 1: *„der Rumpf bleibt wörtlich, kein Satz wird nachgezogen, keine Adresse getauscht"*.
+  [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+  trägt seit `c17a473` die Marke **ÜBERHOLT** auf Punkt 2 — und in genau diesem Punkt sitzt der
+  Befund.
+- **Die Folge steht dort ausgeschrieben:** *„Diese eine Zeile bleibt ein `target-missing`-Befund
+  von `make docs-check` — in einem lebenden Artefakt, dauerhaft, ohne dass jemand sie richtig
+  beheben kann."*
+
+**Damit ist (a) verstellt, und DoD (1) ist zur Hälfte beantwortet.** Offen ist nicht mehr,
+*welche* der zwei Festlegungen den Eintrag regiert — **keine von beiden**, solange der Block
+inline läuft —, sondern ob dieses Repo bei dieser Antwort bleibt und was daraus für
+[`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) folgt. Diese zweite Hälfte
+gehört weiter dem Architect: eine Feststellung dieser Art bindet nur in einem seiner Artefakte,
+und
+[`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen)
+entscheidet über
+[`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben),
+nicht über den Carveout.
+
+**Der Widerspruch zwischen den beiden löst sich mit (c) auf, statt entschieden zu werden — die
+zwei Sätze sprechen über verschiedene Gegenstände.**
+[`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen)
+sagt, der **Link** bleibe tot und dürfe nicht repariert werden; das bleibt unter (c) Wort für
+Wort wahr, denn das Ventil ändert an
+[`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+kein Zeichen. [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) sagt, der
+**Befund** sei temporär; das wird unter (c) wahr. Was in
+[`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen)
+nicht mehr trägt, ist der Halbsatz *„ohne dass jemand sie richtig beheben kann"* — er ist eine
+Aussage über den Werkzeugstand, gegen dieselbe Lücke gemessen wie die Tabellenzeile oben.
+**Rollenfrei wird DoD (2) dadurch nicht:** (c) ist eine Senkung nach
+[`AGENTS.md`](../../../../AGENTS.md) §3.5 und braucht eine ADR. Der Slice hängt weiter an einem
+Architect-Lauf — die Frage, an der er hängt, wechselt nur ihren Gegenstand, von *welche
+Festlegung regiert den Eintrag* zu *ist diese Senkung zulässig und wie ist sie geschnitten*.
+
+**(c) Das geschnittene Referenz-Ventil.** Ein Top-Level-`ignore-refs`-Eintrag in
+[`.d-check.yml`](../../../../.d-check.yml), auf Quelldatei **und** Ziel-Glob geschnitten, nimmt
+genau diese Referenz aus der Prüfung und lässt alle anderen Verweise derselben Datei stehen — die
+Messung samt beider roter Gegenproben steht oben. Er beantwortet die Frage von (a) und (b)
+**nicht**, er entkoppelt sie vom Gate: der Eintrag bleibt unverändert, der Umzug bleibt möglich,
+und der Befund hört auf, ein dauerhaft rotes Gate zu erzeugen. Ob er gesetzt wird, wie eng `refs`
+geschnitten ist und ob der Eintrag die `CO-005`-Kennung im Gate-Output trägt, wie
+`modul-07-carveouts.md` §Geltungs-Konfiguration es verlangt, **entscheidet dieser Plan nicht** —
+das ist die ADR aus DoD (1).
 
 **(a) Die Adresse entfällt, der Text bleibt.** Der Markdown-Link wird zur reinen Nennung — genau
 die Form, die [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 4 vorsieht:
 *„der sichtbare Text bleibt Zeichen für Zeichen stehen, die tag-gepinnte Adresse entfällt … Kein
-Satz ändert sich, keine Aussage wird nachgezogen."* Das wäre eine Zeile. **Die Frage, die dabei
-offen ist, ist keine Formalie:** Festlegung 4 spricht von **Zeitdokumenten**, und derselbe ADR
-erlaubt in Festlegung 2 den lokalen Pfad in `harness/conventions.md` ausdrücklich als
+Satz ändert sich, keine Aussage wird nachgezogen."* Das wäre eine Zeile. **Die Zuordnung ist
+dabei keine Formalie:** Festlegung 4 spricht von **Zeitdokumenten**, und derselbe ADR erlaubt in
+Festlegung 2 den lokalen Pfad in `harness/conventions.md` ausdrücklich als
 **Navigations-Zeiger** eines *lebenden* Artefakts. Ein append-only-Eintrag ist beides zugleich:
 er steht in einer lebenden Datei und ist selbst eingefroren. Welche der zwei Festlegungen ihn
-regiert, sagt die ADR nicht.
+regiert, sagt die ADR nicht — der Adaptions-Block sagt es: **keine**. Wer (a) trotzdem fährt, hebt
+eine Setzung auf; das geht nach
+[`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
+Setzung 1 nicht per Edit am Eintrag, sondern nur über einen Nachfolge-Eintrag.
 
-**(b) Die Verzeichnis-Form.** Der gepinnte Stand nennt sie **Default** — *„Ein Eintrag je Datei …
-ist der Auflösungs-Trigger eingetreten, wandert die Datei nach `conventions/done/`"* —, und dort
+**(b) Die Verzeichnis-Form.** Der adoptierte Stand `v5.12.0` nennt sie **Default** — *„Ein Eintrag
+je Datei … ist der Auflösungs-Trigger eingetreten, wandert die Datei nach `conventions/done/`"* —, und dort
 löst sich die Frage von selbst: der aufgelöste Eintrag liegt in einem `done/`-Verzeichnis und ist
 damit **konstruktiv** ein Zeitdokument. Die Vorlage dafür liegt seit dem Tausch vendored
 (`.harness/baseline/v5.12.0/templates/harness/conventions/MR-NNN-titel.template.md`), der Umzug
 wäre also regelkonform per `cp`
 ([`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)).
 
-**Was für (b) spricht, ist gemessen; was gegen (b) spricht, auch.** Der Konventionsspeicher misst
-**1 836** Zeilen bei **31** Einträgen (`wc -l harness/conventions.md`,
+**Was für (b) spricht, ist gemessen.** Der Konventionsspeicher misst am 2026-08-30 **2 125**
+Zeilen bei **34** Einträgen (`wc -l harness/conventions.md`,
 `grep -c '^### MR-' harness/conventions.md`); das Nachbar-Repo d-check fährt die Verzeichnis-Form
-mit **30** Einträgen und einem Index von **182** Zeilen
+mit **32** Einträgen und einem Index von **184** Zeilen
 (`wc -l /Development/d-check/harness/conventions.md`,
 `ls /Development/d-check/harness/conventions/*.md | wc -l`, lokaler Klon). **Alle vier Zahlen
 wandern mit ihrem Bestand und sind keine Erwartungswerte**
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2). Dagegen steht die Reichweite: `git grep -oE 'conventions\.md#mr-[a-z0-9-]+' -- '*.md'`
-zählt am 2026-08-28 **1 608** Verweise, davon **565** in lebenden Artefakten (dieselbe Suche mit
+Setzung 2).
+
+**Die Reichweite ist gemessen — und sie ist nicht der Preis, für den sie gehalten wird.**
+`git grep -oE 'conventions\.md#mr-[a-z0-9-]+' -- '*.md' | wc -l` zählt am 2026-08-30 **1 797**
+Verweise, davon **632** in lebenden Artefakten (dieselbe Suche mit
 `':!docs/reviews/**' ':!docs/plan/planning/done/**' ':!.harness/baseline/**'`) und **0** außerhalb
 von Markdown (mit `-- ':!*.md'`). **Diese zwei wandern schneller als die vier oben, und das ist
-gemessen statt vermutet:** innerhalb eines einzigen Planner-Laufs am 2026-08-28 stand hier
-nacheinander 1 585, 1 602, 1 607 und 1 608 — jeder geschnittene Slice, jeder Review-Report und jeder
-parallele Lauf einer anderen Rolle bewegt sie, und `git grep` liest den Arbeitsbaum. Wer sie
-zitiert, zitiert einen Zeitpunkt; wer sie prüft, fährt das Kommando neu
+gemessen statt vermutet:** innerhalb eines einzigen Planner-Laufs am 2026-08-28 lieferte dasselbe
+Kommando nacheinander 1 585, 1 602, 1 607 und 1 608 — jeder geschnittene Slice, jeder
+Review-Report und jeder parallele Lauf einer anderen Rolle bewegt sie, und `git grep` liest den
+Arbeitsbaum. Wer sie zitiert, zitiert einen Zeitpunkt; wer sie prüft, fährt das Kommando neu
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 1 verlangt die Messung über **diesem** Baum, Setzung 2 verbietet, sie als Erwartungswert
-zu lesen). [welle-10](../welle-10-re-baseline.md) §6 stellt den Umzug
-deshalb ausdrücklich **out-of-scope**.
+zu lesen).
+
+**Auf einen neuen Pfad zöge der Umzug sie nicht.** Alle Treffer der Suche oben tragen die Form
+`conventions.md#mr-<slug>` — Datei **plus Anker** —, und in der Verzeichnis-Form bleibt die Datei
+als **Index** stehen. Das Nachbar-Repo hält seine Index-Zeilen genau dafür adressierbar:
+`grep -c '<a id=' /Development/d-check/harness/conventions.md` → **55** explizite HTML-Anker,
+je Zeile der alte lange Slug **und** die Kurzform `mr-NNN`. Dass der gepinnte d-check ein solches
+`<a id="…"></a>` als Link-Ziel auflöst, ist unten an einer Sonde gemessen. Was der Umzug kostet,
+ist damit eine Index-Zeile je Eintrag, nicht ein Verweis-Nachzug.
+[welle-10](../welle-10-re-baseline.md) §6 stellt ihn trotzdem **out-of-scope**, und zwar mit
+genau diesem Preis als Begründung — **die Messung ist ein Anlass, jene Grenze neu zu bewerten;
+das ist ein Schnitt und kein Vollzug.**
 
 **Eine Vorfrage, die bisher als ungeprüft galt, ist beantwortet.** Ob der Pin einen expliziten
 HTML-Anker als Link-Ziel auflöst, hat
-[slice-114](slice-114-jede-aussage-hat-einen-abschnitt.md) §1 als offen benannt. Sonde in einer
-eigenen Plandatei, danach zurückgenommen: ein Link auf ein `<a id="…"></a>` mit abweichendem
+[slice-114](../open/slice-114-jede-aussage-hat-einen-abschnitt.md) §1 als offen benannt. Sonde in
+einer eigenen Plandatei, danach zurückgenommen: ein Link auf ein `<a id="…"></a>` mit abweichendem
 Überschriften-Text meldet **nichts**, ein erfundener Anker in derselben Datei meldet
 `anchor-missing`. Der Anker-Mechanismus, mit dem das Nachbar-Repo seine Index-Zeilen adressierbar
-hält, trägt also auch hier — die 1 572 Verweise sind kein Ausschlussgrund für (b), sondern eine
+hält, trägt also auch hier — die Verweise oben sind kein Ausschlussgrund für (b), sondern eine
 Auflage an seine Ausführung.
 
 ### Was dieser Slice nicht ist
@@ -142,20 +259,45 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [ ] **(1) Die Frage ist entschieden, und die Entscheidung liegt in einem Artefakt ihrer
       schreibenden Rolle.** Regiert Festlegung 2 oder Festlegung 4 von
       [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) einen append-only-Eintrag in
-      einer lebenden Datei? Weil jene ADR *Accepted* und damit unveränderlich ist
-      ([`AGENTS.md`](../../../../AGENTS.md) §3.4), ist der Ort eine **neue** ADR oder ein
-      Adaptions-Eintrag — beides Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8). **Ein
-      Ergebnis, das nur in diesem Plan steht, erfüllt den Punkt nicht.**
+      einer lebenden Datei?
+      [`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen)
+      antwortet **keine von beiden** (§1). Der Punkt ist damit nicht erledigt, sondern verlegt: zu
+      erreichen ist, dass diese Antwort entweder als die geltende ausgewiesen wird — und dann
+      [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) über (c) aufgelöst
+      wird statt über den Eintrag — oder dass ein Nachfolge-Eintrag bzw. eine neue ADR anders
+      entscheidet. **Fällt die Wahl auf (c), gehört in dasselbe Artefakt die Senkung**: ein
+      `ignore-refs`-Eintrag lockert die Prüfung auf der Referenz-Achse und braucht nach
+      [`AGENTS.md`](../../../../AGENTS.md) §3.5 eine ADR, samt Geltungsbereich und
+      Auflösungs-Trigger. Weil
+      [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) *Accepted* und damit
+      unveränderlich ist ([`AGENTS.md`](../../../../AGENTS.md) §3.4) und der Block append-only
+      läuft
+      ([`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
+      Setzung 1), ist der Ort in beiden Fällen ein **neues** Artefakt — beides Architect
+      ([`AGENTS.md`](../../../../AGENTS.md) §3.8). **Ein Ergebnis, das nur in diesem Plan steht,
+      erfüllt den Punkt nicht.**
 - [ ] **(2) Der Befund ist fort, ohne dass der Prüfbereich geschrumpft ist.** `make docs-check`
-      meldet die Zeile nicht mehr, und `scan.ignore` in
-      [`.d-check.yml`](../../../../.d-check.yml) trägt **keinen** neuen Eintrag — gegengeprobt mit
-      `git diff` auf die Config. Ein Grün, das durch Ausblenden des Konventionsspeichers entstünde,
-      verfehlt diesen Punkt ausdrücklich. **Rot färbt genau ein Kommando:** `make docs-check`.
-- [ ] **(3) Der Fall ist als Klasse behandelt, nicht als Einzelstück.** Jeder weitere Eintrag des
-      Blocks, der einen Beleg auf einen abgelösten Stand datiert, folgt derselben Regel; die Menge
-      wird beim Lauf erhoben (`git grep -c 'baseline/v3\.5\.2/' harness/conventions.md`), nicht hier
-      behauptet ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-      Setzung 2). Trifft die Regel heute nur einen Eintrag, steht **das** dabei.
+      meldet die Zeile nicht mehr, **und die Dateizahl seiner Ausgabe ist dieselbe wie die eines
+      zweiten Laufs ohne den neuen Config-Eintrag** — zwei Läufe, ein Vergleich, kein gemerkter
+      Wert. Das ist das Maß, nicht ein leerer Config-Diff: ein Referenz-Ventil ändert die Config
+      und lässt den Prüfbereich stehen, `scan.ignore` täte das Gegenteil. Gegengeprobt wird darum
+      zweifach: `scan.ignore` in [`.d-check.yml`](../../../../.d-check.yml) trägt **keinen** neuen
+      Eintrag (`git diff` auf die Config), und ein etwaiger `ignore-refs`-Eintrag trägt ein `in`
+      **und** ein `refs`, die beide enger sind als die Datei — je eine rote Gegenprobe wie in §1.
+      Ein Grün, das durch Ausblenden des Konventionsspeichers entstünde, verfehlt diesen Punkt
+      ausdrücklich. **Rot färbt genau ein Kommando:** `make docs-check`.
+- [ ] **(3) Der Fall ist als Klasse behandelt, nicht als Einzelstück — und die Klasse wird mit
+      dem Kommando erhoben, das sie trifft.** Es sind **zwei** Mengen, nicht eine: die
+      **Nennungen** des abgelösten Baums (`grep -c 'v3\.5\.2' harness/conventions.md` → am
+      2026-08-30 **14**) und davon die **Markdown-Links** in ihn
+      (`grep -cE '\]\([^)]*v3\.5\.2[^)]*\)' harness/conventions.md` → **1**). Nur die zweite färbt
+      `docs-check` rot: `codepaths.roots` in [`.d-check.yml`](../../../../.d-check.yml) sind
+      `[spec, docs, harness]`, `.harness/…` liegt außerhalb, und der Lauf zeigt es — `468
+      Datei(en) geprüft, 1 Befund(e)` bei 14 Nennungen. Beide Zahlen werden beim Lauf neu erhoben,
+      nicht von hier übernommen
+      ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+      Setzung 2). Trifft die zweite Menge genau einen Eintrag, steht **das** dabei — dann ist die
+      Klassen-Aussage eine über den Mechanismus und nicht über die Zahl.
 - [ ] `make gates` grün — **ohne** die Ausnahme aus
       [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md); der Carveout ist damit
       aufgelöst und seine Datei per `git mv` in `carveouts/done/`, die Index-Zeile umgehängt.
@@ -180,8 +322,28 @@ Aussagen-Berührung steht hier gar nicht.
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update **durch den Architect** | der Beleg in [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben) Punkt 2; Umfang hängt an der Entscheidung aus DoD (1). Der Planner schneidet, er schreibt nicht ([`AGENTS.md`](../../../../AGENTS.md) §3.8) |
 | `docs/plan/adr/` | ggf. neu | eine ADR, falls die Entscheidung aus DoD (1) eine ist; [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) selbst bleibt byte-gleich ([`AGENTS.md`](../../../../AGENTS.md) §3.4) |
 | [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) | **auflösen** (`git mv` nach `done/`) | die Ausnahme fällt mit dem Befund |
-| [`.d-check.yml`](../../../../.d-check.yml) | **unverändert** | kein `scan.ignore`-Eintrag; das ist DoD (2) und keine Nebenbedingung |
-| Verzeichnis-Form des Adaptions-Blocks (ein Eintrag je Datei) | **nur bei Ausgang (b)**, und dann als eigener Schnitt | [welle-10](../welle-10-re-baseline.md) §6 stellt den Umzug out-of-scope; er zöge **1 572** Verweise auf einen neuen Pfad und ist keine Fracht dieses Slice |
+| [`.d-check.yml`](../../../../.d-check.yml) | **kein `scan.ignore`-Eintrag**; bei Ausgang (c) ein Top-Level-`ignore-refs`-Eintrag | die Datei-Achse bleibt unberührt — das ist DoD (2) und keine Nebenbedingung. Die Referenz-Achse zu lockern ist eine Senkung nach [`AGENTS.md`](../../../../AGENTS.md) §3.5 und wandert mit ihrer ADR in Commit 1, nicht als Config-Beifang in einen anderen |
+| Verzeichnis-Form des Adaptions-Blocks (ein Eintrag je Datei) | **nur bei Ausgang (b)**, und dann als eigener Schnitt | [welle-10](../welle-10-re-baseline.md) §6 stellt den Umzug out-of-scope. Sein dort genannter Preis — jede `MR-`Kennung auf einen neuen Pfad — ist in §1 gegen das Nachbar-Repo gemessen und trifft nicht zu: die Datei bleibt als Index, der Anker bleibt. Der Umfang bleibt und ist keine Fracht dieses Slice |
+
+**Der Commit-Zuschnitt folgt aus zwei schreibenden Rollen, nicht aus einer Vorliebe.**
+[`AGENTS.md`](../../../../AGENTS.md) §3.8 verlangt für die Änderung am Adaptions-Block einen
+**eigenen Commit, der ausschließlich Artefakte derselben schreibenden Rolle berührt** und die
+Rolle in seiner Message nennt. Den `git mv` und die Config-Updates weist Baseline-Regelwerk
+`modul-07-carveouts.md` §Carveout-Audit-Slice dagegen dem **Implementer** zu und nennt die
+Verteilung über drei Rollen *„Absicht, kein Defekt"*. Daraus vier Commits in dieser Reihenfolge:
+
+1. **Architect — Inhalt:** [`harness/conventions.md`](../../../../harness/conventions.md), dazu
+   eine neue ADR und deren Zeile im ADR-Index, falls DoD (1) eine erzeugt — der Index gehört
+   derselben Rolle
+   ([`ADR-0024`](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)).
+   Sonst nichts.
+2. **Implementer — reiner `git mv`:**
+   [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) nach
+   `docs/plan/carveouts/done/` ([`AGENTS.md`](../../../../AGENTS.md) §3.3).
+3. **Implementer — Inhalt:** die Index-Zeile in `docs/plan/carveouts/README.md` von *Aktiv* auf
+   *Aufgelöst*, dazu die eingehenden Verweise, die der Move bricht.
+4. **Planner — Closure:** DoD-Haken und §7 in diesem Plan, danach der `git mv` nach `done/` als
+   eigener Commit.
 
 ## 4. Trigger
 
@@ -198,8 +360,10 @@ Bedingung aus DoD (1).
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn die Entscheidung auf **(b)** fällt.
   Der Umzug ist dann ein eigener Schnitt mit eigenem Trigger
   ([welle-10](../welle-10-re-baseline.md) §6), und dieser Slice zerfällt in *Entscheidung* und
-  *Vollzug*. Die Bedingung ist vorab benannt, weil sie der wahrscheinlichere der zwei Ausgänge ist,
-  sobald die Klasse aus DoD (3) mehr als einen Eintrag trifft.
+  *Vollzug*. Die Bedingung ist vorab benannt und bleibt ein möglicher Ausgang; eine Aussage
+  darüber, welcher der drei Kandidaten der *einzige* Weg zu DoD (2) sei, steht hier nicht — sie
+  wäre eine Vollständigkeitsaussage über eine Menge, die §1 gerade um einen Kandidaten korrigiert
+  hat.
 - `in-progress` → `open` (blockiert — Carveout?): wenn die Entscheidung aus DoD (1) nicht fällt,
   weil sie eine Frage an eine höher rangierte Quelle aufwirft. Dann bleibt
   [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) bestehen und bekommt eine
@@ -212,8 +376,14 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Closure- und Lerneintrag-Regeln — zwei beobachtbare Kriterien **und** ein
 Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
-Zwei beobachtbare Kriterien: **`make docs-check` meldet die Zeile nicht mehr**, und **`git diff`
-auf [`.d-check.yml`](../../../../.d-check.yml) ist leer** — Grün ohne Schrumpfen des Prüfbereichs.
+Zwei beobachtbare Kriterien aus **zwei** Läufen von `make docs-check` — einem mit dem
+Config-Stand des Abschlusses, einem mit dem Stand davor: **der erste meldet die Zeile nicht
+mehr**, und **beide melden dieselbe Dateizahl** — Grün ohne Schrumpfen des Prüfbereichs. Welche
+Zahl das ist, sagt der Lauf; verglichen werden die zwei Ausgaben, nicht eine gemerkte Zahl.
+Ein leerer Config-Diff ist als zweites Kriterium untauglich: das Referenz-Ventil aus
+§1 ändert die Config und lässt den Prüfbereich stehen, `scan.ignore` wäre eine ähnlich kurze
+Config-Zeile und nähme die Datei samt allen ihren Verweisen aus der Prüfung. Gemessen wird darum
+das, was gemeint ist.
 Dazu die Closure-Notiz mit Steering-Loop-Lerneintrag und je Risiko aus §6 genau ein Ausgang;
 [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) liegt danach in
 `carveouts/done/`.
@@ -226,25 +396,52 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
 dasteht.
 
-- **Der billige Ausweg ist derselbe, den DoD (2) verbietet, und er wird unter Zeitdruck
-  attraktiv.** Ein `scan.ignore`-Eintrag macht den Gate in einer Zeile grün und nimmt dafür 31
-  Einträge samt ihren Links aus dem Prüfbereich. — **Ausgang:** <entfallen: DoD (2) ist erfüllt und
-  der Config-Diff leer | eingetreten: die Senkung ist eine eigene Entscheidung nach
-  [`AGENTS.md`](../../../../AGENTS.md) §3.5 und braucht eine ADR, nicht diesen Slice>
+- **Zwei Config-Ventile sehen gleich billig aus und sind es nicht — die Verwechslung ist das
+  Risiko.** Ein `scan.ignore`-Eintrag macht den Gate in einer Zeile grün und nimmt dafür jeden
+  Eintrag des Blocks samt seinen Links aus dem Prüfbereich
+  (`grep -c '^### MR-' harness/conventions.md` → am 2026-08-30 **34**); das ist der Ausweg, den
+  DoD (2) ausdrücklich verbietet. Ein Top-Level-`ignore-refs`-Eintrag ist **eine andere Sache**:
+  er lässt die Datei im Prüfbereich — die Dateizahl bewegt sich gegenüber einem Lauf ohne ihn
+  nicht — und schaltet nur, was `in` und `refs`
+  gemeinsam treffen. **Beide sind Senkungen nach [`AGENTS.md`](../../../../AGENTS.md) §3.5** und
+  brauchen eine ADR — sie unterscheiden sich in der **Reichweite**, nicht im Gefäß. Wer das
+  zusammenwirft, verbietet entweder zu viel oder erlaubt zu viel. — **Ausgang:** <entfallen:
+  DoD (2) ist erfüllt, `scan.ignore` ist unverändert, und ein etwaiger `ignore-refs`-Eintrag
+  trägt seine ADR und beide roten Gegenproben | eingetreten: der Gate wurde datei-weit
+  stummgeschaltet, und das ist eine eigene Entscheidung, nicht diese>
 - **Die Klasse kann größer sein als ihr heutiger Vertreter.** Trifft die Regel aus DoD (3) mehrere
   Einträge, ist der punktuelle Ausgang (a) nicht mehr angemessen — Modul 7 verweist bei
   **Häufung** ausdrücklich weg vom Einzelfall. — **Ausgang:** <eingetreten: Rückführung nach §4,
   Umzug als eigener Schnitt | entfallen: die Erhebung aus DoD (3) findet genau einen Eintrag>
-- **[`ADR-0017`](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) hat für denselben Gegenstand schon einmal gegen einen überholten Werkzeugstand
-  gemessen.** Ihre Feststellung *„es gibt kein `links.ignore-refs`"* stammt von d-check `v0.62.0`;
-  der Pin steht seit slice-122 auf `v0.65.0`. Die Nachmessung in §1 hält sie — aber die Klasse
-  *„Aussage über ein Werkzeug altert mit dem Pin"* bleibt und trifft jede künftige Runde. —
-  **Ausgang:** <weiter offen: Beobachtung, sobald das Repo ein Register führt | eingetreten:
-  slice-NNN, der Werkzeug-Aussagen an den Pin koppelt>
+- **Die Klasse *„Aussage über ein Werkzeug ist falsch"* ist eingetreten, und ihre Ursache ist
+  nicht das Altern.** Die Feststellung *„es gibt kein `links.ignore-refs`"* sucht den
+  **modul-lokalen** Schlüssel und schließt aus seiner Abwesenheit im `--print-config` auf die
+  fehlende **Fähigkeit**; die Fähigkeit steht seit `[0.49.0]` unter einem Top-Level-Schlüssel
+  (§1). Sie trägt
+  [`ADR-0017`](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md), die gegen
+  `v0.62.0` gemessen hat, und den `scan.ignore`-Kommentar in
+  [`.d-check.yml`](../../../../.d-check.yml) (*„der referenz-weite Knopf existiert nicht"*).
+  **`0.49.0` ist eine kleinere Versionsnummer als `0.62.0`** — das ist Arithmetik über die
+  CHANGELOG-Überschrift, **keine Messung** an jener ADR; ob ihre Folgerung dadurch fällt, ist hier
+  nicht geprüft und gehört in einen eigenen Schnitt. — **Ausgang:** <eingetreten: §1 trägt die
+  korrigierte Messung, der Fremd-Bestand geht als Posten an die Roadmap | weiter offen: die
+  Kopplung Werkzeug-Aussage ↔ Pin hat keinen Sensor>
 - **Der Slice hängt an einer Rolle, nicht an einem Kommando.** Ohne Architect-Lauf ist DoD (1)
   nicht erreichbar, und ein Planner- oder Implementer-Lauf, der ihn trotzdem „erledigt", verstößt
   gegen [`AGENTS.md`](../../../../AGENTS.md) §3.8. — **Ausgang:** <entfallen: die Entscheidung ist
   in einem Architect-Commit sichtbar (`git log --stat`) | eingetreten: Rückführung nach §4>
+- **[`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) und
+  [`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen)
+  sagen Gegenteiliges über denselben Befund, und der Carveout beziffert seinen Geltungsbereich mit
+  sagen Gegenteiliges über denselben Befund.** Der Carveout führt ihn als temporär, der Eintrag
+  als dauerhaft. §1 misst, dass die zwei Sätze verschiedene Gegenstände haben — **Link** gegen
+  **Befund** — und mit (c) beide wahr sind; damit ist der Widerspruch aufgelöst und nicht
+  entschieden. Was bleibt, ist der Halbsatz *„ohne dass jemand sie richtig beheben kann"* in
+  einem Architect-Artefakt, das append-only läuft. Der Carveout ist ein Planner-Artefakt
+  (Baseline-Regelwerk `modul-07-carveouts.md` §Carveout-Audit-Slice) und wird nicht vom
+  Architect-Lauf mitgezogen. — **Ausgang:** <entfallen: der auflösende Lauf hängt beim Umzug nach
+  `carveouts/done/` alles um | eingetreten: der Halbsatz braucht einen Nachfolge-Eintrag, und der
+  gehört dem Architect>
 
 ## 7. Closure-Notiz
 
