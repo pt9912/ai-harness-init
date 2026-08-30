@@ -109,7 +109,7 @@ zu vermuten:
   desselben Auftraggebers; eine fehlende Modul-Fähigkeit ist dort eine **Anforderung**, keine
   Grenze. Wer diesen Ausweg verwirft, verwirft ihn mit einer Sonde am gepinnten Werkzeug — nicht
   mit einem `--print-config`, das eine Beispiel-Config druckt und keine Schema-Liste
-  ([slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) §7, Steering-Loop-Eintrag 1).
+  ([slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md) §7, Steering-Loop-Eintrag 1).
 
 ### Was dieser Slice nicht ist
 
@@ -228,7 +228,7 @@ dasteht.
 - **Die Werkzeug-Frage wird mit einer Trefferliste beantwortet statt mit einer Sonde.** Ob
   d-checks `matrix`-Modul *Status der Quelle* × *Ziel-Glob* kann, entscheidet eine Sonde am
   gepinnten Werkzeug — nicht ein `--print-config` und nicht ein `grep` über eine Doku. Dieselbe
-  Klasse hat in [slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) einen Carveout,
+  Klasse hat in [slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md) einen Carveout,
   eine ADR und einen datei-weiten Ausschluss getragen, die alle enger hätten ausfallen können. —
   **Ausgang:** <entfallen: die Wahl zwischen den zwei Orten steht mit ihrer Messung in der
   Closure-Notiz | eingetreten: die Entscheidung wird mit einer Sonde wiederholt>

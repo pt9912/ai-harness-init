@@ -9,7 +9,7 @@ demselben Wert. Die Verifikations-Checkliste unten ist vollständig gehakt; der 
 welcher Befund **nicht** zu diesem Carveout gehört und wo er entschieden ist.
 
 **Datum angelegt:** 2026-08-28. **Letzte Prüfung:** 2026-08-30 (Auflösung durch
-[slice-132](../../planning/in-progress/slice-132-adaptions-block-ohne-totes-ziel.md): Eintrag
+[slice-132](../../planning/done/slice-132-adaptions-block-ohne-totes-ziel.md): Eintrag
 gesetzt, Restbreite bewacht, Befund fort — s. §Geschichte). **Vorherige Prüfung:** 2026-08-30
 (derselbe Tag, Werkzeug-Aussage korrigiert).
 
@@ -29,7 +29,7 @@ unter `.harness/` liegen außerhalb von `codepaths.roots` (`[spec, docs, harness
 still — `make docs-check` meldet **1** Befund, während die zweite Zählung am 2026-08-30 **14**
 liefert.
 
-**Folge-Slice:** [slice-132](../../planning/in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) — er
+**Folge-Slice:** [slice-132](../../planning/done/slice-132-adaptions-block-ohne-totes-ziel.md) — er
 trägt die Entscheidung an ihre schreibende Rolle und löst diesen Carveout mit seinem Abschluss auf.
 
 Regeln: Baseline-Regelwerk `modul-07-carveouts.md` §Ziel-Form: Carveout — ein
@@ -90,7 +90,7 @@ der Trichter ihn richtig: Übernahme im nächsten Slice, oder Carveout mit Aufl�
 eine BF-Markierung setzte *Code führt, Doku folgt* und trifft nicht zu. *Temporalität:* der
 Trigger hängt an genau einer Entscheidung mit benannter schreibender Rolle, nicht an einem
 unabsehbaren Umbau — also Carveout und keine ADR. **Sollte die Klasse wachsen**, kippt die erste
-Antwort; das führt [slice-132](../../planning/in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) §6
+Antwort; das führt [slice-132](../../planning/done/slice-132-adaptions-block-ohne-totes-ziel.md) §6
 als Risiko mit Ausgang.
 
 **Warum die Ausnahme und nicht das schnelle Grün.** Der Befund ist **richtig**: er meldet, dass
@@ -103,7 +103,7 @@ Klasse überhaupt sichtbar macht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-07-carveouts.md`
 §Ziel-Form: Carveout — konkret und prüfbar. „Wenn Zeit ist" ist kein Trigger.
 
-**[slice-132](../../planning/in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) liegt in `done/`** —
+**[slice-132](../../planning/done/slice-132-adaptions-block-ohne-totes-ziel.md) liegt in `done/`** —
 und damit gilt beides zugleich, geprüft mit **zwei** Läufen von `make docs-check` — einem mit dem
 Config-Stand nach der Auflösung, einem mit dem davor: die Zeile wird nicht mehr gemeldet, **und**
 beide Läufe melden dieselbe Dateizahl. Prüfbar ohne Rückfrage, ohne eine gemerkte Zahl.
@@ -167,7 +167,7 @@ Befund-Zeile → [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-
       auflösendem Slice (2026-08-30). Ihr Link zeigt auf `done/`, wie die übrigen Verweise auf diese
       Datei — der Move und ihr Nachziehen liegen in getrennten Commits.
 - [x] Folge-Slice geschlossen oder explizit dokumentiert —
-      [slice-132](../../planning/in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) trägt
+      [slice-132](../../planning/done/slice-132-adaptions-block-ohne-totes-ziel.md) trägt
       seine Closure-Notiz mit drei Steering-Loop-Einträgen, und kein DoD-Punkt steht mehr offen
       (`grep -c '^- \[ \]' docs/plan/planning/*/slice-132-adaptions-block-ohne-totes-ziel.md` →
       **0**). Sein Zustand ist sein Verzeichnis.
@@ -187,5 +187,5 @@ aus und lässt das Artefakt unberührt.
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-08-28 | Angelegt — der Baum-Tausch macht einen datierten Beleg im Adaptions-Block unauflösbar, und keiner der drei Werkzeug-Auswege trägt | [slice-081](../../planning/done/slice-081-baum-tauschen-pin-ziehen.md) |
-| 2026-08-30 | **Aufgelöst.** [`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) autorisiert das geschnittene Referenz-Ventil, [`.d-check.yml`](../../../../.d-check.yml) trägt es (`in` und `refs` je auf einen Dateinamen), und `test/ignore-refs-restbreite.bats` bewacht seine Restbreite in `make gates`. Zwei Läufe über demselben Baum belegen den Trigger: `469 Datei(en) geprüft, 0 Befund(e)` mit Eintrag gegen `469 Datei(en) geprüft, 1 Befund(e)` ohne — dieselbe Dateizahl, kein geschrumpfter Prüfbereich | [slice-132](../../planning/in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) |
-| 2026-08-30 | **Vollzogen**: `git mv` nach `done/` als eigener Commit, der Link-Abgleich der 77 gebrochenen Verweise als zweiter, Index-Zeile unter *Aufgelöst*. Status-Kopf, Checkliste und Index-Zelle sagen seither dasselbe wie der Ort | [slice-132](../../planning/in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) |
+| 2026-08-30 | **Aufgelöst.** [`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) autorisiert das geschnittene Referenz-Ventil, [`.d-check.yml`](../../../../.d-check.yml) trägt es (`in` und `refs` je auf einen Dateinamen), und `test/ignore-refs-restbreite.bats` bewacht seine Restbreite in `make gates`. Zwei Läufe über demselben Baum belegen den Trigger: `469 Datei(en) geprüft, 0 Befund(e)` mit Eintrag gegen `469 Datei(en) geprüft, 1 Befund(e)` ohne — dieselbe Dateizahl, kein geschrumpfter Prüfbereich | [slice-132](../../planning/done/slice-132-adaptions-block-ohne-totes-ziel.md) |
+| 2026-08-30 | **Vollzogen**: `git mv` nach `done/` als eigener Commit, der Link-Abgleich der 77 gebrochenen Verweise als zweiter, Index-Zeile unter *Aufgelöst*. Status-Kopf, Checkliste und Index-Zelle sagen seither dasselbe wie der Ort | [slice-132](../../planning/done/slice-132-adaptions-block-ohne-totes-ziel.md) |

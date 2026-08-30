@@ -260,7 +260,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt
       Gate-Lauf ist heute rot, an genau einem Befund, den dieser Slice nicht verursacht und nicht
       behebt (§1 Messung 2, getragen von
       [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md), aufzulösen von
-      [slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md)). Der Punkt bedeutet hier: **kein
+      [slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md)). Der Punkt bedeutet hier: **kein
       Befund kommt hinzu und keiner fällt weg**, gemessen gegen §1 Messung 2. Steht die Reihenfolge
       anders — 132 zuerst —, ist er unverändert `0 Befund(e)`.
 - [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist. Berührt ist keiner: der Pin ist eine
@@ -309,7 +309,7 @@ WIP-Limit ist eine harte Größe und kein Vorschlag (Baseline-Regelwerk
 Vorbedingung hat dieser Slice **nicht**: die Auslöse-Bedingung ist heute erfüllt
 (`make freshness-dcheck`, §1), und keine der sechs Messungen aus §1 wartet auf ein fremdes
 Artefakt. Insbesondere wartet er **nicht** auf
-[slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) — dessen Befund ist unter beiden Digests
+[slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md) — dessen Befund ist unter beiden Digests
 derselbe (§1 Messung 2), die zwei Slices berühren einander also nur in der Ausgabe eines Laufs,
 nicht in ihrem Gegenstand.
 

@@ -20,7 +20,7 @@ Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das 
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (ein
 Gate, dessen einziger Befund unbehebbar ist, erzieht dazu, Rot zu überlesen — dieselbe Kehrseite
 des halluzinierten Gates, die schon
-[slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) getragen hat),
+[slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md) getragen hat),
 [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) (die Quelldatei der zwei
 Verweise, und Festlegung 5, die den nächsten Fall ausdrücklich einzeln stellt),
 [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) (dieselbe Klasse, an
@@ -96,7 +96,7 @@ beide.**
 **Die Reihenfolge ist tragend und nicht ordnend.** Läuft [slice-113](slice-113-co-001-ist-faellig.md)
 zuerst, entsteht mit seinem `git mv` ein `docs-check`-Befund in einem Artefakt, das niemand
 anfassen darf — genau der Zustand, aus dem
-[slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) das Repo gerade geholt hat, und
+[slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md) das Repo gerade geholt hat, und
 dann unter Zeitdruck statt in einem eigenen Lauf. Der Preis der falschen Reihenfolge ist nicht
 Aufwand, sondern ein rotes Gate mit gesperrter Reparatur.
 

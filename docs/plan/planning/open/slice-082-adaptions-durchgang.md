@@ -87,7 +87,7 @@ längst erfüllt ist: Ein Trigger, den niemand abfragt, ist kein Wächter."*
       Messungen gegen den gepinnten Stand noch reproduzieren. Diese Hälfte hat sonst keinen Träger:
       [slice-131](slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) schließt
       `harness/conventions.md` ausdrücklich aus, und
-      [slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) behandelt nur die **Adresse** einer
+      [slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md) behandelt nur die **Adresse** einer
       einzelnen Referenz. Kein Gate sieht sie: eine Messung in Inline-Code ist kein Link.
 - [ ] **Achse 2 — jeder Auflösungs-Trigger ist abgefragt**, und die Antwort steht am Eintrag:
       Bedingung eingetreten oder nicht, Eintrag weiter gebraucht oder nicht — bei *gebraucht*
