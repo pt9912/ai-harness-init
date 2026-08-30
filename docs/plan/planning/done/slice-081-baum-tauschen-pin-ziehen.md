@@ -175,7 +175,7 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
       1. **`make gates`** — zwei Befunde, beide mit **extensional geschlossenem** Carveout:
          [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) (zwei Fälle in
          `test/courseset-fixture.bats`; ihr Grün setzt die Klassen-Entscheidung über vier neue
-         Vorlagen voraus — [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md))
+         Vorlagen voraus — [slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md))
          und [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) (**eine**
          Referenz in
          [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
@@ -193,7 +193,7 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
          [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1). Zugeordnet
          sind sie zwei Slices derselben Welle: **7** an
          [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md), **3** an
-         [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md), aufgeteilt je
+         [slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md), aufgeteilt je
          Befund an seiner Vorlagen-Zeile. [welle-10](../welle-10-re-baseline.md) §3 führt beide
          Läufe im Closure-Kriterium — die Welle schließt nicht über diesem Rot.
       3. **Die Modul-7-Pflicht von `CO-004` ist offen und benannt.** Die Gate-Ausgabe nennt die
@@ -216,7 +216,7 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
          **Sein Ausgang ist kein eigener, und genau das ist die Feststellung:** dieser Sensor hat
          keine eigene Ursache, sondern die der Sensoren 1 und 2. Er ist damit denselben zwei
          Slices zugeordnet — [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md)
-         und [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md) —, nicht
+         und [slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md) —, nicht
          einem dritten Artefakt daneben. **Kein weiterer Carveout**, und das folgt aus dem
          Trichter, nicht aus Bequemlichkeit: Frage 1 (Granularität) trifft auf dieselbe Häufung im
          selben Geltungsbereich wie bei Sensor 2, und Baseline-Regelwerk `modul-07-carveouts.md`
@@ -363,7 +363,7 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
   liest über `test/courseset-fixture.bats` den **Inhalt** des Template-Satzes, nicht seinen Pfad;
   der Tausch stellt dort vier Klassen-Fragen, die dieser Slice nicht beantwortet. — **Ausgang:**
   eingetreten → [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) mit Folge-Slice
-  [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md).
+  [slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md).
 - **Der vendored Baum ist zugleich die Eingabe des Emissions-Kanals, und der trägt eine
   Rang-1-Zusage.** `internal/fetch/baseline.go` `DefaultTag` zeigt nach dem Tausch auf den neuen
   Satz; was ein frisch gebootstrapptes Zielrepo bekommt, wechselt damit **ohne** eine Zeile in
@@ -383,7 +383,7 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
   Carveout — Begründung in
   [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) §1): **7** Befunde →
   [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md), **3** →
-  [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md).
+  [slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md).
 - **Der einzige Sensor dieser Klasse liegt außerhalb von `make gates`, und das steht seit
   slice-028 im Code.** Der Doc-Kommentar von `NeutralizeRoadmap` sagt es selbst: *„diese reale
   Drift faengt allein `make smoke` (Tier-2, NICHT in make gates)"*. Ein Abnahme-Punkt, der nur
@@ -401,7 +401,7 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
   hat je Sensor gefragt, ob er rot wird, nicht, welcher Sensor einen anderen als **Vorbedingung**
   fährt. — **Ausgang:** eingetreten → §2 DoD (4) Sensor 4, zugeordnet
   [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) und
-  [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md); die Rückkehr prüft
+  [slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md); die Rückkehr prüft
   [welle-10](../welle-10-re-baseline.md) §3, den Preis der Reihenfolge benennt dort §4.
 - **Ein Verweis, der bewusst nicht gezogen wird, hat am Doku-Gate keinen Ort.** Der Beleg in
   [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
@@ -502,7 +502,7 @@ diesem Slice emittierten Vorlagen — der Roadmap-, der Harness-Einstiegs- und d
 Konventionsspeicher-Vorlage
 ([slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md)) —, **3** aus zweien der
 vier neuen, der Wellen-Ergebnis- und der Adaptions-Eintrags-Vorlage
-([slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md)); die Fundorte stehen
+([slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md)); die Fundorte stehen
 Zeile für Zeile in der Smoke-Ausgabe. `make full-smoke` zeigt dieselben zehn und endet mit
 `full-smoke: FEHLER — make gates im emittierten Repo ist NICHT Exit 0`, wobei die Meldung
 [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) als verletzte Zusage nennt.
@@ -630,7 +630,7 @@ Alle **elf** Punkte tragen ihre `— **Ausgang:**`-Zeile in §6 selbst
 (`sed -n '/^## 6\./,/^## 7\./p' <diese Datei> | grep -c '\*\*Ausgang:\*\*'` → **11**):
 **sieben eingetreten** mit Carveout oder Folge-Slice — einmal
 [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) mit
-[slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md), einmal
+[slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md), einmal
 [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) mit
 [slice-132](../open/slice-132-adaptions-block-ohne-totes-ziel.md), dreimal
 [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) (zweimal davon zusammen
@@ -653,7 +653,7 @@ oben benannt.
 
 ### Folge-Slices — jeder ist eine Datei in `open/`
 
-[slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md) (vier neue Vorlagen
+[slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md) (vier neue Vorlagen
 klassifizieren; löst [`CO-004`](../../carveouts/CO-004-emitter-klassifikation-offen.md) und drei der
 zehn Smoke-Befunde) · [slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md)
 (Präsens-Aussage gegen den gepinnten Stand) ·

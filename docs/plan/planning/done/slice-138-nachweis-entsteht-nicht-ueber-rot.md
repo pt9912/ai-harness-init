@@ -305,7 +305,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 Ist-Stand. Eine **fachliche** Vorbedingung hat dieser Slice nicht.
 
 **Priorität — er geht vor
-[slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md), und das ist kein Vorzug,
+[slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md), und das ist kein Vorzug,
 sondern eine Reihung.** [welle-10](../welle-10-re-baseline.md) §4 führt slice-130 als nächsten
 Posten. Drei Gründe, jeder nachprüfbar:
 
@@ -581,7 +581,7 @@ Fall-Dateien. Die dritte ist ohnehin ein Wellen-Kriterium
 ([welle-10](../welle-10-re-baseline.md) §3).
 
 **Träger des offenen Laufs ist
-[slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md)** — der Folge-Slice von
+[slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md)** — der Folge-Slice von
 `CO-004`; mit dessen Grün wird `make mutate` zum ersten Mal wieder fahrbar, und die fünf neuen Fälle
 sind dann Teil seiner vollen Menge. Präzedenz für genau diesen Zuschnitt:
 [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) §7, dort als *weiter
@@ -818,7 +818,7 @@ das Kommando **des Plans** blind geworden ist. Erst die Verifikation, die die Do
 | Die Partition (a)/(b) trennt nicht nach ihrem eigenen Kriterium | Verifikation `V-4` | **entschieden: bleibt** — Review 4 hat die Schärfung mit Begründung verworfen (jede Fassung führte die gerade getilgte Ort-Behauptung wieder ein); die Deckungs-Aussage ist ganz nachgerechnet und hält |
 | `make comment-claims` grün sagt für die neue Zusage nichts | Verifikation `V-5` | **weiter offen, ohne Träger** — unten, dritter Posten |
 | Plan-Tabelle §3 bildet den Ist-Stand nicht ab | Verifikation `V-6` | **hier vermerkt**, §3 unangetastet (*Was ging anders als geplant*) |
-| `make mutate` nicht herstellbar | Verifikation `V-1` | **entschieden: Haken mit benanntem Ersatz**, Lauf weiter offen mit Träger [slice-130](../open/slice-130-emitter-entscheidet-jedes-neue-template.md) (*Der Haken zu (3)*) |
+| `make mutate` nicht herstellbar | Verifikation `V-1` | **entschieden: Haken mit benanntem Ersatz**, Lauf weiter offen mit Träger [slice-130](../next/slice-130-emitter-entscheidet-jedes-neue-template.md) (*Der Haken zu (3)*) |
 | Das Abhak-Kommando von DoD (2) erreicht seine gebundenen Stellen nicht mehr | Verifikation `V-2` | **entschieden: Ersatz-Messung statt Kommando, Plan-Text unangetastet** (*Der Haken zu (2)*, Lerneintrag II) |
 | *„Bewacht sind beide Hälften"* ohne Vorbehalt | Review 4 `LOW-2` | **weiter offen, ohne Träger** — unten, vierter Posten |
 | Struktur-Grenze der Kante hat nur im Slice-Plan ein Zuhause | Review 4 `INFO-1` | **weiter offen, ohne Träger** — unten, fünfter Posten; mit dem `git mv` wird der Plan zum Zeitdokument |
