@@ -166,29 +166,62 @@ wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
 - **Der Pin ist vollzogen:** `.harness/baseline/v5.12.0/` ist das **einzige** `<tag>`-Verzeichnis
   ([`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache):
   ein Tag zur Zeit), `make baseline-verify` grün über **51** statt 42 Dateien (26 Regelwerk + 25
-  Templates) — heute meldet dasselbe Ziel `v3.5.2 OK — 42 Dateien` (`make baseline-verify`), die
-  51 sind der Bestand des Ziel-Tags (§1).
-- **Durchgang 1 — Adaptionen:** **jeder** Eintrag des Adaptions-Blocks trägt genau einen der fünf
-  Ausgänge mit Beleg, **und jeder Auflösungs-Trigger ist abgefragt** (*„Ein Trigger, den niemand
-  abfragt, ist kein Wächter."*). Vollständigkeit heißt hier **Inventar gegen Abdeckung**, nicht
-  „die auffälligen" — dieselbe Lücke, an der die Roadmap zwei kuratierte Listen führt. **Die
-  Bezugsmenge ist ein Kommando, keine Zahl**, weil sie mit jedem neuen Eintrag wandert
-  ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-  Setzung 2): `grep -c '^### MR-' harness/conventions.md` → am 2026-08-27 **27**, davon mit
-  Auflösungs-Trigger `grep -c '^- \*\*Auflösungs-Trigger' harness/conventions.md` → **26**.
+  Templates) — die 51 sind der Bestand des Ziel-Tags (§1). **Erfüllt:** `ls -d .harness/baseline/*/`
+  nennt ein Verzeichnis, und `make baseline-verify` meldet
+  `baseline-verify: v5.12.0 OK — 51 Dateien (Integritaet + Vollstaendigkeit, netzlos)`.
+- **Durchgang 1 — Adaptionen:** jeder Eintrag der **eingefrorenen Bezugsmenge** unten trägt genau
+  einen der fünf Ausgänge mit Beleg, **und sein Auflösungs-Trigger ist abgefragt** (*„Ein Trigger,
+  den niemand abfragt, ist kein Wächter."*). Vollständigkeit heißt hier **Inventar gegen
+  Abdeckung**, nicht „die auffälligen" — dieselbe Lücke, an der die Roadmap zwei kuratierte Listen
+  führt.
+
+  **Die Bezugsmenge ist geschlossen und extensional genannt:
+  [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) bis
+  [`MR-028`](../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt),
+  lückenlos** — der Bestand des Adaptions-Blocks am Tausch-Commit `b902b60`
+  (`git show b902b60:harness/conventions.md | grep -c '^### MR-'` → **29**, die Kennungen mit
+  `grep -o '^### MR-[0-9]*'` statt `grep -c`; davon mit Auflösungs-Trigger
+  `git show b902b60:harness/conventions.md | grep -c '^- \*\*Auflösungs-Trigger'` → **28**).
+
+  **Eingefroren ist die Mitgliedschaft, nicht der Text.** Welche Kennungen dazugehören, entscheidet
+  der Tausch-Stand; *gelesen* wird jeder von ihnen im **heutigen** Wortlaut, sonst prüfte der
+  Durchgang eine Fassung, die niemand mehr führt. Der Unterschied ist nicht theoretisch:
+  [`MR-022`](../../../harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)
+  und [`MR-023`](../../../harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung)
+  tragen am Tausch-Stand je einen Auflösungs-Trigger und heute keinen mehr — sie sind aufgehoben,
+  und ihr Ausgang liegt damit vor dem Durchgang statt in ihm.
+
+  **Warum nicht der heutige Bestand.** `grep -c '^### MR-' harness/conventions.md` wächst mit jedem
+  Architect-Lauf, und ein **Abdeckungs**-Kriterium über eine Menge, die die Welle selbst
+  vergrößert, ist per Konstruktion nicht erfüllbar: jeder Ausgang, den der Durchgang schreibt, kann
+  einen neuen Eintrag nach sich ziehen, der wieder einen Ausgang verlangt.
+  [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2 trägt diese Fassung nicht — sie verbietet einer **Zahl**, als Erwartungswert
+  aufzutreten, und sagt über die **Definition einer Bezugsmenge** nichts.
+
+  **Die Grenze ist die Frage des Durchgangs, nicht ein Datum.** Achse 1 fragt *„regelt die neue
+  Fassung das, wofür dieser Eintrag angelegt wurde?"* Wer einen Eintrag **nach** `b902b60`
+  geschrieben hat, hatte `v5.12.0` im Baum liegen; für ihn ist die Frage bei der Entstehung
+  beantwortet und nicht offen. Deshalb endet die Menge am Tausch und nicht am Wellen-Schnitt: die
+  Einträge zwischen beiden sind gegen `v3.5.2` geschrieben und tragen die Frage sehr wohl. Was die
+  Einträge **außerhalb** der Menge schulden, steht in §6 — sie sind versorgt, nicht ausgenommen.
 - **Durchgang 2 — Form:** die Referenz-Form ist gegen die alte gehalten und die Pflichtfelder der
   neuen Gliederung stehen in den Singleton-Artefakten.
 - **Durchgang 3 — Stichprobe gegen den Bestand:** ein Abschnitt **ohne** Delta ist geprüft und
   sein Ausgang verbucht. Er läuft unabhängig vom Ergebnis der Tag-Frage.
 - **`make gates` grün — und zwar ohne offenen Carveout auf einem Gate dieser Welle.** Der Zusatz
   ist nicht kosmetisch: ein Welle-Grün, das einen solchen Carveout mitzählte, hieße *„grün, außer
-  wo wir nicht hinsehen"*. Offen und gate-rot ist
-  [`CO-005`](../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) auf `docs-check`;
-  [`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md) liegt in
-  `carveouts/done/` und zählt nicht mehr mit. **Die Bezugsmenge ist auch hier ein Kommando, keine
-  Zahl:** `ls docs/plan/carveouts/CO-*.md` nennt die offenen Dateien und
+  wo wir nicht hinsehen"*. Die zwei Carveouts, die diese Welle selbst erzeugt hat —
+  [`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md) auf `test` und
+  [`CO-005`](../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) auf `docs-check` —, liegen
+  in `carveouts/done/` und zählen nicht mehr mit
+  (`ls docs/plan/carveouts/done/CO-00[45]-*.md`). **Die Bezugsmenge ist hier ein Kommando, keine
+  Liste:** `ls docs/plan/carveouts/CO-*.md` nennt die offenen Dateien und
   `grep -H -m1 '^\*\*Betroffenes Gate:\*\*' docs/plan/carveouts/CO-*.md` das Gate, das jede führt.
-  Die Welle schließt erst, wenn keine davon ein Ziel aus `make gates` rot hält.
+  **Dass diese Menge wandert, ist hier richtig** und nicht die Falle aus dem Absatz unter diesen
+  Kriterien: das Kriterium beschreibt einen **Zustand** und wird in einem Moment ausgewertet, nicht
+  über eine Menge hinweg abgearbeitet. Die Welle schließt erst, wenn keine offene Datei ein Ziel
+  aus `make gates` rot hält.
 - **Die drei Sensoren außerhalb der Gates** — `make smoke`, `make full-smoke`, `make mutate`. Die
   ersten beiden gehören hier ins Kriterium, weil der Tag der **Emissions-Kanal** ist
   (`internal/fetch/baseline.go` `DefaultTag`): ein frisch gebootstrapptes Zielrepo zieht genau
@@ -201,6 +234,33 @@ wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
   ist er darum in der Form, die er selbst ausgibt: `mutate: N ok, 0 Befund(e)` **mit** der
   Vollständigkeits-Zeile über **allen** Fall-Dateien, nicht ein Exit-Code.
 - **Closure-Notiz `welle-10-results.md`** mit Steering-Loop-Eintrag.
+
+**Eingefroren ist genau eines dieser acht Kriterien, und dass es die anderen sieben nicht trifft,
+ist geprüft statt angenommen.** Der Maßstab ist nicht, ob eine Menge im Kriterium vorkommt, sondern
+ob das Kriterium **Abdeckung** über sie verlangt **und** sie **außerhalb dieses Plans** wächst.
+Beides zusammen macht unschließbar; eines allein nicht.
+
+- **Zustands-Kriterien** — Pin · `make gates` ohne offenen Carveout · die drei Sensoren ·
+  Closure-Notiz — werden in **einem** Moment ausgewertet. Eine wandernde Menge schadet ihnen nicht;
+  bei den Carveouts ist sie sogar die Pointe (dort begründet).
+- **Durchgang 3** verlangt **einen** Abschnitt, nicht alle — existenziell, nicht abdeckend.
+- **„Alle Slices dieser Welle in `done/`"** verlangt Abdeckung, aber seine Menge steht **in diesem
+  Plan** (§4) und wächst nur durch einen Akt, der selbst im Diff dieses Plans steht: **6** Zeilen
+  beim Schnitt
+  (`git show 6bf9950:docs/plan/planning/welle-10-re-baseline-v5-3-0.md | awk '/^## 4\. Slices/,/^## 5\./' | grep -c '^| slice-'`)
+  gegen heute **11** (dasselbe `awk` und `grep` über diese Datei). Der Unterschied zu Durchgang 1
+  ist nicht die Bewegung, sondern wer sie auslöst und wer sie sieht: hier die Welle selbst, im
+  eigenen Text; dort ein fremder Rollen-Lauf, der diesen Plan nicht anfasst. **Keine
+  Erwartungswerte** — beide Zahlen wandern mit dem Schnitt.
+- **Durchgang 2** verlangt Abdeckung über Mengen, die ebenfalls außerhalb wachsen — und wird
+  trotzdem **nicht** eingefroren, weil seine Frage an den neuen Elementen weiter gilt. Das
+  Pflichtfeld `Ersetzt-Baseline-Regel` ist eine **Form**-Pflicht der Ziel-Fassung und bindet einen
+  nach dem Tausch geschriebenen Eintrag genauso; [slice-083](open/slice-083-form-vergleich-pflichtfelder.md)
+  §2 nimmt ihn ausdrücklich mit hinein (*„den überlebenden wie den unter dem neuen Stand
+  geschriebenen"*). Bei der zweiten Menge dieses Durchgangs, den Singleton-Artefakten, erzeugt der
+  Zuwachs gar keine Arbeit: das jüngste, [`observations.md`](observations.md), entsteht per `cp`
+  aus `.harness/baseline/v5.12.0/templates/docs/plan/planning/observations.template.md` und trägt
+  die Ziel-Form schon beim Anlegen.
 
 ## 4. Slices in dieser Welle
 
@@ -298,15 +358,13 @@ an denselben zwei, weil sein Grün-Vorlauf genau diese Modi fährt; `make gates`
 ([`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md)) **und**
 [slice-132](done/slice-132-adaptions-block-ohne-totes-ziel.md)
 ([`CO-005`](../carveouts/done/CO-005-adaptions-block-datierter-beleg.md)). **Was davon heute noch steht,
-ist gemessen und nicht abgeleitet:** `make -k gates` hat genau **ein** rotes Ziel, `docs-check` —
-die `make gates`-Kante hängt damit allein an
-[`CO-005`](../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) und
-[slice-132](done/slice-132-adaptions-block-ohne-totes-ziel.md), nicht mehr an
-[`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md). `make smoke` meldet
-`d-check: 20 Datei(en) geprüft, 0 Befund(e)` bei Exit 0, `make test-bats` liefert `1..196` ohne
-`not ok`. **`full-smoke` und `mutate` sind hier nicht gefahren** — der erste braucht Netz, der
+ist gemessen und nicht abgeleitet:** beide Träger der `make gates`-Kante liegen in `done/`
+(`ls docs/plan/planning/done/slice-13[02]-*.md`), beide Carveouts in `carveouts/done/`
+(`ls docs/plan/carveouts/done/CO-00[45]-*.md`), und `make gates` endet mit Exit **0** über allen
+Zielen. **`full-smoke` und `mutate` sind hier nicht gefahren** — der erste braucht Netz, der
 zweite die Zeit eines Voll-Laufs; ihre Zuordnung oben ist eine Planaussage und keine Messung von
-heute. Der teuerste Posten dabei ist nicht das Rot, sondern der blinde Fleck darunter: solange
+heute. Der teuerste Posten im roten Fenster war nicht das Rot, sondern der blinde Fleck darunter:
+solange
 einer der Modi rot ist, die
 der Treiber im Grün-Vorlauf fährt, läuft `mutate` über **null** Fälle, und die
 Haltbarkeits-Prüfung der **gelisteten** Wächter aus
@@ -409,6 +467,35 @@ gegenstandslos wird, kein neues Pflichtfeld mehr braucht.
 - **Ein Sensor für die Adoptions-Lücke** („adoptiert, aber nie umgesetzt"). Er wäre die Antwort
   auf den Trigger von [welle-09](welle-09-modul-15-konformitaet.md), und die Stichprobe aus 084
   ist sein manueller Vorläufer. Ob er baubar ist, ist ungemessen.
+- **Achse 1 des Adaptions-Durchgangs für die Einträge nach dem Tausch** — die Bezugsmenge endet bei
+  [`MR-028`](../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt)
+  (§3). Wie viele danach dazugekommen sind, sagt
+  `grep -c '^### MR-' harness/conventions.md` gegen die **29** des Tausch-Standes. Sie stammen
+  **ausnahmslos** aus Architect-Läufen: `git log --format=%s b902b60..HEAD -- harness/conventions.md`
+  liefert **5** Zeilen, und `… | grep -c '^Rolle Architect'` dieselbe **5** — die Zahlen wandern mit
+  jedem weiteren Lauf und sind keine Erwartungswerte.
+  **Sie sind versorgt, nicht ausgenommen, und ihr Ort ist dreigeteilt:**
+  1. **Achse 1 ist für sie gegenstandslos** — Feststellung, kein Aufschub: die Frage *„regelt die
+     neue Fassung das, wofür dieser Eintrag angelegt wurde?"* ist beim Schreiben beantwortet
+     worden, weil `v5.12.0` beim Schreiben im Baum lag.
+  2. **Die Form-Frage trägt Durchgang 2** und nennt sie ausdrücklich —
+     [slice-083](open/slice-083-form-vergleich-pflichtfelder.md) §2 verlangt
+     `Ersetzt-Baseline-Regel` in jedem Eintrag, *„den überlebenden wie den unter dem neuen Stand
+     geschriebenen"*. Sie fallen also aus Durchgang 1 und nicht aus dieser Welle.
+  3. **Achse 2 — der abgefragte Auflösungs-Trigger — bleibt für sie offen, und das ist keine
+     Wellen-Aufgabe.** Einen Trigger abzufragen ist eine **stehende** Pflicht: sie entsteht mit
+     jedem neuen Eintrag und hat außerhalb dieser einmaligen Migration keinen Träger. Ein
+     Wellen-Kriterium kann sie nicht halten, ohne wieder die Menge zu tragen, die es gerade
+     abgelegt hat.
+- **Eine Norm-Aussage über die Form von Abdeckungs-Kriterien.** Der Absatz unter den Kriterien in
+  §3 unterscheidet Zustand von Abdeckung und verlangt für Abdeckung über eine Menge außerhalb des
+  Plans eine **eingefrorene** Bezugsmenge. Das steht dort als Begründung **dieses** Plans; als
+  **Regel** für jeden Plan wäre es eine Norm-Änderung, und die schreibt nach
+  [`AGENTS.md`](../../../AGENTS.md) §3.8 der Architect. Dieser Plan beschreibt sie und setzt sie
+  nicht in Kraft. **Ihr Gegenstand ist gemessen:** derselbe Fehler steht ein zweites Mal in
+  [slice-082](open/slice-082-adaptions-durchgang.md) und ein drittes Mal in
+  [slice-083](open/slice-083-form-vergleich-pflichtfelder.md) — dort mit ausdrücklicher Begründung
+  und deshalb richtig, was zeigt, dass die Unterscheidung und nicht das Einfrieren die Regel ist.
 
 ## 7. Closure-Notiz
 
