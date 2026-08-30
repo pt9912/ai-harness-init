@@ -1,6 +1,6 @@
 # ADR-0026: Der Doku-Gate nimmt eine eingefrorene Referenz aus — auf beiden Achsen namentlich, nicht datei-weit
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-08-30
 
@@ -306,3 +306,4 @@ Hard-Rule-Aussage ([`AGENTS.md`](../../../AGENTS.md) §3.5) und wird von keinem 
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-08-30 | **Proposed** | Architect-Entscheid zur Gate-Lage nach der Re-Baseline. Vier Läufe am gepinnten Stand tragen sie: das geschnittene Referenz-Ventil, seine zwei roten Gegenproben und die Gegenmessung auf der Datei-Achse. Dass der Zeilen-Marker `d-check:ignore` das Modul `links` nicht deckt, ist hier **nicht** neu gemessen, sondern der Sonde in [`MR-029`](../../../harness/conventions.md#mr-029--der-scanignore-zensus-wandert-und-sein-dritter-grund-ist-keine-scoping-aussage) §Auflösungs-Trigger entnommen, die unter demselben Pin lief |
+| 2026-08-30 | **Accepted** | Angenommen vom Auftraggeber. Der Slice geht damit in seine Implementer-Commits: der Config-Eintrag in [`.d-check.yml`](../../../.d-check.yml) samt Wächter der Restbreite, danach die Auflösung von [`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md) |
