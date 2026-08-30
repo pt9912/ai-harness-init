@@ -45,6 +45,22 @@ modules: [links, anchors, ids, matrix, codepaths, spans]
 ignore-refs:
   - in: "harness/conventions.md"
     refs: [".harness/baseline/v3.5.2/regelwerk/modul-08-agentenrollen.md"]
+  # Zweites Paar, eigene Entscheidung (ADR-0027). docs/plan/adr/0026-eingefrorene-referenz-
+  # referenz-weit-ausgenommen.md nennt CO-005 in ihrer Geschichte-Tabelle als Pfad-Link auf den
+  # Ort VOR der Aufloesung; der Carveout ist aufgeloest und liegt darum in carveouts/done/, denn
+  # Modul 7 der Baseline schreibt diesen Move vor. Die Quelldatei steht auf Accepted und ist nach
+  # AGENTS.md 3.4 eingefroren — der Befund ist in ihr nicht behebbar. Warum daraus eine Ausnahme
+  # folgt und keine Reparatur, steht in ADR-0027.
+  # Die Restbreite dieses Paares ist nicht klein, sondern strukturell null: eine eingefrorene
+  # Datei bekommt keine zweite Referenz. Darin unterscheidet es sich vom Paar darueber, dessen
+  # Quelldatei lebt. Der Kommentar steht eingerueckt, weil test/ignore-refs-restbreite.bats den
+  # Top-Level-Block an der ersten Zeile in Spalte 0 enden laesst.
+  # GRENZE, keine Regel: EXTENSIONAL GESCHLOSSEN auf dieses eine zusaetzliche Paar (ADR-0027).
+  # Die Grenze des Paares darueber gilt unveraendert weiter; ein drittes Paar ist eine neue
+  # Senkung nach AGENTS.md 3.5 und braucht seine eigene ADR — auch dann, wenn es dieselbe
+  # Bedingung erfuellt.
+  - in: "docs/plan/adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md"
+    refs: ["docs/plan/carveouts/CO-005-adaptions-block-datierter-beleg.md"]
 # Kennungen sind linkpflichtig (auch in Inline-Code, link-policy: always) —
 # "klickbar zur Quelle" als gemessenes Property. Literal-schwere Artefakte
 # (Review-Reports, CHANGELOG) ausgenommen.
