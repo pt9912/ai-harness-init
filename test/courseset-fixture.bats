@@ -123,8 +123,34 @@ in_scope() {
   done
 }
 
-# kopiere_ziel liest den Ziel-Pfad aus dem Template-Hinweis einer Vorlage: den
-# ersten Backtick-Pfad hinter dem Wort "Kopiere" im fuehrenden Blockquote.
+# kopiere_ziel liest den Ziel-Pfad aus dem Template-Hinweis einer Vorlage: im
+# fuehrenden Blockquote den ersten Backtick-Ausdruck auf .md hinter dem Wort
+# "nach" des Kopiere-Satzes.
+#
+# Die zwei Anker sitzen dort, wo der Satz den Pfad EINFUEHRT, und darauf ruht der
+# Unterschied zwischen leer und falsch. Ein Template-Hinweis kann vor dem Ziel
+# einen zweiten Inline-Code-Ausdruck fuehren:
+#
+#   Kopiere per `git mv` nach `docs/plan/planning/<bereich>/observations.md`
+#
+# Dort ist der erste Backtick-Ausdruck hinter "Kopiere" nicht der Pfad. Wer die
+# Anker lockert, liest `git mv`, findet darin keinen Platzhalter und haelt die
+# Vorlage still fuer nicht wiederkehrend — die OHNE-ZIEL-Zeile bleibt aus, weil die
+# Extraktion ja etwas geliefert hat. Mit den Ankern liefert diese Wortstellung
+# KEINEN Treffer, wiederkehrend_real macht daraus OHNE-ZIEL, und der Vergleich
+# faellt rot. test/mutations/220 faehrt genau diese Umformulierung.
+#
+# Die Wortstellung ist nicht konstruiert: der Hinweis von
+# harness/conventions/MR-NNN-titel.template.md fuehrt "wandert die Datei per
+# `git mv` nach `done/`" im selben Blockquote — dort steht sie hinter dem Ziel-Pfad
+# statt davor.
+#
+# Was die Anker nicht koennen: sie lesen einen SATZ, kein Datenfeld. Steht zwischen
+# "nach" und dem Ziel ein anderer Backtick-Ausdruck auf .md, liest die Extraktion
+# diesen — dann ist sie wieder falsch statt leer. Und ein Kopiere-Satz, der den
+# Pfad anders einleitet ("Kopiere in `…`"), roetet den Test, obwohl an ihm nichts
+# falsch ist. Beides ist der Preis dafuer, dass der Ziel-Pfad im Blockquote als
+# Prosa steht; die zweite Richtung ist die guenstigere, weil sie laut ist.
 #
 # Das `> `-Praefix faellt ZEILENWEISE weg, bevor die Zeilen zusammenlaufen. Ohne
 # das stuende es mitten im Pfad, sobald der Satz umbricht — bei
@@ -133,7 +159,7 @@ kopiere_ziel() {
   awk '/^>/ { inb = 1; sub(/^>[ \t]?/, ""); buf = buf " " $0; next }
        inb  { exit }
        END  { print buf }' "$1" \
-    | grep -oE 'Kopiere[^`]*`[^`]+`' \
+    | grep -oE 'Kopiere[^`]* nach [^`]*`[^`]+\.md`' \
     | head -1 \
     | sed 's/.*`\(.*\)`/\1/'
 }
@@ -143,9 +169,10 @@ kopiere_ziel() {
 # Ziel je Repo). Ausgegeben wird der BASENAME — emit.isRecurring schaltet auf ihm
 # (planTemplates ruft sie mit path.Base(rel)).
 #
-# Eine Vorlage ohne Kopiere-Satz gaebe eine leere Ableitung und damit ein stilles
-# "nicht wiederkehrend". Sie wird stattdessen als Zeile OHNE-ZIEL:<pfad> ausgegeben
-# und faellt dem Vergleich unten auf — laut statt still.
+# Findet kopiere_ziel in einer Vorlage keinen Ziel-Pfad, gibt wiederkehrend_real
+# fuer sie die Zeile OHNE-ZIEL:<pfad> aus statt gar nichts: eine leere Ableitung
+# ist von einem "nicht wiederkehrend" nicht zu unterscheiden, die Zeile dagegen
+# faellt dem Vergleich unten auf — laut statt still.
 wiederkehrend_real() {
   local rel ziel
   while read -r rel; do
@@ -180,13 +207,20 @@ wiederkehrend_code() {
 # und der Emitter liefe still gegen seine eigene Definition. Der Fall
 # test/mutations/219 faehrt genau das.
 #
-# GRENZE, zweifach. (1) Verglichen werden BASENAMEN, weil emit.isRecurring auf dem
-# Basenamen schaltet; teilten sich zwei Vorlagen einen Basenamen und waere nur eine
-# wiederkehrend, saehe das weder dieser Test noch der Emitter — die Grenze liegt in
-# der Signatur, nicht hier. (2) Gelesen wird der Quelltext der Aufzaehlung, nicht
-# das Verhalten von isRecurring: die go-test-Stufe sieht .harness/ nicht
-# (.dockerignore), ein Lauf mit realem Satz UND Emit-Regel existiert in `make gates`
-# nicht. Dieselbe Begruendung traegt schon die Fixture-Achse oben.
+# GRENZE: verglichen werden BASENAMEN, weil emit.isRecurring auf dem Basenamen
+# schaltet (internal/emit/templates.go ruft isRecurring(path.Base(rel))). Vier
+# in-scope-Vorlagen teilen sich heute den Basenamen README.template.md — sie liegen
+# unter docs/plan/adr/, docs/plan/carveouts/, docs/plan/planning/ und harness/
+# (find "$REAL" -type f -name 'README.template.md' | wc -l gibt die Zahl aus). Wird
+# eine davon wiederkehrend, traegt die Aufzaehlung ihren Basenamen, und der Emitter
+# nimmt alle vier gemeinsam aus dem Emit — darunter harness/README.md. Dieser Test
+# sieht es nicht, denn er vergleicht dieselben Basenamen: die Grenze liegt in der
+# Signatur, nicht hier.
+#
+# GRENZE: gelesen wird der Quelltext der Aufzaehlung, nicht das Verhalten von
+# isRecurring — die go-test-Stufe sieht .harness/ nicht (.dockerignore), ein Lauf
+# mit realem Satz UND Emit-Regel existiert in `make gates` nicht. Dieselbe
+# Begruendung traegt schon die Fixture-Achse oben.
 @test "fixture: emit.isRecurring fuehrt genau die Vorlagen mit Platzhalter im Ziel-Pfad" {
   [ -d "$REAL" ] || { echo "vendored templates/ fehlt: $REAL"; return 1; }
   local real code
@@ -201,8 +235,10 @@ wiederkehrend_code() {
   diff <(printf '%s\n' "$real") <(printf '%s\n' "$code") || {
     echo "DRIFT: emit.isRecurring und die Ziel-Pfade des realen Satzes sagen Verschiedenes."
     echo "  '<' nur aus dem realen Satz abgeleitet, '>' nur in der Aufzaehlung."
-    echo "  Eine Zeile OHNE-ZIEL:<pfad> heisst: diese Vorlage nennt keinen Kopiere-Satz,"
-    echo "  die Ableitung steht fuer sie ohne Grundlage da."
+    echo "  Eine Zeile OHNE-ZIEL:<pfad> heisst: kopiere_ziel findet in dieser Vorlage"
+    echo "  keinen Ziel-Pfad — der Kopiere-Satz fehlt, oder er fuehrt den Pfad in einer"
+    echo "  Wortstellung, die kopiere_ziel nicht liest. Die Ableitung steht fuer diese"
+    echo "  Vorlage dann ohne Grundlage da."
     echo "  Ein Treffer links ist die Frage: ist die Vorlage jetzt wiederkehrend"
     echo "  (Eintrag in emit.isRecurring) oder hat upstream ihren Ziel-Pfad geaendert?"
     return 1

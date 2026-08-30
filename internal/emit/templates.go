@@ -23,7 +23,14 @@ import (
 // dazunimmt, sagt genau das zu. Die zwei mit v5.12.0 dazugekommenen sagen es
 // selbst, jede in ihrem Template-Hinweis:
 //
-// Dass die Liste unten und diese Definition dasselbe meinen, misst
+//	welle-results.template.md — "Kopiere nach docs/plan/planning/done/
+//	  welle-<NN>-results.md": eine je Welle, neben die Welle-Plan-Datei, die
+//	  ihrerseits aus welle.template.md kommt und schon hier steht.
+//	MR-NNN-titel.template.md — "Kopiere nach harness/conventions/
+//	  MR-<NNN>-<titel>.md … Ein Eintrag je Datei": eine je Adaption, dieselbe
+//	  Form wie der ADR-Eintrag NNNN-titel.template.md.
+//
+// Dass die Aufzaehlung im Rumpf und diese Definition dasselbe meinen, misst
 // test/courseset-fixture.bats ("emit.isRecurring fuehrt genau die Vorlagen mit
 // Platzhalter im Ziel-Pfad") gegen den REALEN vendored Satz, nicht gegen die
 // Fixture: er liest je Vorlage den Kopiere-Satz ihres Template-Hinweises und
@@ -31,13 +38,6 @@ import (
 // kein Sensor den Fall, dass upstream einen Ziel-Pfad umschreibt und die Liste
 // hier stehen bleibt — Datei-Bestand und in-scope-Zahl bleiben dabei unberuehrt
 // (test/mutations/219 faehrt genau diese Drift).
-//
-//	welle-results.template.md — "Kopiere nach docs/plan/planning/done/
-//	  welle-<NN>-results.md": eine je Welle, neben die Welle-Plan-Datei, die
-//	  ihrerseits aus welle.template.md kommt und schon hier steht.
-//	MR-NNN-titel.template.md — "Kopiere nach harness/conventions/
-//	  MR-<NNN>-<titel>.md … Ein Eintrag je Datei": eine je Adaption, dieselbe
-//	  Form wie der ADR-Eintrag NNNN-titel.template.md.
 //
 // GRENZE: die namentliche Aufzaehlung in LH-FA-02 ("ADR · slice · welle ·
 // carveout · review-report") fuehrt diese zwei nicht. Sie ist damit unvollstaendig
@@ -104,9 +104,10 @@ func isDerivativeIndex(rel string) bool {
 // danach verworfen; gegenueber: Vorlage bleibt co-located), nicht, OB ein gegebenes
 // Repo dieses Ziel hat. Eine geschlossene Taxonomie ist die Liste ebenfalls nicht:
 // derivative Indexe, Planning-Index, welle-results und MR-NNN-titel stehen in
-// keinem der beiden Eimer. Ob daraus dennoch eine Abweichung im Sinne des
-// Adaptions-Blocks folgt, ist eine Architektur-Frage (AGENTS 3.8) und hier nicht
-// entschieden.
+// keinem der beiden Eimer. Im Adaptions-Block steht zu dieser Weiche kein
+// Eintrag; wo keiner steht, gilt die Baseline unveraendert (MR-000
+// Baseline-Aussage). Ob einer dazukommt, entscheidet der Architect (AGENTS 3.8)
+// — nicht diese Datei und nicht der Lauf, der sie anfasst.
 //
 // Warum eine eigene Weiche und nicht eine der beiden daneben: isRecurring sagt
 // "mehr als ein Ziel je Repo" zu, hier gibt es genau eines; isDerivativeIndex sagt

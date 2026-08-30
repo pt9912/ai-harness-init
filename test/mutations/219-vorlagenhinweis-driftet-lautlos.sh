@@ -16,8 +16,10 @@
 # inScope-Kommentar zusagt.
 #
 # KOPPLUNG beim Baseline-Tausch: der Pfad im `# files:`-Kopf traegt den Tag. Nach
-# einem Bump zeigt er ins Leere, und der Treiber meldet den Fall als unveraendert —
-# laut, nicht still.
+# einem Bump zeigt er ins Leere — der Treiber sichert die gelisteten Dateien VOR
+# der Mutation mit tar und laeuft unter `set -euo pipefail`, der Fall endet also
+# dort und schreibt kein Ergebnis; daraus macht die Vollstaendigkeits-Schranke in
+# merge_report einen Befund. Laut, nicht still.
 #
 # Das Muster kommt OHNE die umschliessenden Backticks des Kopiere-Satzes aus: der
 # Pfad steht genau einmal in der Datei — grep -c 'observations\.md' ueber der Datei
