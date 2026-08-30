@@ -7,7 +7,7 @@
 # kostete jeden Gate ein zweites Mal. Gelesen wird der GELEBTE Makefile dieses Repos —
 # keine Nachbildung, die sich selbst misst.
 #
-# DIE DREI ZUSAGEN, DIE HIER HAENGEN:
+# DIE FUENF ZUSAGEN, DIE HIER HAENGEN:
 #   1. Die Kante existiert: record-gates hat Voraussetzungen. Ohne sie steht der
 #      Stempel NEBEN den Checks, und `make -k gates` schreibt ihn ueber rotem Stand; der
 #      Stop-Hook vergleicht genau diesen Hash und gaebe einen Abschluss frei, den er
@@ -19,10 +19,36 @@
 #      gefallener Voraussetzung auch dann nicht.
 #   3. `gates` zieht den Nachweis ueberhaupt. Ohne diese Zusage waeren 1 und 2 auch
 #      dadurch erfuellt, dass gar kein Nachweis mehr entsteht.
+#   4. An der Kante haengen GENAU die erwarteten Checks. 1 bis 3 sind auch von einer
+#      Kante mit einer einzigen Voraussetzung erfuellt: die uebrigen fielen aus `gates`
+#      heraus, und der Stempel deckte einen Baum, ueber den sie nie geurteilt haben.
+#      Geprueft wird der Bestand, nicht die Reihenfolge — die haengt an Zusage 5.
+#   5. baseline-verify haengt als ERSTER an der Kante. Das ist die Reihenfolgen-Zusage,
+#      die im Makefile neben der Kante steht: steht die vendored Baseline nicht, ist jede
+#      Aussage der Folge-Gates ueber sie wertlos. Serielles make baut die Voraussetzungen
+#      in Listen-Reihenfolge ab; unter `-j` faellt die Zusage (Grenze unten).
 #
-# WAS ER NICHT PRUEFT (Grenze): das VERHALTEN von make. `make -i`, `make -j` und ein
-# Aufruf des Skripts an make vorbei sind an der Struktur nicht sichtbar; sie stehen als
-# Grenze im Makefile neben der Kante und im Kopf von harness/tools/record-gates.sh.
+# ZUSAGE 4 IST STRENGER ALS ZUSAGE 1: eine leere Kante verletzt beide, 1 faellt also nie
+# allein. Sie bleibt trotzdem stehen, weil sie den Mechanismus benennt und ihre Diagnose
+# beim totalen Wegfall sagt, warum das Loch zurueck ist. Wer die Liste kuerzt, sieht 4
+# fallen; wer die Kante ganz entfernt, sieht 1, 4 und 5 zusammen fallen.
+#
+# DIE ERWARTUNGSLISTE IN ZUSAGE 4 IST EINE ZWEITE BUCHFUEHRUNG, kein unabhaengiger
+# Beleg: welche Checks es geben SOLLTE, liest dieser Waechter nirgends. Er faengt das
+# stille Kuerzen — Makefile geaendert, Liste hier nicht — und zwingt jeden neuen Gate
+# durch zwei Stellen; wer beide zugleich aendert, kommt an ihm vorbei.
+#
+# WAS ER NICHT PRUEFT (Grenze): das VERHALTEN von make. Ob ein Lauf den Stempel
+# schreibt, entscheidet make, nicht die Struktur. Die Wege, die ihn ueber rotem Stand
+# schreiben, stehen im Makefile neben der Kante; gemessen sind sie an einem
+# synthetischen Makefile derselben Kantenform, und so wird die Messung wiederholt:
+#   d=$(mktemp -d)
+#   printf '.PHONY: gates record-gates gruen rot\ngates: record-gates\nrecord-gates: gruen rot\n\t@echo STEMPEL\ngruen:\n\t@echo g\nrot:\n\t@exit 1\n' > "$d/Makefile"
+#   for f in "" -k -i "-o rot"; do make -C "$d" $f gates 2>&1 | grep -c STEMPEL; done
+# -> `0 0 1 1` (2026-08-30, GNU Make 4.3). Dieselbe Datei mit `.IGNORE: rot` in der
+# ersten Zeile -> 1, mit `-@exit 1` statt `@exit 1` -> 1,
+# `MAKEFLAGS=i make -C "$d" gates` -> 1, `MAKEFLAGS=k make -C "$d" gates` -> 0. Ein
+# Aufruf des Skripts an make vorbei kennt ohnehin keinen Check.
 # Ebenfalls draussen: Doppelpunkt-Regeln (`ziel::`) — dieses Repo fuehrt keine
 # (`grep -cE '^[A-Za-z_.-]+::' Makefile d-check.mk` -> je 0), und ein Waechter ueber
 # einer Form, die es nicht gibt, hat einen leeren Pruefbereich.
@@ -88,4 +114,22 @@ prereqs() {
 @test "gate-nachweis: gates zieht den Gate-Nachweis ueber record-gates" {
 	echo "Voraussetzungen von gates: [$(prereqs gates | tr '\n' ' ')]"
 	prereqs gates | grep -qx 'record-gates'
+}
+
+# Die Erwartungsliste steht SORTIERT und wird gegen die sortierte Ist-Liste gehalten:
+# so faerbt ein Umsortieren der Kante diesen Test nicht mit — dafuer steht der naechste.
+@test "gate-nachweis: an der Kante haengen genau die erwarteten Checks" {
+	erwartet="baseline-verify build ci-lint comment-claims docs-check host-bin lint shell-lint span-check test"
+	ist="$(prereqs record-gates | LC_ALL=C sort | tr '\n' ' ' | sed 's/ $//')"
+	echo "erwartet: [${erwartet}]"
+	echo "ist:      [${ist}]"
+	echo "Fehlt einer, deckt der Stempel einen Baum, ueber den dieser Check nie geurteilt hat."
+	[ "$ist" = "$erwartet" ]
+}
+
+@test "gate-nachweis: baseline-verify haengt als erster an der Kante" {
+	erster="$(prereqs record-gates | head -1)"
+	echo "erste Voraussetzung von record-gates: [${erster}]"
+	echo "Steht die vendored Baseline nicht, ist jede Aussage der Folge-Gates ueber sie wertlos."
+	[ "$erster" = "baseline-verify" ]
 }

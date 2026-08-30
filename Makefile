@@ -299,19 +299,33 @@ hook-overhead: ## Aufschlag je Tool-Call messen (Median, ADR-0011-Schwelle) — 
 # Die Reihenfolge der Voraussetzungen ist tragend: baseline-verify als ERSTER — steht
 # die vendored Baseline nicht, ist jede Aussage der Folge-Gates über sie wertlos.
 # Serielles `make` baut sie in dieser Reihenfolge ab; `-j` tut es nicht (Grenze unten).
+# Bewacht sind beide Hälften dieser Liste — ihr Bestand und ihr erster Eintrag — in
+# derselben bats-Datei: wer hier einen Check einträgt oder streicht, trägt ihn dort mit.
 #
-# GRENZE — was die Kante NICHT nimmt, je Weg das, was er wirklich bricht:
-#   * `make -i` (--ignore-errors): ein gefallener Check gilt make als gelungen, die
-#     Voraussetzung steht damit, das Rezept läuft. Der Nachweis entsteht über rotem
-#     Stand — der eine Weg, der das Loch offen lässt.
+# GRENZE — was die Kante nicht nimmt. Die Aufzählung führt die Wege, die GEMESSEN sind
+# (je einzeln an einem synthetischen Makefile derselben Kantenform; die Kommandos stehen
+# im Kopf von test/gate-nachweis-kante.bats). Dass es keinen weiteren gibt, steht hier
+# NICHT: die Menge ist nicht gemessen, und `make` kennt mehr Schalter als diese Liste.
+#   * Ein gefallener Check gilt make als GELUNGEN: die Voraussetzung steht, das Rezept
+#     läuft, der Nachweis entsteht über rotem Stand — und der Lauf endet mit Exit 0.
+#     Gemessen sind: `make -i`, `MAKEFLAGS=i` aus der Umgebung, eine `.IGNORE:`-Zeile
+#     und ein `-` vor der Rezept-Zeile eines Checks. Die zwei letzteren brauchen kein
+#     Flag am Aufruf — sie stehen in dieser Datei; heute steht dort keines von beiden
+#     (`sed -n '/^\.IGNORE/p' Makefile d-check.mk | wc -l` -> 0 und
+#     `sed -n '/^\t-/p' Makefile d-check.mk | wc -l` -> 0); der Wächter über der Kante
+#     liest nur Voraussetzungen, keine Rezept-Zeilen und keine Sonderziele.
+#   * Der Check läuft GAR NICHT: `make -o <check>` (--old-file), gleichbedeutend
+#     `make -W <check>` (--what-if). make überspringt ihn, die Voraussetzung gilt als
+#     erfüllt, das Rezept läuft, Exit 0.
 #   * `make -j`: eine Kante sagt „hängt ab von", nicht „läuft danach". Der Nachweis
 #     bleibt gedeckt (make baut kein Ziel mit gefallener Voraussetzung); was fällt, ist
 #     die baseline-verify-zuerst-Zusage oben.
-#   * das ERGEBNIS liest die Kante nicht: `make` gibt dem Rezept keinen Ergebnis-Kanal.
-#     Sie bindet die Reihenfolge, nicht den Ausgang; ein Nachweis über den Ausgang
-#     verlangte eine Quittung je Check.
-# KEIN vierter Weg ist `make record-gates`: die Kante zieht dort dieselben Checks mit,
-# der direkte Aufruf ist mit `make gates` deckungsgleich.
+# KEIN WEG, sondern die Struktur-Grenze der Kante: das ERGEBNIS liest sie nicht — `make`
+# gibt dem Rezept keinen Ergebnis-Kanal. Sie bindet die Reihenfolge, nicht den Ausgang;
+# ein Nachweis über den Ausgang verlangte eine Quittung je Check.
+# GESCHLOSSEN, gemessen: `make record-gates` ist mit `make gates` deckungsgleich — die
+# Kante zieht dort dieselben Checks mit (`diff <(make -n gates) <(make -n record-gates)`
+# ist leer).
 record-gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims host-bin span-check ## Checks + Gate-Nachweis (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh
 
