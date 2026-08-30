@@ -8,7 +8,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 **Welle:** ohne Welle — an zwei Instrumenten gemessen, und beide antworten gleich.
 
 **(1) Die Probe aus [slice-134](../open/slice-134-adr-index-traegt-die-ziel-form.md), von
-[slice-137](../open/slice-137-beobachtungs-register-bekommt-seinen-ort.md) als zwei Konjunkte
+[slice-137](../next/slice-137-beobachtungs-register-bekommt-seinen-ort.md) als zwei Konjunkte
 geführt.** Das erste — *stammt der Befund aus dem Re-Baseline-Delta?* — lautet **nein**, und
 zwar auf beiden Seiten des Mechanismus: der Träger ist älter als der Tausch
 (`git log --diff-filter=A --format='%ad' --date=short -- harness/tools/record-gates.sh` →
@@ -264,7 +264,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       entfällt.
 - [x] Beobachtungs-Register fortgeschrieben — **falls es zum
       Ausführungszeitpunkt existiert**; sein Träger ist
-      [slice-137](../open/slice-137-beobachtungs-register-bekommt-seinen-ort.md), und die
+      [slice-137](../next/slice-137-beobachtungs-register-bekommt-seinen-ort.md), und die
       Reihenfolge der beiden ist frei. Existiert es nicht, wird genau das in §7 notiert, statt
       das Item stumm zu lassen.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
@@ -406,7 +406,7 @@ dasteht.
   Posten steht damit als benannter Planner-Posten in §7 (*Folge-Posten ohne Träger*, erster
   Eintrag), mit genau dem Trigger, den dieses Feld formuliert hat. Das Beobachtungs-Register, das
   Modul 5 für *weiter offen* vorsieht, existiert nicht — Träger
-  [slice-137](../open/slice-137-beobachtungs-register-bekommt-seinen-ort.md).
+  [slice-137](../next/slice-137-beobachtungs-register-bekommt-seinen-ort.md).
 - **Die emittierte Ebene trägt dieselben Restwege, aber keine Grenz-Zeile.** Ihre Kante ist da und
   bewacht (Kopf), ihre zwei Zusage-Stellen nennen `-i` und den direkten Aufruf nicht. Das ist
   dieselbe Klasse wie hier, nur eine Ebene weiter, und sie hat einen anderen Vertrag
@@ -618,7 +618,7 @@ Repo hat keinen Brownfield-Bootstrap.
 
 **Beobachtungs-Register — es existiert nicht, und genau das verlangt die DoD hier zu notieren.**
 `find docs/plan -iname '*observation*' -o -iname '*beobacht*'` liefert **einen** Treffer, und der ist
-[slice-137](../open/slice-137-beobachtungs-register-bekommt-seinen-ort.md) — der Slice, der es erst
+[slice-137](../next/slice-137-beobachtungs-register-bekommt-seinen-ort.md) — der Slice, der es erst
 anlegt. Die Folge ist nicht bloß buchhalterisch: **beide** Lerneinträge unten und der *weiter
 offen*-Ausgang aus §6 hätten dorthin gehört (Modul 5 §Offene Risiken · Modul 10 §Pflege), und
 alle vier Review-Runden haben denselben Zähler vermisst. Sie stehen deshalb hier, wo sie ein
@@ -925,5 +925,5 @@ Konventions-Dichte auf, die eine eigene Zeile in der Deklaration trüge.
 **Vorgelagert — offene Beobachtungen sichten:** **keine Treffer**, und der Grund liegt außerhalb
 dieses Slice: ein Beobachtungs-Register existiert im Repo nicht
 (`find docs/plan -iname '*observation*' | wc -l` → **0**), sein Träger ist
-[slice-137](../open/slice-137-beobachtungs-register-bekommt-seinen-ort.md). Läuft dieser Slice
+[slice-137](../next/slice-137-beobachtungs-register-bekommt-seinen-ort.md). Läuft dieser Slice
 nach jenem, wird die Sichtung nachgeholt und ihr Ergebnis in §7 notiert.

@@ -195,7 +195,7 @@ Schreibweisen, die im Diff **nicht** vorkommen (`\t -`, `\t- `, `\t @-`, `\t\t-`
   Der Mechanismus, der so etwas zählen soll, steht im adoptierten Modul (Finding-Klasse → Closure §7
   → Beobachtungs-Register) und existiert im Repo nicht:
   `find docs/plan -iname '*beobacht*' -o -iname '*observation*'` → genau **1** Treffer, und der ist
-  `docs/plan/planning/open/slice-137-beobachtungs-register-bekommt-seinen-ort.md`, also der Slice,
+  `docs/plan/planning/next/slice-137-beobachtungs-register-bekommt-seinen-ort.md`, also der Slice,
   der es erst anlegt.
 - **verifizierbar:** nein.
 - **klasse:** Steering-Loop-Signal

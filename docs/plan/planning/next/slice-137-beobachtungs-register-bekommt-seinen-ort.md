@@ -8,7 +8,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 **Welle:** ohne Welle — **gemessen an zwei Instrumenten, und das erste legt zunächst das Gegenteil
 nahe.**
 
-**(1) Die Probe aus [slice-134](slice-134-adr-index-traegt-die-ziel-form.md) hat zwei Konjunkte,
+**(1) Die Probe aus [slice-134](../open/slice-134-adr-index-traegt-die-ziel-form.md) hat zwei Konjunkte,
 und hier zeigen sie in verschiedene Richtungen.** Das erste — *stammt der Befund aus dem
 Re-Baseline-Delta?* — lautet **ja**: die abgelöste Fassung kennt den Gegenstand nicht
 (`git grep -l 'observations\|Beobachtungs-Register' b902b60^ -- '.harness/baseline/v3.5.2/' | wc -l`
@@ -22,12 +22,12 @@ entscheidet. Keiner der drei Durchgänge fängt ihn: Durchgang 1 zählt Einträg
 Adaptions-Blocks, und die Übernahme eines Baseline-**Defaults** erzeugt keinen
 ([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage), §1); Durchgang 2 hält
 die Pflichtfelder der neuen Gliederung an **vorhandene** Singleton-Artefakte, und
-[slice-083](slice-083-form-vergleich-pflichtfelder.md) §6 sagt über genau diesen Gegenstand
+[slice-083](../open/slice-083-form-vergleich-pflichtfelder.md) §6 sagt über genau diesen Gegenstand
 wörtlich, eine neue Artefakt-Klasse mit eigener Lese-Pflicht falle *„zwischen"* seine drei
 DoD-Punkte; Durchgang 3 ist die Stichprobe **ohne** Delta. **welle-10 §6 nennt den Fall beim Namen
 und führt ihn hinaus:** *„Ein Delta, das eigene Arbeit verlangt, wird als Slice in `open/` notiert
 — sonst wächst die Welle auf die Größe des Deltas und verliert ihr Closure-Kriterium."* Bei
-[slice-136](slice-136-roadmap-traegt-die-ziel-form.md) zeigten beide Konjunkte gemeinsam nach
+[slice-136](../open/slice-136-roadmap-traegt-die-ziel-form.md) zeigten beide Konjunkte gemeinsam nach
 welle-10 und waren dort nicht zu unterscheiden; hier fallen sie auseinander, und tragend ist das
 zweite: **Herkunft aus dem Delta allein begründet keine Zugehörigkeit.**
 
@@ -53,7 +53,7 @@ Wellen-Zugehörigkeit.
 frisch gebootstrapptes Zielrepo an Registern und Anweisungssätzen bekommt, ist ein anderer Vertrag
 mit eigenen Trägern: [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md) entscheidet
 über jede neue Vorlage des getauschten Baums,
-[slice-085](slice-085-emittierte-ebene-zieht-nach.md) zieht die emittierten Commands nach. Heute
+[slice-085](../open/slice-085-emittierte-ebene-zieht-nach.md) zieht die emittierten Commands nach. Heute
 trägt die emittierte Ebene zum Register **nichts**
 (`grep -rc 'observations\|Beobachtungs-Register\|BEO-' internal/emit/ | grep -cv ':0$'` → **0**),
 und dieser Slice ändert daran nichts.
@@ -193,7 +193,7 @@ sie nicht**, aus drei gemessenen Gründen:
    `docker run --rm --network none ghcr.io/pt9912/d-check@sha256:5ea03abe7918381c68203d8ac078a78d0d4ab91b5478e87c66b5a7b4fda41288 --print-config | grep -ci 'observation'`
    → **0** (gepinnt, `v0.65.0`) und dasselbe Kommando mit
    `sha256:117a3503b2e721aee35dad85b477b6e29b497721f67b7d042b16daef4410a7f1` → **0**
-   (`v0.66.1`, das Ziel von [slice-135](slice-135-d-check-pin-v0661.md)). Das Modul `planning`
+   (`v0.66.1`, das Ziel von [slice-135](../open/slice-135-d-check-pin-v0661.md)). Das Modul `planning`
    führt dort drei Fähigkeiten — Lifecycle, `closure`, `waves` —, keine über ein Register. Das ist
    eine **fehlende Fähigkeit eines Fremd-Werkzeugs**, keine Grenze dieses Repos: d-check hängt an
    einem eigenen Pin, und ob die Fähigkeit entsteht, wird dort entschieden. Der Eigenbau, den es
@@ -284,7 +284,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 Kommando **1**:
 [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) hält es. Eine
 **fachliche** Vorbedingung hat dieser Slice **nicht**. Insbesondere wartet er **nicht** auf
-[slice-083](slice-083-form-vergleich-pflichtfelder.md): dessen §6 hat die Entscheidung benannt,
+[slice-083](../open/slice-083-form-vergleich-pflichtfelder.md): dessen §6 hat die Entscheidung benannt,
 seine drei DoD-Punkte tragen sie nicht, und Modul 5 lässt keinen vierten zu — die Vertagung hat
 dort keinen Haken, an dem sie hängen könnte (§6).
 

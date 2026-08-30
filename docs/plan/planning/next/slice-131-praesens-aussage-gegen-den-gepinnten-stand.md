@@ -89,7 +89,7 @@ git grep -n '\.harness/baseline/v3\.5\.2/' \
 **Die zwei Filter sind der Gegenstand dieses Slice, nicht sein Kleingedrucktes** — sie trennen die
 Nennung, die der Tausch **ziehen muss**, von der, die er **nicht anfassen darf**:
 
-- `grep -v slice-083` — [slice-083](slice-083-form-vergleich-pflichtfelder.md) nennt den alten Tag
+- `grep -v slice-083` — [slice-083](../open/slice-083-form-vergleich-pflichtfelder.md) nennt den alten Tag
   als **Tree-Operanden der Vor-Tausch-Seite** ([welle-10](../welle-10-re-baseline.md) §5).
 - `grep -v 'git show'` — **dieselbe Klasse, und sie ist größer als ein Slice.** Ein
   `git show <ref>:.harness/baseline/v3.5.2/…` adressiert einen **Baum in der Historie**, nicht das
@@ -176,9 +176,9 @@ Aussagen-Berührung steht hier gar nicht.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| [slice-090](slice-090-freshness-audit-im-ziel.md), [slice-091](slice-091-vendored-baum-ohne-anspruch.md), [slice-101](slice-101-norm-postens-bekommen-einen-termin.md), [slice-112](slice-112-replay-schritt-hat-keinen-referenten.md) | update | je eine bis zwei Präsens-Aussagen über den vendored Baum; zwei von ihnen bewegen sich nachweislich (§1) |
+| [slice-090](../open/slice-090-freshness-audit-im-ziel.md), [slice-091](../open/slice-091-vendored-baum-ohne-anspruch.md), [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md), [slice-112](../open/slice-112-replay-schritt-hat-keinen-referenten.md) | update | je eine bis zwei Präsens-Aussagen über den vendored Baum; zwei von ihnen bewegen sich nachweislich (§1) |
 | [welle-09](../welle-09-modul-15-konformitaet.md), [welle-11](../welle-11-traeger-aussage.md) | update | lebende Welle-Pläne; `welle-11` trägt allein **5** der 11 Nennungen und die größte bewegte Zahl (7 → 11) |
-| [slice-083](slice-083-form-vergleich-pflichtfelder.md) | **unverändert** | Tree-Operand der Vor-Tausch-Seite; das Ziehen zerstörte die Messung ([welle-10](../welle-10-re-baseline.md) §5) |
+| [slice-083](../open/slice-083-form-vergleich-pflichtfelder.md) | **unverändert** | Tree-Operand der Vor-Tausch-Seite; das Ziehen zerstörte die Messung ([welle-10](../welle-10-re-baseline.md) §5) |
 | `docs/plan/adr/**` | **unverändert** | Accepted und damit unveränderlich ([`AGENTS.md`](../../../../AGENTS.md) §3.4); die Verweis-Form dort regelt [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 1, und sie heilt den Bestand nicht |
 | `docs/reviews/**`, `docs/plan/planning/done/**` | **unverändert** | Zeitdokumente — die richtige Aussage über ihren Stand |
 | [`harness/conventions.md`](../../../../harness/conventions.md), [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | **unverändert** | Architect-Eigentum bzw. Rang 2; ihre Nennungen zieht [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md), nicht dieser Slice |

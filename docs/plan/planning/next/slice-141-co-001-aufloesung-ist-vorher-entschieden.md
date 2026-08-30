@@ -61,7 +61,7 @@ Artefakt bricht.**
 *„Aktiv — **Auflösung fällig**, nicht offen"*
 (`grep -c 'Auflösung fällig' docs/plan/carveouts/CO-001-bats-shell-lint.md` → **1**), seine letzte
 Prüfung ist der welle-12-Closure-Audit vom 2026-08-27, und sein Folge-Slice
-[slice-113](slice-113-co-001-ist-faellig.md) liegt geschnitten in `open/`. Dessen DoD (3) macht
+[slice-113](../open/slice-113-co-001-ist-faellig.md) liegt geschnitten in `open/`. Dessen DoD (3) macht
 den Ausgang zur **Verzeichnis-Position**: der Carveout wandert per `git mv` nach `done/` — oder er
 bekommt einen Trigger, der noch nicht eingetreten ist.
 
@@ -93,7 +93,7 @@ verlangt für den nächsten Fall dasselbe, von der anderen Seite: er wird *„ei
 *„mit seiner eigenen Messung"*. **Eine Entscheidung, die den Fall von 0027 abschriebe, verletzte
 beide.**
 
-**Die Reihenfolge ist tragend und nicht ordnend.** Läuft [slice-113](slice-113-co-001-ist-faellig.md)
+**Die Reihenfolge ist tragend und nicht ordnend.** Läuft [slice-113](../open/slice-113-co-001-ist-faellig.md)
 zuerst, entsteht mit seinem `git mv` ein `docs-check`-Befund in einem Artefakt, das niemand
 anfassen darf — genau der Zustand, aus dem
 [slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md) das Repo gerade geholt hat, und
@@ -104,7 +104,7 @@ Aufwand, sondern ein rotes Gate mit gesperrter Reparatur.
 
 Er ist **nicht** die Auflösung von [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) und
 **nicht** die shellcheck-Arbeit an den bats-Dateien — beides trägt
-[slice-113](slice-113-co-001-ist-faellig.md), unverändert. Und er entscheidet **nicht** im Voraus,
+[slice-113](../open/slice-113-co-001-ist-faellig.md), unverändert. Und er entscheidet **nicht** im Voraus,
 welches Instrument richtig ist: ein drittes `ignore-refs`-Paar, das Ziel-Ende aus
 [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Festlegung 5, oder ein
 vierter Weg, den die Messung im Lauf zeigt. **Welche Menge die Kandidaten bilden, ist hier nicht
@@ -140,7 +140,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Instrument ein Ventil ist, **beide Skopen je an einer roten Gegenprobe** und der Nachweis,
       dass die geprüfte Datei-Zahl sich nicht bewegt — zwei Läufe, ein Vergleich, kein gemerkter
       Wert.
-- [ ] **(3) [slice-113](slice-113-co-001-ist-faellig.md) trägt die Entscheidung als
+- [ ] **(3) [slice-113](../open/slice-113-co-001-ist-faellig.md) trägt die Entscheidung als
       Vorbedingung.** Sein §4-Start-Trigger nennt sie, und sein DoD-Punkt zum `git mv` verlangt
       danach `make docs-check` mit **0** Befunden. Damit hängt die Reihenfolge an einem Plan-Text,
       den der ausführende Lauf liest, statt an dieser Notiz. **Ein Wächter dafür existiert nicht**
@@ -169,14 +169,14 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | `docs/plan/adr/` | **neu**, durch den Architect | der Liefergegenstand aus DoD (1); dazu die Zeile im ADR-Index, der derselben Rolle gehört ([`ADR-0024`](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)) |
 | [`.d-check.yml`](../../../../.d-check.yml) | **nur, wenn das Instrument ein Ventil ist**, durch den Implementer | die Config-Zeile folgt der Entscheidung, sie ersetzt sie nicht; Zeile **und** Config-Kommentar mit Zeiger auf die neue ADR, wie bei den zwei bestehenden Paaren |
-| [slice-113](slice-113-co-001-ist-faellig.md) | update, durch den Planner | die Vorbedingung aus DoD (3) — §4-Trigger und der `git mv`-Punkt |
+| [slice-113](../open/slice-113-co-001-ist-faellig.md) | update, durch den Planner | die Vorbedingung aus DoD (3) — §4-Trigger und der `git mv`-Punkt |
 | [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) | **unangetastet** | *Accepted*, [`AGENTS.md`](../../../../AGENTS.md) §3.4; die zwei Adressen bleiben, wie sie sind |
-| [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) | **unangetastet** | der Move gehört [slice-113](slice-113-co-001-ist-faellig.md); dieser Slice entscheidet, er vollzieht nicht |
+| [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) | **unangetastet** | der Move gehört [slice-113](../open/slice-113-co-001-ist-faellig.md); dieser Slice entscheidet, er vollzieht nicht |
 
 **Der Commit-Zuschnitt folgt aus den beteiligten Rollen.** Die ADR und ihre Index-Zeile liegen in
 einem Architect-Commit, der ausschließlich Artefakte dieser Rolle berührt
 ([`AGENTS.md`](../../../../AGENTS.md) §3.8); ein etwaiger Config-Eintrag liegt in einem
-Implementer-Commit; die Vorbedingung in [slice-113](slice-113-co-001-ist-faellig.md) und die
+Implementer-Commit; die Vorbedingung in [slice-113](../open/slice-113-co-001-ist-faellig.md) und die
 Closure liegen in Planner-Commits.
 
 ## 4. Trigger
@@ -186,7 +186,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 **Start** (`next` → `in-progress`): ein Architect-Lauf steht bereit — der Slice ist ohne die
 schreibende Rolle der ADR nicht ausführbar, und das ist die Bedingung aus DoD (1), keine
-Formalie. **Zusätzlich:** [slice-113](slice-113-co-001-ist-faellig.md) liegt **nicht** in
+Formalie. **Zusätzlich:** [slice-113](../open/slice-113-co-001-ist-faellig.md) liegt **nicht** in
 `in-progress/`; läuft er parallel, entsteht der Befund, den dieser Slice verhindern soll.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
@@ -211,7 +211,7 @@ Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 Zwei beobachtbare Kriterien: **erstens** eine ADR mit Status *Accepted*, die das Instrument für die
 zwei Verweise benennt und ihren Geltungsbereich extensional schließt — sichtbar in einem
 Architect-Commit (`git log --stat`), nicht in diesem Plan. **Zweitens** trägt
-[slice-113](slice-113-co-001-ist-faellig.md) die Vorbedingung in seinem §4 und den
+[slice-113](../open/slice-113-co-001-ist-faellig.md) die Vorbedingung in seinem §4 und den
 `docs-check`-Nachweis in seinem `git mv`-Punkt
 (`grep -c 'slice-141' docs/plan/planning/*/slice-113-co-001-ist-faellig.md` → mindestens **1**).
 Dazu die Closure-Notiz mit Steering-Loop-Lerneintrag und je Risiko aus §6 genau ein Ausgang.

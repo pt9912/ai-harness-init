@@ -176,7 +176,7 @@ getrackten Dateien außerhalb des Arbeitsbaums (unmutiert · 210 · 211 · 212 �
   (`find docs/plan -iname '*observation*' | wc -l` → **0**, `ls docs/plan/*.md | wc -l` → **0** —
   `docs/plan` trägt nur `adr/`, `carveouts/` und `planning/`; der einzige Namens-Treffer auf
   *beobachtung* ist der Slice, der es erst anlegen soll), sein Träger ist
-  [slice-137](../plan/planning/open/slice-137-beobachtungs-register-bekommt-seinen-ort.md).
+  [slice-137](../plan/planning/next/slice-137-beobachtungs-register-bekommt-seinen-ort.md).
 - **verifizierbar:** nein.
 - **klasse:** Steering-Loop-Signal
 

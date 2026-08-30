@@ -582,7 +582,7 @@ eingelöst, nicht fortgeschrieben.
 einer stillen Auslassung.** Eine `observations.md` unter `docs/plan/planning/` existiert nicht
 (`ls docs/plan/planning/observations.md` → `Datei oder Verzeichnis nicht gefunden`). Der Wegfall
 ist keine Nachlässigkeit, sondern der heutige Zustand des Repos, und er hat seit dem 2026-08-29
-einen Träger: [slice-137](../open/slice-137-beobachtungs-register-bekommt-seinen-ort.md) legt das
+einen Träger: [slice-137](../next/slice-137-beobachtungs-register-bekommt-seinen-ort.md) legt das
 Register an. Das Reconciliation-Register entfällt aus einem anderen und dauerhaften Grund: dieses
 Repo hat keinen Brownfield-Bootstrap.
 
@@ -722,7 +722,7 @@ den Träger zu priorisieren** — und Priorisieren ist ein eigener Zug, kein Clo
 | Der Widerspruch `CO-005` ↔ [`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen) | §6, fünftes Risiko | **aufgelöst statt entschieden** — verschiedene Gegenstände; der eine gefallene Halbsatz hat seinen Nachfolge-Eintrag |
 | Die tote Adresse in [`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md), erzeugt vom eigenen `git mv` | Implementer-Lauf | **ausgenommen, nicht repariert** — [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) Festlegung 1 und 2, Eintrag in `101b92f` |
 | Festlegung 3 hat keinen Wächter | [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) Folgepflicht 3 | **Folge-Slice** [slice-142](../open/slice-142-verweis-form-vor-dem-einfrieren-hat-einen-waechter.md) |
-| `CO-001` ist fällig, und seine Auflösung bricht zwei Verweise aus [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) | [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) §Kontext, ausdrücklich **nicht** gedeckt | **Folge-Slice** [slice-141](../open/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) |
+| `CO-001` ist fällig, und seine Auflösung bricht zwei Verweise aus [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) | [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) §Kontext, ausdrücklich **nicht** gedeckt | **Folge-Slice** [slice-141](../next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) |
 | [`ADR-0017`](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) und der `scan.ignore`-Kommentar tragen den gefallenen Werkzeug-Satz | §6, drittes Risiko | **Folge-Slice** [slice-143](../open/slice-143-datei-weiter-ausschluss-weicht-dem-referenz-ventil.md) |
 | Zwei Steering-Loop-Regeln ohne Norm-Text | §7, Einträge 1 und 3 | **gezählt, nicht verkörpert** — Adressat Architect bzw. Planner, Termin-Träger [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md); dieser Lauf hat sie dort **nicht** eingetragen |
 
@@ -730,7 +730,7 @@ den Träger zu priorisieren** — und Priorisieren ist ein eigener Zug, kein Clo
 
 Drei, alle **wellenlos** — keiner entsteht aus dem Baum-Tausch, alle drei aus der Mechanik der
 Ausnahmen und der Carveout-Auflösung:
-[slice-141](../open/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) (die Entscheidung vor
+[slice-141](../next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) (die Entscheidung vor
 dem Move, weil `CO-001` fällig ist und sein `git mv` zwei Verweise aus einer eingefrorenen ADR
 bricht) · [slice-142](../open/slice-142-verweis-form-vor-dem-einfrieren-hat-einen-waechter.md)
 (der Wächter zu [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) Festlegung 3) ·
