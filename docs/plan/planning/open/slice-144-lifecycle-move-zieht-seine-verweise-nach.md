@@ -42,8 +42,12 @@ drei Spec-Straten; was das Produkt kann, ändert sich nicht. Der Verweis zeigt o
 die Spec nennt diesen Slice nie (Baseline-Regelwerk `grundlagen-referenz-richtung.md`
 §Referenz-Richtung (SDP), `grundlagen-source-precedence.md` §ID-Schema als Klammer).
 
-**Verantwortlich:** — bis zur Priorisierung. Der Gegenstand ist Implementer-Arbeit: ein Skript,
-ein Make-Ziel, ein Selbsttest.
+**Verantwortlich:** Implementer (pt9912). Die Rolle steht hier nicht, weil der Gegenstand nach ihr
+aussieht, sondern weil das Feld sie nennt: Baseline-Regelwerk `modul-05-planning-harness.md`
+§Lifecycle als State Machine setzt es beim Übergang `open → next` auf *„den Rolleninhaber der
+Implementer-Rolle, der die Arbeit hält"* — es sagt *wer*, nicht *wo*, und trägt keinen Sensor. Dass
+die Liefergegenstände (Skript, Make-Ziel, Selbsttest) in dieselbe Richtung zeigen, bestätigt die
+Zuordnung; die Quelle ist sie nicht.
 
 **Autor:** Planner. **Datum:** 2026-08-30.
 
@@ -64,18 +68,43 @@ eigenständig gebaut wird, ist in diesem Slice entschieden statt vorausgesetzt.*
 Der Wechsel `open → next → in-progress → done` ist ein reiner `git mv`
 ([`AGENTS.md`](../../../../AGENTS.md) §3.3), und er bricht jeden Verweis auf die bewegte Datei.
 Der Abgleich danach ist heute Handarbeit, und er hat einen eigenen Commit je Move:
-`git log --format=%h --grep='Link-Abgleich nach dem Move' | wc -l` → **63**. Die Zahl wandert mit
+`git log --format=%h --grep='Link-Abgleich nach dem Move' | wc -l` → **65**. Die Zahl wandert mit
 dem Baum und ist kein Erwartungswert
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2).
 
-**Nicht die Menge ist das Problem, sondern die Formen.** Ein einzelner Move dieses Repos traf
-**vier**: der qualifizierte Präfix `../<verzeichnis>/<datei>`, der **blanke Geschwister-Name**
-(die Quelle lag bis eben im selben Verzeichnis), der repo-relative Pfad aus `docs/reviews/` — und
-die **ausgehenden** Adressen der bewegten Datei selbst, die eine Zählung der eingehenden gar nicht
-findet. `make docs-check` sprang bei diesem Move von **0** auf **24** Befunde und wieder auf
-**0**; drei der 27 geänderten Adressen waren dabei überhaupt nicht gate-sichtbar und trotzdem
-falsch.
+**Nicht die Menge ist das Problem, sondern die Formen — und die sind gemessen, nicht aufgezählt.**
+Eine Adresse auf eine Slice-Datei tritt in den **lebenden** Artefakten dieses Repos in **13**
+Präfix-Formen auf — vom nackten Verzeichnisnamen über ein bis zwei Aufstiege bis zum voll
+qualifizierten Pfad ab Repo-Wurzel, jeweils mit und ohne die Zwischenstufe `plan`. Die Formen
+stehen hier nicht als Liste, weil eine Liste von Adressen in diesem Plan selbst zu Adressen würde;
+sie stehen als Ausgabe:
+
+```sh
+git grep -ohE '[^ ("]*(open|next|in-progress|done)/slice-[0-9]+' \
+  -- ':!.harness/baseline' ':!docs/reviews' ':!docs/plan/planning/done' \
+  | sed -E 's@(open|next|in-progress|done)/slice-[0-9]+@\1/@' \
+  | grep -E '^(\.\./)*([a-z0-9.-]+/)*(open|next|in-progress|done)/$' | sort -u | wc -l
+```
+
+**Eine weitere Form hat gar kein Präfix und ist für dieses Kommando unsichtbar:** das Ziel **ohne
+Verzeichnis-Segment**, der blanke Dateiname, den eine Datei trägt, solange ihr Ziel im selben
+Verzeichnis liegt. Er steht **123**-mal in **33** Dateien der drei offenen Lifecycle-Verzeichnisse
+— dasselbe Kommando einmal mit `-ohE`, einmal mit `-lE`:
+
+```sh
+git grep -ohE ']\((slice|welle)-[0-9][^)/]*\)' -- docs/plan/planning/open \
+  docs/plan/planning/next docs/plan/planning/in-progress | wc -l
+```
+
+**Er bricht in beide Richtungen**, und das ist der Grund, warum eine Zählung der *eingehenden*
+Verweise den Bedarf unterschätzt: er bricht, wenn sein Ziel wegzieht, **und** wenn die tragende
+Datei selbst wegzieht. Die übrigen ausgehenden Adressen eines Slice überleben den Move dagegen:
+`open/`, `next/`, `in-progress/` und `done/` liegen auf **derselben** Tiefe, ein `../../../../`
+zeigt danach unverändert richtig. Für Welle-Plan-Dateien gilt das nicht — sie wechseln beim
+Closure-Move die Tiefe (§6). Alle drei Zahlen wandern mit dem Baum und sind keine Erwartungswerte
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2).
 
 ### Der Ausgangspunkt ist fremd, die Entscheidung ist es nicht
 
@@ -94,11 +123,11 @@ die Existenz des fremden Skripts.
 
 ### Warum ein Werkzeug und nicht eine schärfere Anweisung
 
-Die Anweisung existiert bereits und wird befolgt: 63 Abgleich-Commits sind 63 Fälle, in denen
+Die Anweisung existiert bereits und wird befolgt: jeder Abgleich-Commit oben ist ein Fall, in dem
 jemand daran gedacht hat. Was sie nicht leistet, ist **Vollständigkeit** — welche Formen es gibt,
-steht in keinem der 63 Commits gleich, und zwei Klassen tauchen erst auf, wenn man sie sucht. Eine
-Anweisung, die an derselben Familie schon mehrfach unvollständig geblieben ist, wird durch
-Wiederholung nicht stärker.
+steht in keinem dieser Commits gleich, und die Form ohne Verzeichnis-Segment taucht erst auf, wenn
+man sie sucht. Eine Anweisung, die an derselben Familie schon mehrfach unvollständig geblieben
+ist, wird durch Wiederholung nicht stärker.
 
 ## 2. Definition of Done
 
@@ -111,16 +140,21 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       steht gegen den gemessenen Bedarf dieses Repos.** Ausgangspunkt ist das Werkzeug des
       Schwester-Repos a-check (ein Skript slice-mv.sh und ein Make-Ziel gleichen Namens, beide dem
       Auftraggeber gehörend, beide auf derselben Baseline). **Was übernommen wird, ist zu
-      begründen, nicht vorauszusetzen:** das fremde Skript ersetzt **zwei** Adress-Formen, dieses
-      Repo führt daneben mindestens zwei weitere. Die Entscheidung nennt je Form, ob das Ergebnis
-      sie deckt — und die Form-Menge ist ein **Kommando** über den Bestand, keine Liste in diesem
+      begründen, nicht vorauszusetzen:** das fremde Skript ersetzt **zwei** Adress-Formen; die
+      Form-Menge dieses Repos liefert das Präfix-Kommando aus §1, und **eine** Form liegt
+      grundsätzlich außerhalb von ihm (das Ziel ohne Verzeichnis-Segment, §1 zweites Kommando).
+      Die Entscheidung nennt **je Form** der beiden Kommandos, ob das Ergebnis sie deckt — die
+      Menge ist die Ausgabe dieser Kommandos zum Zeitpunkt der Ausführung, keine Liste in diesem
       Plan.
 - [ ] **(2) `make slice-mv SLICE=<slice-NNN> TO=<open|next|in-progress|done>` bewegt den Slice und
-      zieht die Verweise nach — in beiden Richtungen.** Eingehend: die Verweise **auf** die Datei.
-      Ausgehend: die Ziele **in** der Datei, deren relative Adressen der Verzeichnis-Wechsel
-      mitbewegt — die zweite Richtung findet eine Zählung der ersten gar nicht. Der Beleg ist
-      **nicht** „es lief", sondern `make docs-check` **vor und nach** demselben Move, beide
-      Ausgaben im Bericht.
+      zieht die Verweise nach — in beiden Richtungen.** **Eingehend:** die Verweise **auf** die
+      Datei, in jeder Präfix-Form, die das erste Kommando aus §1 ausgibt. **Ausgehend:** die Ziele
+      **in** der Datei, die kein Verzeichnis-Segment tragen und deshalb nach dem Wechsel ins
+      falsche Verzeichnis zeigen — die Form, die das zweite Kommando aus §1 zählt und das erste
+      per Konstruktion nicht sehen kann. Der Beleg ist **nicht** „es lief", sondern `make
+      docs-check` **vor und nach** demselben Move, beide Ausgaben im Bericht — und dazu der Move
+      einer Datei, die **beide** Richtungen trägt, weil ein Move ohne ausgehende Geschwister-Ziele
+      die zweite Hälfte der Zusage nicht prüft.
 - [ ] **(3) Der Skriptkopf nennt, was das Werkzeug *nicht* kann.** Zwei Grenzen sind schon bekannt
       und gehören hinein: es zieht **Pfade** nach und keine **Zustandssätze**, und
       Welle-Plan-Dateien wechseln beim Closure-Move die Verzeichnis-**Tiefe**. Jede weitere
@@ -193,12 +227,20 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Die Übernahme bringt fremde Annahmen mit, und eine davon ist gemessen zu eng.** Das
-  Vorbild-Skript ersetzt zwei Formen; dieses Repo führt daneben mindestens zwei weitere (blanker
-  Geschwister-Name, ausgehende Adressen der bewegten Datei). Ein Werkzeug, das nur die zwei
+  Vorbild-Skript ersetzt zwei Formen; die zwei Kommandos aus §1 geben für dieses Repo **13**
+  Präfix-Formen plus die Form ohne Verzeichnis-Segment aus. Ein Werkzeug, das nur die zwei
   bekannten trifft, meldet Erfolg und lässt den Rest stehen — schlimmer als kein Werkzeug, weil es
   die Handprüfung ersetzt, die heute den Rest fängt. — **Ausgang:** <eingetreten: slice-NNN |
   entfallen: die Form-Menge ist gemessen und vollständig abgedeckt | weiter offen: → `BEO-<NNN>`
   im Register>
+- **Ein Liefergegenstand liegt in einer Artefakt-Klasse ohne benannte schreibende Rolle.** §3
+  führt [`.claude/commands/implement-slice.md`](../../../../.claude/commands/implement-slice.md);
+  wer die Anweisungssätze unter [`.claude/commands/`](../../../../.claude/commands/) schreiben
+  darf, sagt keine Quelle — das ist `BEO-007` im [Beobachtungs-Register](../observations.md), und
+  der Verantwortliche dieses Slice ist der Implementer. Fällt die Antwort gegen ihn, greift die
+  Rückführung `in-progress` → `open` aus §4; die zwei übrigen Zeilen der Tabelle bleiben davon
+  unberührt und tragen die Zusage aus DoD (2) allein. — **Ausgang:** <entfallen: die Zeile ist
+  ohne Rollen-Konflikt geschrieben | eingetreten: slice-NNN | weiter offen: → `BEO-007`>
 - **Eine Adresse ist ein Teilstring, und Slice-Nummern sind Präfixe voneinander.** `slice-13`
   steckt in `slice-130`; eine Ersetzung über den blanken Nummern-Teil trifft Nachbarn. Die
   Ersetzung muss auf dem **vollen Dateinamen** ankern, und das ist zu belegen, nicht zu behaupten.
@@ -263,11 +305,24 @@ oben. Eine eigene Sub-Area für das Planning-Layout auszudifferenzieren, wäre h
 der Slice legt ein Skript und ein Make-Ziel an und baut keine Konventions-Dichte auf, die eine
 eigene Zeile in der Deklaration trüge.
 
-**Vorgelagert — offene Beobachtungen sichten:** **ein Treffer.**
-[`observations.md`](../observations.md) führt `BEO-003` — *der Abgleich nach einem
-Lifecycle-Move läuft von Hand, und zwei Verweis-Formen brechen dabei regelmäßig* —, und dieser
-Slice **ist** ihr Träger. Sub-Area und Zähler-Stand stehen in der Datei und nicht hier, damit nicht
-zwei Fassungen driften. Der Stand gehört ins Kriterium *Evidenz-/Diskrepanz-Risiko*: er ist der
-Grund, warum dieser Slice überhaupt geschnitten ist, und **nicht** die Existenz eines fremden
-Skripts.
+**Vorgelagert — offene Beobachtungen sichten:** **der Sub-Area-Test trifft jede offene Zeile, und
+das ist selbst eine der Beobachtungen.** Der Schritt fragt *„steht eine der berührten Sub-Areas im
+Register?"*; berührt sind [`harness/tools/`](../../../../harness/tools/) und `*` (gesamtes Repo),
+und **jede** Zeile in [`observations.md`](../observations.md) trägt `*` — genau das ist `BEO-004`.
+Der Test sortiert hier also nichts aus; was er liefert, ist die volle offene Liste, und die
+Zuordnung zu diesem Slice muss aus dem Gegenstand kommen. **Zwei Zeilen berühren ihn:**
+
+- `BEO-003` — *der Abgleich nach einem Lifecycle-Move läuft von Hand, und zwei Verweis-Formen
+  brechen dabei regelmäßig* —, und dieser Slice **ist** ihr Träger. Zähler-Stand und Belege stehen
+  in der Datei und nicht hier, damit nicht zwei Fassungen driften. Der Stand gehört ins Kriterium
+  *Evidenz-/Diskrepanz-Risiko*: er ist der Grund, warum dieser Slice überhaupt geschnitten ist,
+  und **nicht** die Existenz eines fremden Skripts. **Die Zeile nennt zwei Formen; §1 misst
+  mehr** — der Träger schuldet ihr damit eine Präzisierung, keine zweite Kennung.
+- `BEO-007` — die fehlende schreibende Rolle für [`.claude/commands/`](../../../../.claude/commands/);
+  sie trifft **eine** Zeile der Plan-Tabelle in §3 und steht als Risiko in §6.
+
+Der Rest der offenen Liste — wie lang sie ist, sagt
+`grep -c '^| BEO-' docs/plan/planning/observations.md`, und sie wächst mit jeder Closure — berührt
+den Gegenstand dieses Slice nicht. `BEO-004` ist darin selbst enthalten: es erklärt, warum der
+Sub-Area-Test hier nichts aussortiert, und ist deshalb Werkzeug dieser Sichtung, nicht ihr Treffer.
 
