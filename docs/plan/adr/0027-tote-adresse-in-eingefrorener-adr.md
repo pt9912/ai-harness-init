@@ -1,6 +1,6 @@
 # ADR-0027: Eine tote Adresse in einer eingefrorenen ADR wird ausgenommen, nicht nachgezogen — und ein Carveout-Zeiger entsteht künftig ohne Adresse
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-08-30
 
@@ -336,3 +336,4 @@ Paar eine neue ADR verlangt, ist eine Hard-Rule-Aussage
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-08-30 | **Proposed** | Architect-Entscheid zum letzten roten Befund des Doku-Gates. Vier Läufe am gepinnten Stand tragen ihn: das geschnittene Referenz-Ventil, seine zwei roten Gegenproben und die Gegenmessung auf der Datei-Achse |
+| 2026-08-30 | **Accepted** | Angenommen vom Auftraggeber. Festlegung 3 regiert diese Zeile selbst: `CO-005` steht bei der Kennung, ohne Pfad-Link — die Form, deren Fehlen den Befund erzeugt hat, den Festlegung 1 stehen lässt |
