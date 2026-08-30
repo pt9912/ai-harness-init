@@ -26,7 +26,8 @@
 #   5. baseline-verify haengt als ERSTER an der Kante. Das ist die Reihenfolgen-Zusage,
 #      die im Makefile neben der Kante steht: steht die vendored Baseline nicht, ist jede
 #      Aussage der Folge-Gates ueber sie wertlos. Serielles make baut die Voraussetzungen
-#      in Listen-Reihenfolge ab; unter `-j` faellt die Zusage (Grenze unten).
+#      in Listen-Reihenfolge ab; unter `-j` faellt die Zusage — gemessen in der Grenze
+#      unten, Haelfte (a).
 #
 # ZUSAGE 4 IST STRENGER ALS ZUSAGE 1: eine leere Kante verletzt beide, 1 faellt also nie
 # allein. Sie bleibt trotzdem stehen, weil sie den Mechanismus benennt und ihre Diagnose
@@ -38,17 +39,49 @@
 # stille Kuerzen — Makefile geaendert, Liste hier nicht — und zwingt jeden neuen Gate
 # durch zwei Stellen; wer beide zugleich aendert, kommt an ihm vorbei.
 #
-# WAS ER NICHT PRUEFT (Grenze): das VERHALTEN von make. Ob ein Lauf den Stempel
-# schreibt, entscheidet make, nicht die Struktur. Die Wege, die ihn ueber rotem Stand
-# schreiben, stehen im Makefile neben der Kante; gemessen sind sie an einem
-# synthetischen Makefile derselben Kantenform, und so wird die Messung wiederholt:
+# WAS ER NICHT PRUEFT (Grenze). Was hier steht, ist gemessen; dass es die ganze Grenze
+# waere, steht nicht da.
+#
+# (a) LAUFZEIT — ob ein Lauf den Stempel schreibt, entscheidet make; ein Aufruf ist an
+# der Struktur nicht sichtbar. Gemessen an einem synthetischen Makefile derselben
+# Kantenform, und so wird die Messung wiederholt (je Lauf `STEMPEL-Treffer/Exit`):
 #   d=$(mktemp -d)
 #   printf '.PHONY: gates record-gates gruen rot\ngates: record-gates\nrecord-gates: gruen rot\n\t@echo STEMPEL\ngruen:\n\t@echo g\nrot:\n\t@exit 1\n' > "$d/Makefile"
-#   for f in "" -k -i "-o rot"; do make -C "$d" $f gates 2>&1 | grep -c STEMPEL; done
-# -> `0 0 1 1` (2026-08-30, GNU Make 4.3). Dieselbe Datei mit `.IGNORE: rot` in der
-# ersten Zeile -> 1, mit `-@exit 1` statt `@exit 1` -> 1,
-# `MAKEFLAGS=i make -C "$d" gates` -> 1, `MAKEFLAGS=k make -C "$d" gates` -> 0. Ein
-# Aufruf des Skripts an make vorbei kennt ohnehin keinen Check.
+#   for f in "" -k -i "-o rot" "-W rot" -j4 "-j4 -k"; do out=$(make -C "$d" $f gates 2>&1); rc=$?; printf '%s/%s ' "$(grep -c STEMPEL <<<"$out")" "$rc"; done
+#   for e in MAKEFLAGS=i MAKEFLAGS=k; do out=$(env $e make -C "$d" gates 2>&1); rc=$?; printf '%s/%s ' "$(grep -c STEMPEL <<<"$out")" "$rc"; done
+# -> `0/2 0/2 1/0 1/0 1/0 0/2 0/2` fuer die Flag-Reihe (in ihrer Reihenfolge) und
+# `1/0 0/2` fuer die zwei MAKEFLAGS-Laeufe (2026-08-30, GNU Make 4.3). `-o` und `-W`
+# bedeuten Verschiedenes (--old-file gegen --what-if); an dieser Kantenform wirken sie
+# gleich, und die Flag-Reihe misst beide einzeln. Ein Aufruf des Skripts an make vorbei
+# kennt ohnehin keinen Check.
+#
+# Die zwei Klassen, die der Makefile neben der Kante fuehrt — ein gefallener Check gilt
+# als GELUNGEN gegen der Check laeuft GAR NICHT —, trennen sich daran, OB sein Rezept
+# laeuft; sichtbar wird das, sobald es etwas ausgibt:
+#   e=$(mktemp -d); sed 's/^\t@exit 1$/\t@echo ROT; exit 1/' "$d/Makefile" > "$e/Makefile"
+#   for f in -i "-o rot" "-W rot"; do printf '%s ' "$(make -C "$e" $f gates 2>&1 | grep -c ROT)"; done
+# -> `1 0 0`: unter `-i` laeuft der Check und sein Fehlschlag gilt als gelungen, unter
+# `-o`/`-W` laeuft er gar nicht erst.
+#
+# Unter `-j` bleibt der Stempel gedeckt (`0/2` oben); was dort faellt, ist Zusage 5 —
+# eine Kante sagt "haengt ab von", nicht "laeuft danach". Gemessen an einer Kante, deren
+# erste Voraussetzung laenger braucht:
+#   d2=$(mktemp -d)
+#   printf '.PHONY: gates record-gates erst zweit\ngates: record-gates\nrecord-gates: erst zweit\n\t@echo STEMPEL\nerst:\n\t@sleep 0.3; echo ERST\nzweit:\n\t@echo ZWEIT\n' > "$d2/Makefile"
+#   make -C "$d2" --no-print-directory gates; make -C "$d2" --no-print-directory -j2 gates
+# -> seriell `ERST ZWEIT STEMPEL`, unter `-j2` `ZWEIT ERST STEMPEL`.
+#
+# (b) STRUKTUR IN DIESER DATEI, die dieser Waechter nicht liest — nicht Laufzeit: eine
+# `.IGNORE:`-Zeile und ein `-` im Rezept-Praefix eines Checks schreiben den Stempel ueber
+# rotem Stand OHNE Flag am Aufruf. Beide sind Text IM Makefile, also in der Datei, die
+# dieser Waechter ohnehin parst, und waeren damit strukturell pruefbar; er liest aber nur
+# Voraussetzungs-Listen, keine Rezept-Zeilen und keine Sonderziele. Gemessen ueber
+# derselben Form wie oben:
+#   for s in '1i.IGNORE: rot' '1i\ .IGNORE: rot' 's/^\t@exit 1$/\t@-exit 1/' 's/^\t@exit 1$/\t-@exit 1/'; do e=$(mktemp -d); sed "$s" "$d/Makefile" > "$e/Makefile"; out=$(make -C "$e" gates 2>&1); rc=$?; printf '%s/%s ' "$(grep -c STEMPEL <<<"$out")" "$rc"; done
+# -> `1/0 1/0 1/0 1/0`: die vier Schreibweisen wirken gleich — `.IGNORE:` auch mit
+# fuehrendem Leerzeichen, das `-` an beiden Stellen des Praefix-Buendels. Ob heute eine
+# von ihnen im echten Makefile steht, misst das Kommando dort neben der Kante; seine zwei
+# Muster sind auf diese vier eingestellt.
 # Ebenfalls draussen: Doppelpunkt-Regeln (`ziel::`) — dieses Repo fuehrt keine
 # (`grep -cE '^[A-Za-z_.-]+::' Makefile d-check.mk` -> je 0), und ein Waechter ueber
 # einer Form, die es nicht gibt, hat einen leeren Pruefbereich.

@@ -9,15 +9,13 @@
 # dieses Ziel nach einem gefallenen Check noch baut, auch unter `-k`. Wächter über der
 # Kante: test/gate-nachweis-kante.bats.
 #
-# GRENZE — die Wege, die den Nachweis über rotem Stand entstehen lassen, stehen mit
-# ihren Messungen im Makefile neben der Kante. Hier steht die Kurzform und kein zweiter
-# Bestand: zwei gepflegte Listen derselben Sache driften. Kurz — make lässt sich sagen,
-# dass ein gefallener Check gelungen ist (`-i`, `MAKEFLAGS=i`, `.IGNORE:`, ein `-` vor
-# einer Rezept-Zeile) oder dass ein Check gar nicht erst läuft (`-o`/`-W`); in beiden
-# Fällen läuft dieses Rezept über rotem Stand. Ein Aufruf an make vorbei
-# (`bash harness/tools/record-gates.sh`) kennt ohnehin keinen Check. NICHT dazu gehören
-# `make -j` — dort bleibt der Nachweis gedeckt und nur die Reihenfolgen-Zusage fällt —
-# und `make record-gates`, das dieselben Checks mitzieht wie `make gates`.
+# GRENZE — dieses Rezept kann über rotem Stand laufen: make lässt sich sagen, dass ein
+# gefallener Check gelungen ist oder dass ein Check gar nicht erst läuft, und ein Aufruf
+# an make vorbei (`bash harness/tools/record-gates.sh`) kennt ohnehin keinen Check.
+# WELCHE Aufrufe und Schreibweisen das sind, steht hier nicht, sondern gemessen im
+# Makefile neben der Kante. Eine Kurzform hier wäre eine zweite gepflegte Liste
+# derselben Sache, und zwei Listen driften. Dass jene Liste abgeschlossen wäre, steht
+# auch dort nicht.
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 

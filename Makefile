@@ -302,24 +302,31 @@ hook-overhead: ## Aufschlag je Tool-Call messen (Median, ADR-0011-Schwelle) — 
 # Bewacht sind beide Hälften dieser Liste — ihr Bestand und ihr erster Eintrag — in
 # derselben bats-Datei: wer hier einen Check einträgt oder streicht, trägt ihn dort mit.
 #
-# GRENZE — was die Kante nicht nimmt. Die Aufzählung führt die Wege, die GEMESSEN sind
-# (je einzeln an einem synthetischen Makefile derselben Kantenform; die Kommandos stehen
-# im Kopf von test/gate-nachweis-kante.bats). Dass es keinen weiteren gibt, steht hier
-# NICHT: die Menge ist nicht gemessen, und `make` kennt mehr Schalter als diese Liste.
+# GRENZE — was die Kante nicht nimmt. Die Aufzählung führt die Wege, die GEMESSEN sind:
+# je einzeln an einem synthetischen Makefile derselben Kantenform, und Kommando wie
+# Ausgabe stehen im Kopf von test/gate-nachweis-kante.bats — dort tragen Hälfte (a) die
+# Wege über den Aufruf, Hälfte (b) die zwei, die ohne Flag auskommen. Dass es keinen
+# weiteren gibt, steht hier NICHT: die Menge ist nicht gemessen, und `make` kennt mehr
+# Schalter als diese Liste.
 #   * Ein gefallener Check gilt make als GELUNGEN: die Voraussetzung steht, das Rezept
 #     läuft, der Nachweis entsteht über rotem Stand — und der Lauf endet mit Exit 0.
 #     Gemessen sind: `make -i`, `MAKEFLAGS=i` aus der Umgebung, eine `.IGNORE:`-Zeile
-#     und ein `-` vor der Rezept-Zeile eines Checks. Die zwei letzteren brauchen kein
-#     Flag am Aufruf — sie stehen in dieser Datei; heute steht dort keines von beiden
-#     (`sed -n '/^\.IGNORE/p' Makefile d-check.mk | wc -l` -> 0 und
-#     `sed -n '/^\t-/p' Makefile d-check.mk | wc -l` -> 0); der Wächter über der Kante
-#     liest nur Voraussetzungen, keine Rezept-Zeilen und keine Sonderziele.
-#   * Der Check läuft GAR NICHT: `make -o <check>` (--old-file), gleichbedeutend
-#     `make -W <check>` (--what-if). make überspringt ihn, die Voraussetzung gilt als
-#     erfüllt, das Rezept läuft, Exit 0.
+#     und ein `-` im Rezept-Präfix eines Checks. Die zwei letzteren brauchen kein
+#     Flag am Aufruf — ihr Ort ist diese Datei; heute steht dort keines von beiden
+#     (`sed -n '/^ *\.IGNORE/p' Makefile d-check.mk | wc -l` -> 0 und
+#     `sed -n '/^\t[@+-]*-/p' Makefile d-check.mk | wc -l` -> 0). Die zwei Muster decken
+#     die vier Schreibweisen, die Hälfte (b) dort einzeln misst: `.IGNORE:` mit und ohne
+#     führendes Leerzeichen, das `-` an beiden Stellen des Präfix-Bündels (`@-` wie
+#     `-@`). Der Wächter über der Kante liest nur Voraussetzungen, keine Rezept-Zeilen
+#     und keine Sonderziele.
+#   * Der Check läuft GAR NICHT: `make -o <check>` (--old-file) und `make -W <check>`
+#     (--what-if). Die zwei bedeuten Verschiedenes; an dieser Kantenform wirken sie
+#     gleich, je einzeln gemessen — make überspringt den Check, die Voraussetzung gilt
+#     als erfüllt, das Rezept läuft, Exit 0.
 #   * `make -j`: eine Kante sagt „hängt ab von", nicht „läuft danach". Der Nachweis
 #     bleibt gedeckt (make baut kein Ziel mit gefallener Voraussetzung); was fällt, ist
-#     die baseline-verify-zuerst-Zusage oben.
+#     die baseline-verify-zuerst-Zusage oben — beides gemessen, `-j4` und `-j4 -k` für
+#     die Deckung, ein Lauf mit verzögerter erster Voraussetzung für die Reihenfolge.
 # KEIN WEG, sondern die Struktur-Grenze der Kante: das ERGEBNIS liest sie nicht — `make`
 # gibt dem Rezept keinen Ergebnis-Kanal. Sie bindet die Reihenfolge, nicht den Ausgang;
 # ein Nachweis über den Ausgang verlangte eine Quittung je Check.
