@@ -150,7 +150,7 @@ entstanden ist. Der Trigger fragt nach der **Entscheidung**, nicht nach der Farb
 ## Geltungs-Konfiguration
 
 **Es gibt heute keine — und anders als bei
-[`CO-005`](../CO-005-adaptions-block-datierter-beleg.md) ist das kein Werkzeug-Befund, sondern ein
+[`CO-005`](CO-005-adaptions-block-datierter-beleg.md) ist das kein Werkzeug-Befund, sondern ein
 offener Posten.** Gemessen, nicht angenommen: `git grep -c 'CO-004\|CO-005' -- test/ .d-check.yml
 Makefile` liefert **keinen Treffer**, und der rote Lauf gibt `not ok 40` / `not ok 41` ohne jede
 Kennung aus. Modul 7 verlangt *„Die Gate-Konfiguration nennt die `CO-<NNN>` im Gate-Output — sonst
@@ -188,7 +188,7 @@ rot. Ein Ausschluss der Fälle wäre eine Schwellen-Senkung und nach
 - [x] `make gates` grün ohne Ausnahme — für **dieses** Gate. Gefahren 2026-08-30: die bats-Stufe
       meldet `1..196` ohne `not ok`, `make test` ist damit grün, und keine Konfiguration nimmt einen
       Fall aus. **Was daneben rot bleibt, gehört nicht hierher:** `docs-check` fällt unter
-      [`CO-005`](../CO-005-adaptions-block-datierter-beleg.md) (Träger
+      [`CO-005`](CO-005-adaptions-block-datierter-beleg.md) (Träger
       [slice-132](../../planning/in-progress/slice-132-adaptions-block-ohne-totes-ziel.md)) — ein anderer Carveout,
       eine andere Ursache, und dieser hier ist extensional geschlossen (Kopf, §Geltungsbereich).
 - [x] Datei wird nach `docs/plan/carveouts/done/` bewegt (reiner `git mv`) — vollzogen am

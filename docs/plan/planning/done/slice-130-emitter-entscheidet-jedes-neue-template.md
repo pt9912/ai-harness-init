@@ -183,7 +183,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       aufgelöst und seine Datei per `git mv` in `carveouts/done/`, die Index-Zeile umgehängt.
       **Der Haken ruht auf der Ausnahme-Hälfte, nicht auf dem Wort *grün*:** `make -k gates` ist
       rot, an genau einem Ziel, und dessen Ursache ist
-      [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) — ein fremder,
+      [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) — ein fremder,
       dokumentierter Carveout mit eigenem Träger
       ([slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md)), den dieser Slice nicht
       auflösen kann. Warum der Satzanfang unter keiner korrekten Ausführung dieses Slice erreichbar
@@ -424,7 +424,7 @@ verdeckt der erste Abbruch die übrigen zehn Ziele), Exit **2**, und genau **ein
 `make: *** [d-check.mk:66: docs-check] Fehler 1`). Der eine Befund ist
 `harness/conventions.md:1019 → ../.harness/baseline/v3.5.2/regelwerk/modul-08-agentenrollen.md#rollen-sequenz-für-einen-slice · target-missing`
 bei `d-check: 468 Datei(en) geprüft, 1 Befund(e)` — Zeichen für Zeichen der Geltungsbereich von
-[`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md), dessen Träger
+[`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md), dessen Träger
 [slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) in `open/` liegt. Ein Slice, der
 diesen Befund mitnähme, hätte den Schnitt verlassen.
 
@@ -763,7 +763,7 @@ damit der nächste Planner-Lauf sie findet.
 
 `make -k gates`, `make smoke` und `make full-smoke` sind über dem Arbeitsbaum dieser Closure
 gefahren und oben zitiert. **`make gates` grün ist kein Closure-Kriterium dieses Slice** — das eine
-rote Ziel gehört [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) und damit
+rote Ziel gehört [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) und damit
 [slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md). `make mutate` ist **nicht**
 gefahren, mit Grund statt aus Bequemlichkeit: dieser Zug ändert keine Zeile Code
 (`git diff --name-only HEAD -- internal/ test/ | wc -l` → **0**), und über demselben Code-Inhalt

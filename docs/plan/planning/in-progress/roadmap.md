@@ -37,7 +37,7 @@ Plan-Datei.
 
 **Der Zwischenstand ist rot und benannt, nicht rot und still — und von seinen zwei Sorten ist eine
 noch da.** Auf den **Gates** hält ihn ein Carveout:
-[`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) auf `docs-check`
+[`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) auf `docs-check`
 (Folge-Slice `slice-132`). Er hat **keine** Gate-Konfiguration: das Modul `links` kennt am
 Pin `v0.65.0` keine Referenz-Ausnahme, `d-check:ignore` deckt es nicht (Sonde), und `scan.ignore`
 wirkt datei-weit. Dort bleibt der Gate rot, und der Carveout ist der einzige Träger der Begründung.

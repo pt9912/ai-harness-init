@@ -233,7 +233,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [ ] `make gates` bringt **keinen Befund hervor, der diesem Slice zuzurechnen ist**. Die Zusage
       ist bewusst so und nicht „grün" formuliert: der Lauf trägt zum Schnitt-Zeitpunkt zwei offene
       Carveouts ([`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) auf `test`,
-      [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) auf `docs-check`), und
+      [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) auf `docs-check`), und
       beide sind fremde Posten mit eigenen Folge-Slices. Verlangt ist der **Vorher-Nachher-Vergleich
       derselben Ausgabe** — dieselben Befunde, dieselbe Zurechnung, bei `docs-check` eine geprüfte
       Datei mehr.

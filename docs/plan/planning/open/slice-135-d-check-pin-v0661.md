@@ -105,7 +105,7 @@ Arbeitsbaum dieses Repos, netzlos (`--network none`), Mount `:ro`; der Klon des 
    zwei Ausgaben führt **genau eine** Zeile — das von `make` mitgeschriebene `docker run`, in dem
    der Digest steht. **Weder die 450 noch die 1 sind Erwartungswerte:** die Dateizahl wächst mit
    jedem Dokument, und der eine Befund ist der bekannte, von
-   [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) getragene Stand
+   [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) getragene Stand
    ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
    Setzung 2). Tragend ist die **Gleichheit** der zwei Ausgaben.
 3. **Das Fragment ändert sich in genau einer Zeile.** `--print-mk` unter beiden Digests, netzlos:
@@ -259,7 +259,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt
 - [ ] `make gates` ohne **neuen** Befund — und der Punkt sagt hier bewusst nicht „grün": der
       Gate-Lauf ist heute rot, an genau einem Befund, den dieser Slice nicht verursacht und nicht
       behebt (§1 Messung 2, getragen von
-      [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md), aufzulösen von
+      [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md), aufzulösen von
       [slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md)). Der Punkt bedeutet hier: **kein
       Befund kommt hinzu und keiner fällt weg**, gemessen gegen §1 Messung 2. Steht die Reihenfolge
       anders — 132 zuerst —, ist er unverändert `0 Befund(e)`.

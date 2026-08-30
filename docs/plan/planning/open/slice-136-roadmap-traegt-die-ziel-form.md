@@ -285,7 +285,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Diese Hälfte trägt das Review.
 - [ ] `make gates` grün. **Erwartet ist der Stand der Welle, nicht Grün auf leerem Blatt:**
       `docs-check` steht bei einem vorbestehenden Befund
-      ([`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md), Folge-Slice
+      ([`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md), Folge-Slice
       `slice-132`). Abzunehmen ist, dass **kein weiterer** dazukommt — die Zählzeile vor und nach
       dem Slice gehört in den Umsetzungs-Commit.
 - [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist — die Roadmap ist **keiner**: sie
@@ -366,7 +366,7 @@ Richtungen.
 
 **Kriterium 2 — `make gates` läuft, und die `docs-check`-Zählzeile ist gegen den Vorher-Stand
 gehalten.** Abzunehmen ist die **Differenz null**, nicht Grün: der eine vorbestehende Befund
-([`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md)) bleibt, ein zweiter wäre
+([`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md)) bleibt, ein zweiter wäre
 dieser Slice.
 
 **Lerneintrag** in §7 — ohne ihn geht der Slice nicht nach `done/`.

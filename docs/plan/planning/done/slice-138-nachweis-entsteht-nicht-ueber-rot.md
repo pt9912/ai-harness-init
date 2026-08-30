@@ -224,7 +224,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       unverändert oder wird in derselben Zeile auf das eingeschränkt, was die gewählte Form hält
       ([`AGENTS.md`](../../../../AGENTS.md) §3.7). **Rot gesehen** heißt: derselbe Lauf **vor** der
       Änderung schreibt den Stempel; die rote Vorbedingung liegt zum Schnitt-Zeitpunkt vor
-      ([`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) hält `docs-check`
+      ([`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) hält `docs-check`
       rot), und wird sie vorher aufgelöst, stellt der Lauf sie synthetisch her.
 - [x] **(2) Jede Stelle, die die Zusage trägt, sagt, was der Code hält — und die Wege, die offen
       bleiben, stehen dort mit.** Die Menge ist ein Kommando, keine Liste:
@@ -253,7 +253,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [x] `make gates` bringt **keinen Befund hervor, der diesem Slice zuzurechnen ist** — der Lauf
       trägt zum Schnitt-Zeitpunkt zwei offene Carveouts
       ([`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) auf `test`,
-      [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) auf `docs-check`),
+      [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) auf `docs-check`),
       beide fremde Posten mit eigenen Folge-Slices. Verlangt ist der Vorher-Nachher-Vergleich
       derselben Ausgabe.
 - [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist — hier keiner: der emittierte
@@ -368,7 +368,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Die rote Phase blockt danach jeden Stop, und das ist der Preis, nicht ein Nebeneffekt.**
-  Solange [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) `docs-check` rot
+  Solange [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) `docs-check` rot
   hält, entsteht **kein** gültiger Stempel mehr — heute entsteht er über `-k`. Der Loop-Guard des
   Hooks gibt beim zweiten Anlauf frei (*„Hat dieser Hook den Stop bereits einmal blockiert …, nicht
   erneut blockieren"*), der Preis ist also **eine** Blockade je Sitzung, kein Stillstand. Wer ihn
@@ -594,7 +594,7 @@ Ausgabe, beide Stände von mir gefahren:
 
 | Ziel | `b22f330` | `ef22f72` | Zurechnung |
 |---|---|---|---|
-| `docs-check` | `457 Datei(en) geprüft, 1 Befund(e)` | `462 Datei(en) geprüft, 1 Befund(e)` | dieselbe Zeile: `harness/conventions.md:1019 … target-missing` = [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) |
+| `docs-check` | `457 Datei(en) geprüft, 1 Befund(e)` | `462 Datei(en) geprüft, 1 Befund(e)` | dieselbe Zeile: `harness/conventions.md:1019 … target-missing` = [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) |
 | `test-bats` | `1..190`, `not ok 40`/`41` | `1..195`, `not ok 40`/`41` | dieselben zwei = [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md); je `command grep -cE '^not ok '` → **2** |
 | übrige acht | — | grün | — |
 
@@ -888,7 +888,7 @@ oben) und die vier übrigen Mutations-Fälle (dafür ist die Verifikation Eingab
 **Diese Notiz selbst ist gegen den Doku-Gate gehalten:** `make docs-check` über dem Baum dieser
 Closure → `d-check: 462 Datei(en) geprüft, 1 Befund(e)`, und der eine ist
 `harness/conventions.md:1019 … target-missing` =
-[`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) — dieselbe Zahl und derselbe
+[`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) — dieselbe Zahl und derselbe
 Befund wie im Gate-Lauf über `ef22f72`. Der Text dieser Sektion bringt keinen zweiten hervor.
 
 **Die Grenzen dieser Closure, weil sie sonst nirgends stünden.** Ein fünfter Review-Durchgang nach

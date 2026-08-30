@@ -110,7 +110,7 @@ mit, hier fällt, was `in` **und** `refs` gemeinsam treffen — an zwei roten Ge
 **Die Entscheidung liegt bereits in einem Architect-Artefakt, und sie widerspricht dem Carveout.**
 [`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen)
 steht seit `d72e6dd` (2026-08-28 19:01) im Block,
-[`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) entstand mit `26aec2c`
+[`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) entstand mit `26aec2c`
 (19:20) — beide Zeitstempel liefert `git log --format='%h %ci' -1 <ref>`. Der Carveout führt den
 Befund als **temporär mit Auflösungs-Trigger**, der Eintrag als **dauerhaft**. Was der Eintrag
 sagt, trifft beide Kandidaten unten:
@@ -142,7 +142,7 @@ sagt, trifft beide Kandidaten unten:
 **Damit ist (a) verstellt, und DoD (1) ist zur Hälfte beantwortet.** Offen ist nicht mehr,
 *welche* der zwei Festlegungen den Eintrag regiert — **keine von beiden**, solange der Block
 inline läuft —, sondern ob dieses Repo bei dieser Antwort bleibt und was daraus für
-[`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) folgt. Diese zweite Hälfte
+[`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) folgt. Diese zweite Hälfte
 gehört weiter dem Architect: eine Feststellung dieser Art bindet nur in einem seiner Artefakte,
 und
 [`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen)
@@ -156,7 +156,7 @@ zwei Sätze sprechen über verschiedene Gegenstände.**
 sagt, der **Link** bleibe tot und dürfe nicht repariert werden; das bleibt unter (c) Wort für
 Wort wahr, denn das Ventil ändert an
 [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
-kein Zeichen. [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) sagt, der
+kein Zeichen. [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) sagt, der
 **Befund** sei temporär; das wird unter (c) wahr. Was in
 [`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen)
 nicht mehr trägt, ist der Halbsatz *„ohne dass jemand sie richtig beheben kann"* — er ist eine
@@ -263,7 +263,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       [`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen)
       antwortet **keine von beiden** (§1). Der Punkt ist damit nicht erledigt, sondern verlegt: zu
       erreichen ist, dass diese Antwort entweder als die geltende ausgewiesen wird — und dann
-      [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) über (c) aufgelöst
+      [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) über (c) aufgelöst
       wird statt über den Eintrag — oder dass ein Nachfolge-Eintrag bzw. eine neue ADR anders
       entscheidet. **Fällt die Wahl auf (c), gehört in dasselbe Artefakt die Senkung**: ein
       `ignore-refs`-Eintrag lockert die Prüfung auf der Referenz-Achse und braucht nach
@@ -299,7 +299,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Setzung 2). Trifft die zweite Menge genau einen Eintrag, steht **das** dabei — dann ist die
       Klassen-Aussage eine über den Mechanismus und nicht über die Zahl.
 - [ ] `make gates` grün — **ohne** die Ausnahme aus
-      [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md); der Carveout ist damit
+      [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md); der Carveout ist damit
       aufgelöst und seine Datei per `git mv` in `carveouts/done/`, die Index-Zeile umgehängt.
 - [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -321,7 +321,7 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update **durch den Architect** | der Beleg in [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben) Punkt 2; Umfang hängt an der Entscheidung aus DoD (1). Der Planner schneidet, er schreibt nicht ([`AGENTS.md`](../../../../AGENTS.md) §3.8) |
 | `docs/plan/adr/` | ggf. neu | eine ADR, falls die Entscheidung aus DoD (1) eine ist; [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) selbst bleibt byte-gleich ([`AGENTS.md`](../../../../AGENTS.md) §3.4) |
-| [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) | **auflösen** (`git mv` nach `done/`) | die Ausnahme fällt mit dem Befund |
+| [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) | **auflösen** (`git mv` nach `done/`) | die Ausnahme fällt mit dem Befund |
 | [`.d-check.yml`](../../../../.d-check.yml) | **kein `scan.ignore`-Eintrag**; bei Ausgang (c) ein Top-Level-`ignore-refs`-Eintrag | die Datei-Achse bleibt unberührt — das ist DoD (2) und keine Nebenbedingung. Die Referenz-Achse zu lockern ist eine Senkung nach [`AGENTS.md`](../../../../AGENTS.md) §3.5 und wandert mit ihrer ADR in Commit 1, nicht als Config-Beifang in einen anderen |
 | Verzeichnis-Form des Adaptions-Blocks (ein Eintrag je Datei) | **nur bei Ausgang (b)**, und dann als eigener Schnitt | [welle-10](../welle-10-re-baseline.md) §6 stellt den Umzug out-of-scope. Sein dort genannter Preis — jede `MR-`Kennung auf einen neuen Pfad — ist in §1 gegen das Nachbar-Repo gemessen und trifft nicht zu: die Datei bleibt als Index, der Anker bleibt. Der Umfang bleibt und ist keine Fracht dieses Slice |
 
@@ -338,7 +338,7 @@ Verteilung über drei Rollen *„Absicht, kein Defekt"*. Daraus vier Commits in 
    ([`ADR-0024`](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)).
    Sonst nichts.
 2. **Implementer — reiner `git mv`:**
-   [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) nach
+   [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) nach
    `docs/plan/carveouts/done/` ([`AGENTS.md`](../../../../AGENTS.md) §3.3).
 3. **Implementer — Inhalt:** die Index-Zeile in `docs/plan/carveouts/README.md` von *Aktiv* auf
    *Aufgelöst*, dazu die eingehenden Verweise, die der Move bricht.
@@ -366,7 +366,7 @@ Bedingung aus DoD (1).
   hat.
 - `in-progress` → `open` (blockiert — Carveout?): wenn die Entscheidung aus DoD (1) nicht fällt,
   weil sie eine Frage an eine höher rangierte Quelle aufwirft. Dann bleibt
-  [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) bestehen und bekommt eine
+  [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) bestehen und bekommt eine
   nachgetragene *Letzte Prüfung* — kein stilles Weiterlaufen.
 
 ## 5. Closure-Trigger
@@ -385,7 +385,7 @@ Ein leerer Config-Diff ist als zweites Kriterium untauglich: das Referenz-Ventil
 Config-Zeile und nähme die Datei samt allen ihren Verweisen aus der Prüfung. Gemessen wird darum
 das, was gemeint ist.
 Dazu die Closure-Notiz mit Steering-Loop-Lerneintrag und je Risiko aus §6 genau ein Ausgang;
-[`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) liegt danach in
+[`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) liegt danach in
 `carveouts/done/`.
 
 ## 6. Risiken und offene Punkte
@@ -430,7 +430,7 @@ dasteht.
   nicht erreichbar, und ein Planner- oder Implementer-Lauf, der ihn trotzdem „erledigt", verstößt
   gegen [`AGENTS.md`](../../../../AGENTS.md) §3.8. — **Ausgang:** <entfallen: die Entscheidung ist
   in einem Architect-Commit sichtbar (`git log --stat`) | eingetreten: Rückführung nach §4>
-- **[`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) und
+- **[`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) und
   [`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen)
   sagen Gegenteiliges über denselben Befund, und der Carveout beziffert seinen Geltungsbereich mit
   sagen Gegenteiliges über denselben Befund.** Der Carveout führt ihn als temporär, der Eintrag

@@ -176,7 +176,7 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
          [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) (zwei Fälle in
          `test/courseset-fixture.bats`; ihr Grün setzt die Klassen-Entscheidung über vier neue
          Vorlagen voraus — [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md))
-         und [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) (**eine**
+         und [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) (**eine**
          Referenz in
          [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
          Punkt 2, deren Satz nur über den abgelösten Stand wahr ist —
@@ -347,7 +347,7 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
   Zieldateien heißen am neuen Stand anders, ein Pfad-`sed` hätte den Doku-Gate rot gelassen, und
   `make docs-check` schweigt über sämtliche gezogenen Dateien (`452 Datei(en) geprüft,
   1 Befund(e)`, und der eine ist
-  [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md)). **Nicht** entfallen ist
+  [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md)). **Nicht** entfallen ist
   die verwandte Klasse *Adresse hält, Aussage bricht* — sie steht als letzter Punkt dieser Liste
   mit eigenem Ausgang.
 - **`BASELINE_ZIP_SHA256` kommt aus dem Asset, nicht aus dem Baum.** Ein aus dem entpackten
@@ -408,7 +408,7 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
   Punkt 2 ist nur über den abgelösten Stand wahr und steht unter der Append-only-Regel des
   Blocks; das Modul `links` kennt am Pin `v0.65.0` **keine** Referenz-Ausnahme, und `scan.ignore`
   wirkt datei-weit. — **Ausgang:** eingetreten →
-  [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) mit Folge-Slice
+  [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) mit Folge-Slice
   [slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md).
 - **Die vier Verweis-Klassen aus §1 fragen nach Auflösbarkeit, nicht nach Wahrheit.** Ein Verweis,
   dessen Datei und Anker halten, kann ein Zitat oder eine daraus gezogene Zahl tragen, die der
@@ -450,7 +450,7 @@ Lifecycle-Köpfen bestehender Slices sind unangetastet.
 und beide sind zugeordnet: [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) bleibt
 byte-gleich und ist der einzige neue `scan.ignore`-Eintrag (der Config-Kommentar trägt Begründung,
 ADR-Zeiger und die extensionale Grenze), die zweite ist
-[`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md). `make docs-check` bestätigt
+[`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md). `make docs-check` bestätigt
 die Menge: `452 Datei(en) geprüft, 1 Befund(e)`, und der eine ist genau jene Referenz.
 
 **Die Restmenge der stummen Nennungen trägt je Treffer einen der drei Ausgänge, nicht einen
@@ -490,7 +490,7 @@ Verifikation. Die halbe Migration fällt damit an vier getrennten Stellen auf
 ist heute neu erhoben statt übernommen. `make -k gates` (keep-going, damit der Abbruch nach
 `docs-check` nicht die übrigen zehn Ziele verdeckt) liefert **genau zwei** rote Ziele:
 `docs-check` mit `452 Datei(en) geprüft, 1 Befund(e)` =
-[`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) und `test-bats` mit
+[`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) und `test-bats` mit
 `not ok 40` / `not ok 41` bei **189** Fällen (`grep -cE '^(ok|not ok)'` über dieselbe Ausgabe) =
 [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md). Grün sind
 `baseline-verify` · `lint` · `build` · `shell-lint` · `ci-lint` · `host-bin` · `span-check` und
@@ -631,7 +631,7 @@ Alle **elf** Punkte tragen ihre `— **Ausgang:**`-Zeile in §6 selbst
 **sieben eingetreten** mit Carveout oder Folge-Slice — einmal
 [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) mit
 [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md), einmal
-[`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) mit
+[`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) mit
 [slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md), dreimal
 [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) (zweimal davon zusammen
 mit slice-130), einmal [slice-083](../open/slice-083-form-vergleich-pflichtfelder.md), einmal
@@ -658,7 +658,7 @@ klassifizieren; löst [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikat
 zehn Smoke-Befunde) · [slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md)
 (Präsens-Aussage gegen den gepinnten Stand) ·
 [slice-132](../in-progress/slice-132-adaptions-block-ohne-totes-ziel.md) (löst
-[`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md)) ·
+[`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md)) ·
 [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) (sieben der zehn
 Smoke-Befunde; läuft **vor** slice-130). Vorbestehend und unverändert zuständig:
 [slice-082](../open/slice-082-adaptions-durchgang.md) (Adaptions-Durchgang) und
@@ -689,7 +689,7 @@ Smoke-Befunde; läuft **vor** slice-130). Vorbestehend und unverändert zuständ
 ### Verifikation dieser Closure
 
 In diesem Lauf gefahren, alle über `make`: `baseline-verify` (grün) · `docs-check`
-(`452 Datei(en) geprüft, 1 Befund(e)` = [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md)) ·
+(`452 Datei(en) geprüft, 1 Befund(e)` = [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md)) ·
 `-k gates` (zwei rote Ziele, beide mit Carveout) · `smoke` (10 Befunde) · `full-smoke` (dieselben
 10, dann die Meldung über
 [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)) ·

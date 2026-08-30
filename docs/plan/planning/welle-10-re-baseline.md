@@ -183,7 +183,7 @@ wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
 - **`make gates` grün — und zwar ohne offenen Carveout auf einem Gate dieser Welle.** Der Zusatz
   ist nicht kosmetisch: ein Welle-Grün, das einen solchen Carveout mitzählte, hieße *„grün, außer
   wo wir nicht hinsehen"*. Offen und gate-rot ist
-  [`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md) auf `docs-check`;
+  [`CO-005`](../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) auf `docs-check`;
   [`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md) liegt in
   `carveouts/done/` und zählt nicht mehr mit. **Die Bezugsmenge ist auch hier ein Kommando, keine
   Zahl:** `ls docs/plan/carveouts/CO-*.md` nennt die offenen Dateien und
@@ -276,7 +276,7 @@ sind über die ganze slice-133-Kette unangetastet
 → **0**).
 
 **Ein Carveout hält den Zwischenzustand der Gates sichtbar statt still:**
-[`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md) (Gate `docs-check`, Folge-Slice
+[`CO-005`](../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) (Gate `docs-check`, Folge-Slice
 132). Er ist extensional geschlossen und deckt den Vertragsbruch oben **nicht**. Er hat **keine**
 Gate-Konfiguration, weil das Modul `links` am Pin `v0.65.0` keine Referenz-Ausnahme kennt; dort
 bleibt der Gate rot, und der Carveout ist der einzige Träger der Begründung.
@@ -297,10 +297,10 @@ an denselben zwei, weil sein Grün-Vorlauf genau diese Modi fährt; `make gates`
 [slice-130](done/slice-130-emitter-entscheidet-jedes-neue-template.md)
 ([`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md)) **und**
 [slice-132](in-progress/slice-132-adaptions-block-ohne-totes-ziel.md)
-([`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md)). **Was davon heute noch steht,
+([`CO-005`](../carveouts/done/CO-005-adaptions-block-datierter-beleg.md)). **Was davon heute noch steht,
 ist gemessen und nicht abgeleitet:** `make -k gates` hat genau **ein** rotes Ziel, `docs-check` —
 die `make gates`-Kante hängt damit allein an
-[`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md) und
+[`CO-005`](../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) und
 [slice-132](in-progress/slice-132-adaptions-block-ohne-totes-ziel.md), nicht mehr an
 [`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md). `make smoke` meldet
 `d-check: 20 Datei(en) geprüft, 0 Befund(e)` bei Exit 0, `make test-bats` liefert `1..196` ohne

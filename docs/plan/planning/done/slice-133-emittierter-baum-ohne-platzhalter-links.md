@@ -196,7 +196,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 - [x] `make gates` grün, soweit die Welle es zulässt — die offenen Carveouts
       [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) und
-      [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) bleiben bis zu ihren
+      [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) bleiben bis zu ihren
       eigenen Folge-Slices bestehen und sind **nicht** Gegenstand dieses Slice.
 - [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist —
       [`spec/lastenheft.md`](../../../../spec/lastenheft.md) bleibt dabei **unverändert** (§3).
@@ -283,7 +283,7 @@ dasteht.
 - **Der Ausschluss könnte in den emittierten Prüfbereich wandern statt in den Emitter.** Dann
   erbt jeder Adopter einen blinden Fleck in seinem eigenen `d-check`, und der Befund ist gegen
   einen unsichtbaren getauscht — dieselbe Abwägung, die
-  [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md) für `scan.ignore` führt. —
+  [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) für `scan.ignore` führt. —
   **Ausgang: entfallen.** Die Reparatur liegt im Emitter, und der emittierte Prüfbereich ist über
   die **ganze** Kette unberührt:
   `git diff --name-only 3ea5ae2^ HEAD -- internal/emit/templates/d-check.yml | wc -l` → **0**.
@@ -451,7 +451,7 @@ offene DoD-Pflicht, sondern ein **Bau-Problem mit eigenem Ort** — siehe *Über
 `make -k gates 2>&1 | command grep -cE '^make(\[[0-9]+\])?: \*\*\*'` → **2**, nämlich `docs-check`
 und `test-bats`. `docs-check`: `d-check: 456 Datei(en) geprüft, 1 Befund(e)`, und der eine ist
 `harness/conventions.md:1019 → ../.harness/baseline/v3.5.2/regelwerk/modul-08-agentenrollen.md#… · target-missing`
-— [`CO-005`](../../carveouts/CO-005-adaptions-block-datierter-beleg.md), vom Slice unabhängig.
+— [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md), vom Slice unabhängig.
 `test-bats`: `1..190` mit `not ok 40` und `not ok 41`, Zeichen für Zeichen die zwei Fallnamen aus
 [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md); `ok 42` und der neue `ok 43`
 sind grün. **Kein roter Fall außerhalb der Carveouts.** Grün und selbst gesehen:
