@@ -167,7 +167,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       entfällt mit diesem Grund, nicht still.
 - [ ] Beobachtungs-Register: eine `observations.md` unter `docs/plan/planning/` existiert nicht
       (`ls docs/plan/planning/observations.md` → kein Treffer); ob sie entsteht, entscheidet
-      [slice-137](../next/slice-137-beobachtungs-register-bekommt-seinen-ort.md). Bis dahin entfällt das
+      [slice-137](../in-progress/slice-137-beobachtungs-register-bekommt-seinen-ort.md). Bis dahin entfällt das
       Item mit diesem Grund, und was aufgefallen ist, steht in §7.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste Welle-Closure — dieses
@@ -250,7 +250,7 @@ dasteht.
   keinem Rang, gegen die [`AGENTS.md`](../../../../AGENTS.md) §3.7 geschrieben ist. Die Grenze ist
   eine Urteilsfrage, kein Muster. — **Ausgang:** <entfallen: je Weiche ein Zeiger, keine zweite
   Fassung | weiter offen: → Beobachtung, sobald das Repo ein Register führt
-  ([slice-137](../next/slice-137-beobachtungs-register-bekommt-seinen-ort.md))>
+  ([slice-137](../in-progress/slice-137-beobachtungs-register-bekommt-seinen-ort.md))>
 
 ## 7. Closure-Notiz
 
@@ -286,7 +286,7 @@ Werkzeugkette — zwei von drei). Beide erfüllen die Schwelle ≥ 2; keine ist 
 
 **Vorgelagert — offene Beobachtungen sichten:** das Repo führt **kein** Beobachtungs-Register —
 eine `observations.md` unter `docs/plan/planning/` existiert nicht, und ob sie entsteht, entscheidet
-[slice-137](../next/slice-137-beobachtungs-register-bekommt-seinen-ort.md). Keine Treffer, und der Grund ist
+[slice-137](../in-progress/slice-137-beobachtungs-register-bekommt-seinen-ort.md). Keine Treffer, und der Grund ist
 die fehlende Datei, nicht ein leeres Register.
 
 Alle berührten Sub-Areas GF: `internal/emit/` und `test/` gehören zum Greenfield-Bestand; der Modus

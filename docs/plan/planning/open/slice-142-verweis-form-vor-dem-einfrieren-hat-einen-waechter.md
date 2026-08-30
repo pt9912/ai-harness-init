@@ -152,7 +152,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [ ] Beobachtungs-/Reconciliation-Register: das Repo führt keines von beiden; das Item entfällt
       mit diesem Grund und wird in §7 notiert, nicht still übergangen. Träger für das
-      Beobachtungs-Register ist [slice-137](../next/slice-137-beobachtungs-register-bekommt-seinen-ort.md);
+      Beobachtungs-Register ist [slice-137](../in-progress/slice-137-beobachtungs-register-bekommt-seinen-ort.md);
       das Reconciliation-Register entfällt dauerhaft — dieses Repo hat keinen Brownfield-Bootstrap.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste Welle-Closure, nicht
@@ -277,4 +277,4 @@ Modus-Deklaration in
 **Vorgelagert — offene Beobachtungen sichten:** keine Treffer, und der Grund ist die fehlende
 Datei, nicht ein leeres Register (`find docs/plan -iname '*observation*' | wc -l` → **0**). Der
 Träger für seine Entstehung ist
-[slice-137](../next/slice-137-beobachtungs-register-bekommt-seinen-ort.md).
+[slice-137](../in-progress/slice-137-beobachtungs-register-bekommt-seinen-ort.md).

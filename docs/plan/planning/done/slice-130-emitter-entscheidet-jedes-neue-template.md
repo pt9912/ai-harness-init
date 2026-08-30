@@ -472,7 +472,7 @@ Klasse.
 `ls docs/plan/planning/observations.md` → `Datei oder Verzeichnis nicht gefunden`. Das ist keine
 Auslassung, sondern die Folge einer Dogfood-Entscheidung, die dieser Slice ausdrücklich nicht
 trifft (§1, §3); ihr Träger ist
-[slice-137](../next/slice-137-beobachtungs-register-bekommt-seinen-ort.md). **Die Folge ist nicht
+[slice-137](../in-progress/slice-137-beobachtungs-register-bekommt-seinen-ort.md). **Die Folge ist nicht
 bloß buchhalterisch:** beide Lerneinträge unten und die gezählte Klasse gehörten dorthin, und die
 Klasse hat mit diesem Slice ihre fünfte Review-Runde erreicht, ohne dass ein Zähler sie hält. Sie stehen
 deshalb hier, wo ein späterer Lauf sie nur findet, wenn er diesen Slice liest. **Ohne Register gibt

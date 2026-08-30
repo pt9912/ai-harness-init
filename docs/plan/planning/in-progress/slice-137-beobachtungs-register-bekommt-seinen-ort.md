@@ -178,13 +178,13 @@ sie nicht**, aus drei gemessenen Gründen:
    [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
    verbietet und den dieses Repo beim Meilenstein M4 schon einmal ausdrücklich abgewartet hat
    (der Trigger dort verlangt den gefüllten Prüfbereich **vor** der Aktivierung,
-   [`roadmap.md`](../in-progress/roadmap.md) §Meilensteine).
+   [`roadmap.md`](roadmap.md) §Meilensteine).
 2. **Die adoptierbare Hälfte kostet ein fremdes Norm-Artefakt.** Sie wäre ein viertes
    `ids`-Pattern (`BEO-\d{3}` auf die Registerdatei, `link-policy: always`) — und der `ids`-Block
    ist in
    [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
    ausgeschrieben. Ihn zu erweitern, ohne den Eintrag nachzuziehen, erzeugt genau die Drift, die
-   [slice-131](slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) und
+   [slice-131](../next/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) und
    [slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md) abräumen; ihn nachzuziehen ist
    Architect-Arbeit ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Beides gehört nicht in einen
    Planner-Slice, dessen Gegenstand ein Planungs-Artefakt ist.
