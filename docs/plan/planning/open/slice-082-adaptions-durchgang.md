@@ -95,9 +95,12 @@ längst erfüllt ist: Ein Trigger, den niemand abfragt, ist kein Wächter."*
       nicht die Zahl: `grep -c '^- \*\*Auflösungs-Trigger' harness/conventions.md` → am 2026-08-27
       **26** gegen **27** Einträge; beide Zahlen **wandern** und sind keine Erwartungswerte
       ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-      Setzung 2). Der eine ohne Trigger
-      ([`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung))
-      ist kein Ausreißer, sondern bereits aufgehoben; ihn trägt allein Achse 1.
+      Setzung 2). **Welche Einträge keinen Trigger führen, ist ebenfalls ein Kommando und keine
+      Liste in diesem Plan** — die Menge wächst mit jeder Aufhebung:
+      `awk '/^### MR-[0-9]/{if(id!=""&&!f)print id; id=$0; f=0} /Auflösungs-Trigger/{f=1} END{if(id!=""&&!f)print id}' harness/conventions.md`.
+      Ein Eintrag darin ist kein Ausreißer: ein **aufgehobener** Eintrag hat keinen Trigger mehr,
+      und Achse 1 trägt ihn allein. Der Durchgang notiert je Treffer, ob die Aufhebung der Grund
+      ist — ein Treffer ohne Aufhebung und ohne Trigger ist der Befund dieser Achse.
 - [ ] **Was der Durchgang schreibt, hat die Form der Ziel-Prozedur:** ein Rückbau ist ein **neuer
       Eintrag, kein Edit**, und nennt den Baseline-Stand, der den Trigger gefeuert hat. Welche
       Gestalt der aufgehobene Eintrag danach behält, hängt am Ausgang von

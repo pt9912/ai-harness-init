@@ -181,11 +181,14 @@ wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
 - **Durchgang 3 — Stichprobe gegen den Bestand:** ein Abschnitt **ohne** Delta ist geprüft und
   sein Ausgang verbucht. Er läuft unabhängig vom Ergebnis der Tag-Frage.
 - **`make gates` grün — und zwar ohne offenen Carveout auf einem Gate dieser Welle.** Der Zusatz
-  ist nicht kosmetisch: zwischen [slice-081](done/slice-081-baum-tauschen-pin-ziehen.md) und
-  [slice-130](in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) trägt
-  [`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md) zwei rote bats-Fälle auf einem
-  Trigger. Ein Welle-Grün, das diesen Carveout mitzählte, hieße *„grün, außer wo wir nicht
-  hinsehen"*. Die Welle schließt erst, wenn er in `carveouts/done/` liegt.
+  ist nicht kosmetisch: ein Welle-Grün, das einen solchen Carveout mitzählte, hieße *„grün, außer
+  wo wir nicht hinsehen"*. Offen und gate-rot ist
+  [`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md) auf `docs-check`;
+  [`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md) liegt in
+  `carveouts/done/` und zählt nicht mehr mit. **Die Bezugsmenge ist auch hier ein Kommando, keine
+  Zahl:** `ls docs/plan/carveouts/CO-*.md` nennt die offenen Dateien und
+  `grep -H -m1 '^\*\*Betroffenes Gate:\*\*' docs/plan/carveouts/CO-*.md` das Gate, das jede führt.
+  Die Welle schließt erst, wenn keine davon ein Ziel aus `make gates` rot hält.
 - **Die drei Sensoren außerhalb der Gates** — `make smoke`, `make full-smoke`, `make mutate`. Die
   ersten beiden gehören hier ins Kriterium, weil der Tag der **Emissions-Kanal** ist
   (`internal/fetch/baseline.go` `DefaultTag`): ein frisch gebootstrapptes Zielrepo zieht genau
@@ -272,15 +275,16 @@ sind über die ganze slice-133-Kette unangetastet
 (`git diff 3ea5ae2^ 66459c7 -- internal/emit/templates.go | grep -cE '^[+-][^+-].*func (inScope|isRecurring|isDerivativeIndex)'`
 → **0**).
 
-**Zwei Carveouts halten den Zwischenzustand der Gates sichtbar statt still:**
-[`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md) (Gate `test`, Folge-Slice 130) und
+**Ein Carveout hält den Zwischenzustand der Gates sichtbar statt still:**
 [`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md) (Gate `docs-check`, Folge-Slice
-132). Beide sind extensional geschlossen, und **keiner** von beiden deckt den Vertragsbruch oben —
-`CO-004` grenzt das in seinem Kopf ausdrücklich ab. Der zweite hat **keine**
+132). Er ist extensional geschlossen und deckt den Vertragsbruch oben **nicht**. Er hat **keine**
 Gate-Konfiguration, weil das Modul `links` am Pin `v0.65.0` keine Referenz-Ausnahme kennt; dort
-bleibt der Gate rot, und der Carveout ist der einzige Träger der Begründung. Beim ersten ist die
-Nennung im Gate-Output **möglich, aber nicht gesetzt** (`git grep -c 'CO-004' -- test/ .d-check.yml
-Makefile` → kein Treffer) — ein offener Posten, den slice-081 §2 DoD (4) als solchen führt.
+bleibt der Gate rot, und der Carveout ist der einzige Träger der Begründung.
+[`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md) (Gate `test`, Folge-Slice 130)
+liegt in `carveouts/done/`, und `make test-bats` läuft ohne `not ok`. Seine Modul-7-Pflicht
+*Nennung im Gate-Output* ist damit gegenstandslos: eine Ausnahme in Test oder Config gab es nie
+(`git grep -c 'CO-004' -- test/ .d-check.yml Makefile` → kein Treffer), und genau das führt
+slice-081 §2 DoD (4) als Befund.
 
 **Die Reihenfolge hat einen Preis, und er heißt: ab 081 ist die CI kein Signal — für drei ihrer
 Jobs bis 130, für den vierten bis 132.** Der Workflow fährt vier Jobs
@@ -293,10 +297,24 @@ an denselben zwei, weil sein Grün-Vorlauf genau diese Modi fährt; `make gates`
 [slice-130](in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md)
 ([`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md)) **und**
 [slice-132](open/slice-132-adaptions-block-ohne-totes-ziel.md)
-([`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md)). Der teuerste Posten dabei
-ist nicht das Rot, sondern der blinde Fleck darunter: `mutate` läuft in diesem Fenster über
-**null** Fälle, die Haltbarkeits-Prüfung der **gelisteten** Wächter aus
-[`AGENTS.md`](../../../AGENTS.md) §3.6 findet also nicht statt.
+([`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md)). **Was davon heute noch steht,
+ist gemessen und nicht abgeleitet:** `make -k gates` hat genau **ein** rotes Ziel, `docs-check` —
+die `make gates`-Kante hängt damit allein an
+[`CO-005`](../carveouts/CO-005-adaptions-block-datierter-beleg.md) und
+[slice-132](open/slice-132-adaptions-block-ohne-totes-ziel.md), nicht mehr an
+[`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md). `make smoke` meldet
+`d-check: 20 Datei(en) geprüft, 0 Befund(e)` bei Exit 0, `make test-bats` liefert `1..196` ohne
+`not ok`. **`full-smoke` und `mutate` sind hier nicht gefahren** — der erste braucht Netz, der
+zweite die Zeit eines Voll-Laufs; ihre Zuordnung oben ist eine Planaussage und keine Messung von
+heute. Der teuerste Posten dabei ist nicht das Rot, sondern der blinde Fleck darunter: solange
+einer der Modi rot ist, die
+der Treiber im Grün-Vorlauf fährt, läuft `mutate` über **null** Fälle, und die
+Haltbarkeits-Prüfung der **gelisteten** Wächter aus
+[`AGENTS.md`](../../../AGENTS.md) §3.6 findet nicht statt. **`docs-check` gehört nicht zu diesen
+Modi** — der Treiber kennt ihn gar nicht (`grep -c 'docs-check' harness/tools/mutate.sh` → **0**,
+und `grep -h '^# verify:' test/mutations/*.sh | sort -u` führt ihn nicht). Der blinde Fleck endet
+also mit `smoke`, `full-smoke` und den Test-Stufen, nicht mit
+[slice-132](open/slice-132-adaptions-block-ohne-totes-ziel.md).
 
 **Mit [slice-133](done/slice-133-emittierter-baum-ohne-platzhalter-links.md) ist keiner der
 vier Jobs zurück, und dieser Satz steht hier, weil sein Abschluss sonst falsch gelesen wird.**
@@ -306,10 +324,12 @@ verletzt)`. Der Lauf erreicht das Zielrepo — die Netz-Bedingung war erfüllt, 
 den Fehlschlag selbst zu (`AUSGANG BAUM`) — und fällt dort an genau **einem** Teil-Ziel
 (`make full-smoke 2>&1 | grep -cE '^make\[1\]: \*\*\* \['` → **1**, `docs-check`), mit den zwei
 Befunden, die [slice-130](in-progress/slice-130-emitter-entscheidet-jedes-neue-template.md) trägt.
-**[`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) ist damit weiterhin
-gebrochen; die Closure dieser Welle darf slice-133 nicht als Beleg für den Happy Path führen** —
-eingelöst wird er erst mit slice-130 DoD (3), das den gemeinsamen Nachweis über beide Ursachen
-führt.
+**Der Beleg für den Happy Path von
+[`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) hängt an slice-130 DoD (3),
+nicht an slice-133** — jener Punkt führt den gemeinsamen Nachweis über beide Ursachen, und die
+Closure dieser Welle liest ihn dort. Im Arbeitsbaum ist die Reparatur da (`make smoke` →
+`d-check: 20 Datei(en) geprüft, 0 Befund(e)`, Exit 0); geschlossen ist der Slice nicht, und
+`make full-smoke` braucht Netz und ist hier nicht gemessen.
 
 **Ein Zwischenziel, das `main` früher grün zurückgibt, wird hier nicht geschnitten — und der
 Grund ist der Rang, nicht der Aufwand.** Der kürzeste Weg zu einem grünen `make gates` liefe über
