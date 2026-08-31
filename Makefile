@@ -34,7 +34,7 @@ BASELINE_TAG ?= v5.12.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= c91b62bd1ccde3b913027af26258216505f0d783e2ab0e237df0e03af6135e04
 
-.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate
+.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.65.0 -> v0.65.0). Aus
@@ -289,6 +289,14 @@ HOOK_OVERHEAD_CMD ?= $(HOST_BIN) span-emit
 
 hook-overhead: ## Aufschlag je Tool-Call messen (Median, ADR-0011-Schwelle) — NICHT in gates (Messung, kein Sensor)
 	@bash harness/tools/hook-overhead.sh $(HOOK_OVERHEAD_CMD)
+
+# Bewegt einen Slice-Plan zwischen den Lifecycle-Verzeichnissen und zieht seine
+# Verweise nach — Antwort auf BEO-003 · seit slice-144. NICHT in gates: es
+# bewegt, es prueft nicht (LH-QA-01); der Beleg ist `make docs-check` VOR und
+# NACH demselben Move. Die Logik liegt in harness/tools/, damit shell-lint sie
+# deckt und test/slice-mv.bats sie ohne ein Repo zu bewegen pruefen kann.
+slice-mv: ## Lifecycle-Wechsel eines Slice inkl. Verweise (SLICE=<slice-NNN> TO=<open|next|in-progress|done>) — NICHT in gates
+	@bash harness/tools/slice-mv.sh "$(SLICE)" "$(TO)"
 
 # ORDNUNGSKANTE: die Checks hängen AN record-gates, sie stehen nicht daneben. `make`
 # baut ein Ziel, dessen Voraussetzung gefallen ist, auch unter `-k` nicht — über einem
