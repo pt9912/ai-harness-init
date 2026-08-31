@@ -55,9 +55,10 @@ In dieser Reihenfolge:
 3. [`spec/architecture.md`](spec/architecture.md) — Komponenten- und Sequenzsicht.
 4. [`docs/plan/adr/`](docs/plan/adr/) — Architekturentscheidungen.
 5. [`docs/plan/planning/in-progress/roadmap.md`](docs/plan/planning/in-progress/roadmap.md) — aktuelle Welle.
-6. [`README.md`](README.md) — Projekt-Überblick.
-7. **AGENTS.md (diese Datei).**
-8. [`harness/README.md`](harness/README.md) — Harness-Einstieg.
+6. [`docs/user/`](docs/user/) *(falls vorhanden)* — Operations, Quality, Releasing.
+7. [`README.md`](README.md) — Projekt-Überblick.
+8. **AGENTS.md (diese Datei).**
+9. [`harness/README.md`](harness/README.md) — Harness-Einstieg.
 
 ## 3. Harte Regeln
 
@@ -135,7 +136,7 @@ Baseline-Regelwerk `grundlagen-harness-dateien.md` §Was ein Kommentar trägt.
 **Beschrieben wird die Stelle, nicht der Vorgang, der sie erzeugt hat.** Die
 Source Precedence (§2) ist geschlossen —
 `sed -n '/^## 2\. Kanonische Quellen/,/^## 3\. Harte Regeln/p' AGENTS.md | grep -cE '^[0-9]+\. '`
-→ **8** Ränge —, und ein Kommentar sitzt in keinem davon. Trägt er trotzdem den
+→ **9** Ränge —, und ein Kommentar sitzt in keinem davon. Trägt er trotzdem den
 *Grund* einer Entscheidung — eine Befund-Kennung, eine Slice-Nummer als Erzählung,
 das Protokoll eines Laufs —, dann liest der nächste Lauf ihn als Beleg und beruft
 sich auf eine Quelle, die kein Rang deckt. Herkunft steht darum als **ein**
