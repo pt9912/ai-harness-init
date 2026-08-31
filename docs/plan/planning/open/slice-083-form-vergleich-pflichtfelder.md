@@ -11,6 +11,16 @@ wechselt nur durch `git mv`, siehe
 [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
 (die Templates werden referenziert, nicht kopiert — der Vergleich läuft gegen den vendored Baum).
 
+**Verantwortlich:** Architect (pt9912) — §3 nennt
+[`harness/conventions.md`](../../../../harness/conventions.md) und
+[`AGENTS.md`](../../../../AGENTS.md) als Liefergegenstände: das neue Pflichtfeld
+`Ersetzt-Baseline-Regel` trifft den Adaptions-Block, und die Singleton-Nacharbeit an `AGENTS.md`
+ist dieselbe Artefaktklasse — beide **Architect-Artefakte** nach [`AGENTS.md`](../../../../AGENTS.md)
+§3.8. Präzedenzfall [slice-082](../done/slice-082-adaptions-durchgang.md) trägt dieselbe Menge
+(`harness/conventions.md`, `AGENTS.md`) und bekam dieselbe Besetzung. Das Feld weicht damit von der
+Default-Besetzung ab, die Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State
+Machine nennt (*„den Rolleninhaber der Implementer-Rolle"*).
+
 **Autor:** Planner. **Datum:** 2026-08-09.
 
 ---
