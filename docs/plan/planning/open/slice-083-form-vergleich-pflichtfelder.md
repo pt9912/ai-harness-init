@@ -92,7 +92,7 @@ Die **emittierte** Fassung derselben Commands gehört zu
 
 ## 4. Trigger
 
-[slice-082](../in-progress/slice-082-adaptions-durchgang.md) liegt in `done/` — ein Eintrag, der gegenstandslos
+[slice-082](../done/slice-082-adaptions-durchgang.md) liegt in `done/` — ein Eintrag, der gegenstandslos
 geworden ist, bekommt kein neues Pflichtfeld mehr.
 
 Rückführungen: `in-progress` → `next`, wenn die Singleton-Nacharbeit und das Pflichtfeld zusammen

@@ -263,7 +263,7 @@ DoD vollständig, Closure-Notiz geschrieben.
 **Closure-Kriterien (beobachtet, nicht behauptet):**
 
 1. **DoD vollständig.** Alle Punkte aus §2 sind gehakt —
-   `grep -c '^- \[ \]' docs/plan/planning/in-progress/slice-082-adaptions-durchgang.md` → **0**
+   `grep -c '^- \[ \]' docs/plan/planning/done/slice-082-adaptions-durchgang.md` → **0**
    offene Punkte (Kommando läuft vor dem `git mv`, solange die Datei noch unter diesem Pfad
    liegt).
 2. **`make gates` grün** nach dem Commit dieser Closure-Notiz — der Stop-Hook-Stempel deckt den
