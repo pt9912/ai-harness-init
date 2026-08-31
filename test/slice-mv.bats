@@ -5,11 +5,11 @@
 # Skript (BASH_SOURCE-Waechter unterdrueckt main()/git mv) und ruft
 # rewrite_incoming_in_file/rewrite_outgoing_bare_in_file direkt auf Proben —
 # sonst misst der Selbsttest sich selbst statt der Ersetzung (Slice-Plan §6).
-#
-# EINE Ausnahme: "main() haelt sich an seine eigene Ausnahme-Liste" spannt eine
-# echte, aber SYNTHETISCHE Fixture-Repo auf (git init in $BATS_TEST_TMPDIR) —
-# das ist kein Repo im Sinne der obigen Regel (das PRODUKTIV-Repo dieses Slice
-# selbst), sondern ein Wegwerf-Fixture fuer main()s Ausschluss-Pfadspec.
+# Diese Datei fuehrt ALLE ihre Faelle so, ohne Ausnahme — main()s
+# Ausschluss-Pfadspec selbst (Zwei-Commit-Sequenz, docs/reviews-Behandlung)
+# braucht ein echtes `git`-Repo und ist darum NICHT hier, sondern im
+# Skriptkopf (harness/tools/slice-mv.sh, Abschnitt BELEG) belegt — siehe
+# Dateiende.
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
@@ -117,5 +117,6 @@ EOF
 # links/anchors mit realen Markdown-Links, siehe Skriptkopf EINGEHEND)
 # braeuchte fuer einen bats-Fall ein echtes `git`-Repo — main() ruft
 # `git mv`/`git grep`, und das gepinnte BATS_IMAGE fuehrt kein `git`-Binary
-# mit. Der Beleg dafuer ist darum einmalig im Bericht (AGENTS.md 3.6 "wo sie
-# einmalig ist, in den Bericht"), nicht als bats-Fall.
+# mit. Der Beleg dafuer steht darum NICHT hier, sondern dauerhaft im
+# Skriptkopf (harness/tools/slice-mv.sh, Abschnitt BELEG) — ein
+# Vor/Nach-`make docs-check`-Paar an einem echten Move, nicht als bats-Fall.

@@ -39,6 +39,26 @@
 # anwesender Diff im automatischen Move- oder Inhalts-Commit. Ein Verstoss
 # bricht den Aufruf vor dem ersten `git mv` (main(), erste Pruefung).
 #
+# BELEG (DoD (2) im Slice-Plan slice-144, fuer den heutigen Zwei-Commit-Stand
+# nach 8737ca7 — "es lief" reicht der DoD nicht). Eigener Scratch-Clone,
+# sauberer Checkout, echter Move mit beiden Richtungen zugleich (slice-069,
+# open/ -> next/ — traegt acht eingehende Referenzen INKLUSIVE einer aus
+# docs/reviews/2026-07-31-adr-0012-proposed-review.md, dazu ein praefixloses
+# ausgehendes Ziel auf slice-070):
+#   vorher:  make docs-check  ->  d-check: 480 Datei(en) geprueft, 0 Befund(e)
+#   danach:  make docs-check  ->  d-check: 480 Datei(en) geprueft, 8 Befund(e)
+#            alle acht target-missing, alle acht praefixlose Geschwister
+#            UNTER open/ ohne Verzeichnis-Segment (Grenze 3 unten) — keiner in
+#            docs/reviews/** oder docs/plan/planning/done/**. `git show --stat`
+#            auf Commit 1 zeigt einen reinen Rename (0 insertions/0 deletions);
+#            Commit 2 traegt ausschliesslich Inhalt, darunter den
+#            docs/reviews-Treffer.
+#   Reproduzierbar auf jedem sauberen Checkout mit
+#   `make slice-mv SLICE=slice-069 TO=next` gefolgt von `make docs-check` (vor
+#   UND nach). Die konkreten Zahlen wandern mit dem Baum und sind kein
+#   Erwartungswert (MR-025 Setzung 2) — die Befundklasse (praefixlos, unter der
+#   ausgeschlossenen Grenze 3) bleibt es, solange Grenze 3 offen ist.
+#
 # GRENZEN (gemessen, nicht vermutet — drei Stück):
 # (1) Das Werkzeug zieht PFADE nach, keine ZUSTANDSSÄTZE. Eine Zeile "In
 #     Arbeit: <slice>" bleibt nach dem Wechsel stehen; ihr Verweis wird
