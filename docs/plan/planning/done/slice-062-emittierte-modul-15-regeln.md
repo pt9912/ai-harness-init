@@ -514,7 +514,7 @@ Planner-Disziplin beim Schnitt; über den emittierten Harness sagt sie nichts. *
 sie:** ihr Prüfbereich wäre der Abstand zwischen dem `next → in-progress`-Commit und den Commits
 am Liefergegenstand, und **welche** Datei der Liefergegenstand ist, steht nur in Prosa (§3). Ihr
 Träger ist deshalb der nächste Schnitt derselben Bauart — im heutigen Bestand
-[slice-082](../open/slice-082-adaptions-durchgang.md), dessen §3 zwei Norm-Artefakte in die
+[slice-082](../next/slice-082-adaptions-durchgang.md), dessen §3 zwei Norm-Artefakte in die
 Architect-Zeile legt und dessen §4 für `next → in-progress` kein Ereignis nennt. Ohne diesen Griff
 bleibt der Eintrag ein Satz in einer Datei, die niemand wieder liest.
 

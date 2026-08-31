@@ -131,13 +131,13 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
       Architect-Sache ([`AGENTS.md`](../../../../AGENTS.md) §3.8). **Nicht** Bedingung dieses
       Punktes ist, ob das Original einen Zeiger auf seinen Nachfolger bekommt — dafür führt der
       Block zwei verschiedene Präzedenzien, und die Wahl gehört in den Adaptions-Durchgang
-      ([slice-082](../open/slice-082-adaptions-durchgang.md) §2).
+      ([slice-082](../next/slice-082-adaptions-durchgang.md) §2).
 
       **Die stummen Inline-Nennungen zerfallen in drei Ausgänge, nicht in einen** — kein Gate
       sieht sie, also zählt dort die Liste, nicht das Grün. **Gezogen**, wo die Zieldatei die
       Aussage weiter trägt; **begründet stehen gelassen**, wo der Zug ein Zitat fabrizierte, weil
       die zitierte Zeile am neuen Stand nicht mehr existiert — der Grund steht am Fundort, nicht
-      hier; **abgegeben** an [slice-082](../open/slice-082-adaptions-durchgang.md) Achse 1, wo
+      hier; **abgegeben** an [slice-082](../next/slice-082-adaptions-durchgang.md) Achse 1, wo
       nicht die Adresse offen ist, sondern ob die Messung daneben gegen den gepinnten Stand noch
       reproduziert. Ein pauschales *„alle gezogen"* erfüllt den Punkt damit **nicht**: verlangt
       ist die Restmenge mit **einem** dieser drei Ausgänge je Treffer.
@@ -251,7 +251,7 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
 | [`Makefile`](../../../../Makefile) | update | `BASELINE_TAG`, `BASELINE_ZIP_SHA256` — die kanonische Quelle des Tag-Strings |
 | `internal/fetch/baseline.go` | update | `DefaultTag`, `DefaultBaselineSHA256`; per Test ans `Makefile` gekoppelt |
 | `.d-check.yml` | update | `sources`-URL des gepinnten Assets (`make regelwerk-check`); **und** der eine `scan.ignore`-Eintrag aus [ADR-0017](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) — eine namentlich genannte Datei, extensional geschlossen: jeder weitere Eintrag ist eine eigene Senkung nach [`AGENTS.md`](../../../../AGENTS.md) §3.5 und gehört nicht in diesen Slice |
-| [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder), [`harness/conventions.md`](../../../../harness/conventions.md#mr-000--baseline-aussage) | update | die nachziehbaren Links — die Menge erhebt der Lauf, nicht dieser Plan (§2) — und die stummen Inline-Nennungen, jede mit **einem** der drei Ausgänge aus §2 (gezogen · begründet stehen gelassen · an [slice-082](../open/slice-082-adaptions-durchgang.md) Achse 1 abgegeben). Dazu der **Adaptions-Block** als Zähl- und Klassifikations-Ort der `scan.ignore`-Einträge, und zwar als **neuer** Eintrag: [ADR-0017](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) Folgepflicht 2 nennt [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids), dessen Append-only-Disziplin das Hineinschreiben sperrt (§2) |
+| [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder), [`harness/conventions.md`](../../../../harness/conventions.md#mr-000--baseline-aussage) | update | die nachziehbaren Links — die Menge erhebt der Lauf, nicht dieser Plan (§2) — und die stummen Inline-Nennungen, jede mit **einem** der drei Ausgänge aus §2 (gezogen · begründet stehen gelassen · an [slice-082](../next/slice-082-adaptions-durchgang.md) Achse 1 abgegeben). Dazu der **Adaptions-Block** als Zähl- und Klassifikations-Ort der `scan.ignore`-Einträge, und zwar als **neuer** Eintrag: [ADR-0017](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) Folgepflicht 2 nennt [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids), dessen Append-only-Disziplin das Hineinschreiben sperrt (§2) |
 | [ADR-0011](../../adr/0011-telemetrie-erfassung-policy.md), [ADR-0012](../../adr/0012-haupt-kontext-ohne-token-bilanz.md), [ADR-0013](../../adr/0013-technik-stratum-als-zielort.md), [ADR-0014](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md), [ADR-0015](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) | **unberührt** | alle fünf *Accepted* und damit unveränderlich ([`AGENTS.md`](../../../../AGENTS.md) §3.4); [ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 1 heilt den Bestand nicht. Die letztgenannte nennt den Baum ohnehin an keiner Stelle |
 | `docs/plan/planning/done/slice-076-mr-018-umzug-technik-stratum.md`, `docs/reviews/2026-07-26-slice-050-impl-review-runde-5.md`, `docs/reviews/2026-07-26-slice-050-verification.md` | update (nur Adresse) | [ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 4: der Markdown-Link wird zur reinen Nennung. Wer hier einen Satz ändert, verstößt gegen ihre Begründung |
 | `test/sessionstart.bats` | update | drei Fixture-Namen heißen `grundlagen-konventionen.md` |
@@ -269,7 +269,7 @@ die `scan.ignore`-Aufnahme ist eine Gate-Senkung, und die trägt nach
 Rückführungen: `in-progress` → `next`, wenn das Nachziehen der Verweise für sich eine Sitzung
 sprengt (dann trennt der Schnitt Mechanik und Verweise). `in-progress` → `open`, wenn die
 Anker-Einzelprüfung ergibt, dass die Ziel-Fassung eine belegte Aussage nicht mehr trägt — das ist
-eine Inhaltsfrage für [slice-082](../open/slice-082-adaptions-durchgang.md), kein Pfad-Tausch. Die zwei
+eine Inhaltsfrage für [slice-082](../next/slice-082-adaptions-durchgang.md), kein Pfad-Tausch. Die zwei
 Sensoren aus der Fitness Function von [ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md)
 sind **nicht** die Bedingung: sie sind dort ausdrücklich einem eigenen Slice zugewiesen.
 
@@ -290,7 +290,7 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
   [`MR-022`](../../../../harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)
   und [`MR-023`](../../../../harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung)
   weiter über `v3.5.2` sprechen. Diese Sätze sind **datierte Messungen**, keine Links — kein Gate
-  sieht sie. Sie fallen mit [slice-082](../open/slice-082-adaptions-durchgang.md). Der Preis dafür, den
+  sieht sie. Sie fallen mit [slice-082](../next/slice-082-adaptions-durchgang.md). Der Preis dafür, den
   Adaptions-Durchgang nicht in denselben Slice zu packen: das Repo trägt zwischen 081 und 082 eine
   Aussage, deren Bezug gewechselt hat.
   — **Ausgang:** eingetreten, für die drei genannten Stellen aber innerhalb der Kette dieses Slice
@@ -304,7 +304,7 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
   → **11** Zeilen für beide Einträge zusammen, Überschriften eingerechnet). Beide Zahlen wandern und sind keine Erwartungswerte
   ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2). Offen bleibt nicht dieser Satz, sondern die **Klasse** über die übrigen Einträge des
-  Blocks — sie trägt [slice-082](../open/slice-082-adaptions-durchgang.md) Achse 1.
+  Blocks — sie trägt [slice-082](../next/slice-082-adaptions-durchgang.md) Achse 1.
 - **Ein Träger des Zwischenzustands ist kein Dokument, sondern ein Werkzeug: `.harness/skills/reviewer.md`.**
   Sein Kopf erklärt *„Agents-Regelwerk v3.5.2 (Kurs-Welle 34)"* zur Baseline (`grep -c 'v3\.5\.2'
   .harness/skills/reviewer.md` → **4** Zeilen), und sein Output-Schema führt **fünf** Felder, wo
@@ -464,7 +464,7 @@ Setzung 2):
 | Ausgang | Treffer | Warum |
 |---|---|---|
 | **begründet stehen gelassen** | **5** — [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler), [`MR-019`](../../../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence), [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf), [`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt), [`MR-029`](../../../../harness/conventions.md#mr-029--der-scanignore-zensus-wandert-und-sein-dritter-grund-ist-keine-scoping-aussage) | Sie zitieren eine Zeile, die es am neuen Stand nicht gibt — `grundlagen-konventionen.md` existiert dort nicht mehr (`ls .harness/baseline/v5.12.0/regelwerk/ \| grep -c grundlagen-konventionen` → **0**), und der zitierte Kommentar über dem Adaptions-Block ist entfallen. Ein Tag-Nachzug fabrizierte hier ein Zitat. Sie nennen ihren Mess-Tag und erfüllen damit [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist) Setzung 1 |
-| **abgegeben** an [slice-082](../open/slice-082-adaptions-durchgang.md) Achse 1 | **3** — [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) ×1, [`MR-026`](../../../../harness/conventions.md#mr-026--die-hard-rule-nummer-ist-eine-adresse-keine-baseline-entsprechung) ×2 | Nicht die Adresse ist offen, sondern ob die Messung daneben noch reproduziert. Gemessen: das Kommando in [`MR-026`](../../../../harness/conventions.md#mr-026--die-hard-rule-nummer-ist-eine-adresse-keine-baseline-entsprechung) Setzung 1 liefert über den alten Pfad **0** und über den neuen **2**, wo der Satz **1** behauptet (`for t in v3.5.2 v5.12.0; do comm -12 <(grep -E '^### 3\.' AGENTS.md \| sort) <(grep -E '^### 3\.' .harness/baseline/$t/templates/AGENTS.template.md 2>/dev/null \| sort) \| wc -l; done`). Der Ausgang ist Achse 1, nicht dieser Slice: über den Eintrag entscheidet die Rolle, die ihn schreibt ([`AGENTS.md`](../../../../AGENTS.md) §3.8) |
+| **abgegeben** an [slice-082](../next/slice-082-adaptions-durchgang.md) Achse 1 | **3** — [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) ×1, [`MR-026`](../../../../harness/conventions.md#mr-026--die-hard-rule-nummer-ist-eine-adresse-keine-baseline-entsprechung) ×2 | Nicht die Adresse ist offen, sondern ob die Messung daneben noch reproduziert. Gemessen: das Kommando in [`MR-026`](../../../../harness/conventions.md#mr-026--die-hard-rule-nummer-ist-eine-adresse-keine-baseline-entsprechung) Setzung 1 liefert über den alten Pfad **0** und über den neuen **2**, wo der Satz **1** behauptet (`for t in v3.5.2 v5.12.0; do comm -12 <(grep -E '^### 3\.' AGENTS.md \| sort) <(grep -E '^### 3\.' .harness/baseline/$t/templates/AGENTS.template.md 2>/dev/null \| sort) \| wc -l; done`). Der Ausgang ist Achse 1, nicht dieser Slice: über den Eintrag entscheidet die Rolle, die ihn schreibt ([`AGENTS.md`](../../../../AGENTS.md) §3.8) |
 | **entfallen** | **2**, außerhalb der heutigen Menge | Die zwei Nennungen in den Rümpfen von [`MR-023`](../../../../harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung) sind mit dem Rumpf gefallen (`16d5b0d`), nicht gezogen worden |
 
 Die stummen Nennungen in Accepted-ADRs bleiben unberührt
@@ -661,7 +661,7 @@ zehn Smoke-Befunde) · [slice-131](../next/slice-131-praesens-aussage-gegen-den-
 [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md)) ·
 [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) (sieben der zehn
 Smoke-Befunde; läuft **vor** slice-130). Vorbestehend und unverändert zuständig:
-[slice-082](../open/slice-082-adaptions-durchgang.md) (Adaptions-Durchgang) und
+[slice-082](../next/slice-082-adaptions-durchgang.md) (Adaptions-Durchgang) und
 [slice-083](../open/slice-083-form-vergleich-pflichtfelder.md) (Form-Durchgang).
 
 ### Übergabe an andere Rollen
