@@ -112,9 +112,10 @@ EOF
   grep -qF '[a](slice-nicht-vorhanden.md)' moved.md
 }
 
-# main()s Ausschluss-Pfadspec selbst (.harness/baseline/** und docs/reviews/**
-# eingefroren, docs/plan/planning/done/** NICHT) braeuchte fuer einen
-# bats-Fall ein echtes `git`-Repo — main() ruft `git mv`/`git grep`, und das
-# gepinnte BATS_IMAGE fuehrt kein `git`-Binary mit. Der Beleg dafuer ist darum
-# einmalig im Bericht (AGENTS.md 3.6 "wo sie einmalig ist, in den Bericht"),
-# nicht als bats-Fall.
+# main()s Ausschluss-Pfadspec selbst (nur .harness/baseline/** eingefroren;
+# docs/reviews/** und docs/plan/planning/done/** NICHT — beide traegt
+# links/anchors mit realen Markdown-Links, siehe Skriptkopf EINGEHEND)
+# braeuchte fuer einen bats-Fall ein echtes `git`-Repo — main() ruft
+# `git mv`/`git grep`, und das gepinnte BATS_IMAGE fuehrt kein `git`-Binary
+# mit. Der Beleg dafuer ist darum einmalig im Bericht (AGENTS.md 3.6 "wo sie
+# einmalig ist, in den Bericht"), nicht als bats-Fall.

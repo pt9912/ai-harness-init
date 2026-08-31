@@ -172,14 +172,16 @@ main() {
   # Aenderung, also committet dieser Aufruf genau sie.
   git commit -q -m "slice-mv: $base  $from/ -> $TO/ (reiner Move)"
 
-  # EINGEHEND, repo-weit — außer zwei eingefrorenen Bereichen: die vendored
-  # Baseline (unveränderter Fremdtext, .harness/baseline/**) und
-  # docs/reviews/** (Zeitdokumente, .d-check.yml codepaths.exempt-paths: ihre
-  # Lifecycle-Pfade veralten per Definition und werden nicht nachgezogen).
-  # docs/plan/planning/done/** ist ANDERS als diese zwei — NICHT ausgenommen
-  # und wird MIT nachgezogen: `codepaths.exempt-paths` nennt nur
-  # docs/reviews/**, ein Closure-Verweis in einer done/-Datei ist ein realer,
-  # von docs-check geprüfter Link und bricht wie jeder andere.
+  # EINGEHEND, repo-weit — außer der vendored Baseline (unveränderter
+  # Fremdtext, .harness/baseline/**, in .d-check.yml scan.ignore und darum
+  # vom Doku-Gate nie gelesen). docs/reviews/** ist NICHT ausgenommen: dort
+  # steht zwar in .d-check.yml codepaths.exempt-paths und ids.*.exempt-paths
+  # (die Zeitdokumente sind von der Inline-Code-Pfadpflicht und der
+  # ID-Linkpflicht befreit) — aber links/anchors tragen keine solche
+  # Ausnahme und prüfen jeden echten Markdown-Link dort wie überall sonst.
+  # Ein Verweis auf die bewegte Datei bricht dort also genauso wie in
+  # docs/plan/planning/done/**, und beide werden darum mitgezogen; nur der
+  # Pfad ändert sich, die umgebende Aussage bleibt Zeitdokument (Grenze 1).
   local in_count=0 rf
   local -a touched=()
   while IFS= read -r rf; do
@@ -188,7 +190,7 @@ main() {
     touched+=("$rf")
     in_count=$((in_count + 1))
   done < <(git grep -l -F -e "$from/$base" -- \
-             ':!.harness/baseline' ':!docs/reviews' \
+             ':!.harness/baseline' \
              2>/dev/null || true)
 
   # AUSGEHEND — nur in der bewegten Datei selbst, an ihrem NEUEN Ort.
