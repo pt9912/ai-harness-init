@@ -22,7 +22,7 @@ entscheidet. Keiner der drei Durchgänge fängt ihn: Durchgang 1 zählt Einträg
 Adaptions-Blocks, und die Übernahme eines Baseline-**Defaults** erzeugt keinen
 ([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage), §1); Durchgang 2 hält
 die Pflichtfelder der neuen Gliederung an **vorhandene** Singleton-Artefakte, und
-[slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) §6 sagt über genau diesen Gegenstand
+[slice-083](../next/slice-083-form-vergleich-pflichtfelder.md) §6 sagt über genau diesen Gegenstand
 wörtlich, eine neue Artefakt-Klasse mit eigener Lese-Pflicht falle *„zwischen"* seine drei
 DoD-Punkte; Durchgang 3 ist die Stichprobe **ohne** Delta. **welle-10 §6 nennt den Fall beim Namen
 und führt ihn hinaus:** *„Ein Delta, das eigene Arbeit verlangt, wird als Slice in `open/` notiert
@@ -314,7 +314,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 Kommando **1**:
 [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) hält es. Eine
 **fachliche** Vorbedingung hat dieser Slice **nicht**. Insbesondere wartet er **nicht** auf
-[slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md): dessen §6 hat die Entscheidung benannt,
+[slice-083](../next/slice-083-form-vergleich-pflichtfelder.md): dessen §6 hat die Entscheidung benannt,
 seine drei DoD-Punkte tragen sie nicht, und Modul 5 lässt keinen vierten zu — die Vertagung hat
 dort keinen Haken, an dem sie hängen könnte (§6).
 

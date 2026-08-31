@@ -49,11 +49,11 @@ Ziel-Formen des Regelwerks benennen; `implement-slice` allein trägt 28 solcher 
 |---|---|---|
 | `internal/emit/templates/commands/` | update | drei Commands benennen Module und Ziel-Formen |
 | `internal/emit/templates/` (übrige) | prüfen, ggf. update | `d-check.yml`, `baseline-verify.sh`, `enforce/` |
-| `.harness/baseline/<tag>/templates/.harness/skills/*.template.md` als **Emissions-Quelle** | prüfen | was ein Zielrepo an Skills bekommt, entscheidet dieser Slice. **Die gefüllte Fassung dieses Repos** (`.harness/skills/reviewer.md`) gehört **nicht** hierher: sie ist ein ausgefülltes Artefakt der Dogfood-Ebene und liegt seit dem 2026-08-28 bei [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) §2 (1) — zwei Ebenen, zwei Verträge, dieselbe Trennung wie bei den Commands eine Zeile weiter |
+| `.harness/baseline/<tag>/templates/.harness/skills/*.template.md` als **Emissions-Quelle** | prüfen | was ein Zielrepo an Skills bekommt, entscheidet dieser Slice. **Die gefüllte Fassung dieses Repos** (`.harness/skills/reviewer.md`) gehört **nicht** hierher: sie ist ein ausgefülltes Artefakt der Dogfood-Ebene und liegt seit dem 2026-08-28 bei [slice-083](../next/slice-083-form-vergleich-pflichtfelder.md) §2 (1) — zwei Ebenen, zwei Verträge, dieselbe Trennung wie bei den Commands eine Zeile weiter |
 
 ## 4. Trigger
 
-[slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) liegt in `done/` — die Form-Entscheidungen
+[slice-083](../next/slice-083-form-vergleich-pflichtfelder.md) liegt in `done/` — die Form-Entscheidungen
 der Dogfood-Ebene stehen, bevor die emittierte Ebene sie spiegelt oder bewusst nicht spiegelt.
 
 Rückführungen: `in-progress` → `next`, wenn die Command-Texte und der Skill zusammen eine Sitzung
