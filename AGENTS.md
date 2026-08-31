@@ -15,14 +15,25 @@ Regelwerk **und** Templates liegen unter `.harness/baseline/<tag>/{regelwerk,tem
 Netz. Der Baum ist eine **derivative Sicht** auf den Kurs; bei Konflikt gilt die
 kanonische Quelle (§2 und der Kurs selbst, den `regelwerk/README.md` nennt).
 **Lektüre vor dem Workflow (§6): der Index** (`.harness/baseline/<tag>/regelwerk/README.md`)
-**+ das relevante Modul on-demand**, **nicht** der Volltext am Stück (der
-`regelwerk/`-Baum misst ~170 KB / ~2800 Zeilen und sprengt damit Claudes
-150k-Zeichen-Memory-Limit; kein `@`-Auto-Import).
+**+ das relevante Modul on-demand**, **nicht** der Volltext am Stück — der `regelwerk/`-Baum
+misst am adoptierten Stand `v5.12.0` mehr als das Doppelte von Claudes
+150k-Zeichen-Memory-Limit (`cat .harness/baseline/v5.12.0/regelwerk/*.md | wc -c` → **329890**;
+**kein Erwartungswert**, die Zahl wandert mit dem Tag. Das Limit selbst ist eine
+Werkzeug-Eigenschaft und hier nicht messbar — erhoben in
+[`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor)).
 
-**Zugriff (pro Agent verschieden).** **Codex** injiziert via SessionStart-Hook nur
-den **Index** (`.codex/hooks.json` → `harness/tools/sessionstart-inject-regelwerk.sh`);
-**Claude** liest **bei Bedarf** (Pointer: `CLAUDE.md`-Direktive + Source
-Precedence). **Beide** lesen das relevante Modul **on-demand** aus dem Verzeichnis.
+**Zugriff (pro Agent verschieden) — und vier Module sind davon ausgenommen.** **Codex**
+injiziert via SessionStart-Hook nur den **Index** (`.codex/hooks.json` →
+`harness/tools/sessionstart-inject-regelwerk.sh`) und liest jedes Modul **on-demand**.
+**Claude** liest ebenso on-demand (Pointer: `CLAUDE.md`-Direktive + Source Precedence) —
+**außer** den Modulen unter `.claude/rules/`, die als Symlink in den vendored Baum zeigen
+und dadurch in **jedem** Claude-Lauf im Kontext stehen, ohne gelesen worden zu sein
+(`ls .claude/rules/*.md | wc -l` → **4** von **26**,
+`ls .harness/baseline/v5.12.0/regelwerk/*.md | wc -l`; beide **keine Erwartungswerte**).
+Ein `@`-Auto-Import besteht nicht — Träger ist das Verzeichnis. Die Menge ist
+**geschlossen**, ihre Präsenz **erzwingt nichts**, und für jedes übrige Modul gilt die
+On-demand-Pflicht unverändert:
+[`MR-035`](harness/conventions.md#mr-035--der-automatische-claude-kontext-trägt-eine-benannte-geschlossene-modul-auswahl).
 Die `../templates/…`-Ziel-Form-Verweise des Regelwerks lösen netzlos lokal auf,
 weil beide Bäume Geschwister sind (12 eindeutige Ziele, 0 tot — gemessen; roh-`grep`
 zählt je nach Muster mehr, s. [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)). Fehlt die Baseline, ist der **Checkout kaputt**
