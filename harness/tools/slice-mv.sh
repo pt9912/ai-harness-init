@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # slice-mv.sh — Lifecycle-Wechsel eines Slice UND der Verweise, die er bricht
-# (AGENTS.md §3.3: Move und Inhalt sind zwei Commits, dieses Skript liefert
-# den Inhalts-Commit).
+# (AGENTS.md §3.3: Move und Inhalt sind zwei Commits — dieses Skript setzt
+# beide selbst, in dieser Reihenfolge, s. ZUSAGE).
 #
 # ABGRENZUNG (Ausgangspunkt, keine Antwort). Das Schwesterwerkzeug
 # a-check/tools/slice-mv.sh ersetzt zwei Präfix-Formen ("../<dir>/<datei>" und
@@ -16,13 +16,28 @@
 # "docs/plan/planning/") mit einer Regel statt einer Liste, die driftet.
 #
 # ZUSAGE. `make slice-mv SLICE=<slice-NNN> TO=<open|next|in-progress|done>`
-# bewegt den Slice per `git mv` und zieht danach reale Verweise nach —
-# EINGEHEND (jede Präfix-Form auf die bewegte Datei, repo-weit) UND AUSGEHEND
-# (präfixlose Ziele INNERHALB der bewegten Datei, die nach dem Wechsel ins
-# falsche Verzeichnis zeigen). test/slice-mv.bats deckt beide Richtungen und
-# die Teilstring-Falle (slice-13 steckt in slice-130), ohne ein Repo zu
-# bewegen — es ruft die Ersetzungs-Funktionen direkt (Quelle: dieses Skript,
-# per BASH_SOURCE-Wächter ohne Nebenwirkung ladbar).
+# bewegt den Slice per `git mv` und committet den reinen Move SOFORT als
+# eigenen Commit (Hard Rule 3.3: kein Byte Inhalt veraendert, die
+# Rename-Erkennung greift). Danach zieht es reale Verweise nach — EINGEHEND
+# (jede Praefix-Form auf die bewegte Datei, repo-weit) UND AUSGEHEND
+# (praefixlose Ziele INNERHALB der bewegten Datei, die nach dem Wechsel ins
+# falsche Verzeichnis zeigen) — und committet diese Inhaltsaenderung, falls
+# welche anfielen, als ZWEITEN, vom Move getrennten Commit; fiel keine an,
+# bleibt es beim einen Move-Commit. test/slice-mv.bats deckt beide
+# Ersetzungsrichtungen und die Teilstring-Falle (slice-13 steckt in
+# slice-130), ohne ein Repo zu bewegen — es ruft die Ersetzungs-Funktionen
+# direkt auf (Quelle: dieses Skript, per BASH_SOURCE-Waechter ohne
+# Nebenwirkung ladbar). Die Zwei-Commit-Sequenz selbst ist NICHT per bats
+# gedeckt — main() braucht ein echtes `git`-Repo, das gepinnte bats-Image
+# fuehrt kein `git`-Binaer (wie test/slice-mv.bats am Dateiende selbst
+# festhaelt); Beleg ist ein manueller `git show --stat`-Lauf auf den
+# Move-Commit.
+#
+# VORAUSSETZUNG. Weil das Skript selbst committet, verlangt es einen sauberen
+# Arbeitsbaum (keine gestagten oder ungestagten Aenderungen an getrackten
+# Dateien), BEVOR es startet — sonst landet ein fremder, zufaellig
+# anwesender Diff im automatischen Move- oder Inhalts-Commit. Ein Verstoss
+# bricht den Aufruf vor dem ersten `git mv` (main(), erste Pruefung).
 #
 # GRENZEN (gemessen, nicht vermutet — drei Stück):
 # (1) Das Werkzeug zieht PFADE nach, keine ZUSTANDSSÄTZE. Eine Zeile "In
@@ -53,10 +68,12 @@ usage() {
   cat >&2 <<'USAGE'
 Aufruf: make slice-mv SLICE=<slice-NNN[-kurztitel[.md]]> TO=<open|next|in-progress|done>
 
-  Bewegt den Slice per `git mv` und zieht die Verweise nach — repo-weit
-  eingehend (jede gemessene Präfix-Form) und innerhalb der Datei selbst
-  ausgehend (präfixlose Ziele, die nach dem Wechsel ins falsche Verzeichnis
-  zeigen). Grenzen: siehe Skriptkopf.
+  Bewegt den Slice per `git mv`, committet den reinen Move sofort, und zieht
+  danach die Verweise nach — repo-weit eingehend (jede gemessene Präfix-Form)
+  und innerhalb der Datei selbst ausgehend (präfixlose Ziele, die nach dem
+  Wechsel ins falsche Verzeichnis zeigen); fielen Verweise an, committet es
+  sie getrennt vom Move. Verlangt einen sauberen Arbeitsbaum. Grenzen: siehe
+  Skriptkopf.
 USAGE
 }
 
@@ -111,6 +128,13 @@ main() {
 
   cd "$(dirname "$0")/../.."
 
+  # Sauberer Arbeitsbaum (VORAUSSETZUNG im Skriptkopf) — sonst landet ein
+  # fremder Diff in einem der beiden automatischen Commits weiter unten.
+  if ! git diff --quiet || ! git diff --cached --quiet; then
+    echo "slice-mv: Arbeitsbaum nicht sauber — erst committen oder stashen (das Skript committet selbst, siehe Skriptkopf VORAUSSETZUNG)" >&2
+    exit 2
+  fi
+
   case " $LIFECYCLE " in
     *" $TO "*) ;;
     *) echo "slice-mv: '$TO' ist kein Lifecycle-Verzeichnis ($LIFECYCLE)" >&2; exit 2 ;;
@@ -143,6 +167,11 @@ main() {
   mkdir -p "$PLANNING/$TO"
   git mv "$found" "$PLANNING/$TO/$base"
 
+  # Commit 1 — reiner Move, kein Byte Inhalt veraendert (Hard Rule 3.3): der
+  # Arbeitsbaum war laut Vorpruefung sauber, `git mv` ist die einzige gestagte
+  # Aenderung, also committet dieser Aufruf genau sie.
+  git commit -q -m "slice-mv: $base  $from/ -> $TO/ (reiner Move)"
+
   # EINGEHEND, repo-weit — außer zwei eingefrorenen Bereichen: die vendored
   # Baseline (unveränderter Fremdtext, .harness/baseline/**) und
   # docs/reviews/** (Zeitdokumente, .d-check.yml codepaths.exempt-paths: ihre
@@ -152,9 +181,11 @@ main() {
   # docs/reviews/**, ein Closure-Verweis in einer done/-Datei ist ein realer,
   # von docs-check geprüfter Link und bricht wie jeder andere.
   local in_count=0 rf
+  local -a touched=()
   while IFS= read -r rf; do
     [ -n "$rf" ] || continue
     rewrite_incoming_in_file "$rf" "$base" "$from" "$TO"
+    touched+=("$rf")
     in_count=$((in_count + 1))
   done < <(git grep -l -F -e "$from/$base" -- \
              ':!.harness/baseline' ':!docs/reviews' \
@@ -163,12 +194,26 @@ main() {
   # AUSGEHEND — nur in der bewegten Datei selbst, an ihrem NEUEN Ort.
   local out_count
   out_count="$(rewrite_outgoing_bare_in_file "$PLANNING/$TO/$base" "$from")"
+  [ "$out_count" -gt 0 ] && touched+=("$PLANNING/$TO/$base")
+
+  # Commit 2 — Inhaltsänderung, GETRENNT vom Move (Hard Rule 3.3), nur wenn
+  # ueberhaupt ein Verweis anfiel; explizite Pfade statt `git add -A`, damit
+  # kein anderer (eigentlich schon per VORAUSSETZUNG ausgeschlossener) Diff
+  # mitgenommen wird.
+  if [ "${#touched[@]}" -gt 0 ]; then
+    git add -- "${touched[@]}"
+    git commit -q -m "slice-mv: Verweise auf $base nach $TO/ nachgezogen ($in_count eingehend, $out_count ausgehend)"
+  fi
 
   echo "slice-mv ok: $base  $from/ -> $TO/"
+  echo "  Commit 1 (reiner Move): $from/$base -> $TO/$base"
   echo "  eingehend: $in_count Datei(en) mit Verweisen nachgezogen"
   echo "  ausgehend: $out_count präfixloses Ziel(e) in der bewegten Datei auf ../$from/ umgehängt"
-  echo "  Beide Änderungen gehören in EINEN Commit: der Rename bleibt bei 100 %, die Verweise"
-  echo "  liegen in ANDEREN Dateien (AGENTS.md §3.3)."
+  if [ "${#touched[@]}" -gt 0 ]; then
+    echo "  Commit 2 (Inhalt, getrennt vom Move — AGENTS.md §3.3): $in_count eingehend, $out_count ausgehend"
+  else
+    echo "  Kein Verweis zu ziehen — kein zweiter Commit nötig."
+  fi
 }
 
 # BASH_SOURCE-Wächter: test/slice-mv.bats sourced dieses Skript, um
