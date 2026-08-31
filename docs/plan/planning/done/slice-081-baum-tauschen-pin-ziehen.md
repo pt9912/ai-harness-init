@@ -94,7 +94,7 @@ falsches Zitat (dasselbe Muster wie unter §6, nur ohne Link).
 oder die Folgerung bricht.** Sie ist gemessen, nicht vermutet — drei Fälle in `slice-114`, dazu
 **vier** von sechs nachgefahrenen Operanden-Messungen in lebenden Plandateien, deren Ergebnis sich
 gegen den neuen Baum bewegt. Ihr Ausgang ist **kein** Teil dieses Slice: er ist als
-[slice-131](../in-progress/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) geschnitten, der die
+[slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) geschnitten, der die
 Sortierung je Treffer führt und die Regel dahinter an einen Ort bringt. Was **hier** bleibt, ist
 die Feststellung, dass die vier Klassen die Frage nach der Auflösbarkeit stellen und nicht die
 nach der Wahrheit.
@@ -413,7 +413,7 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
 - **Die vier Verweis-Klassen aus §1 fragen nach Auflösbarkeit, nicht nach Wahrheit.** Ein Verweis,
   dessen Datei und Anker halten, kann ein Zitat oder eine daraus gezogene Zahl tragen, die der
   neue Stand nicht mehr deckt — bei grünem Gate. — **Ausgang:** eingetreten → Folge-Slice
-  [slice-131](../in-progress/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md); die drei
+  [slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md); die drei
   gate-sichtbaren Fälle in `slice-114` sind in diesem Zug bereits behoben.
 
 ## 7. Closure-Notiz (nach `done/`)
@@ -612,7 +612,7 @@ Frage ohnehin gestellt wird.
   Setzung 1 um die Übereinstimmungs-Pflicht und um die gepinnte Mess-Basis für einfrierende
   Artefakte. Dieser Lauf schreibt sie **nicht**; er benennt sie und übergibt sie unten.
 - **Die Bestands-Hälfte hat bereits einen Träger:**
-  [slice-131](../in-progress/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) §2 (2) verlangt
+  [slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) §2 (2) verlangt
   wörtlich *„Keine Zahl ist mitgewandert"* für jede nachgemessene Aussage und §2 (3) einen **Ort**
   für die Sortier-Regel. Sein Auslöser ist allerdings der **Tag-String** — Instanz 4 fiele darunter,
   die Instanzen 1 bis 3 nicht. Diese Verengung steht hier als benannter Rest, nicht als gelöst.
@@ -635,7 +635,7 @@ Alle **elf** Punkte tragen ihre `— **Ausgang:**`-Zeile in §6 selbst
 [slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md), dreimal
 [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) (zweimal davon zusammen
 mit slice-130), einmal [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md), einmal
-[slice-131](../in-progress/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) —,
+[slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) —,
 **zwei entfallen** mit Begründung (der `sed`-Fabrikations-Fall und die Hash-Herkunft),
 **eines eingetreten und in dieser Kette geschlossen** (der Zwischenzustand der drei Norm-Stellen),
 **eines eingetreten wie zugesagt** (die alte Form liegt in `git`, der Zugriffsweg steht). **Keines
@@ -655,7 +655,7 @@ oben benannt.
 
 [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md) (vier neue Vorlagen
 klassifizieren; löst [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) und drei der
-zehn Smoke-Befunde) · [slice-131](../in-progress/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md)
+zehn Smoke-Befunde) · [slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md)
 (Präsens-Aussage gegen den gepinnten Stand) ·
 [slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md) (löst
 [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md)) ·

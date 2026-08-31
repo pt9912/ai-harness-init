@@ -16,7 +16,7 @@ dieses Slice selbst (§7, eine lebende Plan-Datei); die beiden `nur bei Fund`-Ze
 einzelnen Fund — Folge-Slice in `docs/plan/planning/open/` oder Carveout in `docs/plan/carveouts/`
 (DoD (3)) — sind ebenfalls lebende Plan-Dateien, und Carveouts identifiziert nach
 Baseline-Regelwerk `modul-07-carveouts.md` §Rollen (Modul 8) der Planner. Präzedenzfall
-[slice-131](../in-progress/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) trägt dieselbe
+[slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) trägt dieselbe
 Artefaktklasse (*„die berührte Menge sind lebende Plan- und Welle-Dateien"*). Die dritte, ebenfalls
 `nur bei Fund` geführte Zeile — `harness/conventions.md`, Adaptions-Block-Eintrag bei einer
 deklarierten Abweichung — bleibt wie dort eine **Übergabe** an den Architect

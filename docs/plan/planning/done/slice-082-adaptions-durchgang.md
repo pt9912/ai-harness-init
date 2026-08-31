@@ -110,7 +110,7 @@ längst erfüllt ist: Ein Trigger, den niemand abfragt, ist kein Wächter."*
       daneben falsch ist und ihr Kommando nicht mehr läuft: ein grüner Ausgang über einem falschen
       Beleg. Je Eintrag ist deshalb **beides** zu beantworten — der Ausgang **und**, ob seine
       Messungen gegen den gepinnten Stand noch reproduzieren. Diese Hälfte hat sonst keinen Träger:
-      [slice-131](../in-progress/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) schließt
+      [slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) schließt
       `harness/conventions.md` ausdrücklich aus, und
       [slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md) behandelt nur die **Adresse** einer
       einzelnen Referenz. Kein Gate sieht sie: eine Messung in Inline-Code ist kein Link.
