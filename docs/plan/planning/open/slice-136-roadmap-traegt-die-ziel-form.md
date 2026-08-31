@@ -16,7 +16,7 @@ führte den ersten Abschnitt als `## Aktuelle Welle`, die neue führt ihn als `#
 §3 *Durchgang 2 — Form* verlangt die Pflichtfelder der neuen Gliederung **in den
 Singleton-Artefakten**, und die Roadmap ist eines — in der extensionalen Menge von
 [slice-083](slice-083-form-vergleich-pflichtfelder.md) §2 steht sie nicht
-(`grep -c 'roadmap' docs/plan/planning/open/slice-083-form-vergleich-pflichtfelder.md` → **0**).
+(`grep -c 'roadmap' docs/plan/planning/next/slice-083-form-vergleich-pflichtfelder.md` → **0**).
 
 **Ebene: Dogfood, nicht emittiert.** Gegenstand ist die Roadmap **dieses** Repos. Die emittierte
 Ebene hat denselben Gegenstand unter einem anderen Vertrag und einen anderen Träger: was ein

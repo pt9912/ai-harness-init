@@ -59,14 +59,14 @@ Regel ersetzt, ist nach dieser Fassung ein **Fork**, keine Adaption. Das trifft 
       benannt: Kopf und Versions-Kommentar erklären `v3.5.2` zur Baseline (`grep -n 'v3\.5\.2'
       .harness/skills/reviewer.md`), und `modul-10-review-harness.md` führt im Output-Schema ein
       **sechstes** Feld `klasse`, das der Skill nicht hat. **Der Zuschnitt ist korrigiert, nicht
-      gewachsen:** [slice-085](slice-085-emittierte-ebene-zieht-nach.md) führte den Skill in §3, und
+      gewachsen:** [slice-085](../open/slice-085-emittierte-ebene-zieht-nach.md) führte den Skill in §3, und
       das war eine Ebenen-Verwechslung — dort geht es um das **emittierte** Repo, hier um die
       ausgefüllten Artefakte **dieses**. Dieselbe Trennung, die der Absatz unter der Plan-Tabelle
       für die Commands zieht. **Die Aufzählung ist extensional, und ein Artefakt ist ausdrücklich
       nicht darin:** `docs/plan/adr/README.md` ist ebenfalls ein ausgefülltes Artefakt dieser
       Ebene mit vendored Ziel-Form, aber seine Abweichungen von ihr stammen **nicht** aus dem
       Delta dieses Sprungs — sie standen schon am abgelösten Stand offen. Er trägt deshalb
-      [slice-134](slice-134-adr-index-traegt-die-ziel-form.md), und dieser Slice zieht ihn nicht
+      [slice-134](../open/slice-134-adr-index-traegt-die-ziel-form.md), und dieser Slice zieht ihn nicht
       mit hinein.
 - [ ] `Ersetzt-Baseline-Regel` steht in **jedem** Adaptions-Eintrag — den überlebenden **wie den
       unter dem neuen Stand geschriebenen** — und nennt genau eine Baseline-Regel als Anker-Link;
@@ -98,7 +98,7 @@ Regel ersetzt, ist nach dieser Fassung ein **Fork**, keine Adaption. Das trifft 
 | [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) | update | die `cp`-Quelle der Results-Notiz existiert jetzt |
 
 Die **emittierte** Fassung derselben Commands gehört zu
-[slice-085](slice-085-emittierte-ebene-zieht-nach.md) — zwei Ebenen, zwei Verträge.
+[slice-085](../open/slice-085-emittierte-ebene-zieht-nach.md) — zwei Ebenen, zwei Verträge.
 
 ## 4. Trigger
 
@@ -108,7 +108,7 @@ geworden ist, bekommt kein neues Pflichtfeld mehr.
 Rückführungen: `in-progress` → `next`, wenn die Singleton-Nacharbeit und das Pflichtfeld zusammen
 eine Sitzung sprengen (dann trennt der Schnitt beide). `in-progress` → `open`, wenn ein Pflichtfeld
 eine Aussage verlangt, die erst der Bestands-Durchgang aus
-[slice-084](slice-084-stichprobe-gegen-bestand.md) liefert.
+[slice-084](../open/slice-084-stichprobe-gegen-bestand.md) liefert.
 
 ## 5. Closure-Trigger
 
