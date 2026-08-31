@@ -371,7 +371,7 @@ der Norm-Text entsteht im Architect-Lauf."* Dieser Abschnitt **ist** dieses Arte
 unterscheidet sich zwischen dem abgelösten und dem gepinnten Stand um **eine hinzugefügte** Zeile
 (`## Leseordnung`) und sonst um nichts — messbar ohne zweiten Baum, weil die alte Seite als
 Tree-Operand in `git` liegt (dieselbe Zugriffsform, die
-[slice-083](slice-083-form-vergleich-pflichtfelder.md) für den ganzen Form-Vergleich nutzt):
+[slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) für den ganzen Form-Vergleich nutzt):
 
 ```
 diff <(git show <Tausch-Commit>^:.harness/baseline/v3.5.2/templates/harness/README.template.md | grep '^## ') \
