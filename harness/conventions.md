@@ -21,7 +21,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   **Re-Baseline auf `v3.1.0`:** 2026-07-17 (slice-011/012); **auf `v3.5.0`:** 2026-07-19 (slice-019);
   **auf `v3.5.1`:** 2026-07-24 (slice-043); **auf `v3.5.2`:** 2026-07-26 (slice-049,
   Normativ-Delta in [`MR-015`](#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) entschieden);
-  **auf `v5.12.0`:** 2026-08-28 (slice-081). Die Prozedur für diesen Sprung steht in
+  **auf `v5.12.0`:** 2026-08-28 (slice-081, Normativ-Delta in slice-082 entschieden). Die Prozedur für diesen Sprung steht in
   [`ADR-0018`](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md), der
   Verweis-Beschluss ist in
   [`ADR-0023`](../docs/plan/adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) gegen genau
