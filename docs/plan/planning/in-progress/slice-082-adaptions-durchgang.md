@@ -94,7 +94,7 @@ längst erfüllt ist: Ein Trigger, den niemand abfragt, ist kein Wächter."*
 
 ## 2. Definition of Done
 
-- [ ] **Achse 1 — jeder** Eintrag der eingefrorenen Menge trägt genau einen der fünf Ausgänge mit
+- [x] **Achse 1 — jeder** Eintrag der eingefrorenen Menge trägt genau einen der fünf Ausgänge mit
       Beleg; Vollständigkeit als **Inventar gegen Abdeckung**
       (`git show b902b60:harness/conventions.md | grep -c '^### MR-'` ist der Nenner — der
       Tausch-Stand, nicht der Arbeitsbaum), nicht als Trefferliste. Fällt ein Eintrag auf
@@ -114,7 +114,7 @@ längst erfüllt ist: Ein Trigger, den niemand abfragt, ist kein Wächter."*
       `harness/conventions.md` ausdrücklich aus, und
       [slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md) behandelt nur die **Adresse** einer
       einzelnen Referenz. Kein Gate sieht sie: eine Messung in Inline-Code ist kein Link.
-- [ ] **Achse 2 — jeder Auflösungs-Trigger der eingefrorenen Menge ist abgefragt**, und die Antwort
+- [x] **Achse 2 — jeder Auflösungs-Trigger der eingefrorenen Menge ist abgefragt**, und die Antwort
       steht am Eintrag: Bedingung eingetreten oder nicht, Eintrag weiter gebraucht oder nicht — bei
       *gebraucht* übernommen, sonst durch einen Nachfolger aufgelöst. Der Nenner ist auch hier ein
       Kommando über den **Tausch-Stand**, nicht über den Arbeitsbaum:
@@ -128,7 +128,7 @@ längst erfüllt ist: Ein Trigger, den niemand abfragt, ist kein Wächter."*
       Ein Eintrag darin ist kein Ausreißer: ein **aufgehobener** Eintrag hat keinen Trigger mehr,
       und Achse 1 trägt ihn allein. Der Durchgang notiert je Treffer, ob die Aufhebung der Grund
       ist — ein Treffer ohne Aufhebung und ohne Trigger ist der Befund dieser Achse.
-- [ ] **Was der Durchgang schreibt, hat die Form der Ziel-Prozedur:** ein Rückbau ist ein **neuer
+- [x] **Was der Durchgang schreibt, hat die Form der Ziel-Prozedur:** ein Rückbau ist ein **neuer
       Eintrag, kein Edit**, und nennt den Baseline-Stand, der den Trigger gefeuert hat. Welche
       Gestalt der aufgehobene Eintrag danach behält, hängt am Ausgang von
       [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
@@ -154,8 +154,8 @@ längst erfüllt ist: Ein Trigger, den niemand abfragt, ist kein Wächter."*
       [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) den Stand, den der
       Durchgang ergibt, und die Re-Baseline-Zeile in §Baseline nennt diesen Slice als Ort des
       Normativ-Deltas — wie sie es für die vier vorigen Re-Baselines tut.
-- [ ] `make gates` grün.
-- [ ] Doku-Update: `AGENTS.md` und `harness/README.md`, soweit ein Ausgang sie berührt.
+- [x] `make gates` grün.
+- [x] Doku-Update: `AGENTS.md` und `harness/README.md`, soweit ein Ausgang sie berührt.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
@@ -242,3 +242,118 @@ DoD vollständig, Closure-Notiz geschrieben.
 Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example): `harness/` und die
 Briefing-Dateien im Wurzelverzeichnis gehören zum Greenfield-Bestand; der Modus steht in der
 Modus-Deklaration von [`harness/conventions.md`](../../../../harness/conventions.md).
+
+## 9. Inventar — Achse 1 und Achse 2 je Eintrag (Übergabe-Artefakt des Durchgangs)
+
+**Nenner:** `git show b902b60:harness/conventions.md | grep -c '^### MR-'` → **29** (Kennungen 000
+bis 028). Alle 29 sind unten geführt — Inventar gegen Abdeckung, keine Trefferliste. Gelesen ist
+jeder Eintrag im **heutigen** Wortlaut (§1); wo ein Eintrag außerhalb dieses Durchgangs bereits
+aufgehoben wurde (Kennungen 018, 022, 023 — alle vor bzw. an `b902b60` retiriert), ist das hier
+nur **verbucht**, nicht entschieden (§6 des Plans). Kreuzverweise auf andere Adaptions-Einträge
+stehen in dieser Tabelle absichtlich **ohne** `MR-`-Präfix (nur die Nummer) — der Präfix bindet
+nach [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
+Link-Pflicht, und eine Tabelle mit 29 Zeilen voller Vollpfad-Links wäre nicht mehr lesbar; die vier
+Posten mit echtem Befund tragen ihre Zitate darum ausgeschrieben **unterhalb** der Tabelle.
+
+| Nr. | Achse 1 — Ausgang | Achse 2 — eigener Bedarf | Messungen reproduzieren? |
+|---|---|---|---|
+| 000 | bleibt gültig (Rest nach den beiden vorbestehenden Teil-Ablösungen 2-Strata→019, Blankett-Klausel→Kommando); ID-Schema/Verzeichniskonvention unverändert Kurs-konform | permanent, Initial-Setzung, kein Trigger | ja (`grep -n Blankett-Klausel harness/conventions.md` reproduziert) |
+| 001 | bleibt gültig (Rest nach vorbestehender Teil-Ablösung Zensus→029); Modul-Aktivierung (matrix/spans/ids-Link-Pflicht) bleibt Tool-Entscheidung, kein Baseline-Bezug | permanent; `codepaths.roots` steht weiterhin auf `[spec, docs, harness]`, nicht gewachsen → nicht ausgelöst | ja (`.d-check.yml`-Grep aktuell) |
+| 002 | bleibt gültig — Mechanik (Working-Tree-Hash, PreToolUse-Guard, Host-Go-Block) deckt sich mit `grundlagen-durchsetzungsschicht.md` (PreToolUse-Hook, Sub-Shell-Rekursion) | permanent, nicht ausgelöst | keine Messwert-Zahlen im Rumpf |
+| 003 | bleibt gültig | permanent; die genannte Restlücke ("CI ist dort das Netz") ist durch die CI-Adaption (014) bereits geschlossen — repo-intern, kein Baseline-Bezug | keine Messwert-Zahlen im Rumpf |
+| 004 | bereits Teil-abgelöst (HISTORIE → Baseline-committet-vendored-Eintrag 007, vor `b902b60`); Rest (Injektor-Mechanik: Codex Volltext, Claude on-demand) bleibt gültig, kein Widerspruch in `grundlagen-durchsetzungsschicht.md`/`modul-02` gefunden | kein neuer Trigger | — |
+| 005 | bleibt gültig (Layout-Wahl `harness/tools/`, kein Baseline-Bezug) | permanent; offene Emissions-Reconciliation bleibt offen — keine Umsetzung hier (§6 des Plans) | — |
+| 006 | bereits Teil-abgelöst (HISTORIE → 007, vor `b902b60`) | kein neuer Trigger | — |
+| 007 | bleibt gültig — bestätigt gegen `v5.12.0`: `grep -n 'werden beim Bootstrap' .harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md` trägt weiterhin "committet vendored" als Baseline-Vorgabe | permanent; Upstream-Überwachung läuft weiter (`regelwerk-check`/`baseline-freshness`), kein Rückbau-Trigger | ja (`make baseline-verify` → 51 Dateien, deckt sich mit welle-10 §1) |
+| 008 | bleibt gültig — Mechanismus (`cp` aus vendored Templates) funktioniert unverändert; Ziel-Baum trägt 25 Templates (welle-10 §1) | permanent, "solange das Repo seine Templates nicht adaptiert" — nicht eingetreten | ja |
+| 009 | bleibt gültig (Tool-Pin-Wahl, kein Baseline-Bezug — d-check-Versionen sind kein Kursgegenstand) | permanent; Re-Pin ist laufende Wartung, aktueller Pin `v0.65.0` (Kettenschritt 027) | ja — Vergleiche fester Digests sind zeitlos |
+| 010 | bleibt gültig | permanent; Fixture/Anker-Zahlen gegen `v0.65.0` durch Kettenschritt 027 bereits bestätigt | ja |
+| 011 | bleibt gültig | permanent | ja |
+| 012 | bleibt gültig (historischer Kettenschritt, weiter durch 013/024/027 fortgesetzt) | permanent | ja |
+| 013 | bleibt gültig (aktueller Mechanismus für `regelwerk-check`) | permanent | ja |
+| 014 | bleibt gültig (CI-Tool-Wahl; kein Baseline-Text zu GitHub-Actions-Scheduling gefunden) | permanent | ja |
+| 015 | **gegenstandslos → Rückbau, als Teil-Ablösung** (Nachfolge-Eintrag unten) | Setzung-3-Trigger ("externer Auftraggeber existiert") nicht eingetreten, bleibt an diesem Eintrag hängen | Zitat reproduziert wörtlich |
+| 016 | **teilweise überholt (gegenstandslos + widerspricht→übernehmen) → vollständige Aufhebung** (Nachfolge-Eintrag unten) | eigener Trigger ("Setzung 2/3 fallen, sobald Modul 6 einen Ort vorsieht") eingetreten | Ist-Messung (21/56) war Zeitpunkt-Messung ohne laufendes Versprechen, kein Reproduktions-Problem |
+| 017 | bleibt gültig (ADR-Verweis, Tool-Policy für emittierte Configs — kein Kurs-Gegenstand) | permanent | keine Messwert-Zahlen im Rumpf |
+| 018 | bereits vollständig aufgehoben (vor `b902b60`) — Ziel (`spec/spezifikation.md` §5, Messreihen-Zeitdokument) weiterhin aktuell und vorhanden | kein Trigger mehr (aufgehoben) | — |
+| 019 | **bleibt gültig** — geprüft: `v5.12.0` verlangt weiterhin die explizite Deklaration jedes Spec-Dokuments in `harness/conventions.md`, trotz jetzt **obligatorischer** 3-Strata-Struktur (Details unten) | permanent; "letzter Abschnitt mit Bestand" ist nicht weggefallen (§3/5/6/7 gefüllt) | die eigene "ÜBERHOLT"-Marke (→021) ist bereits korrekt |
+| 020 | **teilweise überholt → engere Nachfolgerin, Option C bestätigt, kein Widerspruch** (Details unten) | Re-Evaluierungs-Trigger der zugehörigen ADR eingetreten, neu begründet — ADR bleibt Accepted, keine Folge-ADR, keine Rückführung `in-progress → open` | — |
+| 021 | teilweise überholt, größtenteils bereits verbucht (ein Punkt bereits anderweitig abgelöst, außerhalb des Rahmens); der verbleibende Punkt (Sensor-Spalte) bleibt gültig — gegengeprüft: `modul-15-observability.md` §Span-/Audit-Attribut-Regeln trägt weiterhin nur Attribut-Name/Pflicht/Incident-Frage, keine vierte Spalte | permanent, kein neuer Trigger | ja |
+| 022 | bereits vollständig aufgehoben (außerhalb des Rahmens) — nur verbucht | kein Trigger mehr | — |
+| 023 | bereits vollständig aufgehoben (außerhalb des Rahmens) — nur verbucht | kein Trigger mehr | — |
+| 024 | bleibt gültig | permanent; operativ durch Kettenschritt 027 fortgeführt | ja |
+| 025 | bleibt gültig — "Harness-Lüge"-Konzept unverändert in `grundlagen-begriffe.md` vorhanden | keiner (bewusst Feedforward-Quadrant, wie im Eintrag selbst begründet) | ja (Zitat reproduziert) |
+| 026 | bleibt gültig — These (Nummer ist Adresse, keine Baseline-Entsprechung) durch eine zusätzliche Koinzidenz (§3.7 seit dem Vorgriff-eingeholt-Commit, neben dem seit je bestehenden §3.3) eher gestützt als widerlegt | Auflösungs-Trigger im **strukturellen** Sinn nicht ausgelöst (Einzel-Koinzidenzen zählten schon bei §3.3 nicht als Trigger); als Beobachtung notiert, kein Rückbau | ja |
+| 027 | bleibt gültig (aktueller d-check-Pin) | permanent; kein Re-Pin fällig für diesen Durchgang — `v0.66.1` liegt bereits als eigener, wellenloser Slice in `open/`, unabhängig von diesem Durchgang | ja |
+| 028 | bleibt gültig — Mechanismus (blanke Slice-Nummer statt Link) wird weiterhin gelebt | permanent | ja |
+
+### Die vier Posten mit echtem Befund
+
+**015 ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)) — gegenstandslos.**
+[`grundlagen-source-precedence.md`](../../../../.harness/baseline/v5.12.0/regelwerk/grundlagen-source-precedence.md)
+trägt seit `v5.12.0` einen eigenen Absatz *„Fallen Auftraggeber- und Entwickler-Rolle
+zusammen"*, der [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)s drei Setzungen Satz für Satz deckt: *„Die Rolle ist besetzt … der
+annehmende Akt ist die Entscheidung, die vor der Umsetzung fällt"* (Setzung 1), *„Der Träger ist
+dann der Commit: … ausschließlich das Lastenheft … vor dem Slice"* (Setzung 2, wörtlich). Die
+Lücke, die [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) selbst benannte (*„dieses Repo hat keinen externen Auftraggeber"*), ist
+geschlossen. **Rückbau als Teil-Ablösung, nicht Vollentfernung:** der Cutoff-Absatz von [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+bindet an zwei Stellen fort — [`AGENTS.md`](../../../../AGENTS.md) §3.7 und
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+zitieren ihn als Präzedenz (*„dieselbe Begründung trägt den Cutoff in [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)"*). Nach
+[ADR-0014](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) Festlegung 2 (a) bleibt der
+Rumpf deshalb vollständig stehen; nur eine Kopf-Marke ist gesetzt — Nachfolge-Eintrag
+[`MR-036`](../../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline).
+
+**016 ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)) — teilweise überholt, praktisch vollständige Aufhebung.**
+[`modul-06-roadmap.md`](../../../../.harness/baseline/v5.12.0/regelwerk/modul-06-roadmap.md)
+trägt [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)s Platzierungs-Regel (Setzung 2/3: wellenlose Arbeit nicht in der Roadmap, Zustand ist
+die Verzeichnis-Position) jetzt wörtlich als Baseline-Default. Gleichzeitig **widerspricht** die
+neue Fassung [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)s dritter Schnitt-Frage ausdrücklich: [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) sagte *„'Wir wollen eine neue
+Fähigkeit' → gewollt, Welle — auch wenn es zunächst nach einem Slice aussieht"*; die neue Fassung
+sagt *„auch eine neue Fähigkeit kann ein einzelner Slice sein"*. Das eigene Register dieses Repos
+stützt die neue Fassung: [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)s eigene drei Gegenbeispiele (slice-027/039/048) wurden *„fast
+immer nachgeschnitten"* — sie wurden zu Wellen, als sich ein Bündel zeigte, nicht weil "gewollt"
+allein schon eine Welle verlangte. Gewählt: **übernehmen** (nicht "weiter gelten und benennen"),
+weil das eigene Register die alte Regel widerlegt statt stützt. Da nichts vom Rumpf mehr
+eigenständig bindet, ist dies eine vollständige Aufhebung — durchgeführt in zwei zusätzlichen,
+additionsfreien Commits (Zeiger setzen, dann Rumpf löschen), wie
+[ADR-0014](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) Festlegung 2 (c) verlangt.
+Nachfolge-Eintrag [`MR-037`](../../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst).
+
+**019 ([`MR-019`](../../../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence)) — bleibt gültig (Normalfall), keine Vermutung.**
+Der erste Eindruck — *„3 Strata sind jetzt obligatorisch, also gegenstandslos"* — trägt nicht:
+[`grundlagen-referenz-richtung.md`](../../../../.harness/baseline/v5.12.0/regelwerk/grundlagen-referenz-richtung.md)
+verlangt unverändert, dass **jedes** Spec-Dokument sein Stratum in `harness/conventions.md`
+deklariert (*„Ein Spec-Dokument ohne deklariertes Stratum ist eine stille Setzung … und nicht
+normativ zitierbar, bis es deklariert ist"*) — einer von zwei genannten Mechanismen. Die
+Obligatorik der drei Straten ändert **was** normal ist, nicht **ob** eine Deklaration nötig ist.
+[`MR-019`](../../../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence) bleibt darum der Ort dieser Deklaration für `spec/spezifikation.md`. Kein
+Nachfolge-Eintrag.
+
+**020 ([`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)) — teilweise überholt, geprüft statt vermutet.**
+[ADR-0014](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md)s dritter
+Re-Evaluierungs-Trigger (*„Wenn die Baseline die Disziplin-Regel aus dem Vorlagen-Kommentar in
+ein Prosa-Modul hebt … Abweichung ist gegen den neuen Wortlaut neu zu begründen"*) ist
+eingetreten — genau das ist bei `v5.12.0` geschehen
+([`MR-029`](../../../../harness/conventions.md#mr-029--der-scanignore-zensus-wandert-und-sein-dritter-grund-ist-keine-scoping-aussage)
+hat es für einen Nachbar-Fall schon gemessen). Geprüft, nicht nur behauptet: **Option C
+widerspricht dem neuen Wortlaut nicht.** *„Nicht überschrieben"* und *„kein Edit"* richten sich
+gegen das Verändern einer bestehenden Aussage; Option C ändert nichts, sie entfernt den Rumpf per
+eigenem, additionsfreien Commit und lässt Nummer, Überschrift wörtlich und Datum stehen — genau
+den stabilen Anker, den *„ein Nachfolger, der sie auflöst"* voraussetzt. Neu ist ein
+Formerfordernis (Baseline-Stand im `Aufgehoben durch`-Feld nennen), kein Widerspruch. **Ergebnis:
+keine Folge-ADR, keine Rückführung `in-progress → open`.** Nachfolge-Eintrag
+[`MR-038`](../../../../harness/conventions.md#mr-038--ein-retirierender-eintrag-nennt-den-baseline-stand-der-seinen-trigger-feuerte).
+
+### Was das für §4 (Trigger) heißt
+
+Kein Ausgang dieses Durchgangs verlangt eigene Umsetzung außerhalb dieses Slice (drei neue
+Adaptions-Block-Einträge, zwei Kopf-Marken, ein `Aufgehoben-durch`-Zeiger, eine
+Rumpf-Löschung — alles `harness/conventions.md`); die Zwei-Einträge-Schwelle aus §4 ist damit
+nicht erreicht, `in-progress → next` greift nicht. Der einzige Kandidat für
+`in-progress → open` — [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf) gegen die zugehörige ADR — ist geprüft und fällt **für** die
+bestehende Festlegung aus (oben); die Rückführung greift nicht. Kein Zweig fällt auf *Lockerung
+traf Verschärfung* mit Bedarf an einem Gate — kein Carveout. Kein Ausgang berührt den Text von
+[`AGENTS.md`](../../../../AGENTS.md) oder [`harness/README.md`](../../../../harness/README.md)
+inhaltlich; die einzige AGENTS.md-Berührung (§3.7-Zitat von [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)) bleibt unverändert korrekt,
+weil [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) als Teil-Ablösung seinen zitierten Absatz behält.
