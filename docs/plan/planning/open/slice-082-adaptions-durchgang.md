@@ -15,6 +15,17 @@ die der Durchgang prüft), [`MR-020`](../../../../harness/conventions.md#mr-020-
 [ADR-0018](../../adr/0018-ziel-fassung-regiert-die-migration.md) (die Prozedur, nach der dieser
 Durchgang läuft, und die Grenze, dass sie keinen einzelnen Eintrag vorentscheidet).
 
+**Verantwortlich:** Architect (pt9912) — §3 nennt die zwei Haupt-Dateien
+(`harness/conventions.md`, `AGENTS.md`) ausdrücklich **Architect-Artefakte**
+([`AGENTS.md`](../../../../AGENTS.md) §3.8): der Norm-Text der Ausgänge (neue Einträge im
+Adaptions-Block, ggf. der §3.7-Rückbau) entsteht im Architect-Lauf und in eigenem Commit; was der
+Durchgang liefert, ist das Übergabe-Artefakt dafür. Derselbe Liefergegenstand trägt beim
+Präzedenzfall [slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md) dieselbe Besetzung
+(*„der Adaptions-Block schreibt der Architect — dieser Slice ist geschnitten, nicht ausgeführt vom
+Planner"*). Das Feld weicht damit von der Default-Besetzung ab, die Baseline-Regelwerk
+`modul-05-planning-harness.md` §Lifecycle als State Machine nennt (*„den Rolleninhaber der
+Implementer-Rolle"*).
+
 **Autor:** Planner. **Datum:** 2026-08-09.
 
 ---
