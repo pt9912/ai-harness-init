@@ -79,7 +79,7 @@ Setzung 2), zu fahren beim Lauf, nicht beim Schnitt:
 [ADR-0014](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md);
 [`AGENTS.md`](../../../../AGENTS.md) §3.4) und alles unter `done/` und `docs/reviews/` —
 Zeitdokumente. **Unberührt bleibt auch**
-[slice-083](../next/slice-083-form-vergleich-pflichtfelder.md): er nennt den alten Tag als
+[slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md): er nennt den alten Tag als
 **Tree-Operanden der Vor-Tausch-Seite** — genau die Adresse, die der Tausch nicht anfassen darf.
 
 **Und diese Ausnahme ist keine Einzelfall-Ausnahme, sondern eine Klasse.** Eine lebende Plandatei
@@ -312,7 +312,7 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
   dieselbe Klasse wie die Sätze oben — Präsens-Aussage gegen einen Stand, den es nicht mehr gibt —,
   aber es wiegt schwerer: die anderen werden gelesen, dieser **steuert die Rolle, die die übrigen
   Befunde dieser Welle findet**. Kein Gate sieht ihn; `.d-check.yml` liest keine Skill-Metadaten.
-  — **Ausgang:** eingetreten → [slice-083](../next/slice-083-form-vergleich-pflichtfelder.md) §2 (1),
+  — **Ausgang:** eingetreten → [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) §2 (1),
   dem Form-Durchgang dieser Welle. **Nicht** slice-085: dort geht es um das **emittierte** Repo,
   hier um ein ausgefülltes Artefakt dieses — zwei Ebenen, zwei Verträge. Der Preis bis dahin ist
   benannt und nicht wegverhandelt: jeder Review zwischen 081 und 083 läuft auf einem Skill, dessen
@@ -320,7 +320,7 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
 - **Nach diesem Slice liegt die alte Form nur noch in der Historie — das ist die Zusage von
   [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache),
   nicht ihr Preis.** *„Ein Tag zur Zeit (Ersetzen), Historie liegt in git"*: der Form-Vergleich aus
-  [slice-083](../next/slice-083-form-vergleich-pflichtfelder.md) holt die alte Seite dort, mit
+  [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) holt die alte Seite dort, mit
   Tree-Operanden statt zwei Verzeichnissen. Was er dafür braucht, ist **der Commit, der den Baum
   getauscht hat** — er steht als jüngster Eintrag in `git log --oneline -- .harness/baseline/`,
   derselben Abfrage, die heute die drei bisherigen Re-Vendors auflistet.
@@ -329,7 +329,7 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
   — **Ausgang:** eingetreten wie zugesagt, und der Zugriffsweg steht: der Tausch-Commit ist der
   jüngste Eintrag der Abfrage (`git log --oneline -1 -- .harness/baseline/` → `b902b60`), und der
   Baum ist eindeutig (`make baseline-verify` → `v5.12.0 OK — 51 Dateien`). Träger der alten Seite
-  ist [slice-083](../next/slice-083-form-vergleich-pflichtfelder.md), der sie über Tree-Operanden
+  ist [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md), der sie über Tree-Operanden
   holt; ein zweites vendored Verzeichnis entsteht dafür nicht.
 - **Der mechanische Tag-Tausch macht aus einem toten Link ein falsches Zitat.** Gemessen an
   Zeile 129 von `modul-07-carveouts.md`: bei `v3.5.2` steht dort *„Slice schlägt Memo"*, bei
@@ -634,7 +634,7 @@ Alle **elf** Punkte tragen ihre `— **Ausgang:**`-Zeile in §6 selbst
 [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) mit
 [slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md), dreimal
 [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) (zweimal davon zusammen
-mit slice-130), einmal [slice-083](../next/slice-083-form-vergleich-pflichtfelder.md), einmal
+mit slice-130), einmal [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md), einmal
 [slice-131](../in-progress/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) —,
 **zwei entfallen** mit Begründung (der `sed`-Fabrikations-Fall und die Hash-Herkunft),
 **eines eingetreten und in dieser Kette geschlossen** (der Zwischenzustand der drei Norm-Stellen),
@@ -646,7 +646,7 @@ Beobachtungs-Register und ist hier nicht gezogen worden, weil kein Punkt ihn bra
 
 Eine `observations.md` unter `docs/plan/planning/` existiert nicht
 (`ls docs/plan/planning/observations.md` → kein Treffer). Der Ort ist ein Delta der neuen Baseline
-und als Posten geführt, nicht vergessen: [slice-083](../next/slice-083-form-vergleich-pflichtfelder.md)
+und als Posten geführt, nicht vergessen: [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md)
 §6 trägt ihn samt der zwei Lese-Schritte, die ihn von einer bloßen Schreibpflicht unterscheiden.
 Bis dahin zählt der Steering Loop dieses Repos über die Closure-Notizen, und die Verengung steht
 oben benannt.
@@ -662,7 +662,7 @@ zehn Smoke-Befunde) · [slice-131](../in-progress/slice-131-praesens-aussage-geg
 [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) (sieben der zehn
 Smoke-Befunde; läuft **vor** slice-130). Vorbestehend und unverändert zuständig:
 [slice-082](../done/slice-082-adaptions-durchgang.md) (Adaptions-Durchgang) und
-[slice-083](../next/slice-083-form-vergleich-pflichtfelder.md) (Form-Durchgang).
+[slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) (Form-Durchgang).
 
 ### Übergabe an andere Rollen
 
@@ -675,7 +675,7 @@ Smoke-Befunde; läuft **vor** slice-130). Vorbestehend und unverändert zuständ
   und [`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen)
   führen das Pflichtfeld `Ersetzt-Baseline-Regel` der neuen Vorlage nicht, die drei jüngeren
   Einträge führen es — der Form-Durchgang
-  [slice-083](../next/slice-083-form-vergleich-pflichtfelder.md) ist der Ort, an dem das entschieden
+  [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) ist der Ort, an dem das entschieden
   wird, nicht ein Nachzug hier.
 - **An den Implementer:** der `scan.ignore`-Kommentar in `.d-check.yml` beziffert die Reichweite mit
   *„über alle fuenf Module"*, während `modules:` **sechs** führt

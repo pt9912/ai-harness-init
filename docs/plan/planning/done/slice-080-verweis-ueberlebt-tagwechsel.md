@@ -270,7 +270,7 @@ beim zweiten Auftreten am 2026-08-28 nicht neu entstanden, sondern hochgezählt 
 **Der Träger — und warum hier kein Slice geschnitten wird.**
 [welle-10](../welle-10-re-baseline.md) §6 zieht die Grenze selbst: *„Ein Delta, das eigene Arbeit
 verlangt, wird als Slice in `open/` notiert."* Der Durchgang, der die Form der Ziel-Fassung liest,
-ist [slice-083](../next/slice-083-form-vergleich-pflichtfelder.md); sein §1 nennt `observations`
+ist [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md); sein §1 nennt `observations`
 bereits als eine der vier neuen Vorlagen, seine drei DoD-Punkte decken aber **Singleton-Form**,
 das Pflichtfeld `Ersetzt-Baseline-Regel` und die Append-only-Behandlung **wiederkehrender**
 Vorlagen — eine **neue Artefakt-Klasse mit zwei Lese-Schritten** fällt zwischen sie. Der Posten
@@ -302,7 +302,7 @@ Abgeschlossenheit steht.
 | LOW-1 und INFO-1 des Reviews (die Grundlagen-Datei ist am Bezugs-Tag nicht neu; *zwölf* gegen *elf* Muster-Alternativen) | Review `2026-08-28-adr-0023-review.md` | **erledigt vor der Annahme** (`560f558`, letzte zwei Posten): der Satz nennt jetzt die zwei neuen **Zeilen** statt der Datei, und dass der Vorgänger-Beschluss dasselbe Muster *„zwölf Wörter"* nennt, steht dabei |
 | V-2 der Verifikation (*„vom damaligen Zielstand"* misst ab `v5.3.1`, [ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md) maß gegen `v5.3.0`) | Verifikation `2026-08-28-slice-080-verify.md` | **erledigt vor der Annahme** (`560f558`, Posten 6) — beide Tags stehen jetzt mit ihrem Betrag, und die Invarianz der Folgerungen ist mitgemessen |
 | V-3 (*„sechs, nicht vier"* vergleicht zwei Mengen), V-4 (die Datei-Zahlen sind um eins gewandert), V-5 ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) in weiter Lesart) | Verifikation, drei Notizen | **kein Handlungsbedarf, und der Grund je einzeln** — V-3 ist mit der Mess-Basis aus `560f558` aufgelöst (beide Mengen sind benannt); V-4 erklärt die ADR vorab selbst (*„die geprüfte Datei-Zahl … wächst mit"*), die Befund-Zahlen sind unverändert; V-5 stellt Deckungsgleichheit von Plan und Artefakt fest und erfindet keine Regel. Keiner der drei ist nach [`AGENTS.md`](../../../../AGENTS.md) §3.4 noch änderbar, und keiner müsste es sein |
-| Der Slice führte neunzehn Tage eine beantwortete Frage | dieser Lauf | **Steering-Loop-Eintrag oben**, Träger [slice-083](../next/slice-083-form-vergleich-pflichtfelder.md) §6 |
+| Der Slice führte neunzehn Tage eine beantwortete Frage | dieser Lauf | **Steering-Loop-Eintrag oben**, Träger [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) §6 |
 
 ### Übergabe an andere Rollen
 
