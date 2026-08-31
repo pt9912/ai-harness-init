@@ -136,7 +136,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **(1) Die Frage *übernehmen oder eigenständig bauen* ist entschieden, und die Entscheidung
+- [x] **(1) Die Frage *übernehmen oder eigenständig bauen* ist entschieden, und die Entscheidung
       steht gegen den gemessenen Bedarf dieses Repos.** Ausgangspunkt ist das Werkzeug des
       Schwester-Repos a-check (ein Skript slice-mv.sh und ein Make-Ziel gleichen Namens, beide dem
       Auftraggeber gehörend, beide auf derselben Baseline). **Was übernommen wird, ist zu
@@ -146,7 +146,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Die Entscheidung nennt **je Form** der beiden Kommandos, ob das Ergebnis sie deckt — die
       Menge ist die Ausgabe dieser Kommandos zum Zeitpunkt der Ausführung, keine Liste in diesem
       Plan.
-- [ ] **(2) `make slice-mv SLICE=<slice-NNN> TO=<open|next|in-progress|done>` bewegt den Slice und
+- [x] **(2) `make slice-mv SLICE=<slice-NNN> TO=<open|next|in-progress|done>` bewegt den Slice und
       zieht die Verweise nach — in beiden Richtungen.** **Eingehend:** die Verweise **auf** die
       Datei, in jeder Präfix-Form, die das erste Kommando aus §1 ausgibt. **Ausdrücklich außerhalb
       dieser Zusage bleibt die präfixlose Form von der eingehenden Seite:** ein Geschwister, das im
@@ -163,23 +163,23 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       weil ein Move ohne ausgehende Geschwister-Ziele die zweite Hälfte der Zusage nicht prüft. Ein
       Rückstand aus der ausgeschlossenen präfixlosen Eingehend-Form in der Nachher-Ausgabe ist kein
       Verstoß gegen diese Zusage; jeder andere Rückstand schon.
-- [ ] **(3) Der Skriptkopf nennt, was das Werkzeug *nicht* kann.** Zwei Grenzen sind schon bekannt
+- [x] **(3) Der Skriptkopf nennt, was das Werkzeug *nicht* kann.** Zwei Grenzen sind schon bekannt
       und gehören hinein: es zieht **Pfade** nach und keine **Zustandssätze**, und
       Welle-Plan-Dateien wechseln beim Closure-Move die Verzeichnis-**Tiefe**. Jede weitere
       **gemessene** Grenze kommt dazu; eine vermutete nicht. Ein genannter Sensor muss existieren —
       `make comment-claims` prüft genau das.
-- [ ] `make gates` bringt **keinen Befund hervor, der diesem Slice zuzurechnen ist** —
+- [x] `make gates` bringt **keinen Befund hervor, der diesem Slice zuzurechnen ist** —
       Vorher-Nachher-Vergleich derselben Ausgabe, nicht „grün". Dazu `make shell-lint` und
       `make comment-claims`, weil ein neues Skript beide sofort bindet.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist — hier keiner: ein
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist — hier keiner: ein
       Planungs-Werkzeug ändert nichts an dem, was das Produkt emittiert.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: das Repo hat keinen Brownfield-Bootstrap und führt keines; das Item
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: das Repo hat keinen Brownfield-Bootstrap und führt keines; das Item
       entfällt mit diesem Grund, nicht still.
-- [ ] Beobachtungs-Register fortgeschrieben: `BEO-003` trägt den Stand dieses Slice — verkörpert,
+- [x] Beobachtungs-Register fortgeschrieben: `BEO-003` trägt den Stand dieses Slice — verkörpert,
       falls das Werkzeug steht; sonst mit dem Grund, warum nicht.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste Welle-Closure — dieses
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste Welle-Closure — dieses
       Repo fährt Wellen-Betrieb, und die liest auch Slices ohne Wellen-Zugehörigkeit.
 
 ## 3. Plan (vor Code)
@@ -254,34 +254,63 @@ dasteht.
   darf, sagt keine Quelle — das ist `BEO-007` im [Beobachtungs-Register](../observations.md), und
   der Verantwortliche dieses Slice ist der Implementer. Fällt die Antwort gegen ihn, greift die
   Rückführung `in-progress` → `open` aus §4 (zweiter Auslöser dort); die zwei übrigen Zeilen der
-  Tabelle bleiben davon unberührt und tragen die Zusage aus DoD (2) allein. — **Ausgang:**
-  <entfallen: die Zeile ist ohne Rollen-Konflikt geschrieben | eingetreten: slice-NNN | weiter
-  offen: → `BEO-007`>
+  Tabelle bleiben davon unberührt und tragen die Zusage aus DoD (2) allein.
+
+  **Ausgang: entfallen.** [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
+  (Architect-Verdikt über den Konflikt-Pfad, `Proposed`, Annahme-Trigger
+  [slice-145](../next/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md) in `next/`) löst
+  genau diesen Fall in Folgepflicht 4 auf: die Prämisse der Rückführungs-Bedingung aus §4 trifft
+  nicht zu, weil [`AGENTS.md`](../../../../AGENTS.md) §3.8 `.claude/commands/implement-slice.md`
+  nie erfasst hat (Reviewer-Befund HIGH-1, bestätigt) — die Zeile ist ohne Rollen-Konflikt
+  geschrieben. Der Verdikt selbst ist unabhängig vom `Accepted`-Status der ADR gefällt (Modul 8s
+  Konflikt-Pfad schließt mit dem Architect-Artefakt, nicht mit dessen späterer Annahme); die
+  Annahme selbst ist Sache von `slice-145`, nicht dieser Closure. **Die allgemeine Quellenfrage
+  bleibt offen:** [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
+  deckt nur die Command-Form und lässt `.claude/agents/*.md` in
+  Festlegung 3 ausdrücklich unentschieden — zweiter Beleg für `BEO-007` im
+  [Beobachtungs-Register](../observations.md).
 - **Eine Adresse ist ein Teilstring, und Slice-Nummern sind Präfixe voneinander.** `slice-13`
   steckt in `slice-130`; eine Ersetzung über den blanken Nummern-Teil trifft Nachbarn. Die
   Ersetzung muss auf dem **vollen Dateinamen** ankern, und das ist zu belegen, nicht zu behaupten.
-  — **Ausgang:** <eingetreten: slice-NNN | entfallen: der Fall ist als Selbsttest rot gesehen |
-  weiter offen: → `BEO-<NNN>` im Register>
+
+  **Ausgang: entfallen.** Der Fall ist als Selbsttest rot gesehen: `test/slice-mv.bats` führt den
+  Fall *„eingehend: Teilstring-Falle — Move von slice-13 aendert slice-130 NICHT"* (Zeile 68 ff.),
+  der prüft, dass ein Move von `slice-13` `slice-130` unberührt lässt — ohne die
+  Wortgrenzen-Verankerung wäre er rot. `docker run … bats test/slice-mv.bats` → 8/8 `ok`, dieser
+  Fall darunter.
 - **Ein Werkzeug, das Adressen ersetzt, ersetzt keine Zustandssätze.** Eine Zeile *„In Arbeit:
   <slice>"* bleibt nach dem Wechsel nach `done/` stehen; ihr Verweis ist dann richtig und ihre
   Aussage falsch. Das ist eine Grenze, keine Lücke — was ein Satz behauptet, ist Urteil und kein
-  Match. Sie gehört in den Skriptkopf, nicht in die Commit-Message. — **Ausgang:** <entfallen: die
-  Grenze steht im Kopf | weiter offen: → `BEO-<NNN>` im Register>
+  Match. Sie gehört in den Skriptkopf, nicht in die Commit-Message.
+
+  **Ausgang: entfallen.** Die Grenze steht im Kopf — `harness/tools/slice-mv.sh` Abschnitt GRENZEN
+  (1): *„Das Werkzeug zieht PFADE nach, keine ZUSTANDSSÄTZE … Welcher Satz einen Zustand
+  behauptet, ist Urteil, kein Match."*
 - **Welle-Plan-Dateien wechseln beim Closure-Move die Verzeichnis-Tiefe**, nicht nur das
   Verzeichnis: ein Ziel aus Tiefe *n* braucht aus *n+1* ein zusätzliches `../`. Ob der Slice diese
-  Klasse mitnimmt oder sie ausdrücklich ausschließt, ist eine Entscheidung und keine Auslassung. —
-  **Ausgang:** <entfallen: ausdrücklich ausgeschlossen, im Kopf benannt | eingetreten: slice-NNN |
-  weiter offen: → `BEO-<NNN>` im Register>
+  Klasse mitnimmt oder sie ausdrücklich ausschließt, ist eine Entscheidung und keine Auslassung.
+
+  **Ausgang: entfallen.** Ausdrücklich ausgeschlossen, im Kopf benannt — Abschnitt GRENZEN (2):
+  das Werkzeug bewegt nur `SLICE=<slice-NNN>`-Dateien und ersetzt in der Ausgehend-Richtung darum
+  nur `slice-`-Ziele; ein präfixloses `welle-`-Ziel bleibt unberührt (`test/slice-mv.bats`, Fall
+  *„ausgehend: welle-Ziel bleibt unberuehrt (Grenze 2 — nur slice-Dateien)"*).
 - **Ein neues Skript hat zwei Wächter, die es sofort binden.** `make shell-lint` deckt
   `harness/tools/*.sh` ohne Zutun; `make comment-claims` verlangt, dass ein im Kommentar genannter
   Sensor existiert. Ein Kopf, der einen Selbsttest nennt, den es nicht gibt, bricht das Gate — das
-  ist gewollt und hier vorab benannt. — **Ausgang:** <entfallen: beide grün, ohne Ausnahme |
-  eingetreten: slice-NNN>
+  ist gewollt und hier vorab benannt.
+
+  **Ausgang: entfallen.** Beide grün, ohne Ausnahme — `make shell-lint` (clean), `make
+  comment-claims` (47 Datei(en) geprueft, 0 Befund(e); Kommando: `make comment-claims`).
 - **Der Nachweis ist nicht „es lief".** Nach
   [`AGENTS.md`](../../../../AGENTS.md) §3.6 gehört zu jeder Zusage die Änderung, die sie rot färbt.
   Für dieses Werkzeug heißt das: ein Move, dessen Verweise **absichtlich** nicht nachgezogen
   werden, muss `make docs-check` rot machen — sonst misst der Beleg die Mechanik statt die Zusage.
-  — **Ausgang:** <entfallen: rot gesehen und im Bericht benannt | eingetreten: slice-NNN>
+
+  **Ausgang: entfallen.** Rot gesehen und dauerhaft im Bericht benannt — `harness/tools/slice-mv.sh`
+  Abschnitt BELEG dokumentiert einen echten Move (`slice-069`, `open/` → `next/`) mit
+  `make docs-check` vor (480 Datei(en), 0 Befund(e)) und danach (480 Datei(en), 8 Befund(e), alle
+  `target-missing`, alle die ausgeschlossene präfixlose Eingehend-Form aus Grenze (3)) —
+  reproduzierbar auf jedem sauberen Checkout.
 
 ## 7. Closure-Notiz
 
@@ -293,8 +322,60 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-<!-- Erst nach Abschluss füllen. Vor dem `git mv` nach done/; das letzte
-DoD-Item in §2 prüft die nächste Welle-Closure. -->
+**Closure-Kriterien (beobachtet, nicht behauptet):**
+
+1. **DoD vollständig.** Alle Punkte aus §2 sind gehakt —
+   `grep -c '^- \[ \]' docs/plan/planning/done/slice-144-lifecycle-move-zieht-seine-verweise-nach.md` → **0**
+   offene Punkte (Kommando läuft vor dem `git mv`, solange die Datei noch unter diesem Pfad
+   liegt).
+2. **`make gates` grün** nach dem Commit dieser Closure-Notiz — der Stop-Hook-Stempel deckt den
+   Arbeitsbaum (`d-check: 480 Datei(en) geprüft, 0 Befund(e)`; `comment-claims: 47 Datei(en)
+   geprueft, 0 Befund(e)`; bats-Gesamtlauf grün).
+
+- **Was hat funktioniert:** Drei getrennte Rollen-Durchgänge nach dem ersten Grün (Reviewer,
+  Delta-Reviewer, Verifier) fanden nacheinander **unterschiedliche** Lücken an demselben
+  Liefergegenstand, statt denselben Fehler zu wiederholen — Rollen-Konflikt · Commit-Zuschnitt
+  gegen Hard Rule 3.3 · Beleg-vs-Behauptung. Der Konflikt-Pfad aus Modul 8 trug real: das HIGH-1
+  des Erstreviews löste über den Rollenwechsel zum Architect ein echtes Verdikt aus
+  ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md), Verdikt 3 der
+  Konflikt-Tabelle — „Lockerung legitim, aber undokumentiert"), statt dass eine spätere Runde das
+  Finding einfach herabstufte.
+- **Was ging anders als geplant:** Das Werkzeug brauchte vier statt einem Commit
+  (`f9697d7` plus drei Nacharbeits-Runden), und seine dritte, bis heute offene Grenze (präfixlose
+  Eingehend-Form) zeigte sich erst im echten Betrieb: Die zwei realen `slice-082`-Moves trafen
+  beide denselben `docs/reviews`-Fehler, den zwei vorangegangene Reviews nicht gefangen hatten
+  (`9b8d088`/`cfbcfcb`, von Hand nachgezogen, dann in `8737ca7` behoben) — der Plan selbst nennt
+  das „den ehrlichsten Beleg, den dieser Slice hat".
+- **Steering-Loop-Eintrag: benannte Spec-Lücke.** Kein Sensor prüft, ob eine Zusage — Skript-
+  Ausgabe, Testname, Doku-Absatz — nach einem verhaltensändernden Fix weiter zutrifft; `make
+  comment-claims` prüft nur, ob ein genannter Sensor **existiert**, nicht ob eine Aussage daneben
+  **stimmt**. Dreifach in diesem Slice beobachtet: die `100 %`-Zusage der Skript-Ausgabe
+  (Delta-Review MEDIUM-2, behoben `bc38f97`), der Testname „alle 14 gemessenen Praefix-Formen"
+  (Erstreview LOW-1, behoben `fc1fc54`), und — nach `8737ca7` — der `harness/README.md`-Absatz
+  plus die `test/slice-mv.bats`-Kopfzeile (Verifikation, behoben `b1ef306`). Jede der drei fand ein
+  *anderer* Lauf; keine ein Gate. Neuer Register-Eintrag `BEO-009`.
+- **Beobachtungs-Register (`../observations.md`):** `BEO-003` fortgeschrieben (2×: `slice-137`,
+  `slice-144`; Beobachtung präzisiert auf den in §1 gemessenen Bestand statt „zwei Formen"; Stand
+  *teilweise verkörpert* — 13 Präfix-Formen und die ausgehende Hälfte der präfixlosen Form sind
+  gedeckt, die eingehende Hälfte bleibt Grenze 3 und damit offen). `BEO-007` fortgeschrieben (2×:
+  `slice-137`, `slice-144`; die Command-Form ist über
+  [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) beantwortet
+  (`Proposed`), die allgemeine Quellenfrage — auch für `.claude/agents/*.md` — bleibt offen). Neu:
+  `BEO-009` (Sub-Area `*`, 1×, Beleg `slice-144`).
+- **Folge-Slices:** keine neuen — [`slice-145`](../next/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
+  (Erinnerungs-Slice zu [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md),
+  bereits in `next/`) ist das zweite Pflicht-Artefakt des Konflikt-Pfads, kein Ergebnis dieser
+  Closure.
+- **Risiken aus §6:** sieben benannt
+  (`awk '/^## 6\. Risiken/,/^## 7\. Closure-Notiz/' docs/plan/planning/done/slice-144-lifecycle-move-zieht-seine-verweise-nach.md | grep -c '^- \*\*'`
+  → **7**), sieben mit Ausgang — eines *weiter offen* (`BEO-003`), eines *entfallen* auf ein
+  Architect-Verdikt mit offenem Rest
+  ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)/`BEO-007`), fünf
+  *entfallen* auf gemessene oder getestete Deckung, keines *eingetreten*.
+- **Drei Paarungen:** entfällt hier — dieses Repo führt Wellen-Betrieb; die Paarungen (Anker ·
+  Folge-Slice · Register) prüft die nächste Welle-Closure, auch für diesen wellenlosen Slice
+  ([`modul-06-roadmap.md`](../../../../.harness/baseline/v5.12.0/regelwerk/modul-06-roadmap.md)
+  §Wellen-Closure-Prozedur, Schritt 3, *„Zum Schluss alle drei Paarungen prüfen"*).
 
 ## 8. Sub-Area-Modus-Begründung
 
