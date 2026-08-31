@@ -18,9 +18,10 @@ Strukturregeln und Adaptionen leben in [`conventions.md`](conventions.md).
 | 3 | [`spec/architecture.md`](../spec/architecture.md) | Komponenten/Sequenzen, meilensteinfrei |
 | 4 | [`docs/plan/adr/`](../docs/plan/adr/) | Architekturentscheidungen |
 | 5 | [`docs/plan/planning/in-progress/roadmap.md`](../docs/plan/planning/in-progress/roadmap.md) | aktuelle Welle |
-| 6 | [`README.md`](../README.md) | Projekt-Überblick |
-| 7 | [`AGENTS.md`](../AGENTS.md) | Agent-Briefing |
-| 8 | diese Datei | Harness-Einstieg |
+| 6 | [`docs/user/`](../docs/user/) *(falls vorhanden)* | Operations, Quality, Releasing |
+| 7 | [`README.md`](../README.md) | Projekt-Überblick |
+| 8 | [`AGENTS.md`](../AGENTS.md) | Agent-Briefing |
+| 9 | diese Datei | Harness-Einstieg |
 
 ## Guides (Feedforward)
 
@@ -86,3 +87,18 @@ Der Mechanismus selbst ist hier **nicht** geändert (Gate-*Anheben* ist ein Stee
 4. Kleinste sinnvolle Änderung planen.
 5. Engsten nützlichen Sensor laufen lassen.
 6. Repo-weiten Gate-Lauf vor Handoff (`make gates`).
+
+## Leseordnung
+
+Regeln dieser Sektion: Baseline-Regelwerk `grundlagen-harness-dateien.md`
+§harness/README.md als Einstiegspunkt — die Menschen-Hälfte des Einstiegs:
+drei bis fünf **geordnete** Zeiger, was ein neuer Mensch zuerst liest und was
+bei Bedarf; eine Leseordnung, die alles nennt, ist keine.
+
+1. [`AGENTS.md`](../AGENTS.md) §3 — die Hard Rules, vor jedem Lauf.
+2. [`spec/lastenheft.md`](../spec/lastenheft.md) — was dieses Repo vertraglich
+   liefert.
+3. [`docs/plan/planning/in-progress/roadmap.md`](../docs/plan/planning/in-progress/roadmap.md)
+   — woran gerade gearbeitet wird.
+4. [`conventions.md`](conventions.md) — bei Bedarf: Adaptionen von der
+   Baseline (MR-Block), Modus-Deklaration.

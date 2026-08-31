@@ -1,7 +1,7 @@
 # Reviewer-Skill — ai-harness-init
 
-**Version:** 1.4.0 · **Datum:** 2026-07-26 ·
-**Baseline:** Agents-Regelwerk v3.5.2 (Kurs-Welle 34), Modul 10 §Ziel-Form: Reviewer-Skill
+**Version:** 1.5.0 · **Datum:** 2026-08-31 ·
+**Baseline:** Agents-Regelwerk v5.12.0 (Kurs-Welle 98), Modul 10 §Ziel-Form: Reviewer-Skill
 (Output-Schema, Kategorien-Semantik, Report-Pflicht, Pflicht-Kontext-Eingang).
 
 <!-- Versionierung (Modul 10): Änderungen werden versioniert, nicht überschrieben;
@@ -16,11 +16,19 @@ Punkten / Output-Schema / Kategorien. 1.3.0 (slice-043): Baseline-Re-Pin v3.5.0�
 unverändert übernommen — reines Baseline-Label-Update. 1.4.0 (slice-049): Baseline-Re-Pin
 v3.5.1→v3.5.2 (Welle 33→34); `modul-10-review-harness.md` änderte im Re-Vendor real **nur** seine
 eingebettete Quell-URL (`/v3.5.1/`→`/v3.5.2/`) — gemessen, nicht angenommen: nach Normalisierung
-der Versions-Strings ist der Diff leer. Wieder reines Baseline-Label-Update. -->
+der Versions-Strings ist der Diff leer. Wieder reines Baseline-Label-Update. 1.5.0 (slice-083):
+Baseline-Re-Pin v3.5.2→v5.12.0 (Welle 34→98); zwei materielle Deltas aus
+`modul-10-review-harness.md` §Ziel-Form: Reviewer-Skill adoptiert — das Output-Schema führt
+jetzt ein sechstes Feld `klasse` (stabile Kurz-Bezeichnung des Fehlermusters, speist den
+Steering-Loop-Zähler über die Slice-Closure ins Beobachtungs-Register), und die HIGH-Liste
+gewinnt drei baseline-neue Einträge (Norm nur im Template-Kommentar · Kommentar trägt keine
+der fünf Kommentar-Klassen · Zustandsfeld trägt Chronik), verbatim aus
+`.harness/skills/reviewer.template.md`, `v5.12.0`. Die fünf Pflicht-Kontext-Punkte sind
+unverändert. -->
 
 ## Eingangs-Kontext (Pflicht — sonst nicht reproduzierbar)
 
-Der Reviewer erhält die **fünf v3.5.2-Pflicht-Punkte** (Modul 10): den
+Der Reviewer erhält die **fünf Pflicht-Punkte** (Modul 10): den
 **Diff/Commit-Range**, die betroffenen `LH-*`-Anforderungen (in
 [`spec/lastenheft.md`](../../spec/lastenheft.md)), die **referenzierten aktiven ADRs**
 (deren ID im PR/Commit vorkommt), die **Hard Rules** ([`AGENTS.md`](../../AGENTS.md) §3)
@@ -37,7 +45,20 @@ Kontext, anderes Prüf-Artefakt).
   Gate-Skript (Harness-Lüge); halluziniertes Gate
   ([`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6));
   Verstoß gegen eine **aktive** ADR oder gegen eine Hard Rule; Gate-Lockerung
-  ohne ADR; Slice referenziert eine superseded ADR (nur aktive sind normativ).
+  ohne ADR; Slice referenziert eine superseded ADR (nur aktive sind normativ);
+  **Norm nur im Template-Kommentar** — eine Regel steht im `<!-- -->`-Block eines
+  `.template.md` und nirgends sonst, ist beim Adopter also weg, sobald er die
+  Kommentare entfernt (kein Gate fängt das,
+  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v5.12.0/regelwerk/grundlagen-harness-dateien.md)
+  §Template-Schichtung); **Kommentar trägt keine der fünf Kommentar-Klassen** — ein
+  Kommentar in Code, Config oder Skript beschreibt die verworfene Alternative
+  („Ohne X wäre …"), einen abwesenden Text („früher stand hier …") oder bricht mitten
+  im Satz ab, weil eine Teilersetzung den Rest stehen ließ (kein Gate fängt das,
+  [`AGENTS.md`](../../AGENTS.md) §3.7); **Zustandsfeld trägt Chronik** — eine
+  `Stand`-/`Status`-Zelle (Roadmap, Beobachtungs-Register, Meilenstein) erzählt, wie der
+  Zustand entstand, statt Zustand und Beleg als Anker zu nennen, oder ein Drift-Log
+  protokolliert Schließungen und erreichte Meilensteine (kein Gate fängt das,
+  [`AGENTS.md`](../../AGENTS.md) §3.7, *Dieselbe Regel für Zustandsfelder*).
 - **MEDIUM** (vor Merge zu klären): Spec-Treue-Lücke einer Messmethode;
   Bezug-/Abdeckungslücke einer Akzeptanzanforderung; fehlende Negativtests
   bei neuem öffentlichen Vertrag; Reproduzierbarkeits-Risiko
@@ -68,7 +89,11 @@ eine Kategorisierung ⇒ Regel hier schärfen.
 `kategorie` (HIGH/MEDIUM/LOW/INFO) · `quelle` (`LH-*`-ID, ADR-ID, `MR-*`-ID,
 Hard-Rule-Name oder „Maintainability") · `pfad` (`Datei:Zeile`) · `befund`
 (1–2 Sätze, beobachtbar, ohne Lösungsvorschlag) · `verifizierbar` (ja/nein —
-welcher Gate-Lauf würde den Befund bestätigen?).
+welcher Gate-Lauf würde den Befund bestätigen?) · `klasse` (stabile
+Kurz-Bezeichnung des Fehlermusters, z. B. „Tie-Break in sortierender Operation
+nicht dokumentiert" — speist den Steering-Loop-Zähler über die Slice-Closure §7
+ins Beobachtungs-Register,
+[`docs/plan/planning/observations.md`](../../docs/plan/planning/observations.md)).
 
 ## Negativbefunde (Pflicht)
 

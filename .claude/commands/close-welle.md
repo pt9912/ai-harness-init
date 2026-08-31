@@ -21,9 +21,9 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
   nach dem Wave-Self-Close-Commit `make gates` grün bestätigen.
 - **Strenges Doc-Gate.** `LH-`/`ADR-`/`MR-`-Kennungen in gescannten `.md` als klickbare Anker-Links —
   die Results-Notiz und die Roadmap werden gescannt.
-- **Neue Artefakte per `cp`** — für die Results-Notiz existiert **kein** Template im Baum; sie wird frei
-  nach der Modul-6-Struktur geschrieben (die Welle-Datei ist die Quelle der Plan-Struktur). Existiert
-  je ein `welle-results`-Template, dann per `cp` daraus.
+- **Neue Artefakte per `cp`** — die Results-Notiz entsteht seit slice-083 per `cp` aus dem vendored
+  `.harness/baseline/v5.12.0/templates/docs/plan/planning/welle-results.template.md` und wird danach
+  ausgefüllt; die Welle-Datei bleibt Quelle der Plan-Struktur für alles, was das Template offenlässt.
 - **Commit via Message-Datei** (`git commit -F <datei>`).
 
 ## Vorbedingung: Kontext lesen
@@ -42,14 +42,16 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
    (mit Folge-Slice) · permanent akzeptiert. Die Welle darf *mit* dokumentiertem Carveout schließen —
    **nie** mit einem stillen roten Gate. Keine Carveouts → eine belegte „0 offen"-Feststellung, kein
    Auslassen.
-4. **Schritt 3 — Closure-Notiz `done/<welle-id>-results.md` schreiben.** Hält fest, *was gelernt
-   wurde*: geliefert · was funktionierte · was anders lief · **Steering-Loop-Einträge** (geschärfte
-   Regel / neuer Sensor / benannte Spec-Lücke) · Folge-Slices · Verifikation (die Belege aus Schritt 1).
-   **Ohne Lerneintrag ist die Welle nicht „fertig", nur „weg".** **Zugleich (v3.5.0): die Welle-Plan-Datei
-   gehört per `git mv` nach `done/`** — wegen der repo-lokalen Hard Rule 3.3 (Move ≠ Inhalt) als **eigener
-   reiner Move-Commit** (s. Schritt 4). Der Move bricht die Inbound-Links (Roadmap + die Welle-Verweise
-   der Slices) **und** die eigenen `../`-Links der Datei (jetzt eine Ebene tiefer) → im selben Zug
-   reconcilen, bis `docs-check` grün ist.
+4. **Schritt 3 — Closure-Notiz `done/<welle-id>-results.md` schreiben** — per `cp` aus
+   `.harness/baseline/v5.12.0/templates/docs/plan/planning/welle-results.template.md`, dann
+   ausgefüllt. Hält fest, *was gelernt wurde*: geliefert · was funktionierte · was anders lief ·
+   **Steering-Loop-Einträge** (geschärfte Regel / neuer Sensor / benannte Spec-Lücke) · Folge-Slices ·
+   Verifikation (die Belege aus Schritt 1). **Ohne Lerneintrag ist die Welle nicht „fertig", nur
+   „weg".** **Zugleich (v3.5.0): die Welle-Plan-Datei gehört per `git mv` nach `done/`** — wegen der
+   repo-lokalen Hard Rule 3.3 (Move ≠ Inhalt) als **eigener reiner Move-Commit** (s. Schritt 4). Der
+   Move bricht die Inbound-Links (Roadmap + die Welle-Verweise der Slices) **und** die eigenen
+   `../`-Links der Datei (jetzt eine Ebene tiefer) → im selben Zug reconcilen, bis `docs-check` grün
+   ist.
    **Der Lese-Schritt des Beobachtungs-Registers gehört hierher** (`docs/plan/planning/observations.md`,
    Modul 6): jede Zeile mit Zähler **≥ 3** wandert in die Steering-Loop-Einträge und wird zur
    **verkörperten Regel** mit Herkunfts-Anker (`seit welle-<NN>`). Die Zeile bleibt danach **im
