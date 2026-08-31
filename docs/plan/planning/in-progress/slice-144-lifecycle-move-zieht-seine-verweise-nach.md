@@ -148,13 +148,21 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Plan.
 - [ ] **(2) `make slice-mv SLICE=<slice-NNN> TO=<open|next|in-progress|done>` bewegt den Slice und
       zieht die Verweise nach — in beiden Richtungen.** **Eingehend:** die Verweise **auf** die
-      Datei, in jeder Präfix-Form, die das erste Kommando aus §1 ausgibt. **Ausgehend:** die Ziele
-      **in** der Datei, die kein Verzeichnis-Segment tragen und deshalb nach dem Wechsel ins
-      falsche Verzeichnis zeigen — die Form, die das zweite Kommando aus §1 zählt und das erste
-      per Konstruktion nicht sehen kann. Der Beleg ist **nicht** „es lief", sondern `make
-      docs-check` **vor und nach** demselben Move, beide Ausgaben im Bericht — und dazu der Move
-      einer Datei, die **beide** Richtungen trägt, weil ein Move ohne ausgehende Geschwister-Ziele
-      die zweite Hälfte der Zusage nicht prüft.
+      Datei, in jeder Präfix-Form, die das erste Kommando aus §1 ausgibt. **Ausdrücklich außerhalb
+      dieser Zusage bleibt die präfixlose Form von der eingehenden Seite:** ein Geschwister, das im
+      Herkunftsverzeichnis bleibt und die bewegte Datei ohne jedes Verzeichnis-Segment referenziert,
+      bricht durch den Move ebenso — die Ersetzungsregel der Eingehend-Richtung ankert an einem
+      Verzeichnis-Literal, das diese Form nicht trägt, und sieht sie darum grundsätzlich nicht.
+      Diese Grenze steht im Skriptkopf (`harness/tools/slice-mv.sh`, Grenze 3) und bleibt mit
+      `BEO-003` im [Beobachtungs-Register](../observations.md) offen geführt — sie wird von diesem
+      Slice nicht geschlossen. **Ausgehend:** die Ziele **in** der Datei, die kein
+      Verzeichnis-Segment tragen und deshalb nach dem Wechsel ins falsche Verzeichnis zeigen — die
+      Form, die das zweite Kommando aus §1 zählt und das erste per Konstruktion nicht sehen kann.
+      Der Beleg ist **nicht** „es lief", sondern `make docs-check` **vor und nach** demselben Move,
+      beide Ausgaben im Bericht — und dazu der Move einer Datei, die **beide** Richtungen trägt,
+      weil ein Move ohne ausgehende Geschwister-Ziele die zweite Hälfte der Zusage nicht prüft. Ein
+      Rückstand aus der ausgeschlossenen präfixlosen Eingehend-Form in der Nachher-Ausgabe ist kein
+      Verstoß gegen diese Zusage; jeder andere Rückstand schon.
 - [ ] **(3) Der Skriptkopf nennt, was das Werkzeug *nicht* kann.** Zwei Grenzen sind schon bekannt
       und gehören hinein: es zieht **Pfade** nach und keine **Zustandssätze**, und
       Welle-Plan-Dateien wechseln beim Closure-Move die Verzeichnis-**Tiefe**. Jede weitere
@@ -205,10 +213,16 @@ dieser Slice nicht: das Beobachtungs-Register, aus dem sein Auslöser stammt, st
   als größer als zwei Ersetzungs-Regeln, und der Selbsttest wächst zu einem eigenen Gegenstand.
   Geteilt wird dann entlang der **Richtungen** — eingehende Verweise hier, ausgehende in einem
   Folge-Slice —, nicht gedehnt.
-- `in-progress` → `open` (blockiert — Carveout?): die Entscheidung aus DoD (1) fällt auf
-  *eigenständig bauen*, und der Eigenbau berührt eine Norm-Aussage, die nach
-  [`AGENTS.md`](../../../../AGENTS.md) §3.8 der Architect schreibt. Dann geht der Slice zurück nach
-  `open/`, und die Übergabe ist das Artefakt — nicht ein Norm-Text aus diesem Lauf.
+- `in-progress` → `open` (blockiert — Carveout?): **zwei voneinander unabhängige Auslöser.**
+  **Erstens:** die Entscheidung aus DoD (1) fällt auf *eigenständig bauen*, und der Eigenbau
+  berührt eine Norm-Aussage, die nach [`AGENTS.md`](../../../../AGENTS.md) §3.8 der Architect
+  schreibt. **Zweitens:** die offene Rollenfrage `BEO-007` — wer die Anweisungssätze unter
+  [`.claude/commands/`](../../../../.claude/commands/) schreiben darf — fällt für die Zeile
+  [`.claude/commands/implement-slice.md`](../../../../.claude/commands/implement-slice.md) aus §3
+  gegen den Implementer als schreibende Rolle (§6 Risiko 2). In beiden Fällen geht der Slice zurück
+  nach `open/`, und die Übergabe ist das Architect-Artefakt aus dem jeweiligen Konflikt-Pfad
+  (Baseline-Regelwerk `modul-08-agentenrollen.md` §Konflikt-Pfad als Rollen-Sequenz) — nicht ein
+  Norm-Text aus diesem Lauf.
 
 ## 5. Closure-Trigger
 
@@ -230,17 +244,19 @@ dasteht.
   Vorbild-Skript ersetzt zwei Formen; die zwei Kommandos aus §1 geben für dieses Repo **13**
   Präfix-Formen plus die Form ohne Verzeichnis-Segment aus. Ein Werkzeug, das nur die zwei
   bekannten trifft, meldet Erfolg und lässt den Rest stehen — schlimmer als kein Werkzeug, weil es
-  die Handprüfung ersetzt, die heute den Rest fängt. — **Ausgang:** <eingetreten: slice-NNN |
-  entfallen: die Form-Menge ist gemessen und vollständig abgedeckt | weiter offen: → `BEO-<NNN>`
-  im Register>
+  die Handprüfung ersetzt, die heute den Rest fängt. — **Ausgang: weiter offen** → `BEO-003` im
+  [Beobachtungs-Register](../observations.md). Die ausgehende Hälfte der präfixlosen Form ist
+  abgedeckt (DoD (2)); die eingehende Hälfte bleibt außerhalb der Zusage — dieselbe Grenze, die
+  DoD (2) jetzt ausdrücklich benennt, nicht *vollständig abgedeckt*.
 - **Ein Liefergegenstand liegt in einer Artefakt-Klasse ohne benannte schreibende Rolle.** §3
   führt [`.claude/commands/implement-slice.md`](../../../../.claude/commands/implement-slice.md);
   wer die Anweisungssätze unter [`.claude/commands/`](../../../../.claude/commands/) schreiben
   darf, sagt keine Quelle — das ist `BEO-007` im [Beobachtungs-Register](../observations.md), und
   der Verantwortliche dieses Slice ist der Implementer. Fällt die Antwort gegen ihn, greift die
-  Rückführung `in-progress` → `open` aus §4; die zwei übrigen Zeilen der Tabelle bleiben davon
-  unberührt und tragen die Zusage aus DoD (2) allein. — **Ausgang:** <entfallen: die Zeile ist
-  ohne Rollen-Konflikt geschrieben | eingetreten: slice-NNN | weiter offen: → `BEO-007`>
+  Rückführung `in-progress` → `open` aus §4 (zweiter Auslöser dort); die zwei übrigen Zeilen der
+  Tabelle bleiben davon unberührt und tragen die Zusage aus DoD (2) allein. — **Ausgang:**
+  <entfallen: die Zeile ist ohne Rollen-Konflikt geschrieben | eingetreten: slice-NNN | weiter
+  offen: → `BEO-007`>
 - **Eine Adresse ist ein Teilstring, und Slice-Nummern sind Präfixe voneinander.** `slice-13`
   steckt in `slice-130`; eine Ersetzung über den blanken Nummern-Teil trifft Nachbarn. Die
   Ersetzung muss auf dem **vollen Dateinamen** ankern, und das ist zu belegen, nicht zu behaupten.
