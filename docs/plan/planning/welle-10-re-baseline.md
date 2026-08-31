@@ -65,7 +65,7 @@ und `v5.12.0` (`git diff --name-only v5.3.0 v5.12.0 -- lab/regelwerk/modul-07-ca
 und `git diff --name-only v5.3.1 v5.12.0 -- lab/regelwerk/modul-15-observability.md` → beide
 leer). `modul-08-agentenrollen.md` wächst dagegen weiter — **6** Hunks von `v5.3.1` zum Zielstand
 (`git diff v5.3.1 v5.12.0 -- lab/regelwerk/modul-08-agentenrollen.md | grep -c '^@@'`); was davon
-den Adaptions-Durchgang trifft, entscheidet [slice-082](next/slice-082-adaptions-durchgang.md).
+den Adaptions-Durchgang trifft, entscheidet [slice-082](in-progress/slice-082-adaptions-durchgang.md).
 
 Der Sprung ist **strukturell, nicht additiv**. Zwischen gepinnt und Ziel liegen **20** Releases mit
 zwei Major-Bumps über drei Major-Serien
@@ -493,7 +493,7 @@ gegenstandslos wird, kein neues Pflichtfeld mehr braucht.
   **Regel** für jeden Plan wäre es eine Norm-Änderung, und die schreibt nach
   [`AGENTS.md`](../../../AGENTS.md) §3.8 der Architect. Dieser Plan beschreibt sie und setzt sie
   nicht in Kraft. **Ihr Gegenstand ist gemessen:** derselbe Fehler steht ein zweites Mal in
-  [slice-082](next/slice-082-adaptions-durchgang.md) und ein drittes Mal in
+  [slice-082](in-progress/slice-082-adaptions-durchgang.md) und ein drittes Mal in
   [slice-083](open/slice-083-form-vergleich-pflichtfelder.md) — dort mit ausdrücklicher Begründung
   und deshalb richtig, was zeigt, dass die Unterscheidung und nicht das Einfrieren die Regel ist.
 
