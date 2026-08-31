@@ -2,7 +2,7 @@
 
 **Gegenstand:** Commit `fc1fc54` (`.claude/commands/implement-slice.md`,
 `harness/tools/slice-mv.sh`, `test/slice-mv.bats`) und ein Nachtrag zu `f9697d7`.
-**Plan:** [`slice-144`](../plan/planning/in-progress/slice-144-lifecycle-move-zieht-seine-verweise-nach.md).
+**Plan:** [`slice-144`](../plan/planning/done/slice-144-lifecycle-move-zieht-seine-verweise-nach.md).
 **Erstreview:** [`2026-08-31-slice-144-review.md`](2026-08-31-slice-144-review.md).
 **Maßstab:** Modul 10 — gegen Plan, ADRs und Hard Rules; die DoD prüft der Verifier.
 
