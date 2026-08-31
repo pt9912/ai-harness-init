@@ -108,7 +108,7 @@ geworden ist, bekommt kein neues Pflichtfeld mehr.
 Rückführungen: `in-progress` → `next`, wenn die Singleton-Nacharbeit und das Pflichtfeld zusammen
 eine Sitzung sprengen (dann trennt der Schnitt beide). `in-progress` → `open`, wenn ein Pflichtfeld
 eine Aussage verlangt, die erst der Bestands-Durchgang aus
-[slice-084](../open/slice-084-stichprobe-gegen-bestand.md) liefert.
+[slice-084](../next/slice-084-stichprobe-gegen-bestand.md) liefert.
 
 ## 5. Closure-Trigger
 
