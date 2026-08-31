@@ -54,8 +54,17 @@ Adaptions-Block („MR-Block") in `harness/conventions.md`; die workflow-relevan
 
 9. Die Implementation erhält den Slice **in `in-progress/`** (Planner→Implementation-Übergabe,
    Modul 8; `next → in-progress` = „Implementer beginnt", Modul 5). Liegt er noch in `open/`,
-   zuerst dorthin verschieben (`open → next → in-progress`). Jedes `git mv` ist ein **reiner Move,
-   getrennt vom Inhalt committet** (Hard Rule 3.3).
+   zuerst dorthin verschieben (`open → next → in-progress`). Jeder Übergang läuft über
+   `make slice-mv SLICE=<slice-NNN> TO=<next|in-progress>` — es bewegt die Datei per `git mv` und
+   zieht reale Verweise nach: **eingehend** jede gemessene Präfix-Form eines Verweises auf die
+   bewegte Datei, repo-weit; **ausgehend** präfixlose Ziele innerhalb der bewegten Datei selbst. Der
+   Skriptkopf (`harness/tools/slice-mv.sh`) begründet, warum beide Teile in **einen** Commit gehören
+   (Hard Rule 3.3: der Rename der bewegten Datei bleibt Similarity-nah, weil die Eingehend-Änderungen
+   in *anderen* Dateien liegen). Drei gemessene Grenzen bleiben: es zieht Pfade nach, keine
+   Zustandssätze; Welle-Plan-Dateien (Tiefenwechsel beim Closure-Move) bleiben außen vor; und eine
+   präfixlose Referenz **auf** die bewegte Datei aus einer unbewegten Geschwister-Datei erkennt es
+   nicht (`BEO-003`, offen). `make docs-check` nach dem Move zeigt einen etwaigen Rest — von Hand
+   nachziehen, bevor der nächste Schritt startet.
 10. WIP-Limit = 1 pro Implementer (Modul 5): kein paralleles `in-progress/`.
 11. Lifecycle-Rücksprungkanten (Modul 5), falls sich der Slice als falsch erweist: zu groß →
     `in-progress → next` (zurück zur Zerlegung); blockiert → `in-progress → open` (Carveout,
@@ -126,8 +135,11 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
 23. Erst wenn der Review konform **und** die Verifikation die DoD bestätigt hat, schließt der
     **Planner**: die Closure-Notiz mit einem **Steering-Loop-Eintrag** schreiben (geschärfte Regel ·
     neuer Sensor · benannte Spec-Lücke — Modul 5: der `→ done`-Übergang verlangt einen Lerneintrag,
-    nicht nur grüne Gates), dann den Slice `in-progress → done` verschieben (`git mv`, eigener
-    Commit, getrennt vom Inhalt — Hard Rule 3.3). Ein rotes Gate erreicht `done/` **nur** mit
+    nicht nur grüne Gates), dann den Slice `in-progress → done` per
+    `make slice-mv SLICE=<slice-NNN> TO=done` verschieben — Move und Verweis-Nachzug in einem Lauf,
+    ein Commit (Hard Rule 3.3, dieselbe Begründung wie in Schritt 9), dieselben drei Grenzen (keine
+    Zustandssätze, keine Welle-Plan-Dateien, präfixlose Eingehend-Form unerkannt — `BEO-003`).
+    `make docs-check` danach prüft den Rest. Ein rotes Gate erreicht `done/` **nur** mit
     dokumentiertem Carveout (Modul 7), nie als stilles Rot.
 24. **Das Beobachtungs-Register fortschreiben** (`docs/plan/planning/observations.md`, Modul 6) —
     der **Schreib**-Schritt, und er hängt an der Closure, nicht an der Implementation. Für jede

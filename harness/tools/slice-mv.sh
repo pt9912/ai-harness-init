@@ -73,7 +73,12 @@ re_escape() {
 # Unterstrich UND Bindestrich zählen als Wortzeichen, weil "in-progress"
 # selbst einen Bindestrich trägt und ein glued Präfix wie "sibling-open/"
 # sonst faelschlich träfe), nicht an einer festen Präfix-Liste. Der Selbsttest
-# prüft das gegen alle 14 gemessenen Formen plus die Teilstring-Gegenprobe.
+# prüft das an einer Stichprobe über Tiefe (0/1/2 Aufstiege) und Kontext
+# (Klammer, Backtick, Zwischensegment) — die Zahl der im Bestand tatsächlich
+# auftretenden Formen wandert mit dem Baum (Slice-Plan §1, erstes Kommando)
+# und ist keine feste Liste, gegen die dieser Test zählt; Vollständigkeit
+# gegen den lebenden Bestand misst `make docs-check` vor/nach einem realen
+# Move (Slice-Plan §2 DoD (2)), nicht dieser Selbsttest.
 rewrite_incoming_in_file() {  # $1=datei $2=base $3=from $4=to
   local file="$1" base="$2" from="$3" to="$4" esc_base
   esc_base="$(re_escape "$base")"

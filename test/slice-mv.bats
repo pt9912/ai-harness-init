@@ -24,7 +24,7 @@ load_functions() {
   source "$SCRIPT"
 }
 
-@test "eingehend: alle 14 gemessenen Praefix-Formen werden ersetzt (docs/plan/planning/in-progress/slice-144-…§1)" {
+@test "eingehend: die Wortgrenzen-Regel ersetzt jede Praefix-Tiefe und jeden Kontext (Stichprobe, keine feste Formenliste — Vollstaendigkeit gegen den Bestand misst make docs-check, nicht dieser Test)" {
   load_functions
   cat > "$TMP/probe.md" <<'EOF'
 ../../docs/plan/planning/open/slice-999-x.md
