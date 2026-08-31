@@ -2453,9 +2453,9 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   bleibt das Feld aus — es gäbe nichts zu nennen.
 - **Ausgang:** teilweise überholt → engere Nachfolgerin. MR-020 bekommt eine Kopf-Marke
   ([`MR-032`](#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)); der
-  Rumpf bleibt vollständig stehen (Teil-Ablösung, kein Widerspruch zu ADR-0014).
-- **Achse 2 — eigener Bedarf.** MR-020s eigener Auflösungs-Trigger — *„an ADR-0014 gebunden —
-  fällt ihre Annahme … fällt diese Adaption mit ihr"* — ist nicht eingetreten: ADR-0014 bleibt
+  Rumpf bleibt vollständig stehen (Teil-Ablösung, kein Widerspruch zu [ADR-0014](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md)).
+- **Achse 2 — eigener Bedarf.** MR-020s eigener Auflösungs-Trigger — *„an [ADR-0014](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) gebunden —
+  fällt ihre Annahme … fällt diese Adaption mit ihr"* — ist nicht eingetreten: [ADR-0014](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) bleibt
   Accepted; ihr dritter Re-Evaluierungs-Trigger hat eine Neubegründung verlangt, keine
   Aufhebung, und die steht hiermit.
 - **Auflösungs-Trigger:** permanent als Sachstands-Feststellung — eine neu begründete Adaption
