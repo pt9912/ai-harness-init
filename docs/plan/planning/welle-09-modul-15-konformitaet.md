@@ -61,7 +61,8 @@ Die erste Fassung stützte die Welle darauf, dass
 [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) *„keine inhaltlichen
 Adaptionen"* erkläre und die Nicht-Umsetzung damit eine **nicht deklarierte Abweichung** sei.
 Das war **über-gelesen**: die vendored Vorlage
-(`.harness/baseline/v3.5.2/templates/harness/conventions.template.md`) grenzt dieselbe Aussage
+(`.harness/baseline/v5.12.0/templates/harness/conventions.template.md`, nachgemessen gegen den
+gepinnten Stand — Zitat unverändert) grenzt dieselbe Aussage
 ausdrücklich ein — *„für Verzeichniskonvention, Lifecycle-Regeln, Carveout-Disziplin,
 ID-Schema"*. Die Baseline behauptet **nirgends**, jede Regel jedes Moduls sei umgesetzt; sie
 behauptet strukturelle Konformität. Unser [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) hat die Aufzählung fallen lassen und daraus

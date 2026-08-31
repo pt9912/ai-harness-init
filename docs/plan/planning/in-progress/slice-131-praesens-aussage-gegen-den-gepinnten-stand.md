@@ -208,6 +208,18 @@ der Stand, gegen den nachgemessen wird, nicht fest.
   schreiben ([`AGENTS.md`](../../../../AGENTS.md) §3.8); die Punkte (1) und (2) bleiben davon
   unberührt und können vorher fallen.
 
+**Eingetreten am 2026-08-31.** Punkte (1) und (2) sind erledigt: alle 12 zum Lauf-Zeitpunkt
+gemessenen Nennungen (elf aus §1 plus eine neu hinzugekommene in
+[slice-143](../open/slice-143-datei-weiter-ausschluss-weicht-dem-referenz-ventil.md), die die
+Menge nachweislich mit jedem Schnitt wandern lässt) sind sortiert, das Erhebungs-Kommando aus §1
+gibt jetzt nur noch den einen Tree-Operanden aus. Punkt (3) bleibt offen: **welcher Ort** die
+Sortier-Regel trägt — neue ADR oder Adaptions-Eintrag — ist selbst eine Architektur-Frage
+([`AGENTS.md`](../../../../AGENTS.md) §3.8, und dieser Plan schließt
+[`harness/conventions.md`](../../../../harness/conventions.md) ausdrücklich vom eigenen
+Bearbeitungsumfang aus, §3). Der Implementations-Kontext dieses Laufs darf diese Entscheidung
+nicht treffen, also greift die Rückführung: `git mv` nach `open/`, Wiederaufnahme sobald der
+Architect-Ausgang aus DoD (3) vorliegt.
+
 ## 5. Closure-Trigger
 
 

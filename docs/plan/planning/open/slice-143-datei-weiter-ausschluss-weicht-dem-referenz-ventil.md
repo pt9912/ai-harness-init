@@ -100,6 +100,11 @@ zwei Ventile fahren am gepinnten `v0.65.0` produktiv
 
 **Der Ausschluss nimmt 27 Link-Vorkommen aus der Prüfung, um einen Befund stillzulegen.** Der eine
 Befund ist `docs/plan/adr/0013-…:48 → ../../../.harness/baseline/v3.5.2/regelwerk/grundlagen-konventionen.md#…`
+(Tree-Operand nach [slice-131](../in-progress/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md)
+§1: byte-genaues Zitat einer Zeile aus dem `Accepted`-Artefakt
+[`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) selbst, das §3.4 gegen Reparatur
+sperrt — die Adresse bleibt `v3.5.2`, weil sie den eingefrorenen Bestand beschreibt, nicht den
+heute ausgelieferten Baum)
 — dieselbe Klasse wie die zwei bereits ausgenommenen Referenzen: ein Markdown-Link in den
 abgelösten Baum, in einem `Accepted`-Artefakt, das
 [`AGENTS.md`](../../../../AGENTS.md) §3.4 gegen jede Reparatur sperrt. **Keine Erwartungswerte**

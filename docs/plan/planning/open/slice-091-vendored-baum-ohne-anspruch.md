@@ -44,7 +44,7 @@ Namensliste.**
 ```
 # Anspruchs-Menge (im Sonden-Repo) — OHNE die drei Vorlagen, aus denen die lebenden
 # Doku-Tische entstehen: die gehoeren slice-087, nicht diesem Slice.
-grep -rhoE 'make [a-z][a-z0-9-]+' .harness/baseline/v3.5.2/ \
+grep -rhoE 'make [a-z][a-z0-9-]+' .harness/baseline/v5.12.0/ \
   --exclude=AGENTS.template.md --exclude=README.template.md \
   --exclude=closure-note-reviewer.template.md | sed 's/^make //' | sort -u
 # Regel-Menge derselben Variante
@@ -53,7 +53,9 @@ grep -hoE '^[a-zA-Z][a-zA-Z0-9_.-]*:' Makefile harness/mk/*.mk d-check.mk | tr -
 ```
 
 Übrig bleiben `arch-check`, `coverage-gate-critical`, `fullbuild`, `test-determinism`, `verify` —
-**fünf** benannte Ziele (dazu das Muster-Fragment `verify-`). Ihre Fundorte:
+**fünf** benannte Ziele (dazu das Muster-Fragment `verify-`), nachgemessen gegen `v5.12.0`
+([slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md)): dieselben sechs Einträge, unverändert.
+Ihre Fundorte:
 
 | Fundort im mitgelieferten Baum | Anspruch | warum er im Ziel nichts trifft |
 |---|---|---|
@@ -65,7 +67,7 @@ grep -hoE '^[a-zA-Z][a-zA-Z0-9_.-]*:' Makefile harness/mk/*.mk d-check.mk | tr -
 | `templates/docs/plan/planning/welle.template.md` | `fullbuild` | **wandert weiter**: die Vorlage wird nach [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert) je Welle in ein **lebendes** Plan-Dokument kopiert |
 | `templates/docs/plan/adr/NNNN-titel.template.md` | `arch-check` | dasselbe, je ADR |
 
-Kommando für die Zeilen 1–5: `grep -rlE 'make (arch-check|coverage-gate|coverage-gate-critical|fullbuild|test-determinism|verify)\b' .harness/baseline/v3.5.2/regelwerk/ | wc -l` → **5**.
+Kommando für die Zeilen 1–5: `grep -rlE 'make (arch-check|coverage-gate|coverage-gate-critical|fullbuild|test-determinism|verify)\b' .harness/baseline/v5.12.0/regelwerk/ | wc -l` → **5** (nachgemessen gegen `v5.12.0`, unverändert; einer der fünf Fundorte hat den Namen gewechselt — `grundlagen-konventionen.md` existiert dort nicht mehr, `grundlagen-referenz-richtung.md` trägt jetzt `verify`/`test-determinism` — die Fundort-Tabelle oben zählt Dateien nach altem Namen und ist damit eine eigene, engere Frage als diese Zahl).
 
 **Warum das ein Problem ist und nicht bloß Kosmetik.** Die letzten zwei Zeilen sind der teure Fall:
 `cp` aus dem vendored Baum ist die **vorgeschriebene** Art, ein Plan-Artefakt anzulegen. Wer sie
