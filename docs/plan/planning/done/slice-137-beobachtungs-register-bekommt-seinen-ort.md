@@ -398,7 +398,7 @@ dasteht.
   eingetreten: beim Schnitt zählte das Kommando **sieben** Dateien, bei der Ausführung
   `grep -rl '§Das Beobachtungs-Register (vorhandene' docs/plan/planning/{open,next,in-progress}/ | wc -l`
   → **11**. Neun davon sind fremde Pläne und nachgezogen, die zehnte ist diese Datei selbst, die
-  elfte der mit dieser Closure geschnittene [slice-144](../next/slice-144-lifecycle-move-zieht-seine-verweise-nach.md).
+  elfte der mit dieser Closure geschnittene [slice-144](../in-progress/slice-144-lifecycle-move-zieht-seine-verweise-nach.md).
   Und slice-133 liegt tatsächlich in `done/` — die Vorhersage traf zu.
 - **Die Registerdatei vergrößert den Doku-Prüfbereich, und ihr Inhalt ist erst nach dem Strippen
   bekannt.** Die Vorlage trägt **0** Markdown-Links
@@ -452,7 +452,7 @@ Registers in den drei Anweisungssätzen unter
   hat sechs Spalten und darunter keine für einen **Träger** — kein Plan, keine DoD, keine
   Datei-Liste. **Null überführt.** `open/` ist damit nicht geschrumpft, sondern um **eins**
   gewachsen: der geschnittene
-  [slice-144](../next/slice-144-lifecycle-move-zieht-seine-verweise-nach.md). Der Befund selbst ist
+  [slice-144](../in-progress/slice-144-lifecycle-move-zieht-seine-verweise-nach.md). Der Befund selbst ist
   nicht verloren — er steht als [`BEO-002`](../observations.md) im Register und wird von dort
   weitergelesen.
 - **Was ging anders als geplant:** der Vorher-Nachher-Vergleich aus dem `gates`-DoD-Punkt ist
@@ -488,7 +488,7 @@ Registers in den drei Anweisungssätzen unter
   mit diesem Slice **verkörpert**; `BEO-002` bis `BEO-007` (je `*`, 1×, Beleg slice-137) stehen
   offen. Je Zeile stimmt die Zahl der Belege mit dem Zähler überein, und alle sechs Belege von
   `BEO-001` liegen in `done/`.
-- **Folge-Slices:** [slice-144](../next/slice-144-lifecycle-move-zieht-seine-verweise-nach.md) —
+- **Folge-Slices:** [slice-144](../in-progress/slice-144-lifecycle-move-zieht-seine-verweise-nach.md) —
   der Lifecycle-Move zieht seine Verweise nach; Träger von `BEO-003`. Genau einer, und er ist der
   einzige, der künftige Schnitte **reduziert**. Die drei Posten, die ein früherer Zuschnitt zu
   Folge-Slices gemacht hätte, sind Registerzeilen geworden (zweiter Lerneintrag).
