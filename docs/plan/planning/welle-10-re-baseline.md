@@ -284,8 +284,29 @@ werden kann.
 | slice-082 | Adaptions-Durchgang: jeder Eintrag bekommt seinen Ausgang | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | slice-083 | Form-Vergleich: Pflichtfelder und umbenannte Sektionen | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | slice-136 | Die Roadmap trägt die Ziel-Form (Singleton, den 083 nicht führt) | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-147 | `spec/spezifikation.md` trägt ihr `SPEC-<NNN>`-Pflichtfeld (aus 083 ausgegliedert) | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-148 | `spec/architecture.md` trägt ihr `ARC-<NNN>`-Pflichtfeld (aus 083 ausgegliedert) | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | slice-084 | Stichprobe gegen den Bestand, nicht gegen das Delta | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | slice-085 | Die emittierte Ebene zieht nach | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) |
+
+**147 und 148 sind kein Nachzügler wie 130–133/136, sondern ein Re-Schnitt eines bereits
+zugeordneten Mitglieds.** [slice-083](next/slice-083-form-vergleich-pflichtfelder.md) ging am
+2026-08-31 ein zweites Mal `in-progress` → `next` zurück (§2 dort, „Zweiter Schnitt"): von seinen
+drei noch offenen Posten trägt nur `harness/conventions.md` weiterhin einen expliziten DoD-Punkt
+dieses Slice; die `ID`-Schemata von `spec/spezifikation.md` und `spec/architecture.md` standen dort
+nie als eigener DoD-Punkt, nur im Risiko-Register als *„wird Teil des Folge-Zuschnitts"* — dieser
+Zuschnitt liegt jetzt vor. Getrennt statt gebündelt, weil ihre Ripple-Prüfungen an unabhängigen
+Artefaktmengen hängen: **23** lebende Referenzstellen zeigen auf `spec/spezifikation.md#…`
+(mindestens fünf davon aus Accepted-ADRs, [slice-147](open/slice-147-spezifikation-traegt-ihr-id-schema.md)
+§1), **2** auf `spec/architecture.md#…` ([slice-148](open/slice-148-architecture-traegt-ihr-id-schema.md)
+§1). Beide gehören zu Durchgang 2 (*Form*) aus denselben Gründen wie 136: die Menge der
+Singleton-Artefakte ist über diesen Durchgang **nicht** eingefroren (§3), ihre Pflichtfeld-Frage
+gilt für jedes Element weiter, unabhängig davon, wann es in den Schnitt kommt. Für keines der
+beiden neuen Artefakte nennt eine kanonische Quelle eine schreibende Rolle —
+[`ADR-0015`](../adr/0015-rollen-eigentum-an-norm-artefakten.md) grenzt die Architect-Zuordnung
+ausdrücklich auf `AGENTS.md` §3 und den Adaptions-Block ein; beide Slices tragen die Lücke als
+eigenes Risiko statt einer geratenen `Verantwortlich:`-Setzung, und `Verantwortlich:` steht bei
+beiden auf `—`.
 
 **136 ist der fünfte Nachzügler, und sein Grund ist ein anderer als der der vier davor: nicht eine
 übersehene Eingabe, sondern ein übersehenes Artefakt.** Durchgang 2 oben verlangt die Pflichtfelder
@@ -440,7 +461,10 @@ gegenstandslos wird, kein neues Pflichtfeld mehr braucht.
   dagegen tragend, nicht ordnend:** DoD (3) von 130 führt den Nachweis über **beide** Ursachen des
   Vertragsbruchs, und über einem Baum, in dem die Platzhalter-Befunde noch stehen, kann er
   auch bei vier richtig entschiedenen Vorlagen nicht grün werden. 132 verlangt zusätzlich einen
-  **Architect**-Lauf: seine Liefer-Punkte liegen in dessen Artefakten.
+  **Architect**-Lauf: seine Liefer-Punkte liegen in dessen Artefakten. **147 und 148 hängen an
+  keinem anderen Mitglied** — sie berühren je eine andere Spec-Datei mit eigener Referenz-Menge,
+  nicht `harness/conventions.md`, und können vor, neben oder nach 083 laufen; ihre Reihenfolge
+  zueinander entscheidet ebenfalls nur das WIP-Limit.
 
 ## 6. Out-of-Scope für diese Welle
 
