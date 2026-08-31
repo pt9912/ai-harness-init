@@ -21,9 +21,9 @@ den **Plan** gegen die ADR-Lage, bevor Code existiert. Zwei Rollen an derselben 
 sauber, wenn ihr Eingabe-Kontext verschieden ist — sonst ist es doppelte Arbeit mit demselben
 blinden Fleck.
 
-**Warum es diesen Typ gibt:** die Rollen-Achse der Telemetrie
-([slice-060](../../docs/plan/planning/done/slice-060-rollen-achse.md)) — nur ein Lauf unter
-einem rollen-benannten Typ trägt seine Rolle in den Span.
+**Der Typname trägt die Rolle in den Span.** Ein Lauf unter `general-purpose` trägt sie
+nicht und landet im Sammelposten; wer diesen Typ umbenennt oder entfernt, nimmt die
+Rollen-Achse der Telemetrie mit, die `make span-report` je Rolle ausweist.
 
 Vor jeder Arbeit: `CLAUDE.md`, [`AGENTS.md`](../../AGENTS.md),
 [`harness/conventions.md`](../../harness/conventions.md) und das Regelwerk-Modul zur Aufgabe

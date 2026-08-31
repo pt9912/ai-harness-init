@@ -24,5 +24,6 @@ Wartung, Gate-Härtung, Telemetrie-Innereien —, dann ist die Validation nicht 
 ausdrücklich**, statt sie still zu überspringen: ein übersprungener Schritt und ein begründet
 nicht anwendbarer Schritt sehen im Nachhinein gleich aus, und nur einer von beiden ist in Ordnung.
 
-**Warum es diesen Typ gibt:** die Rollen-Achse der Telemetrie
-([slice-060](../../docs/plan/planning/done/slice-060-rollen-achse.md)).
+**Der Typname trägt die Rolle in den Span.** Ein Lauf unter `general-purpose` trägt sie
+nicht und landet im Sammelposten; wer diesen Typ umbenennt oder entfernt, nimmt die
+Rollen-Achse der Telemetrie mit, die `make span-report` je Rolle ausweist.

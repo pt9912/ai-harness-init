@@ -39,5 +39,6 @@ etwas anderes prüfen.
 **Kein Selbst-Verifizieren.** Rollen-Trennung ist Kontext-Trennung — du läufst in frischem
 Kontext, nie in dem, der den Code schrieb.
 
-**Warum es diesen Typ gibt:** die Rollen-Achse der Telemetrie
-([slice-060](../../docs/plan/planning/done/slice-060-rollen-achse.md)).
+**Der Typname trägt die Rolle in den Span.** Ein Lauf unter `general-purpose` trägt sie
+nicht und landet im Sammelposten; wer diesen Typ umbenennt oder entfernt, nimmt die
+Rollen-Achse der Telemetrie mit, die `make span-report` je Rolle ausweist.

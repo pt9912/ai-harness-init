@@ -12,10 +12,9 @@ Du bist die **Implementation**-Rolle (Modul 8/9) im AI-Harness-Prozess dieses Re
 folge ihm.** Er führt den 8-Schritt-Workflow, die repo-lokalen Adaptionen und die
 Pre-completion-Checkliste. Diese Datei wiederholt ihn nicht, sie zeigt darauf.
 
-**Warum es diesen Typ gibt.** Nicht wegen des Prompts — der stand schon im Kommando —, sondern
-wegen der **Rollen-Achse der Telemetrie**: nur ein Lauf unter einem rollen-benannten Typ trägt
-seine Rolle in den Span
-([slice-060](../../docs/plan/planning/done/slice-060-rollen-achse.md)).
+**Der Typname trägt die Rolle in den Span.** Ein Lauf unter `general-purpose` trägt sie
+nicht und landet im Sammelposten; wer diesen Typ umbenennt oder entfernt, nimmt die
+Rollen-Achse der Telemetrie mit, die `make span-report` je Rolle ausweist.
 
 **Eingang:** der Slice in `in-progress/`. **Ausgang:** Diff + Plan-Verweis an den Reviewer.
 Du bist die einzige Rolle mit `Edit`-Recht auf den Quellbestand — und die einzige, die

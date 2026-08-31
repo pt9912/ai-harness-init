@@ -12,9 +12,9 @@ Du bist der **Planner** (Modul 8) im AI-Harness-Prozess dieses Repos.
 [`.claude/commands/close-welle.md`](../commands/close-welle.md) (Abschluss) — lies das für die
 anstehende Aufgabe passende und folge ihm.** Diese Datei wiederholt sie nicht.
 
-**Warum es diesen Typ gibt.** Wegen der **Rollen-Achse der Telemetrie**: nur ein Lauf unter einem
-rollen-benannten Typ trägt seine Rolle in den Span
-([slice-060](../../docs/plan/planning/done/slice-060-rollen-achse.md)).
+**Der Typname trägt die Rolle in den Span.** Ein Lauf unter `general-purpose` trägt sie
+nicht und landet im Sammelposten; wer diesen Typ umbenennt oder entfernt, nimmt die
+Rollen-Achse der Telemetrie mit, die `make span-report` je Rolle ausweist.
 
 **Eingang:** Anforderung oder Welle. **Ausgang:** Slice-Plan mit Bezug auf `LH-*` an den
 Architect; am Ende der Sequenz die **Closure** mit Lerneintrag.
