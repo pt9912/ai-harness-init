@@ -700,6 +700,8 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 ### MR-015 — Change Request bei Personalunion von Auftraggeber und Entwickler
 
+> **ÜBERHOLT: dieser Eintrag, mit einer Ausnahme → [`MR-036`](#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline).** Der Cutoff-Absatz (permanente Ausnahme von rückwirkender Prüfung) bindet als eigenständiges Präzedens fort — [`AGENTS.md`](../AGENTS.md) §3.7 und [`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) zitieren ihn.
+
 - **Datum:** 2026-07-26
 - **Geltungsbereich:** `spec/lastenheft.md` §7 Historie (**Form künftiger** Einträge, nicht die
   bestehenden) und die Commit-Disziplin um diese Datei. [`AGENTS.md`](../AGENTS.md) bleibt
@@ -942,6 +944,8 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Stratum neu zu begründen — ein Spec-Dokument ohne Inhalt ist ein Rang ohne Gegenstand.
 
 ### MR-020 — Aufgehobener Eintrag behält Kopf und Zeiger statt Rumpf
+
+> **ÜBERHOLT: die Aufgehoben-durch-Form für baseline-getriebene Rückbauten → [`MR-038`](#mr-038--ein-retirierender-eintrag-nennt-den-baseline-stand-der-seinen-trigger-feuerte).** Festlegung 1–3 (Kopf bleibt, Rumpf geht bei vollständiger Aufhebung) gelten fort — geprüft und bestätigt gegen `v5.12.0`, nicht widerlegt.
 
 - **Datum:** 2026-08-01
 - **Geltungsbereich:** dieser Adaptions-Block. **Nicht** `docs/plan/adr/` — dort gilt
@@ -2337,6 +2341,175 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   (es prüft den Baum, nicht wer auf ihn zeigt). Ein Tag-Bump zieht die vier Symlinks nach oder
   entfernt sie; welches von beidem, ist ein neuer Eintrag nach Setzung 2. **Setzung 5** fällt neu
   an, sobald eine bedingte Ladung ohne zweiten Wortlaut möglich ist.
+
+### MR-036 — Die Change-Request-Regel bei Personalunion steht jetzt in der adoptierten Baseline
+
+- **Datum:** 2026-08-31
+- **Wirksamkeits-Anlass:** slice-082 — Adaptions-Durchgang von welle-10, Achse 1.
+- **Geltungsbereich:** [`MR-015`](#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+  Setzungen 1–3, der zitierte "adoptierte Wortlaut" und die Begründung. **Nicht** der
+  Cutoff-Absatz — er bindet fort, siehe die Kopf-Marke an MR-015.
+- **Löst auf:** die Adaption selbst. Die adoptierte Baseline `v5.12.0` regelt den Fall
+  "Auftraggeber- und Entwickler-Rolle fallen zusammen" jetzt an derselben Stelle, aus der
+  MR-015 seinen Wortlaut zitierte.
+- **Ausgelöst durch Baseline-Stand:** `v5.12.0`.
+- **Ersetzt-Baseline-Regel:**
+  [`grundlagen-source-precedence.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-source-precedence.md)
+  — der Absatz **„Fallen Auftraggeber- und Entwickler-Rolle zusammen"**: *„fehlt nicht der
+  Vorgang, sondern nur seine Ticket-Form: Die Rolle ist besetzt, und der annehmende Akt ist die
+  Entscheidung, die vor der Umsetzung fällt. Was die Regel trägt, ist nicht die Externalität,
+  sondern die Trennung von Entscheidung und Umsetzung — und die ist auch ohne Ticket
+  herstellbar. Der Träger ist dann der Commit: Ein angenommener Change Request ändert in einem
+  eigenen Commit ausschließlich das Lastenheft und liegt vor dem Slice, der ihn umsetzt."*
+- **Gemessen, nicht vermutet.** Der v3.5.2-Wortlaut, den MR-015 als "adoptierten Wortlaut"
+  zitiert, steht am Zielstand unverändert
+  (`grep -c 'bewusst kein Harness-Konstrukt' .harness/baseline/v5.12.0/regelwerk/grundlagen-source-precedence.md`
+  → **1**) — die Basisregel selbst war also nie der Adaptions-Gegenstand von MR-015. Gegenstand
+  war die **Lücke**, die die Baseline für Personalunion offen ließ, und MR-015 füllte sie
+  selbst. Diese Lücke ist jetzt geschlossen — Satz für Satz deckungsgleich mit MR-015s drei
+  Setzungen: *„Die Rolle ist besetzt … der annehmende Akt ist die Entscheidung, die vor der
+  Umsetzung fällt"* deckt Setzung 1; *„Der Träger ist dann der Commit: … ausschließlich das
+  Lastenheft … vor dem Slice"* deckt Setzung 2 wörtlich; die neue Draft/In-Review/Accepted-
+  Schwelle für den CR-Beginn ergänzt, ohne MR-015 zu widersprechen. MR-015 selbst benannte die
+  Lücke, die jetzt schließt: *„Dieses Repo hat keinen externen Auftraggeber … nur die
+  Ticket-Form fehlt."*
+- **Ausgang: gegenstandslos → Rückbau, als Teil-Ablösung.** Der Cutoff-Absatz wird an zwei
+  Stellen dieses Repos als Präzedenz zitiert
+  ([`AGENTS.md`](../AGENTS.md) §3.7 und
+  [`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert): *„dieselbe
+  Begründung trägt den Cutoff in MR-015"*) und bindet damit fort
+  ([ADR-0014](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) Festlegung 2 (a):
+  *„bei Teil-Aufhebung bleibt der Rumpf, weil sein Rest bindet"*). MR-015 behält deshalb seinen
+  vollständigen Rumpf und bekommt nur die Kopf-Marke
+  ([`MR-032`](#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)) —
+  keine Entfernung, kein zweiter Commit.
+- **Achse 2 — eigener Bedarf.** MR-015 Setzung 3 (Verweis-Spalte nennt die annehmende Instanz
+  statt eines Tickets) trägt einen eigenen Auflösungs-Trigger — *„fällt, sobald ein externer
+  Auftraggeber existiert"*. Der ist unverändert nicht eingetreten und bleibt an MR-015
+  gebunden, nicht an diesem Eintrag.
+- **Auflösungs-Trigger:** permanent als Sachstands-Feststellung — eine eingeholte Adaption wird
+  nicht ein zweites Mal eingeholt. Neu zu entscheiden ist der Gegenstand erst, wenn ein
+  künftiger Baseline-Stand diesen Absatz erneut ändert; dann gegen den dann geltenden Tag zu
+  messen und als neuer Eintrag zu führen.
+
+### MR-037 — Wellenlose Arbeit ist jetzt Baseline-Default, ihr Auslöser-Test ist neu gefasst
+
+- **Datum:** 2026-08-31
+- **Wirksamkeits-Anlass:** slice-082 — Adaptions-Durchgang von welle-10, Achse 1.
+- **Geltungsbereich:** [`MR-016`](#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
+  vollständig (Setzungen 1–3, Ist-Messung, Durchsetzung-Beobachtung).
+- **Löst auf:** MR-016 vollständig. Die adoptierte Baseline `v5.12.0` regelt "Welle oder nicht"
+  und "wo wellenlose Arbeit steht" jetzt selbst, mit einem engeren Kriterium an genau der
+  Stelle, an der MR-016 zu weit ging.
+- **Ausgelöst durch Baseline-Stand:** `v5.12.0`.
+- **Ersetzt-Baseline-Regel:**
+  [`modul-06-roadmap.md`](../.harness/baseline/v5.12.0/regelwerk/modul-06-roadmap.md)
+  §Wann Arbeit eine Welle braucht und §Wellenlos heißt nicht wächterlos.
+- **Was jetzt Baseline-Default ist (gegenstandslos).** MR-016 Setzung 2/3 — wellenlose Arbeit
+  erscheint nicht in der Roadmap, ein geschlossener wellenloser Slice hinterlässt dort keine
+  Spur, sein Zustand ist die Verzeichnis-Position — steht wörtlich in der neuen Fassung:
+  *„Wellenlose Arbeit erscheint nicht in der Roadmap — weder beim Start noch beim Abschluss.
+  Ihr Zustand ist die Verzeichnis-Position … Ein Eintrag daneben wäre eine zweite Quelle für
+  denselben Zustand, und die altert"* und *„Die Belege eines geschlossenen wellenlosen Slice
+  stehen in seiner Datei und in git; das Closure-Log der Roadmap ist für Wellen."* Was MR-016
+  als eigene Repo-Adaption begründen musste, begründet die Baseline jetzt selbst.
+- **Was widersprach, und was übernommen wird (widerspricht → übernehmen).** MR-016 Setzung 1,
+  dritte Frage, entschied: *„Auslöser reaktiv oder gewollt? … 'Wir wollen eine neue Fähigkeit'
+  → gewollt, Welle — auch wenn es zunächst nach einem Slice aussieht."* Die neue Fassung
+  widerspricht dem ausdrücklich: *„Wellenlose Arbeit … typisch für Reaktives … aber nicht
+  darauf beschränkt: auch eine neue Fähigkeit kann ein einzelner Slice sein."* Das eigene
+  Register dieses Repos stützt die Baseline gegen die eigene alte Regel: Die drei von MR-016
+  selbst genannten Gegenbeispiele (slice-027, slice-039, slice-048) waren *„fast immer
+  nachgeschnitten"* — sie wurden erst zu Wellen, als sich ein Bündel zeigte, nicht weil
+  "gewollt" allein schon eine Welle verlangte. Statt die widerlegte Regel zu verteidigen,
+  übernimmt dieser Eintrag das engere Baseline-Kriterium: *„Eine Welle liegt vor, wenn es eine
+  beobachtbare Closure-Bedingung gibt, die mehr beobachtet, als die DoDs ihrer Slices schon
+  belegen."* Bündel und ein eigenes Closure-Kriterium bleiben die tragenden Fragen (MR-016
+  Frage 1/2 decken sich mit der neuen Fassung); die dritte Frage (reaktiv/gewollt) entfällt als
+  eigenständiges Kriterium.
+- **Was nicht anderswo steht, und wo es jetzt lebt.** Die "Durchsetzung"-Beobachtung aus
+  MR-016 (d-checks Modul `planning` liegt im Bild, ist aber an keinen Trigger gehängt) ist
+  **ersatzlos** im Sinn von
+  [ADR-0014](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) Festlegung 2 (b) —
+  nicht weil sie falsch wäre, sondern weil sie seit dem 2026-08-28-Eintrag der
+  Roadmap-Drift-Tabelle (welle-13-Kandidat *„Regeln ohne Feedback-Quadrant schließen"*) an
+  einem aktuelleren, genaueren Ort weitergeführt wird.
+- **Ausgang:** gegenstandslos (Setzung 2/3) und widerspricht → übernehmen (Setzung 1, Frage 3)
+  führen zusammen zum Rückbau derselben Aussage. Da nichts vom Rumpf mehr eigenständig bindet
+  (die einzige verbleibende Aussage ist oben umgezogen), ist dies eine **vollständige
+  Aufhebung** ([`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)):
+  Nummer, Überschrift wörtlich, Datum und die `Aufgehoben durch`-Zeile bleiben, der Rumpf fällt
+  in einem eigenen, additionsfreien Commit ([`AGENTS.md`](../AGENTS.md) §3.3,
+  [ADR-0014](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) Festlegung 2 (c)).
+- **Achse 2 — eigener Bedarf.** MR-016 trug keinen numerischen Auflösungs-Trigger außer
+  *„permanent"* mit der Bedingung *„Setzung 2/3 fallen, sobald Modul 6 selbst einen Ort für
+  wellenlose Arbeit vorsieht"* — genau das ist eingetreten (siehe oben); der eigene Bedarf ist
+  damit durch den Baseline-Bezug erschöpft, kein separater Achse-2-Befund bleibt offen.
+- **Auflösungs-Trigger:** permanent als Sachstands-Feststellung.
+
+### MR-038 — Ein retirierender Eintrag nennt den Baseline-Stand, der seinen Trigger feuerte
+
+- **Datum:** 2026-08-31
+- **Wirksamkeits-Anlass:** slice-082 — Adaptions-Durchgang von welle-10, Achse 1, Posten
+  [`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf) (§6 des
+  Slice-Plans).
+- **Geltungsbereich:** [`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
+  — nur die **Form** der `Aufgehoben durch`-Zeile bei baseline-getriebenem Rückbau. Die
+  Festlegung selbst (Option C: Kopf bleibt, Rumpf geht bei vollständiger Aufhebung) bleibt
+  unverändert und bindet fort.
+- **Ersetzt-Baseline-Regel:**
+  [`modul-02-harness-bootstrap.md`](../.harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md)
+  §Freshness-Audit der vendored Baseline: *„Rückbau ist ein neuer Eintrag, kein Edit — eine
+  aufgelöste `MR-<NNN>` wird nicht überschrieben, sondern bekommt einen Nachfolger, der sie
+  auflöst und den Baseline-Stand nennt, der den Trigger gefeuert hat. Die alte Zeile ist die
+  historisch korrekte Aussage über den damaligen Zustand."*
+- **Ausgelöst durch Baseline-Stand:** `v5.12.0`.
+- **Der Auflösungs-Trigger von
+  [ADR-0014](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) ist eingetreten,
+  und die Entscheidung ist neu begründet, nicht umgestoßen.** Die ADR benennt den Fall selbst:
+  *„Wenn die Baseline die Disziplin-Regel aus dem Vorlagen-Kommentar in ein Prosa-Modul hebt …
+  dann bindet sie unabhängig von ihrer Rezeption hier, und die Abweichung ist gegen den neuen
+  Wortlaut neu zu begründen."* Genau das ist geschehen: die Disziplin-Regel des
+  v3.5.2-Vorlagen-Kommentars (*„keine nachträglichen inhaltlichen Änderungen … nur neue
+  Einträge oder explizite Aufhebungen"*, existiert am Zielstand nicht mehr als Kommentar
+  — `grep -n 'nur neue Eintr\|explizite Aufhebung\|append-only' .harness/baseline/v5.12.0/templates/harness/conventions.template.md`
+  ist leer) lebt jetzt als Prosa in
+  [`grundlagen-harness-dateien.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
+  (*„Einträge werden nie überschrieben"*) und in modul-02 (Zitat oben, siehe auch
+  [`MR-029`](#mr-029--der-scanignore-zensus-wandert-und-sein-dritter-grund-ist-keine-scoping-aussage)).
+- **Geprüft: widerspricht Option C (Kopf bleibt, Rumpf geht) dem neuen Wortlaut?** Nein.
+  *„Nicht überschrieben"* und *„kein Edit"* richten sich gegen das **Verändern** einer
+  bestehenden Aussage; Option C verändert nichts — sie entfernt den Rumpf per **eigenem,
+  additionsfreien Commit**
+  ([ADR-0014](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) Festlegung 2 (c))
+  und lässt Nummer, Überschrift wörtlich und `Datum` stehen: genau das, was *„ein Nachfolger,
+  der sie auflöst"* voraussetzt — einen stabilen Anker, auf den er zeigt. *„Die alte Zeile ist
+  die historisch korrekte Aussage über den damaligen Zustand"* begründet, den Wortlaut nicht zu
+  **verändern** — sie sagt nicht, ihn ewig sichtbar zu halten. MR-020s eigene Begründung trifft
+  denselben Punkt bereits: *„Nicht in `git` steht, was der Kopf hält … Was die
+  append-only-Führung dagegen leisten soll — Nachvollziehbarkeit — leistet `git` vollständig
+  und besser."* Der Rückschluss auf *„widerspricht"* trägt darum nicht; die Adaption bleibt
+  gültig, keine Folge-ADR, keine Rückführung `in-progress → open`.
+- **Was neu ist, und was der Nachfolger ergänzt.** Die neue Fassung verlangt zusätzlich: der
+  Nachfolger *„nennt den Baseline-Stand, der den Trigger gefeuert hat"* — ein Element, das
+  MR-020s eigener Regel-Text bisher nicht ausdrücklich forderte (seine `Aufgehoben
+  durch`-Beispiele im Bestand betreffen bislang ausschließlich repo-interne Umbauten, keinen
+  Baseline-Sprung — deshalb blieb die Lücke bisher unbemerkt). **Setzung:** Wo eine Aufhebung
+  baseline-getrieben ist — dieser Durchgang produziert genau solche —, trägt die `Aufgehoben
+  durch`-Zeile zusätzlich den Tag (Feld `Ausgelöst durch Baseline-Stand`, wie bei
+  [`MR-030`](#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen) bereits
+  gelebt). Wo eine Aufhebung repo-intern getrieben ist (kein Baseline-Sprung als Ursache),
+  bleibt das Feld aus — es gäbe nichts zu nennen.
+- **Ausgang:** teilweise überholt → engere Nachfolgerin. MR-020 bekommt eine Kopf-Marke
+  ([`MR-032`](#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)); der
+  Rumpf bleibt vollständig stehen (Teil-Ablösung, kein Widerspruch zu ADR-0014).
+- **Achse 2 — eigener Bedarf.** MR-020s eigener Auflösungs-Trigger — *„an ADR-0014 gebunden —
+  fällt ihre Annahme … fällt diese Adaption mit ihr"* — ist nicht eingetreten: ADR-0014 bleibt
+  Accepted; ihr dritter Re-Evaluierungs-Trigger hat eine Neubegründung verlangt, keine
+  Aufhebung, und die steht hiermit.
+- **Auflösungs-Trigger:** permanent als Sachstands-Feststellung — eine neu begründete Adaption
+  wird nicht ein zweites Mal neu begründet. Fällig erst, wenn ein künftiger Baseline-Stand die
+  Freshness-Audit-Eigenschaft erneut ändert.
 
 ## Modus-Deklaration pro Sub-Area
 
