@@ -156,7 +156,7 @@ längst erfüllt ist: Ein Trigger, den niemand abfragt, ist kein Wächter."*
       Normativ-Deltas — wie sie es für die vier vorigen Re-Baselines tut.
 - [x] `make gates` grün.
 - [x] Doku-Update: `AGENTS.md` und `harness/README.md`, soweit ein Ausgang sie berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -188,7 +188,11 @@ DoD vollständig, Closure-Notiz geschrieben.
 
 - **Der Durchgang entscheidet, er setzt nicht um.** Wo eine echte Umsetzung nötig wird, entsteht
   ein Slice in `open/`. Wer beides hineinzieht, hat eine Welle im Slice — und verliert das
-  Closure-Kriterium der Welle mit.
+  Closure-Kriterium der Welle mit. — **Ausgang: entfallen.** Nicht eingetreten: kein Ausgang
+  dieses Durchgangs verlangt eigene Umsetzung außerhalb dieses Slice (§9 *Was das für §4
+  (Trigger) heißt* — drei neue Adaptions-Block-Einträge, zwei Kopf-Marken, ein
+  `Aufgehoben-durch`-Zeiger, eine Rumpf-Löschung, alles in `harness/conventions.md`); die
+  Zwei-Einträge-Schwelle aus §4 ist nicht erreicht, `in-progress → next` griff nicht.
 - **Vier Posten der eingefrorenen Menge sind schon sichtbar** — hier steht, was zu messen ist,
   nicht, wie es ausgeht. Bei einem der vier ist der Ausgang inzwischen geschrieben und nur noch zu
   verbuchen:
@@ -228,14 +232,76 @@ DoD vollständig, Closure-Notiz geschrieben.
     **2-Strata**-Aussage sich mit dem Technik-Stratum aus
     [`AGENTS.md`](../../../../AGENTS.md) §2 reibt — der Durchgang ist der Ort, an dem das
     auffällt.
+
+  **Ausgang: entfallen.** Alle vier Posten tragen ihren Beleg jetzt in §9, keiner verlangte einen
+  Carveout oder einen Folge-Slice: [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
+  ist teilweise überholt, Nachfolge-Eintrag
+  [`MR-038`](../../../../harness/conventions.md#mr-038--ein-retirierender-eintrag-nennt-den-baseline-stand-der-seinen-trigger-feuerte)
+  (Option C geprüft, nicht widersprochen — keine Folge-ADR, keine Rückführung
+  `in-progress → open`);
+  [`MR-019`](../../../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence)
+  bleibt gültig, geprüft statt vermutet;
+  [`MR-022`](../../../../harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)/[`MR-023`](../../../../harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung)
+  liegen außerhalb der eingefrorenen Menge, nur verbucht — ihre einzige Restfrage (Textprüfung)
+  hat mit
+  [`MR-031`](../../../../harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline)
+  bereits einen Träger (dort als gemessene Lücke geführt, Architect-Sache, kein neuer Träger aus
+  diesem Slice nötig);
+  [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) bleibt gültig — die
+  genannte Reibung ist bereits vor diesem Durchgang durch eine Teil-Ablösung zu
+  [`MR-019`](../../../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence)
+  aufgelöst (§9, Eintrag 000).
 - **Der Bestand mit je zwei Fragen ist die Obergrenze einer Review-Sitzung.** Wird sie gerissen,
   ist der Schnitt falsch; dann wird geteilt, nicht die Sitzung gedehnt — geteilt wird **die
   Liste, nicht die Achsen**: beide Fragen an einen Eintrag werden an demselben Text beantwortet,
-  und wer sie trennt, liest ihn zweimal.
+  und wer sie trennt, liest ihn zweimal. — **Ausgang: entfallen.** Nicht eingetreten: der
+  Durchgang blieb eine Sitzung; §9 *Was das für §4 heißt* bestätigt, dass die
+  Zwei-Einträge-Schwelle nicht erreicht wurde und `in-progress → next` nicht griff.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Closure-Kriterien (beobachtet, nicht behauptet):**
+
+1. **DoD vollständig.** Alle Punkte aus §2 sind gehakt —
+   `grep -c '^- \[ \]' docs/plan/planning/in-progress/slice-082-adaptions-durchgang.md` → **0**
+   offene Punkte (Kommando läuft vor dem `git mv`, solange die Datei noch unter diesem Pfad
+   liegt).
+2. **`make gates` grün** nach dem Commit dieser Closure-Notiz — der Stop-Hook-Stempel deckt den
+   Arbeitsbaum.
+
+- **Was hat funktioniert:** Das Fünf-Ausgänge-Schema aus Modul 2 (gegenstandslos · bleibt gültig
+  · teilweise überholt · Bezug entfallen · widerspricht) trug für alle 29 Einträge der
+  eingefrorenen Menge — 26 `bleibt gültig`, drei mit echtem Befund (015, 016, 020), kein
+  sechster Ausgang nötig. Die bereits vorher entschiedene `ÜBERHOLT`-Form
+  ([`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger))
+  ließ sich unverändert auf alle drei Rückbauten anwenden (015 und 020 Teil-Ablösung,
+  016 vollständige Aufhebung nach
+  [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf));
+  neben den zwei bereits im Bestand liegenden Beschriftungen (`HISTORIE`, `ÜBERHOLT`) entstand
+  keine dritte.
+- **Was ging anders als geplant:** Zwei der 29 Prüfungen (§9, Einträge 019 und 020) widerlegten
+  den naheliegenden ersten Eindruck — *„die Baseline behandelt das Thema jetzt, also
+  gegenstandslos"* trug in beiden Fällen nicht. Erst die Prüfung gegen den genauen Wortlaut
+  (*„erfüllt der neue Text die Pflicht, für die dieser Eintrag angelegt wurde?"*) ergab den
+  tatsächlichen Ausgang — bei 019 `bleibt gültig` (die Deklarationspflicht bleibt bestehen, auch
+  wenn die drei Straten jetzt obligatorisch sind), bei 020 `teilweise überholt` mit **bestätigter**
+  statt vermuteter Fortgeltung von Option C.
+- **Steering-Loop-Eintrag:** geschärfte Regel — Achse 1 eines Adaptions-Durchgangs (*„regelt die
+  neue Fassung das, wofür diese Adaption angelegt wurde?"*) ist nicht mit *„die Baseline behandelt
+  jetzt dasselbe Thema"* beantwortet, sondern nur mit *„die Baseline erfüllt jetzt genau die
+  Pflicht, für die der Eintrag entstand"* — Beleg: §9, Einträge 019 und 020 dieses Plans. Auslöser:
+  `BEO-008` (slice-082 — 1×; noch nicht verkörpert, siehe Register).
+- **Beobachtungs-Register (`../observations.md`):** neue `BEO-008` angelegt (Sub-Area `*`, 1×,
+  Beleg slice-082).
+- **Folge-Slices:** keine. Kein Ausgang dieses Durchgangs verlangt eigene Umsetzung außerhalb
+  dieses Slice (§9 *Was das für §4 heißt*).
+- **Risiken aus §6:** alle drei mit Ausgang `entfallen` (siehe §6 je Risiko) — keines eingetreten,
+  keines weiter offen.
+- **Drei Paarungen:** entfällt hier — dieses Repo führt Wellen-Betrieb, `welle-10` bleibt nach
+  dieser Closure offen (weitere Slices in `open/`). Die Paarungen (Anker · Folge-Slice · Register)
+  prüft die nächste Welle-Closure, auch für diesen Slice
+  ([`modul-06-roadmap.md`](../../../../.harness/baseline/v5.12.0/regelwerk/modul-06-roadmap.md)
+  §Wellen-Closure-Prozedur, Schritt 3, *„Zum Schluss alle drei Paarungen prüfen"*).
 
 ## 8. Sub-Area-Modus-Begründung
 
