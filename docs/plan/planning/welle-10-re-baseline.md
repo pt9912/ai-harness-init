@@ -248,7 +248,7 @@ Beides zusammen macht unschließbar; eines allein nicht.
   Plan** (§4) und wächst nur durch einen Akt, der selbst im Diff dieses Plans steht: **6** Zeilen
   beim Schnitt
   (`git show 6bf9950:docs/plan/planning/welle-10-re-baseline-v5-3-0.md | awk '/^## 4\. Slices/,/^## 5\./' | grep -c '^| slice-'`)
-  gegen heute **11** (dasselbe `awk` und `grep` über diese Datei). Der Unterschied zu Durchgang 1
+  gegen heute **14** (dasselbe `awk` und `grep` über diese Datei). Der Unterschied zu Durchgang 1
   ist nicht die Bewegung, sondern wer sie auslöst und wer sie sieht: hier die Welle selbst, im
   eigenen Text; dort ein fremder Rollen-Lauf, der diesen Plan nicht anfasst. **Keine
   Erwartungswerte** — beide Zahlen wandern mit dem Schnitt.
@@ -268,7 +268,8 @@ Der Zustand jedes Slice ist sein Lifecycle-Verzeichnis, hier nicht gespiegelt.
 
 Die Reihenfolge ist tragend: **080 entscheidet, 081 vollzieht, 133, 130, 131 und 132 räumen ab, was
 der Vollzug an gebrochenen Zusagen und unbeantworteten Fragen hinterlässt, 082–084 sind die drei
-Durchgänge der Prozedur, 085 zieht die emittierte Ebene nach.** 080 liegt vor 081, weil der Tausch
+Durchgänge der Prozedur, 085 zieht die emittierte Ebene nach, 149 trägt den Rest der Prozedur, den
+die drei Durchgänge selbst nicht abdecken.** 080 liegt vor 081, weil der Tausch
 sonst an einer Frage vorbeiläuft, die er selbst aufwirft. **133 liegt vor 130**, weil dessen
 Nachweis über beide Ursachen zugleich läuft und ohne 133 unter keiner korrekten Ausführung grün
 werden kann.
@@ -288,6 +289,7 @@ werden kann.
 | slice-148 | `spec/architecture.md` trägt ihr `ARC-<NNN>`-Pflichtfeld (aus 083 ausgegliedert) | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | slice-084 | Stichprobe gegen den Bestand, nicht gegen das Delta | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | slice-085 | Die emittierte Ebene zieht nach | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) |
+| slice-149 | Welle-10 trägt ihre drei fehlenden Belege (dritter Sensor, Trigger-Audit, Register) | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 
 **147 und 148 sind kein Nachzügler wie 130–133/136, sondern ein Re-Schnitt eines bereits
 zugeordneten Mitglieds.** [slice-083](next/slice-083-form-vergleich-pflichtfelder.md) ging am
@@ -437,6 +439,22 @@ Eintrag angelegt wurde?"*, der Form-Vergleich fragt *„hat sich die Gestalt der
 geändert?"*. Zwei Fragen, zwei Review-Sitzungen. 082 läuft zuerst, weil ein Eintrag, der
 gegenstandslos wird, kein neues Pflichtfeld mehr braucht.
 
+**149 ist der neunte Nachzügler, und seine Ursache ist eine dritte, von den ersten beiden
+verschiedene: kein übersehenes Artefakt wie bei 136 und keine Baum-als-Eingabe-Lücke wie bei
+130–133, sondern die Ziel-Prozedur selbst.** §3 dieses Plans verlangt drei Sensoren außerhalb der
+Gates, einen Trigger-Audit über drei Artefaktklassen (Carveouts, bootstrap-aware Gates, ADRs) und
+eine gefüllte `welle-10-results.md` — keiner davon ist DoD-Punkt eines der zwölf zuvor
+geschnittenen Mitglieder. Ohne einen eigenen Träger würde dieser Rest bei der nächsten
+`/close-welle`-Ausführung neu erfunden oder übersehen.
+[slice-149](open/slice-149-welle-10-traegt-ihre-drei-fehlenden-belege.md) liefert den dritten
+Sensor (`make full-smoke`; die beiden anderen — `make smoke`, `make mutate` — bestätigt er, falls
+ihr letzter grüner Lauf nicht mehr aktuell ist) und den Trigger-Audit (die beiden offenen
+Carveouts `CO-001`/`CO-002`, keine bootstrap-aware Gates im Repo, sowie die acht ADRs, die dieser
+Plan und der Welle-10-Abschnitt der Roadmap zitieren). **Was 149 nicht trägt:** die Closure-Notiz
+selbst und den `git mv` dieser Datei nach `done/` — Schritt 3 der Wellen-Closure-Prozedur setzt
+voraus, dass alle Mitglieder inklusive 149 bereits in `done/` liegen, und bleibt darum bei
+`/close-welle`. Er hängt an keinem anderen Mitglied (§5).
+
 ## 5. Abhängigkeiten
 
 - **Wird blockiert von:** nichts. Die Kante aus
@@ -464,7 +482,10 @@ gegenstandslos wird, kein neues Pflichtfeld mehr braucht.
   **Architect**-Lauf: seine Liefer-Punkte liegen in dessen Artefakten. **147 und 148 hängen an
   keinem anderen Mitglied** — sie berühren je eine andere Spec-Datei mit eigener Referenz-Menge,
   nicht `harness/conventions.md`, und können vor, neben oder nach 083 laufen; ihre Reihenfolge
-  zueinander entscheidet ebenfalls nur das WIP-Limit.
+  zueinander entscheidet ebenfalls nur das WIP-Limit. **149 hängt an keinem anderen Mitglied** —
+  seine drei Liefer-Punkte sind unabhängig vom übrigen Wellen-Fortschritt ausführbar und können in
+  beliebiger Reihenfolge zu den übrigen laufen; einzig sein eigener Closure-Zeitpunkt bestimmt, wann
+  `/close-welle` frühestens laufen kann — erst wenn alle Mitglieder inklusive 149 in `done/` liegen.
 
 ## 6. Out-of-Scope für diese Welle
 

@@ -18,8 +18,9 @@ der Freshness-Sensor ist**: die Kante aus [welle-09](../welle-09-modul-15-konfor
 aufgelöst (Drift-Log unten; die drei Messungen stehen in §2 der Plan-Datei, nicht hier).
 
 **Slices:** `slice-080` bis `slice-085`, dazu seit dem 2026-08-28 `slice-130`, `slice-131`,
-`slice-132` und `slice-133`, seit dem 2026-08-29 `slice-136` sowie seit dem 2026-08-31 `slice-147`
-und `slice-148` (aus `slice-083` ausgegliedert) — sämtlich geschnitten.
+`slice-132` und `slice-133`, seit dem 2026-08-29 `slice-136` sowie seit dem 2026-08-31 `slice-147`,
+`slice-148` (aus `slice-083` ausgegliedert) und `slice-149` (der trägerlose Rest der
+Ziel-Prozedur: dritter Sensor, Trigger-Audit, Beobachtungs-Register) — sämtlich geschnitten.
 [`slice-080`](../done/slice-080-verweis-ueberlebt-tagwechsel.md) war der
 erste, und **seine Frage ist entschieden**:
 [`ADR-0023`](../../adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md)
@@ -66,11 +67,11 @@ Setzung 2) — alle Beträge oben wandern mit dem Baum.
 full-smoke` (Netz) und `make mutate` (Voll-Lauf) sind hier **nicht** gemessen, und ihr Beleg ist
 Sache der Welle-Closure.
 
-**Was die Welle noch offen hat, ist ihre eigene Substanz und kein Zwischenstand.** Sechs ihrer elf
-Slices liegen nicht in `done/` — `slice-131`, `slice-082`, `slice-083`, `slice-136`, `slice-084`,
-`slice-085` —, und an dreien von ihnen hängen die drei Durchgänge des Closure-Kriteriums. Die
-Verzeichnisse sagen es, nicht diese Zeile
-(`for s in 080 081 082 083 084 085 130 131 132 133 136; do ls docs/plan/planning/*/slice-$s-*.md; done`).
+**Was die Welle noch offen hat, ist ihre eigene Substanz und kein Zwischenstand.** Acht ihrer
+vierzehn Slices liegen nicht in `done/` — `slice-083`, `slice-084`, `slice-085`, `slice-131`,
+`slice-136`, `slice-147`, `slice-148` und `slice-149` —, und an dreien von ihnen hängen die drei
+Durchgänge des Closure-Kriteriums. Die Verzeichnisse sagen es, nicht diese Zeile
+(`for s in 080 081 082 083 084 085 130 131 132 133 136 147 148 149; do ls docs/plan/planning/*/slice-$s-*.md; done`).
 Zwei Carveouts sind weiter aktiv (`ls docs/plan/carveouts/CO-*.md` → `CO-001`, `CO-002`); ob einer
 davon unter das Welle-Kriterium *„ohne offenen Carveout auf einem Gate dieser Welle"* fällt, liest
 die Closure an dem Kommando ab, das die Welle-Datei dafür nennt.
