@@ -44,29 +44,42 @@ taucht in vier Commits auf — allesamt Re-Vendor — und war nie inhaltlich beh
 Trigger von [welle-09](../welle-09-modul-15-konformitaet.md). Die Ursache ist mechanisch: die
 Adoptions-Prüfung sieht bei jeder Re-Baseline nur das Delta, nie den Bestand.
 
+**Auflösung eines Plan-Mangels (entschieden vor der Messung).** DoD (3) und die §3-Tabelle
+spannten gegeneinander: DoD (3) routet jeden Fund über einen Folge-Slice oder Carveout, die
+§3-Tabelle führte `harness/conventions.md` zugleich als in **diesem** Slice geänderte Datei
+(„update, nur bei Fund"). Beides zugleich geht nicht, und das Kopf-Feld **Verantwortlich** hat die
+Antwort bereits vorweggenommen: die dritte, ebenfalls `nur bei Fund` geführte Zeile bleibt eine
+**Übergabe an den Architect** und wechselt den Halter nicht. **DoD (3) gilt; die §3-Tabelle ist
+entsprechend korrigiert** (unten): `harness/conventions.md` wird in diesem Slice **nicht**
+editiert — das Artefakt gehört dem Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Ein Fund
+geht ausschließlich als Folge-Slice in `docs/plan/planning/open/` oder als Carveout aus diesem Lauf
+hervor; die Direktänderung entsteht, wenn überhaupt, im Folge-Lauf. Träfe die Entscheidung
+stattdessen „in diesem Slice", griffe die Rückführung `in-progress → open` — wie gerade bei
+[slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) —, weil ein
+Planner-Kontext dieses Artefakt nicht direkt schreiben darf.
+
 ## 2. Definition of Done
 
-- [ ] Ein Abschnitt **ohne Delta** ist gewählt und die Wahl belegt — die Komplementärmenge zu
+- [x] Ein Abschnitt **ohne Delta** ist gewählt und die Wahl belegt — die Komplementärmenge zu
       `git diff <alt> <neu> -- .harness/baseline/`. Umfang: **genau ein** Abschnitt, keine
       Vollinventur.
-- [ ] Je Regel dieses Abschnitts ist beantwortet: *Steht sie im ausgefüllten Artefakt — oder als
+- [x] Je Regel dieses Abschnitts ist beantwortet: *Steht sie im ausgefüllten Artefakt — oder als
       deklarierte Abweichung?* Zweimal nein heißt: nie übernommen.
-- [ ] Der Ausgang ist verbucht: **ein** Fund geht den Weg jeder Diskrepanz (Übernahme im nächsten
-      Slice oder Carveout mit Auflösungs-Trigger); **mehrere** Funde treffen nicht die einzelne
-      Regel, sondern die
+- [x] Der Ausgang ist verbucht: **ein** Fund geht den Weg jeder Diskrepanz (Übernahme im nächsten
+      Slice oder Carveout mit Auflösungs-Trigger, **nie** als Direktänderung in diesem Slice —
+      Auflösung siehe Ende §1); **mehrere** Funde treffen nicht die einzelne Regel, sondern die
       [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)-Aussage — sie ist
-      dann falsch und wird korrigiert.
-- [ ] `make gates` grün.
-- [ ] Doku-Update: nur bei Fund — Übernahme im ausgefüllten Artefakt oder deklarierte Abweichung.
+      dann falsch und wird korrigiert, ebenfalls über den Folge-Slice, nicht in diesem.
+- [x] `make gates` grün.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| dieser Slice, §7 | update | der geprüfte Abschnitt und sein Ergebnis — die Rotation braucht ein Gedächtnis |
-| [`harness/conventions.md`](../../../../harness/conventions.md) | update, **nur bei Fund** | Übernahme oder deklarierte Abweichung |
-| `docs/plan/carveouts/` bzw. `docs/plan/planning/open/` | neu, **nur bei Fund** | Carveout mit Auflösungs-Trigger oder Folge-Slice |
+| dieser Slice, §9 (neu) und §7 | update | der geprüfte Abschnitt und sein Ergebnis — die Rotation braucht ein Gedächtnis |
+| [`harness/conventions.md`](../../../../harness/conventions.md) | **keine — Architect-Artefakt** | ein Fund routet über die Zeile darunter, nie als Direktänderung in diesem Slice ([`AGENTS.md`](../../../../AGENTS.md) §3.8) |
+| `docs/plan/carveouts/` bzw. `docs/plan/planning/open/` | neu, **nur bei Fund** | Carveout mit Auflösungs-Trigger oder Folge-Slice — trägt die `harness/conventions.md`-Änderung im Folge-Lauf |
 
 ## 4. Trigger
 
@@ -101,6 +114,77 @@ wurde.
 
 ## 8. Sub-Area-Modus-Begründung
 
+**Vorgelagert — Sub-Area-Wahl prüfen:** Berührt sind `*` (gesamtes Repo — deckt den geprüften
+`Dockerfile`-Abschnitt) und `docs/plan/` (dieser Plan, der Folge-Slice). Beide sind bereits in der
+Modus-Deklaration von
+[`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area)
+geführt — keine zu grobe, neu auszudifferenzierende Sub-Area.
+
+**Vorgelagert — offene Beobachtungen sichten:**
+
+- **`BEO-008`** (1×, `*`, Beleg slice-082) — *„Achse 1 … ist nicht mit ‚die Baseline behandelt
+  jetzt dasselbe Thema' beantwortet"*. Dieselbe Arbeitsart wie dieser Durchgang: §9 prüft je Regel
+  des gewählten Abschnitts, ob das Artefakt die **konkrete Pflicht** erfüllt — nicht, ob irgendwo
+  im Repo ein verwandtes Thema auftaucht. Bei der Runtime-Stage-Regel lag der Kurzschluss nahe
+  (*„[`ADR-0003`](../../adr/0003-go-native-binaries.md) bespricht OCI-Images, also erledigt"*) und
+  wurde verworfen: die ADR entscheidet die
+  Architektur, nimmt die Regel aber an keiner Stelle ausdrücklich im Adaptions-Block-Sinn aus (§9).
+  Der Zähler bleibt bei 1× — dieser Lauf ist die Anwendung der Lehre, kein zweites Auftreten des
+  Fehlers; die Prüfpflicht selbst wandert als DoD-Punkt in
+  [slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) weiter.
+- **`BEO-003`** (2× im Register: slice-137, slice-144) — nach dem Move `slice-144: open → next`
+  dieser Sitzung und dem folgenden Link-Abgleich-Commit (`91e1fe0`) läge ein drittes Auftreten vor,
+  das nach Modul 6 die 3×-Schwelle (Lücke statt Notiz) erreichte. **Nicht der Gegenstand dieses
+  Slice, aber hier benannt, weil der Sichtungs-Schritt der Ort dafür ist:** Der Zähler wird von
+  diesem Slice **nicht** erhöht — die Belege des Registers sind formgebunden (Slice-Kennung, Datei
+  in `done/`), und der auslösende Lauf war kein Slice-Closure-Lauf, sondern ein einzelner Commit
+  zwischen zwei Lifecycle-Übergängen. Es gibt keine Slice-Datei, die als Beleg zitiert werden
+  könnte. „Ein Nicht-Closure-Lauf hat keine Route ins Register" ist damit selbst ein Befund und
+  keiner, den dieser Durchgang durch Fortschreiben verdeckt — er bleibt eine benannte Lücke für
+  eine künftige Planungs-Sitzung, statt hier einen Beleg zu erfinden, den die Registerregeln nicht
+  zulassen.
+
 Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example): `harness/` und
 `docs/plan/` gehören zum Greenfield-Bestand; der Modus steht in der Modus-Deklaration von
 [`harness/conventions.md`](../../../../harness/conventions.md).
+
+## 9. Audit — Modul 14 §Multi-Stage-Build: die operativen Disziplinen (Übergabe-Artefakt des Durchgangs)
+
+**Gewählter Abschnitt und Beleg der Delta-Freiheit.** `### Multi-Stage-Build: die operativen
+Disziplinen (Modul 14)` in `modul-14-docker-harness.md`. Kein regelwerk-Datei ist zwischen `v3.5.2`
+und `v5.12.0` auf **Datei**-Ebene delta-frei (gemessen am lokalen Kurs-Klon
+`/Development/KI/ai-harness-course`, weil `.harness/baseline/` in diesem Repo nur den Ziel-Stand
+führt): `for f in $(git -C /Development/KI/ai-harness-course ls-tree -r --name-only v3.5.2 --
+lab/regelwerk); do git -C /Development/KI/ai-harness-course diff --quiet v3.5.2 v5.12.0 -- "$f" &&
+echo "$f"; done` → kein Treffer (nur `lab/templates/Makefile` ist datei-delta-frei, kein Regelwerk).
+„Abschnitt" ist deshalb wie bei [slice-082](../done/slice-082-adaptions-durchgang.md) (Modul 15,
+Block-Ebene) eine **Unter-Sektion**: die gewählte ist wortgleich in beiden Tags —
+`diff <(git -C /Development/KI/ai-harness-course show v3.5.2:lab/regelwerk/modul-14-docker-harness.md | awk '/^### Multi-Stage-Build/{f=1} f{print} /^### Reproduzierbarkeits-Regeln/{exit}') <(git -C /Development/KI/ai-harness-course show v5.12.0:lab/regelwerk/modul-14-docker-harness.md | awk '/^### Multi-Stage-Build/{f=1} f{print} /^### Reproduzierbarkeits-Regeln/{exit}')`
+→ leer.
+
+**Geprüft ist das ausgefüllte Artefakt `Dockerfile`, Regel für Regel:**
+
+| Regel | Im Artefakt? | Beleg |
+|---|---|---|
+| Base-Image per Digest pinnen, nicht per Tag | ja | `grep -c '@sha256:' Dockerfile` → **2** (`golang`, `golangci-lint`); Update-Disziplin über `make freshness-go`/`make freshness-golangci` (read-only Melder) |
+| Lock-File vor dem Code; Installer-Version gepinnt; `--frozen`-Äquivalent | ja | `COPY go.mod`/`COPY go.su[m]` steht in jeder Stage **vor** `COPY . .`; `GOFLAGS="-mod=readonly …"` verweigert das Auflösen neuer Versionen beim Build (Go-Äquivalent zu `--frozen`); die Installer-Version ist die digest-gepinnte `golang`-Base selbst |
+| Stages trennen: `deps` → `build` → `runtime` (Distroless/nonroot, keine Build-Toolchain im Ergebnis) | **nein** | `grep -c '^FROM' Dockerfile` → **6** (`deps`, `warm`, `test`, `compile`, `lint`, `build`), keiner davon `distroless`/`scratch` oder vergleichbar minimal; **kein** Runtime-Image existiert. Kein Adaptions-Eintrag nimmt die Regel aus: `grep -n -i 'runtime\|distroless\|nonroot\|non-root\|modul-14\|multi-stage' harness/conventions.md` → kein Treffer |
+| Image-Hash im Build-Output festhalten (`--metadata-file` → einer Datei „harness/image-hash.txt", referenziert in `harness/README.md`) | **nein** | `find . -iname 'image-hash*' -not -path './.harness/*'` → kein Treffer; `grep -n 'metadata-file\|iidfile' Makefile` → kein Treffer; `grep -c -i 'image-hash\|image_hash' harness/README.md harness/conventions.md` → **0** an beiden Stellen. Ebenfalls keine Ausnahme im Adaptions-Block |
+
+**Ausgang (DoD 3): mehrere Funde.** Zwei von vier Regeln sind **zweimal nein** — weder im Artefakt
+umgesetzt noch im Adaptions-Block ausgenommen, also **nie übernommen** (DoD 2). Nach DoD (3) heißt
+das: nicht die einzelne Regel ist der Fund, sondern die
+[`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)-Blankett-Klausel selbst
+ist für diesen Abschnitt falsch — sie behauptet implizit Konformität (*„wo kein Eintrag sie
+ausnimmt, gilt die Klausel fort"*), die hier für zwei Regeln nicht vorliegt.
+
+**Route (§1-Auflösung).** Kein Gate ist deswegen rot — es fehlt eine Deklaration, kein
+Carveout-Fall. Folge-Slice
+[slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) trägt die
+Architect-Übergabe. Was die zwei Regeln dort werden — Adoption (Mechanismus ergänzen) oder
+deklarierte Abweichung mit Begründung — entscheidet der Architect-Lauf; für die Runtime-Stage-Regel
+liegt die Begründung nahe ([`ADR-0003`](../../adr/0003-go-native-binaries.md): kein OCI-Image als
+Vertriebsmittel), muss aber gegen den genauen Wortlaut der Regel geprüft werden, nicht nur gegen
+das Vorhandensein einer ADR zum Thema (§8, `BEO-008`); für die Image-Hash-Regel ist offen, ob sie
+zur Reproduzierbarkeits-Zusage ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit))
+noch etwas beiträgt, das der bestehende Gate-Stempel (`working-tree-hash.sh`) nicht schon trägt.
