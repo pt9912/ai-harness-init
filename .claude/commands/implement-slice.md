@@ -55,16 +55,19 @@ Adaptions-Block („MR-Block") in `harness/conventions.md`; die workflow-relevan
 9. Die Implementation erhält den Slice **in `in-progress/`** (Planner→Implementation-Übergabe,
    Modul 8; `next → in-progress` = „Implementer beginnt", Modul 5). Liegt er noch in `open/`,
    zuerst dorthin verschieben (`open → next → in-progress`). Jeder Übergang läuft über
-   `make slice-mv SLICE=<slice-NNN> TO=<next|in-progress>` — es bewegt die Datei per `git mv` und
-   zieht reale Verweise nach: **eingehend** jede gemessene Präfix-Form eines Verweises auf die
-   bewegte Datei, repo-weit; **ausgehend** präfixlose Ziele innerhalb der bewegten Datei selbst. Der
-   Skriptkopf (`harness/tools/slice-mv.sh`) begründet, warum beide Teile in **einen** Commit gehören
-   (Hard Rule 3.3: der Rename der bewegten Datei bleibt Similarity-nah, weil die Eingehend-Änderungen
-   in *anderen* Dateien liegen). Drei gemessene Grenzen bleiben: es zieht Pfade nach, keine
-   Zustandssätze; Welle-Plan-Dateien (Tiefenwechsel beim Closure-Move) bleiben außen vor; und eine
-   präfixlose Referenz **auf** die bewegte Datei aus einer unbewegten Geschwister-Datei erkennt es
-   nicht (`BEO-003`, offen). `make docs-check` nach dem Move zeigt einen etwaigen Rest — von Hand
-   nachziehen, bevor der nächste Schritt startet.
+   `make slice-mv SLICE=<slice-NNN> TO=<next|in-progress>` — es bewegt die Datei per `git mv`,
+   committet den reinen Move **sofort als eigenen Commit** (Hard Rule 3.3: kein Byte Inhalt
+   geändert, die Rename-Erkennung greift) und zieht danach reale Verweise nach: **eingehend** jede
+   gemessene Präfix-Form eines Verweises auf die bewegte Datei, repo-weit; **ausgehend** präfixlose
+   Ziele innerhalb der bewegten Datei selbst. Fielen Verweise an, committet das Skript sie als
+   **zweiten**, vom Move getrennten Commit — sonst bleibt es beim einen Move-Commit. Voraussetzung
+   dafür ist ein sauberer Arbeitsbaum beim Aufruf (Skriptkopf `harness/tools/slice-mv.sh`, Abschnitt
+   VORAUSSETZUNG); ein unsauberer Baum bricht den Aufruf, statt fremde Änderungen mitzureißen. Drei
+   gemessene Grenzen bleiben: es zieht Pfade nach, keine Zustandssätze; Welle-Plan-Dateien
+   (Tiefenwechsel beim Closure-Move) bleiben außen vor; und eine präfixlose Referenz **auf** die
+   bewegte Datei aus einer unbewegten Geschwister-Datei erkennt es nicht (`BEO-003`, offen).
+   `make docs-check` nach dem Move zeigt einen etwaigen Rest — von Hand nachziehen, bevor der
+   nächste Schritt startet.
 10. WIP-Limit = 1 pro Implementer (Modul 5): kein paralleles `in-progress/`.
 11. Lifecycle-Rücksprungkanten (Modul 5), falls sich der Slice als falsch erweist: zu groß →
     `in-progress → next` (zurück zur Zerlegung); blockiert → `in-progress → open` (Carveout,
@@ -135,12 +138,13 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
 23. Erst wenn der Review konform **und** die Verifikation die DoD bestätigt hat, schließt der
     **Planner**: die Closure-Notiz mit einem **Steering-Loop-Eintrag** schreiben (geschärfte Regel ·
     neuer Sensor · benannte Spec-Lücke — Modul 5: der `→ done`-Übergang verlangt einen Lerneintrag,
-    nicht nur grüne Gates), dann den Slice `in-progress → done` per
-    `make slice-mv SLICE=<slice-NNN> TO=done` verschieben — Move und Verweis-Nachzug in einem Lauf,
-    ein Commit (Hard Rule 3.3, dieselbe Begründung wie in Schritt 9), dieselben drei Grenzen (keine
-    Zustandssätze, keine Welle-Plan-Dateien, präfixlose Eingehend-Form unerkannt — `BEO-003`).
-    `make docs-check` danach prüft den Rest. Ein rotes Gate erreicht `done/` **nur** mit
-    dokumentiertem Carveout (Modul 7), nie als stilles Rot.
+    nicht nur grüne Gates) und **committen**, dann den Slice `in-progress → done` per
+    `make slice-mv SLICE=<slice-NNN> TO=done` verschieben — ein Lauf, zwei Commits: zuerst der reine
+    Move, danach — getrennt, nur falls welche anfielen — der Verweis-Nachzug (Hard Rule 3.3,
+    dieselbe Begründung wie in Schritt 9). Dieselben drei Grenzen bleiben (keine Zustandssätze,
+    keine Welle-Plan-Dateien, präfixlose Eingehend-Form unerkannt — `BEO-003`). `make docs-check`
+    danach prüft den Rest. Ein rotes Gate erreicht `done/` **nur** mit dokumentiertem Carveout
+    (Modul 7), nie als stilles Rot.
 24. **Das Beobachtungs-Register fortschreiben** (`docs/plan/planning/observations.md`, Modul 6) —
     der **Schreib**-Schritt, und er hängt an der Closure, nicht an der Implementation. Für jede
     Beobachtung aus §7: führt das Register die Klasse schon, dann die vorhandene `BEO-<NNN>`
