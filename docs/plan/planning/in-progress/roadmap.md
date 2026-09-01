@@ -63,13 +63,14 @@ emittierten Baum gebrochen; getragen hat die Reparatur `slice-133` (die Platzhal
 *„smoke: OK"*. **Keine Erwartungswerte**
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2) — alle Beträge oben wandern mit dem Baum.
-[welle-10](../welle-10-re-baseline.md) §3 verlangt **drei** Sensoren außerhalb der Gates; `make
-full-smoke` (Netz) und `make mutate` (Voll-Lauf) sind hier **nicht** gemessen, und ihr Beleg ist
-Sache der Welle-Closure.
+[welle-10](../welle-10-re-baseline.md) §3 verlangt **drei** Sensoren außerhalb der Gates; alle drei
+tragen jetzt einen Beleg — `make smoke` oben, `make full-smoke` (Exit **0**) und `make mutate`
+(**214** von 214 Fall-Dateien, 0 Befund(e)) stehen in
+[`slice-149`](../done/slice-149-welle-10-traegt-ihre-drei-fehlenden-belege.md) §7.
 
-**Was die Welle noch offen hat, ist ihre eigene Substanz und kein Zwischenstand.** Acht ihrer
+**Was die Welle noch offen hat, ist ihre eigene Substanz und kein Zwischenstand.** Sieben ihrer
 vierzehn Slices liegen nicht in `done/` — `slice-083`, `slice-084`, `slice-085`, `slice-131`,
-`slice-136`, `slice-147`, `slice-148` und `slice-149` —, und an dreien von ihnen hängen die drei
+`slice-136`, `slice-147` und `slice-148` —, und an dreien von ihnen hängen die drei
 Durchgänge des Closure-Kriteriums. Die Verzeichnisse sagen es, nicht diese Zeile
 (`for s in 080 081 082 083 084 085 130 131 132 133 136 147 148 149; do ls docs/plan/planning/*/slice-$s-*.md; done`).
 Zwei Carveouts sind weiter aktiv (`ls docs/plan/carveouts/CO-*.md` → `CO-001`, `CO-002`); ob einer
