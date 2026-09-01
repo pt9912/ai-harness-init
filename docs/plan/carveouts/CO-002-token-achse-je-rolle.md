@@ -3,7 +3,13 @@
 **Status:** Permanent — übergeführt in
 [ADR-0021](../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md).
 
-**Datum angelegt:** 2026-08-15. **Letzte Prüfung:** 2026-08-22 (Überführung — die Messung aus
+**Datum angelegt:** 2026-08-15. **Letzte Prüfung:** 2026-09-01 (welle-10-Trigger-Audit,
+[slice-149](../planning/in-progress/slice-149-welle-10-traegt-ihre-drei-fehlenden-belege.md):
+Ausgang **permanent**, bestätigt — es gibt keine offene Schwelle mehr, die wieder eintreten
+könnte, und damit weder eine Auflösung noch eine Verlängerung. Die zwei Zeiger der
+Geltungs-Konfiguration stehen, geprüft mit dem Kommando, das die Tabelle unten dafür nennt:
+`grep -c "CO-002" .claude/hooks/pretooluse-agent-guard.sh spec/spezifikation.md` → **1** und
+**5**). **Vorherige Prüfung:** 2026-08-22 (Überführung — die Messung aus
 Weg 1 ist gefahren und negativ, ihr Zeitdokument ist
 [`docs/reviews/2026-08-21-updatedinput-messung.md`](../../reviews/2026-08-21-updatedinput-messung.md);
 die Zahlen der Anlage stehen unverändert in
@@ -144,3 +150,4 @@ im Kopf behalten.
 | 2026-08-15 | Folge-Slice geschnitten; der Trigger wird am Span gelesen, nicht an der Abdeckungszeile; beide Zeiger der Geltungs-Konfiguration stehen | [slice-086](../planning/done/slice-086-vordergrund-per-updatedinput.md) |
 | 2026-08-15 | Trigger auf **eine** Schwelle gezogen — der Span **und** die committete Mechanik, die ihn erzeugt; der Span eines zurückgenommenen Messaufbaus erfüllt sie nicht. Die Begründung nennt den gemessenen Grund: der Schalter ist sendbar und wirkungslos | [ADR-0019](../adr/0019-agent-guard-prueft-die-aufrufform.md) §Kontext |
 | 2026-08-22 | **Übergeführt** — die Messung aus Weg 1 ist gefahren und negativ; der Status trägt den Übergang, die Adresse bleibt. Die Handlungs-Anweisung im Auflösungs-Trigger und die Verifikations-Checkliste sind damit aufgehoben | [ADR-0021](../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Festlegung 5 |
+| 2026-09-01 | Audit bei welle-10-Closure (Artefaktklasse *Carveout*): Ausgang **permanent**, bestätigt. Betroffen ist kein Gate, sondern die Abdeckung von `make span-report` — das Welle-Kriterium *„ohne offenen Carveout auf einem Gate dieser Welle"* hat hier keinen Gegenstand. Beide Zeiger der Geltungs-Konfiguration stehen | [slice-149](../planning/in-progress/slice-149-welle-10-traegt-ihre-drei-fehlenden-belege.md) |

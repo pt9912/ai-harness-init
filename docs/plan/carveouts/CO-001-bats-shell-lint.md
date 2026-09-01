@@ -6,7 +6,19 @@
 hier und nicht in `done/`, weil eine Auflösung erst gilt, wenn die Gate-Ausnahme fort und
 `make gates` ohne sie grün ist.
 
-**Datum angelegt:** 2026-07-21. **Letzte Prüfung:** 2026-08-27 (welle-12-Closure-Audit:
+**Datum angelegt:** 2026-07-21. **Letzte Prüfung:** 2026-09-01 (welle-10-Trigger-Audit,
+[slice-149](../planning/in-progress/slice-149-welle-10-traegt-ihre-drei-fehlenden-belege.md):
+**Trigger weiterhin EINGETRETEN**, Ausgang **verlängert mit Folge-Slice** — nicht aufgelöst und
+nicht permanent. Der Trigger fragt über den Bestand, und der ist gewachsen statt geschrumpft:
+`git ls-files 'test/*.bats' | wc -l` → **20**, und die tragende Fundstelle steht unverändert —
+`sed -n '30,55p' test/release-matrix.bats | grep -nE '^\s*(if|for|while|case) '` nennt die zwei
+verschachtelten `for`-Schleifen im Rumpf von `lh_platforms()`. Die Zahl wandert mit dem Bestand und
+ist kein Erwartungswert
+([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2). Zwei Folge-Slices tragen den Ausgang, und sie sind nicht dieselbe Arbeit:
+[slice-141](../planning/next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) entscheidet
+**vorher**, [slice-113](../planning/open/slice-113-co-001-ist-faellig.md) **führt aus**).
+**Vorherige Prüfung:** 2026-08-27 (welle-12-Closure-Audit:
 **Trigger EINGETRETEN**. Der Trigger fragt über den Bestand — *„sobald eine einzelne
 `.bats`-Datei eigene Hilfsfunktionen mit Verzweigung oder Schleifen trägt"* —, nicht über die
 Neuzugänge einer Welle. Gemessen über alle
@@ -93,3 +105,4 @@ Lint-Werkzeug einführen.
 | 2026-07-21 | Angelegt (Backlog-Formalisierung, Roadmap §Backlog Cluster E) | [slice-008](../planning/done/slice-008-shell-lint-gate.md) |
 | 2026-07-21 | Geprüft, weiterhin gültig | — |
 | 2026-07-22 | Audit bei welle-03-Closure: weiterhin gültig — Auflösungs-Trigger nicht erfüllt (welle-03 fügte keine bats-Hilfsfunktion mit Verzweigung/Schleifen hinzu; die vorhandenen `for`-Schleifen liegen in @test-Rümpfen, nicht in Helfern) | — |
+| 2026-09-01 | Audit bei welle-10-Closure (Artefaktklasse *Carveout*): Trigger weiterhin **eingetreten**, Ausgang **verlängert mit Folge-Slice** — der Bestand ist von 16 auf 20 `.bats`-Dateien gewachsen, die tragende Fundstelle `lh_platforms()` steht unverändert. Betroffenes Gate bleibt `shell-lint`; ob es unter das Welle-Kriterium *„ohne offenen Carveout auf einem Gate dieser Welle"* fällt, entscheidet die Welle-Closure, nicht dieser Audit | [slice-149](../planning/in-progress/slice-149-welle-10-traegt-ihre-drei-fehlenden-belege.md) |
