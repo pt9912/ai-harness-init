@@ -446,7 +446,7 @@ Gates, einen Trigger-Audit über drei Artefaktklassen (Carveouts, bootstrap-awar
 eine gefüllte `welle-10-results.md` — keiner davon ist DoD-Punkt eines der zwölf zuvor
 geschnittenen Mitglieder. Ohne einen eigenen Träger würde dieser Rest bei der nächsten
 `/close-welle`-Ausführung neu erfunden oder übersehen.
-[slice-149](in-progress/slice-149-welle-10-traegt-ihre-drei-fehlenden-belege.md) liefert den dritten
+[slice-149](done/slice-149-welle-10-traegt-ihre-drei-fehlenden-belege.md) liefert den dritten
 Sensor (`make full-smoke`; die beiden anderen — `make smoke`, `make mutate` — bestätigt er, falls
 ihr letzter grüner Lauf nicht mehr aktuell ist) und den Trigger-Audit (die beiden offenen
 Carveouts `CO-001`/`CO-002`, keine bootstrap-aware Gates im Repo, sowie die acht ADRs, die dieser
