@@ -79,7 +79,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **(1) `make full-smoke` gefahren, Ausgang (Exit-Code + Kern-Zeile) in
+- [x] **(1) `make full-smoke` gefahren, Ausgang (Exit-Code + Kern-Zeile) in
       §7 dokumentiert** — der einzige der drei in
       [welle-10](../welle-10-re-baseline.md) §3 verlangten Sensoren, der laut
       `in-progress/roadmap.md` (Abschnitt *Aktuelle Welle*) noch nicht
@@ -101,16 +101,16 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [x] **(3) Beobachtungs-Register (`../observations.md`) trägt die zwei in
       dieser Planungsrunde gemessenen Kandidaten** (§6) als neue
       `BEO-<NNN>`-Einträge mit Beleg `slice-149`.
-- [ ] `make gates` grün.
-- [ ] Doku-Update für einen öffentlichen Vertrag falls berührt — hier keiner:
+- [x] `make gates` grün.
+- [x] Doku-Update für einen öffentlichen Vertrag falls berührt — hier keiner:
       Gegenstand sind Prozess-Belege, keine Schnittstelle.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register — Repo hat keinen Brownfield-Bootstrap
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register — Repo hat keinen Brownfield-Bootstrap
       (`ls docs/plan/planning/reconciliation.md` → nicht vorhanden); das Item
       entfällt.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -213,7 +213,10 @@ dasteht.
   — Form-Diff aller Singleton-Vorlagen alt/neu plus Trefferzahl je neuer
   Pflicht, als erster Liefer-Punkt vor dem Rest-Schnitt — hätte die vier der
   zweiten Klasse vorweggenommen, nicht die sieben der ersten und dritten. —
-  **Ausgang:** weiter offen → neue `BEO-<NNN>` im Register (DoD 3).
+  **Ausgang:** **weiter offen** → Beobachtungs-Register,
+  [`BEO-010`](../observations.md) (Sub-Area `*`, 1×, Beleg `slice-149`,
+  angelegt unter DoD (3)). Kein Folge-Slice: der Eintrag steht bei 1× und
+  wartet auf den Lese-Schritt, der bei 3× greift.
 - **Beobachtungs-Kandidat (b) — jede Minor-Version wird adoptiert, nicht
   gesammelt.** Kostenreihe laut `harness/conventions.md` §Baseline: `v3.1.0`
   → 2 Slices (slice-011/012), `v3.5.0` → 1 (slice-019), `v3.5.1` → 1
@@ -226,9 +229,17 @@ dasteht.
   Adoptions-Rhythmus künftiger Baseline-Sprünge, verwandt mit der Frage, die
   [ADR-0018](../../adr/0018-ziel-fassung-regiert-die-migration.md) §Wer den
   Zielstand bewegt für den Einzelfall entscheidet — hier für die
-  wiederkehrende Klasse. — **Ausgang:** weiter offen → neue `BEO-<NNN>` im
-  Register (DoD 3); ob daraus ein Folge-ADR-Vorschlag wird, entscheidet der
-  Architect bei der Übergabe zu Liefer-Punkt 2, nicht dieser Slice.
+  wiederkehrende Klasse. — **Ausgang:** **weiter offen** →
+  Beobachtungs-Register, [`BEO-011`](../observations.md) (Sub-Area `*`, 1×,
+  Beleg `slice-149`, angelegt unter DoD (3)). Der Eintrag führt den nächsten
+  Fall bereits mit: `make baseline-freshness` meldet am 2026-09-01
+  `gepinnt: v5.12.0` gegen `latest: v5.18.0` bei Exit 2 (beide Angaben wandern
+  mit dem Upstream-Stand und sind keine Erwartungswerte,
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). Ob daraus über eine geschärfte Regel hinaus eine ADR wird, bleibt
+  Architect-Sache ([`AGENTS.md`](../../../../AGENTS.md) §3.8) — die Übergabe zu
+  Liefer-Punkt 2 hat sie nicht ausgelöst, weil dort kein
+  Re-Evaluierungs-Trigger feuerte.
 - **`make full-smoke` könnte einen Befund melden, der außerhalb dieses Slice
   liegt** — z. B. weil der emittierte Baum erst mit
   [slice-083](../next/slice-083-form-vergleich-pflichtfelder.md),
@@ -236,22 +247,24 @@ dasteht.
   [slice-147](../open/slice-147-spezifikation-traegt-ihr-id-schema.md),
   [slice-148](../open/slice-148-architecture-traegt-ihr-id-schema.md) oder
   [slice-085](../open/slice-085-emittierte-ebene-zieht-nach.md) vollständig
-  konform wird. — **Ausgang:** eingetreten → Verweis auf den bereits offenen
-  Träger (§4, Rückführung) statt eines neuen Folge-Slice; entfallen → grüner
-  Lauf ohne Befund; weiter offen → nicht zutreffend (die Messung ist zum
-  Ausführungszeitpunkt abgeschlossen oder der Slice geht nach §4 zurück).
+  konform wird. — **Ausgang:** **entfallen** → der Lauf endete Exit **0** ohne
+  Befund (Kern-Zeile in §7, Liefer-Punkt 1). Keiner der fünf oben genannten
+  Träger wurde gebraucht, und die Rückführung `in-progress` → `open` aus §4
+  wurde nicht ausgelöst.
 - **Der ADR-Zweig des Trigger-Audits könnte einen Re-Evaluierungs-Trigger
   feuern**, der eine Folge-ADR nötig macht — das bindet einen Architect-Lauf,
-  den dieser Slice nicht selbst vorwegnehmen kann. — **Ausgang:** eingetreten
-  → Folge-ADR-Vorschlag (Architect), als Folge-Slice-Vermerk in §7; entfallen
-  → alle acht ADRs bestätigt, keine Folge nötig; weiter offen → nicht
-  zutreffend (der Audit muss bei Closure abgeschlossen sein).
+  den dieser Slice nicht selbst vorwegnehmen kann. — **Ausgang:** **entfallen**
+  → alle acht ADRs des Audits (DoD (2)) sind auf ihren Re-Evaluierungs-Trigger
+  geprüft, keiner feuert; damit kein Architect-Verdikt, keine Folge-ADR und
+  keine Rückführung `in-progress` → `next` aus §4.
 - **`Verantwortlich:` hat keinen sauberen Rolleninhaber.**
   Modul 5 definiert das Feld über die Implementer-Rolle; die drei
   Liefer-Punkte dieses Slice sind nach der Wellen-Closure-Rollentabelle aus
   Modul 8 Verifier-/Planner-/Architect-Arbeit. — **Ausgang:** **entfallen** →
   beim Übergang `open→next` entschieden, an der Stelle, die dieser Punkt dafür
-  benannt hatte. **Begründung:** Das Feld nennt den **Halter** der Arbeit, nicht
+  benannt hatte; das Feld steht seither auf `Planner (pt9912)` (Kopf dieser
+  Datei, gesetzt im Priorisierungs-Commit `2c67711`).
+  **Begründung:** Das Feld nennt den **Halter** der Arbeit, nicht
   den Ausführenden jedes Teilschritts; gehalten wird sie vom Planner, der zwei
   der drei Liefer-Punkte allein trägt und beim dritten Empfänger des
   Übergabe-Artefakts ist (Kopf, mit Präzedenz slice-084/slice-131). Die Lücke im
@@ -261,8 +274,6 @@ dasteht.
 
 ## 7. Closure-Notiz
 
-<!-- Vor dem `git mv` nach done/ füllen. -->
-
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
 formulieren — sonst zählt das Register zwei Namen getrennt) ·
@@ -271,18 +282,100 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-NNN>, <slice-MMM>, <slice-KKK> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations.md`):** <neue `BEO-<NNN>` angelegt (Sub-Area, 1×, Beleg slice-NNN) | `BEO-<NNN>` auf <N>× erhöht, Beleg slice-NNN ergänzt | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-NNN (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+**Liefer-Punkt 1 — die drei Sensoren außerhalb der Gates** (Läufe vom
+2026-09-01; die Zahlen wandern mit dem Baum und sind keine Erwartungswerte,
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2):
+
+1. **`make full-smoke` → Exit 0.** Kern-Zeile: `full-smoke: OK — frisch
+   gebootstrapptes Repo faehrt make -j gates out-of-the-box gruen
+   (lint/build/test + docs-check + baseline-verify via Fragment-Assembly,
+   record-gates zuletzt), Exit 0 (LH-FA-01/LH-QA-01).` Das ist der Beleg, den
+   [welle-10](../welle-10-re-baseline.md) §3 als dritten Sensor verlangt und
+   der bis zu diesem Slice als einziger nicht committet gemessen war.
+2. **`make smoke` → Exit 0**, `d-check: 20 Datei(en) geprueft, 0 Befund(e)`.
+   Bestätigt statt übernommen ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
+3. **`make mutate` → Exit 0**, `214 ok, 0 Befund(e)`, Vollständigkeit über
+   alle 214 Fall-Dateien. Verlangt ist er in genau dieser Form und nicht als
+   Exit-Code, weil ein Lauf mit rotem Grün-Vorlauf über **null** Fälle liefe
+   (welle-10 §3).
+
+**Closure-Kriterien (beobachtet, nicht behauptet):**
+
+1. **DoD vollständig.** Alle Punkte aus §2 sind gehakt —
+   `grep -c '^- \[ \]' docs/plan/planning/*/slice-149-welle-10-traegt-ihre-drei-fehlenden-belege.md`
+   → **0** offene Punkte (der Glob trägt den Aufruf über den `git mv` hinweg).
+2. **`make gates` grün** nach dem Commit dieser Closure-Notiz — der
+   Stop-Hook-Stempel deckt den Arbeitsbaum.
+
+- **Was hat funktioniert:** Der Schnitt trug seine eigene Behauptung. §1 sagte
+  zu, die drei Liefer-Punkte hingen an keinem anderen Mitglied der Welle; sie
+  liefen vollständig durch, während **7** andere Mitglieder weiter offen sind
+  (`for s in 080 081 082 083 084 085 130 131 132 133 136 147 148 149; do ls
+  docs/plan/planning/*/slice-$s-*.md; done | grep -v '/done/' | grep -vc
+  'slice-149'`; die Zahl wandert mit dem Wellen-Fortschritt und ist kein
+  Erwartungswert). Der Trigger-Audit fand seine drei
+  Gegenstände über Kommandos statt über abgeschriebene Listen
+  (`ls docs/plan/carveouts/CO-*.md` · `grep -c bootstrap-aware
+  harness/conventions.md` · das `grep -ohE 'ADR-[0-9]{4}'` aus DoD (2)) — die
+  Bezugsmenge jeder der drei Artefaktklassen ist damit zum Prüfzeitpunkt
+  erhoben statt aus dem Plan übernommen. Und der dritte
+  Risiko-Ausgang hatte diesmal einen Ort: beide Beobachtungen gingen ins
+  Register, statt als Folge-Slice geschnitten zu werden — genau die Route, die
+  [`BEO-001`](../observations.md) verkörpert hat.
+- **Was ging anders als geplant:** Zwei Dinge. (1) `make mutate` war im ersten
+  Lauf rot, und zwar ohne Fall-Befund: ein Docker-Hub-502 beim Image-Zug. Der
+  Zweitlauf lief sauber. §4 führt die Netz-Bedingung nur als Startbedingung für
+  `make full-smoke`; sie gilt für `make mutate` genauso, und ein Netz-Fehlschlag
+  sieht in der Ausgabe zunächst aus wie ein Sensor-Rot. (2) Der Carveout-Zweig
+  des Audits endete nicht bei *aufgelöst* oder *unverändert gültig*, sondern
+  beim dritten Ausgang: [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md)
+  ist **verlängert mit Folge-Slice** — sein Trigger ist seit dem
+  welle-12-Audit eingetreten und der Bestand wächst weiter
+  (`git ls-files 'test/*.bats' | wc -l` → **20**). Damit bleibt ein offener
+  Carveout auf dem Gate `shell-lint` stehen. Ob er unter das Welle-Kriterium
+  *„`make gates` grün — und zwar ohne offenen Carveout auf einem Gate dieser
+  Welle"* (welle-10 §3) fällt, entscheidet die Welle-Closure; dieser Slice
+  stellt den Befund fest und legt ihn nicht aus.
+- **Steering-Loop-Eintrag: zwei benannte Lücken, gezählt statt verkörpert.**
+  (a) Eine Re-Baseline wird ohne vorgeschalteten Inventur-Slice eröffnet, und
+  die Form-Pflichten der neuen Fassung kommen einzeln als Nachzügler zurück
+  ([`BEO-010`](../observations.md), 1×). (b) Baseline-Sprünge werden gesammelt
+  statt einzeln adoptiert, und die Kosten einer Re-Baseline wachsen mit der
+  Sprungweite statt mit dem Prozess ([`BEO-011`](../observations.md), 1×).
+  Keine der beiden ist mit diesem Slice verkörpert: beide stehen bei 1×, der
+  Lese-Schritt greift bei 3×. (b) ist zusätzlich eine Norm-Aussage über den
+  Adoptions-Rhythmus und damit Architect-Sache
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8) — ein Planner-Slice kann sie
+  benennen, nicht schreiben.
+- **Beobachtungs-Register (`../observations.md`):** zwei neue Kennungen —
+  [`BEO-010`](../observations.md) (Sub-Area `*`, 1×, Beleg `slice-149`) und
+  [`BEO-011`](../observations.md) (Sub-Area `*`, 1×, Beleg `slice-149`). Kein
+  bestehender Eintrag wurde erhöht: keine der vorgefundenen Zeilen deckt eine
+  der beiden Beobachtungen, und der Sichtungs-Schritt in §8 hat das vor dem
+  Anlegen geprüft.
+- **Folge-Slices:** keine neuen aus diesem Slice. Der Carveout-Ausgang
+  *verlängert mit Folge-Slice* nennt zwei, die beide schon als Datei im
+  Planning-Lifecycle liegen und nicht dieselbe Arbeit sind:
+  [slice-141](../next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md)
+  (`next/`) entscheidet **vorher** zwischen den zwei Techniken,
+  [slice-113](../open/slice-113-co-001-ist-faellig.md) (`open/`) **führt aus**.
+- **Risiken aus §6:** fünf benannt
+  (`awk '/^## 6\. Risiken/,/^## 7\. Closure-Notiz/'
+  docs/plan/planning/*/slice-149-welle-10-traegt-ihre-drei-fehlenden-belege.md
+  | grep -c '^- \*\*'` → **5**), fünf mit genau einem Ausgang — zwei *weiter
+  offen* ins Register (`BEO-010`, `BEO-011`), drei *entfallen* (grüner
+  `full-smoke`-Lauf ohne Befund · kein feuernder ADR-Trigger ·
+  `Verantwortlich:` beim Übergang `open→next` gesetzt), keines *eingetreten*.
+- **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt
+  Wellen-Betrieb, und dieser Slice ist Mitglied von
+  [welle-10](../welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt
+  die Paarungen (Anker · Folge-Slice · Register) auf Closure-Schritt 3c —
+  **nach** dem `git mv` der Welle-Datei, weil sie die dort erst entstehenden
+  Einträge prüfen —, und Modul 8 §Rollen-Sequenz für eine Welle weist denselben
+  Schritt dem Planner-Kontext der Welle-Closure zu. Die DoD-Zeile in §2 führt
+  genau diese Unterscheidung; die hier fällige Hälfte ist, die Prüfung dorthin
+  zu übergeben, statt sie zu doppeln.
 
 ## 8. Sub-Area-Modus-Begründung
 
