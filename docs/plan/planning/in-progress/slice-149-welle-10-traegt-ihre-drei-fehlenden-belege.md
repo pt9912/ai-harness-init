@@ -308,8 +308,13 @@ fallen unter den Eintrag `*` (gesamtes Repo) der Modus-Deklaration in
 
 **Vorgelagert — offene Beobachtungen sichten:** Register durchgegangen
 (`docs/plan/planning/observations.md`). Die Sub-Area-Spalte trägt nur `*` und
-schließt damit jede Berührung ein ([`BEO-004`](../observations.md)); keiner
-der neun Einträge erreicht mit diesem Slice 3× — der höchste Stand
-(`BEO-001`, 6×) ist bereits verkörpert, der zweithöchste (`BEO-003`,
-`BEO-007`, je 2×) wird von diesem Slice weder erhöht noch berührt. Keine
-Lücke, die einen eigenen Folge-Slice bräuchte.
+schließt damit jede Berührung ein ([`BEO-004`](../observations.md)); **kein
+Eintrag erreicht mit diesem Slice 3×** — der höchste Stand (`BEO-001`, 6×) ist
+bereits verkörpert, der zweithöchste (`BEO-003`, `BEO-007`, je 2×) wird von
+diesem Slice weder erhöht noch berührt. Die zwei Einträge, die dieser Slice nach
+DoD (3) selbst anlegt, stehen bei 1× und ändern daran nichts. Keine Lücke, die
+einen eigenen Folge-Slice bräuchte. Die Zahl der Register-Zeilen steht hier
+nicht: sie wächst mit jeder Closure und wäre ein Erwartungswert
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2); den Stand liefert
+`grep -c '^| BEO-' docs/plan/planning/observations.md`.
