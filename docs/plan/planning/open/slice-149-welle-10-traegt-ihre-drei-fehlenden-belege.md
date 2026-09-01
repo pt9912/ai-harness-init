@@ -19,14 +19,22 @@ Harness-Prozesspflichten aus Baseline-Regelwerk `modul-06-roadmap.md`
 **Berührte Spec-Stellen:** — Dieser Slice ändert keine Aussage der Spec; er
 liefert Prozess-Belege für die Wellen-Closure.
 
-**Verantwortlich:** — bis zur Priorisierung. **Offene Frage, benannt statt
-geraten:** Modul 5 bindet das Feld an den Rolleninhaber der
-**Implementer**-Rolle; keiner der drei Liefer-Punkte dieses Slice ist
-Implementer-Arbeit im Sinn dieser Definition — nach der Wellen-Closure-Rollentabelle aus Modul 8
-sind Trigger-Prüfung, Trigger-Audit und
-Register-Fortschreibung Verifier-/Planner-/Architect-Arbeit. Wer das Feld beim
-Übergang `open→next` setzt, muss diese Lücke auflösen, nicht nur einen Namen
-eintragen (§6).
+**Verantwortlich:** Planner (pt9912). Modul 5 besetzt das Feld per Default mit
+dem Rolleninhaber der **Implementer**-Rolle; keiner der drei Liefer-Punkte
+dieses Slice ist Implementer-Arbeit. Das Feld sagt, **wer die Arbeit hält**,
+nicht wer jeden Teilschritt ausführt — und gehalten wird sie nach der
+Wellen-Closure-Rollentabelle aus Modul 8 vom Planner: er trägt Liefer-Punkt 2
+(Schritt 2, Carveout-Zweig) und Liefer-Punkt 3 (Schritt 3a, Lese-/Schreib-Schritt
+am Register) allein und ist bei Liefer-Punkt 1 der **Empfänger** des
+Übergabe-Artefakts (Schritt 1: Verifier → Planner, repo-weiter
+Verifikations-Beleg). Zwei Übergaben bleiben und wechseln den Halter nicht:
+dieser Beleg, und — falls ein Re-Evaluierungs-Trigger feuert — das
+Architect-Verdikt aus Liefer-Punkt 2, das eine Folge-ADR nach
+[`AGENTS.md`](../../../../AGENTS.md) §3.8 ohnehin nur der Architect schreibt.
+Die Abweichung vom Default trägt dieselbe Begründung wie bei
+[slice-084](../in-progress/slice-084-stichprobe-gegen-bestand.md) und
+[slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md):
+der Liefergegenstand sind lebende Plan-Dateien, keine Code-Änderung.
 
 **Autor:** Planner. **Datum:** 2026-08-31.
 
@@ -125,13 +133,38 @@ Aussagen-Berührung steht hier gar nicht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): WIP-Limit frei
-(`ls docs/plan/planning/in-progress/slice-*.md | wc -l` → **1**,
-[slice-084](../in-progress/slice-084-stichprobe-gegen-bestand.md) hält es am
-2026-08-31). Keine fachliche Vorbedingung: die drei Liefer-Punkte hängen an
-keinem anderen Mitglied von welle-10 (§1). Einzige praktische Bedingung für
-Liefer-Punkt 1 ist ein ruhiger Baum mit Netzzugriff (`make full-smoke` zieht
-gepinnte Images).
+**Start** (`next` → `in-progress`): WIP-Limit frei. Keine fachliche
+Vorbedingung: die drei Liefer-Punkte hängen an keinem anderen Mitglied von
+welle-10 (§1). Einzige praktische Bedingung für Liefer-Punkt 1 ist ein ruhiger
+Baum mit Netzzugriff (`make full-smoke` zieht gepinnte Images).
+
+**Der Deckel ist gemessen, nicht überschlagen — und die zwei Lesarten von Modul 5
+§Trigger je Lifecycle-Übergang und WIP-Limit laufen hier auseinander:**
+`ls docs/plan/planning/in-progress/slice-*.md | wc -l` → **1**
+([slice-084](../in-progress/slice-084-stichprobe-gegen-bestand.md)).
+
+1. **Wortlaut.** Der Deckel zählt „pro Mensch in der **Implementer**-Rolle,
+   nicht pro Rolle". Die eine Datei in `in-progress/` trägt
+   `Verantwortlich: Planner (pt9912)`
+   (`grep -h -m1 '^\*\*Verantwortlich:\*\*' docs/plan/planning/in-progress/slice-*.md`),
+   dieser Slice ebenso. Unter dem Wortlaut steht der Implementer-Stand auf
+   **0**, und beide Slices liegen außerhalb der gezählten Menge.
+2. **Zweck-Klausel.** *„wer mehrere Slices gleichzeitig in `in-progress/` hat,
+   hat keine Lifecycle, sondern ein Buffet"* bindet an den **Menschen** ohne
+   Rollen-Einschränkung und wäre durch denselben `pt9912` zweimal verletzt. Sie
+   ist es nicht: slice-084 hat alle drei Liefer-Punkte **und** `make gates`
+   abgehakt und offen allein seine Closure-Notiz
+   (`grep -c '^- \[x\]'` → **4**, `grep -c '^- \[ \]'` → **1** über dieser
+   Datei). Was danebensteht, ist kein zweiter *laufender* Arbeitskontext,
+   sondern ein abgeschlossener, der auf seine Closure wartet — genau das, wovor
+   die Klausel nicht warnt.
+
+**Beide Lesarten sagen damit dasselbe: slice-084 blockiert diesen Slice nicht.**
+Dass sie sich überhaupt trennen lassen, liegt daran, dass dieses Repo das Feld
+`Verantwortlich:` regelmäßig mit Planner und Architect besetzt (Präzedenz im
+Kopf) — für eine Besetzung, die der Deckel nicht kennt, ist er kein Wächter. Das
+ist eine Feststellung dieses Slice und keine Norm-Änderung; wer sie zur Regel
+machen will, geht über [`AGENTS.md`](../../../../AGENTS.md) §3.8.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
@@ -213,12 +246,18 @@ dasteht.
   → Folge-ADR-Vorschlag (Architect), als Folge-Slice-Vermerk in §7; entfallen
   → alle acht ADRs bestätigt, keine Folge nötig; weiter offen → nicht
   zutreffend (der Audit muss bei Closure abgeschlossen sein).
-- **`Verantwortlich:` hat keinen sauberen Rolleninhaber** (Kopf-Begründung).
+- **`Verantwortlich:` hat keinen sauberen Rolleninhaber.**
   Modul 5 definiert das Feld über die Implementer-Rolle; die drei
   Liefer-Punkte dieses Slice sind nach der Wellen-Closure-Rollentabelle aus
-  Modul 8 Verifier-/Planner-/Architect-Arbeit. — **Ausgang:**
-  weiter offen → wird bei der Priorisierung (`open→next`) entschieden, wer
-  das Feld füllt; hier benannt, damit es nicht übersehen wird.
+  Modul 8 Verifier-/Planner-/Architect-Arbeit. — **Ausgang:** **entfallen** →
+  beim Übergang `open→next` entschieden, an der Stelle, die dieser Punkt dafür
+  benannt hatte. **Begründung:** Das Feld nennt den **Halter** der Arbeit, nicht
+  den Ausführenden jedes Teilschritts; gehalten wird sie vom Planner, der zwei
+  der drei Liefer-Punkte allein trägt und beim dritten Empfänger des
+  Übergabe-Artefakts ist (Kopf, mit Präzedenz slice-084/slice-131). Die Lücke im
+  **Wortlaut** von Modul 5 bleibt bestehen — sie ist aber keine Eigenschaft
+  dieses Slice, sondern eine des Deckels und der Default-Besetzung, und steht
+  als solche in §4.
 
 ## 7. Closure-Notiz
 
