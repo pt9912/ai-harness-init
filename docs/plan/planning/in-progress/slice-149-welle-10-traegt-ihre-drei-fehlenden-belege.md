@@ -87,7 +87,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       letzter grüner Lauf nicht mehr aktuell ist, hier erneut zu bestätigen —
       kein Wert wird übernommen, der nicht selbst gelaufen ist
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
-- [ ] **(2) Trigger-Audit der Welle durchgeführt** (Modul 6 Closure-Schritt 2,
+- [x] **(2) Trigger-Audit der Welle durchgeführt** (Modul 6 Closure-Schritt 2,
       drei Artefaktklassen): jeder offene Carveout
       (`ls docs/plan/carveouts/CO-*.md`) auf seinen Auflösungs-Trigger geprüft
       und sein Ausgang bestätigt oder nachgetragen; jede bootstrap-aware
@@ -98,7 +98,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       docs/plan/planning/welle-10-re-baseline.md; } | grep -ohE
       'ADR-[0-9]{4}' | sort -u`), auf ihren Re-Evaluierungs-Trigger geprüft —
       mit Architect-Verdikt (Planner→Architect→Planner), falls einer feuert.
-- [ ] **(3) Beobachtungs-Register (`../observations.md`) trägt die zwei in
+- [x] **(3) Beobachtungs-Register (`../observations.md`) trägt die zwei in
       dieser Planungsrunde gemessenen Kandidaten** (§6) als neue
       `BEO-<NNN>`-Einträge mit Beleg `slice-149`.
 - [ ] `make gates` grün.
