@@ -33,7 +33,7 @@ Architect-Verdikt aus Liefer-Punkt 2, das eine Folge-ADR nach
 [`AGENTS.md`](../../../../AGENTS.md) §3.8 ohnehin nur der Architect schreibt.
 Die Abweichung vom Default trägt dieselbe Begründung wie bei
 [slice-084](../done/slice-084-stichprobe-gegen-bestand.md) und
-[slice-131](../next/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md):
+[slice-131](../in-progress/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md):
 der Liefergegenstand sind lebende Plan-Dateien, keine Code-Änderung.
 
 **Autor:** Planner. **Datum:** 2026-08-31.
@@ -61,7 +61,7 @@ ausführbar. **Nicht Gegenstand dieses Slice** ist die inhaltliche Arbeit der
 ([slice-083](../done/slice-083-form-vergleich-pflichtfelder.md),
 [slice-084](../done/slice-084-stichprobe-gegen-bestand.md),
 [slice-085](../open/slice-085-emittierte-ebene-zieht-nach.md),
-[slice-131](../next/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md),
+[slice-131](../in-progress/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md),
 [slice-136](../open/slice-136-roadmap-traegt-die-ziel-form.md),
 [slice-147](../open/slice-147-spezifikation-traegt-ihr-id-schema.md),
 [slice-148](../open/slice-148-architecture-traegt-ihr-id-schema.md)) — jedes

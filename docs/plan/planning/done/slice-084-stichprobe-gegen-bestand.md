@@ -16,7 +16,7 @@ dieses Slice selbst (§7, eine lebende Plan-Datei); die beiden `nur bei Fund`-Ze
 einzelnen Fund — Folge-Slice in `docs/plan/planning/open/` oder Carveout in `docs/plan/carveouts/`
 (DoD (3)) — sind ebenfalls lebende Plan-Dateien, und Carveouts identifiziert nach
 Baseline-Regelwerk `modul-07-carveouts.md` §Rollen (Modul 8) der Planner. Präzedenzfall
-[slice-131](../next/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) trägt dieselbe
+[slice-131](../in-progress/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) trägt dieselbe
 Artefaktklasse (*„die berührte Menge sind lebende Plan- und Welle-Dateien"*). Die dritte, ebenfalls
 `nur bei Fund` geführte Zeile — `harness/conventions.md`, Adaptions-Block-Eintrag bei einer
 deklarierten Abweichung — bleibt wie dort eine **Übergabe** an den Architect
@@ -55,7 +55,7 @@ editiert — das Artefakt gehört dem Architect ([`AGENTS.md`](../../../../AGENT
 geht ausschließlich als Folge-Slice in `docs/plan/planning/open/` oder als Carveout aus diesem Lauf
 hervor; die Direktänderung entsteht, wenn überhaupt, im Folge-Lauf. Träfe die Entscheidung
 stattdessen „in diesem Slice", griffe die Rückführung `in-progress → open` — wie gerade bei
-[slice-131](../next/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) —, weil ein
+[slice-131](../in-progress/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) —, weil ein
 Planner-Kontext dieses Artefakt nicht direkt schreiben darf.
 
 ## 2. Definition of Done
