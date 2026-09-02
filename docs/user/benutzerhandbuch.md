@@ -1,8 +1,8 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Handbuch-Version:** 1.10
+**Handbuch-Version:** 1.11
 **Software-Stand:** `v0.1.1` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64), seit `v0.1.0`. Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat`, `hexagonal` oder `hexslice`; bei den beiden geschichteten kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen), beide auch mit `hexslice`; `hexagonal` liefert heute der Go-Renderer.
-**Stand:** 2026-07-28
+**Stand:** 2026-09-02
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
 ---
@@ -421,7 +421,7 @@ mein-projekt/
 ├── spec/                     Anforderungen und Architektur (Vorlagen)
 ├── harness/                  Einstiegs- und Konventions-Dokumente (Vorlagen)
 │   └── mk/                   Prüf-Bausteine: Doc-Gate, Regelwerk-Prüfung, Schutz-Hooks
-├── docs/plan/                Planung: Architektur-Entscheidungen, Slices, Roadmap
+├── docs/plan/                Planung: Architektur-Entscheidungen, Slices, Roadmap, Beobachtungs-Register
 ├── tools/harness/            Hilfsskripte des Repositorys
 ├── .claude/                  Schutz-Hooks (Command-Guard, Gate-Nachweis) + Arbeitsabläufe
 └── .harness/baseline/        Mitgeliefertes Regelwerk und Vorlagen (netzunabhängig)
@@ -570,6 +570,7 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 
 | Handbuch-Version | Stand | Änderung |
 |---|---|---|
+| 1.11 | 2026-09-02 | Der mitgelieferte Regelwerks-Stand ist `v5.12.0`. Für das aufgesetzte Repository heißt das eine sichtbare Datei mehr: das **Beobachtungs-Register** (`docs/plan/planning/observations.md`) — der stehende Zähler des Steering Loops, mit dem jedes Repository leer beginnt. Die Ordner-Übersicht in §6 nennt es jetzt. |
 | 1.10 | 2026-07-28 | **Dritte Bauform `--arch hexagonal`** (heute für **Go**): die drei klassischen Schichten — Kern, importfreie Ports, getriebene und treibende Adapter — ohne Use-Case-Schnitte. Der Abschnitt „Ein geschichtetes Grundgerüst wählen" führt jetzt eine Wahl-Tabelle (wann welche Bauform), nennt die beiden Regeln, die **unabhängig von den erlaubten Richtungen** greifen (`app-impurity`, `lateral-adapter`) samt echter Fehlermeldung, und sagt ausdrücklich, dass die **treibende Seite strenger geprüft** wird als in verbreiteten Vorlagen — samt der einen Zeile, mit der Sie das lockern. Reihenfolge wie in 1.9: der Text kam **nach** den Sensoren — erst als beide Regeln im Voll-E2E-Smoke real rot gesehen waren. |
 | 1.9 | 2026-07-27 | `--arch hexslice` liefert jetzt auch der **C++**-Renderer: `add-lang cpp <pfad> --arch hexslice` legt ein geschichtetes Modul an, statt wie bis dahin mit Exit 2 abzulehnen. Der Kopf und der Abschnitt „Eine Bauform wählen" sagen das jetzt. Der Satz fiel bewusst **nach** den Sensoren, nicht mit dem Renderer: erst als der Voll-E2E-Smoke belegt hatte, dass ein verbotener Schicht-Import das Architektur-Gate rot färbt und ein Fehler in einer Schicht-Datei den Build, beschreibt die Doku die Fähigkeit. |
 | 1.8 | 2026-07-27 | Drei Aussagen korrigiert, die beschrieben, was das Werkzeug **nicht** tut. (1) „arbeitet in **einem** Schritt" — bis 1.7 stand das im Bedienkonzept, obwohl der Bootstrap seit 1.1 **phasiert** ist (Init sprach-agnostisch, Sprachmodul per `add-lang`); `--lang` beim Init ist die Kurzform für beide Schritte. (2) „zieht ein neueres Regelwerk nach" — an **vier** Stellen im Handbuch und einer im `README.md`. Der Re-Lauf frischt auf den Stand auf, den das **Programm mitbringt**; die Kurs-Version ist darin gepinnt, ein neuerer Stand kommt mit einem neueren Programm oder bewusst über `COURSE_TAG`. (3) Neuer Windows-Hinweis, symmetrisch zum macOS-Quarantäne-Hinweis: die Programme sind **nicht signiert**, der erste Start kann deshalb mit einer Warnung unterbrochen werden. Alle drei fand ein Mensch beim Lesen, kein Sensor. |

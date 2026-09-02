@@ -62,8 +62,11 @@ emittierten Durchsetzungsschicht):
 
 9. Die Implementation erhält den Slice **in `in-progress/`** (Planner→Implementation-Übergabe,
    Modul 8; `next → in-progress` = „Implementer beginnt", Modul 5). Liegt er noch in `open/`,
-   zuerst dorthin verschieben (`open → next → in-progress`). Jedes `git mv` ist ein **reiner Move,
-   getrennt vom Inhalt committet** (Hard Rule 3.3).
+   zuerst dorthin verschieben (`open → next → in-progress`); `open → next` setzt dabei das
+   Kopf-Feld `Verantwortlich:`. Jedes `git mv` ist ein **reiner Move, getrennt vom Inhalt
+   committet** (Hard Rule 3.3), und `next → in-progress` landet **auf dem Hauptzweig, vor der
+   Arbeit** — der Branch entsteht danach. Reist der Move erst im PR mit, ist der Zustand
+   zweigelokal, und `in-progress/` bleibt für alle anderen leer, bis die Arbeit fertig ist.
 10. WIP-Limit = 1 pro Implementer (Modul 5): kein paralleles `in-progress/`.
 11. Lifecycle-Rücksprungkanten (Modul 5), falls sich der Slice als falsch erweist: zu groß →
     `in-progress → next` (zurück zur Zerlegung); blockiert → `in-progress → open` (Carveout,
@@ -94,7 +97,7 @@ ist eine Lifecycle-Rücksprungkante (11).
     **Sensor-Belege** anhängen — `make gates` **und die Nicht-Gate-Sensoren, die den Slice
     betreffen** (die dein Repo führt — z. B. ein Mutations-Sensor, wenn Wächter neu/geändert sind;
     ein Emit-/Integrations-Smoke, wenn der betroffene Pfad berührt ist). Modul 11 verlangt genau
-    hier den Lauf: *„der Implementation-Agent läuft `make verify-*` **selbst** vor der
+    hier den Lauf: *„der Implementer-Agent läuft `make verify-*` **selbst** vor der
     ‚fertig'-Meldung"* — ein Sensor, der erst zur Wellen-Closure feuert, ist pro Slice keiner.
     **Ein nicht gelaufener Sensor ist ein Befund, kein Formfehler:** ihn wegzulassen ist eine
     Aussage („betrifft diesen Slice nicht"), die begründet werden muss. Kein Gate erzwingt das —
@@ -134,6 +137,23 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
     neuer Sensor · benannte Spec-Lücke — Modul 5: der `→ done`-Übergang verlangt einen Lerneintrag,
     nicht nur grüne Gates), dann den Slice `in-progress → done` verschieben (`git mv`, eigener
     Commit, getrennt vom Inhalt — Hard Rule 3.3). Ein rotes Gate erreicht `done/` **nur** mit
-    dokumentiertem Carveout (Modul 7), nie als stilles Rot.
+    dokumentiertem Carveout (Modul 7), nie als stilles Rot. **Jedes offene Risiko aus dem Slice-Plan
+    bekommt dabei genau einen von drei Ausgängen** (Modul 5): *eingetreten* → Carveout oder
+    Folge-Slice mit ID · *entfallen* → gestrichen **mit Begründung** · *weiter offen* → wandert ins
+    Beobachtungs-Register (Schritt 24). Ein Slice geht nicht nach `done/`, während ein Risiko ohne
+    Ausgang dasteht.
+24. **Das Beobachtungs-Register fortschreiben** (`docs/plan/planning/observations.md`, Modul 6) —
+    der **Schreib**-Schritt, und er hängt an der Closure, nicht an der Implementation. Für jede
+    Beobachtung aus der Closure-Notiz: führt das Register die Klasse schon, dann die vorhandene
+    `BEO-<NNN>` **zitieren** und den Zähler erhöhen — wer neu formuliert, spaltet eine Klasse in zwei
+    Namen, und keiner der beiden erreicht je 3×. Sonst eine neue Kennung vergeben; das Register ist
+    zugleich die Vergabestelle. Der Beleg ist **formgebunden**: `slice-<NNN>`, kein Freitext, so
+    viele wie der Zähler sagt. Geschrieben wird er **vor** dem `git mv` — die Slice-Datei liegt dann
+    noch nicht in `done/`, und das ist richtig so, weil Move und Inhalt getrennt committen (Hard
+    Rule 3.3). **Bei null Beobachtungen** bleibt die Tabelle unverändert und die Closure-Notiz trägt
+    den Satz *keine Beobachtung angefallen*: das Auslassen ist keine Antwort. Erreicht ein Eintrag
+    **mit diesem Slice** 3×, wandert er in die Steering-Loop-Einträge der laufenden Welle-Closure
+    (`/close-welle`); läuft keine Welle, löst die Slice-Closure den Lese-Schritt selbst aus, und der
+    Herkunfts-Anker lautet dann `seit slice-<NNN>` statt `seit welle-<NN>`.
 
 Gates nicht überspringen. Keine Erfolgsmeldung ohne Command-Ausgabe.

@@ -3,11 +3,11 @@
 Argument: $ARGUMENTS
 
 Dieser Command führt die **Planner**-Rolle für *eine* Welle (Modul 6 — Roadmap Engineering). Eine
-Welle ist ein **Bündel von Slices**, das gemeinsam geplant und geschlossen wird. Seit Regelwerk v3.5.0
-ist der Welle-Status die **Verzeichnis-Position**, **kein `Status:`-Feld**: die **aktive bzw. geplante**
-Welle liegt **flach** in `docs/plan/planning/<welle-id>.md`, bei Closure wandert sie per `git mv` nach
-`done/` (das schließt `/close-welle`). Ob eine flache Welle *aktuell* oder *geplant* ist, sagt die
-Roadmap (Sequenzierungs-Autorität).
+Welle ist ein **Bündel von Slices**, das gemeinsam geplant und geschlossen wird. Der Welle-Status ist
+die **Verzeichnis-Position**, **kein `Status:`-Feld**: eine **offene** Welle liegt **flach** in
+`docs/plan/planning/<welle-id>.md`, bei Closure wandert sie per `git mv` nach `done/` (das schließt
+`/close-welle`). Der Roadmap-Abschnitt *Offene Wellen* ist derivativ — ein Zeiger je flacher
+Welle-Datei; woran gerade gearbeitet wird, sagt das `Welle:`-Feld der Slices in `in-progress/`.
 
 Kanonische Quellen (vendored Regelwerk, `.harness/baseline/<tag>/regelwerk/`): Modul 6 (Roadmap),
 Modul 5 (Planning-Lifecycle), Modul 7 (Carveouts). Bei Konflikt gilt der Kurs.
@@ -41,7 +41,14 @@ Lies den Adaptions-Block („MR-Block") in `harness/conventions.md`; die planung
 3. Die Roadmap (`docs/plan/planning/in-progress/roadmap.md`) lesen: steht die zu planende Welle schon
    als Zeile in *Nächste Wellen*? Liegen ihre Slices bereits in `open/`?
 
-## Die drei Pflichtteile (Modul 6 — vor dem Schreiben benennen)
+## Eröffnung: die drei Pflichtteile (Modul 6 — vor dem Schreiben benennen)
+
+**Vor den Pflichtteilen: das Beobachtungs-Register sichten** (`docs/plan/planning/observations.md`,
+Modul 6, Eröffnungs-Schritt 2). Betrifft eine offene Beobachtung eine Sub-Area dieser Welle, gehört
+sie in die Slice-Planung (Risiko im betroffenen Slice) — und erreicht der Eintrag **mit dieser Welle**
+3×, ist er keine Notiz mehr, sondern eine Lücke und braucht einen eigenen Slice. **Bei der ersten
+Welle entfällt der Schritt nicht:** das Register existiert ab Repo-Beginn; ist es leer (`— keine —`),
+ist genau das die Antwort und wird notiert.
 
 4. Eine Welle braucht **minimal drei Bestandteile**, sonst ist sie keine Welle:
    - **Slice-IDs** (der Inhalt) — welche Slices bündelt sie?
@@ -55,7 +62,10 @@ Lies den Adaptions-Block („MR-Block") in `harness/conventions.md`; die planung
 ## Slices bereitstellen
 
 6. Existiert ein Slice der Welle noch nicht, ihn **per `cp` aus `slice.template.md`** anlegen
-   (`docs/plan/planning/open/slice-<NN>-<titel>.md`), dann füllen. Nie hand-authoren.
+   (`docs/plan/planning/open/slice-<NN>-<titel>.md`), dann füllen. Nie hand-authoren. **§8 des
+   Plans trägt dieselbe Register-Sichtung noch einmal je Slice** (Modul 5, *Zwei Schritte vor der
+   Modus-Begründung*) — und ist damit für alles **unter** 3× der einzige Leser; keine Treffer sind
+   dort ebenfalls eine Antwort und werden notiert.
 
 ## Welle-Plan per cp anlegen und füllen (der Kern-Schritt)
 
@@ -64,14 +74,17 @@ Lies den Adaptions-Block („MR-Block") in `harness/conventions.md`; die planung
    `diff -q <template> <ziel>` belegen (byte-identisch, dann füllen).
 8. **In-place füllen** (Edits, **kein** Voll-Überschreiben): den `> **Template-Hinweis.**`-Block
    strippen, alle Platzhalter ersetzen, die `<!-- -->`-Guidance-Kommentare entfernen. Die
-   **`Lifecycle:`-Note der Vorlage behalten** (Zustand = Verzeichnis-Position, **kein `Status:`-Feld**
-   — v3.5.0), Zielmeilenstein und Verantwortlich/Datum setzen. Die Abschnitte mit den drei
-   Pflichtteilen aus Schritt 4 füllen; Kennungen als Anker-Links.
+   **`Lifecycle:`-Note der Vorlage behalten** (Zustand = Verzeichnis-Position, **kein
+   `Status:`-Feld**), Zielmeilenstein und Verantwortlich/Datum setzen. Die Abschnitte mit den drei
+   Pflichtteilen aus Schritt 4 füllen, dazu **§6 Out-of-Scope** — was nicht ausdrücklich
+   ausgeschlossen ist, dehnt die Welle, bis der Closure-Trigger unerreichbar wird. Kennungen als
+   Anker-Links.
 
 ## Roadmap verdrahten und gaten
 
-9. Roadmap fortschreiben: die Welle-Zeile in *Nächste Wellen* pflegen — **oder**, wenn ihr Trigger
-   bereits erfüllt ist, sie in *Aktuelle Welle* heben (mit Slice-IDs · Trigger · Closure-Kriterien).
+9. Roadmap fortschreiben: mit dem Anlegen der flachen Welle-Datei verlässt die Welle-Zeile *Nächste
+   Wellen*, und unter *Offene Wellen* steht der Zeiger auf die Datei. Ist die Welle nur geplant,
+   bleibt ihre Zeile in *Nächste Wellen* (Trigger · wichtigste Slices · Aufwand S/M/L, kein Termin).
    Die Welle-Verweise der zugehörigen Slices auf die neue Plan-Datei ziehen.
 10. `make gates` laufen lassen (grün). Beim **Anlegen** ist der Welle-Plan **Inhalt** → ein einzelner
     Commit, hier **kein `git mv`** (die neue Welle entsteht flach = aktiv/geplant). Der `git mv` nach
