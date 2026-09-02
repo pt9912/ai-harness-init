@@ -53,6 +53,14 @@ oder `Proposed` (`… | xargs grep -l '^\*\*Status' 2>/dev/null` eingeschränkt 
 `docs/plan/adr/`, `wc -l` → **6**) — Accepted-ADRs sind nach `AGENTS.md` §3.4 immutabel und dürfen
 von diesem Slice **nicht** editiert werden, auch wenn ihr Zeiger korrekturbedürftig würde.
 
+> **Die Zahl 23 reproduziert nicht, und das Kommando misst nicht, was der Satz sagt** — nachgemessen
+> im Umsetzungslauf, Ausgang in §7. Das Kommando gibt **24** aus, und die zwei `^\./`-verankerten
+> Filter greifen gar nicht, weil `grep -rl <muster> .` die Pfade **ohne** `./`-Präfix ausgibt; die
+> Zeitdokumente und die vendored Vorlage bleiben also drin. **19** ist die Zahl, die der Satz meint
+> (`grep -rl 'spezifikation.md#' --include='*.md' . | grep -v '\.harness/baseline' | grep -v
+> 'docs/reviews' | grep -v 'planning/done' | wc -l`). Die Sätze oben bleiben als geschriebene
+> Fassung stehen; die Messung steht hier daneben.
+
 ## 2. Definition of Done
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
@@ -60,23 +68,26 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **(1) `SPEC-<NNN>`-Spalte in jeder Tabelle §2–§6, fortlaufend über die Datei; die
+- [x] **(1) `SPEC-<NNN>`-Spalte in jeder Tabelle §2–§6, fortlaufend über die Datei; die
       `ADR`-Spalte in §7 entfällt.** Ziel-Form aus dem Form-Diff-Protokoll
       ([slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) §1, Zeile
       `spec/spezifikation.md`). Abschnitts-Überschriften bleiben unverändert — die Spalte fügt
       Inhalt hinzu, sie verschiebt keine Zeile und benennt keinen Anker um.
-- [ ] **(2) Gegenprobe: jeder lebende Anker-Verweis auf `spec/spezifikation.md#…` bleibt
+- [x] **(2) Gegenprobe: jeder lebende Anker-Verweis auf `spec/spezifikation.md#…` bleibt
       auflösbar.** Vorher/Nachher-Diff derselben Kommando-Ausgabe aus §1 (die Dateiliste plus
       `docs-check`-Zählzeile); kein neuer `target-missing`-Befund. Bricht einer, ist er ein
       Risiko-Ausgang (§6), kein stiller Fix an einem ggf. immutablen Artefakt.
-- [ ] `make gates` grün.
-- [ ] Doku-Update: keiner über dieses Artefakt hinaus — die Spalte ist die Doku-Änderung selbst.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register entfällt dauerhaft: dieses Repo hat keinen Brownfield-Bootstrap.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler
+- [x] `make gates` grün.
+- [x] Doku-Update: keiner über dieses Artefakt hinaus — die Spalte ist die Doku-Änderung selbst.
+      **Nicht gehalten:** zwei weitere Dateien, je mit Grund in §7 (`harness/conventions.md` —
+      Architect-Artefakt, eigener Commit; `open/slice-148…` — vier Verweise, die der
+      Lifecycle-Wechsel dieses Slice brach).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register entfällt dauerhaft: dieses Repo hat keinen Brownfield-Bootstrap.
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler
       +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt
       Wellen-Betrieb, sie werden also von der nächsten Welle-Closure geprüft, nicht hier.
 
 ## 3. Plan (vor Code)
@@ -144,16 +155,16 @@ dasteht.
   eine Rolle (Kopf oben). Wird ohne Klärung priorisiert, entscheidet der Default aus
   Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine (Implementer-
   Rolleninhaber) — das ist zulässig, aber eine **Setzung**, keine Ableitung, und sollte als solche
-  im Priorisierungs-Commit benannt werden. — **Ausgang:** <eingetreten: eine Quelle wurde benannt,
-  Feld gesetzt | entfallen: n/a — die Lücke besteht per Messung | weiter offen: → Beobachtung im
-  nächsten Slice-Closure-Lauf notiert (kein neuer BEO-Eintrag vor Closure dieses Slice, Modul 6
-  §Das Beobachtungs-Register: geschrieben wird bei Slice-Closure)>
+  im Priorisierungs-Commit benannt werden. — **Ausgang: weiter offen** → [`BEO-007`](../observations.md)
+  auf **3×** erhöht, Beleg `slice-147`. Keine Quelle wurde benannt; das Feld steht als Setzung
+  (Kopf oben, Commit `cd5d2bb`).
 - **Die Gegenprobe (DoD 2) findet einen Anker-Bruch an einem Accepted-ADR.** Fünf der sechs
   referenzierenden ADRs sind immutabel (§1); trifft die Spalten-Einfügung eine Zeile, auf die einer
-  von ihnen zeigt, kann dieser Slice die ADR nicht korrigieren. — **Ausgang:** <eingetreten:
-  Folge-ADR mit `supersedes` vorgeschlagen, dieser Slice liefert nur die Spalte und dokumentiert den
-  Bruch | entfallen: keine der 23 Referenzstellen bricht (Abschnitts-Anker bleiben unverändert) |
-  weiter offen>
+  von ihnen zeigt, kann dieser Slice die ADR nicht korrigieren. — **Ausgang: entfallen** — keine
+  der Referenzstellen bricht. Die Anker-Menge ist vor und nach der Änderung dieselbe
+  (`#5-metriken-und-tracing-felder` 86×, `#3-defaults-und-konstanten` 8×, `#aufnahme-regel` 7×),
+  `make docs-check` meldet vorher wie nachher **486 Datei(en), 0 Befund(e)**. Zum
+  Accepted-Grenzfall, der **kein** Anker-Bruch ist, siehe §7.
 - **Die Ripple-Menge (23 Dateien) ist größer als beim Schnitt von
   [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) angenommen** (dort nur
   [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md),
@@ -163,13 +174,88 @@ dasteht.
   volle Gegenprobe zieht auch offene Slices in `open/`
   (`slice-071`, `slice-074`, `slice-075`, `slice-077`, `slice-078`, `slice-079`) und `AGENTS.md`
   selbst mit hinein. Keiner davon wird editiert (§3) — die Gegenprobe ist Existenz-, keine
-  Korrektur-Pflicht. — **Ausgang:** <eingetreten: einzelne offene Slices brauchen bei ihrer eigenen
-  Ausführung eine Nachmessung, notiert in ihrem eigenen §6 | entfallen: kein Slice betroffen |
-  weiter offen>
+  Korrektur-Pflicht. — **Ausgang: eingetreten**, aber an einer anderen Achse als hier erwartet:
+  keiner der offenen Slices braucht eine Nachmessung (ihre Zeiger sind Abschnitts-Anker und
+  stehen), dafür brach eine **Aussage über die Gestalt** der Tabelle — die Spaltenzahl in
+  [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+  Punkt 1. Kein Folge-Slice: der Ausgang ist
+  [`MR-044`](../../../../harness/conventions.md#mr-044--das-technik-stratum-trägt-die-id-spalte-der-ziel-form),
+  geschrieben im selben Lauf und in eigenem Commit (§7).
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Abschluss füllen. -->
+Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
+§Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
+formulieren) · `grundlagen-traceability.md` §Herkunfts-Anker.
+
+**Closure-Kriterien (beobachtet, nicht behauptet):**
+
+1. **Die Gegenprobe aus §1/§5, vorher und nachher identisch.** `make docs-check` → **486
+   Datei(en), 0 Befund(e)** vor und nach der Änderung; das Anker-Histogramm auf
+   `spezifikation.md#…` ist unverändert (86 / 8 / 7). Keine Überschrift bewegt, kein Anker
+   umbenannt — die `ID`-Spalte fügt eine Zelle je Zeile hinzu.
+2. **`make gates` grün**, EXIT 0, nach dem Commit von `spec/spezifikation.md` und
+   [`MR-044`](../../../../harness/conventions.md#mr-044--das-technik-stratum-trägt-die-id-spalte-der-ziel-form);
+   der Stop-Hook-Stempel deckt den Arbeitsbaum.
+
+**Der Accepted-Grenzfall, benannt statt übergangen.**
+[`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) Festlegung 3 sagt *„Provenienz lebt
+allein in seiner Historie-Tabelle"*, und §7 trägt seit diesem Slice keine `ADR`-Spalte mehr. Das
+ist **kein** Widerspruch und darum auch kein Folge-ADR: das Wort ist *allein*, also eine
+Ausschließlichkeits-Schranke und keine Pflicht, dort etwas zu führen — und die Begründung derselben
+Festlegung trägt die Verengung ausdrücklich (*„ein Abwärts-Zeiger rottet, sobald eine ADR abgelöst
+wird, und die Auffindbarkeit läuft ohnehin über das `Schärft:`-Feld der ADR"*). Die ADR ist
+**nicht** angefasst ([`AGENTS.md`](../../../../AGENTS.md) §3.4). Dieselbe Richtung entscheidet
+[`MR-042`](../../../../harness/conventions.md#mr-042--der-anlass-einer-lastenheft-änderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz)
+für das Lastenheft; der dortige Bestandsschutz für vorhandene Zeilen hängt am Cutoff von
+[`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+und gilt für dieses Artefakt nicht — hier verlangt die Ziel-Form die Spalte selbst nicht mehr.
+
+- **Was hat funktioniert:** der Vorlauf. §8 hatte
+  [`BEO-009`](../observations.md) ausdrücklich als das Muster benannt, das hier drohte — *eine
+  Änderung korrigiert die Sache und lässt die danebenstehende Zusage stehen* —, und genau dieser
+  Fall trat ein: [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+  Punkt 1 zählt für §5 vier Spalten, seit der `ID`-Spalte sind es fünf. Er wurde **im selben Lauf**
+  gefunden und aufgelöst, statt von einem späteren Lauf. Der Zähler von `BEO-009` steigt deshalb
+  **nicht**: die Beobachtung lautet *„lässt … unverändert stehen"*, und das ist nicht eingetreten.
+- **Was ging anders als geplant — zwei Posten.** (1) **Die Ripple-Prüfung dieses Plans war auf
+  Anker-Auflösbarkeit geschnitten und konnte den einen realen Treffer nicht sehen.** `docs-check`
+  meldet 0 Befunde, während eine Aussage über die *Gestalt* der Tabelle falsch wird; kein Modul aus
+  `modules:` der [`.d-check.yml`](../../../../.d-check.yml) hält einen Satz gegen die Datei, die er
+  beschreibt. (2) **Die Zahl 23 in §1/§3 reproduziert nicht** — das Kommando gibt 24 aus, und seine
+  zwei `^\./`-verankerten Filter greifen nicht, weil `grep -rl <muster> .` ohne `./`-Präfix ausgibt;
+  die Zahl, die der Satz meint, ist **19**. Neue Beobachtung, siehe unten.
+- **Steering-Loop-Eintrag: eine geschärfte Regel, verkörpert** — *eine registrierte Abweichung
+  trägt ihren Umfang, und wer den beschriebenen Gegenstand ändert, zählt ihn neu* — liegt in
+  [`harness/conventions.md` §MR-044](../../../../harness/conventions.md#mr-044--das-technik-stratum-trägt-die-id-spalte-der-ziel-form).
+  Geschrieben hat sie der **Architect** in eigenem Commit ([`AGENTS.md`](../../../../AGENTS.md)
+  §3.8, `da208dc`);
+  [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+  bekam dabei die Kopf-Marke nach
+  [`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
+  Setzung 1, sein Rumpf blieb unangetastet. **Herkunfts-Anker:** der Zielort trägt ihn als
+  `Wirksamkeits-Anlass: slice-147`, blank — die Feld-Form dieses Blocks
+  ([`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt)).
+- **Beobachtungs-Register (`../observations.md`):** eine neue Kennung und eine Erhöhung.
+  **`BEO-015`** (neu, 1×): *eine Zahl steht neben einem Kommando, das nie gefahren wurde — sie
+  reproduziert nicht, und ein Filter des Kommandos greift gar nicht*; Beleg `slice-147`.
+  [`BEO-007`](../observations.md) von 2× auf **3×**, Beleg `slice-147`: die Quellenfrage der
+  schreibenden Rolle trifft zum dritten Mal zu, diesmal außerhalb von `.claude/commands/`. Damit ist
+  die Schwelle erreicht; der **Lese-Schritt liegt bei der Closure von
+  [welle-10](../welle-10-re-baseline.md)** (dieses Repo fährt Wellen-Betrieb, Modul 6
+  §Wellen-Closure-Prozedur Schritt 3, Rollen-Zug Planner → Architect → Planner nach Modul 8). Ein
+  Slice-Schnitt an dieser Stelle wäre Planner-Arbeit im Architect-Kontext und damit genau der Fall,
+  den [`AGENTS.md`](../../../../AGENTS.md) §3.8 ausschließt.
+- **Folge-Slices:** keine. Der einzige eingetretene Ripple ist mit
+  [`MR-044`](../../../../harness/conventions.md#mr-044--das-technik-stratum-trägt-die-id-spalte-der-ziel-form)
+  aufgelöst; `BEO-007` und `BEO-015` liegen im Register.
+- **Risiken aus §6:** drei benannt, drei mit genau einem Ausgang — **eines entfallen**, **eines
+  eingetreten** (aufgelöst, kein Folge-Slice), **eines weiter offen** (im Register,
+  [`BEO-007`](../observations.md)).
+- **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice ist
+  Mitglied von [welle-10](../welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt die
+  Paarungen auf Closure-Schritt 3c, Modul 8 §Rollen-Sequenz für eine Welle weist sie dem
+  Planner-Kontext der Welle-Closure zu.
 
 ## 8. Sub-Area-Modus-Begründung
 
@@ -178,13 +264,15 @@ Modus-Deklaration in [`harness/conventions.md`](../../../../harness/conventions.
 Einordnung wie in [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) §8 und
 [slice-136](../open/slice-136-roadmap-traegt-die-ziel-form.md) §8.
 
-**Vorgelagert — offene Beobachtungen sichten:** Register durchgegangen
-(`docs/plan/planning/observations.md`, neun Einträge `BEO-001`–`BEO-009`, Sub-Area durchweg `*`
-per `BEO-004`). Inhaltlich passt keiner auf eine ID-Spalten-Einfügung in einer Spec-Datei —
-`BEO-008` (Kurzschluss bei Adaptions-Durchgängen) und `BEO-003` (`slice-mv`-Referenzformen)
-betreffen andere Mechaniken; am nächsten kommt `BEO-009` (eine Ableitungs-Korrektur lässt eine
-danebenstehende Zusage unverändert), dessen Muster hier als DoD (2) bereits eingepreist ist, statt
-ein viertes Auftreten zu riskieren. **Keine unmittelbaren Treffer über die pauschale
-`*`-Zuordnung hinaus.**
+**Vorgelagert — offene Beobachtungen sichten:** Register vor der Arbeit durchgegangen
+(`docs/plan/planning/observations.md`, **14** Einträge `BEO-001`–`BEO-014` zum Sichtungs-Zeitpunkt,
+Sub-Area durchweg `*` per `BEO-004`; die Zahl wandert mit dem Register und ist kein Erwartungswert,
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2 — `grep -c '^| BEO-' docs/plan/planning/observations.md`). **Zwei Treffer, beide
+unmittelbar:** [`BEO-007`](../observations.md) (2× — die Quellenfrage der schreibenden Rolle; sie
+**ist** das erste Risiko in §6 und erreicht mit diesem Slice die Schwelle) und
+[`BEO-009`](../observations.md) (2× — eine Änderung lässt die danebenstehende Zusage stehen; hier
+als Vorab-Prüfung eingepreist, statt sie als DoD (2) allein zu tragen: die Anker-Gegenprobe sieht
+eine Gestalt-Aussage nicht). Die übrigen betreffen andere Mechaniken.
 
 Alle berührten Sub-Areas GF: `spec/` gehört zum Greenfield-Bestand.
