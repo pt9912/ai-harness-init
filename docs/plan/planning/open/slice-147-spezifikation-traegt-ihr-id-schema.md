@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Welle:** [welle-10](../welle-10-re-baseline.md) — Teil von Durchgang 2 (*Form*), abgetrennt aus
-[slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) §1/§6, dessen Form-Diff-Protokoll
+[slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) §1/§6, dessen Form-Diff-Protokoll
 das neue Pflichtfeld für dieses Artefakt bereits gemessen, aber nicht umgesetzt hat.
 
 **Bezug:** [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
@@ -35,7 +35,7 @@ Siehe §6, Risiko *Rollenfrage*.
 
 `spec/spezifikation.md` bekommt das Pflichtfeld der Ziel-Fassung: jede Tabelle in §2–§6 eine
 `ID`-Spalte mit fortlaufendem `SPEC-<NNN>`, §7 verliert die `ADR`-Spalte. Gemessen, nicht neu
-entdeckt — der Form-Diff aus [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) §1
+entdeckt — der Form-Diff aus [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) §1
 führt diesen Ausgang bereits als *„neues Pflichtfeld"*; dieser Slice ist die Umsetzung, die dort
 als zu groß für den einen Durchgang zurückgeführt wurde (§4 dort, *„zwei weitere schwere
 Posten"*).
@@ -58,7 +58,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
 - [ ] **(1) `SPEC-<NNN>`-Spalte in jeder Tabelle §2–§6, fortlaufend über die Datei; die
       `ADR`-Spalte in §7 entfällt.** Ziel-Form aus dem Form-Diff-Protokoll
-      ([slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) §1, Zeile
+      ([slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) §1, Zeile
       `spec/spezifikation.md`). Abschnitts-Überschriften bleiben unverändert — die Spalte fügt
       Inhalt hinzu, sie verschiebt keine Zeile und benennt keinen Anker um.
 - [ ] **(2) Gegenprobe: jeder lebende Anker-Verweis auf `spec/spezifikation.md#…` bleibt
@@ -104,14 +104,14 @@ Priorisierung mit `Verantwortlich:` = Implementer-Rolleninhaber als Default.
 **Keine Reihenfolge-Bindung innerhalb der Welle.** Dieser Slice hängt an keinem anderen Mitglied
 von [welle-10](../welle-10-re-baseline.md): [slice-148](slice-148-architecture-traegt-ihr-id-schema.md)
 berührt ein anderes Artefakt mit eigener Referenz-Menge, und die fortgeführte
-`harness/conventions.md`-Arbeit in [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md)
+`harness/conventions.md`-Arbeit in [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md)
 berührt keine spec-Datei.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): die Gegenprobe DoD (2) findet mehr als
   eine Handvoll betroffener Zeilen, deren Klärung selbst Recherche pro Fundstelle verlangt (dieselbe
-  Klasse, die [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) reißen ließ) — dann
+  Klasse, die [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) reißen ließ) — dann
   trennt der Schnitt Spalten-Einfügung und Ripple-Klärung.
 - `in-progress` → `open` (blockiert — Carveout?): die Gegenprobe bricht an einem
   Accepted-ADR-Zeiger, dessen Korrektur nur ein Folge-ADR leisten kann (§3.4) — dann wartet dieser
@@ -151,7 +151,7 @@ dasteht.
   Bruch | entfallen: keine der 23 Referenzstellen bricht (Abschnitts-Anker bleiben unverändert) |
   weiter offen>
 - **Die Ripple-Menge (23 Dateien) ist größer als beim Schnitt von
-  [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) angenommen** (dort nur
+  [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) angenommen** (dort nur
   [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md),
   [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben),
   [`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen)
@@ -171,7 +171,7 @@ dasteht.
 
 **Vorgelagert — Sub-Area-Wahl prüfen:** eine Sub-Area, `spec/` — Greenfield-Bestand nach der
 Modus-Deklaration in [`harness/conventions.md`](../../../../harness/conventions.md), dieselbe
-Einordnung wie in [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) §8 und
+Einordnung wie in [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) §8 und
 [slice-136](slice-136-roadmap-traegt-die-ziel-form.md) §8.
 
 **Vorgelagert — offene Beobachtungen sichten:** Register durchgegangen

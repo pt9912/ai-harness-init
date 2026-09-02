@@ -47,7 +47,7 @@ Drei Einträge des Adaptions-Blocks sagen heute etwas über die Baseline, das am
 entscheidet der Architect-Lauf; dass jeder einen bekommt, entscheidet dieser Plan.
 
 **Gefunden hat sie der Form-Durchgang, nicht der Adaptions-Durchgang.**
-[slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) §6 hält alle drei fest; sie
+[slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) §6 hält alle drei fest; sie
 fielen auf, weil das neue Pflichtfeld `Ersetzt-Baseline-Regel` je Eintrag eine **einzelne**
 Baseline-Regel verlangt und dafür jeder Eintrag gegen den **Volltext** des adoptierten Stands
 gelesen werden musste. Der Delta-Durchgang aus
@@ -93,7 +93,7 @@ gehört dem Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
 
 **Was dieser Slice nicht ist: ein zweiter Bestands-Durchgang.** Die Menge ist **extensional
 geschlossen** — genau die drei Kennungen oben, die
-[slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) §6 benennt. Ein Kriterium
+[slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) §6 benennt. Ein Kriterium
 über *„alle Einträge, deren Aussage am adoptierten Stand nicht mehr trägt"* wäre eine Abdeckung
 über eine Menge, die dieser Plan nicht führt, und liefe auf denselben Durchgang hinaus, den
 [slice-082](../done/slice-082-adaptions-durchgang.md) schon gefahren hat. Für den **Bestand**
@@ -157,7 +157,7 @@ ausdrücklich **nicht** mitgeschnitten.
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md)
+**Start** (`next` → `in-progress`): [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md)
 liegt in `done/`. Der Trigger ist beobachtbar und **kein Ergebnis dieses Slice** — er benennt den
 Lauf, der die drei Befunde protokolliert hat; ohne dessen Closure stünden sie noch als offene
 Risiken in einem Plan, der sie nicht auflösen darf.
@@ -167,7 +167,7 @@ Risiken in einem Plan, der sie nicht auflösen darf.
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn die Recherche für **einen** der drei
   Einträge einen eigenen Nachfolge-Eintrag mit eigener Begründungslast erzeugt, der die anderen
   zwei aus der Sitzung drängt. Dann wird geteilt (je Kennung ein Slice), nicht gedehnt — dieselbe
-  Antwort, die [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) §4 auf
+  Antwort, die [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) §4 auf
   denselben Druck gegeben hat.
 - `in-progress` → `open` (blockiert — Carveout?): wenn der Ausgang für einen Eintrag eine
   Entscheidung verlangt, die dieses Repo noch nicht treffen kann — etwa wenn *übernehmen* an einer

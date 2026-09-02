@@ -58,7 +58,7 @@ docs/plan/planning/*/slice-$s-*.md; done`) — dieser Slice hängt an keinem
 davon: seine drei Liefer-Punkte sind unabhängig vom übrigen Wellen-Fortschritt
 ausführbar. **Nicht Gegenstand dieses Slice** ist die inhaltliche Arbeit der
 übrigen offenen Mitglieder
-([slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md),
+([slice-083](../done/slice-083-form-vergleich-pflichtfelder.md),
 [slice-084](../done/slice-084-stichprobe-gegen-bestand.md),
 [slice-085](../open/slice-085-emittierte-ebene-zieht-nach.md),
 [slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md),
@@ -175,7 +175,7 @@ machen will, geht über [`AGENTS.md`](../../../../AGENTS.md) §3.8.
   die Umsetzung wird ein eigener Folge-Slice.
 - `in-progress` → `open` (blockiert — Carveout?): wenn `make full-smoke` an
   einer Stelle scheitert, die außerhalb dieses Slice liegt (typisch: eine
-  Lücke, die erst [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md),
+  Lücke, die erst [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md),
   [slice-136](../open/slice-136-roadmap-traegt-die-ziel-form.md),
   [slice-147](../open/slice-147-spezifikation-traegt-ihr-id-schema.md),
   [slice-148](../open/slice-148-architecture-traegt-ihr-id-schema.md),
@@ -242,7 +242,7 @@ dasteht.
   Re-Evaluierungs-Trigger feuerte.
 - **`make full-smoke` könnte einen Befund melden, der außerhalb dieses Slice
   liegt** — z. B. weil der emittierte Baum erst mit
-  [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md),
+  [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md),
   [slice-136](../open/slice-136-roadmap-traegt-die-ziel-form.md),
   [slice-147](../open/slice-147-spezifikation-traegt-ihr-id-schema.md),
   [slice-148](../open/slice-148-architecture-traegt-ihr-id-schema.md) oder

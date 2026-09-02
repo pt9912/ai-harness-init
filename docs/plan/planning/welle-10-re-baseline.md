@@ -255,7 +255,7 @@ Beides zusammen macht unschließbar; eines allein nicht.
 - **Durchgang 2** verlangt Abdeckung über Mengen, die ebenfalls außerhalb wachsen — und wird
   trotzdem **nicht** eingefroren, weil seine Frage an den neuen Elementen weiter gilt. Das
   Pflichtfeld `Ersetzt-Baseline-Regel` ist eine **Form**-Pflicht der Ziel-Fassung und bindet einen
-  nach dem Tausch geschriebenen Eintrag genauso; [slice-083](in-progress/slice-083-form-vergleich-pflichtfelder.md)
+  nach dem Tausch geschriebenen Eintrag genauso; [slice-083](done/slice-083-form-vergleich-pflichtfelder.md)
   §2 nimmt ihn ausdrücklich mit hinein (*„den überlebenden wie den unter dem neuen Stand
   geschriebenen"*). Bei der zweiten Menge dieses Durchgangs, den Singleton-Artefakten, erzeugt der
   Zuwachs gar keine Arbeit: das jüngste, [`observations.md`](observations.md), entsteht per `cp`
@@ -294,7 +294,7 @@ werden kann.
 | slice-150 | Drei Adaptions-Einträge tragen den adoptierten Stand (zwei korrigierte Durchgang-1-Ausgänge) | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 
 **147 und 148 sind kein Nachzügler wie 130–133/136, sondern ein Re-Schnitt eines bereits
-zugeordneten Mitglieds.** [slice-083](in-progress/slice-083-form-vergleich-pflichtfelder.md) ging am
+zugeordneten Mitglieds.** [slice-083](done/slice-083-form-vergleich-pflichtfelder.md) ging am
 2026-08-31 ein zweites Mal `in-progress` → `next` zurück (§2 dort, „Zweiter Schnitt"): von seinen
 drei noch offenen Posten trägt nur `harness/conventions.md` weiterhin einen expliziten DoD-Punkt
 dieses Slice; die `ID`-Schemata von `spec/spezifikation.md` und `spec/architecture.md` standen dort
@@ -315,8 +315,8 @@ beiden auf `—`.
 **136 ist der fünfte Nachzügler, und sein Grund ist ein anderer als der der vier davor: nicht eine
 übersehene Eingabe, sondern ein übersehenes Artefakt.** Durchgang 2 oben verlangt die Pflichtfelder
 der neuen Gliederung **in den Singleton-Artefakten**; die extensionale Menge in
-[slice-083](in-progress/slice-083-form-vergleich-pflichtfelder.md) §2 führt die Roadmap nicht
-(`grep -c 'roadmap' docs/plan/planning/in-progress/slice-083-form-vergleich-pflichtfelder.md` → **0**),
+[slice-083](done/slice-083-form-vergleich-pflichtfelder.md) §2 führt die Roadmap nicht
+(`grep -c 'roadmap' docs/plan/planning/done/slice-083-form-vergleich-pflichtfelder.md` → **0**),
 obwohl sie eines ist und ihre Ziel-Form im getauschten Baum den ersten Abschnitt umbenannt hat. Der
 Slice hängt an keinem anderen der Welle und läuft in beliebiger Reihenfolge; er trägt eine
 Vorbedingung außerhalb — [slice-125](open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)
@@ -476,7 +476,7 @@ Setzung 3 auf *nicht eingetreten*, während `grundlagen-source-precedence.md`
 (`grep -c 'die Verweis-Spalte nennt diesen Vorgang statt eines' .harness/baseline/v5.12.0/regelwerk/grundlagen-source-precedence.md`
 → **1**). Eine Welle, die auf diesen zwei Belegen schließt, hätte ihr Abdeckungs-Kriterium der
 Form nach erfüllt und der Sache nach nicht. Gefunden hat beides der **Form**-Durchgang
-([slice-083](in-progress/slice-083-form-vergleich-pflichtfelder.md) §6), weil dessen Pflichtfeld
+([slice-083](done/slice-083-form-vergleich-pflichtfelder.md) §6), weil dessen Pflichtfeld
 jeden Eintrag gegen den Volltext des adoptierten Stands hält statt gegen das Delta; die Klasse
 zählt [`BEO-013`](observations.md). Der dritte Posten von 150 —
 [`MR-028`](../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt),
@@ -499,7 +499,7 @@ falschen Achse-1-Ausgang nicht verhindert.
   Setzung 2):
   `git grep -l '\.harness/baseline/v3\.5\.2/' -- docs/plan/planning/open docs/plan/planning/next`.
   Von den Treffern ist **einer** ausdrücklich nicht gemeint:
-  [slice-083](in-progress/slice-083-form-vergleich-pflichtfelder.md) liegt **in** dieser Welle und nennt
+  [slice-083](done/slice-083-form-vergleich-pflichtfelder.md) liegt **in** dieser Welle und nennt
   den alten Tag als Tree-Operanden der Vor-Tausch-Seite, nicht als Zeiger auf einen Baum, der
   stehen bleiben müsste. Der Rest ist vor dieser Welle fällig oder auf den neuen Tag zu ziehen —
   entschieden wird das je Treffer beim Lauf, nicht hier.
@@ -558,7 +558,7 @@ falschen Achse-1-Ausgang nicht verhindert.
      neue Fassung das, wofür dieser Eintrag angelegt wurde?"* ist beim Schreiben beantwortet
      worden, weil `v5.12.0` beim Schreiben im Baum lag.
   2. **Die Form-Frage trägt Durchgang 2** und nennt sie ausdrücklich —
-     [slice-083](in-progress/slice-083-form-vergleich-pflichtfelder.md) §2 verlangt
+     [slice-083](done/slice-083-form-vergleich-pflichtfelder.md) §2 verlangt
      `Ersetzt-Baseline-Regel` in jedem Eintrag, *„den überlebenden wie den unter dem neuen Stand
      geschriebenen"*. Sie fallen also aus Durchgang 1 und nicht aus dieser Welle.
   3. **Achse 2 — der abgefragte Auflösungs-Trigger — bleibt für sie offen, und das ist keine
@@ -573,7 +573,7 @@ falschen Achse-1-Ausgang nicht verhindert.
   [`AGENTS.md`](../../../AGENTS.md) §3.8 der Architect. Dieser Plan beschreibt sie und setzt sie
   nicht in Kraft. **Ihr Gegenstand ist gemessen:** derselbe Fehler steht ein zweites Mal in
   [slice-082](done/slice-082-adaptions-durchgang.md) und ein drittes Mal in
-  [slice-083](in-progress/slice-083-form-vergleich-pflichtfelder.md) — dort mit ausdrücklicher Begründung
+  [slice-083](done/slice-083-form-vergleich-pflichtfelder.md) — dort mit ausdrücklicher Begründung
   und deshalb richtig, was zeigt, dass die Unterscheidung und nicht das Einfrieren die Regel ist.
 
 ## 7. Closure-Notiz
