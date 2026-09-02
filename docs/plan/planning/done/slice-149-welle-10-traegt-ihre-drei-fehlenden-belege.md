@@ -32,7 +32,7 @@ dieser Beleg, und — falls ein Re-Evaluierungs-Trigger feuert — das
 Architect-Verdikt aus Liefer-Punkt 2, das eine Folge-ADR nach
 [`AGENTS.md`](../../../../AGENTS.md) §3.8 ohnehin nur der Architect schreibt.
 Die Abweichung vom Default trägt dieselbe Begründung wie bei
-[slice-084](../in-progress/slice-084-stichprobe-gegen-bestand.md) und
+[slice-084](../done/slice-084-stichprobe-gegen-bestand.md) und
 [slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md):
 der Liefergegenstand sind lebende Plan-Dateien, keine Code-Änderung.
 
@@ -59,7 +59,7 @@ davon: seine drei Liefer-Punkte sind unabhängig vom übrigen Wellen-Fortschritt
 ausführbar. **Nicht Gegenstand dieses Slice** ist die inhaltliche Arbeit der
 übrigen offenen Mitglieder
 ([slice-083](../next/slice-083-form-vergleich-pflichtfelder.md),
-[slice-084](../in-progress/slice-084-stichprobe-gegen-bestand.md),
+[slice-084](../done/slice-084-stichprobe-gegen-bestand.md),
 [slice-085](../open/slice-085-emittierte-ebene-zieht-nach.md),
 [slice-131](../open/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md),
 [slice-136](../open/slice-136-roadmap-traegt-die-ziel-form.md),
@@ -141,7 +141,7 @@ Baum mit Netzzugriff (`make full-smoke` zieht gepinnte Images).
 **Der Deckel ist gemessen, nicht überschlagen — und die zwei Lesarten von Modul 5
 §Trigger je Lifecycle-Übergang und WIP-Limit laufen hier auseinander:**
 `ls docs/plan/planning/in-progress/slice-*.md | wc -l` → **1**
-([slice-084](../in-progress/slice-084-stichprobe-gegen-bestand.md)).
+([slice-084](../done/slice-084-stichprobe-gegen-bestand.md)).
 
 1. **Wortlaut.** Der Deckel zählt „pro Mensch in der **Implementer**-Rolle,
    nicht pro Rolle". Die eine Datei in `in-progress/` trägt
@@ -180,7 +180,7 @@ machen will, geht über [`AGENTS.md`](../../../../AGENTS.md) §3.8.
   [slice-147](../open/slice-147-spezifikation-traegt-ihr-id-schema.md),
   [slice-148](../open/slice-148-architecture-traegt-ihr-id-schema.md),
   [slice-085](../open/slice-085-emittierte-ebene-zieht-nach.md) oder
-  [slice-084](../in-progress/slice-084-stichprobe-gegen-bestand.md) beheben)
+  [slice-084](../done/slice-084-stichprobe-gegen-bestand.md) beheben)
   — dann zurück nach `open/` mit dem Fund als neuem Risiko oder Carveout.
 
 ## 5. Closure-Trigger

@@ -7,7 +7,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Welle:** ohne Welle — die Closure-Bedingung ist von dieser DoD nicht verschieden; der Fund kam
 aus [welle-10](../welle-10-re-baseline.md)s Durchgang 3
-([slice-084](../in-progress/slice-084-stichprobe-gegen-bestand.md)), gehört aber selbst nicht zu deren
+([slice-084](../done/slice-084-stichprobe-gegen-bestand.md)), gehört aber selbst nicht zu deren
 Slice-Menge (§4 dort: „Ein Delta, das eigene Arbeit verlangt, wird als Slice in `open/` notiert" —
 nicht Fracht der Welle).
 
@@ -35,7 +35,7 @@ damit von der Default-Besetzung ab, die Baseline-Regelwerk `modul-05-planning-ha
 
 Zwei Regeln aus `modul-14-docker-harness.md` §Multi-Stage-Build: die operativen Disziplinen sind
 im `Dockerfile` dieses Repos weder umgesetzt noch im Adaptions-Block als Abweichung geführt —
-gefunden von [slice-084](../in-progress/slice-084-stichprobe-gegen-bestand.md) §9 (Durchgang 3 von
+gefunden von [slice-084](../done/slice-084-stichprobe-gegen-bestand.md) §9 (Durchgang 3 von
 welle-10, Stichprobe gegen den Bestand). Jede der zwei bekommt einen verbuchten Ausgang:
 **Adoption** (der Dockerfile-Mechanismus wird ergänzt) oder **deklarierte Abweichung** (neuer
 `MR-<NNN>`-Eintrag mit Begründung).
@@ -73,7 +73,7 @@ danach wieder — für diesen Abschnitt korrekt statt stillschweigend falsch.
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): [slice-084](../in-progress/slice-084-stichprobe-gegen-bestand.md)
+**Start** (`next` → `in-progress`): [slice-084](../done/slice-084-stichprobe-gegen-bestand.md)
 liegt in `done/` — dort steht der Fund mit seinem Beleg (§9). Zum Zeitpunkt, an dem dieser
 Folge-Slice angelegt wird, liegt slice-084 noch in `in-progress/`; der Link zeigt auf den
 aktuellen Ort und wandert mit dem nächsten `git mv`.

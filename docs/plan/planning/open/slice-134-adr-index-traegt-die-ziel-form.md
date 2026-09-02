@@ -105,7 +105,7 @@ nimmt ein **Gate** aus, und hier hängt an keinem der Posten eines — kein Modu
 `.d-check.yml` liest eine Kopfzelle oder eine fehlende Bullet-Zeile (§6).
 
 **Er ist auch nicht die Stichprobe.** Die führt
-[slice-084](../in-progress/slice-084-stichprobe-gegen-bestand.md) — *ein* Abschnitt pro Audit, rotierend, mit
+[slice-084](../done/slice-084-stichprobe-gegen-bestand.md) — *ein* Abschnitt pro Audit, rotierend, mit
 belegter Wahl. Dieser Fund ist ihr **Ergebnis-Typ**, nicht ihre Ausführung: er fiel bei der
 Verifikation von [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) an, weil dort
 der ADR-Index über vier Commits umgeschrieben wurde, ohne dass ein Plan-Posten ihn führte. Die
@@ -281,7 +281,7 @@ dasteht.
   unsichtbar, solange niemand gegen die Vorlage hält; ein zweiter Fund derselben Art würde nicht
   diesen Slice größer machen, sondern die
   [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)-Aussage treffen —
-  genau die Schwelle, die [slice-084](../in-progress/slice-084-stichprobe-gegen-bestand.md) §2 zieht. — **Ausgang:**
+  genau die Schwelle, die [slice-084](../done/slice-084-stichprobe-gegen-bestand.md) §2 zieht. — **Ausgang:**
   <entfallen: der Abgleich dieses einen Artefakts bleibt punktuell | eingetreten: der Fund geht
   als Beleg in slice-084, und dessen Mehrfach-Fund-Zweig greift>
 
