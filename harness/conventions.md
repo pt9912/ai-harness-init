@@ -1537,6 +1537,18 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   `.harness/baseline/v3.5.2/templates/AGENTS.template.md` §3. **Dieses Repo, nicht das
   emittierte:** die emittierte `AGENTS.md` entsteht aus jener Vorlage, nicht aus dieser
   Fassung — dort trägt jede Regel die Nummer der Vorlage.
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
+  und die Messung ist am adoptierten Stand `v5.12.0` gefahren: das Regelwerk vergibt für Hard Rules
+  keine Nummern und bindet keine.
+  [`modul-09-implementierung.md`](../.harness/baseline/v5.12.0/regelwerk/modul-09-implementierung.md#hard-rules-repo-spezifisch)
+  §Hard Rules (repo-spezifisch) führt *„Bewährte Muster"* ohne Nummerierung, §Ziel-Form: AGENTS.md
+  verweist für die Form auf die Vorlage, und `grep -rn 'AGENTS.md §3' .harness/baseline/v5.12.0/regelwerk/`
+  ist leer (Exit 1). Die eine Nummer, die im Regelwerk steht, ist ein **Form-Beispiel** des
+  Herkunfts-Ankers (`### 3.3 <Hard Rule>   (seit welle-3)` in
+  [`grundlagen-traceability.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-traceability.md#herkunfts-anker)),
+  kein Zuordnungs-Satz. Damit tritt dieser Eintrag an keine Regel; er füllt, was die Vorlagen-Form
+  offen lässt. **Sein Auflösungs-Trigger ist davon unberührt** und für §3.7 eingetreten — das trägt
+  [`MR-031`](#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline), nicht dieses Feld.
 - **Setzung 1 — die beiden Sätze decken sich in der Nummer nicht, und sie sollen es nicht.**
   Eine Hard-Rule-Nummer adressiert einen Abschnitt **dieses** Repos; sie sagt weder eine
   Rangfolge noch eine Entsprechung in der Vorlage zu. Deckungsgleich ist **eine einzige**
@@ -1603,6 +1615,19 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   `internal/emit/emit.go` (emittierter Default-Pin), `Makefile` (das Tag-Beispiel im Kommentar
   über `DCHECK_TAG`), §Baseline; setzt
   [`MR-024`](#mr-024--d-check-pin-v0620-structure-verfügbar) fort.
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
+  aus demselben Grund wie [`MR-024`](#mr-024--d-check-pin-v0620-structure-verfügbar): der Sprung
+  ist der bewusste Digest-Commit aus
+  [`modul-14-docker-harness.md`](../.harness/baseline/v5.12.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)
+  und die Neu-Erzeugung des Fragments aus
+  [`modul-02-harness-bootstrap.md`](../.harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
+  §Gate-Fragment `d-check.mk`. Der Gegenstand — die Verengung des Zeilen-Markers in **Form** und
+  **Lage** — gehört dem Werkzeug: `grep -rn 'd-check:ignore' .harness/baseline/v5.12.0/regelwerk/`
+  nennt am adoptierten Stand `v5.12.0` zwei Zeilen, einen gesetzten Marker in Kommentar-Form und
+  die Regel, dass solche Marker das Adoptieren eines Templates überleben müssen — keine sagt etwas
+  über die Form oder die Lage, in der er wirkt. Dass der Sprung an keinem aktiven Modul senkt, ist
+  die §3.5-Frage von [`AGENTS.md`](../AGENTS.md), an der Quell-Differenz beantwortet; auch sie
+  ersetzt keine Regel.
 - **Adaption:** Das gepinnte d-check-Image springt **v0.62.0 → v0.65.0**. Digest
   `sha256:5ea03abe7918381c68203d8ac078a78d0d4ab91b5478e87c66b5a7b4fda41288`, **dreifach belegt**
   und jedes Bein hier gefahren: lokaler RepoDigest
@@ -1728,6 +1753,18 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Datum:** 2026-08-28
 - **Geltungsbereich:** die **Form** eines Eintrags dieses Blocks. **Nicht** `docs/plan/adr/`,
   **nicht** `docs/plan/planning/**` — dort entscheidet, wer sie führt.
+- **Ersetzt-Baseline-Regel:**
+  [`grundlagen-traceability.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-traceability.md#herkunfts-anker)
+  §Herkunfts-Anker — der Satz, der die Herkunft in diesem Block verortet: *„Der Adaptions-Block
+  trägt das Muster bereits über sein Feld Begründung."* An seine Stelle tritt das eigene Feld
+  `Wirksamkeits-Anlass`, und dazu die Form: derselbe Abschnitt schreibt *„ein Feld, kein Konstrukt"*
+  mit auflösenden Ankern (`seit welle-<NN>`, `seit slice-<NNN>`, die über
+  `done/slice-<NNN>-*.md` §7 auflösen), hier steht die Slice-Nummer **blank**. Der Adaptions-Absatz
+  unten begründet den Zusatz gegen die Pflichtfeld-Liste der Vorlage von `v3.5.2` und liest ihn
+  darum als *„keine Abweichung von einer Baseline-Regel"*; gegen den adoptierten Stand `v5.12.0`
+  gemessen ist er eine, und zwar an dieser einen Stelle. Die **Begründung** der Blank-Form —
+  Adressen verfallen, und die Link-Pflicht bestrafte genau die Aussage, deren Nicht-Auflösen ein
+  Beleg ist — bleibt davon unberührt.
 - **Adaption — Zusatz zur Vorlagen-Form, keine Abweichung von einer Baseline-Regel.** Die
   vendored Vorlage (`.harness/baseline/v3.5.2/templates/harness/conventions.template.md`,
   Kommentar über dem Adaptions-Block) nennt sechs Pflichtfelder — ID · Datum · Geltungsbereich ·
@@ -1793,6 +1830,20 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   [`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids). Dessen übrige
   Setzungen — die Modul-Aktivierung `matrix`/`spans`, `ids` mit `link-policy: always`, das
   `MR`-Pattern — bleiben unangetastet und gelten fort.
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
+  und der Weg des dritten Grundes ist genau der, den die Baseline vorsieht: ein Trigger, der
+  ehrlich nie zu erreichen ist, führt nach
+  [`modul-07-carveouts.md`](../.harness/baseline/v5.12.0/regelwerk/modul-07-carveouts.md#werkzeug-wahl)
+  §Werkzeug-Wahl bei Diskrepanz auf *„**ADR (permanent)** … die Senkung ist
+  Architekturentscheidung, kein Übergang"* — und dort liegt sie
+  ([`ADR-0017`](../docs/plan/adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md)). Zensus
+  und Aufnahme-Grenze sind Zustand und Schranke, keine Setzung gegen eine Regel.
+  **Was hier ausdrücklich nicht als ersetzte Regel gilt:** der Formcheck-Satz des
+  [Freshness-Audits](../.harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
+  — *„Ein toter Anker ist kein Ausgang, sondern ein Formfehler und wird zuerst repariert"* —
+  spricht über den `Geltungsbereich` **eines Eintrags dieses Blocks** nach einem Baseline-Update,
+  nicht über einen Markdown-Link in einer eingefrorenen ADR. Dasselbe Thema ist nicht dieselbe
+  Pflicht. Gemessen am adoptierten Stand `v5.12.0`.
 - **Löst auf:** die Zensus-Aussage aus
   [`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) — *„`scan.ignore` führt
   heute vier Einträge, aus zwei Gründen"* samt der Klassifikation *„beide sind Scoping, keine
@@ -1898,6 +1949,18 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   [`spec/spezifikation.md`](../spec/spezifikation.md#5-metriken-und-tracing-felder) §5. **Nicht**
   Punkt 1 desselben Eintrags — die vierte Spalte (`Sensor`) weicht weiter von der
   Modul-Vorschrift ab und bindet fort.
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
+  und er setzt keine Abweichung: er **baut eine zurück**, wie
+  [`MR-031`](#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline). Die Abweichung
+  *„`implementer` statt Implementation"* hatte ihren Gegenstand in
+  [`modul-08-agentenrollen.md`](../.harness/baseline/v5.12.0/regelwerk/modul-08-agentenrollen.md#rollen-sequenz-für-einen-slice)
+  §Rollen-Sequenz für einen Slice; am adoptierten Stand `v5.12.0` steht dort `Implementer`, und
+  damit ist sie fort. Was bleibt, ist die **Kleinschreibung** als Bezeichner-Konvention, und die
+  tritt an keine Stelle: `grep -rl 'implementer' .harness/baseline/v5.12.0/regelwerk/` ist leer
+  (Exit 1) — es gibt keine Modul-Schreibweise, von der sie abwiche. Auch die zwei Nicht-Handlungen
+  — [`MR-021`](#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+  bleibt unangefasst, der Markdown-Link bleibt auf dem abgelösten Tag — folgen Entscheidungen
+  dieses Repos, nicht einer abgelösten Baseline-Regel.
 - **Löst auf:** die Abweichung *„`implementer` statt Implementation"*. Sie hat keinen Gegenstand
   mehr.
 - **Ausgelöst durch Baseline-Stand:** `v5.12.0`. Der abgelöste Stand schrieb
