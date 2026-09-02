@@ -15,8 +15,8 @@ führte den ersten Abschnitt als `## Aktuelle Welle`, die neue führt ihn als `#
 → **1**). Damit belegt dieser Slice ein Closure-Kriterium der Welle, das ohne ihn eine Lücke trägt:
 §3 *Durchgang 2 — Form* verlangt die Pflichtfelder der neuen Gliederung **in den
 Singleton-Artefakten**, und die Roadmap ist eines — in der extensionalen Menge von
-[slice-083](../next/slice-083-form-vergleich-pflichtfelder.md) §2 steht sie nicht
-(`grep -c 'roadmap' docs/plan/planning/next/slice-083-form-vergleich-pflichtfelder.md` → **0**).
+[slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) §2 steht sie nicht
+(`grep -c 'roadmap' docs/plan/planning/in-progress/slice-083-form-vergleich-pflichtfelder.md` → **0**).
 
 **Ebene: Dogfood, nicht emittiert.** Gegenstand ist die Roadmap **dieses** Repos. Die emittierte
 Ebene hat denselben Gegenstand unter einem anderen Vertrag und einen anderen Träger: was ein
@@ -321,7 +321,7 @@ Drei Ebenen davon gehören anderen — jede mit ihrem Träger, keine ohne:
 | Ort | Treffer | Träger |
 |---|---|---|
 | [`harness/conventions.md`](../../../../harness/conventions.md) ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird): Geltungsbereich und Setzung 2) | 3 | **Architect** — Adaptions-Block, [`AGENTS.md`](../../../../AGENTS.md) §3.8. Kein Slice; ein eigener Rollen-Lauf mit eigenem Commit |
-| [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) · [`plan-welle.md`](../../../../.claude/commands/plan-welle.md) | 3 | [slice-083](../next/slice-083-form-vergleich-pflichtfelder.md) — führt `close-welle` in seiner Plan-Tabelle |
+| [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) · [`plan-welle.md`](../../../../.claude/commands/plan-welle.md) | 3 | [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) — führt `close-welle` in seiner Plan-Tabelle |
 | `internal/emit/templates/commands/` (dieselben zwei Commands, emittierte Fassung) | 3 | [slice-085](slice-085-emittierte-ebene-zieht-nach.md) — dort ausdrücklich zugewiesen; **andere Ebene, anderer Vertrag** |
 
 Die Zeitdokumente in [`done/`](../done) und `docs/reviews/` bleiben unangetastet: sie sagen, was

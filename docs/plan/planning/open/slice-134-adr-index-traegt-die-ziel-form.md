@@ -114,7 +114,7 @@ abziehen.
 
 ### Was daneben liegt und hier nicht mitkommt
 
-[slice-083](../next/slice-083-form-vergleich-pflichtfelder.md) trägt den Form-Vergleich der **Singletons**
+[slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) trägt den Form-Vergleich der **Singletons**
 und des Reviewer-Skills; seine Menge ist dort namentlich aufgezählt und nennt den ADR-Index nicht.
 Beide Slices machen dieselbe Art Arbeit an verschiedenen Artefakten — die Trennung steht in
 083 §2 (1) und hier, damit kein Lauf sie doppelt tut.
@@ -211,7 +211,7 @@ Hauptzweig (am 2026-08-29 liefert es **1**, den laufenden
 hat dieser Slice **nicht**: die Ziel-Form liegt
 vendored im Baum und wechselt bis dahin nicht ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache):
 ein Tag zur Zeit). Insbesondere wartet er **nicht** auf
-[slice-083](../next/slice-083-form-vergleich-pflichtfelder.md) — andere Artefakt-Menge, andere Ziel-Form
+[slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) — andere Artefakt-Menge, andere Ziel-Form
 (§1).
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**

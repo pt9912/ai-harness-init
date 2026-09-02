@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Welle:** [welle-10](../welle-10-re-baseline.md) — Teil von Durchgang 2 (*Form*), abgetrennt aus
-[slice-083](../next/slice-083-form-vergleich-pflichtfelder.md) §1/§6, dessen Form-Diff-Protokoll
+[slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) §1/§6, dessen Form-Diff-Protokoll
 das neue Pflichtfeld für dieses Artefakt bereits gemessen, aber nicht umgesetzt hat.
 
 **Bezug:** [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
@@ -37,7 +37,7 @@ unabhängig beantwortbar, weil ein anderes Artefakt.
 `spec/architecture.md` bekommt das Pflichtfeld der Ziel-Fassung: `ARC-<NNN>` je Komponente (§1)
 und je externer Abhängigkeit (§3), die Schichten-Tabelle in §2 referenziert die Kennung. Gemessen,
 nicht neu entdeckt — der Form-Diff aus
-[slice-083](../next/slice-083-form-vergleich-pflichtfelder.md) §1 führt diesen Ausgang bereits als
+[slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) §1 führt diesen Ausgang bereits als
 *„neues Pflichtfeld"*; dieser Slice ist die Umsetzung, die dort als zu groß für den einen
 Durchgang zurückgeführt wurde.
 
@@ -60,7 +60,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
 - [ ] **(1) `ARC-<NNN>` je Komponente (§1) und externer Abhängigkeit (§3) vergeben, die
       Schichten-Tabelle (§2) referenziert die Kennung.** Ziel-Form aus dem Form-Diff-Protokoll
-      ([slice-083](../next/slice-083-form-vergleich-pflichtfelder.md) §1, Zeile
+      ([slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) §1, Zeile
       `spec/architecture.md`). Abschnitts-Überschriften bleiben unverändert, §5 bleibt
       inhaltlich unberührt.
 - [ ] **(2) Gegenprobe: `spec/architecture.md#5-idempotenz-fragment-assembly-und-resume` bleibt
@@ -103,7 +103,7 @@ Priorisierung mit `Verantwortlich:` = Implementer-Rolleninhaber als Default.
 **Keine Reihenfolge-Bindung innerhalb der Welle.** Dieser Slice hängt an keinem anderen Mitglied
 von [welle-10](../welle-10-re-baseline.md): [slice-147](slice-147-spezifikation-traegt-ihr-id-schema.md)
 berührt ein anderes Artefakt mit eigener Referenz-Menge, und die fortgeführte
-`harness/conventions.md`-Arbeit in [slice-083](../next/slice-083-form-vergleich-pflichtfelder.md)
+`harness/conventions.md`-Arbeit in [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md)
 berührt keine spec-Datei.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
@@ -153,7 +153,7 @@ dasteht.
 
 **Vorgelagert — Sub-Area-Wahl prüfen:** eine Sub-Area, `spec/` — Greenfield-Bestand nach der
 Modus-Deklaration in [`harness/conventions.md`](../../../../harness/conventions.md), dieselbe
-Einordnung wie in [slice-083](../next/slice-083-form-vergleich-pflichtfelder.md) §8,
+Einordnung wie in [slice-083](../in-progress/slice-083-form-vergleich-pflichtfelder.md) §8,
 [slice-136](slice-136-roadmap-traegt-die-ziel-form.md) §8 und
 [slice-147](slice-147-spezifikation-traegt-ihr-id-schema.md) §8.
 
