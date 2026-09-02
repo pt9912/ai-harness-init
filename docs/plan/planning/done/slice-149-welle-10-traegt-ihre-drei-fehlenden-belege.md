@@ -62,7 +62,7 @@ ausführbar. **Nicht Gegenstand dieses Slice** ist die inhaltliche Arbeit der
 [slice-084](../done/slice-084-stichprobe-gegen-bestand.md),
 [slice-085](../done/slice-085-emittierte-ebene-zieht-nach.md),
 [slice-131](../done/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md),
-[slice-136](../next/slice-136-roadmap-traegt-die-ziel-form.md),
+[slice-136](../in-progress/slice-136-roadmap-traegt-die-ziel-form.md),
 [slice-147](../done/slice-147-spezifikation-traegt-ihr-id-schema.md),
 [slice-148](../done/slice-148-architecture-traegt-ihr-id-schema.md)) — jedes
 davon hat seinen eigenen Träger und wird hier nicht gedoppelt. **Ebenfalls
@@ -176,7 +176,7 @@ machen will, geht über [`AGENTS.md`](../../../../AGENTS.md) §3.8.
 - `in-progress` → `open` (blockiert — Carveout?): wenn `make full-smoke` an
   einer Stelle scheitert, die außerhalb dieses Slice liegt (typisch: eine
   Lücke, die erst [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md),
-  [slice-136](../next/slice-136-roadmap-traegt-die-ziel-form.md),
+  [slice-136](../in-progress/slice-136-roadmap-traegt-die-ziel-form.md),
   [slice-147](../done/slice-147-spezifikation-traegt-ihr-id-schema.md),
   [slice-148](../done/slice-148-architecture-traegt-ihr-id-schema.md),
   [slice-085](../done/slice-085-emittierte-ebene-zieht-nach.md) oder
@@ -243,7 +243,7 @@ dasteht.
 - **`make full-smoke` könnte einen Befund melden, der außerhalb dieses Slice
   liegt** — z. B. weil der emittierte Baum erst mit
   [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md),
-  [slice-136](../next/slice-136-roadmap-traegt-die-ziel-form.md),
+  [slice-136](../in-progress/slice-136-roadmap-traegt-die-ziel-form.md),
   [slice-147](../done/slice-147-spezifikation-traegt-ihr-id-schema.md),
   [slice-148](../done/slice-148-architecture-traegt-ihr-id-schema.md) oder
   [slice-085](../done/slice-085-emittierte-ebene-zieht-nach.md) vollständig
