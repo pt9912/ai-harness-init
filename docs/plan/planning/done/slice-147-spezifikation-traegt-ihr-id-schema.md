@@ -117,7 +117,7 @@ die Rollenfrage aus §6 ist entschieden — entweder durch eine benannte Quelle 
 Priorisierung mit `Verantwortlich:` = Implementer-Rolleninhaber als Default.
 
 **Keine Reihenfolge-Bindung innerhalb der Welle.** Dieser Slice hängt an keinem anderen Mitglied
-von [welle-10](../welle-10-re-baseline.md): [slice-148](../open/slice-148-architecture-traegt-ihr-id-schema.md)
+von [welle-10](../welle-10-re-baseline.md): [slice-148](../next/slice-148-architecture-traegt-ihr-id-schema.md)
 berührt ein anderes Artefakt mit eigener Referenz-Menge, und die fortgeführte
 `harness/conventions.md`-Arbeit in [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md)
 berührt keine spec-Datei.
