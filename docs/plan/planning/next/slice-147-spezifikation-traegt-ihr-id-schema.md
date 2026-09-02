@@ -19,13 +19,17 @@ Position der Ziel-Form ist als Abweichung zu begründen).
 bekommen) und `§7` (die dortige `ADR`-Spalte entfällt — Decken-Regel: kein ADR-Bezug in einem
 Spec-Stratum, [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) §Kontext).
 
-**Verantwortlich:** — bis zur Priorisierung. **Keine Quelle benennt eine schreibende Rolle für
-dieses Artefakt** — [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) grenzt die
-Architect-Zuordnung ausdrücklich auf `AGENTS.md` §3 und den Adaptions-Block in
-`harness/conventions.md` ein (*„Über die übrigen Norm-Artefakte trifft diese ADR **keine**
-Aussage"*), und Baseline-Regelwerk `modul-03-spec.md` §Ziel-Form: Spezifikation nennt für keines
-der drei Spec-Strata eine Rolle. `AGENTS.md` §3.8 bestätigt das ausdrücklich für dieses Artefakt.
-Siehe §6, Risiko *Rollenfrage*.
+**Verantwortlich:** Architect (pt9912) — **Setzung, keine Ableitung.** Keine Quelle benennt eine
+schreibende Rolle für dieses Artefakt: [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md)
+grenzt die Architect-Zuordnung auf `AGENTS.md` §3 und den Adaptions-Block ein, und
+Baseline-Regelwerk `modul-03-spec.md` §Ziel-Form: Spezifikation nennt für keines der drei
+Spec-Strata eine Rolle. Besetzt wird **gegen** den Default aus
+`modul-05-planning-harness.md` §Lifecycle als State Machine (Implementer-Rolleninhaber), weil der
+Liefergegenstand ein ID-Schema für ein normatives Dokument mit repo-weiter Ripple-Wirkung ist —
+dieselbe Klasse wie die Norm-Artefakte, die `AGENTS.md` §3.8 dem Architect gibt, und dieselbe
+Personalunion, die [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) §3 für
+`.harness/skills/reviewer.md` bereits eingegangen ist. Die offene Quellenfrage entscheidet das
+**nicht** — siehe §6, Risiko *Rollenfrage*.
 
 **Autor:** Planner. **Datum:** 2026-08-31.
 
