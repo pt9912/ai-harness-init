@@ -12,6 +12,8 @@ wechselt nur durch `git mv`, siehe
 [`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren),
 [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed).
 
+**Verantwortlich:** Implementer (pt9912).
+
 **Autor:** Planner. **Datum:** 2026-08-09.
 
 ---
