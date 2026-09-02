@@ -238,7 +238,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **(1) Kein Satz verschwindet ungeprüft: das Verbleibs-Protokoll liegt vor, und jede getilgte
+- [x] **(1) Kein Satz verschwindet ungeprüft: das Verbleibs-Protokoll liegt vor, und jede getilgte
       Aussage trägt genau einen von drei Ausgängen.** Die drei sind erschöpfend und schließen
       einander aus: **(a) steht schon in der Welle-Datei** — Beleg ist das Kommando, das sie dort
       findet, und der Zeiger genügt; **(b) steht nur hier und wandert nach `<Ziel>`** — das Ziel ist
@@ -251,7 +251,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Welle-Datei **nicht**. Beide Richtungen sind am Diff des Umsetzungs-Commits prüfbar
       (`git show --stat` plus das Protokoll); mechanisch rot wird diese Hälfte nicht, sie trägt das
       Review.
-- [ ] **(2) Die Roadmap trägt die Ziel-Form über alle sieben Abschnitte, und jede nicht übernommene
+- [x] **(2) Die Roadmap trägt die Ziel-Form über alle sieben Abschnitte, und jede nicht übernommene
       Position ist begründet statt still gelassen.** Eingeschlossen und je einzeln abzunehmen: der
       erste Abschnitt heißt `## Offene Wellen` und trägt Zeiger plus Ruhe-Marker-Mechanik statt
       Trigger- und Closure-Prosa · die sechs `Regeln dieser Sektion:`-Zeilen stehen · das
@@ -271,7 +271,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Schwellenwert auf `wc -c` wäre ein Maßstab, der mit jeder legitimen Welle rot wird
       ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
       Setzung 2: mitwandernde Zahlen sind keine Erwartungswerte).
-- [ ] **(3) Über den Wächter ist entschieden — beide Hälften, je mit Ausgang.** Für die
+- [x] **(3) Über den Wächter ist entschieden — beide Hälften, je mit Ausgang.** Für die
       **Marker-Hälfte** und die **Listen-Hälfte** steht getrennt, ob dieser Slice sie schließt oder
       nicht; *nicht geschlossen* ist zulässig **und** verlangt den Grund plus den Folge-Slice, der
       sie trägt. Der Erwartungswert ist heute: beide gehen an
@@ -284,21 +284,21 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       kann, und der Gate ist das stille Grün aus
       [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6).
       Diese Hälfte trägt das Review.
-- [ ] `make gates` grün. **Erwartet ist der Stand der Welle, nicht Grün auf leerem Blatt:**
+- [x] `make gates` grün. **Erwartet ist der Stand der Welle, nicht Grün auf leerem Blatt:**
       `docs-check` steht bei einem vorbestehenden Befund
       ([`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md), Folge-Slice
       `slice-132`). Abzunehmen ist, dass **kein weiterer** dazukommt — die Zählzeile vor und nach
       dem Slice gehört in den Umsetzungs-Commit.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist — die Roadmap ist **keiner**: sie
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist — die Roadmap ist **keiner**: sie
       steht auf Rang 5 der Source Precedence, aber als derivative Sicht, und dieser Slice ändert
       keine Welle-Datei inhaltlich.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
       [`observations.md`](../observations.md) — *keine Beobachtung angefallen* ist ebenfalls eine
       Antwort und wird in §7 notiert. Das Reconciliation-Register entfällt dauerhaft: dieses Repo
       hat keinen Brownfield-Bootstrap.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt
       Wellen-Betrieb, sie werden also von der nächsten Welle-Closure geprüft, nicht hier.
 
 ## 3. Plan (vor Code)
@@ -382,32 +382,53 @@ dasteht.
 - **Die vier Kandidaten-Zeilen verlieren ihre einzige Fassung.** 18 314 Zeichen ohne Welle-Datei
   (§1). Kürzt der Lauf sie auf einzeilige Zellen, ohne den Ausgang **(b)** aus DoD (1) vorher zu
   bedienen, ist Wissen weg, das kein `git`-Log wiederbringt, weil niemand weiß, dass er suchen
-  müsste. — **Ausgang:** <eingetreten: Ziel benannt und angelegt | entfallen: Ausgang (c), die
-  Zeilen bleiben in Ziel-Form | weiter offen>
+  müsste. — **Ausgang:** **entfallen** — Ausgang **(c)**: die Zeilen bleiben in der Roadmap, in
+  Ziel-Form gekürzt. Der Ort war nicht zu erfinden, er stand fest:
+  [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §6 weist die Rest-Achsen ausdrücklich
+  hierher zurück (*„Sie bleiben als Kandidaten-Zeile in der Roadmap stehen"*). Gekürzt ist die
+  Herleitung, nicht der Befund — jede Achse und jeder Bauplan steht weiter da, das Ausgeführte
+  unter dem Zeiger auf seinen Träger (Verbleibs-Protokoll in §7).
 - **Der Rückbau des ersten Abschnitts trifft eine Aussage über welle-09, die dieser Slice nicht
   treffen darf.** Die heutige Prosa erklärt welle-09 für *„angefangen, ruhend, nicht
   abschließbar"*; unter *Offene Wellen* ist sie schlicht ein Zeiger. Damit verschwindet eine
   Einordnung, die eine eigene, ausdrücklich vertagte Planner-Sitzung zum Gegenstand hat
-  ([welle-09](../welle-09-modul-15-konformitaet.md) §1). — **Ausgang:** <eingetreten: der Slice
-  wartet auf die Sitzung (`in-progress` → `open`) | entfallen: die Einordnung steht in welle-09
-  und der Zeiger genügt | weiter offen>
+  ([welle-09](../welle-09-modul-15-konformitaet.md) §1). — **Ausgang:** **entfallen** — die
+  Einordnung steht in der Welle-Datei selbst (§1 nennt die drei ungeschnittenen Mitglieder und die
+  vertagte Planner-Sitzung, §3 die leere Matrix-Zelle als offenen Trigger), und der Zeiger genügt.
+  Die Sitzung entscheidet über den Schnitt von `slice-063`, nicht über einen Abschnittsnamen.
 - **Der Slice widerspricht sich selbst, wenn er die Roadmap fortschreibt.** Modul 6 verlangt für
   das Umhängen eines Slice eine Drift-Log-Zeile — dieser Slice schreibt also in dieselbe Tabelle,
   deren Zellengröße er als Defekt führt. **Aufgelöst, nicht verschwiegen:** die Zeile entsteht in
   der Ziel-Form (Umplanung, Grund, Ende) und ist damit die erste, die das Kriterium erfüllt, nicht
-  die nächste Ausnahme davon. — **Ausgang:** <eingetreten: Zeile länger als die Ziel-Form erlaubt
-  | entfallen: Zeile in Ziel-Form | weiter offen>
+  die nächste Ausnahme davon. — **Ausgang:** **entfallen** — der Slice schreibt keine neue
+  Drift-Log-Zeile: er hängt weder Slice noch Welle um und verschiebt keinen Trigger, ist also keine
+  Umplanung. Er formt die Tabelle um (neue Spalte `Beleg`), und seine eigene Zeile vom 2026-08-29
+  bleibt unverändert stehen.
 - **[`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
   bleibt nach diesem Slice auf einen Abschnitt gebunden, den es nicht mehr gibt.** Der Eintrag
   nennt `§Aktuelle Welle` in seinem Geltungsbereich und in Setzung 2. Er ist Architect-Artefakt
   ([`AGENTS.md`](../../../../AGENTS.md) §3.8), und dieser Slice fasst ihn nicht an. **Das ist eine
   Übergabe, kein Versäumnis** — aber eine, die ohne Ausgang zu einer toten Referenz wird. —
-  **Ausgang:** <eingetreten: Architect-Lauf angestoßen, eigener Commit | entfallen: Grund |
-  weiter offen>
+  **Ausgang:** **entfallen** — `grep -c 'Aktuelle Welle' harness/conventions.md` → **0**. Der
+  Eintrag ist inzwischen aufgehoben und trägt nur noch Kopf und Zeiger auf seinen Nachfolger; sein
+  Rumpf liegt in `git`. Es gibt zu dieser Frage keine Architect-Übergabe.
+- **Nachgetragen, weil erst beim Lauf gefunden:** die zwei Anweisungssätze
+  [`close-welle.md`](../../../../.claude/commands/close-welle.md) und
+  [`plan-welle.md`](../../../../.claude/commands/plan-welle.md) nennen `§Aktuelle Welle` und
+  beschreiben die abgelöste Nachrück-Prozedur (*„die erste Zeile aus Nächste Wellen wird die neue
+  Aktuelle Welle"*), die `modul-06-roadmap.md` Schritt 5 mit *„Befördert wird niemand"* ersetzt.
+  §3 führt sie ausdrücklich **nicht** in der Datei-Liste dieses Slice; ihr dort benannter Träger
+  [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) hat sie nicht gezogen. —
+  **Ausgang:** **weiter offen → Beobachtungs-Register**: [`BEO-009`](../observations.md) Zähler +1
+  mit Beleg `slice-136`. Die Klasse steht dort über der Schwelle, ihr Lese-Schritt liegt bei der
+  Closure von [welle-10](../welle-10-re-baseline.md).
 - **Die Kürzung erzeugt einen `docs-check`-Befund, weil ein Anker verschwindet.** Die Roadmap
   trägt Anker-Links in großer Zahl; wer Absätze entfernt, entfernt Linkziele nicht, aber
-  möglicherweise Linkquellen, auf die andere Dateien zeigen. — **Ausgang:** <eingetreten: Befund
-  behoben im selben Slice | entfallen: Zählzeile unverändert | weiter offen>
+  möglicherweise Linkquellen, auf die andere Dateien zeigen. — **Ausgang:** **eingetreten, im
+  selben Slice behoben** — nicht als Anker-Verlust, sondern umgekehrt: drei neu gesetzte
+  `done/`-Dateinamen waren geraten und zwei Verweise griffen auf `done/slice-136` vor, zusammen
+  fünf × `target-missing`. Nach der Korrektur steht `make docs-check` bei
+  `486 Datei(en) geprüft, 0 Befund(e)` — gleich dem Vorher-Lauf, Differenz **null**.
 
 ## 7. Closure-Notiz
 
@@ -419,22 +440,69 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-NNN>, <slice-MMM>, <slice-KKK> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`observations.md` neben den Wellen):** <neue `BEO-<NNN>` mit Beleg |
-  Zähler +1 an einer vorhandenen Kennung | keine Beobachtung angefallen — und dann steht genau das
-  hier, statt dass die Zeile fehlt>.
-- **Wächter-Entscheidung (DoD 3), wörtlich für den nächsten Leser:** <Marker-Hälfte: …
-  Listen-Hälfte: … — je gebaut oder mit Grund und Folge-Slice nicht gebaut>. Diese Zeile ist die,
-  die [slice-125](../open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) später liest.
-- **Folge-Slices:** <slice-NNN (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
+### Verbleibs-Protokoll (DoD 1)
+
+Eine Zeile je getilgter Aussage, mit genau einem der drei Ausgänge. Die Roadmap ging von
+`83 532` auf `29 276` Zeichen (`wc -c docs/plan/planning/in-progress/roadmap.md`, vor dem Lauf
+gegen `git show HEAD~5:…` — keine Erwartungswerte,
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2).
+
+| Getilgte Aussage | Ausgang | Ziel / Beleg |
+|---|---|---|
+| Trigger- und Closure-Prosa zu welle-09 und welle-10 (erster Abschnitt) | **(a)** | die Welle-Dateien §2/§3 — `grep -c 'baseline-freshness' docs/plan/planning/welle-10-re-baseline.md` → **3**, `grep -c '4 × 2-Matrix' docs/plan/planning/welle-09-modul-15-konformitaet.md` → **1** |
+| Mitglieds-Stand von welle-10 (*„vier ihrer fünfzehn Slices liegen nicht in `done/`"*) | **(a)** | das Verzeichnis selbst; welle-10 §4 führt die Mitglieder, ihr Zustand ist die Lifecycle-Position (Modul 5). Die Zeile war zudem falsch — nur `slice-136` lag noch außerhalb |
+| Die 21 Zeilen *„Warum dieser Abschnitt zwei Wellen trägt"* und *„die Nachfolge ist gemessen"* | **(c)** | gegenstandslos unter *Offene Wellen*: Mehrzahl ist dort der Normalfall, und *befördert wird niemand* (Modul 6 Schritt 5). Was die Kante zu welle-10 aufhob, führt das Drift-Log 2026-08-28 |
+| Trigger-/Slice-Prosa zu welle-11 und welle-13 (zwei Absätze) | **(a)** | welle-11 §2, welle-13 §2 — je mit der Unterscheidung tragend/ordnend, die die Roadmap-Zeile jetzt in einem Satz zitiert |
+| Kandidaten-Zeile *Doc-Gate-Härtung*: `codepaths.roots`-Sonden, `hostpaths`/`diagrams`-Läufe | **(a)** | [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben) (`grep -c 'codepath-missing' harness/conventions.md`) und welle-13 §6 (`grep -c '22 Befund(e)' docs/plan/planning/welle-13-regeln-bekommen-ihren-sensor.md` → **1**) |
+| dieselbe Zeile: *„**31** `test/`-Nennungen in `spec/spezifikation.md` §5 (gemessen 2026-08-08)"* | **(c)** | ersatzlos — die Zahl ist gewandert (`grep -oE '\`?test/[A-Za-z0-9_./-]+' spec/spezifikation.md \| wc -l` → **30**) und trug als Erwartungswert nichts zum Trigger bei |
+| Kandidaten-Zeile *Regeln ohne Feedback-Quadrant*: Hebel-Messung, Sechser-Liste mit Kommandos, Achsen (1)–(4) | **(a)** | welle-13 §1 (vier Messungen samt `fetch-depth`) und §6 (Out-of-Scope der Achsen (5)/(7)/(8)); Achse (8) misst [slice-053](../done/slice-053-cpp-hexslice-renderer.md), Achse (7) [slice-050](../done/slice-050-doku-nachzug-release.md) §7, Achse (9) [`AGENTS.md`](../../../../AGENTS.md) §3.7 |
+| Kandidaten-Zeilen *Vollständigkeits-Wächter* und *Doku- und Sensor-Wartung*, Kern je Achse | **(c)** | bleibt in der Roadmap: welle-13 §6 weist die Rest-Achsen ausdrücklich hierher zurück (*„Sie bleiben als Kandidaten-Zeile in der Roadmap stehen"*). Gekürzt ist die Herleitung, nicht der Befund — jede der sechs Wartungs-Achsen und der Bauplan des Wächters stehen weiter da |
+| dieselben Zeilen: Fall-Chroniken (`38b60ed`, `9cfa1f3`, `08410bc`, Review-Kennungen) | **(c)** | ersatzlos, [`AGENTS.md`](../../../../AGENTS.md) §3.7 — die Regel bleibt, die Fall-Nummer hält `git` |
+| Prosa unter dem Abhängigkeitsgraphen (drei Absätze über Kanten) | **(a)** | §2 der jeweiligen Welle-Datei; für welle-12s fehlende Kante die geschlossene [welle-12-results.md](../done/welle-12-results.md) |
+| Meilenstein-Status M5/M6: Release-Läufe, Asset-Zahlen, Mangel und Behebung, benannte Beleg-Grenzen | **(a)** | [slice-050](../done/slice-050-doku-nachzug-release.md) §7, [slice-052](../done/slice-052-release-v0-1-1.md), [welle-12-results.md](../done/welle-12-results.md) §7 |
+| Drift-Log: drei Zeilen mit Schließung oder Meilenstein (`M3 nachgetragen`, `M5 nachgetragen`, `welle-01 geschlossen … M1 erreicht`) | **(a)** | Closure-Log und `Status`-Spalte derselben Datei; die Umplanungs-Hälfte der 2026-07-25-Zeile bleibt als eigene Zeile stehen |
+| Drift-Log: das ausgeführte Argument je Umplanung (Regelwerks-Zitate, Kommando-Belege, Rang-Argumente) | **(b)** | neue Spalte `Beleg` je Zeile — das Argument steht in der Welle-Datei, der ADR oder dem Slice, auf den die Zelle jetzt zeigt |
+
+**Gegenprobe zur Richtung (a):** `git show HEAD~5:docs/plan/planning/in-progress/roadmap.md`
+gegen die neue Fassung; jede Zeile oben nennt das Kommando, das den Satz an seinem Ziel findet.
+Die Zeilen mit **(c)** sind die einzigen, deren Fassung nur `git` hält.
+
+- **Was hat funktioniert:** Die Ausgänge fielen fast alle auf **(a)** — nicht weil die Roadmap wenig
+  Eigenes trug, sondern weil jede offene Welle eine Plan-Datei mit §2/§3 hat und jede geschlossene
+  eine Results-Notiz. Der harte Fall aus §1 löste sich an einer Stelle, die der Schnitt nicht
+  kannte: welle-13 §6 weist die vier Kandidaten-Achsen ausdrücklich in die Roadmap zurück, damit
+  ist **(c)** belegt statt geraten und kein neuer Ort nötig.
+- **Was ging anders als geplant:** Der Schnitt erwartete für die vier Kandidaten-Zeilen Ausgang
+  **(b)** und damit die Rückführung `in-progress` → `next` (§4). Sie fiel aus. Zwei Nebenbefunde
+  kamen dazu: [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
+  nennt `§Aktuelle Welle` nicht mehr (aufgehoben durch
+  [`MR-037`](../../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst)),
+  das Risiko dazu ist entfallen;
+  dafür nennen [`close-welle.md`](../../../../.claude/commands/close-welle.md) und
+  [`plan-welle.md`](../../../../.claude/commands/plan-welle.md) den Abschnitt weiterhin und
+  beschreiben die abgelöste Nachrück-Prozedur.
+- **Steering-Loop-Eintrag:** Regel geschärft — eine getilgte Aussage bekommt einen von drei
+  Ausgängen, und **(a)** verlangt das Kommando, das den Satz am Ziel findet. Der Schnitt hatte die
+  Regel als DoD-Punkt formuliert; der Lauf zeigt, dass sie die Kürzung überhaupt erst zulässig
+  macht. Auslöser: `BEO-016` (`slice-136` — 1×), gezählt, nicht verkörpert.
+- **Beobachtungs-Register (`observations.md` neben den Wellen):** neue
+  [`BEO-016`](../observations.md) (Plan-Größe gegen Liefer-Punkte), Beleg `slice-136`;
+  [`BEO-009`](../observations.md) Zähler **+1** mit Beleg `slice-136` — der Sektionsname wanderte,
+  die zwei Anweisungssätze daneben nicht.
+- **Wächter-Entscheidung (DoD 3), wörtlich für den nächsten Leser:** **Marker-Hälfte — nicht
+  gebaut, Träger [slice-125](../open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md).**
+  Dieser Slice baut keinen Sensor; er macht die Invariante wahr: `## Offene Wellen` trennt Liste
+  (folgt den Welle-Dateien) und Ruhe-Marker (folgt `in-progress/`), womit `heading`/`marker` auf
+  einen Abschnitt zeigen, in dem die Invariante driften **kann** — der Ausgang, den slice-125
+  DoD (2) als rot benennt, ist damit ausgeschlossen. **Listen-Hälfte — ebenfalls nicht gebaut,
+  Träger ist die `waves`-Entscheidung desselben Slice**, und sie hat ab jetzt zwei benannte
+  Vorbedingungen: `mode: many`, und die an der Roadmap deklarierte Abweichung (flache Welle-Datei
+  ohne Zeiger, weil dieses Repo vor dem Start-Trigger schneidet). Beide Hälften stehen als
+  unbewacht an der Roadmap; slice-125 §1 ist entsprechend nachgezogen.
+- **Folge-Slices:** keiner. Die zwei Nebenbefunde nehmen den dritten Risiko-Ausgang statt eines
+  neuen Schnitts ([`BEO-001`](../observations.md)).
+- **Risiken aus §6:** jedes mit genau einem Ausgang — siehe §6.
 - **Drei Paarungen:** dieses Repo fährt Wellen-Betrieb — sie prüft die nächste Welle-Closure.
 
 ## 8. Sub-Area-Modus-Begründung

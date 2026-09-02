@@ -51,13 +51,19 @@ Digest), jeweils mit den Flags aus [`d-check.mk`](../../../../d-check.mk):
 | dieselben Flags, **mit** `planning: {roadmap: docs/plan/planning/in-progress/roadmap.md}` | **1 Befund**: `planning-drift` auf [`roadmap.md`](../in-progress/roadmap.md) Zeile 13, Exit 1 |
 | dieselbe Config **plus** `waves: {dir: docs/plan/planning}` | **3 Befunde**: zusätzlich `wave-drift` und `wave-preview-exists` auf `welle-09`, Exit 1 |
 
-**Der erste Befund ist echt.** *Aktuelle Welle* nennt welle-10, und
-`ls docs/plan/planning/in-progress/` führte zu diesem Stand allein `roadmap.md` — kein Slice. Nach
-der Invariante ist das Drift; nach
-[`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
-Setzung 2 ist es korrekt, weil der Abschnitt **die Welle** trägt und nicht den Lifecycle-Zustand
-ihrer Slices. **Beide haben recht, und genau deshalb ist dieser Slice eine Entscheidung und keine
-Konfiguration.**
+**Der erste Befund war echt.** Der Abschnitt hieß am Mess-Stand `## Aktuelle Welle`, nannte welle-10
+und trug ausgeschriebene Trigger-Prosa, während `ls docs/plan/planning/in-progress/` allein
+`roadmap.md` führte — kein Slice. Nach der Invariante war das Drift; nach der damaligen
+Roadmap-Konvention war es korrekt, weil der Abschnitt **die Welle** trug und nicht den
+Lifecycle-Zustand ihrer Slices.
+
+**Die Frage ist seit [slice-136](../in-progress/slice-136-roadmap-traegt-die-ziel-form.md) entschieden, und
+zwar im zweiten Zweig: die Konvention hat sich geändert.** Der erste Abschnitt heißt
+`## Offene Wellen` und trägt Zeiger plus Ruhe-Marker-Mechanik; damit gilt die Invariante des Moduls
+für ihn wirklich, statt trivial. Dieser Slice zieht `heading`/`marker` also auf **diesen** Abschnitt
+und muss ihn nicht mehr auf eine Sektion legen, in der nichts driften kann — der Ausgang, den
+DoD (2) unten als **rot** benennt. Die Mess-Zahlen oben stehen an ihrem Stand und sind kein
+Erwartungswert; der erste Schritt der Umsetzung ist, sie neu zu fahren.
 
 **Und er ist flüchtig — das ist die zweite Hälfte derselben Beobachtung.** Über `fccc627`
 (`git archive HEAD | tar -x -C <kopie>`, sonst dieselbe Kopie außerhalb des Repos, netzlos, Mount
@@ -79,20 +85,21 @@ denselben Schlüsselbaum** — sie können in beliebiger Reihenfolge laufen, abe
 
 ### Die zwei Fragen, die vor dem Config-Block beantwortet sein müssen
 
-1. **Was heißt „aktiv" in diesem Repo?** Die Invariante des Moduls setzt *Welle genannt* ⟺ *Slice in
-   `in-progress/`*. Hier gilt das nicht: eine Welle kann geplant und gehoben sein, während ihre
-   Slices in `next/`/`open/` liegen (heute welle-10, Slices `080`–`085`). Entweder der `marker`/
-   `heading` wird auf eine Sektion gezogen, für die die Invariante wirklich gilt, oder die
-   Roadmap-Konvention ändert sich — **und das Zweite ist eine Norm-Frage
-   ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
-   gehört dem Architect, [`AGENTS.md`](../../../../AGENTS.md) §3.8).**
+1. **Was heißt „aktiv" in diesem Repo? — beantwortet, nicht mehr offen.** Die Invariante des Moduls
+   setzt *Welle genannt* ⟺ *Slice in `in-progress/`*. Unter dem alten Abschnittsnamen galt das
+   nicht: eine Welle konnte gehoben sein, während ihre Slices in `next/`/`open/` lagen. Der neue
+   `## Offene Wellen` trennt beides — die **Liste** folgt den Welle-Dateien, der **Ruhe-Marker**
+   folgt `in-progress/` —, und genau der Marker ist der Gegenstand der Invariante. `heading`/
+   `marker` zeigen auf diesen Abschnitt.
 2. **Wird die `waves`-Fähigkeit mitgenommen?** Sie ist opt-in im opt-in und liefert die zwei
-   zusätzlichen Befunde. `wave-preview-exists` auf `welle-09` trifft einen realen Zustand:
-   [welle-09](../welle-09-modul-15-konformitaet.md) liegt flach in `planning/` — also *aktiv oder
-   geplant* — und wird in *Nächste Wellen* nur noch in einer Kandidaten-Zeile erwähnt, während
-   *Aktuelle Welle* welle-10 führt. Ob `mode: one` (Singleton) das Modell dieses Repos ist oder
-   `many`, ist offen; **dieser Slice muss die Frage nicht lösen, aber er muss sie entscheiden** —
-   auch mit „`waves` bleibt aus, und hier steht warum".
+   zusätzlichen Befunde. Der Prüfgegenstand ist die **Listen-Hälfte** — die Bijektion zwischen den
+   Zeigern unter *Offene Wellen* und den flachen Welle-Dateien. Sie hat seit
+   [slice-136](../in-progress/slice-136-roadmap-traegt-die-ziel-form.md) zwei Vorbedingungen, die vorher
+   nicht formuliert waren: `mode: many` (mehrere offene Wellen sind der Normalfall), und die dort
+   an der Roadmap benannte Abweichung — dieses Repo schneidet die Welle-Datei vor dem
+   Start-Trigger, es gibt also flache Dateien **ohne** Zeiger. Ein Sensor, der beides nicht kennt,
+   meldet legitime Zustände als Drift. **Dieser Slice muss die Frage nicht lösen, aber er muss sie
+   entscheiden** — auch mit „`waves` bleibt aus, und hier steht warum".
 
 ## 2. Definition of Done
 
