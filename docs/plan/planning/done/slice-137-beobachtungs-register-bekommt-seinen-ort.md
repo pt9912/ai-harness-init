@@ -184,7 +184,7 @@ sie nicht**, aus drei gemessenen Gründen:
    ist in
    [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
    ausgeschrieben. Ihn zu erweitern, ohne den Eintrag nachzuziehen, erzeugt genau die Drift, die
-   [slice-131](../in-progress/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) und
+   [slice-131](../done/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md) und
    [slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md) abräumen; ihn nachzuziehen ist
    Architect-Arbeit ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Beides gehört nicht in einen
    Planner-Slice, dessen Gegenstand ein Planungs-Artefakt ist.
