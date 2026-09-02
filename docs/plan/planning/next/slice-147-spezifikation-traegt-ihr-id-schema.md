@@ -102,7 +102,7 @@ die Rollenfrage aus §6 ist entschieden — entweder durch eine benannte Quelle 
 Priorisierung mit `Verantwortlich:` = Implementer-Rolleninhaber als Default.
 
 **Keine Reihenfolge-Bindung innerhalb der Welle.** Dieser Slice hängt an keinem anderen Mitglied
-von [welle-10](../welle-10-re-baseline.md): [slice-148](slice-148-architecture-traegt-ihr-id-schema.md)
+von [welle-10](../welle-10-re-baseline.md): [slice-148](../open/slice-148-architecture-traegt-ihr-id-schema.md)
 berührt ein anderes Artefakt mit eigener Referenz-Menge, und die fortgeführte
 `harness/conventions.md`-Arbeit in [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md)
 berührt keine spec-Datei.
@@ -172,7 +172,7 @@ dasteht.
 **Vorgelagert — Sub-Area-Wahl prüfen:** eine Sub-Area, `spec/` — Greenfield-Bestand nach der
 Modus-Deklaration in [`harness/conventions.md`](../../../../harness/conventions.md), dieselbe
 Einordnung wie in [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) §8 und
-[slice-136](slice-136-roadmap-traegt-die-ziel-form.md) §8.
+[slice-136](../open/slice-136-roadmap-traegt-die-ziel-form.md) §8.
 
 **Vorgelagert — offene Beobachtungen sichten:** Register durchgegangen
 (`docs/plan/planning/observations.md`, neun Einträge `BEO-001`–`BEO-009`, Sub-Area durchweg `*`

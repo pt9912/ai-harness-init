@@ -301,7 +301,7 @@ dieses Slice; die `ID`-Schemata von `spec/spezifikation.md` und `spec/architectu
 nie als eigener DoD-Punkt, nur im Risiko-Register als *„wird Teil des Folge-Zuschnitts"* — dieser
 Zuschnitt liegt jetzt vor. Getrennt statt gebündelt, weil ihre Ripple-Prüfungen an unabhängigen
 Artefaktmengen hängen: **23** lebende Referenzstellen zeigen auf `spec/spezifikation.md#…`
-(mindestens fünf davon aus Accepted-ADRs, [slice-147](open/slice-147-spezifikation-traegt-ihr-id-schema.md)
+(mindestens fünf davon aus Accepted-ADRs, [slice-147](next/slice-147-spezifikation-traegt-ihr-id-schema.md)
 §1), **2** auf `spec/architecture.md#…` ([slice-148](open/slice-148-architecture-traegt-ihr-id-schema.md)
 §1). Beide gehören zu Durchgang 2 (*Form*) aus denselben Gründen wie 136: die Menge der
 Singleton-Artefakte ist über diesen Durchgang **nicht** eingefroren (§3), ihre Pflichtfeld-Frage

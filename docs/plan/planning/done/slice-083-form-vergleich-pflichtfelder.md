@@ -57,7 +57,7 @@ Artefakte, sieben Ausgänge:
 | [`AGENTS.md`](../../../../AGENTS.md) | **neues Pflichtfeld** | §2 Source Precedence gewinnt einen Pflicht-Rang `docs/user/*` *(falls vorhanden)* — und er ist vorhanden (`ls docs/user/` führt drei gefüllte Dateien) — **erledigt**: Rang 6 eingefügt, 8 → 9 Ränge, die davon abhängige Zahl in §3.7 (*„→ N Ränge"*) nachgezogen (`sed -n '/^## 2\. Kanonische Quellen/,/^## 3\. Harte Regeln/p' AGENTS.md \| grep -cE '^[0-9]+\. '` → **9**). Die übrigen Textänderungen (§3.3-Nuance, §3.4/Architektur-Bezug, Rahmentext §4/§5) sind Präzisierungen ohne neues Feld oder neue Sektion — **optional**, keine Nacharbeit |
 | [`harness/README.md`](../../../../harness/README.md) | **neues Pflichtfeld + neue Pflicht-Sektion** | dieselbe `docs/user/*`-Zeile in der Source-Precedence-Tabelle — **erledigt**, synchron mit `AGENTS.md`; zusätzlich verlangt `grundlagen-harness-dateien.md` §harness/README.md als Einstiegspunkt jetzt eine achte Pflichtgliederungs-Sektion `## Leseordnung` (drei bis fünf geordnete Zeiger für einen neuen Menschen) — **erledigt** |
 | [`spec/lastenheft.md`](../../../../spec/lastenheft.md) | **optional** | die Kommentar-Blöcke der Vorlage präzisieren Version-/Status-Semantik und die §7-Regeln (Tatsachenberichtigung, Personalunion-Fall), ändern aber keine sichtbare Struktur der **ausgefüllten** Datei — keine Nacharbeit |
-| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | **neues Pflichtfeld** | jede Tabelle in §2–§6 gewinnt eine `ID`-Spalte mit `SPEC-<NNN>` (fortlaufend über die Datei), §7 verliert die `ADR`-Spalte (Decken-Regel: kein ADR-Bezug in einem Spec-Stratum) — **ausgegliedert in [slice-147](../open/slice-147-spezifikation-traegt-ihr-id-schema.md)**, siehe §6 |
+| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | **neues Pflichtfeld** | jede Tabelle in §2–§6 gewinnt eine `ID`-Spalte mit `SPEC-<NNN>` (fortlaufend über die Datei), §7 verliert die `ADR`-Spalte (Decken-Regel: kein ADR-Bezug in einem Spec-Stratum) — **ausgegliedert in [slice-147](../next/slice-147-spezifikation-traegt-ihr-id-schema.md)**, siehe §6 |
 | [`spec/architecture.md`](../../../../spec/architecture.md) | **neues Pflichtfeld** | §1 vergibt `ARC-<NNN>` je Komponente, §2 referenziert sie in einer neuen Spalte, §3 vergibt `ARC-<NNN>` je externer Abhängigkeit — **ausgegliedert in [slice-148](../open/slice-148-architecture-traegt-ihr-id-schema.md)**, siehe §6 |
 | [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md) | **neues Pflichtfeld** | Output-Schema gewinnt `klasse` (sechstes Feld), die HIGH-Liste drei neue baseline-Einträge (Norm nur im Template-Kommentar · Kommentar trägt keine der fünf Kommentar-Klassen · Zustandsfeld trägt Chronik) — **erledigt**; Kopf/Versions-Kommentar auf `v5.12.0` nachgezogen (1.4.0 → 1.5.0) |
 
@@ -135,7 +135,7 @@ Stelle zeigen (§6).
 | [`AGENTS.md`](../../../../AGENTS.md) | update | §2 Source Precedence: Rang `docs/user/*` eingefügt, 8 → 9 Ränge, §3.7-Zahl nachgezogen | **erledigt** |
 | [`harness/README.md`](../../../../harness/README.md) | update | Rang `docs/user/*` (synchron zu `AGENTS.md`) und neue Pflicht-Sektion `## Leseordnung`. Die **Bindung-Spalte** der Sensors-Tabelle bleibt unberührt: `grundlagen-harness-dateien.md` §harness/README.md als Einstiegspunkt verlangt, dass sie auf die `CO-<NNN>`-ID verweist, und heute tut sie es bei **keinem** aktiven Carveout (`grep -c 'CO-00' harness/README.md`). Das ist **kein** Delta des neuen Stands — die Zeile steht wortgleich schon in `v3.5.2` —, sondern eine nie übernommene Baseline-Regel; Modul 7 ordnet den punktuellen Fund dieser Art ausdrücklich der *„Übernahme im nächsten Slice"* zu, nicht diesem Durchgang | **erledigt** (Leseordnung + Precedence-Zeile); Bindung-Spalte bewusst nicht angefasst |
 | `spec/lastenheft.md` | keine | Kommentar-Präzisierungen ohne Struktur-Delta an der ausgefüllten Datei | **optional, entfällt** |
-| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | `SPEC-<NNN>`-Spalte je Tabelle §2–§6, `ADR`-Spalte in §7 entfällt | **ausgegliedert** — [slice-147](../open/slice-147-spezifikation-traegt-ihr-id-schema.md) |
+| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | `SPEC-<NNN>`-Spalte je Tabelle §2–§6, `ADR`-Spalte in §7 entfällt | **ausgegliedert** — [slice-147](../next/slice-147-spezifikation-traegt-ihr-id-schema.md) |
 | [`spec/architecture.md`](../../../../spec/architecture.md) | update | `ARC-<NNN>` je Komponente (§1) und externer Abhängigkeit (§3), Schichten-Tabelle referenziert (§2) | **ausgegliedert** — [slice-148](../open/slice-148-architecture-traegt-ihr-id-schema.md) |
 | `.harness/skills/reviewer.md` | update | Kopf und Versions-Kommentar nennen `v3.5.2`; das Output-Schema führt fünf Felder gegen sechs der neuen Ziel-Form. Die **schreibende Rolle** benennt keine Quelle ([`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) §Kontext — dieselbe offene Frage wie beim Technik-Stratum); dieser Slice hat sie in Personalunion mit der Architect-Rolle geschrieben, ohne sie damit zu entscheiden | **erledigt** (1.4.0 → 1.5.0) |
 | [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) | update | die `cp`-Quelle der Results-Notiz existiert jetzt | **erledigt** |
@@ -183,7 +183,7 @@ Fracht dieses Laufs, wird Teil des Folge-Zuschnitts"* — dieser Slice hatte sie
 als eigene Fracht angenommen. Der Re-Schnitt liest das wörtlich: **dieser Slice bleibt bei
 DoD-Punkt 2 und schließt mit diesem Re-Cut nicht**, `spec/spezifikation.md` und
 `spec/architecture.md` werden zwei eigene Slices —
-[slice-147](../open/slice-147-spezifikation-traegt-ihr-id-schema.md) (**23** lebende
+[slice-147](../next/slice-147-spezifikation-traegt-ihr-id-schema.md) (**23** lebende
 Referenzstellen) und [slice-148](../open/slice-148-architecture-traegt-ihr-id-schema.md) (**2**),
 getrennt statt gebündelt, weil ihre Ripple-Prüfungen an unabhängigen Artefaktmengen hängen und
 keiner der beiden am anderen wartet. Für keines der beiden neuen Artefakte nennt eine kanonische
@@ -240,7 +240,7 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   verschoben hat, ohne dass ein Gate das sieht (dieselbe Klasse Lücke wie
   [`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt)
   sie für Slice-Nummern benennt). — **Ausgang: entfallen als Fracht dieses Laufs, aufgeteilt in
-  zwei eigene Slices beim Re-Schnitt vom 2026-08-31** (§4): [slice-147](../open/slice-147-spezifikation-traegt-ihr-id-schema.md)
+  zwei eigene Slices beim Re-Schnitt vom 2026-08-31** (§4): [slice-147](../next/slice-147-spezifikation-traegt-ihr-id-schema.md)
   für `spec/spezifikation.md` (**23** lebende Referenzstellen, gemessen dort §1), [slice-148](../open/slice-148-architecture-traegt-ihr-id-schema.md)
   für `spec/architecture.md` (**2**, dieselbe Messart). Beide tragen ihre eigene Ripple-Prüfung und
   ihre eigene Rollenfrage — keine Quelle benennt für sie eine schreibende Rolle
@@ -397,7 +397,7 @@ hatten das Feld organisch, der neue Eintrag bringt es beim Entstehen mit).
   [slice-150](../done/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md) — *Drei
   Adaptions-Einträge tragen den adoptierten Stand*, Datei in `open/`, Mitglied von
   [welle-10](../welle-10-re-baseline.md). Aus dem zweiten Re-Cut (§4) liegen daneben
-  [slice-147](../open/slice-147-spezifikation-traegt-ihr-id-schema.md) und
+  [slice-147](../next/slice-147-spezifikation-traegt-ihr-id-schema.md) und
   [slice-148](../open/slice-148-architecture-traegt-ihr-id-schema.md) in `open/`; sie sind nicht
   neu und bleiben unverändert.
 - **Risiken aus §6:** acht benannt
