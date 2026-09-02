@@ -19,14 +19,16 @@ Position der Ziel-Form ist als Abweichung zu begründen).
 `§2` (Schichten und Constraints, referenziert die Kennung), `§3` (externe Abhängigkeiten, vergibt
 `ARC-<NNN>`).
 
-**Verantwortlich:** — bis zur Priorisierung. **Keine Quelle benennt eine schreibende Rolle für
-dieses Artefakt** — [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) grenzt die
-Architect-Zuordnung ausdrücklich auf `AGENTS.md` §3 und den Adaptions-Block in
-`harness/conventions.md` ein (*„Über die übrigen Norm-Artefakte trifft diese ADR **keine**
-Aussage"*), und Baseline-Regelwerk `modul-03-spec.md` nennt für keines der drei Spec-Strata eine
-Rolle. `AGENTS.md` §3.8 bestätigt das ausdrücklich für dieses Artefakt. Siehe §6, Risiko
-*Rollenfrage* — dieselbe offene Frage wie [slice-147](../done/slice-147-spezifikation-traegt-ihr-id-schema.md),
-unabhängig beantwortbar, weil ein anderes Artefakt.
+**Verantwortlich:** Architect (pt9912) — **Setzung, keine Ableitung**, dieselbe wie in
+[slice-147](../done/slice-147-spezifikation-traegt-ihr-id-schema.md): keine Quelle benennt eine
+schreibende Rolle für dieses Artefakt ([`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md)
+grenzt die Architect-Zuordnung auf `AGENTS.md` §3 und den Adaptions-Block ein, Baseline-Regelwerk
+`modul-03-spec.md` nennt für keines der drei Spec-Strata eine Rolle). Besetzt wird **gegen** den
+Default aus `modul-05-planning-harness.md` §Lifecycle als State Machine
+(Implementer-Rolleninhaber), weil der Liefergegenstand ein ID-Schema für ein normatives Dokument
+ist — und bei diesem Artefakt zusätzlich, weil §1/§2 die **Komponenten- und Schichten-Sicht**
+adressierbar machen, den Gegenstand, auf den die `Schärft:`-Felder von **10** ADRs zeigen (`grep -l "^\*\*Schärft:\*\*.*architecture\\.md" docs/plan/adr/*.md | wc -l`; keine Erwartungswerte). Die offene
+Quellenfrage entscheidet das **nicht** — siehe §6, Risiko *Rollenfrage*.
 
 **Autor:** Planner. **Datum:** 2026-08-31.
 
