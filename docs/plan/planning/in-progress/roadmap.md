@@ -69,9 +69,9 @@ tragen jetzt einen Beleg — `make smoke` oben, `make full-smoke` (Exit **0**) u
 (**214** von 214 Fall-Dateien, 0 Befund(e)) stehen in
 [`slice-149`](../done/slice-149-welle-10-traegt-ihre-drei-fehlenden-belege.md) §7.
 
-**Was die Welle noch offen hat, ist ihre eigene Substanz und kein Zwischenstand.** Sechs ihrer
-fünfzehn Slices liegen nicht in `done/` — `slice-085`, `slice-131`, `slice-136`, `slice-147`,
-`slice-148` und `slice-150` —, und an dreien von ihnen hängt der Durchgang *Form*: die aus
+**Was die Welle noch offen hat, ist ihre eigene Substanz und kein Zwischenstand.** Vier ihrer
+fünfzehn Slices liegen nicht in `done/` — `slice-085`, `slice-136`, `slice-147` und
+`slice-148` —, und an dreien von ihnen hängt der Durchgang *Form*: die aus
 `slice-083` ausgegliederten `slice-136`, `slice-147` und `slice-148`. **Alle drei Durchgänge
 tragen ihren Beleg in `done/`** — *Adaptionen* (`slice-082`), *Form* (`slice-083`) und
 *Stichprobe gegen den Bestand* (`slice-084`, Ausgang *mehrere Funde*: die Korrektur trägt der
