@@ -2,8 +2,8 @@
 
 Argument: $ARGUMENTS
 
-Dieser Command führt die **Implementation**-Rolle (Modul 9) für *einen* Slice — innerhalb der
-Rollen-Sequenz Planner → Architect → Implementation → Reviewer → Verifier → Validator →
+Dieser Command führt die **Implementer**-Rolle (Modul 9) für *einen* Slice — innerhalb der
+Rollen-Sequenz Planner → Architect → Implementer → Reviewer → Verifier → Validator →
 Planner-Closure (Modul 8). **Rollen-Trennung ist Kontext-Trennung:** die nachgelagerten Rollen
 (Review, Verifikation, Validation, Closure) laufen in **frischem Kontext** (Subagent / geleerter
 Kontext), nie im Kontext, der den Code schrieb — sonst wiederholt sich derselbe blinde Fleck.
@@ -60,7 +60,7 @@ emittierten Durchsetzungsschicht):
 
 ## Nach in-progress eintreten (Modul 5 Lifecycle + Modul 8 Übergabe)
 
-9. Die Implementation erhält den Slice **in `in-progress/`** (Planner→Implementation-Übergabe,
+9. Der Implementer erhält den Slice **in `in-progress/`** (Planner→Implementer-Übergabe,
    Modul 8; `next → in-progress` = „Implementer beginnt", Modul 5). Liegt er noch in `open/`,
    zuerst dorthin verschieben (`open → next → in-progress`); `open → next` setzt dabei das
    Kopf-Feld `Verantwortlich:`. Jedes `git mv` ist ein **reiner Move, getrennt vom Inhalt
@@ -90,7 +90,7 @@ zurück zum **Plan** (13) — den Plan verfeinern, nicht den Kontext neu lesen. 
 Schritt 1 signalisiert einen Kontext-Defekt. Ein struktureller Fehlschnitt (zu groß / blockiert)
 ist eine Lifecycle-Rücksprungkante (11).
 
-## Pre-completion-Checkliste (Modul 9, Schritt 8 — letzte Handlung der Implementation-Rolle)
+## Pre-completion-Checkliste (Modul 9, Schritt 8 — letzte Handlung der Implementer-Rolle)
 
 17. Doku, ADR-Index und README aktualisieren, falls ein öffentlicher Vertrag berührt ist.
 18. Die Pre-completion-Checkliste laufen: die DoD Punkt für Punkt **behaupten** und die
@@ -101,7 +101,7 @@ ist eine Lifecycle-Rücksprungkante (11).
     ‚fertig'-Meldung"* — ein Sensor, der erst zur Wellen-Closure feuert, ist pro Slice keiner.
     **Ein nicht gelaufener Sensor ist ein Befund, kein Formfehler:** ihn wegzulassen ist eine
     Aussage („betrifft diesen Slice nicht"), die begründet werden muss. Kein Gate erzwingt das —
-    der Stop-Hook deckt nur `make gates`. Das ist die *Behauptung* der Implementation-Rolle und die
+    der Stop-Hook deckt nur `make gates`. Das ist die *Behauptung* der Implementer-Rolle und die
     *Eingabe* des Verifiers — **nicht** das finale DoD-Urteil (Modul 11: „Behauptung ohne
     Bestätigung ist die häufigste Verifier-Lücke"; eine DoD-Verletzung ist eine Verifier-only-Klasse,
     unsichtbar für Review und Tests). Ausgeführte Sensors + Restrisiken berichten.

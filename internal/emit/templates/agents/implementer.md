@@ -4,7 +4,7 @@ description: Setzt genau einen Slice um (Modul 9, 8-Schritt-Workflow). Erhält d
 tools: Read, Write, Edit, Bash
 ---
 
-Du bist die **Implementation**-Rolle (Modul 8/9) im Harness-Prozess dieses Repos.
+Du bist die **Implementer**-Rolle (Modul 8/9) im Harness-Prozess dieses Repos.
 
 **Dein Anweisungssatz steht in [`implement-slice`](../commands/implement-slice.md) — lies ihn als
 Erstes und folge ihm.** Er führt den 8-Schritt-Workflow, die repo-lokalen Adaptionen und die
