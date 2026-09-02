@@ -71,7 +71,7 @@ Planner-Kontext dieses Artefakt nicht direkt schreiben darf.
       [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)-Aussage — sie ist
       dann falsch und wird korrigiert, ebenfalls über den Folge-Slice, nicht in diesem.
 - [x] `make gates` grün.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -98,19 +98,113 @@ wurde.
 ## 6. Risiken und offene Punkte
 
 - **Die Versuchung ist die Vollinventur.** Ein Abschnitt pro Audit, rotierend; die Prozedur nennt
-  den Grund selbst — sonst verliert die Welle ihr Closure-Kriterium.
+  den Grund selbst — sonst verliert die Welle ihr Closure-Kriterium. — **Ausgang:** **entfallen**
+  → der Durchgang blieb bei genau einem Abschnitt: §9 prüft
+  `### Multi-Stage-Build: die operativen Disziplinen (Modul 14)` und dessen Regeln, keine zweite
+  Sektion und kein zweites Modul
+  (`grep -cE '^\|.*\| (ja|\*\*nein\*\*) \|' docs/plan/planning/*/slice-084-stichprobe-gegen-bestand.md`
+  → **4** Regel-Zeilen; der Glob trägt den Aufruf über den `git mv` hinweg, und die Zahl ist die
+  des geprüften Abschnitts, kein Erwartungswert —
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). Die Rückführung `in-progress` → `next` aus §4 wurde damit nicht ausgelöst.
 - **Die Rotation hat kein Gedächtnis außer der Closure-Notiz.** Welcher Abschnitt zuletzt geprüft
   wurde, steht danach in §7 dieses Slice und in `welle-10-results.md`; ein Sensor, der die Rotation
-  führt, existiert nicht. Das ist eine benannte Lücke, keine Zusage.
+  führt, existiert nicht. Das ist eine benannte Lücke, keine Zusage. — **Ausgang:** **weiter offen**
+  → Beobachtungs-Register, [`BEO-012`](../observations.md) (Sub-Area `*`, 1×, Beleg `slice-084`).
+  Kein Folge-Slice: der Eintrag steht bei 1×, der Lese-Schritt greift bei 3×. Von den zwei Trägern,
+  die dieser Punkt nannte, existiert beim Übergang nur der erste — die Results-Notiz entsteht erst
+  bei der Welle-Closure (`ls docs/plan/planning/done/welle-10-results.md` → nicht vorhanden).
 - **Eine BF-Markierung ist hier nicht die Antwort.** Sie regelt Doc ↔ Code und trifft die Achse
-  nicht, um die es geht (Baseline ↔ ausgefülltes Artefakt).
+  nicht, um die es geht (Baseline ↔ ausgefülltes Artefakt). — **Ausgang:** **entfallen** → die
+  Abgrenzung hielt über den ganzen Durchgang: Der Fund ist eine fehlende **Deklaration** — kein
+  Eintrag des Adaptions-Blocks nimmt die zwei Regeln aus (§9, Spalte *Beleg*) —, kein
+  Doc-↔-Code-Reifegrad. Er lief über den in DoD (3) vorgesehenen Weg, §8 führt alle berührten
+  Sub-Areas GF, und eine BF-Markierung wurde an keiner Stelle erwogen.
 - **Mehrere Funde sind der interessante Fall.** Dann ist nicht eine Regel offen, sondern eine
   Aussage über das ganze Repo falsch — und die Korrektur ist größer als dieser Slice. Sie wird
-  benannt und geschnitten, nicht hier erledigt.
+  benannt und geschnitten, nicht hier erledigt. — **Ausgang:** **eingetreten** → zwei der vier
+  Regeln sind zweimal nein (§9); getroffen ist damit die
+  [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)-Blankett-Klausel, nicht
+  die einzelne Regel. Folge-Slice
+  [slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) trägt die
+  Korrektur als Architect-Übergabe und liegt als Datei in `open/`. Kein Carveout: kein Gate ist
+  deswegen rot (§9, *Route*).
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Geprüfter Abschnitt (Closure-Trigger §5).**
+`### Multi-Stage-Build: die operativen Disziplinen (Modul 14)` aus `modul-14-docker-harness.md`,
+zwischen `v3.5.2` und `v5.12.0` wortgleich. Wahl, Beleg der Delta-Freiheit und die Antwort je Regel
+stehen in §9 dieses Plans und werden hier nicht gedoppelt; der Ausgang nach DoD (3) ist der Fall
+*mehrere Funde* — zwei von vier Regeln zweimal nein.
+
+**Closure-Kriterien (beobachtet, nicht behauptet):**
+
+1. **DoD vollständig.**
+   `grep -c '^- \[ \]' docs/plan/planning/*/slice-084-stichprobe-gegen-bestand.md` → **0** offene
+   Punkte (der Glob trägt den Aufruf über den `git mv` hinweg).
+2. **`make gates` grün** nach dem Commit dieser Closure-Notiz — der Stop-Hook-Stempel deckt den
+   Arbeitsbaum.
+
+- **Was hat funktioniert:** Der Schnitt fand, wonach er geschnitten war. §1 sagte zu, dass eine nie
+  übernommene und seither stabile Baseline-Regel weder einen Template-Diff noch einen Eintrag im
+  Adaptions-Durchgang erzeugt; genau zwei solche Regeln lagen im **ersten** geprüften Abschnitt.
+  Kein Gate ist ihretwegen rot (§9, *Route*), und der Delta-Weg sieht sie nicht — die gewählte
+  Unter-Sektion ist zwischen beiden Tags wortgleich (§9, `diff` über beide `git show`-Ausgaben →
+  leer). Getragen hat den Fund die **zweite** Frage aus DoD (2) — *oder als deklarierte
+  Abweichung?*: Sie verhindert den Kurzschluss, ein vorhandener ADR-Text zum Thema (hier
+  [`ADR-0003`](../../adr/0003-go-native-binaries.md), OCI-Images) sei schon die Erfüllung. Genau
+  diese Falle führt [`BEO-008`](../observations.md), und §8 hat sie **vor** der Messung benannt,
+  nicht danach.
+- **Was ging anders als geplant:** Zwei Dinge. (1) Der Plan trug einen Mangel, der vor der Messung
+  aufzulösen war: DoD (3) und die §3-Tabelle spannten gegeneinander — die eine routet jeden Fund
+  über einen Folge-Slice, die andere führte
+  [`harness/conventions.md`](../../../../harness/conventions.md) zugleich als in *diesem* Slice
+  geänderte Datei. Entschieden zugunsten von DoD (3), die §3-Tabelle ist entsprechend korrigiert
+  (§1, Ende); die Rückführung `in-progress` → `open`, die bei umgekehrter Entscheidung fällig
+  gewesen wäre, entfiel damit. (2) Die DoD dieses Plans stammt aus der Vorlage **vor** der
+  Re-Baseline und führt vier Closure-Pflichten nicht als eigene Zeilen
+  (`grep -c '^- \[ \]' .harness/baseline/v5.12.0/templates/docs/plan/planning/slice.template.md`
+  → **9** Zeilen gegen
+  `awk '/^## 2\. Definition/,/^## 3\./' docs/plan/planning/*/slice-084-stichprobe-gegen-bestand.md | grep -cE '^- \[[ x]\]'`
+  → **5**; beide Zahlen wandern mit ihrer Datei und sind keine Erwartungswerte,
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). Getragen sind die vier hier trotzdem — Beobachtungs-Register, Risiko-Ausgänge,
+  Reconciliation-Register (dieses Repo hat keinen Brownfield-Bootstrap,
+  `ls docs/plan/planning/reconciliation.md` → nicht vorhanden) und die drei Paarungen hängen nach
+  Modul 5 und 6 am **Übergang** nach `done/`, nicht an einer DoD-Zeile. Nachgezogen wird die
+  DoD-Form nicht: sie ist der Vertrag, gegen den dieser Slice geschnitten und geprüft wurde.
+- **Steering-Loop-Eintrag: eine benannte Lücke, gezählt statt verkörpert.** Ein rotierender
+  Prüf-Gegenstand — welcher Baseline-Abschnitt zuletzt gegen den ausgefüllten Bestand geprüft wurde
+  — hat keinen stehenden Ort und keinen Sensor ([`BEO-012`](../observations.md), 1×). Mit diesem
+  Slice ist nichts verkörpert: der Eintrag steht bei 1×, der Lese-Schritt greift bei 3×. Die zweite
+  Lehre des Durchgangs — dass die Blankett-Klausel von
+  [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) für einen Abschnitt falsch
+  sein kann, ohne dass ein Gate rot wird — ist keine Regel dieses Slice, sondern die Fracht von
+  [slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md): sie ändert
+  ein Architect-Artefakt ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
+- **Beobachtungs-Register (`../observations.md`):** eine neue Kennung —
+  [`BEO-012`](../observations.md) (Sub-Area `*`, 1×, Beleg `slice-084`). Kein bestehender Eintrag
+  wurde erhöht, und die beiden Kandidaten sind in §8 vor der Messung geprüft:
+  [`BEO-008`](../observations.md) bleibt bei 1× — dieser Lauf ist die **Anwendung** der Lehre, kein
+  zweites Auftreten des Kurzschlusses; [`BEO-003`](../observations.md) bleibt bei 2×, weil der
+  auslösende Lauf kein Slice-Closure-Lauf war und damit keinen formgebundenen Beleg hat.
+- **Folge-Slices:**
+  [slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) — *Modul 14
+  „Multi-Stage-Build": zwei Regeln bekommen ihren Ausgang*, liegt als Datei in `open/`. Kein
+  weiterer: Der zweite Risiko-Ausgang nahm die Register-Route, statt einen Slice zu erzeugen — genau
+  die Route, die [`BEO-001`](../observations.md) verkörpert hat.
+- **Risiken aus §6:** vier benannt
+  (`awk '/^## 6\. Risiken/,/^## 7\. Closure-Notiz/' docs/plan/planning/*/slice-084-stichprobe-gegen-bestand.md | grep -c '^- \*\*'`
+  → **4**), vier mit genau einem Ausgang — einer *eingetreten* (Folge-Slice `slice-146`), einer
+  *weiter offen* ins Register (`BEO-012`), zwei *entfallen* (keine Vollinventur · BF-Markierung an
+  keiner Stelle erwogen).
+- **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice ist
+  Mitglied von [welle-10](../welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt die
+  Paarungen (Anker · Folge-Slice · Register) auf Closure-Schritt 3c — **nach** dem `git mv` der
+  Welle-Datei, weil sie die dort erst entstehenden Einträge prüfen —, und Modul 8 §Rollen-Sequenz
+  für eine Welle weist denselben Schritt dem Planner-Kontext der Welle-Closure zu. Die hier fällige
+  Hälfte ist, die Prüfung dorthin zu übergeben, statt sie zu doppeln.
 
 ## 8. Sub-Area-Modus-Begründung
 
