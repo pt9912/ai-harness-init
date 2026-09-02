@@ -1,6 +1,6 @@
 # Architektur — ai-harness-init
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-07-24.
+**Status:** Aktiv. **Letzte Änderung:** 2026-09-02.
 
 **Hard Rule:** sprach- und meilensteinfrei — keine Wellen, Slices oder
 Commit-Hashes. Die zeitliche Schicht lebt in docs/plan/planning/ *(folgt)*.
@@ -62,27 +62,49 @@ flowchart TB
     P3 -. weiterer add-lang-Lauf .-> P3
 ```
 
+Eine Zeile je Kasten des Diagramms. Die `ARC-<NNN>` ist eine **Adresse** — damit ein Slice
+sagen kann, welche Komponente er berührt —, **keine** Anforderung. Gezählt wird fortlaufend
+**je Datei**: §3 setzt die Reihe fort, statt neu zu beginnen, und eine entfallende Zeile lässt
+ihre Nummer frei. Ein eigener Anker entsteht dabei nicht: eine Kennung in einer Tabellenzelle
+ist kein Sprungziel, der Link von außen endet weiter am Abschnitt.
+
+| ID | Komponente | Rolle |
+|---|---|---|
+| `ARC-001` | CLI / Init-Orchestrierung | Arg-Parsing und Phasen-Orchestrierung des sprach-agnostischen Init |
+| `ARC-002` | Regelwerk- und Template-Fetcher | Regelwerk **und** Templates vom gepinnten Kurs-Release holen |
+| `ARC-003` | Idempotente Ablage | Jede emittierte Datei nach ihrer Idempotenz-Klasse ablegen — konvergent oder skip-if-present |
+| `ARC-004` | Gate-Fragment-Emitter | Root-Makefile als dünner Aggregator + Gate-Fragmente je Belang |
+| `ARC-005` | Durchsetzungs-Emitter | Hooks, Gate-Nachweis, Working-Tree-Hash, Command-Guard mit gebackenem Boden |
+| `ARC-006` | Commands- und Skills-Emitter | Agenten-Workflow-Commands + Reviewer-Skill ins Ziel schreiben |
+| `ARC-007` | Doc-Chain + Sprach-ADR (Phase 2) | **Adopter-Schritt, kein Tool** — er trägt deshalb keine Zeile in §2 |
+| `ARC-008` | CLI / add-lang-Orchestrierung | Arg-Parsing `add-lang <sprache> <pfad>` mit optionalem `--arch`, wiederholbar |
+| `ARC-009` | Generator | Skelett deterministisch je `add-lang` erzeugen; `lang-renderer × arch-layout` komponieren |
+| `ARC-010` | Verdrahtung | Skelett platzieren, Gate-/blocked-Fragment droppen, a-check-Fragment nur bei schichten-tragendem Layout |
+
 ## 2. Schichten und Constraints
 
-| Schicht | Verantwortung | Darf NICHT |
-|---|---|---|
-| CLI | Arg-Parsing (Init + `add-lang <sprache> <pfad>` mit optionalem `--arch <arch>`), Phasen-Orchestrierung | Dateiinhalte erfinden; die Sprache beim Init erzwingen; unbekannte Architektur still hinnehmen (→ Exit 2) |
-| Fetcher | Regelwerk **und** Templates vom gepinnten Kurs-Release holen | floating main nutzen |
-| Placer | Jede emittierte Datei nach ihrer Idempotenz-Klasse ablegen: **konvergent** schreibt kanonisch (heilt Drift/Baseline-Upgrade), **skip-if-present** lässt Adopter-Inhalt unberührt | Adopter-Inhalt clobbern; ein Verzeichnis prunen; im Zweifel konvergent klassifizieren |
-| Gate-Emitter | Root-Makefile als **dünnen Aggregator** (benannter Glob-Include) + Gate-Fragmente je Belang; die Checks akkumulieren in eine Variable, der Nachweis läuft via **Ordnungskante** strikt zuletzt | Gate ohne existierendes Target aktivieren; ein Fragment in-place editieren; `make -j` serialisieren |
-| Enforce-Emitter | Durchsetzung (Hooks, Gate-Nachweis, Working-Tree-Hash, Command-Guard mit **gebackenem universellem Boden** + Union der blocked-Fragmente) schreiben | den Guard fail-open lassen (Boden greift immer); node/jq/OCI als Guard-Dep verlangen |
-| Commands-/Skills-Emitter | Agenten-Workflow-Commands (mit ANPASSEN-Marker) + Reviewer-Skill ins Ziel schreiben | Repo-Quell-Identität in die Artefakte tragen |
-| Generator | Skelett **deterministisch** je `add-lang` erzeugen (Tool-als-Quelle), **gemäß ADR**; **`lang-renderer × arch-layout` komponieren** — arch-invariante Bau-Gerüstung + arch-gegatetes Code-Layout (`flat` byte-identisch zum heutigen Skelett, `hexslice` = `domain`/`application` (Use-Case-Slices)/`ports`/`adapters` + Composition Root `cmd/`, `hexagonal` = `core`/`port`/`driven`/`driving` + Composition Root `cmd/`) | nicht-reproduzierbare/floating Ausgabe; ohne ADR generieren; die Bau-Gerüstung an die Architektur koppeln (sie ist arch-invariant); zwei Layouts zu einem mit zwei Kanten-Mengen verschmelzen (ihre Verzeichnisnamen sind disjunkt) |
-| Verdrahtung | Skelett am Ziel-Root platzieren + Code-Gate-Fragment + Guard-blocked-Fragment **droppen** (kein In-Place-Edit); das **a-check-Fragment (`.a-check.yml` + `a-check.mk`) nur bei schichten-tragendem Layout** droppen | nicht-laufende Targets emittieren; a-check über einem flachen (leeren) Prüfbereich aktivieren |
+Eine Schicht ist eine *Gruppierung* über Komponenten, keine eigene Sache: die erste Spalte
+nennt die `ARC-*` aus §1, die sie umfasst.
+
+| Komponente(n) | Schicht | Verantwortung | Darf NICHT |
+|---|---|---|---|
+| `ARC-001`, `ARC-008` | CLI | Arg-Parsing (Init + `add-lang <sprache> <pfad>` mit optionalem `--arch <arch>`), Phasen-Orchestrierung | Dateiinhalte erfinden; die Sprache beim Init erzwingen; unbekannte Architektur still hinnehmen (→ Exit 2) |
+| `ARC-002` | Fetcher | Regelwerk **und** Templates vom gepinnten Kurs-Release holen | floating main nutzen |
+| `ARC-003` | Placer | Jede emittierte Datei nach ihrer Idempotenz-Klasse ablegen: **konvergent** schreibt kanonisch (heilt Drift/Baseline-Upgrade), **skip-if-present** lässt Adopter-Inhalt unberührt | Adopter-Inhalt clobbern; ein Verzeichnis prunen; im Zweifel konvergent klassifizieren |
+| `ARC-004` | Gate-Emitter | Root-Makefile als **dünnen Aggregator** (benannter Glob-Include) + Gate-Fragmente je Belang; die Checks akkumulieren in eine Variable, der Nachweis läuft via **Ordnungskante** strikt zuletzt | Gate ohne existierendes Target aktivieren; ein Fragment in-place editieren; `make -j` serialisieren |
+| `ARC-005` | Enforce-Emitter | Durchsetzung (Hooks, Gate-Nachweis, Working-Tree-Hash, Command-Guard mit **gebackenem universellem Boden** + Union der blocked-Fragmente) schreiben | den Guard fail-open lassen (Boden greift immer); node/jq/OCI als Guard-Dep verlangen |
+| `ARC-006` | Commands-/Skills-Emitter | Agenten-Workflow-Commands (mit ANPASSEN-Marker) + Reviewer-Skill ins Ziel schreiben | Repo-Quell-Identität in die Artefakte tragen |
+| `ARC-009` | Generator | Skelett **deterministisch** je `add-lang` erzeugen (Tool-als-Quelle), **gemäß ADR**; **`lang-renderer × arch-layout` komponieren** — arch-invariante Bau-Gerüstung + arch-gegatetes Code-Layout (`flat` byte-identisch zum heutigen Skelett, `hexslice` = `domain`/`application` (Use-Case-Slices)/`ports`/`adapters` + Composition Root `cmd/`, `hexagonal` = `core`/`port`/`driven`/`driving` + Composition Root `cmd/`) | nicht-reproduzierbare/floating Ausgabe; ohne ADR generieren; die Bau-Gerüstung an die Architektur koppeln (sie ist arch-invariant); zwei Layouts zu einem mit zwei Kanten-Mengen verschmelzen (ihre Verzeichnisnamen sind disjunkt) |
+| `ARC-010` | Verdrahtung | Skelett am Ziel-Root platzieren + Code-Gate-Fragment + Guard-blocked-Fragment **droppen** (kein In-Place-Edit); das **a-check-Fragment (`.a-check.yml` + `a-check.mk`) nur bei schichten-tragendem Layout** droppen | nicht-laufende Targets emittieren; a-check über einem flachen (leeren) Prüfbereich aktivieren |
 
 ## 3. Externe Abhängigkeiten
 
-| System | Rolle | Substituierbar |
-|---|---|---|
-| git | Repo-Init/Checkout | nein |
-| docker | d-check-Image-Lauf (Gate) + Tool-Build-Image | nein |
-| Go-Toolchain (im gepinnten Build-Image) | Tool-Build / Cross-Compile, Docker-only | nein |
-| Kurs-Release (gepinnt) | Regelwerk + Templates (Sprachskelette erzeugt der Generator, kein Fetch) | Tag wählbar |
+| ID | System | Rolle | Substituierbar |
+|---|---|---|---|
+| `ARC-011` | git | Repo-Init/Checkout | nein |
+| `ARC-012` | docker | d-check-Image-Lauf (Gate) + Tool-Build-Image | nein |
+| `ARC-013` | Go-Toolchain (im gepinnten Build-Image) | Tool-Build / Cross-Compile, Docker-only | nein |
+| `ARC-014` | Kurs-Release (gepinnt) | Regelwerk + Templates (Sprachskelette erzeugt der Generator, kein Fetch) | Tag wählbar |
 
 > Implementierung: **Go**; Auslieferung als **native Binaries** je `GOOS`/`GOARCH`,
 > cross-kompiliert im gepinnten Build-Image (Docker-only, kein Host-`go`).
