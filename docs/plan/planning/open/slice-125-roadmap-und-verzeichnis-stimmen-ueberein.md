@@ -57,7 +57,7 @@ und trug ausgeschriebene Trigger-Prosa, während `ls docs/plan/planning/in-progr
 Roadmap-Konvention war es korrekt, weil der Abschnitt **die Welle** trug und nicht den
 Lifecycle-Zustand ihrer Slices.
 
-**Die Frage ist seit [slice-136](../in-progress/slice-136-roadmap-traegt-die-ziel-form.md) entschieden, und
+**Die Frage ist seit [slice-136](../done/slice-136-roadmap-traegt-die-ziel-form.md) entschieden, und
 zwar im zweiten Zweig: die Konvention hat sich geändert.** Der erste Abschnitt heißt
 `## Offene Wellen` und trägt Zeiger plus Ruhe-Marker-Mechanik; damit gilt die Invariante des Moduls
 für ihn wirklich, statt trivial. Dieser Slice zieht `heading`/`marker` also auf **diesen** Abschnitt
@@ -94,7 +94,7 @@ denselben Schlüsselbaum** — sie können in beliebiger Reihenfolge laufen, abe
 2. **Wird die `waves`-Fähigkeit mitgenommen?** Sie ist opt-in im opt-in und liefert die zwei
    zusätzlichen Befunde. Der Prüfgegenstand ist die **Listen-Hälfte** — die Bijektion zwischen den
    Zeigern unter *Offene Wellen* und den flachen Welle-Dateien. Sie hat seit
-   [slice-136](../in-progress/slice-136-roadmap-traegt-die-ziel-form.md) zwei Vorbedingungen, die vorher
+   [slice-136](../done/slice-136-roadmap-traegt-die-ziel-form.md) zwei Vorbedingungen, die vorher
    nicht formuliert waren: `mode: many` (mehrere offene Wellen sind der Normalfall), und die dort
    an der Roadmap benannte Abweichung — dieses Repo schneidet die Welle-Datei vor dem
    Start-Trigger, es gibt also flache Dateien **ohne** Zeiger. Ein Sensor, der beides nicht kennt,
