@@ -94,17 +94,26 @@ Stelle zeigen (§6).
       `.harness/skills/reviewer.md`, DoD-Punkt 3); drei (`harness/conventions.md`,
       `spec/spezifikation.md`, `spec/architecture.md`) sind protokolliert, aber **nicht**
       umgesetzt — Rückführung, §4/§6.
-- [ ] `Ersetzt-Baseline-Regel` steht in **jedem** Adaptions-Eintrag — den überlebenden **wie den
+- [x] `Ersetzt-Baseline-Regel` steht in **jedem** Adaptions-Eintrag — den überlebenden **wie den
       unter dem neuen Stand geschriebenen** — und nennt genau eine Baseline-Regel als Anker-Link;
       wo keine benannt werden kann, ist der Eintrag als **Fork** entschieden, nicht stillschweigend
       belassen. Die zweite Hälfte ist nicht theoretisch: Einträge, die **nach** dem Tausch
       entstehen, sind keine überlebenden und fielen aus einer Fassung heraus, die nur diese nennt —
-      ein Kriterium, das den Rückstand wachsen lässt, den es abbauen soll. Die heutige Menge liefert
-      ein Kommando, keine Zahl im Text
+      ein Kriterium, das den Rückstand wachsen lässt, den es abbauen soll. **Erledigt für alle
+      Einträge mit vollem Rumpf.** Die Menge liefern Kommandos, keine Zahl im Text
       ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
       Setzung 2): `grep -c '^### MR-' harness/conventions.md` gegen
-      `grep -c 'Ersetzt-Baseline-Regel' harness/conventions.md`. **Nicht erledigt** — Rückführung,
-      §4/§6.
+      `grep -c '^- \*\*Ersetzt-Baseline-Regel:\*\*' harness/conventions.md` und
+      `grep -c '^- \*\*Aufgehoben durch' harness/conventions.md` — tragend ist die **Gleichung**
+      (erste Zahl = Summe der zwei anderen), nicht der Betrag. **Die zwei Zahlen decken sich mit
+      Absicht nicht:** ein nach
+      [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
+      retirierter Eintrag trägt eine geschlossene Aufzählung ohne Pflichtfeld und keine Adaption,
+      die an die Stelle einer Regel treten könnte. Diese Ausnahme und die Frage, ob ein
+      nachgetragenes Pflichtfeld ein *Überschreiben* ist, sind entschieden in
+      [`MR-039`](../../../../harness/conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines);
+      dort ist auch die Folge entschieden, die vier Einträge an diesen §2 verwiesen haben (ein Fork
+      bleibt im Block und trägt sein Verdikt im Feld).
 - [x] Die **wiederkehrenden** Templates sind append-only behandelt: neue Instanzen folgen der neuen
       Form, bestehende werden nicht rückwirkend umgeschrieben. Eingeschlossen:
       [`/close-welle`](../../../../.claude/commands/close-welle.md) zieht die Results-Notiz künftig
@@ -266,6 +275,30 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   (außerhalb dieser Welle) hat `docs/plan/planning/observations.md` angelegt, und dieser Slice
   selbst schreibt keine Zeile hinein (keine Beobachtung dieses Laufs erreicht 1× einen neuen
   Sachverhalt außerhalb des bereits Protokollierten).
+- **Zwei Einträge sind am adoptierten Stand kein Delta mehr, und der Ausgang gehört nicht in ihr
+  Feld.** Der Pflichtfeld-Durchgang hat sie beim Lesen getroffen:
+  [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
+  (keine Blank-Kopie im Repo) und
+  [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+  Setzung 3 (die Verweis-Spalte nennt den annehmenden Vorgang statt eines Tickets) stehen wörtlich
+  in `v5.12.0` — der erste in `modul-02-harness-bootstrap.md` §Anmerkung zum
+  Instanziierungs-Zeitpunkt, der zweite in `grundlagen-source-precedence.md` §Spec-Stratifizierung.
+  Das ist der Freshness-Audit-Ausgang **gegenstandslos**, und der ist ein Nachfolge-Eintrag, kein
+  Edit — die Felder halten den Befund fest und entscheiden ihn nicht.
+  [`MR-036`](../../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline)
+  §Achse 2 führt Setzung 3 bislang als eigenen, nicht eingetretenen Bedarf. — **Offen:** Ausgang
+  ist bei der Closure zu ziehen (Folge-Slice oder Register-Eintrag); das Schneiden eines
+  Folge-Slice ist Planner-Arbeit.
+- **Ein Adaptions-Absatz misst gegen den abgelösten Tag und liest sich dadurch falsch herum.**
+  [`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt)
+  begründet sein Zusatzfeld gegen die Pflichtfeld-Liste von `v3.5.2` und nennt sich deshalb
+  *„keine Abweichung von einer Baseline-Regel"*; gegen `v5.12.0` gemessen ist es eine —
+  `grundlagen-traceability.md` §Herkunfts-Anker verortet die Herkunft dieses Blocks im Feld
+  `Begründung`. Der Rumpf bleibt nach
+  [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
+  unangetastet; das neue Feld trägt den geltenden Stand. — **Offen:** ob daneben eine Kopf-Marke
+  nach [`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
+  gehört, entscheidet der Eintrag, der die Aussage ablöst — und der ist noch nicht geschrieben.
 
 ## 7. Closure-Notiz (nach `done/`)
 
