@@ -7,7 +7,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Welle:** [welle-10](../welle-10-re-baseline.md) — fünfter Nachzügler neben `slice-130` bis
 `slice-133`. Die Zugehörigkeit ist **gemessen, nicht gewählt**, und sie fällt nach derselben Probe,
-die [slice-134](slice-134-adr-index-traegt-die-ziel-form.md) für den ADR-Index ins Gegenteil
+die [slice-134](../open/slice-134-adr-index-traegt-die-ziel-form.md) für den ADR-Index ins Gegenteil
 führte: *stammt der Befund aus dem Re-Baseline-Delta?* Dort nein, hier ja — die abgelöste Vorlage
 führte den ersten Abschnitt als `## Aktuelle Welle`, die neue führt ihn als `## Offene Wellen`
 (`git show c6cc56f:.harness/baseline/v3.5.2/templates/docs/plan/planning/roadmap.template.md | grep -c '^## Aktuelle Welle'`
@@ -218,7 +218,7 @@ ein Ein-Wellen-Wächter legitime Zustände als Drift meldet.
 aktivierte Modul-Liste führt es nicht (`grep '^modules:' .d-check.yml | grep -c planning` → **0**;
 `grep -c planning .d-check.yml` → **3** zählt dagegen nur Pfad-Zeichenketten und ist **nicht** der
 Sensor für diese Aussage). Träger ist
-[slice-125](slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) in
+[slice-125](../open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) in
 [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) — und **dieser Slice ist seine
 Vorbedingung, nicht sein Duplikat.** slice-125 §1 misst gegen den heutigen Stand
 `planning-drift` auf [`roadmap.md`](../in-progress/roadmap.md) **Zeile 13** — das ist die Zeile
@@ -274,7 +274,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       **Marker-Hälfte** und die **Listen-Hälfte** steht getrennt, ob dieser Slice sie schließt oder
       nicht; *nicht geschlossen* ist zulässig **und** verlangt den Grund plus den Folge-Slice, der
       sie trägt. Der Erwartungswert ist heute: beide gehen an
-      [slice-125](slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) (Marker) und dessen
+      [slice-125](../open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) (Marker) und dessen
       `waves`-Entscheidung (Liste) — dieser Slice **baut keinen Sensor**, er macht die Invariante
       wahr, an der slice-125 sonst scheitert. Aufgeschrieben wird das an der Roadmap **und** in
       §7, nicht nur hier, weil slice-125 später gegen den dann geltenden Stand misst.
@@ -311,7 +311,7 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | refactor | der Gegenstand: sieben Abschnitte auf die Ziel-Form, Kopf inklusive |
 | [welle-09](../welle-09-modul-15-konformitaet.md) · [welle-10](../welle-10-re-baseline.md) · [welle-11](../welle-11-traeger-aussage.md) · [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) | prüfen, ggf. update | Ziel für Ausgang (b) des Verbleibs-Protokolls: was die Roadmap heute allein trägt und in die Welle-Datei gehört, landet dort — **inhaltlich nur, was heute nirgends steht** |
-| [slice-125](slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) | update | seine §1-Messung nennt `roadmap.md` Zeile 13 und die Sektion `Aktuelle Welle`; nach diesem Slice zeigt sie ins Leere. Planner-Artefakt, derselbe Rollen-Lauf |
+| [slice-125](../open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) | update | seine §1-Messung nennt `roadmap.md` Zeile 13 und die Sektion `Aktuelle Welle`; nach diesem Slice zeigt sie ins Leere. Planner-Artefakt, derselbe Rollen-Lauf |
 
 **Nicht in dieser Liste, und das ist gemessen, nicht vergessen.** `Aktuelle Welle` steht an sieben
 Orten außerhalb der Zeitdokumente
@@ -431,7 +431,7 @@ Backticks).
   hier, statt dass die Zeile fehlt>.
 - **Wächter-Entscheidung (DoD 3), wörtlich für den nächsten Leser:** <Marker-Hälfte: …
   Listen-Hälfte: … — je gebaut oder mit Grund und Folge-Slice nicht gebaut>. Diese Zeile ist die,
-  die [slice-125](slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) später liest.
+  die [slice-125](../open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) später liest.
 - **Folge-Slices:** <slice-NNN (<Titel>) — ist eine Datei in `open/`>
 - **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
 - **Drei Paarungen:** dieses Repo fährt Wellen-Betrieb — sie prüft die nächste Welle-Closure.
@@ -458,7 +458,7 @@ erfüllt die Schwelle ≥ 2 von 3 Achsen: eigener Zuschnitt mit eigener ID-Reihe
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 — drei von drei. Der Schnitt ist nicht zu grob: `docs/plan/` als Ganzes trüge Planung, Carveouts
 und ADRs zusammen und vermischte drei Regel-Lagen in einem Block — dieselbe Begründung, die
-[slice-134](slice-134-adr-index-traegt-die-ziel-form.md) für `docs/plan/adr/` zieht, hier für die
+[slice-134](../open/slice-134-adr-index-traegt-die-ziel-form.md) für `docs/plan/adr/` zieht, hier für die
 Nachbar-Sub-Area.
 
 **Vorgelagert — offene Beobachtungen sichten:** die Sichtung ist **offen** — sie ist vor der

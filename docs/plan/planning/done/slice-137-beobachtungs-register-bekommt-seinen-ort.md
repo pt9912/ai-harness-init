@@ -27,7 +27,7 @@ wörtlich, eine neue Artefakt-Klasse mit eigener Lese-Pflicht falle *„zwischen
 DoD-Punkte; Durchgang 3 ist die Stichprobe **ohne** Delta. **welle-10 §6 nennt den Fall beim Namen
 und führt ihn hinaus:** *„Ein Delta, das eigene Arbeit verlangt, wird als Slice in `open/` notiert
 — sonst wächst die Welle auf die Größe des Deltas und verliert ihr Closure-Kriterium."* Bei
-[slice-136](../open/slice-136-roadmap-traegt-die-ziel-form.md) zeigten beide Konjunkte gemeinsam nach
+[slice-136](../next/slice-136-roadmap-traegt-die-ziel-form.md) zeigten beide Konjunkte gemeinsam nach
 welle-10 und waren dort nicht zu unterscheiden; hier fallen sie auseinander, und tragend ist das
 zweite: **Herkunft aus dem Delta allein begründet keine Zugehörigkeit.**
 

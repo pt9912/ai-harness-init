@@ -227,7 +227,7 @@ hier ohne Anwendungsfall.
 **Vorgelagert — Sub-Area-Wahl prüfen:** eine Sub-Area, `spec/` — Greenfield-Bestand nach der
 Modus-Deklaration in [`harness/conventions.md`](../../../../harness/conventions.md), dieselbe
 Einordnung wie in [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) §8,
-[slice-136](../open/slice-136-roadmap-traegt-die-ziel-form.md) §8 und
+[slice-136](../next/slice-136-roadmap-traegt-die-ziel-form.md) §8 und
 [slice-147](../done/slice-147-spezifikation-traegt-ihr-id-schema.md) §8.
 
 **Vorgelagert — offene Beobachtungen sichten:** Register vor der Arbeit durchgegangen
