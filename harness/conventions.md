@@ -457,6 +457,8 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 ### MR-008 — Ausfüll-Templates referenziert statt kopiert
 
+> **ÜBERHOLT: die Adaption — das Repo hält keine eigenen Kopien der Ausfüll-Templates → [`MR-041`](#mr-041--die-referenz-statt-kopie-setzung-für-ausfüll-templates-steht-jetzt-in-der-adoptierten-baseline).** Die Abgrenzung gegen [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) und ihr Nachzug vom 2026-07-21 binden für die **emittierte** Ebene fort.
+
 - **Datum:** 2026-07-17
 - **Geltungsbereich:** die fünf in slice-013 gelöschten Repo-Template-Kopien
   `docs/plan/planning/slice.template.md`, `docs/plan/planning/welle.template.md`,
@@ -1750,6 +1752,8 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 ### MR-028 — Der Wirksamkeits-Anlass steht im Eintrag, blank statt verlinkt
 
+> **ÜBERHOLT: die Einordnung „Zusatz zur Vorlagen-Form, keine Abweichung von einer Baseline-Regel" → [`MR-043`](#mr-043--ein-nachgetragenes-pflichtfeld-schlägt-die-einordnung-im-rumpf).** Das Feld `Wirksamkeits-Anlass` und seine Blank-Form binden unverändert fort.
+
 - **Datum:** 2026-08-28
 - **Geltungsbereich:** die **Form** eines Eintrags dieses Blocks. **Nicht** `docs/plan/adr/`,
   **nicht** `docs/plan/planning/**` — dort entscheidet, wer sie führt.
@@ -2626,6 +2630,8 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 ### MR-036 — Die Change-Request-Regel bei Personalunion steht jetzt in der adoptierten Baseline
 
+> **ÜBERHOLT: §Achse 2 — [`MR-015`](#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 3 als eigener, nicht eingetretener Bedarf → [`MR-042`](#mr-042--der-anlass-einer-lastenheft-änderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz).** Die übrigen Setzungen dieses Eintrags gelten fort.
+
 - **Datum:** 2026-08-31
 - **Wirksamkeits-Anlass:** slice-082 — Adaptions-Durchgang von welle-10, Achse 1.
 - **Geltungsbereich:** [`MR-015`](#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
@@ -2953,6 +2959,170 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   beim Sprung auf `v5.12.0` sortiert (slice-131, Erhebungs-Kommando in dessen §1), die Setzung
   bindet ab dem nächsten Sprung. Ändert ein künftiger Baseline-Stand das Freshness-Audit an dieser
   Stelle, ist sie gegen den dann geltenden Tag neu zu prüfen.
+
+### MR-041 — Die Referenz-statt-Kopie-Setzung für Ausfüll-Templates steht jetzt in der adoptierten Baseline
+
+- **Datum:** 2026-09-02
+- **Wirksamkeits-Anlass:** slice-150 — Korrektur eines Achse-1-Ausgangs aus slice-082 §9.
+- **Geltungsbereich:** [`MR-008`](#mr-008--ausfüll-templates-referenziert-statt-kopiert) — die
+  **Adaption** (keine eigenen Blank-Kopien; einzige Quelle ist der vendored Baum; ein neues Artefakt
+  entsteht per `cp` daraus) samt dem Absatz *Abweichung von der Baseline (Modul 2)*. **Nicht** die
+  Abgrenzung gegen [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
+  und deren Nachzug vom 2026-07-21 — sie binden fort, siehe die Kopf-Marke an MR-008.
+- **Löst auf:** die Adaption selbst.
+- **Ausgelöst durch Baseline-Stand:** `v5.12.0`.
+- **Ersetzt-Baseline-Regel:**
+  [`modul-02-harness-bootstrap.md`](../.harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md#greenfield-bootstrap-schritt-sequenz-modul-2)
+  §Anmerkung zum Instanziierungs-Zeitpunkt (Schritt 2).
+- **Gemessen, nicht vermutet — Punkt für Punkt, nicht nach Thema.** MR-008 setzt dreierlei, und der
+  adoptierte Stand sagt jedes davon selbst: *keine dauerhaft gehaltene Blank-Kopie* →
+  *„Die vendored Baseline ist deren **einzige Referenz-Form** — **keine Blank-Kopie im Repo
+  vorhalten.**"* (`grep -c 'keine Blank-Kopie im Repo' .harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md`
+  → **1**); *dieselbe Fünfer-Liste* → *„die **wiederkehrenden Artefakte** — `slice`, `welle`, weitere
+  ADRs (`NNNN-*`), `carveout`, `review-report`"*; *Entstehung pro Instanz aus dem vendored Baum* →
+  *„werden **nicht** beim Bootstrap vorab kopiert, sondern **pro Instanz** aus der vendored Baseline
+  (`.harness/baseline/<tag>/templates/…`), wenn der Workflow sie erreicht"*. Der Kurzschluss, den
+  [`BEO-008`](../docs/plan/planning/observations.md) führt — *„die Baseline behandelt jetzt dasselbe
+  Thema"* —, ist damit gerade **nicht** die Grundlage: geprüft ist die Deckung jeder einzelnen
+  Setzung, nicht die Themengleichheit.
+- **Ausgang: gegenstandslos → Rückbau, als Teil-Ablösung.** Was fällt, ist die Aussage, dieses Repo
+  **weiche** hier ab; die Praxis bleibt unverändert und wird jetzt von der Baseline getragen. Der
+  Rumpf bleibt trotzdem stehen
+  ([`ADR-0014`](../docs/plan/adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) Festlegung 2 (a):
+  *„bei Teil-Aufhebung bleibt der Rumpf, weil sein Rest bindet"*), denn zwei Aussagen darin binden
+  auf einer Ebene, über die der Baseline-Satz nichts sagt — der **emittierten**: die Abgrenzung gegen
+  [`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) und ihr Nachzug vom
+  2026-07-21 sind in [`ADR-0020`](../docs/plan/adr/0020-emittierte-modul-15-regeln.md) als Grund
+  zitiert, warum die fünf wiederkehrenden Vorlagen **nicht emittiert** werden, und die
+  Historie-Zeile `0.8.0` des Lastenhefts nennt sie ebenfalls. MR-008 bekommt die Kopf-Marke
+  ([`MR-032`](#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)), keine
+  Entfernung, kein zweiter Commit.
+- **Achse 2 — eigener Bedarf.** MR-008s Auflösungs-Trigger — *„gilt, solange das Repo seine
+  Templates nicht adaptiert"* — ist nicht eingetreten und wird durch diesen Eintrag auch nicht
+  erledigt: Er beschreibt den Fall, dass **eine** Vorlage eine echte Repo-Adaption braucht und
+  deshalb wieder als Kopie geführt wird. Das wäre dann eine neue Abweichung mit eigenem Eintrag —
+  und keine Blank-Kopie, über die der Baseline-Satz spricht. Der Trigger wandert damit nicht hierher,
+  sondern verliert mit der Adaption seinen Gegenstand.
+- **Auflösungs-Trigger:** permanent als Sachstands-Feststellung. Neu zu entscheiden erst, wenn ein
+  künftiger Baseline-Stand diese Anmerkung ändert; dann gegen den dann geltenden Tag zu messen und
+  als neuer Eintrag zu führen.
+
+### MR-042 — Der Anlass einer Lastenheft-Änderung steht nicht in der Historie, sondern in der Closure-Notiz
+
+- **Datum:** 2026-09-02
+- **Wirksamkeits-Anlass:** slice-150 — Korrektur eines Achse-1-Ausgangs aus slice-082 §9.
+- **Geltungsbereich:** [`MR-015`](#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+  Setzung 3, beide Hälften — **und** die Aussage von
+  [`MR-036`](#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline)
+  §Achse 2, die Setzung 3 als eigenen, nicht eingetretenen Bedarf führt. **Nicht** der Cutoff-Absatz
+  von MR-015 (er bindet fort, siehe dessen Kopf-Marke) und **nicht** dessen Setzungen 1 und 2 (die
+  hat MR-036 bereits erledigt).
+- **Löst auf:** MR-015 Setzung 3 und MR-036 §Achse 2. **Eine zweite Kopf-Marke an MR-015 entsteht
+  dabei nicht:** dessen Marke sagt bereits *„ÜBERHOLT: dieser Eintrag, mit einer Ausnahme"* und
+  nimmt allein den Cutoff-Absatz aus — Setzung 3 liegt in ihrer Reichweite. Die Marke bekommt
+  MR-036.
+- **Ausgelöst durch Baseline-Stand:** `v5.12.0`.
+- **Ersetzt-Baseline-Regel:**
+  [`modul-03-spec.md`](../.harness/baseline/v5.12.0/regelwerk/modul-03-spec.md)
+  §Ziel-Form: Akzeptanzkriterium — der Absatz über die Historie des Lastenhefts.
+- **Zwei Hälften, zwei Ausgänge — und die zweite ist nicht die, die der Delta-Durchgang erwartete.**
+  Setzung 3 sagt zweierlei: *(a)* die **Verweis-Spalte** nennt die annehmende Instanz statt eines
+  Tickets, *(b)* der **Anlass** — ein ADR, ein Slice-Befund — bleibt in der **Änderungs-Spalte**.
+  - *(a)* ist **gegenstandslos**: `grundlagen-source-precedence.md` §Spec-Stratifizierung sagt
+    wörtlich *„die Verweis-Spalte nennt diesen Vorgang statt eines Tickets"*
+    (`grep -c 'die Verweis-Spalte nennt diesen Vorgang statt eines' .harness/baseline/v5.12.0/regelwerk/grundlagen-source-precedence.md`
+    → **1**), und *„dieser Vorgang"* ist genau der commit-getragene annehmende Akt, den Setzung 1/2
+    beschreiben.
+  - *(b)* **widerspricht**. `modul-03-spec.md` zieht die Straten-Decke ausdrücklich durch die
+    Historie — *„Das gilt in jedem Abschnitt, auch in der Historie … wer den auslösenden Slice in
+    der Historie nennt, tut dasselbe eine Zeile später"*
+    (`grep -c 'auslösenden Slice in der Historie nennt' .harness/baseline/v5.12.0/regelwerk/modul-03-spec.md`
+    → **1**) — und weist dem Anlass ein anderes Ende zu: *„Der Anlass geht damit nicht verloren, er
+    liegt nur am richtigen Ende. Beim Lastenheft ist es der **externe CR** in der Verweis-Spalte;
+    wer im Repo bemerkt hat, dass er nötig wird, hält es auf seiner Seite fest (Closure-Notiz des
+    Slice)."* Die Änderungs-Spalte, in der Setzung 3 den Anlass halten will, ist kein Ausweg: der
+    Absatz bindet die Zeile, nicht eine Spalte.
+- **Ausgang: (a) gegenstandslos, (b) widerspricht → übernehmen.** Beide führen zum Rückbau
+  derselben Setzung, aus verschiedenen Gründen — bei *(a)* hat die Baseline dem Repo recht gegeben,
+  bei *(b)* gibt das Repo der Baseline recht. **Warum übernehmen und nicht den Widerspruch
+  benennen:** Die Baseline führt ein Argument, das MR-015 nie gewogen hat — die **Unreparierbarkeit**
+  der Historie-Zeile (*„Eine Historie-Zeile ist ein Protokoll und wird nicht rückwirkend geändert;
+  ein dort genannter ADR-Verweis zeigt nach einer Supersedure dauerhaft auf eine Entscheidung, die
+  nicht mehr gilt"*). Und sie nimmt nichts weg: MR-015 wollte den Anlass **erhalten**, die Baseline
+  gibt ihm einen Ort, an dem er reparierbar ist. **Was ab hier gilt:** eine künftige Historie-Zeile
+  des Lastenhefts nennt im Verweis den annehmenden Akt und trägt weder ADR noch Slice als Anlass;
+  der Anlass steht in der Closure-Notiz des Slice, der ihn bemerkt hat.
+- **Die bestehenden Zeilen werden NICHT umgeschrieben** — MR-015s Cutoff-Absatz bindet fort und
+  deckt genau diesen Fall; er ist der eine Teil jenes Eintrags, den MR-036 ausdrücklich stehen
+  ließ. Ein Slice, der zur Adoption dieser Regel `spec/lastenheft.md` anfasst, widerlegte sie im
+  Vollzug.
+- **Kein Wächter, und das gehört dazu.** Kein Modul aus `modules:` der `.d-check.yml` liest, was in
+  einer Historie-Zelle steht; `matrix` prüft die Referenz-Richtung und nimmt `Historie` per
+  `exclude-sections` gerade **aus**
+  ([`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)) — die Ausnahme, die
+  `grundlagen-referenz-richtung.md` selbst als *„die schlechteste Stelle"* für rottende Verweise
+  benennt. Träger ist der Rollen-Wechsel vor der Änderung.
+- **Auflösungs-Trigger:** permanent als Sachstands-Feststellung. Der frühere Trigger von Setzung 3
+  — *„fällt, sobald ein externer Auftraggeber existiert"* — geht nicht mit über: Er hing daran, dass
+  die Verweis-Form ein **Ersatz** für den fehlenden externen Beleg war; unter dem adoptierten Stand
+  ist sie die Regel selbst, und ein externer CR fügt sich in dieselbe Spalte.
+
+### MR-043 — Ein nachgetragenes Pflichtfeld schlägt die Einordnung im Rumpf
+
+- **Datum:** 2026-09-02
+- **Wirksamkeits-Anlass:** slice-150 — dritter Posten, aus dem Form-Durchgang slice-083 §6.
+- **Geltungsbereich:** [`MR-028`](#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt)
+  — die **Einordnung** *„Zusatz zur Vorlagen-Form, keine Abweichung von einer Baseline-Regel"*, und
+  darüber hinaus die **Form** jedes Eintrags dieses Blocks, dessen nachgetragenes Pflichtfeld einer
+  Einordnung im Rumpf widerspricht. **Nicht** die Setzung von MR-028 (eigenes Feld
+  `Wirksamkeits-Anlass`, blanke statt verlinkter Slice-Nummer) — sie bindet unverändert fort.
+  **Nicht** `docs/plan/adr/`, wo [`AGENTS.md`](../AGENTS.md) §3.4 gilt; **nicht** die emittierte
+  Ebene.
+- **Löst auf:** die Einordnung von MR-028, nicht seine Setzung.
+- **Ausgelöst durch Baseline-Stand:** `v5.12.0`.
+- **Ersetzt-Baseline-Regel:**
+  [`grundlagen-traceability.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-traceability.md#herkunfts-anker)
+  §Herkunfts-Anker — *„Der Adaptions-Block trägt das Muster bereits über sein Feld Begründung."*
+  Dieselbe Zelle, die MR-028s eigenes `Ersetzt-Baseline-Regel`-Feld nennt; dieser Eintrag spricht
+  aus, welche der beiden Aussagen jenes Eintrags gilt.
+- **Der Befund: zwei Sätze im selben Eintrag, gegen zwei verschiedene Tags gemessen.** MR-028s
+  Adaptions-Absatz misst gegen die Pflichtfeld-Liste der Vorlage von `v3.5.2` und schließt daraus
+  *„keine Abweichung von einer Baseline-Regel"*. Das Feld `Ersetzt-Baseline-Regel`, das
+  [`MR-039`](#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
+  Setzung 1 in jedem vor dem Sprung geschriebenen Eintrag nachträgt, misst gegen `v5.12.0` und
+  kommt zum Gegenteil. Beide Sätze sind für ihren Mess-Stand richtig
+  ([`MR-033`](#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)) —
+  aber der Block ist nach seiner Ziel-Form ein *Index der Abweichungen*, und ein Eintrag, der die
+  Leserfrage *weicht dieses Repo hier ab?* zweimal gegensätzlich beantwortet, beantwortet sie nicht.
+- **Setzung — das Feld gilt, der Rumpf bleibt, die Marke trägt den Zustand.** Widerspricht ein nach
+  [`MR-039`](#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
+  Setzung 1 nachgetragenes Pflichtfeld einer Einordnung im Rumpf, gilt das **Feld**: es ist gegen den
+  adoptierten Stand gemessen, die Einordnung gegen einen abgelösten. Der Rumpf wird dafür **nicht**
+  angefasst — die Einordnung ist die historisch korrekte Aussage über ihren Mess-Stand —, und der
+  Eintrag bekommt die Kopf-Marke nach
+  [`MR-032`](#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger), deren
+  `<Reichweite>` die **Einordnung** benennt und nicht die Setzung.
+- **Damit ist MR-032 Setzung 4 an einer Stelle erweitert, nicht umgestoßen.** Dort ist die Marke
+  fällig, wenn ein **späterer Eintrag** eine Aussage ablöst; hier steht die ablösende Aussage im
+  Eintrag selbst. Der Träger ist trotzdem ein späterer: der adoptierte Baseline-Stand, den das
+  nachgetragene Feld zitiert. Die Alternative — Nicht-Fälligkeit, weil kein späterer Eintrag
+  existiert — ließe die zwei gegensätzlichen Sätze unvermittelt nebeneinander stehen und machte die
+  Marke abhängig davon, **wo** die ablösende Aussage steht, statt davon, **dass** sie eine ist.
+- **Ausgang: teilweise überholt → engere Nachfolgerin.** MR-028 behält seinen vollen Rumpf und
+  bekommt die Kopf-Marke; die Setzung des Feldes `Wirksamkeits-Anlass` und seine Blank-Form binden
+  unverändert fort.
+- **Cutoff — ab diesem Eintrag, kein Nachrüsten.** Gebunden ist der Eintrag, dessen Widerspruch
+  festgestellt wird; der **Bestand ist kein Arbeitsauftrag.** Ob ein nachgetragenes Feld einer
+  Einordnung widerspricht, ist ein **Urteil, kein Muster**
+  ([`AGENTS.md`](../AGENTS.md) §3.6) — ein `grep` fände Einträge mit beiden Bestandteilen, nicht
+  Widersprüche zwischen ihnen —, und ein Maßstab über den Bestand wäre darum nicht einmal
+  formulierbar. Träger ist der Form-Durchgang der nächsten Re-Baseline, der diese drei Posten auch
+  gefunden hat.
+- **Auflösungs-Trigger:** permanent, solange dieser Block in der **Inline-Form** läuft; er fällt mit
+  dem Umzug in die Verzeichnis-Form, in der der Zustand die Verzeichnis-Position trägt und die
+  Kopf-Marke gegenstandslos wird
+  ([`MR-032`](#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
+  §Auflösungs-Trigger).
 
 ## Modus-Deklaration pro Sub-Area
 
