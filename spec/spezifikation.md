@@ -1,6 +1,6 @@
 # Spezifikation — ai-harness-init
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-08-02.
+**Status:** Aktiv. **Letzte Änderung:** 2026-09-02.
 
 **Bezug zum Lastenheft:** Diese Spezifikation präzisiert die in
 [`spec/lastenheft.md`](lastenheft.md) formulierten Anforderungen (`LH-*`-IDs). Bei
@@ -22,15 +22,17 @@ Entscheidung und zeigt von dort aufwärts hierher), die **Abweichung** von der
 adoptierten Baseline (repo-lokales Konventionsdokument), die **Anforderung**
 ([`spec/lastenheft.md`](lastenheft.md)) und die **Komponentensicht**.
 
-Zwei Formregeln, weil beide von außen gelesen werden:
+Drei Formregeln, weil alle drei von außen gelesen werden:
 
-- **Der bindende Text zeigt nicht abwärts.** Außerhalb der [Historie](#7-historie)
-  steht hier keine Entscheidungs- und keine Planungs-Kennung: ein Wert steht für
-  sich, das Warum findet man über die aufwärts zeigende Entscheidung. Gemessen wird
+- **Der bindende Text zeigt nicht abwärts, auch die [Historie](#7-historie) nicht.**
+  Hier steht keine Entscheidungs- und keine Planungs-Kennung: ein Wert steht für
+  sich, das Warum findet man über die aufwärts zeigende Entscheidung — sie nennt
+  ihr Ziel in ihrem `Schärft:`-Feld. Gemessen wird
   davon in `.d-check.yml` der **Link, dessen Ziel eine Entscheidungs- oder eine
   Planungs-Datei ist** (`matrix`-Klasse `spec-straten` — rot wird die Klasse des
   Ziels, nicht der Text der Kennung), und die **nackte** Entscheidungs-Kennung
-  (`ids`); eine nackte Planungs-Kennung und jede Kennung, deren Link woanders endet,
+  (`ids`); die Historie nimmt `matrix.exclude-sections` dabei aus, und eine nackte
+  Planungs-Kennung wie jede Kennung, deren Link woanders endet,
   trifft kein Muster — dort gilt die Regel ohne Wächter.
 - **Abschnittsnummern werden nie neu vergeben.** Sie sind die der vendored Vorlage
   `.harness/baseline/v5.12.0/templates/spec/spezifikation.template.md`; ein
@@ -38,6 +40,13 @@ Zwei Formregeln, weil beide von außen gelesen werden:
   seine eigene. Neu zu nummerieren verschöbe die Anker, auf die von außen gezeigt
   wird — und ein Teil dieser Zeiger steht in Dokumenten, die nicht mehr geändert
   werden dürfen.
+- **Eine `SPEC-<NNN>` wird nie neu vergeben.** Sie ist eine **Adresse**, keine
+  Anforderung: fortlaufend **je Datei** gezählt, nicht je Abschnitt, und eine
+  entfallene Zeile lässt ihre Nummer frei. Sie ist das, worauf das `Schärft:`-Feld
+  einer Entscheidung zeigen kann, statt nur den ganzen Abschnitt zu nennen — eine
+  nachrückende Nummer verschöbe genau diese Adresse. **Ein eigener Anker entsteht
+  dabei nicht:** eine Kennung in einer Tabellenzelle ist kein Sprungziel, der Link
+  von außen endet weiter am Abschnitt, und kein Sensor bemerkt eine Umbenennung.
 
 ---
 
@@ -46,10 +55,10 @@ Zwei Formregeln, weil beide von außen gelesen werden:
 Werte, die in Code, Konfiguration oder Gate-Schwelle fest sind — je mit der
 Begründung ihrer Höhe, nicht nur mit ihrer Höhe.
 
-| Name | Wert | Begründung |
-|---|---|---|
-| `model_version` — Länge | höchstens **64** Byte | `model_version` ist der einzige Rohstring unter den neun Werten, die aus dem Werkzeug-Ergebnis erfasst werden; die übrigen acht sind Zahlen oder das gegen sechs Namen normalisierte Etikett. Was die Schranke nicht erfüllt, wird **verworfen, nicht gekürzt**: 64 Byte eines Geheimnisses sind auch 64 Byte fremden Inhalts, und ein verstümmeltes Präfix ist ein falsches Protokoll, wo „unbekannt" das ehrliche ist (dieselbe fail-closed Linie wie `commandProgram`) |
-| `model_version` — Zeichensatz | geschlossen: Buchstaben, Ziffern, `.`, `_`, `-` und die Klammern `[` `]` | Die Klammern gehören zur Bezeichner-Sprache des Herstellers. **Der Zeichensatz ist eine Entscheidung unter Unsicherheit, und das gehört gesagt:** die Messung erfasste nur Schlüsselnamen und Wertlängen, nie Werte — die Gestalt eines echten `resolvedModel` ist **nicht** gemessen. Der Fehlermodus ist ein **fehlendes** Feld, nicht ein falsches, und er ist am Bestand ablesbar: trägt kein `Agent`-Span mit Zählern ein `model_version`, ist die Schranke zu eng geraten und wird **hier** geweitet, nicht im Code aufgeweicht |
+| ID | Name | Wert | Begründung |
+|---|---|---|---|
+| `SPEC-001` | `model_version` — Länge | höchstens **64** Byte | `model_version` ist der einzige Rohstring unter den neun Werten, die aus dem Werkzeug-Ergebnis erfasst werden; die übrigen acht sind Zahlen oder das gegen sechs Namen normalisierte Etikett. Was die Schranke nicht erfüllt, wird **verworfen, nicht gekürzt**: 64 Byte eines Geheimnisses sind auch 64 Byte fremden Inhalts, und ein verstümmeltes Präfix ist ein falsches Protokoll, wo „unbekannt" das ehrliche ist (dieselbe fail-closed Linie wie `commandProgram`) |
+| `SPEC-002` | `model_version` — Zeichensatz | geschlossen: Buchstaben, Ziffern, `.`, `_`, `-` und die Klammern `[` `]` | Die Klammern gehören zur Bezeichner-Sprache des Herstellers. **Der Zeichensatz ist eine Entscheidung unter Unsicherheit, und das gehört gesagt:** die Messung erfasste nur Schlüsselnamen und Wertlängen, nie Werte — die Gestalt eines echten `resolvedModel` ist **nicht** gemessen. Der Fehlermodus ist ein **fehlendes** Feld, nicht ein falsches, und er ist am Bestand ablesbar: trägt kein `Agent`-Span mit Zählern ein `model_version`, ist die Schranke zu eng geraten und wird **hier** geweitet, nicht im Code aufgeweicht |
 
 ## 5. Metriken und Tracing-Felder
 
@@ -85,48 +94,48 @@ Die Spalte ist damit **Feedforward**: ihre Alterung fängt niemand mechanisch, u
 Zeile ändert, zieht ihren Wächter von Hand nach (Sonden und Gegenproben in
 [`MR-021`](../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)).
 
-| Feld | Pflicht | Incident-Frage | Sensor |
-|---|---|---|---|
-| `seq` | Pflicht | *Fehlt ein Span?* — je Strom monoton steigend, damit der **Leser** eine Lücke sieht | `internal/span/span_test.go` · Fall 109 |
-| `ts` | Pflicht | *Wann geschah es?* | — |
-| `event` | Pflicht | *Erfolg oder Fehlschlag?* (Nach- bzw. Fehlschlag-Ereignis) | — |
-| `tool` | Pflicht | *Welches Werkzeug lief?* | `TestMandatoryFieldsAlwaysPresent` · Fall 130 |
-| `tool_use_id` | Pflicht | *Welche Ereignisse gehören zu einem Aufruf?* | `TestMandatoryFieldsAlwaysPresent` · Fall 110 |
-| `session`, `agent` | Pflicht | *Welcher Lauf war es?* — zusammen bilden sie den **Strom** | `internal/span/span_test.go` (Strom-Trennung) |
-| `agent_type` | Pflicht | *Welche Art Lauf?* — der **Subagent-Typ** der Payload, roh. **Pflicht wie `agent`**: die vier Felder `session`/`agent`/`agent_type`/`agent_role` sind ein Block, und leer ist dort eine Aussage (Haupt-Kontext), kein fehlender Wert | — |
-| `agent_role` | Pflicht | *Welche Rolle verursachte den Zugriff?* — das Pflichtfeld aus [Modul 15](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln). Gefüllt, wenn `agent_type` eine Harness-Rolle **nennt** (`planner`, `architect`, `implementer`, `reviewer`, `verifier`, `validator`). **Leer heißt UNBEKANNT, nie „rollenlos"** — s. die Lesevorschrift unten | — |
-| `slice` | Pflicht | *Auf wessen Rechnung lief der Zugriff?* — aus dem Lifecycle-Verzeichnis, Liste (kein Slice ⇒ leer und als leer erkennbar) | `internal/span/span_test.go` (Ableitung) |
-| `requirement` | Pflicht | *Gegen welche Anforderung?* — aus der `Bezug:`-Zeile der Slices, Liste | `internal/span/span_test.go` (Ableitung) |
-| `adr` | Pflicht | *Auf wessen Entscheidung lief der Zugriff?* — die dritte Korrelations-Achse aus [Modul 15 §Kernidee](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#kernidee-modul-15), aus demselben `Bezug:`-Block wie `requirement`, Liste | — |
-| `branch`, `commit` | Pflicht | *Zu welcher Änderung gehört der Zugriff?* — die dritte Korrelations-Achse aus [Modul 15](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln) (*Slice/**PR**/Agent-Rolle*), abgeleitet aus `.git/HEAD`; die PR-Nummer selbst ist nicht erreichbar, s. Abweichung 2 | `internal/span/span_test.go` (Ableitung von `branch`) · Fall 111 |
-| `status` | Pflicht | *Ging es gut?* | — |
-| `permission_mode` | Optional | *Unter welcher Berechtigungs-Lage?* | — |
-| `path` | Optional | *Was wurde wohin geschrieben/gelesen?* — nur bei namentlich gelisteten Datei-Werkzeugen | — |
-| `bytes`, `sha256_16` | Optional | *Hat sich etwas geändert?* — aus dem **Dateisystem**, nie aus der Payload | — |
-| `duration_ms` | Optional | *Wie lange dauerte der Aufruf?* — aus der Payload übernommen. Ohne sie ist **Gleichzeitigkeit nicht entscheidbar**: ein Span trägt sonst nur seinen Abschluss, und zwei Ströme lassen sich nicht überlagern | — |
-| `result_bytes` | Optional | *Wie groß war das Ergebnis?* — **nur die Länge, nie der Inhalt**; gemessen wird die **JSON-Kodierung**, wie die Payload sie trägt (samt Anführungszeichen und Escapes), nicht die Zeichenzahl des Ergebnisses. Ohne sie ist nicht entscheidbar, ob ein **einzelner** Aufruf eine Ressourcenspitze erklärt | — |
-| `program`, `argc` | Optional | *Welches Programm lief?* — erstes Token und Argument-Anzahl, nie die Kommandozeile | — |
-| `spawned_role` | Optional | *Welche Rolle lief im Subagenten — auf wessen Rechnung geht sein Verbrauch?* — aus `tool_response.agentType`, gegen die sechs kanonischen Typnamen normalisiert. **Nie** aus `tool_input.subagent_type`: das ist die *Anforderung*, nicht der *Lauf*, und es liegt auf der Argument-Achse. Eigener Feldname, weil `agent_type`/`agent_role` schon den Typ des **laufenden** Agenten führen. **ABWESEND heißt UNBEKANNT, nie „rollenlos"** — dieselbe *Lesart* wie bei `agent_role`, aber ausdrücklich **nicht** dessen Draht-Form: `agent_role` ist **Pflicht** und steht als `""` in jeder Zeile, `spawned_role` ist `omitempty` und **fehlt** bei leerem Wert. Das ist Absicht und keine Nachlässigkeit — ein `"spawned_role":""` in jedem `Bash`-Span behauptete einen Subagenten, den es nicht gab; die Present-and-empty-Regel gilt für den Vierer-Block, den **jeder** Span trägt, nicht für ein Feld, das nur ein Werkzeug erzeugt. **Unterscheidbar bleibt es am Pflichtfeld `tool`:** ein `Agent`-Span **ohne** `spawned_role` ist ein Lauf mit *unbekannter* Rolle und gehört in den Sammelposten — eine Auswertung, die nach `spawned_role: ""` sucht, findet ihn nicht und darf ihn deshalb nicht aus der Bilanz fallen lassen | `TestAgentGetsNoArgumentFields` (Herkunft und Draht-Form) und `TestFailedAgentCallCapturesNothing` (Draht-Form), `TestSpawnedRoleIsNormalised` (Normalisierung) · Fälle 128, 132, 137, 138 |
-| `input_tokens`, `output_tokens` | Optional | *Wie teuer war dieser Subagenten-Lauf?* — die Verbrauchs-Achse, ohne die eine Token-Bilanz je Rolle eine Summe statt einer Rechnung ist | `TestFailedAgentCallCapturesNothing` · Fälle 134, 136 |
-| `cache_creation_input_tokens`, `cache_read_input_tokens` | Optional | *Zahlte der Lauf den Cache oder nutzte er ihn?* — der Cache-Status, für Subagenten-Läufe **erfasst** (Abweichung 1 unten, dort auf den Rest-Zustand zurückgeschnitten) | — |
-| `total_tokens` | Optional | *Wie groß war der Lauf insgesamt?* — die Summe, die das **Werkzeug selbst** ausweist. Am eigenen Bestand nachgerechnet **ist** sie die Addition der vier Zähler, exakt, an jedem geprüften Zähler-Span. Eine Auswertung addiert sie deshalb **nicht** zu den vier, sondern gegen sie. **Hier steht bewusst keine Zahl und keine Stichprobengröße:** der Bestand unter `.harness/state/spans/` ist gitignored, maschinenlokal und wächst mit jedem Subagenten-Lauf — eine eingefrorene Rechnung ist für einen anderen Checkout ohnehin nicht nachvollziehbar. Die Probe gehört **gefahren**, nicht zitiert, und sie bleibt eine Stichprobe | — |
-| `total_duration_ms` | Optional | *Wie lange lief der Subagent wirklich?* — **nicht** `duration_ms`: das misst den Aufruf, wie der Hook ihn sieht. Die Erfassung hängt an `PostToolUse`/`PostToolUseFailure`, der Hook feuert also **nach** dem Aufruf; `duration_ms` ist die Wanduhr des ganzen Werkzeug-Aufrufs und liegt deshalb in einem Vordergrund-Lauf **über** `total_duration_ms`, um Anlauf und Rückgabe. Wer die Reihenfolge umdreht, liest die Differenz als Subagenten-Zeit. **Die Probe gehört gefahren, nicht zitiert** (hier steht darum keine Zahl): jeder `Agent`-Span mit beiden Werten zeigt sie, und ein Span, in dem `duration_ms` **unter** `total_duration_ms` liegt, wäre der Befund. Ein im **Hintergrund** gelaufener Aufruf trägt gar kein `totalDurationMs`; sein `duration_ms` ist klein, weil das Werkzeug für einen Hintergrund-Subagenten sofort nach dem Start zurückgibt. Jede Paarung gehört ihrem Aufruf; zwei Beobachtungen zu einer zu fügen ergäbe eine Messung, die niemand gemacht hat | — |
-| `total_tool_use_count` | Optional | *Wie viele Werkzeug-Aufrufe verursachte der Subagent?* — der Teiler, ohne den „Token je Aufruf" nicht rechenbar ist | — |
-| `model_version` | Optional | *Welches Modell verursachte die Kosten?* — das Label `model.version` aus [Modul 15 §Cache-Counter-Regeln](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#cache-counter-regeln), aus `tool_response.resolvedModel`, **strukturell begrenzt** (Länge und geschlossener Zeichensatz, [§3](#3-defaults-und-konstanten)). Was die Gestalt eines Bezeichners nicht hat, wird **verworfen, nicht gekürzt** | `TestResolvedModelIsStructurallyBounded` · Fall 129 |
+| ID | Feld | Pflicht | Incident-Frage | Sensor |
+|---|---|---|---|---|
+| `SPEC-003` | `seq` | Pflicht | *Fehlt ein Span?* — je Strom monoton steigend, damit der **Leser** eine Lücke sieht | `internal/span/span_test.go` · Fall 109 |
+| `SPEC-004` | `ts` | Pflicht | *Wann geschah es?* | — |
+| `SPEC-005` | `event` | Pflicht | *Erfolg oder Fehlschlag?* (Nach- bzw. Fehlschlag-Ereignis) | — |
+| `SPEC-006` | `tool` | Pflicht | *Welches Werkzeug lief?* | `TestMandatoryFieldsAlwaysPresent` · Fall 130 |
+| `SPEC-007` | `tool_use_id` | Pflicht | *Welche Ereignisse gehören zu einem Aufruf?* | `TestMandatoryFieldsAlwaysPresent` · Fall 110 |
+| `SPEC-008` | `session`, `agent` | Pflicht | *Welcher Lauf war es?* — zusammen bilden sie den **Strom** | `internal/span/span_test.go` (Strom-Trennung) |
+| `SPEC-009` | `agent_type` | Pflicht | *Welche Art Lauf?* — der **Subagent-Typ** der Payload, roh. **Pflicht wie `agent`**: die vier Felder `session`/`agent`/`agent_type`/`agent_role` sind ein Block, und leer ist dort eine Aussage (Haupt-Kontext), kein fehlender Wert | — |
+| `SPEC-010` | `agent_role` | Pflicht | *Welche Rolle verursachte den Zugriff?* — das Pflichtfeld aus [Modul 15](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln). Gefüllt, wenn `agent_type` eine Harness-Rolle **nennt** (`planner`, `architect`, `implementer`, `reviewer`, `verifier`, `validator`). **Leer heißt UNBEKANNT, nie „rollenlos"** — s. die Lesevorschrift unten | — |
+| `SPEC-011` | `slice` | Pflicht | *Auf wessen Rechnung lief der Zugriff?* — aus dem Lifecycle-Verzeichnis, Liste (kein Slice ⇒ leer und als leer erkennbar) | `internal/span/span_test.go` (Ableitung) |
+| `SPEC-012` | `requirement` | Pflicht | *Gegen welche Anforderung?* — aus der `Bezug:`-Zeile der Slices, Liste | `internal/span/span_test.go` (Ableitung) |
+| `SPEC-013` | `adr` | Pflicht | *Auf wessen Entscheidung lief der Zugriff?* — die dritte Korrelations-Achse aus [Modul 15 §Kernidee](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#kernidee-modul-15), aus demselben `Bezug:`-Block wie `requirement`, Liste | — |
+| `SPEC-014` | `branch`, `commit` | Pflicht | *Zu welcher Änderung gehört der Zugriff?* — die dritte Korrelations-Achse aus [Modul 15](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln) (*Slice/**PR**/Agent-Rolle*), abgeleitet aus `.git/HEAD`; die PR-Nummer selbst ist nicht erreichbar, s. Abweichung 2 | `internal/span/span_test.go` (Ableitung von `branch`) · Fall 111 |
+| `SPEC-015` | `status` | Pflicht | *Ging es gut?* | — |
+| `SPEC-016` | `permission_mode` | Optional | *Unter welcher Berechtigungs-Lage?* | — |
+| `SPEC-017` | `path` | Optional | *Was wurde wohin geschrieben/gelesen?* — nur bei namentlich gelisteten Datei-Werkzeugen | — |
+| `SPEC-018` | `bytes`, `sha256_16` | Optional | *Hat sich etwas geändert?* — aus dem **Dateisystem**, nie aus der Payload | — |
+| `SPEC-019` | `duration_ms` | Optional | *Wie lange dauerte der Aufruf?* — aus der Payload übernommen. Ohne sie ist **Gleichzeitigkeit nicht entscheidbar**: ein Span trägt sonst nur seinen Abschluss, und zwei Ströme lassen sich nicht überlagern | — |
+| `SPEC-020` | `result_bytes` | Optional | *Wie groß war das Ergebnis?* — **nur die Länge, nie der Inhalt**; gemessen wird die **JSON-Kodierung**, wie die Payload sie trägt (samt Anführungszeichen und Escapes), nicht die Zeichenzahl des Ergebnisses. Ohne sie ist nicht entscheidbar, ob ein **einzelner** Aufruf eine Ressourcenspitze erklärt | — |
+| `SPEC-021` | `program`, `argc` | Optional | *Welches Programm lief?* — erstes Token und Argument-Anzahl, nie die Kommandozeile | — |
+| `SPEC-022` | `spawned_role` | Optional | *Welche Rolle lief im Subagenten — auf wessen Rechnung geht sein Verbrauch?* — aus `tool_response.agentType`, gegen die sechs kanonischen Typnamen normalisiert. **Nie** aus `tool_input.subagent_type`: das ist die *Anforderung*, nicht der *Lauf*, und es liegt auf der Argument-Achse. Eigener Feldname, weil `agent_type`/`agent_role` schon den Typ des **laufenden** Agenten führen. **ABWESEND heißt UNBEKANNT, nie „rollenlos"** — dieselbe *Lesart* wie bei `agent_role`, aber ausdrücklich **nicht** dessen Draht-Form: `agent_role` ist **Pflicht** und steht als `""` in jeder Zeile, `spawned_role` ist `omitempty` und **fehlt** bei leerem Wert. Das ist Absicht und keine Nachlässigkeit — ein `"spawned_role":""` in jedem `Bash`-Span behauptete einen Subagenten, den es nicht gab; die Present-and-empty-Regel gilt für den Vierer-Block, den **jeder** Span trägt, nicht für ein Feld, das nur ein Werkzeug erzeugt. **Unterscheidbar bleibt es am Pflichtfeld `tool`:** ein `Agent`-Span **ohne** `spawned_role` ist ein Lauf mit *unbekannter* Rolle und gehört in den Sammelposten — eine Auswertung, die nach `spawned_role: ""` sucht, findet ihn nicht und darf ihn deshalb nicht aus der Bilanz fallen lassen | `TestAgentGetsNoArgumentFields` (Herkunft und Draht-Form) und `TestFailedAgentCallCapturesNothing` (Draht-Form), `TestSpawnedRoleIsNormalised` (Normalisierung) · Fälle 128, 132, 137, 138 |
+| `SPEC-023` | `input_tokens`, `output_tokens` | Optional | *Wie teuer war dieser Subagenten-Lauf?* — die Verbrauchs-Achse, ohne die eine Token-Bilanz je Rolle eine Summe statt einer Rechnung ist | `TestFailedAgentCallCapturesNothing` · Fälle 134, 136 |
+| `SPEC-024` | `cache_creation_input_tokens`, `cache_read_input_tokens` | Optional | *Zahlte der Lauf den Cache oder nutzte er ihn?* — der Cache-Status, für Subagenten-Läufe **erfasst** (Abweichung 1 unten, dort auf den Rest-Zustand zurückgeschnitten) | — |
+| `SPEC-025` | `total_tokens` | Optional | *Wie groß war der Lauf insgesamt?* — die Summe, die das **Werkzeug selbst** ausweist. Am eigenen Bestand nachgerechnet **ist** sie die Addition der vier Zähler, exakt, an jedem geprüften Zähler-Span. Eine Auswertung addiert sie deshalb **nicht** zu den vier, sondern gegen sie. **Hier steht bewusst keine Zahl und keine Stichprobengröße:** der Bestand unter `.harness/state/spans/` ist gitignored, maschinenlokal und wächst mit jedem Subagenten-Lauf — eine eingefrorene Rechnung ist für einen anderen Checkout ohnehin nicht nachvollziehbar. Die Probe gehört **gefahren**, nicht zitiert, und sie bleibt eine Stichprobe | — |
+| `SPEC-026` | `total_duration_ms` | Optional | *Wie lange lief der Subagent wirklich?* — **nicht** `duration_ms`: das misst den Aufruf, wie der Hook ihn sieht. Die Erfassung hängt an `PostToolUse`/`PostToolUseFailure`, der Hook feuert also **nach** dem Aufruf; `duration_ms` ist die Wanduhr des ganzen Werkzeug-Aufrufs und liegt deshalb in einem Vordergrund-Lauf **über** `total_duration_ms`, um Anlauf und Rückgabe. Wer die Reihenfolge umdreht, liest die Differenz als Subagenten-Zeit. **Die Probe gehört gefahren, nicht zitiert** (hier steht darum keine Zahl): jeder `Agent`-Span mit beiden Werten zeigt sie, und ein Span, in dem `duration_ms` **unter** `total_duration_ms` liegt, wäre der Befund. Ein im **Hintergrund** gelaufener Aufruf trägt gar kein `totalDurationMs`; sein `duration_ms` ist klein, weil das Werkzeug für einen Hintergrund-Subagenten sofort nach dem Start zurückgibt. Jede Paarung gehört ihrem Aufruf; zwei Beobachtungen zu einer zu fügen ergäbe eine Messung, die niemand gemacht hat | — |
+| `SPEC-027` | `total_tool_use_count` | Optional | *Wie viele Werkzeug-Aufrufe verursachte der Subagent?* — der Teiler, ohne den „Token je Aufruf" nicht rechenbar ist | — |
+| `SPEC-028` | `model_version` | Optional | *Welches Modell verursachte die Kosten?* — das Label `model.version` aus [Modul 15 §Cache-Counter-Regeln](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#cache-counter-regeln), aus `tool_response.resolvedModel`, **strukturell begrenzt** (Länge und geschlossener Zeichensatz, [§3](#3-defaults-und-konstanten)). Was die Gestalt eines Bezeichners nicht hat, wird **verworfen, nicht gekürzt** | `TestResolvedModelIsStructurallyBounded` · Fall 129 |
 
 **Welches Werkzeug gibt was preis — die namentliche Liste.** Die Feldtabelle oben sagt
 *„nur bei namentlich gelisteten Werkzeugen"*; hier stehen die Namen. Ein Werkzeug
 aufzunehmen ist eine **Entscheidung** und wird hier eingetragen, nicht im Code
 nachgezogen.
 
-| Werkzeug-Name | erfasst zusätzlich zu Name und Status |
-|---|---|
-| `Write`, `Edit`, `MultiEdit`, `NotebookEdit` | `path` (aus `file_path`/`notebook_path`) + `bytes` + `sha256_16` **aus dem Dateisystem** |
-| `Read` | `path` — **kein** Fingerabdruck (er wäre auf einem gelesenen Pfad ein Bestätigungs-Orakel ohne Incident-Frage) |
-| `Bash` | `program` (erstes Token nach übersprungenen `NAME=WERT`-Präfixen) + `argc` |
-| `BashOutput` | **nichts** — seine Eingabe ist eine Shell-Kennung, keine Kommandozeile |
-| `Agent` | `spawned_role` + die vier `usage`-Zähler + `total_tokens` + `total_duration_ms` + `total_tool_use_count` + `model_version` — **neun Werte aus sechs Schlüsseln**, alle aus `tool_response` und alle nach der **Positiv-Liste** (nächster Punkt). **Kein** `path`, `program`, `argc`, `bytes`, `sha256_16`: aus `Agent`s `tool_input` erreicht nichts den Span (dort liegen `subagent_type`, `prompt` und `description`; `ToolInput` in `internal/span/span.go` führt genau drei Felder) |
-| **jedes andere** | **nichts** — der fail-closed Default |
+| ID | Werkzeug-Name | erfasst zusätzlich zu Name und Status |
+|---|---|---|
+| `SPEC-029` | `Write`, `Edit`, `MultiEdit`, `NotebookEdit` | `path` (aus `file_path`/`notebook_path`) + `bytes` + `sha256_16` **aus dem Dateisystem** |
+| `SPEC-030` | `Read` | `path` — **kein** Fingerabdruck (er wäre auf einem gelesenen Pfad ein Bestätigungs-Orakel ohne Incident-Frage) |
+| `SPEC-031` | `Bash` | `program` (erstes Token nach übersprungenen `NAME=WERT`-Präfixen) + `argc` |
+| `SPEC-032` | `BashOutput` | **nichts** — seine Eingabe ist eine Shell-Kennung, keine Kommandozeile |
+| `SPEC-033` | `Agent` | `spawned_role` + die vier `usage`-Zähler + `total_tokens` + `total_duration_ms` + `total_tool_use_count` + `model_version` — **neun Werte aus sechs Schlüsseln**, alle aus `tool_response` und alle nach der **Positiv-Liste** (nächster Punkt). **Kein** `path`, `program`, `argc`, `bytes`, `sha256_16`: aus `Agent`s `tool_input` erreicht nichts den Span (dort liegen `subagent_type`, `prompt` und `description`; `ToolInput` in `internal/span/span.go` führt genau drei Felder) |
+| `SPEC-034` | **jedes andere** | **nichts** — der fail-closed Default |
 
 Die Werkzeug-Achse ist der Werkzeug-**Name**, nicht die Gestalt der Antwort; bewacht von
 `TestOnlyAgentToolGetsResponseValues` · Fall 133, und die `Agent`-Zeile zusätzlich von
@@ -730,13 +739,14 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
 Schnittstellen zu Systemen, die uns nicht gehören, je mit der Fassung, gegen die
 festgelegt ist.
 
-| System | Version | Vertrag-Datei |
-|---|---|---|
+| ID | System | Version | Vertrag-Datei |
+|---|---|---|---|
 
 ## 7. Historie
 
-| Datum | Änderung | ADR |
-|---|---|---|
-| 2026-08-01 | Initial | — |
-| 2026-08-02 | §5 nimmt das Span-Schema auf (Feldtabelle mit Sensor-Spalte, Werkzeug-Liste, Positiv-Liste, Start-Konvention, sechs erklärte Abweichungen, Wächter-Bindungen); §3 nimmt die strukturelle Schranke um `model_version` auf | [`ADR-0013`](../docs/plan/adr/0013-technik-stratum-als-zielort.md) |
-| 2026-08-28 | §5: Der Absatz über die kanonischen Agenten-Typ-Namen nennt keine Abweichung mehr — der adoptierte Baseline-Stand `v5.12.0` schreibt die dritte Rolle `Implementer` statt `Implementation`, womit die sechs Bezeichner die sechs Rollen-Namen des Moduls in Kleinschreibung sind. Der Wert selbst ist unverändert | [`ADR-0023`](../docs/plan/adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) |
+| Datum | Änderung |
+|---|---|
+| 2026-08-01 | Initial |
+| 2026-08-02 | §5 nimmt das Span-Schema auf (Feldtabelle mit Sensor-Spalte, Werkzeug-Liste, Positiv-Liste, Start-Konvention, sechs erklärte Abweichungen, Wächter-Bindungen); §3 nimmt die strukturelle Schranke um `model_version` auf |
+| 2026-08-28 | §5: Der Absatz über die kanonischen Agenten-Typ-Namen nennt keine Abweichung mehr — der adoptierte Baseline-Stand `v5.12.0` schreibt die dritte Rolle `Implementer` statt `Implementation`, womit die sechs Bezeichner die sechs Rollen-Namen des Moduls in Kleinschreibung sind. Der Wert selbst ist unverändert |
+| 2026-09-02 | §3, §5 und §6 tragen die `ID`-Spalte mit fortlaufendem `SPEC-<NNN>`; §7 führt keine `ADR`-Spalte mehr |
