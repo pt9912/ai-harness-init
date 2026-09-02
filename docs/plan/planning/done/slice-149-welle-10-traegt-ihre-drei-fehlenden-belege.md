@@ -64,7 +64,7 @@ ausführbar. **Nicht Gegenstand dieses Slice** ist die inhaltliche Arbeit der
 [slice-131](../done/slice-131-praesens-aussage-gegen-den-gepinnten-stand.md),
 [slice-136](../open/slice-136-roadmap-traegt-die-ziel-form.md),
 [slice-147](../done/slice-147-spezifikation-traegt-ihr-id-schema.md),
-[slice-148](../in-progress/slice-148-architecture-traegt-ihr-id-schema.md)) — jedes
+[slice-148](../done/slice-148-architecture-traegt-ihr-id-schema.md)) — jedes
 davon hat seinen eigenen Träger und wird hier nicht gedoppelt. **Ebenfalls
 nicht Gegenstand:** die eigentliche `welle-10-results.md` und der `git mv` der
 Welle-Datei nach `done/` — Modul 6 setzt dafür voraus, dass **alle** Mitglieder
@@ -178,7 +178,7 @@ machen will, geht über [`AGENTS.md`](../../../../AGENTS.md) §3.8.
   Lücke, die erst [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md),
   [slice-136](../open/slice-136-roadmap-traegt-die-ziel-form.md),
   [slice-147](../done/slice-147-spezifikation-traegt-ihr-id-schema.md),
-  [slice-148](../in-progress/slice-148-architecture-traegt-ihr-id-schema.md),
+  [slice-148](../done/slice-148-architecture-traegt-ihr-id-schema.md),
   [slice-085](../open/slice-085-emittierte-ebene-zieht-nach.md) oder
   [slice-084](../done/slice-084-stichprobe-gegen-bestand.md) beheben)
   — dann zurück nach `open/` mit dem Fund als neuem Risiko oder Carveout.
@@ -245,7 +245,7 @@ dasteht.
   [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md),
   [slice-136](../open/slice-136-roadmap-traegt-die-ziel-form.md),
   [slice-147](../done/slice-147-spezifikation-traegt-ihr-id-schema.md),
-  [slice-148](../in-progress/slice-148-architecture-traegt-ihr-id-schema.md) oder
+  [slice-148](../done/slice-148-architecture-traegt-ihr-id-schema.md) oder
   [slice-085](../open/slice-085-emittierte-ebene-zieht-nach.md) vollständig
   konform wird. — **Ausgang:** **entfallen** → der Lauf endete Exit **0** ohne
   Befund (Kern-Zeile in §7, Liefer-Punkt 1). Keiner der fünf oben genannten

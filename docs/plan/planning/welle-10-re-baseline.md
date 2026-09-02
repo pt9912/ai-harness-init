@@ -302,7 +302,7 @@ nie als eigener DoD-Punkt, nur im Risiko-Register als *„wird Teil des Folge-Zu
 Zuschnitt liegt jetzt vor. Getrennt statt gebündelt, weil ihre Ripple-Prüfungen an unabhängigen
 Artefaktmengen hängen: **23** lebende Referenzstellen zeigen auf `spec/spezifikation.md#…`
 (mindestens fünf davon aus Accepted-ADRs, [slice-147](done/slice-147-spezifikation-traegt-ihr-id-schema.md)
-§1), **2** auf `spec/architecture.md#…` ([slice-148](in-progress/slice-148-architecture-traegt-ihr-id-schema.md)
+§1), **2** auf `spec/architecture.md#…` ([slice-148](done/slice-148-architecture-traegt-ihr-id-schema.md)
 §1). Beide gehören zu Durchgang 2 (*Form*) aus denselben Gründen wie 136: die Menge der
 Singleton-Artefakte ist über diesen Durchgang **nicht** eingefroren (§3), ihre Pflichtfeld-Frage
 gilt für jedes Element weiter, unabhängig davon, wann es in den Schnitt kommt. Für keines der
