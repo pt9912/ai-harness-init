@@ -540,6 +540,21 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   (`codepaths.exempt-paths`, `codepaths.ignore-refs`), [`docs/reviews/`](../docs/reviews/)
   (entfernte Zeilen-Marker), diese Datei (§Baseline-Version + MR-008-Geltungsbereich);
   ergänzt [`MR-001`](#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids).
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**.
+  Der Pin-Sprung tritt an keine Stelle: er **ist** der bewusste Digest-Commit, den
+  [`modul-14-docker-harness.md`](../.harness/baseline/v5.12.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)
+  verlangt (*„Update = bewusster Commit, der nur die Digest-Zeile anhebt"*), und die Neu-Erzeugung
+  bei jedem Bump steht in
+  [`modul-02-harness-bootstrap.md`](../.harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
+  §Gate-Fragment `d-check.mk`. Die zwei Ventil-Achsen ebenso wenig: das vendored Startgerüst
+  `.harness/baseline/v5.12.0/templates/.d-check.yml` kennt weder `codepaths.exempt-paths` noch
+  `codepaths.ignore-refs`, und die Klasse, die `exempt-paths` ausnimmt, führt
+  [`grundlagen-harness-dateien.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-harness-dateien.md#jedes-artefakt-hat-einen-konsumenten)
+  §Jedes Artefakt hat einen Konsumenten als **Lauf-Beleg** — *„über Läufe hinweg werden sie nicht
+  wieder gelesen und müssen es nicht"* —, ohne eine Aussage über den Prüfumfang eines Gates. Die
+  Einordnung *„beide sind Scoping, keine Gate-Lockerung"* steht in
+  [`MR-029`](#mr-029--der-scanignore-zensus-wandert-und-sein-dritter-grund-ist-keine-scoping-aussage)
+  auf dem geltenden Stand. Gemessen am adoptierten Stand `v5.12.0`.
 - **Adaption:** Das gepinnte d-check-Image springt von **v0.10.0** auf **v0.46.0**
   (Digest in `harness.mk`, gegen den Release belegt,
   [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Zwei seit d-check 0.34.0
@@ -580,6 +595,20 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Datum:** 2026-07-18
 - **Geltungsbereich:** `d-check.mk` (aus `harness.mk` umbenannt), `Makefile` (`include`), §Baseline,
   [`harness/README.md`](README.md) §Sensors; ergänzt [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile).
+- **Ersetzt-Baseline-Regel:**
+  [`modul-02-harness-bootstrap.md`](../.harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
+  §Gate-Fragment `d-check.mk` (Schritt 2). Der Kern jener Regel ist adoptiert — das Fragment wird
+  nicht handgeschrieben, sondern aus der gepinnten d-check erzeugt und bei jedem Bump neu —, an
+  **zwei** Punkten tritt der Eintrag an ihre Stelle: (a) die Einbindung ist `include d-check.mk`
+  statt des dort geschriebenen `-include` (`grep -n 'd-check.mk' Makefile`), also fail-closed gegen
+  ein fehlendes Fragment statt tolerant; (b) das Target `doc-check` wird von Hand zu `docs-check`,
+  obwohl derselbe Abschnitt sagt *„Das Tool pflegt die Recipe-Form (`--network none`,
+  Target-Set)"*. Der Rename richtet das Fragment auf den Namen aus, den die Baseline an anderer
+  Stelle selbst führt —
+  [`modul-13-quality-gates.md`](../.harness/baseline/v5.12.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin)
+  nennt das genutzte Gate `docs-check` —, bleibt aber eine Hand-Änderung an einer tool-gepflegten
+  Form. Setzung 2 (nur `docs-check` ist behauptet) ersetzt nichts: sie ist jene Hard Rule wörtlich.
+  Gemessen am adoptierten Stand `v5.12.0`.
 - **Adaption:** Das handgepflegte `harness.mk` wird durch das **tool-generierte** Fragment
   `d-check.mk` (aus `d-check --print-mk`, v0.46.0) ersetzt — die Ziel-Form
   (`.harness/baseline/<tag>/templates/Makefile`) segnet das ausdrücklich ab („Fragment frisch
@@ -643,6 +672,18 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Geltungsbereich:** `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`), `.d-check.yml`
   (`codepaths.check-lines`), `internal/emit/emit.go` (emittierter Default-Pin), §Baseline-Version;
   setzt [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile)/[`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert) fort.
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**.
+  Am adoptierten Stand `v5.12.0` kennt das Regelwerk weder das aktivierte Property noch das
+  verworfene Modul (`grep -rl 'check-lines\|citations' .harness/baseline/v5.12.0/regelwerk/` ist
+  leer, Exit 1); es regelt das Doku-Gate über das Startgerüst
+  `.harness/baseline/v5.12.0/templates/.d-check.yml` und über die Regel, dass der Prüfumfang mit
+  den Artefakten wächst — an keine von beiden tritt eine additive Härtung am schon aktiven
+  `codepaths`. Auch der **Verzicht** auf `citations` ist keine Abweichung, sondern die Anwendung
+  von
+  [`modul-13-quality-gates.md`](../.harness/baseline/v5.12.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin)
+  §Hard Rule (Doku-Disziplin): *„Vorhanden ≠ behauptet"* — ein Modul über leerem Direktiven-Korpus
+  wäre ein behauptetes Gate ohne Deckung. Pin-Sprung und Trockenlauf folgen derselben Doktrin wie
+  in [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile).
 - **Adaption:** Das gepinnte d-check-Image springt **v0.46.0 → v0.50.0** (Digest in
   `d-check.mk`, **dreifach belegt**: lokaler RepoDigest · d-check-Closure-Notiz/Release-Run ·
   `imagetools`-Registry-Inspektion, [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Die seit v0.50.0 verfügbare
@@ -685,6 +726,15 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Datum:** 2026-07-19
 - **Geltungsbereich:** `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`), `internal/emit/emit.go`
   (emittierter Default-Pin), §Baseline-Version; setzt [`MR-011`](#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines) fort.
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
+  und er setzt keine Abweichung: er stellt eine Vorbedingung her, die die Baseline selbst nennt.
+  [`modul-02-harness-bootstrap.md`](../.harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
+  §Freshness-Audit der vendored Baseline führt das Modul am adoptierten Stand `v5.12.0`
+  namentlich — *„d-check `sources` automatisiert die Asset-Prüfung … deckt die Integritäts-Hälfte
+  ab, ersetzt die Release-Listen-Prüfung nicht"* —, und dass es hier **nicht** in `modules:` steht,
+  folgt aus derselben Stelle: der Audit ist eine *„Netz-Operation, außerhalb der Gates"*. Verfügbar
+  machen ohne aktivieren tritt an keine Regel; es hält [`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
+  ein, bis der Prüfbereich existiert.
 - **Adaption:** Das gepinnte d-check-Image springt **v0.50.0 → v0.51.1** (Digest
   `sha256:fede3d02…`, **dreifach belegt**: lokaler RepoDigest · `imagetools` · d-check-`version.md`/
   Handbuch, [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). **Zweck:** das opt-in-Modul `sources`
@@ -708,6 +758,16 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Datum:** 2026-07-19
 - **Geltungsbereich:** `Makefile` (`regelwerk-check`-Recipe), `.d-check.yml` (`sources:`-Block),
   `test/sources-pin.bats` (Kopplung); nutzt das mit [`MR-012`](#mr-012--d-check-pin-v0511-sources-verfügbar) verfügbar gemachte Modul.
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
+  und er setzt keine Abweichung: er vollzieht
+  [`modul-02-harness-bootstrap.md`](../.harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
+  §Freshness-Audit der vendored Baseline Punkt für Punkt — Netz-Operation außerhalb der Gates,
+  Asset-Prüfung durch `sources`, und die dort gezogene Grenze (*„ersetzt die
+  Release-Listen-Prüfung nicht"*) trägt in diesem Repo `make baseline-freshness`
+  ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)). Zwei-Pin-Kopplung und
+  Unpack-Setzung füllen, was die Baseline zur **Ablage** des Hashes offen lässt: sie verlangt den
+  Pin, benennt aber keine Datei, in der er kanonisch steht, und keine Prüfung gegen eine zweite
+  Fassung. Eine Lücke, keine Abweichung. Gemessen am adoptierten Stand `v5.12.0`.
 - **Adaption:** Das Maintenance-Target `make regelwerk-check` (Asset-Content-Drift der vendored
   Baseline gegen den Upstream) wird vom Eigenbau (`curl` + `sha256sum`) auf das d-check-Modul
   `sources` (opt-in, Netz, seit v0.51.0) umgestellt — „Tools verteilen statt Skripte pflegen". Der
@@ -739,6 +799,18 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   `ci-lint`-Target, in `gates`), [`AGENTS.md`](../AGENTS.md) §4, [`harness/README.md`](README.md) §Sensors;
   löst die seit [`MR-003`](#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung) offene
   „CI ist dort das Netz"-Restlücke ein.
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
+  und er setzt keine Abweichung: er löst eine Lücke ein, die die Baseline selbst benennt.
+  [`grundlagen-durchsetzungsschicht.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-durchsetzungsschicht.md#grenzen--ehrlich-benannt)
+  §Grenzen — ehrlich benannt sagt zum inhaltsbasierten Nachweis: *„Der Inhalts-Nachweis hat eine
+  Lücke bei frischem Klon bzw. gelöschtem State mit cleanem Tree (kein Nachweis prüfbar) — dort ist
+  **CI das Netz**."* Genau diesen Satz baut der Eintrag. Die vier Setzungen treten an keine Regel:
+  das Regelwerk am adoptierten Stand `v5.12.0` schreibt keinen CI-Aufbau vor — es verlangt, dass
+  lokal und CI dasselbe gepinnte Image fahren
+  ([`modul-14-docker-harness.md`](../.harness/baseline/v5.12.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)),
+  und `ci-lint` als Gate hält
+  [`modul-13-quality-gates.md`](../.harness/baseline/v5.12.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin)
+  §Hard Rule (Doku-Disziplin) ein, statt von ihr abzuweichen: der Prüfbereich ist nicht leer.
 - **Adaption:** GitHub Actions fährt bei **jedem Push und PR** `make gates` + `make smoke` +
   `make mutate` — jeder Job **frisch ausgecheckt**. Das schließt die
   [`MR-003`](#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)-Restlücke: der lokale
@@ -818,6 +890,21 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Hard-Rule-Katalog gehört, entscheidet der Slice, der ihren Sensor baut (s. §Durchsetzung).
   Adoptiert den Normativ-Delta, den die Baseline `v3.5.2` mitbringt
   (`.harness/baseline/v3.5.2/regelwerk/grundlagen-konventionen.md`, §Spec-Stratifizierung).
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
+  und der Grund ist derselbe wie bei
+  [`MR-008`](#mr-008--ausfüll-templates-referenziert-statt-kopiert): **die Baseline schreibt die
+  Setzung inzwischen selbst.** Die einzige Abweichung, die dieser Eintrag je beanspruchte, ist
+  Setzung 3 — *„die einzige Abweichung vom Baseline-Wortlaut"*, sagt sie über sich —, und
+  [`grundlagen-source-precedence.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-source-precedence.md#spec-stratifizierung)
+  §Spec-Stratifizierung sagt am adoptierten Stand `v5.12.0` genau das: *„Der Träger ist dann der
+  **Commit**: Ein angenommener Change Request ändert in einem eigenen Commit ausschließlich das
+  Lastenheft und liegt vor dem Slice, der ihn umsetzt; die Verweis-Spalte nennt diesen Vorgang
+  statt eines Tickets."* Was nach der Kopf-Marke oben hier fort bindet, ist der
+  **Cutoff-Absatz**, und ein Cutoff tritt an keine Stelle einer Regel: er nimmt einen Bestand von
+  einer Prüfung aus, die die Baseline nicht kennt. **Welcher Ausgang aus der Deckung folgt**,
+  entscheidet ein Nachfolge-Eintrag und nicht dieses Feld —
+  [`MR-036`](#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline)
+  §Achse 2 führt Setzung 3 bislang als eigenen, nicht eingetretenen Bedarf.
 - **Der adoptierte Wortlaut** (verbatim aus dem vendored Baum, nicht paraphrasiert):
 
   > „Change Request" ist **bewusst kein Harness-Konstrukt** — kein `CR-*`-ID-Schema, keine eigene
