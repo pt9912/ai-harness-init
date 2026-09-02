@@ -81,7 +81,7 @@ Stelle zeigen (§6).
       benannt: Kopf und Versions-Kommentar erklären `v3.5.2` zur Baseline (`grep -n 'v3\.5\.2'
       .harness/skills/reviewer.md`), und `modul-10-review-harness.md` führt im Output-Schema ein
       **sechstes** Feld `klasse`, das der Skill nicht hat. **Der Zuschnitt ist korrigiert, nicht
-      gewachsen:** [slice-085](../open/slice-085-emittierte-ebene-zieht-nach.md) führte den Skill in §3, und
+      gewachsen:** [slice-085](../next/slice-085-emittierte-ebene-zieht-nach.md) führte den Skill in §3, und
       das war eine Ebenen-Verwechslung — dort geht es um das **emittierte** Repo, hier um die
       ausgefüllten Artefakte **dieses**. Dieselbe Trennung, die der Absatz unter der Plan-Tabelle
       für die Commands zieht. **Die Aufzählung ist extensional, und ein Artefakt ist ausdrücklich
@@ -141,7 +141,7 @@ Stelle zeigen (§6).
 | [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) | update | die `cp`-Quelle der Results-Notiz existiert jetzt | **erledigt** |
 
 Die **emittierte** Fassung derselben Commands gehört zu
-[slice-085](../open/slice-085-emittierte-ebene-zieht-nach.md) — zwei Ebenen, zwei Verträge.
+[slice-085](../next/slice-085-emittierte-ebene-zieht-nach.md) — zwei Ebenen, zwei Verträge.
 
 ## 4. Trigger
 

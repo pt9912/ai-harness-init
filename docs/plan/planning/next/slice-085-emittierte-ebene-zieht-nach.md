@@ -74,7 +74,7 @@ geschrieben.
   sie gehören darum nicht in `make gates`, sondern an DoD-Verify und Closure.
 - **Die emittierte Starter-Config bleibt bewusst schmaler als der Dogfood.** Ihre Modul-Liste
   nachzuziehen ist eine eigene Frage und liegt bereits als
-  [slice-073](slice-073-emittierte-doc-gate-module.md) in `open/`; wer sie hier mitnimmt, vermischt
+  [slice-073](../open/slice-073-emittierte-doc-gate-module.md) in `open/`; wer sie hier mitnimmt, vermischt
   Re-Baseline und Gate-Anhebung.
 
 ## 7. Closure-Notiz (nach `done/`)

@@ -225,7 +225,7 @@ Aussagen-Berührung steht hier gar nicht.
 | `internal/emit/templates/d-check.yml` | **offen — Entscheidung im Slice** | die zweite mögliche Bauart wäre eine Regel im **emittierten** Prüfbereich statt im Emitter. Sie ist nach [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed) belegpflichtig und wäre ein Ausschluss im Zielrepo, den der Adopter erbt — der Slice begründet, welche Ebene trägt, statt beide anzufassen |
 | `.harness/baseline/v5.12.0/templates/` | **unverändert** | committet vendored Fremd-Blob; ein Edit dort wäre ein Fork und bräche [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache). Der Kurs-Fix wäre die SSoT-Lösung und ist hier nicht verfügbar — dieselbe Lage, die der Kommentar von `NeutralizeRoadmap` schon beschreibt |
 | [`spec/lastenheft.md`](../../../../spec/lastenheft.md) | **unverändert** | Rang 1. Der Sollzustand steht bereits dort; dieser Slice stellt ihn her. Erwiese sich die Zusage als so nicht haltbar, verlässt die Frage den Slice als Übergabe (§6) — sie wird nicht hier geschrieben ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)) |
-| `internal/emit/templates/commands/`, `.harness/skills/` | **unverändert** | der **Text** der emittierten Artefakte ist Gegenstand von [slice-085](../open/slice-085-emittierte-ebene-zieht-nach.md) |
+| `internal/emit/templates/commands/`, `.harness/skills/` | **unverändert** | der **Text** der emittierten Artefakte ist Gegenstand von [slice-085](../next/slice-085-emittierte-ebene-zieht-nach.md) |
 
 ## 4. Trigger
 
