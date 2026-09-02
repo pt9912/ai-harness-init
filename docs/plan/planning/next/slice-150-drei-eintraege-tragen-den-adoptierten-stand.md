@@ -8,7 +8,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 **Welle:** [welle-10](../welle-10-re-baseline.md). **Und das ist eine Entscheidung, keine
 Fortschreibung** — die Nachbar-Regel von [welle-10](../welle-10-re-baseline.md) §6 schickt einen
 Fund, der eigene Arbeit verlangt, als Slice in `open/` **ohne** Wellen-Zugehörigkeit
-([slice-146](slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) ist dieser Fall).
+([slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) ist dieser Fall).
 Hier greift sie nicht: Gegenstand sind nicht neue Regelwerks-Inhalte, sondern **zwei korrigierte
 Ausgänge des Durchgangs 1 dieser Welle** — [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
 und [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
@@ -31,7 +31,7 @@ Spec-Stratum.
 Adaptions-Block von [`harness/conventions.md`](../../../../harness/conventions.md), ein
 Architect-Artefakt ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Präzedenzfälle
 [slice-082](../done/slice-082-adaptions-durchgang.md) und
-[slice-146](slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) tragen dieselbe
+[slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) tragen dieselbe
 Besetzung. Das Feld weicht damit von der Default-Besetzung ab, die Baseline-Regelwerk
 `modul-05-planning-harness.md` §Lifecycle als State Machine nennt (*„den Rolleninhaber der
 Implementer-Rolle"*).

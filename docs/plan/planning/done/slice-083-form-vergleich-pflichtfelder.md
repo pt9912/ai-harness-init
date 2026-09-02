@@ -286,7 +286,7 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   Edit — die Felder halten den Befund fest und entscheiden ihn nicht.
   [`MR-036`](../../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline)
   §Achse 2 führt Setzung 3 bislang als eigenen, nicht eingetretenen Bedarf. — **Ausgang:
-  eingetreten** → [slice-150](../open/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md),
+  eingetreten** → [slice-150](../next/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md),
   Liefer-Punkte 1 und 2. **Kein Register-Eintrag für diese zwei:** ihr Gegenstand ist benannt und
   abzählbar — zwei Kennungen, ein Artefakt, eine Rolle —, und der dritte Risiko-Ausgang trägt
   Beobachtungen, keine Arbeitsposten (dieselbe Grenze führt [`BEO-002`](../observations.md)). Die
@@ -303,7 +303,7 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   `Begründung`. Der Rumpf bleibt nach
   [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
   unangetastet; das neue Feld trägt den geltenden Stand. — **Ausgang: eingetreten** →
-  [slice-150](../open/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md), Liefer-Punkt 3.
+  [slice-150](../next/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md), Liefer-Punkt 3.
   Die Kopf-Marken-Frage nach
   [`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
   ist dort **als Entscheidung** geschnitten, nicht als vorweggenommene Antwort: Setzung 4 macht
@@ -379,7 +379,7 @@ hatten das Feld organisch, der neue Eintrag bringt es beim Entstehen mit).
   keine Lücke, sondern die deklarierte Abweichung
   [`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt),
   die für diesen Block genau diese Feld-Form setzt — derselbe Eintrag, dessen Selbstauskunft
-  Liefer-Punkt 3 von [slice-150](../open/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md)
+  Liefer-Punkt 3 von [slice-150](../next/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md)
   ist. Die Welle-Closure entscheidet, ob sie die Form als Anker nimmt; dieser Slice legt sie offen
   und nicht aus.
 - **Beobachtungs-Register (`../observations.md`):** eine neue Kennung —
@@ -394,7 +394,7 @@ hatten das Feld organisch, der neue Eintrag bringt es beim Entstehen mit).
   [`BEO-003`](../observations.md) bleibt bei 2× — der Lifecycle-Move dieses Slice lief über
   `make slice-mv` und hat keinen Verweis von Hand verlangt.
 - **Folge-Slices:** neu aus dieser Closure ist
-  [slice-150](../open/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md) — *Drei
+  [slice-150](../next/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md) — *Drei
   Adaptions-Einträge tragen den adoptierten Stand*, Datei in `open/`, Mitglied von
   [welle-10](../welle-10-re-baseline.md). Aus dem zweiten Re-Cut (§4) liegen daneben
   [slice-147](../open/slice-147-spezifikation-traegt-ihr-id-schema.md) und
@@ -404,7 +404,7 @@ hatten das Feld organisch, der neue Eintrag bringt es beim Entstehen mit).
   (`awk '/^## 6\. Risiken/,/^## 7\. Closure-Notiz/' docs/plan/planning/*/slice-083-form-vergleich-pflichtfelder.md | grep -c '^- \*\*'`
   → **8**), acht mit genau einem Ausgang — **drei eingetreten** (Re-Cut statt Dehnung; die zwei
   gegenstandslosen Einträge und die Kopf-Marken-Frage je nach
-  [slice-150](../open/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md)), **fünf
+  [slice-150](../next/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md)), **fünf
   entfallen** (Tree-Operanden statt zweier Verzeichnisse · Tausch-Commit eindeutig ·
   Spec-ID-Schemata nicht Fracht dieses Laufs · Verzeichnis-Form nicht angefasst ·
   Beobachtungs-Register bereits adoptiert), **keines weiter offen**. Der dritte Ausgang blieb
