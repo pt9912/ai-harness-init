@@ -49,7 +49,8 @@ Precedence, aber als **derivative Sicht**: Ziel, Trigger und Closure-Kriterien e
 ihre Welle-Datei. Der Verweis zeigt ohnehin **aufwärts**; die Spec nennt diesen Slice nie
 (Baseline-Regelwerk `grundlagen-referenz-richtung.md` §Referenz-Richtung (SDP)).
 
-**Verantwortlich:** —
+**Verantwortlich:** Planner — die Roadmap projiziert die flachen Welle-Dateien, und die schreibt
+der Planner ([ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)).
 
 **Autor:** Planner. **Datum:** 2026-08-29.
 
