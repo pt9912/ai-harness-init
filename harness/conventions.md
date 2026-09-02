@@ -58,6 +58,19 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 - **Datum:** 2026-06-13
 - **Geltungsbereich:** gesamtes Repo
+- **Ersetzt-Baseline-Regel:** keine — und nach dem Wortlaut der Eintrags-Vorlage trotzdem **kein
+  Fork**. Dieser Eintrag ist die von der Baseline selbst vorgesehene **Adoptions-Erklärung**, nicht
+  eine Adaption neben anderen:
+  [`grundlagen-harness-dateien.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
+  §harness/conventions.md als Konventionsspeicher führt den Block als *„**Index** der Abweichungen
+  ggü. Baseline … `MR-000` (Adoptions-Erklärung) plus je eine Tabellenzeile pro Adaption"* — die
+  Erklärung steht **neben** den Adaptionen, nicht unter ihnen. Das ID-Schema tritt an keine Stelle:
+  `LH-FA-NN`/`LH-QA-NN` sind die Form `<PREFIX>-FA-<NN>`/`<PREFIX>-QA-<NN>` aus
+  [`grundlagen-source-precedence.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-source-precedence.md#id-schema-als-klammer)
+  §ID-Schema als Klammer, wo das Vertrags-Präfix ausdrücklich frei wählbar ist. Die eine Setzung
+  dieses Eintrags, die eine Baseline-Regel ersetzte — die 2-Strata-Klausel —, ist mit
+  [`MR-019`](#mr-019--technik-stratum-als-rang-2-der-source-precedence) fort (Kopf-Marke oben).
+  Gemessen am adoptierten Stand `v5.12.0`.
 - **Adaption:** keine inhaltlichen Adaptionen ggü. Baseline-Default.
   ID-Schema: `LH-FA-NN` / `LH-QA-NN`, `ADR-NNNN`, `CO-NNN`, `slice-NNN`,
   `MR-NNN`. **2-Strata-Spec** (Lastenheft → Architektur, keine separate
@@ -71,6 +84,19 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 - **Datum:** 2026-06-13
 - **Geltungsbereich:** `.d-check.yml` (Doc-Referenz-Gate)
+- **Ersetzt-Baseline-Regel:**
+  [`grundlagen-referenz-richtung.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-referenz-richtung.md#referenz-richtung-sdp-wer-darf-wen-referenzieren)
+  §Referenz-Richtung (SDP) — die **Sektions-Ausnahme über den Spec-Straten**: *„ein Spec-Stratum
+  (`lastenheft.md`, `spezifikation.md`, `architecture.md`) enthält `ADR-` oder `slice-` → fail,
+  **ohne ausgenommene Sektion**"*, und dazu *„Die ausgenommene Überschrift … gibt es nur auf der
+  **Planungs-Ebene**. Über den Spec-Straten läuft der Check über das ganze Dokument."* An ihre
+  Stelle tritt `matrix.exclude-sections: [Historie, "7. Historie", Geschichte]` — der Schlüssel
+  liegt neben `classes` und `rules`, also über allen Klassen und damit auch über `spec-straten`.
+  **Die übrigen Setzungen dieses Eintrags ersetzen nichts** und stehen deshalb nicht im Feld:
+  Modul-Aktivierung und `link-policy: always` sind die Reifestufe, die derselbe Abschnitt am
+  adoptierten Stand `v5.12.0` ausdrücklich vorsieht (*„die anker-validierende Stufe ist eine
+  Reifestufe darüber, kein Startwert"*), und das Wachsen mit den Artefakten schreibt das vendored
+  Startgerüst `.harness/baseline/v5.12.0/templates/.d-check.yml` selbst vor.
 - **Adaption:** Über die Baseline-Module (`links`, `anchors`, `ids`,
   `codepaths`) hinaus aktiviert: `matrix` (mechanische Referenz-Richtung/SDP —
   Spec-Straten verweisen nie abwärts auf ADR/Slice; Verweise auf
@@ -101,6 +127,16 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 - **Datum:** 2026-06-13
 - **Geltungsbereich:** [`harness/tools/`](../harness/tools/), [`.claude/`](../.claude/), `make record-gates`
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
+  und er setzt keine Abweichung: er protokolliert eine **Übernahme**. Das Artefakt-Set, das er
+  einführt — Hook-Verdrahtung, Tool-Call-Gate, Handoff-Gate und die gemeinsame, inhaltsbasierte
+  Nachweis-Quelle für Gate-Lauf *und* Handoff-Gate —, ist Punkt für Punkt das der Baseline:
+  [`grundlagen-durchsetzungsschicht.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-durchsetzungsschicht.md#referenz-implementierung)
+  §Referenz-Implementierung, am adoptierten Stand `v5.12.0` gelesen. Auch der Host-Toolchain-Block
+  ersetzt dort nichts: Denylist-Inhalt und Grenze eines Befehls-Guards regelt
+  [`modul-13-quality-gates.md`](../.harness/baseline/v5.12.0/regelwerk/modul-13-quality-gates.md#guard-haertung)
+  §Guard-Härtung, ohne den Umfang festzuschreiben. **Wo** die Skripte liegen, weicht ab — das trägt
+  [`MR-005`](#mr-005--harness-tools-unter-harnesstools-layout-adaption), nicht dieser Eintrag.
 - **Adaption:** Übernahme der Working-Tree-Hash-Mechanik (`record-gates`
   als letzter `gates`-Prerequisite, der Stop-Hook vergleicht den Hash) und
   der `.claude`-Hooks (PreToolUse-Guard, Stop-Gate) aus d-check/b-cad. Der
@@ -115,6 +151,17 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 - **Datum:** 2026-06-13
 - **Geltungsbereich:** [`harness/tools/working-tree-hash.sh`](../harness/tools/working-tree-hash.sh), [`.claude/hooks/`](../.claude/hooks/)
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
+  und er setzt keine Abweichung: beide Härtungen sind die Baseline-Regel selbst. Der
+  inhaltsbasierte Nachweis ist Design-Eigenschaft 2 aus
+  [`grundlagen-durchsetzungsschicht.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-durchsetzungsschicht.md#vier-design-eigenschaften)
+  — *„Nachweis über Inhalt, nicht Diff. Ein Content-Hash des Arbeitsbaums belegt ‚die Gates liefen
+  auf genau diesem Stand'"* —, die rekursive Sub-Shell-Prüfung ist
+  [`modul-13-quality-gates.md`](../.harness/baseline/v5.12.0/regelwerk/modul-13-quality-gates.md#guard-haertung)
+  §Guard-Härtung: *„wird der Payload **rekursiv** derselben Prüfung unterworfen — mit Tiefenlimit,
+  darüber fail-closed blockiert"*. Auch die stehengelassene Restlücke ist keine Abweichung, sondern
+  die dort benannte Grenze (*„frischem Klon bzw. gelöschtem State mit cleanem Tree … dort ist CI
+  das Netz"*). Gemessen am adoptierten Stand `v5.12.0`.
 - **Adaption:** (a) Der Working-Tree-Hash ist **inhaltsbasiert** (sha256
   über getrackte + untracked Dateien) statt diff-basiert — der Gate-Nachweis
   gilt über Commits hinweg; ein Commit *ohne* Gate-Lauf macht den Stop-Hook
@@ -141,6 +188,18 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 - **Datum:** 2026-06-14
 - **Geltungsbereich:** [`harness/tools/`](../harness/tools/), [`.claude/`](../.claude/), [`.codex/`](../.codex/), `.harness/cache/`, `CLAUDE.md`, `Makefile`, `.d-check.yml`
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**.
+  Der Rumpf unten setzte eine Abweichung: **Volltext-Injektion je Codex-Session** gegen
+  [`modul-02-harness-bootstrap.md`](../.harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md#greenfield-bootstrap-schritt-sequenz-modul-2)
+  §Anmerkung zur vendored Baseline (Schritt 2), die das Nachschlagen pro Entscheidung verlangt
+  *„ohne das ganze Regelwerk im Kontext zu halten"*. Diese Setzung ist mit
+  [`MR-006`](#mr-006--regelwerk-cache-als-split-modul-verzeichnis) auf Index-only umgestellt und
+  trägt nicht mehr (Kopf-Marke oben). Was hier fort gilt, ist die **Injektor-Mechanik** —
+  Codex-Hook-Schema, awk-Encoder, kein Netz im Hook, sichtbare Degradation —, und über die sagt die
+  Baseline am adoptierten Stand `v5.12.0` nichts: sie schreibt vor, dass das Regelwerk **nicht
+  ganz** im Kontext steht, nicht, **wodurch** ein Teil hineinkommt. Dieselbe Lücke misst
+  [`MR-035`](#mr-035--der-automatische-claude-kontext-trägt-eine-benannte-geschlossene-modul-auswahl)
+  für die Gegenrichtung.
 - **Adaption:** Das **wortgleiche** Betriebsregelwerk wird **pro Agent
   verschieden** verfügbar gemacht — der 212-KB-Volltext passt in keinen Claude-
   Auto-Kanal (Hook-Ausgaben gekappt bei **10.000 Zeichen**, Memory/`@`-Import
@@ -193,6 +252,20 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 - **Datum:** 2026-06-14
 - **Geltungsbereich:** [`harness/tools/`](../harness/tools/), [`.claude/`](../.claude/), [`.codex/`](../.codex/), `Makefile`, `.d-check.yml`
+- **Ersetzt-Baseline-Regel:**
+  [`grundlagen-durchsetzungsschicht.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-durchsetzungsschicht.md#referenz-implementierung)
+  §Referenz-Implementierung — die Zeile, die die zwei Nachweis-Skripte verortet:
+  *„`tools/harness/working-tree-hash.sh` + `record-gates.sh` — gemeinsame, inhaltsbasierte
+  Nachweis-Quelle für Gate-Lauf und Handoff-Gate"*. An ihre Stelle tritt `harness/tools/`.
+  **Die Abweichung ist dünner, als der Rumpf unten sie führt, und das ist gemessen:** am
+  adoptierten Stand `v5.12.0` ist das die einzige Nennung des Pfades
+  (`grep -rc 'tools/harness' .harness/baseline/v5.12.0/regelwerk/ .harness/baseline/v5.12.0/templates/`
+  gibt nur für diese Datei eine Nicht-Null-Zeile), sie trägt einen `d-check:ignore`-Marker mit der
+  Begründung *„Referenz-Artefakt im Fallstudien-Repo"*, und
+  [`grundlagen-harness-dateien.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-harness-dateien.md#verzeichniskonvention)
+  §Verzeichniskonvention führt für ausführbare Harness-Tools **gar keinen** Ort — `harness/` steht
+  dort mit `README.md`, `conventions.md` und `conventions/`, `.harness/` mit Skills, Allowlists und
+  Checklisten-Middlewares.
 - **Adaption:** Die ausführbaren Harness-Tools (Gate-Nachweis, Working-Tree-Hash,
   Command-Guard-Extraktor, SessionStart-Injektor + awk-Encoder) liegen unter
   `harness/tools/` statt dem Baseline-Default `tools/harness/`. **Eine Ausnahme, und
@@ -232,6 +305,15 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 - **Datum:** 2026-06-16
 - **Geltungsbereich:** `Makefile`, [`harness/tools/`](../harness/tools/), `.harness/cache/`, `CLAUDE.md`, `AGENTS.md`, [`test/`](../test/); ergänzt [`MR-004`](#mr-004--sessionstart-regelwerk-injektor).
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
+  und er setzt keine Abweichung: er **baut eine zurück**. Was von ihm fort gilt — Split-Modul-Form,
+  Index-only-Inject, read-on-demand — ist genau das, was
+  [`modul-02-harness-bootstrap.md`](../.harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md#greenfield-bootstrap-schritt-sequenz-modul-2)
+  §Anmerkung zur vendored Baseline (Schritt 2) am adoptierten Stand `v5.12.0` verlangt: pro
+  Entscheidung den relevanten Abschnitt nachschlagen *„ohne das ganze Regelwerk im Kontext zu
+  halten"*. Der Tradeoff unten benennt den Preis dieser Bewegung, nicht eine Abweichung von ihr.
+  Der **Cache** dagegen — gefetcht und gitignoriert — wich ab und existiert nicht mehr
+  ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache), Kopf-Marke oben).
 - **Adaption:** Der Regelwerk-Cache ist ein **Split-Modul-Verzeichnis**
   `.harness/cache/agents-regelwerk/` (21 Dateien: `grundlagen-*`, `modul-00`…`modul-16`,
   `README.md`-Index) statt der bisherigen Einzeldatei. `make regelwerk-fetch` zieht
@@ -269,6 +351,20 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 
 - **Datum:** 2026-07-17
 - **Geltungsbereich:** `.harness/baseline/`, `Makefile`, [`harness/tools/`](../harness/tools/), `.gitignore`, `.d-check.yml`, `AGENTS.md`, `CLAUDE.md`, [`harness/README.md`](README.md), [`test/`](../test/); löst den Cache-Teil von [`MR-004`](#mr-004--sessionstart-regelwerk-injektor)/[`MR-006`](#mr-006--regelwerk-cache-als-split-modul-verzeichnis) ab.
+- **Ersetzt-Baseline-Regel:**
+  [`modul-02-harness-bootstrap.md`](../.harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
+  §Freshness-Audit der vendored Baseline — die Koexistenz-Setzung: *„Weil der Vendoring-Pfad
+  `<tag>`-gescopt ist, liegen alte und neue Form nebeneinander: `diff -r
+  .harness/baseline/<alt>/templates .harness/baseline/<neu>/templates` zeigt umbenannte Sektionen
+  und neue Felder direkt. Das alte Verzeichnis fällt erst, wenn der Review durch ist."* An ihre
+  Stelle tritt Setzung 4 unten: **ein Tag zur Zeit**, Historie in `git`, und mehr als ein
+  `<tag>`-Verzeichnis ist ein Fehler, den `baseline-verify` und der Injektor erzwingen. Die alte
+  Form bleibt damit erreichbar, aber als Tree-Operand statt als zweites Verzeichnis.
+  **Das Vendoren selbst ersetzt nichts** und steht deshalb nicht im Feld: Regelwerk *und* Templates
+  committet unter `.harness/baseline/<tag>/{regelwerk,templates}/` plus `SHA256SUMS`, netzlos, ist
+  Schritt 2 derselben Sequenz. Die Setzungen 1–3 füllen, was die Baseline zu Format, Umfang und
+  Vollständigkeitsprüfung von `SHA256SUMS` offen lässt — eine Lücke, keine Abweichung. Gemessen am
+  adoptierten Stand `v5.12.0`.
 - **Adaption:** Regelwerk **und** Templates liegen **committet vendored** unter
   `.harness/baseline/<tag>/{regelwerk,templates}/` + `SHA256SUMS` (42 Dateien:
   21 + 21), netzlos auf jedem Checkout präsent — Baseline-Vorgabe aus Modul 2
@@ -368,6 +464,19 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   `docs/reviews/review-report.template.md` — seit slice-016 als Tombstones referenz-weit
   über `codepaths.ignore-refs` deklariert ([`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile)), sodass hier die klaren
   vollen Pfade statt der früheren Glob-Workarounds stehen; ergänzt [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache).
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
+  und der Grund ist ein anderer als bei den übrigen: **die Baseline schreibt diese Setzung
+  inzwischen selbst.**
+  [`modul-02-harness-bootstrap.md`](../.harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md#greenfield-bootstrap-schritt-sequenz-modul-2)
+  §Anmerkung zum Instanziierungs-Zeitpunkt (Schritt 2) nennt am adoptierten Stand `v5.12.0`
+  dieselbe Liste wie der Geltungsbereich oben — *„die **wiederkehrenden Artefakte** — `slice`,
+  `welle`, weitere ADRs (`NNNN-*`), `carveout`, `review-report` — werden **nicht** beim Bootstrap
+  vorab kopiert, sondern **pro Instanz** aus der vendored Baseline"* — und schließt mit
+  *„Die vendored Baseline ist deren **einzige** Referenz-Form — **keine Blank-Kopie im Repo
+  vorhalten.**"* Der Abweichungs-Absatz unten misst gegen den abgelösten Stand; heute steht dieser
+  Eintrag nicht an der Stelle einer Regel, sondern deckt sich mit ihr. **Welcher der fünf Ausgänge
+  daraus folgt**, entscheidet der Adaptions-Durchgang und nicht dieses Feld: nach
+  §Freshness-Audit der vendored Baseline ist das ein Nachfolge-Eintrag, kein Edit hier.
 - **Adaption:** Das Repo hält **keine eigenen Kopien** der Ausfüll-Templates mehr.
   Einzige Quelle ist die committet vendored Baseline
   `.harness/baseline/<tag>/templates/…` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)). Ein neues Artefakt
