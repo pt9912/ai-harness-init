@@ -125,8 +125,7 @@ Stelle zeigen (§6).
       in diesem Lauf umgesetzt wurden (`AGENTS.md`, `harness/README.md`,
       `.harness/skills/reviewer.md`, `.claude/commands/close-welle.md`). Die drei verschobenen
       Artefakte bleiben offen — kein Häkchen ohne Umsetzung.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag. **Nicht dieser Lauf** — der Slice schließt mit
-      diesem Durchgang nicht ab (§4).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag (§7).
 
 ## 3. Plan (vor Code)
 
@@ -286,9 +285,16 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   Das ist der Freshness-Audit-Ausgang **gegenstandslos**, und der ist ein Nachfolge-Eintrag, kein
   Edit — die Felder halten den Befund fest und entscheiden ihn nicht.
   [`MR-036`](../../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline)
-  §Achse 2 führt Setzung 3 bislang als eigenen, nicht eingetretenen Bedarf. — **Offen:** Ausgang
-  ist bei der Closure zu ziehen (Folge-Slice oder Register-Eintrag); das Schneiden eines
-  Folge-Slice ist Planner-Arbeit.
+  §Achse 2 führt Setzung 3 bislang als eigenen, nicht eingetretenen Bedarf. — **Ausgang:
+  eingetreten** → [slice-150](../open/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md),
+  Liefer-Punkte 1 und 2. **Kein Register-Eintrag für diese zwei:** ihr Gegenstand ist benannt und
+  abzählbar — zwei Kennungen, ein Artefakt, eine Rolle —, und der dritte Risiko-Ausgang trägt
+  Beobachtungen, keine Arbeitsposten (dieselbe Grenze führt [`BEO-002`](../observations.md)). Die
+  **Klasse** dahinter zählt getrennt: [`BEO-013`](../observations.md), 1×, Beleg `slice-083`. Der
+  Folge-Slice ist Mitglied von [welle-10](../welle-10-re-baseline.md), weil beide Kennungen in
+  deren eingefrorener Bezugsmenge liegen und die Belege aus
+  [slice-082](../done/slice-082-adaptions-durchgang.md) §9 gegen den adoptierten Stand falsch sind
+  (Begründung dort §4, nicht hier).
 - **Ein Adaptions-Absatz misst gegen den abgelösten Tag und liest sich dadurch falsch herum.**
   [`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt)
   begründet sein Zusatzfeld gegen die Pflichtfeld-Liste von `v3.5.2` und nennt sich deshalb
@@ -296,13 +302,123 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   `grundlagen-traceability.md` §Herkunfts-Anker verortet die Herkunft dieses Blocks im Feld
   `Begründung`. Der Rumpf bleibt nach
   [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
-  unangetastet; das neue Feld trägt den geltenden Stand. — **Offen:** ob daneben eine Kopf-Marke
-  nach [`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
-  gehört, entscheidet der Eintrag, der die Aussage ablöst — und der ist noch nicht geschrieben.
+  unangetastet; das neue Feld trägt den geltenden Stand. — **Ausgang: eingetreten** →
+  [slice-150](../open/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md), Liefer-Punkt 3.
+  Die Kopf-Marken-Frage nach
+  [`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
+  ist dort **als Entscheidung** geschnitten, nicht als vorweggenommene Antwort: Setzung 4 macht
+  die Marke fällig, wenn ein **späterer Eintrag** eine Aussage ablöst, und hier steht die
+  ablösende Aussage im Eintrag selbst — Marke, Nachfolge-Eintrag oder begründete
+  Nicht-Fälligkeit sind alle drei möglich, und die Wahl ist eine Form-Entscheidung über den Block
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8). **Keine eigene Register-Zeile:** die Regel dazu ist
+  bereits verkörpert — [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
+  bindet die Baseline-Aussage an ihren Mess-Tag und nimmt den Bestand ausdrücklich aus; dieser
+  Eintrag ist ein Bestands-Fall davon, kein neuer Befund.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Liefer-Punkt 2 — das Pflichtfeld steht, und die Form ist eine Gleichung statt einer Zahl**
+(Läufe vom 2026-09-02; alle drei Beträge wandern mit dem Block und sind keine Erwartungswerte,
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2):
+
+```sh
+grep -c '^### MR-'                             harness/conventions.md   # 40 Einträge gesamt
+grep -c '^- \*\*Ersetzt-Baseline-Regel:\*\*'   harness/conventions.md   # 36 mit Feld
+grep -c '^- \*\*Aufgehoben durch'              harness/conventions.md   #  4 retiriert, ohne Feld
+```
+
+Tragend ist `40 = 36 + 4`, nicht der Betrag. **Welche** vier fehlen, sagt die Auswertung aus
+[`MR-039`](../../../../harness/conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
+über dieselbe Datei — sie gibt genau die vier retirierten Kennungen aus, die dessen Setzung 2
+namentlich führt. Von den 36 sind **27** in diesem Lauf nachgetragen (§4: acht — `031`–`038` —
+hatten das Feld organisch, der neue Eintrag bringt es beim Entstehen mit).
+
+**Closure-Kriterien (beobachtet, nicht behauptet):**
+
+1. **DoD vollständig.**
+   `grep -c '^- \[ \]' docs/plan/planning/*/slice-083-form-vergleich-pflichtfelder.md` → **0**
+   offene Punkte (der Glob trägt den Aufruf über den `git mv` hinweg).
+2. **`make gates` grün** nach dem Commit dieser Closure-Notiz — der Stop-Hook-Stempel deckt den
+   Arbeitsbaum.
+
+- **Was hat funktioniert:** Die zweite Hälfte des DoD-Punkts — *„den überlebenden **wie den unter
+  dem neuen Stand geschriebenen**"* — hat den Rückstand geschlossen, statt ihn wachsen zu lassen.
+  Sie stand vor der Arbeit im Plan und nicht als Nachtrag, und genau ihre Begründung ist heute in
+  [`MR-039`](../../../../harness/conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
+  Setzung 1 verkörpert: *„ein Kriterium, das nur die Neuzugänge trifft, lässt den Rückstand
+  wachsen, den es abbauen soll."* Ebenso getragen hat die Entscheidung, die Abdeckung als
+  **Gleichung** zu verlangen und nicht als Zahl: die zwei Zählungen decken sich mit Absicht nicht,
+  und ein Kriterium über den Betrag wäre bei jedem neuen Eintrag rot geworden.
+- **Was ging anders als geplant:** Drei Dinge. (1) Der Punkt war nicht ausführbar, ohne vorher
+  eine **Form-Frage** zu entscheiden, die keine Quelle beantwortete: Ist das Nachtragen eines
+  Pflichtfelds ein Überschreiben (die Ziel-Form sagt *„Einträge werden nie überschrieben"*),
+  bekommt ein nach
+  [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
+  retirierter Eintrag eines, und darf ein **Fork** in einem *Index der Abweichungen* stehen? Der
+  Plan hatte das Feld als Schreibarbeit veranschlagt; geliefert hat der Lauf zuerst eine Regel und
+  dann die Arbeit. (2) Der Form-Durchgang hat auf der **Adaptions**-Achse gefunden, was nach dem
+  Schnitt der Welle Durchgang 1 gehörte: zwei Einträge stehen am adoptierten Stand wörtlich in der
+  Baseline und tragen aus [slice-082](../done/slice-082-adaptions-durchgang.md) §9 trotzdem *bleibt
+  gültig* bzw. *nicht eingetreten*. [welle-10](../welle-10-re-baseline.md) §4 trennt die zwei
+  Durchgänge als *„zwei Fragen, zwei Review-Sitzungen"* — sie sind trennbar in der Frage, nicht im
+  Fund. (3) Der Zuschnitt hat **einen** schweren Posten angenommen und drei gefunden; die
+  Rückführung `in-progress` → `next` griff zweimal, und der zweite Re-Cut hat den Rest nicht
+  wiederholt, sondern geteilt (§4).
+- **Steering-Loop-Eintrag: eine geschärfte Regel, verkörpert.** *Ein fehlendes Pflichtfeld wird
+  nachgetragen — auch in einem Eintrag, der vor dem Sprung geschrieben wurde —, ein retirierter
+  Eintrag bekommt keines, und ein Fork bleibt im Block und trägt sein Verdikt im Feld* — liegt in
+  [`harness/conventions.md` §MR-039](../../../../harness/conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines).
+  Auslöser ist kein 3×-Übertritt aus dem Register, sondern der
+  Liefer-Punkt selbst: die Regel war die Vorbedingung seiner Ausführung, und vier Einträge — der
+  Zielort nennt sie in §*Damit ist die Folge entschieden* — hatten ihre Fork-Einordnung
+  ausdrücklich an §2 dieses Plans verwiesen. Geschrieben hat sie der **Architect** — der Adaptions-Block ist sein Artefakt
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8); dieser Plan war das Übergabe-Artefakt, nicht der
+  Schreibort. **Zum Herkunfts-Anker, damit die Anker-Paarung ihn nicht als fehlend liest:** der
+  Zielort trägt ihn als `Wirksamkeits-Anlass: slice-083`, blank, nicht als `seit welle-10`. Das ist
+  keine Lücke, sondern die deklarierte Abweichung
+  [`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt),
+  die für diesen Block genau diese Feld-Form setzt — derselbe Eintrag, dessen Selbstauskunft
+  Liefer-Punkt 3 von [slice-150](../open/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md)
+  ist. Die Welle-Closure entscheidet, ob sie die Form als Anker nimmt; dieser Slice legt sie offen
+  und nicht aus.
+- **Beobachtungs-Register (`../observations.md`):** eine neue Kennung —
+  [`BEO-013`](../observations.md) (Sub-Area `*`, 1×, Beleg `slice-083`): *ein Adaptions-Durchgang,
+  der nach dem Delta fragt, findet eine Deckung nicht, die ein Durchgang findet, der jeden Eintrag
+  gegen den Volltext des adoptierten Stands hält.* Kein bestehender Eintrag wurde erhöht, und die
+  drei Kandidaten sind einzeln geprüft: [`BEO-008`](../observations.md) bleibt bei 1× — er führt
+  den **Kurzschluss** *„die Baseline behandelt jetzt dasselbe Thema"*, also die umgekehrte
+  Fehlerrichtung, und dieser Lauf hat ihn nicht begangen, sondern die Deckung Satz für Satz
+  belegt; [`BEO-010`](../observations.md) bleibt bei 1× — ein vorgeschalteter Inventur-Slice hätte
+  einen falschen Achse-1-Ausgang nicht verhindert, die Zeile führt die Form-Pflichten;
+  [`BEO-003`](../observations.md) bleibt bei 2× — der Lifecycle-Move dieses Slice lief über
+  `make slice-mv` und hat keinen Verweis von Hand verlangt.
+- **Folge-Slices:** neu aus dieser Closure ist
+  [slice-150](../open/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md) — *Drei
+  Adaptions-Einträge tragen den adoptierten Stand*, Datei in `open/`, Mitglied von
+  [welle-10](../welle-10-re-baseline.md). Aus dem zweiten Re-Cut (§4) liegen daneben
+  [slice-147](../open/slice-147-spezifikation-traegt-ihr-id-schema.md) und
+  [slice-148](../open/slice-148-architecture-traegt-ihr-id-schema.md) in `open/`; sie sind nicht
+  neu und bleiben unverändert.
+- **Risiken aus §6:** acht benannt
+  (`awk '/^## 6\. Risiken/,/^## 7\. Closure-Notiz/' docs/plan/planning/*/slice-083-form-vergleich-pflichtfelder.md | grep -c '^- \*\*'`
+  → **8**), acht mit genau einem Ausgang — **drei eingetreten** (Re-Cut statt Dehnung; die zwei
+  gegenstandslosen Einträge und die Kopf-Marken-Frage je nach
+  [slice-150](../open/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md)), **fünf
+  entfallen** (Tree-Operanden statt zweier Verzeichnisse · Tausch-Commit eindeutig ·
+  Spec-ID-Schemata nicht Fracht dieses Laufs · Verzeichnis-Form nicht angefasst ·
+  Beobachtungs-Register bereits adoptiert), **keines weiter offen**. Der dritte Ausgang blieb
+  ungenutzt, und das ist eine Entscheidung, keine Auslassung: die zwei verbliebenen Risiken nennen
+  benannte, abzählbare Arbeitsposten an einem Artefakt einer bestimmten Rolle — das ist ein Slice,
+  keine Beobachtung. Die **Klasse** hinter ihnen hat den Register-Weg genommen
+  ([`BEO-013`](../observations.md)).
+- **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice
+  ist Mitglied von [welle-10](../welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt
+  die Paarungen (Anker · Folge-Slice · Register) auf Closure-Schritt 3c — **nach** dem `git mv` der
+  Welle-Datei, weil sie die dort erst entstehenden Einträge prüfen —, und Modul 8 §Rollen-Sequenz
+  für eine Welle weist denselben Schritt dem Planner-Kontext der Welle-Closure zu. Die hier fällige
+  Hälfte ist, die Prüfung dorthin zu übergeben, statt sie zu doppeln; was die Anker-Hälfte an
+  diesem Slice vorfindet, steht oben im Steering-Loop-Eintrag ausgeschrieben.
 
 ## 8. Sub-Area-Modus-Begründung
 
