@@ -103,7 +103,7 @@ unverändert: *„der Bestand ist kein Arbeitsauftrag"*.
 
 ## 2. Definition of Done
 
-- [ ] [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
+- [x] [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
       trägt einen der fünf Freshness-Audit-Ausgänge
       (`modul-02-harness-bootstrap.md` §Freshness-Audit der vendored Baseline) mit Beleg gegen
       `v5.12.0`. Verlangt ist **ein** Ausgang mit Begründung, nicht ein bestimmter: welche
@@ -115,7 +115,7 @@ unverändert: *„der Bestand ist kein Arbeitsauftrag"*.
       der Vorgänger seine Kopf-Marke nach
       [`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
       Setzung 3 in derselben Änderung.
-- [ ] [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+- [x] [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
       Setzung 3 trägt denselben Nachweis — **und die Aussage von
       [`MR-036`](../../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline)
       §Achse 2 ist mitentschieden.** Sie ist die Stelle, an der Setzung 3 heute als offener
@@ -123,25 +123,25 @@ unverändert: *„der Bestand ist kein Arbeitsauftrag"*.
       derselben Frage stehen. Der dort betroffene Rumpf bleibt dabei unangetastet
       ([`MR-039`](../../../../harness/conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
       §Geltungsbereich: *„Nicht der Inhalt eines akzeptierten Rumpfs"*).
-- [ ] [`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt)
+- [x] [`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt)
       trägt eine **entschiedene** Antwort auf die Kopf-Marken-Frage aus §1 (3) — Marke gesetzt,
       Nachfolge-Eintrag geschrieben oder Nicht-Fälligkeit begründet —, und die Antwort steht **im
       Block**, nicht in diesem Plan: ein Verdikt, das nur hier stünde, fände der nächste
       Form-Durchgang nicht. Sagt die Antwort etwas über andere Einträge derselben Gestalt, sagt
       sie es als Regel mit Cutoff, nicht als Arbeitsauftrag über den Bestand (§1, letzter Absatz).
-- [ ] `make gates` grün.
-- [ ] Doku-Update: keines außerhalb von
+- [x] `make gates` grün.
+- [x] Doku-Update: keines außerhalb von
       [`harness/conventions.md`](../../../../harness/conventions.md) erwartet — tritt eines ein
       (etwa ein Zitat dieses Blocks in [`AGENTS.md`](../../../../AGENTS.md)), zieht es im selben
       Architect-Commit mit ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler
       +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7
       notiert. **[`BEO-013`](../observations.md) ist der naheliegende Kandidat und wird nicht
       automatisch erhöht:** diese Ausführung ist die *Auflösung* der gezählten Klasse, kein
       zweites Auftreten.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo führt
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo führt
       Wellen-Betrieb, sie prüft die nächste Welle-Closure.
 
 ## 3. Plan (vor Code)
@@ -186,32 +186,114 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   und einen Nachzug von 2026-07-21, der die Abgrenzung selbst wieder aufhebt; was davon eigenständig
   bindet, entscheidet über Teil- oder Vollablösung
   ([`ADR-0014`](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) Festlegung 2). Wer das
-  überspringt, entfernt einen Satz, den ein anderes Artefakt zitiert. — **Ausgang:** offen bis zur
-  Closure.
+  überspringt, entfernt einen Satz, den ein anderes Artefakt zitiert. — **Ausgang:** **eingetreten,
+  und die Prüfung hat ihn abgefangen** — beide Sätze binden auf der **emittierten** Ebene, über die
+  der Baseline-Satz nichts sagt: [`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) zitiert
+  sie als Grund, warum die fünf wiederkehrenden Vorlagen nicht emittiert werden, und die
+  Historie-Zeile `0.8.0` des Lastenhefts nennt sie. Daraus folgt **Teil**-Ablösung
+  ([`MR-041`](../../../../harness/conventions.md#mr-041--die-referenz-statt-kopie-setzung-für-ausfüll-templates-steht-jetzt-in-der-adoptierten-baseline)),
+  kein Folge-Slice.
 - **Die Deckung von [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
   Setzung 3 ist an **einem** Satz gemessen, und ein Satz ist keine Setzung.** Setzung 3 verlangt
   neben der Verweis-Form auch, dass der *Anlass* in der Änderungs-Spalte bleibt; ob der
   Baseline-Absatz das mitträgt, ist gegen den Volltext zu prüfen und nicht gegen das Zitat in §1.
   Genau dieser Kurzschluss ist [`BEO-008`](../observations.md) — *„die Baseline behandelt jetzt
-  dasselbe Thema"* trägt nicht. — **Ausgang:** offen bis zur Closure.
+  dasselbe Thema"* trägt nicht. — **Ausgang:** **eingetreten, mit umgekehrtem Vorzeichen** — der
+  Baseline-Absatz trägt die zweite Hälfte nicht, er **widerspricht** ihr: `modul-03-spec.md` zieht
+  die Straten-Decke durch die Historie und weist den Anlass der Closure-Notiz des Slice zu. Der
+  Ausgang ist deshalb zweiteilig (gegenstandslos + widerspricht → übernehmen) und steht in
+  [`MR-042`](../../../../harness/conventions.md#mr-042--der-anlass-einer-lastenheft-änderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz).
+  Kein Folge-Slice: `spec/lastenheft.md` bleibt unangetastet, der Cutoff-Absatz von [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) deckt
+  die bestehenden Zeilen.
 - **Die Kopf-Marken-Frage aus §1 (3) kann als „nicht fällig" enden, und dann liefert dieser
   Liefer-Punkt kein Artefakt.** Ein Verdikt ohne Ort ist nach der DoD-Zeile oben kein Ausgang; er
   müsste dann als eigener Eintrag im Block stehen, und damit wächst der Block um eine
   Form-Entscheidung statt um eine Abweichung. Ob das der richtige Ort ist, ist dieselbe offene
   Frage, die [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
-  §*Der Ort ist offen, die Verbindlichkeit nicht* für sich schon führt. — **Ausgang:** offen bis
-  zur Closure.
+  §*Der Ort ist offen, die Verbindlichkeit nicht* für sich schon führt. — **Ausgang:**
+  **eingetreten** — die Marke ist fällig, der Block wächst um eine Form-Entscheidung
+  ([`MR-043`](../../../../harness/conventions.md#mr-043--ein-nachgetragenes-pflichtfeld-schlägt-die-einordnung-im-rumpf)),
+  und genau dieses Wachstum ist als [`BEO-014`](../observations.md) gezählt statt weggeredet. Die
+  Ortsfrage selbst ist seit [`MR-039`](../../../../harness/conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
+  Setzung 3 beantwortet und nicht mehr offen.
 - **Kein Wächter sieht, ob dieser Slice seine Arbeit tut.** Kein Modul aus `modules:` der
   [`.d-check.yml`](../../../../.d-check.yml) hält einen Eintrag dieses Blocks gegen die Baseline
   (`grep -n '^modules:' .d-check.yml`), und `make comment-claims` hat keine Markdown-Datei im
   Prüfbereich — dieselbe Lücke, die
   [`MR-039`](../../../../harness/conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
   für sich benennt. Träger ist der Rollen-Wechsel und der Form-Vergleich der nächsten
-  Re-Baseline. — **Ausgang:** offen bis zur Closure.
+  Re-Baseline. — **Ausgang:** **weiter offen** — die Lücke ist unverändert und liegt als Klasse
+  bereits im Register: [`BEO-009`](../observations.md) (2×) für *kein Gate prüft den
+  Wahrheitsgehalt einer Aussage*, [`BEO-006`](../observations.md) (1×) für die fehlende
+  Modul-Fähigkeit. Beide bleiben mit diesem Slice unverändert; er ist kein zweites Auftreten,
+  sondern der Beleg derselben, schon gezählten Lücke.
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Abschluss füllen. -->
+**Drei Posten, drei verbuchte Ausgänge — und einer davon ist nicht der erwartete.**
+
+| Posten | Ausgang | Ort |
+|---|---|---|
+| [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert) | **gegenstandslos** → Rückbau als Teil-Ablösung | [`MR-041`](../../../../harness/conventions.md#mr-041--die-referenz-statt-kopie-setzung-für-ausfüll-templates-steht-jetzt-in-der-adoptierten-baseline) |
+| [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 3 | **gegenstandslos** (Verweis-Form) + **widerspricht → übernehmen** (Anlass) | [`MR-042`](../../../../harness/conventions.md#mr-042--der-anlass-einer-lastenheft-änderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz) |
+| [`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt) | **teilweise überholt** → engere Nachfolgerin, Kopf-Marke fällig | [`MR-043`](../../../../harness/conventions.md#mr-043--ein-nachgetragenes-pflichtfeld-schlägt-die-einordnung-im-rumpf) |
+
+Kopf-Marken gesetzt an [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert), [`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt) und
+[`MR-036`](../../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline)
+(dessen §Achse 2 die zweite Fassung derselben Frage führte).
+[`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+bekommt **keine zweite** — seine Marke sagt bereits *„dieser Eintrag, mit einer Ausnahme"* und
+nimmt allein den Cutoff-Absatz aus.
+
+**Closure-Kriterien (beobachtet, nicht behauptet):**
+
+1. **Jeder der drei Posten trägt einen Ausgang im Block, nicht in diesem Plan** — nachweisbar über
+   die Kopf-Marken: `grep -c '^> \*\*ÜBERHOLT' harness/conventions.md` steigt um die drei gesetzten,
+   und die Deckungs-Gleichung aus
+   [`MR-039`](../../../../harness/conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
+   hält über die drei neuen Einträge hinweg: `44 = 40 + 4` (kein Erwartungswert — alle drei Beträge
+   wandern mit dem Block).
+2. **`make gates` grün** nach dem Commit dieser Notiz; der Stop-Hook-Stempel deckt den Arbeitsbaum.
+
+- **Was hat funktioniert:** Die Auflage aus §1, die Menge **extensional** zu schließen. Der Lauf hat
+  drei Einträge gelesen und keinen vierten gesucht; der Bestand blieb, wie
+  [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
+  es hält, kein Arbeitsauftrag. Ebenso getragen hat das Risiko zu [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) in §6: Es hat den Lauf
+  gezwungen, den **Volltext** statt des Zitats zu lesen — und genau dort lag das umgekehrte
+  Vorzeichen.
+- **Was ging anders als geplant:** Der Ausgang für [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 3 ist nicht *gegenstandslos*,
+  wie §1 ihn nahelegte, sondern zweiteilig: Die Baseline deckt die **Verweis**-Hälfte und
+  **widerspricht** der **Anlass**-Hälfte. Damit fiel eine Entscheidung an, die kein Delta vorgibt —
+  der einzige der fünf Ausgänge, an dem das Repo wählt. Gewählt ist *übernehmen*, weil die Baseline
+  ein Argument führt, das [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) nie gewogen hat (die Unreparierbarkeit einer Historie-Zeile), und
+  weil sie den Anlass nicht streicht, sondern ihm einen reparierbaren Ort gibt.
+- **Steering-Loop-Eintrag: eine geschärfte Regel, verkörpert** — *widerspricht ein nachgetragenes
+  Pflichtfeld der Einordnung im Rumpf, gilt das Feld; der Rumpf bleibt, und die Kopf-Marke trägt den
+  Zustand* — liegt in
+  [`harness/conventions.md` §MR-043](../../../../harness/conventions.md#mr-043--ein-nachgetragenes-pflichtfeld-schlägt-die-einordnung-im-rumpf).
+  Auslöser ist kein 3×-Übertritt, sondern der Liefer-Punkt selbst: die Regel war die Vorbedingung
+  seiner Ausführung. Geschrieben hat sie der **Architect** ([`AGENTS.md`](../../../../AGENTS.md)
+  §3.8). **Zum Herkunfts-Anker:** der Zielort trägt ihn als `Wirksamkeits-Anlass: slice-150`, blank
+  — die für diesen Block deklarierte Feld-Form
+  ([`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt)),
+  nicht `seit slice-150`.
+- **Beobachtungs-Register (`../observations.md`):** eine neue Kennung —
+  [`BEO-014`](../observations.md) (Sub-Area `*`, 1×, Beleg `slice-150`): *ein erheblicher Teil des
+  Adaptions-Blocks beschreibt keine Abweichung, sondern Buchführung über den Block selbst.* Dieser
+  Lauf hat den vierten solchen Eintrag hinzugefügt und zählt ihn, statt ihn zu rechtfertigen; die
+  Auflösung — der Umzug in die Verzeichnis-Form — ist in
+  [welle-10](../welle-10-re-baseline.md) §6 ausgeschlossen und bleibt ein eigener Vorgang.
+  [`BEO-013`](../observations.md) bleibt bei **1×**: dieser Slice ist die *Auflösung* der gezählten
+  Klasse, kein zweites Auftreten. [`BEO-008`](../observations.md) bleibt bei **1×** — der
+  Kurzschluss wurde hier nicht begangen, sondern durch die Volltext-Prüfung gerade vermieden.
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** vier benannt, vier mit genau einem Ausgang — **drei eingetreten** (alle drei
+  im Lauf aufgefangen, keiner als Folge-Slice), **eines weiter offen** (die Wächter-Lücke, im
+  Register als [`BEO-009`](../observations.md) und [`BEO-006`](../observations.md) bereits gezählt).
+- **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice ist
+  Mitglied von [welle-10](../welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt die
+  Paarungen auf Closure-Schritt 3c, Modul 8 §Rollen-Sequenz für eine Welle weist sie dem
+  Planner-Kontext der Welle-Closure zu.
 
 ## 8. Sub-Area-Modus-Begründung
 
