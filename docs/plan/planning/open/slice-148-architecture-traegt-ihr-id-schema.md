@@ -25,7 +25,7 @@ Architect-Zuordnung ausdrücklich auf `AGENTS.md` §3 und den Adaptions-Block in
 `harness/conventions.md` ein (*„Über die übrigen Norm-Artefakte trifft diese ADR **keine**
 Aussage"*), und Baseline-Regelwerk `modul-03-spec.md` nennt für keines der drei Spec-Strata eine
 Rolle. `AGENTS.md` §3.8 bestätigt das ausdrücklich für dieses Artefakt. Siehe §6, Risiko
-*Rollenfrage* — dieselbe offene Frage wie [slice-147](../in-progress/slice-147-spezifikation-traegt-ihr-id-schema.md),
+*Rollenfrage* — dieselbe offene Frage wie [slice-147](../done/slice-147-spezifikation-traegt-ihr-id-schema.md),
 unabhängig beantwortbar, weil ein anderes Artefakt.
 
 **Autor:** Planner. **Datum:** 2026-08-31.
@@ -101,7 +101,7 @@ die Rollenfrage aus §6 ist entschieden — entweder durch eine benannte Quelle 
 Priorisierung mit `Verantwortlich:` = Implementer-Rolleninhaber als Default.
 
 **Keine Reihenfolge-Bindung innerhalb der Welle.** Dieser Slice hängt an keinem anderen Mitglied
-von [welle-10](../welle-10-re-baseline.md): [slice-147](../in-progress/slice-147-spezifikation-traegt-ihr-id-schema.md)
+von [welle-10](../welle-10-re-baseline.md): [slice-147](../done/slice-147-spezifikation-traegt-ihr-id-schema.md)
 berührt ein anderes Artefakt mit eigener Referenz-Menge, und die fortgeführte
 `harness/conventions.md`-Arbeit in [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md)
 berührt keine spec-Datei.
@@ -155,12 +155,12 @@ dasteht.
 Modus-Deklaration in [`harness/conventions.md`](../../../../harness/conventions.md), dieselbe
 Einordnung wie in [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) §8,
 [slice-136](slice-136-roadmap-traegt-die-ziel-form.md) §8 und
-[slice-147](../in-progress/slice-147-spezifikation-traegt-ihr-id-schema.md) §8.
+[slice-147](../done/slice-147-spezifikation-traegt-ihr-id-schema.md) §8.
 
 **Vorgelagert — offene Beobachtungen sichten:** Register durchgegangen
 (`docs/plan/planning/observations.md`, neun Einträge `BEO-001`–`BEO-009`, Sub-Area durchweg `*`
 per `BEO-004`). Inhaltlich passt keiner auf eine ID-Vergabe in `spec/architecture.md` — dieselbe
-Prüfung wie in [slice-147](../in-progress/slice-147-spezifikation-traegt-ihr-id-schema.md) §8, hier mit kleinerer
+Prüfung wie in [slice-147](../done/slice-147-spezifikation-traegt-ihr-id-schema.md) §8, hier mit kleinerer
 Ripple-Menge (§1) und identischem Ergebnis. **Keine unmittelbaren Treffer über die pauschale
 `*`-Zuordnung hinaus.**
 
