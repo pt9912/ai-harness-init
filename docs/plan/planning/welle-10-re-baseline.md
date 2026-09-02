@@ -269,7 +269,8 @@ Der Zustand jedes Slice ist sein Lifecycle-Verzeichnis, hier nicht gespiegelt.
 Die Reihenfolge ist tragend: **080 entscheidet, 081 vollzieht, 133, 130, 131 und 132 räumen ab, was
 der Vollzug an gebrochenen Zusagen und unbeantworteten Fragen hinterlässt, 082–084 sind die drei
 Durchgänge der Prozedur, 085 zieht die emittierte Ebene nach, 149 trägt den Rest der Prozedur, den
-die drei Durchgänge selbst nicht abdecken.** 080 liegt vor 081, weil der Tausch
+die drei Durchgänge selbst nicht abdecken, 150 korrigiert zwei Ausgänge des ersten Durchgangs.**
+080 liegt vor 081, weil der Tausch
 sonst an einer Frage vorbeiläuft, die er selbst aufwirft. **133 liegt vor 130**, weil dessen
 Nachweis über beide Ursachen zugleich läuft und ohne 133 unter keiner korrekten Ausführung grün
 werden kann.
@@ -290,6 +291,7 @@ werden kann.
 | slice-084 | Stichprobe gegen den Bestand, nicht gegen das Delta | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | slice-085 | Die emittierte Ebene zieht nach | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) |
 | slice-149 | Welle-10 trägt ihre drei fehlenden Belege (dritter Sensor, Trigger-Audit, Register) | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| slice-150 | Drei Adaptions-Einträge tragen den adoptierten Stand (zwei korrigierte Durchgang-1-Ausgänge) | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 
 **147 und 148 sind kein Nachzügler wie 130–133/136, sondern ein Re-Schnitt eines bereits
 zugeordneten Mitglieds.** [slice-083](in-progress/slice-083-form-vergleich-pflichtfelder.md) ging am
@@ -455,6 +457,35 @@ selbst und den `git mv` dieser Datei nach `done/` — Schritt 3 der Wellen-Closu
 voraus, dass alle Mitglieder inklusive 149 bereits in `done/` liegen, und bleibt darum bei
 `/close-welle`. Er hängt an keinem anderen Mitglied (§5).
 
+**150 ist kein Nachzügler, sondern eine Korrektur an Durchgang 1 — und deshalb Mitglied, wo
+[slice-146](open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) keines ist.**
+§6 schickt einen Fund, der eigene Arbeit verlangt, als Slice in `open/` **ohne**
+Wellen-Zugehörigkeit; das trifft den Fund aus Durchgang 3, dessen Ausgang *mehrere Funde* mit dem
+Verbuchen abgeschlossen ist. Hier liegt es anders: Das Kriterium von Durchgang 1 oben verlangt,
+dass **jeder** Eintrag der eingefrorenen Bezugsmenge genau einen der fünf Ausgänge **mit Beleg**
+trägt, und für zwei ihrer Mitglieder ist der Beleg aus
+[slice-082](done/slice-082-adaptions-durchgang.md) §9 gegen den adoptierten Stand falsch —
+[`MR-008`](../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
+steht dort auf *bleibt gültig*, während `modul-02-harness-bootstrap.md` §Anmerkung zum
+Instanziierungs-Zeitpunkt die Setzung selbst schreibt
+(`grep -c 'keine Blank-Kopie im Repo' .harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md`
+→ **1**), und
+[`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+Setzung 3 auf *nicht eingetreten*, während `grundlagen-source-precedence.md`
+§Spec-Stratifizierung sie wörtlich führt
+(`grep -c 'die Verweis-Spalte nennt diesen Vorgang statt eines' .harness/baseline/v5.12.0/regelwerk/grundlagen-source-precedence.md`
+→ **1**). Eine Welle, die auf diesen zwei Belegen schließt, hätte ihr Abdeckungs-Kriterium der
+Form nach erfüllt und der Sache nach nicht. Gefunden hat beides der **Form**-Durchgang
+([slice-083](in-progress/slice-083-form-vergleich-pflichtfelder.md) §6), weil dessen Pflichtfeld
+jeden Eintrag gegen den Volltext des adoptierten Stands hält statt gegen das Delta; die Klasse
+zählt [`BEO-013`](observations.md). Der dritte Posten von 150 —
+[`MR-028`](../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt),
+dessen Rumpf gegen den abgelösten Tag argumentiert — gehört zu Durchgang 2 und reist mit, weil er
+dieselbe Datei und dieselbe Rolle trägt. **Der Preis steht daneben:** die Mitglieder-Zahl steigt
+erneut, und genau das ist der Gegenstand von [`BEO-010`](observations.md); als **Auftreten** jener
+Beobachtung zählt dieser Slice trotzdem nicht — ein vorgeschalteter Inventur-Slice hätte einen
+falschen Achse-1-Ausgang nicht verhindert.
+
 ## 5. Abhängigkeiten
 
 - **Wird blockiert von:** nichts. Die Kante aus
@@ -486,6 +517,9 @@ voraus, dass alle Mitglieder inklusive 149 bereits in `done/` liegen, und bleibt
   seine drei Liefer-Punkte sind unabhängig vom übrigen Wellen-Fortschritt ausführbar und können in
   beliebiger Reihenfolge zu den übrigen laufen; einzig sein eigener Closure-Zeitpunkt bestimmt, wann
   `/close-welle` frühestens laufen kann — erst wenn alle Mitglieder inklusive 149 in `done/` liegen.
+  **150 hängt an 083**, und die Kante ist tragend, nicht ordnend: seine drei Posten sind die
+  offenen Risiken jenes Plans, und sie bekommen ihren Ausgang in dessen Closure. Vor ihr wäre
+  die Bezugsmenge von 150 nicht geschlossen. Zu den übrigen Mitgliedern hängt er an keinem.
 
 ## 6. Out-of-Scope für diese Welle
 
