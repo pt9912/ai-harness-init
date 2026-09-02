@@ -429,7 +429,7 @@ sich bewegt —, sondern der **DoD-Verify** von 133 und 130, der beide Läufe je
 das Closure-Kriterium dieser Welle (§3). Ein Regressions-Signal aus dem Fenster gibt es nicht;
 das ist eine Lücke mit Träger, keine mit Sensor.
 
-**130 ist nicht der aus [slice-085](next/slice-085-emittierte-ebene-zieht-nach.md)
+**130 ist nicht der aus [slice-085](in-progress/slice-085-emittierte-ebene-zieht-nach.md)
 herausgeschnittene Teil.** Dessen Plan führt `internal/emit/templates/commands/`, die übrigen
 emittierten Vorlagen und den Reviewer-Skill — den **Text** der emittierten Artefakte. Welche
 Vorlagen überhaupt emittiert werden, steht dort an keiner Stelle; 130 füllt eine Lücke, statt 085

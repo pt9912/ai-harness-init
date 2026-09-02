@@ -53,7 +53,7 @@ Wellen-Zugehörigkeit.
 frisch gebootstrapptes Zielrepo an Registern und Anweisungssätzen bekommt, ist ein anderer Vertrag
 mit eigenen Trägern: [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md) entscheidet
 über jede neue Vorlage des getauschten Baums,
-[slice-085](../next/slice-085-emittierte-ebene-zieht-nach.md) zieht die emittierten Commands nach. Heute
+[slice-085](../in-progress/slice-085-emittierte-ebene-zieht-nach.md) zieht die emittierten Commands nach. Heute
 trägt die emittierte Ebene zum Register **nichts**
 (`grep -rc 'observations\|Beobachtungs-Register\|BEO-' internal/emit/ | grep -cv ':0$'` → **0**),
 und dieser Slice ändert daran nichts.
