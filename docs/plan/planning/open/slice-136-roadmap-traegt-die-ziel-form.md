@@ -322,7 +322,7 @@ Drei Ebenen davon gehören anderen — jede mit ihrem Träger, keine ohne:
 |---|---|---|
 | [`harness/conventions.md`](../../../../harness/conventions.md) ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird): Geltungsbereich und Setzung 2) | 3 | **Architect** — Adaptions-Block, [`AGENTS.md`](../../../../AGENTS.md) §3.8. Kein Slice; ein eigener Rollen-Lauf mit eigenem Commit |
 | [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) · [`plan-welle.md`](../../../../.claude/commands/plan-welle.md) | 3 | [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) — führt `close-welle` in seiner Plan-Tabelle |
-| `internal/emit/templates/commands/` (dieselben zwei Commands, emittierte Fassung) | 3 | [slice-085](../in-progress/slice-085-emittierte-ebene-zieht-nach.md) — dort ausdrücklich zugewiesen; **andere Ebene, anderer Vertrag** |
+| `internal/emit/templates/commands/` (dieselben zwei Commands, emittierte Fassung) | 3 | [slice-085](../done/slice-085-emittierte-ebene-zieht-nach.md) — dort ausdrücklich zugewiesen; **andere Ebene, anderer Vertrag** |
 
 Die Zeitdokumente in [`done/`](../done) und `docs/reviews/` bleiben unangetastet: sie sagen, was
 damals galt.

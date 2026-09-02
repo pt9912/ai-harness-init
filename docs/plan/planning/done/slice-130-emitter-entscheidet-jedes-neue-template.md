@@ -215,7 +215,7 @@ Aussagen-Berührung steht hier gar nicht.
 | `test/mutations/` | ggf. neu | je Entscheidung ein rot färbender Fall, soweit die vorhandenen ihn nicht schon tragen ([`AGENTS.md`](../../../../AGENTS.md) §3.6) |
 | [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) | **auflösen** (`git mv` nach `done/`) | die Ausnahme fällt mit der Entscheidung; Auflösen ohne Verschiebung wäre die zweite Lüge (Modul 7) |
 | [`spec/lastenheft.md`](../../../../spec/lastenheft.md) | **unverändert** | Rang 1 der Source Precedence. Berührt eine Entscheidung die Aufzählung in [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), verlässt sie den Slice als Übergabe (§6), statt hier geschrieben zu werden |
-| `internal/emit/templates/commands/`, `.harness/skills/` | **unverändert** | der **Text** der emittierten Artefakte ist Gegenstand von [slice-085](../in-progress/slice-085-emittierte-ebene-zieht-nach.md); hier geht es um die **Menge** |
+| `internal/emit/templates/commands/`, `.harness/skills/` | **unverändert** | der **Text** der emittierten Artefakte ist Gegenstand von [slice-085](../done/slice-085-emittierte-ebene-zieht-nach.md); hier geht es um die **Menge** |
 | eine `observations.md` unter `docs/plan/planning/`, `…/reconciliation.md` | **unverändert** | ob **dieses** Repo die Register führt, ist eine Dogfood-Frage mit eigenem Eigentümer |
 
 ## 4. Trigger
