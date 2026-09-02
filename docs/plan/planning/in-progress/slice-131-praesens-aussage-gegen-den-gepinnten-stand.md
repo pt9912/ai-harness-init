@@ -136,35 +136,35 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **(1) Jede Nennung des abgelösten Tags in einer lebenden Plandatei ist sortiert, und die
+- [x] **(1) Jede Nennung des abgelösten Tags in einer lebenden Plandatei ist sortiert, und die
       Sortierung ist je Treffer belegt.** Die Menge wird beim Lauf mit dem Kommando aus §1 erhoben,
       nicht aus §1 übernommen. Drei Ausgänge, und nur diese drei: **nachgemessen** (Pfad gezogen
       **und** Ergebnis neu gefahren, mit dem Kommando daneben) · **Tree-Operand** (der Satz spricht
       über die Vor-Tausch-Seite; die Adresse bleibt und der Grund steht dabei) · **entfallen** (die
       Aussage hat ihren Gegenstand verloren, mit Begründung, nicht durch Streichen). Danach gibt
       dasselbe Kommando **nur noch** Tree-Operanden aus.
-- [ ] **(2) Keine Zahl ist mitgewandert.** Für jede nachgemessene Aussage steht das Ergebnis, das
+- [x] **(2) Keine Zahl ist mitgewandert.** Für jede nachgemessene Aussage steht das Ergebnis, das
       ihr Kommando gegen den gepinnten Stand **wirklich** ausgibt — nicht die alte Ziffer unter
       neuem Pfad. Rot färbt das kein Gate: der Nachweis ist, dass im Diff jede geänderte Pfadzeile
       eine geänderte oder ausdrücklich bestätigte Ergebniszeile neben sich hat
       ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
       Setzung 1). Wo eine bewegte Zahl die **Folgerung** des Absatzes umstößt, wird die Folgerung
       gezogen, nicht die Zahl gerundet.
-- [ ] **(3) Die Sortier-Regel steht danach an einem Ort.** Die drei Ausgänge aus (1) sind als Regel
+- [x] **(3) Die Sortier-Regel steht danach an einem Ort.** Die drei Ausgänge aus (1) sind als Regel
       formuliert — dort, wo die Verweis-Form dieses Repos entschieden wird, und nicht in einem
       Slice-Plan, den kein zweiter Lauf liest. **Welcher Ort das ist, entscheidet dieser Slice
       nicht**: ist die Antwort eine ADR, ist sie Architect-Sache
       ([`AGENTS.md`](../../../../AGENTS.md) §3.8) und dieser Punkt wird zur Übergabe mit benanntem
       Adressaten. Ein Punkt, der auf „steht im Plan" endet, ist nicht erfüllt.
-- [ ] `make gates` grün.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
+- [x] `make gates` grün.
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
       [`observations.md`](../observations.md) — *keine Beobachtung angefallen* ist ebenfalls eine
       Antwort und wird in §7 notiert. Das Reconciliation-Register entfällt dauerhaft: dieses Repo
       hat keinen Brownfield-Bootstrap.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die
       [welle-10](../welle-10-re-baseline.md)-Closure, nicht dieser Slice — das Repo fährt
       Wellen-Betrieb.
 
@@ -243,22 +243,27 @@ dasteht.
 
 - **Der Nachzug erzeugt genau die Klasse, gegen die er antritt.** Wer 11 Kommandos neu
   fährt, ist versucht, das Ergebnis zu übernehmen, das im Text steht. — **Ausgang:**
-  <entfallen: je Treffer ist die Ausgabe im Diff sichtbar | eingetreten: slice-NNN mit
-  einem Sensor über Kommando-Ergebnis-Paare>
+  **entfallen** — je nachgemessener Treffer trägt im Diff des Nachzug-Commits (`git show d7ebb04`)
+  neben der geänderten Pfadzeile eine geänderte oder ausdrücklich als *unverändert* bestätigte
+  Ergebniszeile.
 - **Kein Gate sieht diese Klasse.** `docs-check` prüft Auflösbarkeit, nicht Wahrheit; die
   11 Nennungen tragen keinen Markdown-Link und lagen deshalb bei grünem Gate falsch da. —
-  **Ausgang:** <weiter offen: als `BEO-<NNN>` im Register |
-  eingetreten: slice-NNN, der einen Sensor baut>
+  **Ausgang:** **weiter offen** — im Register als [`BEO-009`](../observations.md), Zähler auf 2×
+  erhöht statt einer neuen Kennung: dessen Aussage *„kein Gate prüft den Wahrheitsgehalt einer
+  Aussage, nur die Existenz eines genannten Sensors"* ist dieselbe, und eine Umformulierung zählte
+  getrennt weiter.
 - **Die Regel aus DoD (3) hat keinen Eigentümer, solange die ADR-Frage offen ist.**
   [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) ist Accepted und damit
   unveränderlich; die lebende Hälfte braucht eine eigene Entscheidung oder eine
-  ausdrückliche Feststellung, dass keine nötig ist. — **Ausgang:** <eingetreten: Übergabe
-  an den Architect, ADR-Nummer nachtragen | entfallen: die Regel passt in einen
-  Adaptions-Eintrag, und der ist beantragt>
+  ausdrückliche Feststellung, dass keine nötig ist. — **Ausgang:** **entfallen** — die Regel passt
+  in einen Adaptions-Eintrag, und der steht:
+  [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum).
+  Warum keine ADR, steht dort im Feld *Warum hier und nicht als ADR*.
 - **`welle-11` ist ein lebender Welle-Plan mit einer Matrix, die auf einer der bewegten
   Zahlen steht** (7 → 11 `Ziel-Form`-Überschriften). Der Nachzug kann dort mehr treffen
-  als eine Zeile. — **Ausgang:** <eingetreten: Rückführung nach §4, eigener Schnitt |
-  entfallen: die Matrix-Zeile trägt die neue Zahl unverändert>
+  als eine Zeile. — **Ausgang:** **entfallen** — die Matrix-Zeile trägt die neue Zahl unverändert:
+  die Folgerung *„ein Slice dafür hätte keinen Gegenstand"* hängt daran, dass **jede** Ziel-Form
+  eine Vorlage im Geschwisterbaum hat, nicht an ihrer Anzahl.
 
 ## 7. Closure-Notiz
 
@@ -271,7 +276,58 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-<!-- Erst nach Abschluss füllen. -->
+**Liefer-Punkt 3 — die Sortier-Regel hat einen Ort, und es ist kein Slice-Plan.** Sie steht als
+[`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
+im Adaptions-Block. Die Ortsfrage aus DoD (3) war zwischen ADR und Adaptions-Eintrag offen; den
+Ausschlag gab der Gegenstand: eine Prozedur des Re-Baseline-Durchgangs an repo-eigenen Artefakten
+liegt neben [`MR-038`](../../../../harness/conventions.md#mr-038--ein-retirierender-eintrag-nennt-den-baseline-stand-der-seinen-trigger-feuerte)
+und [`MR-039`](../../../../harness/conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines),
+die denselben Durchgang für den Block regeln. Ein Folge-ADR mit `supersedes` hätte kein Objekt:
+[`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) wird nicht abgelöst, ihre für das
+lebende Artefakt offen gelassene Hälfte wird gefüllt. Die Punkte (1) und (2) fielen am 2026-08-31
+(`git show d7ebb04`), danach griff die in §4 vorab benannte Rückführung `in-progress → open`.
+
+**Closure-Kriterien (beobachtet, nicht behauptet):**
+
+1. **Das Erhebungs-Kommando aus §1 gibt nur noch Tree-Operanden aus.** Es liefert eine Zeile —
+   `docs/plan/planning/open/slice-143-…:102` —, und die ist dort im Text als Tree-Operand
+   ausgewiesen: das byte-genaue Zitat eines `docs-check`-Befundes über ein `Accepted`-Artefakt, das
+   [`AGENTS.md`](../../../../AGENTS.md) §3.4 gegen Reparatur sperrt. Der Filter `grep -v 'git show'`
+   ist dabei kein Klassifikator — er zieht die Tree-Operanden **einer** Form ab, nicht die dieser.
+2. **`make gates` grün** nach dem Commit dieser Notiz; der Stop-Hook-Stempel deckt den Arbeitsbaum.
+
+- **Was hat funktioniert:** Die Rückführung. DoD (3) war vorab als Architect-Frage markiert und in
+  §4 mit einer Rückführungs-Bedingung versehen; der Implementations-Lauf hat sie ausgelöst, statt
+  die Norm-Änderung mitzunehmen ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Der zweite Kontext hat
+  dann etwas gefunden, das der erste nicht sehen konnte: dass eine ADR hier der **falsche** Träger
+  wäre, weil die Ausgangs-Menge mit dem Freshness-Audit wandert.
+- **Was ging anders als geplant:** §1 dieses Plans nennt in seiner Prosa *„vier Ergebnisse bewegen
+  sich"*, während die Tabelle darunter drei fett gesetzte Änderungen führt; der ausführende Lauf
+  maß über eine andere Bezugsmenge (elf nachgemessene Aussagen, vier bewegte Zahlen). Der
+  Adaptions-Eintrag stützt sich deshalb nicht auf eine dieser Zählungen, sondern auf **einen**
+  nachprüfbaren Sprung mit beiden Kommandos daneben — die Regel trägt der Mechanismus, nicht der
+  Betrag.
+- **Steering-Loop-Eintrag: eine geschärfte Regel, verkörpert** —
+  *eine Präsens-Aussage über den vendored Baum bekommt beim Sprung genau einen von drei Ausgängen
+  (nachgemessen · Tree-Operand · entfallen), und die alte Zahl unter neuem Pfad ist keiner* — liegt
+  in [`harness/conventions.md` §MR-040](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum).
+  Geschrieben hat sie der **Architect** ([`AGENTS.md`](../../../../AGENTS.md) §3.8); dieser Plan war
+  das Übergabe-Artefakt. **Zum Herkunfts-Anker:** der Zielort trägt ihn als
+  `Wirksamkeits-Anlass: slice-131`, blank — die für diesen Block deklarierte Feld-Form
+  ([`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt)),
+  nicht `seit slice-131`.
+- **Beobachtungs-Register (`../observations.md`):** keine neue Kennung —
+  [`BEO-009`](../observations.md) von 1× auf **2×** erhöht, Beleg `slice-131`. Die Klasse ist
+  dieselbe: ein Vorgang korrigiert die Ableitung (hier den Pfad auf den neuen Tag) und lässt die
+  daneben stehende Zusage (die zitierte Zahl) stehen, und kein Gate prüft deren Wahrheitsgehalt.
+  Eine eigene Kennung hätte dieselbe Beobachtung unter zwei Namen gezählt.
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** vier benannt, vier mit genau einem Ausgang — **drei entfallen**, **eines
+  weiter offen** (im Register, [`BEO-009`](../observations.md)). Keines eingetreten.
+- **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice ist
+  Mitglied von [welle-10](../welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt die
+  Paarungen auf Closure-Schritt 3c, Modul 8 §Rollen-Sequenz für eine Welle weist sie dem
+  Planner-Kontext der Welle-Closure zu.
 
 ## 8. Sub-Area-Modus-Begründung
 
@@ -293,10 +349,14 @@ Refactor ohne neue Sub-Area-Berührung entfällt er ganz. Die beiden
 Sie ist nicht zu grob: der Slice fasst innerhalb von ihr nur lebende Plandateien an und
 lässt `adr/`, `carveouts/` und die Zeitdokumente ausdrücklich stehen (§3).
 
-**Vorgelagert — offene Beobachtungen sichten:** die Sichtung ist **offen** — sie ist vor der
-Bearbeitung gegen [`observations.md`](../observations.md) zu fahren, und ihr Ergebnis gehört ins
-Kriterium *Evidenz-/Diskrepanz-Risiko* unten. Sie steht hier nicht als Ergebnis, weil der Stand des
-Registers zwischen Schnitt und Bearbeitung wandert.
+**Vorgelagert — offene Beobachtungen sichten:** gesichtet ist der gemergte Stand von
+[`observations.md`](../observations.md). Alle Zeilen tragen die Sub-Area `*` und sind damit formal
+Treffer; sachlich berühren diesen Schnitt zwei: [`BEO-009`](../observations.md) — kein Gate prüft
+den Wahrheitsgehalt einer Aussage neben einer korrigierten Ableitung, hier als Risiko in §6 geführt
+und mit diesem Slice auf 2× erhöht — und [`BEO-003`](../observations.md) (2×), dessen Gegenstand der
+Lifecycle-Move ist; er lief über `make slice-mv` und verlangte keinen Verweis von Hand, also keine
+Erhöhung. **Keine erreicht mit diesem Slice 3×**, kein Eintrag wird zur Lücke, keiner verlangt einen
+eigenen Folge-Slice.
 
 Alle berührten Sub-Areas GF: `docs/` gehört zum Greenfield-Bestand; der Modus steht in der
 Modus-Deklaration von [`harness/conventions.md`](../../../../harness/conventions.md). Der
