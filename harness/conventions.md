@@ -997,6 +997,17 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Geltungsbereich:** jede vom Tool **emittierte** Gate-Konfiguration, die ein Adopter
   danach selbst pflegt (`.a-check.yml`, `.d-check.yml`, `tools/harness/blocked/*`) — also
   jeder Prüfbereich, dessen Schärfe wir für **unbekannte** Nutzer festlegen.
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
+  und die **Ebene** ist der Grund. Der Geltungsbereich oben ist die *emittierte*
+  Prüfbereichs-Config, die ein fremder Adopter danach besitzt. Die Baseline am adoptierten Stand
+  `v5.12.0` spricht vom Adopter **ihrer selbst** und nirgends von dem, was ein hier gebautes
+  Werkzeug in ein drittes Repo schreibt: `grep -rn 'Adopter' .harness/baseline/v5.12.0/regelwerk/`
+  nennt Template-Schichtung, Reviewer-Skill, die Baseline-Ablage und die Projekt-README — keinen
+  Emissions-Fall. Was von der Baseline hier greift, greift als **Anwendung**: fail-closed ist
+  Design-Eigenschaft 1 aus
+  [`grundlagen-durchsetzungsschicht.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-durchsetzungsschicht.md#vier-design-eigenschaften)
+  (*„Ein Gate, das im Zweifel passieren lässt, ist keiner"*), und die Gegenkraft nennt der Eintrag
+  selbst.
 - **Warum hier:** die Regel ist in
   [`ADR-0010`](../docs/plan/adr/0010-hexagonal-arch-realisierung.md) (Festlegung 3)
   entschieden worden, steht dort aber in einer **Layout**-ADR. Wer nach der Default-Regel
@@ -1037,6 +1048,20 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Geltungsbereich:** [`spec/spezifikation.md`](../spec/spezifikation.md),
   [`AGENTS.md`](../AGENTS.md) §2, [`harness/README.md`](README.md) §Source precedence,
   `.d-check.yml` (`matrix.classes`).
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
+  und er setzt keine Abweichung: er **baut eine zurück**.
+  [`grundlagen-referenz-richtung.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-referenz-richtung.md#spec-straten-mehr-als-ein-spec-dokument)
+  §Spec-Straten verlangt am adoptierten Stand `v5.12.0` eine Deklaration nur für den **anderen**
+  Fall — *„Ein Repo kann mit zwei Straten fahren. Dann ist das eine Abweichung von der Baseline und
+  wird als `MR-<NNN>` deklariert"* —, und dieser Eintrag hebt genau jene Deklaration aus
+  [`MR-000`](#mr-000--baseline-aussage) auf. Alle drei Straten zu führen ist Default (*„Alle drei
+  Straten sind obligatorisch"*). Die **Form des Gefäßes** tritt ebenfalls an keine Regel: eine
+  Pflichtgliederung für `spec/spezifikation.md` gibt es nicht —
+  [`modul-03-spec.md`](../.harness/baseline/v5.12.0/regelwerk/modul-03-spec.md#ziel-form-spezifikation)
+  §Ziel-Form: Spezifikation nennt Inhalts-Bereiche und operative Regeln, keine Abschnitts-Folge; die
+  freigelassenen Nummern und der nicht nummerierte Abschnitt `Aufnahme-Regel` weichen von der
+  **Vorlage** ab, und über die entscheidet nach §Freshness-Audit die Pflichtgliederung, nicht die
+  Vorlage selbst.
 - **Adaption:** Das Repo führt das **Technik-Stratum**. `spec/spezifikation.md` steht als
   eigener **Rang 2** zwischen Vertrag (Rang 1) und Sicht (Rang 3); die nachfolgenden Ränge
   verschieben sich um eins. Damit ist das Stratum **deklariert** — der Kurs
@@ -1097,6 +1122,17 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Datum:** 2026-08-01
 - **Geltungsbereich:** dieser Adaptions-Block. **Nicht** `docs/plan/adr/` — dort gilt
   [`AGENTS.md`](../AGENTS.md) §3.4 unverändert.
+- **Ersetzt-Baseline-Regel:**
+  [`grundlagen-harness-dateien.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
+  §harness/conventions.md als Konventionsspeicher — *„Einträge werden nie überschrieben."* An ihre
+  Stelle tritt die Festlegung unten: bei **vollständiger** Aufhebung fällt der Rumpf in einem
+  eigenen, additionsfreien Commit; Nummer, Überschrift wörtlich, `Datum` und die Zeiger-Zeile
+  bleiben. Der Satz ist am adoptierten Stand `v5.12.0` derselbe, den der Rumpf aus dem
+  Vorlagen-Kommentar von `v3.5.2` zitiert — nur wohnt er jetzt im Regelwerk statt im Kommentar;
+  dass die Abweichung deshalb gegen den neuen Wortlaut **neu begründet** wurde, trägt
+  [`MR-038`](#mr-038--ein-retirierender-eintrag-nennt-den-baseline-stand-der-seinen-trigger-feuerte).
+  Die Pflichtfeld-Aufzählung im Absatz *„Akzeptiert" heißt committet* unten ist die von `v3.5.2`
+  und führt `Ersetzt-Baseline-Regel` nicht; die geltende steht an derselben Baseline-Stelle.
 - **Adaption:** Die Disziplin-Regel der vendored Vorlage
   (`.harness/baseline/v3.5.2/templates/harness/conventions.template.md`, Kommentar über dem
   Adaptions-Block) verlangt *„keine nachträglichen inhaltlichen Änderungen an akzeptierten
@@ -1138,6 +1174,20 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Abschnitte [3](../spec/spezifikation.md#3-defaults-und-konstanten) und
   [5](../spec/spezifikation.md#5-metriken-und-tracing-felder) von
   [`spec/spezifikation.md`](../spec/spezifikation.md).
+- **Ersetzt-Baseline-Regel:**
+  [`modul-15-observability.md`](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
+  §Span-/Audit-Attribut-Regeln — die Form des Audit-Span-Schemas: *„liste jeden Attribut-Namen,
+  markiere ihn als Pflicht oder Optional und nenne pro Attribut die Incident-Frage, die es
+  beantwortet"*, also drei Spalten. An ihre Stelle tritt die vierte Spalte `Sensor` in
+  [`spec/spezifikation.md`](../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 — Punkt 1
+  der Liste *Was als Delta bleibt* unten; Punkt 2 derselben Liste ist mit
+  [`MR-030`](#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen) fort.
+  **Der Umzug selbst ersetzt nichts:** dass eine fortschreibbare technische Festlegung ins
+  Technik-Stratum gehört, ist Baseline-Default
+  ([`modul-03-spec.md`](../.harness/baseline/v5.12.0/regelwerk/modul-03-spec.md#ziel-form-spezifikation)),
+  und die Aufhebung von [`MR-018`](#mr-018--span-schema-der-telemetrie-erfassung) folgt der Form
+  aus [`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf). Gemessen am
+  adoptierten Stand `v5.12.0`.
 - **Adaption:** [`MR-018`](#mr-018--span-schema-der-telemetrie-erfassung) wird **vollständig
   aufgehoben.** Kein Satz seines Rumpfs bindet noch von dort. Er behält Nummer, Überschrift
   **wörtlich** (sie ist der Anker), das `Datum` und eine Zeiger-Zeile; den Rumpf trägt `git`
@@ -1227,6 +1277,19 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Geltungsbereich:** `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`, Kopfkommentar),
   `internal/emit/emit.go` (emittierter Default-Pin), `Makefile` (das Tag-Beispiel im Kommentar
   über `DCHECK_TAG`), §Baseline-Version; setzt [`MR-012`](#mr-012--d-check-pin-v0511-sources-verfügbar) fort.
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
+  aus demselben Grund wie [`MR-012`](#mr-012--d-check-pin-v0511-sources-verfügbar): ein Pin-Sprung,
+  der ein Modul **verfügbar** macht, ohne es zu aktivieren, tritt an keine Stelle. Er ist der
+  bewusste Digest-Commit aus
+  [`modul-14-docker-harness.md`](../.harness/baseline/v5.12.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)
+  und die Neu-Erzeugung aus
+  [`modul-02-harness-bootstrap.md`](../.harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
+  §Gate-Fragment `d-check.mk`. Das Modul selbst kommt am adoptierten Stand `v5.12.0` im Regelwerk
+  nicht vor (`grep -rl 'structure' .harness/baseline/v5.12.0/regelwerk/` ist leer, Exit 1), und es
+  nicht zu aktivieren hält
+  [`modul-13-quality-gates.md`](../.harness/baseline/v5.12.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin)
+  §Hard Rule (Doku-Disziplin) ein. Auch die Strenge-Bilanz ersetzt nichts: sie beantwortet die
+  §3.5-Frage von [`AGENTS.md`](../AGENTS.md) an der Quelle.
 - **Adaption:** Das gepinnte d-check-Image springt **v0.51.1 → v0.62.0** — **elf** Minor-Releases
   (v0.52.0 vom 2026-08-09 bis v0.62.0 vom 2026-08-21, die bislang größte Spanne dieser Linie).
   Digest `sha256:3996a593b9cb71aa3bcb4f3ddf8f637e7409db31b3a2dac7eedc28d65814cacf`, **dreifach
@@ -1334,6 +1397,15 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Geltungsbereich (Setzung 2 an sich selbst angelegt); der Geltungsbereich sind die vier Kommandos.
   **Dieses Repo, nicht das emittierte:** was ein emittiertes Repo an Beleg-Regeln bekommt,
   entscheidet der Slice, der die Tool-Ebene entscheidet.
+- **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
+  und die Messung ist am adoptierten Stand `v5.12.0` wiederholt: das Regelwerk führt keine Regel
+  über den Beleg einer Zahl in Prosa
+  (`grep -rl 'Erwartungswert' .harness/baseline/v5.12.0/regelwerk/` ist leer, Exit 1). Die Klasse
+  kennt es dem Begriff nach als **Harness-Lüge**
+  ([`grundlagen-begriffe.md`](../.harness/baseline/v5.12.0/regelwerk/grundlagen-begriffe.md#kernbegriffe))
+  und verlangt an mehreren Stellen, eine Grenze zu benennen statt sie zu behaupten — das ist die
+  Umgebung dieser Setzung, nicht die Regel, an deren Stelle sie träte. Der Absatz *Der Ort ist
+  offen* unten misst dieselbe Frage gegen `v3.5.2`; hier steht sie gegen den adoptierten Stand.
 - **Setzung 1 — die Zahl und ihr Kommando stehen beieinander, und das Kommando ist gefahren.**
   Eine Zahl, die als **Messwert** auftritt — Erwartungswert, Bruch-Kriterium, Beleg —, trägt im
   selben Absatz das Kommando, das **genau sie** ausgibt, und wer sie schreibt, hat es über dem
