@@ -19,8 +19,9 @@ import (
 // gibt es nicht: gesucht wird in jeder uebergebenen Datei, `.md` oder nicht —
 // dieselbe Menge, in der der schreibende Traeger sucht (`git grep` kennt keine
 // Endungs-Einschraenkung). Ein Verweis auf ein verschwindendes Zeitdokument steht
-// im Bestand auch in Go-Kommentaren, Mutations-Faellen, im Dockerfile und in
-// bats-Dateien. TestHaengerFindetVerweisAusNichtMarkdownDatei und
+// im Bestand auch in Shell-Hooks und -Helfern, in Go-Kommentaren, in
+// Mutations-Faellen und in bats-Dateien.
+// TestHaengerFindetVerweisAusNichtMarkdownDatei und
 // TestVerweisFundPraefixAusNichtMarkdownDatei decken beide Leser;
 // test/mutations/238-archive-welle-go-suchraum-dateityp.sh nimmt die Achse weg.
 //

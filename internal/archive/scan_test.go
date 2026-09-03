@@ -80,16 +80,18 @@ func TestHaengerFindetVerweisAusReviewReport(t *testing.T) {
 // TestHaengerFindetVerweisAusNichtMarkdownDatei haelt die zweite Achse des
 // Suchraums: der schreibende Traeger sucht mit `git grep` in JEDER getrackten
 // Datei ausser der Baseline, ohne Ruecksicht auf die Endung. Im Bestand tragen
-// Go-Kommentare, Mutations-Faelle, das Dockerfile und bats-Dateien Verweise auf
-// Review-Reports; ein Suchraum nur aus `.md` meldete "der schreibende Lauf
-// liefe", waehrend jener mit Exit 3 abbraeche.
+// Shell-Hooks und -Helfer, Go-Kommentare, Mutations-Faelle und bats-Dateien
+// Verweise auf Review-Reports; ein Suchraum nur aus `.md` meldete "der
+// schreibende Lauf liefe", waehrend jener mit Exit 3 abbraeche. Die vier
+// Fixture-Namen sind je ein Vertreter dieser vier Klassen.
 // Gegenbeispiel: test/mutations/238-archive-welle-go-suchraum-dateityp.sh.
 func TestHaengerFindetVerweisAusNichtMarkdownDatei(t *testing.T) {
 	root, ziel, _ := baumMitReports(t)
 	ohneMd := []string{
+		".claude/hooks/pretooluse-agent-guard.sh",
 		"internal/span/response_test.go",
 		"test/mutations/132-span-rolle-aus-argument.sh",
-		"Dockerfile",
+		"test/agent-guard.bats",
 	}
 	for _, f := range ohneMd {
 		schreibe(t, filepath.Join(root, filepath.FromSlash(f)),

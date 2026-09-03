@@ -8,11 +8,11 @@
 #
 # Der schreibende Traeger sucht denselben Verweis mit `git grep` in JEDER
 # getrackten Datei ausser der Baseline — die Pathspec kennt keine Endung. Im
-# Bestand tragen Go-Kommentare, Mutations-Faelle, das Dockerfile und bats-Dateien
-# Verweise auf Review-Reports. Mit der Verengung meldete die Vorschau "Sperren:
-# keine — der schreibende Lauf liefe" und gaebe Exit 0 aus, waehrend der Traeger
-# mit Exit 3 abbraeche. Das ist die teuerste Fehlerrichtung dieses Zweigs: er
-# sagt zu, vorherzusagen, was die Archivierung taete.
+# Bestand tragen Shell-Hooks und -Helfer, Go-Kommentare, Mutations-Faelle und
+# bats-Dateien Verweise auf Review-Reports. Mit der Verengung meldete die
+# Vorschau "Sperren: keine — der schreibende Lauf liefe" und gaebe Exit 0 aus,
+# waehrend der Traeger mit Exit 3 abbraeche. Das ist die teuerste Fehlerrichtung
+# dieses Zweigs: er sagt zu, vorherzusagen, was die Archivierung taete.
 #
 # Die Verengung faellt nicht von selbst auf. Sie steht an einer anderen Stelle
 # als die Ausnahme-Menge, gegen die der bestehende Suchraum-Fall
