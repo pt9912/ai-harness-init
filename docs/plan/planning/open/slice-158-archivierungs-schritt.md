@@ -85,16 +85,29 @@ Aussagen-Berührung steht hier gar nicht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [slice-156](../done/slice-156-baum-tauschen-pins-ziehen.md) liegt in
-`done/` — die Quelle, gegen die die Form gemessen wird, ist die adoptierte.
+**Start** (`next` → `in-progress`) — **zwei Bedingungen, beide vor dem Beginn prüfbar:**
+
+1. [slice-156](../done/slice-156-baum-tauschen-pins-ziehen.md) liegt in `done/` — die Quelle, gegen
+   die die Form gemessen wird, ist die adoptierte.
+2. **Eine Vorbedingung außerhalb dieses Slice, kein Liefer-Punkt:**
+   [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) trägt
+   `**Status:** Accepted`
+   (`grep -c '^\*\*Status:\*\* Accepted' docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md`
+   → **1**). Träger ist
+   [slice-145](../next/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md). Vorher steht
+   nicht fest, wer die zwei Anweisungssätze schreiben darf, die DoD 2 anfasst — und ein Lauf, der
+   sie ohne diese Antwort ändert, ist genau der Vorgang, den [`BEO-007`](../observations.md) zählt.
+   Der Slice liegt darum in `open/`, nicht in `next/`; dieselbe Platzierung aus demselben Grund
+   trägt [slice-153](slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md).
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn der Sensor-Geltungsbereich mehr
   als eine Nachziehung verlangt — dann trägt die Sensor-Hälfte ein eigener Slice.
-- `in-progress` → `open` (blockiert — Carveout?): wenn
-  [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) noch `Proposed`
-  ist und damit keine Quelle benennt, wer die Command-Artefakte schreiben darf (`BEO-007`).
+- `in-progress` → `open` (blockiert — Carveout?): wenn der Reviewer-Durchgang aus
+  [slice-145](../next/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
+  [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) nicht annimmt und
+  das Eigentum an den Command-Artefakten offen bleibt ([`BEO-007`](../observations.md)).
 
 ## 5. Closure-Trigger
 
