@@ -45,24 +45,24 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **`make archive-welle WELLE=<welle-id>` legt das Archiv an** (`done/<welle-id>/archiv.zip`,
+- [x] **`make archive-welle WELLE=<welle-id>` legt das Archiv an** (`done/<welle-id>/archiv.zip`,
       gepacktes Image statt Host-Werkzeug), schreibt je archiviertem Slice und für den Welle-Plan
       einen Stub per `cp` aus den zwei vendored Vorlagen und zieht die Verweise auf die bewegten
       Dateien nach — Move und Inhalt in getrennten Commits
       ([`AGENTS.md`](../../../../AGENTS.md) §3.3).
-- [ ] **Die Einsammel-Regel liegt im Werkzeug, nicht im Aufrufer:** Slices, deren `Welle:` diese
+- [x] **Die Einsammel-Regel liegt im Werkzeug, nicht im Aufrufer:** Slices, deren `Welle:` diese
       Welle nennt, **und** die wellenlosen seit der letzten Closure; Slices einer noch offenen Welle
       bleiben liegen. Rot gesehen ([`AGENTS.md`](../../../../AGENTS.md) §3.6) an einem Slice jeder
       der drei Klassen.
-- [ ] **Ein Wächter hält die Stub-Form** — Archiv-Zeiger vorhanden **und** keine
+- [x] **Ein Wächter hält die Stub-Form** — Archiv-Zeiger vorhanden **und** keine
       Abschnittsüberschrift mehr; die zweite Hälfte ist die tragende, denn ein Stub mit Zeiger und
       vollem Text wäre die Archivierung, die es nicht gab. Rot gesehen an genau diesem Fall.
-- [ ] `make gates` grün.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] `make gates` grün.
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -111,10 +111,23 @@ dasteht.
 
 - **Ein Zip ist opak und trägt Zeitstempel:** zwei Läufe über denselben Bestand liefern verschiedene
   Bytes, und kein Gate liest hinein. Was ein zweiter Lauf dann belegt, ist zu benennen. —
-  **Ausgang:** offen, wird bei Closure verbucht.
+  **Ausgang:** **entfallen** — die Zeitstempel-Hälfte tritt nicht ein, weil nicht `zip` packt,
+  sondern `git archive --format=zip` über einem Tree-Operanden: die Eintrags-Zeitstempel kommen aus
+  der Commit-Zeit, nicht aus der Uhr des Laufs. Gemessen an zwei Läufen über denselben Commit,
+  `sha256sum` beide Male `0d4ef4178295a1544376b0cbe4853531657a3b25358a8ad87c5ae19d67ab494d`
+  (Scratch-Repo, Skriptkopf §BELEG; keine Erwartungswerte,
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). Ein zweiter Lauf belegt damit Byte-Gleichheit. Dass kein Gate ins Zip hineinliest,
+  bleibt wahr — das ist die Aussage der Quelle selbst (Vollständigkeit bezeugt der
+  Archivierungs-Commit) und kein Rest dieses Risikos.
 - **Die eingehende Hälfte der präfixlosen Verweis-Form hat keinen Träger** (`BEO-003` im
   [Register](../observations.md), Grenze 3): ein Verweis ohne Verzeichnis-Segment bricht beim Move
-  und wird nicht nachgezogen. — **Ausgang:** offen, wird bei Closure verbucht.
+  und wird nicht nachgezogen. — **Ausgang:** **entfallen** für diese Operation:
+  `rewrite_bare_sibling_in_file` ankert an der Link-Klammer statt am Verzeichnis-Literal und hängt
+  jedes präfixlose Ziel in den flach gebliebenen `done/`-Dateien auf `<welle-id>/` um. Zwei
+  bats-Fälle führen beide Richtungen, der Lauf über das Scratch-Repo zieht zwei solche Ziele nach.
+  Für `make slice-mv` bleibt die Grenze unberührt — dort wechselt die Datei das Geschwister-
+  Verzeichnis statt die Ebene, und die Registerzeile führt sie weiter.
 
 ## 7. Closure-Notiz
 
