@@ -1,11 +1,15 @@
-// Package archive sagt, was die Archivierung einer geschlossenen Welle taete:
-// welche Zeitdokumente sie einsammelte, welche fail-closed-Ausgaenge ihr im Weg
-// stuenden und welche Dateien einen Verweis auf etwas Bewegtes tragen.
+// Package archive fuehrt die Archivierung einer geschlossenen Welle aus und sagt
+// vorher, was sie taete: welche Zeitdokumente sie einsammelt, welche
+// fail-closed-Ausgaenge ihr im Weg stehen, welche Dateien einen Verweis auf etwas
+// Bewegtes tragen — und mit `Anwenden` der Move, das Zip, beide Stub-Arten aus
+// der vendored Vorlage und der Verweis-Nachzug.
 //
-// ABGRENZUNG, und sie ist die tragende Eigenschaft dieses Pakets: es SCHREIBT
-// nichts — kein Move, kein Zip, kein Stub, kein Commit. Jede Funktion liest den
-// Baum und rechnet; jede ist ueber einem synthetischen Verzeichnis pruefbar,
-// ohne ein Repo zu bewegen.
+// ZWEI HAELFTEN, und die Trennung ist die Pruefbarkeits-Eigenschaft dieses
+// Pakets. Die LESENDE Haelfte (Vorschau und alles, was sie ruft) schreibt nicht;
+// die SCHREIBENDE (Anwenden und was darunter haengt) fasst nur den Baum unter
+// `root` an und ruft `git` nicht selbst — die vier git-Operationen kommen als
+// Schnittstelle herein. Damit ist auch der schreibende Zweig ueber einem
+// synthetischen Verzeichnis pruefbar, ohne ein Repo zu bewegen.
 //
 // RANG-ZEIGER: was archiviert wird, was liegen bleibt und in welcher Form,
 // steht im Baseline-Regelwerk (modul-06-roadmap.md, §Wellen-Closure-Prozedur,

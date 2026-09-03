@@ -1,6 +1,8 @@
 package archive
 
 import (
+	"fmt"
+	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -100,14 +102,24 @@ func VerweisFund(root string, dateien, bewegte []string) ([]Fund, error) {
 	return out, nil
 }
 
-// fundIn zaehlt die drei Formen fuer eine Datei, jede nur in ihrem Suchraum.
+// rollen sagt, welche der zwei relativen Formen in dieser Datei ueberhaupt auf
+// die flache done/-Ebene aufloesen. Es ist die EINE Stelle, an der beide Leser
+// dieser Datei ihren Suchraum bestimmen — der zaehlende (VerweisFund) und der
+// schreibende (Nachziehen). Zwei Fassungen dieser Regel drifteten, und die
+// Vorschau saegte dann etwas anderes, als der Lauf taete.
 // `zieht` sind die Basenamen, die dieser Lauf selbst bewegt.
-func fundIn(inhalt, datei string, bewegte []string, zieht map[string]bool) Fund {
-	f := Fund{Datei: datei}
+func rollen(datei string, zieht map[string]bool) (flachInDone, unterDone bool) {
 	dir := filepath.ToSlash(filepath.Dir(datei))
 	markdown := strings.HasSuffix(datei, ".md")
-	flachInDone := markdown && dir == doneDir && !zieht[filepath.Base(datei)]
-	unterDone := markdown && strings.HasPrefix(dir, doneDir+"/")
+	flachInDone = markdown && dir == doneDir && !zieht[filepath.Base(datei)]
+	unterDone = markdown && strings.HasPrefix(dir, doneDir+"/")
+	return flachInDone, unterDone
+}
+
+// fundIn zaehlt die drei Formen fuer eine Datei, jede nur in ihrem Suchraum.
+func fundIn(inhalt, datei string, bewegte []string, zieht map[string]bool) Fund {
+	f := Fund{Datei: datei}
+	flachInDone, unterDone := rollen(datei, zieht)
 	for _, base := range bewegte {
 		f.Praefix += ZaehlePraefix(inhalt, base)
 		if flachInDone {
@@ -118,4 +130,125 @@ func fundIn(inhalt, datei string, bewegte []string, zieht map[string]bool) Fund 
 		}
 	}
 	return f
+}
+
+// ErsetzePraefix haengt die eingehende Form MIT Verzeichnis-Praefix um:
+// "done/<base>" wird zu "done/<welle-id>/<base>", an derselben Wortgrenze, an
+// der ZaehlePraefix zaehlt. Liefert den neuen Inhalt und die Zahl der
+// Ersetzungen.
+func ErsetzePraefix(inhalt, base, welleID string) (string, int) {
+	if base == "" {
+		return inhalt, 0
+	}
+	re := regexp.MustCompile(`(^|[^A-Za-z0-9_-])` + doneName + `/` + regexp.QuoteMeta(base))
+	n := 0
+	out := re.ReplaceAllStringFunc(inhalt, func(m string) string {
+		n++
+		return m[:len(m)-len(doneName)-1-len(base)] + doneName + "/" + welleID + "/" + base
+	})
+	return out, n
+}
+
+// ErsetzeGeschwister haengt die geschwister-relative Form um: "](<base>)" wird zu
+// "](<welle-id>/<base>)". Sie trifft nur in einer Datei, die flach in done/
+// liegen BLEIBT — die Zuordnung macht ersetzeIn, nicht diese Funktion.
+func ErsetzeGeschwister(inhalt, base, welleID string) (string, int) {
+	if base == "" {
+		return inhalt, 0
+	}
+	alt := "](" + base + ")"
+	n := strings.Count(inhalt, alt)
+	if n == 0 {
+		return inhalt, 0
+	}
+	return strings.ReplaceAll(inhalt, alt, "]("+welleID+"/"+base+")"), n
+}
+
+// ErsetzeAufsteigend haengt die aufsteigende Form um: "](../<base>)" wird zu
+// "](../<welle-id>/<base>)".
+//
+// ZUSAGE, und sie ist ADR-0033 Abnahme-Kriterium 3: diese Form schreibt das
+// Werkzeug SELBST in die Stubs (SlicePfadRelativ liefert sie fuer einen
+// Folge-Slice, der noch flach in done/ liegt). Zieht dieses Ziel bei einem
+// SPAETEREN Lauf eine Ebene tiefer, erreicht es keine der beiden anderen Regeln:
+// die Praefix-Regel ankert am Literal "done/", das hier fehlt, und die
+// geschwister-relative laeuft ueber die flachen done/*.md.
+// Gedeckt von TestNachziehenHaengtDenAufsteigendenStubVerweisUm;
+// test/mutations/240-archive-welle-go-aufsteigender-verweis.sh nimmt sie weg.
+func ErsetzeAufsteigend(inhalt, base, welleID string) (string, int) {
+	if base == "" {
+		return inhalt, 0
+	}
+	alt := "](../" + base + ")"
+	n := strings.Count(inhalt, alt)
+	if n == 0 {
+		return inhalt, 0
+	}
+	return strings.ReplaceAll(inhalt, alt, "](../"+welleID+"/"+base+")"), n
+}
+
+// ersetzeIn wendet die drei Formen auf eine Datei an, jede nur in ihrem
+// Suchraum — derselbe, den fundIn zaehlt (beide fragen `rollen`).
+func ersetzeIn(inhalt, datei, welleID string, bewegte []string, zieht map[string]bool) (string, Fund) {
+	f := Fund{Datei: datei}
+	flachInDone, unterDone := rollen(datei, zieht)
+	for _, base := range bewegte {
+		var n int
+		inhalt, n = ErsetzePraefix(inhalt, base, welleID)
+		f.Praefix += n
+		if flachInDone {
+			inhalt, n = ErsetzeGeschwister(inhalt, base, welleID)
+			f.Geschwister += n
+		}
+		if unterDone {
+			inhalt, n = ErsetzeAufsteigend(inhalt, base, welleID)
+			f.Aufsteigend += n
+		}
+	}
+	return inhalt, f
+}
+
+// Nachziehen SCHREIBT den Verweis-Nachzug: jede Datei des Suchraums, die einen
+// Verweis auf eine bewegte Datei traegt, bekommt ihn auf die neue Adresse
+// umgehaengt. Liefert die geaenderten Dateien mit ihrer Zahl je Form — dieselbe
+// Struktur, die die Vorschau ausgibt, damit beide Seiten dasselbe zaehlen.
+//
+// GRENZEN, wie beim zaehlenden Zwilling: es haengt PFADE um, keine
+// Zustandssaetze; und ein eingehender Verweis in Inline-Code ohne
+// Verzeichnis-Segment traegt keine Link-Klammer und wird nicht getroffen.
+// `make docs-check` nach dem Lauf zeigt den Rest.
+func Nachziehen(root string, dateien, bewegte []string, welleID string) ([]Fund, error) {
+	zieht := make(map[string]bool, len(bewegte))
+	for _, b := range bewegte {
+		zieht[b] = true
+	}
+	var out []Fund
+	for _, datei := range Suchraum(dateien) {
+		inhalt, ok, err := lies(root, datei)
+		if err != nil {
+			return nil, err
+		}
+		if !ok {
+			continue
+		}
+		neu, f := ersetzeIn(inhalt, datei, welleID, bewegte, zieht)
+		if f.Summe() == 0 {
+			continue
+		}
+		p := filepath.Join(root, filepath.FromSlash(datei))
+		if err := os.WriteFile(p, []byte(neu), dateiRechte(p)); err != nil {
+			return nil, fmt.Errorf("%s schreiben: %w", datei, err)
+		}
+		out = append(out, f)
+	}
+	return out, nil
+}
+
+// dateiRechte erhaelt den Modus einer bestehenden Datei — der Nachzug fasst auch
+// ausfuehrbare Skripte an, und ein pauschales 0644 naehme ihnen das x-Bit.
+func dateiRechte(p string) os.FileMode {
+	if st, err := os.Stat(p); err == nil {
+		return st.Mode().Perm()
+	}
+	return 0o644
 }

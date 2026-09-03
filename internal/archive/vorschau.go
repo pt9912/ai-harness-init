@@ -2,6 +2,7 @@ package archive
 
 import (
 	"fmt"
+	"io"
 	"strings"
 )
 
@@ -157,7 +158,7 @@ func Schreibe(b Bericht) string {
 // der Klammer FUNDSTELLEN ueber alle Dateien. Eine Fundstellen-Zahl kann die
 // Datei-Zahl uebersteigen — ohne eigenes Einheitswort laese der Aufrufer sie als
 // Teilmenge der ersten. TestSchreibeTrenntDateienVonFundstellen haelt es.
-func schreibeVerweise(sb *strings.Builder, funde []Fund) {
+func schreibeVerweise(sb io.Writer, funde []Fund) {
 	praefix, geschwister, aufsteigend := 0, 0, 0
 	for _, f := range funde {
 		praefix += f.Praefix

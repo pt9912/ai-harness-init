@@ -5,24 +5,65 @@ import (
 	"errors"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"testing"
 )
 
-// TestArchiveWelleOhneVorschauSchreibtNichts haelt die Abgrenzung dieses Zweigs:
-// ohne --vorschau endet er mit Exit 2, VOR jedem Baum-Zugriff, und nennt den
-// Traeger des schreibenden Wegs. Ein Zweig, der ohne Schalter losliefe, waere die
-// zweite Fassung derselben Operation, die ADR-0033 Festlegung 2 ausschliesst.
-func TestArchiveWelleOhneVorschauSchreibtNichts(t *testing.T) {
+// gitStumm ist die Test-Verdrahtung der vier schreibenden git-Operationen: sie
+// schreibt mit und tut nichts. Ein Lauf, der sie ueberhaupt beruehrt, hat die
+// Vorpruefung passiert — genau das misst der Fall darunter.
+type gitStumm struct{ rufe []string }
+
+func (g *gitStumm) Mv(alt, neu string) error  { g.rufe = append(g.rufe, "mv"); return nil }
+func (g *gitStumm) Rm(pfade []string) error   { g.rufe = append(g.rufe, "rm"); return nil }
+func (g *gitStumm) Add(pfade []string) error  { g.rufe = append(g.rufe, "add"); return nil }
+func (g *gitStumm) Commit(nachricht string) error {
+	g.rufe = append(g.rufe, "commit")
+	return nil
+}
+
+// TestArchiveWelleSchreibendBrichtAnEinerSperreAb haelt die Reihenfolge-Zusage
+// des schreibenden Zweigs: die Vorschau ist seine VORPRUEFUNG. Steht eine Sperre,
+// endet er mit Exit 3, nennt sie — und hat bis dahin keine einzige git-Operation
+// angefasst. Ein Zweig, der erst schriebe und dann urteilte, liesse den Baum
+// zwischen zwei Zustaenden stehen.
+//
+// Die Sperre hier ist der unsaubere Arbeitsbaum, und zwar in seiner UNTRACKTEN
+// Form (ADR-0033 Abnahme-Kriterium 2, lesende Haelfte).
+func TestArchiveWelleSchreibendBrichtAnEinerSperreAb(t *testing.T) {
+	root := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(root, "docs", "plan", "planning", "done"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	g := &gitStumm{}
 	var out, errb bytes.Buffer
-	if code := archiveWelle([]string{"welle-10"}, &out, &errb); code != 2 {
-		t.Fatalf("Exit %d, want 2", code)
+	code := archiveWelleLauf(root, "welle-10", false, "?? fremd.txt\n", nil, g, &out, &errb)
+	if code != 3 {
+		t.Fatalf("Exit %d, want 3 (Sperre steht)", code)
 	}
-	if out.Len() != 0 {
-		t.Errorf("stdout nicht leer: %q", out.String())
+	if len(g.rufe) != 0 {
+		t.Fatalf("git-Operationen trotz Sperre: %v", g.rufe)
 	}
-	if !strings.Contains(errb.String(), "make archive-welle WELLE=welle-10") {
-		t.Errorf("stderr nennt den schreibenden Traeger nicht: %q", errb.String())
+	if !strings.Contains(out.String(), "[unsauber]") {
+		t.Errorf("die Sperre steht nicht im Bericht: %q", out.String())
+	}
+}
+
+// TestArchiveWelleVorschauRuehrtKeineGitOperationAn: mit --vorschau endet der
+// Zweig nach dem Bericht, auch wenn keine Sperre steht.
+func TestArchiveWelleVorschauRuehrtKeineGitOperationAn(t *testing.T) {
+	root := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(root, "docs", "plan", "planning", "done"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	g := &gitStumm{}
+	var out, errb bytes.Buffer
+	// Ein leerer done/-Baum traegt eigene Sperren; gemessen wird hier allein, dass
+	// der Vorschau-Zweig keine git-Operation anfasst.
+	archiveWelleLauf(root, "welle-10", true, "", nil, g, &out, &errb)
+	if len(g.rufe) != 0 {
+		t.Fatalf("git-Operationen im Vorschau-Zweig: %v", g.rufe)
 	}
 }
 
@@ -46,7 +87,7 @@ func TestArchiveWelleAufrufFehler(t *testing.T) {
 			if code := archiveWelle(f.args, &out, &errb); code != f.want {
 				t.Fatalf("Exit %d, want %d (stderr: %q)", code, f.want, errb.String())
 			}
-			if !strings.Contains(errb.String(), "archive-welle --vorschau") {
+			if !strings.Contains(errb.String(), "archive-welle [--vorschau]") {
 				t.Errorf("Usage fehlt auf stderr: %q", errb.String())
 			}
 		})
@@ -58,7 +99,7 @@ func TestArchiveWelleHelp(t *testing.T) {
 	if code := archiveWelle([]string{"--help"}, &out, &errb); code != 0 {
 		t.Fatalf("Exit %d, want 0", code)
 	}
-	if !strings.Contains(out.String(), "archive-welle --vorschau") {
+	if !strings.Contains(out.String(), "archive-welle [--vorschau]") {
 		t.Fatalf("Usage fehlt auf stdout: %q", out.String())
 	}
 }

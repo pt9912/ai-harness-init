@@ -1,7 +1,9 @@
 package archive_test
 
 import (
+	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/pt9912/ai-harness-init/internal/archive"
@@ -161,5 +163,66 @@ func TestVerweisFundUebergehtDenEigenenUmzugsgegenstand(t *testing.T) {
 	}
 	if funde[0].Geschwister != 2 {
 		t.Fatalf("Ergebnisnotiz = %+v, want 2 geschwister-relative Fundstellen", funde[0])
+	}
+}
+
+// TestNachziehenSchreibtGenauDortWoVerweisFundZaehlt: der zaehlende und der
+// schreibende Leser fragen dieselbe Suchraum-Regel. Waeren es zwei Fassungen,
+// saegte die Vorschau einen anderen Blast-Radius, als der Lauf anfasst — und der
+// Aufrufer haette eine Aussage, auf die er sich nicht verlassen kann.
+func TestNachziehenSchreibtGenauDortWoVerweisFundZaehlt(t *testing.T) {
+	baum := func() (string, []string) {
+		root := t.TempDir()
+		done := filepath.Join(root, "docs", "plan", "planning", "done")
+		schreibe(t, filepath.Join(root, "docs", "plan", "adr", "0033-x.md"),
+			"Siehe [slice-100](../planning/done/slice-100-a.md).\n")
+		schreibe(t, filepath.Join(done, "welle-10-results.md"),
+			"Geliefert: [slice-100](slice-100-a.md).\n")
+		schreibe(t, filepath.Join(done, "welle-09", "slice-090-x.md"),
+			"Folge-Slice: [slice-100](../slice-100-a.md).\n")
+		schreibe(t, filepath.Join(root, "docs", "plan", "planning", "next", "slice-900-y.md"),
+			"Geschwister im eigenen Verzeichnis: [x](slice-100-a.md).\n")
+		schreibe(t, filepath.Join(done, "slice-100-a.md"), "# Slice slice-100: A\n")
+		return root, []string{
+			"docs/plan/adr/0033-x.md",
+			"docs/plan/planning/done/welle-10-results.md",
+			"docs/plan/planning/done/welle-09/slice-090-x.md",
+			"docs/plan/planning/next/slice-900-y.md",
+			"docs/plan/planning/done/slice-100-a.md",
+		}
+	}
+
+	root, dateien := baum()
+	gezaehlt, err := archive.VerweisFund(root, dateien, []string{"slice-100-a.md"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	geschrieben, err := archive.Nachziehen(root, dateien, []string{"slice-100-a.md"}, "welle-10")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(gezaehlt) != len(geschrieben) {
+		t.Fatalf("VerweisFund = %+v, Nachziehen = %+v — verschiedene Suchraeume", gezaehlt, geschrieben)
+	}
+	for i := range gezaehlt {
+		if gezaehlt[i] != geschrieben[i] {
+			t.Errorf("Datei %d: gezaehlt %+v, geschrieben %+v", i, gezaehlt[i], geschrieben[i])
+		}
+	}
+
+	inhalte := map[string]string{
+		"docs/plan/adr/0033-x.md":                         "](../planning/done/welle-10/slice-100-a.md)",
+		"docs/plan/planning/done/welle-10-results.md":     "](welle-10/slice-100-a.md)",
+		"docs/plan/planning/done/welle-09/slice-090-x.md": "](../welle-10/slice-100-a.md)",
+		"docs/plan/planning/next/slice-900-y.md":          "](slice-100-a.md)",
+	}
+	for datei, want := range inhalte {
+		b, rerr := os.ReadFile(filepath.Join(root, filepath.FromSlash(datei)))
+		if rerr != nil {
+			t.Fatal(rerr)
+		}
+		if !strings.Contains(string(b), want) {
+			t.Errorf("%s traegt %q nicht:\n%s", datei, want, b)
+		}
 	}
 }

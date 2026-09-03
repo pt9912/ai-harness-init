@@ -38,7 +38,7 @@ Verwendung:
   ai-harness-init add-lang <sprache> <pfad> [--arch <arch>]
   ai-harness-init span-emit
   ai-harness-init span-report [<ablageort>]
-  ai-harness-init archive-welle --vorschau <welle-id>
+  ai-harness-init archive-welle [--vorschau] <welle-id>
 
 Der Init-Lauf ist IDEMPOTENT (ADR-0007): ein zweiter Lauf ist Exit 0 — tool-eigene
 Infrastruktur wird kanonisch neu geschrieben (heilt Drift), adopter-gefuellte Dateien
@@ -71,11 +71,13 @@ Subkommando span-report [<ablageort>]:
   der Ablageort unter der Repo-Wurzel des Arbeitsverzeichnisses. Ein Bericht, kein
   Gate: er prueft nichts und faerbt nichts rot.
 
-Subkommando archive-welle --vorschau <welle-id>:
-  Sagt, was die Archivierung der Zeitdokumente einer geschlossenen Welle taete —
-  Einsammel-Klassen, Review-Reports, Blast-Radius der Verweise und die
-  fail-closed-Ausgaenge — und schreibt dabei nichts. Ohne --vorschau endet der
-  Aufruf mit Exit 2; den schreibenden Zweig faehrt "make archive-welle".
+Subkommando archive-welle [--vorschau] <welle-id>:
+  Archiviert die Zeitdokumente einer geschlossenen Welle: Slice-Dateien,
+  Welle-Plan und Review-Reports wandern nach done/<welle-id>/archiv.zip, an der
+  Stelle von Slice und Plan bleibt je ein gekuerzter Stub aus der vendored
+  Vorlage. Verlangt einen sauberen Arbeitsbaum, setzt zwei getrennte Commits
+  (reiner Move, dann Inhalt) und bricht an jeder Sperre ab, bevor er etwas
+  anfasst. Mit --vorschau wird nur gesagt, was der Lauf taete.
 
 Umgebung (bewusster Opt-in-Override der gepinnten Werte — LH-QA-02):
   COURSE_TAG        Kurs-Version für die Baseline (Regelwerk + Templates)

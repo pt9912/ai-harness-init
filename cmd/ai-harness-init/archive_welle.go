@@ -1,34 +1,21 @@
-// Das Unterkommando `archive-welle` sagt, was die Archivierung der Zeitdokumente
-// einer geschlossenen Welle taete. Der Traeger ist das Produkt-Binaer, die
-// Operation sein Unterkommando (ADR-0033 Festlegung 1); die Logik liegt in
-// internal/archive, hier steht der Dispatch und die eine Stelle, an der `git`
-// laeuft.
+// Das Unterkommando `archive-welle` archiviert die Zeitdokumente einer
+// geschlossenen Welle — und sagt mit `--vorschau` vorher, was es taete. Der
+// Traeger ist das Produkt-Binaer, die Operation sein Unterkommando (ADR-0033
+// Festlegung 1); die Logik liegt in internal/archive, hier steht der Dispatch
+// und die eine Stelle, an der `git` laeuft.
 //
-// ES SCHREIBT NICHTS. Zwei Stuecke tragen das, und beide sind nachrechenbar
-// statt zugesagt: der NICHT-Test-Anteil von internal/archive fuehrt keinen
-// schreibenden Aufruf —
+// ZWEI ZWEIGE, ein Einstiegspunkt. Beide fahren dieselbe Vorschau: sie ist die
+// Vorpruefung des schreibenden Laufs, und eine Sperre beendet ihn mit Exit 3,
+// bevor er etwas anfasst (TestArchiveWelleSchreibendBrichtAnEinerSperreAb). Mit
+// `--vorschau` endet der Aufruf danach; ohne sie laeuft die Operation — Move und
+// Commit 1, Zip, Stubs, Verweis-Nachzug, Staging, Commit 2.
 //
-//	git grep -cE 'os\.WriteFile|os\.MkdirAll|os\.Rename|os\.Remove|\.Create\(' \
-//	  -- 'internal/archive/*.go' ':!internal/archive/*_test.go'
-//
-// bleibt ohne Treffer —, und die einzigen Fremdprozesse dieses Zweigs sind die
-// zwei lesenden git-Aufrufe unten. Ohne --vorschau endet er ausserdem VOR jedem
-// Baum-Zugriff mit Exit 2 und nennt den Grund
-// (TestArchiveWelleOhneVorschauSchreibtNichts).
-//
-// Die Testdateien gehoeren nicht in die Messung und sind darum ausgeschlossen:
-// sie legen ihre synthetischen Baeume selbst an und schreiben dabei in
-// t.TempDir(). Wer sie mitzaehlt, bekommt eine Zahl, die die Zusage zu
-// widerlegen scheint, und kann eine spaeter hinzukommende echte Schreib-Stelle
-// nicht mehr von ihnen unterscheiden.
-//
-// GRENZE, benannt statt verschwiegen: fuer die Schreib-Freiheit selbst gibt es
-// keinen Waechter. Wer hier einen schreibenden Aufruf ergaenzt, faellt keinem
-// Gate auf; die zwei Stuecke oben sind eine Messung, keine Schranke.
-//
-// Der schreibende Zweig — Move, Zip, Stubs, Verweis-Nachzug, zwei Commits —
-// liegt beim Shell-Helfer hinter `make archive-welle`, und der bleibt bis zu
-// seiner Abloesung sein einziger Traeger (ADR-0033 Festlegung 2).
+// GRENZE, benannt statt verschwiegen: die vier schreibenden git-Aufrufe unten
+// laufen in keinem Test. Was ueber ihnen liegt — Reihenfolge, Aufteilung auf zwei
+// Commits, die gestagte Pfad-Liste — traegt die Git-Schnittstelle von
+// internal/archive und ist dort ueber einem synthetischen Baum gedeckt
+// (TestAnwendenTrenntMoveVonInhalt); DASS die vier Aufrufe hier das tun, was ihr
+// Name sagt, ist es nicht.
 
 package main
 
@@ -45,21 +32,26 @@ import (
 	"github.com/pt9912/ai-harness-init/internal/span"
 )
 
-const archiveWelleUsage = `ai-harness-init archive-welle --vorschau <welle-id>
+const archiveWelleUsage = `ai-harness-init archive-welle [--vorschau] <welle-id>
 
-Sagt, was die Archivierung der Zeitdokumente einer geschlossenen Welle taete,
-und schreibt dabei nichts: die drei Einsammel-Klassen (Mitglieder · wellenlos ·
-fremd), die Review-Reports, die Dateien mit einem Verweis auf etwas Bewegtes und
-die fail-closed-Ausgaenge, an denen der schreibende Lauf abbraeche.
+Archiviert die Zeitdokumente einer GESCHLOSSENEN Welle: Slice-Dateien,
+Welle-Plan und Review-Reports wandern nach
+docs/plan/planning/done/<welle-id>/archiv.zip, an der Stelle von Slice und Plan
+bleibt je ein gekuerzter Stub aus der vendored Vorlage. Die Ergebnisnotiz bleibt
+vollstaendig und flach. Verlangt einen sauberen Arbeitsbaum und setzt zwei
+getrennte Commits: zuerst den reinen Move, danach Archiv, Stubs und
+Verweis-Nachzug.
 
-  --vorschau    PFLICHT. Ohne sie endet der Aufruf mit Exit 2 und schreibt
-                nichts — den schreibenden Zweig faehrt `+"`make archive-welle`"+`.
+  --vorschau    Nur sagen, was der Lauf taete, und nichts schreiben: die drei
+                Einsammel-Klassen (Mitglieder · wellenlos · fremd), die
+                Review-Reports, die Dateien mit einem Verweis auf etwas Bewegtes
+                und die fail-closed-Ausgaenge, an denen der Lauf abbraeche.
 
 Exit-Codes:
-  0   Vorschau gefahren, keine Sperre — der schreibende Lauf liefe.
-  2   Aufruf-Fehler oder fehlendes --vorschau.
-  3   mindestens eine Sperre steht.
-  1   Laufzeit-Fehler (keine Repo-Wurzel, git nicht lauffaehig, Lesefehler).
+  0   Lauf (bzw. Vorschau) gefahren, keine Sperre.
+  2   Aufruf-Fehler.
+  3   mindestens eine Sperre steht — geschrieben wurde nichts.
+  1   Laufzeit-Fehler (keine Repo-Wurzel, git nicht lauffaehig, Lese-/Schreibfehler).
 `
 
 // archiveWelle ist der testbare Kern des Unterkommandos: Argumente rein, Text
@@ -68,12 +60,6 @@ func archiveWelle(args []string, out, errOut io.Writer) int {
 	welle, vorschau, code := parseArchiveWelle(args, out, errOut)
 	if code >= 0 {
 		return code
-	}
-	if !vorschau {
-		fmt.Fprintln(errOut, "archive-welle: ohne --vorschau schreibt dieses Unterkommando nichts.")
-		fmt.Fprintln(errOut, "  Der schreibende Zweig — Move, Zip, Stubs, Verweis-Nachzug, zwei Commits — liegt beim Shell-Helfer:")
-		fmt.Fprintln(errOut, "    make archive-welle WELLE="+welle)
-		return 2
 	}
 	root, err := repoWurzel()
 	if err != nil {
@@ -90,6 +76,15 @@ func archiveWelle(args []string, out, errOut io.Writer) int {
 		fmt.Fprintf(errOut, "archive-welle: %v\n", err)
 		return 1
 	}
+	return archiveWelleLauf(root, welle, vorschau, porcelain, dateien, gitSchreibend{root}, out, errOut)
+}
+
+// archiveWelleLauf ist der Kern beider Zweige: er startet keinen Prozess, sondern
+// nimmt die zwei git-Lesungen als Werte und die schreibenden git-Operationen als
+// Schnittstelle. Dadurch ist die Reihenfolge-Zusage pruefbar — die Vorschau ist
+// die Vorpruefung, und eine Sperre beendet den Lauf, BEVOR er etwas anfasst.
+// Gedeckt von TestArchiveWelleSchreibendBrichtAnEinerSperreAb.
+func archiveWelleLauf(root, welle string, vorschau bool, porcelain string, dateien []string, g archive.Git, out, errOut io.Writer) int {
 	bericht, err := archive.Vorschau(root, welle, porcelain, dateien)
 	if err != nil {
 		fmt.Fprintf(errOut, "archive-welle: %v\n", err)
@@ -99,7 +94,43 @@ func archiveWelle(args []string, out, errOut io.Writer) int {
 	if len(bericht.Sperren) > 0 {
 		return 3
 	}
+	if vorschau {
+		return 0
+	}
+	if err := archive.Anwenden(root, bericht.Bestand, dateien, g, out); err != nil {
+		fmt.Fprintf(errOut, "archive-welle: %v\n", err)
+		return 1
+	}
 	return 0
+}
+
+// gitSchreibend verdrahtet die vier git-Operationen des schreibenden Laufs. Sie
+// stehen hier und nicht in internal/archive, damit die Urteils-Logik dort ohne
+// git pruefbar bleibt — dieselbe Aufteilung wie bei den zwei lesenden Aufrufen.
+type gitSchreibend struct{ root string }
+
+func (g gitSchreibend) Mv(alt, neu string) error { return g.lauf("mv", "--", alt, neu) }
+
+func (g gitSchreibend) Rm(pfade []string) error {
+	return g.lauf(append([]string{"rm", "-q", "--"}, pfade...)...)
+}
+
+func (g gitSchreibend) Add(pfade []string) error {
+	return g.lauf(append([]string{"add", "--"}, pfade...)...)
+}
+
+func (g gitSchreibend) Commit(nachricht string) error {
+	return g.lauf("commit", "-q", "-m", nachricht)
+}
+
+func (g gitSchreibend) lauf(args ...string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, "git", append([]string{"-C", g.root}, args...)...)
+	if aus, err := cmd.CombinedOutput(); err != nil {
+		return fmt.Errorf("git %s: %w: %s", strings.Join(args, " "), err, strings.TrimSpace(string(aus)))
+	}
+	return nil
 }
 
 // parseArchiveWelle trennt die Welle-Kennung vom Vorschau-Schalter. Der dritte
