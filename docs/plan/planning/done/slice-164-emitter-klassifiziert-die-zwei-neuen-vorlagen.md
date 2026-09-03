@@ -91,7 +91,7 @@ liegt in `done/` — erst dann ist der Satz, gegen den klassifiziert wird, der a
   statt einer Eintragung in bestehende Listen.
 - `in-progress` → `open` (blockiert — Carveout?): wenn die Frage *gehört die Stub-Form überhaupt
   in ein emittiertes Repo?* offen ist — das entscheidet
-  [slice-158](../open/slice-158-archivierungs-schritt.md) für die Dogfood-Ebene, und ohne dessen Verdikt
+  [slice-158](../in-progress/slice-158-archivierungs-schritt.md) für die Dogfood-Ebene, und ohne dessen Verdikt
   klassifiziert dieser Slice gegen eine ungeklärte Zusage.
 
 ## 5. Closure-Trigger
@@ -117,7 +117,7 @@ dasteht.
   kein Erwartungswert,
   [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2). Dass der Wächter danach noch misst, ist rot gesehen (§7).
-- **Die Entscheidung hängt an [slice-158](../open/slice-158-archivierungs-schritt.md)** und kann ins Leere
+- **Die Entscheidung hängt an [slice-158](../in-progress/slice-158-archivierungs-schritt.md)** und kann ins Leere
   laufen, wenn dort der Archivierungs-Schritt für dieses Repo verworfen wird. — **Ausgang:
   entfallen.** *Wiederkehrend* ist die Klasse, die **nichts** ins frische Zielrepo legt; sie sagt
   über dessen Betrieb nichts aus. Dieselbe Klasse tragen `welle.template.md` und

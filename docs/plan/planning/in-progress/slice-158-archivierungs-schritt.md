@@ -98,7 +98,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
    nicht fest, wer die zwei Anweisungssätze schreiben darf, die DoD 2 anfasst — und ein Lauf, der
    sie ohne diese Antwort ändert, ist genau der Vorgang, den [`BEO-007`](../observations.md) zählt.
    Der Slice liegt darum in `open/`, nicht in `next/`; dieselbe Platzierung aus demselben Grund
-   trägt [slice-153](slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md).
+   trägt [slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md).
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
