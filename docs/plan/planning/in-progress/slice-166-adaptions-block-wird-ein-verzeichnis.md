@@ -195,6 +195,51 @@ in Arbeit.
   Sonden verlangt einen Eingriff in `.d-check.yml`. Der Slice geht zurück, und vor ihm steht eine
   ADR nach [`AGENTS.md`](../../../../AGENTS.md) §3.5.
 
+**Rückführung vollzogen — `in-progress` → `open`. Grund: Schritt 0 (b) ist rot.**
+
+Der Vollzug selbst trägt: die Extraktion lief mechanisch über die Trennmarke, 45 Zieldateien
+entstanden, und die Umkehrung der Pfad-Präfix-Korrekturen reproduziert den Vorher-Stand
+**byte-gleich** (identischer sha256 gegen den Ausschnitt aus
+`git show ba4574e:harness/conventions.md`); der Index misst **146** Zeilen. Auch die
+Anker-Mengengleichheit steht: der aus den Überschriften erzeugte Slug-Satz deckt die **45**
+referenzierten Anker exakt — beide Differenzen leer, das 46. Element der Mess-Ausgabe ist das in
+DoD (2) benannte Prosa-Artefakt.
+
+Rot ist die **Adressierbarkeit**. `make docs-check` meldet über dem vollzogenen Stand
+`552 Datei(en) geprüft, 56 Befund(e)` in drei Klassen, und **jede** Reparatur greift in
+[`.d-check.yml`](../../../../.d-check.yml) ein:
+
+1. **54× `id-unlinked`** in 12 der 45 Zieldateien. Das Modul `ids` nimmt bei
+   `link-policy: always` die eigene `target`-Datei von der Linkpflicht aus — die Rümpfe nutzen das
+   54-mal, etwa im `Löst auf:`-Feld von
+   [`MR-037`](../../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst),
+   das eine Kennung unverlinkt nennt. Dieselben Bytes sind im heutigen Stand grün und im Ziel-Ort
+   rot. Reparatur wäre ein `exempt-paths`-Eintrag auf das neue Verzeichnis — eine Senkung nach
+   [`AGENTS.md`](../../../../AGENTS.md) §3.5 — oder nachträgliches Verlinken in angenommenen
+   Einträgen, was die Append-only-Disziplin bricht, die
+   [`MR-039`](../../../../harness/conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
+   führt.
+2. **1× `target-missing`** aus dem Rumpf von
+   [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben).
+   Das `ignore-refs`-Paar, das diese Referenz stummschaltet, ist auf die Index-Datei geschlüsselt
+   (`in:`) und nach
+   [`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) **extensional
+   geschlossen**; den Schlüssel nachzuziehen ist eine neue Senkung mit eigener ADR.
+3. **1× `citation-out-of-range`**: [slice-135](../open/slice-135-d-check-pin-v0661.md) zitiert eine
+   Zeilen-Nummer der Index-Datei, die der 146-Zeilen-Stand nicht mehr hat. Die Datei ist zugleich
+   eine der referenzierenden — DoD (2) schließt aus, sie anzufassen.
+
+**Zwei Prämissen des Plans sind an derselben Messung gefallen** und gehören in den nächsten
+Schnitt:
+
+- §1 nennt für `/Development/a-check` und dieses Repo denselben d-check-Pin.
+  `grep -m1 '^DCHECK_IMAGE' d-check.mk` nennt hier **v0.65.0**, dasselbe Kommando im Nachbar-Repo
+  **v0.69.0** — die Referenz-Form ist an einem neueren Pin gemessen als unser Korpus.
+- §1 nennt die Korrektur an den blockinternen Selbstverweisen als **einzigen** zulässigen Eingriff.
+  Gemessen sind es drei Klassen: dazu **259** aufwärts-relative Ziele (eine Ebene tiefer) und
+  **8** geschwister-relative. Alle drei sind mechanisch und umkehrbar; die Byte-Gleichheit ist über
+  die Umkehrung geprüft, nicht über den Verzicht.
+
 ## 5. Closure-Trigger
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
