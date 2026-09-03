@@ -38,6 +38,7 @@ Verwendung:
   ai-harness-init add-lang <sprache> <pfad> [--arch <arch>]
   ai-harness-init span-emit
   ai-harness-init span-report [<ablageort>]
+  ai-harness-init archive-welle --vorschau <welle-id>
 
 Der Init-Lauf ist IDEMPOTENT (ADR-0007): ein zweiter Lauf ist Exit 0 — tool-eigene
 Infrastruktur wird kanonisch neu geschrieben (heilt Drift), adopter-gefuellte Dateien
@@ -70,6 +71,12 @@ Subkommando span-report [<ablageort>]:
   der Ablageort unter der Repo-Wurzel des Arbeitsverzeichnisses. Ein Bericht, kein
   Gate: er prueft nichts und faerbt nichts rot.
 
+Subkommando archive-welle --vorschau <welle-id>:
+  Sagt, was die Archivierung der Zeitdokumente einer geschlossenen Welle taete —
+  Einsammel-Klassen, Review-Reports, Blast-Radius der Verweise und die
+  fail-closed-Ausgaenge — und schreibt dabei nichts. Ohne --vorschau endet der
+  Aufruf mit Exit 2; den schreibenden Zweig faehrt "make archive-welle".
+
 Umgebung (bewusster Opt-in-Override der gepinnten Werte — LH-QA-02):
   COURSE_TAG        Kurs-Version für die Baseline (Regelwerk + Templates)
   BASELINE_SHA256   erwarteter sha256 des Baseline-Assets
@@ -99,10 +106,12 @@ type sources struct {
 // Prozess-Exit, ohne CWD-Mutation und ohne Netz testbar sind. Exit-Codes:
 // 0 = Erfolg, 2 = Aufruf-/Argument-Fehler (Usage), 1 = Emit-Fehler zur Laufzeit.
 //
-// GRENZE: die zwei ERFASSUNGS-Unterkommandos (`span-emit`, `span-report`) erreichen
-// diese Funktion nicht — main() zweigt sie vorher ab, weil die Klemme des Schreibers
-// den ganzen Prozess ueberdecken muss. Wer run() direkt mit einem ihrer Namen ruft,
-// landet im Init-Pfad.
+// GRENZE: drei Unterkommandos erreichen diese Funktion nicht — die zwei der
+// ERFASSUNG (`span-emit`, `span-report`) und `archive-welle`; main() zweigt sie
+// vorher ab. Fuer den Schreiber ist die Stelle tragend (seine Klemme muss den
+// ganzen Prozess ueberdecken), fuer die zwei anderen ist sie es nicht: sie loesen
+// ihre Repo-Wurzel selbst auf, statt das targetDir dieser Funktion zu nehmen. Wer
+// run() direkt mit einem ihrer Namen ruft, landet im Init-Pfad.
 func run(args []string, targetDir string, src sources, stdout, stderr io.Writer) int {
 	// Subkommando-Dispatch (slice-037): `add-lang <sprache> <pfad>` ist der wiederholbare
 	// Mono-Repo-Pfad; alles andere ist der Default-Init. Die Unterscheidung steht VOR dem
@@ -487,6 +496,10 @@ func main() {
 	// span-check laeuft aus einem lesbaren Arbeitsverzeichnis, in dem os.Getwd() nie
 	// scheitert. Ein Zahn dafuer braeuchte einen Lauf des gebauten Binaers gegen ein
 	// GELOESCHTES Arbeitsverzeichnis — Kandidat, kein Bestand.
+	// Der dritte Zweig — `archive-welle` (ADR-0033 Festlegung 1) — steht in
+	// demselben switch, aber NICHT aus demselben Grund: er traegt keine Klemme, und
+	// seine Position ist frei. Er steht hier, weil er wie `span-report` seine
+	// Repo-Wurzel selbst aufloest und das targetDir von run() nicht braucht.
 	if len(os.Args) > 1 {
 		switch os.Args[1] {
 		case "span-emit":
@@ -494,6 +507,8 @@ func main() {
 			return
 		case "span-report":
 			os.Exit(spanReport(os.Args[2:], os.Stdout, os.Stderr))
+		case "archive-welle":
+			os.Exit(archiveWelle(os.Args[2:], os.Stdout, os.Stderr))
 		}
 	}
 
