@@ -50,12 +50,22 @@ func TestVerweisFundDreiFormenInIhremSuchraum(t *testing.T) {
 		"Folge-Slice: [slice-100](../slice-100-a.md).\n")
 	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "next", "slice-900-y.md"),
 		"Geschwister im eigenen Verzeichnis: [x](slice-100-a.md).\n")
+	// Die zwei relativen Formen tragen zusaetzlich eine Dateityp-Achse: sie sind
+	// Markdown-Link-Ziele und loesen ausserhalb einer Markdown-Datei gegen nichts
+	// auf. Beide Nicht-Markdown-Dateien liegen IM Suchraum ihrer Form und duerfen
+	// trotzdem keinen Treffer ergeben.
+	schreibe(t, filepath.Join(done, "notiz.txt"),
+		"Kein Markdown: [x](slice-100-a.md).\n")
+	schreibe(t, filepath.Join(done, "welle-09", "notiz.txt"),
+		"Kein Markdown: [x](../slice-100-a.md).\n")
 
 	funde, err := archive.VerweisFund(root, []string{
 		"docs/plan/adr/0033-x.md",
 		"docs/plan/planning/done/welle-10-results.md",
 		"docs/plan/planning/done/welle-09/slice-090-x.md",
 		"docs/plan/planning/next/slice-900-y.md",
+		"docs/plan/planning/done/notiz.txt",
+		"docs/plan/planning/done/welle-09/notiz.txt",
 	}, []string{"slice-100-a.md"})
 	if err != nil {
 		t.Fatal(err)
@@ -75,6 +85,14 @@ func TestVerweisFundDreiFormenInIhremSuchraum(t *testing.T) {
 	}
 	if _, drin := got["docs/plan/planning/next/slice-900-y.md"]; drin {
 		t.Error("praefixloses Ziel ausserhalb von done/ gezaehlt — es loest gegen next/ auf, nicht gegen done/")
+	}
+	for _, ohneMd := range []string{
+		"docs/plan/planning/done/notiz.txt",
+		"docs/plan/planning/done/welle-09/notiz.txt",
+	} {
+		if _, drin := got[ohneMd]; drin {
+			t.Errorf("relative Link-Form in %s gezaehlt — ausserhalb einer Markdown-Datei loest sie gegen nichts auf", ohneMd)
+		}
 	}
 	if len(funde) != 3 {
 		t.Fatalf("VerweisFund = %d Dateien, want 3", len(funde))
