@@ -59,10 +59,10 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       vollem Text wäre die Archivierung, die es nicht gab. Rot gesehen an genau diesem Fall.
 - [x] `make gates` grün.
 - [x] Doku-Update, falls ein öffentlicher Vertrag berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 **Die drei offenen Haken hängen nicht an Arbeit, sondern an der Rolle.** Closure-Notiz,
 Register-Fortschreibung und die drei Paarungen sind Closure-Schritte und laufen beim **Planner**,
@@ -152,18 +152,56 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-NNN>, <slice-MMM>, <slice-KKK> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations.md`):** <neue `BEO-<NNN>` angelegt (Sub-Area, 1×, Beleg slice-NNN) | `BEO-<NNN>` auf <N>× erhöht, Beleg slice-NNN ergänzt | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-NNN (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+**Closure-Kriterien (beobachtet, nicht behauptet):**
+
+1. **Probelauf über eine geschlossene Welle dieses Repos** — `make archive-welle WELLE=welle-10`
+   über einem Klon des Hauptzweigs endet an Ausgang 3 („42 wellenlose Slice(s) liegen flach …,
+   aber kein `done/*/archiv.zip` setzt eine Untergrenze"), `git log` und `git status --porcelain`
+   des Klons danach unverändert. Das Werkzeug steht und ist auf **keine** Welle dieses Repos
+   anwendbar, solange der Altbestand nicht als eigener Vorgang archiviert ist — die Aussage hat
+   einen Ort, [`harness/README.md`](../../../../harness/README.md).
+2. **`make gates` grün** nach dem Commit dieser Notiz; der Stop-Hook-Stempel deckt den
+   Arbeitsbaum.
+
+- **Was hat funktioniert:** Der Schnitt lieh sich seine Form: Kopf-Aufbau, Zwei-Commit-Disziplin
+  und die Wortgrenzen-Regel kommen aus `harness/tools/slice-mv.sh`, statt neu entworfen zu werden.
+  Beide Review-Runden maßen an eigenen Scratch-Repos — alle drei HIGH der Runde 1 waren rot
+  gesehen, nicht abgeleitet, und jede Behebung trägt einen bats-Fall, der gegen den alten Stand
+  rot ist.
+- **Was ging anders als geplant:** Der Plan rechnete mit dem Werkzeug, nicht mit seinem Kopf. Von
+  elf Findings der Runde 1 lagen drei in derselben Klasse — die Zusage im Skriptkopf ging weiter
+  als der Code darunter —, die Verifikation fand die vierte, und die Behebung brachte die
+  Zähler-Label-Klasse an neuer Stelle zurück.
+- **Steering-Loop-Eintrag: eine benannte Lücke** — *`make comment-claims` prüft, dass ein
+  Kommentar seinen Sensor nennt und dass der genannte Test existiert; dass der genannte Sensor den
+  zugesagten Fall **deckt**, prüft nichts.* Der Ernstfall steht in Grenze 3 des Skriptkopfs: sie
+  nennt `make docs-check` als Auffang für eine Verweis-Form, die dessen Module nicht sehen
+  (Sonde und Bestands-Zahl in der Registerzeile). Kein Zielort — die Lücke ist **benannt**, nicht
+  verkörpert, und liegt als `BEO-025` im [Register](../observations.md).
+- **Beobachtungs-Register (`../observations.md`):** zwei neue Kennungen, je 1×, Beleg `slice-170`
+  — `BEO-025` (Zusage weiter als Code oder genannter Sensor) und `BEO-026` (Zähler-Label nennt
+  eine andere Einheit als der Zähler zählt). `BEO-003` ist in §1 und §6 zitiert und **nicht**
+  erhöht: der Risiko-Ausgang dort ist *entfallen*, also kein neues Auftreten.
+- **Folge-Slices:** [slice-172](../open/slice-172-adr-archivierung-als-unterkommando.md),
+  [slice-173](../open/slice-173-archive-welle-als-unterkommando.md) und
+  [slice-174](../open/slice-174-archivierung-emittieren.md) — alle drei Dateien in `open/`. Sie
+  sind nicht aus diesem Lauf geschnitten, sondern liegen vor ihm; sie wechseln den Träger vom
+  Shell-Helfer zum Unterkommando des Produkt-Binärs.
+- **Risiken aus §6:** zwei benannt, beide **entfallen** — siehe §6.
+- **Zwei offene LOW der Runde 2 sind nicht behoben:** `titel_von` lässt bei der H1-Form
+  `# Slice <NNN>: T` die Nummer im Titel stehen, `unsauber_grund` zählt Porcelain-Zeilen und nennt
+  sie „Datei(en)". Ein Planner-Lauf ändert den Code nicht — dieselbe Trennung, aus der die drei
+  Haken in §2 überhaupt hier landen. Beide bleiben latent, solange Ausgang 3 jeden Lauf über
+  diesem Repo sperrt (Kriterium 1); die Klasse liegt als `BEO-025`/`BEO-026` im Register, der
+  Einzelfall als Risiko in §6 von
+  [slice-173](../open/slice-173-archive-welle-als-unterkommando.md).
+- **Drei Paarungen** (dieser Slice ist wellenlos, also hier geprüft — **nach** dem `git mv`):
+  (a) **Anker** — kein Eintrag trägt das Feld `liegt in`, also kein Gegenstand; (b)
+  **Folge-Slice** — slice-172, slice-173 und slice-174 sind Dateien im Planning-Lifecycle
+  (`ls docs/plan/planning/*/slice-17[234]-*.md` → je `open/`); (c) **Register** — die drei hier
+  zitierten Kennungen haben je eine Zeile, und jede Zeile des Registers trägt mindestens einen
+  Beleg (`awk -F'|' 'NR>1 && /^\| BEO-/ {if ($6 !~ /slice-/) print $2}' docs/plan/planning/observations.md`
+  → leer).
 
 ## 8. Sub-Area-Modus-Begründung
 
