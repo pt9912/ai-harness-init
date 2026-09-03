@@ -124,22 +124,22 @@ liefert, ist die Frage, die je Eintrag zu entscheiden ist:
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice — **≤ 3 Liefer-Punkte**.
 
-- [ ] **(1) Das `done/` unter [`harness/conventions/`](../../../../harness/conventions/) und die Sektion *Aufgelöste Adaptionen* bestehen.** Jeder
+- [x] **(1) Das `done/` unter [`harness/conventions/`](../../../../harness/conventions/) und die Sektion *Aufgelöste Adaptionen* bestehen.** Jeder
       Eintrag, dessen Auflösungs-Trigger eingetreten ist, liegt dort; seine Index-Zeile steht mit
       **beiden** Ankern in der zweiten Tabelle (Spalten `MR | aufgelöst durch`) und nicht mehr in
       der ersten. Bewegung und Pfad-Berichtigung sind getrennte Commits
       ([`AGENTS.md`](../../../../AGENTS.md) §3.3).
-- [ ] **(2) Die drei Auflösungs-Trigger aus [`BEO-020`](../observations.md) tragen je ein
+- [x] **(2) Die drei Auflösungs-Trigger aus [`BEO-020`](../observations.md) tragen je ein
       einzeln begründetes Urteil** — *aufgelöst* (dann `Löst auf` im ablösenden Eintrag und Umzug
       nach `done/`) oder *bindet fort* (dann steht im Block, welcher Teil des Triggers nicht
       eingetreten ist). Drei Urteile, keine Sammelaussage.
-- [ ] `make gates` grün.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — `BEO-020` und `BEO-014` mit
+- [x] `make gates` grün.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — `BEO-020` und `BEO-014` mit
       Beleg `slice-167`; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7
       notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo läuft ohne
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo läuft ohne
       Wellen-Betrieb, sie werden hier geprüft.
 
 ## 3. Plan (vor Code)
@@ -182,29 +182,75 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
   Setzung 2 setzt `target: harness/conventions/`; ob d-check das als Pfad-Präfix (dann deckt es
   `done/`) oder als direkte Kinder liest, ist **nicht gemessen** — das Schwester-Repo fährt hier
   `target: harness/conventions.md` und beantwortet die Frage nicht. Erst messen, dann bewegen.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen>
+  — **Ausgang:** entfallen — gemessen, nicht angenommen: d-check liest `target` als **Pfad-Präfix**
+  und deckt das Unterverzeichnis. Negativkontrolle rot gesehen (dieselbe blanke Kennung in
+  einer Sonden-Datei außerhalb des Definitions-Orts → `id-unlinked`), dieselbe Sonde in
+  `harness/conventions/` und in `harness/conventions/done/` stumm. Keine Änderung an
+  [`.d-check.yml`](../../../../.d-check.yml); die bedingte Zeile aus §3 entfällt.
 - **[`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
   ist ein vierter Trigger, der hier sichtbar wird und nicht im Umfang steht.** Die Verzeichnis-Form
   bewahrt den Rumpf (das Schwester-Repo legt volle Rümpfe in `done/`), unsere Retirierungs-Form
   entfernt ihn ([`ADR-0014`](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md)). Die vier
   form-sicheren Einträge wandern deshalb als Kopf-und-Zeiger-Rest. Ob die Position den Rückbau
   überflüssig macht, ist eine eigene Entscheidung.
-  — **Ausgang:** <eingetreten: slice-NNN / entfallen: Grund / weiter offen: → BEO-NNN>
+  — **Ausgang:** entfallen — der Trigger von
+  [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
+  hängt nicht am Träger, sondern an der Annahme von
+  [`ADR-0014`](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md) (*die Historie ist da, wo
+  der Rumpf gebraucht wird*); die Verzeichnis-Position berührt sie an keiner Stelle. Der
+  Trigger-Audit bestätigt ihn damit, statt ihn zu bewegen. Dass das Schwester-Repo volle Rümpfe in
+  `done/` legt, ist dessen Praxis und keine Norm dieses Repos.
 - **[`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
   und [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
   könnten den Umfang über die neun hinaus dehnen.** Ihre Marken-`<Reichweite>` benennt den ganzen
   Eintrag; der zweite nimmt ausdrücklich eine Ausnahme aus. Beide sind Urteil, nicht Muster.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen>
+  — **Ausgang:** entfallen — beide tragen eine `ÜBERHOLT`-Kopf-Marke, deren Fortgeltungs-Satz den
+  bindenden Rest ausdrücklich benennt (die Abgrenzung gegen
+  [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) für die
+  emittierte Ebene bzw. der Cutoff-Absatz, den [`AGENTS.md`](../../../../AGENTS.md) §3.7 zitiert).
+  Nach [`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
+  §Zwei Instrumente trägt ein Eintrag genau eines von beiden — beide sind Teil-Ablösung und bleiben
+  in `conventions/`. Der Umfang bleibt bei **vier**.
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations.md`):** <`BEO-020` auf 2× erhöht, Beleg slice-167 ergänzt; `BEO-014` auf 3× — Schwelle, siehe §8>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <Anker · Folge-Slice · Register, Ergebnis>
+- **Was hat funktioniert:** Der Umfang stand vor der ersten Bewegung. Die Form-Messung des Plans
+  trug: **vier** Einträge mit `Aufgehoben durch` sind gewandert, aus der Urteilsmenge **keiner**.
+  Beide Kandidaten mit weiter `<Reichweite>`
+  ([`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert),
+  [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler))
+  nennen ihren bindenden Rest im eigenen Fortgeltungs-Satz — das Urteil kostete Lesen, keine
+  Abwägung. Der `git mv` war in allen vier Fällen eine reine Umbenennung (0 insertions), die
+  Pfad-Berichtigung ein eigener Commit.
+- **Was ging anders als geplant:** Das erste Risiko war das kleinere und das zweite Instrument das
+  größere. Der `ids`-Prüfbereich deckt das Unterverzeichnis (§6) — dafür zeigte der Umzug, dass
+  **zwei** Mess-Blöcke in angenommenen Rümpfen auf `harness/conventions.md` zielen und dort seit
+  [slice-166](../done/slice-166-adaptions-block-wird-ein-verzeichnis.md) null ausgeben. Sie stehen
+  in genau den zwei Einträgen, deren Trigger zu entscheiden war; das Verdikt *bindet fort* zog
+  deshalb zwei Kopf-Marken nach sich
+  ([`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
+  Setzung 3 — der ablösende Eintrag setzt sie in derselben Änderung).
+- **Steering-Loop-Eintrag — geschärfte Regel:** Ein Auflösungs-Trigger, der eine Form-Migration
+  nennt, ist **zwei** Aussagen: die Migration *und* die Folge, die er ihr zuschreibt. Beide werden
+  einzeln geprüft. Hier war die erste dreimal wahr und die zweite dreimal falsch — die
+  Verzeichnis-Position ist binär und trägt den dritten Zustand *teilweise abgelöst* nicht. Der
+  Träger ist [`MR-046`](../../../../harness/conventions.md#mr-046--die-verzeichnis-position-ist-binär-und-trägt-die-kopf-marke-nicht),
+  nicht dieser Absatz: eine Zusage ohne Ort ist keine.
+- **Beobachtungs-Register (`../observations.md`):** `BEO-020` auf **2×**, Beleg `slice-167` — die
+  Klasse bleibt offen, weil den Träger wieder ein eigener Slice stellte und nicht der migrierende
+  Vorgang. `BEO-014` auf **3×** — Schwelle. Der Lese-Schritt ist gelaufen (wellenloser Betrieb) und
+  hat **keine** verkörperbare Regel gefunden: Der Ausgang ist ein Schnitt über den *Inhalt* der
+  sechs Buchführungs-Einträge, und Slices schneidet der Planner. Die Zeile nennt darum keine
+  Folge-Slice-Kennung. Keine neue Beobachtung angefallen.
+- **Folge-Slices:** keine geschnitten. Der Ausgang von `BEO-014` ist ein Planner-Schnitt und steht
+  im Register; eine Kennung hier zu nennen behauptete eine Datei, die es nicht gibt.
+- **Risiken aus §6:** drei notiert, drei mit Ausgang — alle drei *entfallen*, je mit Grund (§6).
+- **Drei Paarungen:** **Anker** — die vier gewanderten Zeilen tragen beide Anker unverändert in der
+  zweiten Tabelle, `make docs-check` meldet `556 Datei(en), 0 Befund(e)`; kein Steering-Loop-Eintrag
+  dieses Slice trägt ein `liegt in <Zielort>`-Feld, die Paarung ist damit gegenstandslos und nicht
+  etwa erfüllt. **Folge-Slice** — keiner genannt, nichts zu paaren. **Register** — die zwei hier
+  zitierten Kennungen `BEO-014` und `BEO-020` haben je eine Zeile, und jede Zeile des Registers
+  trägt mindestens einen Beleg.
 
 ## 8. Sub-Area-Modus-Begründung
 
