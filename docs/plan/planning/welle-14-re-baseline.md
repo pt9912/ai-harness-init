@@ -34,7 +34,7 @@ dort neben den Kommandos, die sie ausgeben. Wie viele Mitglieder diese Welle bek
 Fassung die Migrations-Prozedur dieses Sprungs stellt, ist gemessen
 ([slice-155](done/slice-155-inventur-vor-dem-schnitt.md) §9 — beide Fassungen führen sie, der
 Abschnitt ist byte-gleich) und liegt zur Entscheidung beim Architect:
-[slice-163](open/slice-163-regierende-fassung-des-sprungs.md).
+[slice-163](in-progress/slice-163-regierende-fassung-des-sprungs.md).
 
 ## 2. Trigger (Welle startet)
 
@@ -92,7 +92,7 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 | [slice-159](open/slice-159-register-traegt-die-drei-ausgaenge.md) | Das Beobachtungs-Register trägt die Ziel-Form — drei Ausgänge und die Vorgangs-Beleg-Regel | [`MR-016`](../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird), [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) |
 | [slice-160](open/slice-160-docker-form-hermetisch-und-beleg.md) | Die Docker-Form gegen die Ziel-Fassung — hermetischer Prüflauf und die Trennung Gate/Beleg | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0003`](../adr/0003-go-native-binaries.md) |
 | [slice-161](open/slice-161-conventions-kopf-traegt-die-ziel-form.md) | `harness/conventions.md` trägt die Ziel-Form ihres Kopfes — Stand als Version, Kürzel-Spalte | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage), [`ADR-0015`](../adr/0015-rollen-eigentum-an-norm-artefakten.md) |
-| [slice-163](open/slice-163-regierende-fassung-des-sprungs.md) | Die regierende Fassung des Sprungs — und wo eine Zielstand-Setzung künftig steht | [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md), [`ADR-0015`](../adr/0015-rollen-eigentum-an-norm-artefakten.md) |
+| [slice-163](in-progress/slice-163-regierende-fassung-des-sprungs.md) | Die regierende Fassung des Sprungs — und wo eine Zielstand-Setzung künftig steht | [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md), [`ADR-0015`](../adr/0015-rollen-eigentum-an-norm-artefakten.md) |
 | [slice-164](in-progress/slice-164-emitter-klassifiziert-die-zwei-neuen-vorlagen.md) | Der Emitter klassifiziert die zwei neuen Archiv-Stub-Vorlagen | [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-165](open/slice-165-praesens-aussagen-gegen-v5180.md) | Die stummen `v5.12.0`-Nennungen bekommen ihren Ausgang | [`MR-040`](../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum), [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 
@@ -144,7 +144,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   gemessen ([slice-155](done/slice-155-inventur-vor-dem-schnitt.md) §9 — beide Fassungen
   führen die Prozedur, also greift der zweite Fall von
   [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 3) und wird in
-  [slice-163](open/slice-163-regierende-fassung-des-sprungs.md) entschieden. Sie blockierte die
+  [slice-163](in-progress/slice-163-regierende-fassung-des-sprungs.md) entschieden. Sie blockierte die
   **Eröffnung** nicht — ein Diff-Katalog ist eine Messung und fällt kein Konformitäts-Urteil —,
   und sie blockiert den ersten Durchgang, der eines fällt: darum liegt `slice-163` vor
   [slice-157](open/slice-157-adaptions-durchgang-v5180.md),

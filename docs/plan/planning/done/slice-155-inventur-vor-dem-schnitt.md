@@ -72,7 +72,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Beleg im Plan, und daraus der Fall (erster: die Ziel-Fassung regiert ohne neue Abwägung ·
       zweiter: die Wahl ist neu zu begründen). Der zweite Fall wird **nicht hier entschieden** —
       er geht als Übergabe an den Architect (§6). *Ergebnis: zweiter Fall; Träger der Übergabe ist
-      [slice-163](../open/slice-163-regierende-fassung-des-sprungs.md).*
+      [slice-163](../in-progress/slice-163-regierende-fassung-des-sprungs.md).*
 - [x] `make gates` grün.
 - [x] Doku-Update: [welle-14](../welle-14-re-baseline.md) §4 führt **jeden** neu geschnittenen
       Slice — als Tabellenzeile, wenn er Mitglied ist, sonst benannt mit dem Grund seines
@@ -168,7 +168,7 @@ dasteht.
   und **entscheidet nicht**. Zwei Posten gehen mit der Messung an den Architect: die Wahl selbst,
   und der Ort, an dem die Zielstand-Setzung des Auftraggebers samt Delta-Nachweis künftig steht —
   §Geschichte jener ADR ist mit ihrer Annahme geschlossen. — **Ausgang: eingetreten →
-  [slice-163](../open/slice-163-regierende-fassung-des-sprungs.md).** Die Messung in §9 ergibt den
+  [slice-163](../in-progress/slice-163-regierende-fassung-des-sprungs.md).** Die Messung in §9 ergibt den
   **zweiten** Fall von Festlegung 3 (beide Fassungen führen die Prozedur, der Abschnitt ist
   byte-gleich), also ist die Wahl neu zu begründen. Beide Posten hängen an demselben Verdikt und
   gehen darum in **einen** Slice; er ist Mitglied von [welle-14](../welle-14-re-baseline.md) und
@@ -191,7 +191,7 @@ Backticks).
   Closure-Schritt tragen. Und die drei Kategorien trennen sauber: dass eine Position *ohne
   Gegenstand hier* ist, war dreimal eine kurze, belegbare Antwort statt einer Vermutung.
 - **Was ging anders als geplant:** Zwei Slices folgen **nicht** aus der Datei-Tabelle, sondern aus
-  der Messung darunter — [slice-163](../open/slice-163-regierende-fassung-des-sprungs.md) aus
+  der Messung darunter — [slice-163](../in-progress/slice-163-regierende-fassung-des-sprungs.md) aus
   Festlegung 3 und [slice-162](../open/slice-162-versions-sensor-baseline-pins.md) aus einer
   Position, deren Ausgang die Welle ausschließt. Der Plan hatte für die erste eine *Übergabe*
   vorgesehen und für die zweite nichts; beide brauchten einen Träger, und eine Übergabe ohne
@@ -216,7 +216,7 @@ Backticks).
   [slice-160](../open/slice-160-docker-form-hermetisch-und-beleg.md) (Docker-Form) ·
   [slice-161](../open/slice-161-conventions-kopf-traegt-die-ziel-form.md) (Kopf-Form der
   Konventionen) · [slice-162](../open/slice-162-versions-sensor-baseline-pins.md)
-  (Versions-Sensor) · [slice-163](../open/slice-163-regierende-fassung-des-sprungs.md) (regierende
+  (Versions-Sensor) · [slice-163](../in-progress/slice-163-regierende-fassung-des-sprungs.md) (regierende
   Fassung) — alle acht sind Dateien in `open/`.
 - **Risiken aus §6:** drei, je genau ein Ausgang — *entfallen* (Katalog-Umfang, mit Messung) ·
   *weiter offen → `BEO-013`* (Delta gegen Volltext) · *eingetreten → slice-163* (regierende
@@ -334,7 +334,7 @@ Volltext) · [158](../open/slice-158-archivierungs-schritt.md) (Archivierungs-Sc
 einzeln.
 
 **Dazu zwei Slices, die nicht aus der Tabelle folgen, sondern aus der Messung darunter:**
-[163](../open/slice-163-regierende-fassung-des-sprungs.md) (die regierende Fassung — Mitglied der
+[163](../in-progress/slice-163-regierende-fassung-des-sprungs.md) (die regierende Fassung — Mitglied der
 Welle, sie blockiert jeden Durchgang mit Konformitäts-Urteil) und
 [162](../open/slice-162-versions-sensor-baseline-pins.md) (Versions-Sensor — **kein** Mitglied,
 ein Sensor-Neubau, den [welle-14](../welle-14-re-baseline.md) §6 ausschließt; er liegt in `open/`
@@ -384,7 +384,7 @@ git diff v5.12.0 v5.18.0 -- lab/regelwerk lab/templates | grep '^+' | grep -cE \
 Dieser Slice **misst** und entscheidet nicht (§1, §6). Zwei Posten gehen mit der Messung an den
 Architect, beide als Architektur-Frage nach
 [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md); ihr **Träger** ist
-[slice-163](../open/slice-163-regierende-fassung-des-sprungs.md) — eine Übergabe ohne Träger wäre
+[slice-163](../in-progress/slice-163-regierende-fassung-des-sprungs.md) — eine Übergabe ohne Träger wäre
 ein Posten, den niemand hält:
 
 1. **Die Wahl der regierenden Fassung für den Sprung `v5.12.0` → `v5.18.0`.** Der zweite Fall
