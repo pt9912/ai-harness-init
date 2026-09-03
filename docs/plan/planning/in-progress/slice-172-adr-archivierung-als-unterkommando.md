@@ -59,7 +59,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Die ADR liegt und entscheidet vier benannte Fragen** — Status und, falls `Proposed`, der
+- [x] **Die ADR liegt und entscheidet vier benannte Fragen** — Status und, falls `Proposed`, der
       Acceptance-Trigger stehen in ihr:
       **(a) den Träger**, mit einer Abzählung nach dem Muster von
       [ADR-0022](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
@@ -71,7 +71,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       **(d) ob die Fähigkeit ins Ziel geht und woran ein Ziel sie erreicht** — der Träger aus
       [ADR-0022](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) liegt
       gitignored, ein frischer Klon hat ihn nicht (dort Festlegung 5b).
-- [ ] **Die drei am Shell-Helfer rot gesehenen Zusagen stehen als Abnahme-Kriterien in der ADR**,
+- [x] **Die drei am Shell-Helfer rot gesehenen Zusagen stehen als Abnahme-Kriterien in der ADR**,
       je mit dem Fall, an dem sie bricht: **(1)** der fail-closed-Wächter gegen einen lebenden
       Verweis auf einen zu löschenden Review-Report schließt `docs/reviews/**` **nicht** aus —
       `for r in docs/reviews/*.md; do rb=$(basename "$r"); grep -rlF -e "]($rb)" docs/reviews/ | grep -v "^$r$"; done | sort -u | wc -l`
@@ -82,14 +82,14 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       nennt explizite Pfade statt `-A`, sonst trägt der Self-Close-Commit fremden Inhalt;
       **(3)** ein Stub-Verweis der aufsteigenden Form (`../<datei>.md`) wird beim **Folgelauf**
       nachgezogen, wenn sein Ziel eine Ebene tiefer wandert.
-- [ ] `make gates` grün.
-- [ ] Doku-Update: der ADR-Index ([`docs/plan/adr/README.md`](../../adr/README.md)) bekommt seine
+- [x] `make gates` grün.
+- [x] Doku-Update: der ADR-Index ([`docs/plan/adr/README.md`](../../adr/README.md)) bekommt seine
       Zeile — derivatives Register derselben schreibenden Rolle
       ([ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -143,15 +143,27 @@ dasteht.
 - **Das Vorbild steht in keinem Rang der Source Precedence.** `/Development/d-check/tools/archive-wave/`
   ist ein Nachbar-Repo, kein kanonischer Rang; eine ADR, die es als **Begründung** zitiert, beruft
   sich auf eine Quelle, die kein Rang deckt. Tragen kann es nur als **gemessenes** Vorbild — eine
-  Aussage über seinen Bestand mit dem Kommando daneben. — **Ausgang:** <eingetreten: CO-NNN /
-  slice-NNN | entfallen: Grund | weiter offen: → BEO-NNN im Register>
+  Aussage über seinen Bestand mit dem Kommando daneben. — **Ausgang:** **entfallen** — die ADR
+  spricht die Abgrenzung selbst aus (§Was die Entscheidung auslöst, letzter Absatz: das Vorbild
+  trägt *„als gemessenes Vorbild … nicht als Begründung"*), und jede ihrer zwei Aussagen über
+  dessen Bestand steht neben ihrem Kommando. Die tragenden Gründe der Wahl sind der Prüfbereich,
+  der entfallende Pin und die Reichweite ins Ziel — keiner davon beruft sich auf das Nachbar-Repo.
 - **Der ADR-Text kann eine Adresse nennen, die der Prozess selbst bewegt** — `BEO-017` im
   [Register](../observations.md) führt die Klasse mit drei ADR-tragenden Instanzen: der `git mv`,
   den Modul 5 und Modul 6 vorschreiben, bricht den Zeiger in einem nach
   [`AGENTS.md`](../../../../AGENTS.md) §3.4 eingefrorenen Artefakt. Dieser Slice ist besonders
   exponiert: seine Gegenstände sind ein Slice in `in-progress/` und eine Datei unter
-  `harness/tools/`, die Frage (b) womöglich streicht. — **Ausgang:** <eingetreten: CO-NNN /
-  slice-NNN | entfallen: Grund | weiter offen: → BEO-NNN im Register>
+  `harness/tools/`, die Frage (b) womöglich streicht. — **Ausgang:** **entfallen** — die ADR trägt
+  keine bewegliche Pfad-Adresse, gemessen über beide Adress-Formen, die
+  [ADR-0030](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Festlegung 4
+  trennt: `grep -cE 'archive-welle\.(sh|bats)' docs/plan/adr/0033-wellen-archivierung-als-unterkommando.md`
+  → **0**; Markdown-Link in den Planning-Baum: `grep -coE '\]\([^)]*planning/[^)]*\)' <dieselbe
+  Datei>` → **0**. Als Inline-Code stehen dort drei Planning-Pfade, und keiner ist beweglich: ein
+  Verzeichnis, ein Glob in den vendored Baum und ein tag-loser Platzhalter — genau die Formen, die
+  jene Festlegung 3 als ortsfest führt. Der Slice erscheint nur als **Kennung** in der
+  Geschichte-Tabelle. Keine Erwartungswerte
+  ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2).
 
 ## 7. Closure-Notiz
 
@@ -163,18 +175,54 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-NNN>, <slice-MMM>, <slice-KKK> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations.md`):** <neue `BEO-<NNN>` angelegt (Sub-Area, 1×, Beleg slice-NNN) | `BEO-<NNN>` auf <N>× erhöht, Beleg slice-NNN ergänzt | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-NNN (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+**Closure-Kriterien (beobachtet, nicht behauptet):**
+
+1. **Die Entscheidung liegt und ist im Index geführt** —
+   [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) (`Proposed`, mit
+   Acceptance-Trigger) entscheidet die vier Fragen (a)–(d) und trägt die drei Abnahme-Kriterien
+   je mit dem Fall, an dem sie brechen.
+2. **`make gates` grün** nach dem Commit dieser Notiz; der Stop-Hook-Stempel deckt den
+   Arbeitsbaum.
+
+- **Was hat funktioniert:** Die Präzedenz wurde **geprüft statt zitiert**, und die Prüfung
+  bewegte die Entscheidung: von drei Teilen der Berufung auf
+  [ADR-0022](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) tragen zwei, der
+  dritte nicht. Die Abzählung ist darum eine **eigene** über die Herkunft des *ausführenden
+  Artefakts* — die Transport-Frage jener ADR ist im Dogfood leer —, und die Kopplung zwischen
+  beiden Fragen ist am Kriterium belegt statt behauptet: jedes Mitglied fällt in genau eine
+  Klasse dort, für zwei ihrer vier ist der Ausgang bereits entschieden. Die Rückführung aus §4
+  feuert deshalb nicht.
+- **Was ging anders als geplant:** §1 dieses Plans fasste die Präzedenz eine Stufe zu stark
+  zusammen — *„mit dem Ergebnis, dass jedes gebootstrappte Ziel sie bekommt"*, während jene
+  Festlegung 5(a)/(b) genau das ausschließt (die Platzierung kann scheitern, und der Träger liegt
+  gitignored). Die Korrektur ist nicht kosmetisch: Festlegung 4 der neuen ADR ist deshalb
+  **ortsgebunden** — *die Fähigkeit liegt, wo der Träger liegt* — statt allquantifiziert. Dazu
+  brach der Lifecycle-Move dieses Slice sieben präfixlose Verweise in zwei Plandateien, die
+  eingehende Hälfte, die `make slice-mv` nicht deckt.
+- **Steering-Loop-Eintrag: eine benannte Lücke** — *Ein Plan-Artefakt fasst eine referenzierte
+  Entscheidung zusammen, und die Zusammenfassung ist stärker als die Quelle; kein Modul aus
+  `modules:` der [`.d-check.yml`](../../../../.d-check.yml) hält eine Zusammenfassung gegen das
+  Artefakt, auf das sie zeigt — `links` prüft die Auflösbarkeit, nicht die Aussage.* Kein Zielort
+  — die Lücke ist **benannt**, nicht verkörpert, und liegt als `BEO-027` im
+  [Register](../observations.md).
+- **Beobachtungs-Register (`../observations.md`):** `BEO-003` auf **5×** erhöht, Beleg
+  `slice-172` ergänzt — der `open/` → `in-progress/`-Move brach die präfixlose Form in zwei
+  Plandateien, `make docs-check` meldete **7** `target-missing`. Neu: `BEO-027` (Zusammenfassung
+  stärker als die zusammengefasste Quelle), 1×, Beleg `slice-172`. `BEO-017` ist in §6 zitiert
+  und **nicht** erhöht: der Risiko-Ausgang dort ist *entfallen*, also kein neues Auftreten.
+- **Folge-Slices:** keiner geschnitten. [slice-173](../open/slice-173-archive-welle-als-unterkommando.md)
+  und [slice-174](../open/slice-174-archivierung-emittieren.md) liegen vor diesem Lauf in `open/`
+  und sind die Umsetzung dieser Entscheidung, nicht ihr Ergebnis; ihr Umfang deckt sich mit den
+  Festlegungen 1–4 (Port, Ablösung des Shell-Helfers, Stub-Quelle, Reichweite ins Ziel).
+- **Risiken aus §6:** zwei benannt, beide **entfallen** — siehe §6.
+- **Drei Paarungen** (dieser Slice ist wellenlos, also hier geprüft — **nach** dem `git mv`):
+  (a) **Anker** — kein Eintrag trägt das Feld `liegt in`, also kein Gegenstand; (b)
+  **Folge-Slice** — keiner genannt, also kein Gegenstand; die zwei zitierten Umsetzungs-Slices
+  sind Dateien im Planning-Lifecycle (`ls docs/plan/planning/*/slice-17[34]-*.md` → je `open/`);
+  (c) **Register** — die drei hier zitierten Kennungen haben je eine Zeile, und jede Zeile des
+  Registers trägt mindestens einen Beleg
+  (`awk -F'|' 'NR>1 && /^\| BEO-/ {if ($6 !~ /slice-/) print $2}' docs/plan/planning/observations.md`
+  → leer).
 
 ## 8. Sub-Area-Modus-Begründung
 
