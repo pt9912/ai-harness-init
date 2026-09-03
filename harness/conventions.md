@@ -22,8 +22,12 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   **auf `v3.5.1`:** 2026-07-24 (slice-043); **auf `v3.5.2`:** 2026-07-26 (slice-049,
   Normativ-Delta in [`MR-015`](#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) entschieden);
   **auf `v5.12.0`:** 2026-08-28 (slice-081, Normativ-Delta in slice-082 entschieden);
-  **auf `v5.18.0`:** 2026-09-03 (slice-156, Normativ-Delta in slice-157). Die Prozedur des
-  Sprungs auf `v5.12.0` steht in
+  **auf `v5.18.0`:** 2026-09-03, Delta-Nachweis in slice-155. Die Form dieser Zeile — Ziel-Tag,
+  Datum, der Slice mit dem Delta-Nachweis, sonst nichts — und der Ort einer Zielstand-Setzung
+  stehen in
+  [`ADR-0031`](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
+  Festlegung 2; dieselbe ADR wählt in Festlegung 1 die Fassung, die diesen Sprung regiert. Die
+  Prozedur des Sprungs auf `v5.12.0` steht in
   [`ADR-0018`](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md), der
   Verweis-Beschluss ist in
   [`ADR-0023`](../docs/plan/adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) gegen jenen
