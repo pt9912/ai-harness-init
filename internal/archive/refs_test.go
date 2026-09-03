@@ -89,16 +89,19 @@ func TestVerweisFundDreiFormenInIhremSuchraum(t *testing.T) {
 // ziehen, und eine bats-Datei. Nennt die Vorschau sie nicht, ist ihr
 // Blast-Radius kleiner als das, was der Lauf anfasst.
 // Gegenbeispiel: test/mutations/238-archive-welle-go-suchraum-dateityp.sh.
+// Die Fixture-Namen sind ERFUNDEN, obwohl der Bestand echte traegt. Ein echter
+// Name in dieser Datei stuende im Blast-Radius des naechsten Laufs, und der
+// schreibende Traeger zoege ihn nach — der Fall risse sich damit selbst um.
 func TestVerweisFundPraefixAusNichtMarkdownDatei(t *testing.T) {
 	root := t.TempDir()
 	schreibe(t, filepath.Join(root, "Dockerfile"),
-		"# Begruendung: docs/plan/planning/done/slice-057-go-kompilat-cache.md\n")
+		"# Begruendung: docs/plan/planning/done/slice-900-kompilat-cache.md\n")
 	schreibe(t, filepath.Join(root, "test", "full-smoke-ausgang.bats"),
-		"# siehe done/slice-057-go-kompilat-cache.md\n")
+		"# siehe done/slice-900-kompilat-cache.md\n")
 
 	funde, err := archive.VerweisFund(root,
 		[]string{"Dockerfile", "test/full-smoke-ausgang.bats"},
-		[]string{"slice-057-go-kompilat-cache.md"})
+		[]string{"slice-900-kompilat-cache.md"})
 	if err != nil {
 		t.Fatal(err)
 	}
