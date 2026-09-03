@@ -84,7 +84,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **(1) [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) durchläuft
+- [x] **(1) [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) durchläuft
       den Acceptance-Trigger und trägt ihn.** Ein Reviewer-Durchgang
       prüft die ADR auf Konsistenz (Baseline-Regelwerk `modul-08-agentenrollen.md` §Rollen-Regeln);
       danach setzt der Architect `**Status:** Accepted` und ergänzt die Geschichte-Tabelle um eine
@@ -94,7 +94,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       (`grep -c '0028.*Proposed' docs/plan/adr/README.md` → **0** danach, statt der heutigen
       **1**) — derivatives Register, gehört der Rolle seines Originals
       ([ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)).
-- [ ] **(2) `AGENTS.md` §3.8 bekommt den Zeiger, den Folgepflicht 1 verspricht.** Der Architect
+- [x] **(2) `AGENTS.md` §3.8 bekommt den Zeiger, den Folgepflicht 1 verspricht.** Der Architect
       ergänzt in eigenem Commit, der ausschließlich Architect-Artefakte berührt, den Fall
       „Command-/Skill-Anweisungssätze" neben dem bestehenden Zeiger auf
       [ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md), mit
@@ -103,18 +103,18 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       behauptet Bindung, die nicht besteht
       ([ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) §Konsequenzen,
       Folgepflicht 1).
-- [ ] `make gates` grün.
-- [ ] Doku-Update: `harness/README.md`, falls es §3.8 zitiert und die Ergänzung nachzuziehen ist
+- [x] `make gates` grün.
+- [x] Doku-Update: `harness/README.md`, falls es §3.8 zitiert und die Ergänzung nachzuziehen ist
       (Prüfung, kein sicherer Treffer).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — `BEO-007` bekommt seinen
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — `BEO-007` bekommt seinen
       Ausgang: **verkörpert** über [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
       und den `AGENTS.md`-Zeiger aus DoD (2), nicht über die 3×-Schwelle (der Zähler bleibt bei
       1×) — derselbe Konflikt-Pfad-Auslöser, den
       [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) §Kontext für
       sich selbst benennt.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste Welle-Closure, nicht
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste Welle-Closure, nicht
       dieser Slice — dieses Repo fährt Wellen-Betrieb, und das gilt auch für wellenlose Slices.
 
 ## 3. Plan (vor Code)
@@ -179,20 +179,27 @@ dasteht.
 
 - **Die Reviewer-Konsistenzprüfung findet einen echten inhaltlichen Einwand**, der über eine
   bloße Formalie hinausgeht — z. B. gegen die Abgrenzung von `.claude/agents/*.md` in
-  Festlegung 3, oder gegen eine der drei Optionen in §Verglichene Alternativen. — **Ausgang:**
-  <entfallen: die Prüfung findet keinen inhaltlichen Einwand, nur Konsistenz-Bestätigung |
-  eingetreten: die ADR wird vor der Annahme korrigiert (sie ist noch `Proposed`, keine
-  Folge-ADR nötig) — Beleg in der Geschichte-Tabelle>
+  Festlegung 3, oder gegen eine der drei Optionen in §Verglichene Alternativen. —
+  **Ausgang: eingetreten**, und zwar in der ersten Runde: deren MEDIUM-2 traf Festlegung 2 — der
+  ausgenommene Teil war dem Architect zugewiesen und die Zuordnung
+  [ADR-0015](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) zugeschrieben, deren §Was hier
+  NICHT entschieden ist genau das ausnimmt. Die ADR wurde vor der Annahme korrigiert, wie der
+  Zweig es vorsieht; der Beleg steht in ihrer Geschichte-Tabelle, und die fünfte Runde bestätigt
+  die Konsistenz ohne inhaltlichen Einwand. **Kein Folge-Slice, kein Carveout:** die Korrektur ist
+  im `Proposed`-Fenster vollzogen und nachgemessen, ein Rest bleibt nicht.
 - **Der Zeiger in `AGENTS.md` §3.8 überlädt den Absatz**, der heute genau einen Fall
   ([ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)/derivative
   Register) trägt — ein zweiter Fall in Prosa könnte gegen §3.7 laufen
   (ein Kommentar/Zustandsfeld trägt genau **ein** auflösbares Feld, keinen Absatz). —
-  **Ausgang:** <entfallen: der Zeiger bleibt ein knapper, auflösbarer Verweis, keine zweite
-  Begründungs-Prosa | eingetreten: die Form wird angepasst, bevor der Commit entsteht>
+  **Ausgang: entfallen.** Die Ergänzung ist ein Absatz mit genau **einem** auflösbaren Feld — dem
+  Verweis auf [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
+  (`grep -c 'ADR-0028' AGENTS.md` <!-- d-check:ignore (zitiertes Kommando, kein Verweis auf den Eintrag) --> → **1**) —, und Ausnahme wie offener Rest stehen als
+  Zeiger auf die Entscheidung statt als zweite Begründungs-Prosa.
 - **`harness/README.md` zitiert §3.8 mit einer heute passenden, nach der Ergänzung veralteten
   Formulierung** (z. B. „zwei Artefakte" statt „zwei Norm-Artefaktklassen plus benannte
-  Ausnahme"). — **Ausgang:** <entfallen: kein Zitat betroffen (DoD-Prüfung negativ) | eingetreten:
-  Doku-Update aus DoD nachgezogen>
+  Ausnahme"). — **Ausgang: entfallen** — kein Zitat betroffen, die DoD-Prüfung ist negativ:
+  `grep -c '3\.8' harness/README.md` → **0** (Exit 1); der Harness-Einstieg nennt weder die Hard
+  Rule noch eine der zwei Entscheidungen.
 
 ## 7. Closure-Notiz
 
@@ -204,7 +211,60 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-<!-- Erst nach Abschluss füllen. -->
+**Closure-Kriterien (beobachtet, nicht behauptet):**
+
+1. `grep -c '^\*\*Status:\*\* Accepted' docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md`
+   → **1**, mit einer Geschichte-Zeile, die den Acceptance-Trigger benennt; der ADR-Index trägt
+   dieselbe Spalte (`grep -c '0028.*Proposed' docs/plan/adr/README.md` → **0**, vorher **1**).
+2. [`AGENTS.md`](../../../../AGENTS.md) §3.8 nennt die Entscheidung
+   (`grep -c 'ADR-0028' AGENTS.md` <!-- d-check:ignore (zitiertes Kommando, kein Verweis auf den Eintrag) --> → **1**), gesetzt in einem eigenen Architect-Commit,
+   der außer dieser Datei nichts berührt (`git log --stat`).
+3. `make gates` grün nach dem Commit dieser Notiz; der Stop-Hook-Stempel deckt den Arbeitsbaum.
+
+- **Was funktioniert hat:** die Trennung von Reviewer und Architect am selben Text. Fünf Runden
+  fanden keinen Befund gegen die Entscheidung selbst; der eine, der über die Form hinausging,
+  traf die Rollen-Zuordnung in Festlegung 2 (§6, Risiko 1). Jede Korrektur lief im
+  `Proposed`-Fenster, wo sie ein bis zwei Zeichen kostet; nach `Accepted` wäre jede eine
+  Folge-ADR ([`AGENTS.md`](../../../../AGENTS.md) §3.4).
+- **Was anders lief als geplant:** §2 und §8 dieses Plans rechnen mit
+  [`BEO-007`](../observations.md) bei **1×**; die Zeile steht bei **4×** und führte den Ausgang
+  schon dreigeteilt. Geschrieben ist der Stand des **Registers**, nicht der des Plans. Die Klasse
+  liegt als [`BEO-025`](../observations.md); der Plan-Text bleibt stehen, damit deren Beleg im
+  Indikativ zeigt, worauf er zeigt.
+- **Steering-Loop-Eintrag: eine benannte Lücke** — *für eine Präsens-Aussage über ein
+  repo-eigenes lebendes Artefakt in einem Text, der nach
+  [`AGENTS.md`](../../../../AGENTS.md) §3.4 eingefroren wird, benennt keine Quelle eine Form.*
+  Vier der fünf Runden trugen dieselbe Ursache;
+  [ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md) bindet den Regelwerks-Beleg,
+  [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
+  den vendored Baum und nimmt `docs/plan/adr/` ausdrücklich aus,
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  die Zahl. Kein Zielort — **benannt, nicht verkörpert**: die Lücke liegt als
+  [`BEO-024`](../observations.md).
+- **Verkörpert, und trotzdem ohne `liegt in`-Feld:** Zielort ist
+  [`AGENTS.md`](../../../../AGENTS.md) §3.8, und die Herkunft trägt er dort als **ein** auflösbares
+  Feld — den Verweis auf
+  [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md). Ein zweiter Anker
+  `· seit slice-145` daneben liefe gegen [`AGENTS.md`](../../../../AGENTS.md) §3.7, und das Feld
+  dieser Sektion zöge die Anker-Paarung auf genau ihn. Der Anker steht darum dort, wo dieses Repo
+  ihn führt: in der `Stand`-Zelle von [`BEO-007`](../observations.md) — wie schon bei
+  [`BEO-001`](../observations.md), deren Zielort ihn ebenfalls nicht als Literal trägt.
+- **Beobachtungs-Register (`../observations.md`):** [`BEO-007`](../observations.md) behält Zähler
+  und Belege — dieser Slice **trägt** den Ausgang, er beobachtet nicht —; die `Stand`-Zelle führt
+  die Command-Hälfte jetzt als **verkörpert** (`seit slice-145`) und die Zeile im Ganzen weiter
+  als **geplant**, bis die zwei übrigen Teile eine angenommene Quelle haben. Zwei neue Kennungen:
+  [`BEO-024`](../observations.md) und [`BEO-025`](../observations.md), je 1×, Beleg `slice-145`.
+- **Folge-Slices:** keine neuen — die zwei offenen Teile von [`BEO-007`](../observations.md)
+  tragen [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md) und
+  [slice-152](../open/slice-152-adr-0029-acceptance-trigger.md), beide in `open/`.
+- **Risiken aus §6:** drei benannt, drei mit genau einem Ausgang — eines **eingetreten** (der
+  inhaltliche Einwand der ersten Runde, im `Proposed`-Fenster korrigiert, ohne Rest), zwei
+  **entfallen** (Form des Zeigers, `harness/README.md` zitiert §3.8 nicht).
+- **Eine Abweichung, benannt statt geheilt:** der Übergang `next` → `in-progress` landete erst
+  unmittelbar vor dieser Closure auf dem Hauptzweig; Baseline-Regelwerk
+  `modul-05-planning-harness.md` §Lifecycle als State Machine verlangt ihn **vor** der Arbeit.
+  Der Anspruch war für andere Läufe darum nicht sichtbar. Einmalig, in diesem Lauf, ohne Kollision
+  (`ls docs/plan/planning/in-progress/` führte davor keinen zweiten Slice).
 
 ## 8. Sub-Area-Modus-Begründung
 
