@@ -185,7 +185,7 @@ Tausch-Laufs; die Closure folgt, wenn DoD 2 und 3 getragen sind. Der Register-Ei
   erhöht, Beleg `slice-156`, mit der gemessenen stummen Unterform; dazu die Frage, ob die zwei
   Nachzügler `slice-164`/`slice-165` `BEO-010` auf 3× bringen — darüber urteilt die Closure von
   [welle-14](../welle-14-re-baseline.md), nicht dieser Lauf.)*
-- **Folge-Slices:** [slice-164](../open/slice-164-emitter-klassifiziert-die-zwei-neuen-vorlagen.md)
+- **Folge-Slices:** [slice-164](../next/slice-164-emitter-klassifiziert-die-zwei-neuen-vorlagen.md)
   (Emitter-Klassifikation der zwei neuen Vorlagen) ·
   [slice-165](../open/slice-165-praesens-aussagen-gegen-v5180.md) (die stummen Nennungen und ihr
   [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)-Ausgang)

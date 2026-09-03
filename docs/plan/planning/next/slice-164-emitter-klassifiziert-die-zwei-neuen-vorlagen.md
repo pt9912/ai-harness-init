@@ -91,7 +91,7 @@ liegt in `done/` — erst dann ist der Satz, gegen den klassifiziert wird, der a
   statt einer Eintragung in bestehende Listen.
 - `in-progress` → `open` (blockiert — Carveout?): wenn die Frage *gehört die Stub-Form überhaupt
   in ein emittiertes Repo?* offen ist — das entscheidet
-  [slice-158](slice-158-archivierungs-schritt.md) für die Dogfood-Ebene, und ohne dessen Verdikt
+  [slice-158](../open/slice-158-archivierungs-schritt.md) für die Dogfood-Ebene, und ohne dessen Verdikt
   klassifiziert dieser Slice gegen eine ungeklärte Zusage.
 
 ## 5. Closure-Trigger
@@ -112,7 +112,7 @@ dasteht.
 - **Das Grün entsteht durch Anpassen der Erwartung statt durch eine Entscheidung** — die Fixture
   ist eine Liste, und eine Liste lässt sich immer passend machen. — **Ausgang:** offen, wird bei
   Closure verbucht.
-- **Die Entscheidung hängt an [slice-158](slice-158-archivierungs-schritt.md)** und kann ins Leere
+- **Die Entscheidung hängt an [slice-158](../open/slice-158-archivierungs-schritt.md)** und kann ins Leere
   laufen, wenn dort der Archivierungs-Schritt für dieses Repo verworfen wird. — **Ausgang:** offen,
   wird bei Closure verbucht.
 
