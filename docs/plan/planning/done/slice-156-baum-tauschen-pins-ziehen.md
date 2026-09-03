@@ -63,7 +63,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
       regelt; sein Träger ist [slice-165](../open/slice-165-praesens-aussagen-gegen-v5180.md), für
       die **85** in dieser Datei
-      [slice-157](../in-progress/slice-157-adaptions-durchgang-v5180.md).
+      [slice-157](../done/slice-157-adaptions-durchgang-v5180.md).
       Keine Erwartungswerte
       ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
       Setzung 2). **Gezogen ist die Menge außerhalb dieser zwei:** 12 Links in
@@ -185,7 +185,7 @@ Backticks).
   **Adresse** ist mechanisch, die **Substanz** nicht — der umbenannte Abschnitt trägt die von
   [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption)
   zitierte Zeile nicht mehr, und welchen der fünf Ausgänge das dem Eintrag gibt, entscheidet
-  [slice-157](../in-progress/slice-157-adaptions-durchgang-v5180.md).
+  [slice-157](../done/slice-157-adaptions-durchgang-v5180.md).
 - **Steering-Loop-Eintrag:** Sensor benannt, nicht gebaut — der **Pin-Sensor für lebende
   Artefakte** aus [ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md) §Fitness Function
   (Kandidat 2): *jede Zeichenkette `.harness/baseline/<X>/` in einem lebenden Artefakt erfüllt
@@ -233,7 +233,7 @@ Ein eigener Commit, nur Architect-Artefakte, Rolle in der Message. Gemessen, nic
    → keine Nicht-Null-Zeile); das Zitat steht als Tree-Operand nach
    [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
    Ausgang 2, den Ausgang des Eintrags entscheidet
-   [slice-157](../in-progress/slice-157-adaptions-durchgang-v5180.md).
+   [slice-157](../done/slice-157-adaptions-durchgang-v5180.md).
    Die **stumme** Hälfte bleibt stehen — 148 Nennungen im lebenden Bestand, davon 85 in dieser
    Datei (`git grep -n 'v5\.12\.0' -- ':!.harness/baseline' ':!docs/reviews'
    ':!docs/plan/planning/done' ':!docs/plan/adr' | grep -vc ']('`, dasselbe auf die Datei
@@ -241,7 +241,7 @@ Ein eigener Commit, nur Architect-Artefakte, Rolle in der Message. Gemessen, nic
    [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
    Setzung 2): sie sind datierte Mess-Zeitbezüge nach
    [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
-   und Gegenstand von [slice-157](../in-progress/slice-157-adaptions-durchgang-v5180.md) bzw.
+   und Gegenstand von [slice-157](../done/slice-157-adaptions-durchgang-v5180.md) bzw.
    [slice-165](../open/slice-165-praesens-aussagen-gegen-v5180.md).
 3. **Der `ignore-refs`-Eintrag zu `v3.5.2`** in [`.d-check.yml`](../../../../.d-check.yml) ist von
    diesem Tausch **nicht** berührt und bleibt gültig — er nennt einen Baum, den schon der letzte

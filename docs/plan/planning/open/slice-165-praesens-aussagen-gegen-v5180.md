@@ -51,7 +51,7 @@ git grep -n 'v5\.12\.0' -- ':!.harness/baseline' ':!docs/reviews' \
 [`harness/conventions.md`](../../../../harness/conventions.md) (dieselbe Zählung, auf die Datei
 eingeschränkt) sind Adaptions-Block und damit Architect
 ([`AGENTS.md`](../../../../AGENTS.md) §3.8) — sie trägt
-[slice-157](../in-progress/slice-157-adaptions-durchgang-v5180.md). Und die **eingefrorenen** ADRs bleiben
+[slice-157](../done/slice-157-adaptions-durchgang-v5180.md). Und die **eingefrorenen** ADRs bleiben
 unangetastet: [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
 §Geltungsbereich schließt `docs/plan/adr/` selbst aus.
 
