@@ -12,7 +12,7 @@ Slice, auf den er wartet. **Gemeinsames Closure-Kriterium?** Nein — jedes wär
 eigenen DoD. **Auslöser reaktiv oder gewollt?** Reaktiv: eine angenommene Festlegung hat heute
 keinen Sensor, und die ADR sagt das über sich selbst (§1). Der Gegenstand stammt **nicht** aus dem
 Re-Baseline-Delta und belegt kein Closure-Kriterium von
-[welle-10](../welle-10-re-baseline.md) §3. Nach
+[welle-10](../done/welle-10-re-baseline.md) §3. Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das Verzeichnis.
 

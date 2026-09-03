@@ -151,7 +151,7 @@ Steering-Loop-Lerneintrag.
 ist gestartet und das WIP-Limit ist frei.** Hermetisch, hängt an keinem anderen Slice der Welle.
 
 **Eine Reihenfolge-Notiz, die kein Trigger ist:** dieser Slice ändert möglicherweise die Roadmap,
-und [welle-10](../welle-10-re-baseline.md) ist zur Startzeit bereits geschlossen (Welle-Trigger).
+und [welle-10](../done/welle-10-re-baseline.md) ist zur Startzeit bereits geschlossen (Welle-Trigger).
 Der Drift-Befund aus §1 hängt am Zustand *„Welle genannt, `in-progress/` leer"* — er kann bis dahin
 verschwunden oder ein anderer geworden sein. **Die Messung ist an ihrem Stand festgemacht
 (`1f5741f`) und ist kein Erwartungswert**

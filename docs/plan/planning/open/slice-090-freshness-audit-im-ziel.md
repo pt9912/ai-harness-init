@@ -100,7 +100,7 @@ Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · Doku-Upda
 ## 4. Trigger
 
 **`open` → `next`:** [welle-11](../welle-11-traeger-aussage.md) ist eingetreten, also liegt
-[welle-10](../welle-10-re-baseline.md) in `done/`. **`next` → `in-progress`:** WIP-Limit frei
+[welle-10](../done/welle-10-re-baseline.md) in `done/`. **`next` → `in-progress`:** WIP-Limit frei
 (kein anderer Slice in `in-progress/`).
 
 **Rückführungen, vorab benannt.** `in-progress` → `next`, wenn sich beim Schreiben zeigt, dass die

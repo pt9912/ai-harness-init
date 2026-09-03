@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-10](../welle-10-re-baseline.md) — der Befund entsteht durch den Tausch und hält
+**Welle:** [welle-10](welle-10-re-baseline.md) — der Befund entsteht durch den Tausch und hält
 ihr Closure-Kriterium *„`make gates` grün"* auf. Ihre Closure-Bedingung ist von dieser DoD
 verschieden.
 
@@ -227,7 +227,7 @@ als **Index** stehen. Das Nachbar-Repo hält seine Index-Zeilen genau dafür adr
 je Zeile der alte lange Slug **und** die Kurzform `mr-NNN`. Dass der gepinnte d-check ein solches
 `<a id="…"></a>` als Link-Ziel auflöst, ist unten an einer Sonde gemessen. Was der Umzug kostet,
 ist damit eine Index-Zeile je Eintrag, nicht ein Verweis-Nachzug.
-[welle-10](../welle-10-re-baseline.md) §6 stellt ihn trotzdem **out-of-scope**, und zwar mit
+[welle-10](welle-10-re-baseline.md) §6 stellt ihn trotzdem **out-of-scope**, und zwar mit
 genau diesem Preis als Begründung — **die Messung ist ein Anlass, jene Grenze neu zu bewerten;
 das ist ein Schnitt und kein Vollzug.**
 
@@ -244,7 +244,7 @@ Auflage an seine Ausführung.
 
 Er ist **nicht** der Umzug. Er entscheidet, ob der eine Beleg ohne Umzug tragfähig wird, und wenn
 nein, übergibt er den Umzug als eigenen Schnitt mit eigenem Trigger — so, wie
-[welle-10](../welle-10-re-baseline.md) §6 ihn vorsieht. Und er ist **nicht** der Ort, an dem ein
+[welle-10](welle-10-re-baseline.md) §6 ihn vorsieht. Und er ist **nicht** der Ort, an dem ein
 Planner-Lauf den Adaptions-Block schreibt: die Ausführung gehört dem Architect
 ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
 
@@ -307,7 +307,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       mit diesem Grund und wird in §7 notiert, nicht still übergangen.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [x] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die
-      [welle-10](../welle-10-re-baseline.md)-Closure, nicht dieser Slice.
+      [welle-10](welle-10-re-baseline.md)-Closure, nicht dieser Slice.
 
 ## 3. Plan (vor Code)
 
@@ -323,7 +323,7 @@ Aussagen-Berührung steht hier gar nicht.
 | `docs/plan/adr/` | ggf. neu | eine ADR, falls die Entscheidung aus DoD (1) eine ist; [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) selbst bleibt byte-gleich ([`AGENTS.md`](../../../../AGENTS.md) §3.4) |
 | [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) | **auflösen** (`git mv` nach `done/`) | die Ausnahme fällt mit dem Befund |
 | [`.d-check.yml`](../../../../.d-check.yml) | **kein `scan.ignore`-Eintrag**; bei Ausgang (c) ein Top-Level-`ignore-refs`-Eintrag | die Datei-Achse bleibt unberührt — das ist DoD (2) und keine Nebenbedingung. Die Referenz-Achse zu lockern ist eine Senkung nach [`AGENTS.md`](../../../../AGENTS.md) §3.5 und wandert mit ihrer ADR in Commit 1, nicht als Config-Beifang in einen anderen |
-| Verzeichnis-Form des Adaptions-Blocks (ein Eintrag je Datei) | **nur bei Ausgang (b)**, und dann als eigener Schnitt | [welle-10](../welle-10-re-baseline.md) §6 stellt den Umzug out-of-scope. Sein dort genannter Preis — jede `MR-`Kennung auf einen neuen Pfad — ist in §1 gegen das Nachbar-Repo gemessen und trifft nicht zu: die Datei bleibt als Index, der Anker bleibt. Der Umfang bleibt und ist keine Fracht dieses Slice |
+| Verzeichnis-Form des Adaptions-Blocks (ein Eintrag je Datei) | **nur bei Ausgang (b)**, und dann als eigener Schnitt | [welle-10](welle-10-re-baseline.md) §6 stellt den Umzug out-of-scope. Sein dort genannter Preis — jede `MR-`Kennung auf einen neuen Pfad — ist in §1 gegen das Nachbar-Repo gemessen und trifft nicht zu: die Datei bleibt als Index, der Anker bleibt. Der Umfang bleibt und ist keine Fracht dieses Slice |
 
 **Der Commit-Zuschnitt folgt aus zwei schreibenden Rollen, nicht aus einer Vorliebe.**
 [`AGENTS.md`](../../../../AGENTS.md) §3.8 verlangt für die Änderung am Adaptions-Block einen
@@ -359,7 +359,7 @@ Bedingung aus DoD (1).
 
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn die Entscheidung auf **(b)** fällt.
   Der Umzug ist dann ein eigener Schnitt mit eigenem Trigger
-  ([welle-10](../welle-10-re-baseline.md) §6), und dieser Slice zerfällt in *Entscheidung* und
+  ([welle-10](welle-10-re-baseline.md) §6), und dieser Slice zerfällt in *Entscheidung* und
   *Vollzug*. Die Bedingung ist vorab benannt und bleibt ein möglicher Ausgang; eine Aussage
   darüber, welcher der drei Kandidaten der *einzige* Weg zu DoD (2) sei, steht hier nicht — sie
   wäre eine Vollständigkeitsaussage über eine Menge, die §1 gerade um einen Kandidaten korrigiert
@@ -587,7 +587,7 @@ Register an. Das Reconciliation-Register entfällt aus einem anderen und dauerha
 Repo hat keinen Brownfield-Bootstrap.
 
 **Die drei Paarungen — nicht hier fällig.** Anker, Folge-Slice und Register prüft die
-[welle-10](../welle-10-re-baseline.md)-Closure.
+[welle-10](welle-10-re-baseline.md)-Closure.
 
 ### Was funktionierte
 

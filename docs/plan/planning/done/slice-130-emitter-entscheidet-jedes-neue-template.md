@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-10](../welle-10-re-baseline.md) — sie trägt eine Closure-Bedingung, die von
+**Welle:** [welle-10](welle-10-re-baseline.md) — sie trägt eine Closure-Bedingung, die von
 dieser DoD verschieden ist (die drei Durchgänge der Ziel-Prozedur), und dieser Slice ist einer
 ihrer Zugänge.
 
@@ -196,7 +196,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       gilt für das Reconciliation-Register: das Repo hat keinen Brownfield-Bootstrap.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt
-      Wellen-Betrieb, sie werden also von der [welle-10](../welle-10-re-baseline.md)-Closure
+      Wellen-Betrieb, sie werden also von der [welle-10](welle-10-re-baseline.md)-Closure
       geprüft, nicht hier.
 
 ## 3. Plan (vor Code)
@@ -489,7 +489,7 @@ seiner Messung in §6 selbst. Bilanz: **zwei eingetreten**, **zwei entfallen**, 
 offen**.
 
 **Die drei Paarungen — nicht hier fällig.** Dieses Repo fährt Wellen-Betrieb; Anker, Folge-Slice und
-Register prüft die [welle-10](../welle-10-re-baseline.md)-Closure. Was sie von hier erbt, steht in
+Register prüft die [welle-10](welle-10-re-baseline.md)-Closure. Was sie von hier erbt, steht in
 einem Satz: **zwei** Steering-Loop-Einträge ohne `liegt in` (gezählt, nicht verkörpert), **null**
 *weiter offen*-Ausgänge in §6, **zwei** neue Folge-Slices in `open/` — und dieselbe Ursache wie bei
 [slice-138](../done/slice-138-nachweis-entsteht-nicht-ueber-rot.md) für alles, was ohne Zähler

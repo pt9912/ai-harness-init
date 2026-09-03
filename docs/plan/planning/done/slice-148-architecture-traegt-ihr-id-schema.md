@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-10](../welle-10-re-baseline.md) — Teil von Durchgang 2 (*Form*), abgetrennt aus
+**Welle:** [welle-10](welle-10-re-baseline.md) — Teil von Durchgang 2 (*Form*), abgetrennt aus
 [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) §1/§6, dessen Form-Diff-Protokoll
 das neue Pflichtfeld für dieses Artefakt bereits gemessen, aber nicht umgesetzt hat.
 
@@ -112,7 +112,7 @@ die Rollenfrage aus §6 ist entschieden — entweder durch eine benannte Quelle 
 Priorisierung mit `Verantwortlich:` = Implementer-Rolleninhaber als Default.
 
 **Keine Reihenfolge-Bindung innerhalb der Welle.** Dieser Slice hängt an keinem anderen Mitglied
-von [welle-10](../welle-10-re-baseline.md): [slice-147](../done/slice-147-spezifikation-traegt-ihr-id-schema.md)
+von [welle-10](welle-10-re-baseline.md): [slice-147](../done/slice-147-spezifikation-traegt-ihr-id-schema.md)
 berührt ein anderes Artefakt mit eigener Referenz-Menge, und die fortgeführte
 `harness/conventions.md`-Arbeit in [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md)
 berührt keine spec-Datei.
@@ -218,7 +218,7 @@ hier ohne Anwendungsfall.
 - **Risiken aus §6:** zwei benannt, zwei mit genau einem Ausgang — **eines entfallen**, **eines
   weiter offen** (im Register, [`BEO-007`](../observations.md)). Keines eingetreten.
 - **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice ist
-  Mitglied von [welle-10](../welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt die
+  Mitglied von [welle-10](welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt die
   Paarungen auf Closure-Schritt 3c, Modul 8 §Rollen-Sequenz für eine Welle weist sie dem
   Planner-Kontext der Welle-Closure zu.
 

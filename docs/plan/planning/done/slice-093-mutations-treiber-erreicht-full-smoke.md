@@ -219,7 +219,7 @@ diese drei sind Ausgangspunkte, keine Vorgabe.
 **Beginn (`open` → `next` → `in-progress`): sofort möglich, nichts blockiert ihn.** Der Gegenstand
 liegt vollständig in diesem Repo — Treiber, Sensor und Fall-Verzeichnis —, er berührt die
 emittierte Ebene nicht und hängt an keiner Welle. Insbesondere wartet er **nicht** auf
-[welle-10](../welle-10-re-baseline.md) oder [welle-11](../welle-11-traeger-aussage.md): deren
+[welle-10](welle-10-re-baseline.md) oder [welle-11](../welle-11-traeger-aussage.md): deren
 Trigger stehen auf dem vendored Baum, den dieser Slice nicht liest.
 
 Die zwei Rückführungen, vorab benannt:

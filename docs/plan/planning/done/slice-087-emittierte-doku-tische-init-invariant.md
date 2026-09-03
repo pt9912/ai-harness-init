@@ -158,7 +158,7 @@ seinen eigenen Vertrag. Dieselbe Klasse wie
 
 Die Zahlen oben sind aus dem **Vorlagen- und Emissions-Bestand** gerechnet, nicht an einem frisch
 gebootstrappten Ziel gemessen. Vor dem ersten Handgriff sind sie dort neu zu fahren — sie hängen
-am vendored Stand, und der wandert mit jeder Baseline ([welle-10](../welle-10-re-baseline.md)
+am vendored Stand, und der wandert mit jeder Baseline ([welle-10](welle-10-re-baseline.md)
 zielt bereits auf einen anderen Tag). Ein Baseline-Sprung kann Ansprüche auflösen **oder**
 hinzufügen; die Eigenschaft aus DoD (2) überlebt beides, eine abgeschriebene Namensliste nicht.
 

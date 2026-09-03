@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-10](../welle-10-re-baseline.md) — seine drei Liefer-Punkte
+**Welle:** [welle-10](welle-10-re-baseline.md) — seine drei Liefer-Punkte
 sind Closure-Kriterien aus deren §3 (dritter Sensor, Trigger-Audit), die kein
 anderes Mitglied trägt; ohne diesen Slice bliebe der Rest bei `/close-welle`
 unvorbereitet.
@@ -81,7 +81,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
 - [x] **(1) `make full-smoke` gefahren, Ausgang (Exit-Code + Kern-Zeile) in
       §7 dokumentiert** — der einzige der drei in
-      [welle-10](../welle-10-re-baseline.md) §3 verlangten Sensoren, der laut
+      [welle-10](welle-10-re-baseline.md) §3 verlangten Sensoren, der laut
       `in-progress/roadmap.md` (Abschnitt *Aktuelle Welle*) noch nicht
       committet gemessen ist. `make smoke` und `make mutate` sind, falls ihr
       letzter grüner Lauf nicht mehr aktuell ist, hier erneut zu bestätigen —
@@ -291,7 +291,7 @@ Setzung 2):
    gebootstrapptes Repo faehrt make -j gates out-of-the-box gruen
    (lint/build/test + docs-check + baseline-verify via Fragment-Assembly,
    record-gates zuletzt), Exit 0 (LH-FA-01/LH-QA-01).` Das ist der Beleg, den
-   [welle-10](../welle-10-re-baseline.md) §3 als dritten Sensor verlangt und
+   [welle-10](welle-10-re-baseline.md) §3 als dritten Sensor verlangt und
    der bis zu diesem Slice als einziger nicht committet gemessen war.
 2. **`make smoke` → Exit 0**, `d-check: 20 Datei(en) geprueft, 0 Befund(e)`.
    Bestätigt statt übernommen ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
@@ -369,7 +369,7 @@ Setzung 2):
   `Verantwortlich:` beim Übergang `open→next` gesetzt), keines *eingetreten*.
 - **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt
   Wellen-Betrieb, und dieser Slice ist Mitglied von
-  [welle-10](../welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt
+  [welle-10](welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt
   die Paarungen (Anker · Folge-Slice · Register) auf Closure-Schritt 3c —
   **nach** dem `git mv` der Welle-Datei, weil sie die dort erst entstehenden
   Einträge prüfen —, und Modul 8 §Rollen-Sequenz für eine Welle weist denselben

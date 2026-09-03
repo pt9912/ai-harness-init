@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Welle:** ohne Welle — die Closure-Bedingung ist von dieser DoD nicht verschieden; der Fund kam
-aus [welle-10](../welle-10-re-baseline.md)s Durchgang 3
+aus [welle-10](../done/welle-10-re-baseline.md)s Durchgang 3
 ([slice-084](../done/slice-084-stichprobe-gegen-bestand.md)), gehört aber selbst nicht zu deren
 Slice-Menge (§4 dort: „Ein Delta, das eigene Arbeit verlangt, wird als Slice in `open/` notiert" —
 nicht Fracht der Welle).

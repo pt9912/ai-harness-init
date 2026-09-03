@@ -14,7 +14,7 @@ Baseline-Regelwerk `modul-08-agentenrollen.md` §Konflikt-Pfad als Rollen-Sequen
 Verdikt 3 (*„Lockerung legitim, aber undokumentiert"*) **zwei** Artefakte — die Folge-ADR **und**
 einen Erinnerungs-Slice in `next/`; die Folge-ADR ([ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md))
 existiert, der Erinnerungs-Slice fehlte. Der Gegenstand stammt nicht aus dem Re-Baseline-Delta und
-belegt kein Closure-Kriterium von [welle-10](../welle-10-re-baseline.md) §3; er gehört darum in
+belegt kein Closure-Kriterium von [welle-10](../done/welle-10-re-baseline.md) §3; er gehört darum in
 keine Welle. Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das Verzeichnis.

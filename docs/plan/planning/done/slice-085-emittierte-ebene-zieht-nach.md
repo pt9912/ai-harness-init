@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-10](../welle-10-re-baseline.md).
+**Welle:** [welle-10](welle-10-re-baseline.md).
 
 **Bezug:** [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren),
 [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen),
@@ -135,7 +135,7 @@ diesem Slice **3×** (unten). Kein anderer Eintrag erreichte mit diesem Slice di
   **Grün**, nicht **Aktualität** (`grep -c 'regelwerk' harness/tools/full-smoke.sh` → 0). Ein
   Zielort steht hier bewusst **nicht**: die Lücke ist die dritte Instanz von
   [`BEO-009`](../observations.md), und deren Lese-Schritt liegt bei der Closure von
-  [welle-10](../welle-10-re-baseline.md) (Rollen-Zug Planner → Architect → Planner, Modul 8).
+  [welle-10](welle-10-re-baseline.md) (Rollen-Zug Planner → Architect → Planner, Modul 8).
 - **Beobachtungs-Register ([`../observations.md`](../observations.md)):** keine neue Kennung —
   [`BEO-009`](../observations.md) von 2× auf **3×**, Beleg `slice-085`. Dieselbe Klasse: der
   Tausch-Commit korrigierte die Ableitung (den vendored Baum) und ließ die daneben stehenden
@@ -151,7 +151,7 @@ diesem Slice **3×** (unten). Kein anderer Eintrag erreichte mit diesem Slice di
   **entfallen**: `internal/emit/templates/d-check.yml` ist unverändert, Re-Baseline und
   Gate-Anhebung blieben getrennt.
 - **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice
-  gehört zu [welle-10](../welle-10-re-baseline.md); die Paarungen sind Schritt 3c der
+  gehört zu [welle-10](welle-10-re-baseline.md); die Paarungen sind Schritt 3c der
   Wellen-Closure und prüfen den Bestand, den sie vorfinden (Modul 6).
 - **Sensoren, die nicht liefen — und warum:** keine. `make gates` (Exit 0), `make smoke` (Exit 0),
   `make full-smoke` (Exit 0) und `make mutate` (`mutate: 214 ok, 0 Befund(e)`) sind gelaufen. Das

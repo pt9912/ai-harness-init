@@ -90,7 +90,7 @@ ihrer Annahme offenhielt, ist angenommen
 
 ## 2. Trigger (Welle startet)
 
-- **[welle-10](welle-10-re-baseline.md) liegt in `done/`.** Beobachtbar ohne Rückfrage: die
+- **[welle-10](done/welle-10-re-baseline.md) liegt in `done/`.** Beobachtbar ohne Rückfrage: die
   Plan-Datei liegt neben ihrer Ergebnis-Notiz.
 - **Warum diese Reihenfolge tragend ist und nicht bloß ordentlich:** **jede** Messung dieser Welle
   läuft über den vendored Baum, und welle-10 tauscht genau ihn. Der Adaptions-Durchgang jener Welle
@@ -103,7 +103,7 @@ ihrer Annahme offenhielt, ist angenommen
   eine Prozedur, die das Ziel danach nicht mehr liest. **Das ist ein Risiko-Grund, und er
   unterscheidet diese Kante von der, die vor welle-10 stand:** jene schützte eine Messlatte, deren
   Text sich als unbewegt erwies, und ist am 2026-08-28 aufgelöst
-  ([welle-10](welle-10-re-baseline.md) §2). Diese hier trägt einen Gegenstand, der sich beim
+  ([welle-10](done/welle-10-re-baseline.md) §2). Diese hier trägt einen Gegenstand, der sich beim
   Tausch **real** ändert.
 - **[welle-09](welle-09-modul-15-konformitaet.md) ist keine Vorbedingung dieser Welle** — weder
   unmittelbar noch mittelbar, seit sie welle-10 nicht mehr blockiert. Die Abgrenzung zu ihr bleibt
@@ -194,7 +194,7 @@ gar nicht existiert — das wäre die
 [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Klasse mit
 umgekehrtem Vorzeichen. **Die Frage kann wiederkommen, und dann als eigene:** bringt die
 Re-Baseline die Regel in den Kurs-Stand, liest sie das Ziel — die Prüfung gehört dann in den
-Adaptions-Durchgang von [welle-10](welle-10-re-baseline.md), der ohnehin jeden Eintrag gegen die
+Adaptions-Durchgang von [welle-10](done/welle-10-re-baseline.md), der ohnehin jeden Eintrag gegen die
 neue Fassung hält.
 
 **Und warum kein Slice für den Reviewer-Skill.** Er kommt mit (§1, erster Posten, mit Kommando).
@@ -203,7 +203,7 @@ Der Wert *Träger kommt mit* für Modul 10 wird in 092 gesetzt, nicht erarbeitet
 
 ## 5. Abhängigkeiten
 
-- **Wird blockiert von:** [welle-10](welle-10-re-baseline.md), und **nur** von ihr — sie tauscht
+- **Wird blockiert von:** [welle-10](done/welle-10-re-baseline.md), und **nur** von ihr — sie tauscht
   den Baum, über den jede Messung dieser Welle läuft (§2). Die mittelbare Bindung an
   [welle-09](welle-09-modul-15-konformitaet.md) ist mit deren Kante entfallen.
 - **Blockiert:** keine geplante Welle. Sie ist die letzte der Reihe.

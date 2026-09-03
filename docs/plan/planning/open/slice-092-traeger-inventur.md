@@ -70,7 +70,7 @@ notierte Zahl bräche beim nächsten Baseline-Sprung, ohne dass am Gegenstand et
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2 schließt genau diese Form von Erwartungswert aus. Dieselbe Lücke — *kuratierte Liste
 statt Inventar* — führt die Roadmap seit dem 2026-07-25 als eigenen Kandidaten, und
-[welle-10](../welle-10-re-baseline.md) hängt ihren Adaptions-Durchgang an dieselbe Mechanik.
+[welle-10](../done/welle-10-re-baseline.md) hängt ihren Adaptions-Durchgang an dieselbe Mechanik.
 
 **Was verwiesen und nicht abgeschrieben wird.** Wo eine angenommene Entscheidung den Wert schon
 setzt — [`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) für den
@@ -212,7 +212,7 @@ DoD (1)–(3) erfüllt mit gefahrenen Kommandos, `make gates` grün, `make full-
   `make full-smoke` einmal mit, und der ist die Untergrenze — der Fall-Lauf selbst liegt darunter,
   weil er am getroffenen Wächter abbricht.
 - **Die Inventur altert mit dem Baum.** Sie steht deshalb hinter
-  [welle-10](../welle-10-re-baseline.md) (§2 der Welle) und nennt ihren Nenner als Kommando, nicht
+  [welle-10](../done/welle-10-re-baseline.md) (§2 der Welle) und nennt ihren Nenner als Kommando, nicht
   als Ziffer. Kommt upstream ein Abschnitt hinzu, meldet der Wächter die Differenz — das ist der
   gewollte Ausgang, kein Fehlalarm.
 - **Ein Wert ist fremdbestimmt:** *Doku-Konsistenz-Drift* hängt am Ausgang von slice-063 in

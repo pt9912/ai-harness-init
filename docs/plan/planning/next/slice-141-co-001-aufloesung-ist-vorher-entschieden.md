@@ -12,7 +12,7 @@ wartet auf keinen zweiten. **Gemeinsames Closure-Kriterium?** Nein — jedes wä
 seiner eigenen DoD. **Auslöser reaktiv oder gewollt?** Reaktiv: ein Auflösungs-Trigger ist
 eingetreten und sein Vollzug bricht zwei Adressen, die niemand heilen darf (§1). Der Gegenstand
 stammt **nicht** aus dem Re-Baseline-Delta und belegt kein Closure-Kriterium von
-[welle-10](../welle-10-re-baseline.md) §3; er gehört darum in keine Welle. Nach
+[welle-10](../done/welle-10-re-baseline.md) §3; er gehört darum in keine Welle. Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das Verzeichnis.
 

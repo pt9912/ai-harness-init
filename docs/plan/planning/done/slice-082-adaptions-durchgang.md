@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-10](../welle-10-re-baseline.md).
+**Welle:** [welle-10](welle-10-re-baseline.md).
 
 **Bezug:** [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) (die Aussage,
 die der Durchgang prüft), [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf),
@@ -38,7 +38,7 @@ Beleg"*) und trägt zwei Antworten, jede mit Beleg. Die Prozedur stellt zwei Fra
 liegen auf verschiedenen Achsen.
 
 **Die Menge steht nicht in diesem Plan, sondern in
-[welle-10](../welle-10-re-baseline.md) §3, und sie ist geschlossen:**
+[welle-10](welle-10-re-baseline.md) §3, und sie ist geschlossen:**
 [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) bis
 [`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt),
 der Bestand am Tausch-Commit `b902b60`
@@ -46,7 +46,7 @@ der Bestand am Tausch-Commit `b902b60`
 Bestand: `grep -c '^### MR-' harness/conventions.md` wächst mit jedem Architect-Lauf, und dieser
 Durchgang erzeugt selbst Einträge — ein Kriterium über die laufende Menge könnte er nie erfüllen.
 Warum die Grenze am Tausch liegt und nicht am Wellen-Schnitt, und was die Einträge außerhalb
-schulden, steht in [welle-10](../welle-10-re-baseline.md) §3 und §6; dieser Plan doppelt es nicht.
+schulden, steht in [welle-10](welle-10-re-baseline.md) §3 und §6; dieser Plan doppelt es nicht.
 
 **Eingefroren ist die Mitgliedschaft, nicht der Text.** Gelesen wird jeder Eintrag im **heutigen**
 Wortlaut — zwei von ihnen sind seit dem Tausch aufgehoben worden und tragen ihren Ausgang bereits

@@ -97,7 +97,7 @@ Setzung 1 geprüft, alle drei Fragen beantwortet:
   Verhalten hängt an der Version. Alle Messungen in §1 sind bereits gegen `v0.65.0` gefahren; sie
   gegen `v0.62.0` zu verdrahten hieße, eine Config gegen ein Image zu schneiden, das im selben Zug
   ausgetauscht wird.
-- **[welle-10](welle-10-re-baseline.md) liegt in `done/`.** Der Grund ist **ordnend**: welle-10 ist
+- **[welle-10](done/welle-10-re-baseline.md) liegt in `done/`.** Der Grund ist **ordnend**: welle-10 ist
   die aktuelle Welle und tauscht den vendored Baum; zwei offene Wellen nebeneinander wären ein
   WIP-Bruch, keine Parallelität. Ist welle-10 vorher geschlossen, entfällt die Kante von selbst.
 
@@ -153,9 +153,9 @@ ist falsch"*, nicht *„die DoD ist länger"*.
 ## 5. Abhängigkeiten
 
 - **Wird blockiert von:** [slice-122](done/slice-122-d-check-pin-v0650.md) (Pin, tragend) und
-  [welle-10](welle-10-re-baseline.md) (WIP, ordnend) — beide mit ihrer Begründung in §2.
+  [welle-10](done/welle-10-re-baseline.md) (WIP, ordnend) — beide mit ihrer Begründung in §2.
 - **Blockiert:** nichts. [welle-11](welle-11-traeger-aussage.md) hängt an
-  [welle-10](welle-10-re-baseline.md), nicht an dieser Welle; die Reihung ist damit
+  [welle-10](done/welle-10-re-baseline.md), nicht an dieser Welle; die Reihung ist damit
   welle-10 → welle-11 **und** welle-10 → welle-13, ohne Kante zwischen 11 und 13.
 - **Berührt, aber bindet nicht:** [slice-121](open/slice-121-commit-message-nennt-was-es-gibt.md)
   liegt **außerhalb** dieser Welle und bekommt aus

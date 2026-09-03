@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-10](../welle-10-re-baseline.md).
+**Welle:** [welle-10](welle-10-re-baseline.md).
 
 **Bezug:** [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (der Tag ist
 die Reproduzierbarkeits-Klammer), [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
@@ -83,7 +83,7 @@ Kein Code, keine Gate-Config: die Umsetzung liegt bei
 
 ## 4. Trigger
 
-Beginnt, sobald [welle-10](../welle-10-re-baseline.md) startet — dieser Slice ist ihr
+Beginnt, sobald [welle-10](welle-10-re-baseline.md) startet — dieser Slice ist ihr
 erster; kein Vorgänger innerhalb der Welle.
 
 Rückführungen: `in-progress` → `next`, wenn die Entscheidung mehr als eine Frage trägt (etwa
@@ -268,7 +268,7 @@ Ein Zähler *+1 mit Beleg* ist genau das, was hier fehlte: die Beobachtung vom 2
 beim zweiten Auftreten am 2026-08-28 nicht neu entstanden, sondern hochgezählt worden.
 
 **Der Träger — und warum hier kein Slice geschnitten wird.**
-[welle-10](../welle-10-re-baseline.md) §6 zieht die Grenze selbst: *„Ein Delta, das eigene Arbeit
+[welle-10](welle-10-re-baseline.md) §6 zieht die Grenze selbst: *„Ein Delta, das eigene Arbeit
 verlangt, wird als Slice in `open/` notiert."* Der Durchgang, der die Form der Ziel-Fassung liest,
 ist [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md); sein §1 nennt `observations`
 bereits als eine der vier neuen Vorlagen, seine drei DoD-Punkte decken aber **Singleton-Form**,
@@ -293,7 +293,7 @@ Abgeschlossenheit steht.
 
 | Posten | Herkunft | Ausgang |
 |---|---|---|
-| Die Migrations-Prozedur der Ziel-Fassung regiert ab jetzt | [ADR-0018](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 1, *Accepted* seit `485da30` | **bleibt gültig, kein Nachzug** — der Zuschnitt von 082–084 hängt an ihrem **Inhalt**, und der ist über beide Retargets unberührt (die Geschichte-Zeilen von `2026-08-27` sagen es, ihre Quelle `modul-02-harness-bootstrap.md` ist `v5.9.0` ↔ `v5.12.0` byte-gleich). [welle-10](../welle-10-re-baseline.md) §1 zeigt seit `b650730` auf Festlegung 1, statt sie zu doppeln; der Statuswechsel bewegt den Zeiger nicht |
+| Die Migrations-Prozedur der Ziel-Fassung regiert ab jetzt | [ADR-0018](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 1, *Accepted* seit `485da30` | **bleibt gültig, kein Nachzug** — der Zuschnitt von 082–084 hängt an ihrem **Inhalt**, und der ist über beide Retargets unberührt (die Geschichte-Zeilen von `2026-08-27` sagen es, ihre Quelle `modul-02-harness-bootstrap.md` ist `v5.9.0` ↔ `v5.12.0` byte-gleich). [welle-10](welle-10-re-baseline.md) §1 zeigt seit `b650730` auf Festlegung 1, statt sie zu doppeln; der Statuswechsel bewegt den Zeiger nicht |
 | [ADR-0023](../../adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) Folgepflicht 3 — die drei Klassen als **Sortier-Aufgabe**, nicht als Liste | die ADR, an die planende Rolle | **übernommen, und ausdrücklich ohne Liste** — [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) §1 führt bereits vier Klassen mit demselben Schnitt, einschließlich der Klasse *Tree-Operand der Vor-Tausch-Seite*, die stehen bleibt. Was fehlte, war der Zeiger auf die ADR; er steht seit diesem Lauf im Kopf jenes Slice. Eine Aufzählung der Treffer entsteht **beim Lauf**, wie die Folgepflicht es verlangt |
 | [ADR-0023](../../adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) Folgepflicht 1 — Links **und neue Dateinamen** ziehen, Anker einzeln, die [ADR-0017](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md)-Ausnahme vollziehen | die ADR, an den Tausch-Slice | **an [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md), dort schon verankert** — DoD (2) verlangt neuen Tag **und** neuen Dateinamen samt Anker-Einzelprüfung, §3 führt den einen `scan.ignore`-Eintrag als extensional geschlossen. Der Vollzug steht aus: `grep -c '0013-technik-stratum' .d-check.yml` → **0** (Exit 1), in diesem Lauf reproduziert |
 | Die Bestandszahl in [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) ist überholt | dieser Lauf | **erledigt in jenem Plan** — die Sonde von 2026-08-09 zählte **21** gate-sichtbare Befunde über drei Fundorte; heute sind es **24** über vier, weil eine **lebende Plandatei** mit **3** hinzugekommen ist (`git grep -oE '\]\([^)]*\.harness/baseline/v3\.5\.2/[^)]*\)' -- ':!.harness/baseline' \| cut -d: -f1 \| sort \| uniq -c \| sort -rn`, Summe mit `\| wc -l` → **24**). Der Betrag wandert und ist kein Erwartungswert; die **Klassen** binden, nicht die Summe |

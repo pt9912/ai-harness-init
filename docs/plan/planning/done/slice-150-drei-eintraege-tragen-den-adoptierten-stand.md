@@ -5,8 +5,8 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-10](../welle-10-re-baseline.md). **Und das ist eine Entscheidung, keine
-Fortschreibung** — die Nachbar-Regel von [welle-10](../welle-10-re-baseline.md) §6 schickt einen
+**Welle:** [welle-10](welle-10-re-baseline.md). **Und das ist eine Entscheidung, keine
+Fortschreibung** — die Nachbar-Regel von [welle-10](welle-10-re-baseline.md) §6 schickt einen
 Fund, der eigene Arbeit verlangt, als Slice in `open/` **ohne** Wellen-Zugehörigkeit
 ([slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) ist dieser Fall).
 Hier greift sie nicht: Gegenstand sind nicht neue Regelwerks-Inhalte, sondern **zwei korrigierte
@@ -152,7 +152,7 @@ unverändert: *„der Bestand ist kein Arbeitsauftrag"*.
 
 Mehr steht hier nicht, und das ist der Zuschnitt: **eine Datei, eine Rolle, drei Einträge.** Der
 Adaptions-Block wächst dadurch — dass eine wachsende Datei ein eigener Roadmap-Kandidat ist
-(Verzeichnis-Form), steht in [welle-10](../welle-10-re-baseline.md) §6 und ist hier
+(Verzeichnis-Form), steht in [welle-10](welle-10-re-baseline.md) §6 und ist hier
 ausdrücklich **nicht** mitgeschnitten.
 
 ## 4. Trigger
@@ -282,7 +282,7 @@ nimmt allein den Cutoff-Absatz aus.
   Adaptions-Blocks beschreibt keine Abweichung, sondern Buchführung über den Block selbst.* Dieser
   Lauf hat den vierten solchen Eintrag hinzugefügt und zählt ihn, statt ihn zu rechtfertigen; die
   Auflösung — der Umzug in die Verzeichnis-Form — ist in
-  [welle-10](../welle-10-re-baseline.md) §6 ausgeschlossen und bleibt ein eigener Vorgang.
+  [welle-10](welle-10-re-baseline.md) §6 ausgeschlossen und bleibt ein eigener Vorgang.
   [`BEO-013`](../observations.md) bleibt bei **1×**: dieser Slice ist die *Auflösung* der gezählten
   Klasse, kein zweites Auftreten. [`BEO-008`](../observations.md) bleibt bei **1×** — der
   Kurzschluss wurde hier nicht begangen, sondern durch die Volltext-Prüfung gerade vermieden.
@@ -291,7 +291,7 @@ nimmt allein den Cutoff-Absatz aus.
   im Lauf aufgefangen, keiner als Folge-Slice), **eines weiter offen** (die Wächter-Lücke, im
   Register als [`BEO-009`](../observations.md) und [`BEO-006`](../observations.md) bereits gezählt).
 - **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice ist
-  Mitglied von [welle-10](../welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt die
+  Mitglied von [welle-10](welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt die
   Paarungen auf Closure-Schritt 3c, Modul 8 §Rollen-Sequenz für eine Welle weist sie dem
   Planner-Kontext der Welle-Closure zu.
 

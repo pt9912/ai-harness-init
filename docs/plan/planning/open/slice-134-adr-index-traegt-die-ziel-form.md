@@ -9,7 +9,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 beobachtbare Closure-Bedingung gibt, die **mehr** beobachtet als die DoD dieses Slice —
 Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht: *„Bei einem einzelnen
 Slice ist das der Regelfall: Sein Closure-Trigger würde die eigene DoD abschreiben."* Hier gibt
-es sie nicht: keines der Closure-Kriterien von [welle-10](../welle-10-re-baseline.md) §3 wird von
+es sie nicht: keines der Closure-Kriterien von [welle-10](../done/welle-10-re-baseline.md) §3 wird von
 diesem Slice belegt, und keines braucht ihn. **Der Grund ist gemessen, nicht angenommen:** der
 Befund unten stammt **nicht** aus dem Re-Baseline-Delta (§1) — also trägt ihn auch nicht die
 Welle, die das Delta abarbeitet. Die drei Paarungen (Anker · Folge-Slice · Register) prüft

@@ -90,10 +90,10 @@ Beide Bedingungen sind **beobachtbar und heute erfüllt**; die Welle ist damit s
 
 **Was ausdrücklich *nicht* Trigger ist, und warum — gemessen statt vermutet.** Diese Welle hängt an
 **keiner** der drei Wellen in der Reihe
-[welle-09](../welle-09-modul-15-konformitaet.md) → [welle-10](../welle-10-re-baseline.md) →
+[welle-09](../welle-09-modul-15-konformitaet.md) → [welle-10](welle-10-re-baseline.md) →
 [welle-11](../welle-11-traeger-aussage.md):
 
-- **[welle-10](../welle-10-re-baseline.md) (Re-Baseline) nicht**, weil die Entscheidung die beiden
+- **[welle-10](welle-10-re-baseline.md) (Re-Baseline) nicht**, weil die Entscheidung die beiden
   Modul-15-Ergänzungen der kommenden Regelwerks-Fassung **vorweggenommen statt abgewartet** hat —
   sie stehen in ihrem Kontext-Abschnitt, gegen den Regelwerks-Spiegel des Tags gelesen. Eine Welle,
   die auf einen Tausch wartet, dessen Ergebnis die tragende Entscheidung schon kennt, wartet ohne
@@ -216,7 +216,7 @@ denen dieselbe Stelle warnt.
   in der Reihe liefert etwas, das eine Festlegung dieser Entscheidung braucht — gemessen, nicht
   vermutet (§2).
 - **Blockiert:** keine geplante Welle. Sie liegt **neben** der Reihe
-  [welle-09](../welle-09-modul-15-konformitaet.md) → [welle-10](../welle-10-re-baseline.md) →
+  [welle-09](../welle-09-modul-15-konformitaet.md) → [welle-10](welle-10-re-baseline.md) →
   [welle-11](../welle-11-traeger-aussage.md), nicht hinter ihr; welche der beiden startbaren Wellen
   zuerst läuft, sagt die Roadmap als Sequenzierungs-Autorität.
 - **Innerhalb der Welle:** 094 → 095 → 096 → {098, 099}; 097 ohne Vorbedingung.

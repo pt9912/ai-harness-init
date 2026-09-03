@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-10](../welle-10-re-baseline.md) — Teil von Durchgang 2 (*Form*), abgetrennt aus
+**Welle:** [welle-10](welle-10-re-baseline.md) — Teil von Durchgang 2 (*Form*), abgetrennt aus
 [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) §1/§6, dessen Form-Diff-Protokoll
 das neue Pflichtfeld für dieses Artefakt bereits gemessen, aber nicht umgesetzt hat.
 
@@ -117,7 +117,7 @@ die Rollenfrage aus §6 ist entschieden — entweder durch eine benannte Quelle 
 Priorisierung mit `Verantwortlich:` = Implementer-Rolleninhaber als Default.
 
 **Keine Reihenfolge-Bindung innerhalb der Welle.** Dieser Slice hängt an keinem anderen Mitglied
-von [welle-10](../welle-10-re-baseline.md): [slice-148](../done/slice-148-architecture-traegt-ihr-id-schema.md)
+von [welle-10](welle-10-re-baseline.md): [slice-148](../done/slice-148-architecture-traegt-ihr-id-schema.md)
 berührt ein anderes Artefakt mit eigener Referenz-Menge, und die fortgeführte
 `harness/conventions.md`-Arbeit in [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md)
 berührt keine spec-Datei.
@@ -242,7 +242,7 @@ und gilt für dieses Artefakt nicht — hier verlangt die Ziel-Form die Spalte s
   [`BEO-007`](../observations.md) von 2× auf **3×**, Beleg `slice-147`: die Quellenfrage der
   schreibenden Rolle trifft zum dritten Mal zu, diesmal außerhalb von `.claude/commands/`. Damit ist
   die Schwelle erreicht; der **Lese-Schritt liegt bei der Closure von
-  [welle-10](../welle-10-re-baseline.md)** (dieses Repo fährt Wellen-Betrieb, Modul 6
+  [welle-10](welle-10-re-baseline.md)** (dieses Repo fährt Wellen-Betrieb, Modul 6
   §Wellen-Closure-Prozedur Schritt 3, Rollen-Zug Planner → Architect → Planner nach Modul 8). Ein
   Slice-Schnitt an dieser Stelle wäre Planner-Arbeit im Architect-Kontext und damit genau der Fall,
   den [`AGENTS.md`](../../../../AGENTS.md) §3.8 ausschließt.
@@ -253,7 +253,7 @@ und gilt für dieses Artefakt nicht — hier verlangt die Ziel-Form die Spalte s
   eingetreten** (aufgelöst, kein Folge-Slice), **eines weiter offen** (im Register,
   [`BEO-007`](../observations.md)).
 - **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice ist
-  Mitglied von [welle-10](../welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt die
+  Mitglied von [welle-10](welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt die
   Paarungen auf Closure-Schritt 3c, Modul 8 §Rollen-Sequenz für eine Welle weist sie dem
   Planner-Kontext der Welle-Closure zu.
 

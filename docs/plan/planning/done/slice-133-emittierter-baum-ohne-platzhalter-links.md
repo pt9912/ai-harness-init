@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-10](../welle-10-re-baseline.md) — sie trägt eine Closure-Bedingung, die von
+**Welle:** [welle-10](welle-10-re-baseline.md) — sie trägt eine Closure-Bedingung, die von
 dieser DoD verschieden ist (die drei Durchgänge der Ziel-Prozedur, dazu die drei Sensoren
 außerhalb der Gates), und dieser Slice ist einer ihrer Zugänge.
 
@@ -207,7 +207,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       gilt für das Reconciliation-Register: das Repo hat keinen Brownfield-Bootstrap.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt
-      Wellen-Betrieb, sie werden also von der [welle-10](../welle-10-re-baseline.md)-Closure
+      Wellen-Betrieb, sie werden also von der [welle-10](welle-10-re-baseline.md)-Closure
       geprüft, nicht hier.
 
 ## 3. Plan (vor Code)
@@ -476,7 +476,7 @@ gibt jedem seiner drei Schritte einen Ort. Das Reconciliation-Register entfällt
 Grund und dauerhaft: das Repo hat keinen Brownfield-Bootstrap.
 
 **Die drei Paarungen — nicht hier fällig.** Dieses Repo fährt Wellen-Betrieb; Anker, Folge-Slice
-und Register prüft die [welle-10](../welle-10-re-baseline.md)-Closure.
+und Register prüft die [welle-10](welle-10-re-baseline.md)-Closure.
 
 ### Was funktionierte
 
@@ -599,7 +599,7 @@ Closure-Notiz.
 **weiterhin gebrochen** — `make full-smoke; echo $?` → **2**, mit
 `full-smoke: FEHLER — make gates im emittierten Repo ist NICHT Exit 0 (LH-FA-01 Happy-Path
 verletzt)`. Das ist kein Versäumnis dieses Slice: seine DoD (1) schließt die Restmenge ausdrücklich
-aus. Es ist der Grund, warum die [welle-10](../welle-10-re-baseline.md)-Closure diesen Slice
+aus. Es ist der Grund, warum die [welle-10](welle-10-re-baseline.md)-Closure diesen Slice
 **nicht** als Beleg für den Happy Path führen darf — eingelöst wird er erst mit
 [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md) DoD (3), das den
 **gemeinsamen** Nachweis führt. Derselbe Satz steht in welle-10 §4, damit er dort gelesen wird und

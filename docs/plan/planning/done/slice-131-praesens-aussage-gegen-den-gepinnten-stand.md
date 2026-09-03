@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-10](../welle-10-re-baseline.md) — ihr Ziel-Satz ist wörtlich der Gegenstand
+**Welle:** [welle-10](welle-10-re-baseline.md) — ihr Ziel-Satz ist wörtlich der Gegenstand
 dieses Slice: *„die adoptierte Baseline steht auf `v5.12.0`, **und jede Aussage dieses Repos über
 sie ist gegen diesen Stand gemessen**"*. Ihre Closure-Bedingung ist von dieser DoD verschieden.
 
@@ -90,7 +90,7 @@ git grep -n '\.harness/baseline/v3\.5\.2/' \
 Nennung, die der Tausch **ziehen muss**, von der, die er **nicht anfassen darf**:
 
 - `grep -v slice-083` — [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) nennt den alten Tag
-  als **Tree-Operanden der Vor-Tausch-Seite** ([welle-10](../welle-10-re-baseline.md) §5).
+  als **Tree-Operanden der Vor-Tausch-Seite** ([welle-10](welle-10-re-baseline.md) §5).
 - `grep -v 'git show'` — **dieselbe Klasse, und sie ist größer als ein Slice.** Ein
   `git show <ref>:.harness/baseline/v3.5.2/…` adressiert einen **Baum in der Historie**, nicht das
   Arbeitsverzeichnis; der Pfad bleibt nach dem Tausch richtig und wird durch ein Nachziehen des
@@ -122,7 +122,7 @@ und ausdrücklich unbewacht lässt.
 ### Was dieser Slice nicht tut
 
 Er heilt **keine** Zeitdokumente (`docs/reviews/**`, `docs/plan/planning/done/**`) — sie sind die
-richtige Aussage über ihren Stand ([welle-10](../welle-10-re-baseline.md) §6) — und er fasst
+richtige Aussage über ihren Stand ([welle-10](welle-10-re-baseline.md) §6) — und er fasst
 **keine** Accepted-ADR an ([`AGENTS.md`](../../../../AGENTS.md) §3.4). Er schreibt auch keine
 Verweis-Regel: ob die lebende Hälfte von
 [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) eine eigene Entscheidung braucht, ist
@@ -165,7 +165,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       hat keinen Brownfield-Bootstrap.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [x] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die
-      [welle-10](../welle-10-re-baseline.md)-Closure, nicht dieser Slice — das Repo fährt
+      [welle-10](welle-10-re-baseline.md)-Closure, nicht dieser Slice — das Repo fährt
       Wellen-Betrieb.
 
 ## 3. Plan (vor Code)
@@ -180,7 +180,7 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | [slice-090](../open/slice-090-freshness-audit-im-ziel.md), [slice-091](../open/slice-091-vendored-baum-ohne-anspruch.md), [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md), [slice-112](../open/slice-112-replay-schritt-hat-keinen-referenten.md) | update | je eine bis zwei Präsens-Aussagen über den vendored Baum; zwei von ihnen bewegen sich nachweislich (§1) |
 | [welle-09](../welle-09-modul-15-konformitaet.md), [welle-11](../welle-11-traeger-aussage.md) | update | lebende Welle-Pläne; `welle-11` trägt allein **5** der 11 Nennungen und die größte bewegte Zahl (7 → 11) |
-| [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) | **unverändert** | Tree-Operand der Vor-Tausch-Seite; das Ziehen zerstörte die Messung ([welle-10](../welle-10-re-baseline.md) §5) |
+| [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) | **unverändert** | Tree-Operand der Vor-Tausch-Seite; das Ziehen zerstörte die Messung ([welle-10](welle-10-re-baseline.md) §5) |
 | `docs/plan/adr/**` | **unverändert** | Accepted und damit unveränderlich ([`AGENTS.md`](../../../../AGENTS.md) §3.4); die Verweis-Form dort regelt [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 1, und sie heilt den Bestand nicht |
 | `docs/reviews/**`, `docs/plan/planning/done/**` | **unverändert** | Zeitdokumente — die richtige Aussage über ihren Stand |
 | [`harness/conventions.md`](../../../../harness/conventions.md), [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | **unverändert** | Architect-Eigentum bzw. Rang 2; ihre Nennungen zieht [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md), nicht dieser Slice |
@@ -325,7 +325,7 @@ lebende Artefakt offen gelassene Hälfte wird gefüllt. Die Punkte (1) und (2) f
 - **Risiken aus §6:** vier benannt, vier mit genau einem Ausgang — **drei entfallen**, **eines
   weiter offen** (im Register, [`BEO-009`](../observations.md)). Keines eingetreten.
 - **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice ist
-  Mitglied von [welle-10](../welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt die
+  Mitglied von [welle-10](welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt die
   Paarungen auf Closure-Schritt 3c, Modul 8 §Rollen-Sequenz für eine Welle weist sie dem
   Planner-Kontext der Welle-Closure zu.
 

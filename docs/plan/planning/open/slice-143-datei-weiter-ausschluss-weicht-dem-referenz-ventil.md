@@ -13,7 +13,7 @@ Abschrift seiner eigenen DoD. **Auslöser reaktiv oder gewollt?** Reaktiv: eine 
 Doku-Gate ist gemessen falsch, und auf ihr steht eine Senkung, die breiter ist als nötig (§1).
 **Der Gegenstand stammt nicht aus dem Re-Baseline-Delta**, obwohl er an ihm sichtbar wurde: die
 Fähigkeit, um die es geht, liegt seit d-check `[0.49.0]` vor und ist von jedem Baseline-Stand
-unabhängig. Er belegt darum kein Closure-Kriterium von [welle-10](../welle-10-re-baseline.md) §3.
+unabhängig. Er belegt darum kein Closure-Kriterium von [welle-10](../done/welle-10-re-baseline.md) §3.
 Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das Verzeichnis.

@@ -25,11 +25,11 @@ Entscheidung, sondern Schweigen.
 
 **Die Mess-Grundlage ist zu benennen, weil der Pfad sie nicht mehr nennt.**
 `modul-15-observability.md` liegt `<tag>`-gescopt im vendored Baum; nach
-[welle-10](welle-10-re-baseline.md) löst derselbe Pfad auf einen Text auf, der sich in **zwei der
+[welle-10](done/welle-10-re-baseline.md) löst derselbe Pfad auf einen Text auf, der sich in **zwei der
 vier** Regelblöcke von der Fassung unterscheidet, gegen die diese Welle geschnitten wurde —
 §Span-/Audit-Attribut-Regeln und §Token-Attributions-Regeln geändert, §Cache-Counter-Regeln und
 §Doku-Konsistenz-Drift-Regeln byte-gleich (Kommando in
-[welle-10](welle-10-re-baseline.md) §2). **Maßgeblich ist der Bestand, nicht der Schnitt-Tag:**
+[welle-10](done/welle-10-re-baseline.md) §2). **Maßgeblich ist der Bestand, nicht der Schnitt-Tag:**
 die vier Blöcke tragen in beiden Fassungen dieselben Überschriften in derselben Reihenfolge, und
 **keine Zelle der Matrix unten bewegt sich durch den Tausch** — die entfallene Rollen-Aufzählung
 des zweiten Blocks zitiert kein lebendes Artefakt dieses Repos, und die neue Regel des ersten

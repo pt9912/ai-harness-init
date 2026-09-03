@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-10](../welle-10-re-baseline.md).
+**Welle:** [welle-10](welle-10-re-baseline.md).
 
 **Bezug:** [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage),
 [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
@@ -190,7 +190,7 @@ keiner der beiden am anderen wartet. Für keines der beiden neuen Artefakte nenn
 Quelle eine schreibende Rolle — anders als bei `harness/conventions.md`/`AGENTS.md` grenzt
 [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) die Architect-Zuordnung
 ausdrücklich ein; die beiden neuen Slices tragen die Lücke als eigenes Risiko statt einer
-geratenen `Verantwortlich:`-Setzung. Beide sind [welle-10](../welle-10-re-baseline.md)-Mitglieder
+geratenen `Verantwortlich:`-Setzung. Beide sind [welle-10](welle-10-re-baseline.md)-Mitglieder
 (§4 dort) — Durchgang 2 ist über die Singleton-Artefakte **nicht** eingefroren (welle-10 §3) und
 bindet neue Elemente derselben Menge weiter.
 
@@ -265,7 +265,7 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   Setzung 2). **Die drei DoD-Punkte oben decken Singleton-Form, das Pflichtfeld und die
   Append-only-Behandlung wiederkehrender Vorlagen — eine neue Artefakt-Klasse mit eigener
   Lese-Pflicht fällt zwischen sie.** Dieser Durchgang **entscheidet** darum nur, ob das Register
-  adoptiert wird; verlangt es eigene Arbeit, wird es nach [welle-10](../welle-10-re-baseline.md)
+  adoptiert wird; verlangt es eigene Arbeit, wird es nach [welle-10](welle-10-re-baseline.md)
   §6 ein Slice in `open/`, keine Fracht dieses Slice. **Der Anlass ist gemessen und liegt in
   diesem Repo:** [slice-080](../done/slice-080-verweis-ueberlebt-tagwechsel.md) §7 hält zwei
   Fälle fest, in denen eine Beobachtung über ein **lebendes** Artefakt nur in einer
@@ -291,7 +291,7 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   abzählbar — zwei Kennungen, ein Artefakt, eine Rolle —, und der dritte Risiko-Ausgang trägt
   Beobachtungen, keine Arbeitsposten (dieselbe Grenze führt [`BEO-002`](../observations.md)). Die
   **Klasse** dahinter zählt getrennt: [`BEO-013`](../observations.md), 1×, Beleg `slice-083`. Der
-  Folge-Slice ist Mitglied von [welle-10](../welle-10-re-baseline.md), weil beide Kennungen in
+  Folge-Slice ist Mitglied von [welle-10](welle-10-re-baseline.md), weil beide Kennungen in
   deren eingefrorener Bezugsmenge liegen und die Belege aus
   [slice-082](../done/slice-082-adaptions-durchgang.md) §9 gegen den adoptierten Stand falsch sind
   (Begründung dort §4, nicht hier).
@@ -360,7 +360,7 @@ hatten das Feld organisch, der neue Eintrag bringt es beim Entstehen mit).
   dann die Arbeit. (2) Der Form-Durchgang hat auf der **Adaptions**-Achse gefunden, was nach dem
   Schnitt der Welle Durchgang 1 gehörte: zwei Einträge stehen am adoptierten Stand wörtlich in der
   Baseline und tragen aus [slice-082](../done/slice-082-adaptions-durchgang.md) §9 trotzdem *bleibt
-  gültig* bzw. *nicht eingetreten*. [welle-10](../welle-10-re-baseline.md) §4 trennt die zwei
+  gültig* bzw. *nicht eingetreten*. [welle-10](welle-10-re-baseline.md) §4 trennt die zwei
   Durchgänge als *„zwei Fragen, zwei Review-Sitzungen"* — sie sind trennbar in der Frage, nicht im
   Fund. (3) Der Zuschnitt hat **einen** schweren Posten angenommen und drei gefunden; die
   Rückführung `in-progress` → `next` griff zweimal, und der zweite Re-Cut hat den Rest nicht
@@ -396,7 +396,7 @@ hatten das Feld organisch, der neue Eintrag bringt es beim Entstehen mit).
 - **Folge-Slices:** neu aus dieser Closure ist
   [slice-150](../done/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md) — *Drei
   Adaptions-Einträge tragen den adoptierten Stand*, Datei in `open/`, Mitglied von
-  [welle-10](../welle-10-re-baseline.md). Aus dem zweiten Re-Cut (§4) liegen daneben
+  [welle-10](welle-10-re-baseline.md). Aus dem zweiten Re-Cut (§4) liegen daneben
   [slice-147](../done/slice-147-spezifikation-traegt-ihr-id-schema.md) und
   [slice-148](../done/slice-148-architecture-traegt-ihr-id-schema.md) in `open/`; sie sind nicht
   neu und bleiben unverändert.
@@ -413,7 +413,7 @@ hatten das Feld organisch, der neue Eintrag bringt es beim Entstehen mit).
   keine Beobachtung. Die **Klasse** hinter ihnen hat den Register-Weg genommen
   ([`BEO-013`](../observations.md)).
 - **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice
-  ist Mitglied von [welle-10](../welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt
+  ist Mitglied von [welle-10](welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt
   die Paarungen (Anker · Folge-Slice · Register) auf Closure-Schritt 3c — **nach** dem `git mv` der
   Welle-Datei, weil sie die dort erst entstehenden Einträge prüfen —, und Modul 8 §Rollen-Sequenz
   für eine Welle weist denselben Schritt dem Planner-Kontext der Welle-Closure zu. Die hier fällige

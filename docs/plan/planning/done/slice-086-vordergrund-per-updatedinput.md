@@ -159,7 +159,7 @@ Das Zeitdokument aus DoD (2) trägt Kommando, Datum und Ergebnis.
    [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md). Dieser Slice füllt die Zelle nicht
    und leert sie nicht; er entscheidet später, ob ihr Wert auf *Sensor* oder auf *ADR-Verdikt*
    wechselt, und beide sind für jene Welle zulässig. **Auch nicht in
-   [welle-10](../welle-10-re-baseline.md):** deren Closure sind die drei Durchgänge der
+   [welle-10](welle-10-re-baseline.md):** deren Closure sind die drei Durchgänge der
    Migrations-Prozedur und der Pin; dieser Slice trägt zu keinem davon bei, und er hängt nicht am
    getauschten Baum — er nennt den vendored Pfad an keiner Stelle und wird von jener Welle damit
    nicht blockiert.

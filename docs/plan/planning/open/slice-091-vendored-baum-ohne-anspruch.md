@@ -131,7 +131,7 @@ Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · Doku-Upda
 ## 4. Trigger
 
 **`open` → `next`:** [welle-11](../welle-11-traeger-aussage.md) ist eingetreten, also liegt
-[welle-10](../welle-10-re-baseline.md) in `done/` — und damit auch slice-087, der dieselbe
+[welle-10](../done/welle-10-re-baseline.md) in `done/` — und damit auch slice-087, der dieselbe
 Fehlerklasse in den **lebenden** Doku-Tischen räumt. **`next` → `in-progress`:** WIP-Limit frei.
 
 **Rückführungen, vorab benannt.** `in-progress` → `next`, wenn die Messung nach dem Baum-Tausch
@@ -149,7 +149,7 @@ Closure-Notiz in §7 mit Steering-Loop-Eintrag geschrieben.
 
 - **Der Baum wird getauscht, die Anspruchs-Menge wandert mit.** Deshalb ist die Zeile eine
   Eigenschaft (DoD 2) und deshalb liegt der Slice hinter
-  [welle-10](../welle-10-re-baseline.md). Die **Zahl fünf** in §1 ist ein Ist-Stand vom
+  [welle-10](../done/welle-10-re-baseline.md). Die **Zahl fünf** in §1 ist ein Ist-Stand vom
   2026-08-22, **kein Erwartungswert** — sie bewegt sich mit dem Baum, ohne dass am Gegenstand
   etwas bricht.
 - **Die Zeile deckt den Fall nicht, in dem der Adopter die Vorlage schon kopiert hat.** Sie

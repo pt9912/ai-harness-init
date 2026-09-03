@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-10](../welle-10-re-baseline.md) — fünfter Nachzügler neben `slice-130` bis
+**Welle:** [welle-10](welle-10-re-baseline.md) — fünfter Nachzügler neben `slice-130` bis
 `slice-133`. Die Zugehörigkeit ist **gemessen, nicht gewählt**, und sie fällt nach derselben Probe,
 die [slice-134](../open/slice-134-adr-index-traegt-die-ziel-form.md) für den ADR-Index ins Gegenteil
 führte: *stammt der Befund aus dem Re-Baseline-Delta?* Dort nein, hier ja — die abgelöste Vorlage
@@ -311,7 +311,7 @@ Aussagen-Berührung steht hier gar nicht.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | refactor | der Gegenstand: sieben Abschnitte auf die Ziel-Form, Kopf inklusive |
-| [welle-09](../welle-09-modul-15-konformitaet.md) · [welle-10](../welle-10-re-baseline.md) · [welle-11](../welle-11-traeger-aussage.md) · [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) | prüfen, ggf. update | Ziel für Ausgang (b) des Verbleibs-Protokolls: was die Roadmap heute allein trägt und in die Welle-Datei gehört, landet dort — **inhaltlich nur, was heute nirgends steht** |
+| [welle-09](../welle-09-modul-15-konformitaet.md) · [welle-10](welle-10-re-baseline.md) · [welle-11](../welle-11-traeger-aussage.md) · [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) | prüfen, ggf. update | Ziel für Ausgang (b) des Verbleibs-Protokolls: was die Roadmap heute allein trägt und in die Welle-Datei gehört, landet dort — **inhaltlich nur, was heute nirgends steht** |
 | [slice-125](../open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) | update | seine §1-Messung nennt `roadmap.md` Zeile 13 und die Sektion `Aktuelle Welle`; nach diesem Slice zeigt sie ins Leere. Planner-Artefakt, derselbe Rollen-Lauf |
 
 **Nicht in dieser Liste, und das ist gemessen, nicht vergessen.** `Aktuelle Welle` steht an sieben
@@ -421,7 +421,7 @@ dasteht.
   [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) hat sie nicht gezogen. —
   **Ausgang:** **weiter offen → Beobachtungs-Register**: [`BEO-009`](../observations.md) Zähler +1
   mit Beleg `slice-136`. Die Klasse steht dort über der Schwelle, ihr Lese-Schritt liegt bei der
-  Closure von [welle-10](../welle-10-re-baseline.md).
+  Closure von [welle-10](welle-10-re-baseline.md).
 - **Die Kürzung erzeugt einen `docs-check`-Befund, weil ein Anker verschwindet.** Die Roadmap
   trägt Anker-Links in großer Zahl; wer Absätze entfernt, entfernt Linkziele nicht, aber
   möglicherweise Linkquellen, auf die andere Dateien zeigen. — **Ausgang:** **eingetreten, im

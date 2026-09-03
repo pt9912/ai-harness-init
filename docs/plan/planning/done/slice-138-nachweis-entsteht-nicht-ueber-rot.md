@@ -12,7 +12,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 geführt.** Das erste — *stammt der Befund aus dem Re-Baseline-Delta?* — lautet **nein**, und
 zwar auf beiden Seiten des Mechanismus: der Träger ist älter als der Tausch
 (`git log --diff-filter=A --format='%ad' --date=short -- harness/tools/record-gates.sh` →
-**2026-06-14**, während [welle-10](../welle-10-re-baseline.md) am 2026-08-09 aufgesetzt wurde),
+**2026-06-14**, während [welle-10](welle-10-re-baseline.md) am 2026-08-09 aufgesetzt wurde),
 und die Regelwerk-Zeile, die ihn benennt, ist über den Tausch hinweg unverändert
 (`diff <(git show b902b60^:.harness/baseline/v3.5.2/regelwerk/grundlagen-durchsetzungsschicht.md) .harness/baseline/v5.12.0/regelwerk/grundlagen-durchsetzungsschicht.md | grep -c 'record-gates'`
 → **0**). Das zweite — *belegt der Slice ein Closure-Kriterium von welle-10 §3, und braucht die
@@ -306,7 +306,7 @@ Ist-Stand. Eine **fachliche** Vorbedingung hat dieser Slice nicht.
 
 **Priorität — er geht vor
 [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md), und das ist kein Vorzug,
-sondern eine Reihung.** [welle-10](../welle-10-re-baseline.md) §4 führt slice-130 als nächsten
+sondern eine Reihung.** [welle-10](welle-10-re-baseline.md) §4 führt slice-130 als nächsten
 Posten. Drei Gründe, jeder nachprüfbar:
 
 1. **Der Befund feuert in genau der Phase, in der das Repo steht.** Solange ein Gate rot ist,
@@ -325,7 +325,7 @@ Posten. Drei Gründe, jeder nachprüfbar:
 
 **Kein Konflikt im Gegenstand:** dieser Slice fasst `Makefile`, `harness/tools/` und `test/` an,
 slice-130 `internal/emit/`. Eine Kante gibt es doch, und sie ist klein und zeigt in dieselbe
-Richtung: [welle-10](../welle-10-re-baseline.md) §3 verlangt `make mutate` mit der
+Richtung: [welle-10](welle-10-re-baseline.md) §3 verlangt `make mutate` mit der
 Vollständigkeits-Zeile über **allen** Fall-Dateien — der neue Fall aus DoD (3) gehört dann dazu,
 und ihn vor dieser Closure in den Bestand zu legen ist billiger, als ihn danach nachzureichen.
 
@@ -578,7 +578,7 @@ plus den Grün-Bezug, den der Treiber sonst als Vorlauf herstellt. **Was er nich
 gehört an dieselbe Stelle: die Isolations-Fingerabdruck-Prüfung mitten im Lauf, die
 Doppelkopf-Erkennung als **Lauf** statt als Lektüre, und die Vollständigkeits-Bilanz über **alle**
 Fall-Dateien. Die dritte ist ohnehin ein Wellen-Kriterium
-([welle-10](../welle-10-re-baseline.md) §3).
+([welle-10](welle-10-re-baseline.md) §3).
 
 **Träger des offenen Laufs ist
 [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md)** — der Folge-Slice von

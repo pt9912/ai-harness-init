@@ -11,7 +11,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 funktionierte · was anders lief. Mit ID-Bezug, wo es einen gibt.
 
 **15 Mitglieder, alle in `done/`** — Reihenfolge wie im Plan
-([../welle-10-re-baseline.md](../welle-10-re-baseline.md) §4):
+([welle-10-re-baseline.md](welle-10-re-baseline.md) §4):
 
 - **Entscheidung und Vollzug:** [slice-080](slice-080-verweis-ueberlebt-tagwechsel.md)
   (ein Verweis in die Baseline überlebt den Tag-Wechsel, Ziel-Form aus
@@ -55,7 +55,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 
 - **Das Closure-Kriterium hing an den Durchgängen, nicht am Pin.** *„Der Pin
   ist eine Zeile; die Durchgänge sind der Gegenstand"*
-  ([../welle-10-re-baseline.md](../welle-10-re-baseline.md) §3) hat die Welle
+  ([welle-10-re-baseline.md](welle-10-re-baseline.md) §3) hat die Welle
   davor bewahrt, mit einem gesetzten `BASELINE_TAG` als fertig zu gelten.
 - **Die eingefrorene Bezugsmenge machte Durchgang 1 abschließbar.** Ein
   Abdeckungs-Kriterium über `grep -c '^### MR-' harness/conventions.md` wäre per
@@ -268,5 +268,13 @@ Sensor-Läufe, je mit dem Baum, über dem sie liefen:
   [`../observations.md`](../observations.md), und jede Registerzeile trägt
   mindestens einen Beleg.
 
-**Nach dem Closure-Move** (nachgetragen im Link-Reconciliation-Commit, weil der
-Beleg erst dort entsteht): `make docs-check` → `<wird nachgetragen>`.
+**Nach dem Closure-Move und dem Verweis-Nachzug:** `make docs-check` → Exit **0**,
+`d-check: 493 Datei(en) geprüft, 0 Befund(e)`. Unmittelbar nach dem reinen Move,
+vor dem Nachzug, waren es **221** Befunde, alle `target-missing` — das ist der
+Umfang, den der Nachzug schließt, und zugleich der Beleg, dass das dritte
+`ignore-refs`-Paar aus
+[`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md)
+trägt: der eine Befund in der eingefrorenen
+[`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md), den
+[slice-154](slice-154-eingefrorene-adr-zeigt-auf-den-wellenplan.md) §7 ohne die
+Entscheidung gemessen hat, steht in keinem der beiden Läufe.

@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-10](../welle-10-re-baseline.md).
+**Welle:** [welle-10](welle-10-re-baseline.md).
 
 **Bezug:** [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
 [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren),
@@ -163,7 +163,7 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
       [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
       führt als **Messmethode** wörtlich den Smoke-Test, und der läuft ausdrücklich **nicht** in
       `make gates`. **Die Menge der Sensoren ist keine Aufzählung nach Gefühl, sondern gegen zwei
-      Quellen gezählt:** [welle-10](../welle-10-re-baseline.md) §3 führt drei Ziele außerhalb der
+      Quellen gezählt:** [welle-10](welle-10-re-baseline.md) §3 führt drei Ziele außerhalb der
       Gates, und dieselben drei bleiben im Makefile übrig —
       `grep -nE '^[a-z][a-z0-9-]*:.*NICHT in gates' Makefile` → am 2026-08-29 **12** Zeilen, davon
       weisen sich **9** selbst als etwas anderes als ein Sensor aus (dasselbe Kommando mit
@@ -194,7 +194,7 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
          sind sie zwei Slices derselben Welle: **7** an
          [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md), **3** an
          [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md), aufgeteilt je
-         Befund an seiner Vorlagen-Zeile. [welle-10](../welle-10-re-baseline.md) §3 führt beide
+         Befund an seiner Vorlagen-Zeile. [welle-10](welle-10-re-baseline.md) §3 führt beide
          Läufe im Closure-Kriterium — die Welle schließt nicht über diesem Rot.
       3. **Die Modul-7-Pflicht von `CO-004` ist offen und benannt.** Die Gate-Ausgabe nennt die
          Kennung nicht (`git grep -c 'CO-004' -- test/ .d-check.yml Makefile` → kein Treffer); die
@@ -229,9 +229,9 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
          **keinen** ihrer Fälle — sie schweigt, aber sie schweigt **laut** (der Treiber meldet die
          Unvollständigkeit in jedem Lauf, [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
          ist damit gewahrt). Der Preis der Reihenfolge steht in
-         [welle-10](../welle-10-re-baseline.md) §4. **Dass der Sensor mit den beiden Slices
+         [welle-10](welle-10-re-baseline.md) §4. **Dass der Sensor mit den beiden Slices
          zurückkehrt, ist Vorhersage, nicht Beleg**; geprüft wird sie im Closure-Kriterium der
-         Welle, das `make mutate` bereits führt ([welle-10](../welle-10-re-baseline.md) §3). Bleibt
+         Welle, das `make mutate` bereits führt ([welle-10](welle-10-re-baseline.md) §3). Bleibt
          er danach rot, ist das ein **neuer** Befund mit eigenem Ausgang und kein Nachziehen
          dieser Zeile.
 
@@ -281,7 +281,7 @@ mit Steering-Loop-Lerneintrag geschrieben. **Nicht** *„`make gates` grün"*: d
 zwei Slices derselben Welle tragen. Ein Closure-Kriterium, das hier Grün verlangte, verlangte etwas, das die DoD ausdrücklich
 verwirft — und der Abschluss richtete sich danach, welche der beiden Stellen zuerst gelesen wird.
 Das Grün ist Kriterium der **Welle**, nicht dieses Slice
-([welle-10](../welle-10-re-baseline.md) §3).
+([welle-10](welle-10-re-baseline.md) §3).
 
 ## 6. Risiken und offene Punkte
 
@@ -377,7 +377,7 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
   [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3).
   **Dieses Risiko stand vor dem Lauf nicht hier** — der Plan hat den Baum als Verweis-Ziel und als
   Test-Eingabe inventarisiert, nicht als Emissions-Eingabe; dieselbe Lücke, die
-  [welle-10](../welle-10-re-baseline.md) §4 für die drei Nachzügler benennt, eine Ebene weiter.
+  [welle-10](welle-10-re-baseline.md) §4 für die drei Nachzügler benennt, eine Ebene weiter.
   — **Ausgang:** eingetreten → **kein Carveout, sondern Reparatur** (eine Rang-1-Zusage wird nicht
   ausgenommen; der Trichter aus Modul 7 §Werkzeug-Wahl führt bei dieser Häufung nicht auf
   Carveout — Begründung in
@@ -402,7 +402,7 @@ Das Grün ist Kriterium der **Welle**, nicht dieses Slice
   fährt. — **Ausgang:** eingetreten → §2 DoD (4) Sensor 4, zugeordnet
   [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) und
   [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md); die Rückkehr prüft
-  [welle-10](../welle-10-re-baseline.md) §3, den Preis der Reihenfolge benennt dort §4.
+  [welle-10](welle-10-re-baseline.md) §3, den Preis der Reihenfolge benennt dort §4.
 - **Ein Verweis, der bewusst nicht gezogen wird, hat am Doku-Gate keinen Ort.** Der Beleg in
   [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
   Punkt 2 ist nur über den abgelösten Stand wahr und steht unter der Append-only-Regel des
@@ -621,7 +621,7 @@ Frage ohnehin gestellt wird.
 Sensor einen zweiten mitreißt — `make mutate` hat keine eigene Ursache, sein Grün-Vorlauf fährt die
 Modi, die die Sensoren 1 und 2 rot halten — ist in dieser Kette bereits eingebaut: §2 DoD (4) zählt
 vier Sensoren statt einen, §6 führt den Folgefehler mit Ausgang, und
-[welle-10](../welle-10-re-baseline.md) §3 prüft die Rückkehr, §4 benennt den Preis. Es als Lehre zu
+[welle-10](welle-10-re-baseline.md) §3 prüft die Rückkehr, §4 benennt den Preis. Es als Lehre zu
 notieren, hieße einen geschlossenen Kreis ein zweites Mal aufzuschreiben.
 
 ### Risiken aus §6 — jedes mit genau einem Ausgang
@@ -696,7 +696,7 @@ In diesem Lauf gefahren, alle über `make`: `baseline-verify` (grün) · `docs-c
 `mutate` (`0 ok, 7 Befund(e)`). **`make gates` ist rot, und das ist
 nach §5 kein Closure-Hindernis:** der Slice schließt über zwei extensional geschlossene Carveouts
 mit Folge-Slice und über einem Rot im emittierten Baum, das zwei Slices derselben Welle tragen. Das
-Grün ist Kriterium der **Welle** ([welle-10](../welle-10-re-baseline.md) §3), nicht dieses Slice.
+Grün ist Kriterium der **Welle** ([welle-10](welle-10-re-baseline.md) §3), nicht dieses Slice.
 **Kein `git push`.**
 
 ## 8. Sub-Area-Modus-Begründung

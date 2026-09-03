@@ -9,7 +9,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 (`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht): eine beobachtbare
 Closure-Bedingung, die mehr beobachtet als die DoD dieses Slice. Es gibt keine —
 der Slice **blockiert** die Closure von
-[welle-10](../welle-10-re-baseline.md), gehört ihr aber nicht an: sein
+[welle-10](welle-10-re-baseline.md), gehört ihr aber nicht an: sein
 Gegenstand ist eine Gate-Entscheidung, kein Durchgang der Re-Baseline-Prozedur.
 
 **Bezug:** [ADR-0018](../../adr/0018-ziel-fassung-regiert-die-migration.md)
@@ -40,7 +40,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice — Schnitt nach Lieferwert, nicht nach Schichten; jeder Slice
 ist einzeln lieferbar.
 
-Die Closure von [welle-10](../welle-10-re-baseline.md) verlangt den `git mv`
+Die Closure von [welle-10](welle-10-re-baseline.md) verlangt den `git mv`
 der Welle-Plan-Datei nach `done/` (Baseline-Regelwerk `modul-06-roadmap.md`
 §Wellen-Closure-Prozedur, Schritt 3 — der Zustand ist die
 Verzeichnis-Position). Der Move macht **eine** Adresse tot, und sie steht in
@@ -97,7 +97,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       ([`docs/plan/adr/README.md`](../../adr/README.md)) trägt die Zeile.
 - [x] **(2) Der Befund ist weg, und die Entscheidung ist rot gesehen**
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6): der `git mv` von
-      [welle-10-re-baseline.md](../welle-10-re-baseline.md) nach `done/` wird
+      [welle-10-re-baseline.md](welle-10-re-baseline.md) nach `done/` wird
       probeweise vollzogen, `make docs-check` meldet ohne die Entscheidung
       `codepath-missing` auf Zeile **202** von
       [ADR-0018](../../adr/0018-ziel-fassung-regiert-die-migration.md) und mit
@@ -115,7 +115,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       `slice-154`); die drei gemessenen Instanzen gehören in die Stand-Spalte.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [x] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste
-      Welle-Closure — die von [welle-10](../welle-10-re-baseline.md), die dieser
+      Welle-Closure — die von [welle-10](welle-10-re-baseline.md), die dieser
       Slice freigibt.
 
 ## 3. Plan (vor Code)
@@ -150,7 +150,7 @@ technische Vorbedingung — der Befund ist gemessen und reproduzierbar (§1).
   Slice in *Entscheidung* und *Anwendung*.
 - `in-progress` → `open` (blockiert — Carveout?): wenn keine der drei Optionen
   trägt. **Ein Carveout ist hier kein Ausweg** —
-  [welle-10](../welle-10-re-baseline.md) §3 verlangt `make gates` grün *„ohne
+  [welle-10](welle-10-re-baseline.md) §3 verlangt `make gates` grün *„ohne
   offenen Carveout auf einem Gate dieser Welle"*, und `docs-check` ist eines
   ([`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md)
   lag darauf).
@@ -163,7 +163,7 @@ Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
 **Erstens:** die neue ADR trägt `**Status:** Accepted` und steht im ADR-Index.
 **Zweitens:** über einem Baum, in dem
-[welle-10-re-baseline.md](../welle-10-re-baseline.md) in `done/` liegt, meldet
+[welle-10-re-baseline.md](welle-10-re-baseline.md) in `done/` liegt, meldet
 `make docs-check` **0 Befunde** — und ohne die Entscheidung meldet derselbe Lauf
 `codepath-missing` (beide Ausgaben im Closure-Eintrag zitiert). Dazu die
 Closure-Notiz mit Steering-Loop-Lerneintrag und je Risiko aus §6 genau ein

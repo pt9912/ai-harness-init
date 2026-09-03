@@ -233,7 +233,7 @@ auditierbar, sie ist nur nicht deklariert.
 - `in-progress` → `next`: der Lauf stellt fest, dass die Entscheidung **beide** Ausgänge braucht
   und Ausgang (2) einen eigenen Zuschnitt hat — dann Re-Slice, nicht Ausdehnung.
 - `in-progress` → `open`: der Architect entscheidet, dass die Frage erst nach der Re-Baseline
-  ([welle-10](../welle-10-re-baseline.md)) zu beantworten ist, weil die Ziel-Fassung des Moduls
+  ([welle-10](../done/welle-10-re-baseline.md)) zu beantworten ist, weil die Ziel-Fassung des Moduls
   den Schritt anders schreibt. Dann ist der Auflösungs-Trigger *welle-10 liegt in `done/`* und
   gehört hierher, nicht in ein Memo.
 

@@ -17,7 +17,7 @@ Re-Baseline-Delta?* — lautet **ja**: die abgelöste Fassung kennt den Gegensta
 **20**; beide Beträge wandern mit dem Kurs-Stand und sind keine Erwartungswerte,
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2). Das zweite — *belegt der Slice ein Closure-Kriterium von
-[welle-10](../welle-10-re-baseline.md) §3, und braucht die Welle ihn?* — lautet **nein**, und es
+[welle-10](welle-10-re-baseline.md) §3, und braucht die Welle ihn?* — lautet **nein**, und es
 entscheidet. Keiner der drei Durchgänge fängt ihn: Durchgang 1 zählt Einträge des
 Adaptions-Blocks, und die Übernahme eines Baseline-**Defaults** erzeugt keinen
 ([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage), §1); Durchgang 2 hält
@@ -503,7 +503,7 @@ Registers in den drei Anweisungssätzen unter
   Begründung und Messung), dreimal *weiter offen* (je auf eine Registerzeile). Kein *eingetreten*,
   kein Carveout.
 - **Drei Paarungen (Anker · Folge-Slice · Register):** prüft die nächste Welle-Closure. Dieses Repo
-  fährt Wellen-Betrieb ([welle-10](../welle-10-re-baseline.md) liegt in *Aktuelle Welle*), und die
+  fährt Wellen-Betrieb ([welle-10](welle-10-re-baseline.md) liegt in *Aktuelle Welle*), und die
   liest auch Slices ohne Wellen-Zugehörigkeit. Ihr Lese-Schritt findet `BEO-001` bereits
   verkörpert vor — die Zeile bleibt mit Vermerk stehen, sie wird nicht gestrichen.
 - **Verifikation:** `make gates` → **Exit 0**. `make docs-check` über die Kette: **473**/0 (vor dem

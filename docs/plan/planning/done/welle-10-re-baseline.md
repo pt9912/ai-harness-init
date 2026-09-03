@@ -36,7 +36,7 @@ Ableitung aus einer Messung, sondern derselbe Akt wie die Adoption selbst; eine 
 kann ihn nicht binden, sondern nur **belegpflichtig** machen. Der Preis einer Setzung ist deshalb
 kein Defekt, sondern ein Nachweis je Schritt — Aufpreis, berührte tragende Quellen, und ob eine
 Messung dieses Plans dabei bricht. Adressierung und Begründung stehen in
-[ADR-0018](../adr/0018-ziel-fassung-regiert-die-migration.md) §*Wer den Zielstand bewegt*; die
+[ADR-0018](../../adr/0018-ziel-fassung-regiert-die-migration.md) §*Wer den Zielstand bewegt*; die
 Nachweise der Setzungen führt dieselbe ADR (§*Der Zielstand ist … gezogen*). Dieser Plan doppelt
 beides nicht — er trägt, was aus dem Zielstand für den Schnitt folgt.
 
@@ -45,7 +45,7 @@ beides nicht — er trägt, was aus dem Zielstand für den Schnitt folgt.
 **paraphrasiert** statt quelltreu wieder und verliert dabei die Exklusivität (*„genau die
 Artefaktklasse"*) und die Pointe des Abschnitts (*„meistens kein Skill"*); `v5.3.1` stellt den
 Quelltext her. Getroffen sind wir, weil
-[ADR-0015](../adr/0015-rollen-eigentum-an-norm-artefakten.md) ihr Rollen-Eigentum aus genau
+[ADR-0015](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) ihr Rollen-Eigentum aus genau
 diesem Modul herleitet — die Kurs-Regel dahinter lautet *Didaktik weglassen, Operatives quelltreu
 übernehmen, nie paraphrasieren.* **Der Zielstand trägt die Reparatur weiter**, der gepinnte Baum
 nicht: `for tag in v5.12.0 v3.5.2; do git grep -c 'genau die Artefaktklasse' $tag -- lab/regelwerk/modul-08-agentenrollen.md; done`
@@ -59,13 +59,13 @@ die Dateizahl bleibt **26 + 25 = 51**, auch am Zielstand
 (`for d in lab/regelwerk lab/templates; do git ls-tree -r --name-only v5.12.0 -- $d | wc -l; done`
 → **26 25**). **Keine Messung dieses Plans bricht bis zum Zielstand** — nachgewiesen an ihren zwei
 Trägern, nicht durch Wiederholung: `modul-07-carveouts.md`, Träger der Zitat-Probe aus §6 von
-[slice-081](done/slice-081-baum-tauschen-pin-ziehen.md), ist zwischen `v5.3.0` und `v5.12.0`
+[slice-081](slice-081-baum-tauschen-pin-ziehen.md), ist zwischen `v5.3.0` und `v5.12.0`
 byte-gleich, `modul-15-observability.md`, Träger der Kanten-Messung aus §2, zwischen `v5.3.1`
 und `v5.12.0` (`git diff --name-only v5.3.0 v5.12.0 -- lab/regelwerk/modul-07-carveouts.md`
 und `git diff --name-only v5.3.1 v5.12.0 -- lab/regelwerk/modul-15-observability.md` → beide
 leer). `modul-08-agentenrollen.md` wächst dagegen weiter — **6** Hunks von `v5.3.1` zum Zielstand
 (`git diff v5.3.1 v5.12.0 -- lab/regelwerk/modul-08-agentenrollen.md | grep -c '^@@'`); was davon
-den Adaptions-Durchgang trifft, entscheidet [slice-082](done/slice-082-adaptions-durchgang.md).
+den Adaptions-Durchgang trifft, entscheidet [slice-082](slice-082-adaptions-durchgang.md).
 
 Der Sprung ist **strukturell, nicht additiv**. Zwischen gepinnt und Ziel liegen **20** Releases mit
 zwei Major-Bumps über drei Major-Serien
@@ -83,10 +83,10 @@ je ein `comm` über die Basenamen beider Tags, `-23` für die entfallenen, `-13`
 
 Damit verschwinden Pfade, auf die dieses Repo aus **lebenden** Artefakten zeigt. **Ihre Menge
 wandert mit jedem Schnitt und ist kein Erwartungswert**
-([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2): am 2026-08-27 sind es **56** Nennungen in **14** Dateien, die schwersten
-[`harness/conventions.md`](../../../harness/conventions.md#mr-000--baseline-aussage) (14) und
-[`spec/spezifikation.md`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder) (13).
+[`harness/conventions.md`](../../../../harness/conventions.md#mr-000--baseline-aussage) (14) und
+[`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) (13).
 Gemessen mit
 `git grep -o "\.harness/baseline/v3\.5\.2/[^ )]*" -- ':!.harness/baseline' ':!docs/reviews' ':!docs/plan/planning/done'`,
 für die Nennungen mit `| wc -l`, für die Dateien mit `| cut -d: -f1 | sort -u | wc -l`, für die
@@ -94,7 +94,7 @@ Aufschlüsselung mit `| cut -d: -f1 | sort | uniq -c | sort -rn` (Zeitdokumente 
 bleiben stehen, §6).
 
 **Welche Regelwerks-Fassung diese Migration regiert, entscheidet nicht dieser Plan.** Es
-entscheidet [ADR-0018](../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 1; dort
+entscheidet [ADR-0018](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 1; dort
 stehen die Wahl, ihre Begründung und ihre vier Grenzen. **Plan-Sache ist allein die Folge:** die
 drei Durchgänge des Closure-Kriteriums (§3) und der Zuschnitt der Slices 082–084 sind aus
 Eigenschaften der dort gewählten Prozedur gebaut und haben außerhalb von ihr keine Quelle. Fällt
@@ -102,7 +102,7 @@ die Wahl anders aus, fällt dieser Schnitt mit ihr.
 
 **Was daraus für diesen Plan folgt:** bis der Baum getauscht ist, bleibt `v3.5.2` die adoptierte
 Baseline und für jede Konformitäts-Frage maßgeblich
-([ADR-0018](../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 2) — dieser Plan
+([ADR-0018](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 2) — dieser Plan
 entsteht darum per `cp` aus deren `welle.template.md`, nicht aus der neuen.
 
 ## 2. Trigger (Welle startet)
@@ -111,10 +111,10 @@ entsteht darum per `cp` aus deren `welle.template.md`, nicht aus der neuen.
   Historie rot, der älteste vom 2026-07-24; am 2026-08-27 meldet er `gepinnt: v3.5.2` und
   `latest: v5.12.0` (`make baseline-freshness`; die `latest`-Angabe **wandert** mit jedem Release
   und ist kein Erwartungswert,
-  [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2). Der Auslöser ist damit beobachtbar und real eingetreten, nicht angesetzt. Was er
   auslöst, ist ein Review, kein Nachziehen des Zielstands (§1).
-- **Auf [welle-09](welle-09-modul-15-konformitaet.md) wartet diese Welle nicht, und der Grund
+- **Auf [welle-09](../welle-09-modul-15-konformitaet.md) wartet diese Welle nicht, und der Grund
   steht an der Stelle der Kante statt nur im Drift-Log.** Die Kante schützte die Messlatte jener
   Welle: ihr Closure-Kriterium misst gegen `modul-15-observability.md`, und ein Tausch während der
   Welle zöge ihr diesen Text unter den Füßen weg. **Drei Messungen nehmen dem Schutz seinen
@@ -138,14 +138,14 @@ entsteht darum per `cp` aus deren `welle.template.md`, nicht aus der neuen.
      Repo-Entscheidung (Exporter, Collector, Sampling, Aufbewahrung): Mitzunehmen ist das
      **Schema**, nicht das Setup."* Sie bestätigt kein Ergebnis jener Welle — sie stützt deren
      **Grenze**: §6 dort stellt den Observability-*Stack* out-of-scope und trug das bislang allein
-     auf [`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.md) Festlegung 4.
+     auf [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 4.
   3. **Der Ziel-Text ist bereits gemessene Grundlage einer angenommenen Entscheidung dieses
-     Repos.** [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) aus der
-     geschlossenen [welle-12](done/welle-12-erfassungsschicht-emittieren.md) liest **beide**
+     Repos.** [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) aus der
+     geschlossenen [welle-12](welle-12-erfassungsschicht-emittieren.md) liest **beide**
      geänderten Stellen verbatim
      (`grep -c 'Emissions-Pfad ist Repo-Entscheidung\|Kontexte, nicht auf Personen' docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md`
      → **2**) und löst sie auf: die Block-1-Regel als Scheinwiderspruch, den
-     [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) auf Rang 1
+     [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) auf Rang 1
      der Source Precedence entscheidet, die Block-2-Fassung als **Stütze** ihrer Festlegung 3.
      Der Teil des neuen Textes, der dieses Repo berührt, ist damit **vor** dem Tausch gelesen und
      entschieden — nicht durch ihn. Eine Kante, die jene Welle vor genau diesem Text schützen
@@ -155,7 +155,7 @@ entsteht darum per `cp` aus deren `welle.template.md`, nicht aus der neuen.
   an drei Mitgliedern ohne Datei (`ls docs/plan/planning/*/ | grep -cE '^slice-(061|063|064)-'`
   → **0**), und keines von ihnen berührt den vendored Baum. Der Tausch nimmt ihr nichts und gibt
   ihr nichts; er läuft an ihr vorbei. Was er ihr **schuldet** — eine benannte Mess-Grundlage —
-  steht in [welle-09](welle-09-modul-15-konformitaet.md) §1.
+  steht in [welle-09](../welle-09-modul-15-konformitaet.md) §1.
 
 ## 3. Closure-Trigger (Welle schließt)
 
@@ -164,7 +164,7 @@ wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
 
 - **Alle Slices dieser Welle in `done/`.**
 - **Der Pin ist vollzogen:** `.harness/baseline/v5.12.0/` ist das **einzige** `<tag>`-Verzeichnis
-  ([`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache):
+  ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache):
   ein Tag zur Zeit), `make baseline-verify` grün über **51** statt 42 Dateien (26 Regelwerk + 25
   Templates) — die 51 sind der Bestand des Ziel-Tags (§1). **Erfüllt:** `ls -d .harness/baseline/*/`
   nennt ein Verzeichnis, und `make baseline-verify` meldet
@@ -176,8 +176,8 @@ wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
   führt.
 
   **Die Bezugsmenge ist geschlossen und extensional genannt:
-  [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) bis
-  [`MR-028`](../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt),
+  [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) bis
+  [`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt),
   lückenlos** — der Bestand des Adaptions-Blocks am Tausch-Commit `b902b60`
   (`git show b902b60:harness/conventions.md | grep -c '^### MR-'` → **29**, die Kennungen mit
   `grep -o '^### MR-[0-9]*'` statt `grep -c`; davon mit Auflösungs-Trigger
@@ -186,8 +186,8 @@ wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
   **Eingefroren ist die Mitgliedschaft, nicht der Text.** Welche Kennungen dazugehören, entscheidet
   der Tausch-Stand; *gelesen* wird jeder von ihnen im **heutigen** Wortlaut, sonst prüfte der
   Durchgang eine Fassung, die niemand mehr führt. Der Unterschied ist nicht theoretisch:
-  [`MR-022`](../../../harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)
-  und [`MR-023`](../../../harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung)
+  [`MR-022`](../../../../harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)
+  und [`MR-023`](../../../../harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung)
   tragen am Tausch-Stand je einen Auflösungs-Trigger und heute keinen mehr — sie sind aufgehoben,
   und ihr Ausgang liegt damit vor dem Durchgang statt in ihm.
 
@@ -195,7 +195,7 @@ wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
   Architect-Lauf, und ein **Abdeckungs**-Kriterium über eine Menge, die die Welle selbst
   vergrößert, ist per Konstruktion nicht erfüllbar: jeder Ausgang, den der Durchgang schreibt, kann
   einen neuen Eintrag nach sich ziehen, der wieder einen Ausgang verlangt.
-  [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2 trägt diese Fassung nicht — sie verbietet einer **Zahl**, als Erwartungswert
   aufzutreten, und sagt über die **Definition einer Bezugsmenge** nichts.
 
@@ -212,8 +212,8 @@ wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
 - **`make gates` grün — und zwar ohne offenen Carveout auf einem Gate dieser Welle.** Der Zusatz
   ist nicht kosmetisch: ein Welle-Grün, das einen solchen Carveout mitzählte, hieße *„grün, außer
   wo wir nicht hinsehen"*. Die zwei Carveouts, die diese Welle selbst erzeugt hat —
-  [`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md) auf `test` und
-  [`CO-005`](../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) auf `docs-check` —, liegen
+  [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) auf `test` und
+  [`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) auf `docs-check` —, liegen
   in `carveouts/done/` und zählen nicht mehr mit
   (`ls docs/plan/carveouts/done/CO-00[45]-*.md`). **Die Bezugsmenge ist hier ein Kommando, keine
   Liste:** `ls docs/plan/carveouts/CO-*.md` nennt die offenen Dateien und
@@ -225,7 +225,7 @@ wenn der Pin sitzt. Der Pin ist eine Zeile; die Durchgänge sind der Gegenstand.
 - **Die drei Sensoren außerhalb der Gates** — `make smoke`, `make full-smoke`, `make mutate`. Die
   ersten beiden gehören hier ins Kriterium, weil der Tag der **Emissions-Kanal** ist
   (`internal/fetch/baseline.go` `DefaultTag`): ein frisch gebootstrapptes Zielrepo zieht genau
-  diesen Baum ([`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)). **Beim
+  diesen Baum ([`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)). **Beim
   dritten ist der Grund ein anderer, und er ist der Grund, warum er hier steht und nicht bloß
   mitläuft:** `make mutate` fährt vor der ersten Mutation je Sensor-Modus einen Grün-Vorlauf und
   bricht den Worker fail-closed ab, wenn der Modus schon ohne Mutation rot ist. Solange einer der
@@ -255,10 +255,10 @@ Beides zusammen macht unschließbar; eines allein nicht.
 - **Durchgang 2** verlangt Abdeckung über Mengen, die ebenfalls außerhalb wachsen — und wird
   trotzdem **nicht** eingefroren, weil seine Frage an den neuen Elementen weiter gilt. Das
   Pflichtfeld `Ersetzt-Baseline-Regel` ist eine **Form**-Pflicht der Ziel-Fassung und bindet einen
-  nach dem Tausch geschriebenen Eintrag genauso; [slice-083](done/slice-083-form-vergleich-pflichtfelder.md)
+  nach dem Tausch geschriebenen Eintrag genauso; [slice-083](slice-083-form-vergleich-pflichtfelder.md)
   §2 nimmt ihn ausdrücklich mit hinein (*„den überlebenden wie den unter dem neuen Stand
   geschriebenen"*). Bei der zweiten Menge dieses Durchgangs, den Singleton-Artefakten, erzeugt der
-  Zuwachs gar keine Arbeit: das jüngste, [`observations.md`](observations.md), entsteht per `cp`
+  Zuwachs gar keine Arbeit: das jüngste, [`observations.md`](../observations.md), entsteht per `cp`
   aus `.harness/baseline/v5.12.0/templates/docs/plan/planning/observations.template.md` und trägt
   die Ziel-Form schon beim Anlegen.
 
@@ -277,37 +277,37 @@ werden kann.
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| slice-080 | Ein Verweis in die vendored Baseline überlebt den Tag-Wechsel | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
-| slice-081 | Baum tauschen, Pin ziehen, Verweise nachziehen | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
-| slice-133 | Der emittierte Baum trägt keine Platzhalter-Links | [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) |
-| slice-130 | Der Emitter entscheidet über jedes neue Template | [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) |
-| slice-131 | Eine Präsens-Aussage über die Baseline ist gegen den gepinnten Stand gemessen | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
-| slice-132 | Der Adaptions-Block trägt seinen datierten Beleg ohne totes Ziel | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| slice-082 | Adaptions-Durchgang: jeder Eintrag bekommt seinen Ausgang | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
-| slice-083 | Form-Vergleich: Pflichtfelder und umbenannte Sektionen | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
-| slice-136 | Die Roadmap trägt die Ziel-Form (Singleton, den 083 nicht führt) | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
-| slice-147 | `spec/spezifikation.md` trägt ihr `SPEC-<NNN>`-Pflichtfeld (aus 083 ausgegliedert) | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
-| slice-148 | `spec/architecture.md` trägt ihr `ARC-<NNN>`-Pflichtfeld (aus 083 ausgegliedert) | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
-| slice-084 | Stichprobe gegen den Bestand, nicht gegen das Delta | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
-| slice-085 | Die emittierte Ebene zieht nach | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) |
-| slice-149 | Welle-10 trägt ihre drei fehlenden Belege (dritter Sensor, Trigger-Audit, Register) | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
-| slice-150 | Drei Adaptions-Einträge tragen den adoptierten Stand (zwei korrigierte Durchgang-1-Ausgänge) | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-080 | Ein Verweis in die vendored Baseline überlebt den Tag-Wechsel | [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| slice-081 | Baum tauschen, Pin ziehen, Verweise nachziehen | [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| slice-133 | Der emittierte Baum trägt keine Platzhalter-Links | [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) |
+| slice-130 | Der Emitter entscheidet über jedes neue Template | [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) |
+| slice-131 | Eine Präsens-Aussage über die Baseline ist gegen den gepinnten Stand gemessen | [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| slice-132 | Der Adaptions-Block trägt seinen datierten Beleg ohne totes Ziel | [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| slice-082 | Adaptions-Durchgang: jeder Eintrag bekommt seinen Ausgang | [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-083 | Form-Vergleich: Pflichtfelder und umbenannte Sektionen | [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-136 | Die Roadmap trägt die Ziel-Form (Singleton, den 083 nicht führt) | [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-147 | `spec/spezifikation.md` trägt ihr `SPEC-<NNN>`-Pflichtfeld (aus 083 ausgegliedert) | [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-148 | `spec/architecture.md` trägt ihr `ARC-<NNN>`-Pflichtfeld (aus 083 ausgegliedert) | [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-084 | Stichprobe gegen den Bestand, nicht gegen das Delta | [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) |
+| slice-085 | Die emittierte Ebene zieht nach | [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) |
+| slice-149 | Welle-10 trägt ihre drei fehlenden Belege (dritter Sensor, Trigger-Audit, Register) | [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| slice-150 | Drei Adaptions-Einträge tragen den adoptierten Stand (zwei korrigierte Durchgang-1-Ausgänge) | [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) |
 
 **147 und 148 sind kein Nachzügler wie 130–133/136, sondern ein Re-Schnitt eines bereits
-zugeordneten Mitglieds.** [slice-083](done/slice-083-form-vergleich-pflichtfelder.md) ging am
+zugeordneten Mitglieds.** [slice-083](slice-083-form-vergleich-pflichtfelder.md) ging am
 2026-08-31 ein zweites Mal `in-progress` → `next` zurück (§2 dort, „Zweiter Schnitt"): von seinen
 drei noch offenen Posten trägt nur `harness/conventions.md` weiterhin einen expliziten DoD-Punkt
 dieses Slice; die `ID`-Schemata von `spec/spezifikation.md` und `spec/architecture.md` standen dort
 nie als eigener DoD-Punkt, nur im Risiko-Register als *„wird Teil des Folge-Zuschnitts"* — dieser
 Zuschnitt liegt jetzt vor. Getrennt statt gebündelt, weil ihre Ripple-Prüfungen an unabhängigen
 Artefaktmengen hängen: **23** lebende Referenzstellen zeigen auf `spec/spezifikation.md#…`
-(mindestens fünf davon aus Accepted-ADRs, [slice-147](done/slice-147-spezifikation-traegt-ihr-id-schema.md)
-§1), **2** auf `spec/architecture.md#…` ([slice-148](done/slice-148-architecture-traegt-ihr-id-schema.md)
+(mindestens fünf davon aus Accepted-ADRs, [slice-147](slice-147-spezifikation-traegt-ihr-id-schema.md)
+§1), **2** auf `spec/architecture.md#…` ([slice-148](slice-148-architecture-traegt-ihr-id-schema.md)
 §1). Beide gehören zu Durchgang 2 (*Form*) aus denselben Gründen wie 136: die Menge der
 Singleton-Artefakte ist über diesen Durchgang **nicht** eingefroren (§3), ihre Pflichtfeld-Frage
 gilt für jedes Element weiter, unabhängig davon, wann es in den Schnitt kommt. Für keines der
 beiden neuen Artefakte nennt eine kanonische Quelle eine schreibende Rolle —
-[`ADR-0015`](../adr/0015-rollen-eigentum-an-norm-artefakten.md) grenzt die Architect-Zuordnung
+[`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) grenzt die Architect-Zuordnung
 ausdrücklich auf `AGENTS.md` §3 und den Adaptions-Block ein; beide Slices tragen die Lücke als
 eigenes Risiko statt einer geratenen `Verantwortlich:`-Setzung, und `Verantwortlich:` steht bei
 beiden auf `—`.
@@ -315,11 +315,11 @@ beiden auf `—`.
 **136 ist der fünfte Nachzügler, und sein Grund ist ein anderer als der der vier davor: nicht eine
 übersehene Eingabe, sondern ein übersehenes Artefakt.** Durchgang 2 oben verlangt die Pflichtfelder
 der neuen Gliederung **in den Singleton-Artefakten**; die extensionale Menge in
-[slice-083](done/slice-083-form-vergleich-pflichtfelder.md) §2 führt die Roadmap nicht
+[slice-083](slice-083-form-vergleich-pflichtfelder.md) §2 führt die Roadmap nicht
 (`grep -c 'roadmap' docs/plan/planning/done/slice-083-form-vergleich-pflichtfelder.md` → **0**),
 obwohl sie eines ist und ihre Ziel-Form im getauschten Baum den ersten Abschnitt umbenannt hat. Der
 Slice hängt an keinem anderen der Welle und läuft in beliebiger Reihenfolge; er trägt eine
-Vorbedingung außerhalb — [slice-125](open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)
+Vorbedingung außerhalb — [slice-125](../open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)
 misst gegen die Sektion, die er umbenennt.
 
 **130, 131, 132 und 133 sind beim Schnitt der Welle nicht vorgesehen gewesen, und der Grund gehört
@@ -339,17 +339,17 @@ Zielrepo bekommt. Gemessen: `make smoke` meldet am Stand `26aec2c`
 `23 Datei(en) geprüft, 10 Befund(e)`, über dem Vor-Tausch-Stand
 (`T=$(mktemp -d); git archive c6cc56f | tar -x -C "$T"; cd "$T" && make smoke`)
 `19 Datei(en) geprüft, 0 Befund(e)` bei Exit 0 — **keine Erwartungswerte**
-([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2). Gebrochen sind
-[`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und
-[`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), beide Rang 1.
+[`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und
+[`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), beide Rang 1.
 **Das trägt kein Carveout, sondern zwei Slices:** eine Rang-1-Zusage wird nicht ausgenommen — ein
 Carveout steht in keinem Rang und dürfte nach `grundlagen-source-precedence.md` §Vollständigkeit
 verweisen, ausführen und ausbuchstabieren, aber nichts festlegen —, und der Trichter aus
 `modul-07-carveouts.md` §Werkzeug-Wahl führt bei dieser Häufung ohnehin nicht auf Carveout. **8**
-Befunde hat [slice-133](done/slice-133-emittierter-baum-ohne-platzhalter-links.md)
+Befunde hat [slice-133](slice-133-emittierter-baum-ohne-platzhalter-links.md)
 weggenommen (Platzhalter-Links, sieben davon in drei schon vorher emittierten Singletons), **2**
-trägt [slice-130](done/slice-130-emitter-entscheidet-jedes-neue-template.md) (sie lösen sich mit
+trägt [slice-130](slice-130-emitter-entscheidet-jedes-neue-template.md) (sie lösen sich mit
 der Klassen-Entscheidung). Die Aufteilung ist je Befund an seiner Vorlagen-Zeile erhoben, nicht
 über die Summe geschlossen; die Tabelle steht in slice-133 §1. **Der Schnitt rechnete mit sieben
 und zwei bis drei**, weil er nach Ursachen teilte; die gebaute Neutralisierung trägt die
@@ -361,11 +361,11 @@ sind über die ganze slice-133-Kette unangetastet
 → **0**).
 
 **Ein Carveout hält den Zwischenzustand der Gates sichtbar statt still:**
-[`CO-005`](../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) (Gate `docs-check`, Folge-Slice
+[`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md) (Gate `docs-check`, Folge-Slice
 132). Er ist extensional geschlossen und deckt den Vertragsbruch oben **nicht**. Er hat **keine**
 Gate-Konfiguration, weil das Modul `links` am Pin `v0.65.0` keine Referenz-Ausnahme kennt; dort
 bleibt der Gate rot, und der Carveout ist der einzige Träger der Begründung.
-[`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md) (Gate `test`, Folge-Slice 130)
+[`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) (Gate `test`, Folge-Slice 130)
 liegt in `carveouts/done/`, und `make test-bats` läuft ohne `not ok`. Seine Modul-7-Pflicht
 *Nennung im Gate-Output* ist damit gegenstandslos: eine Ausnahme in Test oder Config gab es nie
 (`git grep -c 'CO-004' -- test/ .d-check.yml Makefile` → kein Treffer), und genau das führt
@@ -376,13 +376,13 @@ Jobs bis 130, für den vierten bis 132.** Der Workflow fährt vier Jobs
 (`awk '/^jobs:/{f=1;next} f&&/^  [a-z][a-z-]*:$/{n++} END{print n}' .github/workflows/ci.yml` →
 am 2026-08-29 **4**: `gates`, `smoke`, `full-smoke`, `mutate`), und alle vier hängen an **einer**
 Ursachenkette. Wer welchen zurückgibt, ist keine Schätzung, sondern steht in den Trägern: `smoke`
-und `full-smoke` an [slice-133](done/slice-133-emittierter-baum-ohne-platzhalter-links.md) **und**
-[slice-130](done/slice-130-emitter-entscheidet-jedes-neue-template.md) (8 + 2 Befunde); `mutate`
+und `full-smoke` an [slice-133](slice-133-emittierter-baum-ohne-platzhalter-links.md) **und**
+[slice-130](slice-130-emitter-entscheidet-jedes-neue-template.md) (8 + 2 Befunde); `mutate`
 an denselben zwei, weil sein Grün-Vorlauf genau diese Modi fährt; `make gates` an
-[slice-130](done/slice-130-emitter-entscheidet-jedes-neue-template.md)
-([`CO-004`](../carveouts/done/CO-004-emitter-klassifikation-offen.md)) **und**
-[slice-132](done/slice-132-adaptions-block-ohne-totes-ziel.md)
-([`CO-005`](../carveouts/done/CO-005-adaptions-block-datierter-beleg.md)). **Was davon heute noch steht,
+[slice-130](slice-130-emitter-entscheidet-jedes-neue-template.md)
+([`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md)) **und**
+[slice-132](slice-132-adaptions-block-ohne-totes-ziel.md)
+([`CO-005`](../../carveouts/done/CO-005-adaptions-block-datierter-beleg.md)). **Was davon heute noch steht,
 ist gemessen und nicht abgeleitet:** beide Träger der `make gates`-Kante liegen in `done/`
 (`ls docs/plan/planning/done/slice-13[02]-*.md`), beide Carveouts in `carveouts/done/`
 (`ls docs/plan/carveouts/done/CO-00[45]-*.md`), und `make gates` endet mit Exit **0** über allen
@@ -393,22 +393,22 @@ solange
 einer der Modi rot ist, die
 der Treiber im Grün-Vorlauf fährt, läuft `mutate` über **null** Fälle, und die
 Haltbarkeits-Prüfung der **gelisteten** Wächter aus
-[`AGENTS.md`](../../../AGENTS.md) §3.6 findet nicht statt. **`docs-check` gehört nicht zu diesen
+[`AGENTS.md`](../../../../AGENTS.md) §3.6 findet nicht statt. **`docs-check` gehört nicht zu diesen
 Modi** — der Treiber kennt ihn gar nicht (`grep -c 'docs-check' harness/tools/mutate.sh` → **0**,
 und `grep -h '^# verify:' test/mutations/*.sh | sort -u` führt ihn nicht). Der blinde Fleck endet
 also mit `smoke`, `full-smoke` und den Test-Stufen, nicht mit
-[slice-132](done/slice-132-adaptions-block-ohne-totes-ziel.md).
+[slice-132](slice-132-adaptions-block-ohne-totes-ziel.md).
 
-**Mit [slice-133](done/slice-133-emittierter-baum-ohne-platzhalter-links.md) ist keiner der
+**Mit [slice-133](slice-133-emittierter-baum-ohne-platzhalter-links.md) ist keiner der
 vier Jobs zurück, und dieser Satz steht hier, weil sein Abschluss sonst falsch gelesen wird.**
 `make full-smoke` am Stand `66459c7` endet mit Exit **2** und
 `full-smoke: FEHLER — make gates im emittierten Repo ist NICHT Exit 0 (LH-FA-01 Happy-Path
 verletzt)`. Der Lauf erreicht das Zielrepo — die Netz-Bedingung war erfüllt, der Treiber ordnet
 den Fehlschlag selbst zu (`AUSGANG BAUM`) — und fällt dort an genau **einem** Teil-Ziel
 (`make full-smoke 2>&1 | grep -cE '^make\[1\]: \*\*\* \['` → **1**, `docs-check`), mit den zwei
-Befunden, die [slice-130](done/slice-130-emitter-entscheidet-jedes-neue-template.md) trägt.
+Befunden, die [slice-130](slice-130-emitter-entscheidet-jedes-neue-template.md) trägt.
 **Der Beleg für den Happy Path von
-[`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) hängt an slice-130 DoD (3),
+[`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) hängt an slice-130 DoD (3),
 nicht an slice-133** — jener Punkt führt den gemeinsamen Nachweis über beide Ursachen, und die
 Closure dieser Welle liest ihn dort. Im Arbeitsbaum ist die Reparatur da (`make smoke` →
 `d-check: 20 Datei(en) geprüft, 0 Befund(e)`, Exit 0); geschlossen ist der Slice nicht, und
@@ -416,9 +416,9 @@ Closure dieser Welle liest ihn dort. Im Arbeitsbaum ist die Reparatur da (`make 
 
 **Ein Zwischenziel, das `main` früher grün zurückgibt, wird hier nicht geschnitten — und der
 Grund ist der Rang, nicht der Aufwand.** Der kürzeste Weg zu einem grünen `make gates` liefe über
-[slice-132](done/slice-132-adaptions-block-ohne-totes-ziel.md) **vor** 133 und 130: er ist von
+[slice-132](slice-132-adaptions-block-ohne-totes-ziel.md) **vor** 133 und 130: er ist von
 beiden unabhängig (§5). Er brächte aber ein grünes Gate, während der Bruch von
-[`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)/[`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
+[`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)/[`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
 — Rang 1 — länger offen stünde, und genau das Grün wäre die Farbe, die den Bruch nicht sieht (er
 liegt außerhalb der Gates, deshalb steht er in §3 eigens). Kürzer als *133 → 130* ist kein Weg zu
 haben: die Kante ist tragend, nicht ordnend (§5). Die Reihenfolge bleibt damit, wie sie oben
@@ -429,7 +429,7 @@ sich bewegt —, sondern der **DoD-Verify** von 133 und 130, der beide Läufe je
 das Closure-Kriterium dieser Welle (§3). Ein Regressions-Signal aus dem Fenster gibt es nicht;
 das ist eine Lücke mit Träger, keine mit Sensor.
 
-**130 ist nicht der aus [slice-085](done/slice-085-emittierte-ebene-zieht-nach.md)
+**130 ist nicht der aus [slice-085](slice-085-emittierte-ebene-zieht-nach.md)
 herausgeschnittene Teil.** Dessen Plan führt `internal/emit/templates/commands/`, die übrigen
 emittierten Vorlagen und den Reviewer-Skill — den **Text** der emittierten Artefakte. Welche
 Vorlagen überhaupt emittiert werden, steht dort an keiner Stelle; 130 füllt eine Lücke, statt 085
@@ -448,7 +448,7 @@ Gates, einen Trigger-Audit über drei Artefaktklassen (Carveouts, bootstrap-awar
 eine gefüllte `welle-10-results.md` — keiner davon ist DoD-Punkt eines der zwölf zuvor
 geschnittenen Mitglieder. Ohne einen eigenen Träger würde dieser Rest bei der nächsten
 `/close-welle`-Ausführung neu erfunden oder übersehen.
-[slice-149](done/slice-149-welle-10-traegt-ihre-drei-fehlenden-belege.md) liefert den dritten
+[slice-149](slice-149-welle-10-traegt-ihre-drei-fehlenden-belege.md) liefert den dritten
 Sensor (`make full-smoke`; die beiden anderen — `make smoke`, `make mutate` — bestätigt er, falls
 ihr letzter grüner Lauf nicht mehr aktuell ist) und den Trigger-Audit (die beiden offenen
 Carveouts `CO-001`/`CO-002`, keine bootstrap-aware Gates im Repo, sowie die acht ADRs, die dieser
@@ -458,48 +458,48 @@ voraus, dass alle Mitglieder inklusive 149 bereits in `done/` liegen, und bleibt
 `/close-welle`. Er hängt an keinem anderen Mitglied (§5).
 
 **150 ist kein Nachzügler, sondern eine Korrektur an Durchgang 1 — und deshalb Mitglied, wo
-[slice-146](open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) keines ist.**
+[slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) keines ist.**
 §6 schickt einen Fund, der eigene Arbeit verlangt, als Slice in `open/` **ohne**
 Wellen-Zugehörigkeit; das trifft den Fund aus Durchgang 3, dessen Ausgang *mehrere Funde* mit dem
 Verbuchen abgeschlossen ist. Hier liegt es anders: Das Kriterium von Durchgang 1 oben verlangt,
 dass **jeder** Eintrag der eingefrorenen Bezugsmenge genau einen der fünf Ausgänge **mit Beleg**
 trägt, und für zwei ihrer Mitglieder ist der Beleg aus
-[slice-082](done/slice-082-adaptions-durchgang.md) §9 gegen den adoptierten Stand falsch —
-[`MR-008`](../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
+[slice-082](slice-082-adaptions-durchgang.md) §9 gegen den adoptierten Stand falsch —
+[`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
 steht dort auf *bleibt gültig*, während `modul-02-harness-bootstrap.md` §Anmerkung zum
 Instanziierungs-Zeitpunkt die Setzung selbst schreibt
 (`grep -c 'keine Blank-Kopie im Repo' .harness/baseline/v5.12.0/regelwerk/modul-02-harness-bootstrap.md`
 → **1**), und
-[`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+[`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
 Setzung 3 auf *nicht eingetreten*, während `grundlagen-source-precedence.md`
 §Spec-Stratifizierung sie wörtlich führt
 (`grep -c 'die Verweis-Spalte nennt diesen Vorgang statt eines' .harness/baseline/v5.12.0/regelwerk/grundlagen-source-precedence.md`
 → **1**). Eine Welle, die auf diesen zwei Belegen schließt, hätte ihr Abdeckungs-Kriterium der
 Form nach erfüllt und der Sache nach nicht. Gefunden hat beides der **Form**-Durchgang
-([slice-083](done/slice-083-form-vergleich-pflichtfelder.md) §6), weil dessen Pflichtfeld
+([slice-083](slice-083-form-vergleich-pflichtfelder.md) §6), weil dessen Pflichtfeld
 jeden Eintrag gegen den Volltext des adoptierten Stands hält statt gegen das Delta; die Klasse
-zählt [`BEO-013`](observations.md). Der dritte Posten von 150 —
-[`MR-028`](../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt),
+zählt [`BEO-013`](../observations.md). Der dritte Posten von 150 —
+[`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt),
 dessen Rumpf gegen den abgelösten Tag argumentiert — gehört zu Durchgang 2 und reist mit, weil er
 dieselbe Datei und dieselbe Rolle trägt. **Der Preis steht daneben:** die Mitglieder-Zahl steigt
-erneut, und genau das ist der Gegenstand von [`BEO-010`](observations.md); als **Auftreten** jener
+erneut, und genau das ist der Gegenstand von [`BEO-010`](../observations.md); als **Auftreten** jener
 Beobachtung zählt dieser Slice trotzdem nicht — ein vorgeschalteter Inventur-Slice hätte einen
 falschen Achse-1-Ausgang nicht verhindert.
 
 ## 5. Abhängigkeiten
 
 - **Wird blockiert von:** nichts. Die Kante aus
-  [welle-09](welle-09-modul-15-konformitaet.md) besteht nicht mehr; die Messungen, die sie
+  [welle-09](../welle-09-modul-15-konformitaet.md) besteht nicht mehr; die Messungen, die sie
   aufheben, stehen in §2. Der Trigger dieser Welle ist damit allein der Freshness-Sensor, und der
   ist real eingetreten.
 - **Blockiert:** jeden Slice **außerhalb** dieser Welle, der den vendored Baum zitiert. **Wer das
   ist, sagt ein Kommando, keine Liste hier** — die Menge wandert mit jedem Schnitt, und eine
   Aufzählung im Plan altert zwischen Schnitt und Ausführung
-  ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2):
   `git grep -l '\.harness/baseline/v3\.5\.2/' -- docs/plan/planning/open docs/plan/planning/next`.
   Von den Treffern ist **einer** ausdrücklich nicht gemeint:
-  [slice-083](done/slice-083-form-vergleich-pflichtfelder.md) liegt **in** dieser Welle und nennt
+  [slice-083](slice-083-form-vergleich-pflichtfelder.md) liegt **in** dieser Welle und nennt
   den alten Tag als Tree-Operanden der Vor-Tausch-Seite, nicht als Zeiger auf einen Baum, der
   stehen bleiben müsste. Der Rest ist vor dieser Welle fällig oder auf den neuen Tag zu ziehen —
   entschieden wird das je Treffer beim Lauf, nicht hier.
@@ -530,10 +530,10 @@ falschen Achse-1-Ausgang nicht verhindert.
   trotzdem zu — `wc -l harness/conventions.md` → am 2026-08-27 **1402** Zeilen, die jeder
   Agentenlauf liest, mit wachsendem Anteil aufgelöster Einträge; die Zahl **wächst** mit jedem
   Eintrag und ist kein Erwartungswert
-  ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2). Das ist ein Roadmap-Kandidat mit eigenem Trigger, keine
   Fracht dieser Welle: der Umzug zöge **jede** `MR-`Kennung des Repos auf einen neuen Pfad, und
-  die sind nach [`MR-001`](../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
+  die sind nach [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
   linkpflichtig.
 - **Zeitdokumente** unter `docs/reviews/**` und `docs/plan/planning/done/**`. Die drei
   verschwindenden Regelwerk-Dateinamen kommen dort in **13** Dateien vor; sie sind die historisch
@@ -544,10 +544,10 @@ falschen Achse-1-Ausgang nicht verhindert.
   auf die Größe des Deltas und verliert ihr Closure-Kriterium. Das ist dieselbe Grenze, die die
   Stichprobe der Ziel-Prozedur zieht („ein Abschnitt pro Audit, rotierend — keine Vollinventur").
 - **Ein Sensor für die Adoptions-Lücke** („adoptiert, aber nie umgesetzt"). Er wäre die Antwort
-  auf den Trigger von [welle-09](welle-09-modul-15-konformitaet.md), und die Stichprobe aus 084
+  auf den Trigger von [welle-09](../welle-09-modul-15-konformitaet.md), und die Stichprobe aus 084
   ist sein manueller Vorläufer. Ob er baubar ist, ist ungemessen.
 - **Achse 1 des Adaptions-Durchgangs für die Einträge nach dem Tausch** — die Bezugsmenge endet bei
-  [`MR-028`](../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt)
+  [`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt)
   (§3). Wie viele danach dazugekommen sind, sagt
   `grep -c '^### MR-' harness/conventions.md` gegen die **29** des Tausch-Standes. Sie stammen
   **ausnahmslos** aus Architect-Läufen: `git log --format=%s b902b60..HEAD -- harness/conventions.md`
@@ -558,7 +558,7 @@ falschen Achse-1-Ausgang nicht verhindert.
      neue Fassung das, wofür dieser Eintrag angelegt wurde?"* ist beim Schreiben beantwortet
      worden, weil `v5.12.0` beim Schreiben im Baum lag.
   2. **Die Form-Frage trägt Durchgang 2** und nennt sie ausdrücklich —
-     [slice-083](done/slice-083-form-vergleich-pflichtfelder.md) §2 verlangt
+     [slice-083](slice-083-form-vergleich-pflichtfelder.md) §2 verlangt
      `Ersetzt-Baseline-Regel` in jedem Eintrag, *„den überlebenden wie den unter dem neuen Stand
      geschriebenen"*. Sie fallen also aus Durchgang 1 und nicht aus dieser Welle.
   3. **Achse 2 — der abgefragte Auflösungs-Trigger — bleibt für sie offen, und das ist keine
@@ -570,16 +570,16 @@ falschen Achse-1-Ausgang nicht verhindert.
   §3 unterscheidet Zustand von Abdeckung und verlangt für Abdeckung über eine Menge außerhalb des
   Plans eine **eingefrorene** Bezugsmenge. Das steht dort als Begründung **dieses** Plans; als
   **Regel** für jeden Plan wäre es eine Norm-Änderung, und die schreibt nach
-  [`AGENTS.md`](../../../AGENTS.md) §3.8 der Architect. Dieser Plan beschreibt sie und setzt sie
+  [`AGENTS.md`](../../../../AGENTS.md) §3.8 der Architect. Dieser Plan beschreibt sie und setzt sie
   nicht in Kraft. **Ihr Gegenstand ist gemessen:** derselbe Fehler steht ein zweites Mal in
-  [slice-082](done/slice-082-adaptions-durchgang.md) und ein drittes Mal in
-  [slice-083](done/slice-083-form-vergleich-pflichtfelder.md) — dort mit ausdrücklicher Begründung
+  [slice-082](slice-082-adaptions-durchgang.md) und ein drittes Mal in
+  [slice-083](slice-083-form-vergleich-pflichtfelder.md) — dort mit ausdrücklicher Begründung
   und deshalb richtig, was zeigt, dass die Unterscheidung und nicht das Einfrieren die Regel ist.
 
 ## 7. Closure-Notiz
 
 Was diese Welle geliefert, was funktioniert und was anders gelaufen ist, steht in
-[welle-10-results.md](done/welle-10-results.md) — dort auch die
+[welle-10-results.md](welle-10-results.md) — dort auch die
 Steering-Loop-Einträge (drei Registerzeilen bei ≥ 3×), der Zeiger auf das
 Beobachtungs-Register, die Folge-Slices und die Verifikations-Belege der fünf
 Closure-Schritte. Diese Datei liegt nach der Closure neben ihr in `done/`; der
