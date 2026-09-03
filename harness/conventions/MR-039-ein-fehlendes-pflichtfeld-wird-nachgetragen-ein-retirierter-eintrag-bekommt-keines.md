@@ -1,5 +1,7 @@
 # MR-039 — Ein fehlendes Pflichtfeld wird nachgetragen, ein retirierter Eintrag bekommt keines
 
+> **ÜBERHOLT: die Deckungs-Messung samt ihrer drei Kommandos über `harness/conventions.md` → [`MR-046`](../conventions.md#mr-046--die-verzeichnis-position-ist-binär-und-trägt-die-kopf-marke-nicht).** Setzung 1, 2 und 3 gelten fort — je einzeln geprüft; die Gleichung selbst gilt über das Verzeichnis unverändert.
+
 - **Datum:** 2026-09-02
 - **Wirksamkeits-Anlass:** slice-083 — der Form-Vergleich der Re-Baseline, dessen zweiter
   DoD-Punkt `Ersetzt-Baseline-Regel` in jedem Eintrag verlangt.

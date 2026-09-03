@@ -1,5 +1,7 @@
 # MR-032 — Ein überholter Eintrag trägt eine Kopf-Marke auf seinen Nachfolger
 
+> **ÜBERHOLT: die Prämisse von Setzung 2 — *„Dieses Repo führt den Block **inline**; eine Position gibt es nicht"* — samt der drei Zensus-Kommandos über `harness/conventions.md` → [`MR-046`](../conventions.md#mr-046--die-verzeichnis-position-ist-binär-und-trägt-die-kopf-marke-nicht).** Die Setzungen 1–4, die Trennung der zwei Instrumente und die Auslegung der Nicht-Anfassen-Sätze gelten fort: die Verzeichnis-Position ist binär und trägt die Teil-Ablösung nicht.
+
 - **Datum:** 2026-08-29
 - **Wirksamkeits-Anlass:** slice-081 — dort entstand die erste Teil-Ablösung dieses Blocks
   ([`MR-029`](../conventions.md#mr-029--der-scanignore-zensus-wandert-und-sein-dritter-grund-ist-keine-scoping-aussage)),

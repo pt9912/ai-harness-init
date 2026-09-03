@@ -65,10 +65,16 @@ vollständige Aufhebung Kopf und Zeiger
 ([`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)), ein nachgetragenes
 Pflichtfeld tritt hinzu statt zu ersetzen
 ([`MR-039`](#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)).
+Ist der Auflösungs-Trigger eines Eintrags eingetreten, wandert seine Datei per `git mv` nach
+[`conventions/done/`](conventions/done/): der Zustand ist die Verzeichnis-Position, kein
+Status-Feld. Die Position ist **binär** — sie trennt *aktiv* von *aufgelöst* und trägt die
+Teil-Ablösung nicht, deren Eintrag aktiv bleibt
+([`MR-046`](#mr-046--die-verzeichnis-position-ist-binär-und-trägt-die-kopf-marke-nicht)).
 
-**Diese Tabelle ist derivativ** ([`ADR-0024`](../docs/plan/adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)):
+**Die Index-Tabellen sind derivativ** ([`ADR-0024`](../docs/plan/adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)):
 was ein Eintrag setzt, setzt seine Datei. Die Spalten `Geltungsbereich` und
-`Ersetzt-Baseline-Regel` tragen den **Anfang** des gleichnamigen Pflichtfelds, und ein `…` sagt,
+`Ersetzt-Baseline-Regel` der aktiven Tabelle tragen den **Anfang** des gleichnamigen
+Pflichtfelds, und ein `…` sagt,
 dass es in der Datei weitergeht; bei Abweichung gilt die Datei. Ein `—` steht, wo der Eintrag das
 Feld nicht führt — nachgetragen wird es nur nach
 [`MR-039`](#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines),
@@ -78,6 +84,10 @@ und ein retirierter Eintrag bekommt keines.
 für neue Verweise vorsieht; der Überschriften-Slug `mr-<NNN>--<titel>` ist die Adresse, unter der
 der Bestand des Repos diesen Block anspricht. Beide zeigen auf dieselbe Zeile, und die Zeile zeigt
 auf die Datei — deshalb kostet der Umzug eines Rumpfs keinen Verweis-Nachzug.
+
+### Aktive Adaptionen
+
+Eine Zeile je Datei in [`conventions/`](conventions/).
 
 | MR | Titel | Geltungsbereich | Ersetzt-Baseline-Regel |
 |---|---|---|---|
@@ -97,14 +107,10 @@ auf die Datei — deshalb kostet der Umzug eines Rumpfs keinen Verweis-Nachzug.
 | [MR-013](conventions/MR-013-regelwerk-check-auf-d-check-sources-tool-statt-skript.md) <a id="mr-013"></a><a id="mr-013--regelwerk-check-auf-d-check-sources-tool-statt-skript"></a> | regelwerk-check auf d-check `sources` (Tool statt Skript) | `Makefile` (`regelwerk-check`-Recipe), `.d-check.yml` (`sources:`-Block), … | keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**, … |
 | [MR-014](conventions/MR-014-ci-auf-frischem-klon-github-actions.md) <a id="mr-014"></a><a id="mr-014--ci-auf-frischem-klon-github-actions"></a> | CI auf frischem Klon (GitHub Actions) | `.github/workflows/ci.yml` (neu), `Makefile` (`ACTIONLINT_IMAGE`, … | keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**, … |
 | [MR-015](conventions/MR-015-change-request-bei-personalunion-von-auftraggeber-und-entwickler.md) <a id="mr-015"></a><a id="mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler"></a> | Change Request bei Personalunion von Auftraggeber und Entwickler | `spec/lastenheft.md` §7 Historie (**Form künftiger** Einträge, nicht die … | keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**, … |
-| [MR-016](conventions/MR-016-welle-oder-nicht-und-wo-wellenlose-arbeit-gefuehrt-wird.md) <a id="mr-016"></a><a id="mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird"></a> | Welle oder nicht, und wo wellenlose Arbeit geführt wird | — | — |
 | [MR-017](conventions/MR-017-default-regel-fuer-emittierte-pruefbereiche-fail-closed.md) <a id="mr-017"></a><a id="mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed"></a> | Default-Regel für emittierte Prüfbereiche (fail-closed) | jede vom Tool **emittierte** Gate-Konfiguration, die ein Adopter … | keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**, … |
-| [MR-018](conventions/MR-018-span-schema-der-telemetrie-erfassung.md) <a id="mr-018"></a><a id="mr-018--span-schema-der-telemetrie-erfassung"></a> | Span-Schema der Telemetrie-Erfassung | — | — |
 | [MR-019](conventions/MR-019-technik-stratum-als-rang-2-der-source-precedence.md) <a id="mr-019"></a><a id="mr-019--technik-stratum-als-rang-2-der-source-precedence"></a> | Technik-Stratum als Rang 2 der Source Precedence | [`spec/spezifikation.md`](../spec/spezifikation.md), … | keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**, … |
 | [MR-020](conventions/MR-020-aufgehobener-eintrag-behaelt-kopf-und-zeiger-statt-rumpf.md) <a id="mr-020"></a><a id="mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf"></a> | Aufgehobener Eintrag behält Kopf und Zeiger statt Rumpf | dieser Adaptions-Block. **Nicht** `docs/plan/adr/` — dort gilt … | [`grundlagen-harness-dateien.md`](../.harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher) … |
 | [MR-021](conventions/MR-021-das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben.md) <a id="mr-021"></a><a id="mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben"></a> | Das Span-Schema zieht ins Technik-Stratum, sein Eintrag wird aufgehoben | [`MR-018`](#mr-018--span-schema-der-telemetrie-erfassung) sowie die … | [`modul-15-observability.md`](../.harness/baseline/v5.18.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln) … |
-| [MR-022](conventions/MR-022-kommentar-regel-als-vorgriff-auf-eine-neuere-baseline.md) <a id="mr-022"></a><a id="mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline"></a> | Kommentar-Regel als Vorgriff auf eine neuere Baseline | — | — |
-| [MR-023](conventions/MR-023-die-platzierung-der-kommentar-regel-ist-keine-abweichung.md) <a id="mr-023"></a><a id="mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung"></a> | Die Platzierung der Kommentar-Regel ist keine Abweichung | — | — |
 | [MR-024](conventions/MR-024-d-check-pin-v0620-structure-verfuegbar.md) <a id="mr-024"></a><a id="mr-024--d-check-pin-v0620-structure-verfügbar"></a> | d-check-Pin v0.62.0 (structure verfügbar) | `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`, Kopfkommentar), … | keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**, … |
 | [MR-025](conventions/MR-025-eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert.md) <a id="mr-025"></a><a id="mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert"></a> | Eine Zahl im Text steht neben dem Kommando, das sie liefert | die **lebenden**, repo-eigenen Markdown-Artefakte — gemessen … | keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**, … |
 | [MR-026](conventions/MR-026-die-hard-rule-nummer-ist-eine-adresse-keine-baseline-entsprechung.md) <a id="mr-026"></a><a id="mr-026--die-hard-rule-nummer-ist-eine-adresse-keine-baseline-entsprechung"></a> | Die Hard-Rule-Nummer ist eine Adresse, keine Baseline-Entsprechung | der Hard-Rule-Block [`AGENTS.md`](../AGENTS.md) §3 gegenüber … | keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**, … |
@@ -127,6 +133,22 @@ auf die Datei — deshalb kostet der Umzug eines Rumpfs keinen Verweis-Nachzug.
 | [MR-043](conventions/MR-043-ein-nachgetragenes-pflichtfeld-schlaegt-die-einordnung-im-rumpf.md) <a id="mr-043"></a><a id="mr-043--ein-nachgetragenes-pflichtfeld-schlägt-die-einordnung-im-rumpf"></a> | Ein nachgetragenes Pflichtfeld schlägt die Einordnung im Rumpf | [`MR-028`](#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt) … | [`grundlagen-traceability.md`](../.harness/baseline/v5.18.0/regelwerk/grundlagen-traceability.md#herkunfts-anker) … |
 | [MR-044](conventions/MR-044-das-technik-stratum-traegt-die-id-spalte-der-ziel-form.md) <a id="mr-044"></a><a id="mr-044--das-technik-stratum-trägt-die-id-spalte-der-ziel-form"></a> | Das Technik-Stratum trägt die ID-Spalte der Ziel-Form | [`MR-021`](#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben) … | [`modul-15-observability.md`](../.harness/baseline/v5.18.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln) … |
 | [MR-045](conventions/MR-045-der-adaptions-block-laeuft-in-der-verzeichnis-form.md) <a id="mr-045"></a><a id="mr-045--der-adaptions-block-läuft-in-der-verzeichnis-form"></a> | Der Adaptions-Block läuft in der Verzeichnis-Form | dieser Block — [`harness/conventions.md`](conventions.md) als Index und … | [`grundlagen-harness-dateien.md`](../.harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher) … |
+| [MR-046](conventions/MR-046-die-verzeichnis-position-ist-binaer-und-traegt-die-kopf-marke-nicht.md) <a id="mr-046"></a><a id="mr-046--die-verzeichnis-position-ist-binär-und-trägt-die-kopf-marke-nicht"></a> | Die Verzeichnis-Position ist binär und trägt die Kopf-Marke nicht | die **Form** eines Eintrags dieses Blocks, dessen Aussage ein späterer Eintrag teilweise ablöst, … | [`grundlagen-harness-dateien.md`](../.harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher) … |
+
+### Aufgelöste Adaptionen
+
+Eine Zeile je Datei in [`conventions/done/`](conventions/done/) — Kennung und Auflösung, sonst
+nichts: die Kette bleibt auffindbar, ohne gelesen zu werden. Der Anker zieht aus der Tabelle
+darüber mit um, und **er** ist der Grund, warum ein Verweis auf eine aufgelöste Adaption nicht
+bricht. Die zweite Spalte zeigt auf die **Index-Zeile** des ablösenden Eintrags, nicht auf seine
+Datei: die wandert bei ihrer eigenen Auflösung weiter.
+
+| MR | aufgelöst durch |
+|---|---|
+| [MR-016](conventions/done/MR-016-welle-oder-nicht-und-wo-wellenlose-arbeit-gefuehrt-wird.md) <a id="mr-016"></a><a id="mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird"></a> | [MR-037](#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst) |
+| [MR-018](conventions/done/MR-018-span-schema-der-telemetrie-erfassung.md) <a id="mr-018"></a><a id="mr-018--span-schema-der-telemetrie-erfassung"></a> | [MR-021](#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben) |
+| [MR-022](conventions/done/MR-022-kommentar-regel-als-vorgriff-auf-eine-neuere-baseline.md) <a id="mr-022"></a><a id="mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline"></a> | [MR-031](#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline) |
+| [MR-023](conventions/done/MR-023-die-platzierung-der-kommentar-regel-ist-keine-abweichung.md) <a id="mr-023"></a><a id="mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung"></a> | [MR-031](#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline) |
 
 ## Modus-Deklaration pro Sub-Area
 
