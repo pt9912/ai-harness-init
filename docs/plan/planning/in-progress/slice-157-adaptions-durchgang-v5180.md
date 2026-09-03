@@ -58,12 +58,12 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       (*„Beide Commits gehören in denselben Push"*) neben
       [`AGENTS.md`](../../../../AGENTS.md) §3.3 — stehen als Übergabe im Plan, nicht als
       Entscheidung.
-- [ ] `make gates` grün.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] `make gates` grün.
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt — keiner berührt: der Adaptions-Speicher wächst um einen Eintrag, [`AGENTS.md`](../../../../AGENTS.md) und die Spec-Straten bleiben unverändert.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -113,10 +113,17 @@ dasteht.
 
 - **Achse 1 wird mit dem Kurzschluss beantwortet** — *„die Baseline behandelt jetzt dasselbe
   Thema"* statt *„der neue Text erfüllt genau die Pflicht, für die der Eintrag entstand"*; die
-  Klasse liegt als `BEO-008` im [Register](../observations.md). — **Ausgang:** offen, wird bei
-  Closure verbucht.
+  Klasse liegt als `BEO-008` im [Register](../observations.md). — **Ausgang: weiter offen →
+  Beobachtungs-Register.** Die Klasse ist in diesem Durchgang **nicht** aufgetreten: Jeder der
+  47 Einträge trägt in §9 die Pflicht, an der er gemessen ist, nicht das Thema — der eine
+  Nicht-*bleibt-gültig*-Ausgang ([`MR-005`](../../../../harness/conventions.md#mr-005)) hängt an drei Messungen über den Pfad selbst. `BEO-008`
+  bleibt bei **1×**; ein ausgebliebenes Auftreten erhöht keinen Zähler.
 - **Der Delta-Durchgang findet eine Deckung nicht** — `BEO-013`, die Auflage dieses Slice.
-  — **Ausgang:** offen, wird bei Closure verbucht.
+  — **Ausgang: weiter offen → Beobachtungs-Register.** Die Auflage ist gefahren (§9 §Methode:
+  gelesen wird der Volltext des zitierten Abschnitts), und die Klasse ist nicht aufgetreten —
+  kein Eintrag bekam *bleibt gültig*, wo der Zielstand seine Pflicht selbst führt. `BEO-013`
+  bleibt bei **1×**. **Was der Durchgang stattdessen fand, ist die Spiegel-Klasse:** ein Muster
+  über ein Zitat trifft den Satz nicht, der wörtlich dasteht — neu als `BEO-021`.
 
 ## 7. Closure-Notiz
 
@@ -128,19 +135,38 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-NNN>, <slice-MMM>, <slice-KKK> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations.md`):** <neue `BEO-<NNN>` angelegt (Sub-Area, 1×, Beleg slice-NNN) | `BEO-<NNN>` auf <N>× erhöht, Beleg slice-NNN ergänzt | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-NNN (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
-
+- **Was hat funktioniert:** Die Verzeichnis-Form macht den Durchgang mechanisch durchgehbar — je
+  Eintrag eine Datei mit eigenem Feld `Ersetzt-Baseline-Regel`, statt einer 3000-Zeilen-Datei, aus
+  der die Bezugsmenge erst herauszulesen wäre. Und die Einträge tragen ihre eigenen
+  Mess-Kommandos: für die 24 Fork-Einträge ist der Zielstand-Test das Nachfahren des Kommandos,
+  das der Eintrag selbst nennt.
+- **Was ging anders als geplant:** Der Durchgang erwartete Ausgänge der Klasse *gegenstandslos*
+  (so lief der Sprung auf `v5.12.0`, [`MR-036`](../../../../harness/conventions.md#mr-036) und
+  [`MR-041`](../../../../harness/conventions.md#mr-041)). Gefunden wurde stattdessen genau ein
+  Ausgang, und zwar der vierte: **Bezug entfallen**. Die Baseline hat die Frage nicht anders
+  beantwortet, sondern fallen lassen — was den Träger der Setzung wechselt, nicht ihren Inhalt.
+- **Steering-Loop-Eintrag:** Regel geschärft: *Ein `grep` über ein Zitat belegt nicht, dass der
+  Satz fehlt* — gegen einen Baseline-Satz zählt der gelesene Abschnitt, nicht das Muster.
+  Auslöser: `BEO-021` (slice-157 — 1×). *Gezählt, nicht verkörpert:* die Schwelle ist nicht
+  erreicht, also entfällt das Feld `liegt in`.
+- **Beobachtungs-Register (`../observations.md`):** neue `BEO-021` angelegt (`*` (gesamtes Repo),
+  1×, Beleg slice-157); `BEO-003` auf **3×** erhöht, Beleg slice-157 ergänzt — der `open/` →
+  `in-progress/`-Move dieses Slice brach den präfixlosen Verweis in
+  [slice-165](../open/slice-165-praesens-aussagen-gegen-v5180.md), also genau die Hälfte, die
+  `make slice-mv` als Grenze 3 offen führt. Der Lese-Schritt bei 3× steht in der Zeile: keine
+  verkörperbare Regel, der Ausgang ist ein Werkzeug-Schnitt und damit Planner-Arbeit.
+  `BEO-008` und `BEO-013` unverändert bei 1× (§6).
+- **Folge-Slices:** keine geschnitten. Zwei Posten gehen ohne Kennung weiter, beide an den Planner:
+  die zweite Ersetzungs-Regel für `make slice-mv` (`BEO-003`, Schwelle erreicht) und die
+  Push-Disziplin aus §9 §Übergabe, die eine Hard-Rule-Frage ist. Eine Kennung hier behauptete eine
+  Datei, die es nicht gibt.
+- **Risiken aus §6:** beide mit Ausgang *weiter offen → Beobachtungs-Register* — siehe §6.
+- **Drei Paarungen:** (a) **Anker** — kein Eintrag trägt `liegt in`, also kein Gegenstand;
+  (b) **Folge-Slice** — keiner genannt, also kein Gegenstand; (c) **Register** — die vier hier
+  zitierten Kennungen `BEO-003`, `BEO-008`, `BEO-013`, `BEO-021` haben je eine Zeile, und jede
+  Zeile des Registers trägt mindestens einen Beleg
+  (`awk -F'|' 'NR>1 && /^\| BEO-/ {if ($6 !~ /slice-/) print $2}' docs/plan/planning/observations.md`
+  → leer). Geprüft **nach** dem `git mv` nach `done/`.
 ## 8. Sub-Area-Modus-Begründung
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
@@ -191,13 +217,16 @@ ohne Adresse: regelt der Zielstand den Gegenstand jetzt selbst? Die fünf Ausgä
 §Freshness-Audit der vendored Baseline (Schritt 2): **gegenstandslos · bleibt gültig · teilweise
 überholt · Bezug entfallen · widerspricht**.
 
-**Ein `grep` auf ein Zitat ist kein Volltext-Durchgang.** Zwei Sätze dieses Durchgangs sind über
-ein Muster **nicht** auffindbar und stehen trotzdem wörtlich am Zielstand: die Digest-Regel aus
-`modul-14-docker-harness.md` (dort `Update = *bewusster* Commit …`, mit Kursiv-Markern innerhalb
-des Zitats) und der Träger-Satz aus `grundlagen-source-precedence.md` §Spec-Stratifizierung (dort
-zwischen *Der* und *Träger* umgebrochen). Beide gäben als `grep -c` eine **0** und damit den
-Ausgang *Bezug entfallen* statt *bleibt gültig* — die Fehlerrichtung, die `BEO-013` benennt,
-einmal in ihrer eigenen Klasse.
+**Ein `grep` auf ein Zitat ist kein Volltext-Durchgang.** **Sieben** zitierte
+Baseline-Sätze dieses Durchgangs geben als `grep -c` über das volle Zitat eine **0** und
+stehen trotzdem wörtlich am Zielstand: In allen sieben trennt ein **Zeilenumbruch** das
+Muster, in dreien liegt zusätzlich ein **Inline-Markup** innerhalb des Zitats (zweimal
+fett, einmal kursiv). Sie verteilen sich auf fünf Dateien des vendored Baums —
+`modul-02-harness-bootstrap.md` (drei), `modul-03-spec.md`, `modul-14-docker-harness.md`,
+`grundlagen-source-precedence.md` und `grundlagen-harness-dateien.md`. Gelesen statt
+gegrept steht jeder von ihnen da; ein Durchgang, der die **0** für sich nähme, verbuchte
+*Bezug entfallen* statt *bleibt gültig*. Die Klasse liegt als `BEO-021` im
+[Register](../observations.md).
 
 ### Ausgänge — Einträge `MR-000` bis `MR-021`
 
