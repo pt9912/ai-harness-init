@@ -59,10 +59,17 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       vollem Text wäre die Archivierung, die es nicht gab. Rot gesehen an genau diesem Fall.
 - [x] `make gates` grün.
 - [x] Doku-Update, falls ein öffentlicher Vertrag berührt.
-- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+
+**Die drei offenen Haken hängen nicht an Arbeit, sondern an der Rolle.** Closure-Notiz,
+Register-Fortschreibung und die drei Paarungen sind Closure-Schritte und laufen beim **Planner**,
+nach Review und Verifikation und in einem eigenen Kontext (Baseline-Regelwerk
+`modul-08-agentenrollen.md` §Die neun Übergaben; [`.claude/commands/implement-slice.md`](../../../../.claude/commands/implement-slice.md)
+Schritte 23 und 24). Die Implementation setzt sie nicht selbst — täte sie es, fielen die drei
+Rollen in einen Kontext, gegen den die Trennung gebaut ist.
 
 ## 3. Plan (vor Code)
 
