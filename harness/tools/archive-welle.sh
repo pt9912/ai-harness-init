@@ -44,21 +44,49 @@
 #
 # BELEG. main() braucht `git` und `docker` und laeuft darum in keinem
 # bats-Fall (das gepinnte BATS_IMAGE fuehrt beides nicht). Der Beleg ist ein
-# eigenes Scratch-Repo mit drei Slices — einem Mitglied, einem wellenlosen,
-# zwei fremden —, einem Welle-Plan, einer Ergebnisnotiz, einem Review-Report
-# und einer frueher archivierten Welle als Untergrenze:
-#   `git show --stat` auf Commit 1 zeigt drei reine Renames,
-#     0 insertions / 0 deletions;
+# eigenes Scratch-Repo mit VIER Slices — einem Mitglied, einem wellenlosen,
+# zwei fremden (einer nennt eine andere Welle, einer traegt "—") —, einem
+# Welle-Plan, einer Ergebnisnotiz, einem Review-Report und einer frueher
+# archivierten Welle als Untergrenze:
+#   `git show --stat` auf Commit 1 zeigt drei reine Renames (zwei Slices + der
+#     Welle-Plan), 0 insertions / 0 deletions;
 #   Commit 2 traegt archiv.zip, drei Stubs, den geloeschten Review-Report und
-#     zwei Verweis-Nachzuege (Praefix-Form in der Ergebnisnotiz, geschwister-
-#     relative Form in einer flach gebliebenen Nachbar-Datei);
+#     den Verweis-Nachzug in BEIDEN Formen (Praefix-Form in der Ergebnisnotiz,
+#     geschwister-relative Form in einer flach gebliebenen Nachbar-Datei);
 #   der wellenlose Slice ist eingesammelt, die zwei fremden liegen unberuehrt
 #     flach in done/;
-#   `sha256sum` ueber zwei `git archive`-Laeufe desselben Tree-Operanden ist
-#     gleich — deshalb steht oben "dieselben Bytes" und nicht "aehnliche".
-# Die vier fail-closed-Ausgaenge sind an demselben Repo gefahren: Altbestand
-# ohne Untergrenze und lebender Verweis auf einen zu loeschenden Review-Report
-# brechen mit 3 ab, "schon archiviert" und "unsauberer Baum" mit 2.
+#   der `unzip -p`-Zeiger, den der Stub abdruckt, liefert wortwoertlich den
+#     archivierten Volltext zurueck — gefahren als genau das Kommando aus dem
+#     Stub, nicht als eine Variante davon.
+# BYTE-GLEICHHEIT ist eine EIGENSCHAFT, keine Zahl: zwei `git archive`-Laeufe
+# ueber demselben Tree-Operanden liefern denselben `sha256sum`. Der Wert selbst
+# steht hier bewusst NICHT — er haengt am Commit des jeweiligen Repos und
+# reproduziert fuer niemanden sonst; eine Zahl, deren Kommando sie beim Leser
+# nicht liefert, waere gegen MR-025 Setzung 2. Nachmessen:
+#   for i in 1 2; do docker run --rm --network none -v "$PWD":/repo:ro \
+#     -w /repo --entrypoint git "$ARCHIVE_IMAGE" -c safe.directory=/repo \
+#     archive --format=zip HEAD -- <pfad> | sha256sum; done
+# NEUN `exit`-Ausgaenge sind fail-closed und alle neun an einem Scratch-Repo
+# gefahren. Gezaehlt wird OHNE die Kommentarzeilen — ein Muster, das `exit N`
+# sucht, findet sonst den Satz, der es beschreibt, und zaehlt sich selbst mit
+# (kein Erwartungswert, die Zahl wandert mit dem Skript):
+#   grep -vE '^[[:space:]]*#' harness/tools/archive-welle.sh \
+#     | grep -cE '\bexit [0-9]'
+#   exit 3 — Altbestand ohne beobachtbare Untergrenze
+#          · lebender Verweis auf einen zu loeschenden Review-Report
+#   exit 2 — kein WELLE-Argument (usage) · unsauberer Arbeitsbaum
+#          · schon archiviert · Ergebnisnotiz fehlt · kein Welle-Plan
+#          · mehrdeutiger Welle-Plan · kein Slice eingesammelt
+# Dazu kommt ein ZEHNTER Abbruch anderer Bauart: schlaegt stub_form_ok an,
+# beendet `set -e` den Lauf nach Commit 1. Er ist kein `exit` und faellt darum
+# aus der Zaehlung oben heraus.
+# Die zwei exit-3-Ausgaenge sind zusaetzlich ueber dem ECHTEN Bestand dieses
+# Repos gefahren (Klon, `welle-01`): der Altbestand-Ausgang meldet die flach
+# liegenden wellenlosen Slices, der Verweis-Ausgang haelt Review-Reports fest,
+# auf die unter anderem `spec/lastenheft.md` und nach AGENTS.md 3.4
+# eingefrorene ADRs zeigen. Fuer dieses Repo heisst das: das Werkzeug ist
+# gebaut, aber noch auf keine Welle anwendbar — die Altbestands-Archivierung
+# und die Aufloesung dieser Verweise liegen davor.
 #
 # GRENZEN (fuenf, gemessen):
 # (1) ALTBESTAND. "wellenlos seit der letzten Closure" hat nur dort eine
@@ -86,10 +114,27 @@
 #     Norm, die an einer Stelle lebt.
 #
 # KOPPLUNG. Der Stub liegt unter docs/plan/planning/done/<welle-id>/ und faellt
-# damit unter zwei Regeln dieses Repos, die eine Ebene hoeher schon galten: die
-# ID-Link-Pflicht (.d-check.yml, ids.link-policy) — deshalb baut
-# feld_hervorgegangen() jede Kennung als Anker-Link statt sie abzuschreiben —
-# und die matrix-Klasse `slice`, deren Glob `**` auch zwei Ebenen tief greift.
+# damit unter zwei Regeln dieses Repos, die eine Ebene hoeher schon galten. Dass
+# beide die zusaetzliche Ebene wirklich erreichen, ist an einer Sonde in einem
+# Klon GEMESSEN und nicht aus dem Glob geschlossen — je eine Sonden-Datei zwei
+# Ebenen tief, eine flache Kontrolle daneben, `docs-check` darueber:
+#   (1) ID-LINK-PFLICHT (.d-check.yml, ids.link-policy: always). Greift zwei
+#       Ebenen tief: eine blanke `ADR-`/`LH-`/`MR-`-Kennung im FLIESSTEXT der
+#       Sonde meldet `id-unlinked`. Deshalb baut feld_hervorgegangen() jede
+#       Kennung als Anker-Link, statt sie abzuschreiben.
+#       GRENZE derselben Messung: die ATX-UEBERSCHRIFT ist ausgenommen — die
+#       blanke Kennung in Zeile 1 der Sonde meldet nichts. Darum darf
+#       titel_von() eine H1 mit Kennung unveraendert in den Stub uebernehmen;
+#       im Bestand gibt es solche H1 (Zaehlung ueber den Lifecycle:
+#       `for f in docs/plan/planning/*/slice-*.md; do head -n1 "$f"; done \
+#          | grep -cE 'ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}'`).
+#       Wandert die Ausnahme, faellt die Kopplung auf titel_von() zurueck.
+#   (2) MATRIX-KLASSE `slice`, Glob `docs/plan/planning/**/slice-*.md`. `**`
+#       greift zwei Ebenen tief: ein Link aus einem Spec-Stratum auf die Sonde
+#       meldet `matrix-forbidden` — gleichlautend mit der flachen Kontrolle.
+#       Der Stub bleibt damit in der Klasse, und die Referenz-Richtung (SDP)
+#       gilt fuer ihn unveraendert weiter. Hier ist nichts zu tun; die Kopplung
+#       steht, damit der naechste Lauf sie nicht fuer aufgehoben haelt.
 set -euo pipefail
 
 PLANNING="docs/plan/planning"

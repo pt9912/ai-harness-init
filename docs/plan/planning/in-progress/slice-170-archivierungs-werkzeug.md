@@ -113,13 +113,19 @@ dasteht.
   Bytes, und kein Gate liest hinein. Was ein zweiter Lauf dann belegt, ist zu benennen. —
   **Ausgang:** **entfallen** — die Zeitstempel-Hälfte tritt nicht ein, weil nicht `zip` packt,
   sondern `git archive --format=zip` über einem Tree-Operanden: die Eintrags-Zeitstempel kommen aus
-  der Commit-Zeit, nicht aus der Uhr des Laufs. Gemessen an zwei Läufen über denselben Commit,
-  `sha256sum` beide Male `0d4ef4178295a1544376b0cbe4853531657a3b25358a8ad87c5ae19d67ab494d`
-  (Scratch-Repo, Skriptkopf §BELEG; keine Erwartungswerte,
+  der Commit-Zeit, nicht aus der Uhr des Laufs. Gemessen an zwei Läufen über demselben
+  Tree-Operanden, zwei Sekunden auseinander — `sha256sum` liefert beide Male denselben Wert. Der
+  Wert **steht hier nicht**, und das ist die Anwendung von
   [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-  Setzung 2). Ein zweiter Lauf belegt damit Byte-Gleichheit. Dass kein Gate ins Zip hineinliest,
-  bleibt wahr — das ist die Aussage der Quelle selbst (Vollständigkeit bezeugt der
-  Archivierungs-Commit) und kein Rest dieses Risikos.
+  Setzung 2 und nicht ihre Umgehung: Er hängt am Commit des jeweiligen Repos, und ein Leser, der
+  das Kommando daneben fährt, bekäme einen anderen — eine Zahl, die ihr eigenes Kommando nicht
+  reproduziert, belegt nichts. Belegt ist die **Eigenschaft** (zwei Läufe, gleiche Bytes), und das
+  Nachmess-Kommando dafür steht im Skriptkopf (`harness/tools/archive-welle.sh`, Abschnitt BELEG).
+  Die opake Hälfte des Risikos bleibt wahr — kein Gate liest ins Zip hinein; das ist die Aussage
+  der Quelle selbst (Vollständigkeit bezeugt der Archivierungs-Commit) und kein Rest dieses
+  Risikos. Was ein zweiter Lauf **zusätzlich** belegt: der `unzip -p`-Zeiger, den der Stub
+  abdruckt, gibt den archivierten Volltext wortwörtlich zurück — als genau dieses Kommando
+  gefahren, nicht als Variante davon.
 - **Die eingehende Hälfte der präfixlosen Verweis-Form hat keinen Träger** (`BEO-003` im
   [Register](../observations.md), Grenze 3): ein Verweis ohne Verzeichnis-Segment bricht beim Move
   und wird nicht nachgezogen. — **Ausgang:** **entfallen** für diese Operation:
