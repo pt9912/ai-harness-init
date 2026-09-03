@@ -19,7 +19,7 @@ hinaus steht in keinem Kriterium (Baseline-Regelwerk `modul-06-roadmap.md`
 [ADR-0022](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 2
 (Fähigkeiten sind Unterkommandos **desselben** Trägers, und der Dogfood fährt denselben
 Einstiegspunkt) — die Träger-Festlegung selbst trifft
-[slice-172](../in-progress/slice-172-adr-archivierung-als-unterkommando.md).
+[slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md).
 
 **Berührte Spec-Stellen:** `—`.
 
@@ -56,19 +56,19 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       (i) die Kennungs-Form dieses Repos — d-checks Muster für die im Stub überlebenden Kennungen
       verlangt nach `FA-` mindestens einen Großbuchstaben und trifft `LH-FA-<NN>` damit nicht,
       während `LH-QA-<NN>` durchgeht; (ii) die Stub-Erzeugung nach Festlegung (c) aus
-      [slice-172](../in-progress/slice-172-adr-archivierung-als-unterkommando.md) — das Vorbild formatiert den
+      [slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md) — das Vorbild formatiert den
       Stub-Text im Code; (iii) die Einsammel-Regel um die **wellenlosen** Slices seit der letzten
       Closure, die das Vorbild in seiner `README.md` §Grenzen ausdrücklich ausschließt, während
       der Anweisungssatz dieses Repos sie verlangt.
 - [ ] **Die drei am Shell-Helfer rot gesehenen Zusagen halten, je einmal rot gesehen** — die
-      Abnahme-Kriterien aus [slice-172](../in-progress/slice-172-adr-archivierung-als-unterkommando.md) DoD (2):
+      Abnahme-Kriterien aus [slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md) DoD (2):
       Hänger-Wächter **ohne** `docs/reviews`-Ausschluss · Sauberkeits-Prüfung deckt untrackte
       Dateien und stagt mit expliziten Pfaden · der aufsteigende Stub-Verweis (`../<datei>.md`)
       wird beim **Folgelauf** nachgezogen. Das Vorbild deckt die dritte konstruktiv (sein Nachzug
       läuft rekursiv über den ganzen Baum und löst jedes Ziel relativ zur verweisenden Datei auf);
       die ersten beiden führt es nicht — es fasst keinen `git`-Zustand an.
 - [ ] **`make archive-welle` fährt den Träger**, und der Shell-Helfer samt seinem bats-Satz folgt
-      Festlegung (b) aus [slice-172](../in-progress/slice-172-adr-archivierung-als-unterkommando.md) — zwei
+      Festlegung (b) aus [slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md) — zwei
       Fassungen derselben Operation nebeneinander sind der Zustand, den dieser Punkt beendet.
 - [ ] `make gates` grün.
 - [ ] Doku-Update: [`harness/README.md`](../../../../harness/README.md) beschreibt das Target —
@@ -97,7 +97,7 @@ Aussagen-Berührung steht hier gar nicht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [slice-172](../in-progress/slice-172-adr-archivierung-als-unterkommando.md)
+**Start** (`next` → `in-progress`): [slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md)
 liegt in `done/` — Träger, Stub-Quelle, Umgang mit dem Shell-Helfer und die drei Abnahme-Kriterien
 stehen dort.
 
