@@ -57,7 +57,7 @@ gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst —
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
 - [ ] **Ein frisch gebootstrapptes Ziel erreicht `archive-welle`** — auf dem Weg, den Festlegung
-      (d) aus [slice-172](slice-172-adr-archivierung-als-unterkommando.md) wählt. Der Weg ist in
+      (d) aus [slice-172](../in-progress/slice-172-adr-archivierung-als-unterkommando.md) wählt. Der Weg ist in
       `make full-smoke` **belegt**, nicht behauptet: derselbe Beleg-Typ, mit dem
       [ADR-0022](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) die
       Erfassungsschicht im Ziel abgenommen hat.
@@ -107,7 +107,7 @@ die halluzinierte Zusage aus
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn die **Erreichbarkeit** im Ziel eine
   eigene Abzählung verlangt — der Träger liegt gitignored, und ein frischer Klon hat ihn nicht.
   Das ist eine Träger-Frage und gehört zu
-  [slice-172](slice-172-adr-archivierung-als-unterkommando.md), nicht an die Emissionsstelle.
+  [slice-172](../in-progress/slice-172-adr-archivierung-als-unterkommando.md), nicht an die Emissionsstelle.
 - `in-progress` → `open` (blockiert — Carveout?): wenn Festlegung (d) die Emission verneint —
   dann hat dieser Slice keinen Gegenstand.
 
