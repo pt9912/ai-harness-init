@@ -31,7 +31,7 @@ das Delta.** Die Volltext-Hälfte ist die Auflage aus `BEO-013` ([Register](../o
 ein Delta-Durchgang findet eine Deckung nicht, die ein Volltext-Durchgang fände, und die
 Fehlerrichtung ist *bleibt gültig* statt *gegenstandslos*.
 
-Der Katalog in [slice-155](../in-progress/slice-155-inventur-vor-dem-schnitt.md) §9 nennt vier
+Der Katalog in [slice-155](../done/slice-155-inventur-vor-dem-schnitt.md) §9 nennt vier
 Positionen, die hier zusammenlaufen: die `MR-<NNN>`-Glossarzeile, der umbenannte Abschnitt
 §Referenz-Implementierung → §Das vollständige Artefakt-Set (er trägt die von
 [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption)

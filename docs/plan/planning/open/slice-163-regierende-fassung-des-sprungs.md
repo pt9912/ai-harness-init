@@ -32,7 +32,7 @@ Precedence — und mit ihr der Ort, an dem eine künftige Zielstand-Setzung samt
 wohnt.**
 
 Die Messung liegt vor und ist in
-[slice-155](../in-progress/slice-155-inventur-vor-dem-schnitt.md) §9 belegt: **beide** Fassungen
+[slice-155](../done/slice-155-inventur-vor-dem-schnitt.md) §9 belegt: **beide** Fassungen
 führen die Migrations-Prozedur — der Abschnitt §Freshness-Audit der vendored Baseline (Schritt 2)
 ist zwischen den Tags byte-gleich. Damit greift der **zweite** Fall von
 [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 3, und die Wahl ist
@@ -87,7 +87,7 @@ Aussagen-Berührung steht hier gar nicht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [slice-155](../in-progress/slice-155-inventur-vor-dem-schnitt.md)
+**Start** (`next` → `in-progress`): [slice-155](../done/slice-155-inventur-vor-dem-schnitt.md)
 liegt in `done/` — die Messung nach Festlegung 3 ist gefahren und belegt, und ohne sie hätte die
 Entscheidung keine Grundlage.
 

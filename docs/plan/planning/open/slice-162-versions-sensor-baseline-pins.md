@@ -8,7 +8,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 **Welle:** ohne Welle — ein Sensor-Neubau, den
 [welle-14](../welle-14-re-baseline.md) §6 ausdrücklich ausschließt; die Linie trägt
 [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md). Der Slice ist der **Ausgang** einer
-Katalog-Position aus [slice-155](../in-progress/slice-155-inventur-vor-dem-schnitt.md) §9 und
+Katalog-Position aus [slice-155](../done/slice-155-inventur-vor-dem-schnitt.md) §9 und
 kein Mitglied der Re-Baseline-Welle.
 
 **Bezug:** [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)

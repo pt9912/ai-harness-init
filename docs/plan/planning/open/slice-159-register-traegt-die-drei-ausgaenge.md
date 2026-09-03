@@ -159,6 +159,6 @@ selbst nur diesen Namen, und genau das ist `BEO-004`.
 **Vorgelagert — offene Beobachtungen sichten:** `BEO-004` (die Sub-Area-Spalte unterscheidet
 nichts) berührt den Gegenstand unmittelbar, ihre Auflösung ist Architect-Arbeit und **nicht**
 Gegenstand hier; `BEO-010` trägt den Zuschnitt und ist in
-[slice-155](../in-progress/slice-155-inventur-vor-dem-schnitt.md) verbucht. Weitere Treffer: keine.
+[slice-155](../done/slice-155-inventur-vor-dem-schnitt.md) verbucht. Weitere Treffer: keine.
 
 **alle berührten Sub-Areas GF** — der Modus-Begründungsblock entfällt damit.

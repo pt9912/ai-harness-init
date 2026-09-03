@@ -27,12 +27,12 @@ zurückzukommen.**
 [welle-10](done/welle-10-re-baseline.md), die als `BEO-010` im [Register](observations.md) liegt:
 jene Welle schloss mit erheblich mehr Mitgliedern, als sie geschnitten hatte — beide Zahlen stehen
 dort neben den Kommandos, die sie ausgeben. Wie viele Mitglieder diese Welle bekommt, beantwortet
-[slice-155](in-progress/slice-155-inventur-vor-dem-schnitt.md); vorher steht die Zahl nirgends.
+[slice-155](done/slice-155-inventur-vor-dem-schnitt.md); vorher steht die Zahl nirgends.
 
 **Wer den Zielstand bewegt, entscheidet diese Datei nicht:**
 [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) §*Wer den Zielstand bewegt*. Welche
 Fassung die Migrations-Prozedur dieses Sprungs stellt, ist offen und liegt beim Architect —
-gemessen wird sie in [slice-155](in-progress/slice-155-inventur-vor-dem-schnitt.md) (§6 dort, mit der
+gemessen wird sie in [slice-155](done/slice-155-inventur-vor-dem-schnitt.md) (§6 dort, mit der
 Übergabe).
 
 ## 2. Trigger (Welle startet)
@@ -84,7 +84,7 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-155](in-progress/slice-155-inventur-vor-dem-schnitt.md) | Inventur vor dem Schnitt — der Form- und Regel-Diff `v5.12.0` → `v5.18.0` | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) |
+| [slice-155](done/slice-155-inventur-vor-dem-schnitt.md) | Inventur vor dem Schnitt — der Form- und Regel-Diff `v5.12.0` → `v5.18.0` | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) |
 | [slice-156](open/slice-156-baum-tauschen-pins-ziehen.md) | Der vendored Baum zieht auf `v5.18.0` — Tausch und Pins | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
 | [slice-157](open/slice-157-adaptions-durchgang-v5180.md) | Adaptions-Durchgang gegen `v5.18.0` — Delta **und** Volltext | [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md), [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | [slice-158](open/slice-158-archivierungs-schritt.md) | Der Archivierungs-Schritt der Wellen-Closure — Entscheidung und Sechs-Schritte-Form | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren), [`ADR-0028`](../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) |
@@ -94,7 +94,7 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 | [slice-163](open/slice-163-regierende-fassung-des-sprungs.md) | Die regierende Fassung des Sprungs — und wo eine Zielstand-Setzung künftig steht | [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md), [`ADR-0015`](../adr/0015-rollen-eigentum-an-norm-artefakten.md) |
 
 **Die Zeilen 2–8 stehen seit dem Katalog** in
-[slice-155](in-progress/slice-155-inventur-vor-dem-schnitt.md) §9 — 21 gemessene Positionen, jede
+[slice-155](done/slice-155-inventur-vor-dem-schnitt.md) §9 — 21 gemessene Positionen, jede
 mit Zuordnung und Ausgang. Bei der Eröffnung fehlten sie, und das war der Zuschnitt und nicht sein
 Mangel: `BEO-010` ([Register](observations.md)) verlangt, dass der Form-Diff vollständig vorliegt,
 **bevor** der Rest geschnitten wird; eine vorab geschätzte Mitglieder-Zahl war beim letzten Mal
@@ -130,7 +130,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   weiter: `modul-15-*` steht nicht im Delta dieses Sprungs
   (`git diff --name-only v5.12.0 v5.18.0 -- lab/regelwerk` am lokalen Kurs-Klon).
 - **Die Übergabe an den Architect hat einen Träger:** die regierende Fassung dieses Sprungs ist
-  gemessen ([slice-155](in-progress/slice-155-inventur-vor-dem-schnitt.md) §9 — beide Fassungen
+  gemessen ([slice-155](done/slice-155-inventur-vor-dem-schnitt.md) §9 — beide Fassungen
   führen die Prozedur, also greift der zweite Fall von
   [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 3) und wird in
   [slice-163](open/slice-163-regierende-fassung-des-sprungs.md) entschieden. Sie blockierte die

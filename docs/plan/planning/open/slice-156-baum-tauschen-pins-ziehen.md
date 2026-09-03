@@ -28,7 +28,7 @@ ist einzeln lieferbar.
 
 **`.harness/baseline/v5.18.0/` liegt vendored, `v5.12.0` ist fort, und jeder Pin und jeder
 Baseline-Pfad im lebenden Bestand zeigt auf den neuen Tag.** Geschnitten aus Position 1 des
-Katalogs in [slice-155](../in-progress/slice-155-inventur-vor-dem-schnitt.md) §9 (die Stand-Zeile
+Katalogs in [slice-155](../done/slice-155-inventur-vor-dem-schnitt.md) §9 (die Stand-Zeile
 des Regelwerk-Index, die `harness/conventions.md` §Baseline zitiert).
 
 ## 2. Definition of Done
@@ -74,7 +74,7 @@ Aussagen-Berührung steht hier gar nicht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [slice-155](../in-progress/slice-155-inventur-vor-dem-schnitt.md)
+**Start** (`next` → `in-progress`): [slice-155](../done/slice-155-inventur-vor-dem-schnitt.md)
 liegt in `done/` — der Katalog steht, und mit ihm die Menge der Positionen, die dieser Tausch
 auslöst.
 
