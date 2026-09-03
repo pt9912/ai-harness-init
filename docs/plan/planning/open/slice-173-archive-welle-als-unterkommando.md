@@ -147,6 +147,14 @@ dasteht.
   Grenzen-Liste im Skriptkopf und die Beschreibung in
   [`harness/README.md`](../../../../harness/README.md). — **Ausgang:** <eingetreten: CO-NNN /
   slice-NNN | entfallen: Grund | weiter offen: → BEO-NNN im Register>
+- **Zwei offene LOW des Vorbilds wandern wortgleich in den Port, wenn sie niemand benennt.** Die
+  zweite Review-Runde von [slice-170](../in-progress/slice-170-archivierungs-werkzeug.md) ließ sie
+  stehen: `titel_von` lässt bei der H1-Form `# Slice <NNN>: T` die Nummer im Titel stehen, obwohl
+  der Kommentar daneben zusagt, eine Zeile ohne Kennung bleibe ganz stehen; `unsauber_grund` zählt
+  Zeilen aus `git status --porcelain` und nennt sie „Datei(en)", während eine Zeile ein untracktes
+  Verzeichnis sein kann. Die Klassen liegen als `BEO-025` und `BEO-026` im
+  [Register](../observations.md). — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen:
+  Grund | weiter offen: → BEO-NNN im Register>
 
 ## 7. Closure-Notiz
 
