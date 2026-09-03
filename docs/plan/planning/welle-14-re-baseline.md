@@ -202,5 +202,10 @@ Regeln dieser Sektion: Baseline-Regelwerk `grundlagen-traceability.md`
 beiden Zeiger unten sind so zu schreiben, wie sie vom Ruheort `done/` auflösen,
 nicht vom Schreibort.
 
-<!-- Erst bei der Closure gefüllt: Ergebnis-Notiz als Geschwister im Ruheort, Zähler eine Ebene
-darüber. Beide Zeiger entstehen dort, weil sie vom Schreibort aus ins Leere zeigen. -->
+Die Ergebnis-Notiz ist [welle-14-results.md](welle-14-results.md), der Zähler
+[`observations.md`](../observations.md). Beide Zeiger stehen so, wie sie vom Ruheort `done/`
+auflösen.
+
+Diese Welle schloss **ohne Schritt 4** (Zeitdokumente archivieren): dessen Start-Bedingung —
+[slice-170](../open/slice-170-archivierungs-werkzeug.md) liegt in `done/` — war nicht eingetreten.
+Die Feststellung und ihr Grund stehen in der Ergebnis-Notiz.
