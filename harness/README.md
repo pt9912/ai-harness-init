@@ -5,7 +5,8 @@
 Einstiegspunkt für Menschen und AI-Agenten. Kein Ersatz für spec/ oder
 docs/. Bei Konflikt mit einer kanonischen Quelle gewinnt diese.
 
-Strukturregeln und Adaptionen leben in [`conventions.md`](conventions.md).
+Strukturregeln leben in [`conventions.md`](conventions.md); die Adaptionen selbst liegen als je
+eine Datei unter [`conventions/`](conventions/), und `conventions.md` ist ihr Index.
 
 ## Source precedence
 
@@ -32,7 +33,8 @@ Strukturregeln und Adaptionen leben in [`conventions.md`](conventions.md).
 | [`spec/architecture.md`](../spec/architecture.md) | Komponenten, Schichten, Constraints |
 | [`docs/plan/adr/`](../docs/plan/adr/) | Architekturentscheidungen |
 | [`AGENTS.md`](../AGENTS.md) | Hard Rules, Source Precedence |
-| [`conventions.md`](conventions.md) | Strukturregeln, MR-Block, Modus |
+| [`conventions.md`](conventions.md) | Strukturregeln, Index des MR-Blocks, Modus |
+| [`conventions/`](conventions/) | die MR-Einträge selbst, eine Datei je Eintrag |
 
 ## Sensors (Feedback-Gates)
 
@@ -100,5 +102,5 @@ bei Bedarf; eine Leseordnung, die alles nennt, ist keine.
    liefert.
 3. [`docs/plan/planning/in-progress/roadmap.md`](../docs/plan/planning/in-progress/roadmap.md)
    — woran gerade gearbeitet wird.
-4. [`conventions.md`](conventions.md) — bei Bedarf: Adaptionen von der
-   Baseline (MR-Block), Modus-Deklaration.
+4. [`conventions.md`](conventions.md) — bei Bedarf: der Index der Adaptionen von der
+   Baseline (der Eintrag selbst liegt unter [`conventions/`](conventions/)), Modus-Deklaration.

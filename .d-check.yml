@@ -30,7 +30,7 @@ modules: [links, anchors, ids, matrix, codepaths, spans]
 # ignore-refs (referenz-weit, geteilt seit d-check 0.49.0 — links, anchors und codepaths
 # honorieren denselben Top-Level-Schluessel): nimmt benannte Referenzen aus, keine Datei.
 # in und refs sind je auf einen Dateinamen geschnitten; aus der Pruefung faellt nur, was beide
-# gemeinsam treffen. harness/conventions.md traegt einen Markdown-Link in den abgeloesten
+# gemeinsam treffen. Der Rumpf von MR-021 traegt einen Markdown-Link in den abgeloesten
 # Baseline-Baum: der Satz um ihn herum ist nur ueber jenen Stand wahr, die adoptierte Baseline
 # sagt an derselben Zeile das Gegenteil, und der Rumpf des Eintrags ist append-only eingefroren.
 # Warum daraus eine Ausnahme folgt und keine Reparatur, steht in ADR-0026.
@@ -43,7 +43,11 @@ modules: [links, anchors, ids, matrix, codepaths, spans]
 # nach AGENTS.md 3.5 und braucht ihre eigene ADR — auch dann, wenn sie dieselbe Bedingung
 # erfuellt.
 ignore-refs:
-  - in: "harness/conventions.md"
+  # Quell-Schluessel: der Rumpf von MR-021 liegt seit dem Umzug in seiner eigenen Datei; die
+  # ausgenommene Referenz ist dieselbe (ADR-0032 zieht den Schluessel nach und supersedet dafuer
+  # die Entscheidung aus ADR-0026 in diesem einen Wert). Das relative Ziel steht eine Ebene
+  # tiefer, das aufgeloeste ist unveraendert.
+  - in: "harness/conventions/MR-021-das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben.md"
     refs: [".harness/baseline/v3.5.2/regelwerk/modul-08-agentenrollen.md"]
   # Zweites Paar, eigene Entscheidung (ADR-0027). docs/plan/adr/0026-eingefrorene-referenz-
   # referenz-weit-ausgenommen.md nennt CO-005 in ihrer Geschichte-Tabelle als Pfad-Link auf den
@@ -95,7 +99,15 @@ ids:
       link-policy: always
       exempt-paths: [CHANGELOG.md, "docs/reviews/**"]
     - regex: 'MR-\d{3}'
-      target: harness/conventions.md
+      # target = Definitions-Ort ("dort ist die Kennung zu Hause"). Die Rumpf-Dateien des
+      # Adaptions-Blocks liegen seit dem Umzug in harness/conventions/, nicht mehr in der
+      # Index-Datei; der Ort folgt dem Rumpf (MR-045 Setzung 2). KEINE Senkung: jedes Byte,
+      # das hier ausgenommen ist, lag vorher in der Index-Datei und war dort ebenso
+      # ausgenommen — und harness/conventions.md tritt dadurch NEU unter die Link-Pflicht.
+      # Der Ort steuert nur, wo eine blanke Kennung erlaubt ist; die 2000+ Verweise des Repos
+      # zeigen unveraendert auf harness/conventions.md#mr-NNN--<slug> und werden von links/
+      # anchors geprueft, nicht von hier.
+      target: harness/conventions/
       link-policy: always
       exempt-paths: [CHANGELOG.md, "docs/reviews/**"]
 # Referenz-Richtung (SDP) mechanisch: Spec-Straten verweisen nie abwärts

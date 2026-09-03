@@ -101,7 +101,7 @@ Arbeitsbaum dieses Repos, netzlos (`--network none`), Mount `:ro`; der Klon des 
    (gepinnt) und `make docs-check DCHECK_DIGEST=sha256:117a3503…a7f1` über denselben unveränderten
    Baum mit unveränderter [`.d-check.yml`](../../../../.d-check.yml): beide
    `d-check: 450 Datei(en) geprüft, 1 Befund(e)`, beide derselbe Befund
-   (`harness/conventions.md:1015`, Grund `target-missing`), beide Exit 2 aus `make`. `diff` der
+   (Grund `target-missing`), beide Exit 2 aus `make`. `diff` der
    zwei Ausgaben führt **genau eine** Zeile — das von `make` mitgeschriebene `docker run`, in dem
    der Digest steht. **Weder die 450 noch die 1 sind Erwartungswerte:** die Dateizahl wächst mit
    jedem Dokument, und der eine Befund ist der bekannte, von
