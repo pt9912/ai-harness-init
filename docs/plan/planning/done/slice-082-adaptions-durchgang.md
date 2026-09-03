@@ -300,7 +300,7 @@ DoD vollständig, Closure-Notiz geschrieben.
 - **Drei Paarungen:** entfällt hier — dieses Repo führt Wellen-Betrieb, `welle-10` bleibt nach
   dieser Closure offen (weitere Slices in `open/`). Die Paarungen (Anker · Folge-Slice · Register)
   prüft die nächste Welle-Closure, auch für diesen Slice
-  ([`modul-06-roadmap.md`](../../../../.harness/baseline/v5.12.0/regelwerk/modul-06-roadmap.md)
+  (`modul-06-roadmap.md`
   §Wellen-Closure-Prozedur, Schritt 3, *„Zum Schluss alle drei Paarungen prüfen"*).
 
 ## 8. Sub-Area-Modus-Begründung
@@ -356,7 +356,7 @@ Posten mit echtem Befund tragen ihre Zitate darum ausgeschrieben **unterhalb** d
 ### Die vier Posten mit echtem Befund
 
 **015 ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)) — gegenstandslos.**
-[`grundlagen-source-precedence.md`](../../../../.harness/baseline/v5.12.0/regelwerk/grundlagen-source-precedence.md)
+`grundlagen-source-precedence.md`
 trägt seit `v5.12.0` einen eigenen Absatz *„Fallen Auftraggeber- und Entwickler-Rolle
 zusammen"*, der [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)s drei Setzungen Satz für Satz deckt: *„Die Rolle ist besetzt … der
 annehmende Akt ist die Entscheidung, die vor der Umsetzung fällt"* (Setzung 1), *„Der Träger ist
@@ -371,7 +371,7 @@ Rumpf deshalb vollständig stehen; nur eine Kopf-Marke ist gesetzt — Nachfolge
 [`MR-036`](../../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline).
 
 **016 ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)) — teilweise überholt, praktisch vollständige Aufhebung.**
-[`modul-06-roadmap.md`](../../../../.harness/baseline/v5.12.0/regelwerk/modul-06-roadmap.md)
+`modul-06-roadmap.md`
 trägt [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)s Platzierungs-Regel (Setzung 2/3: wellenlose Arbeit nicht in der Roadmap, Zustand ist
 die Verzeichnis-Position) jetzt wörtlich als Baseline-Default. Gleichzeitig **widerspricht** die
 neue Fassung [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)s dritter Schnitt-Frage ausdrücklich: [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) sagte *„'Wir wollen eine neue
@@ -388,7 +388,7 @@ Nachfolge-Eintrag [`MR-037`](../../../../harness/conventions.md#mr-037--wellenlo
 
 **019 ([`MR-019`](../../../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence)) — bleibt gültig (Normalfall), keine Vermutung.**
 Der erste Eindruck — *„3 Strata sind jetzt obligatorisch, also gegenstandslos"* — trägt nicht:
-[`grundlagen-referenz-richtung.md`](../../../../.harness/baseline/v5.12.0/regelwerk/grundlagen-referenz-richtung.md)
+`grundlagen-referenz-richtung.md`
 verlangt unverändert, dass **jedes** Spec-Dokument sein Stratum in `harness/conventions.md`
 deklariert (*„Ein Spec-Dokument ohne deklariertes Stratum ist eine stille Setzung … und nicht
 normativ zitierbar, bis es deklariert ist"*) — einer von zwei genannten Mechanismen. Die

@@ -77,7 +77,7 @@ dieses Repos ruft denselben Einstiegspunkt, den ein Zielrepo bekommt.
 künftigen Payload wird **nicht** still mitgeschrieben. Wer eines aufnimmt, trägt es hier
 ein — mit seiner Incident-Frage, sonst gar nicht (*„Ein Attribut ohne Incident-Frage
 fliegt raus"*,
-[Modul 15 §Span-/Audit-Attribut-Regeln](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)).
+[Modul 15 §Span-/Audit-Attribut-Regeln](../.harness/baseline/v5.18.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)).
 Die Tabelle ändert sich mit jedem neuen Feld — jede Änderung ist ein Eintrag hier, kein
 Nebeneffekt im Skript.
 
@@ -103,11 +103,11 @@ Zeile ändert, zieht ihren Wächter von Hand nach (Sonden und Gegenproben in
 | `SPEC-007` | `tool_use_id` | Pflicht | *Welche Ereignisse gehören zu einem Aufruf?* | `TestMandatoryFieldsAlwaysPresent` · Fall 110 |
 | `SPEC-008` | `session`, `agent` | Pflicht | *Welcher Lauf war es?* — zusammen bilden sie den **Strom** | `internal/span/span_test.go` (Strom-Trennung) |
 | `SPEC-009` | `agent_type` | Pflicht | *Welche Art Lauf?* — der **Subagent-Typ** der Payload, roh. **Pflicht wie `agent`**: die vier Felder `session`/`agent`/`agent_type`/`agent_role` sind ein Block, und leer ist dort eine Aussage (Haupt-Kontext), kein fehlender Wert | — |
-| `SPEC-010` | `agent_role` | Pflicht | *Welche Rolle verursachte den Zugriff?* — das Pflichtfeld aus [Modul 15](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln). Gefüllt, wenn `agent_type` eine Harness-Rolle **nennt** (`planner`, `architect`, `implementer`, `reviewer`, `verifier`, `validator`). **Leer heißt UNBEKANNT, nie „rollenlos"** — s. die Lesevorschrift unten | — |
+| `SPEC-010` | `agent_role` | Pflicht | *Welche Rolle verursachte den Zugriff?* — das Pflichtfeld aus [Modul 15](../.harness/baseline/v5.18.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln). Gefüllt, wenn `agent_type` eine Harness-Rolle **nennt** (`planner`, `architect`, `implementer`, `reviewer`, `verifier`, `validator`). **Leer heißt UNBEKANNT, nie „rollenlos"** — s. die Lesevorschrift unten | — |
 | `SPEC-011` | `slice` | Pflicht | *Auf wessen Rechnung lief der Zugriff?* — aus dem Lifecycle-Verzeichnis, Liste (kein Slice ⇒ leer und als leer erkennbar) | `internal/span/span_test.go` (Ableitung) |
 | `SPEC-012` | `requirement` | Pflicht | *Gegen welche Anforderung?* — aus der `Bezug:`-Zeile der Slices, Liste | `internal/span/span_test.go` (Ableitung) |
-| `SPEC-013` | `adr` | Pflicht | *Auf wessen Entscheidung lief der Zugriff?* — die dritte Korrelations-Achse aus [Modul 15 §Kernidee](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#kernidee-modul-15), aus demselben `Bezug:`-Block wie `requirement`, Liste | — |
-| `SPEC-014` | `branch`, `commit` | Pflicht | *Zu welcher Änderung gehört der Zugriff?* — die dritte Korrelations-Achse aus [Modul 15](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln) (*Slice/**PR**/Agent-Rolle*), abgeleitet aus `.git/HEAD`; die PR-Nummer selbst ist nicht erreichbar, s. Abweichung 2 | `internal/span/span_test.go` (Ableitung von `branch`) · Fall 111 |
+| `SPEC-013` | `adr` | Pflicht | *Auf wessen Entscheidung lief der Zugriff?* — die dritte Korrelations-Achse aus [Modul 15 §Kernidee](../.harness/baseline/v5.18.0/regelwerk/modul-15-observability.md#kernidee-modul-15), aus demselben `Bezug:`-Block wie `requirement`, Liste | — |
+| `SPEC-014` | `branch`, `commit` | Pflicht | *Zu welcher Änderung gehört der Zugriff?* — die dritte Korrelations-Achse aus [Modul 15](../.harness/baseline/v5.18.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln) (*Slice/**PR**/Agent-Rolle*), abgeleitet aus `.git/HEAD`; die PR-Nummer selbst ist nicht erreichbar, s. Abweichung 2 | `internal/span/span_test.go` (Ableitung von `branch`) · Fall 111 |
 | `SPEC-015` | `status` | Pflicht | *Ging es gut?* | — |
 | `SPEC-016` | `permission_mode` | Optional | *Unter welcher Berechtigungs-Lage?* | — |
 | `SPEC-017` | `path` | Optional | *Was wurde wohin geschrieben/gelesen?* — nur bei namentlich gelisteten Datei-Werkzeugen | — |
@@ -121,7 +121,7 @@ Zeile ändert, zieht ihren Wächter von Hand nach (Sonden und Gegenproben in
 | `SPEC-025` | `total_tokens` | Optional | *Wie groß war der Lauf insgesamt?* — die Summe, die das **Werkzeug selbst** ausweist. Am eigenen Bestand nachgerechnet **ist** sie die Addition der vier Zähler, exakt, an jedem geprüften Zähler-Span. Eine Auswertung addiert sie deshalb **nicht** zu den vier, sondern gegen sie. **Hier steht bewusst keine Zahl und keine Stichprobengröße:** der Bestand unter `.harness/state/spans/` ist gitignored, maschinenlokal und wächst mit jedem Subagenten-Lauf — eine eingefrorene Rechnung ist für einen anderen Checkout ohnehin nicht nachvollziehbar. Die Probe gehört **gefahren**, nicht zitiert, und sie bleibt eine Stichprobe | — |
 | `SPEC-026` | `total_duration_ms` | Optional | *Wie lange lief der Subagent wirklich?* — **nicht** `duration_ms`: das misst den Aufruf, wie der Hook ihn sieht. Die Erfassung hängt an `PostToolUse`/`PostToolUseFailure`, der Hook feuert also **nach** dem Aufruf; `duration_ms` ist die Wanduhr des ganzen Werkzeug-Aufrufs und liegt deshalb in einem Vordergrund-Lauf **über** `total_duration_ms`, um Anlauf und Rückgabe. Wer die Reihenfolge umdreht, liest die Differenz als Subagenten-Zeit. **Die Probe gehört gefahren, nicht zitiert** (hier steht darum keine Zahl): jeder `Agent`-Span mit beiden Werten zeigt sie, und ein Span, in dem `duration_ms` **unter** `total_duration_ms` liegt, wäre der Befund. Ein im **Hintergrund** gelaufener Aufruf trägt gar kein `totalDurationMs`; sein `duration_ms` ist klein, weil das Werkzeug für einen Hintergrund-Subagenten sofort nach dem Start zurückgibt. Jede Paarung gehört ihrem Aufruf; zwei Beobachtungen zu einer zu fügen ergäbe eine Messung, die niemand gemacht hat | — |
 | `SPEC-027` | `total_tool_use_count` | Optional | *Wie viele Werkzeug-Aufrufe verursachte der Subagent?* — der Teiler, ohne den „Token je Aufruf" nicht rechenbar ist | — |
-| `SPEC-028` | `model_version` | Optional | *Welches Modell verursachte die Kosten?* — das Label `model.version` aus [Modul 15 §Cache-Counter-Regeln](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#cache-counter-regeln), aus `tool_response.resolvedModel`, **strukturell begrenzt** (Länge und geschlossener Zeichensatz, [§3](#3-defaults-und-konstanten)). Was die Gestalt eines Bezeichners nicht hat, wird **verworfen, nicht gekürzt** | `TestResolvedModelIsStructurallyBounded` · Fall 129 |
+| `SPEC-028` | `model_version` | Optional | *Welches Modell verursachte die Kosten?* — das Label `model.version` aus [Modul 15 §Cache-Counter-Regeln](../.harness/baseline/v5.18.0/regelwerk/modul-15-observability.md#cache-counter-regeln), aus `tool_response.resolvedModel`, **strukturell begrenzt** (Länge und geschlossener Zeichensatz, [§3](#3-defaults-und-konstanten)). Was die Gestalt eines Bezeichners nicht hat, wird **verworfen, nicht gekürzt** | `TestResolvedModelIsStructurallyBounded` · Fall 129 |
 
 **Welches Werkzeug gibt was preis — die namentliche Liste.** Die Feldtabelle oben sagt
 *„nur bei namentlich gelisteten Werkzeugen"*; hier stehen die Namen. Ein Werkzeug
@@ -367,15 +367,15 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
 
 - Vom **Pflicht-Minimum** eines Audit-Span-Schemas — Slice-ID · Agent-Rolle · Cache-Status ·
   `requirement.id`
-  ([§Span-/Audit-Attribut-Regeln](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln))
+  ([§Span-/Audit-Attribut-Regeln](../.harness/baseline/v5.18.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln))
   — weichen **1** (Cache-Status) und **3** (`agent_role`) ab: zwei seiner vier Posten.
 - **2** (PR-Nummer) weicht von den **Mindestfeldern eines Tool-Call-Spans** ab
   (*„Korrelations-IDs zu Slice/PR/Agent-Rolle"*, dieselbe
-  [Regelgruppe](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln),
+  [Regelgruppe](../.harness/baseline/v5.18.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln),
   eine andere Liste).
 - **5** (Hintergrund-Lauf ohne Verbrauchs-Achse) und **6** (Haupt-Kontext ohne Zahl) weichen von
   den
-  [**Token-Attributions-Regeln**](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#token-attributions-regeln)
+  [**Token-Attributions-Regeln**](../.harness/baseline/v5.18.0/regelwerk/modul-15-observability.md#token-attributions-regeln)
   ab.
 - **4** (Altbestände) weicht von **keiner** Modul-Regel ab. Ihre Quelle ist eine Entscheidung
   dieses Repos über die **Aufbewahrung**, nicht über das Schema; sie steht hier, weil sie
@@ -390,7 +390,7 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
    ([`CO-002`](../docs/plan/carveouts/CO-002-token-achse-je-rolle.md); die Erfassung selbst
    steht unverändert und nimmt die Zähler, sobald sie wieder ankommen). Eine Auswertung, die
    die Cache-Hit-Rate aus
-   [Modul 15 §Cache-Counter-Regeln](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#cache-counter-regeln)
+   [Modul 15 §Cache-Counter-Regeln](../.harness/baseline/v5.18.0/regelwerk/modul-15-observability.md#cache-counter-regeln)
    rechnet, fände die **Zähler** getrennt nach Erzeugung und Lesung vor, wie das Modul es
    fordert (*„Eine einzelne Metrik `cache.hit_ratio` reicht nicht"*) — heute findet sie für
    keinen Lauf welche. **Vollständig ist die Rechnung damit
@@ -407,7 +407,7 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
    eine Auflösung nahe, die niemand genehmigt hat; der `transcript_path` wird deshalb weder
    erfasst noch gelesen.
 2. **Die PR-NUMMER steht nicht im Span, ihr Anker schon.**
-   [Modul 15](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
+   [Modul 15](../.harness/baseline/v5.18.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
    verlangt die Korrelation zu *Slice/PR/Agent-Rolle*. Eine PR-Nummer lebt bei der Forge;
    der Emitter geht nicht ins Netz und ruft kein `gh` (er läuft je Tool-Call). Erfasst werden
    deshalb `branch` und `commit` — die Größen, über die eine Auswertung den PR nachschlägt.
@@ -428,7 +428,7 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
 
    **Die kanonischen Namen der Agenten-Typen:** `planner` · `architect` · `implementer` ·
    `reviewer` · `verifier` · `validator`. Es sind die sechs Rollen-Namen aus
-   [Modul 8](../.harness/baseline/v5.12.0/regelwerk/modul-08-agentenrollen.md#rollen-sequenz-für-einen-slice),
+   [Modul 8](../.harness/baseline/v5.18.0/regelwerk/modul-08-agentenrollen.md#rollen-sequenz-für-einen-slice),
    kleingeschrieben. Die Kleinschreibung ist die **Bezeichner**-Form und trifft alle sechs
    gleich; sie sagt über keine einzelne Rolle etwas aus. Der Wert steht hier, weil er eine
    technische Festlegung ist — nicht im Code.
@@ -471,7 +471,7 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
    deshalb eine Aussage über **unser Wissen**, nicht über den Lauf: es heißt *unbekannt*,
    niemals *ohne Rolle*.
 
-   [Modul 15 §Token-Attributions-Regeln](../.harness/baseline/v5.12.0/regelwerk/modul-15-observability.md#token-attributions-regeln)
+   [Modul 15 §Token-Attributions-Regeln](../.harness/baseline/v5.18.0/regelwerk/modul-15-observability.md#token-attributions-regeln)
    verlangt an dieser Stelle wörtlich: *„Wo ein Span keinen Rollen-Tag trägt (Sammelposten),
    entscheide begründet, wie du ihn aufteilst (anteilig nach Tool-Calls? dem auslösenden
    Slice zugeschlagen?)"*. Daraus folgt genau dreierlei, und die Reihenfolge ist die

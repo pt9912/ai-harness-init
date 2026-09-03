@@ -374,7 +374,7 @@ Backticks).
   *entfallen* auf gemessene oder getestete Deckung, keines *eingetreten*.
 - **Drei Paarungen:** entfällt hier — dieses Repo führt Wellen-Betrieb; die Paarungen (Anker ·
   Folge-Slice · Register) prüft die nächste Welle-Closure, auch für diesen wellenlosen Slice
-  ([`modul-06-roadmap.md`](../../../../.harness/baseline/v5.12.0/regelwerk/modul-06-roadmap.md)
+  (`modul-06-roadmap.md`
   §Wellen-Closure-Prozedur, Schritt 3, *„Zum Schluss alle drei Paarungen prüfen"*).
 
 ## 8. Sub-Area-Modus-Begründung

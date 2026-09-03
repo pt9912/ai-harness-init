@@ -82,7 +82,7 @@ Aussagen-Berührung steht hier gar nicht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [slice-156](slice-156-baum-tauschen-pins-ziehen.md) liegt in
+**Start** (`next` → `in-progress`): [slice-156](../in-progress/slice-156-baum-tauschen-pins-ziehen.md) liegt in
 `done/` — der Ist-Maßstab ist `v5.18.0`, und die Trennung *Prozedur ≠ Ist-Maßstab*
 ([`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 2) ist damit
 aufgelöst.

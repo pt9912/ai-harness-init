@@ -80,7 +80,7 @@ Aussagen-Berührung steht hier gar nicht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [slice-156](slice-156-baum-tauschen-pins-ziehen.md) liegt in
+**Start** (`next` → `in-progress`): [slice-156](../in-progress/slice-156-baum-tauschen-pins-ziehen.md) liegt in
 `done/` — die Ziel-Form ist dann die adoptierte, und die Änderung misst gegen den Ist-Maßstab.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
