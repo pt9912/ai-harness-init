@@ -15,7 +15,10 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Berührte Spec-Stellen:** `—`.
 
-**Verantwortlich:** —
+**Verantwortlich:** Architect (pt9912) — der Liefergegenstand ist der Schreib-Akt an einer Hard
+Rule, den [`AGENTS.md`](../../../../AGENTS.md) §3.8 dieser Rolle zuweist. Das Feld weicht damit von
+der Default-Besetzung ab, die Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als
+State Machine nennt.
 
 **Autor:** Planner. **Datum:** 2026-09-03.
 
@@ -61,20 +64,22 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Die vier Nennungen tragen `v5.18.0`, und die drei Ergebnisse sind im Lauf dieses Slice
+- [x] **Die vier Nennungen tragen `v5.18.0`, und die drei Ergebnisse sind im Lauf dieses Slice
       selbst gefahren** — nicht aus §1 übernommen. Weicht eines ab, wird die Folgerung des
       Absatzes gezogen, nicht die Ziffer angepasst
       ([`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
-      Ausgang 1).
-- [ ] **Der Commit erfüllt den Zuschnitt aus [`AGENTS.md`](../../../../AGENTS.md) §3.8:** er
+      Ausgang 1). Gefahren sind **alle zehn** Kommandos des Abschnitts, nicht nur die drei — §7.
+- [x] **Der Commit erfüllt den Zuschnitt aus [`AGENTS.md`](../../../../AGENTS.md) §3.8:** er
       berührt nur Artefakte der schreibenden Rolle (diese Datei, ADRs, den Konventionsspeicher)
       und nennt die Rolle in seiner Message. An `git show --stat` ablesbar.
-- [ ] `make gates` grün.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] `make gates` grün.
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt — **keiner berührt**: die Zahlen dieses
+      Abschnitts sind in keinem lebenden Artefakt zitiert
+      (`git grep -nE '289 Dateien|464 solche|124 mit Slice' -- '*.md' ':!.harness/baseline' ':!docs/reviews' ':!docs/plan/planning/done'` gibt nichts aus).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -123,12 +128,16 @@ dasteht.
 
 - **Der Lauf übernimmt die drei Einsen aus §1, statt sie zu fahren** — dieselbe Klasse, gegen die
   [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
-  steht, eine Ebene weiter. — **Ausgang:** offen, wird bei Closure verbucht.
+  steht, eine Ebene weiter. — **Ausgang:** **entfallen** — alle zehn Kommandos des Abschnitts sind
+  in diesem Lauf gefahren, je Kommando steht das Ergebnis in der Tabelle in §7.
 - **Der Commit nimmt ein fremdes Artefakt mit** — der Absatz nennt
   [`MR-031`](../../../../harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline), und ein Nachzug dort
   liegt nahe. Zulässig ist er nur, weil der Konventionsspeicher derselben Rolle gehört; ein
-  Slice-Plan oder eine Roadmap-Zeile im selben Commit ist es nicht. — **Ausgang:** offen, wird bei
-  Closure verbucht.
+  Slice-Plan oder eine Roadmap-Zeile im selben Commit ist es nicht. — **Ausgang:** **entfallen** —
+  der Norm-Commit berührt eine einzige Datei ([`AGENTS.md`](../../../../AGENTS.md), `git show --stat`);
+  [`MR-031`](../../../../harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline)
+  ist unberührt, sein `Ausgelöst durch Baseline-Stand` nennt den Tag, der den Trigger feuerte, und
+  bleibt darum auf `v5.12.0` stehen.
 
 ## 7. Closure-Notiz
 
@@ -140,13 +149,69 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-- **Beobachtungs-Register (`../observations.md`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+**Zehn Kommandos, je eines mit Ausgang — die Verteilung ist einseitig: 10× nachgemessen, 0×
+Tree-Operand, 0× entfallen.** Der Abschnitt führt keine Aussage über die Vor-Tausch-Seite und
+keine, die ihren Gegenstand verloren hat.
+
+| Kommando in §3.7 | im Text | in diesem Lauf | Ausgang |
+|---|---|---|---|
+| Ränge der Source Precedence | 9 | 9 | nachgemessen, unverändert |
+| Zensus: Dateien im Prüfbereich | 289 | **296** | nachgemessen |
+| Zensus: Dateien mit Befund-Kennung | 38 | 38 | nachgemessen, unverändert |
+| Zensus: Zeilen mit Befund-Kennung | 65 | 65 | nachgemessen, unverändert |
+| Zensus: Dateien mit Slice-Nummer | 124 | **126** | nachgemessen |
+| Zensus: Zeilen mit Slice-Nummer | 464 | **472** | nachgemessen |
+| Zensus: zulässige Feld-Form | 0 | **1** | nachgemessen — **Folgerung gewandert** |
+| Vorlage führt die Hard Rule | 1 | 1 | nachgemessen, unverändert |
+| Grundlagen-Abschnitt schreibt sie aus | 1 | 1 | nachgemessen, unverändert |
+| Hard-Rule-Satz, den die Quellen-Klausel anwendet | 1 | 1 | nachgemessen, unverändert |
+
+**Die vier Tag-Nennungen tragen `v5.18.0`, und die Deckungs-Aussage trägt unverändert:** die drei
+`grep -c` der letzten drei Zeilen geben gegen den neuen Baum dasselbe **1** aus. Der Zensus daneben
+ist repo-eigen — er läuft gegen den Index, nicht gegen den vendored Baum — und trägt seinen
+Messpunkt jetzt als `Stand 2026-09-03`. Die zwei **Cutoff**-Daten des Abschnitts (2026-08-30 für
+die Quellen-Klausel, 2026-08-29 für die Zustandsfeld-Hälfte) sind normativ und unberührt.
+
+**Ein Wert hat die Folgerung bewegt, nicht nur die Ziffer:** `zulässige Feld-Form` stand auf **0**
+und steht auf **1** — der `Makefile` trägt einen Herkunfts-Anker in der Form `· seit slice-<NNN>`.
+Die Aussage des Absatzes bleibt: der Bestand ist kein Arbeitsauftrag, und der Ausschnitt, den ein
+`grep` trifft, ist kein Gesamtmaß.
+
+**Closure-Kriterien (beobachtet, nicht behauptet):**
+
+1. **Das Erhebungs-Kommando aus §1 gibt nichts mehr aus** — `git grep -n 'v5\.12\.0' -- AGENTS.md | grep -v ']('`
+   endet mit Exit 1.
+2. **`make gates` grün** nach dem Commit dieser Notiz; der Stop-Hook-Stempel deckt den Arbeitsbaum.
+
+- **Was hat funktioniert:** Das Übergabe-Artefakt aus [slice-165](../done/slice-165-praesens-aussagen-gegen-v5180.md)
+  trug die Messung mit, und dieser Lauf musste sie nur wiederholen statt sie zu suchen. Der
+  Rollen-Wechsel kostete damit einen Lauf, nicht eine zweite Erhebung.
+- **Was ging anders als geplant:** §3 nennt als Gegenstand *die vier Nennungen*. Gefahren wurden
+  alle zehn Kommandos des Abschnitts, und **vier** der sechs Zensus-Werte hatten sich bewegt — die
+  Plan-Tabelle war eine Kandidaten-Liste, keine Ausschluss-Liste. Alle vier liegen in derselben
+  Sektion, derselben Datei und damit im selben Commit-Zuschnitt nach
+  [`AGENTS.md`](../../../../AGENTS.md) §3.8; ein zweiter Schnitt war dafür nicht nötig.
+- **Steering-Loop-Eintrag: eine benannte Spec-Lücke, geschärft** —
+  *[`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
+  Ausgang 1 verlangt, die **Folgerung** zu ziehen statt die Ziffer zu runden — aber nur für die
+  Baum-Hälfte einer Aussage; für den repo-eigenen Zensus daneben verlangt keine Quelle den Lauf.*
+  [slice-165](../done/slice-165-praesens-aussagen-gegen-v5180.md) hat die Lücke benannt; dieser
+  Lauf misst sie an ihrem Ernstfall: Der Zensus **derselben Sektion** hatte eine Folgerung bewegt
+  (`0` → `1`), und der Tag-Nachzug in dieser Datei war einen Slice zuvor daran vorbeigelaufen. Kein
+  Zielort — die Lücke bleibt **benannt**, nicht verkörpert; sie liegt als siebter Beleg an
+  [`BEO-009`](../observations.md), und ihr Ausgang hängt an dem dort geplanten
+  [slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md).
+- **Beobachtungs-Register (`../observations.md`):** keine neue Kennung —
+  [`BEO-009`](../observations.md) von 6× auf **7×** erhöht, Beleg `slice-169`.
+  [`BEO-022`](../observations.md) bleibt bei 2×: dieser Slice **ist** die Rollen-Übergabe, die jene
+  Zeile vermisst, also kein weiteres Auftreten.
+- **Folge-Slices:** keine. Der Ausgang der Klasse hängt an
+  [slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md); einen neuen
+  Schnitt macht der Planner, nicht dieser Lauf ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
+- **Risiken aus §6:** zwei benannt, beide **entfallen** — siehe §6.
+- **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice
+  ist Mitglied von [welle-14](../welle-14-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt
+  die Paarungen auf Closure-Schritt 3c.
 
 ## 8. Sub-Area-Modus-Begründung
 
