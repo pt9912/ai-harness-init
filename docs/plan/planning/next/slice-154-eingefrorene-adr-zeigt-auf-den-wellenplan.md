@@ -24,10 +24,11 @@ Klasse, zweimal entschieden; beide schließen ihre `ignore-refs`-Menge
 
 **Berührte Spec-Stellen:** `—`.
 
-**Verantwortlich:** `—` bis zur Priorisierung (Baseline-Regelwerk
-`modul-05-planning-harness.md` §Lifecycle als State Machine). Der
-Liefergegenstand ist eine Gate-Senkung mit ADR und damit **Architect**-Arbeit
-([`AGENTS.md`](../../../../AGENTS.md) §3.5/§3.8).
+**Verantwortlich:** Architect (pt9912). Der Liefergegenstand ist eine
+Gate-Senkung mit ADR und damit **Architect**-Arbeit
+([`AGENTS.md`](../../../../AGENTS.md) §3.5/§3.8); das Feld weicht damit von der
+Default-Besetzung ab, die Baseline-Regelwerk `modul-05-planning-harness.md`
+§Lifecycle als State Machine nennt.
 
 **Autor:** Planner. **Datum:** 2026-09-02.
 
