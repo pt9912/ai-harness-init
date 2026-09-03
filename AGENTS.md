@@ -272,6 +272,12 @@ er ist damit eines der *Artefakte derselben schreibenden Rolle*, die der Commit-
 verlangt, auch wenn dessen Aufzählung ihn nicht nennt. Wo die Ableitung endet und was sie offen
 lässt, steht in der Entscheidung — hier steht der Zeiger, nicht ihr Text.
 
+**Eine zweite ist es ebenso:** ein Rollen-Anweisungssatz — ein Command oder eine Skill-Datei, die
+den Ablauf **einer** Rolle distilliert — gehört der Rolle, die ihn **ausführt**
+([ADR-0028](docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)). Was sie
+ausnimmt (`.claude/agents/*.md`) und was sie offen lässt (eine Norm-Aussage ohne Original), steht
+dort; hier steht der Zeiger, nicht ihr Text.
+
 **Falsch:** eine Anweisung im laufenden Implementations-Kontext dadurch erfüllen, dass derselbe
 Lauf die Hard Rule und den Adaptions-Eintrag schreibt.
 **Richtig:** die Anweisung ist die **Quelle**; was der laufende Kontext liefert, ist ein
