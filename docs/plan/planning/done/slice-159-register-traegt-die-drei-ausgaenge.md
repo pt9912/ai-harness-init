@@ -62,7 +62,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -161,7 +161,16 @@ Backticks).
   deren §6 den Adaptions-Block ausschließt.
 - **Risiken aus §6:** zwei, je genau ein Ausgang — *eingetreten, im Slice geräumt* (Chronik in der
   `Stand`-Zelle, fünf Zellen) · *entfallen, mit Messung* (kein Zähler bewegt sich).
-- **Drei Paarungen:** <nach dem `git mv` eingetragen>
+- **Drei Paarungen** (geprüft **nach** dem `git mv` nach `done/`): (a) **Anker** — kein Eintrag
+  trägt das Feld `liegt in`, also kein Gegenstand; die drei Treffer von
+  `grep -n 'liegt in' docs/plan/planning/done/slice-159-*.md` sind Trigger-Prosa aus §4 und zwei
+  Nennungen des Feldnamens in Backticks. (b) **Folge-Slice** — `slice-168` ist eine Datei im
+  Planning-Lifecycle (`ls docs/plan/planning/*/slice-168-*.md` → `open/`). (c) **Register** — jede
+  Zeile trägt mindestens einen Beleg
+  (`awk -F'|' 'NR>1 && /^\| BEO-/ {if ($6 !~ /slice-/) print $2}' docs/plan/planning/observations.md`
+  → leer), und jede in `done/` zitierte Kennung hat eine Zeile
+  (`for b in $(grep -rhoE 'BEO-[0-9]{3}' docs/plan/planning/done/ | sort -u); do grep -q "^| $b " docs/plan/planning/observations.md || echo "FEHLT: $b"; done`
+  → leer).
 
 ## 8. Sub-Area-Modus-Begründung
 
