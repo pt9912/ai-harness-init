@@ -88,7 +88,7 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 | [slice-155](done/slice-155-inventur-vor-dem-schnitt.md) | Inventur vor dem Schnitt — der Form- und Regel-Diff `v5.12.0` → `v5.18.0` | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) |
 | [slice-156](done/slice-156-baum-tauschen-pins-ziehen.md) | Der vendored Baum zieht auf `v5.18.0` — Tausch und Pins | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
 | [slice-157](done/slice-157-adaptions-durchgang-v5180.md) | Adaptions-Durchgang gegen `v5.18.0` — Delta **und** Volltext | [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md), [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
-| [slice-158](in-progress/slice-158-archivierungs-schritt.md) | Der Archivierungs-Schritt der Wellen-Closure — Entscheidung und Sechs-Schritte-Form | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren), [`ADR-0028`](../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) |
+| [slice-158](done/slice-158-archivierungs-schritt.md) | Der Archivierungs-Schritt der Wellen-Closure — Entscheidung und Sechs-Schritte-Form | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren), [`ADR-0028`](../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) |
 | [slice-159](done/slice-159-register-traegt-die-drei-ausgaenge.md) | Das Beobachtungs-Register trägt die Ziel-Form — drei Ausgänge und die Vorgangs-Beleg-Regel | [`MR-016`](../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird), [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) |
 | [slice-160](done/slice-160-docker-form-hermetisch-und-beleg.md) | Die Docker-Form gegen die Ziel-Fassung — hermetischer Prüflauf und die Trennung Gate/Beleg | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0003`](../adr/0003-go-native-binaries.md) |
 | [slice-161](done/slice-161-conventions-kopf-traegt-die-ziel-form.md) | `harness/conventions.md` trägt die Ziel-Form ihres Kopfes — Stand als Version, Kürzel-Spalte | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage), [`ADR-0015`](../adr/0015-rollen-eigentum-an-norm-artefakten.md) |
@@ -132,7 +132,7 @@ im [Register](observations.md), und `BEO-014` ist genau der Eintrag, den §6 unt
 **Kein Mitglied, und nicht aus dem Katalog:**
 [slice-170](open/slice-170-archivierungs-werkzeug.md) (das Archivierungs-Werkzeug der
 Wellen-Closure) geht aus der Closure von
-[slice-158](in-progress/slice-158-archivierungs-schritt.md) hervor und trägt dessen
+[slice-158](done/slice-158-archivierungs-schritt.md) hervor und trägt dessen
 Start-Bedingung. Ein Werkzeug-Bau ist nicht der Gegenstand dieser Welle, und ihr Closure-Trigger
 verlangt ihn nicht. Was das für ihre eigene Archivierung heißt, steht in Schritt 4 des
 Anweisungssatzes: Ist die Bedingung bei der Closure nicht eingetreten, ist **das** die

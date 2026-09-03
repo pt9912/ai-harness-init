@@ -33,7 +33,7 @@ Stelle — läuft als Kommando statt von Hand.**
 
 Der Schritt gilt in diesem Repo ab dieser Datei in `done/`; die Start-Bedingung steht in
 [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) Schritt 4
-([slice-158](../in-progress/slice-158-archivierungs-schritt.md)). Von Hand archiviert niemand: Die
+([slice-158](../done/slice-158-archivierungs-schritt.md)). Von Hand archiviert niemand: Die
 Vollständigkeit des Archivs bezeugt allein der Archivierungs-Commit, und der Move bricht dieselben
 Verweis-Formen, für die `make slice-mv` gebaut wurde — er zieht sie nur zwischen den vier
 Lifecycle-Verzeichnissen nach, nicht eine Ebene tiefer (`BEO-003` im [Register](../observations.md)).
@@ -82,7 +82,7 @@ Aussagen-Berührung steht hier gar nicht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [slice-158](../in-progress/slice-158-archivierungs-schritt.md)
+**Start** (`next` → `in-progress`): [slice-158](../done/slice-158-archivierungs-schritt.md)
 liegt in `done/` — dort steht, was das Werkzeug ausführt und ab wann der Schritt läuft.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**

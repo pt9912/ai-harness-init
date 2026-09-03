@@ -179,7 +179,7 @@ Backticks).
   und die `files:`-Köpfe zweier Mutations-Fälle — und keine Pin-Liste kennt sie. Und der
   Diff-Katalog aus [slice-155](../done/slice-155-inventur-vor-dem-schnitt.md) §9 hat jeder
   geänderten **Position** einen Träger gegeben, nicht jedem **Konsumenten** einer Position: die
-  zwei neuen Vorlagen gingen an [slice-158](../in-progress/slice-158-archivierungs-schritt.md), während
+  zwei neuen Vorlagen gingen an [slice-158](../done/slice-158-archivierungs-schritt.md), während
   der Emitter sie in keiner seiner Listen führt und `test/courseset-fixture.bats` an drei Fällen
   rot steht. Beim toten Anker trennt sich zudem, was der Plan als eine Aufgabe führte: die
   **Adresse** ist mechanisch, die **Substanz** nicht — der umbenannte Abschnitt trägt die von
