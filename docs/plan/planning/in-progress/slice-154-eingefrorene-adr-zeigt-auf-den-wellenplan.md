@@ -82,7 +82,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **(1) Eine ADR entscheidet den Fall und die Klasse** — per `cp` aus
+- [x] **(1) Eine ADR entscheidet den Fall und die Klasse** — per `cp` aus
       `.harness/baseline/v5.12.0/templates/docs/plan/adr/NNNN-titel.template.md`,
       mit Bezug auf
       [ADR-0026](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md)/[ADR-0027](../../adr/0027-tote-adresse-in-eingefrorener-adr.md).
@@ -95,7 +95,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       `docs/plan/adr/**` in `codepaths.exempt-paths` (breit; die Vorgänger haben
       Globs zweimal ausdrücklich verworfen). Der ADR-Index
       ([`docs/plan/adr/README.md`](../../adr/README.md)) trägt die Zeile.
-- [ ] **(2) Der Befund ist weg, und die Entscheidung ist rot gesehen**
+- [x] **(2) Der Befund ist weg, und die Entscheidung ist rot gesehen**
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6): der `git mv` von
       [welle-10-re-baseline.md](../welle-10-re-baseline.md) nach `done/` wird
       probeweise vollzogen, `make docs-check` meldet ohne die Entscheidung
@@ -105,16 +105,16 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Wahl auf eine Config-Änderung, trägt die Zeile ihre Begründung und einen
       Zeiger auf die neue ADR — wie jede Ventil-Zeile der
       [`.d-check.yml`](../../../../.d-check.yml).
-- [ ] `make gates` grün.
-- [ ] Doku-Update: `harness/conventions.md`, falls die Entscheidung einen
+- [x] `make gates` grün.
+- [x] Doku-Update: `harness/conventions.md`, falls die Entscheidung einen
       `MR`-Eintrag verlangt (Architect, eigener Commit).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — **neue
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — **neue
       Kennung für die Klasse** *ein prozess-vorgeschriebener Ortswechsel macht
       eine Adresse in einem eingefrorenen Artefakt tot* (Sub-Area `*`, 1×, Beleg
       `slice-154`); die drei gemessenen Instanzen gehören in die Stand-Spalte.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste
       Welle-Closure — die von [welle-10](../welle-10-re-baseline.md), die dieser
       Slice freigibt.
 
@@ -177,20 +177,30 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Die Entscheidung fällt wieder auf ein Einzel-Ventil**, und die vierte
-  Instanz kostet dieselbe Runde. — **Ausgang:** <entfallen: die ADR trifft die
-  Klasse und nennt, was die nächste Instanz trägt | weiter offen → neue
-  `BEO-<NNN>` im Register>
+  Instanz kostet dieselbe Runde. — **Ausgang:** **entfallen** — die ADR trifft die Klasse
+  und nennt, was die nächste Instanz trägt: [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md)
+  Festlegung 3 (Verweis-Form vor dem Einfrieren, vorwärts) und Festlegung 4 (die Entscheidung
+  liegt **vor** dem Lifecycle-Move, auf dem Bestand). Das Ventil bleibt der Träger des
+  eingetretenen Falls; die vierte Instanz kostet keine Notfall-Runde mehr, sondern geplante
+  Arbeit. Beide Festlegungen sind **sensorlos** — das steht in §Konsequenzen der ADR und als
+  Grund, warum [`BEO-017`](../observations.md) offen bleibt statt gestrichen zu werden.
 - **Eine Bereichs-Ausnahme für `docs/plan/adr/**` nimmt mehr aus als den Fall**
   — sie machte jede tote Adresse in jeder ADR unsichtbar, auch in noch
-  änderbaren `Proposed`-Fassungen. — **Ausgang:** <entfallen: verworfen und in
-  §Verglichene Alternativen begründet | eingetreten: die Senkung ist gemessen
-  und ihre Restbreite benannt>
+  änderbaren `Proposed`-Fassungen. — **Ausgang:** **entfallen** — verworfen als Option F und
+  in §Verglichene Alternativen begründet, mit zwei Messungen statt einer Wiederholung der
+  Vorgänger-Argumente: sie kostet **668** Code-Span-Vorkommen über **143** Ziele in **29**
+  Dateien, davon **5** noch änderbar — und sie **deckt die Klasse nicht**, weil `exempt-paths`
+  unter `codepaths:` steht und die Markdown-Link-Hälfte an einer roten Sonde stehen bleibt.
 - **Der Befund wandert**, weil ein weiterer Wellenplan oder eine Slice-Datei
   aus einem eingefrorenen Artefakt adressiert wird, bevor die ADR steht. —
-  **Ausgang:** <entfallen: die Menge ist vor der Entscheidung erhoben — ein
-  `git grep` über `docs/plan/adr` nach Code-Span-Pfaden unter
-  `docs/plan/planning/` | eingetreten: die ADR nimmt die zusätzlichen Fälle mit
-  auf>
+  **Ausgang:** **entfallen** — die Menge ist vor der Entscheidung erhoben, und **breiter als
+  dieser Plan vorschlug**: nicht nur über Code-Span-Pfade, sondern auch über Markdown-Links.
+  Genau die zweite Hälfte trug den Fund: [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md)
+  adressiert die Welle-Plan-Datei von `welle-09` als Link. Der **Befund** ist damit nicht
+  gewandert — er blieb einer —, wohl aber die **Klasse**: sie hat ein zweites, geladenes
+  Mitglied. Es ist in [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md)
+  §Kontext benannt, als Re-Evaluierungs-Trigger geführt und ausdrücklich **nicht** mit
+  ausgenommen (Alternativen-Zeile `G'`).
 
 ## 7. Closure-Notiz
 
@@ -202,7 +212,71 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-<!-- Erst nach Abschluss füllen. -->
+**Liefer-Punkt 1 — die Entscheidung ist
+[`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md).** Gewählt ist
+das dritte namentlich geschnittene `ignore-refs`-Paar **plus** zwei Klassen-Regeln, nicht das
+Ventil allein. Der Ausschlag kam von einer Messung, die dieser Plan nicht verlangt hatte: die
+Klasse ist über **beide** Adress-Formen erhoben, und die Markdown-Link-Hälfte zeigt ein zweites,
+geladenes Mitglied. Ein reines Einzel-Ventil hätte die vierte Runde damit schon eingeplant.
+Die Bereichs-Ausnahme fiel nicht am Vorgänger-Argument gegen Globs, sondern an einer eigenen
+Sonde: sie deckt die Klasse gar nicht, weil `codepaths.exempt-paths` das Modul `links` nicht
+bindet.
+
+**Closure-Kriterien (beobachtet, nicht behauptet):**
+
+1. **Die ADR trägt `**Status:** Accepted` und steht im Index.**
+   `grep -c '^\*\*Status:\*\* Accepted' docs/plan/adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md`
+   → **1**; `grep -c '0030-eingefrorene-adresse-auf-den-planning-lifecycle' docs/plan/adr/README.md` → **1**.
+
+2. **Beide `docs-check`-Ausgaben, über demselben probeweise bewegten Baum.** Der `git mv` der
+   Welle-Plan-Datei nach `done/` wurde vollzogen, alle übrigen Verweise in beide Richtungen
+   nachgezogen ([ADR-0018](../../adr/0018-ziel-fassung-regiert-die-migration.md) blieb dabei
+   unberührt — `git diff --name-only` nannte sie in keinem Lauf), danach zurückgenommen.
+
+   *Ohne* die Entscheidung (drittes Paar aus der Config entfernt):
+
+   ```
+   d-check: 492 Datei(en) geprüft, 1 Befund(e)
+   docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md:202	docs/plan/planning/welle-10-re-baseline.md	codepath-missing
+   ```
+
+   *Mit* der Entscheidung:
+
+   ```
+   d-check: 492 Datei(en) geprüft, 0 Befund(e)
+   ```
+
+   **Tragend ist der Unterschied in der ersten Zahl, nicht ihr Betrag:** sie steht in beiden
+   Läufen auf 492 — das Referenz-Ventil senkt den Prüfbereich nicht, der datei-weite Ausschluss
+   täte es (Gegenmessung in der ADR: 490 statt 491 am damaligen Bestand).
+
+**Lerneintrag (Steering Loop) — eine benannte Lücke, kein neuer Sensor.** Der vorhandene
+Restbreite-Wächter `test/ignore-refs-restbreite.bats` liest **jedes** Paar des
+Top-Level-Blocks und sagt sich selbst zu, jeder künftige Eintrag falle „vom ersten Lauf an unter
+dieselbe Messung". Für dieses Paar stimmt das **nicht**: er zählt nur die Inline-Markdown-Form
+`](ziel)`, und die Adresse dieses Paares ist ein Code-Span. Er zählt null, ist grün und hat
+nichts gemessen. Die Zusage des Wächters ist damit enger als ihr eigener Kopftext — die Klasse
+aus [`AGENTS.md`](../../../../AGENTS.md) §3.6, eine Ebene tiefer. Sie steht als Folgepflicht 2
+in [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) und als
+Re-Evaluierungs-Trigger, **nicht** als behauptete Deckung
+([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+
+**Register.** Neue Kennung [`BEO-017`](../observations.md) (1×, Sub-Area `*`, Beleg
+`slice-154`) für die Klasse *ein prozess-vorgeschriebener Ortswechsel macht eine Adresse in
+einem eingefrorenen Artefakt tot*; die Stand-Spalte nennt die drei gemessenen Instanzen. Sie
+bleibt **offen** und wird nicht gestrichen: die zwei Regeln, die die Klasse anhalten, haben
+keinen Sensor.
+
+**Kein `MR`-Eintrag.** Ein Adaptions-Eintrag registriert eine **Abweichung von der Baseline**
+([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)). Diese Entscheidung
+weicht von keiner ab — die Baseline schreibt die Config des Doku-Gates nicht vor, und die zwei
+Klassen-Regeln folgen der Lifecycle-Vorschrift, statt sie zu lockern. DoD-Punkt *Doku-Update*
+ist damit beantwortet, nicht übersprungen.
+
+**Kein Folge-Slice geschnitten.** Die zwei offenen Arbeiten hängen an Ereignissen, nicht an
+diesem Slice: die Code-Span-Achse des Restbreite-Wächters (Folgepflicht 2) und die Entscheidung
+zum geladenen `welle-09`-Mitglied, die nach Festlegung 4 vor dessen Closure-Move fällt. Beide
+stehen als Re-Evaluierungs-Trigger in der ADR.
 
 ## 8. Sub-Area-Modus-Begründung
 
