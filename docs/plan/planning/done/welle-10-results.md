@@ -140,7 +140,7 @@ Setzung 2). Jede der drei bekommt hier ihren Lese-Schritt:
 - **Norm-Artefakt ohne benannte schreibende Rolle** — Teil-Ausgang über drei
   Artefaktklassen, zwei davon entschieden: Command-Artefakte über
   [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
-  (`Proposed`; Annahme trägt [slice-145](../next/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)),
+  (`Proposed`; Annahme trägt [slice-145](../in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)),
   `.claude/agents/*.md` über
   [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md)
   (`Proposed`; Annahme trägt [slice-152](../open/slice-152-adr-0029-acceptance-trigger.md));

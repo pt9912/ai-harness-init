@@ -118,7 +118,7 @@ kein Liefer-Punkt** —
 trägt `**Status:** Accepted`
 (`grep -c '^\*\*Status:\*\* Accepted' docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md`
 → **1**). Träger ist
-[slice-145](../next/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md).
+[slice-145](../in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md).
 Vorher steht nicht fest, wer die zwei Dateien schreiben darf — und ein Lauf, der
 sie ohne diese Antwort anfasst, ist genau der Vorgang, den
 [`BEO-007`](../observations.md) zählt. Der Slice liegt darum in `open/`, nicht
@@ -132,7 +132,7 @@ in `next/`.
 - `in-progress` → `open` (blockiert — Carveout?): wenn
   [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
   im Reviewer-Durchgang von
-  [slice-145](../next/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
+  [slice-145](../in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
   nicht angenommen wird und das Eigentum offen bleibt.
 
 ## 5. Closure-Trigger
@@ -163,7 +163,7 @@ dasteht.
   entspricht dem, was das Gate leisten kann | weiter offen → `BEO-009` im
   Register>
 - **Die Vorbedingung tritt nicht ein**, weil
-  [slice-145](../next/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
+  [slice-145](../in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
   liegen bleibt oder die ADR nicht angenommen wird. — **Ausgang:** <entfallen:
   angenommen, Beleg in der Geschichte-Tabelle | eingetreten: Rückführung nach
   `open/` nach §4>

@@ -45,7 +45,7 @@ und der Hard-Rule-Zeiger in `AGENTS.md` §3.8, und beides schreibt nach
 Konsistenz-Prüfung, die der Acceptance-Trigger verlangt, liegt beim Reviewer. Derselbe
 Liefergegenstand trägt bei den Präzedenzfällen
 [slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md) und
-[slice-141](slice-141-co-001-aufloesung-ist-vorher-entschieden.md) dieselbe Besetzung. Das Feld
+[slice-141](../next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) dieselbe Besetzung. Das Feld
 weicht damit von der Default-Besetzung ab, die Baseline-Regelwerk `modul-05-planning-harness.md`
 §Lifecycle als State Machine nennt (*„den Rolleninhaber der Implementer-Rolle"*). Abgelegt direkt
 in `next/`, wie Baseline-Regelwerk `modul-08-agentenrollen.md` §Konflikt-Pfad als Rollen-Sequenz
