@@ -30,7 +30,7 @@ ist einzeln lieferbar.
 Klassen-Entscheidung — in scope oder nicht, Singleton oder wiederkehrend —, und
 `test/courseset-fixture.bats` ist wieder grün.**
 
-Der Tausch auf `v5.18.0` ([slice-156](../in-progress/slice-156-baum-tauschen-pins-ziehen.md)) hat
+Der Tausch auf `v5.18.0` ([slice-156](../done/slice-156-baum-tauschen-pins-ziehen.md)) hat
 den vendored Satz um zwei Vorlagen erweitert; der Emitter führt sie in keiner seiner drei Listen.
 Gemessen im Tausch-Lauf: `make -k gates` meldet `not ok 40` (`courseSet()` gegen den realen Satz),
 `not ok 41` (`in-scope-Templates: 23, erwartet 21`) und `not ok 43` (`isRecurring` liest
@@ -81,7 +81,7 @@ Aussagen-Berührung steht hier gar nicht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [slice-156](../in-progress/slice-156-baum-tauschen-pins-ziehen.md)
+**Start** (`next` → `in-progress`): [slice-156](../done/slice-156-baum-tauschen-pins-ziehen.md)
 liegt in `done/` — erst dann ist der Satz, gegen den klassifiziert wird, der adoptierte.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**

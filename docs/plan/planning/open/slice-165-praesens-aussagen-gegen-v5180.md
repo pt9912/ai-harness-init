@@ -33,7 +33,7 @@ einen der drei Ausgänge aus
 — nachgemessen · Tree-Operand · entfallen.**
 
 Stumm heißt: kein Markdown-Link, also kein `target-missing`, also kein Gate. Der Tausch auf
-`v5.18.0` ([slice-156](../in-progress/slice-156-baum-tauschen-pins-ziehen.md)) hat den
+`v5.18.0` ([slice-156](../done/slice-156-baum-tauschen-pins-ziehen.md)) hat den
 gate-sichtbaren Teil erledigt und den stummen unberührt gelassen — dort ist die Adresse meist
 Operand eines Kommandos, dessen Ergebnis im selben Satz zitiert wird, und ein Pfad-`sed` machte aus
 einem lauten Fehler einen stummen.
@@ -95,7 +95,7 @@ Aussagen-Berührung steht hier gar nicht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [slice-156](../in-progress/slice-156-baum-tauschen-pins-ziehen.md)
+**Start** (`next` → `in-progress`): [slice-156](../done/slice-156-baum-tauschen-pins-ziehen.md)
 liegt in `done/` — vorher gibt es keinen neuen Baum, gegen den nachgemessen würde.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
