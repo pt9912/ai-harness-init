@@ -199,7 +199,7 @@ Backticks).
   `.harness/baseline/v5.12.0/…` als Kommando-Operanden, deren Pfad seit dem Tausch ins Leere
   zeigt, und `codepaths.roots` der [`.d-check.yml`](../../../../.d-check.yml) ist
   `[spec, docs, harness]` — `.harness/` liegt außerhalb, also meldet kein Gate sie.
-- **Folge-Slices:** [slice-164](../in-progress/slice-164-emitter-klassifiziert-die-zwei-neuen-vorlagen.md)
+- **Folge-Slices:** [slice-164](../done/slice-164-emitter-klassifiziert-die-zwei-neuen-vorlagen.md)
   (Emitter-Klassifikation der zwei neuen Vorlagen) ·
   [slice-165](../open/slice-165-praesens-aussagen-gegen-v5180.md) (die stummen Nennungen und ihr
   [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)-Ausgang)
