@@ -50,18 +50,18 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Beide Vorlagen tragen ein Verdikt je Achse** — in scope / außer scope, und bei in scope
+- [x] **Beide Vorlagen tragen ein Verdikt je Achse** — in scope / außer scope, und bei in scope
       Singleton oder wiederkehrend —, jedes mit dem Grund am Fundort und nicht in diesem Plan.
-- [ ] **`test/courseset-fixture.bats` ist grün**, und das Grün ist nicht durch Anpassen der
+- [x] **`test/courseset-fixture.bats` ist grün**, und das Grün ist nicht durch Anpassen der
       Erwartung erkauft: die Fixture folgt der Entscheidung, nicht umgekehrt. Rot gesehen
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6) ist das Gegenbeispiel — eine dritte Vorlage im
       Satz, die in keiner Liste steht, färbt dieselben Fälle.
-- [ ] `make gates` grün.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] `make gates` grün.
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -110,11 +110,19 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Das Grün entsteht durch Anpassen der Erwartung statt durch eine Entscheidung** — die Fixture
-  ist eine Liste, und eine Liste lässt sich immer passend machen. — **Ausgang:** offen, wird bei
-  Closure verbucht.
+  ist eine Liste, und eine Liste lässt sich immer passend machen. — **Ausgang: entfallen.** Die
+  Erwartungs-Zahl folgt der Entscheidung: beide Vorlagen bleiben in scope, also zählt der Satz
+  **23** statt 21
+  (`find .harness/baseline/*/templates -type f -name '*.template.md' | grep -v '/project-readme' | wc -l`;
+  kein Erwartungswert,
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). Dass der Wächter danach noch misst, ist rot gesehen (§7).
 - **Die Entscheidung hängt an [slice-158](../open/slice-158-archivierungs-schritt.md)** und kann ins Leere
-  laufen, wenn dort der Archivierungs-Schritt für dieses Repo verworfen wird. — **Ausgang:** offen,
-  wird bei Closure verbucht.
+  laufen, wenn dort der Archivierungs-Schritt für dieses Repo verworfen wird. — **Ausgang:
+  entfallen.** *Wiederkehrend* ist die Klasse, die **nichts** ins frische Zielrepo legt; sie sagt
+  über dessen Betrieb nichts aus. Dieselbe Klasse tragen `welle.template.md` und
+  `welle-results.template.md`, ohne dass ein Zielrepo Wellen fahren müsste. `slice-158` entscheidet
+  die Dogfood-Ebene und berührt diese Klasse nicht.
 
 ## 7. Closure-Notiz
 
@@ -126,13 +134,68 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-- **Beobachtungs-Register (`../observations.md`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+**Rolle:** Implementer. **Datum:** 2026-09-03.
+
+**Das Verdikt, beide Achsen, für beide Vorlagen: in scope · wiederkehrend.** Der Grund steht am
+Fundort (`emit.isRecurring`, Rumpf und Kommentar) und ruht auf zwei Belegen: Beide nennen ihren
+Ziel-Ort als Verzeichnis mit Platzhalter — `docs/plan/planning/done/<welle-id>/`, je archiviertem
+Slice bzw. Welle-Plan einer —, und der Set-Index des vendored Satzes
+(`.harness/baseline/v5.18.0/templates/README.md` §Ein- vs. wiederkehrende Templates) führt beide
+ebenfalls unter den Wiederkehrenden. *Wiederkehrend* heißt: nicht emittiert, aus dem vendored Satz
+je Artefakt kopiert; ein frisch gebootstrapptes Zielrepo bekommt keine co-located Kopie.
+
+- **Was hat funktioniert:** Der Wächter hat seine Frage gestellt, statt das Neue still als Singleton
+  durchzulassen — genau die drei Fälle, die sein eigener Kommentar ankündigt. Das Gegenbeispiel ist
+  gefahren: eine dritte, unklassifizierte Vorlage im vendored Satz färbt `not ok 40`, `41` und `43`
+  und keinen weiteren Fall; danach wieder entfernt. Die Entscheidung selbst ist rot gesehen über
+  drei neue Fälle in `test/mutations/` (222/223: ein Eintrag fällt aus `emit.isRecurring` → die
+  Vorlage wird als Singleton emittiert, `TestTemplates_EmittierterBestandVollstaendig` rot · 224:
+  der Ziel-Ort verliert seinen Platzhalter → die Ableitung sagt *nicht wiederkehrend*, die dritte
+  Achse rot).
+- **Was ging anders als geplant:** Drei Abweichungen, alle benannt statt weggedeutet. (1) Der
+  **Start-Trigger** aus §4 verlangt `slice-156` in `done/`; beim Übergang lag er noch in
+  `in-progress/`. Getragen hat die Sachbedingung dahinter — der vendored Baum steht auf `v5.18.0`
+  (`ls -d .harness/baseline/*/`) —, und `slice-156` ist inzwischen geschlossen. (2) Das **WIP-Limit**
+  war beim Übergang nicht frei: `in-progress/` trug `slice-156` und `slice-164` nebeneinander.
+  (3) Die dritte Achse konnte die zwei Vorlagen **nicht ableiten** — ihr Leser kannte nur den
+  Kopiere-Satz und meldete für beide `OHNE-ZIEL:`. Das ist kein Defekt des Wächters, sondern die
+  Grenze, die sein eigener Kommentar als *laut statt still* benennt; der Leser liest jetzt beide
+  Satzformen (`ziel_ort`).
+- **Steering-Loop-Eintrag:** Sensor ergänzt: `test/courseset-fixture.bats` leitet die
+  wiederkehrenden Vorlagen aus **zwei** Satzformen des Template-Hinweises ab — Kopiere-Satz und
+  Verbleib-Satz —, jede mit eigener Endungs-Bedingung (`.md` bzw. `/`); eine dritte Form fällt
+  weiter als `OHNE-ZIEL:` auf. Dazu drei Fälle in `test/mutations/` (222, 223, 224).
+- **Beobachtungs-Register (`../observations.md`):** keine Beobachtung angefallen — das Register
+  bleibt unverändert. Zwei Kandidaten sind geprüft und **verworfen**, beide mit Messung statt
+  Eindruck: (a) *die bats-Funktion `in_scope` ist eine zweite Fassung von `emit.inScope` ohne
+  Wächter* — trägt nicht, denn eine einseitige Verengung von `emit.inScope` färbt die dritte Achse
+  rot (die Vorlage bliebe in der Ableitung und fehlte in der Aufzählung); (b) *eine Mutation
+  verankert auf einer Quellzeilen-Form und wird von einem Nachbar-Eintrag still entschärft* — trägt
+  nicht, weil `make mutate` einen zahnlosen Fall meldet; die Kopplung steht jetzt als Kommentar an
+  `emit.isRecurring`. `BEO-010` (Nachzügler einer Re-Baseline) trifft die Klasse dieses Slice; ob er
+  der dritte Übertritt ist, entscheidet nach §8 die Closure von
+  [welle-14](../welle-14-re-baseline.md) — hier wird der Zähler darum nicht bewegt.
+- **Folge-Slices:** keine. Die Lücke in
+  [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) — die
+  Aufzählung nennt vier der neun wiederkehrenden Vorlagen nicht — hat ihren Träger bereits in
+  [slice-139](../open/slice-139-lastenheft-deckt-die-emit-disposition.md); ein zweiter wäre eine
+  zweite Adresse für dieselbe Sache.
+- **Risiken aus §6:** zwei, je genau ein Ausgang, beide **entfallen** — mit Messung in §6 selbst.
+- **Drei Paarungen:** nicht hier fällig. Dieser Slice ist Mitglied von
+  [welle-14](../welle-14-re-baseline.md) §4; Anker, Folge-Slice und Register prüft deren Closure.
+  Was sie von hier erbt: **ein** Steering-Loop-Eintrag ohne `liegt in` (gezählt, nicht verkörpert),
+  **null** *weiter offen*-Ausgänge, **null** neue Folge-Slices, **keine** neue `BEO-<NNN>`.
+
+**Sensor-Belege dieses Laufs.** `make gates` Exit **0** (`baseline-verify: v5.18.0 OK — 53 Dateien`,
+`d-check: 505 Datei(en) geprüft, 0 Befund(e)`, `comment-claims: 47 Datei(en) geprueft, 0 Befund(e)`,
+`1..206` in der bats-Stufe, darunter `ok 40`–`ok 44`). `make smoke` Exit **0**, das emittierte
+`docs-check` meldet `20 Datei(en) geprüft, 0 Befund(e)`. `make mutate` Exit **0**,
+`217 ok, 0 Befund(e)`, darunter die drei neuen Fälle je mit ihrem rot gefärbten Sensor. Ein
+erster Lauf meldete `1 Befund(e)` `host-baum`: eine Mutations-Zieldatei änderte sich unter ihm
+(`harness/conventions.md`, von einem parallelen Architect-Commit), also ist er kein Verdikt und
+wurde über ruhendem Baum wiederholt. Alle Zahlen wandern mit dem Baum und sind keine Erwartungswerte
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2).
 
 ## 8. Sub-Area-Modus-Begründung
 
