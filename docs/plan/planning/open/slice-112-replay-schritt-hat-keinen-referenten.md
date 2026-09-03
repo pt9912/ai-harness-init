@@ -58,8 +58,8 @@ die Abweichung von der Baseline-Fassung steht dort, wo Abweichungen dieses Repos
 Modul 6 §Wellen-Closure-Prozedur setzt in Schritt 1 als beobachtbare Closure-Bedingung: *„Alle
 Slices der Welle liegen in `done/`, `make gates` und der Replay-Lauf sind grün."* §Regeln gegen
 typische Fehlannahmen wiederholt es (*„Gegen ‚Welle = Sprint'"*). Der Begriff steht dort
-`grep -ci replay .harness/baseline/v5.12.0/regelwerk/modul-06-roadmap.md` → **6** mal (nachgemessen
-gegen `v5.12.0`; vorher **5**).
+`grep -ci replay .harness/baseline/v5.18.0/regelwerk/modul-06-roadmap.md` → **6** mal (nachgemessen
+gegen `v5.18.0`, unverändert).
 
 **Diesen Lauf gibt es hier nicht — gemessen über fünf unabhängige Achsen, nicht vermutet:**
 

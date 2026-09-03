@@ -59,7 +59,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
 - [ ] **(1) Eine ADR entscheidet die schreibende Rolle für die zwei
       Spec-Straten** — per `cp` aus
-      `.harness/baseline/v5.12.0/templates/docs/plan/adr/NNNN-titel.template.md`.
+      `.harness/baseline/v5.18.0/templates/docs/plan/adr/NNNN-titel.template.md`.
       Sie nennt ihren Geltungsbereich extensional (diese zwei Dateien), leitet
       aus [ADR-0015](../../adr/0015-rollen-eigentum-an-norm-artefakten.md)
       §Kontext ab statt aus dem Bestand, und trägt einen

@@ -49,7 +49,7 @@ eine Entscheidung — übernommen oder als Abweichung erklärt —, und keiner s
 
 ### Die drei Posten, je mit dem Kommando, das sie zeigt
 
-Ziel-Form ist `.harness/baseline/v5.12.0/templates/docs/plan/adr/README.template.md`
+Ziel-Form ist `.harness/baseline/v5.18.0/templates/docs/plan/adr/README.template.md`
 ([`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert):
 die Vorlage wird referenziert, nicht kopiert).
 
@@ -60,7 +60,7 @@ die Vorlage wird referenziert, nicht kopiert).
 | 3 | Konventionen-Bullet | fehlt | die `**Schärft:**`-Aufwärts-Deklaration je ADR |
 
 ```sh
-T=.harness/baseline/v5.12.0/templates/docs/plan/adr/README.template.md
+T=.harness/baseline/v5.18.0/templates/docs/plan/adr/README.template.md
 grep -m1 '^| ' docs/plan/adr/README.md    # 1: | ADR | Titel | Status | Bezug |
 grep -m1 '^| ' "$T"                       # 1: | ID | Titel | Status | Bezug |
 grep -c 'diesen Index aktualisieren' docs/plan/adr/README.md   # 2: 0
@@ -82,12 +82,12 @@ nichts —, statt die Unschärfe mit zu kopieren.
 ### Der Befund stammt nicht aus dem Delta — und das entscheidet, wohin er gehört
 
 Die Vorlage sagt beide fehlenden Sätze und die Kopfzelle `ID` **schon am abgelösten Stand**; der
-Sprung `v3.5.2` → `v5.12.0` hat an ihnen nichts geändert, sondern nur die Referenz-Form zweier
+Sprung `v3.5.2` → `v5.18.0` hat an ihnen nichts geändert, sondern nur die Referenz-Form zweier
 Bullets (Kurs-URL → `Baseline-Regelwerk …`) und eine Kennungs-Präzisierung ergänzt:
 
 ```sh
 diff <(git show c6cc56f:.harness/baseline/v3.5.2/templates/docs/plan/adr/README.template.md) \
-     .harness/baseline/v5.12.0/templates/docs/plan/adr/README.template.md
+     .harness/baseline/v5.18.0/templates/docs/plan/adr/README.template.md
 ```
 
 → zwei Hunks, beide in der Bullet-**Begründung**, keiner an Kopfzelle oder Bullet-Bestand

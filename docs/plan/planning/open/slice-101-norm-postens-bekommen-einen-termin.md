@@ -224,8 +224,8 @@ ein Eintrag im Adaptions-Block, nicht eine Schärfung einer Hard Rule.
 **Der gemessene Anlass ist eine Dreier-Reihe, und genau die ist die Schwelle.** Modul 10
 §Ziel-Form (Reviewer-Skill, Punkt *Pflege (Steering-Loop)*) verlangt wörtlich *„bei dreimaligem
 gleichem Finding Klassifikation schärfen / Folge-ADR bzw. `AGENTS.md`-Update / Gate"*
-(`grep -n 'dreimaligem gleichem Finding' .harness/baseline/v5.12.0/regelwerk/modul-10-review-harness.md`
-→ Zeile 78, nachgemessen gegen `v5.12.0`, derselbe Wortlaut).
+(`grep -n 'dreimaligem gleichem Finding' .harness/baseline/v5.18.0/regelwerk/modul-10-review-harness.md`
+→ Zeile 78, nachgemessen gegen `v5.18.0`, derselbe Wortlaut und dieselbe Zeile).
 Die Reihe: [slice-097](../done/slice-097-rollen-typen-gehen-mit.md) sauber ·
 [slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md) einmal (eine Datei) ·
 [slice-099](../done/slice-099-leser-und-aufraeum-kommando.md) erneut, diesmal **fünf** Dateien

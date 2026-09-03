@@ -15,7 +15,11 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Berührte Spec-Stellen:** `—`.
 
-**Verantwortlich:** —
+**Verantwortlich:** Planner (pt9912) — die Restmenge sind lebende Plan- und Norm-Artefakte, und
+der Ausgang je Treffer ist eine Sortier-Entscheidung nach
+[`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum),
+keine Implementation. Das Feld weicht damit von der Default-Besetzung ab, die
+Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine nennt.
 
 **Autor:** Planner. **Datum:** 2026-09-03.
 
@@ -44,16 +48,30 @@ Setzung 2):
 
 ```sh
 git grep -n 'v5\.12\.0' -- ':!.harness/baseline' ':!docs/reviews' \
-  ':!docs/plan/planning/done' ':!docs/plan/adr' | grep -vc ']('   # 2026-09-03: 152
+  ':!docs/plan/planning/done' ':!docs/plan/adr' | grep -vc ']('   # vor diesem Durchgang: 152
 ```
 
-**Zwei Teilmengen liegen ausdrücklich außerhalb:** die **88** Treffer in
-[`harness/conventions.md`](../../../../harness/conventions.md) (dieselbe Zählung, auf die Datei
-eingeschränkt) sind Adaptions-Block und damit Architect
-([`AGENTS.md`](../../../../AGENTS.md) §3.8) — sie trägt
-[slice-157](../done/slice-157-adaptions-durchgang-v5180.md). Und die **eingefrorenen** ADRs bleiben
+**Alle Stände dieses Abschnitts sind die *vor* dem Durchgang** — er verkleinert seine eigene
+Bezugsmenge, und ein Stand danach beschriebe das Ergebnis, nicht die Aufgabe. Was übrig bleibt und
+warum, steht in §7.
+
+**Zwei Teilmengen liegen ausdrücklich außerhalb:** der **Adaptions-Speicher** — die Index-Datei
+[`harness/conventions.md`](../../../../harness/conventions.md) **und** das Eintrags-Verzeichnis
+`harness/conventions/` daneben ([`MR-045`](../../../../harness/conventions.md#mr-045--der-adaptions-block-läuft-in-der-verzeichnis-form))
+— gehört dem Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8) und wird von
+[slice-157](../done/slice-157-adaptions-durchgang-v5180.md) getragen; seine Größe misst dieselbe
+Zählung, auf beide Pfade eingeschränkt:
+
+```sh
+git grep -n 'v5\.12\.0' -- harness/conventions.md harness/conventions/ | grep -vc ']('   # 85
+```
+
+Und die **eingefrorenen** ADRs bleiben
 unangetastet: [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
 §Geltungsbereich schließt `docs/plan/adr/` selbst aus.
+
+**Die Restmenge dieses Slice ist damit die Differenz** — dasselbe Kommando mit beiden zusätzlichen
+Ausschlüssen (`':!harness/conventions.md' ':!harness/conventions/'`): vor diesem Durchgang **55**.
 
 ## 2. Definition of Done
 
@@ -62,19 +80,21 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Jeder Treffer der Restmenge trägt einen der drei Ausgänge**, je Treffer entschieden und
+- [x] **Jeder Treffer der Restmenge trägt einen der drei Ausgänge**, je Treffer entschieden und
       am Fundort begründet, wo der Ausgang *Tree-Operand* oder *entfallen* ist. Ein pauschales
-      „alle gezogen" erfüllt den Punkt nicht.
-- [ ] **Keine Zahl ist mitgewandert:** wo der Ausgang *nachgemessen* lautet, ist das Kommando
+      „alle gezogen" erfüllt den Punkt nicht. **Vier Treffer tragen ihren Ausgang, aber nicht den
+      Schreib-Akt** — sie liegen in [`AGENTS.md`](../../../../AGENTS.md) §3.7 und gehen als
+      [slice-169](../open/slice-169-agents-37-messstaende-gegen-v5180.md) an den Architect (§7).
+- [x] **Keine Zahl ist mitgewandert:** wo der Ausgang *nachgemessen* lautet, ist das Kommando
       gegen den neuen Baum gefahren und die **Folgerung** gezogen, nicht die Ziffer gerundet.
       Belegt an mindestens einem Treffer, dessen Ergebnis sich bewegt hat — findet der Lauf
       keinen, ist **das** der Befund und steht in §7.
-- [ ] `make gates` grün.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] `make gates` grün.
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt — [`docs/user/benutzerhandbuch.md`](../../../user/benutzerhandbuch.md) auf **1.12**: die Abschluss-Zeile nennt den neuen Baseline-Stand.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -124,10 +144,14 @@ dasteht.
 
 - **Der Durchgang zieht den Tag und lässt die Zahl stehen** — genau der Fehler, gegen den
   [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
-  steht, und kein Gate sieht ihn. — **Ausgang:** offen, wird bei Closure verbucht.
+  steht, und kein Gate sieht ihn. — **Ausgang:** **entfallen** — jede der 37 nachgemessenen
+  Stellen trägt im Diff neben der geänderten Pfadzeile eine neu gefahrene oder ausdrücklich als
+  unverändert bestätigte Ergebniszeile; wo das Ergebnis sprang, ist die Folgerung gezogen (§7).
 - **Ein Teil der Treffer gehört dem Architect** ([`AGENTS.md`](../../../../AGENTS.md) §3.7/§3.8),
-  und ein Planner- oder Implementer-Lauf schreibt sie im Vorbeigehen mit. — **Ausgang:** offen,
-  wird bei Closure verbucht.
+  und ein Planner- oder Implementer-Lauf schreibt sie im Vorbeigehen mit. — **Ausgang:**
+  **entfallen** — die vier §3.7-Treffer sind unberührt und als
+  [slice-169](../open/slice-169-agents-37-messstaende-gegen-v5180.md) übergeben; berührt hat dieser
+  Lauf allein §1 derselben Datei, den §3.8 nicht bindet.
 
 ## 7. Closure-Notiz
 
@@ -139,13 +163,70 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-- **Beobachtungs-Register (`../observations.md`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+**Die Restmenge, erhoben und je Treffer verbucht.** Vor dem Durchgang **55**, danach **18**
+(dasselbe Kommando aus §1 mit den zwei zusätzlichen Ausschlüssen). Die Verteilung der drei
+Ausgänge:
+
+| Ausgang | Zahl | Fundorte |
+|---|---|---|
+| **nachgemessen** — Pfad gezogen, Kommando neu gefahren | 37 | `close-welle.md` (2) · `reviewer.md` Kopf (1) · `slice-090` (1) · `slice-091` (3) · `slice-101` (2) · `slice-112` (2) · `slice-114` (8) · `slice-134` (4) · `slice-140` (2) · `slice-151` (1) · `welle-09` (1) · `welle-11` (7) · `benutzerhandbuch.md` §Beispielablauf (1) · `spezifikation.md` §Aufnahme-Regel (1) · `internal/emit/templates.go` (1) |
+| **Tree-Operand** — spricht über die Vor-Tausch-Seite, bleibt stehen | 11 | `reviewer.md` Versions-Log 1.5.0 (2) · `CO-005` (1, datierter Gate-Lauf) · diese Datei, Titel (1) · [welle-14](../welle-14-re-baseline.md) (3: Start-Trigger, Sprung-Ausgang, Versions-Range) · `benutzerhandbuch.md` Historie 1.11 (1) · `templates.go`/`templates_test.go` Herkunfts-Marken (2) · `spezifikation.md` Historie 2026-08-28 (1) |
+| **entfallen** — Gegenstand verloren, mit Begründung aufgehoben | 0 als Tag-Nennung | Der Ausgang traf **eine Aussage**, nicht eine Nennung: [slice-114](../open/slice-114-jede-aussage-hat-einen-abschnitt.md) §1 las *„`## Leseordnung` fehlt"*, der Abschnitt steht in der Datei. Ihre Nennung selbst lief unter *nachgemessen* — die Adresse blieb gebraucht |
+
+**Die vier verbleibenden Treffer sind gemessen, aber nicht geschrieben:** sie liegen in
+[`AGENTS.md`](../../../../AGENTS.md) §3.7, und §3 dieser Datei ist Hard Rule und damit
+Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Ihr Ausgang **nachgemessen** steht fest —
+alle drei Kommandos geben gegen `v5.18.0` unverändert **1** aus —, den Schreib-Akt trägt
+[slice-169](../open/slice-169-agents-37-messstaende-gegen-v5180.md).
+
+**Closure-Kriterien (beobachtet, nicht behauptet):**
+
+1. **Die Restmenge ist neu erhoben und je Treffer verbucht** — Tabelle oben: 37 nachgemessen +
+   11 Tree-Operand + 4 Übergabe = **55**. Der Reststand **18** ist diese 11 + 4 plus **3** neu
+   geschriebene Tree-Operanden: das Versions-Log 1.6.0 von
+   [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md) nennt den Re-Pin-Sprung
+   und führt seine zwei `git show`-Belege am abgelösten Tag.
+2. **`make gates` grün** nach dem Commit dieser Notiz; der Stop-Hook-Stempel deckt den Arbeitsbaum.
+
+- **Was hat funktioniert:** Die Trennung von *Ausgang bestimmen* und *Ausgang schreiben*. Für die
+  vier `AGENTS.md`-Treffer war der Ausgang in diesem Lauf entscheidbar und die Messung billig; nur
+  der Schreib-Akt gehört einer anderen Rolle. Das Übergabe-Artefakt trägt die Messung mit, statt
+  sie im Architect-Lauf zu wiederholen.
+- **Was ging anders als geplant:** §3 dieses Plans nennt `internal/emit/templates*.go`,
+  `AGENTS.md`, die Plan-Dateien und drei Einzelartefakte — `spec/spezifikation.md` steht dort
+  nicht, trägt aber zwei Treffer. Die Kandidaten-Tabelle war keine Ausschluss-Liste; die
+  Bezugsmenge ist das Kommando aus §1, und das trifft Rang 2 mit. Und die Ausschluss-Angabe *„88
+  Treffer in `harness/conventions.md`"* zeigte auf die Einzeldatei-Form des Adaptions-Blocks, den
+  [`MR-045`](../../../../harness/conventions.md#mr-045--der-adaptions-block-läuft-in-der-verzeichnis-form)
+  seither in ein Verzeichnis überführt hat — die Grenze steht jetzt auf beiden Pfaden.
+- **Steering-Loop-Eintrag: eine benannte Spec-Lücke** —
+  *[`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
+  bindet die **Baum**-Hälfte einer
+  Präsens-Aussage; der repo-eigene Operand daneben, der im selben Satz zitiert wird, hat beim
+  Sprung keinen Ausgang*. Gemessen: die Zahlen, die dieser Durchgang bewegen musste, standen
+  überwiegend auf der repo-eigenen Seite (`harness/README.md` **16 161** → **19 116** Zeichen, ihre
+  Abschnittszahl **6** → **7**, der Adaptions-Speicher **148 721** → **339 546**); auf der
+  Baum-Seite bewegte sich zweierlei (die Konventions-Vorlage des vendored Satzes wuchs von
+  **8 785** auf **9 658** Zeichen, und zwei wiederkehrende Vorlagen kamen hinzu). Kein Zielort — die Lücke ist **benannt**, nicht
+  verkörpert: sie liegt als sechster Beleg an [`BEO-009`](../observations.md), und ihr Ausgang
+  hängt an dem dort geplanten [slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md).
+- **Beobachtungs-Register (`../observations.md`):** keine neue Kennung —
+  [`BEO-009`](../observations.md) von 5× auf **6×** erhöht, Beleg `slice-165`. Die Klasse ist
+  dieselbe: ein Vorgang korrigiert die Ableitung (den Pfad) und lässt die daneben stehende Zusage
+  (die zitierte Zahl) stehen, und kein Gate prüft deren Wahrheitsgehalt.
+- **Folge-Slices:** [slice-169](../open/slice-169-agents-37-messstaende-gegen-v5180.md) — die vier
+  `AGENTS.md`-§3.7-Treffer als Architect-Schreibakt, Mitglied von
+  [welle-14](../welle-14-re-baseline.md) §4.
+- **Risiken aus §6:** zwei benannt, zwei mit genau einem Ausgang — beide **entfallen**. (1) *Tag
+  gezogen, Zahl stehen gelassen*: Jede der 37 nachgemessenen Stellen trägt im Diff neben der
+  geänderten Pfadzeile eine neu gefahrene oder ausdrücklich als unverändert bestätigte
+  Ergebniszeile; wo das Ergebnis sprang, ist die Folgerung gezogen (slice-114: *zwei fehlende
+  Abschnitte* → **einer**). (2) *Ein Teil der Treffer gehört dem Architect*: nicht eingetreten —
+  die vier `AGENTS.md`-§3.7-Treffer sind unberührt und als Folge-Slice übergeben; berührt hat
+  dieser Lauf allein §1 derselben Datei, den §3.8 nicht bindet.
+- **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice
+  ist Mitglied von [welle-14](../welle-14-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt
+  die Paarungen auf Closure-Schritt 3c.
 
 ## 8. Sub-Area-Modus-Begründung
 

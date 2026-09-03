@@ -36,8 +36,8 @@ Freshness-Audit ist und dass kein Sensor dafür mitkommt — mit dem Grund.**
 ein leeres `git init`-Verzeichnis) trifft `grep -rni 'freshness' --exclude-dir=.git
 --exclude-dir=baseline . | wc -l` **0** Zeilen — die gesamte lebende Schicht schweigt. Im
 mitgelieferten Baum daneben nennt `grep -rlni 'freshness'
-.harness/baseline/v5.12.0/regelwerk/ | wc -l` **4** Dateien (nachgemessen gegen den gepinnten
-Stand nach [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md); vorher **2**): Modul 2
+.harness/baseline/v5.18.0/regelwerk/ | wc -l` **4** Dateien (nachgemessen gegen den gepinnten
+Stand `v5.18.0`, unverändert; dieselben vier Fundorte): Modul 2
 schreibt den Audit als Pflicht-Schritt aus (*„Eine vendored Kopie driftet still von der Quelle
 weg, sobald ein neues Kurs-Release erscheint; Pinnen ohne Überwachung ist die halbe Maßnahme"*),
 Modul 7, `grundlagen-source-precedence.md` und `grundlagen-bootstrap.md` verweisen darauf. Der

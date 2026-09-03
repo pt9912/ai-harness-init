@@ -95,6 +95,12 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 | [slice-163](done/slice-163-regierende-fassung-des-sprungs.md) | Die regierende Fassung des Sprungs — und wo eine Zielstand-Setzung künftig steht | [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md), [`ADR-0015`](../adr/0015-rollen-eigentum-an-norm-artefakten.md) |
 | [slice-164](done/slice-164-emitter-klassifiziert-die-zwei-neuen-vorlagen.md) | Der Emitter klassifiziert die zwei neuen Archiv-Stub-Vorlagen | [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-165](in-progress/slice-165-praesens-aussagen-gegen-v5180.md) | Die stummen `v5.12.0`-Nennungen bekommen ihren Ausgang | [`MR-040`](../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum), [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| [slice-169](open/slice-169-agents-37-messstaende-gegen-v5180.md) | Die vier Mess-Stände in `AGENTS.md` §3.7 stehen gegen `v5.18.0` | [`MR-040`](../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum), [`AGENTS.md`](../../../AGENTS.md) §3.8 |
+
+**Zeile 11 ist die Rollen-Hälfte von Zeile 10:** die vier Nennungen in
+[`AGENTS.md`](../../../AGENTS.md) §3.7 sind gemessen, aber §3 dieser Datei ist Hard Rule und
+gehört dem **Architect**. Ein eigener Slice statt eines Nachzugs im Planner-Lauf ist genau der
+Zuschnitt, den [`AGENTS.md`](../../../AGENTS.md) §3.8 verlangt.
 
 **Die Zeilen 9 und 10 folgen nicht aus dem Katalog, sondern aus dem Tausch selbst** — beide sind
 in [slice-156](done/slice-156-baum-tauschen-pins-ziehen.md) gemessen: der neue Satz bricht

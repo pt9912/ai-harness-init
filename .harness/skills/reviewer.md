@@ -1,7 +1,7 @@
 # Reviewer-Skill — ai-harness-init
 
-**Version:** 1.5.0 · **Datum:** 2026-08-31 ·
-**Baseline:** Agents-Regelwerk v5.12.0 (Kurs-Welle 98), Modul 10 §Ziel-Form: Reviewer-Skill
+**Version:** 1.6.0 · **Datum:** 2026-09-03 ·
+**Baseline:** Agents-Regelwerk v5.18.0 (Kurs-Welle 111), Modul 10 §Ziel-Form: Reviewer-Skill
 (Output-Schema, Kategorien-Semantik, Report-Pflicht, Pflicht-Kontext-Eingang).
 
 <!-- Versionierung (Modul 10): Änderungen werden versioniert, nicht überschrieben;
@@ -24,7 +24,13 @@ Steering-Loop-Zähler über die Slice-Closure ins Beobachtungs-Register), und di
 gewinnt drei baseline-neue Einträge (Norm nur im Template-Kommentar · Kommentar trägt keine
 der fünf Kommentar-Klassen · Zustandsfeld trägt Chronik), verbatim aus
 `.harness/skills/reviewer.template.md`, `v5.12.0`. Die fünf Pflicht-Kontext-Punkte sind
-unverändert. -->
+unverändert. 1.6.0 (slice-165): Baseline-Re-Pin v5.12.0→v5.18.0 (Welle 98→111); reines
+Baseline-Label-Update, gemessen statt angenommen: §Ziel-Form: Reviewer-Skill und die Ziel-Form-
+Vorlage sind über den Tausch **byte-gleich**, beide `diff` leer bei Exit 0 —
+`diff <(git show db83415^:.harness/baseline/v5.12.0/regelwerk/modul-10-review-harness.md | sed -n '44,92p') <(sed -n '44,92p' .harness/baseline/v5.18.0/regelwerk/modul-10-review-harness.md)`
+und `diff <(git show db83415^:.harness/baseline/v5.12.0/templates/.harness/skills/reviewer.template.md) .harness/baseline/v5.18.0/templates/.harness/skills/reviewer.template.md`.
+Das einzige Delta des Moduls liegt in §Reviewer berichtet auch, was er nicht gefunden hat und
+berührt weder Output-Schema noch Kategorien noch die fünf Pflicht-Kontext-Punkte. -->
 
 ## Eingangs-Kontext (Pflicht — sonst nicht reproduzierbar)
 

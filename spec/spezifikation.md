@@ -35,7 +35,7 @@ Drei Formregeln, weil alle drei von außen gelesen werden:
   Planungs-Kennung wie jede Kennung, deren Link woanders endet,
   trifft kein Muster — dort gilt die Regel ohne Wächter.
 - **Abschnittsnummern werden nie neu vergeben.** Sie sind die der vendored Vorlage
-  `.harness/baseline/v5.12.0/templates/spec/spezifikation.template.md`; ein
+  `.harness/baseline/v5.18.0/templates/spec/spezifikation.template.md`; ein
   Abschnitt ohne Inhalt lässt seine Nummer frei, und ein hinzukommender bekommt
   seine eigene. Neu zu nummerieren verschöbe die Anker, auf die von außen gezeigt
   wird — und ein Teil dieser Zeiger steht in Dokumenten, die nicht mehr geändert

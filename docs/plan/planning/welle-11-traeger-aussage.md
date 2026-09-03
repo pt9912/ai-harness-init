@@ -39,8 +39,8 @@ gefahren am 2026-08-22:
 
 | Regel im mitgelieferten Regelwerk | Träger hier | im Ziel | Kommando im Sonden-Repo |
 |---|---|---|---|
-| **Modul 2** §*Freshness-Audit der vendored Baseline* | `harness/tools/baseline-freshness.sh` + `harness/tools/component-freshness.sh`, `make baseline-freshness`, Nachtlauf | **fehlt ganz** — kein Ziel, keine Zeile | `grep -rni 'freshness' --exclude-dir=.git --exclude-dir=baseline . \| wc -l` → **0**; Gegenprobe im mitgelieferten Baum: `grep -rlni 'freshness' .harness/baseline/v5.12.0/regelwerk/ \| wc -l` → **4** (nachgemessen gegen `v5.12.0`; vorher **2**) |
-| **`make`-Ansprüche des vendored Baums** (Modul 7/11/13/15 + Grundlagen) | hier gibt es die Ziele teils, teils nicht | **5** Regelwerk-Dateien nennen ein Ziel, das in **keiner** Variante existiert; **2** wiederkehrende Vorlagen tragen es beim `cp` in ein lebendes Dokument | `grep -rlE 'make (arch-check\|coverage-gate\|coverage-gate-critical\|fullbuild\|test-determinism\|verify)\b' .harness/baseline/v5.12.0/regelwerk/ \| wc -l` → **5** (nachgemessen gegen `v5.12.0`, unverändert) |
+| **Modul 2** §*Freshness-Audit der vendored Baseline* | `harness/tools/baseline-freshness.sh` + `harness/tools/component-freshness.sh`, `make baseline-freshness`, Nachtlauf | **fehlt ganz** — kein Ziel, keine Zeile | `grep -rni 'freshness' --exclude-dir=.git --exclude-dir=baseline . \| wc -l` → **0**; Gegenprobe im mitgelieferten Baum: `grep -rlni 'freshness' .harness/baseline/v5.18.0/regelwerk/ \| wc -l` → **4** (nachgemessen gegen `v5.18.0`, unverändert) |
+| **`make`-Ansprüche des vendored Baums** (Modul 7/11/13/15 + Grundlagen) | hier gibt es die Ziele teils, teils nicht | **5** Regelwerk-Dateien nennen ein Ziel, das in **keiner** Variante existiert; **2** wiederkehrende Vorlagen tragen es beim `cp` in ein lebendes Dokument | `grep -rlE 'make (arch-check\|coverage-gate\|coverage-gate-critical\|fullbuild\|test-determinism\|verify)\b' .harness/baseline/v5.18.0/regelwerk/ \| wc -l` → **5** (nachgemessen gegen `v5.18.0`, unverändert) |
 | **Modul 15**, Erfassung · Token-Attribution · Cache-Counter | `span-emit`, `make span-report`, `.claude/agents/` | **entschieden, geht mit** ([`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegungen 1, 3–5 für Träger und Rollen-Typen, Festlegung 8 für Token-Attribution/Cache-Counter als Auswertung ohne Bilanz) — **noch nicht umgesetzt** | `ls .claude/` im Ziel → `commands hooks settings.json`, unverändert seit der Messung vom 2026-08-22: kein Slice legt den Träger bisher ab (`grep -rn 'claude/agents' --include=*.go . \| wc -l` → **0**) |
 | **Modul 15**, Doku-Konsistenz-Drift | `make docs-check` + `.d-check.yml` | Träger `doc-targets` liegt bei, ist **nicht aktiviert** — Gegenstand von [welle-09](welle-09-modul-15-konformitaet.md), nicht dieser Welle | `grep -m1 '^modules:' .d-check.yml` → `modules: [links, anchors]`; `grep -c 'targets' .d-check.yml` → **0** |
 | **Modul 8**, Rollen-Trennung | `.claude/agents/` (6 Dateien) | **entschieden, geht mit** ([`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 3 — generische, aus Dogfood und Regelwerk abgeleitete Fassung, `skip-if-present`) — **noch nicht umgesetzt** | dasselbe `ls .claude/`, unverändert seit der Messung vom 2026-08-22 |
@@ -55,10 +55,10 @@ gefahren am 2026-08-22:
    Reviewer-Skill in seiner Aufzählung. Die Ziel-Form aus Modul 10 ist im Ziel also vorhanden — als
    auszufüllende Vorlage, was genau ihre Ziel-Form ist. **Ein Slice dafür hätte keinen
    Gegenstand.** Derselbe Befund gilt für alle **elf** `### Ziel-Form`-Abschnitte des
-   Regelwerks — `grep -rh '^### Ziel-Form' .harness/baseline/v5.12.0/regelwerk/ | wc -l` → **11**
-   (nachgemessen gegen `v5.12.0`; vorher **7**), und jede zugehörige Vorlage liegt im
+   Regelwerks — `grep -rh '^### Ziel-Form' .harness/baseline/v5.18.0/regelwerk/ | wc -l` → **11**
+   (nachgemessen gegen `v5.18.0`, unverändert), und jede zugehörige Vorlage liegt im
    `templates/`-Geschwisterbaum, den das Ziel vollständig bekommt — die vier stichprobenartig
-   geprüften Verzeichnisse (`ls .harness/baseline/v5.12.0/templates/.harness/skills/ …/docs/plan/{planning,adr,carveouts}/`)
+   geprüften Verzeichnisse (`ls .harness/baseline/v5.18.0/templates/.harness/skills/ …/docs/plan/{planning,adr,carveouts}/`)
    tragen ihre Vorlagen unverändert.
 2. **Die Mutations-Regel steht im Ziel nirgends.** *„Keine Zusage ohne rot gesehenes
    Gegenbeispiel"* ist [`AGENTS.md`](../../../AGENTS.md) §3.6 **dieses** Repos und ein Vorgriff auf
@@ -66,8 +66,8 @@ gefahren am 2026-08-22:
    ([`MR-022`](../../../harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)-Klasse).
    Die emittierte `AGENTS.md` stammt aus der vendored Vorlage und führt unter §3 sechs andere Hard
    Rules (`grep -n '^### 3\.' AGENTS.md` im Sonden-Repo); im gesamten mitgelieferten Baum trifft
-   `grep -rniE 'rot gesehen|gegenbeispiel' .harness/baseline/v5.12.0/` **eine** Zeile (nachgemessen
-   gegen `v5.12.0`, unverändert), und die ist
+   `grep -rniE 'rot gesehen|gegenbeispiel' .harness/baseline/v5.18.0/` **eine** Zeile (nachgemessen
+   gegen `v5.18.0`, unverändert), und die ist
    *„Gegenbeispiel-Rauschen"* aus einem anderen Zusammenhang. **Ein Ziel, das die Regel nicht
    liest, vermisst ihren Träger nicht** — `harness/tools/mutate.sh` und `test/mutations/` sind
    deshalb kein vierter Slice (§6).

@@ -67,13 +67,13 @@ daneben).
 ### Die Prozedur hat sechs Schritte, das Emit führt fünf davon
 
 Der Set-Index des vendored Satzes schreibt vor, wie eine Vorlage zu einem Repo-File wird
-(`sed -n '/^## Verwendung/,/^## /p' .harness/baseline/v5.12.0/templates/README.md`). Schritt 4
+(`sed -n '/^## Verwendung/,/^## /p' .harness/baseline/v5.18.0/templates/README.md`). Schritt 4
 lautet *„Template-Hinweis-Block oben entfernen"*, Schritt 5 *„HTML-Kommentar-Hilfen entfernen
 (`<!-- ... -->`) — **außer** `<!-- d-check:ignore … -->`-Marker"*. Beide Schritte sind im Baum
 belegbar:
 
 ```sh
-grep -c 'HTML-Kommentar-Hilfen entfernen' .harness/baseline/v5.12.0/templates/README.md  # -> 1
+grep -c 'HTML-Kommentar-Hilfen entfernen' .harness/baseline/v5.18.0/templates/README.md  # -> 1
 grep -c 'func StripHintBlock' internal/emit/templates.go                                 # -> 1  (Schritt 4)
 grep -c 'd-check:ignore' internal/emit/templates.go                                      # -> 0  (Schritt 5 fehlt)
 ```
