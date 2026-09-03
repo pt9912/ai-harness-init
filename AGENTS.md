@@ -193,16 +193,16 @@ entscheidet der Slice, der die Tool-Ebene entscheidet — nicht diese Sektion.
 2026-08-30.** Gebunden ist der Kommentar, der geschrieben oder geändert wird; der
 **Bestand ist kein Arbeitsauftrag dieser Sektion**. Er ist gemessen, nicht
 geschätzt — jede Zahl neben dem Kommando, das sie ausgibt, alle über denselben
-Pathspec, der den Geltungsbereich oben abbildet (Stand 2026-08-30):
+Pathspec, der den Geltungsbereich oben abbildet (Stand 2026-09-03):
 
 ```sh
 PS=( '*.go' '*.sh' '*.awk' '*Makefile' 'Dockerfile' ':!internal/emit/templates' ':!.harness/baseline' )
-git ls-files "${PS[@]}" | wc -l                                                                   # 289 Dateien im Prüfbereich
+git ls-files "${PS[@]}" | wc -l                                                                   # 296 Dateien im Prüfbereich
 git grep -lE '^[[:space:]]*(#|//).*Review-Befund' -- "${PS[@]}" | wc -l                           #  38 mit Befund-Kennung
 git grep -cE '^[[:space:]]*(#|//).*Review-Befund' -- "${PS[@]}" | awk -F: '{s+=$NF} END{print s}' #  65 solche Zeilen
-git grep -lE '^[[:space:]]*(#|//).*slice-[0-9]'  -- "${PS[@]}" | wc -l                            # 124 mit Slice-Nummer
-git grep -cE '^[[:space:]]*(#|//).*slice-[0-9]'  -- "${PS[@]}" | awk -F: '{s+=$NF} END{print s}'  # 464 solche Zeilen
-git grep -lE '· seit (welle|slice)-'             -- "${PS[@]}" | wc -l                            #   0 in der zulässigen Feld-Form
+git grep -lE '^[[:space:]]*(#|//).*slice-[0-9]'  -- "${PS[@]}" | wc -l                            # 126 mit Slice-Nummer
+git grep -cE '^[[:space:]]*(#|//).*slice-[0-9]'  -- "${PS[@]}" | awk -F: '{s+=$NF} END{print s}'  # 472 solche Zeilen
+git grep -lE '· seit (welle|slice)-'             -- "${PS[@]}" | wc -l                            #   1 in der zulässigen Feld-Form
 ```
 
 **Keine Erwartungswerte** ([`MR-025`](harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
@@ -226,17 +226,17 @@ ob eine Zelle Chronik trägt, ist wie die zwei Urteils-Klassen oben ein Urteil u
 kein Muster — ein `grep` zählte Zellen, nicht Verstöße, und gäbe damit ein Muster
 als Kriterium aus, das keines ist (§3.6).
 
-**Herkunft, mit Mess-Stand:** die adoptierte Baseline `v5.12.0` **führt** diese
+**Herkunft, mit Mess-Stand:** die adoptierte Baseline `v5.18.0` **führt** diese
 Regel — als Hard Rule mit derselben Nummer und demselben Titel im Hard-Rules-Block
 der AGENTS-Vorlage
-(`grep -c '^### 3\.7 Ein Kommentar beschreibt, was da ist$' .harness/baseline/v5.12.0/templates/AGENTS.template.md` → **1**)
+(`grep -c '^### 3\.7 Ein Kommentar beschreibt, was da ist$' .harness/baseline/v5.18.0/templates/AGENTS.template.md` → **1**)
 und ausgeschrieben in
-`grep -c '^### Was ein Kommentar trägt — Code, Konfiguration, Skripte$' .harness/baseline/v5.12.0/regelwerk/grundlagen-harness-dateien.md` → **1**.
+`grep -c '^### Was ein Kommentar trägt — Code, Konfiguration, Skripte$' .harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md` → **1**.
 Was hier über die Vorlage hinaus steht — Geltungsbereich, Cutoff, Quellen-Klausel
 und die Wächter-Aussage —, ergänzt sie, ohne sie einzuschränken. Die
 Quellen-Klausel ist die **Anwendung** der Baseline-Hard-Rule *„Wer Herkunft nennt,
 nennt sie als **ein** auflösbares Feld … und nie als Absatz"*
-(`grep -c 'nennt sie als \*\*ein\*\* auflösbares Feld' .harness/baseline/v5.12.0/regelwerk/grundlagen-harness-dateien.md` → **1**):
+(`grep -c 'nennt sie als \*\*ein\*\* auflösbares Feld' .harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md` → **1**):
 Sie nimmt keine der fünf Klassen weg und keine der dort genannten Anker-Formen —
 `· seit slice-<NNN>` steht in der Begründung ausdrücklich, weil
 `grundlagen-traceability.md` §Herkunfts-Anker ihn für wellenlos verkörperte Regeln
