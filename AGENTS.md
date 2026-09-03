@@ -7,7 +7,9 @@ Doku ändert. Verweist auf die kanonischen Quellen und formuliert die
 Hard Rules. Bei Konflikt zwischen dieser Datei und einer kanonischen
 Quelle gilt die kanonische Quelle (Source Precedence, §2).
 
-Strukturregeln und Adaptionen leben in [`harness/conventions.md`](harness/conventions.md).
+Strukturregeln leben in [`harness/conventions.md`](harness/conventions.md); die Adaptionen selbst
+liegen daneben, eine Datei je Eintrag, unter [`harness/conventions/`](harness/conventions/) — die
+Datei ist ihr Index ([`MR-045`](harness/conventions.md#mr-045--der-adaptions-block-läuft-in-der-verzeichnis-form)).
 
 **Betriebsregelwerk der adoptierten Baseline — committet vendored, netzlos.**
 Regelwerk **und** Templates liegen unter `.harness/baseline/<tag>/{regelwerk,templates}/`
@@ -251,10 +253,12 @@ als gemessene Lücke.
 
 ### 3.8 Hard Rules und Adaptions-Block schreibt der Architect
 
-Die Hard Rules dieser Datei (§3) und der Adaptions-Block in
-[`harness/conventions.md`](harness/conventions.md) werden vom **Architect** geschrieben. Eine
+Die Hard Rules dieser Datei (§3) und der Adaptions-Block — die Index-Datei
+[`harness/conventions.md`](harness/conventions.md) samt dem Eintrags-Verzeichnis
+[`harness/conventions/`](harness/conventions/) daneben — werden vom **Architect** geschrieben. Eine
 Änderung an ihnen landet in einem **eigenen Commit**, der ausschließlich Artefakte derselben
-schreibenden Rolle berührt — ADRs und diese zwei — und die Rolle in seiner Message nennt.
+schreibenden Rolle berührt — ADRs, diese Datei und den Konventionsspeicher — und die Rolle in
+seiner Message nennt.
 Gebunden ist das **Schreiben**; **gelesen** werden beide von jeder Rolle uneingeschränkt.
 
 **Über andere Norm-Artefakte sagt diese Regel nichts.** Wo eine Quelle die schreibende Rolle
