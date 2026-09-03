@@ -97,7 +97,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-173](slice-173-archive-welle-als-unterkommando.md) liegt in `done/` — vorher gibt es kein
+[slice-173](../in-progress/slice-173-archive-welle-als-unterkommando.md) liegt in `done/` — vorher gibt es kein
 Kommando, auf das der emittierte Anweisungssatz zeigen könnte, und ein Zeiger darauf wäre genau
 die halluzinierte Zusage aus
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6).
