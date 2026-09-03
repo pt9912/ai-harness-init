@@ -276,8 +276,9 @@ Backticks).
   geschlossen · §5 neu gefasst · Festlegung-2-Einwand nicht erhoben), dreimal *weiter offen* nach
   `BEO-026`, `BEO-009`, `BEO-025`.
 - **Drei Paarungen:** **Anker** — keine, dieser Slice verkörpert nichts (kein `liegt in`-Feld).
-  **Folge-Slice** — `slice-175` liegt in `open/`. **Register** — die fünf genannten Kennungen haben
-  je eine Zeile, und jede Zeile des Registers trägt mindestens einen Beleg.
+  **Folge-Slice** — `slice-175` liegt in `open/`. **Register** — die sieben in diesem Plan
+  genannten Kennungen (`BEO-003`, `-009`, `-016`, `-025`, `-026`, `-028`, `-029`) haben je eine
+  Zeile, und jede Zeile des Registers trägt mindestens einen Beleg.
 
 ## 8. Sub-Area-Modus-Begründung
 
