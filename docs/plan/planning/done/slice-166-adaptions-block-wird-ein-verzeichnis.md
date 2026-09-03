@@ -75,7 +75,7 @@ Append-only-Disziplin des Blocks **nicht** verletzt, ist die Entscheidung, die L
 trägt — nicht eine Annahme, die der Vollzug nebenbei mitnimmt.
 
 Er ist auch **nicht** der Adaptions-Durchgang gegen `v5.18.0`
-([slice-157](../open/slice-157-adaptions-durchgang-v5180.md)) und **nicht** die Auflösung von
+([slice-157](../in-progress/slice-157-adaptions-durchgang-v5180.md)) und **nicht** die Auflösung von
 `BEO-014`.
 
 ## 2. Definition of Done
@@ -267,7 +267,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Ein paralleler Lauf schreibt in denselben Bereich.**
-  [slice-157](../open/slice-157-adaptions-durchgang-v5180.md) (Adaptions-Durchgang gegen
+  [slice-157](../in-progress/slice-157-adaptions-durchgang-v5180.md) (Adaptions-Durchgang gegen
   `v5.18.0`, Mitglied von [welle-14](../welle-14-re-baseline.md)) legt neue `MR`-Einträge an und
   ändert damit genau die Menge, die dieser Slice umzieht. Beide Reihenfolgen sind gangbar und
   kosten Verschiedenes: **157 zuerst** heißt, dieser Slice zieht mehr Einträge um; **166 zuerst**
@@ -279,7 +279,7 @@ dasteht.
   und zwar über den Start-Trigger in §4.
   — **Ausgang: entfallen** — die Nicht-Gleichzeitigkeit hat gehalten. Der Start-Trigger war beim
   Übergang erfüllt (`git status --porcelain -- harness/conventions.md` leer), und
-  [slice-157](../open/slice-157-adaptions-durchgang-v5180.md) liegt unverändert in `open/`. Er
+  [slice-157](../in-progress/slice-157-adaptions-durchgang-v5180.md) liegt unverändert in `open/`. Er
   schreibt seine Einträge damit gleich in der Verzeichnis-Form an.
 - **Die `Ersetzt-Baseline-Regel`-Spalte steht überwiegend auf `—`.** Das Feld ist ein Pflichtfeld
   jüngeren Datums; ältere Einträge führen es nicht, und nachgetragen wird es nicht. Eine
