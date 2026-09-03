@@ -578,5 +578,10 @@ falschen Achse-1-Ausgang nicht verhindert.
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Welle-Abschluss füllen. Verweis auf welle-10-results.md. -->
+Was diese Welle geliefert, was funktioniert und was anders gelaufen ist, steht in
+[welle-10-results.md](done/welle-10-results.md) — dort auch die
+Steering-Loop-Einträge (drei Registerzeilen bei ≥ 3×), der Zeiger auf das
+Beobachtungs-Register, die Folge-Slices und die Verifikations-Belege der fünf
+Closure-Schritte. Diese Datei liegt nach der Closure neben ihr in `done/`; der
+Zustand ist die Verzeichnis-Position (§Lifecycle oben), kein Status-Feld.
 

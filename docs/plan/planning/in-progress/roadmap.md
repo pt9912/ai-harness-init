@@ -17,7 +17,6 @@ Welle-Dateien; woran gearbeitet wird, sagt das `Welle:`-Feld der Slices in
 nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
-- [welle-10 — Re-Baseline `v3.5.2` → `v5.12.0`](../welle-10-re-baseline.md)
 
 Nichts in Arbeit.
 
@@ -124,10 +123,12 @@ Ergebnis-Notiz, keine Nummernfolge.
 | [welle-06-freshness](../done/welle-06-freshness.md) | 2026-07-24 | [welle-06-results.md](../done/welle-06-results.md) |
 | [welle-07-arch-achse](../done/welle-07-arch-achse.md) | 2026-07-25 | [welle-07-results.md](../done/welle-07-results.md) |
 | [welle-08-cpp-hexslice](../done/welle-08-cpp-hexslice.md) | 2026-07-27 | [welle-08-results.md](../done/welle-08-results.md) |
+| [welle-10-re-baseline](../done/welle-10-re-baseline.md) | 2026-09-03 | [welle-10-results.md](../done/welle-10-results.md) |
 | [welle-12-erfassungsschicht-emittieren](../done/welle-12-erfassungsschicht-emittieren.md) | 2026-08-27 | [welle-12-results.md](../done/welle-12-results.md) |
 
-Die Lücke zwischen `welle-08` und `welle-12` ist keine Auslassung: `welle-09` bis `welle-11` sind
-geschnitten und nicht geschlossen — ihr Zustand steht oben.
+Die Tabelle ist nach Wellen-Nummer sortiert, nicht nach Abschluss-Datum; `welle-10` schloss nach
+`welle-12`. Die Lücken sind keine Auslassung: `welle-09` und `welle-11` sind geschnitten und nicht
+geschlossen — ihr Zustand steht oben bzw. unter *Nächste Wellen*.
 
 ## Historische Trigger-Verschiebungen
 
