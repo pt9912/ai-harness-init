@@ -135,15 +135,25 @@ codepaths:
   # Review-Laufs ein; Lifecycle-Pfade (next/->in-progress/->done/) darin veralten per
   # Definition. Ersetzt die verstreuten Zeilen-Marker (slice-016 / MR-009).
   exempt-paths: ["docs/reviews/**"]
-  # ignore-refs (referenz-weit): Tombstones der in slice-013 geloeschten Ausfuell-Templates
-  # (MR-008 — bewusst entfernt, nicht geplant). Normative Doku darf die klaren vollen Pfade
-  # nennen statt Glob-Workarounds. Genau die fuenf geloeschten Dateien, keine breite Liste.
+  # ignore-refs (referenz-weit): Tombstones bewusst ENTFERNTER Artefakte (MR-008/MR-009 —
+  # entfernt, nicht geplant; ein geplanter Pfad bleibt Doc-fuehrt-Code-folgt und ist kein
+  # Tombstone). Normative Doku darf die klaren vollen Pfade nennen statt Glob-Workarounds.
+  # Genau die geloeschten Dateien, keine breite Liste; MR-009 nennt das Wachstum dieser Liste
+  # als seinen Aufloesungs-Trigger.
+  # Die ersten fuenf sind die Repo-Kopien der Ausfuell-Templates, deren einzige Quelle heute
+  # die vendored Baseline ist (MR-008).
+  # Der sechste ist der Shell-Helfer der Wellen-Archivierung: die Operation liegt als
+  # Unterkommando des Produkt-Binaers in internal/archive (ADR-0033 Festlegung 1 und 2), zwei
+  # Fassungen nebeneinander gibt es nicht. Die Zeitdokumente in docs/plan/planning/done/ und
+  # das Beobachtungs-Register nennen den Pfad als Inline-Code weiter — dort ist er die Adresse
+  # eines Vorgangs, den es gab.
   ignore-refs:
     - docs/plan/planning/slice.template.md
     - docs/plan/planning/welle.template.md
     - docs/plan/adr/NNNN-titel.template.md
     - docs/plan/carveouts/carveout.template.md
     - docs/reviews/review-report.template.md
+    - harness/tools/archive-welle.sh
 # sources (opt-in, NETZ, seit d-check v0.51.0): Content-Pin des Baseline-Assets gegen
 # Upstream-Drift (MR-013) — der tool-gelieferte Ersatz fuer den Eigenbau (curl+sha256sum)
 # im Target `make regelwerk-check`. BEWUSST NICHT in `modules:` oben: sources ist Netz und

@@ -21,7 +21,9 @@ const (
 // tritt. Die Reihenfolge einer Ersetzungs-Liste ist TRAGEND: `<welle-id>` ist
 // Teilzeichenkette von `<welle-id>-results.md` und von
 // `done/<welle-id>/archiv.zip`, also stehen die zusammengesetzten Platzhalter
-// vor dem einfachen. Gedeckt von TestWelleStubErsetztDenZusammengesetztenZuerst.
+// vor dem einfachen. Gedeckt von TestAnwendenSchreibtBeideStubArtenAusDerVorlage:
+// sein Welle-Stub traegt `**Ergebnisnotiz:** [welle-10-results.md](…)` — bei
+// umgedrehter Reihenfolge stuende dort `welle-10-results.md` ohne Link.
 type Ersetzung struct {
 	Platzhalter string
 	Wert        string

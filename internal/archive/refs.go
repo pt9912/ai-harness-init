@@ -173,7 +173,7 @@ func ErsetzeGeschwister(inhalt, base, welleID string) (string, int) {
 // SPAETEREN Lauf eine Ebene tiefer, erreicht es keine der beiden anderen Regeln:
 // die Praefix-Regel ankert am Literal "done/", das hier fehlt, und die
 // geschwister-relative laeuft ueber die flachen done/*.md.
-// Gedeckt von TestNachziehenHaengtDenAufsteigendenStubVerweisUm;
+// Gedeckt von TestZweiterLaufZiehtDenAufsteigendenStubVerweisNach;
 // test/mutations/240-archive-welle-go-aufsteigender-verweis.sh nimmt sie weg.
 func ErsetzeAufsteigend(inhalt, base, welleID string) (string, int) {
 	if base == "" {

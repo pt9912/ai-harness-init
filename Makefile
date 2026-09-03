@@ -8,12 +8,6 @@ include d-check.mk
 BATS_IMAGE ?= bats/bats@sha256:e8f18e0acd4ea933bf019130b85033be75e8ce081db299e93578de83d7874e33
 SHELLCHECK_IMAGE ?= koalaman/shellcheck@sha256:bb596a0d169b85ddd81d8b6d3a2ff6d5baf5fca10b97f575ebc647c3dff62b3d
 ACTIONLINT_IMAGE ?= rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667
-# Packt das Wellen-Archiv (`make archive-welle`). Ein eigener Pin statt des
-# Go-Basisbildes: dessen Digest lebt im Dockerfile, und eine zweite Kopie hier
-# waere eine zweite Quelle. `git archive --format=zip` braucht kein zip-Binary
-# und liefert ueber demselben Commit dieselben Bytes.
-ARCHIVE_IMAGE ?= alpine/git@sha256:4f9488b7295baec153a9953479690f835ad4699b1d9f11e3897a4485c224fc3e
-
 # Go-Toolchain-Version (Dockerfile-Stages, a-check gespiegelt); der Base-Digest
 # steht digest-gepinnt im Dockerfile (LH-QA-02). Go-Gates leben im Makefile
 # (NICHT d-check.mk) und treiben Dockerfile-Stages via `docker build --target`.
@@ -306,11 +300,19 @@ slice-mv: ## Lifecycle-Wechsel eines Slice inkl. Verweise (SLICE=<slice-NNN> TO=
 # Schritt 4 der Wellen-Closure: die Zeitdokumente einer geschlossenen Welle
 # wandern ins Archiv, an ihrer Stelle bleiben Stubs. NICHT in gates: es
 # archiviert, es prueft nicht (LH-QA-01); der Beleg ist `make docs-check` VOR
-# und NACH demselben Lauf. Die Logik liegt in harness/tools/, damit shell-lint
-# sie deckt und test/archive-welle.bats sie ohne ein Repo zu bewegen pruefen
-# kann.
-archive-welle: ## Zeitdokumente einer geschlossenen Welle archivieren (WELLE=<welle-id>) — NICHT in gates
-	@ARCHIVE_IMAGE='$(ARCHIVE_IMAGE)' bash harness/tools/archive-welle.sh "$(WELLE)"
+# und NACH demselben Lauf.
+#
+# Der Traeger ist das Produkt-Binaer, die Operation sein Unterkommando
+# (ADR-0033 Festlegung 1); die Logik liegt in internal/archive und ist damit von
+# `make test` und `make lint` gedeckt. Das Zip kommt aus der Standardbibliothek —
+# ein eigenes gepinntes Bild braucht dieses Ziel nicht.
+#
+# MIT Prerequisite auf host-bin, anders als span-check und hook-overhead: die
+# zwei MESSEN den Traeger, der liegt; dieses Ziel BENUTZT ihn. Ein Aufruf gegen
+# ein veraltetes Bild archivierte nach einer Regel, die der Baum nicht mehr
+# fuehrt.
+archive-welle: host-bin ## Zeitdokumente einer geschlossenen Welle archivieren (WELLE=<welle-id>) — NICHT in gates
+	@$(HOST_BIN) archive-welle "$(WELLE)"
 
 # ORDNUNGSKANTE: die Checks hängen AN record-gates, sie stehen nicht daneben. `make`
 # baut ein Ziel, dessen Voraussetzung gefallen ist, auch unter `-k` nicht — über einem
