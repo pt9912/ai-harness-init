@@ -43,14 +43,14 @@ ist einzeln lieferbar.
 die Zeitdokumente der Welle in ihren drei Klassen ein und nennt den Blast-Radius: welche Dateien
 einen Verweis auf etwas Bewegtes tragen. Das **Tun** — Move, Zip, Stub, Nachzug, zwei Commits —
 und die Ablösung des Shell-Helfers liefert
-[slice-175](../open/slice-175-archive-welle-schreibender-pfad.md).
+[slice-175](../next/slice-175-archive-welle-schreibender-pfad.md).
 
 **Warum das Festlegung 2 aus
 [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) nicht auslöst.** Jene beendet
 den Zustand *zwei Fassungen derselben Operation nebeneinander* und verlangt, dass
 `make archive-welle` auf genau einen Träger zeigt. Ein Zweig, der nichts schreibt, ist keine
 zweite Fassung der Operation; das Target bleibt unverändert beim Shell-Helfer, und der ist bis
-[slice-175](../open/slice-175-archive-welle-schreibender-pfad.md) sein einziger.
+[slice-175](../next/slice-175-archive-welle-schreibender-pfad.md) sein einziger.
 
 ## 2. Definition of Done
 
@@ -74,7 +74,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       `docs/reviews/**` verengen) und die **lesende Hälfte** von Abnahme-Kriterium 2 (die
       Sauberkeits-Prüfung deckt **untrackte** Dateien; rot zu sehen: sie auf getrackte verengen).
       Die schreibende Hälfte von 2 und Kriterium 3 liefert
-      [slice-175](../open/slice-175-archive-welle-schreibender-pfad.md); Folgepflicht 1 jener ADR
+      [slice-175](../next/slice-175-archive-welle-schreibender-pfad.md); Folgepflicht 1 jener ADR
       ist über **beide** Slices erfüllt und in keinem allein.
 - [x] `make gates` grün.
 - [x] Doku-Update: [`harness/README.md`](../../../../harness/README.md) nennt den Vorschau-Zweig,
@@ -129,7 +129,7 @@ größer ist, hängt vom Maßstab ab — am Shell-Helfer das Tun, am Vorbild das
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn der Verweis-**Fund** ohne den
   Schreibvorgang nicht prüfbar ist — dann endet dieser Slice beim Einsammeln und den zwei
   Wächtern, und der Fund geht zu
-  [slice-175](../open/slice-175-archive-welle-schreibender-pfad.md).
+  [slice-175](../next/slice-175-archive-welle-schreibender-pfad.md).
 - `in-progress` → `open` (blockiert — Carveout?): wenn
   [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) ihren Acceptance-Trigger
   nicht besteht (Reviewer-Runde mit blockierendem Befund) — dann steht die Träger-Wahl neu und
@@ -141,7 +141,7 @@ Shell-Helfer sind sie seit [slice-170](../done/slice-170-archivierungs-werkzeug.
 bindet Festlegung 2 der [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) die
 Ablösung an *den Lauf, der das Unterkommando liefert* — „nicht davor und nicht danach". Ein
 dritter Slice allein für die Ablösung ist damit ausgeschlossen; sie liegt bei
-[slice-175](../open/slice-175-archive-welle-schreibender-pfad.md).
+[slice-175](../next/slice-175-archive-welle-schreibender-pfad.md).
 
 ## 5. Closure-Trigger
 
@@ -180,7 +180,7 @@ dasteht.
   — dieselbe Klasse, die `BEO-003` im [Register](../observations.md) als *eingehende Hälfte der
   präfixlosen Form* führt (5×, verkörpert in `make slice-mv` mit benannter Grenze). Der
   Verweis-**Fund** dieses Slice ist genau die Stelle, an der die Grenze sichtbar wird: was er
-  nicht meldet, wandert ungesehen durch [slice-175](../open/slice-175-archive-welle-schreibender-pfad.md).
+  nicht meldet, wandert ungesehen durch [slice-175](../next/slice-175-archive-welle-schreibender-pfad.md).
   — **Ausgang: entfallen** — der Port erbt die Grenze nicht: `ZaehlePraefix`
   (`internal/archive/refs.go`) ankert mit einer Wortgrenzen-Regel am Literal `done/` und deckt
   damit jede Aufstiegstiefe; `TestZaehlePraefixAnDerWortgrenze` führt den Fall aus einer
@@ -194,7 +194,7 @@ dasteht.
   Der Port ist nicht wortgleich: `UnsauberGrund` (`internal/archive/clean.go`) meldet
   `untrackte(r) Eintrag/Eintraege` und trägt dafür `TestUnsauberGrundNenntEintragNichtDatei`. Der
   Shell-Träger schreibt weiter `untrackte Datei(en)`; seine Ablösung liegt bei
-  [slice-175](../open/slice-175-archive-welle-schreibender-pfad.md)
+  [slice-175](../next/slice-175-archive-welle-schreibender-pfad.md)
 - **Ein Quervergleich, der die vier Zahlen des Shell-Helfers verlangt, ist über diesem Repo nicht
   fahrbar.** Der Helfer druckt sie (`harness/tools/archive-welle.sh`,
   Zeilen 644–648) **nach** seinem Untergrenzen-Ausgang (Zeilen 577–588), und der greift hier für
@@ -270,7 +270,7 @@ Backticks).
   auf 2× erhöht, je Beleg slice-173 ergänzt; neu angelegt `BEO-028` (`*`, 1×, Beleg slice-173 —
   ein Mutations-Fall zeigt auf den Träger vor einem Umzug) und `BEO-029` (`*`, 1×, Beleg
   slice-173 — Closure-Kriterium ohne Divergenz-Fläche und ohne erreichbare Messstelle).
-- **Folge-Slices:** [slice-175](../open/slice-175-archive-welle-schreibender-pfad.md) (schreibender
+- **Folge-Slices:** [slice-175](../next/slice-175-archive-welle-schreibender-pfad.md) (schreibender
   Pfad und Ablösung des Shell-Helfers) — ist eine Datei in `open/`.
 - **Risiken aus §6:** sechs Punkte, je ein Ausgang — dreimal *entfallen* (Vorbild-Grenze im Port
   geschlossen · §5 neu gefasst · Festlegung-2-Einwand nicht erhoben), dreimal *weiter offen* nach
@@ -299,7 +299,7 @@ Refactor ohne neue Sub-Area-Berührung entfällt er ganz. Die beiden
 `test/mutations/` liegen in keiner engeren Sub-Area der Modus-Deklaration in
 [`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area).
 `harness/tools/` ist **nicht** mehr berührt: die Ablösung des Shell-Helfers liegt bei
-[slice-175](../open/slice-175-archive-welle-schreibender-pfad.md).
+[slice-175](../next/slice-175-archive-welle-schreibender-pfad.md).
 
 **Vorgelagert — offene Beobachtungen sichten:** Drei Treffer im [Register](../observations.md).
 `BEO-003` (5×, verkörpert in `make slice-mv` mit benannter Grenze) und `BEO-026` (1×, offen)
