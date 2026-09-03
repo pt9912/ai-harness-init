@@ -152,7 +152,7 @@ dasteht.
   Kopf-Feld ist Form-Arbeit von [slice-148](../done/slice-148-architecture-traegt-ihr-id-schema.md)s
   Nachfolge | eingetreten: Folge-Slice mit ID für das Kopf-Feld>
 - **Der `AGENTS.md`-§3.8-Zeiger überlädt den Absatz**, der heute einen Fall
-  trägt und mit [slice-145](../in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
+  trägt und mit [slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
   einen zweiten bekommt. — **Ausgang:** <entfallen: der Zeiger bleibt ein
   auflösbarer Verweis ohne zweite Begründungs-Prosa ([`AGENTS.md`](../../../../AGENTS.md) §3.7)
   | eingetreten: die Form wird vor dem Commit angepasst>

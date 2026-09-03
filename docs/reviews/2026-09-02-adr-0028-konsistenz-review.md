@@ -6,7 +6,7 @@
 | **Review-Art** | **Plan-/Design-Review** gegen aktive ADRs, Hard Rules und die Ziel-Form der ADR-Vorlage. **Nicht** DoD-Abhakung (Verifier, Modul 11), **keine** inhaltliche Neubewertung der Entscheidung |
 | **Gegenstand** | [`docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md`](../plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md), Status `Proposed`, angelegt in `2dc505a` (2026-08-31 09:46 +0200) |
 | **Auftrag** | Baseline-Regelwerk `modul-08-agentenrollen.md` §Rollen-Regeln — *„ADR-Änderung: Architect schreibt; Reviewer prüft auf Konsistenz; Implementer liest als Constraint"*. Dieser Lauf **ist** die ADR-Review-Runde, die `grundlagen-bootstrap.md` §Vier Trigger-Klassen als Acceptance-Trigger führt (*„ADR-Review-Runde abgeschlossen → bindend"*) |
-| **Plan** | [`docs/plan/planning/in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md`](../plan/planning/in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md), DoD (1) |
+| **Plan** | [`docs/plan/planning/done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md`](../plan/planning/done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md), DoD (1) |
 | **Bindende ADRs** | `ADR-0015` (Accepted), `ADR-0016` (Accepted), `ADR-0024` (Accepted) · zur Kohärenz mitgelesen, **nicht bindend**: `ADR-0025` (Proposed), `ADR-0029` (Proposed) |
 | **Anforderungen / Normen** | `AGENTS.md` §3.1, §3.4, §3.6, §3.7, §3.8 · `MR-000`, `MR-015`, `MR-018`, `MR-021`, `MR-025`, `MR-030` · `LH-QA-01` |
 | **Vorherige Findings am gleichen Modul** | `docs/reviews/2026-08-31-slice-144-review.md` HIGH-1 — der Befund, der diese ADR über den Konflikt-Pfad ausgelöst hat; `docs/reviews/2026-08-29-adr-0024-mr-031-032-review.md` — die Vorgänger-Runde derselben ADR-Familie, deren zwei Befunde (Status ohne Trigger · Festlegung schließt den eigenen Anwendungsfall aus) hier gezielt gegengeprüft wurden |
@@ -144,7 +144,7 @@ ist diese Datei.
 - **quelle:** Slice-Plan §2 DoD-Punkt *Beobachtungs-Register* und §8 *Vorgelagert — offene
   Beobachtungen sichten*, gegen `docs/plan/planning/observations.md`; Baseline-Regelwerk
   `modul-06-roadmap.md` §Das Beobachtungs-Register
-- **pfad:** `docs/plan/planning/in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md:110-115`
+- **pfad:** `docs/plan/planning/done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md:110-115`
   und `:230-232`
 - **befund:** Der Plan sagt zu, `BEO-007` bekomme seinen Ausgang *„**verkörpert** über ADR-0028 und
   den `AGENTS.md`-Zeiger aus DoD (2), nicht über die 3×-Schwelle (der Zähler bleibt bei 1×)"*, und

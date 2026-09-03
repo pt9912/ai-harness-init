@@ -94,7 +94,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
    `**Status:** Accepted`
    (`grep -c '^\*\*Status:\*\* Accepted' docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md`
    → **1**). Träger ist
-   [slice-145](../in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md). Vorher steht
+   [slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md). Vorher steht
    nicht fest, wer die zwei Anweisungssätze schreiben darf, die DoD 2 anfasst — und ein Lauf, der
    sie ohne diese Antwort ändert, ist genau der Vorgang, den [`BEO-007`](../observations.md) zählt.
    Der Slice liegt darum in `open/`, nicht in `next/`; dieselbe Platzierung aus demselben Grund
@@ -105,7 +105,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn der Sensor-Geltungsbereich mehr
   als eine Nachziehung verlangt — dann trägt die Sensor-Hälfte ein eigener Slice.
 - `in-progress` → `open` (blockiert — Carveout?): wenn der Reviewer-Durchgang aus
-  [slice-145](../in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
+  [slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
   [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) nicht annimmt und
   das Eigentum an den Command-Artefakten offen bleibt ([`BEO-007`](../observations.md)).
 

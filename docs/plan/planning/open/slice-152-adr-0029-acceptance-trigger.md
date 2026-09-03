@@ -14,7 +14,7 @@ Closure-Bedingung, die mehr beobachtet als die DoD dieses Slice. Es gibt keine.
 (deren Festlegung 2 den Re-Evaluierungs-Trigger stellt, den der Gegenstand einlöst),
 [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
 (Nachbarfrage; ihr Acceptance-Trigger liegt bei
-[slice-145](../in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
+[slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
 — derselbe Bauplan), Baseline-Regelwerk `grundlagen-bootstrap.md` §Vier
 Trigger-Klassen (Acceptance-Trigger), [`BEO-007`](../observations.md).
 
@@ -55,7 +55,7 @@ stehen auf `Proposed` (`grep -l '^\*\*Status:\*\* Proposed' docs/plan/adr/0*.md 
 [ADR-0029](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) —
 haben keinen Träger für ihren Acceptance-Trigger; nur
 [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) hat
-einen ([slice-145](../in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)).
+einen ([slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)).
 Keine Erwartungswerte, [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2.
 
@@ -122,7 +122,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 **Start** (`next` → `in-progress`): ein Architect-Lauf steht bereit. Keine
 technische Vorbedingung. **Nicht** blockiert auf
-[slice-145](../in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md):
+[slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md):
 [ADR-0029](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md)
 §Kontext sagt selbst, dass sie an keiner fremden Annahme hängt.
 

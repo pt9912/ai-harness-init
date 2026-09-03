@@ -139,7 +139,7 @@ Korrekturen angefasst hat.
 
 - **kategorie:** MEDIUM
 - **quelle:** `MR-025` Setzung 1; Modul 6 §Das Beobachtungs-Register (Sichtungs-Schritt)
-- **pfad:** `docs/plan/planning/in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md:110-113`
+- **pfad:** `docs/plan/planning/done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md:110-113`
   und `:230`
 - **befund:** Der Plan sagt in §2 DoD *„der Zähler bleibt bei 1×"* und in §8
   *„`BEO-007` steht im Register (Sub-Area `*`, 1×, …)"*. Gemessen steht die Zeile an `HEAD` **und**

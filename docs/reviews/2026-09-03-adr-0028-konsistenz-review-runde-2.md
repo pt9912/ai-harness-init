@@ -7,7 +7,7 @@
 | **Gegenstand** | [`docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md`](../plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md), Status `Proposed` |
 | **Diff dieser Runde** | `88fb255` *„Rolle Architect: ADR-0028 vor der Annahme korrigiert — Belege tragen den Tag, Zahlen ihre Mess-Basis"* (2026-09-02 20:11 +0200), zwei Dateien: die ADR und der ADR-Index (`git show 88fb255 --stat --format=`) |
 | **Auftrag** | Baseline-Regelwerk `modul-08-agentenrollen.md` §Rollen-Regeln — *„ADR-Änderung: Architect schreibt; Reviewer prüft auf Konsistenz; Implementer liest als Constraint"*. Dieser Lauf ist die zweite ADR-Review-Runde; wer die Korrektur geschrieben hat, prüft sie nicht |
-| **Plan** | [`docs/plan/planning/in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md`](../plan/planning/in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md), DoD (1) |
+| **Plan** | [`docs/plan/planning/done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md`](../plan/planning/done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md), DoD (1) |
 | **Bindende ADRs** | `ADR-0015`, `ADR-0016`, `ADR-0024` (alle Accepted) · zur Kohärenz mitgelesen, **nicht bindend**: `ADR-0025`, `ADR-0029` (beide `Proposed`) |
 | **Anforderungen / Normen** | `AGENTS.md` §3.1, §3.4, §3.6, §3.7, §3.8 · `MR-000`, `MR-007`, `MR-018`, `MR-021`, `MR-025`, `MR-030`, `MR-033`, `MR-040`, `MR-045` · `LH-QA-01`, `LH-QA-02` |
 | **Vorherige Findings am gleichen Modul** | [`docs/reviews/2026-09-02-adr-0028-konsistenz-review.md`](2026-09-02-adr-0028-konsistenz-review.md) — 1 HIGH, 3 MEDIUM, 1 LOW, 1 INFO; jeder dieser sechs Befunde ist unten einzeln nachgemessen. Davor [`docs/reviews/2026-08-31-slice-144-review.md`](2026-08-31-slice-144-review.md) HIGH-1, der Auslöser der ADR |
@@ -139,7 +139,7 @@ Korrektur und diesen Lauf gefallen ist.
 - **quelle:** Slice-Plan §2 DoD und §8 *Vorgelagert — offene Beobachtungen sichten*, gegen
   [`docs/plan/planning/observations.md`](../plan/planning/observations.md); Baseline `v5.18.0`,
   `modul-06-roadmap.md` §Das Beobachtungs-Register
-- **pfad:** `docs/plan/planning/in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md:110`, `:230`
+- **pfad:** `docs/plan/planning/done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md:110`, `:230`
 - **befund:** Das ist MEDIUM-3 der ersten Runde, unverändert. Die Korrektur hat den Plan nicht
   berührt — `git show 88fb255 --stat --format=` nennt zwei Dateien, die ADR und
   `docs/plan/adr/README.md`. Der §8-Sichtungsblock sagt weiter *„`BEO-007` steht im Register

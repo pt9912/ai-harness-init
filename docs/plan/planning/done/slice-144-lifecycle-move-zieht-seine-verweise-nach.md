@@ -258,7 +258,7 @@ dasteht.
 
   **Ausgang: entfallen.** [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
   (Architect-Verdikt über den Konflikt-Pfad, `Proposed`, Annahme-Trigger
-  [slice-145](../in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md) in `next/`) löst
+  [slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md) in `next/`) löst
   genau diesen Fall in Folgepflicht 4 auf: die Prämisse der Rückführungs-Bedingung aus §4 trifft
   nicht zu, weil [`AGENTS.md`](../../../../AGENTS.md) §3.8 `.claude/commands/implement-slice.md`
   nie erfasst hat (Reviewer-Befund HIGH-1, bestätigt) — die Zeile ist ohne Rollen-Konflikt
@@ -362,7 +362,7 @@ Backticks).
   [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) beantwortet
   (`Proposed`), die allgemeine Quellenfrage — auch für `.claude/agents/*.md` — bleibt offen). Neu:
   `BEO-009` (Sub-Area `*`, 1×, Beleg `slice-144`).
-- **Folge-Slices:** keine neuen — [`slice-145`](../in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
+- **Folge-Slices:** keine neuen — [`slice-145`](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
   (Erinnerungs-Slice zu [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md),
   bereits in `next/`) ist das zweite Pflicht-Artefakt des Konflikt-Pfads, kein Ergebnis dieser
   Closure.

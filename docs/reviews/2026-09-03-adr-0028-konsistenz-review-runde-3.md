@@ -7,7 +7,7 @@
 | **Gegenstand** | `docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md`, Status `Proposed` |
 | **Diff dieser Runde** | `f91ad18` *„Rolle Architect: ADR-0028 gegen v5.18.0 nachgemessen — Belege, ein Zitat und die Report-Verweise"* (2026-09-03 11:07:42 +0200), **eine** Datei, 58 Einfügungen / 31 Löschungen (`git show f91ad18 --stat --format=`) |
 | **Auftrag** | Baseline-Regelwerk `modul-08-agentenrollen.md` §Rollen-Regeln — *„ADR-Änderung: Architect schreibt; Reviewer prüft auf Konsistenz; Implementer liest als Constraint"*. Dieser Lauf ist die dritte ADR-Review-Runde; wer die Korrektur geschrieben hat, prüft sie nicht |
-| **Plan** | `docs/plan/planning/in-progress/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md`, DoD (1) |
+| **Plan** | `docs/plan/planning/done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md`, DoD (1) |
 | **Bindende ADRs** | `ADR-0015`, `ADR-0016`, `ADR-0024` (alle `Accepted` — je `grep -m1 '^\*\*Status:\*\*'`) · zur Kohärenz mitgelesen, **nicht bindend**: `ADR-0025`, `ADR-0029` (beide `Proposed`) |
 | **Anforderungen / Normen** | `AGENTS.md` §3.1, §3.4, §3.6, §3.7, §3.8 · `MR-000`, `MR-007`, `MR-025`, `MR-033`, `MR-040`, `MR-045` · `LH-QA-01` |
 | **Vorherige Findings am gleichen Modul** | Runde 2, Report `2026-09-03-adr-0028-konsistenz-review-runde-2.md` (1 HIGH, 2 MEDIUM, 2 LOW, 1 INFO); Runde 1, Report `2026-09-02-adr-0028-konsistenz-review.md` (1 HIGH, 3 MEDIUM, 1 LOW, 1 INFO). Alle sechs der zweiten Runde sind unten einzeln nachgemessen. Davor `2026-08-31-slice-144-review.md` HIGH-1, der Auslöser der ADR. **Beide Vorgänger-Reports sind hier bei ihrer Kennung genannt, nicht unter ihrer Adresse** — dieselbe Trennung, die der Gegenstand selbst jetzt zieht |
