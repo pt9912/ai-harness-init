@@ -5,7 +5,7 @@
 | **Rolle** | Reviewer (Modul 8/10) — frischer Kontext, getrennt von Implementation, Architektur und Planung |
 | **Review-Art** | Code-Review — Diff gegen Plan, aktive ADRs und Hard Rules. **Nicht** DoD-Abhakung (Verifier, Modul 11) |
 | **Gegenstand** | `git diff 98b9e90..0d4029e` — 12 Dateien, `924 Zeilen(+) / 15 Zeilen(-)`; die vier Commits seit dem Move nach `in-progress/`: `48351df` (Verweis-Nachzug des Move), `2aa36e8`, `4827584`, `0d4029e` |
-| **Plan** | [`docs/plan/planning/in-progress/slice-170-archivierungs-werkzeug.md`](../plan/planning/in-progress/slice-170-archivierungs-werkzeug.md) |
+| **Plan** | [`docs/plan/planning/done/slice-170-archivierungs-werkzeug.md`](../plan/planning/done/slice-170-archivierungs-werkzeug.md) |
 | **Bindende ADRs** | keine — kein Commit dieses Slice nennt eine ADR-ID, `docs/plan/adr/` ist nicht berührt (`git diff --name-only 98b9e90..HEAD -- docs/plan/adr/` leer) |
 | **Anforderungen** | [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (kein Gate), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten), [`AGENTS.md`](../../AGENTS.md) §3.1, §3.2, §3.3, §3.6, §3.7, §3.9 |
 | **Vorherige Findings am gleichen Modul** | `docs/reviews/2026-08-31-slice-144-review.md` zum Präzedenz-Werkzeug `harness/tools/slice-mv.sh` (HIGH-1 Rollen-Eigentum, MEDIUM-1 Plan-Prosa weiter als DoD-Text, LOW-1 gedriftete Zahl). Das Muster *„die Zusage im Kopf ist weiter als das, was der Code hält"* wiederholt sich hier (HIGH-2, HIGH-3, MEDIUM-3) |

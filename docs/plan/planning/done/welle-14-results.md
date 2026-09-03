@@ -245,7 +245,7 @@ ein halluziniertes Gate.
   Geschnitten aus der ausdrücklichen *Offenen Übergabe an den Planner* in
   [slice-163](slice-163-regierende-fassung-des-sprungs.md) §7 und aus dem
   Trigger-Audit unten.
-- [slice-170](../in-progress/slice-170-archivierungs-werkzeug.md) — das
+- [slice-170](../done/slice-170-archivierungs-werkzeug.md) — das
   Archivierungs-Werkzeug der Wellen-Closure, hervorgegangen aus
   [slice-158](slice-158-archivierungs-schritt.md); es trägt die Start-Bedingung
   von Schritt 4 (siehe *Archivierung* unten).
@@ -327,7 +327,7 @@ Die fünf Closure-Kriterien aus §3 der Welle-Datei, jedes einzeln gefahren:
 **Archivierung (Schritt 4) — nicht ausgeführt, Start-Bedingung nicht
 eingetreten.** Der Schritt verlangt in diesem Repo, dass das
 Archivierungs-Werkzeug vorliegt;
-[slice-170](../in-progress/slice-170-archivierungs-werkzeug.md) liegt in `open/`, nicht
+[slice-170](../done/slice-170-archivierungs-werkzeug.md) liegt in `open/`, nicht
 in `done/` (`ls docs/plan/planning/open/slice-170-*.md`). Diese Welle schließt
 deshalb **ohne** Schritt 4 — das ist die im Anweisungssatz vorgesehene
 Feststellung und kein Mangel. Von Hand archiviert niemand: die Vollständigkeit

@@ -5,7 +5,7 @@
 | **Rolle** | Reviewer (Modul 8/10) — frischer Kontext, getrennt von Implementation, Architektur und Planung |
 | **Review-Art** | Nachprüfung: halten die Behebungen der Runde-1-Findings? **Nicht** DoD-Abhakung (Verifier, Modul 11) |
 | **Gegenstand** | `git diff 0d4029e..HEAD` — die zwei Behebungs-Commits `80426ab` (Skript, bats, drei neue Mutations-Fälle) und `669eb4c` (`harness/README.md`) |
-| **Plan** | [`docs/plan/planning/in-progress/slice-170-archivierungs-werkzeug.md`](../plan/planning/in-progress/slice-170-archivierungs-werkzeug.md) |
+| **Plan** | [`docs/plan/planning/done/slice-170-archivierungs-werkzeug.md`](../plan/planning/done/slice-170-archivierungs-werkzeug.md) |
 | **Vorherige Findings am gleichen Modul** | [`2026-09-03-slice-170-impl-review.md`](2026-09-03-slice-170-impl-review.md) (3 HIGH, 3 MEDIUM, 3 LOW, 2 INFO); davor [`2026-08-31-slice-144-review.md`](2026-08-31-slice-144-review.md) zum Präzedenz-Werkzeug `harness/tools/slice-mv.sh` |
 | **Bindende ADRs** | keine — auch die zwei Behebungs-Commits nennen keine ADR-ID und berühren `docs/plan/adr/` nicht |
 | **Anforderungen** | [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten), [`AGENTS.md`](../../AGENTS.md) §3.2, §3.3, §3.6, §3.7, §3.9 |

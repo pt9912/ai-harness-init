@@ -39,7 +39,7 @@ ist einzeln lieferbar.
 Shell-Helfer je Dogfood-Repo, oder eigenständiges Go-Modul.**
 
 Die Frage steht, weil zwei Antworten nebeneinander liegen. Dieses Repo baut den Schritt als
-Shell-Helfer ([slice-170](../in-progress/slice-170-archivierungs-werkzeug.md)); im Nachbar-Repo
+Shell-Helfer ([slice-170](../done/slice-170-archivierungs-werkzeug.md)); im Nachbar-Repo
 `/Development/d-check/tools/archive-wave/` läuft dieselbe Operation als eigenständiges Go-Modul
 mit eigenem `go.mod`, `Dockerfile` und `Makefile`. Für eine dritte Antwort besteht eine
 angenommene Präzedenz: [ADR-0022](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
@@ -108,7 +108,7 @@ Aussagen-Berührung steht hier gar nicht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [slice-170](../in-progress/slice-170-archivierungs-werkzeug.md)
+**Start** (`next` → `in-progress`): [slice-170](../done/slice-170-archivierungs-werkzeug.md)
 liegt in `done/` — dort liegt der Shell-Helfer, dessen Ablösung Frage (b) entscheidet, und dort
 sind die drei Zusagen aus DoD (2) rot gesehen worden.
 
