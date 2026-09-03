@@ -5,16 +5,26 @@
 // laeuft.
 //
 // ES SCHREIBT NICHTS. Zwei Stuecke tragen das, und beide sind nachrechenbar
-// statt zugesagt: internal/archive fuehrt keinen schreibenden Aufruf
-// (grep -cE 'os\.WriteFile|os\.MkdirAll|os\.Rename|os\.Remove|\.Create\('
-// ueber internal/archive/*.go), und der einzige Fremdprozess dieses Zweigs ist
-// das lesende git status --porcelain unten. Ohne --vorschau endet er ausserdem
-// VOR jedem Baum-Zugriff mit Exit 2 und nennt den Grund
+// statt zugesagt: der NICHT-Test-Anteil von internal/archive fuehrt keinen
+// schreibenden Aufruf —
+//
+//	git grep -cE 'os\.WriteFile|os\.MkdirAll|os\.Rename|os\.Remove|\.Create\(' \
+//	  -- 'internal/archive/*.go' ':!internal/archive/*_test.go'
+//
+// bleibt ohne Treffer —, und die einzigen Fremdprozesse dieses Zweigs sind die
+// zwei lesenden git-Aufrufe unten. Ohne --vorschau endet er ausserdem VOR jedem
+// Baum-Zugriff mit Exit 2 und nennt den Grund
 // (TestArchiveWelleOhneVorschauSchreibtNichts).
+//
+// Die Testdateien gehoeren nicht in die Messung und sind darum ausgeschlossen:
+// sie legen ihre synthetischen Baeume selbst an und schreiben dabei in
+// t.TempDir(). Wer sie mitzaehlt, bekommt eine Zahl, die die Zusage zu
+// widerlegen scheint, und kann eine spaeter hinzukommende echte Schreib-Stelle
+// nicht mehr von ihnen unterscheiden.
 //
 // GRENZE, benannt statt verschwiegen: fuer die Schreib-Freiheit selbst gibt es
 // keinen Waechter. Wer hier einen schreibenden Aufruf ergaenzt, faellt keinem
-// Gate auf; die zwei Stuecke oben sind eine Messung von heute, keine Schranke.
+// Gate auf; die zwei Stuecke oben sind eine Messung, keine Schranke.
 //
 // Der schreibende Zweig — Move, Zip, Stubs, Verweis-Nachzug, zwei Commits —
 // liegt beim Shell-Helfer hinter `make archive-welle`, und der bleibt bis zu
@@ -75,7 +85,12 @@ func archiveWelle(args []string, out, errOut io.Writer) int {
 		fmt.Fprintf(errOut, "archive-welle: %v\n", err)
 		return 1
 	}
-	bericht, err := archive.Vorschau(root, welle, porcelain)
+	dateien, err := gitLsFiles(root)
+	if err != nil {
+		fmt.Fprintf(errOut, "archive-welle: %v\n", err)
+		return 1
+	}
+	bericht, err := archive.Vorschau(root, welle, porcelain, dateien)
 	if err != nil {
 		fmt.Fprintf(errOut, "archive-welle: %v\n", err)
 		return 1
@@ -133,15 +148,39 @@ func repoWurzel() (string, error) {
 	return root, nil
 }
 
-// gitStatusPorcelain ist die EINZIGE Stelle, an der dieser Zweig ein fremdes
-// Programm startet. Der Aufruf ist rein lesend; sein Ergebnis geht als Wert an
-// archive.Vorschau, damit die Urteils-Logik ohne git pruefbar bleibt.
+// gitStatusPorcelain und gitLsFiles sind die einzigen zwei Stellen, an denen
+// dieser Zweig ein fremdes Programm startet — beide rein lesend, beide in dieser
+// Datei. Ihre Ergebnisse gehen als Werte an archive.Vorschau, damit die
+// Urteils-Logik ohne git pruefbar bleibt.
 func gitStatusPorcelain(root string) (string, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-	b, err := exec.CommandContext(ctx, "git", "-C", root, "status", "--porcelain").Output()
+	b, err := gitLesend(root, "status", "--porcelain")
 	if err != nil {
-		return "", fmt.Errorf("git status --porcelain: %w", err)
+		return "", err
 	}
 	return string(b), nil
+}
+
+// gitLsFiles liefert den Suchraum der Verweis-Vorpruefung: jeden Pfad, den der
+// Index fuehrt. Es ist dieselbe Menge, ueber der der schreibende Traeger sein
+// `git grep` fuehrt — ohne Dateityp-Einschraenkung, damit die Vorschau denselben
+// Verweis sieht wie er. Ausgenommen wird nichts an dieser Stelle: die
+// Ausnahme-Menge steht in archive.AusgenommenePfade und gilt dort fuer jeden
+// Eingang. -z, weil ein Dateiname ein Zeilenende tragen darf.
+func gitLsFiles(root string) ([]string, error) {
+	b, err := gitLesend(root, "ls-files", "-z")
+	if err != nil {
+		return nil, err
+	}
+	return strings.FieldsFunc(string(b), func(r rune) bool { return r == 0 }), nil
+}
+
+// gitLesend startet git mit Kontext-Timeout und gibt stdout zurueck.
+func gitLesend(root string, args ...string) ([]byte, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	b, err := exec.CommandContext(ctx, "git", append([]string{"-C", root}, args...)...).Output()
+	if err != nil {
+		return nil, fmt.Errorf("git %s: %w", strings.Join(args, " "), err)
+	}
+	return b, nil
 }

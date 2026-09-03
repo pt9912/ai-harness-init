@@ -2,6 +2,9 @@ package main
 
 import (
 	"bytes"
+	"errors"
+	"os"
+	"os/exec"
 	"strings"
 	"testing"
 )
@@ -68,5 +71,41 @@ func TestUsageNenntAlleDreiUnterkommandos(t *testing.T) {
 		if !strings.Contains(usage, name) {
 			t.Errorf("usage nennt %q nicht", name)
 		}
+	}
+}
+
+// TestSubkommandoRouting_ArchiveWelleFaelltNichtInDenInitPfad misst den
+// main()-Zweig als PROZESS, nicht die Funktion dahinter: Traegt das Argument
+// keine Welle-Kennung, endet der Traeger mit Exit 2, schreibt nichts auf stdout
+// und laesst das Arbeitsverzeichnis, wie es war.
+//
+// Der Durchfall ist die Gefahr, und er ist still: ohne den `case` landet
+// `archive-welle` in run() — dort ist es ein Positionsargument, das der
+// Flag-Parser stehen laesst, und der Init-Pfad SCHREIBT in das
+// Arbeitsverzeichnis. Genau die Eigenschaft, die dieses Unterkommando traegt,
+// kippte damit lautlos. Die dritte Pruefung unten faengt diesen Durchfall, die
+// ersten zwei ein Umhaengen des Zweigs auf ein anderes Unterkommando.
+// Gegenbeispiel: test/mutations/237-archive-welle-go-routing-vertauscht.sh.
+func TestSubkommandoRouting_ArchiveWelleFaelltNichtInDenInitPfad(t *testing.T) {
+	root := newRoot(t)
+	stdout, err := runChild(t, root, "archive-welle", "")
+
+	var ee *exec.ExitError
+	if !errors.As(err, &ee) || ee.ExitCode() != 2 {
+		t.Fatalf("Exit %v, want 2 (Aufruf-Fehler ohne <welle-id>)", err)
+	}
+	if stdout != "" {
+		t.Errorf("stdout nicht leer: %q", stdout)
+	}
+	eintraege, lerr := os.ReadDir(root)
+	if lerr != nil {
+		t.Fatal(lerr)
+	}
+	if len(eintraege) != 1 || eintraege[0].Name() != ".git" {
+		namen := make([]string, 0, len(eintraege))
+		for _, e := range eintraege {
+			namen = append(namen, e.Name())
+		}
+		t.Fatalf("Arbeitsverzeichnis nach dem Lauf = %v, want nur .git — der Zweig hat in den schreibenden Init-Pfad durchgereicht", namen)
 	}
 }

@@ -23,27 +23,28 @@ func TestAusgenommenTrifftPraefixUndVerzeichnis(t *testing.T) {
 	}
 }
 
-// TestMarkdownDateienUeberspringtBaseline: der vendored Fremdtext liegt
-// ausserhalb des Suchraums, alles andere darin.
-func TestMarkdownDateienUeberspringtBaseline(t *testing.T) {
-	root := t.TempDir()
-	schreibe(t, filepath.Join(root, "docs", "reviews", "r.md"), "x\n")
-	schreibe(t, filepath.Join(root, ".harness", "baseline", "v1", "regelwerk", "m.md"), "x\n")
-	schreibe(t, filepath.Join(root, "README.md"), "x\n")
-	schreibe(t, filepath.Join(root, "Makefile"), "x\n")
-
-	got, err := archive.MarkdownDateien(root)
-	if err != nil {
-		t.Fatal(err)
-	}
-	want := []string{"README.md", "docs/reviews/r.md"}
+// TestSuchraumFiltertNurDieAusgenommenenPraefixe: der vendored Fremdtext und
+// `.git` fallen heraus, JEDER andere uebergebene Pfad bleibt drin — auch der
+// ohne `.md`. Sortiert und ohne Doppel, damit die Fund-Reihenfolge stabil ist.
+func TestSuchraumFiltertNurDieAusgenommenenPraefixe(t *testing.T) {
+	got := archive.Suchraum([]string{
+		"README.md",
+		"Makefile",
+		".harness/baseline/v1/regelwerk/m.md",
+		".git/COMMIT_EDITMSG",
+		"docs/reviews/r.md",
+		"test/mutations/132-x.sh",
+		"README.md",
+	})
+	want := []string{"Makefile", "README.md", "docs/reviews/r.md", "test/mutations/132-x.sh"}
 	if strings.Join(got, ",") != strings.Join(want, ",") {
-		t.Fatalf("MarkdownDateien = %v, want %v", got, want)
+		t.Fatalf("Suchraum = %v, want %v", got, want)
 	}
 }
 
 // baumMitReports legt zwei Review-Reports an, von denen einer den anderen
-// verlinkt — der Fall, den der Haenger-Waechter faengt.
+// verlinkt — der Fall, den der Haenger-Waechter faengt. Der dritte Rueckgabewert
+// ist der Suchraum-Eingang, wie ihn der Aufrufer aus dem Index liefert.
 func baumMitReports(t *testing.T) (root, ziel, verweiser string) {
 	t.Helper()
 	root = t.TempDir()
@@ -64,7 +65,7 @@ func baumMitReports(t *testing.T) (root, ziel, verweiser string) {
 func TestHaengerFindetVerweisAusReviewReport(t *testing.T) {
 	root, ziel, verweiser := baumMitReports(t)
 
-	got, err := archive.Haenger(root, []string{ziel}, []string{ziel})
+	got, err := archive.Haenger(root, []string{ziel, verweiser}, []string{ziel}, []string{ziel})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -76,16 +77,71 @@ func TestHaengerFindetVerweisAusReviewReport(t *testing.T) {
 	}
 }
 
+// TestHaengerFindetVerweisAusNichtMarkdownDatei haelt die zweite Achse des
+// Suchraums: der schreibende Traeger sucht mit `git grep` in JEDER getrackten
+// Datei ausser der Baseline, ohne Ruecksicht auf die Endung. Im Bestand tragen
+// Go-Kommentare, Mutations-Faelle, das Dockerfile und bats-Dateien Verweise auf
+// Review-Reports; ein Suchraum nur aus `.md` meldete "der schreibende Lauf
+// liefe", waehrend jener mit Exit 3 abbraeche.
+// Gegenbeispiel: test/mutations/238-archive-welle-go-suchraum-dateityp.sh.
+func TestHaengerFindetVerweisAusNichtMarkdownDatei(t *testing.T) {
+	root, ziel, _ := baumMitReports(t)
+	ohneMd := []string{
+		"internal/span/response_test.go",
+		"test/mutations/132-span-rolle-aus-argument.sh",
+		"Dockerfile",
+	}
+	for _, f := range ohneMd {
+		schreibe(t, filepath.Join(root, filepath.FromSlash(f)),
+			"# siehe docs/reviews/2026-09-01-slice-100-r1.md\n")
+	}
+
+	got, err := archive.Haenger(root, append([]string{ziel}, ohneMd...), []string{ziel}, []string{ziel})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != len(ohneMd) {
+		t.Fatalf("Haenger = %v, want je einen Treffer aus %v", got, ohneMd)
+	}
+	for _, f := range ohneMd {
+		gefunden := false
+		for _, g := range got {
+			if strings.HasPrefix(g, f+" -> ") {
+				gefunden = true
+			}
+		}
+		if !gefunden {
+			t.Errorf("%s traegt einen lebenden Verweis, steht aber in keinem Haenger: %v", f, got)
+		}
+	}
+}
+
 // TestHaengerUebergehtVerschwindende ist die Umkehr-Probe: wer selbst
 // verschwindet, traegt danach keinen lebenden Verweis mehr und ist kein Haenger.
 func TestHaengerUebergehtVerschwindende(t *testing.T) {
 	root, ziel, verweiser := baumMitReports(t)
 
-	got, err := archive.Haenger(root, []string{ziel}, []string{ziel, verweiser})
+	got, err := archive.Haenger(root, []string{ziel, verweiser}, []string{ziel}, []string{ziel, verweiser})
 	if err != nil {
 		t.Fatal(err)
 	}
 	if len(got) != 0 {
 		t.Fatalf("Haenger = %v, want keinen — der Verweiser verschwindet selbst", got)
+	}
+}
+
+// TestHaengerUebergehtFehlendeDatei: ein Pfad, den der Index fuehrt und der
+// Arbeitsbaum nicht, ist kein Lesefehler, sondern uebersprungen.
+func TestHaengerUebergehtFehlendeDatei(t *testing.T) {
+	root, ziel, verweiser := baumMitReports(t)
+
+	got, err := archive.Haenger(root,
+		[]string{ziel, verweiser, "docs/plan/planning/done/nie-angelegt.md"},
+		[]string{ziel}, []string{ziel})
+	if err != nil {
+		t.Fatalf("fehlender Pfad im Suchraum ist ein Fehler geworden: %v", err)
+	}
+	if len(got) != 1 {
+		t.Fatalf("Haenger = %v, want genau einen Treffer aus %s", got, verweiser)
 	}
 }

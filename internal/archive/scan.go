@@ -1,6 +1,7 @@
 package archive
 
 import (
+	"errors"
 	"fmt"
 	"io/fs"
 	"os"
@@ -13,6 +14,15 @@ import (
 // in dem dieses Paket nach Verweisen sucht. Die Menge ist geschlossen und steht
 // an dieser einen Stelle; wer sie erweitert, verengt beide Leser zugleich — die
 // Haenger-Vorpruefung und den Verweis-Fund.
+//
+// Sie ist die EINZIGE Achse, an der der Suchraum verengt ist. Eine Dateityp-Achse
+// gibt es nicht: gesucht wird in jeder uebergebenen Datei, `.md` oder nicht —
+// dieselbe Menge, in der der schreibende Traeger sucht (`git grep` kennt keine
+// Endungs-Einschraenkung). Ein Verweis auf ein verschwindendes Zeitdokument steht
+// im Bestand auch in Go-Kommentaren, Mutations-Faellen, im Dockerfile und in
+// bats-Dateien. TestHaengerFindetVerweisAusNichtMarkdownDatei und
+// TestVerweisFundPraefixAusNichtMarkdownDatei decken beide Leser;
+// test/mutations/238-archive-welle-go-suchraum-dateityp.sh nimmt die Achse weg.
 //
 // `.git` ist kein Prueftext, `.harness/baseline` unveraenderter Fremdtext, den
 // das Doku-Gate unter scan.ignore nie liest.
@@ -40,44 +50,59 @@ func Ausgenommen(rel string) bool {
 	return false
 }
 
-// MarkdownDateien liefert jede `.md`-Datei unter root als repo-relativen Pfad,
-// sortiert und ohne die ausgenommenen Praefixe.
+// Suchraum ist die Menge der Dateien, in denen dieses Paket nach Verweisen sucht:
+// die uebergebenen repo-relativen Pfade ohne die ausgenommenen Praefixe,
+// sortiert und ohne Doppel. Beide Leser dieses Pakets fuehren jede Liste durch
+// diese Funktion, damit die Ausnahme-Menge oben fuer jeden Eingang gilt.
 //
-// GRENZE, benannt statt verschwiegen: der Lauf geht ueber den ARBEITSBAUM, nicht
-// ueber den git-Index. Eine untrackte Markdown-Datei zaehlt damit mit — der
-// schreibende Zweig verlangt ohnehin einen sauberen Baum, und in einem sauberen
-// Baum fallen beide Mengen zusammen.
-func MarkdownDateien(root string) ([]string, error) {
-	var out []string
-	err := filepath.WalkDir(root, func(p string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
+// KOPPLUNG: die Liste liefert der Aufrufer aus dem GIT-INDEX (`git ls-files`) —
+// dieselbe Menge, ueber der der schreibende Traeger sein `git grep` fuehrt.
+// Damit steht sie ohne git-Aufruf in diesem Paket, und was der Index nicht
+// fuehrt — Ignoriertes unter `.harness/state/`, `bin/`, `dist/` und jede
+// untrackte Datei —, liegt fuer beide Fassungen ausserhalb.
+func Suchraum(dateien []string) []string {
+	out := make([]string, 0, len(dateien))
+	gesehen := make(map[string]bool, len(dateien))
+	for _, d := range dateien {
+		rel := filepath.ToSlash(strings.TrimSpace(d))
+		if rel == "" || gesehen[rel] || Ausgenommen(rel) {
+			continue
 		}
-		rel, relErr := filepath.Rel(root, p)
-		if relErr != nil {
-			return relErr
-		}
-		rel = filepath.ToSlash(rel)
-		if d.IsDir() {
-			if rel != "." && Ausgenommen(rel) {
-				return filepath.SkipDir
-			}
-			return nil
-		}
-		if strings.HasSuffix(rel, ".md") && !Ausgenommen(rel) {
-			out = append(out, rel)
-		}
-		return nil
-	})
-	if err != nil {
-		return nil, fmt.Errorf("%s durchsuchen: %w", root, err)
+		gesehen[rel] = true
+		out = append(out, rel)
 	}
 	sort.Strings(out)
-	return out, nil
+	return out
+}
+
+// lies liefert den Inhalt einer Datei des Suchraums. Der zweite Rueckgabewert ist
+// false fuer die zwei Eintraege, hinter denen kein durchsuchbarer Inhalt steht:
+// ein Pfad, den der Index fuehrt und der Arbeitsbaum nicht (geloescht, noch nicht
+// committet), und ein Symlink — dessen git-Blob ist sein Zielpfad, nicht der Text
+// dahinter; ihm zu folgen zoege den ausgenommenen Baseline-Baum ueber
+// `.claude/rules/` wieder in den Suchraum.
+func lies(root, rel string) (string, bool, error) {
+	p := filepath.Join(root, filepath.FromSlash(rel))
+	st, err := os.Lstat(p)
+	if errors.Is(err, fs.ErrNotExist) {
+		return "", false, nil
+	}
+	if err != nil {
+		return "", false, fmt.Errorf("%s lesen: %w", rel, err)
+	}
+	if !st.Mode().IsRegular() {
+		return "", false, nil
+	}
+	b, err := os.ReadFile(p)
+	if err != nil {
+		return "", false, fmt.Errorf("%s lesen: %w", rel, err)
+	}
+	return string(b), true, nil
 }
 
 // Haenger nennt jeden lebenden Verweis auf eine Datei, die der Lauf ERSATZLOS
-// loeschte — je Fund eine Zeile "<verweisende Datei> -> <Ziel>".
+// loeschte — je Fund eine Zeile "<verweisende Datei> -> <Ziel>". `dateien` ist
+// der rohe Suchraum-Eingang des Aufrufers.
 //
 // ZUSAGE: gefunden wird nur, was den Lauf UEBERLEBT. Wer selbst verschwindet —
 // die eingesammelten Slices, der Welle-Plan und die anderen zu loeschenden
@@ -87,25 +112,24 @@ func MarkdownDateien(root string) ([]string, error) {
 // Link. Das ist die Form, in der ein Markdown-Verweis auf ein Zeitdokument im
 // Bestand steht; ein gleichlautender Name im Fliesstext zaehlt mit, und diese
 // Richtung ist die fail-closed-sichere.
-func Haenger(root string, ziele, verschwindend []string) ([]string, error) {
-	dateien, err := MarkdownDateien(root)
-	if err != nil {
-		return nil, err
-	}
+func Haenger(root string, dateien, ziele, verschwindend []string) ([]string, error) {
 	weg := make(map[string]bool, len(verschwindend))
 	for _, v := range verschwindend {
 		weg[filepath.ToSlash(v)] = true
 	}
 	var out []string
-	for _, datei := range dateien {
+	for _, datei := range Suchraum(dateien) {
 		if weg[datei] {
 			continue
 		}
-		inhalt, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(datei)))
+		inhalt, ok, err := lies(root, datei)
 		if err != nil {
-			return nil, fmt.Errorf("%s lesen: %w", datei, err)
+			return nil, err
 		}
-		out = append(out, treffer(string(inhalt), datei, ziele)...)
+		if !ok {
+			continue
+		}
+		out = append(out, treffer(inhalt, datei, ziele)...)
 	}
 	sort.Strings(out)
 	return out, nil

@@ -51,7 +51,12 @@ func TestVerweisFundDreiFormenInIhremSuchraum(t *testing.T) {
 	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "next", "slice-900-y.md"),
 		"Geschwister im eigenen Verzeichnis: [x](slice-100-a.md).\n")
 
-	funde, err := archive.VerweisFund(root, []string{"slice-100-a.md"})
+	funde, err := archive.VerweisFund(root, []string{
+		"docs/plan/adr/0033-x.md",
+		"docs/plan/planning/done/welle-10-results.md",
+		"docs/plan/planning/done/welle-09/slice-090-x.md",
+		"docs/plan/planning/next/slice-900-y.md",
+	}, []string{"slice-100-a.md"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -73,5 +78,67 @@ func TestVerweisFundDreiFormenInIhremSuchraum(t *testing.T) {
 	}
 	if len(funde) != 3 {
 		t.Fatalf("VerweisFund = %d Dateien, want 3", len(funde))
+	}
+}
+
+// TestVerweisFundPraefixAusNichtMarkdownDatei: die Praefix-Form ankert am
+// Literal "done/" und gilt in jedem Dateityp — der schreibende Traeger zieht sie
+// mit `git grep` ohne Endungs-Filter nach und stagt die getroffene Datei in
+// seinen Inhalts-Commit. Zwei Dateien des Bestands stehen fuer die Klasse:
+// `Dockerfile`, aus dem `make test`, `make lint` und `make build` ihre Stages
+// ziehen, und eine bats-Datei. Nennt die Vorschau sie nicht, ist ihr
+// Blast-Radius kleiner als das, was der Lauf anfasst.
+// Gegenbeispiel: test/mutations/238-archive-welle-go-suchraum-dateityp.sh.
+func TestVerweisFundPraefixAusNichtMarkdownDatei(t *testing.T) {
+	root := t.TempDir()
+	schreibe(t, filepath.Join(root, "Dockerfile"),
+		"# Begruendung: docs/plan/planning/done/slice-057-go-kompilat-cache.md\n")
+	schreibe(t, filepath.Join(root, "test", "full-smoke-ausgang.bats"),
+		"# siehe done/slice-057-go-kompilat-cache.md\n")
+
+	funde, err := archive.VerweisFund(root,
+		[]string{"Dockerfile", "test/full-smoke-ausgang.bats"},
+		[]string{"slice-057-go-kompilat-cache.md"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(funde) != 2 {
+		t.Fatalf("VerweisFund = %v, want beide Dateien ohne .md-Endung", funde)
+	}
+	for _, f := range funde {
+		if f.Praefix != 1 || f.Summe() != 1 {
+			t.Errorf("%+v, want genau 1 Praefix-Treffer", f)
+		}
+	}
+}
+
+// TestVerweisFundUebergehtDenEigenenUmzugsgegenstand: die praefixlose Form zaehlt
+// nicht in einer Datei, die dieser Lauf selbst mitnimmt. Zwei Mitglieder
+// derselben Welle, die einander geschwister-relativ verlinken, wandern gemeinsam
+// nach done/<welle-id>/; ihre Links bleiben gueltig, und der schreibende Traeger
+// fasst sie nicht an. Wer sie zaehlt, meldet einen zu grossen Blast-Radius.
+func TestVerweisFundUebergehtDenEigenenUmzugsgegenstand(t *testing.T) {
+	root := t.TempDir()
+	done := filepath.Join(root, "docs", "plan", "planning", "done")
+	schreibe(t, filepath.Join(done, "slice-100-a.md"),
+		"Nachbar: [slice-101](slice-101-b.md).\n")
+	schreibe(t, filepath.Join(done, "slice-101-b.md"),
+		"Vorlaeufer: [slice-100](slice-100-a.md).\n")
+	schreibe(t, filepath.Join(done, "welle-10-results.md"),
+		"Geliefert: [slice-100](slice-100-a.md) und [slice-101](slice-101-b.md).\n")
+
+	funde, err := archive.VerweisFund(root, []string{
+		"docs/plan/planning/done/slice-100-a.md",
+		"docs/plan/planning/done/slice-101-b.md",
+		"docs/plan/planning/done/welle-10-results.md",
+	}, []string{"slice-100-a.md", "slice-101-b.md"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(funde) != 1 || funde[0].Datei != "docs/plan/planning/done/welle-10-results.md" {
+		t.Fatalf("VerweisFund = %+v, want nur die bleibende Ergebnisnotiz", funde)
+	}
+	if funde[0].Geschwister != 2 {
+		t.Fatalf("Ergebnisnotiz = %+v, want 2 geschwister-relative Fundstellen", funde[0])
 	}
 }

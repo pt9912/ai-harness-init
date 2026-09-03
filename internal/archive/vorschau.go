@@ -23,19 +23,22 @@ type Bericht struct {
 }
 
 // Vorschau liest den Baum unter root und sagt, was eine Archivierung von welleID
-// taete. Sie SCHREIBT nichts. `porcelain` ist die Ausgabe von
-// `git status --porcelain`; sie kommt als Wert herein, damit die Vorschau ohne
-// git pruefbar ist und der Aufrufer die eine Stelle behaelt, an der git laeuft.
-func Vorschau(root, welleID, porcelain string) (Bericht, error) {
+// taete. Sie SCHREIBT nichts.
+//
+// Zwei Eingaben kommen als WERT herein statt aus einem git-Aufruf dieses Pakets:
+// `porcelain` ist die Ausgabe von `git status --porcelain`, `dateien` der
+// Suchraum aus `git ls-files`. Damit ist die Vorschau ohne git pruefbar, und der
+// Aufrufer behaelt die eine Datei, in der git laeuft.
+func Vorschau(root, welleID, porcelain string, dateien []string) (Bericht, error) {
 	b, err := Einsammeln(root, welleID)
 	if err != nil {
 		return Bericht{}, err
 	}
 	ber := Bericht{Bestand: b}
-	if ber.Funde, err = VerweisFund(root, b.Bewegte()); err != nil {
+	if ber.Funde, err = VerweisFund(root, dateien, b.Bewegte()); err != nil {
 		return Bericht{}, err
 	}
-	haenger, err := Haenger(root, b.Reviews, b.Verschwindend())
+	haenger, err := Haenger(root, dateien, b.Reviews, b.Verschwindend())
 	if err != nil {
 		return Bericht{}, err
 	}
@@ -149,6 +152,11 @@ func Schreibe(b Bericht) string {
 
 // schreibeVerweise nennt den Blast-Radius: die betroffenen Dateien mit ihrer
 // Zahl je Form. Null Treffer ist eine Aussage und wird ausgeschrieben.
+//
+// ZWEI EINHEITEN, beide beschriftet: die erste Zahl zaehlt DATEIEN, die drei in
+// der Klammer FUNDSTELLEN ueber alle Dateien. Eine Fundstellen-Zahl kann die
+// Datei-Zahl uebersteigen — ohne eigenes Einheitswort laese der Aufrufer sie als
+// Teilmenge der ersten. TestSchreibeTrenntDateienVonFundstellen haelt es.
 func schreibeVerweise(sb *strings.Builder, funde []Fund) {
 	praefix, geschwister, aufsteigend := 0, 0, 0
 	for _, f := range funde {
@@ -156,7 +164,7 @@ func schreibeVerweise(sb *strings.Builder, funde []Fund) {
 		geschwister += f.Geschwister
 		aufsteigend += f.Aufsteigend
 	}
-	fmt.Fprintf(sb, "  Verweise: %d Datei(en) betroffen (%d mit Praefix, %d geschwister-relativ, %d aufsteigend)\n",
+	fmt.Fprintf(sb, "  Verweise: %d Datei(en) betroffen (%d Praefix-, %d geschwister-relative, %d aufsteigende Fundstelle(n))\n",
 		len(funde), praefix, geschwister, aufsteigend)
 	for _, f := range funde {
 		fmt.Fprintf(sb, "    %s (%d)\n", f.Datei, f.Summe())

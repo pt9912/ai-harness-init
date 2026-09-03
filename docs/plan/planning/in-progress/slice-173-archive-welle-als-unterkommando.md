@@ -175,6 +175,22 @@ dasteht.
   [Register](../observations.md) (1×, offen). Ein wortgleicher Port trägt sie weiter. —
   **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen: Grund | weiter offen: → BEO-NNN im
   Register>
+- **Der Quervergleich aus §5 ist über diesem Repo nicht fahrbar.** Er verlangt neben dem
+  Vorschau-Lauf die vier Zahlen des Shell-Helfers. Der druckt sie (`harness/tools/archive-welle.sh`,
+  Zeilen 644–648) **nach** seinem Untergrenzen-Ausgang (Zeilen 577–588), und der greift hier für
+  jede Welle: **0** vorhandene `done/*/archiv.zip`
+  (`ls docs/plan/planning/done/*/archiv.zip 2>/dev/null | wc -l`) bei **44** flach in `done/`
+  liegenden wellenlosen Slices
+  (`grep -l '^\*\*Welle:\*\* *ohne Welle' docs/plan/planning/done/slice-*.md | wc -l`, keine
+  Erwartungswerte,
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). Ein Vergleich setzt damit einen geänderten oder gesourcten Helfer voraus. Dazu liegt
+  die Fläche daneben: die vier Zahlen rechnen beide Fassungen aus derselben Einsammel-Regel,
+  während der **Suchraum** — die Achse, an der die zwei Fassungen auseinanderlaufen können — in
+  keine von ihnen eingeht. Die Neufassung des Kriteriums ist Planner-Arbeit
+  (Baseline-Regelwerk `modul-08-agentenrollen.md` §Rollen-Regeln) und steht in keinem
+  Implementations-Lauf. — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen: Grund |
+  weiter offen: → BEO-NNN im Register>
 - **Ein Reviewer kann den Vorschau-Zweig als zweite Fassung der Operation lesen** und Festlegung 2
   der [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) für ausgelöst halten —
   dann müsste dieser Lauf den Shell-Helfer entfernen, ohne dessen Schreib-Hälfte zu haben. Die

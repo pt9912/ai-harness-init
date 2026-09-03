@@ -186,7 +186,7 @@ func Einsammeln(root, welleID string) (Bestand, error) {
 			}
 		case name == ergebnisName:
 			b.Ergebnis = rel
-		case strings.HasPrefix(name, welleID) && strings.HasSuffix(name, ".md"):
+		case planName(name, welleID):
 			b.Plaene = append(b.Plaene, rel)
 		case strings.HasPrefix(name, "slice-") && strings.HasSuffix(name, ".md"):
 			if err := b.einordnen(root, rel); err != nil {
@@ -200,6 +200,21 @@ func Einsammeln(root, welleID string) (Bestand, error) {
 	}
 	sort.Strings(b.Plaene)
 	return b, nil
+}
+
+// planName sagt, ob ein Dateiname aus done/ der Welle-Plan dieser Welle ist: er
+// beginnt mit der Kennung, traegt die Markdown-Endung — und hinter der Kennung
+// steht keine ZIFFER. Dieselbe Grenze, die nenntWelle fuer das Kopf-Feld und
+// ReviewTrifft fuer die Slice-Nummer ziehen: ohne sie zoege "welle-1" die
+// Dateien von "welle-10" und "welle-14" in die Kandidatenliste, und die
+// Ergebnisnotiz einer fremden Welle stuende darin als Welle-Plan.
+// Gedeckt von TestEinsammelnPlanAnDerZiffernGrenze.
+func planName(name, welleID string) bool {
+	if welleID == "" || !strings.HasSuffix(name, ".md") || !strings.HasPrefix(name, welleID) {
+		return false
+	}
+	rest := name[len(welleID):]
+	return rest == "" || rest[0] < '0' || rest[0] > '9'
 }
 
 // einordnen liest das Kopf-Feld einer Slice-Datei und haengt sie an ihre Klasse.

@@ -1,8 +1,6 @@
 package archive
 
 import (
-	"fmt"
-	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -60,30 +58,42 @@ func ZaehleAufsteigend(inhalt, base string) int {
 
 // VerweisFund nennt jede Datei des Suchraums, die einen Verweis auf eine der
 // bewegten Dateien traegt, mit der Zahl je Form — sortiert nach Dateiname.
-// `bewegte` sind Basenamen (Bestand.Bewegte).
+// `dateien` ist der rohe Suchraum-Eingang des Aufrufers, `bewegte` sind
+// Basenamen (Bestand.Bewegte).
 //
 // DIE DREI FORMEN HABEN VERSCHIEDENE SUCHRAEUME, und das ist keine Sparsamkeit,
 // sondern die Aufloesungs-Regel von Markdown: die Praefix-Form ankert am Literal
-// "done/" und gilt ueberall; die praefixlose Form loest gegen das Verzeichnis
-// der LINKTRAGENDEN Datei auf und trifft nur aus done/ selbst; die aufsteigende
-// nur aus einem Unterverzeichnis von done/. Wer alle drei ueberall zaehlte,
-// meldete Treffer, die kein Umzug beruehrt.
+// "done/", gilt ueberall und in jedem Dateityp — TestVerweisFundPraefixAusNichtMarkdownDatei
+// haelt sie an einer Datei ohne `.md`. Die praefixlose Form loest gegen das
+// Verzeichnis der LINKTRAGENDEN Datei auf und trifft nur aus done/ selbst; die
+// aufsteigende nur aus einem Unterverzeichnis von done/. Beide sind zusaetzlich
+// auf `.md` begrenzt: sie sind Markdown-Link-Ziele und loesen ausserhalb einer
+// Markdown-Datei gegen nichts auf. Wer alle drei ueberall zaehlte, meldete
+// Treffer, die kein Umzug beruehrt.
+//
+// ABGRENZUNG: die praefixlose Form zaehlt nicht in einer Datei, die dieser Lauf
+// SELBST nach done/<welle-id>/ zoege. Ihre Geschwister-Links bleiben nach dem
+// gemeinsamen Umzug gueltig, und der schreibende Traeger fasst sie nicht an.
+// TestVerweisFundUebergehtDenEigenenUmzugsgegenstand haelt das.
 //
 // GRENZE: gefunden wird, was an einer dieser drei Formen ankert. Ein eingehender
 // Verweis in Inline-Code ohne Verzeichnis-Segment (`slice-N….md` als Pfad-Span
 // statt als Link-Ziel) traegt keine Link-Klammer und steht in keinem Fund.
-func VerweisFund(root string, bewegte []string) ([]Fund, error) {
-	dateien, err := MarkdownDateien(root)
-	if err != nil {
-		return nil, err
+func VerweisFund(root string, dateien, bewegte []string) ([]Fund, error) {
+	zieht := make(map[string]bool, len(bewegte))
+	for _, b := range bewegte {
+		zieht[b] = true
 	}
 	var out []Fund
-	for _, datei := range dateien {
-		inhalt, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(datei)))
+	for _, datei := range Suchraum(dateien) {
+		inhalt, ok, err := lies(root, datei)
 		if err != nil {
-			return nil, fmt.Errorf("%s lesen: %w", datei, err)
+			return nil, err
 		}
-		if f := fundIn(string(inhalt), datei, bewegte); f.Summe() > 0 {
+		if !ok {
+			continue
+		}
+		if f := fundIn(inhalt, datei, bewegte, zieht); f.Summe() > 0 {
 			out = append(out, f)
 		}
 	}
@@ -91,11 +101,13 @@ func VerweisFund(root string, bewegte []string) ([]Fund, error) {
 }
 
 // fundIn zaehlt die drei Formen fuer eine Datei, jede nur in ihrem Suchraum.
-func fundIn(inhalt, datei string, bewegte []string) Fund {
+// `zieht` sind die Basenamen, die dieser Lauf selbst bewegt.
+func fundIn(inhalt, datei string, bewegte []string, zieht map[string]bool) Fund {
 	f := Fund{Datei: datei}
 	dir := filepath.ToSlash(filepath.Dir(datei))
-	flachInDone := dir == doneDir
-	unterDone := strings.HasPrefix(dir, doneDir+"/")
+	markdown := strings.HasSuffix(datei, ".md")
+	flachInDone := markdown && dir == doneDir && !zieht[filepath.Base(datei)]
+	unterDone := markdown && strings.HasPrefix(dir, doneDir+"/")
 	for _, base := range bewegte {
 		f.Praefix += ZaehlePraefix(inhalt, base)
 		if flachInDone {

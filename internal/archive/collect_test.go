@@ -196,6 +196,30 @@ func TestEinsammelnReviewsAnDerSuffixGrenze(t *testing.T) {
 	}
 }
 
+// TestEinsammelnPlanAnDerZiffernGrenze haelt die dritte Zuordnungs-Stelle an
+// derselben Grenze wie die zwei anderen: "welle-1" trifft die Dateien von
+// "welle-10" und "welle-14" nicht. Ohne sie stuende die Ergebnisnotiz einer
+// fremden Welle als Kandidat in der Sperre 'mehrdeutiger-plan'.
+func TestEinsammelnPlanAnDerZiffernGrenze(t *testing.T) {
+	root := t.TempDir()
+	schreibe(t, slicePfad(root, "welle-1-erste.md"), "# Welle welle-1\n")
+	schreibe(t, slicePfad(root, "welle-1-results.md"), "# Ergebnis\n")
+	schreibe(t, slicePfad(root, "welle-10-re-baseline.md"), "# Welle welle-10\n")
+	schreibe(t, slicePfad(root, "welle-10-results.md"), "# Ergebnis\n")
+	schreibe(t, slicePfad(root, "welle-14-x.md"), "# Welle welle-14\n")
+
+	b, err := archive.Einsammeln(root, "welle-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(b.Plaene) != 1 || filepath.Base(b.Plaene[0]) != "welle-1-erste.md" {
+		t.Fatalf("Plaene = %v, want nur [welle-1-erste.md]", b.Plaene)
+	}
+	if filepath.Base(b.Ergebnis) != "welle-1-results.md" {
+		t.Fatalf("Ergebnis = %q, want welle-1-results.md", b.Ergebnis)
+	}
+}
+
 // TestEinsammelnFindetUntergrenze belegt beide Richtungen des
 // Untergrenzen-Merkmals: ohne ein bestehendes Archiv leer, mit einem gesetzt.
 func TestEinsammelnFindetUntergrenze(t *testing.T) {
