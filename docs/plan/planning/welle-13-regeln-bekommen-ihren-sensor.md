@@ -97,9 +97,15 @@ Setzung 1 geprüft, alle drei Fragen beantwortet:
   Verhalten hängt an der Version. Alle Messungen in §1 sind bereits gegen `v0.65.0` gefahren; sie
   gegen `v0.62.0` zu verdrahten hieße, eine Config gegen ein Image zu schneiden, das im selben Zug
   ausgetauscht wird.
-- **[welle-10](done/welle-10-re-baseline.md) liegt in `done/`.** Der Grund ist **ordnend**: welle-10 ist
-  die aktuelle Welle und tauscht den vendored Baum; zwei offene Wellen nebeneinander wären ein
-  WIP-Bruch, keine Parallelität. Ist welle-10 vorher geschlossen, entfällt die Kante von selbst.
+- **[welle-14](welle-14-re-baseline.md) liegt in `done/`.** Der Grund ist **tragend**, nicht bloß
+  ordnend: Zwei Slices dieser Welle bauen Sensoren auf Formen, die jener Sprung bewegt — der
+  Roadmap-/Verzeichnis-Wächter ([slice-125](open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md))
+  und der Closure-Notiz-Sensor ([slice-129](open/slice-129-closure-notiz-hat-einen-sensor.md)). Die
+  Ziel-Fassung schiebt der Wellen-Closure einen Schritt ein, der die Zeitdokumente einer Welle nach
+  `done/<welle-id>/` archiviert und an ihrer Stelle Stubs lässt (`v5.18.0`, `modul-06-roadmap.md`,
+  §Wellen-Closure-Prozedur, Schritt 4); damit ändert sich, was `done/` enthält und was eine
+  Closure-Notiz ist. Es ist derselbe Grund wie beim Pin darüber: eine Config gegen ein Artefakt zu
+  schneiden, das im selben Zug ausgetauscht wird.
 
 ## 3. Closure-Trigger (Welle schließt)
 

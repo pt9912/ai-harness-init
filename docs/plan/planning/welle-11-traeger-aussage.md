@@ -90,21 +90,14 @@ ihrer Annahme offenhielt, ist angenommen
 
 ## 2. Trigger (Welle startet)
 
-- **[welle-10](done/welle-10-re-baseline.md) liegt in `done/`.** Beobachtbar ohne Rückfrage: die
+- **[welle-14](welle-14-re-baseline.md) liegt in `done/`.** Beobachtbar ohne Rückfrage: die
   Plan-Datei liegt neben ihrer Ergebnis-Notiz.
 - **Warum diese Reihenfolge tragend ist und nicht bloß ordentlich:** **jede** Messung dieser Welle
-  läuft über den vendored Baum, und welle-10 tauscht genau ihn. Der Adaptions-Durchgang jener Welle
-  bewegt zudem den Gegenstand von slice-090 unmittelbar — die Ziel-Fassung führt den
-  Freshness-Audit mit **sieben** statt drei Eigenschaften, gemessen und ausgeschrieben in
-  [ADR-0018](../adr/0018-ziel-fassung-regiert-die-migration.md) §*Was die beiden Fassungen zum
-  Freshness-Audit führen* (**Proposed** — welcher Tag am Ende steht, ist dort noch offen; dass der
-  Abschnitt **wächst**, ist gegen beide erwogenen Zielstände gemessen und trägt den Trigger
-  unabhängig vom Ausgang). Eine Aussage über den Audit, die vor dem Tausch entsteht, beschriebe
-  eine Prozedur, die das Ziel danach nicht mehr liest. **Das ist ein Risiko-Grund, und er
-  unterscheidet diese Kante von der, die vor welle-10 stand:** jene schützte eine Messlatte, deren
-  Text sich als unbewegt erwies, und ist am 2026-08-28 aufgelöst
-  ([welle-10](done/welle-10-re-baseline.md) §2). Diese hier trägt einen Gegenstand, der sich beim
-  Tausch **real** ändert.
+  läuft über den vendored Baum, und welle-14 tauscht genau ihn. Sie bewegt zudem den Gegenstand von
+  slice-090 unmittelbar: `modul-02-harness-bootstrap.md` ändert sich in jenem Sprung erneut, und
+  der Freshness-Audit ist genau das Thema jenes Slice. Eine Aussage über den Audit, die vor dem
+  Tausch entsteht, beschriebe eine Prozedur, die das Ziel danach nicht mehr liest — ein
+  Risiko-Grund, kein Ordnungs-Grund.
 - **[welle-09](welle-09-modul-15-konformitaet.md) ist keine Vorbedingung dieser Welle** — weder
   unmittelbar noch mittelbar, seit sie welle-10 nicht mehr blockiert. Die Abgrenzung zu ihr bleibt
   und hält den Schnitt sauber: die `make`-Ansprüche der **lebenden** emittierten Doku-Tische

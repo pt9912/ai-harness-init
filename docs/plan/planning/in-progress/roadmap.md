@@ -17,6 +17,7 @@ Welle-Dateien; woran gearbeitet wird, sagt das `Welle:`-Feld der Slices in
 nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
+- [welle-14 — Re-Baseline](../welle-14-re-baseline.md)
 
 Nichts in Arbeit.
 
@@ -51,8 +52,8 @@ unverlinkter ist ein Kandidat ohne Datei und ohne geschnittene Slices.
 
 | Welle | Trigger (beobachtbar) | Wichtigste Slices | Aufwand |
 |---|---|---|---|
-| [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md) | welle-10 liegt in `done/` — tragend, weil jede Messung dieser Welle über den vendored Baum läuft, den welle-10 tauscht (§2 der Plan-Datei) | `slice-090`–`slice-092` | M |
-| [welle-13 — Regeln bekommen ihren Sensor](../welle-13-regeln-bekommen-ihren-sensor.md) | [`slice-122`](../done/slice-122-d-check-pin-v0650.md) liegt in `done/` (tragend) **und** welle-10 liegt in `done/` (ordnend) | `slice-123`–`slice-127`, `slice-129` | L |
+| [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md) | welle-14 liegt in `done/` — tragend, weil jede Messung dieser Welle über den vendored Baum läuft, den welle-14 tauscht (§2 der Plan-Datei) | `slice-090`–`slice-092` | M |
+| [welle-13 — Regeln bekommen ihren Sensor](../welle-13-regeln-bekommen-ihren-sensor.md) | [`slice-122`](../done/slice-122-d-check-pin-v0650.md) liegt in `done/` (tragend) **und** welle-14 liegt in `done/` (tragend — die Ziel-Fassung bewegt die Formen, auf die `slice-125`/`slice-129` ihre Sensoren bauen) | `slice-123`–`slice-127`, `slice-129` | L |
 | Doc-Gate-Härtung | erneut beobachtete Befund-Klasse (Muster `slice-026`: neun Instanzen → Sensor) | `test` in `codepaths.roots` aufnehmen — Gate-*Anheben* nach dem [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)-Muster mit Trockenlauf vor dem Pin ([`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)/[`MR-011`](../../../../harness/conventions.md#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines)); die Messung dazu führt [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben) · Anker-Fragment-Sensor · Prosa-Zahlen-Provenienz · `citations` · die zwei Module `hostpaths` und `diagrams`, ausgeschrieben in [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §6. **Nicht dasselbe wie** [slice-069](../open/slice-069-zahn-bindet-zusicherung.md) oder [slice-070](../open/slice-070-comment-claims-pruefbereich.md) — hier zählt die bloße **Existenz** des genannten Pfades | S |
 | Vollständigkeits-Wächter für kuratierte Listen | am 2026-07-25 fand ein **Nutzer** den veralteten bats-Pin von Hand; für bats, shellcheck und actionlint gibt es keinen Freshness-Sensor | Beide kuratierten Listen prüfen ihre **Einträge**, nie ihre **Vollständigkeit** — `upstream-drift` jeden gelisteten Pin, `make mutate` jeden gelisteten Wächter. Ein Bauplan deckt beide: Inventar einsammeln, gegen die Abdeckungs-Menge halten, Differenz melden. Die drei Images sind nur per Digest gepinnt und tragen keinen Versions-String — die Version aus dem gepinnten Image selbst lesen (`bats --version`), sonst entsteht eine zweite Quelle, die driftet. Schließt Achse (5) der Doku- und Sensor-Wartung mit ein | M |
 | Regeln ohne Feedback-Quadrant schließen — Rest-Achsen | die Klasse ist am 2026-07-26 sechsfach gemessen (Drift-Log unten) | Achse (1) ist in [welle-09](../welle-09-modul-15-konformitaet.md) eingefaltet, die Achsen (1)–(4) und die Sensor-Hälfte von (6) sind als [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) geschnitten. Hier bleiben: **(5)** Co-Change um [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 2 — Eigenbau mit Cutoff ab dem einführenden Commit (rückwirkend wäre er dauerhaft rot) und fail-closed bei Shallow Clone · **(6, Skill-Hälfte)** `.harness/skills/closure-note-reviewer.md` fehlt (`ls .harness/skills/ \| wc -l` → **1**), obwohl das Werkzeug sie in jedes Ziel emittiert · **(7)** veröffentlichte Artefakte außerhalb von `git`: der Release-Text von `v0.1.0` wurde viermal korrigiert, kein Gate erreicht ihn ([slice-050](../done/slice-050-doku-nachzug-release.md) §7) · **(8)** der Liefer-Punkte-Zähler; die Ist-Messung über neun Slices führt [slice-053](../done/slice-053-cpp-hexslice-renderer.md) · **(9)** die Quellen-Klausel [`AGENTS.md`](../../../../AGENTS.md) §3.7 — sie nennt sich selbst wächterlos, Träger-Kandidat ist `make comment-claims` statt d-check; gefordert ist ein **Cutoff-Mechanismus** über den geänderten Zeilen, keine Räumung des Bestands | L |
@@ -97,12 +98,14 @@ flowchart LR
     W11[welle-11<br/>Träger-Aussage]
     W12[welle-12<br/>Erfassungsschicht emittieren]
     W13[welle-13<br/>Regeln bekommen ihren Sensor]
+    W14[welle-14<br/>Re-Baseline]
     W1 --> W2 --> W3 --> W4 --> W5
     W5 -.-> W6
     W5 --> W7 --> W8
     W8 --> W9
-    W10 --> W11
-    W10 --> W13
+    W10 --> W14
+    W14 --> W11
+    W14 --> W13
     S122([slice-122 done<br/>d-check-Pin v0.65.0]) --> W13
     A0022([ADR-0022 Accepted<br/>+ slice-093 done]) --> W12
 ```
@@ -141,6 +144,7 @@ einer Umplanung steht im Beleg, nicht in der Zelle.
 
 | Datum | Was wurde geändert? | Warum? | Beleg |
 |---|---|---|---|
+| 2026-09-03 | [welle-14](../welle-14-re-baseline.md) geschnitten und eröffnet — mit **einem** Mitglied, [slice-155](../open/slice-155-inventur-vor-dem-schnitt.md); die übrigen Zeilen ihrer §4 folgen dem Katalog. Zugleich zeigt die tragende Kante von [welle-11](../welle-11-traeger-aussage.md) und die zweite Kante von [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) auf welle-14 statt auf welle-10; welle-13s Kante wechselt dabei von *ordnend* zu *tragend* | Der Trigger ist gemessen: `make baseline-freshness` meldet `gepinnt: v5.12.0`, `latest: v5.18.0`. Die Mitglieder-Zahl steht bewusst nicht vorab — [`BEO-010`](../observations.md) misst am letzten Sprung den Abstand zwischen geschnittenen und geschlossenen Slices (beide Zahlen dort neben ihren Kommandos), und die Ursache war der Schnitt vor der Inventur. Die zwei Kanten tragen denselben Grund wie zuvor, nur gegen die jetzt tauschende Welle: welle-11 misst über den vendored Baum, und welle-13 baut zwei Sensoren auf Formen, die Modul 6 der Ziel-Fassung mit dem neuen Archivierungs-Schritt bewegt | [welle-14](../welle-14-re-baseline.md) §2/§5, [`BEO-010`](../observations.md), [`BEO-011`](../observations.md) |
 | 2026-09-02 | [`slice-150`](../done/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md) in [welle-10](../done/welle-10-re-baseline.md) geschnitten, ohne Reihenfolge-Bindung außer der tragenden Kante zu `slice-083` | Kein Nachzügler, sondern eine Korrektur an Durchgang 1: zwei Einträge der eingefrorenen Bezugsmenge tragen die Ausgänge *bleibt gültig* bzw. *nicht eingetreten*, während der adoptierte Stand beide Setzungen wörtlich führt. Eine Welle, die darauf schließt, erfüllt ihr Kriterium der Form nach und der Sache nach nicht | [welle-10](../done/welle-10-re-baseline.md) §3, [`slice-082`](../done/slice-082-adaptions-durchgang.md) §9, [`BEO-013`](../observations.md) |
 | 2026-08-31 | [`slice-083`](../done/slice-083-form-vergleich-pflichtfelder.md) ein zweites Mal `in-progress` → `next` zurückgeführt; die zwei offenen Spec-Posten als [`slice-147`](../done/slice-147-spezifikation-traegt-ihr-id-schema.md) und [`slice-148`](../done/slice-148-architecture-traegt-ihr-id-schema.md) neu geschnitten | `slice-083` behält nur `harness/conventions.md` — den einzigen Posten mit eigenem, noch offenem DoD-Punkt. Die zwei Spec-Dateien hängen an unabhängigen Artefaktmengen, und für sie benennt keine Quelle eine schreibende Rolle | [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md), [`slice-147`](../done/slice-147-spezifikation-traegt-ihr-id-schema.md) §1 |
 | 2026-08-29 | [`slice-136`](../done/slice-136-roadmap-traegt-die-ziel-form.md) in [welle-10](../done/welle-10-re-baseline.md) geschnitten, ohne Reihenfolge-Bindung zu den übrigen Mitgliedern | Durchgang 2 (*Form*) verlangt die neue Gliederung in den Singleton-Artefakten; diese Datei ist eines und stand in keiner Slice-Menge | [welle-10](../done/welle-10-re-baseline.md) §3 |
