@@ -35,8 +35,8 @@
     [`MR-001`](../conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
     verlangt sie ohnehin für jede Kennung außerhalb des Definitions-Orts. Blank standen sie
     allein, weil der Definitions-Ort sie deckte.
-- **Setzung 2 — der Definitions-Ort folgt dem Rumpf, und das ist keine Senkung.** Das Muster
-  `MR-\d{3}` in [`.d-check.yml`](../../.d-check.yml) nennt als `target` das Verzeichnis
+- **Setzung 2 — der Definitions-Ort folgt dem Rumpf, und das ist keine Senkung** · seit slice-166.
+  Das Muster `MR-\d{3}` in [`.d-check.yml`](../../.d-check.yml) nennt als `target` das Verzeichnis
   `harness/conventions/` statt der Index-Datei. Der Prüfumfang wird dadurch nicht um Bestand
   gekürzt, den dieses Repo autoritativ schreibt — der Test, mit dem
   [`MR-029`](../conventions.md#mr-029--der-scanignore-zensus-wandert-und-sein-dritter-grund-ist-keine-scoping-aussage)
