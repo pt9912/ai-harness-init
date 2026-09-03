@@ -44,7 +44,7 @@ Setzung 2):
 
 ```sh
 git grep -n 'v5\.12\.0' -- ':!.harness/baseline' ':!docs/reviews' \
-  ':!docs/plan/planning/done' ':!docs/plan/adr' | grep -vc ']('   # 2026-09-03: 148
+  ':!docs/plan/planning/done' ':!docs/plan/adr' | grep -vc ']('   # 2026-09-03: 152
 ```
 
 **Zwei Teilmengen liegen ausdrücklich außerhalb:** die **88** Treffer in

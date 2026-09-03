@@ -51,11 +51,12 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Kommando im Plan; Zeitdokumente (`docs/reviews/**`, `docs/plan/planning/done/**`) und die
       nach [`AGENTS.md`](../../../../AGENTS.md) §3.4 eingefrorenen ADRs bleiben unangetastet.
       **Offen, und die Restmenge ist zerlegt statt pauschal benannt.** Gate-sichtbar (Markdown-Link,
-      `git grep -oE '\]\([^)]*\.harness/baseline/v5\.12\.0/[^)]*\)' -- ':!.harness/baseline' | wc -l`)
+      `grep -cE '\]\([^)]*\.harness/baseline/v5\.12\.0/[^)]*\)' harness/conventions.md`)
       bleiben **62**, alle in [`harness/conventions.md`](../../../../harness/conventions.md) und
       alle im Adaptions-Block — damit Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8), siehe
-      den nächsten Punkt. Stumm (kein Link, `git grep -n 'v5\.12\.0' -- ':!.harness/baseline'
-      ':!docs/reviews' ':!docs/plan/planning/done' ':!docs/plan/adr' | grep -vc ']('` → **148**)
+      den nächsten Punkt; `make docs-check` meldet dieselbe Zahl als Befund-Zahl und keinen Befund
+      außerhalb dieser Datei. Stumm (kein Link, `git grep -n 'v5\.12\.0' -- ':!.harness/baseline'
+      ':!docs/reviews' ':!docs/plan/planning/done' ':!docs/plan/adr' | grep -vc ']('` → **152**)
       bleibt der Bestand, den
       [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
       regelt; sein Träger ist [slice-165](../open/slice-165-praesens-aussagen-gegen-v5180.md).
