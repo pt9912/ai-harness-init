@@ -23,7 +23,7 @@
 #
 # Die dritte Achse misst nicht die Fixture, sondern die KLASSIFIKATION: die
 # namentliche Aufzaehlung in emit.isRecurring gegen die Definition, die ihr
-# Kommentar ausspricht (Ziel-Pfad mit <…>-Platzhalter). Gegenstand ist der reale
+# Kommentar ausspricht (Ziel-Ort mit <…>-Platzhalter). Gegenstand ist der reale
 # Satz und internal/emit/templates.go, die Fixture kommt darin nicht vor.
 
 setup() {
@@ -81,24 +81,24 @@ in_scope() {
   }
 }
 
-@test "fixture: der reale Satz liefert genau 21 in-scope-Templates" {
-  # Die Zahl ist kein Selbstzweck: von 21 in-scope-Templates emittiert der Tool genau
-  # 11 als Singletons (inkl. der 2 Durchsetzungs-Skills seit slice-030 und des
-  # Beobachtungs-Registers seit slice-130); ununemittiert bleiben 2 derivative Indexe
-  # (emit.isDerivativeIndex), 7 wiederkehrende (emit.isRecurring) und 1 modus-gebundenes
+@test "fixture: der reale Satz liefert genau 23 in-scope-Templates" {
+  # Die Zahl ist kein Selbstzweck: von 23 in-scope-Templates emittiert der Tool genau
+  # 11 als Singletons (inkl. der 2 Durchsetzungs-Skills und des
+  # Beobachtungs-Registers); ununemittiert bleiben 2 derivative Indexe
+  # (emit.isDerivativeIndex), 9 wiederkehrende (emit.isRecurring) und 1 modus-gebundenes
   # Register (emit.isBrownfieldOnly). Bewegt sich die Zahl, hat upstream etwas
   # hinzugefuegt oder entfernt — und die Aufzaehlungen brauchen dann eine Entscheidung,
   # statt das Neue still als Singleton zu behandeln.
   local n
   n="$(real_paths | in_scope | wc -l | tr -d ' ')"
-  [ "$n" -eq 21 ] || {
-    echo "in-scope-Templates: $n, erwartet 21"
+  [ "$n" -eq 23 ] || {
+    echo "in-scope-Templates: $n, erwartet 23"
     real_paths | in_scope
     return 1
   }
 }
 
-@test "fixture: die sieben wiederkehrenden Templates existieren real" {
+@test "fixture: die neun wiederkehrenden Templates existieren real" {
   # emit.isRecurring zaehlt sie namentlich auf (LH-FA-02). Ab 0.8.0 werden sie NICHT
   # emittiert, sondern aus der vendored Baseline je Artefakt kopiert (ADR-0005) —
   # verschwindet einer upstream, bricht genau dieses referenzierte Modell (der Nutzer
@@ -117,23 +117,36 @@ in_scope() {
     docs/plan/carveouts/carveout.template.md \
     docs/reviews/review-report.template.md \
     docs/plan/planning/welle-results.template.md \
-    harness/conventions/MR-NNN-titel.template.md
+    harness/conventions/MR-NNN-titel.template.md \
+    docs/plan/planning/archiv-stub-slice.template.md \
+    docs/plan/planning/archiv-stub-welle.template.md
   do
     [ -f "$REAL/$rel" ] || { echo "wiederkehrendes Template fehlt real: $rel"; return 1; }
   done
 }
 
-# kopiere_ziel liest den Ziel-Pfad aus dem Template-Hinweis einer Vorlage: im
-# fuehrenden Blockquote den ersten Backtick-Ausdruck auf .md hinter dem Wort
-# "nach" des Kopiere-Satzes.
+# ziel_ort liest den Ziel-Ort aus dem Template-Hinweis einer Vorlage: im
+# fuehrenden Blockquote den ersten Backtick-Ausdruck hinter einem der zwei Anker,
+# die den Ort EINFUEHREN.
 #
-# Die zwei Anker sitzen dort, wo der Satz den Pfad EINFUEHRT, und darauf ruht der
+#   Kopiere-Satz  — "Kopiere … nach `<pfad>.md`": das Ziel ist eine Datei. So
+#                   nennen ihn sieben der neun wiederkehrenden Vorlagen.
+#   Verbleib-Satz — "… liegen bleibt (`<verzeichnis>/`)": das Ziel ist das
+#                   Verzeichnis, in dem die Kopie liegen bleibt. So nennen ihn die
+#                   zwei Archiv-Stubs, die nirgendwohin kopiert werden.
+#
+# Beide Zweige verlangen vom gelesenen Ausdruck eine ENDUNG — .md hier, / dort.
+# Ein Backtick-Ausdruck, der kein Ort ist, ist damit kein Treffer, und ein
+# upstream umgeschriebener Ort faellt als OHNE-ZIEL auf, statt als falscher Wert
+# durchzugehen.
+#
+# Die Anker sitzen dort, wo der Satz den Ort EINFUEHRT, und darauf ruht der
 # Unterschied zwischen leer und falsch. Ein Template-Hinweis kann vor dem Ziel
 # einen zweiten Inline-Code-Ausdruck fuehren:
 #
 #   Kopiere per `git mv` nach `docs/plan/planning/<bereich>/observations.md`
 #
-# Dort ist der erste Backtick-Ausdruck hinter "Kopiere" nicht der Pfad. Wer die
+# Dort ist der erste Backtick-Ausdruck hinter "Kopiere" nicht der Ort. Wer die
 # Anker lockert, liest `git mv`, findet darin keinen Platzhalter und haelt die
 # Vorlage still fuer nicht wiederkehrend — die OHNE-ZIEL-Zeile bleibt aus, weil die
 # Extraktion ja etwas geliefert hat. Mit den Ankern liefert diese Wortstellung
@@ -147,36 +160,38 @@ in_scope() {
 #
 # Was die Anker nicht koennen: sie lesen einen SATZ, kein Datenfeld. Steht zwischen
 # "nach" und dem Ziel ein anderer Backtick-Ausdruck auf .md, liest die Extraktion
-# diesen — dann ist sie wieder falsch statt leer. Und ein Kopiere-Satz, der den
-# Pfad anders einleitet ("Kopiere in `…`"), roetet den Test, obwohl an ihm nichts
-# falsch ist. Beides ist der Preis dafuer, dass der Ziel-Pfad im Blockquote als
+# diesen — dann ist sie wieder falsch statt leer. Und ein Satz, der den Ort anders
+# einleitet ("Kopiere in `…`", "steht unter `…`"), roetet den Test, obwohl an ihm
+# nichts falsch ist. Beides ist der Preis dafuer, dass der Ort im Blockquote als
 # Prosa steht; die zweite Richtung ist die guenstigere, weil sie laut ist.
 #
 # Das `> `-Praefix faellt ZEILENWEISE weg, bevor die Zeilen zusammenlaufen. Ohne
 # das stuende es mitten im Pfad, sobald der Satz umbricht — bei
-# .harness/skills/closure-note-reviewer.template.md tut er das.
-kopiere_ziel() {
+# .harness/skills/closure-note-reviewer.template.md tut er das. Aus demselben
+# Grund laesst der Verbleib-Anker Leerraum vor der Klammer zu: bei beiden
+# Archiv-Stubs bricht der Satz genau dort um.
+ziel_ort() {
   awk '/^>/ { inb = 1; sub(/^>[ \t]?/, ""); buf = buf " " $0; next }
        inb  { exit }
        END  { print buf }' "$1" \
-    | grep -oE 'Kopiere[^`]* nach [^`]*`[^`]+\.md`' \
+    | grep -oE 'Kopiere[^`]* nach [^`]*`[^`]+\.md`|liegen bleibt[[:space:]]*\([[:space:]]*`[^`]+/`' \
     | head -1 \
     | sed 's/.*`\(.*\)`/\1/'
 }
 
 # wiederkehrend_real leitet die wiederkehrenden Vorlagen aus dem REALEN Satz ab:
-# wiederkehrend ist, wessen Ziel-Pfad einen <…>-Platzhalter fuehrt (mehr als ein
+# wiederkehrend ist, wessen Ziel-Ort einen <…>-Platzhalter fuehrt (mehr als ein
 # Ziel je Repo). Ausgegeben wird der BASENAME — emit.isRecurring schaltet auf ihm
 # (planTemplates ruft sie mit path.Base(rel)).
 #
-# Findet kopiere_ziel in einer Vorlage keinen Ziel-Pfad, gibt wiederkehrend_real
+# Findet ziel_ort in einer Vorlage keinen Ziel-Ort, gibt wiederkehrend_real
 # fuer sie die Zeile OHNE-ZIEL:<pfad> aus statt gar nichts: eine leere Ableitung
 # ist von einem "nicht wiederkehrend" nicht zu unterscheiden, die Zeile dagegen
 # faellt dem Vergleich unten auf — laut statt still.
 wiederkehrend_real() {
   local rel ziel
   while read -r rel; do
-    ziel="$(kopiere_ziel "$REAL/$rel")"
+    ziel="$(ziel_ort "$REAL/$rel")"
     if [ -z "$ziel" ]; then
       echo "OHNE-ZIEL:$rel"
     else
@@ -202,10 +217,11 @@ wiederkehrend_code() {
 # realen Satz statt gegen die Fixture.
 #
 # Was ohne ihn durchginge: ein Baseline-Bump, der in einem Template-Hinweis den
-# Ziel-Pfad von fest auf platzhalterhaltig aendert (oder umgekehrt), laesst
+# Ziel-Ort von fest auf platzhalterhaltig aendert (oder umgekehrt), laesst
 # Datei-Bestand und in-scope-Zahl unberuehrt — die zwei Achsen oben bleiben gruen,
-# und der Emitter liefe still gegen seine eigene Definition. Der Fall
-# test/mutations/219 faehrt genau das.
+# und der Emitter liefe still gegen seine eigene Definition. Die Faelle
+# test/mutations/219 (Kopiere-Satz) und test/mutations/224 (Verbleib-Satz) fahren
+# genau das, je an einer der zwei Satzformen.
 #
 # GRENZE: verglichen werden BASENAMEN, weil emit.isRecurring auf dem Basenamen
 # schaltet (internal/emit/templates.go ruft isRecurring(path.Base(rel))). Vier
@@ -235,12 +251,12 @@ wiederkehrend_code() {
   diff <(printf '%s\n' "$real") <(printf '%s\n' "$code") || {
     echo "DRIFT: emit.isRecurring und die Ziel-Pfade des realen Satzes sagen Verschiedenes."
     echo "  '<' nur aus dem realen Satz abgeleitet, '>' nur in der Aufzaehlung."
-    echo "  Eine Zeile OHNE-ZIEL:<pfad> heisst: kopiere_ziel findet in dieser Vorlage"
-    echo "  keinen Ziel-Pfad — der Kopiere-Satz fehlt, oder er fuehrt den Pfad in einer"
-    echo "  Wortstellung, die kopiere_ziel nicht liest. Die Ableitung steht fuer diese"
-    echo "  Vorlage dann ohne Grundlage da."
+    echo "  Eine Zeile OHNE-ZIEL:<pfad> heisst: ziel_ort findet in dieser Vorlage"
+    echo "  keinen Ziel-Ort — Kopiere- wie Verbleib-Satz fehlen, oder einer fuehrt den"
+    echo "  Ort in einer Wortstellung, die ziel_ort nicht liest. Die Ableitung steht"
+    echo "  fuer diese Vorlage dann ohne Grundlage da."
     echo "  Ein Treffer links ist die Frage: ist die Vorlage jetzt wiederkehrend"
-    echo "  (Eintrag in emit.isRecurring) oder hat upstream ihren Ziel-Pfad geaendert?"
+    echo "  (Eintrag in emit.isRecurring) oder hat upstream ihren Ziel-Ort geaendert?"
     return 1
   }
 }

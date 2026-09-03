@@ -9,7 +9,7 @@
 # steht trotzdem nicht in seiner Liste.
 #
 # Ohne diesen Waechter faellt das durch jede Masche: der Datei-Bestand ist
-# unveraendert, die in-scope-Zahl bleibt 21, courseSet() bleibt deckungsgleich, und
+# unveraendert, die in-scope-Zahl bleibt unberuehrt, courseSet() bleibt deckungsgleich, und
 # die go-test-Stufe sieht .harness/ gar nicht (.dockerignore).
 # Der Emitter liefe still gegen seine eigene Definition — die Klasse "Baseline
 # gebumpt, Klassifikation nicht nachgezogen", deren strukturelle Abschaffung der

@@ -61,6 +61,11 @@ func courseSet() fs.FS {
 		// je Adaption (emit.isRecurring nennt die Ziel-Pfade beider)
 		"docs/plan/planning/welle-results.template.md": f(hint + body),
 		"harness/conventions/MR-NNN-titel.template.md": f(hint + body),
+		// ebenfalls wiederkehrend, nur ohne Kopiere-Satz: die Archiv-Stubs bleiben
+		// je archiviertem Slice bzw. Welle-Plan unter done/<welle-id>/ liegen
+		// (emit.isRecurring, Verbleib-Satz)
+		"docs/plan/planning/archiv-stub-slice.template.md": f(hint + body),
+		"docs/plan/planning/archiv-stub-welle.template.md": f(hint + body),
 		// in scope, aber modus-gebunden: das Reconciliation-Register braucht nur ein
 		// Repo aus dem Brownfield-Bootstrap (emit.isBrownfieldOnly)
 		"docs/plan/planning/reconciliation.template.md": f(hint + body),
@@ -219,6 +224,8 @@ func TestTemplates_RecurringNichtEmittiert(t *testing.T) {
 		"docs/reviews/review-report.template.md",
 		"docs/plan/planning/welle-results.template.md",
 		"harness/conventions/MR-NNN-titel.template.md",
+		"docs/plan/planning/archiv-stub-slice.template.md",
+		"docs/plan/planning/archiv-stub-welle.template.md",
 		// transformierte .md-Form (falls die isRecurring-Weiche auf Singleton faellt)
 		"docs/plan/adr/NNNN-titel.md",
 		"docs/plan/planning/slice.md",
@@ -227,6 +234,8 @@ func TestTemplates_RecurringNichtEmittiert(t *testing.T) {
 		"docs/reviews/review-report.md",
 		"docs/plan/planning/welle-results.md",
 		"harness/conventions/MR-NNN-titel.md",
+		"docs/plan/planning/archiv-stub-slice.md",
+		"docs/plan/planning/archiv-stub-welle.md",
 	} {
 		if _, err := os.Stat(filepath.Join(dir, rel)); err == nil {
 			t.Errorf("wiederkehrendes Template emittiert (darf nicht, 0.8.0): %s", rel)

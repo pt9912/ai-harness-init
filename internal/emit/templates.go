@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// isRecurring markiert die sieben wiederkehrenden Templates (LH-FA-02, ab 0.8.0):
+// isRecurring markiert die neun wiederkehrenden Templates (LH-FA-02, ab 0.8.0):
 // sie werden NICHT (mehr) emittiert. Sie liegen aus dem Fetch bereits vendored unter
 // .harness/baseline/<tag>/templates/ und werden von dort je Artefakt kopiert (wie im
 // Dogfood, ADR-0005) — eine co-located .md-Kopie waere Redundanz und widerspraeche
@@ -18,36 +18,54 @@ import (
 // Selbstwiderspruch, den slice-024s Voll-Smoke aufdeckte). Sie ist per .d-check.yml
 // (scan.ignore **/*.template.md) zwar gate-neutral, aber eben ueberfluessig.
 //
-// WIEDERKEHREND heisst hier: die Vorlage nennt ihren Ziel-Pfad mit einem
+// WIEDERKEHREND heisst hier: die Vorlage nennt ihren Ziel-ORT mit einem
 // Platzhalter darin, es gibt also mehr als ein Ziel je Repo. Wer einen Eintrag
-// dazunimmt, sagt genau das zu. Die zwei mit v5.12.0 dazugekommenen sagen es
-// selbst, jede in ihrem Template-Hinweis:
+// dazunimmt, sagt genau das zu. Der Ort steht im Template-Hinweis, und der Satz,
+// der ihn einfuehrt, hat zwei Formen:
 //
-//	welle-results.template.md — "Kopiere nach docs/plan/planning/done/
+//	KOPIERE-SATZ ("Kopiere … nach <pfad>.md") — so nennen ihn sieben der neun,
+//	  darunter welle-results.template.md ("… docs/plan/planning/done/
 //	  welle-<NN>-results.md": eine je Welle, neben die Welle-Plan-Datei, die
-//	  ihrerseits aus welle.template.md kommt und schon hier steht.
-//	MR-NNN-titel.template.md — "Kopiere nach harness/conventions/
-//	  MR-<NNN>-<titel>.md … Ein Eintrag je Datei": eine je Adaption, dieselbe
-//	  Form wie der ADR-Eintrag NNNN-titel.template.md.
+//	  ihrerseits aus welle.template.md kommt und schon hier steht) und
+//	  MR-NNN-titel.template.md ("… harness/conventions/MR-<NNN>-<titel>.md …
+//	  Ein Eintrag je Datei": eine je Adaption, dieselbe Form wie der ADR-Eintrag
+//	  NNNN-titel.template.md).
+//	VERBLEIB-SATZ ("… liegen bleibt (<verzeichnis>/)") — so nennen ihn die zwei
+//	  Archiv-Stubs. Sie werden nicht an einen Ort kopiert, sondern bleiben an der
+//	  Stelle des archivierten Volltexts liegen: unter
+//	  docs/plan/planning/done/<welle-id>/, je archiviertem Slice bzw. je
+//	  archiviertem Welle-Plan einer (Baseline-Regelwerk modul-06-roadmap.md
+//	  §Wellen-Closure-Prozedur, Schritt 4). Der Set-Index des vendored Satzes
+//	  (templates/README.md §Ein- vs. wiederkehrende Templates) fuehrt beide
+//	  ebenfalls unter den Wiederkehrenden — anders als bei isBrownfieldOnly folgt
+//	  die Weiche ihm hier.
 //
 // Dass die Aufzaehlung im Rumpf und diese Definition dasselbe meinen, misst
 // test/courseset-fixture.bats ("emit.isRecurring fuehrt genau die Vorlagen mit
 // Platzhalter im Ziel-Pfad") gegen den REALEN vendored Satz, nicht gegen die
-// Fixture: er liest je Vorlage den Kopiere-Satz ihres Template-Hinweises und
-// haelt die abgeleitete Menge gegen den Rumpf dieser Funktion. Ohne ihn faengt
-// kein Sensor den Fall, dass upstream einen Ziel-Pfad umschreibt und die Liste
-// hier stehen bleibt — Datei-Bestand und in-scope-Zahl bleiben dabei unberuehrt
-// (test/mutations/219 faehrt genau diese Drift).
+// Fixture: er liest je Vorlage den Ziel-Ort ihres Template-Hinweises in BEIDEN
+// Formen und haelt die abgeleitete Menge gegen den Rumpf dieser Funktion. Ohne
+// ihn faengt kein Sensor den Fall, dass upstream einen Ziel-Ort umschreibt und
+// die Liste hier stehen bleibt — Datei-Bestand und in-scope-Zahl bleiben dabei
+// unberuehrt (test/mutations/219 faehrt diese Drift am Kopiere-Satz, 224 am
+// Verbleib-Satz).
 //
 // GRENZE: die namentliche Aufzaehlung in LH-FA-02 ("ADR · slice · welle ·
-// carveout · review-report") fuehrt diese zwei nicht. Sie ist damit unvollstaendig
+// carveout · review-report") fuehrt vier der neun nicht. Sie ist damit unvollstaendig
 // — das Lastenheft ist Rang 1 der Source Precedence und wird nicht vom Emit
 // fortgeschrieben; kein Gate sieht die Luecke, weil docs-check Kennungen und Links
 // prueft, nicht die Vollstaendigkeit einer Aufzaehlung.
+//
+// KOPPLUNG, die beim Aendern zaehlt: test/mutations/215, 216 und 218 verankern
+// ihr sed-Muster auf der LETZTEN case-Zeile samt Doppelpunkt. Ein hinten
+// angehaengter Eintrag nimmt ihnen den Anker; die Mutation greift dann ins Leere
+// und der Fall meldet "keine Zaehne mehr" — laut, aber erst im Lauf von
+// make mutate, der nicht in make gates steht. Neue Eintraege gehen davor.
 func isRecurring(base string) bool {
 	switch base {
 	case "NNNN-titel.template.md", "slice.template.md", "welle.template.md",
 		"carveout.template.md", "review-report.template.md",
+		"archiv-stub-slice.template.md", "archiv-stub-welle.template.md",
 		"welle-results.template.md", "MR-NNN-titel.template.md":
 		return true
 	}

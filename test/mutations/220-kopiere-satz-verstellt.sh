@@ -7,14 +7,14 @@
 # Inline-Code-Ausdruck; der Pfad selbst bleibt Zeichen fuer Zeichen derselbe.
 #
 # Nach der Mutation ist der erste Backtick-Ausdruck hinter dem Wort "Kopiere" das
-# `git mv` und nicht der Pfad. Wer die Anker in kopiere_ziel lockert, liest ihn:
+# `git mv` und nicht der Pfad. Wer die Anker in ziel_ort lockert, liest ihn:
 # die Extraktion ist dann nicht LEER, sondern FALSCH — die OHNE-ZIEL-Zeile bleibt
 # aus (es wurde ja etwas gelesen), das gelesene Stueck traegt keinen Platzhalter,
 # und die abgeleitete Menge stimmt zufaellig weiter, weil auch der echte Ziel-Pfad
 # dieser Vorlage keinen traegt. Ein Waechter ohne die Anker bleibt dabei gruen, und
 # zwar fuer jede Vorlage, deren Hinweis so umformuliert wird.
 #
-# Rot wird es, weil kopiere_ziel hinter dem Wort "nach" liest und vom gelesenen
+# Rot wird es, weil ziel_ort hinter dem Wort "nach" liest und vom gelesenen
 # Ausdruck die .md-Endung verlangt: die mutierte Wortstellung liefert keinen
 # Treffer, wiederkehrend_real gibt die Zeile OHNE-ZIEL aus, und der diff gegen den
 # isRecurring-Rumpf faellt.
