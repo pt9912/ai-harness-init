@@ -31,9 +31,10 @@ dort neben den Kommandos, die sie ausgeben. Wie viele Mitglieder diese Welle bek
 
 **Wer den Zielstand bewegt, entscheidet diese Datei nicht:**
 [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) §*Wer den Zielstand bewegt*. Welche
-Fassung die Migrations-Prozedur dieses Sprungs stellt, ist offen und liegt beim Architect —
-gemessen wird sie in [slice-155](done/slice-155-inventur-vor-dem-schnitt.md) (§6 dort, mit der
-Übergabe).
+Fassung die Migrations-Prozedur dieses Sprungs stellt, ist gemessen
+([slice-155](done/slice-155-inventur-vor-dem-schnitt.md) §9 — beide Fassungen führen sie, der
+Abschnitt ist byte-gleich) und liegt zur Entscheidung beim Architect:
+[slice-163](open/slice-163-regierende-fassung-des-sprungs.md).
 
 ## 2. Trigger (Welle startet)
 
