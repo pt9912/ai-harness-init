@@ -1,5 +1,7 @@
 # MR-005 — Harness-Tools unter harness/tools/ (Layout-Adaption)
 
+> **ÜBERHOLT: die Abweichungs-Aussage — `harness/tools/` an der Stelle eines Baseline-Defaults `tools/harness/` → [`MR-047`](../conventions.md#mr-047--der-ort-der-ausführbaren-harness-tools-ist-keine-abweichung-mehr).** Der Ort existiert am adoptierten Stand nicht mehr; die Layout-Setzung selbst, die Ausnahme für den kompilierten Span-Emitter und der offene Reconciliation-Punkt gegenüber der emittierten Struktur binden unverändert fort.
+
 - **Datum:** 2026-06-14
 - **Geltungsbereich:** [`harness/tools/`](../../harness/tools/), [`.claude/`](../../.claude/), [`.codex/`](../../.codex/), `Makefile`, `.d-check.yml`
 - **Ersetzt-Baseline-Regel:**
