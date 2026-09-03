@@ -55,7 +55,7 @@ Closure von [slice-163](../done/slice-163-regierende-fassung-des-sprungs.md) §7
 führt ihn als *Offene Übergabe an den Planner* und nennt dort ausdrücklich
 keine Folge-Slice-ID, weil das Schneiden Planner-Arbeit ist. Der
 Trigger-Audit der Closure von
-[welle-14](../welle-14-re-baseline.md) hat sie aufgenommen.
+[welle-14](../done/welle-14-re-baseline.md) hat sie aufgenommen.
 
 ## 2. Definition of Done
 

@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-14](../welle-14-re-baseline.md).
+**Welle:** [welle-14](welle-14-re-baseline.md).
 
 **Bezug:** [`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)
 (die emittierten Anweisungssätze nennen die Schritt-Zahl),
@@ -40,7 +40,7 @@ Ausgang 2, keine Erwartungswerte,
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2).
 
-**Der Altbestand ist nicht Gegenstand** — [welle-14](../welle-14-re-baseline.md) §6 schließt ihn
+**Der Altbestand ist nicht Gegenstand** — [welle-14](welle-14-re-baseline.md) §6 schließt ihn
 aus, und die Ziel-Fassung stellt ihn selbst frei.
 
 ## 2. Definition of Done
@@ -163,7 +163,7 @@ Abweichung, also kein `MR-<NNN>`: Die Bedingung kommt aus der Quelle selbst — 
 vollständig ist, bezeugt nur der Archivierungs-Commit — deshalb gehört die Operation in ein Werkzeug
 und nicht in Handarbeit"* (`v5.18.0`, `modul-06-roadmap.md`, §Wellen-Closure-Prozedur, Schritt 4) —,
 und der Handlauf wäre die Abweichung, nicht ihr Aufschub. Für
-[welle-14](../welle-14-re-baseline.md) ist die Bedingung offen; ihre Closure verbucht **das** als
+[welle-14](welle-14-re-baseline.md) ist die Bedingung offen; ihre Closure verbucht **das** als
 Feststellung, statt den Schritt still auszulassen. Der Altbestand bleibt frei (jene §6, und die
 Quelle stellt ihn selbst frei). **Die Gegen-Lesart ist benannt:** Wer den Aufschub als Abweichung
 liest, braucht dafür einen Eintrag im Konventionsspeicher — und der gehört dem Architect
@@ -210,10 +210,10 @@ Setzung 2).
   *„fünf Schritte"* stand daneben unverändert weiter, und kein Gate sieht sie.
 - **Folge-Slices:** [slice-170](../open/slice-170-archivierungs-werkzeug.md) (Das
   Archivierungs-Werkzeug der Wellen-Closure) — ist eine Datei in `open/`, ohne Wellen-Zugehörigkeit
-  und darum kein Mitglied von [welle-14](../welle-14-re-baseline.md).
+  und darum kein Mitglied von [welle-14](welle-14-re-baseline.md).
 - **Risiken aus §6:** zwei, je genau ein Ausgang, beide **entfallen** — mit Begründung in §6 selbst.
 - **Drei Paarungen:** nicht hier fällig. Dieser Slice ist Mitglied von
-  [welle-14](../welle-14-re-baseline.md) §4; Anker, Folge-Slice und Register prüft deren Closure.
+  [welle-14](welle-14-re-baseline.md) §4; Anker, Folge-Slice und Register prüft deren Closure.
   Was sie von hier erbt: **ein** Steering-Loop-Eintrag ohne `liegt in` (gezählt, nicht verkörpert),
   **null** *weiter offen*-Ausgänge, **einen** neuen Folge-Slice, **keine** neue `BEO-<NNN>`
   (ein Zähler +1 auf `BEO-009`).

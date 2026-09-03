@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-14](../welle-14-re-baseline.md).
+**Welle:** [welle-14](welle-14-re-baseline.md).
 
 **Bezug:** [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
 (die Setzung, die diesen Durchgang vorschreibt),
@@ -173,7 +173,7 @@ drei Ausgänge:
 | Ausgang | Zahl | Fundorte |
 |---|---|---|
 | **nachgemessen** — Pfad gezogen, Kommando neu gefahren | 37 | `close-welle.md` (2) · `reviewer.md` Kopf (1) · `slice-090` (1) · `slice-091` (3) · `slice-101` (2) · `slice-112` (2) · `slice-114` (8) · `slice-134` (4) · `slice-140` (2) · `slice-151` (1) · `welle-09` (1) · `welle-11` (7) · `benutzerhandbuch.md` §Beispielablauf (1) · `spezifikation.md` §Aufnahme-Regel (1) · `internal/emit/templates.go` (1) |
-| **Tree-Operand** — spricht über die Vor-Tausch-Seite, bleibt stehen | 11 | `reviewer.md` Versions-Log 1.5.0 (2) · `CO-005` (1, datierter Gate-Lauf) · diese Datei, Titel (1) · [welle-14](../welle-14-re-baseline.md) (3: Start-Trigger, Sprung-Ausgang, Versions-Range) · `benutzerhandbuch.md` Historie 1.11 (1) · `templates.go`/`templates_test.go` Herkunfts-Marken (2) · `spezifikation.md` Historie 2026-08-28 (1) |
+| **Tree-Operand** — spricht über die Vor-Tausch-Seite, bleibt stehen | 11 | `reviewer.md` Versions-Log 1.5.0 (2) · `CO-005` (1, datierter Gate-Lauf) · diese Datei, Titel (1) · [welle-14](welle-14-re-baseline.md) (3: Start-Trigger, Sprung-Ausgang, Versions-Range) · `benutzerhandbuch.md` Historie 1.11 (1) · `templates.go`/`templates_test.go` Herkunfts-Marken (2) · `spezifikation.md` Historie 2026-08-28 (1) |
 | **entfallen** — Gegenstand verloren, mit Begründung aufgehoben | 0 als Tag-Nennung | Der Ausgang traf **eine Aussage**, nicht eine Nennung: [slice-114](../open/slice-114-jede-aussage-hat-einen-abschnitt.md) §1 las *„`## Leseordnung` fehlt"*, der Abschnitt steht in der Datei. Ihre Nennung selbst lief unter *nachgemessen* — die Adresse blieb gebraucht |
 
 **Die vier verbleibenden Treffer sind gemessen, aber nicht geschrieben:** sie liegen in
@@ -219,7 +219,7 @@ alle drei Kommandos geben gegen `v5.18.0` unverändert **1** aus —, den Schrei
   (die zitierte Zahl) stehen, und kein Gate prüft deren Wahrheitsgehalt.
 - **Folge-Slices:** [slice-169](../done/slice-169-agents-37-messstaende-gegen-v5180.md) — die vier
   `AGENTS.md`-§3.7-Treffer als Architect-Schreibakt, Mitglied von
-  [welle-14](../welle-14-re-baseline.md) §4.
+  [welle-14](welle-14-re-baseline.md) §4.
 - **Risiken aus §6:** zwei benannt, zwei mit genau einem Ausgang — beide **entfallen**. (1) *Tag
   gezogen, Zahl stehen gelassen*: Jede der 37 nachgemessenen Stellen trägt im Diff neben der
   geänderten Pfadzeile eine neu gefahrene oder ausdrücklich als unverändert bestätigte
@@ -228,7 +228,7 @@ alle drei Kommandos geben gegen `v5.18.0` unverändert **1** aus —, den Schrei
   die vier `AGENTS.md`-§3.7-Treffer sind unberührt und als Folge-Slice übergeben; berührt hat
   dieser Lauf allein §1 derselben Datei, den §3.8 nicht bindet.
 - **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice
-  ist Mitglied von [welle-14](../welle-14-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt
+  ist Mitglied von [welle-14](welle-14-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt
   die Paarungen auf Closure-Schritt 3c.
 
 ## 8. Sub-Area-Modus-Begründung

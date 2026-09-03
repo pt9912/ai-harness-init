@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-14](../welle-14-re-baseline.md).
+**Welle:** [welle-14](welle-14-re-baseline.md).
 
 **Bezug:** [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
 (die zweiklassige Template-Ablage ist die Zusage, die der Emitter hält),
@@ -174,7 +174,7 @@ je Artefakt kopiert; ein frisch gebootstrapptes Zielrepo bekommt keine co-locate
   nicht, weil `make mutate` einen zahnlosen Fall meldet; die Kopplung steht jetzt als Kommentar an
   `emit.isRecurring`. `BEO-010` (Nachzügler einer Re-Baseline) trifft die Klasse dieses Slice; ob er
   der dritte Übertritt ist, entscheidet nach §8 die Closure von
-  [welle-14](../welle-14-re-baseline.md) — hier wird der Zähler darum nicht bewegt.
+  [welle-14](welle-14-re-baseline.md) — hier wird der Zähler darum nicht bewegt.
 - **Folge-Slices:** keine. Die Lücke in
   [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) — die
   Aufzählung nennt vier der neun wiederkehrenden Vorlagen nicht — hat ihren Träger bereits in
@@ -182,7 +182,7 @@ je Artefakt kopiert; ein frisch gebootstrapptes Zielrepo bekommt keine co-locate
   zweite Adresse für dieselbe Sache.
 - **Risiken aus §6:** zwei, je genau ein Ausgang, beide **entfallen** — mit Messung in §6 selbst.
 - **Drei Paarungen:** nicht hier fällig. Dieser Slice ist Mitglied von
-  [welle-14](../welle-14-re-baseline.md) §4; Anker, Folge-Slice und Register prüft deren Closure.
+  [welle-14](welle-14-re-baseline.md) §4; Anker, Folge-Slice und Register prüft deren Closure.
   Was sie von hier erbt: **ein** Steering-Loop-Eintrag ohne `liegt in` (gezählt, nicht verkörpert),
   **null** *weiter offen*-Ausgänge, **null** neue Folge-Slices, **keine** neue `BEO-<NNN>`.
 
@@ -219,6 +219,6 @@ führt für `internal/emit/` keine engere.
 **Vorgelagert — offene Beobachtungen sichten:** `BEO-010` (Nachzügler einer Re-Baseline) trifft
 diesen Slice direkt — er **ist** ein Nachzügler; der Zähler-Stand steht im
 [Register](../observations.md), das Urteil über den dritten Übertritt fällt die Closure von
-[welle-14](../welle-14-re-baseline.md). Weitere Treffer: keine.
+[welle-14](welle-14-re-baseline.md). Weitere Treffer: keine.
 
 **alle berührten Sub-Areas GF** — der Modus-Begründungsblock entfällt damit.

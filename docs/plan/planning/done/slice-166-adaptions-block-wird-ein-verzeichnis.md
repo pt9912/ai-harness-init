@@ -268,7 +268,7 @@ dasteht.
 
 - **Ein paralleler Lauf schreibt in denselben Bereich.**
   [slice-157](../done/slice-157-adaptions-durchgang-v5180.md) (Adaptions-Durchgang gegen
-  `v5.18.0`, Mitglied von [welle-14](../welle-14-re-baseline.md)) legt neue `MR`-Einträge an und
+  `v5.18.0`, Mitglied von [welle-14](welle-14-re-baseline.md)) legt neue `MR`-Einträge an und
   ändert damit genau die Menge, die dieser Slice umzieht. Beide Reihenfolgen sind gangbar und
   kosten Verschiedenes: **157 zuerst** heißt, dieser Slice zieht mehr Einträge um; **166 zuerst**
   heißt, 157 schreibt seine neuen Einträge gleich in der Verzeichnis-Form an. **Welche zuerst

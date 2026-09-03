@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-14](../welle-14-re-baseline.md).
+**Welle:** [welle-14](welle-14-re-baseline.md).
 
 **Bezug:** [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6),
@@ -206,7 +206,7 @@ Backticks).
   → **2**), beide mit genau einem Ausgang — beide *entfallen*, je an einer Messung in §9
   aufgelöst.
 - **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice
-  ist Mitglied von [welle-14](../welle-14-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt
+  ist Mitglied von [welle-14](welle-14-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt
   die Paarungen (Anker · Folge-Slice · Register) auf Closure-Schritt 3c — **nach** dem `git mv`
   der Welle-Datei, weil sie die dort erst entstehenden Einträge prüfen —, und Modul 8
   §Rollen-Sequenz für eine Welle weist denselben Schritt dem Planner-Kontext der Welle-Closure zu.

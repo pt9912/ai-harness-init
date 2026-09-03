@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Welle:** ohne Welle — ein Sensor-Neubau, den
-[welle-14](../welle-14-re-baseline.md) §6 ausdrücklich ausschließt; die Linie trägt
+[welle-14](../done/welle-14-re-baseline.md) §6 ausdrücklich ausschließt; die Linie trägt
 [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md). Der Slice ist der **Ausgang** einer
 Katalog-Position aus [slice-155](../done/slice-155-inventur-vor-dem-schnitt.md) §9 und
 kein Mitglied der Re-Baseline-Welle.

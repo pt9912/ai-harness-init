@@ -90,7 +90,7 @@ ihrer Annahme offenhielt, ist angenommen
 
 ## 2. Trigger (Welle startet)
 
-- **[welle-14](welle-14-re-baseline.md) liegt in `done/`.** Beobachtbar ohne Rückfrage: die
+- **[welle-14](done/welle-14-re-baseline.md) liegt in `done/`.** Beobachtbar ohne Rückfrage: die
   Plan-Datei liegt neben ihrer Ergebnis-Notiz.
 - **Warum diese Reihenfolge tragend ist und nicht bloß ordentlich:** **jede** Messung dieser Welle
   läuft über den vendored Baum, und welle-14 tauscht genau ihn. Sie bewegt zudem den Gegenstand von

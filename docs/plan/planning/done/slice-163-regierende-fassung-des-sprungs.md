@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-14](../welle-14-re-baseline.md) — er löst die offene Übergabe aus deren §5.
+**Welle:** [welle-14](welle-14-re-baseline.md) — er löst die offene Übergabe aus deren §5.
 
 **Bezug:** [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) (Festlegung 3, zweiter
 Fall — die Wahl ist offen und in diesem Sprung begründet zu entscheiden; ihr erster
@@ -41,7 +41,7 @@ jene ADR nennt sie selbst als Preis ihrer Zurückhaltung.
 
 Der zweite Posten hängt daran: §Geschichte jener ADR ist mit ihrer Annahme geschlossen, jede
 weitere Bewegung des Zielstands ist eine Folge-ADR mit `Supersedes`. Die Setzung, die
-[welle-14](../welle-14-re-baseline.md) trägt, hat damit heute keinen Ort, an dem sie mit
+[welle-14](welle-14-re-baseline.md) trägt, hat damit heute keinen Ort, an dem sie mit
 Delta-Nachweis stünde.
 
 **Dieser Slice ist Architect-Arbeit** — die Wahl der normativen Quelle ist eine Architektur-Frage,
@@ -197,7 +197,7 @@ Backticks).
   (§6 nennt das Kommando), und die neue ADR trägt kein `Supersedes`
   — sie wendet deren Festlegung 3 an, statt sie zu ändern.
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — die Paarungen prüft die Closure von
-  [welle-14](../welle-14-re-baseline.md).
+  [welle-14](welle-14-re-baseline.md).
 
 ## 8. Sub-Area-Modus-Begründung
 

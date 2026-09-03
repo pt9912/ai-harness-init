@@ -8,7 +8,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 **Welle:** ohne Welle. Kein Closure-Kriterium beobachtet mehr, als die DoD
 unten belegt (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle
 braucht). Insbesondere **kein Mitglied von**
-[welle-14](../welle-14-re-baseline.md): deren §6 schließt den Adaptions-Block
+[welle-14](../done/welle-14-re-baseline.md): deren §6 schließt den Adaptions-Block
 aus, und der Gegenstand hier ist der **Inhalt** der Einträge, nicht die Form
 des Blocks.
 
@@ -90,7 +90,7 @@ Aussagen-Berührung steht hier gar nicht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [welle-14](../welle-14-re-baseline.md) liegt
+**Start** (`next` → `in-progress`): [welle-14](../done/welle-14-re-baseline.md) liegt
 in `done/`. Grund ist ordnend: [slice-161](../done/slice-161-conventions-kopf-traegt-die-ziel-form.md)
 bewegt den Kopf derselben Datei, und zwei Läufe auf demselben Artefakt
 kollidieren.

@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-14](../welle-14-re-baseline.md).
+**Welle:** [welle-14](welle-14-re-baseline.md).
 
 **Bezug:** [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
 [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
@@ -133,7 +133,7 @@ dasteht.
 
 - **Der Tausch bricht die emittierte Ebene, und `make gates` sieht es nicht** — genau das
   passierte beim letzten Baum-Tausch; sichtbar wurde es allein über `make full-smoke`, das nicht
-  in `make gates` läuft (Closure-Trigger von [welle-14](../welle-14-re-baseline.md) §3).
+  in `make gates` läuft (Closure-Trigger von [welle-14](welle-14-re-baseline.md) §3).
   — **Ausgang: entfallen**, weil die Gegenprobe gefahren ist statt vermutet: `make full-smoke`
   über dem getauschten Baum endet mit **Exit 0** und meldet *„frisch gebootstrapptes Repo faehrt
   make -j gates out-of-the-box gruen"*. Der Unterschied zum letzten Sprung ist inhaltlich und
@@ -203,11 +203,11 @@ Backticks).
   (Emitter-Klassifikation der zwei neuen Vorlagen) ·
   [slice-165](../done/slice-165-praesens-aussagen-gegen-v5180.md) (die stummen Nennungen und ihr
   [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)-Ausgang)
-  — beide Dateien im Planning-Lifecycle, beide Mitglieder von [welle-14](../welle-14-re-baseline.md) §4.
+  — beide Dateien im Planning-Lifecycle, beide Mitglieder von [welle-14](welle-14-re-baseline.md) §4.
 - **Risiken aus §6:** zwei, je genau ein Ausgang — *entfallen* (emittierte Ebene, mit
   `full-smoke`-Lauf) · *weiter offen → `BEO-017`* (eingefrorene Adresse, stumme Unterform).
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — die Paarungen prüft die Closure von
-  [welle-14](../welle-14-re-baseline.md).
+  [welle-14](welle-14-re-baseline.md).
 
 ### Was der Architect-Anteil geliefert hat ([`AGENTS.md`](../../../../AGENTS.md) §3.8)
 

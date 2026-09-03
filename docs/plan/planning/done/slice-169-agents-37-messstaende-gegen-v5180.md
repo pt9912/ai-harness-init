@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-14](../welle-14-re-baseline.md).
+**Welle:** [welle-14](welle-14-re-baseline.md).
 
 **Bezug:** [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
 (Ausgang 1 — nachgemessen),
@@ -210,7 +210,7 @@ Die Aussage des Absatzes bleibt: der Bestand ist kein Arbeitsauftrag, und der Au
   Schnitt macht der Planner, nicht dieser Lauf ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
 - **Risiken aus §6:** zwei benannt, beide **entfallen** — siehe §6.
 - **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice
-  ist Mitglied von [welle-14](../welle-14-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt
+  ist Mitglied von [welle-14](welle-14-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt
   die Paarungen auf Closure-Schritt 3c.
 
 ## 8. Sub-Area-Modus-Begründung

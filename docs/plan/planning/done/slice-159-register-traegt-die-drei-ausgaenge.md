@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-14](../welle-14-re-baseline.md).
+**Welle:** [welle-14](welle-14-re-baseline.md).
 
 **Bezug:** [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 (die Belege sind Zahlen mit Kommando),
@@ -157,7 +157,7 @@ Backticks).
   Zellen: `BEO-001` und `BEO-003` *verkörpert*, `BEO-007`, `BEO-009` und `BEO-014` *geplant*.
 - **Folge-Slices:** [slice-168](../open/slice-168-adaptions-eintraege-trennen-abweichung-von-buchfuehrung.md)
   (Die Adaptions-Einträge trennen Abweichung von Buchführung) — ist eine Datei in `open/` und der
-  *geplant*-Ausgang von `BEO-014`; **kein** Mitglied von [welle-14](../welle-14-re-baseline.md),
+  *geplant*-Ausgang von `BEO-014`; **kein** Mitglied von [welle-14](welle-14-re-baseline.md),
   deren §6 den Adaptions-Block ausschließt.
 - **Risiken aus §6:** zwei, je genau ein Ausgang — *eingetreten, im Slice geräumt* (Chronik in der
   `Stand`-Zelle, fünf Zellen) · *entfallen, mit Messung* (kein Zähler bewegt sich).

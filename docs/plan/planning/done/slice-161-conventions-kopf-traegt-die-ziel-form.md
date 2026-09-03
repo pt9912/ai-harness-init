@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-14](../welle-14-re-baseline.md).
+**Welle:** [welle-14](welle-14-re-baseline.md).
 
 **Bezug:** [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) (das ID-Schema
 dieses Repos — es entscheidet, ob die Kürzel-Spalte überhaupt geführt wird),
@@ -158,7 +158,7 @@ Backticks).
 - **Risiken aus §6:** Risiko 1 *eingetreten* → slice-162; Risiko 2 *entfallen* mit Begründung. Je
   ein Ausgang, siehe §6.
 - **Drei Paarungen:** Dieses Repo führt Wellen-Betrieb, und slice-161 ist Mitglied von
-  [welle-14](../welle-14-re-baseline.md) — geprüft werden sie von deren Closure. Vorbereitet:
+  [welle-14](welle-14-re-baseline.md) — geprüft werden sie von deren Closure. Vorbereitet:
   **Anker** — kein Feld `liegt in`, mit diesem Slice ist nichts verkörpert worden ·
   **Folge-Slice** — slice-162 liegt als Datei in `open/` · **Register** — `BEO-003` hat eine
   Registerzeile, und sie trägt vier Belege.

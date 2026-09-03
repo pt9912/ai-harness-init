@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-14](../welle-14-re-baseline.md) — der erste Slice der Welle; er liefert die
+**Welle:** [welle-14](welle-14-re-baseline.md) — der erste Slice der Welle; er liefert die
 Grundlage, auf der ihre übrigen Mitglieder geschnitten werden.
 
 **Bezug:** [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (die Baseline
@@ -39,7 +39,7 @@ ist einzeln lieferbar.
 
 **Der vollständige Form- und Regel-Diff `v5.12.0` → `v5.18.0` liegt als Katalog vor, jede
 geänderte Position hat eine Zuordnung, und daraus steht fest, welche Slices
-[welle-14](../welle-14-re-baseline.md) braucht — bevor der Rest geschnitten wird.**
+[welle-14](welle-14-re-baseline.md) braucht — bevor der Rest geschnitten wird.**
 
 Der Slice ist die Antwort auf `BEO-010` ([Register](../observations.md)):
 [welle-10](../done/welle-10-re-baseline.md) schloss mit erheblich mehr Mitgliedern, als sie
@@ -74,7 +74,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       er geht als Übergabe an den Architect (§6). *Ergebnis: zweiter Fall; Träger der Übergabe ist
       [slice-163](../done/slice-163-regierende-fassung-des-sprungs.md).*
 - [x] `make gates` grün.
-- [x] Doku-Update: [welle-14](../welle-14-re-baseline.md) §4 führt **jeden** neu geschnittenen
+- [x] Doku-Update: [welle-14](welle-14-re-baseline.md) §4 führt **jeden** neu geschnittenen
       Slice — als Tabellenzeile, wenn er Mitglied ist, sonst benannt mit dem Grund seines
       Ausschlusses (§6 jener Datei); die Roadmap trägt ihren Drift-Eintrag. Ein öffentlicher
       Vertrag ist nicht berührt. *Der Nachsatz ist eine Präzisierung dieses Punktes gegenüber dem
@@ -96,7 +96,7 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | dieser Plan, §9 | update | trägt den Katalog und die Messung |
 | `docs/plan/planning/open/` | neu | je Folge-Slice eine Datei, per `cp` aus der Vorlage |
-| [welle-14](../welle-14-re-baseline.md) §4 | update | die Slice-Tabelle der Welle bekommt ihre übrigen Zeilen |
+| [welle-14](welle-14-re-baseline.md) §4 | update | die Slice-Tabelle der Welle bekommt ihre übrigen Zeilen |
 
 Der Katalog wird am lokalen Kurs-Klon `/Development/KI/ai-harness-course` gemessen (`git diff`
 zwischen den zwei Tags). Der vendored Baum unter `.harness/baseline/` wird in diesem Slice **nicht**
@@ -107,7 +107,7 @@ angefasst — der Tausch ist ein eigener Slice, den der Katalog benennt.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [welle-14](../welle-14-re-baseline.md) ist eröffnet — ihre
+**Start** (`next` → `in-progress`): [welle-14](welle-14-re-baseline.md) ist eröffnet — ihre
 Plan-Datei liegt flach in `docs/plan/planning/`, und die Roadmap führt sie unter *Offene Wellen*.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
@@ -171,7 +171,7 @@ dasteht.
   [slice-163](../done/slice-163-regierende-fassung-des-sprungs.md).** Die Messung in §9 ergibt den
   **zweiten** Fall von Festlegung 3 (beide Fassungen führen die Prozedur, der Abschnitt ist
   byte-gleich), also ist die Wahl neu zu begründen. Beide Posten hängen an demselben Verdikt und
-  gehen darum in **einen** Slice; er ist Mitglied von [welle-14](../welle-14-re-baseline.md) und
+  gehen darum in **einen** Slice; er ist Mitglied von [welle-14](welle-14-re-baseline.md) und
   liegt vor jedem Durchgang, der ein Konformitäts-Urteil fällt.
 
 ## 7. Closure-Notiz
@@ -198,7 +198,7 @@ Backticks).
   Träger ist ein Posten, den niemand hält.
 - **Steering-Loop-Eintrag:** Der Zuschnitt einer Re-Baseline-Welle folgt seit diesem Slice einem
   gemessenen Katalog statt einer Schätzung — der Nachweis ist §9 dieses Plans, der Ertrag steht in
-  [welle-14](../welle-14-re-baseline.md) §4. Der Eintrag ist **gezählt, nicht verkörpert**: er
+  [welle-14](welle-14-re-baseline.md) §4. Der Eintrag ist **gezählt, nicht verkörpert**: er
   liegt in keinem Zielort, weil `BEO-010` bei 2× steht und die Schwelle nicht erreicht hat.
   Auslöser: `BEO-010` (slice-149, slice-148 — 2×).
 - **Beobachtungs-Register (`../observations.md`):** `BEO-018` neu angelegt (`*` (gesamtes Repo),
@@ -222,7 +222,7 @@ Backticks).
   *weiter offen → `BEO-013`* (Delta gegen Volltext) · *eingetreten → slice-163* (regierende
   Fassung).
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — die Paarungen prüft die Closure von
-  [welle-14](../welle-14-re-baseline.md). Was dieser Slice ihnen vorlegt: **Anker** — kein Feld
+  [welle-14](welle-14-re-baseline.md). Was dieser Slice ihnen vorlegt: **Anker** — kein Feld
   `liegt in`, der Steering-Loop-Eintrag ist gezählt, nicht verkörpert; **Folge-Slice** — acht
   Kennungen, alle als Datei in `open/`; **Register** — `BEO-010`, `BEO-011`, `BEO-013` und
   `BEO-016` sind hier zitiert und haben je eine Zeile, `BEO-018` ist neu und trägt mit
@@ -294,7 +294,7 @@ Zuordnungen: **D** = bindet dieses Repo (Dogfood) · **E** = bindet die emittier
 | # | Datei | Position (Stichwort) | Zu | Ausgang |
 |---|---|---|---|---|
 | 1 | `regelwerk/README.md` | Stand-Zeile: Kurs-Welle 98 · 2026-08-26 → 111 · 2026-08-31 | D | [slice-156](../done/slice-156-baum-tauschen-pins-ziehen.md) — `harness/conventions.md` §Baseline zitiert genau diese Zeile |
-| 2 | `grundlagen-begriffe.md` | neue Glossarzeile `MR-<NNN>`: Vergabestelle Adaptions-Block, Text in `harness/conventions/MR-<NNN>-<titel>.md`, Zustand = Verzeichnis-Position, **kein Status-Feld** | D | [slice-157](../done/slice-157-adaptions-durchgang-v5180.md) — die Verzeichnis-Form selbst ist per [welle-14](../welle-14-re-baseline.md) §6 ausgeschlossen (`BEO-014`) |
+| 2 | `grundlagen-begriffe.md` | neue Glossarzeile `MR-<NNN>`: Vergabestelle Adaptions-Block, Text in `harness/conventions/MR-<NNN>-<titel>.md`, Zustand = Verzeichnis-Position, **kein Status-Feld** | D | [slice-157](../done/slice-157-adaptions-durchgang-v5180.md) — die Verzeichnis-Form selbst ist per [welle-14](welle-14-re-baseline.md) §6 ausgeschlossen (`BEO-014`) |
 | 3 | `grundlagen-durchsetzungsschicht.md` | §Referenz-Implementierung → §Das vollständige Artefakt-Set; der Pfad `tools/harness/…` fällt zugunsten *„eine gemeinsame, inhaltsbasierte Nachweis-Quelle"*, der Referenz-Repo-Schluss entfällt | D | [slice-157](../done/slice-157-adaptions-durchgang-v5180.md) — [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption) ersetzt genau die gestrichene Zeile, [`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) zitiert den umbenannten Anker |
 | 4 | `grundlagen-harness-dateien.md` | Modus-Deklaration führt je Sub-Area ein **Kürzel** (kurz, GROSS, unveränderlich), sobald Kennungen ein Bereichssegment tragen; ohne Segment entfällt die Spalte | D | [slice-161](../done/slice-161-conventions-kopf-traegt-die-ziel-form.md) — die Bedingung ist zu messen, nicht anzunehmen |
 | 5 | `grundlagen-source-precedence.md` | „Das Segment wird nachgeschlagen, nicht formuliert" — das Kürzel steht in der Modus-Deklaration | D | [slice-161](../done/slice-161-conventions-kopf-traegt-die-ziel-form.md) — dieselbe Pflicht wie 4, ein Slice |
@@ -307,7 +307,7 @@ Zuordnungen: **D** = bindet dieses Repo (Dogfood) · **E** = bindet die emittier
 | 12 | `modul-10-review-harness.md` | Review-Report wandert vollständig ins Archiv, **ohne Stub**; ein Rang-Dokument, das einen einzelnen Report als Beleg verlinkt, macht ein Zeitdokument zur Quelle | D | [slice-158](../done/slice-158-archivierungs-schritt.md) |
 | 13 | `modul-13-quality-gates.md` | **neu**: §Gate und Beleg — zwei Rollen derselben Prüfung. Der tolerierende Nachsatz gehört an den Beleg-Lauf, **nie** an den Gate-Lauf; die sammelnde Stage erbt von der Quell-, nicht von der Gate-Stage | D+E | [slice-160](../done/slice-160-docker-form-hermetisch-und-beleg.md) |
 | 14 | `modul-14-docker-harness.md` | **neu**, drei Abschnitte: §Zwei Formen des Reproduzierbarkeits-Ankers (Archiv vs. Rezept) · §Besitz der Belege eines containerisierten Gates (root über schreibbarem Mount) · §Der Prüflauf ist hermetisch — kein Mount (`COPY` + `stdout`; `--no-cache-filter`, **kein** `-q`) | D+E | [slice-160](../done/slice-160-docker-form-hermetisch-und-beleg.md) |
-| 15 | `templates/.d-check.yml` | (a) **neu**: `versions`-Block (auskommentiert) — `pin-pattern`, `current-from: harness/conventions.md#baseline`, `exempt-paths`; `version-stale` statt totem Link · (b) `vcs`: `immutable-when` keilt auf die Datums-Zeile, `status-line`/`head-allow` entfallen | (a) D+E · (b) — | (a) → [slice-162](../open/slice-162-versions-sensor-baseline-pins.md) · (b) kein Folge-Slice: er gilt der Verzeichnis-Form `harness/conventions/**`, die dieses Repo nicht führt (`BEO-014`, per [welle-14](../welle-14-re-baseline.md) §6 ausgeschlossen), und die emittierte Starter-Config trug den Block nie |
+| 15 | `templates/.d-check.yml` | (a) **neu**: `versions`-Block (auskommentiert) — `pin-pattern`, `current-from: harness/conventions.md#baseline`, `exempt-paths`; `version-stale` statt totem Link · (b) `vcs`: `immutable-when` keilt auf die Datums-Zeile, `status-line`/`head-allow` entfallen | (a) D+E · (b) — | (a) → [slice-162](../open/slice-162-versions-sensor-baseline-pins.md) · (b) kein Folge-Slice: er gilt der Verzeichnis-Form `harness/conventions/**`, die dieses Repo nicht führt (`BEO-014`, per [welle-14](welle-14-re-baseline.md) §6 ausgeschlossen), und die emittierte Starter-Config trug den Block nie |
 | 16 | `templates/README.md` | zwei neue Zeilen für die Archiv-Stub-Vorlagen; die „wiederkehrend"-Liste wächst um beide | D | [slice-158](../done/slice-158-archivierungs-schritt.md) — derivativ zu Position 10 (d), keine eigene Arbeit |
 | 17 | `templates/docs/plan/planning/archiv-stub-slice.template.md` | **NEU** — Stub an der Stelle des archivierten Slice-Volltexts; keine Abschnittsüberschriften, `Welle:` + `Archiviert mit:` + `Hervorgegangen:` | D | [slice-158](../done/slice-158-archivierungs-schritt.md) |
 | 18 | `templates/docs/plan/planning/archiv-stub-welle.template.md` | **NEU** — Stub an der Stelle des archivierten Welle-Plans; Zeiger auf die Ergebnisnotiz und die Zahl der archivierten Vorgänge | D | [slice-158](../done/slice-158-archivierungs-schritt.md) |
@@ -337,7 +337,7 @@ einzeln.
 [163](../done/slice-163-regierende-fassung-des-sprungs.md) (die regierende Fassung — Mitglied der
 Welle, sie blockiert jeden Durchgang mit Konformitäts-Urteil) und
 [162](../open/slice-162-versions-sensor-baseline-pins.md) (Versions-Sensor — **kein** Mitglied,
-ein Sensor-Neubau, den [welle-14](../welle-14-re-baseline.md) §6 ausschließt; er liegt in `open/`
+ein Sensor-Neubau, den [welle-14](welle-14-re-baseline.md) §6 ausschließt; er liegt in `open/`
 und ist damit verbucht, ohne die Welle zu dehnen).
 
 ### Messung nach [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 3
@@ -393,11 +393,11 @@ ein Posten, den niemand hält:
    nicht hier einzulösen:
    [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) §Verglichene Alternativen
    verwirft Option A — die Festlegung im Wellenplan zu halten — ausdrücklich. Der Plan von
-   [welle-14](../welle-14-re-baseline.md) trägt darum einen Zeiger, keine Setzung.
+   [welle-14](welle-14-re-baseline.md) trägt darum einen Zeiger, keine Setzung.
 2. **Wo die Zielstand-Setzung des Auftraggebers samt Delta-Nachweis künftig steht.** §Geschichte
    jener ADR ist mit ihrer Annahme geschlossen — sie sagt selbst, dass ab *Accepted* jede weitere
    Bewegung des Zielstands eine Folge-ADR mit `Supersedes` ist. Die Setzung, die
-   [welle-14](../welle-14-re-baseline.md) trägt (`v5.18.0` statt `v5.12.0`), hat damit heute
+   [welle-14](welle-14-re-baseline.md) trägt (`v5.18.0` statt `v5.12.0`), hat damit heute
    **keinen** Ort, an dem sie mit Delta-Nachweis stünde; dieser Katalog ist der Nachweis, nicht
    sein Gefäß.
 
