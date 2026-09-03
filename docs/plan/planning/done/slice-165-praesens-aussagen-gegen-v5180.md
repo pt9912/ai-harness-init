@@ -84,7 +84,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       am Fundort begründet, wo der Ausgang *Tree-Operand* oder *entfallen* ist. Ein pauschales
       „alle gezogen" erfüllt den Punkt nicht. **Vier Treffer tragen ihren Ausgang, aber nicht den
       Schreib-Akt** — sie liegen in [`AGENTS.md`](../../../../AGENTS.md) §3.7 und gehen als
-      [slice-169](../open/slice-169-agents-37-messstaende-gegen-v5180.md) an den Architect (§7).
+      [slice-169](../in-progress/slice-169-agents-37-messstaende-gegen-v5180.md) an den Architect (§7).
 - [x] **Keine Zahl ist mitgewandert:** wo der Ausgang *nachgemessen* lautet, ist das Kommando
       gegen den neuen Baum gefahren und die **Folgerung** gezogen, nicht die Ziffer gerundet.
       Belegt an mindestens einem Treffer, dessen Ergebnis sich bewegt hat — findet der Lauf
@@ -150,7 +150,7 @@ dasteht.
 - **Ein Teil der Treffer gehört dem Architect** ([`AGENTS.md`](../../../../AGENTS.md) §3.7/§3.8),
   und ein Planner- oder Implementer-Lauf schreibt sie im Vorbeigehen mit. — **Ausgang:**
   **entfallen** — die vier §3.7-Treffer sind unberührt und als
-  [slice-169](../open/slice-169-agents-37-messstaende-gegen-v5180.md) übergeben; berührt hat dieser
+  [slice-169](../in-progress/slice-169-agents-37-messstaende-gegen-v5180.md) übergeben; berührt hat dieser
   Lauf allein §1 derselben Datei, den §3.8 nicht bindet.
 
 ## 7. Closure-Notiz
@@ -167,7 +167,7 @@ Backticks).
 Inhalts-Commits und **vor** dem `git mv` **18** (dasselbe Kommando aus §1 mit den zwei
 zusätzlichen Ausschlüssen). Der `git mv` tauscht anschließend zwei Glieder derselben Summe: der
 Titel dieser Datei verlässt die Menge — `done/` steht im Ausschluss —, und die Zitat-Nennung in
-[slice-169](../open/slice-169-agents-37-messstaende-gegen-v5180.md) tritt ein. Die Verteilung der
+[slice-169](../in-progress/slice-169-agents-37-messstaende-gegen-v5180.md) tritt ein. Die Verteilung der
 drei Ausgänge:
 
 | Ausgang | Zahl | Fundorte |
@@ -180,7 +180,7 @@ drei Ausgänge:
 [`AGENTS.md`](../../../../AGENTS.md) §3.7, und §3 dieser Datei ist Hard Rule und damit
 Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Ihr Ausgang **nachgemessen** steht fest —
 alle drei Kommandos geben gegen `v5.18.0` unverändert **1** aus —, den Schreib-Akt trägt
-[slice-169](../open/slice-169-agents-37-messstaende-gegen-v5180.md).
+[slice-169](../in-progress/slice-169-agents-37-messstaende-gegen-v5180.md).
 
 **Closure-Kriterien (beobachtet, nicht behauptet):**
 
@@ -217,7 +217,7 @@ alle drei Kommandos geben gegen `v5.18.0` unverändert **1** aus —, den Schrei
   [`BEO-009`](../observations.md) von 5× auf **6×** erhöht, Beleg `slice-165`. Die Klasse ist
   dieselbe: ein Vorgang korrigiert die Ableitung (den Pfad) und lässt die daneben stehende Zusage
   (die zitierte Zahl) stehen, und kein Gate prüft deren Wahrheitsgehalt.
-- **Folge-Slices:** [slice-169](../open/slice-169-agents-37-messstaende-gegen-v5180.md) — die vier
+- **Folge-Slices:** [slice-169](../in-progress/slice-169-agents-37-messstaende-gegen-v5180.md) — die vier
   `AGENTS.md`-§3.7-Treffer als Architect-Schreibakt, Mitglied von
   [welle-14](../welle-14-re-baseline.md) §4.
 - **Risiken aus §6:** zwei benannt, zwei mit genau einem Ausgang — beide **entfallen**. (1) *Tag
