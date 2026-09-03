@@ -85,12 +85,27 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 | Slice | Titel | Bezug |
 |---|---|---|
 | [slice-155](in-progress/slice-155-inventur-vor-dem-schnitt.md) | Inventur vor dem Schnitt — der Form- und Regel-Diff `v5.12.0` → `v5.18.0` | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) |
+| [slice-156](open/slice-156-baum-tauschen-pins-ziehen.md) | Der vendored Baum zieht auf `v5.18.0` — Tausch und Pins | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
+| [slice-157](open/slice-157-adaptions-durchgang-v5180.md) | Adaptions-Durchgang gegen `v5.18.0` — Delta **und** Volltext | [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md), [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
+| [slice-158](open/slice-158-archivierungs-schritt.md) | Der Archivierungs-Schritt der Wellen-Closure — Entscheidung und Sechs-Schritte-Form | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren), [`ADR-0028`](../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) |
+| [slice-159](open/slice-159-register-traegt-die-drei-ausgaenge.md) | Das Beobachtungs-Register trägt die Ziel-Form — drei Ausgänge und die Vorgangs-Beleg-Regel | [`MR-016`](../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird), [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) |
+| [slice-160](open/slice-160-docker-form-hermetisch-und-beleg.md) | Die Docker-Form gegen die Ziel-Fassung — hermetischer Prüflauf und die Trennung Gate/Beleg | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0003`](../adr/0003-go-native-binaries.md) |
+| [slice-161](open/slice-161-conventions-kopf-traegt-die-ziel-form.md) | `harness/conventions.md` trägt die Ziel-Form ihres Kopfes — Stand als Version, Kürzel-Spalte | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage), [`ADR-0015`](../adr/0015-rollen-eigentum-an-norm-artefakten.md) |
+| [slice-163](open/slice-163-regierende-fassung-des-sprungs.md) | Die regierende Fassung des Sprungs — und wo eine Zielstand-Setzung künftig steht | [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md), [`ADR-0015`](../adr/0015-rollen-eigentum-an-norm-artefakten.md) |
 
-**Die Tabelle ist bei der Eröffnung unvollständig, und das ist der Zuschnitt, nicht sein Mangel.**
-`BEO-010` ([Register](observations.md)) verlangt, dass der Form-Diff vollständig vorliegt, **bevor**
-der Rest geschnitten wird; eine vorab geschätzte Mitglieder-Zahl war beim letzten Mal genau der
-Fehler. Jede spätere Zeile ist eine Umplanung und bekommt ihren Eintrag im Drift-Log der
-[Roadmap](in-progress/roadmap.md).
+**Die Zeilen 2–8 stehen seit dem Katalog** in
+[slice-155](in-progress/slice-155-inventur-vor-dem-schnitt.md) §9 — 21 gemessene Positionen, jede
+mit Zuordnung und Ausgang. Bei der Eröffnung fehlten sie, und das war der Zuschnitt und nicht sein
+Mangel: `BEO-010` ([Register](observations.md)) verlangt, dass der Form-Diff vollständig vorliegt,
+**bevor** der Rest geschnitten wird; eine vorab geschätzte Mitglieder-Zahl war beim letzten Mal
+genau der Fehler. Die Umplanung trägt das Drift-Log der [Roadmap](in-progress/roadmap.md).
+
+**Ein weiterer Slice ist aus demselben Katalog hervorgegangen und hier bewusst kein Mitglied:**
+[slice-162](open/slice-162-versions-sensor-baseline-pins.md) (Versions-Sensor gegen Tag-Drift der
+Baseline-Pins) ist ein **Sensor-Neubau**, den §6 ausschließt; die Linie trägt
+[welle-13](welle-13-regeln-bekommen-ihren-sensor.md). Er liegt in `open/` und ist damit verbucht,
+ohne die Welle zu dehnen. Dass die Slice-Tabelle einer Welle und ihre Out-of-Scope-Liste über
+dieselbe neue Datei Verschiedenes sagen, liegt als `BEO-018` im [Register](observations.md).
 
 ## 5. Abhängigkeiten
 
@@ -114,10 +129,16 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 - **Wird blockiert von: keiner.** [welle-09](welle-09-modul-15-konformitaet.md) läuft eigenständig
   weiter: `modul-15-*` steht nicht im Delta dieses Sprungs
   (`git diff --name-only v5.12.0 v5.18.0 -- lab/regelwerk` am lokalen Kurs-Klon).
-- **Offene Übergabe an den Architect:** die regierende Fassung dieses Sprungs
-  ([slice-155](in-progress/slice-155-inventur-vor-dem-schnitt.md) §6). Sie blockiert die **Eröffnung**
-  nicht — ein Diff-Katalog ist eine Messung und fällt kein Konformitäts-Urteil; sie blockiert den
-  ersten Durchgang, der eines fällt.
+- **Die Übergabe an den Architect hat einen Träger:** die regierende Fassung dieses Sprungs ist
+  gemessen ([slice-155](in-progress/slice-155-inventur-vor-dem-schnitt.md) §9 — beide Fassungen
+  führen die Prozedur, also greift der zweite Fall von
+  [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 3) und wird in
+  [slice-163](open/slice-163-regierende-fassung-des-sprungs.md) entschieden. Sie blockierte die
+  **Eröffnung** nicht — ein Diff-Katalog ist eine Messung und fällt kein Konformitäts-Urteil —,
+  und sie blockiert den ersten Durchgang, der eines fällt: darum liegt `slice-163` vor
+  [slice-157](open/slice-157-adaptions-durchgang-v5180.md),
+  [slice-160](open/slice-160-docker-form-hermetisch-und-beleg.md) und
+  [slice-161](open/slice-161-conventions-kopf-traegt-die-ziel-form.md).
 
 ## 6. Out-of-Scope für diese Welle
 
