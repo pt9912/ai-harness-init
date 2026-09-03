@@ -113,6 +113,69 @@ stehen dort.
 - `in-progress` → `open` (blockiert — Carveout?): wenn Festlegung (a) den Träger nicht auf das
   Produkt-Binär legt — dann hat dieser Slice keinen Gegenstand.
 
+**Rückführung vollzogen — `in-progress` → `next`. Grund: die Messlatte dieser Sektion ist
+überschritten.**
+
+Die zwei Messungen, mit den Kommandos dieser Sektion:
+`wc -l harness/tools/archive-welle.sh test/archive-welle.bats` → **771 + 335 = 1106**;
+`wc -l /Development/d-check/tools/archive-wave/*.go` → **1555**, davon **773** Logik
+(`ls /Development/d-check/tools/archive-wave/*.go | grep -v _test | xargs wc -l | tail -1`) und
+**782** Tests (`ls /Development/d-check/tools/archive-wave/*_test.go | xargs wc -l | tail -1`).
+
+**Der tragende Befund ist nicht die größere der zwei Zahlen, sondern dass der Port ihre
+*Vereinigung* ist.** §1 liest das Vorbild als Vorlage für den ganzen Gegenstand (*„portiert, nicht
+entworfen"*); gemessen deckt es die Hälfte, die weder `git`-Zustand noch Vorlage anfasst:
+
+- **Der `git`-Halbteil fehlt ganz.** Kein Vorbild-Modul ruft `git`:
+  `grep -lE '"git"|exec\.Command' /Development/d-check/tools/archive-wave/*.go | wc -l` → **0**.
+  Sauberkeits-Prüfung, Zwei-Commit-Trennung und explizites Staging (Abnahme-Kriterium 2 aus
+  [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md)) haben dort keinen
+  Gegenstand, ebensowenig der Hänger-Wächter (Abnahme-Kriterium 1), der über `git grep` urteilt.
+- **Die Stub-Quelle fehlt ganz.** Das Vorbild formatiert beide Stubs im Code
+  (`grep -c 'fmt\.Sprintf' /Development/d-check/tools/archive-wave/stub.go` → **2**) und liest die
+  Vorlage nie ein (`grep -c 'os\.ReadFile' /Development/d-check/tools/archive-wave/stub.go` →
+  **0**). Festlegung 3 jener ADR verlangt den `cp` aus dem vendored Baum — dieser Gegenstand ist
+  zu entwerfen, nicht zu portieren.
+- **Die Einsammel-Regel deckt eine von drei Klassen.** Das Vorbild kennt nur *mitglied*; die
+  Klassen *wellenlos* und *fremd* und die Suffix-Grenze der Report-Zuordnung (`slice-001` trifft
+  `slice-001a` nicht) stehen allein im Shell-Helfer.
+
+Extensional, weil *„hat einen Gegenstand im Vorbild"* ein Urteil ist und kein Muster: von den
+**22** Shell-Funktionen (`grep -cE '^[a-z_0-9]+\(\) *\{' harness/tools/archive-welle.sh`) haben
+diese **keinen** — `unsauber_grund`, `grep_suchraum`, `haenger_filtern`, `stub_form_ok`,
+`geschlossen_datum`, `slice_pfad_relativ`, `feld_hervorgegangen`, `templates_dir`,
+`stub_aus_vorlage`, `abbruch_nach_commit1`. Sie tragen die beiden fail-closed-Wächter, die
+Vorlagen-Quelle und die Anker-Link-Pflicht im Stub.
+
+**Die Kalibrierung ist gemessen, nicht geschätzt.** Derselbe Gegenstand hat als Shell-Helfer bei
+**1106** Zeilen **zwei** Review-Runden gebraucht (`ls docs/reviews/*slice-170*.md | wc -l` →
+**2**). Der Port liegt über der Vereinigung von 1106 und 1555 und ist in *einer* Review-Sitzung
+nicht prüfbar.
+
+**Ein zweites, unabhängiges Signal:** die Fitness-Function-Tabelle jener ADR führt **6** Zeilen
+*Geschuldet, nicht geliefert*
+(`grep -c 'Geschuldet, nicht geliefert' docs/plan/adr/0033-wellen-archivierung-als-unterkommando.md`),
+und **4** ihrer **5** Folgepflichten
+(`grep -c '^- \*\*Folgepflicht' docs/plan/adr/0033-wellen-archivierung-als-unterkommando.md` →
+**5**; die fünfte gehört [slice-174](../open/slice-174-archivierung-emittieren.md)) fallen in
+diesen einen Lauf — dazu die **7** Mutations-Fälle, die nach Festlegung 2 mitwandern
+(`grep -l 'archive-welle' test/mutations/*.sh | wc -l`).
+
+**Was die Rückführungs-Kante selbst nicht trägt — Befund für den Schnitt.** Ihr Satz *„Dann geht
+der Port als eigener Slice zurück, und die drei Zusagen bleiben hier"* lässt den verbleibenden
+Slice ohne Gegenstand: die drei Abnahme-Kriterien sind für den **neuen** Träger geschuldet und
+können vor ihm nicht bestehen — am Shell-Helfer sind sie seit
+[slice-170](../done/slice-170-archivierungs-werkzeug.md) erfüllt. Dazu bindet Festlegung 2 jener
+ADR die Ablösung des Shell-Helfers an *den Lauf, der das Unterkommando liefert* — „nicht davor und
+nicht danach". Eine Trennung *Port* / *Zusagen* gibt es damit nicht.
+
+**Die Achse, die trägt, ist Lesen gegen Schreiben** — Vorschlag als Übergabe-Artefakt, die
+Entscheidung liegt beim Planner: ein erster Slice liefert die vier reinen Gegenstände unter
+`internal/` samt einem Vorschau-Zweig, der nichts schreibt (der `-apply`-lose Pfad des Vorbilds),
+während der Shell-Helfer Träger bleibt; ein zweiter liefert den schreibenden Pfad, die zwei
+fail-closed-Wächter, die drei Abnahme-Kriterien mit ihrem roten Gegenbeispiel und die Ablösung
+samt Mutations-Fällen, Pin und Beschreibung.
+
 ## 5. Closure-Trigger
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
