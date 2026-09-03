@@ -1,4 +1,4 @@
-# Slice slice-173: `ai-harness-init archive-welle` als Unterkommando
+# Slice slice-173: Der Vorschau-Zweig von `archive-welle` — was der Lauf über den Baum sagt
 
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
 Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
@@ -18,8 +18,10 @@ hinaus steht in keinem Kriterium (Baseline-Regelwerk `modul-06-roadmap.md`
 [ADR-0003](../../adr/0003-go-native-binaries.md) (native Binaries als Vertriebsform),
 [ADR-0022](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 2
 (Fähigkeiten sind Unterkommandos **desselben** Trägers, und der Dogfood fährt denselben
-Einstiegspunkt) — die Träger-Festlegung selbst trifft
-[slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md).
+Einstiegspunkt),
+[ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) (`Proposed` mit
+Acceptance-Trigger — das Architect-Verdikt, das dieser Port als Constraint liest: Festlegung 1
+der Träger, Festlegung 2 der Zeitpunkt der Ablösung, die drei Abnahme-Kriterien).
 
 **Berührte Spec-Stellen:** `—`.
 
@@ -35,13 +37,20 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice — Schnitt nach Lieferwert, nicht nach Schichten; jeder Slice
 ist einzeln lieferbar.
 
-**Schritt 4 der Wellen-Closure läuft als Unterkommando des Produkt-Binärs statt als
-Shell-Helfer.**
+**Der Träger sagt, was eine Archivierung täte — und schreibt dabei nichts.**
 
-Die Logik wird **portiert, nicht entworfen**: `/Development/d-check/tools/archive-wave/` fährt
-dieselbe Operation gegen dasselbe `docs/plan/planning/`-Layout und trennt sie in vier Gegenstände
-mit je eigenem Test — Einsammeln, Verweis-Nachzug, Stub, Zip. Das begrenzt die Review-Fläche auf
-einen **Vergleich gegen ein benanntes Vorbild** plus das gemessene Delta, statt auf einen Entwurf.
+`ai-harness-init archive-welle --vorschau <welle>` prüft die zwei fail-closed-Bedingungen, sammelt
+die Zeitdokumente der Welle in ihren drei Klassen ein und nennt den Blast-Radius: welche Dateien
+einen Verweis auf etwas Bewegtes tragen. Das **Tun** — Move, Zip, Stub, Nachzug, zwei Commits —
+und die Ablösung des Shell-Helfers liefert
+[slice-175](../open/slice-175-archive-welle-schreibender-pfad.md).
+
+**Warum das Festlegung 2 aus
+[ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) nicht auslöst.** Jene beendet
+den Zustand *zwei Fassungen derselben Operation nebeneinander* und verlangt, dass
+`make archive-welle` auf genau einen Träger zeigt. Ein Zweig, der nichts schreibt, ist keine
+zweite Fassung der Operation; das Target bleibt unverändert beim Shell-Helfer, und der ist bis
+[slice-175](../open/slice-175-archive-welle-schreibender-pfad.md) sein einziger.
 
 ## 2. Definition of Done
 
@@ -50,29 +59,27 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **`ai-harness-init archive-welle` existiert** — Zweig im `main()`-Dispatch neben
-      `span-emit`/`span-report`, Logik unter `internal/archive/` in den vier Gegenständen des
-      Vorbilds, je mit Go-Test. **Drei Abweichungen vom Vorbild sind gemessen und umgesetzt:**
-      (i) die Kennungs-Form dieses Repos — d-checks Muster für die im Stub überlebenden Kennungen
-      verlangt nach `FA-` mindestens einen Großbuchstaben und trifft `LH-FA-<NN>` damit nicht,
-      während `LH-QA-<NN>` durchgeht; (ii) die Stub-Erzeugung nach Festlegung (c) aus
-      [slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md) — das Vorbild formatiert den
-      Stub-Text im Code; (iii) die Einsammel-Regel um die **wellenlosen** Slices seit der letzten
-      Closure, die das Vorbild in seiner `README.md` §Grenzen ausdrücklich ausschließt, während
-      der Anweisungssatz dieses Repos sie verlangt.
-- [ ] **Die drei am Shell-Helfer rot gesehenen Zusagen halten, je einmal rot gesehen** — die
-      Abnahme-Kriterien aus [slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md) DoD (2):
-      Hänger-Wächter **ohne** `docs/reviews`-Ausschluss · Sauberkeits-Prüfung deckt untrackte
-      Dateien und stagt mit expliziten Pfaden · der aufsteigende Stub-Verweis (`../<datei>.md`)
-      wird beim **Folgelauf** nachgezogen. Das Vorbild deckt die dritte konstruktiv (sein Nachzug
-      läuft rekursiv über den ganzen Baum und löst jedes Ziel relativ zur verweisenden Datei auf);
-      die ersten beiden führt es nicht — es fasst keinen `git`-Zustand an.
-- [ ] **`make archive-welle` fährt den Träger**, und der Shell-Helfer samt seinem bats-Satz folgt
-      Festlegung (b) aus [slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md) — zwei
-      Fassungen derselben Operation nebeneinander sind der Zustand, den dieser Punkt beendet.
+- [ ] **`ai-harness-init archive-welle --vorschau <welle>` sagt, was die Archivierung täte** —
+      Zweig im `main()`-Dispatch neben `span-emit`/`span-report`, Logik unter `internal/archive/`,
+      je mit Go-Test: das **Einsammeln** in den drei Klassen (*mitglied* nach dem `Welle:`-Feld ·
+      *wellenlos* seit der letzten Closure · *fremd*, bleibt liegen) samt der Suffix-Grenze der
+      Report-Zuordnung (`slice-001` trifft `slice-001a` nicht) und dem Untergrenzen-Wächter (ohne
+      ein bestehendes `done/*/archiv.zip` hat *seit der letzten Closure* keine beobachtbare
+      Untergrenze — fail-closed statt raten), dazu der **Fund** der drei Verweis-Formen
+      (eingehend `done/<datei>` · geschwister-relativ · aufsteigend `../<datei>`). Ohne
+      `--vorschau` schreibt der Zweig nichts und nennt den Grund.
+- [ ] **Die zwei lesenden Abnahme-Kriterien halten, je einmal rot gesehen** —
+      [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) Abnahme-Kriterium 1
+      (der Hänger-Wächter schließt `docs/reviews/**` **nicht** aus; rot zu sehen: den Suchraum um
+      `docs/reviews/**` verengen) und die **lesende Hälfte** von Abnahme-Kriterium 2 (die
+      Sauberkeits-Prüfung deckt **untrackte** Dateien; rot zu sehen: sie auf getrackte verengen).
+      Die schreibende Hälfte von 2 und Kriterium 3 liefert
+      [slice-175](../open/slice-175-archive-welle-schreibender-pfad.md); Folgepflicht 1 jener ADR
+      ist über **beide** Slices erfüllt und in keinem allein.
 - [ ] `make gates` grün.
-- [ ] Doku-Update: [`harness/README.md`](../../../../harness/README.md) beschreibt das Target —
-      was es prüft und was nicht, und dass es außerhalb von `make gates` steht.
+- [ ] Doku-Update: [`harness/README.md`](../../../../harness/README.md) nennt den Vorschau-Zweig,
+      wie er erreicht wird (über den Träger aus `make host-bin`) und dass `make archive-welle`
+      unverändert den Shell-Helfer fährt.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
@@ -87,10 +94,10 @@ Aussagen-Berührung steht hier gar nicht.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `internal/archive/` | neu | Einsammeln · Verweis-Nachzug · Stub · Zip, je mit Go-Test — die vier Gegenstände des Vorbilds |
-| `cmd/ai-harness-init/archive_welle.go` | neu | Unterkommando-Zweig nach dem Muster von `span_emit.go` / `span_report.go` |
-| `Makefile` | update | `archive-welle` zeigt auf den Träger statt auf den Shell-Helfer |
-| `harness/tools/archive-welle.sh`, `test/archive-welle.bats` | nach Festlegung (b) | zwei Fassungen derselben Operation driften |
+| `internal/archive/` | neu | Vorprüfung · Einsammeln · Verweis-Fund, je mit Go-Test — die lesenden Gegenstände des Vorbilds (`collect.go`, die Fund-Hälfte von `rewrite.go`) |
+| `cmd/ai-harness-init/archive_welle.go` | neu | Dispatch-Zweig nach dem Muster von `span_emit.go` / `span_report.go` |
+| `test/mutations/` | neu | je ein Zahn für die zwei Abnahme-Kriterien und die drei Einsammel-Klassen; die sieben Shell-Fälle bleiben, solange der Helfer der Träger ist |
+| [`harness/README.md`](../../../../harness/README.md) | update | wie der Vorschau-Zweig erreicht wird, und dass `make archive-welle` unverändert bleibt |
 
 ## 4. Trigger
 
@@ -98,83 +105,43 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`): [slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md)
-liegt in `done/` — Träger, Stub-Quelle, Umgang mit dem Shell-Helfer und die drei Abnahme-Kriterien
-stehen dort.
+liegt in `done/` — [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) steht als
+Architect-Verdikt und ist das Constraint dieses Ports.
+
+**Die Schnitt-Achse ist *sagen* gegen *tun*, und die zwei Hälften sind gemessen** (keine
+Erwartungswerte,
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2). Am Shell-Helfer, über die Funktions-Spannen
+(`awk '/^[a-z_0-9]+\(\) *\{/ { if(n) print n, NR-s; n=$1; sub(/\(\).*/,"",n); s=NR } END{ if(n) print n, NR-s }' harness/tools/archive-welle.sh`):
+die **7** lesenden Funktionen tragen **97** Zeilen plus die Lesephase von `main()` (**126**,
+`awk 'NR>=523 && NR<=648' harness/tools/archive-welle.sh | wc -l`), die **10** schreibenden
+**189** plus die Schreibphase (**114**, `NR>=650 && NR<=763`); die drei `rewrite_*` (**52**)
+verschmelzen Fund und Schreiben. Am Vorbild, das beide trennt:
+`wc -l /Development/d-check/tools/archive-wave/{collect,rewrite,main}.go` → **474** für das Sagen
+gegen `{archive,stub}.go` → **299** für das Tun, und `rewrite.go` trägt in **187** Zeilen genau
+**1** schreibenden Aufruf
+(`grep -c -E 'os\.WriteFile|os\.MkdirAll|os\.Rename|os\.Remove|\.Create\(' /Development/d-check/tools/archive-wave/rewrite.go`).
+Keine der zwei Hälften erreicht die Vereinigung, an der die Rückführung gemessen wurde; **welche**
+größer ist, hängt vom Maßstab ab — am Shell-Helfer das Tun, am Vorbild das Sagen.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
-- `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn Port und die drei Zusagen zusammen
-  **nicht in einer Review-Sitzung** prüfbar sind. Die Messlatte liegt vor und ist keine Schätzung
-  — `wc -l harness/tools/archive-welle.sh test/archive-welle.bats` für den Shell-Helfer, der aus
-  **einem** Durchgang drei blockierende Befunde trug, und
-  `wc -l /Development/d-check/tools/archive-wave/*.go` für das Vorbild (keine Erwartungswerte,
-  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-  Setzung 2). Dann geht der **Port** als eigener Slice zurück, und die drei Zusagen bleiben hier.
-- `in-progress` → `open` (blockiert — Carveout?): wenn Festlegung (a) den Träger nicht auf das
-  Produkt-Binär legt — dann hat dieser Slice keinen Gegenstand.
+- `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn der Verweis-**Fund** ohne den
+  Schreibvorgang nicht prüfbar ist — dann endet dieser Slice beim Einsammeln und den zwei
+  Wächtern, und der Fund geht zu
+  [slice-175](../open/slice-175-archive-welle-schreibender-pfad.md).
+- `in-progress` → `open` (blockiert — Carveout?): wenn
+  [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) ihren Acceptance-Trigger
+  nicht besteht (Reviewer-Runde mit blockierendem Befund) — dann steht die Träger-Wahl neu und
+  dieser Slice hat keinen Gegenstand.
 
-**Rückführung vollzogen — `in-progress` → `next`. Grund: die Messlatte dieser Sektion ist
-überschritten.**
-
-Die zwei Messungen, mit den Kommandos dieser Sektion:
-`wc -l harness/tools/archive-welle.sh test/archive-welle.bats` → **771 + 335 = 1106**;
-`wc -l /Development/d-check/tools/archive-wave/*.go` → **1555**, davon **773** Logik
-(`ls /Development/d-check/tools/archive-wave/*.go | grep -v _test | xargs wc -l | tail -1`) und
-**782** Tests (`ls /Development/d-check/tools/archive-wave/*_test.go | xargs wc -l | tail -1`).
-
-**Der tragende Befund ist nicht die größere der zwei Zahlen, sondern dass der Port ihre
-*Vereinigung* ist.** §1 liest das Vorbild als Vorlage für den ganzen Gegenstand (*„portiert, nicht
-entworfen"*); gemessen deckt es die Hälfte, die weder `git`-Zustand noch Vorlage anfasst:
-
-- **Der `git`-Halbteil fehlt ganz.** Kein Vorbild-Modul ruft `git`:
-  `grep -lE '"git"|exec\.Command' /Development/d-check/tools/archive-wave/*.go | wc -l` → **0**.
-  Sauberkeits-Prüfung, Zwei-Commit-Trennung und explizites Staging (Abnahme-Kriterium 2 aus
-  [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md)) haben dort keinen
-  Gegenstand, ebensowenig der Hänger-Wächter (Abnahme-Kriterium 1), der über `git grep` urteilt.
-- **Die Stub-Quelle fehlt ganz.** Das Vorbild formatiert beide Stubs im Code
-  (`grep -c 'fmt\.Sprintf' /Development/d-check/tools/archive-wave/stub.go` → **2**) und liest die
-  Vorlage nie ein (`grep -c 'os\.ReadFile' /Development/d-check/tools/archive-wave/stub.go` →
-  **0**). Festlegung 3 jener ADR verlangt den `cp` aus dem vendored Baum — dieser Gegenstand ist
-  zu entwerfen, nicht zu portieren.
-- **Die Einsammel-Regel deckt eine von drei Klassen.** Das Vorbild kennt nur *mitglied*; die
-  Klassen *wellenlos* und *fremd* und die Suffix-Grenze der Report-Zuordnung (`slice-001` trifft
-  `slice-001a` nicht) stehen allein im Shell-Helfer.
-
-Extensional, weil *„hat einen Gegenstand im Vorbild"* ein Urteil ist und kein Muster: von den
-**22** Shell-Funktionen (`grep -cE '^[a-z_0-9]+\(\) *\{' harness/tools/archive-welle.sh`) haben
-diese **keinen** — `unsauber_grund`, `grep_suchraum`, `haenger_filtern`, `stub_form_ok`,
-`geschlossen_datum`, `slice_pfad_relativ`, `feld_hervorgegangen`, `templates_dir`,
-`stub_aus_vorlage`, `abbruch_nach_commit1`. Sie tragen die beiden fail-closed-Wächter, die
-Vorlagen-Quelle und die Anker-Link-Pflicht im Stub.
-
-**Die Kalibrierung ist gemessen, nicht geschätzt.** Derselbe Gegenstand hat als Shell-Helfer bei
-**1106** Zeilen **zwei** Review-Runden gebraucht (`ls docs/reviews/*slice-170*.md | wc -l` →
-**2**). Der Port liegt über der Vereinigung von 1106 und 1555 und ist in *einer* Review-Sitzung
-nicht prüfbar.
-
-**Ein zweites, unabhängiges Signal:** die Fitness-Function-Tabelle jener ADR führt **6** Zeilen
-*Geschuldet, nicht geliefert*
-(`grep -c 'Geschuldet, nicht geliefert' docs/plan/adr/0033-wellen-archivierung-als-unterkommando.md`),
-und **4** ihrer **5** Folgepflichten
-(`grep -c '^- \*\*Folgepflicht' docs/plan/adr/0033-wellen-archivierung-als-unterkommando.md` →
-**5**; die fünfte gehört [slice-174](../open/slice-174-archivierung-emittieren.md)) fallen in
-diesen einen Lauf — dazu die **7** Mutations-Fälle, die nach Festlegung 2 mitwandern
-(`grep -l 'archive-welle' test/mutations/*.sh | wc -l`).
-
-**Was die Rückführungs-Kante selbst nicht trägt — Befund für den Schnitt.** Ihr Satz *„Dann geht
-der Port als eigener Slice zurück, und die drei Zusagen bleiben hier"* lässt den verbleibenden
-Slice ohne Gegenstand: die drei Abnahme-Kriterien sind für den **neuen** Träger geschuldet und
-können vor ihm nicht bestehen — am Shell-Helfer sind sie seit
-[slice-170](../done/slice-170-archivierungs-werkzeug.md) erfüllt. Dazu bindet Festlegung 2 jener
-ADR die Ablösung des Shell-Helfers an *den Lauf, der das Unterkommando liefert* — „nicht davor und
-nicht danach". Eine Trennung *Port* / *Zusagen* gibt es damit nicht.
-
-**Die Achse, die trägt, ist Lesen gegen Schreiben** — Vorschlag als Übergabe-Artefakt, die
-Entscheidung liegt beim Planner: ein erster Slice liefert die vier reinen Gegenstände unter
-`internal/` samt einem Vorschau-Zweig, der nichts schreibt (der `-apply`-lose Pfad des Vorbilds),
-während der Shell-Helfer Träger bleibt; ein zweiter liefert den schreibenden Pfad, die zwei
-fail-closed-Wächter, die drei Abnahme-Kriterien mit ihrem roten Gegenbeispiel und die Ablösung
-samt Mutations-Fällen, Pin und Beschreibung.
+**Was die Achse *Port / Zusagen* nicht trägt**, und warum sie hier nicht steht: die drei
+Abnahme-Kriterien sind für den **neuen** Träger geschuldet und können vor ihm nicht bestehen; am
+Shell-Helfer sind sie seit [slice-170](../done/slice-170-archivierungs-werkzeug.md) erfüllt. Dazu
+bindet Festlegung 2 der [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) die
+Ablösung an *den Lauf, der das Unterkommando liefert* — „nicht davor und nicht danach". Ein
+dritter Slice allein für die Ablösung ist damit ausgeschlossen; sie liegt bei
+[slice-175](../open/slice-175-archive-welle-schreibender-pfad.md).
 
 ## 5. Closure-Trigger
 
@@ -182,8 +149,10 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Closure- und Lerneintrag-Regeln — zwei beobachtbare Kriterien **und** ein
 Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
-DoD vollständig; ein Probelauf über eine geschlossene Welle dieses Repos ist gefahren und sein
-Ergebnis genannt; `make gates` grün; Closure-Notiz mit Steering-Loop-Lerneintrag.
+DoD vollständig; ein Vorschau-Lauf über eine geschlossene Welle dieses Repos ist gefahren und
+seine vier Zahlen (mitglied · wellenlos · fremd · Reports) gegen die des Shell-Helfers gehalten —
+er gibt dieselben aus, und eine Abweichung ist ein Befund, kein Rauschen; `make gates` grün;
+Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 6. Risiken und offene Punkte
 
@@ -195,29 +164,23 @@ dasteht.
 - **Ein Port erbt die Grenzen des Vorbilds.** Dessen `README.md` §Grenzen nennt selbst, dass ein
   Verzeichnis-Präfix-Verweis aus einer **Nicht-Wurzel**-Datei still übersehen statt gemeldet wird
   — dieselbe Klasse, die `BEO-003` im [Register](../observations.md) als *eingehende Hälfte der
-  präfixlosen Form* führt (4×, verkörpert in `make slice-mv` mit benannter Grenze). Was der Port
-  nicht deckt, gehört benannt statt geerbt. — **Ausgang:** <eingetreten: CO-NNN / slice-NNN |
-  entfallen: Grund | weiter offen: → BEO-NNN im Register>
-- **Ob zwei Läufe dasselbe Archiv liefern, ist am Vorbild ungemessen.** Der Shell-Helfer belegte
-  die Eigenschaft über einen Tree-Operanden, dessen Eintrags-Zeitstempel aus der Commit-Zeit
-  kommen; das Vorbild schreibt das Zip aus der Standardbibliothek und setzt die Zeit anders. Kein
-  Gate liest in ein Zip hinein — was ein zweiter Lauf belegt, ist zu **messen**, nicht zu
-  übernehmen. — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen: Grund | weiter offen:
-  → BEO-NNN im Register>
-- **Der Port nimmt Zusagen aus dem Kopf des Shell-Helfers mit, deren Ableitung er ändert** —
-  genau die Klasse `BEO-009` im [Register](../observations.md) (8×, geplant): ein Fix korrigiert
-  die Ableitung und lässt die daneben stehende Zusage unverändert stehen. Betroffen sind die
-  Grenzen-Liste im Skriptkopf und die Beschreibung in
-  [`harness/README.md`](../../../../harness/README.md). — **Ausgang:** <eingetreten: CO-NNN /
-  slice-NNN | entfallen: Grund | weiter offen: → BEO-NNN im Register>
-- **Zwei offene LOW des Vorbilds wandern wortgleich in den Port, wenn sie niemand benennt.** Die
-  zweite Review-Runde von [slice-170](../done/slice-170-archivierungs-werkzeug.md) ließ sie
-  stehen: `titel_von` lässt bei der H1-Form `# Slice <NNN>: T` die Nummer im Titel stehen, obwohl
-  der Kommentar daneben zusagt, eine Zeile ohne Kennung bleibe ganz stehen; `unsauber_grund` zählt
-  Zeilen aus `git status --porcelain` und nennt sie „Datei(en)", während eine Zeile ein untracktes
-  Verzeichnis sein kann. Die Klassen liegen als `BEO-025` und `BEO-026` im
-  [Register](../observations.md). — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen:
-  Grund | weiter offen: → BEO-NNN im Register>
+  präfixlosen Form* führt (5×, verkörpert in `make slice-mv` mit benannter Grenze). Der
+  Verweis-**Fund** dieses Slice ist genau die Stelle, an der die Grenze sichtbar wird: was er
+  nicht meldet, wandert ungesehen durch [slice-175](../open/slice-175-archive-welle-schreibender-pfad.md).
+  — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen: Grund | weiter offen: → BEO-NNN im
+  Register>
+- **`unsauber_grund` ist die Funktion, die dieser Slice portiert, und sie trägt einen offenen
+  LOW.** Sie zählt Zeilen aus `git status --porcelain` und nennt sie „Datei(en)", während eine
+  Zeile ein untracktes Verzeichnis sein kann — die Klasse `BEO-026` im
+  [Register](../observations.md) (1×, offen). Ein wortgleicher Port trägt sie weiter. —
+  **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen: Grund | weiter offen: → BEO-NNN im
+  Register>
+- **Ein Reviewer kann den Vorschau-Zweig als zweite Fassung der Operation lesen** und Festlegung 2
+  der [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) für ausgelöst halten —
+  dann müsste dieser Lauf den Shell-Helfer entfernen, ohne dessen Schreib-Hälfte zu haben. Die
+  Abgrenzung steht in §1 und hängt an einer prüfbaren Eigenschaft (der Zweig schreibt nicht,
+  `make archive-welle` bleibt unverändert), nicht an einer Absicht. — **Ausgang:** <eingetreten:
+  CO-NNN / slice-NNN | entfallen: Grund | weiter offen: → BEO-NNN im Register>
 
 ## 7. Closure-Notiz
 
@@ -257,14 +220,17 @@ reinem GF genügt der Hinweis *"alle berührten Sub-Areas GF"*; bei reinem
 Refactor ohne neue Sub-Area-Berührung entfällt er ganz. Die beiden
 *Vorgelagert*-Blöcke entfallen nie.
 
-**Vorgelagert — Sub-Area-Wahl prüfen:** Berührt sind `*` (gesamtes Repo) und `harness/tools/` —
-beide führt die Modus-Deklaration in
-[`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area);
-`cmd/` und `internal/` liegen in keiner engeren.
+**Vorgelagert — Sub-Area-Wahl prüfen:** Berührt ist `*` (gesamtes Repo) — `cmd/`, `internal/` und
+`test/mutations/` liegen in keiner engeren Sub-Area der Modus-Deklaration in
+[`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area).
+`harness/tools/` ist **nicht** mehr berührt: die Ablösung des Shell-Helfers liegt bei
+[slice-175](../open/slice-175-archive-welle-schreibender-pfad.md).
 
-**Vorgelagert — offene Beobachtungen sichten:** Zwei Treffer, beide als Risiko in §6:
-`BEO-003` (4×, verkörpert in `make slice-mv` mit ausdrücklich benannter Grenze) und `BEO-009`
-(8×, geplant). Beide stehen im [Register](../observations.md); keiner erreicht mit diesem Slice
-die Schwelle neu. Weitere Treffer: keine.
+**Vorgelagert — offene Beobachtungen sichten:** Drei Treffer im [Register](../observations.md).
+`BEO-003` (5×, verkörpert in `make slice-mv` mit benannter Grenze) und `BEO-026` (1×, offen)
+stehen als Risiko in §6. `BEO-016` (1×, offen — ein Slice-Plan trägt ein Vielfaches der Zeilenzahl
+des Schwester-Repos für dieselbe Arbeitsklasse) ist durch den Re-Cut berührt und **kein** Risiko:
+der Schnitt kürzt diesen Plan, statt ihn wachsen zu lassen. Keiner erreicht mit diesem Slice die
+Schwelle neu. Weitere Treffer: keine.
 
 **alle berührten Sub-Areas GF** — der Modus-Begründungsblock entfällt damit.
