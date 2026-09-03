@@ -47,19 +47,23 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       ([`MR-035`](../../../../harness/conventions.md#mr-035--der-automatische-claude-kontext-trägt-eine-benannte-geschlossene-modul-auswahl))
       und die `files:`-Köpfe von `test/mutations/219` und `220`. Die zwei letzten Klassen führen
       den Tag im **Pfad** und stehen in keiner Pin-Liste.
-- [ ] **Kein `v5.12.0`-Pfad bleibt im lebenden Bestand** — gemessen statt behauptet, mit dem
+- [x] **Kein `v5.12.0`-Pfad bleibt im lebenden Bestand** — gemessen statt behauptet, mit dem
       Kommando im Plan; Zeitdokumente (`docs/reviews/**`, `docs/plan/planning/done/**`) und die
       nach [`AGENTS.md`](../../../../AGENTS.md) §3.4 eingefrorenen ADRs bleiben unangetastet.
-      **Offen, und die Restmenge ist zerlegt statt pauschal benannt.** Gate-sichtbar (Markdown-Link,
+      **Getragen, und die Restmenge ist zerlegt statt pauschal benannt.** Gate-sichtbar
+      (Markdown-Link,
       `grep -cE '\]\([^)]*\.harness/baseline/v5\.12\.0/[^)]*\)' harness/conventions.md`)
-      bleiben **62**, alle in [`harness/conventions.md`](../../../../harness/conventions.md) und
+      waren **62**, alle in [`harness/conventions.md`](../../../../harness/conventions.md) und
       alle im Adaptions-Block — damit Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8), siehe
-      den nächsten Punkt; `make docs-check` meldet dieselbe Zahl als Befund-Zahl und keinen Befund
-      außerhalb dieser Datei. Stumm (kein Link, `git grep -n 'v5\.12\.0' -- ':!.harness/baseline'
-      ':!docs/reviews' ':!docs/plan/planning/done' ':!docs/plan/adr' | grep -vc ']('` → **152**)
+      den nächsten Punkt; sie sind gezogen, dasselbe Kommando gibt **0** aus und `make docs-check`
+      meldet `505 Datei(en) geprüft, 0 Befund(e)`. Stumm (kein Link,
+      `git grep -n 'v5\.12\.0' -- ':!.harness/baseline'
+      ':!docs/reviews' ':!docs/plan/planning/done' ':!docs/plan/adr' | grep -vc ']('` → **148**)
       bleibt der Bestand, den
       [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
-      regelt; sein Träger ist [slice-165](../open/slice-165-praesens-aussagen-gegen-v5180.md).
+      regelt; sein Träger ist [slice-165](../open/slice-165-praesens-aussagen-gegen-v5180.md), für
+      die **85** in dieser Datei
+      [slice-157](../open/slice-157-adaptions-durchgang-v5180.md).
       Keine Erwartungswerte
       ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
       Setzung 2). **Gezogen ist die Menge außerhalb dieser zwei:** 12 Links in
@@ -69,16 +73,16 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       einzeln gegen die Zieldatei geprüft, dazu die Substanz der zitierten Aussage; **5** Adressen
       in zwei Zeitdokumenten sind entfallen, während ihr sichtbarer Text Zeichen für Zeichen steht
       ([ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 4).
-- [ ] **Die Adoptions-Erklärung nennt den neuen Stand:**
+- [x] **Die Adoptions-Erklärung nennt den neuen Stand:**
       [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) und §Baseline
       führen `v5.18.0` samt der Regelwerk-Stand-Zeile des neuen Index. Adaptions-Block heißt
       Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8) — eigener Commit.
-- [ ] `make gates` grün.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] `make gates` grün.
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -163,15 +167,13 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-**Noch nicht geschrieben — der Slice liegt in `in-progress/`.** Was hier steht, ist der Stand des
-Tausch-Laufs; die Closure folgt, wenn DoD 2 und 3 getragen sind. Der Register-Eintrag entsteht
-**bei** der Closure und nicht davor: der Beleg ist formgebunden an eine Datei in `done/`
-(Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register, Lage-Prüfung).
-
 - **Was hat funktioniert:** Die Provenienz-Kette ist gefahren statt zugesagt — derselbe
   containerisierte Ladeweg reproduziert über `v5.12.0` den bestehenden `BASELINE_ZIP_SHA256`, und
   der vom Produkt-Binär vendorte `v5.12.0`-Baum ist byte-identisch zum bisherigen Bestand. Der
-  neue Baum entsteht damit über einen Weg, der an der alten Seite belegt ist.
+  neue Baum entsteht damit über einen Weg, der an der alten Seite belegt ist. Und der Nachzug der
+  Verweise ist **je Ziel** geprüft statt per `sed` über den Tag-String
+  ([ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md) Folgepflicht 1): 29 eindeutige Ziele
+  hinter 62 Links, 28 lösen am neuen Stand unverändert auf, eines nicht.
 - **Was ging anders als geplant:** Der Plan führt drei Pins; getragen haben den Tag **fünf**
   Klassen. Zwei davon nennen ihn im **Pfad** statt als Wert — die vier `.claude/rules/`-Symlinks
   und die `files:`-Köpfe zweier Mutations-Fälle — und keine Pin-Liste kennt sie. Und der
@@ -179,42 +181,73 @@ Tausch-Laufs; die Closure folgt, wenn DoD 2 und 3 getragen sind. Der Register-Ei
   geänderten **Position** einen Träger gegeben, nicht jedem **Konsumenten** einer Position: die
   zwei neuen Vorlagen gingen an [slice-158](../open/slice-158-archivierungs-schritt.md), während
   der Emitter sie in keiner seiner Listen führt und `test/courseset-fixture.bats` an drei Fällen
-  rot steht.
-- **Steering-Loop-Eintrag:** *(offen — wird bei der Closure geschrieben.)*
-- **Beobachtungs-Register (`../observations.md`):** *(offen — vorgesehen: `BEO-017` auf 2×
-  erhöht, Beleg `slice-156`, mit der gemessenen stummen Unterform; dazu die Frage, ob die zwei
-  Nachzügler `slice-164`/`slice-165` `BEO-010` auf 3× bringen — darüber urteilt die Closure von
-  [welle-14](../welle-14-re-baseline.md), nicht dieser Lauf.)*
+  rot steht. Beim toten Anker trennt sich zudem, was der Plan als eine Aufgabe führte: die
+  **Adresse** ist mechanisch, die **Substanz** nicht — der umbenannte Abschnitt trägt die von
+  [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption)
+  zitierte Zeile nicht mehr, und welchen der fünf Ausgänge das dem Eintrag gibt, entscheidet
+  [slice-157](../open/slice-157-adaptions-durchgang-v5180.md).
+- **Steering-Loop-Eintrag:** Sensor benannt, nicht gebaut — der **Pin-Sensor für lebende
+  Artefakte** aus [ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md) §Fitness Function
+  (Kandidat 2): *jede Zeichenkette `.harness/baseline/<X>/` in einem lebenden Artefakt erfüllt
+  `<X> == BASELINE_TAG`*. Sein Gegenbeispiel ist genau der Zustand zwischen Tausch und Nachzug,
+  und dieser Slice hat ihn zweimal durchlaufen — erst mit 62 `target-missing`, dann mit den
+  stummen Nennungen, die kein Gate sieht. Träger ist
+  [slice-162](../open/slice-162-versions-sensor-baseline-pins.md).
+  Auslöser: `BEO-017` (slice-154, slice-156 — 2×, unter der Schwelle).
+- **Beobachtungs-Register (`../observations.md`):** `BEO-017` auf 2× erhöht, Beleg `slice-156`
+  ergänzt. Die Zeile trägt jetzt die **stumme** Unterform: vier `Accepted`-ADRs nennen
+  `.harness/baseline/v5.12.0/…` als Kommando-Operanden, deren Pfad seit dem Tausch ins Leere
+  zeigt, und `codepaths.roots` der [`.d-check.yml`](../../../../.d-check.yml) ist
+  `[spec, docs, harness]` — `.harness/` liegt außerhalb, also meldet kein Gate sie.
 - **Folge-Slices:** [slice-164](../in-progress/slice-164-emitter-klassifiziert-die-zwei-neuen-vorlagen.md)
   (Emitter-Klassifikation der zwei neuen Vorlagen) ·
   [slice-165](../open/slice-165-praesens-aussagen-gegen-v5180.md) (die stummen Nennungen und ihr
   [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)-Ausgang)
-  — beide Dateien in `open/`, beide Mitglieder von [welle-14](../welle-14-re-baseline.md) §4.
+  — beide Dateien im Planning-Lifecycle, beide Mitglieder von [welle-14](../welle-14-re-baseline.md) §4.
 - **Risiken aus §6:** zwei, je genau ein Ausgang — *entfallen* (emittierte Ebene, mit
   `full-smoke`-Lauf) · *weiter offen → `BEO-017`* (eingefrorene Adresse, stumme Unterform).
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — die Paarungen prüft die Closure von
   [welle-14](../welle-14-re-baseline.md).
 
-### Offen für den Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8)
+### Was der Architect-Anteil geliefert hat ([`AGENTS.md`](../../../../AGENTS.md) §3.8)
 
 Ein eigener Commit, nur Architect-Artefakte, Rolle in der Message. Gemessen, nicht geschätzt:
 
-1. **DoD 3** — [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) und
-   §Baseline von [`harness/conventions.md`](../../../../harness/conventions.md) nennen `v5.18.0`
-   samt der Stand-Zeile des neuen Regelwerk-Index
-   (`head -20 .harness/baseline/v5.18.0/regelwerk/README.md`).
-2. **62 Markdown-Links** in derselben Datei, alle im Adaptions-Block, zeigen in den abgelösten
-   Baum. `make docs-check` → `503 Datei(en) geprüft, 62 Befund(e)`, und **jeder** Befund liegt
-   dort. **Einer der Anker ist tot und nicht bloß der Tag:**
-   `grundlagen-durchsetzungsschicht.md#referenz-implementierung` — die Überschrift heißt am neuen
-   Stand *Das vollständige Artefakt-Set* (Position 3 des Katalogs, dort
-   [slice-157](../open/slice-157-adaptions-durchgang-v5180.md) zugeordnet). Die übrigen 35 Ziele
-   lösen auf; drei davon über explizite `<a id="">`-Anker statt über die Überschrift.
+1. **DoD 3 getragen** — [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage),
+   §Baseline und §Adoptierte Konventions-Quellen von
+   [`harness/conventions.md`](../../../../harness/conventions.md) nennen `v5.18.0` samt der
+   Stand-Zeile des neuen Regelwerk-Index (**Kurs-Welle 111 · 2026-08-31**,
+   `sed -n '3p' .harness/baseline/v5.18.0/regelwerk/README.md`). Die zwei von [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) zitierten
+   Belege sind gegen den neuen Stand **nachgemessen** und stehen dort.
+2. **DoD 2, gate-sichtbare Hälfte, getragen** — alle 62 Markdown-Links dieser Datei zeigen auf
+   `v5.18.0`; `make docs-check` meldet `505 Datei(en) geprüft, 0 Befund(e)`, und im lebenden
+   Bestand bleibt kein `v5.12.0`-Link
+   (`git grep -cE '\]\([^)]*\.harness/baseline/v5\.12\.0/[^)]*\)' -- ':!docs/reviews' ':!docs/plan/planning/done' ':!docs/plan/adr'`
+   → leer). **Der eine tote Anker ist korrigiert:**
+   `grundlagen-durchsetzungsschicht.md#referenz-implementierung` heißt am neuen Stand
+   §Das vollständige Artefakt-Set; beide Nennungen
+   ([`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks),
+   [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption))
+   tragen Anker und Abschnittsnamen gemeinsam. Die von [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption) zitierte Zeile führt der neue
+   Baum **nicht** (`grep -rc 'tools/harness' .harness/baseline/v5.18.0/regelwerk/ .harness/baseline/v5.18.0/templates/`
+   → keine Nicht-Null-Zeile); das Zitat steht als Tree-Operand nach
+   [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
+   Ausgang 2, den Ausgang des Eintrags entscheidet
+   [slice-157](../open/slice-157-adaptions-durchgang-v5180.md).
+   Die **stumme** Hälfte bleibt stehen — 148 Nennungen im lebenden Bestand, davon 85 in dieser
+   Datei (`git grep -n 'v5\.12\.0' -- ':!.harness/baseline' ':!docs/reviews'
+   ':!docs/plan/planning/done' ':!docs/plan/adr' | grep -vc ']('`, dasselbe auf die Datei
+   eingeschränkt; keine Erwartungswerte,
+   [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+   Setzung 2): sie sind datierte Mess-Zeitbezüge nach
+   [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
+   und Gegenstand von [slice-157](../open/slice-157-adaptions-durchgang-v5180.md) bzw.
+   [slice-165](../open/slice-165-praesens-aussagen-gegen-v5180.md).
 3. **Der `ignore-refs`-Eintrag zu `v3.5.2`** in [`.d-check.yml`](../../../../.d-check.yml) ist von
    diesem Tausch **nicht** berührt und bleibt gültig — er nennt einen Baum, den schon der letzte
    Sprung ablöste. [ADR-0026](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md)
    §Re-Evaluierungs-Trigger sagt für den neuen abgelösten Tag ausdrücklich, dass ein Eintrag für
-   ihn von jener Entscheidung nicht gedeckt wäre; **gebraucht wird keiner** (Befund 2 ist
+   ihn von jener Entscheidung nicht gedeckt wäre; **gebraucht wird keiner** (Befund 2 war
    reparierbar, nicht eingefroren).
 
 ## 8. Sub-Area-Modus-Begründung
