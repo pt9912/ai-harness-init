@@ -152,7 +152,7 @@ Backticks).
 - **Beobachtungs-Register (`../observations.md`):** neue `BEO-021` angelegt (`*` (gesamtes Repo),
   1×, Beleg slice-157); `BEO-003` auf **3×** erhöht, Beleg slice-157 ergänzt — der `open/` →
   `in-progress/`-Move dieses Slice brach den präfixlosen Verweis in
-  [slice-165](../open/slice-165-praesens-aussagen-gegen-v5180.md), also genau die Hälfte, die
+  [slice-165](../in-progress/slice-165-praesens-aussagen-gegen-v5180.md), also genau die Hälfte, die
   `make slice-mv` als Grenze 3 offen führt. Der Lese-Schritt bei 3× steht in der Zeile: keine
   verkörperbare Regel, der Ausgang ist ein Werkzeug-Schnitt und damit Planner-Arbeit.
   `BEO-008` und `BEO-013` unverändert bei 1× (§6).
@@ -341,7 +341,7 @@ nicht.
 Die Nennungen des abgelösten Tags in den Eintrags-Dateien sind **kein** Freshness-Audit-Ausgang,
 sondern die Klasse aus
 [`MR-040`](../../../../harness/conventions.md#mr-040) (drei Ausgänge für eine Präsens-Aussage über
-den vendored Baum). Ihr Träger ist [slice-165](../open/slice-165-praesens-aussagen-gegen-v5180.md),
+den vendored Baum). Ihr Träger ist [slice-165](../in-progress/slice-165-praesens-aussagen-gegen-v5180.md),
 dessen §1 den Anteil dieses Registers ausdrücklich hierher verweist — die dortige Zahl ist am
 Index-Stand vor der Verzeichnis-Form erhoben und beim Lauf neu zu messen:
 

@@ -61,7 +61,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       ':!docs/reviews' ':!docs/plan/planning/done' ':!docs/plan/adr' | grep -vc ']('` → **148**)
       bleibt der Bestand, den
       [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
-      regelt; sein Träger ist [slice-165](../open/slice-165-praesens-aussagen-gegen-v5180.md), für
+      regelt; sein Träger ist [slice-165](../in-progress/slice-165-praesens-aussagen-gegen-v5180.md), für
       die **85** in dieser Datei
       [slice-157](../done/slice-157-adaptions-durchgang-v5180.md).
       Keine Erwartungswerte
@@ -201,7 +201,7 @@ Backticks).
   `[spec, docs, harness]` — `.harness/` liegt außerhalb, also meldet kein Gate sie.
 - **Folge-Slices:** [slice-164](../done/slice-164-emitter-klassifiziert-die-zwei-neuen-vorlagen.md)
   (Emitter-Klassifikation der zwei neuen Vorlagen) ·
-  [slice-165](../open/slice-165-praesens-aussagen-gegen-v5180.md) (die stummen Nennungen und ihr
+  [slice-165](../in-progress/slice-165-praesens-aussagen-gegen-v5180.md) (die stummen Nennungen und ihr
   [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)-Ausgang)
   — beide Dateien im Planning-Lifecycle, beide Mitglieder von [welle-14](../welle-14-re-baseline.md) §4.
 - **Risiken aus §6:** zwei, je genau ein Ausgang — *entfallen* (emittierte Ebene, mit
@@ -242,7 +242,7 @@ Ein eigener Commit, nur Architect-Artefakte, Rolle in der Message. Gemessen, nic
    Setzung 2): sie sind datierte Mess-Zeitbezüge nach
    [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
    und Gegenstand von [slice-157](../done/slice-157-adaptions-durchgang-v5180.md) bzw.
-   [slice-165](../open/slice-165-praesens-aussagen-gegen-v5180.md).
+   [slice-165](../in-progress/slice-165-praesens-aussagen-gegen-v5180.md).
 3. **Der `ignore-refs`-Eintrag zu `v3.5.2`** in [`.d-check.yml`](../../../../.d-check.yml) ist von
    diesem Tausch **nicht** berührt und bleibt gültig — er nennt einen Baum, den schon der letzte
    Sprung ablöste. [ADR-0026](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md)
