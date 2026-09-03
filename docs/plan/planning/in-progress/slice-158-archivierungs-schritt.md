@@ -32,9 +32,11 @@ ist entschieden und belegt; und wo heute *fünf* Closure-Schritte stehen, stehen
 Die neue Fassung schiebt der Wellen-Closure einen Schritt ein: Slice-Dateien, Welle-Plan und
 Review-Reports wandern nach `done/<welle-id>/archiv.zip`, an ihrer Stelle bleiben gekürzte Stubs
 (zwei neue Vorlagen), die Ergebnisnotiz bleibt vollständig und flach. Gemessen ist der Bruch, den
-das erzeugt: die Anweisungssätze dieses Repos und die emittierten führen beide *„fünf Schritte"*
-(`grep -c 'fünf' .claude/commands/close-welle.md internal/emit/templates/commands/close-welle.md`;
-keine Erwartungswerte,
+das erzeugt: die Anweisungssätze dieses Repos und die emittierten führten beide *„fünf Schritte"*
+(`git grep -c 'fünf' 470b5d3 -- .claude/commands/close-welle.md internal/emit/templates/commands/close-welle.md`
+→ je **4**; Tree-Operand nach
+[`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
+Ausgang 2, keine Erwartungswerte,
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2).
 
@@ -48,24 +50,24 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Die Entscheidung steht mit Beleg:** ab welcher Welle Schritt 4 hier läuft — oder dass er
+- [x] **Die Entscheidung steht mit Beleg:** ab welcher Welle Schritt 4 hier läuft — oder dass er
       als benannte Abweichung nicht läuft (`MR-<NNN>`). Dazu die Vorbedingung, die die Quelle
       selbst nennt: der **Geltungsbereich der vorhandenen Sensoren** ist gegen `done/*.md` geprüft,
       damit kein Sensor über den Stubs grün bleibt, ohne noch etwas zu prüfen.
-- [ ] **Sechs statt fünf:** die Closure-Schritt-Zahl und der Archivierungs-Schritt stehen in den
+- [x] **Sechs statt fünf:** die Closure-Schritt-Zahl und der Archivierungs-Schritt stehen in den
       Anweisungssätzen — Dogfood **und** emittierte Ebene. Wer sie schreiben darf, ist
       [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md); ist sie bei
       Beginn noch `Proposed`, ist das der Blocker aus §4 und keine stille Ausnahme.
-- [ ] **Die zwei Stub-Vorlagen sind erreichbar** — `archiv-stub-slice` und `archiv-stub-welle`
+- [x] **Die zwei Stub-Vorlagen sind erreichbar** — `archiv-stub-slice` und `archiv-stub-welle`
       sind wiederkehrende Artefakte und entstehen per `cp` aus dem vendored Baum
       ([`MR-041`](../../../../harness/conventions.md#mr-041--die-referenz-statt-kopie-setzung-für-ausfüll-templates-steht-jetzt-in-der-adoptierten-baseline));
       dass das gilt, ist belegt, nicht angenommen.
-- [ ] `make gates` grün.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] `make gates` grün.
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -127,10 +129,20 @@ dasteht.
 
 - **Ein Sensor auf `done/*.md` bleibt über den Stubs grün, ohne noch etwas zu prüfen** — die
   Quelle nennt diese Vorbedingung selbst; ungeprüft ist sie ein stilles Grün. — **Ausgang:**
-  offen, wird bei Closure verbucht.
+  **entfallen** — kein Sensor dieses Repos verliert eine Ebene tiefer seine Zähne, gemessen mit der
+  Sonde in §7: `.d-check.yml` scannt ab `.` ohne Ausnahme für `done/**`, und die einzige
+  glob-tragende Klasse (`matrix.classes.slice`) greift über `**` auch zwei Ebenen tief. Was der
+  Geltungsbereich **zusätzlich** einschließt — die ID-Link-Pflicht im Stub — steht als Kopplung in
+  Schritt 4 des Anweisungssatzes.
 - **Der Slice hängt an einer `Proposed`-ADR** — wer die Command-Artefakte schreiben darf, ist
   `BEO-007` im [Register](../observations.md), und die Zeile schließt erst, wenn alle drei
-  Hälften eine angenommene Quelle haben. — **Ausgang:** offen, wird bei Closure verbucht.
+  Hälften eine angenommene Quelle haben. — **Ausgang:** **entfallen** für diesen Slice:
+  [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) trägt
+  `**Status:** Accepted`
+  (`grep -c '^\*\*Status:\*\* Accepted' docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md`
+  → **1**), und der Träger [slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
+  liegt in `done/`. Die Registerzeile bleibt davon unberührt — ihre zwei anderen Hälften stehen
+  weiter offen.
 
 ## 7. Closure-Notiz
 
@@ -142,18 +154,77 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-NNN>, <slice-MMM>, <slice-KKK> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations.md`):** <neue `BEO-<NNN>` angelegt (Sub-Area, 1×, Beleg slice-NNN) | `BEO-<NNN>` auf <N>× erhöht, Beleg slice-NNN ergänzt | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-NNN (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+**Rolle:** Planner. **Datum:** 2026-09-03.
+
+**Die Entscheidung: Schritt 4 läuft in diesem Repo, und seine Start-Bedingung ist beobachtbar —
+[slice-170](../open/slice-170-archivierungs-werkzeug.md) (Archivierungs-Werkzeug) liegt in `done/`.**
+Sie steht dort, wo sie gelesen wird: in Schritt 4 der zwei Anweisungssätze. Keine benannte
+Abweichung, also kein `MR-<NNN>`: Die Bedingung kommt aus der Quelle selbst — *„Ob das Archiv
+vollständig ist, bezeugt nur der Archivierungs-Commit — deshalb gehört die Operation in ein Werkzeug
+und nicht in Handarbeit"* (`v5.18.0`, `modul-06-roadmap.md`, §Wellen-Closure-Prozedur, Schritt 4) —,
+und der Handlauf wäre die Abweichung, nicht ihr Aufschub. Für
+[welle-14](../welle-14-re-baseline.md) ist die Bedingung offen; ihre Closure verbucht **das** als
+Feststellung, statt den Schritt still auszulassen. Der Altbestand bleibt frei (jene §6, und die
+Quelle stellt ihn selbst frei). **Die Gegen-Lesart ist benannt:** Wer den Aufschub als Abweichung
+liest, braucht dafür einen Eintrag im Konventionsspeicher — und der gehört dem Architect
+([`AGENTS.md`](../../../../AGENTS.md) §3.8), nicht diesem Lauf.
+
+**Beleg 1 — Sensor-Geltungsbereich, mit rot gesehener Sonde.** Zwei Sonden-Dateien in `done/` (flach
+als Kontrolle, verschachtelt unter `done/welle-99-sonde/`) und je ein Link darauf aus
+`spec/architecture.md`: `make docs-check` meldet **beide** als `matrix-forbidden`
+(`d-check: 568 Datei(en) geprüft, 2 Befund(e)`, Exit 1) — die Klasse `slice` der
+[`.d-check.yml`](../../../../.d-check.yml) greift über `**` also auch zwei Ebenen tief, und die
+Kontrolle belegt, dass die Regel überhaupt feuert. Sonde danach entfernt. Dazu ohne Sonde:
+`scan.roots` ist `["."]` und `scan.ignore` nimmt `done/**` nicht aus; kein bats-Fall und kein
+`make`-Ziel keilt auf `docs/plan/planning/done/`
+(`grep -rln 'planning/done' test/ harness/tools/ Makefile` trifft `slice-mv.sh`, `slice-mv.bats`,
+`full-smoke-ausgang.bats` und drei Mutations-Fälle — je als Lifecycle-Logik oder Fixture-Text, nicht
+als Prüfbereich); `comment-claims` führt vier Pfad-Muster ohne Markdown. **Was der Bereich dagegen
+einschließt:** `ids.exempt-paths` nennt nur `CHANGELOG.md` und `docs/reviews/**` — die Link-Pflicht
+gilt im Stub, dessen Feld `Hervorgegangen:` Kennungen trägt. Diese Kopplung steht jetzt in Schritt 4.
+
+**Beleg 2 — die zwei Stub-Vorlagen sind erreichbar.** Sie liegen im vendored Baum und damit unter
+`make baseline-verify`
+(`grep -c 'archiv-stub' .harness/baseline/v5.18.0/SHA256SUMS` → **2**), und der Emitter führt beide
+als **wiederkehrend** (`grep -c 'archiv-stub' internal/emit/templates.go` → **1**, die `case`-Zeile
+in `isRecurring`; Verdikt und Wächter: [slice-164](../done/slice-164-emitter-klassifiziert-die-zwei-neuen-vorlagen.md)).
+Wiederkehrend heißt: nicht emittiert, je Instanz per `cp` aus dem vendored Baum
+([`MR-041`](../../../../harness/conventions.md#mr-041--die-referenz-statt-kopie-setzung-für-ausfüll-templates-steht-jetzt-in-der-adoptierten-baseline)) —
+der Workflow erreicht sie, weil Schritt 4 jetzt beide `cp`-Quellen mit vollem Pfad nennt. Keine
+Erwartungswerte ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2).
+
+- **Was hat funktioniert:** Die Sonde hat die Frage entschieden, die ein `grep` nicht entscheidet —
+  ob ein `**` zwei Ebenen trägt, sagt das Werkzeug und nicht die Konfigurationszeile. Die Kontrolle
+  daneben trennt *die Regel greift nicht* von *die Regel gibt es nicht*.
+- **Was ging anders als geplant:** Die Frage aus §1 hatte zwei Antworten im Angebot — *ab Welle X*
+  oder *benannte Abweichung* —, und beide passten nicht: Die Quelle bindet die Ausführung an ein
+  Werkzeug, das dieses Repo nicht hat. Die Antwort ist darum eine dritte Form, die der Harness
+  ohnehin führt: eine beobachtbare Start-Bedingung mit geschnittenem Träger.
+- **Steering-Loop-Eintrag:** Regel geschärft: Eine übernommene Baseline-Pflicht, die ihre Ausführung
+  an ein Werkzeug bindet, bekommt eine **beobachtbare Start-Bedingung plus Folge-Slice** — nicht
+  Handarbeit und nicht Schweigen; ist die Bedingung bei einer Closure nicht eingetreten, ist *das*
+  die Feststellung in der Results-Notiz. Steht in Schritt 4 beider Anweisungssätze.
+- **Beobachtungs-Register (`../observations.md`):** `BEO-009` auf 8× erhöht, Beleg slice-158
+  ergänzt — der Baum-Tausch bewegte die Ableitung (die Quelle führt sechs Schritte), die Zusage
+  *„fünf Schritte"* stand daneben unverändert weiter, und kein Gate sieht sie.
+- **Folge-Slices:** [slice-170](../open/slice-170-archivierungs-werkzeug.md) (Das
+  Archivierungs-Werkzeug der Wellen-Closure) — ist eine Datei in `open/`, ohne Wellen-Zugehörigkeit
+  und darum kein Mitglied von [welle-14](../welle-14-re-baseline.md).
+- **Risiken aus §6:** zwei, je genau ein Ausgang, beide **entfallen** — mit Begründung in §6 selbst.
+- **Drei Paarungen:** nicht hier fällig. Dieser Slice ist Mitglied von
+  [welle-14](../welle-14-re-baseline.md) §4; Anker, Folge-Slice und Register prüft deren Closure.
+  Was sie von hier erbt: **ein** Steering-Loop-Eintrag ohne `liegt in` (gezählt, nicht verkörpert),
+  **null** *weiter offen*-Ausgänge, **einen** neuen Folge-Slice, **keine** neue `BEO-<NNN>`
+  (ein Zähler +1 auf `BEO-009`).
+
+**Sensor-Belege dieses Laufs.** `make gates` Exit **0** (`baseline-verify: v5.18.0 OK — 53 Dateien`,
+`d-check: 567 Datei(en) geprüft, 0 Befund(e)`, `comment-claims: 47 Datei(en) geprueft, 0 Befund(e)`,
+`1..206` in der bats-Stufe, **0** `not ok`). Der Sonden-Lauf davor ist der einzige rote dieses
+Slice und war es mit Absicht: `2 Befund(e)` über **beide** Sonden. Alle Zahlen wandern mit dem Baum
+und sind keine Erwartungswerte
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2).
 
 ## 8. Sub-Area-Modus-Begründung
 

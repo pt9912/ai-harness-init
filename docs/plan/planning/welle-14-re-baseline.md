@@ -129,6 +129,15 @@ dieselbe neue Datei Verschiedenes sagen, liegt als `BEO-018` im [Register](obser
 Adaptions-Einträge trennen Abweichung von Buchführung). Er ist der *geplant*-Ausgang von `BEO-014`
 im [Register](observations.md), und `BEO-014` ist genau der Eintrag, den §6 unten ausschließt.
 
+**Kein Mitglied, und nicht aus dem Katalog:**
+[slice-170](open/slice-170-archivierungs-werkzeug.md) (das Archivierungs-Werkzeug der
+Wellen-Closure) geht aus der Closure von
+[slice-158](in-progress/slice-158-archivierungs-schritt.md) hervor und trägt dessen
+Start-Bedingung. Ein Werkzeug-Bau ist nicht der Gegenstand dieser Welle, und ihr Closure-Trigger
+verlangt ihn nicht. Was das für ihre eigene Archivierung heißt, steht in Schritt 4 des
+Anweisungssatzes: Ist die Bedingung bei der Closure nicht eingetreten, ist **das** die
+Feststellung in der Ergebnis-Notiz.
+
 ## 5. Abhängigkeiten
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
