@@ -90,7 +90,7 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 | [slice-157](done/slice-157-adaptions-durchgang-v5180.md) | Adaptions-Durchgang gegen `v5.18.0` — Delta **und** Volltext | [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md), [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | [slice-158](open/slice-158-archivierungs-schritt.md) | Der Archivierungs-Schritt der Wellen-Closure — Entscheidung und Sechs-Schritte-Form | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren), [`ADR-0028`](../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) |
 | [slice-159](done/slice-159-register-traegt-die-drei-ausgaenge.md) | Das Beobachtungs-Register trägt die Ziel-Form — drei Ausgänge und die Vorgangs-Beleg-Regel | [`MR-016`](../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird), [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) |
-| [slice-160](in-progress/slice-160-docker-form-hermetisch-und-beleg.md) | Die Docker-Form gegen die Ziel-Fassung — hermetischer Prüflauf und die Trennung Gate/Beleg | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0003`](../adr/0003-go-native-binaries.md) |
+| [slice-160](done/slice-160-docker-form-hermetisch-und-beleg.md) | Die Docker-Form gegen die Ziel-Fassung — hermetischer Prüflauf und die Trennung Gate/Beleg | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0003`](../adr/0003-go-native-binaries.md) |
 | [slice-161](done/slice-161-conventions-kopf-traegt-die-ziel-form.md) | `harness/conventions.md` trägt die Ziel-Form ihres Kopfes — Stand als Version, Kürzel-Spalte | [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage), [`ADR-0015`](../adr/0015-rollen-eigentum-an-norm-artefakten.md) |
 | [slice-163](done/slice-163-regierende-fassung-des-sprungs.md) | Die regierende Fassung des Sprungs — und wo eine Zielstand-Setzung künftig steht | [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md), [`ADR-0015`](../adr/0015-rollen-eigentum-an-norm-artefakten.md) |
 | [slice-164](done/slice-164-emitter-klassifiziert-die-zwei-neuen-vorlagen.md) | Der Emitter klassifiziert die zwei neuen Archiv-Stub-Vorlagen | [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
@@ -153,7 +153,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   **Eröffnung** nicht — ein Diff-Katalog ist eine Messung und fällt kein Konformitäts-Urteil —,
   und sie blockiert den ersten Durchgang, der eines fällt: darum liegt `slice-163` vor
   [slice-157](done/slice-157-adaptions-durchgang-v5180.md),
-  [slice-160](in-progress/slice-160-docker-form-hermetisch-und-beleg.md) und
+  [slice-160](done/slice-160-docker-form-hermetisch-und-beleg.md) und
   [slice-161](done/slice-161-conventions-kopf-traegt-die-ziel-form.md).
 
 ## 6. Out-of-Scope für diese Welle
