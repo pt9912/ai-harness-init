@@ -13,9 +13,11 @@ davon auf), [ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-origin
 Präzedenz, wie dieses Repo eine solche Lücke schließt — durch Ableitung statt Liste),
 [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) (die Form jedes Belegs unten: Tag ·
 Regelwerks-Dateiname und Abschnittsname · Zitat verbatim, in die Festlegung 3 (a) vor dem
-Accept-Übergang bringt; ihre Festlegung 4 trägt zusätzlich die Verweis-Form auf Zeitdokumente),
+Accept-Übergang bringt; ihre Festlegung 4 regelt die **Gegenrichtung** — den Verweis *in* einem
+Zeitdokument, nicht den *auf* eines),
 [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-(jede Zahl unten steht neben dem Kommando, das sie liefert, und trägt ihre Mess-Basis)
+(jede Zahl unten steht neben dem Kommando, das sie liefert; welche davon eine Ref tragen und
+welche nicht, sagt §Mess-Basis dieses Dokuments)
 
 **Schärft:** — Prozess-ADR ohne Spec-Stratum.
 
@@ -25,10 +27,21 @@ Accept-Übergang bringt; ihre Festlegung 4 trägt zusätzlich die Verweis-Form a
 
 ### Mess-Basis dieses Dokuments
 
-Jede Zahl unten ist gegen den Commit **`7485be3`** gefahren und nennt ihn im Kommando. Der Grund
-ist [ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) §Geschichte: Werte
+Jede Zahl unten über den wandernden Repo-Bestand ist gegen den Commit **`7485be3`** gefahren und
+nennt ihn im Kommando. Der Grund ist
+[ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) §Geschichte: Werte
 über einen wandernden Bestand *„bewegen sich mit jedem Commit … statt im selben Zug zu veralten, in
-dem §3.4 sie einfriert"*. Alle Baseline-Zitate sind gegen den adoptierten Stand **`v5.18.0`**
+dem §3.4 sie einfriert"*. **Zwei Zahlen sind ausgenommen, und sie können es nicht anders sein:**
+die Proben-Zählung und die Link-Zählung in §Verbatim-Proben messen **diese Datei**, die sich mit
+jeder Korrektur ändert — ihr Gegenstand ist der Text, den der Leser vor sich hat, und nicht der
+Stand einer Ref.
+
+**Dieselbe Pinnung gilt für das Beobachtungs-Register, und sie hat dort eine Grenze.** Übernommen
+sind Bezeichnung, Zähler und Belege der Zeile; die `Stand`-Zelle schreibt jede Slice-Closure fort
+und ist darum weder zitiert noch als Beleg geführt — ein Wortlaut daraus wäre in dem Moment
+eingefroren, in dem die Zeile weiterläuft.
+
+Alle Baseline-Zitate sind gegen den adoptierten Stand **`v5.18.0`**
 gehalten; die Probe steht im Anhang §Verbatim-Proben.
 
 ### Der Anlass, gemessen
@@ -134,10 +147,11 @@ Eröffnungssatz noch einmal: `plan-welle.md` — *„Dieser Command führt die *
 (Modul 9) für *einen* Slice"*. Jeder der drei Commands benennt seine ausführende Rolle selbst, an
 derselben Stelle, im selben Satzmuster.
 
-`BEO-007` selbst hält fest, dass dieses Muster in der Praxis schon gilt, ohne je entschieden worden
-zu sein: *„Umgangen, nicht gelöst: geschrieben wurde nur in Abschnitten, die die Planner-Rolle
-bereits im Titel führen."* Genau das ist die informelle Fassung der Regel, die diese ADR jetzt
-formalisiert.
+**Was `BEO-007` beiträgt, ist die Frage — nicht der Befund.** Die Registerzeile hält fest, dass für
+diese Artefakte *keine Quelle* eine schreibende Rolle benennt; dass die Praxis daneben längst
+existiert, tragen der Gründungs-Commit und die vier heute lebenden Dateien oben. Was diese ADR
+festhält, ist damit keine neue Regel, sondern die bisher nur gelebte Fassung dessen, was die
+Dateien selbst schon sagen.
 
 **Was der Commit-Bestand dazu NICHT hergibt.** Die Rollen-Präfix-Konvention in den Commit-Messages
 ist für beide Verzeichnisse zu jung, um ein Muster zu tragen — anders als bei
@@ -223,7 +237,7 @@ Skill-Datei"*, oben zitiert); diese ADR dehnt sie auf die Command-Form derselben
 Dass die drei Commands das Kriterium in ihrem eigenen Eröffnungssatz beantworten, ist **keine
 Voraussetzung** der Regel, sondern macht ihre heutige Anwendung trivial. Der Satz steht in allen
 drei Dateien an derselben Stelle — nach der Überschrift und der `Argument:`-Zeile, nicht in
-Zeile 1 (`grep -n 'Dieser Command führt die' .claude/commands/*.md` → je `:5`, **kein**
+Zeile 1 (`git grep -n 'Dieser Command führt die' 7485be3 -- .claude/commands/` → je `:5`, **kein**
 Erwartungswert). Zur
 Planner-Zuordnung der Wellen-Closure: `v5.18.0`, `modul-06-roadmap.md` §Wellen-Closure-Prozedur
 weist die Eröffnung dem Planner zu — *„Die Eröffnung ist Planner-Arbeit"* —, und `v5.18.0`,
@@ -289,12 +303,12 @@ erreicht sie nicht; und die emittierte Ebene.
 
 - **Positiv:** die Frage *„durfte dieser Lauf das schreiben?"* ist für Anweisungssätze vor
   der Änderung beantwortbar, ohne dass ein Register von Zuordnungen entsteht, das driftet.
-- **Positiv, und nur zur Hälfte:** `BEO-007` bekommt für seine **Anweisungssatz**-Hälfte einen
-  Ausgang, der nicht bloß „umgangen" (die eigene Formulierung der Beobachtung) bleibt, sondern die
-  schon gelebte Praxis als Norm festhält. **Die andere Hälfte bleibt offen** — die zwei jüngsten
-  Belege der Zeile liegen bei den Spec-Straten, für die diese ADR nichts sagt (§Kontext, §Was hier
-  NICHT entschieden ist). Wer die Zeile auf *verkörpert* setzt, ohne das zu trennen, verliert
-  genau die Beobachtung, für die der Zähler zählt.
+- **Positiv, und nur für einen Teil:** `BEO-007` bekommt für die **Anweisungssatz**-Artefakte eine
+  benannte Quelle statt einer gelebten, nirgends festgehaltenen Praxis. **Die übrigen Teile der
+  Zeile bleiben offen** — `.claude/agents/*.md` nimmt Festlegung 3 ausdrücklich aus, und die zwei
+  jüngsten Belege der Zeile liegen bei den Spec-Straten, für die diese ADR nichts sagt (§Kontext,
+  §Was hier NICHT entschieden ist). Wer die Zeile auf *verkörpert* setzt, ohne das zu trennen,
+  verliert genau die Beobachtung, für die der Zähler zählt.
 - **Positiv:** kein zusätzlicher Rollenwechsel für die Regelfälle — die ausführende Rolle pflegt ihr
   eigenes Werkzeug weiter selbst, mit der normalen Review-Prüfung (Diff gegen Plan/ADR/Hard Rules)
   als Kontrolle, statt jeder operativen Änderung ein Architect-Gate vorzuschalten.
@@ -373,8 +387,8 @@ ist der Rollen-Wechsel vor der Änderung.
 
 ## Verbatim-Proben
 
-Die Wortlaute unten belegen **neun** Baseline-Aussagen — der Konflikt-Pfad ist über zwei Fragmente
-belegt, darum sind es **zehn** Kommandos —, und jeder steht am adoptierten Stand `v5.18.0` genau
+Die Wortlaute unten belegen **zehn** Baseline-Aussagen — der Konflikt-Pfad ist über zwei Fragmente
+belegt, darum sind es **elf** Kommandos —, und jeder steht am adoptierten Stand `v5.18.0` genau
 einmal; whitespace-normalisiert geprüft, wie
 [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) Festlegung 2 *verbatim* definiert (*„der Wortlaut
 ohne Auszeichnung, Whitespace normalisiert"*). Die Ausgabe jedes Kommandos ist **1**. Die Zahl der
@@ -382,7 +396,7 @@ Proben ist selbst gemessen und **kein** Erwartungswert
 ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2):
 `awk '/^## Verbatim-Proben/,/^## Geschichte/' docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md | grep -c '^tr '`
-→ **10**.
+→ **11**.
 
 ```sh
 M8=.harness/baseline/v5.18.0/regelwerk/modul-08-agentenrollen.md
@@ -401,6 +415,7 @@ tr '\n' ' ' < $M6 | tr -s ' ' | grep -cF '**Bei 3×** wandert der Eintrag in die
 tr '\n' ' ' < $M10 | tr -s ' ' | grep -cF 'Die Aussage gehört an den zitierenden Ort, die Report-Kennung bleibt im Text'
 tr '\n' ' ' < $GB | tr -s ' ' | grep -cF 'ADR-Review-Runde abgeschlossen → bindend'
 tr '\n' ' ' < $M4 | tr -s ' ' | grep -cF 'Eine ADR mit Status `Accepted` wird nicht inhaltlich überschrieben'
+tr '\n' ' ' < $M6 | tr -s ' ' | grep -cF 'Review-Reports bekommen keinen Stub; sie haben keine Identität jenseits ihres Slice.'
 ```
 
 Der lokale Pfad steht hier als **Gegenstand der Probe**, nicht als Adresse eines Belegs — die
@@ -410,16 +425,16 @@ Datei zeigt in den vendored Baum
 (`grep -c ']([^)]*\.harness/baseline/' docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md` → **0**).
 
 **Aus demselben Grund nennt diese Datei Review-Reports bei ihrer Kennung und nie unter ihrer
-Adresse.** Ein Report ist ein Zeitdokument ohne Identität jenseits seines Slice; `v5.18.0`,
-`modul-10-review-harness.md` §Reviewer berichtet auch, was er nicht gefunden hat hält für ein
-Rang-Dokument fest: *„Die Aussage gehört an den zitierenden Ort, die Report-Kennung bleibt im
-Text."* Das ist dieselbe Trennung, die
+Adresse.** `v5.18.0`, `modul-10-review-harness.md` §Reviewer berichtet auch, was er nicht gefunden
+hat hält für ein Rang-Dokument fest: *„Die Aussage gehört an den zitierenden Ort, die
+Report-Kennung bleibt im Text."* Das ist dieselbe Trennung, die
 [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) Festlegung 4 für die Gegenrichtung zieht — dort
 verliert ein Verweis *in* einem Zeitdokument seine Adresse und behält seinen Text, hier ein Verweis
-*auf* eines. Der Grund ist derselbe wie beim vendored Baum: die Adresse verfällt (Wellen-Closure
-archiviert Review-Reports **ohne** Stub, `v5.18.0`, `modul-06-roadmap.md`
-§Wellen-Closure-Prozedur Schritt 4), die Aussage nicht — und nach `Accepted` sperrt
-[`AGENTS.md`](../../../AGENTS.md) §3.4 die Ein-Zeilen-Korrektur.
+*auf* eines. Der Grund ist derselbe wie beim vendored Baum: die Adresse verfällt, die Aussage
+nicht. `v5.18.0`, `modul-06-roadmap.md` §Wellen-Closure-Prozedur sagt für die Archivierung
+ausdrücklich: *„Review-Reports bekommen keinen Stub; sie haben keine Identität jenseits ihres
+Slice."* Nach `Accepted` sperrt [`AGENTS.md`](../../../AGENTS.md) §3.4 die Ein-Zeilen-Korrektur,
+mit der ein toter Report-Pfad sonst nachgezogen würde.
 
 ## Geschichte
 
@@ -428,6 +443,7 @@ archiviert Review-Reports **ohne** Stub, `v5.18.0`, `modul-06-roadmap.md`
 | 2026-08-31 | **Proposed** | Architect-Verdikt auf eine Reviewer-Eskalation, Report `2026-08-31-slice-144-review.md` HIGH-1. Ausgelöst über den Konflikt-Pfad aus `v5.12.0`, `modul-08-agentenrollen.md` §Konflikt-Pfad als Rollen-Sequenz (Pflicht ab HIGH mit Rollen-Widerspruch). Gewähltes Verdikt der drei aus dessen Tabelle: *„Lockerung legitim, aber undokumentiert"* — Selbst-Autorschaft des eigenen operativen Anweisungssatzes war durch den Baseline-eigenen Konflikt-Pfad-Präzedenzfall („R aktualisiert Skill-Datei") bereits der Form nach gedeckt, nur nie für die Command-Form derselben Artefaktklasse als Norm festgehalten. Der Acceptance-Trigger der Baseline (`v5.12.0`, `grundlagen-bootstrap.md` §Vier Trigger-Klassen: *„ADR-Review-Runde abgeschlossen → bindend"*) hat **nicht** stattgefunden — dieselbe Zurückhaltung wie bei [ADR-0025](0025-register-mit-gemischten-originalen.md): der Bestand begründet keinen Status |
 | 2026-09-02 | Überarbeitet, weiter **Proposed** | Reviewer-Runde `2026-09-02-adr-0028-konsistenz-review.md`, Verdikt *Konsistenz NICHT bestätigt*, Statuswechsel blockiert. Vier Befunde treffen den Text, alle im `Proposed`-Fenster behoben. **HIGH-1:** die acht Baseline-Belege trugen den Tag nicht, den [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) Festlegung 2 verlangt und deren Festlegung 3 (a) zur Vorbedingung genau dieses Übergangs macht; jeder Beleg bekam Tag, Dateiname, Abschnittsname und Zitat, und §Verbatim-Proben wurde als nachfahrbarer Block angelegt. Eine Verortung war falsch: *„Nur 1, 2 und 3b …"* steht in `modul-08-agentenrollen.md` §Rollen-Sequenz für eine Welle, nicht in `modul-06-roadmap.md`. **MEDIUM-1:** die vier `git log`-Kommandos liefen ohne Ref gegen `HEAD` und gaben dort **13/1/4/0** statt der abgedruckten **10/0/3/0**; sie tragen jetzt die Mess-Basis `7485be3` und sind als *keine Erwartungswerte* gekennzeichnet, und der von ihnen getragene Satz („kein Rollen-präfigiertes Commit") ist durch den gemessenen Befund ersetzt. **MEDIUM-2:** Festlegung 2 wies den ausgenommenen Teil dem Architect zu und schrieb die Zuordnung [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) zu, deren §Was hier NICHT entschieden ist *„eine Eigentums-Aussage über irgendein drittes Artefakt"* ausdrücklich ausnimmt; der Teil bleibt jetzt offen. **MEDIUM-3** trifft die Plan-Datei, wirkt aber hierher: `BEO-007` steht nicht bei 1×, sondern bei 4×, und zwei seiner Belege liegen bei den Spec-Straten — §Kontext, der zweite Positiv-Punkt und §Was hier NICHT entschieden ist trennen die beantwortete von der offenen Hälfte. Dazu **LOW-1** (die Verlagerung der sechs kanonischen Namen vollzog [`MR-021`](../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben) mit **vollständiger** Aufhebung von [`MR-018`](../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung), nicht [`MR-030`](../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen) mit einer Teil-Aufhebung) und **INFO-1** (der Geltungsbereich ist jetzt ausgesprochen — gebunden ist die Artefaktklasse, nicht die Datei-Form; die Anwendungs-Tabelle führt `.harness/skills/reviewer.md` mit) |
 | 2026-09-03 | Überarbeitet, weiter **Proposed** | Reviewer-Runde `2026-09-03-adr-0028-konsistenz-review-runde-2.md`, Verdikt *Konsistenz NICHT bestätigt*: die sechs Befunde der Vorrunde sind behoben, dazwischen ist der Baseline-Tausch auf `v5.18.0` gefallen. **HIGH-1:** die Belege waren gegen den abgelösten Stand gemessen; jede Präsens-Aussage über den vendored Baum ist am adoptierten Stand neu gefahren, und §Verbatim-Proben trägt die `v5.18.0`-Pfade. **Ein Tag-Tausch allein trug nicht:** `v5.18.0` schreibt *„3a, 3c, 4, 5 und 6 laufen im Planner-Kontext"*, weil die Wellen-Closure einen sechsten Schritt (Zeitdokumente archivieren) bekommen hat — das Zitat in Festlegung 1 ist wortgetreu nachgezogen, die Planner-Zuordnung, die es trägt, bleibt unverändert. Die übrigen Wortlaute stehen am neuen Stand je einmal; die tragende Negativ-Prämisse (Re-Evaluierungs-Trigger 1) hält, mit dem Mess-Kommando daneben. Die Tags in den zwei Zeilen oben datieren ihre eigene Runde und bleiben stehen. **MEDIUM-1:** die zwei Markdown-Links auf Review-Reports und die eine Pfad-Nennung in §Kontext sind durch die Report-Kennung ersetzt; der Grund und die zwei Quellen stehen am Ende von §Verbatim-Proben. Dazu **LOW-1** (der Kopf von §Verbatim-Proben zählte sieben Aussagen bei neun Kommandos — jetzt neun Aussagen, zehn Kommandos, mit Zähl-Kommando) und **LOW-2** (die Anwendungs-Tabelle sagte *erste Zeile*, gemessen steht der Satz im Eröffnungssatz). **INFO-1** betrifft [ADR-0029](0029-agenten-typkarten-derivativ-gemischte-originale.md), **MEDIUM-2** den Planner-Plan; beide sind hier nicht behoben und blockieren diesen Text nicht. Der Statuswechsel bleibt offen: eine dritte Runde prüft diese Korrektur |
+| 2026-09-03 | Überarbeitet, weiter **Proposed** | Reviewer-Runde `2026-09-03-adr-0028-konsistenz-review-runde-3.md`, Verdikt *Konsistenz NICHT bestätigt*, ohne inhaltlichen Einwand gegen die Entscheidung selbst; beide Befunde treffen die Beleg-Form. **HIGH-1:** der Beleg für den Verfall einer Report-Adresse trug Tag, Dateiname und Abschnittsname, statt des Zitats aber die Ordnungszahl *Schritt 4* — und deren Gegenstand hat sich beim letzten Baseline-Sprung verschoben. Er trägt jetzt den Wortlaut *„Review-Reports bekommen keinen Stub; sie haben keine Identität jenseits ihres Slice."* und keine Nummer mehr; §Verbatim-Proben führt ihn als elfte Probe, und der zuvor unbelegte Satz über die fehlende Identität eines Reports ist in diesem Zitat aufgegangen. **MEDIUM-1:** das `BEO-007`-Zitat *„Umgangen, nicht gelöst …"* stand an keinem der zwei Refs, die diese Datei nennt — die `Stand`-Zelle hat es verloren und ist seither erneut umgeschrieben worden. Aus dem Register übernimmt diese Datei jetzt Bezeichnung, Zähler und Belege und **keinen** Wortlaut der `Stand`-Zelle (§Mess-Basis dieses Dokuments); §Kontext trägt die Aussage über die gelebte Praxis auf dem Gründungs-Commit und den vier Dateien, und der zweite Positiv-Punkt spricht von **drei** offenen Teilen der Zeile statt von zwei Hälften. Dazu **LOW-1** (die `Bezug:`-Zeile schrieb [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) Festlegung 4 die Verweis-Form *auf* Zeitdokumente zu; die Festlegung regelt die Gegenrichtung) und **LOW-2** (die Mess-Basis-Klausel galt für *jede* Zahl, während zwei selbstbezügliche sie nicht tragen können — die Klausel nimmt sie jetzt ausdrücklich aus, und der Eröffnungssatz-Fund läuft gegen die Ref). **INFO-1** betrifft [ADR-0029](0029-agenten-typkarten-derivativ-gemischte-originale.md), **MEDIUM-2** den Planner-Plan; beide sind hier nicht behoben und blockieren diesen Text nicht. Der Statuswechsel bleibt offen: eine vierte Runde prüft diese Korrektur |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
