@@ -163,9 +163,12 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-**Die Restmenge, erhoben und je Treffer verbucht.** Vor dem Durchgang **55**, danach **18**
-(dasselbe Kommando aus §1 mit den zwei zusätzlichen Ausschlüssen). Die Verteilung der drei
-Ausgänge:
+**Die Restmenge, erhoben und je Treffer verbucht.** Vor dem Durchgang **55**, nach den zwei
+Inhalts-Commits und **vor** dem `git mv` **18** (dasselbe Kommando aus §1 mit den zwei
+zusätzlichen Ausschlüssen). Der `git mv` tauscht anschließend zwei Glieder derselben Summe: der
+Titel dieser Datei verlässt die Menge — `done/` steht im Ausschluss —, und die Zitat-Nennung in
+[slice-169](../open/slice-169-agents-37-messstaende-gegen-v5180.md) tritt ein. Die Verteilung der
+drei Ausgänge:
 
 | Ausgang | Zahl | Fundorte |
 |---|---|---|
