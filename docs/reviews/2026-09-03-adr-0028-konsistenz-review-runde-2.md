@@ -91,7 +91,7 @@ Korrektur und diesen Lauf gefallen ist.
   Regel fängt den Fall:**
   [`MR-040`](../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
   §Geltungsbereich nimmt `docs/plan/adr/` ausdrücklich aus, und
-  [`slice-165`](../plan/planning/in-progress/slice-165-praesens-aussagen-gegen-v5180.md) §1 schließt das
+  [`slice-165`](../plan/planning/done/slice-165-praesens-aussagen-gegen-v5180.md) §1 schließt das
   Verzeichnis per Pathspec aus mit der Begründung *„die **eingefrorenen** ADRs bleiben
   unangetastet"* — ADR-0028 ist nicht eingefroren. Der Fall fällt damit genau in die Lücke, die
   Träger (a) schließen soll.

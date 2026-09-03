@@ -38,7 +38,7 @@ Der Absatz führt vier stumme Nennungen des abgelösten Tags — einmal als Stan
 git grep -n 'v5\.12\.0' -- AGENTS.md | grep -v ']('   # 2026-09-03: 4, alle in §3.7
 ```
 
-**Die Messung liegt vor, das Schreiben nicht.** [slice-165](../in-progress/slice-165-praesens-aussagen-gegen-v5180.md)
+**Die Messung liegt vor, das Schreiben nicht.** [slice-165](../done/slice-165-praesens-aussagen-gegen-v5180.md)
 hat die drei Kommandos gegen `v5.18.0` gefahren — alle drei geben unverändert **1** aus
 (`grep -c '^### 3\.7 Ein Kommentar beschreibt, was da ist$' .harness/baseline/v5.18.0/templates/AGENTS.template.md`,
 `grep -c '^### Was ein Kommentar trägt — Code, Konfiguration, Skripte$' .harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md`,
