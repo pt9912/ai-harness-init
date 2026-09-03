@@ -182,7 +182,7 @@ Backticks).
   — `BEO-025` (Zusage weiter als Code oder genannter Sensor) und `BEO-026` (Zähler-Label nennt
   eine andere Einheit als der Zähler zählt). `BEO-003` ist in §1 und §6 zitiert und **nicht**
   erhöht: der Risiko-Ausgang dort ist *entfallen*, also kein neues Auftreten.
-- **Folge-Slices:** [slice-172](../open/slice-172-adr-archivierung-als-unterkommando.md),
+- **Folge-Slices:** [slice-172](../in-progress/slice-172-adr-archivierung-als-unterkommando.md),
   [slice-173](../open/slice-173-archive-welle-als-unterkommando.md) und
   [slice-174](../open/slice-174-archivierung-emittieren.md) — alle drei Dateien in `open/`. Sie
   sind nicht aus diesem Lauf geschnitten, sondern liegen vor ihm; sie wechseln den Träger vom

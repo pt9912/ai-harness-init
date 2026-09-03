@@ -201,6 +201,6 @@ Artefakt tot) steht als Risiko in §6. `BEO-007` (4×, geplant — wer die Anwei
 `.claude/commands/` schreiben darf, sagt keine Quelle) ist berührt, aber kein Risiko dieses
 Slice: Frage (d) entscheidet nur **ob** die Fähigkeit ins Ziel geht; wer den emittierten
 Anweisungssatz dann **schreibt**, ist die offene Hälfte jener Zeile und Gegenstand von
-[slice-174](slice-174-archivierung-emittieren.md). Weitere Treffer: keine.
+[slice-174](../open/slice-174-archivierung-emittieren.md). Weitere Treffer: keine.
 
 **alle berührten Sub-Areas GF** — der Modus-Begründungsblock entfällt damit.
