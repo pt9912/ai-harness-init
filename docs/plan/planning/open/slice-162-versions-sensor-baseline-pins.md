@@ -91,7 +91,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`): zwei Bedingungen zugleich —
-[slice-161](slice-161-conventions-kopf-traegt-die-ziel-form.md) liegt in `done/` (der Bezugspunkt,
+[slice-161](../in-progress/slice-161-conventions-kopf-traegt-die-ziel-form.md) liegt in `done/` (der Bezugspunkt,
 den `current-from` liest, existiert), **und** der gepinnte d-check-Stand führt das Modul
 `versions`, gemessen über `--print-config` statt angenommen
 ([slice-135](slice-135-d-check-pin-v0661.md) trägt den Pin-Sprung).

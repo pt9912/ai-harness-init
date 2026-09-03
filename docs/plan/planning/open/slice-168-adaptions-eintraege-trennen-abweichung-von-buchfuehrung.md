@@ -91,7 +91,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`): [welle-14](../welle-14-re-baseline.md) liegt
-in `done/`. Grund ist ordnend: [slice-161](slice-161-conventions-kopf-traegt-die-ziel-form.md)
+in `done/`. Grund ist ordnend: [slice-161](../in-progress/slice-161-conventions-kopf-traegt-die-ziel-form.md)
 bewegt den Kopf derselben Datei, und zwei Läufe auf demselben Artefakt
 kollidieren.
 
