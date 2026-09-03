@@ -61,6 +61,26 @@ ignore-refs:
   # Bedingung erfuellt.
   - in: "docs/plan/adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md"
     refs: ["docs/plan/carveouts/CO-005-adaptions-block-datierter-beleg.md"]
+  # Drittes Paar, eigene Entscheidung (ADR-0030). docs/plan/adr/0018-ziel-fassung-regiert-die-
+  # migration.md nennt die Welle-Plan-Datei von welle-10 als Pfad auf den Ort VOR der Closure;
+  # die Closure bewegt sie per git mv nach done/, denn Modul 6 der Baseline schreibt diesen Move
+  # vor. Die Quelldatei steht auf Accepted und ist nach AGENTS.md 3.4 eingefroren — der Befund ist
+  # in ihr nicht behebbar. Warum daraus eine Ausnahme folgt und keine Reparatur, steht in ADR-0030.
+  # ANDERE ACHSE als die zwei Paare darueber: die Adresse steht als Inline-Code, der Befund ist
+  # codepath-missing statt target-missing. Dass der geteilte Top-Level-Schluessel auch codepaths
+  # honoriert, ist an diesem Paar gemessen (ADR-0030, Sonden-Tabelle), nicht angenommen.
+  # Die Restbreite dieses Paares ist strukturell null: eine eingefrorene Datei bekommt keine
+  # zweite Referenz. Sie ist hier gemessen (ein Code-Span, null Markdown-Links), aber NICHT
+  # bewacht: test/ignore-refs-restbreite.bats zaehlt nur die Inline-Markdown-Form und sieht die
+  # Code-Span-Achse nicht — es zaehlt fuer dieses Paar null und ist gruen, ohne gemessen zu haben.
+  # Das ist ADR-0030 Folgepflicht 2, eine benannte Luecke und keine behauptete Deckung.
+  # GRENZE, keine Regel: EXTENSIONAL GESCHLOSSEN auf dieses eine zusaetzliche Paar (ADR-0030).
+  # Die Grenzen der zwei Paare darueber gelten unveraendert weiter; ein viertes Paar ist eine neue
+  # Senkung nach AGENTS.md 3.5 und braucht seine eigene ADR — auch dann, wenn es dieselbe
+  # Bedingung erfuellt. Das gilt namentlich fuer den geladenen zweiten Fall der Klasse, den
+  # ADR-0030 im Kontext benennt und ausdruecklich NICHT mitnimmt.
+  - in: "docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md"
+    refs: ["docs/plan/planning/welle-10-re-baseline.md"]
 # Kennungen sind linkpflichtig (auch in Inline-Code, link-policy: always) —
 # "klickbar zur Quelle" als gemessenes Property. Literal-schwere Artefakte
 # (Review-Reports, CHANGELOG) ausgenommen.
