@@ -183,7 +183,7 @@ Backticks).
   eine andere Einheit als der Zähler zählt). `BEO-003` ist in §1 und §6 zitiert und **nicht**
   erhöht: der Risiko-Ausgang dort ist *entfallen*, also kein neues Auftreten.
 - **Folge-Slices:** [slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md),
-  [slice-173](../open/slice-173-archive-welle-als-unterkommando.md) und
+  [slice-173](../next/slice-173-archive-welle-als-unterkommando.md) und
   [slice-174](../open/slice-174-archivierung-emittieren.md) — alle drei Dateien in `open/`. Sie
   sind nicht aus diesem Lauf geschnitten, sondern liegen vor ihm; sie wechseln den Träger vom
   Shell-Helfer zum Unterkommando des Produkt-Binärs.
@@ -194,7 +194,7 @@ Backticks).
   Haken in §2 überhaupt hier landen. Beide bleiben latent, solange Ausgang 3 jeden Lauf über
   diesem Repo sperrt (Kriterium 1); die Klasse liegt als `BEO-025`/`BEO-026` im Register, der
   Einzelfall als Risiko in §6 von
-  [slice-173](../open/slice-173-archive-welle-als-unterkommando.md).
+  [slice-173](../next/slice-173-archive-welle-als-unterkommando.md).
 - **Drei Paarungen** (dieser Slice ist wellenlos, also hier geprüft — **nach** dem `git mv`):
   (a) **Anker** — kein Eintrag trägt das Feld `liegt in`, also kein Gegenstand; (b)
   **Folge-Slice** — slice-172, slice-173 und slice-174 sind Dateien im Planning-Lifecycle
