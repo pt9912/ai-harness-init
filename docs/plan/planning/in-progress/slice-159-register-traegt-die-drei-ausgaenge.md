@@ -49,19 +49,19 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Der Kopftext des Registers trägt die drei Ausgänge und die Vorgangs-Beleg-Regel** — als
+- [x] **Der Kopftext des Registers trägt die drei Ausgänge und die Vorgangs-Beleg-Regel** — als
       geschlossene Menge, nicht als Aufzählung unter anderen; `offen` ist als Normalzustand
       unterhalb der Schwelle ausgewiesen.
-- [ ] **Jede Zeile ab 3× trägt genau einen der drei Ausgänge**, und die Zeilen darunter tragen
+- [x] **Jede Zeile ab 3× trägt genau einen der drei Ausgänge**, und die Zeilen darunter tragen
       `offen`. Die Menge der betroffenen Zeilen ist als Kommando ausgewiesen, nicht geschätzt.
-- [ ] **Die Beleg-Spalte ist gegen die neue Regel geprüft:** je Zeile so viele Belege wie der
+- [x] **Die Beleg-Spalte ist gegen die neue Regel geprüft:** je Zeile so viele Belege wie der
       Zähler, jeder die Kennung eines abgeschlossenen Vorgangs — und wo ein Vorkommen keinen
       hatte, steht es benannt statt gezählt.
-- [ ] `make gates` grün.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] `make gates` grün.
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -110,10 +110,21 @@ dasteht.
 - **Die `Stand`-Zelle trägt Chronik statt Zustand** — [`AGENTS.md`](../../../../AGENTS.md) §3.7
   bindet die Zustandsfelder lebender Register, und die drei Ausgänge sind genau eine
   Zustands-Aussage. Die heutigen Zellen tragen zum Teil ausgeschriebene Herleitung.
-  — **Ausgang:** offen, wird bei Closure verbucht.
+  — **Ausgang: eingetreten**, an fünf Zellen, alle fünf in diesem Slice geräumt: die
+  Lauf-Protokolle des Lese-Schritts sind fort. Gemessen über die abgelöste Fassung als
+  Tree-Operand,
+  `git show 8ca4a28:docs/plan/planning/observations.md | grep -cE 'Der \*\*Lese-Schritt\*\*|Der Lese-Schritt läuft|der Lese-Schritt der nächsten'`
+  → **5**, dasselbe Muster auf der heutigen Datei → **0** (keine Erwartungswerte,
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). **Kein Folge-Slice, weil kein Rest bleibt:**
+  [`AGENTS.md`](../../../../AGENTS.md) §3.7 bindet die Zelle, die geschrieben wird; der Bestand
+  darunter ist kein Arbeitsauftrag.
 - **Der Umbau der Beleg-Spalte ändert einen Zähler-Stand** — *ein Vorgang zählt einmal* kann eine
-  Zeile senken, und eine gesenkte Zeile verlässt die Schwelle. — **Ausgang:** offen, wird bei
-  Closure verbucht.
+  Zeile senken, und eine gesenkte Zeile verlässt die Schwelle. — **Ausgang: entfallen** — keine
+  Zeile führt denselben Vorgang zweimal, und je Zeile deckt sich die Beleg-Zahl mit dem Zähler:
+  `awk -F'|' '/^\| BEO-/ {gsub(/^ +| +$/,"",$6); n=split($6,a,","); z=substr($5,1,index($5,"×")-1)+0; if(n!=z) print $2}' docs/plan/planning/observations.md`
+  → **leere Ausgabe**. Kein Zähler bewegt sich durch die neue Regel, also verlässt keine Zeile
+  die Schwelle.
 
 ## 7. Closure-Notiz
 
@@ -125,18 +136,32 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-NNN>, <slice-MMM>, <slice-KKK> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations.md`):** <neue `BEO-<NNN>` angelegt (Sub-Area, 1×, Beleg slice-NNN) | `BEO-<NNN>` auf <N>× erhöht, Beleg slice-NNN ergänzt | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-NNN (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Was hat funktioniert:** Die Ziel-Form stand vollständig in zwei Quellen — dem Bedienhinweis der
+  Vorlage `observations.template.md` und der Ausgangs-Tabelle in `modul-06-roadmap.md`
+  §Das Beobachtungs-Register. Für vier der fünf Zeilen ab 3× stand der Ausgang inhaltlich schon in
+  der Zelle und war nur noch als Ausgang zu schreiben.
+- **Was ging anders als geplant:** Der Plan sah eine Form-Anpassung. Tragend war die
+  Ausgangs-Zuweisung: drei Zeilen standen auf *„Schwelle erreicht, weiter offen"* — ein Zustand,
+  den die neue Fassung ausdrücklich verbietet —, und zwei davon sagten selbst, warum sie keinen
+  Ausgang tragen: ihr Ausgang ist ein Slice-Schnitt, und die schließende Rolle durfte keinen
+  machen. Eine davon brauchte darum eine neue Datei statt einer Umformulierung.
+- **Steering-Loop-Eintrag:** Regel geschärft: *Der Lese-Schritt gehört in die Rolle, die seinen
+  Ausgang schreiben darf* — ein Eintrag ohne Ausgang wird sonst von Closure zu Closure vererbt,
+  ohne dass jemand ihn ablehnt. Auslöser: `BEO-022` (slice-157, slice-167 — 2×).
+  *Gezählt, nicht verkörpert:* die Schwelle ist nicht erreicht, also entfällt das Feld `liegt in`.
+- **Beobachtungs-Register (`../observations.md`):** neue `BEO-022` angelegt (`*` (gesamtes Repo),
+  2×, Belege slice-157 und slice-167); `BEO-009` auf **5×** erhöht, Beleg slice-159 ergänzt — der
+  Kopftext dieses Registers führt jetzt die Vorgangs-Beleg-Regel, während
+  [`implement-slice.md`](../../../../.claude/commands/implement-slice.md) daneben die abgelöste
+  Slice-Form behauptet, in beiden Fassungen. Die Ausgänge der fünf Zeilen ab 3× stehen in ihren
+  Zellen: `BEO-001` und `BEO-003` *verkörpert*, `BEO-007`, `BEO-009` und `BEO-014` *geplant*.
+- **Folge-Slices:** [slice-168](../open/slice-168-adaptions-eintraege-trennen-abweichung-von-buchfuehrung.md)
+  (Die Adaptions-Einträge trennen Abweichung von Buchführung) — ist eine Datei in `open/` und der
+  *geplant*-Ausgang von `BEO-014`; **kein** Mitglied von [welle-14](../welle-14-re-baseline.md),
+  deren §6 den Adaptions-Block ausschließt.
+- **Risiken aus §6:** zwei, je genau ein Ausgang — *eingetreten, im Slice geräumt* (Chronik in der
+  `Stand`-Zelle, fünf Zellen) · *entfallen, mit Messung* (kein Zähler bewegt sich).
+- **Drei Paarungen:** <nach dem `git mv` eingetragen>
 
 ## 8. Sub-Area-Modus-Begründung
 

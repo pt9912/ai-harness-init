@@ -118,6 +118,11 @@ Baseline-Pins) ist ein **Sensor-Neubau**, den §6 ausschließt; die Linie trägt
 ohne die Welle zu dehnen. Dass die Slice-Tabelle einer Welle und ihre Out-of-Scope-Liste über
 dieselbe neue Datei Verschiedenes sagen, liegt als `BEO-018` im [Register](observations.md).
 
+**Aus demselben Grund kein Mitglied:**
+[slice-168](open/slice-168-adaptions-eintraege-trennen-abweichung-von-buchfuehrung.md) (die
+Adaptions-Einträge trennen Abweichung von Buchführung). Er ist der *geplant*-Ausgang von `BEO-014`
+im [Register](observations.md), und `BEO-014` ist genau der Eintrag, den §6 unten ausschließt.
+
 ## 5. Abhängigkeiten
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
