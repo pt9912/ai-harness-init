@@ -209,7 +209,7 @@ Backticks).
   Deckung verfehlt hätte; `BEO-016` hat diesen Plan gebunden, aber kein neues Auftreten erzeugt —
   die Messung dazu steht in §6. Drei `Stand`-Zellen sind um ihren Träger ergänzt (`BEO-010`,
   `BEO-013`).
-- **Folge-Slices:** [slice-156](../open/slice-156-baum-tauschen-pins-ziehen.md) (Tausch und Pins) ·
+- **Folge-Slices:** [slice-156](../in-progress/slice-156-baum-tauschen-pins-ziehen.md) (Tausch und Pins) ·
   [slice-157](../open/slice-157-adaptions-durchgang-v5180.md) (Adaptions-Durchgang) ·
   [slice-158](../open/slice-158-archivierungs-schritt.md) (Archivierungs-Schritt) ·
   [slice-159](../open/slice-159-register-traegt-die-drei-ausgaenge.md) (Beobachtungs-Register) ·
@@ -293,7 +293,7 @@ Zuordnungen: **D** = bindet dieses Repo (Dogfood) · **E** = bindet die emittier
 
 | # | Datei | Position (Stichwort) | Zu | Ausgang |
 |---|---|---|---|---|
-| 1 | `regelwerk/README.md` | Stand-Zeile: Kurs-Welle 98 · 2026-08-26 → 111 · 2026-08-31 | D | [slice-156](../open/slice-156-baum-tauschen-pins-ziehen.md) — `harness/conventions.md` §Baseline zitiert genau diese Zeile |
+| 1 | `regelwerk/README.md` | Stand-Zeile: Kurs-Welle 98 · 2026-08-26 → 111 · 2026-08-31 | D | [slice-156](../in-progress/slice-156-baum-tauschen-pins-ziehen.md) — `harness/conventions.md` §Baseline zitiert genau diese Zeile |
 | 2 | `grundlagen-begriffe.md` | neue Glossarzeile `MR-<NNN>`: Vergabestelle Adaptions-Block, Text in `harness/conventions/MR-<NNN>-<titel>.md`, Zustand = Verzeichnis-Position, **kein Status-Feld** | D | [slice-157](../open/slice-157-adaptions-durchgang-v5180.md) — die Verzeichnis-Form selbst ist per [welle-14](../welle-14-re-baseline.md) §6 ausgeschlossen (`BEO-014`) |
 | 3 | `grundlagen-durchsetzungsschicht.md` | §Referenz-Implementierung → §Das vollständige Artefakt-Set; der Pfad `tools/harness/…` fällt zugunsten *„eine gemeinsame, inhaltsbasierte Nachweis-Quelle"*, der Referenz-Repo-Schluss entfällt | D | [slice-157](../open/slice-157-adaptions-durchgang-v5180.md) — [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption) ersetzt genau die gestrichene Zeile, [`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) zitiert den umbenannten Anker |
 | 4 | `grundlagen-harness-dateien.md` | Modus-Deklaration führt je Sub-Area ein **Kürzel** (kurz, GROSS, unveränderlich), sobald Kennungen ein Bereichssegment tragen; ohne Segment entfällt die Spalte | D | [slice-161](../open/slice-161-conventions-kopf-traegt-die-ziel-form.md) — die Bedingung ist zu messen, nicht anzunehmen |
@@ -312,7 +312,7 @@ Zuordnungen: **D** = bindet dieses Repo (Dogfood) · **E** = bindet die emittier
 | 17 | `templates/docs/plan/planning/archiv-stub-slice.template.md` | **NEU** — Stub an der Stelle des archivierten Slice-Volltexts; keine Abschnittsüberschriften, `Welle:` + `Archiviert mit:` + `Hervorgegangen:` | D | [slice-158](../open/slice-158-archivierungs-schritt.md) |
 | 18 | `templates/docs/plan/planning/archiv-stub-welle.template.md` | **NEU** — Stub an der Stelle des archivierten Welle-Plans; Zeiger auf die Ergebnisnotiz und die Zahl der archivierten Vorgänge | D | [slice-158](../open/slice-158-archivierungs-schritt.md) |
 | 19 | `templates/docs/plan/planning/observations.template.md` | Kopftext nennt die drei Ausgänge; Bedienhinweis: Vorgangs-Beleg, ein Vorgang zählt einmal, `offen` als Normalzustand | D | [slice-159](../open/slice-159-register-traegt-die-drei-ausgaenge.md) — Singleton-Form-Pflicht, die zweite Ursachen-Klasse aus `BEO-010` |
-| 20 | `templates/harness/conventions.template.md` | (a) `Stand:` ist **Version/Tag, kein Datum** — sonst bricht der Versions-Sensor fail-closed · (b) Modus-Deklaration bekommt die Kürzel-Spalte | D | [slice-161](../open/slice-161-conventions-kopf-traegt-die-ziel-form.md); die emittierte Fassung ist dieselbe vendored Vorlage mit zwei Transformationen ([`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf) §Nur die Dogfood-Ebene) und zieht mit [slice-156](../open/slice-156-baum-tauschen-pins-ziehen.md) mit |
+| 20 | `templates/harness/conventions.template.md` | (a) `Stand:` ist **Version/Tag, kein Datum** — sonst bricht der Versions-Sensor fail-closed · (b) Modus-Deklaration bekommt die Kürzel-Spalte | D | [slice-161](../open/slice-161-conventions-kopf-traegt-die-ziel-form.md); die emittierte Fassung ist dieselbe vendored Vorlage mit zwei Transformationen ([`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf) §Nur die Dogfood-Ebene) und zieht mit [slice-156](../in-progress/slice-156-baum-tauschen-pins-ziehen.md) mit |
 | 21 | `templates/harness/conventions/MR-NNN-titel.template.md` | (a) das Feld `- **Status:** Accepted` **entfällt** · (b) der `Ersetzt-Baseline-Regel`-Link trägt Tiefe **und** Version, je mit eigenem Wächter | D | [slice-157](../open/slice-157-adaptions-durchgang-v5180.md) — (a) deckt sich mit [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf) §*„Akzeptiert" heißt committet*; (b) ist die Regel, deren Werkzeug [slice-162](../open/slice-162-versions-sensor-baseline-pins.md) baut |
 
 **Verteilung — Handzählung über die Spalte `Zu`, kein Kommando gibt genau sie aus**
@@ -323,7 +323,7 @@ Jede Position mit **D** oder **E** trägt in der Spalte `Ausgang` entweder eine 
 die Begründung, warum keiner nötig ist; **keine Position ohne Ausgang**.
 
 **Sechs Folge-Slices, nicht zwanzig.** Der Schnitt bündelt:
-[156](../open/slice-156-baum-tauschen-pins-ziehen.md) (Tausch und Pins) ·
+[156](../in-progress/slice-156-baum-tauschen-pins-ziehen.md) (Tausch und Pins) ·
 [157](../open/slice-157-adaptions-durchgang-v5180.md) (Adaptions-Durchgang, Delta **und**
 Volltext) · [158](../open/slice-158-archivierungs-schritt.md) (Archivierungs-Schritt) ·
 [159](../open/slice-159-register-traegt-die-drei-ausgaenge.md) (Beobachtungs-Register) ·
