@@ -8,8 +8,9 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ## Baseline
 
 - **Konvention:** AI-Harness-Kurs
-- **Regelwerk + Templates:** `v5.18.0` committet vendored
-  (`.harness/baseline/v5.18.0/`, [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
+- **Stand:** `v5.18.0`
+- **Regelwerk + Templates:** committet vendored unter
+  `.harness/baseline/v5.18.0/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
   `regelwerk/README.md`: **Kurs-Welle 111 · 2026-08-31**
   (`sed -n '3p' .harness/baseline/v5.18.0/regelwerk/README.md`).
 - **d-check:** der lebende Pin steht in `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`) und, per
@@ -35,6 +36,15 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   nicht:** die Zahl ist nur am lokalen Kurs-Klon zu messen, und kein Kommando dieses Repos gibt
   sie aus ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 1).
+
+**Was das Feld `Stand:` trägt.** Den adoptierten Stand als **Version**, nie als Datum — das Datum
+steht in der eigenen Zeile `Datum der Adoption:`. Das Feld ist der Bezugspunkt, den ein
+Versions-Sensor über den Anker dieses Abschnitts liest und gegen jeden Baseline-Pin im Repo hält;
+ein Datum an dieser Stelle liefert ihm keine Version, und er bricht fail-closed ab. Ziel-Form:
+[`conventions.template.md`](../.harness/baseline/v5.18.0/templates/harness/conventions.template.md)
+§Baseline. **Ein solcher Sensor läuft in diesem Repo nicht** — die Modul-Liste der
+[`.d-check.yml`](../.d-check.yml) führt kein `versions` (`grep -n '^modules:' .d-check.yml`); das
+Feld steht als Ziel-Form, nicht als bewachte Zusage.
 
 ## Adoptierte Konventions-Quellen
 
@@ -152,6 +162,25 @@ Datei: die wandert bei ihrer eigenen Auflösung weiter.
 | [MR-023](conventions/done/MR-023-die-platzierung-der-kommentar-regel-ist-keine-abweichung.md) <a id="mr-023"></a><a id="mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung"></a> | [MR-031](#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline) |
 
 ## Modus-Deklaration pro Sub-Area
+
+**Eine Kürzel-Spalte führt diese Tabelle nicht.** Die Ziel-Form verlangt sie nur dort, wo Kennungen
+ein Bereichssegment tragen (`ADR-<KUERZEL>-NNNN`, `slice-<KUERZEL>-NNN`); wer ohne Segment zählt,
+streicht sie (adoptierter Stand `v5.18.0`,
+`.harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md`
+§harness/conventions.md als Konventionsspeicher). Dieses Repo zählt ohne Segment: Das ID-Schema in
+[`MR-000`](#mr-000--baseline-aussage) führt keines, und keine vergebene Kennung trägt eines.
+
+```sh
+git grep -ohE '\b(ADR|CO|MR)-[A-Z]{2,}-[0-9]+|\bslice-[A-Z]{2,}-[0-9]+' -- '*.md' ':!.harness/baseline' | sort -u | wc -l   # 0
+```
+
+**Kein Erwartungswert** ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2) — die Zahl wandert mit dem Bestand; die Aussage hängt daran, dass sie null ist. Der
+Zählraum wird erst mit dem zweiten Menschen am Repo zur Frage, und hier fallen Auftraggeber und
+Entwickler zusammen
+([`MR-015`](#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)). Ein
+vergebenes Kürzel ist unveränderlich — es steht dann in Kennungen, in Commits und in Verweisen —,
+deshalb entsteht die Spalte mit dem Segment und nicht auf Vorrat.
 
 | Sub-Area | Modus | Begründung | Graduation |
 |---|---|---|---|
