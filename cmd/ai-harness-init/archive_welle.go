@@ -4,12 +4,21 @@
 // internal/archive, hier steht der Dispatch und die eine Stelle, an der `git`
 // laeuft.
 //
-// ES SCHREIBT NICHTS, und das ist konstruktiv hergestellt statt zugesagt: dieser
-// Zweig ruft ausschliesslich lesende Funktionen, und ohne `--vorschau` endet er
-// vor jedem Baum-Zugriff mit Exit 2 und nennt den Grund. Der schreibende Zweig —
-// Move, Zip, Stubs, Verweis-Nachzug, zwei Commits — liegt beim Shell-Helfer
-// hinter `make archive-welle`, und der bleibt bis zu seiner Abloesung sein
-// einziger Traeger (ADR-0033 Festlegung 2).
+// ES SCHREIBT NICHTS. Zwei Stuecke tragen das, und beide sind nachrechenbar
+// statt zugesagt: internal/archive fuehrt keinen schreibenden Aufruf
+// (grep -cE 'os\.WriteFile|os\.MkdirAll|os\.Rename|os\.Remove|\.Create\('
+// ueber internal/archive/*.go), und der einzige Fremdprozess dieses Zweigs ist
+// das lesende git status --porcelain unten. Ohne --vorschau endet er ausserdem
+// VOR jedem Baum-Zugriff mit Exit 2 und nennt den Grund
+// (TestArchiveWelleOhneVorschauSchreibtNichts).
+//
+// GRENZE, benannt statt verschwiegen: fuer die Schreib-Freiheit selbst gibt es
+// keinen Waechter. Wer hier einen schreibenden Aufruf ergaenzt, faellt keinem
+// Gate auf; die zwei Stuecke oben sind eine Messung von heute, keine Schranke.
+//
+// Der schreibende Zweig — Move, Zip, Stubs, Verweis-Nachzug, zwei Commits —
+// liegt beim Shell-Helfer hinter `make archive-welle`, und der bleibt bis zu
+// seiner Abloesung sein einziger Traeger (ADR-0033 Festlegung 2).
 
 package main
 

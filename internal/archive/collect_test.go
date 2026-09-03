@@ -79,7 +79,7 @@ func TestKlasseVonFremdBleibtLiegen(t *testing.T) {
 }
 
 func TestWelleFeldLiestErsteZeile(t *testing.T) {
-	inhalt := "# Slice slice-173: X\n\n**Welle:** [welle-10](welle-10-re-baseline.md).\n\n**Welle:** welle-99.\n"
+	inhalt := "# Slice slice-100: X\n\n**Welle:** [welle-10](welle-10-re-baseline.md).\n\n**Welle:** welle-99.\n"
 	if got := archive.WelleFeld(inhalt); got != "[welle-10](welle-10-re-baseline.md)." {
 		t.Fatalf("WelleFeld = %q", got)
 	}
