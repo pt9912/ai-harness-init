@@ -27,12 +27,12 @@ zurückzukommen.**
 [welle-10](done/welle-10-re-baseline.md), die als `BEO-010` im [Register](observations.md) liegt:
 jene Welle schloss mit erheblich mehr Mitgliedern, als sie geschnitten hatte — beide Zahlen stehen
 dort neben den Kommandos, die sie ausgeben. Wie viele Mitglieder diese Welle bekommt, beantwortet
-[slice-155](open/slice-155-inventur-vor-dem-schnitt.md); vorher steht die Zahl nirgends.
+[slice-155](in-progress/slice-155-inventur-vor-dem-schnitt.md); vorher steht die Zahl nirgends.
 
 **Wer den Zielstand bewegt, entscheidet diese Datei nicht:**
 [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) §*Wer den Zielstand bewegt*. Welche
 Fassung die Migrations-Prozedur dieses Sprungs stellt, ist offen und liegt beim Architect —
-gemessen wird sie in [slice-155](open/slice-155-inventur-vor-dem-schnitt.md) (§6 dort, mit der
+gemessen wird sie in [slice-155](in-progress/slice-155-inventur-vor-dem-schnitt.md) (§6 dort, mit der
 Übergabe).
 
 ## 2. Trigger (Welle startet)
@@ -84,7 +84,7 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-155](open/slice-155-inventur-vor-dem-schnitt.md) | Inventur vor dem Schnitt — der Form- und Regel-Diff `v5.12.0` → `v5.18.0` | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) |
+| [slice-155](in-progress/slice-155-inventur-vor-dem-schnitt.md) | Inventur vor dem Schnitt — der Form- und Regel-Diff `v5.12.0` → `v5.18.0` | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) |
 
 **Die Tabelle ist bei der Eröffnung unvollständig, und das ist der Zuschnitt, nicht sein Mangel.**
 `BEO-010` ([Register](observations.md)) verlangt, dass der Form-Diff vollständig vorliegt, **bevor**
@@ -115,7 +115,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   weiter: `modul-15-*` steht nicht im Delta dieses Sprungs
   (`git diff --name-only v5.12.0 v5.18.0 -- lab/regelwerk` am lokalen Kurs-Klon).
 - **Offene Übergabe an den Architect:** die regierende Fassung dieses Sprungs
-  ([slice-155](open/slice-155-inventur-vor-dem-schnitt.md) §6). Sie blockiert die **Eröffnung**
+  ([slice-155](in-progress/slice-155-inventur-vor-dem-schnitt.md) §6). Sie blockiert die **Eröffnung**
   nicht — ein Diff-Katalog ist eine Messung und fällt kein Konformitäts-Urteil; sie blockiert den
   ersten Durchgang, der eines fällt.
 
