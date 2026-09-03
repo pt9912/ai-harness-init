@@ -12,14 +12,19 @@
 # docs/plan/planning/done/<welle-id>/archiv.zip an, ersetzt jede eingesammelte
 # Slice-Datei und den Welle-Plan durch einen Stub im selben Verzeichnis,
 # entfernt die eingesammelten Review-Reports ohne Stub und zieht die Verweise
-# auf die bewegten Dateien in beiden Formen nach — mit Verzeichnis-Praefix und
-# geschwister-relativ (praefixlos). Move und Inhalt liegen in zwei getrennten
-# Commits (AGENTS.md 3.3): Commit 1 ist ein reiner `git mv` ohne ein Byte
-# Inhalt, Commit 2 traegt Archiv, Stubs und Verweis-Nachzug.
-# test/archive-welle.bats deckt die Einsammel-Regel, die Stub-Form, die
-# Stub-Erzeugung aus der Vorlage und beide Ersetzungsrichtungen ueber
-# synthetischen Proben ab, ohne ein Repo zu bewegen; main() braucht ein echtes
-# `git`-Repo und Docker und laeuft dort nicht mit.
+# auf die bewegten Dateien in DREI Formen nach — mit Verzeichnis-Praefix
+# ("done/<datei>", jede Aufstiegstiefe), geschwister-relativ ("](<datei>)" in
+# den flach gebliebenen done/*.md) und aufsteigend ("](../<datei>)" in den
+# Dateien unter done/<welle-x>/, die eine Ebene hoeher zeigen). Move und
+# Inhalt liegen in zwei getrennten Commits (AGENTS.md 3.3): Commit 1 ist ein
+# reiner `git mv` ohne ein Byte Inhalt, Commit 2 traegt Archiv, Stubs und
+# Verweis-Nachzug und stagt dafuer BENANNTE Pfade, nicht den ganzen Baum.
+# test/archive-welle.bats deckt die Einsammel-Regel samt Suffix-Grenze, die
+# Stub-Form, die Stub-Erzeugung aus der Vorlage, alle drei
+# Ersetzungsrichtungen und die reinen Funktionen, auf denen die
+# fail-closed-Ausgaenge urteilen (unsauber_grund, grep_suchraum,
+# haenger_filtern) — ueber synthetischen Proben, ohne ein Repo zu bewegen;
+# main() braucht ein echtes `git`-Repo und Docker und laeuft dort nicht mit.
 #
 # EINSAMMEL-REGEL (sie liegt hier, nicht im Aufrufer). Prueffeld sind die
 # flachen `slice-*.md` unter docs/plan/planning/done/. Das Kopf-Feld
@@ -29,12 +34,19 @@
 #   fremd      — das Feld nennt eine andere Welle
 #                oder gar keine ("—")                 -> bleibt liegen
 # Dazu der Welle-Plan (done/<welle-id>*.md ausser der Ergebnisnotiz) und die
-# Review-Reports, deren Dateiname die Nummer eines eingesammelten Slice traegt.
+# Review-Reports, deren Dateiname die Nummer eines eingesammelten Slice traegt
+# — an einer SUFFIX-Grenze: "slice-001" trifft "slice-001a" nicht, sonst zoege
+# die Archivierung der einen Haelfte eines Re-Schnitts die Reports der anderen
+# mit. Die Nummer traegt den Buchstaben-Suffix, den ein Re-Schnitt vergibt.
 # Die Ergebnisnotiz bleibt vollstaendig und flach.
 #
 # VORAUSSETZUNG. Das Skript committet selbst und verlangt darum einen sauberen
 # Arbeitsbaum, bevor es startet — sonst landet ein fremder Diff im Move- oder
-# im Inhalts-Commit. Ein Verstoss bricht den Aufruf vor dem ersten `git mv`.
+# im Inhalts-Commit. Gemessen wird mit `git status --porcelain`, also
+# EINSCHLIESSLICH untrackter Dateien: die Zusage lautet "sauberer
+# Arbeitsbaum" ohne Einschraenkung, und ein untrackter Fremdbestand ist unter
+# ihr keiner. Ein Verstoss bricht den Aufruf vor dem ersten `git mv`; die
+# Meldung nennt die zwei Klassen getrennt, weil die Abhilfe verschieden ist.
 #
 # DOCKER-ONLY. Gepackt wird mit `git archive --format=zip` im gepinnten Bild
 # (ARCHIVE_IMAGE), ueber einen read-only gemounteten Baum und mit Ausgabe auf
@@ -44,17 +56,27 @@
 #
 # BELEG. main() braucht `git` und `docker` und laeuft darum in keinem
 # bats-Fall (das gepinnte BATS_IMAGE fuehrt beides nicht). Der Beleg ist ein
-# eigenes Scratch-Repo mit VIER Slices — einem Mitglied, einem wellenlosen,
-# zwei fremden (einer nennt eine andere Welle, einer traegt "—") —, einem
-# Welle-Plan, einer Ergebnisnotiz, einem Review-Report und einer frueher
-# archivierten Welle als Untergrenze:
+# eigenes Scratch-Repo mit ZWEI zu archivierenden Wellen, fuenf Slices — einem
+# Mitglied, einem wellenlosen, drei fremden (zwei nennen eine andere Welle,
+# einer traegt "—") —, je Welle Plan und Ergebnisnotiz, zwei Review-Reports und
+# einer frueher archivierten Welle als Untergrenze:
 #   `git show --stat` auf Commit 1 zeigt drei reine Renames (zwei Slices + der
 #     Welle-Plan), 0 insertions / 0 deletions;
 #   Commit 2 traegt archiv.zip, drei Stubs, den geloeschten Review-Report und
-#     den Verweis-Nachzug in BEIDEN Formen (Praefix-Form in der Ergebnisnotiz,
-#     geschwister-relative Form in einer flach gebliebenen Nachbar-Datei);
-#   der wellenlose Slice ist eingesammelt, die zwei fremden liegen unberuehrt
+#     den Verweis-Nachzug in ALLEN DREI Formen: Praefix-Form in einer ADR
+#     ausserhalb des Planning-Baums, geschwister-relative Form in der
+#     Ergebnisnotiz, aufsteigende Form beim ZWEITEN Lauf — dort haengt er
+#     sowohl den Stub der ersten Welle als auch den einer frueher archivierten
+#     um, deren Folge-Slice-Link auf die flache done/-Ebene zeigte;
+#   der wellenlose Slice ist eingesammelt, die drei fremden liegen unberuehrt
 #     flach in done/;
+#   ein Report, den ein BLEIBENDER Report verlinkt, bricht den Lauf an Ausgang
+#     3 mit beiden Dateinamen in der Meldung; eine untrackte Fremddatei bricht
+#     ihn an Ausgang 2 vor dem ersten `git mv`;
+#   ein Slice-Paar NNNa/NNNb in derselben Welle bekommt zwei Stubs mit
+#     verschiedener H1, und die Report-Zahl im Welle-Stub deckt sich mit den
+#     Report-Eintraegen im Zip;
+#   nach beiden Laeufen meldet `git status --porcelain` nichts;
 #   der `unzip -p`-Zeiger, den der Stub abdruckt, liefert wortwoertlich den
 #     archivierten Volltext zurueck — gefahren als genau das Kommando aus dem
 #     Stub, nicht als eine Variante davon.
@@ -66,29 +88,27 @@
 #   for i in 1 2; do docker run --rm --network none -v "$PWD":/repo:ro \
 #     -w /repo --entrypoint git "$ARCHIVE_IMAGE" -c safe.directory=/repo \
 #     archive --format=zip HEAD -- <pfad> | sha256sum; done
-# NEUN `exit`-Ausgaenge sind fail-closed und alle neun an einem Scratch-Repo
-# gefahren. Gezaehlt wird OHNE die Kommentarzeilen — ein Muster, das `exit N`
-# sucht, findet sonst den Satz, der es beschreibt, und zaehlt sich selbst mit
-# (kein Erwartungswert, die Zahl wandert mit dem Skript):
+# ZEHN `exit`-Ausgaenge sind fail-closed. Gezaehlt wird OHNE die
+# Kommentarzeilen — ein Muster, das `exit N` sucht, findet sonst den Satz, der
+# es beschreibt, und zaehlt sich selbst mit (kein Erwartungswert, die Zahl
+# wandert mit dem Skript):
 #   grep -vE '^[[:space:]]*#' harness/tools/archive-welle.sh \
 #     | grep -cE '\bexit [0-9]'
+#   exit 4 — Stub-Form verletzt, Abbruch ZWISCHEN den zwei Commits; die
+#            Meldung nennt den Rueckweg, weil der Baum dann einen Zustand
+#            traegt, in den ein zweiter Aufruf nicht von selbst zurueckfindet
+#            (er scheitert an "Arbeitsbaum nicht sauber" UND "schon
+#            archiviert" zugleich)
 #   exit 3 — Altbestand ohne beobachtbare Untergrenze
 #          · lebender Verweis auf einen zu loeschenden Review-Report
 #   exit 2 — kein WELLE-Argument (usage) · unsauberer Arbeitsbaum
 #          · schon archiviert · Ergebnisnotiz fehlt · kein Welle-Plan
 #          · mehrdeutiger Welle-Plan · kein Slice eingesammelt
-# Dazu kommt ein ZEHNTER Abbruch anderer Bauart: schlaegt stub_form_ok an,
-# beendet `set -e` den Lauf nach Commit 1. Er ist kein `exit` und faellt darum
-# aus der Zaehlung oben heraus.
-# Die zwei exit-3-Ausgaenge sind zusaetzlich ueber dem ECHTEN Bestand dieses
-# Repos gefahren (Klon, `welle-01`): der Altbestand-Ausgang meldet die flach
-# liegenden wellenlosen Slices, der Verweis-Ausgang haelt Review-Reports fest,
-# auf die unter anderem `spec/lastenheft.md` und nach AGENTS.md 3.4
-# eingefrorene ADRs zeigen. Fuer dieses Repo heisst das: das Werkzeug ist
-# gebaut, aber noch auf keine Welle anwendbar — die Altbestands-Archivierung
-# und die Aufloesung dieser Verweise liegen davor.
+# Auf welche Welle dieses Repos das Werkzeug anwendbar ist, sagt
+# harness/README.md — eine Aussage hat einen Ort, und diese wandert mit dem
+# Bestand.
 #
-# GRENZEN (fuenf, gemessen):
+# GRENZEN (sechs, gemessen):
 # (1) ALTBESTAND. "wellenlos seit der letzten Closure" hat nur dort eine
 #     beobachtbare Untergrenze, wo schon einmal archiviert wurde. Solange kein
 #     done/<welle-id>/archiv.zip existiert, umfasst die Klasse `wellenlos`
@@ -101,8 +121,9 @@
 #     ungenau. Welcher Satz einen Zustand behauptet, ist Urteil, kein Match.
 # (3) Ein eingehender Verweis in INLINE-CODE ohne Verzeichnis-Segment
 #     (`slice-N….md` als Pfad-Span statt als Link-Ziel) wird nicht
-#     nachgezogen: die geschwister-relative Ersetzung ankert an der
-#     Link-Klammer `](…)`. `make docs-check` nach dem Lauf zeigt den Rest.
+#     nachgezogen: die geschwister-relative und die aufsteigende Ersetzung
+#     ankern beide an der Link-Klammer `](…)`. `make docs-check` nach dem Lauf
+#     zeigt den Rest.
 # (4) Das Feld `Geschlossen:` eines Slice-Stubs nimmt das Datum aus der
 #     `**Rolle:** … **Datum:**`-Zeile der Closure-Notiz; traegt die Datei
 #     keine, steht dort das Abschluss-Datum der archivierenden Welle.
@@ -112,6 +133,11 @@
 #     fallen weg wie ihr Bedienhinweis (templates/README.md §Verwendung,
 #     Schritte 4 und 5); in hundert Stubs waeren sie hundert Kopien einer
 #     Norm, die an einer Stelle lebt.
+# (6) Ein Review-Report ueber MEHRERE Slices traegt die Plural-Form im Namen
+#     ("…-slices-011-014-…") und keinen der Einzel-Substrings, auf die die
+#     Einsammel-Regel greift. Er bleibt flach liegen, waehrend seine Slices
+#     ins Archiv gehen. Das ist die richtige Ablage — er gehoert keinem
+#     einzelnen Slice —, aber er wird auch nicht mitgezaehlt.
 #
 # KOPPLUNG. Der Stub liegt unter docs/plan/planning/done/<welle-id>/ und faellt
 # damit unter zwei Regeln dieses Repos, die eine Ebene hoeher schon galten. Dass
@@ -170,6 +196,58 @@ sed_ersatz() {  # $1=text
   s="${s//&/\\&}"
   s="${s//\#/\\#}"
   printf '%s' "$s"
+}
+
+# Der Grund, warum der Arbeitsbaum nicht sauber ist — leer, wenn er es ist.
+# Liest `git status --porcelain` von stdin und trennt die zwei Klassen:
+# Aenderungen an getrackten Dateien und UNTRACKTER Bestand. Beide brechen den
+# Lauf, denn Commit 2 dieses Laufs setzt den Wave-Self-Close-Punkt, den ein
+# Audit liest; die Trennung steht in der Meldung, weil die Abhilfe verschieden
+# ist (committen/stashen gegen aufraeumen/ignorieren).
+# Gedeckt von test/archive-welle.bats.
+unsauber_grund() {
+  local zeile getrackt=0 untrackt=0
+  while IFS= read -r zeile; do
+    [ -n "$zeile" ] || continue
+    case "$zeile" in
+      '?? '*) untrackt=$((untrackt + 1)) ;;
+      *)      getrackt=$((getrackt + 1)) ;;
+    esac
+  done
+  if [ "$getrackt" -gt 0 ] && [ "$untrackt" -gt 0 ]; then
+    printf '%d Aenderung(en) an getrackten Dateien und %d untrackte Datei(en)\n' "$getrackt" "$untrackt"
+  elif [ "$getrackt" -gt 0 ]; then
+    printf '%d Aenderung(en) an getrackten Dateien\n' "$getrackt"
+  elif [ "$untrackt" -gt 0 ]; then
+    printf '%d untrackte Datei(en)\n' "$untrackt"
+  fi
+}
+
+# Der Suchraum fuer beide `git grep`-Laeufe dieses Skripts, als Pathspec-Liste.
+# Ausgenommen ist ALLEIN die vendored Baseline — unveraenderter Fremdtext, in
+# .d-check.yml unter scan.ignore und vom Doku-Gate nie gelesen.
+# docs/reviews/** steht NICHT darin: die Zeitdokumente sind in .d-check.yml
+# nur von codepaths und ids befreit, `links`/`anchors` pruefen jeden
+# Markdown-Link dort wie ueberall sonst — und Reports verlinken einander quer
+# ueber Wellen-Grenzen. Ein bleibender Report, der auf einen verschwindenden
+# zeigt, faerbt `make docs-check` rot; genau das faengt die Haenger-Vorpruefung
+# fail-closed ab. Gedeckt von test/archive-welle.bats.
+grep_suchraum() {
+  printf '%s\n' ':!.harness/baseline'
+}
+
+# Aus der Trefferliste (stdin) die HAENGER: jede verweisende Datei, die den
+# Lauf ueberlebt. Wer selbst verschwindet — die eingesammelten Slices, der
+# Welle-Plan und die anderen zu loeschenden Review-Reports — traegt danach
+# keinen lebenden Verweis mehr. Gibt "<datei> -> <ziel>" je Haenger aus.
+# Gedeckt von test/archive-welle.bats.
+haenger_filtern() {  # $1=ziel-basename $2=verschwindende pfade, leerzeichen-getrennt
+  local ziel="$1" weg=" $2 " t
+  while IFS= read -r t; do
+    [ -n "$t" ] || continue
+    case "$weg" in *" $t "*) continue ;; esac
+    printf '%s -> %s\n' "$t" "$ziel"
+  done
 }
 
 # Der Rohtext hinter dem Kopf-Feld `**Welle:**`, aus der ERSTEN Zeile, die es
@@ -242,19 +320,76 @@ rewrite_bare_sibling_in_file() {  # $1=datei $2=base $3=praefix
   printf '%d\n' "$n"
 }
 
-# Die Slice-Nummer aus einem Dateinamen ("slice-170-titel.md" -> "170").
+# EINGEHEND aufsteigend: ein Link-Ziel der Form "](../<base>)" in einer Datei
+# unter done/<welle-x>/ zeigt eine Ebene hoeher — auf eine Datei, die flach in
+# done/ liegt. Zieht diese Datei mit diesem Lauf nach done/<welle-neu>/,
+# bekommt das Ziel das Verzeichnis-Segment dazwischen.
+# Diese Form schreibt das Werkzeug SELBST: slice_pfad_relativ() liefert fuer
+# einen Folge-Slice, der noch flach in done/ liegt, genau "../<datei>.md", und
+# feld_hervorgegangen() setzt sie als Markdown-Link in den Stub. Die beiden
+# anderen Regeln erreichen sie nicht — die Praefix-Regel ankert am Literal
+# "done/", das hier fehlt, und die geschwister-relative laeuft ueber die
+# flachen done/*.md. Gibt die Anzahl der umgehaengten Vorkommen auf stdout aus.
+# Gedeckt von test/archive-welle.bats.
+rewrite_parent_relative_in_file() {  # $1=datei $2=base $3=welle-id
+  local file="$1" base="$2" welle="$3" esc_base n
+  esc_base="$(re_escape "$base")"
+  n="$(grep -oE "\\]\\(\\.\\./$esc_base\\)" "$file" 2>/dev/null | wc -l | tr -d ' ')"
+  if [ "$n" -gt 0 ]; then
+    sed -i -E "s#\\]\\(\\.\\./$esc_base\\)#](../${welle}/${base})#g" "$file"
+  fi
+  printf '%d\n' "$n"
+}
+
+# Die Slice-Nummer aus einem Dateinamen, MIT dem Buchstaben-Suffix, den ein
+# Re-Schnitt vergibt ("slice-170-titel.md" -> "170",
+# "slice-001a-cli-skeleton.md" -> "001a"). Der Suffix gehoert zur Identitaet:
+# er traegt die H1 des Stubs und die Grenze, an der die Review-Reports
+# eingesammelt werden. Gedeckt von test/archive-welle.bats.
 slice_nummer() {  # $1=basename
-  printf '%s' "$1" | sed -n 's/^slice-\([0-9][0-9]*\).*/\1/p'
+  printf '%s' "$1" | sed -n 's/^slice-\([0-9][0-9]*[A-Za-z]*\).*/\1/p'
+}
+
+# Die Review-Reports zu einer Slice-Nummer. Der Glob sammelt, die Grenze
+# entscheidet: hinter der Nummer darf kein Buchstabe und keine Ziffer stehen,
+# sonst zoege "slice-001" die Reports von "slice-001a" mit — und liegen die
+# zwei Haelften eines Re-Schnitts in verschiedenen Wellen, loeschte die erste
+# Archivierung die Reports der zweiten. Gedeckt von test/archive-welle.bats.
+reviews_zu_nummer() {  # $1=nummer $2=reviews-verzeichnis
+  local nr="$1" dir="$2" r
+  for r in "$dir"/*"slice-$nr"*.md; do
+    [ -e "$r" ] || continue
+    basename "$r" | grep -qE "slice-$nr([^0-9A-Za-z]|\$)" || continue
+    printf '%s\n' "$r"
+  done
 }
 
 # Der Titel aus der H1-Zeile, ohne die Kennung davor. Getroffen werden die
 # Formen "# Slice slice-NNN: T", "# slice-NNN — T", "# Welle welle-NN: T" und
 # "# welle-NN — T"; traegt die Zeile keine Kennung, bleibt sie ganz stehen.
+# Alle vier sind in test/archive-welle.bats gedeckt, die Gedankenstrich-Formen
+# zusaetzlich unter LC_ALL=C: der Trenner steht als ALTERNATIVE (:|—|-) und
+# nicht in einer Klammer [:—-]. Eine Klammer zerlegt das Drei-Byte-Zeichen in
+# drei Einzelbytes, sobald das Locale des Aufrufers keine Multibyte-Zeichen
+# kennt — und das Skript laeuft auf dem Host, nur das Packen im Container.
 titel_von() {  # $1=datei
   head -n 1 "$1" \
     | sed -E -e 's/^#[[:space:]]*//' \
              -e 's/^(Slice|Welle)[[:space:]]+//' \
-             -e 's/^(slice|welle)-[0-9]+[A-Za-z0-9-]*[[:space:]]*[:—-][[:space:]]*//'
+             -e 's/^(slice|welle)-[0-9]+[A-Za-z0-9-]*[[:space:]]*(:|—|-)[[:space:]]*//'
+}
+
+# Der Rueckweg nach einem Abbruch ZWISCHEN den zwei Commits. Zu diesem
+# Zeitpunkt steht Commit 1 (der reine Move), archiv.zip liegt untrackt im Baum
+# und die Stubs stehen ungestagt daneben — ein zweiter Aufruf scheitert dann an
+# zwei eigenen Vorpruefungen zugleich ("Arbeitsbaum nicht sauber" und "schon
+# archiviert"). Darum nennt der Abbruch den Weg zurueck, statt den Baum in
+# einem Zustand zu lassen, aus dem das Werkzeug selbst nicht herausfuehrt.
+abbruch_nach_commit1() {  # $1=welle-id
+  echo "archive-welle: Abbruch nach Commit 1 (reiner Move) — der Baum traegt den Move, archiv.zip und die Stubs." >&2
+  echo "  Zurueck auf den Stand vor dem Lauf:" >&2
+  echo "    git reset --hard HEAD~1 && git clean -fd -- $DONE/$1" >&2
+  exit 4
 }
 
 # Das Abschluss-Datum eines Slice: die Closure-Notiz traegt es in ihrer
@@ -391,8 +526,10 @@ main() {
 
   cd "$(dirname "$0")/../.."
 
-  if ! git diff --quiet || ! git diff --cached --quiet; then
-    echo "archive-welle: Arbeitsbaum nicht sauber — erst committen oder stashen (das Skript committet selbst, siehe Skriptkopf VORAUSSETZUNG)" >&2
+  local unsauber
+  unsauber="$(git status --porcelain | unsauber_grund)"
+  if [ -n "$unsauber" ]; then
+    echo "archive-welle: Arbeitsbaum nicht sauber ($unsauber) — erst committen, stashen oder aufraeumen (das Skript committet selbst, siehe Skriptkopf VORAUSSETZUNG)" >&2
     exit 2
   fi
 
@@ -460,31 +597,39 @@ main() {
 
   # Review-Reports zu den eingesammelten Slices: der Dateiname traegt die
   # Nummer. Sie bekommen keinen Stub — sie haben keine Identitaet neben ihrem
-  # Slice.
+  # Slice. `sort -u`, weil ein Report die Nummern mehrerer eingesammelter
+  # Slices tragen kann und die Zahl sonst zweimal zaehlte, was sie einmal ist —
+  # sie steht im Welle-Stub als Mass fuer die Vollstaendigkeit des Archivs.
   local -a reviews=()
   local nr r
-  for f in "${slices[@]}"; do
-    nr="$(slice_nummer "$(basename "$f")")"
-    [ -n "$nr" ] || continue
-    for r in "$REVIEWS"/*"slice-$nr"*.md; do
-      [ -e "$r" ] && reviews+=("$r")
-    done
-  done
+  while IFS= read -r r; do
+    [ -n "$r" ] || continue
+    reviews+=("$r")
+  done < <(
+    for f in "${slices[@]}"; do
+      nr="$(slice_nummer "$(basename "$f")")"
+      [ -n "$nr" ] || continue
+      reviews_zu_nummer "$nr" "$REVIEWS"
+    done | LC_ALL=C sort -u
+  )
+
+  local -a suchraum=()
+  local t
+  while IFS= read -r t; do suchraum+=("$t"); done < <(grep_suchraum)
 
   # Ein zu loeschender Review-Report darf keinen lebenden Verweis mehr tragen:
   # dahinter stehen unter anderem nach AGENTS.md 3.4 eingefrorene ADRs, in
   # denen der Bruch nicht behebbar waere. Vor jeder Mutation pruefen.
   local -a haenger=()
-  local rb treffer t
+  local rb verschwindend
+  verschwindend="${slices[*]} $plan ${reviews[*]:-}"
   for r in "${reviews[@]:-}"; do
     [ -n "$r" ] || continue
     rb="$(basename "$r")"
-    treffer="$(git grep -l -F -e "$rb" -- ':!.harness/baseline' ':!docs/reviews' 2>/dev/null || true)"
     while IFS= read -r t; do
       [ -n "$t" ] || continue
-      case " ${slices[*]} $plan " in *" $t "*) continue ;; esac
-      haenger+=("$t -> $rb")
-    done <<< "$treffer"
+      haenger+=("$t")
+    done < <(git grep -l -F -e "$rb" -- "${suchraum[@]}" 2>/dev/null | haenger_filtern "$rb" "$verschwindend" || true)
   done
   if [ "${#haenger[@]}" -gt 0 ]; then
     echo "archive-welle: ein Review-Report soll verschwinden, auf den noch verwiesen wird:" >&2
@@ -543,7 +688,7 @@ main() {
       "s#<welle-id | ohne Welle>#$(sed_ersatz "$wellefeld")#g" \
       "s#<JJJJ-MM-TT>#$(geschlossen_datum "$ziel/$base" "$wdatum")#g" \
       "s#<BEO-\*, ADR-\*, Folge-Slice — oder .— keine —.>#$(sed_ersatz "$(feld_hervorgegangen "$ziel/$base" "$WELLE")")#g"
-    stub_form_ok "$ziel/$base"
+    stub_form_ok "$ziel/$base" || abbruch_nach_commit1 "$WELLE"
   done
 
   # Welle-Stub. Die Ergebnisnotiz bleibt flach, eine Ebene hoeher.
@@ -554,39 +699,67 @@ main() {
     "s#<JJJJ-MM-TT>#$wdatum#g" \
     "s#<welle-id>-results\.md#[$WELLE-results.md](../$WELLE-results.md)#g" \
     "s#<N Slices, M Reviews>#${#slices[@]} Slices, ${#reviews[@]} Reviews#g"
-  stub_form_ok "$ziel/$planbase"
+  stub_form_ok "$ziel/$planbase" || abbruch_nach_commit1 "$WELLE"
 
   if [ "${#reviews[@]}" -gt 0 ]; then
     git rm -q -- "${reviews[@]}"
   fi
 
-  # ---- Verweis-Nachzug, beide Formen --------------------------------------
+  # ---- Verweis-Nachzug, alle drei Formen ----------------------------------
   local -a bewegte=()
   for f in "${slices[@]}" "$plan"; do bewegte+=("$(basename "$f")"); done
 
-  local praefix_treffer=0 bare_treffer=0 rf n
+  # `beruehrt` sammelt DATEIEN, nicht Fundstellen: eine Datei kann Verweise auf
+  # mehrere bewegte Dateien tragen und stuende sonst mehrfach in der Zahl, die
+  # der Lauf am Ende als "Datei(en)" ausgibt. Dieselbe Liste stagt Commit 2.
+  local -a beruehrt=()
+  local bare_treffer=0 parent_treffer=0 rf n
   for base in "${bewegte[@]}"; do
     while IFS= read -r rf; do
       [ -n "$rf" ] || continue
       rewrite_incoming_in_file "$rf" "$base" "done" "done/$WELLE"
-      praefix_treffer=$((praefix_treffer + 1))
-    done < <(git grep -l -F -e "done/$base" -- ':!.harness/baseline' 2>/dev/null || true)
+      beruehrt+=("$rf")
+    done < <(git grep -l -F -e "done/$base" -- "${suchraum[@]}" 2>/dev/null || true)
 
     # Geschwister-relativ: die Dateien, die flach in done/ liegen bleiben.
     for rf in "$DONE"/*.md; do
       [ -e "$rf" ] || continue
       n="$(rewrite_bare_sibling_in_file "$rf" "$base" "$WELLE/")"
-      bare_treffer=$((bare_treffer + n))
+      if [ "$n" -gt 0 ]; then bare_treffer=$((bare_treffer + n)); beruehrt+=("$rf"); fi
+    done
+
+    # Aufsteigend: die Dateien in den Welle-Verzeichnissen — die Stubs frueher
+    # archivierter Wellen und die dieses Laufs. Ihre "](../<datei>)"-Ziele
+    # zeigen auf die flache done/-Ebene, aus der die bewegte Datei gerade
+    # verschwindet.
+    for rf in "$DONE"/*/*.md; do
+      [ -e "$rf" ] || continue
+      n="$(rewrite_parent_relative_in_file "$rf" "$base" "$WELLE")"
+      if [ "$n" -gt 0 ]; then parent_treffer=$((parent_treffer + n)); beruehrt+=("$rf"); fi
     done
   done
 
-  git add -A
+  local -a beruehrt_uniq=()
+  while IFS= read -r rf; do
+    [ -n "$rf" ] || continue
+    beruehrt_uniq+=("$rf")
+  done < <(printf '%s\n' "${beruehrt[@]:-}" | sed '/^$/d' | LC_ALL=C sort -u)
+
+  # Explizite Pfade statt `git add -A`: Archiv, Stubs und die beruehrten
+  # Dateien — und sonst nichts. Die Loeschung der Review-Reports ist von
+  # `git rm` oben schon gestagt. Der Wave-Self-Close-Commit ist der eine Punkt,
+  # an dem ein Audit die Welle schliessen sieht; fremder Inhalt hat darin
+  # nichts zu suchen, auch nicht der, den die Vorpruefung schon ausschliesst.
+  local -a zu_stagen=("$ziel/archiv.zip")
+  for base in "${bewegte[@]}"; do zu_stagen+=("$ziel/$base"); done
+  [ "${#beruehrt_uniq[@]}" -gt 0 ] && zu_stagen+=("${beruehrt_uniq[@]}")
+  git add -- "${zu_stagen[@]}"
   git commit -q -m "archive-welle: $WELLE  Archiv, Stubs und Verweis-Nachzug (Inhalt, getrennt vom Move — AGENTS.md §3.3)"
 
   echo "archive-welle ok: $WELLE"
   echo "  Commit 1 (reiner Move): ${#slices[@]} Slice(s) + Welle-Plan nach $ziel/"
   echo "  Commit 2 (Inhalt): archiv.zip ($(wc -c < "$ziel/archiv.zip") Bytes), $((${#slices[@]} + 1)) Stub(s), ${#reviews[@]} Review-Report(s) entfernt"
-  echo "  Verweise: $praefix_treffer Datei(en) mit Praefix-Form, $bare_treffer geschwister-relative Ziel(e)"
+  echo "  Verweise: ${#beruehrt_uniq[@]} Datei(en) nachgezogen ($bare_treffer geschwister-relative, $parent_treffer aufsteigende Ziel(e))"
   echo "  Naechster Schritt: make docs-check — er zeigt, was Grenze 2 und 3 (Skriptkopf) haben stehen lassen."
 }
 

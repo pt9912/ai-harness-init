@@ -61,6 +61,83 @@ kopf() {  # $1=datei $2=welle-feld-inhalt
   [ "$(klasse_von "$TMP/a.md" welle-02)" = "mitglied" ]
 }
 
+# ---- Einsammel-Regel: die Review-Reports -----------------------------------
+
+@test "Nummer: der Buchstaben-Suffix eines Re-Schnitts gehoert zur Identitaet" {
+  load_functions
+  [ "$(slice_nummer slice-170-titel.md)" = "170" ]
+  [ "$(slice_nummer slice-001a-cli-skeleton.md)" = "001a" ]
+  [ "$(slice_nummer slice-001b-cli-flags.md)" = "001b" ]
+}
+
+@test "Review-Reports: die Suffix-Grenze — slice-001 zieht slice-001a NICHT mit" {
+  load_functions
+  mkdir -p "$TMP/rev"
+  : > "$TMP/rev/2026-01-01-slice-001-review.md"
+  : > "$TMP/rev/2026-01-02-slice-001a-review.md"
+  : > "$TMP/rev/2026-01-03-slice-001b-review.md"
+  run reviews_zu_nummer 001 "$TMP/rev"
+  [ "$status" -eq 0 ]
+  [ "$(printf '%s\n' "$output" | grep -c .)" -eq 1 ]
+  [[ "$output" == *"slice-001-review.md"* ]]
+  run reviews_zu_nummer 001a "$TMP/rev"
+  [ "$(printf '%s\n' "$output" | grep -c .)" -eq 1 ]
+  [[ "$output" == *"slice-001a-review.md"* ]]
+}
+
+# ---- Vorbedingung: der saubere Arbeitsbaum --------------------------------
+
+@test "Arbeitsbaum: ein leeres Porcelain nennt keinen Grund" {
+  load_functions
+  # Ueber `run`, nicht ueber eine Kommando-Ersetzung: die verschluckt den
+  # Status, und ein Fall, der eine LEERE Ausgabe erwartet, waere sonst auch
+  # dann gruen, wenn es die Funktion gar nicht gibt.
+  run bash -c "printf '' | { source '$SCRIPT'; unsauber_grund; }"
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
+
+@test "Arbeitsbaum: UNTRACKTE Dateien allein sind schon ein Grund" {
+  load_functions
+  run bash -c "printf '?? FREMDE-UNTRACKED-DATEI.txt\n?? scratch/notiz.md\n' | { source '$SCRIPT'; unsauber_grund; }"
+  [ "$status" -eq 0 ]
+  [ "$output" = "2 untrackte Datei(en)" ]
+}
+
+@test "Arbeitsbaum: getrackte und untrackte Klasse werden getrennt genannt" {
+  load_functions
+  run bash -c "printf ' M harness/tools/x.sh\nA  neu.md\n?? scratch.txt\n' | { source '$SCRIPT'; unsauber_grund; }"
+  [ "$status" -eq 0 ]
+  [ "$output" = "2 Aenderung(en) an getrackten Dateien und 1 untrackte Datei(en)" ]
+}
+
+# ---- Haenger-Vorpruefung: Suchraum und Filter -----------------------------
+
+@test "Haenger-Suchraum: docs/reviews ist NICHT ausgenommen, die vendored Baseline schon" {
+  load_functions
+  run grep_suchraum
+  [ "$status" -eq 0 ]
+  [[ "$output" == *':!.harness/baseline'* ]]
+  # Ein Report verlinkt den anderen; links/anchors pruefen das Verzeichnis.
+  [[ "$output" != *'docs/reviews'* ]]
+}
+
+@test "Haenger-Filter: ein BLEIBENDER Report, der auf einen verschwindenden zeigt, ist ein Haenger" {
+  load_functions
+  weg="docs/reviews/2026-07-22-slice-032-review.md docs/plan/planning/done/slice-032-x.md"
+  run bash -c "printf 'docs/reviews/2026-07-23-slice-034-review.md\n' | { source '$SCRIPT'; haenger_filtern 2026-07-22-slice-032-review.md '$weg'; }"
+  [ "$status" -eq 0 ]
+  [ "$output" = "docs/reviews/2026-07-23-slice-034-review.md -> 2026-07-22-slice-032-review.md" ]
+}
+
+@test "Haenger-Filter: wer selbst verschwindet, ist kein Haenger (Gegenprobe)" {
+  load_functions
+  weg="docs/reviews/a.md docs/reviews/b.md docs/plan/planning/done/slice-032-x.md"
+  run bash -c "printf 'docs/reviews/a.md\ndocs/plan/planning/done/slice-032-x.md\n' | { source '$SCRIPT'; haenger_filtern b.md '$weg'; }"
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
+
 # ---- Stub-Form ------------------------------------------------------------
 
 @test "Stub-Form: Zeiger da und keine Abschnittsueberschrift -> gruen" {
@@ -127,6 +204,27 @@ EOF
   grep -qF '[a](../done/slice-901-x.md)' "$TMP/probe.md"
 }
 
+@test "eingehend aufsteigend: '](../<datei>)' im Stub bekommt das Welle-Segment" {
+  load_functions
+  # Genau die Form, die feld_hervorgegangen() fuer einen flach in done/
+  # liegenden Folge-Slice selbst in den Stub schreibt.
+  printf '**Hervorgegangen:** [slice-901](../slice-901-x.md)\n' > "$TMP/stub.md"
+  run rewrite_parent_relative_in_file "$TMP/stub.md" "slice-901-x.md" "welle-42"
+  [ "$status" -eq 0 ]
+  [ "$output" = "1" ]
+  grep -qF '[slice-901](../welle-42/slice-901-x.md)' "$TMP/stub.md"
+}
+
+@test "eingehend aufsteigend: Geschwister-Form und Praefix-Form bleiben unberuehrt (Gegenprobe)" {
+  load_functions
+  printf '[a](slice-901-x.md)\n[b](../../done/slice-901-x.md)\n' > "$TMP/probe.md"
+  run rewrite_parent_relative_in_file "$TMP/probe.md" "slice-901-x.md" "welle-42"
+  [ "$status" -eq 0 ]
+  [ "$output" = "0" ]
+  grep -qF '[a](slice-901-x.md)' "$TMP/probe.md"
+  grep -qF '[b](../../done/slice-901-x.md)' "$TMP/probe.md"
+}
+
 # ---- Stub-Felder ----------------------------------------------------------
 
 @test "Titel und Nummer kommen aus H1 und Dateiname" {
@@ -140,6 +238,16 @@ EOF
   load_functions
   printf '# Welle welle-42: Der Titel der Welle\n' > "$TMP/a.md"
   [ "$(titel_von "$TMP/a.md")" = "Der Titel der Welle" ]
+}
+
+@test "Titel: die zwei Gedankenstrich-Formen tragen auch unter LC_ALL=C" {
+  load_functions
+  printf '# slice-901 — Ein Titel mit Gedankenstrich\n' > "$TMP/s.md"
+  printf '# welle-42 — Der Titel der Welle\n' > "$TMP/w.md"
+  run bash -c "export LC_ALL=C; source '$SCRIPT'; titel_von '$TMP/s.md'; titel_von '$TMP/w.md'"
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "Ein Titel mit Gedankenstrich" ]
+  [ "${lines[1]}" = "Der Titel der Welle" ]
 }
 
 @test "Geschlossen: das Datum der Closure-Notiz sticht den Ersatzwert" {
@@ -216,9 +324,12 @@ EOF
 }
 
 # main() — Einsammeln ueber dem echten Baum, die Zwei-Commit-Sequenz, das
-# Packen im gepinnten Bild, das Loeschen der Review-Reports und die vier
-# fail-closed-Ausgaenge (Altbestand ohne Untergrenze · lebender Verweis auf
-# einen zu loeschenden Review-Report · schon archiviert · unsauberer Baum)
-# brauchen `git` und `docker`; das gepinnte BATS_IMAGE fuehrt beides nicht.
-# Der Beleg dafuer steht darum im Skriptkopf (harness/tools/archive-welle.sh,
-# Abschnitt BELEG) als Lauf ueber einem eigenen Scratch-Repo.
+# Packen im gepinnten Bild, das Loeschen der Review-Reports und JEDER
+# fail-closed-Ausgang brauchen `git` und `docker`; das gepinnte BATS_IMAGE
+# fuehrt beides nicht. Der Beleg dafuer steht darum im Skriptkopf
+# (harness/tools/archive-welle.sh, Abschnitt BELEG) als Lauf ueber einem
+# eigenen Scratch-Repo; dort steht auch die Aufzaehlung der Ausgaenge samt dem
+# Kommando, das sie zaehlt — eine zweite Auszaehlung hier driftete gegen sie.
+# Was die Faelle oben pruefen, sind die reinen Funktionen, auf denen die
+# Ausgaenge urteilen: unsauber_grund (Vorbedingung), grep_suchraum und
+# haenger_filtern (Haenger-Vorpruefung), stub_form_ok (Stub-Form).
