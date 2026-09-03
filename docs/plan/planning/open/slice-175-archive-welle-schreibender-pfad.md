@@ -42,7 +42,7 @@ ist einzeln lieferbar.
 
 `ai-harness-init archive-welle` schreibt: Move und Commit 1, das Zip aus der Standardbibliothek,
 beide Stub-Arten aus der vendored Vorlage, den Nachzug der in
-[slice-173](../in-progress/slice-173-archive-welle-als-unterkommando.md) gefundenen Verweise, explizites
+[slice-173](../done/slice-173-archive-welle-als-unterkommando.md) gefundenen Verweise, explizites
 Staging und Commit 2. Mit demselben Lauf zeigt `make archive-welle` auf den Träger, und der
 Shell-Helfer samt seinem bats-Satz geht — Festlegung 2 aus
 [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) bindet die Ablösung an genau
@@ -67,7 +67,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       statt `-A` (rot: `-A` stagen, eine untrackte Fremddatei danebenlegen) und der aufsteigende
       Stub-Verweis (`../<datei>.md`) wird beim **Folgelauf** nachgezogen (rot: die aufsteigende
       Ersetzungsrichtung entfernen). Zusammen mit den zwei lesenden aus
-      [slice-173](../in-progress/slice-173-archive-welle-als-unterkommando.md) ist Folgepflicht 1 jener
+      [slice-173](../done/slice-173-archive-welle-als-unterkommando.md) ist Folgepflicht 1 jener
       ADR damit erfüllt.
 - [ ] **`make archive-welle` fährt den Träger, und er ist der einzige** — Festlegung 2 und die
       Folgepflichten 2–4: `harness/tools/archive-welle.sh` und `test/archive-welle.bats` sind
@@ -110,12 +110,12 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-173](../in-progress/slice-173-archive-welle-als-unterkommando.md) liegt in `done/` — vorher gibt
+[slice-173](../done/slice-173-archive-welle-als-unterkommando.md) liegt in `done/` — vorher gibt
 es weder das Einsammeln noch den Verweis-Fund, auf denen der schreibende Pfad aufsetzt.
 
 **Dieser Slice ist der tragende Vorgänger von
 [slice-174](../open/slice-174-archivierung-emittieren.md), nicht
-[slice-173](../in-progress/slice-173-archive-welle-als-unterkommando.md).** Dessen §4 nennt heute noch
+[slice-173](../done/slice-173-archive-welle-als-unterkommando.md).** Dessen §4 nennt heute noch
 slice-173; nach diesem Schnitt ist das zu früh: Folgepflicht 5 aus
 [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) lässt den emittierten
 Anweisungssatz erst auf das Kommando zeigen, *wenn es läuft*, und ein Vorschau-Zweig archiviert

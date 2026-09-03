@@ -210,7 +210,7 @@ Backticks).
   Plandateien, `make docs-check` meldete **7** `target-missing`. Neu: `BEO-027` (Zusammenfassung
   stärker als die zusammengefasste Quelle), 1×, Beleg `slice-172`. `BEO-017` ist in §6 zitiert
   und **nicht** erhöht: der Risiko-Ausgang dort ist *entfallen*, also kein neues Auftreten.
-- **Folge-Slices:** keiner geschnitten. [slice-173](../in-progress/slice-173-archive-welle-als-unterkommando.md)
+- **Folge-Slices:** keiner geschnitten. [slice-173](../done/slice-173-archive-welle-als-unterkommando.md)
   und [slice-174](../open/slice-174-archivierung-emittieren.md) liegen vor diesem Lauf in `open/`
   und sind die Umsetzung dieser Entscheidung, nicht ihr Ergebnis; ihr Umfang deckt sich mit den
   Festlegungen 1–4 (Port, Ablösung des Shell-Helfers, Stub-Quelle, Reichweite ins Ziel).

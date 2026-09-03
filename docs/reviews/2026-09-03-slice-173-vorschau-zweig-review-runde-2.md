@@ -5,7 +5,7 @@
 | **Rolle** | Reviewer (Modul 8/10) — frischer Kontext, getrennt von Implementation, Architektur und Planung |
 | **Review-Art** | Nachprüfung der Runde-1-Findings am geänderten Diff. **Nicht** DoD-Abhakung und **keine** Gate-Lauf-Bestätigung (Verifier, Modul 11) |
 | **Gegenstand** | `git diff c876d6a..HEAD` — vier Implementations-Commits `244db38` (Suchraum), `6b40c5c` (Fixture-Namen), `0358995` (Suchraum-Kommando im README), `760370d` (Dateityp-Achse der relativen Formen) |
-| **Plan** | [`docs/plan/planning/in-progress/slice-173-archive-welle-als-unterkommando.md`](../plan/planning/in-progress/slice-173-archive-welle-als-unterkommando.md) |
+| **Plan** | [`docs/plan/planning/done/slice-173-archive-welle-als-unterkommando.md`](../plan/planning/done/slice-173-archive-welle-als-unterkommando.md) |
 | **Vorherige Findings am gleichen Modul** | [`2026-09-03-slice-173-vorschau-zweig-review.md`](2026-09-03-slice-173-vorschau-zweig-review.md) (1 HIGH, 4 MEDIUM, 4 LOW, 3 INFO); davor [`2026-09-03-slice-170-impl-review.md`](2026-09-03-slice-170-impl-review.md) und [`…-runde-2.md`](2026-09-03-slice-170-impl-review-runde-2.md) an der Shell-Fassung |
 | **Bindende ADRs** | [ADR-0033](../plan/adr/0033-wellen-archivierung-als-unterkommando.md) (**`Proposed`**; Abnahme-Kriterium 1 und die Fitness-Function-Tabelle sind Prüfmaßstab, weil der Plan sie als solchen nennt), [ADR-0022](../plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 2, [ADR-0003](../plan/adr/0003-go-native-binaries.md) |
 | **Anforderungen** | [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten); [`AGENTS.md`](../../AGENTS.md) §3.2, §3.6, §3.7, §3.9; [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) |
@@ -202,7 +202,7 @@ Slice-Closure"*). Der anders ausgegangene Risiko-1-Ausgang gehört ebenfalls dor
 
 - **kategorie:** LOW
 - **quelle:** [`AGENTS.md`](../../AGENTS.md) §3.7 (*Rang-Zeiger*)
-- **pfad:** [`docs/plan/planning/in-progress/slice-173-archive-welle-als-unterkommando.md`](../plan/planning/in-progress/slice-173-archive-welle-als-unterkommando.md) §6, dritter Risiko-Punkt
+- **pfad:** [`docs/plan/planning/done/slice-173-archive-welle-als-unterkommando.md`](../plan/planning/done/slice-173-archive-welle-als-unterkommando.md) §6, dritter Risiko-Punkt
 - **befund:** Der Eintrag begründet *„Die Neufassung des Kriteriums ist Planner-Arbeit"* mit
   `modul-08-agentenrollen.md` §Rollen-Regeln. Dieser Abschnitt nennt **Planner** kein einziges Mal
   (`sed -n '/^### Rollen-Regeln (Modul 8)/,/^<a id=/p' .harness/baseline/v5.18.0/regelwerk/modul-08-agentenrollen.md | grep -c 'Planner'`
