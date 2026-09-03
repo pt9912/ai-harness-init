@@ -24,9 +24,8 @@ die Folgepflichten 1–4).
 
 **Berührte Spec-Stellen:** `—`.
 
-**Verantwortlich:** `—` bis zur Priorisierung (Baseline-Regelwerk
-`modul-05-planning-harness.md` §Lifecycle als State Machine — das Feld wird beim Übergang
-`open` → `next` gesetzt).
+**Verantwortlich:** Implementation (ai-harness-init-Team, pt9912) — gesetzt beim Übergang
+`open` → `next` (Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine).
 
 **Autor:** Planner. **Datum:** 2026-09-03.
 

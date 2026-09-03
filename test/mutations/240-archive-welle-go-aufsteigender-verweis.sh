@@ -13,7 +13,6 @@
 # Archivierungslauf zieht dieses Ziel eine Ebene tiefer, der Link zeigt ins
 # Leere, und keine der beiden anderen Regeln erreicht ihn — die Praefix-Regel
 # ankert am Literal "done/", das hier fehlt, die geschwister-relative laeuft
-# ueber die flachen done/*.md. Der Nachfolger dieses Falls in der
-# Shell-Fassung.
+# ueber die flachen done/*.md.
 set -euo pipefail
 sed -i 's|"](\.\./"+welleID+"/"+base+")"|"](../"+base+")"|' internal/archive/refs.go

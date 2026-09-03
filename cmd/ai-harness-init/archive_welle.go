@@ -191,10 +191,10 @@ func gitStatusPorcelain(root string) (string, error) {
 	return string(b), nil
 }
 
-// gitLsFiles liefert den Suchraum der Verweis-Vorpruefung: jeden Pfad, den der
-// Index fuehrt. Es ist dieselbe Menge, ueber der der schreibende Traeger sein
-// `git grep` fuehrt — ohne Dateityp-Einschraenkung, damit die Vorschau denselben
-// Verweis sieht wie er. Ausgenommen wird nichts an dieser Stelle: die
+// gitLsFiles liefert den Suchraum beider Zweige: jeden Pfad, den der Index
+// fuehrt, ohne Dateityp-Einschraenkung. Der zaehlende und der schreibende Zweig
+// bekommen dieselbe Liste — die Vorschau sieht damit denselben Verweis, den der
+// Lauf umhaengt. Ausgenommen wird nichts an dieser Stelle: die
 // Ausnahme-Menge steht in archive.AusgenommenePfade und gilt dort fuer jeden
 // Eingang. -z, weil ein Dateiname ein Zeilenende tragen darf.
 func gitLsFiles(root string) ([]string, error) {

@@ -135,9 +135,10 @@ func untergrenzeSperre(b Bestand) []Sperre {
 	}}
 }
 
-// Schreibe rendert den Bericht als Text. Die vier Einsammel-Zahlen stehen in
-// derselben Reihenfolge und mit derselben Bedeutung wie beim Shell-Helfer, damit
-// ein Vorschau-Lauf gegen ihn haltbar ist.
+// Schreibe rendert den Bericht als Text. Beide Zweige geben ihn aus — der
+// Vorschau-Lauf als sein Ergebnis, der schreibende als seine Vorpruefung —, und
+// die vier Einsammel-Zahlen stehen darin in der Reihenfolge Mitglieder ·
+// wellenlos · fremd · Review-Reports.
 func Schreibe(b Bericht) string {
 	var sb strings.Builder
 	be := b.Bestand

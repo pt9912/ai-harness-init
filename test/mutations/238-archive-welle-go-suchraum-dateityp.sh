@@ -6,13 +6,13 @@
 # Zieht eine zweite Achse in den Suchraum ein, in dem das Unterkommando nach
 # lebenden Verweisen sucht: nur noch `.md`.
 #
-# Der schreibende Traeger sucht denselben Verweis mit `git grep` in JEDER
-# getrackten Datei ausser der Baseline — die Pathspec kennt keine Endung. Im
-# Bestand tragen Shell-Hooks und -Helfer, Go-Kommentare, Mutations-Faelle und
-# bats-Dateien Verweise auf Review-Reports. Mit der Verengung meldete die
-# Vorschau "Sperren: keine — der schreibende Lauf liefe" und gaebe Exit 0 aus,
-# waehrend der Traeger mit Exit 3 abbraeche. Das ist die teuerste Fehlerrichtung
-# dieses Zweigs: er sagt zu, vorherzusagen, was die Archivierung taete.
+# Der Suchraum ist der GIT-INDEX, ohne Endungs-Filter: im Bestand tragen
+# Shell-Hooks und -Helfer, Go-Kommentare, Mutations-Faelle und bats-Dateien
+# Verweise auf Review-Reports. Mit der Verengung meldet die Vorpruefung
+# "Sperren: keine" — und weil der schreibende Zweig genau diese Vorpruefung
+# fahrt, laeuft er durch, loescht den Report und laesst einen lebenden Verweis
+# ins Leere zeigen. Das Rot kommt dann von `make docs-check`, nach zwei Commits,
+# und in einer nach AGENTS.md 3.4 eingefrorenen Datei ist es nicht behebbar.
 #
 # Die Verengung faellt nicht von selbst auf. Sie steht an einer anderen Stelle
 # als die Ausnahme-Menge, gegen die der bestehende Suchraum-Fall

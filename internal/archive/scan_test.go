@@ -78,12 +78,12 @@ func TestHaengerFindetVerweisAusReviewReport(t *testing.T) {
 }
 
 // TestHaengerFindetVerweisAusNichtMarkdownDatei haelt die zweite Achse des
-// Suchraums: der schreibende Traeger sucht mit `git grep` in JEDER getrackten
-// Datei ausser der Baseline, ohne Ruecksicht auf die Endung. Im Bestand tragen
-// Shell-Hooks und -Helfer, Go-Kommentare, Mutations-Faelle und bats-Dateien
-// Verweise auf Review-Reports; ein Suchraum nur aus `.md` meldete "der
-// schreibende Lauf liefe", waehrend jener mit Exit 3 abbraeche. Die vier
-// Fixture-Namen sind je ein Vertreter dieser vier Klassen.
+// Suchraums: gesucht wird in JEDER getrackten Datei ausser der Baseline, ohne
+// Ruecksicht auf die Endung. Im Bestand tragen Shell-Hooks und -Helfer,
+// Go-Kommentare, Mutations-Faelle und bats-Dateien Verweise auf Review-Reports;
+// ein Suchraum nur aus `.md` liesse den Lauf durchgehen und das Rot erst nach dem
+// Commit an `make docs-check` entstehen. Die vier Fixture-Namen sind je ein
+// Vertreter dieser vier Klassen.
 // Gegenbeispiel: test/mutations/238-archive-welle-go-suchraum-dateityp.sh.
 func TestHaengerFindetVerweisAusNichtMarkdownDatei(t *testing.T) {
 	root, ziel, _ := baumMitReports(t)

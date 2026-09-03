@@ -102,16 +102,16 @@ func TestVerweisFundDreiFormenInIhremSuchraum(t *testing.T) {
 }
 
 // TestVerweisFundPraefixAusNichtMarkdownDatei: die Praefix-Form ankert am
-// Literal "done/" und gilt in jedem Dateityp — der schreibende Traeger zieht sie
-// mit `git grep` ohne Endungs-Filter nach und stagt die getroffene Datei in
-// seinen Inhalts-Commit. Zwei Dateien des Bestands stehen fuer die Klasse:
+// Literal "done/" und gilt in jedem Dateityp — der Nachzug haengt sie ohne
+// Endungs-Filter um und stagt die getroffene Datei in den Inhalts-Commit.
+// Zwei Dateien des Bestands stehen fuer die Klasse:
 // `Dockerfile`, aus dem `make test`, `make lint` und `make build` ihre Stages
 // ziehen, und eine bats-Datei. Nennt die Vorschau sie nicht, ist ihr
 // Blast-Radius kleiner als das, was der Lauf anfasst.
 // Gegenbeispiel: test/mutations/238-archive-welle-go-suchraum-dateityp.sh.
 // Die Fixture-Namen sind ERFUNDEN, obwohl der Bestand echte traegt. Ein echter
 // Name in dieser Datei stuende im Blast-Radius des naechsten Laufs, und der
-// schreibende Traeger zoege ihn nach — der Fall risse sich damit selbst um.
+// Nachzug haengte ihn um — der Fall risse sich damit selbst um.
 func TestVerweisFundPraefixAusNichtMarkdownDatei(t *testing.T) {
 	root := t.TempDir()
 	schreibe(t, filepath.Join(root, "Dockerfile"),
@@ -138,8 +138,8 @@ func TestVerweisFundPraefixAusNichtMarkdownDatei(t *testing.T) {
 // TestVerweisFundUebergehtDenEigenenUmzugsgegenstand: die praefixlose Form zaehlt
 // nicht in einer Datei, die dieser Lauf selbst mitnimmt. Zwei Mitglieder
 // derselben Welle, die einander geschwister-relativ verlinken, wandern gemeinsam
-// nach done/<welle-id>/; ihre Links bleiben gueltig, und der schreibende Traeger
-// fasst sie nicht an. Wer sie zaehlt, meldet einen zu grossen Blast-Radius.
+// nach done/<welle-id>/; ihre Links bleiben gueltig, und der Nachzug fasst sie
+// nicht an. Wer sie zaehlt, meldet einen zu grossen Blast-Radius.
 func TestVerweisFundUebergehtDenEigenenUmzugsgegenstand(t *testing.T) {
 	root := t.TempDir()
 	done := filepath.Join(root, "docs", "plan", "planning", "done")

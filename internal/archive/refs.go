@@ -75,7 +75,7 @@ func ZaehleAufsteigend(inhalt, base string) int {
 //
 // ABGRENZUNG: die praefixlose Form zaehlt nicht in einer Datei, die dieser Lauf
 // SELBST nach done/<welle-id>/ zoege. Ihre Geschwister-Links bleiben nach dem
-// gemeinsamen Umzug gueltig, und der schreibende Traeger fasst sie nicht an.
+// gemeinsamen Umzug gueltig, und der Nachzug fasst sie nicht an.
 // TestVerweisFundUebergehtDenEigenenUmzugsgegenstand haelt das.
 //
 // GRENZE: gefunden wird, was an einer dieser drei Formen ankert. Ein eingehender

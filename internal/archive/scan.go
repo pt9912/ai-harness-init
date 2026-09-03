@@ -12,15 +12,14 @@ import (
 
 // AusgenommenePfade nennt die repo-relativen Praefixe AUSSERHALB des Suchraums,
 // in dem dieses Paket nach Verweisen sucht. Die Menge ist geschlossen und steht
-// an dieser einen Stelle; wer sie erweitert, verengt beide Leser zugleich — die
-// Haenger-Vorpruefung und den Verweis-Fund.
+// an dieser einen Stelle; wer sie erweitert, verengt alle drei Leser zugleich —
+// die Haenger-Vorpruefung, den Verweis-Fund und den Verweis-Nachzug.
 //
 // Sie ist die EINZIGE Achse, an der der Suchraum verengt ist. Eine Dateityp-Achse
-// gibt es nicht: gesucht wird in jeder uebergebenen Datei, `.md` oder nicht —
-// dieselbe Menge, in der der schreibende Traeger sucht (`git grep` kennt keine
-// Endungs-Einschraenkung). Ein Verweis auf ein verschwindendes Zeitdokument steht
-// im Bestand auch in Shell-Hooks und -Helfern, in Go-Kommentaren, in
-// Mutations-Faellen und in bats-Dateien.
+// gibt es nicht: gesucht wird in jeder uebergebenen Datei, `.md` oder nicht. Ein
+// Verweis auf ein verschwindendes Zeitdokument steht im Bestand auch in
+// Shell-Hooks und -Helfern, in Go-Kommentaren, in Mutations-Faellen und in
+// bats-Dateien.
 // TestHaengerFindetVerweisAusNichtMarkdownDatei und
 // TestVerweisFundPraefixAusNichtMarkdownDatei decken beide Leser;
 // test/mutations/238-archive-welle-go-suchraum-dateityp.sh nimmt die Achse weg.
@@ -53,14 +52,14 @@ func Ausgenommen(rel string) bool {
 
 // Suchraum ist die Menge der Dateien, in denen dieses Paket nach Verweisen sucht:
 // die uebergebenen repo-relativen Pfade ohne die ausgenommenen Praefixe,
-// sortiert und ohne Doppel. Beide Leser dieses Pakets fuehren jede Liste durch
+// sortiert und ohne Doppel. Jeder Leser dieses Pakets fuehrt jede Liste durch
 // diese Funktion, damit die Ausnahme-Menge oben fuer jeden Eingang gilt.
 //
 // KOPPLUNG: die Liste liefert der Aufrufer aus dem GIT-INDEX (`git ls-files`) —
-// dieselbe Menge, ueber der der schreibende Traeger sein `git grep` fuehrt.
+// eine Menge, die der zaehlende und der schreibende Zweig gemeinsam bekommen.
 // Damit steht sie ohne git-Aufruf in diesem Paket, und was der Index nicht
 // fuehrt — Ignoriertes unter `.harness/state/`, `bin/`, `dist/` und jede
-// untrackte Datei —, liegt fuer beide Fassungen ausserhalb.
+// untrackte Datei —, liegt fuer beide ausserhalb.
 func Suchraum(dateien []string) []string {
 	out := make([]string, 0, len(dateien))
 	gesehen := make(map[string]bool, len(dateien))

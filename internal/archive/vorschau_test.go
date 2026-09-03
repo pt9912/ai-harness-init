@@ -151,8 +151,8 @@ func TestVorschauSperrtOhnePlanUndOhneErgebnisnotiz(t *testing.T) {
 }
 
 // TestSchreibeNenntDieVierZahlenUndDieSperren: die Ausgabe traegt die vier
-// Einsammel-Zahlen in derselben Bedeutung wie der Shell-Helfer und nennt jede
-// Sperre mit ihrer Kennung.
+// Einsammel-Zahlen — Mitglieder, wellenlos, fremd, Review-Reports — und nennt
+// jede Sperre mit ihrer Kennung.
 func TestSchreibeNenntDieVierZahlenUndDieSperren(t *testing.T) {
 	root := vollstaendigerBaum(t)
 	b := vorschauVon(t, root, "welle-10", "?? scratch.txt\n")

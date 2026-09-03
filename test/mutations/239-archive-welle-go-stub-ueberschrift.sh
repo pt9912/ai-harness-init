@@ -10,6 +10,6 @@
 #
 # Das Rot kaeme sonst nirgends her. Ein Zip ist opak, kein Gate liest hinein,
 # und ein Stub mit voller Sektion sieht im Diff aus wie ein Slice, der eben
-# nicht archiviert wurde. Der Nachfolger dieses Falls in der Shell-Fassung.
+# nicht archiviert wurde.
 set -euo pipefail
 sed -i 's/^\t\tif strings.HasPrefix(zeile, "##") {$/\t\tif false \&\& strings.HasPrefix(zeile, "##") {/' internal/archive/stub.go
