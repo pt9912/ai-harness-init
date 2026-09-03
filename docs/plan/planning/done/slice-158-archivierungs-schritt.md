@@ -157,7 +157,7 @@ Backticks).
 **Rolle:** Planner. **Datum:** 2026-09-03.
 
 **Die Entscheidung: Schritt 4 läuft in diesem Repo, und seine Start-Bedingung ist beobachtbar —
-[slice-170](../open/slice-170-archivierungs-werkzeug.md) (Archivierungs-Werkzeug) liegt in `done/`.**
+[slice-170](../next/slice-170-archivierungs-werkzeug.md) (Archivierungs-Werkzeug) liegt in `done/`.**
 Sie steht dort, wo sie gelesen wird: in Schritt 4 der zwei Anweisungssätze. Keine benannte
 Abweichung, also kein `MR-<NNN>`: Die Bedingung kommt aus der Quelle selbst — *„Ob das Archiv
 vollständig ist, bezeugt nur der Archivierungs-Commit — deshalb gehört die Operation in ein Werkzeug
@@ -208,7 +208,7 @@ Setzung 2).
 - **Beobachtungs-Register (`../observations.md`):** `BEO-009` auf 8× erhöht, Beleg slice-158
   ergänzt — der Baum-Tausch bewegte die Ableitung (die Quelle führt sechs Schritte), die Zusage
   *„fünf Schritte"* stand daneben unverändert weiter, und kein Gate sieht sie.
-- **Folge-Slices:** [slice-170](../open/slice-170-archivierungs-werkzeug.md) (Das
+- **Folge-Slices:** [slice-170](../next/slice-170-archivierungs-werkzeug.md) (Das
   Archivierungs-Werkzeug der Wellen-Closure) — ist eine Datei in `open/`, ohne Wellen-Zugehörigkeit
   und darum kein Mitglied von [welle-14](welle-14-re-baseline.md).
 - **Risiken aus §6:** zwei, je genau ein Ausgang, beide **entfallen** — mit Begründung in §6 selbst.
