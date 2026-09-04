@@ -9,7 +9,7 @@
 | **Runde 2** | [`2026-09-04-slice-175-schreibender-pfad-review-runde-2.md`](2026-09-04-slice-175-schreibender-pfad-review-runde-2.md) — 1 HIGH, 1 MEDIUM |
 | **Runde 3** | [`2026-09-04-slice-175-schreibender-pfad-review-runde-3.md`](2026-09-04-slice-175-schreibender-pfad-review-runde-3.md) — 1 HIGH (Verdrahtung `echterEingang()`) |
 | **Runde 4** | [`2026-09-04-slice-175-schreibender-pfad-review-runde-4.md`](2026-09-04-slice-175-schreibender-pfad-review-runde-4.md) — 1 HIGH (Bedien-Einstieg `Makefile:322`), 1 MEDIUM, 1 LOW |
-| **Plan** | [`docs/plan/planning/in-progress/slice-175-archive-welle-schreibender-pfad.md`](../plan/planning/in-progress/slice-175-archive-welle-schreibender-pfad.md) |
+| **Plan** | [`docs/plan/planning/done/slice-175-archive-welle-schreibender-pfad.md`](../plan/planning/done/slice-175-archive-welle-schreibender-pfad.md) |
 | **Bindende ADRs** | [ADR-0033](../plan/adr/0033-wellen-archivierung-als-unterkommando.md) (**`Proposed`**, Prüfmaßstab laut Plan), [ADR-0011](../plan/adr/0011-telemetrie-erfassung-policy.md) (**`Accepted`**), [ADR-0028](../plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) (**`Accepted`**), [ADR-0022](../plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md), [ADR-0003](../plan/adr/0003-go-native-binaries.md) |
 | **Anforderungen** | [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit); [`AGENTS.md`](../../AGENTS.md) §3.2, §3.6, §3.7, §3.8, §3.9; [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) |
 | **Skill-Version** | `.harness/skills/reviewer.md` 1.6.0 |

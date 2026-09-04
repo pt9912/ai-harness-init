@@ -4,7 +4,7 @@
 |---|---|
 | **Rolle** | Verifier (Modul 8/11) — frischer Kontext, getrennt von Implementation, Review und Planung |
 | **Frage** | „Bauen wir es richtig?" — gegen Plan (§2 DoD, §5 Closure-Trigger) und ADR-0033. **Nicht** Plan-vs.-Diff auf Maintainability-Ebene (das ist Reviewer) und **nicht** gegen realen Bedarf (das ist Validator) |
-| **Gegenstand** | `docs/plan/planning/in-progress/slice-175-archive-welle-schreibender-pfad.md`, Code-Stand HEAD `007fdc7`, letzter Implementer-Commit `987d520` |
+| **Gegenstand** | `docs/plan/planning/done/slice-175-archive-welle-schreibender-pfad.md`, Code-Stand HEAD `007fdc7`, letzter Implementer-Commit `987d520` |
 | **Eingang** | DoD-Bestätigung + Sensor-Belege aus der Commit-Message von `987d520` und den sieben Review-Runden `docs/reviews/2026-09-04-slice-175-schreibender-pfad-review{,-runde-{2..7}}.md` |
 | **Bindende ADRs** | [ADR-0033](../plan/adr/0033-wellen-archivierung-als-unterkommando.md) (**Proposed** — Prüfmaßstab laut Plan, Acceptance-Trigger nicht Gegenstand dieser Verifikation), [ADR-0028](../plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md), [ADR-0022](../plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md), [ADR-0003](../plan/adr/0003-go-native-binaries.md) |
 | **Anforderungen** | [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |

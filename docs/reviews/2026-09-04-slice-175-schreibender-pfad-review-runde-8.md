@@ -6,7 +6,7 @@
 | **Review-Art** | **Schmale Runde, kein Voll-Review.** Nachprüfung der zwei Punkte, an denen Runde 7 blockierte, mit **selbst gebauten** Sonden. **Nicht** DoD-Abhakung und **keine** Gate-Lauf-Bestätigung (Verifier, Modul 11) |
 | **Gegenstand** | `git show 987d520` — vier Dateien (`test/mutations/256-hostbin-zweite-nennung-in-derselben-zeile.sh` +18/−11, `test/unterkommando-kopplung.bats` +14/−2, `test/mutations/261-dispatch-marke-nur-im-kommentar.sh` neu, `harness/README.md` ein Absatz) |
 | **Runde 7** | [`2026-09-04-slice-175-schreibender-pfad-review-runde-7.md`](2026-09-04-slice-175-schreibender-pfad-review-runde-7.md) — 0 HIGH, 1 MEDIUM, 1 LOW; Verdikt *nicht freigegeben* |
-| **Plan** | [`docs/plan/planning/in-progress/slice-175-archive-welle-schreibender-pfad.md`](../plan/planning/in-progress/slice-175-archive-welle-schreibender-pfad.md) |
+| **Plan** | [`docs/plan/planning/done/slice-175-archive-welle-schreibender-pfad.md`](../plan/planning/done/slice-175-archive-welle-schreibender-pfad.md) |
 | **Bindende ADRs** | [ADR-0033](../plan/adr/0033-wellen-archivierung-als-unterkommando.md) (**`Proposed`**, Prüfmaßstab laut Plan), [ADR-0011](../plan/adr/0011-telemetrie-erfassung-policy.md) (**`Accepted`**), [ADR-0022](../plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md), [ADR-0003](../plan/adr/0003-go-native-binaries.md) |
 | **Anforderungen** | [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit); [`AGENTS.md`](../../AGENTS.md) §3.2, §3.6, §3.7, §3.8, §3.9 |
 | **Skill-Version** | `.harness/skills/reviewer.md` 1.6.0 |

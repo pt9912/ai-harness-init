@@ -5,7 +5,7 @@
 | **Rolle** | Reviewer (Modul 8/10) — frischer Kontext, getrennt von Implementation, Architektur und Planung |
 | **Review-Art** | Diff gegen Plan und Hard Rules. **Nicht** DoD-Abhakung und **keine** Gate-Lauf-Bestätigung (Verifier, Modul 11) |
 | **Gegenstand** | `git diff a795e53..ef18c90` — drei Implementations-Commits `1e18b7e` (schreibender Pfad in `internal/archive` + `cmd/`), `f85e9a4` (Ablösung: Helfer, bats-Satz, sieben Mutations-Fälle, `Makefile`, `.d-check.yml`, `harness/README.md`), `ef18c90` (neun Kommentare + Kopf-Feld `Verantwortlich:`) |
-| **Plan** | [`docs/plan/planning/in-progress/slice-175-archive-welle-schreibender-pfad.md`](../plan/planning/in-progress/slice-175-archive-welle-schreibender-pfad.md) |
+| **Plan** | [`docs/plan/planning/done/slice-175-archive-welle-schreibender-pfad.md`](../plan/planning/done/slice-175-archive-welle-schreibender-pfad.md) |
 | **Vorherige Findings am gleichen Modul** | [`2026-09-03-slice-173-vorschau-zweig-review.md`](2026-09-03-slice-173-vorschau-zweig-review.md) · [`2026-09-03-slice-173-vorschau-zweig-review-runde-2.md`](2026-09-03-slice-173-vorschau-zweig-review-runde-2.md) · [`2026-09-03-slice-170-impl-review.md`](2026-09-03-slice-170-impl-review.md) — dieselbe Operation, lesender Zweig bzw. Shell-Fassung. Deren tragende Klasse `BEO-025` (*Zusage nennt einen Geltungsbereich, den der Code darunter nicht hält; in ihrer schärfsten Form nennt sie einen Sensor, der die Form nicht sieht*) steht im [Register](../plan/planning/observations.md) offen |
 | **Bindende ADRs** | [ADR-0033](../plan/adr/0033-wellen-archivierung-als-unterkommando.md) (**`Proposed`** — Architect-Verdikt, das der Port als Constraint liest; ihre drei Abnahme-Kriterien, Festlegung 2 und 3 und die fünf Folgepflichten sind hier Prüfmaßstab, weil der Plan sie als solchen nennt), [ADR-0028](../plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) (**`Accepted`** — Eigentum am Anweisungssatz), [ADR-0022](../plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md), [ADR-0003](../plan/adr/0003-go-native-binaries.md) |
 | **Anforderungen** | [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten); [`AGENTS.md`](../../AGENTS.md) §3.2, §3.3, §3.6, §3.7, §3.9; [`MR-009`](../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile), [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) |
@@ -108,7 +108,7 @@ unten sind darum **gemessen grün unter der Mutation**, nicht aus dem Test-Besta
   Modus-Begründung (*„erreicht der Eintrag mit diesem Slice 3×, ist er keine Notiz mehr, sondern
   eine Lücke und braucht einen eigenen Folge-Slice"*) ·
   [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-- **pfad:** [`…/slice-175-archive-welle-schreibender-pfad.md`](../plan/planning/in-progress/slice-175-archive-welle-schreibender-pfad.md)
+- **pfad:** [`…/slice-175-archive-welle-schreibender-pfad.md`](../plan/planning/done/slice-175-archive-welle-schreibender-pfad.md)
   Zeile 160 und 168 (§6) sowie Zeile 220-222 (§8)
 - **befund:** §8 und §6 führen `BEO-009` mit **8×** und `BEO-025` mit **1×**; das
   [Register](../plan/planning/observations.md) führt sie mit **9×** bzw. **2×**
