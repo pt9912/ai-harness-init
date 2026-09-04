@@ -316,6 +316,15 @@ func TestParseArchiveWelleGewinntDenSchalterAusDemArgument(t *testing.T) {
 // TestArchiveWelleAufrufFehler: fehlende Kennung, unbekanntes Flag und zwei
 // Kennungen sind Aufruf-Fehler (Exit 2) mit Usage auf stderr; --help ist Exit 0
 // mit Usage auf stdout.
+//
+// Der Fall „leeres Argument" ist die Form, die der Bedien-Einstieg erzeugt: das
+// Rezept von `make archive-welle` gibt `"$(WELLE)"` weiter, und ohne gesetztes
+// WELLE ist das eine leere Zeichenkette — ein Argument, das die Schleife
+// durchlaeuft, im Gegensatz zum leeren Argument-FELD daneben. Beide enden auf
+// derselben Pruefung nach der Schleife.
+// Gegenbeispiel: test/mutations/255-archive-welle-go-leere-kennung-akzeptiert.sh
+// ersetzt sie durch eine Laengen-Pruefung ueber dem Argument-Feld — das leere
+// Feld bleibt dann Exit 2, die leere Kennung laeuft weiter.
 func TestArchiveWelleAufrufFehler(t *testing.T) {
 	faelle := []struct {
 		name string
@@ -323,6 +332,7 @@ func TestArchiveWelleAufrufFehler(t *testing.T) {
 		want int
 	}{
 		{"ohne Argument", []string{}, 2},
+		{"leeres Argument", []string{""}, 2},
 		{"nur --vorschau", []string{"--vorschau"}, 2},
 		{"unbekanntes Flag", []string{"--bogus", "welle-10"}, 2},
 		{"zwei Kennungen", []string{"--vorschau", "welle-10", "welle-11"}, 2},
@@ -394,5 +404,42 @@ func TestSubkommandoRouting_ArchiveWelleFaelltNichtInDenInitPfad(t *testing.T) {
 			namen = append(namen, e.Name())
 		}
 		t.Fatalf("Arbeitsverzeichnis nach dem Lauf = %v, want nur .git — der Zweig hat in den schreibenden Init-Pfad durchgereicht", namen)
+	}
+}
+
+// TestSubkommandoRouting_UnbekannterNameSchreibtNicht misst dieselbe Gefahr eine
+// Stufe frueher, am Namen selbst: `archive-well` ist der Bedien-Einstieg um
+// einen Buchstaben gekuerzt. Er trifft den switch in main() nicht und ist in
+// run() ein Positionsargument — dahinter liegt der Bootstrap, der in das
+// Arbeitsverzeichnis schreibt.
+//
+// Der Fall faehrt den Traeger als PROZESS in einem leeren Repo und misst genau
+// das, was ein Aufrufer sieht: Exit-Code, stdout und den Bestand des
+// Arbeitsverzeichnisses. Der Unterschied zu
+// TestInitPfadNimmtKeinPositionsargument ist der Eingang, nicht die Zusage —
+// dort kommt der Name als Argument-Feld an run(), hier ueber die Kommandozeile
+// eines echten Prozesses; und diese Strecke ist die, die das Makefile-Ziel
+// `archive-welle` faehrt.
+func TestSubkommandoRouting_UnbekannterNameSchreibtNicht(t *testing.T) {
+	root := newRoot(t)
+	stdout, err := runChild(t, root, "archive-well", "")
+
+	var ee *exec.ExitError
+	if !errors.As(err, &ee) || ee.ExitCode() != 2 {
+		t.Fatalf("Exit %v, want 2 (Aufruf-Fehler) — ein unbekannter Unterkommando-Name endet nicht im Bootstrap", err)
+	}
+	if stdout != "" {
+		t.Errorf("stdout nicht leer: %q", stdout)
+	}
+	eintraege, lerr := os.ReadDir(root)
+	if lerr != nil {
+		t.Fatal(lerr)
+	}
+	if len(eintraege) != 1 || eintraege[0].Name() != ".git" {
+		namen := make([]string, 0, len(eintraege))
+		for _, e := range eintraege {
+			namen = append(namen, e.Name())
+		}
+		t.Fatalf("Arbeitsverzeichnis nach dem Lauf = %v, want nur .git — der vertippte Name ist in den schreibenden Init-Pfad durchgefallen", namen)
 	}
 }

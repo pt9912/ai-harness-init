@@ -113,7 +113,8 @@ type sources struct {
 // vorher ab. Fuer den Schreiber ist die Stelle tragend (seine Klemme muss den
 // ganzen Prozess ueberdecken), fuer die zwei anderen ist sie es nicht: sie loesen
 // ihre Repo-Wurzel selbst auf, statt das targetDir dieser Funktion zu nehmen. Wer
-// run() direkt mit einem ihrer Namen ruft, landet im Init-Pfad.
+// run() direkt mit einem ihrer Namen ruft, bekommt Exit 2 — hier ist der Name ein
+// Positionsargument, und der Init-Pfad nimmt keines.
 func run(args []string, targetDir string, src sources, stdout, stderr io.Writer) int {
 	// Subkommando-Dispatch (slice-037): `add-lang <sprache> <pfad>` ist der wiederholbare
 	// Mono-Repo-Pfad; alles andere ist der Default-Init. Die Unterscheidung steht VOR dem
@@ -137,6 +138,29 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 	case err != nil:
 		// unbekanntes Flag u. a. → Usage auf stderr, Exit 2.
 		fmt.Fprintln(stderr, "Fehler:", err)
+		fmt.Fprint(stderr, usage)
+		return 2
+	}
+
+	// ZUSAGE: der Init-Pfad nimmt Flags und sonst nichts. Was fs.Parse als
+	// Positionsargument stehen laesst, endet hier mit Exit 2, und bootstrap()
+	// unten laeuft nicht. Das ist die Sperre fuer den vertippten
+	// Unterkommando-Namen: `archive-well` trifft den switch in main() nicht und
+	// kommt hier an, und dahinter legt bootstrap() ein Repo im
+	// Arbeitsverzeichnis an — mit Exit 0, also ununterscheidbar von einem
+	// gelungenen Aufruf. Der Aufrufer, der diese Namen aus einer zweiten Quelle
+	// bezieht, ist das Makefile-Ziel `archive-welle`.
+	// Gedeckt von TestInitPfadNimmtKeinPositionsargument (netzlos, direkt an
+	// run()) und TestSubkommandoRouting_UnbekannterNameSchreibtNicht (der
+	// Traeger als Prozess in einem leeren Verzeichnis);
+	// test/mutations/253-archive-welle-go-init-pfad-positionsargument.sh nimmt
+	// sie weg.
+	//
+	// ABGRENZUNG: der Name wird nicht auf Aehnlichkeit zu einem bekannten
+	// geprueft und keiner erraten. Die Meldung nennt das Token und druckt die
+	// Usage, die jedes Unterkommando fuehrt (TestUsageNenntAlleDreiUnterkommandos).
+	if fs.NArg() > 0 {
+		fmt.Fprintf(stderr, "Fehler: unbekanntes Argument %q — der Init-Pfad nimmt nur Flags; Unterkommandos siehe unten\n", fs.Arg(0))
 		fmt.Fprint(stderr, usage)
 		return 2
 	}

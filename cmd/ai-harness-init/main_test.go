@@ -588,3 +588,44 @@ func TestRun_AddLangExcessArg(t *testing.T) {
 		t.Fatalf("add-lang mit ueberzaehligem Arg exit %d, want 2", code)
 	}
 }
+
+// TestInitPfadNimmtKeinPositionsargument misst die Sperre in run() dort, wo sie
+// netzlos und eindeutig ist: ein Argument, das kein Flag ist, ist ein
+// Aufruf-Fehler (Exit 2), und das Zielverzeichnis bleibt leer.
+//
+// Der gemessene Eingang ist ein VERTIPPTER Unterkommando-Name. Er trifft weder
+// den switch in main() noch den add-lang-Zweig, kommt als Positionsargument bei
+// fs.Parse an — und ohne die Sperre laeuft dahinter der Bootstrap, der in das
+// Arbeitsverzeichnis SCHREIBT. Die Namen der drei Faelle sind die drei
+// Unterkommandos des Traegers, je um einen Buchstaben gekuerzt; sie stehen fuer
+// jeden Namen, den ein Aufrufer aus einer zweiten Quelle bezieht.
+//
+// Die Verzeichnis-Pruefung ist die tragende: Exit 2 allein bekaeme man auch von
+// einem Bootstrap, der unterwegs scheitert.
+// Gegenbeispiel: test/mutations/253-archive-welle-go-init-pfad-positionsargument.sh.
+func TestInitPfadNimmtKeinPositionsargument(t *testing.T) {
+	for _, arg := range []string{"archive-well", "span-repor", "add-lan"} {
+		t.Run(arg, func(t *testing.T) {
+			dir := t.TempDir()
+			var out, errb bytes.Buffer
+			code := run([]string{arg, "welle-10"}, dir, testSources(t), &out, &errb)
+			if code != 2 {
+				t.Fatalf("Exit %d fuer %q, want 2 (Aufruf-Fehler) — der Name ist in run() ein Positionsargument, und dahinter liegt der schreibende Init-Pfad; stderr: %q", code, arg, errb.String())
+			}
+			if !strings.Contains(errb.String(), arg) {
+				t.Errorf("stderr nennt das Token %q nicht: %q", arg, errb.String())
+			}
+			eintraege, err := os.ReadDir(dir)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(eintraege) != 0 {
+				namen := make([]string, 0, len(eintraege))
+				for _, e := range eintraege {
+					namen = append(namen, e.Name())
+				}
+				t.Fatalf("Zielverzeichnis nach dem Aufruf = %v, want leer — der Aufruf ist in den schreibenden Init-Pfad durchgefallen", namen)
+			}
+		})
+	}
+}
