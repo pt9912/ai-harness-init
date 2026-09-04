@@ -159,12 +159,15 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       ([`AGENTS.md`](../../../../AGENTS.md) §3.7: ein Kommentar beschreibt, was da ist).
 - [x] `make gates` grün.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — fünf neue Kennungen
-      (`BEO-031`…`BEO-035`) und zwei Zähler-Schritte (`BEO-025` 3× → 4×, `BEO-030` 1× → 2×), alle
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — sechs neue Kennungen
+      (`BEO-031`…`BEO-036`) und zwei Zähler-Schritte (`BEO-025` 3× → 4×, `BEO-030` 1× → 2×), alle
       mit Beleg `slice-180`; eingetragen bei der Slice-Closure, wie §8 den Schreibpunkt setzt (§7,
       Block *Closure — Planner*).
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). *(Läuft am formalen Closure-Schritt — Planner, `in-progress/` → `done/` — noch aus; die Implementer-Übergabe hier ist die Vorarbeit dafür, s. §7.)*
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — nach dem `git mv` gefahren,
+      weil sie in `done/` suchen: Anker entfällt (nichts verkörpert, kein Feld `liegt in <Zielort>`),
+      Folge-Slice grün (sechs genannte Kennungen, alle als Datei im Lifecycle), Register grün in
+      beiden Hälften. Kommandos und Ergebnis in §7, Block *Closure — Planner*.
 
 ## 3. Plan (vor Code)
 
@@ -565,8 +568,8 @@ und Verifikation, s. Kopf dieser Datei und Baseline-Regelwerk `modul-08-agentenr
   §Closure — Planner (Form *neuer Sensor*).
 - **Beobachtungs-Register (`../observations.md`):** vom **Implementer**-Lauf nicht fortgeschrieben —
   §8 dieses Plans hält den Schreibpunkt für die Slice-Closure. Er hinterließ vier Kandidaten-Zeilen
-  unten; eingetragen sind sie samt zwei Zähler-Schritten und einer fünften Zeile beim Closure-Schritt
-  (§Closure — Planner).
+  unten; eingetragen sind sie samt zwei Zähler-Schritten und zwei weiteren Zeilen beim
+  Closure-Schritt (§Closure — Planner).
 - **Folge-Slices:** keine — jedes Risiko trägt einen Ausgang, der entweder abgeschlossen ist
   (entfallen/eingetreten-aufgelöst) oder bereits an einer bestehenden Kennung hängt (`BEO-003`,
   `BEO-007`), ohne einen neuen Träger zu brauchen.
@@ -703,7 +706,7 @@ Lerneintrag-Regeln (zwei beobachtbare Kriterien **und** ein Lerneintrag) · `mod
   GNU-only-Option in einer bats-Zusicherung ist unter dem gepinnten Alpine/BusyBox-Bild unter jeder
   Mutation grün — hat keinen Sensor und liegt als `BEO-034` im Register: **gezählt, nicht
   verkörpert**.
-- **Beobachtungs-Register fortgeschrieben** ([`../observations.md`](../observations.md)) — fünf neue
+- **Beobachtungs-Register fortgeschrieben** ([`../observations.md`](../observations.md)) — sechs neue
   Kennungen und zwei Zähler-Schritte, alle mit Beleg `slice-180`:
   - `BEO-031` (§6 Risiko 1) · `BEO-032` (Risiko 2) · `BEO-033` (Risiko 6) · `BEO-034` (Risiko 8) —
     die vier vorbereiteten Kandidaten oben, unverändert in der Sache, mit den vorgeschlagenen
@@ -713,6 +716,9 @@ Lerneintrag-Regeln (zwei beobachtbare Kriterien **und** ein Lerneintrag) · `mod
     Bestand in `docs/reviews/**` sind Zeitdokumente, ein Umzug bräche eingehende Verweise, und
     keine Quelle verbietet der Reviewer-Form ihren freien Gegenstands-Teil — die Reparatur wäre
     eine Verschärfung einer der beiden Vorgaben und damit eine Entscheidung, kein Nachzug.
+  - `BEO-036` (neu, im Closure-Lauf selbst ausgelöst) — der Verweis-Nachzug des `git mv` ersetzt
+    auch einen Pfad, der als Tree-Operand an einer Commit-Kennung hängt, und macht das Kommando
+    kaputt. Reparatur im selben Lauf, Messung unten.
   - `BEO-025` **3× → 4×**. Geprüft statt angenommen: der Slice hat die Klasse nicht nur benannt,
     sondern in einer **neu geschriebenen** Zusage erzeugt — der Kommentar am
     `isolation_key`-Aufrufpunkt nannte einen Sensor als Träger für den vollen Baum, dessen
@@ -725,7 +731,7 @@ Lerneintrag-Regeln (zwei beobachtbare Kriterien **und** ein Lerneintrag) · `mod
     `slice-175` veraltet; er wird hier **nicht** nachgezogen, weil er der Beleg für den
     Registereintrag ist, den diese Closure schreibt.
 - **Lese-Schritt.** **Keine** Zeile erreicht **mit diesem Slice** 3×: `BEO-025` stand schon darüber
-  und trägt seinen Ausgang, `BEO-030` steht bei 2×, die fünf neuen bei 1×. Vier Wellen sind offen
+  und trägt seinen Ausgang, `BEO-030` steht bei 2×, die sechs neuen bei 1×. Vier Wellen sind offen
   (`ls docs/plan/planning/welle-*.md`), der Schwellen-Lese-Schritt liegt damit bei ihrer Closure und
   nicht hier ([`.claude/commands/implement-slice.md`](../../../../.claude/commands/implement-slice.md)
   Schritt 24). `BEO-017` steht bei 3× ohne Ausgang und benennt dafür selbst die Closure von
@@ -744,8 +750,36 @@ Lerneintrag-Regeln (zwei beobachtbare Kriterien **und** ein Lerneintrag) · `mod
   der Abschnitt sagt das über sich selbst, und ihr Träger ist
   [slice-125](../open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) — kein neuer
   Registereintrag für eine bereits benannte Lücke mit benanntem Träger.
-- **Drei Paarungen (Repo ohne Wellen-Betrieb, dieser Slice):** geprüft **nach** dem `git mv`, weil
-  sie in `done/` suchen — Ergebnis unten.
+- **Drei Paarungen (Repo ohne Wellen-Betrieb, dieser Slice):** gefahren **nach** dem `git mv`, weil
+  sie in `done/` suchen. **(a) Anker-Paarung — entfällt:** die Notiz trägt kein Pflichtfeld
+  `liegt in <Zielort>`; die drei Treffer auf die Zeichenkette sind zwei Nennungen des Feldnamens in
+  seiner Verneinung und ein Satz gewöhnlicher Prosa (`grep -n 'liegt in ' <diese Datei>`) — nichts
+  ist mit diesem Slice verkörpert, also gibt es nichts zu paaren. **(b) Folge-Slice-Paarung — grün:**
+  jede in dieser Datei genannte Slice-Kennung liegt als Datei im Lifecycle, geprüft über den
+  vollständigen Ist-Bestand statt über eine Stichprobe (`grep -ohE 'slice-[0-9]{3}[a-z]?' <diese
+  Datei> \| sort -u`, je Treffer ein `ls docs/plan/planning/{open,next,in-progress,done}/<id>-*.md`)
+  — `slice-056`, `slice-125`, `slice-151`, `slice-175`, `slice-180`, `slice-181`, kein Fehltreffer.
+  **(c) Register-Paarung — grün in beiden Hälften:** jede unter
+  `docs/plan/planning/done/**` zitierte `BEO-<NNN>` hat eine Registerzeile (Differenz der zwei
+  sortierten Mengen leer, `git grep -ohE 'BEO-[0-9]{3}' -- 'docs/plan/planning/done/**'` gegen
+  `grep -oE '^\| BEO-[0-9]{3}' ../observations.md`), und jede Registerzeile trägt mindestens einen
+  Beleg. **Über die Pflicht hinaus gemessen:** für jede Zeile stimmt der Zähler mit der **Anzahl**
+  der Belege überein — die formgebundene Bedingung *so viele wie der Zähler sagt*, die die
+  maschinelle Hälfte der Paarung nicht verlangt. Die Umkehrung *jede Zeile ist irgendwo zitiert* ist
+  nach Baseline-Regelwerk `modul-06-roadmap.md` ausdrücklich **nicht** Gegenstand und ist nicht
+  geprüft.
+- **Ein Befund aus dem Closure-Lauf selbst, im selben Lauf repariert:** Der Verweis-Nachzug des
+  `git mv` hängte einen **Tree-Operanden** um — `git show <sha>:…/in-progress/slice-180-…md` wurde
+  zu `…/done/…`, und für diesen Stand meldet `git` *„befindet sich im Dateisystem, aber nicht in"*
+  der Kennung. Der alte Pfad ist dort der richtige; er ist zurückgesetzt. Der Bestand ist gemessen:
+  **37** Tree-Operanden in den lebenden Markdown-Artefakten, davon war genau der eben erzeugte tot
+  (`git grep -ohE '\b[0-9a-f]{7,40}:[A-Za-z0-9_./-]+\.md' -- '*.md' ':!.harness/baseline' | sort -u`,
+  je Eintrag `git cat-file -e`; keine Erwartungswerte,
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). Die Klasse liegt als `BEO-036` im Register, ihre Zusage-Hälfte — der Skriptkopf von
+  `harness/tools/slice-mv.sh` führt *drei* Grenzen und diese ist die vierte — als zweiter, **nicht
+  gezählter** Fund an `BEO-025`. `make docs-check` meldet über beiden Ständen dasselbe: kein Gate
+  sieht die Klasse.
 
 ## 8. Sub-Area-Modus-Begründung
 
