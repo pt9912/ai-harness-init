@@ -1463,8 +1463,11 @@ main() {
   # und dem Schreiben des Belegs unveraendert bleibt, erzwingt hier NICHTS — die fuenfte
   # fail-closed-Bedingung (Sensor: test/mutate-driver.bats „driver: run_case meldet einen
   # HOST-Treffer und BRICHT AB") deckt nur die `# files:`-Zielpfade (`target_fingerprint`),
-  # nicht die volle Schluessel-Bezugsmenge aus `isolation_key_files` — 57 gegen 1055 Pfade,
-  # gemessen. Diese Luecke ist `BEO-025` (`docs/plan/planning/observations.md`), ihr Ausgang
+  # nicht die volle Schluessel-Bezugsmenge aus `isolation_key_files` — gemessen gegen
+  # `sed -n 's/^# files: //p' test/mutations/*.sh | tr ' ' '\n' | sed '/^$/d' | LC_ALL=C sort -u | wc -l`
+  # (Zielpfade) vs. `bash -c "source harness/tools/mutate.sh 2>/dev/null||true; isolation_key_files | wc -l"`
+  # (Schluessel-Menge); keine Erwartungswerte, beide Zahlen wandern mit dem Fall- bzw. Datei-Bestand.
+  # Diese Luecke ist `BEO-025` (`docs/plan/planning/observations.md`), ihr Ausgang
   # ist geplant. Ein nicht berechenbarer Schluessel schaltet NUR den Uebersprung/den Beleg
   # fuer DIESEN Lauf ab, nicht den Lauf selbst — derselbe fail-closed-Vorrang wie bei den
   # Bedingungen 1-5.
