@@ -30,10 +30,10 @@ ein Urteil.**
 ### Der gemessene Anlass
 
 Die vendored Vorlage
-[`conventions.template.md`](../../../../.harness/baseline/v5.18.0/templates/harness/conventions.template.md)
+`conventions.template.md`
 führt **zwei** Tabellen: *Aktive Adaptionen* und daneben *Aufgelöste Adaptionen* mit den Spalten
 `MR | aufgelöst durch`, deren Zeilen auf `conventions/done/` zeigen. Die Eintrags-Vorlage
-[`MR-NNN-titel.template.md`](../../../../.harness/baseline/v5.18.0/templates/harness/conventions/MR-NNN-titel.template.md)
+`MR-NNN-titel.template.md`
 sagt den Mechanismus aus: *„Ist der Auflösungs-Trigger eingetreten, wandert die Datei per `git mv`
 nach `done/`; der Zustand ist die Verzeichnis-Position, kein Status-Feld."*
 [slice-166](../done/slice-166-adaptions-block-wird-ein-verzeichnis.md) hat die erste Tabelle

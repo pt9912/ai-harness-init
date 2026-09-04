@@ -22,7 +22,7 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
 - **Strenges Doc-Gate.** `LH-`/`ADR-`/`MR-`-Kennungen in gescannten `.md` als klickbare Anker-Links —
   die Results-Notiz und die Roadmap werden gescannt.
 - **Neue Artefakte per `cp`** — die Results-Notiz entsteht seit slice-083 per `cp` aus dem vendored
-  `.harness/baseline/v5.18.0/templates/docs/plan/planning/welle-results.template.md` und wird danach
+  `.harness/baseline/v6.0.0/templates/docs/plan/planning/welle-results.template.md` und wird danach
   ausgefüllt; die Welle-Datei bleibt Quelle der Plan-Struktur für alles, was das Template offenlässt.
 - **Commit via Message-Datei** (`git commit -F <datei>`).
 
@@ -43,7 +43,7 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
    **nie** mit einem stillen roten Gate. Keine Carveouts → eine belegte „0 offen"-Feststellung, kein
    Auslassen.
 4. **Schritt 3 — Closure-Notiz `done/<welle-id>-results.md` schreiben** — per `cp` aus
-   `.harness/baseline/v5.18.0/templates/docs/plan/planning/welle-results.template.md`, dann
+   `.harness/baseline/v6.0.0/templates/docs/plan/planning/welle-results.template.md`, dann
    ausgefüllt. Hält fest, *was gelernt wurde*: geliefert · was funktionierte · was anders lief ·
    **Steering-Loop-Einträge** (geschärfte Regel / neuer Sensor / benannte Spec-Lücke) · Folge-Slices ·
    Verifikation (die Belege aus Schritt 1). **Ohne Lerneintrag ist die Welle nicht „fertig", nur

@@ -49,7 +49,7 @@ func courseSet() fs.FS {
 		"docs/plan/planning/roadmap.template.md": f(hint + "# Roadmap\n" + eingebettet + "\n| <welle-NN> | YYYY-MM-DD | [`welle-NN-results.md`](../done/welle-NN-results.md) |\n"),
 		// in scope, Singleton: das Beobachtungs-Register ist die stehende Datei des
 		// Steering Loops, eine je Repo (emit.planTemplates, Weichen-Kommentar).
-		"docs/plan/planning/observations.template.md": f(hint + body),
+		"docs/plan/planning/observation.template.md": f(hint + body),
 		// in scope — Wiederkehrende (LH-FA-02 0.8.0: NICHT emittiert, referenziert
 		// aus der vendored Baseline) und derivative Indexe (nicht emittiert)
 		"docs/plan/adr/NNNN-titel.template.md":       f(hint + body),
@@ -273,7 +273,7 @@ func TestTemplates_EmittierterBestandVollstaendig(t *testing.T) {
 		// Das Beobachtungs-Register: eine stehende Datei je Repo, leer angefangen.
 		// Faellt sie in eine der drei Nicht-Emit-Weichen, fehlt sie hier und der Test
 		// wird rot — der Zahn der Singleton-Entscheidung aus slice-130.
-		"docs/plan/planning/observations.md",
+		"docs/plan/planning/observation.md",
 		"harness/README.md",
 		"harness/conventions.md",
 		"spec/architecture.md",

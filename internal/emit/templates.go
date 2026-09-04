@@ -332,7 +332,7 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 		// Brownfield-Bootstraps.
 		//
 		// WER HIER EINE VORLAGE NICHT EINTRAEGT, ENTSCHEIDET "Singleton" — das ist
-		// die Voreinstellung, und fuer docs/plan/planning/observations.template.md
+		// die Voreinstellung, und fuer docs/plan/planning/observation.template.md
 		// ist sie die richtige: das Beobachtungs-Register ist die stehende Datei des
 		// Steering Loops ("Kopiere nach docs/plan/planning/observations.md", ein Ziel
 		// je Repo, ohne Platzhalter im Pfad), und seine leere Tabelle ist laut

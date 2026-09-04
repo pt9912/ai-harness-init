@@ -55,7 +55,7 @@ Kontext, anderes Prüf-Artefakt).
   **Norm nur im Template-Kommentar** — eine Regel steht im `<!-- -->`-Block eines
   `.template.md` und nirgends sonst, ist beim Adopter also weg, sobald er die
   Kommentare entfernt (kein Gate fängt das,
-  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md)
+  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md)
   §Template-Schichtung); **Kommentar trägt keine der fünf Kommentar-Klassen** — ein
   Kommentar in Code, Config oder Skript beschreibt die verworfene Alternative
   („Ohne X wäre …"), einen abwesenden Text („früher stand hier …") oder bricht mitten

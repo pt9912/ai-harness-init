@@ -213,7 +213,7 @@ Gelesen wird je Eintrag der **Volltext** des Abschnitts, den sein Pflichtfeld
 `Ersetzt-Baseline-Regel` nennt, im Zielstand `v5.18.0` — nicht die Diff-Zeilen
 (`BEO-013`, [Register](../observations.md)). Führt das Feld `keine` (Fork), steht dieselbe Frage
 ohne Adresse: regelt der Zielstand den Gegenstand jetzt selbst? Die fünf Ausgänge stehen in
-[`modul-02-harness-bootstrap.md`](../../../../.harness/baseline/v5.18.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
+`modul-02-harness-bootstrap.md`
 §Freshness-Audit der vendored Baseline (Schritt 2): **gegenstandslos · bleibt gültig · teilweise
 überholt · Bezug entfallen · widerspricht**.
 
