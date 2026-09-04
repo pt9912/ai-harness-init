@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # files: .harness/baseline/v5.18.0/templates/docs/plan/planning/archiv-stub-welle.template.md
-# expect: jeder Platzhalter der Stub-Erzeugung steht in einer der zwei Vorlagen
+# expect: jeder Platzhalter steht in genau der Vorlage, die sein Block fuellt
 # verify: test-bats
 #
 # BENENNT EINEN PLATZHALTER DER VENDORED VORLAGE UM — die Richtung, aus der eine

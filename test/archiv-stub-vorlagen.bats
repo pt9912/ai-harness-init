@@ -9,6 +9,15 @@
 # Form-Aenderung der Baseline erst beim naechsten Archivierungslauf ans Licht —
 # als Stub mit einem stehengebliebenen Platzhalter.
 #
+# JE VORLAGE EINZELN, nicht ueber ihrer Vereinigung. Es gibt zwei Bloecke und
+# zwei Vorlagen, und der Block fuellt GENAU EINE davon: `sliceStub` die
+# Slice-Vorlage, `welleStub` die Welle-Vorlage. Ein Platzhalter, den beide
+# Bloecke ersetzen, steht auch in beiden Vorlagen — eine Umbenennung in genau
+# einer bliebe unter einer Vereinigungs-Frage gruen, waehrend der Lauf dort einen
+# Stub mit stehengebliebenem Platzhalter schriebe. Die Zuordnung Block -> Datei
+# kommt aus den Konstanten, die der Code selbst benutzt, nicht aus einer zweiten
+# Liste hier.
+#
 # GRENZE, benannt statt verschwiegen: geprueft wird die Richtung
 # Code -> Vorlage. Ein Platzhalter, den die Vorlage traegt und der Code nicht
 # ersetzt, faellt hier nicht auf; er faellt im Stub auf, wo er stehen bleibt.
@@ -18,18 +27,33 @@ setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
   QUELLE="$REPO/internal/archive/anwenden.go"
   KONST="$REPO/internal/archive/collect.go"
+  VORLAGEN_KONST="$REPO/internal/archive/stub.go"
   TDIR="$(echo "$REPO"/.harness/baseline/*/templates/docs/plan/planning)"
+  # Die zwei Bloecke, benannt ueber die Konstante, mit der der Code seine Vorlage
+  # waehlt — dieselbe Zeichenkette traegt den Block-Anfang und die Aufloesung des
+  # Dateinamens. Wer eine dritte Stub-Art baut, ohne sie hier zu ergaenzen, faellt
+  # am Deckungs-Fall unten auf.
+  BLOECKE="stubVorlageSlice stubVorlageWelle"
 }
 
-# ersetzungs_zeilen liefert JEDES Ersetzungs-Literal aus den []Ersetzung-Bloecken
-# von sliceStub und welleStub — die Bezugsmenge, ueber die der Fall unten
-# quantifiziert. Sie ist die Zeilen-Menge, nicht eine Auswahl daraus.
+# ersetzungs_zeilen <konstante> liefert die Ersetzungs-Literale GENAU DES Blocks,
+# der die mit dieser Konstante benannte Vorlage fuellt — die Bezugsmenge, ueber
+# die die Faelle unten quantifizieren. Sie ist die Zeilen-Menge dieses Blocks,
+# nicht eine Auswahl daraus und nicht die Vereinigung beider.
 ersetzungs_zeilen() {
-  sed -n '/\[\]Ersetzung{$/,/^\t})$/p' "$QUELLE" | grep -E '^[[:space:]]+\{'
+  sed -n "/$1), \[\]Ersetzung{\$/,/^\t})\$/p" "$QUELLE" | grep -E '^[[:space:]]+\{'
 }
 
-# platzhalter loest jedes dieser Literale in seinen ERSTEN Ausdruck auf — den
-# Platzhalter. Zwei Formen kommen vor, und beide werden getroffen:
+# vorlage_datei <konstante> loest den Dateinamen auf, den der Code unter dieser
+# Konstante fuehrt. Ohne diese Aufloesung stuende die Zuordnung Block -> Datei
+# hier ein zweites Mal und koennte gegen den Code driften.
+vorlage_datei() {
+  sed -n "s/^[[:space:]]*$1[[:space:]]*= \"\(.*\)\"\$/\1/p" "$VORLAGEN_KONST"
+}
+
+# platzhalter <konstante> loest jedes Literal des Blocks in seinen ERSTEN
+# Ausdruck auf — den Platzhalter. Zwei Formen kommen vor, und beide werden
+# getroffen:
 #
 #   {"<NNN>", nummer},                        -> der Zeichenketten-Literal
 #   {"done/<welle-id>/" + archivName, zipRel} -> Literal + Konstante, aufgeloest
@@ -68,7 +92,7 @@ platzhalter() {
         echo "unbekannte Ersetzungs-Form, nicht aufloesbar: $zeile" >&2
         return 1 ;;
     esac
-  done < <(ersetzungs_zeilen)
+  done < <(ersetzungs_zeilen "$1")
 }
 
 @test "beide Stub-Vorlagen liegen im vendored Baum" {
@@ -76,31 +100,46 @@ platzhalter() {
   [ -f "$TDIR/archiv-stub-welle.template.md" ]
 }
 
-# Die Deckungs-Aussage des Falls darunter: die Extraktion loest JEDES
-# Ersetzungs-Literal auf, nicht eine Teilmenge. Ohne diesen Vergleich kann das
-# Muster still enger werden als die Quelle, und „jeder Platzhalter" waere dann
-# eine Quantifizierung ueber eine Menge, die der Test gar nicht sieht.
-@test "die Extraktion loest jedes Ersetzungs-Literal der Go-Quelle auf" {
-  zeilen="$(ersetzungs_zeilen | grep -c . || true)"
-  [ "$zeilen" -ge 5 ]
-  aufgeloest="$(platzhalter | grep -c . || true)"
-  [ "$aufgeloest" -eq "$zeilen" ] || {
-    echo "$aufgeloest von $zeilen Ersetzungs-Literalen aufgeloest" >&2
-    false
-  }
+# Die Deckungs-Aussage des Falls darunter, jetzt je Block: die Extraktion loest
+# JEDES Ersetzungs-Literal auf, nicht eine Teilmenge — und der Block ist nicht
+# leer. Beides ist noetig: ein sed-Bereich, der ins Leere liefe, machte den
+# Vorlagen-Fall unten zu einer Quantifizierung ueber die leere Menge, und die ist
+# immer wahr.
+@test "die Extraktion loest jedes Ersetzungs-Literal beider Bloecke auf" {
+  for k in $BLOECKE; do
+    zeilen="$(ersetzungs_zeilen "$k" | grep -c . || true)"
+    [ "$zeilen" -ge 5 ] || {
+      echo "Block '$k': nur $zeilen Ersetzungs-Literale gefunden — der Bereich greift nicht" >&2
+      false
+    }
+    aufgeloest="$(platzhalter "$k" | grep -c . || true)"
+    [ "$aufgeloest" -eq "$zeilen" ] || {
+      echo "Block '$k': $aufgeloest von $zeilen Ersetzungs-Literalen aufgeloest" >&2
+      false
+    }
+  done
 }
 
-@test "jeder Platzhalter der Stub-Erzeugung steht in einer der zwei Vorlagen" {
+@test "jeder Platzhalter steht in genau der Vorlage, die sein Block fuellt" {
   fehlend=""
-  while IFS= read -r p; do
-    [ -n "$p" ] || continue
-    if ! grep -qF -- "$p" "$TDIR/archiv-stub-slice.template.md" \
-      && ! grep -qF -- "$p" "$TDIR/archiv-stub-welle.template.md"; then
-      fehlend="$fehlend|$p"
-    fi
-  done < <(platzhalter | sort -u)
+  for k in $BLOECKE; do
+    datei="$(vorlage_datei "$k")"
+    [ -n "$datei" ] || {
+      echo "Konstante '$k' ist in ${VORLAGEN_KONST##*/} nicht aufloesbar" >&2
+      false
+    }
+    [ -f "$TDIR/$datei" ] || {
+      echo "Vorlage '$datei' (aus '$k') liegt nicht unter $TDIR" >&2
+      false
+    }
+    while IFS= read -r p; do
+      [ -n "$p" ] || continue
+      grep -qF -- "$p" "$TDIR/$datei" || fehlend="$fehlend
+  $datei: $p"
+    done < <(platzhalter "$k" | sort -u)
+  done
   [ -z "$fehlend" ] || {
-    echo "Platzhalter ohne Entsprechung in den Vorlagen:$fehlend" >&2
+    echo "Platzhalter ohne Entsprechung in der Vorlage, die ihr Block fuellt:$fehlend" >&2
     false
   }
 }
