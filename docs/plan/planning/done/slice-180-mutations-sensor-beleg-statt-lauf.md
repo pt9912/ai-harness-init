@@ -731,11 +731,18 @@ Lerneintrag-Regeln (zwei beobachtbare Kriterien **und** ein Lerneintrag) · `mod
     `slice-175` veraltet; er wird hier **nicht** nachgezogen, weil er der Beleg für den
     Registereintrag ist, den diese Closure schreibt.
 - **Lese-Schritt.** **Keine** Zeile erreicht **mit diesem Slice** 3×: `BEO-025` stand schon darüber
-  und trägt seinen Ausgang, `BEO-030` steht bei 2×, die sechs neuen bei 1×. Vier Wellen sind offen
-  (`ls docs/plan/planning/welle-*.md`), der Schwellen-Lese-Schritt liegt damit bei ihrer Closure und
-  nicht hier ([`.claude/commands/implement-slice.md`](../../../../.claude/commands/implement-slice.md)
-  Schritt 24). `BEO-017` steht bei 3× ohne Ausgang und benennt dafür selbst die Closure von
-  [welle-15](../welle-15-re-baseline.md); diese Slice-Closure bewegt die Zeile nicht.
+  und trägt seinen Ausgang, `BEO-030` steht bei 2×, die sechs neuen bei 1×. **Der
+  Schwellen-Lese-Schritt liegt trotzdem nicht hier:** Das Repo führt Wellen-Betrieb —
+  [`roadmap.md`](../in-progress/roadmap.md) §Offene Wellen trägt **2** Zeiger neben **4** flachen
+  Welle-Dateien (`awk '/^## Offene Wellen/,/^## Nächste Wellen/' docs/plan/planning/in-progress/roadmap.md \| grep -c '^- \[welle-'`
+  gegen `ls docs/plan/planning/welle-*.md \| wc -l`; die Differenz ist die dort erklärte Abweichung,
+  geschnitten vor dem Start-Trigger; keine Erwartungswerte,
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2) —, und für diesen Fall gibt
+  [`.claude/commands/implement-slice.md`](../../../../.claude/commands/implement-slice.md) Schritt 24
+  den Lese-Schritt der laufenden Welle-Closure. `BEO-017` steht bei 3× ohne Ausgang und benennt dafür
+  selbst die Closure von [welle-15](../welle-15-re-baseline.md); diese Slice-Closure bewegt die Zeile
+  nicht.
 - **Ausgang für den offenen Rest aus dem Review (Datei-Modus):** `isolation_key()` hasht Inhalt,
   nicht Metadaten — ein reiner `chmod` bewegt den Schlüssel nicht. Kein Fehlerpfad ist benannt, weil
   jeder Fall über `bash "$case_file"` läuft und kein Bit auswertet. **Weiter offen → Register:** der
