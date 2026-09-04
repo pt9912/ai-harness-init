@@ -212,7 +212,7 @@ Kurs-Klon und der Bestand dieses Repos, beides heute messbar.
   `slice-<KUERZEL>-NNN` zwei weitere Kennungs-Familien, und die stehen hier nicht zur Debatte. Dann
   trennt der Schnitt Verweis-Frage (a/c) und Kennungs-Frage (b).
 - `in-progress` → `open` (blockiert — Carveout?): wenn der Katalog aus
-  [slice-176](../open/slice-176-inventur-vor-dem-schnitt-v600.md) §9 die Register-Position anders
+  [slice-176](../next/slice-176-inventur-vor-dem-schnitt-v600.md) §9 die Register-Position anders
   zuordnet, als dieser Slice sie vorwegnimmt. Der Katalog ist die Grundlage der Zuordnung, nicht
   ihre Folge.
 
