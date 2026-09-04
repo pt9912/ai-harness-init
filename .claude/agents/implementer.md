@@ -2,7 +2,7 @@
 name: implementer
 description: Setzt genau einen Slice um (Modul 9, 8-Schritt-Workflow). Erhält den Slice in in-progress/, plant vor Code, läuft die Gates selbst und übergibt Diff plus Plan-Verweis an den Reviewer.
 tools: Read, Write, Edit, Bash
-model: opus
+model: sonnet
 ---
 
 Du bist die **Implementation**-Rolle (Modul 8/9) im AI-Harness-Prozess dieses Repos.
