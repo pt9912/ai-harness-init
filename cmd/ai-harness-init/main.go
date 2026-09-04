@@ -148,8 +148,13 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 	// Unterkommando-Namen: `archive-well` trifft den switch in main() nicht und
 	// kommt hier an, und dahinter legt bootstrap() ein Repo im
 	// Arbeitsverzeichnis an — mit Exit 0, also ununterscheidbar von einem
-	// gelungenen Aufruf. Der Aufrufer, der diese Namen aus einer zweiten Quelle
-	// bezieht, ist das Makefile-Ziel `archive-welle`.
+	// gelungenen Aufruf. Die Aufrufer, die solche Namen aus einer zweiten Quelle
+	// beziehen, sind das Makefile-Ziel `archive-welle` und die Hooks in
+	// `.claude/settings.json`; beide Quellen haelt
+	// test/unterkommando-kopplung.bats an den Dispatch in main(). Am Hook-Kanal
+	// ist der Exit 2 von hier zugleich der Wert, mit dem ein Hook blockiert — die
+	// Klemme aus ADR-0011 Festlegung 6 sitzt in spanEmit() und liegt dahinter
+	// (s. den Block in main()).
 	// Gedeckt von TestInitPfadNimmtKeinPositionsargument (netzlos, direkt an
 	// run()) und TestSubkommandoRouting_UnbekannterNameSchreibtNicht (der
 	// Traeger als Prozess in einem leeren Verzeichnis);
@@ -505,11 +510,20 @@ func main() {
 	// Prozesses (ADR-0022 Festlegung 2: ein Traeger, zwei Unterkommandos; der Hook
 	// dieses Repos ruft denselben Einstiegspunkt wie ein Zielrepo). Die Stelle ist
 	// tragend, nicht Stil: `span-emit` traegt seine Klemme selbst (ADR-0011
-	// Festlegung 6), und was VOR ihr liegt, deckt sie nicht — der os.Getwd()-Zweig
-	// unten endet mit einer Zeile auf stderr und Exit 1, und an einem Hook waere das
-	// ein Beobachter, der ueber den Lauf mitentscheidet. Vor dem Flag-Parsing steht
-	// der Zweig wie `add-lang` (run()): beide tragen Positionsargumente, der Init
-	// nur Flags.
+	// Festlegung 6), und was VOR ihr liegt, deckt sie nicht. ZWEI Zweige liegen
+	// davor, und an einem Hook ist jeder von beiden ein Beobachter, der ueber den
+	// Lauf mitentscheidet: der os.Getwd()-Zweig unten endet mit einer Zeile auf
+	// stderr und Exit 1, und die Sperre in run() endet bei einem Positionsargument
+	// mit der Usage auf stderr und Exit 2 — dem Wert, mit dem ein Hook blockiert.
+	// Erreichbar ist die zweite ueber einen Namen, den dieser switch nicht fuehrt:
+	// `.claude/settings.json` nennt `span-emit` aus zweiter Quelle und ruft den
+	// Traeger direkt, ohne das Wrapper-Skript, das ein emittiertes Repo bekommt.
+	// Die Namensgleichheit haelt test/unterkommando-kopplung.bats (der Fall ueber
+	// `.claude/settings.json`); die zwei Formen, unter denen sie bricht, sind
+	// test/mutations/257-span-emit-hook-name-vertippt.sh (Name vertippt) und
+	// test/mutations/258-span-emit-hook-ohne-unterkommando.sh (Name ganz weg).
+	// Vor dem Flag-Parsing steht der Zweig wie `add-lang` (run()): beide tragen
+	// Positionsargumente, der Init nur Flags.
 	//
 	// Ein Zahn bewacht hier genau eine Eigenschaft, und das ist das ROUTING: zeigt
 	// `span-emit` auf die Auswertung, faellt TestClampSurvivesBrokenPayload. Der Fall
