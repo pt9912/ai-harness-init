@@ -62,10 +62,22 @@ setup() {
 # Satzzeichen, das in einer Kommentar-Zeile unmittelbar am Namen klebt, wird
 # mitgelesen und faellt als unbekannter Name auf: eine Nennung im Fliesstext
 # gehoert in Backticks, so wie die vorhandene sie traegt.
+#
+# DER DISPATCH IST DIE MENGE DER case-MARKEN AM ZEILENANFANG, und Entscheidung
+# wie Diagnose lesen sie aus DEMSELBEN Muster. Geprueft wird Mitgliedschaft in
+# dieser Menge — ganze Zeile, feste Zeichenkette —, nicht das Vorkommen der
+# Zeichenkette irgendwo in main.go: ein `case "…":` in einer KOMMENTAR-Zeile
+# dispatcht nichts, und ueber dem switch steht dort ein langer Kommentarblock.
+# Der Fall dazu ist test/mutations/261-dispatch-marke-nur-im-kommentar.sh.
+# GRENZE, fail-closed: eine Mehrfach-Marke (`case "a", "b":`) faellt aus dem
+# Muster und damit aus der Menge — ihr Name faellt als undispatcht auf, nicht
+# durch.
 kopplung_haelt() {
   local quelle="$1" datei="$2" nennung_muster="$3" name_muster="$4"
   local nennungen namen gefunden n
+  local dispatch_muster='^[[:space:]]*case "[^"]*":' dispatch
 
+  dispatch="$(grep -oE "$dispatch_muster" "$MAIN" | sed -E 's/^[[:space:]]*case "//; s/":$//')"
   nennungen="$(grep -oE "$nennung_muster" "$datei" | grep -c . || true)"
   namen="$(grep -oE "$name_muster" "$datei" | sed -E 's/^.*[[:space:]]//' || true)"
   gefunden="$(printf '%s' "$namen" | grep -c . || true)"
@@ -84,11 +96,11 @@ kopplung_haelt() {
   fi
 
   for n in $(printf '%s\n' "$namen" | sort -u); do
-    if ! grep -qF "case \"$n\":" "$MAIN"; then
+    if ! grep -qxF "$n" <<<"$dispatch"; then
       echo "$quelle gibt dem Traeger '$n', und main() dispatcht diesen Namen nicht." >&2
       echo "Im Traeger ist er ein Positionsargument des Init-Pfads — der Aufruf endet mit Exit 2," >&2
       echo "statt zu tun, was der Aufrufer danebenschreibt. Der Dispatch fuehrt heute:" >&2
-      grep -nE '^[[:space:]]*case "[^"]*":' "$MAIN" >&2
+      grep -nE "$dispatch_muster" "$MAIN" >&2
       return 1
     fi
   done
