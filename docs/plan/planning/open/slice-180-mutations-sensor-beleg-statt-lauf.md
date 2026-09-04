@@ -67,7 +67,7 @@ dritte folgt derselben Platzierung. **Was das nicht entscheidet:** ob die Aufnah
 Spezifikation diese Klasse eigentlich einschlösse; das ist eine Frage an das Stratum und steht als
 Risiko in §6.
 
-**Verantwortlich:** — (bis zur Priorisierung).
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner (ai-harness-init-Team, pt9912). **Datum:** 2026-09-04.
 
