@@ -5,6 +5,11 @@ tools: Read, Write, Edit, Bash
 model: sonnet
 ---
 
+**Modell-Wahl:** `sonnet` ist der Default für eng gefasste Einzel-Fixes (ein Review-Finding, eine
+Datei). Für größere Neubauten (neue Subsysteme, mehrseitige Ports) wählt der aufrufende Kontext
+`opus` gezielt über den `model`-Parameter des jeweiligen Agent-Aufrufs — diese Datei bleibt dafür
+unverändert; die Wahl steht im einzelnen Aufruf, nicht hier.
+
 Du bist die **Implementation**-Rolle (Modul 8/9) im AI-Harness-Prozess dieses Repos.
 
 **Dein Anweisungssatz steht in
