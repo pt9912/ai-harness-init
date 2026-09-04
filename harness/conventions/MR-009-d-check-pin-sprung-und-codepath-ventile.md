@@ -7,14 +7,14 @@
   ergänzt [`MR-001`](../conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids).
 - **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**.
   Der Pin-Sprung tritt an keine Stelle: er **ist** der bewusste Digest-Commit, den
-  [`modul-14-docker-harness.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)
+  [`modul-14-docker-harness.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)
   verlangt (*„Update = bewusster Commit, der nur die Digest-Zeile anhebt"*), und die Neu-Erzeugung
   bei jedem Bump steht in
-  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
+  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
   §Gate-Fragment `d-check.mk`. Die zwei Ventil-Achsen ebenso wenig: das vendored Startgerüst
   `.harness/baseline/v5.12.0/templates/.d-check.yml` kennt weder `codepaths.exempt-paths` noch
   `codepaths.ignore-refs`, und die Klasse, die `exempt-paths` ausnimmt, führt
-  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md#jedes-artefakt-hat-einen-konsumenten)
+  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md#jedes-artefakt-hat-einen-konsumenten)
   §Jedes Artefakt hat einen Konsumenten als **Lauf-Beleg** — *„über Läufe hinweg werden sie nicht
   wieder gelesen und müssen es nicht"* —, ohne eine Aussage über den Prüfumfang eines Gates. Die
   Einordnung *„beide sind Scoping, keine Gate-Lockerung"* steht in

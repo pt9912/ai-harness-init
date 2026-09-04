@@ -21,7 +21,7 @@
   über den Beleg einer Zahl in Prosa
   (`grep -rl 'Erwartungswert' .harness/baseline/v5.12.0/regelwerk/` ist leer, Exit 1). Die Klasse
   kennt es dem Begriff nach als **Harness-Lüge**
-  ([`grundlagen-begriffe.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-begriffe.md#kernbegriffe))
+  ([`grundlagen-begriffe.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-begriffe.md#kernbegriffe))
   und verlangt an mehreren Stellen, eine Grenze zu benennen statt sie zu behaupten — das ist die
   Umgebung dieser Setzung, nicht die Regel, an deren Stelle sie träte. Der Absatz *Der Ort ist
   offen* unten misst dieselbe Frage gegen `v3.5.2`; hier steht sie gegen den adoptierten Stand.

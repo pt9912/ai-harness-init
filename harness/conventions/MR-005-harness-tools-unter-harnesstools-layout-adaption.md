@@ -5,7 +5,7 @@
 - **Datum:** 2026-06-14
 - **Geltungsbereich:** [`harness/tools/`](../../harness/tools/), [`.claude/`](../../.claude/), [`.codex/`](../../.codex/), `Makefile`, `.d-check.yml`
 - **Ersetzt-Baseline-Regel:**
-  [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-durchsetzungsschicht.md#das-vollständige-artefakt-set)
+  [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-durchsetzungsschicht.md#das-vollständige-artefakt-set)
   §Das vollständige Artefakt-Set. Am Stand `v5.12.0` heißt der Abschnitt §Referenz-Implementierung
   und verortet die zwei Nachweis-Skripte: *„`tools/harness/working-tree-hash.sh` +
   `record-gates.sh` — gemeinsame, inhaltsbasierte Nachweis-Quelle für Gate-Lauf und Handoff-Gate"*
@@ -24,7 +24,7 @@
   (`git grep -c 'tools/harness' db83415^ -- '.harness/baseline/v5.12.0/'` gibt genau eine Zeile,
   und zwar für diese Datei), sie trägt einen `d-check:ignore`-Marker mit der
   Begründung *„Referenz-Artefakt im Fallstudien-Repo"*, und
-  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md#verzeichniskonvention)
+  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md#verzeichniskonvention)
   §Verzeichniskonvention führt für ausführbare Harness-Tools **gar keinen** Ort — `harness/` steht
   dort mit `README.md`, `conventions.md` und `conventions/`, `.harness/` mit Skills, Allowlists und
   Checklisten-Middlewares.

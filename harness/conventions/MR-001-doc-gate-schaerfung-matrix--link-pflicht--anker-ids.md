@@ -5,7 +5,7 @@
 - **Datum:** 2026-06-13
 - **Geltungsbereich:** `.d-check.yml` (Doc-Referenz-Gate)
 - **Ersetzt-Baseline-Regel:**
-  [`grundlagen-referenz-richtung.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-referenz-richtung.md#referenz-richtung-sdp-wer-darf-wen-referenzieren)
+  [`grundlagen-referenz-richtung.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-referenz-richtung.md#referenz-richtung-sdp-wer-darf-wen-referenzieren)
   §Referenz-Richtung (SDP) — die **Sektions-Ausnahme über den Spec-Straten**: *„ein Spec-Stratum
   (`lastenheft.md`, `spezifikation.md`, `architecture.md`) enthält `ADR-` oder `slice-` → fail,
   **ohne ausgenommene Sektion**"*, und dazu *„Die ausgenommene Überschrift … gibt es nur auf der

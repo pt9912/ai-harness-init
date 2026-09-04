@@ -8,9 +8,9 @@
 - **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
   aus demselben Grund wie [`MR-024`](../conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar): der Sprung
   ist der bewusste Digest-Commit aus
-  [`modul-14-docker-harness.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)
+  [`modul-14-docker-harness.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)
   und die Neu-Erzeugung des Fragments aus
-  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
+  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
   §Gate-Fragment `d-check.mk`. Der Gegenstand — die Verengung des Zeilen-Markers in **Form** und
   **Lage** — gehört dem Werkzeug: `grep -rn 'd-check:ignore' .harness/baseline/v5.12.0/regelwerk/`
   nennt am adoptierten Stand `v5.12.0` zwei Zeilen, einen gesetzten Marker in Kommentar-Form und

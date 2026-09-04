@@ -14,7 +14,7 @@
   [`MR-008`](../conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert): **die Baseline schreibt die
   Setzung inzwischen selbst.** Die einzige Abweichung, die dieser Eintrag je beanspruchte, ist
   Setzung 3 — *„die einzige Abweichung vom Baseline-Wortlaut"*, sagt sie über sich —, und
-  [`grundlagen-source-precedence.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-source-precedence.md#spec-stratifizierung)
+  [`grundlagen-source-precedence.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-source-precedence.md#spec-stratifizierung)
   §Spec-Stratifizierung sagt am adoptierten Stand `v5.12.0` genau das: *„Der Träger ist dann der
   **Commit**: Ein angenommener Change Request ändert in einem eigenen Commit ausschließlich das
   Lastenheft und liegt vor dem Slice, der ihn umsetzt; die Verweis-Spalte nennt diesen Vorgang

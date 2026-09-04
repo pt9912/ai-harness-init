@@ -60,7 +60,7 @@
   [`ADR-0026`](../../docs/plan/adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md).
 - **Warum ein neuer Eintrag und keine Korrektur an den zwei Sätzen.** Der Block läuft
   append-only: *„Einträge werden nie überschrieben"*
-  ([`grundlagen-harness-dateien.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
+  ([`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
   §harness/conventions.md als Konventionsspeicher). Ein Satz, der zu seinem Datum richtig war,
   bleibt stehen; dass er es nicht mehr ist, sagt die Kopf-Marke daneben
   ([`MR-032`](../conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)

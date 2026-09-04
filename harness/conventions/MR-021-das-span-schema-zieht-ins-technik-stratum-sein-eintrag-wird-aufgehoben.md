@@ -10,7 +10,7 @@
   [5](../../spec/spezifikation.md#5-metriken-und-tracing-felder) von
   [`spec/spezifikation.md`](../../spec/spezifikation.md).
 - **Ersetzt-Baseline-Regel:**
-  [`modul-15-observability.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
+  [`modul-15-observability.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
   §Span-/Audit-Attribut-Regeln — die Form des Audit-Span-Schemas: *„liste jeden Attribut-Namen,
   markiere ihn als Pflicht oder Optional und nenne pro Attribut die Incident-Frage, die es
   beantwortet"*, also drei Spalten. An ihre Stelle tritt die vierte Spalte `Sensor` in
@@ -19,7 +19,7 @@
   [`MR-030`](../conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen) fort.
   **Der Umzug selbst ersetzt nichts:** dass eine fortschreibbare technische Festlegung ins
   Technik-Stratum gehört, ist Baseline-Default
-  ([`modul-03-spec.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-03-spec.md#ziel-form-spezifikation)),
+  ([`modul-03-spec.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-03-spec.md#ziel-form-spezifikation)),
   und die Aufhebung von [`MR-018`](../conventions.md#mr-018--span-schema-der-telemetrie-erfassung) folgt der Form
   aus [`MR-020`](../conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf). Gemessen am
   adoptierten Stand `v5.12.0`.
@@ -45,7 +45,7 @@
 - **Was als Delta bleibt, und damit den Gegenstand dieses Blocks trifft — zwei Posten:**
   1. **Die Sensor-Spalte ist eine dritte Abweichung von der Vorlagen-Form.** §5 trägt jetzt vier
      Spalten (Feld · Pflicht · Incident-Frage · **Sensor**) statt der drei, die
-     [`modul-15-observability.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
+     [`modul-15-observability.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
      vorschreibt. Grund: eine Zusicherung ohne benannten Wächter ist nach
      [`AGENTS.md`](../../AGENTS.md) §3.6 unbelegt, und die Bindung wächst mit ihrem Gegenstand wie
      die Zeile selbst. [`MR-019`](../conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence) zählt

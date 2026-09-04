@@ -12,7 +12,7 @@
 - **Löst auf:** die Einordnung von [MR-028](../conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt), nicht seine Setzung.
 - **Ausgelöst durch Baseline-Stand:** `v5.12.0`.
 - **Ersetzt-Baseline-Regel:**
-  [`grundlagen-traceability.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-traceability.md#herkunfts-anker)
+  [`grundlagen-traceability.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-traceability.md#herkunfts-anker)
   §Herkunfts-Anker — *„Der Adaptions-Block trägt das Muster bereits über sein Feld Begründung."*
   Dieselbe Zelle, die [MR-028](../conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt)s eigenes `Ersetzt-Baseline-Regel`-Feld nennt; dieser Eintrag spricht
   aus, welche der beiden Aussagen jenes Eintrags gilt.

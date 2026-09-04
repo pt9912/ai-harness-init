@@ -5,10 +5,10 @@
 - **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
   und er setzt keine Abweichung: beide Härtungen sind die Baseline-Regel selbst. Der
   inhaltsbasierte Nachweis ist Design-Eigenschaft 2 aus
-  [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-durchsetzungsschicht.md#vier-design-eigenschaften)
+  [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-durchsetzungsschicht.md#vier-design-eigenschaften)
   — *„Nachweis über Inhalt, nicht Diff. Ein Content-Hash des Arbeitsbaums belegt ‚die Gates liefen
   auf genau diesem Stand'"* —, die rekursive Sub-Shell-Prüfung ist
-  [`modul-13-quality-gates.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-13-quality-gates.md#guard-haertung)
+  [`modul-13-quality-gates.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-13-quality-gates.md#guard-haertung)
   §Guard-Härtung: *„wird der Payload **rekursiv** derselben Prüfung unterworfen — mit Tiefenlimit,
   darüber fail-closed blockiert"*. Auch die stehengelassene Restlücke ist keine Abweichung, sondern
   die dort benannte Grenze (*„frischem Klon bzw. gelöschtem State mit cleanem Tree … dort ist CI

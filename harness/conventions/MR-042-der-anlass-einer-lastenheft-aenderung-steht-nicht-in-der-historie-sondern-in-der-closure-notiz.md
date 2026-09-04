@@ -14,7 +14,7 @@
   [MR-036](../conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline).
 - **Ausgelöst durch Baseline-Stand:** `v5.12.0`.
 - **Ersetzt-Baseline-Regel:**
-  [`modul-03-spec.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-03-spec.md)
+  [`modul-03-spec.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-03-spec.md)
   §Ziel-Form: Akzeptanzkriterium — der Absatz über die Historie des Lastenhefts.
 - **Zwei Hälften, zwei Ausgänge — und die zweite ist nicht die, die der Delta-Durchgang erwartete.**
   Setzung 3 sagt zweierlei: *(a)* die **Verweis-Spalte** nennt die annehmende Instanz statt eines

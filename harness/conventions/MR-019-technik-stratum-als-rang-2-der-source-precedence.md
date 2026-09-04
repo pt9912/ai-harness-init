@@ -8,14 +8,14 @@
   `.d-check.yml` (`matrix.classes`).
 - **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
   und er setzt keine Abweichung: er **baut eine zurück**.
-  [`grundlagen-referenz-richtung.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-referenz-richtung.md#spec-straten-mehr-als-ein-spec-dokument)
+  [`grundlagen-referenz-richtung.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-referenz-richtung.md#spec-straten-mehr-als-ein-spec-dokument)
   §Spec-Straten verlangt am adoptierten Stand `v5.12.0` eine Deklaration nur für den **anderen**
   Fall — *„Ein Repo kann mit zwei Straten fahren. Dann ist das eine Abweichung von der Baseline und
   wird als `MR-<NNN>` deklariert"* —, und dieser Eintrag hebt genau jene Deklaration aus
   [`MR-000`](../conventions.md#mr-000--baseline-aussage) auf. Alle drei Straten zu führen ist Default (*„Alle drei
   Straten sind obligatorisch"*). Die **Form des Gefäßes** tritt ebenfalls an keine Regel: eine
   Pflichtgliederung für `spec/spezifikation.md` gibt es nicht —
-  [`modul-03-spec.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-03-spec.md#ziel-form-spezifikation)
+  [`modul-03-spec.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-03-spec.md#ziel-form-spezifikation)
   §Ziel-Form: Spezifikation nennt Inhalts-Bereiche und operative Regeln, keine Abschnitts-Folge; die
   freigelassenen Nummern und der nicht nummerierte Abschnitt `Aufnahme-Regel` weichen von der
   **Vorlage** ab, und über die entscheidet nach §Freshness-Audit die Pflichtgliederung, nicht die
@@ -23,7 +23,7 @@
 - **Adaption:** Das Repo führt das **Technik-Stratum**. `spec/spezifikation.md` steht als
   eigener **Rang 2** zwischen Vertrag (Rang 1) und Sicht (Rang 3); die nachfolgenden Ränge
   verschieben sich um eins. Damit ist das Stratum **deklariert** — der Kurs
-  ([`grundlagen-referenz-richtung.md` §Spec-Straten](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-referenz-richtung.md#spec-straten-mehr-als-ein-spec-dokument))
+  ([`grundlagen-referenz-richtung.md` §Spec-Straten](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-referenz-richtung.md#spec-straten-mehr-als-ein-spec-dokument))
   verlangt die Deklaration hier und nennt ein undeklariertes Spec-Dokument *„nicht normativ
   zitierbar“*.
 - **Hebt die 2-Strata-Klausel aus [`MR-000`](../conventions.md#mr-000--baseline-aussage) auf** —
@@ -38,7 +38,7 @@
   steht in Dokumenten, die ab *Accepted* nicht mehr geändert werden dürfen
   ([`AGENTS.md`](../../AGENTS.md) §3.4). Zwei Abweichungen von der Vorlagen-Form: §5 trägt die
   Drei-Spalten-Gestalt, die
-  [`modul-15-observability.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-15-observability.md)
+  [`modul-15-observability.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-15-observability.md)
   vorschreibt (Feld · Pflicht/Optional · Incident-Frage) statt der Vorlagen-Spalten
   *Span · Pflicht-Attribute · Quelle* — die Vorlage verweist an dieser Stelle selbst auf das
   Modul, und der vorhandene Bestand trägt bereits diese drei Spalten; und vor §3 steht ein

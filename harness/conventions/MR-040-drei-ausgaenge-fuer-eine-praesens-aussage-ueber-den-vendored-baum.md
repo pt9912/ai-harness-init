@@ -13,7 +13,7 @@
 - **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**, der
   nach [`MR-039`](../conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
   Setzung 3 hier steht und sein Verdikt im Feld trägt. Das
-  [Freshness-Audit](../../.harness/baseline/v5.18.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
+  [Freshness-Audit](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
   führt am adoptierten Stand `v5.12.0` Ausgänge für **Adaptions-Einträge** und einen Durchgang über
   die **Form** der Artefakte; für die sagt es *„Für **wiederkehrende** Templates (ADR, Slice, Welle,
   Carveout, Review-Report) gilt die Append-only-Logik: Neue Instanzen folgen der neuen Form,

@@ -7,15 +7,15 @@
   „CI ist dort das Netz"-Restlücke ein.
 - **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
   und er setzt keine Abweichung: er löst eine Lücke ein, die die Baseline selbst benennt.
-  [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-durchsetzungsschicht.md#grenzen--ehrlich-benannt)
+  [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-durchsetzungsschicht.md#grenzen--ehrlich-benannt)
   §Grenzen — ehrlich benannt sagt zum inhaltsbasierten Nachweis: *„Der Inhalts-Nachweis hat eine
   Lücke bei frischem Klon bzw. gelöschtem State mit cleanem Tree (kein Nachweis prüfbar) — dort ist
   **CI das Netz**."* Genau diesen Satz baut der Eintrag. Die vier Setzungen treten an keine Regel:
   das Regelwerk am adoptierten Stand `v5.12.0` schreibt keinen CI-Aufbau vor — es verlangt, dass
   lokal und CI dasselbe gepinnte Image fahren
-  ([`modul-14-docker-harness.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)),
+  ([`modul-14-docker-harness.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)),
   und `ci-lint` als Gate hält
-  [`modul-13-quality-gates.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin)
+  [`modul-13-quality-gates.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin)
   §Hard Rule (Doku-Disziplin) ein, statt von ihr abzuweichen: der Prüfbereich ist nicht leer.
 - **Adaption:** GitHub Actions fährt bei **jedem Push und PR** `make gates` + `make smoke` +
   `make mutate` — jeder Job **frisch ausgecheckt**. Das schließt die

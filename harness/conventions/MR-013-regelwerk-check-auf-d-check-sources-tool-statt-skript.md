@@ -5,7 +5,7 @@
   `test/sources-pin.bats` (Kopplung); nutzt das mit [`MR-012`](../conventions.md#mr-012--d-check-pin-v0511-sources-verfügbar) verfügbar gemachte Modul.
 - **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
   und er setzt keine Abweichung: er vollzieht
-  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
+  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
   §Freshness-Audit der vendored Baseline Punkt für Punkt — Netz-Operation außerhalb der Gates,
   Asset-Prüfung durch `sources`, und die dort gezogene Grenze (*„ersetzt die
   Release-Listen-Prüfung nicht"*) trägt in diesem Repo `make baseline-freshness`

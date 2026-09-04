@@ -6,7 +6,7 @@
 - **Geltungsbereich:** dieser Adaptions-Block. **Nicht** `docs/plan/adr/` — dort gilt
   [`AGENTS.md`](../../AGENTS.md) §3.4 unverändert.
 - **Ersetzt-Baseline-Regel:**
-  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
+  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
   §harness/conventions.md als Konventionsspeicher — *„Einträge werden nie überschrieben."* An ihre
   Stelle tritt die Festlegung unten: bei **vollständiger** Aufhebung fällt der Rumpf in einem
   eigenen, additionsfreien Commit; Nummer, Überschrift wörtlich, `Datum` und die Zeiger-Zeile

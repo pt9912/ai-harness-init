@@ -12,7 +12,7 @@
 - **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
   und der Grund ist ein anderer als bei den übrigen: **die Baseline schreibt diese Setzung
   inzwischen selbst.**
-  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-02-harness-bootstrap.md#greenfield-bootstrap-schritt-sequenz-modul-2)
+  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md#greenfield-bootstrap-schritt-sequenz-modul-2)
   §Anmerkung zum Instanziierungs-Zeitpunkt (Schritt 2) nennt am adoptierten Stand `v5.12.0`
   dieselbe Liste wie der Geltungsbereich oben — *„die **wiederkehrenden Artefakte** — `slice`,
   `welle`, weitere ADRs (`NNNN-*`), `carveout`, `review-report` — werden **nicht** beim Bootstrap

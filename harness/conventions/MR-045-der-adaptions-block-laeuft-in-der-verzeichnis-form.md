@@ -7,7 +7,7 @@
   das Verzeichnis [`conventions/`](../conventions/) daneben. **Nicht** `docs/plan/adr/`, wo
   [`AGENTS.md`](../../AGENTS.md) §3.4 unverändert gilt; **nicht** die emittierte Ebene.
 - **Ersetzt-Baseline-Regel:**
-  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
+  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
   §harness/conventions.md als Konventionsspeicher — *„Einträge werden nie überschrieben"*.
   Dieselbe Zelle tragen [`MR-020`](../conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf),
   [`MR-032`](../conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
@@ -30,7 +30,7 @@
   - **(b) Verlinkte Kennung.** Eine `MR-`Kennung, die im Rumpf blank stand, wird zum Verweis auf
     ihre Index-Zeile. Der Linktext **ist** die Kennung; gelesen steht dasselbe da. Die Ziel-Form
     schreibt genau diese Gestalt vor — die Vorlage
-    [`MR-NNN-titel.template.md`](../../.harness/baseline/v5.18.0/templates/harness/conventions/MR-NNN-titel.template.md)
+    [`MR-NNN-titel.template.md`](../../.harness/baseline/v6.0.0/templates/harness/conventions/MR-NNN-titel.template.md)
     führt `Löst auf` als Link auf `../conventions.md#mr-<NNN>` —, und
     [`MR-001`](../conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
     verlangt sie ohnehin für jede Kennung außerhalb des Definitions-Orts. Blank standen sie

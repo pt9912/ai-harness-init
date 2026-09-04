@@ -14,7 +14,7 @@
   Setzung 1).
 - **Ausgelöst durch Baseline-Stand:** `v5.12.0`.
 - **Ersetzt-Baseline-Regel:**
-  [`modul-15-observability.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
+  [`modul-15-observability.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
   §Span-/Audit-Attribut-Regeln — dieselbe Drei-Spalten-Form, die schon [MR-021](../conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben) nennt
   (*„liste jeden Attribut-Namen, markiere ihn als Pflicht oder Optional und nenne pro Attribut die
   Incident-Frage"*). Dieser Eintrag schreibt die dort registrierte Abweichung fort, er eröffnet
@@ -24,7 +24,7 @@
   Abschnitts, §3 und §6 tragen dieselbe `ID`-Spalte mit fortlaufendem `SPEC-<NNN>`. **Zwei
   Baseline-Regeln treffen in einer Tabelle aufeinander, und beide gelten:** die Drei-Spalten-Form
   aus dem Observability-Modul und die ID-Vergabe aus
-  [`grundlagen-source-precedence.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-source-precedence.md#id-schema-als-klammer)
+  [`grundlagen-source-precedence.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-source-precedence.md#id-schema-als-klammer)
   §ID-Schema als Klammer, die die vendored Vorlage
   `.harness/baseline/v5.12.0/templates/spec/spezifikation.template.md` in jeder Tabelle von §2 bis
   §6 als `ID`-Spalte ausführt. Die `ID`-Spalte ist damit **keine** Abweichung, sondern die

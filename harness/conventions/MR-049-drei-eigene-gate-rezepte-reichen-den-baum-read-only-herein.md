@@ -10,13 +10,13 @@
   eigenes Rezept (`grep -c 'docker run' internal/gen/golang.go internal/gen/cpp.go` → **0** in
   beiden), die emittierten Gates sind ausschließlich `docker build --target`.
 - **Ersetzt-Baseline-Regel:**
-  [`modul-14-docker-harness.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-14-docker-harness.md#der-prüflauf-ist-hermetisch--kein-mount)
+  [`modul-14-docker-harness.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-14-docker-harness.md#der-prüflauf-ist-hermetisch--kein-mount)
   §Der Prüflauf ist hermetisch — kein Mount, Satz *„Die Quellen wandern beim Build ins Image, die
   Ergebnisse kommen über `stdout` heraus."*
 - **Adaption.** Wo das Werkzeug in einem fremden, digest-gepinnten Bild liegt und der Prüfbereich
   der ganze Baum ist, kommt der Baum per `-v "$(CURDIR)":<pfad>:ro` herein. Das ist der
   `:ro`-Zweig, den
-  [`modul-14-docker-harness.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-14-docker-harness.md#besitz-der-belege-eines-containerisierten-gates)
+  [`modul-14-docker-harness.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-14-docker-harness.md#besitz-der-belege-eines-containerisierten-gates)
   §Besitz der Belege eines containerisierten Gates als einen von zwei Preisen nennt — *„`:ro`
   plus Umleitung alles Schreibenden (trägt nur, solange die Prüfung nichts in den Baum schreiben
   **muss**)"*. Der Rest des Gate-Wegs ist hermetisch: `test-go`, `lint`, `build`, `host-bin`,

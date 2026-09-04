@@ -10,7 +10,7 @@
 - **Löst auf:** die Adaption selbst.
 - **Ausgelöst durch Baseline-Stand:** `v5.12.0`.
 - **Ersetzt-Baseline-Regel:**
-  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-02-harness-bootstrap.md#greenfield-bootstrap-schritt-sequenz-modul-2)
+  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md#greenfield-bootstrap-schritt-sequenz-modul-2)
   §Anmerkung zum Instanziierungs-Zeitpunkt (Schritt 2).
 - **Gemessen, nicht vermutet — Punkt für Punkt, nicht nach Thema.** [MR-008](../conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert) setzt dreierlei, und der
   adoptierte Stand sagt jedes davon selbst: *keine dauerhaft gehaltene Blank-Kopie* →

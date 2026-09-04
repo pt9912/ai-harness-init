@@ -59,7 +59,7 @@
   Form-Setzung über das Register, kein Verbot des Verzeichnisses.**
 - **Setzung 3 — Präsenz ist keine Durchsetzung.** Ein Modul im Auto-Kontext liegt im Quadranten
   *inferential feedforward* (Baseline `v5.12.0`,
-  [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-durchsetzungsschicht.md)
+  [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-durchsetzungsschicht.md)
   §Die Lücke: aspirativ vs. bindend — *„er **informiert**. Ein driftender oder vergesslicher Agent
   kann ihn ignorieren"*). Es erzwingt nichts, färbt nichts rot und ersetzt keinen Sensor. Wer eine
   Regel dort ablegt, hat sie **gezeigt**, nicht **gebunden**; die zwei fail-closed Bindepunkte

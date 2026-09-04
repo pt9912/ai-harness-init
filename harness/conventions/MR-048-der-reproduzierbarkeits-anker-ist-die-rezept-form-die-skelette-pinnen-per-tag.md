@@ -10,13 +10,13 @@
   [slice-146](../../docs/plan/planning/open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md)
   hält (Runtime-Stage, Image-Hash-Beleg) — die bleiben dort offen.
 - **Ersetzt-Baseline-Regel:**
-  [`modul-14-docker-harness.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)
+  [`modul-14-docker-harness.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)
   §Multi-Stage-Build: die operativen Disziplinen, Regel *„Base-Image per Digest pinnen
   (`FROM …@sha256:…`), nicht per Tag"* — und zwar **nur für die emittierten Skelette**. Für den
   Dogfood tritt dieser Eintrag an keine Regel: dort ist sie erfüllt.
 - **Adaption — zwei Verdikte, keine Pauschale über beide Ebenen.**
   1. **Dogfood: Rezept-Form, und sie heißt ab hier so.**
-     [`modul-14-docker-harness.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-14-docker-harness.md#zwei-formen-des-reproduzierbarkeits-ankers)
+     [`modul-14-docker-harness.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-14-docker-harness.md#zwei-formen-des-reproduzierbarkeits-ankers)
      §Zwei Formen des Reproduzierbarkeits-Ankers verlangt, dass ein Repo seine Form benennt
      (*„wer das nicht tut, hat die Rezept-Form und benennt sie besser auch so"*). Dies ist die
      Benennung. Beide Bedingungen der Rezept-Zeile sind gemessen:

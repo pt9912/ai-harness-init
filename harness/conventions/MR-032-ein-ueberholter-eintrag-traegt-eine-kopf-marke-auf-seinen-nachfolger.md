@@ -14,7 +14,7 @@
   Eintrag ablöst. **Nicht** `docs/plan/adr/` — dort gilt [`AGENTS.md`](../../AGENTS.md) §3.4
   unverändert; **nicht** die emittierte Ebene.
 - **Ersetzt-Baseline-Regel:**
-  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
+  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
   §harness/conventions.md als Konventionsspeicher — *„Der Zustand ist die Verzeichnis-Position,
   kein Status-Feld."*
 - **Adaption:** Der Zustand *überholt* bekommt in diesem Block einen Träger im Text — eine

@@ -14,7 +14,7 @@
   und er setzt keine Abweichung: er **baut eine zurück**, wie
   [`MR-031`](../conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline). Die Abweichung
   *„`implementer` statt Implementation"* hatte ihren Gegenstand in
-  [`modul-08-agentenrollen.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-08-agentenrollen.md#rollen-sequenz-für-einen-slice)
+  [`modul-08-agentenrollen.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-08-agentenrollen.md#rollen-sequenz-für-einen-slice)
   §Rollen-Sequenz für einen Slice; am adoptierten Stand `v5.12.0` steht dort `Implementer`, und
   damit ist sie fort. Was bleibt, ist die **Kleinschreibung** als Bezeichner-Konvention, und die
   tritt an keine Stelle: `grep -rl 'implementer' .harness/baseline/v5.12.0/regelwerk/` ist leer

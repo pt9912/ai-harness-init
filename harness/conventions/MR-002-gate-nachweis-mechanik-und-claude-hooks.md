@@ -6,12 +6,12 @@
   und er setzt keine Abweichung: er protokolliert eine **Übernahme**. Das Artefakt-Set, das er
   einführt — Hook-Verdrahtung, Tool-Call-Gate, Handoff-Gate und die gemeinsame, inhaltsbasierte
   Nachweis-Quelle für Gate-Lauf *und* Handoff-Gate —, ist Punkt für Punkt das der Baseline:
-  [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-durchsetzungsschicht.md#das-vollständige-artefakt-set)
+  [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-durchsetzungsschicht.md#das-vollständige-artefakt-set)
   §Das vollständige Artefakt-Set, am Stand `v5.12.0` unter dem Titel §Referenz-Implementierung
   gelesen; ob die Deckung am adoptierten Stand `v5.18.0` trägt, misst der Adaptions-Durchgang
   (slice-157). Auch der Host-Toolchain-Block
   ersetzt dort nichts: Denylist-Inhalt und Grenze eines Befehls-Guards regelt
-  [`modul-13-quality-gates.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-13-quality-gates.md#guard-haertung)
+  [`modul-13-quality-gates.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-13-quality-gates.md#guard-haertung)
   §Guard-Härtung, ohne den Umfang festzuschreiben. **Wo** die Skripte liegen, weicht ab — das trägt
   [`MR-005`](../conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption), nicht dieser Eintrag.
 - **Adaption:** Übernahme der Working-Tree-Hash-Mechanik (`record-gates`

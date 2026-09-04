@@ -17,7 +17,7 @@
 - **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
   und er setzt keine Abweichung: er **baut eine zurück**. Was von ihm fort gilt — Split-Modul-Form,
   Index-only-Inject, read-on-demand — ist genau das, was
-  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-02-harness-bootstrap.md#greenfield-bootstrap-schritt-sequenz-modul-2)
+  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md#greenfield-bootstrap-schritt-sequenz-modul-2)
   §Anmerkung zur vendored Baseline (Schritt 2) am adoptierten Stand `v5.12.0` verlangt: pro
   Entscheidung den relevanten Abschnitt nachschlagen *„ohne das ganze Regelwerk im Kontext zu
   halten"*. Der Tradeoff unten benennt den Preis dieser Bewegung, nicht eine Abweichung von ihr.

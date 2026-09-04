@@ -12,13 +12,13 @@
 - **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
   und der Weg des dritten Grundes ist genau der, den die Baseline vorsieht: ein Trigger, der
   ehrlich nie zu erreichen ist, führt nach
-  [`modul-07-carveouts.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-07-carveouts.md#werkzeug-wahl)
+  [`modul-07-carveouts.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-07-carveouts.md#werkzeug-wahl)
   §Werkzeug-Wahl bei Diskrepanz auf *„**ADR (permanent)** … die Senkung ist
   Architekturentscheidung, kein Übergang"* — und dort liegt sie
   ([`ADR-0017`](../../docs/plan/adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md)). Zensus
   und Aufnahme-Grenze sind Zustand und Schranke, keine Setzung gegen eine Regel.
   **Was hier ausdrücklich nicht als ersetzte Regel gilt:** der Formcheck-Satz des
-  [Freshness-Audits](../../.harness/baseline/v5.18.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
+  [Freshness-Audits](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
   — *„Ein toter Anker ist kein Ausgang, sondern ein Formfehler und wird zuerst repariert"* —
   spricht über den `Geltungsbereich` **eines Eintrags dieses Blocks** nach einem Baseline-Update,
   nicht über einen Markdown-Link in einer eingefrorenen ADR. Dasselbe Thema ist nicht dieselbe
@@ -78,13 +78,13 @@
   (`.harness/baseline/v3.5.2/templates/harness/conventions.template.md`, Kommentar über dem
   Adaptions-Block; die Zeile existiert am neuen Stand nicht mehr). `v5.12.0` sagt
   *„Einträge werden nie überschrieben"*
-  ([`grundlagen-harness-dateien.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
+  ([`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
   §harness/conventions.md als Konventionsspeicher) und benennt diesen Fall eigens:
   *„Rückbau ist ein neuer Eintrag, kein Edit — eine aufgelöste `MR-<NNN>` wird nicht
   überschrieben, sondern bekommt einen Nachfolger, der sie auflöst und den Baseline-Stand nennt,
   der den Trigger gefeuert hat. Die alte Zeile ist die historisch korrekte Aussage über den
   damaligen Zustand"*
-  ([`modul-02-harness-bootstrap.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-02-harness-bootstrap.md)).
+  ([`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md)).
   Der Satz in [`MR-001`](../conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) ist die
   richtige Aussage über den 13. Juni; ihn zu überschreiben löschte, **wann** die Klassifikation
   noch stimmte. **Dieses Repo hat den Fall bereits einmal so entschieden:**

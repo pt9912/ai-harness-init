@@ -5,7 +5,7 @@
   (emittierter Default-Pin), §Baseline-Version; setzt [`MR-011`](../conventions.md#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines) fort.
 - **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
   und er setzt keine Abweichung: er stellt eine Vorbedingung her, die die Baseline selbst nennt.
-  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
+  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
   §Freshness-Audit der vendored Baseline führt das Modul am adoptierten Stand `v5.12.0`
   namentlich — *„d-check `sources` automatisiert die Asset-Prüfung … deckt die Integritäts-Hälfte
   ab, ersetzt die Release-Listen-Prüfung nicht"* —, und dass es hier **nicht** in `modules:` steht,

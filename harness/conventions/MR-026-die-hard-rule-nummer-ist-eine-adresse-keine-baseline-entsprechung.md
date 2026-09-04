@@ -8,12 +8,12 @@
 - **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
   und die Messung ist am adoptierten Stand `v5.12.0` gefahren: das Regelwerk vergibt für Hard Rules
   keine Nummern und bindet keine.
-  [`modul-09-implementierung.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-09-implementierung.md#hard-rules-repo-spezifisch)
+  [`modul-09-implementierung.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-09-implementierung.md#hard-rules-repo-spezifisch)
   §Hard Rules (repo-spezifisch) führt *„Bewährte Muster"* ohne Nummerierung, §Ziel-Form: AGENTS.md
   verweist für die Form auf die Vorlage, und `grep -rn 'AGENTS.md §3' .harness/baseline/v5.12.0/regelwerk/`
   ist leer (Exit 1). Die eine Nummer, die im Regelwerk steht, ist ein **Form-Beispiel** des
   Herkunfts-Ankers (`### 3.3 <Hard Rule>   (seit welle-3)` in
-  [`grundlagen-traceability.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-traceability.md#herkunfts-anker)),
+  [`grundlagen-traceability.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-traceability.md#herkunfts-anker)),
   kein Zuordnungs-Satz. Damit tritt dieser Eintrag an keine Regel; er füllt, was die Vorlagen-Form
   offen lässt. **Sein Auflösungs-Trigger ist davon unberührt** und für §3.7 eingetreten — das trägt
   [`MR-031`](../conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline), nicht dieses Feld.

@@ -12,7 +12,7 @@
   den Artefakten wächst — an keine von beiden tritt eine additive Härtung am schon aktiven
   `codepaths`. Auch der **Verzicht** auf `citations` ist keine Abweichung, sondern die Anwendung
   von
-  [`modul-13-quality-gates.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin)
+  [`modul-13-quality-gates.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin)
   §Hard Rule (Doku-Disziplin): *„Vorhanden ≠ behauptet"* — ein Modul über leerem Direktiven-Korpus
   wäre ein behauptetes Gate ohne Deckung. Pin-Sprung und Trockenlauf folgen derselben Doktrin wie
   in [`MR-009`](../conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile).

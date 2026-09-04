@@ -15,7 +15,7 @@
 - **Geltungsbereich:** [`harness/tools/`](../../harness/tools/), [`.claude/`](../../.claude/), [`.codex/`](../../.codex/), `.harness/cache/`, `CLAUDE.md`, `Makefile`, `.d-check.yml`
 - **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**.
   Der Rumpf unten setzte eine Abweichung: **Volltext-Injektion je Codex-Session** gegen
-  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-02-harness-bootstrap.md#greenfield-bootstrap-schritt-sequenz-modul-2)
+  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md#greenfield-bootstrap-schritt-sequenz-modul-2)
   §Anmerkung zur vendored Baseline (Schritt 2), die das Nachschlagen pro Entscheidung verlangt
   *„ohne das ganze Regelwerk im Kontext zu halten"*. Diese Setzung ist mit
   [`MR-006`](../conventions.md#mr-006--regelwerk-cache-als-split-modul-verzeichnis) auf Index-only umgestellt und

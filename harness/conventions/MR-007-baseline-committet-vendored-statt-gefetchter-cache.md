@@ -3,7 +3,7 @@
 - **Datum:** 2026-07-17
 - **Geltungsbereich:** `.harness/baseline/`, `Makefile`, [`harness/tools/`](../../harness/tools/), `.gitignore`, `.d-check.yml`, `AGENTS.md`, `CLAUDE.md`, [`harness/README.md`](../README.md), [`test/`](../../test/); löst den Cache-Teil von [`MR-004`](../conventions.md#mr-004--sessionstart-regelwerk-injektor)/[`MR-006`](../conventions.md#mr-006--regelwerk-cache-als-split-modul-verzeichnis) ab.
 - **Ersetzt-Baseline-Regel:**
-  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
+  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
   §Freshness-Audit der vendored Baseline — die Koexistenz-Setzung: *„Weil der Vendoring-Pfad
   `<tag>`-gescopt ist, liegen alte und neue Form nebeneinander: `diff -r
   .harness/baseline/<alt>/templates .harness/baseline/<neu>/templates` zeigt umbenannte Sektionen

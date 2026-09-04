@@ -9,7 +9,7 @@
   Festlegung selbst (Option C: Kopf bleibt, Rumpf geht bei vollständiger Aufhebung) bleibt
   unverändert und bindet fort.
 - **Ersetzt-Baseline-Regel:**
-  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-02-harness-bootstrap.md)
+  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md)
   §Freshness-Audit der vendored Baseline: *„Rückbau ist ein neuer Eintrag, kein Edit — eine
   aufgelöste `MR-<NNN>` wird nicht überschrieben, sondern bekommt einen Nachfolger, der sie
   auflöst und den Baseline-Stand nennt, der den Trigger gefeuert hat. Die alte Zeile ist die
@@ -25,7 +25,7 @@
   Einträge oder explizite Aufhebungen"*, existiert am Zielstand nicht mehr als Kommentar
   — `grep -n 'nur neue Eintr\|explizite Aufhebung\|append-only' .harness/baseline/v5.12.0/templates/harness/conventions.template.md`
   ist leer) lebt jetzt als Prosa in
-  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
+  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
   (*„Einträge werden nie überschrieben"*) und in modul-02 (Zitat oben, siehe auch
   [`MR-029`](../conventions.md#mr-029--der-scanignore-zensus-wandert-und-sein-dritter-grund-ist-keine-scoping-aussage)).
 - **Geprüft: widerspricht Option C (Kopf bleibt, Rumpf geht) dem neuen Wortlaut?** Nein.

@@ -9,7 +9,7 @@
   [`internal/gen/`](../../internal/gen/). **Nicht** `test-go`, `lint` und `release-artifacts`:
   die tragen den Griff (`grep -cE '^\t+docker build --no-cache-filter' Makefile` → **3**).
 - **Ersetzt-Baseline-Regel:**
-  [`modul-14-docker-harness.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-14-docker-harness.md#der-prüflauf-ist-hermetisch--kein-mount)
+  [`modul-14-docker-harness.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-14-docker-harness.md#der-prüflauf-ist-hermetisch--kein-mount)
   §Der Prüflauf ist hermetisch — kein Mount, Griff 1 der Tabelle *„Zwei Wege, die Prüfung
   auszulösen"*: `--no-cache-filter <stage>` an jedem Gate, dessen Gate-Stage selbst das Gate ist.
 - **Adaption.** Der Griff steht dort, wo ein Cache-Treffer ein Urteil ersetzen könnte, und fehlt

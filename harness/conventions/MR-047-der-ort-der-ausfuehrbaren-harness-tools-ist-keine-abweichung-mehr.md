@@ -19,7 +19,7 @@
   [MR-005](../conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption) trat, gibt
   es am adoptierten Stand nicht mehr, also kann dieser Eintrag keine ersetzen.
 - **Der Ausgang ist *Bezug entfallen*, nicht *gegenstandslos* — und die zwei sind verschieden.**
-  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
+  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
   §Freshness-Audit der vendored Baseline trennt sie: *gegenstandslos* heißt *„die neue Fassung
   regelt das **jetzt neu** selbst"*, *Bezug entfallen* heißt *„die Baseline regelt das Thema gar
   nicht mehr — dann ist der Eintrag keine Adaption mehr; ein Nachfolge-Eintrag löst ihn auf und
@@ -33,11 +33,11 @@
      `grep -rc 'tools/harness' .harness/baseline/v5.18.0/regelwerk/ .harness/baseline/v5.18.0/templates/`
      gibt **keine Nicht-Null-Zeile**.
   2. Der Abschnitt, der ihn trug, nennt **keinen Ort** mehr:
-     [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-durchsetzungsschicht.md#das-vollständige-artefakt-set)
+     [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-durchsetzungsschicht.md#das-vollständige-artefakt-set)
      §Das vollständige Artefakt-Set führt an jener Zeile *„eine gemeinsame, **inhaltsbasierte
      Nachweis-Quelle** für Gate-Lauf *und* Handoff-Gate (eine Wahrheit, keine Logik-Dopplung)"*.
   3. Kein anderer Abschnitt springt ein:
-     [`grundlagen-harness-dateien.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md#verzeichniskonvention)
+     [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md#verzeichniskonvention)
      §Verzeichniskonvention führt für **ausführbare** Harness-Tools keinen Ort — dort stehen
      `harness/README.md`, `harness/conventions.md`, `harness/conventions/` und `.harness/`.
 
@@ -62,7 +62,7 @@
   [`MR-039`](../conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
   Setzung 3 für den Fork entschieden hat — *weicht dieses Repo hier ab?* wird an **einem** Ort
   beantwortet, auch wenn die Antwort *nein* lautet; und
-  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
+  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
   §harness/conventions.md als Konventionsspeicher nennt als Inhalt ausdrücklich *„die
   **repo-lokalen Strukturregeln** und Adaptionen"*, also beides.
 - **Ausgang: Bezug entfallen → Teil-Ablösung.** Was fällt, ist allein die Aussage, dieses Repo

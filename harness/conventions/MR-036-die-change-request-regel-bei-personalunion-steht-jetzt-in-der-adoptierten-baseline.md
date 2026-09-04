@@ -12,7 +12,7 @@
   [MR-015](../conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) seinen Wortlaut zitierte.
 - **Ausgelöst durch Baseline-Stand:** `v5.12.0`.
 - **Ersetzt-Baseline-Regel:**
-  [`grundlagen-source-precedence.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-source-precedence.md)
+  [`grundlagen-source-precedence.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-source-precedence.md)
   — der Absatz **„Fallen Auftraggeber- und Entwickler-Rolle zusammen"**: *„fehlt nicht der
   Vorgang, sondern nur seine Ticket-Form: Die Rolle ist besetzt, und der annehmende Akt ist die
   Entscheidung, die vor der Umsetzung fällt. Was die Regel trägt, ist nicht die Externalität,

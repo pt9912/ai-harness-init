@@ -8,13 +8,13 @@
   aus demselben Grund wie [`MR-012`](../conventions.md#mr-012--d-check-pin-v0511-sources-verfügbar): ein Pin-Sprung,
   der ein Modul **verfügbar** macht, ohne es zu aktivieren, tritt an keine Stelle. Er ist der
   bewusste Digest-Commit aus
-  [`modul-14-docker-harness.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)
+  [`modul-14-docker-harness.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)
   und die Neu-Erzeugung aus
-  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
+  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
   §Gate-Fragment `d-check.mk`. Das Modul selbst kommt am adoptierten Stand `v5.12.0` im Regelwerk
   nicht vor (`grep -rl 'structure' .harness/baseline/v5.12.0/regelwerk/` ist leer, Exit 1), und es
   nicht zu aktivieren hält
-  [`modul-13-quality-gates.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin)
+  [`modul-13-quality-gates.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin)
   §Hard Rule (Doku-Disziplin) ein. Auch die Strenge-Bilanz ersetzt nichts: sie beantwortet die
   §3.5-Frage von [`AGENTS.md`](../../AGENTS.md) an der Quelle.
 - **Adaption:** Das gepinnte d-check-Image springt **v0.51.1 → v0.62.0** — **elf** Minor-Releases

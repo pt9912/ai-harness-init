@@ -9,7 +9,7 @@
   Stelle, an der [MR-016](../conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) zu weit ging.
 - **Ausgelöst durch Baseline-Stand:** `v5.12.0`.
 - **Ersetzt-Baseline-Regel:**
-  [`modul-06-roadmap.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-06-roadmap.md)
+  [`modul-06-roadmap.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-06-roadmap.md)
   §Wann Arbeit eine Welle braucht und §Wellenlos heißt nicht wächterlos.
 - **Was jetzt Baseline-Default ist (gegenstandslos).** [MR-016](../conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) Setzung 2/3 — wellenlose Arbeit
   erscheint nicht in der Roadmap, ein geschlossener wellenloser Slice hinterlässt dort keine

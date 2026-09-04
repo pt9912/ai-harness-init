@@ -6,7 +6,7 @@
 - **Geltungsbereich:** die **Form** eines Eintrags dieses Blocks. **Nicht** `docs/plan/adr/`,
   **nicht** `docs/plan/planning/**` — dort entscheidet, wer sie führt.
 - **Ersetzt-Baseline-Regel:**
-  [`grundlagen-traceability.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-traceability.md#herkunfts-anker)
+  [`grundlagen-traceability.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-traceability.md#herkunfts-anker)
   §Herkunfts-Anker — der Satz, der die Herkunft in diesem Block verortet: *„Der Adaptions-Block
   trägt das Muster bereits über sein Feld Begründung."* An seine Stelle tritt das eigene Feld
   `Wirksamkeits-Anlass`, und dazu die Form: derselbe Abschnitt schreibt *„ein Feld, kein Konstrukt"*

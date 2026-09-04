@@ -4,7 +4,7 @@
 - **Geltungsbereich:** `d-check.mk` (aus `harness.mk` umbenannt), `Makefile` (`include`), §Baseline,
   [`harness/README.md`](../README.md) §Sensors; ergänzt [`MR-009`](../conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile).
 - **Ersetzt-Baseline-Regel:**
-  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
+  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
   §Gate-Fragment `d-check.mk` (Schritt 2). Der Kern jener Regel ist adoptiert — das Fragment wird
   nicht handgeschrieben, sondern aus der gepinnten d-check erzeugt und bei jedem Bump neu —, an
   **zwei** Punkten tritt der Eintrag an ihre Stelle: (a) die Einbindung ist `include d-check.mk`
@@ -13,7 +13,7 @@
   obwohl derselbe Abschnitt sagt *„Das Tool pflegt die Recipe-Form (`--network none`,
   Target-Set)"*. Der Rename richtet das Fragment auf den Namen aus, den die Baseline an anderer
   Stelle selbst führt —
-  [`modul-13-quality-gates.md`](../../.harness/baseline/v5.18.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin)
+  [`modul-13-quality-gates.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin)
   nennt das genutzte Gate `docs-check` —, bleibt aber eine Hand-Änderung an einer tool-gepflegten
   Form. Setzung 2 (nur `docs-check` ist behauptet) ersetzt nichts: sie ist jene Hard Rule wörtlich.
   Gemessen am adoptierten Stand `v5.12.0`.

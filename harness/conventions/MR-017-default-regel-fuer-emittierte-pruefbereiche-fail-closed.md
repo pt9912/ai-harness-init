@@ -12,7 +12,7 @@
   nennt Template-Schichtung, Reviewer-Skill, die Baseline-Ablage und die Projekt-README — keinen
   Emissions-Fall. Was von der Baseline hier greift, greift als **Anwendung**: fail-closed ist
   Design-Eigenschaft 1 aus
-  [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-durchsetzungsschicht.md#vier-design-eigenschaften)
+  [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-durchsetzungsschicht.md#vier-design-eigenschaften)
   (*„Ein Gate, das im Zweifel passieren lässt, ist keiner"*), und die Gegenkraft nennt der Eintrag
   selbst.
 - **Warum hier:** die Regel ist in

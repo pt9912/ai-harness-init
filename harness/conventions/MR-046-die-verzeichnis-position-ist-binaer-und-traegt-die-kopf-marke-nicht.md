@@ -10,7 +10,7 @@
   kein Satz darin wird geändert, gestrichen oder umformuliert. **Nicht** `docs/plan/adr/`, wo
   [`AGENTS.md`](../../AGENTS.md) §3.4 unverändert gilt; **nicht** die emittierte Ebene.
 - **Ersetzt-Baseline-Regel:**
-  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
+  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
   §harness/conventions.md als Konventionsspeicher — *„Der Zustand ist die Verzeichnis-Position,
   kein Status-Feld."* Dieselbe Zelle trägt
   [`MR-032`](../conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger);
