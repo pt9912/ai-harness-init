@@ -41,6 +41,27 @@ setup() {
 # Nennungen in DERSELBEN Zeile als eine gezaehlt: die zweite gaebe keinen Namen
 # her, die Gleichheit haette trotzdem gehalten, und das Literal waere
 # ungekoppelt.
+#
+# DER NAME IST DURCH TRENNER BEGRENZT, NICHT DURCH EINE ZEICHEN-WEISSLISTE.
+# Gelesen wird alles zwischen dem Zwischenraum hinter der Traeger-Nennung und
+# dem naechsten Zeichen, das in diesen zwei Dateien ein Wort beendet:
+# Zwischenraum, doppeltes Anfuehrungszeichen, Backtick. Damit ist die Menge, aus
+# der dieser Fall Namen zieht, ECHT WEITER als die Menge der Namen, die main()
+# dispatcht — und genau das ist die Bedingung dafuer, dass ein UNGUELTIGER Name
+# ueberhaupt in die Dispatch-Schleife kommt. Eine Weissliste ueber der Form der
+# heute gueltigen Namen (`[a-z][a-z-]*`) schneidet am ersten Zeichen ausserhalb
+# ab und liefert einen gueltigen Praefix: `span-emit2` laese sie als
+# `span-emit`, die Kalibrierung bliebe ausgeglichen, die Schleife faende den
+# `case` — fuer einen Namen, den main() mit Exit 2 ablehnt. Die Faelle dazu sind
+# test/mutations/259-hostbin-name-mit-ziffer.sh und
+# test/mutations/260-span-emit-hook-name-mit-ziffer.sh.
+#
+# ZWEI GRENZEN, beide fail-closed. Beginnt hinter der Nennung ein Trenner —
+# etwa eine Variablen-Referenz in Anfuehrungszeichen —, gibt die Nennung keinen
+# Namen her; das faengt die Kalibrierung, nicht die Schleife. Und ein
+# Satzzeichen, das in einer Kommentar-Zeile unmittelbar am Namen klebt, wird
+# mitgelesen und faellt als unbekannter Name auf: eine Nennung im Fliesstext
+# gehoert in Backticks, so wie die vorhandene sie traegt.
 kopplung_haelt() {
   local quelle="$1" datei="$2" nennung_muster="$3" name_muster="$4"
   local nennungen namen gefunden n
@@ -67,7 +88,7 @@ kopplung_haelt() {
       echo "$quelle gibt dem Traeger '$n', und main() dispatcht diesen Namen nicht." >&2
       echo "Im Traeger ist er ein Positionsargument des Init-Pfads — der Aufruf endet mit Exit 2," >&2
       echo "statt zu tun, was der Aufrufer danebenschreibt. Der Dispatch fuehrt heute:" >&2
-      grep -nE '^[[:space:]]*case "[a-z-]+":' "$MAIN" >&2
+      grep -nE '^[[:space:]]*case "[^"]*":' "$MAIN" >&2
       return 1
     fi
   done
@@ -81,7 +102,7 @@ kopplung_haelt() {
   kopplung_haelt \
     "der Makefile" "$MK" \
     '\$\(HOST_BIN\)[[:space:]]' \
-    '\$\(HOST_BIN\)[[:space:]]+[a-z][a-z-]*'
+    '\$\(HOST_BIN\)[[:space:]]+[^[:space:]"`]+'
 }
 
 @test "jedes Unterkommando hinter dem Traeger in .claude/settings.json steht im Dispatch von main()" {
@@ -94,5 +115,5 @@ kopplung_haelt() {
   kopplung_haelt \
     ".claude/settings.json" "$SETTINGS" \
     'ai-harness-init' \
-    'ai-harness-init[[:space:]]+[a-z][a-z-]*'
+    'ai-harness-init[[:space:]]+[^[:space:]"`]+'
 }

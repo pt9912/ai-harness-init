@@ -519,9 +519,11 @@ func main() {
 	// `.claude/settings.json` nennt `span-emit` aus zweiter Quelle und ruft den
 	// Traeger direkt, ohne das Wrapper-Skript, das ein emittiertes Repo bekommt.
 	// Die Namensgleichheit haelt test/unterkommando-kopplung.bats (der Fall ueber
-	// `.claude/settings.json`); die zwei Formen, unter denen sie bricht, sind
-	// test/mutations/257-span-emit-hook-name-vertippt.sh (Name vertippt) und
-	// test/mutations/258-span-emit-hook-ohne-unterkommando.sh (Name ganz weg).
+	// `.claude/settings.json`); die drei Formen, unter denen sie bricht, sind
+	// test/mutations/257-span-emit-hook-name-vertippt.sh (Name vertippt),
+	// test/mutations/258-span-emit-hook-ohne-unterkommando.sh (Name ganz weg) und
+	// test/mutations/260-span-emit-hook-name-mit-ziffer.sh (Name um ein Zeichen
+	// verlaengert, dessen Praefix ein gueltiger Name bleibt).
 	// Vor dem Flag-Parsing steht der Zweig wie `add-lang` (run()): beide tragen
 	// Positionsargumente, der Init nur Flags.
 	//
