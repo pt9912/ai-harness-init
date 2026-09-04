@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# files: .harness/baseline/v5.18.0/templates/docs/plan/planning/observations.template.md
+# files: .harness/baseline/v6.0.0/templates/docs/plan/planning/observations.template.md
 # expect: emit.isRecurring fuehrt genau die Vorlagen mit Platzhalter im Ziel-Pfad
 #
 # Die Gegenrichtung zu 215-218: dort wandert die AUFZAEHLUNG, hier die QUELLE. Der
@@ -27,4 +27,4 @@
 # als Kommando-Substitution (SC2016); eine Inline-Suppression verbietet AGENTS 3.2.
 set -euo pipefail
 sed -i 's|docs/plan/planning/observations\.md|docs/plan/planning/<bereich>/observations.md|' \
-	.harness/baseline/v5.18.0/templates/docs/plan/planning/observations.template.md
+	.harness/baseline/v6.0.0/templates/docs/plan/planning/observations.template.md

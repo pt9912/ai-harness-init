@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# files: .harness/baseline/v5.18.0/templates/docs/plan/planning/archiv-stub-welle.template.md
+# files: .harness/baseline/v6.0.0/templates/docs/plan/planning/archiv-stub-welle.template.md
 # expect: jeder Platzhalter steht in genau der Vorlage, die sein Block fuellt
 # verify: test-bats
 #
@@ -24,4 +24,4 @@
 # daraus einen Befund. Laut, nicht still — dieselbe Kopplung wie in Fall 219.
 set -euo pipefail
 sed -i 's|<welle-id>-results\.md|<welle-id>-ergebnisse.md|' \
-	.harness/baseline/v5.18.0/templates/docs/plan/planning/archiv-stub-welle.template.md
+	.harness/baseline/v6.0.0/templates/docs/plan/planning/archiv-stub-welle.template.md

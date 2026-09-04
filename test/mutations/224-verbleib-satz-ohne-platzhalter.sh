@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# files: .harness/baseline/v5.18.0/templates/docs/plan/planning/archiv-stub-slice.template.md
+# files: .harness/baseline/v6.0.0/templates/docs/plan/planning/archiv-stub-slice.template.md
 # expect: emit.isRecurring fuehrt genau die Vorlagen mit Platzhalter im Ziel-Pfad
 #
 # Dieselbe Drift wie 219, an der anderen Satzform. 219 faehrt sie am Kopiere-Satz
@@ -27,4 +27,4 @@
 # Kommando-Substitution (SC2016); eine Inline-Suppression verbietet AGENTS 3.2.
 set -euo pipefail
 sed -i 's|docs/plan/planning/done/<welle-id>/|docs/plan/planning/done/|' \
-	.harness/baseline/v5.18.0/templates/docs/plan/planning/archiv-stub-slice.template.md
+	.harness/baseline/v6.0.0/templates/docs/plan/planning/archiv-stub-slice.template.md
