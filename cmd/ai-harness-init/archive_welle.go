@@ -21,12 +21,22 @@
 // haelt die Parser-Haelfte allein, in beiden Argument-Reihenfolgen und ohne den
 // Schalter.
 //
-// GRENZE, benannt statt verschwiegen: die vier schreibenden git-Aufrufe unten
-// laufen in keinem Test. Was ueber ihnen liegt — Reihenfolge, Aufteilung auf zwei
-// Commits, die gestagte Pfad-Liste — traegt die Git-Schnittstelle von
-// internal/archive und ist dort ueber einem synthetischen Baum gedeckt
-// (TestAnwendenTrenntMoveVonInhalt); DASS die vier Aufrufe hier das tun, was ihr
-// Name sagt, ist es nicht.
+// DER BETRIEBS-EINGANG LAEUFT ALS PROZESS GEGEN EIN ECHTES REPO, in
+// archive_welle_echt_test.go: der Traeger startet in einem Scratch-Repo, und die
+// zwei fail-closed-Sperren, die aus der Aussenwelt entstehen, fallen dort je
+// einzeln — TestArchiveWelleEchtSperrtAmUnsauberenArbeitsbaum haengt an
+// `git status --porcelain`, TestArchiveWelleEchtSperrtAmHaengendenVerweis an
+// `git ls-files`. TestArchiveWelleEchtArchiviertUndSetztZweiCommits ist deren
+// Gegenprobe und der einzige Fall, der die vier schreibenden git-Aufrufe unten
+// wirklich ausfuehrt: zwei Commits, sauberer Arbeitsbaum danach.
+//
+// GRENZE, benannt statt verschwiegen: von den vier schreibenden Aufrufen ist der
+// erste EINZELN gemessen (test/mutations/252 macht `Mv` zum No-Op, und Commit 1
+// laeuft danach ueber einen leeren Index). Fuer `Rm`, `Add` und `Commit` traegt
+// der Fall nur ihr Zusammenspiel; welcher von ihnen ausfaellt, ist aus seinem
+// Rot nicht ablesbar. Reihenfolge, Aufteilung auf zwei Commits und die gestagte
+// Pfad-Liste liegen daneben in der Git-Schnittstelle von internal/archive und
+// sind dort ueber einem synthetischen Baum gedeckt (TestAnwendenTrenntMoveVonInhalt).
 
 package main
 
@@ -84,11 +94,22 @@ type laufEingang struct {
 	schreibend func(root string) archive.Git
 }
 
-// echterEingang ist die Verdrahtung des Betriebs.
+// echterEingang ist die Verdrahtung des Betriebs: die Repo-Wurzel ueber dem
+// Arbeitsverzeichnis, die zwei lesenden git-Aufrufe und die vier schreibenden.
 //
-// ABGRENZUNG: er traegt keine Verzweigung, und die vier Felder haben paarweise
-// verschiedene Signaturen — eine Vertauschung untereinander uebersetzt nicht.
-// Was er zusagt, ist damit vom Compiler getragen und von keinem Test.
+// ZUSAGE: die vier Felder tragen die echten Betriebs-Implementierungen — nicht
+// nur irgendeine Fassung mit passender Signatur. Gemessen in
+// archive_welle_echt_test.go gegen ein echtes Repo, Feld fuer Feld:
+// test/mutations/249 laesst `wurzel` das Arbeitsverzeichnis statt der Wurzel
+// darueber liefern, 250 verwirft die Antwort von `porcelain`, 251 die von
+// `dateien`; `schreibend` faellt an
+// TestArchiveWelleEchtArchiviertUndSetztZweiCommits, sobald es den vier
+// Operationen eine andere Wurzel gibt.
+//
+// ABGRENZUNG: er traegt keine Verzweigung, und die vier Signaturen sind
+// paarweise verschieden — eine Vertauschung untereinander uebersetzt nicht. Das
+// ist die Compiler-Haelfte der Zusage; die andere, ob in jedem Feld die echte
+// Fassung steht, traegt allein der Test oben.
 func echterEingang() laufEingang {
 	return laufEingang{
 		wurzel:     repoWurzel,
