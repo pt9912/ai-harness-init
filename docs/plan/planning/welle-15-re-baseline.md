@@ -95,7 +95,7 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 
 **Sieben Mitglieder — die Zahl steht seit dem Katalog fest, nicht seit der Eröffnung.** `BEO-010`
 ([Register](observations.md)) misst an einer Re-Baseline den Abstand zwischen geschnittenen und
-geschlossenen Slices, und die Ursache war der Schnitt **vor** der Inventur; die zwei Zeilen oben
+geschlossenen Slices, und die Ursache war der Schnitt **vor** der Inventur; die Zeilen 5 bis 7
 sind darum aus [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) §9 hervorgegangen und
 nicht vorab gesetzt. Die Umplanung trägt das Drift-Log der [Roadmap](in-progress/roadmap.md).
 
@@ -111,6 +111,14 @@ Platz dafür hielt der letzte Absatz dieser Sektion, jetzt hat er seinen Slice.
 zehn lebende Slice-Pläne und vier Anweisungssatz-Dateien einen Vorgang an, den es nicht mehr gibt.
 Ein Ausgang in `open/` wäre hier gerade **kein** verbuchter Ausgang: Der Nachzügler, gegen den das
 Welle-Ziel steht, wäre mit dem Umzug schon da.
+
+**Zeile 7 ist keine Katalog-Position, sondern eine Eigenschaft der Prozedur** — und steht deshalb
+in [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) §9 in einem eigenen Abschnitt
+neben der Tabelle. Der Adaptions-Durchgang stellt seine Frage **pro Eintrag**, nicht pro Hunk; ein
+Katalog kann ihn strukturell nicht finden. Er ist Mitglied, weil beide Fassungen die Prozedur
+byte-gleich führen und er eine ihrer sieben Eigenschaften ist — Präzedenz
+[slice-157](done/slice-157-adaptions-durchgang-v5180.md) in
+[welle-14](done/welle-14-re-baseline.md).
 
 **Ein Katalog-Slice ist ausdrücklich kein Mitglied**, und der Grund gehört hierher statt in ein
 stilles Weglassen (`BEO-018`):
