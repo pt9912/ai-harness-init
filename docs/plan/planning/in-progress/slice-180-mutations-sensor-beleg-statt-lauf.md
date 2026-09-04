@@ -159,7 +159,10 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       ([`AGENTS.md`](../../../../AGENTS.md) §3.7: ein Kommentar beschreibt, was da ist).
 - [x] `make gates` grün.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. **Vorbereitet, nicht eingetragen:** §8 dieses Plans hält den Schreibpunkt für Sache der Slice-Closure; §7 trägt die vier Kandidaten-Zeilen zur Übernahme durch den Planner.
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — fünf neue Kennungen
+      (`BEO-031`…`BEO-035`) und zwei Zähler-Schritte (`BEO-025` 3× → 4×, `BEO-030` 1× → 2×), alle
+      mit Beleg `slice-180`; eingetragen bei der Slice-Closure, wie §8 den Schreibpunkt setzt (§7,
+      Block *Closure — Planner*).
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). *(Läuft am formalen Closure-Schritt — Planner, `in-progress/` → `done/` — noch aus; die Implementer-Übergabe hier ist die Vorarbeit dafür, s. §7.)*
 
@@ -553,16 +556,17 @@ und Verifikation, s. Kopf dieser Datei und Baseline-Regelwerk `modul-08-agentenr
   `harness/tools/mutate.sh` (Kopf) und [`harness/README.md`](../../../../harness/README.md).
   **N-5** — die beiden `57 von 1055`-Stellen tragen jetzt ihr Kommando und die
   Nicht-Erwartungswert-Marke, mit dem aktuellen Stand `57`/`1058`.
-- **Steering-Loop-Eintrag:** Beobachtung, kein Regel-Übertritt — keine der vier vorgeschlagenen
-  Kandidaten-Zeilen (§Kandidaten für das Beobachtungs-Register unten) erreicht bei ihrer Übernahme
-  3×; alle vier wären Erstauftreten. Kein Eintrag `— liegt in …` (nichts verkörpert). Die wertvollste
-  einzelne Lehre — GNU-only Shell-Optionen in bats-Zusicherungen gegen ein Alpine/BusyBox-Testbild
-  (Kandidat unten) — bleibt darum **gezählt, nicht verkörpert**; ein Lint-Schritt oder eine
-  Hard-Rule-Ergänzung wäre bei einem dritten Auftreten fällig.
-- **Beobachtungs-Register (`../observations.md`):** **nicht fortgeschrieben in diesem Lauf.** §8
-  dieses Plans hält den Schreibpunkt für Sache der Slice-Closure, nicht des Implementer-Laufs — vier
-  Kandidaten-Zeilen liegen unten vorbereitet zur Übernahme durch den Planner, keine Zeile wurde in
-  `../observations.md` angelegt oder erhöht.
+- **Schwellen-Stand:** kein Regel-Übertritt — keine der vier vorgeschlagenen Kandidaten-Zeilen
+  (§Kandidaten für das Beobachtungs-Register unten) erreicht bei ihrer Übernahme 3×; alle vier sind
+  Erstauftreten. Kein Eintrag `— liegt in …` (nichts verkörpert). Die wertvollste einzelne Lehre —
+  GNU-only Shell-Optionen in bats-Zusicherungen gegen ein Alpine/BusyBox-Testbild (Kandidat unten) —
+  bleibt darum **gezählt, nicht verkörpert**; ein Lint-Schritt oder eine Hard-Rule-Ergänzung wäre bei
+  einem dritten Auftreten fällig. Den Lerneintrag, den der `done/`-Übergang verlangt, trägt der Block
+  §Closure — Planner (Form *neuer Sensor*).
+- **Beobachtungs-Register (`../observations.md`):** vom **Implementer**-Lauf nicht fortgeschrieben —
+  §8 dieses Plans hält den Schreibpunkt für die Slice-Closure. Er hinterließ vier Kandidaten-Zeilen
+  unten; eingetragen sind sie samt zwei Zähler-Schritten und einer fünften Zeile beim Closure-Schritt
+  (§Closure — Planner).
 - **Folge-Slices:** keine — jedes Risiko trägt einen Ausgang, der entweder abgeschlossen ist
   (entfallen/eingetreten-aufgelöst) oder bereits an einer bestehenden Kennung hängt (`BEO-003`,
   `BEO-007`), ohne einen neuen Träger zu brauchen.
@@ -607,12 +611,11 @@ und Verifikation, s. Kopf dieser Datei und Baseline-Regelwerk `modul-08-agentenr
   formalen Closure-Schritt (`git mv` nach `done/`), den dieser Implementer-Lauf nicht ausführt.
   Vorprüfbar war bereits: Anker-Paarung entfällt (kein Feld `liegt in <Zielort>` in dieser Notiz, da
   nichts verkörpert wurde); Folge-Slice-Paarung entfällt (keine genannten Folge-Slices);
-  Register-Paarung ist zum jetzigen Stand **nicht anwendbar** — die vier Kandidaten-Zeilen unten
-  existieren noch nicht in `../observations.md`; sie entstehen dort erst, wenn der Planner sie beim
-  Closure-Schritt übernimmt, und die formale Prüfung setzt ohnehin voraus, dass diese Datei bereits
-  in `done/` liegt.
+  Register-Paarung war zum Zeitpunkt der Übergabe **nicht anwendbar** — die Kandidaten-Zeilen unten
+  entstehen in `../observations.md` erst mit dem Closure-Schritt, und die formale Prüfung setzt
+  ohnehin voraus, dass diese Datei bereits in `done/` liegt. Ihr Ergebnis trägt §Closure — Planner.
 
-### Kandidaten für das Beobachtungs-Register — vom Planner bei der Closure einzutragen
+### Kandidaten für das Beobachtungs-Register — bei der Closure eingetragen
 
 Regel dieser Sektion: §8 unten hält den Schreibpunkt für `../observations.md` für Sache der
 Slice-Closure (Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register, *„Eingetragen
@@ -682,6 +685,67 @@ freie `BEO-<NNN>`, gegen den dann aktuellen Registerstand) liegt beim Planner.
   gepinnten `$(BATS_IMAGE)`; Träger ist der Autor, der eine neue Zusicherung schreibt, und — bei 3× —
   eine Prüf-Regel oder ein Lint-Schritt gegen bekannte GNU-only `find`/`tar`/`sed`-Optionen in
   `test/*.bats`.
+
+### Closure — Planner
+
+Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md` §Closure- und
+Lerneintrag-Regeln (zwei beobachtbare Kriterien **und** ein Lerneintrag) · `modul-06-roadmap.md`
+§Das Beobachtungs-Register (Schreibpunkt ist die Slice-Closure) · [`AGENTS.md`](../../../../AGENTS.md)
+§3.3 (Move und Inhalt in getrennten Commits).
+
+- **Lerneintrag, Form *neuer Sensor*.** Der Slice hinterlässt drei neue Mutations-Fälle
+  (`262`/`263`/`264`) und drei neue Zusicherungen in `test/mutate-driver.bats`, je eine pro Zeile
+  der Fitness Function aus
+  [ADR-0035](../../../../docs/plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md).
+  Zwei davon treffen `main()` als Prozess statt der isolierten Funktion — das ist der Unterschied,
+  an dem der erste Entwurf scheiterte. **Was der Lerneintrag nicht behauptet:** dass damit die
+  Klasse geschlossen wäre, die den Slice teuer machte. Die schärfste Einzel-Lehre — eine
+  GNU-only-Option in einer bats-Zusicherung ist unter dem gepinnten Alpine/BusyBox-Bild unter jeder
+  Mutation grün — hat keinen Sensor und liegt als `BEO-034` im Register: **gezählt, nicht
+  verkörpert**.
+- **Beobachtungs-Register fortgeschrieben** ([`../observations.md`](../observations.md)) — fünf neue
+  Kennungen und zwei Zähler-Schritte, alle mit Beleg `slice-180`:
+  - `BEO-031` (§6 Risiko 1) · `BEO-032` (Risiko 2) · `BEO-033` (Risiko 6) · `BEO-034` (Risiko 8) —
+    die vier vorbereiteten Kandidaten oben, unverändert in der Sache, mit den vorgeschlagenen
+    Kennungen: `BEO-030` war der Höchststand, es gibt keine Kollision.
+  - `BEO-035` (neu, Planner-Beobachtung) — die Namensformen zweier Rollen-Reports sind nicht
+    disjunkt. Entschieden statt offen gelassen: **benannt und gezählt, nicht korrigiert.** Der
+    Bestand in `docs/reviews/**` sind Zeitdokumente, ein Umzug bräche eingehende Verweise, und
+    keine Quelle verbietet der Reviewer-Form ihren freien Gegenstands-Teil — die Reparatur wäre
+    eine Verschärfung einer der beiden Vorgaben und damit eine Entscheidung, kein Nachzug.
+  - `BEO-025` **3× → 4×**. Geprüft statt angenommen: der Slice hat die Klasse nicht nur benannt,
+    sondern in einer **neu geschriebenen** Zusage erzeugt — der Kommentar am
+    `isolation_key`-Aufrufpunkt nannte einen Sensor als Träger für den vollen Baum, dessen
+    `# files:`-Ziele **57** von **1060** Schlüssel-Pfaden decken. Ein eigener Vorgang, ein
+    Zähler-Schritt; der Ausgang bleibt **geplant** auf
+    [slice-181](../open/slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md).
+  - `BEO-030` **1× → 2×**, zwei Funde in einem Vorgang. §8 dieses Plans führte `BEO-025` als 2×
+    gegen 3× im Register (im Diff korrigiert) und führt `BEO-009` als 9× gegen 10× (steht). Der
+    zweite Stand war beim Schnitt richtig und ist durch die dazwischenliegende Closure von
+    `slice-175` veraltet; er wird hier **nicht** nachgezogen, weil er der Beleg für den
+    Registereintrag ist, den diese Closure schreibt.
+- **Lese-Schritt.** **Keine** Zeile erreicht **mit diesem Slice** 3×: `BEO-025` stand schon darüber
+  und trägt seinen Ausgang, `BEO-030` steht bei 2×, die fünf neuen bei 1×. Vier Wellen sind offen
+  (`ls docs/plan/planning/welle-*.md`), der Schwellen-Lese-Schritt liegt damit bei ihrer Closure und
+  nicht hier ([`.claude/commands/implement-slice.md`](../../../../.claude/commands/implement-slice.md)
+  Schritt 24). `BEO-017` steht bei 3× ohne Ausgang und benennt dafür selbst die Closure von
+  [welle-15](../welle-15-re-baseline.md); diese Slice-Closure bewegt die Zeile nicht.
+- **Ausgang für den offenen Rest aus dem Review (Datei-Modus):** `isolation_key()` hasht Inhalt,
+  nicht Metadaten — ein reiner `chmod` bewegt den Schlüssel nicht. Kein Fehlerpfad ist benannt, weil
+  jeder Fall über `bash "$case_file"` läuft und kein Bit auswertet. **Weiter offen → Register:** der
+  Punkt steht als zweiter, benannter Anteil in `BEO-031`, in derselben Klasse wie Docker-Cache und
+  Host-Werkzeuge (ein Anteil des Prüfgegenstands, den der Schlüssel nicht liest) und darum kein
+  eigener Zähler.
+- **Roadmap.** Der Ruhe-Marker *Nichts in Arbeit* in
+  [`roadmap.md`](../in-progress/roadmap.md) §Offene Wellen stand während der Laufzeit dieses Slice
+  neben einem beanspruchten `in-progress/` — nach Baseline-Regelwerk `modul-06-roadmap.md`
+  §Roadmap-Struktur derselbe Defekt wie ein fehlender Marker bei leerem Verzeichnis. Mit dem Move
+  dieses Slice trifft er wieder zu; die Roadmap bleibt darum unberührt. Die Invariante ist unbewacht,
+  der Abschnitt sagt das über sich selbst, und ihr Träger ist
+  [slice-125](../open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) — kein neuer
+  Registereintrag für eine bereits benannte Lücke mit benanntem Träger.
+- **Drei Paarungen (Repo ohne Wellen-Betrieb, dieser Slice):** geprüft **nach** dem `git mv`, weil
+  sie in `done/` suchen — Ergebnis unten.
 
 ## 8. Sub-Area-Modus-Begründung
 
