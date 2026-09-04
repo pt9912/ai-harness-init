@@ -21,7 +21,7 @@ Kriterium, das jene Messung anwendet),
 **Berührte Spec-Stellen:** `—`. Der Slice katalogisiert und schneidet; er schreibt keine
 Spec-Stelle.
 
-**Verantwortlich:** `—` bis zur Priorisierung. Der Liefergegenstand ist ein Katalog im Plan und
+**Verantwortlich:** Planner (pt9912). Der Liefergegenstand ist ein Katalog im Plan und
 eine Menge neuer Slice-Dateien in `open/` — beides Planner-Artefakte (Baseline-Regelwerk
 `modul-08-agentenrollen.md` §Welche Rolle braucht welche Artefaktklasse).
 
