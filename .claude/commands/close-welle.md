@@ -63,20 +63,37 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
    3× steht, liest diese Closure **nicht** — dafür ist §8 des nächsten Slice-Plans zuständig
    (`/plan-welle`); wer nur den Lese-Schritt kennt, sieht alles darunter nie wieder an.
 5. **Schritt 4 — Zeitdokumente der Welle archivieren.** Ihre Slice-Dateien, ihr Plan und die
-   Review-Reports dieser Slices wandern nach `done/<welle-id>/archiv.zip`; an ihrer Stelle bleiben
-   gekürzte Stubs — per `cp` aus
-   `.harness/baseline/v5.18.0/templates/docs/plan/planning/archiv-stub-slice.template.md` bzw.
-   `.harness/baseline/v5.18.0/templates/docs/plan/planning/archiv-stub-welle.template.md`; ein Stub
-   trägt keine Abschnittsüberschriften, Review-Reports bekommen keinen. Die **Ergebnisnotiz bleibt
-   vollständig und flach**. Eingesammelt wird nach der Welle, nicht nach dem Verzeichnis: die Slices,
-   deren `Welle:` diese Welle nennt, **und** die wellenlosen seit der letzten Closure; Slices einer
-   noch offenen Welle bleiben liegen.
-   **Start-Bedingung in diesem Repo: `slice-170` (Archivierungs-Werkzeug) liegt in `done/`.** Ist sie
-   nicht eingetreten, gehört **das** als Feststellung in die Results-Notiz und die Welle schließt
-   ohne Schritt 4 — von Hand archiviert niemand: die Vollständigkeit des Archivs bezeugt allein der
-   Archivierungs-Commit, und der Move bricht dieselben Verweis-Formen wie ein Lifecycle-Wechsel,
-   die `make slice-mv` nur für die vier Lifecycle-Verzeichnisse nachzieht, nicht eine Ebene tiefer.
-   Der Altbestand — Wellen, die vor dieser Adoption schlossen — bleibt frei.
+   Review-Reports dieser Slices wandern nach `done/<welle-id>/archiv.zip`; an der Stelle von Slice
+   und Plan bleibt je ein gekürzter Stub, die **Ergebnisnotiz bleibt vollständig und flach**,
+   Review-Reports bekommen keinen. Eingesammelt wird nach der Welle, nicht nach dem Verzeichnis:
+   die Slices, deren `Welle:` diese Welle nennt, **und** die wellenlosen seit der letzten Closure;
+   Slices einer noch offenen Welle bleiben liegen.
+   **Der Träger ist `make archive-welle WELLE=<welle-id>`, und von Hand archiviert niemand:** die
+   Vollständigkeit des Archivs bezeugt allein der Archivierungs-Commit. Das Ziel hängt an
+   `host-bin` und fährt das Unterkommando des Produkt-Binärs
+   ([ADR-0033](../../docs/plan/adr/0033-wellen-archivierung-als-unterkommando.md) Festlegung 1). Es
+   setzt die **zwei Commits** (erst der reine `git mv`, dann Archiv, Stubs und Verweis-Nachzug mit
+   explizitem Staging — Hard Rule 3.3), packt das Zip aus der Go-Standardbibliothek, zieht die
+   Verweise auf die bewegten Dateien in **drei** Formen nach (mit Verzeichnis-Präfix,
+   geschwister-relativ, aufsteigend) und schreibt **beide Stub-Arten aus den vendored Vorlagen** —
+   fehlt eine, bricht es ab, statt eine Form zu erfinden (Festlegung 3). Das macht die
+   `cp`-Regel der Adaptionen oben hier gegenstandslos: die Vorlage wird nicht von Hand kopiert,
+   sondern vom Träger gelesen. Was derselbe Lauf **täte**, ohne zu schreiben, sagt
+   `.harness/state/bin/ai-harness-init archive-welle --vorschau <welle-id>` (ein eigenes
+   `make`-Ziel hat der Vorschau-Zweig nicht). Das Target ist **kein Gate** — es archiviert, es
+   prüft nicht; der Beleg ist `make docs-check` vor und nach demselben Lauf. Die vollständige
+   Beschreibung mit allen Sperren steht in `harness/README.md` §Sensors (Feedback-Gates).
+   **Jeder Ausgang ist fail-closed, und einer davon greift in diesem Repo beim ersten Lauf:**
+   solange kein `docs/plan/planning/done/*/archiv.zip` existiert, hat *wellenlos seit der letzten
+   Closure* keine beobachtbare Untergrenze — der Lauf bricht ab, statt den gesamten Altbestand
+   mitzunehmen (`ls docs/plan/planning/done/*/archiv.zip 2>/dev/null | wc -l`; keine
+   Erwartungswerte). Die Archivierung des **Altbestands** ist dann ein eigener Vorgang, und sie
+   braucht eine Entscheidung, die heute keine Quelle dieses Repos trägt: welche Welle die
+   wellenlosen Slices einsammelt, die keiner angehören (Baseline-Regelwerk `modul-06-roadmap.md`
+   §Wellen-Closure-Prozedur, Schritt 4 — die chronologisch nächste geschlossene Welle oder ein
+   einzelnes Sammel-Archiv). Bricht der Lauf an einer Sperre, gehört **das** als Feststellung in
+   die Results-Notiz und die Welle schließt ohne Schritt 4. Wellen, die vor dieser Adoption
+   schlossen, bleiben frei.
    **Zwei repo-lokale Kopplungen im Stub:** Die ID-Link-Pflicht gilt auch dort, `Hervorgegangen:`
    trägt seine Kennungen als Anker-Links. Und der Geltungsbereich der Sensoren trägt die Stub-Ebene:
    `.d-check.yml` scannt ab `.`, und die `matrix`-Klasse `slice` greift über `**` auch
