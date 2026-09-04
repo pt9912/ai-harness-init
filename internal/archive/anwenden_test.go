@@ -419,6 +419,62 @@ func TestAnwendenOhneVorlageNenntDenRueckweg(t *testing.T) {
 	}
 }
 
+// vorlageSliceOhneZeiger ist die Slice-Vorlage ohne ihren Archiv-Zeiger-Block.
+// Der Stub, der daraus entsteht, ist form-widrig — genau der Zustand, gegen den
+// FormOK im Lauf steht.
+const vorlageSliceOhneZeiger = `# slice-<NNN> — <Titel>
+
+> **Template-Hinweis.** ` + vorlagenMarker + ` — dieser Absatz faellt beim Kuerzen weg.
+
+**Welle:** <welle-id | ohne Welle>
+**Archiviert mit:** <welle-id> · **Geschlossen:** <JJJJ-MM-TT>
+**Hervorgegangen:** <BEO-*, ADR-*, Folge-Slice — oder ` + "`— keine —`" + `>
+`
+
+// TestAnwendenBrichtBeiVerletzterStubFormAb misst die VERDRAHTUNG von FormOK,
+// nicht ihre Logik: dass der Lauf sie zwischen Stub-Erzeugung und Schreibzugriff
+// ruft und an ihrem Urteil abbricht. Die Logik selbst deckt
+// TestFormOKMeldetStehengebliebeneUeberschrift — ein Test ueber der Funktion
+// bleibt gruen, wenn niemand sie mehr aufruft.
+//
+// Vier Pruefungen, und die letzte ist die tragende: die bewegte Datei traegt
+// nach dem Abbruch noch ihren VOLLTEXT. Damit ist gemessen, dass FormOK VOR dem
+// os.WriteFile steht und nicht dahinter — ein Lauf, der erst schriebe und dann
+// urteilte, liesse den form-widrigen Stub im Baum.
+//
+// Der Abbruch liegt ZWISCHEN den zwei Commits (harness/README.md: „eine
+// verletzte Stub-Form bricht zwischen den zwei Commits ab und nennt den
+// Rueckweg") — darum steht der Rueckweg im Fehlertext und der Move-Commit
+// alleine da.
+// Gegenbeispiel: test/mutations/243-archive-welle-go-stubform-verdrahtung.sh.
+func TestAnwendenBrichtBeiVerletzterStubFormAb(t *testing.T) {
+	root := baueBaum(t)
+	schreibe(t, filepath.Join(root, ".harness", "baseline", pruefTag, "templates",
+		"docs", "plan", "planning", "archiv-stub-slice.template.md"), vorlageSliceOhneZeiger)
+	b := einsammeln(t, root, "welle-10")
+	g := &gitMitschreiber{root: root,
+		beobachte: "docs/plan/planning/done/welle-10/slice-100-a.md",
+		zipPfad:   "docs/plan/planning/done/welle-10/" + archivNameTest}
+	var aus bytes.Buffer
+
+	err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus)
+
+	if err == nil {
+		t.Fatal("form-widriger Stub: want Fehler, got nil — FormOK ist nicht verdrahtet")
+	}
+	for _, teil := range []string{"kein Archiv-Zeiger", "Abbruch nach Commit 1", "git reset --hard HEAD~1"} {
+		if !strings.Contains(err.Error(), teil) {
+			t.Errorf("Fehlertext nennt %q nicht:\n%v", teil, err)
+		}
+	}
+	if len(g.commits) != 1 {
+		t.Errorf("%d Commits, want 1 (nur der Move — der Inhalts-Commit kommt nicht mehr)", len(g.commits))
+	}
+	if got := lesen(t, root, "docs/plan/planning/done/welle-10/slice-100-a.md"); got != volltextSlice100 {
+		t.Errorf("der form-widrige Stub steht im Baum — FormOK laeuft nach dem Schreibzugriff:\n%q", got)
+	}
+}
+
 // TestZweiterLaufZiehtDenAufsteigendenStubVerweisNach ist ADR-0033
 // Abnahme-Kriterium 3, gefahren als das, was es ist: ZWEI Laeufe. Der erste
 // archiviert welle-09 und schreibt dabei selbst einen Verweis der aufsteigenden

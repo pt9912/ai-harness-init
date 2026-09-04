@@ -222,6 +222,11 @@ func schreibeStubs(root string, b Bestand, vorlagen string, umzuege []Umzug, zip
 		if err != nil {
 			return err
 		}
+		// ZUSAGE: der Schreibzugriff kommt NACH dem Form-Urteil. Ein form-widriger
+		// Stub erreicht den Baum nicht, der Lauf bricht zwischen den zwei Commits
+		// ab und nennt den Rueckweg. Gedeckt von
+		// TestAnwendenBrichtBeiVerletzterStubFormAb;
+		// test/mutations/243-archive-welle-go-stubform-verdrahtung.sh nimmt sie weg.
 		if err := FormOK(text); err != nil {
 			return fmt.Errorf("%s: %v", u.Neu, err)
 		}

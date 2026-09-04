@@ -10,6 +10,11 @@
 // `--vorschau` endet der Aufruf danach; ohne sie laeuft die Operation — Move und
 // Commit 1, Zip, Stubs, Verweis-Nachzug, Staging, Commit 2.
 //
+// Die Vorschau-Haelfte ist an einem SPERRENFREIEN Baum gedeckt, denn nur dort
+// sagt sie etwas: TestArchiveWelleVorschauSchreibtNichtsObwohlDerLaufLiefe misst
+// Exit-Code, git-Aufrufe und den Baum-Abdruck,
+// TestArchiveWelleSchreibendLaeuftAmSelbenBaum die Gegenprobe ohne den Schalter.
+//
 // GRENZE, benannt statt verschwiegen: die vier schreibenden git-Aufrufe unten
 // laufen in keinem Test. Was ueber ihnen liegt — Reihenfolge, Aufteilung auf zwei
 // Commits, die gestagte Pfad-Liste — traegt die Git-Schnittstelle von
@@ -94,6 +99,11 @@ func archiveWelleLauf(root, welle string, vorschau bool, porcelain string, datei
 	if len(bericht.Sperren) > 0 {
 		return 3
 	}
+	// ZUSAGE: hier endet der Vorschau-Zweig — mit Exit 0 und ohne einen einzigen
+	// Schreibzugriff, auch dann, wenn keine Sperre steht. Das ist die einzige
+	// Eigenschaft, die einen Blick auf eine Welle von ihrer Archivierung trennt.
+	// Gedeckt von TestArchiveWelleVorschauSchreibtNichtsObwohlDerLaufLiefe;
+	// test/mutations/242-archive-welle-go-vorschau-schaltet-nicht-ab.sh nimmt sie weg.
 	if vorschau {
 		return 0
 	}
