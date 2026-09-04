@@ -83,8 +83,10 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 |---|---|---|
 | [slice-176](open/slice-176-inventur-vor-dem-schnitt-v600.md) | Inventur vor dem Schnitt — der Form- und Regel-Diff `v5.18.0` → `v6.0.0` | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) |
 | [slice-177](open/slice-177-beobachtungs-register-verzeichnis-form.md) | Das Beobachtungs-Register läuft in der Verzeichnis-Form | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-045`](../../../harness/conventions.md#mr-045--der-adaptions-block-läuft-in-der-verzeichnis-form) |
+| [slice-178](open/slice-178-regierende-fassung-des-sprungs-v600.md) | Die regierende Fassung dieses Sprungs wird entschieden (Architect) | [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md), [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) |
+| [slice-179](open/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) | Die Form des Beobachtungs-Registers wird entschieden — vor dem Umzug (Architect) | [`ADR-0030`](../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 
-**Zwei Mitglieder, und die übrigen Zeilen folgen dem Katalog.** Die Mitglieder-Zahl steht bewusst
+**Vier Mitglieder, und die übrigen Zeilen folgen dem Katalog.** Die Mitglieder-Zahl steht bewusst
 nicht vorab: `BEO-010` ([Register](observations.md)) misst an einer Re-Baseline den Abstand
 zwischen geschnittenen und geschlossenen Slices, und die Ursache war der Schnitt **vor** der
 Inventur. Die Umplanung, die die weiteren Mitglieder aufnimmt, trägt das Drift-Log der
@@ -98,6 +100,30 @@ kommt von außerhalb des Sprungs: eine flache Datei, in die **jede** Slice-Closu
 Kollisions-Punkt für parallel arbeitende Rolleninhaber — begründet in
 [slice-177](open/slice-177-beobachtungs-register-verzeichnis-form.md) §1. Der Katalog weist diese
 Position jenem Slice zu, statt einen zweiten zu erzeugen.
+
+**Zeile 3 und 4 sind die zwei Entscheidungen, ohne die diese Welle kein Konformitäts-Urteil
+fällen darf.** [slice-178](open/slice-178-regierende-fassung-des-sprungs-v600.md) löst Übergabe 1
+aus §5 ein — die Präzedenz ist derselbe Gegenstand eine Runde früher
+([slice-163](done/slice-163-regierende-fassung-des-sprungs.md), Mitglied von
+[welle-14](done/welle-14-re-baseline.md)).
+[slice-179](open/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) geht Zeile 2 voraus: Die
+Ziel-Form nimmt dem Register seine flache Datei, und
+[`ADR-0030`](../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Festlegung 4 verlangt
+für genau diesen Fall die Entscheidung **vor** dem Move.
+
+**Was diese Welle noch nicht führt, und was von ihm erwartet wird.** Der **Baum-Tausch** hat noch
+keinen Slice — er geht aus dem Katalog in
+[slice-176](open/slice-176-inventur-vor-dem-schnitt-v600.md) §9 hervor und wird nicht vorab
+erfunden (`BEO-010`: gemessen statt geschätzt). Wenn er geschnitten ist, trägt **er** die
+Zielstand-Buchung nach
+[`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2 — die
+Zeile in §Baseline von [`harness/conventions.md`](../../../harness/conventions.md) mit Ziel-Tag,
+Datum des **Vollzugs** und dem Zeiger auf den Delta-Nachweis in
+[slice-176](open/slice-176-inventur-vor-dem-schnitt-v600.md). Präzedenz ist
+[slice-156](done/slice-156-baum-tauschen-pins-ziehen.md), der die Zeile für den vorigen Sprung
+schrieb. **Nicht** dorthin gehört sie in
+[slice-176](open/slice-176-inventur-vor-dem-schnitt-v600.md): Vor dem Tausch trüge sie ein Datum
+für ein Ereignis, das nicht stattgefunden hat. Hier steht der Platz, nicht der Slice.
 
 ## 5. Abhängigkeiten
 
@@ -113,12 +139,24 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   eine Umplanung auf eine Annahme. **Ob** dieser Sprung ihre Gegenstände bewegt, misst
   [slice-176](open/slice-176-inventur-vor-dem-schnitt-v600.md) — der Katalog ist die Grundlage der
   Kante, nicht ihre Folge.
-- **Zwei Übergaben an den Architect** hängen an derselben Messung und haben in
-  [slice-176](open/slice-176-inventur-vor-dem-schnitt-v600.md) §6 ihren Träger: die regierende
-  Fassung dieses Sprungs und die Buchung der Zielstand-Setzung nach
-  [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2. Sie
-  blockieren die **Eröffnung** nicht — ein Diff-Katalog ist eine Messung und fällt kein
-  Konformitäts-Urteil —, wohl aber jeden Durchgang, der eines fällt.
+- **Zwei Übergaben an den Architect** stehen in
+  [slice-176](open/slice-176-inventur-vor-dem-schnitt-v600.md) §6 und haben jetzt getrennte Träger.
+  Übergabe 1 — die **regierende Fassung dieses Sprungs** — trägt
+  [slice-178](open/slice-178-regierende-fassung-des-sprungs-v600.md). Übergabe 2 — die **Buchung
+  der Zielstand-Setzung** nach
+  [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2 —
+  trägt der Baum-Tausch-Slice, den es noch nicht gibt (§4, letzter Absatz). Sie blockieren die
+  **Eröffnung** nicht — ein Diff-Katalog ist eine Messung und fällt kein Konformitäts-Urteil —,
+  wohl aber jeden Durchgang, der eines fällt.
+- **Eine Kante innerhalb der Welle ist tragend:**
+  [slice-179](open/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) →
+  [slice-177](open/slice-177-beobachtungs-register-verzeichnis-form.md). Ohne die entschiedene
+  Kennungs- und Index-Gestalt hat der Umzug kein Ziel, und
+  [`ADR-0030`](../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Festlegung 4
+  verlangt die Entscheidung vor dem Move. Die zweite Kante ist ordnend:
+  [slice-176](open/slice-176-inventur-vor-dem-schnitt-v600.md) →
+  [slice-178](open/slice-178-regierende-fassung-des-sprungs-v600.md), weil die Wahl auf der
+  zweistufigen Messung jenes Slice steht.
 
 ## 6. Out-of-Scope für diese Welle
 

@@ -143,20 +143,24 @@ dasteht.
 - **Der Bestand offener Slice-Pläne wird von diesem Katalog nicht gehalten** (`BEO-023`). Er misst
   das Delta der **Baseline**; ob ein Plan in `open/` seine Pflicht über den Sprung hinweg behält,
   misst er nicht. — **Ausgang:** <…>
-- **Übergabe 1 an den Architect: die regierende Fassung dieses Sprungs.**
+- **Übergabe 1 an den Architect: die regierende Fassung dieses Sprungs — Träger ist
+  [slice-178](../open/slice-178-regierende-fassung-des-sprungs-v600.md).**
   [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 1
   gilt **nur** für `v5.12.0` → `v5.18.0`; ihr erster Re-Evaluierungs-Trigger verlangt für diesen
   Sprung eine neue Messung, und `BEO-019` sagt, warum sie zweistufig ist: ein byte-gleicher
   Abschnitt delegiert in Dateien, die ein Delta tragen können. Dieser Slice **misst** (DoD 3) und
   entscheidet nicht — eine neu zu begründende Wahl der normativen Quelle ist Architektur-Frage
   ([`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md)). — **Ausgang:** <…>
-- **Übergabe 2 an den Architect: die Buchung der Zielstand-Setzung.** Der Auftraggeber hat `v6.0.0`
-  als Zielstand gesetzt; verbucht wird sie nach
+- **Übergabe 2 an den Architect: die Buchung der Zielstand-Setzung — sie gehört nicht in diesen
+  Slice.** Der Auftraggeber hat `v6.0.0` als Zielstand gesetzt; verbucht wird sie nach
   [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2 in
   §Baseline von [`harness/conventions.md`](../../../../harness/conventions.md), mit genau drei
-  Teilen — Ziel-Tag und Datum des Vollzugs, dieser Slice als Zeiger auf den Delta-Nachweis, sonst
-  nichts. Die Datei gehört dem Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8); der Planner
-  liefert den Nachweis, nicht die Zeile. — **Ausgang:** <…>
+  Teilen — Ziel-Tag und **Datum des Vollzugs**, dieser Slice als Zeiger auf den Delta-Nachweis,
+  sonst nichts. Der Vollzug ist der Baum-Tausch, und der ist ein eigener Slice, den der Katalog
+  benennt (Präzedenz [slice-156](../done/slice-156-baum-tauschen-pins-ziehen.md), der die Zeile für
+  den vorigen Sprung schrieb). Vorher trüge die Zeile ein Datum für ein Ereignis, das nicht
+  stattgefunden hat. Dieser Slice liefert den **Nachweis**, auf den sie zeigt, nicht die Zeile. —
+  **Ausgang:** <…>
 
 ## 7. Closure-Notiz
 
@@ -237,6 +241,28 @@ eine Position dieses Repo wirklich bindet, gehört in den Slice, der sie trägt.
 
 **Eine Position ist vor diesem Katalog gemessen und geschnitten:** `v6.0.0` ersetzt die
 Register-Vorlage durch eine Vorlage je **Beobachtung**
-(`git diff --name-status v5.18.0 v6.0.0 -- lab/templates/docs/plan/planning`). Ihr Träger ist
-[slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md); der Katalog weist ihr
-diesen Slice zu, statt einen zweiten zu erzeugen.
+(`git diff --name-status v5.18.0 v6.0.0 -- lab/templates/docs/plan/planning`). Ihre Träger sind
+[slice-179](../open/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) (die Form-Entscheidung) und
+[slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md) (der Vollzug); der Katalog
+weist ihr diese Slices zu, statt einen dritten zu erzeugen.
+
+**Eine zweite Position hängt daran und hat ausdrücklich keinen Träger:** Dieselbe Umgestaltung
+löst das **Kennungs-Schema** ab — statt `BEO-<NNN>` adressiert die Ziel-Fassung `BEO-<KUERZEL>/<slug>`,
+und sie sagt dazu *„eine fortlaufende Nummer gibt es nicht mehr"*
+(`git show v6.0.0:lab/regelwerk/modul-06-roadmap.md`, §Das Beobachtungs-Register, am lokalen
+Kurs-Klon). Der **Bestand** der abgelösten Form ist repo-weit gemessen:
+
+```sh
+git grep -oE '\bBEO-[0-9]{3}\b' -- '*.md' ':!.harness/baseline' | wc -l   # 594 Vorkommen
+git grep -lE '\bBEO-[0-9]{3}\b' -- '*.md' ':!.harness/baseline' | wc -l   #  70 Dateien
+```
+
+Keine Erwartungswerte
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2). Die Position ist von der **Ablage**-Form getrennt zu führen: Die
+Verzeichnis-Gestalt trägt
+[slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md), das erste Pfad-Segment
+entscheidet [slice-179](../open/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) — was mit den
+594 Vorkommen im Bestand geschieht (umhängen, oder als Stand ihrer Zeit stehen lassen, wo die
+Quelle eingefroren ist), ist eine dritte Frage, die dieser Katalog **zuordnet** und die keinen
+vorab erfundenen Träger bekommt (`BEO-010`, `BEO-018`).
