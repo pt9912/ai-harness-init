@@ -15,7 +15,7 @@ Implementer-Arbeit der Runden 2 **und** 3 in einem Commit.
 [`2026-09-04-slice-180-mutations-sensor-verify.md`](2026-09-04-slice-180-mutations-sensor-verify.md).
 
 **Eingangs-Kontext (fünf Pflicht-Punkte + Slice-Plan):** unverändert —
-[`slice-180`](../plan/planning/in-progress/slice-180-mutations-sensor-beleg-statt-lauf.md),
+[`slice-180`](../plan/planning/done/slice-180-mutations-sensor-beleg-statt-lauf.md),
 [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6),
 [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
 [`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten),

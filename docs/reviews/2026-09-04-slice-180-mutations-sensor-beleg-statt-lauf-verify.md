@@ -4,7 +4,7 @@
 Implementation, Architektur, Planung oder Review dieses Slice.
 
 **Eingang:** DoD-Bestätigung und Sensor-Belege des Implementers
-([`slice-180`](../plan/planning/in-progress/slice-180-mutations-sensor-beleg-statt-lauf.md), §7),
+([`slice-180`](../plan/planning/done/slice-180-mutations-sensor-beleg-statt-lauf.md), §7),
 plus drei Reviewer-Runden gegen denselben Diff:
 [Runde 1](2026-09-04-slice-180-mutations-sensor-verify.md) (2 HIGH, 3 MEDIUM, 3 LOW, 1 INFO,
 blockiert), [Runde 2](2026-09-04-slice-180-mutations-sensor-verify-runde-2.md) (1 HIGH, 3 MEDIUM,
@@ -43,7 +43,7 @@ zitierten unabsichtlichen Zwischen-Edits trafen die Plan-Datei selbst, `../obser
 
 ```
 $ git ls-files --cached --others --exclude-standard | grep -cF \
-  -e docs/plan/planning/in-progress/slice-180-mutations-sensor-beleg-statt-lauf.md \
+  -e docs/plan/planning/done/slice-180-mutations-sensor-beleg-statt-lauf.md \
   -e docs/plan/planning/observations.md \
   -e test/mutations/74-mutate-kopie-ohne-git.sh
 3
@@ -112,7 +112,7 @@ mit Werten und Verweis auf diesen Report nach. Kein Code, kein DoD-Häkchen, kei
 von §7 berührt.
 
 ```
-$ git diff --stat -- docs/plan/planning/in-progress/slice-180-mutations-sensor-beleg-statt-lauf.md
+$ git diff --stat -- docs/plan/planning/done/slice-180-mutations-sensor-beleg-statt-lauf.md
  .../slice-180-mutations-sensor-beleg-statt-lauf.md | 20 ++++++++++++++++----
  1 file changed, 16 insertions(+), 4 deletions(-)
 ```

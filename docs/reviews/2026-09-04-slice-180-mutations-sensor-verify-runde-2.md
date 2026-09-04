@@ -12,7 +12,7 @@ Arbeitsbaum gegen `HEAD` (`8ae359b`) — `git diff HEAD --stat` → 6 Dateien, 4
 (2 HIGH, 3 MEDIUM, 3 LOW, 1 INFO, blockiert).
 
 **Eingangs-Kontext (fünf Pflicht-Punkte + Slice-Plan):** unverändert gegenüber Runde 1 —
-[`slice-180`](../plan/planning/in-progress/slice-180-mutations-sensor-beleg-statt-lauf.md),
+[`slice-180`](../plan/planning/done/slice-180-mutations-sensor-beleg-statt-lauf.md),
 [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6),
 [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
 [`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten),
@@ -246,7 +246,7 @@ dem Register:
   `bash -c "source harness/tools/mutate.sh 2>/dev/null||true; isolation_key_files | wc -l"` →
   **1056**, und ohne die zwei untrackten Fall-Dateien **1054** (dieselbe Liste durch
   `grep -vc 'test/mutations/26[23]'`). Sie ist damit im selben Dokument schon überholt, das die Nicht-Erwartungswert-Marke an zehn Stellen mitführt
-  (`grep -c 'Erwartungswert' docs/plan/planning/in-progress/slice-180-mutations-sensor-beleg-statt-lauf.md` → **10**).
+  (`grep -c 'Erwartungswert' docs/plan/planning/done/slice-180-mutations-sensor-beleg-statt-lauf.md` → **10**).
 - **verifizierbar:** ja — das Kommando oben gegen die zitierte Zahl. Kein Modul aus `modules:` der
   `.d-check.yml` prüft Zahlen gegen Kommandos.
 - **klasse:** *Mitwandernde Messzahl ohne ihr Kommando und ohne Nicht-Erwartungswert-Marke.*

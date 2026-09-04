@@ -13,7 +13,7 @@
   `test/mutate-driver.bats`, `test/mutations/74-mutate-kopie-ohne-git.sh`,
   `docs/plan/planning/observations.md`, `docs/plan/planning/in-progress/slice-180-…md`
   plus die neue Fall-Datei 262.
-- **Slice-Plan:** [`slice-180`](../plan/planning/in-progress/slice-180-mutations-sensor-beleg-statt-lauf.md)
+- **Slice-Plan:** [`slice-180`](../plan/planning/done/slice-180-mutations-sensor-beleg-statt-lauf.md)
   (`in-progress/`, Verantwortlich Implementer).
 - **`LH-*`:** [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6),
   [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
