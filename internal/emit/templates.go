@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// isRecurring markiert die neun wiederkehrenden Templates (LH-FA-02, ab 0.8.0):
+// isRecurring markiert die zehn wiederkehrenden Templates (LH-FA-02, ab 0.8.0):
 // sie werden NICHT (mehr) emittiert. Sie liegen aus dem Fetch bereits vendored unter
 // .harness/baseline/<tag>/templates/ und werden von dort je Artefakt kopiert (wie im
 // Dogfood, ADR-0005) — eine co-located .md-Kopie waere Redundanz und widerspraeche
@@ -21,9 +21,9 @@ import (
 // WIEDERKEHREND heisst hier: die Vorlage nennt ihren Ziel-ORT mit einem
 // Platzhalter darin, es gibt also mehr als ein Ziel je Repo. Wer einen Eintrag
 // dazunimmt, sagt genau das zu. Der Ort steht im Template-Hinweis, und der Satz,
-// der ihn einfuehrt, hat zwei Formen:
+// der ihn einfuehrt, hat drei Formen:
 //
-//	KOPIERE-SATZ ("Kopiere … nach <pfad>.md") — so nennen ihn sieben der neun,
+//	KOPIERE-SATZ ("Kopiere … nach <pfad>.md") — so nennen ihn sieben der zehn,
 //	  darunter welle-results.template.md ("… docs/plan/planning/done/
 //	  welle-<NN>-results.md": eine je Welle, neben die Welle-Plan-Datei, die
 //	  ihrerseits aus welle.template.md kommt und schon hier steht) und
@@ -39,19 +39,25 @@ import (
 //	  (templates/README.md §Ein- vs. wiederkehrende Templates) fuehrt beide
 //	  ebenfalls unter den Wiederkehrenden — anders als bei isBrownfieldOnly folgt
 //	  die Weiche ihm hier.
+//	LEGE-SATZ ("Lege … an unter <verzeichnis>/") — so nennt ihn
+//	  observation.template.md ("Lege sie an unter docs/plan/planning/
+//	  observations/BEO-<KUERZEL>/<slug>/"): die Vorlage einer EINZELNEN
+//	  Beobachtung, seit die Verzeichnis-Form ihre stehende Register-Datei abloest
+//	  (ADR-0034). Anders als beim Verbleib-Satz ist ihr Ziel-Ort ein Verzeichnis
+//	  MIT zwei Platzhaltern, nicht das feste Archiv-Verzeichnis eines Vorgangs.
 //
 // Dass die Aufzaehlung im Rumpf und diese Definition dasselbe meinen, misst
 // test/courseset-fixture.bats ("emit.isRecurring fuehrt genau die Vorlagen mit
 // Platzhalter im Ziel-Pfad") gegen den REALEN vendored Satz, nicht gegen die
-// Fixture: er liest je Vorlage den Ziel-Ort ihres Template-Hinweises in BEIDEN
-// Formen und haelt die abgeleitete Menge gegen den Rumpf dieser Funktion. Ohne
+// Fixture: er liest je Vorlage den Ziel-Ort ihres Template-Hinweises in ALLEN
+// DREI Formen und haelt die abgeleitete Menge gegen den Rumpf dieser Funktion. Ohne
 // ihn faengt kein Sensor den Fall, dass upstream einen Ziel-Ort umschreibt und
 // die Liste hier stehen bleibt — Datei-Bestand und in-scope-Zahl bleiben dabei
 // unberuehrt (test/mutations/219 faehrt diese Drift am Kopiere-Satz, 224 am
 // Verbleib-Satz).
 //
 // GRENZE: die namentliche Aufzaehlung in LH-FA-02 ("ADR · slice · welle ·
-// carveout · review-report") fuehrt vier der neun nicht. Sie ist damit unvollstaendig
+// carveout · review-report") fuehrt fuenf der zehn nicht. Sie ist damit unvollstaendig
 // — das Lastenheft ist Rang 1 der Source Precedence und wird nicht vom Emit
 // fortgeschrieben; kein Gate sieht die Luecke, weil docs-check Kennungen und Links
 // prueft, nicht die Vollstaendigkeit einer Aufzaehlung.
@@ -66,7 +72,9 @@ func isRecurring(base string) bool {
 	case "NNNN-titel.template.md", "slice.template.md", "welle.template.md",
 		"carveout.template.md", "review-report.template.md",
 		"archiv-stub-slice.template.md", "archiv-stub-welle.template.md",
-		"welle-results.template.md", "MR-NNN-titel.template.md":
+		"observation.template.md":
+		return true
+	case "welle-results.template.md", "MR-NNN-titel.template.md":
 		return true
 	}
 	return false
@@ -332,14 +340,14 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 		// Brownfield-Bootstraps.
 		//
 		// WER HIER EINE VORLAGE NICHT EINTRAEGT, ENTSCHEIDET "Singleton" — das ist
-		// die Voreinstellung, und fuer docs/plan/planning/observation.template.md
-		// ist sie die richtige: das Beobachtungs-Register ist die stehende Datei des
-		// Steering Loops ("Kopiere nach docs/plan/planning/observations.md", ein Ziel
-		// je Repo, ohne Platzhalter im Pfad), und seine leere Tabelle ist laut
-		// Baseline-Regelwerk modul-06-roadmap.md §Das Beobachtungs-Register "die, mit
-		// der jedes Repo anfaengt". Ein Repo ohne die Datei haette keine
-		// Vergabestelle fuer BEO-<NNN> und keinen Ort fuer den Sichtungs-Schritt der
-		// Slice-Planung.
+		// die Voreinstellung. docs/plan/planning/observation.template.md faellt seit
+		// dem v6.0.0-Baum NICHT mehr darunter: ihr Ziel-Ort traegt seit der
+		// Verzeichnis-Form des Registers (ADR-0034) zwei Platzhalter ("Lege sie an
+		// unter docs/plan/planning/observations/BEO-<KUERZEL>/<slug>/"), isRecurring
+		// nennt sie deshalb ausdruecklich und die Weiche unten faengt sie vor dem
+		// Default ab. Das emittierte Repo hat damit KEINE stehende Register-Datei
+		// mehr — die Singleton-Zusage aus slice-130 galt fuer den vorigen Baum, nicht
+		// fuer diesen; ein Ersatz-Traeger ist offen (slice-177, ADR-0034).
 		if isRecurring(path.Base(rel)) || isDerivativeIndex(rel) || isBrownfieldOnly(rel) {
 			return nil
 		}

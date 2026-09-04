@@ -47,9 +47,6 @@ func courseSet() fs.FS {
 		// Roadmap traegt die gate-unsichere "Abgeschlossene Wellen"-Beispielzeile
 		// (broken ../done/-Link) — NeutralizeRoadmap muss sie beim Emit entschaerfen.
 		"docs/plan/planning/roadmap.template.md": f(hint + "# Roadmap\n" + eingebettet + "\n| <welle-NN> | YYYY-MM-DD | [`welle-NN-results.md`](../done/welle-NN-results.md) |\n"),
-		// in scope, Singleton: das Beobachtungs-Register ist die stehende Datei des
-		// Steering Loops, eine je Repo (emit.planTemplates, Weichen-Kommentar).
-		"docs/plan/planning/observation.template.md": f(hint + body),
 		// in scope — Wiederkehrende (LH-FA-02 0.8.0: NICHT emittiert, referenziert
 		// aus der vendored Baseline) und derivative Indexe (nicht emittiert)
 		"docs/plan/adr/NNNN-titel.template.md":       f(hint + body),
@@ -66,6 +63,10 @@ func courseSet() fs.FS {
 		// (emit.isRecurring, Verbleib-Satz)
 		"docs/plan/planning/archiv-stub-slice.template.md": f(hint + body),
 		"docs/plan/planning/archiv-stub-welle.template.md": f(hint + body),
+		// ebenfalls wiederkehrend, eigene dritte Form (Lege-Satz statt Kopiere- oder
+		// Verbleib-Satz): eine Vorlage je Beobachtung, seit die Verzeichnis-Form die
+		// stehende Register-Datei abloest (ADR-0034, emit.isRecurring Lege-Satz)
+		"docs/plan/planning/observation.template.md": f(hint + body),
 		// in scope, aber modus-gebunden: das Reconciliation-Register braucht nur ein
 		// Repo aus dem Brownfield-Bootstrap (emit.isBrownfieldOnly)
 		"docs/plan/planning/reconciliation.template.md": f(hint + body),
@@ -270,10 +271,6 @@ func TestTemplates_EmittierterBestandVollstaendig(t *testing.T) {
 		"AGENTS.md",
 		"docs/plan/planning/README.md",
 		"docs/plan/planning/in-progress/roadmap.md",
-		// Das Beobachtungs-Register: eine stehende Datei je Repo, leer angefangen.
-		// Faellt sie in eine der drei Nicht-Emit-Weichen, fehlt sie hier und der Test
-		// wird rot — der Zahn der Singleton-Entscheidung aus slice-130.
-		"docs/plan/planning/observation.md",
 		"harness/README.md",
 		"harness/conventions.md",
 		"spec/architecture.md",

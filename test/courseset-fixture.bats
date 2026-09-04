@@ -98,7 +98,7 @@ in_scope() {
   }
 }
 
-@test "fixture: die neun wiederkehrenden Templates existieren real" {
+@test "fixture: die zehn wiederkehrenden Templates existieren real" {
   # emit.isRecurring zaehlt sie namentlich auf (LH-FA-02). Ab 0.8.0 werden sie NICHT
   # emittiert, sondern aus der vendored Baseline je Artefakt kopiert (ADR-0005) —
   # verschwindet einer upstream, bricht genau dieses referenzierte Modell (der Nutzer
@@ -119,24 +119,30 @@ in_scope() {
     docs/plan/planning/welle-results.template.md \
     harness/conventions/MR-NNN-titel.template.md \
     docs/plan/planning/archiv-stub-slice.template.md \
-    docs/plan/planning/archiv-stub-welle.template.md
+    docs/plan/planning/archiv-stub-welle.template.md \
+    docs/plan/planning/observation.template.md
   do
     [ -f "$REAL/$rel" ] || { echo "wiederkehrendes Template fehlt real: $rel"; return 1; }
   done
 }
 
 # ziel_ort liest den Ziel-Ort aus dem Template-Hinweis einer Vorlage: im
-# fuehrenden Blockquote den ersten Backtick-Ausdruck hinter einem der zwei Anker,
+# fuehrenden Blockquote den ersten Backtick-Ausdruck hinter einem der drei Anker,
 # die den Ort EINFUEHREN.
 #
 #   Kopiere-Satz  — "Kopiere … nach `<pfad>.md`": das Ziel ist eine Datei. So
-#                   nennen ihn sieben der neun wiederkehrenden Vorlagen.
+#                   nennen ihn sieben der zehn wiederkehrenden Vorlagen.
 #   Verbleib-Satz — "… liegen bleibt (`<verzeichnis>/`)": das Ziel ist das
 #                   Verzeichnis, in dem die Kopie liegen bleibt. So nennen ihn die
 #                   zwei Archiv-Stubs, die nirgendwohin kopiert werden.
+#   Lege-Satz     — "Lege … an unter `<verzeichnis>/`": das Ziel ist ebenfalls
+#                   ein Verzeichnis, aber mit Platzhaltern im Pfad statt einem
+#                   festen Archiv-Ort. So nennt ihn observation.template.md, die
+#                   Vorlage einer einzelnen Beobachtung (ADR-0034).
 #
-# Beide Zweige verlangen vom gelesenen Ausdruck eine ENDUNG — .md hier, / dort.
-# Ein Backtick-Ausdruck, der kein Ort ist, ist damit kein Treffer, und ein
+# Alle drei Zweige verlangen vom gelesenen Ausdruck eine ENDUNG — .md beim
+# Kopiere-Satz, / bei Verbleib- und Lege-Satz. Ein Backtick-Ausdruck, der kein
+# Ort ist, ist damit kein Treffer, und ein
 # upstream umgeschriebener Ort faellt als OHNE-ZIEL auf, statt als falscher Wert
 # durchzugehen.
 #
@@ -174,7 +180,7 @@ ziel_ort() {
   awk '/^>/ { inb = 1; sub(/^>[ \t]?/, ""); buf = buf " " $0; next }
        inb  { exit }
        END  { print buf }' "$1" \
-    | grep -oE 'Kopiere[^`]* nach [^`]*`[^`]+\.md`|liegen bleibt[[:space:]]*\([[:space:]]*`[^`]+/`' \
+    | grep -oE 'Kopiere[^`]* nach [^`]*`[^`]+\.md`|liegen bleibt[[:space:]]*\([[:space:]]*`[^`]+/`|Lege[^`]* unter[[:space:]]*`[^`]+/`' \
     | head -1 \
     | sed 's/.*`\(.*\)`/\1/'
 }
