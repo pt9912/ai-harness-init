@@ -17,8 +17,7 @@ Welle-Dateien; woran gearbeitet wird, sagt das `Welle:`-Feld der Slices in
 nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
-
-Nichts in Arbeit.
+- [welle-15 — Re-Baseline auf `v6.0.0`](../welle-15-re-baseline.md)
 
 **Eine Position der Ziel-Form ist nicht übernommen, und hier steht der Grund**
 ([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage): eine unerklärte Abweichung
@@ -98,6 +97,7 @@ flowchart LR
     W12[welle-12<br/>Erfassungsschicht emittieren]
     W13[welle-13<br/>Regeln bekommen ihren Sensor]
     W14[welle-14<br/>Re-Baseline]
+    W15[welle-15<br/>Re-Baseline v6.0.0]
     W1 --> W2 --> W3 --> W4 --> W5
     W5 -.-> W6
     W5 --> W7 --> W8
@@ -105,6 +105,7 @@ flowchart LR
     W10 --> W14
     W14 --> W11
     W14 --> W13
+    W14 --> W15
     S122([slice-122 done<br/>d-check-Pin v0.65.0]) --> W13
     A0022([ADR-0022 Accepted<br/>+ slice-093 done]) --> W12
 ```
@@ -144,6 +145,7 @@ einer Umplanung steht im Beleg, nicht in der Zelle.
 
 | Datum | Was wurde geändert? | Warum? | Beleg |
 |---|---|---|---|
+| 2026-09-04 | [welle-15](../welle-15-re-baseline.md) geschnitten und eröffnet — mit **zwei** Mitgliedern, [slice-176](../open/slice-176-inventur-vor-dem-schnitt-v600.md) und [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md); die übrigen Zeilen ihrer §4 folgen dem Katalog. Der Abhängigkeitsgraph bekommt die Kante `W14 → W15` | Der Trigger ist gemessen: `make baseline-freshness` meldet `gepinnt: v5.18.0`, `latest: v6.0.0` bei Exit ≠ 0. Die Mitglieder-Zahl steht bewusst nicht vorab — [`BEO-010`](../observations.md) misst am letzten Sprung, dass ein Schnitt **vor** der Inventur die Form-Pflichten einzeln als Nachzügler zurückbringt; die Kante zu welle-14 ist **ordnend**, weil der Sprung vom Stand ausgeht, den jene Welle gesetzt hat. `slice-177` folgt nicht dem Katalog, sondern einer Messung neben ihm: `v6.0.0` ersetzt die Register-Vorlage durch eine Vorlage je Beobachtung, und der flache Träger ist zugleich ein Kollisions-Punkt für parallele Läufe. Der Sprung wird zeitnah statt gesammelt adoptiert ([`BEO-011`](../observations.md)) | [welle-15](../welle-15-re-baseline.md) §2/§4/§5, [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md) §1, [`BEO-010`](../observations.md), [`BEO-011`](../observations.md) |
 | 2026-09-03 | [welle-14](../done/welle-14-re-baseline.md) bekommt zwei weitere Mitglieder — [`slice-164`](../done/slice-164-emitter-klassifiziert-die-zwei-neuen-vorlagen.md) und [`slice-165`](../done/slice-165-praesens-aussagen-gegen-v5180.md) | Beide folgen nicht aus dem Diff-Katalog, sondern aus dem vollzogenen Tausch und sind in ihm gemessen: der neue Template-Satz bricht `test/courseset-fixture.bats` an drei Fällen, und die stummen Nennungen des abgelösten Tags im lebenden Bestand haben ihren [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)-Ausgang noch nicht. Der Katalog ordnet **Positionen** einen Träger zu; eine Position hat mehrere Konsumenten | [`slice-156`](../done/slice-156-baum-tauschen-pins-ziehen.md) §6, [welle-14](../done/welle-14-re-baseline.md) §4, [`BEO-010`](../observations.md) |
 | 2026-09-03 | [welle-14](../done/welle-14-re-baseline.md) bekommt sieben weitere Mitglieder — [`slice-156`](../done/slice-156-baum-tauschen-pins-ziehen.md) bis [`slice-161`](../done/slice-161-conventions-kopf-traegt-die-ziel-form.md) und [`slice-163`](../done/slice-163-regierende-fassung-des-sprungs.md); die offene Architect-Übergabe aus ihrer §5 hat damit einen Träger. [`slice-162`](../open/slice-162-versions-sensor-baseline-pins.md) entsteht aus demselben Katalog, bleibt aber **außerhalb** der Welle | Der Diff-Katalog liegt vor und macht die Mitglieder-Zahl zur Messung statt zur Schätzung: 21 Positionen, 20 davon mit einem Gegenstand in diesem Repo, gebündelt statt einzeln. `slice-163` folgt aus der Messung nach [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 — **beide** Fassungen führen die Migrations-Prozedur, also greift ihr zweiter Fall. `slice-162` ist ein Sensor-Neubau, den [welle-14](../done/welle-14-re-baseline.md) §6 ausschließt | [slice-155](../done/slice-155-inventur-vor-dem-schnitt.md) §9, [welle-14](../done/welle-14-re-baseline.md) §4/§5/§6, [`BEO-010`](../observations.md), [`BEO-018`](../observations.md) |
 | 2026-09-03 | [welle-14](../done/welle-14-re-baseline.md) geschnitten und eröffnet — mit **einem** Mitglied, [slice-155](../done/slice-155-inventur-vor-dem-schnitt.md); die übrigen Zeilen ihrer §4 folgen dem Katalog. Zugleich zeigt die tragende Kante von [welle-11](../welle-11-traeger-aussage.md) und die zweite Kante von [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) auf welle-14 statt auf welle-10; welle-13s Kante wechselt dabei von *ordnend* zu *tragend* | Der Trigger ist gemessen: `make baseline-freshness` meldet `gepinnt: v5.12.0`, `latest: v5.18.0`. Die Mitglieder-Zahl steht bewusst nicht vorab — [`BEO-010`](../observations.md) misst am letzten Sprung den Abstand zwischen geschnittenen und geschlossenen Slices (beide Zahlen dort neben ihren Kommandos), und die Ursache war der Schnitt vor der Inventur. Die zwei Kanten tragen denselben Grund wie zuvor, nur gegen die jetzt tauschende Welle: welle-11 misst über den vendored Baum, und welle-13 baut zwei Sensoren auf Formen, die Modul 6 der Ziel-Fassung mit dem neuen Archivierungs-Schritt bewegt | [welle-14](../done/welle-14-re-baseline.md) §2/§5, [`BEO-010`](../observations.md), [`BEO-011`](../observations.md) |

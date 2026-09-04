@@ -1,0 +1,242 @@
+# Slice slice-176: Inventur vor dem Schnitt — der Form- und Regel-Diff `v5.18.0` → `v6.0.0`
+
+**Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
+Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
+wechselt nur durch `git mv`, siehe
+Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
+
+**Welle:** [welle-15](../welle-15-re-baseline.md) — der erste Slice der Welle; er liefert die
+Grundlage, auf der ihre übrigen Mitglieder geschnitten werden.
+
+**Bezug:** [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (die Baseline
+ist auf einen Tag gepinnt — der Diff ist die Vorarbeit zum Tausch dieses Pins),
+[`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) (ihr erster
+Re-Evaluierungs-Trigger verlangt die Messung unten; ihre Festlegung 2 nennt den Ort der
+Zielstand-Buchung),
+[`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) (Festlegung 3 stellt das
+Kriterium, das jene Messung anwendet),
+[`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
+(der vendored Baum ist der Gegenstand).
+
+**Berührte Spec-Stellen:** `—`. Der Slice katalogisiert und schneidet; er schreibt keine
+Spec-Stelle.
+
+**Verantwortlich:** `—` bis zur Priorisierung. Der Liefergegenstand ist ein Katalog im Plan und
+eine Menge neuer Slice-Dateien in `open/` — beides Planner-Artefakte (Baseline-Regelwerk
+`modul-08-agentenrollen.md` §Welche Rolle braucht welche Artefaktklasse).
+
+**Autor:** Planner. **Datum:** 2026-09-04.
+
+---
+
+## 1. Ziel
+
+Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
+§Ziel-Form: Slice — Schnitt nach Lieferwert, nicht nach Schichten; jeder Slice
+ist einzeln lieferbar.
+
+**Der vollständige Form- und Regel-Diff `v5.18.0` → `v6.0.0` liegt als Katalog vor, jede geänderte
+Position hat eine Zuordnung, und daraus steht fest, welche Slices
+[welle-15](../welle-15-re-baseline.md) braucht — bevor der Rest geschnitten wird.**
+
+Der Slice ist die Antwort auf `BEO-010` ([Register](../observations.md), 2×): der Umfang der
+Folge-Arbeit wird **gemessen, nicht geschätzt**. Er ist zugleich die Probe auf `BEO-011` (1×) —
+dieser Sprung wird zeitnah statt gesammelt adoptiert, und ob die Kostenreihe damit flacher bleibt,
+misst die Closure der Welle.
+
+**Er entscheidet nichts über den Ist-Zustand.** Ein Katalog stellt fest, was sich geändert hat; ob
+eine Änderung dieses Repo bindet, ist eine Konformitäts-Frage, und für die bleibt bis zum Tausch
+`v5.18.0` maßgeblich ([`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md)
+Festlegung 2). Der Katalog hängt darum nicht an den offenen Fragen aus §6.
+
+## 2. Definition of Done
+
+Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
+§Ziel-Form: Slice — **≤ 3 Liefer-Punkte**; mehr heißt: der Slice ist zu groß und
+gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
+Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
+
+- [ ] **Diff-Katalog** in §9 dieses Plans: je geänderter Datei die inhaltlichen Positionen als
+      Stichwort, je Position eine von drei Zuordnungen — *bindet dieses Repo* · *bindet die
+      emittierte Ebene* · *ohne Gegenstand hier*. Vollständigkeit gemessen statt behauptet: die
+      Datei-Liste des Katalogs deckt `git diff --name-status v5.18.0 v6.0.0 -- lab/regelwerk
+      lab/templates` am lokalen Kurs-Klon, und die **neuen** (`A`) wie die **entfallenen** (`D`)
+      Dateien sind als solche ausgewiesen.
+- [ ] **Folge-Slice-Liste**: jede Position mit einer der ersten zwei Zuordnungen trägt entweder
+      einen Folge-Slice (Datei in `open/`, Gegenstand benannt) oder die Begründung, warum keiner
+      nötig ist. Keine Position ohne Ausgang.
+- [ ] **Messung nach
+      [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
+      Re-Evaluierungs-Trigger 1**, zweistufig, weil jener Trigger beides verlangt: (a) Führt die
+      gepinnte Fassung `v5.18.0` die Migrations-Prozedur
+      ([`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 3)? (b) Führt
+      sie sie **byte-gleich**, tragen die Abschnitte, in die sie delegiert, ein Delta? Ergebnis je
+      Stufe mit Beleg im Plan, und daraus der Fall. Die **Wahl** wird nicht hier entschieden — sie
+      geht als Übergabe an den Architect (§6).
+- [ ] `make gates` grün.
+- [ ] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt **jeden** neu geschnittenen
+      Slice — als Tabellenzeile, wenn er Mitglied ist, sonst benannt mit dem Grund seines
+      Ausschlusses (§6 jener Datei, `BEO-018`); die Roadmap trägt ihren Drift-Eintrag. Ein
+      öffentlicher Vertrag ist nicht berührt.
+- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+
+## 3. Plan (vor Code)
+
+Regeln dieser Sektion: Baseline-Regelwerk `grundlagen-bootstrap.md`
+§Was ist eine Sub-Area? — diese Liste liefert die **Pfad-Kandidaten** für §8,
+nicht die Antwort: Pfad-Berührung ist nicht hinreichend, und eine
+Aussagen-Berührung steht hier gar nicht.
+
+| Datei / Komponente | Änderungs-Art | Begründung |
+|---|---|---|
+| dieser Plan, §9 | update | trägt den Katalog und die Messung |
+| `docs/plan/planning/open/` | neu | je Folge-Slice eine Datei, per `cp` aus der Vorlage |
+| [welle-15](../welle-15-re-baseline.md) §4 | update | die Slice-Tabelle der Welle bekommt ihre übrigen Zeilen |
+
+Der Katalog wird am lokalen Kurs-Klon `/Development/KI/ai-harness-course` gemessen (`git diff`
+zwischen den zwei Tags). Der vendored Baum unter `.harness/baseline/` wird in diesem Slice **nicht**
+angefasst — der Tausch ist ein eigener Slice, den der Katalog benennt.
+
+## 4. Trigger
+
+Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
+§Trigger je Lifecycle-Übergang und WIP-Limit.
+
+**Start** (`next` → `in-progress`): [welle-15](../welle-15-re-baseline.md) ist eröffnet — ihre
+Plan-Datei liegt flach in `docs/plan/planning/`, und die Roadmap führt sie unter *Offene Wellen*.
+
+**Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
+
+- `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn die Zuordnung einer Position selbst
+  Messarbeit am Bestand dieses Repos verlangt, die über einen Lauf hinausgeht — dann wird der
+  Katalog nach Achsen geteilt (Regelwerk-Hälfte / Template-Hälfte), und die Zuordnung der zweiten
+  Achse wird ein eigener Slice.
+- `in-progress` → `open` (blockiert — Carveout?): wenn der lokale Kurs-Klon den Tag `v6.0.0` nicht
+  führt und das Delta netzlos nicht messbar ist. Ein Ersatz über die Release-Assets ist ein anderer
+  Gegenstand und kein Zwischenschritt.
+
+## 5. Closure-Trigger
+
+Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
+§Closure- und Lerneintrag-Regeln — zwei beobachtbare Kriterien **und** ein
+Lerneintrag; ohne ihn ist der Slice nur abgelegt.
+
+DoD vollständig; jede benannte Folge-Slice-Datei liegt im Planning-Lifecycle; Closure-Notiz mit
+Steering-Loop-Lerneintrag geschrieben.
+
+## 6. Risiken und offene Punkte
+
+Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
+§Offene Risiken werden bei Closure aufgelöst — **jedes** Risiko bekommt genau
+**einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
+dasteht.
+
+- **Der Katalog wird zur Beweisführung und wächst über seinen Zweck hinaus** (`BEO-016` im
+  [Register](../observations.md)). Ein Katalog ist eine Liste mit Zuordnung, kein Nachweis je
+  Position; die Nachweis-Pflicht steht beim tragenden Slice. — **Ausgang:** <…>
+- **Ein Delta-Katalog findet eine Deckung nicht, die ein Volltext-Durchgang fände** (`BEO-013`).
+  Dieser Katalog ist definitionsgemäß ein Delta; der Adaptions-Durchgang, den er als Folge-Slice
+  benennt, braucht darum ausdrücklich die Volltext-Hälfte als eigenen DoD-Punkt. — **Ausgang:** <…>
+- **Der Bestand offener Slice-Pläne wird von diesem Katalog nicht gehalten** (`BEO-023`). Er misst
+  das Delta der **Baseline**; ob ein Plan in `open/` seine Pflicht über den Sprung hinweg behält,
+  misst er nicht. — **Ausgang:** <…>
+- **Übergabe 1 an den Architect: die regierende Fassung dieses Sprungs.**
+  [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 1
+  gilt **nur** für `v5.12.0` → `v5.18.0`; ihr erster Re-Evaluierungs-Trigger verlangt für diesen
+  Sprung eine neue Messung, und `BEO-019` sagt, warum sie zweistufig ist: ein byte-gleicher
+  Abschnitt delegiert in Dateien, die ein Delta tragen können. Dieser Slice **misst** (DoD 3) und
+  entscheidet nicht — eine neu zu begründende Wahl der normativen Quelle ist Architektur-Frage
+  ([`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md)). — **Ausgang:** <…>
+- **Übergabe 2 an den Architect: die Buchung der Zielstand-Setzung.** Der Auftraggeber hat `v6.0.0`
+  als Zielstand gesetzt; verbucht wird sie nach
+  [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2 in
+  §Baseline von [`harness/conventions.md`](../../../../harness/conventions.md), mit genau drei
+  Teilen — Ziel-Tag und Datum des Vollzugs, dieser Slice als Zeiger auf den Delta-Nachweis, sonst
+  nichts. Die Datei gehört dem Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8); der Planner
+  liefert den Nachweis, nicht die Zeile. — **Ausgang:** <…>
+
+## 7. Closure-Notiz
+
+Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
+§Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
+formulieren — sonst zählt das Register zwei Namen getrennt) ·
+`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
+Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
+wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
+Backticks).
+
+- **Was hat funktioniert:** <…>
+- **Was ging anders als geplant:** <…>
+- **Steering-Loop-Eintrag:** <…>
+- **Beobachtungs-Register (`../observations.md`):** <…>
+- **Folge-Slices:** <…>
+- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
+- **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — sie prüft die Closure von
+  [welle-15](../welle-15-re-baseline.md).
+
+## 8. Sub-Area-Modus-Begründung
+
+Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
+§Ziel-Form: Sub-Area-Modus-Begründung — dort die **zwei vorgelagerten
+Schritte** (sie stehen in jedem Slice-Plan, unabhängig von Modus und
+Slice-Typ) und die **vier Pflichtkriterien** (Konventionen-Dichte ·
+Phase-Reife · Evidenz-/Diskrepanz-Risiko · Reconciliation-Aufwand), vier und
+nicht mehr.
+
+**Umfang.** Der **Modus-Begründungsblock** unten ist Pflicht, sobald
+mindestens eine berührte Sub-Area BF oder Hybrid ist — einer pro Sub-Area. Bei
+reinem GF genügt der Hinweis *"alle berührten Sub-Areas GF"*; bei reinem
+Refactor ohne neue Sub-Area-Berührung entfällt er ganz. Die beiden
+*Vorgelagert*-Blöcke entfallen nie.
+
+**Vorgelagert — Sub-Area-Wahl prüfen:** Berührt ist `*` (gesamtes Repo) — die einzige Sub-Area, die
+die Modus-Deklaration in
+[`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area) für
+diesen Gegenstand führt; `harness/tools/` und `.codex/` sind vom Katalog nicht berührt. Eine
+feinere Aufteilung wäre keine Ausdifferenzierung, sondern eine Vorwegnahme des Ergebnisses:
+**welche** Bereiche der Diff trifft, ist der Liefergegenstand.
+
+**Vorgelagert — offene Beobachtungen sichten:** Das [Register](../observations.md) ist vollständig
+durchgegangen. **Jede** Zeile trägt `*` (gesamtes Repo) — die Spalte unterscheidet in diesem Repo
+nichts, und genau das führt `BEO-004` selbst. Fünf Zeilen berühren diesen Slice mit ihrem
+Zähler-Stand, keine erreicht mit ihm 3×:
+
+- `BEO-010` (2×) — *Re-Baseline ohne vorgeschalteten Inventur-Slice*. Dieser Slice **ist** ihre
+  Antwort, nicht ihr drittes Auftreten. Kommt eine Form-Pflicht dieser Fassung trotzdem als
+  Nachzügler zurück, ist **das** die dritte Instanz.
+- `BEO-011` (1×) — *gesammelte Sprünge kosten überproportional*. Dieser Sprung wird zeitnah
+  adoptiert; ob die Kostenreihe flacher bleibt, misst die Closure der Welle.
+- `BEO-013` (1×) — *Delta-Durchgang findet nicht, was ein Volltext-Durchgang findet*. Steht als
+  Risiko in §6 und bindet den Zuschnitt des Adaptions-Durchgangs, den dieser Slice benennt.
+- `BEO-016` (1×) — *Slice-Pläne tragen ein Vielfaches der nötigen Zeilenzahl*. Bindet diesen Plan
+  selbst; er ist deshalb knapp gehalten.
+- `BEO-019` (1×) — *Byte-Gleichheit an einem Abschnitt wird als Aussage über die Regel gelesen*.
+  Bindet DoD 3: die Messung ist zweistufig, weil die erste Stufe allein die Klasse reproduzierte.
+
+**alle berührten Sub-Areas GF** — der Modus-Begründungsblock entfällt damit
+(Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Sub-Area-Modus-Begründung, Umfang).
+`*` steht in der Modus-Deklaration als Greenfield: Doc führt, Code folgt, Graduation `n/a`.
+
+## 9. Diff-Katalog
+
+Ausgangs-Messung, gefahren am 2026-09-04 am lokalen Kurs-Klon:
+`git diff --shortstat v5.18.0 v6.0.0 -- lab/regelwerk lab/templates` → **14 Dateien, +191/−91**.
+Die Zahlen wandern nicht mehr (beide Tags sind fest), sind aber am Klon zu reproduzieren und stehen
+hier neben ihrem Kommando
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)).
+**Die Major-Nummer ist kein Größenmaß:** die Delta-Größe steht neben dem Kommando oben, nicht in
+der Versionsnummer.
+
+Der Katalog selbst — Datei-Liste, Positionen, Zuordnungen, Ausgänge — entsteht im Lauf und steht
+hier. **Was er ist und was nicht:** eine Liste mit Zuordnung. Er stellt fest, *was* sich geändert
+hat und *auf welcher Ebene* es einen Gegenstand hat; er führt **keinen Nachweis je Position**. Ob
+eine Position dieses Repo wirklich bindet, gehört in den Slice, der sie trägt.
+
+**Eine Position ist vor diesem Katalog gemessen und geschnitten:** `v6.0.0` ersetzt die
+Register-Vorlage durch eine Vorlage je **Beobachtung**
+(`git diff --name-status v5.18.0 v6.0.0 -- lab/templates/docs/plan/planning`). Ihr Träger ist
+[slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md); der Katalog weist ihr
+diesen Slice zu, statt einen zweiten zu erzeugen.
