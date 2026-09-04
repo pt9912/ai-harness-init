@@ -138,8 +138,9 @@ codepaths:
   # ignore-refs (referenz-weit): Tombstones bewusst ENTFERNTER Artefakte (MR-008/MR-009 —
   # entfernt, nicht geplant; ein geplanter Pfad bleibt Doc-fuehrt-Code-folgt und ist kein
   # Tombstone). Normative Doku darf die klaren vollen Pfade nennen statt Glob-Workarounds.
-  # Genau die geloeschten Dateien, keine breite Liste; MR-009 nennt das Wachstum dieser Liste
-  # als seinen Aufloesungs-Trigger.
+  # Genau die geloeschten Dateien, keine breite Liste. MR-009 ist PERMANENT; seine
+  # Wachstums-Klausel ist eine Bedingung an diese Liste, kein Aufloesungs-Trigger: sie waechst
+  # nur mit weiteren bewusst entfernten Artefakten.
   # Die ersten fuenf sind die Repo-Kopien der Ausfuell-Templates, deren einzige Quelle heute
   # die vendored Baseline ist (MR-008).
   # Der sechste ist der Shell-Helfer der Wellen-Archivierung: die Operation liegt als

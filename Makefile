@@ -311,6 +311,13 @@ slice-mv: ## Lifecycle-Wechsel eines Slice inkl. Verweise (SLICE=<slice-NNN> TO=
 # zwei MESSEN den Traeger, der liegt; dieses Ziel BENUTZT ihn. Ein Aufruf gegen
 # ein veraltetes Bild archivierte nach einer Regel, die der Baum nicht mehr
 # fuehrt.
+#
+# KOPPLUNG an .gitignore: host-bin legt den Traeger unter .harness/state/ ab, und
+# das Unterkommando zaehlt untrackte Eintraege als "Baum nicht sauber". Beides
+# vertraegt sich nur, solange der Ablageort ignoriert ist —
+# `git check-ignore -v .harness/state/bin/ai-harness-init` nennt die Zeile, die das
+# traegt. Verengt jemand sie, bricht jeder Lauf hier an der eigenen
+# Sauberkeits-Sperre ab, und kein Gate zeigt den Zusammenhang.
 archive-welle: host-bin ## Zeitdokumente einer geschlossenen Welle archivieren (WELLE=<welle-id>) — NICHT in gates
 	@$(HOST_BIN) archive-welle "$(WELLE)"
 
