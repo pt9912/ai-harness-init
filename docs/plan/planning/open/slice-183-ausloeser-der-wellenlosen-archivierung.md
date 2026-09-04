@@ -130,7 +130,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-182](slice-182-baum-tausch-v600-pins-ziehen.md) liegt in `done/`. Der Grund ist tragend:
+[slice-182](../in-progress/slice-182-baum-tausch-v600-pins-ziehen.md) liegt in `done/`. Der Grund ist tragend:
 Bis zum Tausch ist `v5.18.0` der Ist-Maßstab
 ([`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 2), und die Regel,
 die hier entschieden wird, steht erst danach im vendored Baum — eine ADR, die einen Text zitiert,

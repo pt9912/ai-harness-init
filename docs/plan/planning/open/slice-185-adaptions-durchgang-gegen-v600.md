@@ -127,7 +127,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 **Start** (`next` → `in-progress`), zwei Bedingungen:
 
-1. **[slice-182](slice-182-baum-tausch-v600-pins-ziehen.md) liegt in `done/`.** Vorher ist
+1. **[slice-182](../in-progress/slice-182-baum-tausch-v600-pins-ziehen.md) liegt in `done/`.** Vorher ist
    `v5.18.0` der Ist-Maßstab
    ([`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 2), und der
    Volltext, gegen den geprüft wird, liegt netzlos nicht vor.
