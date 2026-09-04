@@ -17,13 +17,58 @@
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
   QUELLE="$REPO/internal/archive/anwenden.go"
+  KONST="$REPO/internal/archive/collect.go"
   TDIR="$(echo "$REPO"/.harness/baseline/*/templates/docs/plan/planning)"
 }
 
-# Die Platzhalter kommen aus der Go-Quelle selbst, nicht aus einer zweiten
-# Liste: `{"<…>",` ist die Form, in der sliceStub und welleStub sie fuehren.
+# ersetzungs_zeilen liefert JEDES Ersetzungs-Literal aus den []Ersetzung-Bloecken
+# von sliceStub und welleStub — die Bezugsmenge, ueber die der Fall unten
+# quantifiziert. Sie ist die Zeilen-Menge, nicht eine Auswahl daraus.
+ersetzungs_zeilen() {
+  sed -n '/\[\]Ersetzung{$/,/^\t})$/p' "$QUELLE" | grep -E '^[[:space:]]+\{'
+}
+
+# platzhalter loest jedes dieser Literale in seinen ERSTEN Ausdruck auf — den
+# Platzhalter. Zwei Formen kommen vor, und beide werden getroffen:
+#
+#   {"<NNN>", nummer},                        -> der Zeichenketten-Literal
+#   {"done/<welle-id>/" + archivName, zipRel} -> Literal + Konstante, aufgeloest
+#
+# ZUSAGE: eine Zeile, die keine der zwei Formen trifft, laesst die Funktion
+# FALLEN statt sie zu ueberspringen. Ein Extraktions-Muster, das enger ist als
+# die Menge, ueber die der Test-Name quantifiziert, ist ein Waechter, der
+# schweigt — die Platzhalter, die dabei durchfallen, sind gerade die
+# zusammengesetzten und die, deren Text nicht auf `>` endet.
 platzhalter() {
-  grep -oE '\{"<[^"]+>"' "$QUELLE" | sed -e 's/^{"//' -e 's/"$//' | sort -u
+  local zeile rest kopf nach konst wert
+  while IFS= read -r zeile; do
+    # Alles ab `{"`, dann der Literal-Text bis zum SCHLIESSENDEN Anfuehrungszeichen.
+    # Was danach kommt, entscheidet die Form — nicht ein Muster ueber der ganzen
+    # Zeile: der Wert-Ausdruck traegt selbst Anfuehrungszeichen und Pluszeichen.
+    rest="${zeile#*\{\"}"
+    kopf="${rest%%\"*}"
+    nach="${rest#"$kopf"\"}"
+    case "$nach" in
+      ", "*)
+        printf '%s\n' "$kopf" ;;
+      " + "*)
+        konst="${nach# + }"; konst="${konst%%,*}"
+        case "$konst" in
+          *[!A-Za-z0-9_]*|"")
+            echo "kein einfacher Konstanten-Name: '$konst' in: $zeile" >&2
+            return 1 ;;
+        esac
+        wert="$(sed -n "s/^[[:space:]]*$konst[[:space:]]*= \"\(.*\)\"\$/\1/p" "$KONST")"
+        if [ -z "$wert" ]; then
+          echo "Konstante '$konst' nicht in ${KONST##*/} aufloesbar: $zeile" >&2
+          return 1
+        fi
+        printf '%s%s\n' "$kopf" "$wert" ;;
+      *)
+        echo "unbekannte Ersetzungs-Form, nicht aufloesbar: $zeile" >&2
+        return 1 ;;
+    esac
+  done < <(ersetzungs_zeilen)
 }
 
 @test "beide Stub-Vorlagen liegen im vendored Baum" {
@@ -31,9 +76,18 @@ platzhalter() {
   [ -f "$TDIR/archiv-stub-welle.template.md" ]
 }
 
-@test "die Go-Quelle fuehrt ueberhaupt Platzhalter (sonst prueft der Fall darunter nichts)" {
-  n="$(platzhalter | grep -c . || true)"
-  [ "$n" -ge 5 ]
+# Die Deckungs-Aussage des Falls darunter: die Extraktion loest JEDES
+# Ersetzungs-Literal auf, nicht eine Teilmenge. Ohne diesen Vergleich kann das
+# Muster still enger werden als die Quelle, und „jeder Platzhalter" waere dann
+# eine Quantifizierung ueber eine Menge, die der Test gar nicht sieht.
+@test "die Extraktion loest jedes Ersetzungs-Literal der Go-Quelle auf" {
+  zeilen="$(ersetzungs_zeilen | grep -c . || true)"
+  [ "$zeilen" -ge 5 ]
+  aufgeloest="$(platzhalter | grep -c . || true)"
+  [ "$aufgeloest" -eq "$zeilen" ] || {
+    echo "$aufgeloest von $zeilen Ersetzungs-Literalen aufgeloest" >&2
+    false
+  }
 }
 
 @test "jeder Platzhalter der Stub-Erzeugung steht in einer der zwei Vorlagen" {
@@ -42,9 +96,9 @@ platzhalter() {
     [ -n "$p" ] || continue
     if ! grep -qF -- "$p" "$TDIR/archiv-stub-slice.template.md" \
       && ! grep -qF -- "$p" "$TDIR/archiv-stub-welle.template.md"; then
-      fehlend="$fehlend $p"
+      fehlend="$fehlend|$p"
     fi
-  done < <(platzhalter)
+  done < <(platzhalter | sort -u)
   [ -z "$fehlend" ] || {
     echo "Platzhalter ohne Entsprechung in den Vorlagen:$fehlend" >&2
     false
