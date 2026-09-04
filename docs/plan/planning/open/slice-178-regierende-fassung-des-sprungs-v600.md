@@ -49,7 +49,7 @@ Der Anlass ist gemessen und steht in der zitierten Entscheidung selbst:
 [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 1 ist
 ausdrücklich auf `v5.12.0` → `v5.18.0` geschlossen, und ihr erster Re-Evaluierungs-Trigger sagt für
 den nächsten Sprung *„misst neu — und zwar beides"*. Die zweistufige Messung liefert
-[slice-176](../next/slice-176-inventur-vor-dem-schnitt-v600.md) DoD 3; dieser Slice **wählt** auf
+[slice-176](../in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) DoD 3; dieser Slice **wählt** auf
 ihr und misst nicht noch einmal.
 
 **Eine neue, eigenständige ADR — kein `Supersedes`.** Eine Entscheidung über diesen Sprung ändert
@@ -70,7 +70,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       *hier* trägt, statt dem von
       [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 1
       abgeschriebenen. Sie zitiert das Ergebnis beider Mess-Stufen aus
-      [slice-176](../next/slice-176-inventur-vor-dem-schnitt-v600.md) §9 als Zeiger, statt es zu
+      [slice-176](../in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §9 als Zeiger, statt es zu
       wiederholen. `Status` steht in ihr; bei `Proposed` steht der Acceptance-Trigger daneben
       (Präzedenz [slice-171](../open/slice-171-adr-0031-acceptance-trigger.md)).
 - [ ] **Die Abgrenzung ist ausgesprochen:** kein `Supersedes` auf
@@ -105,7 +105,7 @@ Aussagen-Berührung steht hier gar nicht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [slice-176](../next/slice-176-inventur-vor-dem-schnitt-v600.md)
+**Start** (`next` → `in-progress`): [slice-176](../in-progress/slice-176-inventur-vor-dem-schnitt-v600.md)
 liegt in `done/`. Der Grund ist tragend, nicht ordnend: Die Wahl steht auf der zweistufigen Messung
 jenes Slice, und der Katalog daneben sagt, welche Positionen des Sprungs überhaupt ein
 Konformitäts-Urteil verlangen.

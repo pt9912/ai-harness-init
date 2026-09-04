@@ -189,7 +189,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 1. **Der vendored Baum trägt die Ziel-Form** — `make baseline-verify` meldet `v6.0.0 OK`. Die
    Bedingung nennt **kein** Slice, weil der tauschende Slice aus dem Katalog in
-   [slice-176](../next/slice-176-inventur-vor-dem-schnitt-v600.md) §9 hervorgeht und heute nicht
+   [slice-176](../in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §9 hervorgeht und heute nicht
    existiert; eine Kennung hier behauptete eine Datei, die es nicht gibt. Der Grund ist tragend,
    nicht ordnend: Vor dem Tausch ist `v5.18.0` der Ist-Maßstab
    ([`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 2), und die
