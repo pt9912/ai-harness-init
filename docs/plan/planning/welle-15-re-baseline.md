@@ -25,7 +25,7 @@ zurückzukommen.**
 
 **Der Schnitt beginnt mit einer Inventur, nicht mit einer Schätzung** (`BEO-010` im
 [Register](observations.md), 2×). Wie viele Mitglieder diese Welle bekommt, beantwortet
-[slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md): **sechs**, dazu ein
+[slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md): **sechs**, dazu ein
 ausdrücklich ausgeschlossener Folge-Slice (§4). Die Zahl steht seit dem Katalog fest und nicht
 seit der Eröffnung.
 
@@ -38,7 +38,7 @@ Datei gehört dem Architect ([`AGENTS.md`](../../../AGENTS.md) §3.8). Welche Fa
 Migrations-Prozedur **dieses** Sprungs stellt, ist offen: Festlegung 1 jener ADR gilt nur für
 `v5.12.0` → `v5.18.0`, ihr erster Re-Evaluierungs-Trigger verlangt für den nächsten Sprung eine
 neue Messung. Die Messung liegt vor
-([slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §9, zweistufig); die **Wahl**
+([slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) §9, zweistufig); die **Wahl**
 ist offen und trägt [slice-178](open/slice-178-regierende-fassung-des-sprungs-v600.md). Beide
 Posten stehen als Übergaben in §5.
 
@@ -85,7 +85,7 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) | Inventur vor dem Schnitt — der Form- und Regel-Diff `v5.18.0` → `v6.0.0` | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) |
+| [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) | Inventur vor dem Schnitt — der Form- und Regel-Diff `v5.18.0` → `v6.0.0` | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) |
 | [slice-177](open/slice-177-beobachtungs-register-verzeichnis-form.md) | Das Beobachtungs-Register läuft in der Verzeichnis-Form | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-045`](../../../harness/conventions.md#mr-045--der-adaptions-block-läuft-in-der-verzeichnis-form) |
 | [slice-178](open/slice-178-regierende-fassung-des-sprungs-v600.md) | Die regierende Fassung dieses Sprungs wird entschieden (Architect) | [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md), [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) |
 | [slice-179](done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) | Die Form des Beobachtungs-Registers wird entschieden — vor dem Umzug (Architect) | [`ADR-0030`](../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
@@ -96,7 +96,7 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 **Sieben Mitglieder — die Zahl steht seit dem Katalog fest, nicht seit der Eröffnung.** `BEO-010`
 ([Register](observations.md)) misst an einer Re-Baseline den Abstand zwischen geschnittenen und
 geschlossenen Slices, und die Ursache war der Schnitt **vor** der Inventur; die zwei Zeilen oben
-sind darum aus [slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §9 hervorgegangen und
+sind darum aus [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) §9 hervorgegangen und
 nicht vorab gesetzt. Die Umplanung trägt das Drift-Log der [Roadmap](in-progress/roadmap.md).
 
 **Zeile 5 löst zwei Closure-Bedingungen dieser Welle ein**, die keine andere einlösen kann (§3):
@@ -152,7 +152,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 
 - **Wird blockiert von: keiner.** Der Start-Trigger ist gefahren und eingetreten (§2).
 - **Blockiert: eine Kante, und sie hängt an einem Slice statt an dieser Welle.** Der Katalog
-  ([slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §9) misst die zwei Kandidaten
+  ([slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) §9) misst die zwei Kandidaten
   von damals einzeln, statt sie zu vermuten. **Die benannten Gegenstände sind byte-gleich:**
   §Freshness-Audit der vendored Baseline (Schritt 2) — der Gegenstand von
   [slice-090](open/slice-090-freshness-audit-im-ziel.md) — trägt zwischen den Tags kein Delta
@@ -173,7 +173,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   [slice-092](open/slice-092-traeger-inventur.md) und
   [slice-129](open/slice-129-closure-notiz-hat-einen-sensor.md)** — drei Slices, nicht zwei Wellen.
 - **Zwei Übergaben an den Architect** stehen in
-  [slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §6 und haben jetzt beide einen
+  [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) §6 und haben jetzt beide einen
   Träger. Übergabe 1 — die **regierende Fassung dieses Sprungs** — trägt
   [slice-178](open/slice-178-regierende-fassung-des-sprungs-v600.md), auf der zweistufigen Messung
   in jenem §9. Übergabe 2 — die **Buchung der Zielstand-Setzung** nach
@@ -200,7 +200,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   [slice-177](open/slice-177-beobachtungs-register-verzeichnis-form.md) →
   [slice-184](open/slice-184-register-form-im-bestand-nachziehen.md) — der Ziel-Wortlaut, den der
   Bestand übernimmt, entsteht dort. Ordnend:
-  [slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) →
+  [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) →
   [slice-178](open/slice-178-regierende-fassung-des-sprungs-v600.md), weil die Wahl auf der
   zweistufigen Messung jenes Slice steht.
 

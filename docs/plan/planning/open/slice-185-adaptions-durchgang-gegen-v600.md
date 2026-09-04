@@ -8,7 +8,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 **Welle:** [welle-15](../welle-15-re-baseline.md) — **Mitglied.** Der Adaptions-Durchgang ist eine
 der sieben Eigenschaften der Migrations-Prozedur, die diesen Sprung regiert (*„Der Review geht
 durch die Adaptions-Liste, nicht nur durch den Diff"*), und beide Fassungen führen sie byte-gleich
-([slice-176](../in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §9, Stufe b). Präzedenz ist
+([slice-176](../done/slice-176-inventur-vor-dem-schnitt-v600.md) §9, Stufe b). Präzedenz ist
 [slice-157](../done/slice-157-adaptions-durchgang-v5180.md) als Mitglied von
 [welle-14](../done/welle-14-re-baseline.md).
 
@@ -231,7 +231,7 @@ ihm 3×:
   als Risiko in §6, hier in der Selbstauskunfts-Form.
 - `BEO-019` (2×) — *Byte-Gleichheit an einem Abschnitt wird als Aussage über die Regel gelesen*.
   Bindet die Lesart der Prozedur: Sie ist byte-gleich, ihre Delegate sind es nicht
-  ([slice-176](../in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §9).
+  ([slice-176](../done/slice-176-inventur-vor-dem-schnitt-v600.md) §9).
 - `BEO-016` (1×) — *Slice-Pläne tragen ein Vielfaches der nötigen Zeilenzahl*. Bindet diesen Plan
   selbst; er ist deshalb knapp gehalten.
 

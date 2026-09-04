@@ -48,7 +48,7 @@ ausdrücklich offen ließ: `modul-06-roadmap.md` §Wann Arbeit eine Welle brauch
 sechste Zeile in der Träger-Tabelle — *Zeitdokumente archivieren (Closure-Schritt 4) ·
 Slice-Closure · nach den Paarungen*, Schlüssel `done/slice-<NNN>-archiv.zip` **flach** neben dem
 Stub —, und `modul-05` wie `modul-10` ziehen nach (Position **P-06** des Katalogs in
-[slice-176](../in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §9).
+[slice-176](../done/slice-176-inventur-vor-dem-schnitt-v600.md) §9).
 
 **Damit feuern zwei Re-Evaluierungs-Trigger von
 [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) gleichzeitig** — der erste

@@ -46,7 +46,7 @@ dort ausdrücklich als Risiko stehen bleibt (`BEO-009`), ist die **Anweisung dan
 `BEO-<NNN>` oder Zähler +1*, *`BEO-<NNN>` zitieren und den Zähler erhöhen*, *jede Registerzeile
 trägt einen Beleg*. Unter der Ziel-Form gibt es keine Zeile, keine fortlaufende Nummer und keinen
 Zähler, den man erhöht — er **folgt** aus den Dateien (Position **P-14** des Katalogs in
-[slice-176](../in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §9).
+[slice-176](../done/slice-176-inventur-vor-dem-schnitt-v600.md) §9).
 
 **Der Bestand ist gemessen, nicht geschätzt:**
 

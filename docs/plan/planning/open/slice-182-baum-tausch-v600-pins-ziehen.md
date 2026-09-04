@@ -38,7 +38,7 @@ ist einzeln lieferbar.
 Tag-Segment zeigt dorthin, und die Setzung des Auftraggebers ist an ihrem Ort verbucht.**
 
 Der Slice geht aus dem Diff-Katalog in
-[slice-176](../in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §9 hervor und trägt dort die
+[slice-176](../done/slice-176-inventur-vor-dem-schnitt-v600.md) §9 hervor und trägt dort die
 Positionen **P-01** (der Regelwerks-Stand, den §Baseline zitiert), **P-12** (die drei
 Vorlagen-Querverweise ohne Gegenstand hier) und die Vorbedingung von **P-13** (die neue Vorlage
 `observation.template.md` liegt netzlos erst nach dem Tausch vor).
@@ -79,7 +79,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Re-Baseline-Zeile in der Form aus
       [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
       Festlegung 2 — Ziel-Tag, **Datum des Vollzugs**,
-      [slice-176](../in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) als Zeiger auf den
+      [slice-176](../done/slice-176-inventur-vor-dem-schnitt-v600.md) als Zeiger auf den
       Delta-Nachweis, **sonst nichts** —, und die `Stand:`-Zeile sowie der zitierte
       Regelwerks-Stand (`sed -n '3p' .harness/baseline/v6.0.0/regelwerk/README.md`) sind
       nachgezogen. **Diese Datei gehört dem Architect**
@@ -122,7 +122,7 @@ der Move von der Inhaltsänderung zu trennen.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [slice-176](../in-progress/slice-176-inventur-vor-dem-schnitt-v600.md)
+**Start** (`next` → `in-progress`): [slice-176](../done/slice-176-inventur-vor-dem-schnitt-v600.md)
 liegt in `done/`. Der Grund ist tragend, nicht ordnend: Der Katalog sagt, welche Positionen der
 Tausch mitzieht und welche einen eigenen Träger haben — ohne ihn tauscht der Lauf einen Baum und
 weiß nicht, was er damit ausgelöst hat (`BEO-010`).
