@@ -184,7 +184,7 @@ dasteht.
   den vorigen Sprung schrieb). Vorher trüge die Zeile ein Datum für ein Ereignis, das nicht
   stattgefunden hat. Dieser Slice liefert den **Nachweis**, auf den sie zeigt, nicht die Zeile. —
   **Ausgang: entfallen.** Der Baum-Tausch-Slice ist geschnitten:
-  [slice-182](../open/slice-182-baum-tausch-v600-pins-ziehen.md) trägt die Buchung als dritten
+  [slice-182](../next/slice-182-baum-tausch-v600-pins-ziehen.md) trägt die Buchung als dritten
   Liefer-Punkt, mit dem **Datum des Vollzugs** und einem eigenen Architect-Commit
   ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Damit hat der Posten einen Träger statt eines
   Platzhalters, und [welle-15](../welle-15-re-baseline.md) §4 nennt keinen ungeschnittenen Slice
@@ -232,7 +232,7 @@ Backticks).
   slice-176); `BEO-016`, `BEO-019` und `BEO-023` je auf **2×** erhöht, Beleg slice-176 ergänzt.
   `BEO-010`, `BEO-011` und `BEO-013` bleiben unverändert — dieser Slice ist ihre **Antwort** bzw.
   ihre Vorsorge, kein weiteres Auftreten.
-- **Folge-Slices:** [slice-182](../open/slice-182-baum-tausch-v600-pins-ziehen.md),
+- **Folge-Slices:** [slice-182](../next/slice-182-baum-tausch-v600-pins-ziehen.md),
   [slice-184](../open/slice-184-register-form-im-bestand-nachziehen.md) und
   [slice-185](../open/slice-185-adaptions-durchgang-gegen-v600.md) — Mitglieder von
   [welle-15](../welle-15-re-baseline.md); [slice-183](../open/slice-183-ausloeser-der-wellenlosen-archivierung.md)
@@ -325,7 +325,7 @@ Ebene* · **—** *ohne Gegenstand hier*.
 
 | # | Datei · Hunks | Position | Zu | Ausgang |
 |---|---|---|---|---|
-| P-01 | `regelwerk/README.md` ×1 | `Stand:`-Zeile `Kurs-Welle 111 · 2026-08-31` → `116 · 2026-09-03` | RE | [slice-182](../open/slice-182-baum-tausch-v600-pins-ziehen.md) — §Baseline von [`harness/conventions.md`](../../../../harness/conventions.md) zitiert genau diese Zeile per `sed -n '3p'` |
+| P-01 | `regelwerk/README.md` ×1 | `Stand:`-Zeile `Kurs-Welle 111 · 2026-08-31` → `116 · 2026-09-03` | RE | [slice-182](../next/slice-182-baum-tausch-v600-pins-ziehen.md) — §Baseline von [`harness/conventions.md`](../../../../harness/conventions.md) zitiert genau diese Zeile per `sed -n '3p'` |
 | P-02 | `grundlagen-begriffe.md` ×1 · `modul-05` H2 | Kennung: `BEO-<NNN>` → `BEO-<KUERZEL>/<slug>`; **keine Vergabestelle, keine fortlaufende Nummer** | RE | entschieden in [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) Festlegung 3, vollzogen von [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md) — **kein neuer Slice** |
 | P-03 | `grundlagen-harness-dateien.md` H1 | Planning-Layout: `observations.md` → `observations/` | RE | [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md) |
 | P-04 | `grundlagen-harness-dateien.md` H2 | **„Die Spalte ist nicht bedingt."** Die Kürzel-Spalte der Modus-Deklaration ist unbedingt Pflicht, weil `BEO-<KUERZEL>/<slug>` jedem Repo mindestens **eine** Kennungsklasse mit Segment gibt | RE | [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) Folgepflicht 2 (Architect-Commit) — **kein neuer Slice**; s. *Eine Verschärfung* unten |
@@ -336,9 +336,9 @@ Ebene* · **—** *ohne Gegenstand hier*.
 | P-09 | `modul-06` H3 | **§Das Beobachtungs-Register vollständig neu**: Verzeichnis statt Tabelle · drei Dateien mit drei Lebensdauern · **Zähler abgeleitet statt geführt** · Kennung **ist** der Pfad · leere Ablage = nur `README.md` · *gestrichen* wird Verzeichnis-Vermerk statt zweiter Sektion · die Beleg-Prüfungen fallen von **drei** auf **zwei** (die *Anzahl*-Prüfung hat kein Objekt mehr) | RE | [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) + [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md) — **kein neuer Slice** |
 | P-10 | `modul-06` H4 | Wellen-Eröffnung Schritt 2 nennt den neuen Registerpfad | RE | [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md) DoD 2 |
 | P-11 | `modul-06` H5 | Register-Paarung (c): die genannte Beobachtung existiert als **Verzeichnis** statt als Zeile | RE | [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md) — dazu die **benannte Lücke**: die maschinelle Hälfte ist hier ohnehin unbewacht (`grep -c observations .d-check.yml` → 0), und das bleibt sie ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) |
-| P-12 | `templates/README.md` ×1 · `reconciliation.template.md` ×1 · `welle-results.template.md` ×1 | drei Querverweise ziehen auf `observation.template.md` bzw. `observations/` nach | — | [slice-182](../open/slice-182-baum-tausch-v600-pins-ziehen.md) trägt sie **als Baum-Inhalt**, nicht als Arbeit: Dieses Repo emittiert **keine** Planning-Vorlage (`find internal/emit/templates -path '*planning*'` → leer) und führt keine `reconciliation.md` (Greenfield) |
+| P-12 | `templates/README.md` ×1 · `reconciliation.template.md` ×1 · `welle-results.template.md` ×1 | drei Querverweise ziehen auf `observation.template.md` bzw. `observations/` nach | — | [slice-182](../next/slice-182-baum-tausch-v600-pins-ziehen.md) trägt sie **als Baum-Inhalt**, nicht als Arbeit: Dieses Repo emittiert **keine** Planning-Vorlage (`find internal/emit/templates -path '*planning*'` → leer) und führt keine `reconciliation.md` (Greenfield) |
 | P-13 | `README.template.md` ×1 | Planning-README: das Register liegt als `observations/` neben den Wellen | RE | [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md) DoD 2 — `docs/plan/planning/README.md` steht in dessen Bezugsmenge |
-| P-14 | `observation.template.md` (**A**, +88) · `observations.template.md` (**D**, −58) | die Ziel-Form **je Beobachtung** entsteht, die Register-Vorlage entfällt | RE | [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md) legt daraus per `cp` an; die Vorlage liegt netzlos erst nach [slice-182](../open/slice-182-baum-tausch-v600-pins-ziehen.md) vor — genau die erste Start-Bedingung jenes Slice |
+| P-14 | `observation.template.md` (**A**, +88) · `observations.template.md` (**D**, −58) | die Ziel-Form **je Beobachtung** entsteht, die Register-Vorlage entfällt | RE | [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md) legt daraus per `cp` an; die Vorlage liegt netzlos erst nach [slice-182](../next/slice-182-baum-tausch-v600-pins-ziehen.md) vor — genau die erste Start-Bedingung jenes Slice |
 | P-15 | `slice.template.md` ×2 | DoD-Zeile und §7-Zeile: Verzeichnis-Ablage, **kein Zähler wird gesetzt** — er folgt aus den Dateien | RE **+ EM** | **neu:** [slice-184](../open/slice-184-register-form-im-bestand-nachziehen.md). Gemessen: **10** von **60** lebenden Plänen tragen die alte DoD-Zeile, **4** Anweisungssatz-Dateien die alte Form-Beschreibung (Kommandos in dessen §1) |
 
 **Keine Position ohne Ausgang** — elf tragen einen benannten Slice oder eine angenommene ADR, vier
@@ -465,7 +465,7 @@ führt keine ADR über den Archivierungs-Träger, dieses Repo schon.
 meldet in der Closure-Notiz zwei Klassen, die erst der unabhängige Review fand — eine übersehene
 lebende Version-Annotation neben einem Zitat und zu kleine Selbstauskunfts-Zahlen im begleitenden
 Adaptions-Eintrag; beide stehen in
-[slice-182](../open/slice-182-baum-tausch-v600-pins-ziehen.md) §6, Risiko 1 und 2. Und sein
+[slice-182](../next/slice-182-baum-tausch-v600-pins-ziehen.md) §6, Risiko 1 und 2. Und sein
 Migrations-Slice sprengte die Ein-Sitzungs-Review-Grenze (28 Einträge, ~180 Dateien): das ist die
 Rückführung, die [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md) §4 bereits
 vorab benennt.
