@@ -587,10 +587,22 @@ und Verifikation, s. Kopf dieser Datei und Baseline-Regelwerk `modul-08-agentenr
   `../observations.md`, dazu die Kommentar-Vereinfachung in
   `test/mutations/74-mutate-kopie-ohne-git.sh`); zwischen `b8o8h2kkp` und `bte64frb1` das
   Eintragen der `FULL_SECONDS`-Zahl samt Risiko-5-Text in dieser Datei. Beide Male lief der
-  jeweils nächste `make mutate`-Aufruf **wieder voll**, statt zu überspringen — derselbe Beleg, den
-  Closure-Trigger 2 (a)/(c) verlangt (eine Änderung an einer im Schlüssel geführten Datei bewegt
-  ihn), zweifach unabsichtlich, aber real ausgelöst. Erst der danach unangetastete Baum
-  (`bte64frb1` → die zwei letzten Läufe, **0.08 s**/**0.07 s**) übersprang.
+  jeweils nächste `make mutate`-Aufruf **wieder voll**, statt zu überspringen — real ausgelöst,
+  aber **nicht** der Beleg, den Closure-Trigger 2 (c) verlangt: alle drei angefassten Pfade sind
+  getrackt und stehen in `git ls-files --cached --others --exclude-standard`; die definierende
+  Bedingung von Probe (c) (dieselbe Menge **nicht** zu führen) trifft auf keinen von ihnen zu
+  (Review-Runde 3, Fund R3-2 —
+  [`2026-09-04-slice-180-mutations-sensor-verify-runde-3.md`](../../../reviews/2026-09-04-slice-180-mutations-sensor-verify-runde-3.md)).
+  Was die zwei Zwischen-Edits real zeigen, ist die allgemeinere Eigenschaft, aus der (a) folgt:
+  **jede** getrackte Datei bewegt den Schlüssel, nicht nur ein `# files:`-Ziel. **Probe (c) selbst
+  ist real gefahren, gesondert und gezielt, im Verifier-Durchgang**
+  ([`2026-09-04-slice-180-mutations-sensor-beleg-statt-lauf-verify.md`](../../../reviews/2026-09-04-slice-180-mutations-sensor-beleg-statt-lauf-verify.md)):
+  einzige Änderung an `.claude/settings.local.json` — dem einen Pfad, den §3 als Kopie-ohne-`git
+  ls-files` misst — verschob `isolation_key()` von `ff9dd097…` auf `29b501f0…`; ein direkt danach
+  gestarteter `bash harness/tools/mutate.sh` lief messbar in den Grün-Vorlauf statt in die
+  Übersprung-Meldung (Protokoll im genannten Verifier-Report), die Datei wurde danach
+  byte-identisch zurückgesetzt. Erst der seither unangetastete Baum (`bte64frb1` → die zwei
+  letzten Läufe, **0.08 s**/**0.07 s**) übersprang.
 - **Drei Paarungen (nur Repo ohne Wellen-Betrieb):** **noch nicht geprüft** — sie laufen am
   formalen Closure-Schritt (`git mv` nach `done/`), den dieser Implementer-Lauf nicht ausführt.
   Vorprüfbar war bereits: Anker-Paarung entfällt (kein Feld `liegt in <Zielort>` in dieser Notiz, da
