@@ -14,6 +14,12 @@
 // sagt sie etwas: TestArchiveWelleVorschauSchreibtNichtsObwohlDerLaufLiefe misst
 // Exit-Code, git-Aufrufe und den Baum-Abdruck,
 // TestArchiveWelleSchreibendLaeuftAmSelbenBaum die Gegenprobe ohne den Schalter.
+// Beide nehmen `vorschau` als PARAMETER. Die Strecke davor — vom Argument-Feld
+// ueber den Parser bis zu diesem Parameter — misst
+// TestArchiveWelleReichtDenSchalterVomArgumentBisZumZweig ueber demselben Baum,
+// mit `--vorschau` als Argument; TestParseArchiveWelleGewinntDenSchalterAusDemArgument
+// haelt die Parser-Haelfte allein, in beiden Argument-Reihenfolgen und ohne den
+// Schalter.
 //
 // GRENZE, benannt statt verschwiegen: die vier schreibenden git-Aufrufe unten
 // laufen in keinem Test. Was ueber ihnen liegt — Reihenfolge, Aufteilung auf zwei
@@ -60,28 +66,70 @@ Exit-Codes:
 `
 
 // archiveWelle ist der testbare Kern des Unterkommandos: Argumente rein, Text
-// raus, Exit-Code zurueck.
+// raus, Exit-Code zurueck. Er verdrahtet den Betriebs-Eingang und delegiert.
 func archiveWelle(args []string, out, errOut io.Writer) int {
+	return archiveWelleMit(args, echterEingang(), out, errOut)
+}
+
+// laufEingang buendelt, was zwischen dem Parsen und dem Zweig aus der Aussenwelt
+// kommt: die Repo-Wurzel, die zwei lesenden git-Aufrufe und die Verdrahtung der
+// vier schreibenden. Es steht als Werte-Buendel, damit die STRECKE vom
+// Kommandozeilen-Argument bis zum Vorschau-Guard ohne ein Repo pruefbar ist —
+// dieselbe Aufteilung, aus der archiveWelleLauf schon die zwei Lesungen als
+// Werte und die Schreib-Operationen als Schnittstelle nimmt.
+type laufEingang struct {
+	wurzel     func() (string, error)
+	porcelain  func(root string) (string, error)
+	dateien    func(root string) ([]string, error)
+	schreibend func(root string) archive.Git
+}
+
+// echterEingang ist die Verdrahtung des Betriebs.
+//
+// ABGRENZUNG: er traegt keine Verzweigung, und die vier Felder haben paarweise
+// verschiedene Signaturen — eine Vertauschung untereinander uebersetzt nicht.
+// Was er zusagt, ist damit vom Compiler getragen und von keinem Test.
+func echterEingang() laufEingang {
+	return laufEingang{
+		wurzel:     repoWurzel,
+		porcelain:  gitStatusPorcelain,
+		dateien:    gitLsFiles,
+		schreibend: func(root string) archive.Git { return gitSchreibend{root} },
+	}
+}
+
+// archiveWelleMit ist die Strecke vom Argument-Feld bis zum Zweig: parsen, die
+// Aussenwelt lesen, den geparsten Schalter weiterreichen.
+//
+// ZUSAGE: der Wert, den parseArchiveWelle aus `--vorschau` gewinnt, ist der Wert,
+// den archiveWelleLauf als `vorschau` bekommt — ein Aufrufer, der den Schalter
+// setzt, erreicht den Guard. Gedeckt von
+// TestArchiveWelleReichtDenSchalterVomArgumentBisZumZweig samt seiner Gegenprobe
+// TestArchiveWelleOhneSchalterSchreibtAmSelbenArgumentFeld;
+// test/mutations/246-archive-welle-go-vorschau-flag-verloren.sh nimmt den Wert im
+// Parser weg, test/mutations/247-archive-welle-go-schalter-erreicht-zweig-nicht.sh
+// auf dieser Strecke.
+func archiveWelleMit(args []string, e laufEingang, out, errOut io.Writer) int {
 	welle, vorschau, code := parseArchiveWelle(args, out, errOut)
 	if code >= 0 {
 		return code
 	}
-	root, err := repoWurzel()
+	root, err := e.wurzel()
 	if err != nil {
 		fmt.Fprintf(errOut, "archive-welle: %v\n", err)
 		return 1
 	}
-	porcelain, err := gitStatusPorcelain(root)
+	porcelain, err := e.porcelain(root)
 	if err != nil {
 		fmt.Fprintf(errOut, "archive-welle: %v\n", err)
 		return 1
 	}
-	dateien, err := gitLsFiles(root)
+	dateien, err := e.dateien(root)
 	if err != nil {
 		fmt.Fprintf(errOut, "archive-welle: %v\n", err)
 		return 1
 	}
-	return archiveWelleLauf(root, welle, vorschau, porcelain, dateien, gitSchreibend{root}, out, errOut)
+	return archiveWelleLauf(root, welle, vorschau, porcelain, dateien, e.schreibend(root), out, errOut)
 }
 
 // archiveWelleLauf ist der Kern beider Zweige: er startet keinen Prozess, sondern
@@ -146,6 +194,12 @@ func (g gitSchreibend) lauf(args ...string) error {
 // parseArchiveWelle trennt die Welle-Kennung vom Vorschau-Schalter. Der dritte
 // Rueckgabewert ist -1, solange der Aufruf weiterlaeuft, sonst der Exit-Code
 // eines bereits gedruckten Ausgangs.
+//
+// ZUSAGE: `--vorschau` steht an keiner festen Position — der Schalter wird vor
+// wie nach der Kennung gewonnen, und ohne ihn ist der Wert falsch. Gedeckt von
+// TestParseArchiveWelleGewinntDenSchalterAusDemArgument;
+// test/mutations/246-archive-welle-go-vorschau-flag-verloren.sh nimmt die eine
+// Zuweisung weg, aus der dieser Wert entsteht.
 func parseArchiveWelle(args []string, out, errOut io.Writer) (welle string, vorschau bool, code int) {
 	for _, a := range args {
 		switch {

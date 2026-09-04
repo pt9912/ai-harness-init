@@ -12,6 +12,8 @@ import (
 	"sort"
 	"strings"
 	"testing"
+
+	"github.com/pt9912/ai-harness-init/internal/archive"
 )
 
 // gitStumm ist die Test-Verdrahtung der vier schreibenden git-Operationen: sie
@@ -201,6 +203,114 @@ func baumAbdruck(t *testing.T, root string) string {
 	}
 	sort.Strings(zeilen)
 	return strings.Join(zeilen, "\n")
+}
+
+// attrappenEingang verdrahtet die Strecke zwischen Parser und Zweig auf einen
+// synthetischen Baum: die Wurzel ist gesetzt, der Arbeitsbaum sauber, der
+// Suchraum ist der Baum selbst, und die vier schreibenden git-Operationen gehen
+// an den Mitschreiber. Kein Prozess, kein Repo — gemessen wird der Weg des
+// geparsten Schalters, nicht git.
+func attrappenEingang(t *testing.T, root string, g archive.Git) laufEingang {
+	t.Helper()
+	dateien := indexAttrappe(t, root)
+	return laufEingang{
+		wurzel:     func() (string, error) { return root, nil },
+		porcelain:  func(string) (string, error) { return "", nil },
+		dateien:    func(string) ([]string, error) { return dateien, nil },
+		schreibend: func(string) archive.Git { return g },
+	}
+}
+
+// TestArchiveWelleReichtDenSchalterVomArgumentBisZumZweig misst die STRECKE, die
+// ein realer Aufrufer nimmt: `--vorschau` steht als Argument im Feld, nicht als
+// Parameter am Zweig. Gemessen wird damit auch die eine Zuweisung im Parser, aus
+// der der Wert entsteht, und seine Weitergabe an archiveWelleLauf — beide waeren
+// sonst durch keinen Test gedeckt, waehrend die Zusagen daneben vom SCHALTER
+// sprechen.
+//
+// Derselbe sperrenfreie Baum wie beim Parameter-Fall, aus demselben Grund: an
+// einem Baum mit Sperre endete der Lauf schon in der Vorpruefung, und der Fall
+// bliebe gruen, auch wenn der Schalter nirgends mehr ankaeme. Die
+// Vorbedingung steht darum als einziges Fatal vorweg.
+//
+// Gegenbeispiele: test/mutations/246-archive-welle-go-vorschau-flag-verloren.sh
+// (der Parser gewinnt den Wert nicht mehr),
+// test/mutations/247-archive-welle-go-schalter-erreicht-zweig-nicht.sh (er
+// erreicht den Zweig nicht mehr).
+func TestArchiveWelleReichtDenSchalterVomArgumentBisZumZweig(t *testing.T) {
+	root := sperrenfreierBaum(t)
+	vorher := baumAbdruck(t, root)
+
+	g := &gitStumm{}
+	var out, errb bytes.Buffer
+	code := archiveWelleMit([]string{"--vorschau", "welle-10"}, attrappenEingang(t, root, g), &out, &errb)
+
+	if !strings.Contains(out.String(), "Sperren: keine") {
+		t.Fatalf("der Prueftext traegt eine Sperre — gemessen waere die Vorpruefung, nicht der Schalter:\n%s", out.String())
+	}
+	if nachher := baumAbdruck(t, root); nachher != vorher {
+		t.Errorf("`--vorschau` im Argument-Feld hat den Baum veraendert:\nvorher\n%s\nnachher\n%s", vorher, nachher)
+	}
+	if len(g.rufe) != 0 {
+		t.Errorf("git-Operationen trotz `--vorschau` im Argument-Feld: %v", g.rufe)
+	}
+	if code != 0 {
+		t.Errorf("Exit %d, want 0 (Vorschau ohne Sperre; stderr: %q)", code, errb.String())
+	}
+}
+
+// TestArchiveWelleOhneSchalterSchreibtAmSelbenArgumentFeld ist die Gegenprobe:
+// DASSELBE Argument-Feld ohne `--vorschau` — und dann faellt der Abdruck. Ohne
+// sie sagte der Fall darueber nur, dass an diesem Baum nichts passiert.
+func TestArchiveWelleOhneSchalterSchreibtAmSelbenArgumentFeld(t *testing.T) {
+	root := sperrenfreierBaum(t)
+	vorher := baumAbdruck(t, root)
+
+	g := &gitStumm{}
+	var out, errb bytes.Buffer
+	archiveWelleMit([]string{"welle-10"}, attrappenEingang(t, root, g), &out, &errb)
+
+	if len(g.rufe) == 0 {
+		t.Fatalf("ohne `--vorschau` keine einzige git-Operation — der Baum traegt eine Sperre:\n%s (stderr: %q)", out.String(), errb.String())
+	}
+	if baumAbdruck(t, root) == vorher {
+		t.Fatal("ohne `--vorschau` blieb der Baum unveraendert — der Fall darueber misst dann nichts")
+	}
+}
+
+// TestParseArchiveWelleGewinntDenSchalterAusDemArgument haelt die Parser-Haelfte
+// der Strecke allein: aus welchem Argument-Feld welcher Wert entsteht. Die
+// Position ist Teil der Zusage — `--vorschau` steht vor wie nach der Kennung —,
+// und die dritte Zeile haelt die Gegenrichtung: ohne den Schalter ist der Wert
+// falsch. Ein Fall nur ueber der ersten Zeile bliebe gruen, wenn der Wert
+// konstant wahr waere.
+// Gegenbeispiel: test/mutations/246-archive-welle-go-vorschau-flag-verloren.sh.
+func TestParseArchiveWelleGewinntDenSchalterAusDemArgument(t *testing.T) {
+	faelle := []struct {
+		name     string
+		args     []string
+		welle    string
+		vorschau bool
+	}{
+		{"Schalter vor der Kennung", []string{"--vorschau", "welle-10"}, "welle-10", true},
+		{"Schalter nach der Kennung", []string{"welle-10", "--vorschau"}, "welle-10", true},
+		{"ohne Schalter", []string{"welle-10"}, "welle-10", false},
+	}
+	for _, f := range faelle {
+		t.Run(f.name, func(t *testing.T) {
+			var out, errb bytes.Buffer
+			welle, vorschau, code := parseArchiveWelle(f.args, &out, &errb)
+			if code != -1 {
+				t.Fatalf("Exit %d, want -1 (der Aufruf laeuft weiter; stderr: %q)", code, errb.String())
+			}
+			if welle != f.welle {
+				t.Errorf("Welle %q, want %q", welle, f.welle)
+			}
+			if vorschau != f.vorschau {
+				t.Errorf("vorschau %v, want %v — aus %v gewonnen", vorschau, f.vorschau, f.args)
+			}
+		})
+	}
 }
 
 // TestArchiveWelleAufrufFehler: fehlende Kennung, unbekanntes Flag und zwei
