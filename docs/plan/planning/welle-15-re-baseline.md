@@ -25,7 +25,9 @@ zurückzukommen.**
 
 **Der Schnitt beginnt mit einer Inventur, nicht mit einer Schätzung** (`BEO-010` im
 [Register](observations.md), 2×). Wie viele Mitglieder diese Welle bekommt, beantwortet
-[slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md); vorher steht die Zahl nirgends.
+[slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md): **sechs**, dazu ein
+ausdrücklich ausgeschlossener Folge-Slice (§4). Die Zahl steht seit dem Katalog fest und nicht
+seit der Eröffnung.
 
 **Zwei Fragen entscheidet diese Datei nicht.** Wer den Zielstand bewegt, steht in
 [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) §*Wer den Zielstand bewegt*; **wo**
@@ -35,8 +37,10 @@ die Setzung verbucht wird, in
 Datei gehört dem Architect ([`AGENTS.md`](../../../AGENTS.md) §3.8). Welche Fassung die
 Migrations-Prozedur **dieses** Sprungs stellt, ist offen: Festlegung 1 jener ADR gilt nur für
 `v5.12.0` → `v5.18.0`, ihr erster Re-Evaluierungs-Trigger verlangt für den nächsten Sprung eine
-neue Messung. Beide Posten trägt [slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §6
-als Übergabe an den Architect.
+neue Messung. Die Messung liegt vor
+([slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §9, zweistufig); die **Wahl**
+ist offen und trägt [slice-178](open/slice-178-regierende-fassung-des-sprungs-v600.md). Beide
+Posten stehen als Übergaben in §5.
 
 ## 2. Trigger (Welle startet)
 
@@ -85,12 +89,36 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 | [slice-177](open/slice-177-beobachtungs-register-verzeichnis-form.md) | Das Beobachtungs-Register läuft in der Verzeichnis-Form | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-045`](../../../harness/conventions.md#mr-045--der-adaptions-block-läuft-in-der-verzeichnis-form) |
 | [slice-178](open/slice-178-regierende-fassung-des-sprungs-v600.md) | Die regierende Fassung dieses Sprungs wird entschieden (Architect) | [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md), [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) |
 | [slice-179](done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) | Die Form des Beobachtungs-Registers wird entschieden — vor dem Umzug (Architect) | [`ADR-0030`](../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-182](open/slice-182-baum-tausch-v600-pins-ziehen.md) | Der vendored Baum steht auf `v6.0.0` — Pins gezogen, Setzung verbucht | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache), [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) |
+| [slice-184](open/slice-184-register-form-im-bestand-nachziehen.md) | Die Form-Beschreibung des Beobachtungs-Registers zieht im Bestand nach | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0028`](../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md), [`ADR-0034`](../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) |
+| [slice-185](open/slice-185-adaptions-durchgang-gegen-v600.md) | Der Adaptions-Durchgang gegen `v6.0.0` — jeder Eintrag mit eigenem Ausgang (Architect) | [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md), [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 
-**Vier Mitglieder, und die übrigen Zeilen folgen dem Katalog.** Die Mitglieder-Zahl steht bewusst
-nicht vorab: `BEO-010` ([Register](observations.md)) misst an einer Re-Baseline den Abstand
-zwischen geschnittenen und geschlossenen Slices, und die Ursache war der Schnitt **vor** der
-Inventur. Die Umplanung, die die weiteren Mitglieder aufnimmt, trägt das Drift-Log der
-[Roadmap](in-progress/roadmap.md).
+**Sieben Mitglieder — die Zahl steht seit dem Katalog fest, nicht seit der Eröffnung.** `BEO-010`
+([Register](observations.md)) misst an einer Re-Baseline den Abstand zwischen geschnittenen und
+geschlossenen Slices, und die Ursache war der Schnitt **vor** der Inventur; die zwei Zeilen oben
+sind darum aus [slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §9 hervorgegangen und
+nicht vorab gesetzt. Die Umplanung trägt das Drift-Log der [Roadmap](in-progress/roadmap.md).
+
+**Zeile 5 löst zwei Closure-Bedingungen dieser Welle ein**, die keine andere einlösen kann (§3):
+`make baseline-verify` meldet `v6.0.0 OK`, und §Baseline von
+[`harness/conventions.md`](../../../harness/conventions.md) nennt denselben Tag. Sie trägt darum
+auch die **Zielstand-Buchung** nach
+[`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2 — den
+Platz dafür hielt der letzte Absatz dieser Sektion, jetzt hat er seinen Slice.
+
+**Zeile 6 ist Mitglied aus Gleichzeitigkeit, nicht aus Nähe.** Sobald
+[slice-177](open/slice-177-beobachtungs-register-verzeichnis-form.md) die Ablage umzieht, weisen
+zehn lebende Slice-Pläne und vier Anweisungssatz-Dateien einen Vorgang an, den es nicht mehr gibt.
+Ein Ausgang in `open/` wäre hier gerade **kein** verbuchter Ausgang: Der Nachzügler, gegen den das
+Welle-Ziel steht, wäre mit dem Umzug schon da.
+
+**Ein Katalog-Slice ist ausdrücklich kein Mitglied**, und der Grund gehört hierher statt in ein
+stilles Weglassen (`BEO-018`):
+[slice-183](open/slice-183-ausloeser-der-wellenlosen-archivierung.md) — *Der Auslöser der
+Zeitdokumente-Archivierung im wellenlosen Betrieb wird entschieden* (Architect). Der
+Closure-Trigger dieser Welle (§3) nennt ihn in keiner seiner fünf Bedingungen, und das Welle-Ziel
+verlangt einen **verbuchten Ausgang**, keinen Vollzug — die Datei in `open/` ist er. Position
+**P-06** des Katalogs.
 
 **Zeile 2 folgt nicht dem Katalog, sondern einer Messung neben ihm** — dieselbe Ausnahme, die
 [welle-14](done/welle-14-re-baseline.md) §4 für zwei ihrer Zeilen führt. Die Position ist einzeln
@@ -111,19 +139,11 @@ Ziel-Form nimmt dem Register seine flache Datei, und
 [`ADR-0030`](../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Festlegung 4 verlangt
 für genau diesen Fall die Entscheidung **vor** dem Move.
 
-**Was diese Welle noch nicht führt, und was von ihm erwartet wird.** Der **Baum-Tausch** hat noch
-keinen Slice — er geht aus dem Katalog in
-[slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §9 hervor und wird nicht vorab
-erfunden (`BEO-010`: gemessen statt geschätzt). Wenn er geschnitten ist, trägt **er** die
-Zielstand-Buchung nach
-[`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2 — die
-Zeile in §Baseline von [`harness/conventions.md`](../../../harness/conventions.md) mit Ziel-Tag,
-Datum des **Vollzugs** und dem Zeiger auf den Delta-Nachweis in
-[slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md). Präzedenz ist
-[slice-156](done/slice-156-baum-tauschen-pins-ziehen.md), der die Zeile für den vorigen Sprung
-schrieb. **Nicht** dorthin gehört sie in
-[slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md): Vor dem Tausch trüge sie ein Datum
-für ein Ereignis, das nicht stattgefunden hat. Hier steht der Platz, nicht der Slice.
+**Die Reihenfolge der sechs ist eine Kette, keine Liste.** Zeile 5 (Baum-Tausch) geht Zeile 2
+voraus, weil die Vorlage, aus der die neue Ablage per `cp` entsteht, netzlos erst danach vorliegt;
+Zeile 6 folgt Zeile 2, weil sie deren Ziel-Wortlaut übernimmt. Zeile 1 geht allen voraus — sie
+liefert den Katalog, auf dem 5 und 6 überhaupt geschnitten sind. Die tragenden Kanten stehen
+einzeln in §5.
 
 ## 5. Abhängigkeiten
 
@@ -131,29 +151,55 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Roadmap-Struktur: fünf Abschnitte.
 
 - **Wird blockiert von: keiner.** Der Start-Trigger ist gefahren und eingetreten (§2).
-- **Blockiert: offen, und das ist hier die Antwort statt einer Kante.** Kandidaten sind
-  [welle-11](welle-11-traeger-aussage.md) (jede ihrer Messungen läuft über den vendored Baum) und
-  [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) (zwei ihrer Slices bauen Sensoren auf Formen
-  aus `modul-05`/`modul-06`). Beide Kanten hingen bis zur Closure von
-  [welle-14](done/welle-14-re-baseline.md) und sind mit ihr gefallen; sie erneut zu setzen wäre
-  eine Umplanung auf eine Annahme. **Ob** dieser Sprung ihre Gegenstände bewegt, misst
-  [slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) — der Katalog ist die Grundlage der
-  Kante, nicht ihre Folge.
+- **Blockiert: eine Kante, und sie hängt an einem Slice statt an dieser Welle.** Der Katalog
+  ([slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §9) misst die zwei Kandidaten
+  von damals einzeln, statt sie zu vermuten. **Die benannten Gegenstände sind byte-gleich:**
+  §Freshness-Audit der vendored Baseline (Schritt 2) — der Gegenstand von
+  [slice-090](open/slice-090-freshness-audit-im-ziel.md) — trägt zwischen den Tags kein Delta
+  (`git diff --name-only v5.18.0 v6.0.0 -- lab/regelwerk/modul-02-harness-bootstrap.md` → leer), und
+  §Roadmap-Struktur: fünf Abschnitte — der Gegenstand von
+  [slice-125](open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) — liegt zwischen zwei
+  Hunks statt in einem (`git diff v5.18.0 v6.0.0 -- lab/regelwerk/modul-06-roadmap.md | grep '^@@'`
+  gegen `git show v5.18.0:lab/regelwerk/modul-06-roadmap.md | grep -n '^### '`). **Was doch
+  bewegt wird, ist die Register-Hälfte** — P-09 und P-11 schreiben die Ablage und die
+  Register-Paarung (c) neu, und die berührt
+  [slice-129](open/slice-129-closure-notiz-hat-einen-sensor.md). Dazu wechselt jede Präsens-Aussage
+  über den vendored Baum mit dem Tausch ihren Gegenstand
+  ([slice-091](open/slice-091-vendored-baum-ohne-anspruch.md),
+  [slice-092](open/slice-092-traeger-inventur.md), [`MR-040`](../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)).
+  Die Kante ist damit nicht *`welle-15` blockiert beide Wellen*, sondern
+  **[slice-182](open/slice-182-baum-tausch-v600-pins-ziehen.md) blockiert
+  [slice-091](open/slice-091-vendored-baum-ohne-anspruch.md),
+  [slice-092](open/slice-092-traeger-inventur.md) und
+  [slice-129](open/slice-129-closure-notiz-hat-einen-sensor.md)** — drei Slices, nicht zwei Wellen.
 - **Zwei Übergaben an den Architect** stehen in
-  [slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §6 und haben jetzt getrennte Träger.
-  Übergabe 1 — die **regierende Fassung dieses Sprungs** — trägt
-  [slice-178](open/slice-178-regierende-fassung-des-sprungs-v600.md). Übergabe 2 — die **Buchung
-  der Zielstand-Setzung** nach
+  [slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) §6 und haben jetzt beide einen
+  Träger. Übergabe 1 — die **regierende Fassung dieses Sprungs** — trägt
+  [slice-178](open/slice-178-regierende-fassung-des-sprungs-v600.md), auf der zweistufigen Messung
+  in jenem §9. Übergabe 2 — die **Buchung der Zielstand-Setzung** nach
   [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2 —
-  trägt der Baum-Tausch-Slice, den es noch nicht gibt (§4, letzter Absatz). Sie blockieren die
-  **Eröffnung** nicht — ein Diff-Katalog ist eine Messung und fällt kein Konformitäts-Urteil —,
-  wohl aber jeden Durchgang, der eines fällt.
-- **Eine Kante innerhalb der Welle ist tragend:**
+  trägt [slice-182](open/slice-182-baum-tausch-v600-pins-ziehen.md) als dessen dritter
+  Liefer-Punkt, mit dem **Datum des Vollzugs**. Sie blockieren die **Eröffnung** nicht — ein
+  Diff-Katalog ist eine Messung und fällt kein Konformitäts-Urteil —, wohl aber jeden Durchgang,
+  der eines fällt.
+- **Eine dritte Übergabe ist mit dem Katalog entstanden und liegt außerhalb dieser Welle:** der
+  **Auslöser der wellenlosen Zeitdokumente-Archivierung**
+  ([slice-183](open/slice-183-ausloeser-der-wellenlosen-archivierung.md), Position P-06). Zwei
+  Re-Evaluierungs-Trigger von
+  [`ADR-0033`](../adr/0033-wellen-archivierung-als-unterkommando.md) sind mit diesem Sprung
+  gefeuert; der Träger bleibt entschieden, der Auslöser nicht.
+- **Drei Kanten innerhalb der Welle sind tragend, eine ist ordnend.** Tragend:
   [slice-179](done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) →
-  [slice-177](open/slice-177-beobachtungs-register-verzeichnis-form.md). Ohne die entschiedene
+  [slice-177](open/slice-177-beobachtungs-register-verzeichnis-form.md) — ohne die entschiedene
   Kennungs- und Index-Gestalt hat der Umzug kein Ziel, und
   [`ADR-0030`](../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Festlegung 4
-  verlangt die Entscheidung vor dem Move. Die zweite Kante ist ordnend:
+  verlangt die Entscheidung vor dem Move.
+  [slice-182](open/slice-182-baum-tausch-v600-pins-ziehen.md) →
+  [slice-177](open/slice-177-beobachtungs-register-verzeichnis-form.md) — die Vorlage, aus der die
+  Ablage per `cp` entsteht, liegt netzlos erst nach dem Tausch vor.
+  [slice-177](open/slice-177-beobachtungs-register-verzeichnis-form.md) →
+  [slice-184](open/slice-184-register-form-im-bestand-nachziehen.md) — der Ziel-Wortlaut, den der
+  Bestand übernimmt, entsteht dort. Ordnend:
   [slice-176](in-progress/slice-176-inventur-vor-dem-schnitt-v600.md) →
   [slice-178](open/slice-178-regierende-fassung-des-sprungs-v600.md), weil die Wahl auf der
   zweistufigen Messung jenes Slice steht.
@@ -167,8 +213,13 @@ der Closure-Trigger unerreichbar wird.
 
 - **Sensor-Neubauten** — sie tragen [welle-13](welle-13-regeln-bekommen-ihren-sensor.md).
 - **Die Archivierung des Altbestands** — der Wellen, die vor der Einführung des
-  Archivierungs-Schritts schlossen. Die adoptierte Fassung stellt sie frei; ob die **laufende**
-  Regel hier greift, ist eine Position des Katalogs.
+  Archivierungs-Schritts schlossen. **Der Katalog hat die offene Hälfte beantwortet:** Der
+  freistellende Satz (*„Kein Zwang zum Nachrüsten — und kein Verbot"*) ist zwischen den Tags
+  byte-gleich und spricht unverändert von **Wellen**. Was `v6.0.0` neu bringt, ist der wellenlose
+  Fall (Position P-06) — und für den gab es vorher keine Regel, von der man freigestellt sein
+  könnte. Diese Welle schließt beides aus; **ob** die Freistellung sich auf den wellenlosen
+  Altbestand überträgt, entscheidet
+  [slice-183](open/slice-183-ausloeser-der-wellenlosen-archivierung.md) und nicht diese Zeile.
 - **Der d-check-Pin** ([slice-135](open/slice-135-d-check-pin-v0661.md)) — eigene Linie, eigener
   Trigger; er hängt an keiner Baseline-Version.
 - **Jede Senkung einer bestehenden Schwelle.** Wird ein Gate nur durch eine Lockerung grün, ist das
