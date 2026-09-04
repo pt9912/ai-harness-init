@@ -102,7 +102,7 @@ die Kollisions-Einheit oben und die Pflicht des Sprungs.
 **Was dieser Slice nicht entscheidet.** Ob `docs/plan/planning/observations.md` als Index-Datei
 stehen bleibt, welche Gestalt die Kennung bekommt und ob der Umzug ein Commit ist oder zwei —
 das sind drei Architect-Fragen, und sie stehen in
-[slice-179](../open/slice-179-register-ortsfestigkeit-vor-dem-umzug.md), der diesem Slice
+[slice-179](../done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md), der diesem Slice
 vorausgeht. Dieser Slice **vollzieht** die entschiedene Gestalt.
 
 ## 2. Definition of Done
@@ -194,7 +194,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
    nicht ordnend: Vor dem Tausch ist `v5.18.0` der Ist-Maßstab
    ([`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 2), und die
    Vorlage, aus der die Ablage per `cp` entsteht, liegt netzlos erst danach vor.
-2. **[slice-179](../open/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) liegt in `done/`, und
+2. **[slice-179](../done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) liegt in `done/`, und
    die dort entstandene ADR steht auf `Accepted`.** Eine `Proposed`-ADR bindet den
    Durchgang nicht. Der Grund ist tragend:
    [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Festlegung 4
@@ -208,7 +208,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
   gelesen werden müssen. Dann trennt der Schnitt Ablage (Liefer-Punkt 1) und Verweis-Nachzug
   (Liefer-Punkt 2) in zwei Slices.
 - `in-progress` → `open` (blockiert — Carveout?): wenn die Umsetzung eine Frage aufwirft, die
-  [slice-179](../open/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) nicht entschieden hat.
+  [slice-179](../done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) nicht entschieden hat.
   Sie geht dorthin zurück, nicht in diesen Lauf.
 
 ## 5. Closure-Trigger
@@ -299,7 +299,7 @@ nichts (`BEO-004`). Fünf Zeilen berühren diesen Slice mit ihrem Zähler-Stand:
   Form-Beschreibung des Registers steht an mehreren Orten. Steht als Risiko in §6.
 - `BEO-017` (2×) — *ein vorgeschriebener Ortswechsel macht eine Adresse in einem eingefrorenen
   Artefakt tot*. **Dieser Umzug ist ein Auftreten der Klasse**; sein Ausgang steht nicht hier,
-  sondern in [slice-179](../open/slice-179-register-ortsfestigkeit-vor-dem-umzug.md), der ihm
+  sondern in [slice-179](../done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md), der ihm
   deshalb vorausgeht.
 - `BEO-025` (2×) — *eine Zusage nennt einen Sensor, der die zugesagte Form nicht sieht*. Bindet die
   Formulierung von DoD 2: `make docs-check` deckt Link und Codepath, nicht Inline-Code.

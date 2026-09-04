@@ -242,7 +242,7 @@ eine Position dieses Repo wirklich bindet, gehört in den Slice, der sie trägt.
 **Eine Position ist vor diesem Katalog gemessen und geschnitten:** `v6.0.0` ersetzt die
 Register-Vorlage durch eine Vorlage je **Beobachtung**
 (`git diff --name-status v5.18.0 v6.0.0 -- lab/templates/docs/plan/planning`). Ihre Träger sind
-[slice-179](../open/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) (die Form-Entscheidung) und
+[slice-179](../done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) (die Form-Entscheidung) und
 [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md) (der Vollzug); der Katalog
 weist ihr diese Slices zu, statt einen dritten zu erzeugen.
 
@@ -262,7 +262,7 @@ Keine Erwartungswerte
 Setzung 2). Die Position ist von der **Ablage**-Form getrennt zu führen: Die
 Verzeichnis-Gestalt trägt
 [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md), das erste Pfad-Segment
-entscheidet [slice-179](../open/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) — was mit den
+entscheidet [slice-179](../done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) — was mit den
 594 Vorkommen im Bestand geschieht (umhängen, oder als Stand ihrer Zeit stehen lassen, wo die
 Quelle eingefroren ist), ist eine dritte Frage, die dieser Katalog **zuordnet** und die keinen
 vorab erfundenen Träger bekommt (`BEO-010`, `BEO-018`).
