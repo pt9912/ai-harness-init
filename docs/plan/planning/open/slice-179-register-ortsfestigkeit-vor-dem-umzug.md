@@ -26,6 +26,9 @@ Gate, dessen Befund unbehebbar ist, erzieht dazu, Rot zu überlesen),
 [`MR-045`](../../../../harness/conventions.md#mr-045--der-adaptions-block-läuft-in-der-verzeichnis-form)
 (die repo-eigene Präzedenz für den einen Zweig).
 
+**Ergebnis:** [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md),
+`Accepted`.
+
 **Berührte Spec-Stellen:** `—`. Der Slice entscheidet eine Form- und Verweis-Frage; er schreibt
 keine Spec-Stelle.
 
@@ -109,7 +112,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Die ADR liegt und entscheidet drei benannte Fragen** — `Status` steht in ihr, bei
+- [x] **Die ADR liegt und entscheidet drei benannte Fragen** — `Status` steht in ihr, bei
       `Proposed` der Acceptance-Trigger daneben:
       **(a) die Gestalt** — Index-Datei bleibt oder entfällt, mit dem Ausgang für jede der vier
       gemessenen ADR-Adressen, falls sie entfällt; ein weiteres `ignore-refs`-Paar ist dabei die
@@ -124,23 +127,47 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Commit geschnittene Adaption gebraucht (`/Development/d-check/harness/conventions/`, Eintrag
       *Register-Formatmigration ist ein einziger, deklarierter Commit*) — die Messung ist hier zu
       wiederholen, nicht zu zitieren.
-- [ ] **Jeder Zweig ist an einer Sonde gemessen, nicht geschätzt** — je ein `make docs-check` über
+      → [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md),
+      `Accepted`, fünf Festlegungen. **(a)** Festlegung 1 (Datei entfällt ersatzlos, kein Index) und
+      Festlegung 2 (viertes, namentlich geschnittenes Paar für die **eine** eingefrorene Adresse;
+      die übrigen 74 betroffenen Dateien sind änderbar und bekommen kein Ventil). **(b)**
+      Festlegung 3 — die Spalte kommt und deklariert das Segment der Beobachtungs-Kennung, sonst
+      keiner; `*` trägt `ALL`. Der *dritte Weg* ist benannt und ist die Ziel-Form selbst.
+      **(c)** Festlegung 4 — ein Commit, mit der hier wiederholten Messung.
+      Dazu Festlegung 5, die [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md)
+      Festlegung 3 in **einem** Wert teil-supersedet: Die stehende Register-Datei ist nicht mehr
+      ortsfest.
+- [x] **Jeder Zweig ist an einer Sonde gemessen, nicht geschätzt** — je ein `make docs-check` über
       dem probeweise umgezogenen Baum, mit Befundzahl **und** geprüfter Datei-Zahl je Zweig,
       danach zurückgenommen. Das ist die Form, in der
       [`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md),
       [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) und
       [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) gemessen
       haben.
-- [ ] `make gates` grün.
-- [ ] Doku-Update: der ADR-Index ([`docs/plan/adr/README.md`](../../adr/README.md)) trägt die neue
-      Zeile ([`AGENTS.md`](../../../../AGENTS.md) §5);
+      → **Beide Zweige am selben Baum, dem mit der neuen ADR.** *Index bleibt*:
+      `589 Datei(en) geprüft, 0 Befund(e)` — die Datei bleibt, jede Adresse löst auf, und keine
+      Referenz trägt einen Eintrags-Anker, den eine Kürzung bräche
+      (`git grep -o 'observations\.md#' -- '*.md' ':!.harness/baseline' | wc -l` → **0**).
+      *Volle Ziel-Form*: `588 Datei(en) geprüft, 355 Befund(e)` über **75** Dateien
+      (263 `target-missing`, 92 `codepath-missing`); die geprüfte Datei-Zahl fällt um genau eins,
+      und das ist die entfallene Datei. Davon eingefroren: **eine**.
+      **Die Ventil-Sonden liegen eine Datei tiefer**, weil sie liefen, bevor die ADR existierte —
+      Basis `587`, und dort trägt das Paar mit `587 … 354` bei unveränderter Datei-Zahl. Die zwei
+      roten Gegenproben (`587 … 355`), die Gegenmessung auf der Datei-Achse
+      (`586 … 354` — der Prüfbereich schrumpft) und die Glob-Sonde
+      (`587 … 354` — **kein** Zugewinn gegenüber dem engen Paar) stehen in der ADR.
+- [x] Doku-Update: der ADR-Index ([`docs/plan/adr/README.md`](../../adr/README.md)) trägt die neue
+      Zeile ([`AGENTS.md`](../../../../AGENTS.md) §5) — und die Zeile von
+      [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) nennt in ihrer
+      Status-Zelle den teil-revidierten Wert, wie es die Zeile von
+      [`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) vormacht;
       [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md) §2 nennt die
-      entschiedene Gestalt statt der offenen Alternative. Ein öffentlicher Vertrag ist nicht
-      berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+      entschiedene Gestalt statt der offenen Alternative — dazu §3, dessen Tabellenzeile und
+      Commit-Absatz dieselbe offene Frage führten. Ein öffentlicher Vertrag ist nicht berührt.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -159,6 +186,14 @@ Aussagen-Berührung steht hier gar nicht.
 Der Umzug selbst steht **nicht** in dieser Liste: Er ist der Gegenstand von
 [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md), und die Entscheidung geht
 ihm voraus.
+
+**Eine Zeile dieser Tabelle ist nicht ausgeführt worden, und das ist entschieden statt vergessen.**
+Die Kürzel-Spalte in [`harness/conventions.md`](../../../../harness/conventions.md) wird von
+[`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
+Festlegung 3 **entschieden**, aber erst nach dem Baum-Tausch **geschrieben**: Vor ihm ist der
+adoptierte Stand der Ist-Maßstab
+([`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 2), und dessen Regel
+trägt die heutige Leere der Spalte zu Recht. Sie steht als Folgepflicht 2 jener ADR.
 
 ## 4. Trigger
 
@@ -181,6 +216,10 @@ Kurs-Klon und der Bestand dieses Repos, beides heute messbar.
   zuordnet, als dieser Slice sie vorwegnimmt. Der Katalog ist die Grundlage der Zuordnung, nicht
   ihre Folge.
 
+**Keine der beiden ist eingetreten.** Die Kürzel-Frage brauchte den Schnitt nicht, weil die
+Ziel-Fassung sie beantwortet: Die Spalte deklariert das Segment der Beobachtungs-Kennung und sagt
+über die zwei anderen Familien nichts.
+
 ## 5. Closure-Trigger
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
@@ -200,22 +239,44 @@ dasteht.
 - **Die Referenz des Nachbar-Repos wird als Präzedenz gelesen statt als Messung** (`BEO-027` im
   [Register](../observations.md)). Sein Ventil-Regime kennt Verzeichnis-Globs, dieses nicht; sein
   Migrations-Eintrag deckt ausdrücklich **einen** Commit und nennt sich selbst *„keine
-  Blankovollmacht"*. Übernommen wird die **Messung**, nicht die Konfiguration. — **Ausgang:** <…>
+  Blankovollmacht"*. Übernommen wird die **Messung**, nicht die Konfiguration. — **Ausgang:**
+  **entfallen.** Die Glob-Form ist an der eigenen Sonde gefahren und dabei als **wertlos** gemessen
+  worden, nicht als unzulässig verworfen: Sie liefert `… 354 Befund(e)` — denselben Wert wie das
+  namentlich geschnittene Paar — und weitet dabei den Quell-Skopus auf 33 ADR-Dateien, davon sechs
+  noch änderbare. Ein Zweig, der an der eigenen Messung scheitert, kann nicht mehr als Autorität
+  gelesen werden. Der **Beleg-Charakter** des Nachbarn ist damit bestätigt und seine Konfiguration
+  ausdrücklich nicht übernommen.
 - **Der vorgeschriebene Ortswechsel macht eine Adresse in einem eingefrorenen Artefakt tot**
   (`BEO-017`, 2× — dieser Slice ist die Antwort auf das dritte Auftreten, nicht seine Notiz). Vier
   gemessene Instanzen kosteten je eine eigene ADR und eine eigene Gate-Senkung; ob diese die fünfte
-  wird, entscheidet Zweig (a). — **Ausgang:** <…>
+  wird, entscheidet Zweig (a). — **Ausgang:** **weiter offen**, im
+  [Beobachtungs-Register](../observations.md). Sie wird die fünfte Senkung; der Zähler steht mit
+  dem Beleg dieses Slice auf **3×**, und den Ausgang der Zeile weist der Lese-Schritt der Closure
+  von [welle-15](../welle-15-re-baseline.md) zu — nicht dieser Slice
+  (Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register: zwischen dem Beleg, der auf
+  3 hebt, und dem Lese-Schritt steht der Eintrag zulässig auf `offen`).
 - **Die Kürzel-Entscheidung wirkt über dieses Register hinaus.** Ein vergebenes Kürzel ist
   unveränderlich und stünde danach in Kennungen, Commits und Verweisen; die Modus-Deklaration
   begründet ihre heutige Leere genau damit. Eine Spalte allein für Beobachtungen ist ein dritter
-  Weg und als solcher zu benennen. — **Ausgang:** <…>
+  Weg und als solcher zu benennen. — **Ausgang:** **entfallen.** Der dritte Weg ist benannt, und er
+  ist keine Erfindung dieses Slice, sondern die Ziel-Fassung selbst: Sie erklärt die Spalte für
+  *nicht bedingt*, **weil** die Beobachtungs-Kennung ein Segment trägt, und sagt über
+  `ADR-NNNN` und `slice-NNN` nichts. Der Zählraum jener zwei Familien bleibt unberührt und
+  weiterhin ohne Segment gemessen; die Sorge hat damit keinen Gegenstand mehr.
 - **Eine Fähigkeit des Doku-Gates ist unterwegs und wird hier nicht als vorhanden verbucht.** Das
   Nachbar-Repo hat sein `planning`-Modul um einen Verzeichnis-Modus erweitert
   (`observations.dir`, dieselbe Entscheidung wie oben), der genau die maschinelle Hälfte der
   Register-Paarung über der neuen Ablage prüft — die Lücke, die `BEO-006` (1×) führt. Ob der hier gepinnte Stand sie
   trägt, ist **nicht gemessen**; sie hier zu behaupten wäre
   [`AGENTS.md`](../../../../AGENTS.md) §3.1. Der Gegenstand gehört zum Pin-Slice
-  [slice-135](../open/slice-135-d-check-pin-v0661.md), nicht hierher. — **Ausgang:** <…>
+  [slice-135](../open/slice-135-d-check-pin-v0661.md), nicht hierher. — **Ausgang:** **weiter
+  offen**, im [Beobachtungs-Register](../observations.md) als `BEO-006`. Der Zähler bleibt bei
+  **1×**: Die Lücke ist in diesem Slice **benannt**, aber nicht **aufgetreten** — sie wurde
+  ausdrücklich nicht gemessen und nicht verbucht, und ein Beleg für eine Beobachtung, die der
+  Vorgang gar nicht getroffen hat, hübe den Zähler auf eine Gelegenheit, die es nicht gab
+  (Baseline-Regelwerk `modul-06-roadmap.md`: *benannt, nicht gezählt*). Sie steht als
+  Re-Evaluierungs-Trigger in
+  [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md).
 
 ## 7. Closure-Notiz
 
@@ -227,12 +288,51 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations.md`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
+- **Was hat funktioniert:** Die Sonde vor der Entscheidung. Der probeweise Wegfall der Datei hat
+  die Frage *wie viele Adressen sind eingefroren?* von einer Schätzung in eine Liste verwandelt:
+  **355** Befunde über **75** Dateien, davon **eine** eingefroren. Damit war die Glob-Frage keine
+  Abwägung mehr, sondern eine Messung — und die Glob-Form fiel an ihrer eigenen Zahl, nicht an
+  einer Regel. Zweitens: das Nachbar-Repo **vollständig** zu lesen statt seine Konfiguration zu
+  übernehmen. Der Unterschied lag nicht im Werkzeug, sondern in einer Regel, die dieses Repo hat
+  und jenes nicht — [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 4, die
+  Zeitdokumente **repariert** statt sie auszunehmen. Vier der fünf fremden Paare hatten hier von
+  vornherein keinen Gegenstand.
+- **Was ging anders als geplant:** Der Plan hat den Fall zu klein geschnitten. Er zählte **vier**
+  Vorkommen in ADR-Dateien und leitete daraus die Frage ab; die Sonde zeigt, dass zwei davon
+  überhaupt kein Befund sind — ein Vorkommen in einem umzäunten Block und eine blanke Dateinennung
+  ohne Verzeichnis lösen kein Modul aus. Übrig blieb **eine** Adresse. Umgekehrt war der Bestand
+  außerhalb der ADRs mit 74 Dateien viel größer als der Plan nahelegte, aber vollständig änderbar.
+  **Und dieser Lauf ist selbst in die Klasse gelaufen, die er entscheidet:** Die erste Fassung der
+  ADR nannte den Ort der Register-Datei als blanken Pfad in einem Code-Span und erzeugte damit
+  einen **eigenen**, sechsten Befund — `356` statt `355`. Gefunden hat ihn die Sonde, nicht das
+  Nachdenken.
+- **Steering-Loop-Eintrag:** *Die entscheidende ADR ist selbst ein Mitglied der Klasse, die sie
+  entscheidet — und die **Zitat-Form** entscheidet, ob sie es wird.* Eine ADR, die einen
+  Ortswechsel beschließt, muss den bewegten Ort zitieren, um ihren eigenen Config-Eintrag
+  unzweideutig zu machen; ab `Accepted` darf sie ihn nicht mehr korrigieren. Gemessen ist der
+  Unterschied: ein Code-Span, der **nur** den Pfad trägt, löst `codepaths` aus; derselbe Pfad als
+  Wert innerhalb eines YAML-Fragments und jedes Vorkommen in einem umzäunten Block tun es nicht.
+  Verkörpert ist das als Folgepflicht 4 von
+  [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
+  — zusammen mit deren Festlegung 5, die der Klasse die Erlaubnis nimmt, auf die dieser Lauf sich
+  sonst berufen hätte. Der Herkunfts-Anker der Regel entsteht beim Lese-Schritt der Closure von
+  [welle-15](../welle-15-re-baseline.md), nicht hier; darum trägt dieser Eintrag **kein**
+  `liegt in`-Feld.
+- **Beobachtungs-Register (`../observations.md`):** `BEO-017` **2× → 3×** (Beleg `slice-179`) —
+  sechste Instanz, und die erste, deren Bestand vollständig aufgelöst ist statt teilweise. Die
+  Schwelle ist damit erreicht; der Ausgang gehört dem Lese-Schritt der Welle-Closure.
+  `BEO-027` **1× → 2×** (Beleg `slice-179`) — §1 dieses Plans führt die Verzeichnis-Entscheidung
+  des Nachbarn als die Quelle, die dort Wegfall und die fünf Ventile trägt; gelesen trägt sie den
+  Konfigurations-Modus des **Werkzeugs**, und die zwei anderen Sachen stehen in einem anderen
+  Vorgang und einem eigenen Adaptions-Eintrag. `BEO-006` bleibt bei **1×** (benannt, nicht
+  aufgetreten — Begründung in §6). `BEO-016` ist nicht erhöht: Dieser Plan ist lang, aber der
+  Vorgang hat die Beobachtung nicht neu erzeugt.
+- **Folge-Slices:** keiner neu. Die Arbeit, die aus dieser Entscheidung folgt, hat ihre Dateien
+  bereits — [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md) vollzieht den
+  Umzug und trägt die drei Folgepflichten 1 bis 3 der ADR;
+  [slice-135](../open/slice-135-d-check-pin-v0661.md) hält die Gate-Fähigkeit.
+- **Risiken aus §6:** vier, jedes mit genau einem Ausgang — zwei *entfallen* mit Begründung, zwei
+  *weiter offen* im Register. Keines *eingetreten*, also kein Carveout.
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — sie prüft die Closure von
   [welle-15](../welle-15-re-baseline.md).
 

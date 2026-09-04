@@ -115,14 +115,15 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [ ] **Die Ablage steht in der Ziel-Form.** Ein Verzeichnis `observations` unter
       `docs/plan/planning/` trägt je Beobachtung ein Verzeichnis nach `observation.template.md`
       des dann vendored Stands — `observation.md`, `state.md`, `evidence/` mit einer Datei je
-      Auftreten — plus die `README.md`, die die Ablage auch leer sichtbar hält. Der
-      **Verzeichnis-Name** und die Frage, ob daneben eine Index-Datei stehen bleibt, folgen der
-      Entscheidung aus
-      [slice-179](../open/slice-179-register-ortsfestigkeit-vor-dem-umzug.md); dieser Punkt setzt
-      sie um und trifft sie nicht. **Kein Zähler-Feld bleibt stehen:** die Zahl der
-      Evidence-Dateien **ist** der Zähler, und ein zweites Feld daneben wäre die Quelle, die die
-      Form gerade abschafft — das gilt auch für eine Index-Tabelle, falls die Entscheidung eine
-      vorsieht. Vollständigkeit gemessen statt behauptet: die Zahl der Verzeichnisse deckt
+      Auftreten — plus die `README.md`, die die Ablage auch leer sichtbar hält. **Die Gestalt ist
+      entschieden:** [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
+      Festlegung 1 — die stehende Register-Datei entfällt ersatzlos, **keine** Index-Datei tritt
+      an ihre Stelle; dieser Punkt setzt das um und trifft es nicht. **Kein Zähler-Feld bleibt
+      stehen:** die Zahl der Evidence-Dateien **ist** der Zähler, und ein zweites Feld daneben
+      wäre die Quelle, die die Form gerade abschafft. Das Kürzel-Segment des Ziel-Pfads
+      `BEO-<KUERZEL>/<slug>` steht in derselben Entscheidung (Festlegung 3): `*` (gesamtes Repo)
+      trägt `ALL`, und alle Einträge des Ausgangsstands führen diese Sub-Area.
+      Vollständigkeit gemessen statt behauptet: die Zahl der Verzeichnisse deckt
       `grep -c '^| BEO-' docs/plan/planning/observations.md` und die Zahl der Evidence-Dateien die
       Summe der Zähler-Spalte, beides am Ausgangsstand.
 - [ ] **Kein Verweis zeigt ins Leere.** Die lebenden Referenzen sind nachgezogen — Bezugsmenge
@@ -132,8 +133,16 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Setzung 2). **Der Doppel-Anker-Mechanismus des Vorbilds hat hier keinen Gegenstand:** die
       Referenzen tragen keinen Eintrags-Anker, gemessen mit
       `git grep -o 'observations\.md#' -- '*.md' ':!.harness/baseline' | wc -l` → **0**. Welche
-      Referenzen **nicht** nachgezogen werden, weil ihre Quelle eingefroren ist, benennt
-      [slice-179](../open/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) mit ihrem Ausgang.
+      Referenzen **nicht** nachgezogen werden, weil ihre Quelle eingefroren ist, ist entschieden
+      und gemessen: **genau eine** —
+      [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) trägt einen
+      Markdown-Link auf die Register-Datei und steht auf `Accepted`. Ihr Ausgang ist ein viertes,
+      namentlich geschnittenes `ignore-refs`-Paar
+      ([`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
+      Festlegung 2, samt Config-Kommentar und den zwei Belegläufen ihrer Folgepflicht 1). Alle
+      übrigen betroffenen Dateien sind änderbar: lebende Artefakte werden nachgezogen,
+      Zeitdokumente verlieren die Adresse und behalten den Text
+      ([`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 4).
       Belegt durch `make docs-check` ohne Befund.
 - [ ] `make gates` grün.
 - [ ] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice; jede Quelle, die
@@ -154,16 +163,22 @@ Aussagen-Berührung steht hier gar nicht.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `observations` unter `docs/plan/planning/` | neu | die Ablage, je Beobachtung ein Verzeichnis aus der vendored Vorlage |
-| `docs/plan/planning/observations.md` | refactor | geht in der Ablage auf, soweit [slice-179](../open/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) sie nicht als Index stehen lässt |
+| `docs/plan/planning/observations.md` | refactor | geht ersatzlos in der Ablage auf — keine Index-Datei bleibt stehen ([`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) Festlegung 1) |
 | lebende Verweise auf die alte Datei | update | Bezugsmenge und Kommando in DoD 2 |
 
-**Der Commit-Zuschnitt ist nicht Sache dieses Plans.** Ob Move und Inhaltsänderung zwei Commits
-sind ([`AGENTS.md`](../../../../AGENTS.md) §3.3) oder ob dieser Vorgang zu den Fällen gehört, in
-denen die Prämisse jener Regel nicht zutrifft, entscheidet
-[slice-179](../open/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) (c). Das Nachbar-Repo hat
-für denselben Vorgang gemessen, dass es **keine** grüne Zwischenteilung gibt
-(`/Development/d-check/harness/conventions/`, Eintrag *Register-Formatmigration ist ein einziger,
-deklarierter Commit*) — eine Messung, die hier zu wiederholen und nicht zu übernehmen ist.
+**Der Commit-Zuschnitt ist entschieden: ein Commit.**
+[`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
+Festlegung 4 — [`AGENTS.md`](../../../../AGENTS.md) §3.3 greift nicht, weil ihr Gegenstand fehlt:
+Der Vorgang ist eine Zerlegung ohne Move. Die Messung, dass es **keine** grüne Zwischenteilung
+gibt, ist in diesem Repo gefahren und nicht vom Nachbarn übernommen (`355` Befunde über `75`
+Dateien für den Zustand *alte Datei fort, Ablage und Verweise noch nicht da*). Der zweite Beleg
+ist von **diesem** Lauf vorzulegen: `git diff-tree -r --name-status -M` über dem
+Migrations-Commit weist keine `R`-Zeile aus. Weist sie eine aus, trifft die Prämisse von §3.3 doch
+zu, und der Vorgang wird geteilt. Die Kürzel-Spalte in
+[`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area) liegt
+**neben** diesem Commit, nicht in ihm — sie ist ein Architect-Commit
+([`AGENTS.md`](../../../../AGENTS.md) §3.8, [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
+Folgepflicht 2).
 
 ## 4. Trigger
 
