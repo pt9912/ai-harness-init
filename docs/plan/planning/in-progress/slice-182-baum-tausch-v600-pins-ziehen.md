@@ -66,6 +66,20 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
       ist keine Vollständigkeits-, sondern eine Eindeutigkeits-Aussage und wird als solche belegt
       (`ls -d .harness/baseline/v*/ | wc -l` → 1).
+
+      **Und die fünf Pin-Stellen tragen denselben Tag.** `BASELINE_TAG` und
+      `BASELINE_ZIP_SHA256` (`Makefile`), `sources`-`url`/`sha256` in
+      [`.d-check.yml`](../../../../.d-check.yml) sowie `DefaultTag`/`DefaultBaselineSHA256`
+      in `internal/fetch/baseline.go` nennen `v6.0.0` bzw. den sha256 seines
+      Release-Assets, und `make regelwerk-check` (Netz, **nicht** in `make gates`) ist grün.
+      Der vendored Baum stammt aus **diesem** Asset, oder der Unterschied zum
+      `git archive`-Stand ist gemessen und benannt. **Kein Gate deckt das:**
+      `baseline-verify` entdeckt das `<tag>`-Verzeichnis statt `BASELINE_TAG` zu lesen, und
+      `test/sources-pin.bats` koppelt die fünf nur untereinander — beide sind grün,
+      während Baum und Pins verschiedene Tags tragen. Der Pin ist die einzige Kette zur
+      Upstream-Provenienz (`SHA256SUMS` ist selbst erzeugt,
+      [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Präzedenz:
+      [slice-156](../done/slice-156-baum-tauschen-pins-ziehen.md) DoD 1.
 - [ ] **Kein lebender Verweis zeigt auf den alten Tag.** Bezugsmenge und Ausschlüsse gemessen statt
       behauptet: `git grep -n '\.harness/baseline/v5\.18\.0' -- '*.md' '*.go' '*.sh' '*.yml'
       'Makefile'` außerhalb der eingefrorenen Bestände (`docs/plan/planning/done/`,
@@ -108,6 +122,7 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | `.harness/baseline/v6.0.0/` | neu | der vendored Baum des Zielstands, netzlos verifizierbar |
 | `.harness/baseline/v5.18.0/` | entfernt | genau ein Tag liegt im Baum ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) |
+| `Makefile`, [`.d-check.yml`](../../../../.d-check.yml), `internal/fetch/baseline.go` | update | die fünf Pin-Stellen (DoD 1) |
 | lebende Pfad-Verweise mit Tag-Segment | update | Bezugsmenge und Ausschlüsse in DoD 2 |
 | [`harness/conventions.md`](../../../../harness/conventions.md) §Baseline | update | die Buchung — **eigener Architect-Commit** |
 
