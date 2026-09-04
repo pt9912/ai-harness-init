@@ -7,5 +7,8 @@
 # ("no project was found in any parent directories"). Der Gruen-Vorlauf fing es damals;
 # ein Fall haelt die Eigenschaft jetzt dauerhaft (Review F-3: fuenf neue Waechter, aber
 # nur zwei Faelle — ausgerechnet der schon einmal gebrochene war unbewacht).
+#
+# prepare_isolation traegt den Ausschluss ueber die benannte ISOLATION_EXCLUDES-Liste,
+# nicht ueber ein Inline-`--exclude=` im tar-Aufruf; der Patch zielt auf diese Definition.
 set -euo pipefail
-sed -i 's|tar -cf - --exclude=./.harness/state|tar -cf - --exclude=./.git --exclude=./.harness/state|' harness/tools/mutate.sh
+sed -i 's|^ISOLATION_EXCLUDES=(\./\.harness/state)|ISOLATION_EXCLUDES=(./.git ./.harness/state)|' harness/tools/mutate.sh

@@ -35,7 +35,7 @@
 # zusagte). Die Faelle nutzen `sed -i` und GNU-BRE-Escapes, sind also NICHT strikt
 # POSIX — die zwischenzeitliche POSIX-Zusage griff weiter als der Code (N-3).
 #
-# FAIL-CLOSED, fuenf Bedingungen. Der Sensor misst die ABWESENHEIT von Rot und
+# FAIL-CLOSED, sechs Bedingungen. Der Sensor misst die ABWESENHEIT von Rot und
 # koennte darum selbst still gruen werden; jede dieser Bedingungen schliesst
 # einen Weg dorthin:
 #   1. Das Mutations-Skript scheitert            -> Befund (nicht uebersprungen).
@@ -49,6 +49,29 @@
 #   5. Die Zieldatei(en) im HOST-Baum aendern sich waehrend eines Falls -> Befund und
 #      ABBRUCH. Die Isolation ist dann gebrochen (oder es wurde parallel editiert);
 #      beides macht jede weitere Messung wertlos.
+#   6. Ein Beleg-Uebersprung greift NUR bei exaktem Schluessel-Treffer eines
+#      vollstaendig gruenen Vorlaufs (ADR-0035, s. isolation_key/finalize_belief);
+#      ein nicht berechenbarer Schluessel deaktiviert ihn, ein Lauf mit Befund
+#      hinterlaesst KEINEN Beleg, und MUTATE_FORCE erzwingt den vollen Lauf.
+#
+# BELEG STATT LAUF (ADR-0035): ein zweiter Lauf ueber IDENTISCHEM Pruefgegenstand fragt
+# nichts, was der erste nicht beantwortet hat. War der letzte Lauf ueber demselben
+# Schluessel vollstaendig gruen (fail_count == 0), gibt DIESER Lauf den frueheren Beleg
+# aus, statt den Fall-Satz erneut zu fahren — Exit 0, Beleg-Stand genannt, KEINE Fall-Zahl
+# behauptet (der Lauf hat keine gemessen). BEZUGSMENGE des Schluessels ist die
+# Isolationskopie aus prepare_isolation (isolation_key_files), NICHT der ganze Arbeitsbaum
+# und NICHT harness/tools/working-tree-hash.sh — eine zweite, fuer den Gate-Nachweis
+# gepflegte Definition desselben Wortes waere gegen diese hier drift-faehig. EINE
+# deklarierte AUSNAHME zusaetzlich zur Kopier-Definition: `.git` (ISOLATION_KEY_EXEMPT) —
+# die Kopie braucht es nur fuer die Projektwurzel, ein Schluessel darueber bewegte sich mit
+# jedem Commit ohne Inhaltsaenderung. BENANNTER REST, den KEIN baum-abgeleiteter Schluessel
+# deckt: der lokale Docker-Cache-Zustand und die Host-Werkzeuge selbst (bash, tar, git,
+# docker) — MUTATE_FORCE=1 erzwingt darum den vollen Lauf auch ueber unveraendertem
+# Pruefgegenstand, und die Uebersprung-Meldung nennt diesen Rest. EIN Beleg-Slot, nicht
+# einer je Schluessel: ein Lauf ueber einem ANDEREN Pruefgegenstand entwertet ihn (siehe
+# clear_belief), auch wenn der vorige Schluessel nie widerlegt wurde — kehrt der Baum
+# danach zu diesem frueheren, tatsaechlich gruenen Stand zurueck, faehrt der naechste
+# Lauf trotzdem wieder voll.
 #
 # NICHT in `make gates` — der Grund ist die LAUFZEIT: je Fall ein voller Sensor-Lauf,
 # und die Fall-Menge waechst mit jedem bewachten Waechter. Was der Lauf HEUTE kostet,
@@ -112,6 +135,39 @@ HOST_BEFORE=""
 
 LOCK="$REPO/.harness/state/mutate.lock"
 HAVE_LOCK=""
+
+# BELIEF ist der Ablageort des Beleg-Schluessels eines vollstaendig gruenen Laufs —
+# dieselbe Ablage wie der Gate-Nachweis (.harness/state/gates-passed.diffsha), aber ein
+# Baum-Hash statt eines Namens, der Commit/Diff nahelegte: ADR-0035 Festlegung 3 schliesst
+# harness/tools/working-tree-hash.sh als Schluessel ausdruecklich aus.
+BELIEF="$REPO/.harness/state/mutate-passed.key"
+
+# write_belief traegt den Schluessel <1> als Beleg ein.
+write_belief() {
+  mkdir -p "$(dirname "$BELIEF")"
+  printf '%s\n' "$1" >"$BELIEF"
+}
+
+# clear_belief entfernt einen bestehenden Beleg — auch einen zum AKTUELLEN Schluessel: ein
+# Lauf, der trotz uebereinstimmendem Schluessel rot wird (moeglich unter MUTATE_FORCE),
+# widerlegt die vorige Zusage, und ein spaeterer, nicht erzwungener Lauf darf sie nicht
+# erben.
+clear_belief() {
+  rm -f "$BELIEF"
+}
+
+# finalize_belief traegt den Beleg fuer den Schluessel <1> gemaess dem AKTUELLEN
+# fail_count ein oder entfernt ihn. Ausgelagert aus main(), damit
+# test/mutate-driver.bats die Zusage "ein Lauf mit Befund hinterlaesst keinen Beleg"
+# (ADR-0035 Fitness Function) ohne einen kompletten Lauf pruefen kann.
+finalize_belief() {
+  local key="$1"
+  if [ "$fail_count" -eq 0 ]; then
+    [ -n "$key" ] && write_belief "$key"
+  else
+    clear_belief
+  fi
+}
 
 # JOBS ist die Zahl der Worker; jeder traegt eine eigene isolierte Kopie. Der Default ist
 # eine ZEIT-Stellschraube, keine Verdikt-Stellschraube (s. Kopf): 4, weil die Reihe ueber
@@ -212,21 +268,79 @@ isolation_path() {
   printf '%s' "$dest"
 }
 
+# ISOLATION_EXCLUDES ist DIE Ausschluss-Menge der Isolationskopie — eine benannte
+# Definition statt eines Inline-`--exclude=` im tar-Aufruf, weil zwei Ableitungen aus
+# EINER Quelle folgen: was prepare_isolation kopiert, und was isolation_key_files in den
+# Beleg-Schluessel aufnimmt (ADR-0035 Festlegung 3). Pfade relativ zur Projektwurzel, in
+# tar-Exclude-Syntax (fuehrendes "./"). Heute genau ein Eintrag: der Laufzustand — Lock
+# und Beleg jedes mutate-Laufs — darf sich selbst nicht in die Kopie oder den Schluessel
+# schreiben.
+ISOLATION_EXCLUDES=(./.harness/state)
+
+# ISOLATION_KEY_EXEMPT ist die DEKLARIERTE Ausnahme des Schluessels obenauf auf
+# ISOLATION_EXCLUDES (ADR-0035 Festlegung 3: hier deklariert, hier begruendet, als Rest
+# gezaehlt statt als Deckung). Heute genau ein Eintrag: `.git`. Die Kopie braucht `.git`
+# nur fuer die Projektwurzel (`# verify: ci-lint` faehrt actionlint, das ohne sie
+# abbricht) — `.dockerignore` nimmt `.git` ohnehin aus jedem Docker-Build-Kontext, und ein
+# Schluessel UEBER `.git` bewegt sich mit jedem Commit ohne Inhaltsaenderung. Waechst diese
+# Liste, ist DAS der sichtbare Ort: sie ist Gegenstand von test/mutate-driver.bats
+# "driver: jeder von prepare_isolation kopierte Pfad geht in den Schluessel ein oder steht
+# in der Ausnahmeliste".
+ISOLATION_KEY_EXEMPT=(./.git)
+
+# isolation_tar_args setzt die uebergebenen Pfade in tar-Exclude-Argumente um — EINE
+# Funktion fuer beide Listen oben statt zweier fast gleicher Umsetzungen; zwei getrennt
+# gepflegte Umsetzungen sind dieselbe Drift-Konstruktion, die dieses Repo an failure_form
+# schon einmal beseitigt hat.
+isolation_tar_args() {
+  local p
+  for p in "$@"; do
+    printf -- '--exclude=%s\n' "$p"
+  done
+}
+
 # prepare_isolation kopiert den Host-Baum JE WORKER an diesen Ort — main() ruft sie
 # JOBS-mal, jede Kopie traegt genau einen Worker. Die Kopie IST
 # das Repo — inklusive `.git`: `make ci-lint` faehrt actionlint, und das bricht ohne
 # git-Projektwurzel ab („no project was found in any parent directories"). Der erste
-# Entwurf sparte `.git` aus; der Gruen-Vorlauf fing es. Ausgeschlossen bleibt nur
-# `.harness/state/` (Laufzustand, gitignored, enthaelt den Lock DIESES Laufs). tar statt
-# rsync/cp -a: tar ist im Repo ohnehin die Sicherungs-Mechanik (LH-QA-03). Der Platzbedarf
-# ist der der Kopie MAL JOBS: `du -sh --exclude=./.harness/state .` -> 51M (2026-08-27),
-# davon 39M `.git`, das `make ci-lint` braucht.
+# Entwurf sparte `.git` aus; der Gruen-Vorlauf fing es. Ausgeschlossen bleibt, was
+# ISOLATION_EXCLUDES nennt. tar statt rsync/cp -a: tar ist im Repo ohnehin die
+# Sicherungs-Mechanik (LH-QA-03). Der Platzbedarf ist der der Kopie MAL JOBS: `du -sh
+# --exclude=./.harness/state .` -> 51M (2026-08-27), davon 39M `.git`, das `make ci-lint`
+# braucht.
 prepare_isolation() {
   local dest
   dest="$(isolation_path "$1")" || return 1
   mkdir -p "$dest"
-  ( cd "$REPO" && tar -cf - --exclude=./.harness/state . ) | tar -xf - -C "$dest"
+  local -a excl
+  mapfile -t excl < <(isolation_tar_args "${ISOLATION_EXCLUDES[@]}")
+  ( cd "$REPO" && tar -cf - "${excl[@]}" . ) | tar -xf - -C "$dest"
   printf '%s' "$dest"
+}
+
+# isolation_key_files listet die Pfade, die IN DEN SCHLUESSEL eingehen: dieselbe
+# ISOLATION_EXCLUDES-Definition wie prepare_isolation, zusaetzlich gefiltert um
+# ISOLATION_KEY_EXEMPT (ADR-0035 Festlegung 3). Lauf direkt gegen $REPO, nicht gegen eine
+# materialisierte Kopie — derselbe tar-Aufruf wie beim Kopieren, ohne den Umweg ueber die
+# Platte, und darum bereits VOR der ersten Isolations-Kopie auswertbar. Sortiert;
+# Verzeichnis-Eintraege (tar-Zeilen auf "/") sind keine Dateien und fallen heraus.
+isolation_key_files() {
+  local -a excl kexcl
+  mapfile -t excl < <(isolation_tar_args "${ISOLATION_EXCLUDES[@]}")
+  mapfile -t kexcl < <(isolation_tar_args "${ISOLATION_KEY_EXEMPT[@]}")
+  ( cd "$REPO" && tar -cf - "${excl[@]}" "${kexcl[@]}" . ) | tar -tf - \
+    | sed 's|^\./||; /^$/d' | grep -v '/$' | LC_ALL=C sort -u
+}
+
+# isolation_key ist der Inhalts-Hash ueber isolation_key_files — der Schluessel, gegen den
+# ein Beleg-Uebersprung geprueft wird (ADR-0035). FAIL-CLOSED wie target_fingerprint: eine
+# leere Liste liefert KEINEN Hash — zwei leere Hashes waeren gleich und meldeten
+# "unveraendert", ohne je gemessen zu haben.
+isolation_key() {
+  local files
+  files="$(isolation_key_files)" || return 1
+  [ -n "$files" ] || return 1
+  printf '%s\n' "$files" | tr '\n' '\0' | fingerprint_of_list "$REPO"
 }
 
 # prepare_prerun_log legt das Verzeichnis fuer das Protokoll des Gruen-Vorlaufs an und
@@ -1342,6 +1456,43 @@ main() {
 
   [ -d "$CASES_DIR" ] || { echo "mutate: $CASES_DIR fehlt" >&2; exit 1; }
 
+  # BELEG STATT LAUF (ADR-0035): belief_key traegt den Schluessel des LAUFENDEN Baums
+  # durch main() — fuer den Vergleich hier UND fuer finalize_belief am Ende. Berechnet
+  # einmal, VOR jeder Isolations-Kopie, weil er den Baum-Zustand festhalten soll, den
+  # dieser Lauf tatsaechlich prueft. UNGEDECKT: dass der Host-Baum zwischen dieser Zeile
+  # und dem Schreiben des Belegs unveraendert bleibt, erzwingt hier NICHTS — die fuenfte
+  # fail-closed-Bedingung (Sensor: test/mutate-driver.bats „driver: run_case meldet einen
+  # HOST-Treffer und BRICHT AB") deckt nur die `# files:`-Zielpfade (`target_fingerprint`),
+  # nicht die volle Schluessel-Bezugsmenge aus `isolation_key_files` — 57 gegen 1055 Pfade,
+  # gemessen. Diese Luecke ist `BEO-025` (`docs/plan/planning/observations.md`), ihr Ausgang
+  # ist geplant. Ein nicht berechenbarer Schluessel schaltet NUR den Uebersprung/den Beleg
+  # fuer DIESEN Lauf ab, nicht den Lauf selbst — derselbe fail-closed-Vorrang wie bei den
+  # Bedingungen 1-5.
+  local belief_key=""
+  if ! belief_key="$(isolation_key)"; then
+    echo "mutate: Schluessel nicht berechenbar — Beleg-Uebersprung fuer diesen Lauf deaktiviert." >&2
+    belief_key=""
+  elif [ -z "${MUTATE_FORCE:-}" ] && [ -f "$BELIEF" ] && [ "$(cat "$BELIEF" 2>/dev/null)" = "$belief_key" ]; then
+    echo "mutate: Beleg fuer Pruefgegenstand $belief_key liegt vor (.harness/state/mutate-passed.key, $(date -r "$BELIEF" '+%Y-%m-%d %H:%M:%S')) — seit dem letzten vollstaendig gruenen Lauf unveraendert. Kein Fall-Lauf."
+    echo "mutate: MUTATE_FORCE=1 erzwingt einen vollen Lauf; ungedeckt bleiben Docker-Cache-Zustand und Host-Werkzeuge (ADR-0035 Festlegung 4)."
+    exit 0
+  fi
+
+  # SOFORTIGE ENTWERTUNG (ADR-0035): ab hier laeuft ein ECHTER Versuch,
+  # kein Uebersprung — und ab jetzt gilt der Beleg-Slot als WIDERLEGT, bis finalize_belief
+  # ihn am Ende neu schreibt. Ohne dieses Loeschen HIER ueberlebt ein stehender Beleg jeden
+  # der sechs `exit`-Pfade zwischen hier und `finalize_belief` (leeres Fall-Set, Fingerabdruck
+  # nicht berechenbar, unbekannter `# verify:`-Modus, `require_isolated`, der GRUEN-VORLAUF —
+  # das ist der Docker-Cache-Fall aus Festlegung 4 — und `on_signal`): jeder dieser Abbrueche
+  # ist ein ROTER oder unvollstaendiger Versuch, und der naechste, unerzwungene Aufruf muss
+  # ihn als solchen sehen, nicht den STEHENGEBLIEBENEN Beleg eines FRUEHEREN gruenen Laufs
+  # erben. Es gibt nur EINEN Beleg-Slot (BELIEF) — nicht einen je Schluessel —, darum wird
+  # hier bedingungslos geloescht, unabhaengig davon, ob belief_key berechenbar war oder ob
+  # er zum aktuellen Baum passte: ein Beleg gilt erst wieder, wenn DIESER Lauf ihn neu verdient
+  # hat. Sensor: test/mutations/263 (bricht den Gruen-Vorlauf-Analogon-Fall ab und verlangt,
+  # dass der naechste Aufruf wieder voll faehrt statt "unveraendert" zu melden).
+  clear_belief
+
   # ISOLATION: den Baum EINMAL nach ausserhalb des Repos kopieren. Ab hier trifft
   # keine Mutation mehr den Host-Baum — parallele Gate-/Test-Laeufe in diesem Repo
   # sind unbedenklich, und ein Abbruch laesst nichts zurueck (slice-047).
@@ -1503,6 +1654,7 @@ main() {
 
   report_times "$total"
   echo "mutate: $pass_count ok, $fail_count Befund(e)"
+  finalize_belief "$belief_key"
   [ "$fail_count" -eq 0 ]
 }
 

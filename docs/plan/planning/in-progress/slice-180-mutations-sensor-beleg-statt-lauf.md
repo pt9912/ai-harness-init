@@ -120,7 +120,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **(1) Der Treiber überspringt den Fall-Satz genau dann, wenn ein aufgezeichneter,
+- [x] **(1) Der Treiber überspringt den Fall-Satz genau dann, wenn ein aufgezeichneter,
       vollständig grüner Lauf denselben Baum-Zustand belegt.** Vier Eigenschaften, alle vier
       prüfbar: der **Zustand** liegt unter `.harness/state/` (gitignored, dieselbe Ablage wie der
       Gate-Nachweis — und **außerhalb** der Bezugsmenge, weil `prepare_isolation` genau dieses
@@ -134,7 +134,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Exit 0, nennt den Beleg-Stand und behauptet **keine** Fall-Zahl (`BEO-026`). Dazu ein
       Ausschalter (`MUTATE_FORCE`), weil der Schlüssel nachweislich nicht alles deckt, was in das
       Verdikt eingeht (§6, Risiko 1).
-- [ ] **(2) Die drei Wege ins stille Grün sind je einmal rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6 — die Zusage ist
+- [x] **(2) Die drei Wege ins stille Grün sind je einmal rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6 — die Zusage ist
       erst fertig, wenn benannt ist, was passieren müsste, damit sie bricht). Es sind genau die drei
       Zeilen der Fitness Function aus
       [ADR-0035](../../../../docs/plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md),
@@ -149,7 +149,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       unter `test/mutations/`, der einen Pfad aus dem Schlüssel nimmt, ohne ihn in die Ausnahmeliste
       zu setzen — nach dem Muster von `test/mutations/97-mutate-sensorwahl.sh`, und er trifft die
       Stelle, die der Lauf wirklich benutzt, nicht eine im Test nachgebaute (`BEO-028`).
-- [ ] **(3) Die stehenden Zusagen sagen, was der Treiber tut.** Der Kopf von
+- [x] **(3) Die stehenden Zusagen sagen, was der Treiber tut.** Der Kopf von
       [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) führt heute fünf
       fail-closed-Bedingungen und die Begründung, warum der Sensor nicht in `make gates` steht; der
       `make mutate`-Absatz in [`harness/README.md`](../../../../harness/README.md) beschreibt den
@@ -157,11 +157,11 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       deklarierten Ausnahme und dem benannten Rest** — und die Zusage sagt nur, was der Schlüssel
       wirklich deckt (`BEO-025`). Die abgelöste Aussage wird **ersetzt, nicht ergänzt**
       ([`AGENTS.md`](../../../../AGENTS.md) §3.7: ein Kommentar beschreibt, was da ist).
-- [ ] `make gates` grün.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] `make gates` grün.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. **Vorbereitet, nicht eingetragen:** §8 dieses Plans hält den Schreibpunkt für Sache der Slice-Closure; §7 trägt die vier Kandidaten-Zeilen zur Übernahme durch den Planner.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). *(Läuft am formalen Closure-Schritt — Planner, `in-progress/` → `done/` — noch aus; die Implementer-Übergabe hier ist die Vorarbeit dafür, s. §7.)*
 
 ## 3. Plan (vor Code)
 
@@ -334,7 +334,12 @@ dasteht.
    Mess-Stand, kein Erwartungswert). Ein Beleg über unverändertem Baum konserviert damit ein Verdikt, das
    ein anderer Docker-Zustand kippen könnte. **Das ist die Lücke, die `MUTATE_FORCE` benennt statt
    schließt** — und der Grund, warum der Ausschalter kein Komfort ist, sondern Teil der Zusage.
-   — **Ausgang:** <bei Closure>
+   — **Ausgang: weiter offen.** Der Rest ist mit der Implementierung strukturell so geblieben, wie
+   er hier vorhergesagt war — kein baum-abgeleiteter Schlüssel kann Docker-Cache-Zustand oder
+   Host-Werkzeuge je decken. `MUTATE_FORCE` und die Übersprung-Meldung benennen ihn, wie DoD (1)
+   verlangt; das ist Milderung, keine Schließung. Kandidat für einen neuen Registereintrag,
+   vorgeschlagen als `BEO-031` in §7 — Eintragung ist Sache der Slice-Closure, nicht dieses
+   Implementer-Laufs (§8).
 2. **Die Bezugsmenge ist entschieden — offen bleibt, ob die eine Ausnahme trägt.**
    [ADR-0035](../../../../docs/plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
    Festlegung 3 setzt die Isolationskopie als Menge und **eine** Definition als Quelle; §3 dieses
@@ -342,7 +347,11 @@ dasteht.
    die ADR selbst: ob eine deklarierte Ausnahme *berechtigt* ist, prüft nichts — der Wächter aus
    DoD (2a) prüft, dass sie **dasteht**. Die Ausnahme ist damit dauerhaft ein Urteil und kein Beleg,
    und sie ist der erste Ort, an dem eine spätere Runde nachsieht, wenn ein Fall unerklärt grün
-   bleibt. — **Ausgang:** <bei Closure>
+   bleibt. — **Ausgang: weiter offen.** Der Wächter aus DoD (2a) prüft und hält weiter nur, **dass**
+   die Ausnahmeliste dasteht (`ISOLATION_KEY_EXEMPT` mit genau `.git`) — nicht, **ob** ein
+   künftiger Eintrag darin berechtigt ist. Das bleibt dauerhaft ein Urteil, mechanisch nicht
+   entscheidbar. Kandidat für einen neuen Registereintrag, vorgeschlagen als `BEO-032` in §7 —
+   Eintragung ist Sache der Slice-Closure, nicht dieses Implementer-Laufs (§8).
 3. **Eine engere Bezugsmenge ist verlockend und gemessen falsch, wenn sie am Dateityp ansetzt.**
    Ein Schlüssel über `*.go` + `test/mutations/**` + dem Treiber + `go.mod`/`go.sum` ließe genau
    die Mutationen unbemerkt, die **nicht** auf Go-Dateien zeigen: `sed -n 's/^# files: //p'
@@ -358,7 +367,10 @@ dasteht.
    entschieden** ([ADR-0035](../../../../docs/plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
    Festlegung 3); jede Verengung darunter ist eine eigene Entscheidung mit eigener Deckungs-Messung
    und liegt außerhalb dieses Slice (§Was hier nicht entschieden ist, zweiter Punkt derselben ADR).
-   — **Ausgang:** <bei Closure>
+   — **Ausgang: entfallen.** Implementiert ist die entschiedene Isolationskopie-Bezugsmenge:
+   `isolation_key_files()` zieht dieselbe `ISOLATION_EXCLUDES`-Definition wie `prepare_isolation()`
+   (§3-Tabelle), keine Dateityp-Filterung. Das hier beschriebene Risiko einer versehentlichen
+   Verengung trat nicht ein, weil der Code die abgelehnte Alternative nie enthielt.
 4. **Ein commit-basierter Schlüssel sähe den Arbeitsbaum nicht.** `git diff <sha> HEAD -- <pfade>`
    vergleicht zwei **Bäume aus der Historie**; eine ungespeicherte oder nur gestagte Änderung liegt
    in keinem von beiden und meldete „unverändert". Genau dieser Fehler ist in diesem Repo schon
@@ -368,7 +380,11 @@ dasteht.
    nennt beide Richtungen der Begründung. **Dass ein Commit den Beleg gültig lässt, ist hier kein
    geerbter Nebengewinn, sondern die Folge der `.git`-Ausnahme aus §3** — er hängt an einem Urteil,
    das dieser Plan trifft, und fiele mit ihm weg. Das ist der Unterschied zum Gate-Nachweis, dessen
-   Bezugsmenge `.git` nie enthielt. — **Ausgang:** <bei Closure>
+   Bezugsmenge `.git` nie enthielt. — **Ausgang: entfallen.** `isolation_key()` hasht den
+   **Inhalt** von `isolation_key_files()` (`fingerprint_of_list`, Zeile ~331–340) — kein
+   `git diff`/`git log`-Aufruf im Schlüsselpfad. Verifiziert: `grep -n 'git diff\|git log'
+   harness/tools/mutate.sh` trifft keine Zeile zwischen `isolation_key_files` und `finalize_belief`.
+   Das hier beschriebene Risiko einer diff-basierten Fassung trat nicht ein.
 5. **Der Nutzen ist kleiner, als er klingt, und die entschiedene Bezugsmenge macht ihn kleiner, nicht
    größer.** Der Übersprung greift nur, wenn sich am Prüfgegenstand **nichts** bewegt hat — ein
    Doku-Nachzug, eine neue Review-Datei, ein Häkchen in einer DoD bewegen ihn. Die Kopie ist dabei
@@ -378,13 +394,23 @@ dasteht.
    offen — und der Verifier-Lauf nach einem Implementer-Lauf, der nichts mehr angefasst hat. **Ob
    der Slice sich damit lohnt, ist eine Planungs-Frage und ausdrücklich nicht von der ADR
    beantwortet** (§Was hier nicht entschieden ist, dritter Punkt); sie ist bei der Closure gegen die
-   gemessene Wanduhr-Zeit aus §5 zu beantworten. — **Ausgang:** <bei Closure>
+   gemessene Wanduhr-Zeit aus §5 zu beantworten. — **Ausgang: entfallen.** Gemessen (Closure-Notiz
+   §7, Closure-Trigger 1 aus §5): ein voller `MUTATE_FORCE=1`-Lauf über 248 Fällen kostet
+   **1105.02 s** (`/usr/bin/time`, `248 ok, 0 Befund(e)`), der Übersprung über demselben,
+   unveränderten Baum **0.10 s** — zweimal gemessen, exit 0, keine Fall-Zahl behauptet. Für den
+   abgedeckten Fall (Verifier-Lauf nach einem
+   Implementer-Lauf, der nichts mehr angefasst hat) ist der Nutzen real und nicht kleiner als
+   erhofft.
 6. **Der Übersprung wird als grüner Lauf zitiert.** Eine DoD-Zeile oder eine Closure-Notiz, die
    „`make mutate` grün" schreibt, unterscheidet nicht mehr zwischen *gemessen* und *belegt*. Das ist
    dieselbe Klasse wie `BEO-026` (ein Zähler-Label nennt eine andere Einheit als der Zähler zählt);
    die Gegenmaßnahme steht in DoD (1) — die Übersprung-Meldung behauptet keine Fall-Zahl und nennt
    den Beleg-Stand. Ungedeckt bleibt, was ein **Leser** daraus macht: kein Sensor liest eine
-   Closure-Notiz. — **Ausgang:** <bei Closure>
+   Closure-Notiz. — **Ausgang: weiter offen.** DoD (1) hält die Meldungs-Form (kein Fall-Zähler im
+   Übersprung), aber kein Wächter prüft, ob ein **späterer** Text — eine DoD-Zeile, eine
+   Closure-Notiz, ein Review-Kommentar — „`make mutate` grün" schreibt, ohne zwischen echtem Lauf
+   und Übersprung zu unterscheiden. Kandidat für einen neuen Registereintrag, vorgeschlagen als
+   `BEO-033` in §7 — Eintragung ist Sache der Slice-Closure, nicht dieses Implementer-Laufs (§8).
 7. **Die Zulässigkeits-Frage gehört nicht in den Implementations-Kontext.** Ob ein Übersprung eine
    Schwellen-Senkung ist, entscheidet [`AGENTS.md`](../../../../AGENTS.md) §3.5 (Senkung → ADR) gegen
    [`MR-050`](../../../../harness/conventions.md#mr-050--zwei-gate-ziele-fahren-ohne---no-cache-filter-weil-ihr-cache-schlüssel-den-prüfgegenstand-deckt)
@@ -412,28 +438,60 @@ dasteht.
    findet"*, einmal der CI-Auslöser
    ([`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)),
    einmal eine Herkunfts-Nennung (`grep -n 'mutate' <jede der sechs Dateien>`).
-   — **Ausgang:** <bei Closure>
+   — **Ausgang: entfallen.** `git log --oneline -- docs/plan/adr/0035-...md` zeigt **einen** Commit
+   (den anlegenden) — Festlegung 3 hat sich seit der Plan-Erstellung nicht bewegt, der Status ist
+   unverändert `Proposed`. Der befürchtete Fall (Bewegung während der Umsetzung, gelieferte Deckung
+   wird falsch) trat nicht ein.
 8. **Der neue Fall misst sich selbst.** Ein `test/mutations/`-Fall, der die Übersprung-Logik in
    einer Test-Attrappe nachbaut statt die Stelle zu treffen, die `main()` benutzt, bleibt unter
    jeder Mutation grün (`BEO-028`; dieselbe Klasse, an der `test/mutations/221` hängt). Die Probe
    ist mechanisch: `make mutate` meldet auf den eigenen neuen Fall einen Befund, wenn er nicht
-   trifft. — **Ausgang:** <bei Closure>
+   trifft. — **Ausgang: eingetreten, aufgelöst im selben Slice, kein Carveout/Folge-Slice nötig.**
+   Die Probe schlug real an: der erste vollständige `make mutate`-Lauf gegen den fertigen Diff (Job
+   `bj9e7dr8v`) meldete `246 ok, 2 Befund(e)`, exit 2 — einer davon
+   `test/mutations/262-mutate-schluessel-ausnahme-nicht-deklariert.sh`
+   (`make test-bats blieb GRUEN — '...hat keine Zaehne mehr'`). Ursache war **nicht** eine
+   Test-Attrappe (der Fall trifft die reale `isolation_key_files()`-Funktion, die `main()` benutzt),
+   sondern eine Portabilitäts-Lücke in der neuen bats-Zusicherung selbst: `find … -printf '%P\n'`
+   ist eine GNU-`find`-Erweiterung, die das gepinnte, Alpine/BusyBox-basierte `bats/bats`-Testbild
+   nicht kennt (`docker run --entrypoint sh $(BATS_IMAGE) -c 'cat /etc/os-release'` →
+   `Alpine Linux v3.19`, `tar (busybox) 1.36.1`) — der `find`-Aufruf scheiterte lautlos im
+   `$(...)`-Capture, die Vergleichsmenge blieb leer, der Test konnte unter **keiner** Mutation rot
+   werden. Behoben durch das im Repo bereits etablierte portable Muster (`baseline-verify.bats`,
+   `courseset-fixture.bats`): `find … | sed 's|^\./||'`. Beide Richtungen gegen das **echte**
+   gepinnte Bild nachgemessen, nicht nur gegen Host-`bash`: unmutiert `ok 49 ...`, mit der Mutation
+   aus Fall 262 angewendet `not ok 49 ...`. Derselbe Vollständigkeits-Kanal fand einen zweiten,
+   unabhängigen Befund am selben Lauf: `test/mutations/74-mutate-kopie-ohne-git.sh` traf nicht mehr
+   (Risiko 8 ist damit auch der Beleg für Risiko 4 unten — zwei getrennte fail-closed-Bedingungen,
+   ein Lauf). Der volle Fall-Satz lief danach zweimal sauber durch (`248 ok, 0 Befund(e)`, Jobs
+   `bmvjdd30s` und die getimte Wiederholung in §7).
 9. **Der Mutex und der Übersprung.** Der `mkdir`-Mutex trägt keine PID und ist bewusst fail-closed;
    ein hart abgebrochener Lauf lässt ihn liegen. Ein Übersprung **vor** dem Lock liefe an ihm
    vorbei und meldete Erfolg, während ein anderer Lauf noch arbeitet; ein Übersprung **hinter** dem
    Lock erbt dessen Abbruch-Meldung samt der Stale-Lock-Falle für einen Lauf, der gar nichts tut.
    Der Plan setzt ihn **hinter** den Lock (§3) — die entgegengesetzte Wahl wäre zu begründen, nicht
-   stillschweigend zu treffen. — **Ausgang:** <bei Closure>
+   stillschweigend zu treffen. — **Ausgang: entfallen.** Die geplante Reihenfolge ist implementiert
+   und verifiziert: `mkdir "$LOCK"` und `HAVE_LOCK=1` stehen bei Zeile 1424/1430, der
+   Beleg-Schlüssel-Check (`belief_key=...`, Übersprung-Pfad) erst ab Zeile ~1462 — der Übersprung
+   sitzt hinter dem Lock, wie geplant. Das Risiko der entgegengesetzten (unbegründeten) Reihenfolge
+   trat nicht ein.
 10. **Diese Datei wandert.** `open/` → `next/` → `in-progress/` → `done/` bricht Verweise auf sie;
    `make slice-mv` deckt die Präfix-Formen und die ausgehende Hälfte der präfixlosen, **nicht**
-   deren eingehende (`BEO-003`, 5×, verkörpert mit benannter Grenze). — **Ausgang:** <bei Closure>
+   deren eingehende (`BEO-003`, 5×, verkörpert mit benannter Grenze). — **Ausgang: weiter offen,
+   bereits gedeckt.** Der `git mv` dieser Datei nach `done/` läuft nicht in diesem Implementer-Lauf
+   (Übergabe an Reviewer, s. Kopf dieser Datei) und ist damit kein Vorkommen dieses Slice — die
+   strukturelle Grenze ist bereits als `BEO-003` verkörpert (`make slice-mv`, 5× Beleg); kein neuer
+   Registereintrag.
 11. **Die Platzierung der neuen Stellschraube.** `MUTATE_FORCE` ist eine technische Festlegung
     dieses Repos; ob die Aufnahme-Regel von [`spec/spezifikation.md`](../../../../spec/spezifikation.md)
     diese Klasse einschließt, ist offen — die zwei vorhandenen Stellschrauben stehen dort **nicht**,
     und wer diese Frage entscheidet, ist selbst ungeklärt (`BEO-007`, dritter Teil: die Spec-Straten
     haben keine schreibende Rolle; Träger ist
     [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md)). Dieser Slice folgt
-    der bestehenden Platzierung und entscheidet die Frage nicht. — **Ausgang:** <bei Closure>
+    der bestehenden Platzierung und entscheidet die Frage nicht. — **Ausgang: weiter offen, bereits
+    gedeckt.** Zitiert dieselbe offene Teilfrage wie `BEO-007` (4×, **geplant** → `slice-151`); dieser
+    Slice folgt der bestehenden Platzierung (`MUTATE_FORCE` im Skript, keine Spec-Stelle) und bewegt
+    die Frage nicht — kein neuer Beleg, kein neuer Registereintrag.
 
 ## 7. Closure-Notiz
 
@@ -445,20 +503,173 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-*(Vor dem `git mv` nach `done/` zu füllen.)*
+*(Implementer-Übergabe an den Reviewer — der `git mv` nach `done/` selbst folgt erst nach Review
+und Verifikation, s. Kopf dieser Datei und Baseline-Regelwerk `modul-08-agentenrollen.md`
+§Rollen-Sequenz für einen Slice. Diese Sektion ist die dafür vorgesehene Vorarbeit.)*
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-NNN>, <slice-MMM>, <slice-KKK> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations.md`):** <neue `BEO-<NNN>` angelegt (Sub-Area, 1×, Beleg slice-NNN) | `BEO-<NNN>` auf <N>× erhöht, Beleg slice-NNN ergänzt | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-NNN (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Was hat funktioniert:** Die Fitness-Function-Struktur aus §2/§5 (drei benannte Wege ins stille
+  Grün, je einer mit Gegenbeispiel) fing real, was sie fangen sollte — nur nicht am erwarteten Ort.
+  `make mutate` selbst meldete auf den eigenen, in diesem Slice neu geschriebenen Fall
+  (`test/mutations/262`) einen Befund, bevor irgendeine Behauptung „fertig" stand. Genau das ist der
+  Mechanismus, den Risiko 8 vorab benannte, und er hat gegriffen.
+- **Was ging anders als geplant:** Zwei Funde, beide über den echten `make mutate`-Lauf gegen den
+  fertigen Diff, keiner über eine reine Code-Review-Lektüre. **Erstens:** die neue bats-Zusicherung
+  (DoD 2a) benutzte `find … -printf '%P\n'` — eine GNU-`find`-Erweiterung, die im gepinnten
+  Alpine/BusyBox-`bats/bats`-Testbild keine gültige Option ist; der Aufruf scheiterte dort lautlos,
+  die Zusicherung war strukturell grün unter jeder Mutation (Risiko 8, Kandidat `BEO-034`). Host-`bash` mit
+  GNU-Coreutils maskierte den Defekt vollständig — „von Hand geprüft" hätte ihn nicht gefunden.
+  **Zweitens:** die im Slice fällige Refaktorierung von `prepare_isolation`s Ausschluss (inline
+  `--exclude=` → benannte `ISOLATION_EXCLUDES`-Definition, DoD 1) machte den `sed`-Anker eines
+  *bereits bestehenden* Falls (`test/mutations/74`) ungültig; der Fall scheiterte fail-closed an
+  Bedingung 2 („Mutation ändert die Datei nicht"), statt unbemerkt durchzurutschen (Risiko 4). Beide
+  Funde wurden in diesem Diff behoben und gegen das **echte** gepinnte Testbild — nicht nur gegen
+  Host-`bash` — in beiden Richtungen (grün unmutiert, rot mutiert) nachgemessen, danach zwei
+  vollständige `make mutate`-Läufe mit `248 ok, 0 Befund(e)` gefahren (Jobs `bmvjdd30s` und die
+  getimte Wiederholung unten). **Drittens, aus dem Review** (`docs/reviews/2026-09-04-slice-180-…md`,
+  blockiert mit 2 HIGH/3 MEDIUM/3 LOW/1 INFO, danach behoben): der Beleg-Slot überlebte einen
+  Abbruch nach der Beleg-Prüfung — real reproduziert, Fix ist eine sofortige `clear_belief` am
+  Entscheidungspunkt „kein Übersprung" statt erst am Lauf-Ende (neuer Fall
+  `test/mutations/263`, neuer main()-Prozess-Test, der die echte Verdrahtung trifft statt der
+  isolierten Funktion) · der Kommentar am Schlüssel-Punkt benannte die fünfte fail-closed-Bedingung
+  fälschlich als Träger für den vollen Baum (**57** von **1058** Pfaden gedeckt — dieselben zwei
+  Kommandos wie in §8, `BEO-025`; keine Erwartungswerte) — korrigiert,
+  ohne die Deckungslücke selbst zu schließen. Dazu drei LOW (rohe Pipes in der damaligen
+  `BEO-034`-Zeile, fehlende Untergrenze in Fitness-Function-Zeile 1, Chronik-Satz in einer
+  `Stand`-Zelle) behoben. Danach erneut `make test`/`make gates`/`make mutate` — `249 ok,
+  0 Befund(e)`, exit 0.
+- **Vierter Zug, aus der zweiten Review-Runde** (`docs/reviews/2026-09-04-slice-180-…-runde-2.md`,
+  erneut blockiert mit 1 HIGH/3 MEDIUM/1 LOW): **N-1** — der Gleichheits-Vergleich im dritten Teil
+  der Übersprung-Bedingung (`belief_key` gegen den Beleg-Dateiinhalt) war ohne eigenen Wächter; ein
+  neuer Fall (`test/mutations/264`) entfernt genau diesen Vergleich, ein neuer main()-Prozess-Test
+  (`test/mutate-driver.bats`) legt eine Beleg-Datei mit abweichendem Inhalt vor und verlangt einen
+  vollen Lauf statt eines Übersprungs — unmutiert GRÜN, mit der Mutation aus Fall 264 ROT, real
+  gemessen. **N-2** — eine Runden-Kennung (`Review-Fund MEDIUM-1`) und eine veraltete Zeilennummer
+  im Testkommentar (`AGENTS.md` §3.7) entfernt bzw. durch eine Stellenbeschreibung ohne Zeilenzahl
+  ersetzt; der Testname und die `# expect:`-Zeile von Fall 263 verlieren ihr Freitext-Label
+  `HIGH-1`. **N-3** — die vier Registerzeilen aus dem vorigen Zug sind aus `../observations.md`
+  zurückgenommen (dieser Lauf schreibt nicht ins Register, wie §8 selbst sagt); ihr Inhalt steht
+  jetzt als vorbereiteter Vorschlag in §7 (unten), das DoD-Häkchen ist entsprechend auf „vorbereitet,
+  nicht eingetragen" korrigiert. **N-4** — ein Satz zur Ein-Slot-Eigenschaft des Belegs ergänzt in
+  `harness/tools/mutate.sh` (Kopf) und [`harness/README.md`](../../../../harness/README.md).
+  **N-5** — die beiden `57 von 1055`-Stellen tragen jetzt ihr Kommando und die
+  Nicht-Erwartungswert-Marke, mit dem aktuellen Stand `57`/`1058`.
+- **Steering-Loop-Eintrag:** Beobachtung, kein Regel-Übertritt — keine der vier vorgeschlagenen
+  Kandidaten-Zeilen (§Kandidaten für das Beobachtungs-Register unten) erreicht bei ihrer Übernahme
+  3×; alle vier wären Erstauftreten. Kein Eintrag `— liegt in …` (nichts verkörpert). Die wertvollste
+  einzelne Lehre — GNU-only Shell-Optionen in bats-Zusicherungen gegen ein Alpine/BusyBox-Testbild
+  (Kandidat unten) — bleibt darum **gezählt, nicht verkörpert**; ein Lint-Schritt oder eine
+  Hard-Rule-Ergänzung wäre bei einem dritten Auftreten fällig.
+- **Beobachtungs-Register (`../observations.md`):** **nicht fortgeschrieben in diesem Lauf.** §8
+  dieses Plans hält den Schreibpunkt für Sache der Slice-Closure, nicht des Implementer-Laufs — vier
+  Kandidaten-Zeilen liegen unten vorbereitet zur Übernahme durch den Planner, keine Zeile wurde in
+  `../observations.md` angelegt oder erhöht.
+- **Folge-Slices:** keine — jedes Risiko trägt einen Ausgang, der entweder abgeschlossen ist
+  (entfallen/eingetreten-aufgelöst) oder bereits an einer bestehenden Kennung hängt (`BEO-003`,
+  `BEO-007`), ohne einen neuen Träger zu brauchen.
+- **Risiken aus §6:** Risiko 1 weiter offen (Kandidat `BEO-031`) · Risiko 2 weiter offen (Kandidat
+  `BEO-032`) · Risiko 3 entfallen · Risiko 4 entfallen · Risiko 5 entfallen (Messung unten) · Risiko 6
+  weiter offen (Kandidat `BEO-033`) · Risiko 7 entfallen · Risiko 8 eingetreten, im selben Slice
+  aufgelöst · Risiko 9 entfallen · Risiko 10 weiter offen, bereits `BEO-003` · Risiko 11 weiter offen,
+  bereits `BEO-007`.
+- **Wanduhr-Zeit (Risiko 5, Closure-Trigger 1 aus §5):** sechs reale Läufe insgesamt über den
+  fertigen Diff, kein Erwartungswert
+  ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2) — jeder einzelne `248 ok, 0 Befund(e)`, Vollständigkeit 248/248, exit 0: **vier**
+  vollständige `MUTATE_FORCE=1`-Läufe (`bj9e7dr8v` mit 2 Befund(en) vor der Reparatur zählt nicht
+  mit; danach `bmvjdd30s`, `bzr6op537` mit **1105.02 s**, `b8o8h2kkp` mit **1113.78 s**, `bte64frb1`
+  mit **1105.67 s** — Streuung < 1 %, `/usr/bin/time -f '%e'`), **zwei** Übersprünge auf dem
+  danach unveränderten Baum, direkt hintereinander gemessen: **0.08 s** und **0.07 s** (Exit 0,
+  „… liegt vor … Kein Fall-Lauf.", keine Fall-Zahl behauptet). Das Verhältnis trägt Risiko 5 als
+  *entfallen*: für den abgedeckten Fall (unveränderter Prüfgegenstand) ist der Übersprung praktisch
+  kostenlos gegen einen vollen Lauf von rund 18,4 Minuten. **Gegenprobe live nachgezogen, zweimal
+  unabsichtlich:** zwischen `bzr6op537` und `b8o8h2kkp` liefen redaktionelle Zwischen-Edits an
+  getrackten Dateien dieses Diffs (der `.git`-Anker-Fix in dieser Plan-Datei **und** in
+  `../observations.md`, dazu die Kommentar-Vereinfachung in
+  `test/mutations/74-mutate-kopie-ohne-git.sh`); zwischen `b8o8h2kkp` und `bte64frb1` das
+  Eintragen der `FULL_SECONDS`-Zahl samt Risiko-5-Text in dieser Datei. Beide Male lief der
+  jeweils nächste `make mutate`-Aufruf **wieder voll**, statt zu überspringen — derselbe Beleg, den
+  Closure-Trigger 2 (a)/(c) verlangt (eine Änderung an einer im Schlüssel geführten Datei bewegt
+  ihn), zweifach unabsichtlich, aber real ausgelöst. Erst der danach unangetastete Baum
+  (`bte64frb1` → die zwei letzten Läufe, **0.08 s**/**0.07 s**) übersprang.
+- **Drei Paarungen (nur Repo ohne Wellen-Betrieb):** **noch nicht geprüft** — sie laufen am
+  formalen Closure-Schritt (`git mv` nach `done/`), den dieser Implementer-Lauf nicht ausführt.
+  Vorprüfbar war bereits: Anker-Paarung entfällt (kein Feld `liegt in <Zielort>` in dieser Notiz, da
+  nichts verkörpert wurde); Folge-Slice-Paarung entfällt (keine genannten Folge-Slices);
+  Register-Paarung ist zum jetzigen Stand **nicht anwendbar** — die vier Kandidaten-Zeilen unten
+  existieren noch nicht in `../observations.md`; sie entstehen dort erst, wenn der Planner sie beim
+  Closure-Schritt übernimmt, und die formale Prüfung setzt ohnehin voraus, dass diese Datei bereits
+  in `done/` liegt.
+
+### Kandidaten für das Beobachtungs-Register — vom Planner bei der Closure einzutragen
+
+Regel dieser Sektion: §8 unten hält den Schreibpunkt für `../observations.md` für Sache der
+Slice-Closure (Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register, *„Eingetragen
+wird bei der Slice-Closure"*) — dieser Implementer-Lauf trägt darum **keine** Zeile dort ein. Die
+vier Beobachtungen, die während der Umsetzung anfielen, stehen hier als vorbereiteter Inhalt für den
+Übernahme-Schritt; **Kennung, Zähler und Beleg sind Vorschläge** — die tatsächliche Vergabe (nächste
+freie `BEO-<NNN>`, gegen den dann aktuellen Registerstand) liegt beim Planner.
+
+- **Kandidat `BEO-031`** (Risiko 1) — *Ein baum-abgeleiteter Beleg deckt nicht den vollen
+  Prüfgegenstand: Docker-Cache-Zustand und Host-Werkzeuge (bash, tar, git, docker selbst) bleiben
+  strukturell außerhalb jedes Inhalts-Hashs über einem Arbeitsbaum — ein Übersprung kann ein Verdikt
+  konservieren, das ein anderer, nicht baum-abgeleiteter Zustand widerlegt hätte.* Sub-Area `*`
+  (gesamtes Repo), vorgeschlagener Zähler 1×, Beleg `slice-180`, Stand `offen — Erstauftreten`,
+  gemessen an [ADR-0035](../../../../docs/plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
+  Festlegung 4 und der Umsetzung in diesem Slice §6 Risiko 1: `isolation_key()` hasht ausschließlich
+  Pfade der Isolationskopie (`prepare_isolation`/`isolation_key_files`, dieselbe
+  `ISOLATION_EXCLUDES`-Definition); Docker-Image-Digests stehen zwar in getrackten Dateien und
+  bewegen den Schlüssel mit, aber der **gebaute Layer-Cache** und die **Host-Werkzeug-Version** selbst
+  stehen in keinem Baum-Zustand. Gemildert, nicht geschlossen, durch `MUTATE_FORCE` und eine
+  Übersprung-Meldung, die den Rest explizit benennt (`grep -n 'MUTATE_FORCE=1 erzwingt'
+  harness/tools/mutate.sh`). Kein Modul aus `modules:` der `.d-check.yml` und kein Fall aus
+  `test/mutations/` kann diese Klasse prüfen — der ungedeckte Anteil liegt außerhalb jedes
+  Baum-Zustands, den ein Sensor lesen könnte; Träger ist die Zusage selbst (Kopf von
+  `harness/tools/mutate.sh`, Absatz *BELEG STATT LAUF*).
+- **Kandidat `BEO-032`** (Risiko 2) — *Eine deklarierte Ausnahmeliste (Ausschluss von einer sonst
+  geltenden Regel) wird mechanisch nur auf **Existenz/Form** geprüft, nie auf **inhaltliche
+  Berechtigung** — ob ein Eintrag darin richtig ist, bleibt dauerhaft ein Urteil, kein Beleg.*
+  Sub-Area `*`, vorgeschlagener Zähler 1×, Beleg `slice-180`, Stand `offen — Erstauftreten`, gemessen
+  an [ADR-0035](../../../../docs/plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
+  Festlegung 3 und §6 Risiko 2: `ISOLATION_KEY_EXEMPT` trägt heute genau `.git`, mit
+  schriftlicher Begründung in §3 des Plans (drei Gründe, gemessene Kosten). Der Wächter aus DoD (2a)
+  desselben Slice (`test/mutate-driver.bats` „driver: jeder von prepare_isolation kopierte Pfad geht
+  in den Schluessel ein oder steht in der Ausnahmeliste") hält nur, **dass** jeder kopierte Pfad im
+  Schlüssel oder in der Ausnahmeliste steht — nicht, **ob** ein Eintrag in der Ausnahmeliste sachlich
+  gerechtfertigt ist. Ein zweiter, unbegründet hinzugefügter Ausnahme-Eintrag bliebe für diesen
+  Wächter unsichtbar. Kein Modul aus `modules:` der `.d-check.yml` prüft die Berechtigung eines
+  Ausnahme-Eintrags gegen seine schriftliche Begründung; Träger ist die Review-Runde, die eine
+  Erweiterung der Liste liest.
+- **Kandidat `BEO-033`** (Risiko 6) — *Eine Aussage „X lief grün"/„`make mutate` grün" unterscheidet
+  sprachlich nicht zwischen einem echten Fall-Lauf und einem Beleg-Übersprung — beide tragen denselben
+  Wortlaut mit anderer Herkunft (*gemessen* vs. *belegt*), und kein Sensor liest eine Closure-Notiz
+  oder DoD-Zeile gegen die tatsächliche Lauf-Art.* Sub-Area `*`, vorgeschlagener Zähler 1×, Beleg
+  `slice-180`, Stand `offen — Erstauftreten`, gemessen an §6 Risiko 6: DoD (1) desselben Slice hält
+  die **Meldungs-Form** des Übersprungs selbst frei von einer Fall-Zahl (`BEO-026`-Klasse vermieden),
+  aber kein Wächter prüft einen **späteren** Text — eine künftige DoD-Zeile, Closure-Notiz oder ein
+  Review-Kommentar könnte „`make mutate` grün" schreiben, ohne zu sagen, ob ein Fall-Satz lief oder
+  ein Beleg zitiert wurde. Abgrenzung zu `BEO-026`: dort nennt ein Zähler-**Label** eine falsche
+  Einheit; hier fehlt die Unterscheidung nicht am Zähler, sondern an der **Herkunfts-Angabe** einer
+  Grün-Aussage selbst. Kein Modul aus `modules:` der `.d-check.yml` hält eine Grün-Behauptung gegen
+  die Lauf-Art, aus der sie stammt; Träger ist der Review, der eine solche Aussage liest.
+- **Kandidat `BEO-034`** (Risiko 8) — *Eine neu geschriebene bats-Zusicherung benutzt eine GNU-only
+  Shell-/Coreutils-Erweiterung (hier `find … -printf`), die im gepinnten **Alpine/BusyBox**-Testbild
+  lautlos scheitert — die Vergleichsmenge bleibt leer statt zu warnen, und die Zusicherung ist
+  strukturell grün unter **jeder** Mutation, unabhängig vom geprüften Code.* Sub-Area `*`,
+  vorgeschlagener Zähler 1×, Beleg `slice-180`, Stand `offen — Erstauftreten`, gemessen an
+  `test/mutate-driver.bats` „driver: jeder von prepare_isolation kopierte Pfad geht in den Schluessel
+  ein oder steht in der Ausnahmeliste" (§6 Risiko 8): der Test lief unter Host-`bash`/GNU-`find`
+  korrekt rot/grün, und *derselbe Wortlaut* blieb unter dem gepinnten `bats/bats`-Image (`docker run
+  --entrypoint sh $(BATS_IMAGE) -c 'cat /etc/os-release'` → `Alpine Linux v3.19`, `tar (busybox)
+  1.36.1`) strukturell grün, weil `find -printf '%P\n'` dort keine BusyBox-Option ist und der Aufruf
+  im `$(...)`-Capture lautlos scheiterte. Der Fehler ist an der **Wahl des Testwerkzeugs** entstanden,
+  nicht am Code, den der Test prüft — Host-`bash` maskiert ihn vollständig, weil GNU-`coreutils` dort
+  `-printf` kennt. Das im Repo bereits etablierte Gegenmittel (`find … | sed 's|^\./||'`, benutzt in
+  `baseline-verify.bats`, `courseset-fixture.bats`, `emitted-baseline-verify.bats`) trägt jetzt auch
+  die betroffene Zusicherung in `test/mutate-driver.bats`. Kein Modul aus `modules:` der
+  `.d-check.yml` und kein `shellcheck`-Lauf prüft eine bats-Datei gegen den Options-Umfang des
+  gepinnten `$(BATS_IMAGE)`; Träger ist der Autor, der eine neue Zusicherung schreibt, und — bei 3× —
+  eine Prüf-Regel oder ein Lint-Schritt gegen bekannte GNU-only `find`/`tar`/`sed`-Optionen in
+  `test/*.bats`.
 
 ## 8. Sub-Area-Modus-Begründung
 
@@ -500,13 +711,20 @@ durchgegangen (Stand: der gemergte Hauptzweig). **Jede** Zeile trägt `*` (gesam
 Spalte unterscheidet in diesem Repo nichts (`BEO-004`, 1×). Acht Zeilen berühren diesen Slice mit
 ihrem Zähler-Stand, und zwei davon binden eine DoD-Formulierung:
 
-- `BEO-025` (2×, offen) — *eine Zusage im Skript- oder Funktionskopf nennt einen Geltungsbereich,
-  den der Code darunter nicht hält; in der schärfsten Form nennt sie einen Sensor, der den
-  ausgegrenzten Rest nicht sieht.* **Die dem Slice am nächsten stehende Zeile:** Gegenstand von
-  DoD (3) ist genau ein solcher Kopf, und der Übersprung schafft eine neue Zusage über einen
-  Geltungsbereich (den Schlüssel). Tritt die Klasse in diesem Slice auf, ist sie das **dritte**
-  Auftreten und braucht einen eigenen Folge-Slice statt einer Notiz — das ist bei der Closure zu
-  entscheiden, nicht hier vorwegzunehmen.
+- `BEO-025` (**3×**, **geplant** → [slice-181](../open/slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md))
+  — *eine Zusage im Skript- oder Funktionskopf nennt einen Geltungsbereich, den der Code darunter
+  nicht hält; in der schärfsten Form nennt sie einen Sensor, der den ausgegrenzten Rest nicht
+  sieht.* **Die dem Slice am nächsten stehende Zeile:** Gegenstand von DoD (3) ist genau ein
+  solcher Kopf, und der ursprüngliche Kommentar am `isolation_key`-Aufrufpunkt in `main()` trug
+  tatsächlich genau diese Klasse — der `main()`-Kopf benannte die fünfte fail-closed-Bedingung als
+  Träger für den ganzen Host-Baum, sie deckt aber nur **57** von **1058** Schlüssel-Pfaden
+  (`# files:`-Ziele, nicht die volle `isolation_key_files`-Menge —
+  `sed -n 's/^# files: //p' test/mutations/*.sh | tr ' ' '\n' | sed '/^$/d' | LC_ALL=C sort -u | wc -l`
+  gegen `bash -c "source harness/tools/mutate.sh 2>/dev/null||true; isolation_key_files | wc -l"`;
+  keine Erwartungswerte, [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2, beide Zahlen wandern mit dem Fall- bzw. Datei-Bestand). Im Diff korrigiert: die falsche
+  Sensor-Zuschreibung entfernt, `BEO-025` benannt statt eine nicht existierende Deckung zu
+  behaupten.
 - `BEO-026` (2×, offen) — *ein Zähler-Label nennt eine andere Einheit als der Zähler zählt.* Bindet
   die Ausgabe-Form in DoD (1): die Übersprung-Meldung nennt keinen Fall-Zähler. Auch hier wäre ein
   Auftreten das dritte.
@@ -532,9 +750,14 @@ ihrem Zähler-Stand, und zwei davon binden eine DoD-Formulierung:
   zweites Auftreten ist, entscheidet der Lauf, der den Plan übernimmt; sie hier zu verneinen wäre
   das Urteil des Autors über sein eigenes Artefakt.
 
-**Keine dieser Zeilen erreicht mit diesem Slice 3×** — die zwei Kandidaten (`BEO-025`, `BEO-026`)
-stehen bei 2× und träten erst durch einen **Fund** in diesem Slice über die Schwelle, nicht durch
-seine Planung.
+**`BEO-025` steht bereits bei 3×/geplant** — nicht durch diesen Slice, sondern durch den
+`slice-175`-Lese-Schritt, der vor diesem Implementer-Lauf lag; die Sichtung oben zitiert den
+korrekten, gemergten Stand. `BEO-026` bleibt bei 2×, offen, und träte erst durch einen weiteren
+**Fund** über die Schwelle, nicht durch seine bloße Planung. Ob der im Diff korrigierte Fund an
+`BEO-025` (Kommentar am `isolation_key`-Aufrufpunkt) einen weiteren Beleg für diese Zeile
+begründet, ist beim Closure-Schritt zu entscheiden — Eintragungen in
+[`../observations.md`](../observations.md) sind Sache der Slice-Closure, nicht dieses
+Implementer-Laufs.
 
 **alle berührten Sub-Areas GF** — der Modus-Begründungsblock entfällt damit
 (Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Sub-Area-Modus-Begründung, Umfang).

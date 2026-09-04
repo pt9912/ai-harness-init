@@ -923,3 +923,154 @@ FALL
   grep -qF 'OHNE Bericht' <<<"$output"
   ! grep -qF 'NACH-DEM-SIGNAL-WEITERGELAUFEN' <<<"$output"
 }
+
+# --- Beleg statt Lauf (ADR-0035) ---------------------------------------------
+# isolation_key_files/isolation_key sind die Bezugsmenge des Beleg-Schluessels: dieselbe
+# ISOLATION_EXCLUDES-Definition wie prepare_isolation, plus die deklarierte Ausnahme
+# ISOLATION_KEY_EXEMPT (`.git`). Die drei Tests unten sind die drei Zeilen der Fitness
+# Function aus ADR-0035.
+
+# Fitness-Function-Zeile 1 (bats, `make test`): jeder von prepare_isolation kopierte Pfad
+# geht entweder in den Schluessel ein oder steht in der deklarierten Ausnahmeliste — ein
+# dritter Fall ist rot. Beide Mengen kommen aus den ECHTEN Funktionen, nicht aus einer im
+# Test nachgebauten Fassung (BEO-028): die Kopie-Seite aus einem echten
+# prepare_isolation-Lauf, die Schluessel-Seite aus isolation_key_files selbst.
+@test "driver: jeder von prepare_isolation kopierte Pfad geht in den Schluessel ein oder steht in der Ausnahmeliste" {
+  local root dest copy key exempt diff p e matched
+  root="$(mktemp -d)"
+  dest="$(bash -c "source '$DRIVER' 2>/dev/null || true; prepare_isolation '$root'")"
+  copy="$(cd "$dest" && find . -mindepth 1 \( -type f -o -type l \) | sed 's|^\./||' | LC_ALL=C sort -u)"
+  # FAIL-CLOSED wie target_fingerprint/isolation_key im selben Skript: eine LEERE Kopie
+  # macht "diff" trivial leer und die Schleife unten liefe nie — vakuaer gruen ueber der
+  # leeren Menge, ohne je einen Pfad geprueft zu haben.
+  [ -n "$copy" ]
+  key="$(bash -c "source '$DRIVER' 2>/dev/null || true; isolation_key_files")"
+  exempt="$(bash -c "source '$DRIVER' 2>/dev/null || true; printf '%s\n' \"\${ISOLATION_KEY_EXEMPT[@]}\"")"
+  rm -rf "$root"
+  diff="$(LC_ALL=C comm -23 <(printf '%s\n' "$copy") <(printf '%s\n' "$key" | LC_ALL=C sort -u))"
+  while IFS= read -r p; do
+    [ -z "$p" ] && continue
+    matched=""
+    while IFS= read -r e; do
+      e="${e#./}"
+      [ -z "$e" ] && continue
+      case "$p" in
+        "$e" | "$e"/*) matched=1 ;;
+      esac
+    done <<<"$exempt"
+    if [ -z "$matched" ]; then
+      echo "unerklaerter Pfad ausserhalb Schluessel UND Ausnahmeliste: $p" >&2
+      return 1
+    fi
+  done <<<"$diff"
+}
+
+# Fitness-Function-Zeile 2 (test/mutations/262, `make mutate`): eine Mutation, die einen
+# Pfad aus dem Schluessel nimmt, ohne ihn in ISOLATION_KEY_EXEMPT zu setzen, faerbt genau
+# den Test oben rot — geprueft ueber `make mutate` selbst, nicht hier; dieser Kommentar ist
+# der Zeiger auf den Fall, kein zweiter Wortlaut.
+
+# Fitness-Function-Zeile 3 (bats, `make test`): der Schluessel reagiert auf den Inhalt, den
+# er hasht — sonst waere ein "unveraendert" ein Rechen-Artefakt statt einer Messung.
+@test "driver: isolation_key bewegt sich mit dem Inhalt, den er hasht" {
+  local tmp a b
+  tmp="$(mktemp -d)"
+  printf 'eins\n' >"$tmp/datei.txt"
+  a="$(bash -c "source '$DRIVER' 2>/dev/null || true; REPO='$tmp'; isolation_key")"
+  printf 'zwei\n' >"$tmp/datei.txt"
+  b="$(bash -c "source '$DRIVER' 2>/dev/null || true; REPO='$tmp'; isolation_key")"
+  rm -rf "$tmp"
+  [ -n "$a" ]
+  [ "$a" != "$b" ]
+}
+
+# Fitness-Function-Zeile 3, zweiter Teil (bats, `make test`): ein Lauf mit mindestens
+# einem Befund hinterlaesst KEINEN Beleg — auch nicht, wenn schon einer zum SELBEN
+# Schluessel dastand (moeglich unter MUTATE_FORCE ueber unveraendertem Baum). Gegenprobe:
+# fail_count=0 schreibt den Beleg. GEMESSEN IST NUR finalize_belief ISOLIERT — dass main()
+# an ihrem einzigen Aufrufort, als dessen letzte Anweisung, tatsaechlich genauso aufruft,
+# UND dass kein Ausgang DAVOR einen bestehenden Beleg unbehandelt laesst, prueft dieser
+# Test-Block nicht; dafuer stehen die main()-Tests darunter.
+@test "driver: finalize_belief schreibt den Beleg NUR bei fail_count=0" {
+  local tmp
+  tmp="$(mktemp -d)"
+  run bash -c "source '$DRIVER' 2>/dev/null || true
+    BELIEF='$tmp/mutate-passed.key'
+    fail_count=0
+    finalize_belief schluessel-abc"
+  [ "$status" -eq 0 ]
+  [ "$(cat "$tmp/mutate-passed.key")" = "schluessel-abc" ]
+  rm -rf "$tmp"
+}
+
+@test "driver: ein Lauf mit Befund hinterlaesst keinen Beleg (auch keinen stehengebliebenen)" {
+  local tmp
+  tmp="$(mktemp -d)"
+  printf 'alter-schluessel\n' >"$tmp/mutate-passed.key"
+  run bash -c "source '$DRIVER' 2>/dev/null || true
+    BELIEF='$tmp/mutate-passed.key'
+    fail_count=1
+    finalize_belief schluessel-abc"
+  [ "$status" -eq 0 ]
+  [ ! -f "$tmp/mutate-passed.key" ]
+  rm -rf "$tmp"
+}
+
+# Der Beleg-Slot ist EIN Slot, keiner je Schluessel: finalize_belief steht als LETZTE
+# Anweisung von main(), und jeder `exit`-Pfad DAVOR (leeres Fall-Set, Fingerabdruck,
+# unbekannter Modus, require_isolated, der GRUEN-VORLAUF — der Docker-Cache-Fall aus
+# ADR-0035 Festlegung 4 — und `on_signal`) muss einen bestehenden Beleg sofort entwerten,
+# bevor er `main()` verlaesst — sonst ueberlebt ein Beleg genau den Lauf, der ihn
+# widerlegt: ein erzwungener Lauf, der nach der Beleg-Pruefung rot abbricht, liesse den
+# ALTEN Beleg stehen, und der naechste UNERZWUNGENE Aufruf meldete faelschlich
+# "unveraendert", Exit 0. Dieser Test trifft NICHT die isolierte Funktion, sondern die
+# ECHTE main()-Verdrahtung: er startet `mutate.sh` zweimal als eigenen Prozess, braucht
+# kein Docker — der gewaehlte Abbruch (unbekannter `# verify:`-Modus) liegt vor jeder
+# Isolations-Kopie und jedem Sensor-Lauf.
+@test "driver: main() loescht einen bestehenden Beleg SOFORT, wenn der Lauf danach abbricht (kein Ueberleben)" {
+  local fake
+  fake="$(mktemp -d)"
+  mkdir -p "$fake"/{harness/tools,test/mutations,.harness/state}
+  cp "$DRIVER" "$fake/harness/tools/mutate.sh"
+  printf '%s\n' '#!/usr/bin/env bash' '# files: datei.txt' '# expect: irgendwas' \
+    '# verify: unbekannter-modus' 'set -euo pipefail' 'true' >"$fake/test/mutations/01-demo.sh"
+  printf 'inhalt\n' >"$fake/datei.txt"
+  bash -c "source '$fake/harness/tools/mutate.sh' 2>/dev/null || true; isolation_key" \
+    >"$fake/.harness/state/mutate-passed.key"
+  [ -s "$fake/.harness/state/mutate-passed.key" ]
+
+  run env MUTATE_FORCE=1 bash "$fake/harness/tools/mutate.sh"
+  [ "$status" -eq 1 ]
+  [ ! -f "$fake/.harness/state/mutate-passed.key" ]
+
+  run bash "$fake/harness/tools/mutate.sh"
+  [ "$status" -eq 1 ]
+  ! grep -qF 'Kein Fall-Lauf' <<<"$output"
+  grep -qF "unbekannter '# verify:" <<<"$output"
+  rm -rf "$fake"
+}
+
+# Der Uebersprung ist DREITEILIG (Bedingung 6 im Kopf: "NUR bei exaktem Schluessel-Treffer"):
+# kein MUTATE_FORCE, eine Beleg-Datei liegt vor, UND ihr Inhalt entspricht dem aktuellen
+# belief_key. Die ersten zwei Teile deckt der Test oben (keine Datei -> kein Uebersprung) und
+# der volle main()-Lauf ohnehin (kein belief_key ohne Isolationskopie); der DRITTE, der
+# Gleichheits-Vergleich selbst, ist ohne diesen Test unbewacht — eine Beleg-Datei mit
+# beliebigem Inhalt genuegte dann fuer den Uebersprung. Dieser Test legt eine Beleg-Datei mit
+# einem Inhalt an, der zu KEINEM berechenbaren Schluessel passt, und verlangt, dass der
+# unerzwungene Lauf trotzdem voll faehrt statt "unveraendert" zu melden.
+@test "driver: main() ueberspringt NUR bei einem Beleg, der dem aktuellen Schluessel entspricht" {
+  local fake
+  fake="$(mktemp -d)"
+  mkdir -p "$fake"/{harness/tools,test/mutations,.harness/state}
+  cp "$DRIVER" "$fake/harness/tools/mutate.sh"
+  printf '%s\n' '#!/usr/bin/env bash' '# files: datei.txt' '# expect: irgendwas' \
+    '# verify: unbekannter-modus' 'set -euo pipefail' 'true' >"$fake/test/mutations/01-demo.sh"
+  printf 'inhalt\n' >"$fake/datei.txt"
+  printf 'VOELLIG-FALSCHER-SCHLUESSEL\n' >"$fake/.harness/state/mutate-passed.key"
+
+  run bash "$fake/harness/tools/mutate.sh"
+  [ "$status" -eq 1 ]
+  ! grep -qF 'Kein Fall-Lauf' <<<"$output"
+  grep -qF "unbekannter '# verify:" <<<"$output"
+  rm -rf "$fake"
+}
