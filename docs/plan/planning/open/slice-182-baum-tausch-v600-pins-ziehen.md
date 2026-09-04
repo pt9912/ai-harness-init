@@ -22,7 +22,8 @@ seinen Tag — die Pin-Hälfte des Tauschs).
 **Berührte Spec-Stellen:** `—`. Der Slice tauscht einen vendored Fremd-Blob und zieht Verweise
 nach; er schreibt keine Spec-Stelle.
 
-**Verantwortlich:** `—` bis zur Priorisierung.
+**Verantwortlich:** Implementer (pt9912). Der Zielstand-Buchungs-Punkt in `harness/conventions.md`
+bleibt Architect-Hoheit (§3.8) und wandert als eigener, gesondert benannter Commit in den Ablauf.
 
 **Autor:** Planner. **Datum:** 2026-09-04.
 
