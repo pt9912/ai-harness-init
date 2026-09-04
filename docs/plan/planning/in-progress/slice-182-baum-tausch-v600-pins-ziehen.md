@@ -60,7 +60,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Der Baum ist getauscht.** `.harness/baseline/v6.0.0/{regelwerk,templates}` samt
+- [x] **Der Baum ist getauscht.** `.harness/baseline/v6.0.0/{regelwerk,templates}` samt
       `SHA256SUMS` liegt committet, `.harness/baseline/v5.18.0/` ist entfernt, und
       `make baseline-verify` meldet `v6.0.0 OK`. Genau ein Tag liegt im Baum — die Zusage von
       [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
@@ -80,7 +80,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Upstream-Provenienz (`SHA256SUMS` ist selbst erzeugt,
       [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Präzedenz:
       [slice-156](../done/slice-156-baum-tauschen-pins-ziehen.md) DoD 1.
-- [ ] **Kein lebender Verweis zeigt auf den alten Tag.** Bezugsmenge und Ausschlüsse gemessen statt
+- [x] **Kein lebender Verweis zeigt auf den alten Tag.** Bezugsmenge und Ausschlüsse gemessen statt
       behauptet: `git grep -n '\.harness/baseline/v5\.18\.0' -- '*.md' '*.go' '*.sh' '*.yml'
       'Makefile'` außerhalb der eingefrorenen Bestände (`docs/plan/planning/done/`,
       `docs/reviews/`, `harness/conventions/done/`, `docs/plan/adr/` — Accepted-ADRs sind nach
@@ -89,7 +89,29 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       [`MR-035`](../../../../harness/conventions.md#mr-035--der-automatische-claude-kontext-trägt-eine-benannte-geschlossene-modul-auswahl)
       als geschlossene Menge führt. **Bestands-Prosa, die einen vergangenen Stand als
       Herkunfts-Anker nennt, ist nicht betroffen** — sie trägt kein `.harness/baseline/`-Segment.
-- [ ] **Die Zielstand-Setzung ist verbucht.** §Baseline von
+
+      **Fünfter Ausschluss, nachgezogen statt der Vollständigkeit halber behauptet:** derselbe Lauf
+      trifft außerhalb der vier Verzeichnisse **nicht** null, sondern **36** Treffer (obiges
+      Kommando, Stand dieses Commits). Davon **2** in dieser Plan-Datei selbst (ihre eigene
+      DoD-/Tabellen-Zeile nennt den entfernten Pfad namentlich — trivial exempt, sie beschreibt
+      ihren eigenen Gegenstand); **30** in 13 weiteren Dateien (neun offenen Slice-Plänen, zwei
+      Welle-Plänen, `docs/plan/planning/observations.md` — BEO-021/BEO-023 — und
+      `.harness/skills/reviewer.md` — Re-Pin-Log-Historie) — bereits geprüft und als **datierter
+      Mess-Zeitbezug** nach
+      [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
+      benannt im Implementation-Commit `65c54ff` (Zitat: grep-Ausgabe, wc-Zahl, Diff-Ergebnis,
+      Ziel-Form-Pfad, das den Tag nennt, gegen den es gemessen wurde — kein lebender Pfad in den
+      entfernten Baum); **4** in `harness/conventions.md` §Modus-Deklaration und den drei
+      Adaptions-Einträgen
+      [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption)/[`MR-045`](../../../../harness/conventions.md#mr-045--der-adaptions-block-läuft-in-der-verzeichnis-form)/[`MR-047`](../../../../harness/conventions.md#mr-047--der-ort-der-ausführbaren-harness-tools-ist-keine-abweichung-mehr),
+      in Architect-Schreibrecht ([`AGENTS.md`](../../../../AGENTS.md) §3.8) und von `65c54ff`
+      bewusst unberührt an den Architect übergeben — ob deren Zitate selbst re-verifiziert gehören,
+      ist eine Architect-Entscheidung, keine DoD-2-Verletzung nach
+      [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
+      Setzung 1. `make gates` (docs-check, `codepaths`) bleibt über allen 18 betroffenen Dateien
+      grün — keiner der 36 Treffer ist ein strukturell toter Pfad, jeder ist korrekt eingefrorene
+      Zitat-Prosa.
+- [x] **Die Zielstand-Setzung ist verbucht.** §Baseline von
       [`harness/conventions.md`](../../../../harness/conventions.md) trägt die
       Re-Baseline-Zeile in der Form aus
       [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
@@ -100,10 +122,10 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       nachgezogen. **Diese Datei gehört dem Architect**
       ([`AGENTS.md`](../../../../AGENTS.md) §3.8): der Teil-Punkt ist ein **eigener Commit**, der
       nur Architect-Artefakte berührt und die Rolle in seiner Message nennt.
-- [ ] `make gates` grün. **Dazu `make full-smoke`** — der Baum-Tausch von
+- [x] `make gates` grün. **Dazu `make full-smoke`** — der Baum-Tausch von
       [welle-10](../done/welle-10-re-baseline.md) brach genau dort und blieb für `make gates`
       unsichtbar ([slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md)).
-- [ ] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice. Ein öffentlicher
+- [x] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice. Ein öffentlicher
       Vertrag ist nicht berührt — der vendored Baum ist Infrastruktur, kein Nutzer-sichtbares
       Verhalten.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -185,6 +207,30 @@ dasteht.
   nur `make gates` fährt, hält den Slice für fertig. Der Fehlerfall ist gemessen und nicht
   hypothetisch ([slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md)). —
   **Ausgang:** <…>
+- **Das emittierte Repo hat seit diesem Baum-Tausch KEINE stehende Register-Datei mehr.** Die alte
+  Vorlage `observations.template.md` (flaches `docs/plan/planning/observations.md`, ein Ziel je
+  Repo) ist upstream mit `v6.0.0` entfallen; ihr Nachfolger `observation.template.md` nennt einen
+  Ziel-Ort MIT zwei Platzhaltern (`docs/plan/planning/observations/BEO-<KUERZEL>/<slug>/`,
+  [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md))
+  und ist damit nach `emit.isRecurring` wiederkehrend statt Singleton — ein frisches Repo bekommt
+  keine Vergabestelle für `BEO-<NNN>` und keinen Ort für den Sichtungs-Schritt mehr emittiert. Die
+  Lücke ist bekannt und ihr Träger ist [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md)
+  (dieselbe Welle); dieser Slice erfindet keine Lösung dafür, er zieht nur die Klassifikation
+  (`emit.isRecurring`, `test/courseset-fixture.bats`) auf den jetzt geltenden Zustand nach. —
+  **Ausgang:** <…>
+- **`make mutate` bricht seit dem Baum-Tausch VOLLSTÄNDIG ab, statt je Fall einen Befund zu
+  melden.** `test/mutations/219` und `220` tragen im `# files:`-Kopf
+  `.harness/baseline/v6.0.0/templates/docs/plan/planning/observations.template.md` — die alte,
+  upstream entfallene Vorlage. Ihre eigenen Kommentare sagen einen **lauten Befund je Fall** voraus
+  (Vollständigkeits-Schranke in `merge_report`); real bricht der Treiber schon VOR dem ersten Fall
+  ab (`target_fingerprint` scheitert an der fehlenden Datei, `mutate.sh` Zeile ~1516, exit 1, kein
+  Bericht, keine der 260+ übrigen Fälle läuft). Das ist derselbe angekündigte Fall, nur strenger
+  als vorhergesagt — kein neuer Defekt dieses Slices und bewusst nicht behoben (gehört zu
+  [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md), derselbe Träger wie
+  oben). Bis dahin liefert `make mutate` repo-weit **keine** Mutationsdeckung; die für diesen Slice
+  geänderten Wächter (`ziel_ort` in `test/courseset-fixture.bats`, `isRecurring` in
+  `internal/emit/templates.go`) sind stattdessen manuell gegen eine isolierte Kopie rot gesehen
+  (Implementation-Bericht dieses Slices). — **Ausgang:** <…>
 
 ## 7. Closure-Notiz
 
