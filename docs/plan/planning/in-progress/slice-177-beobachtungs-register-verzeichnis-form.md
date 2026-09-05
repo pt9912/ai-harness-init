@@ -122,7 +122,14 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       stehen:** die Zahl der Evidence-Dateien **ist** der Zähler, und ein zweites Feld daneben
       wäre die Quelle, die die Form gerade abschafft. Das Kürzel-Segment des Ziel-Pfads
       `BEO-<KUERZEL>/<slug>` steht in derselben Entscheidung (Festlegung 3): `*` (gesamtes Repo)
-      trägt `ALL`, und alle Einträge des Ausgangsstands führen diese Sub-Area.
+      trägt `ALL`, und alle Einträge des Ausgangsstands führen diese Sub-Area. **Nachgetragen in
+      der Review-Nacharbeit (HIGH-1):** Der erste Vollzugs-Commit hatte die fortlaufende Nummer
+      `BEO-<NNN>` als Verzeichnisnamen belassen statt sie durch das Kürzel zu ersetzen — ein
+      Reviewer-Fund, real bestätigt durch die von Hand vergebenen `BEO-040`/`BEO-041` beim
+      slice-178-Merge. Alle 41 Verzeichnisse liegen jetzt unter `BEO-ALL/<slug>/`
+      (`ls docs/plan/planning/observations/ | grep -c '^BEO-[0-9]'` → **0**,
+      `ls docs/plan/planning/observations/BEO-ALL | wc -l` → **41**), reiner `git mv`, keine
+      Slug-Kollision (41 eindeutige Slugs geprüft).
       Vollständigkeit gemessen statt behauptet: die Zahl der Verzeichnisse deckt
       `grep -c '^| BEO-' docs/plan/planning/observations.md` und die Zahl der Evidence-Dateien die
       Summe der Zähler-Spalte, beides am Ausgangsstand — der Ausgangsstand ist am Vollzugs-Commit
@@ -130,7 +137,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Datei danach entfällt. Nachgemessen für **jeden** der 39 Einträge (nicht nur die Summe): Ein
       Vergleichs-Lauf hielt die Zähler-Spalte je `BEO-<NNN>` gegen die Zahl der Dateien unter dem
       jeweiligen `evidence/` — **39 von 39** identisch, **0** Abweichungen.
-- [ ] **Kein Verweis zeigt ins Leere.** Die lebenden Referenzen sind nachgezogen — Bezugsmenge
+- [x] **Kein Verweis zeigt ins Leere.** Die lebenden Referenzen sind nachgezogen — Bezugsmenge
       `git grep -l 'observations\.md' -- '*.md' ':!.harness/baseline' | wc -l`
       (2026-09-05, am Start dieses Laufs: **112** Dateien, **615** Vorkommen mit `-o … | wc -l`;
       gewachsen gegenüber dem Planungsstand, keine Erwartungswerte,
@@ -153,19 +160,27 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       benannten Ausnahme, die diese Zeile nicht erfüllt:** drei Einträge des Adaptions-Blocks
       ([`MR-041`](../../../../harness/conventions.md#mr-041),
       [`MR-047`](../../../../harness/conventions.md#mr-047),
-      [`MR-048`](../../../../harness/conventions.md#mr-048)) tragen denselben toten Pfad als
-      funktionierenden Markdown-Link und sind nach [`AGENTS.md`](../../../../AGENTS.md) §3.8
-      Architect-Eigentum — der Implementer-Lauf darf sie nicht anfassen und kein fünftes
-      `ignore-refs`-Paar ohne eigene ADR anlegen ([`AGENTS.md`](../../../../AGENTS.md) §3.5). Belegt
-      durch `make docs-check`: **3** verbleibende `target-missing`-Befunde, alle in dieser Klasse,
-      0 sonst (neben einer externen Verunreinigung des Arbeitsbaums durch ein fremdes
-      Orchestrierungs-Artefakt, siehe §6). Der Punkt ist damit **nicht** vollständig erfüllt — die
-      Reparatur der drei Zeilen ist eine Übergabe an den Architect (§6).
-- [ ] `make gates` grün — blockiert durch denselben Rest (§6): `docs-check` bleibt rot, solange die
-      drei Architect-Zeilen stehen. Alle anderen Gates dieses Laufs sind einzeln grün geprüft
-      (`baseline-verify`, `lint`, `build`, `shell-lint`, `ci-lint`, `comment-claims`); `test`
-      zeigte einen Fehlschlag, der auf dieselbe externe Verunreinigung zurückgeführt und dort
-      reproduziert wurde (§6), nicht auf diesen Diff.
+      [`MR-048`](../../../../harness/conventions.md#mr-048)) trugen denselben toten Pfad als
+      funktionierenden Markdown-Link — **nachgetragen in der Review-Nacharbeit:** ein reiner
+      Pfad-Nachzug auf `BEO-ALL/…` wegen des eigenen HIGH-1-Moves ist kein neuer Inhalt und keine
+      neue Architect-Entscheidung ([`AGENTS.md`](../../../../AGENTS.md) §3.8 bindet die inhaltliche
+      Änderung, nicht diesen Fall), die drei Zeilen sind darum nachgezogen. **Ein zweiter, davon
+      unabhängiger toter Verweis (HIGH-4)** stand in `.harness/skills/reviewer.md:111`
+      (Reviewer-Eigentum nach
+      [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) Festlegung 1)
+      — der erste Vollzugs-Commit hatte ihn fälschlich im Implementer-Kontext repariert
+      (Rollen-Übergriff), die Review-Nacharbeit hat ihn auf den Vor-Migrations-Wortlaut
+      zurückgesetzt; die inhaltliche Korrektur bleibt der Reviewer-Rolle. Belegt durch
+      `make docs-check`: **1** verbleibender `target-missing`-Befund, genau diese eine Zeile, 0
+      sonst. Der Punkt gilt damit als erfüllt **bis auf** diese eine, bewusst belassene
+      Reviewer-Übergabe.
+- [ ] `make gates` grün — blockiert durch genau den einen Rest oben
+      (`.harness/skills/reviewer.md:111`, HIGH-4-Übergabe an die Reviewer-Rolle). Alle anderen
+      Gates dieses Laufs sind einzeln grün geprüft (`baseline-verify`, `lint`, `build`, `test`
+      inkl. aller 218 bats-Fälle, `shell-lint`, `ci-lint`, `comment-claims`, `host-bin`,
+      `span-check`); die zuvor gemeldete externe Verunreinigung durch ein fremdes
+      Orchestrierungs-Artefakt (§6) ist nicht mehr reproduzierbar — das Verzeichnis ist inzwischen
+      ignoriert (`git log --format=%H -1 -- .gitignore` → `ac801bb`).
 - [x] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice; jede Quelle, die
       die Register-**Form** beschreibt statt nur auf sie zu zeigen, ist nachgezogen oder als
       Übergabe benannt (§6). Ein öffentlicher Vertrag ist nicht berührt.
@@ -295,21 +310,38 @@ dasteht.
   nachgeprüft** (Zähler-Deckung 39/39 gegen den Ausgangsstand, siehe DoD 1) statt nur behauptet. Ob
   die Menge eine Review-Sitzung überschreitet, ist eine Reviewer-Entscheidung und wird hier nicht
   vorweggenommen; die Rückführung bleibt dem Reviewer/Planner vorbehalten, falls sie doch greift.
-- **Drei Architect-Zeilen tragen nach dem Wegfall einen toten Verweis, den der Implementer-Lauf
-  nicht reparieren darf** — neu, während des Vollzugs gefunden, kein Eintrag im
-  Beobachtungs-Register zum Planungszeitpunkt.
+- **Drei Architect-Zeilen trugen nach dem Wegfall einen toten Verweis** — im ersten Vollzugs-Commit
+  gefunden, kein Eintrag im Beobachtungs-Register zum Planungszeitpunkt.
   [`MR-041`](../../../../harness/conventions.md#mr-041),
   [`MR-047`](../../../../harness/conventions.md#mr-047) und
-  [`MR-048`](../../../../harness/conventions.md#mr-048) verlinken `BEO-008` über
-  `docs/plan/planning/observations.md`; alle drei
-  gehören zum Adaptions-Block und sind damit nach [`AGENTS.md`](../../../../AGENTS.md) §3.8
-  Architect-Eigentum, unabhängig davon, dass die Reparatur selbst trivial wäre (Pfad → `observations/README.md`).
-  Ein fünftes `ignore-refs`-Paar ohne eigene ADR verstieße gegen
-  [`AGENTS.md`](../../../../AGENTS.md) §3.5 und die in [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
-  Festlegung 2 gezogene Grenze. — **Ausgang: weiter offen.** Übergabe an den Architect: entweder die
-  drei Zeilen in einem eigenen Architect-Commit nachziehen, oder — falls das aus anderem Grund nicht
-  gewünscht ist — einen Folge-ADR für ein fünftes `ignore-refs`-Paar. Bis dahin bleibt `make
-  docs-check` mit genau **3** `target-missing`-Befunden rot.
+  [`MR-048`](../../../../harness/conventions.md#mr-048) verlinkten `BEO-008` über den alten Pfad;
+  alle drei gehören zum Adaptions-Block und sind damit nach [`AGENTS.md`](../../../../AGENTS.md)
+  §3.8 Architect-Eigentum für ihren **Inhalt**. — **Ausgang: entfallen.** In der Review-Nacharbeit
+  auf `BEO-ALL/adaptions-achse-1-kurzschluss/observation.md` gezogen: der Koordinator (in der
+  Architect-Rolle, Commit `df86429`, vor dieser Nacharbeit) hatte die drei Zeilen bereits auf die
+  Verzeichnis-Form gebracht, und der reine Pfad-Nachzug wegen des eigenen HIGH-1-Moves ist keine
+  neue inhaltliche Entscheidung, sondern eine Move-Folge wie bei jedem `slice-mv` — ausdrücklich so
+  vom Koordinator autorisiert. Kein fünftes `ignore-refs`-Paar nötig, `make docs-check` zeigt für
+  diese Klasse **0** Befunde.
+- **Ein Reviewer-eigener Verweis wurde im Implementer-Kontext geändert** (`HIGH-4`, neu, während der
+  Review-Nacharbeit gefunden). `.harness/skills/reviewer.md:111` verlinkt die Register-Datei; der
+  erste Vollzugs-Commit hatte die Zeile auf `observations/README.md` korrigiert, obwohl
+  [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) Festlegung 1 diese
+  Datei ausdrücklich der **Reviewer**-Rolle zuweist — ein Rollen-Übergriff, während derselbe Commit
+  die drei MR-Zeilen aus demselben Grund unangetastet ließ. — **Ausgang: weiter offen**, mit
+  benanntem Träger. Die Zeile ist auf ihren Vor-Migrations-Wortlaut zurückgesetzt (Review-Nacharbeit);
+  `make docs-check` zeigt dafür bewusst **1** `target-missing`-Befund, bis die Reviewer-Rolle die
+  inhaltliche Korrektur in ihrem eigenen Kontext vornimmt.
+- **Historische Prosa-Zitate der alten `BEO-<NNN>`-Nummer lösen nach dem Umzug auf `BEO-ALL` nicht
+  mehr auf** — neu, während der Review-Nacharbeit zu HIGH-1 gefunden. Vorbestehende lebende Dateien
+  außerhalb von `observations/` (`welle-15-re-baseline.md`, `roadmap.md`, offene/nächste Slice-Pläne,
+  `harness/conventions/*.md` außer den drei oben genannten MR-Einträgen) zitieren einzelne
+  Beobachtungen weiter unter ihrer alten Nummer (`BEO-010`, `BEO-018` etc.) — reine Kennungs-Prosa,
+  kein Pfad, darum kein `docs-check`-Befund, aber ein Leser, der die alte Nummer als Verzeichnis
+  sucht, findet sie nicht mehr. — **Ausgang: weiter offen.** Der Umfang ist zehn bis mehrere Dutzend
+  Dateien und damit ein eigener Nachzieh-Vorgang, kein Nebenprodukt dieses Slice; ob er in
+  [slice-184](../open/slice-184-register-form-im-bestand-nachziehen.md) aufgeht oder einen eigenen
+  Folge-Slice bekommt, entscheidet die Planner-Closure, nicht dieser Lauf.
 - **Ein fremdes Orchestrierungs-Artefakt im Arbeitsbaum verfälscht Gate-Läufe** — kein Risiko dieses
   Slice-Inhalts, aber während der Verifikation gefunden und rot-dann-grün belegt
   ([`AGENTS.md`](../../../../AGENTS.md) §3.6): ein unversionierter, ungeignorter Git-Worktree unter
