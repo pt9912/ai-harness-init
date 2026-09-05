@@ -80,7 +80,7 @@ getauschtem Muster gemessen, damit die
 Grenze zwischen den zwei Slices nicht behauptet, sondern sichtbar ist.
 
 **Ein dritter Träger steht jetzt neben den beiden, und die Grenze ist textlich gemessen.**
-[slice-186](slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) zieht die **Identität** einer
+[slice-186](../open/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) zieht die **Identität** einer
 konkreten Beobachtung nach — eine dreistellige Nummer im Fließtext oder als Link-Label, die seit
 dem Umzug nirgends mehr auflöst. **Hier bleibt die Form-Sprache**: der Platzhalter
 `BEO-<NNN>` mit seinen spitzen Klammern, *Registerzeile*, *Zähler erhöhen*. Die zwei Mengen
