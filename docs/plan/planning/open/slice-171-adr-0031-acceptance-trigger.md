@@ -85,7 +85,10 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
       Bedingung liest — Neufassung des Triggers. Ein dritter Ausgang ist keiner.
 - [ ] `make gates` grün.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben.
+- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis
+      `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler
+      wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls
+      eine Antwort und wird in §7 notiert.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste
       Welle-Closure.
