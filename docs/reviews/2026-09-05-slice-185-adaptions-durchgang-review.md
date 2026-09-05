@@ -5,7 +5,7 @@
 - **Rolle:** Reviewer (Modul 8/10), frischer Kontext, kein Selbst-Review.
   Skill: [`.harness/skills/reviewer.md`](../../.harness/skills/reviewer.md) `1.7.0`.
 - **Datum:** 2026-09-05
-- **Gegenstand:** [slice-185](../plan/planning/in-progress/slice-185-adaptions-durchgang-gegen-v600.md)
+- **Gegenstand:** [slice-185](../plan/planning/done/slice-185-adaptions-durchgang-gegen-v600.md)
   — noch **nicht** geschlossen (`in-progress/`).
 - **Commit-Range:** `ec0d820..5d0c868` (drei Commits, ermittelt über
   `git log --oneline --grep 'slice-185'`):
@@ -52,7 +52,7 @@ ls harness/conventions/MR-*.md | wc -l                                   # 47
 ls harness/conventions/done/*.md | wc -l                                 #  4
 diff <(ls harness/conventions/MR-*.md | xargs -n1 basename | cut -d- -f1-2 | sort) \
      <(grep -oE '^\| \[MR-[0-9]{3}\]\([^)]*\) \| (bleibt gültig|gegenstandslos|teilweise überholt|Bezug entfallen|widerspricht)' \
-         docs/plan/planning/in-progress/slice-185-adaptions-durchgang-gegen-v600.md \
+         docs/plan/planning/done/slice-185-adaptions-durchgang-gegen-v600.md \
        | grep -oE 'MR-[0-9]{3}' | sort -u)                               # leer, Exit 0
 # 2 — Ausgangs-Zeilen gezählt und auf Dopplung geprüft
 … | grep -oE 'MR-[0-9]{3}' | sort | uniq -c | awk '$1>1'                 # leer (47 Zeilen, keine doppelt)
@@ -86,7 +86,7 @@ gegenstandslos, teilweise überholt, ohne Bezug oder im Widerspruch. Die Befunde
   dem Kommando, das sie liefert; eine Handzählung sagt, dass sie eine ist) ·
   Baseline-Regelwerk [`modul-06-roadmap.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-06-roadmap.md)
   §Das Beobachtungs-Register (`evidence/<vorgangs-id>.md` — *unveränderlich ab Merge*)
-- **pfad:** [`slice-185-adaptions-durchgang-gegen-v600.md:390–394`](../plan/planning/in-progress/slice-185-adaptions-durchgang-gegen-v600.md)
+- **pfad:** [`slice-185-adaptions-durchgang-gegen-v600.md:390–394`](../plan/planning/done/slice-185-adaptions-durchgang-gegen-v600.md)
   und [`observations/BEO-ALL/zitat-grep-uebersieht-zeilenumbruch-und-markup/evidence/slice-185.md:2`](../plan/planning/observations/BEO-ALL/zitat-grep-uebersieht-zeilenumbruch-und-markup/evidence/slice-185.md)
 - **befund:** §Methode sagt *„in diesem Durchgang **viermal** belegt … Sie liegen in
   `modul-14-docker-harness.md` (zwei), `grundlagen-source-precedence.md` und
@@ -135,7 +135,7 @@ gegenstandslos, teilweise überholt, ohne Bezug oder im Widerspruch. Die Befunde
   [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md)
   §Freshness-Audit der vendored Baseline (je Eintrag ein Ausgang mit eigenem Beleg) ·
   Beobachtung [`delta-durchgang-uebersieht-deckung`](../plan/planning/observations/BEO-ALL/delta-durchgang-uebersieht-deckung/observation.md)
-- **pfad:** [`slice-185-adaptions-durchgang-gegen-v600.md:369–388`](../plan/planning/in-progress/slice-185-adaptions-durchgang-gegen-v600.md)
+- **pfad:** [`slice-185-adaptions-durchgang-gegen-v600.md:369–388`](../plan/planning/done/slice-185-adaptions-durchgang-gegen-v600.md)
 - **befund:** Der Plan sagt *„Die 99 Zeilen und die eine neue Datei sind gelesen und tragen **sechs**
   Gegenstände"* und schließt daraus *„**Keiner der sechs** berührt eine der 47 Adaptionen"*. Eine der
   99 Zeilen trägt keinen der sechs: der Aufzählungspunkt *„**Was offen bleibt:** Die
@@ -236,7 +236,7 @@ gegenstandslos, teilweise überholt, ohne Bezug oder im Widerspruch. Die Befunde
 - **kategorie:** LOW
 - **quelle:** Maintainability · [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)
   (ein Beleg-Kommando muss nach dem Vorgang noch dasselbe messen)
-- **pfad:** [`slice-185-adaptions-durchgang-gegen-v600.md:509–517`](../plan/planning/in-progress/slice-185-adaptions-durchgang-gegen-v600.md)
+- **pfad:** [`slice-185-adaptions-durchgang-gegen-v600.md:509–517`](../plan/planning/done/slice-185-adaptions-durchgang-gegen-v600.md)
 - **befund:** Der zweite Operand nennt `docs/plan/planning/in-progress/slice-185-….md` als festen
   Pfad. Nach dem `git mv` nach `done/` liefert das `grep` dort nichts, der `diff` meldet 47
   fehlende Kennungen — also *einen Defekt*, wo keiner ist, statt leer zu bleiben. Der Plan sagt es
@@ -251,7 +251,7 @@ gegenstandslos, teilweise überholt, ohne Bezug oder im Widerspruch. Die Befunde
 
 - **kategorie:** INFO
 - **quelle:** §9 §Methode, zweite Hälfte
-- **pfad:** [`slice-185-adaptions-durchgang-gegen-v600.md:347–361`](../plan/planning/in-progress/slice-185-adaptions-durchgang-gegen-v600.md)
+- **pfad:** [`slice-185-adaptions-durchgang-gegen-v600.md:347–361`](../plan/planning/done/slice-185-adaptions-durchgang-gegen-v600.md)
 - **befund:** Beide Schleifen tragen `[ -f "$B/$f" ] || continue`. Zwischen den Tags ist genau eine
   Datei entfallen und eine entstanden:
 
@@ -274,7 +274,7 @@ gegenstandslos, teilweise überholt, ohne Bezug oder im Widerspruch. Die Befunde
 
 - **kategorie:** INFO
 - **quelle:** Maintainability
-- **pfad:** [`slice-185-adaptions-durchgang-gegen-v600.md:509–517`](../plan/planning/in-progress/slice-185-adaptions-durchgang-gegen-v600.md)
+- **pfad:** [`slice-185-adaptions-durchgang-gegen-v600.md:509–517`](../plan/planning/done/slice-185-adaptions-durchgang-gegen-v600.md)
 - **befund:** Der zweite Operand endet auf `sort -u`. Zwei Ausgangs-Zeilen für **dieselbe** Kennung
   — etwa mit zwei verschiedenen Ausgängen — blieben damit unsichtbar; die Prüfung deckt „jeder
   Eintrag hat mindestens eine Zeile", nicht „genau eine". Heute ohne Gegenstand:
