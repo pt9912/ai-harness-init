@@ -27,7 +27,7 @@
   hat dem Repo nicht recht gegeben, sie hat die Frage fallen lassen. Der Unterschied entscheidet,
   **wer** die Setzung danach trägt — bei *gegenstandslos* die Baseline, hier dieses Register.
 - **Gemessen, nicht vermutet — an drei Stellen, nicht am Thema.** Der Kurzschluss, den
-  [`BEO-008`](../../docs/plan/planning/observations/BEO-008/adaptions-achse-1-kurzschluss/observation.md) führt, ist damit gerade nicht die
+  [`BEO-008`](../../docs/plan/planning/observations/BEO-ALL/adaptions-achse-1-kurzschluss/observation.md) führt, ist damit gerade nicht die
   Grundlage:
   1. Der Pfad kommt im Zielstand **nirgends** vor:
      `grep -rc 'tools/harness' .harness/baseline/v5.18.0/regelwerk/ .harness/baseline/v5.18.0/templates/`
