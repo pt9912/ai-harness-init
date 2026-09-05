@@ -210,8 +210,8 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 - **Zwei Übergaben an den Architect** stehen in
   [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) §6 und haben jetzt beide einen
   Träger. Übergabe 1 — die **regierende Fassung dieses Sprungs** — ist **erledigt**: sie steht als
-  [`ADR-0036`](../adr/0036-ziel-fassung-regiert-den-sprung-v600.md) (`Proposed`, Acceptance-Trigger
-  in der Datei), entschieden von
+  [`ADR-0036`](../adr/0036-ziel-fassung-regiert-den-sprung-v600.md) (`Accepted`,
+  `grep -m1 '^\*\*Status:\*\*' docs/plan/adr/0036-*.md`), entschieden von
   [slice-178](done/slice-178-regierende-fassung-des-sprungs-v600.md) auf der zweistufigen
   Messung in jenem §9. Übergabe 2 — die **Buchung der Zielstand-Setzung** nach
   [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2 —
