@@ -286,6 +286,6 @@ Regeln dieser Sektion: Baseline-Regelwerk `grundlagen-traceability.md`
 beiden Zeiger unten sind so zu schreiben, wie sie vom Ruheort `done/` auflösen,
 nicht vom Schreibort.
 
-Die Ergebnis-Notiz ist `welle-15-results.md` — Geschwister im Ruheort `done/`; der Zähler ist das
-Beobachtungs-Register eine Ebene darüber. Beide Zeiger werden bei der Closure als Link gesetzt und
-lösen dann vom Ruheort auf; vom Schreibort aus zeigen sie ins Leere.
+Die Ergebnis-Notiz ist [welle-15-results.md](welle-15-results.md) — Geschwister im Ruheort `done/`;
+der Zähler ist das Beobachtungs-Register [`../observations/`](../observations/README.md) eine Ebene
+darüber. Beide Zeiger stehen so, wie sie vom Ruheort `done/` auflösen.

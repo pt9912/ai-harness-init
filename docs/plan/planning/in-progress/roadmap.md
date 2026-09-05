@@ -17,7 +17,6 @@ Welle-Dateien; woran gearbeitet wird, sagt das `Welle:`-Feld der Slices in
 nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
-- [welle-15 — Re-Baseline auf `v6.0.0`](../welle-15-re-baseline.md)
 
 Nichts in Arbeit.
 
@@ -131,6 +130,7 @@ Ergebnis-Notiz, keine Nummernfolge.
 | [welle-10-re-baseline](../done/welle-10-re-baseline.md) | 2026-09-03 | [welle-10-results.md](../done/welle-10-results.md) |
 | [welle-12-erfassungsschicht-emittieren](../done/welle-12-erfassungsschicht-emittieren.md) | 2026-08-27 | [welle-12-results.md](../done/welle-12-results.md) |
 | [welle-14-re-baseline](../done/welle-14-re-baseline.md) | 2026-09-03 | [welle-14-results.md](../done/welle-14-results.md) |
+| [welle-15-re-baseline](../done/welle-15-re-baseline.md) | 2026-09-05 | [welle-15-results.md](../done/welle-15-results.md) |
 
 Die Tabelle ist nach Wellen-Nummer sortiert, nicht nach Abschluss-Datum; `welle-10` schloss nach
 `welle-12`. Die Lücken sind keine Auslassung: `welle-09`, `welle-11` und `welle-13` sind
