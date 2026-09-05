@@ -8,8 +8,9 @@ bei Regel-Delta **11**. Dieselbe Rechnung trägt für den Sprung davor (`roh=2/2
 [`ADR-0036`](../../../../../../docs/plan/adr/0036-ziel-fassung-regiert-den-sprung-v600.md)
 §Was das Messinstrument mitzählt. **Wirkung im Bestand:**
 [`ADR-0031`](../../../../../../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
-§Kontext führt ihre Delegat-Tabelle mit den Roh-Zahlen; ihre Festlegung 1 stützt sich auf den
-einen Delegaten mit echtem Delta und bleibt unberührt — die Konsistenz-Prüfung jener Datei ist
+führt dieselbe Mehrzahl an drei Stellen, davon in §Entscheidung als einen der tragenden Gründe von
+Festlegung 1 — nicht nur in ihrem §Kontext. Das Ergebnis von Festlegung 1 bleibt unberührt: der
+eine Delegat mit echtem Delta trägt sie unabhängig. Die Konsistenz-Prüfung jener Datei ist
 ein eigener Vorgang
 ([slice-171](../../../../../../docs/plan/planning/open/slice-171-adr-0031-acceptance-trigger.md)).
 **Kein Sensor:** kein Modul aus `modules:` der
