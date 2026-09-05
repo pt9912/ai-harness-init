@@ -25,9 +25,13 @@ zurückzukommen.**
 
 **Der Schnitt beginnt mit einer Inventur, nicht mit einer Schätzung** (`BEO-010` im
 [Register](observations/README.md), 2×). Wie viele Mitglieder diese Welle bekommt, beantwortet
-[slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md): **sechs**, dazu ein
+[slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md): **sieben**, dazu ein
 ausdrücklich ausgeschlossener Folge-Slice (§4). Die Zahl steht seit dem Katalog fest und nicht
-seit der Eröffnung.
+seit der Eröffnung. **Ein achtes Mitglied kam danach hinzu** — nicht aus dem Katalog, sondern aus
+dem vollzogenen Umzug, und genau das ist die Grenze, die ein Diff-Katalog seiner Bauart nach hat
+(§4, Zeile 8). Gezählt wird die Tabelle in §4, nicht dieser Satz:
+`sed -n '/^| Slice | Titel | Bezug |/,/^$/p' docs/plan/planning/welle-15-re-baseline.md | grep -c '^| \[slice-'`
+→ **8**.
 
 **Zwei Fragen entscheidet diese Datei nicht.** Wer den Zielstand bewegt, steht in
 [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) §*Wer den Zielstand bewegt*; **wo**
@@ -92,12 +96,32 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 | [slice-182](done/slice-182-baum-tausch-v600-pins-ziehen.md) | Der vendored Baum steht auf `v6.0.0` — Pins gezogen, Setzung verbucht | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache), [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) |
 | [slice-184](open/slice-184-register-form-im-bestand-nachziehen.md) | Die Form-Beschreibung des Beobachtungs-Registers zieht im Bestand nach | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0028`](../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md), [`ADR-0034`](../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) |
 | [slice-185](open/slice-185-adaptions-durchgang-gegen-v600.md) | Der Adaptions-Durchgang gegen `v6.0.0` — jeder Eintrag mit eigenem Ausgang (Architect) | [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md), [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
+| [slice-186](open/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) | Jede zitierte Beobachtungs-Kennung löst wieder auf | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0034`](../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md), [`ADR-0016`](../adr/0016-verweis-traegt-tag-und-zitat.md) |
 
-**Sieben Mitglieder — die Zahl steht seit dem Katalog fest, nicht seit der Eröffnung.** `BEO-010`
+**Acht Mitglieder — sieben stehen seit dem Katalog fest, das achte seit dem Vollzug.** `BEO-010`
 ([Register](observations/README.md)) misst an einer Re-Baseline den Abstand zwischen geschnittenen und
 geschlossenen Slices, und die Ursache war der Schnitt **vor** der Inventur; die Zeilen 5 bis 7
 sind darum aus [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) §9 hervorgegangen und
-nicht vorab gesetzt. Die Umplanung trägt das Drift-Log der [Roadmap](in-progress/roadmap.md).
+nicht vorab gesetzt. Jede Umplanung trägt das Drift-Log der [Roadmap](in-progress/roadmap.md).
+
+**Zeile 8 folgt nicht dem Katalog, sondern dem vollzogenen Umzug** — dieselbe Ausnahme, die
+[welle-14](done/welle-14-re-baseline.md) §4 für zwei ihrer Zeilen führt, und sie ist gemessen statt
+vermutet. Der Katalog weist Position **P-02** (*Kennung: `BEO-<NNN>` → `BEO-<KUERZEL>/<slug>`*)
+[slice-177](in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) zu und vermerkt
+ausdrücklich *„kein neuer Slice"*. Diese Zuordnung deckt die **Verzeichnisse**; sie deckt nicht die
+**Zitate** der abgeschafften Nummer, die seit dem Umzug in **23** lebenden Dateien stehen und
+nirgends mehr auflösen (Kommandos in
+[slice-186](open/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) §1). Ein Katalog ordnet
+**Positionen** einen Träger zu; eine Position kann mehrere Konsumenten haben — genau die Erfahrung,
+die [`BEO-ALL/re-baseline-ohne-inventur-slice`](observations/BEO-ALL/re-baseline-ohne-inventur-slice/observation.md)
+führt.
+
+**Mitglied aus Gleichzeitigkeit, wie Zeile 6.** Die toten Zitate sind mit dem Umzugs-Commit dieser
+Welle entstanden; ein Ausgang in `open/` wäre hier kein **verbuchter** Ausgang, sondern der
+Nachzügler, gegen den das Welle-Ziel steht. Das unterscheidet Zeile 8 von
+[slice-183](open/slice-183-ausloeser-der-wellenlosen-archivierung.md), der aus demselben Katalog
+kommt und **draußen** bleibt: Dort entscheidet der Slice eine offene Frage, und nichts im Baum ist
+gebrochen, solange er wartet.
 
 **Zeile 5 löst zwei Closure-Bedingungen dieser Welle ein**, die keine andere einlösen kann (§3):
 `make baseline-verify` meldet `v6.0.0 OK`, und §Baseline von
@@ -147,11 +171,14 @@ Ziel-Form nimmt dem Register seine flache Datei, und
 [`ADR-0030`](../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Festlegung 4 verlangt
 für genau diesen Fall die Entscheidung **vor** dem Move.
 
-**Die Reihenfolge der sechs ist eine Kette, keine Liste.** Zeile 5 (Baum-Tausch) geht Zeile 2
+**Die Reihenfolge ist eine Kette, keine Liste** — und die Kette trägt hier keine eigene Zahl, damit
+sie nicht gegen die Tabelle driftet. Zeile 5 (Baum-Tausch) geht Zeile 2
 voraus, weil die Vorlage, aus der die neue Ablage per `cp` entsteht, netzlos erst danach vorliegt;
-Zeile 6 folgt Zeile 2, weil sie deren Ziel-Wortlaut übernimmt. Zeile 1 geht allen voraus — sie
-liefert den Katalog, auf dem 5 und 6 überhaupt geschnitten sind. Die tragenden Kanten stehen
-einzeln in §5.
+Zeile 6 folgt Zeile 2, weil sie deren Ziel-Wortlaut übernimmt. Zeile 8 folgt Zeile 2 aus einem
+anderen Grund als Zeile 6 — nicht wegen eines Wortlauts, sondern weil die Plan-Datei von Zeile 2
+selbst in ihrer Bezugsmenge steht und mit dem `git mv` nach `done/` ein Zeitdokument wird. Zeile 1
+geht allen voraus — sie liefert den Katalog, auf dem 5 und 6 überhaupt geschnitten sind. Die
+tragenden Kanten stehen einzeln in §5.
 
 ## 5. Abhängigkeiten
 
@@ -198,7 +225,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   Re-Evaluierungs-Trigger von
   [`ADR-0033`](../adr/0033-wellen-archivierung-als-unterkommando.md) sind mit diesem Sprung
   gefeuert; der Träger bleibt entschieden, der Auslöser nicht.
-- **Drei Kanten innerhalb der Welle sind tragend, eine ist ordnend.** Tragend:
+- **Vier Kanten innerhalb der Welle sind tragend, eine ist ordnend.** Tragend:
   [slice-179](done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) →
   [slice-177](in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) — ohne die entschiedene
   Kennungs- und Index-Gestalt hat der Umzug kein Ziel, und
@@ -209,7 +236,14 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   Ablage per `cp` entsteht, liegt netzlos erst nach dem Tausch vor.
   [slice-177](in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) →
   [slice-184](open/slice-184-register-form-im-bestand-nachziehen.md) — der Ziel-Wortlaut, den der
-  Bestand übernimmt, entsteht dort. Ordnend:
+  Bestand übernimmt, entsteht dort.
+  [slice-177](in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) →
+  [slice-186](open/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) — die vierte tragende
+  Kante, und sie trägt aus einem anderen Grund als die dritte: Die Plan-Datei von
+  [slice-177](in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) ist selbst eines der
+  Artefakte, die eine abgeschaffte Kennung zitieren, und verlässt die Bezugsmenge mit ihrem `git mv`
+  nach `done/` ([`ADR-0016`](../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 4). Ein Nachzug
+  davor zöge eine Datei mit, die danach ausdrücklich nicht mehr dazugehört. Ordnend:
   [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) →
   [slice-178](done/slice-178-regierende-fassung-des-sprungs-v600.md), weil die Wahl auf der
   zweistufigen Messung jenes Slice steht.

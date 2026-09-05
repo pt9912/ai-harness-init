@@ -79,6 +79,17 @@ Dieser Slice übernimmt für alle sechs nur noch die **Form**-Sprache (`BEO-<NNN
 getauschtem Muster gemessen, damit die
 Grenze zwischen den zwei Slices nicht behauptet, sondern sichtbar ist.
 
+**Ein dritter Träger steht jetzt neben den beiden, und die Grenze ist textlich gemessen.**
+[slice-186](slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) zieht die **Identität** einer
+konkreten Beobachtung nach — eine dreistellige Nummer im Fließtext oder als Link-Label, die seit
+dem Umzug nirgends mehr auflöst. **Hier bleibt die Form-Sprache**: der Platzhalter
+`BEO-<NNN>` mit seinen spitzen Klammern, *Registerzeile*, *Zähler erhöhen*. Die zwei Mengen
+schneiden sich nicht — `printf 'BEO-<NNN>\n' | grep -c 'BEO-[0-9][0-9][0-9]'` → **0**, der
+Platzhalter trägt keine dreistellige Zahl —, und die Grenze steht symmetrisch in beiden Plänen,
+wie sie es zwischen diesem Slice und
+[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) schon tut. **Kein
+vierter Liefer-Punkt hier:** Die DoD unten führt drei, und Modul 5 lässt nicht mehr zu.
+
 **Zwei Ebenen, und sie sind auseinanderzuhalten.** Die drei Anweisungssätze unter
 `.claude/commands/` binden **diesen** Lauf; ihre Gegenstücke unter
 `internal/emit/templates/commands/` sind **Produkt** und binden jeden Adopter. Dieselbe Änderung,

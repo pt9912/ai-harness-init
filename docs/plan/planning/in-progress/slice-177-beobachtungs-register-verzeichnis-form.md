@@ -178,7 +178,12 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       (`278248f`). Belegt durch `make docs-check`: **0** verbleibende `target-missing`-Befunde.
       Der Punkt gilt jetzt vollständig erfüllt, beide Rollen-Übergriffe sind durch je einen
       passend zugeschriebenen Commit ersetzt, nicht nur zurückgenommen.
-- [x] `make gates` grün — `make gates` → EXIT 0, `d-check: 775 Datei(en) geprüft, 0 Befund(e)`.
+- [x] `make gates` grün — `make gates` → EXIT 0, `d-check: 776 Datei(en) geprüft, 0 Befund(e)`.
+      Die geprüfte Datei-Zahl wandert mit dem Bestand und ist **kein** Erwartungswert
+      ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+      Setzung 2); beobachtbar ist die Null dahinter. Reproduzierbar ist der Lauf nur über einem
+      Baum **ohne** fremden Agenten-Worktree — die Bedingung dafür ist rein operativ und steht als
+      offener Punkt in §6.
       Alle anderen Gates dieses Laufs sind einzeln grün geprüft (`baseline-verify`, `lint`,
       `build`, `test` inkl. aller 218 bats-Fälle, `shell-lint`, `ci-lint`, `comment-claims`,
       `host-bin`, `span-check`). **Korrektur einer eigenen Fehleinschätzung:** Eine frühere
@@ -276,12 +281,16 @@ dasteht.
 - **Ein Verweis-Nachzug über 93 Dateien bricht etwas, das kein Gate sieht** (`BEO-003`, 5×,
   **verkörpert** in `make slice-mv`). Dessen Deckung gilt Slice-Adressen; für diese Datei gibt es
   keinen Träger, und die präfixlose Form bricht in beide Richtungen. `make docs-check` fängt die
-  Link- und Codepath-Hälfte, nicht die Inline-Code-Hälfte (`BEO-025`). — **Ausgang: entfallen.**
-  Dieser Vorgang ist kein Lifecycle-`git mv` einer Slice-Datei — der Vollzugs-Commit zeigt keine
-  `R`-Zeile in `git diff-tree --name-status -M` (Plan §3) —, `make slice-mv` ist darum nicht
-  einschlägig und seine Grenze trifft diesen Fall nicht. Der Nachzug lief stattdessen manuell
-  (gezielte `sed`-Ersetzungen je Klasse: Lebend → Pfad umgehängt, Zeitdokument → Adresse verloren)
-  und iterativ gegen `make docs-check`, bis nur die unten neu benannte Ausnahme stand.
+  Link- und Codepath-Hälfte, nicht die Inline-Code-Hälfte (`BEO-025`). — **Ausgang: eingetreten,
+  Folge-Slice [slice-186](../open/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md).** Der
+  Nachzug lief manuell (gezielte `sed`-Ersetzungen je Klasse: Lebend → Pfad umgehängt,
+  Zeitdokument → Adresse verloren) und iterativ gegen `make docs-check` — und genau darin liegt der
+  Eintritt: Die Inline-Code-Hälfte, die dieselbe Zeile als ungedeckt benennt, hat er übersehen. Der
+  Beleg steht zwei Einträge weiter unten (der `awk`-Aufruf in [slice-181] §8), gefunden von einem
+  Reviewer und nicht von einem Sensor. `make slice-mv` ist an dieser Stelle **nicht** einschlägig —
+  der Vollzugs-Commit zeigt keine `R`-Zeile in `git diff-tree --name-status -M` (Plan §3) —, aber
+  das beantwortet eine andere Frage als die, die dieses Risiko stellt: Ob der Nachzug etwas
+  gebrochen hat, hängt nicht daran, welches Werkzeug ihn hätte fahren können.
 - **Die Form-Beschreibung steht an mehreren Orten und zieht nicht mit** (`BEO-009`, 9×). Der
   Kopftext des Registers, die drei Anweisungssätze unter `.claude/commands/` und ihre emittierten
   Gegenstücke beschreiben die heutige Tabellen-Form — dazu die Vorlagen-Zeile *„Beobachtungs-Register
@@ -326,32 +335,85 @@ dasteht.
   [`MR-047`](../../../../harness/conventions.md#mr-047) und
   [`MR-048`](../../../../harness/conventions.md#mr-048) verlinkten `BEO-008` über den alten Pfad;
   alle drei gehören zum Adaptions-Block und sind damit nach [`AGENTS.md`](../../../../AGENTS.md)
-  §3.8 Architect-Eigentum für ihren **Inhalt**. — **Ausgang: entfallen.** In der Review-Nacharbeit
-  auf `BEO-ALL/adaptions-achse-1-kurzschluss/observation.md` gezogen: der Koordinator (in der
-  Architect-Rolle, Commit `df86429`, vor dieser Nacharbeit) hatte die drei Zeilen bereits auf die
-  Verzeichnis-Form gebracht, und der reine Pfad-Nachzug wegen des eigenen HIGH-1-Moves ist keine
-  neue inhaltliche Entscheidung, sondern eine Move-Folge wie bei jedem `slice-mv` — ausdrücklich so
-  vom Koordinator autorisiert. Kein fünftes `ignore-refs`-Paar nötig, `make docs-check` zeigt für
-  diese Klasse **0** Befunde.
+  §3.8 Architect-Eigentum für ihren **Inhalt**. — **Ausgang: entfallen**, und der Weg dahin führte
+  über einen eigenen Verstoß derselben Regel. Alle drei Zeilen zeigen auf
+  `BEO-ALL/adaptions-achse-1-kurzschluss/observation.md`, `make docs-check` meldet für diese Klasse
+  **0** Befunde, und kein fünftes `ignore-refs`-Paar ist nötig. **Gezogen hat sie ein
+  Architect-Commit** (`2826fdb`), der ausschließlich Architect-Artefakte berührt — die drei
+  Eintrags-Dateien und sonst nichts (`git show --stat 2826fdb`). **Der erste Versuch war selbst ein
+  §3.8-Verstoß, nicht bloß eine unbelegte Behauptung:** `d3490fb` schrieb dieselbe Änderung im
+  Implementer-Kontext und stützte sich auf die Lesart *„reiner Pfad-Nachzug wegen des Moves zählt
+  nicht als Architect-Entscheidung"*. Diese Lesart hat keine Quelle —
+  [`AGENTS.md`](../../../../AGENTS.md) §3.8 sagt *„Gebunden ist das **Schreiben**"* ohne
+  Move-Ausnahme, und [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
+  sagt für genau diesen Verweis *„Das ist ein Architect-Commit … und liegt damit neben dem
+  Migrations-Commit"*. Der Commit ist revertiert (`66a49e9`), die Änderung in der richtigen Rolle
+  wiederholt. Sie steht hier, weil eine frühere Fassung dieser Zeile die widerlegte Lesart als
+  Begründung führte; ein Folgelauf, der sie liest, würde sich auf eine Ausnahme berufen, die keine
+  Quelle deckt.
 - **Ein Reviewer-eigener Verweis wurde im Implementer-Kontext geändert** (`HIGH-4`, neu, während der
   Review-Nacharbeit gefunden). `.harness/skills/reviewer.md:111` verlinkt die Register-Datei; der
   erste Vollzugs-Commit hatte die Zeile auf `observations/README.md` korrigiert, obwohl
   [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) Festlegung 1 diese
   Datei ausdrücklich der **Reviewer**-Rolle zuweist — ein Rollen-Übergriff, während derselbe Commit
-  die drei MR-Zeilen aus demselben Grund unangetastet ließ. — **Ausgang: weiter offen**, mit
-  benanntem Träger. Die Zeile ist auf ihren Vor-Migrations-Wortlaut zurückgesetzt (Review-Nacharbeit);
-  `make docs-check` zeigt dafür bewusst **1** `target-missing`-Befund, bis die Reviewer-Rolle die
-  inhaltliche Korrektur in ihrem eigenen Kontext vornimmt.
+  die drei MR-Zeilen aus demselben Grund unangetastet ließ. — **Ausgang: entfallen.** Der benannte
+  Träger hat gehandelt: Die **Reviewer**-Rolle hat die inhaltliche Korrektur in ihrem eigenen
+  Kontext vorgenommen (`278248f` — eine Datei, eine Zeile, Message *„Rolle Reviewer: …"*, mit
+  [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) Festlegung 1 als
+  Grundlage). Der Zeiger steht in der Verzeichnis-Form, und `make docs-check` meldet **0**
+  `target-missing`-Befunde. Damit ist auch der Rollen-Übergriff des ersten Vollzugs-Commits nicht
+  nur zurückgenommen, sondern durch einen passend zugeschriebenen Commit **ersetzt** — die Sequenz
+  mit Übergabe-Artefakt, die Baseline-Regelwerk `modul-08-agentenrollen.md` verlangt.
 - **Historische Prosa-Zitate der alten `BEO-<NNN>`-Nummer lösen nach dem Umzug auf `BEO-ALL` nicht
   mehr auf** — neu, während der Review-Nacharbeit zu HIGH-1 gefunden. Vorbestehende lebende Dateien
   außerhalb von `observations/` (`welle-15-re-baseline.md`, `roadmap.md`, offene/nächste Slice-Pläne,
   `harness/conventions/*.md` außer den drei oben genannten MR-Einträgen) zitieren einzelne
   Beobachtungen weiter unter ihrer alten Nummer (`BEO-010`, `BEO-018` etc.) — reine Kennungs-Prosa,
   kein Pfad, darum kein `docs-check`-Befund, aber ein Leser, der die alte Nummer als Verzeichnis
-  sucht, findet sie nicht mehr. — **Ausgang: weiter offen.** Der Umfang ist zehn bis mehrere Dutzend
-  Dateien und damit ein eigener Nachzieh-Vorgang, kein Nebenprodukt dieses Slice; ob er in
-  [slice-184](../open/slice-184-register-form-im-bestand-nachziehen.md) aufgeht oder einen eigenen
-  Folge-Slice bekommt, entscheidet die Planner-Closure, nicht dieser Lauf.
+  sucht, findet sie nicht mehr. — **Ausgang: eingetreten, Folge-Slice
+  [slice-186](../open/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md).** Nicht prognostiziert,
+  sondern in diesem Diff manifest: `9292a08` hat die Zitate tot gemacht. **Der Umfang ist jetzt
+  gemessen statt geschätzt** (2026-09-05, keine Erwartungswerte,
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2):
+
+  ```sh
+  git grep -l 'BEO-[0-9]' -- '*.md' ':!.harness/baseline' ':!docs/reviews' \
+    ':!docs/plan/planning/done' ':!docs/plan/planning/observations' | wc -l          # 23 Dateien
+  git grep -o 'BEO-[0-9][0-9][0-9]' -- '*.md' ':!.harness/baseline' ':!docs/reviews' \
+    ':!docs/plan/planning/done' ':!docs/plan/planning/observations' | wc -l          # 134 Vorkommen
+  git grep -c 'BEO-[0-9]' -- 'docs/plan/planning/observations' \
+    | awk -F: '{s+=$NF} END{print s+0}'                                              #  7 innerhalb
+  ```
+
+  Die **7** innerhalb der Ablage sind der schärfere Teil: sechs liegen in `evidence/`-Dateien
+  (*unveränderlich ab Merge*), eines in `BEO-ALL/regel-delta-zaehlt-herkunfts-kommentar-mit/observation.md`
+  (*unveränderlich ab Anlage*) — dessen Zitat zeigt auf ein Ziel, das seit dem Umzug nur noch über
+  `git ls-tree 9292a08^` auflöst. **Kein Carveout**, weil kein Gate rot steht: Die Klasse hat
+  keinen Wächter, `make docs-check` bleibt über ihr grün, und ein Carveout schaltet einen roten
+  Gate-Status auf Trigger, den es hier nicht gibt. **Nicht [slice-184]**, und die Grenze ist
+  textlich gemessen statt behauptet: Jener Slice trägt die **Form-Sprache** — den Platzhalter
+  `BEO-<NNN>`, *Registerzeile*, *Zähler erhöhen* —, dieser Befund die **Identität** einer
+  konkreten Beobachtung; `printf 'BEO-<NNN>\n' | grep -c 'BEO-[0-9][0-9][0-9]'` → **0**, die zwei
+  Mengen schneiden sich nicht. Ein vierter Liefer-Punkt an [slice-184] hätte ihn zudem über die
+  Drei-Punkte-Grenze von Modul 5 gehoben.
+- **Ein Kommando in einem lebenden Plan liest die abgeschaffte Tabellenform** — neu, vom
+  Runde-2-Reviewer gefunden. Der Sichtungs-Schritt in
+  [slice-181](../open/slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md) §8 belegt sich mit
+  einem `awk -F'|'`-Aufruf über die entfallene Register-Datei und schneidet auf deren
+  Tabellenspalten. Die Stelle liegt **innerhalb** der Hälfte, die dieser Slice für sich reklamiert
+  — die bare Adresse überall dort, wo sie unabhängig von der Vorlagen-Zeile auftritt; die zwei
+  Vorlagen-Zeilen derselben Datei sind [slice-184](../open/slice-184-register-form-im-bestand-nachziehen.md)
+  zugeschlagen. **Ein reiner Pfad-Nachzug träfe es nicht:** das Kommando liefe danach lautlos leer,
+  statt zu fehlen — die Feldstruktur gibt es in der Ziel-Form ebenso wenig wie die Datei.
+  **Und kein Gate sieht es:** der Pfad steckt in einem Inline-Code-Span, der ein ganzes
+  Shell-Kommando umfasst, und erscheint auch im kontrafaktischen `d-check`-Lauf **ohne** das
+  siebte `ignore-refs`-Paar nicht unter den Befunden. — **Ausgang: eingetreten, Folge-Slice
+  [slice-186](../open/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)**, dort Liefer-Punkt
+  3. **Nicht `weiter offen` mit [slice-181] als Träger:** Jener Slice hat einen anderen Gegenstand
+  (eine Grenzen-Liste neben einem Ausdruck), und ihm eine Nacharbeit zuzuweisen, die seine DoD
+  nicht führt, wäre ein Ausgang, der seinen Träger nur benennt — genau die Klasse, die der
+  Runde-2-Reviewer an diesem §6 beanstandet hat.
 - **Ein fremdes Orchestrierungs-Artefakt im Arbeitsbaum verfälscht Gate-Läufe** — kein Risiko dieses
   Slice-Inhalts, aber während der Verifikation gefunden und rot-dann-grün belegt
   ([`AGENTS.md`](../../../../AGENTS.md) §3.6): ein unversionierter, ungeignorter Git-Worktree unter
