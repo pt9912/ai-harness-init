@@ -289,3 +289,9 @@ nicht vom Schreibort.
 Die Ergebnis-Notiz ist [welle-15-results.md](welle-15-results.md) — Geschwister im Ruheort `done/`;
 der Zähler ist das Beobachtungs-Register [`../observations/`](../observations/README.md) eine Ebene
 darüber. Beide Zeiger stehen so, wie sie vom Ruheort `done/` auflösen.
+
+Diese Welle schloss **ohne Schritt 4** (Zeitdokumente archivieren): Der schreibende Lauf ist
+gefahren und an zwei Sperren fail-closed ausgestiegen, ohne zu schreiben — die fehlende
+Untergrenze für *wellenlos seit der letzten Closure* (Entscheidung bei
+[slice-183](../open/slice-183-ausloeser-der-wellenlosen-archivierung.md)) und Verweise auf
+Review-Reports, die verschwinden sollen. Die Ausgabe steht in der Ergebnis-Notiz.

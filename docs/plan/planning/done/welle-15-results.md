@@ -366,6 +366,47 @@ Das ist das Übergabe-Artefakt *Verifier → Planner* aus
   [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) tragen
   [slice-183](../open/slice-183-ausloeser-der-wellenlosen-archivierung.md).
 
+**Schritt 4 — Archivierung: gefahren, fail-closed an zwei Sperren abgebrochen.**
+Träger ist `make archive-welle WELLE=welle-15`
+([`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md)
+Festlegung 1); von Hand archiviert niemand, denn die Vollständigkeit des Archivs
+bezeugt allein der Archivierungs-Commit. Der **schreibende** Lauf ist über dem
+sauberen Baum nach den Move-Commits gefahren und hat nichts geschrieben — das
+Unterkommando endete mit Status 3, `make` mit 2, und `git status --porcelain`
+danach ist leer. Seine Vorprüfung meldet:
+
+```text
+  Mitglieder (Welle-Feld nennt welle-15): 8
+  wellenlos (seit der letzten Closure): 47
+  fremd (andere Welle, bleibt liegen):  77
+  Review-Reports (ohne Stub):           121
+  Sperren: 2 — der schreibende Lauf braeche ab.
+    [untergrenze] 47 wellenlose(r) Slice(s) liegen flach in docs/plan/planning/done/,
+                  aber kein docs/plan/planning/done/*/archiv.zip setzt eine Untergrenze
+    [haenger]     ein Review-Report soll verschwinden, auf den noch verwiesen wird
+```
+
+**Keine Erwartungswerte** — die vier Bestandszahlen wandern mit dem Baum
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2). Beide Sperren sind unabhängig von dieser Welle:
+
+- `[untergrenze]` — solange kein `docs/plan/planning/done/*/archiv.zip` existiert
+  (`ls docs/plan/planning/done/*/archiv.zip 2>/dev/null | wc -l` → **0**), hat
+  *wellenlos seit der letzten Closure* keine beobachtbare Untergrenze; die Klasse
+  umfasste den gesamten Altbestand, und der Lauf rät nicht. Die Archivierung des
+  Altbestands ist ein eigener Vorgang und braucht die Entscheidung, die
+  [slice-183](../open/slice-183-ausloeser-der-wellenlosen-archivierung.md)
+  trägt — §6 dieser Welle hält beides ausdrücklich außerhalb.
+- `[haenger]` — Review-Reports sollen ins Archiv, auf die noch verwiesen wird;
+  der Lauf listet **42** Verweis-Paare auf (`… -> docs/reviews/…`-Zeilen der
+  Sperren-Ausgabe), darunter Verweise aus `Accepted`-ADRs, die
+  [`AGENTS.md`](../../../../AGENTS.md) §3.4 einfriert.
+
+**Diese Welle schließt damit ohne Schritt 4.** Das ist die im Anweisungssatz
+vorgesehene Feststellung und kein Mangel: *„Bricht der Lauf an einer Sperre,
+gehört das als Feststellung in die Results-Notiz, und die Welle schließt ohne
+Schritt 4."* Die Zeitdokumente dieser Welle bleiben flach in `done/`.
+
 **Die drei Paarungen (Ende Schritt 3):**
 
 - **(a) Anker-Paarung** — vier Einträge oben tragen ein `liegt in`. Zwei zeigen
