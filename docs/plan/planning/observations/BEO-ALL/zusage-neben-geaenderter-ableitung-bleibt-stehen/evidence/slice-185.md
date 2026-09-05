@@ -1,0 +1,2 @@
+**Vorgang:** slice-185
+**Fund:** Zwei Zustandsfelder in `harness/conventions.md` standen neben einer Ableitung, die sich bewegt hatte. §Baseline führte die Prozedur-Entscheidung dieses Sprungs als `Proposed` mit Acceptance-Trigger, während die ADR-Datei `**Status:** Accepted` trägt — der Umschlag lief in einem Commit, der die Zeile daneben nicht mitnahm. §Modus-Deklaration nannte die Zahl der Beobachtungs-Verzeichnisse neben einem Kommando, das die Sub-Area-Zeile ausgibt und nicht ihre Zahl; der Betrag war seit der Anlage weiterer Verzeichnisse überholt.
