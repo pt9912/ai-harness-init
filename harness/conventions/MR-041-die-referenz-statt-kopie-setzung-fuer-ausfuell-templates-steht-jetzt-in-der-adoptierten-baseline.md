@@ -20,7 +20,7 @@
   ADRs (`NNNN-*`), `carveout`, `review-report`"*; *Entstehung pro Instanz aus dem vendored Baum* →
   *„werden **nicht** beim Bootstrap vorab kopiert, sondern **pro Instanz** aus der vendored Baseline
   (`.harness/baseline/<tag>/templates/…`), wenn der Workflow sie erreicht"*. Der Kurzschluss, den
-  [`BEO-008`](../../docs/plan/planning/observations/BEO-ALL/adaptions-achse-1-kurzschluss/observation.md) führt — *„die Baseline behandelt jetzt dasselbe
+  [`BEO-008`](../../docs/plan/planning/observations/BEO-008/adaptions-achse-1-kurzschluss/observation.md) führt — *„die Baseline behandelt jetzt dasselbe
   Thema"* —, ist damit gerade **nicht** die Grundlage: geprüft ist die Deckung jeder einzelnen
   Setzung, nicht die Themengleichheit.
 - **Ausgang: gegenstandslos → Rückbau, als Teil-Ablösung.** Was fällt, ist die Aussage, dieses Repo
