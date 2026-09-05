@@ -188,7 +188,7 @@ Zum Zeitpunkt dieser Entscheidung begann `harness/conventions.md` §Modus-Deklar
 mit dem Satz *„Eine Kürzel-Spalte führt diese Tabelle nicht."* und begründete ihn mit der
 **abgelösten** Fassung (der Absatz nannte `adoptierter Stand v5.18.0` und deren
 `grundlagen-harness-dateien.md` §harness/conventions.md als Konventionsspeicher). Gegen die
-gepinnte Pflichtgliederung war das richtig — dieses Repo vergibt keine Kennung mit
+gepinnte Pflichtgliederung war das richtig — dieses Repo vergab damals keine Kennung mit
 Bereichssegment. Gegen die Ziel-Fassung war es falsch, denn dort ist die Spalte unbedingt.
 
 **Das war die Wahl in einem Satz:** Ein Durchgang nach der gepinnten Fassung las diese Stelle
