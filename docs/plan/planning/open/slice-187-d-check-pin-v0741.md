@@ -46,7 +46,7 @@ und
 [`MR-012`](../../../../harness/conventions.md#mr-012--d-check-pin-v0511-sources-verfügbar)
 (dieselbe Linie, frühere Sprünge),
 [`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar)
-(das Muster *verfügbar, nicht aktiviert* — hier auf drei neue Fähigkeiten anzuwenden),
+(das Muster *verfügbar, nicht aktiviert* — hier auf vier neue Fähigkeiten anzuwenden),
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 (jede Zahl neben dem Kommando, das genau sie liefert),
 [`AGENTS.md`](../../../../AGENTS.md) §3.5 (Senkung ⇒ ADR — die Frage, die die Bilanz beantworten
@@ -203,7 +203,7 @@ selbst als offen aus; tragend sind Messung 5 und 6
 ([`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar)
 §Welches der zwei Beine die Bilanz trägt).
 
-### Drei Fähigkeiten werden verfügbar — keine wird hier aktiviert
+### Vier Fähigkeiten werden verfügbar — keine wird hier aktiviert
 
 Dieselbe Trennung, die
 [`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar) im
@@ -215,6 +215,18 @@ also über einen eigenen Schnitt mit eigener Config-Entscheidung und eigenem Tro
 - **Das Modul `workflows`** (21.) und **`reviews`** (22.) — der Modulsatz wächst von 20 auf 22,
   abzählbar an den `--disable`-Namen der generierten Recipes
   (`grep -oE '\-\-disable [a-z]+' <ausgabe> | sort -u | wc -l` → **20** gegen **22**).
+  **`reviews`** (`review-missing`, seit `[0.73.0]`) prüft dabei genau die Kante *Code → Review* aus
+  dem Modul-1-Entwicklungszyklus: ein `done/`-Slice mit DoD-Haken „unabhängiger Review" braucht
+  einen passenden Report unter `docs/reviews/` mit derselben `slice-<NNN>`-Kennung — **noch nicht
+  selbst nachgemessen** in diesem Lauf, als Kandidat aus externer Recherche übernommen und vor der
+  Aktivierungs-Entscheidung zu verifizieren.
+- **Das Modul `planning`** trägt neben `observations.dir` (unten) eine zweite, hier noch nicht
+  gemessene Fähigkeit: **`DC-FA-PLAN-001`** (seit `[0.73.0]`/`[0.74.0]`) prüft die
+  Lifecycle-Konsistenz `open/ → in-progress/ → done/` und die Closure-Note-Pflicht — die Kante
+  *Review → Verify → Closure* desselben Diagramms. Dieses Repo aktiviert `planning` heute gar nicht
+  (`grep -n '^modules:' .d-check.yml` → `[links, anchors, ids, matrix, codepaths, spans]`, kein
+  `planning`); ob `DC-FA-PLAN-001` mit diesem Repos eigener `slice-mv`-Mechanik (Modul 5) kollidiert
+  oder sie ergänzt, ist eine Frage für den Aktivierungs-Schnitt, nicht für diesen Pin-Slice.
 - **`planning.observations.dir`** (`[0.74.0]`), und diese Fähigkeit ist die bemerkenswerte:
   Sie prüft die Register-Deckung gegen eine **Verzeichnis-Ablage** — eine zitierte Kennung
   `<pfad>` gilt als nachgewiesen, wenn `<observations.dir>/<pfad>/observation.md` existiert.
@@ -325,7 +337,7 @@ Aussagen-Berührung steht hier gar nicht.
 | [`Makefile`](../../../../Makefile) | update | das Tag-Beispiel im Kommentar über `DCHECK_TAG` (`grep -n 'v0\.65\.0' Makefile` → **eine** Zeile) — dieselbe Stelle, die [`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar) und [`MR-027`](../../../../harness/conventions.md#mr-027--d-check-pin-v0650-ignore-marker-in-zwei-achsen-verengt) bei den Vorgänger-Sprüngen nachzogen |
 | [slice-135](slice-135-d-check-pin-v0661.md) | update | Zeiger auf diesen Slice, weil seine Ziel-Version überholt ist und die Linie **einen** lebenden Pin trägt (§1 *Was mit slice-135 geschieht*). Planner-Eigentum, keine fremde Rolle berührt. **Nicht** gelöscht — dafür fehlt die Norm (§6) |
 | [`harness/conventions.md`](../../../../harness/conventions.md) und `harness/conventions/` | **nicht durch diesen Slice** | Architect-Eigentum ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Der neue Adaptions-Eintrag, die Fortschreibung von §Baseline und die **Korrektur der Target-Zahl** in [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert) Setzung 2 entstehen im Architect-Lauf; dieser Slice liefert die **Messungen** als Übergabe-Artefakt (§6) |
-| [`.d-check.yml`](../../../../.d-check.yml) | **unverändert** | der Pin bewegt keine Modul-Liste und keinen Prüfbereich. Wer hier `workflows`, `reviews` oder `planning.observations.dir` einträgt, aktiviert eine Fähigkeit — das ist ein eigener Schnitt (§1 *Drei Fähigkeiten*) |
+| [`.d-check.yml`](../../../../.d-check.yml) | **unverändert** | der Pin bewegt keine Modul-Liste und keinen Prüfbereich. Wer hier `workflows`, `reviews` oder `planning.observations.dir` einträgt, aktiviert eine Fähigkeit — das ist ein eigener Schnitt (§1 *Vier Fähigkeiten*) |
 | [`internal/emit/templates/d-check.yml`](../../../../internal/emit/templates/d-check.yml) | **unverändert** | die emittierte Starter-Config bleibt `modules: [links, anchors]` ([`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)); der eine Breaking Change der Spanne trifft `structure` und damit weder diese noch die lebende Config (§1 *Kein Breaking Change*) |
 | `internal/emit/testdata/raw-print-mk.txt` | **unverändert** | die vier Anker, an denen `AdaptMK` hängt, stehen in der frischen `v0.74.1`-Ausgabe je genau einmal (§1 Messung 4). Nachzuziehen wäre die Fixture erst, wenn einer fehlt — ihre Zeilenzahl ist kein Kriterium |
 | `docs/reviews/**`, `docs/plan/planning/done/**` | **unangetastet** | Zeitdokumente; sie frieren den Stand ihres Laufs ein. Die Nennungen von `v0.65.0` darin sind wahr über ihren Gegenstand |
@@ -407,7 +419,7 @@ dasteht.
 - **`BEO-ALL/register-paarung-ohne-gate-modul` wird durch diesen Slice in seiner Tatsachen-Basis
   überholt.** Der Eintrag steht bei **1×** und hält fest, die maschinelle Hälfte der
   Register-Paarung habe *„in keinem gepinnten Doku-Gate-Stand ein Modul"*. Nach diesem Pin hat sie
-  eines (`planning.observations.dir`, §1 *Drei Fähigkeiten*) — im Bild, nicht in `modules:`. Der
+  eines (`planning.observations.dir`, §1 *Vier Fähigkeiten*) — im Bild, nicht in `modules:`. Der
   Satz wird damit als geschriebener falsch, während die **Deckung** unverändert fehlt.
   `observation.md` ist ab Anlage unveränderlich; bewegt werden darf nur `state.md`. — **Ausgang:**
   <weiter offen: der Eintrag bleibt im Register, sein Stand wird in der Closure gegen den neuen
@@ -468,7 +480,7 @@ Der Adaptions-Block ist Architect-Eigentum; dieser Slice liefert **Messungen**, 
    ausdrücklich **keine** zweite Fassung der Version, sondern zeigt auf den lebenden Ort; zu
    ergänzen ist allein die Aufzählung der Einträge. Ein Zeilen-Bereich steht hier bewusst nicht —
    er wandert mit jeder Architect-Änderung an derselben Datei.
-4. **Drei Fähigkeiten sind ab diesem Pin verfügbar und nicht adoptiert** (§1). Ob der neue Eintrag
+4. **Vier Fähigkeiten sind ab diesem Pin verfügbar und nicht adoptiert** (§1). Ob der neue Eintrag
    sie so nennt — *verfügbar*, nicht *aktiv*, die Lage aus
    [`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar) —,
    entscheidet der Architect-Lauf. Für `planning.observations.dir` kommt eine zweite Frage dazu,
@@ -528,7 +540,7 @@ festhält; die Auswahl unten ist deshalb **inhaltlich** getroffen und nicht übe
   Hälfte der Register-Paarung hat in keinem gepinnten Doku-Gate-Stand ein Modul*. Dieser Slice
   ändert die **Tatsachen-Basis** des Eintrags, ohne die Lücke zu schließen: `v0.74.0` liefert
   `planning.observations.dir` genau für die Verzeichnis-Form dieses Repos, verfügbar und nicht
-  aktiviert (§1 *Drei Fähigkeiten*). Steht als Risiko in §6.
+  aktiviert (§1 *Vier Fähigkeiten*). Steht als Risiko in §6.
 - `BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht` (**2×**, `slice-160`,
   `slice-176`, Stand `offen`) — *ein Plan wartet in `open/` über einen Sprung hinweg, und der
   Sprung ändert die Pflicht, die er halten soll*. [slice-135](slice-135-d-check-pin-v0661.md) ist
