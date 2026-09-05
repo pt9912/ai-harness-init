@@ -13,7 +13,7 @@
 | **Aktive ADRs im Commit-Text** | `ADR-0016`, `ADR-0018`, `ADR-0023`, `ADR-0031`, `ADR-0034`, `ADR-0035`, `ADR-0003`, `ADR-0011`, `ADR-0028`, `ADR-0030` |
 | **Hard Rules** | [`AGENTS.md`](../../AGENTS.md) §3.1–§3.9, tragend hier §3.3, §3.4, §3.6, §3.7, §3.8 |
 | **Vorherige Findings am gleichen Modul** | [`docs/reviews/2026-08-28-slice-081-review.md`](2026-08-28-slice-081-review.md) — derselbe Vorgangstyp (Baum-Tausch): HIGH ×3, MEDIUM ×4; wiederkehrende Klassen dort `Präsens-Aussage-gegen-gepinnten-Stand` (2×), `Zahl-ohne-lieferndes-Kommando` (5×), `Gate-Abbruch-verdeckt-Rest` |
-| **Slice-Plan** (Repo-Ergänzung) | [`docs/plan/planning/in-progress/slice-182-baum-tausch-v600-pins-ziehen.md`](../plan/planning/in-progress/slice-182-baum-tausch-v600-pins-ziehen.md) |
+| **Slice-Plan** (Repo-Ergänzung) | [`docs/plan/planning/done/slice-182-baum-tausch-v600-pins-ziehen.md`](../plan/planning/done/slice-182-baum-tausch-v600-pins-ziehen.md) |
 
 **Selbst gefahren, nicht übernommen** (Ergebnisse in den Negativbefunden):
 `make gates` · `make full-smoke` · `make regelwerk-check` (Netz) · `make mutate` ·
@@ -59,7 +59,7 @@ Setzung 1); keine ist ein Erwartungswert.
 
 - **kategorie:** HIGH (aus MEDIUM eskaliert: §Kontext-Eskalation der Skill-Datei — dieselbe Beobachtung im Sensor-/Gate-Pfad steigt eine Stufe; der betroffene Sensor liegt tot)
 - **quelle:** Baseline-Regelwerk `modul-05-planning-harness.md` §Offene Risiken werden bei Closure aufgelöst (*„Urteil bleibt … ob die genannte Folge-Slice-ID die Realisierung tatsächlich auffängt"*)
-- **pfad:** `docs/plan/planning/in-progress/slice-182-baum-tausch-v600-pins-ziehen.md:217` und `:229`
+- **pfad:** `docs/plan/planning/done/slice-182-baum-tausch-v600-pins-ziehen.md:217` und `:229`
 - **befund:** Beide neuen §6-Risiken — die fehlende stehende Register-Datei im **emittierten** Repo und der `make mutate`-Komplettabbruch — weisen [slice-177](../plan/planning/open/slice-177-beobachtungs-register-verzeichnis-form.md) als Träger aus („derselbe Träger wie oben"). Gemessen: `grep -n 'mutation\|mutate\|219\|220\|218' docs/plan/planning/open/slice-177-beobachtungs-register-verzeichnis-form.md` → **keine Ausgabe**; `grep -c 'internal/emit' …/slice-177-….md` → **0**. Seine DoD adressiert ausschließlich die Ablage `docs/plan/planning/observations/` **dieses** Repos, den Verweis-Nachzug und `make gates` grün — und `make gates` fährt `mutate` nicht (`grep -n '^record-gates:' Makefile`). [welle-15](../plan/planning/welle-15-re-baseline.md) §4 führt **7** Mitglieder (`grep -c '^| \[slice-' docs/plan/planning/welle-15-re-baseline.md`); keines davon nennt `test/mutations/` oder `internal/emit`. Auch der Katalog, aus dem die Zuordnung stammen soll, kennt die Position nicht: `grep -c 'mutation' docs/plan/planning/done/slice-176-inventur-vor-dem-schnitt-v600.md` → **0**. Ein Risiko-Ausgang „Folge-Slice mit ID" ist damit formal gesetzt und materiell leer: schließt slice-177 mit grünem `make gates`, bleibt `make mutate` tot und kein Artefakt erinnert daran.
 - **verifizierbar:** nein durch ein Gate — kein Modul der `.d-check.yml` liest Slice-Pläne auf Deckung. Ja durch die zwei `grep` oben.
 - **klasse:** `Folge-Slice-traegt-den-Befund-nicht`
@@ -104,7 +104,7 @@ Setzung 1); keine ist ein Erwartungswert.
 
 - **kategorie:** LOW
 - **quelle:** [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 1
-- **pfad:** `docs/plan/planning/in-progress/slice-182-baum-tausch-v600-pins-ziehen.md:227`
+- **pfad:** `docs/plan/planning/done/slice-182-baum-tausch-v600-pins-ziehen.md:227`
 - **befund:** Das §6-Risiko schreibt „keine der 260+ übrigen Fälle läuft". Gemessen: `ls test/mutations/*.sh | wc -l` → **250**. Die Zahl steht ohne das Kommando, das sie liefert, und liegt über dem Ist-Bestand.
 - **verifizierbar:** nein durch ein Gate; ja durch das `ls` oben.
 - **klasse:** `Zahl-ohne-lieferndes-Kommando`
@@ -122,7 +122,7 @@ Setzung 1); keine ist ein Erwartungswert.
 
 - **kategorie:** LOW
 - **quelle:** [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
-- **pfad:** `docs/plan/planning/in-progress/slice-182-baum-tausch-v600-pins-ziehen.md:111–113`
+- **pfad:** `docs/plan/planning/done/slice-182-baum-tausch-v600-pins-ziehen.md:111–113`
 - **befund:** Der fünfte Ausschluss schließt mit „`make gates` (docs-check, `codepaths`) bleibt über allen 18 betroffenen Dateien grün — keiner der 36 Treffer ist ein strukturell toter Pfad". Alle 36 Treffer **sind** tote Pfade (`.harness/baseline/v5.18.0/` existiert nicht mehr); keiner ist ein **Markdown-Link** — gemessen: `grep -cE '\]\([^)]*\.harness/baseline/v5\.18\.0' <hits>` → **0**. Das grüne `docs-check` belegt damit „kein toter Link", nicht „kein toter Pfad". Die Wortwahl macht aus einer Sensor-Grenze eine Sensor-Aussage.
 - **verifizierbar:** ja, in der Gegenrichtung: ein einziger der 36 Treffer als Link geschrieben färbt `docs-check` rot — genau das war der Gegenbeispiel-Lauf, den `faa8178` mit `96 Befund(e)` protokolliert.
 - **klasse:** `Sensor-Grenze-als-Sensor-Aussage`
@@ -131,7 +131,7 @@ Setzung 1); keine ist ein Erwartungswert.
 
 - **kategorie:** LOW
 - **quelle:** [`AGENTS.md`](../../AGENTS.md) §3.3, Slice-Plan §3
-- **pfad:** `docs/plan/planning/in-progress/slice-182-baum-tausch-v600-pins-ziehen.md:154–156` · Commit `d75cd8c`
+- **pfad:** `docs/plan/planning/done/slice-182-baum-tausch-v600-pins-ziehen.md:154–156` · Commit `d75cd8c`
 - **befund:** §3 des Plans macht die Commit-Trennung an einer Messung fest: „Weist `git diff-tree -r --name-status -M` über dem Tausch-Commit eine `R`-Zeile aus, ist der Move von der Inhaltsänderung zu trennen." Gemessen: `git diff-tree -r --name-status -M d75cd8c | grep -c '^R'` → **53** `R`-Zeilen, die niedrigste Ähnlichkeit `R060` (`SHA256SUMS`), dazu `R078` (`grundlagen-traceability.md`). Der Tausch ist trotzdem ein Commit, und die `d75cd8c`-Message berichtet die Messung nicht. Der Schaden, gegen den §3.3 schützt, ist hier **nicht** eingetreten — `git` hat alle 53 Umbenennungen erkannt —, aber die Bedingung des Plans ist unausgewertet geblieben, und `R060` liegt nur knapp über der Standard-Schwelle: beim nächsten Sprung mit größerem Delta fällt sie darunter.
 - **verifizierbar:** nein durch ein Gate; ja durch das `git diff-tree` oben.
 - **klasse:** `Plan-Bedingung-unausgewertet`
@@ -139,7 +139,7 @@ Setzung 1); keine ist ein Erwartungswert.
 ### INFO-1 — Die Klassifikation der 36 DoD-2-Resttreffer geht exakt auf
 
 - **kategorie:** INFO
-- **pfad:** `docs/plan/planning/in-progress/slice-182-baum-tausch-v600-pins-ziehen.md:93–113`
+- **pfad:** `docs/plan/planning/done/slice-182-baum-tausch-v600-pins-ziehen.md:93–113`
 - **befund:** Ich habe das in der DoD genannte Kommando wörtlich nachgefahren (`git grep -n '\.harness/baseline/v5\.18\.0' -- '*.md' '*.go' '*.sh' '*.yml' 'Makefile'`, minus die vier eingefrorenen Verzeichnisse): **36** Treffer über **18** Dateien. Aufteilung deckungsgleich mit dem Plan — **2** in der Plan-Datei selbst, **4** in `harness/conventions.md` + `MR-005`/`MR-045`/`MR-047`, **30** in **13** Dateien, davon **9** offene Slice-Pläne (090, 091, 101, 112, 114, 134, 140, 151, 174), **2** Welle-Pläne (09, 11), `observations.md` (BEO-021/BEO-023) und `.harness/skills/reviewer.md`. **Kein Treffer bleibt unklassifiziert**, und die Einordnung als datierter Mess-Zeitbezug nach [`MR-033`](../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist) trägt für alle 30: jeder steht in einem Kommando oder Zitat, das den Tag nennt, gegen den gemessen wurde. Die Aufgabenstellung dieses Reviews fragte, ob einer stehen bleibt — die Antwort ist nein. Der Defekt der DoD-2-Hälfte liegt nicht in der Klassifikation der 36, sondern in der **Bezugsmenge**, die MEDIUM-3 und MEDIUM-4 strukturell nicht erreicht.
 
 ### INFO-2 — `harness/conventions.md:181` ist mehr als eine veraltete Fundstelle, hat aber einen benannten Träger
