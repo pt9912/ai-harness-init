@@ -142,17 +142,21 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
     Folge-Slice mit ID · *entfallen* → gestrichen **mit Begründung** · *weiter offen* → wandert ins
     Beobachtungs-Register (Schritt 24). Ein Slice geht nicht nach `done/`, während ein Risiko ohne
     Ausgang dasteht.
-24. **Das Beobachtungs-Register fortschreiben** (`docs/plan/planning/observations/README.md`, Modul 6) —
+24. **Das Beobachtungs-Register fortschreiben** (`docs/plan/planning/observations/`, Modul 6) —
     der **Schreib**-Schritt, und er hängt an der Closure, nicht an der Implementation. Für jede
     Beobachtung aus der Closure-Notiz: führt das Register die Klasse schon, dann die vorhandene
-    `BEO-<NNN>` **zitieren** und den Zähler erhöhen — wer neu formuliert, spaltet eine Klasse in zwei
-    Namen, und keiner der beiden erreicht je 3×. Sonst eine neue Kennung vergeben; das Register ist
-    zugleich die Vergabestelle. Der Beleg ist **formgebunden**: `slice-<NNN>`, kein Freitext, so
-    viele wie der Zähler sagt. Geschrieben wird er **vor** dem `git mv` — die Slice-Datei liegt dann
-    noch nicht in `done/`, und das ist richtig so, weil Move und Inhalt getrennt committen (Hard
-    Rule 3.3). **Bei null Beobachtungen** bleibt die Tabelle unverändert und die Closure-Notiz trägt
-    den Satz *keine Beobachtung angefallen*: das Auslassen ist keine Antwort. Erreicht ein Eintrag
-    **mit diesem Slice** 3×, wandert er in die Steering-Loop-Einträge der laufenden Welle-Closure
+    Kennung `BEO-<KUERZEL>/<slug>` **zitieren** und eine weitere Datei in ihrem `evidence/` anlegen
+    — wer neu formuliert, spaltet eine Klasse in zwei Pfade, und keiner der beiden erreicht je 3×.
+    Sonst ein neues Verzeichnis `BEO-<KUERZEL>/<slug>/` mit `observation.md` und `state.md` anlegen
+    — Kürzel aus der Modus-Deklaration nachschlagen, nicht erfinden; das Register ist zugleich die
+    Vergabestelle für den `<slug>`-Teil. Der Beleg ist **formgebunden**: `evidence/slice-<NNN>.md`,
+    kein Freitext, eine Datei je Auftreten. Geschrieben wird er **vor** dem `git mv` — die
+    Slice-Datei liegt dann noch nicht in `done/`, und das ist richtig so, weil Move und Inhalt
+    getrennt committen (Hard Rule 3.3). Der Zähler wird **nicht gesetzt**, er ist die Zahl der
+    Evidence-Dateien und **folgt** aus ihnen. **Bei null Beobachtungen** bleibt die Ablage
+    unverändert und die Closure-Notiz trägt den Satz *keine Beobachtung angefallen*: das Auslassen
+    ist keine Antwort. Erreicht ein Eintrag **mit diesem Slice** 3× (die Zahl seiner
+    Evidence-Dateien), wandert er in die Steering-Loop-Einträge der laufenden Welle-Closure
     (`/close-welle`); läuft keine Welle, löst die Slice-Closure den Lese-Schritt selbst aus, und der
     Herkunfts-Anker lautet dann `seit slice-<NNN>` statt `seit welle-<NN>`.
 
