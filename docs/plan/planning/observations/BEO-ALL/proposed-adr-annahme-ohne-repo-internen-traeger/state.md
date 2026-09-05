@@ -2,7 +2,7 @@
 
 [`ADR-0036`](../../../../../../docs/plan/adr/0036-ziel-fassung-regiert-den-sprung-v600.md) steht
 auf `Proposed`; der Start-Trigger von
-[slice-185](../../../../../../docs/plan/planning/next/slice-185-adaptions-durchgang-gegen-v600.md)
+[slice-185](../../../../../../docs/plan/planning/in-progress/slice-185-adaptions-durchgang-gegen-v600.md)
 §4 verlangt sie auf `Accepted`. Die Mitigation aus dem Risiko-Text ist angewandt: der
 Acceptance-Trigger steht **in** der Datei (§Der Acceptance-Trigger), ein dritter Slice in `open/`
 entsteht dafür nicht (`git grep -l 'adr/0036-' -- docs/plan/planning/open` → leer). Was offen

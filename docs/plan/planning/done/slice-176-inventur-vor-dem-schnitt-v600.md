@@ -145,7 +145,7 @@ dasteht.
   Dieser Katalog ist definitionsgemäß ein Delta; der Adaptions-Durchgang, den er als Folge-Slice
   benennt, braucht darum ausdrücklich die Volltext-Hälfte als eigenen DoD-Punkt. — **Ausgang:
   entfallen**, weil die vorab gestellte Bedingung erfüllt ist:
-  [slice-185](../next/slice-185-adaptions-durchgang-gegen-v600.md) ist geschnitten, und seine
+  [slice-185](../in-progress/slice-185-adaptions-durchgang-gegen-v600.md) ist geschnitten, und seine
   **DoD 2** führt die Volltext-Hälfte als eigenen Punkt statt als Satz im Vorgehen; §1 dort weist
   die 19 Pfad-Treffer ausdrücklich als Lesereihenfolge und **nicht** als Bezugsmenge aus. Der
   Zähler bleibt bei **1×** — der Durchgang ist geschnitten, nicht gelaufen, und ein
@@ -234,7 +234,7 @@ Backticks).
   ihre Vorsorge, kein weiteres Auftreten.
 - **Folge-Slices:** [slice-182](../done/slice-182-baum-tausch-v600-pins-ziehen.md),
   [slice-184](../done/slice-184-register-form-im-bestand-nachziehen.md) und
-  [slice-185](../next/slice-185-adaptions-durchgang-gegen-v600.md) — Mitglieder von
+  [slice-185](../in-progress/slice-185-adaptions-durchgang-gegen-v600.md) — Mitglieder von
   [welle-15](../welle-15-re-baseline.md); [slice-183](../open/slice-183-ausloeser-der-wellenlosen-archivierung.md)
   — ausdrücklich **kein** Mitglied, Grund in jener §4 (`BEO-018`). Alle vier sind Dateien im
   Planning-Lifecycle.
@@ -360,7 +360,7 @@ git grep -lE 'regelwerk/(README|grundlagen-begriffe|grundlagen-harness-dateien|g
 
 **Die 19 sind die Delta-Hälfte und sind ausdrücklich nicht die Bezugsmenge** — genau die Lücke,
 die `BEO-013` misst. Träger ist **neu:**
-[slice-185](../next/slice-185-adaptions-durchgang-gegen-v600.md), dessen DoD 2 die Volltext-Hälfte
+[slice-185](../in-progress/slice-185-adaptions-durchgang-gegen-v600.md), dessen DoD 2 die Volltext-Hälfte
 als eigenen Punkt führt statt als Satz im Vorgehen. Damit hat auch der Posten einen Ausgang, den
 der Katalog seiner Bauart nach übersieht.
 
