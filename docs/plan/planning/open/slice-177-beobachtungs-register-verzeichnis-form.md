@@ -30,7 +30,7 @@ Modul prüft, prüft es danach ebenso wenig),
 **Berührte Spec-Stellen:** `—`. Der Slice bewegt ein Planning-Artefakt; er schreibt keine
 Spec-Stelle.
 
-**Verantwortlich:** `—` bis zur Priorisierung.
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-04.
 
