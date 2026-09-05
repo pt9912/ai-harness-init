@@ -7,7 +7,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Welle:** [welle-15](../welle-15-re-baseline.md) — **Mitglied**, und der Grund ist nicht Nähe,
 sondern Gleichzeitigkeit: Ab dem Moment, in dem
-[slice-177](slice-177-beobachtungs-register-verzeichnis-form.md) die Ablage umzieht, weisen
+[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) die Ablage umzieht, weisen
 **zehn** lebende Slice-Pläne und **vier** Anweisungssatz-Dateien einen Vorgang an, den es nicht
 mehr gibt (§1, mit Kommando). Das Welle-Ziel *„statt einzeln als Nachzügler zurückzukommen"* wäre mit einem Ausgang in
 `open/` gerade nicht eingelöst — der Nachzügler wäre schon da.
@@ -41,7 +41,7 @@ noch als Tabelle mit gepflegtem Zähler.**
 
 **Der Gegenstand ist die Form-Beschreibung, nicht die Adresse.** Den Pfad
 `observations.md` → `observations/` zieht
-[slice-177](slice-177-beobachtungs-register-verzeichnis-form.md) über seine Bezugsmenge nach. Was
+[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) über seine Bezugsmenge nach. Was
 dort ausdrücklich als Risiko stehen bleibt (`BEO-009`), ist die **Anweisung daneben**: *neue
 `BEO-<NNN>` oder Zähler +1*, *`BEO-<NNN>` zitieren und den Zähler erhöhen*, *jede Registerzeile
 trägt einen Beleg*. Unter der Ziel-Form gibt es keine Zeile, keine fortlaufende Nummer und keinen
@@ -67,7 +67,7 @@ Setzung 2) — beide Beträge wandern mit jedem neu geschnittenen Plan.
 **Die vier sind die Form-Hälfte, nicht die Adress-Hälfte.** Nimmt man den Pfad `observations.md`
 mit ins Muster, sind es **alle sechs** Anweisungssatz-Dateien — die zwei zusätzlichen tragen die
 Adresse und sonst nichts von der alten Form, und die Adresse zieht
-[slice-177](slice-177-beobachtungs-register-verzeichnis-form.md) über seine eigene Bezugsmenge
+[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) über seine eigene Bezugsmenge
 nach. Beide Mengen sind mit demselben Kommando und nur getauschtem Muster gemessen, damit die
 Grenze zwischen den zwei Slices nicht behauptet, sondern sichtbar ist.
 
@@ -133,7 +133,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-177](slice-177-beobachtungs-register-verzeichnis-form.md) liegt in `done/`. Der Grund ist
+[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) liegt in `done/`. Der Grund ist
 tragend, nicht ordnend: Der Ziel-Wortlaut, den die Pläne übernehmen, ist der der neuen
 `slice.template.md`; vorher schriebe der Lauf eine Form ab, die im Repo noch keinen Gegenstand hat,
 und die zehn Pläne verwiesen auf eine Ablage, die es nicht gibt.
