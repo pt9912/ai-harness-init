@@ -304,7 +304,7 @@ dasteht.
   (Stand `geplant`), Beleg `evidence/slice-177.md`; die Eigentums-Hälfte liegt daneben in
   [`BEO-ALL/anweisungssatz-eigentum-ohne-quelle`](../observations/BEO-ALL/anweisungssatz-eigentum-ohne-quelle/observation.md).
   Der Stand ist unverändert gegenüber dem migrierten Register; die **Grenze zwischen
-  diesem Slice und [slice-184](../next/slice-184-register-form-im-bestand-nachziehen.md) ist real
+  diesem Slice und [slice-184](../in-progress/slice-184-register-form-im-bestand-nachziehen.md) ist real
   gemessen statt behauptet** (Review-Nacharbeit, Review-Fund MEDIUM-1: die beiden Pläne wiesen sich
   dieselbe Teilmenge wechselseitig zu). **Was dieser Slice trägt:** die bare Adresse
   `observations.md` → `observations/README.md`, überall dort, wo sie **unabhängig** von der
@@ -415,7 +415,7 @@ dasteht.
   einem `awk -F'|'`-Aufruf über die entfallene Register-Datei und schneidet auf deren
   Tabellenspalten. Die Stelle liegt **innerhalb** der Hälfte, die dieser Slice für sich reklamiert
   — die bare Adresse überall dort, wo sie unabhängig von der Vorlagen-Zeile auftritt; die zwei
-  Vorlagen-Zeilen derselben Datei sind [slice-184](../next/slice-184-register-form-im-bestand-nachziehen.md)
+  Vorlagen-Zeilen derselben Datei sind [slice-184](../in-progress/slice-184-register-form-im-bestand-nachziehen.md)
   zugeschlagen. **Ein reiner Pfad-Nachzug träfe es nicht:** das Kommando liefe danach lautlos leer,
   statt zu fehlen — die Feldstruktur gibt es in der Ziel-Form ebenso wenig wie die Datei.
   **Und kein Gate sieht es:** der Pfad steckt in einem Inline-Code-Span, der ein ganzes
@@ -527,7 +527,7 @@ Backticks).
   Träger der drei Ausgänge *eingetreten* in §6 (die präfixlose Verweis-Form, die Prosa-Zitate der
   abgeschafften Nummer, und das `awk`-Kommando in einem lebenden Plan, das die entfallene Tabelle
   liest). Kein weiterer Folge-Slice geht aus dieser Closure hervor; die zwei Nachbarn
-  [slice-184](../next/slice-184-register-form-im-bestand-nachziehen.md) (Form-Sprache) und
+  [slice-184](../in-progress/slice-184-register-form-im-bestand-nachziehen.md) (Form-Sprache) und
   [slice-181](../open/slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md) (Grenzen-Liste)
   bestanden vorher und tragen je eine textlich abgegrenzte Hälfte.
 - **Risiken aus §6:** neun Risiken, neun Ausgänge — vier *eingetreten* (drei mit
