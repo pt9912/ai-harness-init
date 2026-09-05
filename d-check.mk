@@ -19,9 +19,8 @@
 #     enabled sein eigenes Modul, wie jedes advisory-Target ohne Platz in `make gates`.
 #     Die Zeilenreferenz-Prüfung `codepaths.check-lines` ist in `.d-check.yml`
 #     aktiviert (additive Härtung, MR-011).
-# VERENGTES MARKER-VERHALTEN, an einer frischen Sonde unter v0.74.1 gemessen
-# statt vom Vorgaenger-Pin geerbt: ein `d-check:ignore` unterdrueckt nur
-# noch, wenn es (a) in einem echten HTML-Kommentar steht UND (b) nicht in
+# VERENGTES MARKER-VERHALTEN seit v0.74.1: ein `d-check:ignore` unterdrueckt
+# nur noch, wenn es (a) in einem echten HTML-Kommentar steht UND (b) nicht in
 # Inline-Code eingeschlossen ist. Vier Lagen ueber einem toten Codepath, Kopie
 # ausserhalb des Repos, unter v0.74.1:
 #   `<!-- d-check:ignore -->`      unterdrueckt
@@ -45,7 +44,7 @@
 # des Grundes (`target-missing` -> „Linkziel existiert nicht"). Wer eine Ausgabe
 # spaltenweise zerlegt und die letzte Spalte (`awk -F'\t' '{print $NF}'`) als Grund-CODE
 # liest, bekommt ab diesem Pin den Klartext statt des Codes — kein Skript dieses Repos
-# tut das heute (gemessen, nicht vermutet).
+# tut das heute.
 # Einbinden: `include d-check.mk`; eine eigene .d-check.yml danebenlegen.
 # NEU-ERZEUGUNG: VIER Handgriffe. Abzaehlbar — der Digest steht literal, weil `$(DCHECK_REF)`
 # in einem Kommentar keine Shell-Variable ist und wortwoertlich gefahren still `1` liefert:
