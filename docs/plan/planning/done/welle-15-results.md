@@ -71,14 +71,19 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   vollzogenen Umzug. Kommando:
 
   ```sh
-  for r in $(git log --format=%h --reverse --follow \
-               -- docs/plan/planning/done/welle-15-re-baseline.md); do
+  for r in $(git log --format=%h --follow \
+               -- docs/plan/planning/done/welle-15-re-baseline.md | tac); do
     for p in docs/plan/planning/welle-15-re-baseline.md \
              docs/plan/planning/done/welle-15-re-baseline.md; do
       git show "$r:$p" 2>/dev/null
     done | awk '/^## 4\. Slices/,/^## 5\./' | grep -c '^| \[slice-'
   done | uniq
   ```
+
+  Die Umkehrung steht als `tac` hinter `git log` und nicht als `--reverse`:
+  `--follow` und `--reverse` zusammen liefern über dieser Datei **einen**
+  Commit statt der vollen Kette — nachgestellt reproduzierbar mit
+  `git log --format=%h --reverse --follow -- <derselbe Pfad> | wc -l`.
 
   **Keine Erwartungswerte** — die Reihe wächst mit jedem weiteren Stand der Datei
   ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
