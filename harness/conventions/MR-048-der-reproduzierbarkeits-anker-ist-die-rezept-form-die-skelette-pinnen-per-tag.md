@@ -56,7 +56,7 @@
   OCI-Image als *Vertriebsmittel* und ist damit der Grund, warum keine Archiv-Form besteht — die
   **Anker-Frage** entscheidet sie nicht: *aufbewahren, um einen Lauf zu wiederholen* und
   *ausliefern* sind zwei Vorgänge, und die ADR spricht nur über den zweiten. Der Kurzschluss,
-  den [`BEO-008`](../../docs/plan/planning/observations/BEO-008/adaptions-achse-1-kurzschluss/observation.md) führt, ist hier ausdrücklich
+  den [`BEO-008`](../../docs/plan/planning/observations/BEO-ALL/adaptions-achse-1-kurzschluss/observation.md) führt, ist hier ausdrücklich
   vermieden.
 - **Kein Wächter, und das gehört dazu.** Kein Modul aus `modules:` der
   [`.d-check.yml`](../../.d-check.yml) prüft eine Pin-Form (`grep -m1 '^modules:' .d-check.yml`

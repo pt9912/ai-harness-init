@@ -42,7 +42,7 @@ selbst als Bedingung ihres Umschlags auf `Accepted` nennt.
   meldete **dreimal** dieselbe Klasse — MEDIUM-2 *„Die Provenienz- und Inventur-Zahlen der
   Commit-Messages halten der Nachmessung nicht stand"*, LOW-1 *„Zahl ohne Kommando"*, LOW-2
   *„… aus dem Text nicht reproduzierbar"*. Im Register läuft sie als
-  [`BEO-015`](../plan/planning/observations/BEO-015/zahl-neben-nie-gefahrenem-kommando/observation.md)
+  `BEO-015`
   und steht dort auf **3×** (Belege `slice-147`, `slice-148`, `slice-182`), Schwelle erreicht.
 - **Slice-Plan:** [`docs/plan/planning/done/slice-178-regierende-fassung-des-sprungs-v600.md`](../plan/planning/done/slice-178-regierende-fassung-des-sprungs-v600.md).
 
@@ -80,7 +80,7 @@ selbst als Bedingung ihres Umschlags auf `Accepted` nennt.
     docs/plan/adr/0036-ziel-fassung-regiert-den-sprung-v600.md   # 17 eigene Verweise
   ```
 - **klasse:** *Zahl neben nie gefahrenem Kommando* — deckungsgleich mit
-  [`BEO-015`](../plan/planning/observations/BEO-015/zahl-neben-nie-gefahrenem-kommando/observation.md).
+  `BEO-015`.
 - **Warum HIGH und nicht MEDIUM.** Drei Verstärker, jeder einzeln benannt: (a) die Klasse steht im
   Register auf **3×** und wurde von diesem Slice weder in §8 gesichtet noch in §7 erhöht — die
   Sichtung führt `BEO-019`, `BEO-027`, `BEO-016` und nicht `BEO-015`; (b) dieselbe Klasse war in der
@@ -170,7 +170,7 @@ selbst als Bedingung ihres Umschlags auf `Accepted` nennt.
   ```
 - **klasse:** *Präsens-Aussage über ein lebendes Artefakt in einem einzufrierenden Text* —
   deckungsgleich mit
-  [`BEO-024`](../plan/planning/observations/BEO-024/praesens-aussage-in-einzufrierendem-artefakt-ohne-form/observation.md)
+  `BEO-024`
   (1×, offen), das genau diese Fehlerrichtung führt: *„die Aussage altert nach dem Einfrieren, und
   niemand darf sie mehr korrigieren"*.
 

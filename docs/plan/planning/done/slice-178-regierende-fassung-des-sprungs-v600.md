@@ -137,7 +137,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Die erste Mess-Stufe kommt byte-gleich heraus und die Wahl wird als *egal* gelesen**
-  (`BEO-019` im [Register](../observations/README.md)). Der Abschnitt delegiert in andere Dateien, und
+  (`BEO-019` im Register). Der Abschnitt delegiert in andere Dateien, und
   deren Delta trägt die Wirkung; die zweite Stufe ist deshalb Pflicht, nicht Zugabe. —
   **Ausgang: entfallen**, gemessen statt vermutet. Die Entscheidung steht auf der Delegation:
   neun Verweise des byte-gleichen Abschnitts, vier davon nach `grundlagen-harness-dateien.md`,
@@ -239,7 +239,7 @@ die Modus-Deklaration in
 [`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area) für
 Norm-Artefakte führt.
 
-**Vorgelagert — offene Beobachtungen sichten:** Das [Register](../observations/README.md) ist vollständig
+**Vorgelagert — offene Beobachtungen sichten:** Das Register ist vollständig
 durchgegangen. **Jede** Zeile trägt `*` (gesamtes Repo) — die Spalte unterscheidet in diesem Repo
 nichts (`BEO-004`). Drei Zeilen berühren diesen Slice mit ihrem Zähler-Stand, keine erreicht mit
 ihm 3×:
