@@ -158,7 +158,7 @@ dasteht.
   ([slice-171](../open/slice-171-adr-0031-acceptance-trigger.md),
   [slice-152](../open/slice-152-adr-0029-acceptance-trigger.md)); eine dritte wäre ein Muster.
   Der Acceptance-Trigger gehört darum in die ADR selbst. — **Ausgang: weiter offen**, ins
-  [Register](../observations.md) als `BEO-041` (1×, Beleg `slice-178`). Die Mitigation ist
+  Register als `BEO-041` (1×, Beleg `slice-178`). Die Mitigation ist
   angewandt — der Trigger steht in der Datei, ein dritter Slice in `open/` entsteht nicht
   (`git grep -l 'adr/0036-' -- docs/plan/planning/open` → leer) —, aber die zweite Hälfte des
   Risikos bleibt wahr: der Start-Trigger von
@@ -192,7 +192,7 @@ Backticks).
   Instrumenten-Fehlers und darum eine eigene Kennung.
 - **Steering-Loop-Eintrag:** neue Beobachtung statt geschärfter Regel — *ein Zeilen-Diff über
   zwei vendored Bäume misst nicht die Regel, solange der Herkunfts-Kommentar mitzählt*. Angelegt
-  als `BEO-040` im [Register](../observations.md), mit der rückwirkenden Gegenprobe über den
+  als `BEO-040` im Register, mit der rückwirkenden Gegenprobe über den
   Sprung davor. Verkörpert ist damit nichts — der Eintrag ist gezählt, nicht verkörpert, und
   wartet auf 3×.
 - **Beobachtungs-Register (`../observations.md`):** zwei neue Zeilen. `BEO-040` (`*` (gesamtes
