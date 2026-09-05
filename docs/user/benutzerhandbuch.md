@@ -171,7 +171,7 @@ make gates
 Während des Aufsetzens sehen Sie eine Abschluss-Zeile wie:
 
 ```text
-ai-harness-init: Bootstrap (Baseline v5.18.0 vendored + Doc-Gate + Aggregator + Durchsetzung + Template-Baseline) — --lang=go (Skelett verdrahtet).
+ai-harness-init: Bootstrap (Baseline v6.0.0 vendored + Doc-Gate + Aggregator + Durchsetzung + Template-Baseline) — --lang=go (Skelett verdrahtet).
 ```
 
 Das bedeutet: Regelwerk und Vorlagen liegen im Repository, die Prüfungen sind verdrahtet, und ein lauffähiges Go-Grundgerüst ist eingebaut. `make gates` läuft danach ohne Fehler durch. (Ohne `--lang` steht statt „Skelett verdrahtet“ die Meldung „sprach-agnostisch (doc-only Gate)“ — siehe [Ohne Sprache aufsetzen](#ohne-sprache-aufsetzen-doc-only).)
