@@ -101,7 +101,7 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | [`docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) | update (Status + Geschichte-Zeile + Trigger-Verdikt), Architect | DoD (1)/(2); nach `Accepted` immutabel ([`AGENTS.md`](../../../../AGENTS.md) §3.4) — DoD (2) gehört **vor** den Status-Wechsel |
 | [`docs/plan/adr/README.md`](../../adr/README.md) | update (Status-Spalte), Architect | DoD (1) — derivatives Register desselben Originals ([ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)) |
-| [`docs/plan/planning/observations.md`](../observations/README.md) | update | Register-Pflicht (nicht mitgezählt) |
+| [`docs/plan/planning/observations/README.md`](../observations/README.md) | update | Register-Pflicht (nicht mitgezählt) |
 
 **Commit-Zuschnitt nach Rollen:** ein Reviewer-Durchgang ohne eigenen Commit
 (Konsistenz ist Voraussetzung, kein Artefakt), danach ein Architect-Commit für

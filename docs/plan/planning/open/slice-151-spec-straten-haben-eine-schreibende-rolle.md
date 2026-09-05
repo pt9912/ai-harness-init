@@ -100,7 +100,7 @@ Aussagen-Berührung steht hier gar nicht.
 | `docs/plan/adr/00NN-…​.md` | neu (per `cp` aus der vendored Vorlage), Architect | DoD (1)/(2) |
 | [`docs/plan/adr/README.md`](../../adr/README.md) | update (Index-Zeile + Status), Architect | DoD (1)/(2) — derivatives Register desselben Originals ([ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)) |
 | [`AGENTS.md`](../../../../AGENTS.md) | update (§3.8 Zeiger), Architect, eigener Commit | Doku-Update, fällig erst mit der Annahme |
-| [`docs/plan/planning/observations.md`](../observations/README.md) | update (`BEO-007` Stand) | Register-Pflicht (nicht mitgezählt) |
+| [`docs/plan/planning/observations/README.md`](../observations/README.md) | update (`BEO-007` Stand) | Register-Pflicht (nicht mitgezählt) |
 
 ## 4. Trigger
 

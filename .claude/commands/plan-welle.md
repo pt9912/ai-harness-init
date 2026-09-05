@@ -50,7 +50,7 @@ Lies den Adaptions-Block („MR-Block") in `harness/conventions.md`; die planung
 
 ## Slices bereitstellen
 
-**Vor jedem neuen Slice-Plan: das Beobachtungs-Register sichten** (`docs/plan/planning/observations.md`)
+**Vor jedem neuen Slice-Plan: das Beobachtungs-Register sichten** (`docs/plan/planning/observations/README.md`)
 — der **Sichtungs**-Schritt aus Modul 5, *Zwei Schritte vor der Modus-Begründung*, und für alles
 **unter** 3× der einzige Leser: die Welle-Closure liest nur, was die Schwelle erreicht hat. Berührt
 eine Sub-Area des neuen Slice eine Registerzeile, gehört ihr **Zähler-Stand** in das Kriterium

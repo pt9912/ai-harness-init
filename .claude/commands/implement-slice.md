@@ -145,7 +145,7 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
     keine Welle-Plan-Dateien, präfixlose Eingehend-Form unerkannt — `BEO-003`). `make docs-check`
     danach prüft den Rest. Ein rotes Gate erreicht `done/` **nur** mit dokumentiertem Carveout
     (Modul 7), nie als stilles Rot.
-24. **Das Beobachtungs-Register fortschreiben** (`docs/plan/planning/observations.md`, Modul 6) —
+24. **Das Beobachtungs-Register fortschreiben** (`docs/plan/planning/observations/README.md`, Modul 6) —
     der **Schreib**-Schritt, und er hängt an der Closure, nicht an der Implementation. Für jede
     Beobachtung aus §7: führt das Register die Klasse schon, dann die vorhandene `BEO-<NNN>`
     **zitieren** und den Zähler erhöhen — wer neu formuliert, spaltet eine Klasse in zwei Namen,

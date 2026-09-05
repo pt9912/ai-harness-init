@@ -262,10 +262,21 @@ dasteht.
   Gegenstücke beschreiben die heutige Tabellen-Form — dazu die Vorlagen-Zeile *„Beobachtungs-Register
   (`../observations.md`) fortgeschrieben"*, die in **jedem** offenen Slice-Plan steht. Wer die
   Anweisungssätze schreiben darf, ist die offene Frage aus `BEO-007`. — **Ausgang: weiter offen.**
-  Unverändert gegenüber dem migrierten Registerstand (`BEO-009`/`BEO-007`); dieser Slice zieht laut
-  §1 ausdrücklich nur die **Adresse** `observations.md` → `observations/README.md` nach, nicht die
-  **Form-Beschreibung** — Letztere bleibt [slice-184](../open/slice-184-register-form-im-bestand-nachziehen.md)
-  zugewiesen.
+  Unverändert gegenüber dem migrierten Registerstand (`BEO-009`/`BEO-007`); die **Grenze zwischen
+  diesem Slice und [slice-184](../open/slice-184-register-form-im-bestand-nachziehen.md) ist real
+  gemessen statt behauptet** (Review-Nacharbeit, Review-Fund MEDIUM-1: die beiden Pläne wiesen sich
+  dieselbe Teilmenge wechselseitig zu). **Was dieser Slice trägt:** die bare Adresse
+  `observations.md` → `observations/README.md`, überall dort, wo sie **unabhängig** von der
+  Vorlagen-Zeile auftritt — die drei Anweisungssätze unter `.claude/commands/` und ihre emittierten
+  Gegenstücke (sechs Dateien, `git grep -l 'observations\.md' -- .claude/commands
+  internal/emit/templates/commands`, alle sechs jetzt auf `observations/README.md` gezogen), dazu
+  jede Markdown-Link-Form repo-weit (`LOW-1`, Label nachgezogen). **Was [slice-184] trägt:** genau
+  die Fälle, in denen Adresse und Form **dieselbe Zeichenkette** sind und sich nicht trennen lassen
+  — die Vorlagen-Zeile *„Beobachtungs-Register (`../observations.md`) fortgeschrieben"* selbst, in
+  jedem offenen/nächsten/laufenden Slice-Plan, in dem sie steht: Ihre Adresse ist mit ihrer
+  Form-Aussage (*neue `BEO-<NNN>` oder Zähler +1*) verwoben, und ein Nachzug, der nur die Adresse
+  träfe, verschöbe die Form-Korrektur ohne sie zu leisten. Diese Grenze steht jetzt symmetrisch in
+  beiden Plänen.
 - **Die Zwischen-Zustands-Zusage ist nicht bewiesen, sondern hergeleitet.** Dass zwei Closures an
   verschiedenen Beobachtungen nicht mehr kollidieren, folgt aus der Datei-Trennung; ein
   Gegenbeispiel ist hier **nicht** rot gesehen ([`AGENTS.md`](../../../../AGENTS.md) §3.6), und kein

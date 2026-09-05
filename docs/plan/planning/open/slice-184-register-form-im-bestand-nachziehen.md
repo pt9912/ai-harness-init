@@ -39,10 +39,15 @@ ist einzeln lieferbar.
 **Kein lebendes Artefakt dieses Repos und kein emittiertes beschreibt das Beobachtungs-Register
 noch als Tabelle mit gepflegtem Zähler.**
 
-**Der Gegenstand ist die Form-Beschreibung, nicht die Adresse.** Den Pfad
-`observations.md` → `observations/` zieht
-[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) über seine Bezugsmenge nach. Was
-dort ausdrücklich als Risiko stehen bleibt (`BEO-009`), ist die **Anweisung daneben**: *neue
+**Der Gegenstand ist die Form-Beschreibung, nicht jede Adresse — und die Grenze ist jetzt real
+gemessen, nicht nur behauptet** (Review-Nacharbeit an
+[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md), Review-Fund
+MEDIUM-1: die beiden Pläne wiesen sich wechselseitig dieselbe Teilmenge zu, ohne dass einer sie
+trug). [slice-177] zieht die bare Adresse `observations.md` → `observations/README.md` überall
+dort nach, wo sie **unabhängig** von der Vorlagen-Zeile unten auftritt — namentlich in allen
+sechs Anweisungssatz-Dateien (§ unten). **Was hier bleibt**, ist die **Anweisung daneben**, dort wo
+Adresse und Form **dieselbe Zeichenkette** sind und sich nicht trennen lassen — die Vorlagen-Zeile
+*„Beobachtungs-Register (`../observations.md`) fortgeschrieben"* selbst, mit ihrer Anweisung: *neue
 `BEO-<NNN>` oder Zähler +1*, *`BEO-<NNN>` zitieren und den Zähler erhöhen*, *jede Registerzeile
 trägt einen Beleg*. Unter der Ziel-Form gibt es keine Zeile, keine fortlaufende Nummer und keinen
 Zähler, den man erhöht — er **folgt** aus den Dateien (Position **P-14** des Katalogs in
@@ -65,10 +70,13 @@ Keine Erwartungswerte
 Setzung 2) — beide Beträge wandern mit jedem neu geschnittenen Plan.
 
 **Die vier sind die Form-Hälfte, nicht die Adress-Hälfte.** Nimmt man den Pfad `observations.md`
-mit ins Muster, sind es **alle sechs** Anweisungssatz-Dateien — die zwei zusätzlichen tragen die
-Adresse und sonst nichts von der alten Form, und die Adresse zieht
-[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) über seine eigene Bezugsmenge
-nach. Beide Mengen sind mit demselben Kommando und nur getauschtem Muster gemessen, damit die
+mit ins Muster, sind es **alle sechs** Anweisungssatz-Dateien — die zwei zusätzlichen trugen die
+Adresse und sonst nichts von der alten Form, und die Adresse hat
+[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) bereits über seine
+eigene Bezugsmenge nachgezogen (alle sechs Dateien zeigen jetzt auf `observations/README.md`).
+Dieser Slice übernimmt für alle sechs nur noch die **Form**-Sprache (`BEO-<NNN>`, *Registerzeile*,
+*Zähler erhöhen*), nicht mehr die Adresse. Beide Mengen sind mit demselben Kommando und nur
+getauschtem Muster gemessen, damit die
 Grenze zwischen den zwei Slices nicht behauptet, sondern sichtbar ist.
 
 **Zwei Ebenen, und sie sind auseinanderzuhalten.** Die drei Anweisungssätze unter

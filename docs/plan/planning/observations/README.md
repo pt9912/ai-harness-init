@@ -58,3 +58,11 @@ unvollständig.
 
 **Ist nichts offen**, steht in dieser Ablage nur diese `README.md` — ein leeres Verzeichnis führt
 `git` nicht. Ohne sie wäre *nichts beobachtet* nicht von *nie geführt* zu unterscheiden.
+
+**Zwei Verweis-Formen, ein Kriterium: was wird zitiert.** Ein Verweis auf das Register **als
+Mechanismus** — *das Register sichten*, *der Zähler wird abgeleitet*, *wer schreibt/liest* —
+zeigt auf diese `README.md`. Ein Verweis auf **eine konkrete Beobachtung** — ihre Bezeichnung,
+ihr Stand, ihr Zähler — zeigt auf deren eigene `observation.md` (Kennung `BEO-<KUERZEL>/<slug>`).
+Die erste Form überlebt jede Umbenennung eines Eintrags, die zweite bricht mit ihr — genau das
+macht sie zur richtigen Wahl, wenn der Verweis wirklich diese eine Beobachtung meint und nicht
+das Register als Ganzes.

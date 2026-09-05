@@ -142,7 +142,7 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
     Folge-Slice mit ID · *entfallen* → gestrichen **mit Begründung** · *weiter offen* → wandert ins
     Beobachtungs-Register (Schritt 24). Ein Slice geht nicht nach `done/`, während ein Risiko ohne
     Ausgang dasteht.
-24. **Das Beobachtungs-Register fortschreiben** (`docs/plan/planning/observations.md`, Modul 6) —
+24. **Das Beobachtungs-Register fortschreiben** (`docs/plan/planning/observations/README.md`, Modul 6) —
     der **Schreib**-Schritt, und er hängt an der Closure, nicht an der Implementation. Für jede
     Beobachtung aus der Closure-Notiz: führt das Register die Klasse schon, dann die vorhandene
     `BEO-<NNN>` **zitieren** und den Zähler erhöhen — wer neu formuliert, spaltet eine Klasse in zwei

@@ -159,7 +159,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       ([`AGENTS.md`](../../../../AGENTS.md) §3.4).
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [ ] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
-      [`observations.md`](../observations/README.md) — *keine Beobachtung angefallen* ist ebenfalls eine
+      [`observations/README.md`](../observations/README.md) — *keine Beobachtung angefallen* ist ebenfalls eine
       Antwort und wird in §7 notiert. Das Reconciliation-Register entfällt dauerhaft: dieses Repo
       hat keinen Brownfield-Bootstrap.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
@@ -319,7 +319,7 @@ und der Schnitt ist nicht zu grob: `docs/plan/` als Ganzes trüge Planung, Carve
 zusammen und vermischte drei Regel-Lagen in einem Block.
 
 **Vorgelagert — offene Beobachtungen sichten:** die Sichtung ist **offen** — sie ist vor der
-Bearbeitung gegen [`observations.md`](../observations/README.md) zu fahren, und ihr Ergebnis gehört ins
+Bearbeitung gegen [`observations/README.md`](../observations/README.md) zu fahren, und ihr Ergebnis gehört ins
 Kriterium *Evidenz-/Diskrepanz-Risiko* unten. Sie steht hier nicht als Ergebnis, weil der Stand des
 Registers zwischen Schnitt und Bearbeitung wandert.
 

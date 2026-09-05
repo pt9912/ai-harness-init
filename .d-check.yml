@@ -167,9 +167,18 @@ codepaths:
   # eines Vorgangs, den es gab.
   # Der siebte ist die flache Register-Datei selbst (ADR-0034): v6.0.0 ersetzt sie ersatzlos
   # durch die Verzeichnis-Ablage docs/plan/planning/observations/, keine zweite Fassung bleibt
-  # stehen. Der Bestand in docs/plan/planning/done/ und docs/reviews/ nennt den alten Pfad als
-  # Inline-Code weiter — dort ist er die Adresse eines Vorgangs, den es gab, nicht ein Zeiger auf
-  # einen Ort, der heute etwas bedeutet.
+  # stehen. Referenz-weit wie die sechs Paare darueber: jede Inline-Code-Nennung dieses Pfads
+  # verstummt, unabhaengig von der Quelldatei. Gemessen (Eintrag entfernt, docs-check ueber der
+  # Kopie) reicht das ueber die zwei im Ursprungs-Slice genannten Klassen (docs/plan/planning/
+  # done/, docs/reviews/) hinaus auf vier Klassen: docs/plan/planning/done/** (Zeitdokumente,
+  # Adresse eines Vorgangs, den es gab) · docs/plan/planning/open/** (slice-151/152/153/162/168/
+  # 171/174/181 -- die alte Vorlagen-Zeile "Beobachtungs-Register (`../observations.md`)
+  # fortgeschrieben", Form-Nachzug ist slice-184s Gegenstand, nicht dieser Zeile) ·
+  # docs/plan/planning/in-progress/slice-177-*.md selbst (misst den Ausgangsstand vor dem eigenen
+  # Umzug, Praeteritum) · docs/user/benutzerhandbuch.md (eine datierte Aenderungshistorie-Zeile,
+  # Chronik von Beruf). Kein Treffer liegt ausserhalb dieser vier Klassen -- namentlich kein
+  # .claude/commands/* oder internal/emit/templates/commands/* mehr, die vor diesem Nachzug hier
+  # mitverdeckt waren.
   ignore-refs:
     - docs/plan/planning/slice.template.md
     - docs/plan/planning/welle.template.md

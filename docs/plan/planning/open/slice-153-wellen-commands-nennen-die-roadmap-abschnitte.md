@@ -105,7 +105,7 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) | update (Schritt 5 + Kopf-Bezug) | DoD (1)/(2) — zwei Nennungen |
 | [`.claude/commands/plan-welle.md`](../../../../.claude/commands/plan-welle.md) | update (Eröffnungs-Schritt 3) | DoD (1)/(2) — eine Nennung |
-| [`docs/plan/planning/observations.md`](../observations/README.md) | update (`BEO-009` Stand) | Register-Pflicht (nicht mitgezählt) |
+| [`docs/plan/planning/observations/README.md`](../observations/README.md) | update (`BEO-009` Stand) | Register-Pflicht (nicht mitgezählt) |
 
 ## 4. Trigger
 

@@ -109,7 +109,7 @@ Aussagen-Berührung steht hier gar nicht.
 | [`docs/plan/adr/0029-agenten-typkarten-derivativ-gemischte-originale.md`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) | update (Status + Geschichte-Zeile), Architect | DoD (1); nach `Accepted` immutabel ([`AGENTS.md`](../../../../AGENTS.md) §3.4) |
 | [`docs/plan/adr/0025-register-mit-gemischten-originalen.md`](../../adr/0025-register-mit-gemischten-originalen.md) | update (Status) **oder** unberührt | DoD (2) — welcher der zwei Ausgänge, entscheidet die Konsistenzprüfung |
 | [`docs/plan/adr/README.md`](../../adr/README.md) | update (Status-Spalte), Architect | DoD (1)/(2) — derivatives Register desselben Originals |
-| [`docs/plan/planning/observations.md`](../observations/README.md) | update (neue Kennung + `BEO-007` Stand) | Register-Pflicht (nicht mitgezählt) |
+| [`docs/plan/planning/observations/README.md`](../observations/README.md) | update (neue Kennung + `BEO-007` Stand) | Register-Pflicht (nicht mitgezählt) |
 
 **Commit-Zuschnitt nach Rollen:** ein Reviewer-Durchgang ohne eigenen Commit
 (Konsistenz ist Voraussetzung, kein Artefakt), danach ein Architect-Commit für

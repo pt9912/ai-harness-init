@@ -57,7 +57,7 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
    funktionierte · was anders lief · **Steering-Loop-Einträge** (geschärfte Regel / neuer Sensor /
    benannte Spec-Lücke) · Zeiger aufs Beobachtungs-Register · Folge-Slices · Verifikation (die Belege
    aus Schritt 1). **Ohne Lerneintrag ist die Welle nicht „fertig", nur „weg".**
-   **Der Lese-Schritt des Beobachtungs-Registers gehört hierher** (`docs/plan/planning/observations.md`,
+   **Der Lese-Schritt des Beobachtungs-Registers gehört hierher** (`docs/plan/planning/observations/README.md`,
    Modul 6): jede Zeile mit Zähler **≥ 3** wandert in die Steering-Loop-Einträge und wird zur
    **verkörperten Regel** mit Herkunfts-Anker (`seit welle-<NN>`). Die Zeile bleibt danach im Register
    stehen, mit Vermerk; gestrichen wird nur in die Sektion *Gestrichene Einträge*, mit Begründung.

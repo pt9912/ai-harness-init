@@ -28,11 +28,11 @@ Rule „git mv + Inhaltsänderung = zwei Commits" in
 
 ## Beobachtungs-Register
 
-[`observations.md`](observations/README.md) liegt **flach** in diesem Verzeichnis, neben den Wellen — und
-ist keine Welle: die Datei steht, sie wandert nicht, und sie hat keinen Lifecycle-Zustand. Sie ist
-der Zähler des Steering Loops. Geschrieben wird bei der **Slice-Closure**, gelesen bei der
+[`observations/`](observations/README.md) liegt als Verzeichnis in diesem Ordner, neben den Wellen —
+und ist keine Welle: je Beobachtung ein eigenes Verzeichnis, kein Lifecycle-Zustand. Sie ist der
+Zähler des Steering Loops. Geschrieben wird bei der **Slice-Closure**, gelesen bei der
 **Welle-Closure** (was 3× erreicht hat) und in **§8 jedes Slice-Plans** (was darunter steht). Die
-Regeln stehen in der Datei selbst.
+Regeln stehen in [`observations/README.md`](observations/README.md).
 
 ## Aktueller Stand
 

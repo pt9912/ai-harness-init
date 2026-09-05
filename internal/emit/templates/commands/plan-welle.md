@@ -43,7 +43,7 @@ Lies den Adaptions-Block („MR-Block") in `harness/conventions.md`; die planung
 
 ## Eröffnung: die drei Pflichtteile (Modul 6 — vor dem Schreiben benennen)
 
-**Vor den Pflichtteilen: das Beobachtungs-Register sichten** (`docs/plan/planning/observations.md`,
+**Vor den Pflichtteilen: das Beobachtungs-Register sichten** (`docs/plan/planning/observations/README.md`,
 Modul 6, Eröffnungs-Schritt 2). Betrifft eine offene Beobachtung eine Sub-Area dieser Welle, gehört
 sie in die Slice-Planung (Risiko im betroffenen Slice) — und erreicht der Eintrag **mit dieser Welle**
 3×, ist er keine Notiz mehr, sondern eine Lücke und braucht einen eigenen Slice. **Bei der ersten
