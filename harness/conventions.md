@@ -188,30 +188,34 @@ Datei: die wandert bei ihrer eigenen Auflösung weiter.
 
 ## Modus-Deklaration pro Sub-Area
 
-**Eine Kürzel-Spalte führt diese Tabelle nicht.** Die Ziel-Form verlangt sie nur dort, wo Kennungen
-ein Bereichssegment tragen (`ADR-<KUERZEL>-NNNN`, `slice-<KUERZEL>-NNN`); wer ohne Segment zählt,
-streicht sie (adoptierter Stand `v5.18.0`,
-`.harness/baseline/v5.18.0/regelwerk/grundlagen-harness-dateien.md`
-§harness/conventions.md als Konventionsspeicher). Dieses Repo zählt ohne Segment: Das ID-Schema in
-[`MR-000`](#mr-000--baseline-aussage) führt keines, und keine vergebene Kennung trägt eines.
+**Die Spalte ist nicht bedingt — seit `v6.0.0` trägt sie.** Bis `v5.18.0` verlangte die Ziel-Form
+eine Kürzel-Spalte nur dort, wo Kennungen ein Bereichssegment tragen (`ADR-<KUERZEL>-NNNN`,
+`slice-<KUERZEL>-NNN`); ohne Segment zählende Repos strichen sie. Das ID-Schema in
+[`MR-000`](#mr-000--baseline-aussage) führt weiterhin keines für ADRs/Slices:
 
 ```sh
 git grep -ohE '\b(ADR|CO|MR)-[A-Z]{2,}-[0-9]+|\bslice-[A-Z]{2,}-[0-9]+' -- '*.md' ':!.harness/baseline' | sort -u | wc -l   # 0
 ```
 
 **Kein Erwartungswert** ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2) — die Zahl wandert mit dem Bestand; die Aussage hängt daran, dass sie null ist. Der
-Zählraum wird erst mit dem zweiten Menschen am Repo zur Frage, und hier fallen Auftraggeber und
-Entwickler zusammen
-([`MR-015`](#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)). Ein
-vergebenes Kürzel ist unveränderlich — es steht dann in Kennungen, in Commits und in Verweisen —,
-deshalb entsteht die Spalte mit dem Segment und nicht auf Vorrat.
+Setzung 2) — die Zahl wandert mit dem Bestand; die Aussage hängt daran, dass sie null ist. Seit
+`v6.0.0` trägt jedoch eine andere Kennungsklasse ein Segment: Die Identität einer Beobachtung im
+Beobachtungs-Register **ist** der Pfad `BEO-<KUERZEL>/<slug>`
+([`ADR-0034`](../docs/plan/adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
+Festlegung 3) — die Bedingung ist damit erfüllt, nicht aufgehoben, und die Spalte deklariert **nur**
+dieses Segment, keines von ADR/Slice. Tragend ist allein `ALL`: Alle Beobachtungen dieses Repos
+führen dieselbe Sub-Area `*`
+(`grep -h '^\*\*Sub-Area:\*\*' docs/plan/planning/observations/BEO-ALL/*/observation.md | sort -u`
+→ eine Zeile, `* (gesamtes Repo)`, über allen **41** Verzeichnissen — keine Erwartungswerte, die
+Tabellenform ist mit der Verzeichnis-Form entfallen und die Sub-Area steht seitdem in dieser Zeile
+jeder `observation.md`, nicht mehr in einer Spalte der flachen Datei). Ein vergebenes Kürzel ist
+unveränderlich — es steht dann in Kennungen, in Commits und in Verweisen.
 
-| Sub-Area | Modus | Begründung | Graduation |
-|---|---|---|---|
-| `*` (gesamtes Repo) | Greenfield | Neues Repo, Doc führt, Code folgt | n/a (GF) |
-| `harness/tools/` | Greenfield | adoptierte Harness-Mechanik (Adaptions-Block) | n/a (GF) |
-| `.codex/` | Greenfield | neue Pfad-Familie, adoptierte SessionStart-Hook-Mechanik | n/a (GF) |
+| Sub-Area | Kürzel | Modus | Begründung | Graduation |
+|---|---|---|---|---|
+| `*` (gesamtes Repo) | `ALL` | Greenfield | Neues Repo, Doc führt, Code folgt | n/a (GF) |
+| `harness/tools/` | `TOOLS` | Greenfield | adoptierte Harness-Mechanik (Adaptions-Block) | n/a (GF) |
+| `.codex/` | `CODEX` | Greenfield | neue Pfad-Familie, adoptierte SessionStart-Hook-Mechanik | n/a (GF) |
 
 **Wer der „Auswerter (slice-060)" aus [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) ist.**
 Die ADR ist ab *Accepted* immutabel und nennt an drei Stellen die Slice-**ID** 060 als den
