@@ -360,7 +360,7 @@ gegenstandslos, teilweise überholt, ohne Bezug oder im Widerspruch. Die Befunde
   [slice-091](../plan/planning/open/slice-091-vendored-baum-ohne-anspruch.md),
   [slice-092](../plan/planning/open/slice-092-traeger-inventur.md),
   [slice-153](../plan/planning/open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md),
-  [slice-186](../plan/planning/open/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md).
+  [slice-186](../plan/planning/next/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md).
   **Kein Befund.**
 - **Register-Paarung (maschinelle Hälfte)** — jede in §6/§7 zitierte Beobachtung existiert als
   Verzeichnis, und **kein** Verzeichnis hat ein leeres `evidence/` (45 geprüft). Die drei genannten

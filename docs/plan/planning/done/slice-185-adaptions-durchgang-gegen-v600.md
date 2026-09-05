@@ -666,5 +666,5 @@ oben ist gegen den Zielstand neu gefahren —, und **ändert** keine.
 
 Ebenfalls nicht getragen: die Zitate der abgeschafften Beobachtungs-Nummer in §1, §6 und §8 dieses
 Plans. Sie sind der Gegenstand von
-[slice-186](../open/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md); jede in diesem
+[slice-186](../next/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md); jede in diesem
 Durchgang **neu** geschriebene Nennung steht in der Pfad-Form und löst auf.

@@ -12,7 +12,7 @@ fortlaufende Nummer abgeschafft; seither zitieren **23** lebende Dateien eine Ke
 nirgends mehr auflöst (§1, mit Kommando). Ein Ausgang in `open/` wäre hier gerade **kein**
 verbuchter Ausgang im Sinne des Welle-Ziels *„statt einzeln als Nachzügler zurückzukommen"* — der
 Nachzügler wäre mit dem Umzug schon da. **Der Unterschied zu
-[slice-183](slice-183-ausloeser-der-wellenlosen-archivierung.md)**, der aus demselben Katalog kommt
+[slice-183](../open/slice-183-ausloeser-der-wellenlosen-archivierung.md)**, der aus demselben Katalog kommt
 und ausdrücklich **draußen** bleibt: Dort ist nichts gebrochen, dort wird eine offene Frage
 entschieden, und die Datei in `open/` ist der verbuchte Ausgang.
 
@@ -144,7 +144,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       keines von beiden, und genau diese Unterscheidung ist zu treffen statt anzunehmen). Der
       Ausgang steht im Plan, nicht nur im Commit.
 - [ ] **Der Sichtungs-Schritt von
-      [slice-181](slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md) §8 liest keine
+      [slice-181](../open/slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md) §8 liest keine
       abgeschaffte Struktur mehr.** Sein Beleg-Kommando schneidet mit `awk -F'|'` auf die
       Tabellenspalten des entfallenen Trägers; ein reiner Pfad-Nachzug ergäbe ein Kommando, das
       lautlos leer liefert — der Ersatz zählt Evidence-Dateien und liest `state.md`.
@@ -174,7 +174,7 @@ Aussagen-Berührung steht hier gar nicht.
 | [`docs/plan/adr/`](../../adr/) | update **oder** *keine*, je nach Status | zwei Dateien, zwölf Vorkommen — die `Accepted`-Hälfte ist nach §3.4 eingefroren, die `Proposed`-Hälfte nicht; steht als Risiko in §6 |
 | [`harness/README.md`](../../../../harness/README.md), [`.claude/commands/`](../../../../.claude/commands/), [roadmap](../in-progress/roadmap.md), [welle-15](../welle-15-re-baseline.md) | update | je ein Vorkommen; der Anweisungssatz gehört seiner ausführenden Rolle ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)) |
 | `docs/plan/planning/observations/` | update oder *keine* | Liefer-Punkt 2 — die Entscheidung steht vor der Änderung |
-| [slice-181](slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md) §8 | update | Liefer-Punkt 3 — Kommando statt Zitat |
+| [slice-181](../open/slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md) §8 | update | Liefer-Punkt 3 — Kommando statt Zitat |
 
 **Der Commit-Zuschnitt zerfällt nach Rolle, nicht nach Datei-Menge.** Die drei Einträge unter
 `harness/conventions/` und die Anweisungssatz-Dateien gehören anderen Rollen als der Plan-Bestand;
@@ -316,7 +316,7 @@ Stand 2026-09-05, keine Erwartungswerte). Fünf Einträge berühren diesen Slice
 - [`vorgeschriebener-ortswechsel-macht-adresse-tot`](../observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/observation.md)
   (3×, `offen`) — steht auf der Schwelle und trifft Liefer-Punkt 2 unmittelbar; als Risiko in §6.
 - [`zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
-  (5×, **geplant** → [slice-181](slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md)) —
+  (5×, **geplant** → [slice-181](../open/slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md)) —
   bindet die Formulierung von DoD 1 und 3: kein Modul sieht diese Klasse, und die DoD sagt das,
   statt `make docs-check` als Deckung anzuführen. Steht als Risiko in §6.
 - [`anweisungssatz-eigentum-ohne-quelle`](../observations/BEO-ALL/anweisungssatz-eigentum-ohne-quelle/observation.md)

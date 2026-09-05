@@ -13,5 +13,5 @@ getilgt oder die Zahl gerundet.
 Ein zweiter Plan derselben Welle beschreibt dieselbe Mechanik und weicht ihr durch die Wahl seines
 Beispiels aus, statt sie als Klasse zu führen — *„Dieser Plan führt selbst keine dreistellige
 Nummer, und das ist Absicht statt Zufall"*
-([slice-186](../../../open/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) §1). Das ist
+([slice-186](../../../next/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) §1). Das ist
 Vermeidung im Einzelfall, kein Auftreten und kein Träger.
