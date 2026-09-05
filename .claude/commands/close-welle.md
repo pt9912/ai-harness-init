@@ -53,13 +53,14 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
    `../`-Links der Datei (jetzt eine Ebene tiefer) → im selben Zug reconcilen, bis `docs-check` grün
    ist.
    **Der Lese-Schritt des Beobachtungs-Registers gehört hierher** (`docs/plan/planning/observations/README.md`,
-   Modul 6): jede Zeile mit Zähler **≥ 3** wandert in die Steering-Loop-Einträge und wird zur
-   **verkörperten Regel** mit Herkunfts-Anker (`seit welle-<NN>`). Die Zeile bleibt danach **im
-   Register stehen**, mit Vermerk; still löschen macht sie ununterscheidbar von einer, die es nie
-   gab — gestrichen wird nur in die Sektion *Gestrichene Einträge*, mit der Begründung, warum die
-   Beobachtung nicht mehr auftreten kann. **Erreicht keine Zeile 3×**, ist *„keine Zeile über der
-   Schwelle"* die Feststellung, die in die Results-Notiz gehört; bei leerer Tabelle lautet sie
-   *„das Register trägt `— keine —`"*. Auslassen ist in beiden Fällen keine Antwort. Was **unter**
+   Modul 6): jeder Eintrag, dessen `evidence/` **≥ 3** Dateien führt, wandert in die
+   Steering-Loop-Einträge und wird zur **verkörperten Regel** mit Herkunfts-Anker
+   (`seit welle-<NN>`). Der Ausgang steht danach in seiner `state.md`, das **Verzeichnis bleibt
+   liegen**; still löschen macht die Beobachtung ununterscheidbar von einer, die es nie gab —
+   *gestrichen* trägt dieselbe `state.md`, mit der Begründung, warum die Beobachtung nicht mehr
+   auftreten kann. **Erreicht kein Eintrag 3×**, ist *„kein Eintrag über der Schwelle"* die
+   Feststellung, die in die Results-Notiz gehört; trägt die Ablage nur ihre `README.md`, lautet sie
+   *„das Register führt keinen Eintrag"*. Auslassen ist in beiden Fällen keine Antwort. Was **unter**
    3× steht, liest diese Closure **nicht** — dafür ist §8 des nächsten Slice-Plans zuständig
    (`/plan-welle`); wer nur den Lese-Schritt kennt, sieht alles darunter nie wieder an.
 5. **Schritt 4 — Zeitdokumente der Welle archivieren.** Ihre Slice-Dateien, ihr Plan und die

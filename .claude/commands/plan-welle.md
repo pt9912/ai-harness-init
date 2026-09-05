@@ -53,12 +53,13 @@ Lies den Adaptions-Block („MR-Block") in `harness/conventions.md`; die planung
 **Vor jedem neuen Slice-Plan: das Beobachtungs-Register sichten** (`docs/plan/planning/observations/README.md`)
 — der **Sichtungs**-Schritt aus Modul 5, *Zwei Schritte vor der Modus-Begründung*, und für alles
 **unter** 3× der einzige Leser: die Welle-Closure liest nur, was die Schwelle erreicht hat. Berührt
-eine Sub-Area des neuen Slice eine Registerzeile, gehört ihr **Zähler-Stand** in das Kriterium
-*Evidenz-/Diskrepanz-Risiko* in §8 des Plans — und erreicht der Eintrag **mit diesem Slice** 3×,
+eine Sub-Area des neuen Slice einen Eintrag `BEO-<KUERZEL>/<slug>/`, gehört dessen **Zähler-Stand**
+in das Kriterium *Evidenz-/Diskrepanz-Risiko* in §8 des Plans — abgelesen wird er nicht, er ist die
+Zahl der Dateien unter dem `evidence/` des Eintrags. Erreicht der Eintrag **mit diesem Slice** 3×,
 ist er keine Notiz mehr, sondern eine Lücke mit eigenem Folge-Slice. **Keine Treffer sind ebenfalls
-eine Antwort** und werden in §8 notiert; trägt die Tabelle `— keine —`, lautet die Antwort genau
-das — nicht *„geprüft"* und nicht gar nichts. Gelesen wird der **gemergte** Stand: das Register ist
-beim Lesen so alt wie der letzte Merge.
+eine Antwort** und werden in §8 notiert; trägt die Ablage nur ihre `README.md`, lautet die Antwort
+genau das — nicht *„geprüft"* und nicht gar nichts. Gelesen wird der **gemergte** Stand: das
+Register ist beim Lesen so alt wie der letzte Merge.
 
 6. Existiert ein Slice der Welle noch nicht, ihn **per `cp` aus `slice.template.md`** anlegen
    (`docs/plan/planning/open/slice-<NN>-<titel>.md`), dann füllen. Nie hand-authoren.

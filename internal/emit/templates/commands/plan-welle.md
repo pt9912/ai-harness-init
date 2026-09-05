@@ -46,9 +46,10 @@ Lies den Adaptions-Block („MR-Block") in `harness/conventions.md`; die planung
 **Vor den Pflichtteilen: das Beobachtungs-Register sichten** (`docs/plan/planning/observations/README.md`,
 Modul 6, Eröffnungs-Schritt 2). Betrifft eine offene Beobachtung eine Sub-Area dieser Welle, gehört
 sie in die Slice-Planung (Risiko im betroffenen Slice) — und erreicht der Eintrag **mit dieser Welle**
-3×, ist er keine Notiz mehr, sondern eine Lücke und braucht einen eigenen Slice. **Bei der ersten
-Welle entfällt der Schritt nicht:** das Register existiert ab Repo-Beginn; ist es leer (`— keine —`),
-ist genau das die Antwort und wird notiert.
+3× (die Zahl der Dateien unter seinem `evidence/`; ein Zähler-Feld gibt es nicht), ist er keine Notiz
+mehr, sondern eine Lücke und braucht einen eigenen Slice. **Bei der ersten Welle entfällt der Schritt
+nicht:** das Register existiert ab Repo-Beginn; trägt die Ablage nur ihre `README.md`, ist genau das
+die Antwort und wird notiert.
 
 4. Eine Welle braucht **minimal drei Bestandteile**, sonst ist sie keine Welle:
    - **Slice-IDs** (der Inhalt) — welche Slices bündelt sie?

@@ -58,10 +58,12 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
    benannte Spec-Lücke) · Zeiger aufs Beobachtungs-Register · Folge-Slices · Verifikation (die Belege
    aus Schritt 1). **Ohne Lerneintrag ist die Welle nicht „fertig", nur „weg".**
    **Der Lese-Schritt des Beobachtungs-Registers gehört hierher** (`docs/plan/planning/observations/README.md`,
-   Modul 6): jede Zeile mit Zähler **≥ 3** wandert in die Steering-Loop-Einträge und wird zur
-   **verkörperten Regel** mit Herkunfts-Anker (`seit welle-<NN>`). Die Zeile bleibt danach im Register
-   stehen, mit Vermerk; gestrichen wird nur in die Sektion *Gestrichene Einträge*, mit Begründung.
-   Erreicht keine Zeile 3×, ist *„keine Zeile über der Schwelle"* die Feststellung, die in die
+   Modul 6): jeder Eintrag, dessen `evidence/` **≥ 3** Dateien führt, wandert in die
+   Steering-Loop-Einträge und wird zur **verkörperten Regel** mit Herkunfts-Anker
+   (`seit welle-<NN>`). Der Ausgang steht danach in seiner `state.md`, das Verzeichnis bleibt liegen;
+   *gestrichen* trägt dieselbe `state.md`, mit Begründung — still löschen macht die Beobachtung
+   ununterscheidbar von einer, die es nie gab.
+   Erreicht kein Eintrag 3×, ist *„kein Eintrag über der Schwelle"* die Feststellung, die in die
    Results-Notiz gehört — Auslassen ist keine Antwort. Was **unter** 3× steht, liest diese Closure
    **nicht**; dafür ist der Sichtungs-Schritt der Slice-Planung zuständig (`/plan-welle`).
    **Zugleich gehört die Welle-Plan-Datei per `git mv` nach `done/`** — wegen der repo-lokalen Hard
@@ -72,8 +74,9 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
    prüfen: (a) *Anker* — wo ein Steering-Loop-Eintrag das Feld `liegt in <Zielort>` trägt, existiert
    der Zielort und trägt `seit welle-<NN>` bzw. `seit slice-<NNN>`; (b) *Folge-Slice* — jeder genannte
    Folge-Slice existiert als Datei irgendwo im Planning-Lifecycle, nicht nur in `open/`;
-   (c) *Register* — jede genannte `BEO-<NNN>` hat eine Registerzeile, und jede Registerzeile trägt
-   mindestens einen Beleg. Rot heißt in allen drei Fällen: etwas wurde versprochen und nicht angelegt.
+   (c) *Register* — jede genannte Kennung `BEO-<KUERZEL>/<slug>` existiert als Verzeichnis im
+   Register, und jedes Verzeichnis trägt ein nicht leeres `evidence/`. Rot heißt in allen drei
+   Fällen: etwas wurde versprochen und nicht angelegt.
 5. **Schritt 4 — Zeitdokumente der Welle archivieren.** Ihre Slice-Dateien, ihr Plan und die
    Review-Reports dieser Slices wandern nach `done/<welle-id>/archiv.zip`; an ihrer Stelle bleiben
    gekürzte Stubs — per `cp` aus den vendored Vorlagen `archiv-stub-slice.template.md` bzw.
