@@ -207,30 +207,64 @@ dasteht.
   nur `make gates` fährt, hält den Slice für fertig. Der Fehlerfall ist gemessen und nicht
   hypothetisch ([slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md)). —
   **Ausgang:** <…>
-- **Das emittierte Repo hat seit diesem Baum-Tausch KEINE stehende Register-Datei mehr.** Die alte
-  Vorlage `observations.template.md` (flaches `docs/plan/planning/observations.md`, ein Ziel je
-  Repo) ist upstream mit `v6.0.0` entfallen; ihr Nachfolger `observation.template.md` nennt einen
-  Ziel-Ort MIT zwei Platzhaltern (`docs/plan/planning/observations/BEO-<KUERZEL>/<slug>/`,
+- **Das emittierte Repo hat seit diesem Baum-Tausch KEINE stehende Register-Datei mehr — und für
+  diese Hälfte weist keine Quelle einen Träger aus.** Die alte Vorlage `observations.template.md`
+  (flaches `docs/plan/planning/observations.md`, ein Ziel je Repo) ist upstream mit `v6.0.0`
+  entfallen; ihr Nachfolger `observation.template.md` nennt einen Ziel-Ort MIT zwei Platzhaltern
+  (`docs/plan/planning/observations/BEO-<KUERZEL>/<slug>/`,
   [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md))
-  und ist damit nach `emit.isRecurring` wiederkehrend statt Singleton — ein frisches Repo bekommt
-  keine Vergabestelle für `BEO-<NNN>` und keinen Ort für den Sichtungs-Schritt mehr emittiert. Die
-  Lücke ist bekannt und ihr Träger ist [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md)
-  (dieselbe Welle); dieser Slice erfindet keine Lösung dafür, er zieht nur die Klassifikation
-  (`emit.isRecurring`, `test/courseset-fixture.bats`) auf den jetzt geltenden Zustand nach. —
-  **Ausgang:** <…>
-- **`make mutate` bricht seit dem Baum-Tausch VOLLSTÄNDIG ab, statt je Fall einen Befund zu
-  melden.** `test/mutations/219` und `220` tragen im `# files:`-Kopf
-  `.harness/baseline/v6.0.0/templates/docs/plan/planning/observations.template.md` — die alte,
-  upstream entfallene Vorlage. Ihre eigenen Kommentare sagen einen **lauten Befund je Fall** voraus
-  (Vollständigkeits-Schranke in `merge_report`); real bricht der Treiber schon VOR dem ersten Fall
-  ab (`target_fingerprint` scheitert an der fehlenden Datei, `mutate.sh` Zeile ~1516, exit 1, kein
-  Bericht, keine der 260+ übrigen Fälle läuft). Das ist derselbe angekündigte Fall, nur strenger
-  als vorhergesagt — kein neuer Defekt dieses Slices und bewusst nicht behoben (gehört zu
-  [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md), derselbe Träger wie
-  oben). Bis dahin liefert `make mutate` repo-weit **keine** Mutationsdeckung; die für diesen Slice
-  geänderten Wächter (`ziel_ort` in `test/courseset-fixture.bats`, `isRecurring` in
-  `internal/emit/templates.go`) sind stattdessen manuell gegen eine isolierte Kopie rot gesehen
-  (Implementation-Bericht dieses Slices). — **Ausgang:** <…>
+  und ist damit nach `emit.isRecurring` wiederkehrend statt Singleton. Dieser Slice zieht nur die
+  Klassifikation (`emit.isRecurring`, `test/courseset-fixture.bats`) auf den jetzt geltenden
+  Zustand nach; er erfindet keine Lösung.
+
+  **Der Zustand im Ziel ist gemessen, nicht hergeleitet.** Ein frisch gebootstrapptes Repo trägt
+  kein `observations/` und sagt zugleich, es trage eines: nach `make host-bin` den Träger aus dem
+  Zustands-Bereich in einem leeren `git init`-Verzeichnis mit `--name Probe` laufen lassen, dann
+  dort `ls -d docs/plan/planning/observations` → *nicht gefunden*, während
+  `grep -c 'observations/' docs/plan/planning/README.md` → **1** die Ablage als vorhanden
+  beschreibt. Ein frisches Repo bekommt damit weder einen Ort für den Sichtungs-Schritt noch die
+  leere Ablage, die *nichts beobachtet* von *nie geführt* unterscheidet
+  (Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register).
+
+  **Warum hier trotzdem kein Träger steht.** Von den **7** Mitgliedern dieser Welle
+  (`grep -c '^| \[slice-' docs/plan/planning/welle-15-re-baseline.md`) berührt keines die
+  emittierte Ablage. [slice-177](../open/slice-177-beobachtungs-register-verzeichnis-form.md) legt
+  die Ablage **dieses** Repos an ([`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
+  Festlegung 1) und nennt die Emit-Ebene nicht
+  (`grep -c 'internal/emit' docs/plan/planning/open/slice-177-beobachtungs-register-verzeichnis-form.md`
+  → **0**); [slice-184](../open/slice-184-register-form-im-bestand-nachziehen.md) zieht die
+  emittierten **Anweisungssätze** nach, und alle seine Emit-Stellen zeigen dorthin
+  (`grep -c 'internal/emit' docs/plan/planning/open/slice-184-register-form-im-bestand-nachziehen.md`
+  → **4**, dasselbe Kommando mit dem Muster `internal/emit/templates/commands` → ebenfalls **4**).
+  Auch der Katalog in
+  [slice-176](../done/slice-176-inventur-vor-dem-schnitt-v600.md) §9 führt die Position **P-14** als
+  **RE** (*bindet dieses Repo*) statt als **RE + EM**; die Begründung, die dort die Emit-Ebene
+  ausschließt (**P-12**), misst den **repo-eigenen** Vorlagensatz
+  (`find internal/emit/templates -path '*planning*' | wc -l` → **0**), während `emit.planTemplates`
+  den **vendored** Satz begeht. Genau diese Differenz lässt die emittierte Hälfte durchfallen.
+
+  **Und ein Ersatz verlangt eine Entscheidung, die keine Quelle trifft.** `v6.0.0` liefert **keine**
+  Vorlage für die `README.md`, die dasselbe Modul jedem Repo ab Beginn zuschreibt
+  (`find .harness/baseline/v6.0.0/templates -path '*observations*' | wc -l` → **0**) — wer die
+  Lücke schließt, entscheidet zuerst, ob dieses Repo dafür einen eigenen Vorlagen-Text führt oder
+  die emittierte Aussage zurücknimmt. Keine Erwartungswerte
+  ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). — **Ausgang:** <…>
+- **Ein Mutations-Fall, dessen `# files:`-Ziel dieser Tausch entfernt, legt `make mutate` repo-weit
+  still.** Der Treiber berechnet den Fingerabdruck **aller** Ziele vor dem ersten Fall
+  (`target_fingerprint` in `harness/tools/mutate.sh`); ein fehlendes Ziel bricht den Lauf ab, statt
+  den je Fall angekündigten lauten Befund zu liefern — die Vollständigkeits-Schranke in
+  `merge_report` kommt dann gar nicht mehr zum Zug. **Eingetreten, und in diesem Slice behoben:**
+  `test/mutations/219` und `220` trugen die upstream entfallene `observations.template.md` und
+  zielen jetzt auf `AGENTS.template.md`, deren Kopiere-Satz dieselbe Drift am selben Wächter trägt
+  (`emit.isRecurring` gegen `test/courseset-fixture.bats`). Der Satz läuft wieder vollständig:
+  `make mutate` meldet `250 ok, 0 Befund(e)`, EXIT 0 über `ls test/mutations/*.sh | wc -l` → **250**
+  Fälle (kein Erwartungswert,
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). Die für diesen Slice geänderten Wächter — `ziel_ort` in
+  `test/courseset-fixture.bats`, `isRecurring` in `internal/emit/templates.go` — tragen damit wieder
+  gelistete Fälle, und keiner meldet Befund. Ein Träger außerhalb dieses Slice hat keinen
+  Gegenstand. — **Ausgang:** <…>
 
 ## 7. Closure-Notiz
 
