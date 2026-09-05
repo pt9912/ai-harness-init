@@ -162,7 +162,7 @@ dasteht.
   angewandt — der Trigger steht in der Datei, ein dritter Slice in `open/` entsteht nicht
   (`git grep -l 'adr/0036-' -- docs/plan/planning/open` → leer) —, aber die zweite Hälfte des
   Risikos bleibt wahr: der Start-Trigger von
-  [slice-185](../open/slice-185-adaptions-durchgang-gegen-v600.md) §4 verlangt `Accepted`, und
+  [slice-185](../next/slice-185-adaptions-durchgang-gegen-v600.md) §4 verlangt `Accepted`, und
   der Umschlag ist eine Entscheidung des Auftraggebers, die dieser Lauf nicht hat.
 
 ## 7. Closure-Notiz
