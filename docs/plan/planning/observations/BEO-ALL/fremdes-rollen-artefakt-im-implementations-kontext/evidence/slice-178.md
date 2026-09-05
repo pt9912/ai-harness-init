@@ -1,0 +1,2 @@
+**Vorgang:** slice-178
+**Fund:** Derselbe Architect-Kontext, der die Norm dieses Slice schrieb, hat ihn auch geschlossen — Closure-Notiz, drei Risiko-Ausgänge, zwei Registerzeilen und §5 des Welle-Plans in einem Commit, danach der `git mv` nach `done/`; Closure und Welle-Plan weist Baseline-Regelwerk `modul-08-agentenrollen.md` §Rollen-Sequenz für einen Slice bzw. §Rollen-Sequenz für eine Welle dem **Planner** zu, und zwischen Implementation und Closure liegt kein Übergabe-Artefakt.

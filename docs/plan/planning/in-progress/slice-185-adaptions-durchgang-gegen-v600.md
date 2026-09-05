@@ -90,7 +90,8 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Pfad-Treffer aus §1 sind die Lesereihenfolge und **nicht** die Bezugsmenge. Der Slice weist
       je Eintrag aus, welche der zwei Hälften den Ausgang trug — sonst ist nicht unterscheidbar,
       ob eine Deckung geprüft oder nur nicht getroffen wurde. **Erfüllt:** §9 §Methode nennt die
-      Hälften und zählt die Änderungs-Menge extensional aus; die zwei Tabellen sind nach Hälfte
+      Hälften und zählt die Änderungs-Menge extensional aus — **sieben** Gegenstände, deren
+      Partition über die größte Einzeldatei aufgeht; die zwei Tabellen sind nach Hälfte
       geschnitten (20 Delta, 27 Volltext).
 - [x] **Rückbau ist ein neuer Eintrag, kein Edit.** Wird ein Eintrag gegenstandslos, wandert er
       nach `harness/conventions/done/` und behält Kopf und Zeiger
@@ -103,8 +104,11 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [x] `make gates` grün.
 - [x] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice. Ein öffentlicher
       Vertrag ist nicht berührt.
-- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [x] Beobachtungs-Register fortgeschrieben — neuer Eintrag oder ein weiterer Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag — geschrieben im **Planner**-Kontext nach dem
+      Review, mit dessen wiederkehrenden Klassen als dritter Quelle (Baseline-Regelwerk
+      `modul-05-planning-harness.md` §Closure- und Lerneintrag-Regeln).
+- [x] Beobachtungs-Register fortgeschrieben — **fünf** Belege über vier Verzeichnisse, eines davon
+      neu (§7); keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
@@ -190,7 +194,7 @@ dasteht.
   ([`delta-durchgang-uebersieht-deckung`](../observations/BEO-ALL/delta-durchgang-uebersieht-deckung/observation.md)).
   Die Auflage ist gefahren, und zwar in einer **geschlossenen** Form: §9 §Methode zählt die
   Änderungs-Menge des Sprungs extensional aus — **99** hinzugefügte Regel-Zeilen über **14**
-  Dateien plus **eine** neue Vorlage — und ordnet sie sechs Gegenständen zu, von denen keiner
+  Dateien plus **eine** neue Vorlage — und ordnet sie sieben Gegenständen zu, von denen keiner
   eine der 47 Adaptionen berührt. Die Klasse ist damit **nicht** aufgetreten; ein ausgebliebenes
   Auftreten erhöht keinen Zähler, der Eintrag bleibt bei **1×**.
 - **Eine Pauschale ersetzt 47 Einzelurteile.** [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md)
@@ -198,8 +202,8 @@ dasteht.
   Der Druck dazu wächst mit der Zahl — deshalb steht die Rückführung in §4 vorab. —
   **Ausgang: entfallen.** Der Druck ist eingetreten (das Ergebnis ist über alle 47 dasselbe), die
   Pauschale nicht: jede der 47 Zeilen in §9 nennt die Pflicht, an der ihr Eintrag gemessen ist,
-  und ein eigenes Kommando oder eine eigene gelesene Stelle. Vier Zeilen tragen einen Beleg, den
-  ein `grep` nicht liefert, drei nennen einen Auflösungs-Trigger mit eigenem Ergebnis, und eine
+  und ein eigenes Kommando oder eine eigene gelesene Stelle. Acht Zeilen tragen einen Beleg, den
+  ein `grep` nicht liefert (§9 §Methode), drei nennen einen Auflösungs-Trigger mit eigenem Ergebnis, und eine
   ([`MR-035`](../../../../harness/conventions.md#mr-035)) trägt einen **gefeuerten** Trigger — die Zeilen sind nicht austauschbar. Das Risiko
   kann in diesem Slice nicht mehr eintreten und wird darum gestrichen statt weitergezählt.
 - **Die Selbstauskunft eines frisch geschriebenen Eintrags ist zu klein** (`BEO-009`, 10×,
@@ -232,7 +236,7 @@ Backticks).
 - **Was hat funktioniert:** Die Volltext-Hälfte ließ sich zum ersten Mal **schließen** statt nur
   behaupten. Statt je Eintrag zu fragen *„habe ich genug gelesen?"* zählt der Durchgang die
   **Änderungs-Menge** aus — jede hinzugefügte Regel-Zeile des Sprungs, abzüglich des
-  Herkunfts-Kommentars des vendored Baums — und ordnet sie sechs Gegenständen zu. Danach ist
+  Herkunfts-Kommentars des vendored Baums — und ordnet sie sieben Gegenständen zu. Danach ist
   *„kein Gegenstand berührt eine Adaption"* eine Aussage über eine abgezählte Menge und nicht
   über einen Leseeindruck. Der Preis ist niedrig: **99** Zeilen über **14** Dateien.
 - **Was ging anders als geplant:** Der Durchgang erwartete Bewegung — die zwei Vorgänger
@@ -241,19 +245,64 @@ Backticks).
   und ergänzt drei Randregeln; von den 47 Adaptionen ist keine über dieses Artefakt geschrieben.
   Bewegt hat sich stattdessen eine Klasse **neben** dem Durchgang — zwei Zustandsfelder, die eine
   überholte Ableitung weitersagten (§6).
-- **Steering-Loop-Eintrag:** Regel geschärft: *Ein Volltext-Durchgang ist erst geschlossen, wenn
-  die Änderungs-Menge extensional ausgezählt ist* — die Frage *„regelt die neue Fassung das
-  jetzt selbst?"* hat genau so viele mögliche Quellen, wie der Sprung Regel-Zeilen hinzufügt, und
-  die sind zählbar. Auslöser:
+- **Was der Review beitrug (dritte Quelle nach Baseline-Regelwerk `modul-05-planning-harness.md`
+  §Closure- und Lerneintrag-Regeln):**
+  [`2026-09-05-slice-185-adaptions-durchgang-review.md`](../../../reviews/2026-09-05-slice-185-adaptions-durchgang-review.md)
+  — **blockierend, 3 MEDIUM, kein HIGH**; das Sachurteil *47× bleibt gültig* ist unabhängig gegen
+  den `v6.0.0`-Volltext nachgeprüft und trägt. Die drei trafen die **Beleg-Kette**, nicht das
+  Verdikt, und sind hier aufgelöst: die grep-blinde Zitat-Menge war halb so groß beziffert, wie
+  die eigenen Tabellen sie belegen (§9 §Methode, jetzt acht über sechs Dateien) · die Partition
+  der 99 Zeilen ließ eine Zeile aus (§9, jetzt sieben Gegenstände statt sechs) · die
+  Closure-Schritte liefen im Architect-Kontext statt beim Planner. **LOW-2** ist mitbehoben (die
+  Bijektion nennt das Lifecycle-Verzeichnis als Glob), **INFO-2** in derselben Zeile benannt.
+  **INFO-1** (die Auszähl-Schleife überspringt die eine entfallene Baseline-Datei) und **INFO-3**
+  (zwei Einträge zitieren einen `v3.5.2`-Pfad ohne Ziel) sind gemessen folgenlos für die 47
+  Ausgänge und bleiben ohne Aktion; INFO-3 gehört ohnehin
+  [slice-091](../open/slice-091-vendored-baum-ohne-anspruch.md)/[slice-092](../open/slice-092-traeger-inventur.md).
+- **Was diese Closure nicht deckt — zwei offene Übergaben, benannt statt still:**
+  **(1) An den Architect:** §Baseline von
+  [`harness/conventions.md`](../../../../harness/conventions.md) spricht
+  [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Bindungskraft zu
+  (*„stehen in"*, *„bindet"*), während jene ADR auf `Proposed` steht
+  (`grep -m1 '^\*\*Status:\*\*' docs/plan/adr/0031-*.md`) — Review LOW-1. Die Datei gehört dem
+  Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8); dieser Planner-Lauf fasst sie nicht an.
+  **(2) Die Verifier-Kante ist nicht gelaufen.** Baseline-Regelwerk `modul-08-agentenrollen.md`
+  §Rollen-Sequenz für einen Slice führt `I→R→Vf→P`; hier folgt `P` unmittelbar auf `R`. Was dieser
+  Lauf selbst gefahren hat, steht unten unter *Verifikation*; ein DoD-Urteil aus getrenntem
+  Kontext ersetzt es nicht.
+- **Steering-Loop-Eintrag:** Regel geschärft: *Eine extensionale Auszählung ist erst geschlossen,
+  wenn ihre Partition die ausgezählte Menge ausschöpft **und** ihre Fundzahlen gegen die eigene
+  Aufzählung gehalten sind.* Der erste Teil ist der ursprüngliche Lerneintrag — die Frage *„regelt
+  die neue Fassung das jetzt selbst?"* hat genau so viele mögliche Quellen, wie der Sprung
+  Regel-Zeilen hinzufügt, und die sind zählbar. Der zweite Teil ist die Verschärfung, die dieser
+  Slice bezahlt hat: **beide** Auszählungen des Durchgangs waren zu klein — die Partition um eine
+  Zeile (sechs statt sieben Gegenstände), die Zitat-Fundmenge um vier (vier statt acht) —, und
+  beide Male stand die Zahl **ohne** ihr Kommando und ohne Handzählungs-Ansage da, also ohne die
+  Stelle, an der ein Leser sie hätte nachzählen können. Eine Auszählung, die sich selbst als
+  Schluss-Argument benutzt, trägt ihre Ableitung mit; sonst ist sie ein Leseeindruck mit Ziffer.
+  Auslöser:
   [`delta-durchgang-uebersieht-deckung`](../observations/BEO-ALL/delta-durchgang-uebersieht-deckung/observation.md)
-  (1×). *Gezählt, nicht verkörpert:* die Schwelle ist nicht erreicht, also entfällt das Feld
-  `liegt in`.
-- **Beobachtungs-Register:** zwei Belege ergänzt, kein neues Verzeichnis.
+  (1×) und
+  [`extensionale-zahl-unterschreitet-die-eigene-fundmenge`](../observations/BEO-ALL/extensionale-zahl-unterschreitet-die-eigene-fundmenge/observation.md)
+  (1×). *Gezählt, nicht verkörpert:* keiner der beiden erreicht die Schwelle, also entfällt das
+  Feld `liegt in`.
+- **Beobachtungs-Register:** fünf Belege, davon zwei aus dem Review dieses Slice; **ein** neues
+  Verzeichnis. Jeder Stand ist die Zahl der Dateien unter `evidence/`
+  (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l`) — keine Erwartungswerte,
+  sie wandern mit dem Register:
   [`zitat-grep-uebersieht-zeilenumbruch-und-markup`](../observations/BEO-ALL/zitat-grep-uebersieht-zeilenumbruch-und-markup/observation.md)
-  auf **2×** (vier Zitate mit `grep -c` → 0, alle vier stehen wörtlich am Zielstand);
-  [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
-  auf **13×** (§6). Beide Stände sind
-  die Zahl der Dateien unter `evidence/` (`ls <verzeichnis>/evidence | wc -l`).
+  **2×** · [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
+  **13×** (§6) ·
+  [`fremdes-rollen-artefakt-im-implementations-kontext`](../observations/BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext/observation.md)
+  **3×** — **zwei** Belege in diesem Zug, weil zwei Vorgänge betroffen sind: `slice-178`, dessen
+  Fund aus dem nachträglichen Review nie gebucht wurde, und `slice-185` selbst. Damit ist die
+  Schwelle erreicht; der Ausgang steht dem **Lese-Schritt** zu und der liegt bei der Closure von
+  [welle-15](../welle-15-re-baseline.md), nicht hier ·
+  [`extensionale-zahl-unterschreitet-die-eigene-fundmenge`](../observations/BEO-ALL/extensionale-zahl-unterschreitet-die-eigene-fundmenge/observation.md)
+  **1×**, neu angelegt: Die Nachbarklasse
+  [`zahl-neben-nie-gefahrenem-kommando`](../observations/BEO-ALL/zahl-neben-nie-gefahrenem-kommando/observation.md)
+  trifft nicht — dort steht ein Kommando neben der Zahl und liefert sie nicht, hier steht gar
+  keines, und der Beleg ist der eigene Fließtext ·
   [`delta-durchgang-uebersieht-deckung`](../observations/BEO-ALL/delta-durchgang-uebersieht-deckung/observation.md)
   bleibt bei **1×** — die Klasse ist nicht aufgetreten.
 - **Folge-Slices:** keine geschnitten. **Ein Posten geht ohne Kennung weiter**, und er gehört
@@ -268,6 +317,13 @@ Backticks).
   nicht gibt.
 - **Risiken aus §6:** je genau ein Ausgang — *weiter offen → Register*, *entfallen* (mit
   Begründung), *eingetreten → im Slice behoben*. Siehe §6.
+- **Verifikation, und was sie deckt:** `make gates` in diesem Lauf gefahren, **EXIT 0**. Dazu
+  wiederholt: die Bijektion aus §Bilanz (leere Ausgabe, Exit 0, **47** Ausgangs-Zeilen, keine
+  doppelt), die acht `grep -c -F` der grep-blinden Zitate (alle **0**, alle acht Sätze wörtlich am
+  Zielstand), die Auszählung der **26** `modul-06`-Zeilen gegen die Partition 1 + 2 + 23, und die
+  drei Bestands-Kommandos zur Schluss-Aussage (Register **3**, Modus-Deklaration **2**, Carveout
+  **4**, Frist **1**). **Was das nicht deckt:** das DoD-Urteil aus getrenntem Kontext — die
+  Verifier-Kante ist nicht gelaufen (oben, offene Übergabe 2).
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — sie prüft die Closure von
   [welle-15](../welle-15-re-baseline.md).
 
@@ -306,6 +362,13 @@ ihm 3×:
   ([slice-176](../done/slice-176-inventur-vor-dem-schnitt-v600.md) §9).
 - `BEO-016` (1×) — *Slice-Pläne tragen ein Vielfaches der nötigen Zeilenzahl*. Bindet diesen Plan
   selbst; er ist deshalb knapp gehalten.
+
+**Die Sichtung greift dem Ergebnis nicht vor.** Sie fragt, welche offene Beobachtung diesen Slice
+**vorab** berührt; welche er **erzeugt**, beantwortet erst die Closure. Zwei tun das und stehen
+darum in §7 statt hier —
+[`fremdes-rollen-artefakt-im-implementations-kontext`](../observations/BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext/observation.md),
+mit diesem Slice an der Schwelle, und die neu angelegte
+[`extensionale-zahl-unterschreitet-die-eigene-fundmenge`](../observations/BEO-ALL/extensionale-zahl-unterschreitet-die-eigene-fundmenge/observation.md).
 
 **alle berührten Sub-Areas GF** — der Modus-Begründungsblock entfällt damit
 (Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Sub-Area-Modus-Begründung, Umfang).
@@ -366,7 +429,7 @@ dessen Ziel zwischen zwei Vendorings die Form wechselt, ohne dass eine Regel sic
 ([`ADR-0036`](../../adr/0036-ziel-fassung-regiert-den-sprung-v600.md) §Was das Messinstrument
 mitzählt).
 
-**Die 99 Zeilen und die eine neue Datei sind gelesen und tragen sechs Gegenstände:**
+**Die 99 Zeilen und die eine neue Datei sind gelesen und tragen sieben Gegenstände:**
 
 | # | Gegenstand | Wo |
 |---|---|---|
@@ -376,8 +439,16 @@ mitzählt).
 | 4 | Ein **Fluss-Diagramm** des Steering Loops, additiv am Ende der Datei — 38 der 99 Zeilen | `grundlagen-traceability.md` |
 | 5 | Die **Release-URL** der zwei Vorlagen zeigt auf `releases/latest/` statt auf einen Tag | `templates/AGENTS.template.md`, `templates/harness/conventions.template.md` |
 | 6 | Die **Stand-Zeile** des Regelwerk-Index und zwei tag-gescopte Kurs-Links werden relativ | `regelwerk/README.md` |
+| 7 | Die **Carveout-Frist** misst in Wellen und hat im wellenlosen Betrieb keinen Ersatz-Träger — der Zielstand stellt das als **benannte Lücke** frei und begründet ausdrücklich **keine** Pflicht (*„das bleibt eine benannte Lücke, keine Pflicht, und ein Repo bleibt ohne sie konform"*) | `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht, **eine** Zeile |
 
-**Keiner der sechs berührt eine der 47 Adaptionen** — und das ist keine Themen-Aussage, sondern
+Die Partition ist über die größte Einzeldatei geprüft und geht auf: die **26** `modul-06`-Zeilen
+zerfallen in **1** (Gegenstand 7, die erste hinzugefügte Zeile) + **2** (Gegenstand 3) + **23**
+(Gegenstand 1) — Handzählung über die Ausgabe des Kommandos aus §Methode, auf `modul-06` verengt;
+kein Kommando gibt die Aufteilung selbst aus
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 1).
+
+**Keiner der sieben berührt eine der 47 Adaptionen** — und das ist keine Themen-Aussage, sondern
 über den Bestand gemessen: nur **drei** Einträge nennen das Beobachtungs-Register überhaupt, und
 alle drei zitieren dort eine Beobachtung als Beleg ihrer eigenen Begründung, statt eine Regel über
 das Register zu setzen
@@ -385,17 +456,46 @@ das Register zu setzen
 [`MR-048`](../../../../harness/conventions.md#mr-048)). Die **zwei**, die die Modus-Deklaration nennen, tun es als Block-Grenze eines Kommandos
 bzw. als Fundort eines Falls, nicht als Gegenstand
 (`grep -l 'Modus-Deklaration\|Kürzel-Spalte' harness/conventions/MR-*.md` → [`MR-019`](../../../../harness/conventions.md#mr-019), [`MR-028`](../../../../harness/conventions.md#mr-028)).
-Keine Erwartungswerte; beide Listen wandern mit dem Block.
+Die **vier**, die einen Carveout nennen, tun es über die Template-Ablage bzw. die
+Append-only-Form einer Instanz, keiner über eine **Frist**
+(`grep -li 'carveout' harness/conventions/MR-*.md` → [`MR-008`](../../../../harness/conventions.md#mr-008), [`MR-029`](../../../../harness/conventions.md#mr-029), [`MR-040`](../../../../harness/conventions.md#mr-040), [`MR-041`](../../../../harness/conventions.md#mr-041);
+`grep -li 'frist' harness/conventions/MR-*.md` trifft allein [`MR-025`](../../../../harness/conventions.md#mr-025), und dort geht es um die
+Befristung eines Adaptions-Eintrags, nicht um die eines Carveouts).
+Keine Erwartungswerte; alle drei Listen wandern mit dem Block.
 
-**Ein `grep` auf ein Zitat ist kein Volltext-Durchgang** — in diesem Durchgang **viermal** belegt.
-Vier zitierte Baseline-Sätze geben als `grep -c` über das volle Zitat eine **0** und stehen
-trotzdem wörtlich am Zielstand; in allen vier trennt ein **Zeilenumbruch** das Muster. Sie liegen
-in `modul-14-docker-harness.md` (zwei), `grundlagen-source-precedence.md` und
-`grundlagen-referenz-richtung.md`; die Zeilennummern stehen in den Zeilen unten. Gelesen statt
-gegrept steht jeder von ihnen da; ein Durchgang, der die **0** für sich nähme, verbuchte viermal
-*Bezug entfallen* statt *bleibt gültig*. Die Klasse liegt als
+**Ein `grep` auf ein Zitat ist kein Volltext-Durchgang** — in diesem Durchgang **achtmal** belegt,
+über **sechs** Dateien. Acht zitierte Baseline-Sätze geben als `grep -c -F` über das volle Zitat
+eine **0** und stehen trotzdem wörtlich am Zielstand; ein Zeilenumbruch oder ein Inline-Markup
+trennt das Muster. Es sind die Zeilen von [`MR-007`](../../../../harness/conventions.md#mr-007)
+(`modul-02-harness-bootstrap.md`), [`MR-009`](../../../../harness/conventions.md#mr-009),
+[`MR-048`](../../../../harness/conventions.md#mr-048),
+[`MR-049`](../../../../harness/conventions.md#mr-049) (alle drei `modul-14-docker-harness.md`),
+[`MR-014`](../../../../harness/conventions.md#mr-014) (`grundlagen-durchsetzungsschicht.md`),
+[`MR-015`](../../../../harness/conventions.md#mr-015) (`grundlagen-source-precedence.md`),
+[`MR-019`](../../../../harness/conventions.md#mr-019) (`grundlagen-referenz-richtung.md`) und
+[`MR-032`](../../../../harness/conventions.md#mr-032) (`grundlagen-harness-dateien.md`). Gelesen
+statt gegrept steht jeder von ihnen da; ein Durchgang, der die **0** für sich nähme, verbuchte
+achtmal *Bezug entfallen* statt *bleibt gültig*.
+
+**Beide Zahlen sind Handzählungen über die Beleg-Spalte der drei Tabellen unten**
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 1: liefert kein Kommando eine Zahl, steht das dabei). Mechanisch abzulesen ist eine
+**Untergrenze** — sieben der acht Zeilen nennen den Umbruch ausdrücklich, die achte
+([`MR-014`](../../../../harness/conventions.md#mr-014)) nennt statt seiner die Zeilennummer:
+
+```sh
+grep -hoE '^\| \[MR-[0-9]{3}\][^|]*\| bleibt gültig \| [^|]*' \
+  docs/plan/planning/*/slice-185-adaptions-durchgang-gegen-v600.md \
+  | grep -cE 'bricht nach|bricht zwischen|umgebrochen nach'   # 7 — Untergrenze, nicht die Fundmenge
+```
+
+Die Klasse liegt als
 [`zitat-grep-uebersieht-zeilenumbruch-und-markup`](../observations/BEO-ALL/zitat-grep-uebersieht-zeilenumbruch-und-markup/observation.md)
-im Register.
+im Register. **Ihr Beleg zu diesem Slice nennt vier statt acht** und ist nach
+Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register *unveränderlich ab Merge* —
+er bleibt, wie er steht. Die Diskrepanz ist selbst ein Fund und hat einen eigenen Registereintrag
+([`extensionale-zahl-unterschreitet-die-eigene-fundmenge`](../observations/BEO-ALL/extensionale-zahl-unterschreitet-die-eigene-fundmenge/observation.md));
+gültig ist die Zahl an dieser Stelle, weil sie hier neben ihrer Ableitung steht.
 
 **Wie die Spalte *Hälfte* zu lesen ist.** *Delta* heißt: der Eintrag nennt eine Datei, die dieser
 Sprung bewegt, und der Ausgang steht auf dem gelesenen neuen Volltext ihres Abschnitts. *Volltext*
@@ -442,7 +542,7 @@ Setzung 1); die übrigen **27** stehen allein auf der Volltext-Hälfte.
 ### Ausgänge — Volltext-Hälfte (27 Einträge)
 
 Für alle 27 gilt zusätzlich zur eigenen Messung: die genannte Zieldatei trägt zwischen den Tags
-netto **0** geänderte Zeilen (Kommando in §Methode), und keiner der sechs Gegenstände des Sprungs
+netto **0** geänderte Zeilen (Kommando in §Methode), und keiner der sieben Gegenstände des Sprungs
 regelt ihren Gegenstand an anderer Stelle neu.
 
 | MR | Ausgang | Beleg am Zielstand `v6.0.0` |
@@ -465,7 +565,7 @@ regelt ihren Gegenstand an anderer Stelle neu.
 | [MR-024](../../../../harness/conventions.md#mr-024) | bleibt gültig | Die Messung des Eintrags trägt unverändert: `grep -rl structure …/regelwerk/` ist **leer** (Exit 1), das Modul bleibt verfügbar statt aktiviert (`grep -c structure .d-check.yml` → **0**) |
 | [MR-027](../../../../harness/conventions.md#mr-027) | bleibt gültig | Der Gegenstand gehört weiter dem Werkzeug: `grep -rn 'd-check:ignore' …/regelwerk/ \| wc -l` → **1**, und die eine Zeile ist die Regel, dass gesetzte Marker das Adoptieren eines Templates überleben — über **Form** und **Lage** der Wirkung sagt sie nichts |
 | [MR-030](../../../../harness/conventions.md#mr-030) | bleibt gültig | Beide Messungen tragen am Zielstand: `grep -c 'participant I as Implementer' …/modul-08-agentenrollen.md` → **1**, `grep -rl 'implementer' …/regelwerk/ \| wc -l` → **0** |
-| [MR-033](../../../../harness/conventions.md#mr-033) | bleibt gültig | Der Zielstand führt weiter keine Regel darüber, dass eine Baseline-Aussage ihren Mess-Tag nennt; der Eintrag ist eine Sachstands-Setzung ohne Baseline-Gegenstück. Dass der Sprung keine hinzufügt, ist die Auszählung aus §Methode: **99** hinzugefügte Regel-Zeilen, sechs Gegenstände, keiner davon eine Beleg-Regel |
+| [MR-033](../../../../harness/conventions.md#mr-033) | bleibt gültig | Der Zielstand führt weiter keine Regel darüber, dass eine Baseline-Aussage ihren Mess-Tag nennt; der Eintrag ist eine Sachstands-Setzung ohne Baseline-Gegenstück. Dass der Sprung keine hinzufügt, ist die Auszählung aus §Methode: **99** hinzugefügte Regel-Zeilen, sieben Gegenstände, keiner davon eine Beleg-Regel |
 | [MR-036](../../../../harness/conventions.md#mr-036) | bleibt gültig | Der Absatz, dessen Deckung der Eintrag feststellt, steht am Zielstand (`grep -c 'Fallen Auftraggeber- und Entwickler-Rolle zusammen' …/grundlagen-source-precedence.md` → **1**) samt dem Träger-Satz (siehe [MR-015](../../../../harness/conventions.md#mr-015)); der Rückbau bleibt richtig |
 | [MR-040](../../../../harness/conventions.md#mr-040) | bleibt gültig | Die Lücke, die der Eintrag füllt, ist unverändert offen: der Freshness-Audit bindet die **Form** einer Instanz (`grep -c 'nicht rückwirkend umgeschrieben' …/modul-02-harness-bootstrap.md` → **1**) und führt keinen Ausgang für eine **Aussage über den vendored Baum**. Der Trigger — eine Änderung des Audits an dieser Stelle — ist nicht eingetreten |
 | [MR-041](../../../../harness/conventions.md#mr-041) | bleibt gültig | Die Deckung, die den Rückbau trug, steht wörtlich (`grep -c 'keine Blank-Kopie im Repo' …/modul-02-harness-bootstrap.md` → **1**); §Anmerkung zum Instanziierungs-Zeitpunkt ist unverändert |
@@ -508,13 +608,18 @@ Bezugsmenge gegen die Kennungen mit Ausgangs-Zeile, in beide Richtungen; die Aus
 
 ```sh
 diff <(ls harness/conventions/MR-*.md | xargs -n1 basename | cut -d- -f1-2 | sort) \
-     <(grep -oE '^\| \[MR-[0-9]{3}\]\([^)]*\) \| (bleibt gültig|gegenstandslos|teilweise überholt|Bezug entfallen|widerspricht)' \
-         docs/plan/planning/in-progress/slice-185-adaptions-durchgang-gegen-v600.md \
+     <(grep -hoE '^\| \[MR-[0-9]{3}\]\([^)]*\) \| (bleibt gültig|gegenstandslos|teilweise überholt|Bezug entfallen|widerspricht)' \
+         docs/plan/planning/*/slice-185-adaptions-durchgang-gegen-v600.md \
        | grep -oE 'MR-[0-9]{3}' | sort -u)
 ```
 
-Ein Eintrag ohne Zeile und eine Zeile ohne Eintrag sind darin derselbe Defekt. Der Pfad im
-zweiten Operanden ist der Schreibort; nach dem `git mv` nach `done/` ist er dort nachzuziehen.
+Ein Eintrag ohne Zeile und eine Zeile ohne Eintrag sind darin derselbe Defekt. **Der zweite
+Operand nennt das Lifecycle-Verzeichnis als Glob statt fest** — ein Kommando, das nach dem
+`git mv` einen Defekt meldete, wo keiner ist, misst den Ort statt den Gegenstand
+([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)); `make slice-mv` zieht
+Verweise nach, keine Kommando-Argumente. Die Prüfung deckt **Existenz**, nicht Eindeutigkeit —
+`sort -u` kollabiert zwei Zeilen derselben Kennung; dass es heute keine gibt, sagt
+`… | sort | uniq -c | awk '$1>1'` → leere Ausgabe bei **47** Zeilen.
 
 **Die Lockerungs-Frage ist einzeln beantwortet, nicht übergangen.** Die Prozedur verlangt bei
 *Lockerung gegen Verschärfung* ein Carveout statt einer stillen Dauer-`MR`. Zwei Einträge dieses
