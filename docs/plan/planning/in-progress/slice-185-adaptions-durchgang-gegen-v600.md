@@ -503,6 +503,19 @@ aufhob, und jeder der drei steht oben auf *bleibt gültig*.
 Setzung 1). Die Bezugsmenge ist die des Kommandos oben — jeder ihrer Einträge steht in genau einer
 Zeile, keiner ohne Ausgang.
 
+**Dass keiner ohne Ausgang steht, ist nicht abgezählt, sondern als Bijektion geprüft** — die
+Bezugsmenge gegen die Kennungen mit Ausgangs-Zeile, in beide Richtungen; die Ausgabe ist leer:
+
+```sh
+diff <(ls harness/conventions/MR-*.md | xargs -n1 basename | cut -d- -f1-2 | sort) \
+     <(grep -oE '^\| \[MR-[0-9]{3}\]\([^)]*\) \| (bleibt gültig|gegenstandslos|teilweise überholt|Bezug entfallen|widerspricht)' \
+         docs/plan/planning/in-progress/slice-185-adaptions-durchgang-gegen-v600.md \
+       | grep -oE 'MR-[0-9]{3}' | sort -u)
+```
+
+Ein Eintrag ohne Zeile und eine Zeile ohne Eintrag sind darin derselbe Defekt. Der Pfad im
+zweiten Operanden ist der Schreibort; nach dem `git mv` nach `done/` ist er dort nachzuziehen.
+
 **Die Lockerungs-Frage ist einzeln beantwortet, nicht übergangen.** Die Prozedur verlangt bei
 *Lockerung gegen Verschärfung* ein Carveout statt einer stillen Dauer-`MR`. Zwei Einträge dieses
 Blocks sind ausdrücklich als Lockerung bzw. Senkung geführt:
