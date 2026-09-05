@@ -5,7 +5,7 @@
 - **Rolle:** Reviewer (Modul 8/10), frischer Kontext, kein Selbst-Review.
   Skill: [`.harness/skills/reviewer.md`](../../.harness/skills/reviewer.md) `1.7.0`.
 - **Datum:** 2026-09-05 · **Runde:** 1
-- **Gegenstand:** [slice-187](../plan/planning/in-progress/slice-187-d-check-pin-v0741.md) —
+- **Gegenstand:** [slice-187](../plan/planning/done/slice-187-d-check-pin-v0741.md) —
   noch **nicht** geschlossen (`in-progress/`).
 - **Umsetzungs-Commit:** `9a1a22f` — drei Dateien, 43+/32−
   (`git show --stat 9a1a22f`): [`d-check.mk`](../../d-check.mk) 69 Zeilen,
@@ -224,7 +224,7 @@ Geprüft ist hier, ob die Zusagen **tragen** und ob ein stiller Grün-Pfad beste
   Verzeichnis"*)
 - **pfad:** `docs/plan/planning/welle-13-regeln-bekommen-ihren-sensor.md:111-112`
 - **befund:** Die Zeile lautet
-  *„`[slice-187](in-progress/slice-187-d-check-pin-v0741.md)` (wellenlos, `open/`) zieht den
+  *„`[slice-187](done/slice-187-d-check-pin-v0741.md)` (wellenlos, `open/`) zieht den
   d-check-Pin …"* (Ziel als Inline-Code zitiert — der geschriebene relative Pfad löst aus `docs/plan/planning/` auf, aus `docs/reviews/` nicht). `slice-mv` hat die **Adresse** korrekt nach `in-progress/` gezogen
   (`81a2749`), das **Zustandswort** daneben nicht. Link (Zeile 111) und Zustandswort (Zeile 112) desselben Satzes sagen damit
   zwei verschiedene Verzeichnisse. `welle-13` liegt flach, ist also eine offene Welle und ein
@@ -241,7 +241,7 @@ Geprüft ist hier, ob die Zusagen **tragen** und ob ein stiller Grün-Pfad beste
 - **kategorie:** LOW
 - **quelle:** [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 1 · Slice-Plan §6 *Übergabe 1* (die Zahlen wandern in den neuen `MR`-Eintrag)
-- **pfad:** `docs/plan/planning/in-progress/slice-187-d-check-pin-v0741.md:86-88`
+- **pfad:** `docs/plan/planning/done/slice-187-d-check-pin-v0741.md:86-88`
 - **befund:** *„Auf den gepinnten Stand folgen **zwölf** Tags — neun Minors, dazu zwei
   Patch-Releases und der bekannte tote Tag `v0.66.0`."* Die **zwölf** stimmt und steht neben
   ihrem Kommando. Die Zerlegung daneben trägt kein Kommando und geht nicht auf: Gezählt sind
