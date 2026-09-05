@@ -353,6 +353,113 @@ Sandbox"*. Und er hängt an einem Agenten: `.codex/hooks.json` führt allein den
 SessionStart-Injektor. Wo der Guard nicht läuft oder nicht greift, trägt allein
 dieser Abschnitt.
 
+### 3.10 Den Slice schließt der Planner, nicht der Lauf, der ihn gebaut hat
+
+Der Abschluss eines Slice ist **Planner-Arbeit** und läuft nicht in dem Kontext, der die Arbeit
+ausgeführt hat — weder im Implementations- noch im Architect- noch im Reviewer-Kontext. Gebunden
+ist der ganze Abschluss: die Closure-Notiz mit dem Lerneintrag, die Ausgänge der offenen Risiken,
+die DoD-Häkchen, die Fortschreibung des Beobachtungs-Registers, ein berührter Welle-Plan und der
+`git mv` nach `done/`.
+
+**Das Feld `Verantwortlich:` überträgt sie nicht.** Es benennt den Rolleninhaber der
+**ausführenden** Rolle; wer die Arbeit hält, hält damit nicht ihre Abnahme.
+
+**Eigener Commit, wie in §3.8.** Der Abschluss landet in einem Commit, der ausschließlich
+Closure-Artefakte berührt und die Rolle in seiner Message nennt — nachträglich an
+`git log --stat` ablesbar. Fällt im ausführenden Lauf eine Änderung an, die die **Abnahme selbst**
+verschiebt (ein DoD-Punkt, ein Closure-Trigger, eine Out-of-Scope-Grenze), ist sie kein
+Closure-Schritt, sondern ein **Übergabe-Artefakt** an den Planner: die ausführende Rolle schreibt
+ihr eigenes Abnahmekriterium nicht um.
+
+**Falsch:** die Closure-Notiz §7, die Risiko-Ausgänge §6 und die Register-Belege in demselben
+Commit setzen, der die Arbeit des Slice trägt.
+**Richtig:** die Arbeit committen, an Review und Verifikation übergeben, den Abschluss in frischem
+Kontext schreiben.
+
+**Warum der Planner — und was diese Sektion hinzufügt.** Die Zuweisung ist nicht neu: die
+adoptierte Baseline führt den Schritt in der Rollen-Sequenz für einen Slice als
+`P->>P: Closure in done/ + Lerneintrag`
+(`grep -c 'P->>P: Closure in done/ + Lerneintrag' .harness/baseline/v6.0.0/regelwerk/modul-08-agentenrollen.md`
+→ **1**). Neu ist der **Commit-Zuschnitt**, den §3.8 für die zwei Architect-Artefakte führt und
+den für den Abschluss keine Quelle führt — ohne ihn ist die Rollen-Grenze im Nachhinein an nichts
+ablesbar. Die Sektion füllt damit eine Lücke, statt von der Baseline abzuweichen; deshalb steht zu
+ihr **kein** Eintrag im Adaptions-Block ([`MR-000`](harness/conventions.md#mr-000--baseline-aussage)).
+
+**Begründung (gemessen, nicht postuliert):** Der Zähler des Beobachtungs-Registers steht bei
+**4** —
+
+```sh
+ls docs/plan/planning/observations/BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext/evidence/*.md | wc -l
+```
+
+**kein Erwartungswert**, er wandert mit dem Register. In dreien der vier Fälle schrieb derselbe
+Kontext, der die Arbeit tat, den Abschluss dazu; in einem davon eine ab Merge unveränderliche
+Register-Beleg-Datei mit einer Zahl, die ihre eigene Fundmenge halbiert, und in einem anderen die
+Umschrift des eigenen Abnahmekriteriums. Der Schaden ist nicht die Rollen-Formalie, sondern der
+fehlende zweite Blick vor einem Merge, der Artefakte einfriert.
+
+**Cutoff — ab dieser Sektion, kein Nachrüsten.** Gebunden ist der Abschluss, der geschrieben wird;
+der Bestand ist kein Arbeitsauftrag. **Geltungsbereich: dieses Repo.** Was ein emittiertes Repo an
+Eigentums-Aussagen bekommt, entscheidet der Slice, der die Tool-Ebene entscheidet.
+
+**Ein Wächter existiert nicht.** Kein Modul des Doku-Gates liest Commits
+(`grep -n '^modules:' .d-check.yml`), und `make mutate` kennt keine Fehlschlag-Form für einen
+Commit-Zuschnitt — dieselbe Lage, die §3.8 für sich selbst feststellt. Träger ist der
+Rollen-Wechsel vor dem Abschluss, nicht ein Gate danach · seit welle-15.
+
+### 3.11 Eine Adresse, die der Prozess bewegt, steht nicht in einem einfrierenden Artefakt
+
+Ein Artefakt, das unveränderlich wird — eine ADR ab `Accepted`, ein Rollen-Report, eine
+Closure-Notiz, jedes Artefakt, das nach Abschluss nicht mehr angefasst wird (§3.4) —, nennt ein
+Artefakt, dessen Ort der Prozess bewegt, bei seiner **Kennung**. Der sichtbare Text bleibt, die
+Pfad-Adresse entfällt. **Gebunden ist, was wandert, nicht der Baum, in dem es liegt:** ein
+Verzeichnis, ein Glob, eine stehende Ablage und eine Datei, die ihren Lifecycle bereits verlassen
+hat, sind ortsfest und bleiben als Pfad zulässig.
+
+**Und der Ortswechsel wird entschieden, bevor er vollzogen wird.** Vor einem vom Prozess
+vorgeschriebenen Ortswechsel — dem `git mv` des Lifecycle, der Auflösung eines Carveouts, dem
+Formwechsel einer Ablage — misst der bewegende Lauf über **beide** Adress-Formen, Code-Span und
+Markdown-Link, ob ein eingefrorenes Artefakt das bewegte als Pfad nennt; die zwei fallen auf
+verschiedene Module des Doku-Gates. Findet er einen, gehört die Entscheidung **vor** den Move.
+
+**Was diese Sektion ist.** Die **Verallgemeinerung** von vier Entscheidungen, die dieselbe Linie
+je für einen Baum ziehen: [ADR-0027](docs/plan/adr/0027-tote-adresse-in-eingefrorener-adr.md)
+Festlegung 3 (Carveouts),
+[ADR-0030](docs/plan/adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Festlegung 3
+(Planning-Lifecycle) und Festlegung 4 (die Entscheidung vor dem Move),
+[ADR-0034](docs/plan/adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
+Festlegung 5 (die Ablage des Beobachtungs-Registers). Ihren Text schreibt sie **nicht** ab, und
+bei Konflikt gilt die ADR (§2). Sie fügt eine Aussage hinzu: die Linie hängt an der Eigenschaft
+*wandert auf Anweisung* und nicht an der Aufzählung der Bäume — ein Baum, den keine der vier
+nennt, braucht deshalb keine fünfte Runde.
+
+**Was sie nicht erweitert.** Keine der Aufnahme-Grenzen für die `ignore-refs`-Paare in
+[`.d-check.yml`](.d-check.yml): jedes weitere Paar bleibt eine Senkung nach §3.5 mit eigener ADR.
+Und in **änderbaren** Artefakten bleibt der Pfad der richtige Zeiger; der Move zieht ihn nach.
+
+**Begründung (gemessen, nicht postuliert):** Vier namentlich geschnittene Referenz-Ventile stehen
+heute in der Gate-Config, jedes mit eigener ADR, jedes aus demselben Generator; der Zähler des
+Beobachtungs-Registers steht bei **3** —
+
+```sh
+grep -c '^  - in: ' .d-check.yml                                                                              # 4
+ls docs/plan/planning/observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/evidence/*.md | wc -l  # 3
+```
+
+**Keine Erwartungswerte** — beide Zahlen wandern. Teuer ist nicht der Befund, sondern die Runde,
+die er auslöst: eine eigene Entscheidung je Mitglied, weil die Regel den Baum nannte statt der
+Eigenschaft.
+
+**Cutoff — ab dieser Sektion, kein Nachrüsten.** Gebunden ist die Adresse, die geschrieben wird,
+und der Move, der geplant wird; der Bestand ist kein Arbeitsauftrag, und er ist ohnehin
+eingefroren. **Geltungsbereich: dieses Repo.**
+
+**Ein Wächter existiert nicht.** Kein Modul des Doku-Gates hält Status und Adress-Form zusammen,
+und die Reihenfolge zweier Commits liest keines — beide Lücken benennt
+[ADR-0030](docs/plan/adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) §Fitness Function
+für ihre eigenen Festlegungen. Träger ist der Accept-Übergang und der Lauf, der den Move plant
+· seit welle-15.
+
 ## 4. Quality Gates
 
 | Target | Zweck |

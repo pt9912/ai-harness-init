@@ -1,5 +1,7 @@
 # MR-025 — Eine Zahl im Text steht neben dem Kommando, das sie liefert
 
+> **ÜBERHOLT: die Grenze des Geltungsbereichs auf die lebenden Markdown-Artefakte → [`MR-051`](../conventions.md#mr-051).** Beide Setzungen, der Cutoff und die Wächter-Aussage binden unverändert fort; hinzu treten zwei benannte Klassen — die Commit-Message und der außerhalb des Beobachtungs-Registers zitierte Zähler-Stand.
+
 - **Datum:** 2026-08-22
 - **Geltungsbereich:** die **lebenden**, repo-eigenen Markdown-Artefakte — gemessen
   `git ls-files '*.md' ':!docs/reviews/**' ':!docs/plan/planning/done/**' ':!.harness/baseline/**' | wc -l`
