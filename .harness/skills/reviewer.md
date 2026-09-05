@@ -108,7 +108,7 @@ welcher Gate-Lauf würde den Befund bestätigen?) · `klasse` (stabile
 Kurz-Bezeichnung des Fehlermusters, z. B. „Tie-Break in sortierender Operation
 nicht dokumentiert" — speist den Steering-Loop-Zähler über die Slice-Closure §7
 ins Beobachtungs-Register,
-[`docs/plan/planning/observations.md`](../../docs/plan/planning/observations/README.md)).
+[`docs/plan/planning/observations.md`](../../docs/plan/planning/observations.md)).
 
 ## Negativbefunde (Pflicht)
 
