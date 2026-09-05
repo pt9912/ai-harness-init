@@ -30,7 +30,7 @@ Zeitdokumenten: Text bleibt, Adresse fällt),
 **Berührte Spec-Stellen:** `—`. Der Slice zieht Kennungs-Zitate nach; er schreibt keine
 Spec-Stelle.
 
-**Verantwortlich:** `—` bis zur Priorisierung.
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-05.
 
