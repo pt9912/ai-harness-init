@@ -268,10 +268,10 @@ dasteht.
 
   **Warum hier trotzdem kein Träger steht.** Von den **7** Mitgliedern dieser Welle
   (`grep -c '^| \[slice-' docs/plan/planning/welle-15-re-baseline.md`) berührt keines die
-  emittierte Ablage. [slice-177](../next/slice-177-beobachtungs-register-verzeichnis-form.md) legt
+  emittierte Ablage. [slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) legt
   die Ablage **dieses** Repos an ([`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
   Festlegung 1) und nennt die Emit-Ebene nicht
-  (`grep -c 'internal/emit' docs/plan/planning/next/slice-177-beobachtungs-register-verzeichnis-form.md`
+  (`grep -c 'internal/emit' docs/plan/planning/in-progress/slice-177-beobachtungs-register-verzeichnis-form.md`
   → **0**); [slice-184](../open/slice-184-register-form-im-bestand-nachziehen.md) zieht die
   emittierten **Anweisungssätze** nach, und alle seine Emit-Stellen zeigen dorthin
   (`grep -c 'internal/emit' docs/plan/planning/open/slice-184-register-form-im-bestand-nachziehen.md`
@@ -384,10 +384,10 @@ Backticks).
   Wortlaut steht je Risiko in §6 und nicht hier zweimal.
 - **Ein Posten geht an die Implementer-Rolle, offen und benannt:** Der Kopfkommentar von
   `internal/emit/templates.go` nennt für die fehlende emittierte Register-Ablage
-  [slice-177](../next/slice-177-beobachtungs-register-verzeichnis-form.md) als Ersatz-Träger
+  [slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) als Ersatz-Träger
   (`grep -n 'slice-177' internal/emit/templates.go` → eine Zeile), während jener Slice die
   Emit-Ebene nicht führt
-  (`grep -c 'internal/emit' docs/plan/planning/next/slice-177-beobachtungs-register-verzeichnis-form.md`
+  (`grep -c 'internal/emit' docs/plan/planning/in-progress/slice-177-beobachtungs-register-verzeichnis-form.md`
   → **0**; keine Erwartungswerte,
   [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2). Dieselbe Aussage,
