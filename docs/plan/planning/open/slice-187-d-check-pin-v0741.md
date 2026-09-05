@@ -13,7 +13,7 @@ repo-weiter Beleg über die DoD hinaus. Seit
 trägt diese Frage die Baseline selbst; die dritte Frage *reaktiv oder gewollt* ist dort
 ausdrücklich **entfallen** und wird hier deshalb nicht gestellt.
 
-**Mitglied von [welle-15](../welle-15-re-baseline.md) ist dieser Slice nicht — und das ist keine
+**Mitglied von [welle-15](../done/welle-15-re-baseline.md) ist dieser Slice nicht — und das ist keine
 Auslegung, sondern zitierbar:** deren §6 *Out-of-Scope* nennt den d-check-Pin namentlich
 (*„eigene Linie, eigener Trigger; er hängt an keiner Baseline-Version"*). Die Zeile nennt dabei
 [slice-135](slice-135-d-check-pin-v0661.md) als den Slice dieser Linie; dieser hier tritt an
@@ -308,7 +308,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt
 - [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt
-      Wellen-Betrieb ([welle-15](../welle-15-re-baseline.md) liegt flach), sie werden also von der
+      Wellen-Betrieb ([welle-15](../done/welle-15-re-baseline.md) liegt flach), sie werden also von der
       nächsten Welle-Closure geprüft und nicht hier, auch für Slices ohne Wellen-Zugehörigkeit.
 
 ## 3. Plan (vor Code)
@@ -342,7 +342,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 das WIP-Limit ist eine harte Größe und kein Vorschlag. Eine inhaltliche Vorbedingung hat
 dieser Slice **nicht**: Die Auslöse-Bedingung ist heute erfüllt (`make freshness-dcheck`, §1), alle
 sechs Messungen aus §1 sind gefahren, und keine wartet auf ein fremdes Artefakt. Insbesondere
-wartet er **nicht** auf [welle-15](../welle-15-re-baseline.md): Deren §6 schließt diese Linie
+wartet er **nicht** auf [welle-15](../done/welle-15-re-baseline.md): Deren §6 schließt diese Linie
 ausdrücklich aus, die zwei berühren einander in keinem Gegenstand.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
@@ -422,7 +422,7 @@ dasteht.
   **Der Nachbar im Register ist gesichtet und nicht vereinnahmt:**
   `BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht` steht bei **2×** und benennt
   denselben Mechanismus, aber ausdrücklich über einen **Baseline**-Sprung; die d-check-Linie ist
-  laut [welle-15](../welle-15-re-baseline.md) §6 eine andere. Ob das eine dritte Gelegenheit
+  laut [welle-15](../done/welle-15-re-baseline.md) §6 eine andere. Ob das eine dritte Gelegenheit
   desselben Eintrags ist — dann Schwelle — oder eine eigene Beobachtung über zu enge Fassung, ist
   das Urteil der Closure und keines dieses Plans. — **Ausgang:** <weiter offen: als Beleg in einen
   der zwei Einträge, entschieden bei der Closure | eingetreten: Folge-Slice, der den Ausgang eines
@@ -533,7 +533,7 @@ festhält; die Auswahl unten ist deshalb **inhaltlich** getroffen und nicht übe
   `slice-176`, Stand `offen`) — *ein Plan wartet in `open/` über einen Sprung hinweg, und der
   Sprung ändert die Pflicht, die er halten soll*. [slice-135](slice-135-d-check-pin-v0661.md) ist
   genau dieser Fall, **aber auf einer anderen Linie**: Der Eintrag sagt *Baseline*-Sprung, und
-  [welle-15](../welle-15-re-baseline.md) §6 trennt die d-check-Linie ausdrücklich davon. **Deshalb
+  [welle-15](../done/welle-15-re-baseline.md) §6 trennt die d-check-Linie ausdrücklich davon. **Deshalb
   zählt dieser Slice hier nicht selbsttätig hoch** — die Frage, ob die Fassung des Eintrags zu eng
   ist oder eine zweite Beobachtung vorliegt, ist Urteil und gehört in die Closure (§6). Wäre sie
   mit *ja* beantwortet, stünde der Eintrag bei 3× und bräuchte einen eigenen Folge-Slice; das ist

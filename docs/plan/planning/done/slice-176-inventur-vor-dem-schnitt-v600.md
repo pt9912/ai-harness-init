@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-15](../welle-15-re-baseline.md) — der erste Slice der Welle; er liefert die
+**Welle:** [welle-15](welle-15-re-baseline.md) — der erste Slice der Welle; er liefert die
 Grundlage, auf der ihre übrigen Mitglieder geschnitten werden.
 
 **Bezug:** [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (die Baseline
@@ -37,7 +37,7 @@ ist einzeln lieferbar.
 
 **Der vollständige Form- und Regel-Diff `v5.18.0` → `v6.0.0` liegt als Katalog vor, jede geänderte
 Position hat eine Zuordnung, und daraus steht fest, welche Slices
-[welle-15](../welle-15-re-baseline.md) braucht — bevor der Rest geschnitten wird.**
+[welle-15](welle-15-re-baseline.md) braucht — bevor der Rest geschnitten wird.**
 
 Der Slice ist die Antwort auf `BEO-010` (Register, 2×): der Umfang der
 Folge-Arbeit wird **gemessen, nicht geschätzt**. Er ist zugleich die Probe auf `BEO-011` (1×) —
@@ -74,7 +74,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Stufe mit Beleg im Plan, und daraus der Fall. Die **Wahl** wird nicht hier entschieden — sie
       geht als Übergabe an den Architect (§6).
 - [ ] `make gates` grün.
-- [x] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt **jeden** neu geschnittenen
+- [x] Doku-Update: [welle-15](welle-15-re-baseline.md) §4 führt **jeden** neu geschnittenen
       Slice — als Tabellenzeile, wenn er Mitglied ist, sonst benannt mit dem Grund seines
       Ausschlusses (§6 jener Datei, `BEO-018`); die Roadmap trägt ihren Drift-Eintrag. Ein
       öffentlicher Vertrag ist nicht berührt.
@@ -94,7 +94,7 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | dieser Plan, §9 | update | trägt den Katalog und die Messung |
 | `docs/plan/planning/open/` | neu | je Folge-Slice eine Datei, per `cp` aus der Vorlage |
-| [welle-15](../welle-15-re-baseline.md) §4 | update | die Slice-Tabelle der Welle bekommt ihre übrigen Zeilen |
+| [welle-15](welle-15-re-baseline.md) §4 | update | die Slice-Tabelle der Welle bekommt ihre übrigen Zeilen |
 
 Der Katalog wird am lokalen Kurs-Klon `/Development/KI/ai-harness-course` gemessen (`git diff`
 zwischen den zwei Tags). Der vendored Baum unter `.harness/baseline/` wird in diesem Slice **nicht**
@@ -105,7 +105,7 @@ angefasst — der Tausch ist ein eigener Slice, den der Katalog benennt.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [welle-15](../welle-15-re-baseline.md) ist eröffnet — ihre
+**Start** (`next` → `in-progress`): [welle-15](welle-15-re-baseline.md) ist eröffnet — ihre
 Plan-Datei liegt flach in `docs/plan/planning/`, und die Roadmap führt sie unter *Offene Wellen*.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
@@ -173,7 +173,7 @@ dasteht.
   Fassungen führen die Prozedur, byte-gleich, und genau einer der vier Delegate trägt ein Delta.
   Der Träger [slice-178](../done/slice-178-regierende-fassung-des-sprungs-v600.md) liegt in `open/`
   und ist Mitglied der Welle; die Übergabe steht in
-  [welle-15](../welle-15-re-baseline.md) §5.
+  [welle-15](welle-15-re-baseline.md) §5.
 - **Übergabe 2 an den Architect: die Buchung der Zielstand-Setzung — sie gehört nicht in diesen
   Slice.** Der Auftraggeber hat `v6.0.0` als Zielstand gesetzt; verbucht wird sie nach
   [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2 in
@@ -187,7 +187,7 @@ dasteht.
   [slice-182](../done/slice-182-baum-tausch-v600-pins-ziehen.md) trägt die Buchung als dritten
   Liefer-Punkt, mit dem **Datum des Vollzugs** und einem eigenen Architect-Commit
   ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Damit hat der Posten einen Träger statt eines
-  Platzhalters, und [welle-15](../welle-15-re-baseline.md) §4 nennt keinen ungeschnittenen Slice
+  Platzhalters, und [welle-15](welle-15-re-baseline.md) §4 nennt keinen ungeschnittenen Slice
   mehr.
 
 ## 7. Closure-Notiz
@@ -235,14 +235,14 @@ Backticks).
 - **Folge-Slices:** [slice-182](../done/slice-182-baum-tausch-v600-pins-ziehen.md),
   [slice-184](../done/slice-184-register-form-im-bestand-nachziehen.md) und
   [slice-185](../done/slice-185-adaptions-durchgang-gegen-v600.md) — Mitglieder von
-  [welle-15](../welle-15-re-baseline.md); [slice-183](../open/slice-183-ausloeser-der-wellenlosen-archivierung.md)
+  [welle-15](welle-15-re-baseline.md); [slice-183](../open/slice-183-ausloeser-der-wellenlosen-archivierung.md)
   — ausdrücklich **kein** Mitglied, Grund in jener §4 (`BEO-018`). Alle vier sind Dateien im
   Planning-Lifecycle.
 - **Risiken aus §6:** jedes mit genau einem Ausgang — zwei *eingetreten* (`BEO-016`, `BEO-023`),
   drei *entfallen* (`BEO-013` mit erfüllter Vorab-Bedingung, Übergabe 1, Übergabe 2). Keines
   *weiter offen*.
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — sie prüft die Closure von
-  [welle-15](../welle-15-re-baseline.md).
+  [welle-15](welle-15-re-baseline.md).
 
 ## 8. Sub-Area-Modus-Begründung
 

@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-15](../welle-15-re-baseline.md) — **Mitglied, und der Grund ist gemessen statt
+**Welle:** [welle-15](welle-15-re-baseline.md) — **Mitglied, und der Grund ist gemessen statt
 zweckmäßig.** Der Zuschnitt-Test ist nicht *„braucht diese Arbeit eine Welle?"*
 ([`MR-037`](../../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst)),
 sondern *„ist die Ablage-Form eine Pflicht der Ziel-Fassung?"* — und sie ist es: `v6.0.0` ersetzt
@@ -196,7 +196,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       strukturelle Gate-Eigenschaft — eine echte Behebung bräuchte einen `.d-check.yml
       scan.ignore`-Eintrag und damit eine eigene ADR nach [`AGENTS.md`](../../../../AGENTS.md)
       §3.5. Das bleibt eine benannte, nicht behobene Lücke (§6).
-- [x] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice; jede Quelle, die
+- [x] Doku-Update: [welle-15](welle-15-re-baseline.md) §4 führt diesen Slice; jede Quelle, die
       die Register-**Form** beschreibt statt nur auf sie zu zeigen, ist nachgezogen oder als
       Übergabe benannt (§6). Ein öffentlicher Vertrag ist nicht berührt.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag — §7, Form *geschärfte Regel*; das Feld
@@ -205,7 +205,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Einträge per `cp` aus der vendored Vorlage. Aufzählung und Kommandos in §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen) — neun
       Risiken, neun Ausgänge, keiner außerhalb der geschlossenen Menge.
-- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). Dieses Repo führt Wellen-Betrieb: die Prüfung liegt bei der Closure von [welle-15](../welle-15-re-baseline.md), hier steht die Deklaration.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). Dieses Repo führt Wellen-Betrieb: die Prüfung liegt bei der Closure von [welle-15](welle-15-re-baseline.md), hier steht die Deklaration.
 
 ## 3. Plan (vor Code)
 
@@ -496,7 +496,7 @@ Backticks).
   eng geschnitten auf Regeln, die die **3×-Schwelle** erreicht haben und **ohne** Welle verkörpert
   wurden (Baseline-Regelwerk `grundlagen-traceability.md` §Herkunfts-Anker für
   Steering-Loop-Regeln). Keine Registerzeile hat mit diesem Slice 3× erreicht, und der Slice ist
-  Mitglied von [welle-15](../welle-15-re-baseline.md).
+  Mitglied von [welle-15](welle-15-re-baseline.md).
 - **Beobachtungs-Register:** fortgeschrieben mit **sechs** Belegen, je einer pro Klasse — *ein
   Vorgang zählt einmal*, gleich wieviele Funde die zwei Runden je Klasse geliefert haben. Drei
   Belege gehen an bestehende Einträge, drei Einträge entstehen neu (per `cp` aus
@@ -535,7 +535,7 @@ Backticks).
   der Rückführung), zwei *entfallen*, drei *weiter offen* mit je einem Eintrag im
   Beobachtungs-Register. Der Wortlaut steht in §6 und wird hier nicht zweitgeschrieben.
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — sie prüft die Closure von
-  [welle-15](../welle-15-re-baseline.md).
+  [welle-15](welle-15-re-baseline.md).
 
 ## 8. Sub-Area-Modus-Begründung
 

@@ -741,7 +741,7 @@ Lerneintrag-Regeln (zwei beobachtbare Kriterien **und** ein Lerneintrag) · `mod
   Setzung 2) —, und für diesen Fall gibt
   [`.claude/commands/implement-slice.md`](../../../../.claude/commands/implement-slice.md) Schritt 24
   den Lese-Schritt der laufenden Welle-Closure. `BEO-017` steht bei 3× ohne Ausgang und benennt dafür
-  selbst die Closure von [welle-15](../welle-15-re-baseline.md); diese Slice-Closure bewegt die Zeile
+  selbst die Closure von [welle-15](welle-15-re-baseline.md); diese Slice-Closure bewegt die Zeile
   nicht.
 - **Ausgang für den offenen Rest aus dem Review (Datei-Modus):** `isolation_key()` hasht Inhalt,
   nicht Metadaten — ein reiner `chmod` bewegt den Schlüssel nicht. Kein Fehlerpfad ist benannt, weil

@@ -5,13 +5,13 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** ohne Welle — **kein Mitglied von [welle-15](../welle-15-re-baseline.md), und der Grund
+**Welle:** ohne Welle — **kein Mitglied von [welle-15](../done/welle-15-re-baseline.md), und der Grund
 ist ihr eigener Closure-Trigger.** Der fordert alle Slices der Welle in `done/`, zwei grüne
 repo-weite Läufe und den vollzogenen Pin; die Archivierung eines wellenlosen Slice steht in keiner
 dieser Bedingungen. Das Welle-Ziel *„jede Pflicht, die die neue Fassung mitbringt, hat einen
 verbuchten Ausgang"* ist mit **dieser Datei in `open/`** eingelöst — ein Ausgang ist ein Träger,
 kein Vollzug. Ausdrücklich benannt statt stillschweigend weggelassen (`BEO-ALL/out-of-scope-und-doku-dod-widersprechen-sich`,
-[welle-15](../welle-15-re-baseline.md) §4).
+[welle-15](../done/welle-15-re-baseline.md) §4).
 
 **Bezug:**
 [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) (**zwei** ihrer

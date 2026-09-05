@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-15](../welle-15-re-baseline.md) — **Mitglied**, und der Grund ist nicht Nähe,
+**Welle:** [welle-15](welle-15-re-baseline.md) — **Mitglied**, und der Grund ist nicht Nähe,
 sondern Gleichzeitigkeit: Ab dem Moment, in dem
 [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) die Ablage umzieht, weisen
 **zehn** lebende Slice-Pläne und **vier** Anweisungssatz-Dateien einen Vorgang an, den es nicht
@@ -123,7 +123,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       allein nicht gedeckt ist, ist gemessen und nicht vermutet
       ([slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md)).
 - [x] `make gates` grün.
-- [x] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice. **Ein öffentlicher
+- [x] Doku-Update: [welle-15](welle-15-re-baseline.md) §4 führt diesen Slice. **Ein öffentlicher
       Vertrag ist berührt** — die emittierten Anweisungssätze sind das, was ein Adopter bekommt;
       die Änderungshistorie von [`docs/user/benutzerhandbuch.md`](../../../user/benutzerhandbuch.md)
       bekommt ihre Zeile, ihre **bestehenden** Zeilen bleiben unangetastet.
@@ -294,7 +294,7 @@ Backticks).
 - **Risiken aus §6:** vier notiert, vier mit genau einem Ausgang — dreimal *entfallen* mit
   Begründung, einmal *eingetreten* mit Folge-Slice-ID. Keines steht ohne Ausgang da.
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — sie prüft die Closure von
-  [welle-15](../welle-15-re-baseline.md).
+  [welle-15](welle-15-re-baseline.md).
 
 ## 8. Sub-Area-Modus-Begründung
 

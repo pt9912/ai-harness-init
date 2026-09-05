@@ -5,11 +5,11 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-15](../welle-15-re-baseline.md) — **Mitglied**, und die Präzedenz ist derselbe
+**Welle:** [welle-15](welle-15-re-baseline.md) — **Mitglied**, und die Präzedenz ist derselbe
 Gegenstand eine Runde früher: [slice-163](../done/slice-163-regierende-fassung-des-sprungs.md) trug
 diese Frage für den Sprung auf `v5.18.0` als Mitglied von
 [welle-14](../done/welle-14-re-baseline.md) und löste deren offene Übergabe aus §5 ein. Der Slice
-löst hier Übergabe 1 aus [welle-15](../welle-15-re-baseline.md) §5. Der andere Kandidat,
+löst hier Übergabe 1 aus [welle-15](welle-15-re-baseline.md) §5. Der andere Kandidat,
 [slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md), beantwortet die Frage nicht:
 Er lief wellenlos, weil zum Zeitpunkt seines Schnitts **keine Welle offen war** —
 `git merge-base --is-ancestor d0ad524 ea2dc71 && echo 'welle-14 war vor dem Schnitt geschlossen'`
@@ -80,7 +80,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Option C), und der übernächste Sprung misst wieder.
 - [x] `make gates` grün.
 - [x] Doku-Update: der ADR-Index ([`docs/plan/adr/README.md`](../../adr/README.md)) trägt die neue
-      Zeile ([`AGENTS.md`](../../../../AGENTS.md) §5); [welle-15](../welle-15-re-baseline.md) §5
+      Zeile ([`AGENTS.md`](../../../../AGENTS.md) §5); [welle-15](welle-15-re-baseline.md) §5
       führt Übergabe 1 als erledigt. Ein öffentlicher Vertrag ist nicht berührt.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
@@ -98,7 +98,7 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | `docs/plan/adr/` | neu | die Entscheidung, per `cp` aus der vendored ADR-Vorlage |
 | [`docs/plan/adr/README.md`](../../adr/README.md) | update | der Index wächst mit der ADR |
-| [welle-15](../welle-15-re-baseline.md) §5 | update | Übergabe 1 hat einen Ausgang |
+| [welle-15](welle-15-re-baseline.md) §5 | update | Übergabe 1 hat einen Ausgang |
 
 ## 4. Trigger
 
@@ -217,7 +217,7 @@ Backticks).
 - **Risiken aus §6:** drei, je genau ein Ausgang — *entfallen* · *entfallen* · *weiter offen*
   (`BEO-041`); siehe §6.
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — sie prüft die Closure von
-  [welle-15](../welle-15-re-baseline.md).
+  [welle-15](welle-15-re-baseline.md).
 
 ## 8. Sub-Area-Modus-Begründung
 

@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-15](../welle-15-re-baseline.md) — **Mitglied** aus demselben Grund wie
+**Welle:** [welle-15](welle-15-re-baseline.md) — **Mitglied** aus demselben Grund wie
 [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md), dessen Vorbedingung er
 ist: Die Ablage-Form ist eine Pflicht der Ziel-Fassung, und der Slice liefert die Entscheidung, ohne
 die jene Pflicht nicht vollzogen werden kann.
@@ -200,7 +200,7 @@ trägt die heutige Leere der Spalte zu Recht. Sie steht als Folgepflicht 2 jener
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [welle-15](../welle-15-re-baseline.md) ist eröffnet — ihre
+**Start** (`next` → `in-progress`): [welle-15](welle-15-re-baseline.md) ist eröffnet — ihre
 Plan-Datei liegt flach in `docs/plan/planning/`, und die Roadmap führt sie unter *Offene Wellen*.
 Die Entscheidung braucht den Baum-Tausch nicht: Ihre Grundlage ist die Ziel-Form am lokalen
 Kurs-Klon und der Bestand dieses Repos, beides heute messbar.
@@ -252,7 +252,7 @@ dasteht.
   wird, entscheidet Zweig (a). — **Ausgang:** **weiter offen**, im
   Beobachtungs-Register. Sie wird die fünfte Senkung; der Zähler steht mit
   dem Beleg dieses Slice auf **3×**, und den Ausgang der Zeile weist der Lese-Schritt der Closure
-  von [welle-15](../welle-15-re-baseline.md) zu — nicht dieser Slice
+  von [welle-15](welle-15-re-baseline.md) zu — nicht dieser Slice
   (Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register: zwischen dem Beleg, der auf
   3 hebt, und dem Lese-Schritt steht der Eintrag zulässig auf `offen`).
 - **Die Kürzel-Entscheidung wirkt über dieses Register hinaus.** Ein vergebenes Kürzel ist
@@ -316,7 +316,7 @@ Backticks).
   [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
   — zusammen mit deren Festlegung 5, die der Klasse die Erlaubnis nimmt, auf die dieser Lauf sich
   sonst berufen hätte. Der Herkunfts-Anker der Regel entsteht beim Lese-Schritt der Closure von
-  [welle-15](../welle-15-re-baseline.md), nicht hier; darum trägt dieser Eintrag **kein**
+  [welle-15](welle-15-re-baseline.md), nicht hier; darum trägt dieser Eintrag **kein**
   `liegt in`-Feld.
 - **Beobachtungs-Register (`../observations.md`):** `BEO-017` **2× → 3×** (Beleg `slice-179`) —
   sechste Instanz, und die erste, deren Bestand vollständig aufgelöst ist statt teilweise. Die
@@ -334,7 +334,7 @@ Backticks).
 - **Risiken aus §6:** vier, jedes mit genau einem Ausgang — zwei *entfallen* mit Begründung, zwei
   *weiter offen* im Register. Keines *eingetreten*, also kein Carveout.
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — sie prüft die Closure von
-  [welle-15](../welle-15-re-baseline.md).
+  [welle-15](welle-15-re-baseline.md).
 
 ## 8. Sub-Area-Modus-Begründung
 

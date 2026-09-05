@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-15](../welle-15-re-baseline.md) — **Mitglied.** Der Adaptions-Durchgang ist eine
+**Welle:** [welle-15](welle-15-re-baseline.md) — **Mitglied.** Der Adaptions-Durchgang ist eine
 der sieben Eigenschaften der Migrations-Prozedur, die diesen Sprung regiert (*„Der Review geht
 durch die Adaptions-Liste, nicht nur durch den Diff"*), und beide Fassungen führen sie byte-gleich
 ([slice-176](../done/slice-176-inventur-vor-dem-schnitt-v600.md) §9, Stufe b). Präzedenz ist
@@ -102,7 +102,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       **Erfüllt ohne Gegenstand:** kein Eintrag wird gegenstandslos (§9 §Bilanz), also wandert
       keiner und entsteht keiner. Ein Rückbau ohne Befund wäre der Fehler, nicht die Pflicht.
 - [x] `make gates` grün.
-- [x] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice. Ein öffentlicher
+- [x] Doku-Update: [welle-15](welle-15-re-baseline.md) §4 führt diesen Slice. Ein öffentlicher
       Vertrag ist nicht berührt.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag — geschrieben im **Planner**-Kontext nach dem
       Review, mit dessen wiederkehrenden Klassen als dritter Quelle (Baseline-Regelwerk
@@ -151,7 +151,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 2. **[slice-178](../done/slice-178-regierende-fassung-des-sprungs-v600.md) liegt in `done/`, und die dort
    entstandene ADR steht auf `Accepted`.** Der Durchgang **fällt** Konformitäts-Urteile; ohne
    entschiedene normative Quelle wären sie auf eine Fassung gestützt, die niemand gewählt hat —
-   genau die Lage, die [welle-15](../welle-15-re-baseline.md) §5 als *„blockiert jeden Durchgang,
+   genau die Lage, die [welle-15](welle-15-re-baseline.md) §5 als *„blockiert jeden Durchgang,
    der eines fällt"* führt.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
@@ -297,7 +297,7 @@ Backticks).
   **3×** — **zwei** Belege in diesem Zug, weil zwei Vorgänge betroffen sind: `slice-178`, dessen
   Fund aus dem nachträglichen Review nie gebucht wurde, und `slice-185` selbst. Damit ist die
   Schwelle erreicht; der Ausgang steht dem **Lese-Schritt** zu und der liegt bei der Closure von
-  [welle-15](../welle-15-re-baseline.md), nicht hier ·
+  [welle-15](welle-15-re-baseline.md), nicht hier ·
   [`extensionale-zahl-unterschreitet-die-eigene-fundmenge`](../observations/BEO-ALL/extensionale-zahl-unterschreitet-die-eigene-fundmenge/observation.md)
   **1×**, neu angelegt: Die Nachbarklasse
   [`zahl-neben-nie-gefahrenem-kommando`](../observations/BEO-ALL/zahl-neben-nie-gefahrenem-kommando/observation.md)
@@ -313,7 +313,7 @@ Backticks).
   [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum),
   und ihr Träger sind [slice-091](../open/slice-091-vendored-baum-ohne-anspruch.md) und
   [slice-092](../open/slice-092-traeger-inventur.md)
-  ([welle-15](../welle-15-re-baseline.md) §5). Eine Kennung hier behauptete eine Datei, die es
+  ([welle-15](welle-15-re-baseline.md) §5). Eine Kennung hier behauptete eine Datei, die es
   nicht gibt.
 - **Risiken aus §6:** je genau ein Ausgang — *weiter offen → Register*, *entfallen* (mit
   Begründung), *eingetreten → im Slice behoben*. Siehe §6.
@@ -325,7 +325,7 @@ Backticks).
   **4**, Frist **1**). **Was das nicht deckt:** das DoD-Urteil aus getrenntem Kontext — die
   Verifier-Kante ist nicht gelaufen (oben, offene Übergabe 2).
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — sie prüft die Closure von
-  [welle-15](../welle-15-re-baseline.md).
+  [welle-15](welle-15-re-baseline.md).
 
 ## 8. Sub-Area-Modus-Begründung
 
@@ -643,7 +643,7 @@ Adaptionen ist keine über dieses Artefakt geschrieben. Der Beleg dafür ist die
 §Methode, nicht das Ausbleiben eines Treffers: Hätte der Sprung eine Adaption eingeholt, stünde
 die Regel unter den 99 Zeilen. **Was der Sprung dem Repo abverlangt hat, lag außerhalb dieses
 Registers** — Register-Umzug, Kennungs-Nachzug, Anweisungssätze; das sind die sieben übrigen
-Mitglieder von [welle-15](../welle-15-re-baseline.md).
+Mitglieder von [welle-15](welle-15-re-baseline.md).
 
 ### Was dieser Durchgang **nicht** trägt
 
@@ -659,7 +659,7 @@ git grep -l 'v5\.12\.0' -- 'harness/conventions/' | wc -l                       
 **Keine Erwartungswerte** — beide wandern mit dem Block. Ihr Träger sind
 [slice-091](../open/slice-091-vendored-baum-ohne-anspruch.md) und
 [slice-092](../open/slice-092-traeger-inventur.md)
-([welle-15](../welle-15-re-baseline.md) §5). Sie hier mitzunehmen wäre ein vierter Liefer-Punkt an
+([welle-15](welle-15-re-baseline.md) §5). Sie hier mitzunehmen wäre ein vierter Liefer-Punkt an
 einem Slice mit drei (Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Slice). Der
 Durchgang **prüft** diese Nennungen, wo sie eine Messung tragen — jede Zeile der drei Tabellen
 oben ist gegen den Zielstand neu gefahren —, und **ändert** keine.

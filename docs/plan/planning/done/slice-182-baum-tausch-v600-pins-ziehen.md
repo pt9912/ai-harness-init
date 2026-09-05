@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-15](../welle-15-re-baseline.md) — **Mitglied, und zwar zwingend.** Ihr
+**Welle:** [welle-15](welle-15-re-baseline.md) — **Mitglied, und zwar zwingend.** Ihr
 Closure-Trigger nennt zwei Bedingungen, die nur dieser Slice herstellt: `make baseline-verify`
 meldet `v6.0.0 OK`, und §Baseline von [`harness/conventions.md`](../../../../harness/conventions.md)
 nennt denselben Tag. Kein anderer Mitglieds-Kandidat kann sie einlösen.
@@ -136,7 +136,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [x] `make gates` grün. **Dazu `make full-smoke`** — der Baum-Tausch von
       [welle-10](../done/welle-10-re-baseline.md) brach genau dort und blieb für `make gates`
       unsichtbar ([slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md)).
-- [x] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice. Ein öffentlicher
+- [x] Doku-Update: [welle-15](welle-15-re-baseline.md) §4 führt diesen Slice. Ein öffentlicher
       Vertrag ist nicht berührt — der vendored Baum ist Infrastruktur, kein Nutzer-sichtbares
       Verhalten.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -267,7 +267,7 @@ dasteht.
   (Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register).
 
   **Warum hier trotzdem kein Träger steht.** Von den **7** Mitgliedern dieser Welle
-  (`grep -c '^| \[slice-' docs/plan/planning/welle-15-re-baseline.md`) berührt keines die
+  (`grep -c '^| \[slice-' docs/plan/planning/done/welle-15-re-baseline.md`) berührt keines die
   emittierte Ablage. [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) legt
   die Ablage **dieses** Repos an ([`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
   Festlegung 1) und nennt die Emit-Ebene nicht
@@ -370,7 +370,7 @@ Backticks).
   **Zwei Zeilen treten mit dieser Closure über die Schwelle** — `BEO-015` und `BEO-030` — und
   stehen bis dahin `offen`: Den Ausgang weist der **Lese-Schritt** zu, und der liegt in diesem Repo
   bei der Welle-Closure. Sie sind damit Pflicht-Posten für Schritt 3a der Closure von
-  [welle-15](../welle-15-re-baseline.md), nicht für diese hier.
+  [welle-15](welle-15-re-baseline.md), nicht für diese hier.
 - **Folge-Slices: keine.** Alle drei offenen Posten haben eine Route, und keine davon ist eine neue
   Plan-Datei: die Prosa-Zahl in [`AGENTS.md`](../../../../AGENTS.md) §1 zählt unter `BEO-009`, die
   emittierte Register-Hälfte unter `BEO-038`, der falsche Träger im Kopf von
@@ -402,7 +402,7 @@ Backticks).
   ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2) — die Dateizahlen wandern mit dem Baum.
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — sie prüft die Closure von
-  [welle-15](../welle-15-re-baseline.md).
+  [welle-15](welle-15-re-baseline.md).
 
 ## 8. Sub-Area-Modus-Begründung
 
@@ -439,7 +439,7 @@ der Arbeit dasteht.
 - `BEO-009` (10×, **geplant**) — *eine Zusage neben der geänderten Ableitung bleibt stehen*. Steht
   als Risiko in §6, hier in der Commit-Zuschnitt-Form.
 - `BEO-011` (1×) — *gesammelte Sprünge kosten überproportional*. Dieser Sprung wird zeitnah
-  adoptiert; die Kostenreihe misst die Closure von [welle-15](../welle-15-re-baseline.md).
+  adoptiert; die Kostenreihe misst die Closure von [welle-15](welle-15-re-baseline.md).
 - `BEO-025` (4×, **geplant** in [slice-181](../open/slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md))
   — *eine Zusage nennt einen Sensor, der die zugesagte Form nicht sieht*. Bindet DoD 4:
   `make gates` sieht den Fall aus DoD 1 nicht vollständig, `make full-smoke` gehört dazu.

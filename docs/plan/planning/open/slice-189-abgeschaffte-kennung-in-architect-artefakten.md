@@ -8,7 +8,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 **Welle:** ohne Welle. Der Baseline-Test ist das *Mehr*
 (`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht): eine beobachtbare Closure-Bedingung, die
 mehr beobachtet als die DoD unten. Es gibt keine — und **kein Mitglied von**
-[welle-15](../welle-15-re-baseline.md): Deren Ziel verlangt für jede Pflicht des Sprungs einen
+[welle-15](../done/welle-15-re-baseline.md): Deren Ziel verlangt für jede Pflicht des Sprungs einen
 *verbuchten Ausgang*, keinen Vollzug, und diese Datei in `open/` **ist** er. Das unterscheidet
 diesen Slice von
 [slice-186](../done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md), dessen Nachzug

@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-15](../welle-15-re-baseline.md) — **Mitglied aus Gleichzeitigkeit, nicht aus
+**Welle:** [welle-15](welle-15-re-baseline.md) — **Mitglied aus Gleichzeitigkeit, nicht aus
 Nähe**, dieselbe Begründung wie bei
 [slice-184](../done/slice-184-register-form-im-bestand-nachziehen.md). Der Umzug dieser Welle hat die
 fortlaufende Nummer abgeschafft; seither zitieren **23** lebende Dateien eine Kennung, die
@@ -200,7 +200,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Pfad steckt in einem Inline-Code-Span, der ein ganzes Shell-Kommando umfasst, und
       `make docs-check` bleibt darüber grün.
 - [x] `make gates` grün.
-- [x] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice bereits (Zeile
+- [x] Doku-Update: [welle-15](welle-15-re-baseline.md) §4 führt diesen Slice bereits (Zeile
       angelegt beim Schnitt). Ein öffentlicher
       Vertrag ist **nicht** berührt — der emittierte Baum führt keine `BEO`-Kennung dieses Repos
       (`git grep -o 'BEO-[0-9][0-9][0-9]' -- internal/emit/templates | wc -l` → **0**; die
@@ -210,7 +210,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       eine weitere Datei in einem vorhandenen `evidence/`, je ein `evidence/slice-186.md`, kein
       gesetzter Zähler (§7).
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen) — siehe §6/§7.
-- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit); dieses Repo führt Wellen-Betrieb, geprüft darum bei der Closure von [welle-15](../welle-15-re-baseline.md).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit); dieses Repo führt Wellen-Betrieb, geprüft darum bei der Closure von [welle-15](welle-15-re-baseline.md).
 
 ## 3. Plan (vor Code)
 
@@ -224,7 +224,7 @@ Aussagen-Berührung steht hier gar nicht.
 | Slice-Pläne in `open/` und `in-progress/` | update | 15 der 23 Dateien; Bezugsmenge und Kommando in §1 |
 | [`harness/conventions/`](../../../../harness/conventions/) | update | drei Einträge — **Architect-Artefakt** ([`AGENTS.md`](../../../../AGENTS.md) §3.8), eigener Commit, eigene Rolle |
 | [`docs/plan/adr/`](../../adr/) | update **oder** *keine*, je nach Status | zwei Dateien, zwölf Vorkommen — die `Accepted`-Hälfte ist nach §3.4 eingefroren, die `Proposed`-Hälfte nicht; steht als Risiko in §6 |
-| [`harness/README.md`](../../../../harness/README.md), [`.claude/commands/`](../../../../.claude/commands/), [roadmap](../in-progress/roadmap.md), [welle-15](../welle-15-re-baseline.md) | update | je ein Vorkommen; der Anweisungssatz gehört seiner ausführenden Rolle ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)) |
+| [`harness/README.md`](../../../../harness/README.md), [`.claude/commands/`](../../../../.claude/commands/), [roadmap](../in-progress/roadmap.md), [welle-15](welle-15-re-baseline.md) | update | je ein Vorkommen; der Anweisungssatz gehört seiner ausführenden Rolle ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)) |
 | `docs/plan/planning/observations/` | update oder *keine* | Liefer-Punkt 2 — die Entscheidung steht vor der Änderung |
 | [slice-181](../open/slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md) §8 | update | Liefer-Punkt 3 — Kommando statt Zitat |
 
@@ -348,7 +348,7 @@ dasteht.
   gibt es dafür nicht. Der Beleg (`evidence/slice-186.md`) liegt darum bei der oben genannten,
   mit dieser Closure vergebenen Kennung; die Nachbarklasse bleibt bei drei Belegen über einem
   Gegenstand statt bei vieren über zweien. Der Lese-Schritt liegt bei diesem Repo im
-  Wellen-Betrieb — er läuft bei der Closure von [welle-15](../welle-15-re-baseline.md), nicht
+  Wellen-Betrieb — er läuft bei der Closure von [welle-15](welle-15-re-baseline.md), nicht
   hier.
 
 ## 7. Closure-Notiz
@@ -417,7 +417,7 @@ Backticks).
   teilt. Ergänzt wurde
   [`fremdes-rollen-artefakt-im-implementations-kontext`](../observations/BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext/observation.md);
   der Eintrag stand vor diesem Slice schon auf der Schwelle, sein Ausgang steht dem Lese-Schritt
-  der Closure von [welle-15](../welle-15-re-baseline.md) zu und wird hier **nicht** zugewiesen.
+  der Closure von [welle-15](welle-15-re-baseline.md) zu und wird hier **nicht** zugewiesen.
   Zähler-Stände: `for s in abgeschaffte-kennung-in-unveraenderlichem-artefakt zahl-ohne-kommando-trifft-ihren-gegenstand-nicht uebergabe-an-andere-rolle-ohne-traeger-artefakt fremdes-rollen-artefakt-im-implementations-kontext; do d="docs/plan/planning/observations/BEO-ALL/$s"; echo "$s $(ls "$d/evidence" | wc -l)x"; done`
   (keine Erwartungswerte).
 - **Folge-Slices:** [slice-189](../open/slice-189-abgeschaffte-kennung-in-architect-artefakten.md)
@@ -439,7 +439,7 @@ Backticks).
 - **Risiken aus §6:** vier notiert, vier mit genau einem Ausgang — dreimal *entfallen* mit
   Begründung, einmal *weiter offen* mit Register-Verweis. Keines steht ohne Ausgang da.
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — sie prüft die Closure von
-  [welle-15](../welle-15-re-baseline.md).
+  [welle-15](welle-15-re-baseline.md).
 
 ## 8. Sub-Area-Modus-Begründung
 

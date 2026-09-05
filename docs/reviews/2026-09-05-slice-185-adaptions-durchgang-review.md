@@ -369,7 +369,7 @@ gegenstandslos, teilweise überholt, ohne Bezug oder im Widerspruch. Die Befunde
   das Kommando steht jetzt neben der Zahl ([`MR-025`](../../harness/conventions.md#mr-025)
   Setzung 1); `grep -m1 '^\*\*Status:\*\*' docs/plan/adr/0036-*.md` → `Accepted`. Beide Zellen
   tragen Zustand, keine Chronik. **Kein Befund** (außer LOW-1 zur Nachbar-Klausel).
-- **[welle-15](../plan/planning/welle-15-re-baseline.md) §4** führt slice-185 mit Zeiger auf
+- **[welle-15](../plan/planning/done/welle-15-re-baseline.md) §4** führt slice-185 mit Zeiger auf
   `in-progress/`. **Kein Befund.**
 - **`make gates`** — selbst gefahren, **EXIT 0**; `d-check: 800 Datei(en) geprüft, 0 Befund(e)`;
   `test` 218 bats-Fälle ok, 8 Go-Pakete ok; `span-check` grün. Deckungsgleich mit der Angabe in der

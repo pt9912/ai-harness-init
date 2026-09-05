@@ -210,7 +210,7 @@ falschen Zähler-Stand* tritt hier **nicht** ein.
   **Link-Adressen** in `Accepted`-ADRs, aufgelöst über `ignore-refs`-Paare. Der Zähler steht damit
   bei **4×** über zwei verschiedenen Gegenständen. Das konkrete Versagen liegt vor dem Repo:
   Der Ausgang dieses Eintrags ist beim Lese-Schritt der
-  [welle-15](../plan/planning/welle-15-re-baseline.md)-Closure fällig; er wird an drei
+  [welle-15](../plan/planning/done/welle-15-re-baseline.md)-Closure fällig; er wird an drei
   ADR-Adress-Fällen bemessen und deckt den Identitäts-Fall nicht — und die Kurzbeschreibung ist
   *ab Anlage unveränderlich* und kann nicht nachgezogen werden.
 - **verifizierbar:** **nein** — maschinell prüfbar ist nach Modul 6 nur die Deckung (Verzeichnis
@@ -449,7 +449,7 @@ falschen Zähler-Stand* tritt hier **nicht** ein.
   und ist als Beleg-Dokument bestimmungsgemäß rückblickend.
 - **N-16 — Der Register-Eintrag ist nicht vorschnell einem Ausgang zugewiesen.** §6 Risiko 4 trägt
   *weiter offen → Register*, §7 verweist den Ausgang ausdrücklich an den Lese-Schritt von
-  [welle-15](../plan/planning/welle-15-re-baseline.md), und der Zähler ist nirgends als Feld
+  [welle-15](../plan/planning/done/welle-15-re-baseline.md), und der Zähler ist nirgends als Feld
   gesetzt — er ist die Dateizahl (**4**,
   `ls docs/plan/planning/observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/evidence | wc -l`).
   Das ist Modul-6-konform. Der Einwand gegen diesen Beleg betrifft die **Klasse**, nicht das
