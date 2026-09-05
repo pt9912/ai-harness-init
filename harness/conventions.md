@@ -61,14 +61,24 @@ Feld steht als Ziel-Form, nicht als bewachte Zusage.
   Setzung 2) — sie wandert mit dem Stand; tragend ist das `OK`. Die URL ersetzt die frühere
   `raw…/main/…/agents-regelwerk.md`-Monolith-URL, die **404** liefert (der Monolith
   existiert upstream seit v2.0.0 nicht mehr — die Module leben unter `/kurs/de/`).
-- **Die Upstream-Provenienz dieses Standes ist offen** und steht hier, weil sie sonst als belegt
-  gälte ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). `SHA256SUMS` im Baum
-  ist selbst erzeugt und trägt allein die lokale Integrität; die Herkunft hängt an
-  `BASELINE_ZIP_SHA256` (`grep -m1 '^BASELINE_ZIP_SHA256' Makefile`), und dieser Pin trägt — wie
-  `BASELINE_TAG`, das `sources`-Paar in [`.d-check.yml`](../.d-check.yml) und
-  `DefaultTag`/`DefaultBaselineSHA256` in `internal/fetch/baseline.go` — den abgelösten Stand.
-  Solange die fünf Stellen dort stehen, prüft `make regelwerk-check` (Netz, **nicht** in
-  `make gates`) ein anderes Asset als den vendored Baum. Träger des Nachzugs ist slice-182.
+- **Die Provenienz-Kette ist zur Hälfte bewacht**, und die unbewachte Hälfte steht hier, weil sie
+  sonst als belegt gälte ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Fünf
+  Stellen pinnen `v6.0.0` samt dem sha256 seines Release-Assets: `BASELINE_TAG` und
+  `BASELINE_ZIP_SHA256` (`grep -nE '^BASELINE_(TAG|ZIP_SHA256)' Makefile`), das `sources`-Paar in
+  [`.d-check.yml`](../.d-check.yml) (`grep -n 'lab-regelwerk' -A 1 .d-check.yml`) und
+  `DefaultTag`/`DefaultBaselineSHA256` in `internal/fetch/baseline.go`
+  (`grep -nE 'Default(Tag|BaselineSHA256) =' internal/fetch/baseline.go`). Kanonisch ist das
+  Makefile-Paar; die vier übrigen sind fail-closed daran gekoppelt und laufen in `make gates`
+  (`test/sources-pin.bats`, `TestDefaultTag_MatchesBaseline`,
+  `TestDefaultBaselineSHA256_MatchesMakefile`) — ein Sprung, der eine Stelle stehen lässt, färbt
+  rot. **Pin → Asset** hält `make regelwerk-check` (Netz, **nicht** in `make gates`) →
+  `0 Befund(e)`, EXIT 0. **Asset → vendored Baum** hält nichts: `regelwerk-check` hasht die
+  Roh-Bytes des ZIP (`unpack: none`), `make baseline-verify` hält den Baum gegen `SHA256SUMS`, und
+  `SHA256SUMS` ist selbst erzeugt — es trägt allein die lokale Integrität, nicht die Herkunft
+  (`harness/tools/baseline-verify.sh` §Kopfkommentar). Ein drittes Ziel, das beide Seiten hielte,
+  gibt es nicht: `make baseline-freshness` prüft die Tag-Achse, nicht den Inhalt
+  (`grep -nE '^(baseline|regelwerk)[a-z-]*:' Makefile` nennt die drei). Diese Hälfte hängt am
+  Vendoring-Vorgang, nicht an einem Sensor.
 - **In-Repo (verkörperte Form):** die committet vendored Baseline
   `.harness/baseline/v6.0.0/{regelwerk,templates}/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — die
   präsente, netzlose Sicht auf die kanonische Quelle; bei Konflikt gilt der Kurs.
@@ -203,3 +213,7 @@ deshalb entsteht die Spalte mit dem Segment und nicht auf Vorrat.
 **Wer der „Auswerter (slice-060)" aus [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) ist.**
 Die ADR ist ab *Accepted* immutabel und nennt an drei Stellen die Slice-**ID** 060 als den
 Auswertungs-Slice (Festlegung 1 Punkt 3 sowie die Re-Evaluierungs-Trigger 2 und 6). Der Schnitt
+vom 2026-07-29 hat die Arbeit geteilt: **slice-060 ist die Rollen-Achse** (Erfassung),
+**slice-066 ist die Auswertung**. Gemeint ist an allen drei Stellen der **auswertende** Slice,
+also slice-066. Diese Umdeutung steht hier und nur hier — die ADR wird dafür nicht angefasst
+([`AGENTS.md`](../AGENTS.md) §3.4).
