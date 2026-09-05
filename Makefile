@@ -36,7 +36,7 @@ BASELINE_ZIP_SHA256 ?= ed617e382560793ddd805650a7a0e1e421d68d4fff81253da240a9d47
 .PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
-# steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.65.0 -> v0.65.0). Aus
+# steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
 # DCHECK_IMAGE, NICHT DCHECK_REF — letzteres traegt bei gesetztem Digest keinen Tag.
 DCHECK_TAG := $(lastword $(subst :, ,$(DCHECK_IMAGE)))
 # -h unterdrueckt den Dateinamen-Praefix: MAKEFILE_LIST traegt mehrere Dateien,
