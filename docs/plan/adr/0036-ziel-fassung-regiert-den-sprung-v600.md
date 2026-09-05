@@ -182,21 +182,25 @@ Der Befund wird hier benannt statt in jener Datei nachgetragen: Ihre Konsistenz-
 eigener Vorgang mit eigenem Träger (`slice-171`), und ein Architect-Lauf, der fremde Befunde still
 einarbeitet, nimmt ihm sein Objekt.
 
-### Die Wirkung ist nicht hypothetisch — sie steht heute im Konventionsspeicher
+### Die Wirkung war nicht hypothetisch — sie stand zum Entscheidungszeitpunkt im Konventionsspeicher
 
-`harness/conventions.md` §Modus-Deklaration pro Sub-Area beginnt mit dem Satz *„Eine Kürzel-Spalte
-führt diese Tabelle nicht."* und begründet ihn mit der **abgelösten** Fassung (der Absatz nennt
-`adoptierter Stand v5.18.0` und deren `grundlagen-harness-dateien.md` §harness/conventions.md als
-Konventionsspeicher). Gegen die gepinnte Pflichtgliederung ist das richtig — dieses Repo vergibt
-keine Kennung mit Bereichssegment. Gegen die Ziel-Fassung ist es falsch, denn dort ist die Spalte
-unbedingt.
+Zum Zeitpunkt dieser Entscheidung begann `harness/conventions.md` §Modus-Deklaration pro Sub-Area
+mit dem Satz *„Eine Kürzel-Spalte führt diese Tabelle nicht."* und begründete ihn mit der
+**abgelösten** Fassung (der Absatz nannte `adoptierter Stand v5.18.0` und deren
+`grundlagen-harness-dateien.md` §harness/conventions.md als Konventionsspeicher). Gegen die
+gepinnte Pflichtgliederung war das richtig — dieses Repo vergibt keine Kennung mit
+Bereichssegment. Gegen die Ziel-Fassung war es falsch, denn dort ist die Spalte unbedingt.
 
-**Das ist die Wahl in einem Satz:** Ein Durchgang nach der gepinnten Fassung liest diese Stelle
-grün, ein Durchgang nach der Ziel-Fassung rot. Nicht weil die Prozedur andere Worte hätte —
-sie hat dieselben —, sondern weil sie ihre Frage an zwei verschiedene Pflichtgliederungen stellt.
-**Welchen Ausgang der Fund bekommt, entscheidet diese ADR nicht**; er gehört dem
-Adaptions-Durchgang und der Folgepflicht von
-[ADR-0034](0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md).
+**Das war die Wahl in einem Satz:** Ein Durchgang nach der gepinnten Fassung las diese Stelle
+grün, ein Durchgang nach der Ziel-Fassung rot. Nicht weil die Prozedur andere Worte gehabt hätte —
+sie hatte dieselben —, sondern weil sie ihre Frage an zwei verschiedene Pflichtgliederungen
+stellte. **Die Folgepflicht von
+[ADR-0034](0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
+Festlegung 3 hat den Fund inzwischen aufgelöst** — ein eigener Architect-Commit hat die
+Kürzel-Spalte nachgetragen (`harness/conventions.md:214`); die Stelle liest heute grün nach der
+Ziel-Fassung und ist damit kein offener Fund mehr. Das bestätigt die Wahl dieser ADR eher, als sie
+zu entkräften: Der Delegat, den die Ziel-Fassung als tragend benennt, war genau der, an dem sich
+etwas bewegen musste.
 
 ### Die gepinnte Fassung liegt nicht mehr vendored
 
@@ -295,7 +299,7 @@ eine Entscheidung des Auftraggebers hin.
 | Option | Pro | Contra |
 |---|---|---|
 | A — nichts entscheiden, die Wahl fällt faktisch beim ersten Durchgang | kein Aufwand; der Abschnitt ist byte-gleich, also „egal" | *egal* ist gemessen falsch: die Prozedur delegiert, und das Delegat mit dem Delta ändert genau die abgefragte Pflichtgliederung. [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 verlangt für diesen Fall ausdrücklich eine Begründung; sie zu unterlassen hieße, ihr zweites Anwendungsereignis auszulassen. Und der Durchgang selbst wäre blockiert: sein Start-Trigger nennt eine entschiedene normative Quelle |
-| B — die gepinnte Fassung `v5.18.0` regiert | formal der Stand zu Beginn der Welle; der Abschnitt ist identisch, also kostet es nichts | sie ist **nicht mehr vendored** — `ls -1 .harness/baseline/` gibt allein `v6.0.0` aus, und ein netzloser Lauf öffnet den Text nicht. Ihre Delegate messen den Bestand an einer Pflichtgliederung, die das Repo verlassen hat: die Kürzel-Spalten-Stelle im Konventionsspeicher wäre grün, wo der adoptierte Stand rot ist |
+| B — die gepinnte Fassung `v5.18.0` regiert | formal der Stand zu Beginn der Welle; der Abschnitt ist identisch, also kostet es nichts | sie ist **nicht mehr vendored** — `ls -1 .harness/baseline/` gibt allein `v6.0.0` aus, und ein netzloser Lauf öffnet den Text nicht. Ihre Delegate messen den Bestand an einer Pflichtgliederung, die das Repo verlassen hat: Zum Entscheidungszeitpunkt wäre die Kürzel-Spalten-Stelle im Konventionsspeicher nach `v5.18.0` grün gelesen worden, während sie nach der Ziel-Fassung rot war — inzwischen durch die Folgepflicht von ADR-0034 aufgelöst, aber ein Durchgang nach B hätte diese Auflösung nie gefordert |
 | C — allgemeine Regel *„stets die Ziel-Fassung"*, in Ablösung von [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 | jeder künftige Sprung startet ohne Vorlauf; die Messung entfiele | dort verworfen und hier unverändert gültig: sie bände Prozeduren, deren Wortlaut niemand kennt, und wäre der stille Auto-Bump eine Ebene höher — den **beide** Fassungen wortgleich verbieten. Zusätzlich verlangte sie ein `Supersedes` auf eine ADR, auf die 77 Verweis-Vorkommen aus 16 lebenden Dateien zeigen (`git grep -oE '\]\([^)]*0018-ziel-fassung-regiert-die-migration\.md[^)]*\)' -- ':!docs/reviews' ':!docs/plan/planning/done' \| wc -l`, dazu dieselbe Abfrage mit `-l`; beide wandern und sind keine Erwartungswerte, [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2), und `matrix.status` in [`.d-check.yml`](../../../.d-check.yml) verbietet Verweise auf superseded ADRs |
 | D — die Prozedur aus der Ziel-Fassung, die Delegate aus der gepinnten | nähme die Fassung, die im Baum liegt, und ließe den Maßstab, unter dem die Welle eröffnet wurde | der Abschnitt adressiert seine Delegate **relativ im eigenen Baum** (`grundlagen-harness-dateien.md#…`); die Aufteilung stünde in keiner Fassung und wäre eine Erfindung dieses Repos — derselbe Fehler wie Option D in [ADR-0018](0018-ziel-fassung-regiert-die-migration.md), nur an anderer Stelle. Und sie hätte genau die Wirkung von B: die abgefragte Pflichtgliederung käme aus dem abgelösten Stand |
 | **E — gewählt: Ziel-Fassung für diesen Sprung, auf einer für dieses Fassungspaar gefahrenen Messung** | entscheidet den anstehenden Fall auf Gründen, die hier gemessen sind — Verweis-Verteilung, Netto-Delta je Delegat, die netzlose Verfügbarkeit der zwei Bäume — statt sie von der Vorgänger-Entscheidung zu übernehmen; das Kriterium aus [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) bleibt für den nächsten Sprung unangetastet | der nächste Sprung erbt dieselbe Pflicht ein drittes Mal; und wer *byte-gleich* liest, muss die Delegation **und** den Herkunfts-Kommentar mitlesen, sonst hält er die Frage für erledigt oder findet ein Delta, das keines ist |
