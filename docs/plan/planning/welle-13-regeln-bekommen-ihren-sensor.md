@@ -109,7 +109,7 @@ Setzung 1 geprüft, alle drei Fragen beantwortet:
 
 **Hinweis, noch nicht als dritter Trigger gesetzt — der Schnitt der Trigger-Liste ist Sache des
 Planungs-Akts, der diese Welle eröffnet, nicht dieser Notiz.** [slice-187](in-progress/slice-187-d-check-pin-v0741.md)
-(wellenlos, `open/`) zieht den d-check-Pin von `v0.65.0` — der Stand, gegen den §1 dieser Welle
+(wellenlos) zieht den d-check-Pin von `v0.65.0` — der Stand, gegen den §1 dieser Welle
 misst — auf `v0.74.1`. Das ist derselbe Grund wie bei `slice-122` oben: die Modulzahl wächst von
 **20** auf **22** (`workflows`, `reviews` neu), und `planning` bekommt eine neue Fähigkeit
 `observations.dir` (`[0.74.0]`, prüft die Register-Deckung gegen eine Verzeichnis-Ablage — genau
