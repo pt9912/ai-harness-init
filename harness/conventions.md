@@ -30,8 +30,8 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   [`ADR-0031`](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
   Festlegung 2. **Die Prozedur des Sprungs auf `v6.0.0` stellt die Ziel-Fassung** —
   [`ADR-0036`](../docs/plan/adr/0036-ziel-fassung-regiert-den-sprung-v600.md), einzige Festlegung,
-  `Proposed` mit Acceptance-Trigger in der Datei; sie bindet ab `Accepted`
-  ([`AGENTS.md`](../AGENTS.md) §3.4). Festlegung 1 von
+  `Accepted`; sie bindet damit nach [`AGENTS.md`](../AGENTS.md) §3.4, Korrekturen entstehen als
+  Folge-ADR mit `Supersedes`. Festlegung 1 von
   [`ADR-0031`](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) bindet
   allein den Sprung auf `v5.18.0`; die eigene Messung, die ihr erster Re-Evaluierungs-Trigger für
   jeden weiteren verlangt, ist in slice-176 gefahren und in slice-178 entschieden. Die
@@ -206,7 +206,8 @@ Festlegung 3) — die Bedingung ist damit erfüllt, nicht aufgehoben, und die Sp
 dieses Segment, keines von ADR/Slice. Tragend ist allein `ALL`: Alle Beobachtungen dieses Repos
 führen dieselbe Sub-Area `*`
 (`grep -h '^\*\*Sub-Area:\*\*' docs/plan/planning/observations/BEO-ALL/*/observation.md | sort -u`
-→ eine Zeile, `* (gesamtes Repo)`, über allen **41** Verzeichnissen — keine Erwartungswerte, die
+→ eine Zeile, `* (gesamtes Repo)`, über allen **45** Verzeichnissen,
+`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l` — keine Erwartungswerte, die
 Tabellenform ist mit der Verzeichnis-Form entfallen und die Sub-Area steht seitdem in dieser Zeile
 jeder `observation.md`, nicht mehr in einer Spalte der flachen Datei). Ein vergebenes Kürzel ist
 unveränderlich — es steht dann in Kennungen, in Commits und in Verweisen.
