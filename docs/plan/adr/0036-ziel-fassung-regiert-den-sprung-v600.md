@@ -1,6 +1,6 @@
 # ADR-0036: Die Ziel-Fassung regiert auch den Sprung `v5.18.0` → `v6.0.0`
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-05
 
@@ -375,6 +375,7 @@ wäre `git` + `diff` + `grep`; ihn hier als vorhanden auszugeben wäre
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-05 | **Proposed** | Architect-Lauf zu `slice-178`. Anlass ist der zweite Eintritt des zweiten Falls aus [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 und der erste Re-Evaluierungs-Trigger von [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md), der für diesen Sprung eine eigene zweistufige Messung verlangt. Die Messung ist in diesem Lauf gegen die zwei **vendored** Bäume nachgefahren statt aus dem Katalog übernommen; dabei ist die Netto-Frage des Delegat-Deltas entstanden |
+| 2026-09-05 | **Accepted** | **Entscheidung des Auftraggebers vom 2026-09-05, vollzogen in der Architect-Rolle.** Wer eine ADR annimmt, sagt keine Quelle dieses Repos — gemessen in [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) §Geschichte, hier nicht gedoppelt. Der Acceptance-Trigger dieser Datei ist eingelöst: drei Reviewer-Konsistenzrunden gegen [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) und [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) (`docs/reviews/2026-09-05-adr-0036-konsistenz-bestaetigung.md`, `-runde-2.md`, `-runde-3.md`) fanden zusammen 1 HIGH und 6 MEDIUM — ausnahmslos veraltete oder ungenau verortete Präsens-Aussagen in der Begründung, keinen Einwand gegen Festlegung, tragende Gründe oder Abgrenzung. Alle sind vor diesem Umschlag behoben (`ec3343a`, `8f40677`, dieser Commit); die dritte Runde bestätigt ausdrücklich keinen weiteren Rest. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes`. Die Vergabe eines Belegs für die drei Fix-Commits ist keine Bedingung der Annahme — Runde 3 stellt fest, dass keiner der drei ein belegfähiger Vorgang ist (Beleg braucht eine abgeschlossene Vorgangs-Kennung); das bleibt Planner-/Closure-Sache |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
