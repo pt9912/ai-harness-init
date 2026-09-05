@@ -272,9 +272,9 @@ dasteht.
   die Ablage **dieses** Repos an ([`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
   Festlegung 1) und nennt die Emit-Ebene nicht
   (`grep -c 'internal/emit' docs/plan/planning/done/slice-177-beobachtungs-register-verzeichnis-form.md`
-  → **0**); [slice-184](../open/slice-184-register-form-im-bestand-nachziehen.md) zieht die
+  → **0**); [slice-184](../next/slice-184-register-form-im-bestand-nachziehen.md) zieht die
   emittierten **Anweisungssätze** nach, und alle seine Emit-Stellen zeigen dorthin
-  (`grep -c 'internal/emit' docs/plan/planning/open/slice-184-register-form-im-bestand-nachziehen.md`
+  (`grep -c 'internal/emit' docs/plan/planning/next/slice-184-register-form-im-bestand-nachziehen.md`
   → **4**, dasselbe Kommando mit dem Muster `internal/emit/templates/commands` → ebenfalls **4**).
   Auch der Katalog in
   [slice-176](../done/slice-176-inventur-vor-dem-schnitt-v600.md) §9 führt die Position **P-14** als
