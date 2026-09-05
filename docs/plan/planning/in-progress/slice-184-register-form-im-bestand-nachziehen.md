@@ -107,30 +107,30 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Die lebenden Slice-Pläne tragen die Ziel-Form.** Die DoD-Zeile und die §7-Zeile jedes
+- [x] **Die lebenden Slice-Pläne tragen die Ziel-Form.** Die DoD-Zeile und die §7-Zeile jedes
       Plans in `open/`, `next/` und `in-progress/` nennen die Verzeichnis-Ablage und **setzen
       keinen Zähler** — der Wortlaut kommt aus `slice.template.md` des dann vendored Stands, nicht
       aus einer eigenen Formulierung. Vollständigkeit gemessen statt behauptet: das Kommando aus
       §1 trifft danach **null**. **Zeitdokumente bleiben unangetastet** — `done/` und
       `docs/reviews/` sind Chronik von Beruf ([`AGENTS.md`](../../../../AGENTS.md) §3.7).
-- [ ] **Die drei Anweisungssätze unter `.claude/commands/` tragen die Ziel-Form** — kein
+- [x] **Die drei Anweisungssätze unter `.claude/commands/` tragen die Ziel-Form** — kein
       `BEO-<NNN>`, keine *Registerzeile*, kein *Zähler erhöhen*. **Der Commit-Zuschnitt folgt
       [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md):**
       `plan-welle.md` und `close-welle.md` gehören dem Planner, `implement-slice.md` dem
       Implementer — zwei Rollen, zwei Commits, die Rolle je in der Message.
-- [ ] **Die emittierten Gegenstücke ziehen mit.** `internal/emit/templates/commands/` trägt
+- [x] **Die emittierten Gegenstücke ziehen mit.** `internal/emit/templates/commands/` trägt
       denselben Stand; belegt durch `make full-smoke` — dass die emittierte Hälfte über `make gates`
       allein nicht gedeckt ist, ist gemessen und nicht vermutet
       ([slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md)).
-- [ ] `make gates` grün.
-- [ ] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice. **Ein öffentlicher
+- [x] `make gates` grün.
+- [x] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice. **Ein öffentlicher
       Vertrag ist berührt** — die emittierten Anweisungssätze sind das, was ein Adopter bekommt;
       die Änderungshistorie von [`docs/user/benutzerhandbuch.md`](../../../user/benutzerhandbuch.md)
       bekommt ihre Zeile, ihre **bestehenden** Zeilen bleiben unangetastet.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register fortgeschrieben — neuer Eintrag oder ein weiterer Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register fortgeschrieben — neuer Eintrag oder ein weiterer Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -186,19 +186,46 @@ dasteht.
 - **Der Nachzug ersetzt Wortlaut und lässt die Pflicht dahinter stehen** (`BEO-023`, 2×). Ein Plan
   in `open/` kann durch den Sprung nicht nur anders **formuliert**, sondern anders **verpflichtet**
   sein; eine Ersetzung, die das nicht prüft, macht aus einer offenen Frage eine erledigte. Steht
-  als zweite Rückführung in §4. — **Ausgang:** <…>
+  als zweite Rückführung in §4. — **Ausgang: entfallen.** Alle **acht** Ersetzungen sind ein
+  Träger-Wechsel derselben Pflicht: Der Wortlaut ist der der vendored `slice.template.md` —
+  `grep -cF 'fortgeschrieben — neues Verzeichnis' .harness/baseline/v6.0.0/templates/docs/plan/planning/slice.template.md`
+  → **1**, **kein** Erwartungswert —, und die verlangte Handlung — *das Register fortschreiben* — ist vorher wie nachher dieselbe; nur ihr
+  Mittel wechselt von Zeile-plus-Zähler auf Verzeichnis-plus-Beleg. Kein Plan gewinnt oder
+  verliert dadurch eine Pflicht, und das Urteil je Plan war damit für alle acht dasselbe.
 - **Die Bezugsmenge ist ein `grep` und keine Vollständigkeitsaussage** (`BEO-025`, 2×). Die zwei
   Kommandos in §1 finden **Muster**; eine Prosa-Beschreibung der Tabellen-Form ohne diese Wörter
   fänden sie nicht. Der Slice sagt darum die getroffene Menge zu, nicht die vollständige. —
-  **Ausgang:** <…>
+  **Ausgang: eingetreten →**
+  [slice-188](../open/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md). Zweimal
+  eingetreten, an zwei Orten mit zwei Folgen. **Innerhalb** der Anweisungssätze: Das Muster fand
+  **zwei** von **vier** betroffenen Dateien; die zwei übrigen tragen dieselbe Tabellen-Form unter
+  anderen Wörtern (`— keine —`, *Gestrichene Einträge*, *keine Zeile*) und sind hier mitgezogen
+  worden — gefunden hat sie das Lesen, nicht der Sensor. **Außerhalb**, und dort nicht
+  absorbierbar: `internal/archive/stub.go` erkennt die Kennung als `BEO-[0-9]{3}` und baut den
+  Link auf die abgelöste Register-**Datei**, die der Umzug in ein Verzeichnis aufgelöst hat (den
+  Pfad nennt die Datei selbst); eine Closure-Notiz in der heutigen Form fällt durch den Ausdruck
+  **durch**, und das Stub-Feld verliert die Zeile still. Go-Dateien liegen in keiner der drei
+  Bezugsmengen dieser Welle — `git grep -l 'BEO-[0-9]\|observations\.md' -- '*.go' | wc -l` →
+  **3**, während [slice-186](../open/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) über
+  `'*.md'` misst. Das ist ein zweiter Liefergegenstand und damit ein eigener Slice, kein vierter
+  DoD-Punkt hier.
 - **Die emittierte Hälfte wird als dieselbe Änderung behandelt wie die lokale** (Dogfood ≠
   emittiert). Beide tragen denselben Text, aber verschiedene Verträge: der eine bindet diesen Lauf,
   der andere jeden Adopter — und nur der zweite verlangt eine Zeile in der Änderungshistorie. —
-  **Ausgang:** <…>
+  **Ausgang: entfallen.** Die zwei Ebenen sind als zwei Verträge behandelt worden: eigener
+  DoD-Punkt, `make full-smoke` als Beleg, und eine Zeile in der Änderungshistorie **nur** für die
+  emittierte Hälfte. Die Annahme *„beide tragen denselben Text"* ist dabei gemessen **falsch** —
+  jede Ebene trug eine Formulierung, die die andere nicht hatte —, und beide sind darum einzeln
+  gelesen und einzeln gezogen worden; die Prämisse des Risikos trifft nicht mehr zu.
 - **Zwei Rollen in einem Lauf** (`BEO-007`, 4×, **geplant**). `implement-slice.md` gehört dem
   Implementer ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md));
   wer ihn im selben Kontext wie die Planner-Sätze ändert, hat den Rollenwechsel übersprungen, den
-  der Commit-Zuschnitt nur noch abbildet. — **Ausgang:** <…>
+  der Commit-Zuschnitt nur noch abbildet. — **Ausgang: entfallen.** Der Rollenwechsel hat
+  stattgefunden, nicht bloß der Commit-Zuschnitt: Der Implementer lieferte `implement-slice.md`
+  lokal und emittiert und **ließ die zwei Wellen-Commands stehen**, weil
+  [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) Festlegung 1 sie
+  dem Planner gibt; der Planner-Kontext hat sie in einem eigenen Lauf und einem eigenen Commit
+  gezogen. Die ADR ist damit angewandt und nicht ausgelegt worden.
 
 ## 7. Closure-Notiz
 
@@ -210,12 +237,62 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register:** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
+- **Was hat funktioniert:** Der Schnitt nach **Rolle** statt nach Datei. Der Implementer-Lauf hat
+  die zwei Wellen-Commands nicht angefasst und den Grund benannt; der Planner-Lauf hat sie
+  gezogen. Der Rollenwechsel ist damit an `git log --stat` ablesbar und nicht bloß behauptet — und
+  er hat sich sofort ausgezahlt: Der zweite Kontext fand beim Lesen die Hälfte der Arbeit, die das
+  DoD-Muster nicht sah.
+- **Was ging anders als geplant:** Die Bezugsmenge war zu klein, und zwar messbar. Das Muster aus
+  §1 traf **vier** Anweisungssatz-Dateien; betroffen waren **sechs** — in der Hälfte dieses
+  Planner-Laufs **zwei** von **vier**. Die zwei ungesehenen tragen dieselbe abgelöste Form unter
+  anderen Wörtern: `— keine —`, *Gestrichene Einträge*, *keine Zeile*. Beide Werte sind über
+  denselben Ref und nur getauschtes Muster erhoben, **keine Erwartungswerte**:
+
+  ```sh
+  git grep -lE 'BEO-<NNN>|Registerzeile|Zähler erhöhen' bfd117a^ \
+    -- .claude/commands internal/emit/templates/commands | wc -l                       # 4
+  git grep -lE 'BEO-<NNN>|Registerzeile|Zähler erhöhen|— keine —|Gestrichene Einträge|leerer Tabelle|jede Zeile mit Zähler' \
+    bfd117a^ -- .claude/commands internal/emit/templates/commands | wc -l              # 6
+  ```
+
+  Dass das emittierte `plan-welle.md` überhaupt betroffen war, stand in keinem Lauf-Bericht;
+  gefunden hat es die Sichtung aller sechs Dateien mit erweitertem Muster. Zweitens hat dieselbe Sichtung einen
+  Träger **außerhalb** aller drei Bezugsmengen dieser Welle sichtbar gemacht
+  (`internal/archive/stub.go`, §6 Risiko 2) — der Grund für den Folge-Slice unten.
+  Und drittens: das Bestands-Kommando aus §1 traf beim Start **9** Pläne und danach **1** — diese
+  **1** ist dieser Plan selbst, der die getilgte Zeile in §1 zitiert; er verlässt den Pathspec mit
+  dem `git mv` nach `done/`. Beide Werte sind **keine Erwartungswerte**
+  ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2), gefahren als
+  `git grep -lE 'Beobachtungs-Register \(`\.\./observations\.md`\) fortgeschrieben' <ref> -- 'docs/plan/planning/open/*.md' 'docs/plan/planning/next/*.md' 'docs/plan/planning/in-progress/*.md' | wc -l`
+  über `bfd117a^` und `HEAD`.
+- **Steering-Loop-Eintrag:** *benannte Spec-Lücke.* Ein Slice, der einen Bestand über ein
+  **Muster** definiert, sagt heute die getroffene Menge zu — und keine Quelle verlangt, dass er
+  die **Achse** nennt, entlang derer das Muster blind ist. Hier war es die Achse *dieselbe Aussage
+  in anderen Wörtern* (die zwei ungesehenen Dateien) und die Achse *derselbe Gegenstand in einer
+  anderen Dateiklasse* (`'*.md'` gegen `'*.go'`). Beide Blindstellen sind erst beim Lesen
+  aufgefallen, nicht beim Messen. Ein Sensor dafür ist **nicht** gebaut und wird hier nicht
+  behauptet
+  ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6));
+  der Eintrag ist gezählt, nicht verkörpert — die Teil-Zeile `— liegt in …` entfällt darum
+  ersatzlos.
+- **Beobachtungs-Register (`../observations/`):** drei Vorgänge eingetragen, alle mit dem Beleg
+  `evidence/slice-184.md`, keine Kennung neu formuliert, wo eine bestand.
+  [`BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
+  ergänzt — Zähler steht damit bei **7×**;
+  [`BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger`](../observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/observation.md)
+  ergänzt — **2×**; und
+  [`BEO-ALL/mess-zusage-trifft-das-eigene-zitat`](../observations/BEO-ALL/mess-zusage-trifft-das-eigene-zitat/observation.md)
+  **neu angelegt** — **1×**. Der Zähler ist jeweils die Zahl der Dateien unter `evidence/`,
+  gemessen mit `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/ | wc -l`; **keine
+  Erwartungswerte**. Die Ergänzung an `zusage-nennt-sensor-der-form-nicht-sieht` ist der
+  **Zähler**-Vorgang für ein Auftreten der Klasse und **nicht** ein zweiter Ausgang für Risiko 2 —
+  dessen einer Ausgang ist der Folge-Slice unten.
+- **Folge-Slices:**
+  [slice-188](../open/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md) (*Der
+  Archiv-Stub kennt die Kennungs-Form des Registers*) — liegt als Datei in `open/`.
+- **Risiken aus §6:** vier notiert, vier mit genau einem Ausgang — dreimal *entfallen* mit
+  Begründung, einmal *eingetreten* mit Folge-Slice-ID. Keines steht ohne Ausgang da.
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — sie prüft die Closure von
   [welle-15](../welle-15-re-baseline.md).
 

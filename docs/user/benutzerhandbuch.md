@@ -1,8 +1,8 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Handbuch-Version:** 1.12
+**Handbuch-Version:** 1.13
 **Software-Stand:** `v0.1.1` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64), seit `v0.1.0`. Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat`, `hexagonal` oder `hexslice`; bei den beiden geschichteten kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen), beide auch mit `hexslice`; `hexagonal` liefert heute der Go-Renderer.
-**Stand:** 2026-09-03
+**Stand:** 2026-09-05
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
 ---
@@ -570,6 +570,7 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 
 | Handbuch-Version | Stand | Änderung |
 |---|---|---|
+| 1.13 | 2026-09-05 | Die drei mitgelieferten Rollen-Anweisungssätze unter `.claude/commands/` (`/plan-welle`, `/close-welle`, `/implement-slice`) beschreiben das **Beobachtungs-Register** jetzt so, wie der mitgelieferte Regelwerks-Stand es führt: je Beobachtung ein **Verzeichnis** unter `docs/plan/planning/observations/` statt einer Tabellenzeile, ein Beleg ist eine Datei unter `evidence/`, und einen Zähler pflegt niemand — er ist die Zahl dieser Dateien. Betroffen sind genau diese drei Dateien des aufgesetzten Repositories; am übrigen Bestand ändert sich nichts. Das Register **selbst** legt der Bootstrap nicht an — seit es ein Verzeichnis je Beobachtung ist, gibt es keine stehende Register-Datei mehr, und das erste Verzeichnis entsteht mit der ersten Beobachtung. |
 | 1.12 | 2026-09-03 | Der mitgelieferte Regelwerks-Stand ist `v5.18.0`. Für das aufgesetzte Repository ändert sich **keine sichtbare Datei**: der vendored Vorlagen-Satz gewinnt zwei wiederkehrende Vorlagen (`archiv-stub-slice`, `archiv-stub-welle`), und wiederkehrende Vorlagen werden aus `.harness/baseline/` **referenziert**, nicht ins Repository kopiert. Die Abschluss-Zeile im Beispielablauf nennt jetzt den neuen Stand. |
 | 1.11 | 2026-09-02 | Der mitgelieferte Regelwerks-Stand ist `v5.12.0`. Für das aufgesetzte Repository heißt das eine sichtbare Datei mehr: das **Beobachtungs-Register** (`docs/plan/planning/observations.md`) — der stehende Zähler des Steering Loops, mit dem jedes Repository leer beginnt. Die Ordner-Übersicht in §6 nennt es jetzt. |
 | 1.10 | 2026-07-28 | **Dritte Bauform `--arch hexagonal`** (heute für **Go**): die drei klassischen Schichten — Kern, importfreie Ports, getriebene und treibende Adapter — ohne Use-Case-Schnitte. Der Abschnitt „Ein geschichtetes Grundgerüst wählen" führt jetzt eine Wahl-Tabelle (wann welche Bauform), nennt die beiden Regeln, die **unabhängig von den erlaubten Richtungen** greifen (`app-impurity`, `lateral-adapter`) samt echter Fehlermeldung, und sagt ausdrücklich, dass die **treibende Seite strenger geprüft** wird als in verbreiteten Vorlagen — samt der einen Zeile, mit der Sie das lockern. Reihenfolge wie in 1.9: der Text kam **nach** den Sensoren — erst als beide Regeln im Voll-E2E-Smoke real rot gesehen waren. |
