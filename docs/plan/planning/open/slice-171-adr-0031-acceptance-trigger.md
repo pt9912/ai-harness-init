@@ -16,7 +16,7 @@ Closure-Bedingung, die mehr beobachtet als die DoD dieses Slice. Es gibt keine.
 (Nachbarfall; ihr Acceptance-Trigger liegt bei
 [slice-152](slice-152-adr-0029-acceptance-trigger.md) — derselbe Bauplan),
 Baseline-Regelwerk `grundlagen-bootstrap.md` §Vier Trigger-Klassen
-(Acceptance-Trigger), [`BEO-007`](../observations/README.md).
+(Acceptance-Trigger), [`BEO-ALL/anweisungssatz-eigentum-ohne-quelle`](../observations/BEO-ALL/anweisungssatz-eigentum-ohne-quelle/observation.md).
 
 **Berührte Spec-Stellen:** `—`.
 [ADR-0031](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
@@ -204,15 +204,15 @@ unter den Eintrag `*` (gesamtes Repo) der Modus-Deklaration in
 — **alle berührten Sub-Areas GF**, der Modus-Begründungsblock entfällt damit
 nach dem *Umfang*-Absatz oben.
 
-**Vorgelagert — offene Beobachtungen sichten:** [`BEO-007`](../observations/README.md)
+**Vorgelagert — offene Beobachtungen sichten:** [`BEO-ALL/anweisungssatz-eigentum-ohne-quelle`](../observations/BEO-ALL/anweisungssatz-eigentum-ohne-quelle/observation.md)
 (4×, *wer ein Norm-Artefakt schreiben darf*) berührt diesen Slice am Rand — der
 Status-Übergang selbst ist unstrittig Architect-Arbeit, die Frage jener Zeile
 betrifft die Anweisungssätze und nicht die ADR; der Slice erhöht sie nicht.
-[`BEO-019`](../observations/README.md) (1×, Byte-Gleichheit eines Regelwerks-Abschnitts
+[`BEO-ALL/byte-gleichheit-als-aussage-ueber-die-regel-gelesen`](../observations/BEO-ALL/byte-gleichheit-als-aussage-ueber-die-regel-gelesen/observation.md) (1×, Byte-Gleichheit eines Regelwerks-Abschnitts
 als Aussage über die Regel) ist der **Gegenstand** der zu prüfenden ADR und
 steht dort als §Kontext.
-[`BEO-020`](../observations/README.md) (2×, *ein Auflösungs-Trigger feuert und bleibt
+[`BEO-ALL/ausloesender-trigger-ohne-traeger-im-migrierenden-vorgang`](../observations/BEO-ALL/ausloesender-trigger-ohne-traeger-im-migrierenden-vorgang/observation.md) (2×, *ein Auflösungs-Trigger feuert und bleibt
 unbemerkt*) trägt DoD (2): der vierte Re-Evaluierungs-Trigger ist genau dieser
 Fall, mit Anlass eingetreten und Bedingung offen.
-[`BEO-016`](../observations/README.md) (1×, Plan-Umfang) ist auf diesen Plan angewandt
+[`BEO-ALL/slice-plan-umfang-waechst-ueber-umsetzung-hinaus`](../observations/BEO-ALL/slice-plan-umfang-waechst-ueber-umsetzung-hinaus/observation.md) (1×, Plan-Umfang) ist auf diesen Plan angewandt
 statt notiert. Keine weiteren Treffer.

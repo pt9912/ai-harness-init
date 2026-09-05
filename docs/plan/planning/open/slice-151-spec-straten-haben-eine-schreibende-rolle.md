@@ -17,7 +17,7 @@ Adaptions-Block ein und lässt damit genau diese Lücke),
 und [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
 (dieselbe Frage, andere Artefaktklassen — Präzedenz für die Ableitung),
 [`AGENTS.md`](../../../../AGENTS.md) §3.8 (*„wo keine Quelle sie benennt, bleibt
-die Frage offen"*), [`BEO-007`](../observations/README.md) (der Zähler, dessen dritter
+die Frage offen"*), [`BEO-ALL/anweisungssatz-eigentum-ohne-quelle`](../observations/BEO-ALL/anweisungssatz-eigentum-ohne-quelle/observation.md) (der Zähler, dessen dritter
 und vierter Beleg genau diese zwei Dateien sind).
 
 **Berührte Spec-Stellen:** `—`. Der Liefergegenstand ist eine ADR über das
@@ -80,7 +80,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Muster des bestehenden [ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)-Zeigers.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben —
-      [`BEO-007`](../observations/README.md) bekommt den Ausgang seiner
+      [`BEO-ALL/anweisungssatz-eigentum-ohne-quelle`](../observations/BEO-ALL/anweisungssatz-eigentum-ohne-quelle/observation.md) bekommt den Ausgang seiner
       Spec-Straten-Hälfte (Stand-Spalte, Zähler unverändert: der Slice löst
       auf, er beobachtet nicht neu).
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
@@ -100,7 +100,7 @@ Aussagen-Berührung steht hier gar nicht.
 | `docs/plan/adr/00NN-…​.md` | neu (per `cp` aus der vendored Vorlage), Architect | DoD (1)/(2) |
 | [`docs/plan/adr/README.md`](../../adr/README.md) | update (Index-Zeile + Status), Architect | DoD (1)/(2) — derivatives Register desselben Originals ([ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)) |
 | [`AGENTS.md`](../../../../AGENTS.md) | update (§3.8 Zeiger), Architect, eigener Commit | Doku-Update, fällig erst mit der Annahme |
-| [`docs/plan/planning/observations/README.md`](../observations/README.md) | update (`BEO-007` Stand) | Register-Pflicht (nicht mitgezählt) |
+| [`docs/plan/planning/observations/README.md`](../observations/README.md) | update (`BEO-ALL/anweisungssatz-eigentum-ohne-quelle` Stand) | Register-Pflicht (nicht mitgezählt) |
 
 ## 4. Trigger
 
@@ -146,7 +146,7 @@ dasteht.
   Geltungsbereich bleibt extensional auf die zwei Dateien | eingetreten:
   Folge-Slice mit ID für die allgemeine Fassung>
 - **Die zwei Spec-Dateien tragen kein Kopf-Feld für die Rolle**, während die
-  Ziel-Form der Baseline eines vorsieht ([`BEO-010`](../observations/README.md),
+  Ziel-Form der Baseline eines vorsieht ([`BEO-ALL/re-baseline-ohne-inventur-slice`](../observations/BEO-ALL/re-baseline-ohne-inventur-slice/observation.md),
   zweiter Beleg). Die ADR entscheidet dann etwas, das im Artefakt selbst nicht
   ablesbar ist. — **Ausgang:** <entfallen: die ADR ist der Ort der Aussage, das
   Kopf-Feld ist Form-Arbeit von [slice-148](../done/slice-148-architecture-traegt-ihr-id-schema.md)s
@@ -191,8 +191,8 @@ Repo) der Modus-Deklaration in
 — **alle berührten Sub-Areas GF**, der Modus-Begründungsblock entfällt damit
 nach dem *Umfang*-Absatz oben.
 
-**Vorgelagert — offene Beobachtungen sichten:** [`BEO-007`](../observations/README.md)
+**Vorgelagert — offene Beobachtungen sichten:** [`BEO-ALL/anweisungssatz-eigentum-ohne-quelle`](../observations/BEO-ALL/anweisungssatz-eigentum-ohne-quelle/observation.md)
 steht bei 4× und ist der direkte Gegenstand dieses Slice (Spec-Straten-Hälfte);
 sein Ausgang steht in DoD, nicht bloß als Sichtungs-Notiz.
-[`BEO-016`](../observations/README.md) (1×, Plan-Umfang) ist auf diesen Plan angewandt
+[`BEO-ALL/slice-plan-umfang-waechst-ueber-umsetzung-hinaus`](../observations/BEO-ALL/slice-plan-umfang-waechst-ueber-umsetzung-hinaus/observation.md) (1×, Plan-Umfang) ist auf diesen Plan angewandt
 statt notiert. Keine weiteren Treffer für die berührten Sub-Areas.

@@ -12,7 +12,7 @@ braucht). Insbesondere **kein Mitglied von**
 aus, und der Gegenstand hier ist der **Inhalt** der Einträge, nicht die Form
 des Blocks.
 
-**Bezug:** [`BEO-014`](../observations/README.md) (Schwelle erreicht, dieser Slice ist
+**Bezug:** [`BEO-ALL/adaptions-block-spricht-ueber-sich-selbst`](../observations/BEO-ALL/adaptions-block-spricht-ueber-sich-selbst/observation.md) (Schwelle erreicht, dieser Slice ist
 ihr Ausgang *geplant*),
 [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)
 (die Bezugsmenge ist der Block selbst),
@@ -162,13 +162,13 @@ Refactor ohne neue Sub-Area-Berührung entfällt er ganz. Die beiden
 *Vorgelagert*-Blöcke entfallen nie.
 
 **Vorgelagert — Sub-Area-Wahl prüfen:** Berührt ist `*` (gesamtes Repo) — den
-einzigen Namen, den die Modus-Deklaration führt; genau das ist `BEO-004`.
+einzigen Namen, den die Modus-Deklaration führt; genau das ist `BEO-ALL/sub-area-spalte-unterscheidet-nichts`.
 
-**Vorgelagert — offene Beobachtungen sichten:** `BEO-014` ist der Auslöser
+**Vorgelagert — offene Beobachtungen sichten:** `BEO-ALL/adaptions-block-spricht-ueber-sich-selbst` ist der Auslöser
 dieses Slice (Schwelle erreicht, Ausgang *geplant* auf diese Datei).
-`BEO-020` (ein Auflösungs-Trigger feuert mit der Migration, das Urteil hat
+`BEO-ALL/ausloesender-trigger-ohne-traeger-im-migrierenden-vorgang` (ein Auflösungs-Trigger feuert mit der Migration, das Urteil hat
 keinen Träger) berührt denselben Gegenstand und steht bei 2× — tritt er hier
-erneut auf, erreicht er die Schwelle. `BEO-004` unterscheidet nichts und ist
+erneut auf, erreicht er die Schwelle. `BEO-ALL/sub-area-spalte-unterscheidet-nichts` unterscheidet nichts und ist
 Architect-Arbeit. Weitere Treffer: keine.
 
 **alle berührten Sub-Areas GF** — der Modus-Begründungsblock entfällt damit.

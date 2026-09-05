@@ -111,7 +111,8 @@ wörtlich
 *„BEDIENHINWEIS — keine Norm; faellt beim Kopieren weg (README.md §Verwendung, Schritt 5) und darf
 deshalb nichts Tragendes halten."* Er fällt nicht weg. Ein Adopter liest in seinem eigenen Register
 einen Satz, der seine eigene Abwesenheit behauptet — und darunter eine Muster-Tabelle mit
-erfundenen `BEO-001`/`BEO-002`-Zeilen, gegen die derselbe Block warnt. Dieselbe Form steht im
+erfundenen `BEO-<NNN>`-Zeilen im abgelösten Nummern-Schema, gegen die derselbe Block warnt.
+Dieselbe Form steht im
 emittierten `docs/plan/planning/in-progress/roadmap.md`
 (`grep -rl 'BEDIENHINWEIS' "$P" | grep -v '/\.harness/baseline/'` → **2** Dateien).
 

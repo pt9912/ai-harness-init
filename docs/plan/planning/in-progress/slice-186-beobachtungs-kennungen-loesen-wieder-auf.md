@@ -127,38 +127,73 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Die Kennungs-Zitate außerhalb der Ablage nennen die Pfad-Form.** Jedes Vorkommen einer
+- [x] **Die Kennungs-Zitate außerhalb der Ablage nennen die Pfad-Form.** Jedes Vorkommen einer
       dreistelligen `BEO`-Nummer in einem lebenden Artefakt nennt stattdessen `BEO-ALL/<slug>`;
       wo das Zitat ein Markdown-Link ist, folgt sein Ziel der entschiedenen Verweis-Konvention
       (`observations/README.md` §Zwei Verweis-Formen: konkrete Beobachtung → ihre eigene
       `observation.md`). Vollständigkeit gemessen statt behauptet: das zweite Kommando aus §1
-      trifft danach **null**, das vierte ebenfalls. **Zeitdokumente bleiben unangetastet** —
-      `docs/plan/planning/done/` und `docs/reviews/` sind Chronik von Beruf
-      ([`AGENTS.md`](../../../../AGENTS.md) §3.7,
+      trifft danach **16**, nicht null — und jeder der 16 zerfällt in eine von vier gemessenen,
+      benannten Ausnahmen, keine davon eine übersehene Lücke:
+      ```sh
+      git grep -o 'BEO-[0-9][0-9][0-9]' -- '*.md' ':!.harness/baseline' ':!docs/reviews' \
+        ':!docs/plan/planning/done' ':!docs/plan/planning/observations' | wc -l   # 16
+      ```
+      **9** in [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) —
+      `Accepted`, nach [`AGENTS.md`](../../../../AGENTS.md) §3.4 immutabel, genau die Ausnahme,
+      die §6 Risiko 1 vorab benennt. **3** in
+      [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) —
+      `Proposed`, damit inhaltlich änderbar, aber eine ADR-Änderung ist nach
+      `modul-08-agentenrollen.md` §Rollen-Regeln *„Architect schreibt"*, unabhängig vom Status;
+      das hat §6 Risiko 1 nicht vorgesehen (dort stand *„ist änderbar"* ohne die Rollen-Klausel) —
+      **Übergabe an den Architect**, kein Implementer-Edit. **3** in `harness/conventions/` — Adaptions-Block,
+      Architect-Artefakt nach [`AGENTS.md`](../../../../AGENTS.md) §3.8, wie in §3 geplant —
+      **Übergabe an den Architect**. **1** in
+      [slice-188](../open/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md) —
+      ein **wörtliches Zitat** von `anwenden_test.go`s Testfixture-Zeichenkette, keine Zusage
+      dieses Repos über die heutige Kennung; ein Nachzug würde eine falsche Aussage über den
+      real vorhandenen Go-Test-Quelltext einführen (`AGENTS.md` §3.7). Das vierte Kommando aus §1
+      trifft **null**:
+      ```sh
+      git grep -o '\[`BEO-[0-9]*`\]([^)]*observations/README\.md)' -- '*.md' \
+        ':!.harness/baseline' ':!docs/reviews' ':!docs/plan/planning/done' | wc -l   # 0
+      ```
+      **Zeitdokumente bleiben unangetastet** — `docs/plan/planning/done/` und `docs/reviews/`
+      sind Chronik von Beruf ([`AGENTS.md`](../../../../AGENTS.md) §3.7,
       [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 4); sie stehen
       darum in der Bezugsmenge von §1 ausgeschlossen und nicht bloß unbearbeitet.
-- [ ] **Die sieben Vorkommen innerhalb der Ablage tragen einen benannten Ausgang** — entweder
-      nachgezogen, oder ausdrücklich stehengelassen mit der Regel, die das trägt. Sechs liegen in
-      `evidence/`-Dateien (*unveränderlich ab Merge*), eines in einer `observation.md`
-      (*unveränderlich ab Anlage*, für **Bezeichnung und Sub-Area** — die zitierende Zeile ist
-      keines von beiden, und genau diese Unterscheidung ist zu treffen statt anzunehmen). Der
-      Ausgang steht im Plan, nicht nur im Commit.
-- [ ] **Der Sichtungs-Schritt von
+- [x] **Die sieben Vorkommen innerhalb der Ablage tragen einen benannten Ausgang** — geprüft statt
+      angenommen: Sechs liegen in `evidence/<vorgangs-id>.md`-Dateien, alle bereits gemergt und
+      damit nach `observations/README.md` §Form *unveränderlich ab Merge*. Das siebte liegt in
+      der **Kurzbeschreibung** einer `observation.md` — README §Form führt drei unveränderliche
+      Felder *ab Anlage* (Bezeichnung, Sub-Area, **Kurzbeschreibung**), und die zitierende Zeile
+      ist genau dieses dritte Feld, nicht bloß benachbarter Fließtext. Beide Klassen sind damit
+      schon heute eingefroren, nicht erst durch eine noch zu treffende Entscheidung — Liefer-Punkt
+      2 aus §1 bleibt unberührt: **Ausgang aller sieben: ausdrücklich stehengelassen**, mit der
+      Ablage-eigenen Unveränderlichkeitsregel als Grund. Ein achtes, neues Auftreten dieser
+      Klasse selbst — dass die Ablage die eigene Zitat-Form nicht nachziehen kann — ist als
+      `evidence/slice-186.md` bei
+      [`BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot`](../observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/observation.md)
+      verbucht (§7).
+- [x] **Der Sichtungs-Schritt von
       [slice-181](../open/slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md) §8 liest keine
-      abgeschaffte Struktur mehr.** Sein Beleg-Kommando schneidet mit `awk -F'|'` auf die
-      Tabellenspalten des entfallenen Trägers; ein reiner Pfad-Nachzug ergäbe ein Kommando, das
-      lautlos leer liefert — der Ersatz zählt Evidence-Dateien und liest `state.md`.
-      **Kein Gate sieht das:** der Pfad steckt in einem Inline-Code-Span, der ein ganzes
-      Shell-Kommando umfasst, und `make docs-check` bleibt darüber grün.
-- [ ] `make gates` grün.
-- [ ] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice. Ein öffentlicher
+      abgeschaffte Struktur mehr.** Das `awk -F'|'`-Kommando auf die Tabellenspalten des
+      entfallenen Trägers ist ersetzt durch eine Schleife über die drei betroffenen Slugs, die je
+      die Zahl der `evidence/`-Dateien zählt und die erste Zeile der `state.md` liest — dieselbe
+      Aussage (Stand + Zähler je Beobachtung), gegen die heutige Verzeichnis-Form gemessen statt
+      gegen die abgeschaffte Tabelle.
+- [x] `make gates` grün.
+- [x] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice bereits (Zeile
+      angelegt beim Schnitt). Ein öffentlicher
       Vertrag ist **nicht** berührt — der emittierte Baum führt keine `BEO`-Kennung dieses Repos
       (`git grep -o 'BEO-[0-9][0-9][0-9]' -- internal/emit/templates | wc -l` → **0**; die
       `-c`-Form taugt hier nicht, sie schweigt bei null Treffern statt eine Null auszugeben).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag (§7).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — eine weitere Datei
+      (`evidence/slice-186.md`) bei
+      [`BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot`](../observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/observation.md)
+      angelegt; kein neues Verzeichnis, kein gesetzter Zähler (§7).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen) — siehe §6/§7.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit); dieses Repo führt Wellen-Betrieb, geprüft darum bei der Closure von [welle-15](../welle-15-re-baseline.md).
 
 ## 3. Plan (vor Code)
 
@@ -214,8 +249,11 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Closure- und Lerneintrag-Regeln — zwei beobachtbare Kriterien **und** ein
 Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
-DoD vollständig; das zweite und das vierte Kommando aus §1 treffen **null**; `make gates` grün;
-Closure-Notiz mit Steering-Loop-Lerneintrag geschrieben.
+DoD vollständig; das vierte Kommando aus §1 trifft **null**, das zweite trifft **16** und jeder
+der 16 zerfällt in eine der vier gemessenen, in DoD (1) benannten Ausnahmen (Accepted-ADR ·
+Architect-Übergabe [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) ·
+Architect-Übergabe `harness/conventions/` · wörtliches Go-Test-Zitat
+in slice-188); `make gates` grün; Closure-Notiz mit Steering-Loop-Lerneintrag geschrieben.
 
 ## 6. Risiken und offene Punkte
 
@@ -236,14 +274,23 @@ dasteht.
   `Proposed` mit **3** und ist änderbar. Die Zusage von Liefer-Punkt 1 muss die eingefrorene
   Hälfte **ausnehmen** statt sie zu übersehen, sonst steht eine Vollständigkeits-Aussage neben
   einer Menge, die sie nicht erreichen darf — und die Ausnahme ist am **Status** zu treffen, nicht
-  am Pfad. — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen: Grund | weiter offen: → BEO-NNN im Register>
+  am Pfad. — **Ausgang: entfallen.** DoD (1) nennt die
+  [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)-Hälfte als
+  gemessene Ausnahme, statt sie zu übersehen. Ein Zusatz-Fund, den dieser Text selbst nicht
+  vorwegnahm: „änderbar" war zu grob — nach `modul-08-agentenrollen.md` §Rollen-Regeln ist *jede*
+  ADR-Änderung Architect-Arbeit, unabhängig vom Status; die 3 Vorkommen von
+  [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) sind darum
+  trotz `Proposed` **nicht** vom Implementer gezogen, sondern an den Architect übergeben (§7).
 - **Die Bezugsmenge ist ein `grep` und keine Vollständigkeitsaussage**
   ([`BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md),
   5×, **geplant**). Das Muster `BEO-[0-9][0-9][0-9]` findet die dreistellige Zahl; eine
   Beobachtung, die im Fließtext nur unter ihrem Prosa-Namen genannt wird, fände es nicht — und
   **kein Modul der [`.d-check.yml`](../../../../.d-check.yml) prüft diese Klasse**, weil die Ziele
   der 46 Links auflösen und die Prosa-Zitate keine Links sind. Der Slice sagt darum die
-  **getroffene** Menge zu, nicht die vollständige. — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen: Grund | weiter offen: → BEO-NNN im Register>
+  **getroffene** Menge zu, nicht die vollständige. — **Ausgang: entfallen.** Genau diese
+  Zurückhaltung steht in DoD (1)/§1: die Zusage benennt ihre eigene Reichweite (16 Treffer, vier
+  gemessene Ausnahmeklassen), statt Vollständigkeit zu behaupten, die der Ausdruck nicht deckt —
+  das ist die Vorkehrung, die dieses Risiko verlangt hatte, nicht ihr Fehlschlag.
 - **Der Nachzug ändert Artefakte, die diesem Slice nicht gehören**
   ([`BEO-ALL/anweisungssatz-eigentum-ohne-quelle`](../observations/BEO-ALL/anweisungssatz-eigentum-ohne-quelle/observation.md),
   4×, **geplant**). Drei Treffer liegen im Adaptions-Block (Architect,
@@ -252,14 +299,27 @@ dasteht.
   selben Kontext zieht wie den Plan-Bestand, hat den Rollenwechsel übersprungen, den der
   Commit-Zuschnitt nur noch abbildet — genau der Fehler, der in
   [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) zweimal
-  auftrat. — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen: Grund | weiter offen: → BEO-NNN im Register>
+  auftrat. — **Ausgang: entfallen.** Der Implementer-Lauf zieht nur, was ihm gehört: die zwei
+  Vorkommen in [`.claude/commands/implement-slice.md`](../../../../.claude/commands/implement-slice.md)
+  sind der eigene Anweisungssatz
+  ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) gibt ihn der
+  ausführenden Rolle) und darum kein
+  fremdes Artefakt. Die drei Vorkommen in `harness/conventions/` bleiben unangetastet — Übergabe
+  an den Architect (§7), wie in §3 geplant. Derselbe Rollenwechsel gilt für die drei Vorkommen in
+  [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) (Risiko 1) —
+  kein CO/Folge-Slice nötig, die Zuordnung selbst ist bereits geklärt (Modul 8, `AGENTS.md`
+  §3.8).
 - **Die sieben Vorkommen in der Ablage sind ein Auftreten von
   [`BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot`](../observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/observation.md)**
   (3×, `offen`) — *ein vorgeschriebener Ortswechsel macht eine Adresse in einem eingefrorenen
   Artefakt tot*, hier nicht als Adresse, sondern als Identität, und das Eingefrorene ist die
   Ablage selbst. Der Eintrag steht bereits auf der Schwelle; ob dieser Slice ihn zum vierten Mal
   belegt oder sein Ausgang wird, entscheidet der Lese-Schritt der Closure, nicht dieser
-  Plan. — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen: Grund | weiter offen: → BEO-NNN im Register>
+  Plan. — **Ausgang: weiter offen →
+  [`BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot`](../observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/observation.md)
+  im Register.** Dieser Slice belegt sie zum vierten Mal (`evidence/slice-186.md`, §7); der
+  Lese-Schritt liegt bei diesem Repo im Wellen-Betrieb — er läuft bei der Closure von
+  [welle-15](../welle-15-re-baseline.md), nicht hier.
 
 ## 7. Closure-Notiz
 
@@ -271,12 +331,48 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
+- **Was hat funktioniert:** Die mechanische Abbildung Nummer → Slug aus dem Elternstand des
+  Umzugs (`9292a08^`, §1) trug über alle 16 lebenden Dateien und beide Zitat-Formen (Prosa-Zitat,
+  Markdown-Link mit falschem Ziel) — kein Fall verlangte eine Neuformulierung, nur einen
+  Kennungs-Austausch.
+- **Was ging anders als geplant:** §6 Risiko 1 nannte
+  [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) als *„Proposed
+  … und ist änderbar"* und legte damit nahe, der Implementer könne ihre drei Vorkommen im selben
+  Zug ziehen wie die Plan-Dateien. Das trägt nicht: `modul-08-agentenrollen.md` §Rollen-Regeln
+  gibt *jede* ADR-Änderung dem Architect, unabhängig vom Status — der `Proposed`-Status macht die
+  ADR inhaltlich änderbar, nicht die Rolle, die sie ändert. Sie bleibt darum unangetastet,
+  wie die neun Vorkommen der `Accepted`-Hälfte. Zusätzlich stellte sich die Trennung zwischen
+  „gehört einer anderen Rolle" und „ist einfach mein eigener Anweisungssatz" als schärfer heraus
+  als der Plan sie zeichnete: `.claude/commands/implement-slice.md` steht zwar in derselben
+  Pfad-Klasse wie `harness/conventions/`, gehört aber der **ausführenden** Rolle
+  ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)) und damit hier
+  dem Implementer selbst.
+- **Steering-Loop-Eintrag:** *benannte Spec-Lücke.* §6 Risiko 1 und §3 der Plan-Tabelle
+  behandelten „Proposed-ADR" als gleichbedeutend mit „vom Implementer änderbar" — die
+  Rollen-Bindung von Modul 8 gilt aber am **Artefakttyp** (ADR), nicht am Status. Kein Sensor
+  prüft das ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6));
+  der Eintrag ist gezählt, nicht verkörpert.
+- **Beobachtungs-Register (`../observations/`):** ein Vorgang eingetragen, keine Kennung neu
+  formuliert. `evidence/slice-186.md` in
+  [`BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot`](../observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/observation.md)
+  ergänzt — Zähler steht damit bei **4×** (`ls
+  docs/plan/planning/observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/evidence/
+  | wc -l`; keine Erwartungswerte). Der Ausgang (Schwelle bereits bei 3× erreicht, jetzt 4×)
+  steht dem Lese-Schritt der Welle-Closure zu (§6 Risiko 4), nicht dieser Closure.
+- **Folge-Slices:** keine — die zwei entdeckten Übergaben sind reine Kennungs-Nachzüge von
+  wenigen Zeilen und keine eigenständige Liefer-Einheit; sie gehen als **Übergabe** an den
+  Architect (nicht als neue Slice-Datei): 3 Vorkommen in
+  [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) (`BEO-<NNN>` →
+  `BEO-ALL/anweisungssatz-eigentum-ohne-quelle`, dieselbe Abbildung wie überall sonst) und 3 in
+  [`MR-041`](../../../../harness/conventions.md#mr-041--die-referenz-statt-kopie-setzung-für-ausfüll-templates-steht-jetzt-in-der-adoptierten-baseline),
+  [`MR-047`](../../../../harness/conventions.md#mr-047--der-ort-der-ausführbaren-harness-tools-ist-keine-abweichung-mehr),
+  [`MR-048`](../../../../harness/conventions.md#mr-048--der-reproduzierbarkeits-anker-ist-die-rezept-form-die-emittierten-skelette-pinnen-per-tag)
+  (`BEO-<NNN>` → `BEO-ALL/adaptions-achse-1-kurzschluss` — dort steht das Linkziel bereits
+  richtig, nur das Label ist stehengeblieben), plus die 9 `Accepted`-Vorkommen in
+  [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md), die nach §3.4
+  nur eine Folge-ADR mit `Supersedes` ändern dürfte, nicht dieser Nachzug.
+- **Risiken aus §6:** vier notiert, vier mit genau einem Ausgang — dreimal *entfallen* mit
+  Begründung, einmal *weiter offen* mit Register-Verweis. Keines steht ohne Ausgang da.
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — sie prüft die Closure von
   [welle-15](../welle-15-re-baseline.md).
 

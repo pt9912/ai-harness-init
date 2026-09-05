@@ -171,9 +171,9 @@ Refactor ohne neue Sub-Area-Berührung entfällt er ganz. Die beiden
 und die Emissions-Vorlage liegen in keiner engeren Sub-Area der Modus-Deklaration in
 [`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area).
 
-**Vorgelagert — offene Beobachtungen sichten:** `BEO-017` (ein vorgeschriebener Ortswechsel macht
+**Vorgelagert — offene Beobachtungen sichten:** `BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot` (ein vorgeschriebener Ortswechsel macht
 eine Adresse in einem eingefrorenen Artefakt tot) ist die Klasse, die dieser Sensor sichtbar
-macht — er löst sie nicht auf, er meldet sie. `BEO-006` (die Register-Paarung hat in keinem
+macht — er löst sie nicht auf, er meldet sie. `BEO-ALL/register-paarung-ohne-gate-modul` (die Register-Paarung hat in keinem
 gepinnten Stand ein Modul) berührt dieselbe Achse *fehlende Fähigkeit des Fremd-Werkzeugs*, ist
 aber ein anderer Gegenstand. Weitere Treffer: keine.
 

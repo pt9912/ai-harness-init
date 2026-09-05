@@ -10,7 +10,7 @@ ist ihr eigener Closure-Trigger.** Der fordert alle Slices der Welle in `done/`,
 repo-weite Läufe und den vollzogenen Pin; die Archivierung eines wellenlosen Slice steht in keiner
 dieser Bedingungen. Das Welle-Ziel *„jede Pflicht, die die neue Fassung mitbringt, hat einen
 verbuchten Ausgang"* ist mit **dieser Datei in `open/`** eingelöst — ein Ausgang ist ein Träger,
-kein Vollzug. Ausdrücklich benannt statt stillschweigend weggelassen (`BEO-018`,
+kein Vollzug. Ausdrücklich benannt statt stillschweigend weggelassen (`BEO-ALL/out-of-scope-und-doku-dod-widersprechen-sich`,
 [welle-15](../welle-15-re-baseline.md) §4).
 
 **Bezug:**
@@ -72,7 +72,7 @@ Setzung 2).
 
 **Was dieser Slice nicht tut.** Er baut den Einzel-Slice-Modus des Werkzeugs nicht. Dessen
 Zuschnitt hängt an der Entscheidung hier — ihn vorab zu erfinden wäre genau der Schnitt vor der
-Messung, gegen den `BEO-010` steht.
+Messung, gegen den `BEO-ALL/re-baseline-ohne-inventur-slice` steht.
 
 ## 2. Definition of Done
 
@@ -162,13 +162,13 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Die Freistellung für den Wellen-Altbestand wird auf den wellenlosen übertragen, ohne dass die
-  Quelle das sagt** (`BEO-027`, 1× — *ein lebendes Plan-Artefakt fasst eine Entscheidung stärker
+  Quelle das sagt** (`BEO-ALL/zusammenfassung-staerker-als-ihre-quelle`, 1× — *ein lebendes Plan-Artefakt fasst eine Entscheidung stärker
   zusammen als die Quelle*). Der freistellende Satz spricht von *„Wellen, die vor der Einführung
   schlossen"*; für den wellenlosen Fall gab es vor `v6.0.0` gar keine Regel, von der man
   freigestellt sein könnte. Die Analogie ist zu **prüfen**, nicht zu unterstellen. —
   **Ausgang:** <…>
 - **Die Archivierung nimmt einem vorhandenen Sensor seinen Geltungsbereich, ohne dass er rot wird**
-  (`BEO-025`, 2×). Die Ziel-Fassung sagt das selbst: *„Ein Sensor, der auf `done/*.md` keilt, sieht
+  (`BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht`, 2×). Die Ziel-Fassung sagt das selbst: *„Ein Sensor, der auf `done/*.md` keilt, sieht
   die archivierten Stubs im Unterverzeichnis nicht mehr und bleibt grün, ohne noch etwas zu
   prüfen."* Für den wellenlosen Fall liegt das Archiv **flach** neben dem Stub, nicht in einem
   Unterverzeichnis — ob die Warnung damit entfällt oder sich nur verschiebt, gehört gemessen. —
@@ -223,17 +223,17 @@ Slice entscheidet ohnehin nur den Auslöser.
 
 **Vorgelagert — offene Beobachtungen sichten:** Das [Register](../observations/README.md) ist vollständig
 durchgegangen. **Jede** Zeile trägt `*` (gesamtes Repo) — die Spalte unterscheidet in diesem Repo
-nichts (`BEO-004`). Vier Zeilen berühren diesen Slice mit ihrem Zähler-Stand, keine erreicht mit
+nichts (`BEO-ALL/sub-area-spalte-unterscheidet-nichts`). Vier Zeilen berühren diesen Slice mit ihrem Zähler-Stand, keine erreicht mit
 ihm 3×:
 
-- `BEO-010` (2×) — *Re-Baseline ohne vorgeschalteten Inventur-Slice, Form-Pflichten kommen als
+- `BEO-ALL/re-baseline-ohne-inventur-slice` (2×) — *Re-Baseline ohne vorgeschalteten Inventur-Slice, Form-Pflichten kommen als
   Nachzügler*. Dieser Slice ist ein **Ergebnis** der Inventur, nicht ein Nachzügler; er bindet §3
   (der Werkzeug-Slice wird nicht vorab erfunden).
-- `BEO-025` (2×) — *eine Zusage nennt einen Sensor, der die zugesagte Form nicht sieht*. Steht als
+- `BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht` (2×) — *eine Zusage nennt einen Sensor, der die zugesagte Form nicht sieht*. Steht als
   Risiko in §6 und bindet DoD 3.
-- `BEO-027` (1×) — *ein lebendes Plan-Artefakt fasst eine Entscheidung stärker zusammen als die
+- `BEO-ALL/zusammenfassung-staerker-als-ihre-quelle` (1×) — *ein lebendes Plan-Artefakt fasst eine Entscheidung stärker zusammen als die
   Quelle*. Steht als Risiko in §6.
-- `BEO-016` (1×) — *Slice-Pläne tragen ein Vielfaches der nötigen Zeilenzahl*. Bindet diesen Plan
+- `BEO-ALL/slice-plan-umfang-waechst-ueber-umsetzung-hinaus` (1×) — *Slice-Pläne tragen ein Vielfaches der nötigen Zeilenzahl*. Bindet diesen Plan
   selbst; er ist deshalb knapp gehalten.
 
 **alle berührten Sub-Areas GF** — der Modus-Begründungsblock entfällt damit

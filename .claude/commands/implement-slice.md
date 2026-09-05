@@ -65,7 +65,7 @@ Adaptions-Block („MR-Block") in `harness/conventions.md`; die workflow-relevan
    VORAUSSETZUNG); ein unsauberer Baum bricht den Aufruf, statt fremde Änderungen mitzureißen. Drei
    gemessene Grenzen bleiben: es zieht Pfade nach, keine Zustandssätze; Welle-Plan-Dateien
    (Tiefenwechsel beim Closure-Move) bleiben außen vor; und eine präfixlose Referenz **auf** die
-   bewegte Datei aus einer unbewegten Geschwister-Datei erkennt es nicht (`BEO-003`, offen).
+   bewegte Datei aus einer unbewegten Geschwister-Datei erkennt es nicht (`BEO-ALL/verweise-brechen-beim-ortswechsel`).
    `make docs-check` nach dem Move zeigt einen etwaigen Rest — von Hand nachziehen, bevor der
    nächste Schritt startet.
 10. WIP-Limit = 1 pro Implementer (Modul 5): kein paralleles `in-progress/`.
@@ -142,7 +142,7 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
     `make slice-mv SLICE=<slice-NNN> TO=done` verschieben — ein Lauf, zwei Commits: zuerst der reine
     Move, danach — getrennt, nur falls welche anfielen — der Verweis-Nachzug (Hard Rule 3.3,
     dieselbe Begründung wie in Schritt 9). Dieselben drei Grenzen bleiben (keine Zustandssätze,
-    keine Welle-Plan-Dateien, präfixlose Eingehend-Form unerkannt — `BEO-003`). `make docs-check`
+    keine Welle-Plan-Dateien, präfixlose Eingehend-Form unerkannt — `BEO-ALL/verweise-brechen-beim-ortswechsel`). `make docs-check`
     danach prüft den Rest. Ein rotes Gate erreicht `done/` **nur** mit dokumentiertem Carveout
     (Modul 7), nie als stilles Rot.
 24. **Das Beobachtungs-Register fortschreiben** (`docs/plan/planning/observations/`, Modul 6) —

@@ -23,7 +23,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 die die neue Fassung mitbringt, hat einen verbuchten Ausgang, statt einzeln als Nachzügler
 zurückzukommen.**
 
-**Der Schnitt beginnt mit einer Inventur, nicht mit einer Schätzung** (`BEO-010` im
+**Der Schnitt beginnt mit einer Inventur, nicht mit einer Schätzung** (`BEO-ALL/re-baseline-ohne-inventur-slice` im
 [Register](observations/README.md), 2×). Wie viele Mitglieder diese Welle bekommt, beantwortet
 [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md): **sieben**, dazu ein
 ausdrücklich ausgeschlossener Folge-Slice (§4). Die Zahl steht seit dem Katalog fest und nicht
@@ -98,7 +98,7 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 | [slice-185](done/slice-185-adaptions-durchgang-gegen-v600.md) | Der Adaptions-Durchgang gegen `v6.0.0` — jeder Eintrag mit eigenem Ausgang (Architect) | [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md), [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | [slice-186](in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) | Jede zitierte Beobachtungs-Kennung löst wieder auf | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0034`](../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md), [`ADR-0016`](../adr/0016-verweis-traegt-tag-und-zitat.md) |
 
-**Acht Mitglieder — sieben stehen seit dem Katalog fest, das achte seit dem Vollzug.** `BEO-010`
+**Acht Mitglieder — sieben stehen seit dem Katalog fest, das achte seit dem Vollzug.** `BEO-ALL/re-baseline-ohne-inventur-slice`
 ([Register](observations/README.md)) misst an einer Re-Baseline den Abstand zwischen geschnittenen und
 geschlossenen Slices, und die Ursache war der Schnitt **vor** der Inventur; die Zeilen 5 bis 7
 sind darum aus [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) §9 hervorgegangen und
@@ -145,7 +145,7 @@ byte-gleich führen und er eine ihrer sieben Eigenschaften ist — Präzedenz
 [welle-14](done/welle-14-re-baseline.md).
 
 **Ein Katalog-Slice ist ausdrücklich kein Mitglied**, und der Grund gehört hierher statt in ein
-stilles Weglassen (`BEO-018`):
+stilles Weglassen (`BEO-ALL/out-of-scope-und-doku-dod-widersprechen-sich`):
 [slice-183](open/slice-183-ausloeser-der-wellenlosen-archivierung.md) — *Der Auslöser der
 Zeitdokumente-Archivierung im wellenlosen Betrieb wird entschieden* (Architect). Der
 Closure-Trigger dieser Welle (§3) nennt ihn in keiner seiner fünf Bedingungen, und das Welle-Ziel

@@ -50,7 +50,7 @@ danach wieder — für diesen Abschnitt korrekt statt stillschweigend falsch.
       [`ADR-0003`](../../adr/0003-go-native-binaries.md) („kein OCI-Image als Vertriebsmittel"),
       geprüft und nicht nur unterstellt: Trägt die ADR die **Runtime-Stage**-Frage überhaupt, oder
       nur die Frage nach dem *Vertriebskanal* — zwei verschiedene Dinge, die ein Kurzschluss
-      gleichsetzen könnte (dieselbe Falle wie `BEO-008`).
+      gleichsetzen könnte (dieselbe Falle wie `BEO-ALL/adaptions-achse-1-kurzschluss`).
 - [ ] **Image-Hash-Regel** (*„Image-Hash im Build-Output festhalten … harness/image-hash.txt"*) hat
       einen Ausgang: Adoption (ein Mechanismus, der den Digest des Build-Outputs festhält, analog
       `harness/tools/working-tree-hash.sh` für den Arbeitsbaum) oder deklarierte Abweichung — mit
@@ -112,7 +112,7 @@ und `Dockerfile` sind beide in der bestehenden Modus-Deklaration von
 [`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area)
 über `*` geführt; keine zu grobe, neu auszudifferenzierende Sub-Area.
 
-**Vorgelagert — offene Beobachtungen sichten:** `BEO-008` (1×, `*`, Beleg slice-082) — *„Achse 1
+**Vorgelagert — offene Beobachtungen sichten:** `BEO-ALL/adaptions-achse-1-kurzschluss` (1×, `*`, Beleg slice-082) — *„Achse 1
 … ist nicht mit ‚die Baseline behandelt jetzt dasselbe Thema' beantwortet"*. Gilt für DoD-Punkt 1
 dieses Slice unmittelbar: Dass [`ADR-0003`](../../adr/0003-go-native-binaries.md) „OCI-Image"
 erwähnt, beantwortet nicht automatisch, ob sie die **Runtime-Stage**-Pflicht trägt — das ist als

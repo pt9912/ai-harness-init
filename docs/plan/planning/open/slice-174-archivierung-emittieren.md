@@ -136,7 +136,7 @@ dasteht.
   offen: → BEO-NNN im Register>
 - **Der Gegenstand ist ein Rollen-Anweisungssatz, und dieser Slice ist Implementer-Arbeit.**
   [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) gibt
-  `close-welle.md` der ausführenden Rolle — dem Planner; `BEO-007` im
+  `close-welle.md` der ausführenden Rolle — dem Planner; `BEO-ALL/anweisungssatz-eigentum-ohne-quelle` im
   [Register](../observations/README.md) (4×, geplant) führt die noch offenen Teile derselben Frage. Die
   **Text**-Hälfte von DoD (2) ist damit eine Übergabe, keine Implementer-Entscheidung. —
   **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen: Grund | weiter offen: → BEO-NNN im
@@ -192,8 +192,8 @@ Die **emittierte** Ebene ist keine Sub-Area dieses Repos: sie ist ein anderer Ve
 Deklaration führt sie nicht.
 
 **Vorgelagert — offene Beobachtungen sichten:** Zwei Treffer im [Register](../observations/README.md).
-`BEO-007` (4×, geplant — wer die Anweisungssätze schreiben darf, sagt keine Quelle) steht als
-Risiko in §6. `BEO-009` (8×, geplant — eine geänderte Ableitung lässt die Zusage daneben stehen)
+`BEO-ALL/anweisungssatz-eigentum-ohne-quelle` (4×, geplant — wer die Anweisungssätze schreiben darf, sagt keine Quelle) steht als
+Risiko in §6. `BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen` (8×, geplant — eine geänderte Ableitung lässt die Zusage daneben stehen)
 ist berührt: DoD (2) zieht **genau eine** solche Zusage nach, den Satz über das nicht vorhandene
 Werkzeug; der Zähler bewegt sich damit nicht, weil dieser Slice die Klasse auflöst statt sie zu
 beobachten. Weitere Treffer: keine.
