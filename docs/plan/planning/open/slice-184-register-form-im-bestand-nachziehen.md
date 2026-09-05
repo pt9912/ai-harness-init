@@ -24,7 +24,7 @@ Rollen-Anweisungssatz gehört der Rolle, die ihn **ausführt** — dieser Slice 
 **Berührte Spec-Stellen:** `—`. Der Slice zieht Form-Beschreibungen nach; er schreibt keine
 Spec-Stelle.
 
-**Verantwortlich:** `—` bis zur Priorisierung.
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-04.
 
