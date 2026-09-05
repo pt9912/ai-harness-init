@@ -1,0 +1,2 @@
+**Vorgang:** slice-187
+**Fund:** Zwei Stellen des neu geschriebenen Adopter-Kopfes von `d-check.mk` sprachen über die Entstehung ihrer Aussage statt über den gepinnten Stand — *„an einer frischen Sonde … gemessen statt vom Vorgaenger-Pin geerbt"* (Lauf-Protokoll plus verworfene Alternative) und *„(gemessen, nicht vermutet)"* (Mess-Beteuerung ohne Kommando im Absatz); gefunden vom Review, nicht von einem Sensor.

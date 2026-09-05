@@ -1,0 +1,2 @@
+**Vorgang:** slice-187
+**Fund:** Der Pin-Sprung bewegte die Ableitung an drei Stellen und ließ die Zusagen daneben stehen — [`MR-010`](../../../../../../../harness/conventions.md#mr-010) Setzung 2 nannte weiter *zwölf* Targets, während `grep -cE '^docs?-[a-z-]+:' d-check.mk` **13** liefert; [`MR-034`](../../../../../../../harness/conventions.md#mr-034) beanspruchte im Indikativ *„hier steht der geltende Stand"* und nannte `v0.65.0`; und `welle-13` sagte neben einem bereits nachgezogenen Link weiter `open/`.

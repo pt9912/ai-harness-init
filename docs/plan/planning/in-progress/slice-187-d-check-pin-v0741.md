@@ -266,7 +266,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt
 ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
-- [ ] **(1) Der Pin steht auf `v0.74.1`, dreifach belegt, und der emittierte Default zieht mit.**
+- [x] **(1) Der Pin steht auf `v0.74.1`, dreifach belegt, und der emittierte Default zieht mit.**
       Beide gekoppelten Stellen — [`d-check.mk`](../../../../d-check.mk) und
       [`internal/emit/emit.go`](../../../../internal/emit/emit.go) — tragen Tag und Digest
       zeichengleich; der Digest ist **vor** dem Pin über die drei Beine aus §1 Messung 1 neu
@@ -276,7 +276,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt
       fällt mit `--- FAIL:` an `TestDefaultImage_MatchesCanonical` und
       `TestDefaultDigest_MatchesCanonical`. Dieser Lauf gehört **gesehen** und seine Meldung
       **gelesen** — sie nennt die zwei Zeichenketten, die auseinanderlaufen.
-- [ ] **(2) Das Fragment ist gegen eine frische `v0.74.1`-Ausgabe re-adaptiert, nicht
+- [x] **(2) Das Fragment ist gegen eine frische `v0.74.1`-Ausgabe re-adaptiert, nicht
       nachgebessert — die vier Handgriffe erneut angewandt, der Rest verbatim übernommen.**
       Das ist der Punkt, der diesen Sprung von den zwei Vorgängern unterscheidet: Das Tool liefert
       **acht** Zeilen mehr (§1 Messung 3), darunter ein neues Target und sechs veränderte Recipes.
@@ -289,7 +289,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt
       **4**; die 4 ist damit kein Erwartungswert aus der Erinnerung, sondern ein Kriterium, dessen
       Ist-Wert vor und nach dem Handgriff gemessen ist. Bleibt sie bei 9 oder steht sie bei 5, ist
       verbatim-Inhalt verlorengegangen oder ein Handgriff doppelt angewandt.
-- [ ] **(3) Der Kopf von [`d-check.mk`](../../../../d-check.mk) sagt, was der gepinnte Stand tut —
+- [x] **(3) Der Kopf von [`d-check.mk`](../../../../d-check.mk) sagt, was der gepinnte Stand tut —
       an einer eigenen Sonde gemessen, nicht vom Vorgänger geerbt.** **Zehn** Stellen nennen heute
       den alten Stand (`grep -c 'v0\.65\.0\|5ea03abe' d-check.mk` → **10**). Die Sonden-Tabelle der
       Marker-Semantik ist über **`v0.74.1`** neu zu messen; die Vorgänger-Spanne `v0.62.0` →
@@ -303,10 +303,10 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt
       nicht gepinnt ist; (b) die Sonde selbst: ein `d-check:ignore` in blanker Prosa über einem
       echten Befund wird unter `v0.74.1` **unterdrückt** statt gemeldet — dann ist die Tabelle
       abgeschrieben statt gemessen.
-- [ ] `make gates` grün — heute ist es das (§1 Messung 2, `0 Befund(e)`, Exit 0), und dieser Slice
+- [x] `make gates` grün — heute ist es das (§1 Messung 2, `0 Befund(e)`, Exit 0), und dieser Slice
       darf es nicht kippen. Der Punkt sagt hier bewusst *grün* und nicht *ohne neuen Befund*: Die
       Basis ist null, jede Abweichung ist ein Zugang.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist. Berührt ist keiner: Der Pin ist eine
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist. Berührt ist keiner: Der Pin ist eine
       Versions-Referenz, und die Gate-Namen in [`AGENTS.md`](../../../../AGENTS.md) §4 und
       [`harness/README.md`](../../../../harness/README.md) bewegen sich nicht — `docs-check` bleibt
       der einzige behauptete Gate, `doc-usage` ist advisory. Die Target-**Zahl** bewegt sich
@@ -316,10 +316,10 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt
       Doku-Dateien — gemessen mit
       `grep -rn 'doc-help\|doc-structure\|doc-trace' harness/README.md docs/user/*.md`, das über
       diesen Dateien keinen Target-Namen findet.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt
       Wellen-Betrieb ([welle-15](../done/welle-15-re-baseline.md) liegt flach), sie werden also von der
       nächsten Welle-Closure geprüft und nicht hier, auch für Slices ohne Wellen-Zugehörigkeit.
 
@@ -398,33 +398,59 @@ dasteht.
   [`d-check.mk`](../../../../d-check.mk) adaptiert ist (§1 Messung 3) — bei den zwei
   Vorgänger-Sprüngen war es **eine**. Wer den Sprung wie jene behandelt und nur die zwei
   Wertzeilen tauscht, verliert das neue Target und sechs Recipe-Zeilen, ohne dass ein Gate es
-  meldet: Kein Modul dieses Repos hält das Fragment gegen die Tool-Ausgabe. — **Ausgang:**
-  <entfallen: DoD (2) misst die Hunk-Zahl gegen eine frische Ausgabe und färbt bei 9 statt 4 rot |
-  eingetreten: Folge-Slice für die Fragment-Neuordnung, §4 Rückführung 1>
+  meldet: Kein Modul dieses Repos hält das Fragment gegen die Tool-Ausgabe. —
+  **Ausgang: entfallen.** In diesem Closure-Lauf nachgemessen, netzlos gegen den gepinnten
+  Digest: `diff <(docker run --rm --network none ghcr.io/pt9912/d-check@sha256:e31a372b…4641
+  --print-mk) d-check.mk | grep -c '^[0-9]'` → **4**. Das sind die vier Handgriffe aus
+  [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)
+  Setzung 1 und kein fünfter; damit stammt alles übrige byte-gleich vom Werkzeug, das neue Target
+  `doc-usage` und die sechs Recipe-Zeilen eingeschlossen. Weder die **9** noch eine **5** aus dem
+  Rot-Kriterium ist eingetreten. Das Risiko kann in diesem Slice nicht mehr eintreten; die
+  **Wächter**-Lücke daneben bleibt und ist unten benannt.
 - **Die leere Quell-Differenz ist die verführerischste Messung dieses Slice.** *„Keine der sechs
   aktiven Regeldateien bewegt eine Zeile"* liest sich wie ein Freispruch und ist nur eine
   Untergrenze: Die Bilanz ist über **Dateien** gezogen, während die Frage über **Verhalten** geht,
-  und geteilte Infrastruktur hat sich in sieben Dateien bewegt (§1 Messung 5). — **Ausgang:**
-  <entfallen: die Gegenmessung auf Nicht-Null-Basis aus §1 Messung 6 liefert identische
-  Befundmengen und ist im Umsetzungs-Lauf zu wiederholen | eingetreten: sie liefert eine Differenz,
-  und §4 Rückführung 2 greift>
+  und geteilte Infrastruktur hat sich in sieben Dateien bewegt (§1 Messung 5). —
+  **Ausgang: entfallen.** Die Gegenmessung auf Nicht-Null-Basis ist nach dem Planungslauf **zweimal
+  unabhängig** wiederholt worden, und beide Male liefert sie identische Befundmengen: der
+  Architect-Lauf in
+  [`MR-052`](../../../../harness/conventions.md#mr-052--d-check-pin-v0741-zwei-module-verfügbar-vierte-ausgabe-spalte)
+  §Gegenmessung (**beide** Digests `826 Datei(en) geprüft, 85 Befund(e)`, Exit 1, `diff` der nach
+  `cut -f1-3` sortierten Ströme leer, Verteilung beidseitig **15**/**38**/**32**) und der Review
+  in [N-4](../../../reviews/2026-09-05-slice-187-d-check-pin-review.md) (`825/85`, dieselbe
+  Verteilung). Die zwei Dateizahlen gehen auseinander und sind keine Erwartungswerte — tragend ist
+  die Gleichheit der zwei Mengen **innerhalb** eines Laufs. Keine Senkung, also kein ADR nach
+  [`AGENTS.md`](../../../../AGENTS.md) §3.5; §4 Rückführung 2 greift nicht.
 - **Die vierte Ausgabe-Spalte ist gemessen, aber nicht bewacht.** Ab diesem Pin trägt jede
   Befund-Zeile den Grund zusätzlich im Klartext (§1 Messung 6). Kein Skript dieses Repos zerlegt
   heute eine d-check-Befund-Zeile spaltenweise — gemessen: `test/ignore-refs-restbreite.bats` liest
   die **Config** und nicht die Ausgabe, und `harness/tools/full-smoke.sh` prüft mit
   `grep -qF -- "geprüft"` die **Summen**-Zeile, deren Form sich nicht bewegt. Die Zusage gilt für
-  den heutigen Bestand; wer künftig `$NF` als Grund-Code liest, liest den Klartext. — **Ausgang:**
-  <entfallen: der Kopf von [`d-check.mk`](../../../../d-check.mk) sagt es zu, DoD (3) | eingetreten:
-  Folge-Slice, wenn ein Leser der Spalten-Form entsteht>
+  den heutigen Bestand; wer künftig `$NF` als Grund-Code liest, liest den Klartext. —
+  **Ausgang: entfallen.** Der Kopf von [`d-check.mk`](../../../../d-check.mk) trägt die Zusage
+  (DoD (3), Absatz *AB v0.74.1 TRAEGT JEDE BEFUND-ZEILE EINE VIERTE, TAB-GETRENNTE SPALTE*), und
+  der Auslöser des zweiten Zweigs ist nicht eingetreten: In diesem Closure-Lauf nachgemessen,
+  `git grep -nE "awk +-F'?\\\\t|cut +-f|\\$NF" -- 'harness/tools/*' 'test/*' '.claude/hooks/*'
+  'Makefile' 'd-check.mk'` nennt drei Dateien — `comment-claims.sh` und `mutate.sh` über **ihrem
+  eigenen** Zeilenformat und `d-check.mk` selbst, wo die Form im Kopf als Warnung steht. Kein
+  Leser der d-check-Spaltenform ist entstanden, also kein Folge-Slice. **Was nicht entfällt:** die
+  Zusage hat keinen stehenden Wächter (Review INFO-2) — benannt in §7, nicht gezählt.
 - **`BEO-ALL/register-paarung-ohne-gate-modul` wird durch diesen Slice in seiner Tatsachen-Basis
   überholt.** Der Eintrag steht bei **1×** und hält fest, die maschinelle Hälfte der
   Register-Paarung habe *„in keinem gepinnten Doku-Gate-Stand ein Modul"*. Nach diesem Pin hat sie
   eines (`planning.observations.dir`, §1 *Vier Fähigkeiten*) — im Bild, nicht in `modules:`. Der
   Satz wird damit als geschriebener falsch, während die **Deckung** unverändert fehlt.
-  `observation.md` ist ab Anlage unveränderlich; bewegt werden darf nur `state.md`. — **Ausgang:**
-  <weiter offen: der Eintrag bleibt im Register, sein Stand wird in der Closure gegen den neuen
-  Sachverhalt geprüft | eingetreten: Folge-Slice für die Aktivierungs-Entscheidung, die ein
-  **Anheben** ist und über den Steering-Loop läuft>
+  `observation.md` ist ab Anlage unveränderlich; bewegt werden darf nur `state.md`. —
+  **Ausgang: weiter offen → Beobachtungs-Register**
+  ([`register-paarung-ohne-gate-modul`](../observations/BEO-ALL/register-paarung-ohne-gate-modul/observation.md)).
+  Der Stand ist gegen den neuen Sachverhalt geprüft und in `state.md` nachgezogen: Das Modul
+  besteht im gepinnten Stand (`planning.observations.dir`), es ist **verfügbar, nicht aktiviert**,
+  und die **Deckung** fehlt unverändert. **Kein neuer Beleg** — der Zähler misst das Auftreten der
+  Beobachtung, und aufgetreten ist sie hier nicht; bewegt hat sich ihre Tatsachen-Basis. Der
+  Eintrag bleibt bei **1×** und damit unter der Schwelle, wo `offen` der Normalzustand ist und
+  kein Ausgang. Die Aktivierung ist ein **Anheben** über den Steering-Loop und braucht einen
+  eigenen Schnitt; eine Kennung dafür steht hier nicht, weil sie sonst eine Datei behauptete, die
+  es nicht gibt.
 - **Ein überholter offener Plan hat keinen Ausgang, den eine Norm nennt.**
   [slice-135](../open/slice-135-d-check-pin-v0661.md) zeigt die Klasse: ein Plan wartet in `open/` über
   Versions-Sprünge hinweg, und der Sprung ändert die Pflicht, die er halten soll. Modul 5 kennt
@@ -436,24 +462,47 @@ dasteht.
   denselben Mechanismus, aber ausdrücklich über einen **Baseline**-Sprung; die d-check-Linie ist
   laut [welle-15](../done/welle-15-re-baseline.md) §6 eine andere. Ob das eine dritte Gelegenheit
   desselben Eintrags ist — dann Schwelle — oder eine eigene Beobachtung über zu enge Fassung, ist
-  das Urteil der Closure und keines dieses Plans. — **Ausgang:** <weiter offen: als Beleg in einen
-  der zwei Einträge, entschieden bei der Closure | eingetreten: Folge-Slice, der den Ausgang eines
-  überholten offenen Plans normiert>
+  das Urteil der Closure und keines dieses Plans. —
+  **Ausgang: weiter offen → Beobachtungs-Register**, und zwar als **neuer** Eintrag
+  [`ueberholter-offener-plan-ohne-genormten-ausgang`](../observations/BEO-ALL/ueberholter-offener-plan-ohne-genormten-ausgang/observation.md)
+  (**1×**), nicht als dritter Beleg beim Nachbarn. **Das Urteil, ausgeschrieben:** Der Nachbar
+  beschreibt die **Erkennungs**-Lücke — *„kein Schritt hält den Bestand offener Slice-Pläne gegen
+  den neuen Stand"*, Fehlerrichtung *der Plan gilt weiter*. Hier ist der Plan **erkannt** worden
+  (§1 *Was mit slice-135 geschieht*); gefehlt hat der **Ausgang**. Das sind zwei Hälften derselben
+  Lage und nicht dieselbe Beobachtung, und `observation.md` ist ab Anlage unveränderlich — ein
+  Beleg dort weitete eine feststehende Identität still. Der Nachbar bleibt damit bei **2×**, die
+  Schwelle ist nicht erreicht, und die Linien-Frage (*Baseline* gegen *d-check*) muss nicht
+  entschieden werden. `slice-135` bleibt liegen, kein Folge-Slice geschnitten.
 - **Der Pin trägt einen Grund, den kein Sensor dieses Repos kennt.** `make freshness-dcheck` sagt
   *„ein neuer Tag ist da"*, nicht *„der gepinnte ist verwundbar"*; kein Gate scannt das gepinnte
   Fremd-Image. `[0.74.1]` ist ein reiner Security-Release (zwei behebbare CVEs in
   `golang.org/x/crypto`, **Fremdquelle** CHANGELOG des Klons, hier nicht nachgemessen), und
   `[0.65.0]` war es vor ihm. Die Klasse ist bereits einmal aufgefallen
   ([slice-122](../done/slice-122-d-check-pin-v0650.md) §6) und mit diesem Slice nicht geschlossen.
-  — **Ausgang:** <weiter offen: als Kandidat notiert, ohne eigenen Schnitt in diesem Lauf |
-  eingetreten: Folge-Slice>
+  — **Ausgang: weiter offen → Beobachtungs-Register**, neuer Eintrag
+  [`ausloesender-sensor-nennt-den-grund-des-vorgangs-nicht`](../observations/BEO-ALL/ausloesender-sensor-nennt-den-grund-des-vorgangs-nicht/observation.md)
+  (**1×**). *„Als Kandidat notiert"* ist genau die Route, die Baseline-Regelwerk
+  `modul-05-planning-harness.md` §Offene Risiken für diesen Ausgang vorsieht — sie hängt ihn an
+  den Zähler, statt einen zweiten Mechanismus zu erfinden; ohne die Datei wäre die Notiz beim
+  nächsten Sprung wieder verschwunden. Der Eintrag steht bei **1×** und nicht bei 2×: Das frühere
+  Auftreten in [slice-122](../done/slice-122-d-check-pin-v0650.md) §6 wird **nicht nachgebucht** —
+  jener Vorgang ist geschlossen, seine Closure hat den Beleg nicht gelegt, und das Register
+  entstand danach. Kein Folge-Slice.
 - **Der Rang-Zeiger bleibt nach diesem Slice halb.** Zeile 2 des Kopfes nennt nach DoD (3) die
   richtige **Version**, aber weiter nur die Einträge der Vorgänger-Sprünge — der Eintrag zu diesem
   hier existiert zum Umsetzungs-Zeitpunkt nicht (Übergabe 1). Das ist eine echte
   Reihenfolge-Abhängigkeit an einer fremden Rolle, keine Auslassung, und sie darf den Pin nicht
-  aufhalten. — **Ausgang:** <entfallen: der Architect-Lauf liegt vor dem Umsetzungs-Lauf und der
-  Zeiger nennt den Eintrag sofort | eingetreten: Folge-Slice nach dem Muster von
-  [slice-128](../done/slice-128-d-check-kopf-sagt-was-gilt.md)>
+  aufhalten. — **Ausgang: entfallen**, aber **nicht auf dem Weg, den dieser Absatz annahm.** Die
+  Annahme *„der Architect-Lauf liegt vor dem Umsetzungs-Lauf"* ist falsch gewesen: Der
+  Umsetzungs-Commit lag zuerst, und dazwischen stand ein Review, der genau diese Reihenfolge als
+  **MEDIUM-1** aufnahm. Er nannte dafür zwei zulässige Wege, und dieser Slice ist den ersten
+  gegangen — der Architect-Lauf liegt vor der **Closure**, nicht vor der Umsetzung, und der Zeiger
+  ist danach im selben Slice nachgezogen. Am Stand dieser Closure gemessen: `sed -n '2p'
+  d-check.mk` führt die adaptierenden Einträge des Kopfes auf, und
+  [`MR-052`](../../../../harness/conventions.md#mr-052--d-check-pin-v0741-zwei-module-verfügbar-vierte-ausgabe-spalte)
+  steht als letzter darin. Der Rang-Zeiger ist damit ganz und
+  nicht halb; der zweite Weg (Folge-Slice nach dem Muster von
+  [slice-128](../done/slice-128-d-check-kopf-sagt-was-gilt.md)) wird nicht gebraucht.
 
 ### Übergabe an den Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8 — vier Posten, keiner hier geschrieben)
 
@@ -497,7 +546,149 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-<!-- Erst nach Abschluss füllen. -->
+**Rolle:** Planner (Baseline-Regelwerk `modul-05-planning-harness.md` §Closure- und
+Lerneintrag-Regeln). **Datum:** 2026-09-05. **Gegenstand:** die Commit-Kette von `5c85147`
+(Lifecycle-Übergang) bis `59f9ac0` (Rang-Zeiger). Jede Zahl unten ist **in diesem Lauf** erhoben;
+die Zahlen aus Planung, Umsetzung, Review und Architect-Lauf waren Eingabe, kein Beleg
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 1).
+
+- **Was hat funktioniert:** Die **Strenge-Bilanz auf zwei Beinen**. Der Trockenlauf über dem
+  realen Baum ist über einer 0-Befund-Basis informationsleer, und dieser Slice hat sich nicht
+  darauf verlassen: Neben die leere Quell-Differenz an den sechs aktiven Regeldateien — mit
+  Prüfung gegen das falsche Negativ — trat eine Gegenmessung auf **Nicht-Null-Basis**, und die hat
+  eine echte Verhaltensänderung gefunden, die kein anderer Weg gezeigt hätte: die **vierte
+  Ausgabe-Spalte**. Der Auflösungs-Trigger von
+  [`MR-027`](../../../../harness/conventions.md#mr-027--d-check-pin-v0650-ignore-marker-in-zwei-achsen-verengt)
+  hatte diese Gegenmessung an die Bedingung *„wo ein aktives Modul Zeilen verliert"* geknüpft, und
+  die war über dieser Spanne **nicht** erfüllt. Sie ist trotzdem gefahren worden — und weil sie
+  etwas fand, hat
+  [`MR-052`](../../../../harness/conventions.md#mr-052--d-check-pin-v0741-zwei-module-verfügbar-vierte-ausgabe-spalte)
+  §Auflösungs-Trigger die Bedingung für künftige Sprünge gestrichen. Das ist der Fall, in dem eine
+  einzelne Messung eine Regel bewegt hat, statt nur einen Haken zu setzen.
+  Ebenso getragen hat die **Re-Adaption statt Nachbesserung**: vier Hunks gegen vorher neun, und
+  aus der Vier folgt, dass das neue Target und die sechs Recipe-Zeilen byte-gleich vom Werkzeug
+  stammen. Die zwei HIGH-Klassen der Vorgänger-Sprünge (Marker-Tabelle am Bestand widerlegt,
+  *„fünf von sechs"*) sind hier **nicht** wiedergekehrt.
+- **Was ging anders als geplant — der „mechanische" Pin-Sprung war der teuerste dieser Linie, und
+  der Grund liegt nicht im Diff.** Der Umsetzungs-Commit `9a1a22f` bewegt **drei** Dateien
+  (`git show --stat --format= 9a1a22f | tail -1` → *3 files changed, 43 insertions(+),
+  32 deletions(-)*). Alles danach war Nacharbeit an Stellen, die der Commit **nicht** berührt hat:
+  ein blockierender Review mit drei MEDIUM, ein Architect-Lauf mit **zwei neuen** Adaptions-
+  Einträgen und einer nachgezogenen Setzung
+  (`git show --stat --format= e934301 | tail -1` → *5 files changed, 277 insertions(+),
+  8 deletions(-)*), dazu zwei kleine Folge-Commits. Der Grund ist strukturell: Der Pin ist nicht
+  nur ein Wert, sondern **Operand von Aussagen in fremden Artefakten** — einer Target-Zahl in
+  [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)
+  Setzung 2, einem Geltungs-Satz in
+  [`MR-034`](../../../../harness/conventions.md#mr-034--das-geteilte-referenz-ventil-trägt-am-gepinnten-stand),
+  einem Zustandswort in `welle-13`. Keines dieser Artefakte gehört dem Implementer, und **kein
+  Gate hält eine Prosa-Aussage gegen ihre Ableitung**. Der Plan hat zwei der drei Stellen gesehen
+  und als Übergabe gestellt — aber den **Auffang** an eine Annahme über die Rollen-Reihenfolge
+  gehängt (*„der Architect-Lauf liegt vor dem Umsetzungs-Lauf"*), statt sie zum Start-Trigger zu
+  machen. Die Annahme fiel, und damit stand die falsche Aussage auf dem Hauptzweig, bis der
+  Architect-Lauf sie einholte. **Ein Nebenbefund derselben Klasse in dieser Datei:** Der letzte
+  DoD-Punkt begründet den Wellen-Betrieb mit *„welle-15 liegt flach"* — sie liegt seit ihrer
+  Closure in `done/`. Die **Aussage** trägt unverändert (`ls docs/plan/planning/welle-*.md` nennt
+  **drei** offene Welle-Dateien), ihr genannter Beleg ist weitergewandert.
+- **Was der Review beitrug** (dritte Quelle nach Baseline-Regelwerk `modul-05-planning-harness.md`
+  §Closure- und Lerneintrag-Regeln):
+  [`2026-09-05-slice-187-d-check-pin-review.md`](../../../reviews/2026-09-05-slice-187-d-check-pin-review.md)
+  — **blockierend, 3 MEDIUM, kein HIGH.** Das Sachurteil des Slice ist unabhängig nachgemessen
+  worden und trägt (N-1 bis N-15); die drei MEDIUM trafen den **Zustand an HEAD**, nicht die
+  Implementation, und sind alle drei aufgelöst: MEDIUM-1
+  ([`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)
+  Setzung 2 an drei Stellen falsch) und MEDIUM-2
+  ([`MR-034`](../../../../harness/conventions.md#mr-034--das-geteilte-referenz-ventil-trägt-am-gepinnten-stand)
+  beansprucht den geltenden Stand) im Architect-Lauf `e934301` — am Stand dieser Closure nennt
+  `grep -rln 'führt \*\*dreizehn\*\* Targets' harness/conventions/` **eine** Datei, und der
+  Ventil-Eintrag trägt die Kopf-Marke mit Zeiger auf
+  [`MR-053`](../../../../harness/conventions.md#mr-053--ein-eintrag-datiert-seine-werkzeug-aussage-statt-den-lebenden-pin-zu-führen);
+  MEDIUM-3 (der neue Kopf beschreibt den Vorgang seiner Entstehung) in `2999156`. **LOW-2**
+  (`welle-13` nennt `open/` neben einem Link nach `in-progress/`) ist in `39903fe` behoben,
+  **LOW-3** (die Tag-Zerlegung geht nicht auf) im Architect-Lauf richtiggestellt — zwölf Tags sind
+  neun Minors **und drei** Patches. **LOW-1** (die zwei Kopplungstests haben keinen Fall in
+  `test/mutations/`) bleibt offen und ist **nicht** von diesem Slice erzeugt; sein Träger ist
+  [slice-119](../open/slice-119-zusage-ohne-fall-wird-sichtbar.md), dem
+  [slice-122](../done/slice-122-d-check-pin-v0650.md) die Bezugsmengen-Frage bereits zugewiesen
+  hat. Eine zweite Kennung daneben wäre eine zweite Fassung derselben Frage.
+- **Was diese Closure nicht deckt — drei Posten, benannt statt still:**
+  **(1) Die Verifier-Kante ist nicht gelaufen.** Baseline-Regelwerk `modul-08-agentenrollen.md`
+  §Rollen-Sequenz für einen Slice führt `I→R→Vf→P`; hier folgt `P` unmittelbar auf `R`. Was dieser
+  Lauf selbst gefahren hat, steht unten unter *Verifikation*; ein DoD-Urteil aus getrenntem
+  Kontext ersetzt es nicht.
+  **(2) Das Vier-Hunk-Kriterium hat keinen stehenden Wächter** (Review INFO-2). Es ist in diesem
+  Lauf erneut gemessen (§6 Risiko 1) — das deckt diesen Slice, nicht den nächsten Pin. Dasselbe
+  gilt für die Vier-Spalten-Zusage im Kopf: Sie ist wahr über den heutigen Bestand und wird von
+  keinem Sensor gehalten.
+  **(3) Der Lese-Schritt des Beobachtungs-Registers gehört nicht hierher.** Dieses Repo führt
+  **Wellen-Betrieb** — `ls docs/plan/planning/welle-*.md` nennt drei offene Welle-Dateien —, und
+  *wellenlos* ist nach Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht
+  eine Eigenschaft des **Repos**, nicht des einzelnen Slice: *„Ein Repo mit Wellen hat eine
+  Welle-Closure, und die liest und prüft alles, was seit der letzten Welle in `done/` liegt — auch
+  Slices ohne Wellen-Zugehörigkeit."* Die Tabelle *Träger im Repo ohne Wellen* greift hier also
+  nicht; diese Closure **zählt** und weist Risiko-Ausgänge zu, sie liest keine Schwellen. Für die
+  drei Paarungen gilt dasselbe (letzter DoD-Punkt).
+- **Steering-Loop-Eintrag — geschärfte Regel:** *Wer einen Wert bewegt, der **Operand von Aussagen
+  in fremden Artefakten** ist, macht die Rollen-Reihenfolge zum **Start-Trigger** (§4), nicht zur
+  Annahme in einem Risiko-Ausgang (§6).* Eine Reihenfolge, die in §4 steht, hält den Slice auf,
+  bis sie erfüllt ist; eine, die in §6 steht, wird erst bei der Closure geprüft — und bis dahin
+  liegt die falsche Aussage auf dem Hauptzweig. Dieser Slice hat beides ausprobiert: Der Plan
+  **hat** die betroffenen fremden Stellen benannt (§6, vier Übergabe-Posten) und trotzdem den
+  Zustand an HEAD falsch werden lassen, weil die Reihenfolge nur als Annahme dastand. Der Preis
+  war ein blockierender Review, dessen zwei tragende Befunde die Implementation gar nicht
+  betrafen. Auslöser:
+  [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
+  (**14×**, Stand `geplant`/`slice-153`) — alle drei Instanzen dieses Laufs liegen in genau der
+  Unterklasse, die dessen `state.md` als **offen** ausweist (Prosa-Zahl, Präsens-Satz,
+  Zustandswort). *Gezählt, nicht verkörpert:* Die Regel ist hier formuliert, nicht geschrieben —
+  ihr Zielort wäre ein Norm-Artefakt, und das gehört dem Architect
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Das Feld `liegt in` entfällt darum.
+- **Beobachtungs-Register:** **vier** Belege, davon einer aus dem Review; **drei** neue
+  Verzeichnisse, **ein** Stand nachgezogen. Jeder Zähler ist die Zahl der Dateien unter
+  `evidence/` (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l`) — keine
+  Erwartungswerte, sie wandern mit dem Register:
+  [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
+  **14×** — **ein** Beleg für MEDIUM-1, MEDIUM-2 und LOW-2 zusammen, weil drei Funde in **einem**
+  Vorgang eine Gelegenheit sind ·
+  [`kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle`](../observations/BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle/observation.md)
+  **1×**, neu (MEDIUM-3); der Nachbar
+  [`adaptions-block-spricht-ueber-sich-selbst`](../observations/BEO-ALL/adaptions-block-spricht-ueber-sich-selbst/observation.md)
+  deckt ihn nicht — er handelt vom Adaptions-Block, nicht von Kommentaren in Code und
+  Konfiguration. Das frühere Auftreten in
+  [slice-128](../done/slice-128-d-check-kopf-sagt-was-gilt.md) wird **nicht nachgebucht** ·
+  [`ueberholter-offener-plan-ohne-genormten-ausgang`](../observations/BEO-ALL/ueberholter-offener-plan-ohne-genormten-ausgang/observation.md)
+  **1×**, neu (§6 Risiko 5) ·
+  [`ausloesender-sensor-nennt-den-grund-des-vorgangs-nicht`](../observations/BEO-ALL/ausloesender-sensor-nennt-den-grund-des-vorgangs-nicht/observation.md)
+  **1×**, neu (§6 Risiko 6) ·
+  [`register-paarung-ohne-gate-modul`](../observations/BEO-ALL/register-paarung-ohne-gate-modul/observation.md)
+  bleibt bei **1×** — die Beobachtung ist nicht aufgetreten, ihre Tatsachen-Basis hat sich bewegt;
+  nachgezogen ist allein `state.md`, denn `observation.md` ist ab Anlage unveränderlich.
+  **Kein Eintrag erreicht mit diesem Slice die Schwelle.**
+- **Folge-Slices:** **keine geschnitten**, und das ist eine Entscheidung, keine Auslassung. Vier
+  der sieben Risiken sind entfallen; die drei offenen sind an den Zähler gehängt, wo sie beim
+  dritten Auftreten von selbst fällig werden. Ein Posten geht **ohne Kennung** weiter und gehört
+  einem anderen Plan: die Aktivierungs-Entscheidung über die vier ab diesem Pin verfügbaren
+  Fähigkeiten (`workflows`, `reviews`, `planning`, `planning.observations.dir`) ist ein
+  **Anheben** über den Steering-Loop
+  ([`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids))
+  mit eigener Config-Entscheidung und eigenem Trockenlauf. Eine Kennung hier behauptete eine
+  Datei, die es nicht gibt. [slice-135](../open/slice-135-d-check-pin-v0661.md) bleibt liegen —
+  der Grund steht in §1 und als Beobachtung im Register.
+- **Risiken aus §6:** sieben, je genau ein Ausgang — **vier entfallen** (Sprungweite ·
+  Quell-Differenz · vierte Spalte · Rang-Zeiger), **drei weiter offen → Register**
+  (Register-Paarung · überholter offener Plan · Pin-Grund). Kein *eingetreten*. Siehe §6, jeder
+  Ausgang mit dem Kommando oder der Stelle, die ihn trägt.
+- **Verifikation, und was sie deckt:** `make gates` in diesem Closure-Lauf gefahren, **EXIT 0**,
+  darin `d-check` mit **0 Befund(e)** über dem Baum **nach** allen Änderungen dieser Closure.
+  `make freshness-dcheck` → *„aktuell — gepinnt und latest sind beide v0.74.1"*, Exit 0; das ist
+  das erste Closure-Kriterium aus §5, und es ist dasselbe Kommando, das den Slice ausgelöst hat.
+  Die zwei DoD-Nachmessungen dieses Laufs stehen in §6 (Hunk-Zahl **4**; der Rang-Zeiger nennt den
+  neuen Adaptions-Eintrag). **Was `make gates` nicht deckt:** `make mutate` ist hier **nicht** erneut gefahren — der
+  Review hat ihn erzwungen über **250** Fälle gefahren (`mutate: 250 ok, 0 Befund(e)`, EXIT 0),
+  und diese Closure ändert keine Datei in seinem Prüfgegenstand. `make smoke`/`make full-smoke`
+  brauchen Netz und stehen außerhalb von `make gates`; die emittierte Seite ist stattdessen über
+  die Kopplungstests und N-10 bis N-12 des Reviews geprüft.
 
 ## 8. Sub-Area-Modus-Begründung
 
