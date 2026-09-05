@@ -107,6 +107,18 @@ Setzung 1 geprüft, alle drei Fragen beantwortet:
   Closure-Notiz ist. Es ist derselbe Grund wie beim Pin darüber: eine Config gegen ein Artefakt zu
   schneiden, das im selben Zug ausgetauscht wird.
 
+**Hinweis, noch nicht als dritter Trigger gesetzt — der Schnitt der Trigger-Liste ist Sache des
+Planungs-Akts, der diese Welle eröffnet, nicht dieser Notiz.** [slice-187](open/slice-187-d-check-pin-v0741.md)
+(wellenlos, `open/`) zieht den d-check-Pin von `v0.65.0` — der Stand, gegen den §1 dieser Welle
+misst — auf `v0.74.1`. Das ist derselbe Grund wie bei `slice-122` oben: die Modulzahl wächst von
+**20** auf **22** (`workflows`, `reviews` neu), und `planning` bekommt eine neue Fähigkeit
+`observations.dir` (`[0.74.0]`, prüft die Register-Deckung gegen eine Verzeichnis-Ablage — genau
+die Form, auf die dieses Repo mit [welle-15](done/welle-15-re-baseline.md) umgezogen ist). Weder
+`reviews` noch `observations.dir` sind in §1/§6 unten gemessen; die Aufzählung *„zehn nicht
+adoptierte Module — vollständig"* gilt für den Stand vor `slice-187` und wird mit dessen Landung
+zur Untergrenze. Wer diese Welle eröffnet, nachdem `slice-187` in `done/` liegt, sollte §1 und §6
+gegen `v0.74.1` neu fahren, bevor er die Trigger-Liste schließt.
+
 ## 3. Closure-Trigger (Welle schließt)
 
 - Alle sechs Slices liegen in `done/`.
