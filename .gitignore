@@ -14,3 +14,11 @@
 # mkdir) legt dist/ jetzt selbst an — lokal gefahren waere es sonst ungetrackt im
 # Arbeitsbaum (dieselbe Klasse wie /bin/, Verifier-Befund A-3).
 /dist/
+
+# Isolierte Git-Worktrees fuer parallele Agenten-Laeufe (Claude-Code-Harness-
+# Feature) legen hier eine vollstaendige zweite Baum-Kopie an. Ungetrackt und
+# ungeignored liess sie docs-check den fremden Baum mitscannen (Review-Befund
+# slice-177, MEDIUM). Kein Eintrag in .d-check.yml scan.ignore -- eine
+# Erweiterung dort waere eine Gate-Senkung nach AGENTS.md §3.5 und braucht
+# eine eigene ADR; das hier ist reine Git-Tracking-Hygiene.
+.claude/worktrees/
