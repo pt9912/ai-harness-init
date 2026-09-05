@@ -94,7 +94,7 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 | [slice-178](done/slice-178-regierende-fassung-des-sprungs-v600.md) | Die regierende Fassung dieses Sprungs wird entschieden (Architect) | [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md), [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) |
 | [slice-179](done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) | Die Form des Beobachtungs-Registers wird entschieden — vor dem Umzug (Architect) | [`ADR-0030`](../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-182](done/slice-182-baum-tausch-v600-pins-ziehen.md) | Der vendored Baum steht auf `v6.0.0` — Pins gezogen, Setzung verbucht | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache), [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) |
-| [slice-184](next/slice-184-register-form-im-bestand-nachziehen.md) | Die Form-Beschreibung des Beobachtungs-Registers zieht im Bestand nach | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0028`](../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md), [`ADR-0034`](../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) |
+| [slice-184](in-progress/slice-184-register-form-im-bestand-nachziehen.md) | Die Form-Beschreibung des Beobachtungs-Registers zieht im Bestand nach | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0028`](../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md), [`ADR-0034`](../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) |
 | [slice-185](open/slice-185-adaptions-durchgang-gegen-v600.md) | Der Adaptions-Durchgang gegen `v6.0.0` — jeder Eintrag mit eigenem Ausgang (Architect) | [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md), [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 | [slice-186](open/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) | Jede zitierte Beobachtungs-Kennung löst wieder auf | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0034`](../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md), [`ADR-0016`](../adr/0016-verweis-traegt-tag-und-zitat.md) |
 
@@ -235,7 +235,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   [slice-177](done/slice-177-beobachtungs-register-verzeichnis-form.md) — die Vorlage, aus der die
   Ablage per `cp` entsteht, liegt netzlos erst nach dem Tausch vor.
   [slice-177](done/slice-177-beobachtungs-register-verzeichnis-form.md) →
-  [slice-184](next/slice-184-register-form-im-bestand-nachziehen.md) — der Ziel-Wortlaut, den der
+  [slice-184](in-progress/slice-184-register-form-im-bestand-nachziehen.md) — der Ziel-Wortlaut, den der
   Bestand übernimmt, entsteht dort.
   [slice-177](done/slice-177-beobachtungs-register-verzeichnis-form.md) →
   [slice-186](open/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) — die vierte tragende

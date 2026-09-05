@@ -155,7 +155,7 @@ dasteht.
   misst er nicht. — **Ausgang: eingetreten**, und zwar beziffert: `v6.0.0` schreibt die DoD- und
   die §7-Zeile in `slice.template.md` um, und die abgelöste Form steht in **10** von **60**
   lebenden Plänen. Folge-Slice
-  [slice-184](../next/slice-184-register-form-im-bestand-nachziehen.md), Welle-Mitglied; Register
+  [slice-184](../in-progress/slice-184-register-form-im-bestand-nachziehen.md), Welle-Mitglied; Register
   auf **2×** mit Beleg slice-176. **Die Grenze bleibt:** gezählt ist der Wortlaut, nicht die
   Pflicht dahinter — dass ein Plan durch den Sprung anders *verpflichtet* sein kann, ist ein
   Urteil je Plan und steht als Rückführung in dessen §4.
@@ -233,7 +233,7 @@ Backticks).
   `BEO-010`, `BEO-011` und `BEO-013` bleiben unverändert — dieser Slice ist ihre **Antwort** bzw.
   ihre Vorsorge, kein weiteres Auftreten.
 - **Folge-Slices:** [slice-182](../done/slice-182-baum-tausch-v600-pins-ziehen.md),
-  [slice-184](../next/slice-184-register-form-im-bestand-nachziehen.md) und
+  [slice-184](../in-progress/slice-184-register-form-im-bestand-nachziehen.md) und
   [slice-185](../open/slice-185-adaptions-durchgang-gegen-v600.md) — Mitglieder von
   [welle-15](../welle-15-re-baseline.md); [slice-183](../open/slice-183-ausloeser-der-wellenlosen-archivierung.md)
   — ausdrücklich **kein** Mitglied, Grund in jener §4 (`BEO-018`). Alle vier sind Dateien im
@@ -339,7 +339,7 @@ Ebene* · **—** *ohne Gegenstand hier*.
 | P-12 | `templates/README.md` ×1 · `reconciliation.template.md` ×1 · `welle-results.template.md` ×1 | drei Querverweise ziehen auf `observation.template.md` bzw. `observations/` nach | — | [slice-182](../done/slice-182-baum-tausch-v600-pins-ziehen.md) trägt sie **als Baum-Inhalt**, nicht als Arbeit: Dieses Repo emittiert **keine** Planning-Vorlage (`find internal/emit/templates -path '*planning*'` → leer) und führt keine `reconciliation.md` (Greenfield) |
 | P-13 | `README.template.md` ×1 | Planning-README: das Register liegt als `observations/` neben den Wellen | RE | [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) DoD 2 — `docs/plan/planning/README.md` steht in dessen Bezugsmenge |
 | P-14 | `observation.template.md` (**A**, +88) · `observations.template.md` (**D**, −58) | die Ziel-Form **je Beobachtung** entsteht, die Register-Vorlage entfällt | RE | [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) legt daraus per `cp` an; die Vorlage liegt netzlos erst nach [slice-182](../done/slice-182-baum-tausch-v600-pins-ziehen.md) vor — genau die erste Start-Bedingung jenes Slice |
-| P-15 | `slice.template.md` ×2 | DoD-Zeile und §7-Zeile: Verzeichnis-Ablage, **kein Zähler wird gesetzt** — er folgt aus den Dateien | RE **+ EM** | **neu:** [slice-184](../next/slice-184-register-form-im-bestand-nachziehen.md). Gemessen: **10** von **60** lebenden Plänen tragen die alte DoD-Zeile, **4** Anweisungssatz-Dateien die alte Form-Beschreibung (Kommandos in dessen §1) |
+| P-15 | `slice.template.md` ×2 | DoD-Zeile und §7-Zeile: Verzeichnis-Ablage, **kein Zähler wird gesetzt** — er folgt aus den Dateien | RE **+ EM** | **neu:** [slice-184](../in-progress/slice-184-register-form-im-bestand-nachziehen.md). Gemessen: **10** von **60** lebenden Plänen tragen die alte DoD-Zeile, **4** Anweisungssatz-Dateien die alte Form-Beschreibung (Kommandos in dessen §1) |
 
 **Keine Position ohne Ausgang** — elf tragen einen benannten Slice oder eine angenommene ADR, vier
 tragen die Begründung, warum keiner nötig ist (P-05, P-07, P-08, P-12).
