@@ -225,6 +225,16 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   Re-Evaluierungs-Trigger von
   [`ADR-0033`](../adr/0033-wellen-archivierung-als-unterkommando.md) sind mit diesem Sprung
   gefeuert; der Träger bleibt entschieden, der Auslöser nicht.
+- **Eine vierte Übergabe ist mit dem Vollzug entstanden und liegt ebenfalls außerhalb dieser
+  Welle:** der **Kennungs-Nachzug in den Architect-Artefakten**
+  ([slice-189](open/slice-189-abgeschaffte-kennung-in-architect-artefakten.md)).
+  [slice-186](in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) zieht jedes
+  lebende Zitat der abgeschafften Kennungs-Form, das ihm gehört; was in
+  [`ADR-0029`](../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) und im
+  Adaptions-Block steht, schreibt der Architect
+  ([`AGENTS.md`](../../../AGENTS.md) §3.8, `modul-08-agentenrollen.md` §Rollen-Regeln). Die Datei
+  in `open/` **ist** der verbuchte Ausgang, den §1 verlangt — der Closure-Trigger (§3) nennt sie
+  in keiner seiner fünf Bedingungen.
 - **Vier Kanten innerhalb der Welle sind tragend, eine ist ordnend.** Tragend:
   [slice-179](done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) →
   [slice-177](done/slice-177-beobachtungs-register-verzeichnis-form.md) — ohne die entschiedene

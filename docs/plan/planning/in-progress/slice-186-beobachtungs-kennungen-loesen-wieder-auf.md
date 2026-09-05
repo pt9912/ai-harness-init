@@ -43,7 +43,12 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 ist einzeln lieferbar.
 
 **Kein lebendes Artefakt dieses Repos zitiert eine Beobachtung unter einer Kennung, die nicht mehr
-auflöst.**
+auflöst — außer an den benannten, gedeckten Ausnahmen.** Es gibt sie, und sie stehen nicht im
+Kleingedruckten: vier Klassen außerhalb der Ablage, die eine Accepted-ADR, eine fremde
+schreibende Rolle oder ein wörtliches Quelltext-Zitat trägt (DoD 1), und eine innerhalb, die
+die Unveränderlichkeitsregel der Ablage selbst trägt (DoD 2). Jede ist gemessen, keine ist eine
+übersehene Lücke. Der Satz ohne diesen Zusatz wäre eine Zusage, die die eigene DoD zwei
+Abschnitte weiter zurücknimmt.
 
 `v6.0.0` schafft die fortlaufende Nummer ab — *„Eine fortlaufende Nummer gibt es nicht mehr"* —
 und setzt an ihre Stelle den Pfad `BEO-<KUERZEL>/<slug>`
@@ -147,7 +152,10 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       das hat §6 Risiko 1 nicht vorgesehen (dort stand *„ist änderbar"* ohne die Rollen-Klausel) —
       **Übergabe an den Architect**, kein Implementer-Edit. **3** in `harness/conventions/` — Adaptions-Block,
       Architect-Artefakt nach [`AGENTS.md`](../../../../AGENTS.md) §3.8, wie in §3 geplant —
-      **Übergabe an den Architect**. **1** in
+      **Übergabe an den Architect**. **Diese zwei sind die einzigen nicht dauerhaften Ausnahmen,
+      und ihr Träger ist eine Datei, kein Satz:**
+      [slice-189](../open/slice-189-abgeschaffte-kennung-in-architect-artefakten.md) in `open/`
+      (§7). **1** in
       [slice-188](../open/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md) —
       ein **wörtliches Zitat** von `anwenden_test.go`s Testfixture-Zeichenkette, keine Zusage
       dieses Repos über die heutige Kennung; ein Nachzug würde eine falsche Aussage über den
@@ -169,18 +177,28 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       ist genau dieses dritte Feld, nicht bloß benachbarter Fließtext. Beide Klassen sind damit
       schon heute eingefroren, nicht erst durch eine noch zu treffende Entscheidung — Liefer-Punkt
       2 aus §1 bleibt unberührt: **Ausgang aller sieben: ausdrücklich stehengelassen**, mit der
-      Ablage-eigenen Unveränderlichkeitsregel als Grund. Ein achtes, neues Auftreten dieser
-      Klasse selbst — dass die Ablage die eigene Zitat-Form nicht nachziehen kann — ist als
-      `evidence/slice-186.md` bei
+      Ablage-eigenen Unveränderlichkeitsregel als Grund. Das Auftreten der Klasse selbst — dass
+      die Ablage die eigene Zitat-Form nicht nachziehen kann — ist als `evidence/slice-186.md`
+      bei
+      [`BEO-ALL/abgeschaffte-kennung-in-unveraenderlichem-artefakt`](../observations/BEO-ALL/abgeschaffte-kennung-in-unveraenderlichem-artefakt/observation.md)
+      verbucht (§7), einer mit dieser Closure vergebenen Kennung: Die Nachbarklasse
       [`BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot`](../observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/observation.md)
-      verbucht (§7).
+      bindet ihre ab Anlage unveränderliche Kurzbeschreibung an die **Adresse** eines bewegten
+      Artefakts in einer nach [`AGENTS.md`](../../../../AGENTS.md) §3.4 eingefrorenen ADR; hier
+      fällt die **Identität** selbst weg, und das Eingefrorene ist die Ablage.
 - [x] **Der Sichtungs-Schritt von
       [slice-181](../open/slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md) §8 liest keine
       abgeschaffte Struktur mehr.** Das `awk -F'|'`-Kommando auf die Tabellenspalten des
       entfallenen Trägers ist ersetzt durch eine Schleife über die drei betroffenen Slugs, die je
-      die Zahl der `evidence/`-Dateien zählt und die erste Zeile der `state.md` liest — dieselbe
-      Aussage (Stand + Zähler je Beobachtung), gegen die heutige Verzeichnis-Form gemessen statt
-      gegen die abgeschaffte Tabelle.
+      die Zahl der `evidence/`-Dateien zählt und die erste Zeile der `state.md` liest. **Eine
+      Äquivalenz zum ersetzten Ausdruck wird nicht zugesagt**, und das ist der Punkt: Jener
+      schnitt Kennung, Zähler und **Belegliste** aus den Tabellenspalten, dieser liefert Zähler
+      und **Stand** je Slug — die Belegliste ist heute das Verzeichnis `evidence/` selbst und kein
+      Feld, das man ausschneiden könnte. Zugesagt ist, was der Sichtungs-Schritt braucht: zu jeder
+      der drei dort genannten Beobachtungen ihr Zähler und ihr Stand, gegen die heutige
+      Verzeichnis-Form gemessen statt gegen die abgeschaffte Tabelle. **Kein Gate sieht das:** der
+      Pfad steckt in einem Inline-Code-Span, der ein ganzes Shell-Kommando umfasst, und
+      `make docs-check` bleibt darüber grün.
 - [x] `make gates` grün.
 - [x] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice bereits (Zeile
       angelegt beim Schnitt). Ein öffentlicher
@@ -188,10 +206,9 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       (`git grep -o 'BEO-[0-9][0-9][0-9]' -- internal/emit/templates | wc -l` → **0**; die
       `-c`-Form taugt hier nicht, sie schweigt bei null Treffern statt eine Null auszugeben).
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag (§7).
-- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — eine weitere Datei
-      (`evidence/slice-186.md`) bei
-      [`BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot`](../observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/observation.md)
-      angelegt; kein neues Verzeichnis, kein gesetzter Zähler (§7).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — drei neue Verzeichnisse und
+      eine weitere Datei in einem vorhandenen `evidence/`, je ein `evidence/slice-186.md`, kein
+      gesetzter Zähler (§7).
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen) — siehe §6/§7.
 - [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit); dieses Repo führt Wellen-Betrieb, geprüft darum bei der Closure von [welle-15](../welle-15-re-baseline.md).
 
@@ -253,7 +270,10 @@ DoD vollständig; das vierte Kommando aus §1 trifft **null**, das zweite trifft
 der 16 zerfällt in eine der vier gemessenen, in DoD (1) benannten Ausnahmen (Accepted-ADR ·
 Architect-Übergabe [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) ·
 Architect-Übergabe `harness/conventions/` · wörtliches Go-Test-Zitat
-in slice-188); `make gates` grün; Closure-Notiz mit Steering-Loop-Lerneintrag geschrieben.
+in slice-188), wobei die zwei Übergaben mit
+[slice-189](../open/slice-189-abgeschaffte-kennung-in-architect-artefakten.md) einen Träger im
+Planning-Lifecycle haben und nicht nur einen Satz in dieser Datei; `make gates` grün;
+Closure-Notiz mit Steering-Loop-Lerneintrag geschrieben.
 
 ## 6. Risiken und offene Punkte
 
@@ -283,7 +303,10 @@ dasteht.
   trotz `Proposed` **nicht** vom Implementer gezogen, sondern an den Architect übergeben (§7).
 - **Die Bezugsmenge ist ein `grep` und keine Vollständigkeitsaussage**
   ([`BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md),
-  5×, **geplant**). Das Muster `BEO-[0-9][0-9][0-9]` findet die dreistellige Zahl; eine
+  **7×**, `geplant` —
+  `ls docs/plan/planning/observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/evidence | wc -l`,
+  kein Erwartungswert; der Stand hat sich seit der Anlage dieses Plans bewegt, §8 nennt den
+  damaligen). Das Muster `BEO-[0-9][0-9][0-9]` findet die dreistellige Zahl; eine
   Beobachtung, die im Fließtext nur unter ihrem Prosa-Namen genannt wird, fände es nicht — und
   **kein Modul der [`.d-check.yml`](../../../../.d-check.yml) prüft diese Klasse**, weil die Ziele
   der 46 Links auflösen und die Prosa-Zitate keine Links sind. Der Slice sagt darum die
@@ -316,10 +339,17 @@ dasteht.
   Ablage selbst. Der Eintrag steht bereits auf der Schwelle; ob dieser Slice ihn zum vierten Mal
   belegt oder sein Ausgang wird, entscheidet der Lese-Schritt der Closure, nicht dieser
   Plan. — **Ausgang: weiter offen →
-  [`BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot`](../observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/observation.md)
-  im Register.** Dieser Slice belegt sie zum vierten Mal (`evidence/slice-186.md`, §7); der
-  Lese-Schritt liegt bei diesem Repo im Wellen-Betrieb — er läuft bei der Closure von
-  [welle-15](../welle-15-re-baseline.md), nicht hier.
+  [`BEO-ALL/abgeschaffte-kennung-in-unveraenderlichem-artefakt`](../observations/BEO-ALL/abgeschaffte-kennung-in-unveraenderlichem-artefakt/observation.md)
+  im Register.** Die im Risiko-Text angenommene Kennung trägt den Fall **nicht**: Ihre ab Anlage
+  unveränderliche Kurzbeschreibung bindet die Klasse an eine **Adresse** in einem nach
+  [`AGENTS.md`](../../../../AGENTS.md) §3.4 eingefrorenen Artefakt, aufgelöst über ein
+  `ignore-refs`-Paar — so liegen ihre drei vorhandenen Belege, und so liegt dieser Fall nicht.
+  Hier fällt die **Identität** weg, das Eingefrorene ist die Ablage, und ein `ignore-refs`-Ventil
+  gibt es dafür nicht. Der Beleg (`evidence/slice-186.md`) liegt darum bei der oben genannten,
+  mit dieser Closure vergebenen Kennung; die Nachbarklasse bleibt bei drei Belegen über einem
+  Gegenstand statt bei vieren über zweien. Der Lese-Schritt liegt bei diesem Repo im
+  Wellen-Betrieb — er läuft bei der Closure von [welle-15](../welle-15-re-baseline.md), nicht
+  hier.
 
 ## 7. Closure-Notiz
 
@@ -332,9 +362,16 @@ wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
 - **Was hat funktioniert:** Die mechanische Abbildung Nummer → Slug aus dem Elternstand des
-  Umzugs (`9292a08^`, §1) trug über alle 16 lebenden Dateien und beide Zitat-Formen (Prosa-Zitat,
-  Markdown-Link mit falschem Ziel) — kein Fall verlangte eine Neuformulierung, nur einen
-  Kennungs-Austausch.
+  Umzugs (`9292a08^`, §1) trug über alle **15** angefassten Dateien und beide Zitat-Formen
+  (Prosa-Zitat, Markdown-Link mit falschem Ziel) — kein Fall verlangte eine Neuformulierung, nur
+  einen Kennungs-Austausch. Die Zahl ist die der Dateien, in denen eine dreistellige Nummer
+  verschwand, und nicht die Trefferzahl aus DoD 1 (kein Erwartungswert):
+
+  ```sh
+  git show e8cde04 --unified=0 \
+    | awk '/^diff --git/{f=$3; sub(/^a\//,"",f)} /^-/ && !/^---/ && /BEO-[0-9][0-9][0-9]/{print f}' \
+    | sort -u | wc -l                                                                    # 15
+  ```
 - **Was ging anders als geplant:** §6 Risiko 1 nannte
   [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) als *„Proposed
   … und ist änderbar"* und legte damit nahe, der Implementer könne ihre drei Vorkommen im selben
@@ -346,31 +383,59 @@ Backticks).
   als der Plan sie zeichnete: `.claude/commands/implement-slice.md` steht zwar in derselben
   Pfad-Klasse wie `harness/conventions/`, gehört aber der **ausführenden** Rolle
   ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)) und damit hier
-  dem Implementer selbst.
-- **Steering-Loop-Eintrag:** *benannte Spec-Lücke.* §6 Risiko 1 und §3 der Plan-Tabelle
-  behandelten „Proposed-ADR" als gleichbedeutend mit „vom Implementer änderbar" — die
-  Rollen-Bindung von Modul 8 gilt aber am **Artefakttyp** (ADR), nicht am Status. Kein Sensor
-  prüft das ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6));
-  der Eintrag ist gezählt, nicht verkörpert.
-- **Beobachtungs-Register (`../observations/`):** ein Vorgang eingetragen, keine Kennung neu
-  formuliert. `evidence/slice-186.md` in
-  [`BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot`](../observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/observation.md)
-  ergänzt — Zähler steht damit bei **4×** (`ls
-  docs/plan/planning/observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/evidence/
-  | wc -l`; keine Erwartungswerte). Der Ausgang (Schwelle bereits bei 3× erreicht, jetzt 4×)
-  steht dem Lese-Schritt der Welle-Closure zu (§6 Risiko 4), nicht dieser Closure.
-- **Folge-Slices:** keine — die zwei entdeckten Übergaben sind reine Kennungs-Nachzüge von
-  wenigen Zeilen und keine eigenständige Liefer-Einheit; sie gehen als **Übergabe** an den
-  Architect (nicht als neue Slice-Datei): 3 Vorkommen in
-  [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) (`BEO-<NNN>` →
-  `BEO-ALL/anweisungssatz-eigentum-ohne-quelle`, dieselbe Abbildung wie überall sonst) und 3 in
+  dem Implementer selbst. Und die Umbuchung des Register-Belegs (§6 Risiko 4) hat zwei Adressen
+  im Review-Report dieses Slice tot gemacht — `make docs-check` meldete sie als
+  `target-missing`. Repariert ist die **Adresse**, nicht der Text: die zwei Markdown-Links stehen
+  jetzt als Inline-Code-Pfad, den `.d-check.yml` für `docs/reviews/**` ausdrücklich ausnimmt
+  (*„Zeitdokumente … frieren den Stand ihres Review-Laufs ein; Lifecycle-Pfade darin veralten per
+  Definition"*). Dieselbe Operation fährt `make slice-mv` bei jedem Lifecycle-Wechsel selbst über
+  `docs/reviews/**`; hier kannte sie den Pfad nicht, weil er keine Slice-Datei ist. Der Befund und
+  seine Fundstelle bleiben wörtlich stehen.
+- **Steering-Loop-Eintrag:** *benannte Spec-Lücke.* Keine Quelle sagt, wie ein Artefakt nachzieht,
+  dessen zitierte **Identität** abgeschafft wurde, während eine Ablage-Regel es unveränderlich
+  hält — `observation.md` ab Anlage, `evidence/<vorgangs-id>.md` ab Merge
+  ([`observations/README.md`](../observations/README.md) §Form, und Modul 6 ebenso). Die Regel
+  trägt die Unveränderlichkeit unbedingt und kennt den Fall nicht, dass das Zitierte selbst
+  wegfällt; die Folge ist ein Register, das die eigene Kennungs-Form nicht nachziehen kann. Kein
+  Sensor prüft das
+  ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6));
+  der Eintrag ist **gezählt, nicht verkörpert**, und seine Route in den Zähler ist
+  [`BEO-ALL/abgeschaffte-kennung-in-unveraenderlichem-artefakt`](../observations/BEO-ALL/abgeschaffte-kennung-in-unveraenderlichem-artefakt/observation.md).
+  Die Fehl-Annahme über den `Proposed`-Status steht dafür **nicht** hier: Sie ist keine Lücke,
+  denn `modul-08-agentenrollen.md` §Rollen-Regeln entscheidet sie ohne Vorbehalt — sie steht als
+  Korrektur unter *Was ging anders als geplant*.
+- **Beobachtungs-Register (`../observations/`):** vier Einträge, je ein `evidence/slice-186.md`,
+  kein Zähler gesetzt. Drei Verzeichnisse **neu angelegt** —
+  [`abgeschaffte-kennung-in-unveraenderlichem-artefakt`](../observations/BEO-ALL/abgeschaffte-kennung-in-unveraenderlichem-artefakt/observation.md)
+  (die sieben Zitate in der Ablage, §6 Risiko 4),
+  [`zahl-ohne-kommando-trifft-ihren-gegenstand-nicht`](../observations/BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht/observation.md)
+  (die zwei falschen Zahlen dieses Zuges, oben und in §6) und
+  [`uebergabe-an-andere-rolle-ohne-traeger-artefakt`](../observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/observation.md)
+  (die Übergabe ohne Slice-Datei). Jede der drei ist vergeben, **weil** die nächstliegende
+  vorhandene Kennung sie in ihrer unveränderlichen Kurzbeschreibung ausschließt — die Abgrenzung
+  steht in der jeweiligen `observation.md`, damit die Klasse sich nicht still in zwei Pfade
+  teilt. Ergänzt wurde
+  [`fremdes-rollen-artefakt-im-implementations-kontext`](../observations/BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext/observation.md);
+  der Eintrag stand vor diesem Slice schon auf der Schwelle, sein Ausgang steht dem Lese-Schritt
+  der Closure von [welle-15](../welle-15-re-baseline.md) zu und wird hier **nicht** zugewiesen.
+  Zähler-Stände: `for s in abgeschaffte-kennung-in-unveraenderlichem-artefakt zahl-ohne-kommando-trifft-ihren-gegenstand-nicht uebergabe-an-andere-rolle-ohne-traeger-artefakt fremdes-rollen-artefakt-im-implementations-kontext; do d="docs/plan/planning/observations/BEO-ALL/$s"; echo "$s $(ls "$d/evidence" | wc -l)x"; done`
+  (keine Erwartungswerte).
+- **Folge-Slices:** [slice-189](../open/slice-189-abgeschaffte-kennung-in-architect-artefakten.md)
+  — *Die abgeschaffte Beobachtungs-Kennung zieht in den Architect-Artefakten nach*, eine Datei in
+  `open/`. Sie trägt die zwei Übergaben, die dieser Slice nicht selbst ziehen darf: die Vorkommen
+  in [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md)
+  (`BEO-<NNN>` → `BEO-ALL/anweisungssatz-eigentum-ohne-quelle`) und die in
   [`MR-041`](../../../../harness/conventions.md#mr-041--die-referenz-statt-kopie-setzung-für-ausfüll-templates-steht-jetzt-in-der-adoptierten-baseline),
   [`MR-047`](../../../../harness/conventions.md#mr-047--der-ort-der-ausführbaren-harness-tools-ist-keine-abweichung-mehr),
   [`MR-048`](../../../../harness/conventions.md#mr-048--der-reproduzierbarkeits-anker-ist-die-rezept-form-die-emittierten-skelette-pinnen-per-tag)
   (`BEO-<NNN>` → `BEO-ALL/adaptions-achse-1-kurzschluss` — dort steht das Linkziel bereits
-  richtig, nur das Label ist stehengeblieben), plus die 9 `Accepted`-Vorkommen in
-  [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md), die nach §3.4
-  nur eine Folge-ADR mit `Supersedes` ändern dürfte, nicht dieser Nachzug.
+  richtig, nur das Label ist stehengeblieben). **Eine Übergabe ohne Slice-Datei wäre keine:**
+  Modul 8 §Die neun Übergaben nennt für Planner → Architect den Slice-Plan als Artefakt, und der
+  einzige andere Träger wäre diese Closure-Notiz gewesen, die mit dem `git mv` Chronik wird
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.7). Die Vorkommen in
+  [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) gehen dort
+  ausdrücklich **nicht** mit: `Accepted` und nach §3.4 nur über eine Folge-ADR mit `Supersedes`
+  änderbar — ein anderer Gegenstand, kein Nachzug.
 - **Risiken aus §6:** vier notiert, vier mit genau einem Ausgang — dreimal *entfallen* mit
   Begründung, einmal *weiter offen* mit Register-Verweis. Keines steht ohne Ausgang da.
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — sie prüft die Closure von

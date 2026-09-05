@@ -121,7 +121,7 @@ falschen Zähler-Stand* tritt hier **nicht** ein.
   [`…/slice-186-…md`](../plan/planning/in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
   §2 (zehn DoD-Häkchen **und** der umgeschriebene DoD-Text), §5, §6 (vier Risiko-Ausgänge),
   §7 (vollständige Closure-Notiz) sowie
-  [`…/vorgeschriebener-ortswechsel-macht-adresse-tot/evidence/slice-186.md`](../plan/planning/observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/evidence/slice-186.md)
+  `docs/plan/planning/observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/evidence/slice-186.md`
 - **befund:** Derselbe Lauf, der den Nachzug schrieb, hat im selben Commit die Closure-Notiz §7,
   die vier Risiko-Ausgänge §6, den Closure-Trigger §5, die DoD-Häkchen **und** den Register-Beleg
   geschrieben — sämtlich Schritte, die der repo-eigene Anweisungssatz unter die Überschrift
@@ -199,7 +199,7 @@ falschen Zähler-Stand* tritt hier **nicht** ein.
   §Das Beobachtungs-Register (*„Der Pfad ersetzt die Namens-Disziplin … Mensch urteilt, Maschine
   prüft Deckung"*; `observation.md` *unveränderlich ab Anlage*) ·
   [`observations/README.md`](../plan/planning/observations/README.md) §Form
-- **pfad:** [`…/vorgeschriebener-ortswechsel-macht-adresse-tot/evidence/slice-186.md`](../plan/planning/observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/evidence/slice-186.md)
+- **pfad:** `docs/plan/planning/observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/evidence/slice-186.md`
 - **befund:** Die Kurzbeschreibung des Eintrags bindet die Klasse an zwei Merkmale: *„eine
   **Adresse** in einem nach `AGENTS.md` **§3.4** eingefrorenen Artefakt"*. Der neue Beleg trifft
   keines von beiden und sagt das selbst: *„Die Klasse trifft hier nicht die **Adresse** eines
