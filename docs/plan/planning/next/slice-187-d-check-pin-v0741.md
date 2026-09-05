@@ -16,7 +16,7 @@ ausdrücklich **entfallen** und wird hier deshalb nicht gestellt.
 **Mitglied von [welle-15](../done/welle-15-re-baseline.md) ist dieser Slice nicht — und das ist keine
 Auslegung, sondern zitierbar:** deren §6 *Out-of-Scope* nennt den d-check-Pin namentlich
 (*„eigene Linie, eigener Trigger; er hängt an keiner Baseline-Version"*). Die Zeile nennt dabei
-[slice-135](slice-135-d-check-pin-v0661.md) als den Slice dieser Linie; dieser hier tritt an
+[slice-135](../open/slice-135-d-check-pin-v0661.md) als den Slice dieser Linie; dieser hier tritt an
 dessen Stelle (§1 *Was mit slice-135 geschieht*), der Ausschluss gilt unverändert für beide.
 Wellenlose Arbeit erscheint nicht in der Roadmap; ihr Zustand ist die Verzeichnis-Position.
 
@@ -240,7 +240,7 @@ also über einen eigenen Schnitt mit eigener Config-Entscheidung und eigenem Tro
 
 ### Was mit slice-135 geschieht
 
-[slice-135](slice-135-d-check-pin-v0661.md) liegt in `open/` und zieht den Pin auf **`v0.66.1`** —
+[slice-135](../open/slice-135-d-check-pin-v0661.md) liegt in `open/` und zieht den Pin auf **`v0.66.1`** —
 einen Stand, den acht weitere Minors überholt haben. Sein Gegenstand ist der dieses Slice: Die
 Pin-Linie trägt **einen** lebenden Pin, zwei offene Pläne können ihn nicht beide bewegen, und wer
 `v0.66.1` pinnte, ließe `make freshness-dcheck` im selben Moment wieder rot. Dieser Slice tritt
@@ -335,7 +335,7 @@ Aussagen-Berührung steht hier gar nicht.
 | [`d-check.mk`](../../../../d-check.mk) | update | der lebende Pin (`DCHECK_IMAGE` + `DCHECK_DIGEST`), der Adopter-Kopf **und** der verbatim-Teil. Anders als bei den zwei Vorgänger-Sprüngen ist der verbatim-Teil betroffen: sechs advisory-Recipes bekommen `--disable workflows --disable reviews`, ein dreizehntes Target `doc-usage` kommt hinzu, vier Kopf-Kommentarzeilen mit Handbuch-URLs (§1 Messung 3). Der Weg ist **Neu-Erzeugen und die vier Handgriffe erneut anwenden**, nicht Nachbessern (DoD (2)). Dazu die **zehn** Kopf-Stellen, die den alten Stand nennen (`grep -c 'v0\.65\.0\|5ea03abe' d-check.mk` → **10**), und die Sonden-Tabelle, die zu **messen** und nicht umzuschreiben ist (DoD (3)) |
 | [`internal/emit/emit.go`](../../../../internal/emit/emit.go) | update | `DefaultImage`/`DefaultDigest` — Tier-1-Drift; die zwei go-Tests koppeln beide Stellen und färben DoD (1) rot |
 | [`Makefile`](../../../../Makefile) | update | das Tag-Beispiel im Kommentar über `DCHECK_TAG` (`grep -n 'v0\.65\.0' Makefile` → **eine** Zeile) — dieselbe Stelle, die [`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar) und [`MR-027`](../../../../harness/conventions.md#mr-027--d-check-pin-v0650-ignore-marker-in-zwei-achsen-verengt) bei den Vorgänger-Sprüngen nachzogen |
-| [slice-135](slice-135-d-check-pin-v0661.md) | update | Zeiger auf diesen Slice, weil seine Ziel-Version überholt ist und die Linie **einen** lebenden Pin trägt (§1 *Was mit slice-135 geschieht*). Planner-Eigentum, keine fremde Rolle berührt. **Nicht** gelöscht — dafür fehlt die Norm (§6) |
+| [slice-135](../open/slice-135-d-check-pin-v0661.md) | update | Zeiger auf diesen Slice, weil seine Ziel-Version überholt ist und die Linie **einen** lebenden Pin trägt (§1 *Was mit slice-135 geschieht*). Planner-Eigentum, keine fremde Rolle berührt. **Nicht** gelöscht — dafür fehlt die Norm (§6) |
 | [`harness/conventions.md`](../../../../harness/conventions.md) und `harness/conventions/` | **nicht durch diesen Slice** | Architect-Eigentum ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Der neue Adaptions-Eintrag, die Fortschreibung von §Baseline und die **Korrektur der Target-Zahl** in [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert) Setzung 2 entstehen im Architect-Lauf; dieser Slice liefert die **Messungen** als Übergabe-Artefakt (§6) |
 | [`.d-check.yml`](../../../../.d-check.yml) | **unverändert** | der Pin bewegt keine Modul-Liste und keinen Prüfbereich. Wer hier `workflows`, `reviews` oder `planning.observations.dir` einträgt, aktiviert eine Fähigkeit — das ist ein eigener Schnitt (§1 *Vier Fähigkeiten*) |
 | [`internal/emit/templates/d-check.yml`](../../../../internal/emit/templates/d-check.yml) | **unverändert** | die emittierte Starter-Config bleibt `modules: [links, anchors]` ([`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)); der eine Breaking Change der Spanne trifft `structure` und damit weder diese noch die lebende Config (§1 *Kein Breaking Change*) |
@@ -426,7 +426,7 @@ dasteht.
   Sachverhalt geprüft | eingetreten: Folge-Slice für die Aktivierungs-Entscheidung, die ein
   **Anheben** ist und über den Steering-Loop läuft>
 - **Ein überholter offener Plan hat keinen Ausgang, den eine Norm nennt.**
-  [slice-135](slice-135-d-check-pin-v0661.md) zeigt die Klasse: ein Plan wartet in `open/` über
+  [slice-135](../open/slice-135-d-check-pin-v0661.md) zeigt die Klasse: ein Plan wartet in `open/` über
   Versions-Sprünge hinweg, und der Sprung ändert die Pflicht, die er halten soll. Modul 5 kennt
   vier Verzeichnisse und keinen Zustand *zurückgezogen*; für das Entfernen einer Plandatei gibt es
   keine normative Grundlage, und der Bestand an früheren `git rm` ist Bestand, keine Norm. Dieser
@@ -543,7 +543,7 @@ festhält; die Auswahl unten ist deshalb **inhaltlich** getroffen und nicht übe
   aktiviert (§1 *Vier Fähigkeiten*). Steht als Risiko in §6.
 - `BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht` (**2×**, `slice-160`,
   `slice-176`, Stand `offen`) — *ein Plan wartet in `open/` über einen Sprung hinweg, und der
-  Sprung ändert die Pflicht, die er halten soll*. [slice-135](slice-135-d-check-pin-v0661.md) ist
+  Sprung ändert die Pflicht, die er halten soll*. [slice-135](../open/slice-135-d-check-pin-v0661.md) ist
   genau dieser Fall, **aber auf einer anderen Linie**: Der Eintrag sagt *Baseline*-Sprung, und
   [welle-15](../done/welle-15-re-baseline.md) §6 trennt die d-check-Linie ausdrücklich davon. **Deshalb
   zählt dieser Slice hier nicht selbsttätig hoch** — die Frage, ob die Fassung des Eintrags zu eng
