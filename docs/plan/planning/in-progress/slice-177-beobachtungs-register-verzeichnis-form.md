@@ -166,7 +166,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       (`baseline-verify`, `lint`, `build`, `shell-lint`, `ci-lint`, `comment-claims`); `test`
       zeigte einen Fehlschlag, der auf dieselbe externe Verunreinigung zurückgeführt und dort
       reproduziert wurde (§6), nicht auf diesen Diff.
-- [ ] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice; jede Quelle, die
+- [x] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice; jede Quelle, die
       die Register-**Form** beschreibt statt nur auf sie zu zeigen, ist nachgezogen oder als
       Übergabe benannt (§6). Ein öffentlicher Vertrag ist nicht berührt.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
