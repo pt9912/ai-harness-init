@@ -39,7 +39,7 @@ Migrations-Prozedur **dieses** Sprungs stellt, ist offen: Festlegung 1 jener ADR
 `v5.12.0` → `v5.18.0`, ihr erster Re-Evaluierungs-Trigger verlangt für den nächsten Sprung eine
 neue Messung. Die Messung liegt vor
 ([slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) §9, zweistufig); die **Wahl**
-ist offen und trägt [slice-178](in-progress/slice-178-regierende-fassung-des-sprungs-v600.md). Beide
+ist offen und trägt [slice-178](done/slice-178-regierende-fassung-des-sprungs-v600.md). Beide
 Posten stehen als Übergaben in §5.
 
 ## 2. Trigger (Welle startet)
@@ -87,7 +87,7 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 |---|---|---|
 | [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) | Inventur vor dem Schnitt — der Form- und Regel-Diff `v5.18.0` → `v6.0.0` | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) |
 | [slice-177](in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) | Das Beobachtungs-Register läuft in der Verzeichnis-Form | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-045`](../../../harness/conventions.md#mr-045--der-adaptions-block-läuft-in-der-verzeichnis-form) |
-| [slice-178](in-progress/slice-178-regierende-fassung-des-sprungs-v600.md) | Die regierende Fassung dieses Sprungs wird entschieden (Architect) | [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md), [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) |
+| [slice-178](done/slice-178-regierende-fassung-des-sprungs-v600.md) | Die regierende Fassung dieses Sprungs wird entschieden (Architect) | [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md), [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) |
 | [slice-179](done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) | Die Form des Beobachtungs-Registers wird entschieden — vor dem Umzug (Architect) | [`ADR-0030`](../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-182](done/slice-182-baum-tausch-v600-pins-ziehen.md) | Der vendored Baum steht auf `v6.0.0` — Pins gezogen, Setzung verbucht | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache), [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) |
 | [slice-184](open/slice-184-register-form-im-bestand-nachziehen.md) | Die Form-Beschreibung des Beobachtungs-Registers zieht im Bestand nach | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0028`](../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md), [`ADR-0034`](../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) |
@@ -138,7 +138,7 @@ Kollisions-Punkt für parallel arbeitende Rolleninhaber — begründet in
 Position jenem Slice zu, statt einen zweiten zu erzeugen.
 
 **Zeile 3 und 4 sind die zwei Entscheidungen, ohne die diese Welle kein Konformitäts-Urteil
-fällen darf.** [slice-178](in-progress/slice-178-regierende-fassung-des-sprungs-v600.md) löst Übergabe 1
+fällen darf.** [slice-178](done/slice-178-regierende-fassung-des-sprungs-v600.md) löst Übergabe 1
 aus §5 ein — die Präzedenz ist derselbe Gegenstand eine Runde früher
 ([slice-163](done/slice-163-regierende-fassung-des-sprungs.md), Mitglied von
 [welle-14](done/welle-14-re-baseline.md)).
@@ -182,9 +182,11 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   [slice-129](open/slice-129-closure-notiz-hat-einen-sensor.md)** — drei Slices, nicht zwei Wellen.
 - **Zwei Übergaben an den Architect** stehen in
   [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) §6 und haben jetzt beide einen
-  Träger. Übergabe 1 — die **regierende Fassung dieses Sprungs** — trägt
-  [slice-178](in-progress/slice-178-regierende-fassung-des-sprungs-v600.md), auf der zweistufigen Messung
-  in jenem §9. Übergabe 2 — die **Buchung der Zielstand-Setzung** nach
+  Träger. Übergabe 1 — die **regierende Fassung dieses Sprungs** — ist **erledigt**: sie steht als
+  [`ADR-0036`](../adr/0036-ziel-fassung-regiert-den-sprung-v600.md) (`Proposed`, Acceptance-Trigger
+  in der Datei), entschieden von
+  [slice-178](done/slice-178-regierende-fassung-des-sprungs-v600.md) auf der zweistufigen
+  Messung in jenem §9. Übergabe 2 — die **Buchung der Zielstand-Setzung** nach
   [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2 —
   trägt [slice-182](done/slice-182-baum-tausch-v600-pins-ziehen.md) als dessen dritter
   Liefer-Punkt, mit dem **Datum des Vollzugs**. Sie blockieren die **Eröffnung** nicht — ein
@@ -209,7 +211,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   [slice-184](open/slice-184-register-form-im-bestand-nachziehen.md) — der Ziel-Wortlaut, den der
   Bestand übernimmt, entsteht dort. Ordnend:
   [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) →
-  [slice-178](in-progress/slice-178-regierende-fassung-des-sprungs-v600.md), weil die Wahl auf der
+  [slice-178](done/slice-178-regierende-fassung-des-sprungs-v600.md), weil die Wahl auf der
   zweistufigen Messung jenes Slice steht.
 
 ## 6. Out-of-Scope für diese Welle

@@ -160,7 +160,7 @@ dasteht.
   Pflicht dahinter — dass ein Plan durch den Sprung anders *verpflichtet* sein kann, ist ein
   Urteil je Plan und steht als Rückführung in dessen §4.
 - **Übergabe 1 an den Architect: die regierende Fassung dieses Sprungs — Träger ist
-  [slice-178](../in-progress/slice-178-regierende-fassung-des-sprungs-v600.md).**
+  [slice-178](../done/slice-178-regierende-fassung-des-sprungs-v600.md).**
   [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 1
   gilt **nur** für `v5.12.0` → `v5.18.0`; ihr erster Re-Evaluierungs-Trigger verlangt für diesen
   Sprung eine neue Messung, und `BEO-019` sagt, warum sie zweistufig ist: ein byte-gleicher
@@ -171,7 +171,7 @@ dasteht.
   DoD 3) und kommt im **zweiten** Fall von
   [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 heraus — beide
   Fassungen führen die Prozedur, byte-gleich, und genau einer der vier Delegate trägt ein Delta.
-  Der Träger [slice-178](../in-progress/slice-178-regierende-fassung-des-sprungs-v600.md) liegt in `open/`
+  Der Träger [slice-178](../done/slice-178-regierende-fassung-des-sprungs-v600.md) liegt in `open/`
   und ist Mitglied der Welle; die Übergabe steht in
   [welle-15](../welle-15-re-baseline.md) §5.
 - **Übergabe 2 an den Architect: die Buchung der Zielstand-Setzung — sie gehört nicht in diesen
@@ -427,7 +427,7 @@ das an seine Stelle tritt* wiederholt sich damit **an derselben Zieldatei**, ein
 [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 — die Wahl ist
 **offen** und zu begründen; *byte-gleich* trägt sie nicht, weil die Prozedur delegiert und das
 Delegat ein Delta hat (`BEO-019`). **Entschieden wird sie hier nicht** — das ist
-[slice-178](../in-progress/slice-178-regierende-fassung-des-sprungs-v600.md), §6 Übergabe 1.
+[slice-178](../done/slice-178-regierende-fassung-des-sprungs-v600.md), §6 Übergabe 1.
 
 **Als Beifang, weil er den Zuschnitt jenes Slice betrifft:** der **dritte**
 Re-Evaluierungs-Trigger jener ADR (*„wenn eine künftige Baseline die Meta-Frage selbst
@@ -442,7 +442,7 @@ git diff v5.18.0 v6.0.0 -- lab/regelwerk lab/templates | grep '^+' | grep -cE \
 
 **Grenze**, unverändert die der Vorgänger: ein Negativ aus dreizehn aufgezählten Zeichenketten.
 Damit greift die zweite Rückführung von
-[slice-178](../in-progress/slice-178-regierende-fassung-des-sprungs-v600.md) §4 **nicht**.
+[slice-178](../done/slice-178-regierende-fassung-des-sprungs-v600.md) §4 **nicht**.
 
 ### Cross-Check gegen das Nachbar-Repo
 

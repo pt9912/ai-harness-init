@@ -67,7 +67,7 @@ sagen, **wo zuerst zu lesen ist**, nicht, wo aufgehört wird.
 ([`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 4, dritter Punkt:
 Ergibt der Durchgang, dass eine begründende ADR überholt ist, ist die Antwort eine **Folge-ADR mit
 `Supersedes`**, nie ein Edit). Und er entscheidet die regierende Fassung nicht — das ist
-[slice-178](../in-progress/slice-178-regierende-fassung-des-sprungs-v600.md), der ihm vorausgeht.
+[slice-178](../done/slice-178-regierende-fassung-des-sprungs-v600.md), der ihm vorausgeht.
 
 ## 2. Definition of Done
 
@@ -131,7 +131,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
    `v5.18.0` der Ist-Maßstab
    ([`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 2), und der
    Volltext, gegen den geprüft wird, liegt netzlos nicht vor.
-2. **[slice-178](../in-progress/slice-178-regierende-fassung-des-sprungs-v600.md) liegt in `done/`, und die dort
+2. **[slice-178](../done/slice-178-regierende-fassung-des-sprungs-v600.md) liegt in `done/`, und die dort
    entstandene ADR steht auf `Accepted`.** Der Durchgang **fällt** Konformitäts-Urteile; ohne
    entschiedene normative Quelle wären sie auf eine Fassung gestützt, die niemand gewählt hat —
    genau die Lage, die [welle-15](../welle-15-re-baseline.md) §5 als *„blockiert jeden Durchgang,

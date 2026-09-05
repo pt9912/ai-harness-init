@@ -28,10 +28,13 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Datum, der Slice mit dem Delta-Nachweis, sonst nichts — und der Ort einer Zielstand-Setzung
   stehen in
   [`ADR-0031`](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
-  Festlegung 2. **Welche Fassung den Sprung auf `v6.0.0` regiert, ist offen:** Festlegung 1 jener
-  ADR bindet allein den Sprung auf `v5.18.0`, und ihr erster Re-Evaluierungs-Trigger verlangt für
-  jeden weiteren eine eigene Messung; sie ist in slice-176 gefahren, entschieden wird sie in
-  slice-178. Die
+  Festlegung 2. **Die Prozedur des Sprungs auf `v6.0.0` stellt die Ziel-Fassung** —
+  [`ADR-0036`](../docs/plan/adr/0036-ziel-fassung-regiert-den-sprung-v600.md), einzige Festlegung,
+  `Proposed` mit Acceptance-Trigger in der Datei; sie bindet ab `Accepted`
+  ([`AGENTS.md`](../AGENTS.md) §3.4). Festlegung 1 von
+  [`ADR-0031`](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) bindet
+  allein den Sprung auf `v5.18.0`; die eigene Messung, die ihr erster Re-Evaluierungs-Trigger für
+  jeden weiteren verlangt, ist in slice-176 gefahren und in slice-178 entschieden. Die
   Prozedur des Sprungs auf `v5.12.0` steht in
   [`ADR-0018`](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md), der
   Verweis-Beschluss ist in
