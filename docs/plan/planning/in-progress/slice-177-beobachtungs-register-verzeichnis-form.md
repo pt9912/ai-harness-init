@@ -199,10 +199,13 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [x] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice; jede Quelle, die
       die Register-**Form** beschreibt statt nur auf sie zu zeigen, ist nachgezogen oder als
       Übergabe benannt (§6). Ein öffentlicher Vertrag ist nicht berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register fortgeschrieben — neuer Eintrag oder ein weiterer Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag — §7, Form *geschärfte Regel*; das Feld
+      `liegt in` steht **nicht**, und §7 sagt warum.
+- [x] Beobachtungs-Register fortgeschrieben — sechs Belege, drei an bestehende Einträge, drei neue
+      Einträge per `cp` aus der vendored Vorlage. Aufzählung und Kommandos in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen) — neun
+      Risiken, neun Ausgänge, keiner außerhalb der geschlossenen Menge.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). Dieses Repo führt Wellen-Betrieb: die Prüfung liegt bei der Closure von [welle-15](../welle-15-re-baseline.md), hier steht die Deklaration.
 
 ## 3. Plan (vor Code)
 
@@ -295,8 +298,12 @@ dasteht.
   Kopftext des Registers, die drei Anweisungssätze unter `.claude/commands/` und ihre emittierten
   Gegenstücke beschreiben die heutige Tabellen-Form — dazu die Vorlagen-Zeile *„Beobachtungs-Register
   (`../observations.md`) fortgeschrieben"*, die in **jedem** offenen Slice-Plan steht. Wer die
-  Anweisungssätze schreiben darf, ist die offene Frage aus `BEO-007`. — **Ausgang: weiter offen.**
-  Unverändert gegenüber dem migrierten Registerstand (`BEO-009`/`BEO-007`); die **Grenze zwischen
+  Anweisungssätze schreiben darf, ist die offene Frage aus `BEO-007`. — **Ausgang: weiter offen**,
+  im Register als
+  [`BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
+  (Stand `geplant`), Beleg `evidence/slice-177.md`; die Eigentums-Hälfte liegt daneben in
+  [`BEO-ALL/anweisungssatz-eigentum-ohne-quelle`](../observations/BEO-ALL/anweisungssatz-eigentum-ohne-quelle/observation.md).
+  Der Stand ist unverändert gegenüber dem migrierten Register; die **Grenze zwischen
   diesem Slice und [slice-184](../open/slice-184-register-form-im-bestand-nachziehen.md) ist real
   gemessen statt behauptet** (Review-Nacharbeit, Review-Fund MEDIUM-1: die beiden Pläne wiesen sich
   dieselbe Teilmenge wechselseitig zu). **Was dieser Slice trägt:** die bare Adresse
@@ -317,7 +324,12 @@ dasteht.
   Sensor misst Merge-Verhalten. Der Slice sagt darum die **Eigenschaft der Ablage** zu, nicht ein
   Ausbleiben von Konflikten. — **Ausgang: weiter offen.** Unverändert seit der Planung — kein Sensor
   für Merge-Verhalten existiert und wurde in diesem Lauf auch nicht gebaut (außerhalb des
-  Liefer-Umfangs). Kandidat für das Beobachtungs-Register bei der Closure.
+  Liefer-Umfangs). Im Register steht die Klasse seit dieser Closure als
+  [`BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel`](../observations/BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel/observation.md)
+  (1×, Stand `offen`) — sie ist von
+  [`BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
+  getrennt geführt, weil dort ein Sensor genannt ist und zu eng schneidet, hier gar keiner
+  existiert.
 - **Der Umzug überträgt einen Inhalt, den er zugleich zerlegt.** Aus einer Tabellenzelle werden
   `observation.md`, `state.md` und je Beleg eine Datei; die heutigen Zellen mischen Identität,
   Stand und Beleg-Prosa in einem Absatz. Die Zerlegung ist ein **Urteil** je Eintrag, kein
@@ -427,10 +439,15 @@ dasteht.
   reproduzierbar `NOT FOUND`, bei **einem** Treffer (Worktree-Pfad aus `find` ausgeschlossen)
   zuverlässig `FOUND` — beide Zustände gegeneinander gemessen, nicht nur behauptet. — **Ausgang:
   weiter offen**, außerhalb des Eigentums dieses Slice: Weder die Worktree-Bereinigung noch eine
-  `.gitignore`-Ergänzung für `.claude/worktrees/` gehören zum Liefer-Umfang; die Beobachtung ist ein
-  Kandidat für das Beobachtungs-Register (Sub-Area `harness/tools/`, Fund: ein zweiter Treffer kann
-  eine `pipefail`-Pipeline in `comment-claims.sh` durch SIGPIPE zum Fehlschlag bringen, unabhängig
-  von seiner Ursache).
+  `.gitignore`-Ergänzung für `.claude/worktrees/` gehören zum Liefer-Umfang. Im Register steht die
+  Klasse seit dieser Closure als
+  [`BEO-ALL/gate-flaeche-haengt-am-arbeitsbaum`](../observations/BEO-ALL/gate-flaeche-haengt-am-arbeitsbaum/observation.md)
+  (1×, Stand `offen`). **Die Sub-Area ist `*` (gesamtes Repo), nicht `harness/tools/`:** Beide
+  betroffenen Sensoren sind repo-weite Gates, und die Regel des Registers verlangt die Sub-Area,
+  deren Konventions-Härte die Beobachtung betrifft — nicht die, in deren Verzeichnis sie auffiel.
+  Der Fund selbst hängt nicht am Skript: ein zweiter Treffer bringt eine `pipefail`-Pipeline in
+  `comment-claims.sh` durch SIGPIPE zum Fehlschlag, und dieselbe Baum-Abhängigkeit trifft
+  `make docs-check` über eine Scan-Fläche, die `.gitignore` nicht verkleinert.
 
 ## 7. Closure-Notiz
 
@@ -442,13 +459,81 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register:** <…> — dieser Slice schreibt seinen eigenen Eintrag bereits in die
-  **neue** Ablage; der Übergang ist damit an seiner ersten Benutzung geprüft.
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
+- **Was hat funktioniert:** Die Zerlegung — der einzige Teil, den keine der beiden Review-Runden
+  beanstandet hat. Aus 39 Tabellenzeilen wurden Verzeichnisse mit `observation.md`, `state.md` und
+  je Beleg einer Datei; die Zähler-Deckung wurde **je Eintrag** gegen den Elternstand gehalten (39
+  von 39 identisch, 0 Abweichungen, DoD 1) statt nur als Summe. Der zweite Umzug auf
+  `BEO-ALL/<slug>` ist ein reiner Rename ohne ein Byte Inhaltsänderung, damit trifft die Prämisse
+  von [`AGENTS.md`](../../../../AGENTS.md) §3.3 wie im Plan §3 angenommen nicht zu.
+  Und die Ziel-Form löst den Kollisions-Punkt aus §1 **strukturell statt disziplinarisch**: *ein
+  Vorgang zählt einmal* ist jetzt eine Eigenschaft des Dateisystems — die sechs Belege dieser
+  Closure sind sechs neue Dateien und keine sechs Änderungen an einer 6 357 Zeichen langen Zeile.
+  **Ein Nebeneffekt, und er steht bereits gemessen in diesem Plan:** Weil die Identität einer
+  Beobachtung jetzt ein **Pfad** ist, fällt ihr Zitat in Pfad- oder Link-Form unter
+  `make docs-check` (DoD 2: **0** verbleibende `target-missing`-Befunde); eine tote `BEO`-Nummer im
+  Fließtext fällt unter kein Modul (§6, siebter Punkt). Der Gewinn ist einseitig und darum benannt:
+  er deckt die Zitat-Hälfte in Pfad-Form — nicht die Prosa-Form, und nicht die Beleg-Hälfte der
+  Register-Paarung.
+- **Was ging anders als geplant:** Zwei Review-Runden, beide blockierend — und **kein** Befund traf
+  die Zerlegung; alle trafen ihre Umgebung. Drei Muster, jedes mit einem Ausgang in §6:
+  (1) Der erste Vollzug ließ die fortlaufende Nummer als Verzeichnisnamen stehen, obwohl DoD 1 das
+  Kürzel-Segment nennt — und der Beleg gegen sie lag schon vor, weil eine Merge-Auflösung zwei
+  Kennungen von Hand vergeben musste, also den Stand aller vergebenen Nummern über zwei Zweige
+  hinweg kennen musste: genau die Voraussetzung, die die Ziel-Form abschafft.
+  (2) Zweimal wurde ein Artefakt einer anderen Rolle im Implementations-Kontext geschrieben, das
+  zweite Mal kurz nachdem derselbe Lauf den ersten Übergriff zurückgenommen hatte; beide sind nicht
+  nur revertiert, sondern durch je einen passend zugeschriebenen Commit **ersetzt**.
+  (3) Der Verweis-Nachzug lief von Hand — `make slice-mv` deckt Slice-Adressen, nicht die Adresse
+  einer Ablage —, und die Inline-Code-Hälfte hat dabei ein Reviewer gefunden, kein Sensor.
+- **Steering-Loop-Eintrag — geschärfte Regel:** *Ein Verweis auf das Register **als Mechanismus**
+  zeigt auf [`observations/README.md`](../observations/README.md); ein Verweis auf **eine konkrete
+  Beobachtung** — ihre Bezeichnung, ihr Stand, ihr Zähler — zeigt auf deren eigene
+  `observation.md`.* Die Regel steht in [`observations/README.md`](../observations/README.md)
+  §Zwei Verweis-Formen und ersetzt die zwei ungleichen Konventionen, die im Bestand nebeneinander
+  entstanden waren. Sie ist die Voraussetzung des Nebeneffekts oben: erst die zweite Form macht ein
+  Beobachtungs-Zitat zu einem Pfad, den ein Modul sehen kann.
+  **Das Feld `liegt in` steht hier nicht**, und das ist keine Auslassung: Der Herkunfts-Anker ist
+  eng geschnitten auf Regeln, die die **3×-Schwelle** erreicht haben und **ohne** Welle verkörpert
+  wurden (Baseline-Regelwerk `grundlagen-traceability.md` §Herkunfts-Anker für
+  Steering-Loop-Regeln). Keine Registerzeile hat mit diesem Slice 3× erreicht, und der Slice ist
+  Mitglied von [welle-15](../welle-15-re-baseline.md).
+- **Beobachtungs-Register:** fortgeschrieben mit **sechs** Belegen, je einer pro Klasse — *ein
+  Vorgang zählt einmal*, gleich wieviele Funde die zwei Runden je Klasse geliefert haben. Drei
+  Belege gehen an bestehende Einträge, drei Einträge entstehen neu (per `cp` aus
+  `observation.template.md` des vendored Stands):
+  [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
+  · [`zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
+  · [`ausgang-nennt-traeger-der-nicht-traegt`](../observations/BEO-ALL/ausgang-nennt-traeger-der-nicht-traegt/observation.md)
+  · neu
+  [`fremdes-rollen-artefakt-im-implementations-kontext`](../observations/BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext/observation.md)
+  (die zwei Rollen-Übergriffe aus §6 — *ein* Beleg, weil sie in **einem** Vorgang liegen)
+  · neu [`gate-flaeche-haengt-am-arbeitsbaum`](../observations/BEO-ALL/gate-flaeche-haengt-am-arbeitsbaum/observation.md)
+  · neu [`zusage-ohne-herstellbares-gegenbeispiel`](../observations/BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel/observation.md).
+  **Keine Zeile erreicht mit diesem Slice 3×** — die drei bestehenden standen schon darüber, die
+  drei neuen stehen bei 1×; ein Lese-Schritt ist damit nicht ausgelöst. Der Stand ist abgeleitet
+  und steht neben dem Kommando, das ihn liefert (2026-09-05, keine Erwartungswerte,
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2):
+
+  ```sh
+  find docs/plan/planning/observations/BEO-ALL -name observation.md | wc -l          # 44 Eintraege
+  find docs/plan/planning/observations/BEO-ALL -path '*/evidence/*.md' | wc -l       # 90 Belege
+  find docs/plan/planning/observations/BEO-ALL -path '*/evidence/slice-177.md' | wc -l #  6 davon aus diesem Slice
+  ```
+
+  Dieser Slice schreibt seine Belege damit bereits in die **neue** Ablage; der Übergang ist an
+  seiner ersten Benutzung geprüft, und keiner der 44 Einträge hat ein leeres `evidence/`.
+- **Folge-Slices:** [slice-186](../open/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) —
+  Träger der drei Ausgänge *eingetreten* in §6 (die präfixlose Verweis-Form, die Prosa-Zitate der
+  abgeschafften Nummer, und das `awk`-Kommando in einem lebenden Plan, das die entfallene Tabelle
+  liest). Kein weiterer Folge-Slice geht aus dieser Closure hervor; die zwei Nachbarn
+  [slice-184](../open/slice-184-register-form-im-bestand-nachziehen.md) (Form-Sprache) und
+  [slice-181](../open/slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md) (Grenzen-Liste)
+  bestanden vorher und tragen je eine textlich abgegrenzte Hälfte.
+- **Risiken aus §6:** neun Risiken, neun Ausgänge — vier *eingetreten* (drei mit
+  [slice-186](../open/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md), eines ohne Auslösung
+  der Rückführung), zwei *entfallen*, drei *weiter offen* mit je einem Eintrag im
+  Beobachtungs-Register. Der Wortlaut steht in §6 und wird hier nicht zweitgeschrieben.
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — sie prüft die Closure von
   [welle-15](../welle-15-re-baseline.md).
 

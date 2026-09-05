@@ -1,0 +1,2 @@
+**Vorgang:** slice-177
+**Fund:** Ein paralleler Agenten-Worktree unter `.claude/worktrees/` verdoppelte die von `make docs-check` gescannten Dateien und ließ über eine `pipefail`/`SIGPIPE`-Interaktion einen bats-Fall von `make comment-claims` fehlschlagen; die `.gitignore`-Ergänzung ändert an beidem nichts — mit einer einzigen ignorierten Probe-Datei steigt die geprüfte Datei-Zahl und der Sensor meldet Befunde.
