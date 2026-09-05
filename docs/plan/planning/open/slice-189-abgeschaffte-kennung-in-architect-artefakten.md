@@ -11,7 +11,7 @@ mehr beobachtet als die DoD unten. Es gibt keine — und **kein Mitglied von**
 [welle-15](../welle-15-re-baseline.md): Deren Ziel verlangt für jede Pflicht des Sprungs einen
 *verbuchten Ausgang*, keinen Vollzug, und diese Datei in `open/` **ist** er. Das unterscheidet
 diesen Slice von
-[slice-186](../in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md), dessen Nachzug
+[slice-186](../done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md), dessen Nachzug
 ohne ihn mit dem Umzugs-Commit schon gebrochen dastand.
 
 **Bezug:** [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (die
@@ -46,7 +46,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 ist einzeln lieferbar.
 
 **Die Zitate der abgeschafften `BEO-<NNN>`-Form, die
-[slice-186](../in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) als Übergabe an
+[slice-186](../done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) als Übergabe an
 den Architect ausgenommen hat, nennen die entschiedene Pfad-Form `BEO-ALL/<slug>`.**
 
 Jener Slice hat jedes lebende Zitat gezogen, das ihm gehörte, und vier Ausnahmen benannt. Zwei
@@ -143,7 +143,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-186](../in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) liegt in
+[slice-186](../done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) liegt in
 `done/`. Der Grund ist **ordnend**, nicht tragend: Die Vorkommen stehen schon heute so da, und der
 Nachzug hinge an nichts. Vor jener Closure gäbe es diesen Slice aber nicht — er *ist* ihr
 Übergabe-Artefakt, und ein Träger, der vor seiner Übergabe läuft, hat keine.

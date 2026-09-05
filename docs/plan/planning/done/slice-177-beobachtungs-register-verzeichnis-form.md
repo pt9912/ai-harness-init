@@ -285,7 +285,7 @@ dasteht.
   **verkörpert** in `make slice-mv`). Dessen Deckung gilt Slice-Adressen; für diese Datei gibt es
   keinen Träger, und die präfixlose Form bricht in beide Richtungen. `make docs-check` fängt die
   Link- und Codepath-Hälfte, nicht die Inline-Code-Hälfte (`BEO-025`). — **Ausgang: eingetreten,
-  Folge-Slice [slice-186](../in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md).** Der
+  Folge-Slice [slice-186](../done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md).** Der
   Nachzug lief manuell (gezielte `sed`-Ersetzungen je Klasse: Lebend → Pfad umgehängt,
   Zeitdokument → Adresse verloren) und iterativ gegen `make docs-check` — und genau darin liegt der
   Eintritt: Die Inline-Code-Hälfte, die dieselbe Zeile als ungedeckt benennt, hat er übersehen. Der
@@ -383,7 +383,7 @@ dasteht.
   Beobachtungen weiter unter ihrer alten Nummer (`BEO-010`, `BEO-018` etc.) — reine Kennungs-Prosa,
   kein Pfad, darum kein `docs-check`-Befund, aber ein Leser, der die alte Nummer als Verzeichnis
   sucht, findet sie nicht mehr. — **Ausgang: eingetreten, Folge-Slice
-  [slice-186](../in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md).** Nicht prognostiziert,
+  [slice-186](../done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md).** Nicht prognostiziert,
   sondern in diesem Diff manifest: `9292a08` hat die Zitate tot gemacht. **Der Umfang ist jetzt
   gemessen statt geschätzt** (2026-09-05, keine Erwartungswerte,
   [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
@@ -421,7 +421,7 @@ dasteht.
   **Und kein Gate sieht es:** der Pfad steckt in einem Inline-Code-Span, der ein ganzes
   Shell-Kommando umfasst, und erscheint auch im kontrafaktischen `d-check`-Lauf **ohne** das
   siebte `ignore-refs`-Paar nicht unter den Befunden. — **Ausgang: eingetreten, Folge-Slice
-  [slice-186](../in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)**, dort Liefer-Punkt
+  [slice-186](../done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)**, dort Liefer-Punkt
   3. **Nicht `weiter offen` mit [slice-181] als Träger:** Jener Slice hat einen anderen Gegenstand
   (eine Grenzen-Liste neben einem Ausdruck), und ihm eine Nacharbeit zuzuweisen, die seine DoD
   nicht führt, wäre ein Ausgang, der seinen Träger nur benennt — genau die Klasse, die der
@@ -523,7 +523,7 @@ Backticks).
 
   Dieser Slice schreibt seine Belege damit bereits in die **neue** Ablage; der Übergang ist an
   seiner ersten Benutzung geprüft, und keiner der 44 Einträge hat ein leeres `evidence/`.
-- **Folge-Slices:** [slice-186](../in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) —
+- **Folge-Slices:** [slice-186](../done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) —
   Träger der drei Ausgänge *eingetreten* in §6 (die präfixlose Verweis-Form, die Prosa-Zitate der
   abgeschafften Nummer, und das `awk`-Kommando in einem lebenden Plan, das die entfallene Tabelle
   liest). Kein weiterer Folge-Slice geht aus dieser Closure hervor; die zwei Nachbarn
@@ -531,7 +531,7 @@ Backticks).
   [slice-181](../open/slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md) (Grenzen-Liste)
   bestanden vorher und tragen je eine textlich abgegrenzte Hälfte.
 - **Risiken aus §6:** neun Risiken, neun Ausgänge — vier *eingetreten* (drei mit
-  [slice-186](../in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md), eines ohne Auslösung
+  [slice-186](../done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md), eines ohne Auslösung
   der Rückführung), zwei *entfallen*, drei *weiter offen* mit je einem Eintrag im
   Beobachtungs-Register. Der Wortlaut steht in §6 und wird hier nicht zweitgeschrieben.
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — sie prüft die Closure von

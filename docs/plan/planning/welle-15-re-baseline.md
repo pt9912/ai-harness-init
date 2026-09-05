@@ -96,7 +96,7 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 | [slice-182](done/slice-182-baum-tausch-v600-pins-ziehen.md) | Der vendored Baum steht auf `v6.0.0` — Pins gezogen, Setzung verbucht | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache), [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) |
 | [slice-184](done/slice-184-register-form-im-bestand-nachziehen.md) | Die Form-Beschreibung des Beobachtungs-Registers zieht im Bestand nach | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0028`](../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md), [`ADR-0034`](../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) |
 | [slice-185](done/slice-185-adaptions-durchgang-gegen-v600.md) | Der Adaptions-Durchgang gegen `v6.0.0` — jeder Eintrag mit eigenem Ausgang (Architect) | [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md), [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
-| [slice-186](in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) | Jede zitierte Beobachtungs-Kennung löst wieder auf | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0034`](../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md), [`ADR-0016`](../adr/0016-verweis-traegt-tag-und-zitat.md) |
+| [slice-186](done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) | Jede zitierte Beobachtungs-Kennung löst wieder auf | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0034`](../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md), [`ADR-0016`](../adr/0016-verweis-traegt-tag-und-zitat.md) |
 
 **Acht Mitglieder — sieben stehen seit dem Katalog fest, das achte seit dem Vollzug.** `BEO-ALL/re-baseline-ohne-inventur-slice`
 ([Register](observations/README.md)) misst an einer Re-Baseline den Abstand zwischen geschnittenen und
@@ -111,7 +111,7 @@ vermutet. Der Katalog weist Position **P-02** (*Kennung: `BEO-<NNN>` → `BEO-<K
 ausdrücklich *„kein neuer Slice"*. Diese Zuordnung deckt die **Verzeichnisse**; sie deckt nicht die
 **Zitate** der abgeschafften Nummer, die seit dem Umzug in **23** lebenden Dateien stehen und
 nirgends mehr auflösen (Kommandos in
-[slice-186](in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) §1). Ein Katalog ordnet
+[slice-186](done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) §1). Ein Katalog ordnet
 **Positionen** einen Träger zu; eine Position kann mehrere Konsumenten haben — genau die Erfahrung,
 die [`BEO-ALL/re-baseline-ohne-inventur-slice`](observations/BEO-ALL/re-baseline-ohne-inventur-slice/observation.md)
 führt.
@@ -228,7 +228,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 - **Eine vierte Übergabe ist mit dem Vollzug entstanden und liegt ebenfalls außerhalb dieser
   Welle:** der **Kennungs-Nachzug in den Architect-Artefakten**
   ([slice-189](open/slice-189-abgeschaffte-kennung-in-architect-artefakten.md)).
-  [slice-186](in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) zieht jedes
+  [slice-186](done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) zieht jedes
   lebende Zitat der abgeschafften Kennungs-Form, das ihm gehört; was in
   [`ADR-0029`](../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) und im
   Adaptions-Block steht, schreibt der Architect
@@ -248,7 +248,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   [slice-184](done/slice-184-register-form-im-bestand-nachziehen.md) — der Ziel-Wortlaut, den der
   Bestand übernimmt, entsteht dort.
   [slice-177](done/slice-177-beobachtungs-register-verzeichnis-form.md) →
-  [slice-186](in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) — die vierte tragende
+  [slice-186](done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) — die vierte tragende
   Kante, und sie trägt aus einem anderen Grund als die dritte: Die Plan-Datei von
   [slice-177](done/slice-177-beobachtungs-register-verzeichnis-form.md) ist selbst eines der
   Artefakte, die eine abgeschaffte Kennung zitieren, und verlässt die Bezugsmenge mit ihrem `git mv`

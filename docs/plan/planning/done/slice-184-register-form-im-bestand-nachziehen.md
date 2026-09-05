@@ -80,7 +80,7 @@ getauschtem Muster gemessen, damit die
 Grenze zwischen den zwei Slices nicht behauptet, sondern sichtbar ist.
 
 **Ein dritter Träger steht jetzt neben den beiden, und die Grenze ist textlich gemessen.**
-[slice-186](../in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) zieht die **Identität** einer
+[slice-186](../done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) zieht die **Identität** einer
 konkreten Beobachtung nach — eine dreistellige Nummer im Fließtext oder als Link-Label, die seit
 dem Umzug nirgends mehr auflöst. **Hier bleibt die Form-Sprache**: der Platzhalter
 `BEO-<NNN>` mit seinen spitzen Klammern, *Registerzeile*, *Zähler erhöhen*. Die zwei Mengen
@@ -206,7 +206,7 @@ dasteht.
   Pfad nennt die Datei selbst); eine Closure-Notiz in der heutigen Form fällt durch den Ausdruck
   **durch**, und das Stub-Feld verliert die Zeile still. Go-Dateien liegen in keiner der drei
   Bezugsmengen dieser Welle — `git grep -l 'BEO-[0-9]\|observations\.md' -- '*.go' | wc -l` →
-  **3**, während [slice-186](../in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) über
+  **3**, während [slice-186](../done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) über
   `'*.md'` misst. Das ist ein zweiter Liefergegenstand und damit ein eigener Slice, kein vierter
   DoD-Punkt hier.
 - **Die emittierte Hälfte wird als dieselbe Änderung behandelt wie die lokale** (Dogfood ≠

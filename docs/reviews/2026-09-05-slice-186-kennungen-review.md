@@ -5,7 +5,7 @@
 - **Rolle:** Reviewer (Modul 8/10), frischer Kontext, kein Selbst-Review.
   Skill: [`.harness/skills/reviewer.md`](../../.harness/skills/reviewer.md) `1.7.0`.
 - **Datum:** 2026-09-05
-- **Gegenstand:** [slice-186](../plan/planning/in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
+- **Gegenstand:** [slice-186](../plan/planning/done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
   — noch **nicht** geschlossen (`in-progress/`).
 - **Commit:** `e8cde04` (ein Commit, 17 Dateien —
   `git show --stat e8cde04`). Die vier `slice-mv`-Commits davor
@@ -118,7 +118,7 @@ falschen Zähler-Stand* tritt hier **nicht** ein.
   die DoD bestätigt hat, schließt der **Planner**"*) und Schritt 24 (*„der **Schreib**-Schritt, und
   er hängt an der Closure, nicht an der Implementation"*)
 - **pfad:** `e8cde04` —
-  [`…/slice-186-…md`](../plan/planning/in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
+  [`…/slice-186-…md`](../plan/planning/done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
   §2 (zehn DoD-Häkchen **und** der umgeschriebene DoD-Text), §5, §6 (vier Risiko-Ausgänge),
   §7 (vollständige Closure-Notiz) sowie
   `docs/plan/planning/observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/evidence/slice-186.md`
@@ -170,7 +170,7 @@ falschen Zähler-Stand* tritt hier **nicht** ein.
   oder eine weitere Datei in das vorhandene `evidence/`"*) ·
   [`.claude/commands/implement-slice.md`](../../.claude/commands/implement-slice.md) Schritt 24
   (*„Für jede Beobachtung aus §7"*) · [`AGENTS.md`](../../AGENTS.md) §3.6
-- **pfad:** [`…/slice-186-…md`](../plan/planning/in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
+- **pfad:** [`…/slice-186-…md`](../plan/planning/done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
   §7, Punkt *Steering-Loop-Eintrag*
 - **befund:** Der Lerneintrag benennt eine neue Klasse — *„§6 Risiko 1 und §3 der Plan-Tabelle
   behandelten „Proposed-ADR" als gleichbedeutend mit „vom Implementer änderbar""* — und schließt
@@ -224,7 +224,7 @@ falschen Zähler-Stand* tritt hier **nicht** ein.
 - **quelle:** [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 1 (*„trägt im selben Absatz das Kommando, das **genau sie** ausgibt"*) — vom Plan §1
   ausdrücklich in Bezug genommen (*„jede Zahl unten steht neben ihrem Kommando"*)
-- **pfad:** [`…/slice-186-…md`](../plan/planning/in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
+- **pfad:** [`…/slice-186-…md`](../plan/planning/done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
   §7, Punkt *Was hat funktioniert*
 - **befund:** Der Satz *„trug über alle **16** lebenden Dateien und beide Zitat-Formen"* trägt kein
   Kommando, und die Zahl trifft nicht. Der Commit ersetzt eine `BEO-<NNN>` in **15** Dateien:
@@ -255,7 +255,7 @@ falschen Zähler-Stand* tritt hier **nicht** ein.
   Kontext-Switch ohne Übergabe"*) und §Konflikt-Pfad (*„Kein Pfeil ohne benennbares Artefakt"*) ·
   [`modul-05-planning-harness.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-05-planning-harness.md)
   §Offene Risiken werden bei Closure aufgelöst
-- **pfad:** [`…/slice-186-…md`](../plan/planning/in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
+- **pfad:** [`…/slice-186-…md`](../plan/planning/done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
   §7, Punkt *Folge-Slices*; DoD 1
 - **befund:** Sechs der 16 verbliebenen Vorkommen — 3 in
   [ADR-0029](../plan/adr/0029-agenten-typkarten-derivativ-gemischte-originale.md), 3 in
@@ -284,7 +284,7 @@ falschen Zähler-Stand* tritt hier **nicht** ein.
 - **kategorie:** LOW
 - **quelle:** [`AGENTS.md`](../../AGENTS.md) §3.6 (*„Eine Zusage … ist erst fertig, wenn benannt
   ist, was passieren müsste, damit sie bricht"*)
-- **pfad:** [`…/slice-186-…md`](../plan/planning/in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
+- **pfad:** [`…/slice-186-…md`](../plan/planning/done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
   §1, erster fett gesetzter Satz
 - **befund:** §1 führt als Ziel *„**Kein lebendes Artefakt dieses Repos zitiert eine Beobachtung
   unter einer Kennung, die nicht mehr auflöst.**"* Nach dem Slice zitieren **23** Stellen eine
@@ -300,7 +300,7 @@ falschen Zähler-Stand* tritt hier **nicht** ein.
 - **kategorie:** LOW
 - **quelle:** [`AGENTS.md`](../../AGENTS.md) §3.6 ·
   [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
-- **pfad:** [`…/slice-186-…md`](../plan/planning/in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
+- **pfad:** [`…/slice-186-…md`](../plan/planning/done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
   DoD 3 · [`…/slice-181-…md`](../plan/planning/open/slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md) §8
 - **befund:** Die neue Mess-Methode **funktioniert** — selbst gefahren, Ausgabe:
   `zusage-neben-geaenderter-ableitung-bleibt-stehen 13x **Stand:** geplant` ·
@@ -325,7 +325,7 @@ falschen Zähler-Stand* tritt hier **nicht** ein.
 - **quelle:** [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2 · [`AGENTS.md`](../../AGENTS.md) §3.7, Zustandsfeld-Hälfte (*„Gebunden ist die Zelle,
   die geschrieben oder geändert wird"*)
-- **pfad:** [`…/slice-186-…md`](../plan/planning/in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
+- **pfad:** [`…/slice-186-…md`](../plan/planning/done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
   §6, zweites Risiko
 - **befund:** Der Absatz führt
   [`zusage-nennt-sensor-der-form-nicht-sieht`](../plan/planning/observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
@@ -345,7 +345,7 @@ falschen Zähler-Stand* tritt hier **nicht** ein.
   [`modul-05-planning-harness.md`](../../.harness/baseline/v6.0.0/regelwerk/modul-05-planning-harness.md)
   §Closure- und Lerneintrag-Regeln (drei Formen: *geschärfte Regel · neuer Sensor · benannte
   Spec-Lücke*)
-- **pfad:** [`…/slice-186-…md`](../plan/planning/in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
+- **pfad:** [`…/slice-186-…md`](../plan/planning/done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md)
   §7, Punkt *Steering-Loop-Eintrag*
 - **befund:** Der Eintrag firmiert als *benannte Spec-Lücke*, beschreibt aber keine Lücke in einer
   Spec: `modul-08-agentenrollen.md` §Rollen-Regeln sagt *„ADR-Änderung: Architect schreibt"* ohne

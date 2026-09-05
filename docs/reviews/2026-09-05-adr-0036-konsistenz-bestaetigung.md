@@ -336,7 +336,7 @@ Beobachtungs-Register geführt; **keine** hat mit ADR-0036 zu tun.
   steht auf `verkörpert`, ohne die verbleibende Richtung als Grenze zu nennen.
 - **verifizierbar:** **ja** — `make docs-check` färbt rot; reproduzierbar:
   ```sh
-  sed -n '10p;104p' docs/plan/planning/in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md
+  sed -n '10p;104p' docs/plan/planning/done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md
   ls docs/plan/planning/*/slice-184-*   # -> in-progress/
   ```
 - **klasse:** *Zustandsfeld sagt „verkörpert", die Verkörperung deckt eine der zwei genannten
