@@ -67,7 +67,7 @@ muss die Eigenschaft messen).
 [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) nahm die sechs
 Anweisungssatz-Dateien, [slice-184](../done/slice-184-register-form-im-bestand-nachziehen.md) die
 Form-Sprache in denselben, und
-[slice-186](slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) misst über `'*.md'`. Go-Dateien
+[slice-186](../in-progress/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) misst über `'*.md'`. Go-Dateien
 liegen in keiner der drei:
 
 ```sh
