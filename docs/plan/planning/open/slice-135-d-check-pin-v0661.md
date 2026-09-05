@@ -1,12 +1,12 @@
 # Slice slice-135: Der d-check-Pin zieht auf v0.66.1 — und der Kopf sagt, was der gepinnte Stand tut
 
-**Gegenstand liegt bei [slice-186](slice-186-d-check-pin-v0741.md).** Die Ziel-Version `v0.66.1`
+**Gegenstand liegt bei [slice-187](slice-187-d-check-pin-v0741.md).** Die Ziel-Version `v0.66.1`
 ist von `v0.74.1` überholt; die Pin-Linie trägt **einen** lebenden Pin, und wer `v0.66.1` pinnte,
 ließe `make freshness-dcheck` im selben Moment wieder rot. Die sechs Messungen unten sind über
-`v0.65.0..v0.66.1` gezogen — eine echte Teilmenge der Spanne, die slice-186 misst — und dort **neu
+`v0.65.0..v0.66.1` gezogen — eine echte Teilmenge der Spanne, die slice-187 misst — und dort **neu
 gefahren** statt übernommen. Die Datei bleibt liegen: Für das Entfernen einer Plandatei nennt
 Modul 5 keinen Zustand und keinen Weg; die Lücke steht in
-[slice-186](slice-186-d-check-pin-v0741.md) §6 mit Ausgang.
+[slice-187](slice-187-d-check-pin-v0741.md) §6 mit Ausgang.
 
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
 Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er

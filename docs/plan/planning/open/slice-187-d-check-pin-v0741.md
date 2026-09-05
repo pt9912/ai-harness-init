@@ -1,4 +1,4 @@
-# Slice slice-186: Der d-check-Pin springt `v0.65.0` → `v0.74.1` — neun Minors, zwei neue Module, ein dreizehntes Target
+# Slice slice-187: Der d-check-Pin springt `v0.65.0` → `v0.74.1` — neun Minors, zwei neue Module, ein dreizehntes Target
 
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
 Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
