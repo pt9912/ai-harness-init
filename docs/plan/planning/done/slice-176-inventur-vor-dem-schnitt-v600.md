@@ -326,19 +326,19 @@ Ebene* · **—** *ohne Gegenstand hier*.
 | # | Datei · Hunks | Position | Zu | Ausgang |
 |---|---|---|---|---|
 | P-01 | `regelwerk/README.md` ×1 | `Stand:`-Zeile `Kurs-Welle 111 · 2026-08-31` → `116 · 2026-09-03` | RE | [slice-182](../done/slice-182-baum-tausch-v600-pins-ziehen.md) — §Baseline von [`harness/conventions.md`](../../../../harness/conventions.md) zitiert genau diese Zeile per `sed -n '3p'` |
-| P-02 | `grundlagen-begriffe.md` ×1 · `modul-05` H2 | Kennung: `BEO-<NNN>` → `BEO-<KUERZEL>/<slug>`; **keine Vergabestelle, keine fortlaufende Nummer** | RE | entschieden in [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) Festlegung 3, vollzogen von [slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) — **kein neuer Slice** |
-| P-03 | `grundlagen-harness-dateien.md` H1 | Planning-Layout: `observations.md` → `observations/` | RE | [slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) |
+| P-02 | `grundlagen-begriffe.md` ×1 · `modul-05` H2 | Kennung: `BEO-<NNN>` → `BEO-<KUERZEL>/<slug>`; **keine Vergabestelle, keine fortlaufende Nummer** | RE | entschieden in [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) Festlegung 3, vollzogen von [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) — **kein neuer Slice** |
+| P-03 | `grundlagen-harness-dateien.md` H1 | Planning-Layout: `observations.md` → `observations/` | RE | [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) |
 | P-04 | `grundlagen-harness-dateien.md` H2 | **„Die Spalte ist nicht bedingt."** Die Kürzel-Spalte der Modus-Deklaration ist unbedingt Pflicht, weil `BEO-<KUERZEL>/<slug>` jedem Repo mindestens **eine** Kennungsklasse mit Segment gibt | RE | [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) Folgepflicht 2 (Architect-Commit) — **kein neuer Slice**; s. *Eine Verschärfung* unten |
 | P-05 | `grundlagen-traceability.md` ×1 (+45) | neu **§Der Fluss**: Diagramm des Steering Loops, die zwei Schleifen, und die Begründung, warum der Volltext eines geschlossenen Slice ins Archiv darf | — | keiner. Kein lebendes Artefakt dieses Repos bildet den Fluss ab (`git grep -ln 'flowchart\|stateDiagram' -- '*.md' ':!.harness/baseline' ':!docs/plan/planning/done' ':!docs/reviews'` → `roadmap.md`, `spec/architecture.md`; beide zeigen etwas anderes). Der Abschnitt ist die **Begründung** zu P-06, nicht eine zweite Pflicht |
 | P-06 | `modul-05` H1 · `modul-06` H2 · `modul-10` ×1 | **Die Zeitdokumente-Archivierung bekommt für den wellenlosen Betrieb einen Träger** — die Slice-Closure selbst, nach den Paarungen, Schlüssel `done/slice-<NNN>-archiv.zip` **flach** neben dem Stub; der Review-Report wandert mit | RE | **neu:** [slice-183](../open/slice-183-ausloeser-der-wellenlosen-archivierung.md) (Architect). Gemessen: **47** geschlossene Slices tragen `**Welle:** ohne Welle`, **0** sind archiviert |
 | P-07 | `modul-06` H1a | Carveout-Frist misst in Wellen — Zusatz: *„das bleibt eine benannte Lücke, keine Pflicht, und ein Repo bleibt ohne sie konform"* | — | keiner: **Entlastung**, keine neue Pflicht. Der Bestand ist trotzdem benannt — [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) führt seine Prüfungen seit `welle-03` in Wellen und hat wellenlose Neuzugänge nachweislich übersehen; die Ziel-Fassung erklärt das ausdrücklich für konform |
 | P-08 | `modul-06` H1b | neuer Absatz *„Warum das Archivieren nicht hier steht"* | — | keiner: erläutert die Trägerschaft aus P-06, stellt keine eigene Pflicht |
-| P-09 | `modul-06` H3 | **§Das Beobachtungs-Register vollständig neu**: Verzeichnis statt Tabelle · drei Dateien mit drei Lebensdauern · **Zähler abgeleitet statt geführt** · Kennung **ist** der Pfad · leere Ablage = nur `README.md` · *gestrichen* wird Verzeichnis-Vermerk statt zweiter Sektion · die Beleg-Prüfungen fallen von **drei** auf **zwei** (die *Anzahl*-Prüfung hat kein Objekt mehr) | RE | [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) + [slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) — **kein neuer Slice** |
-| P-10 | `modul-06` H4 | Wellen-Eröffnung Schritt 2 nennt den neuen Registerpfad | RE | [slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) DoD 2 |
-| P-11 | `modul-06` H5 | Register-Paarung (c): die genannte Beobachtung existiert als **Verzeichnis** statt als Zeile | RE | [slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) — dazu die **benannte Lücke**: die maschinelle Hälfte ist hier ohnehin unbewacht (`grep -c observations .d-check.yml` → 0), und das bleibt sie ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) |
+| P-09 | `modul-06` H3 | **§Das Beobachtungs-Register vollständig neu**: Verzeichnis statt Tabelle · drei Dateien mit drei Lebensdauern · **Zähler abgeleitet statt geführt** · Kennung **ist** der Pfad · leere Ablage = nur `README.md` · *gestrichen* wird Verzeichnis-Vermerk statt zweiter Sektion · die Beleg-Prüfungen fallen von **drei** auf **zwei** (die *Anzahl*-Prüfung hat kein Objekt mehr) | RE | [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) + [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) — **kein neuer Slice** |
+| P-10 | `modul-06` H4 | Wellen-Eröffnung Schritt 2 nennt den neuen Registerpfad | RE | [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) DoD 2 |
+| P-11 | `modul-06` H5 | Register-Paarung (c): die genannte Beobachtung existiert als **Verzeichnis** statt als Zeile | RE | [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) — dazu die **benannte Lücke**: die maschinelle Hälfte ist hier ohnehin unbewacht (`grep -c observations .d-check.yml` → 0), und das bleibt sie ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) |
 | P-12 | `templates/README.md` ×1 · `reconciliation.template.md` ×1 · `welle-results.template.md` ×1 | drei Querverweise ziehen auf `observation.template.md` bzw. `observations/` nach | — | [slice-182](../done/slice-182-baum-tausch-v600-pins-ziehen.md) trägt sie **als Baum-Inhalt**, nicht als Arbeit: Dieses Repo emittiert **keine** Planning-Vorlage (`find internal/emit/templates -path '*planning*'` → leer) und führt keine `reconciliation.md` (Greenfield) |
-| P-13 | `README.template.md` ×1 | Planning-README: das Register liegt als `observations/` neben den Wellen | RE | [slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) DoD 2 — `docs/plan/planning/README.md` steht in dessen Bezugsmenge |
-| P-14 | `observation.template.md` (**A**, +88) · `observations.template.md` (**D**, −58) | die Ziel-Form **je Beobachtung** entsteht, die Register-Vorlage entfällt | RE | [slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) legt daraus per `cp` an; die Vorlage liegt netzlos erst nach [slice-182](../done/slice-182-baum-tausch-v600-pins-ziehen.md) vor — genau die erste Start-Bedingung jenes Slice |
+| P-13 | `README.template.md` ×1 | Planning-README: das Register liegt als `observations/` neben den Wellen | RE | [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) DoD 2 — `docs/plan/planning/README.md` steht in dessen Bezugsmenge |
+| P-14 | `observation.template.md` (**A**, +88) · `observations.template.md` (**D**, −58) | die Ziel-Form **je Beobachtung** entsteht, die Register-Vorlage entfällt | RE | [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) legt daraus per `cp` an; die Vorlage liegt netzlos erst nach [slice-182](../done/slice-182-baum-tausch-v600-pins-ziehen.md) vor — genau die erste Start-Bedingung jenes Slice |
 | P-15 | `slice.template.md` ×2 | DoD-Zeile und §7-Zeile: Verzeichnis-Ablage, **kein Zähler wird gesetzt** — er folgt aus den Dateien | RE **+ EM** | **neu:** [slice-184](../open/slice-184-register-form-im-bestand-nachziehen.md). Gemessen: **10** von **60** lebenden Plänen tragen die alte DoD-Zeile, **4** Anweisungssatz-Dateien die alte Form-Beschreibung (Kommandos in dessen §1) |
 
 **Keine Position ohne Ausgang** — elf tragen einen benannten Slice oder eine angenommene ADR, vier
@@ -467,7 +467,7 @@ lebende Version-Annotation neben einem Zitat und zu kleine Selbstauskunfts-Zahle
 Adaptions-Eintrag; beide stehen in
 [slice-182](../done/slice-182-baum-tausch-v600-pins-ziehen.md) §6, Risiko 1 und 2. Und sein
 Migrations-Slice sprengte die Ein-Sitzungs-Review-Grenze (28 Einträge, ~180 Dateien): das ist die
-Rückführung, die [slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) §4 bereits
+Rückführung, die [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) §4 bereits
 vorab benennt.
 
 **Die Messung nach [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
@@ -490,7 +490,7 @@ die Richtigkeit der Messung oben.
 Register-Vorlage durch eine Vorlage je **Beobachtung**
 (`git diff --name-status v5.18.0 v6.0.0 -- lab/templates/docs/plan/planning`). Ihre Träger sind
 [slice-179](../done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) (die Form-Entscheidung) und
-[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) (der Vollzug); der Katalog
+[slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) (der Vollzug); der Katalog
 weist ihr diese Slices zu, statt einen dritten zu erzeugen.
 
 **Eine zweite Position hängt daran und hat ausdrücklich keinen Träger:** Dieselbe Umgestaltung
@@ -508,7 +508,7 @@ Keine Erwartungswerte
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2). Die Position ist von der **Ablage**-Form getrennt zu führen: Die
 Verzeichnis-Gestalt trägt
-[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md), das erste Pfad-Segment
+[slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md), das erste Pfad-Segment
 entscheidet [slice-179](../done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) — was mit den
 594 Vorkommen im Bestand geschieht (umhängen, oder als Stand ihrer Zeit stehen lassen, wo die
 Quelle eingefroren ist), ist eine dritte Frage, die dieser Katalog **zuordnet** und die keinen

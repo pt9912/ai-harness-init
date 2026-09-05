@@ -338,7 +338,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 **Start** (`next` → `in-progress`): **das WIP-Limit von 1 ist frei** —
 `ls docs/plan/planning/in-progress/ | grep -c '^slice-'` liefert **0**. Am 2026-09-05 liefert es
-**1**, den laufenden [slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md);
+**1**, den laufenden [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md);
 das WIP-Limit ist eine harte Größe und kein Vorschlag. Eine inhaltliche Vorbedingung hat
 dieser Slice **nicht**: Die Auslöse-Bedingung ist heute erfüllt (`make freshness-dcheck`, §1), alle
 sechs Messungen aus §1 sind gefahren, und keine wartet auf ein fremdes Artefakt. Insbesondere

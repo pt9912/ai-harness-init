@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Welle:** [welle-15](../welle-15-re-baseline.md) — **Mitglied** aus demselben Grund wie
-[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md), dessen Vorbedingung er
+[slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md), dessen Vorbedingung er
 ist: Die Ablage-Form ist eine Pflicht der Ziel-Fassung, und der Slice liefert die Entscheidung, ohne
 die jene Pflicht nicht vollzogen werden kann.
 
@@ -161,7 +161,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) nennt in ihrer
       Status-Zelle den teil-revidierten Wert, wie es die Zeile von
       [`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) vormacht;
-      [slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) §2 nennt die
+      [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) §2 nennt die
       entschiedene Gestalt statt der offenen Alternative — dazu §3, dessen Tabellenzeile und
       Commit-Absatz dieselbe offene Frage führten. Ein öffentlicher Vertrag ist nicht berührt.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -181,10 +181,10 @@ Aussagen-Berührung steht hier gar nicht.
 | `docs/plan/adr/` | neu | die Entscheidung, per `cp` aus der vendored ADR-Vorlage |
 | [`docs/plan/adr/README.md`](../../adr/README.md) | update | der Index wächst mit der ADR |
 | [`harness/conventions.md`](../../../../harness/conventions.md) §Modus-Deklaration | update | nur im Zweig (b), der die Spalte einführt |
-| [slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) §2 | update | die DoD nennt danach die entschiedene Gestalt |
+| [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) §2 | update | die DoD nennt danach die entschiedene Gestalt |
 
 Der Umzug selbst steht **nicht** in dieser Liste: Er ist der Gegenstand von
-[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md), und die Entscheidung geht
+[slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md), und die Entscheidung geht
 ihm voraus.
 
 **Eine Zeile dieser Tabelle ist nicht ausgeführt worden, und das ist entschieden statt vergessen.**
@@ -328,7 +328,7 @@ Backticks).
   aufgetreten — Begründung in §6). `BEO-016` ist nicht erhöht: Dieser Plan ist lang, aber der
   Vorgang hat die Beobachtung nicht neu erzeugt.
 - **Folge-Slices:** keiner neu. Die Arbeit, die aus dieser Entscheidung folgt, hat ihre Dateien
-  bereits — [slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) vollzieht den
+  bereits — [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) vollzieht den
   Umzug und trägt die drei Folgepflichten 1 bis 3 der ADR;
   [slice-135](../open/slice-135-d-check-pin-v0661.md) hält die Gate-Fähigkeit.
 - **Risiken aus §6:** vier, jedes mit genau einem Ausgang — zwei *entfallen* mit Begründung, zwei

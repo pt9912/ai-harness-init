@@ -13,7 +13,7 @@
 | **Aktive ADRs im Commit-/Plan-Text** | `ADR-0034` (tragend), `ADR-0030`, `ADR-0028`, `ADR-0016`, `ADR-0018`, `ADR-0033`, `ADR-0023`, `ADR-0026`, `ADR-0027`, `ADR-0032` |
 | **Hard Rules** | [`AGENTS.md`](../../AGENTS.md) §3.1–§3.9, tragend hier §3.3, §3.4, §3.5, §3.6, §3.7, §3.8, §3.9 |
 | **Vorherige Findings am gleichen Modul** | [`2026-09-05-slice-182-baum-tausch-v600-review.md`](2026-09-05-slice-182-baum-tausch-v600-review.md) — unmittelbarer Vorgänger in derselben Welle: HIGH ×4, MEDIUM ×4, LOW ×4, INFO ×3. Wiederkehrende Klassen dort: `Präsens-Aussage-gegen-gepinnten-Stand` (`BEO-009`, 3×), `Sensor-Grenze-als-Sensor-Aussage` (LOW-3, `BEO-025`), `Folge-Slice-traegt-den-Befund-nicht` (HIGH-4). **Alle drei kehren hier wieder** — siehe HIGH-2, HIGH-3, MEDIUM-1. Dazu [`2026-08-31-slice-144-review.md`](2026-08-31-slice-144-review.md) HIGH-1, aus dem [`ADR-0028`](../plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) hervorging — die Regel, die HIGH-4 unten trifft. |
-| **Slice-Plan** (Repo-Ergänzung) | [`slice-177`](../plan/planning/in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) |
+| **Slice-Plan** (Repo-Ergänzung) | [`slice-177`](../plan/planning/done/slice-177-beobachtungs-register-verzeichnis-form.md) |
 
 **Selbst gefahren, nicht aus Commit-Messages übernommen** (Ergebnisse in den
 Negativbefunden): `make gates` (EXIT 0) · zwei kontrafaktische `d-check`-Läufe über einer
@@ -71,7 +71,7 @@ Setzung 1); keine ist ein Erwartungswert.
 
 - **kategorie:** MEDIUM
 - **quelle:** Baseline-Regelwerk `modul-05-planning-harness.md` §Offene Risiken werden bei Closure aufgelöst (ein Ausgang muss *tragen*), [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
-- **pfad:** [`slice-177`](../plan/planning/in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) §6, zweites Risiko · [`slice-184`](../plan/planning/open/slice-184-register-form-im-bestand-nachziehen.md) §1
+- **pfad:** [`slice-177`](../plan/planning/done/slice-177-beobachtungs-register-verzeichnis-form.md) §6, zweites Risiko · [`slice-184`](../plan/planning/open/slice-184-register-form-im-bestand-nachziehen.md) §1
 - **befund:** slice-177 §6 führt die Zeile *„Beobachtungs-Register (`../observations.md`) fortgeschrieben"* unter der **Form-Beschreibung** und weist sie slice-184 zu; slice-184 §1 sagt in der Gegenrichtung: *„Der Gegenstand ist die Form-Beschreibung, nicht die Adresse. Den Pfad `observations.md` → `observations/` zieht slice-177 über seine Bezugsmenge nach"* — und noch einmal: *„die Adresse zieht slice-177 über seine eigene Bezugsmenge nach"*. Der Pfad in dieser Zeile ist eine Adresse, keine Form-Beschreibung. Ergebnis: 18 tote Adressen in lebenden Artefakten (Aufstellung in HIGH-2) haben keinen benannten Träger, und der Ausgang *weiter offen* jenes Risikos trägt nicht, was er zu tragen vorgibt. Die Klasse ist dieselbe, die der Vorgänger-Review als HIGH-4 gemeldet hat.
 - **verifizierbar:** ja — derselbe kontrafaktische Lauf wie in HIGH-2 (`772 … 113`), plus `git grep -n 'Beobachtungs-Register (\`\.\./observations\.md\`) fortgeschrieben' -- docs/plan/planning/open docs/plan/planning/next`.
 - **klasse:** `Folge-Slice-traegt-den-Befund-nicht` (Wiederholung aus [`2026-09-05-slice-182-baum-tausch-v600-review.md`](2026-09-05-slice-182-baum-tausch-v600-review.md) HIGH-4)
@@ -107,7 +107,7 @@ Setzung 1); keine ist ein Erwartungswert.
 
 - **kategorie:** LOW
 - **quelle:** [`AGENTS.md`](../../AGENTS.md) §3.7
-- **pfad:** [`slice-177`](../plan/planning/in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) §2, DoD 3 und §6, fünftes Risiko
+- **pfad:** [`slice-177`](../plan/planning/done/slice-177-beobachtungs-register-verzeichnis-form.md) §2, DoD 3 und §6, fünftes Risiko
 - **befund:** Beide Stellen sagen im Indikativ Präsens, `docs-check` bleibe mit genau **3** `target-missing`-Befunden rot, solange die drei Architect-Zeilen stehen. Der Architect-Commit `df86429` hat sie gezogen; mein `make docs-check` meldet `772 Datei(en) geprüft, 0 Befund(e)`, `make gates` EXIT 0. Die Aussage ist Chronik geworden und steht in einem lebenden Plan — Nachzug ist Closure-Arbeit des Planners, nicht des Implementers.
 - **verifizierbar:** ja — `make docs-check`.
 - **klasse:** `Zusage-neben-geaenderter-Ableitung-bleibt-stehen` (`BEO-009`)

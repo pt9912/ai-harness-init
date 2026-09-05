@@ -90,7 +90,7 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 | Slice | Titel | Bezug |
 |---|---|---|
 | [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) | Inventur vor dem Schnitt — der Form- und Regel-Diff `v5.18.0` → `v6.0.0` | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) |
-| [slice-177](in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) | Das Beobachtungs-Register läuft in der Verzeichnis-Form | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-045`](../../../harness/conventions.md#mr-045--der-adaptions-block-läuft-in-der-verzeichnis-form) |
+| [slice-177](done/slice-177-beobachtungs-register-verzeichnis-form.md) | Das Beobachtungs-Register läuft in der Verzeichnis-Form | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-045`](../../../harness/conventions.md#mr-045--der-adaptions-block-läuft-in-der-verzeichnis-form) |
 | [slice-178](done/slice-178-regierende-fassung-des-sprungs-v600.md) | Die regierende Fassung dieses Sprungs wird entschieden (Architect) | [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md), [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md) |
 | [slice-179](done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) | Die Form des Beobachtungs-Registers wird entschieden — vor dem Umzug (Architect) | [`ADR-0030`](../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-182](done/slice-182-baum-tausch-v600-pins-ziehen.md) | Der vendored Baum steht auf `v6.0.0` — Pins gezogen, Setzung verbucht | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache), [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) |
@@ -107,7 +107,7 @@ nicht vorab gesetzt. Jede Umplanung trägt das Drift-Log der [Roadmap](in-progre
 **Zeile 8 folgt nicht dem Katalog, sondern dem vollzogenen Umzug** — dieselbe Ausnahme, die
 [welle-14](done/welle-14-re-baseline.md) §4 für zwei ihrer Zeilen führt, und sie ist gemessen statt
 vermutet. Der Katalog weist Position **P-02** (*Kennung: `BEO-<NNN>` → `BEO-<KUERZEL>/<slug>`*)
-[slice-177](in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) zu und vermerkt
+[slice-177](done/slice-177-beobachtungs-register-verzeichnis-form.md) zu und vermerkt
 ausdrücklich *„kein neuer Slice"*. Diese Zuordnung deckt die **Verzeichnisse**; sie deckt nicht die
 **Zitate** der abgeschafften Nummer, die seit dem Umzug in **23** lebenden Dateien stehen und
 nirgends mehr auflösen (Kommandos in
@@ -131,7 +131,7 @@ auch die **Zielstand-Buchung** nach
 Platz dafür hielt der letzte Absatz dieser Sektion, jetzt hat er seinen Slice.
 
 **Zeile 6 ist Mitglied aus Gleichzeitigkeit, nicht aus Nähe.** Sobald
-[slice-177](in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) die Ablage umzieht, weisen
+[slice-177](done/slice-177-beobachtungs-register-verzeichnis-form.md) die Ablage umzieht, weisen
 zehn lebende Slice-Pläne und vier Anweisungssatz-Dateien einen Vorgang an, den es nicht mehr gibt.
 Ein Ausgang in `open/` wäre hier gerade **kein** verbuchter Ausgang: Der Nachzügler, gegen den das
 Welle-Ziel steht, wäre mit dem Umzug schon da.
@@ -158,7 +158,7 @@ gemessen (`git diff --name-status v5.18.0 v6.0.0 -- lab/templates/docs/plan/plan
 Kurs-Klon: die Register-Vorlage wird durch eine Vorlage je **Beobachtung** ersetzt), und der Anlass
 kommt von außerhalb des Sprungs: eine flache Datei, in die **jede** Slice-Closure schreibt, ist ein
 Kollisions-Punkt für parallel arbeitende Rolleninhaber — begründet in
-[slice-177](in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) §1. Der Katalog weist diese
+[slice-177](done/slice-177-beobachtungs-register-verzeichnis-form.md) §1. Der Katalog weist diese
 Position jenem Slice zu, statt einen zweiten zu erzeugen.
 
 **Zeile 3 und 4 sind die zwei Entscheidungen, ohne die diese Welle kein Konformitäts-Urteil
@@ -227,20 +227,20 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   gefeuert; der Träger bleibt entschieden, der Auslöser nicht.
 - **Vier Kanten innerhalb der Welle sind tragend, eine ist ordnend.** Tragend:
   [slice-179](done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md) →
-  [slice-177](in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) — ohne die entschiedene
+  [slice-177](done/slice-177-beobachtungs-register-verzeichnis-form.md) — ohne die entschiedene
   Kennungs- und Index-Gestalt hat der Umzug kein Ziel, und
   [`ADR-0030`](../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Festlegung 4
   verlangt die Entscheidung vor dem Move.
   [slice-182](done/slice-182-baum-tausch-v600-pins-ziehen.md) →
-  [slice-177](in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) — die Vorlage, aus der die
+  [slice-177](done/slice-177-beobachtungs-register-verzeichnis-form.md) — die Vorlage, aus der die
   Ablage per `cp` entsteht, liegt netzlos erst nach dem Tausch vor.
-  [slice-177](in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) →
+  [slice-177](done/slice-177-beobachtungs-register-verzeichnis-form.md) →
   [slice-184](open/slice-184-register-form-im-bestand-nachziehen.md) — der Ziel-Wortlaut, den der
   Bestand übernimmt, entsteht dort.
-  [slice-177](in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) →
+  [slice-177](done/slice-177-beobachtungs-register-verzeichnis-form.md) →
   [slice-186](open/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) — die vierte tragende
   Kante, und sie trägt aus einem anderen Grund als die dritte: Die Plan-Datei von
-  [slice-177](in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) ist selbst eines der
+  [slice-177](done/slice-177-beobachtungs-register-verzeichnis-form.md) ist selbst eines der
   Artefakte, die eine abgeschaffte Kennung zitieren, und verlässt die Bezugsmenge mit ihrem `git mv`
   nach `done/` ([`ADR-0016`](../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 4). Ein Nachzug
   davor zöge eine Datei mit, die danach ausdrücklich nicht mehr dazugehört. Ordnend:

@@ -7,7 +7,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Welle:** [welle-15](../welle-15-re-baseline.md) — **Mitglied**, und der Grund ist nicht Nähe,
 sondern Gleichzeitigkeit: Ab dem Moment, in dem
-[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) die Ablage umzieht, weisen
+[slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) die Ablage umzieht, weisen
 **zehn** lebende Slice-Pläne und **vier** Anweisungssatz-Dateien einen Vorgang an, den es nicht
 mehr gibt (§1, mit Kommando). Das Welle-Ziel *„statt einzeln als Nachzügler zurückzukommen"* wäre mit einem Ausgang in
 `open/` gerade nicht eingelöst — der Nachzügler wäre schon da.
@@ -41,7 +41,7 @@ noch als Tabelle mit gepflegtem Zähler.**
 
 **Der Gegenstand ist die Form-Beschreibung, nicht jede Adresse — und die Grenze ist jetzt real
 gemessen, nicht nur behauptet** (Review-Nacharbeit an
-[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md), Review-Fund
+[slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md), Review-Fund
 MEDIUM-1: die beiden Pläne wiesen sich wechselseitig dieselbe Teilmenge zu, ohne dass einer sie
 trug). [slice-177] zieht die bare Adresse `observations.md` → `observations/README.md` überall
 dort nach, wo sie **unabhängig** von der Vorlagen-Zeile unten auftritt — namentlich in allen
@@ -72,7 +72,7 @@ Setzung 2) — beide Beträge wandern mit jedem neu geschnittenen Plan.
 **Die vier sind die Form-Hälfte, nicht die Adress-Hälfte.** Nimmt man den Pfad `observations.md`
 mit ins Muster, sind es **alle sechs** Anweisungssatz-Dateien — die zwei zusätzlichen trugen die
 Adresse und sonst nichts von der alten Form, und die Adresse hat
-[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) bereits über seine
+[slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) bereits über seine
 eigene Bezugsmenge nachgezogen (alle sechs Dateien zeigen jetzt auf `observations/README.md`).
 Dieser Slice übernimmt für alle sechs nur noch die **Form**-Sprache (`BEO-<NNN>`, *Registerzeile*,
 *Zähler erhöhen*), nicht mehr die Adresse. Beide Mengen sind mit demselben Kommando und nur
@@ -87,7 +87,7 @@ dem Umzug nirgends mehr auflöst. **Hier bleibt die Form-Sprache**: der Platzhal
 schneiden sich nicht — `printf 'BEO-<NNN>\n' | grep -c 'BEO-[0-9][0-9][0-9]'` → **0**, der
 Platzhalter trägt keine dreistellige Zahl —, und die Grenze steht symmetrisch in beiden Plänen,
 wie sie es zwischen diesem Slice und
-[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) schon tut. **Kein
+[slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) schon tut. **Kein
 vierter Liefer-Punkt hier:** Die DoD unten führt drei, und Modul 5 lässt nicht mehr zu.
 
 **Zwei Ebenen, und sie sind auseinanderzuhalten.** Die drei Anweisungssätze unter
@@ -152,7 +152,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) liegt in `done/`. Der Grund ist
+[slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) liegt in `done/`. Der Grund ist
 tragend, nicht ordnend: Der Ziel-Wortlaut, den die Pläne übernehmen, ist der der neuen
 `slice.template.md`; vorher schriebe der Lauf eine Form ab, die im Repo noch keinen Gegenstand hat,
 und die zehn Pläne verwiesen auf eine Ablage, die es nicht gibt.

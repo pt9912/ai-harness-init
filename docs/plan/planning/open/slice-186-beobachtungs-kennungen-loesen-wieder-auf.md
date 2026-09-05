@@ -50,7 +50,7 @@ und setzt an ihre Stelle den Pfad `BEO-<KUERZEL>/<slug>`
 ([`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
 Festlegung 3, Katalog-Position **P-02** in
 [slice-176](../done/slice-176-inventur-vor-dem-schnitt-v600.md) §9).
-[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) hat die
+[slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) hat die
 **Verzeichnisse** gezogen; die **Zitate** der alten Nummer stehen weiter. Ein Leser, der eine
 solche Nummer nachschlägt, findet nichts — sie löst nur noch über den Elternstand des Umzugs auf.
 
@@ -100,7 +100,7 @@ verlangt sie in **jedem** beteiligten Plan; hier steht sie zum dritten Mal symme
 
 | Träger | Gegenstand | Muster |
 |---|---|---|
-| [slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) | die bare **Adresse** der Ablage | `observations.md` → `observations/README.md` |
+| [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) | die bare **Adresse** der Ablage | `observations.md` → `observations/README.md` |
 | [slice-184](slice-184-register-form-im-bestand-nachziehen.md) | die **Form-Sprache** und ihre Anweisung | `BEO-<NNN>` als Platzhalter · *Registerzeile* · *Zähler erhöhen* · die Vorlagen-Zeile |
 | **hier** | die **Kennung als Identität** einer konkreten Beobachtung | eine dreistellige Zahl an der Stelle des Platzhalters |
 
@@ -180,7 +180,7 @@ Aussagen-Berührung steht hier gar nicht.
 `harness/conventions/` und die Anweisungssatz-Dateien gehören anderen Rollen als der Plan-Bestand;
 die Präzedenz ist in diesem Repo gemessen und teuer bezahlt — derselbe Nachzug wurde an derselben
 Stelle einmal im falschen Kontext geschrieben, revertiert und als eigener Architect-Commit
-wiederholt ([slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) §6).
+wiederholt ([slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) §6).
 
 ## 4. Trigger
 
@@ -188,7 +188,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) liegt in `done/`.
+[slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) liegt in `done/`.
 Der Grund ist **tragend**, nicht ordnend: Seine Plan-Datei ist selbst eine der gemessenen 23
 (`git grep -l 'BEO-[0-9]' -- 'docs/plan/planning/in-progress/*.md'` → `roadmap.md` und jene
 Datei), und mit dem `git mv` wird sie ein Zeitdokument, das nach
@@ -251,7 +251,7 @@ dasteht.
   ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)). Wer sie im
   selben Kontext zieht wie den Plan-Bestand, hat den Rollenwechsel übersprungen, den der
   Commit-Zuschnitt nur noch abbildet — genau der Fehler, der in
-  [slice-177](../in-progress/slice-177-beobachtungs-register-verzeichnis-form.md) zweimal
+  [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) zweimal
   auftrat. — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen: Grund | weiter offen: → BEO-NNN im Register>
 - **Die sieben Vorkommen in der Ablage sind ein Auftreten von
   [`BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot`](../observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/observation.md)**
