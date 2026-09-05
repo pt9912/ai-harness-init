@@ -174,12 +174,14 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       `make docs-check`: **1** verbleibender `target-missing`-Befund, genau diese eine Zeile, 0
       sonst. Der Punkt gilt damit als erfüllt **bis auf** diese eine, bewusst belassene
       Reviewer-Übergabe.
-- [ ] `make gates` grün — blockiert durch genau den einen Rest oben
-      (`.harness/skills/reviewer.md:111`, HIGH-4-Übergabe an die Reviewer-Rolle). Alle anderen
-      Gates dieses Laufs sind einzeln grün geprüft (`baseline-verify`, `lint`, `build`, `test`
-      inkl. aller 218 bats-Fälle, `shell-lint`, `ci-lint`, `comment-claims`, `host-bin`,
-      `span-check`); die zuvor gemeldete externe Verunreinigung durch ein fremdes
-      Orchestrierungs-Artefakt (§6) ist nicht mehr reproduzierbar — das Verzeichnis ist inzwischen
+- [x] `make gates` grün — die Reviewer-Rolle hat die eine verbliebene Übergabe
+      (`.harness/skills/reviewer.md:111`) selbst geschlossen (Commit `278248f`): Zeiger auf
+      `observations/README.md` gezogen. `make gates` → EXIT 0, `d-check: 774 Datei(en) geprüft,
+      0 Befund(e)`. Alle anderen Gates dieses Laufs waren bereits einzeln grün geprüft
+      (`baseline-verify`, `lint`, `build`, `test` inkl. aller 218 bats-Fälle, `shell-lint`,
+      `ci-lint`, `comment-claims`, `host-bin`, `span-check`); die zuvor gemeldete externe
+      Verunreinigung durch ein fremdes Orchestrierungs-Artefakt (§6) ist nicht mehr
+      reproduzierbar — das Verzeichnis ist inzwischen
       ignoriert (`git log --format=%H -1 -- .gitignore` → `ac801bb`).
 - [x] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice; jede Quelle, die
       die Register-**Form** beschreibt statt nur auf sie zu zeigen, ist nachgezogen oder als
