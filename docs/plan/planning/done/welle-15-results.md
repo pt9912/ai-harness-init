@@ -96,17 +96,26 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   Ziel-Gestalt, bevor
   [slice-177](slice-177-beobachtungs-register-verzeichnis-form.md) die Ablage
   bewegte; [slice-182](slice-182-baum-tausch-v600-pins-ziehen.md) legte die
-  Vorlage netzlos vor demselben Move bereit. Keine der vier tragenden
-  Binnen-Kanten musste im Lauf umgehängt werden.
+  Vorlage netzlos vor demselben Move bereit. Keine der tragenden Binnen-Kanten
+  musste im Lauf umgehängt werden; die vierte kam mit dem achten Mitglied hinzu.
 - **Der Adaptions-Durchgang lief gegen Delta *und* Volltext.** Das ist dieselbe
   Anlage wie in [welle-14](welle-14-re-baseline.md) und deckt die
   Fehlerrichtung, die
   [`BEO-ALL/delta-durchgang-uebersieht-deckung`](../observations/BEO-ALL/delta-durchgang-uebersieht-deckung/observation.md)
   führt: ein Eintrag bleibt *gültig*, obwohl die neue Fassung seine Setzung
   wörtlich führt und er damit gegenstandslos ist.
-- **`make slice-mv` hat jeden Lifecycle-Wechsel dieser Welle selbst
-  nachgezogen** (`git log --oneline --grep='^slice-mv:'`). Wo es *nicht* griff,
-  war es die benannte Grenze und keine Überraschung — die eingehende Hälfte der
+- **`make slice-mv` trug die Lifecycle-Wechsel und zog ihre Verweise selbst
+  nach** — für **7** der **8** Mitglieder:
+
+  ```sh
+  git log --oneline --grep='^slice-mv:' --since=2026-09-04 \
+    | grep -oE 'slice-1(7[6-9]|8[2-6])' | sort -u | wc -l
+  ```
+
+  Das achte ist `slice-179`: sein Wechsel `open/` → `done/` steht als manueller
+  reiner Move (`git log --oneline --follow --diff-filter=R -- docs/plan/planning/done/slice-179-register-ortsfestigkeit-vor-dem-umzug.md`).
+  Keine Erwartungswerte. Wo das Werkzeug lief und trotzdem nicht griff, war es
+  die benannte Grenze und keine Überraschung — die eingehende Hälfte der
   präfixlosen Verweis-Form, einmal von Hand repariert
   ([`BEO-ALL/verweise-brechen-beim-ortswechsel`](../observations/BEO-ALL/verweise-brechen-beim-ortswechsel/observation.md)).
 
@@ -135,9 +144,9 @@ die daraus schon gezogen wurde (Folge-Slice, Spec-Version).
   [welle-14](welle-14-re-baseline.md), wo jede Zeile über der Schwelle bereits
   einen trug und keine Verkörperung entstand. Die Übergabe *Planner → Architect →
   Planner* (Baseline-Regelwerk `modul-08-agentenrollen.md` §Rollen-Sequenz für
-  eine Welle, Schritt 3b) lief damit in dieser Closure zum ersten Mal seit
-  [welle-10](welle-10-re-baseline.md) wieder mit Inhalt; die vier Ausgänge stehen
-  unten.
+  eine Welle, Schritt 3b) lief in dieser Closure damit mit Inhalt statt leer; ihr
+  Ergebnis sind zwei Hard Rules und ein Adaptions-Eintrag, und die vier Ausgänge
+  stehen unten.
 - **Zwei Re-Evaluierungs-Trigger von**
   [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) **sind
   mit diesem Sprung gefeuert**, und der Ausgang liegt außerhalb dieser Welle:
@@ -229,9 +238,15 @@ Closure** und werden hier nicht neu zugewiesen — zwei *verkörpert*
 [`BEO-ALL/anweisungssatz-eigentum-ohne-quelle`](../observations/BEO-ALL/anweisungssatz-eigentum-ohne-quelle/observation.md)
 → `slice-151`/`slice-152`,
 [`BEO-ALL/adaptions-block-spricht-ueber-sich-selbst`](../observations/BEO-ALL/adaptions-block-spricht-ueber-sich-selbst/observation.md)
-→ `slice-168`). Die erste dieser vier ist in dieser Welle um vier Belege
-gewachsen — der Anstieg ist selbst der Befund: die Klasse wächst schneller als
-ihr Träger.
+→ `slice-168`). Die erste dieser vier hat aus dieser Welle **3** von insgesamt
+**13** Belegen — der Anteil ist selbst der Befund: die Klasse wächst schneller
+als ihr Träger. Kommando (keine Erwartungswerte):
+
+```sh
+D=docs/plan/planning/observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/evidence
+for s in 176 177 178 179 182 184 185 186; do [ -f "$D/slice-$s.md" ] && echo "$s"; done | wc -l
+ls "$D" | wc -l
+```
 
 <!-- Gegenstück am Ziel, nicht vergessen — es ist die andere Hälfte des Paares:
      noqa-gate:  ## LH-QA-SUP-002 · seit welle-<NN>
