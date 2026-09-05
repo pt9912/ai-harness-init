@@ -99,12 +99,17 @@ Klammer darunter sagt, was abgezogen ist):
 
 | Delegierte Frage | Zieldatei | Regel-Zeilen mit Delta |
 |---|---|---|
-| Adaptions-Durchgang: *Regelt die neue Fassung das, wofür diese Adaption angelegt wurde?* | `grundlagen-harness-dateien.md` §Konventionsspeicher | **11** |
-| Form-Vergleich: *Ist dieses Feld Pflicht?* | dieselbe Datei, §Konventionsspeicher und §Einstiegspunkt | (dieselben 11) |
-| **Korrektur der Zeilen-Zuordnung:** Die Etikettierung „§Konventionsspeicher" trägt für alle 11 nicht — **9** der 11 Netto-Zeilen liegen dort (Zeilen 295–301), **2** liegen in §Verzeichniskonvention (Zeile 14), einer Sektion, in die der Freshness-Audit nicht delegiert. Die Zahl 11 selbst bleibt korrekt (dieselbe `diff`-Messung), nur ihr Sektions-Etikett war datei-skopiert statt sektions-skopiert. |
+| Adaptions-Durchgang: *Regelt die neue Fassung das, wofür diese Adaption angelegt wurde?* | `grundlagen-harness-dateien.md`, **9** in §Konventionsspeicher (Zeilen 295–301) | **9** |
+| Form-Vergleich: *Ist dieses Feld Pflicht?* | dieselbe Datei, §Konventionsspeicher und §Einstiegspunkt | (dieselben 9) |
 | Werkzeug-Wahl bei einem Stichproben-Fund | `modul-07-carveouts.md` §Werkzeug-Wahl | **0** |
 | Append-only-Disziplin beim Rückbau | `modul-04-adrs.md` | **0** |
 | dass eine Migration keine Modus-Frage ist | `grundlagen-bootstrap.md` §Modus pro Sub-Area | **0** |
+
+**Die restlichen 2 der insgesamt 11 Netto-Zeilen liegen außerhalb der Delegation.** Sie stehen in
+`grundlagen-harness-dateien.md` §Verzeichniskonvention (Zeile 14) — einer Sektion, in die der
+Freshness-Audit nicht delegiert. Die Gesamtzahl **11** bleibt die korrekte `diff`-Messung
+(`roh=13` minus `2` Herkunfts-Kommentar); nur ihre Zuordnung zu genau einer Sektion war zu grob:
+9 treffen die delegierte Frage, 2 nicht.
 
 ```sh
 for f in grundlagen-harness-dateien modul-07-carveouts modul-04-adrs grundlagen-bootstrap; do
@@ -119,7 +124,7 @@ done
 #    grundlagen-bootstrap: roh=2 herkunfts-kommentar=2
 ```
 
-**Und die 11 treffen die delegierte Frage — eine Ebene tiefer, als ein Zeilen-Diff sie findet.**
+**Und die neun treffen die delegierte Frage — eine Ebene tiefer, als ein Zeilen-Diff sie findet.**
 Die Pflichtgliederungs-**Tabellenzeile** *Modus-Deklaration pro Sub-Area* ist zwischen den Tags
 byte-gleich (in beiden Fassungen Zeile 236,
 `grep -n 'Modus-Deklaration pro Sub-Area' <datei>`). Gekippt ist die Prosa darunter, die ihre
@@ -236,8 +241,14 @@ Tragend sind zwei gemessene Gründe, und keiner davon ist von
 1. **Die Prozedur ist nicht abgeschlossen, und ihr Delegat mit Delta ist der, auf den sie am
    häufigsten zeigt.** Vier der neun Verweise gehen nach `grundlagen-harness-dateien.md`, drei
    davon in §Konventionsspeicher — die einzige der vier Zieldateien mit einem Regel-Delta. Die
-   Wahl entscheidet damit, gegen welche Pflichtgliederung der Durchgang misst, und der Unterschied
-   ist an einer lebenden Stelle des Konventionsspeichers ablesbar.
+   Wahl entscheidet damit, gegen welche Pflichtgliederung der Durchgang misst. **Der Unterschied
+   war zum Zeitpunkt dieser Entscheidung an einer Stelle des Konventionsspeichers
+   ablesbar** (`harness/conventions.md` §Modus-Deklaration pro Sub-Area, die die fehlende
+   Kürzel-Spalte damals noch mit dem abgelösten Stand begründete) — die Stelle ist inzwischen
+   durch einen eigenen Architect-Commit nachgezogen (`ADR-0034` Festlegung 3, Folgepflicht 2) und
+   liest sich heute nicht mehr als Gegenbeispiel. Das ändert das Ergebnis dieses Grundes nicht: Er
+   beschreibt die Delegat-Wahl, nicht diese eine Stelle, deren Nachzug ihn eher bestätigt als
+   widerlegt.
 2. **Die gepinnte Fassung liegt nicht mehr vendored.** Der Tausch liegt vor dem Durchgang; ein
    Lauf nach `v5.18.0` arbeitete netzlos nach einem Text, der im Arbeitsbaum fehlt.
 
