@@ -13,8 +13,12 @@
   Die sechs Commits davor (`5c85147`, `a5d190e`, `fc2b8e9`, `bd51497`, `81a2749`, `a10de4a`)
   sind Lifecycle-Bewegung; ihr Verweis-Nachzug ist hier nur dort Gegenstand, wo er einen
   Zustand hinterlassen hat (LOW-2).
-- **Arbeitsbaum:** sauber, `main` **voraus 1** gegen `origin/main` (`git status -sb`) —
-  `9a1a22f` liegt **nicht** auf dem Hauptzweig.
+- **Arbeitsbaum:** sauber. **Der Hauptzweig hat sich während dieses Laufs bewegt:** Zu Beginn
+  lag `9a1a22f` **nicht** auf `origin/main` (`git status -sb` → *voraus 1*, mit `9a1a22f` als
+  `HEAD`); am Ende zeigt `git rev-parse origin/main` auf `9a1a22f`, und
+  `git reflog show origin/main` führt ihn als `update by push`. Der Zustand, den MEDIUM-1 und
+  MEDIUM-2 beschreiben, liegt damit **auf dem Hauptzweig** und nicht nur lokal — das verschärft
+  die beiden Befunde, statt sie zu entkräften.
 - **Berührte `LH-*`:**
   [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (der Digest-Pin ist die
   Reproduzierbarkeits-Zusage) ·
