@@ -182,9 +182,11 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   [slice-129](open/slice-129-closure-notiz-hat-einen-sensor.md)** — drei Slices, nicht zwei Wellen.
 - **Zwei Übergaben an den Architect** stehen in
   [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) §6 und haben jetzt beide einen
-  Träger. Übergabe 1 — die **regierende Fassung dieses Sprungs** — trägt
-  [slice-178](in-progress/slice-178-regierende-fassung-des-sprungs-v600.md), auf der zweistufigen Messung
-  in jenem §9. Übergabe 2 — die **Buchung der Zielstand-Setzung** nach
+  Träger. Übergabe 1 — die **regierende Fassung dieses Sprungs** — ist **erledigt**: sie steht als
+  [`ADR-0036`](../adr/0036-ziel-fassung-regiert-den-sprung-v600.md) (`Proposed`, Acceptance-Trigger
+  in der Datei), entschieden von
+  [slice-178](in-progress/slice-178-regierende-fassung-des-sprungs-v600.md) auf der zweistufigen
+  Messung in jenem §9. Übergabe 2 — die **Buchung der Zielstand-Setzung** nach
   [`ADR-0031`](../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2 —
   trägt [slice-182](done/slice-182-baum-tausch-v600-pins-ziehen.md) als dessen dritter
   Liefer-Punkt, mit dem **Datum des Vollzugs**. Sie blockieren die **Eröffnung** nicht — ein
