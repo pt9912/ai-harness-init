@@ -45,7 +45,7 @@ Vorlagen-Querverweise ohne Gegenstand hier) und die Vorbedingung von **P-13** (d
 `observation.template.md` liegt netzlos erst nach dem Tausch vor).
 
 **Er entscheidet nichts über die regierende Fassung.** Das ist
-[slice-178](../next/slice-178-regierende-fassung-des-sprungs-v600.md); dieser Slice vollzieht.
+[slice-178](../in-progress/slice-178-regierende-fassung-des-sprungs-v600.md); dieser Slice vollzieht.
 
 **Die Buchung gehört hierher und nicht in den Katalog-Slice.** Die Zeile in §Baseline trägt nach
 [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2 das
