@@ -7,7 +7,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Welle:** [welle-15](../welle-15-re-baseline.md) — **Mitglied aus Gleichzeitigkeit, nicht aus
 Nähe**, dieselbe Begründung wie bei
-[slice-184](../in-progress/slice-184-register-form-im-bestand-nachziehen.md). Der Umzug dieser Welle hat die
+[slice-184](../done/slice-184-register-form-im-bestand-nachziehen.md). Der Umzug dieser Welle hat die
 fortlaufende Nummer abgeschafft; seither zitieren **23** lebende Dateien eine Kennung, die
 nirgends mehr auflöst (§1, mit Kommando). Ein Ausgang in `open/` wäre hier gerade **kein**
 verbuchter Ausgang im Sinne des Welle-Ziels *„statt einzeln als Nachzügler zurückzukommen"* — der
@@ -101,7 +101,7 @@ verlangt sie in **jedem** beteiligten Plan; hier steht sie zum dritten Mal symme
 | Träger | Gegenstand | Muster |
 |---|---|---|
 | [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) | die bare **Adresse** der Ablage | `observations.md` → `observations/README.md` |
-| [slice-184](../in-progress/slice-184-register-form-im-bestand-nachziehen.md) | die **Form-Sprache** und ihre Anweisung | `BEO-<NNN>` als Platzhalter · *Registerzeile* · *Zähler erhöhen* · die Vorlagen-Zeile |
+| [slice-184](../done/slice-184-register-form-im-bestand-nachziehen.md) | die **Form-Sprache** und ihre Anweisung | `BEO-<NNN>` als Platzhalter · *Registerzeile* · *Zähler erhöhen* · die Vorlagen-Zeile |
 | **hier** | die **Kennung als Identität** einer konkreten Beobachtung | eine dreistellige Zahl an der Stelle des Platzhalters |
 
 Die Disjunktheit ist geprüft und nicht angenommen: `printf 'BEO-<NNN>\n' | grep -c 'BEO-[0-9][0-9][0-9]'`
