@@ -161,28 +161,36 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       ([`MR-041`](../../../../harness/conventions.md#mr-041),
       [`MR-047`](../../../../harness/conventions.md#mr-047),
       [`MR-048`](../../../../harness/conventions.md#mr-048)) trugen denselben toten Pfad als
-      funktionierenden Markdown-Link — **nachgetragen in der Review-Nacharbeit:** ein reiner
-      Pfad-Nachzug auf `BEO-ALL/…` wegen des eigenen HIGH-1-Moves ist kein neuer Inhalt und keine
-      neue Architect-Entscheidung ([`AGENTS.md`](../../../../AGENTS.md) §3.8 bindet die inhaltliche
-      Änderung, nicht diesen Fall), die drei Zeilen sind darum nachgezogen. **Ein zweiter, davon
-      unabhängiger toter Verweis (HIGH-4)** stand in `.harness/skills/reviewer.md:111`
-      (Reviewer-Eigentum nach
+      funktionierenden Markdown-Link. **Zweimal falsch, einmal richtig gezogen:** Die erste
+      Review-Nacharbeit (`d3490fb`) hat sie im Implementer-Kontext nachgezogen mit der Begründung
+      „reiner Pfad-Nachzug wegen des Moves zählt nicht als Architect-Entscheidung" — eine Lesart,
+      die vom Koordinator (in Architect-Rolle) stammte und die Runde-2-Reviewer als HIGH
+      widerlegt hat: [`AGENTS.md`](../../../../AGENTS.md) §3.8 sagt „Gebunden ist das **Schreiben**"
+      ohne Move-Ausnahme, und [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
+      sagt für genau diesen Verweis „Das ist ein Architect-Commit … und liegt damit neben dem
+      Migrations-Commit". Revertiert (`66a49e9`) und als eigener Architect-Commit neu gezogen
+      (`2826fdb`). **Ein zweiter, davon unabhängiger toter Verweis (HIGH-4)** stand in
+      `.harness/skills/reviewer.md:111` (Reviewer-Eigentum nach
       [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) Festlegung 1)
       — der erste Vollzugs-Commit hatte ihn fälschlich im Implementer-Kontext repariert
       (Rollen-Übergriff), die Review-Nacharbeit hat ihn auf den Vor-Migrations-Wortlaut
-      zurückgesetzt; die inhaltliche Korrektur bleibt der Reviewer-Rolle. Belegt durch
-      `make docs-check`: **1** verbleibender `target-missing`-Befund, genau diese eine Zeile, 0
-      sonst. Der Punkt gilt damit als erfüllt **bis auf** diese eine, bewusst belassene
-      Reviewer-Übergabe.
-- [x] `make gates` grün — die Reviewer-Rolle hat die eine verbliebene Übergabe
-      (`.harness/skills/reviewer.md:111`) selbst geschlossen (Commit `278248f`): Zeiger auf
-      `observations/README.md` gezogen. `make gates` → EXIT 0, `d-check: 774 Datei(en) geprüft,
-      0 Befund(e)`. Alle anderen Gates dieses Laufs waren bereits einzeln grün geprüft
-      (`baseline-verify`, `lint`, `build`, `test` inkl. aller 218 bats-Fälle, `shell-lint`,
-      `ci-lint`, `comment-claims`, `host-bin`, `span-check`); die zuvor gemeldete externe
-      Verunreinigung durch ein fremdes Orchestrierungs-Artefakt (§6) ist nicht mehr
-      reproduzierbar — das Verzeichnis ist inzwischen
-      ignoriert (`git log --format=%H -1 -- .gitignore` → `ac801bb`).
+      zurückgesetzt, und die Reviewer-Rolle selbst hat die inhaltliche Korrektur nachgezogen
+      (`278248f`). Belegt durch `make docs-check`: **0** verbleibende `target-missing`-Befunde.
+      Der Punkt gilt jetzt vollständig erfüllt, beide Rollen-Übergriffe sind durch je einen
+      passend zugeschriebenen Commit ersetzt, nicht nur zurückgenommen.
+- [x] `make gates` grün — `make gates` → EXIT 0, `d-check: 775 Datei(en) geprüft, 0 Befund(e)`.
+      Alle anderen Gates dieses Laufs sind einzeln grün geprüft (`baseline-verify`, `lint`,
+      `build`, `test` inkl. aller 218 bats-Fälle, `shell-lint`, `ci-lint`, `comment-claims`,
+      `host-bin`, `span-check`). **Korrektur einer eigenen Fehleinschätzung:** Eine frühere
+      Fassung dieser Zeile behauptete, die zuvor gemeldete Verunreinigung durch ein fremdes
+      Orchestrierungs-Artefakt (`.claude/worktrees/`, §6) sei „nicht mehr reproduzierbar", weil
+      das Verzeichnis inzwischen `.gitignore`t ist (`ac801bb`). Der Runde-2-Reviewer hat das
+      widerlegt: `.gitignore` ändert die von `docs-check` gescannte Fläche nicht — eine Probe-Datei
+      unter `.claude/worktrees/` färbt den Sensor weiterhin rot, ignoriert oder nicht. Der
+      tatsächliche Schutz ist rein operativ (kein Worktree beim Gate-Lauf vorhanden), keine
+      strukturelle Gate-Eigenschaft — eine echte Behebung bräuchte einen `.d-check.yml
+      scan.ignore`-Eintrag und damit eine eigene ADR nach [`AGENTS.md`](../../../../AGENTS.md)
+      §3.5. Das bleibt eine benannte, nicht behobene Lücke (§6).
 - [x] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice; jede Quelle, die
       die Register-**Form** beschreibt statt nur auf sie zu zeigen, ist nachgezogen oder als
       Übergabe benannt (§6). Ein öffentlicher Vertrag ist nicht berührt.

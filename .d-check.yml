@@ -172,8 +172,10 @@ codepaths:
   # Kopie) reicht das ueber die zwei im Ursprungs-Slice genannten Klassen (docs/plan/planning/
   # done/, docs/reviews/) hinaus auf vier Klassen: docs/plan/planning/done/** (Zeitdokumente,
   # Adresse eines Vorgangs, den es gab) · docs/plan/planning/open/** (slice-151/152/153/162/168/
-  # 171/174/181 -- die alte Vorlagen-Zeile "Beobachtungs-Register (`../observations.md`)
-  # fortgeschrieben", Form-Nachzug ist slice-184s Gegenstand, nicht dieser Zeile) ·
+  # 171/174/181/184 -- neun Dateien, die alte Vorlagen-Zeile "Beobachtungs-Register
+  # (`../observations.md`) fortgeschrieben", Form-Nachzug ist slice-184s eigener Gegenstand,
+  # nicht dieser Zeile -- slice-184 traegt die Zeile selbst UND ist in dieser Liste, weil sein
+  # eigener Plan sie ebenfalls zitiert) ·
   # docs/plan/planning/in-progress/slice-177-*.md selbst (misst den Ausgangsstand vor dem eigenen
   # Umzug, Praeteritum) · docs/user/benutzerhandbuch.md (eine datierte Aenderungshistorie-Zeile,
   # Chronik von Beruf). Kein Treffer liegt ausserhalb dieser vier Klassen -- namentlich kein

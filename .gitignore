@@ -16,9 +16,11 @@
 /dist/
 
 # Isolierte Git-Worktrees fuer parallele Agenten-Laeufe (Claude-Code-Harness-
-# Feature) legen hier eine vollstaendige zweite Baum-Kopie an. Ungetrackt und
-# ungeignored liess sie docs-check den fremden Baum mitscannen (Review-Befund
-# slice-177, MEDIUM). Kein Eintrag in .d-check.yml scan.ignore -- eine
-# Erweiterung dort waere eine Gate-Senkung nach AGENTS.md §3.5 und braucht
-# eine eigene ADR; das hier ist reine Git-Tracking-Hygiene.
+# Feature) legen hier eine vollstaendige zweite Baum-Kopie an. Der Eintrag haelt
+# sie aus dem Git-Tracking heraus; er aendert NICHT die von docs-check gescannte
+# Flaeche (scan.ignore respektiert .gitignore nicht) -- ein Worktree, der beim
+# Gate-Lauf noch existiert, faerbt docs-check weiterhin rot. Der Schutz ist rein
+# operativ (kein Worktree beim Lauf), keine Gate-Eigenschaft. Ein Eintrag in
+# .d-check.yml scan.ignore waere eine Gate-Senkung nach AGENTS.md §3.5 und
+# braucht eine eigene ADR.
 .claude/worktrees/
