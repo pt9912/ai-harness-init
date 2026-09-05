@@ -86,7 +86,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       [ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md));
       kein sicherer Treffer.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — **neue
+- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — **neue
       Kennung für die Klasse** *ein `Proposed`-ADR hat keinen Träger für ihren
       Acceptance-Trigger* (Sub-Area `*`, 1×, Beleg `slice-152`); dazu
       [`BEO-007`](../observations/README.md) Stand-Spalte um den `.claude/agents/`-Ausgang

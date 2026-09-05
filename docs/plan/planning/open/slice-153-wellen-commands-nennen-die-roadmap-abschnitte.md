@@ -86,7 +86,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       oder [`harness/README.md`](../../../../harness/README.md) denselben
       abgelösten Namen tragen (kein sicherer Treffer).
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben —
+- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben —
       [`BEO-009`](../observations/README.md) bekommt den Ausgang seiner Command-Hälfte
       in der Stand-Spalte (Zähler unverändert: der Slice löst auf, er beobachtet
       nicht neu).

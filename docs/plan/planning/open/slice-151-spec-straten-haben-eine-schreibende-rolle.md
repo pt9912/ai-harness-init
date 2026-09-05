@@ -79,7 +79,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       auf die neue ADR — in eigenem Architect-Commit, **nach** DoD (2), nach dem
       Muster des bestehenden [ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)-Zeigers.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben —
+- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben —
       [`BEO-007`](../observations/README.md) bekommt den Ausgang seiner
       Spec-Straten-Hälfte (Stand-Spalte, Zähler unverändert: der Slice löst
       auf, er beobachtet nicht neu).
