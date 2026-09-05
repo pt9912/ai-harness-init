@@ -521,7 +521,7 @@ vollständig durchgegangen (**41** Verzeichnisse unter `BEO-ALL/`,
 Erwartungswert**). **Jede** Beobachtung trägt dieselbe Sub-Area `*` — die Zuordnung unterscheidet
 in diesem Repo nichts, was der Eintrag `BEO-ALL/sub-area-spalte-unterscheidet-nichts` selbst
 festhält; die Auswahl unten ist deshalb **inhaltlich** getroffen und nicht über die Sub-Area.
-**Drei Einträge berühren diesen Slice, keiner erreicht mit ihm 3×** (Zähler abgeleitet aus
+**Vier Einträge berühren diesen Slice, keiner erreicht mit ihm 3×** (Zähler abgeleitet aus
 `ls <eintrag>/evidence | wc -l`):
 
 - `BEO-ALL/register-paarung-ohne-gate-modul` (**1×**, `slice-137`, Stand `offen`) — *die maschinelle
@@ -545,6 +545,17 @@ festhält; die Auswahl unten ist deshalb **inhaltlich** getroffen und nicht übe
   [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert), die
   nachzuziehen ist. Dieselbe Linien-Frage wie beim Eintrag darüber — der Text sagt *Re-Baseline* —,
   und dieselbe Antwort: benannt, nicht stillschweigend mitgezählt.
+- `BEO-ALL/slice-plan-umfang-waechst-ueber-umsetzung-hinaus` (**2×**, `slice-136`, `slice-176`,
+  Stand `offen`) — *ein Slice-Plan trägt ein Vielfaches der Zeilenzahl, die das Schwester-Repo für
+  dieselbe Arbeitsklasse braucht*. Der Eintrag **bindet diesen Plan selbst, und er hält ihn nicht
+  ein**: `wc -l` über diese Datei liefert eine Zahl in der Größenordnung, die der Eintrag
+  beanstandet. Der Umfang steckt in §1 — sechs Messungen mit ihren Kommandos —, und er ist hier
+  nicht Zierde: Der Sprung ist der zweitgrößte dieser Linie, Messung 6 hat eine
+  Verhaltensänderung gefunden, die kein anderer Weg gezeigt hätte, und der Auflösungs-Trigger von
+  [`MR-027`](../../../../harness/conventions.md#mr-027--d-check-pin-v0650-ignore-marker-in-zwei-achsen-verengt)
+  verlangt die Bilanz ausdrücklich belegt. **Das ist eine Begründung, keine Entlastung.** Ob dieser
+  Plan die dritte Gelegenheit des Eintrags ist — dann Schwelle und eigener Folge-Slice —, ist das
+  Urteil der Closure; hier steht er benannt statt übergangen.
 
 **alle berührten Sub-Areas GF** — der Modus-Begründungsblock entfällt damit nach dem
 *Umfang*-Absatz oben (Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form:
