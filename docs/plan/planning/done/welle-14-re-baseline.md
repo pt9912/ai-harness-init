@@ -24,7 +24,7 @@ Pflicht, die die neue Fassung mitbringt, hat einen verbuchten Ausgang, statt ein
 zurückzukommen.**
 
 **Der Schnitt beginnt mit einer Inventur, nicht mit einer Schätzung.** Das ist die Lehre aus
-[welle-10](welle-10-re-baseline.md), die als `BEO-010` im [Register](../observations.md) liegt:
+[welle-10](welle-10-re-baseline.md), die als `BEO-010` im Register liegt:
 jene Welle schloss mit erheblich mehr Mitgliedern, als sie geschnitten hatte — beide Zahlen stehen
 dort neben den Kommandos, die sie ausgeben. Wie viele Mitglieder diese Welle bekommt, beantwortet
 [slice-155](slice-155-inventur-vor-dem-schnitt.md); vorher steht die Zahl nirgends.
@@ -113,7 +113,7 @@ Konsumenten, und diese zwei hatten keinen.
 **Die Zeilen 2–8 stehen seit dem Katalog** in
 [slice-155](slice-155-inventur-vor-dem-schnitt.md) §9 — 21 gemessene Positionen, jede
 mit Zuordnung und Ausgang. Bei der Eröffnung fehlten sie, und das war der Zuschnitt und nicht sein
-Mangel: `BEO-010` ([Register](../observations.md)) verlangt, dass der Form-Diff vollständig vorliegt,
+Mangel: `BEO-010` (Register) verlangt, dass der Form-Diff vollständig vorliegt,
 **bevor** der Rest geschnitten wird; eine vorab geschätzte Mitglieder-Zahl war beim letzten Mal
 genau der Fehler. Die Umplanung trägt das Drift-Log der [Roadmap](../in-progress/roadmap.md).
 
@@ -122,12 +122,12 @@ genau der Fehler. Die Umplanung trägt das Drift-Log der [Roadmap](../in-progres
 Baseline-Pins) ist ein **Sensor-Neubau**, den §6 ausschließt; die Linie trägt
 [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md). Er liegt in `open/` und ist damit verbucht,
 ohne die Welle zu dehnen. Dass die Slice-Tabelle einer Welle und ihre Out-of-Scope-Liste über
-dieselbe neue Datei Verschiedenes sagen, liegt als `BEO-018` im [Register](../observations.md).
+dieselbe neue Datei Verschiedenes sagen, liegt als `BEO-018` im Register.
 
 **Aus demselben Grund kein Mitglied:**
 [slice-168](../open/slice-168-adaptions-eintraege-trennen-abweichung-von-buchfuehrung.md) (die
 Adaptions-Einträge trennen Abweichung von Buchführung). Er ist der *geplant*-Ausgang von `BEO-014`
-im [Register](../observations.md), und `BEO-014` ist genau der Eintrag, den §6 unten ausschließt.
+im Register, und `BEO-014` ist genau der Eintrag, den §6 unten ausschließt.
 
 **Kein Mitglied, und nicht aus dem Katalog:**
 [slice-170](../done/slice-170-archivierungs-werkzeug.md) (das Archivierungs-Werkzeug der
@@ -182,7 +182,7 @@ der Closure-Trigger unerreichbar wird.
   Eintrag, statt des Inline-Blocks in
   [`harness/conventions.md`](../../../../harness/conventions.md).
   [welle-10](welle-10-re-baseline.md) §6 schloss ihn schon aus; er liegt als `BEO-014` im
-  [Register](../observations.md) und bleibt ein eigener, ungeschnittener Vorgang. Dass die neue
+  Register und bleibt ein eigener, ungeschnittener Vorgang. Dass die neue
   Fassung die Eintrags-Vorlage anfasst, zieht ihn nicht herein.
 - **Die Archivierung des Altbestands** — der geschlossenen Wellen, die vor dieser Adoption
   schlossen. Die Ziel-Fassung stellt sie ausdrücklich frei (`v5.18.0`, `modul-06-roadmap.md`,
@@ -203,7 +203,7 @@ beiden Zeiger unten sind so zu schreiben, wie sie vom Ruheort `done/` auflösen,
 nicht vom Schreibort.
 
 Die Ergebnis-Notiz ist [welle-14-results.md](welle-14-results.md), der Zähler
-[`observations.md`](../observations.md). Beide Zeiger stehen so, wie sie vom Ruheort `done/`
+`observations.md`. Beide Zeiger stehen so, wie sie vom Ruheort `done/`
 auflösen.
 
 Diese Welle schloss **ohne Schritt 4** (Zeitdokumente archivieren): dessen Start-Bedingung —

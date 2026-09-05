@@ -258,7 +258,7 @@ Beides zusammen macht unschließbar; eines allein nicht.
   nach dem Tausch geschriebenen Eintrag genauso; [slice-083](slice-083-form-vergleich-pflichtfelder.md)
   §2 nimmt ihn ausdrücklich mit hinein (*„den überlebenden wie den unter dem neuen Stand
   geschriebenen"*). Bei der zweiten Menge dieses Durchgangs, den Singleton-Artefakten, erzeugt der
-  Zuwachs gar keine Arbeit: das jüngste, [`observations.md`](../observations.md), entsteht per `cp`
+  Zuwachs gar keine Arbeit: das jüngste, `observations.md`, entsteht per `cp`
   aus `.harness/baseline/v5.12.0/templates/docs/plan/planning/observations.template.md` und trägt
   die Ziel-Form schon beim Anlegen.
 
@@ -478,11 +478,11 @@ Setzung 3 auf *nicht eingetreten*, während `grundlagen-source-precedence.md`
 Form nach erfüllt und der Sache nach nicht. Gefunden hat beides der **Form**-Durchgang
 ([slice-083](slice-083-form-vergleich-pflichtfelder.md) §6), weil dessen Pflichtfeld
 jeden Eintrag gegen den Volltext des adoptierten Stands hält statt gegen das Delta; die Klasse
-zählt [`BEO-013`](../observations.md). Der dritte Posten von 150 —
+zählt `BEO-013`. Der dritte Posten von 150 —
 [`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt),
 dessen Rumpf gegen den abgelösten Tag argumentiert — gehört zu Durchgang 2 und reist mit, weil er
 dieselbe Datei und dieselbe Rolle trägt. **Der Preis steht daneben:** die Mitglieder-Zahl steigt
-erneut, und genau das ist der Gegenstand von [`BEO-010`](../observations.md); als **Auftreten** jener
+erneut, und genau das ist der Gegenstand von `BEO-010`; als **Auftreten** jener
 Beobachtung zählt dieser Slice trotzdem nicht — ein vorgeschalteter Inventur-Slice hätte einen
 falschen Achse-1-Ausgang nicht verhindert.
 

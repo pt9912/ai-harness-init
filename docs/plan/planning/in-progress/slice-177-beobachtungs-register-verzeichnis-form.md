@@ -112,7 +112,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Die Ablage steht in der Ziel-Form.** Ein Verzeichnis `observations` unter
+- [x] **Die Ablage steht in der Ziel-Form.** Ein Verzeichnis `observations` unter
       `docs/plan/planning/` trägt je Beobachtung ein Verzeichnis nach `observation.template.md`
       des dann vendored Stands — `observation.md`, `state.md`, `evidence/` mit einer Datei je
       Auftreten — plus die `README.md`, die die Ablage auch leer sichtbar hält. **Die Gestalt ist
@@ -125,10 +125,15 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       trägt `ALL`, und alle Einträge des Ausgangsstands führen diese Sub-Area.
       Vollständigkeit gemessen statt behauptet: die Zahl der Verzeichnisse deckt
       `grep -c '^| BEO-' docs/plan/planning/observations.md` und die Zahl der Evidence-Dateien die
-      Summe der Zähler-Spalte, beides am Ausgangsstand.
+      Summe der Zähler-Spalte, beides am Ausgangsstand — der Ausgangsstand ist am Vollzugs-Commit
+      nur noch über `git show <parent>:docs/plan/planning/observations.md` erreichbar, weil die
+      Datei danach entfällt. Nachgemessen für **jeden** der 39 Einträge (nicht nur die Summe): Ein
+      Vergleichs-Lauf hielt die Zähler-Spalte je `BEO-<NNN>` gegen die Zahl der Dateien unter dem
+      jeweiligen `evidence/` — **39 von 39** identisch, **0** Abweichungen.
 - [ ] **Kein Verweis zeigt ins Leere.** Die lebenden Referenzen sind nachgezogen — Bezugsmenge
       `git grep -l 'observations\.md' -- '*.md' ':!.harness/baseline' | wc -l`
-      (2026-09-04: **93** Dateien, **491** Vorkommen mit `-o … | wc -l`; keine Erwartungswerte,
+      (2026-09-05, am Start dieses Laufs: **112** Dateien, **615** Vorkommen mit `-o … | wc -l`;
+      gewachsen gegenüber dem Planungsstand, keine Erwartungswerte,
       [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
       Setzung 2). **Der Doppel-Anker-Mechanismus des Vorbilds hat hier keinen Gegenstand:** die
       Referenzen tragen keinen Eintrags-Anker, gemessen mit
@@ -139,12 +144,28 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Markdown-Link auf die Register-Datei und steht auf `Accepted`. Ihr Ausgang ist ein viertes,
       namentlich geschnittenes `ignore-refs`-Paar
       ([`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
-      Festlegung 2, samt Config-Kommentar und den zwei Belegläufen ihrer Folgepflicht 1). Alle
-      übrigen betroffenen Dateien sind änderbar: lebende Artefakte werden nachgezogen,
-      Zeitdokumente verlieren die Adresse und behalten den Text
-      ([`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 4).
-      Belegt durch `make docs-check` ohne Befund.
-- [ ] `make gates` grün.
+      Festlegung 2, samt Config-Kommentar und den zwei Belegläufen ihrer Folgepflicht 1) — beide
+      Belegläufe in `.d-check.yml` gefahren: mit dem Eintrag fehlt der Befund, ohne ihn steht er.
+      Alle übrigen betroffenen Dateien sind änderbar: lebende Artefakte sind nachgezogen (Pfad
+      `observations.md` → `observations/README.md`), Zeitdokumente haben die Adresse verloren und
+      den Text behalten
+      ([`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 4) — **mit einer
+      benannten Ausnahme, die diese Zeile nicht erfüllt:** drei Einträge des Adaptions-Blocks
+      ([`MR-041`](../../../../harness/conventions.md#mr-041),
+      [`MR-047`](../../../../harness/conventions.md#mr-047),
+      [`MR-048`](../../../../harness/conventions.md#mr-048)) tragen denselben toten Pfad als
+      funktionierenden Markdown-Link und sind nach [`AGENTS.md`](../../../../AGENTS.md) §3.8
+      Architect-Eigentum — der Implementer-Lauf darf sie nicht anfassen und kein fünftes
+      `ignore-refs`-Paar ohne eigene ADR anlegen ([`AGENTS.md`](../../../../AGENTS.md) §3.5). Belegt
+      durch `make docs-check`: **3** verbleibende `target-missing`-Befunde, alle in dieser Klasse,
+      0 sonst (neben einer externen Verunreinigung des Arbeitsbaums durch ein fremdes
+      Orchestrierungs-Artefakt, siehe §6). Der Punkt ist damit **nicht** vollständig erfüllt — die
+      Reparatur der drei Zeilen ist eine Übergabe an den Architect (§6).
+- [ ] `make gates` grün — blockiert durch denselben Rest (§6): `docs-check` bleibt rot, solange die
+      drei Architect-Zeilen stehen. Alle anderen Gates dieses Laufs sind einzeln grün geprüft
+      (`baseline-verify`, `lint`, `build`, `shell-lint`, `ci-lint`, `comment-claims`); `test`
+      zeigte einen Fehlschlag, der auf dieselbe externe Verunreinigung zurückgeführt und dort
+      reproduziert wurde (§6), nicht auf diesen Diff.
 - [ ] Doku-Update: [welle-15](../welle-15-re-baseline.md) §4 führt diesen Slice; jede Quelle, die
       die Register-**Form** beschreibt statt nur auf sie zu zeigen, ist nachgezogen oder als
       Übergabe benannt (§6). Ein öffentlicher Vertrag ist nicht berührt.
@@ -230,24 +251,71 @@ dasteht.
 - **Ein Verweis-Nachzug über 93 Dateien bricht etwas, das kein Gate sieht** (`BEO-003`, 5×,
   **verkörpert** in `make slice-mv`). Dessen Deckung gilt Slice-Adressen; für diese Datei gibt es
   keinen Träger, und die präfixlose Form bricht in beide Richtungen. `make docs-check` fängt die
-  Link- und Codepath-Hälfte, nicht die Inline-Code-Hälfte (`BEO-025`). — **Ausgang:** <…>
+  Link- und Codepath-Hälfte, nicht die Inline-Code-Hälfte (`BEO-025`). — **Ausgang: entfallen.**
+  Dieser Vorgang ist kein Lifecycle-`git mv` einer Slice-Datei — der Vollzugs-Commit zeigt keine
+  `R`-Zeile in `git diff-tree --name-status -M` (Plan §3) —, `make slice-mv` ist darum nicht
+  einschlägig und seine Grenze trifft diesen Fall nicht. Der Nachzug lief stattdessen manuell
+  (gezielte `sed`-Ersetzungen je Klasse: Lebend → Pfad umgehängt, Zeitdokument → Adresse verloren)
+  und iterativ gegen `make docs-check`, bis nur die unten neu benannte Ausnahme stand.
 - **Die Form-Beschreibung steht an mehreren Orten und zieht nicht mit** (`BEO-009`, 9×). Der
   Kopftext des Registers, die drei Anweisungssätze unter `.claude/commands/` und ihre emittierten
   Gegenstücke beschreiben die heutige Tabellen-Form — dazu die Vorlagen-Zeile *„Beobachtungs-Register
   (`../observations.md`) fortgeschrieben"*, die in **jedem** offenen Slice-Plan steht. Wer die
-  Anweisungssätze schreiben darf, ist die offene Frage aus `BEO-007`. — **Ausgang:** <…>
+  Anweisungssätze schreiben darf, ist die offene Frage aus `BEO-007`. — **Ausgang: weiter offen.**
+  Unverändert gegenüber dem migrierten Registerstand (`BEO-009`/`BEO-007`); dieser Slice zieht laut
+  §1 ausdrücklich nur die **Adresse** `observations.md` → `observations/README.md` nach, nicht die
+  **Form-Beschreibung** — Letztere bleibt [slice-184](../open/slice-184-register-form-im-bestand-nachziehen.md)
+  zugewiesen.
 - **Die Zwischen-Zustands-Zusage ist nicht bewiesen, sondern hergeleitet.** Dass zwei Closures an
   verschiedenen Beobachtungen nicht mehr kollidieren, folgt aus der Datei-Trennung; ein
   Gegenbeispiel ist hier **nicht** rot gesehen ([`AGENTS.md`](../../../../AGENTS.md) §3.6), und kein
   Sensor misst Merge-Verhalten. Der Slice sagt darum die **Eigenschaft der Ablage** zu, nicht ein
-  Ausbleiben von Konflikten. — **Ausgang:** <…>
+  Ausbleiben von Konflikten. — **Ausgang: weiter offen.** Unverändert seit der Planung — kein Sensor
+  für Merge-Verhalten existiert und wurde in diesem Lauf auch nicht gebaut (außerhalb des
+  Liefer-Umfangs). Kandidat für das Beobachtungs-Register bei der Closure.
 - **Der Umzug überträgt einen Inhalt, den er zugleich zerlegt.** Aus einer Tabellenzelle werden
   `observation.md`, `state.md` und je Beleg eine Datei; die heutigen Zellen mischen Identität,
   Stand und Beleg-Prosa in einem Absatz. Die Zerlegung ist ein **Urteil** je Eintrag, kein
   Formatwechsel — 29 Einträge mit **58** Belegen
   (`awk -F'|' '/^\| BEO-/{gsub(/[^0-9]/,"",$5); s+=$5} END{print s}' docs/plan/planning/observations.md`,
   kein Erwartungswert). Reicht sie über eine Review-Sitzung hinaus, greift die erste Rückführung
-  aus §4. — **Ausgang:** <…>
+  aus §4. — **Ausgang: eingetreten, ohne die Rückführung auszulösen.** Der Bestand wuchs zwischen
+  Planung und Vollzug auf 39 Einträge mit 82 Belegen; die Zerlegung ist vollzogen und **maschinell
+  nachgeprüft** (Zähler-Deckung 39/39 gegen den Ausgangsstand, siehe DoD 1) statt nur behauptet. Ob
+  die Menge eine Review-Sitzung überschreitet, ist eine Reviewer-Entscheidung und wird hier nicht
+  vorweggenommen; die Rückführung bleibt dem Reviewer/Planner vorbehalten, falls sie doch greift.
+- **Drei Architect-Zeilen tragen nach dem Wegfall einen toten Verweis, den der Implementer-Lauf
+  nicht reparieren darf** — neu, während des Vollzugs gefunden, kein Eintrag im
+  Beobachtungs-Register zum Planungszeitpunkt.
+  [`MR-041`](../../../../harness/conventions.md#mr-041),
+  [`MR-047`](../../../../harness/conventions.md#mr-047) und
+  [`MR-048`](../../../../harness/conventions.md#mr-048) verlinken `BEO-008` über
+  `docs/plan/planning/observations.md`; alle drei
+  gehören zum Adaptions-Block und sind damit nach [`AGENTS.md`](../../../../AGENTS.md) §3.8
+  Architect-Eigentum, unabhängig davon, dass die Reparatur selbst trivial wäre (Pfad → `observations/README.md`).
+  Ein fünftes `ignore-refs`-Paar ohne eigene ADR verstieße gegen
+  [`AGENTS.md`](../../../../AGENTS.md) §3.5 und die in [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
+  Festlegung 2 gezogene Grenze. — **Ausgang: weiter offen.** Übergabe an den Architect: entweder die
+  drei Zeilen in einem eigenen Architect-Commit nachziehen, oder — falls das aus anderem Grund nicht
+  gewünscht ist — einen Folge-ADR für ein fünftes `ignore-refs`-Paar. Bis dahin bleibt `make
+  docs-check` mit genau **3** `target-missing`-Befunden rot.
+- **Ein fremdes Orchestrierungs-Artefakt im Arbeitsbaum verfälscht Gate-Läufe** — kein Risiko dieses
+  Slice-Inhalts, aber während der Verifikation gefunden und rot-dann-grün belegt
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.6): ein unversionierter, ungeignorter Git-Worktree unter
+  `.claude/worktrees/agent-a7cc0039bb43f2cee/` (eine volle zweite Baumkopie einer anderen,
+  gleichzeitig laufenden Sitzung) liegt im von `.d-check.yml` gescannten Wurzelverzeichnis und
+  verdoppelt Treffer für `make docs-check` (5484 zusätzliche Befunde, gemessen mit/ohne die
+  ausgeschlossene Teilmenge) **und** löst über eine `pipefail`+`SIGPIPE`-Interaktion in
+  `harness/tools/comment-claims.sh` einen falschen `bats`-Fehlschlag aus (Test *„Behauptung MIT
+  Sensor-Nennung: gruen"*, `test/comment-claims.bats:27`): `find … | xargs … grep -lE … | grep -q .`
+  liefert bei **zwei** Treffern (Original + Worktree-Duplikat von `internal/gen/gen_test.go`)
+  reproduzierbar `NOT FOUND`, bei **einem** Treffer (Worktree-Pfad aus `find` ausgeschlossen)
+  zuverlässig `FOUND` — beide Zustände gegeneinander gemessen, nicht nur behauptet. — **Ausgang:
+  weiter offen**, außerhalb des Eigentums dieses Slice: Weder die Worktree-Bereinigung noch eine
+  `.gitignore`-Ergänzung für `.claude/worktrees/` gehören zum Liefer-Umfang; die Beobachtung ist ein
+  Kandidat für das Beobachtungs-Register (Sub-Area `harness/tools/`, Fund: ein zweiter Treffer kann
+  eine `pipefail`-Pipeline in `comment-claims.sh` durch SIGPIPE zum Fehlschlag bringen, unabhängig
+  von seiner Ursache).
 
 ## 7. Closure-Notiz
 
@@ -289,7 +357,7 @@ die Modus-Deklaration in
 [`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area) für
 das Planning-Layout führt; `harness/tools/` und `.codex/` sind nicht berührt.
 
-**Vorgelagert — offene Beobachtungen sichten:** Das [Register](../observations.md) ist vollständig
+**Vorgelagert — offene Beobachtungen sichten:** Das [Register](../observations/README.md) ist vollständig
 durchgegangen. **Jede** Zeile trägt `*` (gesamtes Repo) — die Spalte unterscheidet in diesem Repo
 nichts (`BEO-004`). Fünf Zeilen berühren diesen Slice mit ihrem Zähler-Stand:
 

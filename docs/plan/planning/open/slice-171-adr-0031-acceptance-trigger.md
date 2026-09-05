@@ -16,7 +16,7 @@ Closure-Bedingung, die mehr beobachtet als die DoD dieses Slice. Es gibt keine.
 (Nachbarfall; ihr Acceptance-Trigger liegt bei
 [slice-152](slice-152-adr-0029-acceptance-trigger.md) — derselbe Bauplan),
 Baseline-Regelwerk `grundlagen-bootstrap.md` §Vier Trigger-Klassen
-(Acceptance-Trigger), [`BEO-007`](../observations.md).
+(Acceptance-Trigger), [`BEO-007`](../observations/README.md).
 
 **Berührte Spec-Stellen:** `—`.
 [ADR-0031](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
@@ -101,7 +101,7 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | [`docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) | update (Status + Geschichte-Zeile + Trigger-Verdikt), Architect | DoD (1)/(2); nach `Accepted` immutabel ([`AGENTS.md`](../../../../AGENTS.md) §3.4) — DoD (2) gehört **vor** den Status-Wechsel |
 | [`docs/plan/adr/README.md`](../../adr/README.md) | update (Status-Spalte), Architect | DoD (1) — derivatives Register desselben Originals ([ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)) |
-| [`docs/plan/planning/observations.md`](../observations.md) | update | Register-Pflicht (nicht mitgezählt) |
+| [`docs/plan/planning/observations.md`](../observations/README.md) | update | Register-Pflicht (nicht mitgezählt) |
 
 **Commit-Zuschnitt nach Rollen:** ein Reviewer-Durchgang ohne eigenen Commit
 (Konsistenz ist Voraussetzung, kein Artefakt), danach ein Architect-Commit für
@@ -201,15 +201,15 @@ unter den Eintrag `*` (gesamtes Repo) der Modus-Deklaration in
 — **alle berührten Sub-Areas GF**, der Modus-Begründungsblock entfällt damit
 nach dem *Umfang*-Absatz oben.
 
-**Vorgelagert — offene Beobachtungen sichten:** [`BEO-007`](../observations.md)
+**Vorgelagert — offene Beobachtungen sichten:** [`BEO-007`](../observations/README.md)
 (4×, *wer ein Norm-Artefakt schreiben darf*) berührt diesen Slice am Rand — der
 Status-Übergang selbst ist unstrittig Architect-Arbeit, die Frage jener Zeile
 betrifft die Anweisungssätze und nicht die ADR; der Slice erhöht sie nicht.
-[`BEO-019`](../observations.md) (1×, Byte-Gleichheit eines Regelwerks-Abschnitts
+[`BEO-019`](../observations/README.md) (1×, Byte-Gleichheit eines Regelwerks-Abschnitts
 als Aussage über die Regel) ist der **Gegenstand** der zu prüfenden ADR und
 steht dort als §Kontext.
-[`BEO-020`](../observations.md) (2×, *ein Auflösungs-Trigger feuert und bleibt
+[`BEO-020`](../observations/README.md) (2×, *ein Auflösungs-Trigger feuert und bleibt
 unbemerkt*) trägt DoD (2): der vierte Re-Evaluierungs-Trigger ist genau dieser
 Fall, mit Anlass eingetreten und Bedingung offen.
-[`BEO-016`](../observations.md) (1×, Plan-Umfang) ist auf diesen Plan angewandt
+[`BEO-016`](../observations/README.md) (1×, Plan-Umfang) ist auf diesen Plan angewandt
 statt notiert. Keine weiteren Treffer.

@@ -211,10 +211,10 @@ alle drei Kommandos geben gegen `v5.18.0` unverändert **1** aus —, den Schrei
   Abschnittszahl **6** → **7**, der Adaptions-Speicher **148 721** → **339 546**); auf der
   Baum-Seite bewegte sich zweierlei (die Konventions-Vorlage des vendored Satzes wuchs von
   **8 785** auf **9 658** Zeichen, und zwei wiederkehrende Vorlagen kamen hinzu). Kein Zielort — die Lücke ist **benannt**, nicht
-  verkörpert: sie liegt als sechster Beleg an [`BEO-009`](../observations.md), und ihr Ausgang
+  verkörpert: sie liegt als sechster Beleg an `BEO-009`, und ihr Ausgang
   hängt an dem dort geplanten [slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md).
 - **Beobachtungs-Register (`../observations.md`):** keine neue Kennung —
-  [`BEO-009`](../observations.md) von 5× auf **6×** erhöht, Beleg `slice-165`. Die Klasse ist
+  `BEO-009` von 5× auf **6×** erhöht, Beleg `slice-165`. Die Klasse ist
   dieselbe: ein Vorgang korrigiert die Ableitung (den Pfad) und lässt die daneben stehende Zusage
   (die zitierte Zahl) stehen, und kein Gate prüft deren Wahrheitsgehalt.
 - **Folge-Slices:** [slice-169](../done/slice-169-agents-37-messstaende-gegen-v5180.md) — die vier
@@ -254,6 +254,6 @@ führt keine engere, und die Treffer liegen quer über den Baum.
 daneben bleibt stehen*, Schwelle erreicht) trägt genau die Unterklasse, die dieser Slice abarbeitet
 — ihre Stand-Zelle nennt *„Präsens-Satz über den vendored Baum"* ausdrücklich als offen und
 sensorlos. `BEO-015` (*Zahl steht neben einem nie gefahrenen Kommando*) bindet die Arbeitsweise
-dieses Durchgangs. Zähler-Stände siehe [Register](../observations.md). Weitere Treffer: keine.
+dieses Durchgangs. Zähler-Stände siehe Register. Weitere Treffer: keine.
 
 **alle berührten Sub-Areas GF** — der Modus-Begründungsblock entfällt damit.

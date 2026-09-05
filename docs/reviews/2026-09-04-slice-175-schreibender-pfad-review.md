@@ -6,7 +6,7 @@
 | **Review-Art** | Diff gegen Plan und Hard Rules. **Nicht** DoD-Abhakung und **keine** Gate-Lauf-Bestätigung (Verifier, Modul 11) |
 | **Gegenstand** | `git diff a795e53..ef18c90` — drei Implementations-Commits `1e18b7e` (schreibender Pfad in `internal/archive` + `cmd/`), `f85e9a4` (Ablösung: Helfer, bats-Satz, sieben Mutations-Fälle, `Makefile`, `.d-check.yml`, `harness/README.md`), `ef18c90` (neun Kommentare + Kopf-Feld `Verantwortlich:`) |
 | **Plan** | [`docs/plan/planning/done/slice-175-archive-welle-schreibender-pfad.md`](../plan/planning/done/slice-175-archive-welle-schreibender-pfad.md) |
-| **Vorherige Findings am gleichen Modul** | [`2026-09-03-slice-173-vorschau-zweig-review.md`](2026-09-03-slice-173-vorschau-zweig-review.md) · [`2026-09-03-slice-173-vorschau-zweig-review-runde-2.md`](2026-09-03-slice-173-vorschau-zweig-review-runde-2.md) · [`2026-09-03-slice-170-impl-review.md`](2026-09-03-slice-170-impl-review.md) — dieselbe Operation, lesender Zweig bzw. Shell-Fassung. Deren tragende Klasse `BEO-025` (*Zusage nennt einen Geltungsbereich, den der Code darunter nicht hält; in ihrer schärfsten Form nennt sie einen Sensor, der die Form nicht sieht*) steht im [Register](../plan/planning/observations.md) offen |
+| **Vorherige Findings am gleichen Modul** | [`2026-09-03-slice-173-vorschau-zweig-review.md`](2026-09-03-slice-173-vorschau-zweig-review.md) · [`2026-09-03-slice-173-vorschau-zweig-review-runde-2.md`](2026-09-03-slice-173-vorschau-zweig-review-runde-2.md) · [`2026-09-03-slice-170-impl-review.md`](2026-09-03-slice-170-impl-review.md) — dieselbe Operation, lesender Zweig bzw. Shell-Fassung. Deren tragende Klasse `BEO-025` (*Zusage nennt einen Geltungsbereich, den der Code darunter nicht hält; in ihrer schärfsten Form nennt sie einen Sensor, der die Form nicht sieht*) steht im Register offen |
 | **Bindende ADRs** | [ADR-0033](../plan/adr/0033-wellen-archivierung-als-unterkommando.md) (**`Proposed`** — Architect-Verdikt, das der Port als Constraint liest; ihre drei Abnahme-Kriterien, Festlegung 2 und 3 und die fünf Folgepflichten sind hier Prüfmaßstab, weil der Plan sie als solchen nennt), [ADR-0028](../plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) (**`Accepted`** — Eigentum am Anweisungssatz), [ADR-0022](../plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md), [ADR-0003](../plan/adr/0003-go-native-binaries.md) |
 | **Anforderungen** | [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten); [`AGENTS.md`](../../AGENTS.md) §3.2, §3.3, §3.6, §3.7, §3.9; [`MR-009`](../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile), [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) |
 | **Skill-Version** | `.harness/skills/reviewer.md` 1.6.0 |
@@ -111,7 +111,7 @@ unten sind darum **gemessen grün unter der Mutation**, nicht aus dem Test-Besta
 - **pfad:** [`…/slice-175-archive-welle-schreibender-pfad.md`](../plan/planning/done/slice-175-archive-welle-schreibender-pfad.md)
   Zeile 160 und 168 (§6) sowie Zeile 220-222 (§8)
 - **befund:** §8 und §6 führen `BEO-009` mit **8×** und `BEO-025` mit **1×**; das
-  [Register](../plan/planning/observations.md) führt sie mit **9×** bzw. **2×**
+  Register führt sie mit **9×** bzw. **2×**
   (`awk -F'|' '/BEO-0(09|25)/ {print $2, $5, $6}' docs/plan/planning/observations.md`). Beide Zahlen
   stehen ohne das Kommando, das sie liefert. Die Folge ist nicht kosmetisch: mit dem wahren Stand
   **2×** erreicht `BEO-025` durch diesen Slice die **dritte** Nennung, womit die Sichtungs-Regel
@@ -129,7 +129,7 @@ unten sind darum **gemessen grün unter der Mutation**, nicht aus dem Test-Besta
   Zustand und Beleg) · [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) ·
   [ADR-0033](../plan/adr/0033-wellen-archivierung-als-unterkommando.md) Folgepflicht 3 (*geänderte
   Ableitung, stehengebliebene Zusage*)
-- **pfad:** [`docs/plan/planning/observations.md`](../plan/planning/observations.md) Zeile 74
+- **pfad:** `docs/plan/planning/observations.md` Zeile 74
   (`BEO-026`); dieselbe Klasse in Zeile 73 (`BEO-025`) und Zeile 77 (`BEO-029`)
 - **befund:** Die Zelle sagt *„der Shell-Träger schreibt weiter `untrackte Datei(en)`
   (`grep -c 'untrackte Datei(en)' harness/tools/archive-welle.sh`), und seine Ablösung liegt bei

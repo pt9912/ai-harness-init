@@ -169,7 +169,7 @@ Backticks).
   Kurzschluss nahe (*„[`ADR-0003`](../../adr/0003-go-native-binaries.md) streicht das OCI-Image,
   also erledigt"*) und wurde verworfen — die ADR entscheidet den **Vertriebskanal**, nicht die
   Frage, woran ein Lauf wiederholbar ist. Genau diese Falle führt
-  [`BEO-008`](../observations.md), und §8 hat sie vor der Messung benannt.
+  `BEO-008`, und §8 hat sie vor der Messung benannt.
 - **Was ging anders als geplant:** Zweierlei. (1) Die höherrangige Quelle drehte ein Verdikt um.
   Für die emittierten Skelette sah die Baseline-Regel (*„per Digest, nicht per Tag"*) nach einer
   glatten Abweichung aus; [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)
@@ -182,14 +182,14 @@ Backticks).
 - **Steering-Loop-Eintrag: eine benannte Lücke, gezählt statt verkörpert.** Ein Folge-Slice, der
   über einen Baseline-Sprung hinweg in `open/` wartet, hält eine Pflicht, die sich unter ihm
   bewegt haben kann — und kein Schritt hält den Bestand offener Slice-Pläne gegen den neuen Stand
-  ([`BEO-023`](../observations.md), 1×). Mit diesem Slice ist nichts verkörpert: der Eintrag steht
+  (`BEO-023`, 1×). Mit diesem Slice ist nichts verkörpert: der Eintrag steht
   bei 1×, der Lese-Schritt greift bei 3×.
 - **Beobachtungs-Register (`../observations.md`):** eine neue Kennung —
-  [`BEO-023`](../observations.md) (Sub-Area `*`, 1×, Beleg `slice-160`). Kein bestehender Eintrag
-  wurde erhöht, und die drei Kandidaten sind geprüft: [`BEO-008`](../observations.md) bleibt bei
+  `BEO-023` (Sub-Area `*`, 1×, Beleg `slice-160`). Kein bestehender Eintrag
+  wurde erhöht, und die drei Kandidaten sind geprüft: `BEO-008` bleibt bei
   1× — dieser Lauf ist die **Anwendung** der Lehre, kein zweites Auftreten des Kurzschlusses;
-  [`BEO-009`](../observations.md) bleibt bei 5×, weil dieser Lauf keine Ableitung ändert und
-  darum keine Zusage stehen lassen kann; [`BEO-013`](../observations.md) bleibt bei 1×, weil seine
+  `BEO-009` bleibt bei 5×, weil dieser Lauf keine Ableitung ändert und
+  darum keine Zusage stehen lassen kann; `BEO-013` bleibt bei 1×, weil seine
   Bezugsmenge die Adaptions-Einträge sind, nicht die offenen Slice-Pläne.
 - **Folge-Slices:** keiner geschnitten — das ist Planner-Arbeit. **Ein offener Punkt zur
   Übergabe:** die Fracht von

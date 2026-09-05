@@ -214,7 +214,7 @@ dasteht.
   Pflicht, als erster Liefer-Punkt vor dem Rest-Schnitt — hätte die vier der
   zweiten Klasse vorweggenommen, nicht die sieben der ersten und dritten. —
   **Ausgang:** **weiter offen** → Beobachtungs-Register,
-  [`BEO-010`](../observations.md) (Sub-Area `*`, 1×, Beleg `slice-149`,
+  `BEO-010` (Sub-Area `*`, 1×, Beleg `slice-149`,
   angelegt unter DoD (3)). Kein Folge-Slice: der Eintrag steht bei 1× und
   wartet auf den Lese-Schritt, der bei 3× greift.
 - **Beobachtungs-Kandidat (b) — jede Minor-Version wird adoptiert, nicht
@@ -230,7 +230,7 @@ dasteht.
   [ADR-0018](../../adr/0018-ziel-fassung-regiert-die-migration.md) §Wer den
   Zielstand bewegt für den Einzelfall entscheidet — hier für die
   wiederkehrende Klasse. — **Ausgang:** **weiter offen** →
-  Beobachtungs-Register, [`BEO-011`](../observations.md) (Sub-Area `*`, 1×,
+  Beobachtungs-Register, `BEO-011` (Sub-Area `*`, 1×,
   Beleg `slice-149`, angelegt unter DoD (3)). Der Eintrag führt den nächsten
   Fall bereits mit: `make baseline-freshness` meldet am 2026-09-01
   `gepinnt: v5.12.0` gegen `latest: v5.18.0` bei Exit 2 (beide Angaben wandern
@@ -322,7 +322,7 @@ Setzung 2):
   erhoben statt aus dem Plan übernommen. Und der dritte
   Risiko-Ausgang hatte diesmal einen Ort: beide Beobachtungen gingen ins
   Register, statt als Folge-Slice geschnitten zu werden — genau die Route, die
-  [`BEO-001`](../observations.md) verkörpert hat.
+  `BEO-001` verkörpert hat.
 - **Was ging anders als geplant:** Zwei Dinge. (1) `make mutate` war im ersten
   Lauf rot, und zwar ohne Fall-Befund: ein Docker-Hub-502 beim Image-Zug. Der
   Zweitlauf lief sauber. §4 führt die Netz-Bedingung nur als Startbedingung für
@@ -340,17 +340,17 @@ Setzung 2):
 - **Steering-Loop-Eintrag: zwei benannte Lücken, gezählt statt verkörpert.**
   (a) Eine Re-Baseline wird ohne vorgeschalteten Inventur-Slice eröffnet, und
   die Form-Pflichten der neuen Fassung kommen einzeln als Nachzügler zurück
-  ([`BEO-010`](../observations.md), 1×). (b) Baseline-Sprünge werden gesammelt
+  (`BEO-010`, 1×). (b) Baseline-Sprünge werden gesammelt
   statt einzeln adoptiert, und die Kosten einer Re-Baseline wachsen mit der
-  Sprungweite statt mit dem Prozess ([`BEO-011`](../observations.md), 1×).
+  Sprungweite statt mit dem Prozess (`BEO-011`, 1×).
   Keine der beiden ist mit diesem Slice verkörpert: beide stehen bei 1×, der
   Lese-Schritt greift bei 3×. (b) ist zusätzlich eine Norm-Aussage über den
   Adoptions-Rhythmus und damit Architect-Sache
   ([`AGENTS.md`](../../../../AGENTS.md) §3.8) — ein Planner-Slice kann sie
   benennen, nicht schreiben.
 - **Beobachtungs-Register (`../observations.md`):** zwei neue Kennungen —
-  [`BEO-010`](../observations.md) (Sub-Area `*`, 1×, Beleg `slice-149`) und
-  [`BEO-011`](../observations.md) (Sub-Area `*`, 1×, Beleg `slice-149`). Kein
+  `BEO-010` (Sub-Area `*`, 1×, Beleg `slice-149`) und
+  `BEO-011` (Sub-Area `*`, 1×, Beleg `slice-149`). Kein
   bestehender Eintrag wurde erhöht: keine der vorgefundenen Zeilen deckt eine
   der beiden Beobachtungen, und der Sichtungs-Schritt in §8 hat das vor dem
   Anlegen geprüft.
@@ -401,7 +401,7 @@ fallen unter den Eintrag `*` (gesamtes Repo) der Modus-Deklaration in
 
 **Vorgelagert — offene Beobachtungen sichten:** Register durchgegangen
 (`docs/plan/planning/observations.md`). Die Sub-Area-Spalte trägt nur `*` und
-schließt damit jede Berührung ein ([`BEO-004`](../observations.md)); **kein
+schließt damit jede Berührung ein (`BEO-004`); **kein
 Eintrag erreicht mit diesem Slice 3×** — der höchste Stand (`BEO-001`, 6×) ist
 bereits verkörpert, der zweithöchste (`BEO-003`, `BEO-007`, je 2×) wird von
 diesem Slice weder erhöht noch berührt. Die zwei Einträge, die dieser Slice nach

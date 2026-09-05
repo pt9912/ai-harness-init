@@ -124,7 +124,7 @@ dasteht.
   dieser 17 ändert genau die delegierte Pflichtgliederung für
   [`harness/conventions.md`](../../../../harness/conventions.md). Die Kommandos stehen in
   [ADR-0031](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) §Kontext; die
-  Klasse liegt als `BEO-019` im [Register](../observations.md).
+  Klasse liegt als `BEO-019` im Register.
 - **Eine `Accepted`-ADR wird angefasst statt abgelöst** —
   [`AGENTS.md`](../../../../AGENTS.md) §3.4 und dieselbe Regel in der Baseline verbieten das;
   §Geschichte von [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) sagt zu
@@ -164,7 +164,7 @@ Backticks).
   benennt ihn als offene Frage derselben Entscheidung.
 - **Steering-Loop-Eintrag:** neue Beobachtung statt geschärfter Regel — *eine Byte-Gleichheits-
   Messung an einem Abschnitt ist keine Aussage über die Regel, die er stellt*, weil der Abschnitt
-  delegiert. Angelegt als `BEO-019` im [Register](../observations.md), mit der gemessenen
+  delegiert. Angelegt als `BEO-019` im Register, mit der gemessenen
   Reichweite: sieben ADRs schließen einen Delta-Nachweis über Byte-Gleichheit tragender Quellen.
   Verkörpert ist damit nichts — der Eintrag ist gezählt, nicht verkörpert, und wartet auf 3×.
 - **Beobachtungs-Register (`../observations.md`):** neue `BEO-019` angelegt (`*` (gesamtes Repo),

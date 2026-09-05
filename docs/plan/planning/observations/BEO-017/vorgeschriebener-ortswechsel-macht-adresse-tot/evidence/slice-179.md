@@ -1,0 +1,2 @@
+**Vorgang:** slice-179
+**Fund:** [`ADR-0030`](../../../../../../../docs/plan/adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) trägt einen toten Wellenplan-Pfad nach der Closure; ihr Ausgang hielt die Klasse an beiden Enden fest, aber ohne Sensor — ein viertes Mitglied ([`ADR-0011`](../../../../../../../docs/plan/adr/0011-telemetrie-erfassung-policy.md) auf `welle-09`) blieb zusätzlich geladen, und der Wegfall der Register-Datei selbst wurde als sechste Instanz zum vierten `ignore-refs`-Paar dieser Reihe.

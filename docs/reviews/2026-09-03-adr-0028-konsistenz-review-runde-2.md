@@ -137,7 +137,7 @@ Korrektur und diesen Lauf gefallen ist.
 
 - **kategorie:** MEDIUM
 - **quelle:** Slice-Plan §2 DoD und §8 *Vorgelagert — offene Beobachtungen sichten*, gegen
-  [`docs/plan/planning/observations.md`](../plan/planning/observations.md); Baseline `v5.18.0`,
+  `docs/plan/planning/observations.md`; Baseline `v5.18.0`,
   `modul-06-roadmap.md` §Das Beobachtungs-Register
 - **pfad:** `docs/plan/planning/done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md:110`, `:230`
 - **befund:** Das ist MEDIUM-3 der ersten Runde, unverändert. Die Korrektur hat den Plan nicht

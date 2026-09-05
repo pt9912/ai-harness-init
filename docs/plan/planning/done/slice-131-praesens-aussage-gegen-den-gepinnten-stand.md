@@ -160,7 +160,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
-      [`observations.md`](../observations.md) — *keine Beobachtung angefallen* ist ebenfalls eine
+      `observations.md` — *keine Beobachtung angefallen* ist ebenfalls eine
       Antwort und wird in §7 notiert. Das Reconciliation-Register entfällt dauerhaft: dieses Repo
       hat keinen Brownfield-Bootstrap.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
@@ -248,7 +248,7 @@ dasteht.
   Ergebniszeile.
 - **Kein Gate sieht diese Klasse.** `docs-check` prüft Auflösbarkeit, nicht Wahrheit; die
   11 Nennungen tragen keinen Markdown-Link und lagen deshalb bei grünem Gate falsch da. —
-  **Ausgang:** **weiter offen** — im Register als [`BEO-009`](../observations.md), Zähler auf 2×
+  **Ausgang:** **weiter offen** — im Register als `BEO-009`, Zähler auf 2×
   erhöht statt einer neuen Kennung: dessen Aussage *„kein Gate prüft den Wahrheitsgehalt einer
   Aussage, nur die Existenz eines genannten Sensors"* ist dieselbe, und eine Umformulierung zählte
   getrennt weiter.
@@ -317,13 +317,13 @@ lebende Artefakt offen gelassene Hälfte wird gefüllt. Die Punkte (1) und (2) f
   ([`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt)),
   nicht `seit slice-131`.
 - **Beobachtungs-Register (`../observations.md`):** keine neue Kennung —
-  [`BEO-009`](../observations.md) von 1× auf **2×** erhöht, Beleg `slice-131`. Die Klasse ist
+  `BEO-009` von 1× auf **2×** erhöht, Beleg `slice-131`. Die Klasse ist
   dieselbe: ein Vorgang korrigiert die Ableitung (hier den Pfad auf den neuen Tag) und lässt die
   daneben stehende Zusage (die zitierte Zahl) stehen, und kein Gate prüft deren Wahrheitsgehalt.
   Eine eigene Kennung hätte dieselbe Beobachtung unter zwei Namen gezählt.
 - **Folge-Slices:** keine.
 - **Risiken aus §6:** vier benannt, vier mit genau einem Ausgang — **drei entfallen**, **eines
-  weiter offen** (im Register, [`BEO-009`](../observations.md)). Keines eingetreten.
+  weiter offen** (im Register, `BEO-009`). Keines eingetreten.
 - **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice ist
   Mitglied von [welle-10](welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt die
   Paarungen auf Closure-Schritt 3c, Modul 8 §Rollen-Sequenz für eine Welle weist sie dem
@@ -350,10 +350,10 @@ Sie ist nicht zu grob: der Slice fasst innerhalb von ihr nur lebende Plandateien
 lässt `adr/`, `carveouts/` und die Zeitdokumente ausdrücklich stehen (§3).
 
 **Vorgelagert — offene Beobachtungen sichten:** gesichtet ist der gemergte Stand von
-[`observations.md`](../observations.md). Alle Zeilen tragen die Sub-Area `*` und sind damit formal
-Treffer; sachlich berühren diesen Schnitt zwei: [`BEO-009`](../observations.md) — kein Gate prüft
+`observations.md`. Alle Zeilen tragen die Sub-Area `*` und sind damit formal
+Treffer; sachlich berühren diesen Schnitt zwei: `BEO-009` — kein Gate prüft
 den Wahrheitsgehalt einer Aussage neben einer korrigierten Ableitung, hier als Risiko in §6 geführt
-und mit diesem Slice auf 2× erhöht — und [`BEO-003`](../observations.md) (2×), dessen Gegenstand der
+und mit diesem Slice auf 2× erhöht — und `BEO-003` (2×), dessen Gegenstand der
 Lifecycle-Move ist; er lief über `make slice-mv` und verlangte keinen Verweis von Hand, also keine
 Erhöhung. **Keine erreicht mit diesem Slice 3×**, kein Eintrag wird zur Lücke, keiner verlangt einen
 eigenen Folge-Slice.

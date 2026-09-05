@@ -82,8 +82,8 @@ geschrieben.
 ## 7. Closure-Notiz (nach `done/`)
 
 **Vorgelagert — offene Beobachtungen gesichtet** (Modul 5, *Zwei Schritte vor der
-Modus-Begründung*): [`../observations.md`](../observations.md) führt 15 Kennungen, alle mit
-Sub-Area `*` und damit alle berührt. Einschlägig war [`BEO-009`](../observations.md) bei 2× — mit
+Modus-Begründung*): `../observations.md` führt 15 Kennungen, alle mit
+Sub-Area `*` und damit alle berührt. Einschlägig war `BEO-009` bei 2× — mit
 diesem Slice **3×** (unten). Kein anderer Eintrag erreichte mit diesem Slice die Schwelle.
 
 **Closure-Kriterien (beobachtet, nicht behauptet):**
@@ -134,10 +134,10 @@ diesem Slice **3×** (unten). Kein anderer Eintrag erreichte mit diesem Slice di
   vergleicht Text mit dem Baum (`grep -m1 '^modules:' .d-check.yml`), und die beiden Smokes belegen
   **Grün**, nicht **Aktualität** (`grep -c 'regelwerk' harness/tools/full-smoke.sh` → 0). Ein
   Zielort steht hier bewusst **nicht**: die Lücke ist die dritte Instanz von
-  [`BEO-009`](../observations.md), und deren Lese-Schritt liegt bei der Closure von
+  `BEO-009`, und deren Lese-Schritt liegt bei der Closure von
   [welle-10](welle-10-re-baseline.md) (Rollen-Zug Planner → Architect → Planner, Modul 8).
-- **Beobachtungs-Register ([`../observations.md`](../observations.md)):** keine neue Kennung —
-  [`BEO-009`](../observations.md) von 2× auf **3×**, Beleg `slice-085`. Dieselbe Klasse: der
+- **Beobachtungs-Register (`../observations.md`):** keine neue Kennung —
+  `BEO-009` von 2× auf **3×**, Beleg `slice-085`. Dieselbe Klasse: der
   Tausch-Commit korrigierte die Ableitung (den vendored Baum) und ließ die daneben stehenden
   Zusagen (die emittierten Command-Texte) stehen. Eine eigene Kennung für die *Asymmetrie* hätte
   dieselbe Beobachtung unter zwei Namen gezählt und keine der beiden erreichte je 3×.

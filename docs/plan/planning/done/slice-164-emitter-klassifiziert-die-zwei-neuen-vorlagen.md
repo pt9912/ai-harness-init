@@ -218,7 +218,7 @@ führt für `internal/emit/` keine engere.
 
 **Vorgelagert — offene Beobachtungen sichten:** `BEO-010` (Nachzügler einer Re-Baseline) trifft
 diesen Slice direkt — er **ist** ein Nachzügler; der Zähler-Stand steht im
-[Register](../observations.md), das Urteil über den dritten Übertritt fällt die Closure von
+Register, das Urteil über den dritten Übertritt fällt die Closure von
 [welle-14](welle-14-re-baseline.md). Weitere Treffer: keine.
 
 **alle berührten Sub-Areas GF** — der Modus-Begründungsblock entfällt damit.

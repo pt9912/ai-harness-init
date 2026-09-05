@@ -11,7 +11,7 @@ hinaus steht in keinem Kriterium (Baseline-Regelwerk `modul-06-roadmap.md`
 [`MR-037`](../../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst)).
 
 **Bezug:**
-[`BEO-025`](../observations.md) (3×, geplant — dieser Slice ist der benannte Ausgang des
+[`BEO-025`](../observations/README.md) (3×, geplant — dieser Slice ist der benannte Ausgang des
 Lese-Schritts),
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
 (ein Wächter, der eine Menge zusagt und eine engere prüft, ist dieselbe Klasse eine Ebene
@@ -52,7 +52,7 @@ eines `/* … */`-Blocks trägt vor `case` nur Leerraum und fällt in die Menge 
 bleibt damit grün, während der Bedien-Einstieg gebrochen ist. Dieselbe Zusage steht in
 [`harness/README.md`](../../../../harness/README.md).
 
-Das ist die **dritte** Instanz von [`BEO-025`](../observations.md), und mit ihr die Schwelle:
+Das ist die **dritte** Instanz von [`BEO-025`](../observations/README.md), und mit ihr die Schwelle:
 eine Zusage nennt einen Geltungsbereich, den der Ausdruck darunter nicht hält.
 
 ## 2. Definition of Done
@@ -109,7 +109,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 **Start** (`next` → `in-progress`):
 [slice-175](../done/slice-175-archive-welle-schreibender-pfad.md) liegt in `done/` — dessen
-Lese-Schritt weist [`BEO-025`](../observations.md) diesen Slice als Ausgang zu, und vorher gibt
+Lese-Schritt weist [`BEO-025`](../observations/README.md) diesen Slice als Ausgang zu, und vorher gibt
 es weder die dritte Instanz noch die Zuweisung.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
@@ -201,7 +201,7 @@ Refactor ohne neue Sub-Area-Berührung entfällt er ganz. Die beiden
 [`AGENTS.md`](../../../../AGENTS.md) liegen in keiner engeren Sub-Area der Modus-Deklaration in
 [`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area).
 
-**Vorgelagert — offene Beobachtungen sichten:** Drei Treffer im [Register](../observations.md),
+**Vorgelagert — offene Beobachtungen sichten:** Drei Treffer im [Register](../observations/README.md),
 je mit dem Stand, den das Register führt (`awk -F'|' '/BEO-0(09|22|25)/ {print $2, $5, $6}' docs/plan/planning/observations.md`;
 keine Erwartungswerte,
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)

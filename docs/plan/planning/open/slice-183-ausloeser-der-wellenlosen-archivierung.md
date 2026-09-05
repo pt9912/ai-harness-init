@@ -221,7 +221,7 @@ Norm-Artefakte führt. `harness/tools/` ist **nicht** berührt: Der Träger ist 
 ([`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) Festlegung 1), und dieser
 Slice entscheidet ohnehin nur den Auslöser.
 
-**Vorgelagert — offene Beobachtungen sichten:** Das [Register](../observations.md) ist vollständig
+**Vorgelagert — offene Beobachtungen sichten:** Das [Register](../observations/README.md) ist vollständig
 durchgegangen. **Jede** Zeile trägt `*` (gesamtes Repo) — die Spalte unterscheidet in diesem Repo
 nichts (`BEO-004`). Vier Zeilen berühren diesen Slice mit ihrem Zähler-Stand, keine erreicht mit
 ihm 3×:

@@ -65,8 +65,8 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   [slice-137](slice-137-beobachtungs-register-bekommt-seinen-ort.md) gingen
   offene Risiken als Registerzeile ein statt als Folge-Slice in `open/` —
   sichtbar an [slice-149](slice-149-welle-10-traegt-ihre-drei-fehlenden-belege.md),
-  dessen zwei offene Risiken [`BEO-010`](../observations.md) und
-  [`BEO-011`](../observations.md) wurden.
+  dessen zwei offene Risiken `BEO-010` und
+  `BEO-011` wurden.
 
 ## Was ging anders als geplant?
 
@@ -75,9 +75,9 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 die daraus schon gezogen wurde (Folge-Slice, Spec-Version).
 
 - **Die Welle wuchs von 6 auf 15 Mitglieder.** Ursache sind zwei benannte
-  Klassen im Register: [`BEO-010`](../observations.md) (Re-Baseline ohne
+  Klassen im Register: `BEO-010` (Re-Baseline ohne
   vorgeschalteten Inventur-Slice — die Form-Pflichten kommen einzeln als
-  Nachzügler zurück) und [`BEO-011`](../observations.md) (Sprünge werden
+  Nachzügler zurück) und `BEO-011` (Sprünge werden
   gesammelt statt einzeln adoptiert). Beide stehen unter der Schwelle und
   warten.
 - **Ein Baseline-Sprung ist kein Pin-Wechsel, sondern ein Eingabe-Wechsel.**
@@ -98,7 +98,7 @@ die daraus schon gezogen wurde (Folge-Slice, Spec-Version).
   adoptierten Stand falsch; gefunden hat sie der Form-Durchgang
   ([slice-083](slice-083-form-vergleich-pflichtfelder.md) §6), korrigiert
   [slice-150](slice-150-drei-eintraege-tragen-den-adoptierten-stand.md). Die
-  Klasse zählt [`BEO-013`](../observations.md).
+  Klasse zählt `BEO-013`.
 - **Der Blocker der Closure war die Closure selbst.** Der von Modul 6
   vorgeschriebene `git mv` dieser Welle-Datei nach `done/` macht eine Adresse in
   der nach [`AGENTS.md`](../../../../AGENTS.md) §3.4 eingefrorenen
@@ -107,7 +107,7 @@ die daraus schon gezogen wurde (Folge-Slice, Spec-Version).
   [slice-154](slice-154-eingefrorene-adr-zeigt-auf-den-wellenplan.md) mit
   [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md),
   dessen Festlegung 4 die Entscheidung künftig **vor** den Move zieht. Die
-  Klasse führt [`BEO-017`](../observations.md) (1×, unter der Schwelle) — mit
+  Klasse führt `BEO-017` (1×, unter der Schwelle) — mit
   drei gemessenen Instanzen und einem geladenen vierten Mitglied.
 - **Die Sensor-Belege mussten mehrfach neu gefahren werden**, weil sich der Baum
   zwischen Beleg und Closure bewegte (Reviewer- und Architect-Läufe an
@@ -166,7 +166,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register — der Zähler wird **nicht** hier gepflegt; diese
 Sektion ist ein Zeiger und trägt keine Daten.
 
-Der Zähler steht in [`../observations.md`](../observations.md).
+Der Zähler steht in `../observations.md`.
 Was in dieser Welle **3×** erreicht hat, steht oben unter
 *Steering-Loop-Einträge*.
 
@@ -265,7 +265,7 @@ Sensor-Läufe, je mit dem Baum, über dem sie liefen:
   Datei im Planning-Lifecycle (`ls` je Kennung über `open/ next/ in-progress/ done/`,
   16 Kennungen, 0 Fehlstellen).
 - **(c) Register-Paarung:** jede hier zitierte `BEO-<NNN>` hat eine Zeile in
-  [`../observations.md`](../observations.md), und jede Registerzeile trägt
+  `../observations.md`, und jede Registerzeile trägt
   mindestens einen Beleg.
 
 **Nach dem Closure-Move und dem Verweis-Nachzug:** `make docs-check` → Exit **0**,

@@ -16,7 +16,7 @@ Closure-Bedingung, die mehr beobachtet als die DoD dieses Slice. Es gibt keine.
 (Nachbarfrage; ihr Acceptance-Trigger liegt bei
 [slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
 — derselbe Bauplan), Baseline-Regelwerk `grundlagen-bootstrap.md` §Vier
-Trigger-Klassen (Acceptance-Trigger), [`BEO-007`](../observations.md).
+Trigger-Klassen (Acceptance-Trigger), [`BEO-007`](../observations/README.md).
 
 **Berührte Spec-Stellen:** `—`.
 [ADR-0029](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) ist
@@ -89,7 +89,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben — **neue
       Kennung für die Klasse** *ein `Proposed`-ADR hat keinen Träger für ihren
       Acceptance-Trigger* (Sub-Area `*`, 1×, Beleg `slice-152`); dazu
-      [`BEO-007`](../observations.md) Stand-Spalte um den `.claude/agents/`-Ausgang
+      [`BEO-007`](../observations/README.md) Stand-Spalte um den `.claude/agents/`-Ausgang
       ergänzt. Die Kennung entsteht bei **dieser** Slice-Closure, nicht früher:
       Modul 6 §Das Beobachtungs-Register weist das Schreiben der Slice-Closure
       zu, und ein Beleg ist formgebunden auf eine Slice-Datei in `done/`.
@@ -109,7 +109,7 @@ Aussagen-Berührung steht hier gar nicht.
 | [`docs/plan/adr/0029-agenten-typkarten-derivativ-gemischte-originale.md`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) | update (Status + Geschichte-Zeile), Architect | DoD (1); nach `Accepted` immutabel ([`AGENTS.md`](../../../../AGENTS.md) §3.4) |
 | [`docs/plan/adr/0025-register-mit-gemischten-originalen.md`](../../adr/0025-register-mit-gemischten-originalen.md) | update (Status) **oder** unberührt | DoD (2) — welcher der zwei Ausgänge, entscheidet die Konsistenzprüfung |
 | [`docs/plan/adr/README.md`](../../adr/README.md) | update (Status-Spalte), Architect | DoD (1)/(2) — derivatives Register desselben Originals |
-| [`docs/plan/planning/observations.md`](../observations.md) | update (neue Kennung + `BEO-007` Stand) | Register-Pflicht (nicht mitgezählt) |
+| [`docs/plan/planning/observations.md`](../observations/README.md) | update (neue Kennung + `BEO-007` Stand) | Register-Pflicht (nicht mitgezählt) |
 
 **Commit-Zuschnitt nach Rollen:** ein Reviewer-Durchgang ohne eigenen Commit
 (Konsistenz ist Voraussetzung, kein Artefakt), danach ein Architect-Commit für
@@ -171,7 +171,7 @@ dasteht.
   benannten Träger>
 - **Der Zähler der neuen Kennung startet bei 1×**, obwohl die Klasse zum
   Zeitpunkt dieses Slice schon zwei Instanzen hat — dieselbe Grenze, die
-  [`BEO-005`](../observations.md) führt. — **Ausgang:** <weiter offen →
+  [`BEO-005`](../observations/README.md) führt. — **Ausgang:** <weiter offen →
   `BEO-005` im Register (kein neuer Mechanismus)>
 
 ## 7. Closure-Notiz
@@ -207,11 +207,11 @@ unter den Eintrag `*` (gesamtes Repo) der Modus-Deklaration in
 — **alle berührten Sub-Areas GF**, der Modus-Begründungsblock entfällt damit
 nach dem *Umfang*-Absatz oben.
 
-**Vorgelagert — offene Beobachtungen sichten:** [`BEO-007`](../observations.md)
+**Vorgelagert — offene Beobachtungen sichten:** [`BEO-007`](../observations/README.md)
 (4×) berührt diesen Slice — [ADR-0029](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md)
 schließt die `.claude/agents/*.md`-Hälfte, die
 [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
 Festlegung 3 offen ließ; sein Ausgang steht in DoD.
-[`BEO-005`](../observations.md) (1×, Zähler startet bei null) trägt einen
-Risiko-Ausgang in §6. [`BEO-016`](../observations.md) (1×, Plan-Umfang) ist auf
+[`BEO-005`](../observations/README.md) (1×, Zähler startet bei null) trägt einen
+Risiko-Ausgang in §6. [`BEO-016`](../observations/README.md) (1×, Plan-Umfang) ist auf
 diesen Plan angewandt statt notiert. Keine weiteren Treffer.

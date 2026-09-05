@@ -249,7 +249,7 @@ falschen Zeichenklasse. Das ist die Schwelle, an der die Skill-Datei *„Guide/S
 statt nur melden"* verlangt — für die Closure §7 derselbe Vorgang und dieselbe Kennung
 `BEO-025`. **Ob** der Zähler-Schritt fällt und was er auslöst, entscheidet die Closure und nicht
 dieser Report
-([`docs/plan/planning/observations.md`](../plan/planning/observations.md)).
+(`docs/plan/planning/observations.md`).
 
 ---
 

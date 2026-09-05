@@ -24,7 +24,7 @@ die die neue Fassung mitbringt, hat einen verbuchten Ausgang, statt einzeln als 
 zurückzukommen.**
 
 **Der Schnitt beginnt mit einer Inventur, nicht mit einer Schätzung** (`BEO-010` im
-[Register](observations.md), 2×). Wie viele Mitglieder diese Welle bekommt, beantwortet
+[Register](observations/README.md), 2×). Wie viele Mitglieder diese Welle bekommt, beantwortet
 [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md): **sechs**, dazu ein
 ausdrücklich ausgeschlossener Folge-Slice (§4). Die Zahl steht seit dem Katalog fest und nicht
 seit der Eröffnung.
@@ -94,7 +94,7 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 | [slice-185](open/slice-185-adaptions-durchgang-gegen-v600.md) | Der Adaptions-Durchgang gegen `v6.0.0` — jeder Eintrag mit eigenem Ausgang (Architect) | [`ADR-0018`](../adr/0018-ziel-fassung-regiert-die-migration.md), [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) |
 
 **Sieben Mitglieder — die Zahl steht seit dem Katalog fest, nicht seit der Eröffnung.** `BEO-010`
-([Register](observations.md)) misst an einer Re-Baseline den Abstand zwischen geschnittenen und
+([Register](observations/README.md)) misst an einer Re-Baseline den Abstand zwischen geschnittenen und
 geschlossenen Slices, und die Ursache war der Schnitt **vor** der Inventur; die Zeilen 5 bis 7
 sind darum aus [slice-176](done/slice-176-inventur-vor-dem-schnitt-v600.md) §9 hervorgegangen und
 nicht vorab gesetzt. Die Umplanung trägt das Drift-Log der [Roadmap](in-progress/roadmap.md).

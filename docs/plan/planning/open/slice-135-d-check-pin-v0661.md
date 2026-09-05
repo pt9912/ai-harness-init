@@ -269,7 +269,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt
       Targets vor wie nach).
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [ ] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
-      [`observations.md`](../observations.md) — *keine Beobachtung angefallen* ist ebenfalls eine
+      [`observations.md`](../observations/README.md) — *keine Beobachtung angefallen* ist ebenfalls eine
       Antwort und wird in §7 notiert. Das Reconciliation-Register entfällt dauerhaft: dieses Repo
       hat keinen Brownfield-Bootstrap.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
@@ -462,7 +462,7 @@ verschiedene Änderungs-Art, gemeinsamer Wert nur über die zwei Kopplungstests.
 Schwelle ≥ 2 von 3 Achsen.
 
 **Vorgelagert — offene Beobachtungen sichten:** die Sichtung ist **offen** — sie ist vor der
-Bearbeitung gegen [`observations.md`](../observations.md) zu fahren, und ihr Ergebnis gehört ins
+Bearbeitung gegen [`observations.md`](../observations/README.md) zu fahren, und ihr Ergebnis gehört ins
 Kriterium *Evidenz-/Diskrepanz-Risiko* unten. Sie steht hier nicht als Ergebnis, weil der Stand des
 Registers zwischen Schnitt und Bearbeitung wandert.
 

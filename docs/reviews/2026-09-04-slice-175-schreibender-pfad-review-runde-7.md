@@ -98,7 +98,7 @@ der Treiber meldet *„4 isolierte Kopie(n) unter /tmp/… — der Host-Baum wir
   dann `make test-bats`: der Kopf sagt grün, gemessen ist rot. Die verlorene Unterscheidung zeigt
   das Paar L1/L2 an derselben Zeile.
 - **klasse:** Ein Fix macht die Zusage seines eigenen Gegenbeispiels falsch und nimmt ihm den
-  Zahn ([`BEO-009`](../plan/planning/observations.md))
+  Zahn (`BEO-009`)
 
 ### LOW-1 — Der Entscheidungs-Grep der Dispatch-Schleife ist unverankert und kommentar-blind, der Diagnose-Grep derselben Funktion zeilenverankert
 
@@ -246,7 +246,7 @@ ungekoppelt, Runde 5 die Kalibrierung über der falschen Zählgröße, Runde 6 d
 der falschen Zeichenklasse, Runde 7 das Gegenbeispiel, das durch die Reparatur der Runde 6 seinen
 Zweig gewechselt hat. Die Klasse dieser Runde ist gegenüber den drei Vorrunden **verschoben** —
 dort deckte der Sensor die Menge nicht, hier deckt der Sensor, aber sein Gegenbeispiel misst ihn
-nicht mehr; sie fällt darum auf [`BEO-009`](../plan/planning/observations.md) und nicht auf
+nicht mehr; sie fällt darum auf `BEO-009` und nicht auf
 `BEO-025`. **Ob** ein Zähler-Schritt fällt und was er auslöst, entscheidet die Closure und nicht
 dieser Report.
 

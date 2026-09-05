@@ -9,7 +9,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 (`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht): eine beobachtbare
 Closure-Bedingung, die mehr beobachtet als die DoD dieses Slice. Es gibt keine.
 
-**Bezug:** [`BEO-009`](../observations.md) (vierter Beleg `slice-136` ist genau
+**Bezug:** [`BEO-009`](../observations/README.md) (vierter Beleg `slice-136` ist genau
 dieser Fund), [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
 (entscheidet, wer `.claude/commands/*.md` schreiben darf — die Vorbedingung),
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
@@ -87,7 +87,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       abgelösten Namen tragen (kein sicherer Treffer).
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [ ] Beobachtungs-Register (`../observations.md`) fortgeschrieben —
-      [`BEO-009`](../observations.md) bekommt den Ausgang seiner Command-Hälfte
+      [`BEO-009`](../observations/README.md) bekommt den Ausgang seiner Command-Hälfte
       in der Stand-Spalte (Zähler unverändert: der Slice löst auf, er beobachtet
       nicht neu).
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
@@ -105,7 +105,7 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) | update (Schritt 5 + Kopf-Bezug) | DoD (1)/(2) — zwei Nennungen |
 | [`.claude/commands/plan-welle.md`](../../../../.claude/commands/plan-welle.md) | update (Eröffnungs-Schritt 3) | DoD (1)/(2) — eine Nennung |
-| [`docs/plan/planning/observations.md`](../observations.md) | update (`BEO-009` Stand) | Register-Pflicht (nicht mitgezählt) |
+| [`docs/plan/planning/observations.md`](../observations/README.md) | update (`BEO-009` Stand) | Register-Pflicht (nicht mitgezählt) |
 
 ## 4. Trigger
 
@@ -121,7 +121,7 @@ trägt `**Status:** Accepted`
 [slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md).
 Vorher steht nicht fest, wer die zwei Dateien schreiben darf — und ein Lauf, der
 sie ohne diese Antwort anfasst, ist genau der Vorgang, den
-[`BEO-007`](../observations.md) zählt. Der Slice liegt darum in `open/`, nicht
+[`BEO-007`](../observations/README.md) zählt. Der Slice liegt darum in `open/`, nicht
 in `next/`.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
@@ -206,8 +206,8 @@ fällt unter den Eintrag `*` (gesamtes Repo) der Modus-Deklaration in
 — **alle berührten Sub-Areas GF**, der Modus-Begründungsblock entfällt damit
 nach dem *Umfang*-Absatz oben.
 
-**Vorgelagert — offene Beobachtungen sichten:** [`BEO-009`](../observations.md)
+**Vorgelagert — offene Beobachtungen sichten:** [`BEO-009`](../observations/README.md)
 (4×) ist der direkte Gegenstand; sein Ausgang steht in DoD.
-[`BEO-007`](../observations.md) (4×) trägt die Vorbedingung in §4.
-[`BEO-016`](../observations.md) (1×, Plan-Umfang) ist auf diesen Plan angewandt
+[`BEO-007`](../observations/README.md) (4×) trägt die Vorbedingung in §4.
+[`BEO-016`](../observations/README.md) (1×, Plan-Umfang) ist auf diesen Plan angewandt
 statt notiert. Keine weiteren Treffer.

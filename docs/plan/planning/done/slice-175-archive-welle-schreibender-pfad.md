@@ -160,10 +160,10 @@ dasteht.
   hält zwei Läufe über demselben Inhalt Byte gegen Byte. Der Beleg liegt damit in `make test`
   und nicht in einer Eigenschaft, die vom Vorbild geerbt wäre
 - **Die Ablösung nimmt Zusagen aus dem Kopf des Shell-Helfers mit, deren Ableitung sie ändert** —
-  genau die Klasse `BEO-009` im [Register](../observations.md) (8×, geplant): ein Fix korrigiert
+  genau die Klasse `BEO-009` im Register (8×, geplant): ein Fix korrigiert
   die Ableitung und lässt die daneben stehende Zusage stehen. Betroffen sind die Grenzen-Liste im
   Skriptkopf und die Beschreibung in [`harness/README.md`](../../../../harness/README.md)
-  (Folgepflicht 3). — **Ausgang: weiter offen** → `BEO-009` im [Register](../observations.md)
+  (Folgepflicht 3). — **Ausgang: weiter offen** → `BEO-009` im Register
   (10×, Beleg slice-175). Das Risiko ist **an den zwei benannten Orten nicht** eingetreten: die
   Grenzen-Zusagen des Skriptkopfs stehen in [`harness/README.md`](../../../../harness/README.md)
   nach, soweit sie weiter gelten. Getroffen hat es einen **dritten** Ort, den die Eingrenzung
@@ -172,7 +172,7 @@ dasteht.
   keinen Sensor
 - **`titel_von` trägt einen offenen LOW in den Port**, wenn ihn niemand benennt: bei der H1-Form
   `# Slice <NNN>: T` bleibt die Nummer im Titel stehen, obwohl der Kommentar daneben zusagt, eine
-  Zeile ohne Kennung bleibe ganz stehen — die Klasse `BEO-025` im [Register](../observations.md)
+  Zeile ohne Kennung bleibe ganz stehen — die Klasse `BEO-025` im Register
   (1×, offen). Die Funktion speist den Stub und liegt damit in diesem Slice. — **Ausgang:
   entfallen** — der Port trägt den LOW nicht weiter: `TitelVon` (`internal/archive/stub.go`)
   nennt die Form `# Slice 190: T` als **benannte** Grenze samt dem Rest, der stehen bleibt
@@ -297,7 +297,7 @@ beide führt die Modus-Deklaration in
 [`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area);
 `cmd/`, `internal/` und `test/mutations/` liegen in keiner engeren.
 
-**Vorgelagert — offene Beobachtungen sichten:** Zwei Treffer im [Register](../observations.md),
+**Vorgelagert — offene Beobachtungen sichten:** Zwei Treffer im Register,
 beide als Risiko in §6: `BEO-009` (eine geänderte Ableitung lässt die Zusage daneben stehen) und
 `BEO-025` (eine Zusage im Funktionskopf nennt einen Geltungsbereich, den der Code darunter nicht
 hält). Den Zähler-Stand nennt das Register selbst, nicht dieser Satz

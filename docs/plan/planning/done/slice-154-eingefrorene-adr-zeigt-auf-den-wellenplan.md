@@ -131,7 +131,7 @@ Aussagen-Berührung steht hier gar nicht.
 | [`docs/plan/adr/README.md`](../../adr/README.md) | update (Index-Zeile), Architect | DoD (1) |
 | [`.d-check.yml`](../../../../.d-check.yml) | update **oder** unberührt, Architect | DoD (2) — hängt an der gewählten Option |
 | [`docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md`](../../adr/0018-ziel-fassung-regiert-die-migration.md) | **unberührt** | `Accepted` ([`AGENTS.md`](../../../../AGENTS.md) §3.4) — kein Byte, auch nicht an der Adresse |
-| [`docs/plan/planning/observations.md`](../observations.md) | update (neue Kennung) | Register-Pflicht (nicht mitgezählt) |
+| `docs/plan/planning/observations.md` | update (neue Kennung) | Register-Pflicht (nicht mitgezählt) |
 
 ## 4. Trigger
 
@@ -183,7 +183,7 @@ dasteht.
   liegt **vor** dem Lifecycle-Move, auf dem Bestand). Das Ventil bleibt der Träger des
   eingetretenen Falls; die vierte Instanz kostet keine Notfall-Runde mehr, sondern geplante
   Arbeit. Beide Festlegungen sind **sensorlos** — das steht in §Konsequenzen der ADR und als
-  Grund, warum [`BEO-017`](../observations.md) offen bleibt statt gestrichen zu werden.
+  Grund, warum `BEO-017` offen bleibt statt gestrichen zu werden.
 - **Eine Bereichs-Ausnahme für `docs/plan/adr/**` nimmt mehr aus als den Fall**
   — sie machte jede tote Adresse in jeder ADR unsichtbar, auch in noch
   änderbaren `Proposed`-Fassungen. — **Ausgang:** **entfallen** — verworfen als Option F und
@@ -261,7 +261,7 @@ in [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.m
 Re-Evaluierungs-Trigger, **nicht** als behauptete Deckung
 ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 
-**Register.** Neue Kennung [`BEO-017`](../observations.md) (1×, Sub-Area `*`, Beleg
+**Register.** Neue Kennung `BEO-017` (1×, Sub-Area `*`, Beleg
 `slice-154`) für die Klasse *ein prozess-vorgeschriebener Ortswechsel macht eine Adresse in
 einem eingefrorenen Artefakt tot*; die Stand-Spalte nennt die drei gemessenen Instanzen. Sie
 bleibt **offen** und wird nicht gestrichen: die zwei Regeln, die die Klasse anhalten, haben
@@ -302,7 +302,7 @@ nach dem *Umfang*-Absatz oben.
 
 **Vorgelagert — offene Beobachtungen sichten:** kein Eintrag des Registers
 führt diese Klasse; das ist selbst der Befund, und DoD legt die Kennung an.
-[`BEO-006`](../observations.md) (1×) grenzt an, trifft aber nicht: dort fehlt
+`BEO-006` (1×) grenzt an, trifft aber nicht: dort fehlt
 dem Doku-Gate eine **Fähigkeit**, hier ist die Fähigkeit da und wird
-absichtlich eingeschränkt. [`BEO-016`](../observations.md) (1×, Plan-Umfang) ist
+absichtlich eingeschränkt. `BEO-016` (1×, Plan-Umfang) ist
 auf diesen Plan angewandt statt notiert.

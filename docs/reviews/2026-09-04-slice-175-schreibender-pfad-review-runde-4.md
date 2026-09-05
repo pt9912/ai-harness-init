@@ -273,7 +273,7 @@ dem Argument. Das Muster ist über vier Runden stabil: gemessen wird jeweils dor
 stehen — diesmal eine Ebene über dem Prozess, im `make`-Ziel. Für die Closure §7 ist es derselbe
 Vorgang und dieselbe Kennung `BEO-025`; **ob** der Zähler-Schritt fällt und was er auslöst,
 entscheidet die Closure und nicht dieser Report
-([`docs/plan/planning/observations.md`](../plan/planning/observations.md)).
+(`docs/plan/planning/observations.md`).
 
 ---
 

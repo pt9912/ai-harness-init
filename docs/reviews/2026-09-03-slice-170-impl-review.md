@@ -336,7 +336,7 @@ leer).
 - INFO: 2
 
 **Wiederkehrende Finding-Klasse (für Closure/Beobachtungs-Register,
-[`observations.md`](../plan/planning/observations.md)):** Ein Skriptkopf sagt einen Geltungsbereich
+`observations.md`):** Ein Skriptkopf sagt einen Geltungsbereich
 zu, den der Code darunter nicht hält — die Vorbedingung „sauberer Arbeitsbaum" gilt nur für
 getrackte Dateien (HIGH-2), die Grenzen-Liste nennt „fünf, gemessen" und lässt die vom Werkzeug
 selbst erzeugte sechste aus (HIGH-3), der Funktionskommentar sagt vier H1-Formen zu und zwei sind

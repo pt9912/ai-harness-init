@@ -23,7 +23,7 @@ funktionierte · was anders lief. Mit ID-Bezug, wo es einen gibt.
   ([slice-157](slice-157-adaptions-durchgang-v5180.md),
   [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)) — die
   Volltext-Hälfte stand als eigener DoD-Punkt, weil
-  [`BEO-013`](../observations.md) genau die Fehlerrichtung *bleibt gültig statt
+  `BEO-013` genau die Fehlerrichtung *bleibt gültig statt
   gegenstandslos* führt.
 - **Der Archivierungs-Schritt der Wellen-Closure ist entschieden**, und beide
   Fassungen der Anweisungssätze tragen die Sechs-Schritte-Form
@@ -80,7 +80,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   mit Position, Träger und Ausgang; die Slice-Tabelle der Welle ist daraus
   geschnitten statt vorab geschätzt.
 - **`make slice-mv` hat jeden Lifecycle-Wechsel selbst nachgezogen** — die
-  Verkörperung von [`BEO-003`](../observations.md) hat in dieser Welle
+  Verkörperung von `BEO-003` hat in dieser Welle
   wiederholt gegriffen (`git log --oneline --grep='^slice-mv:'`). Wo sie *nicht*
   griff, war es die benannte Grenze und keine Überraschung: die eingehende
   Hälfte der präfixlosen Verweis-Form, zweimal von `make docs-check` als
@@ -113,7 +113,7 @@ die daraus schon gezogen wurde (Folge-Slice, Spec-Version).
   [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 3 (a)
   macht die Beleg-Form zur Vorbedingung des Accept-Übergangs —, und der Grund,
   warum sie im `Proposed`-Fenster so oft brach, liegt als
-  [`BEO-024`](../observations.md) im Register: für eine Präsens-Aussage über ein
+  `BEO-024` im Register: für eine Präsens-Aussage über ein
   repo-eigenes lebendes Artefakt in einem Text, der eingefroren wird, benennt
   keine Quelle eine Form.
 - **Der Baseline-Tausch fiel mitten in eine laufende ADR-Konsistenzprüfung**, und
@@ -121,12 +121,12 @@ die daraus schon gezogen wurde (Folge-Slice, Spec-Version).
   sechsten Schritt gegeben, also musste ein wörtliches Zitat in Festlegung 1
   nachgezogen werden statt nur ein Pfad. Dieselbe Klasse traf die
   Anweisungssätze selbst (*„fünf Schritte"* gegen sechs) und liegt als achter
-  Beleg von [`BEO-009`](../observations.md) im Register.
+  Beleg von `BEO-009` im Register.
 - **Drei Mitglieder kamen nach dem Katalog dazu**
   ([slice-164](slice-164-emitter-klassifiziert-die-zwei-neuen-vorlagen.md),
   [slice-165](slice-165-praesens-aussagen-gegen-v5180.md),
   [slice-169](slice-169-agents-37-messstaende-gegen-v5180.md)) — **das ist kein
-  drittes Auftreten von [`BEO-010`](../observations.md).** Jene Zeile beschreibt
+  drittes Auftreten von `BEO-010`.** Jene Zeile beschreibt
   eine Re-Baseline, die *ohne vorgeschalteten Inventur-Slice* eröffnet wird;
   diese Welle hatte ihn, und die drei Zugänge stammen nicht aus einer Lücke des
   Katalogs, sondern aus dem **Tausch selbst** (beide in
@@ -141,7 +141,7 @@ die daraus schon gezogen wurde (Folge-Slice, Spec-Version).
   [slice-155](slice-155-inventur-vor-dem-schnitt.md) eine Zeile in der
   Slice-Tabelle verlangte. Der Einzelfall ist aufgelöst (kein Mitglied, in
   `open/` verbucht), die Klasse nicht — sie liegt als
-  [`BEO-018`](../observations.md) im Register.
+  `BEO-018` im Register.
 
 ## Steering-Loop-Einträge
 
@@ -228,7 +228,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register — der Zähler wird **nicht** hier gepflegt; diese
 Sektion ist ein Zeiger und trägt keine Daten.
 
-Der Zähler steht in [`../observations.md`](../observations.md).
+Der Zähler steht in `../observations.md`.
 Was in dieser Welle **3×** erreicht hat, steht oben unter
 *Steering-Loop-Einträge*.
 
@@ -253,7 +253,7 @@ ein halluziniertes Gate.
   gegen Tag-Drift der Baseline-Pins; die Linie trägt
   [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md), nicht diese Welle.
 - [slice-168](../open/slice-168-adaptions-eintraege-trennen-abweichung-von-buchfuehrung.md)
-  — der `geplant`-Ausgang von [`BEO-014`](../observations.md); von §6 dieser
+  — der `geplant`-Ausgang von `BEO-014`; von §6 dieser
   Welle ausdrücklich ausgeschlossen.
 
 ## Verifikation
@@ -322,7 +322,7 @@ Die fünf Closure-Kriterien aus §3 der Welle-Datei, jedes einzeln gefahren:
   —, während seine Bedingung (*„§Baseline verlässt seinen Ort"*) **nicht**
   eingetreten ist (`grep -c '^## Baseline' harness/conventions.md` → **1**).
   Anlass eingetreten, Bedingung offen: dieselbe Fehlerrichtung, die
-  [`BEO-020`](../observations.md) führt.
+  `BEO-020` führt.
 
 **Archivierung (Schritt 4) — nicht ausgeführt, Start-Bedingung nicht
 eingetreten.** Der Schritt verlangt in diesem Repo, dass das
@@ -352,7 +352,7 @@ ohnehin freigestellt.
   (`for s in 170 171 162 168; do ls docs/plan/planning/*/slice-$s-*.md; done`
   → vier Treffer, alle in `open/`).
 - **(c) Register-Paarung** — jede oben zitierte `BEO-<NNN>` hat eine Zeile in
-  [`../observations.md`](../observations.md) (`BEO-001`, `BEO-003`, `BEO-007`,
+  `../observations.md` (`BEO-001`, `BEO-003`, `BEO-007`,
   `BEO-009`, `BEO-010`, `BEO-013`, `BEO-014`, `BEO-018`, `BEO-020`, `BEO-024`),
   und jede Registerzeile trägt mindestens einen Beleg
   (`grep -c '^| BEO-' docs/plan/planning/observations.md` gegen die Belege-Spalte;

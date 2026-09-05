@@ -36,7 +36,7 @@ Der Schritt gilt in diesem Repo ab dieser Datei in `done/`; die Start-Bedingung 
 ([slice-158](../done/slice-158-archivierungs-schritt.md)). Von Hand archiviert niemand: Die
 Vollständigkeit des Archivs bezeugt allein der Archivierungs-Commit, und der Move bricht dieselben
 Verweis-Formen, für die `make slice-mv` gebaut wurde — er zieht sie nur zwischen den vier
-Lifecycle-Verzeichnissen nach, nicht eine Ebene tiefer (`BEO-003` im [Register](../observations.md)).
+Lifecycle-Verzeichnissen nach, nicht eine Ebene tiefer (`BEO-003` im Register).
 
 ## 2. Definition of Done
 
@@ -95,7 +95,7 @@ liegt in `done/` — dort steht, was das Werkzeug ausführt und ab wann der Schr
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn das Nachziehen der Verweise eine
-  zweite Ersetzungs-Regel verlangt — die Grenze von `BEO-003` im [Register](../observations.md) ist
+  zweite Ersetzungs-Regel verlangt — die Grenze von `BEO-003` im Register ist
   ein eigener Gegenstand und kein Anhang dieses Werkzeugs.
 - `in-progress` → `open` (blockiert — Carveout?): wenn ein deterministisches Archiv im gepinnten
   Image nicht herstellbar ist und damit unklar bleibt, was ein zweiter Lauf belegt.
@@ -134,7 +134,7 @@ dasteht.
   abdruckt, gibt den archivierten Volltext wortwörtlich zurück — als genau dieses Kommando
   gefahren, nicht als Variante davon.
 - **Die eingehende Hälfte der präfixlosen Verweis-Form hat keinen Träger** (`BEO-003` im
-  [Register](../observations.md), Grenze 3): ein Verweis ohne Verzeichnis-Segment bricht beim Move
+  Register, Grenze 3): ein Verweis ohne Verzeichnis-Segment bricht beim Move
   und wird nicht nachgezogen. — **Ausgang:** **entfallen** für diese Operation:
   `rewrite_bare_sibling_in_file` ankert an der Link-Klammer statt am Verzeichnis-Literal und hängt
   jedes präfixlose Ziel in den flach gebliebenen `done/`-Dateien auf `<welle-id>/` um. Zwei
@@ -177,7 +177,7 @@ Backticks).
   zugesagten Fall **deckt**, prüft nichts.* Der Ernstfall steht in Grenze 3 des Skriptkopfs: sie
   nennt `make docs-check` als Auffang für eine Verweis-Form, die dessen Module nicht sehen
   (Sonde und Bestands-Zahl in der Registerzeile). Kein Zielort — die Lücke ist **benannt**, nicht
-  verkörpert, und liegt als `BEO-025` im [Register](../observations.md).
+  verkörpert, und liegt als `BEO-025` im Register.
 - **Beobachtungs-Register (`../observations.md`):** zwei neue Kennungen, je 1×, Beleg `slice-170`
   — `BEO-025` (Zusage weiter als Code oder genannter Sensor) und `BEO-026` (Zähler-Label nennt
   eine andere Einheit als der Zähler zählt). `BEO-003` ist in §1 und §6 zitiert und **nicht**

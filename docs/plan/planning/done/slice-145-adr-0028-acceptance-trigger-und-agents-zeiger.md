@@ -129,7 +129,7 @@ Aussagen-Berührung steht hier gar nicht.
 | [`docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) | update (Status + Geschichte-Zeile), durch den Architect | DoD (1) — Acceptance-Trigger vollzogen; nach `Accepted` wird die Datei nicht mehr inhaltlich überschrieben (Baseline-Regelwerk `modul-04-adrs.md` §Hard Rule für Accepted-ADRs) |
 | [`docs/plan/adr/README.md`](../../adr/README.md) | update (Status-Spalte), durch den Architect | DoD (1) — derivatives Register desselben Originals |
 | [`AGENTS.md`](../../../../AGENTS.md) | update (§3.8 Zeiger), durch den Architect | DoD (2) — Folgepflicht 1 aus [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md), fällig erst mit der Annahme |
-| [`docs/plan/planning/observations.md`](../observations.md) | update (`BEO-007` Stand-Spalte) | Register-Pflicht (nicht mitgezählt) |
+| `docs/plan/planning/observations.md` | update (`BEO-007` Stand-Spalte) | Register-Pflicht (nicht mitgezählt) |
 
 **Der Commit-Zuschnitt folgt den Rollen:** ein Reviewer-Durchgang ohne eigenen Commit (Konsistenz
 ist Voraussetzung, kein Artefakt), danach ein Architect-Commit für DoD (1) und ein zweiter für
@@ -227,9 +227,9 @@ Backticks).
   `Proposed`-Fenster, wo sie ein bis zwei Zeichen kostet; nach `Accepted` wäre jede eine
   Folge-ADR ([`AGENTS.md`](../../../../AGENTS.md) §3.4).
 - **Was anders lief als geplant:** §2 und §8 dieses Plans rechnen mit
-  [`BEO-007`](../observations.md) bei **1×**; die Zeile steht bei **4×** und führte den Ausgang
+  `BEO-007` bei **1×**; die Zeile steht bei **4×** und führte den Ausgang
   schon dreigeteilt. Geschrieben ist der Stand des **Registers**, nicht der des Plans. Die Klasse
-  liegt als [`BEO-025`](../observations.md); der Plan-Text bleibt stehen, damit deren Beleg im
+  liegt als `BEO-025`; der Plan-Text bleibt stehen, damit deren Beleg im
   Indikativ zeigt, worauf er zeigt.
 - **Steering-Loop-Eintrag: eine benannte Lücke** — *für eine Präsens-Aussage über ein
   repo-eigenes lebendes Artefakt in einem Text, der nach
@@ -240,21 +240,21 @@ Backticks).
   den vendored Baum und nimmt `docs/plan/adr/` ausdrücklich aus,
   [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   die Zahl. Kein Zielort — **benannt, nicht verkörpert**: die Lücke liegt als
-  [`BEO-024`](../observations.md).
+  `BEO-024`.
 - **Verkörpert, und trotzdem ohne `liegt in`-Feld:** Zielort ist
   [`AGENTS.md`](../../../../AGENTS.md) §3.8, und die Herkunft trägt er dort als **ein** auflösbares
   Feld — den Verweis auf
   [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md). Ein zweiter Anker
   `· seit slice-145` daneben liefe gegen [`AGENTS.md`](../../../../AGENTS.md) §3.7, und das Feld
   dieser Sektion zöge die Anker-Paarung auf genau ihn. Der Anker steht darum dort, wo dieses Repo
-  ihn führt: in der `Stand`-Zelle von [`BEO-007`](../observations.md) — wie schon bei
-  [`BEO-001`](../observations.md), deren Zielort ihn ebenfalls nicht als Literal trägt.
-- **Beobachtungs-Register (`../observations.md`):** [`BEO-007`](../observations.md) behält Zähler
+  ihn führt: in der `Stand`-Zelle von `BEO-007` — wie schon bei
+  `BEO-001`, deren Zielort ihn ebenfalls nicht als Literal trägt.
+- **Beobachtungs-Register (`../observations.md`):** `BEO-007` behält Zähler
   und Belege — dieser Slice **trägt** den Ausgang, er beobachtet nicht —; die `Stand`-Zelle führt
   die Command-Hälfte jetzt als **verkörpert** (`seit slice-145`) und die Zeile im Ganzen weiter
   als **geplant**, bis die zwei übrigen Teile eine angenommene Quelle haben. Zwei neue Kennungen:
-  [`BEO-024`](../observations.md) und [`BEO-025`](../observations.md), je 1×, Beleg `slice-145`.
-- **Folge-Slices:** keine neuen — die zwei offenen Teile von [`BEO-007`](../observations.md)
+  `BEO-024` und `BEO-025`, je 1×, Beleg `slice-145`.
+- **Folge-Slices:** keine neuen — die zwei offenen Teile von `BEO-007`
   tragen [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md) und
   [slice-152](../open/slice-152-adr-0029-acceptance-trigger.md), beide in `open/`.
 - **Risiken aus §6:** drei benannt, drei mit genau einem Ausgang — eines **eingetreten** (der

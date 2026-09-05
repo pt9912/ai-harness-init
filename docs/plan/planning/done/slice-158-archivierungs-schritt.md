@@ -98,7 +98,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
    → **1**). Träger ist
    [slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md). Vorher steht
    nicht fest, wer die zwei Anweisungssätze schreiben darf, die DoD 2 anfasst — und ein Lauf, der
-   sie ohne diese Antwort ändert, ist genau der Vorgang, den [`BEO-007`](../observations.md) zählt.
+   sie ohne diese Antwort ändert, ist genau der Vorgang, den `BEO-007` zählt.
    Der Slice liegt darum in `open/`, nicht in `next/`; dieselbe Platzierung aus demselben Grund
    trägt [slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md).
 
@@ -109,7 +109,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 - `in-progress` → `open` (blockiert — Carveout?): wenn der Reviewer-Durchgang aus
   [slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
   [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) nicht annimmt und
-  das Eigentum an den Command-Artefakten offen bleibt ([`BEO-007`](../observations.md)).
+  das Eigentum an den Command-Artefakten offen bleibt (`BEO-007`).
 
 ## 5. Closure-Trigger
 
@@ -135,7 +135,7 @@ dasteht.
   Geltungsbereich **zusätzlich** einschließt — die ID-Link-Pflicht im Stub — steht als Kopplung in
   Schritt 4 des Anweisungssatzes.
 - **Der Slice hängt an einer `Proposed`-ADR** — wer die Command-Artefakte schreiben darf, ist
-  `BEO-007` im [Register](../observations.md), und die Zeile schließt erst, wenn alle drei
+  `BEO-007` im Register, und die Zeile schließt erst, wenn alle drei
   Hälften eine angenommene Quelle haben. — **Ausgang:** **entfallen** für diesen Slice:
   [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) trägt
   `**Status:** Accepted`

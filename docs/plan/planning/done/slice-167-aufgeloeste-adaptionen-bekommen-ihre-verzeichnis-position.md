@@ -75,7 +75,7 @@ Prosa-Muster. Beide sind keine Form-Kriterien.
 [`MR-022`](../../../../harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline),
 [`MR-023`](../../../../harness/conventions.md#mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung).
 Fünf sind **Urteil**, nicht Muster: die drei aus
-[`BEO-020`](../observations.md) —
+`BEO-020` —
 [`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger),
 [`MR-039`](../../../../harness/conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines),
 [`MR-043`](../../../../harness/conventions.md#mr-043--ein-nachgetragenes-pflichtfeld-schlägt-die-einordnung-im-rumpf)
@@ -129,7 +129,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
       **beiden** Ankern in der zweiten Tabelle (Spalten `MR | aufgelöst durch`) und nicht mehr in
       der ersten. Bewegung und Pfad-Berichtigung sind getrennte Commits
       ([`AGENTS.md`](../../../../AGENTS.md) §3.3).
-- [x] **(2) Die drei Auflösungs-Trigger aus [`BEO-020`](../observations.md) tragen je ein
+- [x] **(2) Die drei Auflösungs-Trigger aus `BEO-020` tragen je ein
       einzeln begründetes Urteil** — *aufgelöst* (dann `Löst auf` im ablösenden Eintrag und Umzug
       nach `done/`) oder *bindet fort* (dann steht im Block, welcher Teil des Triggers nicht
       eingetreten ist). Drei Urteile, keine Sammelaussage.
@@ -270,10 +270,10 @@ Modus-Deklaration zu ändern ist ein eigener Vorgang.
 (`docs/plan/planning/observations.md`, gemergter Stand). Treffer auf `*` (gesamtes Repo), die
 diesen Slice betreffen:
 
-- [`BEO-020`](../observations.md) — **1×**, Beleg `slice-166`. **Dieser Slice ist ihr Gegenstand:**
+- `BEO-020` — **1×**, Beleg `slice-166`. **Dieser Slice ist ihr Gegenstand:**
   Der Eintrag sagt, das Urteil über einen gefeuerten Trigger habe im migrierenden Vorgang keinen
   Träger. DoD (2) **ist** dieser Träger; mit der Closure steht der Zähler auf 2×.
-- [`BEO-014`](../observations.md) — **2×**, Belege `slice-150`, `slice-166`. Gegenstand ist die
+- `BEO-014` — **2×**, Belege `slice-150`, `slice-166`. Gegenstand ist die
   Buchführung des Blocks über sich selbst; die vier Einträge dieses Slice
   ([`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf),
   [`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger),
@@ -283,7 +283,7 @@ diesen Slice betreffen:
   mehr, sondern eine Lücke und braucht einen eigenen Folge-Slice; der Lese-Schritt fällt bei der
   Closure an, weil dieses Repo ohne Wellen-Betrieb läuft
   ([`MR-037`](../../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst)).
-- [`BEO-016`](../observations.md) — **1×**, Beleg `slice-136` (Plan-Länge). Bindet diesen Plan als
+- `BEO-016` — **1×**, Beleg `slice-136` (Plan-Länge). Bindet diesen Plan als
   Auflage, nicht als Liefer-Punkt.
 
 **Welle oder nicht.** Der Auslöser-Test ist seit

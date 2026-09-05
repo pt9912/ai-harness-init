@@ -149,7 +149,7 @@ dasteht.
   dessen Bestand steht neben ihrem Kommando. Die tragenden Gründe der Wahl sind der Prüfbereich,
   der entfallende Pin und die Reichweite ins Ziel — keiner davon beruft sich auf das Nachbar-Repo.
 - **Der ADR-Text kann eine Adresse nennen, die der Prozess selbst bewegt** — `BEO-017` im
-  [Register](../observations.md) führt die Klasse mit drei ADR-tragenden Instanzen: der `git mv`,
+  Register führt die Klasse mit drei ADR-tragenden Instanzen: der `git mv`,
   den Modul 5 und Modul 6 vorschreiben, bricht den Zeiger in einem nach
   [`AGENTS.md`](../../../../AGENTS.md) §3.4 eingefrorenen Artefakt. Dieser Slice ist besonders
   exponiert: seine Gegenstände sind ein Slice in `in-progress/` und eine Datei unter
@@ -204,7 +204,7 @@ Backticks).
   `modules:` der [`.d-check.yml`](../../../../.d-check.yml) hält eine Zusammenfassung gegen das
   Artefakt, auf das sie zeigt — `links` prüft die Auflösbarkeit, nicht die Aussage.* Kein Zielort
   — die Lücke ist **benannt**, nicht verkörpert, und liegt als `BEO-027` im
-  [Register](../observations.md).
+  Register.
 - **Beobachtungs-Register (`../observations.md`):** `BEO-003` auf **5×** erhöht, Beleg
   `slice-172` ergänzt — der `open/` → `in-progress/`-Move brach die präfixlose Form in zwei
   Plandateien, `make docs-check` meldete **7** `target-missing`. Neu: `BEO-027` (Zusammenfassung
@@ -243,7 +243,7 @@ Refactor ohne neue Sub-Area-Berührung entfällt er ganz. Die beiden
 in keiner engeren Sub-Area der Modus-Deklaration in
 [`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area).
 
-**Vorgelagert — offene Beobachtungen sichten:** Zwei Treffer im [Register](../observations.md).
+**Vorgelagert — offene Beobachtungen sichten:** Zwei Treffer im Register.
 `BEO-017` (2×, offen — ein vorgeschriebener Ortswechsel macht eine Adresse in einem eingefrorenen
 Artefakt tot) steht als Risiko in §6. `BEO-007` (4×, geplant — wer die Anweisungssätze unter
 `.claude/commands/` schreiben darf, sagt keine Quelle) ist berührt, aber kein Risiko dieses

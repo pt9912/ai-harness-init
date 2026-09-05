@@ -34,7 +34,7 @@ fünfundvierzig — und der Adaptions-Block ist keine Datei, die ein Lauf übers
 §1 verweist aus vier Absätzen in ihn hinein.
 
 Das Beobachtungs-Register führt den Befund als
-[`BEO-014`](../observations.md) — *ein erheblicher Teil des Adaptions-Blocks beschreibt keine
+`BEO-014` — *ein erheblicher Teil des Adaptions-Blocks beschreibt keine
 Abweichung von einer Baseline-Regel, sondern Buchführung über den Block selbst*. Dieser Slice löst
 `BEO-014` **nicht** auf: Er ändert den **Träger**, nicht den Inhalt. Er macht die Buchführung
 sichtbar, indem sie eine eigene Datei bekommt statt Zeilen im Fließtext — und er macht damit den
@@ -117,7 +117,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       falsch macht. `harness/README.md` ebenso.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben —
-      [`BEO-014`](../observations.md) wird **zitiert, nicht neu angelegt**; seine `Stand`-Spalte
+      `BEO-014` wird **zitiert, nicht neu angelegt**; seine `Stand`-Spalte
       bekommt den Zeiger auf diesen Slice als Zustand, nicht als Chronik.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieser Slice läuft
@@ -305,7 +305,7 @@ dasteht.
   Der eine Klick mehr bleibt und ist die gewählte Form, kein offener Punkt.
 - **Der Umzug ändert den Träger, nicht den Inhalt — `BEO-014` bleibt offen.** Wer die
   Verzeichnis-Form für die Auflösung der Beobachtung hält, schließt eine Zeile, die weiter zutrifft.
-  — **Ausgang: weiter offen** → [`BEO-014`](../observations.md) im Register, Zähler auf 2×, Beleg
+  — **Ausgang: weiter offen** → `BEO-014` im Register, Zähler auf 2×, Beleg
   `slice-166` ergänzt. Der Träger ist gewechselt, die Buchführungs-Fracht des Blocks unverändert.
 
 ## 7. Closure-Notiz
@@ -363,12 +363,12 @@ Steering-Loop-Regeln.
   [`MR-039`](../../../../harness/conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
   und [`MR-043`](../../../../harness/conventions.md#mr-043--ein-nachgetragenes-pflichtfeld-schlägt-die-einordnung-im-rumpf)
   ist mit dem Umzug eingetreten — alle drei sind an die Inline-Form gebunden. Ihre Re-Evaluierung
-  verlangt je Eintrag ein `Löst auf`-Urteil; sie geht als [`BEO-020`](../observations.md) ins
+  verlangt je Eintrag ein `Löst auf`-Urteil; sie geht als `BEO-020` ins
   Register, nicht in diesen Slice. **Bootstrap-aware
   Gate:** keines berührt.
 - **Folge-Slices:** keiner. Der offene Posten des Trigger-Audits — die drei Einträge, deren
-  Auflösungs-Trigger der Umzug gefeuert hat — geht als [`BEO-020`](../observations.md) ins
-  Register statt in einen Schnitt. Das ist der Ausgang, den [`BEO-001`](../observations.md)
+  Auflösungs-Trigger der Umzug gefeuert hat — geht als `BEO-020` ins
+  Register statt in einen Schnitt. Das ist der Ausgang, den `BEO-001`
   verlangt: nicht jede Beobachtung wird ein Slice. Ein Slice-Plan wäre außerdem ein
   Planner-Artefakt, und dieser Lauf trägt die Architect-Rolle.
 - **Risiken aus §6:** vier, jedes mit genau einem Ausgang — dreimal *entfallen* (mit Messung),
@@ -403,7 +403,7 @@ Zeile dem Architect-Lauf, der sie schreibt.
 
 **Vorgelagert — offene Beobachtungen sichten:** Register durchgegangen
 (`docs/plan/planning/observations.md`). Treffer für `*` (gesamtes Repo):
-[`BEO-014`](../observations.md), Zähler **1×**, Beleg `slice-150`. Mit diesem Slice erreicht der
+`BEO-014`, Zähler **1×**, Beleg `slice-150`. Mit diesem Slice erreicht der
 Eintrag **nicht** die Schwelle 3× — er wird belegt, nicht verkörpert. Weitere Treffer auf `*`
 werden beim Vollzug erneut gesichtet, weil das Register zwischen Schnitt und Übernahme
 fortgeschrieben wird und beim Lesen so alt ist wie der letzte Merge.

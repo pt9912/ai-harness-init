@@ -199,11 +199,11 @@ Die Aussage des Absatzes bleibt: der Bestand ist kein Arbeitsauftrag, und der Au
   Lauf misst sie an ihrem Ernstfall: Der Zensus **derselben Sektion** hatte eine Folgerung bewegt
   (`0` → `1`), und der Tag-Nachzug in dieser Datei war einen Slice zuvor daran vorbeigelaufen. Kein
   Zielort — die Lücke bleibt **benannt**, nicht verkörpert; sie liegt als siebter Beleg an
-  [`BEO-009`](../observations.md), und ihr Ausgang hängt an dem dort geplanten
+  `BEO-009`, und ihr Ausgang hängt an dem dort geplanten
   [slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md).
 - **Beobachtungs-Register (`../observations.md`):** keine neue Kennung —
-  [`BEO-009`](../observations.md) von 6× auf **7×** erhöht, Beleg `slice-169`.
-  [`BEO-022`](../observations.md) bleibt bei 2×: dieser Slice **ist** die Rollen-Übergabe, die jene
+  `BEO-009` von 6× auf **7×** erhöht, Beleg `slice-169`.
+  `BEO-022` bleibt bei 2×: dieser Slice **ist** die Rollen-Übergabe, die jene
   Zeile vermisst, also kein weiteres Auftreten.
 - **Folge-Slices:** keine. Der Ausgang der Klasse hängt an
   [slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md); einen neuen
@@ -236,6 +236,6 @@ führt keine engere.
 daneben bleibt stehen*, Schwelle erreicht) trägt die Klasse dieses Nachzugs; `BEO-022` (*der
 Lese-Schritt erkennt den Übertritt, der Ausgang gehört einer anderen Rolle*) trägt seinen
 **Anlass** — dieser Slice ist die Rollen-Übergabe, die jene Zeile vermisst. Zähler-Stände siehe
-[Register](../observations.md). Weitere Treffer: keine.
+Register. Weitere Treffer: keine.
 
 **alle berührten Sub-Areas GF** — der Modus-Begründungsblock entfällt damit.

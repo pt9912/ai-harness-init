@@ -210,7 +210,7 @@ dasteht.
   Adaptions-Eintrags
   (`unzip -p /Development/d-check/docs/plan/planning/done/welle-88/archiv.zip
   docs/plan/planning/done/slice-193-baseline-v600-bump.md`, §9). — **Ausgang: weiter offen →
-  [Beobachtungs-Register](../observations.md), `BEO-009`.** Beide vom Nachbar-Repo genannten
+  Beobachtungs-Register, `BEO-009`.** Beide vom Nachbar-Repo genannten
   Klassen sind aufgetreten. Die **Version-Annotation neben einem Zitat** zweimal, beide in diesem
   Slice behoben: `docs/user/benutzerhandbuch.md` zeigte eine Beispielausgabe, die das Werkzeug
   nicht mehr erzeugt, und der Kopf von `.harness/skills/reviewer.md` deklarierte eine Baseline,
@@ -289,7 +289,7 @@ dasteht.
   Lücke schließt, entscheidet zuerst, ob dieses Repo dafür einen eigenen Vorlagen-Text führt oder
   die emittierte Aussage zurücknimmt. Keine Erwartungswerte
   ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-  Setzung 2). — **Ausgang: weiter offen → [Beobachtungs-Register](../observations.md), `BEO-038`**
+  Setzung 2). — **Ausgang: weiter offen → Beobachtungs-Register, `BEO-038`**
   (neue Kennung, Erstauftreten). Der dritte Ausgang ist hier der einzige, der nicht lügt: Ein
   Carveout schaltete einen roten Gate-Status auf einen Trigger, und rot ist hier nichts — kein Gate
   sieht die Lücke. Eine Folge-Slice-ID wäre ein Ausgang, der formal steht und materiell leer ist:
@@ -315,7 +315,7 @@ dasteht.
   die zwei umgezielten Fälle färben ihren Wächter selbst rot, bevor sie grün wurden. Was das
   Einzelne überlebt, ist die **Fall**-Hälfte — ein Mutations-Fall nennt eine Datei, die sein
   Wächter nicht liest —, und sie hat eine Kennung: `BEO-028` im
-  [Beobachtungs-Register](../observations.md), mit diesem Slice als zweitem Beleg.
+  Beobachtungs-Register, mit diesem Slice als zweitem Beleg.
 
 ## 7. Closure-Notiz
 
@@ -424,7 +424,7 @@ die die Modus-Deklaration in
 [`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area) für
 den vendored Baum und den Konventionsspeicher führt.
 
-**Vorgelagert — offene Beobachtungen sichten:** Das [Register](../observations.md) ist vollständig
+**Vorgelagert — offene Beobachtungen sichten:** Das Register ist vollständig
 durchgegangen. **Jede** Zeile trägt `*` (gesamtes Repo) — die Spalte unterscheidet in diesem Repo
 nichts (`BEO-004`). Vier Zeilen berühren diesen Slice mit ihrem Zähler-Stand. **Keine der vier
 erreicht 3× erst durch ihn**, und eine steht schon darüber und trägt ihren Ausgang. Die Stände sind

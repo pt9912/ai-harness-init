@@ -6,7 +6,7 @@
 | **Review-Art** | Diff gegen Plan und Hard Rules. **Nicht** DoD-Abhakung und **keine** Gate-Lauf-Bestätigung (Verifier, Modul 11) |
 | **Gegenstand** | `git diff 3f3af46..HEAD` — vier Implementations-Commits `83a00cb` (Unterkommando + `internal/archive`), `40bee7a` (fünf Mutations-Fälle), `3d72369` (`harness/README.md`), `39b3d35` (Kopf-Kommentar); dazu der Verweis-Nachzug `65d6bad` |
 | **Plan** | [`docs/plan/planning/done/slice-173-archive-welle-als-unterkommando.md`](../plan/planning/done/slice-173-archive-welle-als-unterkommando.md) |
-| **Vorherige Findings am gleichen Modul** | [`2026-09-03-slice-170-impl-review.md`](2026-09-03-slice-170-impl-review.md) und [`2026-09-03-slice-170-impl-review-runde-2.md`](2026-09-03-slice-170-impl-review-runde-2.md) — dieselbe Operation in ihrer Shell-Fassung, aus der dieser Lauf portiert; deren Klassen `BEO-025` (Zusage weiter als der Code) und `BEO-026` (Zähler-Label ≠ Einheit) stehen offen im [Register](../plan/planning/observations.md) |
+| **Vorherige Findings am gleichen Modul** | [`2026-09-03-slice-170-impl-review.md`](2026-09-03-slice-170-impl-review.md) und [`2026-09-03-slice-170-impl-review-runde-2.md`](2026-09-03-slice-170-impl-review-runde-2.md) — dieselbe Operation in ihrer Shell-Fassung, aus der dieser Lauf portiert; deren Klassen `BEO-025` (Zusage weiter als der Code) und `BEO-026` (Zähler-Label ≠ Einheit) stehen offen im Register |
 | **Bindende ADRs** | [ADR-0033](../plan/adr/0033-wellen-archivierung-als-unterkommando.md) (**`Proposed`** — Architect-Verdikt, kein Accepted-Constraint; ihre drei Abnahme-Kriterien und die Fitness-Function-Tabelle sind hier Prüfmaßstab, weil der Plan sie als solchen nennt), [ADR-0022](../plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 2, [ADR-0003](../plan/adr/0003-go-native-binaries.md) |
 | **Anforderungen** | [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten); [`AGENTS.md`](../../AGENTS.md) §3.2, §3.3, §3.6, §3.7, §3.9; [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) |
 | **Skill-Version** | `.harness/skills/reviewer.md` 1.6.0 |
@@ -133,7 +133,7 @@ Test-Bestand abgeleitet und als solches gekennzeichnet, nicht als Sensor-Ergebni
 ### LOW-1 — Die `Verweise:`-Zeile trägt drei Zahlen ohne eigene Einheit unter einem `Datei(en)`-Label
 
 - **kategorie:** LOW
-- **quelle:** `BEO-026` im [Beobachtungs-Register](../plan/planning/observations.md) (*Ein Zähler-Label nennt eine andere Einheit als der Zähler zählt*, offen, 1×)
+- **quelle:** `BEO-026` im Beobachtungs-Register (*Ein Zähler-Label nennt eine andere Einheit als der Zähler zählt*, offen, 1×)
 - **pfad:** `internal/archive/vorschau.go:152-164` (`schreibeVerweise`)
 - **befund:** Ausgegeben wird `Verweise: %d Datei(en) betroffen (%d mit Praefix, %d geschwister-relativ, %d aufsteigend)`.
   Die erste Zahl ist `len(funde)` — Dateien. Die drei in der Klammer sind über alle Dateien
@@ -200,7 +200,7 @@ Test-Bestand abgeleitet und als solches gekennzeichnet, nicht als Sensor-Ergebni
 ### INFO-1 — `BEO-026` ist im Port behoben, im Register aber unverändert
 
 - **kategorie:** INFO
-- **quelle:** [Beobachtungs-Register](../plan/planning/observations.md), `BEO-026`
+- **quelle:** Beobachtungs-Register, `BEO-026`
 - **pfad:** `internal/archive/clean.go:24-27`, `:42-46`
 - **befund:** `UnsauberGrund` meldet `untrackte(r) Eintrag/Eintraege` statt `Datei(en)`, mit
   Begründung im Kopf und mit `TestUnsauberGrundNenntEintragNichtDatei` als eigenem Wächter. Das ist

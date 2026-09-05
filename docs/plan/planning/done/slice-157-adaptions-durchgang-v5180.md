@@ -27,7 +27,7 @@ ist einzeln lieferbar.
 
 **Jeder Eintrag des Adaptions-Blocks trägt einen der fünf Ausgänge gegen `v5.18.0`, mit eigenem
 Beleg — und der Durchgang hält jeden Eintrag gegen den *Volltext* des Zielstands, nicht nur gegen
-das Delta.** Die Volltext-Hälfte ist die Auflage aus `BEO-013` ([Register](../observations.md)):
+das Delta.** Die Volltext-Hälfte ist die Auflage aus `BEO-013` (Register):
 ein Delta-Durchgang findet eine Deckung nicht, die ein Volltext-Durchgang fände, und die
 Fehlerrichtung ist *bleibt gültig* statt *gegenstandslos*.
 
@@ -113,7 +113,7 @@ dasteht.
 
 - **Achse 1 wird mit dem Kurzschluss beantwortet** — *„die Baseline behandelt jetzt dasselbe
   Thema"* statt *„der neue Text erfüllt genau die Pflicht, für die der Eintrag entstand"*; die
-  Klasse liegt als `BEO-008` im [Register](../observations.md). — **Ausgang: weiter offen →
+  Klasse liegt als `BEO-008` im Register. — **Ausgang: weiter offen →
   Beobachtungs-Register.** Die Klasse ist in diesem Durchgang **nicht** aufgetreten: Jeder der
   47 Einträge trägt in §9 die Pflicht, an der er gemessen ist, nicht das Thema — der eine
   Nicht-*bleibt-gültig*-Ausgang ([`MR-005`](../../../../harness/conventions.md#mr-005)) hängt an drei Messungen über den Pfad selbst. `BEO-008`
@@ -211,7 +211,7 @@ Verzeichnis-Position kein Beleg dafür ist, dass der Zielstand ihren Gegenstand 
 
 Gelesen wird je Eintrag der **Volltext** des Abschnitts, den sein Pflichtfeld
 `Ersetzt-Baseline-Regel` nennt, im Zielstand `v5.18.0` — nicht die Diff-Zeilen
-(`BEO-013`, [Register](../observations.md)). Führt das Feld `keine` (Fork), steht dieselbe Frage
+(`BEO-013`, Register). Führt das Feld `keine` (Fork), steht dieselbe Frage
 ohne Adresse: regelt der Zielstand den Gegenstand jetzt selbst? Die fünf Ausgänge stehen in
 `modul-02-harness-bootstrap.md`
 §Freshness-Audit der vendored Baseline (Schritt 2): **gegenstandslos · bleibt gültig · teilweise
@@ -226,7 +226,7 @@ fett, einmal kursiv). Sie verteilen sich auf fünf Dateien des vendored Baums �
 `grundlagen-source-precedence.md` und `grundlagen-harness-dateien.md`. Gelesen statt
 gegrept steht jeder von ihnen da; ein Durchgang, der die **0** für sich nähme, verbuchte
 *Bezug entfallen* statt *bleibt gültig*. Die Klasse liegt als `BEO-021` im
-[Register](../observations.md).
+Register.
 
 ### Ausgänge — Einträge `MR-000` bis `MR-021`
 

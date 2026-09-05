@@ -12,7 +12,7 @@ braucht). Insbesondere **kein Mitglied von**
 aus, und der Gegenstand hier ist der **Inhalt** der Einträge, nicht die Form
 des Blocks.
 
-**Bezug:** [`BEO-014`](../observations.md) (Schwelle erreicht, dieser Slice ist
+**Bezug:** [`BEO-014`](../observations/README.md) (Schwelle erreicht, dieser Slice ist
 ihr Ausgang *geplant*),
 [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)
 (die Bezugsmenge ist der Block selbst),

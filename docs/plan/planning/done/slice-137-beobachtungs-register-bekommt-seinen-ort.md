@@ -358,7 +358,7 @@ dasteht.
 - **Der Zähler startet bei null, und das kostet etwas Benennbares.** Eine Klasse, die in den
   geschlossenen Slices bereits dreimal aufgetreten ist, erreicht die Schwelle nicht von
   selbst; sichtbar wird sie erst beim vierten Mal. Der Preis ist gewollt (§1), aber er ist keiner,
-  den man verschweigt. — **Ausgang: weiter offen** → [`BEO-005`](../observations.md) im Register.
+  den man verschweigt. — **Ausgang: weiter offen** → `BEO-005` im Register.
   Der vorformulierte Weg ist zugleich **einmal gegangen**: `BEO-001` trägt sechs Belege aus
   `done/`, und sie sind über einen Literal-Grep auf **eine** Klasse gefunden, nicht über eine
   Inventur (`grep -rl 'Beobachtungs-Register' docs/plan/planning/done/slice-*.md | wc -l` → **6**,
@@ -367,7 +367,7 @@ dasteht.
 - **Die maschinelle Hälfte der Register-Paarung bleibt unbewacht, und das ist benannt statt
   verschwiegen.** Kein Modul der beiden gemessenen d-check-Stände deckt sie (§1, Messung 3); die
   adoptierbare Hälfte kostet einen Eintrag im Adaptions-Block. — **Ausgang: weiter offen** →
-  [`BEO-006`](../observations.md) im Register, und ausdrücklich **nicht** als Folge-Slice: Modul 5
+  `BEO-006` im Register, und ausdrücklich **nicht** als Folge-Slice: Modul 5
   führt *weiter offen* auf das Register und den Folge-Slice auf *eingetreten*. Der vorformulierte
   Ausgang nannte einen Folge-Slice und war darin falsch — die Verwechslung ist der zweite
   Lerneintrag in §7. Der genannte Trigger *die erste `BEO-<NNN>` ist vergeben* ist mit dieser
@@ -386,7 +386,7 @@ dasteht.
   dieses Repo eine solche Lücke schließt — mit einer ADR, also Architect-Arbeit. DoD (3) bindet
   sich deshalb auf die Abschnitte, die die **Planner**-Rolle bereits im Titel führen; die
   allgemeine Eigentums-Frage bleibt daneben stehen. — **Ausgang: weiter offen** →
-  [`BEO-007`](../observations.md) im Register. Die Bindung hat gehalten:
+  `BEO-007` im Register. Die Bindung hat gehalten:
   `grep -l 'Planner' .claude/commands/*.md | wc -l` → **3** von **3**, jede geschriebene Stelle
   liegt in einem Abschnitt, den die Rolle bereits führt. Umgangen ist damit die Frage, nicht
   gelöst — und sie gehört an den Architect, nicht in eine weitere Planner-Runde.
@@ -430,7 +430,7 @@ wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
 **Geliefert:** das stehende Beobachtungs-Register
-([`observations.md`](../observations.md), leer angelegt und mit dieser Closure auf sieben Zeilen
+(`observations.md`, leer angelegt und mit dieser Closure auf sieben Zeilen
 gefüllt), neun nachgezogene lebende Plandateien, und je ein Träger für die drei Schritte des
 Registers in den drei Anweisungssätzen unter
 [`.claude/commands/`](../../../../.claude/commands/).
@@ -453,7 +453,7 @@ Registers in den drei Anweisungssätzen unter
   Datei-Liste. **Null überführt.** `open/` ist damit nicht geschrumpft, sondern um **eins**
   gewachsen: der geschnittene
   [slice-144](../done/slice-144-lifecycle-move-zieht-seine-verweise-nach.md). Der Befund selbst ist
-  nicht verloren — er steht als [`BEO-002`](../observations.md) im Register und wird von dort
+  nicht verloren — er steht als `BEO-002` im Register und wird von dort
   weitergelesen.
 - **Was ging anders als geplant:** der Vorher-Nachher-Vergleich aus dem `gates`-DoD-Punkt ist
   gegenstandslos geworden. Der Plan rechnete mit zwei offenen Carveouts auf `test` und
@@ -482,7 +482,7 @@ Registers in den drei Anweisungssätzen unter
   weiter da, wird gezählt". Wer beides als Folge-Slice ausgibt, kauft für jede Beobachtung einen
   Termin. Drei Risiken dieses Slice sind danach umgestellt worden — auf `BEO-005`, `BEO-006` und
   `BEO-007` statt auf drei neue Dateien in `open/`.
-- **Beobachtungs-Register ([`observations.md`](../observations.md)):** **sieben neue Kennungen**,
+- **Beobachtungs-Register (`observations.md`):** **sieben neue Kennungen**,
   keine erhöht (es gab keine). `BEO-001` (`*`, 6×, Belege slice-080, slice-081, slice-130,
   slice-132, slice-133, slice-138) steht beim Erstauftreten bereits **über** der Schwelle und ist
   mit diesem Slice **verkörpert**; `BEO-002` bis `BEO-007` (je `*`, 1×, Beleg slice-137) stehen
@@ -536,7 +536,7 @@ eigene Zeile in der Deklaration trüge.
 
 **Vorgelagert — offene Beobachtungen sichten:** **keine Treffer, und der Grund ist der Gegenstand
 dieses Slice** — beim Sichtungs-Schritt gab es kein Register, das gesichtet werden könnte. Es
-entsteht mit diesem Slice ([`observations.md`](../observations.md), angelegt mit `— keine —` in
+entsteht mit diesem Slice (`observations.md`, angelegt mit `— keine —` in
 beiden Tabellen), und die Zeilen, die es heute führt, stammen aus seiner Closure — aus dem
 **Schreib**-Schritt also, nicht aus dem Sichtungs-Schritt. Dies ist der letzte Slice dieses Repos,
 der diese Antwort mit dieser Begründung geben kann; ab dem nächsten ist die Tabelle die Antwort,

@@ -154,7 +154,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       bricht durch den Move ebenso — die Ersetzungsregel der Eingehend-Richtung ankert an einem
       Verzeichnis-Literal, das diese Form nicht trägt, und sieht sie darum grundsätzlich nicht.
       Diese Grenze steht im Skriptkopf (`harness/tools/slice-mv.sh`, Grenze 3) und bleibt mit
-      `BEO-003` im [Beobachtungs-Register](../observations.md) offen geführt — sie wird von diesem
+      `BEO-003` im Beobachtungs-Register offen geführt — sie wird von diesem
       Slice nicht geschlossen. **Ausgehend:** die Ziele **in** der Datei, die kein
       Verzeichnis-Segment tragen und deshalb nach dem Wechsel ins falsche Verzeichnis zeigen — die
       Form, die das zweite Kommando aus §1 zählt und das erste per Konstruktion nicht sehen kann.
@@ -205,7 +205,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **Start** (`next` → `in-progress`): **das WIP-Limit ist frei**, also
 `ls docs/plan/planning/in-progress/slice-*.md | wc -l` → **0**. Eine **fachliche** Vorbedingung hat
 dieser Slice nicht: das Beobachtungs-Register, aus dem sein Auslöser stammt, steht bereits
-([`observations.md`](../observations.md)).
+(`observations.md`).
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
@@ -245,13 +245,13 @@ dasteht.
   Präfix-Formen plus die Form ohne Verzeichnis-Segment aus. Ein Werkzeug, das nur die zwei
   bekannten trifft, meldet Erfolg und lässt den Rest stehen — schlimmer als kein Werkzeug, weil es
   die Handprüfung ersetzt, die heute den Rest fängt. — **Ausgang: weiter offen** → `BEO-003` im
-  [Beobachtungs-Register](../observations.md). Die ausgehende Hälfte der präfixlosen Form ist
+  Beobachtungs-Register. Die ausgehende Hälfte der präfixlosen Form ist
   abgedeckt (DoD (2)); die eingehende Hälfte bleibt außerhalb der Zusage — dieselbe Grenze, die
   DoD (2) jetzt ausdrücklich benennt, nicht *vollständig abgedeckt*.
 - **Ein Liefergegenstand liegt in einer Artefakt-Klasse ohne benannte schreibende Rolle.** §3
   führt [`.claude/commands/implement-slice.md`](../../../../.claude/commands/implement-slice.md);
   wer die Anweisungssätze unter [`.claude/commands/`](../../../../.claude/commands/) schreiben
-  darf, sagt keine Quelle — das ist `BEO-007` im [Beobachtungs-Register](../observations.md), und
+  darf, sagt keine Quelle — das ist `BEO-007` im Beobachtungs-Register, und
   der Verantwortliche dieses Slice ist der Implementer. Fällt die Antwort gegen ihn, greift die
   Rückführung `in-progress` → `open` aus §4 (zweiter Auslöser dort); die zwei übrigen Zeilen der
   Tabelle bleiben davon unberührt und tragen die Zusage aus DoD (2) allein.
@@ -268,7 +268,7 @@ dasteht.
   bleibt offen:** [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
   deckt nur die Command-Form und lässt `.claude/agents/*.md` in
   Festlegung 3 ausdrücklich unentschieden — zweiter Beleg für `BEO-007` im
-  [Beobachtungs-Register](../observations.md).
+  Beobachtungs-Register.
 - **Eine Adresse ist ein Teilstring, und Slice-Nummern sind Präfixe voneinander.** `slice-13`
   steckt in `slice-130`; eine Ersetzung über den blanken Nummern-Teil trifft Nachbarn. Die
   Ersetzung muss auf dem **vollen Dateinamen** ankern, und das ist zu belegen, nicht zu behaupten.
@@ -405,7 +405,7 @@ eigene Zeile in der Deklaration trüge.
 **Vorgelagert — offene Beobachtungen sichten:** **der Sub-Area-Test trifft jede offene Zeile, und
 das ist selbst eine der Beobachtungen.** Der Schritt fragt *„steht eine der berührten Sub-Areas im
 Register?"*; berührt sind [`harness/tools/`](../../../../harness/tools/) und `*` (gesamtes Repo),
-und **jede** Zeile in [`observations.md`](../observations.md) trägt `*` — genau das ist `BEO-004`.
+und **jede** Zeile in `observations.md` trägt `*` — genau das ist `BEO-004`.
 Der Test sortiert hier also nichts aus; was er liefert, ist die volle offene Liste, und die
 Zuordnung zu diesem Slice muss aus dem Gegenstand kommen. **Zwei Zeilen berühren ihn:**
 

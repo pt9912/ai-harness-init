@@ -86,7 +86,7 @@ Kalibrierungs-Block auf `if false` (S4), der Entscheidungs-Grep zurück auf
 - **verifizierbar:** ja — `case "span-report":` umbenennen, die alte Marke in einen
   `/* … */`-Block derselben Datei setzen, dann `make test-bats`: heute grün.
 - **klasse:** Eine Sensor-Zusage nennt einen Geltungsbereich weiter, als der Ausdruck darunter ihn
-  hält ([`BEO-025`](../plan/planning/observations.md)) — **nicht** `BEO-009`: die Zusage entstand
+  hält (`BEO-025`) — **nicht** `BEO-009`: die Zusage entstand
   mit dem Ausdruck und war nie deckungsgleich
 
 ---
@@ -184,7 +184,7 @@ der falschen Zeichenklasse, Runde 7 das Gegenbeispiel mit gewechseltem Zweig. Ru
 reparierten Stelle **keinen** Rückschritt: die zwei Zählweisen sind wieder unterscheidbar, der
 Vergleich ist eine Mitgliedschaftsprüfung, und der Bestand behält seine Zähne. Was bleibt, ist eine
 Grenze des Ausdrucks, die der Text daneben nicht nennt — die schwächste Form dieser Familie
-bisher. **Ob** ein Zähler-Schritt auf [`BEO-025`](../plan/planning/observations.md) fällt und was er
+bisher. **Ob** ein Zähler-Schritt auf `BEO-025` fällt und was er
 auslöst, entscheidet die Closure und nicht dieser Report.
 
 ---

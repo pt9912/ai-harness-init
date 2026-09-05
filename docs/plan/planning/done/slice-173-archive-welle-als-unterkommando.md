@@ -177,7 +177,7 @@ dasteht.
 
 - **Ein Port erbt die Grenzen des Vorbilds.** Dessen `README.md` §Grenzen nennt selbst, dass ein
   Verzeichnis-Präfix-Verweis aus einer **Nicht-Wurzel**-Datei still übersehen statt gemeldet wird
-  — dieselbe Klasse, die `BEO-003` im [Register](../observations.md) als *eingehende Hälfte der
+  — dieselbe Klasse, die `BEO-003` im Register als *eingehende Hälfte der
   präfixlosen Form* führt (5×, verkörpert in `make slice-mv` mit benannter Grenze). Der
   Verweis-**Fund** dieses Slice ist genau die Stelle, an der die Grenze sichtbar wird: was er
   nicht meldet, wandert ungesehen durch [slice-175](../done/slice-175-archive-welle-schreibender-pfad.md).
@@ -189,8 +189,8 @@ dasteht.
 - **`unsauber_grund` ist die Funktion, die dieser Slice portiert, und sie trägt einen offenen
   LOW.** Sie zählt Zeilen aus `git status --porcelain` und nennt sie „Datei(en)", während eine
   Zeile ein untracktes Verzeichnis sein kann — die Klasse `BEO-026` im
-  [Register](../observations.md) (1×, offen). Ein wortgleicher Port trägt sie weiter. —
-  **Ausgang: weiter offen** → `BEO-026` im [Register](../observations.md) (2×, Beleg slice-173).
+  Register (1×, offen). Ein wortgleicher Port trägt sie weiter. —
+  **Ausgang: weiter offen** → `BEO-026` im Register (2×, Beleg slice-173).
   Der Port ist nicht wortgleich: `UnsauberGrund` (`internal/archive/clean.go`) meldet
   `untrackte(r) Eintrag/Eintraege` und trägt dafür `TestUnsauberGrundNenntEintragNichtDatei`. Der
   Shell-Träger schreibt weiter `untrackte Datei(en)`; seine Ablösung liegt bei
@@ -229,7 +229,7 @@ dasteht.
   Stelle, an der `git` läuft"*, während derselbe Kopf zehn Zeilen tiefer *„die zwei lesenden
   git-Aufrufe unten"* nennt und `gitStatusPorcelain`/`gitLsFiles` als *„die einzigen zwei
   Stellen"* stehen. Wer nur den Datei-Kopf liest, hält eine der zwei für die einzige. —
-  **Ausgang: weiter offen** → `BEO-009` im [Register](../observations.md) (9×, Beleg slice-173)
+  **Ausgang: weiter offen** → `BEO-009` im Register (9×, Beleg slice-173)
 - **`Suchraum` normalisiert weg, wofür `gitLsFiles` zwei Funktionen entfernt `-z` fährt.**
   `internal/archive/scan.go` führt jeden Eintrag durch `strings.TrimSpace`, während
   `cmd/ai-harness-init/archive_welle.go` `-z` mit *„weil ein Dateiname ein Zeilenende tragen
@@ -238,7 +238,7 @@ dasteht.
   `git ls-files -z | tr '\0' '\n' | grep -cE '^[[:space:]]|[[:space:]]$'` gegen
   `git ls-files | wc -l`; keine Erwartungswerte,
   [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-  Setzung 2). — **Ausgang: weiter offen** → `BEO-025` im [Register](../observations.md) (2×,
+  Setzung 2). — **Ausgang: weiter offen** → `BEO-025` im Register (2×,
   Beleg slice-173)
 
 ## 7. Closure-Notiz
@@ -301,7 +301,7 @@ Refactor ohne neue Sub-Area-Berührung entfällt er ganz. Die beiden
 `harness/tools/` ist **nicht** mehr berührt: die Ablösung des Shell-Helfers liegt bei
 [slice-175](../done/slice-175-archive-welle-schreibender-pfad.md).
 
-**Vorgelagert — offene Beobachtungen sichten:** Drei Treffer im [Register](../observations.md).
+**Vorgelagert — offene Beobachtungen sichten:** Drei Treffer im Register.
 `BEO-003` (5×, verkörpert in `make slice-mv` mit benannter Grenze) und `BEO-026` (1×, offen)
 stehen als Risiko in §6. `BEO-016` (1×, offen — ein Slice-Plan trägt ein Vielfaches der Zeilenzahl
 des Schwester-Repos für dieselbe Arbeitsklasse) ist durch den Re-Cut berührt und **kein** Risiko:

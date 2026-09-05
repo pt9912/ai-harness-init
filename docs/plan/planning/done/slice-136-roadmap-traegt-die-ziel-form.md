@@ -294,7 +294,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       keine Welle-Datei inhaltlich.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
-      [`observations.md`](../observations.md) — *keine Beobachtung angefallen* ist ebenfalls eine
+      `observations.md` — *keine Beobachtung angefallen* ist ebenfalls eine
       Antwort und wird in §7 notiert. Das Reconciliation-Register entfällt dauerhaft: dieses Repo
       hat keinen Brownfield-Bootstrap.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
@@ -419,7 +419,7 @@ dasteht.
   Aktuelle Welle"*), die `modul-06-roadmap.md` Schritt 5 mit *„Befördert wird niemand"* ersetzt.
   §3 führt sie ausdrücklich **nicht** in der Datei-Liste dieses Slice; ihr dort benannter Träger
   [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) hat sie nicht gezogen. —
-  **Ausgang:** **weiter offen → Beobachtungs-Register**: [`BEO-009`](../observations.md) Zähler +1
+  **Ausgang:** **weiter offen → Beobachtungs-Register**: `BEO-009` Zähler +1
   mit Beleg `slice-136`. Die Klasse steht dort über der Schwelle, ihr Lese-Schritt liegt bei der
   Closure von [welle-10](welle-10-re-baseline.md).
 - **Die Kürzung erzeugt einen `docs-check`-Befund, weil ein Anker verschwindet.** Die Roadmap
@@ -487,8 +487,8 @@ Die Zeilen mit **(c)** sind die einzigen, deren Fassung nur `git` hält.
   Regel als DoD-Punkt formuliert; der Lauf zeigt, dass sie die Kürzung überhaupt erst zulässig
   macht. Auslöser: `BEO-016` (`slice-136` — 1×), gezählt, nicht verkörpert.
 - **Beobachtungs-Register (`observations.md` neben den Wellen):** neue
-  [`BEO-016`](../observations.md) (Plan-Größe gegen Liefer-Punkte), Beleg `slice-136`;
-  [`BEO-009`](../observations.md) Zähler **+1** mit Beleg `slice-136` — der Sektionsname wanderte,
+  `BEO-016` (Plan-Größe gegen Liefer-Punkte), Beleg `slice-136`;
+  `BEO-009` Zähler **+1** mit Beleg `slice-136` — der Sektionsname wanderte,
   die zwei Anweisungssätze daneben nicht.
 - **Wächter-Entscheidung (DoD 3), wörtlich für den nächsten Leser:** **Marker-Hälfte — nicht
   gebaut, Träger [slice-125](../open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md).**
@@ -501,7 +501,7 @@ Die Zeilen mit **(c)** sind die einzigen, deren Fassung nur `git` hält.
   ohne Zeiger, weil dieses Repo vor dem Start-Trigger schneidet). Beide Hälften stehen als
   unbewacht an der Roadmap; slice-125 §1 ist entsprechend nachgezogen.
 - **Folge-Slices:** keiner. Die zwei Nebenbefunde nehmen den dritten Risiko-Ausgang statt eines
-  neuen Schnitts ([`BEO-001`](../observations.md)).
+  neuen Schnitts (`BEO-001`).
 - **Risiken aus §6:** jedes mit genau einem Ausgang — siehe §6.
 - **Drei Paarungen:** dieses Repo fährt Wellen-Betrieb — sie prüft die nächste Welle-Closure.
 
@@ -531,7 +531,7 @@ und ADRs zusammen und vermischte drei Regel-Lagen in einem Block — dieselbe Be
 Nachbar-Sub-Area.
 
 **Vorgelagert — offene Beobachtungen sichten:** die Sichtung ist **offen** — sie ist vor der
-Bearbeitung gegen [`observations.md`](../observations.md) zu fahren, und ihr Ergebnis gehört ins
+Bearbeitung gegen `observations.md` zu fahren, und ihr Ergebnis gehört ins
 Kriterium *Evidenz-/Diskrepanz-Risiko* unten. Sie steht hier nicht als Ergebnis, weil der Stand des
 Registers zwischen Schnitt und Bearbeitung wandert.
 

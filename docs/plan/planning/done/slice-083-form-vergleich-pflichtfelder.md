@@ -289,8 +289,8 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   eingetreten** → [slice-150](../done/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md),
   Liefer-Punkte 1 und 2. **Kein Register-Eintrag für diese zwei:** ihr Gegenstand ist benannt und
   abzählbar — zwei Kennungen, ein Artefakt, eine Rolle —, und der dritte Risiko-Ausgang trägt
-  Beobachtungen, keine Arbeitsposten (dieselbe Grenze führt [`BEO-002`](../observations.md)). Die
-  **Klasse** dahinter zählt getrennt: [`BEO-013`](../observations.md), 1×, Beleg `slice-083`. Der
+  Beobachtungen, keine Arbeitsposten (dieselbe Grenze führt `BEO-002`). Die
+  **Klasse** dahinter zählt getrennt: `BEO-013`, 1×, Beleg `slice-083`. Der
   Folge-Slice ist Mitglied von [welle-10](welle-10-re-baseline.md), weil beide Kennungen in
   deren eingefrorener Bezugsmenge liegen und die Belege aus
   [slice-082](../done/slice-082-adaptions-durchgang.md) §9 gegen den adoptierten Stand falsch sind
@@ -383,15 +383,15 @@ hatten das Feld organisch, der neue Eintrag bringt es beim Entstehen mit).
   ist. Die Welle-Closure entscheidet, ob sie die Form als Anker nimmt; dieser Slice legt sie offen
   und nicht aus.
 - **Beobachtungs-Register (`../observations.md`):** eine neue Kennung —
-  [`BEO-013`](../observations.md) (Sub-Area `*`, 1×, Beleg `slice-083`): *ein Adaptions-Durchgang,
+  `BEO-013` (Sub-Area `*`, 1×, Beleg `slice-083`): *ein Adaptions-Durchgang,
   der nach dem Delta fragt, findet eine Deckung nicht, die ein Durchgang findet, der jeden Eintrag
   gegen den Volltext des adoptierten Stands hält.* Kein bestehender Eintrag wurde erhöht, und die
-  drei Kandidaten sind einzeln geprüft: [`BEO-008`](../observations.md) bleibt bei 1× — er führt
+  drei Kandidaten sind einzeln geprüft: `BEO-008` bleibt bei 1× — er führt
   den **Kurzschluss** *„die Baseline behandelt jetzt dasselbe Thema"*, also die umgekehrte
   Fehlerrichtung, und dieser Lauf hat ihn nicht begangen, sondern die Deckung Satz für Satz
-  belegt; [`BEO-010`](../observations.md) bleibt bei 1× — ein vorgeschalteter Inventur-Slice hätte
+  belegt; `BEO-010` bleibt bei 1× — ein vorgeschalteter Inventur-Slice hätte
   einen falschen Achse-1-Ausgang nicht verhindert, die Zeile führt die Form-Pflichten;
-  [`BEO-003`](../observations.md) bleibt bei 2× — der Lifecycle-Move dieses Slice lief über
+  `BEO-003` bleibt bei 2× — der Lifecycle-Move dieses Slice lief über
   `make slice-mv` und hat keinen Verweis von Hand verlangt.
 - **Folge-Slices:** neu aus dieser Closure ist
   [slice-150](../done/slice-150-drei-eintraege-tragen-den-adoptierten-stand.md) — *Drei
@@ -411,7 +411,7 @@ hatten das Feld organisch, der neue Eintrag bringt es beim Entstehen mit).
   ungenutzt, und das ist eine Entscheidung, keine Auslassung: die zwei verbliebenen Risiken nennen
   benannte, abzählbare Arbeitsposten an einem Artefakt einer bestimmten Rolle — das ist ein Slice,
   keine Beobachtung. Die **Klasse** hinter ihnen hat den Register-Weg genommen
-  ([`BEO-013`](../observations.md)).
+  (`BEO-013`).
 - **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice
   ist Mitglied von [welle-10](welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt
   die Paarungen (Anker · Folge-Slice · Register) auf Closure-Schritt 3c — **nach** dem `git mv` der

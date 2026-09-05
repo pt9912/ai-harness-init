@@ -264,7 +264,7 @@ auflösbaren Pfad hinaus.
 INFO der Runde 1 — elf von elf.
 
 **Wiederkehrende Finding-Klasse (für Closure/Beobachtungs-Register,
-[`observations.md`](../plan/planning/observations.md)):** Die Klasse *„Zähler-Label nennt eine
+`observations.md`):** Die Klasse *„Zähler-Label nennt eine
 andere Einheit als der Zähler zählt"* trat in Runde 1 als LOW-1 auf und ist mit der Behebung an
 neuer Stelle wieder entstanden (LOW-2 dieser Runde, `unsauber_grund`) — **zweites Auftreten
 derselben Klasse innerhalb desselben Slice**. Die Klasse *„Kommentar-Zusage nennt mehr Fälle, als

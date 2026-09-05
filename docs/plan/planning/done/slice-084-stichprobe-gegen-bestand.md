@@ -110,7 +110,7 @@ wurde.
 - **Die Rotation hat kein Gedächtnis außer der Closure-Notiz.** Welcher Abschnitt zuletzt geprüft
   wurde, steht danach in §7 dieses Slice und in `welle-10-results.md`; ein Sensor, der die Rotation
   führt, existiert nicht. Das ist eine benannte Lücke, keine Zusage. — **Ausgang:** **weiter offen**
-  → Beobachtungs-Register, [`BEO-012`](../observations.md) (Sub-Area `*`, 1×, Beleg `slice-084`).
+  → Beobachtungs-Register, `BEO-012` (Sub-Area `*`, 1×, Beleg `slice-084`).
   Kein Folge-Slice: der Eintrag steht bei 1×, der Lese-Schritt greift bei 3×. Von den zwei Trägern,
   die dieser Punkt nannte, existiert beim Übergang nur der erste — die Results-Notiz entsteht erst
   bei der Welle-Closure (`ls docs/plan/planning/done/welle-10-results.md` → nicht vorhanden).
@@ -154,7 +154,7 @@ stehen in §9 dieses Plans und werden hier nicht gedoppelt; der Ausgang nach DoD
   leer). Getragen hat den Fund die **zweite** Frage aus DoD (2) — *oder als deklarierte
   Abweichung?*: Sie verhindert den Kurzschluss, ein vorhandener ADR-Text zum Thema (hier
   [`ADR-0003`](../../adr/0003-go-native-binaries.md), OCI-Images) sei schon die Erfüllung. Genau
-  diese Falle führt [`BEO-008`](../observations.md), und §8 hat sie **vor** der Messung benannt,
+  diese Falle führt `BEO-008`, und §8 hat sie **vor** der Messung benannt,
   nicht danach.
 - **Was ging anders als geplant:** Zwei Dinge. (1) Der Plan trug einen Mangel, der vor der Messung
   aufzulösen war: DoD (3) und die §3-Tabelle spannten gegeneinander — die eine routet jeden Fund
@@ -176,7 +176,7 @@ stehen in §9 dieses Plans und werden hier nicht gedoppelt; der Ausgang nach DoD
   DoD-Form nicht: sie ist der Vertrag, gegen den dieser Slice geschnitten und geprüft wurde.
 - **Steering-Loop-Eintrag: eine benannte Lücke, gezählt statt verkörpert.** Ein rotierender
   Prüf-Gegenstand — welcher Baseline-Abschnitt zuletzt gegen den ausgefüllten Bestand geprüft wurde
-  — hat keinen stehenden Ort und keinen Sensor ([`BEO-012`](../observations.md), 1×). Mit diesem
+  — hat keinen stehenden Ort und keinen Sensor (`BEO-012`, 1×). Mit diesem
   Slice ist nichts verkörpert: der Eintrag steht bei 1×, der Lese-Schritt greift bei 3×. Die zweite
   Lehre des Durchgangs — dass die Blankett-Klausel von
   [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) für einen Abschnitt falsch
@@ -184,16 +184,16 @@ stehen in §9 dieses Plans und werden hier nicht gedoppelt; der Ausgang nach DoD
   [slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md): sie ändert
   ein Architect-Artefakt ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
 - **Beobachtungs-Register (`../observations.md`):** eine neue Kennung —
-  [`BEO-012`](../observations.md) (Sub-Area `*`, 1×, Beleg `slice-084`). Kein bestehender Eintrag
+  `BEO-012` (Sub-Area `*`, 1×, Beleg `slice-084`). Kein bestehender Eintrag
   wurde erhöht, und die beiden Kandidaten sind in §8 vor der Messung geprüft:
-  [`BEO-008`](../observations.md) bleibt bei 1× — dieser Lauf ist die **Anwendung** der Lehre, kein
-  zweites Auftreten des Kurzschlusses; [`BEO-003`](../observations.md) bleibt bei 2×, weil der
+  `BEO-008` bleibt bei 1× — dieser Lauf ist die **Anwendung** der Lehre, kein
+  zweites Auftreten des Kurzschlusses; `BEO-003` bleibt bei 2×, weil der
   auslösende Lauf kein Slice-Closure-Lauf war und damit keinen formgebundenen Beleg hat.
 - **Folge-Slices:**
   [slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) — *Modul 14
   „Multi-Stage-Build": zwei Regeln bekommen ihren Ausgang*, liegt als Datei in `open/`. Kein
   weiterer: Der zweite Risiko-Ausgang nahm die Register-Route, statt einen Slice zu erzeugen — genau
-  die Route, die [`BEO-001`](../observations.md) verkörpert hat.
+  die Route, die `BEO-001` verkörpert hat.
 - **Risiken aus §6:** vier benannt
   (`awk '/^## 6\. Risiken/,/^## 7\. Closure-Notiz/' docs/plan/planning/*/slice-084-stichprobe-gegen-bestand.md | grep -c '^- \*\*'`
   → **4**), vier mit genau einem Ausgang — einer *eingetreten* (Folge-Slice `slice-146`), einer

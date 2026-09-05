@@ -146,7 +146,7 @@ dasteht.
   Rolle (Kopf oben). Wird ohne Klärung priorisiert, entscheidet der Default aus
   Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine (Implementer-
   Rolleninhaber) — das ist zulässig, aber eine **Setzung**, keine Ableitung, und sollte als solche
-  im Priorisierungs-Commit benannt werden. — **Ausgang: weiter offen** → [`BEO-007`](../observations.md)
+  im Priorisierungs-Commit benannt werden. — **Ausgang: weiter offen** → `BEO-007`
   auf **4×** erhöht, Beleg `slice-148`. Keine Quelle wurde benannt; das Feld steht als Setzung.
 - **Die Gegenprobe (DoD 2) findet einen Anker-Bruch an einem der zwei Accepted-ADRs.** Beide
   zeigen auf dieselbe Zeile (§5), die dieser Slice nicht anfasst — das Risiko ist damit klein,
@@ -207,16 +207,16 @@ hier ohne Anwendungsfall.
   Steering-Loop-Regeln, und die Hard Rule dieses Artefakts verbietet Wellen- und Slice-Nennungen
   ohnehin.
 - **Beobachtungs-Register (`../observations.md`):** keine neue Kennung, drei Erhöhungen.
-  [`BEO-007`](../observations.md) 3× → **4×** (Rollenfrage, Beleg `slice-148`),
-  [`BEO-010`](../observations.md) 1× → **2×** (die Form-Pflichten der Re-Baseline kommen einzeln
+  `BEO-007` 3× → **4×** (Rollenfrage, Beleg `slice-148`),
+  `BEO-010` 1× → **2×** (die Form-Pflichten der Re-Baseline kommen einzeln
   als Nachzügler zurück — der Lerneintrag oben ist der Beleg: der Form-Diff führte für dieses
-  Artefakt **eine** Position, gemessen sind es fünf), [`BEO-015`](../observations.md) 1× → **2×**
+  Artefakt **eine** Position, gemessen sind es fünf), `BEO-015` 1× → **2×**
   (die Zahl neben dem nie gefahrenen Kommando, zweites Vorkommen in §1 dieses Plans).
 - **Folge-Slices:** keine. Die vier offenen Ziel-Form-Positionen liegen als
-  [`BEO-010`](../observations.md) im Register — bei 2× ist die Klasse ein **Symptom**, kein
+  `BEO-010` im Register — bei 2× ist die Klasse ein **Symptom**, kein
   eigener Schnitt; der Lese-Schritt bei 3× liegt bei der Welle-Closure.
 - **Risiken aus §6:** zwei benannt, zwei mit genau einem Ausgang — **eines entfallen**, **eines
-  weiter offen** (im Register, [`BEO-007`](../observations.md)). Keines eingetreten.
+  weiter offen** (im Register, `BEO-007`). Keines eingetreten.
 - **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice ist
   Mitglied von [welle-10](welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt die
   Paarungen auf Closure-Schritt 3c, Modul 8 §Rollen-Sequenz für eine Welle weist sie dem
@@ -235,10 +235,10 @@ Einordnung wie in [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md)
 Sub-Area durchweg `*` per `BEO-004`; die Zahl wandert mit dem Register und ist kein Erwartungswert,
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2 — `grep -c '^| BEO-' docs/plan/planning/observations.md`). **Drei Treffer, alle
-unmittelbar:** [`BEO-007`](../observations.md) (3× — die Quellenfrage der schreibenden Rolle, sie
+unmittelbar:** `BEO-007` (3× — die Quellenfrage der schreibenden Rolle, sie
 **ist** das erste Risiko in §6 und hat die Schwelle mit dem Vorgänger-Slice bereits erreicht),
-[`BEO-009`](../observations.md) (2× — eine Änderung lässt die danebenstehende Zusage stehen; als
-Gestalt-Gegenprobe vorab gefahren, §7) und [`BEO-015`](../observations.md) (1× — die Zahl neben
+`BEO-009` (2× — eine Änderung lässt die danebenstehende Zusage stehen; als
+Gestalt-Gegenprobe vorab gefahren, §7) und `BEO-015` (1× — die Zahl neben
 dem nie gefahrenen Kommando; §1 dieses Plans trägt dasselbe Idiom und wurde nachgemessen). Die
 übrigen betreffen andere Mechaniken.
 

@@ -57,7 +57,7 @@ Keine Erwartungswerte
 Setzung 2) — beide Beträge wandern mit jedem neuen Eintrag.
 
 **Die 19 sind die Delta-Hälfte und decken den Durchgang nicht.** `BEO-013` (im
-[Register](../observations.md)) misst genau diese Lücke: Ein Durchgang, der nach dem **Delta**
+[Register](../observations/README.md)) misst genau diese Lücke: Ein Durchgang, der nach dem **Delta**
 fragt, findet eine Deckung nicht, die ein Durchgang findet, der **jeden** Eintrag gegen den neuen
 Volltext hält — und die Fehlerrichtung ist *bleibt gültig*, wo *gegenstandslos* richtig wäre. Die
 Prozedur stellt ihre Frage darum pro Eintrag über die ganze Liste, nicht über den Diff; die 19
@@ -220,7 +220,7 @@ die die Modus-Deklaration in
 den Konventionsspeicher führt. Eine feinere Aufteilung entlang der Eintrags-Gegenstände wäre keine
 Ausdifferenzierung: Die Einträge teilen einen Speicher und eine schreibende Rolle.
 
-**Vorgelagert — offene Beobachtungen sichten:** Das [Register](../observations.md) ist vollständig
+**Vorgelagert — offene Beobachtungen sichten:** Das [Register](../observations/README.md) ist vollständig
 durchgegangen. **Jede** Zeile trägt `*` (gesamtes Repo) — die Spalte unterscheidet in diesem Repo
 nichts (`BEO-004`). Vier Zeilen berühren diesen Slice mit ihrem Zähler-Stand, keine erreicht mit
 ihm 3×:

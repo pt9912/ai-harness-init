@@ -237,7 +237,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Die Referenz des Nachbar-Repos wird als Präzedenz gelesen statt als Messung** (`BEO-027` im
-  [Register](../observations.md)). Sein Ventil-Regime kennt Verzeichnis-Globs, dieses nicht; sein
+  Register). Sein Ventil-Regime kennt Verzeichnis-Globs, dieses nicht; sein
   Migrations-Eintrag deckt ausdrücklich **einen** Commit und nennt sich selbst *„keine
   Blankovollmacht"*. Übernommen wird die **Messung**, nicht die Konfiguration. — **Ausgang:**
   **entfallen.** Die Glob-Form ist an der eigenen Sonde gefahren und dabei als **wertlos** gemessen
@@ -250,7 +250,7 @@ dasteht.
   (`BEO-017`, 2× — dieser Slice ist die Antwort auf das dritte Auftreten, nicht seine Notiz). Vier
   gemessene Instanzen kosteten je eine eigene ADR und eine eigene Gate-Senkung; ob diese die fünfte
   wird, entscheidet Zweig (a). — **Ausgang:** **weiter offen**, im
-  [Beobachtungs-Register](../observations.md). Sie wird die fünfte Senkung; der Zähler steht mit
+  Beobachtungs-Register. Sie wird die fünfte Senkung; der Zähler steht mit
   dem Beleg dieses Slice auf **3×**, und den Ausgang der Zeile weist der Lese-Schritt der Closure
   von [welle-15](../welle-15-re-baseline.md) zu — nicht dieser Slice
   (Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register: zwischen dem Beleg, der auf
@@ -270,7 +270,7 @@ dasteht.
   trägt, ist **nicht gemessen**; sie hier zu behaupten wäre
   [`AGENTS.md`](../../../../AGENTS.md) §3.1. Der Gegenstand gehört zum Pin-Slice
   [slice-135](../open/slice-135-d-check-pin-v0661.md), nicht hierher. — **Ausgang:** **weiter
-  offen**, im [Beobachtungs-Register](../observations.md) als `BEO-006`. Der Zähler bleibt bei
+  offen**, im Beobachtungs-Register als `BEO-006`. Der Zähler bleibt bei
   **1×**: Die Lücke ist in diesem Slice **benannt**, aber nicht **aufgetreten** — sie wurde
   ausdrücklich nicht gemessen und nicht verbucht, und ein Beleg für eine Beobachtung, die der
   Vorgang gar nicht getroffen hat, hübe den Zähler auf eine Gelegenheit, die es nicht gab
@@ -356,7 +356,7 @@ die Modus-Deklaration in
 [`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area) für
 Norm-Artefakte und das Planning-Layout führt.
 
-**Vorgelagert — offene Beobachtungen sichten:** Das [Register](../observations.md) ist vollständig
+**Vorgelagert — offene Beobachtungen sichten:** Das Register ist vollständig
 durchgegangen. **Jede** Zeile trägt `*` (gesamtes Repo) — die Spalte unterscheidet in diesem Repo
 nichts (`BEO-004`). Vier Zeilen berühren diesen Slice mit ihrem Zähler-Stand:
 

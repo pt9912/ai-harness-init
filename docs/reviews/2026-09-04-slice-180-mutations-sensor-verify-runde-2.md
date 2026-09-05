@@ -89,7 +89,7 @@ siehe N-5.
 
 Der Verweis auf `BEO-025` ist **kein** Verstoß gegen die Quellen-Klausel von
 [`AGENTS.md`](../../AGENTS.md) §3.7: `BEO-025` löst nach
-[`docs/plan/planning/observations.md`](../plan/planning/observations.md) auf — ein **lebendes**
+`docs/plan/planning/observations.md` auf — ein **lebendes**
 Register, das §3.7 selbst als solches führt —, nicht nach einem Zeitdokument.
 
 ### MEDIUM-1 — überwiegend behoben; die Rest-Lücke ist gemessen

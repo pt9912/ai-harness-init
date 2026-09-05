@@ -26,7 +26,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice — Schnitt nach Lieferwert, nicht nach Schichten; jeder Slice
 ist einzeln lieferbar.
 
-**[`observations.md`](../observations.md) führt die drei Ausgänge — *verkörpert · geplant ·
+**`observations.md` führt die drei Ausgänge — *verkörpert · geplant ·
 gestrichen* — als geschlossene Menge und die generalisierte Beleg-Regel, und jede Zeile ab 3×
 trägt genau einen der drei.**
 
@@ -37,7 +37,7 @@ kein zweites Auftreten, und ein Vorkommen ohne abgeschlossenen Vorgang ist *bena
 gezählt*); und ab 3× ist der Stand einer von drei Ausgängen, wobei `offen` unterhalb der Schwelle
 der Normalzustand und **kein** Ausgang ist.
 
-Das ist die zweite Ursachen-Klasse aus `BEO-010` ([Register](../observations.md)) — ein
+Das ist die zweite Ursachen-Klasse aus `BEO-010` (Register) — ein
 Singleton-Artefakt, dessen Form-Pflicht in
 [welle-10](../done/welle-10-re-baseline.md) einzeln als Nachzügler zurückkam. Hier steht sie im
 Schnitt.
@@ -73,7 +73,7 @@ Aussagen-Berührung steht hier gar nicht.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| [`observations.md`](../observations.md) | update | Kopftext und die `Stand`-Spalte |
+| `observations.md` | update | Kopftext und die `Stand`-Spalte |
 
 ## 4. Trigger
 

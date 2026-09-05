@@ -221,7 +221,7 @@ die die Modus-Deklaration in
 Planning-Artefakte, Anweisungssätze und den emittierten Baum führt. `.codex/` ist **nicht**
 berührt: Es führt allein den SessionStart-Injektor und keinen Anweisungssatz.
 
-**Vorgelagert — offene Beobachtungen sichten:** Das [Register](../observations.md) ist vollständig
+**Vorgelagert — offene Beobachtungen sichten:** Das [Register](../observations/README.md) ist vollständig
 durchgegangen. **Jede** Zeile trägt `*` (gesamtes Repo) — die Spalte unterscheidet in diesem Repo
 nichts (`BEO-004`). Vier Zeilen berühren diesen Slice mit ihrem Zähler-Stand, keine erreicht mit
 ihm 3×:

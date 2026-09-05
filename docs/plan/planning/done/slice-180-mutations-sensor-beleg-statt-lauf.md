@@ -706,7 +706,7 @@ Lerneintrag-Regeln (zwei beobachtbare Kriterien **und** ein Lerneintrag) · `mod
   GNU-only-Option in einer bats-Zusicherung ist unter dem gepinnten Alpine/BusyBox-Bild unter jeder
   Mutation grün — hat keinen Sensor und liegt als `BEO-034` im Register: **gezählt, nicht
   verkörpert**.
-- **Beobachtungs-Register fortgeschrieben** ([`../observations.md`](../observations.md)) — sechs neue
+- **Beobachtungs-Register fortgeschrieben** (`../observations.md`) — sechs neue
   Kennungen und zwei Zähler-Schritte, alle mit Beleg `slice-180`:
   - `BEO-031` (§6 Risiko 1) · `BEO-032` (Risiko 2) · `BEO-033` (Risiko 6) · `BEO-034` (Risiko 8) —
     die vier vorbereiteten Kandidaten oben, unverändert in der Sache, mit den vorgeschlagenen
@@ -823,7 +823,7 @@ Modus-Deklaration in
 und wird von diesem Slice auch nicht zu einer — die zwei Test-Artefakte aus DoD (2) sind Wächter
 der Änderung in `harness/tools/`, nicht ein eigener Träger einer Modus-Entscheidung.
 
-**Vorgelagert — offene Beobachtungen sichten:** Das [Register](../observations.md) ist vollständig
+**Vorgelagert — offene Beobachtungen sichten:** Das Register ist vollständig
 durchgegangen (Stand: der gemergte Hauptzweig). **Jede** Zeile trägt `*` (gesamtes Repo) — die
 Spalte unterscheidet in diesem Repo nichts (`BEO-004`, 1×). Acht Zeilen berühren diesen Slice mit
 ihrem Zähler-Stand, und zwei davon binden eine DoD-Formulierung:
@@ -873,7 +873,7 @@ korrekten, gemergten Stand. `BEO-026` bleibt bei 2×, offen, und träte erst dur
 **Fund** über die Schwelle, nicht durch seine bloße Planung. Ob der im Diff korrigierte Fund an
 `BEO-025` (Kommentar am `isolation_key`-Aufrufpunkt) einen weiteren Beleg für diese Zeile
 begründet, ist beim Closure-Schritt zu entscheiden — Eintragungen in
-[`../observations.md`](../observations.md) sind Sache der Slice-Closure, nicht dieses
+`../observations.md` sind Sache der Slice-Closure, nicht dieses
 Implementer-Laufs.
 
 **alle berührten Sub-Areas GF** — der Modus-Begründungsblock entfällt damit

@@ -53,7 +53,7 @@ Baseline-Regel verlangt und dafür jeder Eintrag gegen den **Volltext** des adop
 gelesen werden musste. Der Delta-Durchgang aus
 [slice-082](../done/slice-082-adaptions-durchgang.md) fragte nach der **Bewegung** der Baseline und
 kam bei zweien zum gegenteiligen Ergebnis. Die Klasse führt
-[`BEO-013`](../observations.md) (1×, Beleg `slice-083`); dieser Plan trägt die drei Einzelfälle.
+`BEO-013` (1×, Beleg `slice-083`); dieser Plan trägt die drei Einzelfälle.
 
 **(1) [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
 — die Baseline schreibt die Setzung inzwischen selbst.**
@@ -137,7 +137,7 @@ unverändert: *„der Bestand ist kein Arbeitsauftrag"*.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler
       +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7
-      notiert. **[`BEO-013`](../observations.md) ist der naheliegende Kandidat und wird nicht
+      notiert. **`BEO-013` ist der naheliegende Kandidat und wird nicht
       automatisch erhöht:** diese Ausführung ist die *Auflösung* der gezählten Klasse, kein
       zweites Auftreten.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
@@ -197,7 +197,7 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   Setzung 3 ist an **einem** Satz gemessen, und ein Satz ist keine Setzung.** Setzung 3 verlangt
   neben der Verweis-Form auch, dass der *Anlass* in der Änderungs-Spalte bleibt; ob der
   Baseline-Absatz das mitträgt, ist gegen den Volltext zu prüfen und nicht gegen das Zitat in §1.
-  Genau dieser Kurzschluss ist [`BEO-008`](../observations.md) — *„die Baseline behandelt jetzt
+  Genau dieser Kurzschluss ist `BEO-008` — *„die Baseline behandelt jetzt
   dasselbe Thema"* trägt nicht. — **Ausgang:** **eingetreten, mit umgekehrtem Vorzeichen** — der
   Baseline-Absatz trägt die zweite Hälfte nicht, er **widerspricht** ihr: `modul-03-spec.md` zieht
   die Straten-Decke durch die Historie und weist den Anlass der Closure-Notiz des Slice zu. Der
@@ -213,7 +213,7 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   §*Der Ort ist offen, die Verbindlichkeit nicht* für sich schon führt. — **Ausgang:**
   **eingetreten** — die Marke ist fällig, der Block wächst um eine Form-Entscheidung
   ([`MR-043`](../../../../harness/conventions.md#mr-043--ein-nachgetragenes-pflichtfeld-schlägt-die-einordnung-im-rumpf)),
-  und genau dieses Wachstum ist als [`BEO-014`](../observations.md) gezählt statt weggeredet. Die
+  und genau dieses Wachstum ist als `BEO-014` gezählt statt weggeredet. Die
   Ortsfrage selbst ist seit [`MR-039`](../../../../harness/conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
   Setzung 3 beantwortet und nicht mehr offen.
 - **Kein Wächter sieht, ob dieser Slice seine Arbeit tut.** Kein Modul aus `modules:` der
@@ -223,8 +223,8 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   [`MR-039`](../../../../harness/conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
   für sich benennt. Träger ist der Rollen-Wechsel und der Form-Vergleich der nächsten
   Re-Baseline. — **Ausgang:** **weiter offen** — die Lücke ist unverändert und liegt als Klasse
-  bereits im Register: [`BEO-009`](../observations.md) (2×) für *kein Gate prüft den
-  Wahrheitsgehalt einer Aussage*, [`BEO-006`](../observations.md) (1×) für die fehlende
+  bereits im Register: `BEO-009` (2×) für *kein Gate prüft den
+  Wahrheitsgehalt einer Aussage*, `BEO-006` (1×) für die fehlende
   Modul-Fähigkeit. Beide bleiben mit diesem Slice unverändert; er ist kein zweites Auftreten,
   sondern der Beleg derselben, schon gezählten Lücke.
 
@@ -278,18 +278,18 @@ nimmt allein den Cutoff-Absatz aus.
   ([`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt)),
   nicht `seit slice-150`.
 - **Beobachtungs-Register (`../observations.md`):** eine neue Kennung —
-  [`BEO-014`](../observations.md) (Sub-Area `*`, 1×, Beleg `slice-150`): *ein erheblicher Teil des
+  `BEO-014` (Sub-Area `*`, 1×, Beleg `slice-150`): *ein erheblicher Teil des
   Adaptions-Blocks beschreibt keine Abweichung, sondern Buchführung über den Block selbst.* Dieser
   Lauf hat den vierten solchen Eintrag hinzugefügt und zählt ihn, statt ihn zu rechtfertigen; die
   Auflösung — der Umzug in die Verzeichnis-Form — ist in
   [welle-10](welle-10-re-baseline.md) §6 ausgeschlossen und bleibt ein eigener Vorgang.
-  [`BEO-013`](../observations.md) bleibt bei **1×**: dieser Slice ist die *Auflösung* der gezählten
-  Klasse, kein zweites Auftreten. [`BEO-008`](../observations.md) bleibt bei **1×** — der
+  `BEO-013` bleibt bei **1×**: dieser Slice ist die *Auflösung* der gezählten
+  Klasse, kein zweites Auftreten. `BEO-008` bleibt bei **1×** — der
   Kurzschluss wurde hier nicht begangen, sondern durch die Volltext-Prüfung gerade vermieden.
 - **Folge-Slices:** keine.
 - **Risiken aus §6:** vier benannt, vier mit genau einem Ausgang — **drei eingetreten** (alle drei
   im Lauf aufgefangen, keiner als Folge-Slice), **eines weiter offen** (die Wächter-Lücke, im
-  Register als [`BEO-009`](../observations.md) und [`BEO-006`](../observations.md) bereits gezählt).
+  Register als `BEO-009` und `BEO-006` bereits gezählt).
 - **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice ist
   Mitglied von [welle-10](welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt die
   Paarungen auf Closure-Schritt 3c, Modul 8 §Rollen-Sequenz für eine Welle weist sie dem
@@ -302,14 +302,14 @@ Modus-Deklaration in [`harness/conventions.md`](../../../../harness/conventions.
 sie führt. Eine feinere Ausdifferenzierung (`harness/` als eigene Sub-Area) erfüllt das
 Inklusionskriterium hier nicht: der Liefergegenstand ist der repo-weite Abweichungs-Index, nicht
 ein Verzeichnis. Dass `*` nichts unterscheidet, ist bekannt und gezählt —
-[`BEO-004`](../observations.md) (1×).
+`BEO-004` (1×).
 
 **Vorgelagert — offene Beobachtungen sichten:** gesichtet ist der gemergte Stand von
-[`observations.md`](../observations.md). Alle Zeilen tragen die Sub-Area `*` und sind damit formal
+`observations.md`. Alle Zeilen tragen die Sub-Area `*` und sind damit formal
 Treffer; sachlich berühren diesen Schnitt drei, keine davon an der Schwelle:
-[`BEO-013`](../observations.md) (1×) — die Klasse, deren drei Einzelfälle dieser Slice auflöst;
-[`BEO-008`](../observations.md) (1×) — der Achse-1-Kurzschluss, hier als Risiko in §6 geführt statt
-nur genannt; [`BEO-002`](../observations.md) (1×) — der fehlende Ausgang *real, aber nicht jetzt*,
+`BEO-013` (1×) — die Klasse, deren drei Einzelfälle dieser Slice auflöst;
+`BEO-008` (1×) — der Achse-1-Kurzschluss, hier als Risiko in §6 geführt statt
+nur genannt; `BEO-002` (1×) — der fehlende Ausgang *real, aber nicht jetzt*,
 der auch für diesen Plan gälte, wenn er nicht ausgeführt wird. **Keine erreicht mit diesem Slice
 3×**, kein Eintrag wird also zur Lücke, und keiner verlangt einen eigenen Folge-Slice.
 

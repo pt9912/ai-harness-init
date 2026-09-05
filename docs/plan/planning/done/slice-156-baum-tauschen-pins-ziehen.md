@@ -141,7 +141,7 @@ dasteht.
   Vorlagen ohne. Die **Klasse** bleibt und trägt beim nächsten Sprung dieselbe Pflicht — der
   Beleg ist der Lauf, nicht die Erwartung.
 - **Ein Baseline-Pfad in einem eingefrorenen Artefakt wird durch den Tausch tot** — die Klasse
-  liegt als `BEO-017` im [Register](../observations.md), erste gemessene Instanz war genau dieser
+  liegt als `BEO-017` im Register, erste gemessene Instanz war genau dieser
   Fall. — **Ausgang: weiter offen → `BEO-017`.** Eingetreten ist die Klasse, aber in einer Form,
   die keine der drei bisherigen Instanzen hatte: **stumm**. Vier `Accepted`-ADRs
   ([ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md),
@@ -270,7 +270,7 @@ in [`harness/conventions.md`](../../../../harness/conventions.md#modus-deklarati
 führt für den vendored Baum keine engere.
 
 **Vorgelagert — offene Beobachtungen sichten:** `BEO-017` (Zähler-Stand siehe
-[Register](../observations.md)) steht als Risiko in §6; `BEO-010` und `BEO-011` tragen den
+Register) steht als Risiko in §6; `BEO-010` und `BEO-011` tragen den
 Zuschnitt dieser Welle und sind dort verbucht. Weitere Treffer: keine.
 
 **alle berührten Sub-Areas GF** — der Modus-Begründungsblock entfällt damit.

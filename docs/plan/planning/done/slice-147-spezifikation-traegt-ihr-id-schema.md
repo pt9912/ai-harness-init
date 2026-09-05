@@ -155,7 +155,7 @@ dasteht.
   eine Rolle (Kopf oben). Wird ohne Klärung priorisiert, entscheidet der Default aus
   Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine (Implementer-
   Rolleninhaber) — das ist zulässig, aber eine **Setzung**, keine Ableitung, und sollte als solche
-  im Priorisierungs-Commit benannt werden. — **Ausgang: weiter offen** → [`BEO-007`](../observations.md)
+  im Priorisierungs-Commit benannt werden. — **Ausgang: weiter offen** → `BEO-007`
   auf **3×** erhöht, Beleg `slice-147`. Keine Quelle wurde benannt; das Feld steht als Setzung
   (Kopf oben, Commit `cd5d2bb`).
 - **Die Gegenprobe (DoD 2) findet einen Anker-Bruch an einem Accepted-ADR.** Fünf der sechs
@@ -212,7 +212,7 @@ für das Lastenheft; der dortige Bestandsschutz für vorhandene Zeilen hängt am
 und gilt für dieses Artefakt nicht — hier verlangt die Ziel-Form die Spalte selbst nicht mehr.
 
 - **Was hat funktioniert:** der Vorlauf. §8 hatte
-  [`BEO-009`](../observations.md) ausdrücklich als das Muster benannt, das hier drohte — *eine
+  `BEO-009` ausdrücklich als das Muster benannt, das hier drohte — *eine
   Änderung korrigiert die Sache und lässt die danebenstehende Zusage stehen* —, und genau dieser
   Fall trat ein: [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
   Punkt 1 zählt für §5 vier Spalten, seit der `ID`-Spalte sind es fünf. Er wurde **im selben Lauf**
@@ -239,7 +239,7 @@ und gilt für dieses Artefakt nicht — hier verlangt die Ziel-Form die Spalte s
 - **Beobachtungs-Register (`../observations.md`):** eine neue Kennung und eine Erhöhung.
   **`BEO-015`** (neu, 1×): *eine Zahl steht neben einem Kommando, das nie gefahren wurde — sie
   reproduziert nicht, und ein Filter des Kommandos greift gar nicht*; Beleg `slice-147`.
-  [`BEO-007`](../observations.md) von 2× auf **3×**, Beleg `slice-147`: die Quellenfrage der
+  `BEO-007` von 2× auf **3×**, Beleg `slice-147`: die Quellenfrage der
   schreibenden Rolle trifft zum dritten Mal zu, diesmal außerhalb von `.claude/commands/`. Damit ist
   die Schwelle erreicht; der **Lese-Schritt liegt bei der Closure von
   [welle-10](welle-10-re-baseline.md)** (dieses Repo fährt Wellen-Betrieb, Modul 6
@@ -251,7 +251,7 @@ und gilt für dieses Artefakt nicht — hier verlangt die Ziel-Form die Spalte s
   aufgelöst; `BEO-007` und `BEO-015` liegen im Register.
 - **Risiken aus §6:** drei benannt, drei mit genau einem Ausgang — **eines entfallen**, **eines
   eingetreten** (aufgelöst, kein Folge-Slice), **eines weiter offen** (im Register,
-  [`BEO-007`](../observations.md)).
+  `BEO-007`).
 - **Drei Paarungen:** hier **nicht** geprüft. Dieses Repo führt Wellen-Betrieb, und dieser Slice ist
   Mitglied von [welle-10](welle-10-re-baseline.md); Modul 6 §Wellen-Closure-Prozedur legt die
   Paarungen auf Closure-Schritt 3c, Modul 8 §Rollen-Sequenz für eine Welle weist sie dem
@@ -269,9 +269,9 @@ Einordnung wie in [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md)
 Sub-Area durchweg `*` per `BEO-004`; die Zahl wandert mit dem Register und ist kein Erwartungswert,
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2 — `grep -c '^| BEO-' docs/plan/planning/observations.md`). **Zwei Treffer, beide
-unmittelbar:** [`BEO-007`](../observations.md) (2× — die Quellenfrage der schreibenden Rolle; sie
+unmittelbar:** `BEO-007` (2× — die Quellenfrage der schreibenden Rolle; sie
 **ist** das erste Risiko in §6 und erreicht mit diesem Slice die Schwelle) und
-[`BEO-009`](../observations.md) (2× — eine Änderung lässt die danebenstehende Zusage stehen; hier
+`BEO-009` (2× — eine Änderung lässt die danebenstehende Zusage stehen; hier
 als Vorab-Prüfung eingepreist, statt sie als DoD (2) allein zu tragen: die Anker-Gegenprobe sieht
 eine Gestalt-Aussage nicht). Die übrigen betreffen andere Mechaniken.
 

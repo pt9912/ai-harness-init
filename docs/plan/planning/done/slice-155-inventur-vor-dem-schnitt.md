@@ -41,7 +41,7 @@ ist einzeln lieferbar.
 geänderte Position hat eine Zuordnung, und daraus steht fest, welche Slices
 [welle-14](welle-14-re-baseline.md) braucht — bevor der Rest geschnitten wird.**
 
-Der Slice ist die Antwort auf `BEO-010` ([Register](../observations.md)):
+Der Slice ist die Antwort auf `BEO-010` (Register):
 [welle-10](../done/welle-10-re-baseline.md) schloss mit erheblich mehr Mitgliedern, als sie
 geschnitten hatte — beide Zahlen stehen dort neben den Kommandos, die sie ausgeben —, weil die
 Form-Pflichten der neuen Fassung einzeln als Nachzügler zurückkamen. Der Umfang der Folge-Arbeit
@@ -79,7 +79,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Ausschlusses (§6 jener Datei); die Roadmap trägt ihren Drift-Eintrag. Ein öffentlicher
       Vertrag ist nicht berührt. *Der Nachsatz ist eine Präzisierung dieses Punktes gegenüber dem
       Schnitt: dass eine Katalog-Position ihren Ausgang außerhalb der Welle finden kann, war beim
-      Schneiden nicht gesehen — die Klasse liegt als `BEO-018` im [Register](../observations.md).*
+      Schneiden nicht gesehen — die Klasse liegt als `BEO-018` im Register.*
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations.md`) fortgeschrieben — neue `BEO-<NNN>` oder Zähler +1 mit Beleg; keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
@@ -137,7 +137,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Der Katalog wird zur Beweisführung und wächst über seinen Zweck hinaus** — die Klasse liegt als
-  `BEO-016` im [Register](../observations.md). Ein Katalog ist eine Liste mit Zuordnung, kein
+  `BEO-016` im Register. Ein Katalog ist eine Liste mit Zuordnung, kein
   Nachweis je Position. — **Ausgang: entfallen.** Das Risiko hatte diesen Lauf als Gegenstand, und
   der ist vorbei: §9 ist eine Tabelle mit einer Spalte `Zu` und einer Spalte `Ausgang`, und die
   Nachweis-Pflicht steht ausdrücklich beim tragenden Slice statt bei der Position. Gemessen: die
@@ -149,10 +149,10 @@ dasteht.
   ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2). Die **Klasse** bleibt im Register und wird von jedem künftigen Plan neu gestellt.
 - **Ein Delta-Katalog findet eine Deckung nicht, die ein Volltext-Durchgang fände** — die Klasse
-  liegt als `BEO-013` im [Register](../observations.md), gemessen an zwei Einträgen des letzten
+  liegt als `BEO-013` im Register, gemessen an zwei Einträgen des letzten
   Adaptions-Durchgangs. Der Katalog dieses Slice ist definitionsgemäß ein Delta; der
   Adaptions-Durchgang, den er als Folge-Slice benennt, braucht darum ausdrücklich die
-  Volltext-Hälfte. — **Ausgang: weiter offen → `BEO-013`** im [Register](../observations.md). Der
+  Volltext-Hälfte. — **Ausgang: weiter offen → `BEO-013`** im Register. Der
   Einzelfall ist gebunden — [slice-157](../done/slice-157-adaptions-durchgang-v5180.md) trägt die
   Volltext-Hälfte als eigenen DoD-Punkt —, die Klasse bleibt: dieser Katalog **ist** ein Delta und
   sagt das über sich selbst.
@@ -250,7 +250,7 @@ diesen Gegenstand führt; `harness/tools/` und `.codex/` sind vom Katalog nicht 
 feinere Aufteilung wäre hier keine Ausdifferenzierung, sondern eine Vorwegnahme des Ergebnisses:
 **welche** Bereiche der Diff trifft, ist der Liefergegenstand.
 
-**Vorgelagert — offene Beobachtungen sichten:** Das [Register](../observations.md) ist vollständig
+**Vorgelagert — offene Beobachtungen sichten:** Das Register ist vollständig
 durchgegangen. **Jede** Zeile trägt `*` (gesamtes Repo) — die Spalte unterscheidet in diesem Repo
 nichts, und genau das führt `BEO-004` selbst. Vier Zeilen berühren diesen Slice mit ihrem
 Zähler-Stand:

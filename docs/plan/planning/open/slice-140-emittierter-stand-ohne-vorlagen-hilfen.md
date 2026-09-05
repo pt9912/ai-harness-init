@@ -140,7 +140,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [ ] Reconciliation-Register: das Repo hat keinen Brownfield-Bootstrap und führt keines; das Item
       entfällt mit diesem Grund, nicht still.
 - [ ] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
-      [`observations.md`](../observations.md) — *keine Beobachtung angefallen* ist ebenfalls eine
+      [`observations.md`](../observations/README.md) — *keine Beobachtung angefallen* ist ebenfalls eine
       Antwort und wird in §7 notiert.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste Welle-Closure — dieses
@@ -249,7 +249,7 @@ Tests, eigene Ziel-Form — drei von drei Achsen) und `test/` (eigener Zuschnitt
 Werkzeugkette — zwei von drei). Beide erfüllen die Schwelle ≥ 2; keine ist zu grob geschnitten.
 
 **Vorgelagert — offene Beobachtungen sichten:** die Sichtung ist **offen** — sie ist vor der
-Bearbeitung gegen [`observations.md`](../observations.md) zu fahren, und ihr Ergebnis gehört ins
+Bearbeitung gegen [`observations.md`](../observations/README.md) zu fahren, und ihr Ergebnis gehört ins
 Kriterium *Evidenz-/Diskrepanz-Risiko* unten. Sie steht hier nicht als Ergebnis, weil der Stand des
 Registers zwischen Schnitt und Bearbeitung wandert.
 

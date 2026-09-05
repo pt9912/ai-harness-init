@@ -39,7 +39,7 @@ ist einzeln lieferbar.
 Position hat eine Zuordnung, und daraus steht fest, welche Slices
 [welle-15](../welle-15-re-baseline.md) braucht — bevor der Rest geschnitten wird.**
 
-Der Slice ist die Antwort auf `BEO-010` ([Register](../observations.md), 2×): der Umfang der
+Der Slice ist die Antwort auf `BEO-010` (Register, 2×): der Umfang der
 Folge-Arbeit wird **gemessen, nicht geschätzt**. Er ist zugleich die Probe auf `BEO-011` (1×) —
 dieser Sprung wird zeitnah statt gesammelt adoptiert, und ob die Kostenreihe damit flacher bleibt,
 misst die Closure der Welle.
@@ -135,7 +135,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Der Katalog wird zur Beweisführung und wächst über seinen Zweck hinaus** (`BEO-016` im
-  [Register](../observations.md)). Ein Katalog ist eine Liste mit Zuordnung, kein Nachweis je
+  Register). Ein Katalog ist eine Liste mit Zuordnung, kein Nachweis je
   Position; die Nachweis-Pflicht steht beim tragenden Slice. — **Ausgang: eingetreten**, und die
   Positions-Tabelle ist nicht die Ursache: sie misst 15 Zeilen, §9 im Ganzen **226** gegen **134**
   beim Inventur-Slice des vorigen Sprungs, bei kleinerem Delta. Der Zuwachs sitzt in den zwei
@@ -266,7 +266,7 @@ diesen Gegenstand führt; `harness/tools/` und `.codex/` sind vom Katalog nicht 
 feinere Aufteilung wäre keine Ausdifferenzierung, sondern eine Vorwegnahme des Ergebnisses:
 **welche** Bereiche der Diff trifft, ist der Liefergegenstand.
 
-**Vorgelagert — offene Beobachtungen sichten:** Das [Register](../observations.md) ist vollständig
+**Vorgelagert — offene Beobachtungen sichten:** Das Register ist vollständig
 durchgegangen. **Jede** Zeile trägt `*` (gesamtes Repo) — die Spalte unterscheidet in diesem Repo
 nichts, und genau das führt `BEO-004` selbst. Fünf Zeilen berühren diesen Slice mit ihrem
 Zähler-Stand, keine erreicht mit ihm 3×:

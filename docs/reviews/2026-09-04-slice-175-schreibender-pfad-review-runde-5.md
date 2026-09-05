@@ -301,7 +301,7 @@ Rand: einmal in der Bezugsmenge des Sensors, der die Kette schließt (MEDIUM-1),
 zweiten Kanal, den derselbe Sensor nicht sieht (MEDIUM-2). Für die Closure §7 ist es derselbe
 Vorgang und dieselbe Kennung `BEO-025`; **ob** der Zähler-Schritt fällt und was er auslöst,
 entscheidet die Closure und nicht dieser Report
-([`docs/plan/planning/observations.md`](../plan/planning/observations.md)).
+(`docs/plan/planning/observations.md`).
 
 ---
 
