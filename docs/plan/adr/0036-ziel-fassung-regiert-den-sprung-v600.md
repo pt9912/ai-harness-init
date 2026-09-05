@@ -28,9 +28,10 @@ liest, nach welcher Fassung ein Durchgang lief — hier so benannt)
 **Schärft:** — Prozess-ADR ohne Spec-Stratum: sie wählt die **normative Quelle eines Vorgangs**,
 nicht den Inhalt eines Spec-Dokuments.
 
-**Kopplung:** §Baseline von `harness/conventions.md` führt heute den Zustand *offen* für die
-regierende Fassung dieses Sprungs. Die Folgepflicht unten wechselt diesen Zustand; die Datei ist
-Architect-Eigentum ([`AGENTS.md`](../../../AGENTS.md) §3.8), und die Zeile bekommt kein neues Feld.
+**Kopplung:** §Baseline von `harness/conventions.md` zeigt für die regierende Fassung dieses
+Sprungs auf diese ADR — die Folgepflicht unten löst sie im selben Commit ein, der den Zustand
+*offen* davor ablöst. Die Datei ist Architect-Eigentum ([`AGENTS.md`](../../../AGENTS.md) §3.8),
+und die Zeile bekommt kein neues Feld.
 
 **Regeln:** Baseline-Regelwerk `modul-04-adrs.md`
 §Ziel-Form: ADR (MADR).
@@ -100,6 +101,7 @@ Klammer darunter sagt, was abgezogen ist):
 |---|---|---|
 | Adaptions-Durchgang: *Regelt die neue Fassung das, wofür diese Adaption angelegt wurde?* | `grundlagen-harness-dateien.md` §Konventionsspeicher | **11** |
 | Form-Vergleich: *Ist dieses Feld Pflicht?* | dieselbe Datei, §Konventionsspeicher und §Einstiegspunkt | (dieselben 11) |
+| **Korrektur der Zeilen-Zuordnung:** Die Etikettierung „§Konventionsspeicher" trägt für alle 11 nicht — **9** der 11 Netto-Zeilen liegen dort (Zeilen 295–301), **2** liegen in §Verzeichniskonvention (Zeile 14), einer Sektion, in die der Freshness-Audit nicht delegiert. Die Zahl 11 selbst bleibt korrekt (dieselbe `diff`-Messung), nur ihr Sektions-Etikett war datei-skopiert statt sektions-skopiert. |
 | Werkzeug-Wahl bei einem Stichproben-Fund | `modul-07-carveouts.md` §Werkzeug-Wahl | **0** |
 | Append-only-Disziplin beim Rückbau | `modul-04-adrs.md` | **0** |
 | dass eine Migration keine Modus-Frage ist | `grundlagen-bootstrap.md` §Modus pro Sub-Area | **0** |
@@ -166,12 +168,14 @@ done
 
 **Was daraus folgt und was nicht.** Der Satz *„der Abschnitt delegiert in vier Dateien, und die
 haben ein Delta"* trägt in beiden Sprüngen für **eine** Datei, nicht für vier;
-[ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) §Kontext führt ihre Tabelle
-mit den Roh-Zahlen und stützt ihre Festlegung 1 ausdrücklich auf denselben einen Delegaten
-(*„Und der Unterschied trifft genau die delegierte Frage"*). Der Befund **verengt einen Satz ihres
-Kontexts, nicht ihre Festlegung** — und er wird hier benannt statt in jener Datei nachgetragen:
-Ihre Konsistenz-Prüfung ist ein eigener Vorgang mit eigenem Träger (`slice-171`), und ein
-Architect-Lauf, der fremde Befunde still einarbeitet, nimmt ihm sein Objekt.
+[ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) führt dieselbe Mehrzahl an
+drei Stellen, davon in §Entscheidung als **einen der tragenden Gründe von Festlegung 1** (*„sie
+delegiert vier Fragen in Abschnitte, die ein Delta haben"*) — nicht nur in ihrem §Kontext, wie eine
+frühere Fassung dieses Absatzes den Fundort benannt hatte. Das **Ergebnis** von Festlegung 1 bleibt
+davon unberührt: Ein Delegat mit echtem Delta trägt sie unabhängig vom Zähl-Fehler der übrigen drei.
+Der Befund wird hier benannt statt in jener Datei nachgetragen: Ihre Konsistenz-Prüfung ist ein
+eigener Vorgang mit eigenem Träger (`slice-171`), und ein Architect-Lauf, der fremde Befunde still
+einarbeitet, nimmt ihm sein Objekt.
 
 ### Die Wirkung ist nicht hypothetisch — sie steht heute im Konventionsspeicher
 
@@ -281,7 +285,7 @@ eine Entscheidung des Auftraggebers hin.
 |---|---|---|
 | A — nichts entscheiden, die Wahl fällt faktisch beim ersten Durchgang | kein Aufwand; der Abschnitt ist byte-gleich, also „egal" | *egal* ist gemessen falsch: die Prozedur delegiert, und das Delegat mit dem Delta ändert genau die abgefragte Pflichtgliederung. [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 verlangt für diesen Fall ausdrücklich eine Begründung; sie zu unterlassen hieße, ihr zweites Anwendungsereignis auszulassen. Und der Durchgang selbst wäre blockiert: sein Start-Trigger nennt eine entschiedene normative Quelle |
 | B — die gepinnte Fassung `v5.18.0` regiert | formal der Stand zu Beginn der Welle; der Abschnitt ist identisch, also kostet es nichts | sie ist **nicht mehr vendored** — `ls -1 .harness/baseline/` gibt allein `v6.0.0` aus, und ein netzloser Lauf öffnet den Text nicht. Ihre Delegate messen den Bestand an einer Pflichtgliederung, die das Repo verlassen hat: die Kürzel-Spalten-Stelle im Konventionsspeicher wäre grün, wo der adoptierte Stand rot ist |
-| C — allgemeine Regel *„stets die Ziel-Fassung"*, in Ablösung von [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 | jeder künftige Sprung startet ohne Vorlauf; die Messung entfiele | dort verworfen und hier unverändert gültig: sie bände Prozeduren, deren Wortlaut niemand kennt, und wäre der stille Auto-Bump eine Ebene höher — den **beide** Fassungen wortgleich verbieten. Zusätzlich verlangte sie ein `Supersedes` auf eine ADR, auf die 62 Verweis-Vorkommen aus 16 lebenden Dateien zeigen (`git grep -oE '\]\([^)]*0018-ziel-fassung-regiert-die-migration\.md[^)]*\)' -- ':!docs/reviews' ':!docs/plan/planning/done' \| wc -l`, dazu dieselbe Abfrage mit `-l`; beide wandern und sind keine Erwartungswerte, [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2), und `matrix.status` in [`.d-check.yml`](../../../.d-check.yml) verbietet Verweise auf superseded ADRs |
+| C — allgemeine Regel *„stets die Ziel-Fassung"*, in Ablösung von [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 | jeder künftige Sprung startet ohne Vorlauf; die Messung entfiele | dort verworfen und hier unverändert gültig: sie bände Prozeduren, deren Wortlaut niemand kennt, und wäre der stille Auto-Bump eine Ebene höher — den **beide** Fassungen wortgleich verbieten. Zusätzlich verlangte sie ein `Supersedes` auf eine ADR, auf die 77 Verweis-Vorkommen aus 16 lebenden Dateien zeigen (`git grep -oE '\]\([^)]*0018-ziel-fassung-regiert-die-migration\.md[^)]*\)' -- ':!docs/reviews' ':!docs/plan/planning/done' \| wc -l`, dazu dieselbe Abfrage mit `-l`; beide wandern und sind keine Erwartungswerte, [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2), und `matrix.status` in [`.d-check.yml`](../../../.d-check.yml) verbietet Verweise auf superseded ADRs |
 | D — die Prozedur aus der Ziel-Fassung, die Delegate aus der gepinnten | nähme die Fassung, die im Baum liegt, und ließe den Maßstab, unter dem die Welle eröffnet wurde | der Abschnitt adressiert seine Delegate **relativ im eigenen Baum** (`grundlagen-harness-dateien.md#…`); die Aufteilung stünde in keiner Fassung und wäre eine Erfindung dieses Repos — derselbe Fehler wie Option D in [ADR-0018](0018-ziel-fassung-regiert-die-migration.md), nur an anderer Stelle. Und sie hätte genau die Wirkung von B: die abgefragte Pflichtgliederung käme aus dem abgelösten Stand |
 | **E — gewählt: Ziel-Fassung für diesen Sprung, auf einer für dieses Fassungspaar gefahrenen Messung** | entscheidet den anstehenden Fall auf Gründen, die hier gemessen sind — Verweis-Verteilung, Netto-Delta je Delegat, die netzlose Verfügbarkeit der zwei Bäume — statt sie von der Vorgänger-Entscheidung zu übernehmen; das Kriterium aus [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) bleibt für den nächsten Sprung unangetastet | der nächste Sprung erbt dieselbe Pflicht ein drittes Mal; und wer *byte-gleich* liest, muss die Delegation **und** den Herkunfts-Kommentar mitlesen, sonst hält er die Frage für erledigt oder findet ein Delta, das keines ist |
 
