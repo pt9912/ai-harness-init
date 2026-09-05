@@ -35,13 +35,13 @@
   das umbenannte Haupt-Target gelistet wird). Die advisory-Targets bleiben sonst **verbatim**
   (`doc-`-Präfix).
 - **Setzung 2 — nur `docs-check` ist ein *behaupteter* Gate ([`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).** `d-check.mk`
-  führt **zwölf** Targets (`grep -cE '^docs?-[a-z-]+:' d-check.mk` → **12**; `make doc-help` listet
-  dieselben zwölf). Genau eines davon, `docs-check`, steht in `make gates`,
-  [`AGENTS.md`](../../AGENTS.md) §4 und [`harness/README.md`](../README.md) §Sensors; die übrigen **elf**
+  führt **dreizehn** Targets (`grep -cE '^docs?-[a-z-]+:' d-check.mk` → **13**; `make doc-help`
+  listet dieselben dreizehn). Genau eines davon, `docs-check`, steht in `make gates`,
+  [`AGENTS.md`](../../AGENTS.md) §4 und [`harness/README.md`](../README.md) §Sensors; die übrigen **zwölf**
   sind advisory/opt-in (`doc-trace`/`doc-complete`/`doc-doctor`/`doc-repair`/`doc-immutable`/
-  `doc-commits`/`doc-planning`/`doc-tracked`/`doc-targets`/`doc-structure`/`doc-help`) — also
-  **verfügbar, aber nicht als Gate behauptet**, exakt wie `regelwerk-check` (Makefile-Target, nicht
-  in `gates`). Kein halluziniertes Gate: „behauptet" ≠ „vorhanden". Die Aufzählung **ist** die
+  `doc-commits`/`doc-planning`/`doc-tracked`/`doc-targets`/`doc-structure`/`doc-usage`/`doc-help`) —
+  also **verfügbar, aber nicht als Gate behauptet**, exakt wie `regelwerk-check` (Makefile-Target,
+  nicht in `gates`). Kein halluziniertes Gate: „behauptet" ≠ „vorhanden". Die Aufzählung **ist** die
   Grenzziehung: ein Target, das in ihr fehlt, ist weder als behauptet noch als advisory
   ausgewiesen — deshalb ist sie an den Re-Pin gebunden (§Auflösungs-Trigger) und nicht an das
   Datum dieses Eintrags.

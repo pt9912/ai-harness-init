@@ -1,5 +1,7 @@
 # MR-034 — Das geteilte Referenz-Ventil trägt am gepinnten Stand
 
+> **ÜBERHOLT: der Satz *„Der gepinnte d-check ist `ghcr.io/pt9912/d-check:v0.65.0` unter dem Digest in `d-check.mk`"* und der Halbsatz *„und **hier** steht der geltende Stand"* → [`MR-053`](../conventions.md#mr-053--ein-eintrag-datiert-seine-werkzeug-aussage-statt-den-lebenden-pin-zu-führen).** Alles übrige gilt fort: die Ablösung der zwei Sätze in [`MR-029`](../conventions.md#mr-029--der-scanignore-zensus-wandert-und-sein-dritter-grund-ist-keine-scoping-aussage) und [`MR-030`](../conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen), die Aussage über das geteilte `ignore-refs` samt ihrer roten Gegenprobe — unter `v0.74.1` neu gemessen in [`MR-052`](../conventions.md#mr-052--d-check-pin-v0741-zwei-module-verfügbar-vierte-ausgabe-spalte) — und die Feststellung über `d-check --print-config`. Wo der lebende Pin steht, sagt §Baseline.
+
 - **Datum:** 2026-08-30
 - **Wirksamkeits-Anlass:** slice-132.
 - **Geltungsbereich:** die **Werkzeug-Aussage** über das Doku-Gate in zwei Einträgen dieses
