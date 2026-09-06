@@ -314,6 +314,85 @@ dasteht.
   (`ls docs/plan/planning/observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/evidence/*.md | wc -l`)
   und deren Stand `verkörpert` ist — die verkörperte Regel deckt den **künftigen** Schreibfall, den
   Bestand deckt sie nicht. — **Ausgang:** offen; die Closure setzt ihn.
+- **Nach vollständigem Nachzug bleibt das Doku-Gate rot: 32 Link-Vorkommen in 14 Review-Reports
+  zeigen in den alten Baum, und das Modul `links` prüft sie.** Das ist die **Vorkommen-Achse**
+  derselben Klasse `BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot`, nicht ein zweiter Fund:
+  Das Risiko darüber zählt **Dateien** in den vier eingefrorenen Beständen, dieses zählt, was das
+  Gate daraus **macht**. Doppelt gezählt wird dabei nichts — die Menge liegt innerhalb der
+  Bezugsmenge aus DoD 2 und **außerhalb** von deren lebendem Teil: Dort ist `docs/reviews` per
+  Pathspec ausgenommen und trägt null. Verankert gemessen, Fences und Inline-Code gestrippt, weil
+  eine rohe Zählung den eigenen Abdruck mitzählt (roh 15 Dateien; der Mehrtreffer ist ein
+  abgedrucktes Kommando):
+
+  ```sh
+  n=0; d=0
+  for f in docs/reviews/*.md; do
+    c=$(awk '/^```/{x=!x;next} !x' "$f" | sed -E 's/`[^`]*`//g' \
+        | grep -oE '\]\([^)]*\.harness/baseline/v[0-9][^)]*\)' | wc -l)
+    [ "$c" -gt 0 ] && { n=$((n+c)); d=$((d+1)); }
+  done; echo "$n Links in $d Reports"                        # 32 Links in 14 Reports
+  ```
+
+  **Dass daraus Befunde werden, ist gemessen und nicht gefolgert** — an einer Kopie außerhalb des
+  Repos, weil `make docs-check` den Arbeitsbaum mountet: Baum nach `v6.3.1` umbenannt, jeder lebende
+  Verweis gezogen, die vier eingefrorenen Bestände unangetastet, darüber der Pin aus `d-check.mk`:
+
+  ```sh
+  S=$(mktemp -d)                                             # ausserhalb des Repos
+  tar --exclude=.git --exclude=.tmp -cf - . | (cd "$S" && tar -xf -)
+  mv "$S/.harness/baseline/v6.0.0" "$S/.harness/baseline/v6.3.1"
+  find "$S" -type f \( -name '*.md' -o -name '*.go' -o -name '*.sh' -o -name '*.yml' -o -name 'Makefile' \) \
+    -not -path '*/docs/reviews/*'            -not -path '*/docs/plan/adr/*' \
+    -not -path '*/docs/plan/planning/done/*' -not -path '*/harness/conventions/done/*' \
+    -not -path '*/.harness/baseline/*' \
+    -exec grep -lF '.harness/baseline/v6.0.0' {} + \
+    | xargs -r sed -i 's|\.harness/baseline/v6\.0\.0|.harness/baseline/v6.3.1|g'
+  D=$(sed -n 's/^DCHECK_DIGEST ?= //p' d-check.mk)
+  docker run --rm --network none -v "$S:/repo:ro" "ghcr.io/pt9912/d-check@$D"
+  ```
+
+  → `d-check: 892 Datei(en) geprüft, 32 Befund(e)`, EXIT 1 — **alle 32 in `docs/reviews/`, je
+  Link-Vorkommen einer**, keiner in den drei übrigen eingefrorenen Beständen. Ohne den Nachzug sind
+  es 156, also dieselben 32 plus 124 lebende.
+
+  **Warum das Gate sie sieht:** Die Reports sind **nicht** vom Doku-Gate ausgenommen. Von den
+  Modulen in [`.d-check.yml`](../../../../.d-check.yml) tragen nur `ids` und `codepaths` eine
+  `exempt-paths`-Zeile für `docs/reviews`; `links` und `anchors` tragen keine, und eine
+  referenz-weite Options-Sektion haben sie nicht
+  (`grep -n '^modules:' -A 0 .d-check.yml; grep -n 'exempt-paths' .d-check.yml`).
+
+  **Was das für die DoD heißt, ausdrücklich:** Liefer-Punkt 2 bleibt erfüllbar — ein eingefrorener
+  Report ist kein *lebender* Verweis, und die dortige Messung schließt ihn aus. Rot färbt er
+  trotzdem; getroffen sind der DoD-Punkt `make gates` grün und Closure-Kriterium 1 in §5.
+
+  **Drei Wege stehen offen, und keiner wird hier gewählt** — die Wahl gehört in den Lauf: ein
+  eingefrorenes Artefakt ändern, was [`AGENTS.md`](../../../../AGENTS.md) §3.4 und §3.11 sperren ·
+  ein Referenz-Ventil, das nach §3.5 seine eigene ADR braucht — heute führt die Config **4** Paare
+  (`grep -c '^  - in: ' .d-check.yml`), dieser Fall bräuchte **14** `in:`-Einträge über **22**
+  Paare aus Datei × aufgelöstem Ziel, und ein `scan.ignore`-Schnitt an ihrer Stelle nähme **293**
+  Reports aus vier Modulen (`ls docs/reviews/*.md | wc -l`) · den Tausch anders schneiden.
+
+  **Grenzen dieser Messung — was sie liefert und was sie nicht sieht.** Die 32 sind eine
+  **Untergrenze**: Die Sonde zog pauschal, während der Lauf zwei Klassen stehen lässt (DoD 2), und
+  sie misst nur den Prüfbereich — was `scan.ignore` ausnimmt, trägt eine tote Adresse unbemerkt.
+  Vier weitere Reports nennen die Adresse **ohne** Link-Klammer: nach dem Tausch tot als Pfad, grün
+  im Gate, weil `codepaths` genau hier ausgenommen ist. Und die Fundmenge ruht nicht — die Hälfte
+  der 14 ist am Tag dieser Messung entstanden:
+
+  ```sh
+  comm -23 <(git grep -l  '\.harness/baseline/v6\.0\.0'      -- docs/reviews | sort) \
+           <(git grep -lE '\]\([^)]*\.harness/baseline/v6\.0\.0' -- docs/reviews | sort) | wc -l
+                                                             # 4 Reports ohne Link-Form
+  for f in $(git grep -lE '\]\([^)]*\.harness/baseline/v6\.0\.0' -- docs/reviews); do
+    git log --diff-filter=A --format=%ad --date=short -1 -- "$f"; done | sort | uniq -c
+                                                             # 7 am 2026-09-05, 7 am 2026-09-06
+  ```
+
+  **Keine Erwartungswerte** — jede Zahl dieses Eintrags ist an den Stand vom 2026-09-06 gebunden und
+  wächst mit jedem Review-Lauf, der in den Baum verlinkt. Die Tag-Literale in den Kommandos oben
+  sind eine datierte Mess-Aussage nach
+  [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
+  und gehören zur zweiten Nicht-Zieh-Klasse aus DoD 2. — **Ausgang:** offen; die Closure setzt ihn.
 - **Die regierende Fassung ist bei Start noch nicht entschieden.** Dann greift der Start-Trigger
   nicht und der Slice bleibt liegen — das ist die gewollte Wirkung, nicht der Schaden. Der Schaden
   entstünde, wenn der Lauf ohne die Entscheidung tauscht und der spätere Adaptions-Durchgang
