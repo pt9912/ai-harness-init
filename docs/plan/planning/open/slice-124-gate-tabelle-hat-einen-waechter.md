@@ -45,7 +45,7 @@ undokumentiertes Target auf, statt still zu bleiben.**
 ### Der Anlass: die Regel hat keinen Träger, und das Werkzeug dafür liegt seit Monaten im Image
 
 [`AGENTS.md`](../../../../AGENTS.md) §3.1 verlangt, dass jeder genannte Gate auf frischem Checkout
-läuft. Geprüft wird das von nichts: [`.d-check.yml`](../../../../.d-check.yml) führt sechs Module
+läuft. Geprüft wird das von nichts: [`.d-check.yml`](../../../../.d-check.yml) führt sieben Module
 (`grep -m1 '^modules:' .d-check.yml`), und keines vergleicht Doku gegen Build-Targets. Das Modul
 `targets` (`DC-FA-TGT-001`) tut genau das und ist als `doc-targets` in
 [`d-check.mk`](../../../../d-check.mk) erzeugt — verdrahtet ist es nirgends

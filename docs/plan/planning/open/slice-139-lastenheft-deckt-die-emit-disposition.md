@@ -130,7 +130,7 @@ der *umsetzende Slice*, den jene Setzung voraussetzt, und §4 macht die Bedingun
 
 **Was er liefert, ist das, was heute niemand liefert:** den Wächter. Kein Modul von
 `.d-check.yml` prüft die Vollständigkeit einer Aufzählung
-(`grep -m1 '^modules:' .d-check.yml` → `links, anchors, ids, matrix, codepaths, spans`), und
+(`grep -m1 '^modules:' .d-check.yml` → `links, anchors, ids, matrix, codepaths, spans, planning`), und
 `make comment-claims` prüft die Existenz eines genannten Sensors, nicht die Deckung zweier Mengen.
 Ohne ihn wandert die Lücke beim nächsten Baseline-Bump wieder ein.
 

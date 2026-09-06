@@ -45,7 +45,7 @@ die Reichweiten-Grenze dieses Slice folgt),
 **Das emittierte Doc-Gate bekommt die Module, die es tragen kann — entschieden nach einer
 Regel, nicht nach Geschmack, und je Modul im Ziel rot gesehen.**
 
-Die emittierte Konfiguration führt heute zwei Module. Der Dogfood führt sechs. Ein
+Die emittierte Konfiguration führt heute zwei Module. Der Dogfood führt sieben. Ein
 gebootstrapptes Ziel bekommt damit dieselbe Doku-Struktur und dieselbe Regelwerk-Kopie wie wir —
 und ein Gate, das die Referenz-Richtung nicht prüfen **kann**. Es ist nicht rot und nicht grün;
 es hat zu der Frage nichts zu sagen.

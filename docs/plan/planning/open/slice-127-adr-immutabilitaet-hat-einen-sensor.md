@@ -41,7 +41,7 @@ Supersede-Übergang bleibt grün.**
 
 [`AGENTS.md`](../../../../AGENTS.md) §3.4 setzt ADRs nach *Accepted* immutabel. Geprüft wird das von
 nichts — der Roadmap-Kandidat misst es mit `grep -rl immutable test/` → **kein Treffer**, und
-[`.d-check.yml`](../../../../.d-check.yml) führt sechs Module, von denen keines einen Commit
+[`.d-check.yml`](../../../../.d-check.yml) führt sieben Module, von denen keines einen Commit
 entgegennimmt.
 
 ### Das Modul, und der Ist-Zustand seines Ziels

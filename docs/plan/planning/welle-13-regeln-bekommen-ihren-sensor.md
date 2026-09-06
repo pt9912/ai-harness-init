@@ -85,8 +85,8 @@ aufgenommen hat.
    diese Abweichung tragen, sonst meldet er einen legitimen Zustand als Drift.
 3. **Der Trockenlauf ist nicht geteilt.** Jedes Modul brauchte seinen eigenen Lauf mit seiner eigenen
    Config; der Pin-Trockenlauf aus
-   [slice-187](done/slice-187-d-check-pin-v0741.md) fährt die sechs **aktiven** Module und sagt über
-   die Kandidaten nichts. Genau deshalb liegt der Pin **nicht** in dieser Welle.
+   [slice-187](done/slice-187-d-check-pin-v0741.md) fuhr die zu seiner Zeit sechs **aktiven** Module
+   und sagt über die Kandidaten nichts. Genau deshalb liegt der Pin **nicht** in dieser Welle.
 4. **Zwei der vier sind in CI blind.** `grep -c 'fetch-depth' .github/workflows/ci.yml` → **0** bei
    **4** `actions/checkout`-Zeilen (`grep -c 'actions/checkout' .github/workflows/ci.yml`).
    Voreinstellung ist Tiefe **1**; ein history-lesendes Modul wäre dort **blind und grün** — die
@@ -316,9 +316,10 @@ ist falsch"*, nicht *„die DoD ist länger"*.
 - **Die zwölf nicht adoptierten Module des Images — vollständig aufgezählt, nicht beispielhaft.**
   Das gepinnte Image führt **22** verfügbare Module
   (`--print-config`, dann `grep -m1 '^# Verfügbar:' | tr ',' '\n' | wc -l`),
-  [`.d-check.yml`](../../../.d-check.yml) aktiviert **sechs**
-  (`grep -m1 '^modules:' .d-check.yml | tr ',' '\n' | wc -l`), diese Welle nimmt **vier** (§4) —
-  **zwölf** bleiben draußen. Eine Liste, die nur einen Teil davon nennt, gibt eine Auswahl als
+  [`.d-check.yml`](../../../.d-check.yml) aktiviert **sieben**
+  (`grep -m1 '^modules:' .d-check.yml | tr ',' '\n' | wc -l`), diese Welle nimmt **vier** (§4),
+  von denen `planning` mit [slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)
+  bereits in der Sieben steht — **zwölf** bleiben draußen. Eine Liste, die nur einen Teil davon nennt, gibt eine Auswahl als
   Vollzähligkeit aus; darum stehen hier alle zwölf. **Zwei davon sind mit `slice-187` neu
   hinzugekommen** und unten eigens gemessen, weil die Erstfassung sie nicht kennen konnte.
 

@@ -65,8 +65,9 @@ nicht mehr änderbar.
 
 **Kein Sensor dieses Repos liest eine Commit-Message.** Gemessen, nicht angenommen:
 `git grep -lnE 'git (log|show|cat-file).*(%B|--format=.%s)|commit-msg|COMMIT_EDITMSG' -- Makefile d-check.mk .d-check.yml harness/tools/ .claude/hooks/ .codex/ .github/ test/`
-→ **kein Treffer** (Exit 1). [`.d-check.yml`](../../../../.d-check.yml) führt sechs Module
-(`links, anchors, ids, matrix, codepaths, spans`), und keines davon nimmt einen Commit entgegen.
+→ **kein Treffer** (Exit 1). [`.d-check.yml`](../../../../.d-check.yml) führt sieben Module
+(`links, anchors, ids, matrix, codepaths, spans, planning`), und keines davon nimmt einen Commit
+entgegen.
 
 ### Warum der Sensor vor den Commit gehört und nicht in `make gates`
 

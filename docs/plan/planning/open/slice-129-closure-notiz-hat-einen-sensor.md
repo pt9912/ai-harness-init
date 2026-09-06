@@ -51,9 +51,10 @@ Zusage in einer Wortvariante). **Beide Zahlen sind keine Erwartungswerte** — s
 Bestand, diese Datei eingerechnet
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2). Gelesen wird eine solche Notiz von nichts: `grep -c '^verify' Makefile` → **0**, und
-[`.d-check.yml`](../../../../.d-check.yml) führt sechs Module
+[`.d-check.yml`](../../../../.d-check.yml) führt sieben Module
 (`grep -m1 '^modules:' .d-check.yml`), von denen keines eine Paket-Datei auf ihren Abschluss hin
-öffnet. Wer eine Notiz vergisst, erfährt es von einer schreibenden Rolle oder gar nicht.
+öffnet — `planning` ebenfalls nicht, solange der `closure.dir`-Block fehlt, den dieser Slice
+setzt. Wer eine Notiz vergisst, erfährt es von einer schreibenden Rolle oder gar nicht.
 
 ### Der Sensor ist geliefert, nicht zu bauen
 

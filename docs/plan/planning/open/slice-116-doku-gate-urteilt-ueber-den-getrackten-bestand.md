@@ -270,7 +270,7 @@ Gate-Konfiguration liegt außerhalb (Kopfzeile *Ebene*).
   [`MR-003`](../../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)
   benennt die Klasse *lokal grün, CI rot* ausdrücklich.
 - **Phase-Reife:** Phase 5 (Betrieb). Der Gate läuft in jedem `make gates` und in jedem CI-Lauf;
-  seine Module sind aktiviert und begründet (`grep -m1 '^modules:' .d-check.yml` führt sechs). Was
+  seine Module sind aktiviert und begründet (`grep -m1 '^modules:' .d-check.yml` führt sieben). Was
   fehlt, ist nicht Reife, sondern die richtige Menge.
 - **Evidenz-/Diskrepanz-Risiko:** niedrig für den Bestand (aus den Protokollen und dem Repo gelesen,
   §1), **offen für den Weg** — ob die Gate-Konfiguration die Eigenschaft selbst trägt, ist Frage A
