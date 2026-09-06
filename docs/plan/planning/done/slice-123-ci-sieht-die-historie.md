@@ -395,6 +395,18 @@ wandern mit dem Bestand.
   [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md), und im Repo mit Wellen-Betrieb prüft
   sie die Welle-Closure (Vorlagen-Item in §2). Vorgearbeitet ist die Register-Paarung insoweit,
   als jede oben genannte Beobachtung als Verzeichnis existiert und jede einen Beleg trägt.
+- **Nachtrag nach dem Move — der Ruhe-Marker der Roadmap stand die ganze Laufzeit dieses Slice
+  falsch, und niemand hat es gemerkt.** Beim Übergang `next → in-progress` blieb *„Nichts in
+  Arbeit."* unter §Offene Wellen stehen, obwohl `in-progress/` einen beanspruchten Slice trug —
+  genau der Defekt, den die Ziel-Form als *stehengebliebener Marker bei beanspruchtem Slice*
+  führt. Gemessen am eingefrorenen Move-Commit, damit die Zahl fest ist:
+  `git show 666bf14:docs/plan/planning/in-progress/roadmap.md | grep -c 'Nichts in Arbeit'` →
+  **1**. Wahr geworden ist der Marker erst wieder durch diesen Abschluss, ohne dass ihn jemand
+  angefasst hätte. **Kein Register-Eintrag, und der Grund ist derselbe wie bei N-5:** Die Lücke
+  ist im Abschnitt selbst benannt, und ihr Träger steht mit
+  [slice-125](../open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) als Datei in `open/`
+  — mit dem Auftrag, für **beide** Hälften einen Sensor zu bauen. Was dieser Nachtrag beiträgt,
+  ist der reale Beleg, dass die Marker-Hälfte ohne Sensor nicht bloß theoretisch driftet.
 
 ## 8. Sub-Area-Modus-Begründung
 
