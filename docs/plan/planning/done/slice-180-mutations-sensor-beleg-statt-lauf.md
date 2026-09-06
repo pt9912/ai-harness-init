@@ -755,7 +755,7 @@ Lerneintrag-Regeln (zwei beobachtbare Kriterien **und** ein Lerneintrag) · `mod
   §Roadmap-Struktur derselbe Defekt wie ein fehlender Marker bei leerem Verzeichnis. Mit dem Move
   dieses Slice trifft er wieder zu; die Roadmap bleibt darum unberührt. Die Invariante ist unbewacht,
   der Abschnitt sagt das über sich selbst, und ihr Träger ist
-  [slice-125](../open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) — kein neuer
+  [slice-125](../in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) — kein neuer
   Registereintrag für eine bereits benannte Lücke mit benanntem Träger.
 - **Drei Paarungen (Repo ohne Wellen-Betrieb, dieser Slice):** gefahren **nach** dem `git mv`, weil
   sie in `done/` suchen. **(a) Anker-Paarung — entfällt:** die Notiz trägt kein Pflichtfeld

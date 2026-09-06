@@ -193,7 +193,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   [slice-090](../open/slice-090-freshness-audit-im-ziel.md) — trägt zwischen den Tags kein Delta
   (`git diff --name-only v5.18.0 v6.0.0 -- lab/regelwerk/modul-02-harness-bootstrap.md` → leer), und
   §Roadmap-Struktur: fünf Abschnitte — der Gegenstand von
-  [slice-125](../open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) — liegt zwischen zwei
+  [slice-125](../in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) — liegt zwischen zwei
   Hunks statt in einem (`git diff v5.18.0 v6.0.0 -- lab/regelwerk/modul-06-roadmap.md | grep '^@@'`
   gegen `git show v5.18.0:lab/regelwerk/modul-06-roadmap.md | grep -n '^### '`). **Was doch
   bewegt wird, ist die Register-Hälfte** — P-09 und P-11 schreiben die Ablage und die

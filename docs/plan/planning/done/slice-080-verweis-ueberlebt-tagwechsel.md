@@ -278,7 +278,7 @@ steht seit diesem Lauf dort in §6, mit den zwei Messungen oben. Ihn hier als ei
 schneiden hieße, im gepinnten Regime zu bauen, was das Ziel-Regime in derselben Welle mitbringt.
 
 **Zwei benachbarte Schnitte tragen die Klasse nicht — geprüft, nicht angenommen.**
-[slice-125](../open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) verdrahtet die
+[slice-125](../in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) verdrahtet die
 Lifecycle-Invariante des Moduls `planning` (*Ruhe-Marker genau dann, wenn kein Slice im Block
 liegt*) — sie sieht **Verzeichnis gegen Überschrift**, nicht einen veralteten Prosa-Satz; die
 Drift, die `de1e4bc` zog, lag in einem Satz, den sein eigener Nachsatz bereits widerlegte, und

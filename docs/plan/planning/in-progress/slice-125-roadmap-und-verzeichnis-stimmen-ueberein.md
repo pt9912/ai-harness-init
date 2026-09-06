@@ -80,7 +80,7 @@ Grund für die Form von DoD (2).
 Lifecycle-Invariante die **Closure-Notiz-Prüfung** (opt-in über `closure.dir`, fünf eigene
 Grund-Codes); sie hat einen anderen Gegenstand (den Ruheort statt der laufenden Arbeit), eine
 andere Aufruf-Empfehlung und eigene Entscheidungen. Sie ist als
-[slice-129](slice-129-closure-notiz-hat-einen-sensor.md) geschnitten. **Beide Slices konfigurieren
+[slice-129](../open/slice-129-closure-notiz-hat-einen-sensor.md) geschnitten. **Beide Slices konfigurieren
 denselben Schlüsselbaum** — sie können in beliebiger Reihenfolge laufen, aber nicht gleichzeitig.
 
 ### Die zwei Fragen, die vor dem Config-Block beantwortet sein müssen

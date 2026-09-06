@@ -404,7 +404,7 @@ wandern mit dem Bestand.
   **1**. Wahr geworden ist der Marker erst wieder durch diesen Abschluss, ohne dass ihn jemand
   angefasst hätte. **Kein Register-Eintrag, und der Grund ist derselbe wie bei N-5:** Die Lücke
   ist im Abschnitt selbst benannt, und ihr Träger steht mit
-  [slice-125](../open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) als Datei in `open/`
+  [slice-125](../in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) als Datei in `open/`
   — mit dem Auftrag, für **beide** Hälften einen Sensor zu bauen. Was dieser Nachtrag beiträgt,
   ist der reale Beleg, dass die Marker-Hälfte ohne Sensor nicht bloß theoretisch driftet.
 
