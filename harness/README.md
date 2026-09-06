@@ -74,8 +74,8 @@ Repo-Konvention), was dieser Slice nicht entscheidet. Die zweite Fähigkeit dess
 Slice ([slice-129](../docs/plan/planning/open/slice-129-closure-notiz-hat-einen-sensor.md)). Eine
 **vierte** Fähigkeit desselben Moduls (`observations`, Deckung zwischen zitierten
 Beobachtungs-Kennungen und ihrem Nachweis im Register — additiv eine fünfte für den
-Verzeichnis-Modus dieser Ablage) ist ebenfalls verfügbar und nicht aktiviert; anders als `waves`
-und `closure` trägt sie noch keinen eigenen Slice —
+Verzeichnis-Modus dieser Ablage) ist ebenfalls verfügbar und nicht aktiviert; anders als
+`closure` (`slice-129`) trägt sie — wie `waves` selbst — noch keinen eigenen Slice —
 [`BEO-ALL/register-paarung-ohne-gate-modul`](../docs/plan/planning/observations/BEO-ALL/register-paarung-ohne-gate-modul/observation.md)
 führt die Lücke als offene Beobachtung, mit einer Drift-Log-Zeile in
 [`roadmap.md`](../docs/plan/planning/in-progress/roadmap.md) daneben.
