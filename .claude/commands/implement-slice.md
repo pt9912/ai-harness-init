@@ -115,6 +115,14 @@ ist eine Lifecycle-Rücksprungkante (11).
     automatisch); wo sie einmalig ist, in den Bericht. **Keine Antwort ist ein Befund**, kein
     Formfehler — die Klasse „Zusage greift weiter als Abdeckung" hat vier Rollen-Durchgänge
     gekostet, bevor sie hier landete.
+20. **Jeden in diesem Lauf neu geschriebenen oder geänderten Kommentar gegen `AGENTS.md` §3.7
+    prüfen** (Code, Konfiguration, Skripte — inklusive `.github/workflows/*.yml`, `Makefile`,
+    Skript-Köpfe). Die Probe: beschreibt der Satz den **Ist-Zustand** (indikativ, auflösbar), oder
+    trägt er eine Slice-Nummer als Begründung, ein „(… , entschieden)" ohne Anker-Form, oder einen
+    Konjunktiv über eine verworfene Alternative bzw. eine noch nicht existierende künftige Änderung
+    (**„sobald Slice X das tut …"**)? Herkunft steht nur als **ein** auflösbares Feld in den dort
+    genannten Formen (`LH-*`, `ADR-*`, `· seit welle-<NN>`, wellenlos `· seit slice-<NNN>`) — alles
+    andere ist Zustand, keine Chronik, und wird vor der Übergabe umformuliert statt mitgeschleift.
 
 Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontexten** (Modul 8).
 
