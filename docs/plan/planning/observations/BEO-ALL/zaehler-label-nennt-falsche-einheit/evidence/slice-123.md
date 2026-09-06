@@ -1,0 +1,2 @@
+**Vorgang:** slice-123
+**Fund:** Die Rot-Meldung des Historie-Vorlauf-Wächters gab die Zahl der Shallow-Grenzen (`wc -l < .git/shallow`) unter dem Label `Tiefe:` aus. An einem `--depth 5`-Klon zählt `git log --oneline | wc -l` fünf Commits, `.git/shallow` eine Zeile — das Label nannte eine Einheit, die der Zähler nicht zählt, und der Leser hätte sein Ergebnis gegen die falsche Größe abgezählt. Das Label heißt seither `Shallow-Grenzen:`; im vollen Checkout steht `voll (kein Shallow-Klon)`.

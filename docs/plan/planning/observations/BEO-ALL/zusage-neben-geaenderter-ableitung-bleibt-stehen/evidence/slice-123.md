@@ -1,0 +1,2 @@
+**Vorgang:** slice-123
+**Fund:** Die Korrektur des Wächter-Labels von *Tiefe* auf *Shallow-Grenzen* hat die Ableitung geändert und zwei Zusagen daneben stehen lassen: den Namen des ersten bats-Falls (`… LEER + Tiefe + Range + Advice`), der in jeder `make test-bats`-Ausgabe erscheint, während die Zusicherung darin `Shallow-Grenzen:` prüft — und die DoD-(1)-Zeile, die weiter *Tiefe* zusagte, obwohl die Rot-Meldung das Wort nicht mehr trägt. Beide sind nachgezogen; der Fall-Name im selben Lauf, die DoD-Zeile erst durch den Planner.
