@@ -1,6 +1,6 @@
 # ADR-0037: Der Bootstrap stellt den Tag-0-Zustand des Prozesses her — die Struktur-Aufzählung in `LH-FA-02` nennt Instanzen, nicht die Menge
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-06
 
@@ -24,6 +24,9 @@ Gegenkraft: kein Gate und keine Zusage über einem Bestand, den kein Lauf herste
 beschlossene Herkunfts-Klasse),
 [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) (Festlegung 2 — die Form eines Baseline-Belegs
 in einem einfrierenden Artefakt; Träger (a) bindet sie an den Accept-Übergang),
+[ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) (das derivative
+Register gehört der Rolle seines Originals — der ADR-Index wird im selben Architect-Commit
+nachgezogen),
 [ADR-0034](0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
 (Festlegung 1 — die Ablage besteht aus `README.md` plus je Beobachtung einem Verzeichnis;
 Festlegung 5 — die Ablage ist ortsfest),
@@ -640,6 +643,7 @@ Deckung, die kein Lauf prüft, wird nicht als vorhanden verbucht).
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-06 | **Proposed** | `slice-190` |
+| 2026-09-06 | **Accepted** | Entscheidung des Auftraggebers vom 2026-09-06, vollzogen in der Architect-Rolle. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
