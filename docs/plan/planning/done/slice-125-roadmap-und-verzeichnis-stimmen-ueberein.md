@@ -269,8 +269,8 @@ Setzung 1).
   einem elfstelligen Nachhall.** Der Kern des Slice (`planning` in `modules:`, der `planning:`-Block
   mit `roadmap`/`heading`/`marker`) ist klein und hat vom ersten Umsetzungs-Commit an gehalten;
   keine der drei Review-Runden hat ihn angegriffen. Teuer waren die **Aussagen daneben**: Die
-  Modul-Liste ist Operand von Prosa in elf lebenden Artefakten, und der Diff hat sie alle elf falsch
-  gemacht. Dazu kam eine Verhaltensänderung an einer Stelle, die niemand als betroffen erwartet
+  Modul-Liste ist Operand von Prosa in **zwölf** lebenden Artefakten, und der Diff hat sie alle
+  falsch gemacht. Dazu kam eine Verhaltensänderung an einer Stelle, die niemand als betroffen erwartet
   hatte — `make regelwerk-check` ist der einzige d-check-Aufruf dieses Repos, der die Modul-Liste
   **aufzählt**, statt erschöpfend zu disablen, und fuhr nach der Aktivierung ein zweites Modul mit
   (Review-Runde 2, HIGH). Drei Runden Nacharbeit gingen fast vollständig auf diese Klasse; die
@@ -284,9 +284,12 @@ Setzung 1).
   behoben, sechs neue, darunter der `regelwerk-check`-HIGH mit **geändertem Verhalten**.
   [Runde 3](../../../reviews/2026-09-06-slice-125-re-check-runde-3.md) — kein HIGH, für den
   Verifier freigegeben; ihr einziger MEDIUM (R-1) misst nach, dass die Fundmengen-Messung des
-  Implementers **einen** Treffer meldete, wo elf lebende Stellen standen, und benennt die zwei
+  Implementers **einen** Treffer meldete, wo **elf** lebende Stellen standen, und benennt die zwei
   Methodenfehler, die neun davon unsichtbar gemacht haben. Dieser MEDIUM ist der Grund, warum diese
-  Closure zwei Übergaben schreibt statt einer.
+  Closure zwei Übergaben schreibt statt einer. **Und die Kette geht eine Runde weiter:** Diese
+  Closure hat R-1s Fundmenge nicht übernommen, sondern über einem breiteren Muster neu gefahren —
+  und **zwei** weitere Fundstellen gefunden, die auch Runde 3 nicht hatte (unten, Übergabe 2). Die
+  Klasse hat damit in **einem** Vorgang drei Messungen überlebt, jede breiter als die vorige.
 - **Was diese Closure nicht deckt — drei Posten, benannt statt still:**
   **(1) Der Lese-Schritt des Beobachtungs-Registers gehört nicht hierher.** Dieses Repo führt
   Wellen-Betrieb (`ls docs/plan/planning/welle-*.md` nennt drei offene Welle-Dateien), und
@@ -377,17 +380,55 @@ liefert **Messungen**, keinen Norm- und keinen Index-Text.
 
 ### Übergabe 2 — im Planner-Eigentum, hier entschieden und ausgeführt
 
-**Neun der elf Stellen aus R-1 gehören dem Planner, und sie sind gezogen statt vertagt.**
-Die Alternative wäre gewesen, sie an den Arbeitspunkt *(6) Prosa-Aufzählung gegen ihre Config* des
-Roadmap-Kandidaten *Doku- und Sensor-Wartung* zu hängen. Dagegen sprechen zwei Gründe: Es sind
-Ein-Wort-Änderungen, und der Kandidat ist nicht geschnitten — eine Kennung dort wäre ein
-verbuchter Ausgang ohne Datum. Gezogen sind: der Arbeitspunkt selbst in
+**Die Fundmenge ist hier neu gefahren statt übernommen, und sie ist größer als in R-1:
+dreizehn Fundstellen in zwölf Dateien.** Zwei Siebe braucht es dafür, und **dass sie zusammen
+nicht reichen, ist der Befund und keine Umständlichkeit** — die Aussage steht im Bestand in zwei
+Formen, als Literal-Liste und als Zahlwort, und ein Zahlwort ist nur dann greifbar, wenn *Modul*
+in derselben Zeile steht:
+
+```sh
+R=b0fbde7   # der Stand vor diesem Nachzug; ohne Operand zaehlte das Kommando sein eigenes Zitat mit
+git grep -nE 'links, anchors, ids, matrix, codepaths, spans([^,]|$)' $R -- ':!.harness/baseline' ':!docs/reviews' ':!docs/plan/planning/done' ':!docs/plan/planning/observations' ':!harness/conventions' ':!docs/plan/adr/0*' | wc -l                        # 5
+git grep -nE '\b[Ss]echs\b' $R -- 'docs/plan/planning/open' 'docs/plan/planning/in-progress' 'docs/plan/planning/welle-*.md' | grep -i modul | grep -vcE 'Modul [0-9]|modul-[0-9]'   # 11
+```
+
+**Die zwei Siebe liefern 16 Zeilen und finden damit 11 der 13** — abzuziehen sind eine
+Überschneidung (`slice-121` über zwei Zeilen) und vier Zeilen, die die Modul-Liste nicht meinen
+(ein Mutations-Fall, eine Spec-Tabelle, eine DoD-Punkte-Zählung und die geprüfte Nicht-Fundstelle
+unten).
+**Zwei findet keines von beiden, und beide zeigen dieselbe Schwäche:**
+`docs/plan/adr/README.md:83-84` bricht die Aufzählung nach `codepaths,` um (Sieb 1 verfehlt sie),
+und `welle-13` §6 schreibt *„aktiviert **sechs**"* ohne das Wort *Modul* in derselben Zeile
+(Sieb 2 verfehlt sie). Gefunden sind beide durch **Lesen**, nicht durch ein Muster — genau die
+Grenze, die
+[`zitat-grep-uebersieht-zeilenumbruch-und-markup`](../observations/BEO-ALL/zitat-grep-uebersieht-zeilenumbruch-und-markup/observation.md)
+führt.
+
+**Zwei der dreizehn gehören dem Architect** (oben, Übergabe 1). **Elf gehören dem Planner**, und
+**neun sind gezogen** statt vertagt: der Arbeitspunkt selbst in
 [`roadmap.md`](../in-progress/roadmap.md) (N-4 — die Zeile, die die Klasse beschreibt, trug sie),
-die Modul-Zählung in [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §6 und die sieben
-Slice-Pläne in [`open/`](../open) (`slice-116`, `slice-121`, `slice-124`, `slice-127`, `slice-129`,
-`slice-135`, `slice-139`). **In einem eigenen Commit**, nicht in dem der Closure: Ein Prosa-Nachzug
-in acht fremden Plan-Dateien ist kein Closure-Artefakt nach
-[`AGENTS.md`](../../../../AGENTS.md) §3.10.
+die Modul-Zählung in [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §6 und sieben
+Slice-Pläne in [`open/`](../open) (`slice-073`, `slice-116`, `slice-121`, `slice-124`, `slice-127`,
+`slice-129`, `slice-139`). Die Alternative wäre gewesen, sie an den Arbeitspunkt
+*(6) Prosa-Aufzählung gegen ihre Config* des Roadmap-Kandidaten *Doku- und Sensor-Wartung* zu
+hängen; dagegen sprechen zwei Gründe: Es sind Ein-Wort-Änderungen, und der Kandidat ist nicht
+geschnitten — eine Kennung dort wäre ein verbuchter Ausgang ohne Datum. **In einem eigenen
+Commit**, nicht in dem der Closure: Ein Prosa-Nachzug in neun fremden Plan-Dateien ist kein
+Closure-Artefakt nach [`AGENTS.md`](../../../../AGENTS.md) §3.10.
+
+**Zwei Fundstellen bleiben bewusst stehen, und hier steht warum.** Beide liegen in
+[slice-135](../open/slice-135-d-check-pin-v0661.md), und beide sind Teil einer **datierten Messung**
+über die Spanne `v0.65.0..v0.66.1` — einer Spanne, die das Repo mit
+[slice-187](../done/slice-187-d-check-pin-v0741.md) hinter sich gelassen hat. Der Plan ist als
+überholt geführt
+([`ueberholter-offener-plan-ohne-genormten-ausgang`](../observations/BEO-ALL/ueberholter-offener-plan-ohne-genormten-ausgang/observation.md)).
+Eine Zahl darin zu ziehen hieße, eine überholte Messung als aktuell auszugeben — teurer als der
+sichtbare Fehler.
+
+**Eine dritte Stelle ist geprüft und **kein** Fund:** `welle-13` §1 Punkt 3 sagt, der
+Pin-Trockenlauf von `slice-187` habe *„die sechs aktiven Module"* gefahren. Das ist über jenen Lauf
+wahr — er lag vor dieser Aktivierung. Geändert ist allein die Zeitform, damit die Zahl nicht als
+heutiger Stand gelesen wird.
 
 ### Übergabe 3 — an die Closure von [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md)
 
