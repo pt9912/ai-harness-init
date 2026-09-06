@@ -26,6 +26,10 @@ Vertrag, gegen den dieser Slice misst),
 [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)
 (die Default-Regel für emittierte Prüfbereiche — ihr Geltungsbereich **ist**
 dieser Bestand),
+[`ADR-0037`](../../adr/0037-bootstrap-stellt-den-tag-0-zustand-her.md)
+(welche Orte der Bootstrap anlegt — Festlegung 1 trägt `harness/conventions/`,
+Festlegung 2 den Register-Ort, Festlegung 4 trägt `docs/plan/carveouts/done`
+nicht),
 [`ADR-0007`](../../adr/0007-bootstrap-phasen.md) (die Idempotenz-Klasse
 *skip-if-present*, aus der die Reichweiten-Grenze folgt),
 [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
@@ -44,7 +48,7 @@ grep -oE 'SPEC-[0-9]+' spec/spezifikation.md | sort -u | wc -l   # 34
 
 — keine davon nennt ihn, der Vertrag steht allein im Lastenheft.
 
-**Verantwortlich:** — (bis zur Priorisierung).
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** ai-harness-init-Team (pt9912). **Datum:** 2026-09-06.
 
@@ -52,10 +56,13 @@ grep -oE 'SPEC-[0-9]+' spec/spezifikation.md | sort -u | wc -l   # 34
 
 ## 1. Ziel
 
-**Ein frisch gebootstrapptes Ziel trägt die zwei Orte, die sein eigener
-emittierter Text als vorhanden beschreibt und die heute schlicht in der
-Struktur-Liste fehlen.** Ein dritter fehlt nicht versehentlich; er ist strittig
-und bleibt draußen (§6).
+**Ein frisch gebootstrapptes Ziel trägt `harness/conventions/`** — den einen der
+drei Orte, die sein eigener emittierter Text als vorhanden führt und den
+[`ADR-0037`](../../adr/0037-bootstrap-stellt-den-tag-0-zustand-her.md)
+Festlegung 1 trägt. Die zwei anderen entstehen hier nicht:
+`docs/plan/carveouts/done` trägt Festlegung 4 nicht, der Register-Ort ist
+entschieden und liegt in einem eigenen Schnitt (§6). Ihre Fundstellen bleiben —
+eine bekommt einen Ausgang statt einer Anlage, drei bleiben stehen.
 
 Die feste Liste in `structureGitkeeps()` trägt heute sechs Einträge:
 
@@ -79,30 +86,12 @@ docker run --rm --network none -v "$ziel:/repo:ro" \
 
 | Genannter Ort | genannt von | Fundstellen | in diesem Slice |
 |---|---|---|---|
-| `harness/conventions/` | emittierte `harness/conventions.md` | 2 | ja — eine davon (die zweite ist der Vorlagen-Pfad unten) |
-| `docs/plan/carveouts/done/` | emittierte `docs/plan/planning/README.md` | 1 | ja |
-| `docs/plan/planning/observations/` | drei emittierte Commands | 3 | **nein** — Norm-Konflikt, §6 |
+| `harness/conventions/` | emittierte `harness/conventions.md` | 2 | angelegt (DoD 1) — das trifft eine der zwei; die zweite ist der Vorlagen-Pfad unten (DoD 2) |
+| `docs/plan/carveouts/done/` | emittierte `docs/plan/planning/README.md` | 1 | **nicht angelegt** (Festlegung 4) — Ausgang statt Anlage (DoD 2) |
+| `docs/plan/planning/observations/` | drei emittierte Commands | 3 | **nein** — entschieden (Festlegung 2), eigener Schnitt (§6) |
 
-**Nur die ersten zwei sind unstrittig.** Beim dritten steht das
-Baseline-Regelwerk gegen dokumentiertes Werkzeug-Verhalten: Modul 6 verlangt für
-das Register eine echte `README.md` — *„Ist nichts offen, steht in
-`observations/` nur die `README.md` … Die leere Ablage **ist** die Aussage, und
-sie ist die, mit der **jedes Repo anfängt**"* —, während
-[`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md)
-§Änderungshistorie 1.13 die Nicht-Anlage als gewollt beschreibt. Das ist keine
-vergessene Zeile in einer Liste, sondern eine Entscheidung, die keine Quelle
-trifft; sie steht als Risiko in §6 und **nicht** in der DoD.
-
-**Gemessen, nicht gerechnet.** Derselbe Lauf über demselben Bootstrap, nachdem
-allein die zwei unstrittigen Verzeichnisse angelegt sind:
-
-```text
-d-check: 19 Datei(en) geprüft, 4 Befund(e)
-```
-
-Von den sechs fallen zwei. Von den vier verbleibenden gehören **drei** zum
-Register-Konflikt oben; die **vierte** hat eine eigene Ursache und bekommt darum
-einen eigenen DoD-Punkt statt einer Fußnote: die emittierte
+**Zwei der sechs Fundstellen bekommen einen Ausgang statt einer Anlage.** Die
+eine hat eine eigene Ursache und darum einen eigenen DoD-Punkt: die emittierte
 `harness/conventions.md` nennt die Eintrags-Vorlage
 `MR-NNN-titel.template.md` unter einem **baseline-relativen** Verzeichnis, das im
 Ziel als repo-relatives gelesen wird. Sie liegt real unter
@@ -115,10 +104,13 @@ Ziel trägt ihn:
 grep -c 'MR-NNN-titel.template.md' harness/conventions.md   # 0
 ```
 
-**Dieser Plan ist selbst ein Beleg dafür.** Der erste `make docs-check`-Lauf über
-ihm meldete **2** Befunde derselben Art `codepath-missing`, weil er den Pfad
-zitierte, wie das emittierte Ziel ihn trägt. Der Dogfood fährt `codepaths`; das
-Ziel fährt es nicht und schweigt darum zu derselben Zeile.
+Die andere ist die Nennung von `docs/plan/carveouts/done/` im emittierten
+Planning-Index: Der Ort wird nicht angelegt, die Zeile bleibt stehen und braucht
+denselben benannten Ausgang.
+
+**Die Asymmetrie ist die des Gates, nicht der Zeile:** Der Dogfood fährt
+`codepaths`, das Ziel fährt es nicht — derselbe Pfad fällt hier auf und dort
+nicht.
 
 **Was dieser Slice nicht ist, und was daraus folgt.** Er schaltet `codepaths` in
 [`internal/emit/templates/d-check.yml`](../../../../internal/emit/templates/d-check.yml)
@@ -129,12 +121,12 @@ emit-seitig neutralisiert oder upstream gefallen"*.
 
 **Dieser Slice feuert den Trigger nicht — und das gehört gesagt, statt es zu
 hoffen.** Nach DoD (1) und (2) bleiben **drei** Fundstellen stehen, alle aus dem
-Register-Konflikt. Solange sie stehen, startet ein Ziel mit aktivem `codepaths`
+Register-Ort. Solange sie stehen, startet ein Ziel mit aktivem `codepaths`
 rot, und das verböte
 [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3).
-Die Reihenfolge ist damit: erst dieser Slice, dann die Entscheidung zum Register
-(§6), **dann** ist `codepaths` in slice-073 überhaupt eine Frage. Zwei
-Entscheidungen, zwei Schnitte — der Bestand ist auch ohne die Modul-Liste falsch.
+Die Reihenfolge ist damit: erst dieser Slice, dann der Schnitt, der den
+Register-Ort liefert (§6), **dann** ist `codepaths` in slice-073 überhaupt eine
+Frage. Drei Schnitte — der Bestand ist auch ohne die Modul-Liste falsch.
 
 ## 2. Definition of Done
 
@@ -143,36 +135,43 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **(1) Der Bootstrap legt die zwei unstrittigen Orte an.**
-  `structureGitkeeps()` bekommt `harness/conventions` und
-  `docs/plan/carveouts/done`. **`docs/plan/planning/observations/` bleibt
-  draußen** — der Norm-Konflikt aus §6 wird nicht nebenbei in einer
-  Listen-Erweiterung entschieden. **Der Zahn steht schon und wird
+- [ ] **(1) Der Bootstrap legt den einen Ort an, den Festlegung 1 trägt.**
+  `structureGitkeeps()` bekommt `harness/conventions`; die drei Bedingungen sind
+  dort je einzeln belegt, und der Commit nennt sie einzeln statt pauschal.
+  **`docs/plan/carveouts/done` bleibt draußen** (Festlegung 4),
+  **`docs/plan/planning/observations/` ebenfalls** — sein Träger ist eine
+  `README.md` und keine `.gitkeep` (Festlegung 2), also ein eigener Schnitt (§6).
+  **Der Zahn steht schon und wird
   nicht neu gebaut:** `TestTemplates_EmittierterBestandVollstaendig` vergleicht
   den **ganzen** emittierten Baum gegen eine `want`-Liste auf Mengengleichheit,
   und `test/mutations/28-gitkeep-fehlt.sh` ist der kuratierte Fall dazu. Der
   Rot-Nachweis fällt darum im Lauf selbst an: nach der Erweiterung von
   `structureGitkeeps()` ist der Test **rot**, bis `want` nachgezogen ist — diese
   rote Ausgabe wird gelesen und in §7 benannt, nicht übersprungen.
-- [ ] **(2) Der baseline-relative Vorlagen-Pfad in der emittierten
-  `harness/conventions.md` bekommt einen benannten Ausgang.** Er nennt die
+- [ ] **(2) Die zwei Fundstellen auf Orte, die der Bootstrap nicht anlegt,
+  bekommen je einen benannten Ausgang.** Die eine ist der baseline-relative
+  Vorlagen-Pfad in der emittierten `harness/conventions.md` — er nennt die
   Eintrags-Vorlage unter einem Verzeichnis, das im Ziel nichts trifft; sie liegt
   unter
   [`.harness/baseline/v6.0.0/templates/harness/conventions/`](../../../../.harness/baseline/v6.0.0/templates/harness/conventions/).
-  Zulässig ist **ein** Ausgang, ausdrücklich gewählt und in der Vorlage begründet:
-  den Pfad im emittierten Text auf den vendored Ort ausschreiben, **oder** die
-  Zeile mit dem Marker stumm schalten, den die Baseline für dieselbe Klasse selbst
-  setzt —
+  Die andere ist `docs/plan/carveouts/done/` in der emittierten
+  `docs/plan/planning/README.md`. Zulässig ist je **ein** Ausgang, ausdrücklich
+  gewählt und begründet: den Pfad im emittierten Text auf den vendored Ort
+  ausschreiben, die Zeile mit dem Marker stumm schalten, den die Baseline für
+  dieselbe Klasse selbst setzt —
 
   ```sh
   grep -c 'd-check:ignore' \
     .harness/baseline/v6.0.0/templates/docs/plan/carveouts/carveout.template.md   # 1
   ```
 
-  **Nicht** zulässig: den vendored Fremdtext ändern
-  ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)).
+  — oder die Nennung umformulieren. **Nicht** zulässig: den vendored Fremdtext
+  ändern
+  ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache))
+  und **keinen** Ausgang wählen — dann bleibt die Fundstelle stehen, und DoD (3)
+  fällt.
 - [ ] **(3) Gemessen: `codepaths` über dem frischen Ziel meldet 6 → 3 Befunde,
-  und die drei Rückstände sind namentlich die des Register-Konflikts.** Dieselbe
+  und die drei Rückstände sind namentlich die des Register-Orts.** Dieselbe
   Messreihe wie in §1, `--lang go` **und** sprachlos. **Der Rot-Nachweis ist der
   Vorher-Lauf**: derselbe Aufruf über dem heutigen Stand meldet **6**; ein
   Nachher-Lauf allein belegt nicht, dass die Änderung gewirkt hat
@@ -196,34 +195,34 @@ Aussagen-Berührung steht hier gar nicht.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `internal/emit/templates.go` (`structureGitkeeps`) | update | die zwei fehlenden Verzeichnisse; die Liste ist tool-definiert und quell-unabhängig, also wächst sie hier und nirgends sonst |
+| `internal/emit/templates.go` (`structureGitkeeps`) | update | das eine Verzeichnis, das Festlegung 1 trägt; die Liste ist tool-definiert und quell-unabhängig, also wächst sie hier und nirgends sonst |
 | `internal/emit/templates_test.go` (`want`-Liste) | update | der Mengen-Vergleich ist der Zahn; er wird nachgezogen, nicht aufgeweicht |
-| die emittierte `harness/conventions.md` | update | DoD (2) — der baseline-relative Vorlagen-Pfad; **nur** die emittierte Fassung, nicht der vendored Fremdtext |
+| die emittierte `harness/conventions.md` und `docs/plan/planning/README.md` | update | DoD (2) — je ein Ausgang für die Fundstelle; **nur** die emittierte Fassung, nicht der vendored Fremdtext |
 | [`spec/lastenheft.md`](../../../../spec/lastenheft.md) | **unverändert** | siehe die Change-Request-Frage unten |
 | [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) | **unverändert** | sein §6-Baum ist zusammenfassende Prosa und nennt kein Struktur-Verzeichnis einzeln; er wird von DoD (1) weder wahr noch falsch. Dass er in dieser Form Lücken **verdeckt**, ist ein eigener Liefer-Wert — [slice-191](slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md), §6 |
-| `internal/emit/` — Emission der Register-`README.md` | **nicht in diesem Slice** | Norm-Konflikt, §6 |
+| `internal/emit/` — Emission der Register-`README.md` | **nicht in diesem Slice** | entschieden (Festlegung 2), eigener Schnitt — §6 |
 
-**Die Change-Request-Frage steht vor dem Code, nicht danach.**
+**Die Change-Request-Frage ist beantwortet.**
 [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
 zählt die Struktur-Verzeichnisse auf: *„Lifecycle-Ordner, ADR-/Carveout-/
 Reviews-Ordner"*. `docs/plan/carveouts/done` ist ein Carveout-Ordner und damit
-gedeckt; `harness/conventions` ist **keiner der genannten**. Ob die Aufzählung
-Beispiel oder Menge ist — und damit, ob die Erweiterung die Zusage
-*out-of-the-box gate-sicher* **erfüllt** (kein Change Request) oder den Vertrag
-**ändert** ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)) —
-ist **hier nicht entschieden**. Die Antwort gehört an den Architect
-([`AGENTS.md`](../../../../AGENTS.md) §3.8 zieht die Grenze für Norm-Artefakte,
-und ein Lastenheft-Satz ist Rang 1); der Slice hält sie als Risiko mit Ausgang
-in §6, statt sie im Implementations-Kontext zu beantworten.
+gedeckt; `harness/conventions` ist **keiner der genannten**. Festlegung 1 liest
+die Aufzählung als beispielhaft und macht die **Eigenschaft** maßgeblich: die
+Aufnahme eines Ortes, der ihre drei Bedingungen erfüllt, **erfüllt**
+[`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3),
+sie ändert den Vertrag nicht
+([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)).
+Gedeckt heißt dabei nicht angelegt: `docs/plan/carveouts/done` scheitert an der
+ersten der drei Bedingungen (Festlegung 4) und bleibt draußen.
 
 ## 4. Trigger
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**`open` → `next`:** WIP-Limit frei **und** die Change-Request-Frage aus §3 ist
-beantwortet. Sie ist keine Umsetzungs-Frage, und wer sie in `in-progress/`
-stellt, stellt sie im falschen Kontext. Keine Abhängigkeit von
+**`open` → `next`:** die Change-Request-Frage aus §3 ist beantwortet
+([`ADR-0037`](../../adr/0037-bootstrap-stellt-den-tag-0-zustand-her.md)
+Festlegung 1), `Verantwortlich:` ist gesetzt. Keine Abhängigkeit von
 [slice-073](slice-073-emittierte-doc-gate-module.md) in dieser Richtung — der
 Slice hier ist die Grundlage, nicht die Folge.
 
@@ -236,9 +235,11 @@ Slice hier ist die Grundlage, nicht die Folge.
   unerkannt; nach unten, die Messreihe in §1 hat einen Fall doppelt gezählt.
   Beides gehört zurück in den Schnitt, statt DoD (3) still auf „weniger als
   vorher" abzusenken.
-- `in-progress` → `open` (blockiert — Carveout?): falls die Change-Request-Frage
-  aus §3 mit *Vertragsänderung* beantwortet wird. Dann liegt eine
-  Lastenheft-Änderung vor der Arbeit, und die ist kein Schritt in diesem Slice.
+- `in-progress` → `open` (blockiert — Carveout?): falls für eine der zwei
+  Fundstellen aus DoD (2) kein Ausgang bleibt, der ohne Änderung am vendored
+  Fremdtext auskommt. Dann liegt eine Entscheidung vor der Arbeit
+  ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)),
+  und die ist kein Schritt in diesem Slice.
 
 ## 5. Closure-Trigger
 
@@ -264,31 +265,24 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
 dasteht.
 
-- **Die Change-Request-Frage aus §3 ist offen.** Ob `harness/conventions` unter
-  die Aufzählung in
+- **Die Change-Request-Frage aus §3 ist beantwortet.** Die Aufnahme eines Ortes,
+  der die drei Bedingungen aus Festlegung 1 erfüllt, ist Erfüllung von
   [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
-  fällt oder sie ändert, entscheidet der Architect. Beantwortet vor
-  `open` → `next` (§4). — **Ausgang:** <offen>
-- **Der Register-Ort ist ein Norm-Konflikt und wird hier nicht gelöst.**
-  Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register verlangt
-  die Ablage samt `README.md` als den Zustand, mit dem *jedes Repo anfängt*;
-  [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md)
-  §Änderungshistorie 1.13 beschreibt die Nicht-Anlage als gewollt. Eine vendored
-  Vorlage für die `README.md` existiert nicht
-  (`find .harness/baseline/v6.0.0/templates -name '*observation*README*' | wc -l`
-  → **0**), die Einzel-Vorlage `observation.template.md` ist bewusst
-  **wiederkehrend** und damit unemittiert
-  ([`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)).
-  Drei Fundstellen hängen daran und bleiben nach diesem Slice stehen. Der
-  Ausgang ist eine **Entscheidung des Architect**, kein Code-Zug, und bis dahin
-  ist `codepaths` im Ziel keine Option. — **Ausgang:** <offen>
-- **Der `.gitkeep` für `docs/plan/carveouts/done/` widerspricht einer Aussage der
-  Baseline.** `carveout.template.md` schreibt an ihrer eigenen Zeile *„done/
-  entsteht erst bei erster Carveout-Auflösung"* und schaltet sie darum mit einem
-  Marker stumm, statt den Ort anzulegen. Wer ihn beim Bootstrap anlegt, nimmt der
-  Aussage ihre Grundlage; wer ihn weglässt, lässt die Fundstelle aus
-  `docs/plan/planning/README.md` stehen. Der Slice wählt **einen** der beiden Wege
-  ausdrücklich — Marker **oder** Verzeichnis, nicht beides und nicht keines. —
+  und keine Vertragsänderung. — **Ausgang:** <offen>
+- **Der Register-Ort ist entschieden und liegt außerhalb dieses Schnitts.**
+  Festlegung 2 legt `docs/plan/planning/observations/` beim Init an, und zwar mit
+  einer tool-autorierten `README.md` statt einer `.gitkeep`; Festlegung 3 ordnet
+  sie *skip-if-present* zu. Der Träger ist damit eine andere Herkunfts-Klasse als
+  die `.gitkeep`-Liste aus DoD (1) und wäre hier der vierte Liefer-Punkt. **Der
+  Schnitt, der ihn liefert, ist noch nicht geschnitten** — bis dahin bleiben
+  seine drei Fundstellen stehen, und `codepaths` ist im Ziel keine Option. —
+  **Ausgang:** <offen>
+- **Für `docs/plan/carveouts/done/` gibt es keinen Anlege-Weg.** Festlegung 4
+  trägt den Ort nicht; `carveout.template.md` schreibt an ihrer eigenen Zeile
+  *„done/ entsteht erst bei erster Carveout-Auflösung"* und schaltet sie darum
+  mit einem Marker stumm. Die Fundstelle aus `docs/plan/planning/README.md`
+  bleibt damit stehen und braucht einen Ausgang (DoD 2); **welchen**, ist
+  Umsetzung und steht hier nicht. Bleibt keiner, greift die Rückführung aus §4. —
   **Ausgang:** <offen>
 - **Der Beleg deckt das frische Ziel, nicht das gealterte.** `.d-check.yml` und
   der Struktur-Bestand sind *skip-if-present*
@@ -389,8 +383,8 @@ for s in emittierte-vorlagen-klassifikation-ohne-traeger \
   echo "$s $(ls "$d/evidence" | wc -l)x $(head -1 "$d/state.md")"
 done
 # emittierte-vorlagen-klassifikation-ohne-traeger  2x  **Stand:** offen
-# zusage-neben-geaenderter-ableitung-bleibt-stehen 14x **Stand:** geplant
-# zusage-ohne-herstellbares-gegenbeispiel          1x  **Stand:** offen
+# zusage-neben-geaenderter-ableitung-bleibt-stehen 16x **Stand:** geplant
+# zusage-ohne-herstellbares-gegenbeispiel          2x  **Stand:** offen
 # vollstaendigkeits-zusage-misst-falsche-ebene     1x  **Stand:** offen
 ```
 
@@ -405,11 +399,12 @@ Treffer: keine.
   `observations/README.md` keine Vorlage existiert; `slice-184`, dass kein
   Emissions-Pfad den Ort anlegt. Der dritte Beleg ist dieser Slice — die Klasse
   ist ein drittes Mal aufgetreten, diesmal für zwei **weitere** Orte. **Der
-  Übertritt ist damit erreicht, und der Ausgang ist geteilt:** die zwei
-  unstrittigen Orte löst DoD (1); der Register-Ort ist ein Norm-Konflikt und
-  bleibt offen (§6, Risiko 2). Den Stand setzt der Lese-Schritt der Closure,
-  nicht dieser Plan — und er wird für den offenen Teil einen Träger nennen
-  müssen, sonst übersteht der Eintrag eine Closure ohne Ausgang.
+  Übertritt ist damit erreicht, und der Ausgang ist geteilt:** einen Ort legt
+  DoD (1) an, zwei Fundstellen bekommen einen Ausgang statt einer Anlage
+  (DoD 2), der Register-Ort liegt in einem eigenen, noch nicht geschnittenen
+  Schnitt (§6, Risiko 2). Den Stand setzt der Lese-Schritt der Closure, nicht
+  dieser Plan — und er wird für den offenen Teil einen Träger nennen müssen,
+  sonst übersteht der Eintrag eine Closure ohne Ausgang.
 - [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
   — **getroffen**, aber an einer Stelle, die dieser Slice nicht anfasst: der
   §6-Baum des Benutzerhandbuchs beschreibt einen Bestand, den `slice-182`
