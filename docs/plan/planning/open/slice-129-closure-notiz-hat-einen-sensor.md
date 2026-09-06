@@ -155,7 +155,7 @@ insbesondere **nicht** an [slice-123](../done/slice-123-ci-sieht-die-historie.md
 keinen git-Stand.
 
 **Eine Reihenfolge-Notiz, die kein Trigger ist:** dieser Slice und
-[slice-125](slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) konfigurieren **dasselbe** Modul
+[slice-125](../in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) konfigurieren **dasselbe** Modul
 in **einem** Schlüsselbaum. Laufen sie nacheinander, erbt der zweite den Block des ersten; laufen
 sie parallel, kollidieren sie in einer Datei. Die Reihenfolge ist frei, die Gleichzeitigkeit nicht.
 
