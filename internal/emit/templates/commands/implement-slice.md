@@ -148,7 +148,7 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
     dokumentiertem Carveout (Modul 7), nie als stilles Rot. **Jedes offene Risiko aus dem Slice-Plan
     bekommt dabei genau einen von drei Ausgängen** (Modul 5): *eingetreten* → Carveout oder
     Folge-Slice mit ID · *entfallen* → gestrichen **mit Begründung** · *weiter offen* → wandert ins
-    Beobachtungs-Register (Schritt 24). Ein Slice geht nicht nach `done/`, während ein Risiko ohne
+    Beobachtungs-Register (Schritt 25). Ein Slice geht nicht nach `done/`, während ein Risiko ohne
     Ausgang dasteht.
 25. **Das Beobachtungs-Register fortschreiben** (`docs/plan/planning/observations/`, Modul 6) —
     der **Schreib**-Schritt, und er hängt an der Closure, nicht an der Implementation. Für jede
