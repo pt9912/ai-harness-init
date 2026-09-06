@@ -16,6 +16,11 @@ spricht. Der Generator selbst ist nicht berührt.
 
 **Bezug:** [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
 (der emittierte Bestand, über den §6 spricht),
+[`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)
+(die Erfassungsschicht — der Teil dieses Bestands, den §6 heute gar nicht kennt, §1),
+[`ADR-0022`](../../../../docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
+(Festlegung 7 — warum ihre Feldliste im geprüften Doku-Bereich des Ziels liegt und damit zum
+sichtbaren Bestand gehört),
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
 (die Gegenkraft, falls dieser Slice einen Wächter setzt: kein Gate über leerem
 Prüfbereich),
@@ -73,6 +78,50 @@ Verzeichnis einzeln nennt, fällt das beim Lesen nicht auf. Dasselbe gilt für
 `harness/conventions/` und `docs/plan/carveouts/done/`, die
 [slice-190](slice-190-bootstrap-legt-die-versprochenen-orte-an.md) nachträgt.
 
+**Die zweite Instanz derselben Klasse ist keine Zeile, sondern eine ganze Fähigkeit.** Das Handbuch
+beschreibt den Ist-Zustand des Werkzeugs; über
+[`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)
+(Erfassungsschicht emittieren) steht darin nichts:
+
+```sh
+grep -icE 'span|telemetri|erfassung|aufzeichn|feldliste' docs/user/benutzerhandbuch.md   # 0
+```
+
+**Kein Erwartungswert**
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2) — die Zahl wandert mit dem Handbuch; tragend ist, dass sie null ist. Was die fünf Muster
+**nicht** treffen, ist ungemessen: die Null gilt für sie, nicht für jede denkbare Umschreibung.
+
+**Die Lücke ist nicht theoretisch, und sie liegt schon in Phase 1.** Die Feldliste entsteht in
+`emit.Enforce` — einer von acht Emissions-Stufen der Init-Strecke, unbedingt aufgerufen und
+sprach-agnostisch, weil der Träger das *laufende* Bild kopiert und nicht am Sprachmodul hängt:
+
+```sh
+grep -n 'erfassung-feldliste' internal/emit/fieldlist.go          # FieldListPath, ein Zielort im Ziel
+grep -cE '^\tif err := emit\.[A-Z]' cmd/ai-harness-init/main.go   # 8, darunter emit.Enforce
+sed -n '/^\treturn FieldList(targetDir)$/p' internal/emit/enforce.go   # der Zweig, der sie schreibt
+grep -n 'os.Executable()' internal/emit/enforce.go                # der Traeger ist das laufende Bild
+```
+
+Ein Adopter bekommt damit ein Repo, dessen Hooks bei Werkzeug-Aufrufen Spans schreiben und das eine
+Feldliste darüber mitführt — im **geprüften** Doku-Bereich seines Ziels
+([`ADR-0022`](../../../../docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
+Festlegung 7). §6 nennt weder die Datei noch die Fähigkeit. **Das ist derselbe Defekt wie die
+`docs/plan/`-Zeile, eine Stufe größer:** dort behauptet eine Bündelung einen Ort, den kein
+Emissions-Pfad anlegt; hier verschweigt sie einen, den jeder Lauf anlegt. Beide Richtungen fängt
+nur eine Aufzählung, die gehalten wird.
+
+**Zwei Einschränkungen gehören dazu, sonst sagt der Befund mehr als er misst.** *Erstens* ist der
+**Code-Pfad** gemessen, nicht ein Baum: die vier Kommandos zeigen, dass die Stufe unbedingt läuft
+und an keinem Sprachmodul hängt — dass die Datei im dokument-only-Baum steht, bestätigt der Lauf,
+der §6 ohnehin gegen einen frischen Bootstrap hält. *Zweitens* hängt sie an einem **Laufzeit-Zweig**:
+`emit.Enforce` schreibt Feldliste und Hook-Wrapper nur, wenn die Träger-Ablage gelingt, und meldet
+sonst den Grund, ohne den Bootstrap scheitern zu lassen
+([`ADR-0022`](../../../../docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
+Festlegung 5(a)). **Für DoD (1) heißt das:** der Baum zeigt den Gelingens-Zweig und sagt, dass er
+es tut — ein Baum, der die zwei Artefakte unbedingt behauptet, wäre an einem Ziel ohne abgelegten
+Träger falsch, und der Wächter aus DoD (2) müsste die Bedingung kennen, statt sie zu übersehen.
+
 **Zwei Dinge sind zu liefern, und sie hängen zusammen.** Erst muss entschieden
 sein, *was* der Baum zeigt — ohne diese Entscheidung gibt es nichts, was ein
 Wächter halten könnte; dann muss er gegen den realen Bestand gehalten werden,
@@ -95,15 +144,27 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
   ihn — der vendored Baum ist ein Fremd-Blob, seine Datei-für-Datei-Auflistung
   wäre kein Bestandsbild, sondern ein Inhaltsverzeichnis des Kurses. Er steht als
   **ein** Eintrag mit seiner Zahl daneben.
+  **Die Erfassungsschicht gehört dabei zum Bestand, nicht zum Beiwerk:** ihre Artefakte entstehen
+  nach §1 schon in Phase 1, also führt der Baum sie wie jede andere Datei — mit einem Etikett, das
+  die Fähigkeit beim Namen nennt. Das ist eine **Präzisierung dieses Punktes, kein zusätzlicher**:
+  ein vollständiger Baum zeigt sie ohnehin, und was der Befund hinzufügt, ist die Pflicht, das
+  Etikett zu wählen statt den Pfad kommentarlos einzureihen. *Was* erfasst wird, wie ein Adopter es
+  ausliest oder abschaltet, bleibt außerhalb (§6, *Nicht in diesem Slice*).
 - [ ] **(2) Der Baum ist gegen den realen Bestand gehalten, nicht von Hand
   gepflegt.** Ein Wächter vergleicht die im Handbuch genannten Pfade mit der
-  Menge, die der Emitter liefert — die dieselbe Quelle ist, die
-  `TestTemplates_EmittierterBestandVollstaendig` schon als `want`-Liste führt.
+  Menge, die der Emitter liefert. **Diese Menge ist die der ganzen Init-Strecke, nicht die der
+  Vorlagen-Stufe allein** — die `want`-Liste in
+  `TestTemplates_EmittierterBestandVollstaendig` deckt gemessen **eine** der acht Stufen und
+  keinen Pfad der Erfassungsschicht; ein Wächter auf ihr wäre gegen genau den Befund aus §1 blind.
+  Welche Quelle die Soll-Menge liefert, entscheidet der erste Lauf gegen die vier Kandidaten in §3.
   **In beide Richtungen**, wie bei der Bijektion in Modul 6: ein genannter Pfad
   ohne Emission und ein emittierter Pfad ohne Nennung sind derselbe Defekt.
   **Rot-Nachweis:** ein Eintrag wird aus `structureGitkeeps()` genommen, ohne das
   Handbuch anzufassen — der Wächter muss rot werden; und ein Pfad wird im
-  Handbuch erfunden — er muss ebenfalls rot werden. Beide Richtungen einmal rot
+  Handbuch erfunden — er muss ebenfalls rot werden. **Einer der beiden nimmt seinen Eintrag aus der
+  Erfassungs-Stufe** (`grep -n 'return FieldList' internal/emit/enforce.go`) statt aus der
+  Vorlagen-Stufe: ein Nachweis, der nur `structureGitkeeps()` anfasst, belegt genau die Achse, die
+  die verworfene Soll-Quelle schon sah, und ließe die Blindstelle aus §1 ungemessen. Beide Richtungen einmal rot
   gesehen, sonst ist der Wächter eine Behauptung
   ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Ein `test/mutations/`-Fall hält den
   Zahn.
@@ -135,13 +196,39 @@ Aussagen-Berührung steht hier gar nicht.
 | [`harness/README.md`](../../../../harness/README.md) §Sensors | update **falls** der Wächter ein `make`-Ziel bekommt | ein genanntes Ziel muss existieren ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)); hängt er in `make test`, entfällt der Eintrag |
 
 **Was die Umsetzung zuerst entscheidet** (Modul 9 §4): **welche Quelle die
-Soll-Menge liefert.** Drei Kandidaten, und sie sind nicht gleichwertig — die
-`want`-Liste in `internal/emit/templates_test.go` (heute schon der
-Mengen-Vergleich, aber eine Test-Konstante), `emit.Templates()` selbst über einen
-Temp-Baum (die Wahrheit, aber im Test teurer), oder ein echter Bootstrap-Lauf
-(am nächsten am Nutzer, braucht Docker und fällt damit aus `make test` heraus).
-Die Wahl bestimmt, wo der Wächter läuft, und gehört in den ersten Lauf — nicht
-in diesen Plan, der sie sonst ohne Messung vorwegnähme.
+Soll-Menge liefert.** Der Befund aus §1 macht daraus eine Mengen-Frage mit Zahlen statt einer
+Geschmacksfrage: die Init-Strecke hat **acht** Emissions-Stufen, und die Wahl entscheidet, wie
+viele davon der Wächter überhaupt sehen kann.
+
+```sh
+grep -oE '^\tif err := emit\.[A-Za-z]+' cmd/ai-harness-init/main.go | sed 's/.*emit\.//' | tr '\n' ' '
+# DocGate BaselineVerify Templates RootReadme Enforce Commands Agents Makefile
+
+T='/^func TestTemplates_EmittierterBestandVollstaendig/,/^}$/p'
+sed -n "$T" internal/emit/templates_test.go | grep -oE 'emit\.[A-Za-z]+' | sort -u   # emit.Templates
+sed -n "$T" internal/emit/templates_test.go | grep -cE '^\t\t"'                      # 16
+sed -n "$T" internal/emit/templates_test.go | grep -cE 'erfassung-feldliste|span-emit|\.claude/'  # 0
+
+sed -n '/^func emitDokumentSatz/,/^}$/p' internal/emit/emitteddocs_test.go \
+  | grep -oE 'emit\.[A-Za-z]+' | sort -u | wc -l                                     # 5
+```
+
+**Keine Erwartungswerte**
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2) — jede Zahl wandert mit dem Emitter. Vier Kandidaten, und sie sind nicht gleichwertig:
+
+| Kandidat | gedeckte Stufen | Grenze |
+|---|---|---|
+| die `want`-Liste in `internal/emit/templates_test.go` | **1** von 8, **16** Pfade, **0** aus der Erfassungsschicht | **verworfen** — gegen den Befund aus §1 strukturell blind; eine Test-Konstante über einer Teilstrecke |
+| `emitDokumentSatz` in `internal/emit/emitteddocs_test.go` | **5** — Vorlagen, Root-README, Commands, Rollen-Typen, Feldliste | nennt seine Grenze im eigenen Kopf (*„ein SECHSTER fiele heraus, bis er hier steht"*); Gate-Fragmente und `Makefile`-Aggregator fehlen, und die Liste ist eine zweite Fassung der Emitter-Reihe |
+| die Emitter selbst über einen Temp-Baum | alle acht, **wenn** der Lauf alle acht ruft | dieselbe Zweitfassungs-Falle, nur vollständiger; im Test teurer |
+| ein echter Bootstrap-Lauf | alle acht plus die Laufzeit-Zweige (Träger gelegt / nicht gelegt) | am nächsten am Nutzer, braucht Docker und fällt damit aus `make test` heraus |
+
+**Was der Befund entscheidet und was nicht.** Verworfen ist Kandidat 1 — das ist gemessen und
+kein Urteil. Zwischen den übrigen drei entscheidet der erste Lauf; dieser Plan nähme die Wahl
+sonst ohne Messung vorweg. **Die Fehlerrichtung ist bei allen dreien dieselbe**: eine Quelle, die
+die Stufen aufzählt, ist eine zweite Fassung von `emitAll` und altert genau wie der Baum, den sie
+halten soll — wer eine wählt, benennt in DoD (2), wie ihre eigene Vollständigkeit gehalten wird.
 
 ## 4. Trigger
 
@@ -153,6 +240,22 @@ liegt in `done/`. **Kein Zwang, sondern Ökonomie:** slice-190 bewegt die
 Soll-Menge, und ein Baum, der davor geschrieben wird, ist beim Merge von
 slice-190 wieder alt. Läuft dieser Slice zuerst, färbt sein eigener Wächter aus
 DoD (2) den Nachbarn rot — was funktioniert, aber die Arbeit zweimal macht.
+
+**Ein zweiter Anspruch liegt auf demselben Abschnitt, und er antwortet entgegengesetzt.**
+[slice-111](slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) — offen seit dem
+2026-08-26 — nimmt sich §6 des Handbuchs ebenfalls vor. Sein DoD (2) *„Der Baum sagt, ob er
+aufzählt oder zusammenfasst"* lässt die Bündelung ausdrücklich zu, mit der Begründung, eine
+Einzel-Aufzählung altere bei jedem Slice; DoD (1) hier zählt auf. **Beide antworten auf denselben
+Einwand, und er ist berechtigt:** eine Aufzählung altert — *wenn sie niemand hält*. DoD (2) hier
+ist dieser Halter, den slice-111 nicht zur Verfügung hatte; damit ist der Widerspruch aufgelöst
+und nicht überstimmt. Die Bedienwissen-Hälfte von slice-111 bleibt davon unberührt und ist sein
+eigener Liefer-Wert (§6, *Nicht in diesem Slice*).
+
+**Folge für die Reihenfolge:** läuft slice-111 zuerst, schreibt er eine ausgesprochene
+Zusammenfassung, die dieser Slice wieder aufzählt — die Arbeit doppelt sich wie im
+slice-190-Fall oben. Läuft dieser Slice zuerst, ist slice-111s DoD (2) an einem Baum zu messen,
+den ein Wächter hält; ob es damit erfüllt oder gegenstandslos ist, entscheidet **sein** Lauf.
+Dieser Slice schreibt nicht in den fremden Plan.
 
 **Start** (`next` → `in-progress`): Implementer übernimmt, WIP-Limit frei.
 
@@ -210,6 +313,14 @@ dasteht.
   Änderung zu zeigen. Der Ausgang wäre ein zweiter Wächter über der Zahl; er ist
   hier **nicht** gebaut, und die Lücke steht benannt statt behauptet. —
   **Ausgang:** <offen>
+- **Der Baum nennt eine Fähigkeit, die das Handbuch sonst nirgends einführt.** Nach §1 ist die
+  Zeile der Feldliste die **erste und einzige** Erwähnung der Erfassung im ganzen Dokument
+  ([`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)); ein
+  Etikett im Baum ist kein Abschnitt. Wer das für zu wenig hält, hat recht — der Träger dafür ist
+  [slice-111](slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md), nicht ein vierter
+  DoD-Punkt hier (Modul 5 §Ziel-Form, ≤ 3). Bis er läuft, steht die Fähigkeit **benannt und
+  unerklärt** da; das ist die bewusste Grenze dieses Schnitts und keine Auslassung. —
+  **Ausgang:** <offen>
 - **Die Register-Zeile hängt an einer fremden Entscheidung.** DoD (3) schreibt
   den Bestand zum Zeitpunkt der Umsetzung; fällt die Entscheidung aus
   [slice-190](slice-190-bootstrap-legt-die-versprochenen-orte-an.md) §6 **nach**
@@ -219,8 +330,13 @@ dasteht.
 - **Nicht in diesem Slice:** der Generator selbst
   ([slice-190](slice-190-bootstrap-legt-die-versprochenen-orte-an.md)), die
   emittierte Modul-Liste
-  ([slice-073](slice-073-emittierte-doc-gate-module.md)), und jede Aussage über
-  den Bestand außerhalb von §6 des Handbuchs.
+  ([slice-073](slice-073-emittierte-doc-gate-module.md)), **die Erklärung der Erfassungsschicht —
+  *was* erfasst wird, wie ein Adopter es ausliest oder abschaltet, und die zwei `make`-Ziele
+  dafür**, und jede Aussage über den Bestand außerhalb von §6 des Handbuchs.
+  Die Erklärungs-Hälfte ist **kein neu zu schneidender Slice**: sie liegt seit dem 2026-08-26 als
+  [slice-111](slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) in `open/` und führt
+  sie in DoD (1) samt dem Nachzug an §5 *Konfiguration* und §9 *Glossar* des Handbuchs. Der
+  Zuschnitt hier fügt ihr nichts hinzu und nimmt ihr nichts weg — er benennt nur die Naht (§4).
 
 ## 7. Closure-Notiz
 
@@ -274,7 +390,9 @@ der `evidence/`-Dateien und die erste Zeile seiner `state.md`:
 for s in zusage-neben-geaenderter-ableitung-bleibt-stehen \
          vollstaendigkeits-zusage-misst-falsche-ebene \
          emittierte-vorlagen-klassifikation-ohne-traeger \
-         zusage-nennt-sensor-der-form-nicht-sieht; do
+         zusage-nennt-sensor-der-form-nicht-sieht \
+         ueberholter-offener-plan-ohne-genormten-ausgang \
+         slice-plan-umfang-waechst-ueber-umsetzung-hinaus; do
   d="docs/plan/planning/observations/BEO-ALL/$s"
   echo "$s $(ls "$d/evidence" | wc -l)x $(head -1 "$d/state.md")"
 done
@@ -282,7 +400,7 @@ done
 
 Keine Erwartungswerte
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2). Die vier Einträge des Kommandos berühren diesen Slice, weitere
+Setzung 2). Die sechs Einträge des Kommandos berühren diesen Slice, weitere
 Treffer: keine.
 
 - [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
@@ -291,6 +409,11 @@ Treffer: keine.
   Zusage kein Anker ist … dort ist der Ausgang eine Regel ohne Sensor"*. DoD (2)
   ist der Sensor für **eine** dieser Unterklassen — die Bestands-Beschreibung —,
   nicht für alle. Was er nicht deckt, bleibt am Eintrag.
+  **Der Befund aus §1 ist ein weiteres Vorkommen genau dieser Klasse:** die Ableitung hat sich
+  bewegt (die Init-Strecke bekam die Erfassungs-Stufe), die Zusage daneben — der Baum in §6 —
+  stand still. Er ist **benannt, nicht gezählt**: dieser Slice ist nicht geschlossen, und ein
+  Beleg entsteht bei der Closure, nicht bei der Planung
+  (Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register).
 - [`vollstaendigkeits-zusage-misst-falsche-ebene`](../observations/BEO-ALL/vollstaendigkeits-zusage-misst-falsche-ebene/observation.md)
   — **getroffen**: ein Wächter über einer *Zahl* statt einer *Menge* wäre genau
   ihr Fall. Steht als Risiko in §6 und ist der Grund, warum DoD (2) den
@@ -302,7 +425,22 @@ Treffer: keine.
 - [`zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
   — berührt, weil DoD (2) einen Sensor zusagt. **Nicht getroffen**, solange die
   zwei Rot-Nachweise aus §5 (a) gefahren sind: ein Sensor, der beide Richtungen
-  rot gesehen hat, sieht die Form.
+  rot gesehen hat, sieht die Form. Die verworfene Soll-Quelle aus §3 wäre der Gegenfall gewesen —
+  ein Wächter, dessen Prüfbereich die Form gar nicht enthält.
+- [`ueberholter-offener-plan-ohne-genormten-ausgang`](../observations/BEO-ALL/ueberholter-offener-plan-ohne-genormten-ausgang/observation.md)
+  — **berührt, Zuordnung offen.** Die geteilte Hälfte ist wörtlich die Lage aus §4: *„Wer ihn
+  liegen lässt, führt einen zweiten Anspruch auf dieselbe Linie"* — zwei offene Pläne über §6 des
+  Handbuchs, mit entgegengesetzter Formantwort. Der Anlass ist ein **anderer**: die Identitäts-Zeile
+  des Eintrags bindet ihn an einen Versions-Sprung, hier ist es ein zweiter Schnitt auf dieselbe
+  Fläche. Ob das dieselbe Beobachtung ist oder eine benachbarte, entscheidet der Lauf, der den
+  Beleg schreibt — nicht dieser Plan, und eine unveränderliche `observation.md` wird dafür nicht
+  gedehnt.
+- [`slice-plan-umfang-waechst-ueber-umsetzung-hinaus`](../observations/BEO-ALL/slice-plan-umfang-waechst-ueber-umsetzung-hinaus/observation.md)
+  — berührt durch die Aufnahme des Befundes selbst. **Nicht getroffen:** die Beweisführung wächst,
+  die **Liefer-Zahl nicht** — der Befund präzisiert DoD (1) und korrigiert die Soll-Quelle in
+  DoD (2), statt einen vierten Punkt anzuhängen; die Erklärungs-Hälfte geht an einen Plan, den es
+  schon gibt (§6). Ein vierter Punkt wäre hier zugleich der Verstoß gegen Modul 5 §Ziel-Form und
+  ein Vorkommen dieses Eintrags gewesen.
 
 **Alle berührten Sub-Areas GF.** Der Modus-Begründungsblock entfällt damit
 (§Umfang oben); `*` steht in der Modus-Deklaration von
