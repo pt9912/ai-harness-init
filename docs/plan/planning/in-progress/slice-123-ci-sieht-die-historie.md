@@ -116,8 +116,9 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       Träger ist die Verifikation dieses Slice und der Lauf, der den ersten history-lesenden Schritt
       hinzufügt: eine **benannte Lücke**, keine zugesagte Abdeckung
       ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-- [ ] **(3) Der Wächter hat seinen Zahn.** Ein `test/mutations/`-Fall entfernt die Tiefen-Prüfung
-      und färbt den benannten Test rot.
+- [ ] **(3) Der Wächter hat seinen Zahn.** Ein `test/mutations/`-Fall entfernt die **Leer-Erkennung
+      der Range** — nicht eine Tiefen-Prüfung, die der Wächter nicht führt (§1) — und färbt den
+      benannten Test rot.
       **Rot:** `make mutate` meldet **BEFUND** auf genau diesen Fall, solange der Zahn nicht die
       Stelle trifft, die der Aufrufer benutzt.
 
