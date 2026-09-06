@@ -34,9 +34,10 @@ Die **Marker-Hälfte** (Ruhe-Marker genau dann, wenn `in-progress/` keinen Slice
 `planning` (`grep -n '^modules:' .d-check.yml` führt es; `.d-check.yml` bindet `heading`/`marker` auf
 diesen Abschnitt) — ein Widerspruch zwischen dieser Sektion und `in-progress/` färbt `docs-check`
 rot. Die **Listen-Hälfte** (Bijektion Zeiger ↔ flache Welle-Dateien) bleibt unbewacht: Die
-`waves`-Fähigkeit desselben Moduls verlangt genau diese Bijektion und kennt die Abweichung oben
-nicht — sie meldete die Differenz zwischen Zeigern und flachen Dateien als Drift, obwohl sie hier
-die gewollte Form ist. Was das kostet und was daran offen bleibt, steht in
+`waves`-Fähigkeit desselben Moduls verlangt unter `waves.mode: many` genau diese Bijektion (Default
+ist `one`, ein Singleton-Prädikat) und kennt in beiden Modi die Abweichung oben nicht — sie meldete
+die Differenz zwischen Zeigern und flachen Dateien als Drift, obwohl sie hier die gewollte Form
+ist. Was das kostet und was daran offen bleibt, steht in
 [`harness/README.md`](../../../../harness/README.md) neben dem, was `docs-check` prüft.
 
 ## Nächste Wellen

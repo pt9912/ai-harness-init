@@ -33,10 +33,10 @@ modules: [links, anchors, ids, matrix, codepaths, spans, planning]
 # planning-drift). heading/marker zeigen auf DIESEN Abschnitt, nicht auf den
 # Modul-Default "## Aktuelle Welle"/"Keine aktive Welle": er traegt die Zeiger-Liste
 # und den Ruhe-Marker als zwei getrennte Aussagen, ueber denen die Invariante pruefbar
-# ist. Die `waves`-Faehigkeit desselben Moduls bleibt aus — sie verlangt eine Bijektion
-# Zeiger <-> flache Welle-Dateien und kennt die in der Roadmap selbst dokumentierte
-# Abweichung dieses Repos (Welle-Datei geschnitten vor Eintritt des Start-Triggers)
-# nicht; Begruendung in harness/README.md.
+# ist. Die `waves`-Faehigkeit desselben Moduls bleibt aus — unter `waves.mode: many` verlangt sie
+# eine Bijektion Zeiger <-> flache Welle-Dateien (Default ist `one`, ein Singleton-Praedikat), und
+# in beiden Modi kennt sie die in der Roadmap selbst dokumentierte Abweichung dieses Repos
+# (Welle-Datei geschnitten vor Eintritt des Start-Triggers) nicht; Begruendung in harness/README.md.
 planning:
   roadmap: docs/plan/planning/in-progress/roadmap.md
   heading: "## Offene Wellen"
