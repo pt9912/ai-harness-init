@@ -16,7 +16,7 @@ die Slice-Pläne 191/193 (fremde, teils laufende Arbeit).
 nicht reproduzierbar):
 
 - Slice-Plan
-  [`slice-125`](../plan/planning/in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)
+  [`slice-125`](../plan/planning/done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)
   (§1 Anlass und die zwei Vorfragen · §2 DoD (1)–(3) · §3 Plan-Tabelle inkl. der
   Übergabe-Zeile · §4 Rückführungen · §6 Risiken)
 - Aktive ADRs:
@@ -188,7 +188,7 @@ Baseline-Regelwerk `modul-10-review-harness.md` §Ziel-Form: Reviewer-Skill.
 - `quelle`: Baseline-Regelwerk `modul-08-agentenrollen.md` §Die neun Übergaben (*„Ohne jedes
   dieser Artefakte gibt es keinen Rollenwechsel — nur einen Kontext-Switch ohne Übergabe"*) ·
   [`AGENTS.md`](../../AGENTS.md) §3.8 und §3.10
-- `pfad`: `docs/plan/planning/in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md:146`
+- `pfad`: `docs/plan/planning/done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md:146`
   (die einzige geführte Übergabe-Zeile) · sonst kein Artefakt
 - `befund`: Der Diff erzeugt drei Verpflichtungen für andere Rollen, und keine davon steht in
   einer Datei dieses Repos — weder im Slice-Plan noch in einer der drei Commit-Messages.
@@ -235,7 +235,7 @@ Baseline-Regelwerk `modul-10-review-harness.md` §Ziel-Form: Reviewer-Skill.
 - `kategorie`: INFO
 - `quelle`: [`MR-020`](../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
   · [`MR-037`](../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst)
-- `pfad`: `docs/plan/planning/in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md:146`
+- `pfad`: `docs/plan/planning/done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md:146`
 - `befund`: Die Plan-Tabelle führt `harness/conventions.md` als *nicht durch diesen Slice* mit
   der Begründung, [`MR-016`](../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
   trage „*die Durchsetzungs-Aussage, die dieser Slice falsch macht*". `MR-016` ist seit

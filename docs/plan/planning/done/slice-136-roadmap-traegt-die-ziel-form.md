@@ -219,7 +219,7 @@ ein Ein-Wellen-Wächter legitime Zustände als Drift meldet.
 aktivierte Modul-Liste führt es nicht (`grep '^modules:' .d-check.yml | grep -c planning` → **0**;
 `grep -c planning .d-check.yml` → **3** zählt dagegen nur Pfad-Zeichenketten und ist **nicht** der
 Sensor für diese Aussage). Träger ist
-[slice-125](../in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) in
+[slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) in
 [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) — und **dieser Slice ist seine
 Vorbedingung, nicht sein Duplikat.** slice-125 §1 misst gegen den heutigen Stand
 `planning-drift` auf [`roadmap.md`](../in-progress/roadmap.md) **Zeile 13** — das ist die Zeile
@@ -275,7 +275,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       **Marker-Hälfte** und die **Listen-Hälfte** steht getrennt, ob dieser Slice sie schließt oder
       nicht; *nicht geschlossen* ist zulässig **und** verlangt den Grund plus den Folge-Slice, der
       sie trägt. Der Erwartungswert ist heute: beide gehen an
-      [slice-125](../in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) (Marker) und dessen
+      [slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) (Marker) und dessen
       `waves`-Entscheidung (Liste) — dieser Slice **baut keinen Sensor**, er macht die Invariante
       wahr, an der slice-125 sonst scheitert. Aufgeschrieben wird das an der Roadmap **und** in
       §7, nicht nur hier, weil slice-125 später gegen den dann geltenden Stand misst.
@@ -312,7 +312,7 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | refactor | der Gegenstand: sieben Abschnitte auf die Ziel-Form, Kopf inklusive |
 | [welle-09](../welle-09-modul-15-konformitaet.md) · [welle-10](welle-10-re-baseline.md) · [welle-11](../welle-11-traeger-aussage.md) · [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) | prüfen, ggf. update | Ziel für Ausgang (b) des Verbleibs-Protokolls: was die Roadmap heute allein trägt und in die Welle-Datei gehört, landet dort — **inhaltlich nur, was heute nirgends steht** |
-| [slice-125](../in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) | update | seine §1-Messung nennt `roadmap.md` Zeile 13 und die Sektion `Aktuelle Welle`; nach diesem Slice zeigt sie ins Leere. Planner-Artefakt, derselbe Rollen-Lauf |
+| [slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) | update | seine §1-Messung nennt `roadmap.md` Zeile 13 und die Sektion `Aktuelle Welle`; nach diesem Slice zeigt sie ins Leere. Planner-Artefakt, derselbe Rollen-Lauf |
 
 **Nicht in dieser Liste, und das ist gemessen, nicht vergessen.** `Aktuelle Welle` steht an sieben
 Orten außerhalb der Zeitdokumente
@@ -491,7 +491,7 @@ Die Zeilen mit **(c)** sind die einzigen, deren Fassung nur `git` hält.
   `BEO-009` Zähler **+1** mit Beleg `slice-136` — der Sektionsname wanderte,
   die zwei Anweisungssätze daneben nicht.
 - **Wächter-Entscheidung (DoD 3), wörtlich für den nächsten Leser:** **Marker-Hälfte — nicht
-  gebaut, Träger [slice-125](../in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md).**
+  gebaut, Träger [slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md).**
   Dieser Slice baut keinen Sensor; er macht die Invariante wahr: `## Offene Wellen` trennt Liste
   (folgt den Welle-Dateien) und Ruhe-Marker (folgt `in-progress/`), womit `heading`/`marker` auf
   einen Abschnitt zeigen, in dem die Invariante driften **kann** — der Ausgang, den slice-125

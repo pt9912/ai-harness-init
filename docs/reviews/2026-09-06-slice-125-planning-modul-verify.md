@@ -19,7 +19,7 @@ ausgenommen). Elf berührte Dateien: `.d-check.yml`, `docs/plan/planning/in-prog
 
 **Eingangs-Kontext:**
 
-- Slice-Plan `docs/plan/planning/in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md`
+- Slice-Plan `docs/plan/planning/done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md`
   (§1 Anlass und Baseline-Messung · §2 DoD (1)–(3) · §3 Plan-Tabelle · §4 Rückführungen · §6
   Risiken).
 - Drei Review-Reports — als Kontext gelesen, nicht als Prüfgrundlage übernommen; jede Behauptung
@@ -81,7 +81,7 @@ Gegenrichtung selbst nachgestellt — `slice-125` aus `in-progress/` einer Kopie
 den Marker zu setzen:
 
 ```
-$ rm <kopie2>/docs/plan/planning/in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md
+$ rm <kopie2>/docs/plan/planning/done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md
 $ docker run --rm --network none -v "<kopie2>:/repo:ro" ghcr.io/pt9912/d-check@sha256:e31a372…
 d-check: 866 Datei(en) geprüft, 23 Befund(e)
 docs/plan/planning/in-progress/roadmap.md:11 … planning-drift  kein Slice in

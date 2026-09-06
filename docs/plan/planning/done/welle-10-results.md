@@ -194,7 +194,7 @@ Mitglieds-Slice, der ihn nannte):
 [slice-091](../open/slice-091-vendored-baum-ohne-anspruch.md) (Mitglieder von
 [welle-11](../welle-11-traeger-aussage.md)) ·
 [slice-112](../open/slice-112-replay-schritt-hat-keinen-referenten.md) ·
-[slice-125](../in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) ·
+[slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) ·
 [slice-134](../open/slice-134-adr-index-traegt-die-ziel-form.md).
 
 ## Verifikation

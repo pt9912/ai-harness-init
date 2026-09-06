@@ -81,7 +81,7 @@ aufgenommen hat.
    repo-eigene Abweichung, die [`roadmap.md`](in-progress/roadmap.md) unter *Offene Wellen*
    erklärt — eine Welle-Datei wird geschnitten, bevor ihr Start-Trigger eintritt. Die Eröffnung
    dieser Welle nimmt zwei davon weg; die zwei zu `welle-11` bleiben, bis deren Trigger eintritt.
-   Ein Sensor nach [slice-125](in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) muss
+   Ein Sensor nach [slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) muss
    diese Abweichung tragen, sonst meldet er einen legitimen Zustand als Drift.
 3. **Der Trockenlauf ist nicht geteilt.** Jedes Modul brauchte seinen eigenen Lauf mit seiner eigenen
    Config; der Pin-Trockenlauf aus
@@ -157,7 +157,7 @@ Spalte oben nennt ihn —, und dort werden sie beim jeweiligen Slice-Schnitt auf
   die diese Welle misst, beginnt bei ihm.
 - **[welle-14](done/welle-14-re-baseline.md) liegt in `done/`.** Der Grund ist **tragend**, nicht bloß
   ordnend: Zwei Slices dieser Welle bauen Sensoren auf Formen, die jener Sprung bewegt — der
-  Roadmap-/Verzeichnis-Wächter ([slice-125](in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md))
+  Roadmap-/Verzeichnis-Wächter ([slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md))
   und der Closure-Notiz-Sensor ([slice-129](open/slice-129-closure-notiz-hat-einen-sensor.md)). Die
   Ziel-Fassung schiebt der Wellen-Closure einen Schritt ein, der die Zeitdokumente einer Welle nach
   `done/<welle-id>/` archiviert und an ihrer Stelle Stubs lässt (`v5.18.0`, `modul-06-roadmap.md`,
@@ -209,7 +209,7 @@ Verzeichnisse (dieselbe zweite Wahrheit, die beim Slice retired wurde). -->
 |---|---|---|
 | [slice-123](done/slice-123-ci-sieht-die-historie.md) | CI sieht die Historie — oder der Lauf fällt, statt grün zu melden | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | [slice-124](open/slice-124-gate-tabelle-hat-einen-waechter.md) | Die Gate-Tabellen werden gegen das Makefile gehalten (Modul `targets`, Achse 1) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| [slice-125](in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) | Roadmap und Lifecycle-Verzeichnis widersprechen sich nicht mehr still (Modul `planning`, Achse 4) | [`MR-016`](../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) |
+| [slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) | Roadmap und Lifecycle-Verzeichnis widersprechen sich nicht mehr still (Modul `planning`, Achse 4) | [`MR-016`](../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) |
 | [slice-126](open/slice-126-commit-message-traegt-eine-kennung.md) | Eine Commit-Message ohne Kennung wird rot, und zwar vor dem Commit (Modul `commits`, Achse 3) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-127](open/slice-127-adr-immutabilitaet-hat-einen-sensor.md) | Hard Rule 3.4 bekommt ihren Sensor (Modul `vcs`, Achse 2) | [`AGENTS.md`](../../../AGENTS.md) §3.4 |
 | [slice-129](open/slice-129-closure-notiz-hat-einen-sensor.md) | Die Closure-Notiz-Pflicht bekommt ihren Sensor (Modul `planning`, zweite Fähigkeit, Achse 6) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
@@ -220,7 +220,7 @@ und [slice-127](open/slice-127-adr-immutabilitaet-hat-einen-sensor.md) voraus**:
 Historie, und ohne die Range-Entscheidung aus 123 wären sie in CI blind und grün — ein fail-open
 Sensor ist schlechter als keiner, weil er eine Zusage trägt. Die drei hermetischen
 ([slice-124](open/slice-124-gate-tabelle-hat-einen-waechter.md),
-[slice-125](in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md),
+[slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md),
 [slice-129](open/slice-129-closure-notiz-hat-einen-sensor.md)) hängen an nichts und können zuerst
 laufen. **Nicht gleichzeitig laufen dürfen 125 und 129:** beide konfigurieren dasselbe Modul in
 demselben Schlüsselbaum — die Reihenfolge ist frei, die Parallelität nicht.
@@ -303,7 +303,7 @@ ist falsch"*, nicht *„die DoD ist länger"*.
   beschreibt.
   **Warum sie trotzdem draußen bleibt:** Sie ist keine der gemessenen Achsen des Kandidaten, aus
   denen diese Welle ihre Identität nimmt, und sie wäre ein **dritter** Slice im selben
-  `planning`-Schlüsselbaum neben [slice-125](in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)
+  `planning`-Schlüsselbaum neben [slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)
   und [slice-129](open/slice-129-closure-notiz-hat-einen-sensor.md) — die §4 unten schon nicht
   gleichzeitig laufen lässt. **Eine Slice-Kennung steht hier deshalb nicht**; sie behauptete eine
   Datei, die es nicht gibt

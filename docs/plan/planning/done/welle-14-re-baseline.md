@@ -150,7 +150,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   das Thema von [slice-090](../open/slice-090-freshness-audit-im-ziel.md).
 - **Blockiert: [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md).** Zwei ihrer Slices bauen
   Sensoren auf Formen, die dieser Sprung bewegt: der Roadmap-/Verzeichnis-Wächter
-  ([slice-125](../in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)) und der
+  ([slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)) und der
   Closure-Notiz-Sensor ([slice-129](../open/slice-129-closure-notiz-hat-einen-sensor.md)). Die
   Ziel-Fassung schiebt der Wellen-Closure einen Schritt ein, der die Zeitdokumente einer Welle nach
   `done/<welle-id>/` archiviert und an ihrer Stelle Stubs lässt (`v5.18.0`,

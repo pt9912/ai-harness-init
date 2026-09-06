@@ -319,7 +319,7 @@ der neuen Gliederung **in den Singleton-Artefakten**; die extensionale Menge in
 (`grep -c 'roadmap' docs/plan/planning/done/slice-083-form-vergleich-pflichtfelder.md` → **0**),
 obwohl sie eines ist und ihre Ziel-Form im getauschten Baum den ersten Abschnitt umbenannt hat. Der
 Slice hängt an keinem anderen der Welle und läuft in beliebiger Reihenfolge; er trägt eine
-Vorbedingung außerhalb — [slice-125](../in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)
+Vorbedingung außerhalb — [slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)
 misst gegen die Sektion, die er umbenennt.
 
 **130, 131, 132 und 133 sind beim Schnitt der Welle nicht vorgesehen gewesen, und der Grund gehört

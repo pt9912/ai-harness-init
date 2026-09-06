@@ -247,7 +247,7 @@ erste `git`-Befehl läuft:**
    [`ADR-0036`](../../adr/0036-ziel-fassung-regiert-den-sprung-v600.md) §Kontext, die sie im
    ADR-Lauf selbst gegen die vendored Bäume nachfuhr. Der Delta-Katalog in §1 ist ihr **Material**,
    nicht ihr Ersatz: Er misst Dateien und Zeilen, nicht die Frage, welche Fassung regiert.
-2. **[slice-125](../in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) liegt in
+2. **[slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) liegt in
    `done/`.** Er fasst [`.d-check.yml`](../../../../.d-check.yml) und
    [`harness/README.md`](../../../../harness/README.md) an — beide sind Gegenstand dieses Slice
    (Pin-Stelle bzw. Adress-Nachzug). Zwei Läufe darauf gleichzeitig erzeugen einen Konflikt in

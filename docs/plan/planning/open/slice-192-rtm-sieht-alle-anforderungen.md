@@ -177,7 +177,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 **Start** (`next` → `in-progress`): **zwei Bedingungen, beide beobachtbar, beide tragend.**
 
-1. **[slice-125](../in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) liegt in
+1. **[slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) liegt in
    `done/`.** Beobachtbar ohne Rückfrage: `ls docs/plan/planning/done/slice-125-*.md`. Der Grund ist
    **tragend, nicht ordnend**: Beide Slices schreiben in denselben Schlüsselbaum
    [`.d-check.yml`](../../../../.d-check.yml) — jener verdrahtet das Modul `planning`, dieser den
@@ -266,7 +266,7 @@ dasteht.
   Frage wandert, sie verschwindet nicht. — **Ausgang:** <offen>
 - **Risiko 5 — der `trace:`-Block ist ein zweiter Schreiber in
   [`.d-check.yml`](../../../../.d-check.yml).** Der Start-Trigger serialisiert gegen
-  [slice-125](../in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md), aber
+  [slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md), aber
   [slice-129](slice-129-closure-notiz-hat-einen-sensor.md) schreibt in denselben Baum und ist
   nicht durch diesen Trigger gedeckt. Läuft es dazwischen, ist der Konflikt ein Merge-Konflikt,
   kein stiller. — **Ausgang:** <offen>
