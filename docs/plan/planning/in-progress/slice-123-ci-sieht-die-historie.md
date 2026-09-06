@@ -6,8 +6,8 @@ wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
 **Welle:** [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) — der **erste** Slice und die
-harte Kante zu [slice-126](slice-126-commit-message-traegt-eine-kennung.md) und
-[slice-127](slice-127-adr-immutabilitaet-hat-einen-sensor.md).
+harte Kante zu [slice-126](../open/slice-126-commit-message-traegt-eine-kennung.md) und
+[slice-127](../open/slice-127-adr-immutabilitaet-hat-einen-sensor.md).
 
 **Ebene: Dogfood, nicht emittiert.** Gegenstand sind die Workflows **dieses** Repos
 ([`.github/workflows/`](../../../../.github/workflows)). Was ein emittiertes Repo an
@@ -71,14 +71,14 @@ darum die Range, nicht die Klon-Tiefe:** eine Tiefen-Prüfung ließe den leeren 
 die Historie fehlt, muss **fallen**. Ohne diese Hälfte ist die Zeile eine Zusage ohne
 Gegenbeispiel — sie hält, solange niemand sie entfernt, und bricht still, sobald jemand es tut.
 Diese Hälfte gehört genau **einmal** ins Repo und nicht zweimal in
-[slice-126](slice-126-commit-message-traegt-eine-kennung.md) und
-[slice-127](slice-127-adr-immutabilitaet-hat-einen-sensor.md); läge sie in 126, hinge 127 an 126,
+[slice-126](../open/slice-126-commit-message-traegt-eine-kennung.md) und
+[slice-127](../open/slice-127-adr-immutabilitaet-hat-einen-sensor.md); läge sie in 126, hinge 127 an 126,
 obwohl die zwei fachlich nichts miteinander zu tun haben.
 
 **Und der Prüfbereich ist enger als „alle sieben Checkouts".** Volle Historie kostet Zeit; sie
 gehört an die Jobs, deren Schritte Historie **lesen**, nicht an jeden Checkout des Repos. Welche
-das sind, ist nach [slice-126](slice-126-commit-message-traegt-eine-kennung.md) und
-[slice-127](slice-127-adr-immutabilitaet-hat-einen-sensor.md) bekannt — vor ihnen ist es eine
+das sind, ist nach [slice-126](../open/slice-126-commit-message-traegt-eine-kennung.md) und
+[slice-127](../open/slice-127-adr-immutabilitaet-hat-einen-sensor.md) bekannt — vor ihnen ist es eine
 Entscheidung, und sie ist DoD (2).
 
 ## 2. Definition of Done
@@ -132,7 +132,7 @@ ist dieser Slice der erste; er wartet auf keinen anderen.
 
 - `in-progress` → `next`: DoD (2) lässt sich nicht entscheiden, weil noch kein history-lesender
   Schritt existiert — dann wird der Slice zu einer Entscheidung ohne Gegenstand. Er geht zurück und
-  **hinter** [slice-126](slice-126-commit-message-traegt-eine-kennung.md); die Kante dreht sich um.
+  **hinter** [slice-126](../open/slice-126-commit-message-traegt-eine-kennung.md); die Kante dreht sich um.
   **Das ist der wahrscheinlichste Rückweg dieses Slice**, und er ist kein Fehler, sondern die
   Alternative, gegen die hier entschieden wurde.
 - `in-progress` → `open`: `fetch-depth: 0` treibt die CI-Laufzeit über eine Grenze, die dieses Repo
@@ -149,8 +149,8 @@ Befund, Closure-Notiz in §7 mit Steering-Loop-Eintrag.
 ## 6. Risiken und offene Punkte
 
 - **Der Wächter kann sich selbst nicht beweisen, solange er allein steht.** Vor
-  [slice-126](slice-126-commit-message-traegt-eine-kennung.md) und
-  [slice-127](slice-127-adr-immutabilitaet-hat-einen-sensor.md) gibt es keinen produktiven Schritt,
+  [slice-126](../open/slice-126-commit-message-traegt-eine-kennung.md) und
+  [slice-127](../open/slice-127-adr-immutabilitaet-hat-einen-sensor.md) gibt es keinen produktiven Schritt,
   der Historie liest — sein Gegenbeispiel ist dann ein **konstruierter** flacher Klon und nicht ein
   echter CI-Lauf. Das ist zulässig (DoD (1) nennt genau diesen Lauf), aber es ist eine schwächere
   Deckung, und sie gehört in die Closure-Notiz statt in eine Erfolgsmeldung.

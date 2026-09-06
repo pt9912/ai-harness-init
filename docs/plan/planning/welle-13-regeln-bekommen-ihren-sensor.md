@@ -207,7 +207,7 @@ Verzeichnisse (dieselbe zweite Wahrheit, die beim Slice retired wurde). -->
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-123](open/slice-123-ci-sieht-die-historie.md) | CI sieht die Historie — oder der Lauf fällt, statt grün zu melden | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| [slice-123](in-progress/slice-123-ci-sieht-die-historie.md) | CI sieht die Historie — oder der Lauf fällt, statt grün zu melden | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | [slice-124](open/slice-124-gate-tabelle-hat-einen-waechter.md) | Die Gate-Tabellen werden gegen das Makefile gehalten (Modul `targets`, Achse 1) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-125](open/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) | Roadmap und Lifecycle-Verzeichnis widersprechen sich nicht mehr still (Modul `planning`, Achse 4) | [`MR-016`](../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) |
 | [slice-126](open/slice-126-commit-message-traegt-eine-kennung.md) | Eine Commit-Message ohne Kennung wird rot, und zwar vor dem Commit (Modul `commits`, Achse 3) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
@@ -215,7 +215,7 @@ Verzeichnisse (dieselbe zweite Wahrheit, die beim Slice retired wurde). -->
 | [slice-129](open/slice-129-closure-notiz-hat-einen-sensor.md) | Die Closure-Notiz-Pflicht bekommt ihren Sensor (Modul `planning`, zweite Fähigkeit, Achse 6) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 
 **Die Reihenfolge ist nicht beliebig, eine Kante ist hart und eine ist ein Ausschluss.**
-[slice-123](open/slice-123-ci-sieht-die-historie.md) geht **[slice-126](open/slice-126-commit-message-traegt-eine-kennung.md)
+[slice-123](in-progress/slice-123-ci-sieht-die-historie.md) geht **[slice-126](open/slice-126-commit-message-traegt-eine-kennung.md)
 und [slice-127](open/slice-127-adr-immutabilitaet-hat-einen-sensor.md) voraus**: beide lesen
 Historie, und ohne die Range-Entscheidung aus 123 wären sie in CI blind und grün — ein fail-open
 Sensor ist schlechter als keiner, weil er eine Zusage trägt. Die drei hermetischen
