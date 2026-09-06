@@ -98,9 +98,11 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
 - [ ] **(2) Die Checkouts, die Historie brauchen, tragen `fetch-depth: 0`, und die anderen nicht —
       mit der Begründung neben der Zeile.** Entschieden und aufgeschrieben ist, **welche** der
       sieben `actions/checkout`-Stellen betroffen sind und warum die übrigen bei Tiefe 1 bleiben.
-      **Rot:** `make ci-lint` fällt bei fehlerhafter Workflow-Syntax; und die Zuordnung selbst ist
-      rot, wenn ein Job mit einem history-lesenden Schritt ohne `fetch-depth: 0` bleibt — genau der
-      Fall, den Punkt (1) dann in CI sichtbar macht.
+      **Rot:** `make ci-lint` fällt bei fehlerhafter Workflow-Syntax. Für die Zuordnung selbst gibt
+      es heute **keinen realen CI-Rot-Nachweis** — kein Job ruft `history-range-guard` auf
+      (`grep -rn 'run:.*history-range-guard' .github/workflows/` → 0, §6 Risiken); ihr Nachweis ist
+      der **konstruierte** flache Klon aus Punkt (1), nicht ein echter CI-Lauf, der einen
+      history-lesenden Schritt ohne `fetch-depth: 0` tatsächlich fallen lässt.
 - [ ] **(3) Der Wächter hat seinen Zahn.** Ein `test/mutations/`-Fall entfernt die Tiefen-Prüfung
       und färbt den benannten Test rot.
       **Rot:** `make mutate` meldet **BEFUND** auf genau diesen Fall, solange der Zahn nicht die
@@ -116,7 +118,7 @@ Steering-Loop-Lerneintrag.
 |---|---|---|
 | [`.github/workflows/ci.yml`](../../../../.github/workflows/ci.yml) | update | `fetch-depth: 0` an den Jobs, deren Schritte Historie lesen — welche das sind, entscheidet DoD (2) |
 | `harness/tools/` — ein neues Skript **oder** ein Schritt im Workflow | neu | der Tiefen-Wächter aus DoD (1). Präzedenz für die hermetische Bauart: [`harness/tools/component-freshness.sh`](../../../../harness/tools/component-freshness.sh) |
-| [`Makefile`](../../../../Makefile) | update | das Ziel, das den Wächter fährt, falls er eines bekommt — dann zieht [`AGENTS.md`](../../../../AGENTS.md) §4 mit (öffentlicher Vertrag) |
+| [`Makefile`](../../../../Makefile) | update | das Ziel, das den Wächter fährt — **kein Gate** und in keiner Prerequisite-Kette (wie `slice-mv`/`archive-welle`/`span-report`/`hook-overhead`), darum bleibt [`AGENTS.md`](../../../../AGENTS.md) §4 (Quality-Gates-Tabelle) unberührt |
 | `test/` | neu | der bats-Fall, den DoD (3) mit einem `test/mutations/`-Fall belegt |
 | [`harness/README.md`](../../../../harness/README.md) | update | was der Wächter prüft und was **nicht** — der Harness-Einstieg ist der Ort dieser Aussage |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | **nicht durch diesen Slice** | Adaptions-Block ist Architect-Eigentum ([`AGENTS.md`](../../../../AGENTS.md) §3.8); berührt der Slice [`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions), ist das eine Übergabe |
@@ -166,6 +168,13 @@ Befund, Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   allein den SessionStart-Injektor; ein Wächter, der nur in GitHub Actions greift, deckt CI und
   nicht den lokalen Lauf. Ob das reicht, ist zu benennen — hier ist es vertretbar, weil die
   **Blindheit** eine CI-Eigenschaft ist und lokal gar nicht auftritt.
+- **Offene Norm-Frage: Wer darf `internal/emit/templates/commands/*.md` ändern?**
+  [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) entscheidet das für
+  die emittierte Ebene ausdrücklich **nicht** (§Was hier NICHT entschieden ist), während dieser
+  Slice-Kopf „Ebene: Dogfood, nicht emittiert" erklärt. Eine Nummern-Korrektur in
+  `internal/emit/templates/commands/implement-slice.md` (sachlich richtig) ist im Diff dennoch
+  enthalten. Die Frage bleibt für den Architect offen und wird hier nicht durch eine weitere
+  Implementer-Auslegung entschieden.
 
 ## 7. Closure-Notiz (nach `done/`)
 
