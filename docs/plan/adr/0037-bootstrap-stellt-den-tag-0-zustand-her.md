@@ -126,40 +126,6 @@ sein Repo nicht hat. Das ist die Klasse, die
 [`BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger`](../planning/observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/observation.md)
 führt.
 
-### Die Gegenposition, und warum sie nicht trägt
-
-[`docs/user/benutzerhandbuch.md`](../../user/benutzerhandbuch.md) §Änderungshistorie 1.13
-beschreibt die Nicht-Anlage als gewollt: *„Das Register selbst legt der Bootstrap nicht an — seit
-es ein Verzeichnis je Beobachtung ist, gibt es keine stehende Register-Datei mehr, und das erste
-Verzeichnis entsteht mit der ersten Beobachtung."*
-
-Der Satz vermengt zwei Dinge, die
-[ADR-0034](0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
-auseinanderhält. Entfallen ist die **stehende Register-Datei** — die Tabelle, die den Zähler
-führte (Festlegung 1: *„Die stehende Register-Datei entfällt, und keine Index-Datei tritt an ihre
-Stelle"*). Nicht entfallen ist die **Ablage**, und dieselbe Festlegung schreibt ihre Form aus:
-*„ein Verzeichnis `observations` unter `docs/plan/planning/` mit `README.md` und je Beobachtung
-einem Verzeichnis"*. Die `README.md` ist Bestandteil der Ablage, nicht ein Eintrag darin; aus dem
-Wegfall der Tabelle folgt für sie nichts.
-
-Die Handbuch-Zeile beschreibt damit den **Ist-Stand des Werkzeugs**, nicht eine Entscheidung —
-der Bestand ist keine Norm. Sie wird durch diese ADR an einem Punkt falsch. **Umgeschrieben wird
-sie deshalb nicht:** Ein Historie-Eintrag beschreibt einen vergangenen Stand; was das Handbuch
-**im Präsens** über den Bestand sagt, zieht der Slice nach, der seinen Bestandsbaum schreibt
-(`slice-191`). Diese Datei tut weder das eine noch das andere — dieselbe Zuweisung steht in
-§Konsequenzen.
-
-### Zwei geprüfte Gegen-Gründe, beide tragen nicht
-
-- **[ADR-0007](0007-bootstrap-phasen.md) (Idempotenz-Klassen)** rechtfertigt die Nicht-Anlage
-  nicht. Sie sagt, *wie* eine emittierte Datei beim Re-Lauf behandelt wird — *„im Zweifel gilt
-  `skip-if-present`"* —, und beantwortet damit eine andere Frage als *ob* sie beim ersten Lauf
-  entsteht. Für die eine neue Datei liefert sie die Klasse (Festlegung 3), nicht ein Veto.
-- **[ADR-0034](0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)**
-  ebenso wenig: Ihr Geltungsbereich ist der Dogfood, und dort schreibt sie die Ablage samt
-  `README.md` gerade **vor**. Über die emittierte Ebene sagt sie nichts — die Ebenen-Trennung
-  bleibt bestehen, und deshalb braucht die emittierte Hälfte diese eigene Entscheidung.
-
 ### Welche Aufzählung in [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) ausgelegt wird — und was sie zählt
 
 Der Absatz trägt **vier** Klammern, die je eine Klasse aufzählen:
@@ -275,7 +241,7 @@ ist beispielhaft, nicht abschließend.** Maßgeblich ist die **Eigenschaft**, ni
 
 Alle drei Bedingungen zusammen, nicht einzeln.
 
-**Wie (a) ausgewertet wird — die Regel steht hier, nicht in ihrem Anwendungsfall.** (a) fragt nach
+**Wie (a) ausgewertet wird.** (a) fragt nach
 dem **Tag-0-Zustand**: Führt der Text den Ort als in einem **frischen** Repo vorhanden? **Drei
 Formen tun das nicht**, und alle drei sind an der Form der Nennung erkennbar, nicht am Gegenstand:
 
@@ -311,34 +277,8 @@ Kollisions-Regeln**, weil die Disjunktion *„Regelwerk **oder** mitemittierter 
   sonst als unbedingt läse: Sie beantwortet genau die Frage, die (a) stellt, und beantwortet sie
   mit *nein*.
 
-**Das Wort *Existenz* grenzt die zweite Regel gegen Form 2 ab, und die Grenze ist tragend.** Die
-Glosse zu Form 2 sagt, ein Text über das *Wodurch* sage damit etwas über das *Vorher*. Griffe die
-zweite Regel schon daran, entkräftete jede Ziel-Nennung jede unbedingte — und die erste Regel sagt
-das Gegenteil; zwei Regeln trügen dasselbe Prädikat mit entgegengesetzter Wirkung. Form 2
-disqualifiziert deshalb **die Nennung, in der sie steht**, und trägt nicht über sie hinaus; die
-zweite Kollisions-Regel greift allein an einer Aussage über die Existenz des Ortes selbst.
-
-**Der Fall ist nicht konstruiert.** Der Lifecycle-Ordner `done/` — ein Verzeichnis und damit
-ortsfest, als Pfad also nach [`AGENTS.md`](../../../AGENTS.md) §3.11 zulässig — trägt in der
-Verzeichniskonvention eine eigene, zusatzfreie Zeile: Baseline `v6.0.0`,
-`grundlagen-harness-dateien.md` §Verzeichniskonvention, *„docs/plan/planning/done/ #
-abgeschlossene Slices"*. Und die mitemittierte `slice.template.md` nennt dieselbe Ablage als Ziel
-eines `git mv` — Baseline `v6.0.0`, `templates/docs/plan/planning/slice.template.md`, Kopf-Feld
-**Lifecycle**, das den Template-Abbau überlebt: *„Der Zustand dieses Slice ist das Verzeichnis, in
-dem diese Datei liegt … Er wechselt nur durch `git mv`"*. Nach der ersten Regel ist (a) erfüllt,
-und der Bootstrap legt den Ort an; ohne die Abgrenzung oben gäbe dasselbe Kriterium hier zwei
-Antworten.
-
-```sh
-grep -c '^docs/plan/planning/done/' \
-  .harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md            # 1
-grep -c 'wechselt nur durch `git mv`' \
-  .harness/baseline/v6.0.0/templates/docs/plan/planning/slice.template.md     # 1
-sed -n '/^func structureGitkeeps/,/^}/p' internal/emit/templates.go \
-  | grep -c '"docs/plan/planning/done"'                                       # 1
-```
-
-**Keine Erwartungswerte.**
+Form 2 disqualifiziert **die Nennung, in der sie steht**, und trägt nicht über sie hinaus; die
+zweite Kollisions-Regel greift allein an einer Aussage über die **Existenz** des Ortes selbst.
 
 Die Aufnahme eines Ortes, der die drei erfüllt, ist **Erfüllung** von
 [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) und
@@ -351,10 +291,9 @@ Zusage *aus dem Nichts wird nichts emittiert*
 ([`spec/lastenheft.md §5`](../../../spec/lastenheft.md#5-globale-out-of-scope-punkte)) bleibt
 unangetastet, weil (a) die Quelle benennt.
 
-**Die Einschränkung auf das Lastenheft steht dort mit Absicht.** Eine Zusage in einem **Plan** —
-ein Abnahmekriterium eines Slice — liegt auf einer anderen Ebene und ist von diesem Satz nicht
-gedeckt. Diese Entscheidung berührt eine solche: Festlegung 4 benennt sie, und Folgepflicht 4
-nennt die Rolle, die daraus die Folgerung schreibt.
+Eine Zusage in einem **Plan** — ein Abnahmekriterium eines Slice — liegt auf einer anderen Ebene
+und ist von diesem Satz nicht gedeckt; Festlegung 4 benennt die eine, die diese Entscheidung
+berührt.
 
 **Die drei übrigen Klassen-Klammern desselben Absatzes bleiben unberührt.** Die
 Singleton-Klammer *„(authored-once: …)"* zählt **template-abgeleitete** Dateien — die
@@ -366,21 +305,8 @@ und die der **derivativen Index-Sichten** tragen im selben Absatz je ihre eigene
 Festlegung 4 lässt beide stehen. Festlegung 1 legt eine Klammer aus und hebt keine
 Klassen-Regel auf.
 
-**„Unberührt" heißt: diese Entscheidung legt sie nicht aus — nicht, dass sie als geschlossene
-Menge zu lesen wären.** Für die Singleton-Klammer trägt der Ist-Stand die Instanzen-Lesart
-bereits: Sie nennt Root-`README.md`, das der Emitter nicht schreibt, und sie nennt drei Dateien
-nicht, die er schreibt — `docs/plan/planning/README.md` und die zwei `.harness/skills/*.md`.
-
-```sh
-sed -n '/^func TestTemplates_EmittierterBestandVollstaendig/,/^}/p' \
-  internal/emit/templates_test.go | grep -c '^[[:space:]]*"README\.md",'   # 0
-sed -n '/^func TestTemplates_EmittierterBestandVollstaendig/,/^}/p' \
-  internal/emit/templates_test.go \
-  | grep -cE '"(docs/plan/planning/README\.md|\.harness/skills/)'          # 3
-```
-
-**Keine Erwartungswerte.** Die Lesart wird hier also nicht erfunden; sie wird für **eine** Klammer
-ausgesprochen.
+*Unberührt* heißt: diese Entscheidung legt sie nicht aus — nicht, dass sie als geschlossene Menge
+zu lesen wären.
 
 **`harness/conventions/` erfüllt die drei** — je Bedingung einzeln belegt, in genau der Form, die
 Folgepflicht 1 unten vom umsetzenden Lauf verlangt:
@@ -452,21 +378,6 @@ das andere nicht: Ein `.gitkeep` lässt `git` ein leeres Verzeichnis führen, un
 Regelwerk sie verlangt und die kein `.gitkeep` tragen kann. Der Satz wird damit nicht abbedungen;
 sein Subjekt trifft für diesen Ort nicht zu.
 
-**Unter der Gegen-Lesart bleibt die Change-Request-Antwort dieselbe; die Träger-Frage beantwortet
-sie nicht.** Wer den Satz als Vorgabe für **jedes** Struktur-Verzeichnis liest, findet auch dann
-keine geänderte Anforderung, keine zurückgenommene Zusage des Lastenhefts und keinen berührten
-Out-of-Scope-Punkt — das sind Fragen an den **Text** von Rang 1, und den ändert diese Entscheidung
-nicht. **Erfüllung, kein Change Request**, gilt darum in beiden Lesarten
-([`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler),
-[`MR-036`](../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline)).
-
-**Was jene Lesart daneben aufwirft, trägt dieser Absatz nicht.** Ob die gewählte Datei der Vorgabe
-**folgt**, ist eine Frage an die Befolgung, nicht an den Text — und sie ist oben am **Wortlaut**
-entschieden: Subjekt des Satzes sind *leere* Struktur-Verzeichnisse. Die Gegen-Lesart verwirft
-genau dieses Subjekt und bekommt hier keine zweite Begründung; die Einordnung des Trägers steht
-auf der Haupt-Lesart. Der Zweck des Absatzes — *out-of-the-box gate-sicher* — wird unter beiden
-erreicht.
-
 **Die Datei ist keine Kopie des Dogfood-Textes.** Der hiesige Text ist repo-spezifisch (er
 zitiert Einträge des eigenen Adaptions-Blocks); emittiert wird eine generische Fassung, die die
 Ablage-Form, die Schreib-/Lese-Rollen, die Beleg-Form und die drei Ausgänge nennt und sonst
@@ -476,13 +387,7 @@ nichts.
 Entscheidung 3). Sie folgt aus deren eigener Regel — *„jede emittierte Datei ist **genau einer**
 Klasse zugeordnet; im **Zweifel gilt `skip-if-present`** (nie Adopter-Inhalt clobbern — der
 sichere Default)"* —, und der Zweifel besteht, sobald ein Adopter den Text an sein Repo anpasst.
-**Aus dem Bestand wird die Klasse nicht begründet:** In diesem Repo trägt die Datei zwei Commits,
-beide aus dem Slice, der sie anlegte (`git log --oneline --follow --
-docs/plan/planning/observations/README.md` → **2** Zeilen, kein Erwartungswert), und mit dem
-Register wachsen kann sie ohnehin nicht — der Index ist verboten
-([ADR-0034](0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
-Festlegung 1). Ein `.gitkeep` einer Struktur-Ablage bleibt davon unberührt und behält seine
-bisherige Behandlung.
+Ein `.gitkeep` einer Struktur-Ablage bleibt davon unberührt und behält seine bisherige Behandlung.
 
 **4. Was diese Entscheidung ausdrücklich nicht öffnet.** Sie ist ein **Kriterium**, keine
 Blankovollmacht:
@@ -497,26 +402,6 @@ Blankovollmacht:
   sie **gegenstandslos** ist: Sie entscheidet, ob ein **Ort** entsteht, und `docs/plan/adr/` wie
   `docs/plan/carveouts/` entstehen bereits — der Bootstrap hält beide mit `.gitkeep`.
 
-  **Zwei Gründe tragen den Ausschluss nicht und stehen darum nicht daneben.** **(c)** trägt ihn
-  nicht: der Emit-Pfad nimmt jedem Markdown-Link, dessen Ziel-Pfad einen `<…>`-Platzhalter trägt,
-  die Link-Syntax, und beide Index-Vorlagen tragen genau einen solchen Link und sonst keinen — ein
-  Index-Skelett röte ein frisches `docs-check` heute nicht mehr. Und ein Satz der Art *„ein Index
-  ist eine Datei und fällt darum aus dem Subjekt"* trägt ihn ebenso wenig: Festlegung 2 legt einen
-  Ort gerade über eine **Datei mit Inhalt** an. Was die Fälle trennt, ist nicht Datei gegen
-  Verzeichnis, sondern ob der Ort ohne den Bootstrap entsteht — und das ist Bedingung (b), die
-  bereits dasteht.
-
-  ```sh
-  sed -n '/^func structureGitkeeps/,/^}/p' internal/emit/templates.go \
-    | grep -cE '"docs/plan/(adr|carveouts)"'                                    # 2
-  grep -c 'body = NeutralizePlaceholderLinks(body)' internal/emit/templates.go  # 1
-  grep -oE '\]\([^)]*\)' \
-    .harness/baseline/v6.0.0/templates/docs/plan/adr/README.template.md \
-    .harness/baseline/v6.0.0/templates/docs/plan/carveouts/README.template.md
-  # je genau eine Zeile, beide mit einem <…>-Platzhalter im Ziel-Pfad
-  ```
-
-  **Keine Erwartungswerte.**
 - Das **Reconciliation-Register** des Brownfield-Rückbaus bleibt **unemittiert**
   (Vorlage: Baseline `v6.0.0`, `templates/docs/plan/planning/reconciliation.template.md`).
   Es scheitert an (a), und der Beleg steht in derselben Quelle und derselben Form wie der von
@@ -583,71 +468,31 @@ Blankovollmacht:
   **Keine Erwartungswerte.** Was daraus für die stehenbleibende Fundstelle im Planning-Index
   folgt — Marker, Umformulierung oder etwas Drittes —, ist **Umsetzung** und steht hier nicht.
 
-  **Diese Festlegung berührt eine bestehende Zusage — die eines Plans, nicht die des
-  Lastenhefts, und das gehört ausgesprochen.** `slice-190` — der Slice, dessen zwei Fragen diese
-  Datei beantwortet — verlangt in **DoD (1)** `docs/plan/carveouts/done` namentlich für die
-  Struktur-Liste des Emitters. Diese Entscheidung trägt den Ort nicht; der DoD-Punkt ist in seiner
-  heutigen Fassung mit ihr **nicht erfüllbar**. Das ist keine Nebenwirkung, sondern die Folge, und
-  sie wird hier benannt statt stillschweigend vollzogen.
-
-  **Von drei weiteren Stellen desselben Plans ist eine nicht betroffen, zwei sind es — und der
-  Unterschied liegt in der Achse, nicht in der Formulierung.** Ein Satz seines §3 stellt fest,
-  `docs/plan/carveouts/done` sei *„ein Carveout-Ordner und damit gedeckt"*. Er steht im Absatz
-  *„Die Change-Request-Frage steht vor dem Code"* und mündet in *„ist hier nicht entschieden"*; er
-  beantwortet damit die **Change-Request-Frage** — ob die Aufnahme eines Ortes den Vertrag ändert —
-  und bleibt richtig: Wäre der Ort aufzunehmen, bräuchte es dafür keinen Change Request, weil die
-  Rang-1-Klammer *„ADR-/Carveout-/Reviews-Ordner"* ihn deckte. Die Frage, die diese Festlegung
-  beantwortet, ist die andere: **ob** er aufzunehmen ist. Dazu sagt **jener Satz** nichts.
-
-  **§1 steht dagegen auf der Anlege-Achse, und seine Prämisse fällt mit dieser Festlegung.** Sein
-  *„Nur die ersten zwei sind unstrittig"* führt `docs/plan/carveouts/done` neben
-  `harness/conventions` als die Orte, die dieser Slice anlegt, und **DoD (1)** knüpft dasselbe
-  Wort ans Anlegen: *„Der Bootstrap legt die zwei unstrittigen Orte an"*. Drei Messungen tragen
-  die Zuordnung. §1 nennt die Change-Request-Frage **kein einziges Mal** — sie kommt im Plan erst
-  in §3 vor. Auf der Change-Request-Achse stehen die zwei Orte **verschieden**: §3 führt den einen
-  als von der Rang-1-Klammer gedeckt, während §6 für `harness/conventions` die
-  Change-Request-Frage ausdrücklich offen führt; §1 nennt sie gleich, und das geht nur auf der
-  Anlege-Achse auf. **Ein zweiter Satz derselben Sektion fällt mit:** nach DoD (1) und (2) blieben
-  *„drei Fundstellen … alle aus dem Register-Konflikt"* — eine Zahl, die den hier
-  ausgeschlossenen Ort als angelegt voraussetzt.
-
-  **Die dritte Stelle steht in derselben Sektion wie die erste und auf derselben Achse wie die
-  zweite.** Die Tabelle *Plan (vor Code)* in §3 weist `structureGitkeeps()` auf *„die zwei
-  fehlenden Verzeichnisse"* an — dieselbe Funktion und dieselbe Zahl wie **DoD (1)**, und
-  Festlegung 4 trägt nur einen der zwei Orte. Sie fällt mit derselben Prämisse wie der DoD-Punkt.
-  Die Unberührtheit oben gilt deshalb dem zitierten Satz und nicht der Sektion, in der er steht.
-
-  **Der Plan hat den Fall selbst offengehalten.** Sein §6 führt als eigenes Risiko, dass ein
-  `.gitkeep` für diesen Ort einer Aussage der Baseline widerspricht — genau der oben zitierten —,
-  und verlangt vom Slice, **einen** von zwei Wegen ausdrücklich zu wählen: *„Marker **oder**
-  Verzeichnis, nicht beides und nicht keines"*. Diese Festlegung schließt den zweiten Weg; der
-  erste bleibt offen und ist Umsetzung.
+  **Diese Festlegung berührt eine Zusage von `slice-190`** — die eines Plans, nicht die des
+  Lastenhefts. Sein **DoD (1)** verlangt `docs/plan/carveouts/done` namentlich für die
+  Struktur-Liste des Emitters; diese Entscheidung trägt den Ort nicht, der DoD-Punkt ist in seiner
+  heutigen Fassung mit ihr **nicht erfüllbar**. Dieselbe Prämisse tragen drei weitere Stellen:
+  **DoD (3)** mit der Fundstellen-Zahl nach DoD (1) und (2), §1 mit *„Nur die ersten zwei sind
+  unstrittig"* und die `structureGitkeeps()`-Zeile der Plan-Tabelle in §3 mit *„die zwei fehlenden
+  Verzeichnisse"*. **Nicht** betroffen ist der §3-Satz, `docs/plan/carveouts/done` sei *„ein
+  Carveout-Ordner und damit gedeckt"*: Er beantwortet die **Change-Request**-Frage, nicht die
+  **Anlege**-Frage, und bleibt richtig.
 
   ```sh
   P='docs/plan/planning/*/slice-190-*.md'
-  sed -n '/^## 1\. Ziel/,/^## 2\./p' $P | grep -c 'Change Request\|Change-Request'      # 0
   sed -n '/^## 1\. Ziel/,/^## 2\./p' $P | grep -c 'Nur die ersten zwei sind unstrittig' # 1
   sed -n '/^## 1\. Ziel/,/^## 2\./p' $P | grep -c 'Fundstellen stehen, alle aus dem'    # 1
   sed -n '/^## 2\. Definition of Done/,/^## 3\./p' $P \
-    | grep -c 'legt die zwei unstrittigen Orte an'                                      # 1
-  sed -n '/^## 2\. Definition of Done/,/^## 3\./p' $P \
     | grep -c 'docs/plan/carveouts/done'                                                # 1
-  sed -n '/^## 3\./,/^## 4\./p' $P | grep -c 'ist \*\*hier nicht entschieden\*\*'       # 1
   sed -n '/^## 3\./,/^## 4\./p' $P | grep -c 'die zwei fehlenden Verzeichnisse'         # 1
-  sed -n '/^## 3\./,/^## 4\./p' $P | grep -c 'structureGitkeeps'                        # 1
-  sed -n '/^## 6\./,/^## 7\./p' $P | grep -c 'Ob `harness/conventions` unter'           # 1
-  sed -n '/^## 6\./,/^## 7\./p' $P \
-    | grep -c 'Marker \*\*oder\*\* Verzeichnis, nicht beides und nicht keines'          # 1
   ```
 
   **Keine Erwartungswerte**; der Glob statt der Pfad-Adresse nach
-  [`AGENTS.md`](../../../AGENTS.md) §3.11. **Was aus der Kollision folgt, schreibt der Planner**
-  (§3.10) — diese Datei ist das Übergabe-Artefakt und nimmt weder den neuen Schnitt vorweg noch
-  die Frage, ob die Messzahl in DoD (3) auf dem verbleibenden Weg gehalten wird. Sie benennt
-  **vier** Stellen, an denen die Kollision im Plan aufschlägt — **DoD (1)**, **DoD (3)**, §1 und
-  die `structureGitkeeps`-Zeile in §3 —, und schlägt für keine dieser Stellen einen Wortlaut vor.
-  **Die Menge ist damit nicht geschlossen:** gemessen sind diese vier, nicht die Vollständigkeit
-  über den ganzen Plan — die misst der Planner an ihm. Folgepflicht 4 benennt die Übergabe.
+  [`AGENTS.md`](../../../AGENTS.md) §3.11. **Die Menge ist nicht geschlossen** — gemessen sind
+  diese vier Stellen, nicht die Vollständigkeit über den ganzen Plan. Der Plan hält den Fall
+  selbst offen: sein §6 verlangt *„Marker **oder** Verzeichnis, nicht beides und nicht keines"* —
+  diese Festlegung schließt den zweiten Weg, der erste bleibt offen und ist Umsetzung. **Was aus
+  der Kollision folgt, schreibt der Planner** (§3.10); Folgepflicht 4 benennt die Übergabe.
 - **Kein Eintrag im Adaptions-Block.** Diese Entscheidung stellt Baseline-Konformität her, statt
   von ihr abzuweichen; es gibt nichts zu deklarieren
   ([`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage)).
