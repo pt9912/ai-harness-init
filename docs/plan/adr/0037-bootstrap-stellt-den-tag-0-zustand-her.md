@@ -22,15 +22,21 @@ Gegenkraft: kein Gate und keine Zusage über einem Bestand, den kein Lauf herste
 [ADR-0005](0005-ziel-repo-distribution.md) (der vendored Template-Baum im Ziel),
 [ADR-0006](0006-durchsetzung-commands-tool-als-quelle.md) (Tool-als-Quelle als bereits
 beschlossene Herkunfts-Klasse),
+[ADR-0016](0016-verweis-traegt-tag-und-zitat.md) (Festlegung 2 — die Form eines Baseline-Belegs
+in einem einfrierenden Artefakt; Träger (a) bindet sie an den Accept-Übergang),
 [ADR-0034](0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
 (Festlegung 1 — die Ablage besteht aus `README.md` plus je Beobachtung einem Verzeichnis;
 Festlegung 5 — die Ablage ist ortsfest),
 [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) (eine Abweichung von der
 Baseline schuldet einen Eintrag — diese Entscheidung setzt keine),
+[`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+(die Change-Request-Frage bei Personalunion — Festlegung 1 beantwortet sie als *Erfüllung*),
 [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 (jede Zahl unten steht neben dem Kommando, das sie liefert),
 [`MR-033`](../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
 (jede Baseline-Aussage nennt ihren Tag),
+[`MR-036`](../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline)
+(dieselbe Change-Request-Regel steht seit `v5.12.0` in der adoptierten Baseline),
 [`MR-051`](../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
 (Setzung 2 — ein zitierter Register-Zähler ist eine datierte Messung)
 
@@ -53,21 +59,21 @@ schreibt ihn nicht um ([`AGENTS.md`](../../../AGENTS.md) §2 Rang 1).
 ### Die Frage kommt aus dem Emitter selbst, nicht von außen
 
 `internal/emit/templates.go` benennt seine eigene offene Stelle im Klartext — zwei Kommentar-
-Absätze, verbatim:
+Absätze, verbatim und in der Reihenfolge der Quelle:
 
 ```text
-GRENZE: LH-FA-02 fuehrt diese Disposition nicht — es nennt Singletons,
-Wiederkehrende, derivative Indexe, .gitkeeps und die nie kopierte Set-Index-README.
-Das Lastenheft ist Rang 1 und wird nicht vom Emit fortgeschrieben.
-
 Im Adaptions-Block steht zu dieser Weiche kein Eintrag; wo keiner steht, gilt die
 Baseline unveraendert (MR-000 Baseline-Aussage). Ob einer dazukommt, entscheidet
 der Architect (AGENTS 3.8) — nicht diese Datei und nicht der Lauf, der sie anfasst.
+
+GRENZE: LH-FA-02 fuehrt diese Disposition nicht — es nennt Singletons,
+Wiederkehrende, derivative Indexe, .gitkeeps und die nie kopierte Set-Index-README.
+Das Lastenheft ist Rang 1 und wird nicht vom Emit fortgeschrieben.
 ```
 
 ```sh
-grep -c 'GRENZE: LH-FA-02 fuehrt diese Disposition nicht' internal/emit/templates.go   # 1
 grep -c 'Ob einer dazukommt, entscheidet der Architect' internal/emit/templates.go     # 1
+grep -c 'GRENZE: LH-FA-02 fuehrt diese Disposition nicht' internal/emit/templates.go   # 1
 ```
 
 **Keine Erwartungswerte**
@@ -136,8 +142,11 @@ einem Verzeichnis"*. Die `README.md` ist Bestandteil der Ablage, nicht ein Eintr
 Wegfall der Tabelle folgt für sie nichts.
 
 Die Handbuch-Zeile beschreibt damit den **Ist-Stand des Werkzeugs**, nicht eine Entscheidung —
-der Bestand ist keine Norm. Sie wird durch diese ADR an einem Punkt falsch; ihre Korrektur ist
-Sache des Slice, der den Bestandsbaum des Handbuchs schreibt (`slice-191`), nicht dieser Datei.
+der Bestand ist keine Norm. Sie wird durch diese ADR an einem Punkt falsch. **Umgeschrieben wird
+sie deshalb nicht:** Ein Historie-Eintrag beschreibt einen vergangenen Stand; was das Handbuch
+**im Präsens** über den Bestand sagt, zieht der Slice nach, der seinen Bestandsbaum schreibt
+(`slice-191`). Diese Datei tut weder das eine noch das andere — dieselbe Zuweisung steht in
+§Konsequenzen.
 
 ### Zwei geprüfte Gegen-Gründe, beide tragen nicht
 
@@ -213,7 +222,8 @@ Gegenstand angewandt.
 
 ### Dass eine Datei ohne Baseline-Vorlage entstehen darf, ist bereits entschieden
 
-Für die Register-`README.md` führt der vendored Baum keine Vorlage:
+Für die Register-`README.md` führt der vendored Template-Baum, den das Ziel mitbekommt
+([ADR-0005](0005-ziel-repo-distribution.md)), keine Vorlage:
 
 ```sh
 find .harness/baseline/v6.0.0/templates -iname '*observation*README*' | wc -l   # 0
@@ -262,10 +272,23 @@ ist beispielhaft, nicht abschließend.** Maßgeblich ist die **Eigenschaft**, ni
 > ohne den Bootstrap nicht entsteht, weil `git` ein leeres Verzeichnis nicht führt, und (c) sein
 > Anlegen keinen Platzhalter-Link erzeugt, der das Doku-Gate des Ziels rot färbt.
 
-Alle drei Bedingungen zusammen, nicht einzeln. Die Aufnahme eines Ortes, der sie erfüllt, ist
-**Erfüllung** von
+Alle drei Bedingungen zusammen, nicht einzeln.
+
+**Wie (a) ausgewertet wird — die Regel steht hier, nicht in ihrem Anwendungsfall.** Maßgeblich
+ist, ob der Text den Ort **unbedingt** führt. Trägt die Nennung einen Modus- oder
+Bedingungs-Zusatz (*„nur im Brownfield-Bootstrap"*), oder steht sie in einer Wenn-dann-Form, die
+ein Ereignis voraussetzt (*„ist ihr Auflösungs-Trigger eingetreten, wandert sie … nach
+`conventions/done/`"*), dann führt sie den Ort **nicht für ein frisches Repo**, und (a) trägt
+nicht — beide Beispiele sind Baseline `v6.0.0` und in Festlegung 4 belegt. Die Disjunktion
+*„Regelwerk **oder** mitemittierter Text"* ändert daran nichts: Sie eröffnet zwei **Quellen**,
+nicht zwei Maßstäbe — ein zweiter Text hilft nur, wenn **er** den Ort unbedingt führt.
+
+Die Aufnahme eines Ortes, der die drei erfüllt, ist **Erfüllung** von
 [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) und
-[`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), **kein Change Request**:
+[`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), **kein Change Request**
+([`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler),
+seit `v5.12.0` in der Baseline —
+[`MR-036`](../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline)):
 keine Anforderung ändert sich, keine Zusage wird zurückgenommen, und die Zusage *aus dem Nichts
 wird nichts emittiert*
 ([`spec/lastenheft.md §5`](../../../spec/lastenheft.md#5-globale-out-of-scope-punkte)) bleibt
@@ -281,14 +304,32 @@ und die der **derivativen Index-Sichten** tragen im selben Absatz je ihre eigene
 Festlegung 4 lässt beide stehen. Festlegung 1 legt eine Klammer aus und hebt keine
 Klassen-Regel auf.
 
+**„Unberührt" heißt: diese Entscheidung legt sie nicht aus — nicht, dass sie als geschlossene
+Menge zu lesen wären.** Für die Singleton-Klammer trägt der Ist-Stand die Instanzen-Lesart
+bereits: Sie nennt Root-`README.md`, das der Emitter nicht schreibt, und sie nennt drei Dateien
+nicht, die er schreibt — `docs/plan/planning/README.md` und die zwei `.harness/skills/*.md`.
+
+```sh
+sed -n '/^func TestTemplates_EmittierterBestandVollstaendig/,/^}/p' \
+  internal/emit/templates_test.go | grep -c '^[[:space:]]*"README\.md",'   # 0
+sed -n '/^func TestTemplates_EmittierterBestandVollstaendig/,/^}/p' \
+  internal/emit/templates_test.go \
+  | grep -cE '"(docs/plan/planning/README\.md|\.harness/skills/)'          # 3
+```
+
+**Keine Erwartungswerte.** Die Lesart wird hier also nicht erfunden; sie wird für **eine** Klammer
+ausgesprochen.
+
 **`harness/conventions/` erfüllt die drei** — je Bedingung einzeln belegt, in genau der Form, die
 Folgepflicht 1 unten vom umsetzenden Lauf verlangt:
 
-- **(a)** Das mitemittierte Regelwerk führt den Ort im Indikativ: Baseline `v6.0.0`,
+- **(a)** Das mitemittierte Regelwerk führt den Ort **unbedingt** im Indikativ: Baseline `v6.0.0`,
   `grundlagen-harness-dateien.md` §Verzeichniskonvention, in derselben Baumdarstellung wie
   `docs/plan/planning/observations/` — *„harness/conventions/ # ein MR je Datei; done/ =
   aufgelöst"*. Die Vorlage, aus der der Bootstrap den Konventionsspeicher stempelt, nennt ihn ein
-  zweites Mal: *„Jede Adaption ist eine eigene Datei unter `harness/conventions/`"*.
+  zweites Mal — Baseline `v6.0.0`, `templates/harness/conventions.template.md`
+  §Adaptions-Block, und zwar im **Rumpf**, der den Template-Abbau überlebt, nicht in einem
+  Kommentarblock: *„Jede Adaption ist eine eigene Datei unter `harness/conventions/`"*.
 
   ```sh
   grep -c '^harness/conventions/ ' \
@@ -299,14 +340,17 @@ Folgepflicht 1 unten vom umsetzenden Lauf verlangt:
 
 - **(b)** Der emittierte Bestand trägt unter `harness/conventions/` nichts — ohne den Bootstrap
   entsteht das Verzeichnis nicht, weil `git` ein leeres Verzeichnis nicht führt. Gemessen an der
-  `want`-Liste des Mengen-Vergleichs, mit Gegenprobe an derselben Liste, damit die Null nicht aus
-  einem leeren Ausschnitt stammt:
+  `want`-Liste des Mengen-Vergleichs — der Ausschnitt ist auf **dessen** Funktion begrenzt, damit
+  die zweite `want`-Liste der Datei nicht mitzählt —, mit Gegenprobe an derselben Liste, damit die
+  Null nicht aus einem leeren Ausschnitt stammt:
 
   ```sh
-  sed -n '/want := \[\]string{/,/^[[:space:]]*}$/p' internal/emit/templates_test.go \
-    | grep -c 'harness/conventions\.md'   # 1 — die Index-Datei steht in der Liste
-  sed -n '/want := \[\]string{/,/^[[:space:]]*}$/p' internal/emit/templates_test.go \
-    | grep -c 'harness/conventions/'      # 0 — das Verzeichnis daneben nicht
+  sed -n '/^func TestTemplates_EmittierterBestandVollstaendig/,/^}/p' \
+    internal/emit/templates_test.go | grep -c 'harness/conventions\.md'   # 1 — die Index-Datei
+                                                                          #     steht in der Liste
+  sed -n '/^func TestTemplates_EmittierterBestandVollstaendig/,/^}/p' \
+    internal/emit/templates_test.go | grep -c 'harness/conventions/'      # 0 — das Verzeichnis
+                                                                          #     daneben nicht
   ```
 
 - **(c)** Der Träger ist ein `.gitkeep`. Es ist leer, trägt also keinen Link und damit keinen
@@ -321,34 +365,50 @@ Verzeichnis, träfe aber die zwei Anweisungssätze nicht, die namentlich auf
 `observations/README.md` zeigen, und trüge die Unterscheidung *nichts beobachtet* gegen *nie
 geführt* nicht, die das Regelwerk als ihren Zweck nennt.
 
+**Die Träger-Frage ist damit hier entschieden, nicht in Festlegung 1.** Festlegung 1 entscheidet,
+**ob** ein Ort entsteht; **womit** er gehalten wird, sagt
+[`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) mit `.gitkeep`
+als Vorgabe. Diese Festlegung weicht davon für **einen** benannten Ort ab und begründet die
+Abweichung im Satz davor; die drei Bedingungen begründen sie nicht und könnten es nicht.
+
 **Die Datei ist keine Kopie des Dogfood-Textes.** Der hiesige Text ist repo-spezifisch (er
 zitiert Einträge des eigenen Adaptions-Blocks); emittiert wird eine generische Fassung, die die
 Ablage-Form, die Schreib-/Lese-Rollen, die Beleg-Form und die drei Ausgänge nennt und sonst
 nichts.
 
 **3. Idempotenz-Klasse: `skip-if-present`** ([ADR-0007](0007-bootstrap-phasen.md)
-Entscheidung 3). Sie ist Adopter-Boden: er schreibt sie fort, sobald sein Register lebt — dieses
-Repo hat es getan. Die Klasse folgt damit nicht aus dem Zweifels-Default, sondern positiv aus dem
-beobachteten Umgang mit derselben Datei. Ein `.gitkeep` einer Struktur-Ablage bleibt davon
-unberührt und behält seine bisherige Behandlung.
+Entscheidung 3). Sie folgt aus deren eigener Regel — *„jede emittierte Datei ist **genau einer**
+Klasse zugeordnet; im **Zweifel gilt `skip-if-present`** (nie Adopter-Inhalt clobbern — der
+sichere Default)"* —, und der Zweifel besteht, sobald ein Adopter den Text an sein Repo anpasst.
+**Aus dem Bestand wird die Klasse nicht begründet:** In diesem Repo trägt die Datei zwei Commits,
+beide aus dem Slice, der sie anlegte (`git log --oneline --follow --
+docs/plan/planning/observations/README.md` → **2** Zeilen, kein Erwartungswert), und mit dem
+Register wachsen kann sie ohnehin nicht — der Index ist verboten
+([ADR-0034](0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
+Festlegung 1). Ein `.gitkeep` einer Struktur-Ablage bleibt davon unberührt und behält seine
+bisherige Behandlung.
 
 **4. Was diese Entscheidung ausdrücklich nicht öffnet.** Sie ist ein **Kriterium**, keine
 Blankovollmacht:
 
 - Die **derivativen Index-Sichten** (ADR-Index, Carveout-Index) bleiben *Fülle-wenn-Inhalt-da*.
-  Zwei Gründe, jeder für sich tragend. **(i) Das Subjekt der Festlegung 1 ist ein Ort, nicht sein
-  Inhalt.** Bedingung (b) fragt, ob er ohne den Bootstrap entsteht — `docs/plan/adr/` und
-  `docs/plan/carveouts/` entstehen bereits, der Bootstrap hält beide mit `.gitkeep`. Ein Index
-  ist eine Datei **in** einem angelegten Ort und fällt nicht unter das Subjekt. **(ii) Derselbe
-  Absatz in [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
-  gibt ihnen ihre eigene Klassen-Regel:** *„Derivative Index-Sichten
-  (ADR-/Carveout-Index) sind Fülle-wenn-Inhalt-da — sie entstehen durch Kopieren aus der
-  Baseline, sobald der erste ADR/Carveout existiert, nicht als gate-unsichere
+  **Der tragende Grund ist die eigene Klassen-Regel desselben
+  [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)-Absatzes:**
+  *„Derivative Index-Sichten (ADR-/Carveout-Index) sind Fülle-wenn-Inhalt-da — sie entstehen durch
+  Kopieren aus der Baseline, sobald der erste ADR/Carveout existiert, nicht als gate-unsichere
   Platzhalter-Skelette bei Bootstrap."* Festlegung 1 legt die Klammer der leeren
-  Struktur-Verzeichnisse aus; sie hebt diese Regel nicht auf. **Bedingung (c) trägt den
-  Ausschluss nicht:** der Emit-Pfad nimmt jedem Markdown-Link, dessen Ziel-Pfad einen
-  `<…>`-Platzhalter trägt, die Link-Syntax, und beide Index-Vorlagen tragen genau einen solchen
-  Link und sonst keinen — ein Index-Skelett röte ein frisches `docs-check` heute nicht mehr.
+  Struktur-Verzeichnisse aus; sie hebt diese Regel nicht auf. Hinzu tritt, dass Festlegung 1 für
+  sie **gegenstandslos** ist: Sie entscheidet, ob ein **Ort** entsteht, und `docs/plan/adr/` wie
+  `docs/plan/carveouts/` entstehen bereits — der Bootstrap hält beide mit `.gitkeep`.
+
+  **Zwei Gründe tragen den Ausschluss nicht und stehen darum nicht daneben.** **(c)** trägt ihn
+  nicht: der Emit-Pfad nimmt jedem Markdown-Link, dessen Ziel-Pfad einen `<…>`-Platzhalter trägt,
+  die Link-Syntax, und beide Index-Vorlagen tragen genau einen solchen Link und sonst keinen — ein
+  Index-Skelett röte ein frisches `docs-check` heute nicht mehr. Und ein Satz der Art *„ein Index
+  ist eine Datei und fällt darum aus dem Subjekt"* trägt ihn ebenso wenig: Festlegung 2 legt einen
+  Ort gerade über eine **Datei mit Inhalt** an. Was die Fälle trennt, ist nicht Datei gegen
+  Verzeichnis, sondern ob der Ort ohne den Bootstrap entsteht — und das ist Bedingung (b), die
+  bereits dasteht.
 
   ```sh
   sed -n '/^func structureGitkeeps/,/^}/p' internal/emit/templates.go \
@@ -363,8 +423,49 @@ Blankovollmacht:
   **Keine Erwartungswerte.**
 - Das **Reconciliation-Register** des Brownfield-Rückbaus bleibt **unemittiert** (Vorlage:
   [`reconciliation.template.md`](../../../.harness/baseline/v6.0.0/templates/docs/plan/planning/reconciliation.template.md)).
-  Das Regelwerk legt es im Rückbau an, nicht im Skelett-Schritt — es scheitert an (a), weil der
-  mitemittierte Planning-Index es einem Greenfield-Repo ausdrücklich abspricht.
+  Es scheitert an (a), und der Beleg steht in derselben Quelle und derselben Form wie der von
+  `harness/conventions/`: Baseline `v6.0.0`, `grundlagen-harness-dateien.md`
+  §Verzeichniskonvention führt es mit einem **Modus-Zusatz** —
+  *„docs/plan/planning/reconciliation.md # Reconciliation-Register: nur im Brownfield-Bootstrap"*.
+  Angelegt wird es dort, wo dieser Modus läuft: Baseline `v6.0.0`,
+  `modul-02-harness-bootstrap.md` §Brownfield-Bootstrap: Schritt-Sequenz, Detail-Tabelle
+  Schritte 5–9, Schritt 8 — *„Diskrepanz-Schock: docs/plan/planning/reconciliation.md
+  anlegen"*. Der mitemittierte Planning-Index spricht es einem Greenfield-Repo zusätzlich
+  ausdrücklich ab.
+
+  ```sh
+  grep -c 'Reconciliation-Register: nur im Brownfield-Bootstrap' \
+    .harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md   # 1
+  grep -c 'docs/plan/planning/reconciliation.md` anlegen' \
+    .harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md   # 1
+  ```
+
+  **Keine Erwartungswerte.**
+- **Die zwei `done/`-Ablagen bleiben draußen, und zwar nach derselben Auswertungs-Regel.**
+  `harness/conventions/done/` steht im (a)-Beleg oben mit im Zitat (*„done/ = aufgelöst"*), und
+  die Vorlage nennt es in der Wenn-dann-Form — Baseline `v6.0.0`,
+  `templates/harness/conventions.template.md` §Adaptions-Block: *„ist ihr Auflösungs-Trigger
+  eingetreten, wandert sie per `git mv` nach `conventions/done/`"*. `docs/plan/carveouts/done/`
+  steht in der Vorlage des mitemittierten Planning-Index ebenso als Ziel eines Umzugs —
+  `templates/docs/plan/planning/README.template.md` §Slices vs. Wellen: *„Aufgelöste Carveouts
+  wandern **nicht** hierher, sondern in ihr eigenes `docs/plan/carveouts/done/`"* —, und
+  `templates/docs/plan/carveouts/carveout.template.md` §Verifikation (nach Auflösung) schaltet
+  ihre eigene Zeile mit einem Marker stumm und begründet das mit *„done/ entsteht erst bei erster
+  Carveout-Auflösung"*. Beide sind damit als **Ziel eines Umzugs** genannt, den ein frisches Repo
+  nicht hinter sich hat; (a) trägt sie nicht. Was daraus für die stehenbleibende Fundstelle im
+  Planning-Index folgt — Marker, Umformulierung oder etwas Drittes —, ist **Umsetzung** und steht
+  hier nicht.
+
+  ```sh
+  grep -c 'wandert sie per `git mv` nach' \
+    .harness/baseline/v6.0.0/templates/harness/conventions.template.md          # 1
+  grep -c 'sondern in ihr eigenes `docs/plan/carveouts/done/`' \
+    .harness/baseline/v6.0.0/templates/docs/plan/planning/README.template.md    # 1
+  grep -c 'done/ entsteht erst bei erster Carveout-Auflösung' \
+    .harness/baseline/v6.0.0/templates/docs/plan/carveouts/carveout.template.md # 1
+  ```
+
+  **Keine Erwartungswerte.**
 - **Kein Eintrag im Adaptions-Block.** Diese Entscheidung stellt Baseline-Konformität her, statt
   von ihr abzuweichen; es gibt nichts zu deklarieren
   ([`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage)).
@@ -382,14 +483,19 @@ Blankovollmacht:
 | B — die Handbuch-Linie festschreiben: Nicht-Anlage ist gewollt, dafür die drei Anweisungssätze umschreiben, bis sie den Ort nicht mehr nennen | löst die Fundstellen ohne neue emittierte Datei; das Werkzeug bleibt, wie es ist | Löst den Konflikt auf der falschen Ebene: Das mitgelieferte Regelwerk sagt weiter, dass jedes Repo mit der Ablage anfängt — es ist Teil desselben emittierten Standes ([`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)), und ein Umschreiben der Anweisungssätze macht sie nur stumm, nicht richtig. Und es verschlechtert sie: der Sichtungs- und der Lese-Schritt bekämen keine Adresse mehr |
 | C — `.gitkeep` in `observations/` statt einer `README.md` | eine Zeile in einer bestehenden Liste, keine autorierte Datei, keine Herkunfts-Frage | Trifft die zwei Fundstellen nicht, die auf `observations/README.md` zeigen, und lässt die eine Aussage weg, für die die Datei laut Regelwerk existiert. Ein `.gitkeep` sagt *hier ist ein Verzeichnis*; verlangt ist *hier wird geführt, und es ist leer* |
 | D — Change Request an [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3): Aufzählung als Menge lesen und per Version-Bump erweitern | maximale Formtreue gegenüber Rang 1; der Auftraggeber entscheidet ausdrücklich | Behandelt eine Auslegungs-Frage als Vertragsänderung und erzeugt damit eine Vertragsänderung je künftigem Struktur-Ort — dieselbe Runde, die [`AGENTS.md`](../../../AGENTS.md) §3.11 für die Adress-Klasse gerade abgeschafft hat. Und sie wäre inhaltlich falsch begründet: der CR `0.8.0` konnte `harness/conventions/` nicht ausschließen, weil es die Form erst sechs Wochen später gab |
-| **E — gewählt: Eigenschaft statt Aufzählung (drei kumulative Bedingungen) + tool-autorierte Register-`README.md` als `skip-if-present`** | Der emittierte Stand hört auf, sich selbst zu widersprechen; die Regel gilt für den nächsten Ort ohne neue Runde; sie bleibt eng, und zwar aus drei Gründen statt aus einem: die drei Bedingungen gelten kumulativ, ihr Subjekt ist ein **Ort** und nicht dessen Inhalt, und sie hebt keine der drei übrigen Klassen-Regeln desselben [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)-Absatzes auf — die derivativen Indexe behalten ihre (Festlegung 4), das Reconciliation-Register scheitert an (a); die Herkunfts-Klasse ist eine bereits geführte, nicht eine neue | Legt einen Rang-1-Satz aus, ohne dass der Auftraggeber ihn geändert hätte — wer die Aufzählung als Menge liest, sieht darin eine Vertragsdehnung. Die drei Bedingungen sind **Urteil**, nicht Muster: kein Sensor prüft (a), und wer *„nennt ihn im Indikativ"* weit auslegt, kann den Bestand ausdehnen. Und die emittierte `README.md` ist eine zweite Fassung einer Aussage des Regelwerks — sie kann gegen `modul-06-roadmap.md` driften, ohne dass etwas rot wird |
+| **E — gewählt: Eigenschaft statt Aufzählung (drei kumulative Bedingungen) + tool-autorierte Register-`README.md` als `skip-if-present`** | Der emittierte Stand hört auf, sich selbst zu widersprechen; die Regel gilt für den nächsten Ort ohne neue Runde; sie bleibt eng, und zwar aus drei Gründen statt aus einem: die drei Bedingungen gelten kumulativ, (a) wird nach einer **geschriebenen** Auswertungs-Regel gemessen (unbedingte Nennung), und sie hebt keine der drei übrigen Klassen-Regeln desselben [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)-Absatzes auf — die derivativen Indexe behalten ihre (Festlegung 4), das Reconciliation-Register und die zwei `done/`-Ablagen scheitern an (a); die Herkunfts-Klasse ist eine bereits geführte, nicht eine neue | Legt einen Rang-1-Satz aus, ohne dass der Auftraggeber ihn geändert hätte — wer die Aufzählung als Menge liest, sieht darin eine Vertragsdehnung. Die drei Bedingungen sind **Urteil**, nicht Muster: kein Sensor prüft (a), und wer *„nennt ihn im Indikativ"* weit auslegt, kann den Bestand ausdehnen. Sie entscheiden zudem nur das *Ob* eines Ortes — welcher **Träger** ihn hält, bleibt eine zweite Frage, die sie nicht beantworten (Festlegung 2 beantwortet sie für ihren einen Fall eigens). Und die emittierte `README.md` ist eine zweite Fassung einer Aussage des Regelwerks — sie kann gegen `modul-06-roadmap.md` driften, ohne dass etwas rot wird |
 
 ## Konsequenzen
 
 - **Positiv:** Ein frisch gebootstrapptes Repo trägt die Orte, die sein eigener mitgelieferter
   Text nennt. Der Adopter, der `/plan-welle` folgt, findet, wohin er geschickt wird.
-- **Positiv:** Die Frage ist als **Kriterium** entschieden, nicht als Einzelfall — der nächste
-  Ort derselben Klasse braucht keine eigene Runde, sondern nur die drei Bedingungen.
+- **Positiv, mit benannter Grenze:** Die Frage ist als **Kriterium** entschieden, nicht als
+  Einzelfall — *ob* der nächste Ort derselben Klasse aufzunehmen ist, beantworten die drei
+  Bedingungen samt der Auswertungs-Regel zu (a), ohne eigene Runde. **Was sie nicht beantworten,
+  ist der Träger:** Vorgabe bleibt das `.gitkeep` aus
+  [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), und eine
+  Abweichung davon — wie sie Festlegung 2 für **einen** Ort trifft — ist eine eigene Frage mit
+  eigener Begründung. Für die spart dieses Kriterium keine Runde.
 - **Positiv:** Der Zweck von
   [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) —
   *out-of-the-box gate-sicher* — wird für ein Ziel mit aktivem `codepaths` überhaupt erst
@@ -397,7 +503,8 @@ Blankovollmacht:
   Modul-Liste anfasst (`slice-073`).
 - **Negativ:** Festlegung 1 hat **keinen Sensor** und kann keinen bekommen — Bedingung (a) ist
   ein Urteil über einen Text, kein Muster. Die Schranke gegen eine ausufernde Anwendung ist
-  prozessual: die drei Bedingungen gelten kumulativ, und der Reviewer prüft sie.
+  prozessual: die drei Bedingungen gelten kumulativ, die Auswertungs-Regel zu (a) steht
+  geschrieben, und der Reviewer prüft beides.
 - **Negativ:** Die emittierte Register-`README.md` ist eine **zweite Fassung** einer Aussage, die
   im mitemittierten `modul-06-roadmap.md` bereits steht. Sie kann gegen den vendored Baum
   driften, wenn ein Baseline-Sprung die Ablage-Form ändert, und kein Gate hält die zwei zusammen.
@@ -445,6 +552,9 @@ Deckung, die kein Lauf prüft, wird nicht als vorhanden verbucht).
 - **Wenn der vendored Baum eine Vorlage für die Register-`README.md` bekommt** *(am Baum
   ablesbar)*: dann fällt der Grund für die Tool-Autorierung, und die Datei wird gestempelt wie
   jedes andere Singleton.
+- **Wenn ein Baseline-Sprung eine der zwei `done/`-Ablagen oder das Reconciliation-Register
+  **unbedingt** führt** *(am vendored Baum ablesbar)*: dann trägt (a) für sie, und die Ausschlüsse
+  in Festlegung 4 sind neu zu messen — nicht stillschweigend beizubehalten.
 - **Wenn `codepaths` im emittierten Ziel aktiviert wird** *(an der emittierten Modul-Liste
   ablesbar)*: dann wird die zweite nicht gebaute Deckung oben messbar, und die
   Fitness-Function-Tabelle ist um sie zu ergänzen.
@@ -457,8 +567,9 @@ Deckung, die kein Lauf prüft, wird nicht als vorhanden verbucht).
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-09-06 | **Proposed** | Architect-Lauf zu zwei Fragen aus `slice-190`: der **Change-Request-Frage** aus §3 — sie ist die eine Bedingung, die §4 für `open → next` neben dem WIP-Limit nennt — und dem **Register-Ort** aus §6, den derselbe Plan als *„Entscheidung des Architect, kein Code-Zug"* führt. Welche Risiken §6 mit welchem Ausgang schließt, sagt diese Datei nicht (Folgepflicht 3). Anlass ist die vom Emitter selbst benannte Grenze (*„Ob einer dazukommt, entscheidet der Architect"*) und die Klasse [`BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger`](../planning/observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/observation.md), deren abgeleiteter Zähler am 2026-09-06 bei `ls docs/plan/planning/observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/evidence/*.md \| wc -l` → **2** steht — **kein Erwartungswert** ([`MR-051`](../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung) Setzung 2); der Beleg für diesen Vorgang fällt mit der Slice-Closure, nicht mit dieser Datei ([`AGENTS.md`](../../../AGENTS.md) §3.10). Geprüft und als nicht tragend verworfen sind die zwei möglichen Gegen-Gründe [ADR-0007](0007-bootstrap-phasen.md) und [ADR-0034](0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md); die Aufzählungs-Frage ist an drei Messungen entschieden, nicht an der Lesart |
-| 2026-09-06 | Überarbeitet, weiter **Proposed** | Reviewer-Runde `2026-09-06-adr-0037-konsistenz-review.md`, Verdikt *Konsistenz NICHT BESTÄTIGT* — **ohne Einwand gegen die Entscheidung selbst**: alle elf abgedruckten Kommandos reproduzieren, beide Kern-Argumentationen halten dem Volltext stand, und die zwei Gegenbeispiele fallen nicht unter die Eigenschaft. Die **fünf** blockierenden MEDIUM sind im `Proposed`-Fenster behoben, jede Zahl dieser Runde neu gefahren. **M-1:** Der Ausschluss der derivativen Indexe hing an Bedingung (c); der Emit-Pfad nimmt jedem Link mit `<…>` im Ziel-Pfad die Link-Syntax (`NeutralizePlaceholderLinks`), und beide Index-Vorlagen tragen genau einen solchen Link — (c) trägt nicht. Festlegung 4 steht jetzt auf zwei gemessenen Gründen (Subjekt-Grenze *Ort statt Inhalt*; die eigene Klassen-Regel desselben [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)-Absatzes), und die Enge-Zusage von Alternative E nennt dieselben. **M-2:** Die Antwort auf die zweite Frage nannte für keine der drei Bedingungen eine Fundstelle; sie stehen jetzt einzeln, mit Kommando, Regelwerks-Zitat nach [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) Festlegung 2 und einer Gegenprobe, die die Null von (b) gegen einen leeren Ausschnitt absichert. **M-3:** *„die zwei Struktur-Aufzählungen"* bestimmte keine Menge — der Absatz trägt **vier** Klassen-Klammern; ausgelegt wird genau eine, die der leeren Struktur-Verzeichnisse, und für die drei übrigen steht, warum sie unberührt bleiben. Titel, Abschnittsüberschrift, Entscheidungssatz und der ADR-Index sind auf den Singular nachgezogen. **M-4:** Die Zeile darüber beschrieb den Anlass als *zwei offene Risiken, die den Trigger sperren*; gemessen nennt §4 **eine** Bedingung für `open → next` neben dem WIP-Limit, und §6 trug am 2026-09-06 **sechs** Risiken ohne Ausgang (`sed -n '/^## 6\./,/^## 7\./p' docs/plan/planning/*/slice-190-*.md \| grep -c 'Ausgang:\*\* <offen>'` → **6**, kein Erwartungswert; der Glob statt der Pfad-Adresse nach [`AGENTS.md`](../../../AGENTS.md) §3.11). Sie nennt jetzt die zwei beantworteten Fragen und keine Zahl über fremden Stand. **M-5:** Beide Messwerte tragen ihr Kommando — die Lifecycle-Zahl in beiden Lesarten (vier Ebenen im Regelwerk, drei `.gitkeep` im Emitter) und der Register-Zähler mit Stand, Ableitungs-Kommando und *kein Erwartungswert*; [`MR-051`](../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung) steht dafür jetzt im `Bezug`. **L-1 bis L-4 und INFO-1 bis INFO-3 sind hier nicht behoben** — jene Runde führt keinen von ihnen als blockierend; INFO-1 ist als Nebenwirkung von M-5 mitgezogen, weil sein Kommando ohnehin neu gefahren wurde und jetzt `cmd/` mitliest. Der Statuswechsel bleibt offen: eine zweite Runde prüft diese Korrektur |
+| 2026-09-06 | **Proposed** | Architect-Lauf zu zwei Fragen aus `slice-190`: der **Change-Request-Frage** aus §3 — die §4 am 2026-09-06 neben dem WIP-Limit als Bedingung für `open → next` führte — und dem **Register-Ort** aus §6, den derselbe Plan als *„Entscheidung des Architect, kein Code-Zug"* führt. Welche Risiken §6 mit welchem Ausgang schließt, sagt diese Datei nicht (Folgepflicht 3). Anlass ist die vom Emitter selbst benannte Grenze (*„Ob einer dazukommt, entscheidet der Architect"*) und die Klasse [`BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger`](../planning/observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/observation.md), deren abgeleiteter Zähler am 2026-09-06 bei `ls docs/plan/planning/observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/evidence/*.md \| wc -l` → **2** steht — **kein Erwartungswert** ([`MR-051`](../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung) Setzung 2); der Beleg für diesen Vorgang fällt mit der Slice-Closure, nicht mit dieser Datei ([`AGENTS.md`](../../../AGENTS.md) §3.10). Geprüft und als nicht tragend verworfen sind die zwei möglichen Gegen-Gründe [ADR-0007](0007-bootstrap-phasen.md) und [ADR-0034](0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md); die Aufzählungs-Frage ist an drei Messungen entschieden, nicht an der Lesart |
+| 2026-09-06 | Überarbeitet, weiter **Proposed** | Reviewer-Runde `2026-09-06-adr-0037-konsistenz-review.md`, Verdikt *Konsistenz NICHT BESTÄTIGT* — **ohne Einwand gegen die Entscheidung selbst**: alle elf abgedruckten Kommandos reproduzieren, beide Kern-Argumentationen halten dem Volltext stand, und die zwei Gegenbeispiele fallen nicht unter die Eigenschaft. Die **fünf** blockierenden MEDIUM sind im `Proposed`-Fenster behoben, jede Zahl dieser Runde neu gefahren. **M-1:** Der Ausschluss der derivativen Indexe hing an Bedingung (c); der Emit-Pfad nimmt jedem Link mit `<…>` im Ziel-Pfad die Link-Syntax (`NeutralizePlaceholderLinks`), und beide Index-Vorlagen tragen genau einen solchen Link — (c) trägt nicht. Festlegung 4 stand damit auf zwei gemessenen Gründen (Subjekt-Grenze *Ort statt Inhalt*; die eigene Klassen-Regel desselben [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)-Absatzes), und die Enge-Zusage von Alternative E nannte dieselben. **M-2:** Die Antwort auf die zweite Frage nannte für keine der drei Bedingungen eine Fundstelle; sie stehen jetzt einzeln, mit Kommando, Regelwerks-Zitat nach [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) Festlegung 2 und einer Gegenprobe, die die Null von (b) gegen einen leeren Ausschnitt absichert. **M-3:** *„die zwei Struktur-Aufzählungen"* bestimmte keine Menge — der Absatz trägt **vier** Klassen-Klammern; ausgelegt wird genau eine, die der leeren Struktur-Verzeichnisse, und für die drei übrigen steht, warum sie unberührt bleiben. Titel, Abschnittsüberschrift, Entscheidungssatz und der ADR-Index sind auf den Singular nachgezogen. **M-4:** Die Zeile darüber beschrieb den Anlass als *zwei offene Risiken, die den Trigger sperren*; gemessen führte §4 am 2026-09-06 neben dem WIP-Limit die Change-Request-Frage aus §3, und §6 trug am selben Tag **sechs** Risiken ohne Ausgang (`sed -n '/^## 6\./,/^## 7\./p' docs/plan/planning/*/slice-190-*.md \| grep -c 'Ausgang:\*\* <offen>'` → **6**, kein Erwartungswert; der Glob statt der Pfad-Adresse nach [`AGENTS.md`](../../../AGENTS.md) §3.11). Sie nennt jetzt die zwei beantworteten Fragen und keine Zahl über fremden Stand. **M-5:** Beide Messwerte tragen ihr Kommando — die Lifecycle-Zahl in beiden Lesarten (vier Ebenen im Regelwerk, drei `.gitkeep` im Emitter) und der Register-Zähler mit Stand, Ableitungs-Kommando und *kein Erwartungswert*; [`MR-051`](../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung) steht dafür jetzt im `Bezug`. **L-1 bis L-4 sowie INFO-2 und INFO-3 sind hier nicht behoben** — jene Runde führt keinen von ihnen als blockierend; **INFO-1 ist mitgezogen**, weil sein Kommando ohnehin neu gefahren wurde und jetzt `cmd/` mitliest. Der Statuswechsel bleibt offen: eine zweite Runde prüft diese Korrektur |
+| 2026-09-06 | Überarbeitet, weiter **Proposed** | Reviewer-Runde `2026-09-06-adr-0037-konsistenz-review-runde-2.md`, Verdikt *Konsistenz NICHT BESTÄTIGT* — die fünf MEDIUM der Vorrunde sind am Ist-Stand als behoben nachgemessen, alle 23 abgedruckten Kommandos reproduzieren, und gegen die Entscheidung selbst steht weiterhin **kein** Befund. Behoben sind hier **beide** blockierenden MEDIUM **und jeder übrige Posten**; maßgeblich war je die bindende Quelle, nicht das Severity-Label. **M-1:** Die Aussage über das Reconciliation-Register trägt jetzt die Form aus [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) Festlegung 2 — Tag, Regelwerks-Datei, Abschnitt, Zitat —, die deren Träger (a) zur Vorbedingung des `Accepted`-Übergangs macht; der Posten stand seit Runde 1 als L-3 und war allein wegen des Labels liegen geblieben. **M-2:** Der Grund *„ein Index ist eine Datei in einem angelegten Ort"* ist **gestrichen** — symmetrisch angewandt hätte er Festlegung 2s eigenen Gegenstand ausgeschlossen, deren Träger eine Datei mit Inhalt ist. Den Ausschluss der derivativen Indexe trägt jetzt allein die Klassen-Regel desselben [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)-Absatzes; daneben steht, dass Festlegung 1 für sie gegenstandslos ist, und dass sie nur das *Ob* eines Ortes entscheidet, nicht seinen Träger. Konsequenz 2, Festlegung 2 und die Contra-Zelle von Alternative E nennen diese Grenze. **L-1, L-3 und Runde-1-L-4:** Die Auswertungs-Regel zu (a) steht jetzt geschrieben — eine Nennung mit Modus- oder Bedingungs-Zusatz führt den Ort nicht für ein frisches Repo, und die Disjunktion eröffnet zwei Quellen, nicht zwei Maßstäbe. Nach ihr bleiben `harness/conventions/done/` und `docs/plan/carveouts/done/` draußen, je mit Zitat und Kommando; die Umsetzungs-Frage zur stehenbleibenden Fundstelle bleibt beim Slice. **L-2:** Die zweite Aussage über den fremden Plan-Stand ist datiert und trägt keine Zahl mehr, in beiden Geschichte-Zeilen. **Runde-1-L-1:** Festlegung 3 begründet die Idempotenz-Klasse aus der Zweifels-Regel von [ADR-0007](0007-bootstrap-phasen.md) statt aus dem Bestand. **Runde-1-L-2:** §Kontext und §Konsequenzen weisen den Handbuch-Nachzug jetzt gleich zu. **INFO-1** (Beleg-Kommando auf die Funktion des Mengen-Vergleichs verengt), **INFO-2** (Abschnittsname und Rumpf-Lage der Vorlagen-Hälfte), **INFO-3** (was *„unberührt"* heißt, mit Messung an der Singleton-Klammer), **INFO-4** (die widersprüchliche Halbaussage über INFO-1) und **INFO-5** (Zitat-Reihenfolge der zwei Emitter-Absätze; `Bezug` um [ADR-0016](0016-verweis-traegt-tag-und-zitat.md), [`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) und [`MR-036`](../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline) ergänzt, [ADR-0005](0005-ziel-repo-distribution.md) im Rumpf verankert) sind mitgezogen. Ein sechster Re-Evaluierungs-Trigger fängt den Fall, dass ein Baseline-Sprung einen der drei ausgeschlossenen Orte unbedingt führt. **Aus diesem Report bleibt nichts offen.** Der Statuswechsel bleibt es: er braucht eine Runde mit tragendem Verdikt. Das wiederkehrende Muster beider Runden — *das Kriterium verspricht eine Reichweite, die sein geschriebener Text nicht hat*, dritte Wiederholung — ist als Steering-Loop-Signal benannt; seine Register-Zuordnung fällt bei der Slice-Closure, nicht hier ([`AGENTS.md`](../../../AGENTS.md) §3.10) |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
