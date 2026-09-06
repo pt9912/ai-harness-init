@@ -76,7 +76,7 @@ Beobachtungs-Register"*. Das Beobachtungs-Register entsteht dort nicht — die
 Zeile behauptet einen Ort, den kein Emissions-Pfad anlegt, und weil sie kein
 Verzeichnis einzeln nennt, fällt das beim Lesen nicht auf. Dasselbe gilt für
 `harness/conventions/` und `docs/plan/carveouts/done/`, die
-[slice-190](slice-190-bootstrap-legt-die-versprochenen-orte-an.md) nachträgt.
+[slice-190](../next/slice-190-bootstrap-legt-die-versprochenen-orte-an.md) nachträgt.
 
 **Die zweite Instanz derselben Klasse ist keine Zeile, sondern eine ganze Fähigkeit.** Das Handbuch
 beschreibt den Ist-Zustand des Werkzeugs; über
@@ -171,7 +171,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [ ] **(3) Die Aussage über den Register-Ort ist mit dem Bestand in
   Übereinstimmung.** Die `docs/plan/`-Zeile nennt heute das
   Beobachtungs-Register als Inhalt; ob der Ort entsteht, entscheidet das Risiko
-  aus [slice-190](slice-190-bootstrap-legt-die-versprochenen-orte-an.md) §6.
+  aus [slice-190](../next/slice-190-bootstrap-legt-die-versprochenen-orte-an.md) §6.
   **Dieser Slice erfindet die Entscheidung nicht** — er schreibt den Baum so,
   wie der Bestand zum Zeitpunkt der Umsetzung ist, und der Wächter aus (2) hält
   ihn danach unabhängig davon, wie sie ausfällt.
@@ -192,7 +192,7 @@ Aussagen-Berührung steht hier gar nicht.
 | [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) §6 | update | DoD (1) und (3) — der vollständige Baum für beide Phasen |
 | ein Wächter über der Pfad-Menge (Ort offen: Go-Test neben `templates_test.go` oder bats-Fall) | neu | DoD (2); der Ort folgt aus der Frage, welche Quelle die Menge liefert, und die steht in Go |
 | `test/mutations/` | neu | der kuratierte Fall zum Wächter aus DoD (2) |
-| `internal/emit/` | **unverändert** | der Generator ist nicht Gegenstand; wer hier etwas ändert, ist in [slice-190](slice-190-bootstrap-legt-die-versprochenen-orte-an.md) |
+| `internal/emit/` | **unverändert** | der Generator ist nicht Gegenstand; wer hier etwas ändert, ist in [slice-190](../next/slice-190-bootstrap-legt-die-versprochenen-orte-an.md) |
 | [`harness/README.md`](../../../../harness/README.md) §Sensors | update **falls** der Wächter ein `make`-Ziel bekommt | ein genanntes Ziel muss existieren ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)); hängt er in `make test`, entfällt der Eintrag |
 
 **Was die Umsetzung zuerst entscheidet** (Modul 9 §4): **welche Quelle die
@@ -235,7 +235,7 @@ halten soll — wer eine wählt, benennt in DoD (2), wie ihre eigene Vollständi
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**`open` → `next`:** [slice-190](slice-190-bootstrap-legt-die-versprochenen-orte-an.md)
+**`open` → `next`:** [slice-190](../next/slice-190-bootstrap-legt-die-versprochenen-orte-an.md)
 liegt in `done/`. **Kein Zwang, sondern Ökonomie:** slice-190 bewegt die
 Soll-Menge, und ein Baum, der davor geschrieben wird, ist beim Merge von
 slice-190 wieder alt. Läuft dieser Slice zuerst, färbt sein eigener Wächter aus
@@ -323,12 +323,12 @@ dasteht.
   **Ausgang:** <offen>
 - **Die Register-Zeile hängt an einer fremden Entscheidung.** DoD (3) schreibt
   den Bestand zum Zeitpunkt der Umsetzung; fällt die Entscheidung aus
-  [slice-190](slice-190-bootstrap-legt-die-versprochenen-orte-an.md) §6 **nach**
+  [slice-190](../next/slice-190-bootstrap-legt-die-versprochenen-orte-an.md) §6 **nach**
   diesem Slice, ändert sich der Baum noch einmal. Der Wächter aus DoD (2) fängt
   das — er wird dann rot, und das ist der gewollte Ausgang, nicht ein Fehler
   dieses Slice. — **Ausgang:** <offen>
 - **Nicht in diesem Slice:** der Generator selbst
-  ([slice-190](slice-190-bootstrap-legt-die-versprochenen-orte-an.md)), die
+  ([slice-190](../next/slice-190-bootstrap-legt-die-versprochenen-orte-an.md)), die
   emittierte Modul-Liste
   ([slice-073](slice-073-emittierte-doc-gate-module.md)), **die Erklärung der Erfassungsschicht —
   *was* erfasst wird, wie ein Adopter es ausliest oder abschaltet, und die zwei `make`-Ziele
