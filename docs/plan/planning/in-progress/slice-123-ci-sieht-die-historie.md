@@ -98,11 +98,9 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
 - [ ] **(2) Die Checkouts, die Historie brauchen, tragen `fetch-depth: 0`, und die anderen nicht —
       mit der Begründung neben der Zeile.** Entschieden und aufgeschrieben ist, **welche** der
       sieben `actions/checkout`-Stellen betroffen sind und warum die übrigen bei Tiefe 1 bleiben.
-      **Rot:** `make ci-lint` fällt bei fehlerhafter Workflow-Syntax. Für die Zuordnung selbst gibt
-      es heute **keinen realen CI-Rot-Nachweis** — kein Job ruft `history-range-guard` auf
-      (`grep -rn 'run:.*history-range-guard' .github/workflows/` → 0, §6 Risiken); ihr Nachweis ist
-      der **konstruierte** flache Klon aus Punkt (1), nicht ein echter CI-Lauf, der einen
-      history-lesenden Schritt ohne `fetch-depth: 0` tatsächlich fallen lässt.
+      **Rot:** `make ci-lint` fällt bei fehlerhafter Workflow-Syntax; und die Zuordnung selbst ist
+      rot, wenn ein Job mit einem history-lesenden Schritt ohne `fetch-depth: 0` bleibt — genau der
+      Fall, den Punkt (1) dann in CI sichtbar macht.
 - [ ] **(3) Der Wächter hat seinen Zahn.** Ein `test/mutations/`-Fall entfernt die Tiefen-Prüfung
       und färbt den benannten Test rot.
       **Rot:** `make mutate` meldet **BEFUND** auf genau diesen Fall, solange der Zahn nicht die
@@ -175,6 +173,13 @@ Befund, Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   `internal/emit/templates/commands/implement-slice.md` (sachlich richtig) ist im Diff dennoch
   enthalten. Die Frage bleibt für den Architect offen und wird hier nicht durch eine weitere
   Implementer-Auslegung entschieden.
+- **DoD (2) sagt einen Rot-Nachweis zu, den es heute nicht gibt.** Kein Job ruft
+  `history-range-guard` auf (`grep -rn 'run:.*history-range-guard' .github/workflows/` → 0); der
+  einzige heute vorliegende Rot-Nachweis für die Zuordnung ist der **konstruierte** flache Klon aus
+  Punkt (1), kein echter CI-Lauf, der einen history-lesenden Schritt ohne `fetch-depth: 0`
+  tatsächlich fallen lässt. Die DoD-Klausel selbst bleibt unverändert stehen ([`AGENTS.md`](../../../../AGENTS.md)
+  §3.10: die ausführende Rolle schreibt ihr eigenes Abnahmekriterium nicht um) — die Präzisierung
+  ist Sache des Planners.
 
 ## 7. Closure-Notiz (nach `done/`)
 
