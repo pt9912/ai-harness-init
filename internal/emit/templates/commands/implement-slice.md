@@ -112,27 +112,35 @@ ist eine Lifecycle-Rücksprungkante (11).
     ist, gehört sie in den Mutations-Sensor deines Repos (falls vorhanden); wo sie einmalig ist, in
     den Bericht. **Keine Antwort ist ein Befund**, kein Formfehler — die Klasse „Zusage greift
     weiter als Abdeckung" ist in der Praxis teuer erkauft.
+20. **Jeden in diesem Lauf neu geschriebenen oder geänderten Kommentar gegen `AGENTS.md` §3.7
+    prüfen** (Code, Konfiguration, Skripte). Die Probe: beschreibt der Satz den **Ist-Zustand**
+    (indikativ, auflösbar), oder trägt er eine Slice-Nummer als Begründung, ein „(… , entschieden)"
+    ohne Anker-Form, oder einen Konjunktiv über eine verworfene Alternative bzw. eine noch nicht
+    existierende künftige Änderung (**„sobald Slice X das tut …"**)? Herkunft steht nur als **ein**
+    auflösbares Feld in den dort genannten Formen (`LH-*`, `ADR-*`, `· seit welle-<NN>`, wellenlos
+    `· seit slice-<NNN>`) — alles andere ist Zustand, keine Chronik, und wird vor der Übergabe
+    umformuliert statt mitgeschleift.
 
 Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontexten** (Modul 8).
 
 ## Übergaben an nachgelagerte Rollen (Modul 8 → 10 → 11)
 
-20. **→ Reviewer (Code-Review, Modul 10):** den Diff + Plan-Verweis an einen **unabhängigen**
+21. **→ Reviewer (Code-Review, Modul 10):** den Diff + Plan-Verweis an einen **unabhängigen**
     Reviewer übergeben (`.harness/skills/reviewer.md`, frischer Kontext — kein Selbst-Review). Er
     kategorisiert Findings (HIGH/MEDIUM/LOW/INFO) in einen Report unter `docs/reviews/` und prüft
     den Diff gegen **Plan + ADR + Hard Rules** (nicht die DoD). HIGH/MEDIUM auflösen; ein HIGH mit
     Rollen-Konflikt folgt Modul 8 §Konflikt-Pfad (Sequenz mit Übergabe-Artefakten, nie
     „herabstufen, weil der Implementer widerspricht").
-21. **→ Verifier (Modul 11):** in getrenntem Kontext die DoD-/Spec-Behauptung und den
+22. **→ Verifier (Modul 11):** in getrenntem Kontext die DoD-/Spec-Behauptung und den
     Plan-vs-Code-Diff **bestätigen**, dazu ADR-Konformität. Das fängt, was Tests übersehen und der
     Reviewer nicht sieht (DoD-Verletzung).
-22. **→ Validator (Modul 8):** falls der Slice End-Nutzer-Wert liefert, gegen den realen Bedarf
+23. **→ Validator (Modul 8):** falls der Slice End-Nutzer-Wert liefert, gegen den realen Bedarf
     validieren („das Richtige bauen"). Meist n/a bei interner Wartung — dann explizit sagen statt
     still überspringen.
 
 ## Closure — Planner-Rolle (Modul 8 + Modul 5)
 
-23. Erst wenn der Review konform **und** die Verifikation die DoD bestätigt hat, schließt der
+24. Erst wenn der Review konform **und** die Verifikation die DoD bestätigt hat, schließt der
     **Planner**: die Closure-Notiz mit einem **Steering-Loop-Eintrag** schreiben (geschärfte Regel ·
     neuer Sensor · benannte Spec-Lücke — Modul 5: der `→ done`-Übergang verlangt einen Lerneintrag,
     nicht nur grüne Gates), dann den Slice `in-progress → done` verschieben (`git mv`, eigener
@@ -142,7 +150,7 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
     Folge-Slice mit ID · *entfallen* → gestrichen **mit Begründung** · *weiter offen* → wandert ins
     Beobachtungs-Register (Schritt 24). Ein Slice geht nicht nach `done/`, während ein Risiko ohne
     Ausgang dasteht.
-24. **Das Beobachtungs-Register fortschreiben** (`docs/plan/planning/observations/`, Modul 6) —
+25. **Das Beobachtungs-Register fortschreiben** (`docs/plan/planning/observations/`, Modul 6) —
     der **Schreib**-Schritt, und er hängt an der Closure, nicht an der Implementation. Für jede
     Beobachtung aus der Closure-Notiz: führt das Register die Klasse schon, dann die vorhandene
     Kennung `BEO-<KUERZEL>/<slug>` **zitieren** und eine weitere Datei in ihrem `evidence/` anlegen
