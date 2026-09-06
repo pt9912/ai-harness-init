@@ -4,8 +4,10 @@
 # wenn `heading` auf eine im Dokument fehlende Ueberschrift zeigt (Grund-Code planning-drift) —
 # dieser Waechter haelt dieselbe Kopplung ohne einen Docker-Lauf. Eine Ueberschrift, die zwar
 # existiert, aber nie den Ruhe-Marker traegt und die Invariante darum trivial machen wuerde, bleibt
-# fuer `docs-check` unsichtbar und ist Gegenstand des Review, nicht dieses Waechters. Was das Modul
-# damit deckt und was nicht (die `waves`-Faehigkeit bleibt aus), steht in harness/README.md.
+# fuer `docs-check` unsichtbar; dieser Waechter faengt sie ueber den exakten heading-Wert ab
+# (Zusicherung unten, gepinnt von test/mutations/272-planning-heading-auf-marker-lose-sektion.sh).
+# Was das Modul damit deckt und was nicht (die `waves`-Faehigkeit bleibt aus), steht in
+# harness/README.md.
 #
 # NETZLOS (nur Datei-Lesen), laeuft in `make gates` ueber `make test` -> `test-bats`.
 
