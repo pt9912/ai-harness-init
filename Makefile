@@ -33,7 +33,7 @@ BASELINE_TAG ?= v6.0.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= ed617e382560793ddd805650a7a0e1e421d68d4fff81253da240a9d47a2e654a
 
-.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle
+.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims history-range-guard host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -146,6 +146,22 @@ comment-claims: ## Kommentar-Behauptungen nennen ihren Sensor (AGENTS.md 3.6) �
 # das `file:line:col:`-Praefix.
 ci-lint: ## GitHub-Actions-Workflows linten (actionlint) im gepinnten Image — Docker-only, IN gates
 	docker run --rm -v "$(CURDIR)":/repo:ro -w /repo $(ACTIONLINT_IMAGE)
+
+# Vorlauf-Waechter fuer history-lesende d-check-Module (`vcs`/`commits`, Targets
+# `doc-immutable`/`doc-commits` in d-check.mk): prueft VOR dem Modul-Lauf, dass
+# RANGE git-seitig aufloesbar UND NICHT LEER ist — sonst meldet ein history-
+# lesender Job auf einem flachen Klon "0 Befund(e)", Exit 0, obwohl keine
+# Historie zur Verfuegung stand (MR-007 Setzung 3: "blind und gruen").
+# Hermetisch, kein Docker, kein Netz. NICHT in gates: kein hiesiger CI-Job
+# ruft heute `doc-immutable`/`doc-commits` (s. .github/workflows/ci.yml Kopf)
+# — ein Job, dessen Schritt Historie liest, ruft dieses Ziel vor seinem
+# `doc-immutable`/`doc-commits`-Aufruf. STAGED=1 reicht `--staged` durch
+# (Vergleich gegen den Index braucht keine Tiefe > 1). Die Logik liegt in
+# harness/tools/, damit shell-lint sie deckt und test/history-range-guard.bats
+# den reinen `decide()`-Teil ohne git pruefen kann (das gepinnte bats-Image
+# fuehrt kein `git`, s. harness/tools/slice-mv.sh Kopf).
+history-range-guard: ## Historie-Vorlauf-Waechter: RANGE muss aufloesbar UND nicht leer sein — NICHT in gates
+	@bash harness/tools/history-range-guard.sh "$(if $(STAGED),--staged,$(RANGE))"
 
 # Verifiziert die vendored Baseline netzlos, in zwei Schritten: `sha256sum -c`
 # über SHA256SUMS fängt geänderte und gelöschte Dateien, ein Vollständigkeits-
