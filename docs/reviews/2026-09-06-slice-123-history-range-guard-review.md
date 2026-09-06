@@ -15,7 +15,7 @@
 **Eingangs-Kontext** (die Verträge, gegen die geprüft wurde — ohne
 diese Liste ist der Lauf nicht reproduzierbar):
 
-- Slice-Plan [`slice-123`](../plan/planning/in-progress/slice-123-ci-sieht-die-historie.md)
+- Slice-Plan [`slice-123`](../plan/planning/done/slice-123-ci-sieht-die-historie.md)
   (§1 Anlass-Messung · §2 DoD (1)–(3) · §3 Plan-Tabelle · §4 Rückführungen · §6 Risiken)
 - Aktive ADRs: [`ADR-0028`](../plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
   (vom Implementer für die zwei `implement-slice.md` in Anspruch genommen),

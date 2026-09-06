@@ -7,7 +7,7 @@ wechselt nur durch `git mv`, siehe
 
 **Welle:** [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) — Achse (2) des Roadmap-Kandidaten
 *Regeln ohne Feedback-Quadrant schließen*. **Hängt an
-[slice-123](../in-progress/slice-123-ci-sieht-die-historie.md)**: das Modul liest eine Commit-Range.
+[slice-123](../done/slice-123-ci-sieht-die-historie.md)**: das Modul liest eine Commit-Range.
 
 **Ebene: Dogfood, nicht emittiert.** Gegenstand sind die ADRs **dieses** Repos
 ([`docs/plan/adr/`](../../adr/)). Was ein emittiertes Repo an Immutabilitäts-Prüfung bekommt,
@@ -130,7 +130,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       bleiben. Wird er rot, blockiert der Gate genau die Korrektur-Form, die
       [`AGENTS.md`](../../../../AGENTS.md) §3.4 vorschreibt.
 - [ ] **(3) Der Lauf fällt, wenn seine Range nichts hergibt — statt grün zu melden.** Die Kopplung
-      an [slice-123](../in-progress/slice-123-ci-sieht-die-historie.md) ist hergestellt und einmal gesehen. **Die
+      an [slice-123](../done/slice-123-ci-sieht-die-historie.md) ist hergestellt und einmal gesehen. **Die
       unauflösbare Range ist dabei nicht der Fall, der zählt:** sie bricht schon heute fail-closed
       ab (`--range HEAD~1..HEAD` in einem Klon der Tiefe 1 → `d-check: error: Range-Basis "HEAD~1"
       nicht auflösbar: object not found`, Exit 2). Der gefährliche Fall ist die **auflösbare, aber
@@ -149,7 +149,7 @@ Steering-Loop-Lerneintrag.
 |---|---|---|
 | [`.d-check.yml`](../../../../.d-check.yml) | update | der `vcs:`-Block (`paths`, `immutable-when`, `exclude-sections`, `status-line`, `head-allow`). **`vcs` gehört NICHT in `modules:`** — es braucht eine Range und liefe im hermetischen `docs-check` ins Leere |
 | [`Makefile`](../../../../Makefile) | update | das Ziel, das den Range-Lauf fährt; wird es behauptet, zieht [`AGENTS.md`](../../../../AGENTS.md) §4 mit |
-| [`.github/workflows/ci.yml`](../../../../.github/workflows/ci.yml) | update | der Schritt, der das Ziel über die PR-Range fährt — mit der Tiefe aus [slice-123](../in-progress/slice-123-ci-sieht-die-historie.md) |
+| [`.github/workflows/ci.yml`](../../../../.github/workflows/ci.yml) | update | der Schritt, der das Ziel über die PR-Range fährt — mit der Tiefe aus [slice-123](../done/slice-123-ci-sieht-die-historie.md) |
 | [`docs/plan/adr/`](../../adr/) | **prüfen, nicht ändern** | Kopfzeilen-Form und Abschnitts-Namen des Bestands entscheiden die Muster in DoD (2). Eine ADR anzupassen, damit der Sensor grün wird, wäre der Verstoß gegen die Regel, die er bewacht ([`AGENTS.md`](../../../../AGENTS.md) §3.4) |
 | `test/` | neu | die Fälle zu DoD (1)/(2) plus ihr `test/mutations/`-Zahn |
 | [`harness/README.md`](../../../../harness/README.md) | update | was der Sensor prüft, über welche Range, und was er **nicht** sieht |
@@ -158,7 +158,7 @@ Steering-Loop-Lerneintrag.
 ## 4. Trigger
 
 **Beginn (`open` → `next` → `in-progress`): [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md)
-ist gestartet, [slice-123](../in-progress/slice-123-ci-sieht-die-historie.md) liegt in `done/`, und das WIP-Limit
+ist gestartet, [slice-123](../done/slice-123-ci-sieht-die-historie.md) liegt in `done/`, und das WIP-Limit
 ist frei.** Die Kante zu 123 ist **tragend**: ohne sie ist DoD (3) nicht herstellbar, weil es genau
 die Tiefen-Prüfung ist, die 123 baut.
 

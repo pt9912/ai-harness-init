@@ -7,7 +7,7 @@ wechselt nur durch `git mv`, siehe
 
 **Welle:** [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) — Achse (3) des Roadmap-Kandidaten
 *Regeln ohne Feedback-Quadrant schließen*. **Hängt an
-[slice-123](../in-progress/slice-123-ci-sieht-die-historie.md)**, sobald der Sensor eine Commit-Spanne liest.
+[slice-123](../done/slice-123-ci-sieht-die-historie.md)**, sobald der Sensor eine Commit-Spanne liest.
 
 **Ebene: Dogfood, nicht emittiert.** Gegenstand sind die Commit-Messages **dieses** Repos. Im
 Emissions-Baum kommt der Gegenstand nicht vor
@@ -125,7 +125,7 @@ Steering-Loop-Lerneintrag.
 | [`.d-check.yml`](../../../../.d-check.yml) | update | der `commits:`-Block (`id-patterns`, `exempt-pattern`). **`commits` gehört NICHT in `modules:`** — es braucht eine Range bzw. eine Message-Datei und liefe im hermetischen `docs-check` ins Leere |
 | [`Makefile`](../../../../Makefile) | update | das Ziel, das den Vor-Commit-Lauf fährt (`--commit-msg`), und ggf. das Range-Ziel für CI. Ein neues behauptetes Ziel zieht [`AGENTS.md`](../../../../AGENTS.md) §4 mit |
 | [`.claude/hooks/`](../../../../.claude/hooks) | offen | falls der Ort ein Hook-Griff auf `git commit -F` ist; dann berührt der Slice [`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) und die vom Guard selbst benannte Grenze |
-| [`.github/workflows/ci.yml`](../../../../.github/workflows/ci.yml) | update | nur falls DoD (2) eine Range in CI entscheidet — dann ist [slice-123](../in-progress/slice-123-ci-sieht-die-historie.md) **Voraussetzung**, sonst ist der Lauf dort blind und grün |
+| [`.github/workflows/ci.yml`](../../../../.github/workflows/ci.yml) | update | nur falls DoD (2) eine Range in CI entscheidet — dann ist [slice-123](../done/slice-123-ci-sieht-die-historie.md) **Voraussetzung**, sonst ist der Lauf dort blind und grün |
 | `test/` | neu | der bats-Fall, den DoD (3) mit einem `test/mutations/`-Fall belegt |
 | [`harness/README.md`](../../../../harness/README.md) | update | der Träger und seine Grenze (DoD (3)) |
 | [`slice-121`](slice-121-commit-message-nennt-was-es-gibt.md) | **nicht durch diesen Slice** | dessen §3/§4/§6 sind mit der Träger-Messung nachgezogen; die **Eigenschaft** bleibt seine |
@@ -135,7 +135,7 @@ Steering-Loop-Lerneintrag.
 
 **Beginn (`open` → `next` → `in-progress`): [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md)
 ist gestartet, das WIP-Limit ist frei — und
-[slice-123](../in-progress/slice-123-ci-sieht-die-historie.md) liegt in `done/`, falls DoD (2) eine Range in CI
+[slice-123](../done/slice-123-ci-sieht-die-historie.md) liegt in `done/`, falls DoD (2) eine Range in CI
 entscheidet.** Der Vor-Commit-Zweig allein braucht keine Historie und könnte früher laufen; weil die
 Entscheidung aber **Teil** der DoD ist und nicht vor ihr steht, wartet der Slice.
 

@@ -198,7 +198,7 @@ Steering-Loop-Lerneintrag.
 
 **Beginn (`open` → `next` → `in-progress`): [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md)
 ist gestartet und das WIP-Limit ist frei.** Der Slice ist hermetisch und wartet auf keinen anderen —
-insbesondere **nicht** auf [slice-123](../in-progress/slice-123-ci-sieht-die-historie.md): `targets` liest keine
+insbesondere **nicht** auf [slice-123](../done/slice-123-ci-sieht-die-historie.md): `targets` liest keine
 Historie und ist auf einem Klon der Tiefe 1 genauso scharf wie auf einem vollen.
 
 **Rückführungen, vorab benannt:**

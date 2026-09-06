@@ -16,7 +16,7 @@ Zitate aus den Review-Reports. **Nicht Gegenstand:** Closure-Notiz §7, DoD-Häk
 
 **Eingangs-Kontext:**
 
-- Slice-Plan `docs/plan/planning/in-progress/slice-123-ci-sieht-die-historie.md`, aktueller Stand
+- Slice-Plan `docs/plan/planning/done/slice-123-ci-sieht-die-historie.md`, aktueller Stand
   nach `9b9f07b` (§1 Anlass-Messung, §2 DoD (1)–(3), §3 Plan-Tabelle, §6 Risiken).
 - Review-Report Runde 1 (`2026-09-06-slice-123-history-range-guard-review.md`) und Runde 2
   (`2026-09-06-slice-123-history-range-guard-review-runde-2.md`) — als Kontext gelesen, nicht als

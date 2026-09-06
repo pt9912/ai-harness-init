@@ -151,7 +151,7 @@ Steering-Loop-Lerneintrag.
 
 **Beginn (`open` → `next` → `in-progress`): [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md)
 ist gestartet und das WIP-Limit ist frei.** Hermetisch, hängt an keinem anderen Slice der Welle —
-insbesondere **nicht** an [slice-123](../in-progress/slice-123-ci-sieht-die-historie.md): die Fähigkeit liest
+insbesondere **nicht** an [slice-123](../done/slice-123-ci-sieht-die-historie.md): die Fähigkeit liest
 keinen git-Stand.
 
 **Eine Reihenfolge-Notiz, die kein Trigger ist:** dieser Slice und
