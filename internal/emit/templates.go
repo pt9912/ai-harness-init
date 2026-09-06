@@ -368,6 +368,17 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 			// eine gate-unsichere Beispielzeile — emit-seitig neutralisieren (§6 b).
 			body = NeutralizeRoadmap(body)
 		}
+		if rel == conventionsTemplate {
+			// Der Vorlagen-Pfad ist baseline-relativ (ADR-0037 Festlegung 1) — emit-seitig
+			// entschaerfen, der vendored Fremdtext bleibt unveraendert (MR-007).
+			body = NeutralizeConventionsTemplateRef(body)
+		}
+		if rel == planningReadmeTemplate {
+			// docs/plan/carveouts/done entsteht erst bei der ersten Carveout-Aufloesung
+			// (ADR-0037 Festlegung 4) — derselbe Marker, den die Baseline fuer denselben
+			// Ort in carveout.template.md selbst setzt.
+			body = NeutralizePlanningReadmeCarveoutsDoneRef(body)
+		}
 		out[singletonTarget(rel)] = []byte(body)
 		return nil
 	})
@@ -390,6 +401,27 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 // Slice-Lifecycle-Ebenen open/next/done (in-progress/ traegt bereits die Roadmap)
 // sowie die ADR-/Carveout-/Reviews-Ordner. Tool-definiert und quell-unabhaengig —
 // darum eine feste Liste, kein Ableiten aus src.
+//
+// harness/conventions traegt die drei kumulativen Bedingungen aus ADR-0037
+// Festlegung 1 — je einzeln, nicht pauschal:
+//
+//	(a) Das mitemittierte Regelwerk fuehrt den Ort unbedingt im Indikativ
+//	    (grundlagen-harness-dateien.md §Verzeichniskonvention: "harness/conventions/
+//	    # ein MR je Datei"), und die Vorlage, aus der die emittierte
+//	    harness/conventions.md gestempelt wird, nennt ihn im Rumpf ein zweites Mal
+//	    ("Jede Adaption ist eine eigene Datei unter harness/conventions/").
+//	(b) Ohne den Bootstrap entsteht das Verzeichnis nicht: die emittierte
+//	    harness/conventions.md selbst zaehlt als Singleton, das Verzeichnis
+//	    daneben nicht (TestTemplates_EmittierterBestandVollstaendig, want-Liste
+//	    unten fuehrt "harness/conventions.md" ohne ein zusaetzliches
+//	    "harness/conventions/").
+//	(c) Der Traeger ist ein leeres .gitkeep — kein Platzhalter-Link.
+//
+// docs/plan/carveouts/done und docs/plan/planning/observations bleiben aussen
+// vor: Festlegung 4 traegt den ersten nicht (Ziel eines Vorgangs, der ein
+// Ereignis voraussetzt — die erste Carveout-Aufloesung), der zweite braucht
+// eine README.md statt eines .gitkeep (Festlegung 2) und ist kein Gegenstand
+// dieser Liste.
 func structureGitkeeps() []string {
 	dirs := []string{
 		"docs/plan/adr",
@@ -398,6 +430,7 @@ func structureGitkeeps() []string {
 		"docs/plan/planning/open",
 		"docs/plan/planning/next",
 		"docs/plan/planning/done",
+		"harness/conventions",
 	}
 	out := make([]string, len(dirs))
 	for i, d := range dirs {
@@ -441,6 +474,58 @@ const roadmapDoneLink = "[`welle-NN-results.md`](../done/welle-NN-results.md)"
 // im Pfad und faellt unter NeutralizePlaceholderLinks, ohne diesen Marker zu brauchen.
 func NeutralizeRoadmap(s string) string {
 	return strings.ReplaceAll(s, roadmapDoneLink, "`welle-NN-results.md`")
+}
+
+// conventionsTemplate ist der Quell-Relpfad der Konventionsspeicher-Vorlage
+// (templates/-gewurzelt).
+const conventionsTemplate = "harness/conventions.template.md"
+
+// conventionsPathRefOld ist der zwei Zeilen lange Satzteil, der die
+// Eintrags-Vorlage unter einem baseline-relativen Pfad nennt
+// (`harness/conventions/MR-NNN-titel.template.md`) — im emittierten Ziel liest
+// ein Adopter ihn als repo-relativ, real liegt sie unter
+// `.harness/baseline/<tag>/templates/harness/conventions/`. Der volle,
+// tag-gebundene Pfad ist an dieser Stelle im Emitter nicht bekannt (kein
+// Baseline-Tag als Parameter durchgereicht); die Neutralisierung entfernt
+// darum die Pfad-FORM (ADR-0037 Festlegung 1, Fundstelle 1) statt einen
+// erratenen Pfad einzusetzen.
+const conventionsPathRefOld = "kopiert aus\n`harness/conventions/MR-NNN-titel.template.md` der vendored Baseline;"
+const conventionsPathRefNew = "kopiert aus der\ngleichnamigen Eintrags-Vorlage `MR-NNN-titel.template.md` der vendored Baseline;"
+
+// NeutralizeConventionsTemplateRef macht die emittierte harness/conventions.md
+// codepath-sicher: die Vorlage nennt ihren eigenen Quell-Pfad
+// (harness/conventions/MR-NNN-titel.template.md) baseline-relativ; im Ziel-Repo
+// gibt es unter diesem Pfad nichts. Ersetzt wird die Pfad-Form durch eine
+// Nennung ohne Verzeichnis-Segment — der Dateiname bleibt lesbar, zeigt aber
+// nicht mehr auf einen Ort, den es im Ziel-Repo nicht gibt. Ohne den Satzteil
+// unveraendert. Deckungs-Grenze wie bei NeutralizeRoadmap: Wortlaut-Drift im
+// vendored Fremdtext faengt allein `make smoke` gegen den realen Satz, nicht
+// dieser Test.
+func NeutralizeConventionsTemplateRef(s string) string {
+	return strings.ReplaceAll(s, conventionsPathRefOld, conventionsPathRefNew)
+}
+
+// planningReadmeTemplate ist der Quell-Relpfad der Planning-Index-Vorlage
+// (templates/-gewurzelt).
+const planningReadmeTemplate = "docs/plan/planning/README.template.md"
+
+// carveoutsDoneRefOld ist die Zeile, die `docs/plan/carveouts/done/` als Ziel
+// der Carveout-Aufloesung nennt — ein Ort, den der Bootstrap nicht anlegt
+// (ADR-0037 Festlegung 4, Fundstelle 2): `docs/plan/carveouts/done/` entsteht
+// erst bei der ersten Carveout-Aufloesung, derselbe Grund, den
+// carveout.template.md fuer denselben Ort selbst per d-check:ignore stumm
+// schaltet.
+const carveoutsDoneRefOld = "sondern in ihr eigenes `docs/plan/carveouts/done/` (Baseline-Regelwerk"
+const carveoutsDoneRefNew = "sondern in ihr eigenes `docs/plan/carveouts/done/` <!-- d-check:ignore (done/ entsteht erst bei erster Carveout-Auflösung) --> (Baseline-Regelwerk"
+
+// NeutralizePlanningReadmeCarveoutsDoneRef macht die emittierte
+// docs/plan/planning/README.md codepath-sicher: sie setzt denselben
+// d-check:ignore-Marker, den die Baseline in carveout.template.md fuer
+// denselben Ort bereits fuehrt. Ohne die Zeile unveraendert. Deckungs-Grenze
+// wie bei NeutralizeRoadmap: Wortlaut-Drift im vendored Fremdtext faengt
+// allein `make smoke` gegen den realen Satz, nicht dieser Test.
+func NeutralizePlanningReadmeCarveoutsDoneRef(s string) string {
+	return strings.ReplaceAll(s, carveoutsDoneRefOld, carveoutsDoneRefNew)
 }
 
 // makeTargetPlaceholder tritt an die Stelle einer Ziel-Nennung, die im

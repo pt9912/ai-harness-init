@@ -29,6 +29,14 @@ func courseSet() fs.FS {
 	spitz := "\n1. [<zuerst — z. B. `AGENTS.md`>](<pfad>)\n"
 	eingebettet := "\n- [<welle-NN-titel>](../<welle-NN-titel>.md)\n"
 	nurAnker := "\n[`MR-<NNN>`](../conventions.md#mr-<NNN>)\n"
+	// conventionsPathQuirk traegt den realen, baseline-relativen Vorlagen-Pfad
+	// (ADR-0037 Festlegung 1, Fundstelle 1) — NeutralizeConventionsTemplateRef
+	// muss ihn beim Emit entschaerfen.
+	conventionsPathQuirk := "\nJede Adaption ist eine eigene Datei unter `harness/conventions/`, kopiert aus\n`harness/conventions/MR-NNN-titel.template.md` der vendored Baseline;\n"
+	// carveoutsDoneQuirk traegt die reale Nennung von docs/plan/carveouts/done/
+	// (ADR-0037 Festlegung 4, Fundstelle 2) — NeutralizePlanningReadmeCarveoutsDoneRef
+	// muss sie beim Emit mit dem d-check:ignore-Marker versehen.
+	carveoutsDoneQuirk := "\nsondern in ihr eigenes `docs/plan/carveouts/done/` (Baseline-Regelwerk\n`modul-07-carveouts.md`).\n"
 	f := func(s string) *fstest.MapFile { return &fstest.MapFile{Data: []byte(s)} }
 	return fstest.MapFS{
 		// in scope — Singletons
@@ -37,10 +45,10 @@ func courseSet() fs.FS {
 		"spec/architecture.template.md":         f(hint + body),
 		"spec/spezifikation.template.md":        f(hint + body),
 		"harness/README.template.md":            f(hint + body + spitz),
-		"harness/conventions.template.md":       f(hint + body + nurAnker),
+		"harness/conventions.template.md":       f(hint + body + nurAnker + conventionsPathQuirk),
 		"docs/plan/adr/README.template.md":      f(hint + body),
 		"docs/plan/carveouts/README.template.md": f(hint + body),
-		"docs/plan/planning/README.template.md": f(hint + body),
+		"docs/plan/planning/README.template.md": f(hint + body + carveoutsDoneQuirk),
 		// Durchsetzungs-Skills (LH-FA-06 Skill-Teil, seit slice-030 emittiert; bleiben Fetch, ADR-0006)
 		".harness/skills/reviewer.template.md":              f(hint + body),
 		".harness/skills/closure-note-reviewer.template.md": f(hint + body),
@@ -152,6 +160,7 @@ func TestTemplates_Layout(t *testing.T) {
 		"docs/plan/planning/open/.gitkeep",
 		"docs/plan/planning/next/.gitkeep",
 		"docs/plan/planning/done/.gitkeep",
+		"harness/conventions/.gitkeep",
 	}
 	for _, rel := range gitkeeps {
 		if _, err := os.Stat(filepath.Join(dir, rel)); err != nil {
@@ -285,6 +294,7 @@ func TestTemplates_EmittierterBestandVollstaendig(t *testing.T) {
 		"docs/plan/planning/next/.gitkeep",
 		"docs/plan/planning/open/.gitkeep",
 		"docs/reviews/.gitkeep",
+		"harness/conventions/.gitkeep",
 	}
 	sort.Strings(want)
 	got := emittedTree(t, dir)
@@ -442,6 +452,7 @@ func TestTemplates_MinimalQuelle(t *testing.T) {
 		"AGENTS.md", "spec/lastenheft.md",
 		"docs/plan/adr/.gitkeep", "docs/plan/carveouts/.gitkeep", "docs/reviews/.gitkeep",
 		"docs/plan/planning/open/.gitkeep", "docs/plan/planning/next/.gitkeep", "docs/plan/planning/done/.gitkeep",
+		"harness/conventions/.gitkeep",
 	}
 	sort.Strings(want)
 	if got := emittedTree(t, dir); strings.Join(got, "\n") != strings.Join(want, "\n") {
@@ -578,6 +589,79 @@ func TestTemplates_RoadmapGateSafe(t *testing.T) {
 	}
 	if strings.Contains(string(got), "Template-Hinweis") {
 		t.Error("emittierte Roadmap traegt noch den Template-Hinweis-Block")
+	}
+}
+
+// TestNeutralizeConventionsTemplateRef prueft die pure Neutralisierung: der
+// baseline-relative Vorlagen-Pfad verliert sein Verzeichnis-Segment, der
+// Dateiname bleibt lesbar, ohne Marker unveraendert.
+func TestNeutralizeConventionsTemplateRef(t *testing.T) {
+	in := "Jede Adaption ist eine eigene Datei unter `harness/conventions/`, kopiert aus\n`harness/conventions/MR-NNN-titel.template.md` der vendored Baseline;\n"
+	got := emit.NeutralizeConventionsTemplateRef(in)
+	if strings.Contains(got, "`harness/conventions/MR-NNN-titel.template.md`") {
+		t.Errorf("baseline-relativer Pfad nicht neutralisiert:\n%s", got)
+	}
+	if !strings.Contains(got, "`MR-NNN-titel.template.md`") {
+		t.Errorf("Dateiname verloren:\n%s", got)
+	}
+	const plain = "kein Pfad hier\n"
+	if emit.NeutralizeConventionsTemplateRef(plain) != plain {
+		t.Error("NeutralizeConventionsTemplateRef veraenderte Text ohne den Marker")
+	}
+}
+
+// TestTemplates_ConventionsTemplateRefGateSafe: die emittierte harness/conventions.md
+// traegt KEINEN Inline-Code-Pfad mehr, der auf harness/conventions/MR-NNN-titel.template.md
+// zeigt. Wiring-Probe wie TestTemplates_RoadmapGateSafe — die Fixture traegt den
+// realen, baseline-relativen Pfad (courseSet() §conventionsPathQuirk).
+func TestTemplates_ConventionsTemplateRefGateSafe(t *testing.T) {
+	dir := t.TempDir()
+	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
+		t.Fatalf("Templates: %v", err)
+	}
+	got, err := os.ReadFile(filepath.Join(dir, "harness/conventions.md"))
+	if err != nil {
+		t.Fatalf("harness/conventions.md lesen: %v", err)
+	}
+	if strings.Contains(string(got), "`harness/conventions/MR-NNN-titel.template.md`") {
+		t.Errorf("emittierte harness/conventions.md traegt noch den baseline-relativen Pfad:\n%s", got)
+	}
+}
+
+// TestNeutralizePlanningReadmeCarveoutsDoneRef prueft die pure Neutralisierung:
+// die Nennung von docs/plan/carveouts/done/ bekommt denselben d-check:ignore-
+// Marker, den die Baseline fuer denselben Ort in carveout.template.md selbst
+// fuehrt, ohne Marker unveraendert.
+func TestNeutralizePlanningReadmeCarveoutsDoneRef(t *testing.T) {
+	in := "sondern in ihr eigenes `docs/plan/carveouts/done/` (Baseline-Regelwerk\n`modul-07-carveouts.md`).\n"
+	got := emit.NeutralizePlanningReadmeCarveoutsDoneRef(in)
+	if !strings.Contains(got, "d-check:ignore") {
+		t.Errorf("docs/plan/carveouts/done/ ohne d-check:ignore-Marker:\n%s", got)
+	}
+	if !strings.Contains(got, "`docs/plan/carveouts/done/`") {
+		t.Errorf("Ort-Nennung verloren:\n%s", got)
+	}
+	const plain = "kein Ort hier\n"
+	if emit.NeutralizePlanningReadmeCarveoutsDoneRef(plain) != plain {
+		t.Error("NeutralizePlanningReadmeCarveoutsDoneRef veraenderte Text ohne den Marker")
+	}
+}
+
+// TestTemplates_PlanningReadmeCarveoutsDoneRefGateSafe: die emittierte
+// docs/plan/planning/README.md traegt den d-check:ignore-Marker auf der
+// docs/plan/carveouts/done/-Zeile. Wiring-Probe wie TestTemplates_RoadmapGateSafe —
+// die Fixture traegt die reale Nennung (courseSet() §carveoutsDoneQuirk).
+func TestTemplates_PlanningReadmeCarveoutsDoneRefGateSafe(t *testing.T) {
+	dir := t.TempDir()
+	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
+		t.Fatalf("Templates: %v", err)
+	}
+	got, err := os.ReadFile(filepath.Join(dir, "docs/plan/planning/README.md"))
+	if err != nil {
+		t.Fatalf("docs/plan/planning/README.md lesen: %v", err)
+	}
+	if !strings.Contains(string(got), "`docs/plan/carveouts/done/` <!-- d-check:ignore") {
+		t.Errorf("emittierte docs/plan/planning/README.md traegt keinen d-check:ignore-Marker auf der docs/plan/carveouts/done/-Zeile:\n%s", got)
 	}
 }
 
