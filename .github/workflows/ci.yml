@@ -21,7 +21,7 @@
 # `mutate`) einen history-lesenden d-check-Modul-Lauf (`vcs`/`commits`,
 # Targets `doc-immutable`/`doc-commits` in d-check.mk) ausloest —
 # `.d-check.yml` aktiviert fuer `docs-check` nur
-# `links, anchors, ids, matrix, codepaths, spans`, keines davon liest
+# `links, anchors, ids, matrix, codepaths, spans, planning`, keines davon liest
 # `git`-Historie. Ein Job, dessen Schritt Historie liest, braucht an seinem
 # Checkout `fetch-depth: 0` UND einen vorgeschalteten
 # `make history-range-guard RANGE=...` (harness/tools/history-range-guard.sh)
