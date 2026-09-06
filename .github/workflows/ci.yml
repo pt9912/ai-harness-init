@@ -14,6 +14,23 @@
 #
 # Docker-only (ADR-0003): die Runner bringen Docker mit; keine Host-Go-Toolchain,
 # kein `actions/setup-go`. Alles laeuft in den gepinnten Images der make-Targets.
+#
+# CHECKOUT-TIEFE: keiner der vier `actions/checkout` unten traegt
+# `fetch-depth: 0`. `actions/checkout` klont per Default mit Tiefe 1; das
+# genuegt, weil keines der vier Job-Ziele (`make gates`/`smoke`/`full-smoke`/
+# `mutate`) einen history-lesenden d-check-Modul-Lauf (`vcs`/`commits`,
+# Targets `doc-immutable`/`doc-commits` in d-check.mk) ausloest —
+# `.d-check.yml` aktiviert fuer `docs-check` nur
+# `links, anchors, ids, matrix, codepaths, spans`, keines davon liest
+# `git`-Historie. Ein Job, dessen Schritt Historie liest, braucht an seinem
+# Checkout `fetch-depth: 0` UND einen vorgeschalteten
+# `make history-range-guard RANGE=...` (harness/tools/history-range-guard.sh)
+# davor — sonst meldet eine aufloesbare, aber im flachen Klon leere Range
+# `0 Befund(e)`, Exit 0, statt zu fallen (MR-007 Setzung 3, "blind und
+# gruen"). Dieselbe Begruendung gilt fuer die zwei Checkouts in release.yml
+# (bauen/starten Artefakte, lesen keine Historie) und den einen in
+# upstream-drift.yml (Netz-Freshness, liest keine Historie) — repo-weit
+# sieben Checkouts, keiner braucht heute Tiefe > 1.
 
 name: ci
 

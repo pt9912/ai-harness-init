@@ -22,6 +22,11 @@
 #
 # workflow_dispatch wie in upstream-drift.yml: der Plattform-Nachweis ist damit VOR
 # einem Tag manuell anstossbar — sonst kaeme das Feedback erst beim Release.
+#
+# CHECKOUT-TIEFE: die zwei `actions/checkout` unten bleiben bei der
+# Default-Tiefe 1 — `make release-artifacts` baut Binaries, `start-smoke.sh`
+# startet sie; keiner liest `git`-Historie. Begruendung und Gesamtbild
+# (repo-weit sieben Checkouts) stehen im Kopf von ci.yml.
 
 name: release
 

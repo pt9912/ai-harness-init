@@ -13,6 +13,12 @@
 # Wie ci.yml: nur `make`-Targets, keine zweite Gate-Definition (MR-010-Geist).
 # Read-only — die Sensoren melden, sie mutieren nichts (ein Bump bleibt eine bewusste
 # MR-007-Operation). Docker-only (ADR-0003).
+#
+# CHECKOUT-TIEFE: der eine `actions/checkout` unten bleibt bei der
+# Default-Tiefe 1 — die gefahrenen Sensoren sind Netz-Freshness
+# (Upstream-Release-Tags gegen den gepinnten Wert), keiner liest
+# `git`-Historie. Begruendung und Gesamtbild (repo-weit sieben Checkouts)
+# stehen im Kopf von ci.yml.
 
 name: upstream-drift
 
