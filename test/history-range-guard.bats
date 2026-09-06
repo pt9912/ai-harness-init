@@ -23,7 +23,7 @@ setup() {
   GUARD="$REPO/harness/tools/history-range-guard.sh"
 }
 
-@test "history-range-guard: leere Range (0 Commits) -> exit 1, LEER + Tiefe + Range + Advice" {
+@test "history-range-guard: leere Range (0 Commits) -> exit 1, LEER + Shallow-Grenzen + Range + Advice" {
   run bash "$GUARD" --decide "HEAD..HEAD" 0
   [ "$status" -eq 1 ]
   printf '%s' "$output" | grep -q "Range 'HEAD..HEAD' ist aufloesbar, aber LEER"
@@ -56,6 +56,12 @@ setup() {
   run bash "$GUARD" --decide "HEAD..HEAD" abc
   [ "$status" -eq 2 ]
   printf '%s' "$output" | grep -q "liefert keine gueltige Commit-Zahl"
+}
+
+@test "history-range-guard: --decide-staged mit ungueltigem Wert -> exit 2, fail-closed" {
+  run bash "$GUARD" --decide-staged abc
+  [ "$status" -eq 2 ]
+  printf '%s' "$output" | grep -q "erwartet 0 oder 1"
 }
 
 @test "history-range-guard: ohne Argument -> exit != 0, Usage-Meldung" {

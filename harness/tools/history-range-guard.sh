@@ -107,10 +107,21 @@ decide() {
 # decide_staged <has_staged> — REIN: 0 = keine gestagte Aenderung, 1 =
 # mindestens eine. Meldet den Leerfall statt ihn schweigend durchzureichen
 # (dieselbe Klasse "blind und gruen" wie bei der leeren Range, MR-007
-# Setzung 3, hier fuer den --staged-Zweig); Exit ist in beiden Faellen 0 —
-# --staged loest den Range-Check nicht aus.
+# Setzung 3, hier fuer den --staged-Zweig); Exit 0 in beiden gueltigen
+# Faellen — --staged loest den Range-Check nicht aus. Exit 2 bei einem
+# Wert ausserhalb `0|1` — derselbe fail-closed-Grundsatz wie in decide();
+# ueber den produktiven Pfad nicht erreichbar (der `--staged`-Zweig
+# uebergibt ausschliesslich die Literale 0 und 1), nur ueber
+# `--decide-staged` mit einem ungueltigen Argument.
 decide_staged() {
   local has_staged="$1"
+  case "$has_staged" in
+    0 | 1) ;;
+    *)
+      echo "history-range-guard: --decide-staged erwartet 0 oder 1, nicht '$has_staged'." >&2
+      return 2
+      ;;
+  esac
   if [ "$has_staged" -eq 0 ]; then
     echo "history-range-guard: --staged ohne gestagte Aenderung — nichts zu pruefen." >&2
   fi
@@ -128,8 +139,9 @@ fi
 # (Fixture, fuer den bats-Test test/history-range-guard.bats — ohne git,
 # ohne Repo).
 if [ "${1:-}" = "--decide-staged" ]; then
-  decide_staged "${2:-}"
-  exit 0
+  rc=0
+  decide_staged "${2:-}" || rc=$?
+  exit "$rc"
 fi
 
 range="${1:?Usage: history-range-guard.sh <base>..<head> | --staged | --decide <range> <count> | --decide-staged <0|1>}"
