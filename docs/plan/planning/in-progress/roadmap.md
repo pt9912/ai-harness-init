@@ -19,8 +19,6 @@ nicht hier.
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 - [welle-13 — Regeln bekommen ihren Sensor](../welle-13-regeln-bekommen-ihren-sensor.md)
 
-Nichts in Arbeit.
-
 **Eine Position der Ziel-Form ist nicht übernommen, und hier steht der Grund**
 ([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage): eine unerklärte Abweichung
 ist ein Fork, keine Adaption). Die Ziel-Form setzt *flache Welle-Datei* mit *offene Welle* gleich —
@@ -30,15 +28,16 @@ Zeiger stehen. Die Differenz steht vollständig unter *Nächste Wellen*, je mit 
 Zeiger folgt dem **eingetretenen** Start-Trigger, nicht dem Schnitt: eine Welle ohne eingetretene
 Beginn-Bedingung zu eröffnen, hebt die Trigger-Disziplin auf, die dieselbe Roadmap einfordert.
 
-**Beide Aussagen dieses Blocks sind heute unbewacht, und das ist benannt statt verschwiegen**
-([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Die
-**Marker-Hälfte** (Ruhe-Marker genau dann, wenn `in-progress/` keinen Slice trägt) und die
-**Listen-Hälfte** (Bijektion Zeiger ↔ flache Welle-Dateien) tragen kein Modul: `grep -n '^modules:'
-.d-check.yml` führt `planning` nicht. Träger für beide ist
-[slice-125](../in-progress/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) — die Invariante gilt ab
-hier für diesen Abschnitt, und die Listen-Hälfte braucht dort einen Sensor, der das
-Kardinalitäts-Modell kennt (mehrere offene Wellen sind der Normalfall) und die Abweichung oben
-kennt.
+**Von den zwei Aussagen dieses Blocks trägt eine ein Modul, die andere nicht — benannt statt
+verschwiegen** ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+Die **Marker-Hälfte** (Ruhe-Marker genau dann, wenn `in-progress/` keinen Slice trägt) hält das Modul
+`planning` (`grep -n '^modules:' .d-check.yml` führt es; `.d-check.yml` bindet `heading`/`marker` auf
+diesen Abschnitt) — ein Widerspruch zwischen dieser Sektion und `in-progress/` färbt `docs-check`
+rot. Die **Listen-Hälfte** (Bijektion Zeiger ↔ flache Welle-Dateien) bleibt unbewacht: Die
+`waves`-Fähigkeit desselben Moduls verlangt genau diese Bijektion und kennt die Abweichung oben
+nicht — sie meldete die Differenz zwischen Zeigern und flachen Dateien als Drift, obwohl sie hier
+die gewollte Form ist. Was das kostet und was daran offen bleibt, steht in
+[`harness/README.md`](../../../../harness/README.md) neben dem, was `docs-check` prüft.
 
 ## Nächste Wellen
 
