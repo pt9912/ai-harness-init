@@ -262,7 +262,7 @@ Baseline-Regelwerk `modul-10-review-harness.md` §Ziel-Form: Reviewer-Skill.
   (`grep -nE 'Tiefe|depth|Historie' harness/conventions/MR-014-*.md` findet nur die
   Pin-Nachträge zu `actions/checkout`-Versionen), eine Übergabe war also nicht fällig.
 - geprüft, ohne Befund: **Kollision mit
-  [`slice-190`](../plan/planning/next/slice-190-bootstrap-legt-die-versprochenen-orte-an.md)** —
+  [`slice-190`](../plan/planning/in-progress/slice-190-bootstrap-legt-die-versprochenen-orte-an.md)** —
   der offene Slice arbeitet an `internal/emit/templates.go` (`structureGitkeeps`),
   dessen `want`-Liste und der emittierten `harness/conventions.md`; keine dieser
   Dateien liegt im Diff. Seine Mess-Grundlage bleibt unberührt: die drei emittierten
