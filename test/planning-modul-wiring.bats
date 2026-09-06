@@ -51,7 +51,16 @@ field() {
 }
 
 @test "der konfigurierte heading existiert wortgleich als Abschnitt in der Roadmap" {
-  grep -qxF "$(field heading)" "$ROADMAP"
+  local h
+  h="$(field heading)"
+  # Ein leerer planning:-Block macht "$h" zum leeren String, und grep -qxF ""
+  # traefe dann jede Leerzeile der Roadmap — dieselbe Vakuitaet wie im
+  # waves-Test unten. Diese Pruefung faengt den leeren Fall vor dem grep ab.
+  [ -n "$h" ] || {
+    echo "planning:-Block ist leer — heading-Zusicherung liefe ins Leere" >&2
+    false
+  }
+  grep -qxF "$h" "$ROADMAP"
 }
 
 @test "planning: waves bleibt aus (Entscheidung dokumentiert in harness/README.md)" {
