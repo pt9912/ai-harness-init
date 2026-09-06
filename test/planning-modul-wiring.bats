@@ -53,5 +53,13 @@ field() {
 }
 
 @test "planning: waves bleibt aus (Entscheidung dokumentiert in harness/README.md)" {
-  ! block | grep -qE '^[[:space:]]+waves:'
+  content="$(block)"
+  # Ein leerer planning:-Block macht die Negation darunter ueber der leeren Menge wahr, ohne
+  # dass die Faehigkeit gemessen wurde; diese Pruefung faengt genau diesen Fall vor der
+  # Negation ab.
+  [ -n "$content" ] || {
+    echo "planning:-Block ist leer — die Zusicherung liefe ins Leere" >&2
+    false
+  }
+  ! printf '%s\n' "$content" | grep -qE '^[[:space:]]+waves:'
 }
