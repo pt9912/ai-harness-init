@@ -284,8 +284,9 @@ Setzung 1).
   behoben, sechs neue, darunter der `regelwerk-check`-HIGH mit **geändertem Verhalten**.
   [Runde 3](../../../reviews/2026-09-06-slice-125-re-check-runde-3.md) — kein HIGH, für den
   Verifier freigegeben; ihr einziger MEDIUM (R-1) misst nach, dass die Fundmengen-Messung des
-  Implementers **einen** Treffer meldete, wo **elf** lebende Stellen standen, und benennt die zwei
-  Methodenfehler, die neun davon unsichtbar gemacht haben. Dieser MEDIUM ist der Grund, warum diese
+  Implementers **einen** Treffer meldete, wo **elf** lebende Stellen standen — neun davon in keiner
+  Runde benannt —, und benennt die zwei Methodenfehler, die eine von ihnen auch der Messung selbst
+  entzogen haben. Dieser MEDIUM ist der Grund, warum diese
   Closure zwei Übergaben schreibt statt einer. **Und die Kette geht eine Runde weiter:** Diese
   Closure hat R-1s Fundmenge nicht übernommen, sondern über einem breiteren Muster neu gefahren —
   und **zwei** weitere Fundstellen gefunden, die auch Runde 3 nicht hatte (unten, Übergabe 2). Die
@@ -301,7 +302,7 @@ Setzung 1).
   [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md). Vorgearbeitet ist die Register-Paarung
   insoweit, als jede unten genannte Beobachtung als Verzeichnis existiert und jede mindestens einen
   Beleg trägt.
-  **(3) Die neun Planner-eigenen Prosa-Stellen aus R-1 sind nachgezogen, aber ohne Wächter.** Kein
+  **(3) Neun der elf Planner-eigenen Prosa-Stellen sind nachgezogen, aber ohne Wächter.** Kein
   Modul aus `modules:` urteilt über den Wahrheitsgehalt einer Prosa-Zahl, und `make comment-claims`
   hat keine Markdown-Datei im Prüfbereich. Die nächste Änderung an `modules:` erzeugt dieselbe
   Fundmenge neu.
@@ -413,7 +414,7 @@ Slice-Pläne in [`open/`](../open) (`slice-073`, `slice-116`, `slice-121`, `slic
 *(6) Prosa-Aufzählung gegen ihre Config* des Roadmap-Kandidaten *Doku- und Sensor-Wartung* zu
 hängen; dagegen sprechen zwei Gründe: Es sind Ein-Wort-Änderungen, und der Kandidat ist nicht
 geschnitten — eine Kennung dort wäre ein verbuchter Ausgang ohne Datum. **In einem eigenen
-Commit**, nicht in dem der Closure: Ein Prosa-Nachzug in neun fremden Plan-Dateien ist kein
+Commit**, nicht in dem der Closure: Ein Prosa-Nachzug in neun Planner-Artefakten ist kein
 Closure-Artefakt nach [`AGENTS.md`](../../../../AGENTS.md) §3.10.
 
 **Zwei Fundstellen bleiben bewusst stehen, und hier steht warum.** Beide liegen in
