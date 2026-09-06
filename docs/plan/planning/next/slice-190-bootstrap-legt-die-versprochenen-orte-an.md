@@ -115,7 +115,7 @@ nicht.
 **Was dieser Slice nicht ist, und was daraus folgt.** Er schaltet `codepaths` in
 [`internal/emit/templates/d-check.yml`](../../../../internal/emit/templates/d-check.yml)
 **nicht** ein. Welche Module ein Ziel bekommt, entscheidet
-[slice-073](slice-073-emittierte-doc-gate-module.md), dessen
+[slice-073](../open/slice-073-emittierte-doc-gate-module.md), dessen
 Nicht-Emissions-Trigger für `codepaths` lautet: *„die zwei Vorlagen-Stellen sind
 emit-seitig neutralisiert oder upstream gefallen"*.
 
@@ -199,7 +199,7 @@ Aussagen-Berührung steht hier gar nicht.
 | `internal/emit/templates_test.go` (`want`-Liste) | update | der Mengen-Vergleich ist der Zahn; er wird nachgezogen, nicht aufgeweicht |
 | die emittierte `harness/conventions.md` und `docs/plan/planning/README.md` | update | DoD (2) — je ein Ausgang für die Fundstelle; **nur** die emittierte Fassung, nicht der vendored Fremdtext |
 | [`spec/lastenheft.md`](../../../../spec/lastenheft.md) | **unverändert** | siehe die Change-Request-Frage unten |
-| [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) | **unverändert** | sein §6-Baum ist zusammenfassende Prosa und nennt kein Struktur-Verzeichnis einzeln; er wird von DoD (1) weder wahr noch falsch. Dass er in dieser Form Lücken **verdeckt**, ist ein eigener Liefer-Wert — [slice-191](slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md), §6 |
+| [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) | **unverändert** | sein §6-Baum ist zusammenfassende Prosa und nennt kein Struktur-Verzeichnis einzeln; er wird von DoD (1) weder wahr noch falsch. Dass er in dieser Form Lücken **verdeckt**, ist ein eigener Liefer-Wert — [slice-191](../open/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md), §6 |
 | `internal/emit/` — Emission der Register-`README.md` | **nicht in diesem Slice** | entschieden (Festlegung 2), eigener Schnitt — §6 |
 
 **Die Change-Request-Frage ist beantwortet.**
@@ -223,7 +223,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **`open` → `next`:** die Change-Request-Frage aus §3 ist beantwortet
 ([`ADR-0037`](../../adr/0037-bootstrap-stellt-den-tag-0-zustand-her.md)
 Festlegung 1), `Verantwortlich:` ist gesetzt. Keine Abhängigkeit von
-[slice-073](slice-073-emittierte-doc-gate-module.md) in dieser Richtung — der
+[slice-073](../open/slice-073-emittierte-doc-gate-module.md) in dieser Richtung — der
 Slice hier ist die Grundlage, nicht die Folge.
 
 **Start** (`next` → `in-progress`): Implementer übernimmt, WIP-Limit frei.
@@ -299,7 +299,7 @@ dasteht.
   [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md),
   die [`AGENTS.md`](../../../../AGENTS.md) §3.4 sperrt. **Dieser Slice bewegt die
   Modul-Liste nicht** und löst die Klasse damit nicht aus — sie trifft
-  [slice-073](slice-073-emittierte-doc-gate-module.md), und dort gehört sie
+  [slice-073](../open/slice-073-emittierte-doc-gate-module.md), und dort gehört sie
   entschieden, nicht hier gelöst. Registriert als
   [`BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md).
   — **Ausgang:** <offen>
@@ -313,14 +313,14 @@ dasteht.
   nennt heute kein einziges Struktur-Verzeichnis einzeln, es gibt also nichts zu
   koppeln — erst muss entschieden werden, *was* er zeigt, dann kann ein Wächter
   ihn halten. Beides zusammen ist ein eigener Liefer-Wert und liegt als
-  [slice-191](slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md) in
+  [slice-191](../open/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md) in
   `open/`. Registriert als
   [`BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md),
   dessen `state.md` genau diese Unterklasse als *Zusage ohne Anker, Ausgang eine
   Regel ohne Sensor* führt. — **Ausgang:** <offen>
 - **Nicht in diesem Slice:** die emittierte Modul-Liste
-  ([slice-073](slice-073-emittierte-doc-gate-module.md)), der Handbuch-Baum
-  ([slice-191](slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md)),
+  ([slice-073](../open/slice-073-emittierte-doc-gate-module.md)), der Handbuch-Baum
+  ([slice-191](../open/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md)),
   der Register-Ort (Risiko 2), die `.d-check.yml` **dieses** Repos, jeder
   Migrationspfad für bereits gebootstrappte Repos, und jede Änderung am vendored
   Baseline-Baum.
@@ -409,7 +409,7 @@ Treffer: keine.
   — **getroffen**, aber an einer Stelle, die dieser Slice nicht anfasst: der
   §6-Baum des Benutzerhandbuchs beschreibt einen Bestand, den `slice-182`
   verändert hat. Steht als Risiko in §6, Träger ist
-  [slice-191](slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md).
+  [slice-191](../open/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md).
   Die Zusagen über die emittierte **Modul-Liste** sind davon verschieden und hier
   nicht berührt — die Liste bewegt dieser Slice nicht.
 - [`zusage-ohne-herstellbares-gegenbeispiel`](../observations/BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel/observation.md)
