@@ -63,14 +63,22 @@ hält damit die **Marker-Hälfte** — der Ruhe-Marker „Nichts in Arbeit." ste
 [`docs/plan/planning/in-progress/`](../docs/plan/planning/in-progress) keinen `slice-*.md` trägt;
 ein Widerspruch färbt `docs-check` rot (Grund-Code `planning-drift`). Die **Listen-Hälfte** — die
 Bijektion zwischen den Zeigern unter „Offene Wellen" und den flachen Welle-Dateien — bleibt
-unbewacht: Die `waves`-Fähigkeit desselben Moduls verlangt genau diese Bijektion und kennt die in
-der Roadmap selbst dokumentierte Abweichung dieses Repos nicht — eine Welle-Datei wird hier
-geschnitten, **bevor** ihr Start-Trigger eintritt, und `waves` meldete das als `wave-drift`/
+unbewacht: Die `waves`-Fähigkeit desselben Moduls verlangt unter `waves.mode: many` genau diese
+Bijektion (Default ist `one`, ein Singleton-Prädikat) und kennt in beiden Modi die in der Roadmap
+selbst dokumentierte Abweichung dieses Repos nicht — eine Welle-Datei wird hier geschnitten,
+**bevor** ihr Start-Trigger eintritt, und `waves` meldete das als `wave-drift`/
 `wave-preview-exists`, obwohl es hier die gewollte Form ist. `waves` bleibt deshalb aus; die
 Fähigkeit dazuzuschalten setzt voraus, dass diese Abweichung selbst aufgelöst wird (Ziel-Form statt
 Repo-Konvention), was dieser Slice nicht entscheidet. Die zweite Fähigkeit desselben Moduls
 (`closure`, Struktur der Closure-Notizen) ist ebenfalls nicht aktiviert — anderer Gegenstand, eigener
-Slice ([slice-129](../docs/plan/planning/open/slice-129-closure-notiz-hat-einen-sensor.md)).
+Slice ([slice-129](../docs/plan/planning/open/slice-129-closure-notiz-hat-einen-sensor.md)). Eine
+**vierte** Fähigkeit desselben Moduls (`observations`, Deckung zwischen zitierten
+Beobachtungs-Kennungen und ihrem Nachweis im Register — additiv eine fünfte für den
+Verzeichnis-Modus dieser Ablage) ist ebenfalls verfügbar und nicht aktiviert; anders als `waves`
+und `closure` trägt sie noch keinen eigenen Slice —
+[`BEO-ALL/register-paarung-ohne-gate-modul`](../docs/plan/planning/observations/BEO-ALL/register-paarung-ohne-gate-modul/observation.md)
+führt die Lücke als offene Beobachtung, mit einer Drift-Log-Zeile in
+[`roadmap.md`](../docs/plan/planning/in-progress/roadmap.md) daneben.
 
 **Was `comment-claims` nicht deckt — benannt, weil eine Vollständigkeits-Zeile („N Datei(en) geprueft, 0 Befund(e)") sonst mehr behauptet als sie trägt** (Review-Befund HIGH-1 vom 2026-07-30; die hier zuerst stehende Zählung „an **zwei** Stellen" war selbst zu eng und ist in Runde 2 korrigiert worden): der Prüfbereich entsteht im Rezept aus `git ls-files` und ist an **drei** Stellen enger als der Gate-Stempel, den `record-gates` über den Arbeitsbaum legt (`harness/tools/working-tree-hash.sh`: `--cached --others --exclude-standard`).
 
