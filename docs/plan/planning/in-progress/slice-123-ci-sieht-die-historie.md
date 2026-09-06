@@ -87,8 +87,10 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
 
 - [ ] **(1) Ein history-lesender Schritt, dessen Range nichts hergibt, fällt — statt grün zu
       melden.** Der Wächter prüft **vor** dem Modul-Lauf, dass die Range auflösbar **und nicht
-      leer** ist, und nennt beim Rot, was fehlt (Tiefe, angeforderte Range, Zahl der enthaltenen
-      Commits).
+      leer** ist, und nennt beim Rot, was fehlt (**Shallow-Grenzen**, angeforderte Range, Zahl der
+      enthaltenen Commits) — **nicht** die Klon-Tiefe. Der Wächter urteilt über die Range und nicht
+      über die Tiefe (§1); ein Label *Tiefe* über einer Shallow-Grenzen-Zahl nennt die falsche
+      Einheit, und die Zusage nennt darum die Größe, die die Ausgabe wirklich trägt.
       **Rot:** in einem flachen Klon (`git clone --depth 1` gegen eine lokale Kopie) den Schritt
       mit einer **leeren** Range fahren → Exit ≠ 0 mit dieser Meldung. Ohne den Wächter meldet
       derselbe Lauf `0 Befund(e)`, Exit 0 (§1) — das ist das Gegenbeispiel, und es gehört einmal
@@ -98,9 +100,22 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
 - [ ] **(2) Die Checkouts, die Historie brauchen, tragen `fetch-depth: 0`, und die anderen nicht —
       mit der Begründung neben der Zeile.** Entschieden und aufgeschrieben ist, **welche** der
       sieben `actions/checkout`-Stellen betroffen sind und warum die übrigen bei Tiefe 1 bleiben.
-      **Rot:** `make ci-lint` fällt bei fehlerhafter Workflow-Syntax; und die Zuordnung selbst ist
-      rot, wenn ein Job mit einem history-lesenden Schritt ohne `fetch-depth: 0` bleibt — genau der
-      Fall, den Punkt (1) dann in CI sichtbar macht.
+      **Rot:** `make ci-lint` fällt bei fehlerhafter Workflow-Syntax — das hält die **Form** der
+      Workflows, nicht die Zuordnung. Die Zuordnung ist eine Aussage über zwei Mengen und rot,
+      sobald sie auseinanderfallen: die Schritte, die Historie lesen
+      (`grep -rnE 'doc-immutable|doc-commits' .github/workflows/ | grep -v ':[0-9]*:#' | wc -l`),
+      gegen die Checkouts mit voller Tiefe
+      (`grep -rn 'fetch-depth' .github/workflows/ | grep -v ':[0-9]*:#' | wc -l`). Beide liefern
+      heute **0** — **keine Erwartungswerte**, sie wandern mit den Workflows. **Das Kriterium ist
+      damit über der leeren Menge wahr**, und das ist der Befund, nicht seine Umgehung: der Beleg
+      dieses Slice ist die **Begründung** im Kopf von
+      [`.github/workflows/ci.yml`](../../../../.github/workflows/ci.yml), nicht ein CI-Lauf. Rot
+      wird die Zuordnung, wenn die erste Zahl steigt und die zweite nicht mitgeht.
+      **Ein Sensor dafür existiert nicht** — kein Modul der
+      [`.d-check.yml`](../../../../.d-check.yml) liest Workflows, und `make ci-lint` prüft Syntax.
+      Träger ist die Verifikation dieses Slice und der Lauf, der den ersten history-lesenden Schritt
+      hinzufügt: eine **benannte Lücke**, keine zugesagte Abdeckung
+      ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 - [ ] **(3) Der Wächter hat seinen Zahn.** Ein `test/mutations/`-Fall entfernt die Tiefen-Prüfung
       und färbt den benannten Test rot.
       **Rot:** `make mutate` meldet **BEFUND** auf genau diesen Fall, solange der Zahn nicht die
@@ -173,13 +188,25 @@ Befund, Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   `internal/emit/templates/commands/implement-slice.md` (sachlich richtig) ist im Diff dennoch
   enthalten. Die Frage bleibt für den Architect offen und wird hier nicht durch eine weitere
   Implementer-Auslegung entschieden.
-- **DoD (2) sagt einen Rot-Nachweis zu, den es heute nicht gibt.** Kein Job ruft
-  `history-range-guard` auf (`grep -rn 'run:.*history-range-guard' .github/workflows/` → 0); der
-  einzige heute vorliegende Rot-Nachweis für die Zuordnung ist der **konstruierte** flache Klon aus
-  Punkt (1), kein echter CI-Lauf, der einen history-lesenden Schritt ohne `fetch-depth: 0`
-  tatsächlich fallen lässt. Die DoD-Klausel selbst bleibt unverändert stehen ([`AGENTS.md`](../../../../AGENTS.md)
-  §3.10: die ausführende Rolle schreibt ihr eigenes Abnahmekriterium nicht um) — die Präzisierung
-  ist Sache des Planners.
+- **Die Zuordnung aus DoD (2) ist über der leeren Menge wahr.** Der erste Punkt oben betrifft die
+  *Deckung* des Wächters, dieser die *Zuordnungs-Aussage* daneben: Kein Schritt liest heute Historie
+  (`grep -rnE 'doc-immutable|doc-commits' .github/workflows/ | grep -v ':[0-9]*:#' | wc -l` → **0**,
+  kein Erwartungswert), also braucht keiner der sieben Checkouts volle Tiefe — und die Zusage „die
+  anderen bleiben bei Tiefe 1" hält, ohne je rot werden zu können. Ihr Beleg ist die **Begründung**
+  im Kopf von [`.github/workflows/ci.yml`](../../../../.github/workflows/ci.yml); ein Sensor, der
+  die zwei Mengen gegeneinander hält, existiert nicht. Der Punkt bleibt offen, bis
+  [slice-126](../open/slice-126-commit-message-traegt-eine-kennung.md) oder
+  [slice-127](../open/slice-127-adr-immutabilitaet-hat-einen-sensor.md) den ersten history-lesenden
+  Schritt liefert, und braucht bei der Closure einen der drei Ausgänge.
+- **Ein eingefrorener Rollen-Report nennt diesen Plan als Pfad, und der `git mv` nach `done/` steht
+  bevor.** Der Report der ersten Review-Runde adressiert den Plan als
+  `../plan/planning/in-progress/…`-Link; nach
+  [`AGENTS.md`](../../../../AGENTS.md) §3.11 ist ein Rollen-Report ein einfrierendes Artefakt, und
+  `make slice-mv` nimmt [`docs/reviews/`](../../../reviews/) von der Eingehend-Ersetzung
+  ausdrücklich **nicht** aus. Die Entscheidung — Verweis brechen lassen, nachziehen lassen oder den
+  Report als Kennung umschreiben — gehört nach
+  [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Festlegung 4
+  **vor** den Move und wird beim Abschluss fällig, nicht hier.
 
 ## 7. Closure-Notiz (nach `done/`)
 
