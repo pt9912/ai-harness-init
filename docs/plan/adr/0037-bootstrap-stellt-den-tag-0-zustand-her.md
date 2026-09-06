@@ -1,4 +1,4 @@
-# ADR-0037: Der Bootstrap stellt den Tag-0-Zustand des Prozesses her — die Struktur-Aufzählungen in `LH-FA-02` nennen Instanzen, nicht die Menge
+# ADR-0037: Der Bootstrap stellt den Tag-0-Zustand des Prozesses her — die Struktur-Aufzählung in `LH-FA-02` nennt Instanzen, nicht die Menge
 
 **Status:** Proposed
 
@@ -9,8 +9,8 @@
 **Bezug:**
 [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) (Init legt die
 sprach-agnostische Harness-Struktur an),
-[`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) (die zwei
-Aufzählungen, deren Reichweite hier entschieden wird, und die Zusage *out-of-the-box
+[`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) (die
+Aufzählung, deren Reichweite hier entschieden wird, und die Zusage *out-of-the-box
 gate-sicher*),
 [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) (die
 Präzedenz einer tool-autorierten Datei ohne Baseline-Vorlage),
@@ -30,7 +30,9 @@ Baseline schuldet einen Eintrag — diese Entscheidung setzt keine),
 [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 (jede Zahl unten steht neben dem Kommando, das sie liefert),
 [`MR-033`](../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
-(jede Baseline-Aussage nennt ihren Tag)
+(jede Baseline-Aussage nennt ihren Tag),
+[`MR-051`](../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
+(Setzung 2 — ein zitierter Register-Zähler ist eine datierte Messung)
 
 **Schärft:** `ARC-003` (Idempotente Ablage,
 [`spec/architecture.md §1`](../../../spec/architecture.md#1-komponenten-übersicht)) — Festlegung 3
@@ -100,12 +102,12 @@ grep -rlc 'docs/plan/planning/observations' internal/emit/templates/commands/*.m
 grep -rl 'docs/plan/planning/observations/README.md' internal/emit/templates/commands/ | wc -l   # 2
 ```
 
-Angelegt wird nichts davon. Im ganzen Go-Code steht der Name dreimal, und keine der drei Stellen
-schreibt den Ort:
+Angelegt wird nichts davon. Im Go-Code des Emitters und des Dogfood-Werkzeugs steht der Name
+dreimal, und keine der drei Stellen schreibt den Ort:
 
 ```sh
-grep -rn 'observations' internal/ --include='*.go' | grep -v '_test.go' | wc -l          # 3
-grep -rn 'observations' internal/ --include='*.go' | grep -v '_test.go' | grep -c '//'   # 2
+grep -rn 'observations' internal/ cmd/ --include='*.go' | grep -v '_test.go' | wc -l          # 3
+grep -rn 'observations' internal/ cmd/ --include='*.go' | grep -v '_test.go' | grep -c '//'   # 2
 ```
 
 Zwei sind **Kommentare** im Emitter, die die Vorlagen-Klassifikation erläutern; die dritte liegt
@@ -148,15 +150,47 @@ Sache des Slice, der den Bestandsbaum des Handbuchs schreibt (`slice-191`), nich
   `README.md` gerade **vor**. Über die emittierte Ebene sagt sie nichts — die Ebenen-Trennung
   bleibt bestehen, und deshalb braucht die emittierte Hälfte diese eigene Entscheidung.
 
-### Die zwei Aufzählungen in [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) — was sie zählen und was nicht
+### Welche Aufzählung in [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) ausgelegt wird — und was sie zählt
 
-Der tragende Satz lautet: *„Leere Struktur-Verzeichnisse (Lifecycle-Ordner, ADR-/Carveout-/
-Reviews-Ordner) werden mit `.gitkeep` gehalten"*. Drei Messungen sprechen gegen die Lesart *die
-Klammer ist die Menge*:
+Der Absatz trägt **vier** Klammern, die je eine Klasse aufzählen:
 
-1. **Die Klammer mischt Klasse und Instanz.** *„Lifecycle-Ordner"* ist eine Klassen-Bezeichnung
-   ohne Namen — sie deckt heute drei Verzeichnisse, ohne eines zu nennen; daneben stehen drei
-   namentliche. Eine geschlossene Menge zählt nicht teils Klassen, teils Mitglieder.
+```sh
+sed -n '/^### LH-FA-02/,/^### LH-FA-03/p' spec/lastenheft.md | tr '\n' ' ' \
+  | grep -oE '\([^()]*\)' | grep -E 'authored-once|ADR ·|Carveout-Index|Lifecycle-'
+# (authored-once: `AGENTS.md`, `spec/*`, `harness/*`, Root-`README.md`, Roadmap)
+# (ADR · slice · welle · carveout · review-report)
+# (ADR-/ Carveout-Index)
+# (Lifecycle- Ordner, ADR-/Carveout-/Reviews-Ordner)
+```
+
+**Keine Erwartungswerte.** Ausgelegt wird hier **die vierte** — die Klammer der leeren
+Struktur-Verzeichnisse. Ihr tragender Satz lautet: *„Leere Struktur-Verzeichnisse
+(Lifecycle-Ordner, ADR-/Carveout-/Reviews-Ordner) werden mit `.gitkeep` gehalten"*. Drei
+Messungen sprechen gegen die Lesart *die Klammer ist die Menge*:
+
+1. **Die Klammer mischt Klasse und Instanz.** Sie nennt eine Klassen-Bezeichnung ohne Namen und
+   daneben drei Ordner beim Namen:
+
+   ```sh
+   sed -n '/^### LH-FA-02/,/^### LH-FA-03/p' spec/lastenheft.md | tr '\n' ' ' \
+     | grep -oE '\(Lifecycle-[^()]*\)'
+   # (Lifecycle- Ordner, ADR-/Carveout-/Reviews-Ordner)
+   ```
+
+   Wie viele Verzeichnisse *„Lifecycle-Ordner"* deckt, sagt die Klammer nicht — und die zwei
+   Antworten, die der Bestand gibt, sind verschieden: die Verzeichniskonvention des Regelwerks
+   führt **vier** Ebenen, der Emitter hält **drei** davon mit `.gitkeep`, weil `in-progress/`
+   bereits die Roadmap trägt.
+
+   ```sh
+   grep -oE '^docs/plan/planning/(open|next|in-progress|done)/' \
+     .harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md | sort -u | wc -l   # 4
+   sed -n '/^func structureGitkeeps/,/^}/p' internal/emit/templates.go \
+     | grep -c '"docs/plan/planning/'                                                     # 3
+   ```
+
+   **Keine Erwartungswerte.** Eine geschlossene Menge zählt nicht teils Klassen, teils
+   Mitglieder — und sie lässt die Zahl ihrer Mitglieder nicht offen.
 2. **Das strittige Verzeichnis existierte zum Zeitpunkt der Aufzählung nicht.** Der Satz kam mit
    dem Change Request `0.8.0`; die Verzeichnis-Form des Adaptions-Blocks kam sechs Wochen später:
 
@@ -214,13 +248,14 @@ Platzhalter-Link, der ein frisches `docs-check` röten könnte.
 ## Entscheidung
 
 **Der Bootstrap stellt den Zustand her, den der von ihm mitgelieferte Prozess für Tag 0
-beschreibt; die Struktur-Aufzählungen in
-[`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) nennen
+beschreibt; die Struktur-Aufzählung in
+[`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) nennt
 Instanzen, keine Menge.** Vier Festlegungen.
 
-**1. Die zwei Struktur-Aufzählungen in
-[`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) sind
-beispielhaft, nicht abschließend.** Maßgeblich ist die **Eigenschaft**, nicht die Namensliste:
+**1. Die Aufzählung der leeren Struktur-Verzeichnisse in
+[`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) — die vierte
+der vier Klassen-Klammern des Absatzes, *„(Lifecycle-Ordner, ADR-/Carveout-/Reviews-Ordner)"* —
+ist beispielhaft, nicht abschließend.** Maßgeblich ist die **Eigenschaft**, nicht die Namensliste:
 
 > Ein Ort ist vom Bootstrap anzulegen, wenn (a) das mitemittierte Regelwerk oder ein
 > mitemittierter Text ihn für ein frisches Repo im **Indikativ** als vorhanden führt, (b) er
@@ -234,8 +269,50 @@ Alle drei Bedingungen zusammen, nicht einzeln. Die Aufnahme eines Ortes, der sie
 keine Anforderung ändert sich, keine Zusage wird zurückgenommen, und die Zusage *aus dem Nichts
 wird nichts emittiert*
 ([`spec/lastenheft.md §5`](../../../spec/lastenheft.md#5-globale-out-of-scope-punkte)) bleibt
-unangetastet, weil (a) die Quelle benennt. **`harness/conventions/` erfüllt die drei** und ist
-damit gedeckt.
+unangetastet, weil (a) die Quelle benennt.
+
+**Die drei übrigen Klassen-Klammern desselben Absatzes bleiben unberührt.** Die
+Singleton-Klammer *„(authored-once: …)"* zählt **template-abgeleitete** Dateien — die
+Register-`README.md` ist keine, der vendored Baum führt für sie keine Vorlage, und ihre
+Herkunfts-Klasse ist die tool-autorierte aus
+[`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) /
+[ADR-0006](0006-durchsetzung-commands-tool-als-quelle.md). Die Klammer der **Wiederkehrenden**
+und die der **derivativen Index-Sichten** tragen im selben Absatz je ihre eigene Klassen-Regel;
+Festlegung 4 lässt beide stehen. Festlegung 1 legt eine Klammer aus und hebt keine
+Klassen-Regel auf.
+
+**`harness/conventions/` erfüllt die drei** — je Bedingung einzeln belegt, in genau der Form, die
+Folgepflicht 1 unten vom umsetzenden Lauf verlangt:
+
+- **(a)** Das mitemittierte Regelwerk führt den Ort im Indikativ: Baseline `v6.0.0`,
+  `grundlagen-harness-dateien.md` §Verzeichniskonvention, in derselben Baumdarstellung wie
+  `docs/plan/planning/observations/` — *„harness/conventions/ # ein MR je Datei; done/ =
+  aufgelöst"*. Die Vorlage, aus der der Bootstrap den Konventionsspeicher stempelt, nennt ihn ein
+  zweites Mal: *„Jede Adaption ist eine eigene Datei unter `harness/conventions/`"*.
+
+  ```sh
+  grep -c '^harness/conventions/ ' \
+    .harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md      # 1
+  grep -c 'Jede Adaption ist eine eigene Datei unter `harness/conventions/`' \
+    .harness/baseline/v6.0.0/templates/harness/conventions.template.md    # 1
+  ```
+
+- **(b)** Der emittierte Bestand trägt unter `harness/conventions/` nichts — ohne den Bootstrap
+  entsteht das Verzeichnis nicht, weil `git` ein leeres Verzeichnis nicht führt. Gemessen an der
+  `want`-Liste des Mengen-Vergleichs, mit Gegenprobe an derselben Liste, damit die Null nicht aus
+  einem leeren Ausschnitt stammt:
+
+  ```sh
+  sed -n '/want := \[\]string{/,/^[[:space:]]*}$/p' internal/emit/templates_test.go \
+    | grep -c 'harness/conventions\.md'   # 1 — die Index-Datei steht in der Liste
+  sed -n '/want := \[\]string{/,/^[[:space:]]*}$/p' internal/emit/templates_test.go \
+    | grep -c 'harness/conventions/'      # 0 — das Verzeichnis daneben nicht
+  ```
+
+- **(c)** Der Träger ist ein `.gitkeep`. Es ist leer, trägt also keinen Link und damit keinen
+  Platzhalter-Link.
+
+**Keine Erwartungswerte** — alle vier Zahlen wandern mit dem Baum.
 
 **2. `docs/plan/planning/observations/` entsteht beim Init, und zwar mit einer `README.md`, nicht
 mit einer `.gitkeep`.** Die Nicht-Anlage ist eine Lücke gegenüber dem mitgelieferten Regelwerk,
@@ -258,9 +335,32 @@ unberührt und behält seine bisherige Behandlung.
 **4. Was diese Entscheidung ausdrücklich nicht öffnet.** Sie ist ein **Kriterium**, keine
 Blankovollmacht:
 
-- Die **derivativen Index-Sichten** (ADR-Index, Carveout-Index) bleiben *Fülle-wenn-Inhalt-da* —
-  sie scheitern an Bedingung (c) der Festlegung 1, und genau daran hat sie der Voll-Smoke einmal
-  gemessen.
+- Die **derivativen Index-Sichten** (ADR-Index, Carveout-Index) bleiben *Fülle-wenn-Inhalt-da*.
+  Zwei Gründe, jeder für sich tragend. **(i) Das Subjekt der Festlegung 1 ist ein Ort, nicht sein
+  Inhalt.** Bedingung (b) fragt, ob er ohne den Bootstrap entsteht — `docs/plan/adr/` und
+  `docs/plan/carveouts/` entstehen bereits, der Bootstrap hält beide mit `.gitkeep`. Ein Index
+  ist eine Datei **in** einem angelegten Ort und fällt nicht unter das Subjekt. **(ii) Derselbe
+  Absatz in [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
+  gibt ihnen ihre eigene Klassen-Regel:** *„Derivative Index-Sichten
+  (ADR-/Carveout-Index) sind Fülle-wenn-Inhalt-da — sie entstehen durch Kopieren aus der
+  Baseline, sobald der erste ADR/Carveout existiert, nicht als gate-unsichere
+  Platzhalter-Skelette bei Bootstrap."* Festlegung 1 legt die Klammer der leeren
+  Struktur-Verzeichnisse aus; sie hebt diese Regel nicht auf. **Bedingung (c) trägt den
+  Ausschluss nicht:** der Emit-Pfad nimmt jedem Markdown-Link, dessen Ziel-Pfad einen
+  `<…>`-Platzhalter trägt, die Link-Syntax, und beide Index-Vorlagen tragen genau einen solchen
+  Link und sonst keinen — ein Index-Skelett röte ein frisches `docs-check` heute nicht mehr.
+
+  ```sh
+  sed -n '/^func structureGitkeeps/,/^}/p' internal/emit/templates.go \
+    | grep -cE '"docs/plan/(adr|carveouts)"'                                    # 2
+  grep -c 'body = NeutralizePlaceholderLinks(body)' internal/emit/templates.go  # 1
+  grep -oE '\]\([^)]*\)' \
+    .harness/baseline/v6.0.0/templates/docs/plan/adr/README.template.md \
+    .harness/baseline/v6.0.0/templates/docs/plan/carveouts/README.template.md
+  # je genau eine Zeile, beide mit einem <…>-Platzhalter im Ziel-Pfad
+  ```
+
+  **Keine Erwartungswerte.**
 - Das **Reconciliation-Register** des Brownfield-Rückbaus bleibt **unemittiert** (Vorlage:
   [`reconciliation.template.md`](../../../.harness/baseline/v6.0.0/templates/docs/plan/planning/reconciliation.template.md)).
   Das Regelwerk legt es im Rückbau an, nicht im Skelett-Schritt — es scheitert an (a), weil der
@@ -282,7 +382,7 @@ Blankovollmacht:
 | B — die Handbuch-Linie festschreiben: Nicht-Anlage ist gewollt, dafür die drei Anweisungssätze umschreiben, bis sie den Ort nicht mehr nennen | löst die Fundstellen ohne neue emittierte Datei; das Werkzeug bleibt, wie es ist | Löst den Konflikt auf der falschen Ebene: Das mitgelieferte Regelwerk sagt weiter, dass jedes Repo mit der Ablage anfängt — es ist Teil desselben emittierten Standes ([`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)), und ein Umschreiben der Anweisungssätze macht sie nur stumm, nicht richtig. Und es verschlechtert sie: der Sichtungs- und der Lese-Schritt bekämen keine Adresse mehr |
 | C — `.gitkeep` in `observations/` statt einer `README.md` | eine Zeile in einer bestehenden Liste, keine autorierte Datei, keine Herkunfts-Frage | Trifft die zwei Fundstellen nicht, die auf `observations/README.md` zeigen, und lässt die eine Aussage weg, für die die Datei laut Regelwerk existiert. Ein `.gitkeep` sagt *hier ist ein Verzeichnis*; verlangt ist *hier wird geführt, und es ist leer* |
 | D — Change Request an [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3): Aufzählung als Menge lesen und per Version-Bump erweitern | maximale Formtreue gegenüber Rang 1; der Auftraggeber entscheidet ausdrücklich | Behandelt eine Auslegungs-Frage als Vertragsänderung und erzeugt damit eine Vertragsänderung je künftigem Struktur-Ort — dieselbe Runde, die [`AGENTS.md`](../../../AGENTS.md) §3.11 für die Adress-Klasse gerade abgeschafft hat. Und sie wäre inhaltlich falsch begründet: der CR `0.8.0` konnte `harness/conventions/` nicht ausschließen, weil es die Form erst sechs Wochen später gab |
-| **E — gewählt: Eigenschaft statt Aufzählung (drei kumulative Bedingungen) + tool-autorierte Register-`README.md` als `skip-if-present`** | Der emittierte Stand hört auf, sich selbst zu widersprechen; die Regel gilt für den nächsten Ort ohne neue Runde; sie bleibt eng, weil alle drei Bedingungen zusammen gelten und die zwei bekannten Gegenbeispiele (derivative Indexe, Reconciliation-Register) an ihr scheitern statt ausgenommen zu werden; die Herkunfts-Klasse ist eine bereits geführte, nicht eine neue | Legt einen Rang-1-Satz aus, ohne dass der Auftraggeber ihn geändert hätte — wer die Aufzählung als Menge liest, sieht darin eine Vertragsdehnung. Die drei Bedingungen sind **Urteil**, nicht Muster: kein Sensor prüft (a), und wer *„nennt ihn im Indikativ"* weit auslegt, kann den Bestand ausdehnen. Und die emittierte `README.md` ist eine zweite Fassung einer Aussage des Regelwerks — sie kann gegen `modul-06-roadmap.md` driften, ohne dass etwas rot wird |
+| **E — gewählt: Eigenschaft statt Aufzählung (drei kumulative Bedingungen) + tool-autorierte Register-`README.md` als `skip-if-present`** | Der emittierte Stand hört auf, sich selbst zu widersprechen; die Regel gilt für den nächsten Ort ohne neue Runde; sie bleibt eng, und zwar aus drei Gründen statt aus einem: die drei Bedingungen gelten kumulativ, ihr Subjekt ist ein **Ort** und nicht dessen Inhalt, und sie hebt keine der drei übrigen Klassen-Regeln desselben [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)-Absatzes auf — die derivativen Indexe behalten ihre (Festlegung 4), das Reconciliation-Register scheitert an (a); die Herkunfts-Klasse ist eine bereits geführte, nicht eine neue | Legt einen Rang-1-Satz aus, ohne dass der Auftraggeber ihn geändert hätte — wer die Aufzählung als Menge liest, sieht darin eine Vertragsdehnung. Die drei Bedingungen sind **Urteil**, nicht Muster: kein Sensor prüft (a), und wer *„nennt ihn im Indikativ"* weit auslegt, kann den Bestand ausdehnen. Und die emittierte `README.md` ist eine zweite Fassung einer Aussage des Regelwerks — sie kann gegen `modul-06-roadmap.md` driften, ohne dass etwas rot wird |
 
 ## Konsequenzen
 
@@ -357,7 +457,8 @@ Deckung, die kein Lauf prüft, wird nicht als vorhanden verbucht).
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-09-06 | **Proposed** | Architect-Lauf zu den zwei offenen Risiken aus `slice-190` §6, die dessen `open → next`-Trigger sperren. Anlass ist die vom Emitter selbst benannte Grenze (*„Ob einer dazukommt, entscheidet der Architect"*) und der dritte Eintritt der Klasse [`BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger`](../planning/observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/observation.md). Geprüft und als nicht tragend verworfen sind die zwei möglichen Gegen-Gründe [ADR-0007](0007-bootstrap-phasen.md) und [ADR-0034](0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md); die Aufzählungs-Frage ist an drei Messungen entschieden, nicht an der Lesart |
+| 2026-09-06 | **Proposed** | Architect-Lauf zu zwei Fragen aus `slice-190`: der **Change-Request-Frage** aus §3 — sie ist die eine Bedingung, die §4 für `open → next` neben dem WIP-Limit nennt — und dem **Register-Ort** aus §6, den derselbe Plan als *„Entscheidung des Architect, kein Code-Zug"* führt. Welche Risiken §6 mit welchem Ausgang schließt, sagt diese Datei nicht (Folgepflicht 3). Anlass ist die vom Emitter selbst benannte Grenze (*„Ob einer dazukommt, entscheidet der Architect"*) und die Klasse [`BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger`](../planning/observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/observation.md), deren abgeleiteter Zähler am 2026-09-06 bei `ls docs/plan/planning/observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/evidence/*.md \| wc -l` → **2** steht — **kein Erwartungswert** ([`MR-051`](../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung) Setzung 2); der Beleg für diesen Vorgang fällt mit der Slice-Closure, nicht mit dieser Datei ([`AGENTS.md`](../../../AGENTS.md) §3.10). Geprüft und als nicht tragend verworfen sind die zwei möglichen Gegen-Gründe [ADR-0007](0007-bootstrap-phasen.md) und [ADR-0034](0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md); die Aufzählungs-Frage ist an drei Messungen entschieden, nicht an der Lesart |
+| 2026-09-06 | Überarbeitet, weiter **Proposed** | Reviewer-Runde `2026-09-06-adr-0037-konsistenz-review.md`, Verdikt *Konsistenz NICHT BESTÄTIGT* — **ohne Einwand gegen die Entscheidung selbst**: alle elf abgedruckten Kommandos reproduzieren, beide Kern-Argumentationen halten dem Volltext stand, und die zwei Gegenbeispiele fallen nicht unter die Eigenschaft. Die **fünf** blockierenden MEDIUM sind im `Proposed`-Fenster behoben, jede Zahl dieser Runde neu gefahren. **M-1:** Der Ausschluss der derivativen Indexe hing an Bedingung (c); der Emit-Pfad nimmt jedem Link mit `<…>` im Ziel-Pfad die Link-Syntax (`NeutralizePlaceholderLinks`), und beide Index-Vorlagen tragen genau einen solchen Link — (c) trägt nicht. Festlegung 4 steht jetzt auf zwei gemessenen Gründen (Subjekt-Grenze *Ort statt Inhalt*; die eigene Klassen-Regel desselben [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)-Absatzes), und die Enge-Zusage von Alternative E nennt dieselben. **M-2:** Die Antwort auf die zweite Frage nannte für keine der drei Bedingungen eine Fundstelle; sie stehen jetzt einzeln, mit Kommando, Regelwerks-Zitat nach [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) Festlegung 2 und einer Gegenprobe, die die Null von (b) gegen einen leeren Ausschnitt absichert. **M-3:** *„die zwei Struktur-Aufzählungen"* bestimmte keine Menge — der Absatz trägt **vier** Klassen-Klammern; ausgelegt wird genau eine, die der leeren Struktur-Verzeichnisse, und für die drei übrigen steht, warum sie unberührt bleiben. Titel, Abschnittsüberschrift, Entscheidungssatz und der ADR-Index sind auf den Singular nachgezogen. **M-4:** Die Zeile darüber beschrieb den Anlass als *zwei offene Risiken, die den Trigger sperren*; gemessen nennt §4 **eine** Bedingung für `open → next` neben dem WIP-Limit, und §6 trug am 2026-09-06 **sechs** Risiken ohne Ausgang (`sed -n '/^## 6\./,/^## 7\./p' docs/plan/planning/*/slice-190-*.md \| grep -c 'Ausgang:\*\* <offen>'` → **6**, kein Erwartungswert; der Glob statt der Pfad-Adresse nach [`AGENTS.md`](../../../AGENTS.md) §3.11). Sie nennt jetzt die zwei beantworteten Fragen und keine Zahl über fremden Stand. **M-5:** Beide Messwerte tragen ihr Kommando — die Lifecycle-Zahl in beiden Lesarten (vier Ebenen im Regelwerk, drei `.gitkeep` im Emitter) und der Register-Zähler mit Stand, Ableitungs-Kommando und *kein Erwartungswert*; [`MR-051`](../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung) steht dafür jetzt im `Bezug`. **L-1 bis L-4 und INFO-1 bis INFO-3 sind hier nicht behoben** — jene Runde führt keinen von ihnen als blockierend; INFO-1 ist als Nebenwirkung von M-5 mitgezogen, weil sein Kommando ohnehin neu gefahren wurde und jetzt `cmd/` mitliest. Der Statuswechsel bleibt offen: eine zweite Runde prüft diese Korrektur |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
