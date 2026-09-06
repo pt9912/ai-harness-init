@@ -178,11 +178,11 @@ baseline-verify: ## Vendored Baseline netzlos verifizieren (Integrität + Vollst
 # kanonisch als BASELINE_ZIP_SHA256 und dupliziert in .d-check.yml; beide koppelt
 # test/sources-pin.bats fail-closed. Braucht Netz, deshalb NICHT in gates
 # (LH-QA-01). Prueft NUR das Asset des gepinnten Tags — die Tag-Achse prueft
-# baseline-freshness. Exit: 0 = kein Drift, !=0 = Alarm. Die sechs --disable-Flags
-# isolieren den Lauf auf `sources`: sie nennen genau die sechs Module, die
+# baseline-freshness. Exit: 0 = kein Drift, !=0 = Alarm. Die sieben --disable-Flags
+# isolieren den Lauf auf `sources`: sie nennen genau die sieben Module, die
 # .d-check.yml fuer docs-check aktiviert — dort laufen sie netzlos und in gates.
 regelwerk-check: ## Upstream-Content-Drift des Baseline-ZIP (d-check sources, Netz) — Maintenance/CI, NICHT in gates
-	docker run --rm -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable sources --disable links --disable anchors --disable ids --disable matrix --disable codepaths --disable spans
+	docker run --rm -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable sources --disable links --disable anchors --disable ids --disable matrix --disable codepaths --disable spans --disable planning
 	@echo "Hinweis: prueft NUR das Asset von $(BASELINE_TAG). Ein NEUER Tag upstream bleibt hier unsichtbar — 'make baseline-freshness' prueft die Release-Liste (slice-018, MR-007)."
 
 # Meldet einen neueren Upstream-Tag als BASELINE_TAG: folgt dem
