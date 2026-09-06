@@ -410,11 +410,10 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 //	    # ein MR je Datei"), und die Vorlage, aus der die emittierte
 //	    harness/conventions.md gestempelt wird, nennt ihn im Rumpf ein zweites Mal
 //	    ("Jede Adaption ist eine eigene Datei unter harness/conventions/").
-//	(b) Ohne den Bootstrap entsteht das Verzeichnis nicht: die emittierte
-//	    harness/conventions.md selbst zaehlt als Singleton, das Verzeichnis
-//	    daneben nicht (TestTemplates_EmittierterBestandVollstaendig, want-Liste
-//	    unten fuehrt "harness/conventions.md" ohne ein zusaetzliches
-//	    "harness/conventions/").
+//	(b) Ohne den Bootstrap entsteht das Verzeichnis nicht: git trackt kein
+//	    leeres Verzeichnis, und ohne einen eigenen Traeger bliebe
+//	    harness/conventions/ nach dem Emit unsichtbar, obwohl die emittierte
+//	    harness/conventions.md es referenziert.
 //	(c) Der Traeger ist ein leeres .gitkeep — kein Platzhalter-Link.
 //
 // docs/plan/carveouts/done und docs/plan/planning/observations bleiben aussen
@@ -498,9 +497,14 @@ const conventionsPathRefNew = "kopiert aus der\ngleichnamigen Eintrags-Vorlage `
 // gibt es unter diesem Pfad nichts. Ersetzt wird die Pfad-Form durch eine
 // Nennung ohne Verzeichnis-Segment — der Dateiname bleibt lesbar, zeigt aber
 // nicht mehr auf einen Ort, den es im Ziel-Repo nicht gibt. Ohne den Satzteil
-// unveraendert. Deckungs-Grenze wie bei NeutralizeRoadmap: Wortlaut-Drift im
-// vendored Fremdtext faengt allein `make smoke` gegen den realen Satz, nicht
-// dieser Test.
+// unveraendert. Deckungs-Luecke, anders als bei NeutralizeRoadmap (dort ein
+// gebrochener Markdown-Link, den `links` im emittierten Ziel faehrt): der hier
+// neutralisierte Defekt ist ein Inline-Code-Pfad, den allein `codepaths` liest —
+// und `codepaths` ist im emittierten Pruefbereich auskommentiert
+// (internal/emit/templates/d-check.yml: modules: [links, anchors]). Driftet der
+// Wortlaut im vendored Baum, wird dieser strings.ReplaceAll ein stiller No-op;
+// kein Sensor dieses Repos faengt das heute (ADR-0037 §Fitness Function nennt
+// dieselbe Luecke fuer die Deckung zwischen emittiertem Text und Bestand).
 func NeutralizeConventionsTemplateRef(s string) string {
 	return strings.ReplaceAll(s, conventionsPathRefOld, conventionsPathRefNew)
 }
@@ -521,9 +525,15 @@ const carveoutsDoneRefNew = "sondern in ihr eigenes `docs/plan/carveouts/done/` 
 // NeutralizePlanningReadmeCarveoutsDoneRef macht die emittierte
 // docs/plan/planning/README.md codepath-sicher: sie setzt denselben
 // d-check:ignore-Marker, den die Baseline in carveout.template.md fuer
-// denselben Ort bereits fuehrt. Ohne die Zeile unveraendert. Deckungs-Grenze
-// wie bei NeutralizeRoadmap: Wortlaut-Drift im vendored Fremdtext faengt
-// allein `make smoke` gegen den realen Satz, nicht dieser Test.
+// denselben Ort bereits fuehrt. Ohne die Zeile unveraendert. Deckungs-Luecke,
+// anders als bei NeutralizeRoadmap (dort ein gebrochener Markdown-Link, den
+// `links` im emittierten Ziel faehrt): der hier neutralisierte Defekt ist ein
+// Inline-Code-Pfad, den allein `codepaths` liest — und `codepaths` ist im
+// emittierten Pruefbereich auskommentiert (internal/emit/templates/d-check.yml:
+// modules: [links, anchors]). Driftet der Wortlaut im vendored Baum, wird dieser
+// strings.ReplaceAll ein stiller No-op; kein Sensor dieses Repos faengt das
+// heute (ADR-0037 §Fitness Function nennt dieselbe Luecke fuer die Deckung
+// zwischen emittiertem Text und Bestand).
 func NeutralizePlanningReadmeCarveoutsDoneRef(s string) string {
 	return strings.ReplaceAll(s, carveoutsDoneRefOld, carveoutsDoneRefNew)
 }
