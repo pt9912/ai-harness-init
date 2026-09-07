@@ -533,11 +533,22 @@ weiter belastet — er hätte dieselbe Messstelle ein drittes Mal abgelesen.
   [`README.md`](../observations/README.md) des Registers sagt dasselbe für den Lese-Schritt
   ausdrücklich. Gemessen: `ls docs/plan/planning/welle-*.md | wc -l` → **3** (kein
   Erwartungswert). Die Tabelle *Träger im Repo ohne Wellen* greift hier also nicht.
-  **(1) Der Lese-Schritt gehört der nächsten Welle-Closure.**
+  **(1) Der Lese-Schritt — für den einen Eintrag über der Schwelle hier, für den Rest dort.**
   [`emittierte-vorlagen-klassifikation-ohne-traeger`](../observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/observation.md)
-  erreicht mit dem Beleg dieses Slice **3×** und steht damit über der Schwelle; sein `state.md`
-  bleibt `offen`, was zwischen dem hebenden Beleg und dem Lese-Schritt zulässig ist. Der
-  Übertritt ist hier festgehalten, damit die Welle-Closure ihn nicht suchen muss.
+  erreicht mit dem Beleg dieses Slice **3×**. Ihn `offen` liegen zu lassen, bis eine Welle
+  schließt, wäre der write-only-Zustand, den `modul-06-roadmap.md` §Das Beobachtungs-Register
+  ausschließt — *„Nicht zulässig ist ein Eintrag, der eine Closure ohne Ausgang übersteht"* —, und
+  der Ausgang ist ohne Rollen-Grenzverletzung erreichbar. Gesetzt ist **`geplant`**, Kennung
+  `slice-194`. *Verkörpert* wäre zu viel: Das Kriterium **steht** zwar, vom Architect als
+  [`ADR-0037`](../../adr/0037-bootstrap-stellt-den-tag-0-zustand-her.md) geschrieben — aber der
+  Ausgang *verkörpert* verlangt einen Zielort, der den Herkunfts-Anker **trägt**, und ein ab
+  `Accepted` unveränderliches Artefakt kann ihn nicht mehr aufnehmen
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.4). Schritt 3b der Rollen-Sequenz
+  (Planner → Architect → Planner) wird dabei nicht ausgelöst: Diese Closure **schreibt** keine
+  Regel, sie erkennt den Übertritt und bucht.
+  **Alles unter der Schwelle liest diese Closure nicht** — das ist der Sichtungs-Schritt der
+  nächsten Slice-Planung (§8) bzw. der Lese-Schritt der nächsten Welle-Closure für alles, was
+  später übertritt.
   **(2) Das Trigger-Audit ist gemessen, aber nicht eingetragen** — es ist Schritt 2 der
   Wellen-Closure. Zwei Carveouts (`ls docs/plan/carveouts/CO-*.md | wc -l` → **2**), beide mit
   gesetztem Ausgang: [CO-001](../../carveouts/CO-001-bats-shell-lint.md) aktiv mit eingetretenem
@@ -557,11 +568,43 @@ weiter belastet — er hätte dieselbe Messstelle ein drittes Mal abgelesen.
   → **2**, kein Erwartungswert). Beide tragen einen *Benannt, nicht gezählt*-Abschnitt, sind also
   gewollt beleglos — die maschinelle Hälfte *jede Zeile trägt mindestens einen Beleg* trifft sie
   trotzdem. Ob die Prüfung oder die Form nachzieht, entscheidet nicht diese Closure.
+  **Ein zweiter Rückstand aus demselben Vorlauf, und er wiegt schwerer:** zwei Einträge stehen bei
+  **3×** und tragen weiter `offen` —
+
+  ```sh
+  for d in docs/plan/planning/observations/BEO-ALL/*/; do
+    n=$(ls "$d/evidence"/*.md 2>/dev/null | wc -l); s=$(head -1 "$d/state.md")
+    [ "$n" -ge 3 ] && [ "$s" = "**Stand:** offen" ] && echo "$(basename $d) $n"
+  done
+  # zaehler-label-nennt-falsche-einheit 3
+  # zitat-grep-uebersieht-zeilenumbruch-und-markup 3
+  ```
+
+  **Keine Erwartungswerte.** Beide sind **nicht** von diesem Slice gehoben und liegen thematisch
+  außerhalb; ihren Ausgang zu setzen hieße, über fremde Gegenstände zu urteilen. Sie stehen damit
+  in genau dem Zustand, den `modul-06-roadmap.md` als unzulässig bezeichnet, und sind die
+  Instanzen, an denen
+  [`schwellen-uebertritt-ohne-zustaendige-rolle`](../observations/BEO-ALL/schwellen-uebertritt-ohne-zustaendige-rolle/observation.md)
+  *(„die Zeile bleibt ohne Ausgang stehen und wird von der nächsten Closure geerbt")* real wird —
+  hier benannt, damit die nächste Closure sie nicht suchen muss.
   **(4) Archiviert wird nicht.** Die Archivierung ist Schritt 4 derselben Wellen-Closure, und
   `make archive-welle` ist auf diesen Bestand ohnehin nicht anwendbar: die Sperren `untergrenze`
   (`ls docs/plan/planning/done/*/archiv.zip 2>/dev/null | wc -l` → **0**) und `haenger` stehen.
   Kein `done/slice-190-archiv.zip` also, und das ist eine Entscheidung, keine Auslassung.
-- **Steering-Loop-Eintrag — geschärfte Regel:** *Wer in einem Dogfood-Artefakt einen Sensor als
+- **Steering-Loop-Eintrag — Schwellen-Übertritt, Ausgang `geplant`:** *Ob der Bootstrap einen Ort
+  anlegt, entscheidet die **Eigenschaft** — nennt ein mitemittierter Text ihn für ein frisches Repo
+  im Indikativ, entsteht er ohne den Bootstrap nicht, und erzeugt sein Anlegen keinen
+  Platzhalter-Link —, nicht die Namensliste des Lastenhefts.* Auslöser:
+  [`emittierte-vorlagen-klassifikation-ohne-traeger`](../observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/observation.md)
+  (`slice-182`, `slice-184`, `slice-190` — 3×), Kennung `slice-194`.
+  *Kein `liegt in`, und der Grund ist nicht Bequemlichkeit:* Das Kriterium **steht** — der
+  Architect hat es als
+  [`ADR-0037`](../../adr/0037-bootstrap-stellt-den-tag-0-zustand-her.md) geschrieben —, aber eine
+  ADR ist eine Entscheidung und kein Zielort einer Verkörperung, und *verkörpert* verlangt einen
+  Zielort, der den Herkunfts-Anker **trägt**; ein ab `Accepted` unveränderliches Artefakt kann ihn
+  nicht mehr aufnehmen ([`AGENTS.md`](../../../../AGENTS.md) §3.4). Offen ist damit die Anwendung,
+  und die trägt eine Kennung.
+- **Steering-Loop-Eintrag — geschärfte Regel, gezählt:** *Wer in einem Dogfood-Artefakt einen Sensor als
   Auffang benennt, dessen Lauf im **emittierten Ziel** stattfindet, misst die Deckung an der
   Gate-Config des Ziels — nicht an der, die er vor sich hat.* Die zwei Konfigurationen sind
   verschiedene Dateien mit verschiedenen Modul-Listen, und die Werkzeugnamen sind auf beiden
@@ -576,7 +619,9 @@ weiter belastet — er hätte dieselbe Messstelle ein drittes Mal abgelesen.
   (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l`) — keine Erwartungswerte,
   sie wandern mit dem Register:
   [`emittierte-vorlagen-klassifikation-ohne-traeger`](../observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/observation.md)
-  **3×** (Schwelle erreicht, s. o.) ·
+  **3×** — Schwelle erreicht, Stand mit dieser Closure von `offen` auf **geplant** gesetzt
+  (Kennung `slice-194`; warum nicht *verkörpert*, und die Sensor-Grenze, stehen in seiner
+  `state.md`) ·
   [`zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
   **8×** (HIGH-1) ·
   [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
@@ -591,6 +636,14 @@ weiter belastet — er hätte dieselbe Messstelle ein drittes Mal abgelesen.
   **1×**, neu (§6) ·
   [`gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse`](../observations/BEO-ALL/gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse/observation.md)
   **1×**, neu (INFO-2).
+  **Geprüft und ausdrücklich *nicht* gebucht:**
+  [`schwellen-uebertritt-ohne-zustaendige-rolle`](../observations/BEO-ALL/schwellen-uebertritt-ohne-zustaendige-rolle/observation.md)
+  (**2×**) beschreibt den Übertritt, dessen Ausgang *„eine Handlung verlangt, die der Rolle dieser
+  Closure nicht zusteht"*, sodass *„die Zeile ohne Ausgang stehen bleibt und von der nächsten
+  Closure geerbt wird"*. Genau das ist hier **nicht** eingetreten: Der Ausgang `geplant` mit
+  Kennung stand der Planner-Rolle offen, und die Zeile wird nicht vererbt. Der Eintrag als dritte
+  Instanz zu buchen hieße, die Beobachtung an der Frage festzumachen statt an ihrem Ausgang — der
+  Zähler misst, was **eingetreten** ist.
 - **Folge-Slices:**
   [slice-194](../open/slice-194-bootstrap-legt-den-register-ort-an.md) (Der Bootstrap legt den
   Register-Ort an) — mit dieser Closure geschnitten, ist eine Datei in `open/` ·
