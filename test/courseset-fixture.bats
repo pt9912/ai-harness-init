@@ -81,24 +81,24 @@ in_scope() {
   }
 }
 
-@test "fixture: der reale Satz liefert genau 23 in-scope-Templates" {
-  # Die Zahl ist kein Selbstzweck: von 23 in-scope-Templates emittiert der Tool genau
+@test "fixture: der reale Satz liefert genau 24 in-scope-Templates" {
+  # Die Zahl ist kein Selbstzweck: von 24 in-scope-Templates emittiert der Tool genau
   # 11 als Singletons (inkl. der 2 Durchsetzungs-Skills und des
   # Beobachtungs-Registers); ununemittiert bleiben 2 derivative Indexe
-  # (emit.isDerivativeIndex), 9 wiederkehrende (emit.isRecurring) und 1 modus-gebundenes
+  # (emit.isDerivativeIndex), 10 wiederkehrende (emit.isRecurring) und 1 modus-gebundenes
   # Register (emit.isBrownfieldOnly). Bewegt sich die Zahl, hat upstream etwas
   # hinzugefuegt oder entfernt — und die Aufzaehlungen brauchen dann eine Entscheidung,
   # statt das Neue still als Singleton zu behandeln.
   local n
   n="$(real_paths | in_scope | wc -l | tr -d ' ')"
-  [ "$n" -eq 23 ] || {
-    echo "in-scope-Templates: $n, erwartet 23"
+  [ "$n" -eq 24 ] || {
+    echo "in-scope-Templates: $n, erwartet 24"
     real_paths | in_scope
     return 1
   }
 }
 
-@test "fixture: die zehn wiederkehrenden Templates existieren real" {
+@test "fixture: die elf wiederkehrenden Templates existieren real" {
   # emit.isRecurring zaehlt sie namentlich auf (LH-FA-02). Ab 0.8.0 werden sie NICHT
   # emittiert, sondern aus der vendored Baseline je Artefakt kopiert (ADR-0005) —
   # verschwindet einer upstream, bricht genau dieses referenzierte Modell (der Nutzer
@@ -120,7 +120,8 @@ in_scope() {
     harness/conventions/MR-NNN-titel.template.md \
     docs/plan/planning/archiv-stub-slice.template.md \
     docs/plan/planning/archiv-stub-welle.template.md \
-    docs/plan/planning/observation.template.md
+    docs/plan/planning/observation.template.md \
+    harness/sensors/gate.template.md
   do
     [ -f "$REAL/$rel" ] || { echo "wiederkehrendes Template fehlt real: $rel"; return 1; }
   done

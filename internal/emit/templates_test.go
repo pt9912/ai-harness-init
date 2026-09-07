@@ -75,6 +75,9 @@ func courseSet() fs.FS {
 		// Verbleib-Satz): eine Vorlage je Beobachtung, seit die Verzeichnis-Form die
 		// stehende Register-Datei abloest (ADR-0034, emit.isRecurring Lege-Satz)
 		"docs/plan/planning/observation.template.md": f(hint + body),
+		// ebenfalls wiederkehrend, wieder ein Kopiere-Satz: eine Sensor-Datei je
+		// Gate mit mehr als einem Satz Vertrag (emit.isRecurring)
+		"harness/sensors/gate.template.md": f(hint + body),
 		// in scope, aber modus-gebunden: das Reconciliation-Register braucht nur ein
 		// Repo aus dem Brownfield-Bootstrap (emit.isBrownfieldOnly)
 		"docs/plan/planning/reconciliation.template.md": f(hint + body),

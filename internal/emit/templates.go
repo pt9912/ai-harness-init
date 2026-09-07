@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// isRecurring markiert die zehn wiederkehrenden Templates (LH-FA-02, ab 0.8.0):
+// isRecurring markiert die elf wiederkehrenden Templates (LH-FA-02, ab 0.8.0):
 // sie werden NICHT (mehr) emittiert. Sie liegen aus dem Fetch bereits vendored unter
 // .harness/baseline/<tag>/templates/ und werden von dort je Artefakt kopiert (wie im
 // Dogfood, ADR-0005) — eine co-located .md-Kopie waere Redundanz und widerspraeche
@@ -23,13 +23,15 @@ import (
 // dazunimmt, sagt genau das zu. Der Ort steht im Template-Hinweis, und der Satz,
 // der ihn einfuehrt, hat drei Formen:
 //
-//	KOPIERE-SATZ ("Kopiere … nach <pfad>.md") — so nennen ihn sieben der zehn,
+//	KOPIERE-SATZ ("Kopiere … nach <pfad>.md") — so nennen ihn acht der elf,
 //	  darunter welle-results.template.md ("… docs/plan/planning/done/
 //	  welle-<NN>-results.md": eine je Welle, neben die Welle-Plan-Datei, die
-//	  ihrerseits aus welle.template.md kommt und schon hier steht) und
+//	  ihrerseits aus welle.template.md kommt und schon hier steht),
 //	  MR-NNN-titel.template.md ("… harness/conventions/MR-<NNN>-<titel>.md …
 //	  Ein Eintrag je Datei": eine je Adaption, dieselbe Form wie der ADR-Eintrag
-//	  NNNN-titel.template.md).
+//	  NNNN-titel.template.md) und gate.template.md ("Kopiere nach
+//	  harness/sensors/<target>.md": eine je Gate mit mehr als einem Satz
+//	  Vertrag).
 //	VERBLEIB-SATZ ("… liegen bleibt (<verzeichnis>/)") — so nennen ihn die zwei
 //	  Archiv-Stubs. Sie werden nicht an einen Ort kopiert, sondern bleiben an der
 //	  Stelle des archivierten Volltexts liegen: unter
@@ -72,7 +74,7 @@ func isRecurring(base string) bool {
 	case "NNNN-titel.template.md", "slice.template.md", "welle.template.md",
 		"carveout.template.md", "review-report.template.md",
 		"archiv-stub-slice.template.md", "archiv-stub-welle.template.md",
-		"observation.template.md":
+		"observation.template.md", "gate.template.md":
 		return true
 	case "welle-results.template.md", "MR-NNN-titel.template.md":
 		return true
