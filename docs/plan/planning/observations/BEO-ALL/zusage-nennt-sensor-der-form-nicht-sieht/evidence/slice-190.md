@@ -1,0 +1,2 @@
+**Vorgang:** slice-190
+**Fund:** Zwei neue Funktionsköpfe in `internal/emit/templates.go` sagten zu, Wortlaut-Drift im vendored Fremdtext fange `make smoke` auf. Der dort ausgewertete Lauf ist das emittierte Doku-Gate, und dessen Modul-Liste führt `links` und `anchors`; die zwei Defekte sind Inline-Code-Pfade, die allein `codepaths` liest. Die genannte Auffang-Instanz sieht genau die Form nicht, um die es geht — dieselbe Klasse, die an demselben Modul schon zweimal aufgetreten ist.

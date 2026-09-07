@@ -1,0 +1,2 @@
+**Vorgang:** slice-190
+**Fund:** Die emittierte `harness/conventions.md` nannte die Eintrags-Vorlage unter einem baseline-relativen Pfad, der im Ziel gegen nichts auflöst. Gewählt wurde der umformulierende Ausgang; der Adopter liest seitdem, *dass* eine Eintrags-Vorlage existiert, nicht *wo* sie liegt — real unter `.harness/baseline/<tag>/templates/harness/conventions/`. Der ausschreibende Ausgang war erreichbar und hätte den Baseline-Tag in der Signatur der Emissions-Funktion verlangt, den der Aufrufer eine Zeile darüber bereits führt.

@@ -1,0 +1,2 @@
+**Vorgang:** slice-190
+**Fund:** Zwei Stellen in **einem** Vorgang, darum ein Beleg. Ein Kommentar belegte eine Aufnahme-Bedingung damit, dass die Vergleichsliste den neuen Eintrag *nicht* führe — geschrieben in demselben Commit, der ihn hineinschrieb, sodass das abgedruckte Kommando die eigene Begründung widerlegt. Und die Prosa des Slice-Plans nannte die Länge einer Liste im Indikativ neben dem Kommando, das sie seit der Implementierung um eins höher ausgibt. Beide Male steht die Zusage still weiter, weil kein Sensor eine Prosa-Aussage gegen ihre Ableitung hält.

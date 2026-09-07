@@ -1,0 +1,2 @@
+**Vorgang:** slice-190
+**Fund:** Der `next → in-progress`-Move fand drei eingehende Verweise, zwei davon in Rollen-Reports, und der Nachzug hat beide byte-geändert. Einer trägt seitdem den Link-Pfad `in-progress/` unmittelbar neben seiner eigenen Prosa „(in `open/`)" — die Grenze, die `make slice-mv` selbst deklariert (*es zieht Pfade nach, keine Zustandssätze*), tritt damit innerhalb einer Zeile ein. Für dieselbe Datei war es die zweite solche Änderung in diesem Vorgang; die von §3.11 vor den Move gesetzte Messung über beide Adress-Formen hat nicht stattgefunden.

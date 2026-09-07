@@ -140,7 +140,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **(1) Der Bootstrap legt den einen Ort an, den Festlegung 1 trägt.**
+- [x] **(1) Der Bootstrap legt den einen Ort an, den Festlegung 1 trägt.**
   `structureGitkeeps()` bekommt `harness/conventions`; die drei Bedingungen sind
   dort je einzeln belegt, und der Commit nennt sie einzeln statt pauschal.
   **`docs/plan/carveouts/done` bleibt draußen** (Festlegung 4),
@@ -153,7 +153,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
   Rot-Nachweis fällt darum im Lauf selbst an: nach der Erweiterung von
   `structureGitkeeps()` ist der Test **rot**, bis `want` nachgezogen ist — diese
   rote Ausgabe wird gelesen und in §7 benannt, nicht übersprungen.
-- [ ] **(2) Die zwei Fundstellen auf Orte, die der Bootstrap nicht anlegt,
+- [x] **(2) Die zwei Fundstellen auf Orte, die der Bootstrap nicht anlegt,
   bekommen je einen benannten Ausgang.** Die eine ist der baseline-relative
   Vorlagen-Pfad in der emittierten `harness/conventions.md` — er nennt die
   Eintrags-Vorlage unter einem Verzeichnis, das im Ziel nichts trifft; sie liegt
@@ -175,7 +175,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
   ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache))
   und **keinen** Ausgang wählen — dann bleibt die Fundstelle stehen, und DoD (3)
   fällt.
-- [ ] **(3) Gemessen: `codepaths` über dem frischen Ziel meldet 6 → 3 Befunde,
+- [x] **(3) Gemessen: `codepaths` über dem frischen Ziel meldet 6 → 3 Befunde,
   und die drei Rückstände sind namentlich die des Register-Orts.** Dieselbe
   Messreihe wie in §1, `--lang go` **und** sprachlos. **Der Rot-Nachweis ist der
   Vorher-Lauf**: derselbe Aufruf über dem heutigen Stand meldet **6**; ein
@@ -184,12 +184,12 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
   Rückstand, nicht die Null** — wer hier *0 Befunde* schriebe, hätte eine Zahl
   zugesagt, die dieser Zuschnitt nicht erreichen kann, und der nächste Lauf
   senkte sie still ab.
-- [ ] `make gates` grün; `make full-smoke` grün (beide Bootstrap-Formen);
+- [x] `make gates` grün; `make full-smoke` grün (beide Bootstrap-Formen);
   `make mutate` grün über die CI.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). Dieses Repo führt Wellen-Betrieb; sie liegen damit bei der nächsten Welle-Closure (§7, Posten 3).
 
 ## 3. Plan (vor Code)
 
@@ -273,7 +273,13 @@ dasteht.
 - **Die Change-Request-Frage aus §3 ist beantwortet.** Die Aufnahme eines Ortes,
   der die drei Bedingungen aus Festlegung 1 erfüllt, ist Erfüllung von
   [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
-  und keine Vertragsänderung. — **Ausgang:** <offen>
+  und keine Vertragsänderung. — **Ausgang:** entfallen — gestrichen: die Frage ist beantwortet und
+  kann nicht mehr eintreten.
+  [`ADR-0037`](../../adr/0037-bootstrap-stellt-den-tag-0-zustand-her.md) Festlegung 1 steht auf
+  `Accepted` und trifft die Einordnung selbst; die Verifikation hat §3 gegen sie gehalten und
+  Deckung festgestellt, und
+  [`spec/lastenheft.md`](../../../../spec/lastenheft.md) ist unberührt geblieben
+  (`git diff --stat 711d92cb^..HEAD -- spec/lastenheft.md` ist leer).
 - **Der Register-Ort ist entschieden und liegt außerhalb dieses Schnitts.**
   Festlegung 2 legt `docs/plan/planning/observations/` beim Init an, und zwar mit
   einer tool-autorierten `README.md` statt einer `.gitkeep`; Festlegung 3 ordnet
@@ -281,20 +287,28 @@ dasteht.
   die `.gitkeep`-Liste aus DoD (1) und wäre hier der vierte Liefer-Punkt. **Der
   Schnitt, der ihn liefert, ist noch nicht geschnitten** — bis dahin bleiben
   seine drei Fundstellen stehen, und `codepaths` ist im Ziel keine Option. —
-  **Ausgang:** <offen>
+  **Ausgang:** eingetreten →
+  [slice-194](../open/slice-194-bootstrap-legt-den-register-ort-an.md). Die drei Rückstände der
+  Messreihe sind namentlich seine; der Schnitt ist mit dieser Closure gezogen und liegt in
+  `open/`.
 - **Für `docs/plan/carveouts/done/` gibt es keinen Anlege-Weg.** Festlegung 4
   trägt den Ort nicht; `carveout.template.md` schreibt an ihrer eigenen Zeile
   *„done/ entsteht erst bei erster Carveout-Auflösung"* und schaltet sie darum
   mit einem Marker stumm. Die Fundstelle aus `docs/plan/planning/README.md`
   bleibt damit stehen und braucht einen Ausgang (DoD 2); **welchen**, ist
   Umsetzung und steht hier nicht. Bleibt keiner, greift die Rückführung aus §4. —
-  **Ausgang:** <offen>
+  **Ausgang:** entfallen — gestrichen: ein Ausgang war da, die Rückführung ist nicht gezogen
+  worden. Gewählt ist der Ignore-Marker in der Form, die `carveout.template.md` für denselben Ort
+  selbst führt; die Verifikation hat ihn am emittierten Baum gegengelesen, und die Fundstelle ist
+  aus der 6 → 3-Differenz verschwunden.
 - **Der Beleg deckt das frische Ziel, nicht das gealterte.** `.d-check.yml` und
   der Struktur-Bestand sind *skip-if-present*
   ([`ADR-0007`](../../adr/0007-bootstrap-phasen.md)); ein bereits gebootstrapptes
   Repo bekommt nichts davon. Das ist die Idempotenz-Klasse, kein Versehen — aber
   die Lücke bleibt dort offen und gehört benannt statt vorausgesetzt. —
-  **Ausgang:** <offen>
+  **Ausgang:** weiter offen → Beobachtungs-Register,
+  [`BEO-ALL/idempotente-anlage-erreicht-den-bestand-nicht`](../observations/BEO-ALL/idempotente-anlage-erreicht-den-bestand-nicht/observation.md)
+  (mit dieser Closure angelegt, Beleg `evidence/slice-190.md`).
 - **Die Zusagen über die emittierte Modul-Liste stehen woanders und wandern
   nicht mit.** Sechs Einträge des Adaptions-Blocks nennen den emittierten
   Startzustand im Indikativ
@@ -307,7 +321,9 @@ dasteht.
   [slice-073](../open/slice-073-emittierte-doc-gate-module.md), und dort gehört sie
   entschieden, nicht hier gelöst. Registriert als
   [`BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md).
-  — **Ausgang:** <offen>
+  — **Ausgang:** weiter offen → Beobachtungs-Register, ebendort (Beleg `evidence/slice-190.md`
+  mit dieser Closure ergänzt). Die Entscheidung über die Modul-Liste bleibt bei
+  [slice-073](../open/slice-073-emittierte-doc-gate-module.md).
 - **Die Beschreibung des emittierten Bestands wird von keinem Sensor gehalten.**
   Der emittierte Baum hat mit `TestTemplates_EmittierterBestandVollstaendig` einen
   Mengen-Vergleich; die **Beschreibung** desselben Bestands in
@@ -322,7 +338,11 @@ dasteht.
   `open/`. Registriert als
   [`BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md),
   dessen `state.md` genau diese Unterklasse als *Zusage ohne Anker, Ausgang eine
-  Regel ohne Sensor* führt. — **Ausgang:** <offen>
+  Regel ohne Sensor* führt. — **Ausgang:** eingetreten →
+  [slice-191](../open/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md). Die
+  Beschreibung ist zwischen `slice-182` und heute gealtert, ohne dass etwas rot wurde; der
+  Folge-Slice ist eine Datei in `open/` und trägt beide Hälften — was der §6-Baum zeigt und welcher
+  Wächter ihn hält.
 - **Eingefrorene Artefakte adressieren wandernde Lifecycle-Dateien als Pfad, und
   der Verweis-Nachzug beim Ortswechsel schreibt sie um.**
   [`AGENTS.md`](../../../../AGENTS.md) §3.11 verlangt in einem Artefakt, das
@@ -358,16 +378,20 @@ dasteht.
   [`AGENTS.md`](../../../../AGENTS.md) §3.5. Die Frage ist damit eine Norm-Frage
   über Gate-Config und Hard Rule und gehört an den **Architect**
   ([`AGENTS.md`](../../../../AGENTS.md) §3.8), nicht in diesen Slice. —
-  **Ausgang:** <offen>
+  **Ausgang:** weiter offen → Beobachtungs-Register,
+  [`BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt`](../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/observation.md)
+  (mit dieser Closure angelegt, Beleg `evidence/slice-190.md`). Die zwei benachbarten Einträge
+  decken den Fall nicht: dort bricht der Verweis bzw. stirbt die Adresse, hier bleibt sie gültig
+  und das eingefrorene Artefakt wird geschrieben.
 - **Der `next` → `in-progress`-Move schreibt zwei Artefakte, für die keine Quelle
   dieses Repos einen Träger nennt.** Er macht den vom Modul `planning` bewachten
   Ruhe-Marker der Roadmap falsch, und sein Commit trägt eine Traceability-ID
   ([`AGENTS.md`](../../../../AGENTS.md) §5); *welcher* Schritt den Marker
   ausgleicht und *welche* Kennung eine reine Planungs-Zustandsänderung trägt,
   steht in keinem Anweisungssatz und in keinem Werkzeug. Registriert als
-  [`BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md);
-  ob dieser Slice dort ein Beleg wird, entscheidet der Lese-Schritt der Closure.
-  — **Ausgang:** <offen>
+  [`BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md).
+  — **Ausgang:** weiter offen → Beobachtungs-Register, ebendort (Beleg `evidence/slice-190.md`
+  mit dieser Closure ergänzt).
 - **Der emittierte Text nennt die Eintrags-Vorlage ohne Adresse.** Der für die
   erste Fundstelle aus DoD (2) gewählte Ausgang entfernt die Pfad-Form; ein
   Adopter liest danach, *dass* eine Eintrags-Vorlage existiert, nicht *wo* sie
@@ -378,7 +402,9 @@ dasteht.
   (`grep -c 'tag := envOr' cmd/ai-harness-init/main.go` → **1**), die Funktion
   nimmt ihn nicht entgegen. DoD (2) lässt alle drei Ausgänge zu, dieser
   eingeschlossen; ob dem Adopter die Adresse fehlt, ist damit nicht entschieden.
-  — **Ausgang:** <offen>
+  — **Ausgang:** weiter offen → Beobachtungs-Register,
+  [`BEO-ALL/gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse`](../observations/BEO-ALL/gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse/observation.md)
+  (mit dieser Closure angelegt, Beleg `evidence/slice-190.md`).
 - **Nicht in diesem Slice:** die emittierte Modul-Liste
   ([slice-073](../open/slice-073-emittierte-doc-gate-module.md)), der Handbuch-Baum
   ([slice-191](../open/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md)),
@@ -396,18 +422,187 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-NNN>, <slice-MMM>, <slice-KKK> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-NNN.md` | `evidence/slice-NNN.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-NNN (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+**Rolle:** Planner (Baseline-Regelwerk `modul-05-planning-harness.md` §Closure- und
+Lerneintrag-Regeln). **Datum:** 2026-09-07. **Gegenstand:** die Commit-Kette von `711d92cb`
+(Lifecycle-Übergang) bis `74dbbb83` (Verifikation).
+
+**Woher die Zahlen unten stammen, und zwar getrennt.** Jede Zahl, die neben ihrem Kommando steht,
+ist **in diesem Lauf** erhoben
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 1). **Zwei stehen ohne eigenes Kommando da und sind übernommen:** die **6** und die **3**
+der Messreihe aus DoD (3). Sie sind nicht die des umsetzenden Laufs, sondern die der
+**Verifikation**, die sie über einen eigenen `git worktree` unabhängig reproduziert hat
+([`2026-09-07-slice-190-bootstrap-orte-verify.md`](../../../reviews/2026-09-07-slice-190-bootstrap-orte-verify.md));
+diese Closure hat sie nicht ein drittes Mal gefahren. Ein dritter Lauf hätte die Zusage nicht
+weiter belastet — er hätte dieselbe Messstelle ein drittes Mal abgelesen.
+
+- **Was hat funktioniert: die Zusage war der Rückstand, nicht die Null.** DoD (3) hat den Wert
+  zugesagt, den dieser Zuschnitt erreichen kann — **3** verbleibende Fundstellen, namentlich
+  benannt —, statt der Null, die erst ein weiterer Schnitt liefert. Das hat zwei Dinge getragen,
+  die sonst auseinanderfallen: Die Verifikation konnte die Zusage **unabhängig reproduzieren**,
+  weil sie eine Zahl und eine Namensliste prüfte statt eines Erfolgs; und der offene Rest hatte
+  beim Schneiden des Folge-Slice bereits seine Adresse. Eine zugesagte Null hätte der nächste Lauf
+  still abgesenkt, und niemand hätte gesehen, an welcher Stelle.
+  Ebenso getragen hat der **Rot-Nachweis als Vorher-Lauf**: derselbe Aufruf über dem Stand vor der
+  Implementierung meldet **6**. Ohne ihn belegte der Nachher-Lauf nur einen Zustand, nicht eine
+  Wirkung.
+- **Was ging anders als geplant — die Deckungsfrage wurde an der falschen Gate-Config
+  beantwortet.** Zwei neue Funktionsköpfe sagten zu, Wortlaut-Drift im vendored Fremdtext fange
+  `make smoke` auf. Der dort ausgewertete Lauf ist das Doku-Gate **des emittierten Ziels**, und
+  dessen Modul-Liste ist eine andere als die dieses Repos:
+
+  ```sh
+  grep -n '^modules:' .d-check.yml
+  # modules: [links, anchors, ids, matrix, codepaths, spans, planning]
+  grep -n '^modules:' internal/emit/templates/d-check.yml
+  # modules: [links, anchors]
+  ```
+
+  **Keine Erwartungswerte.** Die zwei Defekte sind Inline-Code-Pfade, die allein `codepaths`
+  liest — der benannte Auffang sieht genau die Form nicht, um die es geht. Der Fehler ist nicht
+  Nachlässigkeit, sondern eine Ebenen-Verwechslung an einer Stelle, an der beide Ebenen dieselben
+  Werkzeugnamen führen: Wer im Dogfood sitzt und fragt *„deckt ein Sensor das?"*, hat die
+  Dogfood-Config vor sich und die Ziel-Config im Kopf.
+- **Was der Review beitrug** (dritte Quelle nach Baseline-Regelwerk `modul-05-planning-harness.md`
+  §Closure- und Lerneintrag-Regeln):
+  [`2026-09-06-slice-190-bootstrap-orte-review.md`](../../../reviews/2026-09-06-slice-190-bootstrap-orte-review.md)
+  — **blockierend, 3 HIGH und 1 MEDIUM.** Die **Sache** des Slice hat er unabhängig getragen: die
+  drei Bedingungen für `harness/conventions`, die zwei ausgeschlossenen Orte, der unberührte
+  vendored Baum, die Wiring-Proben als Ausgabe-Eigenschaft statt Implementierungsdetail. Blockiert
+  haben Aussagen **neben** der Sache. HIGH-1 (falsche Sensor-Zuschreibung), HIGH-2 (ein
+  Code-Beleg, den sein eigenes abgedrucktes Kommando widerlegt) und MEDIUM-1 (zwei neue Wächter
+  ohne kuratierten Mutations-Fall) sind aufgelöst; die zwei neuen Fälle sind einzeln rot gesehen.
+  HIGH-3 betrifft einen bereits vollzogenen Move und ist eine Norm-Frage — er hat keinen Ausgang
+  im Code, sondern einen im Register (§6). LOW-1 ist in `git` festgeschrieben und nicht mehr
+  korrigierbar.
+- **Der offene Punkt der Verifikation ist geschlossen, und zwar durch einen Lauf, nicht durch eine
+  Auslegung.** Die DoD verlangt `make mutate` **über die CI**; der Lauf zum Planner-Commit war von
+  einem späteren, slice-fremden Push verdrängt worden (`ci.yml` fährt
+  `concurrency: cancel-in-progress: true`), sodass für jenen Stand kein abgeschlossener Lauf
+  existierte. Der Lauf über dem Stand, auf dem diese Closure aufsetzt, ist vollständig grün:
+
+  ```sh
+  gh run view 34079012052 --json conclusion,jobs \
+    -q '.conclusion, (.jobs[] | .name + ": " + .conclusion)'
+  # success
+  # smoke: success
+  # mutate: success
+  # gates: success
+  # full-smoke: success
+  ```
+
+  Der Baum dieses Laufs enthält alle Commits des Slice. Die Zusage ist damit an ihrer eigenen
+  Quelle belegt, und die zwei lokalen `mutate`-Läufe aus Umsetzung und Verifikation stehen daneben
+  als das, was sie sind: übereinstimmende Vorbefunde, nicht der geschuldete Beleg.
+- **Die Entscheidung vor dem `git mv` nach `done/` — gemessen, dann getroffen.**
+  [`AGENTS.md`](../../../../AGENTS.md) §3.11 Absatz 2 verlangt vor einem vorgeschriebenen
+  Ortswechsel die Messung über **beide** Adress-Formen, weil sie auf verschiedene Module des
+  Doku-Gates fallen, und stellt die Entscheidung vor den Move. Über die einfrierenden Artefakte
+  dieses Repos — ADR ab `Accepted` · Rollen-Report · Zeitdokument in `done/` —:
+
+  ```sh
+  datei='slice-190-bootstrap-legt-die-versprochenen-orte-an.md'
+  frozen() { { grep -l '^\*\*Status:\*\* Accepted' docs/plan/adr/[0-9]*.md
+               ls docs/reviews/*.md docs/plan/planning/done/*.md; } ; }
+  frozen | wc -l                                        # 487  Bezugsmenge
+  frozen | xargs grep -ln "]([^)]*$datei)"               # 2    Markdown-Link
+  frozen | xargs grep -ln "\`[^\`]*$datei\`"             # 0    Code-Span
+  ```
+
+  **Keine Erwartungswerte.** Die zwei sind
+  [`2026-09-06-adr-0037-konsistenz-review.md`](../../../reviews/2026-09-06-adr-0037-konsistenz-review.md)
+  und
+  [`2026-09-06-slice-123-history-range-guard-review.md`](../../../reviews/2026-09-06-slice-123-history-range-guard-review.md)
+  — dieselben zwei, die der Review als HIGH-3 nennt.
+
+  **Entschieden: der Nachzug läuft.** Von den drei Wegen ist nur einer heute gangbar. Den Nachzug
+  für `docs/reviews/**` abzuschalten hieße, die Ausnahmeliste von `make slice-mv` zu ändern, und
+  ein Referenz-Ventil je Datei zu setzen wäre eine Senkung nach
+  [`AGENTS.md`](../../../../AGENTS.md) §3.5 — beides Norm-Arbeit am Werkzeug und an der
+  Gate-Config, die dem **Architect** gehört (§3.8) und die genau der offene Punkt in §6 ist. Den
+  Move zu unterlassen ist keine Option: der Zustand **ist** die Verzeichnis-Position. Bleibt der
+  Nachzug, und er ist die kleinere Beschädigung — er hält die Verweise auflösbar, statt zwei
+  eingefrorene Reports mit toten Adressen zurückzulassen. **Der Preis steht dabei und wird nicht
+  weggeredet:** zwei nach §3.4 unveränderliche Artefakte werden byte-geändert, und im
+  Konsistenz-Report steht danach erneut ein Link-Pfad neben einer Prosa-Angabe, die ihm
+  widerspricht. Gebucht als
+  [`BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt`](../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/observation.md).
+- **Was diese Closure nicht deckt — vier Posten, benannt statt still.** Dieses Repo führt
+  **Wellen-Betrieb**, und *wellenlos* ist nach Baseline-Regelwerk `modul-06-roadmap.md` §Wann
+  Arbeit eine Welle braucht eine Eigenschaft des **Repos**, nicht des einzelnen Slice — die eigene
+  [`README.md`](../observations/README.md) des Registers sagt dasselbe für den Lese-Schritt
+  ausdrücklich. Gemessen: `ls docs/plan/planning/welle-*.md | wc -l` → **3** (kein
+  Erwartungswert). Die Tabelle *Träger im Repo ohne Wellen* greift hier also nicht.
+  **(1) Der Lese-Schritt gehört der nächsten Welle-Closure.**
+  [`emittierte-vorlagen-klassifikation-ohne-traeger`](../observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/observation.md)
+  erreicht mit dem Beleg dieses Slice **3×** und steht damit über der Schwelle; sein `state.md`
+  bleibt `offen`, was zwischen dem hebenden Beleg und dem Lese-Schritt zulässig ist. Der
+  Übertritt ist hier festgehalten, damit die Welle-Closure ihn nicht suchen muss.
+  **(2) Das Trigger-Audit ist gemessen, aber nicht eingetragen** — es ist Schritt 2 der
+  Wellen-Closure. Zwei Carveouts (`ls docs/plan/carveouts/CO-*.md | wc -l` → **2**), beide mit
+  gesetztem Ausgang: [CO-001](../../carveouts/CO-001-bats-shell-lint.md) aktiv mit eingetretenem
+  Auflösungs-Trigger, Ausgang *verlängert mit Folge-Slice*;
+  [CO-002](../../carveouts/CO-002-token-achse-je-rolle.md) permanent. Ein bootstrap-aware Gate
+  führt der Dogfood nicht. Bei den ADRs ist der erste Re-Evaluierungs-Trigger von
+  [`ADR-0036`](../../adr/0036-ziel-fassung-regiert-den-sprung-v600.md) gefeuert; die Antwort ist
+  [`ADR-0038`](../../adr/0038-ziel-fassung-regiert-den-sprung-v650.md) und liegt beim Architect.
+  **(3) Die drei Paarungen prüft die Welle-Closure** (letzter DoD-Punkt). Als Vorlauf sind sie
+  hier trotzdem gefahren, weil sie read-only sind: **(a)** hat keinen Gegenstand — §7 trägt kein
+  Pflichtfeld `liegt in <Zielort>`, der Steering-Loop-Eintrag ist gezählt und nicht verkörpert;
+  **(b)** löst jede in dieser Datei genannte Slice-Kennung im Lifecycle auf, `slice-194` und
+  `slice-191` als Dateien in `open/`; **(c)** findet jeden zitierten `BEO-ALL/<slug>` im Register.
+  Die zweite Hälfte von (c) hat einen Rückstand **außerhalb** dieses Slice gefunden: zwei
+  Verzeichnisse führen kein `evidence/`
+  (`for d in docs/plan/planning/observations/BEO-ALL/*/; do [ -d "$d/evidence" ] || echo "$d"; done | wc -l`
+  → **2**, kein Erwartungswert). Beide tragen einen *Benannt, nicht gezählt*-Abschnitt, sind also
+  gewollt beleglos — die maschinelle Hälfte *jede Zeile trägt mindestens einen Beleg* trifft sie
+  trotzdem. Ob die Prüfung oder die Form nachzieht, entscheidet nicht diese Closure.
+  **(4) Archiviert wird nicht.** Die Archivierung ist Schritt 4 derselben Wellen-Closure, und
+  `make archive-welle` ist auf diesen Bestand ohnehin nicht anwendbar: die Sperren `untergrenze`
+  (`ls docs/plan/planning/done/*/archiv.zip 2>/dev/null | wc -l` → **0**) und `haenger` stehen.
+  Kein `done/slice-190-archiv.zip` also, und das ist eine Entscheidung, keine Auslassung.
+- **Steering-Loop-Eintrag — geschärfte Regel:** *Wer in einem Dogfood-Artefakt einen Sensor als
+  Auffang benennt, dessen Lauf im **emittierten Ziel** stattfindet, misst die Deckung an der
+  Gate-Config des Ziels — nicht an der, die er vor sich hat.* Die zwei Konfigurationen sind
+  verschiedene Dateien mit verschiedenen Modul-Listen, und die Werkzeugnamen sind auf beiden
+  Ebenen dieselben; genau das macht die Verwechslung lautlos. Der Prüfschritt ist zwei Kommandos
+  lang und steht oben. Auslöser:
+  [`zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
+  (**8×**, Stand `geplant`/`slice-181`). *Gezählt, nicht verkörpert:* Die Regel ist hier
+  formuliert, nicht geschrieben — ihr Zielort wäre ein Norm-Artefakt, und das gehört dem Architect
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Das Feld `liegt in` entfällt darum.
+- **Beobachtungs-Register (`../observations/`):** **sieben** Belege, davon fünf aus dem Review;
+  **drei** neue Verzeichnisse. Jeder Zähler ist die Zahl der Dateien unter `evidence/`
+  (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l`) — keine Erwartungswerte,
+  sie wandern mit dem Register:
+  [`emittierte-vorlagen-klassifikation-ohne-traeger`](../observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/observation.md)
+  **3×** (Schwelle erreicht, s. o.) ·
+  [`zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
+  **8×** (HIGH-1) ·
+  [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
+  **17×** — **ein** Beleg für HIGH-2 und LOW-2 zusammen, weil zwei Funde in **einem** Vorgang eine
+  Gelegenheit sind ·
+  [`lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md)
+  **2×** (INFO-1) ·
+  [`verweis-nachzug-schreibt-in-eingefrorenes-artefakt`](../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/observation.md)
+  **1×**, neu (HIGH-3) — die zwei Nachbarn decken ihn nicht: dort bricht der Verweis bzw. stirbt
+  die Adresse, hier bleibt sie gültig und das eingefrorene Artefakt wird geschrieben ·
+  [`idempotente-anlage-erreicht-den-bestand-nicht`](../observations/BEO-ALL/idempotente-anlage-erreicht-den-bestand-nicht/observation.md)
+  **1×**, neu (§6) ·
+  [`gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse`](../observations/BEO-ALL/gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse/observation.md)
+  **1×**, neu (INFO-2).
+- **Folge-Slices:**
+  [slice-194](../open/slice-194-bootstrap-legt-den-register-ort-an.md) (Der Bootstrap legt den
+  Register-Ort an) — mit dieser Closure geschnitten, ist eine Datei in `open/` ·
+  [slice-191](../open/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md)
+  (Benutzerhandbuch zeigt den vollständigen Bestand) — lag bereits in `open/`.
+- **Risiken aus §6:** alle **neun** mit genau einem Ausgang — **2** eingetreten (Folge-Slice
+  `slice-194` bzw. `slice-191`), **2** entfallen mit Begründung, **5** weiter offen ins
+  Beobachtungs-Register. Gemessen: `grep -c 'Ausgang:\*\* <offen>'` über dieser Datei → **0**.
+- **Drei Paarungen:** verbindlich nicht hier — dieses Repo führt Wellen-Betrieb, und sie sind Teil
+  der Wellen-Closure (letzter DoD-Punkt). Als read-only-Vorlauf sind alle drei trotzdem gefahren
+  und tragen; ihr Ergebnis und der eine Rückstand außerhalb dieses Slice stehen oben unter
+  Posten (3).
 
 ## 8. Sub-Area-Modus-Begründung
 

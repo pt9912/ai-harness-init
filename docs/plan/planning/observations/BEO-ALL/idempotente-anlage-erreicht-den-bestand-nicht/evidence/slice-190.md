@@ -1,0 +1,2 @@
+**Vorgang:** slice-190
+**Fund:** Der neue Struktur-Ort `harness/conventions/` und die zwei neutralisierten Fundstellen erreichen allein das frisch gebootstrappte Ziel; die Messreihe der DoD misst dort und ist dort unabhängig reproduziert. In einem Repo, das vor dieser Änderung gebootstrappt wurde, bleibt der Ort aus und die zwei Sätze stehen im alten Wortlaut — der Beleg des Slice deckt diese Hälfte ausdrücklich nicht, und ein Vorgang, der sie nachzöge, ist nirgends benannt.

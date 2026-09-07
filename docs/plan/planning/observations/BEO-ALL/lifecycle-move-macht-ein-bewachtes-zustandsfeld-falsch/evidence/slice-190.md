@@ -1,0 +1,2 @@
+**Vorgang:** slice-190
+**Fund:** Der `next → in-progress`-Move machte den Ruhe-Marker unter *Offene Wellen* falsch; der Ausgleich lief als eigener Commit von Hand, und welcher Schritt ihn trägt, schreibt weiterhin kein Artefakt vor, das der bewegende Lauf liest. `make slice-mv` bewegt die Datei und zieht Verweise nach, rührt das Zustandsfeld aber nicht an — die Lücke sitzt zwischen Werkzeug und Anweisungssatz, nicht im Sensor: das Modul `planning` färbt den Widerspruch zuverlässig rot.
