@@ -1,6 +1,6 @@
 # ADR-0038: Die Ziel-Fassung regiert auch den Sprung `v6.0.0` → `v6.5.0`
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-07
 
@@ -453,6 +453,7 @@ wäre klon-abhängig. Ihn hier als vorhanden auszugeben wäre
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-07 | **Proposed** | Architect-Lauf vor dem Schnitt von `slice-193`. Anlass ist der dritte Eintritt des zweiten Falls aus [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 und der erste Re-Evaluierungs-Trigger von [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md), der für diesen Sprung eine eigene zweistufige Messung samt Netto-Frage verlangt |
+| 2026-09-07 | **Accepted** | Entscheidung des Auftraggebers vom 2026-09-07, vollzogen in der Architect-Rolle. Die Folgepflicht an den Planner ist mit dem Schnitt von `slice-193` auf den gesetzten Zielstand eingelöst. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
