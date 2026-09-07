@@ -8,11 +8,11 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ## Baseline
 
 - **Konvention:** AI-Harness-Kurs
-- **Stand:** `v6.0.0`
+- **Stand:** `v6.5.0`
 - **Regelwerk + Templates:** committet vendored unter
-  `.harness/baseline/v6.0.0/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
-  `regelwerk/README.md`: **Kurs-Welle 116 · 2026-09-03**
-  (`sed -n '3p' .harness/baseline/v6.0.0/regelwerk/README.md`).
+  `.harness/baseline/v6.5.0/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
+  `regelwerk/README.md`: **Kurs-Welle 128 · 2026-09-06**
+  (`sed -n '3p' .harness/baseline/v6.5.0/regelwerk/README.md`).
 - **d-check:** der lebende Pin steht in `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`) und, per
   go-Test daran gekoppelt, in `internal/emit/emit.go` — hier steht keine zweite Fassung davon
   ([`MR-027`](#mr-027--d-check-pin-v0650-ignore-marker-in-zwei-achsen-verengt) §Kein Wächter);
@@ -26,22 +26,23 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Normativ-Delta in [`MR-015`](#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) entschieden);
   **auf `v5.12.0`:** 2026-08-28 (slice-081, Normativ-Delta in slice-082 entschieden);
   **auf `v5.18.0`:** 2026-09-03, Delta-Nachweis in slice-155;
-  **auf `v6.0.0`:** 2026-09-04, Delta-Nachweis in slice-176. Die Form dieser Zeile — Ziel-Tag,
+  **auf `v6.0.0`:** 2026-09-04, Delta-Nachweis in slice-176;
+  **auf `v6.5.0`:** 2026-09-07, Delta-Nachweis steht aus. Die Form dieser Zeile — Ziel-Tag,
   Datum, der Slice mit dem Delta-Nachweis, sonst nichts — und der Ort einer Zielstand-Setzung
   stehen in
   [`ADR-0031`](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
   Festlegung 2. **Die Prozedur des Sprungs auf `v6.0.0` stellt die Ziel-Fassung** —
   [`ADR-0036`](../docs/plan/adr/0036-ziel-fassung-regiert-den-sprung-v600.md), einzige Festlegung,
   `Accepted`; sie bindet damit nach [`AGENTS.md`](../AGENTS.md) §3.4, Korrekturen entstehen als
-  Folge-ADR mit `Supersedes`. **Der Zielstand ist am 2026-09-07 auf `v6.5.0` gesetzt** — Setzung
-  des Auftraggebers, die
+  Folge-ADR mit `Supersedes`. **Der Zielstand ist am 2026-09-07 auf `v6.5.0` gesetzt und am
+  selben Tag vollzogen** — die Setzung ist die des Auftraggebers, die
   [`ADR-0018`](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md) §Wer den Zielstand
-  bewegt ihm vorbehält. Ihr **Vollzug** steht aus: Der Baum trägt `v6.0.0`, und die Buchung in der
-  Aufzählung oben entsteht mit dem Tausch — ihr zweiter Teil, der Slice mit dem Delta-Nachweis,
-  existiert noch nicht. **Die Prozedur dieses Sprungs stellt die Ziel-Fassung** —
+  bewegt ihm vorbehält. Der zweite Teil ihrer Buchung oben — der Slice mit dem Delta-Nachweis
+  — steht aus: Der Adaptions-Durchgang gegen `v6.5.0` ist noch nicht geschnitten. **Die
+  Prozedur dieses Sprungs stellt die Ziel-Fassung** —
   [`ADR-0038`](../docs/plan/adr/0038-ziel-fassung-regiert-den-sprung-v650.md), einzige Festlegung,
-  `Proposed` mit Acceptance-Trigger in der Datei; sie bindet ab `Accepted`
-  ([`AGENTS.md`](../AGENTS.md) §3.4). Festlegung 1 von
+  `Accepted`; sie bindet damit nach
+  [`AGENTS.md`](../AGENTS.md) §3.4. Festlegung 1 von
   [`ADR-0031`](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) bindet
   allein den Sprung auf `v5.18.0`; die eigene Messung, die ihr erster Re-Evaluierungs-Trigger für
   jeden weiteren verlangt, ist in slice-176 gefahren und in slice-178 entschieden. Die
@@ -65,18 +66,18 @@ Feld steht als Ziel-Form, nicht als bewachte Zusage.
 
 ## Adoptierte Konventions-Quellen
 
-- **Extern (Kurs, kanonisch):** <https://github.com/pt9912/ai-harness-course/tree/v6.0.0/kurs/de>
-  — auf den Tag `v6.0.0` gepinnt, **nicht** `main`-floating
+- **Extern (Kurs, kanonisch):** <https://github.com/pt9912/ai-harness-course/tree/v6.5.0/kurs/de>
+  — auf den Tag `v6.5.0` gepinnt, **nicht** `main`-floating
   ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Netzlos nachprüfbar ist der
   vendored Baum — `make baseline-verify` →
-  `baseline-verify: v6.0.0 OK — 53 Dateien (Integritaet + Vollstaendigkeit, netzlos)`. **Die
+  `baseline-verify: v6.5.0 OK — 54 Dateien (Integritaet + Vollstaendigkeit, netzlos)`. **Die
   Dateizahl ist kein Erwartungswert** ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2) — sie wandert mit dem Stand; tragend ist das `OK`. Die URL ersetzt die frühere
   `raw…/main/…/agents-regelwerk.md`-Monolith-URL, die **404** liefert (der Monolith
   existiert upstream seit v2.0.0 nicht mehr — die Module leben unter `/kurs/de/`).
 - **Die Provenienz-Kette ist zur Hälfte bewacht**, und die unbewachte Hälfte steht hier, weil sie
   sonst als belegt gälte ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Fünf
-  Stellen pinnen `v6.0.0` samt dem sha256 seines Release-Assets: `BASELINE_TAG` und
+  Stellen pinnen `v6.5.0` samt dem sha256 seines Release-Assets: `BASELINE_TAG` und
   `BASELINE_ZIP_SHA256` (`grep -nE '^BASELINE_(TAG|ZIP_SHA256)' Makefile`), das `sources`-Paar in
   [`.d-check.yml`](../.d-check.yml) (`grep -n 'lab-regelwerk' -A 1 .d-check.yml`) und
   `DefaultTag`/`DefaultBaselineSHA256` in `internal/fetch/baseline.go`
@@ -93,7 +94,7 @@ Feld steht als Ziel-Form, nicht als bewachte Zusage.
   (`grep -nE '^(baseline|regelwerk)[a-z-]*:' Makefile` nennt die drei). Diese Hälfte hängt am
   Vendoring-Vorgang, nicht an einem Sensor.
 - **In-Repo (verkörperte Form):** die committet vendored Baseline
-  `.harness/baseline/v6.0.0/{regelwerk,templates}/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — die
+  `.harness/baseline/v6.5.0/{regelwerk,templates}/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — die
   präsente, netzlose Sicht auf die kanonische Quelle; bei Konflikt gilt der Kurs.
 
 ## Adaptions-Block
@@ -219,7 +220,7 @@ Festlegung 3) — die Bedingung ist damit erfüllt, nicht aufgehoben, und die Sp
 dieses Segment, keines von ADR/Slice. Tragend ist allein `ALL`: Alle Beobachtungen dieses Repos
 führen dieselbe Sub-Area `*`
 (`grep -h '^\*\*Sub-Area:\*\*' docs/plan/planning/observations/BEO-ALL/*/observation.md | sort -u`
-→ eine Zeile, `* (gesamtes Repo)`, über allen **45** Verzeichnissen,
+→ eine Zeile, `* (gesamtes Repo)`, über allen **65** Verzeichnissen,
 `ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l` — keine Erwartungswerte, die
 Tabellenform ist mit der Verzeichnis-Form entfallen und die Sub-Area steht seitdem in dieser Zeile
 jeder `observation.md`, nicht mehr in einer Spalte der flachen Datei). Ein vergebenes Kürzel ist
