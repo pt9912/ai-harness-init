@@ -4,7 +4,7 @@
 
 Ein Eintrag, der seinen Ausgang bekommen hat, sammelt weiter Belege — und für diese Belege ist
 keine Handlung definiert. Das Register hat zwei Leser (Baseline-Regelwerk
-[`modul-06-roadmap.md`](../../../../../../.harness/baseline/v6.0.0/regelwerk/modul-06-roadmap.md)
+[`modul-06-roadmap.md`](../../../../../../.harness/baseline/v6.5.0/regelwerk/modul-06-roadmap.md)
 §Das Beobachtungs-Register): Der **Lese-Schritt** der Closure fragt, welcher Eintrag **3×**
 erreicht hat, und weist ihm einen der drei Ausgänge zu; der **Sichtungs-Schritt** der Slice-Planung
 liest, was **darunter** steht. Ein Eintrag oberhalb der Schwelle, der bereits *verkörpert* oder

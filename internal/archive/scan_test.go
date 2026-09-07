@@ -10,7 +10,7 @@ import (
 
 func TestAusgenommenTrifftPraefixUndVerzeichnis(t *testing.T) {
 	faelle := map[string]bool{
-		".harness/baseline/v6.0.0/regelwerk/x.md": true,
+		".harness/baseline/v6.5.0/regelwerk/x.md": true,
 		".harness/baseline":                       true,
 		".harness/state/spans/x.md":               false,
 		"docs/reviews/2026-09-01-slice-100-r1.md": false,

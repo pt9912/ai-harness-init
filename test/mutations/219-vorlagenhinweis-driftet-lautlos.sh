@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# files: .harness/baseline/v6.0.0/templates/AGENTS.template.md
+# files: .harness/baseline/v6.5.0/templates/AGENTS.template.md
 # expect: emit.isRecurring fuehrt genau die Vorlagen mit Platzhalter im Ziel-Pfad
 #
 # Die Gegenrichtung zu 215-218: dort wandert die AUFZAEHLUNG, hier die QUELLE. Der
@@ -39,4 +39,4 @@
 # Kommando-Substitution (SC2016), eine Inline-Suppression verbietet AGENTS 3.2.
 set -euo pipefail
 sed -i '/Kopiere nach/ s/AGENTS\.md/<bereich>\/AGENTS.md/2' \
-	.harness/baseline/v6.0.0/templates/AGENTS.template.md
+	.harness/baseline/v6.5.0/templates/AGENTS.template.md
