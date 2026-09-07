@@ -64,15 +64,20 @@ Festlegung 1 trägt. Die zwei anderen entstehen hier nicht:
 entschieden und liegt in einem eigenen Schnitt (§6). Ihre Fundstellen bleiben —
 eine bekommt einen Ausgang statt einer Anlage, drei bleiben stehen.
 
-Die feste Liste in `structureGitkeeps()` trägt heute sechs Einträge:
+Die feste Liste in `structureGitkeeps()` trägt die Orte, die der Bootstrap
+anlegt:
 
 ```sh
-sed -n '/^func structureGitkeeps/,/^}/p' internal/emit/templates.go | grep -c '^\t\t"'   # 6
+sed -n '/^func structureGitkeeps/,/^}/p' internal/emit/templates.go | grep -c '^\t\t"'   # 7
 ```
 
-Drei weitere Orte werden von emittierten Dateien im Indikativ genannt und
-entstehen nicht: das Beobachtungs-Register, das Eintrags-Verzeichnis des
-Konventionsspeichers und die `done/`-Ablage der Carveouts.
+**Kein Erwartungswert**
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2) — die Zahl wandert mit der Liste, und die Prosa daneben nennt sie
+darum nicht.
+
+Das Beobachtungs-Register und die `done/`-Ablage der Carveouts werden von
+emittierten Dateien im Indikativ genannt und entstehen nicht.
 
 **Gemessen am frischen Ziel**, nicht hergeleitet. Bootstrap in ein leeres
 `git`-Repo (`ai-harness-init --lang go --name smoke`), dann der gepinnte d-check
@@ -318,6 +323,62 @@ dasteht.
   [`BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md),
   dessen `state.md` genau diese Unterklasse als *Zusage ohne Anker, Ausgang eine
   Regel ohne Sensor* führt. — **Ausgang:** <offen>
+- **Eingefrorene Artefakte adressieren wandernde Lifecycle-Dateien als Pfad, und
+  der Verweis-Nachzug beim Ortswechsel schreibt sie um.**
+  [`AGENTS.md`](../../../../AGENTS.md) §3.11 verlangt in einem Artefakt, das
+  unveränderlich wird, die **Kennung** statt der Pfad-Adresse, und vor jedem
+  vorgeschriebenen Ortswechsel eine Messung über beide Adress-Formen;
+  `make slice-mv` ersetzt eingehende Verweise repo-weit außer
+  `.harness/baseline/**` und nimmt weder `docs/reviews/**` noch
+  `docs/plan/planning/done/**` aus. Die Menge über die einfrierenden Artefakte
+  dieses Repos — ADR ab `Accepted` · Rollen-Report · Zeitdokument in `done/` —,
+  ortsfeste Ziele wie die Roadmap ausgenommen:
+
+  ```sh
+  frozen() { { grep -l '^\*\*Status:\*\* Accepted' docs/plan/adr/[0-9]*.md
+               ls docs/reviews/*.md docs/plan/planning/done/*.md; } ; }
+  ortsfest='in-progress/roadmap\.md'
+  frozen | wc -l                                                        # 486  Bezugsmenge
+  frozen | xargs grep -ohE '\]\([^)]*planning/(open|next|in-progress|welle-)[^)]*\.md\)' | grep -vc "$ortsfest"   #  40  Markdown-Link
+  frozen | xargs grep -ohE '`[^`]*planning/(open|next|in-progress|welle-)[^`]*\.md`'     | grep -vc "$ortsfest"   # 328  Code-Span
+  ls docs/reviews/*.md | xargs grep -ohE '`[^`]*planning/(open|next|in-progress|welle-)[^`]*\.md`' | grep -vc "$ortsfest"   # 298
+  ```
+
+  **Keine Erwartungswerte**
+  ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). Für denselben Baum stehen zwei Antworten nebeneinander, und welche
+  gilt, entscheidet die Adress-Form: `codepaths` nimmt `docs/reviews/**`
+  datei-weit aus — die letzte Zahl ist der stumme Anteil der vorletzten —, `links`
+  trägt gar keine Options-Sektion
+  (`grep -cE '^(links|anchors):' .d-check.yml` → **0**), und dort greift
+  stattdessen der Nachzug. Ein Referenz-Ventil ist für diese Breite keine Option:
+  die vier Paare in [`.d-check.yml`](../../../../.d-check.yml) schneiden `in` und
+  `refs` je auf **eine** benannte Datei, und jede Verbreiterung auf ein
+  Verzeichnis ist eine eigene Senkung nach
+  [`AGENTS.md`](../../../../AGENTS.md) §3.5. Die Frage ist damit eine Norm-Frage
+  über Gate-Config und Hard Rule und gehört an den **Architect**
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8), nicht in diesen Slice. —
+  **Ausgang:** <offen>
+- **Der `next` → `in-progress`-Move schreibt zwei Artefakte, für die keine Quelle
+  dieses Repos einen Träger nennt.** Er macht den vom Modul `planning` bewachten
+  Ruhe-Marker der Roadmap falsch, und sein Commit trägt eine Traceability-ID
+  ([`AGENTS.md`](../../../../AGENTS.md) §5); *welcher* Schritt den Marker
+  ausgleicht und *welche* Kennung eine reine Planungs-Zustandsänderung trägt,
+  steht in keinem Anweisungssatz und in keinem Werkzeug. Registriert als
+  [`BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md);
+  ob dieser Slice dort ein Beleg wird, entscheidet der Lese-Schritt der Closure.
+  — **Ausgang:** <offen>
+- **Der emittierte Text nennt die Eintrags-Vorlage ohne Adresse.** Der für die
+  erste Fundstelle aus DoD (2) gewählte Ausgang entfernt die Pfad-Form; ein
+  Adopter liest danach, *dass* eine Eintrags-Vorlage existiert, nicht *wo* sie
+  liegt — real unter
+  [`.harness/baseline/v6.0.0/templates/harness/conventions/`](../../../../.harness/baseline/v6.0.0/templates/harness/conventions/).
+  Den tag-gebundenen Pfad auszuschreiben verlangt den Tag in der Signatur von
+  `emit.Templates`; der Aufrufer führt ihn
+  (`grep -c 'tag := envOr' cmd/ai-harness-init/main.go` → **1**), die Funktion
+  nimmt ihn nicht entgegen. DoD (2) lässt alle drei Ausgänge zu, dieser
+  eingeschlossen; ob dem Adopter die Adresse fehlt, ist damit nicht entschieden.
+  — **Ausgang:** <offen>
 - **Nicht in diesem Slice:** die emittierte Modul-Liste
   ([slice-073](../open/slice-073-emittierte-doc-gate-module.md)), der Handbuch-Baum
   ([slice-191](../open/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md)),
