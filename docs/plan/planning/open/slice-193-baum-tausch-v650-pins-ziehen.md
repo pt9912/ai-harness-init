@@ -1,4 +1,4 @@
-# Slice slice-193: Der vendored Baum steht auf `v6.3.1` — Pins gezogen, Verweise nachgezogen
+# Slice slice-193: Der vendored Baum steht auf `v6.5.0` — Pins gezogen, Verweise nachgezogen
 
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
 Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
@@ -27,12 +27,12 @@ gerade **nicht** gezogen),
 [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) (jeder Verweis in den Baum trägt
 seinen Tag — die Pin-Hälfte des Tauschs),
 [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) (Festlegung 3 stellt das
-Kriterium, nach dem die regierende Fassung dieses Sprungs bestimmt wird),
+Kriterium der regierenden Fassung; Festlegung 2 trennt Prozedur und Ist-Maßstab und trägt hier,
+solange der Tausch aussteht),
 [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) (Festlegung 2
-nennt Ort und Mindestumfang der Zielstand-Buchung, die dieser Slice auslöst),
-[`ADR-0036`](../../adr/0036-ziel-fassung-regiert-den-sprung-v600.md) (regiert den **vorigen**
-Sprung; ihr erster Re-Evaluierungs-Trigger ist der Grund, warum dieser Slice auf eine eigene
-Entscheidung wartet — §4)
+nennt Ort und Drei-Teil-Form der Zielstand-Buchung, die dieser Slice auslöst),
+[`ADR-0038`](../../adr/0038-ziel-fassung-regiert-den-sprung-v650.md) (die regierende Fassung
+**dieses** Sprungs; `Proposed`, und ihre Annahme ist Start-Bedingung 1 in §4)
 
 **Berührte Spec-Stellen:** `spec/spezifikation.md` §5 und §7 — **als Adresse, nicht als Aussage.**
 Beide Abschnitte zitieren das Regelwerk über `.harness/baseline/v6.0.0/regelwerk/…`-Pfade; der
@@ -47,7 +47,15 @@ ausführenden Rolle** — die Datei ist Architect-Eigentum
 ([`AGENTS.md`](../../../../AGENTS.md) §3.8), und ihre Änderung wandert als eigener, die Rolle
 nennender Commit in den Ablauf (§3, letzte Zeile).
 
-**Autor:** Planner. **Datum:** 2026-09-06.
+**Autor:** Planner. **Datum:** 2026-09-07.
+
+**Form dieses Plans:** die Ziel-Form der **gepinnten** Fassung `v6.0.0`
+(`templates/docs/plan/planning/slice.template.md` — §1 *Ziel*, §8
+*Sub-Area-Modus-Begründung*). Das ist keine Wahl dieses Plans, sondern
+[`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 2: Prozedur und
+Ist-Maßstab sind während des Wechsels zwei Fassungen, und bis der Baum getauscht ist, bleibt die
+gepinnte für jede Konformitäts-Frage maßgeblich. Die Umbenennung beider Abschnitte in `v6.4.0`
+steht darum in §1 als Delta-Posten und nicht in dieser Gliederung.
 
 ---
 
@@ -57,59 +65,106 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice — Schnitt nach Lieferwert, nicht nach Schichten; jeder Slice
 ist einzeln lieferbar.
 
-**`.harness/baseline/` führt `v6.3.1` als einzigen Baum, die fünf Pin-Stellen nennen denselben Tag
+**`.harness/baseline/` führt `v6.5.0` als einzigen Baum, die fünf Pin-Stellen nennen denselben Tag
 und den sha256 seines Release-Assets, und jede lebende Adresse mit Tag-Segment zeigt dorthin.**
+
+Der Zielstand ist gesetzt, nicht abgeleitet: Der Auftraggeber hat ihn am 2026-09-07 auf `v6.5.0`
+gezogen, verbucht in [`harness/conventions.md`](../../../../harness/conventions.md) §Baseline —
+dem Ort, den [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
+Festlegung 2 dafür vorgibt. Nach welcher Fassung der Sprung läuft, entscheidet
+[`ADR-0038`](../../adr/0038-ziel-fassung-regiert-den-sprung-v650.md): die Ziel-Fassung `v6.5.0`.
 
 ### Der Delta-Katalog — gemessen auf der Achse, die wirklich vendored wird
 
 Das Release-Asset heißt `lab-regelwerk.zip` (`grep -n 'lab-regelwerk' -A 1 .d-check.yml`), und der
 Baum darin ist `regelwerk/` + `templates/` (`ls .harness/baseline/v6.0.0/`). Upstream entspricht
 das **`lab/regelwerk` + `lab/templates`**, nicht `kurs/de`: Ein Diff über `kurs/de` misst die
-Kurs-Fassung, aus der der Baum abgeleitet wird, und ordnet Änderungen anderen Tags zu. Gemessen am
-lokalen Kurs-Klon `/Development/KI/ai-harness-course`, Stand `1fdce81`:
+Kurs-Fassung, aus der der Baum abgeleitet wird, und ordnet Änderungen anderen Tags zu. Die
+Byte-Gleichheit dieser Achse ist in
+[`ADR-0038`](../../adr/0038-ziel-fassung-regiert-den-sprung-v650.md) §Die Achse belegt und hier
+nicht zweitgemessen. Gemessen am lokalen Kurs-Klon `/Development/KI/ai-harness-course`, Stand
+`ac94c33` — eine **Host-Voraussetzung**, kein Artefakt dieses Repos:
 
 ```sh
-cd /Development/KI/ai-harness-course
-git diff --stat v6.0.0..v6.3.1 -- lab/regelwerk lab/templates   # 13 Dateien, +286/-13
-for p in v6.0.0..v6.1.0 v6.1.0..v6.2.0 v6.2.0..v6.3.0 v6.3.0..v6.3.1; do
-  git diff --stat "$p" -- lab/regelwerk lab/templates; done
+K=/Development/KI/ai-harness-course
+git -C "$K" diff --numstat v6.0.0 v6.5.0 -- lab/regelwerk lab/templates \
+  | awk '{a+=$1;d+=$2;n++} END{printf "%d Dateien  +%d  -%d\n", n,a,d}'   # 32 Dateien  +624  -153
+for p in v6.0.0..v6.1.0 v6.1.0..v6.2.0 v6.2.0..v6.3.0 \
+         v6.3.0..v6.3.1 v6.3.1..v6.4.0 v6.4.0..v6.5.0; do
+  git -C "$K" diff --numstat "$p" -- lab/regelwerk lab/templates; done
 ```
 
 **Keine Erwartungswerte**
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2) — die Beträge sind an die genannten Tags gebunden und an keinen lebenden Baum. Was in
-welchem Tag liegt, ist die Voraussetzung des Schnitts unten und deshalb je Tag aufgeschlüsselt:
-
+welchem Tag liegt, ist die Voraussetzung des Schnitts unten und deshalb je Tag aufgeschlüsselt.
 Die Zellen nennen die Kurs-Dateien mit ihrem **Basisnamen**, relativ zu den zwei Operanden des
 Kommandos oben — sie liegen im Kurs-Repo und nicht in diesem, und eine Repo-Adresse für sie zu
-schreiben wäre eine, die hier ins Leere zeigt.
+schreiben wäre eine, die hier ins Leere zeigt. **`regelwerk/README.md` ist in jedem Schritt mit
+`+1/-1` dabei und in keiner Zeile genannt:** Das ist die Stand-Zeile des Baums
+(`git -C "$K" show v6.5.0:lab/regelwerk/README.md | sed -n '3p'` → `**Stand:** Kurs-Welle 128 ·
+2026-09-06.`), kein Regel-Delta.
 
 | Tag | Regelwerk | Templates | Was es normativ setzt |
 |---|---|---|---|
-| `v6.1.0` | `modul-07-carveouts` +3 · `modul-10-review-harness` +7 · `modul-13-quality-gates` +6 | `AGENTS.template.md` +7 · `README.template.md` (Einstiegs-Vorlage) +14 | Carveout-Auflösung setzt die Bindung-Spalte zurück · Review-**Deckung** ist mechanisierbar (d-check-Modul `reviews`) · ein feuernder Trigger macht die Entfernung der Hard-Rule-Zeile zum DoD-Punkt · Schritt 8 ist Rollenwechsel, kein Abschluss |
-| `v6.2.0` | `modul-05-planning-harness` +3/-3 | `.d-check.yml` +8 · `slice.template.md` +5/-1 | die verpflichtende **Review-Zeile** in der DoD, der auskommentierte `reviews:`-Block mit `done-dir` als Aktivierungs-Schalter, und der Review-Report zählt nicht als Liefer-Punkt |
-| `v6.3.0` | `grundlagen-begriffe` +1 · `grundlagen-harness-dateien` +81/-1 · `modul-13-quality-gates` +27 | `README.md` +1 · `README.template.md` (Einstiegs-Vorlage) +33 · **neu** `gate.template.md` +81 | die **Sensors-Regel**: ein Gate je Datei in einem neuen Sensor-Verzeichnis, benannt nach dem Target, ohne `done/`-Lifecycle; Zeitdokumente nennen das Target statt es zu verlinken; dazu *„Ein Gate ohne seine Grenze behauptet ebenfalls zu viel"* und *„Die dritte Lage: genannt, aber kein Gate"* |
-| `v6.3.1` | `modul-13-quality-gates` +11/-6 | — | Nachschärfung derselben zwei Absätze |
+| `v6.1.0` | `modul-07-carveouts` +3 · `modul-10-review-harness` +7 · `modul-13-quality-gates` +6 | `AGENTS.template.md` +7 · `README.template.md` (Einstiegs-Vorlage) +14 | Die Carveout-Auflösung setzt die **Bindung**-Spalte in `harness/README.md` §Sensors zurück · Review-**Deckung** ist mechanisierbar (d-check-Modul `reviews`), die Kategorisierung bleibt inferential · ein feuernder Trigger macht die Entfernung der Hard-Rule-Zeile zum DoD-Punkt des auslösenden Slice · Schritt 8 des Minimal Agent Workflow ist Rollenwechsel, kein Abschluss |
+| `v6.2.0` | `modul-05-planning-harness` +3/-3 | `.d-check.yml` +8 · `slice.template.md` +4/-1 | die verpflichtende **Review-Zeile** in der DoD, der auskommentierte `reviews:`-Block mit `done-dir` als Aktivierungs-Schalter, und der Review-Report zählt **nicht** als Liefer-Punkt |
+| `v6.3.0` | `grundlagen-begriffe` +1 · `grundlagen-harness-dateien` +80/-1 · `modul-13-quality-gates` +27 | `README.md` +1 · `README.template.md` +33 · **neu** `gate.template.md` +81, erste Datei einer neuen Vorlagen-Ebene | die **Sensors-Regel**: ein Gate je Datei unter `harness/sensors/<target>.md`, sobald sein Vertrag mehr als einen Satz braucht; die Tabellenzeile bleibt und wird ihr Index, die **Target-Zelle wird zum Link**; kein `sensors/done/` — ein retiriertes Gate ist weg; Zeitdokumente schreiben `make <target>` als Token statt als Pfad |
+| `v6.3.1` | `modul-13-quality-gates` +10/-7 | — | Nachschärfung derselben zwei Absätze |
+| `v6.4.0` | `modul-05-planning-harness` +46/-1 · `modul-06-roadmap` +3/-1 · `modul-09-implementierung` +9 | `README.md` +10/-6 · `slice.template.md` +36/-10 | die **Out-of-Scope-Disziplin** im Slice-Plan: §1 heißt *Ziel und Abgrenzung*, je Ausschluss eine Begründung, **vier Klassen** als Suchraster (Folge-Slice mit Kennung, die die Sendung annimmt · bewusst stehender Bestand · anderer Vorgang · Schicht-Abgrenzung), keine Mindestzahl und kein Sensor darauf; §8 heißt *Sub-Area-Prüfungen und Modus-Begründung*, weil die zwei vorgelagerten Prüfungen unbedingt sind und nur der Begründungsblock bedingt |
+| `v6.5.0` | 21 Dateien, davon mit Regel-Delta `grundlagen-harness-dateien` +52/-22 · `grundlagen-traceability` +41 | `archiv-stub-slice` +8 · `archiv-stub-welle` +8 · `welle-results` +8 · `review-report` +18/-2 | die **Zitier-Form** als stehender Norm-Block in vier einfrierenden Vorlagen (Kennung statt Adresse: `slice-NNN` statt Lifecycle-Pfad, `make <target>` statt Sensor-Datei-Link, eine Baseline-Stelle als `v<X.Y.Z>` · `regelwerk/<datei>.md` §<Abschnitt> statt als Link) · die **RTM-Gegenrichtung** *Anforderung → Beleg*, erzeugt statt gepflegt, mit dem **Slice** als entlastender Spalte und der ADR ausdrücklich **nicht** als Quittung |
+
+**Die `v6.4.0`- und `v6.5.0`-Zeilen tragen zwei Posten, die diesen Plan selbst betreffen**, und
+beide sind hier Delta, nicht Gliederung: Die Umbenennung von §1 und §8 und die Zitier-Form gelten
+ab dem Tausch für neu kopierte Artefakte — bis dahin ist die gepinnte Fassung der Ist-Maßstab
+(Kopf, letztes Feld).
+
+**Die Tabellenform ist in `v6.5.0` eine eigene Rauschklasse.** 17 der 25 im letzten
+Release-Schritt berührten Dateien ändern **nur** die Markdown-Tabellenform;
+[`ADR-0038`](../../adr/0038-ziel-fassung-regiert-den-sprung-v650.md) §Was das Messinstrument
+diesmal mitzählt führt die Messung. Wer die Roh-Beträge der `v6.5.0`-Zeile als Regel-Delta liest,
+überschätzt sie — deshalb nennt die Zelle die zwei Dateien mit Regel-Delta einzeln.
 
 **Der d-check-Pin-Sprung aus `v6.1.0` ist kein Posten dieses Slice — nachgemessen, nicht
 geglaubt.** Er liegt in einem Commit, der `lab/regelwerk`/`lab/templates` **nicht** anfasst
-(`git show --stat $(git log --format=%H v6.0.0..v6.1.0 --grep='chore(d-check)')` → `Makefile`,
-`d-check.mk`, `lab/example/Makefile`, `lab/example/d-check.mk`), und liegt damit außerhalb des
-Assets, das dieses Repo vendort. Die Achse ist zudem deckungsgleich: Kurs und Repo stehen beide auf
-`v0.74.1` (`git show v6.3.1:d-check.mk | grep -n DCHECK_IMAGE` gegen
+(`git -C "$K" show --stat $(git -C "$K" log --format=%H v6.0.0..v6.1.0 --grep='chore(d-check)')`
+→ `Makefile`, `d-check.mk`, `lab/example/Makefile`, `lab/example/d-check.mk`), und liegt damit
+außerhalb des Assets, das dieses Repo vendort. Die Achse ist zudem deckungsgleich: Kurs und Repo
+stehen beide auf `v0.74.1` (`git -C "$K" show v6.5.0:d-check.mk | grep -n DCHECK_IMAGE` gegen
 `grep -n DCHECK_IMAGE d-check.mk`) — dieses Repo hat den Sprung mit
 [slice-187](../done/slice-187-d-check-pin-v0741.md) selbst vollzogen und pinnt zusätzlich per
 Digest. **Der Tausch bringt hier nichts nach.**
 
+### Warum das ein Slice bleibt — die Größen-Achsen sind gegen den Ziel-Tag invariant
+
+Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Slice nennt drei Abbruch-Kriterien.
+Alle drei sind hier gemessen, und keines hängt daran, **welcher** Tag das Ziel ist:
+
+- **≤ 3 Liefer-Punkte.** Es bleiben die drei aus §2 — Baum samt Pins, Adress-Nachzug,
+  Zielstand-Buchung. Was der weitere Sprung mitbringt, ist **Inhalt**; dieser Slice bewegt
+  **Bytes und Adressen**. Die Zahl der Pin-Stellen ist 5, die der Bäume nach dem Lauf 1, die der
+  Adress-Formen 2 (Link und Pfad) — jede davon ist eine Eigenschaft dieses Repos, nicht des
+  Ziel-Tags.
+- **Höchstens zwei Schichten.** Berührt sind der vendored Baum (Daten) und die Adress-Schicht
+  (Pins, Markdown, Symlinks). Ein Delta über 32 statt über 13 Kurs-Dateien fügt keine dritte hinzu.
+- **In einer Review-Sitzung prüfbar.** Der prüfbare Teil ist der Adress-Nachzug über die lebenden
+  Dateien; seine Menge ist **64** und wandert mit dem Bestand, nicht mit dem Ziel-Tag (Kommando in
+  §2, Liefer-Punkt 2).
+
+**Geteilt wird deshalb nicht.** Was *wächst*, ist die Liste in §6 §Offene Punkte — und die zählt
+nach derselben Sektion nicht in die Größe, weil sie beschreibt, was der Slice **nicht** liefert.
+
 ### Was dieser Slice nicht tut
 
-Er **entscheidet nichts über die regierende Fassung** — das ist eine Architect-Entscheidung und
-sein Start-Trigger (§4). Er **wertet den Delta nicht aus**: welcher Adaptions-Eintrag von der neuen
+Er **entscheidet nichts über die regierende Fassung** — das tut
+[`ADR-0038`](../../adr/0038-ziel-fassung-regiert-den-sprung-v650.md), und ihre Annahme ist sein
+Start-Trigger (§4). Er **wertet den Delta nicht aus**: welcher Adaptions-Eintrag von der neuen
 Fassung eingeholt wird und welche Form-Pflicht dieses Repo trifft, ist der Adaptions-Durchgang, und
-der ist ein eigener Slice (§6). Und er **stellt die Sensors-Sektion nicht um**: Die `v6.3.0`-Zeile
-der Tabelle oben ist der umfangreichste Posten des Sprungs, sie legt ein neues Verzeichnis an und
-berührt zwei lebende Norm-Artefakte — sie in denselben Schnitt zu nehmen hieße, einen vierten
-Liefer-Punkt zu tragen und die Zwei-Schichten-Grenze zu reißen.
+der ist ein eigener Slice (§6). Und er **setzt keine der sechs Form-Pflichten um**, die die Tabelle
+oben führt — Sensors-Verzeichnis, Zitier-Form, RTM-Gegenrichtung, Out-of-Scope-Disziplin,
+Review-Wächter, Carveout-Bindungsspalte. Jede davon urteilt über bestehende Artefakte; der Tausch
+legt nur den Text daneben, an dem sie gemessen werden. §6 §Offene Punkte führt sie einzeln mit
+Begründung.
 
 ## 2. Definition of Done
 
@@ -119,8 +174,8 @@ gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst —
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
 - [ ] **Der Baum ist getauscht, und die fünf Pin-Stellen nennen denselben Tag.**
-      `.harness/baseline/v6.3.1/{regelwerk,templates}` samt `SHA256SUMS` liegt committet,
-      `.harness/baseline/v6.0.0/` ist entfernt, und `make baseline-verify` meldet `v6.3.1 OK`.
+      `.harness/baseline/v6.5.0/{regelwerk,templates}` samt `SHA256SUMS` liegt committet,
+      `.harness/baseline/v6.0.0/` ist entfernt, und `make baseline-verify` meldet `v6.5.0 OK`.
       Genau ein Tag liegt im Baum — die Zusage von
       [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
       ist eine Eindeutigkeits-, keine Vollständigkeits-Aussage und wird als solche belegt
@@ -134,7 +189,9 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       `TestDefaultBaselineSHA256_MatchesMakefile`). `make regelwerk-check` (Netz, **nicht** in
       `make gates`) ist grün. Der sha256 wird am **Release-Asset gemessen**, nicht aus einer
       Erwartung übernommen; steht er nicht neben dem Kommando, das ihn liefert, ist der
-      Liefer-Punkt offen.
+      Liefer-Punkt offen. **Dieser Plan nennt ihn nicht** — ihn hier zu führen hieße, eine Zahl
+      ohne ihr Kommando zu setzen
+      ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)).
 
       **Kein Gate deckt die Kopplung Baum↔Pin:** `baseline-verify` entdeckt das
       `<tag>`-Verzeichnis, statt `BASELINE_TAG` zu lesen, und `test/sources-pin.bats` koppelt die
@@ -147,8 +204,8 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
       ```sh
       P=( '*.md' '*.go' '*.sh' '*.yml' 'Makefile' )
-      git grep -l '\.harness/baseline/v6\.0\.0' -- "${P[@]}" | wc -l                       # 82 Dateien
-      git grep -c '\.harness/baseline/v6\.0\.0' -- "${P[@]}" | awk -F: '{s+=$NF} END{print s}'  # 233 Vorkommen
+      git grep -l '\.harness/baseline/v6\.0\.0' -- "${P[@]}" | wc -l                       # 93 Dateien
+      git grep -c '\.harness/baseline/v6\.0\.0' -- "${P[@]}" | awk -F: '{s+=$NF} END{print s}'  # 285 Vorkommen
       git grep -l '\.harness/baseline/v6\.0\.0' -- "${P[@]}" \
         ':!docs/plan/planning/done' ':!docs/reviews' ':!harness/conventions/done' ':!docs/plan/adr' \
         | wc -l                                                                            # 64 lebende Dateien
@@ -170,12 +227,14 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       **Was `make docs-check` davon trägt:** keinen toten **Link** — nicht *keinen toten Pfad*. Ein
       `.harness/baseline/v6.0.0/…` in Inline-Code ohne Link-Klammer bleibt grün und ist als Pfad in
       den Arbeitsbaum trotzdem tot. Der Beleg ist darum das `git grep` oben, nicht das Gate.
-- [ ] **Die Zielstand-Setzung ist verbucht — von der Rolle, der die Datei gehört.** §Baseline von
-      [`harness/conventions.md`](../../../../harness/conventions.md) trägt für `v6.3.1` die Zeile
-      in der Form aus
+- [ ] **Die Zielstand-Buchung ist vollzogen — von der Rolle, der die Datei gehört.** §Baseline von
+      [`harness/conventions.md`](../../../../harness/conventions.md) trägt für `v6.5.0` die Zeile
+      in der Drei-Teil-Form aus
       [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2
       — Ziel-Tag, Datum des **Vollzugs**, der Slice mit dem Delta-Nachweis, sonst nichts —, und das
-      Feld `Stand:` nennt `v6.3.1`. Die Datei ist Architect-Eigentum
+      Feld `Stand:` nennt `v6.5.0`. Diese Buchung ist die Architect-Folgepflicht, die
+      [`ADR-0038`](../../adr/0038-ziel-fassung-regiert-den-sprung-v650.md) §Konsequenzen *fällig
+      mit dem Baum-Tausch* stellt. Die Datei ist Architect-Eigentum
       ([`AGENTS.md`](../../../../AGENTS.md) §3.8): Der ausführende Lauf schreibt sie **nicht**,
       sondern übergibt; die Änderung landet in einem eigenen, die Rolle nennenden Commit, der außer
       Architect-Artefakten nichts berührt. **Der Liefer-Punkt ist erst erfüllt, wenn dieser Commit
@@ -199,7 +258,7 @@ Aussagen-Berührung steht hier gar nicht.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `.harness/baseline/v6.3.1/{regelwerk,templates}/` + `SHA256SUMS` | neu | der vendored Baum aus dem verifizierten Release-Asset |
+| `.harness/baseline/v6.5.0/{regelwerk,templates}/` + `SHA256SUMS` | neu | der vendored Baum aus dem verifizierten Release-Asset |
 | `.harness/baseline/v6.0.0/` | entfernt | genau ein Tag liegt im Baum ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) |
 | `Makefile` (`BASELINE_TAG`, `BASELINE_ZIP_SHA256`) | update | kanonisches Pin-Paar |
 | [`.d-check.yml`](../../../../.d-check.yml) (`sources`-`url`/`sha256`) | update | fail-closed an das Makefile-Paar gekoppelt (`test/sources-pin.bats`) |
@@ -222,31 +281,29 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **Start** (`next` → `in-progress`) — **drei Bedingungen, alle beobachtbar, alle erfüllt, bevor der
 erste `git`-Befehl läuft:**
 
-1. **Die Entscheidung über die regierende Fassung des Sprungs `v6.0.0` → `v6.3.1` liegt als
-   angenommene ADR vor.** Sie ist ein **Übergabe-Artefakt des Architect**, nicht Arbeit dieses
-   Slice, und ihr Fehlen ist der Grund, warum er noch nicht priorisiert ist.
+1. **[`ADR-0038`](../../adr/0038-ziel-fassung-regiert-den-sprung-v650.md) steht auf `Accepted`.**
+   Sie entscheidet die regierende Fassung des Sprungs `v6.0.0` → `v6.5.0` und ist ein
+   **Übergabe-Artefakt des Architect**, nicht Arbeit dieses Slice. Beobachtbar an
+   `grep -m1 '^\*\*Status:\*\*' docs/plan/adr/0038-ziel-fassung-regiert-den-sprung-v650.md`.
 
-   Warum sie fällig ist — nachgelesen, nicht angenommen:
-   [`ADR-0036`](../../adr/0036-ziel-fassung-regiert-den-sprung-v600.md) trägt diesen Sprung
-   **nicht**. Ihre Festlegung ist ausdrücklich auf `v5.18.0` → `v6.0.0` geschlossen (*„Diese
-   Festlegung gilt **nur** für `v5.18.0` → `v6.0.0`"*), ihr Abschnitt §Was diese Festlegung nicht
-   tut verwirft die allgemeine Regel *„es regiert stets die Ziel-Fassung"* erneut, und ihr **erster
-   Re-Evaluierungs-Trigger** verlangt für den nächsten Sprung eine eigene Messung: *„Der nächste
-   Sprung misst neu — beide Stufen, und das Delegat-Delta **netto**."* Dieselbe Bahn ist die von
-   [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md), deren
-   Festlegung 1 allein den Sprung davor band und deren Re-Evaluierungs-Trigger in
-   [`ADR-0036`](../../adr/0036-ziel-fassung-regiert-den-sprung-v600.md) eingelöst wurde; das
-   Kriterium selbst steht in
-   [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 und ist mit
-   jedem Sprung neu anzuwenden. **Ob die Ziel-Fassung, die gepinnte oder eine dritte Antwort
-   regiert, entscheidet dieser Plan nicht** — er stellt fest, dass keine bestehende Entscheidung
-   den Fall deckt.
+   Solange sie `Proposed` trägt, ist sie ein Architect-Verdikt und bindet nicht
+   ([`AGENTS.md`](../../../../AGENTS.md) §3.4 bindet ab `Accepted`) — ihr eigener
+   Acceptance-Trigger verlangt eine Reviewer-Runde gegen
+   [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md),
+   [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) und
+   [`ADR-0036`](../../adr/0036-ziel-fassung-regiert-den-sprung-v600.md) mit Report ohne
+   blockierenden Befund unter `docs/reviews/`. **Dass diese Bedingung heute unerfüllt ist, ist die
+   gewollte Wirkung**: Der Slice bleibt liegen, bis die normative Quelle des Vorgangs steht.
 
-   Die zweistufige Messung (führt die gepinnte Fassung die Prozedur? · haben ihre Delegate ein
-   **Netto**-Delta?) liegt beim entscheidenden Lauf — Präzedenz ist
-   [`ADR-0036`](../../adr/0036-ziel-fassung-regiert-den-sprung-v600.md) §Kontext, die sie im
-   ADR-Lauf selbst gegen die vendored Bäume nachfuhr. Der Delta-Katalog in §1 ist ihr **Material**,
-   nicht ihr Ersatz: Er misst Dateien und Zeilen, nicht die Frage, welche Fassung regiert.
+   **Warum überhaupt eine eigene Entscheidung:**
+   [`ADR-0036`](../../adr/0036-ziel-fassung-regiert-den-sprung-v600.md) trägt diesen Sprung nicht —
+   ihre Festlegung ist ausdrücklich auf `v5.18.0` → `v6.0.0` geschlossen, und ihr erster
+   Re-Evaluierungs-Trigger verlangt für den nächsten Sprung eine eigene zweistufige Messung samt
+   Netto-Frage. Dieselbe Bahn ist die von
+   [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md); das Kriterium
+   selbst steht in [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 3
+   und ist mit jedem Sprung neu anzuwenden. Der Delta-Katalog in §1 ist **Material** dieser
+   Messung, nicht ihr Ersatz: Er misst Dateien und Zeilen, nicht die Frage, welche Fassung regiert.
 2. **[slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) liegt in
    `done/`.** Er fasst [`.d-check.yml`](../../../../.d-check.yml) und
    [`harness/README.md`](../../../../harness/README.md) an — beide sind Gegenstand dieses Slice
@@ -264,10 +321,10 @@ erste `git`-Befehl läuft:**
   (`cite`-artig) auf den alten Baum zeigt und von Hand nachzurechnen ist. Dann trennt der Schnitt
   Tausch (Liefer-Punkt 1) und Nachzug (Liefer-Punkt 2) in zwei Slices.
 - `in-progress` → `open` (blockiert — Carveout?): wenn ein Gate am neuen Baum rot wird und die
-  Ursache in der Ziel-Fassung liegt statt in diesem Repo — der wahrscheinlichste Fall ist eine
-  Form-Pflicht aus der `v6.3.0`-Zeile in §1, die ein bestehendes Artefakt bricht. Dann ist der rote
-  Status auf einen Trigger zu schalten (Carveout, Baseline-Regelwerk `modul-07-carveouts.md`),
-  nicht still zu übergehen.
+  Ursache in der Ziel-Fassung liegt statt in diesem Repo — die wahrscheinlichsten Fälle sind die
+  Sensors-Regel aus `v6.3.0` und die Zitier-Form aus `v6.5.0`, die beide auf lebende Norm-Artefakte
+  zielen. Dann ist der rote Status auf einen Trigger zu schalten (Carveout, Baseline-Regelwerk
+  `modul-07-carveouts.md`), nicht still zu übergehen.
 
 ## 5. Closure-Trigger
 
@@ -277,7 +334,7 @@ Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
 **Zwei beobachtbare Kriterien:**
 
-1. `make baseline-verify` meldet `v6.3.1 OK`, `ls -d .harness/baseline/v*/ | wc -l` gibt `1`, und
+1. `make baseline-verify` meldet `v6.5.0 OK`, `ls -d .harness/baseline/v*/ | wc -l` gibt `1`, und
    `make gates` ist grün — mit gültigem Stempel über dem Baum, der die Closure trägt.
 2. Der Adress-Lauf aus DoD 2 trifft außerhalb der vier eingefrorenen Bestände und der zwei
    benannten Nicht-Zieh-Klassen **null**, und die Ausnahmen sind einzeln aufgezählt statt als Zahl
@@ -303,63 +360,68 @@ dasteht.
   gehört vor den Vollzug.** [`AGENTS.md`](../../../../AGENTS.md) §3.11 verlangt vor einem vom
   Prozess vorgeschriebenen Ortswechsel eine Messung über **beide** Adress-Formen — Code-Span und
   Markdown-Link —, ob ein eingefrorenes Artefakt das bewegte als Pfad nennt. Sie ist hier gefahren
-  und trifft nicht null: **18** Dateien in den vier eingefrorenen Beständen nennen
-  `.harness/baseline/v6.0.0/…` (3 ADRs, 12 Review-Reports, 3 `done/`-Slices, 0 aufgelöste
-  MR-Einträge), **10** davon als Markdown-Link
-  (`git grep -lE '\]\([^)]*\.harness/baseline/v6\.0\.0' -- docs/plan/adr docs/reviews
-  docs/plan/planning/done harness/conventions/done | wc -l`; kein Erwartungswert). Ein
-  ADR-Verweis ist nach §3.4 unantastbar, ein Review-Report ebenso — der Nachzug darf sie nicht
-  ziehen, und ihr Ziel liegt nach dem Tausch nicht mehr im Baum. Das ist die Klasse
-  `BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot`, deren Zähler bei **4** steht
-  (`ls docs/plan/planning/observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/evidence/*.md | wc -l`)
-  und deren Stand `verkörpert` ist — die verkörperte Regel deckt den **künftigen** Schreibfall, den
-  Bestand deckt sie nicht. — **Ausgang:** offen; die Closure setzt ihn.
-- **Nach vollständigem Nachzug bleibt das Doku-Gate rot: 32 Link-Vorkommen in 14 Review-Reports
-  zeigen in den alten Baum, und das Modul `links` prüft sie.** Das ist die **Vorkommen-Achse**
-  derselben Klasse `BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot`, nicht ein zweiter Fund:
-  Das Risiko darüber zählt **Dateien** in den vier eingefrorenen Beständen, dieses zählt, was das
-  Gate daraus **macht**. Doppelt gezählt wird dabei nichts — die Menge liegt innerhalb der
-  Bezugsmenge aus DoD 2 und **außerhalb** von deren lebendem Teil: Dort ist `docs/reviews` per
-  Pathspec ausgenommen und trägt null. Verankert gemessen, Fences und Inline-Code gestrippt, weil
-  eine rohe Zählung den eigenen Abdruck mitzählt (roh 15 Dateien; der Mehrtreffer ist ein
-  abgedrucktes Kommando):
+  und trifft nicht null: **29** Dateien in den vier eingefrorenen Beständen nennen
+  `.harness/baseline/v6.0.0/…`, **15** davon in Link-Form, und die Link-Form liegt in **zwei**
+  Beständen, nicht mehr nur in einem:
 
   ```sh
-  n=0; d=0
-  for f in docs/reviews/*.md; do
-    c=$(awk '/^```/{x=!x;next} !x' "$f" | sed -E 's/`[^`]*`//g' \
-        | grep -oE '\]\([^)]*\.harness/baseline/v[0-9][^)]*\)' | wc -l)
-    [ "$c" -gt 0 ] && { n=$((n+c)); d=$((d+1)); }
-  done; echo "$n Links in $d Reports"                        # 32 Links in 14 Reports
+  E=( docs/plan/adr docs/reviews docs/plan/planning/done harness/conventions/done )
+  git grep -l  '\.harness/baseline/v6\.0\.0'          -- "${E[@]}" | wc -l   # 29
+  git grep -lE '\]\([^)]*\.harness/baseline/v6\.0\.0' -- "${E[@]}" | wc -l   # 15
+  git grep -lE '\]\([^)]*\.harness/baseline/v6\.0\.0' -- "${E[@]}" | cut -d/ -f1-3 | sort | uniq -c
+  #   1 docs/plan/planning/done      (ein geschlossener Slice)
+  #  14 docs/reviews
   ```
 
-  **Dass daraus Befunde werden, ist gemessen und nicht gefolgert** — an einer Kopie außerhalb des
-  Repos, weil `make docs-check` den Arbeitsbaum mountet: Baum nach `v6.3.1` umbenannt, jeder lebende
-  Verweis gezogen, die vier eingefrorenen Bestände unangetastet, darüber der Pin aus `d-check.mk`:
+  Ein ADR-Verweis ist nach §3.4 unantastbar, ein Review-Report und ein geschlossener Slice ebenso
+  — der Nachzug darf sie nicht ziehen, und ihr Ziel liegt nach dem Tausch nicht mehr im Baum. Das
+  ist die Klasse `BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot`, deren Zähler bei **4**
+  steht
+  (`ls docs/plan/planning/observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/evidence/*.md | wc -l`)
+  und deren Stand `verkörpert` ist — die verkörperte Regel deckt den **künftigen** Schreibfall, den
+  Bestand deckt sie nicht. Die Ziel-Fassung bringt für den künftigen Fall einen zweiten Träger mit
+  (die Zitier-Form in vier Vorlagen, §1 `v6.5.0`-Zeile); auf den Bestand wirkt auch der nicht.
+  **Keine Erwartungswerte** — beide Zahlen wachsen mit jedem Review-Lauf, der in den Baum
+  verlinkt. — **Ausgang:** offen; die Closure setzt ihn.
+- **Nach vollständigem Nachzug bleibt das Doku-Gate rot: 35 Befunde aus eingefrorenen Artefakten,
+  die das Modul `links` prüft.** Das ist die **Vorkommen-Achse** derselben Klasse
+  `BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot`, nicht ein zweiter Fund: Das Risiko
+  darüber zählt **Dateien** in den vier eingefrorenen Beständen, dieses zählt, was das Gate daraus
+  **macht**. Doppelt gezählt wird dabei nichts — die Menge liegt innerhalb der Bezugsmenge aus
+  DoD 2 und **außerhalb** von deren lebendem Teil, dessen Pathspec beide Bestände ausnimmt.
+
+  **Gemessen und nicht gefolgert** — an einer Kopie außerhalb des Repos, weil `make docs-check` den
+  Arbeitsbaum mountet: Baum nach `v6.5.0` umbenannt, jeder lebende Verweis gezogen, die vier
+  eingefrorenen Bestände unangetastet, darüber der Pin aus `d-check.mk`:
 
   ```sh
   S=$(mktemp -d)                                             # ausserhalb des Repos
   tar --exclude=.git --exclude=.tmp -cf - . | (cd "$S" && tar -xf -)
-  mv "$S/.harness/baseline/v6.0.0" "$S/.harness/baseline/v6.3.1"
+  mv "$S/.harness/baseline/v6.0.0" "$S/.harness/baseline/v6.5.0"
   find "$S" -type f \( -name '*.md' -o -name '*.go' -o -name '*.sh' -o -name '*.yml' -o -name 'Makefile' \) \
     -not -path '*/docs/reviews/*'            -not -path '*/docs/plan/adr/*' \
     -not -path '*/docs/plan/planning/done/*' -not -path '*/harness/conventions/done/*' \
     -not -path '*/.harness/baseline/*' \
     -exec grep -lF '.harness/baseline/v6.0.0' {} + \
-    | xargs -r sed -i 's|\.harness/baseline/v6\.0\.0|.harness/baseline/v6.3.1|g'
+    | xargs -r sed -i 's|\.harness/baseline/v6\.0\.0|.harness/baseline/v6.5.0|g'
   D=$(sed -n 's/^DCHECK_DIGEST ?= //p' d-check.mk)
   docker run --rm --network none -v "$S:/repo:ro" "ghcr.io/pt9912/d-check@$D"
   ```
 
-  → `d-check: 892 Datei(en) geprüft, 32 Befund(e)`, EXIT 1 — **alle 32 in `docs/reviews/`, je
-  Link-Vorkommen einer**, keiner in den drei übrigen eingefrorenen Beständen. Ohne den Nachzug sind
-  es 156, also dieselben 32 plus 124 lebende.
+  → `d-check: 913 Datei(en) geprüft, 35 Befund(e)`, EXIT 1 — **32 in `docs/reviews/` (14 Dateien),
+  3 in `docs/plan/planning/done/` (eine Datei), 0 in `docs/plan/adr/` und
+  `harness/conventions/done/`**, je Link-Vorkommen ein Befund. Ohne den Nachzug sind es **157**,
+  also dieselben 35 plus 122 lebende (dieselbe Kopie ohne den `find`-Schritt).
 
-  **Warum das Gate sie sieht:** Die Reports sind **nicht** vom Doku-Gate ausgenommen. Von den
+  **Der `done/`-Anteil ist neu gegenüber dem vorigen Sprung** und die Achse, an der dieses Risiko
+  wächst: Ein geschlossener Slice friert wie ein Report ein, aber er entsteht in jeder Closure,
+  nicht nur in jedem Review.
+
+  **Warum das Gate sie sieht:** Die Bestände sind **nicht** vom Doku-Gate ausgenommen. Von den
   Modulen in [`.d-check.yml`](../../../../.d-check.yml) tragen nur `ids` und `codepaths` eine
   `exempt-paths`-Zeile für `docs/reviews`; `links` und `anchors` tragen keine, und eine
   referenz-weite Options-Sektion haben sie nicht
-  (`grep -n '^modules:' -A 0 .d-check.yml; grep -n 'exempt-paths' .d-check.yml`).
+  (`grep -n '^modules:' .d-check.yml; grep -n 'exempt-paths' .d-check.yml`).
 
   **Was das für die DoD heißt, ausdrücklich:** Liefer-Punkt 2 bleibt erfüllbar — ein eingefrorener
   Report ist kein *lebender* Verweis, und die dortige Messung schließt ihn aus. Rot färbt er
@@ -368,75 +430,86 @@ dasteht.
   **Drei Wege stehen offen, und keiner wird hier gewählt** — die Wahl gehört in den Lauf: ein
   eingefrorenes Artefakt ändern, was [`AGENTS.md`](../../../../AGENTS.md) §3.4 und §3.11 sperren ·
   ein Referenz-Ventil, das nach §3.5 seine eigene ADR braucht — heute führt die Config **4** Paare
-  (`grep -c '^  - in: ' .d-check.yml`), dieser Fall bräuchte **14** `in:`-Einträge über **22**
-  Paare aus Datei × aufgelöstem Ziel, und ein `scan.ignore`-Schnitt an ihrer Stelle nähme **293**
-  Reports aus vier Modulen (`ls docs/reviews/*.md | wc -l`) · den Tausch anders schneiden.
+  (`grep -c '^  - in: ' .d-check.yml`), dieser Fall bräuchte **15** `in:`-Einträge, und ein
+  `scan.ignore`-Schnitt an ihrer Stelle nähme **299** Reports aus vier Modulen
+  (`ls docs/reviews/*.md | wc -l`) · den Tausch anders schneiden.
 
-  **Grenzen dieser Messung — was sie liefert und was sie nicht sieht.** Die 32 sind eine
+  **Grenzen dieser Messung — was sie liefert und was sie nicht sieht.** Die 35 sind eine
   **Untergrenze**: Die Sonde zog pauschal, während der Lauf zwei Klassen stehen lässt (DoD 2), und
   sie misst nur den Prüfbereich — was `scan.ignore` ausnimmt, trägt eine tote Adresse unbemerkt.
-  Vier weitere Reports nennen die Adresse **ohne** Link-Klammer: nach dem Tausch tot als Pfad, grün
-  im Gate, weil `codepaths` genau hier ausgenommen ist. Und die Fundmenge ruht nicht — die Hälfte
-  der 14 ist am Tag dieser Messung entstanden:
-
-  ```sh
-  comm -23 <(git grep -l  '\.harness/baseline/v6\.0\.0'      -- docs/reviews | sort) \
-           <(git grep -lE '\]\([^)]*\.harness/baseline/v6\.0\.0' -- docs/reviews | sort) | wc -l
-                                                             # 4 Reports ohne Link-Form
-  for f in $(git grep -lE '\]\([^)]*\.harness/baseline/v6\.0\.0' -- docs/reviews); do
-    git log --diff-filter=A --format=%ad --date=short -1 -- "$f"; done | sort | uniq -c
-                                                             # 7 am 2026-09-05, 7 am 2026-09-06
-  ```
-
-  **Keine Erwartungswerte** — jede Zahl dieses Eintrags ist an den Stand vom 2026-09-06 gebunden und
-  wächst mit jedem Review-Lauf, der in den Baum verlinkt. Die Tag-Literale in den Kommandos oben
-  sind eine datierte Mess-Aussage nach
+  **14** eingefrorene Dateien nennen die Adresse **ohne** Link-Klammer: nach dem Tausch tot als
+  Pfad, grün im Gate, weil `codepaths` für `docs/reviews` ausgenommen ist
+  (`comm -23 <(git grep -l '\.harness/baseline/v6\.0\.0' -- "${E[@]}" | sort)
+  <(git grep -lE '\]\([^)]*\.harness/baseline/v6\.0\.0' -- "${E[@]}" | sort) | wc -l`).
+  **Keine Erwartungswerte** — jede Zahl dieses Eintrags ist an den Stand vom 2026-09-07 gebunden.
+  Die Tag-Literale in den Kommandos oben sind eine datierte Mess-Aussage nach
   [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
   und gehören zur zweiten Nicht-Zieh-Klasse aus DoD 2. — **Ausgang:** offen; die Closure setzt ihn.
-- **Die regierende Fassung ist bei Start noch nicht entschieden.** Dann greift der Start-Trigger
+- **Die regierende Fassung ist bei Start noch nicht angenommen.** Dann greift Start-Bedingung 1
   nicht und der Slice bleibt liegen — das ist die gewollte Wirkung, nicht der Schaden. Der Schaden
-  entstünde, wenn der Lauf ohne die Entscheidung tauscht und der spätere Adaptions-Durchgang
-  gegen eine Pflichtgliederung misst, die niemand gewählt hat. — **Ausgang:** offen; die Closure
-  setzt ihn.
+  entstünde, wenn der Lauf ohne die Annahme tauscht und der spätere Adaptions-Durchgang gegen eine
+  Pflichtgliederung misst, die keine angenommene Entscheidung deckt. — **Ausgang:** offen; die
+  Closure setzt ihn.
 - **Der Sprung läuft ohne eigenen Inventur-Slice, und die Klasse dafür steht bei 2×.**
   `BEO-ALL/re-baseline-ohne-inventur-slice` beschreibt genau diesen Fall — *„die Form-Pflichten der
   neuen Fassung kommen einzeln als Nachzügler zurück statt gebündelt in den Schnitt"* — und zählt
-  `slice-148`, `slice-149`
+  zwei Belege
   (`ls docs/plan/planning/observations/BEO-ALL/re-baseline-ohne-inventur-slice/evidence/*.md | wc -l`
   → 2). Hier trägt **dieser Plan** den Katalog (§1, je Tag und je Datei, auf der vendored Achse),
   und der Schnitt ist daraus geschnitten statt geschätzt. Tritt beim Vollzug eine Form-Pflicht auf,
   die der Katalog nicht führt, ist das der **dritte** Eintritt — und damit eine Lücke mit eigenem
-  Folge-Slice, keine Notiz. — **Ausgang:** offen; die Closure setzt ihn.
-- **Eine Form-Pflicht aus der `v6.3.0`-Zeile bricht ein bestehendes Artefakt beim Tausch.** Der
-  wahrscheinlichste Kandidat ist die Sensors-Regel, die
-  [`harness/README.md`](../../../../harness/README.md) betrifft — dieser Slice stellt sie nicht
-  um, aber der neue Baum steht dann daneben. Bricht dabei ein Gate, ist der Weg der Carveout mit
-  Auflösungs-Trigger, nicht das stille Rot. — **Ausgang:** offen; die Closure setzt ihn.
+  Folge-Slice, keine Notiz. **Sechs Releases auf einmal erhöhen genau dieses Risiko**, und die
+  Klasse dafür heißt `BEO-ALL/baseline-sprungweite-treibt-kosten` (1×, offen). — **Ausgang:**
+  offen; die Closure setzt ihn.
+- **Eine Form-Pflicht aus der `v6.3.0`- oder der `v6.5.0`-Zeile bricht ein bestehendes Artefakt
+  beim Tausch.** Zwei Kandidaten sind benannt und gemessen: die **Sensors-Regel**, die
+  [`harness/README.md`](../../../../harness/README.md) betrifft — die Sektion führt **80** Zeilen
+  bei **13** Tabellenzeilen, und das Verzeichnis, das die Ziel-Fassung dafür vorsieht, fehlt
+  (`awk '/^## Sensors/{p=1} /^## Traceability/{p=0} p' harness/README.md | wc -l`; dieselbe
+  Pipeline mit `grep -c '^|'`; `ls -d harness/sensors 2>/dev/null | wc -l` → 0) —, und die
+  **Zitier-Form**, die in vier einfrierenden Vorlagen als stehender Norm-Block liegt. Dieser Slice
+  stellt keine von beiden um, aber der neue Baum steht dann daneben. Bricht dabei ein Gate, ist der
+  Weg der Carveout mit Auflösungs-Trigger, nicht das stille Rot. — **Ausgang:** offen; die Closure
+  setzt ihn.
+- **Der Bestand offener Slice-Pläne ist gegen die gepinnte Fassung geschnitten, und niemand hält
+  ihn gegen den neuen Stand.** `open/` führt **57** Pläne
+  (`ls docs/plan/planning/open/slice-*.md | wc -l`), jeder mit einer §1/§8-Gliederung und einer
+  Zitier-Praxis nach `v6.0.0`. Das ist
+  `BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht` (2×, offen); dieser Plan ist
+  der eine, den der Sprung nachgezogen bekommt, und belegt damit zugleich, dass es für die übrigen
+  keinen Schritt gibt. **Der Tausch ändert daran nichts** — er legt nur den Text daneben, gegen den
+  sie künftig gelesen werden. — **Ausgang:** offen; die Closure setzt ihn.
 - **Die vendored `slice.template.md` erzeugt in einem Greenfield-Repo bei jedem kopierten Slice
   einen `codepath-missing`-Befund** — ihr Reconciliation-Item führt den Register-Pfad als
   Inline-Code, und `codepaths` prüft Inline-Code-Pfade auf Existenz, während dieses Repo die Datei
   nicht führt (`ls docs/plan/planning/reconciliation.md` → nicht vorhanden). **Der Tausch behebt es
-  nicht:** `v6.3.1` fasst die Vorlage zwar an (+5/-1), die Reconciliation-Zeile aber nicht
-  (`cd /Development/KI/ai-harness-course && git diff v6.0.0..v6.3.1 --
-  lab/templates/docs/plan/planning/slice.template.md | grep -i reconcil` → leer). Der Bestand
-  behilft sich, indem der Pfad als **Kommando-Operand** geschrieben wird, der seine eigene
-  Abwesenheit belegt; dieser Plan tut es in §2. Ob daraus eine Regel wird, entscheidet nicht dieser
-  Slice. — **Ausgang:** offen; die Closure setzt ihn.
+  nicht:** `v6.5.0` fasst die Vorlage in zwei Schritten an, die Reconciliation-Zeile aber nicht
+  (`git -C "$K" diff v6.0.0 v6.5.0 -- lab/templates/docs/plan/planning/slice.template.md | grep -i
+  reconcil` → leer). Der Bestand behilft sich, indem der Pfad als **Kommando-Operand** geschrieben
+  wird, der seine eigene Abwesenheit belegt; dieser Plan tut es in §2. Ob daraus eine Regel wird,
+  entscheidet nicht dieser Slice. — **Ausgang:** offen; die Closure setzt ihn.
 
 ### Offene Punkte — was dieser Schnitt bewusst nicht mitnimmt
 
 Kein Risiko, sondern die Begründung der Grenze. Jeder Posten ist eigene Arbeit mit eigenem
-Liefer-Wert; **eine Kennung trägt hier keiner**, weil ein genannter Folge-Slice als Datei im
-Lifecycle existieren muss (Folge-Slice-Paarung) und das Anlegen dieser Dateien ein eigener
-Planungs-Schritt ist.
+Liefer-Wert. **Bis auf einen trägt keiner eine Kennung**, weil ein genannter Folge-Slice als Datei
+im Lifecycle existieren muss (Folge-Slice-Paarung) und das Anlegen dieser Dateien ein eigener
+Planungs-Schritt ist; die eine Ausnahme nennt einen **bestehenden** Nachbar-Slice, keinen
+zugesagten. Die Liste ist der Umfang, den die Planung nach dem Tausch vor sich hat — sie zählt
+nicht in die Größe dieses Slice (§1, letzter Block), aber sie ist das Material der Wellen-Frage in
+ihrer letzten Zeile.
 
 | Posten | Warum nicht hier |
 |---|---|
 | **Adaptions-Durchgang** — jeder Eintrag unter [`harness/conventions/`](../../../../harness/conventions/) gegen die neue Fassung, mit den fünf Ausgängen des Freshness-Audits | Er urteilt über **Inhalte**, der Tausch bewegt **Bytes und Adressen**. Präzedenz des vorigen Sprungs: [slice-182](../done/slice-182-baum-tausch-v600-pins-ziehen.md) tauschte, [slice-185](../done/slice-185-adaptions-durchgang-gegen-v600.md) urteilte. Zusammengelegt wäre der Slice weder in einer Review-Sitzung prüfbar noch bei ≤ 3 Liefer-Punkten |
-| **Die Sensors-Umstellung** — das Sensor-Verzeichnis unter `harness/` anlegen (je Gate eine nach dem Target benannte Datei), [`harness/README.md`](../../../../harness/README.md) §Sensors auf seine Tabelle zurückführen, die fehlende Sektion `## Safety and scope boundaries` nachtragen, [`AGENTS.md`](../../../../AGENTS.md) §4 nachziehen | Der umfangreichste Posten des Sprungs (§1, `v6.3.0`-Zeile), ein **neues Verzeichnis** und zwei lebende Norm-Artefakte, davon eines in Architect-Eigentum. Er ist zugleich der Träger, aus dem die zwei in §8 gesichteten Register-Einträge ihren Ausgang bekommen — die Migration liefert ihnen die Regel, die dem Repo bisher fehlte |
-| **Die Review-Zusage bekommt ihren Wächter** — die `v6.2.0`-DoD-Zeile in Kraft setzen und das d-check-Modul `reviews` (`done-dir` als Aktivierungs-Schalter) in [`.d-check.yml`](../../../../.d-check.yml) aktivieren, dazu die emittierte Fassung unter `internal/emit/templates/` | **Die Übernahme ist entschieden** (Setzung des Auftraggebers) und dieser Slice trägt sie nicht: Er tauscht den Baum, aus dem die neue Vorlage kommt — die DoD-Zeile wirkt damit ab dem Tausch auf jeden **neu kopierten** Plan. Das **Aktivieren** des Moduls ist dagegen ein Gate-Anheben mit eigener Bezugsmenge (`docs/plan/planning/done/` gegen `docs/reviews/`) und braucht seinen eigenen roten Beleg ([`AGENTS.md`](../../../../AGENTS.md) §3.6) |
+| **Die Sensors-Umstellung** (`v6.3.0`/`v6.3.1`) — das Sensor-Verzeichnis unter `harness/` anlegen, je Gate mit mehr als einem Satz Vertrag eine nach dem Target benannte Datei, die Target-Zelle der Tabelle zum Link machen, [`harness/README.md`](../../../../harness/README.md) §Sensors auf seine Tabelle zurückführen, [`AGENTS.md`](../../../../AGENTS.md) §4 nachziehen | Der umfangreichste Posten des Sprungs und der **tragende Grund** von [`ADR-0038`](../../adr/0038-ziel-fassung-regiert-den-sprung-v650.md): ein **neues Verzeichnis**, eine neue Artefakt-Klasse mit eigener Ziel-Form (`gate.template.md` in der Vorlagen-Achse) und zwei lebende Norm-Artefakte, davon eines in Architect-Eigentum. Er ist zugleich der Träger, aus dem die zwei in §8 gesichteten Nullzähler-Einträge ihren Ausgang bekommen — die Ziel-Fassung liefert ihnen die Regel, die dem Repo bisher fehlt. **Eine Reihenfolge-Bedingung ist gemessen:** Solange das Verzeichnis fehlt, färbt jede Nennung seines Pfads als Inline-Code `docs-check` rot (Modul `codepaths`, Grund-Code `codepath-missing`) — der Slice legt es an, bevor ein lebendes Dokument darauf zeigt |
+| **Die Zitier-Form in einfrierenden Artefakten** (`v6.5.0`) — den stehenden Norm-Block der vier Vorlagen in die repo-eigene Praxis übernehmen und gegen [`AGENTS.md`](../../../../AGENTS.md) §3.11 halten | Er urteilt über die **Schreib-Regel** künftiger Zeitdokumente, nicht über den Baum. Und er berührt eine Frage, die [`ADR-0038`](../../adr/0038-ziel-fassung-regiert-den-sprung-v650.md) §Was diese Festlegung nicht entscheidet ausdrücklich offen lässt und als eigene Architect-Folgepflicht führt — der Träger von §3.11 ¶1 für Rollen-Reports und das Verhältnis der `exempt-paths`-Ausnahme zum Nachzug durch `make slice-mv`. Eine Entscheidung, die dort fällt, ist nicht in einem Tausch-Slice zu treffen |
+| **Die RTM-Gegenrichtung** (`v6.5.0`) — *Anforderung → Beleg* als erzeugter Auslesestand, mit der Setzung, welche Spalte entlastet | Neue Fähigkeit mit eigenem Liefer-Wert und eigener Bezugsmenge (`spec/lastenheft.md` gegen den Lifecycle). Die Baseline schlägt den **Slice** als entlastende Spalte vor und verlangt, eine andere Wahl zu deklarieren — das ist eine Setzung für den Adaptions-Block, kein Byte im Baum. Ein Nachbar-Slice führt die Frage bereits: slice-192 |
+| **Die Out-of-Scope-Disziplin im Slice-Plan** (`v6.4.0`) — §1 auf *Ziel und Abgrenzung*, §8 auf *Sub-Area-Prüfungen und Modus-Begründung*, vier Ausschluss-Klassen mit Begründungspflicht | Sie gilt für **neu kopierte** Pläne ab dem Tausch und ändert am Baum nichts. Für den Bestand ist sie die Frage aus dem sechsten Risiko oben — 57 Pläne in `open/`, die niemand hält —, und die ist eine Planungs-Entscheidung, kein Nachzug |
+| **Die Review-Zusage bekommt ihren Wächter** (`v6.1.0`/`v6.2.0`) — die DoD-Zeile in Kraft setzen und das d-check-Modul `reviews` (`done-dir` als Aktivierungs-Schalter) in [`.d-check.yml`](../../../../.d-check.yml) aktivieren, dazu die emittierte Fassung unter `internal/emit/templates/` | Der Tausch bringt die neue Vorlage, und die DoD-Zeile wirkt damit ab dem Tausch auf jeden **neu kopierten** Plan. Das **Aktivieren** des Moduls ist dagegen ein Gate-Anheben mit eigener Bezugsmenge (`docs/plan/planning/done/` gegen `docs/reviews/`) und braucht seinen eigenen roten Beleg ([`AGENTS.md`](../../../../AGENTS.md) §3.6) |
+| **Die Carveout-Bindungsspalte** (`v6.1.0`) — die Auflösung eines Carveouts setzt die `Bindung`-Spalte in [`harness/README.md`](../../../../harness/README.md) §Sensors zurück | Eine Regel über den **Carveout-Lifecycle**, die erst beim nächsten Auflösungs-Vorgang greift. Sie hängt zudem an der Sensors-Umstellung darüber: Wo die Tabellenzeile hin wandert, wandert die Spalte mit |
 | **Die emittierte Ebene über den Pin hinaus** — der `reviews:`-Block der `.d-check.yml`-Vorlage, das Sensor-Verzeichnis im Ziel-Repo, `gate.template.md` | Die **Pin**-Hälfte gehört zwingend hierher: `DefaultTag`/`DefaultBaselineSHA256` in `internal/fetch/baseline.go` sind zwei der fünf gekoppelten Stellen, und wer sie stehen ließe, färbt `make gates` rot. Die **Inhalts**-Hälfte gehört nicht: Was ein emittiertes Repo an Struktur bekommt, ist eine eigene Entscheidung mit eigenem Prüfbereich, und `make full-smoke` ist ihr Beleg — nicht `make gates` |
-| **Die Wellen-Frage** — braucht dieser Vorgang eine Welle? | Die Antwort hängt daran, ob eine Closure-Bedingung mehr beobachtet als die DoDs der Mitglieder (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht). Sie ist beantwortbar, sobald die Mitglieder feststehen — und die Eröffnung legt eine eigene Datei an, die dieser Lauf nicht schreibt |
+| **Die Wellen-Frage** — braucht dieser Vorgang eine Welle? | Die Antwort hängt daran, ob eine Closure-Bedingung mehr beobachtet als die DoDs der Mitglieder (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht). Sie ist beantwortbar, sobald die Mitglieder feststehen — und die Eröffnung legt eine eigene Datei an, die dieser Lauf nicht schreibt. **Die Liste oben ist ihr Material:** Acht Posten mit eigenem Liefer-Wert sind der Umfang, an dem sich entscheidet, ob ein Bündel vorliegt |
 
 ## 7. Closure-Notiz
 
@@ -483,28 +556,32 @@ unter `ALL`. `ALL` erfüllt die Schwelle als deklarierte Sub-Area mit eigenem K�
 Aufteilung wäre hier Erfindung — der Gegenstand ist ein Baum, den das ganze Repo adressiert.
 
 **Vorgelagert — offene Beobachtungen sichten:** Das Register unter
-[`../observations/`](../observations/) ist durchgegangen; alle Einträge liegen unter `BEO-ALL` und
-treffen die berührte Sub-Area damit formal. Aufgeführt sind die, die **diesen Vorgang** betreffen
-— Zähler abgelesen als Dateizahl unter `evidence/`, nicht aus einem Feld
+[`../observations/`](../observations/) ist durchgegangen; es führt **65** Verzeichnisse
+(`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l`), alle unter `BEO-ALL`, die damit die
+berührte Sub-Area formal treffen. Aufgeführt sind die, die **diesen Vorgang** betreffen — Zähler
+abgelesen als Dateizahl unter `evidence/`, nicht aus einem Feld
 (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`; keine
 Erwartungswerte):
 
 | Eintrag | Zähler | Stand | Bezug zu diesem Slice |
 |---|---|---|---|
+| `vorgeschriebener-ortswechsel-macht-adresse-tot` | 4× | verkörpert | die 29 eingefrorenen Dateien mit `v6.0.0`-Adresse, §6 erstes und zweites Risiko |
 | `re-baseline-ohne-inventur-slice` | 2× | offen | **erreicht mit diesem Slice 3×, falls der Katalog in §1 nicht trägt** — als Risiko in §6 geführt |
-| `vorgeschriebener-ortswechsel-macht-adresse-tot` | 4× | verkörpert | die 18 eingefrorenen Dateien mit `v6.0.0`-Adresse, §6 erstes Risiko |
-| `folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht` | 2× | offen | die Slices in `open/`, die gegen `v6.0.0`-Pflichten geschnitten sind, gelten nach dem Tausch gegen `v6.3.1` |
+| `folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht` | 2× | offen | die 57 Pläne in `open/`, gegen `v6.0.0`-Pflichten geschnitten; dieser Plan ist der nachgezogene, §6 sechstes Risiko |
+| `byte-gleichheit-als-aussage-ueber-die-regel-gelesen` | 2× | offen | der Delta-Katalog in §1 nennt je Tag die Dateien mit Regel-Delta, nicht die Roh-Beträge — `v6.5.0` normalisiert die Tabellenform des ganzen Baums |
+| `verweis-nachzug-schreibt-in-eingefrorenes-artefakt` | 1× | offen | der Nachzug darf die 15 eingefrorenen Link-Dateien nicht ziehen; ihre Ausnahme steht in DoD 2 |
 | `verweis-nachzug-bricht-tree-operand` | 1× | offen | die erste der zwei Nicht-Zieh-Klassen in DoD 2 |
-| `baseline-sprungweite-treibt-kosten` | 1× | offen | vier Tags auf einmal; die Aufschlüsselung je Tag in §1 ist die Antwort darauf |
-| `mess-zusage-trifft-das-eigene-zitat` | 1× | offen | die Kommando-Zeilen dieses Plans nennen Kurs-Tags als Operanden; sie dürfen beim Nachzug nicht gezogen werden ([`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)) |
-| `einstiegs-datei-weicht-von-der-pflichtgliederung-ab` | 0× | offen | **gesichtet, hier nicht aufgelöst** — die fehlende Sektion `## Safety and scope boundaries`; die Migration bringt die Regel, die Umstellung ist eigene Arbeit (§6) |
-| `benannte-luecke-ohne-ausgang` | 0× | offen | **gesichtet, hier nicht aufgelöst** — *„kein `sensors/done/`"* ist genau die Austrags-Regel, die `v6.3.1` mitbringt; ihr Ausgang entsteht mit der Sensors-Umstellung, gesetzt wird er von einer Closure, nicht von diesem Plan |
+| `baseline-sprungweite-treibt-kosten` | 1× | offen | sechs Releases auf einmal; die Aufschlüsselung je Tag in §1 ist die Antwort darauf |
+| `mess-zusage-trifft-das-eigene-zitat` | 1× | offen | die Kommando-Zeilen dieses Plans nennen Tags als Operanden; sie dürfen beim Nachzug nicht gezogen werden ([`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)) |
+| `regel-delta-zaehlt-herkunfts-kommentar-mit` | 1× | offen | dieselbe Frage, andere Rauschklasse — für diesen Sprung trägt der Herkunfts-Kommentar null, die Tabellenform trägt ([`ADR-0038`](../../adr/0038-ziel-fassung-regiert-den-sprung-v650.md) §Was das Messinstrument diesmal mitzählt) |
+| `einstiegs-datei-weicht-von-der-pflichtgliederung-ab` | 0× | offen | **gesichtet, hier nicht aufgelöst** — die fehlende Sektion `## Safety and scope boundaries` und die Sensors-Fläche; die Ziel-Fassung bringt die Regel, die Umstellung ist eigene Arbeit (§6) |
+| `benannte-luecke-ohne-ausgang` | 0× | offen | **gesichtet, hier nicht aufgelöst** — *„kein `sensors/done/`"* ist genau die Austrags-Regel, die `v6.5.0` mitbringt; ihr Ausgang entsteht mit der Sensors-Umstellung, gesetzt wird er von einer Closure, nicht von diesem Plan |
 
 Die letzten beiden tragen heute **kein** `evidence/`-Verzeichnis — der Zähler ist damit null, und
 das ist der abgelesene Stand, keine Auslassung
-(`find docs/plan/planning/observations/BEO-ALL/benannte-luecke-ohne-ausgang -type f`). Ihre
-Bezeichnungen sind hier **zitiert**, nicht neu formuliert, damit das Register sie nicht als zwei
-Pfade zählt.
+(`find docs/plan/planning/observations/BEO-ALL/benannte-luecke-ohne-ausgang -type f`). Alle
+Bezeichnungen sind **zitiert**, nicht neu formuliert, damit das Register sie nicht als zwei Pfade
+zählt.
 
 **Modus:** alle berührten Sub-Areas **GF** — der Begründungsblock entfällt damit nach der
 Umfangs-Regel dieser Sektion. Der Modus ist keine Folge der Slice-Größe, sondern der Deklaration in
