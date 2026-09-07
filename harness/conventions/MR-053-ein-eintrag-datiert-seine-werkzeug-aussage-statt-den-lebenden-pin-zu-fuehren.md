@@ -31,9 +31,9 @@
   [`MR-039`](../conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
   Setzung 3 hier steht und sein Verdikt im Feld trägt. Die Baseline führt für eine Aussage über ein
   **Werkzeug** keinen Ausgang: das
-  [Freshness-Audit](../../.harness/baseline/v6.0.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
+  [Freshness-Audit](../../.harness/baseline/v6.5.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
   kennt Ausgänge für Adaptions-Einträge gegenüber der **Baseline**, und
-  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
+  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.5.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
   §harness/conventions.md als Konventionsspeicher sagt *„Einträge werden nie überschrieben"*, ohne
   zu sagen, wohin eine überholte Werkzeug-Aussage geht. Diese Setzung füllt die Lücke und tritt an
   keine Stelle.
