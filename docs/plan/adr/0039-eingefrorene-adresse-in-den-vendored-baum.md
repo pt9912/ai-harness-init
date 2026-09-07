@@ -119,9 +119,15 @@ honorieren denselben Top-Level-Schluessel)"*.
 ### Was tatsächlich versperrt war: der repo-eigene Breiten-Wächter
 
 `test/ignore-refs-restbreite.bats` läuft in `make gates` und hält jedes Paar gegen den Bestand.
-Zwei Zähne, und beide fallen an der Glob-Form: `in:` muss eine **existierende Datei** sein (sonst
-`Quelldatei fehlt`), und ein Paar darf **höchstens einen** Markdown-Link decken (sonst
-`$n aufloesende Links, hoechstens 1 ist gedeckt`). Die exakte Paar-Form skaliert hier nicht:
+Zwei Zähne, und die Glob-Form nimmt beiden die Wirkung — **auf verschiedene Weise, und der
+Unterschied ist der wichtigere Teil**. `in:` muss eine **existierende Datei** sein; ein Glob ist
+keine, der Zahn meldet `Quelldatei fehlt` und wird damit **falsch rot**. Der zweite Zahn hält ein
+Paar auf **höchstens einen** Markdown-Link (sonst
+`$n aufloesende Links, hoechstens 1 ist gedeckt`); er vergleicht das aufgelöste Link-Ziel mit dem
+`refs`-Literal auf **Gleichheit**, ein Glob erfüllt die nie, er zählt 0 und bleibt **grün, ohne
+gemessen zu haben** — er wird **falsch grün**. Für einen Wächter sind das nicht zwei Fälle
+desselben Versagens: Das eine ist sichtbar, das andere liest sich wie eine Aussage. Die exakte
+Paar-Form skaliert hier ohnehin nicht:
 
 ```sh
 PS=( 'docs/reviews/**' 'docs/plan/planning/done/**' 'docs/plan/planning/observations/**' )
@@ -136,8 +142,11 @@ done | sort | uniq -c | awk '{n++; if ($1>1) m++; if ($1>x) x=$1} END {print n, 
 
 **6 der 24 Paare überschreiten die Kappung.** Die Kappung ist eine Konstante ohne Gegenstand: Ihr
 Zweck ist, dass eine Ausnahme nicht mehr stumm schaltet, als jemand entschieden hat — und dieser
-Zweck hängt an der **Deklaration**, nicht an der Zahl 1. Die 1 war die Deklaration der vier
-bestehenden Paare, in den Wächter geschrieben statt in den Eintrag.
+Zweck hängt an der **Deklaration**, nicht an der Zahl 1. Die 1 ist eine Obergrenze über alle Paare
+zugleich, in den Wächter geschrieben statt in den Eintrag; als Deklaration trifft sie die Breite
+von dreien der vier und nicht die des Paares aus
+[ADR-0030](0030-eingefrorene-adresse-auf-den-planning-lifecycle.md), das auf der gemessenen Achse
+null deckt — Festlegung 2 misst es.
 
 ### Die Koexistenz-Option steht heute nicht offen
 
@@ -183,8 +192,45 @@ und er liest die Glob-Form auf beiden Achsen.** Vier Bedingungen, alle urteilsfr
 - Deckt er **weniger**, ist er ebenfalls rot: eine zu hohe Zahl ist ein vorab bewilligtes Budget
   für künftiges Stummschalten, und genau das soll der Wächter verhindern.
 
-Die vier bestehenden exakten Paare tragen dabei die Deklaration **1** und ändern ihr Verhalten
-nicht. Gemessen für die drei neuen Einträge, am Tag dieser Entscheidung:
+**Die Deklaration `0` ist eine Deklaration, keine fehlende.** Ein Eintrag, der auf der gemessenen
+Achse nichts deckt, sagt das — und wird rot, sobald der erste Markdown-Link hinzutritt. Eine
+Unterschranken-Ausnahme für ihn braucht der Wächter **nicht**: `gedeckt < 0` ist über einer
+Zählung unerfüllbar, die Klausel hätte keinen Fall. Das ist gemessen und nicht abgewogen —
+über alle Wertepaare bis 6 fällt kein einziges Urteil anders aus:
+
+```sh
+awk 'BEGIN{ for (dec=0;dec<=6;dec++) for (cov=0;cov<=6;cov++)
+  if ((cov!=dec) != ((cov>dec) || (cov<dec && dec>0))) d++; print (d+0) " Unterschiede" }'
+# -> 0 Unterschiede   ("gedeckt == deklariert" gegen dieselbe Regel mit Unterschranke nur fuer deklariert > 0)
+```
+
+**Die vier bestehenden exakten Paare tragen die Deklaration, die ihr Bestand misst — `1 · 1 · 0 · 1`.**
+Drei decken je einen Markdown-Link; das dritte
+([ADR-0030](0030-eingefrorene-adresse-auf-den-planning-lifecycle.md)) deckt eine
+**Code-Span**-Referenz und damit null auf der Achse, die der Wächter liest. Die Config sagt es an
+Ort und Stelle selbst — *„es zaehlt fuer dieses Paar null und ist gruen, ohne gemessen zu haben"* —,
+und die §Fitness-Function-Tabelle unten führt dieselbe Lücke.
+
+```sh
+R="$(git rev-parse --show-toplevel)"
+awk '/^ignore-refs:[[:space:]]*$/{b=1;next} b&&/^[^[:space:]]/{b=0} b' "$R/.d-check.yml" |
+  sed -n 's/^[[:space:]]*-[[:space:]]*in:[[:space:]]*"\(.*\)"/\1/p;s/^[[:space:]]*refs:[[:space:]]*\["\(.*\)"\]/\1/p' |
+  paste - - | while IFS="$(printf '\t')" read -r f t; do
+    d="$(dirname "$f")"; printf '%s\t' "$(basename "$f")"
+    grep -oE '\]\([^)]*\)' "$R/$f" | sed 's/^](//; s/)$//; s/[[:space:]].*$//; s/#.*$//' |
+      while read -r x; do [ -n "$x" ] || continue
+        case "$x" in [a-zA-Z]*:*) continue;; esac
+        [ "$(cd "$d" && realpath -m --relative-to="$R" "$x")" = "$t" ] && echo x
+      done | wc -l
+  done
+# -> je Zeile Basename und Zahl, in Config-Reihenfolge: 1 · 1 · 0 · 1
+```
+
+**Am Tag dieser Entscheidung bleibt damit jedes der vier grün. Ihr Verhalten ändert sich
+trotzdem**, und das ist der Zweck der Festlegung: Die Unterschranke ist auch für sie neu — fällt
+ein gedeckter Link weg, ist das Paar rot statt still grün.
+
+Gemessen für die drei neuen Einträge, am selben Tag:
 
 ```sh
 R="$(git rev-parse --show-toplevel)"
@@ -200,9 +246,24 @@ done
 ```
 
 **Keine Erwartungswerte** — die Zahlen wandern mit dem Bestand, und **dass** sie wandern, ist der
-Sinn der Festlegung: Jede Bewegung ist ab dann eine Entscheidung. Sie liegen über den 36
-Gate-Befunden, weil sie **jeden** Markdown-Link in den vendored Baum zählen, auch die heute
-auflösenden.
+Sinn der Festlegung: Jede Bewegung ist ab dann eine Entscheidung.
+
+**33 + 3 + 2 = 38 liegt um 2 über den 36 Gate-Befunden, und beide Fälle sind benannt.** Der eine
+zeigt in den **lebenden** Baum und löst heute auf. Der andere steht in `docs/reviews/`
+**innerhalb von Inline-Code** und trägt einen `<tag>`-Platzhalter statt eines Tags — d-check sieht
+ihn nie als Referenz, das Ventil kann ihn nicht stummschalten, und *gedeckt* sind für diesen Baum
+darum höchstens 32:
+
+```sh
+PS=( 'docs/reviews/**' 'docs/plan/planning/done/**' 'docs/plan/planning/observations/**' )
+git grep -oE '\]\([^)]*\.harness/baseline/v6\.5\.0/' -- "${PS[@]}" | wc -l    # 1 — loest heute auf
+git grep -oE '\]\([^)]*baseline/<tag>/' -- 'docs/reviews/*.md' | wc -l        # 1 — Platzhalter, keine Referenz
+```
+
+Die Deklaration zählt beide mit, weil der Wächter dieselbe naive `](…)`-Form zählt wie das
+Kommando darüber. Deklaration und Befundmenge sind damit **nicht deckungsgleich**; der Wächter
+bleibt in sich stimmig, weil beide Seiten dasselbe zählen, und die Differenz gehört benannt statt
+als Rundungsrest verschwiegen.
 
 **3. Die drei Einträge sind extensional geschlossen — auf diese drei Quell-Bäume und auf diesen
 einen `refs`-Wert.** Ein vierter Baum, ein anderer `refs`-Wert und jede Verbreiterung sind eine
@@ -232,7 +293,7 @@ weiter.
 |---|---|---|
 | A — 24 exakte `ignore-refs`-Paare über 16 `in:`-Dateien | die Form, die der heutige Wächter liest | 6 der 24 überschreiten die Kappung, die Route braucht Festlegung 2 also trotzdem. Dazu 16 permanente Konfigurationszeilen, die je ein Zeitdokument benennen, und beim nächsten Bump derselbe Aufwand erneut |
 | B — 16 exakte `in:`-Dateien mit Glob in `refs:` | `in:` bleibt eine existierende Datei, Zahn 1 des Wächters hält | Zahn 2 wird **blind**: `count_links` vergleicht das aufgelöste Link-Ziel mit dem `refs`-Literal, ein Glob trifft nie, der Wächter zählt 0 und ist grün, ohne gemessen zu haben — dieselbe Blindstelle, die er für die Code-Span-Achse selbst benennt |
-| C — `scan.ignore` auf die drei Bäume | eine Zeile je Baum, kein Wächter-Umbau | nimmt die Dateien aus **allen** Modulen: `git ls-files 'docs/reviews/*.md' \| wc -l` → 299 Dateien und `git grep -oE '\]\((\.\./)+[^)]+\)' -- 'docs/reviews/*.md' \| grep -vc 'baseline/'` → 3887 repo-interne Link-Prüfungen fielen weg (keine Erwartungswerte). Und die Begründung des `archive-welle`-Suchraums in [`harness/README.md`](../../../harness/README.md) — *„`links`/`anchors` prüfen die Zeitdokumente wie jede andere Datei"* — würde falsch |
+| C — `scan.ignore` auf die drei Bäume | eine Zeile je Baum, kein Wächter-Umbau | nimmt die Dateien aus **allen** Modulen: `git ls-files 'docs/reviews/*.md' \| wc -l` → 301 Dateien und `git grep -oE '\]\((\.\./)+[^)]+\)' -- 'docs/reviews/*.md' \| grep -vc 'baseline/'` → 3972 repo-interne Link-Prüfungen fielen weg (keine Erwartungswerte). Und die Begründung des `archive-welle`-Suchraums in [`harness/README.md`](../../../harness/README.md) — *„`links`/`anchors` prüfen die Zeitdokumente wie jede andere Datei"* — würde falsch |
 | D — `exempt-paths` unter `links`/`anchors` als Werkzeug-Anforderung | acht Module des Werkzeugs führen den Knopf | er ist **datei-weit** und damit gröber als der Fall: Zeile 3 der Sonden-Tabelle — ein toter Link ohne Baseline-Bezug in einer gedeckten Datei — verstummte mit. Der querschnittliche `ignore-refs` löst dieselbe Aufgabe ziel-weit und liegt vor; eine Anforderung an ein Nachbar-Repo für eine Fähigkeit, die es hat, ist keine |
 | E — den alten Baum stehen lassen | die Ziel-Fassung sieht die Koexistenz vor | `make baseline-verify` bricht fail-closed bei zwei `<tag>`-Verzeichnissen ab ([`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 4). Und selbst ohne die Sperre nur ein Aufschub — die Adressen sterben, wenn der Baum fällt |
 | F — das eingefrorene Artefakt doch anfassen | der Befund verschwindet an der Quelle | dann ist es kein Zeitdokument mehr ([`AGENTS.md`](../../../AGENTS.md) §3.4). Die Ziel-Fassung führt diesen Weg und benennt seinen Preis: *„es doch anfassen — dann ist es kein Zeitdokument mehr"* |
@@ -252,7 +313,8 @@ weiter.
   Baum verstummt in den drei Bäumen mit. Heute ist das genau **1** Adresse
   (`git grep -oE '\]\([^)]*\.harness/baseline/v6\.5\.0/' -- 'docs/reviews/**' 'docs/plan/planning/done/**' 'docs/plan/planning/observations/**' | wc -l`,
   kein Erwartungswert); die §3.11-Schärfung sorgt dafür, dass keine hinzukommt, und die
-  Deklaration aus Festlegung 2 macht jede neue sichtbar.
+  Deklaration aus Festlegung 2 macht jede neue sichtbar — **solange nicht im selben Stand eine
+  wegfällt**: Sie ist eine Zahl und misst Kardinalität, nicht Identität.
 - **Negativ:** Der Wächter wird von *„höchstens 1"* auf *„genau N"* gestellt. Fällt eine
   Deklaration durch einen legitimen Vorgang — etwa wenn `make archive-welle` Review-Reports in
   ein Archiv zieht —, wird er rot und verlangt eine Entscheidung. Das ist gewollt und kostet.
@@ -264,9 +326,10 @@ weiter.
   [ADR-0030](0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) für sich benennt. Träger
   bleiben der Accept-Übergang und der Lauf, der den Bump plant.
 - **Folgepflicht (Implementer), fällig mit der Annahme dieser ADR:** die drei Einträge in
-  [`.d-check.yml`](../../../.d-check.yml) und der neue Maßstab in
-  `test/ignore-refs-restbreite.bats`, je mit dem rot gesehenen Gegenbeispiel
-  ([`AGENTS.md`](../../../AGENTS.md) §3.6) — fehlende Deklaration, zu hohe Zahl, zu niedrige Zahl.
+  [`.d-check.yml`](../../../.d-check.yml), die Deklaration an **allen sieben** Einträgen und der
+  neue Maßstab in `test/ignore-refs-restbreite.bats`, je mit dem rot gesehenen Gegenbeispiel
+  ([`AGENTS.md`](../../../AGENTS.md) §3.6) — fehlende Deklaration, zu hohe Zahl, zu niedrige Zahl,
+  und die Deklaration `0`, die von einer fehlenden zu unterscheiden ist.
 - **Folgepflicht (Architect), fällig mit der Annahme dieser ADR:**
   [`AGENTS.md`](../../../AGENTS.md) §3.11 bekommt die vendored-Baseline-Adresse als ausdrücklichen
   Fall — die Ausnahme *„ein Verzeichnis … ist ortsfest"* gilt nicht für ein `<tag>`-gescoptes
@@ -287,6 +350,7 @@ ist einzeln geprüft statt verschwiegen:
 | Frage | Wer sie misst |
 |---|---|
 | deckt ein Eintrag mehr/weniger als deklariert? | `test/ignore-refs-restbreite.bats` nach Festlegung 2 |
+| tauscht ein gedeckter Link gegen einen anderen, ohne dass sich die Zahl ändert? | niemand — die Deklaration misst Kardinalität, nicht Identität |
 | kommt ein **vierter** Eintrag hinzu? | niemand — Hard-Rule-Aussage ([`AGENTS.md`](../../../AGENTS.md) §3.5), wie [ADR-0026](0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) es für sich selbst feststellt |
 | ist die gedeckte Datei wirklich eingefroren? | niemand — kein Modul aus `modules:` der [`.d-check.yml`](../../../.d-check.yml) liest einen Status |
 | deckt der Eintrag eine Code-Span-Referenz? | niemand — der Wächter zählt die Inline-Markdown-Form; [ADR-0030](0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Folgepflicht 2 führt die Lücke |
