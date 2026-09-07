@@ -41,7 +41,7 @@ Kennung nennt der Slice nicht: Er berührt keine `SPEC-<NNN>`-Zeile inhaltlich. 
 **aufwärts** — die Spec nennt diesen Slice nie (Baseline-Regelwerk
 `grundlagen-referenz-richtung.md` §Referenz-Richtung (SDP)).
 
-**Verantwortlich:** `—` bis zur Priorisierung. **Die Zielstand-Buchung in
+**Verantwortlich:** Implementer (pt9912). **Die Zielstand-Buchung in
 [`harness/conventions.md`](../../../../harness/conventions.md) §Baseline gehört nicht der
 ausführenden Rolle** — die Datei ist Architect-Eigentum
 ([`AGENTS.md`](../../../../AGENTS.md) §3.8), und ihre Änderung wandert als eigener, die Rolle
