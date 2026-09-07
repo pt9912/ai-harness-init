@@ -66,22 +66,32 @@ Zwei Entscheidungen tragen einen Acceptance-Trigger in der Datei. Beide sind ang
 | [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) | Reviewer-Konsistenzrunden | **drei Reports namentlich**, ihre Befundzahl, und dass die dritte Runde keinen Rest feststellt |
 | [ADR-0038](0038-ziel-fassung-regiert-den-sprung-v650.md) | *„ihr Report ohne blockierenden Befund in `docs/reviews/`"* | **keinen Beleg** — die Zeile nennt die Entscheidung und eine eingelöste Planner-Folgepflicht |
 
-Der einzige Report zu [ADR-0038](0038-ziel-fassung-regiert-den-sprung-v650.md)
-(`docs/reviews/2026-09-07-adr-0038-ziel-fassung-v650-review.md`) schließt mit *„Nicht annahmefähig
-in dieser Runde — zwei HIGH"* und stellt selbst fest, er sei der verlangte Report nicht:
+Der einzige Report zu [ADR-0038](0038-ziel-fassung-regiert-den-sprung-v650.md) — die
+Reviewer-Runde vom 2026-09-07 zu jener Entscheidung — schließt mit *„Nicht annahmefähig in dieser
+Runde — zwei HIGH"* und stellt selbst fest, er sei der verlangte Report nicht: *„dieser Report ist
+es nicht; er blockiert an HIGH-1 und HIGH-2"*.
 
 ```sh
-git grep -lF '0038-ziel-fassung-regiert-den-sprung-v650' -- 'docs/reviews/*.md'   # 2 Dateien
+git grep -lF '0038-ziel-fassung-regiert-den-sprung-v650' -- 'docs/reviews/*.md'   # 3 Dateien
 ```
 
 **Kein Erwartungswert**
 ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2) — die zweite ist der Review-Report zu `slice-193`, der Anlass dieses Laufs, und
-keine zweite Runde zu jener Entscheidung. Zwischen
-dem Report und dem Accept-Commit liegt allein der Architect-Commit, der die zwei HIGH auflöst.
-Die Rolle, deren Artefakt geprüft wurde, hat den Prüfbefund für erledigt erklärt und danach
-angenommen; die Bestätigung, die der Trigger verlangt, ist eine **Nachmessung desselben
+Setzung 2) — die zwei weiteren sind der Review-Report zu `slice-193`, der Anlass dieses Laufs, und
+die Runde über dieser Entscheidung selbst; keine davon ist eine zweite Runde zu jener Entscheidung.
+Zwischen dem Report und dem Accept-Commit liegt allein der Architect-Commit, der die zwei HIGH
+auflöst. Die Rolle, deren Artefakt geprüft wurde, hat den Prüfbefund für erledigt erklärt und
+danach angenommen; die Bestätigung, die der Trigger verlangt, ist eine **Nachmessung desselben
 Kontexts**.
+
+**Wogegen die zwei HIGH sich richten, gehört dazu, weil es die Reichweite dieser Entscheidung
+begrenzt.** Sie treffen den **Inhalt** — *„Die Festlegung deckt den Sprung nicht, den der abhängige
+Plan führt"* und *„Der Zielstand `v6.5.0` ist im Repo nirgends gesetzt"* —, nicht den Akt; den kann
+jener Report nicht beanstanden, denn er ist älter als er. Ob die *Festlegung* von
+[ADR-0038](0038-ziel-fassung-regiert-den-sprung-v650.md) trägt, ist damit **nach Aktenlage offen**:
+Es gibt dazu eine Nachmessung des schreibenden Kontexts und sonst nichts. Was **feststeht**, ist
+allein, dass ihr Akt den Beleg übersprang, den ihr eigener Trigger verlangt. Diese Entscheidung
+regelt darum den Akt und maßt sich über den Inhalt kein Urteil an.
 
 Seit `Accepted` ist die Datei nach [`AGENTS.md`](../../../AGENTS.md) §3.4 eingefroren. Der
 Widerspruch zwischen ihrer Statuszeile und ihrem Trigger-Abschnitt ist damit **in ihr nicht mehr
@@ -122,10 +132,17 @@ Statuszeile und Trigger-Abschnitt gemeinsam ein, und keine spätere Fassung repa
 
 **Was diese Festlegungen nicht tun.**
 
-- **Kein `Supersedes` auf [ADR-0038](0038-ziel-fassung-regiert-den-sprung-v650.md).** Ihr *Inhalt*
-  ist geprüft und trägt — der Report bestätigt die Entscheidung und beanstandet den **Akt**. Eine
-  Folge-ADR mit `Supersedes` entschiede eine richtige Sache neu; was defekt war, ist ein Vorgang,
-  und Vorgänge werden nicht supersedet. Der Statuswert bleibt, wie er steht.
+- **Kein `Supersedes` auf [ADR-0038](0038-ziel-fassung-regiert-den-sprung-v650.md) — und der Grund
+  ist Verfügbarkeit, nicht Entbehrlichkeit.** Defekt ist ein **Vorgang**: Der Akt sprang über den
+  Beleg, den der eigene Trigger jener Datei verlangt. Ob ihre *Festlegung* trägt, ist damit nicht
+  entschieden (§Kontext). Ein `Supersedes` setzt jedoch eine **neue Entscheidung über denselben
+  Gegenstand** voraus — über den Sprung `v6.0.0` → `v6.5.0` —, und dieser Lauf hat sie nicht: Er
+  entscheidet über den Übergang, nicht über den Sprung, und der einzige Beleg, der ihm für den
+  Inhalt zur Verfügung stünde, ist die Nachmessung, die Festlegung 2 gerade verwirft. Ein
+  `Supersedes` auf dieser Grundlage wiederholte den Fehler eine Ebene höher. Es reparierte den
+  Schaden auch nicht: Statuszeile und Trigger-Abschnitt jener Datei sind nach
+  [`AGENTS.md`](../../../AGENTS.md) §3.4 eingefroren, gleich was daneben beschlossen wird. Der
+  Statuswert bleibt, wie er steht; was aussteht, ist die Runde — sie steht unten als Folgepflicht.
 - **Sie benennen keinen annehmenden Akteur.** Wer entscheidet, bleibt offen wie bisher; entschieden
   ist, **woran** der annehmende Lauf sich hält. Die Setzung des Auftraggebers wird dadurch nicht
   eingeschränkt — sie wird nur nicht mehr als Ersatz für einen Beleg gelesen, den die Datei selbst
@@ -148,15 +165,20 @@ ohne blockierenden Befund in `docs/reviews/` liegt.** Meldet eine Runde einen bl
 Befund, ist der Beleg nach Festlegung 2 die **nächste** Runde derselben Rolle, nicht die
 Nachmessung des auflösenden Laufs.
 
+**Und ihre Accept-Zeile nennt diesen Beleg.** Festlegung 1 gilt für diese Datei damit ebenso,
+obwohl der Cutoff sie vom Bestand ausnimmt: Der Trigger holt **beide** Hälften zurück, nicht eine.
+Eine korrigierende Entscheidung, deren Accept-Zeile die Form der korrigierten trüge, wäre keine.
+
 ## Verglichene Alternativen
 
 | Option | Pro | Contra |
 |---|---|---|
 | A — nichts tun, den Fall als Einzelfall notieren | keine neue Norm; der Zähler des Beobachtungs-Registers läuft weiter und entscheidet bei 3× | der Zähler ist der richtige Weg für eine **beobachtete** Klasse, nicht für eine, die den nächsten Schritt blockiert: [ADR-0039](0039-eingefrorene-adresse-in-den-vendored-baum.md) braucht heute einen Accept-Übergang, und ohne Regel wiederholte ihn derselbe Lauf, der sie geschrieben hat |
-| B — Folge-ADR mit `Supersedes ADR-0038` | die Statuszeile bekäme eine Entscheidung, die ihren Trigger hält | entschiede eine inhaltlich geprüfte Sache neu, nur um einen Vorgang zu heilen. Der Report beanstandet den Akt, nicht die Festlegung; ein `Supersedes` behauptete das Gegenteil |
+| B — Folge-ADR mit `Supersedes ADR-0038` | die Statuszeile bekäme eine Entscheidung, die ihren Trigger hält | `Supersedes` verlangt eine neue Entscheidung über den Sprung `v6.0.0` → `v6.5.0`; dieser Lauf hat sie nicht und prüft den Übergang, nicht den Sprung. Der einzige Inhalts-Beleg, der ihm zur Verfügung stünde, ist die Nachmessung, die Festlegung 2 verwirft. Und er repariert nichts: [ADR-0038](0038-ziel-fassung-regiert-den-sprung-v650.md) bleibt mit ihrem Widerspruch nach [`AGENTS.md`](../../../AGENTS.md) §3.4 eingefroren |
 | C — einen annehmenden Akteur benennen | schlösse die Lücke, die [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) misst, an ihrer Wurzel | löste den beobachteten Fall **nicht**: der Akteur war benannt (Auftraggeber, vollzogen in der Architect-Rolle) und der Beleg fehlte trotzdem. Und sie griffe in eine Frage ein, die bei Personalunion dem Auftraggeber gehört ([`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)) |
 | D — Hard Rule in [`AGENTS.md`](../../../AGENTS.md) §3 statt ADR | §3 wird von jedem Lauf gelesen | §3 bindet jeden Lauf; dies bindet einen. Und die Regel spricht über die Innenform einer ADR — sie gehört in die Artefaktklasse, über die sie urteilt |
-| **E — gewählt: drei Festlegungen an den Übergang, kein `Supersedes`, kein Akteur** | trifft genau den Defekt: der Beleg fehlte, und der vorhandene stammte aus dem falschen Kontext. Kostet keine bestehende Entscheidung, keine Rolle und keine Prüffläche; die Form, die Festlegung 1 verlangt, existiert bereits gelebt in [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) | eine Regel ohne Sensor mehr. Sie hängt am Rollen-Wechsel vor dem Übergang, und der ist nicht mechanisch erzwingbar |
+| **F — mitgewählt: die ausstehende Bestätigungsrunde zu [ADR-0038](0038-ziel-fassung-regiert-den-sprung-v650.md) nachholen, ohne die Datei anzufassen** | der Trigger bekäme, was er verlangt — ein Übergabe-Artefakt der prüfenden Rolle statt einer Nachmessung. Der Beleg liegt an einem **lebenden** Ort, die eingefrorene Datei bleibt unberührt, und die Frage nach ihrem Inhalt bekommt endlich einen zweiten Kontext | heilt die Accept-Zeile **nicht** — sie ist eingefroren und nennt weiterhin keinen Beleg; der Schaden bleibt dauerhaft. Und die Runde entscheidet nichts: eine Prüfung ist keine Norm, die Klasse bliebe ungeregelt. **Nicht exklusiv zu E** — F behandelt die Instanz, E die Klasse |
+| **E — gewählt, zusammen mit F: drei Festlegungen an den Übergang, kein `Supersedes`, kein Akteur** | trifft genau den Defekt: der Beleg fehlte, und der vorhandene stammte aus dem falschen Kontext. Kostet keine bestehende Entscheidung, keine Rolle und keine Prüffläche; die Form, die Festlegung 1 verlangt, existiert bereits gelebt in [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) | eine Regel ohne Sensor mehr. Sie hängt am Rollen-Wechsel vor dem Übergang, und der ist nicht mechanisch erzwingbar. Für die **Instanz**, die sie ausgelöst hat, trägt sie nichts — dafür steht F daneben |
 
 ## Konsequenzen
 
@@ -176,10 +198,19 @@ Nachmessung des auflösenden Laufs.
   vorkommen.
 - **Negativ:** Die Regel kann eine Entscheidung **blockieren**, deren Inhalt niemand bestreitet,
   weil ihre Bestätigungsrunde aussteht. Das ist gewollt und trotzdem Reibung.
+- **Negativ, und der Cutoff verursacht ihn:** Für den Bestand ändert sich nichts. Die Instanz, die
+  diese Entscheidung ausgelöst hat, bleibt mit einem unbelegten Trigger stehen; sie bekommt ihren
+  zweiten Kontext allein über die Folgepflicht unten, nicht über die drei Festlegungen.
 - **Negativ /
   [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6):**
   **Kein Sensor.** Sie liegt im Feedforward-Quadranten; Träger ist der Rollen-Wechsel vor dem
   Übergang, nicht ein Gate danach.
+- **Folgepflicht (Planner), fällig unabhängig von dieser Entscheidung — Option F:** Die
+  Bestätigungsrunde, die der Acceptance-Trigger von
+  [ADR-0038](0038-ziel-fassung-regiert-den-sprung-v650.md) verlangt, steht aus. Sie gehört
+  eingeplant, und ihr Beleg an einen **lebenden** Ort — die eingefrorene Datei nimmt ihn nicht mehr
+  auf. Ohne sie bleibt jener Trigger unbelegt, und der Statuswert, den nachfolgende Läufe als
+  Start-Bedingung lesen, sagt über den Inhalt weiterhin nichts.
 - **Folgepflicht (Planner), fällig unabhängig von dieser Entscheidung:** Der beobachtete Fall
   gehört als Beleg in `BEO-ALL/proposed-adr-annahme-ohne-repo-internen-traeger` oder in eine
   eigene Beobachtung — das Register ist Planner-Eigentum und wird von dieser Entscheidung nicht
@@ -208,6 +239,10 @@ Beleg aus dem richtigen Kontext stammt. Das bleibt Urteil, wie beim Beobachtungs
   ist Option C wieder offen und diese Entscheidung gegen sie zu halten.
 - **Wenn eine ADR angenommen wird, deren Accept-Zeile keinen Beleg nennt** *(feedforward, kein
   Gate meldet es)*: Festlegung 1 ist gebrochen, und der Vorgang gehört zurück in dieses Gefäß.
+- **Wenn die Runde aus Option F einen blockierenden Befund gegen den Inhalt von
+  [ADR-0038](0038-ziel-fassung-regiert-den-sprung-v650.md) meldet** *(beobachtbar an einem dritten
+  Report zu jener Entscheidung)*: Dann ist ihre Festlegung nicht nur unbelegt, sondern bestritten,
+  und Option B ist mit neuer Evidenz erneut zu halten.
 - **Wenn das Modul `reviews` aktiviert wird** *(beobachtbar an `modules:` in
   [`.d-check.yml`](../../../.d-check.yml))*: Die Fitness-Tabelle oben ist neu zu halten — die
   Deckungs-Hälfte hätte dann einen Sensor.
