@@ -9,13 +9,14 @@
 **Bezug:**
 [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) (ihre §Geschichte trägt die Messung, dass
 **keine** Quelle dieses Repos und keine der vendored Baseline einen annehmenden Akteur benennt —
-diese Entscheidung füllt die Lücke, die dort benannt ist),
-[ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) (dieselbe Bauart: eine Zuständigkeit, die
-keine Quelle benennt, wird entschieden statt weiter offen gelassen),
+diese Entscheidung lässt das *Wer* offen und bindet das *Woran*; die Messung trägt Alternative C),
+[ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) (benachbarte Bauart auf einer anderen
+Achse: dort bekommen zwei Norm-Artefakte eine **schreibende Rolle**, hier bekommt ein
+**Status-Übergang** seine Bedingung — die Zuständigkeit bleibt unberührt),
 [ADR-0038](0038-ziel-fassung-regiert-den-sprung-v650.md) (`Accepted`, der gemessene Anlass; sie
 wird von dieser Entscheidung **nicht** abgelöst),
 [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) (dieselbe Klasse, an derselben Stelle
-richtig belegt — die Form, die Festlegung 1 verallgemeinert),
+belegt — die **Sache**, die Festlegung 1 verallgemeinert; ihre Adress-Form führt sie nicht),
 [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) (Träger (a) bindet die Verweis-Prüfung an genau
 diesen Übergang),
 [ADR-0027](0027-tote-adresse-in-eingefrorener-adr.md),
@@ -72,13 +73,19 @@ Runde — zwei HIGH"* und stellt selbst fest, er sei der verlangte Report nicht:
 es nicht; er blockiert an HIGH-1 und HIGH-2"*.
 
 ```sh
-git grep -lF '0038-ziel-fassung-regiert-den-sprung-v650' -- 'docs/reviews/*.md'   # 3 Dateien
+git grep -lF '0038-ziel-fassung-regiert-den-sprung-v650' -- 'docs/reviews/*.md'
 ```
 
-**Kein Erwartungswert**
+**Neben diesem Kommando steht keine Zahl, und der Grund ist Festlegung 2 unten, auf diese Datei
+selbst angewandt.** Der Korpus `docs/reviews/` wächst mit jeder Runde, die jene Festlegung
+verlangt; zwischen dem Stand, an dem eine Zahl über ihn in eine `Proposed`-ADR geschrieben wird,
+und der Annahme derselben Datei liegt darum mindestens ein weiterer Report. Eine solche Zahl ist im
+Moment ihrer eigenen Annahme falsch — nicht gelegentlich, sondern immer. Der Zusatz *„kein
+Erwartungswert"*
 ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2) — die zwei weiteren sind der Review-Report zu `slice-193`, der Anlass dieses Laufs, und
-die Runde über dieser Entscheidung selbst; keine davon ist eine zweite Runde zu jener Entscheidung.
+Setzung 2) trägt sie nicht: Er deckt Drift **nach** dem Schreiben, und hier bewegt der schreibende
+Vorgang die Zahl selbst. Tragend ist ohnehin eine Eigenschaft und kein Betrag: **Keine** der
+ausgegebenen Dateien ist eine zweite Runde zu jener Entscheidung — sie nennen sie als Bezug.
 Zwischen dem Report und dem Accept-Commit liegt allein der Architect-Commit, der die zwei HIGH
 auflöst. Die Rolle, deren Artefakt geprüft wurde, hat den Prüfbefund für erledigt erklärt und
 danach angenommen; die Bestätigung, die der Trigger verlangt, ist eine **Nachmessung desselben
@@ -114,10 +121,12 @@ Kontext, der einen Befund auflöst, ist derselbe, der ihn übersehen hat.
 **Drei Festlegungen. Sie binden den Lauf, der den Status auf `Accepted` setzt.**
 
 **1. Die Accept-Zeile der §Geschichte nennt den Beleg, den der Acceptance-Trigger der Datei
-verlangt — als auflösbaren Zeiger, in der Form, die
-[ADR-0027](0027-tote-adresse-in-eingefrorener-adr.md) für ein einfrierendes Artefakt vorschreibt
-(Kennung, nicht Pfad-Link).** Trägt die Datei **keinen** Acceptance-Trigger, sagt die Zeile das
-ausdrücklich; ein fehlender Trigger ist eine Aussage, kein Freibrief.
+verlangt — als auflösbaren Zeiger, in der Form, die [`AGENTS.md`](../../../AGENTS.md) §3.11 für ein
+einfrierendes Artefakt vorschreibt: Kennung, nicht Pfad-Link, über **beide** Adress-Formen.**
+Trägt die Datei **keinen** Acceptance-Trigger, sagt die Zeile das ausdrücklich; ein fehlender
+Trigger ist eine Aussage, kein Freibrief. Die erste Fassung dieser Adress-Regel steht in
+[ADR-0027](0027-tote-adresse-in-eingefrorener-adr.md) Festlegung 3, dort für Carveouts geschnitten;
+§3.11 trägt sie für jedes Artefakt, dessen Ort der Prozess bewegt.
 
 **2. Hat eine prüfende Runde einen blockierenden Befund gemeldet, ist der Beleg eine **erneute
 Runde derselben prüfenden Rolle**.** Die Nachmessung durch den Kontext, der den Befund aufgelöst
@@ -153,7 +162,12 @@ Statuszeile und Trigger-Abschnitt gemeinsam ein, und keine spätere Fassung repa
 - **Cutoff — ab dieser Entscheidung, kein Nachrüsten.** Gebunden ist der Übergang, der vollzogen
   wird; der Bestand der angenommenen ADRs ist kein Arbeitsauftrag und ohnehin eingefroren. Die
   Annahme **dieser** Datei fällt unter die alte Lage — ihr eigener Trigger unten sagt darum, was
-  sie verlangt.
+  sie verlangt. **Sind zwei Übergänge gleichzeitig fällig, ordnet der annehmende Lauf sie
+  ausdrücklich**, statt sie der Reihenfolge zweier Commits zu überlassen: Ein Commit trägt keine
+  Ordnung, und beide Accept-Zeilen frieren ein. Für
+  [ADR-0039](0039-eingefrorene-adresse-in-den-vendored-baum.md) ist der Übergang **nach** diesem
+  vollzogen; ihre Accept-Zeile trägt Festlegung 1 damit vollständig, einschließlich der
+  ausdrücklichen Aussage über den fehlenden Acceptance-Trigger.
 
 ### Der Acceptance-Trigger
 
@@ -178,7 +192,7 @@ Eine korrigierende Entscheidung, deren Accept-Zeile die Form der korrigierten tr
 | C — einen annehmenden Akteur benennen | schlösse die Lücke, die [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) misst, an ihrer Wurzel | löste den beobachteten Fall **nicht**: der Akteur war benannt (Auftraggeber, vollzogen in der Architect-Rolle) und der Beleg fehlte trotzdem. Und sie griffe in eine Frage ein, die bei Personalunion dem Auftraggeber gehört ([`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)) |
 | D — Hard Rule in [`AGENTS.md`](../../../AGENTS.md) §3 statt ADR | §3 wird von jedem Lauf gelesen | §3 bindet jeden Lauf; dies bindet einen. Und die Regel spricht über die Innenform einer ADR — sie gehört in die Artefaktklasse, über die sie urteilt |
 | **F — mitgewählt: die ausstehende Bestätigungsrunde zu [ADR-0038](0038-ziel-fassung-regiert-den-sprung-v650.md) nachholen, ohne die Datei anzufassen** | der Trigger bekäme, was er verlangt — ein Übergabe-Artefakt der prüfenden Rolle statt einer Nachmessung. Der Beleg liegt an einem **lebenden** Ort, die eingefrorene Datei bleibt unberührt, und die Frage nach ihrem Inhalt bekommt endlich einen zweiten Kontext | heilt die Accept-Zeile **nicht** — sie ist eingefroren und nennt weiterhin keinen Beleg; der Schaden bleibt dauerhaft. Und die Runde entscheidet nichts: eine Prüfung ist keine Norm, die Klasse bliebe ungeregelt. **Nicht exklusiv zu E** — F behandelt die Instanz, E die Klasse |
-| **E — gewählt, zusammen mit F: drei Festlegungen an den Übergang, kein `Supersedes`, kein Akteur** | trifft genau den Defekt: der Beleg fehlte, und der vorhandene stammte aus dem falschen Kontext. Kostet keine bestehende Entscheidung, keine Rolle und keine Prüffläche; die Form, die Festlegung 1 verlangt, existiert bereits gelebt in [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) | eine Regel ohne Sensor mehr. Sie hängt am Rollen-Wechsel vor dem Übergang, und der ist nicht mechanisch erzwingbar. Für die **Instanz**, die sie ausgelöst hat, trägt sie nichts — dafür steht F daneben |
+| **E — gewählt, zusammen mit F: drei Festlegungen an den Übergang, kein `Supersedes`, kein Akteur** | trifft genau den Defekt: der Beleg fehlte, und der vorhandene stammte aus dem falschen Kontext. Kostet keine bestehende Entscheidung, keine Rolle und keine Prüffläche; die **Sache**, die Festlegung 1 verlangt — Beleg genannt, Befundzahl genannt, kein Rest festgestellt —, existiert bereits gelebt in [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md), deren Accept-Zeile ihre drei Reports allerdings als Pfade in Inline-Code führt statt als Kennung | eine Regel ohne Sensor mehr. Sie hängt am Rollen-Wechsel vor dem Übergang, und der ist nicht mechanisch erzwingbar. Für die **Instanz**, die sie ausgelöst hat, trägt sie nichts — dafür steht F daneben |
 
 ## Konsequenzen
 
@@ -198,6 +212,10 @@ Eine korrigierende Entscheidung, deren Accept-Zeile die Form der korrigierten tr
   vorkommen.
 - **Negativ:** Die Regel kann eine Entscheidung **blockieren**, deren Inhalt niemand bestreitet,
   weil ihre Bestätigungsrunde aussteht. Das ist gewollt und trotzdem Reibung.
+- **Negativ, und Festlegung 2 verursacht ihn:** Eine Zahl über `docs/reviews/**` ist in einer
+  `Proposed`-ADR nicht mehr einholbar. Der Korpus wächst durch das Prüfverfahren, das zwischen dem
+  Schreiben und der Annahme mindestens eine weitere Runde erzwingt; wer den Betrag braucht, nennt
+  ihn mit Stichtag, im Report statt in der Entscheidung, oder als Verhältnis.
 - **Negativ, und der Cutoff verursacht ihn:** Für den Bestand ändert sich nichts. Die Instanz, die
   diese Entscheidung ausgelöst hat, bleibt mit einem unbelegten Trigger stehen; sie bekommt ihren
   zweiten Kontext allein über die Folgepflicht unten, nicht über die drei Festlegungen.

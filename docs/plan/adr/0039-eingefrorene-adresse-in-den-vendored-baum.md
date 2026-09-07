@@ -227,8 +227,11 @@ awk '/^ignore-refs:[[:space:]]*$/{b=1;next} b&&/^[^[:space:]]/{b=0} b' "$R/.d-ch
 ```
 
 **Am Tag dieser Entscheidung bleibt damit jedes der vier grün. Ihr Verhalten ändert sich
-trotzdem**, und das ist der Zweck der Festlegung: Die Unterschranke ist auch für sie neu — fällt
-ein gedeckter Link weg, ist das Paar rot statt still grün.
+trotzdem**, und das ist der Zweck der Festlegung — bei den drei Paaren mit Deklaration 1 über die
+Unterschranke, beim Null-Paar über die Oberschranke. Für die drei ist die Unterschranke neu: fällt
+ein gedeckter Link weg, ist das Paar rot statt still grün. Für das Null-Paar hat sie keinen Fall
+(Absatz darüber); dort trägt die Oberschranke, und sie greift, sobald der erste Markdown-Link
+hinzutritt.
 
 Gemessen für die drei neuen Einträge, am selben Tag:
 
@@ -279,8 +282,10 @@ weiter.
   [ADR-0032](0032-eingefrorene-referenz-folgt-ihrem-rumpf.md) und
   [ADR-0034](0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) bleiben
   für ihr Paar unverändert wahr. Festlegung 2 fasst den **Maßstab** des Wächters neu, den
-  [ADR-0026](0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) Folgepflicht 2 stellt; sein
-  Verdikt über jene vier Paare bleibt dasselbe.
+  [ADR-0026](0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) Folgepflicht 2 stellt; am Tag
+  dieser Entscheidung bleibt sein Verdikt über jene vier Paare dasselbe. **Zu tun ist an ihnen
+  trotzdem etwas:** Die Deklaration gilt an allen sieben Einträgen, und mit ihr ändert sich das
+  Verhalten der vier — Festlegung 2, Absatz *Am Tag dieser Entscheidung*.
 - **Sie heilen den lebenden Bestand nicht.** Eine tote Baseline-Adresse außerhalb der drei Bäume
   bleibt ein Befund und wird nachgezogen.
 - **Sie schreiben die Hard Rule nicht.** Die Schärfung von §3.11 steht unten als Folgepflicht.
@@ -293,7 +298,7 @@ weiter.
 |---|---|---|
 | A — 24 exakte `ignore-refs`-Paare über 16 `in:`-Dateien | die Form, die der heutige Wächter liest | 6 der 24 überschreiten die Kappung, die Route braucht Festlegung 2 also trotzdem. Dazu 16 permanente Konfigurationszeilen, die je ein Zeitdokument benennen, und beim nächsten Bump derselbe Aufwand erneut |
 | B — 16 exakte `in:`-Dateien mit Glob in `refs:` | `in:` bleibt eine existierende Datei, Zahn 1 des Wächters hält | Zahn 2 wird **blind**: `count_links` vergleicht das aufgelöste Link-Ziel mit dem `refs`-Literal, ein Glob trifft nie, der Wächter zählt 0 und ist grün, ohne gemessen zu haben — dieselbe Blindstelle, die er für die Code-Span-Achse selbst benennt |
-| C — `scan.ignore` auf die drei Bäume | eine Zeile je Baum, kein Wächter-Umbau | nimmt die Dateien aus **allen** Modulen: `git ls-files 'docs/reviews/*.md' \| wc -l` → 301 Dateien und `git grep -oE '\]\((\.\./)+[^)]+\)' -- 'docs/reviews/*.md' \| grep -vc 'baseline/'` → 3972 repo-interne Link-Prüfungen fielen weg (keine Erwartungswerte). Und die Begründung des `archive-welle`-Suchraums in [`harness/README.md`](../../../harness/README.md) — *„`links`/`anchors` prüfen die Zeitdokumente wie jede andere Datei"* — würde falsch |
+| C — `scan.ignore` auf die drei Bäume | eine Zeile je Baum, kein Wächter-Umbau | nimmt die Dateien aus **allen** Modulen: Allein die repo-internen Link-Prüfungen über `docs/reviews/` (`git grep -oE '\]\((\.\./)+[^)]+\)' -- 'docs/reviews/*.md' \| grep -vc 'baseline/'`) übersteigen die 36 gedeckten Befunde aus §Der Bestand um **zwei Größenordnungen**, und sie fielen sämtlich weg. **Hier steht das Verhältnis und kein Betrag:** Der Zähler wächst mit jeder Reviewer-Runde, also auch mit der, die diese Entscheidung annimmt — eine Zahl an dieser Stelle wäre im Moment der Annahme falsch. Und die Begründung des `archive-welle`-Suchraums in [`harness/README.md`](../../../harness/README.md) — *„`links`/`anchors` prüfen die Zeitdokumente wie jede andere Datei"* — würde falsch |
 | D — `exempt-paths` unter `links`/`anchors` als Werkzeug-Anforderung | acht Module des Werkzeugs führen den Knopf | er ist **datei-weit** und damit gröber als der Fall: Zeile 3 der Sonden-Tabelle — ein toter Link ohne Baseline-Bezug in einer gedeckten Datei — verstummte mit. Der querschnittliche `ignore-refs` löst dieselbe Aufgabe ziel-weit und liegt vor; eine Anforderung an ein Nachbar-Repo für eine Fähigkeit, die es hat, ist keine |
 | E — den alten Baum stehen lassen | die Ziel-Fassung sieht die Koexistenz vor | `make baseline-verify` bricht fail-closed bei zwei `<tag>`-Verzeichnissen ab ([`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) Setzung 4). Und selbst ohne die Sperre nur ein Aufschub — die Adressen sterben, wenn der Baum fällt |
 | F — das eingefrorene Artefakt doch anfassen | der Befund verschwindet an der Quelle | dann ist es kein Zeitdokument mehr ([`AGENTS.md`](../../../AGENTS.md) §3.4). Die Ziel-Fassung führt diesen Weg und benennt seinen Preis: *„es doch anfassen — dann ist es kein Zeitdokument mehr"* |
