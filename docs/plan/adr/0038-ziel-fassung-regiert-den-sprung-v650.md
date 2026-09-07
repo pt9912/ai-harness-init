@@ -14,9 +14,9 @@ noch aussteht),
 [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) (die Vorgänger-Entscheidung, ausdrücklich
 auf den Sprung davor geschlossen; ihr erster Re-Evaluierungs-Trigger verlangt für diesen Sprung
 die zweistufige Messung samt Netto-Frage, ihr zweiter ist gefeuert),
-[ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) (deren Festlegung 2 — Ort und
-geschlossene Drei-Teil-Form einer Zielstand-Setzung — bleibt unberührt und bindet die Buchung, die
-mit dem Baum-Tausch entsteht),
+[ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) (`Proposed`; deren
+Festlegung 2 — Ort und geschlossene Drei-Teil-Form einer Zielstand-Setzung — bleibt unberührt und
+bindet die Buchung, die mit dem Baum-Tausch entsteht),
 [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) (die Wahl der normativen Quelle und der Ort
 einer Norm-Buchung sind Architect-Sache),
 [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) (Form jedes Belegs in diesem Dokument),
@@ -35,12 +35,13 @@ liest, nach welcher Fassung ein Durchgang lief — hier so benannt)
 **Schärft:** — Prozess-ADR ohne Spec-Stratum: sie wählt die **normative Quelle eines Vorgangs**,
 nicht den Inhalt eines Spec-Dokuments.
 
-**Kopplung:** keine im Vollzug dieses Laufs. Eine Zielstand-Setzung wird nach
-[ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2 in §Baseline von
-`harness/conventions.md` gebucht, mit drei Teilen — Ziel-Tag und Datum, der Slice mit dem
-Delta-Nachweis, sonst nichts. Für diesen Sprung existiert der dritte Teil noch nicht; die Buchung
-entsteht mit dem Baum-Tausch, nicht hier. Die Datei ist Architect-Eigentum
-([`AGENTS.md`](../../../AGENTS.md) §3.8).
+**Kopplung:** §Baseline von `harness/conventions.md` — dort ist die Zielstand-Setzung auf `v6.5.0`
+vom 2026-09-07 verbucht, und dort steht der Zeiger auf diese Entscheidung als regierende Fassung
+des Sprungs. Der **Ort** ist der von
+[ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2; deren
+geschlossene Drei-Teil-Form gilt der Buchung des **Vollzugs**, und die entsteht mit dem
+Baum-Tausch, nicht hier — ihr zweiter Teil, der Slice mit dem Delta-Nachweis, existiert noch nicht.
+Die Datei ist Architect-Eigentum ([`AGENTS.md`](../../../AGENTS.md) §3.8).
 
 **Regeln:** Baseline-Regelwerk `modul-04-adrs.md`
 §Ziel-Form: ADR (MADR).
@@ -55,8 +56,16 @@ Migrations-Prozedur führt. Führt sie sie nicht, regiert die Ziel-Fassung ohne 
 **führen beide sie, ist die Wahl offen und in jenem Sprung begründet zu entscheiden.**
 [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) hat den zweiten Fall für
 `v5.12.0` → `v5.18.0` entschieden, [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) für
-`v5.18.0` → `v6.0.0`. Beide sind auf ihren Sprung geschlossen. Für `v6.0.0` → `v6.5.0` verlangt
-der erste Re-Evaluierungs-Trigger von
+`v5.18.0` → `v6.0.0`. Beide sind auf ihren Sprung geschlossen.
+
+**Der Zielstand steht, und er ist gesetzt, nicht abgeleitet:** Der Auftraggeber hat ihn am
+2026-09-07 auf `v6.5.0` gezogen — der Akt, den
+[ADR-0018](0018-ziel-fassung-regiert-die-migration.md) §Wer den Zielstand bewegt ihm vorbehält,
+weil kein Lauf im Repo den Zielstand einer Release-Liste nachführen darf. Verbucht ist er in
+§Baseline von `harness/conventions.md`; diese Entscheidung wählt nicht **ob** dorthin gesprungen
+wird, sondern nach welcher Fassung.
+
+Für `v6.0.0` → `v6.5.0` verlangt der erste Re-Evaluierungs-Trigger von
 [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) eine eigene Messung — *„beide Stufen, und
 das Delegat-Delta **netto**"*. Die Abschnitte darunter fahren sie.
 
@@ -76,10 +85,9 @@ mkdir -p /tmp/v650 && git -C "$K" archive v6.5.0 lab/regelwerk lab/templates \
 diff -r -x SHA256SUMS .harness/baseline/v6.0.0 /tmp/v600   # -> leer
 ```
 
-**Grenze, und sie ist die eigentliche Kostenstelle dieser Messung:** Die `v6.0.0`-Seite ist
-netzlos aus dem Arbeitsbaum prüfbar, die `v6.5.0`-Seite nicht — jener Tag liegt in diesem Repo
-nirgends. Jede Zahl unten, die `/tmp/v650` liest, ist gegen den Kurs-Klon erhoben und dort und nur
-dort nachfahrbar; die Gegenprobe oben ist das einzige, was sie an den Arbeitsbaum bindet. **Keine
+**Grenze — die Kostenstelle dieser Messung:** Die `v6.0.0`-Seite ist netzlos aus dem
+Arbeitsbaum prüfbar, die `v6.5.0`-Seite nicht. Jede Zahl unten, die `/tmp/v650` liest, ist nur am
+Kurs-Klon nachfahrbar; die Gegenprobe oben bindet sie an den Arbeitsbaum. **Keine
 Erwartungswerte** ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2) — die Beträge wandern mit den Tags.
 
@@ -185,9 +193,7 @@ diese Pflichtgliederung für `harness/README.md` ist gekippt: Ihre `## Sensors`-
 `v6.5.0` eine zweite Kommentarzeile — *„Prosa je Gate unter harness/sensors/<target>.md"* —, und
 die Sektion darunter führt die neue Artefakt-Klasse aus (`v6.5.0`,
 `grundlagen-harness-dateien.md`, §harness/README.md als Einstiegspunkt: *„Ein Gate je Datei,
-sobald sein Vertrag mehr braucht als einen Satz"*, mit der Abgrenzung *„Ob der Überhang schon
-unter der Tabelle steht oder in die Zelle gedrängt wurde, ist dieselbe Sache — eine Zelle, die zum
-Absatz geworden ist, ist der Fund, nicht die Ausnahme"*).
+sobald sein Vertrag mehr braucht als einen Satz"*).
 
 ### Was das Messinstrument diesmal mitzählt — die Tabellenform, nicht der Herkunfts-Kommentar
 
@@ -223,9 +229,8 @@ git -C "$K" diff --name-only v6.4.0 v6.5.0 -- lab/regelwerk lab/templates | wc -
 
 **Was daraus folgt und was nicht.** Die Netto-Rechnung von
 [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) bleibt richtig und ist hier
-gegenstandslos; die Klasse, die sie beschreibt, ist nicht die einzige ihrer Art. Eine allgemeine
-Rausch-Regel entsteht daraus **nicht** — welche Klassen ein Zeilen-Diff über zwei Baseline-Bäume
-mitzählt, hängt am jeweiligen Upstream-Vorgang und ist je Sprung zu messen.
+gegenstandslos. Eine allgemeine Rausch-Regel entsteht daraus **nicht** — welche Klassen ein
+Zeilen-Diff über zwei Baseline-Bäume mitzählt, ist je Sprung zu messen.
 
 ### Die Zwei-Fassungen-Phase lebt — anders als in den zwei Sprüngen davor
 
@@ -233,8 +238,9 @@ mitzählt, hängt am jeweiligen Upstream-Vorgang und ist je Sprung zu messen.
 ls -1 .harness/baseline/   # -> v6.0.0
 ```
 
-Gemessen am 2026-09-07 trägt der Arbeitsbaum `v6.0.0`, und der Baum-Tausch steht als `slice-193`
-noch aus. Damit ist der **zweite** tragende Grund von
+Gemessen am 2026-09-07 trägt der Arbeitsbaum `v6.0.0`, und der Baum-Tausch steht aus — sein Plan
+`slice-193` ist auf einen anderen Ziel-Tag geschnitten als den gesetzten (Folgepflicht unten).
+Damit ist der **zweite** tragende Grund von
 [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) — *„Die gepinnte Fassung liegt nicht mehr
 vendored"* — hier nicht verfügbar; ihr zweiter Re-Evaluierungs-Trigger ist gefeuert und verweist
 für diesen Fall auf den ersten Grund allein. Die Lage ist die von
@@ -255,9 +261,8 @@ ls -d harness/sensors 2>/dev/null | wc -l                                       
 ```
 
 Ein Durchgang nach der gepinnten Fassung liest diese Stelle grün — deren Pflichtgliederung kennt
-die Klasse nicht. Ein Durchgang nach der Ziel-Fassung findet sie. Das ist die Wahl in einem Satz,
-und sie ist dieselbe Bauart wie in den zwei Sprüngen davor, nur an einer anderen Sektion und für
-eine andere Datei.
+die Klasse nicht. Ein Durchgang nach der Ziel-Fassung findet sie. Das ist die Wahl in einem Satz —
+dieselbe Bauart wie in den zwei Sprüngen davor, an einer anderen Sektion und Datei.
 
 ### Auch `v6.5.0` beantwortet die Frage dieser ADR nicht
 
@@ -273,11 +278,10 @@ diff -ruN -x SHA256SUMS .harness/baseline/v6.0.0 /tmp/v650 | grep '^+' | grep -c
 ```
 
 **Dreizehn Zeilen, alle gelesen.** Sie sprechen von Glossar-Einträgen (Konventionsspeicher, Change
-Request, Brownfield, Acceptance-Trigger, DoD), von der Kennung-statt-Adresse-Regel und ihrer
-eigenen Begründung, und von Ausfüll-Hinweisen in Vorlagen. Eine Meta-Regel darüber, welche Fassung
-einen Wechsel regiert, ist nicht darunter — der Trigger ist **nicht** gefeuert. **Grenze**,
-unverändert die der Vorgänger: ein Negativ aus dreizehn aufgezählten Zeichenketten; eine Regel
-ohne eines dieser Wörter wäre nicht gefunden worden.
+Request, Brownfield, Acceptance-Trigger, DoD), von der Kennung-statt-Adresse-Regel und von
+Ausfüll-Hinweisen in Vorlagen. Eine Meta-Regel darüber, welche Fassung einen Wechsel regiert, ist
+nicht darunter — der Trigger ist **nicht** gefeuert. **Grenze**, unverändert die der Vorgänger:
+ein Negativ aus dreizehn aufgezählten Zeichenketten.
 
 ## Entscheidung
 
@@ -293,22 +297,19 @@ Tragend ist **ein** gemessener Grund, nicht zwei:
 `harness/README.md` beantwortet, ändert die Pflichtgliederung.** §harness/README.md als
 Einstiegspunkt gewinnt netto 109 Zeilen und eine neue Artefakt-Klasse, die in der
 Pflichtgliederung selbst steht. Die Wahl entscheidet damit, gegen welche Pflichtgliederung der
-Form-Vergleich misst — am Bestand dieses Repos an einer Stelle ablesbar, die heute keine Entsprechung
-hat.
+Form-Vergleich misst — am Bestand dieses Repos ablesbar.
 
 Der zweite Grund aus [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) — die gepinnte
-Fassung liege nicht mehr vendored — steht hier **nicht** zur Verfügung und wird ausdrücklich nicht
-in Anspruch genommen: Der Tausch steht aus, `v6.0.0` liegt im Baum, und
-[ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 2 hält es als Ist-Maßstab bis
-dahin ausdrücklich in Kraft.
+Fassung liege nicht mehr vendored — wird ausdrücklich **nicht** in Anspruch genommen
+(§Die Zwei-Fassungen-Phase lebt).
 
 **Was diese Festlegung nicht tut.**
 
-- **Kein `Supersedes`.** An [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) ändert sie
-  nichts: Deren Festlegung 3 ist so gebaut, dass jeder Sprung sie **erfüllt** statt sie zu
-  ersetzen. An [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) und
-  [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) ebenfalls nichts: Beide
-  bleiben für ihren Sprung wahr, und Festlegung 2 der letzteren gilt unverändert.
+- **Kein `Supersedes`.** [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 ist so
+  gebaut, dass jeder Sprung sie **erfüllt** statt sie zu ersetzen;
+  [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) und
+  [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) bleiben für ihren Sprung
+  wahr, und Festlegung 2 der letzteren gilt unverändert.
 - **Keine allgemeine Regel.** *„Es regiert stets die Ziel-Fassung"* entsteht hier ausdrücklich
   nicht; sie bleibt verworfen ([ADR-0018](0018-ziel-fassung-regiert-die-migration.md)
   §Verglichene Alternativen, Option C), und der nächste Sprung misst erneut — beide Stufen.
@@ -325,18 +326,16 @@ dahin ausdrücklich in Kraft.
 ADR.** `v6.5.0` schließt die **Zugehörigkeits**-Hälfte: `grundlagen-harness-dateien.md`,
 §harness/README.md als Einstiegspunkt nennt die einfrierende Klasse namentlich — *„Einfrierend
 sind die Zeitdokumente — Review-Report, Closure-Notiz, Archiv-Stub, Accepted-ADR, geschlossener
-Slice"* — und legt für **neue** Instanzen einen Träger in vier Vorlagen ab, deren Zitier-Form-Block
-sich selbst als *„bleibt stehen — Norm, kein Ausfüll-Hinweis"* ausweist. Beides bestätigt, was
-[`AGENTS.md`](../../../AGENTS.md) §3.11 ¶1 mit *„ein Rollen-Report"* bereits sagt. Offen bleibt die
-**Träger**-Hälfte am Bestand dieses Repos, und sie ist eine Abwägung mit eigenen Optionen: Zwei
+Slice"* — und legt für **neue** Instanzen einen Träger in vier Vorlagen ab; drei davon weisen ihren
+Zitier-Form-Block wörtlich als *„bleibt stehen — Norm, kein Ausfüll-Hinweis"* aus, die vierte
+sinngleich gekürzt. Beides bestätigt, was [`AGENTS.md`](../../../AGENTS.md) §3.11 ¶1 mit *„ein
+Rollen-Report"* bereits sagt. Offen bleibt die **Träger**-Hälfte am Bestand dieses Repos: Zwei
 Artefakte sagen über denselben Baum Gegenteiliges — `exempt-paths` im `codepaths`-Block von
 [`.d-check.yml`](../../../.d-check.yml) nimmt `docs/reviews/**` aus, `make slice-mv` zieht die
 Verweise ebendort nach. Die Ziel-Fassung **charakterisiert** die Ausnahme (*„ein Ausnahme-Ventil im
 Prüfbereich, also eine Gate-Senkung mit eigener Begründungslast"*), sie wählt nicht zwischen ihr
-und ihrem Wegfall — und nach [`AGENTS.md`](../../../AGENTS.md) §3.5 ist die Senkung selbst ein
-ADR-Gegenstand. Der Gegenstand dieser ADR hier ist die normative Quelle eines Vorgangs; jener ist
-ein Ventil gegen einen Nachzug. Zwei Gegenstände, zwei Entscheidungen. Die Folgepflicht unten
-benennt sie.
+und ihrem Wegfall — und nach [`AGENTS.md`](../../../AGENTS.md) §3.5 ist die Senkung ein eigener
+ADR-Gegenstand. Zwei Gegenstände, zwei Entscheidungen; die Folgepflicht unten benennt sie.
 
 ### Der Acceptance-Trigger
 
@@ -348,34 +347,34 @@ ohne blockierenden Befund in `docs/reviews/` liegt** — die Aufteilung, die das
 `modul-08-agentenrollen.md` §Rollen-Regeln verbatim vorschreibt: *„ADR-Änderung: Architect
 schreibt; Reviewer prüft auf Konsistenz; Implementer liest als Constraint"*.
 
-Bis dahin ist sie ein Architect-Verdikt und als solches das Übergabe-Artefakt, das der Schnitt von
-`slice-193` als Constraint liest; sie ist nicht eingefroren
+Bis dahin ist sie ein Architect-Verdikt und das Übergabe-Artefakt, das der Schnitt des
+Tausch-Slice als Constraint liest; sie ist nicht eingefroren
 ([`AGENTS.md`](../../../AGENTS.md) §3.4 bindet ab `Accepted`).
 
 ## Verglichene Alternativen
 
 | Option | Pro | Contra |
 |---|---|---|
-| A — nichts entscheiden, die Wahl fällt faktisch beim ersten Durchgang | kein Aufwand; der Abschnitt ist byte-gleich, also „egal" | *egal* ist gemessen falsch: die Prozedur delegiert, und einer der Delegate ändert die Pflichtgliederung, die sie abfragt. [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 verlangt für diesen Fall ausdrücklich eine Begründung; sie zu unterlassen hieße, ihr drittes Anwendungsereignis auszulassen. Und der Schnitt von `slice-193` wäre blockiert: er braucht eine entschiedene normative Quelle |
-| B — die gepinnte Fassung `v6.0.0` regiert | sie liegt im Baum und ist netzlos lesbar — anders als in den zwei Sprüngen davor ist das hier ein echtes Argument; sie ist zudem bis zum Tausch der Ist-Maßstab | ihre Pflichtgliederung für `harness/README.md` kennt die Sensor-Datei-Klasse nicht; ein Form-Vergleich nach B liest die 80-Zeilen-Sektion des Einstiegspunkts grün und fordert die Auflösung nie. Der Ist-Maßstab bleibt davon unberührt — [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 2 trennt ihn von der Prozedur, und B verwechselt beide |
-| C — allgemeine Regel *„stets die Ziel-Fassung"*, in Ablösung von [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 | jeder künftige Sprung startet ohne Vorlauf; die Messung entfiele | dort verworfen und hier unverändert gültig: sie bände Prozeduren, deren Wortlaut niemand kennt, und wäre der stille Auto-Bump eine Ebene höher — den **beide** Fassungen wortgleich verbieten. Dieser Sprung ist zudem ihr Gegenbeispiel: Der Delegat mit dem Delta hat gewechselt, was eine Blankett-Regel nie bemerkt hätte. Zusätzlich verlangte sie ein `Supersedes` auf eine ADR, auf die 73 Verweis-Vorkommen aus 14 lebenden Dateien zeigen (`git grep -oE '\]\([^)]*0018-ziel-fassung-regiert-die-migration\.md[^)]*\)' -- ':!docs/reviews' ':!docs/plan/planning/done' \| wc -l`, dazu dieselbe Abfrage mit `-l`; beide wandern und sind keine Erwartungswerte, [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2), und `matrix.status` in [`.d-check.yml`](../../../.d-check.yml) verbietet Verweise auf superseded ADRs |
+| A — nichts entscheiden, die Wahl fällt faktisch beim ersten Durchgang | kein Aufwand; der Abschnitt ist byte-gleich, also „egal" | *egal* ist gemessen falsch: die Prozedur delegiert, und einer der Delegate ändert die Pflichtgliederung, die sie abfragt. [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 verlangt für diesen Fall ausdrücklich eine Begründung; sie zu unterlassen hieße, ihr drittes Anwendungsereignis auszulassen. Und der Tausch-Slice bliebe ohne entschiedene normative Quelle |
+| B — die gepinnte Fassung `v6.0.0` regiert | sie liegt im Baum und ist netzlos lesbar — anders als in den zwei Sprüngen davor ist das hier ein echtes Argument; sie ist zudem bis zum Tausch der Ist-Maßstab | ihre Pflichtgliederung für `harness/README.md` kennt die Sensor-Datei-Klasse nicht; ein Form-Vergleich nach B liest die 80-Zeilen-Sektion des Einstiegspunkts grün und fordert die Auflösung nie. Der Ist-Maßstab bleibt unberührt — [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 2 trennt ihn von der Prozedur, und B verwechselt beide |
+| C — allgemeine Regel *„stets die Ziel-Fassung"*, in Ablösung von [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 | jeder künftige Sprung startet ohne Vorlauf; die Messung entfiele | dort verworfen und hier unverändert gültig: sie bände Prozeduren, deren Wortlaut niemand kennt, und wäre der stille Auto-Bump eine Ebene höher — den **beide** Fassungen wortgleich verbieten. Dieser Sprung ist ihr Gegenbeispiel: Der Delegat mit dem Delta hat gewechselt, was eine Blankett-Regel nie bemerkt hätte. Sie verlangte zudem ein `Supersedes` auf eine ADR, auf die 93 Verweis-Vorkommen aus 15 lebenden Dateien zeigen (`git grep -oE '\]\([^)]*0018-ziel-fassung-regiert-die-migration\.md[^)]*\)' -- ':!docs/reviews' ':!docs/plan/planning/done' \| wc -l`, dazu dieselbe Abfrage mit `-l`; beide wandern, [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2), und `matrix.status` in [`.d-check.yml`](../../../.d-check.yml) verbietet Verweise auf superseded ADRs |
 | D — die Prozedur aus der Ziel-Fassung, die Delegate aus der gepinnten | nähme den Text, der die Frage stellt, und ließe die Antworten in dem Baum, der netzlos vorliegt | der Abschnitt adressiert seine Delegate **relativ im eigenen Baum**; die Aufteilung stünde in keiner Fassung und wäre eine Erfindung dieses Repos — derselbe Fehler wie Option D in [ADR-0018](0018-ziel-fassung-regiert-die-migration.md). Und sie hätte genau die Wirkung von B, denn das Delta liegt vollständig in einem Delegat |
 | E — Übernahme der Begründung von [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) statt eigener Messung | die Bauart ist dieselbe, das Ergebnis wäre dasselbe | zwei ihrer drei Stützen sind hier gemessen falsch: Der Delegat mit dem Delta ist ein anderer, und die gepinnte Fassung liegt sehr wohl noch vendored. Ein abgeschriebener Grund hätte beide Unterschiede verdeckt — und der erste Re-Evaluierungs-Trigger jener ADR verlangt genau diese Messung |
-| **F — gewählt: Ziel-Fassung für diesen Sprung, auf einer für dieses Fassungspaar gefahrenen Messung** | entscheidet den anstehenden Fall auf Gründen, die hier gemessen sind — Delegat-Verteilung, Netto-Delta je Delegat und je Sektion, die Tabellenform als neue Rauschklasse, der ausstehende Tausch —, und trägt auf **einem** Grund statt auf zweien, weil der zweite hier nachweislich fehlt; das Kriterium aus [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) bleibt für den nächsten Sprung unangetastet | der nächste Sprung erbt dieselbe Pflicht ein viertes Mal; die Messung ist gewachsen (Achse, beide Stufen, Netto, Sektions-Ebene); und die `v6.5.0`-Seite ist bis zum Tausch nur am Kurs-Klon nachfahrbar |
+| **F — gewählt: Ziel-Fassung für diesen Sprung, auf einer für dieses Fassungspaar gefahrenen Messung** | entscheidet den anstehenden Fall auf Gründen, die hier gemessen sind — Delegat-Verteilung, Netto-Delta je Delegat und je Sektion, die Tabellenform als neue Rauschklasse, der ausstehende Tausch —, und trägt auf **einem** Grund statt auf zweien, weil der zweite hier fehlt; das Kriterium aus [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) bleibt für den nächsten Sprung unangetastet | der nächste Sprung erbt dieselbe Pflicht ein viertes Mal; die Messung ist gewachsen (Achse, beide Stufen, Netto, Sektions-Ebene); und die `v6.5.0`-Seite ist bis zum Tausch nur am Kurs-Klon nachfahrbar |
 
 ## Konsequenzen
 
-- **Positiv:** Der Schnitt von `slice-193` und der Adaptions-Durchgang danach haben eine benannte,
-  zitierte Quelle, bevor das erste Konformitäts-Urteil fällt.
-- **Positiv:** Die Vendoring-**Achse** ist gemessen und steht als Voraussetzung über allen Zahlen:
-  vendored ist `lab/`, nicht der Kurstext. Wer künftig gegen `kurs/de` misst, hat die Gegenprobe
-  hier stehen.
-- **Positiv:** *Byte-gleich* ist zum dritten Mal entkräftet, und diesmal an einem **anderen**
-  Delegaten als bei den Vorgängern. Die Lesart *„es ist immer der Konventionsspeicher"* ist damit
-  widerlegt, bevor sie zur Abkürzung werden konnte.
+- **Positiv:** Der Sprung auf den gesetzten Zielstand hat eine benannte, zitierte Quelle, bevor das
+  erste Konformitäts-Urteil fällt — für den Schnitt des Tausch-Slice wie für den
+  Adaptions-Durchgang danach.
+- **Positiv:** Die Vendoring-**Achse** ist gemessen und steht über allen Zahlen: vendored ist
+  `lab/`, nicht der Kurstext. Wer künftig gegen `kurs/de` misst, hat die Gegenprobe hier stehen.
+- **Positiv:** *Byte-gleich* ist zum dritten Mal entkräftet, diesmal an einem **anderen**
+  Delegaten. Die Lesart *„es ist immer der Konventionsspeicher"* ist widerlegt, bevor sie zur
+  Abkürzung werden konnte.
 - **Positiv:** Die Netto-Frage hat eine zweite Rauschklasse — die Tabellenform —, und sie ist
-  beziffert. Ein Roh-Diff über diesen Sprung überschätzt das Regel-Delta in drei der vier
-  Delegate.
+  beziffert. Ein Roh-Diff überschätzt das Regel-Delta in allen vier Delegaten; in zweien meldet er
+  eines, wo netto keines steht.
 - **Negativ:** Die Wahl gilt für diesen Sprung und für keinen weiteren. Der nächste erbt die
   Messpflicht, inzwischen um die Achsen- und die Sektions-Ebene gewachsen.
 - **Negativ:** Diese Entscheidung trägt auf **einem** Grund. Fiele der Delegat-Delta-Befund weg,
@@ -388,15 +387,21 @@ Bis dahin ist sie ein Architect-Verdikt und als solches das Übergabe-Artefakt, 
   **Kein Sensor.** Kein Gate liest, nach welcher Fassung ein Durchgang lief. Träger ist der Zeiger
   in §Baseline von `harness/conventions.md` und der Review des Durchgangs-Ergebnisses.
 - **Folgepflicht (Architect), fällig mit dem Baum-Tausch:** §Baseline von
-  `harness/conventions.md` bekommt die Buchung der Zielstand-Setzung in der Drei-Teil-Form von
-  [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2 und zeigt für
-  die regierende Fassung dieses Sprungs hierher. Sie entsteht dort, nicht hier: Ihr dritter Teil —
-  der Slice mit dem Delta-Nachweis — existiert zum Zeitpunkt dieser Entscheidung nicht.
+  `harness/conventions.md` bekommt die Buchung des Vollzugs in der Drei-Teil-Form von
+  [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2. Sie entsteht
+  dort, nicht hier: Ihr zweiter Teil — der Slice mit dem Delta-Nachweis — existiert zum Zeitpunkt
+  dieser Entscheidung nicht.
 - **Folgepflicht (Architect), fällig mit der Annahme dieser ADR:** eine eigene Entscheidung über
   den Träger von [`AGENTS.md`](../../../AGENTS.md) §3.11 ¶1 für Rollen-Reports und über das
   Verhältnis der `exempt-paths`-Ausnahme zum Nachzug durch `make slice-mv`. Sie ist durch die
   Ziel-Fassung fällig geworden und in dieser ADR ausdrücklich nicht entschieden.
-- **Darüber hinaus ändert diese ADR keine Datei außer sich selbst und dem ADR-Index.**
+- **Folgepflicht (Planner), fällig vor der Priorisierung des Tausch-Slice:** `slice-193` ist auf den
+  Ziel-Tag `v6.3.1` geschnitten und führt damit einen anderen Sprung als den gesetzten; er ist
+  umzuschneiden, sonst bleibt seine erste Start-Bedingung unerfüllt. Der Wortlaut ist
+  Planner-Eigentum ([ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md)); diese Entscheidung ist
+  das Übergabe-Artefakt, nicht der Text.
+- **Darüber hinaus ändert diese ADR keine Datei außer sich selbst, dem ADR-Index und §Baseline von
+  `harness/conventions.md`.**
 
 ## Fitness Function (falls maschinell prüfbar)
 
@@ -417,8 +422,8 @@ Bis dahin ist sie ein Architect-Verdikt und als solches das Übergabe-Artefakt, 
 
 **Teilweise mechanisierbar, hier nicht gebaut:** die Netto-Rechnung ist ein Muster — ein
 Zeilen-Diff über zwei Baseline-Bäume, abzüglich der Zeilen, die nur die Tabellenform ändern. Sie
-setzt jedoch beide Bäume voraus, und der zweite liegt bis zum Tausch nicht im Repo; ein Sensor
-darüber wäre netz- oder klon-abhängig. Ihn hier als vorhanden auszugeben wäre
+setzt beide Bäume voraus, und der zweite liegt bis zum Tausch nicht im Repo; ein Sensor darüber
+wäre klon-abhängig. Ihn hier als vorhanden auszugeben wäre
 [`AGENTS.md`](../../../AGENTS.md) §3.1 eine Ebene tiefer.
 
 ## Re-Evaluierungs-Trigger
@@ -434,8 +439,8 @@ darüber wäre netz- oder klon-abhängig. Ihn hier als vorhanden auszugeben wär
   Begründung — diese ADR liefert sie nicht.
 - **Wenn der Baum vor dem Schnitt des Durchgangs getauscht wird** *(beobachtbar an
   `ls -1 .harness/baseline/`)*: dann endet die Zwei-Fassungen-Phase, der Contra-Punkt von Option B
-  und die dritte Negativ-Konsequenz oben entfallen — am Ergebnis ändert das nichts, wohl aber an
-  der Begründungslast eines künftigen Sprungs, der in derselben Lage steht.
+  und die dritte Negativ-Konsequenz oben entfallen — am Ergebnis ändert das nichts, an der
+  Begründungslast eines künftigen Sprungs schon.
 - **Wenn ein künftiger Upstream-Vorgang eine dritte Rauschklasse einführt** *(beobachtbar daran,
   dass die Zahl der nur-Tabellenform-Dateien den Netto-Diff nicht mehr erklärt)*: dann ist die
   Netto-Rechnung um sie zu erweitern, bevor ein Delegat-Delta als Regel-Delta gilt.

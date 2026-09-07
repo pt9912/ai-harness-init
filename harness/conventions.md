@@ -33,7 +33,15 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Festlegung 2. **Die Prozedur des Sprungs auf `v6.0.0` stellt die Ziel-Fassung** —
   [`ADR-0036`](../docs/plan/adr/0036-ziel-fassung-regiert-den-sprung-v600.md), einzige Festlegung,
   `Accepted`; sie bindet damit nach [`AGENTS.md`](../AGENTS.md) §3.4, Korrekturen entstehen als
-  Folge-ADR mit `Supersedes`. Festlegung 1 von
+  Folge-ADR mit `Supersedes`. **Der Zielstand ist am 2026-09-07 auf `v6.5.0` gesetzt** — Setzung
+  des Auftraggebers, die
+  [`ADR-0018`](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md) §Wer den Zielstand
+  bewegt ihm vorbehält. Ihr **Vollzug** steht aus: Der Baum trägt `v6.0.0`, und die Buchung in der
+  Aufzählung oben entsteht mit dem Tausch — ihr zweiter Teil, der Slice mit dem Delta-Nachweis,
+  existiert noch nicht. **Die Prozedur dieses Sprungs stellt die Ziel-Fassung** —
+  [`ADR-0038`](../docs/plan/adr/0038-ziel-fassung-regiert-den-sprung-v650.md), einzige Festlegung,
+  `Proposed` mit Acceptance-Trigger in der Datei; sie bindet ab `Accepted`
+  ([`AGENTS.md`](../AGENTS.md) §3.4). Festlegung 1 von
   [`ADR-0031`](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) bindet
   allein den Sprung auf `v5.18.0`; die eigene Messung, die ihr erster Re-Evaluierungs-Trigger für
   jeden weiteren verlangt, ist in slice-176 gefahren und in slice-178 entschieden. Die
