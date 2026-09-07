@@ -122,6 +122,39 @@ Festlegung 5(a)). **Für DoD (1) heißt das:** der Baum zeigt den Gelingens-Zwei
 es tut — ein Baum, der die zwei Artefakte unbedingt behauptet, wäre an einem Ziel ohne abgelegten
 Träger falsch, und der Wächter aus DoD (2) müsste die Bedingung kennen, statt sie zu übersehen.
 
+**Zwei weitere Familien fehlen, jede auf ihre Art.** Der Baum trägt `.claude/` als **einen**
+Eintrag — die drei Workflow-Commands verschwinden darin — und führt von `.harness/` nur den
+`baseline/`-Zweig, während der Skill-Ordner daneben überhaupt nicht vorkommt:
+
+```sh
+sed -n '/^mein-projekt\/$/,/^```$/p' docs/user/benutzerhandbuch.md \
+  | grep -cE 'skills|commands'                                                        # 0
+grep -c '".claude/commands/' internal/emit/commands.go                                # 3
+sed -n '/^func TestTemplates_EmittierterBestandVollstaendig/,/^}$/p' \
+  internal/emit/templates_test.go | grep -cE '"\.harness/skills/'                     # 2
+```
+
+**Keine Erwartungswerte**
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2). Beide Familien sind vertraglich zugesagt —
+[`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) für
+die Workflow-Commands,
+[`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) für den
+Reviewer-/Closure-Skill —, und beide liegen im Ziel. Für DoD (1) sind sie **keine Ausnahme,
+sondern der Regelfall**: ein Baum, der jede Datei einzeln nennt, zeigt sie ohne Zusatzregel. Dass
+ein Adopter danach auch **weiß**, wozu sie da sind, ist eine andere Frage; sie liegt bei
+[slice-195](slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) und steht hier unter
+*Nicht in diesem Slice* (§6).
+
+**Der Baum zeigt den Bestand, nicht den Vertrag.** Die Richtung ist nicht selbstverständlich:
+[`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) nennt
+`CLAUDE.md` als Teil der Durchsetzungsschicht, und kein Emissions-Pfad legt sie an. Wer den Baum
+aus dem Vertrag ableitet, schreibt eine Zeile über eine Datei, die kein Lauf erzeugt — dieselbe
+Klasse Defekt wie die `docs/plan/`-Zeile oben, nur aus der anderen Quelle. Der Fall selbst und sein
+Adressat stehen in
+[slice-195](slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) §6; hier gilt die Regel: die
+Soll-Menge kommt aus dem Emitter (§3), nicht aus dem Lastenheft.
+
 **Zwei Dinge sind zu liefern, und sie hängen zusammen.** Erst muss entschieden
 sein, *was* der Baum zeigt — ohne diese Entscheidung gibt es nichts, was ein
 Wächter halten könnte; dann muss er gegen den realen Bestand gehalten werden,
@@ -257,6 +290,14 @@ slice-190-Fall oben. Läuft dieser Slice zuerst, ist slice-111s DoD (2) an einem
 den ein Wächter hält; ob es damit erfüllt oder gegenstandslos ist, entscheidet **sein** Lauf.
 Dieser Slice schreibt nicht in den fremden Plan.
 
+**Ein dritter Anspruch liegt auf derselben Datei, aber nicht auf demselben Abschnitt.**
+[slice-195](slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) beschreibt drei Fähigkeiten,
+die der Vertrag zusagt und der Ist-Text verschweigt — Workflow-Commands, Reviewer-/Closure-Skill,
+Pointer-/Trust-Abschnitt der emittierten README. Die Grenze ist die **Form**: dort Prosa über
+Fähigkeiten (§4, §9), hier die Pfad-Aufzählung in §6 und ihr Wächter. Keine Reihenfolge ist
+erzwungen, und der Wächter aus DoD (2) urteilt über Pfade, nicht über Absätze — er wird von
+slice-195 weder rot noch grün.
+
 **Start** (`next` → `in-progress`): Implementer übernimmt, WIP-Limit frei.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
@@ -321,6 +362,12 @@ dasteht.
   DoD-Punkt hier (Modul 5 §Ziel-Form, ≤ 3). Bis er läuft, steht die Fähigkeit **benannt und
   unerklärt** da; das ist die bewusste Grenze dieses Schnitts und keine Auslassung. —
   **Ausgang:** <offen>
+- **Der Baum kann aus dem Vertrag statt aus dem Bestand entstehen.** Wer beim Schreiben
+  [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) daneben
+  legt, nimmt `CLAUDE.md` auf — zugesagt, aber von keinem Emissions-Pfad angelegt (§1). Der
+  Wächter aus DoD (2) fängt das in der einen Richtung (genannter Pfad ohne Emission), und genau
+  dafür verlangt DoD (2) beide Richtungen; bis er steht, trägt allein die Regel aus §1. —
+  **Ausgang:** <offen>
 - **Die Register-Zeile hängt an einer fremden Entscheidung.** DoD (3) schreibt
   den Bestand zum Zeitpunkt der Umsetzung; fällt die Entscheidung aus
   [slice-190](../done/slice-190-bootstrap-legt-die-versprochenen-orte-an.md) §6 **nach**
@@ -333,10 +380,20 @@ dasteht.
   ([slice-073](slice-073-emittierte-doc-gate-module.md)), **die Erklärung der Erfassungsschicht —
   *was* erfasst wird, wie ein Adopter es ausliest oder abschaltet, und die zwei `make`-Ziele
   dafür**, und jede Aussage über den Bestand außerhalb von §6 des Handbuchs.
-  Die Erklärungs-Hälfte ist **kein neu zu schneidender Slice**: sie liegt seit dem 2026-08-26 als
+  Die Erklärungs-Hälfte ist **kein neu zu schneidender Slice**: sie liegt als
   [slice-111](slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) in `open/` und führt
   sie in DoD (1) samt dem Nachzug an §5 *Konfiguration* und §9 *Glossar* des Handbuchs. Der
   Zuschnitt hier fügt ihr nichts hinzu und nimmt ihr nichts weg — er benennt nur die Naht (§4).
+- **Ebenfalls nicht in diesem Slice: die Erklärung der drei übrigen zugesagten Fähigkeiten** —
+  Workflow-Commands, Reviewer-/Closure-Skill und der Pointer-/Trust-Abschnitt der emittierten
+  README. Ihre Pfade zeigt DoD (1) wie jeden anderen; was sie **leisten**, führt
+  [slice-195](slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md).
+- **Und nicht in einem Slice überhaupt: zwei Vertragsfragen.** Die Sprachenliste in
+  [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) und `CLAUDE.md`
+  in [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) sagen
+  zu, was der Bestand nicht führt; gemessen und an den Auftraggeber übergeben sind sie in
+  [slice-195](slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) §6. Für diesen Slice folgt
+  daraus **eine** Regel und sonst nichts: Der Baum zeigt, was der Emitter anlegt (§1).
 
 ## 7. Closure-Notiz
 
@@ -430,7 +487,10 @@ Treffer: keine.
 - [`ueberholter-offener-plan-ohne-genormten-ausgang`](../observations/BEO-ALL/ueberholter-offener-plan-ohne-genormten-ausgang/observation.md)
   — **berührt, Zuordnung offen.** Die geteilte Hälfte ist wörtlich die Lage aus §4: *„Wer ihn
   liegen lässt, führt einen zweiten Anspruch auf dieselbe Linie"* — zwei offene Pläne über §6 des
-  Handbuchs, mit entgegengesetzter Formantwort. Der Anlass ist ein **anderer**: die Identitäts-Zeile
+  Handbuchs, mit entgegengesetzter Formantwort. (Der dritte,
+  [slice-195](slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md), steht daneben und nicht
+  dagegen: er beschreibt Fähigkeiten und beantwortet die Formfrage nicht.) Der Anlass ist ein
+  **anderer**: die Identitäts-Zeile
   des Eintrags bindet ihn an einen Versions-Sprung, hier ist es ein zweiter Schnitt auf dieselbe
   Fläche. Ob das dieselbe Beobachtung ist oder eine benachbarte, entscheidet der Lauf, der den
   Beleg schreibt — nicht dieser Plan, und eine unveränderliche `observation.md` wird dafür nicht
