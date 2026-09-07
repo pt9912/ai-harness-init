@@ -1,6 +1,6 @@
 # ADR-0040: Der Accept-Übergang nennt den Beleg, den der eigene Acceptance-Trigger verlangt — und der Kontext, der den blockierenden Befund auflöste, ist keiner
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-07
 
@@ -273,6 +273,7 @@ Beleg aus dem richtigen Kontext stammt. Das bleibt Urteil, wie beim Beobachtungs
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-07 | **Proposed** | Architect-Lauf; Anlass ist HIGH-1 des Review-Reports zu `slice-193` |
+| 2026-09-07 | **Accepted** | **Entscheidung des Auftraggebers vom 2026-09-07, vollzogen in der Architect-Rolle.** Der Acceptance-Trigger ist eingelöst, und Festlegung 2 gilt dabei für diese Datei selbst: Die erste Reviewer-Runde vom 2026-09-07 zu ihr meldete zwei blockierende Befunde, Beleg ist darum die **zweite** — die Reviewer-Bestätigungsrunde vom 2026-09-07 zu ADR-0039 und ADR-0040, Runde 2, gefahren in frischem Kontext gegen [ADR-0018](0018-ziel-fassung-regiert-die-migration.md), [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) und [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md); ihre Kategorie-Summary nennt **kein HIGH** (1 MEDIUM · 3 LOW · 2 INFO), ihr Report liegt damit ohne blockierenden Befund in `docs/reviews/`. **Die nicht blockierenden Befunde sind vor diesem Umschlag behoben** — MEDIUM-1, LOW-3 und die Zahl-Klasse aus INFO-1 —, und Festlegung 2 deckt das: Sie verlangt eine weitere Runde nur nach einem **blockierenden** Befund. Die Reihenfolge-Frage aus INFO-2 ist im Cutoff der §Entscheidung beantwortet. Wer eine ADR annimmt, sagt keine Quelle dieses Repos — gemessen in [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) §Geschichte, hier nicht gedoppelt. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit

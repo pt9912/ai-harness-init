@@ -1,6 +1,6 @@
 # ADR-0039: Die eingefrorene Adresse in den vendored Baum bekommt ein baum-weites Referenz-Ventil, und der Breiten-Wächter misst gegen eine deklarierte Zahl
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-07
 
@@ -379,6 +379,7 @@ ist einzeln geprüft statt verschwiegen:
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-07 | **Proposed** | Architect-Lauf; löst die zweite Architect-Folgepflicht von [ADR-0038](0038-ziel-fassung-regiert-den-sprung-v650.md) ein |
+| 2026-09-07 | **Accepted** | **Entscheidung des Auftraggebers vom 2026-09-07, vollzogen in der Architect-Rolle.** **Diese Datei trägt keinen Acceptance-Trigger** — die ausdrückliche Aussage, die [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1 an dieser Stelle verlangt; ihr Cutoff ordnet diesen Übergang **nach** dem jener Datei, weshalb Festlegung 1 hier bereits trägt. Ein Trigger verlangt hier also keinen Beleg; die Annahme stützt sich trotzdem auf einen — die Reviewer-Bestätigungsrunde vom 2026-09-07 zu ADR-0039 und ADR-0040, Runde 2, deren Kategorie-Summary **kein HIGH** nennt. **Die nicht blockierenden Befunde sind vor diesem Umschlag behoben** — LOW-1, LOW-2 und die Zahl-Klasse aus INFO-1. Wer eine ADR annimmt, sagt keine Quelle dieses Repos — gemessen in [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) §Geschichte, hier nicht gedoppelt. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
