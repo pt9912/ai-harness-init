@@ -1,6 +1,6 @@
 ## Modul 10 — Review Harness
 
-<!-- Quelle: [04-qualitaet/modul-10-review-harness.md](../../kurs/de/04-qualitaet/modul-10-review-harness.md) -->
+<!-- Quelle: [04-qualitaet/modul-10-review-harness.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/04-qualitaet/modul-10-review-harness.md) -->
 
 ### Drei Review-Arten — wogegen wird geprüft
 

@@ -1,6 +1,6 @@
 ## Modul 11 — Verification Harness
 
-<!-- Quelle: [04-qualitaet/modul-11-verification.md](../../kurs/de/04-qualitaet/modul-11-verification.md) -->
+<!-- Quelle: [04-qualitaet/modul-11-verification.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/04-qualitaet/modul-11-verification.md) -->
 
 ### Begriffe: Pre-completion Checklist Middleware und DoD-Verletzung
 

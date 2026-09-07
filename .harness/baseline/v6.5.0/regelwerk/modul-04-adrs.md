@@ -1,6 +1,6 @@
 ## Modul 4 — ADRs
 
-<!-- Quelle: [01-spec-und-architektur/modul-04-adrs.md](../../kurs/de/01-spec-und-architektur/modul-04-adrs.md) -->
+<!-- Quelle: [01-spec-und-architektur/modul-04-adrs.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/01-spec-und-architektur/modul-04-adrs.md) -->
 
 ### Mini-Glossar für dieses Modul (Modul 4)
 

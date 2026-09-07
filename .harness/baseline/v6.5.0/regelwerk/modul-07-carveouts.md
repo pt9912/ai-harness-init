@@ -1,6 +1,6 @@
 ## Modul 7 — Carveout Management
 
-<!-- Quelle: [02-planung/modul-07-carveouts.md](../../kurs/de/02-planung/modul-07-carveouts.md) -->
+<!-- Quelle: [02-planung/modul-07-carveouts.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/02-planung/modul-07-carveouts.md) -->
 
 ### Harness-Einordnung (Modul 7)
 

@@ -1,6 +1,6 @@
 ## Modul 13 — Quality Gates
 
-<!-- Quelle: [04-qualitaet/modul-13-quality-gates.md](../../kurs/de/04-qualitaet/modul-13-quality-gates.md) -->
+<!-- Quelle: [04-qualitaet/modul-13-quality-gates.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/04-qualitaet/modul-13-quality-gates.md) -->
 
 ### Harness-Einordnung (Modul 13)
 

@@ -1,5 +1,5 @@
 ## Referenz-Richtung (SDP)
-<!-- Quelle: [grundlagen/referenz-richtung.md](../../kurs/de/grundlagen/referenz-richtung.md) -->
+<!-- Quelle: [grundlagen/referenz-richtung.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/grundlagen/referenz-richtung.md) -->
 
 ### Referenz-Richtung (SDP): wer darf wen referenzieren
 

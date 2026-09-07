@@ -1,6 +1,6 @@
 ## Modul 14 — Docker Harness
 
-<!-- Quelle: [05-betrieb/modul-14-docker-harness.md](../../kurs/de/05-betrieb/modul-14-docker-harness.md) -->
+<!-- Quelle: [05-betrieb/modul-14-docker-harness.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/05-betrieb/modul-14-docker-harness.md) -->
 
 ### Kernidee (Modul 14)
 

@@ -1,6 +1,6 @@
 ## Modul 8 — Agentenrollen
 
-<!-- Quelle: [03-agenten/modul-08-agentenrollen.md](../../kurs/de/03-agenten/modul-08-agentenrollen.md) -->
+<!-- Quelle: [03-agenten/modul-08-agentenrollen.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/03-agenten/modul-08-agentenrollen.md) -->
 
 ### Kernidee (Modul 8)
 

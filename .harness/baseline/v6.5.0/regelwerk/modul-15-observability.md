@@ -1,6 +1,6 @@
 ## Modul 15 — Observability
 
-<!-- Quelle: [05-betrieb/modul-15-observability.md](../../kurs/de/05-betrieb/modul-15-observability.md) -->
+<!-- Quelle: [05-betrieb/modul-15-observability.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/05-betrieb/modul-15-observability.md) -->
 
 ### Harness-Einordnung
 

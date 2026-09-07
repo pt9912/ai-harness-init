@@ -1,6 +1,6 @@
 ## Modul 3 — Die Spec: Lastenheft, Spezifikation, Architektur
 
-<!-- Quelle: [01-spec-und-architektur/modul-03-spec.md](../../kurs/de/01-spec-und-architektur/modul-03-spec.md) -->
+<!-- Quelle: [01-spec-und-architektur/modul-03-spec.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/01-spec-und-architektur/modul-03-spec.md) -->
 
 ### Harness-Einordnung (Modul 3)
 

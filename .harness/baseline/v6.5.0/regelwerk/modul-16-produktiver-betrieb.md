@@ -1,6 +1,6 @@
 ## Modul 16 — Produktiver Betrieb
 
-<!-- Quelle: [05-betrieb/modul-16-produktiver-betrieb.md](../../kurs/de/05-betrieb/modul-16-produktiver-betrieb.md) -->
+<!-- Quelle: [05-betrieb/modul-16-produktiver-betrieb.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/05-betrieb/modul-16-produktiver-betrieb.md) -->
 
 ### Kernidee (Modul 16)
 

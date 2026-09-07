@@ -1,5 +1,5 @@
 ## Source Precedence und Spec-Stratifizierung
-<!-- Quelle: [grundlagen/source-precedence.md](../../kurs/de/grundlagen/source-precedence.md) -->
+<!-- Quelle: [grundlagen/source-precedence.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/grundlagen/source-precedence.md) -->
 
 ### Source Precedence
 

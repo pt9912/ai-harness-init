@@ -17,7 +17,7 @@ laden kann, ohne das ganze Regelwerk im Kontext zu halten.
 > **Was dieses Verzeichnis ist.** Das **kanonische Regelwerk-Artefakt** (login-frei
 > ausgeliefert als `lab-regelwerk.zip`, self-navigierbar). Es trägt keine eigene
 > Normativität: maßgeblich für den *Inhalt* bleibt der Kurs unter
-> [`/kurs/de/`](../../kurs/de/README.md) — die Module der Phasen 01–05 plus die
+> [`/kurs/de/`](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/README.md) — die Module der Phasen 01–05 plus die
 > normativen Grundlagen-Abschnitte.
 >
 > **Was dieses Verzeichnis NICHT ist.** Eine eigene Quelle der Wahrheit. Wer hier
@@ -97,4 +97,4 @@ gepinnte GitHub-URLs umgeschrieben (`tools/rewrite-doc-links.py`).
 ## Lizenz
 
 Wie der übrige Kurs: Texte unter CC BY 4.0, Code-Artefakte unter MIT. Details in
-[`LICENSE.md`](../../LICENSE.md).
+[`LICENSE.md`](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/LICENSE.md).

@@ -1,6 +1,6 @@
 ## Modul 9 — Implementierung durch KI-Agenten
 
-<!-- Quelle: [03-agenten/modul-09-implementierung.md](../../kurs/de/03-agenten/modul-09-implementierung.md) -->
+<!-- Quelle: [03-agenten/modul-09-implementierung.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/03-agenten/modul-09-implementierung.md) -->
 
 ### Kernidee (Modul 9)
 

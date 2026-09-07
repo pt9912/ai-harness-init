@@ -1,5 +1,5 @@
 ## Durchsetzungsschicht
-<!-- Quelle: [grundlagen/durchsetzungsschicht.md](../../kurs/de/grundlagen/durchsetzungsschicht.md) -->
+<!-- Quelle: [grundlagen/durchsetzungsschicht.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/grundlagen/durchsetzungsschicht.md) -->
 
 Konventionen, Hard Rules und Sensors sind *aspirativ*, bis etwas sie an
 die Agent-Schleife **bindet**. Diese Seite beschreibt die

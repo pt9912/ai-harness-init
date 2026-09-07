@@ -1,5 +1,5 @@
 ## Klassifikation und Steering Loop
-<!-- Quelle: [grundlagen/klassifikation.md](../../kurs/de/grundlagen/klassifikation.md) -->
+<!-- Quelle: [grundlagen/klassifikation.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/grundlagen/klassifikation.md) -->
 
 Wir klassifizieren jede Kontrolle, die der Harness bereitstellt, entlang
 mehrerer Achsen. Zwei Schulen prägen das Vokabular: **Böckeler/Thoughtworks**

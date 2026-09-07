@@ -1,6 +1,6 @@
 ## Modul 5 — Planning Harness
 
-<!-- Quelle: [02-planung/modul-05-planning-harness.md](../../kurs/de/02-planung/modul-05-planning-harness.md) -->
+<!-- Quelle: [02-planung/modul-05-planning-harness.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/02-planung/modul-05-planning-harness.md) -->
 
 ### Kernidee (Modul 5)
 

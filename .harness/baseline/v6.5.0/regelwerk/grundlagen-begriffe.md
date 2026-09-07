@@ -1,5 +1,5 @@
 ## Kernbegriffe und Trennschärfen
-<!-- Quelle: [grundlagen/begriffe.md](../../kurs/de/grundlagen/begriffe.md) -->
+<!-- Quelle: [grundlagen/begriffe.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/grundlagen/begriffe.md) -->
 
 ### Kernbegriffe
 

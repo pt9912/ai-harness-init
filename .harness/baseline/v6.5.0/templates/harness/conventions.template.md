@@ -69,7 +69,7 @@ ist derivativ — bei Konflikt gilt das Lehrmaterial.
 - **Extern (Lehrmaterial):** <Pfad oder URL>
 - **Vendored Baseline (Regelwerk + Templates):** aus dem self-contained
   Release-Asset
-  https://github.com/pt9912/ai-harness-course/releases/latest/download/lab-regelwerk.zip
+  https://github.com/pt9912/ai-harness-course/releases/download/v6.5.0/lab-regelwerk.zip
   nach `.harness/baseline/<tag>/{regelwerk,templates}/` entpackt (netzlos,
   `SHA256SUMS`) — adoptierten Stand notieren (Stand-Zeile in
   `regelwerk/README.md`, z. B. „Kurs-Welle 24 · 2026-07-16"; Wellen-Register:

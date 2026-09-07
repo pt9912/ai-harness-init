@@ -1,6 +1,6 @@
 ## Modul 6 — Roadmap Engineering
 
-<!-- Quelle: [02-planung/modul-06-roadmap.md](../../kurs/de/02-planung/modul-06-roadmap.md) -->
+<!-- Quelle: [02-planung/modul-06-roadmap.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/02-planung/modul-06-roadmap.md) -->
 
 ### Kernidee (Modul 6)
 

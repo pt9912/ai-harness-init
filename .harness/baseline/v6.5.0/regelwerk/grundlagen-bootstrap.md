@@ -1,5 +1,5 @@
 ## Harness-Bootstrap
-<!-- Quelle: [grundlagen/bootstrap.md](../../kurs/de/grundlagen/bootstrap.md) -->
+<!-- Quelle: [grundlagen/bootstrap.md](https://github.com/pt9912/ai-harness-course/blob/v6.5.0/kurs/de/grundlagen/bootstrap.md) -->
 
 ### Harness-Bootstrap
 
