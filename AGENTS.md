@@ -226,17 +226,17 @@ ob eine Zelle Chronik trägt, ist wie die zwei Urteils-Klassen oben ein Urteil u
 kein Muster — ein `grep` zählte Zellen, nicht Verstöße, und gäbe damit ein Muster
 als Kriterium aus, das keines ist (§3.6).
 
-**Herkunft, mit Mess-Stand:** die adoptierte Baseline `v6.0.0` **führt** diese
+**Herkunft, mit Mess-Stand:** die adoptierte Baseline `v6.5.0` **führt** diese
 Regel — als Hard Rule mit derselben Nummer und demselben Titel im Hard-Rules-Block
 der AGENTS-Vorlage
-(`grep -c '^### 3\.7 Ein Kommentar beschreibt, was da ist$' .harness/baseline/v6.0.0/templates/AGENTS.template.md` → **1**)
+(`grep -c '^### 3\.7 Ein Kommentar beschreibt, was da ist$' .harness/baseline/v6.5.0/templates/AGENTS.template.md` → **1**)
 und ausgeschrieben in
-`grep -c '^### Was ein Kommentar trägt — Code, Konfiguration, Skripte$' .harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md` → **1**.
+`grep -c '^### Was ein Kommentar trägt — Code, Konfiguration, Skripte$' .harness/baseline/v6.5.0/regelwerk/grundlagen-harness-dateien.md` → **1**.
 Was hier über die Vorlage hinaus steht — Geltungsbereich, Cutoff, Quellen-Klausel
 und die Wächter-Aussage —, ergänzt sie, ohne sie einzuschränken. Die
 Quellen-Klausel ist die **Anwendung** der Baseline-Hard-Rule *„Wer Herkunft nennt,
 nennt sie als **ein** auflösbares Feld … und nie als Absatz"*
-(`grep -c 'nennt sie als \*\*ein\*\* auflösbares Feld' .harness/baseline/v6.0.0/regelwerk/grundlagen-harness-dateien.md` → **1**):
+(`grep -c 'nennt sie als \*\*ein\*\* auflösbares Feld' .harness/baseline/v6.5.0/regelwerk/grundlagen-harness-dateien.md` → **1**):
 Sie nimmt keine der fünf Klassen weg und keine der dort genannten Anker-Formen —
 `· seit slice-<NNN>` steht in der Begründung ausdrücklich, weil
 `grundlagen-traceability.md` §Herkunfts-Anker ihn für wellenlos verkörperte Regeln
@@ -379,7 +379,7 @@ Kontext schreiben.
 **Warum der Planner — und was diese Sektion hinzufügt.** Die Zuweisung ist nicht neu: die
 adoptierte Baseline führt den Schritt in der Rollen-Sequenz für einen Slice als
 `P->>P: Closure in done/ + Lerneintrag`
-(`grep -c 'P->>P: Closure in done/ + Lerneintrag' .harness/baseline/v6.0.0/regelwerk/modul-08-agentenrollen.md`
+(`grep -c 'P->>P: Closure in done/ + Lerneintrag' .harness/baseline/v6.5.0/regelwerk/modul-08-agentenrollen.md`
 → **1**). Neu ist der **Commit-Zuschnitt**, den §3.8 für die zwei Architect-Artefakte führt und
 den für den Abschluss keine Quelle führt — ohne ihn ist die Rollen-Grenze im Nachhinein an nichts
 ablesbar. Die Sektion füllt damit eine Lücke, statt von der Baseline abzuweichen; deshalb steht zu
