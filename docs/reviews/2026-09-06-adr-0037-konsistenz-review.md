@@ -44,7 +44,7 @@ nichts ist aus der Commit-Message, aus dem Slice-Plan oder aus der ADR übernomm
 - **Vorherige Findings am gleichen Modul:** **keine** — `ls docs/reviews/ | grep -iE '0037|slice-190|slice-191'`
   ist leer. Dies ist Runde 1. Als Muster herangezogen: die drei ADR-0036-Runden, zuletzt
   [Runde 3](2026-09-05-adr-0036-konsistenz-bestaetigung-runde-3.md).
-- **Slice-Plan:** [`slice-190`](../plan/planning/in-progress/slice-190-bootstrap-legt-die-versprochenen-orte-an.md)
+- **Slice-Plan:** [`slice-190`](../plan/planning/done/slice-190-bootstrap-legt-die-versprochenen-orte-an.md)
   (in `open/`) — das Übergabe-Artefakt, dessen zwei Fragen die ADR beantwortet.
 
 **Gate-Lauf.** `make docs-check` in diesem Lauf **zweimal** gefahren (Docker-only, §3.9) — vor dem
@@ -180,7 +180,7 @@ Jedes Finding folgt dem §Output-Schema des Reviewer-Skills.
 - `pfad`: `docs/plan/adr/0037-bootstrap-stellt-den-tag-0-zustand-her.md:360` (§Geschichte)
 - `befund`: Die Zeile lautet *„Architect-Lauf zu den zwei offenen Risiken aus `slice-190` §6, die
   dessen `open → next`-Trigger sperren."* Gemessen trägt
-  [`slice-190`](../plan/planning/in-progress/slice-190-bootstrap-legt-die-versprochenen-orte-an.md) §6
+  [`slice-190`](../plan/planning/done/slice-190-bootstrap-legt-die-versprochenen-orte-an.md) §6
   **sechs** Risiken mit `**Ausgang:** <offen>`, und §4 nennt für `open → next` **eine** Bedingung
   neben dem WIP-Limit — *„die Change-Request-Frage aus §3 ist beantwortet"*. Das zweite von der ADR
   behandelte Risiko (der Register-Ort) sagt in seinem eigenen Text *„Der Ausgang ist eine
@@ -193,10 +193,10 @@ Jedes Finding folgt dem §Output-Schema des Reviewer-Skills.
 - `verifizierbar`: **nein**. Reproduzierbar:
   ```sh
   sed -n '/^## 6\. Risiken/,/^## 7\./p' \
-    docs/plan/planning/in-progress/slice-190-bootstrap-legt-die-versprochenen-orte-an.md \
+    docs/plan/planning/done/slice-190-bootstrap-legt-die-versprochenen-orte-an.md \
     | grep -c '\*\*Ausgang:\*\* <offen>'                     # 6
   sed -n '/^## 4\. Trigger/,/^## 5\./p' \
-    docs/plan/planning/in-progress/slice-190-bootstrap-legt-die-versprochenen-orte-an.md \
+    docs/plan/planning/done/slice-190-bootstrap-legt-die-versprochenen-orte-an.md \
     | grep -A1 '^\*\*`open` → `next`'
   # -> "WIP-Limit frei und die Change-Request-Frage aus §3 ist beantwortet."
   ```

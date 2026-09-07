@@ -44,7 +44,7 @@ allein im Lastenheft.
 **Ein frisch gebootstrapptes Ziel trägt `docs/plan/planning/observations/` mit seiner
 `README.md`** — den letzten der drei Orte, die sein eigener mitemittierter Text als vorhanden
 führt. Die zwei anderen sind erledigt: `harness/conventions/` legt
-[slice-190](../in-progress/slice-190-bootstrap-legt-die-versprochenen-orte-an.md) an,
+[slice-190](../done/slice-190-bootstrap-legt-die-versprochenen-orte-an.md) an,
 `docs/plan/carveouts/done/` trägt
 [`ADR-0037`](../../adr/0037-bootstrap-stellt-den-tag-0-zustand-her.md) Festlegung 4 nicht und hat
 dort einen Ausgang statt einer Anlage bekommen.
@@ -79,7 +79,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
   emittierten Baum gegen eine `want`-Liste auf Mengengleichheit und ist nach der Erweiterung rot,
   bis `want` nachgezogen ist — diese rote Ausgabe wird gelesen und in §7 benannt.
 - [ ] **(2) Gemessen: `codepaths` über dem frischen Ziel meldet 3 → 0 Befunde.** Dieselbe
-  Messreihe wie in [slice-190](../in-progress/slice-190-bootstrap-legt-die-versprochenen-orte-an.md) §1,
+  Messreihe wie in [slice-190](../done/slice-190-bootstrap-legt-die-versprochenen-orte-an.md) §1,
   netzlos über `roots: [spec, docs, harness]`, `--lang go` **und** sprachlos. **Der Rot-Nachweis
   ist der Vorher-Lauf** — derselbe Aufruf über dem heutigen Stand meldet **3**; ein Nachher-Lauf
   allein belegt nicht, dass die Änderung gewirkt hat
@@ -238,7 +238,7 @@ Setzung 2). Die vier Einträge des Kommandos berühren diesen Slice, weitere Tre
 
 - [`emittierte-vorlagen-klassifikation-ohne-traeger`](../observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/observation.md)
   — **steht über der Schwelle und ist der Grund für diesen Slice.** Dieser Slice räumt den
-  Rest-Teil, den [slice-190](../in-progress/slice-190-bootstrap-legt-die-versprochenen-orte-an.md) offen
+  Rest-Teil, den [slice-190](../done/slice-190-bootstrap-legt-die-versprochenen-orte-an.md) offen
   gelassen hat. Den Ausgang setzt der Lese-Schritt der nächsten Welle-Closure, nicht dieser Plan.
 - [`idempotente-anlage-erreicht-den-bestand-nicht`](../observations/BEO-ALL/idempotente-anlage-erreicht-den-bestand-nicht/observation.md)
   — **getroffen**: Festlegung 3 ordnet die Anlage *skip-if-present* zu; steht als Risiko in §6.
