@@ -171,9 +171,11 @@ Baum. **Dieser Slice schreibt in keinen der beiden fremden Pläne.**
   Fähigkeiten keinen Absatz braucht, sondern einen eigenen Aufgaben-Abschnitt mit durchgespieltem
   Beispiel (wie `add-lang` einen hat). Drei Aufgaben-Kapitel sind kein Slice mehr; dann trennt ein
   Re-Schnitt sie, und jedes hat für sich Liefer-Wert.
-- `in-progress` → `open` (blockiert — Carveout?): falls DoD (2) nicht zu schreiben ist, ohne die
-  `CLAUDE.md`-Frage aus §6 zu beantworten — der Vertrag zählt sie zur Durchsetzungsschicht, der
-  Bestand kennt sie nicht. Dann steht eine Entscheidung aus, und dieser Slice ist nicht ihr Ort.
+- `in-progress` → `open` (blockiert — Carveout?): falls die Herkunfts-Aussage aus DoD (2) am Text
+  nicht zu halten ist — [`ADR-0006`](../../adr/0006-durchsetzung-commands-tool-als-quelle.md)
+  §Abgrenzung Punkt 2 ordnet dem Skill seine **Quelle** zu (Kurs-Satz statt Tool), nicht sein
+  Verhalten beim Wiederholungs-Lauf. Zeigt der Bestand, dass §4 des Handbuchs ihn anders behandelt
+  als der Satz sagt, steht eine Entscheidung aus, und dieser Slice ist nicht ihr Ort.
 
 ## 5. Closure-Trigger
 
@@ -224,35 +226,37 @@ des Baums bei
 [slice-191](slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md). Beide sind bereits
 geschnitten; dieser Slice fügt ihnen nichts hinzu und nimmt ihnen nichts weg.
 
-**Nicht in diesem Slice — zwei Vertragsfragen, und sie gehören dem Auftraggeber.** Beide sind vom
-selben Typ und vom Typ der drei DoD-Punkte **verschieden**: Dort schweigt der Text über einen
-vorhandenen Bestand — hier sagt der Vertrag etwas zu, das nicht existiert. Eine Doku-Änderung kann
-das nicht auflösen: Wer den Ist-Text an den Vertrag anpasst, beschreibt etwas, das es nicht gibt;
-wer den Vertrag an den Ist-Stand anpasst, ändert `LH-*` — und das darf nach Baseline-Regelwerk
-`grundlagen-source-precedence.md` §Spec-Stratifizierung **weder ADR noch Slice**. Der Träger ist
-ein angenommener Change Request in einem eigenen Commit, der **vor** dem umsetzenden Slice liegt
-(ebenda, §*Fallen Auftraggeber- und Entwickler-Rolle zusammen*; die Adaptions-Seite dazu führt
-[`MR-036`](../../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline)).
-**Welchen Weg der Auftraggeber wählt, steht hier nicht** — dieser Plan misst und übergibt.
+**Nicht in diesem Slice — zwei Soll/Ist-Deltas, und beide sind der Normalfall.** Sie sind vom
+selben Typ und vom Typ der drei DoD-Punkte **verschieden**: Dort **existiert** der Bestand und der
+Ist-Text schweigt darüber — das ist der Defekt, den dieser Slice behebt. Hier nennt das Zielbild
+etwas, das der Bestand nicht führt, und das ist keiner. Drei Dokumentklassen, drei Zeit-Domänen:
+[`spec/`](../../../../spec) sagt, was gelten **soll**, [`docs/user/`](../../../../docs/user) sagt,
+was **ist**, und `docs/plan/planning/` sagt, **wann** es kommt. Ein Abstand zwischen dem ersten
+und dem zweiten ist die Aufgabe des Zielbilds, nicht sein Mangel; die Soll/Ist-Inventur macht ihn
+**sichtbar**, sie beseitigt ihn nicht. **Für diesen Slice folgt daraus eine Regel und sonst
+nichts:** Das Handbuch beschreibt beides **nicht** — weder als vorhanden noch als geplant. Ein
+Handbuch bildet den Ist-Zustand ab und trägt keine Vorschau.
 
 1. **Die Sprachenliste** in
-   [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4). Der Vertrag
+   [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4). Das Zielbild
    nennt sechs Sprachen, der Generator führt zwei Profile:
 
    ```sh
    grep '^\*\*Unterstützte Sprachen:\*\*' spec/lastenheft.md | grep -oE '`[a-z]+`' | wc -l   # 6
    sed -n '/^func profiles/,/^}$/p' internal/gen/gen.go | grep -cE '^\t\t"'                  # 2
-   sed -n '/^\*\*Unterstützte Sprachen:\*\*/,+2p' spec/lastenheft.md
    ```
 
-   Das dritte Kommando zeigt die zweite Hälfte: dieselbe Passage führt `cpp` in der Liste der
-   unterstützten Sprachen **und** im Folgesatz als *folgt* — während beides von den zwei
-   vorhandenen Profilen eines ist. Der Ist-Text des Handbuchs (*„Derzeit `go` und `cpp`"*) ist
-   damit richtig; falsch ist die Zusage daneben.
+   **Keine Erwartungswerte**
+   ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+   Setzung 2) — beide wandern, die erste mit dem Zielbild, die zweite mit dem Generator. Beide
+   Seiten sind richtig: Die Liste sagt, welche Sprachen das Werkzeug tragen **soll**, und dass
+   `cpp` darin steht **und** gebaut ist, ist kein Widerspruch — ein Zielbild wird nicht
+   nachgeführt, wenn ein Teil davon existiert. Der Ist-Text des Handbuchs (*„Derzeit `go` und
+   `cpp`"*) beschreibt die zwei Profile und bleibt, wie er ist; die vier übrigen Sprachen gehören
+   dort in keiner Form hinein, auch nicht als Ausblick.
 2. **`CLAUDE.md`** in
    [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren). Das
-   Akzeptanzkriterium sagt sie im Zielrepo zu; emittiert wird sie nicht, und keine Vorlage trägt
-   sie:
+   Zielbild führt sie im Zielrepo; emittiert wird sie nicht, und keine Vorlage trägt sie:
 
    ```sh
    git grep -c 'CLAUDE\.md' -- 'internal/emit/*.go' 'cmd/**' | wc -l                    # 0 Dateien
@@ -260,25 +264,21 @@ ein angenommener Change Request in einem eigenen Commit, der **vor** dem umsetze
    grep -c '`CLAUDE\.md` (falls vorhanden)' internal/emit/templates/commands/plan-welle.md   # 1
    ```
 
-   Das dritte Kommando ist der Beleg, dass es keine Nachlässigkeit ist, sondern die geltende
-   Bauart: Das **emittierte** Command spricht selbst im Konditional über die Datei.
-   [`ADR-0006`](../../adr/0006-durchsetzung-commands-tool-als-quelle.md) §Abgrenzung Punkt 3 hält
-   dieselbe Linie und nennt sie eine **benannte Lücke** — *„die CLAUDE.md-Quelle ist ein eigener
-   CR … hier **nicht** entschieden"*. Die ADR ist `Accepted` und damit immutabel
-   ([`AGENTS.md`](../../../../AGENTS.md) §3.4); sie kann `LH-*` ohnehin nicht ändern.
+   **Auch hier tragen beide Seiten**, und dieselbe Anforderung sagt, warum sie sich nicht
+   widersprechen: `CLAUDE.md` ist dort ein **Briefing** wie `AGENTS.md` und damit *„**autort**,
+   nicht tool-generiert"* (`grep -c 'autort\*\*, nicht tool-generiert' spec/lastenheft.md` → `1`).
+   Ein Zielrepo **soll** eine haben; sie entsteht nicht aus dem Bootstrap. Das dritte Kommando
+   zeigt dieselbe Linie im **emittierten** Command, das im Konditional über die Datei spricht,
+   und [`ADR-0006`](../../adr/0006-durchsetzung-commands-tool-als-quelle.md) §Abgrenzung Punkt 3
+   führt sie als **benannte Lücke**. **Für das Handbuch heißt das:** Es beschreibt den Bestand,
+   und `CLAUDE.md` steht nicht darin.
 
-**Keine der beiden hat heute einen Träger.** Die Sprachenliste kommt im wartenden Bestand nur dort
-vor, wo sie ausgeschlossen wird:
-
-```sh
-git grep -l 'LH-FA-04' -- 'docs/plan/planning/open/*.md' 'docs/plan/planning/next/*.md'
-# slice-191 und slice-195 — beide fuehren sie in ihrem §6 als Nicht-Gegenstand
-```
-
-Für `CLAUDE.md` steht der Träger benannt und unbesetzt: der eigene CR, den
-[`ADR-0006`](../../adr/0006-durchsetzung-commands-tool-als-quelle.md) verlangt und ausdrücklich
-nicht entscheidet. Ein Slice ist für beide der falsche Träger — sie entscheiden, **ob** der
-Vertrag so gilt, und das entscheidet keine Planung.
+**Ein Defekt steht daneben, und er ist von beiden verschieden.**
+[`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) sagt
+*„`cpp` … **folgt**"* — eine **Liefer-Aussage** in einem Soll-Dokument, also Plan am falschen Ort;
+dass sie zusätzlich nicht mehr stimmt, ist die Folge und nicht der Grund. Sie ist gemessen und hat
+einen Träger: [slice-196](slice-196-spec-traegt-keine-liefer-aussage.md). Dieser Slice fasst
+`spec/` nicht an (§3).
 
 ## 7. Closure-Notiz
 
@@ -356,8 +356,9 @@ Setzung 2). Die sechs Einträge des Kommandos berühren diesen Slice; weitere Tr
   ausdrücklich, statt einen Wächter zu behaupten, der Prosa nicht sieht.
 - [`out-of-scope-und-doku-dod-widersprechen-sich`](../observations/BEO-ALL/out-of-scope-und-doku-dod-widersprechen-sich/observation.md)
   — berührt, weil §6 eine Out-of-Scope-Grenze neben drei Doku-DoD-Punkte stellt. **Nicht
-  getroffen:** die Gegenstände sind disjunkt — die DoD beschreibt vorhandene Artefakte, die Grenze
-  schließt zwei zugesagte, nicht vorhandene aus, und §6 sagt, welches welches ist.
+  getroffen:** die Gegenstände sind disjunkt — die DoD beschreibt Artefakte, die im Bestand
+  liegen, die Grenze schließt zwei aus, die nur im Zielbild stehen, und §6 sagt, welches welches
+  ist. Beide Male entscheidet dieselbe Frage: Steht es im Bestand?
 - [`slice-plan-umfang-waechst-ueber-umsetzung-hinaus`](../observations/BEO-ALL/slice-plan-umfang-waechst-ueber-umsetzung-hinaus/observation.md)
   — berührt durch die Anlage eines weiteren Plans. **Nicht getroffen:** der Umfang ist geteilt
   statt gewachsen — die Fähigkeits-Hälfte steht hier, die Pfad-Hälfte bleibt in
@@ -366,8 +367,8 @@ Setzung 2). Die sechs Einträge des Kommandos berühren diesen Slice; weitere Tr
 - [`benannte-luecke-ohne-ausgang`](../observations/BEO-ALL/benannte-luecke-ohne-ausgang/observation.md)
   — berührt, weil §2 eine Grenze benennt und §6 zwei. **Nicht getroffen:** der Eintrag misst
   Grenz-Beschreibungen in einem **lebenden** Artefakt im Pflicht-Lesepfad; diese hier stehen in
-  einem Plan, den der Prozess nach `done/` legt, und die zwei aus §6 haben mit dem Auftraggeber
-  einen Adressaten.
+  einem Plan, den der Prozess nach `done/` legt. Die zwei aus §6 sind zudem keine Lücken, sondern
+  ein Abstand zwischen zwei Dokumentklassen, den keine Seite schließen soll.
 
 **Zwei Einträge nahe der Schwelle sind geprüft und nicht berührt:**
 `re-baseline-ohne-inventur-slice` und `folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht`

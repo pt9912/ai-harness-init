@@ -146,14 +146,13 @@ ein Adopter danach auch **weiß**, wozu sie da sind, ist eine andere Frage; sie 
 [slice-195](slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) und steht hier unter
 *Nicht in diesem Slice* (§6).
 
-**Der Baum zeigt den Bestand, nicht den Vertrag.** Die Richtung ist nicht selbstverständlich:
+**Der Baum zeigt den Bestand, nicht das Zielbild.** Die Richtung ist nicht selbstverständlich:
 [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) nennt
 `CLAUDE.md` als Teil der Durchsetzungsschicht, und kein Emissions-Pfad legt sie an. Wer den Baum
-aus dem Vertrag ableitet, schreibt eine Zeile über eine Datei, die kein Lauf erzeugt — dieselbe
-Klasse Defekt wie die `docs/plan/`-Zeile oben, nur aus der anderen Quelle. Der Fall selbst und sein
-Adressat stehen in
-[slice-195](slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) §6; hier gilt die Regel: die
-Soll-Menge kommt aus dem Emitter (§3), nicht aus dem Lastenheft.
+aus dem Zielbild ableitet, schreibt eine Zeile über eine Datei, die kein Lauf erzeugt — dieselbe
+Klasse Defekt wie die `docs/plan/`-Zeile oben, nur aus der anderen Quelle. Gemessen steht der Fall
+in [slice-195](slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) §6; hier gilt die Regel:
+die Soll-Menge kommt aus dem Emitter (§3), nicht aus dem Lastenheft.
 
 **Zwei Dinge sind zu liefern, und sie hängen zusammen.** Erst muss entschieden
 sein, *was* der Baum zeigt — ohne diese Entscheidung gibt es nichts, was ein
@@ -388,10 +387,11 @@ dasteht.
   Workflow-Commands, Reviewer-/Closure-Skill und der Pointer-/Trust-Abschnitt der emittierten
   README. Ihre Pfade zeigt DoD (1) wie jeden anderen; was sie **leisten**, führt
   [slice-195](slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md).
-- **Und nicht in einem Slice überhaupt: zwei Vertragsfragen.** Die Sprachenliste in
+- **Und ebenfalls nicht: zwei Soll/Ist-Deltas.** Die Sprachenliste in
   [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) und `CLAUDE.md`
-  in [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) sagen
-  zu, was der Bestand nicht führt; gemessen und an den Auftraggeber übergeben sind sie in
+  in [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)
+  nennen, was der Bestand nicht führt — der Normalfall zwischen einem Zielbild und einem Bestand
+  und kein Befund; gemessen stehen beide in
   [slice-195](slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) §6. Für diesen Slice folgt
   daraus **eine** Regel und sonst nichts: Der Baum zeigt, was der Emitter anlegt (§1).
 
