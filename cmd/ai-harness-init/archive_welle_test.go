@@ -360,11 +360,11 @@ func TestArchiveWelleHelp(t *testing.T) {
 	}
 }
 
-// TestUsageNenntAlleDreiUnterkommandos: die Hilfe des Traegers fuehrt jedes
+// TestUsageNenntAlleVierUnterkommandos: die Hilfe des Traegers fuehrt jedes
 // Unterkommando, das main() dispatcht — sonst ist eine Faehigkeit vorhanden und
 // unauffindbar.
-func TestUsageNenntAlleDreiUnterkommandos(t *testing.T) {
-	for _, name := range []string{"span-emit", "span-report", "archive-welle"} {
+func TestUsageNenntAlleVierUnterkommandos(t *testing.T) {
+	for _, name := range []string{"span-emit", "span-report", "archive-welle", "vendor-baseline"} {
 		if !strings.Contains(usage, name) {
 			t.Errorf("usage nennt %q nicht", name)
 		}

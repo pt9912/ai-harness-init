@@ -33,7 +33,7 @@ BASELINE_TAG ?= v6.5.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 80684c17b958d2bc0c25eef1bdff25342b9c7b90254431ade9c29ee2add18865
 
-.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims history-range-guard host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle
+.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims history-range-guard host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -336,6 +336,30 @@ slice-mv: ## Lifecycle-Wechsel eines Slice inkl. Verweise (SLICE=<slice-NNN> TO=
 # Sauberkeits-Sperre ab, und kein Gate zeigt den Zusammenhang.
 archive-welle: host-bin ## Zeitdokumente einer geschlossenen Welle archivieren (WELLE=<welle-id>) — NICHT in gates
 	@$(HOST_BIN) archive-welle "$(WELLE)"
+
+# Legt den vendored Baum DIESES Repos (.harness/baseline/$(BASELINE_TAG)/) aus
+# dem VERIFIZIERTEN Release-Asset an, statt ihn von Hand aus einem fremden
+# Arbeitsbaum zu kopieren — der Traeger fuer harness/conventions.md §Adoptierte
+# Konventions-Quellen: „Asset -> vendored Baum haelt nichts". NICHT in gates:
+# es stellt her, es prueft nicht (LH-QA-01); der Beleg ist `make baseline-verify`
+# NACH demselben Lauf.
+#
+# Die Faehigkeit liegt vollstaendig in internal/fetch.Baseline (LH-FA-09) und
+# hatte bislang genau einen Aufrufer, den Init-Pfad fuer Zielrepos; die Logik
+# ist damit von `make test` und `make lint` gedeckt, dieses Ziel ist nur ihr
+# zweiter Aufrufer. KONVERGENT (ADR-0007): ein vorhandenes <tag>-Verzeichnis
+# wird ersetzt, kein zweites legt sich daneben (MR-007 Setzung 4).
+#
+# Tag und sha256 kommen als ARGUMENTE aus den KANONISCHEN Makefile-Variablen
+# BASELINE_TAG/BASELINE_ZIP_SHA256 — kein zweiter, eingebetteter Wert. Weicht
+# der aus dem Asset berechnete sha256 vom uebergebenen ab, bricht der Lauf VOR
+# jedem Schreibzugriff ab (SHA256Mismatch in internal/fetch), ein bestehender
+# Baum bleibt unveraendert.
+#
+# MIT Prerequisite auf host-bin, aus demselben Grund wie bei archive-welle:
+# dieses Ziel BENUTZT den Traeger, es misst ihn nicht.
+vendor-baseline: host-bin ## Eigenen vendored Baum aus dem verifizierten Release-Asset anlegen — NICHT in gates
+	@$(HOST_BIN) vendor-baseline "$(BASELINE_TAG)" "$(BASELINE_ZIP_SHA256)"
 
 # ORDNUNGSKANTE: die Checks hängen AN record-gates, sie stehen nicht daneben. `make`
 # baut ein Ziel, dessen Voraussetzung gefallen ist, auch unter `-k` nicht — über einem

@@ -39,6 +39,7 @@ Verwendung:
   ai-harness-init span-emit
   ai-harness-init span-report [<ablageort>]
   ai-harness-init archive-welle [--vorschau] <welle-id>
+  ai-harness-init vendor-baseline <tag> <sha256>
 
 Der Init-Lauf ist IDEMPOTENT (ADR-0007): ein zweiter Lauf ist Exit 0 — tool-eigene
 Infrastruktur wird kanonisch neu geschrieben (heilt Drift), adopter-gefuellte Dateien
@@ -79,6 +80,13 @@ Subkommando archive-welle [--vorschau] <welle-id>:
   (reiner Move, dann Inhalt) und bricht an jeder Sperre ab, bevor er etwas
   anfasst. Mit --vorschau wird nur gesagt, was der Lauf taete.
 
+Subkommando vendor-baseline <tag> <sha256>:
+  Legt den vendored Baum DIESES Repos (.harness/baseline/<tag>/) aus dem
+  verifizierten Release-Asset an — sha256 gegen <sha256> pruefen, regelwerk/
+  UND templates/ entpacken, SHA256SUMS schreiben. KONVERGENT (ADR-0007): ein
+  vorhandenes <tag>-Verzeichnis wird ersetzt, kein zweites legt sich daneben.
+  Bricht der sha256-Pin, bleibt ein bestehender Baum unveraendert.
+
 Umgebung (bewusster Opt-in-Override der gepinnten Werte — LH-QA-02):
   COURSE_TAG        Kurs-Version für die Baseline (Regelwerk + Templates)
   BASELINE_SHA256   erwarteter sha256 des Baseline-Assets
@@ -108,13 +116,14 @@ type sources struct {
 // Prozess-Exit, ohne CWD-Mutation und ohne Netz testbar sind. Exit-Codes:
 // 0 = Erfolg, 2 = Aufruf-/Argument-Fehler (Usage), 1 = Emit-Fehler zur Laufzeit.
 //
-// GRENZE: drei Unterkommandos erreichen diese Funktion nicht — die zwei der
-// ERFASSUNG (`span-emit`, `span-report`) und `archive-welle`; main() zweigt sie
-// vorher ab. Fuer den Schreiber ist die Stelle tragend (seine Klemme muss den
-// ganzen Prozess ueberdecken), fuer die zwei anderen ist sie es nicht: sie loesen
-// ihre Repo-Wurzel selbst auf, statt das targetDir dieser Funktion zu nehmen. Wer
-// run() direkt mit einem ihrer Namen ruft, bekommt Exit 2 — hier ist der Name ein
-// Positionsargument, und der Init-Pfad nimmt keines.
+// GRENZE: vier Unterkommandos erreichen diese Funktion nicht — die zwei der
+// ERFASSUNG (`span-emit`, `span-report`), `archive-welle` und
+// `vendor-baseline`; main() zweigt sie vorher ab. Fuer den Schreiber ist die
+// Stelle tragend (seine Klemme muss den ganzen Prozess ueberdecken), fuer die
+// drei anderen ist sie es nicht: sie loesen ihre Repo-Wurzel selbst auf, statt
+// das targetDir dieser Funktion zu nehmen. Wer run() direkt mit einem ihrer
+// Namen ruft, bekommt Exit 2 — hier ist der Name ein Positionsargument, und
+// der Init-Pfad nimmt keines.
 func run(args []string, targetDir string, src sources, stdout, stderr io.Writer) int {
 	// Subkommando-Dispatch (slice-037): `add-lang <sprache> <pfad>` ist der wiederholbare
 	// Mono-Repo-Pfad; alles andere ist der Default-Init. Die Unterscheidung steht VOR dem
@@ -163,7 +172,7 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 	//
 	// ABGRENZUNG: der Name wird nicht auf Aehnlichkeit zu einem bekannten
 	// geprueft und keiner erraten. Die Meldung nennt das Token und druckt die
-	// Usage, die jedes Unterkommando fuehrt (TestUsageNenntAlleDreiUnterkommandos).
+	// Usage, die jedes Unterkommando fuehrt (TestUsageNenntAlleVierUnterkommandos).
 	if fs.NArg() > 0 {
 		fmt.Fprintf(stderr, "Fehler: unbekanntes Argument %q — der Init-Pfad nimmt nur Flags; Unterkommandos siehe unten\n", fs.Arg(0))
 		fmt.Fprint(stderr, usage)
@@ -538,10 +547,12 @@ func main() {
 	// span-check laeuft aus einem lesbaren Arbeitsverzeichnis, in dem os.Getwd() nie
 	// scheitert. Ein Zahn dafuer braeuchte einen Lauf des gebauten Binaers gegen ein
 	// GELOESCHTES Arbeitsverzeichnis — Kandidat, kein Bestand.
-	// Der dritte Zweig — `archive-welle` (ADR-0033 Festlegung 1) — steht in
-	// demselben switch, aber NICHT aus demselben Grund: er traegt keine Klemme, und
-	// seine Position ist frei. Er steht hier, weil er wie `span-report` seine
-	// Repo-Wurzel selbst aufloest und das targetDir von run() nicht braucht.
+	// Der dritte und der vierte Zweig — `archive-welle` (ADR-0033 Festlegung 1)
+	// und `vendor-baseline` — stehen im selben switch, aber NICHT aus demselben
+	// Grund: sie tragen keine Klemme, und ihre Position ist frei. Sie stehen
+	// hier, weil sie wie `span-report` ihre Repo-Wurzel selbst aufloesen und
+	// das targetDir von run() nicht brauchen — `vendor-baseline` legt den
+	// eigenen vendored Baum dieses Repos an, nicht den eines Zielrepos.
 	if len(os.Args) > 1 {
 		switch os.Args[1] {
 		case "span-emit":
@@ -551,6 +562,8 @@ func main() {
 			os.Exit(spanReport(os.Args[2:], os.Stdout, os.Stderr))
 		case "archive-welle":
 			os.Exit(archiveWelle(os.Args[2:], os.Stdout, os.Stderr))
+		case "vendor-baseline":
+			os.Exit(vendorBaseline(os.Args[2:], os.Stdout, os.Stderr))
 		}
 	}
 
