@@ -28,7 +28,7 @@ berührt)
 **Berührte Spec-Stellen:** `—`. Der Prüfbereich eines Gate-Moduls ist in
 [`spec/spezifikation.md`](../../../../spec/spezifikation.md) nicht festgelegt.
 
-**Verantwortlich:** — (bis zur Priorisierung; Implementer-Arbeit).
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-07.
 
