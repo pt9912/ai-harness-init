@@ -1,8 +1,16 @@
 # CO-006: Der Tag-Tausch des vendored Baums macht 36 Adressen in einfrierenden Artefakten tot
 
-**Status:** Aktiv.
+**Status:** **Aufgelöst** — der Modul-7-Übergang ist vollzogen, und der Ort sagt es: diese Datei
+liegt in `done/`, der Index führt sie unter *Aufgelöst*. Beide Hälften des Auflösungs-Triggers sind
+gemessen: `make docs-check` meldet `0 Befund(e)`, und keine der 16 Dateien, die die 36 Adressen
+tragen, ist seit der Anlage angefasst worden. Die Verifikations-Checkliste unten ist vollständig
+gehakt.
 
-**Datum angelegt:** 2026-09-08. **Letzte Prüfung:** 2026-09-08.
+**Datum angelegt:** 2026-09-08. **Letzte Prüfung:** 2026-09-08 (Auflösung durch
+[slice-197](../planning/done/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md): drei
+`ignore-refs`-Einträge in Glob-Form mit dem baum-weiten `refs`-Wert `.harness/baseline/**`, die
+Breiten-Deklaration an allen sieben Einträgen und der neue Maßstab des Wächters — `genau N` statt
+`höchstens 1`).
 
 **Betroffenes Gate:** `make docs-check` — und über die Prerequisite-Kette `record-gates` damit
 `make gates`. Von den sieben Modulen der [`.d-check.yml`](../../../.d-check.yml)
@@ -120,18 +128,38 @@ Festlegung 1 samt ihrer Breiten-Deklaration nach Festlegung 2.
 
 ## Verifikation (nach Auflösung)
 
-- [ ] Die drei `ignore-refs`-Einträge liegen in [`.d-check.yml`](../../../.d-check.yml), je mit
-      der am Lauf-Tag gemessenen Breiten-Deklaration.
-- [ ] `make docs-check` meldet `0 Befund(e)`, und die geprüfte Datei-Zahl ist **nicht** gesunken —
-      ein Referenz-Ventil nimmt Referenzen aus, keine Dateien.
-- [ ] Kein Artefakt in `docs/reviews/**`, `docs/plan/planning/done/**` oder
-      `docs/plan/planning/observations/**` ist gegenüber dem Anlage-Stand geändert.
-- [ ] `make gates` grün ohne Ausnahme.
-- [ ] Datei wird nach `docs/plan/carveouts/done/` bewegt (reiner `git mv`).
-- [ ] `slice-197` liegt in `done/`.
+- [x] Die drei `ignore-refs`-Einträge liegen in [`.d-check.yml`](../../../.d-check.yml), je mit
+      der am Lauf-Tag gemessenen Breiten-Deklaration. Alle drei tragen den `in:`-Wert und den
+      `refs`-Wert aus [ADR-0039](../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md)
+      Festlegung 1 wörtlich, die Deklarationen lauten `33 · 3 · 2`, und
+      `grep -c '^  - in: ' .d-check.yml` → **7** belegt Festlegung 3: kein vierter Baum.
+- [x] `make docs-check` meldet `0 Befund(e)`, und die geprüfte Datei-Zahl ist **nicht** gesunken —
+      ein Referenz-Ventil nimmt Referenzen aus, keine Dateien. Belegt durch **zwei Läufe über
+      derselben Kopie** außerhalb des Arbeitsbaums, gegen den in
+      [`d-check.mk`](../../../d-check.mk) gepinnten Digest: mit den drei Einträgen
+      `0 Befund(e)`, ohne sie `36 Befund(e)` — bei **identischer** Datei-Zahl in beiden Läufen.
+      Der Vergleich läuft über demselben Baum und nicht gegen eine notierte Zahl; die 36 sind
+      dieselben, die dieser Carveout deckt.
+- [x] Kein Artefakt in `docs/reviews/**`, `docs/plan/planning/done/**` oder
+      `docs/plan/planning/observations/**` ist gegenüber dem Anlage-Stand geändert. **Gemessen
+      über die Menge, die der Trigger meint** — die Dateien, die die Adressen *tragen*, nicht die
+      drei Bäume als Ganze: `git diff --stat` über die 16 Träger vom Anlage-Commit bis heute ist
+      leer. Die Bäume selbst haben legitim Dateien **aufgenommen** (die Reports dieses Slice, den
+      Slice-Plan von `slice-193` und die Register-Belege), und eine Datei ist vom Verweis-Nachzug
+      eines Lifecycle-Moves geändert — keine davon trägt eine der 36 Adressen.
+- [x] `make gates` grün ohne Ausnahme. Gefahren über dem Baum dieser Auflösung, EXIT **0**; es ist
+      keine Ausnahme konfiguriert, die zurückzunehmen wäre (§Geltungs-Konfiguration).
+- [x] Datei wird nach `docs/plan/carveouts/done/` bewegt (reiner `git mv`) — der Move als eigener
+      Commit, der Verweis-Nachzug als zweiter ([`AGENTS.md`](../../../AGENTS.md) §3.3).
+- [x] `slice-197` liegt in `done/`. Sein Zustand ist sein Verzeichnis, und kein DoD-Punkt steht
+      mehr offen
+      (`grep -c '^- \[ \]' docs/plan/planning/done/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md`
+      → **0**).
 
 ## Geschichte
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-08 | Angelegt | [slice-193](../planning/done/slice-193-baum-tausch-v650-pins-ziehen.md) §7, Ausgang des zweiten Risikos aus §6 |
+| 2026-09-08 | **Aufgelöst.** [ADR-0039](../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) autorisiert das Referenz-Ventil in Glob-Form, [`.d-check.yml`](../../../.d-check.yml) trägt die drei Einträge mit ihrer Breiten-Deklaration, und `test/ignore-refs-restbreite.bats` misst sie in `make gates` gegen `genau N` statt gegen die Konstante 1. Zwei Läufe über derselben Kopie belegen den Trigger: mit den Einträgen `0 Befund(e)`, ohne sie `36 Befund(e)`, bei identischer Datei-Zahl — kein geschrumpfter Prüfbereich. Die 16 Träger-Dateien sind seit der Anlage unverändert | [slice-197](../planning/done/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md) |
+| 2026-09-08 | **Vollzogen**: `git mv` nach `done/` als eigener Commit, der Verweis-Nachzug als zweiter, Index-Zeile unter *Aufgelöst*. Status-Kopf, Checkliste und Index-Zelle sagen seither dasselbe wie der Ort | [slice-197](../planning/done/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md) |

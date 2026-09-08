@@ -159,7 +159,8 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [x] `make gates` grün. Gemessen in dieser Closure über dem Baum, der sie trägt: EXIT 0, und
       `make docs-check` meldet `0 Befund(e)` — der Nachher-Wert zu den `36 Befund(e)` aus §1, mit
       demselben Kommando erhoben. Tragend ist die Null; die daneben stehende Datei-Zahl (Stichtag
-      2026-09-08: 959) ist **kein Erwartungswert** und wandert mit dem Bestand.
+      2026-09-08: 962) ist **kein Erwartungswert** und wandert mit dem Bestand — sie ist zwischen
+      zwei Läufen dieser Closure selbst gewachsen, weil die Register-Belege Dateien sind.
 - [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8). Der Review-Report vom
@@ -177,7 +178,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       `codepaths` ihn dann als fehlendes Ziel meldet — dieselbe Stelle, die
       [slice-193](../done/slice-193-baum-tausch-v650-pins-ziehen.md) §6 als offenen Punkt
       führt.
-- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. Sechs Belege, ein neuer Eintrag — §7.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. Sieben Belege, zwei neue Einträge — §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen). Fünf von fünf, je genau einer.
 - [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). **Dieses Repo führt Wellen-Betrieb; der Träger ist benannt, und zwei Befunde für ihn liegen vor:** die zweite Hälfte der Register-Paarung (c) ist unverändert rot (zwei Einträge mit leerem `evidence/`), und vier Einträge stehen bei 3× oder darüber ohne Ausgang (§7, letzter Punkt) — beides Vorbestand, keiner von diesem Slice erzeugt.
 
@@ -288,9 +289,12 @@ dasteht.
   Zirkularität vor der Übernahme aufgelöst, indem es das rote Gate an einen Trigger band statt an
   dessen Herstellung; damit konnte slice-193 schließen, **bevor** dieser Slice beansprucht wurde.
   Die zwei reinen Move-Commits stehen in genau dieser Reihenfolge auf dem Hauptzweig, und zwischen
-  ihnen trägt `in-progress/` keinen zweiten `slice-*.md` —
-  `git log --oneline --reverse --diff-filter=A --format='%h %s' -- docs/plan/planning/done/slice-193-baum-tausch-v650-pins-ziehen.md docs/plan/planning/done/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md`
-  nennt zuerst den Abgang von slice-193, dann den Zugang dieses Slice. Die offen gelassene
+  ihnen trägt `in-progress/` keinen zweiten `slice-*.md` — `git log --oneline --reverse 6a328c4b..281a1f79`
+  nennt als ersten den Abgang von slice-193 aus `in-progress/` und als letzten den Zugang dieses
+  Slice. **Das Kommando trägt bewusst kein Pfad-Literal:** Ein Pfad, der einen *vergangenen*
+  Aufenthalt bezeichnet, wird vom Verweis-Nachzug des Closure-Moves auf den *heutigen* umgeschrieben
+  und misst danach etwas anderes, ohne zu scheitern. Die zwei Kennungen sind Commit-Hashes und
+  wandern nicht. Die offen gelassene
   Lifecycle-Frage — ob zwei gleichzeitig beanspruchte Slices desselben Rolleninhabers zulässig
   wären — hat damit keinen Gegenstand mehr und wird nicht stellvertretend beantwortet.
 - **Die Deklaration für `docs/reviews/**` veraltet durch den Review dieses Slice selbst.** Der
@@ -429,18 +433,23 @@ Backticks).
   [`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) §Fitness Function für
   sich benennt, und sie ist **gezählt, nicht verkörpert** — der Eintrag `liegt in` entfällt darum
   ersatzlos.
-- **Beobachtungs-Register (`../observations/`):** **sechs** Belege aus diesem Vorgang, je genau
+- **Beobachtungs-Register (`../observations/`):** **sieben** Belege aus diesem Vorgang, je genau
   eine `slice-197.md` — ein Vorgang zählt einmal, auch wo ein Fund mehrfach auftrat. Fünf gehen in
   bestehende Einträge: `verweis-nachzug-schreibt-in-eingefrorenes-artefakt` (→ **3×**) ·
   `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch` (→ **4×**) ·
   `messung-nimmt-lebendes-register-in-den-eingefrorenen-ausschluss` (→ 2×) ·
   `ausnahmeliste-nur-auf-form-geprueft` (→ 2×) ·
-  `gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse` (→ 2×). **Ein Eintrag ist neu** und trägt
-  zwei Belege, weil sein Erstauftreten in einem anderen abgeschlossenen Vorgang liegt:
-  `config-kommentar-nennt-anderen-bereich-als-der-eintrag` mit `evidence/slice-177.md` und
-  `evidence/slice-197.md` (→ 2×) — die wiederkehrende Finding-Klasse des Reviews dieses Slice,
-  deren erstes Auftreten der Report vom 2026-09-05 zu `slice-177` trägt. Zähler sind Dateizahlen
-  und stehen in keinem Feld
+  `gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse` (→ 2×). **Zwei Einträge sind neu.**
+  `config-kommentar-nennt-anderen-bereich-als-der-eintrag` trägt zwei Belege, weil sein
+  Erstauftreten in einem anderen abgeschlossenen Vorgang liegt — `evidence/slice-177.md` und
+  `evidence/slice-197.md` (→ 2×), die wiederkehrende Finding-Klasse des Reviews dieses Slice.
+  `verweis-nachzug-ersetzt-eine-historisch-richtige-adresse` (→ 1×) entstand **in** der Closure:
+  Der Nachzug des Closure-Moves schrieb die Pathspec einer Mess-Aussage über die Vergangenheit von
+  `in-progress/` auf `done/` um, das Kommando lief weiter und maß etwas anderes. Er ist **nicht**
+  in `verweis-nachzug-bricht-tree-operand` einsortiert: Deren `observation.md` ist ab Anlage
+  unveränderlich und nennt die Form `<sha>:<pfad>`, in der derselbe Nachzug laut scheitert — ein
+  Beleg dort machte den Eintrags-Text enger als seine Belege, genau die Klasse eine Ebene höher.
+  Zähler sind Dateizahlen und stehen in keinem Feld
   (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`).
 
   **Ein Eintrag überschreitet mit diesem Slice die Schwelle** —
