@@ -132,13 +132,13 @@ Ursache aus, `roots` als Präfix-Zeichenkette ist es. Die Diagnose des Slice ist
 
 - `kategorie`: HIGH
 - `quelle`: [`AGENTS.md`](../../AGENTS.md) §3.10 (Hard Rule)
-- `pfad`: `docs/plan/planning/in-progress/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md`
+- `pfad`: `docs/plan/planning/done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md`
   §2, Commit `f5189bba`
 - `befund`: §3.10 zählt *„die DoD-Häkchen"* ausdrücklich zum Abschluss und bindet ihn an einen
   eigenen Commit, der ausschließlich Closure-Artefakte berührt und die Rolle nennt. Gemessen:
 
   ```sh
-  F=docs/plan/planning/in-progress/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md
+  F=docs/plan/planning/done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md
   git show f5189bba -- $F | grep -c '^+- \[x\]'   # 6  neu gesetzte Haekchen
   git show f5189bba -- $F | grep -c '^-- \[ \]'   # 9  ersetzte DoD-Zeilen
   git show f5189bba:$F   | grep -c '^- \['        # 11 DoD-Zeilen gesamt
@@ -270,7 +270,7 @@ Ursache aus, `roots` als Präfix-Zeichenkette ist es. Die Diagnose des Slice ist
   aus `done/` nicht:
 
   ```sh
-  F=docs/plan/planning/in-progress/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md
+  F=docs/plan/planning/done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md
   grep -ohE '\]\(([^)#]+)(#[^)]*)?\)' $F | sed -E 's/^\]\(//; s/\)$//; s/#.*$//' | sort -u \
    | while read -r t; do case "$t" in http*|"") continue;; esac
        a=$(realpath -m --relative-to=. "docs/plan/planning/in-progress/$t")

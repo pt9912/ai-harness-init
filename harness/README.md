@@ -81,7 +81,7 @@ führt die Lücke als offene Beobachtung, mit einer Drift-Log-Zeile in
 [`roadmap.md`](../docs/plan/planning/in-progress/roadmap.md) daneben.
 
 **Was `codepaths` an toten Pfaden in den vendored Baum nicht sieht**
-([slice-201](../docs/plan/planning/in-progress/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)):
+([slice-201](../docs/plan/planning/done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)):
 `codepaths.roots: [spec, docs, harness]` ist eine Liste von Wurzel-**Präfixen** — ein
 Inline-Code-Pfad wird nur existenzgeprüft, wenn er mit einem dieser drei Strings oder mit
 `./`/`../` beginnt. Ein Pfad unter `.harness/baseline/` beginnt mit `.harness`, nicht mit
@@ -182,7 +182,7 @@ Slice-Pläne, flache Welle-Pläne, die laufende Roadmap, eine nach
 [ADR-0028](../docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
 Reviewer-eigene Skill-Datei), und ein Nachzug in einem einzelnen Implementations-Lauf griffe über
 mehrere Rollen-Grenzen hinweg — genau der Fall, den
-[slice-201](../docs/plan/planning/in-progress/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)
+[slice-201](../docs/plan/planning/done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)
 §1 mit *„findet sie viele, ist das ein eigener Vorgang"* für den Gesamtbestand vorwegnimmt, hier
 schon bei zwölf Fundstellen, weil die Eigentums-Grenze und nicht die Stückzahl den Ausschlag gibt.
 
