@@ -300,7 +300,7 @@ trägt nicht — dieser Punkt ist geprüft und als MEDIUM-4 beantwortet.
 
 - `kategorie`: INFO
 - `quelle`: `v6.5.0` · `regelwerk/modul-06-roadmap.md` §Wann Arbeit eine Welle braucht
-- `pfad`: `docs/plan/planning/in-progress/slice-193-baum-tausch-v650-pins-ziehen.md:8`,
+- `pfad`: `docs/plan/planning/done/slice-193-baum-tausch-v650-pins-ziehen.md:8`,
   `:250`, `:530`–`:531`
 - `befund`: Der Kopf sagt *„**Welle:** ohne Welle"*, DoD-Punkt 10 sagt *„im Repo **ohne**
   Wellen-Betrieb hier geprüft"*, und §7 sagt *„dieses Repo führt Wellen-Betrieb; sie prüft die

@@ -14,7 +14,7 @@ am Stichtag unten einzeln nachgefahren und grün.
 `docs/plan/planning/done/**` und `docs/plan/planning/observations/**`, und darin ausschließlich
 Markdown-Links, deren Ziel in `.harness/baseline/**` liegt. Lebende Artefakte liegen außerhalb:
 Der Adress-Nachzug hat sie gezogen, und was dort noch den abgelösten Tag nennt, sind die zwei in
-[slice-193](../planning/in-progress/slice-193-baum-tausch-v650-pins-ziehen.md) DoD 2 deklarierten
+[slice-193](../planning/done/slice-193-baum-tausch-v650-pins-ziehen.md) DoD 2 deklarierten
 Nicht-Zieh-Klassen — Tree-Operand und datierte Mess-Aussage nach
 [`MR-033`](../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist).
 
@@ -134,4 +134,4 @@ Festlegung 1 samt ihrer Breiten-Deklaration nach Festlegung 2.
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-09-08 | Angelegt | [slice-193](../planning/in-progress/slice-193-baum-tausch-v650-pins-ziehen.md) §7, Ausgang des zweiten Risikos aus §6 |
+| 2026-09-08 | Angelegt | [slice-193](../planning/done/slice-193-baum-tausch-v650-pins-ziehen.md) §7, Ausgang des zweiten Risikos aus §6 |

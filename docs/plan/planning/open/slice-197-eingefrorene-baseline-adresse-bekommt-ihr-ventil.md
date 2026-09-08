@@ -95,7 +95,7 @@ setzt die Entscheidung um; er trifft sie nicht.
   [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Folgepflicht 2 und
   bleibt eine benannte Lücke — auch nach diesem Slice. Sie hier mitzunehmen hieße, den Maßstab und
   seine Achse in einem Zug zu ändern, und keine der zwei Änderungen wäre danach einzeln belegt.
-- **Der Closure-Abschluss von [slice-193](../in-progress/slice-193-baum-tausch-v650-pins-ziehen.md).**
+- **Der Closure-Abschluss von [slice-193](../done/slice-193-baum-tausch-v650-pins-ziehen.md).**
   Dieser Slice macht ihn *möglich* (dessen DoD-Punkt `make gates` grün hängt an denselben 36
   Befunden), er vollzieht ihn nicht: Der Abschluss ist Planner-Arbeit in eigenem Kontext
   ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
@@ -168,7 +168,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       (`ls docs/plan/planning/reconciliation.md` → nicht vorhanden). Der Pfad steht als
       **Kommando-Operand**, weil die vendored Vorlage ihn als blanken Inline-Code führt und
       `codepaths` ihn dann als fehlendes Ziel meldet — dieselbe Stelle, die
-      [slice-193](../in-progress/slice-193-baum-tausch-v650-pins-ziehen.md) §6 als offenen Punkt
+      [slice-193](../done/slice-193-baum-tausch-v650-pins-ziehen.md) §6 als offenen Punkt
       führt.
 - [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
@@ -216,7 +216,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
    die Bedingung nennt und nicht ihren heutigen Wert.
 2. **Das WIP-Limit ist frei.** Es zählt **pro Rolleninhaber**, nicht pro Rolle (Baseline-Regelwerk
    `modul-08-agentenrollen.md` §Rollen-Regeln), und
-   [slice-193](../in-progress/slice-193-baum-tausch-v650-pins-ziehen.md) belegt es heute: seine
+   [slice-193](../done/slice-193-baum-tausch-v650-pins-ziehen.md) belegt es heute: seine
    Arbeit liegt vor, sein Abschluss steht aus. **Der Ausweg ist nicht, ihn zu übergehen, und auch
    nicht, auf sein `done/` zu warten** — das wäre zirkulär, denn sein DoD-Punkt `make gates` grün
    hängt an eben den 36 Befunden, die dieser Slice räumt (§6, erstes Risiko).
@@ -269,7 +269,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Das WIP-Limit ist belegt, und der naheliegende Start-Trigger wäre zirkulär.**
-  [slice-193](../in-progress/slice-193-baum-tausch-v650-pins-ziehen.md) liegt in `in-progress/`;
+  [slice-193](../done/slice-193-baum-tausch-v650-pins-ziehen.md) liegt in `in-progress/`;
   sein DoD-Punkt `make gates` grün und sein Closure-Kriterium 1 hängen an denselben 36 Befunden,
   die dieser Slice räumt. *„slice-193 liegt in `done/`"* als Start-Bedingung wäre damit eine
   Bedingung, die dieser Slice selbst herstellen muss — beobachtbar, aber unerfüllbar. Die

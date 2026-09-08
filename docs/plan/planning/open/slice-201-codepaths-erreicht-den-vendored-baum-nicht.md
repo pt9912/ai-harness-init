@@ -59,7 +59,7 @@ Konfiguration, keine Messung** — Liefer-Punkt 1 misst sie, statt sie zu übern
 **Warum das teuer war.** Tote Baseline-Pfade in lebenden Artefakten sind in dieser Form dauerhaft
 gate-unsichtbar; beim Sprung auf `v6.5.0` standen so sechs Falschaussagen in
 [`harness/conventions.md`](../../../../harness/conventions.md), ohne dass ein Gate sie sah.
-[slice-193](../in-progress/slice-193-baum-tausch-v650-pins-ziehen.md) DoD 2 nennt dieselbe Grenze
+[slice-193](../done/slice-193-baum-tausch-v650-pins-ziehen.md) DoD 2 nennt dieselbe Grenze
 vorab — *„Ein `.harness/baseline/…` in Inline-Code ohne Link-Klammer bleibt grün und ist als Pfad
 in den Arbeitsbaum trotzdem tot"* — und behilft sich mit einem `git grep` als Beleg. Ein Beleg, den
 jeder Lauf von Hand führen muss, ist kein Sensor.
