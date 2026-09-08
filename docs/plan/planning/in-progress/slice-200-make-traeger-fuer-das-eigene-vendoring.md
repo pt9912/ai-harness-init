@@ -90,27 +90,36 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Ein `make`-Ziel legt den vendored Baum aus dem verifizierten Asset an**, gefahren über den
+- [x] **Ein `make`-Ziel legt den vendored Baum aus dem verifizierten Asset an**, gefahren über den
       Träger aus [`ADR-0003`](../../adr/0003-go-native-binaries.md) — kein Host-Werkzeug in der
       Befehlsposition ([`AGENTS.md`](../../../../AGENTS.md) §3.9). Es liest den Tag und den
       `sha256` aus den **kanonischen** Makefile-Variablen `BASELINE_TAG`/`BASELINE_ZIP_SHA256`
       (`grep -nE '^BASELINE_(TAG|ZIP_SHA256)' Makefile`), nicht aus einem zweiten Wert, und bricht
       bei Abweichung ab, statt zu schreiben. Nach dem Lauf meldet `make baseline-verify` `OK` und
-      `ls -d .harness/baseline/v*/ | wc -l` gibt `1`.
-- [ ] **Der Lauf ist über denselben Tag wiederholbar und liefert byte-gleiche Bäume** —
+      `ls -d .harness/baseline/v*/ | wc -l` gibt `1`. Beide Prüf-Rollen haben den Lauf einzeln
+      nachgefahren; die Verifikation nennt Rezept, Argumente und beide Nachher-Werte.
+- [x] **Der Lauf ist über denselben Tag wiederholbar und liefert byte-gleiche Bäume** —
       [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), gemessen als
       Fingerabdruck des Baums vor und nach einem zweiten Lauf, nicht zugesagt. **Und ein Lauf mit
       falschem `sha256` färbt rot:** Das ist das rot zu sehende Gegenbeispiel
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6) — ohne es ist nicht belegt, dass die Prüfung
       überhaupt greift, sondern nur, dass der Happy Path läuft. Der Lauf-Bericht nennt die gelesene
-      Fehlermeldung; ein Abbruch lässt den vorhandenen Baum **unverändert**.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+      Fehlermeldung; ein Abbruch lässt den vorhandenen Baum **unverändert**. Beide Hälften sind
+      unabhängig zweimal gefahren — derselbe Baum-Fingerabdruck vor und nach dem Lauf, und die
+      gelesene `SHA256Mismatch`-Meldung am Produkt-Binär **und** über das `make`-Ziel.
+- [x] `make gates` grün. In dieser Closure über dem Baum gefahren, der sie trägt: EXIT 0.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
-      Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update für <Schnittstelle X> falls öffentlicher Vertrag berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register fortgeschrieben, **falls dieser Slice einen Inventur-Fund auflöst** —
+      Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8). Der Review-Report vom
+      2026-09-08 (2 HIGH / 1 MEDIUM / 2 LOW / 3 INFO, Verdikt *blockiert*) und der
+      Verifikations-Report desselben Tages liegen vor; beide HIGH und das MEDIUM sind behoben, kein
+      Befund blockiert die Closure.
+- [x] Doku-Update für <Schnittstelle X> falls öffentlicher Vertrag berührt. Berührt ist das neue
+      `make`-Ziel selbst; seine Beschreibung liegt im `Makefile`-Kopfkommentar und in
+      [`harness/README.md`](../../../../harness/README.md). **`AGENTS.md` §4 bleibt unberührt** —
+      dazu §7, zweiter Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register fortgeschrieben, **falls dieser Slice einen Inventur-Fund auflöst** —
       Zeile mit Datum und auflösendem Artefakt nach *Aufgelöste Einträge* verschoben. **Entfällt
       hier:** Repos ohne Brownfield-Bootstrap haben die Datei nicht, und dieses führt sie nicht
       (`ls docs/plan/planning/reconciliation.md` → nicht vorhanden). Der Pfad steht als
@@ -118,9 +127,9 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       `codepaths` ihn dann als fehlendes Ziel meldet — dieselbe Stelle, die
       [slice-193](../done/slice-193-baum-tausch-v650-pins-ziehen.md) §6 als offenen Punkt
       führt.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. Sechs Belege, drei neue Einträge — §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen). Vier von vier, je genau einer.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). **Dieses Repo führt Wellen-Betrieb; der Träger ist benannt, und die Messung liegt ihm vor** — §7, letzter Punkt.
 
 ## 3. Plan (vor Code)
 
@@ -194,7 +203,16 @@ dasteht.
   stammt, belegt es rückwirkend nicht. Wer nach diesem Slice sagt, *Asset → Baum* sei bewacht,
   behauptet mehr als der Slice liefert
   ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). —
-  **Ausgang:** offen; die Closure setzt ihn.
+  **Ausgang: weiter offen → Beobachtungs-Register**, neuer Eintrag
+  [`BEO-ALL/traeger-fuer-den-vorgang-belegt-den-bestand-nicht`](../observations/BEO-ALL/traeger-fuer-den-vorgang-belegt-den-bestand-nicht/observation.md)
+  mit `evidence/slice-200.md` (1×). **Nicht *entfallen*, und das ist gemessen:** In den Artefakten
+  dieses Slice steht die falsche Aussage nirgends —
+  [`harness/conventions.md`](../../../../harness/conventions.md) §Adoptierte Konventions-Quellen
+  trägt unverändert *„Asset → vendored Baum hält nichts"*
+  (`grep -c 'Asset → vendored Baum\*\* hält nichts' harness/conventions.md` → **1**, kein
+  Erwartungswert), und [`harness/README.md`](../../../../harness/README.md) ordnet das Ziel als
+  *kein Gate* ein. Eintreten kann sie trotzdem in jedem späteren Text, und kein Sensor hält die
+  zwei Ebenen auseinander; *entfallen* verlangt, dass sie nicht mehr eintreten kann.
 - **Der Ort der Ziel-Beschreibung ist offen.** Die Ziel-Fassung `v6.5.0` verlangt für ein Gate,
   dessen Vertrag mehr als einen Satz braucht, eine eigene Datei unter `harness/sensors/<target>.md`
   — und das Verzeichnis fehlt (`ls -d harness/sensors 2>/dev/null | wc -l` → 0). Solange es fehlt,
@@ -202,13 +220,29 @@ dasteht.
   `codepath-missing`). Der Slice legt es **nicht** an — das ist die Sensors-Umstellung, ein eigener
   Posten aus
   [slice-193](../done/slice-193-baum-tausch-v650-pins-ziehen.md) §6 §Offene Punkte —, und
-  schreibt seine Beschreibung darum in die vorhandene Tabelle. — **Ausgang:** offen; die Closure
-  setzt ihn.
+  schreibt seine Beschreibung darum in die vorhandene Tabelle. — **Ausgang: entfallen**, mit
+  Begründung: Der Slice nennt das noch fehlende Sensors-Verzeichnis an keiner Stelle,
+  `make docs-check` meldet `0 Befund(e)`, und es fehlt unverändert
+  (`ls -d harness/sensors 2>/dev/null | wc -l` → **0**; der Pfad steht hier als
+  **Kommando-Operand**, weil `codepaths` ihn als blanken Inline-Code sonst als fehlendes Ziel
+  meldet — dieselbe Falle wie im Reconciliation-Punkt der DoD). Die Beschreibung liegt in
+  [`harness/README.md`](../../../../harness/README.md), und zwar als Absatz statt als Tabellen-Zeile
+  — der Form der zwei herstellenden Nachbarn folgend, weil die einzige Tabelle dort ausschließlich
+  Gates führt. **Der Ort war damit nie offen, sondern falsch angenommen**; diese Hälfte ist keine
+  Risiko-Realisierung, sondern ein Plan-Defekt und steht als zweiter Lerneintrag in §7. Die
+  Sensors-Umstellung selbst bleibt der Posten in
+  [slice-193](../done/slice-193-baum-tausch-v650-pins-ziehen.md) §Offene Punkte, unberührt von
+  diesem Ausgang.
 - **Ein neuer Aufrufer-Name ist eine Kopplung, die still brechen kann.** Ein falscher **Dateipfad**
   in der Rezept-Zeile fällt laut aus, ein falscher **Unterkommando-Name** geht als Zeichenkette
   durch — der Träger entscheidet erst drinnen, was sie bedeutet. `test/unterkommando-kopplung.bats`
-  deckt genau das, und der Slice hat sie zu **nutzen**, nicht zu umgehen. — **Ausgang:** offen; die
-  Closure setzt ihn.
+  deckt genau das, und der Slice hat sie zu **nutzen**, nicht zu umgehen. — **Ausgang: entfallen**,
+  mit Begründung: Der Name ist genutzt, nicht umgangen, und die Kopplung ist in **beide**
+  Richtungen gesehen worden — grün über dem eingereichten Baum, rot über einer Kopie außerhalb des
+  Arbeitsbaums, aus der `case "vendor-baseline":` entfernt ist (`not ok 230`,
+  [`test/unterkommando-kopplung.bats`](../../../../test/unterkommando-kopplung.bats)). Ein stiller
+  Bruch ist damit für **diesen** Namen ausgeschlossen: er hat einen `case` am Zeilenanfang und
+  einen Sensor, der seine Abwesenheit rot färbt.
 - **Die Fähigkeit war da und wurde nicht gefunden — das ist die eigentliche Klasse.** Der Befund
   ist nicht *„es fehlt ein Ziel"*, sondern *„ein Lauf griff zur Handarbeit, obwohl das Repo den Weg
   führt"*. Ob daraus eine eigene Beobachtung wird, ist ein Urteil und gehört in die Closure; der
@@ -216,8 +250,16 @@ dasteht.
   [`BEO-ALL/aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand`](../observations/BEO-ALL/aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand/observation.md)
   — **und er trägt sie nur zur Hälfte**: Er spricht über eine Aussage zum *gepinnten Werkzeug*,
   hier ging es um eine Fähigkeit im *eigenen* Code. Die Bezeichnung ist darum **zitiert** und nicht
-  umformuliert; wer sie umschreibt, teilt die Beobachtung in zwei Pfade. — **Ausgang:** offen; die
-  Closure setzt ihn.
+  umformuliert; wer sie umschreibt, teilt die Beobachtung in zwei Pfade. — **Ausgang: weiter offen
+  → Beobachtungs-Register**, neuer Eintrag
+  [`BEO-ALL/vorhandene-faehigkeit-ohne-traeger-wird-von-hand-nachgebaut`](../observations/BEO-ALL/vorhandene-faehigkeit-ohne-traeger-wird-von-hand-nachgebaut/observation.md).
+  **Sein Beleg ist `slice-193`, nicht `slice-200`:** Dort griff der Lauf zur Handarbeit, hier
+  entsteht der Träger — ein Beleg für diesen Vorgang zählte eine Gelegenheit, die er nicht hatte.
+  Beide Nachbarn sind einzeln geprüft und tragen ihn nicht: die zitierte Bezeichnung spricht über
+  das **gepinnte Fremd-Werkzeug**, und
+  [`BEO-ALL/vendored-baum-entsteht-aus-anderer-quelle-als-sein-pin`](../observations/BEO-ALL/vendored-baum-entsteht-aus-anderer-quelle-als-sein-pin/observation.md)
+  über die **Bytes des Baums**. Die neue Klasse sagt etwas anderes voraus: ein künftiger Lauf kann
+  jede Fähigkeit dieses Repos von Hand nachbauen, ohne den vendored Baum zu berühren.
 
 ## 7. Closure-Notiz
 
@@ -229,18 +271,160 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-NNN>, <slice-MMM>, <slice-KKK> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-NNN.md` | `evidence/slice-NNN.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-NNN (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+**Rolle:** Planner · **Datum:** 2026-09-08.
+
+- **Was hat funktioniert:** Der **dünne Draht auf eine vorhandene Fähigkeit**. `internal/fetch`
+  ist unberührt (`git show --pretty=format: --name-only ae29fe55 ac098942 | grep internal/` ist
+  leer), es gibt keinen sechsten Pin-Ort und keine zweite Fassung der Operation; der neue Zweig
+  trägt Argument-Parsen, Wurzel-Auflösung und Zielpfad, und beide Letzteren sind aus dem
+  Archivierungs-Zweig wiederverwendet. Getragen hat ebenso, dass die zwei Closure-Kriterien als
+  **Läufe** formuliert waren und nicht als Zusagen: Reproduktion über dem gepinnten Tag und das
+  `sha256`-Gegenbeispiel sind von zwei Rollen unabhängig nachgefahren, je mit demselben
+  Baum-Fingerabdruck vor und nach dem Lauf und mit der **gelesenen** Fehlermeldung.
+- **Was ging anders als geplant:** Drei Dinge, und alle drei sitzen in Aussagen **über** die
+  Arbeit, nicht in ihr.
+
+  **Erstens: die Zusage `kein zweites legt sich daneben` galt an vier Stellen und hielt nur über
+  demselben Tag.** Über einem abweichenden Tag legte der Lauf ein zweites `<tag>`-Verzeichnis
+  daneben und färbte `make baseline-verify` rot — genau der Fall, für den §1 den Träger begründet.
+  Der Ausweg war **nicht**, die Zusage zu verengen: Die Sperre steht jetzt vor dem einzigen
+  Netz-Aufrufpunkt, und
+  [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
+  Setzung 4 kann durch dieses Ziel nicht mehr verletzt werden.
+
+  **Zweitens: ein Test-Kommentar nannte ein Gegenbeispiel, das seinen Test nicht rot färbt.**
+  Entfernt man den Dispatch-`case`, bleibt der Go-Satz grün — die Sperre in `run()` beantwortet
+  jedes Positionsargument gleich, mit oder ohne ihn. Die Eigenschaft **ist** gedeckt, nur von
+  einem anderen Wächter (`test/unterkommando-kopplung.bats`, in der Gegenprobe rot gesehen).
+
+  **Drittens: die Beleg-Zahl im Ziel-Absatz misst jetzt ihren Gegenstand, und dafür brauchte sie
+  zwei Korrekturen.** Der Satz *„die zwei Quellen unterschieden sich in N Dateien"* stand zuerst
+  ohne Kommando im Absatz und dann mit einem, das eine **Link-Form** zählt statt der Differenz
+  zweier Quellen. Die zweite Fassung war damit formgerecht nach
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 1 — eine Zahl, ein Kommando daneben, gefahren — und traf den Satz trotzdem nicht; für ihn
+  war sie eine Untergrenze und keine Größe. Der heutige Wert kommt aus einem Diff über die zwei
+  Tree-Operanden des Tausch-Commits und ist von zwei Rollen unabhängig nachgefahren.
+- **Steering-Loop-Eintrag — benannte Spec-Lücke, gegen
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 1 und
+  [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung):**
+  *Der Zahl-Beleg bindet das lebende Artefakt und zwei benannte Träger daneben — er bindet nicht
+  die zwei Zeitdokumente, über die eine Zahl **in** ein lebendes Artefakt gelangt.* Ein
+  Rollen-Report und eine Closure-Notiz sind Chronik von Beruf und liegen außerhalb des
+  Geltungsbereichs; eine Zahl, die durch sie läuft, kommt im lebenden Text bereits belegt aussehend
+  an, weil sie unterwegs ein Kommando bei sich trug — nur eines, das eine andere Menge zählt.
+  [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
+  hat die Frage für die Commit-Message bereits gestellt und dort mit der **Haltbarkeit des
+  Trägers** beantwortet (*„eine Message verliert gar nichts"*); die Weitergabe-Achse ist eine
+  andere und in keiner der zwei Setzungen entschieden. **Kein neuer Sensor wird hier behauptet**
+  ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):
+  Kein Modul aus `modules:` der [`.d-check.yml`](../../../../.d-check.yml) hält eine Prosa-Zahl
+  gegen ihren Gegenstand, und `make mutate` kennt dafür keine Fehlschlag-Form. Ob der
+  Adaptions-Block eine dritte Setzung bekommt, entscheidet der **Architect**
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8); dieser Eintrag ist **gezählt, nicht verkörpert** —
+  die Teil-Zeile `liegt in` entfällt ersatzlos.
+- **Zweiter Lerneintrag — Plan-Defekt, kein Liefer-Defekt.** §3 dieses Plans führt
+  [`AGENTS.md`](../../../../AGENTS.md) §4 als `update`, und §6 verlangt die Beschreibung *„in die
+  vorhandene Tabelle"*. Beides trägt am Bestand nicht, und beide Prüf-Rollen haben es unabhängig
+  gemessen: Die Tabelle in §4 führt genau die zehn `record-gates`-Voraussetzungen plus `make gates`
+  (`awk '/^## 4\. Quality Gates/,/^## 5\./' AGENTS.md | grep -oE 'make [a-z-]+' | sort -u | wc -l`
+  → **11**, gegen `sed -n 's/^record-gates: \(.*\)  *##.*/\1/p' Makefile` → dieselben zehn; keine
+  Erwartungswerte), und die einzige Tabelle in
+  [`harness/README.md`](../../../../harness/README.md) §Sensors führt ausschließlich Gates. Ein
+  **herstellendes** Ziel dort einzutragen liefe gegen
+  [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) — die
+  zwei herstellenden Nachbarn stehen aus demselben Grund als Absatz. **Die geschärfte Regel:** Ein
+  Plan-Punkt, der einen Zielort zum `update` benennt, misst vorher, ob die Norm dieses Zielorts ihn
+  trägt; sonst schreibt der Plan eine Verletzung vor und die Umsetzung muss gegen ihn recht
+  behalten. Sie hat heute **keinen Zielort**: Die Slice-Vorlage liegt vendored und wird nicht
+  angefasst, und die Zusammensetzungs-Regel von §4 ist Architect-Gegenstand
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Auch dieser Eintrag ist damit gezählt, nicht
+  verkörpert — **Übergabe an den Architect**, zusammen mit der Frage aus §5, ob die Aussage
+  *„Asset → vendored Baum hält nichts"* in
+  [`harness/conventions.md`](../../../../harness/conventions.md) §Adoptierte Konventions-Quellen
+  durch diesen Träger zu ändern ist (sie steht heute unverändert und ist es nach §6, erstem Risiko,
+  auch zu Recht).
+- **Beobachtungs-Register (`../observations/`):** **sechs Belege**, je genau eine Datei — ein
+  Vorgang zählt einmal, auch wo ein Fund mehrfach auftrat. Zähler sind Dateizahlen und stehen in
+  keinem Feld (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`, keine
+  Erwartungswerte). **Drei gehen in bestehende Einträge:**
+  [`kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle`](../observations/BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle/observation.md)
+  (→ **3×**; die zwei Funde HIGH-1 und LOW-1 sind eine Gelegenheit) ·
+  [`zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
+  (→ 9×, die viermal wiederholte Tag-Zusage) ·
+  [`zahl-ohne-kommando-trifft-ihren-gegenstand-nicht`](../observations/BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht/observation.md)
+  (→ 2×, die Beleg-Zahl oben). **Drei Einträge sind neu**, und für jeden ist geprüft, dass kein
+  vorhandener ihn trägt:
+  [`neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md)
+  (→ 1×; die Bezeichnung stammt aus dem Review, und dass sie im Register fehlt, ist von der
+  Verifikation eigens gemessen worden) ·
+  [`traeger-fuer-den-vorgang-belegt-den-bestand-nicht`](../observations/BEO-ALL/traeger-fuer-den-vorgang-belegt-den-bestand-nicht/observation.md)
+  (→ 1×, §6 erstes Risiko) ·
+  [`vorhandene-faehigkeit-ohne-traeger-wird-von-hand-nachgebaut`](../observations/BEO-ALL/vorhandene-faehigkeit-ohne-traeger-wird-von-hand-nachgebaut/observation.md)
+  (→ 1×, §6 viertes Risiko — **Beleg `slice-193`**, siehe dort).
+
+  **Ein Eintrag überschreitet mit diesem Slice die Schwelle** —
+  `kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle` — und steht bis zum Lese-Schritt
+  weiter auf `offen`; zulässig und vorübergehend nach `v6.5.0` · `regelwerk/modul-06-roadmap.md`
+  §Das Beobachtungs-Register. **Der Sichtungs-Schritt §8 führt ihn nicht**, und das ist kein
+  Widerspruch: Er kommt aus der dritten Quelle einer Closure — der wiederkehrenden Finding-Klasse
+  des Reviews (`modul-05-planning-harness.md` §Closure- und Lerneintrag-Regeln) —, und die steht
+  beim Schreiben des Plans nicht zur Verfügung. **Den Lese-Schritt trägt in einem Repo mit Wellen-Betrieb die
+  Welle-Closure** (`modul-08-agentenrollen.md` §Rollen-Sequenz für eine Welle, Schritt 3a), und
+  dieses Repo führt zwei offene Wellen (`welle-09`, `welle-13`, Zeiger unter *Offene Wellen* der
+  Roadmap). Die Übergabe steht hier, nicht der Ausgang — stellvertretend entschieden wäre es eine
+  Zuständigkeit, die diese Rolle nicht hat.
+
+  **Zwei Funde bekommen bewusst keinen Beleg.** Der Slice ist die **Antwort** auf
+  [`vendored-baum-entsteht-aus-anderer-quelle-als-sein-pin`](../observations/BEO-ALL/vendored-baum-entsteht-aus-anderer-quelle-als-sein-pin/observation.md)
+  und kein weiteres Auftreten; seine `state.md` nennt jetzt den vorhandenen Träger statt eines
+  zugesagten. Und INFO-3 des Reviews (die Bezugsmenge der Verdrahtungs-Zahl) ist im selben Vorgang
+  behoben — der Satz nennt seither jede Achse, die das Kommando zählt —, ein Beleg zählte hier eine
+  Gelegenheit, keine Wiederholung.
+- **Folge-Slices:** keiner geschnitten. Die Mutations-Deckung ist als Beobachtung geführt und nicht
+  als Slice: Sie steht bei 1×, und ein Folge-Slice je Erstauftreten ist genau der Mechanismus, den
+  das Register ersetzt.
+- **Trigger-Audit:** `CO-001` — Trigger weiterhin **eingetreten**, Ausgang unverändert *verlängert
+  mit Folge-Slice*; die zwei Träger sind Dateien im Lifecycle (`slice-141` entscheidet vorher,
+  `slice-113` führt aus). Die `Letzte Prüfung:`-Zeile jener Datei bleibt beim Stand des
+  welle-10-Audits: In einem Repo mit Wellen-Betrieb ist das Carveout-Audit Schritt 2 der
+  Welle-Closure, und eine zweite Eintragung desselben Ergebnisses wäre Chronik. `CO-002` —
+  **permanent**, in [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md)
+  übergeführt, keine Handlung. Weitere Carveouts führt
+  [`docs/plan/carveouts/`](../../carveouts/) außerhalb von `done/` nicht
+  (`ls docs/plan/carveouts/CO-*.md | wc -l` → **2**, kein Erwartungswert). Bootstrap-aware Gates
+  führt dieses Repo keine. **ADR-Re-Evaluierungs-Trigger im Gegenstand dieses Slice:** keiner
+  gefeuert — [`ADR-0003`](../../adr/0003-go-native-binaries.md) und
+  [`ADR-0007`](../../adr/0007-bootstrap-phasen.md) sind `Accepted` und unberührt, und
+  [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) Festlegung 1 trägt den
+  Träger-und-Unterkommando-Weg, den dieser Slice ein zweites Mal geht, ohne ihn zu ändern. Ein
+  neuer Architektur-Beschluss ist nicht nötig; das hat das Review als Negativbefund gemessen.
+- **Risiken aus §6:** alle vier tragen genau einen Ausgang — **2× entfallen mit Begründung** (der
+  Ort der Ziel-Beschreibung war nie offen, sondern falsch angenommen; die Unterkommando-Kopplung
+  ist genutzt und in beide Richtungen gesehen), **2× weiter offen ins Register**
+  (`traeger-fuer-den-vorgang-belegt-den-bestand-nicht` ·
+  `vorhandene-faehigkeit-ohne-traeger-wird-von-hand-nachgebaut`). Kein Risiko ist *eingetreten*:
+  Der einzige Kandidat wäre die Zusage, die Provenienz-Kette sei jetzt bewacht, und die steht in
+  keinem Artefakt dieses Slice.
+- **Drei Paarungen:** dieses Repo führt Wellen-Betrieb; sie prüft die nächste Welle-Closure — auch
+  für einen Slice ohne Wellen-Zugehörigkeit. **Nachgesehen und übergeben statt behauptet:**
+  (a) **Anker-Paarung** hat keinen Gegenstand — dieser Slice verkörpert nichts und trägt kein Feld
+  `liegt in`. (b) **Folge-Slice-Paarung** grün: die genannten `slice-141` und `slice-113` sind
+  Dateien im Lifecycle. (c) **Register-Paarung**, erste Hälfte grün — jede hier zitierte Beobachtung
+  existiert als Verzeichnis; zweite Hälfte unverändert **rot**, an denselben zwei Einträgen wie
+  zuvor, `benannte-luecke-ohne-ausgang` und
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`, beide mit leerem `evidence/`
+  (`for d in docs/plan/planning/observations/BEO-ALL/*/; do [ -z "$(ls "$d"evidence/*.md 2>/dev/null)" ] && basename "$d"; done`).
+  Dieser Slice hat keinen von beiden erzeugt und schließt keinen. **Der Befund für die
+  Welle-Closure ist gewachsen:** Fünf Einträge stehen bei 3× oder darüber und tragen `offen` —
+  `folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht`,
+  `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`, `zaehler-label-nennt-falsche-einheit`,
+  `zitat-grep-uebersieht-zeilenumbruch-und-markup` und ab jetzt
+  `kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle`. Das ist die Klasse
+  `schwellen-uebertritt-ohne-zustaendige-rolle` (2×) — **benannt, nicht gezählt**: Ein Beleg käme
+  aus einer Closure, die den Lese-Schritt gar nicht trägt, und zählte damit eine Zuständigkeit, die
+  sie nie hatte.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
