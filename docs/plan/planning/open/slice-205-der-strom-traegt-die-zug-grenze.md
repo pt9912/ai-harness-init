@@ -1,4 +1,4 @@
-# Slice slice-205: Der Strom trägt die Zug-Grenze — und sie heißt nicht „Lauf beendet"
+# Slice slice-205: `SubagentStop` wird verdrahtet — und seine Bedeutung gemessen, bevor sie zugesagt wird
 
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
 Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
@@ -13,8 +13,24 @@ sein Beleg ist eine Messung an einem realen Strom, und die steht in seiner eigen
 [slice-204](slice-204-das-programm-feld-nennt-das-programm.md), wo die Änderung über den Träger
 reist: Die Hook-Verdrahtung steht **zweimal** im Repo — in `.claude/settings.json` (dieses Repo)
 und in `internal/emit/templates/enforce/settings-capture-hooks.json` (was ein Zielrepo bekommt).
-Beide führen heute dieselben drei Ereignisse; wer nur eines anfasst, lässt die zwei Ebenen
-auseinanderlaufen.
+
+**Die zwei Dateien führen nicht dieselbe Ereignis-Menge, wohl aber dieselbe
+Erfassungs-Menge** — und nur die ist hier der Gegenstand. Maßgeblich ist nicht, welche Ereignisse
+eine Datei nennt, sondern welche `span-emit` rufen (**keine Erwartungswerte**):
+
+```sh
+for f in .claude/settings.json internal/emit/templates/enforce/settings-capture-hooks.json; do
+  echo "$f"
+  echo "  alle:      $(grep -oE '"(PreToolUse|PostToolUse|PostToolUseFailure|SubagentStart|SubagentStop|Stop)"' "$f" | sort -u | tr '\n' ' ')"
+  echo "  span-emit: $(grep -B8 'span-emit' "$f" | grep -oE '"(PreToolUse|PostToolUse|PostToolUseFailure|SubagentStart|SubagentStop|Stop)"' | sort -u | tr '\n' ' ')"
+done
+```
+
+`.claude/settings.json` führt **fünf** Ereignisse, die Vorlage **drei**. Die **Erfassungs-Hälfte
+ist in beiden dieselbe und dreielementig** — `PostToolUse`, `PostToolUseFailure`,
+`SubagentStart`; die zwei zusätzlichen in diesem Repo sind `PreToolUse` (der Command-Guard) und
+`Stop` (der Gate-Wächter), beide rufen `span-emit` **nicht** und sind hier nicht berührt. Wer nur
+eine der zwei Dateien anfasst, lässt die zwei Ebenen auseinanderlaufen.
 
 **Bezug:**
 [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) (die
@@ -33,7 +49,7 @@ die Bedingung, unter der der Erfassungs-Block überhaupt entsteht),
 **Berührte Spec-Stellen:** [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder)
 §5, Absatz *„Die erfasste MENGE, ausgesprochen statt suggeriert"* — er nennt heute wörtlich
 **drei** Ereignisse und wird mit diesem Slice falsch. Dazu `SPEC-005` (`event`), dessen
-Incident-Frage um die Zug-Grenze wächst.
+Incident-Frage um das Ende-Ereignis wächst.
 
 **Verantwortlich:** —
 
@@ -51,8 +67,8 @@ Ausschlusses stehen in **eben diesem Abschnitt** des Baseline-Regelwerks,
 zusammen mit der Begründungs-Pflicht je Punkt.
 
 **Ziel:** `SubagentStop` wird als **viertes** Erfassungs-Ereignis verdrahtet — auf beiden Ebenen —
-und seine Bedeutung wird **gemessen festgeschrieben**: Es markiert das **Ende eines Zugs**, nicht
-das Ende eines Laufs.
+und seine Bedeutung wird **gemessen, bevor sie zugesagt wird**: ob es einmal je Lauf oder je Zug
+feuert, entscheidet der Lauf und nicht dieser Plan.
 
 Heute beginnt ein Subagenten-Strom beobachtbar und endet stumm. Verdrahtet sind drei Ereignisse,
 und keines davon markiert ein Ende (**keine Erwartungswerte** — der Bestand ist gitignored,
@@ -67,20 +83,51 @@ grep -oE '"(PreToolUse|PostToolUse|PostToolUseFailure|SubagentStart|SubagentStop
 #    PostToolUse, PostToolUseFailure, PreToolUse, Stop, SubagentStart — je 1; SubagentStop: keines
 ```
 
-**Die Incident-Frage ist nicht die naheliegende, und das ist der Kern dieses Slice.** Naheliegend
-wäre *„Läuft der Agent noch oder hängt er?"* — **diese Frage beantwortet das Ereignis nicht.** Die
-vendored Hooks-Referenz sagt für `Stop`/`SubagentStop`: *„am Ende des Zugs. Das Gespräch wird
-fortgesetzt"* ([`docs/user/claude-hooks-referenz.md`](../../../../docs/user/claude-hooks-referenz.md)),
-und führt sie im Rhythmus *„einmal pro Runde"*. Ein Subagent, der seinen Zug beendet, während sein
-Hintergrund-Lauf weiterläuft, und später per Nachricht fortgesetzt wird, feuert es — und läuft
-danach weiter. Die Frage, die es **wirklich** beantwortet, lautet: *„Endet hier ein Zug — ist die
-Lücke im Strom erklärt oder unerklärt?"*
+**Die Incident-Frage ist nicht die naheliegende, und der Grund dafür ist eine fehlende Messung —
+kein Beleg.** Naheliegend wäre *„Läuft der Agent noch oder hängt er?"*. Ob das Ereignis sie
+beantwortet, hängt daran, ob es **einmal pro Lauf** oder **je Zug** feuert, und **die vendored
+Referenz entscheidet das nicht**. Sie sagt an mehreren Stellen etwas darüber, und die Stellen
+lassen beide Lesarten zu
+([`docs/user/claude-hooks-referenz.md`](../../../../docs/user/claude-hooks-referenz.md),
+**keine Erwartungswerte** — die Zeilennummern wandern mit der Datei):
+
+```sh
+grep -n 'SubagentStop' docs/user/claude-hooks-referenz.md
+```
+
+- **Z. 47** (Ereignis-Tabelle): *„When a subagent **finishes**"*.
+- **Z. 574:** *„…in `SubagentStop` konvertiert, da dies das Ereignis ist, das ausgelöst wird,
+  **wenn ein Subagent fertig ist**"*.
+- **Z. 2146** (der eigene Abschnitt): *„Wird ausgeführt, wenn ein Claude Code-Subagent **fertig
+  mit der Antwort** ist."*
+- **Z. 856:** *„`Stop` und `SubagentStop`: am Ende des **Zugs**. Das Gespräch wird fortgesetzt"* —
+  **aber** dieser Satz steht im Abschnitt *„Wo die Erinnerung angezeigt wird"* und beschreibt, wo
+  der `additionalContext` eines Hooks ankommt; dieselbe Aufzählung verortet `PreToolUse`/
+  `PostToolUse` *„neben dem Tool-Ergebnis"*. Aus ihrem Abschnitt gelöst trägt die Zeile die
+  Aussage nicht.
+
+**Die Waage kippt nicht:** *„fertig mit der Antwort"* ist genau die Formulierung, mit der die
+Referenz auch `Stop` beschreibt (*„When Claude finishes responding"*), und `Stop` führt sie
+ausdrücklich im Rhythmus *„einmal pro Runde"*. Dieselben Worte tragen also an anderer Stelle die
+Zug-Lesart. Dazu erhält ein `SubagentStop`-Hook laut Z. 2157 die Arrays `background_tasks` und
+`session_crons` — ein Hinweis darauf, dass beim Feuern noch etwas laufen **kann**, aber kein
+Beleg, wie oft es feuert.
+
+**Also gilt: hier ist es nicht gemessen.** Der Fall, an dem sich die Frage entscheidet — ein
+Subagent beendet seinen Zug, während sein Hintergrund-Lauf weiterläuft, und wird später per
+Nachricht fortgesetzt — ist am 2026-09-08 zweimal aufgetreten und **von niemandem beobachtet
+worden, weil das Ereignis nicht verdrahtet ist**. Das ist der Grund für die Zurückhaltung dieses
+Slice: **Nicht-Verfügbarkeit einer Messung**, nicht ein widersprechender Beleg — dieselbe
+Unterscheidung, die [ADR-0040](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)
+für den Accept-Übergang führt. Deshalb entscheidet **der Lauf** die Frage (Liefer-Punkt 2) und
+nicht dieser Plan.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
-- **Keine Zusage, dass „beendet" von „hängend" unterscheidbar wird.** Nach der Messung oben ist
-  sie nicht haltbar: Ein Zug-Ende ist kein Lauf-Ende, und ein Lauf ohne Zug-Ende kann pausiert
-  statt hängend sein. Der Slice macht Lücken **erklärbar**, nicht Läufe **abgeschlossen** —
+- **Keine Zusage, dass „beendet" von „hängend" unterscheidbar wird.** Sie hängt an der Frage, die
+  §1 offen lässt, und ist deshalb **vor** der Messung nicht zu geben: Feuert das Ereignis je Zug,
+  ist ein Lauf ohne es nur pausiert, nicht hängend. Der Slice liefert das Ereignis und seine
+  gemessene Bedeutung; was ein Beobachter daraus schließen darf, folgt erst daraus —
   **Bestand bleibt bewusst stehen**, und die Grenze gehört benannt statt überschrieben.
 - **Keine Auswertung und keine Sicht.** Wer das neue Ereignis liest und was er daraus schließt,
   ist [slice-203](slice-203-der-laufende-agent-wird-sichtbar-waehrend-er-laeuft.md) —
@@ -104,7 +151,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 - [ ] `SubagentStop` ruft `span-emit` in `.claude/settings.json` **und** in
       `internal/emit/templates/enforce/settings-capture-hooks.json`, je mit leerem Matcher wie
-      die drei bestehenden. Beide Dateien führen danach dieselbe Ereignis-Menge; ein Diff, der
+      die drei bestehenden. Beide Dateien führen danach dieselbe **Erfassungs**-Menge — vier statt drei; ein Diff, der
       nur eine anfasst, ist der Befund.
 - [ ] Ein realer Lauf erzeugt einen `SubagentStop`-Span **im Strom des beendeten Subagenten**
       (dieselbe Ablage-Regel, die `SubagentStart` für den Start hat) — gemessen, nicht
@@ -123,8 +170,9 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       **Beide Ausgänge sind zulässig; keiner ist vorweggenommen.**
 - [ ] Der Absatz *„Die erfasste MENGE"* in
       [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder)
-      §5 nennt **vier** Ereignisse statt drei und schreibt die gemessene Bedeutung fest —
-      einschließlich der Grenze, dass ein Zug-Ende kein Lauf-Ende ist. Das Technik-Stratum ist
+      §5 nennt **vier** Ereignisse statt drei und schreibt die **gemessene** Bedeutung fest —
+      je Lauf oder je Zug, was der Lauf ergeben hat, samt der Grenze, die daraus folgt. Steht
+      dort eine Lesart, die der Lauf nicht belegt hat, ist **das** der Befund. Das Technik-Stratum ist
       ohne Vertragsänderung fortschreibbar
       ([`MR-019`](../../../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence));
       das Lastenheft wird **nicht** angefasst.
@@ -186,7 +234,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
 Zwei beobachtbare Kriterien: **(1)** Ein realer Strom trägt einen `SubagentStop`-Span, und beide
-Hook-Dateien führen dieselbe Ereignis-Menge; `make gates` ist grün. **(2)** Die Bedeutung des
+Hook-Dateien führen dieselbe Erfassungs-Menge; `make gates` ist grün. **(2)** Die Bedeutung des
 Ereignisses ist an einem realen Ablauf gemessen und in der Spec-Zeile festgeschrieben — samt der
 Grenze, die die Messung ergibt. Dazu der Lerneintrag in einer der drei Formen (geschärfte Regel ·
 neuer Sensor · benannte Spec-Lücke).
@@ -195,7 +243,7 @@ neuer Sensor · benannte Spec-Lücke).
 203 liest, dieser Slice schreibt. **Die Abhängigkeit ist eingetragen, aber sie hängt nicht** —
 203 trägt den Zustand POLLING ohne dieses Ereignis vollständig; nur STILL bleibt ohne es
 Rauschen, und 203 benennt das als seine Grenze, statt darauf zu warten. Umgekehrt ist dieser
-Slice ohne 203 lieferbar: ein Strom, der seine Zug-Grenzen führt, ist auch ohne Live-Sicht
+Slice ohne 203 lieferbar: ein Strom, der sein Ende-Ereignis führt, ist auch ohne Live-Sicht
 auswertbar. Keiner wartet auf den anderen — sonst wären es zwei Zombie-Slices (Baseline-Regelwerk
 `modul-05-planning-harness.md` §Ziel-Form: Slice).
 
@@ -206,10 +254,11 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
 dasteht.
 
-- **Das Ereignis wird als „Lauf beendet" gelesen, obwohl es „Zug beendet" heißt.** Ein
-  Beobachter, der es glaubt, übersieht genau den Fall, für den er gebaut wurde: den Lauf, der
-  pausiert und weitergeht. Liefer-Punkt 2 schreibt die Grenze in die Spec, damit sie nicht nur im
-  Kopf des schreibenden Laufs steht. — **Ausgang:** <offen>
+- **Das Ereignis wird als „Lauf beendet" gelesen, bevor gemessen ist, ob es das heißt.** Feuert
+  es je Zug, übersieht ein Beobachter, der es glaubt, genau den Fall, für den er gebaut wurde:
+  den Lauf, der pausiert und weitergeht. Der Referenz-Wortlaut trägt **beide** Lesarten (§1), also
+  entscheidet nur der Lauf. Liefer-Punkt 2 schreibt das Ergebnis in die Spec, damit es nicht nur
+  im Kopf des schreibenden Laufs steht. — **Ausgang:** <offen>
 - **Für `.claude/settings.json` benennt keine Quelle eine schreibende Rolle.**
   [`AGENTS.md`](../../../../AGENTS.md) §3.8 deckt nur Hard Rules und Adaptions-Block;
   [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) nimmt
