@@ -15,22 +15,20 @@
 # Docker-only (ADR-0003): die Runner bringen Docker mit; keine Host-Go-Toolchain,
 # kein `actions/setup-go`. Alles laeuft in den gepinnten Images der make-Targets.
 #
-# CHECKOUT-TIEFE: keiner der vier `actions/checkout` unten traegt
-# `fetch-depth: 0`. `actions/checkout` klont per Default mit Tiefe 1; das
-# genuegt, weil keines der vier Job-Ziele (`make gates`/`smoke`/`full-smoke`/
-# `mutate`) einen history-lesenden d-check-Modul-Lauf (`vcs`/`commits`,
-# Targets `doc-immutable`/`doc-commits` in d-check.mk) ausloest —
-# `.d-check.yml` aktiviert fuer `docs-check` nur
-# `links, anchors, ids, matrix, codepaths, spans, planning`, keines davon liest
-# `git`-Historie. Ein Job, dessen Schritt Historie liest, braucht an seinem
-# Checkout `fetch-depth: 0` UND einen vorgeschalteten
-# `make history-range-guard RANGE=...` (harness/tools/history-range-guard.sh)
-# davor — sonst meldet eine aufloesbare, aber im flachen Klon leere Range
-# `0 Befund(e)`, Exit 0, statt zu fallen (MR-007 Setzung 3, "blind und
-# gruen"). Dieselbe Begruendung gilt fuer die zwei Checkouts in release.yml
-# (bauen/starten Artefakte, lesen keine Historie) und den einen in
-# upstream-drift.yml (Netz-Freshness, liest keine Historie) — repo-weit
-# sieben Checkouts, keiner braucht heute Tiefe > 1.
+# CHECKOUT-TIEFE: vier der fuenf `actions/checkout` unten bleiben bei der
+# Default-Tiefe 1 — `make gates`/`smoke`/`full-smoke`/`mutate` loesen keinen
+# history-lesenden d-check-Modul-Lauf aus (`.d-check.yml` aktiviert fuer
+# `docs-check` nur `links, anchors, ids, matrix, codepaths, spans, planning`,
+# keines davon liest `git`-Historie). Der fuenfte Job (`adr-immutable`) liest
+# die Range ueber das `vcs`-Modul (Target `doc-immutable`/`adr-immutable` in
+# d-check.mk/Makefile) und traegt darum `fetch-depth: 0` UND einen
+# vorgeschalteten `make history-range-guard` (harness/tools/history-range-guard.sh)
+# vor seinem `make doc-immutable`-Aufruf — sonst meldet eine aufloesbare, aber
+# im flachen Klon leere Range `0 Befund(e)`, Exit 0, statt zu fallen (MR-007
+# Setzung 3, "blind und gruen"). Dieselbe Begruendung (kein History-Lesen)
+# gilt fuer die zwei Checkouts in release.yml und den einen in
+# upstream-drift.yml — repo-weit acht Checkouts, genau einer mit
+# `fetch-depth: 0`.
 
 name: ci
 
@@ -87,3 +85,33 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - run: make mutate
+
+  # ADR-Immutabilitaet ueber die Range dieses Ausloesers (AGENTS.md 3.4,
+  # DC-FA-VCS-001): ein Commit, der den Kern einer Accepted-ADR aendert,
+  # faerbt diesen Job rot. Braucht die Historie der Range -> `fetch-depth: 0`
+  # (Kopfkommentar oben) UND den Vorlauf-Waechter VOR dem Modul-Lauf (MR-007
+  # Setzung 3, "blind und gruen"). Die Range ist ereignis-abhaengig: ein PR
+  # vergleicht Base gegen Head, ein Push den vorherigen Ref-Stand
+  # (`github.event.before`) gegen den neuen. Ein Push ohne vorherigen Stand
+  # (neuer Branch/Ref, `before` ist die Nullreferenz) hat keine sinnvolle
+  # Basis; er wird uebersprungen — keine Historie zum Vergleichen ist kein
+  # Befund.
+  adr-immutable:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - name: Range bestimmen
+        id: range
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "range=${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            echo "range=${{ github.event.before }}..${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=1" >> "$GITHUB_OUTPUT"
+          fi
+      - name: ADR-Immutabilitaet (Vorlauf-Waechter + vcs-Modul)
+        if: steps.range.outputs.skip != '1'
+        run: make adr-immutable RANGE=${{ steps.range.outputs.range }}

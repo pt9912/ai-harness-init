@@ -17,8 +17,8 @@
 # CHECKOUT-TIEFE: der eine `actions/checkout` unten bleibt bei der
 # Default-Tiefe 1 — die gefahrenen Sensoren sind Netz-Freshness
 # (Upstream-Release-Tags gegen den gepinnten Wert), keiner liest
-# `git`-Historie. Begruendung und Gesamtbild (repo-weit sieben Checkouts)
-# stehen im Kopf von ci.yml.
+# `git`-Historie. Begruendung und Gesamtbild (repo-weit acht Checkouts, genau
+# einer mit `fetch-depth: 0`) stehen im Kopf von ci.yml.
 
 name: upstream-drift
 

@@ -229,6 +229,27 @@ codepaths:
     - docs/reviews/review-report.template.md
     - harness/tools/archive-welle.sh
     - docs/plan/planning/observations.md
+# vcs (git-basiert, braucht .git + eine Commit-Range — strikt opt-in, NICHT in
+# modules: oben: ein hermetischer docs-check-Lauf ohne Range liefe damit ins
+# Leere, LH-QA-01). Haelt den Kern einer angenommenen ADR ueber die Range
+# unveraendert (AGENTS.md 3.4). paths grenzt die geschuetzte Datei-Klasse ab;
+# immutable-when markiert ab welcher Kopfzeile der Base-Stand unveraendert
+# bleibt; exclude-sections nimmt `Geschichte` aus dem Kern — der Abschnitt, in
+# dem eine ADR ihre Fortschreibung fuehrt, und zugleich die Voraussetzung
+# dafuer, dass der Sensor ueberhaupt an der Kopfzeile anschlaegt statt am
+# Dateiende. head-allow ist gegen den gelebten Bestand gesetzt: die zwei
+# superseded ADRs dieses Repos tragen die Link-Form
+# `Superseded by [ADR-NNNN](NNNN-titel.md)`, nicht die vom Werkzeug
+# vorgeschlagene bare Kennung — Letztere faerbt genau diesen Uebergang rot
+# (test/vcs-modul-wiring.bats haelt beide Felder). Aufgerufen ueber
+# `make adr-immutable RANGE=<base>..<head>` (oder `STAGED=1`), das den
+# Historie-Vorlauf-Waechter `make history-range-guard` vorschaltet.
+vcs:
+  paths: ["docs/plan/adr/[0-9]*.md"]
+  immutable-when: '^\*\*Status:\*\* Accepted'
+  exclude-sections: [Geschichte]
+  status-line: '^\*\*Status:\*\*'
+  head-allow: '^\*\*Status:\*\* (Accepted|Superseded by \[ADR-[0-9]{4}\])'
 # sources (opt-in, NETZ, seit d-check v0.51.0): Content-Pin des Baseline-Assets gegen
 # Upstream-Drift (MR-013) — der tool-gelieferte Ersatz fuer den Eigenbau (curl+sha256sum)
 # im Target `make regelwerk-check`. BEWUSST NICHT in `modules:` oben: sources ist Netz und

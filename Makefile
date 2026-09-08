@@ -33,7 +33,7 @@ BASELINE_TAG ?= v6.5.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 80684c17b958d2bc0c25eef1bdff25342b9c7b90254431ade9c29ee2add18865
 
-.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims history-range-guard host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle vendor-baseline
+.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims history-range-guard adr-immutable host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -152,16 +152,25 @@ ci-lint: ## GitHub-Actions-Workflows linten (actionlint) im gepinnten Image — 
 # RANGE git-seitig aufloesbar UND NICHT LEER ist — sonst meldet ein history-
 # lesender Job auf einem flachen Klon "0 Befund(e)", Exit 0, obwohl keine
 # Historie zur Verfuegung stand (MR-007 Setzung 3: "blind und gruen").
-# Hermetisch, kein Docker, kein Netz. NICHT in gates: kein hiesiger CI-Job
-# ruft heute `doc-immutable`/`doc-commits` (s. .github/workflows/ci.yml Kopf)
-# — ein Job, dessen Schritt Historie liest, ruft dieses Ziel vor seinem
-# `doc-immutable`/`doc-commits`-Aufruf. STAGED=1 reicht `--staged` durch
-# (Vergleich gegen den Index braucht keine Tiefe > 1). Die Logik liegt in
-# harness/tools/, damit shell-lint sie deckt und test/history-range-guard.bats
-# den reinen `decide()`-Teil ohne git pruefen kann (das gepinnte bats-Image
-# fuehrt kein `git`, s. harness/tools/slice-mv.sh Kopf).
+# Hermetisch, kein Docker, kein Netz. NICHT in gates: der Aufrufer in
+# .github/workflows/ci.yml (Job `adr-immutable`) ruft dieses Ziel vor
+# `make doc-immutable`; STAGED=1 reicht `--staged` durch (Vergleich gegen den
+# Index braucht keine Tiefe > 1). Die Logik liegt in harness/tools/, damit
+# shell-lint sie deckt und test/history-range-guard.bats den reinen
+# `decide()`-Teil ohne git pruefen kann (das gepinnte bats-Image fuehrt kein
+# `git`, s. harness/tools/slice-mv.sh Kopf).
 history-range-guard: ## Historie-Vorlauf-Waechter: RANGE muss aufloesbar UND nicht leer sein — NICHT in gates
 	@bash harness/tools/history-range-guard.sh "$(if $(STAGED),--staged,$(RANGE))"
+
+# ADR-Immutabilitaet (AGENTS.md 3.4, DC-FA-VCS-001): kettet den Vorlauf-Waechter
+# vor den eigentlichen d-check-`vcs`-Lauf (d-check.mk, Target `doc-immutable`) —
+# eine aufloesbare, aber leere RANGE bricht hier ab statt "0 Befund(e)" zu
+# melden (MR-007 Setzung 3). Beide Ziele lesen dieselben Variablen RANGE/STAGED
+# vom Aufruf; `make`s Prerequisite-Reihenfolge reicht sie unveraendert durch
+# beide Stufen. NICHT in gates: RANGE variiert pro Lauf und ist damit kein
+# hermetischer Pruefbereich (LH-QA-01) — Aufrufer ist der Job `adr-immutable`
+# in .github/workflows/ci.yml.
+adr-immutable: history-range-guard doc-immutable ## ADR-Kern ueber RANGE=<base>..<head> (oder STAGED=1) unveraendert seit Accepted — NICHT in gates
 
 # Verifiziert die vendored Baseline netzlos, in zwei Schritten: `sha256sum -c`
 # über SHA256SUMS fängt geänderte und gelöschte Dateien, ein Vollständigkeits-
