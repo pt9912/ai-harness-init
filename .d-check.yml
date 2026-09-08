@@ -43,24 +43,32 @@ planning:
   marker: "Nichts in Arbeit."
 # ignore-refs (referenz-weit, geteilt seit d-check 0.49.0 — links, anchors und codepaths
 # honorieren denselben Top-Level-Schluessel): nimmt benannte Referenzen aus, keine Datei.
-# in und refs sind je auf einen Dateinamen geschnitten; aus der Pruefung faellt nur, was beide
-# gemeinsam treffen. Der Rumpf von MR-021 traegt einen Markdown-Link in den abgeloesten
-# Baseline-Baum: der Satz um ihn herum ist nur ueber jenen Stand wahr, die adoptierte Baseline
-# sagt an derselben Zeile das Gegenteil, und der Rumpf des Eintrags ist append-only eingefroren.
-# Warum daraus eine Ausnahme folgt und keine Reparatur, steht in ADR-0026.
+# in und refs sind je ein Dateiname ODER ein Glob (ADR-0039 Festlegung 1); aus der Pruefung
+# faellt nur, was beide gemeinsam treffen. Der Rumpf von MR-021 traegt einen Markdown-Link in
+# den abgeloesten Baseline-Baum: der Satz um ihn herum ist nur ueber jenen Stand wahr, die
+# adoptierte Baseline sagt an derselben Zeile das Gegenteil, und der Rumpf des Eintrags ist
+# append-only eingefroren. Warum daraus eine Ausnahme folgt und keine Reparatur, steht in
+# ADR-0026.
 # Der Eintrag laesst die Datei im Pruefbereich — die gepruefte Datei-Zahl bewegt sich durch ihn
-# nicht. Wie viele Referenzen ein Paar wirklich stumm schaltet, misst weder diese Config noch
-# docs-check: ein zu breiter Eintrag ist genauso gruen wie ein enger. Das misst
-# test/ignore-refs-restbreite.bats (in make gates) — mehr als ein Link je Paar faerbt rot.
-# GRENZE, keine Regel: EXTENSIONAL GESCHLOSSEN auf dieses eine Paar (ADR-0026). Jeder weitere
-# Eintrag, jedes weitere Glob und jede Verbreiterung auf ein Verzeichnis ist eine neue Senkung
-# nach AGENTS.md 3.5 und braucht ihre eigene ADR — auch dann, wenn sie dieselbe Bedingung
-# erfuellt.
+# nicht. Wie viele Referenzen ein Eintrag wirklich stumm schaltet, misst weder diese Config noch
+# docs-check: ein zu breiter Eintrag ist genauso gruen wie ein enger. Jeder Eintrag deklariert
+# darum an seinem Ort per "# Deckung: N", wie viele Markdown-Links er deckt (ADR-0039
+# Festlegung 2); test/ignore-refs-restbreite.bats (in make gates) haelt beide Richtungen —
+# mehr ODER weniger als N faerbt rot, eine fehlende Deklaration ebenso, und "Deckung: 0" ist
+# eine Deklaration und keine fehlende.
+# GRENZE, keine Regel: die vier Paare MR-021/ADR-0026/ADR-0027/ADR-0030/ADR-0034 sind je
+# EXTENSIONAL GESCHLOSSEN auf ihr eigenes Paar; die drei Baum-Eintraege aus ADR-0039 sind
+# EXTENSIONAL GESCHLOSSEN auf genau die drei dort genannten Quell-Baeume und den einen
+# `refs`-Wert `.harness/baseline/**`. Jeder weitere Eintrag, jedes weitere Glob und jede
+# Verbreiterung ist eine neue Senkung nach AGENTS.md 3.5 und braucht ihre eigene ADR — auch
+# dann, wenn sie dieselbe Bedingung erfuellt.
 ignore-refs:
   # Quell-Schluessel: der Rumpf von MR-021 liegt seit dem Umzug in seiner eigenen Datei; die
   # ausgenommene Referenz ist dieselbe (ADR-0032 zieht den Schluessel nach und supersedet dafuer
   # die Entscheidung aus ADR-0026 in diesem einen Wert). Das relative Ziel steht eine Ebene
   # tiefer, das aufgeloeste ist unveraendert.
+  # GRENZE, keine Regel: EXTENSIONAL GESCHLOSSEN auf dieses eine Paar (ADR-0026).
+  # Deckung: 1
   - in: "harness/conventions/MR-021-das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben.md"
     refs: [".harness/baseline/v3.5.2/regelwerk/modul-08-agentenrollen.md"]
   # Zweites Paar, eigene Entscheidung (ADR-0027). docs/plan/adr/0026-eingefrorene-referenz-
@@ -74,9 +82,7 @@ ignore-refs:
   # Quelldatei lebt. Der Kommentar steht eingerueckt, weil test/ignore-refs-restbreite.bats den
   # Top-Level-Block an der ersten Zeile in Spalte 0 enden laesst.
   # GRENZE, keine Regel: EXTENSIONAL GESCHLOSSEN auf dieses eine zusaetzliche Paar (ADR-0027).
-  # Die Grenze des Paares darueber gilt unveraendert weiter; ein drittes Paar ist eine neue
-  # Senkung nach AGENTS.md 3.5 und braucht seine eigene ADR — auch dann, wenn es dieselbe
-  # Bedingung erfuellt.
+  # Deckung: 1
   - in: "docs/plan/adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md"
     refs: ["docs/plan/carveouts/CO-005-adaptions-block-datierter-beleg.md"]
   # Drittes Paar, eigene Entscheidung (ADR-0030). docs/plan/adr/0018-ziel-fassung-regiert-die-
@@ -91,12 +97,11 @@ ignore-refs:
   # zweite Referenz. Sie ist hier gemessen (ein Code-Span, null Markdown-Links), aber NICHT
   # bewacht: test/ignore-refs-restbreite.bats zaehlt nur die Inline-Markdown-Form und sieht die
   # Code-Span-Achse nicht — es zaehlt fuer dieses Paar null und ist gruen, ohne gemessen zu haben.
-  # Das ist ADR-0030 Folgepflicht 2, eine benannte Luecke und keine behauptete Deckung.
+  # Das ist ADR-0030 Folgepflicht 2, eine benannte Luecke und keine behauptete Deckung. Die
+  # Deklaration unten misst dieselbe Markdown-Achse wie der Waechter und traegt darum 0, nicht
+  # die (unbewachte) Code-Span-Referenz.
   # GRENZE, keine Regel: EXTENSIONAL GESCHLOSSEN auf dieses eine zusaetzliche Paar (ADR-0030).
-  # Die Grenzen der zwei Paare darueber gelten unveraendert weiter; ein viertes Paar ist eine neue
-  # Senkung nach AGENTS.md 3.5 und braucht seine eigene ADR — auch dann, wenn es dieselbe
-  # Bedingung erfuellt. Das gilt namentlich fuer den geladenen zweiten Fall der Klasse, den
-  # ADR-0030 im Kontext benennt und ausdruecklich NICHT mitnimmt.
+  # Deckung: 0
   - in: "docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md"
     refs: ["docs/plan/planning/welle-10-re-baseline.md"]
   # Viertes Paar, eigene Entscheidung (ADR-0034). docs/plan/adr/0028-anweisungssatz-gehoert-der-
@@ -110,12 +115,30 @@ ignore-refs:
   # die geschriebene, relative Form traegt nicht (ADR-0034, Sonden-Tabelle).
   # Die Restbreite dieses Paares ist strukturell null: eine eingefrorene Datei bekommt keine
   # zweite Referenz.
-  # GRENZE, keine Regel: EXTENSIONAL GESCHLOSSEN auf dieses eine zusaetzliche Paar (ADR-0034). Die
-  # Grenzen der drei Paare darueber gelten unveraendert weiter; ein fuenftes Paar ist eine neue
-  # Senkung nach AGENTS.md 3.5 und braucht seine eigene ADR — auch dann, wenn es dieselbe
-  # Bedingung erfuellt.
+  # GRENZE, keine Regel: EXTENSIONAL GESCHLOSSEN auf dieses eine zusaetzliche Paar (ADR-0034).
+  # Deckung: 1
   - in: "docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md"
     refs: ["docs/plan/planning/observations.md"]
+  # Fuenftes bis siebtes Paar, eine Entscheidung zu dritt (ADR-0039 Festlegung 1): je einer der
+  # drei einfrierenden Baeume (Review-Report, geschlossener Slice/Welle-Plan, Beobachtungs-
+  # Register) traegt Adressen in den vendored Baum, die mit jedem Tag-Wechsel toben, weil das
+  # Verzeichnis <tag>-gescoped ist und niemand die Zeitdokumente mehr anfassen darf (AGENTS.md
+  # 3.4/3.11). `refs` ist BAUM-weit (`.harness/baseline/**`), nicht tag-weit: die Eigenschaft, die
+  # das Ventil rechtfertigt, ist "zeigt in ein <tag>-gescoptes Vendoring-Verzeichnis", nicht "zeigt
+  # auf v6.0.0" — ein tag-weiter Wert kostete bei jedem Bump drei neue Eintraege und eine neue ADR.
+  # Warum daraus eine Ausnahme folgt und keine Reparatur, steht in ADR-0039.
+  # GRENZE, keine Regel: EXTENSIONAL GESCHLOSSEN auf genau diese drei Quell-Baeume und diesen
+  # einen `refs`-Wert (ADR-0039 Festlegung 3). Ein vierter Baum, ein anderer `refs`-Wert und jede
+  # Verbreiterung sind eine neue Senkung nach AGENTS.md 3.5 und brauchen ihre eigene ADR.
+  # Deckung: 33
+  - in: "docs/reviews/**"
+    refs: [".harness/baseline/**"]
+  # Deckung: 3
+  - in: "docs/plan/planning/done/**"
+    refs: [".harness/baseline/**"]
+  # Deckung: 2
+  - in: "docs/plan/planning/observations/**"
+    refs: [".harness/baseline/**"]
 # Kennungen sind linkpflichtig (auch in Inline-Code, link-policy: always) —
 # "klickbar zur Quelle" als gemessenes Property. Literal-schwere Artefakte
 # (Review-Reports, CHANGELOG) ausgenommen.
