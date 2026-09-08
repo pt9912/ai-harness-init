@@ -35,8 +35,8 @@ Er ändert die Konfiguration eines Gates und den Maßstab eines Wächters, und b
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) steht im
 Bezug als **Vertrag**, nicht als berührte Stelle — der Slice erfüllt ihn, er ändert ihn nicht.
 
-**Verantwortlich:** — (bis zur Priorisierung; die Arbeit ist Implementer-Arbeit,
-[`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) §Kopplung).
+**Verantwortlich:** Implementer (pt9912) — die Arbeit ist Implementer-Arbeit,
+[`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) §Kopplung.
 
 **Autor:** Planner. **Datum:** 2026-09-07.
 
