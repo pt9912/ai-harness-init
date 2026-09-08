@@ -80,6 +80,47 @@ Verzeichnis-Modus dieser Ablage) ist ebenfalls verfügbar und nicht aktiviert; a
 führt die Lücke als offene Beobachtung, mit einer Drift-Log-Zeile in
 [`roadmap.md`](../docs/plan/planning/in-progress/roadmap.md) daneben.
 
+**Was `codepaths` an toten Pfaden in den vendored Baum nicht sieht**
+([slice-201](../docs/plan/planning/in-progress/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)):
+`codepaths.roots: [spec, docs, harness]` ist eine Liste von Wurzel-**Präfixen** — ein
+Inline-Code-Pfad wird nur existenzgeprüft, wenn er mit einem dieser drei Strings oder mit
+`./`/`../` beginnt. Ein Pfad unter `.harness/baseline/` beginnt mit `.harness`, nicht mit
+`harness`, und liegt damit außerhalb dieser Liste: ein erfundener Dateiname dort bleibt stumm,
+derselbe erfundene Dateiname unter `harness/` färbt `codepath-missing` — gemessen an einem
+hermetischen Sonden-Paar über dem in [`d-check.mk`](../d-check.mk) gepinnten Digest. Ein toter
+Inline-Baseline-Pfad in einem **lebenden** Artefakt (etwa
+[`harness/conventions.md`](conventions.md)) bleibt darum dauerhaft gate-unsichtbar.
+
+**Die naheliegende Reparatur — `.harness` als vierten Präfix aufnehmen — ist gemessen und
+verworfen, nicht übersehen:**
+
+```sh
+DIGEST=$(grep -oE 'DCHECK_DIGEST \?= sha256:[0-9a-f]+' d-check.mk | cut -d' ' -f3)
+git clone --local --no-hardlinks . /tmp/probe-fresh    # keine .harness/state/, wie ein frischer Klon
+sed -i 's/roots: \[spec, docs, harness\]/roots: [spec, docs, harness, .harness]/' /tmp/probe-fresh/.d-check.yml
+docker run --rm --network none -v /tmp/probe-fresh:/repo:ro "ghcr.io/pt9912/d-check@${DIGEST}" \
+  | grep -c codepath-missing   # 122 -- kein Erwartungswert, wandert mit dem Bestand
+```
+
+**122** zusätzliche Befunde, fast alle aus drei Klassen, die kein Bug sind: content-gefrorene
+Verweise auf abgelöste Baseline-Tags in den einzelnen `harness/conventions/`-Einträgen
+(append-only seit
+[`MR-020`](conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)/[`MR-032`](conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger))
+· Pfade eines abgelösten Mechanismus (unter `.harness/cache/`, abgelöst von
+[`MR-007`](conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) · der
+gitignorierte Laufzeit-Ort `.harness/state/`, den [`spec/architecture.md`](../spec/architecture.md)
+und [`spec/spezifikation.md`](../spec/spezifikation.md#5-metriken-und-tracing-felder) als
+kanonische Adresse führen, obwohl er auf einem frischen Checkout nicht existiert. Ein Prüfer, der
+nur den gesuchten Fall trifft — einen toten Pfad unter dem **aktuellen** Baseline-Tag in einem
+lebenden Artefakt —, bräuchte für jede dieser drei Klassen eine eigene, gemessene Ausnahme:
+dieselbe Apparatur, die
+[`ADR-0039`](../docs/plan/adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) für die
+**Link**-Form von genau drei einfrierenden Bäumen gebaut hat, hier aber zusätzlich für eine
+vierte, nicht einfrierende Klasse (gitignorierte Laufzeit-Pfade in kanonischen Spec-Dokumenten).
+Das ist außerhalb des Umfangs eines einzelnen Slice und bleibt eine **benannte Lücke**: ein toter
+Inline-Pfad unter `.harness/baseline/` in einem lebenden Artefakt bleibt gate-unsichtbar, bis ein
+Folge-Slice diese drei Ausnahme-Klassen einzeln trägt.
+
 **Was `comment-claims` nicht deckt — benannt, weil eine Vollständigkeits-Zeile („N Datei(en) geprueft, 0 Befund(e)") sonst mehr behauptet als sie trägt** (Review-Befund HIGH-1 vom 2026-07-30; die hier zuerst stehende Zählung „an **zwei** Stellen" war selbst zu eng und ist in Runde 2 korrigiert worden): der Prüfbereich entsteht im Rezept aus `git ls-files` und ist an **drei** Stellen enger als der Gate-Stempel, den `record-gates` über den Arbeitsbaum legt (`harness/tools/working-tree-hash.sh`: `--cached --others --exclude-standard`).
 
 1. **Nur der Index.** `git ls-files` ohne `--others`: eine neu angelegte, noch **untrackte** Datei liegt innerhalb des bestätigten Baum-Zustands und außerhalb des Prüfbereichs — sie wird erst nach ihrem ersten `git add` geprüft.

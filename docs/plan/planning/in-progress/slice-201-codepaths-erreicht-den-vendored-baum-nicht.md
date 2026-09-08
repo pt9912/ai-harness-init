@@ -91,47 +91,67 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Die Ursache ist gemessen, nicht gelesen.** Ein Sonden-Paar über einer Kopie **außerhalb**
-      des Repos, gefahren mit dem in [`d-check.mk`](../../../../d-check.mk) gepinnten Digest: ein
-      erfundener Inline-Pfad in einem lebenden Artefakt **unter** `.harness/baseline/` und
-      derselbe **außerhalb**. Der Lauf-Bericht nennt beide Ausgaben. Ergibt die Sonde eine andere
-      Ursache als `roots` — etwa ein Ventil oder `scan.ignore` —, ist **das** der Befund, und §1 ist
-      falsch gewesen; die Vermutung steht dort ausdrücklich als Vermutung.
-- [ ] **Der Ausgang ist gewählt und belegt: Prüfer oder benannte Grenze.**
-      *Prüfer* heißt, `codepaths` erreicht `.harness/baseline/**` und der tote Inline-Pfad färbt rot
-      — das ist ein **Gate-Anheben** und damit ein Steering-Loop, kein ADR
-      ([`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids));
-      der Bestand ist vorher zu messen, weil die Anhebung ihn sichtbar macht.
-      *Benannte Grenze* heißt, [`harness/README.md`](../../../../harness/README.md) §Sensors sagt an
-      der Stelle, an der `docs-check` seine Fläche beschreibt, **was es nicht sieht** — in derselben
-      Form, in der es das für `make comment-claims` bereits tut. **Ein dritter Ausgang existiert
-      nicht:** Wird weder geprüft noch benannt, bleibt eine Vollständigkeits-Zeile stehen, die mehr
-      behauptet als sie trägt
-      ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-- [ ] **Das Gegenbeispiel ist rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6), und **wovon**
-      hängt vom Ausgang ab — der Lauf-Bericht nennt beides, Fall und gelesene Meldung.
-      Beim *Prüfer*: ein toter Inline-Baseline-Pfad in einem lebenden Artefakt färbt `docs-check`
-      rot, und ein **auflösender** bleibt grün — die Gegenprobe, ohne die der Prüfer auch
-      pauschal röten könnte.
-      Bei der *benannten Grenze*: die Grenze ist mit demselben Sonden-Paar aus Liefer-Punkt 1
-      belegt, und der Text sagt sie als Lücke, nicht als Deckung. **Eine benannte Grenze ohne
-      gemessenes Loch ist eine Behauptung** und erfüllt den Liefer-Punkt nicht.
-- [ ] `make gates` grün.
+- [x] **Die Ursache ist gemessen, nicht gelesen.** Sonden-Paar über einer Kopie **außerhalb** des
+      Repos, gefahren mit dem in [`d-check.mk`](../../../../d-check.mk) gepinnten Digest
+      (`sha256:e31a372b…`, Modul `codepaths` isoliert aktiviert): drei Dokumente mit je einem
+      erfundenen Inline-Pfad — *harness/does-not-exist-201.md* (**außerhalb**),
+      *.harness/baseline/v6.0.0/regelwerk/does-not-exist-201.md* (**innerhalb**, mit `/baseline`-
+      Segment) und *.harness/does-not-exist-201-c.md* (**innerhalb**, ohne `/baseline`-Segment,
+      also **nicht** von `scan.ignore: [".harness/baseline/**"]` erfasst). Ergebnis:
+      **1 Befund(e)** — nur der außerhalb liegende Pfad färbt `codepath-missing`; beide
+      `.harness`-Pfade bleiben stumm, auch der ohne `/baseline`-Segment. Die Gegenprobe: dieselbe
+      Kopie mit `codepaths.roots: [spec, docs, harness, .harness]` meldet **3 Befund(e)** — alle
+      drei, inklusive beider `.harness`-Pfade. Die Ursache ist damit **`roots` als
+      Präfix-Zeichenkette**, nicht `scan.ignore` (das hätte den `/baseline`-losen Pfad nicht
+      erklärt) und kein Ventil — §1s Vermutung bestätigt sich als Messung, nicht als Lesart.
+- [x] **Der Ausgang ist gewählt und belegt: benannte Grenze.** Die naheliegende Reparatur —
+      `.harness` als vierten `roots`-Präfix — ist gemessen und verworfen: über einem **frischen
+      Klon** (`git clone --local --no-hardlinks`, kein `.harness/state/`) meldet sie **122**
+      zusätzliche `codepath-missing`-Befunde, dominiert von drei Klassen, die keine Bugs sind —
+      content-gefrorene Verweise auf abgelöste Baseline-Tags in `harness/conventions/MR-*.md`
+      (append-only, [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)/[`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)),
+      Pfade des abgelösten Cache-Mechanismus (`.harness/cache/`,
+      [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)),
+      und der gitignorierte Laufzeit-Ort `.harness/state/`, den
+      [`spec/architecture.md`](../../../../spec/architecture.md) und
+      [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder)
+      als kanonische Adresse führen, obwohl er auf einem frischen Checkout nicht existiert. Ein
+      Prüfer, der nur den gesuchten Fall trifft, bräuchte für jede der drei Klassen eine eigene,
+      gemessene Ausnahme — dieselbe Apparatur, die
+      [`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) für die
+      **Link**-Form von drei einfrierenden Bäumen gebaut hat, hier aber zusätzlich für eine
+      vierte, nicht einfrierende Klasse (gitignorierte Laufzeit-Pfade in kanonischen
+      Spec-Dokumenten). Das sprengt den Umfang eines ≤3-Liefer-Punkte-Slice (§1 dritter
+      Ausschluss). [`harness/README.md`](../../../../harness/README.md) §Sensors nennt die Lücke
+      jetzt an der Stelle, an der `docs-check` seine Fläche beschreibt — in derselben Form wie für
+      `make comment-claims`.
+- [x] **Das Gegenbeispiel ist rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Bei der
+      *benannten Grenze*: dasselbe Sonden-Paar aus Liefer-Punkt 1 belegt das gemessene Loch — der
+      erfundene Pfad `.harness/baseline/v6.0.0/regelwerk/does-not-exist-201.md` bleibt in
+      `docs-check` stumm (0 Befund für diese Zeile), während derselbe Dateiname unter `harness/`
+      `codepath-missing` färbt. Der README-Text sagt das als Lücke — „bleibt darum dauerhaft
+      gate-unsichtbar" — nicht als Deckung.
+- [x] `make gates` grün. EXIT 0 nach Anpassung des Ruhe-Markers in [`roadmap.md`](roadmap.md)
+      (mechanische Folge des `slice-mv` nach `in-progress/`, kein DoD-Punkt dieses Slice);
+      `docs-check` 976/0 vor und nach der README-Änderung.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update für <Schnittstelle X> falls öffentlicher Vertrag berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register fortgeschrieben, **falls dieser Slice einen Inventur-Fund auflöst** —
-      Zeile mit Datum und auflösendem Artefakt nach *Aufgelöste Einträge* verschoben. **Entfällt
-      hier:** Repos ohne Brownfield-Bootstrap haben die Datei nicht, und dieses führt sie nicht
-      (`ls docs/plan/planning/reconciliation.md` → nicht vorhanden). Der Pfad steht als
-      **Kommando-Operand**, weil die vendored Vorlage ihn als blanken Inline-Code führt und
-      `codepaths` ihn dann als fehlendes Ziel meldet — **genau das Modul, dessen Reichweite dieser
-      Slice zum Gegenstand hat**, hier auf der Achse, auf der es greift.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Doku-Update: [`harness/README.md`](../../../../harness/README.md) §Sensors trägt den neuen
+      Absatz "Was `codepaths` an toten Pfaden in den vendored Baum nicht sieht" mit reproduzierbarem
+      Mess-Kommando für die 122.
+- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag. **Planner-Arbeit** (`AGENTS.md` §3.10).
+- [x] Reconciliation-Register fortgeschrieben, **falls dieser Slice einen Inventur-Fund auflöst** —
+      **entfällt**, wie im Slice-Kopf begründet: Repos ohne Brownfield-Bootstrap haben die Datei
+      nicht (`ls docs/plan/planning/reconciliation.md` → nicht vorhanden).
+- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben. **Planner-Arbeit** (`AGENTS.md`
+      §3.10, Schritt 25 des Implement-Workflows) — Befund für §7: keine neue Beobachtung, siehe
+      Bericht an den Planner.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+      **Planner-Arbeit** bei Closure.
+- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne**
+      Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für
+      Slices ohne Wellen-Zugehörigkeit). **Planner-Arbeit.**
 
 ## 3. Plan (vor Code)
 
