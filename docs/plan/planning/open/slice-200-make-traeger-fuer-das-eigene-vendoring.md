@@ -149,7 +149,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 Slice fasst `Makefile`, `cmd/` und Gate-Beschreibungen an; auf rotem Baum ist nicht unterscheidbar,
 ob sein eigener Stand rot färbt oder der geerbte. Diese Bedingung ist am Tag dieses Plans
 **unerfüllt** (36 Befunde, `make docs-check`), und das ist die gewollte Wirkung: Der Slice wartet
-auf [slice-197](../next/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md).
+auf [slice-197](../in-progress/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md).
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 

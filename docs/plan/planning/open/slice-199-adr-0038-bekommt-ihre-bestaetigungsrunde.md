@@ -166,7 +166,7 @@ Plans erfüllt und steht hier als Bedingung, nicht als ihr heutiger Wert.
 **Keine Bedingung gegen den Baum-Tausch.** Der Slice prüft eine **Entscheidung**, nicht deren
 Vollzug — er ist von
 [slice-193](../done/slice-193-baum-tausch-v650-pins-ziehen.md),
-[slice-197](../next/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md) und
+[slice-197](../in-progress/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md) und
 [slice-198](slice-198-hard-rule-311-nennt-den-vendored-baum.md) unabhängig. **Das ist der Punkt und
 kein Nebeneffekt:** Der Vollzug ist bereits gelaufen, ohne dass der Trigger belegt war; die Runde
 holt den zweiten Kontext nach, den er verlangte.
