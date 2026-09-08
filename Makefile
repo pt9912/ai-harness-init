@@ -345,10 +345,14 @@ archive-welle: host-bin ## Zeitdokumente einer geschlossenen Welle archivieren (
 # NACH demselben Lauf.
 #
 # Die Faehigkeit liegt vollstaendig in internal/fetch.Baseline (LH-FA-09) und
-# hatte bislang genau einen Aufrufer, den Init-Pfad fuer Zielrepos; die Logik
-# ist damit von `make test` und `make lint` gedeckt, dieses Ziel ist nur ihr
-# zweiter Aufrufer. KONVERGENT (ADR-0007): ein vorhandenes <tag>-Verzeichnis
-# wird ersetzt, kein zweites legt sich daneben (MR-007 Setzung 4).
+# hat ausserhalb der Tests zwei Aufrufer: den Init-Pfad fuer Zielrepos und
+# dieses Ziel, fuer den eigenen Baum; die Logik ist von `make test` und
+# `make lint` gedeckt. KONVERGENT (ADR-0007): ein vorhandenes <tag>-Verzeichnis,
+# das GENAU dem uebergebenen Tag entspricht, wird ersetzt, kein zweites legt
+# sich daneben (MR-007 Setzung 4). Liegt statt dessen ein ANDERER Tag da (ein
+# Tag-Bump), bricht der Lauf VOR jedem Zugriff ab, statt das zweite
+# Verzeichnis zu erzeugen — dieses Ziel vendort nur den uebergebenen Tag neu,
+# einen Tag-Wechsel zieht es nicht nach.
 #
 # Tag und sha256 kommen als ARGUMENTE aus den KANONISCHEN Makefile-Variablen
 # BASELINE_TAG/BASELINE_ZIP_SHA256 — kein zweiter, eingebetteter Wert. Weicht

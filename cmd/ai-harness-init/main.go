@@ -84,8 +84,10 @@ Subkommando vendor-baseline <tag> <sha256>:
   Legt den vendored Baum DIESES Repos (.harness/baseline/<tag>/) aus dem
   verifizierten Release-Asset an — sha256 gegen <sha256> pruefen, regelwerk/
   UND templates/ entpacken, SHA256SUMS schreiben. KONVERGENT (ADR-0007): ein
-  vorhandenes <tag>-Verzeichnis wird ersetzt, kein zweites legt sich daneben.
-  Bricht der sha256-Pin, bleibt ein bestehender Baum unveraendert.
+  vorhandenes <tag>-Verzeichnis, das GENAU <tag> heisst, wird ersetzt. Liegt
+  statt dessen ein ANDERER Tag da (Tag-Bump), bricht der Lauf VOR jedem
+  Zugriff ab, statt ein zweites Verzeichnis anzulegen. Bricht der sha256-Pin,
+  bleibt ein bestehender Baum ebenso unveraendert.
 
 Umgebung (bewusster Opt-in-Override der gepinnten Werte — LH-QA-02):
   COURSE_TAG        Kurs-Version für die Baseline (Regelwerk + Templates)

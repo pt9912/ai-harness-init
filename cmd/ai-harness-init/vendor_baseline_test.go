@@ -138,6 +138,50 @@ func TestVendorBaselineMit_SHA256MismatchNichtsVeraendert(t *testing.T) {
 	}
 }
 
+// TestVendorBaselineMit_AndererTagBrichtAbOhneSchreibzugriff: liegt unter
+// baselineDir(root) ein Verzeichnis, das NICHT dem angeforderten Tag
+// entspricht (Tag-Bump), bricht der Lauf VOR jedem Netz-Zugriff und VOR jedem
+// Schreibzugriff ab — kein zweites <tag>-Verzeichnis legt sich daneben
+// (MR-007 Setzung 4), der vorhandene fremde Tag bleibt byte-gleich, und
+// v6.5.0 wird nicht angelegt.
+func TestVendorBaselineMit_AndererTagBrichtAbOhneSchreibzugriff(t *testing.T) {
+	root := t.TempDir()
+	alt := filepath.Join(baselineDir(root), "v6.0.0", "regelwerk")
+	if err := os.MkdirAll(alt, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	marker := filepath.Join(alt, "README.md")
+	if err := os.WriteFile(marker, []byte("alter tag, unveraendert"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	angefragt := false
+	fetchFn := fetch.AssetFetch(func(context.Context, string) (io.ReadCloser, error) {
+		angefragt = true
+		return nil, errors.New("darf nicht laufen")
+	})
+	var out, errb strings.Builder
+	code := vendorBaselineMit([]string{"v6.5.0", "deadbeef"}, func() (string, error) { return root, nil }, fetchFn, &out, &errb)
+	if code != 1 {
+		t.Fatalf("Exit %d, want 1 (anderer Tag vorhanden)", code)
+	}
+	if angefragt {
+		t.Error("Asset-Fetch lief trotz anderem Tag-Verzeichnis")
+	}
+	if out.Len() != 0 {
+		t.Errorf("stdout nicht leer trotz Abbruch: %q", out.String())
+	}
+	if !strings.Contains(errb.String(), "v6.0.0") {
+		t.Errorf("stderr nennt den gefundenen fremden Tag nicht: %q", errb.String())
+	}
+	if _, err := os.Stat(filepath.Join(baselineDir(root), "v6.5.0")); !os.IsNotExist(err) {
+		t.Errorf("v6.5.0 wurde trotz Abbruch angelegt: %v", err)
+	}
+	got, err := os.ReadFile(marker)
+	if err != nil || string(got) != "alter tag, unveraendert" {
+		t.Errorf("der fremde Tag wurde veraendert: %v, %q", err, got)
+	}
+}
+
 // TestVendorBaselineMit_WurzelFehler: findet der Lauf keine Repo-Wurzel, ist
 // das ein Laufzeit-Fehler (Exit 1) — kein Netz-Fetch wird versucht.
 func TestVendorBaselineMit_WurzelFehler(t *testing.T) {
@@ -196,9 +240,11 @@ func TestVendorBaselineHelp(t *testing.T) {
 // main()-Zweig als PROZESS: ohne <tag>/<sha256> endet der Traeger mit Exit 2
 // (Aufruf-Fehler), schreibt nichts auf stdout und laesst das Arbeitsverzeichnis
 // unberuehrt — dieselbe Zusage wie
-// TestSubkommandoRouting_ArchiveWelleFaelltNichtInDenInitPfad. Ohne den `case`
-// waere der Name in run() ein Positionsargument, und der Init-Pfad schriebe in
-// das Arbeitsverzeichnis.
+// TestSubkommandoRouting_ArchiveWelleFaelltNichtInDenInitPfad. Die Sperre in
+// run() (main.go:176) beantwortet JEDES Positionsargument gleich (Exit 2,
+// leeres stdout, kein Schreibzugriff) — dieser Fall unterscheidet darum NICHT,
+// ob der `case` im Dispatch steht oder fehlt; das haelt
+// test/unterkommando-kopplung.bats, das faerbt rot, wenn der `case` fehlt.
 func TestSubkommandoRouting_VendorBaselineFaelltNichtInDenInitPfad(t *testing.T) {
 	root := newRoot(t)
 	stdout, err := runChild(t, root, "vendor-baseline", "")
