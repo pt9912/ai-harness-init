@@ -116,6 +116,15 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 - [ ] Die drei Zustände **arbeitet · STILL · POLLING** werden über einem realen Strom
       unterschieden, mit einem Fenster als Parameter.
+- [ ] **STILL trägt seine gemessene Grenze in der Ausgabe, nicht nur im Plan.** Der Strom führt
+      **kein Ende-Ereignis** — verdrahtet sind `PostToolUse`, `PostToolUseFailure` und
+      `SubagentStart`, keines davon markiert einen Abschluss
+      (`cat .harness/state/spans/*.jsonl | grep -oE '"event":"[^"]*"' | cut -d'"' -f4 | sort | uniq -c`;
+      keine Erwartungswerte). Ein **beendeter** Lauf ist damit von einem **hängenden** nicht zu
+      unterscheiden: Die Information steht nicht im Strom, also kann keine Auswertung sie
+      herstellen. STILL sagt deshalb *„keine Aktivität im Fenster"* und **nicht** *„hängt"* —
+      wer es anders beschriftet, sagt etwas zu, das seine Datenlage nicht trägt
+      ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 - [ ] **Die Polling-Schwelle trägt beide Richtungen, je einmal rot gesehen**
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6): (a) ein Strom mit dem gemessenen Muster wird
       als POLLING gemeldet; (b) ein **legitimer** Lauf, der zurecht oft denselben Gegenstand
@@ -211,6 +220,12 @@ dasteht.
   denselben Bestand; „der jüngste Strom" kann der eigene sein. — **Ausgang:** <offen>
 - **Ein Bericht ohne Sensor altert unbemerkt.** Ändert sich die Feld-Form des Schemas, meldet
   nichts, dass die Kopfzeile leer läuft — genau der Defekt, den der Prototyp bereits hat.
+  — **Ausgang:** <offen>
+- **STILL ist ohne Ende-Ereignis Rauschen, und das ist gemessen.** Der Prototyp meldete an einem
+  Tag dreimal Fehlalarm (zweimal STILL, einmal POLLING) auf Läufe, die **fertig** waren, nicht
+  hängend. Die Ursache liegt außerhalb dieses Slice: Der Strom trägt kein Ende. Adresse ist
+  [slice-205](slice-205-der-strom-traegt-die-zug-grenze.md), und **dieser Slice wartet nicht
+  darauf** — POLLING trägt ohne das Ereignis vollständig, STILL trägt mit der Beschriftung aus §2.
   — **Ausgang:** <offen>
 
 ## 7. Closure-Notiz
