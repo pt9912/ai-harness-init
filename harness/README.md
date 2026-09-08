@@ -128,8 +128,9 @@ gemessene Ausnahme: dieselbe Apparatur, die
 **Link**-Form von genau drei einfrierenden Bäumen gebaut hat, hier aber zusätzlich für eine
 vierte, nicht einfrierende Klasse (gitignorierte Laufzeit-Pfade in kanonischen Spec-Dokumenten).
 Das ist außerhalb des Umfangs eines einzelnen Slice und bleibt eine **benannte Lücke**: ein toter
-Inline-Pfad unter `.harness/baseline/` in einem lebenden Artefakt bleibt gate-unsichtbar, bis ein
-Folge-Slice diese drei Ausnahme-Klassen einzeln trägt.
+Inline-Pfad unter `.harness/baseline/` in einem lebenden Artefakt bleibt gate-unsichtbar, bis
+[slice-202](../docs/plan/planning/open/slice-202-der-tote-inline-pfad-unter-harness-bekommt-seinen-pruefer.md)
+diese Ausnahme-Klassen einzeln trägt.
 
 **Die 102 sind nicht die ganze Entlastung.** Unter den 30 Treffern, deren Ziel mit
 `.harness/baseline/` beginnt —
