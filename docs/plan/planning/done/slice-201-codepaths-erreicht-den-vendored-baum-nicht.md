@@ -132,7 +132,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Slice zum Gegenstand hat**, hier auf der Achse, auf der es greift.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -266,7 +266,7 @@ Backticks).
   3×). Verkörpern ist Architect-Arbeit
   ([`AGENTS.md`](../../../../AGENTS.md) §3.8) und gehört an den Lese-Schritt der nächsten
   Welle-Closure; dieser Eintrag ist damit **gezählt, nicht verkörpert**.
-- **Beobachtungs-Register (`../observations/`):** sieben `evidence/slice-201.md` ergänzt, Zähler
+- **Beobachtungs-Register (`../observations/`):** acht `evidence/slice-201.md` ergänzt, Zähler
   als Dateizahl abgelesen
   (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`, keine
   Erwartungswerte) — `zahl-ohne-kommando-trifft-ihren-gegenstand-nicht` **3×** ·
@@ -275,10 +275,12 @@ Backticks).
   `zusage-neben-geaenderter-ableitung-bleibt-stehen` **18×** ·
   `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch` **5×** ·
   `gate-modul-erreicht-den-vendored-baum-nicht` **2×** ·
-  `benannte-luecke-ohne-ausgang` **1×** (erster Beleg; der Eintrag stand ohne). Die `state.md` von
+  `benannte-luecke-ohne-ausgang` **1×** (erster Beleg; der Eintrag stand ohne) ·
+  `verweis-nachzug-schreibt-in-eingefrorenes-artefakt` **4×** (der Closure-Move selbst schreibt in
+  den Review-Report dieses Slice). Die `state.md` von
   `gate-modul-erreicht-den-vendored-baum-nicht` trägt jetzt die gemessene Ableitung und slice-202
   als Adresse; ihre `observation.md` bleibt unverändert, sie ist ab Anlage unveränderlich.
-  **Fünf der sieben Einträge stehen bei der Schwelle oder darüber** — der Lese-Schritt gehört im
+  **Sechs der acht Einträge stehen bei der Schwelle oder darüber** — der Lese-Schritt gehört im
   Wellen-Betrieb der Welle-Closure, auch für Slices ohne Wellen-Zugehörigkeit
   (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht); diese Closure zählt,
   sie entscheidet nicht.
@@ -287,7 +289,19 @@ Backticks).
   (Der tote Inline-Pfad unter `.harness/` bekommt seinen Prüfer) — ist eine Datei in `open/`.
 - **Risiken aus §6:** vier Risiken, vier Ausgänge — zwei *entfallen* mit Begründung, zwei
   *eingetreten* mit slice-202 als Adresse; siehe §6.
-- **Drei Paarungen:** stehen nach dem `git mv` — letztes DoD-Item in §2.
+- **Drei Paarungen:** nach dem `git mv` geprüft. **(a) Anker** — der Steering-Loop-Eintrag trägt
+  kein Feld `liegt in`, die Paarung hat damit keinen Gegenstand (gezählt, nicht verkörpert).
+  **(b) Folge-Slice** — slice-202 ist eine Datei im Lifecycle
+  (`find docs/plan/planning -name 'slice-202-*.md'` → eine Zeile, in `open/`).
+  **(c) Register** — jede zitierte Kennung löst auf; die zweite Hälfte *„jede Registerzeile trägt
+  mindestens einen Beleg"* meldet **einen** Eintrag ohne `evidence/`:
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`
+  (`for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -eq 0 ] && basename "$d"; done`).
+  Das ist **kein** Rückstand: Der Eintrag führt sein einziges Vorkommen unter *Benannt, nicht
+  gezählt*, und ein Vorkommen ohne abgeschlossenen Vorgang bekommt nach Baseline-Regelwerk
+  `modul-06-roadmap.md` §Das Beobachtungs-Register ausdrücklich keinen Beleg. Die maschinelle
+  Hälfte der Paarung und diese Regel widersprechen einander für genau diese Klasse — benannt
+  statt stillschweigend durchgewinkt.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
