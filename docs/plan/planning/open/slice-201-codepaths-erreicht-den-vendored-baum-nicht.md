@@ -68,7 +68,7 @@ jeder Lauf von Hand führen muss, ist kein Sensor.
 
 - **Die drei `ignore-refs`-Einträge für die einfrierenden Bäume.** Sie decken die **Link**-Form und
   sind eine eigene Entscheidung mit eigenem Wächter:
-  [slice-197](slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md), und diese Kennung
+  [slice-197](../next/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md), und diese Kennung
   nimmt den Punkt an. **Die zwei Vorgänge zeigen in verschiedene Richtungen** — jener schaltet
   stumm, dieser deckt auf; in einem Slice wäre am Ende nicht zu sagen, welche Hälfte welches
   Ergebnis erzeugt hat.
@@ -155,7 +155,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 Slice, der die Fläche eines Gates ändert, braucht einen grünen Ausgangsstand: Auf rotem Baum ist
 nicht unterscheidbar, ob die neue Fläche rot färbt oder die alte. Diese Bedingung ist am Tag dieses
 Plans **unerfüllt** (36 Befunde, `make docs-check`); der Slice wartet auf
-[slice-197](slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md).
+[slice-197](../next/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md).
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
