@@ -2,15 +2,18 @@
 # vcs-modul-wiring.bats — haelt das d-check-Modul `vcs` (DC-FA-VCS-001, AGENTS.md 3.4) auf den
 # Bestand dieses Repos gebunden, ohne einen Docker-Lauf. `vcs` steht NICHT in `modules:` (es
 # braucht eine Commit-Range; ein hermetischer docs-check-Lauf ohne Range liefe damit ins Leere,
-# LH-QA-01) und wird nur ueber `make adr-immutable`/`make doc-immutable` aktiviert. Zwei Felder
+# LH-QA-01) und wird nur ueber `make adr-immutable`/`make doc-immutable` aktiviert. Drei Felder
 # sind gegen den gelebten Bestand gesetzt, nicht gegen den Werkzeug-Vorschlag:
 # `exclude-sections` nimmt `Geschichte` aus dem Kern — ohne sie faengt `immutable-when` die
 # Kopfzeile nicht, sondern jede Fortschreibung faerbt rot, weil jede ADR dieses Repos mit
-# `## Geschichte` endet. `head-allow` traegt die im Bestand gelebte Link-Form des
-# Supersede-Uebergangs (`Superseded by [ADR-NNNN](...)`) statt der vom Werkzeug
-# vorgeschlagenen baren Kennung — Letztere faerbt den erlaubten Uebergang faelschlich rot
-# (gemessen in einem Wegwerf-Klon, harness/README.md traegt das Ergebnis). Dieser Waechter
-# haelt nur die KONFIGURATION gegen Regression, nicht das Verhalten des vendored Werkzeugs.
+# `## Geschichte` endet. `head-allow` ist voll verankert (^…$, kein Praefix-Match) und traegt
+# `Accepted` unveraendert, `Deprecated` (Vokabular der ADR-Vorlage) und die im Bestand gelebte
+# Link-Form des Supersede-Uebergangs (`Superseded by [ADR-NNNN](NNNN-titel.md)`) — nicht die vom
+# Werkzeug vorgeschlagene bare Kennung, und nicht einen Zusatz hinter `Accepted` (gemessen in
+# einem Wegwerf-Klon, harness/README.md traegt das Ergebnis). `status-line` markiert die eine
+# Zeile, die `head-allow` statt der vollen Kern-Unveraenderlichkeit unterliegt — ohne sie faellt
+# die Statuszeile in den Kern und jeder erlaubte Uebergang faerbt rot. Dieser Waechter haelt nur
+# die KONFIGURATION gegen Regression, nicht das Verhalten des vendored Werkzeugs.
 #
 # NETZLOS (nur Datei-Lesen), laeuft in `make gates` ueber `make test` -> `test-bats`.
 
@@ -45,8 +48,12 @@ block() {
   block | grep -qxF '  exclude-sections: [Geschichte]'
 }
 
-@test "vcs: head-allow traegt die gelebte Link-Form, nicht die bare Werkzeug-Vorgabe" {
-  block | grep -qxF "  head-allow: '^\\*\\*Status:\\*\\* (Accepted|Superseded by \\[ADR-[0-9]{4}\\])'"
+@test "vcs: status-line markiert die Statuszeile fuer head-allow" {
+  block | grep -qxF "  status-line: '^\\*\\*Status:\\*\\*'"
+}
+
+@test "vcs: head-allow ist voll verankert und traegt Accepted/Deprecated/Link-Supersede" {
+  block | grep -qxF "  head-allow: '^\\*\\*Status:\\*\\* (Accepted|Deprecated|Superseded by \\[ADR-[0-9]{4}\\]\\([0-9]{4}-[^)]+\\))\$'"
 }
 
 @test "vcs: genau eine head-allow-Zeile (kein stilles YAML-Duplikat)" {

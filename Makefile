@@ -152,10 +152,12 @@ ci-lint: ## GitHub-Actions-Workflows linten (actionlint) im gepinnten Image — 
 # RANGE git-seitig aufloesbar UND NICHT LEER ist — sonst meldet ein history-
 # lesender Job auf einem flachen Klon "0 Befund(e)", Exit 0, obwohl keine
 # Historie zur Verfuegung stand (MR-007 Setzung 3: "blind und gruen").
-# Hermetisch, kein Docker, kein Netz. NICHT in gates: der Aufrufer in
-# .github/workflows/ci.yml (Job `adr-immutable`) ruft dieses Ziel vor
-# `make doc-immutable`; STAGED=1 reicht `--staged` durch (Vergleich gegen den
-# Index braucht keine Tiefe > 1). Die Logik liegt in harness/tools/, damit
+# Hermetisch, kein Docker, kein Netz. NICHT in gates: RANGE variiert pro Lauf
+# und ist damit kein hermetischer Pruefbereich (LH-QA-01) — wie beim Ziel
+# `adr-immutable` unten, das diesen Waechter vorschaltet. Aufrufer ist der Job
+# `adr-immutable` in .github/workflows/ci.yml, der dieses Ziel vor
+# `make doc-immutable` ruft; STAGED=1 reicht `--staged` durch (Vergleich gegen
+# den Index braucht keine Tiefe > 1). Die Logik liegt in harness/tools/, damit
 # shell-lint sie deckt und test/history-range-guard.bats den reinen
 # `decide()`-Teil ohne git pruefen kann (das gepinnte bats-Image fuehrt kein
 # `git`, s. harness/tools/slice-mv.sh Kopf).

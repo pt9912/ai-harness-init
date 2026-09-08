@@ -237,11 +237,24 @@ codepaths:
 # bleibt; exclude-sections nimmt `Geschichte` aus dem Kern — der Abschnitt, in
 # dem eine ADR ihre Fortschreibung fuehrt, und zugleich die Voraussetzung
 # dafuer, dass der Sensor ueberhaupt an der Kopfzeile anschlaegt statt am
-# Dateiende. head-allow ist gegen den gelebten Bestand gesetzt: die zwei
-# superseded ADRs dieses Repos tragen die Link-Form
-# `Superseded by [ADR-NNNN](NNNN-titel.md)`, nicht die vom Werkzeug
-# vorgeschlagene bare Kennung — Letztere faerbt genau diesen Uebergang rot
-# (test/vcs-modul-wiring.bats haelt beide Felder). Aufgerufen ueber
+# Dateiende. head-allow ist voll verankert (^…$, kein Praefix-Match) und traegt
+# genau drei Werte: `Accepted` unveraendert, `Deprecated` (Vokabular der
+# ADR-Vorlage, Ausgang ohne Nachfolger — docs/plan/adr/README.md
+# §`Status` spiegelt das Kopffeld) und die im Bestand gelebte Link-Form
+# `Superseded by [ADR-NNNN](NNNN-titel.md)` — nicht die vom Werkzeug
+# vorgeschlagene bare Kennung, denn die faerbt genau den gelebten Uebergang rot
+# (test/vcs-modul-wiring.bats haelt alle vier Werte). Die vom Index ebenfalls
+# gefuehrte bare Form `Superseded by ADR-NNNN` bleibt ausgeschlossen: `ids`
+# (link-policy: always, oben in dieser Datei) prueft ADR-Kennungen NUR
+# ausserhalb ihres eigenen Zieldateibaums docs/plan/adr/ — eine bare
+# ADR-Erwaehnung INNERHALB einer ADR-Datei bleibt fuer `ids` unsichtbar
+# (gemessen: dieselbe bare Erwaehnung in roadmap.md loest id-unlinked aus, in
+# einer ADR-Datei 0 Befund(e)). head-allow ist damit hier die EINZIGE
+# Durchsetzung der gelebten Link-Form, kein redundanter zweiter Schutz.
+# status-line markiert die eine Zeile, die head-allow statt
+# der vollen Kern-Unveraenderlichkeit unterliegt; ohne sie faellt die
+# Statuszeile in den Kern und jeder erlaubte Uebergang faerbt rot
+# (test/vcs-modul-wiring.bats, test/mutations/280). Aufgerufen ueber
 # `make adr-immutable RANGE=<base>..<head>` (oder `STAGED=1`), das den
 # Historie-Vorlauf-Waechter `make history-range-guard` vorschaltet.
 vcs:
@@ -249,7 +262,7 @@ vcs:
   immutable-when: '^\*\*Status:\*\* Accepted'
   exclude-sections: [Geschichte]
   status-line: '^\*\*Status:\*\*'
-  head-allow: '^\*\*Status:\*\* (Accepted|Superseded by \[ADR-[0-9]{4}\])'
+  head-allow: '^\*\*Status:\*\* (Accepted|Deprecated|Superseded by \[ADR-[0-9]{4}\]\([0-9]{4}-[^)]+\))$'
 # sources (opt-in, NETZ, seit d-check v0.51.0): Content-Pin des Baseline-Assets gegen
 # Upstream-Drift (MR-013) — der tool-gelieferte Ersatz fuer den Eigenbau (curl+sha256sum)
 # im Target `make regelwerk-check`. BEWUSST NICHT in `modules:` oben: sources ist Netz und

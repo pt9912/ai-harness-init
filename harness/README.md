@@ -208,29 +208,88 @@ kein Gate, in keiner Prerequisite-Kette**, denn die Range variiert pro Aufruf un
 hermetischer Prüfbereich ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 Geprüft wird [`AGENTS.md`](../AGENTS.md) §3.4: der Kern einer über die Range `Accepted`
 gebliebenen ADR ändert sich nicht. Der `vcs:`-Block in `.d-check.yml` ist gegen den **gelebten**
-Bestand gesetzt, nicht gegen den Vorschlag aus `d-check --print-config` — zwei Abweichungen
-tragen die Zusage und beide sind an einem Wegwerf-Klon außerhalb des Repos gemessen, nicht
+Bestand gesetzt, nicht gegen den Vorschlag aus `d-check --print-config` — die Abweichungen
+tragen die Zusage und sind an einem Wegwerf-Klon außerhalb des Repos gemessen, nicht
 angenommen: `exclude-sections: [Geschichte]` nimmt den Abschnitt aus dem Kern, in dem eine ADR
 ihre Fortschreibung führt — jede ADR dieses Repos endet mit `## Geschichte`, und ohne die
-Ausnahme färbte jede Fortschreibung statt nur eine Kern-Änderung rot. `head-allow` erlaubt die im
-Bestand gelebte Link-Form des Supersede-Übergangs (`Superseded by [ADR-NNNN](NNNN-titel.md)`),
-nicht die vom Werkzeug vorgeschlagene bare Kennung — Letztere färbt genau den Übergang rot, den
-§3.4 als Korrekturweg vorschreibt. `test/vcs-modul-wiring.bats` hält beide Felder gegen
-Regression, ohne selbst einen Docker-Lauf zu fahren; was `vcs` **kann**, bleibt eine gemessene
-Eigenschaft des vendored Werkzeugs und keine dieses Repos.
+Ausnahme färbte jede Fortschreibung statt nur eine Kern-Änderung rot. `head-allow` ist **voll
+verankert** (`^…$`, kein Präfix-Match — ein Zusatz hinter `Accepted`, etwa
+„Accepted (überholt, siehe ADR-NNNN)“, färbt seit diesem Anker rot statt durchzurutschen) und
+trägt drei Werte: `Accepted` unverändert, `Deprecated` (Vokabular der ADR-Vorlage und von
+[`docs/plan/adr/README.md`](../docs/plan/adr/README.md), Ausgang ohne Nachfolger) und die im
+Bestand gelebte Link-Form des Supersede-Übergangs (`Superseded by [ADR-NNNN](NNNN-titel.md)`) —
+nicht die vom Werkzeug vorgeschlagene bare Kennung, und nicht die vom Index ebenfalls geführte
+bare Supersede-Form (`Superseded by ADR-NNNN` ohne Klammern): Letztere bleibt ausgeschlossen, aber
+**nicht**, weil ein anderes Modul sie ohnehin fängt — gemessen ist das Gegenteil: `ids`
+(`link-policy: always` auf `ADR-\d{4}`) prüft Kennungen nur **außerhalb** ihres eigenen
+Zieldateibaums `docs/plan/adr/`. Dieselbe bare Erwähnung (`echo 'Text mit bare ADR-0005.' >>
+<datei>`, ein Commit, `make docs-check`) trifft in `docs/plan/planning/in-progress/roadmap.md`
+`id-unlinked` (1 Befund), in einer Datei unter `docs/plan/adr/` `0 Befund(e)`. `head-allow` ist
+an dieser Stelle die **einzige** Durchsetzung der im Bestand gelebten Link-Form, kein redundanter
+zweiter Schutz.
+`status-line` markiert, welche Zeile diesem `head-allow` statt der vollen
+Kern-Unveränderlichkeit unterliegt; ohne sie fällt die Statuszeile in den Kern und jeder erlaubte
+Übergang färbt rot. `test/vcs-modul-wiring.bats` hält alle vier Felder gegen Regression, ohne
+selbst einen Docker-Lauf zu fahren; was `vcs` **kann**, bleibt eine gemessene Eigenschaft des
+vendored Werkzeugs und keine dieses Repos.
 
 **Ein Aufrufer existiert:** der Job `adr-immutable` in `.github/workflows/ci.yml` bestimmt die
 Range ereignisabhängig — bei `pull_request` Base gegen Head, bei `push` den vorherigen
 Ref-Stand (`github.event.before`) gegen den neuen — und überspringt einen Push ohne vorherigen
 Stand (neuer Branch, `before` ist die Nullreferenz), statt eine Basis zu erfinden. Sein Checkout
 trägt `fetch-depth: 0`; alle übrigen Checkouts des Repos bleiben bei der Default-Tiefe
-(Begründung im Kopf von `.github/workflows/ci.yml`). **Drei Grenzen bleiben offen, benannt statt
-geschlossen:** ob das Modul einen reinen `git mv` einer ADR-Datei (Hard Rule 3.3) von einer
-Kern-Änderung trennt, ist nicht gemessen; ob `vcs`
-dieselbe `exclude-sections`-Liste wie `matrix` braucht (`[Historie, "7. Historie", Geschichte]`),
-ist geprüft, aber nicht übernommen, solange kein ADR-Kopf eine dieser zwei zusätzlichen
-Überschriften trägt; und was innerhalb von `## Geschichte` stehen darf, ohne die Immutabilität
-faktisch zu unterlaufen, bleibt eine offene Frage der gelebten Praxis, keine des Sensors.
+(Begründung im Kopf von `.github/workflows/ci.yml`).
+
+**Ein reiner `git mv` einer ADR-Datei ist gemessen, nicht offen:** Das Modul trennt ihn **nicht**
+von einer Kern-Änderung — es zählt Pfad-Stabilität zur Immutabilität. Gegen einen Wegwerf-Klon,
+ein Commit, der eine `Accepted`-ADR ohne Inhaltsänderung umbenennt:
+
+```sh
+git mv docs/plan/adr/0003-go-native-binaries.md docs/plan/adr/0003-umbenannt.md
+git commit -qm "reiner git mv einer Accepted-ADR"
+make adr-immutable RANGE=<base>..HEAD
+# docs/plan/adr/0003-go-native-binaries.md:1  core-drift-vcs
+#   immutable Datei geloescht oder umbenannt — der Pfad einer immutablen Datei ist stabil
+```
+
+Operativ folgenlos bleibt das heute: ADR-Pfade sind ortsfest, und
+[`AGENTS.md`](../AGENTS.md) §3.11 nimmt sie ausdrücklich von der wandernden Klasse aus — ein
+realer `slice-mv`-artiger Umzug einer ADR-Datei ist in diesem Repo nicht vorgesehen. Träte er ein,
+wäre der Fehlalarm hier der Beleg dafür, dass die Bewegung als zwei Commits (Hard Rule 3.3) allein
+nicht reicht: `vcs` bräuchte eine eigene Ausnahme für den reinen Move, die es heute nicht gibt.
+
+**Was innerhalb von `## Geschichte` stehen darf, ist entschieden, nicht offen gelassen.** Die
+Ausnahme ist die Voraussetzung dafür, dass der Sensor an der Kopfzeile statt am Dateiende
+anschlägt (s. o.); sie kostet, dass ein Absatz, der dort statt in einer Folge-ADR landet,
+unbewacht bleibt. Der Umfang der so ungeschützten Fläche ist gemessen und wächst mit jeder
+Fortschreibung:
+
+```sh
+t=0; g=0; for f in docs/plan/adr/[0-9]*.md; do
+  t=$((t+$(wc -c < "$f"))); g=$((g+$(awk '/^## Geschichte/{i=1} i' "$f" | wc -c))); done
+awk -v a=$g -v b=$t 'BEGIN{printf "%d von %d Bytes = %.1f%%\n", a, b, 100*a/b}'   # 8.0 % im Schnitt, bis 28,1 % je Datei
+```
+
+Die Alternative — `exclude-sections: []` — ist keine engere, sondern eine strengere Variante mit
+einem anderen Fehler: Jede ADR dieses Repos endet mit `## Geschichte`; ohne die Ausnahme würde
+**jede** Fortschreibung einer angenommenen ADR rot färben, nicht nur eine Kern-Änderung — 100 %
+der heutigen Fortschreibungen wären Fehlalarme gegen 0 gemessenen normativen Sätzen im
+Geschichte-Abschnitt heute (`git grep -n 'Revidiert (Teil-Supersede)' -- 'docs/plan/adr/0*.md'`
+gegen die Zeilennummer von `^## Geschichte` derselben Datei zeigt: die drei bestehenden
+Teil-Supersede-Anordnungen liegen im geschützten Kern, keine im Geschichte-Abschnitt). `vcs`
+kennt keine dritte, feinere Stufe — der Schlüssel schließt einen benannten Abschnitt vollständig
+aus dem Kern oder gar nicht, eine partielle (append-only) Prüfung bietet das Modul nicht. Dieses
+Repo trägt deshalb bewusst die zweite Fehlform (ein still bleibender Verstoß ist möglich, aber
+heute nicht eingetreten) statt der ersten (ein Gate, das bei jeder legitimen Fortschreibung
+blockiert): Die Kosten der ersten sind sicher und laufend, die der zweiten sind hypothetisch und
+liegen bei der Review-Disziplin ([`AGENTS.md`](../AGENTS.md) §3.7 für den Kommentar-Fall,
+[`docs/plan/adr/README.md`](../docs/plan/adr/README.md) für den Zusatz-Umfang einer
+Teil-Supersede-Anordnung).
+
+**Eine Grenze bleibt offen, benannt statt geschlossen:** ob `vcs` dieselbe
+`exclude-sections`-Liste wie `matrix` braucht (`[Historie, "7. Historie", Geschichte]`), ist
+geprüft, aber nicht übernommen, solange kein ADR-Kopf eine dieser zwei zusätzlichen
+Überschriften trägt.
 
 **Nicht-Gate-Verify** (verfügbar, **nicht** in `make gates` — wie `regelwerk-check`/`baseline-freshness`): `make smoke` ist der Tier-2-Emit-Smoke (slice-002) — es emittiert die Doc-Gate-Baseline in ein tmp-Repo und lässt das emittierte `docs-check` real laufen (Host-Docker, ggf. Netz-Pull). `make full-smoke` ist der **Voll-E2E-Smoke** (slice-024): Bootstrap in ein tmp-Repo, dann dort der **zusammengeführte** `make gates` ([`MR-010`](conventions.md#mr-010--d-check-gate-fragment-tool-generiert): docs-check + Go-Gates in einem Lauf) — der Happy-Path-Beweis ([`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)), dass ein frisch gebootstrapptes Repo out-of-the-box grün fährt (die Nutzer-Sicht, die `make smoke` mit seinen getrennten Schritten nicht nimmt). **Sein Grün sagt das eine, sein Rot sagt zwei Dinge:** der Lauf fragt je Durchgang fremde Registries nach gepinnten Bildern und macht jede dieser Anfragen zur Bedingung seines Grüns. Bricht ein Abschnitt ab, nennt der Lauf in **seiner eigenen Ausgabe** den Ausgang — `AUSGANG LEITUNG`, wenn eine ausgehende Anfrage nach einem gepinnten Artefakt **nicht mit 2xx beantwortet** wurde (mit der Zeile, die das trägt), sonst `AUSGANG BAUM`: keine der geführten Formen steht in den gelesenen Zeilen, und der Fehlschlag wird dem **geprüften Baum zugerechnet**. **Der Exit-Code unterscheidet die zwei nicht** und soll es nicht — ein eigener Code lüde dazu ein, den Leitungs-Fall durchzuwinken, und das wäre die Schwellen-Senkung, die [`AGENTS.md`](../AGENTS.md) §3.5 an ein ADR bindet. **Wofür die Unterscheidung gilt, ist ein Kriterium und keine Fundstellen-Liste:** eingeordnet ist **jeder Abschnitt, der ein Bild anfordern kann**. Die Abschnitte sind mechanisch abgegrenzt — jeder führt seinen eigenen Exit-Code (**A** = `grep -cE '\|\| [a-z_0-9]+=\$\?$' harness/tools/full-smoke.sh`). Drei Formen darin fordern nachprüfbar **keines** an: der Trockenlauf (`make -n` führt kein Rezept aus), `make span-clean` (sein Rezept im Ziel ist `rm -rf` plus `echo`) und der Hook-Wrapper (ein Shell-Skript, das das Host-Binär startet und `docker` nicht nennt) — **B** = dieselbe Liste durch `grep -cE ' -n |span-clean|bash "\$wrapper"'`. Der Rest sind make-Stufen und Aufrufe des Werkzeugs (**C** = dieselbe Liste durch `grep -c 'tmpbin/ai-harness-init'`). **Jede** make-Stufe trägt eine Einordnung, dazu die zwei Werkzeug-Aufrufe, die als erste ein noch nicht lokal liegendes Bild anfordern; die Probe darauf ist eine Gleichung statt einer Zählung: **A − B − C** == `grep -cE '^[[:space:]]*einordnen "' harness/tools/full-smoke.sh` **− 2**. **Nicht** eingeordnet sind die übrigen Werkzeug-Aufrufe — sie können nur dieselben zwei Bilder anfordern (das Werkzeug hat genau **einen** Docker-Aufrufpunkt, `printMK` in `internal/emit/emit.go`), und die liegen nach den zwei Erstbezügen lokal; sie laufen unter `set -e` und brechen ohne eigene Meldung ab. Die geführten Formen, ihre Messung und ihre weiteren Grenzen — Paketquellen der C++-Kette sind **keine** gepinnten Artefakte und fallen in den Baum-Fall — stehen im Kopf von `harness/tools/full-smoke-ausgang.sh`; `test/full-smoke-ausgang.bats` fährt beide Richtungen über Ausschnitten echter Läufe. `make span-report` rechnet aus dem Span-Bestand eine **Token-Bilanz je Rolle**. Er steht **bewusst in keiner der Tabellen oben**: ein Bericht prüft nichts und färbt nichts rot, ein Gate über ihm wäre eines über leerem Prüfbereich ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Er liest den Bestand read-only und netzlos; die Ausgabe nennt ihren Nenner, den Sammelposten-Anteil und die Abdeckungszahl samt Bezugsmenge. `make mutate` ist der Mutations-Sensor zu [`AGENTS.md`](../AGENTS.md) §3.6 (slice-026): er wendet ein kuratiertes Set von Mutationen an und meldet jeden Wächter, der dabei **grün** bleibt — die Regel ist sonst nur im Feedforward-Quadranten. **Vor dem Fall-Satz prüft der Lauf einen Beleg** ([`ADR-0035`](../docs/plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md), slice-180): War der letzte Lauf über demselben Prüfgegenstand vollständig grün (`fail_count` gleich null), gibt dieser Lauf **diesen Beleg** aus — Exit 0, Beleg-Stand genannt, **keine** Fall-Zahl behauptet — statt den Satz erneut zu fahren. Die **Bezugsmenge** des Schlüssels ist die Isolationskopie aus `prepare_isolation` (`isolation_key_files`), **nicht** der ganze Arbeitsbaum und **nicht** [`harness/tools/working-tree-hash.sh`](../harness/tools/working-tree-hash.sh) — dessen Menge ist für den Gate-Nachweis gepflegt und driftete als zweite Definition desselben Worts gegen diese hier. **Eine deklarierte Ausnahme** zusätzlich zur Kopier-Definition: `.git` (`ISOLATION_KEY_EXEMPT`) — die Kopie braucht es nur für die Projektwurzel (`make ci-lint`/actionlint bricht sonst ab), ein Schlüssel darüber bewegte sich mit jedem Commit ohne Inhaltsänderung. **Benannter Rest**, den kein baum-abgeleiteter Schlüssel deckt: der lokale Docker-Cache-Zustand und die Host-Werkzeuge selbst (bash, tar, git, docker) — `MUTATE_FORCE=1` erzwingt darum den vollen Lauf auch über unverändertem Prüfgegenstand, und die Übersprung-Meldung nennt diesen Rest. **Der Beleg-Slot ist einer, nicht einer je Schlüssel:** ein Lauf über einem anderen Prüfgegenstand entwertet ihn, auch wenn der vorige Schlüssel nie widerlegt wurde — kehrt der Baum zu einem früher grünen Stand zurück, fährt der nächste Lauf trotzdem wieder voll. Fährt der Satz, läuft je Fall **nur der Sensor, dessen Rot erwartet wird** (aus der `# expect:`-Zeile; bei unklarer Erwartung beide Stufen — slice-056). Die Fälle laufen **auf mehrere Worker verteilt** (`MUTATE_JOBS`, Default im Treiber), jeder mit einer **eigenen isolierten Kopie außerhalb des Repos** — nie im Arbeitsbaum; der Lauf misst das selbst — Fingerabdruck der Mutations-Zieldateien vor, **während** und nach dem Lauf, fail-closed (nur diese Dateien, damit paralleles Arbeiten am Repo den Lauf nicht rötet). **Die Worker-Zahl ist eine Zeit-Stellschraube, keine Verdikt-Stellschraube**, und der Lauf belegt das, statt es zuzusagen: jeder Worker fährt den Grün-Vorlauf **der Modi, die er zieht**, in *seiner* Kopie, die Modi, deren Urteil an einem geteilten Docker-Tag hängt, laufen in **einer** Spur, und der zusammengeführte Bericht nennt am Ende, wie viele der Fall-Dateien ein Ergebnis haben und ob jede Fall-Nummer genau einmal gezogen wurde — weicht eines davon ab, ist der Lauf **rot**, nicht kürzer. Am Ende steht die Zeit-Aufschlüsselung je Fall und je Sensor; sie ist eine **Messung**, kein Gate ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) — über ihre eigene Vollständigkeit urteilt sie aber und verweigert eine Bilanz über einer Teilmenge. **Der Lauf begrenzt seine eigene Stille:** vergehen `MUTATE_STALL_SECONDS` (Vorgabe im Treiber, aus der längsten legitimen Stille hergeleitet) ohne dass ein Worker einen Fall zieht oder abschließt, beendet der Lauf **sich selbst**, benennt die noch laufenden Worker und wird rot — ein hängender Sensor ist von einem langsamen sonst nicht zu unterscheiden, und lokal beendet ihn niemand.  **Was sie nicht deckt, steht im Treiber:** beendet wird der **Worker**, nicht dessen Kinder, und ein Hänger im **Vorwärmlauf vor dem Fork** liegt außerhalb — dort gibt es noch keine Worker zu bewachen. Ein Abbruch lässt **im Arbeitsbaum** kein Residuum zurück; außerhalb bleiben ein Temp-Verzeichnis und, nach hartem Kill, das Lock-Verzeichnis liegen — Letzteres bewusst fail-closed. Beide gehören an DoD-Verify/CI/Wellen-Closure, nicht in den offline-schlanken `make gates`.
 
