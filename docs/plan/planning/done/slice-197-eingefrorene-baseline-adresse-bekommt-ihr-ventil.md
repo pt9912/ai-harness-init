@@ -289,7 +289,7 @@ dasteht.
   dessen Herstellung; damit konnte slice-193 schließen, **bevor** dieser Slice beansprucht wurde.
   Die zwei reinen Move-Commits stehen in genau dieser Reihenfolge auf dem Hauptzweig, und zwischen
   ihnen trägt `in-progress/` keinen zweiten `slice-*.md` —
-  `git log --oneline --reverse --diff-filter=A --format='%h %s' -- docs/plan/planning/done/slice-193-baum-tausch-v650-pins-ziehen.md docs/plan/planning/in-progress/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md`
+  `git log --oneline --reverse --diff-filter=A --format='%h %s' -- docs/plan/planning/done/slice-193-baum-tausch-v650-pins-ziehen.md docs/plan/planning/done/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md`
   nennt zuerst den Abgang von slice-193, dann den Zugang dieses Slice. Die offen gelassene
   Lifecycle-Frage — ob zwei gleichzeitig beanspruchte Slices desselben Rolleninhabers zulässig
   wären — hat damit keinen Gegenstand mehr und wird nicht stellvertretend beantwortet.

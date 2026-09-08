@@ -2,7 +2,7 @@
 
 **Rolle:** Verifier · **Datum:** 2026-09-08
 
-**Gegenstand:** [slice-197](../plan/planning/in-progress/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md)
+**Gegenstand:** [slice-197](../plan/planning/done/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md)
 (`in-progress/`), geprüft gegen seine DoD (§2) und
 [ADR-0039](../plan/adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) (`Accepted`).
 Vorlauf: [Review-Report vom 2026-09-08](2026-09-08-slice-197-ventil-eingefrorene-baseline-adresse-review.md)
