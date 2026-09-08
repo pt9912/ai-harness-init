@@ -107,7 +107,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Drei `ignore-refs`-Einträge in Glob-Form liegen in
+- [x] **Drei `ignore-refs`-Einträge in Glob-Form liegen in
       [`.d-check.yml`](../../../../.d-check.yml), einer je einfrierendem Baum, alle mit demselben
       `refs`-Wert `.harness/baseline/**`.** Die drei `in:`-Werte sind
       `docs/reviews/**`, `docs/plan/planning/done/**` und
@@ -117,7 +117,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       tag-weiter Wert verlangte bei jedem Bump drei neue Einträge und damit eine neue Entscheidung
       je Sprung. Beleg: `make docs-check` meldet `0 Befund(e)`, und der Kommentar jedes der drei
       Einträge nennt seine Entscheidung.
-- [ ] **Alle sieben Einträge deklarieren am Ort ihrer Definition, wie viele Markdown-Links sie
+- [x] **Alle sieben Einträge deklarieren am Ort ihrer Definition, wie viele Markdown-Links sie
       decken — die vier bestehenden ebenso wie die drei neuen.** Die Deklaration ist der **am
       Lauf-Tag gemessene** Wert, geschrieben neben dem Kommando, das ihn liefert
       ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)).
@@ -128,7 +128,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Erwartungswerte**, Stichtag 2026-09-07, gemessen mit den zwei Kommandos aus
       [`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) Festlegung 2. Der
       Lauf misst neu und trägt ein, was er misst.
-- [ ] **[`test/ignore-refs-restbreite.bats`](../../../../test/ignore-refs-restbreite.bats) misst
+- [x] **[`test/ignore-refs-restbreite.bats`](../../../../test/ignore-refs-restbreite.bats) misst
       gegen die deklarierte Zahl statt gegen die Konstante 1 und liest die Glob-Form auf beiden
       Achsen.** Vier Bedingungen, alle urteilsfrei: ein Eintrag **ohne** Deklaration ist rot · er
       deckt **mehr** als deklariert → rot · er deckt **weniger** → rot · die Deklaration `0` ist
@@ -156,13 +156,20 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Unterschranken-Ausnahme für ihn braucht der Wächter **nicht** —
       [`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) Festlegung 2 misst
       das über alle Wertepaare bis 6 als `0 Unterschiede`.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün. Gemessen in dieser Closure über dem Baum, der sie trägt: EXIT 0, und
+      `make docs-check` meldet `0 Befund(e)` — der Nachher-Wert zu den `36 Befund(e)` aus §1, mit
+      demselben Kommando erhoben. Tragend ist die Null; die daneben stehende Datei-Zahl (Stichtag
+      2026-09-08: 959) ist **kein Erwartungswert** und wandert mit dem Bestand.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
-      Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update für <Schnittstelle X> falls öffentlicher Vertrag berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register fortgeschrieben, **falls dieser Slice einen Inventur-Fund auflöst** —
+      Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8). Der Review-Report vom
+      2026-09-08 (1 HIGH / 3 MEDIUM / 4 LOW / 2 INFO) und der Verifikations-Report desselben Tages
+      liegen vor; das HIGH ist behoben, kein Befund blockiert die Closure.
+- [x] Doku-Update falls öffentlicher Vertrag berührt. **Entfällt:** Der Kopf führt
+      `Berührte Spec-Stellen: —`, und weder die Gate-Konfiguration noch der Maßstab des Wächters
+      sind in [`spec/spezifikation.md`](../../../../spec/spezifikation.md) festgelegt.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register fortgeschrieben, **falls dieser Slice einen Inventur-Fund auflöst** —
       Zeile mit Datum und auflösendem Artefakt nach *Aufgelöste Einträge* verschoben. **Entfällt
       hier:** Repos ohne Brownfield-Bootstrap haben die Datei nicht, und dieses führt sie nicht
       (`ls docs/plan/planning/reconciliation.md` → nicht vorhanden). Der Pfad steht als
@@ -170,9 +177,9 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       `codepaths` ihn dann als fehlendes Ziel meldet — dieselbe Stelle, die
       [slice-193](../done/slice-193-baum-tausch-v650-pins-ziehen.md) §6 als offenen Punkt
       führt.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. Sechs Belege, ein neuer Eintrag — §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen). Fünf von fünf, je genau einer.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). **Dieses Repo führt Wellen-Betrieb; der Träger ist benannt, und zwei Befunde für ihn liegen vor:** die zweite Hälfte der Register-Paarung (c) ist unverändert rot (zwei Einträge mit leerem `evidence/`), und vier Einträge stehen bei 3× oder darüber ohne Ausgang (§7, letzter Punkt) — beides Vorbestand, keiner von diesem Slice erzeugt.
 
 ## 3. Plan (vor Code)
 
@@ -276,7 +283,16 @@ dasteht.
   Reihenfolge ist die umgekehrte: **dieser Slice zuerst, der Abschluss von slice-193 danach.** Was
   offen bleibt, ist die Frage, ob zwei gleichzeitig beanspruchte Slices desselben Rolleninhabers
   hier zulässig sind oder ob slice-193 vorher zurückgeführt gehört — sie ist eine
-  Lifecycle-Entscheidung und keine Arbeit dieses Slice. — **Ausgang:** offen; die Closure setzt ihn.
+  Lifecycle-Entscheidung und keine Arbeit dieses Slice. — **Ausgang: entfallen.** Begründung,
+  gemessen und nicht angenommen: Die Doppelbelegung ist nie eingetreten. `CO-006` hat die
+  Zirkularität vor der Übernahme aufgelöst, indem es das rote Gate an einen Trigger band statt an
+  dessen Herstellung; damit konnte slice-193 schließen, **bevor** dieser Slice beansprucht wurde.
+  Die zwei reinen Move-Commits stehen in genau dieser Reihenfolge auf dem Hauptzweig, und zwischen
+  ihnen trägt `in-progress/` keinen zweiten `slice-*.md` —
+  `git log --oneline --reverse --diff-filter=A --format='%h %s' -- docs/plan/planning/done/slice-193-baum-tausch-v650-pins-ziehen.md docs/plan/planning/in-progress/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md`
+  nennt zuerst den Abgang von slice-193, dann den Zugang dieses Slice. Die offen gelassene
+  Lifecycle-Frage — ob zwei gleichzeitig beanspruchte Slices desselben Rolleninhabers zulässig
+  wären — hat damit keinen Gegenstand mehr und wird nicht stellvertretend beantwortet.
 - **Die Deklaration für `docs/reviews/**` veraltet durch den Review dieses Slice selbst.** Der
   Korpus wächst mit jeder Runde, und ein Report, der in den vendored Baum verlinkt, hebt die Zahl
   — der Wächter wird dann **rot, ohne dass jemand etwas falsch gemacht hat**. Das ist keine
@@ -296,8 +312,27 @@ dasteht.
   bewilligte Budget, das
   [`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) Festlegung 2
   ausdrücklich verhindert —, sondern sie im letzten Lauf vor dem Merge neu zu messen. Genau das ist
-  der Preis, den jene Entscheidung in §Konsequenzen benennt. — **Ausgang:** offen; die Closure
-  setzt ihn.
+  der Preis, den jene Entscheidung in §Konsequenzen benennt. — **Ausgang: entfallen.** Begründung,
+  in der Closure nachgemessen statt aus dem Plan übernommen (Stichtag 2026-09-08, **keine
+  Erwartungswerte**): Der Korpus ist um die zwei Reports dieses Slice gewachsen, die Deklaration
+  `33` steht unverändert richtig, und der Grund ist zählbar — beide Reports tragen jede
+  Baseline-Nennung als Inline-Code oder Kennung und **keinen** Markdown-Link in den Baum.
+
+  ```sh
+  ls docs/reviews/*.md | wc -l                                                  # 304 (Plan-Stichtag: 302)
+  git grep -lE '\]\([^)]*\.harness/baseline/' -- 'docs/reviews/*.md' | wc -l    #  17 (Plan-Stichtag:  17)
+  ```
+
+  Die zweite Zahl ist die tragende: Die Zahl der Reports mit Baseline-Link ist trotz zweier neuer
+  Dateien gleich geblieben, das Kommando aus
+  [`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) Festlegung 2 liefert
+  für `docs/reviews` weiterhin `33`, und der Wächter ist über allen sieben Einträgen grün. Der
+  konkrete Fall — *der Review dieses Slice veraltet die Deklaration* — kann nicht mehr eintreten:
+  Die zwei Reports sind geschrieben und eingefroren. **Der allgemeine Mechanismus ist damit nicht
+  geschlossen und wird auch nicht als offene Beobachtung geführt:** Dass die Deklaration mit jedem
+  künftigen Report wandert und der Wächter dann eine Entscheidung verlangt, steht als entschiedene
+  Folge in [`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) §Konsequenzen
+  und §Re-Evaluierungs-Trigger, mit dem Neu-Messen vor dem Merge als benanntem Träger.
 - **Der `in:`-Glob `docs/plan/planning/observations/**` ist breiter als seine Begründung.** Er deckt
   neben `observation.md` und `evidence/*.md` — beide unveränderlich ab Anlage bzw. ab Merge — auch
   `state.md` (der veränderliche Stand) und die `README.md` der Ablage. Für die zwei trägt das
@@ -307,7 +342,12 @@ dasteht.
   [`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) Festlegung 1 ab, die
   Festlegung 3 extensional schließt. Ob eine **Verengung** dafür eine eigene Entscheidung braucht,
   sagt Festlegung 3 nicht — sie nennt Verbreiterungen — und ist damit eine offene Architect-Frage.
-  — **Ausgang:** offen; die Closure setzt ihn.
+  — **Ausgang: weiter offen, ins Beobachtungs-Register.** Der Eintrag ist
+  [`BEO-ALL/messung-nimmt-lebendes-register-in-den-eingefrorenen-ausschluss`](../observations/BEO-ALL/messung-nimmt-lebendes-register-in-den-eingefrorenen-ausschluss/observation.md);
+  er trägt genau diesen Gegenstand — ein auf Unveränderlichkeit begründeter Ausschluss nimmt das
+  lebende Register daneben mit. Beleg `evidence/slice-197.md`, Zähler danach
+  `ls docs/plan/planning/observations/BEO-ALL/messung-nimmt-lebendes-register-in-den-eingefrorenen-ausschluss/evidence/*.md | wc -l`
+  → 2. Die Verengung selbst bleibt Architect-Arbeit und wird hier nicht vorweggenommen.
 - **Der Wächter misst Kardinalität, nicht Identität.** Tauscht ein gedeckter Link gegen einen
   anderen, ohne dass sich die Zahl ändert, bleibt er grün — und ein *neu* stumm geschalteter
   Verweis sieht dann aus wie der alte. Das steht in
@@ -315,7 +355,12 @@ dasteht.
   *„niemand"* und wird von diesem Slice **nicht** geschlossen; er darf es nur nicht als geschlossen
   ausgeben. Die Klasse ist
   [`BEO-ALL/ausnahmeliste-nur-auf-form-geprueft`](../observations/BEO-ALL/ausnahmeliste-nur-auf-form-geprueft/observation.md).
-  — **Ausgang:** offen; die Closure setzt ihn.
+  — **Ausgang: weiter offen, ins Beobachtungs-Register.** Beleg `evidence/slice-197.md`, Zähler
+  danach
+  `ls docs/plan/planning/observations/BEO-ALL/ausnahmeliste-nur-auf-form-geprueft/evidence/*.md | wc -l`
+  → 2. Die Identitäts-Achse bleibt damit unbewacht und ist es auch nach diesem Slice — dieselbe
+  Lücke, die [`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md)
+  §Fitness Function für sich benennt.
 - **Der Preis der Entscheidung tritt mit diesem Slice ein: eine heute auflösende Adresse
   verstummt.** Ein Link in den **lebenden** Baum aus einem der drei gedeckten Bäume wird vom Ventil
   mit stumm geschaltet; Stichtag 2026-09-07 ist das genau eine
@@ -323,7 +368,14 @@ dasteht.
   → 1, **kein Erwartungswert**). Das ist entschieden und nicht zu verhandeln; der Slice hat es zu
   **belegen**, nicht abzuwägen. Die Klasse ist
   [`BEO-ALL/gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse`](../observations/BEO-ALL/gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse/observation.md).
-  — **Ausgang:** offen; die Closure setzt ihn.
+  — **Ausgang: weiter offen, ins Beobachtungs-Register.** Beleg `evidence/slice-197.md`, Zähler
+  danach
+  `ls docs/plan/planning/observations/BEO-ALL/gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse/evidence/*.md | wc -l`
+  → 2. **Nicht** *eingetreten*: Der Preis ist mit dem Slice realisiert und belegt, und die
+  geschlossene Menge kennt für einen realisierten Preis keinen Träger — weder Carveout noch
+  Folge-Slice, weil die Entscheidung steht und nicht zurückzunehmen ist. **Nicht** *entfallen*:
+  Die Adresse ist stumm. Was bleibt, ist eine stehende Eigenschaft ohne Beobachtungsstelle, und
+  genau dafür ist der dritte Ausgang da.
 
 ## 7. Closure-Notiz
 
@@ -335,18 +387,145 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-NNN>, <slice-MMM>, <slice-KKK> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-NNN.md` | `evidence/slice-NNN.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-NNN (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+**Rolle:** Planner · **Datum:** 2026-09-08.
+
+- **Was hat funktioniert:** Die **Trennung von Entscheidung und Umsetzung**. Der Slice hatte
+  nichts abzuwägen: `in:`-Werte, `refs`-Wert und der Maßstab des Wächters standen wörtlich in
+  [`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md), und die vier rot zu
+  sehenden Gegenbeispiele standen als DoD-Punkt statt als Absicht. Beide Prüf-Rollen haben sie
+  **nachgefahren statt geglaubt**, je an einer Kopie außerhalb des Arbeitsbaums, und beide haben
+  dieselben Detailzeilen gelesen — die Behauptung des Plans ist damit dreifach unabhängig belegt.
+  Getragen hat ebenso der **vorab bezifferte Ausgangsstand** in §1: Dieselben zwei Kommandos
+  liefern den Vorher- und den Nachher-Wert, und aus 36 Befunden wurde `0 Befund(e)` ohne dass eine
+  Datei in einem der drei einfrierenden Bäume angefasst wurde — genau die zweite Hälfte des
+  `CO-006`-Triggers, die eine reine Gate-Messung nicht hergibt.
+- **Was ging anders als geplant:** Zwei Dinge.
+
+  **Erstens: der blockierende Befund saß nicht in der Logik, sondern in ihrer Beschreibung.** Der
+  Wächter nannte an drei Stellen `git ls-files` und fuhr `find` — eine der drei Stellen wird nur
+  im Rot ausgegeben und schickte den Leser genau dann zu einem Werkzeug, das nicht gelaufen war.
+  Der Plan sah für den Wächter eine Zählung vor und keine Aussage über die Menge, über der
+  gezählt wird; dass diese Achse den Prüfumfang bestimmt, hat erst das Review gemessen.
+
+  **Zweitens: die Deklaration misst eine engere Menge, als ihr Eintrag deckt** — der Markdown-Link
+  auf das Vendoring-Verzeichnis **selbst** wird vom Werkzeug mit ausgenommen und von der Zählung
+  nicht erfasst. Der Ausweg war **nicht**, die Zählung zu erweitern: Das hätte
+  `docs/plan/planning/done/**` von der in
+  [`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) Festlegung 2
+  gemessenen `3` auf `4` gehoben und wäre eine Abweichung von einer angenommenen Entscheidung
+  gewesen. Verengt wurde die **Zusage**, nicht die Messung — und die verbleibende Grenze steht
+  benannt statt repariert.
+- **Steering-Loop-Eintrag — benannte Spec-Lücke, gegen
+  [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6):**
+  *Eine Referenz-Ausnahme kann ihre **Breite** deklarieren; ihre **Identität** kann sie nicht.*
+  Der Wächter misst ab jetzt `genau N` statt `höchstens 1` und meldet damit auch den **Wegfall**
+  einer gedeckten Referenz — er misst aber Kardinalität. Fällt im selben Stand eine Referenz weg
+  und tritt eine andere hinzu, bleibt er grün, und der neu stumm geschaltete Verweis ist von dem
+  alten nicht zu unterscheiden. Kein Modul aus `modules:` der
+  [`.d-check.yml`](../../../../.d-check.yml) hält fest, **welche** Referenz gedeckt ist, und
+  `make mutate` kennt dafür keine Fehlschlag-Form. **Kein neuer Sensor wird hier behauptet**
+  ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6));
+  die Lücke ist dieselbe, die
+  [`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) §Fitness Function für
+  sich benennt, und sie ist **gezählt, nicht verkörpert** — der Eintrag `liegt in` entfällt darum
+  ersatzlos.
+- **Beobachtungs-Register (`../observations/`):** **sechs** Belege aus diesem Vorgang, je genau
+  eine `slice-197.md` — ein Vorgang zählt einmal, auch wo ein Fund mehrfach auftrat. Fünf gehen in
+  bestehende Einträge: `verweis-nachzug-schreibt-in-eingefrorenes-artefakt` (→ **3×**) ·
+  `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch` (→ **4×**) ·
+  `messung-nimmt-lebendes-register-in-den-eingefrorenen-ausschluss` (→ 2×) ·
+  `ausnahmeliste-nur-auf-form-geprueft` (→ 2×) ·
+  `gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse` (→ 2×). **Ein Eintrag ist neu** und trägt
+  zwei Belege, weil sein Erstauftreten in einem anderen abgeschlossenen Vorgang liegt:
+  `config-kommentar-nennt-anderen-bereich-als-der-eintrag` mit `evidence/slice-177.md` und
+  `evidence/slice-197.md` (→ 2×) — die wiederkehrende Finding-Klasse des Reviews dieses Slice,
+  deren erstes Auftreten der Report vom 2026-09-05 zu `slice-177` trägt. Zähler sind Dateizahlen
+  und stehen in keinem Feld
+  (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`).
+
+  **Ein Eintrag überschreitet mit diesem Slice die Schwelle** —
+  `verweis-nachzug-schreibt-in-eingefrorenes-artefakt` — und steht bis zum Lese-Schritt weiter auf
+  `offen`; zulässig und vorübergehend nach `v6.5.0` · `regelwerk/modul-06-roadmap.md`
+  §Das Beobachtungs-Register. Den Lese-Schritt trägt in einem Repo mit Wellen-Betrieb die
+  Welle-Closure, und dieses Repo führt zwei offene Wellen; die Übergabe steht hier, nicht der
+  Ausgang.
+
+  **Zwei Funde dieses Vorgangs bekommen bewusst keinen Beleg.** Die Beobachtung
+  `gate-flaeche-haengt-am-arbeitsbaum` trifft MEDIUM-2 der Sache nach; der Befund ist im selben
+  Vorgang behoben worden (der Wächter benennt seine Bezugsmenge jetzt selbst), und ein Beleg
+  zählte hier eine Gelegenheit, keine Wiederholung. Und die vier Deklarations-Zahlen der
+  bestehenden Paare sind **nachgemessen und unverändert** — kein Fund.
+- **Folge-Slices:** keiner geschnitten. Die zwei Punkte, die §1 ausschließt und die eine eigene
+  Kennung brauchen, sind bereits Dateien in `open/`:
+  [slice-198](../open/slice-198-hard-rule-311-nennt-den-vendored-baum.md) (die §3.11-Schärfung,
+  Architect-Arbeit) und
+  [slice-201](../open/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md) (der Prüfbereich
+  für Inline-Pfade in den Baum). Die dritte Grenze — die Code-Span-Achse des Wächters — bleibt
+  [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Folgepflicht 2
+  und ist als benannte Lücke geführt, nicht als Slice.
+- **Carveout:** **`CO-006` ist aufgelöst.** Beide Hälften seines Auflösungs-Triggers sind gemessen,
+  und die zweite über der Menge, die sie meint — nicht über den drei Bäumen als Ganzen: Die
+  Trigger-Bedingung fragt nach den Dateien, die die Adressen **tragen**, und die drei Bäume nehmen
+  seit der Anlage legitim neue Dateien auf (die zwei Reports dieses Slice, den Slice-Plan von
+  slice-193, den Verweis-Nachzug seines Reports).
+
+  ```sh
+  git grep -lE '\]\([^)]*\.harness/baseline/v6\.0\.0/' 6a328c4b \
+    -- 'docs/reviews' 'docs/plan/planning/done' 'docs/plan/planning/observations' | wc -l   # 16 Traeger
+  git grep -ohE '\]\([^)]*\.harness/baseline/v6\.0\.0/' 6a328c4b \
+    -- 'docs/reviews' 'docs/plan/planning/done' 'docs/plan/planning/observations' | wc -l   # 36 Adressen
+  git diff --stat 6a328c4b..HEAD -- <die 16 Traeger>                                        # leer
+  ```
+
+  `make docs-check` meldet `0 Befund(e)`, und keine der 16 Träger-Dateien ist seit der Anlage des
+  Carveouts angefasst worden — das ist die Hälfte, die den verbotenen Weg ausschließt. Die Datei
+  wandert per reinem `git mv` nach `docs/plan/carveouts/done/`, ihre Zeile im Index wechselt von
+  *Aktiv* nach *Aufgelöst*. Die `Bindung`-Spalte in
+  [`harness/README.md`](../../../../harness/README.md) §Sensors ist **nicht** zurückzusetzen, und
+  das ist gemessen statt angenommen: `git grep -c 'CO-006' -- harness/README.md` endet ohne Ausgabe
+  mit Exit 1. `CO-006` hatte keine konfigurierte Ausnahme — geduldet war ein **lautes** rotes Gate,
+  und ein lautes Rot hinterlässt keine Konfiguration, die zurückzunehmen wäre.
+- **Trigger-Audit:** `CO-001` — Trigger weiterhin **eingetreten**, Ausgang unverändert
+  *verlängert mit Folge-Slice*; die zwei Träger sind Dateien im Lifecycle
+  ([slice-141](../next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) entscheidet vorher,
+  [slice-113](../open/slice-113-co-001-ist-faellig.md) führt aus). Die `Letzte Prüfung:`-Zeile
+  jener Datei bleibt beim Stand des welle-10-Audits: In einem Repo mit Wellen-Betrieb ist das
+  Carveout-Audit Schritt 2 der Welle-Closure, und eine zweite Eintragung desselben Ergebnisses
+  wäre Chronik. `CO-002` — permanent, in
+  [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) übergeführt, keine
+  Handlung. `CO-006` — aufgelöst, siehe oben. Bootstrap-aware Gates führt dieses Repo keine.
+  ADR-Re-Evaluierungs-Trigger im Gegenstand dieses Slice: Von den vier Triggern in
+  [`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) ist **keiner**
+  gefeuert — keine Deklaration ist rot (`make gates` EXIT 0), kein Baum-Tausch steht an, kein
+  vierter Baum friert ein, und `ls -d .harness/baseline/*/` führt weiterhin genau eine
+  `<tag>`-Ebene. Der offene Acceptance-Beleg von
+  [`ADR-0038`](../../adr/0038-ziel-fassung-regiert-den-sprung-v650.md) bleibt
+  [slice-199](../open/slice-199-adr-0038-bekommt-ihre-bestaetigungsrunde.md).
+- **Risiken aus §6:** alle fünf tragen genau einen Ausgang — **2× entfallen mit Begründung**
+  (die WIP-Doppelbelegung ist nie eingetreten, weil `CO-006` die Zirkularität vor der Übernahme
+  auflöste; die Deklaration `33` ist nachgemessen und unverändert richtig, weil beide Reports
+  dieses Slice keinen Markdown-Link in den Baum tragen), **3× weiter offen ins Register**
+  (`messung-nimmt-lebendes-register-in-den-eingefrorenen-ausschluss` ·
+  `ausnahmeliste-nur-auf-form-geprueft` · `gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse`).
+  Kein Risiko ist *eingetreten*: Der einzige Kandidat — der Preis der Entscheidung — ist realisiert
+  und hat keinen Träger in der geschlossenen Menge, seine Begründung steht bei ihm in §6.
+- **Drei Paarungen:** dieses Repo führt Wellen-Betrieb; sie prüft die nächste Welle-Closure — auch
+  für einen Slice ohne Wellen-Zugehörigkeit. **Nachgesehen und übergeben statt behauptet:** Die
+  zweite Hälfte der Register-Paarung (c) — *jede Registerzeile trägt mindestens einen Beleg* —
+  ist unverändert **rot**, und zwar an denselben zwei Einträgen wie zuvor,
+  `benannte-luecke-ohne-ausgang` und `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; beide
+  führen ein leeres `evidence/`, beide sind in §8 als Nullzähler gesichtet
+  (`for d in docs/plan/planning/observations/BEO-ALL/*/; do [ -z "$(ls "$d"evidence/*.md 2>/dev/null)" ] && basename "$d"; done`).
+  Dieser Slice hat keinen von beiden erzeugt und schließt keinen. **Ein zweiter Befund für die
+  Welle-Closure liegt daneben:** Vier Einträge stehen bei **3×** oder darüber und tragen `offen`
+  — `folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht`,
+  `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`, `zaehler-label-nennt-falsche-einheit`,
+  `zitat-grep-uebersieht-zeilenumbruch-und-markup`. Der Lese-Schritt, der ihnen einen Ausgang
+  zuweist, ist Schritt 3a der Welle-Closure und läuft nicht in dieser Rolle; solange beide Wellen
+  offen sind, hat er keinen Termin. Das ist die Klasse
+  `schwellen-uebertritt-ohne-zustaendige-rolle` (2×) — **benannt, nicht gezählt**: Ein Beleg käme
+  aus einer Closure, die den Lese-Schritt gar nicht trägt, und zählte damit eine Zuständigkeit,
+  die sie nie hatte.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
