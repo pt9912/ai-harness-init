@@ -14,7 +14,6 @@ Formalisierung 2026-07-21, Roadmap §Backlog Cluster E).
 | ID | Titel | Betroffenes Gate | Angelegt |
 |---|---|---|---|
 | [CO-001](CO-001-bats-shell-lint.md) | shell-lint deckt die bats-Dateien nicht ab | `shell-lint` | 2026-07-21 |
-| [CO-006](CO-006-eingefrorene-baseline-adresse-nach-dem-tag-tausch.md) | Der Tag-Tausch des vendored Baums macht 36 Adressen in einfrierenden Artefakten tot | `docs-check` | 2026-09-08 |
 
 ## Permanent — in eine ADR übergeführt
 
@@ -35,3 +34,4 @@ ihnen ist, sagt der **Status** in ihrem Kopf. Die Begründung steht an genau ein
 | [CO-003](done/CO-003-mutate-ohne-zeitschranke.md) | `make mutate` hatte keine Zeitschranke — ein hängender Worker färbte den Lauf nicht rot | 2026-08-27 | 2026-08-28 | [slice-117](../planning/done/slice-117-lauf-ohne-ende-faerbt-rot.md) baute die Schranke, [slice-120](../planning/done/slice-120-co-003-wird-vollzogen.md) vollzog ihn |
 | [CO-004](done/CO-004-emitter-klassifikation-offen.md) | Der Emitter hatte für vier neue Vorlagen keine Klasse | 2026-08-28 | 2026-08-30 | [slice-130](../planning/done/slice-130-emitter-entscheidet-jedes-neue-template.md) entschied die vier Klassen und vollzog den Übergang: `git mv` nach `done/` als eigener Commit, der Link-Abgleich als zweiter |
 | [CO-005](done/CO-005-adaptions-block-datierter-beleg.md) | Ein datierter Beleg im Adaptions-Block hatte kein auflösbares Ziel | 2026-08-28 | 2026-08-30 | [slice-132](../planning/done/slice-132-adaptions-block-ohne-totes-ziel.md) setzte das von [ADR-0026](../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) autorisierte Referenz-Ventil samt Wächter seiner Restbreite und vollzog den Übergang: `git mv` nach `done/` als eigener Commit, der Link-Abgleich als zweiter |
+| [CO-006](done/CO-006-eingefrorene-baseline-adresse-nach-dem-tag-tausch.md) | Der Tag-Tausch des vendored Baums machte 36 Adressen in einfrierenden Artefakten tot | 2026-09-08 | 2026-09-08 | [slice-197](../planning/done/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md) setzte das von [ADR-0039](../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) autorisierte Referenz-Ventil in Glob-Form — drei Einträge, ein baum-weiter `refs`-Wert — und stellte den Breiten-Wächter von der Konstante 1 auf die je Eintrag deklarierte Zahl um; der Übergang: `git mv` nach `done/` als eigener Commit, der Verweis-Nachzug als zweiter |
