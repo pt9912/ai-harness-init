@@ -43,7 +43,7 @@ Nur existierende Targets (keine halluzinierten Gates):
 | Target | Vertrag | Bindung |
 |---|---|---|
 | `make baseline-verify` | Vendored Baseline unverändert: Integrität **und** Vollständigkeit, netzlos | [`MR-007`](conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
-| `make docs-check` | Doku-Referenzen grün (links/anchors/ids/codepaths), netzlos (`--network none`) | [`MR-010`](conventions.md#mr-010--d-check-gate-fragment-tool-generiert) |
+| `make docs-check` | Doku-Referenzen grün (links/anchors/ids/codepaths), netzlos (`--network none`) — **im Prüfbereich seiner Module** (`codepaths` erreicht den vendored Baum nicht vollständig, s. u.) | [`MR-010`](conventions.md#mr-010--d-check-gate-fragment-tool-generiert) |
 | `make test` | Command-Guard-Tests (bats) + Go-Unit-Tests (Dockerfile-`test`-Stage) grün | [`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md), [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
 | `make lint` | Go-Lint (golangci-lint, Dockerfile-`lint`-Stage) grün | [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
 | `make build` | Go-Binary cross-compiliert (Dockerfile-`build`-Stage) | [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
@@ -95,31 +95,72 @@ Inline-Baseline-Pfad in einem **lebenden** Artefakt (etwa
 verworfen, nicht übersehen:**
 
 ```sh
-DIGEST=$(grep -oE 'DCHECK_DIGEST \?= sha256:[0-9a-f]+' d-check.mk | cut -d' ' -f3)
+DIGEST=$(grep -oE 'DCHECK_DIGEST \?= sha256:[0-9a-f]+' d-check.mk | cut -d' ' -f3)   # v0.74.1 zum Zeitpunkt dieser Messung
 git clone --local --no-hardlinks . /tmp/probe-fresh    # keine .harness/state/, wie ein frischer Klon
 sed -i 's/roots: \[spec, docs, harness\]/roots: [spec, docs, harness, .harness]/' /tmp/probe-fresh/.d-check.yml
 docker run --rm --network none -v /tmp/probe-fresh:/repo:ro "ghcr.io/pt9912/d-check@${DIGEST}" \
-  | grep -c codepath-missing   # 122 -- kein Erwartungswert, wandert mit dem Bestand
+  | tee /tmp/lauf.txt | grep -c codepath-missing   # 128 -- kein Erwartungswert, wandert mit dem Bestand;
+                                                     # gemessen über demselben Baum, der diesen Absatz enthält
 ```
 
-**122** zusätzliche Befunde, fast alle aus drei Klassen, die kein Bug sind: content-gefrorene
-Verweise auf abgelöste Baseline-Tags in den einzelnen `harness/conventions/`-Einträgen
-(append-only seit
+**128** zusätzliche Befunde — wie jede Zahl unten aus derselben Kommando-Kette gewonnen und
+darum ebenso **kein Erwartungswert**, sondern derselbe wandernde Bestand. **102 davon** liegen in
+drei Klassen, die kein Bug sind:
+content-gefrorene Verweise auf abgelöste Baseline-Tags in den einzelnen
+`harness/conventions/`-Einträgen (append-only seit
 [`MR-020`](conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)/[`MR-032`](conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger))
+und in denselben Tag-Ständen zitierenden, nach [`AGENTS.md`](../AGENTS.md) §3.4 eingefrorenen ADRs
 · Pfade eines abgelösten Mechanismus (unter `.harness/cache/`, abgelöst von
 [`MR-007`](conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) · der
 gitignorierte Laufzeit-Ort `.harness/state/`, den [`spec/architecture.md`](../spec/architecture.md)
 und [`spec/spezifikation.md`](../spec/spezifikation.md#5-metriken-und-tracing-felder) als
-kanonische Adresse führen, obwohl er auf einem frischen Checkout nicht existiert. Ein Prüfer, der
-nur den gesuchten Fall trifft — einen toten Pfad unter dem **aktuellen** Baseline-Tag in einem
-lebenden Artefakt —, bräuchte für jede dieser drei Klassen eine eigene, gemessene Ausnahme:
-dieselbe Apparatur, die
+kanonische Adresse führen, obwohl er auf einem frischen Checkout nicht existiert:
+
+```sh
+grep codepath-missing /tmp/lauf.txt | awk -F'\t' '$2 ~ /^\.harness\/(baseline|state|cache)/' | wc -l   # 102
+grep codepath-missing /tmp/lauf.txt | awk -F'\t' '$2 !~ /^\.harness\/(baseline|state|cache)/' | wc -l  #  26
+```
+
+Ein Prüfer, der nur den gesuchten Fall trifft — einen toten Pfad unter dem **aktuellen**
+Baseline-Tag in einem lebenden Artefakt —, bräuchte für jede dieser drei Klassen eine eigene,
+gemessene Ausnahme: dieselbe Apparatur, die
 [`ADR-0039`](../docs/plan/adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) für die
 **Link**-Form von genau drei einfrierenden Bäumen gebaut hat, hier aber zusätzlich für eine
 vierte, nicht einfrierende Klasse (gitignorierte Laufzeit-Pfade in kanonischen Spec-Dokumenten).
 Das ist außerhalb des Umfangs eines einzelnen Slice und bleibt eine **benannte Lücke**: ein toter
 Inline-Pfad unter `.harness/baseline/` in einem lebenden Artefakt bleibt gate-unsichtbar, bis ein
 Folge-Slice diese drei Ausnahme-Klassen einzeln trägt.
+
+**Die 102 sind nicht die ganze Entlastung.** Unter den 30 Treffern, deren Ziel mit
+`.harness/baseline/` beginnt —
+
+```sh
+grep codepath-missing /tmp/lauf.txt | awk -F'\t' '$2 ~ /^\.harness\/baseline\//' | wc -l   # 30
+```
+
+— liegen nicht alle in `harness/conventions/` oder einer eingefrorenen ADR:
+
+```sh
+grep codepath-missing /tmp/lauf.txt | awk -F'\t' '$2 ~ /^\.harness\/baseline\//{split($1,a,":"); print a[1]}' \
+  | grep -vE '^(harness/conventions/|docs/plan/adr/)' | sort -u
+```
+
+Der Rest zählt **sechs** Fundstellen, nicht null: fünf tragen einen `.harness/baseline/<abgelöster
+Tag>/…`-Pfad in einem offenen Slice-Plan bzw. einem Welle-Plan; eine sechste —
+außerhalb der `.harness/baseline/`-Form, aber derselben Klasse *toter Pfad in einem lebenden
+Artefakt* — verweist aus einer Skill-Datei auf eine eigene, nicht existierende Vorlage. (Zwei
+weitere Treffer derselben Filterzeile sind **kein** Bug: der Beleg-Pfad, den dieser Absatz selbst
+zu Testzwecken erfindet, und ein `$(BASELINE_TAG)`-Platzhalter in einer Rezept-Beschreibung
+anderswo in diesem Dokument — beide sind erkennbar kein Tag-Literal.) Das ist wörtlich der oben
+benannte tragende Fall — kein Rauschen. Er bleibt hier **ungezogen und benannt**, statt in diesem
+Slice mitgenommen zu werden: Die sechs Fundstellen liegen in mindestens drei verschiedenen
+Eigentums-Bereichen (offene Slice-Pläne, ein Welle-Plan, eine nach
+[ADR-0028](../docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
+Reviewer-eigene Skill-Datei), und ein Nachzug in einem einzelnen Implementations-Lauf griffe über
+mehrere Rollen-Grenzen hinweg — genau der Fall, den
+[slice-201](../docs/plan/planning/in-progress/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)
+§1 mit *„findet sie viele, ist das ein eigener Vorgang"* für den Gesamtbestand vorwegnimmt, hier
+schon bei sechs Fundstellen, weil die Eigentums-Grenze und nicht die Stückzahl den Ausschlag gibt.
 
 **Was `comment-claims` nicht deckt — benannt, weil eine Vollständigkeits-Zeile („N Datei(en) geprueft, 0 Befund(e)") sonst mehr behauptet als sie trägt** (Review-Befund HIGH-1 vom 2026-07-30; die hier zuerst stehende Zählung „an **zwei** Stellen" war selbst zu eng und ist in Runde 2 korrigiert worden): der Prüfbereich entsteht im Rezept aus `git ls-files` und ist an **drei** Stellen enger als der Gate-Stempel, den `record-gates` über den Arbeitsbaum legt (`harness/tools/working-tree-hash.sh`: `--cached --others --exclude-standard`).
 
