@@ -409,19 +409,31 @@ Backticks).
   keinem Artefakt dieses Slice.
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb; sie prüft die nächste Welle-Closure — auch
   für einen Slice ohne Wellen-Zugehörigkeit. **Nachgesehen und übergeben statt behauptet:**
-  (a) **Anker-Paarung** hat keinen Gegenstand — dieser Slice verkörpert nichts und trägt kein Feld
-  `liegt in`. (b) **Folge-Slice-Paarung** grün: die genannten `slice-141` und `slice-113` sind
-  Dateien im Lifecycle. (c) **Register-Paarung**, erste Hälfte grün — jede hier zitierte Beobachtung
-  existiert als Verzeichnis; zweite Hälfte unverändert **rot**, an denselben zwei Einträgen wie
-  zuvor, `benannte-luecke-ohne-ausgang` und
-  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`, beide mit leerem `evidence/`
+  (a) **Anker-Paarung** hat keinen Gegenstand: Dieser Slice verkörpert nichts, und keine der
+  Fundstellen von `liegt in` in dieser Datei ist das Pflichtfeld — drei sind Prosa, zwei sind die
+  Regel selbst (`grep -n 'liegt in'` über dieser Datei, einzeln gelesen). (b)
+  **Folge-Slice-Paarung** grün: `slice-141` liegt in `next/`, `slice-113` in `open/`. (c)
+  **Register-Paarung**, erste Hälfte grün — jede hier zitierte Beobachtung existiert als
+  Verzeichnis
+  (`grep -ohE 'BEO-ALL/[a-z0-9-]+' <diese Datei> | sort -u`, jede gegen `observations/` gehalten);
+  zweite Hälfte unverändert **rot**, an denselben zwei Einträgen wie zuvor,
+  `benannte-luecke-ohne-ausgang` und `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`, beide
+  mit leerem `evidence/`
   (`for d in docs/plan/planning/observations/BEO-ALL/*/; do [ -z "$(ls "$d"evidence/*.md 2>/dev/null)" ] && basename "$d"; done`).
   Dieser Slice hat keinen von beiden erzeugt und schließt keinen. **Der Befund für die
-  Welle-Closure ist gewachsen:** Fünf Einträge stehen bei 3× oder darüber und tragen `offen` —
-  `folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht`,
-  `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`, `zaehler-label-nennt-falsche-einheit`,
-  `zitat-grep-uebersieht-zeilenumbruch-und-markup` und ab jetzt
-  `kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle`. Das ist die Klasse
+  Welle-Closure ist gewachsen:** **sechs** Einträge stehen bei 3× oder darüber und tragen `offen`,
+  gemessen statt aufgezählt —
+
+  ```sh
+  for d in docs/plan/planning/observations/BEO-ALL/*/; do
+    n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l)
+    [ "$n" -ge 3 ] && grep -q '^\*\*Stand:\*\* offen' "$d"state.md && basename "$d"
+  done | wc -l   # 6
+  ```
+
+  **kein Erwartungswert** — die Zahl wandert mit dem Register, und einer der sechs ist
+  `kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle` aus diesem Slice. Das ist die
+  Klasse
   `schwellen-uebertritt-ohne-zustaendige-rolle` (2×) — **benannt, nicht gezählt**: Ein Beleg käme
   aus einer Closure, die den Lese-Schritt gar nicht trägt, und zählte damit eine Zuständigkeit, die
   sie nie hatte.
