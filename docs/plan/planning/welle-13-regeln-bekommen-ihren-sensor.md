@@ -56,7 +56,7 @@ aufgenommen hat.
    einer `Accepted`-ADR — weil die Probe den Satz **ans Dateiende** hängte und damit in
    `## Geschichte`, den der Default-Block über `exclude-sections` aus dem Kern nimmt. Derselbe Satz
    in `## Entscheidung` meldet `core-drift-vcs`, Exit 1
-   ([slice-127](in-progress/slice-127-adr-immutabilitaet-hat-einen-sensor.md) §1 führt beide Läufe).
+   ([slice-127](done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) §1 führt beide Läufe).
    **Damit ist keines der vier Module ohne Rot**, und der Carveout-Pfad aus §3 wird für `vcs` nicht
    gebraucht.
 2. **Die Adoptions-Schuld ist real und je Modul verschieden** — jede Zahl aus dem Lauf des
@@ -211,12 +211,12 @@ Verzeichnisse (dieselbe zweite Wahrheit, die beim Slice retired wurde). -->
 | [slice-124](open/slice-124-gate-tabelle-hat-einen-waechter.md) | Die Gate-Tabellen werden gegen das Makefile gehalten (Modul `targets`, Achse 1) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) | Roadmap und Lifecycle-Verzeichnis widersprechen sich nicht mehr still (Modul `planning`, Achse 4) | [`MR-016`](../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) |
 | [slice-126](open/slice-126-commit-message-traegt-eine-kennung.md) | Eine Commit-Message ohne Kennung wird rot, und zwar vor dem Commit (Modul `commits`, Achse 3) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| [slice-127](in-progress/slice-127-adr-immutabilitaet-hat-einen-sensor.md) | Hard Rule 3.4 bekommt ihren Sensor (Modul `vcs`, Achse 2) | [`AGENTS.md`](../../../AGENTS.md) §3.4 |
+| [slice-127](done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) | Hard Rule 3.4 bekommt ihren Sensor (Modul `vcs`, Achse 2) | [`AGENTS.md`](../../../AGENTS.md) §3.4 |
 | [slice-129](open/slice-129-closure-notiz-hat-einen-sensor.md) | Die Closure-Notiz-Pflicht bekommt ihren Sensor (Modul `planning`, zweite Fähigkeit, Achse 6) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 
 **Die Reihenfolge ist nicht beliebig, eine Kante ist hart und eine ist ein Ausschluss.**
 [slice-123](done/slice-123-ci-sieht-die-historie.md) geht **[slice-126](open/slice-126-commit-message-traegt-eine-kennung.md)
-und [slice-127](in-progress/slice-127-adr-immutabilitaet-hat-einen-sensor.md) voraus**: beide lesen
+und [slice-127](done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) voraus**: beide lesen
 Historie, und ohne die Range-Entscheidung aus 123 wären sie in CI blind und grün — ein fail-open
 Sensor ist schlechter als keiner, weil er eine Zusage trägt. Die drei hermetischen
 ([slice-124](open/slice-124-gate-tabelle-hat-einen-waechter.md),
@@ -419,13 +419,13 @@ ist falsch"*, nicht *„die DoD ist länger"*.
     Messfehlers der Erstfassung**: Ohne sie findet die Suche **sich selbst** — der Satz, der den
     Marker benennt, enthält ihn. Über den ganzen Baum gezählt liefert dieselbe Suche heute **1**
     bzw. **2** Dateien, und alle Treffer sind Sätze *über* den Marker in genau diesem Absatz und in
-    [slice-127](in-progress/slice-127-adr-immutabilitaet-hat-einen-sensor.md) §6 — kein einziger ist einer
+    [slice-127](done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) §6 — kein einziger ist einer
     ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert):
     ein Kommando neben einer Zahl belegt sie erst, wenn es den Gegenstand schneidet).
     **`immutable` bleibt als benannter Ausweichpfad geführt:** ein absichtlich falscher
     `immutable: sha256:0000…`-Marker auf einer Accepted-ADR meldet **`core-drift`** — das
     hermetische Geschwister derselben Zusage, die
-    [slice-127](in-progress/slice-127-adr-immutabilitaet-hat-einen-sensor.md) über `vcs` trägt. Gebraucht
+    [slice-127](done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) über `vcs` trägt. Gebraucht
     wird es dort nicht: das Rot über die Range ist hergestellt (Messung 1). Der Hinweis steht in
     slice-127 §6 und ändert dessen Zuschnitt nicht.
   - **`diagrams` — bewacht eine Kennung.** Ohne Block `0 Befund(e)`; mit `fences: [mermaid]` und
