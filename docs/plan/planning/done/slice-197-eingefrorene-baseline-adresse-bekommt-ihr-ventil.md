@@ -89,7 +89,7 @@ setzt die Entscheidung um; er trifft sie nicht.
   ([`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) §Was diese Festlegungen
   nicht tun). Dass ein solcher Pfad in **Inline-Code** heute von keinem Modul gesehen wird, ist ein
   eigener Vorgang mit eigener Bezugsmenge:
-  [slice-201](../next/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md).
+  [slice-201](../in-progress/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md).
 - **Die Code-Span-Achse des Wächters.** Er zählt die Inline-Markdown-Form und sieht eine
   Code-Span-Referenz nicht; das ist
   [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Folgepflicht 2 und
@@ -468,7 +468,7 @@ Backticks).
   Kennung brauchen, sind bereits Dateien in `open/`:
   [slice-198](../open/slice-198-hard-rule-311-nennt-den-vendored-baum.md) (die §3.11-Schärfung,
   Architect-Arbeit) und
-  [slice-201](../next/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md) (der Prüfbereich
+  [slice-201](../in-progress/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md) (der Prüfbereich
   für Inline-Pfade in den Baum). Die dritte Grenze — die Code-Span-Achse des Wächters — bleibt
   [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Folgepflicht 2
   und ist als benannte Lücke geführt, nicht als Slice.
