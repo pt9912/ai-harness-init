@@ -30,6 +30,8 @@ Slice nicht rot färben darf),
 
 **Autor:** Planner. **Datum:** 2026-08-28.
 
+**Verantwortlich:** Implementer (pt9912).
+
 ---
 
 ## 1. Ziel
