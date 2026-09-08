@@ -145,22 +145,45 @@ grep codepath-missing /tmp/lauf.txt | awk -F'\t' '$2 ~ /^\.harness\/baseline\//{
   | grep -vE '^(harness/conventions/|docs/plan/adr/)' | sort -u
 ```
 
-Der Rest zählt **sechs** Fundstellen, nicht null: fünf tragen einen `.harness/baseline/<abgelöster
-Tag>/…`-Pfad in einem offenen Slice-Plan bzw. einem Welle-Plan; eine sechste —
-außerhalb der `.harness/baseline/`-Form, aber derselben Klasse *toter Pfad in einem lebenden
-Artefakt* — verweist aus einer Skill-Datei auf eine eigene, nicht existierende Vorlage. (Zwei
-weitere Treffer derselben Filterzeile sind **kein** Bug: der Beleg-Pfad, den dieser Absatz selbst
-zu Testzwecken erfindet, und ein `$(BASELINE_TAG)`-Platzhalter in einer Rezept-Beschreibung
+Unter den 30 zählt der Rest **sechs** Fundstellen, nicht null: fünf tragen einen
+`.harness/baseline/<abgelöster Tag>/…`-Pfad in einem offenen Slice-Plan bzw. einem Welle-Plan; eine
+sechste — außerhalb der `.harness/baseline/`-Form, aber derselben Klasse *toter Pfad in einem
+lebenden Artefakt* — verweist aus einer Skill-Datei auf eine eigene, nicht existierende Vorlage.
+(Zwei weitere Treffer derselben Filterzeile sind **kein** Bug: der Beleg-Pfad, den dieser Absatz
+selbst zu Testzwecken erfindet, und ein `$(BASELINE_TAG)`-Platzhalter in einer Rezept-Beschreibung
 anderswo in diesem Dokument — beide sind erkennbar kein Tag-Literal.) Das ist wörtlich der oben
-benannte tragende Fall — kein Rauschen. Er bleibt hier **ungezogen und benannt**, statt in diesem
-Slice mitgenommen zu werden: Die sechs Fundstellen liegen in mindestens drei verschiedenen
-Eigentums-Bereichen (offene Slice-Pläne, ein Welle-Plan, eine nach
+benannte tragende Fall — kein Rauschen.
+
+**Dieselben sechs sind nicht der ganze Rest der 26** — jene Filterzeile trifft nur, wessen Ziel mit
+`.harness/baseline/` beginnt. Im **gesamten** Rest von 26 liegen sechs weitere Treffer mit
+demselben Ziel — einer im Repo nicht existierenden Skill-Datei (`ls .harness/skills/` → nur
+`reviewer.md`) —, in der laufenden Roadmap, zwei offenen Slice-Plänen und drei flachen, offenen
+Welle-Plänen:
+
+```sh
+grep codepath-missing /tmp/lauf.txt \
+  | awk -F'\t' '$2 == ".harness/skills/closure-note-reviewer.md"' \
+  | grep -vE 'done/|docs/plan/adr/' | wc -l   # 6 -- kein Erwartungswert, wandert mit dem Bestand
+```
+
+Zusammen mit den sechs oben sind es **zwölf**, nicht sechs:
+
+```sh
+grep codepath-missing /tmp/lauf.txt \
+  | grep -v '^docs/plan/planning/done/' | grep -v '^docs/plan/adr/' | grep -v '/evidence/' \
+  | grep -v '^harness/conventions/' | awk -F'\t' '$2 !~ /^\.harness\/(state|cache)/' \
+  | grep -v 'does-not-exist-201' | grep -v '\$(BASELINE_TAG)' | wc -l   # 12
+```
+
+Beide Gruppen bleiben hier **ungezogen und benannt**, statt in diesem Slice mitgenommen zu werden:
+Die zwölf Fundstellen liegen in mindestens vier verschiedenen Eigentums-Bereichen (offene
+Slice-Pläne, flache Welle-Pläne, die laufende Roadmap, eine nach
 [ADR-0028](../docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
 Reviewer-eigene Skill-Datei), und ein Nachzug in einem einzelnen Implementations-Lauf griffe über
 mehrere Rollen-Grenzen hinweg — genau der Fall, den
 [slice-201](../docs/plan/planning/in-progress/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)
 §1 mit *„findet sie viele, ist das ein eigener Vorgang"* für den Gesamtbestand vorwegnimmt, hier
-schon bei sechs Fundstellen, weil die Eigentums-Grenze und nicht die Stückzahl den Ausschlag gibt.
+schon bei zwölf Fundstellen, weil die Eigentums-Grenze und nicht die Stückzahl den Ausschlag gibt.
 
 **Was `comment-claims` nicht deckt — benannt, weil eine Vollständigkeits-Zeile („N Datei(en) geprueft, 0 Befund(e)") sonst mehr behauptet als sie trägt** (Review-Befund HIGH-1 vom 2026-07-30; die hier zuerst stehende Zählung „an **zwei** Stellen" war selbst zu eng und ist in Runde 2 korrigiert worden): der Prüfbereich entsteht im Rezept aus `git ls-files` und ist an **drei** Stellen enger als der Gate-Stempel, den `record-gates` über den Arbeitsbaum legt (`harness/tools/working-tree-hash.sh`: `--cached --others --exclude-standard`).
 
