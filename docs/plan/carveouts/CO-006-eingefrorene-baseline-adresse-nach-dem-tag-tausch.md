@@ -18,7 +18,7 @@ Der Adress-Nachzug hat sie gezogen, und was dort noch den abgelösten Tag nennt,
 Nicht-Zieh-Klassen — Tree-Operand und datierte Mess-Aussage nach
 [`MR-033`](../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist).
 
-**Folge-Slice:** [`slice-197`](../planning/open/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md)
+**Folge-Slice:** [`slice-197`](../planning/next/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md)
 
 Regeln: Baseline-Regelwerk `modul-07-carveouts.md` §Ziel-Form: Carveout — ein
 Carveout braucht immer einen Auflösungs-Trigger **und** einen Folge-Slice.

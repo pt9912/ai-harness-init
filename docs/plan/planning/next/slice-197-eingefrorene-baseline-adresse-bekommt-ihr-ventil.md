@@ -75,7 +75,7 @@ setzt die Entscheidung um; er trifft sie nicht.
   derselben Entscheidung und **Architect-Arbeit**
   ([`AGENTS.md`](../../../../AGENTS.md) §3.8); ein Implementations-Lauf, der sie mitnähme, schriebe
   ein fremdes Rollen-Artefakt. Sie ist als
-  [slice-198](slice-198-hard-rule-311-nennt-den-vendored-baum.md) geschnitten, und diese Kennung
+  [slice-198](../open/slice-198-hard-rule-311-nennt-den-vendored-baum.md) geschnitten, und diese Kennung
   nimmt den Punkt an.
 - **Die Verengung des `in:`-Globs `docs/plan/planning/observations/**` auf die einfrierende
   Teilmenge.** Der Glob deckt neben den unveränderlichen `observation.md` und `evidence/*.md` auch
@@ -89,7 +89,7 @@ setzt die Entscheidung um; er trifft sie nicht.
   ([`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) §Was diese Festlegungen
   nicht tun). Dass ein solcher Pfad in **Inline-Code** heute von keinem Modul gesehen wird, ist ein
   eigener Vorgang mit eigener Bezugsmenge:
-  [slice-201](slice-201-codepaths-erreicht-den-vendored-baum-nicht.md).
+  [slice-201](../open/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md).
 - **Die Code-Span-Achse des Wächters.** Er zählt die Inline-Markdown-Form und sieht eine
   Code-Span-Referenz nicht; das ist
   [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Folgepflicht 2 und
