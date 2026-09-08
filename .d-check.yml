@@ -50,13 +50,16 @@ planning:
 # append-only eingefroren. Warum daraus eine Ausnahme folgt und keine Reparatur, steht in
 # ADR-0026.
 # Der Eintrag laesst die Datei im Pruefbereich — die gepruefte Datei-Zahl bewegt sich durch ihn
-# nicht. Wie viele Referenzen ein Eintrag wirklich stumm schaltet, misst weder diese Config noch
-# docs-check: ein zu breiter Eintrag ist genauso gruen wie ein enger. Jeder Eintrag deklariert
-# darum an seinem Ort per "# Deckung: N", wie viele Markdown-Links er deckt (ADR-0039
-# Festlegung 2); test/ignore-refs-restbreite.bats (in make gates) haelt beide Richtungen —
-# mehr ODER weniger als N faerbt rot, eine fehlende Deklaration ebenso, und "Deckung: 0" ist
-# eine Deklaration und keine fehlende.
-# GRENZE, keine Regel: die vier Paare MR-021/ADR-0026/ADR-0027/ADR-0030/ADR-0034 sind je
+# nicht. Wie viele Markdown-Links (Inline-Form `](ziel)`) auf der Praefix-Achse aus ADR-0039
+# Festlegung 2 ein Eintrag stumm schaltet, misst weder diese Config noch docs-check: ein zu
+# breiter Eintrag ist genauso gruen wie ein enger. Jeder Eintrag deklariert darum an seinem Ort
+# per "# Deckung: N" genau diese Zahl (ADR-0039 Festlegung 2); test/ignore-refs-restbreite.bats
+# (in make gates) haelt beide Richtungen — mehr ODER weniger als N faerbt rot, eine fehlende
+# Deklaration ebenso, und "Deckung: 0" ist eine Deklaration und keine fehlende. NICHT gezaehlt:
+# ein Link auf das Praefix-Verzeichnis SELBST ohne weiteres Segment dahinter (dieselbe Grenze
+# wie die Herleitung der Zahlen 33/3/2 in Festlegung 2) und eine Code-Span-Referenz (ADR-0030
+# Folgepflicht 2) — beide schaltet d-check ueber denselben Glob dennoch stumm.
+# GRENZE, keine Regel: die vier Paare ADR-0026/ADR-0027/ADR-0030/ADR-0034 sind je
 # EXTENSIONAL GESCHLOSSEN auf ihr eigenes Paar; die drei Baum-Eintraege aus ADR-0039 sind
 # EXTENSIONAL GESCHLOSSEN auf genau die drei dort genannten Quell-Baeume und den einen
 # `refs`-Wert `.harness/baseline/**`. Jeder weitere Eintrag, jedes weitere Glob und jede
@@ -121,7 +124,7 @@ ignore-refs:
     refs: ["docs/plan/planning/observations.md"]
   # Fuenftes bis siebtes Paar, eine Entscheidung zu dritt (ADR-0039 Festlegung 1): je einer der
   # drei einfrierenden Baeume (Review-Report, geschlossener Slice/Welle-Plan, Beobachtungs-
-  # Register) traegt Adressen in den vendored Baum, die mit jedem Tag-Wechsel toben, weil das
+  # Register) traegt Adressen in den vendored Baum, die mit jedem Tag-Wechsel sterben, weil das
   # Verzeichnis <tag>-gescoped ist und niemand die Zeitdokumente mehr anfassen darf (AGENTS.md
   # 3.4/3.11). `refs` ist BAUM-weit (`.harness/baseline/**`), nicht tag-weit: die Eigenschaft, die
   # das Ventil rechtfertigt, ist "zeigt in ein <tag>-gescoptes Vendoring-Verzeichnis", nicht "zeigt

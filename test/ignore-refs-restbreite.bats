@@ -29,12 +29,20 @@
 # (kein `](...)`) zaehlt ebenfalls nicht — ADR-0030 Folgepflicht 2 benennt das als
 # eigene, hier nicht geschlossene Luecke.
 #
-# Ein `in:`-Wert in Glob-Form (`<verzeichnis>/**`) listet den Baum ueber `git ls-files`
-# und summiert die Treffer aller darin gefuehrten Dateien; ein `refs:`-Wert in Glob-Form
+# Die Deklaration ist DARUM keine Aussage ueber jede vom Ventil tatsaechlich stumm
+# geschaltete Referenz, sondern ueber die Praefix-Achse aus ADR-0039 Festlegung 2: ein
+# Link auf das Praefix-Verzeichnis SELBST, ohne weiteres Segment dahinter (z. B.
+# `.harness/baseline` ohne Tag), zaehlt im Glob-Modus NICHT mit, obwohl d-check ihn ueber
+# denselben `refs`-Glob ebenfalls stumm schaltet — siehe die Begruendung an `count_links_one`
+# unten. Diese Grenze ist gewaehlt, nicht uebersehen: sie reproduziert exakt die Zaehlung, mit
+# der Festlegung 2 die Zahlen 33/3/2 herleitet.
+#
+# Ein `in:`-Wert in Glob-Form (`<verzeichnis>/**`) listet den Baum ueber `find`
+# und summiert die Treffer aller darin gefundenen Dateien; ein `refs:`-Wert in Glob-Form
 # zaehlt jeden aufgeloesten Pfad, der unter dem genannten Verzeichnis liegt (Praefix-
 # Vergleich auf dem normalisierten Pfad).
 #
-# NETZLOS (nur Datei-Lesen und `git ls-files`), laeuft in `make gates` ueber `make test`
+# NETZLOS (nur Datei-Lesen und `find`), laeuft in `make gates` ueber `make test`
 # -> `test-bats`.
 
 setup() {
@@ -58,6 +66,9 @@ block() {
 # vor dem jeweiligen Eintrag steht — leer, wenn keine solche Zeile davorstand. Eine
 # Zeile, die keiner der zwei gelesenen Formen entspricht, wird als UNGELESEN
 # durchgereicht statt verschluckt — sonst waere eine umformatierte Config still gruen.
+# Ein `- in:`-Eintrag OHNE nachfolgende `refs:`-Zeile faellt aus demselben Grund als
+# UNGELESEN: wuerde er einfach ueberschrieben (naechster `- in:`) oder am Block-Ende
+# verworfen, verschwaende der Eintrag spurlos statt gemeldet zu werden.
 pairs() {
   block | awk '
     /^[[:space:]]*(#.*)?$/ {
@@ -73,12 +84,14 @@ pairs() {
     {
       line = $0
       if (line ~ /^[[:space:]]*-[[:space:]]+in:[[:space:]]*/) {
+        if (havesrc) print "UNGELESEN\t- in: \"" src "\" (kein refs: gefolgt)"
         src = line
         sub(/^[[:space:]]*-[[:space:]]+in:[[:space:]]*/, "", src)
         gsub(/["]/, "", src)
         sub(/[[:space:]]+$/, "", src)
         decl = havepending ? pending : ""
         havepending = 0
+        havesrc = 1
         next
       }
       if (line ~ /^[[:space:]]+refs:[[:space:]]*\[/) {
@@ -91,9 +104,13 @@ pairs() {
           gsub(/[" ]/, "", t)
           if (t != "") print src "\t" t "\t" decl
         }
+        havesrc = 0
         next
       }
       print "UNGELESEN\t" line
+    }
+    END {
+      if (havesrc) print "UNGELESEN\t- in: \"" src "\" (kein refs: gefolgt)"
     }
   '
 }
@@ -161,16 +178,23 @@ count_links_one() {
 
 # count_total summiert count_links_one ueber die Dateimenge, die $1 bezeichnet — die
 # eine Datei selbst, wenn $1 literal ist, oder alle unter dem Verzeichnis vor "/**"
-# liegenden Dateien, wenn $1 ein Glob ist. Gelistet wird ueber `find` und nicht ueber
-# `git ls-files`: das gepinnte BATS_IMAGE (Makefile test-bats) fuehrt kein `git`, und
-# der Baum liegt ohnehin als Bind-Mount vor. Gibt bei einem Glob ohne getroffene Datei
-# "LEER" statt einer Zahl aus (eigener Befund, kein stiller 0).
+# liegenden `.md`-Dateien, wenn $1 ein Glob ist (dieselbe Dateityp-Grenze wie d-check,
+# dessen `links`/`anchors` nur `.md` scannen). Gelistet wird ueber `find` und nicht ueber
+# `git ls-files`: das gepinnte BATS_IMAGE (Makefile test-bats) fuehrt kein `git`, und der
+# Baum liegt ohnehin als Bind-Mount vor. Damit ist die gezaehlte Bezugsmenge der
+# WORKING-TREE (getrackt und ungetrackt) und nicht der INDEX, den das Kommando aus
+# ADR-0039 Festlegung 2 (`git ls-files`) zaehlt; am Stand dieses Kommentars fallen beide
+# fuer die drei einfrierenden Baeume zusammen (keine ungetrackte `.md`, keine
+# `*.template.md` darunter) — sie fallen nicht STRUKTURELL zusammen, und eine Neu-Messung
+# nach einem Bump traegt die Zahl, die DIESER Waechter (`find`) ausgibt, nicht zwingend
+# die des ADR-Kommandos. Gibt bei einem Glob ohne getroffene Datei "LEER" statt einer
+# Zahl aus (eigener Befund, kein stiller 0).
 count_total() {
   local src="$1" ref="$2" total=0 n f
   if is_glob "$src"; then
     local dir="${src%/**}"
     local files
-    files="$(cd "$REPO" && find "$dir" -type f 2>/dev/null | sort)"
+    files="$(cd "$REPO" && find "$dir" -type f -name '*.md' 2>/dev/null | sort)"
     if [ -z "$files" ]; then
       echo "LEER"
       return
@@ -233,7 +257,7 @@ count_total() {
     fi
     if [ "$n" = "LEER" ]; then
       befunde="$befunde
-  $src -> $ref: kein Quell-Baum getroffen (git ls-files liefert nichts)"
+  $src -> $ref: kein Quell-Baum getroffen (find liefert nichts)"
       continue
     fi
     if [ "$n" != "$decl" ]; then
@@ -243,10 +267,13 @@ count_total() {
   done < <(pairs)
 
   if [ -n "$befunde" ]; then
-    echo "Eine ignore-refs-Ausnahme deckt nicht so viele Referenzen, wie sie deklariert."
+    echo "Eine ignore-refs-Ausnahme faellt unter einer von drei Bedingungen: keine Deklaration,"
+    echo "mehr gedeckte Links als deklariert, oder weniger."
+    echo "Fehlt die Deklaration: eine unbezifferte Ausnahme waere sonst still gruen — die Zeile"
+    echo "'# Deckung: N' gehoert an den Eintrag."
     echo "Deckt sie MEHR: eine Referenz faellt aus der Pruefung, die niemand entschieden hat."
     echo "Deckt sie WENIGER: die Deklaration ist ein zu hohes, vorab bewilligtes Budget fuer"
-    echo "kuenftiges Stummschalten. Beides ist zu entscheiden und die Deklaration anzupassen"
+    echo "kuenftiges Stummschalten. Alle drei sind zu entscheiden und die Deklaration anzupassen"
     echo "oder der Bestand zu korrigieren — in einer eigenen ADR bei einer Verbreiterung des"
     echo "Eintrags selbst, nicht als Nachziehen (ADR-0026, ADR-0039)."
     echo "$befunde"
