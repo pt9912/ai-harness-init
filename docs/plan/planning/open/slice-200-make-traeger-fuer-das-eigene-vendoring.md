@@ -27,7 +27,7 @@ Fähigkeit; er ändert keine Festlegung des Technik-Stratums. Berührt er beim B
 [`spec/spezifikation.md`](../../../../spec/spezifikation.md), ist das ein Nachzug der
 Gate-Beschreibung und in §3 zu führen.
 
-**Verantwortlich:** — (bis zur Priorisierung; Implementer-Arbeit).
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-07.
 
