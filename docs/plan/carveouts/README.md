@@ -14,6 +14,7 @@ Formalisierung 2026-07-21, Roadmap §Backlog Cluster E).
 | ID | Titel | Betroffenes Gate | Angelegt |
 |---|---|---|---|
 | [CO-001](CO-001-bats-shell-lint.md) | shell-lint deckt die bats-Dateien nicht ab | `shell-lint` | 2026-07-21 |
+| [CO-006](CO-006-eingefrorene-baseline-adresse-nach-dem-tag-tausch.md) | Der Tag-Tausch des vendored Baums macht 36 Adressen in einfrierenden Artefakten tot | `docs-check` | 2026-09-08 |
 
 ## Permanent — in eine ADR übergeführt
 
