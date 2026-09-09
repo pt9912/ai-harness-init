@@ -211,7 +211,7 @@ Backticks).
   stärker als die zusammengefasste Quelle), 1×, Beleg `slice-172`. `BEO-017` ist in §6 zitiert
   und **nicht** erhöht: der Risiko-Ausgang dort ist *entfallen*, also kein neues Auftreten.
 - **Folge-Slices:** keiner geschnitten. [slice-173](../done/slice-173-archive-welle-als-unterkommando.md)
-  und [slice-174](../open/slice-174-archivierung-emittieren.md) liegen vor diesem Lauf in `open/`
+  und [slice-174](../next/slice-174-archivierung-emittieren.md) liegen vor diesem Lauf in `open/`
   und sind die Umsetzung dieser Entscheidung, nicht ihr Ergebnis; ihr Umfang deckt sich mit den
   Festlegungen 1–4 (Port, Ablösung des Shell-Helfers, Stub-Quelle, Reichweite ins Ziel).
 - **Risiken aus §6:** zwei benannt, beide **entfallen** — siehe §6.
@@ -249,6 +249,6 @@ Artefakt tot) steht als Risiko in §6. `BEO-007` (4×, geplant — wer die Anwei
 `.claude/commands/` schreiben darf, sagt keine Quelle) ist berührt, aber kein Risiko dieses
 Slice: Frage (d) entscheidet nur **ob** die Fähigkeit ins Ziel geht; wer den emittierten
 Anweisungssatz dann **schreibt**, ist die offene Hälfte jener Zeile und Gegenstand von
-[slice-174](../open/slice-174-archivierung-emittieren.md). Weitere Treffer: keine.
+[slice-174](../next/slice-174-archivierung-emittieren.md). Weitere Treffer: keine.
 
 **alle berührten Sub-Areas GF** — der Modus-Begründungsblock entfällt damit.

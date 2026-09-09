@@ -184,7 +184,7 @@ Backticks).
   erhöht: der Risiko-Ausgang dort ist *entfallen*, also kein neues Auftreten.
 - **Folge-Slices:** [slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md),
   [slice-173](../done/slice-173-archive-welle-als-unterkommando.md) und
-  [slice-174](../open/slice-174-archivierung-emittieren.md) — alle drei Dateien in `open/`. Sie
+  [slice-174](../next/slice-174-archivierung-emittieren.md) — alle drei Dateien in `open/`. Sie
   sind nicht aus diesem Lauf geschnitten, sondern liegen vor ihm; sie wechseln den Träger vom
   Shell-Helfer zum Unterkommando des Produkt-Binärs.
 - **Risiken aus §6:** zwei benannt, beide **entfallen** — siehe §6.

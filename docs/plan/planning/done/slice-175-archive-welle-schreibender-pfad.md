@@ -113,7 +113,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 es weder das Einsammeln noch den Verweis-Fund, auf denen der schreibende Pfad aufsetzt.
 
 **Dieser Slice ist der tragende Vorgänger von
-[slice-174](../open/slice-174-archivierung-emittieren.md), nicht
+[slice-174](../next/slice-174-archivierung-emittieren.md), nicht
 [slice-173](../done/slice-173-archive-welle-als-unterkommando.md).** Dessen §4 nennt heute noch
 slice-173; nach diesem Schnitt ist das zu früh: Folgepflicht 5 aus
 [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) lässt den emittierten
@@ -272,7 +272,7 @@ Backticks).
   Schritt 2), nicht diese Slice-Closure: dieses Repo führt Wellen-Betrieb.
   (2) **Folgepflicht 5** — der **emittierte** Anweisungssatz zeigt erst auf das Kommando, wenn es
   läuft. Es läuft jetzt; Träger ist
-  [slice-174](../open/slice-174-archivierung-emittieren.md) DoD (2). Sein Start-Trigger nennt
+  [slice-174](../next/slice-174-archivierung-emittieren.md) DoD (2). Sein Start-Trigger nennt
   slice-173 und meint diesen Slice — die Differenz ist mit dieser Closure gegenstandslos, denn
   beide liegen dann in `done/`. Die **repo-eigene** Hälfte trägt slice-174 nicht: sie ist mit
   dieser Closure erledigt (`.claude/commands/close-welle.md` Schritt 4 nennt den Träger).
