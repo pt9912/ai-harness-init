@@ -267,7 +267,7 @@ dasteht.
 - **Risiko 5 — der `trace:`-Block ist ein zweiter Schreiber in
   [`.d-check.yml`](../../../../.d-check.yml).** Der Start-Trigger serialisiert gegen
   [slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md), aber
-  [slice-129](slice-129-closure-notiz-hat-einen-sensor.md) schreibt in denselben Baum und ist
+  [slice-129](../in-progress/slice-129-closure-notiz-hat-einen-sensor.md) schreibt in denselben Baum und ist
   nicht durch diesen Trigger gedeckt. Läuft es dazwischen, ist der Konflikt ein Merge-Konflikt,
   kein stiller. — **Ausgang:** <offen>
 
