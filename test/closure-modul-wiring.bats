@@ -1,13 +1,13 @@
 #!/usr/bin/env bats
-# closure-modul-wiring.bats — haelt die dritte Faehigkeit des d-check-Moduls `planning`
-# (`closure`, DC-FA-PLAN-001) auf die in slice-129 getroffene Config-Entscheidung gebunden:
-# aktiviert ueber `dir`, Kandidaten-Filter bleibt der Modul-Default `slice-glob` (kein eigenes
-# `glob:`), `placeholder` bleibt aus. `docs-check` selbst faellt fail-closed, wenn eine
-# `done/`-Datei unter `slice-glob` eine zu duenne oder fehlende Closure-Notiz traegt
-# (Grund-Codes closure-note-missing/-thin/-ambiguous) — dieser Waechter haelt die Kopplung an
-# die getroffene Filter- und Bedingungs-Entscheidung ohne einen Docker-Lauf. Was die Faehigkeit
-# deckt, was sie absichtlich ausserhalb laesst (die Welle-Ebene) und der reale Docker-Beleg
-# (Kontrolle: gekuerztes Abschnitt 7 faerbt rot) stehen in harness/README.md.
+# closure-modul-wiring.bats — haelt die zweite Faehigkeit des d-check-Moduls `planning`
+# (`closure`, DC-FA-PLAN-001) auf ihre Config-Entscheidung gebunden: aktiviert ueber `dir`,
+# Kandidaten-Filter bleibt der Modul-Default `slice-glob` (kein eigenes `glob:`), `placeholder`
+# bleibt aus. `docs-check` selbst faellt fail-closed, wenn eine `done/`-Datei unter `slice-glob`
+# eine zu duenne oder fehlende Closure-Notiz traegt (Grund-Codes
+# closure-note-missing/-thin/-ambiguous) — dieser Waechter haelt die Kopplung an die getroffene
+# Filter- und Bedingungs-Entscheidung ohne einen Docker-Lauf. Was die Faehigkeit deckt, was sie
+# absichtlich ausserhalb laesst (die Welle-Ebene) und der reale Docker-Beleg (Kontrolle:
+# gekuerztes Abschnitt 7 faerbt rot) stehen in harness/README.md.
 #
 # NETZLOS (nur Datei-Lesen), laeuft in `make gates` ueber `make test` -> `test-bats`.
 

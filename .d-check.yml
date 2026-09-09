@@ -45,7 +45,7 @@ modules: [links, anchors, ids, matrix, codepaths, spans, planning]
 # und die Fundzahl einer probeweisen Weitung in harness/README.md). `placeholder`
 # bleibt aus: eingeschaltet meldet der Lauf einen Fund in einem escapten
 # Vorlagen-Beispiel einer `done/`-Datei, kein unausgefuellter Rumpf (dieselbe
-# Begruendung in harness/README.md) · seit slice-129.
+# Begruendung in harness/README.md).
 planning:
   roadmap: docs/plan/planning/in-progress/roadmap.md
   heading: "## Offene Wellen"
