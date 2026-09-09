@@ -8,7 +8,7 @@
 | Punkt | Wert |
 |---|---|
 | **Diff/Commit-Range** | `2a2ceafd` — der Behebungs-Commit zu Runde 1. Geprüft wird, ob die sechs Befunde aus Runde 1 **tragen**, und ob der Behebungs-Commit selbst neue trägt. |
-| **Slice-Plan** | [`docs/plan/planning/in-progress/slice-129-closure-notiz-hat-einen-sensor.md`](../plan/planning/in-progress/slice-129-closure-notiz-hat-einen-sensor.md) |
+| **Slice-Plan** | [`docs/plan/planning/done/slice-129-closure-notiz-hat-einen-sensor.md`](../plan/planning/done/slice-129-closure-notiz-hat-einen-sensor.md) |
 | **`LH-*`** | [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | **Aktive ADRs im Bezug** | Im Diff neu referenziert wird allein [ADR-0033](../plan/adr/0033-wellen-archivierung-als-unterkommando.md) (`Proposed`) — als Zeiger auf ein Werkzeug in Bau, nicht als normative Stütze. Keine superseded ADR referenziert. |
 | **Hard Rules** | [`AGENTS.md`](../../AGENTS.md) §3.1, §3.3, §3.5, §3.6, §3.7, §3.9, §3.10 |
@@ -62,7 +62,7 @@ dem `docs-check`-Rezept** (`d-check.mk:72`), nicht eine Annäherung daran.
 
 - `kategorie`: HIGH
 - `quelle`: [`AGENTS.md`](../../AGENTS.md) §3.10 (Hard Rule)
-- `pfad`: `docs/plan/planning/in-progress/slice-129-closure-notiz-hat-einen-sensor.md:104,121,151`
+- `pfad`: `docs/plan/planning/done/slice-129-closure-notiz-hat-einen-sensor.md:104,121,151`
 - `befund`: Runde 1 benannte zwei Hälften — der ausführende Lauf hat die Kriterien *umgeschrieben*
   **und** *abgehakt*. Die erste ist zurückgenommen: der Kriterien-Text der drei DoD-Punkte ist
   gegenüber `3b6c81af^` byte-gleich wiederhergestellt, beide `**Rot:**`-Klauseln stehen wieder da,
@@ -168,7 +168,7 @@ dem `docs-check`-Rezept** (`d-check.mk:72`), nicht eine Annäherung daran.
 
 - `kategorie`: INFO
 - `quelle`: [`AGENTS.md`](../../AGENTS.md) §3.10; Runde-1-HIGH-2
-- `pfad`: `docs/plan/planning/in-progress/slice-129-closure-notiz-hat-einen-sensor.md:28,183,203,251`
+- `pfad`: `docs/plan/planning/done/slice-129-closure-notiz-hat-einen-sensor.md:28,183,203,251`
 - `befund`: Der Plan beruft sich an vier Stellen auf `MR-016`, im Kopf mit derselben Aussage, die
   Runde 1 im README als tot beanstandet hat (*„die Welle-Ebene, deren Closure-Notiz dieses Repo auf
   **zwei** Dateien verteilt"*). Die Abgrenzung des Implementers trägt, und zwar zweifach: `git blame`

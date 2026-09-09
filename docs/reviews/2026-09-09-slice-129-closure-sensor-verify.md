@@ -4,7 +4,7 @@
 
 ## Eingang
 
-- **Slice-Plan:** [`docs/plan/planning/in-progress/slice-129-closure-notiz-hat-einen-sensor.md`](../plan/planning/in-progress/slice-129-closure-notiz-hat-einen-sensor.md)
+- **Slice-Plan:** [`docs/plan/planning/done/slice-129-closure-notiz-hat-einen-sensor.md`](../plan/planning/done/slice-129-closure-notiz-hat-einen-sensor.md)
 - **Drei Review-Reports:** [Runde 1](2026-09-09-slice-129-closure-sensor-review.md) (2 HIGH/2 MEDIUM/2 LOW/3 INFO, merge-blockierend) ·
   [Runde 2](2026-09-09-slice-129-closure-sensor-review-runde-2.md) (2 HIGH/2 MEDIUM/0 LOW/2 INFO, merge-blockierend) ·
   [Runde 3](2026-09-09-slice-129-closure-sensor-review-runde-3.md) (0 HIGH/0 MEDIUM/2 LOW/1 INFO, **nicht** merge-blockierend, „reif für den Verifier")

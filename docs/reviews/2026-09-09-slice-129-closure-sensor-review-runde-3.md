@@ -8,7 +8,7 @@
 | Punkt | Wert |
 |---|---|
 | **Diff/Commit-Range** | `9d27866d..f25d5504` — der Behebungs-Commit zu Runde 2, eng umrissen auf die vier dort gemeldeten Befunde. Geprüft wird, ob jeder von ihnen **trägt**, und ob die Behebung selbst neue trägt. |
-| **Slice-Plan** | [`docs/plan/planning/in-progress/slice-129-closure-notiz-hat-einen-sensor.md`](../plan/planning/in-progress/slice-129-closure-notiz-hat-einen-sensor.md) |
+| **Slice-Plan** | [`docs/plan/planning/done/slice-129-closure-notiz-hat-einen-sensor.md`](../plan/planning/done/slice-129-closure-notiz-hat-einen-sensor.md) |
 | **`LH-*`** | [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | **Aktive ADRs im Bezug** | **keine.** Die zwei im Umfeld genannten — ADR-0033 (Werkzeug in Bau, im README-Absatz) und ADR-0035 (Beleg-Mechanik von `make mutate`) — stehen beide auf `Proposed` (`grep -m1 '^\*\*Status' docs/plan/adr/0033-*.md docs/plan/adr/0035-*.md`). Sie werden hier als **Zeiger auf gebauten Mechanismus** zitiert, nicht als normative Stütze; die operative Quelle für die Beleg-Aussage ist `harness/tools/mutate.sh` selbst. Keine superseded ADR referenziert. |
 | **Hard Rules** | [`AGENTS.md`](../../AGENTS.md) §3.3, §3.5, §3.6, §3.7, §3.9, §3.10 sowie §5 (Traceability) |
