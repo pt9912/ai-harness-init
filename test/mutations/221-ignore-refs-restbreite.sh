@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # files: harness/conventions/MR-021-das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben.md
-# expect: d-check.yml: jede Top-Level-ignore-refs-Ausnahme deckt hoechstens einen Markdown-Link ihrer Quelldatei
+# expect: d-check.yml: jede Top-Level-ignore-refs-Ausnahme deckt genau die an ihr deklarierte Anzahl Markdown-Links
 #
 # Haengt einen ZWEITEN Markdown-Link auf das ausgenommene Ziel an. Der Top-Level-
 # `ignore-refs`-Eintrag in .d-check.yml matcht auf dem aufgeloesten Pfad, nicht auf der
