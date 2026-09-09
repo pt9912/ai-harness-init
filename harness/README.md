@@ -70,15 +70,74 @@ selbst dokumentierte Abweichung dieses Repos nicht — eine Welle-Datei wird hie
 `wave-preview-exists`, obwohl es hier die gewollte Form ist. `waves` bleibt deshalb aus; die
 Fähigkeit dazuzuschalten setzt voraus, dass diese Abweichung selbst aufgelöst wird (Ziel-Form statt
 Repo-Konvention), was dieser Slice nicht entscheidet. Die zweite Fähigkeit desselben Moduls
-(`closure`, Struktur der Closure-Notizen) ist ebenfalls nicht aktiviert — anderer Gegenstand, eigener
-Slice ([slice-129](../docs/plan/planning/in-progress/slice-129-closure-notiz-hat-einen-sensor.md)). Eine
-**vierte** Fähigkeit desselben Moduls (`observations`, Deckung zwischen zitierten
-Beobachtungs-Kennungen und ihrem Nachweis im Register — additiv eine fünfte für den
-Verzeichnis-Modus dieser Ablage) ist ebenfalls verfügbar und nicht aktiviert; anders als
-`closure` (`slice-129`) trägt sie — wie `waves` selbst — noch keinen eigenen Slice —
+(`closure`, Struktur der Closure-Notizen) ist seit slice-129 aktiviert — was sie deckt und was
+nicht, steht im eigenen Absatz unten. Eine **vierte** Fähigkeit desselben Moduls (`observations`,
+Deckung zwischen zitierten Beobachtungs-Kennungen und ihrem Nachweis im Register — additiv eine
+fünfte für den Verzeichnis-Modus dieser Ablage) ist ebenfalls verfügbar und nicht aktiviert; anders
+als `closure` trägt sie — wie `waves` selbst — noch keinen eigenen Slice —
 [`BEO-ALL/register-paarung-ohne-gate-modul`](../docs/plan/planning/observations/BEO-ALL/register-paarung-ohne-gate-modul/observation.md)
 führt die Lücke als offene Beobachtung, mit einer Drift-Log-Zeile in
 [`roadmap.md`](../docs/plan/planning/in-progress/roadmap.md) daneben.
+
+**Was `closure` (zweite Fähigkeit von `planning`) deckt, und was nicht** (slice-129):
+[`.d-check.yml`](../.d-check.yml) setzt `planning.closure.dir: docs/plan/planning/done` und hält
+damit Abschnitt 7 (Closure-Notiz) jedes Kandidaten gegen die Fähigkeit des Moduls: kein Abschnitt,
+der auf das Default-Muster `^#{2,3} .*Closure-Notiz` passt (`closure-note-missing`), mehrere
+passende Überschriften ohne eindeutigen Abschnitt (`closure-note-ambiguous`, immer aktiv), weniger
+als vier Satzenden außerhalb von Code (`closure-note-thin`, mit Datei und Zeile in der Meldung),
+ein unausgefüllter `<feld>`-Platzhalter (`closure-note-placeholder`, Bedingung `placeholder: true`)
+und eine deklarierte Floskel (`closure-note-boilerplate`, Bedingung `boilerplate: […]`). **Rot
+gesehen, gegen eine Kopie außerhalb des Repos, netzlos, Mount `:ro`, derselbe Digest wie
+`docs-check`:**
+
+```sh
+DIGEST=$(grep -oE 'DCHECK_DIGEST \?= sha256:[0-9a-f]+' d-check.mk | cut -d' ' -f3)
+git archive HEAD | tar -x -C <kopie>
+docker run --rm --network none -v <kopie>:/repo:ro "ghcr.io/pt9912/d-check@$DIGEST" \
+  --enable planning --config /repo/.d-check.yml
+# unveraendert:                 … 0 Befund(e)
+# Abschnitt 7 einer done/-Datei auf einen Satz gekuerzt:
+#   …/slice-001a-cli-skeleton.md:79  closure-note-thin  Closure-Notiz traegt 1 Satzende-Zeichen
+#   ausserhalb von Code-Bloecken, verlangt sind 4
+```
+
+**Der Kandidaten-Filter bleibt der Modul-Default `slice-glob`** — `.d-check.yml` setzt kein eigenes
+`glob:` — und trifft damit nur `slice-*.md`
+(`ls docs/plan/planning/done/slice-*.md | wc -l`, kein Erwartungswert, wandert mit dem Bestand). Die
+Welle-Ebene (`ls docs/plan/planning/done/welle-*.md | wc -l`) bleibt **absichtlich** außen vor: Die
+Welle-Closure dieses Repos liegt auf zwei Dateien verteilt
+([`MR-016`](conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)) — der
+flache Welle-Plan trägt in seinem §7 nur den *Zeiger* auf die Ergebnisnotiz (zwei Sätze, unter der
+Schwelle), die Ergebnisnotiz selbst führt ihre Closure-Aussage als **H1**, nicht als die vom Modul
+erwartete H2/H3. Gegen eine Kopie außerhalb des Repos, netzlos, mit `closure.glob: '*.md'`
+probeweise geweitet
+(`docker run --rm --network none -v <kopie>:/repo:ro ghcr.io/pt9912/d-check@<digest> --config /repo/.d-check.yml --enable planning`,
+`<digest>` aus `d-check.mk`): **20** Befunde — **12** `closure-note-missing` (jede
+`welle-NN-results.md`, die H1-Form) und **8** `closure-note-thin` (acht der zwölf Welle-Pläne, ihr
+§7-Zeiger). Kein Erwartungswert, beide Zahlen wandern mit dem Welle-Bestand — tragend ist die
+**Zusammensetzung**: Beide Klassen entstehen aus derselben Zwei-Datei-Form, nicht aus fehlender
+Substanz. Der Filter bleibt eng, statt den Gate über eine Form rot zu färben, die diese
+Welle-Closure absichtlich wählt.
+
+`placeholder` bleibt aus derselben Zurückhaltung aus: eingeschaltet meldet der Basis-Lauf **einen**
+`closure-note-placeholder`
+(`docs/plan/planning/done/slice-087-emittierte-doku-tische-init-invariant.md:353`) — eine
+Vorlagen-Syntax in escapten Backticks, deren ungerade Backtick-Zahl die Inline-Code-Paarung
+verschiebt (eine Vorverarbeitungs-Grenze, die das Werkzeug selbst führt), kein unausgefüllter
+Rumpf. Die Bedingung anzuschalten hieße, ein Zeitdokument zu ändern oder eine Ausnahme für eine
+Datei zu setzen, die nichts falsch macht — beides schlechter als sie auszulassen.
+
+**Der Lauf hängt am geteilten Durchsetzungspunkt `make gates`**, nicht an einem eigenen Profil. Das
+Benutzerhandbuch des Werkzeugs legt für diese Fähigkeit ein eigenes `--config`-Profil nahe, damit
+nicht jeder gewöhnliche Doc-Lauf die Closure-Notizen mitprüft. Dieses Repo hat **einen**
+Durchsetzungspunkt (`docs-check` in `make gates`), und `closure` läuft im selben `planning`-Block
+wie die Marker-Hälfte oben — ein zweites Profil wäre ein zweiter Ort, an dem dieselbe Modul-Config
+driften kann, dieselbe Klasse, die [`MR-010`](conventions.md#mr-010--d-check-gate-fragment-tool-generiert)
+für das Gate-Fragment schon einmal ausbuchstabiert hat. **Was das nicht leistet:** Jeder
+`docs-check`-Lauf öffnet jetzt auch jede `slice-*.md` unter `done/` und prüft ihre §7-Struktur —
+auch dann, wenn die Änderung, die den Lauf auslöst, mit `done/` nichts zu tun hat; ein dediziertes
+Advisory-Target, das nur die Closure-Prüfung fährt, ohne die übrigen sechs aktiven Module, gibt es
+nicht.
 
 **Was `codepaths` an toten Pfaden in den vendored Baum nicht sieht**
 ([slice-201](../docs/plan/planning/done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)):
