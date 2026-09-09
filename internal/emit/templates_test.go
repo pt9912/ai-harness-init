@@ -4,6 +4,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 	"testing"
@@ -551,6 +552,112 @@ func TestStripHintBlock(t *testing.T) {
 	no := "# Titel\n\nkein Hinweis\n"
 	if got := emit.StripHintBlock(no); got != no {
 		t.Errorf("StripHintBlock ohne Marker veraenderte den Text: %q", got)
+	}
+}
+
+// TestStripCommentHints prueft die pure Funktion: ein einzeiliger UND ein
+// mehrzeiliger HTML-Kommentar fallen (Schritt 5 der Kopier-Prozedur, README.md
+// §Verwendung), ein `d-check:ignore`-Marker bleibt (dieselbe Stelle, Klammer-
+// Ausnahme), Text ohne Kommentar bleibt unveraendert.
+func TestStripCommentHints(t *testing.T) {
+	head := "# Titel\n\n"
+	tail := "\n\n**Inhalt**\n"
+	einzeilig := "<!-- einzeilig -->"
+	mehrzeilig := "<!--\nmehrzeilig\nueber mehrere Zeilen\n-->"
+	in := head + einzeilig + "\n\n" + mehrzeilig + tail
+	want := head + "\n\n" + tail
+	if got := emit.StripCommentHints(in); got != want {
+		t.Errorf("StripCommentHints = %q, want %q", got, want)
+	}
+
+	ignore := "vor <!-- d-check:ignore (Grund) --> nach\n"
+	if got := emit.StripCommentHints(ignore); got != ignore {
+		t.Errorf("StripCommentHints entfernte einen d-check:ignore-Marker: %q", got)
+	}
+
+	no := "# Titel\n\nkein Kommentar\n"
+	if got := emit.StripCommentHints(no); got != no {
+		t.Errorf("StripCommentHints ohne Marker veraenderte den Text: %q", got)
+	}
+}
+
+// commentHints findet jeden HTML-Kommentar `<!-- ... -->` in s (Test-lokale
+// Sonde, dieselbe Form wie emit.StripCommentHints).
+func commentHints(s string) []string {
+	return regexp.MustCompile(`(?s)<!--.*?-->`).FindAllString(s, -1)
+}
+
+// TestTemplates_KeineKommentarHilfenImEmittiertenSatz misst Schritt 5 der
+// Kopier-Prozedur (README.md §Verwendung) gegen den GESAMTEN emittierten Satz
+// (Templates() + RootReadme(), dieselbe Bezugsmenge wie
+// TestTemplates_KeinPlatzhalterLinkImEmittiertenSatz): kein HTML-Kommentar aus
+// dem Vorlagen-Satz ueberlebt den Emit — ausser dem `d-check:ignore`-Marker.
+//
+// Die Fixture bekommt dafuer eine tragende UND eine d-check:ignore-Kommentar-
+// hilfe an einem realen Singleton (spec/lastenheft.template.md, das im echten
+// Satz bereits mehrere `<!-- ... -->`-Bloecke fuehrt); ohne diese Ergaenzung
+// maesse der Waechter nichts, weil courseSet() sonst keinen HTML-Kommentar
+// traegt.
+func TestTemplates_KeineKommentarHilfenImEmittiertenSatz(t *testing.T) {
+	src := courseSet().(fstest.MapFS)
+	f := src["spec/lastenheft.template.md"]
+	f.Data = append(f.Data, []byte(
+		"\n<!--\nMehrzeiliger Bedienhinweis, der beim Kopieren entfaellt.\n-->\n"+
+			"<!-- d-check:ignore (illustrativer Pfad, bleibt stehen) -->\n")...)
+
+	var inQuelle int
+	if err := fs.WalkDir(src, ".", func(rel string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return err
+		}
+		content, readErr := fs.ReadFile(src, rel)
+		if readErr != nil {
+			return readErr
+		}
+		inQuelle += len(commentHints(string(content)))
+		return nil
+	}); err != nil {
+		t.Fatalf("Quell-Satz lesen: %v", err)
+	}
+	if inQuelle == 0 {
+		t.Fatalf("die Fixture traegt keinen HTML-Kommentar — der Waechter misst nichts")
+	}
+
+	dir := t.TempDir()
+	if err := emit.Templates(src, dir, "X"); err != nil {
+		t.Fatalf("Templates: %v", err)
+	}
+	if err := emit.RootReadme(src, dir, "X"); err != nil {
+		t.Fatalf("RootReadme: %v", err)
+	}
+
+	var dokumente, dcheckIgnoreGefunden int
+	if err := filepath.WalkDir(dir, func(p string, d os.DirEntry, err error) error {
+		if err != nil || d.IsDir() || !strings.HasSuffix(p, ".md") {
+			return err
+		}
+		content, readErr := os.ReadFile(p)
+		if readErr != nil {
+			return readErr
+		}
+		dokumente++
+		rel, _ := filepath.Rel(dir, p)
+		for _, m := range commentHints(string(content)) {
+			if strings.Contains(m, "d-check:ignore") {
+				dcheckIgnoreGefunden++
+				continue
+			}
+			t.Errorf("emittiertes Dokument %s traegt noch eine Kommentar-Hilfe: %q", filepath.ToSlash(rel), m)
+		}
+		return nil
+	}); err != nil {
+		t.Fatalf("emittierten Satz lesen: %v", err)
+	}
+	if dokumente == 0 {
+		t.Fatalf("kein emittiertes Dokument gelesen — der Waechter lief ueber leerem Bestand")
+	}
+	if dcheckIgnoreGefunden == 0 {
+		t.Errorf("der d-check:ignore-Marker ist mitgefallen — er muss Schritt 5 ueberleben")
 	}
 }
 

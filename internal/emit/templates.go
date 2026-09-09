@@ -358,6 +358,10 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 			return fmt.Errorf("template %s lesen: %w", rel, readErr)
 		}
 		body := stampName(StripHintBlock(string(content)), name)
+		// Schritt 5 der Kopier-Prozedur direkt nach Schritt 4 (README.md
+		// §Verwendung): der Blockquote ist weg, jetzt die HTML-Kommentar-Hilfen —
+		// ausser den d-check:ignore-Markern.
+		body = StripCommentHints(body)
 		// Jedes Singleton geht durch die Ziel-Neutralisierung: der Vorlagen-Satz
 		// gehoert dem Kurs (MR-008) und liegt unveraenderlich vendored (AGENTS 3.4),
 		// die Ansprueche fallen darum emit-seitig (slice-087, LH-QA-01).
@@ -776,4 +780,39 @@ func StripHintBlock(s string) string {
 	out = append(out, lines[:start]...)
 	out = append(out, lines[end:]...)
 	return strings.Join(out, "\n")
+}
+
+// commentHintPattern erfasst einen HTML-Kommentar `<!-- ... -->` ueber Zeilen
+// hinweg (DOTALL), non-greedy fuer den kuerzesten Abschluss — die Form, in der
+// der Vorlagen-Satz seine Bedienhinweise fuehrt (README.md §Verwendung,
+// Schritt 5).
+const commentHintPattern = `(?s)<!--.*?-->`
+
+// dcheckIgnoreMarker ist die eine Ausnahme, die Schritt 5 der Kopier-Prozedur
+// selbst benennt (README.md §Verwendung: "HTML-Kommentar-Hilfen entfernen …
+// außer `<!-- d-check:ignore … -->`-Marker"): ein Kommentar, der sie traegt,
+// bleibt stehen.
+const dcheckIgnoreMarker = "d-check:ignore"
+
+// StripCommentHints entfernt jeden HTML-Kommentar `<!-- ... -->` aus einem
+// Singleton — Schritt 5 der Kopier-Prozedur (README.md §Verwendung), die nach
+// Schritt 4 (StripHintBlock) den Template-Hinweis-Block schon entfernt hat.
+// Ausgenommen bleibt ein `<!-- d-check:ignore … -->`-Marker: er unterdrueckt
+// eine Falsch-Positive des Referenz-Gates fuer einen bewusst illustrativen Pfad
+// und gehoert nach der Kopier-Prozedur selbst zu den bleibenden Zeilen, nicht
+// zu den Kommentar-Hilfen. Ohne einen Kommentar unveraendert.
+//
+// Rot faerbt eine verlorene Wirkung TestStripCommentHints (die pure Funktion)
+// und TestTemplates_KeineKommentarHilfenImEmittiertenSatz (die Verdrahtung in
+// planTemplates/RootReadme, gegen die courseSet()-Fixture — der reale vendored
+// Satz liegt unter .harness/, das der Docker-Build-Kontext ausschliesst; ob die
+// Regel dort greift, misst allein `make smoke`, ausserhalb von `make gates`).
+func StripCommentHints(s string) string {
+	comment := regexp.MustCompile(commentHintPattern)
+	return comment.ReplaceAllStringFunc(s, func(m string) string {
+		if strings.Contains(m, dcheckIgnoreMarker) {
+			return m
+		}
+		return ""
+	})
 }
