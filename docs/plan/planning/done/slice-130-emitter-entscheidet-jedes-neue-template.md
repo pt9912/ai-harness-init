@@ -703,7 +703,7 @@ Block, beide unnummeriert).
 | Der Re-Evaluierungs-Trigger von [`ADR-0024`](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md) ist eingetreten und nirgends vermerkt | Review 1 `HIGH-2` | **erledigt** — `a6d436c` legt [`ADR-0025`](../../adr/0025-register-mit-gemischten-originalen.md) an (`Proposed`); kein Satz dieses Slice hängt an ihr |
 | Kopf und Index-Zelle von `CO-004` sagen, der Move stehe aus | Review 1 `MEDIUM-1` | **erledigt** in `722e272`, an vier statt drei Stellen |
 | Der neue Unterscheider ist eine Zusage ohne Sensor | Review 1 `MEDIUM-2` | **erledigt** in `722e272` — die dritte bats-Achse, heute `ok 43`, mit den Zähnen `219`/`220` |
-| Vier Posten stehen nur in Commit-Messages | Review 1 `MEDIUM-3`, Review 2 `MEDIUM-3` | **erledigt** in `7ce375a` — zwei lebende Träger: [slice-139](../open/slice-139-lastenheft-deckt-die-emit-disposition.md) und [slice-140](../open/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md) |
+| Vier Posten stehen nur in Commit-Messages | Review 1 `MEDIUM-3`, Review 2 `MEDIUM-3` | **erledigt** in `7ce375a` — zwei lebende Träger: [slice-139](../open/slice-139-lastenheft-deckt-die-emit-disposition.md) und [slice-140](../next/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md) |
 | [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed) außerhalb seines Geltungsbereichs zitiert | Review 1 `LOW-1` | **erledigt** in `722e272` am Code; für den Plan **hier entschieden** (*Was ging anders als geplant*, §6 Risiko 3) |
 | Der Grenz-Absatz behauptet eine Offenheit, die `a6d436c` beendet hat | Review 2 `MEDIUM-1` | **erledigt** in `4da4f64` — der Satz nennt einen Register-**Zustand** statt einer Entscheidung |
 | Der Wächter zählt seine Grenzen ab; die dritte lässt still grün | Review 2 `MEDIUM-2` | **erledigt** in `4da4f64` — die Extraktion ist geändert, die Zählung ersatzlos gestrichen; Lerneintrag (I) |
@@ -715,7 +715,7 @@ Block, beide unnummeriert).
 | §4 und §6 decken denselben Auslöser mit unvereinbarer Folge | Verifikation `V-3` | **entschieden: §6 gefolgt, §4-Kante als nach [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) unerfüllbar vermerkt** (*Was ging anders als geplant*); §4 unangetastet |
 | Zwei Zeilen in `TestTemplates_RecurringNichtEmittiert` können unter keiner Mutation rot werden | Verifikation `V-4` | **weiter offen, ohne Träger** — unten, erster Folge-Posten; keine DoD-Verletzung, das Muster ist geerbt |
 | Zwei bats-Fälle ohne kuratierten Mutations-Fall | Verifikation `V-5` | **weiter offen, ohne Träger** — unten, erster Folge-Posten (dieselbe Ursache) |
-| Das emittierte `observations.md` trägt zwei `BEDIENHINWEIS`-Blöcke, die von sich selbst sagen, sie fielen beim Kopieren weg | Review 1 `LOW-2` | **erledigt** in `7ce375a` — Träger [slice-140](../open/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md); gate-neutral (HTML-Kommentar, kein Link) |
+| Das emittierte `observations.md` trägt zwei `BEDIENHINWEIS`-Blöcke, die von sich selbst sagen, sie fielen beim Kopieren weg | Review 1 `LOW-2` | **erledigt** in `7ce375a` — Träger [slice-140](../next/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md); gate-neutral (HTML-Kommentar, kein Link) |
 | `<ziel>/harness/conventions/` entsteht im emittierten Baum nicht mehr, ohne `.gitkeep` | Review 1 `INFO-1` | **entschieden: so gewollt** — das Verzeichnis entstand allein aus der falschen Singleton-Einordnung; die Erwartung des Vollständigkeits-Tests führt `harness/conventions.md` als Datei und kein Verzeichnis darunter (`sed -n '/want := \[\]string{/,/^\t}/p' internal/emit/templates_test.go \| grep -c 'conventions/'` → **0**) |
 | Drei Kommentare zählen die Nicht-Emit-Gründe zu dritt | Review 1 `INFO-2` | **weiter offen, unter dem Cutoff** — keine der Zeilen ist im Diff angefasst, [`AGENTS.md`](../../../../AGENTS.md) §3.7 bindet sie damit nicht; als Fundort der gezählten Klasse oben geführt |
 | Kein Sensor prüft die vier Entscheidungen am realen emittierten Baum | Verifikation `V-6` | **weiter offen, mit vorbereitetem Ort** — unten, dritter Folge-Posten |
@@ -727,7 +727,7 @@ Block, beide unnummeriert).
 Emit-Disposition — Change Request nach
 [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler),
 trägt zugleich [`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md)) und
-[slice-140](../open/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md) (der emittierte Stand ohne
+[slice-140](../next/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md) (der emittierte Stand ohne
 Vorlagen-Hilfen — die `BEDIENHINWEIS`-Blöcke, die von sich selbst sagen, sie fielen beim Kopieren
 weg). Beide sind in `7ce375a` entstanden, also **vor** dieser Closure und im Planner-Kontext; diese
 Notiz legt keinen dritten an.
