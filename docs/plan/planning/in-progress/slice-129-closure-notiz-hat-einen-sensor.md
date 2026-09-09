@@ -101,36 +101,37 @@ Entscheidung dieses Slice und keine Konfiguration.
 
 Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 5 §Ziel-Form: ≤ 3).
 
-- [ ] **(1) Die Closure-Fähigkeit ist verdrahtet und färbt rot.** Der Lauf hat einen benannten Ort,
-      und die Meldung nennt Datei, Zeile und Grund-Code.
-      **Rot:** in einer Wegwerf-Kopie das §7 einer `done/`-Datei auf einen Satz kürzen → der Lauf
-      fällt mit `closure-note-thin`. Derselbe Lauf über den unveränderten Baum bleibt grün. Beide
-      gehören in den Umsetzungs-Commit. **Der Arbeitsbaum wird für das Rot nicht angefasst** —
-      [`done/`](../done) ist Zeitdokument-Bestand
-      ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-      §Geltungsbereich).
-- [ ] **(2) Der Kandidaten-Filter ist entschieden, und die Welle-Ebene ist benannt statt
-      weggefiltert.** Entweder gilt weiter `slice-glob` — dann steht in
-      [`harness/README.md`](../../../../harness/README.md), dass die **18** Welle-Dateien
-      (`ls docs/plan/planning/done/welle-*.md | wc -l`) außerhalb liegen und warum —, oder `glob`
-      wird geweitet und die **16** Befunde sind aufgelöst, indem die Konvention nachzieht (die
-      Ergebnisnotiz trägt eine passende Überschrift, der Plan-§7 trägt Substanz).
-      **Rot:** der Filter wird so gesetzt, dass er die Menge leert oder auf eine Klasse zeigt, in
-      der die Bedingung trivial gilt — dann meldet der Gate grün über nichts, und das ist der
-      Verstoß, gegen den er antritt
-      ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-      Mechanisch rot wird der Punkt, wenn nach der Entscheidung ein **neues** Paket ohne Notiz nach
-      [`done/`](../done) wandert und der Lauf es **nicht** meldet.
-- [ ] **(3) Der Ort des Laufs ist entschieden, und die Entscheidung steht gegen die
-      Werkzeug-Empfehlung.** Das Benutzerhandbuch des Werkzeugs legt für diese Fähigkeit ein
-      **eigenes Prüf-Profil** nahe (`--config`), damit nicht jeder gewöhnliche Lauf die
-      Closure-Notizen mitprüft. Dieses Repo hat **einen** Durchsetzungspunkt: `make gates`. Welcher
-      der beiden gilt, ist aufzuschreiben — mit dem, was die gewählte Form **nicht** leistet.
-      **Rot:** ein eigenes Profil ohne Aufrufer. Es liefe nie, und die Regel bliebe im
-      Feedforward-Quadranten, aus dem dieser Slice sie holen soll — dieselbe Klasse wie die
-      `doc-*`-Ziele, die heute ohne Trigger im [`d-check.mk`](../../../../d-check.mk) stehen
-      (`grep -c '^doc-' d-check.mk` → **11**, davon von einem Aufrufer genannt:
-      `grep -c 'doc-' Makefile` → **0**).
+- [x] **(1) Die Closure-Fähigkeit ist verdrahtet und färbt rot.** `.d-check.yml` setzt
+      `planning.closure.dir: docs/plan/planning/done` (der Lauf ist `docs-check` in `make gates`,
+      kein zusätzlicher Ort). **Rot gesehen** gegen eine Kopie außerhalb des Repos, netzlos, mit
+      dem in [`d-check.mk`](../../../../d-check.mk) gepinnten Digest: Basis-Lauf über dem
+      unveränderten Baum → `0 Befund(e)`; Abschnitt 7 von
+      `docs/plan/planning/done/slice-001a-cli-skeleton.md` in derselben Kopie auf einen Satz
+      gekürzt → `closure-note-thin`, Datei `docs/plan/planning/done/slice-001a-cli-skeleton.md`,
+      Zeile `79`. Beide Kommandos und Ausgaben stehen in
+      [`harness/README.md`](../../../../harness/README.md). Der Arbeitsbaum selbst
+      ([`done/`](../done)) bleibt unverändert.
+- [x] **(2) Der Kandidaten-Filter ist entschieden, und die Welle-Ebene ist benannt statt
+      weggefiltert.** Entschieden: `slice-glob` bleibt der Modul-Default (`.d-check.yml` setzt kein
+      eigenes `glob:`) — [`harness/README.md`](../../../../harness/README.md) nennt, dass die
+      Welle-Dateien (`ls docs/plan/planning/done/welle-*.md | wc -l` → **24** zum Zeitpunkt der
+      Umsetzung, kein Erwartungswert) außerhalb bleiben und warum: die Welle-Closure ist auf zwei
+      Dateien verteilt (Welle-Plan trägt nur einen Zeiger, Ergebnisnotiz führt ihre Aussage als H1
+      statt der erwarteten H2/H3). Probeweise mit `glob: '*.md'` geweitet (Kopie außerhalb des
+      Repos): **20** Befunde — **12** `closure-note-missing` (jede `welle-NN-results.md`), **8**
+      `closure-note-thin` (acht der zwölf Welle-Pläne) — dieselbe Zwei-Datei-Form, keine fehlende
+      Substanz. Die im Plan genannten Zahlen (18/16, gemessen mit `v0.65.0` gegen den damaligen
+      Bestand) sind mit dem Bestand gewachsen; die Zusammensetzung (missing = Ergebnisnotizen,
+      thin = Plan-Zeiger) ist unverändert.
+- [x] **(3) Der Ort des Laufs ist entschieden, und die Entscheidung steht gegen die
+      Werkzeug-Empfehlung.** Entschieden: **kein** eigenes `--config`-Profil. `closure` läuft im
+      selben `planning`-Block wie die Marker-Hälfte, am geteilten Durchsetzungspunkt `docs-check`
+      in `make gates` — ein zweites Profil wäre ein zweiter Ort, an dem dieselbe Modul-Config
+      driften kann. Was das **nicht** leistet, steht in
+      [`harness/README.md`](../../../../harness/README.md): jeder `docs-check`-Lauf öffnet jetzt
+      auch jede `slice-*.md` unter `done/` und prüft ihre §7-Struktur, auch wenn die auslösende
+      Änderung mit `done/` nichts zu tun hat; ein dediziertes Advisory-Target ohne die übrigen
+      sechs aktiven Module gibt es nicht.
 
 Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · `make mutate` ohne Befund ·
 Doku-Update, falls ein öffentlicher Vertrag berührt ist · Closure-Notiz mit
@@ -140,8 +141,8 @@ Steering-Loop-Lerneintrag.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| Prüf-Profil für die Closure-Fähigkeit | neu **oder** update | entweder eine eigene Profil-Datei nach der Empfehlung des Werkzeugs oder der `closure`-Block in [`.d-check.yml`](../../../../.d-check.yml) — die Entscheidung **ist** DoD (3) und wird nicht vorweggenommen |
-| [`Makefile`](../../../../Makefile) | update | der Aufrufer des gewählten Laufs; ohne ihn ist die Fähigkeit ein Ziel ohne Trigger |
+| Prüf-Profil für die Closure-Fähigkeit | update | entschieden gegen ein eigenes Profil (DoD (3)): der `closure`-Block landet im bestehenden `planning:`-Block in [`.d-check.yml`](../../../../.d-check.yml), am geteilten Durchsetzungspunkt |
+| [`Makefile`](../../../../Makefile) | **unverändert** | die Entscheidung aus DoD (3) braucht keinen neuen Aufrufer — `docs-check`/`make gates` binden den erweiterten `planning:`-Block bereits über das bestehende `.d-check.yml`; ein eigenes Profil hätte hier ein neues Ziel gebraucht |
 | [`harness/README.md`](../../../../harness/README.md) | update | was der Lauf prüft und was **nicht** — insbesondere die Filter-Entscheidung aus DoD (2) und die Grenze *Struktur, nicht Bedeutung* |
 | `test/` | neu | der Fall, der die Zusage aus DoD (1) rot färbt, plus sein `test/mutations/`-Zahn |
 | [`done/`](../done) | **unverändert** | Zeitdokument-Bestand ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) §Geltungsbereich). Das Rot entsteht in einer Wegwerf-Kopie; wird eine `done/`-Datei geändert, um den Gate grün zu bekommen, ist das ein Befund und keine Umsetzung |
