@@ -12,7 +12,7 @@ wechselt nur durch `git mv`, siehe
 ([`done/`](../done)). Die emittierte Starter-Config bleibt `modules: [links, anchors]`
 ([`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed));
 ob ein Ziel-Repo diese Fähigkeit bekommt, entscheidet
-[slice-073](slice-073-emittierte-doc-gate-module.md) — dort ist die Frage gestellt, und sie ist
+[slice-073](../open/slice-073-emittierte-doc-gate-module.md) — dort ist die Frage gestellt, und sie ist
 dort eine andere, weil ein frisch gebootstrapptes Ziel **keine** abgeschlossenen Pakete hat und die
 Fähigkeit über null Kandidaten fail-closed abbricht.
 
@@ -145,7 +145,7 @@ Steering-Loop-Lerneintrag.
 | [`harness/README.md`](../../../../harness/README.md) | update | was der Lauf prüft und was **nicht** — insbesondere die Filter-Entscheidung aus DoD (2) und die Grenze *Struktur, nicht Bedeutung* |
 | `test/` | neu | der Fall, der die Zusage aus DoD (1) rot färbt, plus sein `test/mutations/`-Zahn |
 | [`done/`](../done) | **unverändert** | Zeitdokument-Bestand ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) §Geltungsbereich). Das Rot entsteht in einer Wegwerf-Kopie; wird eine `done/`-Datei geändert, um den Gate grün zu bekommen, ist das ein Befund und keine Umsetzung |
-| [`internal/emit/`](../../../../internal/emit) | **unverändert** | Ebene Dogfood (Kopfzeile); die emittierte Modul-Liste entscheidet [slice-073](slice-073-emittierte-doc-gate-module.md) |
+| [`internal/emit/`](../../../../internal/emit) | **unverändert** | Ebene Dogfood (Kopfzeile); die emittierte Modul-Liste entscheidet [slice-073](../open/slice-073-emittierte-doc-gate-module.md) |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | **nicht durch diesen Slice** | fällt DoD (2) für die Welle-Ebene aus, ist [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) betroffen — **Übergabe** an den Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8) |
 
 ## 4. Trigger

@@ -80,7 +80,7 @@ Grund für die Form von DoD (2).
 Lifecycle-Invariante die **Closure-Notiz-Prüfung** (opt-in über `closure.dir`, fünf eigene
 Grund-Codes); sie hat einen anderen Gegenstand (den Ruheort statt der laufenden Arbeit), eine
 andere Aufruf-Empfehlung und eigene Entscheidungen. Sie ist als
-[slice-129](../open/slice-129-closure-notiz-hat-einen-sensor.md) geschnitten. **Beide Slices konfigurieren
+[slice-129](../next/slice-129-closure-notiz-hat-einen-sensor.md) geschnitten. **Beide Slices konfigurieren
 denselben Schlüsselbaum** — sie können in beliebiger Reihenfolge laufen, aber nicht gleichzeitig.
 
 ### Die zwei Fragen, die vor dem Config-Block beantwortet sein müssen
@@ -478,7 +478,7 @@ Architect gestellt worden und hier nicht neu entschieden.
 - **Folge-Slices: keine geschnitten**, und das ist eine Entscheidung. Zwei der vier Risiken sind
   entfallen, eines mit einer Messung, eines mit einer Konfigurationsentscheidung; das vierte hängt
   am Zähler und wird beim dritten Auftreten von selbst fällig.
-  [slice-129](../open/slice-129-closure-notiz-hat-einen-sensor.md) bleibt liegen — er konfiguriert
+  [slice-129](../next/slice-129-closure-notiz-hat-einen-sensor.md) bleibt liegen — er konfiguriert
   denselben Schlüsselbaum und war schon vor diesem Slice geschnitten; die `waves`-Aktivierung
   bekommt hier **keine** Kennung, weil sie eine Datei behauptete, die es nicht gibt
   ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).

@@ -374,7 +374,7 @@ Baseline-Regelwerk `modul-10-review-harness.md` §Ziel-Form: Reviewer-Skill.
   über den Steering-Loop, nicht über eine ADR; die vier `ignore-refs`-Paare und der
   `scan.ignore`-Zensus sind unberührt), §3.9 (keine Host-Toolchain in den neuen Rezepten oder
   Tests), §3.11 (die neue Adresse auf
-  [`slice-129`](../plan/planning/open/slice-129-closure-notiz-hat-einen-sensor.md) steht in
+  [`slice-129`](../plan/planning/next/slice-129-closure-notiz-hat-einen-sensor.md) steht in
   einem **änderbaren** Artefakt, wo der Pfad der richtige Zeiger ist, und
   `rewrite_incoming_in_file` in `harness/tools/slice-mv.sh` trifft ihre Präfix-Form beim
   nächsten Move, weil das Zeichen vor `open/` kein Wortzeichen ist).

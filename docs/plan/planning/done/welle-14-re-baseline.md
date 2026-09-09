@@ -151,7 +151,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 - **Blockiert: [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md).** Zwei ihrer Slices bauen
   Sensoren auf Formen, die dieser Sprung bewegt: der Roadmap-/Verzeichnis-Wächter
   ([slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)) und der
-  Closure-Notiz-Sensor ([slice-129](../open/slice-129-closure-notiz-hat-einen-sensor.md)). Die
+  Closure-Notiz-Sensor ([slice-129](../next/slice-129-closure-notiz-hat-einen-sensor.md)). Die
   Ziel-Fassung schiebt der Wellen-Closure einen Schritt ein, der die Zeitdokumente einer Welle nach
   `done/<welle-id>/` archiviert und an ihrer Stelle Stubs lässt (`v5.18.0`,
   `modul-06-roadmap.md`, §Wellen-Closure-Prozedur, Schritt 4) — damit ändert sich, was `done/`

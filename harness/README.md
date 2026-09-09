@@ -71,7 +71,7 @@ selbst dokumentierte Abweichung dieses Repos nicht — eine Welle-Datei wird hie
 Fähigkeit dazuzuschalten setzt voraus, dass diese Abweichung selbst aufgelöst wird (Ziel-Form statt
 Repo-Konvention), was dieser Slice nicht entscheidet. Die zweite Fähigkeit desselben Moduls
 (`closure`, Struktur der Closure-Notizen) ist ebenfalls nicht aktiviert — anderer Gegenstand, eigener
-Slice ([slice-129](../docs/plan/planning/open/slice-129-closure-notiz-hat-einen-sensor.md)). Eine
+Slice ([slice-129](../docs/plan/planning/next/slice-129-closure-notiz-hat-einen-sensor.md)). Eine
 **vierte** Fähigkeit desselben Moduls (`observations`, Deckung zwischen zitierten
 Beobachtungs-Kennungen und ihrem Nachweis im Register — additiv eine fünfte für den
 Verzeichnis-Modus dieser Ablage) ist ebenfalls verfügbar und nicht aktiviert; anders als
