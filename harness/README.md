@@ -105,19 +105,29 @@ docker run --rm --network none -v <kopie>:/repo:ro "ghcr.io/pt9912/d-check@$DIGE
 `glob:` — und trifft damit nur `slice-*.md`
 (`ls docs/plan/planning/done/slice-*.md | wc -l`, kein Erwartungswert, wandert mit dem Bestand). Die
 Welle-Ebene (`ls docs/plan/planning/done/welle-*.md | wc -l`) bleibt **absichtlich** außen vor: Die
-Welle-Closure dieses Repos liegt auf zwei Dateien verteilt
-([`MR-016`](conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)) — der
-flache Welle-Plan trägt in seinem §7 nur den *Zeiger* auf die Ergebnisnotiz (zwei Sätze, unter der
-Schwelle), die Ergebnisnotiz selbst führt ihre Closure-Aussage als **H1**, nicht als die vom Modul
-erwartete H2/H3. Gegen eine Kopie außerhalb des Repos, netzlos, mit `closure.glob: '*.md'`
+Welle-Closure dieses Repos liegt auf zwei Dateien verteilt — dem flachen Welle-Plan und seiner
+Ergebnisnotiz `done/welle-NN-results.md` —, das ist die Form, die
+`modul-06-roadmap.md` §Wellen-Closure-Prozedur Schritt 3 selbst vorschreibt (*„Und die
+Welle-Plan-Datei wandert per `git mv` von flach nach `done/`"*, dort neben der eigenen
+Closure-Notiz). Der flache Welle-Plan trägt in seinem §7 nur den *Zeiger* auf die Ergebnisnotiz
+(zwei Sätze, unter der Schwelle); die Ergebnisnotiz selbst führt ihre Closure-Aussage bei **8** der
+**12** Wellen als **H1** (statt der vom Modul erwarteten H2/H3) — `grep -lE '^# .*[Cc]losure'
+docs/plan/planning/done/welle-*-results.md | wc -l` → **8**. Die übrigen vier
+(`welle-06`, `welle-07`, `welle-08`, `welle-12`) tragen als H1 *„… — Results-Notiz"* und führen das
+Wort *Closure* in **keiner** Überschriften-Ebene (`grep -cE '^#{1,6} .*[Cc]losure'` → 0 je Datei) —
+sie weichen damit auch von der vendored Ziel-Form ab
+(`.harness/baseline/v6.5.0/templates/docs/plan/planning/welle-results.template.md:1`) und bleiben
+eine benannte, nicht nachgezogene Abweichung, kein zweiter Grund für den engen Filter. Gegen eine
+Kopie außerhalb des Repos, netzlos, mit `closure.glob: '*.md'`
 probeweise geweitet
 (`docker run --rm --network none -v <kopie>:/repo:ro ghcr.io/pt9912/d-check@<digest> --config /repo/.d-check.yml --enable planning`,
 `<digest>` aus `d-check.mk`): **20** Befunde — **12** `closure-note-missing` (jede
-`welle-NN-results.md`, die H1-Form) und **8** `closure-note-thin` (acht der zwölf Welle-Pläne, ihr
+`welle-NN-results.md`) und **8** `closure-note-thin` (acht der zwölf Welle-Pläne, ihr
 §7-Zeiger). Kein Erwartungswert, beide Zahlen wandern mit dem Welle-Bestand — tragend ist die
-**Zusammensetzung**: Beide Klassen entstehen aus derselben Zwei-Datei-Form, nicht aus fehlender
-Substanz. Der Filter bleibt eng, statt den Gate über eine Form rot zu färben, die diese
-Welle-Closure absichtlich wählt.
+**Zusammensetzung**: Beide Klassen entstehen überwiegend aus derselben Zwei-Datei-Form, nicht aus
+fehlender Substanz; die vier H1-Abweichungen oben sind darin enthalten, aber keine eigene Ursache.
+Der Filter bleibt eng, statt den Gate über eine Form rot zu färben, die diese Welle-Closure
+absichtlich wählt.
 
 `placeholder` bleibt aus derselben Zurückhaltung aus: eingeschaltet meldet der Basis-Lauf **einen**
 `closure-note-placeholder`
@@ -134,10 +144,26 @@ Durchsetzungspunkt (`docs-check` in `make gates`), und `closure` läuft im selbe
 wie die Marker-Hälfte oben — ein zweites Profil wäre ein zweiter Ort, an dem dieselbe Modul-Config
 driften kann, dieselbe Klasse, die [`MR-010`](conventions.md#mr-010--d-check-gate-fragment-tool-generiert)
 für das Gate-Fragment schon einmal ausbuchstabiert hat. **Was das nicht leistet:** Jeder
-`docs-check`-Lauf öffnet jetzt auch jede `slice-*.md` unter `done/` und prüft ihre §7-Struktur —
-auch dann, wenn die Änderung, die den Lauf auslöst, mit `done/` nichts zu tun hat; ein dediziertes
-Advisory-Target, das nur die Closure-Prüfung fährt, ohne die übrigen sechs aktiven Module, gibt es
-nicht.
+`docs-check`-Lauf öffnet jetzt auch jede `slice-*.md`, die **flach** unter `done/` liegt, und prüft
+ihre §7-Struktur — auch dann, wenn die Änderung, die den Lauf auslöst, mit `done/` nichts zu tun
+hat; ein dediziertes Advisory-Target, das nur die Closure-Prüfung fährt, ohne die übrigen sechs
+aktiven Module, gibt es nicht.
+
+**Der Prüfbereich greift nicht rekursiv, und das ist heute folgenlos, morgen nicht mehr.**
+`closure.dir` öffnet nur die Kandidaten **im genannten Verzeichnis selbst**; eine identische, dünne
+Notiz in einem Unterverzeichnis erzeugt **keinen** Fund — gemessen an einem Sonden-Paar (dieselbe
+`§7`-gekürzte Datei einmal flach unter `done/`, einmal unter einem synthetischen
+`done/welle-99/`): flach `closure-note-thin`, tief **0** Treffer, in derselben Kopie außerhalb des
+Repos. `done/` trägt heute keine Unterverzeichnisse (`find docs/plan/planning/done -mindepth 1
+-maxdepth 1 -type d | wc -l` → 0), die Zusage ist also **heute** vollständig — die vom
+Regelwerk (`modul-06-roadmap.md` §Wellen-Closure-Prozedur Schritt 4) **vor der ersten
+Archivierung** verlangte Geltungsbereichs-Prüfung gilt für diesen Sensor als hiermit durchgeführt
+und mit **benannter Grenze** beantwortet, statt stillschweigend zu bestehen: sobald ein
+`make archive-welle`-Lauf (Werkzeug in Bau, [ADR-0033](../docs/plan/adr/0033-wellen-archivierung-als-unterkommando.md))
+Slice-Stubs in ein `done/<welle-id>/`-Unterverzeichnis bewegt, deckt dieser Sensor sie nicht mehr —
+und die Stubs tragen nach der Ziel-Form ohnehin kein volles §7 mehr, sind also für `closure` kein
+sinnvoller Kandidat. Wer `archive-welle` produktiv nimmt, zieht den Geltungsbereich hier nach
+oder benennt an dieser Stelle, dass die Zusage ab dann nur für den flachen Bestand gilt.
 
 **Was `codepaths` an toten Pfaden in den vendored Baum nicht sieht**
 ([slice-201](../docs/plan/planning/done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)):

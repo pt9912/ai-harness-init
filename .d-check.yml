@@ -38,7 +38,8 @@ modules: [links, anchors, ids, matrix, codepaths, spans, planning]
 # in beiden Modi kennt sie die in der Roadmap selbst dokumentierte Abweichung dieses Repos
 # (Welle-Datei geschnitten vor Eintritt des Start-Triggers) nicht; Begruendung in harness/README.md.
 # closure (zweite Faehigkeit desselben Moduls, opt-in im opt-in): haelt die
-# Struktur der Closure-Notiz (Abschnitt 7) ueber jedem Kandidaten in `dir`. Der
+# Struktur der Closure-Notiz (Abschnitt 7) ueber jedem Kandidaten FLACH in `dir`
+# (nicht rekursiv — Begruendung und Sonden-Beleg in harness/README.md). Der
 # Kandidaten-Filter bleibt der Modul-Default `slice-glob` (kein eigenes `glob:`) —
 # er trifft nur `slice-*.md` und laesst die Welle-Plaene und ihre Ergebnisnotizen
 # aussen vor, weil deren Closure-Form auf zwei Dateien verteilt ist (Begruendung
