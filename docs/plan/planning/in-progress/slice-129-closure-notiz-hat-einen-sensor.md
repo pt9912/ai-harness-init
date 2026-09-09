@@ -101,7 +101,7 @@ Entscheidung dieses Slice und keine Konfiguration.
 
 Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 5 §Ziel-Form: ≤ 3).
 
-- [x] **(1) Die Closure-Fähigkeit ist verdrahtet und färbt rot.** Der Lauf hat einen benannten Ort,
+- [ ] **(1) Die Closure-Fähigkeit ist verdrahtet und färbt rot.** Der Lauf hat einen benannten Ort,
       und die Meldung nennt Datei, Zeile und Grund-Code.
       **Rot:** in einer Wegwerf-Kopie das §7 einer `done/`-Datei auf einen Satz kürzen → der Lauf
       fällt mit `closure-note-thin`. Derselbe Lauf über den unveränderten Baum bleibt grün. Beide
@@ -118,7 +118,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       Zeile `79`. Beide Kommandos und Ausgaben stehen in
       [`harness/README.md`](../../../../harness/README.md). Der Arbeitsbaum selbst
       ([`done/`](../done)) bleibt unverändert.
-- [x] **(2) Der Kandidaten-Filter ist entschieden, und die Welle-Ebene ist benannt statt
+- [ ] **(2) Der Kandidaten-Filter ist entschieden, und die Welle-Ebene ist benannt statt
       weggefiltert.** Entweder gilt weiter `slice-glob` — dann steht in
       [`harness/README.md`](../../../../harness/README.md), dass die **18** Welle-Dateien
       (`ls docs/plan/planning/done/welle-*.md | wc -l`) außerhalb liegen und warum —, oder `glob`
@@ -148,7 +148,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       wandert unbemerkt nach `done/`) ist mit dieser Entscheidung nicht aufgehoben — er bleibt der
       Rot-Weg für jeden Folge-Lauf, unabhängig davon, ob `slice-glob` oder ein geweiteter `glob`
       gilt.
-- [x] **(3) Der Ort des Laufs ist entschieden, und die Entscheidung steht gegen die
+- [ ] **(3) Der Ort des Laufs ist entschieden, und die Entscheidung steht gegen die
       Werkzeug-Empfehlung.** Das Benutzerhandbuch des Werkzeugs legt für diese Fähigkeit ein
       **eigenes Prüf-Profil** nahe (`--config`), damit nicht jeder gewöhnliche Lauf die
       Closure-Notizen mitprüft. Dieses Repo hat **einen** Durchsetzungspunkt: `make gates`. Welcher

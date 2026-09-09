@@ -156,8 +156,9 @@ Notiz in einem Unterverzeichnis erzeugt **keinen** Fund — gemessen an einem So
 `done/welle-99/`): flach `closure-note-thin`, tief **0** Treffer, in derselben Kopie außerhalb des
 Repos. `done/` trägt heute keine Unterverzeichnisse (`find docs/plan/planning/done -mindepth 1
 -maxdepth 1 -type d | wc -l` → 0), die Zusage ist also **heute** vollständig — die vom
-Regelwerk (`modul-06-roadmap.md` §Wellen-Closure-Prozedur Schritt 4) **vor der ersten
-Archivierung** verlangte Geltungsbereichs-Prüfung gilt für diesen Sensor als hiermit durchgeführt
+Regelwerk (`.harness/baseline/v6.5.0/regelwerk/modul-06-roadmap.md` §Wellen-Closure-Prozedur
+Schritt 4) **vor der ersten Archivierung** verlangte Geltungsbereichs-Prüfung gilt für diesen
+Sensor als hiermit durchgeführt
 und mit **benannter Grenze** beantwortet, statt stillschweigend zu bestehen: sobald ein
 `make archive-welle`-Lauf (Werkzeug in Bau, [ADR-0033](../docs/plan/adr/0033-wellen-archivierung-als-unterkommando.md))
 Slice-Stubs in ein `done/<welle-id>/`-Unterverzeichnis bewegt, deckt dieser Sensor sie nicht mehr —
