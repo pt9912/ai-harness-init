@@ -134,7 +134,7 @@ Zähler-Stand aus `ls <eintrag>/evidence/*.md | wc -l`:
 | Beobachtung | Stand | berührt |
 |---|---|---|
 | [`zusage-nennt-sensor-der-form-nicht-sieht`](observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md) | **7×**, *geplant* (`slice-181`) | jeden Sensor, den diese Welle verdrahtet — der Ausgang ist **vergeben**, die Schwelle bereits überschritten |
-| [`register-paarung-ohne-gate-modul`](observations/BEO-ALL/register-paarung-ohne-gate-modul/observation.md) | **1×**, offen | [slice-129](next/slice-129-closure-notiz-hat-einen-sensor.md); die Tatsachen-Basis hat sich bewegt (§6) |
+| [`register-paarung-ohne-gate-modul`](observations/BEO-ALL/register-paarung-ohne-gate-modul/observation.md) | **1×**, offen | [slice-129](in-progress/slice-129-closure-notiz-hat-einen-sensor.md); die Tatsachen-Basis hat sich bewegt (§6) |
 | [`zusage-ohne-herstellbares-gegenbeispiel`](observations/BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel/observation.md) | **1×**, offen | §3, Bedingung *einmal rot gesehen* — der Carveout-Zweig dort **ist** die Antwort auf diesen Fall |
 | [`gruen-aussage-ohne-herkunft`](observations/BEO-ALL/gruen-aussage-ohne-herkunft/observation.md) | **1×**, offen | das Welle-Ziel selbst: *kein Sensor meldet grün, weil er nichts prüft* |
 | [`closure-kriterium-ohne-erreichbare-messstelle`](observations/BEO-ALL/closure-kriterium-ohne-erreichbare-messstelle/observation.md) | **1×**, offen | das welle-eigene Kriterium in §3 |
@@ -158,7 +158,7 @@ Spalte oben nennt ihn —, und dort werden sie beim jeweiligen Slice-Schnitt auf
 - **[welle-14](done/welle-14-re-baseline.md) liegt in `done/`.** Der Grund ist **tragend**, nicht bloß
   ordnend: Zwei Slices dieser Welle bauen Sensoren auf Formen, die jener Sprung bewegt — der
   Roadmap-/Verzeichnis-Wächter ([slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md))
-  und der Closure-Notiz-Sensor ([slice-129](next/slice-129-closure-notiz-hat-einen-sensor.md)). Die
+  und der Closure-Notiz-Sensor ([slice-129](in-progress/slice-129-closure-notiz-hat-einen-sensor.md)). Die
   Ziel-Fassung schiebt der Wellen-Closure einen Schritt ein, der die Zeitdokumente einer Welle nach
   `done/<welle-id>/` archiviert und an ihrer Stelle Stubs lässt (`v5.18.0`, `modul-06-roadmap.md`,
   §Wellen-Closure-Prozedur, Schritt 4); damit ändert sich, was `done/` enthält und was eine
@@ -212,7 +212,7 @@ Verzeichnisse (dieselbe zweite Wahrheit, die beim Slice retired wurde). -->
 | [slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) | Roadmap und Lifecycle-Verzeichnis widersprechen sich nicht mehr still (Modul `planning`, Achse 4) | [`MR-016`](../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) |
 | [slice-126](open/slice-126-commit-message-traegt-eine-kennung.md) | Eine Commit-Message ohne Kennung wird rot, und zwar vor dem Commit (Modul `commits`, Achse 3) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-127](done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) | Hard Rule 3.4 bekommt ihren Sensor (Modul `vcs`, Achse 2) | [`AGENTS.md`](../../../AGENTS.md) §3.4 |
-| [slice-129](next/slice-129-closure-notiz-hat-einen-sensor.md) | Die Closure-Notiz-Pflicht bekommt ihren Sensor (Modul `planning`, zweite Fähigkeit, Achse 6) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-129](in-progress/slice-129-closure-notiz-hat-einen-sensor.md) | Die Closure-Notiz-Pflicht bekommt ihren Sensor (Modul `planning`, zweite Fähigkeit, Achse 6) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 
 **Die Reihenfolge ist nicht beliebig, eine Kante ist hart und eine ist ein Ausschluss.**
 [slice-123](done/slice-123-ci-sieht-die-historie.md) geht **[slice-126](open/slice-126-commit-message-traegt-eine-kennung.md)
@@ -221,7 +221,7 @@ Historie, und ohne die Range-Entscheidung aus 123 wären sie in CI blind und gr�
 Sensor ist schlechter als keiner, weil er eine Zusage trägt. Die drei hermetischen
 ([slice-124](open/slice-124-gate-tabelle-hat-einen-waechter.md),
 [slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md),
-[slice-129](next/slice-129-closure-notiz-hat-einen-sensor.md)) hängen an nichts und können zuerst
+[slice-129](in-progress/slice-129-closure-notiz-hat-einen-sensor.md)) hängen an nichts und können zuerst
 laufen. **Nicht gleichzeitig laufen dürfen 125 und 129:** beide konfigurieren dasselbe Modul in
 demselben Schlüsselbaum — die Reihenfolge ist frei, die Parallelität nicht.
 
@@ -255,7 +255,7 @@ ist falsch"*, nicht *„die DoD ist länger"*.
   über `closure.dir`), mit fünf eigenen Grund-Codes: `closure-note-missing`, `-thin`,
   `-boilerplate`, `-placeholder`, `-ambiguous`. Damit ist sie dieselbe Klasse wie die vier
   gemessenen Achsen — Trockenlauf, Config-Block, Verdrahtung — und liegt als
-  [slice-129](next/slice-129-closure-notiz-hat-einen-sensor.md) in dieser Welle. **Ihre
+  [slice-129](in-progress/slice-129-closure-notiz-hat-einen-sensor.md) in dieser Welle. **Ihre
   Adoptions-Schuld ist die kleinste der Welle und die Messung dazu die kürzeste:** über den
   **133** Slice-Notizen in [`done/`](done) (`ls docs/plan/planning/done/slice-*.md | wc -l`) meldet
   der Lauf `0 Befund(e)`, Exit 0, und dieselbe Kopie mit **einer** auf einen Satz gekürzten Notiz
@@ -304,7 +304,7 @@ ist falsch"*, nicht *„die DoD ist länger"*.
   **Warum sie trotzdem draußen bleibt:** Sie ist keine der gemessenen Achsen des Kandidaten, aus
   denen diese Welle ihre Identität nimmt, und sie wäre ein **dritter** Slice im selben
   `planning`-Schlüsselbaum neben [slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)
-  und [slice-129](next/slice-129-closure-notiz-hat-einen-sensor.md) — die §4 unten schon nicht
+  und [slice-129](in-progress/slice-129-closure-notiz-hat-einen-sensor.md) — die §4 unten schon nicht
   gleichzeitig laufen lässt. **Eine Slice-Kennung steht hier deshalb nicht**; sie behauptete eine
   Datei, die es nicht gibt
   ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Was

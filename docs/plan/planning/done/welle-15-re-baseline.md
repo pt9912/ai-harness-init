@@ -198,7 +198,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   gegen `git show v5.18.0:lab/regelwerk/modul-06-roadmap.md | grep -n '^### '`). **Was doch
   bewegt wird, ist die Register-Hälfte** — P-09 und P-11 schreiben die Ablage und die
   Register-Paarung (c) neu, und die berührt
-  [slice-129](../next/slice-129-closure-notiz-hat-einen-sensor.md). Dazu wechselt jede Präsens-Aussage
+  [slice-129](../in-progress/slice-129-closure-notiz-hat-einen-sensor.md). Dazu wechselt jede Präsens-Aussage
   über den vendored Baum mit dem Tausch ihren Gegenstand
   ([slice-091](../open/slice-091-vendored-baum-ohne-anspruch.md),
   [slice-092](../open/slice-092-traeger-inventur.md), [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)).
@@ -206,7 +206,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   **[slice-182](slice-182-baum-tausch-v600-pins-ziehen.md) blockiert
   [slice-091](../open/slice-091-vendored-baum-ohne-anspruch.md),
   [slice-092](../open/slice-092-traeger-inventur.md) und
-  [slice-129](../next/slice-129-closure-notiz-hat-einen-sensor.md)** — drei Slices, nicht zwei Wellen.
+  [slice-129](../in-progress/slice-129-closure-notiz-hat-einen-sensor.md)** — drei Slices, nicht zwei Wellen.
 - **Zwei Übergaben an den Architect** stehen in
   [slice-176](slice-176-inventur-vor-dem-schnitt-v600.md) §6 und haben jetzt beide einen
   Träger. Übergabe 1 — die **regierende Fassung dieses Sprungs** — ist **erledigt**: sie steht als
