@@ -42,7 +42,7 @@ reist unverändert mit und ist ebenfalls keine Ausnahme, sondern gar kein Gegens
 *„Singletons … werden zu gestempelten `.md`-Zielen"*. Der Verweis zeigt **aufwärts**: das
 Lastenheft nennt diesen Slice nie.
 
-**Verantwortlich:** — (bis zur Priorisierung).
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-08-30.
 
@@ -172,6 +172,13 @@ liegt in `done/`. Der Grund ist **tragend, nicht ordnend**: jener Slice entschei
 überhaupt emittiert wird, und der Prüfbereich dieses Slice ist genau die Ergebnis-Menge. Läuft er
 davor, misst dieser Slice über einem Satz, den der andere noch verändert.
 
+**Reihenfolge innerhalb von `next/`: vor
+[slice-073](slice-073-emittierte-doc-gate-module.md) — Ökonomie, kein Zwang.** Dieser Slice
+entfernt die Kommentar-Hilfen des vendored Satzes auch aus der emittierten AGENTS- und
+Konventions-Datei; genau deren Prosa trägt die zwei `codepath-missing`-Befunde, an denen jener
+Slice `codepaths` heute als nicht emittierbar führt. Läuft dieser zuerst, misst jener einmal statt
+zweimal.
+
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn sich zeigt, dass die Entfernung
@@ -217,6 +224,15 @@ dasteht.
   mehr. Der Wächter muss an der **Quelle** unterscheiden, nicht am Zielpfad. — **Ausgang:**
   <entfallen: die Unterscheidung liegt am Emit-Pfad, nicht an einem Präfix | eingetreten:
   slice-NNN, sobald ein solches Dokument entsteht>
+- **Zwei Mess-Kommandos und eine Plan-Zeile nennen einen Baseline-Tag, den das Repo nicht führt.**
+  §1 liest den Set-Index unter `.harness/baseline/v5.18.0/`, §3 nennt `.harness/baseline/v5.12.0/`;
+  vendored liegt allein der adoptierte Stand (`ls .harness/baseline/`). Die Kommandos laufen so ins
+  Leere, und kein Gate sagt es: `codepaths.roots` führt `[spec, docs, harness]`, ein Pfad unter
+  `.harness` liegt außerhalb
+  ([slice-201](../done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)). Der Bezug ist der
+  Schritt 5 des Set-Index, nicht ein Tag — der Lauf zieht die Adressen auf den adoptierten Stand
+  nach, bevor er misst. — **Ausgang:** <entfallen: die Adressen sind nachgezogen und die Messung
+  neu gefahren | eingetreten: slice-NNN | weiter offen: → Beobachtungs-Register>
 
 ## 7. Closure-Notiz
 

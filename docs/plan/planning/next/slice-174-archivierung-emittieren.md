@@ -26,7 +26,7 @@ Rollen-Anweisungssatz gehört der Rolle, die ihn ausführt).
 
 **Berührte Spec-Stellen:** `—`.
 
-**Verantwortlich:** Implementer
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-03.
 
@@ -102,6 +102,19 @@ Kommando, auf das der emittierte Anweisungssatz zeigen könnte, und ein Zeiger d
 die halluzinierte Zusage aus
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6).
 
+**Zweite Start-Bedingung:** [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md)
+steht auf `Proposed`; ihr Acceptance-Trigger verlangt eine Reviewer-Runde ohne blockierenden
+Befund. Bis dahin ist sie ein Architect-Verdikt und als Constraint lesbar, aber nicht eingefroren
+([`AGENTS.md`](../../../../AGENTS.md) §3.4 bindet ab `Accepted`) — ihre Festlegung 4 trägt den
+Gegenstand dieses Slice, und eine Runde, die sie bewegt, bewegt ihn mit.
+
+**Reihenfolge innerhalb von `next/`:** keine Kopplung an
+[slice-073](slice-073-emittierte-doc-gate-module.md) oder
+[slice-140](slice-140-emittierter-stand-ohne-vorlagen-hilfen.md). Die drei berühren
+`internal/emit/` an getrennten Stellen — die Modul-Liste der emittierten Gate-Konfiguration, die
+Kommentar-Hilfen der Singleton-Ausgabe und die Command-Vorlage samt Fragment; keine Reihenfolge
+ist erzwungen.
+
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn die **Erreichbarkeit** im Ziel eine
@@ -146,6 +159,22 @@ dasteht.
   grün, ohne noch etwas zu prüfen. Was die emittierte Gate-Konfiguration hier zusagt, ist zu
   prüfen, nicht anzunehmen. — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen: Grund |
   weiter offen: → BEO-NNN im Register>
+- **Der Plan hält eine Frage offen, die die Entscheidung inzwischen beantwortet.** §3 führt den
+  eigenen Emissions-Schritt als Bedingung (*„nur falls Festlegung (d) einen eigenen
+  Emissions-Schritt verlangt"*), und die Rückführung `in-progress` → `open` rechnet mit ihrer
+  Verneinung. [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) Festlegung 4
+  entscheidet sie: der Zielbaum bekommt ein Nicht-Gate-Fragment in seinem Fragment-Verzeichnis,
+  gebaut wie das der Erfassungsschicht. Die Bezeichnung *Festlegung (d)* stammt aus dem
+  Alternativen-Vergleich, nicht aus der Nummerierung der angenommenen Fassung. Der Lauf liest die
+  Festlegung, nicht diese Plan-Zeile. — **Ausgang:** <entfallen: §3 und die Rückführung sind auf
+  die Festlegung nachgezogen | eingetreten: CO-NNN / slice-NNN | weiter offen: → Register>
+- **Ein Mess-Kommando nennt einen Baseline-Tag, den das Repo nicht führt.** §1 zählt die zwei
+  Stub-Vorlagen unter `.harness/baseline/v5.18.0/`; vendored liegt allein der adoptierte Stand
+  (`ls .harness/baseline/`). Das Kommando läuft so ins Leere, und kein Gate sagt es:
+  `codepaths.roots` führt `[spec, docs, harness]`, ein Pfad unter `.harness` liegt außerhalb
+  ([slice-201](../done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)). — **Ausgang:**
+  <entfallen: die Adresse ist nachgezogen und die Zählung neu gefahren | eingetreten: slice-NNN |
+  weiter offen: → Register>
 
 ## 7. Closure-Notiz
 

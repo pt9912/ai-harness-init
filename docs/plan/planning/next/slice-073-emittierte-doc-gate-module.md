@@ -36,6 +36,8 @@ Bezug, nicht als Analogie, denn ihr Geltungsbereich **ist** diese Datei),
 die Reichweiten-Grenze dieses Slice folgt),
 [`AGENTS.md`](../../../../AGENTS.md) §3.6 (keine Zusage ohne rot gesehenes Gegenbeispiel).
 
+**Verantwortlich:** Implementer (pt9912).
+
 **Autor:** ai-harness-init-Team (pt9912). **Datum:** 2026-07-31.
 
 ---
@@ -169,6 +171,14 @@ Konfliktfläche, nicht Reihenfolge-Zwang.
 
 **`next` → `in-progress`:** WIP-Limit.
 
+**Reihenfolge innerhalb von `next/`: nach
+[slice-140](slice-140-emittierter-stand-ohne-vorlagen-hilfen.md) — Ökonomie, kein Zwang.** Die
+zwei `codepath-missing`-Befunde aus §1 stammen aus der Prosa der emittierten AGENTS- und
+Konventions-Datei. Genau diese zwei Vorlagen tragen Kommentar-Hilfen des vendored Satzes, und
+jener Slice entfernt sie; ob die zwei Befunde damit fallen und `codepaths` ein vierter Zahn wird,
+entscheidet die Nachmessung aus §3. Läuft dieser Slice zuerst, ist sie nach jenem Merge ein
+zweites Mal zu fahren.
+
 Rückführungen:
 
 - `in-progress` → `next`: falls die Nachmessung zeigt, dass ein Modul der Liste im Ziel doch rot
@@ -207,6 +217,17 @@ DoD vollständig; Review konform (Modul 10); Verifikation bestätigt (Modul 11);
   legen. **Dieser Slice nimmt `targets` ausdrücklich nicht** und legt keine neue Artefakt-Klasse
   an; er füllt nur eine bestehende Konfiguration. Die Überschneidung ist die **Datei**, nicht die
   Entscheidung — wer nach diesem Slice läuft, ergänzt die Modul-Liste, statt sie zu ersetzen.
+- **Der Plan misst gegen einen überholten Stand.** Er entstand am 2026-07-31; die Modul-Liste des
+  Dogfood ist seither um `planning` gewachsen (`grep -m1 '^modules:' .d-check.yml`), und die
+  Ist-Messung in §1 führt dafür keine Zeile. Kriterium 1 aus §1 — *der Dogfood fährt es selbst* —
+  lässt damit einen Kandidaten zu, den die Tabelle nie geprüft hat; die Nachmessung aus §3 deckt
+  die vorhandenen Zeilen, nicht die gewachsene Kandidaten-Menge. Daneben zeigen zwei Verweise auf
+  [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
+  auf einen aufgelösten Eintrag, abgelöst von
+  [`MR-037`](../../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst),
+  und die Lifecycle-Zeile nennt eine Kurs-URL auf einen abgelösten Tag. — **Ausgang:** <entfallen:
+  die Nachmessung nimmt die gewachsene Kandidaten-Menge mit auf | eingetreten: slice-NNN |
+  weiter offen: → Beobachtungs-Register>
 - **Nicht in diesem Slice:** `codepaths` im Ziel (misst rot, s. §1), das Requirement-Muster von
   `ids` (Präfix unbekannt), die Richtungs-Prüfung *innerhalb* der Spec-Straten (der Dogfood
   führt zwei Straten und kann sie nicht erproben), und jeder Migrationspfad für bereits

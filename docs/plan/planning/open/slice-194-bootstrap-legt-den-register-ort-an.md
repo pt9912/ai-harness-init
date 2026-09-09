@@ -61,7 +61,7 @@ ist eine generische Fassung, nicht die repo-spezifische dieses Repos.
 aktivem `codepaths` rot, und das verböte
 [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3). Erst nach
 diesem Slice ist der Nicht-Emissions-Trigger für `codepaths` in
-[slice-073](slice-073-emittierte-doc-gate-module.md) überhaupt eine Frage — dieser Slice
+[slice-073](../next/slice-073-emittierte-doc-gate-module.md) überhaupt eine Frage — dieser Slice
 beantwortet sie **nicht**.
 
 ## 2. Definition of Done
@@ -102,7 +102,7 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | `internal/emit/templates.go` | update | die tool-autorierte `README.md` als neuer Emissions-Eintrag; **nicht** `structureGitkeeps()` — deren Träger ist ein leeres `.gitkeep`, und Festlegung 2 entscheidet gegen diesen Träger |
 | `internal/emit/templates_test.go` (`want`-Listen) | update | der Mengen-Vergleich ist der Zahn; er wird nachgezogen, nicht aufgeweicht |
-| `internal/emit/templates/d-check.yml` | **unverändert** | welche Module ein Ziel bekommt, entscheidet [slice-073](slice-073-emittierte-doc-gate-module.md) — dieser Slice räumt dessen Vorbedingung, er trifft die Entscheidung nicht |
+| `internal/emit/templates/d-check.yml` | **unverändert** | welche Module ein Ziel bekommt, entscheidet [slice-073](../next/slice-073-emittierte-doc-gate-module.md) — dieser Slice räumt dessen Vorbedingung, er trifft die Entscheidung nicht |
 | die Register-Ablage **dieses** Repos | **unverändert** | Dogfood-Ebene, anderer Vertrag |
 
 ## 4. Trigger
@@ -166,7 +166,7 @@ dasteht.
   [`BEO-ALL/gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse`](../observations/BEO-ALL/gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse/observation.md).
   — **Ausgang:** <offen>
 - **Nicht in diesem Slice:** die emittierte Modul-Liste
-  ([slice-073](slice-073-emittierte-doc-gate-module.md)), die `.d-check.yml` **dieses** Repos,
+  ([slice-073](../next/slice-073-emittierte-doc-gate-module.md)), die `.d-check.yml` **dieses** Repos,
   jeder Migrationspfad für bereits gebootstrappte Repos, und jede Änderung am vendored
   Baseline-Baum.
 
