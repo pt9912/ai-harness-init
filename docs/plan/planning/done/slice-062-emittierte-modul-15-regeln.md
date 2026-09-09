@@ -170,7 +170,7 @@ Auftraggeber-Setzung vom 2026-08-16 stehen lässt: **kein neues Artefakt**.
   mit den Artefakten"*) wird von einer Konfiguration des Trägers **erfüllt**, nicht geändert:
   die Artefakte, die sie prüfen würde, entstehen beim Bootstrap. Das ist ein **Anheben** nach
   [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
-  — dieselbe Einordnung, die [slice-073](../open/slice-073-emittierte-doc-gate-module.md) §3 für seine
+  — dieselbe Einordnung, die [slice-073](../next/slice-073-emittierte-doc-gate-module.md) §3 für seine
   Modul-Liste gemessen hat.
 - [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) ist **erfüllt,
   nicht geändert**, und diesmal ohne Zutun: es kommt nichts hinzu, das ein Budget verbrauchen
@@ -395,7 +395,7 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
   [`AGENTS.md`](../../../../AGENTS.md) §3.4); (2) in `slice-063` gäbe er einen zweiten
   Liefergegenstand neben dem Beleg; (3) **keine Auftraggeber-Frage** — er bewegt keine
   Anforderung, sondern stellt eine bestehende her. **Kein Grund ist dagegen, dass
-  [slice-073](../open/slice-073-emittierte-doc-gate-module.md) DoD (3) ihn schon abnähme** — das trägt
+  [slice-073](../next/slice-073-emittierte-doc-gate-module.md) DoD (3) ihn schon abnähme** — das trägt
   nicht: dessen Auflösungs-Trigger nennt zwei
   `codepath-missing`-Stellen der emittierten AGENTS- und Konventions-Datei, die Gate-Ansprüche
   liegen in der AGENTS-Vorlage und der Vorlage von
@@ -404,7 +404,7 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
   fremde Nicht-Emission an einer Messung ab, die sie nicht getroffen hat.
 - **Nicht in diesem Slice:** der Beleg selbst (`slice-063`), die Repo-Seite von Block 4
   (`slice-061`), die emittierte Modul-Liste von `.d-check.yml`
-  ([slice-073](../open/slice-073-emittierte-doc-gate-module.md) — sie nimmt `targets` ausdrücklich
+  ([slice-073](../next/slice-073-emittierte-doc-gate-module.md) — sie nimmt `targets` ausdrücklich
   nicht), die Neutralisierung der Behauptungen im emittierten Dokument-Satz
   ([slice-087](../done/slice-087-emittierte-doku-tische-init-invariant.md)), die Rechnung hinter
   [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md), und jede Migration für bereits

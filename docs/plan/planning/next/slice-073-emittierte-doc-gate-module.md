@@ -86,11 +86,11 @@ ein anderer Schnitt und keine Zeile in diesem hier.
 die Regel `{from: adr, to: slice}` samt `token:`-Erkennung für bare Kennungen und dem
 Zeilen-Marker `<!-- d-check:status-provenance -->` auskommentiert mit. Der Marker ist im Ziel der
 **einzige** Ausweg für eine bewusst deklarierte Provenance: die Bestands-Vorschaltung, die
-[slice-072](slice-072-adr-verweist-nicht-auf-lifecycle.md) im Dogfood wählt, hat im frischen Ziel
+[slice-072](../open/slice-072-adr-verweist-nicht-auf-lifecycle.md) im Dogfood wählt, hat im frischen Ziel
 keinen Bestand, den sie vorschalten könnte.
 
 **Warum die Regel richtig ist**, steht in
-[slice-072](slice-072-adr-verweist-nicht-auf-lifecycle.md) §1 und wird hier **nicht** wiederholt.
+[slice-072](../open/slice-072-adr-verweist-nicht-auf-lifecycle.md) §1 und wird hier **nicht** wiederholt.
 Dieser Slice entscheidet nur, was davon ein fremdes Repo bekommt.
 
 ## 2. Definition of Done
@@ -161,7 +161,7 @@ Nicht-Emissions-Eintrag mehr, sondern ein vierter Zahn.
 ## 4. Trigger
 
 **`open` → `next`:** keine Abhängigkeit von
-[slice-072](slice-072-adr-verweist-nicht-auf-lifecycle.md) — der berührt `.d-check.yml`, dieser
+[slice-072](../open/slice-072-adr-verweist-nicht-auf-lifecycle.md) — der berührt `.d-check.yml`, dieser
 die Emissions-Vorlage; beide Reihenfolgen tragen. Die Konfliktfläche liegt bei slice-063 —
 **falls** slice-062 für das `targets`-Modul entscheidet, fasst er dieselbe Vorlagen-Datei an;
 beide sind benannt, nicht geschnitten. Grund für die Reihung ist damit WIP-Limit und
@@ -211,7 +211,7 @@ DoD vollständig; Review konform (Modul 10); Verifikation bestätigt (Modul 11);
   `ids` (Präfix unbekannt), die Richtungs-Prüfung *innerhalb* der Spec-Straten (der Dogfood
   führt zwei Straten und kann sie nicht erproben), und jeder Migrationspfad für bereits
   gebootstrappte Repos. Ebenfalls **nicht** hier: die Dogfood-Seite derselben Frage — die ist
-  [slice-072](slice-072-adr-verweist-nicht-auf-lifecycle.md), und ihre Begründung wird nicht
+  [slice-072](../open/slice-072-adr-verweist-nicht-auf-lifecycle.md), und ihre Begründung wird nicht
   zweimal aufgeschrieben.
 
 ## 7. Closure-Notiz (nach `done/`)
