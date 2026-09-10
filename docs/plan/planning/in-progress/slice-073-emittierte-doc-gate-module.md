@@ -304,17 +304,39 @@ DoD vollständig; Review konform (Modul 10); Verifikation bestätigt (Modul 11);
   `ids` (Präfix unbekannt) und jeder Migrationspfad für bereits gebootstrappte Repos.
   Ebenfalls **nicht** hier: die **Dogfood-Seite** des `matrix`-Blocks — sie ist
   [slice-072](../open/slice-072-adr-verweist-nicht-auf-lifecycle.md), und ihre Begründung wird nicht
-  zweimal aufgeschrieben. Das gilt seit diesem Schnitt für **alle** Positionen gleich: die zwei
+  zweimal aufgeschrieben. Das gilt für **drei** Positionen: die zwei
   Lifecycle-Klassen im `token:`-Modus, die zwei Regeln `{from: adr, to: …}` **und** die
-  Richtungs-Prüfung innerhalb der Spec-Straten. Die Adresse nimmt die Sendung an — ihre DoD (1)
-  hebt genau diesen Block, sie schließt keine der Positionen aus, und sie liegt in `open/`,
+  Richtungs-Prüfung innerhalb der Spec-Straten. Für diese drei nimmt die Adresse die Sendung an —
+  ihre DoD (1) hebt genau diesen Block, sie schließt keine der drei aus, und sie liegt in `open/`,
   schließt also nach diesem Slice.
-- **Der emittierte Stand läuft dem Dogfood damit voraus, und das ist die benannte Grenze.** Bis
-  slice-072 schließt, fährt ein frisch gebootstrapptes Ziel eine `matrix`-Form, die dieses Repo
-  selbst nicht fährt. Erprobt ist sie hier trotzdem — beide Richtungen über beiden Bäumen (§3,
-  *Übergabe an den Architect*); was fehlt, ist die Dauerhaftigkeit im eigenen Gate, nicht der
-  Beleg. — **Ausgang:** <entfallen: slice-072 schließt vor der Closure | eingetreten: slice-NNN |
-  weiter offen: → Beobachtungs-Register>
+- **Die vierte Position ist `exclude-sections`, und sie geht an eine andere Adresse:**
+  [slice-208](../open/slice-208-dogfood-wert-von-exclude-sections.md). Die emittierte Vorlage trägt
+  `[Geschichte]`, der Dogfood `[Historie, "7. Historie", Geschichte]`
+  (`grep -n 'exclude-sections' internal/emit/templates/d-check.yml` gegen `sed -n '194p' .d-check.yml`).
+  slice-072 kann diese Sendung nicht annehmen, und das ist gemessen statt vermutet: Der Schlüssel
+  steht nicht in seiner DoD (1), **und** seine eigene Ist-Messung setzt den weiten Wert voraus
+  (§1 dort: *„sechs Nennungen liegen unter `Historie`/`Geschichte`, das `exclude-sections` schon
+  heute ausnimmt"*) — der engere Wert würde jene Messung falsch machen, statt sie zu erfüllen.
+  Dazu kommt die Regel-Familie: Verengt man den Dogfood-Wert probeweise (Kopie außerhalb des Repos,
+  netzlos, Mount `:ro`, gepinnter Digest aus [`d-check.mk`](../../../../d-check.mk)), meldet der
+  Lauf `1071 Datei(en) geprüft, 16 Befund(e)` — **alle** in
+  [`spec/lastenheft.md`](../../../../spec/lastenheft.md) unter `## 7. Historie`, davon 14
+  `matrix-forbidden` der Richtung `spec-straten → adr` und 2 `matrix-inactive`. slice-072 handelt
+  von `{from: adr, to: …}`, also der Gegenrichtung; die Position an ihn zu hängen hieße, ihm eine
+  fremde Regel-Familie anzuhängen. **Keine Erwartungswerte** — die Zahlen wandern mit der
+  Historie-Tabelle; tragend ist, dass sie sämtlich aus der CR-Historie stammen, die nach
+  [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+  die ADR nennen **muss**, die den Vertrag änderte.
+- **Der emittierte Stand läuft dem Dogfood an vier Positionen voraus, und das ist die benannte
+  Grenze.** Ein frisch gebootstrapptes Ziel fährt eine `matrix`-Form, die dieses Repo selbst nicht
+  fährt. Erprobt ist sie hier trotzdem — beide Richtungen über beiden Bäumen (§3, *Übergabe an den
+  Architect*); was fehlt, ist die Dauerhaftigkeit im eigenen Gate, nicht der Beleg. **Die vier
+  laufen unterschiedlich ein:** Drei holt slice-072 ein, und danach ist der Vorlauf weg. Bei der
+  vierten ist offen, **ob** er je eingeholt wird — ein frisches Ziel hat keine CR-Historie, die auf
+  ADRs zeigt, dieses Repo hat sie; die Abweichung kann darum die richtige Dauerform sein.
+  Entschieden wird das in [slice-208](../open/slice-208-dogfood-wert-von-exclude-sections.md),
+  nicht hier. — **Ausgang:** <entfallen: slice-072 und slice-208 schließen vor der Closure |
+  eingetreten: slice-NNN | weiter offen: → Beobachtungs-Register>
 
 ## 7. Closure-Notiz (nach `done/`)
 
