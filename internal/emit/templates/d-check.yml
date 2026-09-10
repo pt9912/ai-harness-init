@@ -4,7 +4,7 @@
 # Config-Fehler bzw. ein behaupteter, aber leerer Gate (Modul 13, LH-QA-01).
 scan:
   roots: ["."]
-  # .harness/**: tool-interne Ablage (gefetchtes Sprachskelett-Staging, slice-004a) —
+  # .harness/**: tool-interne Ablage (gefetchtes Sprachskelett-Staging) —
   # keine Adopter-Doku, vom Doc-Gate ausgenommen.
   ignore: ["**/*.template.md", ".tmp/**", ".harness/**"]
 modules: [links, anchors, ids, matrix, spans]

@@ -64,7 +64,7 @@ func ArchGateMkPath(modul string) string { return "harness/mk/arch-" + modul + "
 // (`overriding recipe`); belegt in full-smoke mit ZWEI hexSlice-Modulen.
 func ArchGateMk(modul, path string) string {
 	head := "# " + ArchGateMkPath(modul) + " — Arch-Gate-Fragment (Modul " + modul + "), emittiert von\n" +
-		"# ai-harness-init (slice-046). Bindet das tool-generierte a-check.mk ein und haengt das\n" +
+		"# ai-harness-init. Bindet das tool-generierte a-check.mk ein und haengt das\n" +
 		"# Architektur-Gate an GATE_CHECKS; der Root-Aggregator faehrt es via make gates.\n" +
 		"# Der Sentinel haelt den include ein-malig, ohne auf A_CHECK_IMAGE zu keyen — die\n" +
 		"# Variable ist der Adopter-Override und darf das Gate nicht abschalten.\n" +

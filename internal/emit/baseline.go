@@ -28,7 +28,7 @@ const BaselineVerifyPath = "tools/harness/baseline-verify.sh"
 const BaselineMkPath = "harness/mk/baseline.mk"
 
 // baselineMk ist der Inhalt des Baseline-Fragments. Die Recipe-Zeile ist TAB-eingerueckt.
-const baselineMk = `# harness/mk/baseline.mk — Baseline-Fragment, emittiert von ai-harness-init (slice-034).
+const baselineMk = `# harness/mk/baseline.mk — Baseline-Fragment, emittiert von ai-harness-init.
 # Verifiziert die vendored Baseline netzlos und haengt baseline-verify an GATE_CHECKS;
 # der Root-Aggregator faehrt es via make gates.
 .PHONY: baseline-verify
