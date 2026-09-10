@@ -4,7 +4,7 @@
 
 ## Eingang
 
-- **Slice-Plan:** [`docs/plan/planning/in-progress/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md`](../plan/planning/in-progress/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md)
+- **Slice-Plan:** [`docs/plan/planning/done/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md`](../plan/planning/done/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md)
 - **Sieben Review-Reports:** [Runde 1](2026-09-09-slice-140-vorlagen-hilfen-review.md) (3 HIGH/1 MEDIUM/2 LOW/2 INFO) ·
   [Runde 2](2026-09-10-slice-140-vorlagen-hilfen-review-runde-2.md) (0 HIGH/2 MEDIUM/2 LOW/1 INFO) ·
   [Runde 3](2026-09-10-slice-140-vorlagen-hilfen-review-runde-3.md) (1 HIGH/2 MEDIUM/2 LOW) ·

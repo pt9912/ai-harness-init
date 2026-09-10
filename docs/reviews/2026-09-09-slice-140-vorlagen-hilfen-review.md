@@ -214,7 +214,7 @@ Setzung 2) — jede Zahl unten wandert mit dem Vorlagen-Satz.
 
 - **kategorie:** INFO
 - **quelle:** Slice-Plan §4 (`in-progress → open`), §6 Risiko 1
-- **pfad:** `docs/plan/planning/in-progress/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md`
+- **pfad:** `docs/plan/planning/done/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md`
 - **befund:** §4 benennt die Rückführung *„wenn ein entfernter Kommentar tragenden Inhalt hält,
   der nirgendwo sonst steht"*, und §6 Risiko 1 stellt dieselbe Frage mit der Bezugsmenge des
   §1-Kommandos. HIGH-3 ist genau dieser Fall, gemessen am realen Satz. Notiert wird hier nur, dass

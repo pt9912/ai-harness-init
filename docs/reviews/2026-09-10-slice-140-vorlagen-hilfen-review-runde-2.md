@@ -160,7 +160,7 @@ Klasse, für die §3.10 den zweiten Blick vor dem Einfrieren verlangt.
 - **quelle:** Slice-Plan §2 DoD (1) und §5 Closure-Trigger; [`AGENTS.md`](../../AGENTS.md) §3.10
   (*„ist sie kein Closure-Schritt, sondern ein **Übergabe-Artefakt** an den Planner"*);
   Reviewer-Skill-Anker *Spec-Treue-Lücke einer Messmethode*
-- **pfad:** `docs/plan/planning/in-progress/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md`
+- **pfad:** `docs/plan/planning/done/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md`
   §2 DoD (1) und §5 · Wirkung aus `internal/emit/templates.go:868-870`
 - **befund:** DoD (1) bindet die Abnahme ausdrücklich an ein Kommando — *„die
   `grep -vc '/\.claude/'`-Zeile fällt auf **0**"*, und *„**Vorher-Nachher über dasselbe
@@ -263,7 +263,7 @@ Klasse, für die §3.10 den zweiten Blick vor dem Einfrieren verlangt.
 - **kategorie:** INFO
 - **quelle:** Slice-Plan §6 Risiko 1; Baseline-Regelwerk `modul-05-planning-harness.md`
   §Offene Risiken werden bei Closure aufgelöst
-- **pfad:** `docs/plan/planning/in-progress/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md` §6
+- **pfad:** `docs/plan/planning/done/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md` §6
 - **befund:** Das Risiko bietet zwei vorformulierte Ausgänge an: *„entfallen: jede Fundstelle des
   Kommandos einzeln geprüft, keine trägt"* oder *„eingetreten: CO-NNN"*. Eingetreten ist keiner von
   beiden — der beschädigte Text stand nicht **in** einem Kommentar, sondern war ein Inline-Code-Zitat

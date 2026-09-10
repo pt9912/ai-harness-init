@@ -172,7 +172,7 @@ Konfliktfläche, nicht Reihenfolge-Zwang.
 **`next` → `in-progress`:** WIP-Limit.
 
 **Reihenfolge innerhalb von `next/`: nach
-[slice-140](../in-progress/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md) — Ökonomie, kein Zwang.** Die
+[slice-140](../done/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md) — Ökonomie, kein Zwang.** Die
 zwei `codepath-missing`-Befunde aus §1 stammen aus der Prosa der emittierten AGENTS- und
 Konventions-Datei. Genau diese zwei Vorlagen tragen Kommentar-Hilfen des vendored Satzes, und
 jener Slice entfernt sie; ob die zwei Befunde damit fallen und `codepaths` ein vierter Zahn wird,
