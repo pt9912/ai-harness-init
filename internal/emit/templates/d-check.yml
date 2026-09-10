@@ -20,14 +20,21 @@ ids:
 # emittiert wird oder die Commands ihn anders referenzieren.
 # codepaths:
 #   roots: [spec, docs, harness]
-# Jede Position dieses Blocks traegt dieselbe Autoritaet: die Baseline-Vorlage
-# (.harness/baseline/v6.5.0/templates/.d-check.yml). order:/direction: auf
-# spec-straten und token: auf slice/welle samt {from: adr, to: slice} stehen dort
-# im auskommentierten matrix-Block — sie gehen mit. welle als eigene Klasse und
-# {from: adr, to: welle} stehen dort nicht — sie gehen ueber die Vorlage hinaus,
-# weil dieses Repo drei Lifecycle-Klassen faehrt statt der zwei der Vorlage. Der
-# Dogfood (.d-check.yml) fuehrt order:/direction: heute nicht — das emittierte
-# Ziel ist an dieser Position weiter als der Dogfood.
+# Herkunft der Positionen in diesem Block, gemessen gegen die Baseline-Vorlage
+# (.harness/baseline/<tag>/templates/.d-check.yml). order:/direction: auf
+# spec-straten, token: 'slice-\d{3}' auf der slice-Klasse und die Regel
+# {from: adr, to: slice} stehen dort im auskommentierten matrix-Block und
+# gehen mit. Zwei Positionen gehen darueber hinaus: die welle-Klasse samt
+# token: 'welle-\d{2}' und die Regel {from: adr, to: welle} decken ein
+# drittes Lifecycle-Artefakt neben adr und slice, das die Vorlage noch nicht
+# fuehrt; exclude-sections setzt den Schluessel, den die Vorlage bewusst
+# wegliess, weil die ADR-/Slice-Vorlagen einen Geschichte-/Historie-Abschnitt
+# fuehren, in dem eine legitime rueckwaertige Erwaehnung sonst faelschlich
+# als Verstoss zaehlte. Eine Position bleibt bewusst hinter der Vorlage
+# zurueck: token: 'ADR-\d{4}' auf der adr-Klasse geht NICHT mit — das
+# ids-Modul deckt die blosse Kennung bereits ueber link-policy: always ab
+# (id-unlinked), ein zweiter Fang ueber matrix waere redundant; fuer slice
+# gibt es keine solche ids-Regel, darum bleibt dessen token: aktiv.
 matrix:
   classes:
     - {name: spec-straten, paths: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md], order: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md], direction: no-downward}

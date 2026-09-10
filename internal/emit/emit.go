@@ -44,7 +44,8 @@ const adopterHeader = "# d-check.mk — Doku-Referenz-Gate via d-check. Emittier
 	"# Image-Digest gepinnt (Reproduzierbarkeit). advisory doc-*-Targets verbatim.\n" +
 	"# Einbinden: `include d-check.mk`; eigene .d-check.yml danebenlegen.\n"
 
-// DCheckConfig liefert die eingebettete minimale .d-check.yml (links/anchors).
+// DCheckConfig liefert die eingebettete .d-check.yml-Vorlage; welche Module sie
+// aktiviert, steht in internal/emit/templates/d-check.yml selbst.
 func DCheckConfig() string { return dcheckConfig }
 
 // DocGateMkPath ist der Zielpfad des Doc-Gate-Fragments (slice-034, Fragment-Assembly).
