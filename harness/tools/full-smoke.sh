@@ -293,10 +293,12 @@ fi
 echo "full-smoke: Feldlisten-Ortswahl belegt (toter Verweis im Dokument faerbt das docs-check des Ziels rot, danach zurueckgenommen):"
 grep -E "$FELDLISTE_REL:[0-9]+" <<<"$feldzahn_out" | sed -n '1,2s/^/full-smoke:   /p'
 
-# ZAEHNE zu den drei in der emittierten Konfiguration aktiven Modulen ids/matrix/spans — je
-# ein Gegenbeispiel im gebootstrappten Ziel (AGENTS.md §3.6), nach derselben Form wie der
+# ZAEHNE zu den drei in der emittierten Konfiguration aktiven Modulen ids/matrix/spans —
+# VIER Gegenbeispiele im gebootstrappten Ziel (AGENTS.md §3.6), nach derselben Form wie der
 # Feldlisten-Zahn oben: Verletzung einschmuggeln -> docs-check MUSS roeten, MIT der
-# benannten Befund-Art -> zurueckgenommen. Die ZWEITE Richtung gehoert dazu: dieselbe
+# benannten Befund-Art -> zurueckgenommen. matrix traegt zwei Regeln und damit zwei eigene
+# Zaehne (matrix-forbidden, matrix-downward); eine Regel ohne eigenes Gegenbeispiel waere
+# gelistet-aber-unbewacht. Die ZWEITE Richtung gehoert bei allen vier dazu: dieselbe
 # Verletzung MUSS unter dem AELTEREN modules: [links, anchors] gruen bleiben — sonst
 # belegt der Zahn nur "irgendein Modul faengt es", nicht "ERST dieses Modul findet sie".
 modul_zahn_alte_module_gruen() {
@@ -342,7 +344,33 @@ modul_zahn_alte_module_gruen "$tmprepo" "matrix-Zahn"
 mv "$matrix_doc.orig" "$matrix_doc"
 rm -f "$matrix_adr"
 
-# (2) id-unlinked: eine bare ADR-Kennung (kein Link) — link-policy: always verlangt einen
+# (2) matrix-downward: ein Abwaertslink Vertrag -> Technik INNERHALB der Spec-Straten
+# (order:/direction: no-downward auf der spec-straten-Klasse).
+matrixdown_doc="$tmprepo/spec/lastenheft.md"
+cp "$matrixdown_doc" "$matrixdown_doc.orig"
+sed -i '5a\
+\
+Siehe [spec/spezifikation.md](spezifikation.md) fuer Details (Abwaertslink, Zahn).
+' "$matrixdown_doc"
+matrixdownzahn_rc=0
+matrixdownzahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || matrixdownzahn_rc=$?
+if [ "$matrixdownzahn_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — matrix-downward-Zahn: ein Abwaertslink Vertrag->Technik laesst docs-check im Ziel GRUEN: order:/direction: nicht wirksam (slice-073/AGENTS.md §3.6)." >&2
+	printf '%s\n' "$matrixdownzahn_out" >&2
+	exit 1
+fi
+if ! grep -qE 'matrix-downward' <<<"$matrixdownzahn_out"; then
+	echo "full-smoke: FEHLER — matrix-downward-Zahn: docs-check im Ziel rot, aber ohne matrix-downward (rot aus falschem Grund? slice-073). Ausgabe:" >&2
+	printf '%s\n' "$matrixdownzahn_out" >&2
+	einordnen "make docs-check im Ziel (matrix-downward-Zahn)" "$matrixdownzahn_out"
+	exit 1
+fi
+echo "full-smoke: matrix-downward-Zahn belegt (Abwaertslink Vertrag->Technik faerbt matrix im Ziel rot, danach zurueckgenommen):"
+grep -E 'matrix-downward' <<<"$matrixdownzahn_out" | sed -n '1,2s/^/full-smoke:   /p'
+modul_zahn_alte_module_gruen "$tmprepo" "matrix-downward-Zahn"
+mv "$matrixdown_doc.orig" "$matrixdown_doc"
+
+# (3) id-unlinked: eine bare ADR-Kennung (kein Link) — link-policy: always verlangt einen
 # klickbaren Verweis auch in Prosa.
 ids_doc="$tmprepo/spec/lastenheft.md"
 cp "$ids_doc" "$ids_doc.orig"
@@ -368,7 +396,7 @@ grep -E 'id-unlinked' <<<"$idszahn_out" | sed -n '1,2s/^/full-smoke:   /p'
 modul_zahn_alte_module_gruen "$tmprepo" "ids-Zahn"
 mv "$ids_doc.orig" "$ids_doc"
 
-# (3) span-unclosed: ein nicht geschlossener Inline-Code-Span.
+# (4) span-unclosed: ein nicht geschlossener Inline-Code-Span.
 spans_doc="$tmprepo/spec/lastenheft.md"
 cp "$spans_doc" "$spans_doc.orig"
 printf '\nEin `ungeschlossener Code-Span.\n' >>"$spans_doc"

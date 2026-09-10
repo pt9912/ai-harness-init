@@ -17,7 +17,10 @@ import (
 // bleibt aus: im frischen Ziel fehlt docs/plan/planning/observations/README.md, und drei
 // mitemittierte Workflow-Commands referenzieren den Ort per Inline-Code — aktiv waere es
 // ein brechendes Gate (LH-QA-01). Das Requirement-Muster von ids bleibt auskommentiert:
-// das Praefix gehoert dem Adopter und ist in einem frischen Ziel nicht bekannt.
+// das Praefix gehoert dem Adopter und ist in einem frischen Ziel nicht bekannt. Die
+// spec-straten-Klasse traegt order:/direction: no-downward: die Baseline-Vorlage fuehrt
+// beide im auskommentierten matrix-Block, und die Entscheidungsregel fuer emittierte
+// Module bindet auf Modul-, nicht auf Positions-Ebene.
 func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	yml := emit.DCheckConfig()
 	if !strings.Contains(yml, "modules: [links, anchors, ids, matrix, spans]") {
@@ -44,6 +47,9 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	}
 	if !strings.Contains(yml, "{from: adr, to: slice, allow: false}") || !strings.Contains(yml, "{from: adr, to: welle, allow: false}") {
 		t.Errorf("die beiden neuen matrix-Regeln (adr->slice, adr->welle) fehlen:\n%s", yml)
+	}
+	if !strings.Contains(yml, "order: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md]") || !strings.Contains(yml, "direction: no-downward") {
+		t.Errorf("die Richtungspruefung (order:/direction: no-downward) auf spec-straten fehlt:\n%s", yml)
 	}
 }
 

@@ -20,9 +20,17 @@ ids:
 # emittiert wird oder die Commands ihn anders referenzieren.
 # codepaths:
 #   roots: [spec, docs, harness]
+# Jede Position dieses Blocks traegt dieselbe Autoritaet: die Baseline-Vorlage
+# (.harness/baseline/v6.5.0/templates/.d-check.yml). order:/direction: auf
+# spec-straten und token: auf slice/welle samt {from: adr, to: slice} stehen dort
+# im auskommentierten matrix-Block — sie gehen mit. welle als eigene Klasse und
+# {from: adr, to: welle} stehen dort nicht — sie gehen ueber die Vorlage hinaus,
+# weil dieses Repo drei Lifecycle-Klassen faehrt statt der zwei der Vorlage. Der
+# Dogfood (.d-check.yml) fuehrt order:/direction: heute nicht — das emittierte
+# Ziel ist an dieser Position weiter als der Dogfood.
 matrix:
   classes:
-    - {name: spec-straten, paths: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md]}
+    - {name: spec-straten, paths: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md], order: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md], direction: no-downward}
     - {name: adr, paths: ["docs/plan/adr/[0-9]*.md"]}
     - {name: slice, paths: ["docs/plan/planning/**/slice-*.md"], token: 'slice-\d{3}'}
     - {name: welle, paths: ["docs/plan/planning/**/welle-*.md"], token: 'welle-\d{2}'}
@@ -32,8 +40,7 @@ matrix:
     # Eine Accepted-ADR nennt eine Slice-/Welle-Kennung nur als deklarierte Provenance
     # (Baseline-Regelwerk grundlagen-referenz-richtung.md §Referenz-Richtung): der
     # Zeilen-Marker <!-- d-check:status-provenance --> nimmt die Zeile aus. Er ist im
-    # frischen Ziel der einzige Ausweg — anders als im Dogfood hat ein frisches Ziel
-    # keinen Bestand, den es vorschalten koennte.
+    # frischen Ziel der einzige Ausweg.
     - {from: adr, to: slice, allow: false}
     - {from: adr, to: welle, allow: false}
   status: {forbidden: [superseded, deprecated]}
