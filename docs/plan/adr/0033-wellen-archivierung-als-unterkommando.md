@@ -69,12 +69,15 @@ geschlossenen Welle vor und sagt über ihren Träger einen Satz, verbatim: *„O
 vollständig ist, bezeugt nur der Archivierungs-Commit — deshalb gehört die Operation in ein
 Werkzeug und nicht in Handarbeit."* **Welches** Werkzeug, sagt sie nicht.
 
-Zwei Antworten liegen heute nebeneinander. Dieses Repo fährt die Operation als **Shell-Helfer**
-unter `harness/tools/`, hinter dem Target `make archive-welle`. Das Nachbar-Repo `d-check` fährt
-dieselbe Operation gegen dasselbe `docs/plan/planning/`-Layout als **eigenständiges Go-Modul** mit
-eigenem `go.mod`, eigenem Dockerfile und eigenem Makefile. Eine dritte Antwort hat in diesem Repo
-eine angenommene Präzedenz: [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
-hat für die Erfassungsschicht Träger und Fähigkeit getrennt entschieden.
+Zwei Antworten lagen an der Mess-Basis `e28b887e` nebeneinander — dem Stand, den diese Entscheidung
+vorfand und den §Was heute gemessen ist ebenso datiert. Dieses Repo fuhr die Operation als
+**Shell-Helfer** unter `harness/tools/`, hinter dem Target `make archive-welle`; Festlegung 2 hat
+ihn abgelöst, und dasselbe Target zeigt seither auf den Träger
+(`grep -n -A2 '^archive-welle:' Makefile`). Das Nachbar-Repo `d-check` fährt dieselbe Operation
+gegen dasselbe `docs/plan/planning/`-Layout als **eigenständiges Go-Modul** mit eigenem `go.mod`,
+eigenem Dockerfile und eigenem Makefile. Eine dritte Antwort hat in diesem Repo eine angenommene
+Präzedenz: [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) hat für die
+Erfassungsschicht Träger und Fähigkeit getrennt entschieden.
 
 Solange die Frage offen ist, sagt der emittierte Anweisungssatz für Schritt 4 *„Hat dein Repo das
 Werkzeug nicht, ist die Bedingung nicht eingetreten"*
@@ -144,7 +147,7 @@ führt die Achse, an der die Kopplung zu Festlegung 4 hängt: **wie ein Ziel den
 | Herkunft | Weg | Reichweite ins Ziel | Ausgang |
 | --- | --- | --- | --- |
 | **kein Artefakt** | die Operation bleibt Handarbeit | — | die Quelle schließt es selbst aus (*„gehört die Operation in ein Werkzeug und nicht in Handarbeit"*) — Alternative G |
-| **kein Bau** | Skript in einer Laufzeit, die das Ziel ohnehin führt (`bash`) | als Text emittierbar — aber der zweite gepinnte Bild-Digest reiste mit | der heutige Stand — **Alternative B** |
+| **kein Bau** | Skript in einer Laufzeit, die das Ziel ohnehin führt (`bash`) | als Text emittierbar — aber der zweite gepinnte Bild-Digest reiste mit | der Stand an der Mess-Basis — **Alternative B** |
 | **kein Bau** | Skript in einer Laufzeit, die niemand zusagt (`python`, `node`, `perl`) | keine — [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) hält das Ziel auf `bash + git + docker` | scheitert am Vertrag — Alternative B′ |
 | **bestehendes Vertriebsstück** | Unterkommando des Produkt-Binärs | liegt dort, wo der Träger liegt; erreichbar über ein Fragment der Klasse, die das Ziel schon führt | **gewählt — Alternative A** |
 | **neues Vertriebsstück** | zweites Binär im selben Go-Modul | zweite Selbst-Kopie oder zweiter Kanal | tragfähig, teurer — **Alternative C** |
@@ -164,10 +167,19 @@ heutigen Baum. Keine Zahl ist ein Erwartungswert.
   Commit — braucht `git` und `docker`; das gepinnte bats-Bild führt beides nicht
   (`grep -n '^BATS_IMAGE' Makefile` nennt den Pin), und sein Test-Satz sprach im Kopf selbst aus,
   dass er den Hauptpfad auslässt und nur die reinen Funktionen über synthetischen Proben ruft.
-  Automatisiert gedeckt waren diese Funktionen und **sieben** Mutations-Fälle über ihnen; der
-  Beleg für die Operation selbst war ein von Hand gefahrener Lauf über ein Scratch-Repo.
-  **Dieselbe Zählung trifft heute die Go-Fassung**, die Festlegung 2 an ihre Stelle setzt:
-  `grep -l 'archive-welle' test/mutations/*.sh | wc -l` → **8**.
+  Automatisiert gedeckt waren diese Funktionen und **sieben** Mutations-Fälle über ihnen
+  (`git grep -l 'archive-welle' e28b887e -- 'test/mutations/*.sh' | wc -l`); der Beleg für die
+  Operation selbst war ein von Hand gefahrener Lauf über ein Scratch-Repo.
+  **Dieses Kommando misst die Nachfolge-Menge nicht**, und darum steht neben ihr ein anderes: An
+  der Mess-Basis fielen Inhalts- und Namens-Treffer zusammen, heute nicht mehr — ein Fall bewacht
+  die Operation, ohne die Zeichenkette zu führen
+  (`grep -c 'archive-welle' test/mutations/233-archive-welle-go-haenger-suchraum.sh` → **0**; es
+  ist der Fall zu Abnahme-Kriterium 1), und derselbe Inhalts-`grep` zieht umgekehrt Fälle herein,
+  deren Gegenstand die Dispatch-Kopplung ist und nicht die Archivierung. Die Bezugsmenge der
+  Go-Fassung, die Festlegung 2 an die Stelle des Shell-Wegs setzt, ist deshalb die der
+  §Fitness Function, und sie wird über die Namen gezogen:
+  `ls test/mutations/*archive-welle*.sh test/mutations/*archiv-stub-vorlage*.sh | wc -l` → **24**.
+  Es ist **eine** Bezugsmenge, nicht zwei.
 - **Der Shell-Weg trug einen eigenen gepinnten Bild-Digest** und war dessen einziger Aufrufer: das
   Archiv wurde von einem Bild gepackt. Ein Go-Weg schreibt das Zip aus der Standardbibliothek und
   braucht ihn nicht — das Makefile führt heute **3** Bild-Pins
@@ -224,15 +236,17 @@ diesen Einstiegspunkt.
   denselben Zielen, die das Repo ohnehin fährt (`make test`, `make lint`, `make mutate`); das
   gemessene Vorbild belegt, dass genau diese Zerlegung Tests trägt. **Was dabei nicht wandert,
   gehört genannt:** der `git`-berührende Teil bleibt außerhalb des Test-Bildes, wie er es beim
-  Shell-Weg ist. Der Zugewinn ist die gedeckte Fläche, nicht ihre Vollständigkeit.
+  Shell-Weg war. Der Zugewinn ist die gedeckte Fläche, nicht ihre Vollständigkeit.
 - **Ein gepinntes Bild entfällt.** Das Zip kommt aus der Standardbibliothek; der vierte Digest im
   Makefile verliert seinen Gegenstand. Jede Re-Baseline und jede Freshness-Achse hat danach einen
   Pin weniger zu bewegen ([`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
-- **Die Reichweite ins Ziel kostet nichts.** Der Träger liegt dort bereits; ein Unterkommando von
-  ihm ist dort, ohne dass ein Emissions-Schritt, ein Vertriebskanal oder eine zweite
-  Plattform-Matrix entsteht. Alternative C bezahlte dafür ein zweites Release-Artefakt samt eigenem
-  Start-Smoke, D und E einen Bauschritt bzw. einen Kanal, die [ADR-0007](0007-bootstrap-phasen.md)
-  und [ADR-0003](0003-go-native-binaries.md) je ausgeschlossen haben.
+- **Die Reichweite ins Ziel kostet ein Textfragment und sonst nichts.** Der Träger liegt dort
+  bereits; erreichbar wird sein Unterkommando über das Fragment aus Festlegung 4 — eine Datei in
+  einer Artefakt-Klasse, die das Ziel schon führt, und darum kein Vertriebskanal, kein Bauschritt
+  und keine zweite Plattform-Matrix. Alternative C bezahlte dafür ein zweites Release-Artefakt samt
+  eigenem Start-Smoke, D und E einen Bauschritt bzw. einen Kanal, die
+  [ADR-0007](0007-bootstrap-phasen.md) und [ADR-0003](0003-go-native-binaries.md) je ausgeschlossen
+  haben.
 
 **Was Alternative C dafür böte, ist der Gegenposten und steht in der Tabelle:** ein Träger, der
 **konstruktiv** kein Repo bootstrappen und keine Telemetrie schreiben kann — die kleinste
@@ -408,8 +422,8 @@ das ist keine Ausweitung jener Festlegungen**, sondern dieselbe Form, zweimal me
 
 | Option | Pro | Contra |
 | --- | --- | --- |
-| **A — Unterkommando des Produkt-Binärs (gewählt)** | die vier Gegenstände werden in den Zielen prüfbar, die das Repo ohnehin fährt; ein gepinntes Bild entfällt; die Reichweite ins Ziel entsteht ohne Emissions-Schritt, ohne Kanal und ohne zweite Plattform-Matrix; ein Einstiegspunkt, eine Lint-Config, ein Test-Runner; die Präzedenz aus [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 2 ist erprobt (`grep -c 'case "span-' cmd/ai-harness-init/main.go` → **2**) | der abgelegte Träger bekommt ein Kommando, das den **versionierten** Baum eines fremden Repos umschreibt und darin löscht — eine größere Fähigkeitsfläche als der gitignorierte Schreiber von [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md); der `git`-berührende Teil bleibt außerhalb des Test-Bildes; zwei Review-Runden, ein bats-Satz und sieben Mutations-Fälle des Shell-Wegs werden retiriert |
-| **B — Shell-Helfer je Dogfood-Repo (Status quo)** | existiert, ist zweimal reviewt und trug sieben Mutations-Fälle (Mess-Basis `e28b887e`; dieselbe Zählung trifft heute die Go-Fassung, die Festlegung 2 an ihre Stelle setzt, und nicht mehr diese Option); als **Text** emittierbar, und `bash` steht in [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten); kein Wachstum des Produkt-Binärs | seine tragende Hälfte ist ungetestet — der Hauptpfad braucht `git` und `docker`, die das gepinnte bats-Bild nicht führt; er verlangt einen **eigenen** gepinnten Bild-Digest, der im Ziel unser Pin im fremden Repo wäre; auf der `windows`-Hälfte von [`LH-QA-04`](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) braucht er eine Shell, die *„ohne WSL2-Zwang"* nicht zugesagt ist |
+| **A — Unterkommando des Produkt-Binärs (gewählt)** | die vier Gegenstände werden in den Zielen prüfbar, die das Repo ohnehin fährt; ein gepinntes Bild entfällt; die Reichweite ins Ziel kostet das Textfragment aus Festlegung 4 in einer Artefakt-Klasse, die das Ziel schon führt — keinen Kanal, keinen Bauschritt, keine zweite Plattform-Matrix; ein Einstiegspunkt, eine Lint-Config, ein Test-Runner; die Präzedenz aus [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 2 ist erprobt (`grep -c 'case "span-' cmd/ai-harness-init/main.go` → **2**) | der abgelegte Träger bekommt ein Kommando, das den **versionierten** Baum eines fremden Repos umschreibt und darin löscht — eine größere Fähigkeitsfläche als der gitignorierte Schreiber von [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md); der `git`-berührende Teil bleibt außerhalb des Test-Bildes; zwei Review-Runden, ein bats-Satz und sieben Mutations-Fälle des Shell-Wegs werden retiriert |
+| **B — Shell-Helfer je Dogfood-Repo (der Stand an der Mess-Basis)** | existierte, war zweimal reviewt und trug sieben Mutations-Fälle (Mess-Basis `e28b887e`; die Nachfolge-Menge der Go-Fassung, die Festlegung 2 an seine Stelle setzt, zählt anders und wird über die Namen gezogen — §Was heute gemessen ist); als **Text** emittierbar, und `bash` steht in [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten); kein Wachstum des Produkt-Binärs | seine tragende Hälfte war ungetestet — der Hauptpfad braucht `git` und `docker`, die das gepinnte bats-Bild nicht führt; er verlangt einen **eigenen** gepinnten Bild-Digest, der im Ziel unser Pin im fremden Repo wäre; auf der `windows`-Hälfte von [`LH-QA-04`](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) braucht er eine Shell, die *„ohne WSL2-Zwang"* nicht zugesagt ist |
 | B′ — Skript in `python`/`node`/`perl` | mächtiger als `bash`, ohne Kompilat | verlangt eine Laufzeit, die [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) dem Ziel nicht zusagt — dieselbe Grenze, an der [ADR-0004](0004-durchsetzungs-emission.md) den Guard in bash/awk hält |
 | **C — zweites Binär im selben Go-Modul** | dieselben Prüf- und Pin-Eigenschaften wie A; der Träger könnte **konstruktiv** kein Repo bootstrappen und keine Spans schreiben — die kleinste Fähigkeitsfläche | ein zweites Release-Artefakt mit eigenem Start-Smoke je Plattform ([`LH-QA-04`](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)); ins Ziel käme es nur über eine zweite Selbst-Kopie oder einen zweiten Kanal, also über genau die Wege, die [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) für ihre Alternativen D und E verworfen hat. Gleiche Eigenschaften, höherer Preis |
 | **D — eigenständiges Go-Modul (das gemessene Vorbild)** | portabel per Konstruktion: kein Import aus dem Repo, in dem es liegt, und das Verzeichnis ist in jedes Repo mit demselben Layout kopierbar; ein eigener Test je Gegenstand (`ls /Development/d-check/tools/archive-wave/*_test.go \| wc -l` → **7**) | ein zweites `go.mod`, ein zweites Bild und ein zweites Makefile — ein Bau- und Lint-Bereich, den die Gates dieses Repos nicht von selbst erreichen ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)); ins Ziel käme es als **fremder Quellbaum samt Bauschritt und Aktualisierungsweg** — das ist [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Alternative C, verworfen gegen [ADR-0007](0007-bootstrap-phasen.md) und [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
@@ -443,9 +457,9 @@ das ist keine Ausweitung jener Festlegungen**, sondern dieselbe Form, zweimal me
 - **Folgepflicht 2 — die Mutations-Fälle des Shell-Wegs wandern mit oder werden beim Entfernen
   einzeln benannt.** Ein stiller Verlust verengt die bewachte Fläche, ohne dass ein Gate es meldet.
 - **Folgepflicht 3 — die Beschreibung des Targets wird mit dem Träger nachgezogen.** Sie steht in
-  [`harness/README.md`](../../../harness/README.md) und nennt heute Eigenschaften des Shell-Wegs;
-  wer den Träger tauscht und die Beschreibung stehen lässt, erzeugt genau die Klasse *geänderte
-  Ableitung, stehengebliebene Zusage*, die das Beobachtungs-Register führt.
+  [`harness/README.md`](../../../harness/README.md) und nannte an der Mess-Basis Eigenschaften des
+  Shell-Wegs; wer den Träger tauscht und die Beschreibung stehen lässt, erzeugt genau die Klasse
+  *geänderte Ableitung, stehengebliebene Zusage*, die das Beobachtungs-Register führt.
 - **Folgepflicht 4 — der vierte Pin verlässt das Makefile mit seinem Gegenstand.** Ein gepinnter
   Digest ohne Aufrufer ist eine Zusage über ein Bild, das niemand fährt.
 - **Folgepflicht 5 — der emittierte Anweisungssatz zeigt erst auf das Kommando, wenn es läuft.**
@@ -521,6 +535,7 @@ sed -n 's/^# expect: //p' test/mutations/*archive-welle*.sh test/mutations/*arch
 |---|---|---|
 | 2026-09-03 | **Proposed** | Architect-Lauf zu `slice-172`. Der Träger der Wellen-Archivierung war offen, während zwei Antworten nebeneinander liefen. Die Entscheidung prüft die Berufung auf [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) in drei Teilen statt sie zu übernehmen — zwei tragen, der dritte wird ortsgebunden korrigiert —, führt eine **eigene** Abzählung über die Herkunft des ausführenden Artefakts und wählt den Träger über den **Preis**, nicht über einen Beweis. Der Acceptance-Trigger steht in §Der Acceptance-Trigger |
 | 2026-09-09 | Überarbeitet, weiter **Proposed** | Reviewer-Runde `2026-09-09-adr-0033-konsistenz-review.md`, Verdikt *blockierender Befund*, Statuswechsel blockiert; alle sechs Befunde im `Proposed`-Fenster behoben. **HIGH-1:** Der Beleg der Stub-Vorlagen trug den lokalen Vendoring-Präfix samt Tag und zeigte nach dem Sprung auf `v6.5.0` ins Leere — die Form, die [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) Festlegung 2 ausschließt und deren Träger 3(a) vor genau diesem Übergang greift. Er stützt sich jetzt auf ein tag-genanntes Baseline-Zitat und holt den Tag seiner Zählung aus dem kanonischen Makefile-Pin; §Was diese Entscheidung an sich selbst anwendet zählt den Bestand ab, statt ihn zu behaupten. **MEDIUM-1:** Der Beleg des Acceptance-Triggers nennt den Tag. **MEDIUM-2:** Festlegung 4 schloss den Emissions-Schritt mit einem Argument aus, das einen schweigenden Hook-Wrapper und einen Anwesenheits-Wächter widerlegte — keine der beiden Konstruktionen stand zur Wahl; die Festlegung sieht jetzt das Nicht-Gate-Fragment vor, das die Erfassungsschicht bereits emittiert, und die Kosten-Begründung der gewählten Alternative trägt es. **MEDIUM-3:** Festlegung 5 ist neu — der Preis steht als geschriebener Satz im Ziel, wie [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 6 ihn dort für dieselbe Lage verlangt. Dazu **LOW-1** (die Fitness-Tabelle trägt den gemessenen Stand statt sechsmal *geschuldet*), **LOW-2** (vier Messwerte neu erhoben, zwei davon mit ihrer Mess-Basis) und **INFO-2** (die verwaiste Referenz-Ausnahme des Shell-Wegs als Folgepflicht 9 an den Implementer). Der Beleg für den Accept-Übergang bleibt aus: Nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 trägt ihn eine **erneute** Runde derselben prüfenden Rolle, nicht dieser Lauf |
+| 2026-09-10 | Überarbeitet, weiter **Proposed** | Reviewer-Runde `2026-09-10-adr-0033-konsistenz-review-runde-2.md`, Verdikt *blockierender Befund*; die drei Befunde im `Proposed`-Fenster behoben, jeder über seine **gemessene** Fundmenge — bei zweien war sie größer als die im Report genannten Zeilen. **HIGH-1:** Der dritte Preis-Grund und die Pro-Zelle der gewählten Alternative verneinten den Emissions-Schritt, den Folgepflicht 6 baut; beide nennen jetzt den Preis, den Festlegung 4 und §Konsequenzen schon nennen — ein Textfragment in einer Artefakt-Klasse, die das Ziel führt, und weiter kein Kanal, kein Bauschritt, keine zweite Plattform-Matrix. **MEDIUM-1:** Die Sieben steht bei ihrer Mess-Basis; die Bezugsmenge der Go-Fassung ist die der §Fitness Function und wird über die Namen gezogen, weil ein Inhalts-`grep` sie in beide Richtungen verfehlt. **MEDIUM-2:** Der Shell-Weg steht an allen fünf Stellen im Präteritum oder bei der Mess-Basis; dass dasselbe Target seither auf den Träger zeigt, steht mit seinem Kommando daneben. **INFO-1** und **INFO-2** unverändert, vom Report als kein Verstoß ausgewiesen. Den Accept-Übergang trägt nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 eine **dritte** Runde derselben prüfenden Rolle |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
