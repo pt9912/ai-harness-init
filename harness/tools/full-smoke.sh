@@ -293,6 +293,104 @@ fi
 echo "full-smoke: Feldlisten-Ortswahl belegt (toter Verweis im Dokument faerbt das docs-check des Ziels rot, danach zurueckgenommen):"
 grep -E "$FELDLISTE_REL:[0-9]+" <<<"$feldzahn_out" | sed -n '1,2s/^/full-smoke:   /p'
 
+# ZAEHNE zu den drei mit slice-073 neu aktivierten Modulen (ids, matrix, spans) — je ein
+# Gegenbeispiel im gebootstrappten Ziel (AGENTS.md §3.6), nach derselben Form wie der
+# Feldlisten-Zahn oben: Verletzung einschmuggeln -> docs-check MUSS roeten, MIT der
+# benannten Befund-Art -> zurueckgenommen. Die ZWEITE Richtung gehoert dazu: dieselbe
+# Verletzung MUSS unter dem VORHERIGEN modules: [links, anchors] gruen bleiben — sonst
+# belegt der Zahn nur "irgendein Modul faengt es", nicht "ERST dieses Modul findet sie"
+# (slice-073 DoD 2).
+modul_zahn_alte_module_gruen() {
+	local repo="$1" kennung="$2"
+	local out="" rc=0
+	cp "$repo/.d-check.yml" "$repo/.d-check.yml.zahn-bak"
+	sed -i 's/^modules: \[links, anchors, ids, matrix, spans\]$/modules: [links, anchors]/' "$repo/.d-check.yml"
+	out="$( make -C "$repo" docs-check 2>&1 )" || rc=$?
+	mv "$repo/.d-check.yml.zahn-bak" "$repo/.d-check.yml"
+	if [ "$rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: dieselbe Verletzung faerbt auch unter dem VORHERIGEN modules: [links, anchors] rot — der Zahn belegt nicht, dass ERST das neue Modul sie findet (slice-073)." >&2
+		printf '%s\n' "$out" >&2
+		einordnen "make docs-check im Ziel unter modules: [links, anchors] ($kennung)" "$out"
+		exit 1
+	fi
+}
+
+# (1) matrix-forbidden: eine spec-straten -> adr Referenz (Referenz-Richtung SDP verboten).
+matrix_doc="$tmprepo/spec/lastenheft.md"
+matrix_adr="$tmprepo/docs/plan/adr/9999-smoke-zahn.md"
+cp "$matrix_doc" "$matrix_doc.orig"
+printf '# ADR-9999: Smoke-Zahn\n\n**Status:** Accepted\n\n## Kontext\n\nSmoke.\n' >"$matrix_adr"
+sed -i '5a\
+\
+Siehe [ADR-9999](../docs/plan/adr/9999-smoke-zahn.md) fuer Kontext.
+' "$matrix_doc"
+matrixzahn_rc=0
+matrixzahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || matrixzahn_rc=$?
+if [ "$matrixzahn_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — matrix-Zahn: eine spec-straten->adr Referenz laesst docs-check im Ziel GRUEN: matrix nicht wirksam (slice-073/AGENTS.md §3.6)." >&2
+	printf '%s\n' "$matrixzahn_out" >&2
+	exit 1
+fi
+if ! grep -qE 'matrix-forbidden' <<<"$matrixzahn_out"; then
+	echo "full-smoke: FEHLER — matrix-Zahn: docs-check im Ziel rot, aber ohne matrix-forbidden (rot aus falschem Grund? slice-073). Ausgabe:" >&2
+	printf '%s\n' "$matrixzahn_out" >&2
+	einordnen "make docs-check im Ziel (matrix-Zahn)" "$matrixzahn_out"
+	exit 1
+fi
+echo "full-smoke: matrix-Zahn belegt (spec-straten->adr Referenz faerbt matrix im Ziel rot, danach zurueckgenommen):"
+grep -E 'matrix-forbidden' <<<"$matrixzahn_out" | sed -n '1,2s/^/full-smoke:   /p'
+modul_zahn_alte_module_gruen "$tmprepo" "matrix-Zahn"
+mv "$matrix_doc.orig" "$matrix_doc"
+rm -f "$matrix_adr"
+
+# (2) id-unlinked: eine bare ADR-Kennung (kein Link) — link-policy: always verlangt einen
+# klickbaren Verweis auch in Prosa.
+ids_doc="$tmprepo/spec/lastenheft.md"
+cp "$ids_doc" "$ids_doc.orig"
+sed -i '5a\
+\
+Siehe ADR-9998 fuer Kontext (bare Kennung, kein Link).
+' "$ids_doc"
+idszahn_rc=0
+idszahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || idszahn_rc=$?
+if [ "$idszahn_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — ids-Zahn: eine bare ADR-Kennung laesst docs-check im Ziel GRUEN: ids nicht wirksam (slice-073/AGENTS.md §3.6)." >&2
+	printf '%s\n' "$idszahn_out" >&2
+	exit 1
+fi
+if ! grep -qE 'id-unlinked' <<<"$idszahn_out"; then
+	echo "full-smoke: FEHLER — ids-Zahn: docs-check im Ziel rot, aber ohne id-unlinked (rot aus falschem Grund? slice-073). Ausgabe:" >&2
+	printf '%s\n' "$idszahn_out" >&2
+	einordnen "make docs-check im Ziel (ids-Zahn)" "$idszahn_out"
+	exit 1
+fi
+echo "full-smoke: ids-Zahn belegt (bare ADR-Kennung faerbt ids im Ziel rot, danach zurueckgenommen):"
+grep -E 'id-unlinked' <<<"$idszahn_out" | sed -n '1,2s/^/full-smoke:   /p'
+modul_zahn_alte_module_gruen "$tmprepo" "ids-Zahn"
+mv "$ids_doc.orig" "$ids_doc"
+
+# (3) span-unclosed: ein nicht geschlossener Inline-Code-Span.
+spans_doc="$tmprepo/spec/lastenheft.md"
+cp "$spans_doc" "$spans_doc.orig"
+printf '\nEin `ungeschlossener Code-Span.\n' >>"$spans_doc"
+spanszahn_rc=0
+spanszahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || spanszahn_rc=$?
+if [ "$spanszahn_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — spans-Zahn: ein ungeschlossener Code-Span laesst docs-check im Ziel GRUEN: spans nicht wirksam (slice-073/AGENTS.md §3.6)." >&2
+	printf '%s\n' "$spanszahn_out" >&2
+	exit 1
+fi
+if ! grep -qE 'span-unclosed' <<<"$spanszahn_out"; then
+	echo "full-smoke: FEHLER — spans-Zahn: docs-check im Ziel rot, aber ohne span-unclosed (rot aus falschem Grund? slice-073). Ausgabe:" >&2
+	printf '%s\n' "$spanszahn_out" >&2
+	einordnen "make docs-check im Ziel (spans-Zahn)" "$spanszahn_out"
+	exit 1
+fi
+echo "full-smoke: spans-Zahn belegt (ungeschlossener Code-Span faerbt spans im Ziel rot, danach zurueckgenommen):"
+grep -E 'span-unclosed' <<<"$spanszahn_out" | sed -n '1,2s/^/full-smoke:   /p'
+modul_zahn_alte_module_gruen "$tmprepo" "spans-Zahn"
+mv "$spans_doc.orig" "$spans_doc"
+
 # slice-099 (LH-FA-10 §Leser und §Aufbewahrung / ADR-0022 Festlegung 8 und 6 Stueck 2):
 # DER LESER LAEUFT IM ZIEL UEBER DESSEN EIGENEM BESTAND, UND DAS AUFRAEUM-KOMMANDO IST DA.
 #

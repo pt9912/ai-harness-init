@@ -7,10 +7,34 @@ scan:
   # .harness/**: tool-interne Ablage (gefetchtes Sprachskelett-Staging, slice-004a) —
   # keine Adopter-Doku, vom Doc-Gate ausgenommen.
   ignore: ["**/*.template.md", ".tmp/**", ".harness/**"]
-modules: [links, anchors]
-# ids:
-#   patterns:
-#     - {regex: 'ADR-\d{4}', target: docs/plan/adr/}                    # aktivieren, sobald docs/plan/adr/ existiert
-#     - {regex: '<PREFIX>-[A-Z]{2}-\d{2}', target: spec/lastenheft.md}  # Praefix setzen; aktivieren, sobald spec/lastenheft.md existiert
+modules: [links, anchors, ids, matrix, spans]
+ids:
+  patterns:
+    - {regex: 'ADR-\d{4}', target: docs/plan/adr/, link-policy: always}
+    # Requirement-Praefix gehoert dem Adopter (er ist in einem frischen Ziel nicht
+    # bekannt) — Muster setzen und aktivieren, sobald spec/lastenheft.md eigene
+    # Kennungen fuehrt: {regex: '<PREFIX>-[A-Z]{2}-\d{2}', target: spec/lastenheft.md, link-policy: always}
+# codepaths bleibt aus: im frischen Ziel fehlt docs/plan/planning/observations/README.md
+# (das Register entsteht erst mit der ersten Beobachtung), und drei mitemittierte
+# Workflow-Commands nennen den Ort per Inline-Code — aktivieren, sobald dieser Ort
+# emittiert wird oder die Commands ihn anders referenzieren.
 # codepaths:
-#   roots: [spec, docs, harness]                                        # aktivieren, sobald diese Verzeichnisse existieren
+#   roots: [spec, docs, harness]
+matrix:
+  classes:
+    - {name: spec-straten, paths: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md]}
+    - {name: adr, paths: ["docs/plan/adr/[0-9]*.md"]}
+    - {name: slice, paths: ["docs/plan/planning/**/slice-*.md"], token: 'slice-\d{3}'}
+    - {name: welle, paths: ["docs/plan/planning/**/welle-*.md"], token: 'welle-\d{2}'}
+  rules:
+    - {from: spec-straten, to: adr, allow: false}
+    - {from: spec-straten, to: slice, allow: false}
+    # Eine Accepted-ADR nennt eine Slice-/Welle-Kennung nur als deklarierte Provenance
+    # (Baseline-Regelwerk grundlagen-referenz-richtung.md §Referenz-Richtung): der
+    # Zeilen-Marker <!-- d-check:status-provenance --> nimmt die Zeile aus. Er ist im
+    # frischen Ziel der einzige Ausweg — anders als im Dogfood hat ein frisches Ziel
+    # keinen Bestand, den es vorschalten koennte.
+    - {from: adr, to: slice, allow: false}
+    - {from: adr, to: welle, allow: false}
+  status: {forbidden: [superseded, deprecated]}
+  exclude-sections: [Historie, "7. Historie", Geschichte]

@@ -9,18 +9,41 @@ import (
 	"github.com/pt9912/ai-harness-init/internal/emit"
 )
 
-// TestDCheckConfig_Minimal haelt LH-QA-01 fest: die eingebettete .d-check.yml
-// aktiviert nur links/anchors. ids/codepaths braeuchten Targets (spec/lastenheft.md,
-// roots), die ein frisches Repo nicht hat — aktiv waeren sie ein brechendes Gate.
-func TestDCheckConfig_Minimal(t *testing.T) {
+// TestDCheckConfig_EntschiedeneModulListe haelt slice-073 fest: die eingebettete
+// .d-check.yml aktiviert genau [links, anchors, ids, matrix, spans] — nicht "mindestens
+// zwei Module". Jedes der drei neu aktivierten ist im frischen Ziel gemessen gruen UND
+// faengt sein Gegenbeispiel (harness/tools/full-smoke.sh); dieser Test bindet nur die
+// LISTE, nicht das Verhalten (das braucht Docker und liegt in full-smoke). codepaths
+// bleibt aus: im frischen Ziel fehlt docs/plan/planning/observations/README.md, und drei
+// mitemittierte Workflow-Commands referenzieren den Ort per Inline-Code — aktiv waere es
+// ein brechendes Gate (LH-QA-01). Das Requirement-Muster von ids bleibt auskommentiert:
+// das Praefix gehoert dem Adopter und ist in einem frischen Ziel nicht bekannt.
+func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	yml := emit.DCheckConfig()
-	if !strings.Contains(yml, "modules: [links, anchors]") {
-		t.Errorf("eingebettete .d-check.yml aktiviert nicht genau [links, anchors]:\n%s", yml)
+	if !strings.Contains(yml, "modules: [links, anchors, ids, matrix, spans]") {
+		t.Errorf("eingebettete .d-check.yml aktiviert nicht genau [links, anchors, ids, matrix, spans]:\n%s", yml)
 	}
+	sawPrefixPattern := false
 	for _, line := range strings.Split(yml, "\n") {
-		if strings.HasPrefix(line, "ids:") || strings.HasPrefix(line, "codepaths:") {
-			t.Errorf("unkommentiert aktives Modul im frischen Repo (halluziniertes Gate): %q", line)
+		if strings.HasPrefix(line, "codepaths:") {
+			t.Errorf("codepaths unkommentiert aktiv im frischen Repo (halluziniertes Gate): %q", line)
 		}
+		trimmed := strings.TrimSpace(line)
+		if strings.Contains(trimmed, "<PREFIX>") {
+			sawPrefixPattern = true
+			if !strings.HasPrefix(trimmed, "#") {
+				t.Errorf("das Requirement-Muster von ids ist unkommentiert aktiv, obwohl das Praefix in einem frischen Ziel nicht bekannt ist: %q", line)
+			}
+		}
+	}
+	if !sawPrefixPattern {
+		t.Errorf("das auskommentierte Requirement-Muster von ids fehlt ganz (kein <PREFIX> mehr in der Vorlage):\n%s", yml)
+	}
+	if !strings.Contains(yml, "regex: 'ADR-\\d{4}'") || !strings.Contains(yml, "link-policy: always") {
+		t.Errorf("das ADR-Muster von ids fehlt oder traegt nicht link-policy: always:\n%s", yml)
+	}
+	if !strings.Contains(yml, "{from: adr, to: slice, allow: false}") || !strings.Contains(yml, "{from: adr, to: welle, allow: false}") {
+		t.Errorf("die beiden neuen matrix-Regeln (adr->slice, adr->welle) fehlen:\n%s", yml)
 	}
 }
 
