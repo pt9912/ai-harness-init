@@ -558,7 +558,12 @@ func TestStripHintBlock(t *testing.T) {
 // TestStripCommentHints prueft die pure Funktion: ein einzeiliger UND ein
 // mehrzeiliger HTML-Kommentar fallen (Schritt 5 der Kopier-Prozedur, README.md
 // §Verwendung), ein `d-check:ignore`-Marker bleibt (dieselbe Stelle, Klammer-
-// Ausnahme), Text ohne Kommentar bleibt unveraendert.
+// Ausnahme), Text ohne Kommentar bleibt unveraendert. Dazu zwei Grenzfaelle:
+// ein Inline-Code-ZITAT der Kommentar-Syntax bleibt stehen (Review-Klasse
+// Emit-Regel-trifft-das-Zitat-ihres-eigenen-Gegenstands), und ein
+// Bedienhinweis, der die d-check:ignore-Ausnahme nur ERKLAERT statt sie zu
+// SEIN, faellt trotz der Zeichenkette im Fliesstext (Review-Klasse
+// Ausnahme-auf-Substring-statt-auf-Form).
 func TestStripCommentHints(t *testing.T) {
 	head := "# Titel\n\n"
 	tail := "\n\n**Inhalt**\n"
@@ -579,6 +584,16 @@ func TestStripCommentHints(t *testing.T) {
 	if got := emit.StripCommentHints(no); got != no {
 		t.Errorf("StripCommentHints ohne Marker veraenderte den Text: %q", got)
 	}
+
+	zitat := "eine Regel steht im `<!-- -->`-Block eines `.template.md`\n"
+	if got := emit.StripCommentHints(zitat); got != zitat {
+		t.Errorf("StripCommentHints entfernte ein Inline-Code-Zitat der Kommentar-Syntax: %q, want %q", got, zitat)
+	}
+
+	erklaerung := "<!--\nDieser Hinweis erklaert, wie d-check:ignore benutzt wird.\n-->\n"
+	if got := emit.StripCommentHints(erklaerung); got != "\n" {
+		t.Errorf("StripCommentHints liess einen erklaerenden Bedienhinweis stehen (Substring statt Marker-Form): %q, want %q", got, "\n")
+	}
 }
 
 // commentHints findet jeden HTML-Kommentar `<!-- ... -->` in s (Test-lokale
@@ -597,13 +612,20 @@ func commentHints(s string) []string {
 // hilfe an einem realen Singleton (spec/lastenheft.template.md, das im echten
 // Satz bereits mehrere `<!-- ... -->`-Bloecke fuehrt); ohne diese Ergaenzung
 // maesse der Waechter nichts, weil courseSet() sonst keinen HTML-Kommentar
-// traegt.
+// traegt. Dieselbe Ergaenzung bekommt project-readme.template.md — die
+// EINZIGE Quelle von RootReadme() (readme.go) — separat: ohne einen eigenen
+// Kommentar dort haette die RootReadme()-Haelfte des Waechters keinen
+// Eingang, an dem sie fallen koennte (Review-Klasse
+// Waechter-Haelfte-ohne-rot-faerbbaren-Eingang).
 func TestTemplates_KeineKommentarHilfenImEmittiertenSatz(t *testing.T) {
 	src := courseSet().(fstest.MapFS)
 	f := src["spec/lastenheft.template.md"]
 	f.Data = append(f.Data, []byte(
 		"\n<!--\nMehrzeiliger Bedienhinweis, der beim Kopieren entfaellt.\n-->\n"+
 			"<!-- d-check:ignore (illustrativer Pfad, bleibt stehen) -->\n")...)
+	pr := src["project-readme.template.md"]
+	pr.Data = append(pr.Data, []byte(
+		"\n<!-- Bedienhinweis in der Root-README, faellt beim Kopieren weg. -->\n")...)
 
 	var inQuelle int
 	if err := fs.WalkDir(src, ".", func(rel string, d fs.DirEntry, err error) error {

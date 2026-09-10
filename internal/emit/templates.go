@@ -794,25 +794,77 @@ const commentHintPattern = `(?s)<!--.*?-->`
 // bleibt stehen.
 const dcheckIgnoreMarker = "d-check:ignore"
 
+// dcheckIgnoreMarkerPattern erkennt die MARKER-Form, nicht die Zeichenkette
+// an beliebiger Stelle im Kommentar: der Marker beginnt unmittelbar nach dem
+// Kommentar-Oeffner (optionaler Leerraum dazwischen). Ohne diese Verengung
+// bliebe ein mehrzeiliger Bedienhinweis stehen, der die Ausnahme nur ERKLAERT
+// (die Zeichenkette "d-check:ignore" irgendwo im Fliesstext traegt), statt
+// sie zu SEIN.
+var dcheckIgnoreMarkerPattern = regexp.MustCompile(`^<!--\s*` + regexp.QuoteMeta(dcheckIgnoreMarker) + `\b`)
+
 // StripCommentHints entfernt jeden HTML-Kommentar `<!-- ... -->` aus einem
 // Singleton — Schritt 5 der Kopier-Prozedur (README.md §Verwendung), die nach
 // Schritt 4 (StripHintBlock) den Template-Hinweis-Block schon entfernt hat.
-// Ausgenommen bleibt ein `<!-- d-check:ignore … -->`-Marker: er unterdrueckt
-// eine Falsch-Positive des Referenz-Gates fuer einen bewusst illustrativen Pfad
-// und gehoert nach der Kopier-Prozedur selbst zu den bleibenden Zeilen, nicht
-// zu den Kommentar-Hilfen. Ohne einen Kommentar unveraendert.
+// Ausgenommen bleiben zwei Formen: ein `<!-- d-check:ignore … -->`-Marker
+// (dcheckIgnoreMarkerPattern) — er unterdrueckt eine Falsch-Positive des
+// Referenz-Gates fuer einen bewusst illustrativen Pfad und gehoert nach der
+// Kopier-Prozedur selbst zu den bleibenden Zeilen — und ein Kommentar, den
+// der Vorlagen-Satz nicht SETZT, sondern in Inline-Code ZITIERT (unmittelbar
+// von einem oeffnenden und einem schliessenden Backtick umschlossen,
+// isBacktickQuoted): ohne diese zweite Ausnahme verstuemmelt die Regel ein
+// Zitat der eigenen Kommentar-Syntax (z. B. "`<!-- -->`-Block") zu einer
+// leeren Inline-Code-Spanne. Ohne einen Kommentar unveraendert.
 //
-// Rot faerbt eine verlorene Wirkung TestStripCommentHints (die pure Funktion)
-// und TestTemplates_KeineKommentarHilfenImEmittiertenSatz (die Verdrahtung in
-// planTemplates/RootReadme, gegen die courseSet()-Fixture — der reale vendored
-// Satz liegt unter .harness/, das der Docker-Build-Kontext ausschliesst; ob die
-// Regel dort greift, misst allein `make smoke`, ausserhalb von `make gates`).
+// Zwei Grenzen bleiben ungedeckt. Erstens: ein Zitat mit Zwischenraum zum
+// Backtick (`` <!-- --> ``, mit Leerzeichen) liegt ausserhalb der
+// UNMITTELBAREN Nachbarschaft, die isBacktickQuoted prueft, und wird wie ein
+// echter Kommentar entfernt. Zweitens: das Muster kennt keinen
+// Markdown-Fence-Kontext — ein Kommentar VOR einem Mermaid-Pfeil (derselben
+// Zeichenfolge `-->`) innerhalb eines Code-Blocks kann den non-greedy
+// Abschluss vorzeitig binden. Im heutigen Vorlagen-Satz schliesst jeder
+// Kommentar vor dem naechsten Pfeil (je Vorlage gemessen per
+// `grep -o '<!--' <datei> | wc -l` gegen `grep -o -- '-->' <datei> | wc -l`);
+// das ist eine Eigenschaft des heutigen Textes, keine des Emitters.
+//
+// Rot faerbt eine verlorene Wirkung TestStripCommentHints (die pure Funktion,
+// inklusive der beiden Ausnahmen) und
+// TestTemplates_KeineKommentarHilfenImEmittiertenSatz (die Verdrahtung in
+// planTemplates UND RootReadme, gegen die courseSet()-Fixture — der reale
+// vendored Satz liegt unter .harness/, das der Docker-Build-Kontext
+// ausschliesst). Ob die Regel den REALEN Vorlagen-Satz erreicht, misst kein
+// Gate: `make smoke` prueft in seinem einzigen Inhalts-Schritt ein
+// emittiertes `docs-check` mit `modules: [links, anchors]` — das sieht
+// Link-Ziele, keinen Kommentar-Inhalt, und bliebe gruen, auch wenn diese
+// Funktion gar nicht verdrahtet waere. `test/courseset-fixture.bats` haelt
+// nur den Dateibestand und die Platzhalter-Pfad-Form der Fixture gegen den
+// realen Satz, ebenfalls keine Kommentare. Die reale Wirkung ist damit eine
+// gate-unsichtbare Eigenschaft dieser Funktion, keine Zusage, die ein Sensor
+// dieses Repos traegt.
 func StripCommentHints(s string) string {
 	comment := regexp.MustCompile(commentHintPattern)
-	return comment.ReplaceAllStringFunc(s, func(m string) string {
-		if strings.Contains(m, dcheckIgnoreMarker) {
-			return m
+	locs := comment.FindAllStringIndex(s, -1)
+	if locs == nil {
+		return s
+	}
+	var b strings.Builder
+	last := 0
+	for _, loc := range locs {
+		start, end := loc[0], loc[1]
+		b.WriteString(s[last:start])
+		m := s[start:end]
+		if dcheckIgnoreMarkerPattern.MatchString(m) || isBacktickQuoted(s, start, end) {
+			b.WriteString(m) // Ausnahme: Marker oder Inline-Code-Zitat bleibt stehen
 		}
-		return ""
-	})
+		last = end
+	}
+	b.WriteString(s[last:])
+	return b.String()
+}
+
+// isBacktickQuoted meldet, ob der Treffer [start,end) in s unmittelbar von
+// einem oeffnenden und einem schliessenden Backtick umschlossen ist — die
+// Form, in der der Vorlagen-Satz die Kommentar-SYNTAX zitiert (z. B.
+// "`<!-- -->`-Block"), statt einen Kommentar zu setzen.
+func isBacktickQuoted(s string, start, end int) bool {
+	return start > 0 && s[start-1] == '`' && end < len(s) && s[end] == '`'
 }
