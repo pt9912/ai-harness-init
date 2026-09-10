@@ -9,9 +9,9 @@ import (
 	"github.com/pt9912/ai-harness-init/internal/emit"
 )
 
-// TestDCheckConfig_EntschiedeneModulListe haelt slice-073 fest: die eingebettete
-// .d-check.yml aktiviert genau [links, anchors, ids, matrix, spans] — nicht "mindestens
-// zwei Module". Jedes der drei neu aktivierten ist im frischen Ziel gemessen gruen UND
+// TestDCheckConfig_EntschiedeneModulListe haelt die entschiedene Modul-Liste fest: die
+// eingebettete .d-check.yml aktiviert genau [links, anchors, ids, matrix, spans] — nicht
+// "mindestens zwei Module". Jedes der drei neu aktivierten ist im frischen Ziel gemessen gruen UND
 // faengt sein Gegenbeispiel (harness/tools/full-smoke.sh); dieser Test bindet nur die
 // LISTE, nicht das Verhalten (das braucht Docker und liegt in full-smoke). codepaths
 // bleibt aus: im frischen Ziel fehlt docs/plan/planning/observations/README.md, und drei

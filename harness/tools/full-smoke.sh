@@ -293,13 +293,12 @@ fi
 echo "full-smoke: Feldlisten-Ortswahl belegt (toter Verweis im Dokument faerbt das docs-check des Ziels rot, danach zurueckgenommen):"
 grep -E "$FELDLISTE_REL:[0-9]+" <<<"$feldzahn_out" | sed -n '1,2s/^/full-smoke:   /p'
 
-# ZAEHNE zu den drei mit slice-073 neu aktivierten Modulen (ids, matrix, spans) — je ein
-# Gegenbeispiel im gebootstrappten Ziel (AGENTS.md §3.6), nach derselben Form wie der
+# ZAEHNE zu den drei in der emittierten Konfiguration aktiven Modulen ids/matrix/spans — je
+# ein Gegenbeispiel im gebootstrappten Ziel (AGENTS.md §3.6), nach derselben Form wie der
 # Feldlisten-Zahn oben: Verletzung einschmuggeln -> docs-check MUSS roeten, MIT der
 # benannten Befund-Art -> zurueckgenommen. Die ZWEITE Richtung gehoert dazu: dieselbe
-# Verletzung MUSS unter dem VORHERIGEN modules: [links, anchors] gruen bleiben — sonst
-# belegt der Zahn nur "irgendein Modul faengt es", nicht "ERST dieses Modul findet sie"
-# (slice-073 DoD 2).
+# Verletzung MUSS unter dem AELTEREN modules: [links, anchors] gruen bleiben — sonst
+# belegt der Zahn nur "irgendein Modul faengt es", nicht "ERST dieses Modul findet sie".
 modul_zahn_alte_module_gruen() {
 	local repo="$1" kennung="$2"
 	local out="" rc=0
