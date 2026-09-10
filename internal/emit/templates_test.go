@@ -558,9 +558,15 @@ func TestStripHintBlock(t *testing.T) {
 // TestStripCommentHints prueft die pure Funktion: ein einzeiliger UND ein
 // mehrzeiliger HTML-Kommentar fallen (Schritt 5 der Kopier-Prozedur, README.md
 // §Verwendung), ein `d-check:ignore`-Marker bleibt (dieselbe Stelle, Klammer-
-// Ausnahme), Text ohne Kommentar bleibt unveraendert. Dazu zwei Grenzfaelle:
-// ein Inline-Code-ZITAT der Kommentar-Syntax bleibt stehen (Review-Klasse
-// Emit-Regel-trifft-das-Zitat-ihres-eigenen-Gegenstands), und ein
+// Ausnahme), Text ohne Kommentar bleibt unveraendert. Dazu vier Grenzfaelle:
+// ein vollstaendiges Inline-Code-ZITAT der Kommentar-Syntax bleibt stehen
+// (Review-Klasse Emit-Regel-trifft-das-Zitat-ihres-eigenen-Gegenstands); ein
+// ISOLIERTES Oeffner-Zitat verschluckt nicht den Text bis zum naechsten,
+// entfernten `-->` (Review-Klasse Vorwaerts-Korrektur-loescht-Inhalt — die
+// Sonde traegt einen fremden Mermaid-Pfeil als das entferntere `-->`); ein
+// ISOLIERTES Schliesser-Zitat bindet einen ECHTEN, umschliessenden Kommentar
+// nicht vorzeitig an sich selbst ab (dieselbe Klasse, gespiegelt: hier bliebe
+// sonst das zweite Kommentar-Stueck als Textfragment stehen); und ein
 // Bedienhinweis, der die d-check:ignore-Ausnahme nur ERKLAERT statt sie zu
 // SEIN, faellt trotz der Zeichenkette im Fliesstext (Review-Klasse
 // Ausnahme-auf-Substring-statt-auf-Form).
@@ -588,6 +594,17 @@ func TestStripCommentHints(t *testing.T) {
 	zitat := "eine Regel steht im `<!-- -->`-Block eines `.template.md`\n"
 	if got := emit.StripCommentHints(zitat); got != zitat {
 		t.Errorf("StripCommentHints entfernte ein Inline-Code-Zitat der Kommentar-Syntax: %q, want %q", got, zitat)
+	}
+
+	oeffnerZitat := "Der Oeffner `<!--` leitet ein.\n\nTRAGENDER SATZ A.\n\n```mermaid\nA --> B\n```\n\nTRAGENDER SATZ B.\n"
+	if got := emit.StripCommentHints(oeffnerZitat); got != oeffnerZitat {
+		t.Errorf("StripCommentHints liess ein isoliertes Oeffner-Zitat bis zu einem fremden `-->` binden und loeschte Inhalt: %q, want %q", got, oeffnerZitat)
+	}
+
+	schliesserZitat := "<!-- Hinweis vor dem Zitat. Das Token `-->` steht im Text. Hinweis danach. -->\n\n**Inhalt**\n"
+	wantSchliesser := "\n\n**Inhalt**\n"
+	if got := emit.StripCommentHints(schliesserZitat); got != wantSchliesser {
+		t.Errorf("StripCommentHints band den echten Kommentar am zitierten Schliesser vorzeitig ab und liess ein Zeilenfragment stehen: %q, want %q", got, wantSchliesser)
 	}
 
 	erklaerung := "<!--\nDieser Hinweis erklaert, wie d-check:ignore benutzt wird.\n-->\n"
