@@ -1,18 +1,11 @@
 // Package emit schreibt die Gate-Baselines in ein Zielrepo — das Doc-Gate (hier)
-// und, konditional bei einem schichten-tragenden Layout, das Arch-Gate (archgate.go,
-// slice-046). Beide folgen demselben Muster: tool-autorierte Config + tool-generiertes
+// und, konditional bei einem schichten-tragenden Layout, das Arch-Gate (archgate.go).
+// Beide folgen demselben Muster: tool-autorierte Config + tool-generiertes
 // `.mk`-Fragment aus `--print-mk`.
 //
 // Zwei Artefakte mit bewusst verschiedener Herkunft:
 //   - .d-check.yml — vom Tool AUTORIERTE Config; welche Module aktiv sind, steht
-//     in internal/emit/templates/d-check.yml selbst (DCheckConfig()). Die
-//     LH-QA-01-Garantie traegt nicht Minimalitaet: fuer ids, matrix (zwei Regeln)
-//     und spans haelt je ein benannter Gegenbeispiel-Zahn in
-//     harness/tools/full-smoke.sh (gruen gegen ein frisch gebootstrapptes Ziel,
-//     rot gegen sein eigenes Gegenbeispiel) — vier Befund-Arten fuer drei der
-//     fuenf aktiven Module. links traegt seinen eigenen Zahn im selben Skript
-//     (Feldlisten-Zahn, slice-098, target-missing); anchors bleibt ohne
-//     Gegenbeispiel-Zahn.
+//     in internal/emit/templates/d-check.yml selbst (DCheckConfig()).
 //   - d-check.mk   — zur BOOTSTRAP-Zeit erzeugt via `docker run <d-check> --print-mk`
 //     (Docker ist die geforderte Bootstrap-Abhaengigkeit, LH-QA-03) und mechanisch
 //     adaptiert (AdaptMK). So traegt das Tool kein driftendes Fragment, nur den Pin
@@ -54,8 +47,8 @@ const adopterHeader = "# d-check.mk — Doku-Referenz-Gate via d-check. Emittier
 // aktiviert, steht in internal/emit/templates/d-check.yml selbst.
 func DCheckConfig() string { return dcheckConfig }
 
-// DocGateMkPath ist der Zielpfad des Doc-Gate-Fragments (slice-034, Fragment-Assembly).
-// Es bindet das tool-generierte d-check.mk ein und haengt docs-check an GATE_CHECKS an;
+// DocGateMkPath ist der Zielpfad des Doc-Gate-Fragments. Es bindet das
+// tool-generierte d-check.mk ein und haengt docs-check an GATE_CHECKS an;
 // der Root-Aggregator faehrt es via make gates.
 const DocGateMkPath = "harness/mk/doc-gate.mk"
 
@@ -71,8 +64,7 @@ GATE_CHECKS += docs-check
 
 // DocGateMk liefert den Inhalt des Doc-Gate-Fragments (fuer Tests/Inspektion) — der
 // netzlose Waechter auf die docs-check-Verdrahtung, weil DocGate selbst Docker braucht
-// (--print-mk). Ohne ihn traege nur full-smoke die Zusage „docs-check haengt in gates"
-// (Review-Befund slice-034 F-1: die Deckung des entfernten Mutations-Falls 21).
+// (--print-mk). Ohne ihn traege nur full-smoke die Zusage „docs-check haengt in gates".
 func DocGateMk() string { return docGateMk }
 
 // Options steuert den Doc-Gate-Emit.
@@ -96,7 +88,7 @@ func (o Options) RunRef() string {
 }
 
 // DocGate emittiert .d-check.yml + d-check.mk + doc-gate.mk nach targetDir. GEMISCHTE
-// Idempotenz-Klasse (slice-038, ADR-0007): `.d-check.yml` ist SKIP-IF-PRESENT (Adopter-
+// Idempotenz-Klasse (ADR-0007): `.d-check.yml` ist SKIP-IF-PRESENT (Adopter-
 // Boden — er kann Module aktivieren), `d-check.mk` + `doc-gate.mk` sind KONVERGENT (tool-
 // generiert, heilen Drift/Digest-Bump). Reihenfolge: erst die fallierbaren Schritte
 // (docker --print-mk, Adaption), dann die Schreibvorgaenge — kein halb geschriebener Stand.
@@ -158,7 +150,7 @@ func AdaptMK(raw []byte, digest string) ([]byte, error) {
 // printMK ruft `docker run <ref> --print-mk` und liefert die rohe Ausgabe.
 // --network none haertet den Lauf (--print-mk braucht kein Netz; der Image-Pull,
 // falls noetig, laeuft ueber den Daemon, nicht das Container-Netz). Tool-neutral:
-// d-check und a-check (slice-046) teilen dieselbe --print-mk-Konvention.
+// d-check und a-check teilen dieselbe --print-mk-Konvention.
 func printMK(ctx context.Context, ref string) ([]byte, error) {
 	out, err := exec.CommandContext(ctx, "docker", "run", "--rm", "--network", "none", ref, "--print-mk").Output()
 	if err != nil {
