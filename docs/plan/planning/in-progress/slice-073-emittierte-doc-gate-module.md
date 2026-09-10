@@ -86,10 +86,8 @@ ein anderer Schnitt und keine Zeile in diesem hier.
 
 **Die Ziel-Form ist vorgegeben, nicht zu erfinden.** Die Startkonfiguration des Werkzeugs führt
 die Regel `{from: adr, to: slice}` samt `token:`-Erkennung für bare Kennungen und dem
-Zeilen-Marker `<!-- d-check:status-provenance -->` auskommentiert mit. Der Marker ist im Ziel der
-**einzige** Ausweg für eine bewusst deklarierte Provenance: die Bestands-Vorschaltung, die
-[slice-072](../open/slice-072-adr-verweist-nicht-auf-lifecycle.md) im Dogfood wählt, hat im frischen Ziel
-keinen Bestand, den sie vorschalten könnte.
+Zeilen-Marker `<!-- d-check:status-provenance -->` auskommentiert mit. Was der Marker im Ziel
+trägt, entscheidet DoD (1).
 
 **Warum die Regel richtig ist**, steht in
 [slice-072](../open/slice-072-adr-verweist-nicht-auf-lifecycle.md) §1 und wird hier **nicht** wiederholt.
