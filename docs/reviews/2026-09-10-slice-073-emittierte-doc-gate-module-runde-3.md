@@ -18,7 +18,7 @@
   **Der übergebene Baum-Schnappschuss war 27 Commits alt** (`git rev-list --count 3fd42cc4..HEAD`
   → 27) und nannte slice-140; geprüft ist der reale HEAD `b323363c`, 3 Commits vor `origin/main`.
 - **Slice-Plan (Repo-Ergänzung):**
-  [`slice-073`](../plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md), §2 DoD (1).
+  [`slice-073`](../plan/planning/done/slice-073-emittierte-doc-gate-module.md), §2 DoD (1).
 - **Betroffene `LH-*`:**
   [`LH-FA-02`](../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3),
   [`LH-FA-03`](../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7),
@@ -55,7 +55,7 @@ an einer anderen Stelle desselben Absatzes (HIGH-1 unten).
 
 - **kategorie:** HIGH
 - **quelle:** [`AGENTS.md`](../../AGENTS.md) §3.7,
-  [`slice-073`](../plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md) DoD (1),
+  [`slice-073`](../plan/planning/done/slice-073-emittierte-doc-gate-module.md) DoD (1),
   [`MR-020`](../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
 - **pfad:** `internal/emit/templates/d-check.yml:30-33`
 - **befund:** Der neue Block begründet den Schlüssel mit *„weil die ADR-/Slice-Vorlagen einen

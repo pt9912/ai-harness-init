@@ -60,7 +60,7 @@ Setzung 2) — die Zahl wandert mit dem Register; tragend ist, dass sie die Schw
 
 **Die Behebungs-Seite ist die belegte Hälfte.** Die Auflage *miss erst die Fundmenge, dann zieh
 alle Stellen zugleich* ist in
-[slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md) fünfmal gefahren worden und hat
+[slice-073](../done/slice-073-emittierte-doc-gate-module.md) fünfmal gefahren worden und hat
 **jedes Mal** eine größere Menge gefunden, als der auslösende Report nannte. Das ist ein Beleg für
 die Wirksamkeit, kein Vorschlag — und der Grund, warum dieser Slice mit ihr beginnt statt mit der
 Report-Form.

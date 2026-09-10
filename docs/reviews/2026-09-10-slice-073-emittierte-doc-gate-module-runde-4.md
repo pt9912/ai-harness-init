@@ -26,7 +26,7 @@
   (`docs/plan/adr/0033-*.md`, zwei Reports in `docs/reviews/`) stammen aus dem parallelen
   ADR-0033-Lauf und sind **nicht** geprüft. Arbeitsbaum sauber (`git status --porcelain` → leer).
 - **Slice-Plan (Repo-Ergänzung):**
-  [`slice-073`](../plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md) — §1, DoD (1),
+  [`slice-073`](../plan/planning/done/slice-073-emittierte-doc-gate-module.md) — §1, DoD (1),
   DoD (2), §6.
 - **Betroffene `LH-*`:**
   [`LH-FA-02`](../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3),
@@ -61,7 +61,7 @@ Runden 2 und 3: Der Implementer hat in dieser Runde keine neue Über-Zusage eing
 
 - **kategorie:** HIGH
 - **quelle:** [`AGENTS.md`](../../AGENTS.md) §3.6 (Zusage ohne rot gesehenes Gegenbeispiel), §3.7,
-  [`slice-073`](../plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md) DoD (1)
+  [`slice-073`](../plan/planning/done/slice-073-emittierte-doc-gate-module.md) DoD (1)
 - **pfad:** `internal/emit/templates/d-check.yml:52-55` gegen `internal/emit/templates/d-check.yml:30-34`
 - **befund:** Zeile 54-55 sagt über den Zeilen-Marker `<!-- d-check:status-provenance -->`:
   *„Er ist im frischen Ziel der einzige Ausweg."* Zweiundzwanzig Zeilen darüber begründet der in
@@ -117,10 +117,10 @@ Ausweg"*. Die Verschärfung ist nicht gefordert und nicht messbar gedeckt.
 
 - **kategorie:** MEDIUM
 - **quelle:** Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Slice (*„Die Adresse
-  muss die Sendung annehmen"*), [`slice-073`](../plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md) §6,
+  muss die Sendung annehmen"*), [`slice-073`](../plan/planning/done/slice-073-emittierte-doc-gate-module.md) §6,
   [`AGENTS.md`](../../AGENTS.md) §3.10 (die Out-of-Scope-Grenze ist ein Übergabe-Artefakt)
 - **pfad:** `internal/emit/templates/d-check.yml:59` gegen `.d-check.yml:194` ·
-  `docs/plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md:305-319`
+  `docs/plan/planning/done/slice-073-emittierte-doc-gate-module.md:305-319`
 - **befund:** Vor `497e3980` trugen beide Seiten **denselben** Wert
   (`git show 497e3980^:internal/emit/templates/d-check.yml | grep -n exclude-sections` → Zeile 57,
   `[Historie, "7. Historie", Geschichte]`; `sed -n '194p' .d-check.yml` → derselbe Wert). Seit
@@ -196,7 +196,7 @@ die um eins danebenliegt.
 
 - **kategorie:** MEDIUM
 - **quelle:** [`AGENTS.md`](../../AGENTS.md) §3.6,
-  [`slice-073`](../plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md) DoD (2)
+  [`slice-073`](../plan/planning/done/slice-073-emittierte-doc-gate-module.md) DoD (2)
   (*„eine Regel ohne eigenes Gegenbeispiel ist gelistet-aber-unbewacht"*)
 - **pfad:** `internal/emit/templates/d-check.yml:59`
 - **befund:** `TestDCheckConfig_EntschiedeneModulListe` bindet die Modul-Liste, das ADR-Muster,

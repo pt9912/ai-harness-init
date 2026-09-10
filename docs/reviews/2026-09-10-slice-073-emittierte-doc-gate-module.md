@@ -17,7 +17,7 @@
   `internal/emit/emit_test.go`, `test/mutations/295-emittierte-modulliste-verliert-matrix.sh`;
   die übrigen 14 sind `slice-mv`-Verweis-Nachzug und der Ruhe-Marker.
 - **Slice-Plan (Repo-Ergänzung):**
-  [`slice-073`](../plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md).
+  [`slice-073`](../plan/planning/done/slice-073-emittierte-doc-gate-module.md).
 - **Betroffene `LH-*`:**
   [`LH-FA-02`](../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3),
   [`LH-FA-03`](../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7),
@@ -66,7 +66,7 @@ die Entscheidungsregel des Slice in derselben Änderung zweimal gegensätzlich a
 ### HIGH-1 — Kriterium 1 der eigenen Entscheidungsregel wird in derselben Änderung in beide Richtungen ausgelegt
 
 - **kategorie:** HIGH
-- **quelle:** [`slice-073`](../plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md) §1
+- **quelle:** [`slice-073`](../plan/planning/done/slice-073-emittierte-doc-gate-module.md) §1
   (Entscheidungsregel, Kriterium 1), [`MR-017`](../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)
 - **pfad:** `internal/emit/templates/d-check.yml:24-38`
 - **befund:** Die emittierte `matrix`-Sektion führt vier Neuerungen, die der Dogfood **nicht**
@@ -109,11 +109,11 @@ nirgends im Diff.
 ### HIGH-2 — Der Auflösungs-Trigger der dritten Nicht-Emission ist bereits eingetreten und würde append-only eingefroren
 
 - **kategorie:** HIGH
-- **quelle:** [`slice-073`](../plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md)
+- **quelle:** [`slice-073`](../plan/planning/done/slice-073-emittierte-doc-gate-module.md)
   DoD (3), [`MR-019`](../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence),
   [`AGENTS.md`](../../AGENTS.md) §3.6
 - **pfad:** `internal/emit/templates/d-check.yml:24` (die nicht emittierte Position) /
-  `docs/plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md:126`
+  `docs/plan/planning/done/slice-073-emittierte-doc-gate-module.md:126`
 - **befund:** DoD (3) nennt als Auflösungs-Trigger der dritten Nicht-Emission wörtlich *„der
   Dogfood führt selbst drei Straten und kann sie erproben"*. Beide Hälften sind **heute wahr**:
   `spec/` trägt drei Dateien und die Dogfood-Klasse `spec-straten` listet alle drei
@@ -158,7 +158,7 @@ einmal gebootstrappt wurde.
 - **kategorie:** MEDIUM
 - **quelle:** Baseline-Regelwerk `modul-08-agentenrollen.md` §Die neun Übergaben und ihre
   Artefakte, [`AGENTS.md`](../../AGENTS.md) §3.8
-- **pfad:** `docs/plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md:121`
+- **pfad:** `docs/plan/planning/done/slice-073-emittierte-doc-gate-module.md:121`
   (DoD (3), ungehakt) — kein Artefakt im Baum
 - **befund:** Die Message von `bcf652b9` erklärt DoD (3) zur Architect-Arbeit und benennt *„der
   Report an den Reviewer trägt den Entwurf als Uebergabe-Artefakt"*. Ein solcher Entwurf liegt
@@ -226,7 +226,7 @@ den sie zusagen, hält (Negativbefund N-3). Es ist der Nachsatz, der falsch ist.
 - **quelle:** [`MR-037`](../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst),
   [`MR-020`](../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf),
   [`AGENTS.md`](../../AGENTS.md) §3.10
-- **pfad:** `docs/plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md:9,14`
+- **pfad:** `docs/plan/planning/done/slice-073-emittierte-doc-gate-module.md:9,14`
 - **befund:** Der eingebrachte Nebenbefund ist **in beide Richtungen zu beantworten**. *Als Link*
   folgenlos: der Anker zieht per
   [`MR-020`](../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)

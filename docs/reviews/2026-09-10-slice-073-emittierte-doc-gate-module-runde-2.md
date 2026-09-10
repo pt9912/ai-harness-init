@@ -18,7 +18,7 @@
   `internal/emit/emit_test.go`, `test/mutations/296-…`, `test/mutations/297-…`).
   Arbeitsbaum sauber (`git status --porcelain` → leer).
 - **Slice-Plan (Repo-Ergänzung):**
-  [`slice-073`](../plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md).
+  [`slice-073`](../plan/planning/done/slice-073-emittierte-doc-gate-module.md).
 - **Betroffene `LH-*`:**
   [`LH-FA-02`](../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3),
   [`LH-FA-03`](../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7),
@@ -50,7 +50,7 @@
 
 - **kategorie:** HIGH
 - **quelle:** [`AGENTS.md`](../../AGENTS.md) §3.7,
-  [`slice-073`](../plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md) DoD (1),
+  [`slice-073`](../plan/planning/done/slice-073-emittierte-doc-gate-module.md) DoD (1),
   [`MR-020`](../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
 - **pfad:** `internal/emit/templates/d-check.yml:25-27`
 - **befund:** Der neue Kommentar sagt: *„order:/direction: auf spec-straten und `token:` auf
@@ -86,7 +86,7 @@ Runde-1-HIGH-2 als teuersten Befund führte, nur mit vertauschter Ursache.
 ### MEDIUM-1 — Die Zusage „jede Position trägt dieselbe Autorität" ist an zwei Positionen nicht eingelöst, und an einer davon bleibt das Ziel hinter der Ziel-Form zurück
 
 - **kategorie:** MEDIUM
-- **quelle:** [`slice-073`](../plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md)
+- **quelle:** [`slice-073`](../plan/planning/done/slice-073-emittierte-doc-gate-module.md)
   §1 (Entscheidungsregel) und DoD (1),
   [`MR-017`](../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)
 - **pfad:** `internal/emit/templates/d-check.yml:23-30` (die Aufzählung), `:34` (`adr`-Klasse),

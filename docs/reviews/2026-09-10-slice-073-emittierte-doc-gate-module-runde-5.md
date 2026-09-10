@@ -24,7 +24,7 @@
   `docs/plan/adr/0033-*.md` und ist hier **weder gelesen noch bewertet**. Arbeitsbaum sauber
   (`git status --porcelain` → leer).
 - **Slice-Plan (Repo-Ergänzung):**
-  [`slice-073`](../plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md) — §1, DoD (1),
+  [`slice-073`](../plan/planning/done/slice-073-emittierte-doc-gate-module.md) — §1, DoD (1),
   DoD (2), §6.
 - **Betroffene `LH-*`:**
   [`LH-FA-02`](../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3),
@@ -64,7 +64,7 @@ trifft die Stelle, die der Aufrufer benutzt.
 - **kategorie:** MEDIUM
 - **quelle:** [`AGENTS.md`](../../AGENTS.md) §3.6, §3.10 (Plan-Text ist Planner-Artefakt),
   [Runde 4](2026-09-10-slice-073-emittierte-doc-gate-module-runde-4.md) HIGH-1
-- **pfad:** `docs/plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md:89-92`
+- **pfad:** `docs/plan/planning/done/slice-073-emittierte-doc-gate-module.md:89-92`
 - **befund:** §1 sagt: *„Der Marker ist im Ziel der **einzige** Ausweg für eine bewusst deklarierte
   Provenance: die Bestands-Vorschaltung, die slice-072 im Dogfood wählt, hat im frischen Ziel
   keinen Bestand, den sie vorschalten könnte."* Das ist wörtlich die **enge** Lesart, die Runde-4-HIGH-1

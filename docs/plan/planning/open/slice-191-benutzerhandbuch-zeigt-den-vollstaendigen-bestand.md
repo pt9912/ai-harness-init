@@ -376,7 +376,7 @@ dasteht.
 - **Nicht in diesem Slice:** der Generator selbst
   ([slice-190](../done/slice-190-bootstrap-legt-die-versprochenen-orte-an.md)), die
   emittierte Modul-Liste
-  ([slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md)), **die Erklärung der Erfassungsschicht —
+  ([slice-073](../done/slice-073-emittierte-doc-gate-module.md)), **die Erklärung der Erfassungsschicht —
   *was* erfasst wird, wie ein Adopter es ausliest oder abschaltet, und die zwei `make`-Ziele
   dafür**, und jede Aussage über den Bestand außerhalb von §6 des Handbuchs.
   Die Erklärungs-Hälfte ist **kein neu zu schneidender Slice**: sie liegt als

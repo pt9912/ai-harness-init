@@ -76,7 +76,7 @@ geschrieben.
   sie gehören darum nicht in `make gates`, sondern an DoD-Verify und Closure.
 - **Die emittierte Starter-Config bleibt bewusst schmaler als der Dogfood.** Ihre Modul-Liste
   nachzuziehen ist eine eigene Frage und liegt bereits als
-  [slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md) in `open/`; wer sie hier mitnimmt, vermischt
+  [slice-073](../done/slice-073-emittierte-doc-gate-module.md) in `open/`; wer sie hier mitnimmt, vermischt
   Re-Baseline und Gate-Anhebung.
 
 ## 7. Closure-Notiz (nach `done/`)
@@ -142,7 +142,7 @@ diesem Slice **3×** (unten). Kein anderer Eintrag erreichte mit diesem Slice di
   Zusagen (die emittierten Command-Texte) stehen. Eine eigene Kennung für die *Asymmetrie* hätte
   dieselbe Beobachtung unter zwei Namen gezählt und keine der beiden erreichte je 3×.
 - **Folge-Slices:** keine. Die emittierte Doc-Gate-Modul-Liste bleibt bei
-  [slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md) in `open/`.
+  [slice-073](../done/slice-073-emittierte-doc-gate-module.md) in `open/`.
 - **Risiken aus §6:** drei benannt, drei mit genau einem Ausgang, keines eingetreten.
   (1) *Zwei Ebenen, zwei Verträge* — **entfallen**: der Slice hat nur die Ziel-Ebene entschieden,
   `git diff --name-only 3881e44..HEAD | grep -E '^\.claude/|^\.harness/skills/'` bleibt leer.

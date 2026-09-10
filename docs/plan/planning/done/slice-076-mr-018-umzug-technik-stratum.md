@@ -576,7 +576,7 @@ Closure-Notiz mit Steering-Loop-Eintrag.
   setzt Links, er erzwingt sie nicht) · der Prüfbereich und die Bindungs-Schärfe des
   Mutations-Sensors ([slice-069](../open/slice-069-zahn-bindet-zusicherung.md),
   [slice-070](../open/slice-070-comment-claims-pruefbereich.md)) · die emittierte Ebene und
-  [slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md) · der Inhalt der übrigen 20 Einträge · die
+  [slice-073](../done/slice-073-emittierte-doc-gate-module.md) · der Inhalt der übrigen 20 Einträge · die
   Textänderung an [`AGENTS.md`](../../../../AGENTS.md) §3.4. Ob
   [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)
   ins Stratum gehört, entscheidet **nicht** dieser Slice, sondern die Aufnahme-Regel bei der

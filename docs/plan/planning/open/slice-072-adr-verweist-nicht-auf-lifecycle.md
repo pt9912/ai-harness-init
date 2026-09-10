@@ -98,7 +98,7 @@ und Linkziel dieselbe Kennung tragen und der Gate einen Befund daraus macht. `gr
   `2 Befund(e)`, beide `matrix-downward`; dasselbe Gegenbeispiel **ohne** die zwei Zeilen liefert
   `0 Befund(e)`. **Keine Erwartungswerte** — die Datei-Zahl wandert mit dem Baum; tragend ist die
   Kausalität. **Das emittierte Gegenstück fährt sie bereits** — es ist DoD (1) von
-  [slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md), und bis dieser Slice
+  [slice-073](../done/slice-073-emittierte-doc-gate-module.md), und bis dieser Slice
   schließt, läuft das Ziel dem Dogfood voraus.
 - [ ] **(2) Der Zahn ist dauerhaft, und er kostet den Mutations-Sensor eine Zeile.** Heute kann
   **kein** Fall in `test/mutations/` einen `docs-check`-Wächter binden: `failure_form` in

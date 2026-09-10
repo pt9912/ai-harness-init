@@ -120,7 +120,7 @@ nicht.
 **Was dieser Slice nicht ist, und was daraus folgt.** Er schaltet `codepaths` in
 [`internal/emit/templates/d-check.yml`](../../../../internal/emit/templates/d-check.yml)
 **nicht** ein. Welche Module ein Ziel bekommt, entscheidet
-[slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md), dessen
+[slice-073](../done/slice-073-emittierte-doc-gate-module.md), dessen
 Nicht-Emissions-Trigger für `codepaths` lautet: *„die zwei Vorlagen-Stellen sind
 emit-seitig neutralisiert oder upstream gefallen"*.
 
@@ -228,7 +228,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **`open` → `next`:** die Change-Request-Frage aus §3 ist beantwortet
 ([`ADR-0037`](../../adr/0037-bootstrap-stellt-den-tag-0-zustand-her.md)
 Festlegung 1), `Verantwortlich:` ist gesetzt. Keine Abhängigkeit von
-[slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md) in dieser Richtung — der
+[slice-073](../done/slice-073-emittierte-doc-gate-module.md) in dieser Richtung — der
 Slice hier ist die Grundlage, nicht die Folge.
 
 **Start** (`next` → `in-progress`): Implementer übernimmt, WIP-Limit frei.
@@ -318,12 +318,12 @@ dasteht.
   [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md),
   die [`AGENTS.md`](../../../../AGENTS.md) §3.4 sperrt. **Dieser Slice bewegt die
   Modul-Liste nicht** und löst die Klasse damit nicht aus — sie trifft
-  [slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md), und dort gehört sie
+  [slice-073](../done/slice-073-emittierte-doc-gate-module.md), und dort gehört sie
   entschieden, nicht hier gelöst. Registriert als
   [`BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md).
   — **Ausgang:** weiter offen → Beobachtungs-Register, ebendort (Beleg `evidence/slice-190.md`
   mit dieser Closure ergänzt). Die Entscheidung über die Modul-Liste bleibt bei
-  [slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md).
+  [slice-073](../done/slice-073-emittierte-doc-gate-module.md).
 - **Die Beschreibung des emittierten Bestands wird von keinem Sensor gehalten.**
   Der emittierte Baum hat mit `TestTemplates_EmittierterBestandVollstaendig` einen
   Mengen-Vergleich; die **Beschreibung** desselben Bestands in
@@ -406,7 +406,7 @@ dasteht.
   [`BEO-ALL/gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse`](../observations/BEO-ALL/gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse/observation.md)
   (mit dieser Closure angelegt, Beleg `evidence/slice-190.md`).
 - **Nicht in diesem Slice:** die emittierte Modul-Liste
-  ([slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md)), der Handbuch-Baum
+  ([slice-073](../done/slice-073-emittierte-doc-gate-module.md)), der Handbuch-Baum
   ([slice-191](../open/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md)),
   der Register-Ort (Risiko 2), die `.d-check.yml` **dieses** Repos, jeder
   Migrationspfad für bereits gebootstrappte Repos, und jede Änderung am vendored

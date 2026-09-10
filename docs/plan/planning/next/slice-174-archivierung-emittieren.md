@@ -109,7 +109,7 @@ Befund. Bis dahin ist sie ein Architect-Verdikt und als Constraint lesbar, aber 
 Gegenstand dieses Slice, und eine Runde, die sie bewegt, bewegt ihn mit.
 
 **Reihenfolge innerhalb von `next/`:** keine Kopplung an
-[slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md) oder
+[slice-073](../done/slice-073-emittierte-doc-gate-module.md) oder
 [slice-140](../done/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md). Die drei berühren
 `internal/emit/` an getrennten Stellen — die Modul-Liste der emittierten Gate-Konfiguration, die
 Kommentar-Hilfen der Singleton-Ausgabe und die Command-Vorlage samt Fragment; keine Reihenfolge

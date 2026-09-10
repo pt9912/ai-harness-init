@@ -4,7 +4,7 @@
 
 ## Eingang
 
-- **Slice-Plan:** [`docs/plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md`](../plan/planning/in-progress/slice-073-emittierte-doc-gate-module.md)
+- **Slice-Plan:** [`docs/plan/planning/done/slice-073-emittierte-doc-gate-module.md`](../plan/planning/done/slice-073-emittierte-doc-gate-module.md)
   — alle fünf DoD-Häkchen `[ ]` (korrekt, §3.10: Closure ist Planner-Arbeit).
 - **Fünf Review-Reports:** [Runde 1](2026-09-10-slice-073-emittierte-doc-gate-module.md) (2 HIGH/2 MEDIUM,
   blockierend) · [Runde 2](2026-09-10-slice-073-emittierte-doc-gate-module-runde-2.md) (1 HIGH/1 MEDIUM/2 LOW,

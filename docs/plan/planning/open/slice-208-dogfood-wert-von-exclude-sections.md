@@ -36,7 +36,7 @@ emittierten `[Geschichte]` **konvergiert** oder als benannte, dauerhafte Abweich
 bleibt** — mit einem Beleg, der die Kosten beider Wege beziffert, statt sie zu schätzen.
 
 Der Anlass ist eine gemessene Divergenz, die heute keine Adresse hat. Die emittierte Vorlage trägt
-seit dem Runde-4-Stand von [slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md) den
+seit dem Runde-4-Stand von [slice-073](../done/slice-073-emittierte-doc-gate-module.md) den
 engeren Wert, der Dogfood den weiteren:
 
 ```sh
@@ -84,7 +84,7 @@ Slice.
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Der emittierte Wert `[Geschichte]`.** Er ist in
-  [slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md) DoD (1) entschieden und dort
+  [slice-073](../done/slice-073-emittierte-doc-gate-module.md) DoD (1) entschieden und dort
   gegen den frisch emittierten Bestand gemessen; dieser Slice entscheidet die **Dogfood**-Seite und
   fasst die Ziel-Seite nicht an. *(Schicht-Abgrenzung: der emittierte Baum ist ein anderer
   Vertrag als das eigene Gate.)*

@@ -187,7 +187,7 @@ ein halluziniertes Gate.
 **Aus den Closures der Mitglieder, noch nicht geschlossen** (je Zeile der
 Mitglieds-Slice, der ihn nannte):
 
-- [slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md) ← slice-085 · [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md), [slice-142](../open/slice-142-verweis-form-vor-dem-einfrieren-hat-einen-waechter.md), [slice-143](../open/slice-143-datei-weiter-ausschluss-weicht-dem-referenz-ventil.md), [slice-141](../next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) ← slice-132 · [slice-114](../open/slice-114-jede-aussage-hat-einen-abschnitt.md) ← slice-081 · [slice-139](../open/slice-139-lastenheft-deckt-die-emit-disposition.md) ← slice-130 · [slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) ← slice-084.
+- [slice-073](../done/slice-073-emittierte-doc-gate-module.md) ← slice-085 · [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md), [slice-142](../open/slice-142-verweis-form-vor-dem-einfrieren-hat-einen-waechter.md), [slice-143](../open/slice-143-datei-weiter-ausschluss-weicht-dem-referenz-ventil.md), [slice-141](../next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) ← slice-132 · [slice-114](../open/slice-114-jede-aussage-hat-einen-abschnitt.md) ← slice-081 · [slice-139](../open/slice-139-lastenheft-deckt-die-emit-disposition.md) ← slice-130 · [slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) ← slice-084.
 
 **Nicht aus dieser Welle**, obwohl von Mitgliedern zitiert:
 [slice-090](../open/slice-090-freshness-audit-im-ziel.md) und
