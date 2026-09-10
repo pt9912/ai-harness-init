@@ -809,28 +809,62 @@ var dcheckIgnoreMarkerPattern = regexp.MustCompile(`^<!--\s*` + regexp.QuoteMeta
 // keinen Zeilenumbruch, wie jede Inline-Code-Spanne im heutigen Satz.
 var backtickSpanPattern = regexp.MustCompile("`[^`\n]*`")
 
-// maskQuotedCommentSyntax ersetzt jede backtickSpanPattern-Spanne, die
-// "<!--" oder "-->" traegt, durch einen gleich langen Platzhalter ohne diese
-// beiden Zeichenfolgen, und liefert den maskierten Text zusammen mit der
-// Zuordnung fuer die Rueckuebersetzung (unmaskQuotedCommentSyntax). Damit
-// startet commentHintPattern nie innerhalb eines Zitats: weder ein
-// vollstaendig zitierter Kommentar noch ein isoliertes Oeffner- oder
-// Schliesser-Zitat kann die Regex zum naechsten echten Gegenstueck ausserhalb
-// des Zitats weiterlaufen lassen, unabhaengig davon, welches der beiden
-// Zeichen die Spanne traegt.
+// maskQuotedCommentSyntax ersetzt, ZEILE FUER ZEILE, jede
+// backtickSpanPattern-Spanne, die "<!--" oder "-->" traegt, durch einen
+// Platzhalter ohne diese beiden Zeichenfolgen, und liefert den maskierten
+// Text zusammen mit der Zuordnung fuer die Rueckuebersetzung
+// (unmaskQuotedCommentSyntax). Damit startet commentHintPattern nie innerhalb
+// eines wohlgeformt zitierten Zeichens: weder ein vollstaendig zitierter
+// Kommentar noch ein isoliertes Oeffner- oder Schliesser-Zitat kann die Regex
+// zum naechsten echten Gegenstueck ausserhalb des Zitats weiterlaufen lassen.
+//
+// Zwei Entwurfsentscheidungen tragen das:
+//
+//  1. Bearbeitet wird nur eine Zeile, deren Backtick-Zahl GERADE ist. Das ist
+//     die Wohlgeformtheits-Probe: nur bei gerader Zahl hat jeder Backtick der
+//     Zeile eindeutig einen Partner, und die von backtickSpanPattern
+//     ermittelte Paarung ist die einzig moegliche. Bei ungerader Zahl bindet
+//     ein einzelner, unpaarig stehender Backtick sonst den naechsten,
+//     UNABHAENGIGEN Backtick als Schliesser und reisst echten Text — samt
+//     einer echten Kommentar-Hilfe dazwischen — in die (falsche) Spanne. Eine
+//     ungerade Zeile bleibt darum unmaskiert; StripCommentHints verarbeitet
+//     sie wie vor Einfuehrung dieser Funktion.
+//  2. Ersetzt wird ueber die von FindAllStringIndex gelieferten OFFSETS,
+//     nicht ueber den Fundstellen-STRING: Zwei Spannen mit identischem
+//     Inhalt an verschiedenen Stellen einer Zeile — das Schluss-Backtick der
+//     einen Spanne bildet zugleich mit einem spaeteren, unabhaengigen
+//     Oeffner-Backtick denselben Literal-String — wuerden bei einer Suche
+//     nach dem Literal die FALSCHE, fruehere Stelle treffen. `offset` haelt
+//     die Verschiebung nach, die jede Ersetzung durch die (im Allgemeinen
+//     andere) Platzhalter-Laenge erzeugt.
+//
+// Ungedeckt bleibt eine Spanne, die einen Zeilenumbruch ueberschreitet
+// (StripCommentHints nennt diese Grenze).
 func maskQuotedCommentSyntax(s string) (string, map[string]string) {
-	spans := backtickSpanPattern.FindAllString(s, -1)
-	placeholders := make(map[string]string, len(spans))
-	masked := s
-	for i, span := range spans {
-		if !strings.Contains(span, "<!--") && !strings.Contains(span, "-->") {
+	placeholders := make(map[string]string)
+	n := 0
+	lines := strings.Split(s, "\n")
+	for li, line := range lines {
+		if strings.Count(line, "`")%2 != 0 {
 			continue
 		}
-		placeholder := fmt.Sprintf("\x00\x01QUOTE-%d\x01\x00", i)
-		placeholders[placeholder] = span
-		masked = strings.Replace(masked, span, placeholder, 1)
+		masked := line
+		offset := 0
+		for _, loc := range backtickSpanPattern.FindAllStringIndex(line, -1) {
+			start, end := loc[0]+offset, loc[1]+offset
+			span := masked[start:end]
+			if !strings.Contains(span, "<!--") && !strings.Contains(span, "-->") {
+				continue
+			}
+			placeholder := fmt.Sprintf("\x00\x01QUOTE-%d\x01\x00", n)
+			n++
+			placeholders[placeholder] = span
+			masked = masked[:start] + placeholder + masked[end:]
+			offset += len(placeholder) - len(span)
+		}
+		lines[li] = masked
 	}
-	return masked, placeholders
+	return strings.Join(lines, "\n"), placeholders
 }
 
 // unmaskQuotedCommentSyntax macht maskQuotedCommentSyntax auf dem fertig
@@ -858,25 +892,40 @@ func unmaskQuotedCommentSyntax(s string, placeholders map[string]string) string 
 //
 // Ein reiner `<!--`-Zaehler ueber dem emittierten Baum unterscheidet ein
 // solches Zitat nicht von einer Kommentar-Hilfe — er zaehlt jedes Vorkommen
-// der Zeichenfolge, diese Funktion nur die HILFEN. Ueber dem realen vendored
-// Satz traegt genau eine Zeile ein Zitat (`.harness/skills/reviewer.md`, das
-// Vorkommen "`<!-- -->`-Block"), und ein Kommando wie
+// der Zeichenfolge, diese Funktion nur die HILFEN. Ueber dem EMITTIERTEN Baum
+// traegt eine Zeile ein Zitat (`.harness/skills/reviewer.md`, das Vorkommen
+// "`<!-- -->`-Block"); ueber dem VENDORED Satz selbst sind es vier, in drei
+// Dateien (`README.md` zweimal, `spec/lastenheft.template.md` und
+// `.harness/skills/reviewer.template.md` je einmal) — die drei Uebrigen
+// ueberleben den Emit nicht, weil sie in Kommentarbloecken liegen, die als
+// Ganzes fallen, nicht weil das Zitat selbst verschwaende. Ein Kommando wie
 //
 //	find "$P" -name '*.md' -not -path '*/.git/*' -not -path '*/.harness/baseline/*' -print0 \
 //	  | xargs -0 grep -n '<!--' | grep -v 'd-check:ignore' | grep -vc '/\.claude/'
 //
-// liefert darueber **1**, nicht 0: das gezaehlte Vorkommen ist ein Zitat,
-// keine Kommentar-Hilfe, und ein reiner `<!--`-Zaehler trifft diese
-// Unterscheidung nicht.
+// liefert ueber dem emittierten Baum darueber **1**, nicht 0: das gezaehlte
+// Vorkommen ist ein Zitat, keine Kommentar-Hilfe, und ein reiner
+// `<!--`-Zaehler trifft diese Unterscheidung nicht.
 //
-// Eine Grenze bleibt ungedeckt: das Muster kennt keinen
-// Markdown-Fence-Kontext — ein Kommentar VOR einem Mermaid-Pfeil (derselben
-// Zeichenfolge `-->`) innerhalb eines mehrzeiligen Code-Blocks (dreifacher
-// Backtick, von backtickSpanPattern nicht erfasst) kann den non-greedy
-// Abschluss vorzeitig binden. Im heutigen Vorlagen-Satz schliesst jeder
-// Kommentar vor dem naechsten Pfeil (je Vorlage gemessen per
-// `grep -o '<!--' <datei> | wc -l` gegen `grep -o -- '-->' <datei> | wc -l`);
-// das ist eine Eigenschaft des heutigen Textes, keine des Emitters.
+// Zwei Grenzen bleiben ungedeckt, beide benannt statt stillschweigend
+// bestehend:
+//
+//  1. Das Muster kennt keinen Markdown-Fence-Kontext — ein Kommentar VOR
+//     einem Mermaid-Pfeil (derselben Zeichenfolge `-->`) innerhalb eines
+//     mehrzeiligen Code-Blocks (dreifacher Backtick, von
+//     backtickSpanPattern nicht erfasst) kann den non-greedy Abschluss
+//     vorzeitig binden. Im heutigen Vorlagen-Satz schliesst jeder Kommentar
+//     vor dem naechsten Pfeil (je Vorlage gemessen per
+//     `grep -o '<!--' <datei> | wc -l` gegen `grep -o -- '-->' <datei> | wc -l`);
+//     das ist eine Eigenschaft des heutigen Textes, keine des Emitters.
+//  2. maskQuotedCommentSyntax bearbeitet nur EINZELNE Zeilen (Grenze dort
+//     dokumentiert): ein Zitat der Kommentar-Syntax, dessen Backtick-Paar
+//     einen Zeilenumbruch ueberschreitet, bleibt unmaskiert, und diese Regel
+//     kann dann bis zum naechsten echten Gegenstueck ausserhalb des Zitats
+//     Inhalt loeschen — dieselbe Wirkung wie vor Einfuehrung der Maskierung.
+//     Im heutigen Vorlagen-Satz zitiert keine Fundstelle die Kommentar-Syntax
+//     ueber einen Zeilenumbruch hinweg (die vier Fundstellen oben stehen
+//     je auf einer Zeile).
 //
 // Rot faerbt eine verlorene Wirkung TestStripCommentHints (die pure Funktion,
 // inklusive beider Ausnahmen) und

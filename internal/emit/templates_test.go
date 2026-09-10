@@ -558,18 +558,23 @@ func TestStripHintBlock(t *testing.T) {
 // TestStripCommentHints prueft die pure Funktion: ein einzeiliger UND ein
 // mehrzeiliger HTML-Kommentar fallen (Schritt 5 der Kopier-Prozedur, README.md
 // §Verwendung), ein `d-check:ignore`-Marker bleibt (dieselbe Stelle, Klammer-
-// Ausnahme), Text ohne Kommentar bleibt unveraendert. Dazu vier Grenzfaelle:
-// ein vollstaendiges Inline-Code-ZITAT der Kommentar-Syntax bleibt stehen
-// (Review-Klasse Emit-Regel-trifft-das-Zitat-ihres-eigenen-Gegenstands); ein
+// Ausnahme), Text ohne Kommentar bleibt unveraendert. Dazu sieben Grenzfaelle:
+// ein vollstaendiges Inline-Code-ZITAT der Kommentar-Syntax bleibt stehen; ein
 // ISOLIERTES Oeffner-Zitat verschluckt nicht den Text bis zum naechsten,
-// entfernten `-->` (Review-Klasse Vorwaerts-Korrektur-loescht-Inhalt — die
-// Sonde traegt einen fremden Mermaid-Pfeil als das entferntere `-->`); ein
-// ISOLIERTES Schliesser-Zitat bindet einen ECHTEN, umschliessenden Kommentar
-// nicht vorzeitig an sich selbst ab (dieselbe Klasse, gespiegelt: hier bliebe
-// sonst das zweite Kommentar-Stueck als Textfragment stehen); und ein
-// Bedienhinweis, der die d-check:ignore-Ausnahme nur ERKLAERT statt sie zu
-// SEIN, faellt trotz der Zeichenkette im Fliesstext (Review-Klasse
-// Ausnahme-auf-Substring-statt-auf-Form).
+// entfernten `-->` (die Sonde traegt einen fremden Mermaid-Pfeil als das
+// entferntere `-->`); ein ISOLIERTES Schliesser-Zitat bindet einen ECHTEN,
+// umschliessenden Kommentar nicht vorzeitig an sich selbst ab (dieselbe
+// Klasse, gespiegelt: hier bliebe sonst das zweite Kommentar-Stueck als
+// Textfragment stehen); ein Bedienhinweis, der die d-check:ignore-Ausnahme nur
+// ERKLAERT statt sie zu SEIN, faellt trotz der Zeichenkette im Fliesstext; ein
+// UNPAARIGER Backtick auf derselben Zeile wie eine echte Kommentar-Hilfe laesst
+// diese fallen statt sie mitzumaskieren (die Wohlgeformtheits-Probe in
+// maskQuotedCommentSyntax greift); ein FRUEHERES Vorkommen desselben
+// Zitat-Literals wird nicht statt der tatsaechlich ermittelten Fundstelle
+// maskiert (Offset- statt Inhalts-basierte Ersetzung); und eine ZEILENUEBER-
+// GREIFENDE Zitat-Spanne bleibt eine dokumentierte, unmaskierte Grenze
+// (maskQuotedCommentSyntax bearbeitet nur einzelne Zeilen) — dieser letzte
+// Fall haelt die BEKANNTE Luecke fest, nicht ihre Behebung.
 func TestStripCommentHints(t *testing.T) {
 	head := "# Titel\n\n"
 	tail := "\n\n**Inhalt**\n"
@@ -610,6 +615,32 @@ func TestStripCommentHints(t *testing.T) {
 	erklaerung := "<!--\nDieser Hinweis erklaert, wie d-check:ignore benutzt wird.\n-->\n"
 	if got := emit.StripCommentHints(erklaerung); got != "\n" {
 		t.Errorf("StripCommentHints liess einen erklaerenden Bedienhinweis stehen (Substring statt Marker-Form): %q, want %q", got, "\n")
+	}
+
+	unpaarigerBacktick := "Ein einzelner Backtick ` im Text. <!-- BEDIENHINWEIS faellt weg. --> Und `Code` danach.\n"
+	wantUnpaarigerBacktick := "Ein einzelner Backtick ` im Text.  Und `Code` danach.\n"
+	if got := emit.StripCommentHints(unpaarigerBacktick); got != wantUnpaarigerBacktick {
+		t.Errorf("StripCommentHints liess eine echte Kommentar-Hilfe auf einer Zeile mit unpaariger Backtick-Zahl ueberleben: %q, want %q", got, wantUnpaarigerBacktick)
+	}
+
+	// Vor dem echten Zitat "`-->`" (in einem echten, umschliessenden Kommentar,
+	// wie schliesserZitat oben) steht ein Zufalls-Treffer desselben Literals:
+	// das Schluss-Backtick von "`x`" und das Oeffner-Backtick von "`y`"
+	// bilden zusammen mit dem dazwischenliegenden, unquotierten "-->" zufaellig
+	// dieselbe Zeichenkette "`-->`" — ohne selbst eine Kommentar-Hilfe zu sein
+	// (kein "<!--" davor). Eine Ersetzung nach FUNDSTELLEN-Inhalt statt nach
+	// Fundstellen-OFFSET traefe hier zuerst diesen Zufalls-Treffer und liesse
+	// das echte, spaeter stehende Zitat ungeschuetzt.
+	fruehereZufallsgleicheSpanne := "`x`-->`y` <!-- Hinweis. Das Token `-->` steht im Text. Danach. -->\n\n**Inhalt**\n"
+	wantFruehereZufallsgleicheSpanne := "`x`-->`y` \n\n**Inhalt**\n"
+	if got := emit.StripCommentHints(fruehereZufallsgleicheSpanne); got != wantFruehereZufallsgleicheSpanne {
+		t.Errorf("StripCommentHints maskierte eine zufaellig gleiche, fruehere Zeichenkette statt der ermittelten Fundstelle und liess das echte Zitat ungeschuetzt: %q, want %q", got, wantFruehereZufallsgleicheSpanne)
+	}
+
+	zeilenuebergreifendesZitat := "Ein Zitat `<!--\nzweite Zeile` und dann -->.\n\nTRAGENDER SATZ.\n"
+	wantZeilenuebergreifendesZitat := "Ein Zitat `.\n\nTRAGENDER SATZ.\n"
+	if got := emit.StripCommentHints(zeilenuebergreifendesZitat); got != wantZeilenuebergreifendesZitat {
+		t.Errorf("StripCommentHints behandelt eine zeilenuebergreifende Zitat-Spanne anders als die dokumentierte Grenze es festhaelt: %q, want %q", got, wantZeilenuebergreifendesZitat)
 	}
 }
 
