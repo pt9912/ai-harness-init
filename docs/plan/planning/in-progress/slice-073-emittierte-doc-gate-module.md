@@ -102,17 +102,40 @@ Dieser Slice entscheidet nur, was davon ein fremdes Repo bekommt.
   `modules: [links, anchors, ids, matrix, spans]`. `ids` trägt **nur** das ADR-Muster mit
   `link-policy: always`; das Requirement-Muster bleibt auskommentiert (das Präfix gehört dem
   Adopter, und mit dem Beispiel-Präfix gemessen: 2 Befunde). `matrix` trägt vier Klassen — die
-  Spec-Straten über **drei** emittierte Dateien (der Dogfood führt zwei; die emittierte Struktur
-  hat ein Spezifikations-Stratum dazwischen, und eine Abschrift unserer Klasse ließe es
-  ungeprüft), dazu `adr`, `slice` und `welle`, die beiden Lifecycle-Klassen im `token:`-Modus —
-  und neben den Spec-Straten-Regeln die beiden neuen `{from: adr, to: slice}` und
-  `{from: adr, to: welle}`, dazu `status.forbidden` und `exclude-sections`. Der Kommentar nennt
-  den Zeilen-Marker als den vorgesehenen Ausweg. `make full-smoke` grün — **beide** Bootstrap-Formen.
+  Spec-Straten über **drei** emittierte Dateien, **mit `order:` und `direction: no-downward`**,
+  dazu `adr`, `slice` und `welle`, die beiden Lifecycle-Klassen im `token:`-Modus — und neben den
+  Spec-Straten-Regeln die beiden neuen `{from: adr, to: slice}` und `{from: adr, to: welle}`, dazu
+  `status.forbidden` und `exclude-sections`. Der Kommentar nennt den Zeilen-Marker als den
+  vorgesehenen Ausweg. `make full-smoke` grün — **beide** Bootstrap-Formen.
+
+  **Die Autorität ist für alle Positionen dieses Blocks dieselbe: die Ziel-Form.** Der
+  auskommentierte `matrix`-Block der Baseline-Vorlage führt `order:` und
+  `direction: no-downward` genauso wie `token:` auf `slice` und die Regel `{from: adr, to: slice}`
+  — und die `welle`-Positionen gar nicht:
+
+  ```sh
+  T=.harness/baseline/v6.5.0/templates/.d-check.yml
+  grep -cF 'order:' "$T"; grep -cF 'direction: no-downward' "$T"   # 1 · 1
+  grep -cF "token: 'slice" "$T"; grep -cF 'from: adr, to: slice' "$T"  # 1 · 1
+  grep -cF 'welle' "$T"                                            # 0
+  ```
+
+  **Keine Erwartungswerte** ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2) — sie wandern mit dem vendored Stand. Tragend ist das Verhältnis: Eine Position, die
+  die Vorlage führt, wird nicht zurückgehalten, während zwei ohne Vorlagen-Deckung mitgehen.
+  Kriterium 1 aus §1 (*der Dogfood fährt es selbst*) bindet auf **Modul**-Ebene — die Zeilen der
+  §1-Tabelle sind Module —, und das Modul `matrix` fährt der Dogfood. Für die Positionen
+  *innerhalb* von `matrix` ist die Ziel-Form die Autorität, und sie gilt für alle gleich.
 - [ ] **(2) Jedes neu aktivierte Modul wird im Ziel rot gesehen, und mit der heutigen
   Konfiguration grün.** Je Modul ein Gegenbeispiel im gebootstrappten Ziel, in
   `harness/tools/full-smoke.sh` nach der dort etablierten Zahn-Form (Verletzung einschmuggeln →
   Gate muss rot **mit der benannten Befund-Art** → zurücknehmen): `matrix-forbidden` ·
-  `id-unlinked` · `span-unclosed`. Die zweite Richtung gehört dazu und ist heute schon wahr:
+  `matrix-downward` · `id-unlinked` · `span-unclosed`. **Vier Befund-Arten, nicht drei** —
+  `matrix` trägt seit DoD (1) zwei, und eine Regel ohne eigenes Gegenbeispiel ist
+  gelistet-aber-unbewacht ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Für `matrix-downward` ist
+  der Zahn am frisch gebootstrappten Ziel bereits gemessen (§3, *Übergabe an den Architect*):
+  Abwärtslink Vertrag → Technik/Sicht → `2 Befund(e)`, ohne die Regel `0`.
+  Die zweite Richtung gehört dazu und ist heute schon wahr:
   dasselbe Gegenbeispiel bleibt unter `modules: [links, anchors]` grün — ohne sie behauptet der
   Beleg, das Modul habe die Verletzung gefunden, statt: **erst** das Modul findet sie. Dazu der
   netzlose Wächter, weil `full-smoke` Docker braucht: ein Go-Test bindet die **entschiedene**
@@ -120,15 +143,22 @@ Dieser Slice entscheidet nur, was davon ein fremdes Repo bekommt.
   `test/mutations/`-Fall nimmt ein Modul aus der Vorlage und muss ihn rot färben.
 - [ ] **(3) Was das Ziel NICHT bekommt und wie weit die Entscheidung reicht, steht mit
   Auflösungs-Trigger in [`harness/conventions.md`](../../../../harness/conventions.md).** Die
-  Entscheidungsregel aus §1; die drei begründeten Nicht-Emissionen (`codepaths` — Trigger: die
+  Entscheidungsregel aus §1; die **zwei** begründeten Nicht-Emissionen (`codepaths` — Trigger: die
   zwei Vorlagen-Stellen sind emit-seitig neutralisiert oder upstream gefallen; das
-  Requirement-Muster von `ids` — Trigger: das Tool erfährt das Präfix; die Richtungs-Prüfung
-  *innerhalb* der Spec-Straten — Trigger: der Dogfood führt selbst drei Straten und kann sie
-  erproben); und die **Reichweite**: `.d-check.yml` ist *skip-if-present*
+  Requirement-Muster von `ids` — Trigger: das Tool erfährt das Präfix); und die **Reichweite**:
+  `.d-check.yml` ist *skip-if-present*
   ([`ADR-0007`](../../adr/0007-bootstrap-phasen.md)), ein **bestehendes** Ziel bekommt also
   nichts davon. Das ist die Idempotenz-Klasse, kein Versehen — aber es heißt, dass die Lücke bei
   jedem heute schon gebootstrappten Repo **offen bleibt**, und das gehört benannt statt
   vorausgesetzt.
+
+  **Es sind zwei, nicht drei.** Die dritte Position — die Richtungs-Prüfung *innerhalb* der
+  Spec-Straten — ist keine Nicht-Emission mehr, sondern Teil von DoD (1). Ein Eintrag über sie
+  trüge einen Auflösungs-Trigger, der bei seiner Anlage schon gilt, und die Einträge dieses Blocks
+  sind append-only
+  ([`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf))
+  — der Rumpf wird nachträglich nicht korrigiert. Die Entscheidung dazu steht in §3 unter
+  *Übergabe an den Architect*, mit ihrer Messung.
 - [ ] `make gates` grün; `make full-smoke` grün; `make mutate` grün über die CI
   (`.github/workflows/ci.yml`, frischer Runner).
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -141,7 +171,51 @@ Dieser Slice entscheidet nur, was davon ein fremdes Repo bekommt.
 | `internal/emit/emit_test.go` | update | der Wächter behauptet heute „genau `[links, anchors]`" — das ist nach der Änderung falsch **und** wäre als „irgendeine Liste" zahnlos; er bindet die entschiedene Liste |
 | `harness/tools/full-smoke.sh` | update | die drei Zähne aus DoD (2), je Modul einer, nach der dort etablierten Form |
 | `test/mutations/` | neu | der Mutations-Fall zum netzlosen Wächter |
-| [`harness/conventions.md`](../../../../harness/conventions.md) | update | der Eintrag aus DoD (3) |
+| [`harness/conventions.md`](../../../../harness/conventions.md) + [`harness/conventions/`](../../../../harness/conventions/) | update | der Eintrag aus DoD (3) — **Architect-Arbeit** ([`AGENTS.md`](../../../../AGENTS.md) §3.8), eigener Commit, nicht im Implementations-Kontext |
+
+### Übergabe an den Architect — der Eintrag aus DoD (3)
+
+**Diese Übergabe liegt hier, weil der Slice-Plan ihr Artefakt ist.** Das Baseline-Regelwerk führt
+für die Kante Planner→Architect genau eines
+(`modul-08-agentenrollen.md` §Die neun Übergaben und ihre Artefakte: *„Planner→Architect:
+Slice-Plan mit LH-Bezug"*), und beide Rollen werden über die Artefaktklasse **Template** geführt,
+nicht über einen Skill und nicht über ein Zeitdokument (§Welche Rolle braucht welche
+Artefaktklasse). Eine zweite Datei daneben wäre ein zweiter Ort für dieselbe Aussage.
+
+Der Eintrag bekommt die nächste freie Kennung nach der höchsten vergebenen; vergeben wird sie im
+Architect-Lauf, nicht hier:
+
+```sh
+ls harness/conventions/ | grep -oE 'MR-[0-9]{3}' | sort -u | tail -1
+```
+
+**Kein Erwartungswert** — die Antwort wandert mit dem Block. Der Eintrag hält fest:
+
+1. **Die Entscheidungsregel aus §1** — drei Kriterien, und dass Kriterium 1 auf Modul-Ebene bindet.
+2. **Zwei Nicht-Emissionen mit Auflösungs-Trigger** — `codepaths` und das Requirement-Muster von
+   `ids`, mit den Triggern aus DoD (3). **Keine dritte.**
+3. **Die Reichweite** — `.d-check.yml` ist *skip-if-present*
+   ([`ADR-0007`](../../adr/0007-bootstrap-phasen.md)); ein bereits gebootstrapptes Ziel bekommt
+   nichts davon, und die Lücke bleibt dort offen.
+
+**Warum keine dritte — die Messung, an der die Entscheidung hängt** (2026-09-10, gegen eine Kopie
+außerhalb des Repos, netzlos, Mount `:ro`, über dem in [`d-check.mk`](../../../../d-check.mk)
+gepinnten Digest; das Ziel frisch gebootstrappt mit dem Träger aus `make host-bin`):
+
+| Messung | Prüfgegenstand | Ergebnis |
+|---|---|---|
+| Kriterium 2 | frisches Ziel, `order:`/`direction:` aktiv, unverändert | `19 Datei(en) geprüft, 0 Befund(e)` — gleich dem Stand ohne die zwei Zeilen |
+| Kriterium 3 | dasselbe Ziel, Abwärtslink Vertrag → Technik/Sicht | `2 Befund(e)`, beide `matrix-downward` (Rang 0 → 1, Rang 0 → 2) |
+| Kausalität | dasselbe Gegenbeispiel, `order:`/`direction:` entfernt | `0 Befund(e)` — der Fund kommt aus dieser Regel, nicht aus einer anderen |
+| Erprobung | Dogfood-Baum, `order:`/`direction:` aktiv | `1064 Datei(en) geprüft, 0 Befund(e)`; Gegenbeispiel `2 Befund(e)` `matrix-downward` |
+
+**Keine Erwartungswerte** — die Datei-Zahlen wandern mit beiden Bäumen. Tragend sind die drei
+zusammen — *grün ohne Verletzung · rot mit Verletzung · grün ohne Regel*: Erst die dritte trennt
+„prüft" von „prüft nichts" ([`AGENTS.md`](../../../../AGENTS.md) §3.6), denn Grün allein hätte
+auch ein stillschweigend ignoriertes Feld erzeugt. Der Prüfbereich im Ziel ist **nicht leer** —
+der Bootstrap legt alle drei Spec-Straten als echte `.md` an (`ls <ziel>/spec/` → drei Dateien),
+also greift auch [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
+nicht als Grund.
 
 **Kein Change Request nötig — und das ist gemessen, nicht angenommen.**
 [`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) nennt
@@ -229,11 +303,20 @@ DoD vollständig; Review konform (Modul 10); Verifikation bestätigt (Modul 11);
   die Nachmessung nimmt die gewachsene Kandidaten-Menge mit auf | eingetreten: slice-NNN |
   weiter offen: → Beobachtungs-Register>
 - **Nicht in diesem Slice:** `codepaths` im Ziel (misst rot, s. §1), das Requirement-Muster von
-  `ids` (Präfix unbekannt), die Richtungs-Prüfung *innerhalb* der Spec-Straten (der Dogfood
-  führt zwei Straten und kann sie nicht erproben), und jeder Migrationspfad für bereits
-  gebootstrappte Repos. Ebenfalls **nicht** hier: die Dogfood-Seite derselben Frage — die ist
+  `ids` (Präfix unbekannt) und jeder Migrationspfad für bereits gebootstrappte Repos.
+  Ebenfalls **nicht** hier: die **Dogfood-Seite** des `matrix`-Blocks — sie ist
   [slice-072](../open/slice-072-adr-verweist-nicht-auf-lifecycle.md), und ihre Begründung wird nicht
-  zweimal aufgeschrieben.
+  zweimal aufgeschrieben. Das gilt seit diesem Schnitt für **alle** Positionen gleich: die zwei
+  Lifecycle-Klassen im `token:`-Modus, die zwei Regeln `{from: adr, to: …}` **und** die
+  Richtungs-Prüfung innerhalb der Spec-Straten. Die Adresse nimmt die Sendung an — ihre DoD (1)
+  hebt genau diesen Block, sie schließt keine der Positionen aus, und sie liegt in `open/`,
+  schließt also nach diesem Slice.
+- **Der emittierte Stand läuft dem Dogfood damit voraus, und das ist die benannte Grenze.** Bis
+  slice-072 schließt, fährt ein frisch gebootstrapptes Ziel eine `matrix`-Form, die dieses Repo
+  selbst nicht fährt. Erprobt ist sie hier trotzdem — beide Richtungen über beiden Bäumen (§3,
+  *Übergabe an den Architect*); was fehlt, ist die Dauerhaftigkeit im eigenen Gate, nicht der
+  Beleg. — **Ausgang:** <entfallen: slice-072 schließt vor der Closure | eingetreten: slice-NNN |
+  weiter offen: → Beobachtungs-Register>
 
 ## 7. Closure-Notiz (nach `done/`)
 

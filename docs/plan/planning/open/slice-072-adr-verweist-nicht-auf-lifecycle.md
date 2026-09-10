@@ -82,12 +82,32 @@ und Linkziel dieselbe Kennung tragen und der Gate einen Befund daraus macht. `gr
   (fail-closed; eine Nummern-Schwelle wäre weiter als die Frage und ließe die heute noch
   änderbare [`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md) frei).
   `make docs-check` grün.
+
+  **Dazu die Richtungs-Prüfung *innerhalb* der Spec-Straten.** Die Klasse `spec-straten` geht in
+  die Block-Form und bekommt `order: [spec/lastenheft.md, spec/spezifikation.md,
+  spec/architecture.md]` und `direction: no-downward` — die Rangfolge, die
+  [`MR-019`](../../../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence)
+  setzt und die bis hierher nur im Briefing lebt. Sie gehört in **diesen** Slice, weil sie
+  denselben Block derselben Datei hebt wie die vier Positionen darüber, denselben
+  `failure_form docs-check`-Modus aus DoD (2) braucht und nach
+  [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
+  dieselbe Anhebung ist. Gemessen (2026-09-10, Kopie außerhalb des Repos, netzlos, Mount `:ro`,
+  gepinnter Digest aus [`d-check.mk`](../../../../d-check.mk)): mit den zwei Zeilen
+  `1064 Datei(en) geprüft, 0 Befund(e)` — unverändert gegenüber dem Stand ohne sie; ein
+  eingeschmuggelter Abwärtslink Vertrag → Technik/Sicht außerhalb von `exclude-sections` liefert
+  `2 Befund(e)`, beide `matrix-downward`; dasselbe Gegenbeispiel **ohne** die zwei Zeilen liefert
+  `0 Befund(e)`. **Keine Erwartungswerte** — die Datei-Zahl wandert mit dem Baum; tragend ist die
+  Kausalität. **Das emittierte Gegenstück fährt sie bereits** — es ist DoD (1) von
+  [slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md), und bis dieser Slice
+  schließt, läuft das Ziel dem Dogfood voraus.
 - [ ] **(2) Der Zahn ist dauerhaft, und er kostet den Mutations-Sensor eine Zeile.** Heute kann
   **kein** Fall in `test/mutations/` einen `docs-check`-Wächter binden: `failure_form` in
   `harness/tools/mutate.sh` kennt nur `test`/`test-go`/`test-bats`/`smoke`/`ci-lint` und meldet
   jedes andere `# verify:` als Befund. Der Modus `docs-check` kommt hinzu (Fehlschlag-Muster:
   die Befund-Art selbst), dann trägt ein neuer Fall eine Slice-Kennung in eine **lebende** ADR
-  und muss `make docs-check` rot färben. **Beide Richtungen sind zu zeigen**
+  und muss `make docs-check` rot färben. **Je gehobener Befund-Art ein Fall** — neben
+  `matrix-forbidden` also einer für `matrix-downward`, sonst ist die Richtungs-Prüfung aus
+  DoD (1) gelistet-aber-unbewacht. **Beide Richtungen sind zu zeigen**
   ([`AGENTS.md`](../../../../AGENTS.md) §3.6): mit Regel rot — und ohne Regel grün, **obwohl**
   die Verletzung im Baum liegt. Die zweite Richtung ist der heutige Zustand und damit schon
   belegt; sie gehört trotzdem in den Beleg, sonst behauptet der Fall mehr als er zeigt.
@@ -106,7 +126,7 @@ und Linkziel dieselbe Kennung tragen und der Gate einen Befund daraus macht. `gr
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `.d-check.yml` | update | Klasse `welle`; `token:` auf beiden Ziel-Klassen; vorgeschaltete Klasse der sieben Bestands-ADRs; drei neue Regeln |
+| `.d-check.yml` | update | Klasse `welle`; `token:` auf beiden Ziel-Klassen; vorgeschaltete Klasse der sieben Bestands-ADRs; drei neue Regeln; `spec-straten` in Block-Form mit `order:`/`direction: no-downward` |
 | `docs/plan/planning/done/welle-01-offline-kern.md` | update | ein Nebenbefund, s. u. — nach dem im Repo etablierten Muster, nicht mit einer neuen Config-Zeile |
 | `harness/tools/mutate.sh` | update | `failure_form` bekommt den Modus `docs-check`; ohne ihn ist jeder Doc-Gate-Wächter bauartbedingt unbewacht |
 | `test/mutations/` | neu | der Zahn aus DoD (2) |
