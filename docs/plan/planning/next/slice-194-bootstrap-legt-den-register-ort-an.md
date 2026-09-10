@@ -33,7 +33,7 @@ mitemittierten Datei ohne Baseline-Vorlage).
 `—`. Die Spezifikation führt für den emittierten Struktur-Bestand keine Kennung; der Vertrag steht
 allein im Lastenheft.
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** ai-harness-init-Team (pt9912). **Datum:** 2026-09-07.
 
