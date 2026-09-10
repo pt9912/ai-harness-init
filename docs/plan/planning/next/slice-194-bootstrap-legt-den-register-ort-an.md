@@ -249,7 +249,7 @@ Setzung 2). Die vier Einträge des Kommandos berühren diesen Slice, weitere Tre
 - [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
   — **getroffen**, in der Unterklasse *Zusage ohne Anker, Ausgang eine Regel ohne Sensor*: Die
   neue emittierte `README.md` ist eine zweite Fassung einer Regelwerks-Aussage. Steht als Risiko
-  in §6; Träger der Klasse ist [slice-153](slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md).
+  in §6; Träger der Klasse ist [slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md).
 
 **Alle berührten Sub-Areas GF.** Der Modus-Begründungsblock entfällt damit (§Umfang oben); `*`
 steht in der Modus-Deklaration als Greenfield, und dieser Slice führt keine neue Sub-Area ein.

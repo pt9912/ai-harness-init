@@ -288,7 +288,7 @@ dasteht.
   Schnitt, der ihn liefert, ist noch nicht geschnitten** — bis dahin bleiben
   seine drei Fundstellen stehen, und `codepaths` ist im Ziel keine Option. —
   **Ausgang:** eingetreten →
-  [slice-194](../open/slice-194-bootstrap-legt-den-register-ort-an.md). Die drei Rückstände der
+  [slice-194](../next/slice-194-bootstrap-legt-den-register-ort-an.md). Die drei Rückstände der
   Messreihe sind namentlich seine; der Schnitt ist mit dieser Closure gezogen und liegt in
   `open/`.
 - **Für `docs/plan/carveouts/done/` gibt es keinen Anlege-Weg.** Festlegung 4
@@ -645,7 +645,7 @@ weiter belastet — er hätte dieselbe Messstelle ein drittes Mal abgelesen.
   Instanz zu buchen hieße, die Beobachtung an der Frage festzumachen statt an ihrem Ausgang — der
   Zähler misst, was **eingetreten** ist.
 - **Folge-Slices:**
-  [slice-194](../open/slice-194-bootstrap-legt-den-register-ort-an.md) (Der Bootstrap legt den
+  [slice-194](../next/slice-194-bootstrap-legt-den-register-ort-an.md) (Der Bootstrap legt den
   Register-Ort an) — mit dieser Closure geschnitten, ist eine Datei in `open/` ·
   [slice-191](../open/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md)
   (Benutzerhandbuch zeigt den vollständigen Bestand) — lag bereits in `open/`.
