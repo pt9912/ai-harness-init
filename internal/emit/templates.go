@@ -813,18 +813,24 @@ var backtickSpanPattern = regexp.MustCompile("`[^`\n]*`")
 // backtickSpanPattern-Spanne, die "<!--" oder "-->" traegt, durch einen
 // Platzhalter ohne diese beiden Zeichenfolgen, und liefert den maskierten
 // Text zusammen mit der Zuordnung fuer die Rueckuebersetzung
-// (unmaskQuotedCommentSyntax). Damit startet commentHintPattern nie innerhalb
-// eines wohlgeformt zitierten Zeichens: weder ein vollstaendig zitierter
-// Kommentar noch ein isoliertes Oeffner- oder Schliesser-Zitat kann die Regex
-// zum naechsten echten Gegenstueck ausserhalb des Zitats weiterlaufen lassen.
+// (unmaskQuotedCommentSyntax).
 //
-// Zwei Entwurfsentscheidungen tragen das:
+// Die Funktion ist eine NAEHERUNG an eine Inline-Code-Span-Erkennung, KEIN
+// Parser dafuer: backtickSpanPattern paart einzelne Backtick-Zeichen von
+// links nach rechts innerhalb einer Zeile, deren Backtick-Gesamtzahl gerade
+// ist (Entscheidung 1) — nicht CommonMarks Regel gleich langer
+// Backtick-LAEUFE mit Bindung an die naechste vertraegliche Gegenspanne. Fuer
+// welche Zeilenformen die beiden Verfahren auseinanderfallen und was das
+// konkret bedeutet: siehe StripCommentHints, die diese Faelle als BEISPIELE
+// (nicht als vollstaendige Liste) fuehrt.
+//
+// Zwei Entwurfsentscheidungen der Naeherung:
 //
 //  1. Bearbeitet wird nur eine Zeile, deren Backtick-Zahl GERADE ist. Das ist
-//     die Wohlgeformtheits-Probe: nur bei gerader Zahl hat jeder Backtick der
-//     Zeile eindeutig einen Partner, und die von backtickSpanPattern
-//     ermittelte Paarung ist die einzig moegliche. Bei ungerader Zahl bindet
-//     ein einzelner, unpaarig stehender Backtick sonst den naechsten,
+//     eine notwendige, keine hinreichende Bedingung dafuer, dass jeder
+//     Backtick der Zeile seinen Markdown-Partner traegt (siehe oben,
+//     Backtick-Laeufe laenger als eins). Bei ungerader Zahl bindet ein
+//     einzelner, unpaarig stehender Backtick sonst den naechsten,
 //     UNABHAENGIGEN Backtick als Schliesser und reisst echten Text — samt
 //     einer echten Kommentar-Hilfe dazwischen — in die (falsche) Spanne. Eine
 //     ungerade Zeile bleibt darum unmaskiert; StripCommentHints verarbeitet
@@ -837,9 +843,6 @@ var backtickSpanPattern = regexp.MustCompile("`[^`\n]*`")
 //     nach dem Literal die FALSCHE, fruehere Stelle treffen. `offset` haelt
 //     die Verschiebung nach, die jede Ersetzung durch die (im Allgemeinen
 //     andere) Platzhalter-Laenge erzeugt.
-//
-// Ungedeckt bleibt eine Spanne, die einen Zeilenumbruch ueberschreitet
-// (StripCommentHints nennt diese Grenze).
 func maskQuotedCommentSyntax(s string) (string, map[string]string) {
 	placeholders := make(map[string]string)
 	n := 0
@@ -868,7 +871,18 @@ func maskQuotedCommentSyntax(s string) (string, map[string]string) {
 }
 
 // unmaskQuotedCommentSyntax macht maskQuotedCommentSyntax auf dem fertig
-// gebauten Ergebnis rueckgaengig.
+// gebauten Ergebnis rueckgaengig, indem sie jeden Platzhalter (strings.ReplaceAll,
+// nicht positionsbezogen) durch seine Spanne ersetzt.
+//
+// Benannte Grenze: Getroffen wird jedes Vorkommen der Platzhalter-Byte-Folge
+// im Text, nicht nur die von maskQuotedCommentSyntax gesetzte Fundstelle.
+// Traegt der zu emittierende Quelltext dieselbe Byte-Folge bereits (die
+// Platzhalter beginnen mit dem Steuerzeichen-Paar \x00\x01), ueberschreibt
+// die Rueckuebersetzung diese fremde Stelle mit dem Inhalt einer anderen
+// Spanne. Weder der vendored `v6.5.0`- noch der emittierte Vorlagen-Satz
+// traegt ein NUL-Byte (`grep -rlP '\x00' .harness/baseline/v6.5.0/templates
+// internal/emit/templates` — leer, kein Erwartungswert, gilt fuer den
+// jeweils aktuellen Satz), die Grenze ist heute nicht ausloesbar.
 func unmaskQuotedCommentSyntax(s string, placeholders map[string]string) string {
 	for placeholder, span := range placeholders {
 		s = strings.ReplaceAll(s, placeholder, span)
@@ -907,28 +921,55 @@ func unmaskQuotedCommentSyntax(s string, placeholders map[string]string) string 
 // Vorkommen ist ein Zitat, keine Kommentar-Hilfe, und ein reiner
 // `<!--`-Zaehler trifft diese Unterscheidung nicht.
 //
-// Zwei Grenzen bleiben ungedeckt, beide benannt statt stillschweigend
-// bestehend:
+// Die zugrundeliegende Maskierung (maskQuotedCommentSyntax) ist eine
+// Zeilen-Paritaets-NAEHERUNG, KEIN Parser fuer Inline-Code-Spannen — sie
+// paart Backticks per Zeilen-Paritaet und Links-nach-rechts-Reihenfolge,
+// nicht nach CommonMarks Lauf-Laengen-Regel. Daraus folgt: **die Menge der
+// Faelle, in denen diese Regel eine echte Kommentar-Hilfe uebersieht oder ein
+// Zitat der eigenen Syntax verstuemmelt, ist nicht geschlossen und wird hier
+// nicht als geschlossen behauptet.** Bekannt sind mehrere Formen — als
+// BEISPIELE, nicht als vollstaendige Liste:
 //
-//  1. Das Muster kennt keinen Markdown-Fence-Kontext — ein Kommentar VOR
-//     einem Mermaid-Pfeil (derselben Zeichenfolge `-->`) innerhalb eines
-//     mehrzeiligen Code-Blocks (dreifacher Backtick, von
+//   - ein Kommentar VOR einem Mermaid-Pfeil (derselben Zeichenfolge `-->`)
+//     innerhalb eines mehrzeiligen Code-Blocks (dreifacher Backtick, von
 //     backtickSpanPattern nicht erfasst) kann den non-greedy Abschluss
-//     vorzeitig binden. Im heutigen Vorlagen-Satz schliesst jeder Kommentar
-//     vor dem naechsten Pfeil (je Vorlage gemessen per
-//     `grep -o '<!--' <datei> | wc -l` gegen `grep -o -- '-->' <datei> | wc -l`);
-//     das ist eine Eigenschaft des heutigen Textes, keine des Emitters.
-//  2. maskQuotedCommentSyntax bearbeitet nur EINZELNE Zeilen (Grenze dort
-//     dokumentiert): ein Zitat der Kommentar-Syntax, dessen Backtick-Paar
-//     einen Zeilenumbruch ueberschreitet, bleibt unmaskiert, und diese Regel
-//     kann dann bis zum naechsten echten Gegenstueck ausserhalb des Zitats
-//     Inhalt loeschen — dieselbe Wirkung wie vor Einfuehrung der Maskierung.
-//     Im heutigen Vorlagen-Satz zitiert keine Fundstelle die Kommentar-Syntax
-//     ueber einen Zeilenumbruch hinweg (die vier Fundstellen oben stehen
-//     je auf einer Zeile).
+//     vorzeitig binden;
+//   - ein Zitat der Kommentar-Syntax, dessen Backtick-Paar einen
+//     Zeilenumbruch ueberschreitet, bleibt unmaskiert und die Regel kann bis
+//     zum naechsten echten Gegenstueck ausserhalb des Zitats Inhalt loeschen;
+//   - ein Backtick-LAUF der Laenge zwei oder mehr um ein Zitat der
+//     Kommentar-Syntax (z. B. "``<!--``") faellt aus der Paarungslogik von
+//     backtickSpanPattern (sie paart einzelne Backticks von links) und wird
+//     nicht als eine zusammenhaengende Spanne erkannt;
+//   - zwei einzelne, freistehende Backticks um eine echte Kommentar-Hilfe
+//     (nicht nur einer, siehe die Wohlgeformtheits-Probe oben) machen die
+//     Zeile fuer die Paritaets-Probe wieder gerade und die Hilfe ueberlebt.
+//
+// Jede dieser Formen ist ein GEGENBEISPIEL gegen Vollstaendigkeit, kein
+// Katalog, den ein kuenftiger Fund nur noch ergaenzt. Kein Gate dieses Repos
+// bewertet, ob eine weitere Form existiert.
+//
+// Was diese Regel gegen den heutigen Vorlagen-Satz traegt, ist nicht die
+// Vollstaendigkeit der Naeherung, sondern eine GEMESSENE Abwesenheit der
+// bekannten Formen im Text, den der Emit tatsaechlich verarbeitet:
+//
+//	T=.harness/baseline/v6.5.0/templates
+//	grep -rn '``' "$T" --include='*.md' | grep -e '<!--' -e '\-\->'          # leer
+//	grep -rn '``' internal/emit/templates/ | grep -e '<!--' -e '\-\->'       # leer
+//	find "$T" -name '*.md' -print0 | xargs -0 awk \
+//	  '{ c=gsub(/`/,"`"); if (c%2==1 && ($0 ~ /<!--/ || $0 ~ /-->/)) print FILENAME":"FNR }'  # leer
+//
+// Kein Erwartungswert — jede Zeile wandert mit dem Vorlagen-Satz; tragend ist
+// allein, dass sie heute leer sind. **Diese Probe gilt fuer den Satz, gegen
+// den sie gefahren wurde, und fuer keinen anderen: JEDER Re-Baseline
+// (MR-008 tauscht `$T` vollstaendig gegen einen fremden Text) muss sie gegen
+// den NEUEN Satz erneut fahren, bevor diese Regel dem neuen Satz gegenueber
+// als sicher gilt.** Ein nicht-leeres Ergebnis heisst nicht zwingend
+// Datenverlust — es heisst, dass eine der oben genannten Formen jetzt
+// vorkommt und von Hand geprueft werden muss.
 //
 // Rot faerbt eine verlorene Wirkung TestStripCommentHints (die pure Funktion,
-// inklusive beider Ausnahmen) und
+// inklusive beider Ausnahmen und der oben genannten Beispiel-Faelle) und
 // TestTemplates_KeineKommentarHilfenImEmittiertenSatz (die Verdrahtung in
 // planTemplates UND RootReadme, gegen die courseSet()-Fixture — der reale
 // vendored Satz liegt unter .harness/, das der Docker-Build-Kontext
