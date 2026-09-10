@@ -933,43 +933,55 @@ func unmaskQuotedCommentSyntax(s string, placeholders map[string]string) string 
 //   - ein Kommentar VOR einem Mermaid-Pfeil (derselben Zeichenfolge `-->`)
 //     innerhalb eines mehrzeiligen Code-Blocks (dreifacher Backtick, von
 //     backtickSpanPattern nicht erfasst) kann den non-greedy Abschluss
-//     vorzeitig binden;
+//     vorzeitig binden ("Fence-Blindheit"). Im heutigen Vorlagen-Satz
+//     schliesst jeder Kommentar vor dem naechsten Pfeil (je Vorlage gemessen
+//     per `grep -o '<!--' <datei> | wc -l` gegen `grep -o -- '-->' <datei> | wc -l`);
+//     das ist eine Eigenschaft des heutigen Textes, keine des Emitters;
 //   - ein Zitat der Kommentar-Syntax, dessen Backtick-Paar einen
-//     Zeilenumbruch ueberschreitet, bleibt unmaskiert und die Regel kann bis
-//     zum naechsten echten Gegenstueck ausserhalb des Zitats Inhalt loeschen;
+//     Zeilenumbruch ueberschreitet ("zeilenuebergreifendes Zitat"), bleibt
+//     unmaskiert und die Regel kann bis zum naechsten echten Gegenstueck
+//     ausserhalb des Zitats Inhalt loeschen;
 //   - ein Backtick-LAUF der Laenge zwei oder mehr um ein Zitat der
-//     Kommentar-Syntax (z. B. "``<!--``") faellt aus der Paarungslogik von
-//     backtickSpanPattern (sie paart einzelne Backticks von links) und wird
-//     nicht als eine zusammenhaengende Spanne erkannt;
+//     Kommentar-Syntax (z. B. "``<!--``", "Backtick-Lauf") faellt aus der
+//     Paarungslogik von backtickSpanPattern (sie paart einzelne Backticks von
+//     links) und wird nicht als eine zusammenhaengende Spanne erkannt;
 //   - zwei einzelne, freistehende Backticks um eine echte Kommentar-Hilfe
-//     (nicht nur einer, siehe die Wohlgeformtheits-Probe oben) machen die
-//     Zeile fuer die Paritaets-Probe wieder gerade und die Hilfe ueberlebt.
+//     ("zwei freistehende Backticks", nicht nur einer, siehe die
+//     Wohlgeformtheits-Probe oben) machen die Zeile fuer die Paritaets-Probe
+//     wieder gerade und die Hilfe ueberlebt.
 //
 // Jede dieser Formen ist ein GEGENBEISPIEL gegen Vollstaendigkeit, kein
 // Katalog, den ein kuenftiger Fund nur noch ergaenzt. Kein Gate dieses Repos
 // bewertet, ob eine weitere Form existiert.
 //
 // Was diese Regel gegen den heutigen Vorlagen-Satz traegt, ist nicht die
-// Vollstaendigkeit der Naeherung, sondern eine GEMESSENE Abwesenheit der
-// bekannten Formen im Text, den der Emit tatsaechlich verarbeitet:
+// Vollstaendigkeit der Naeherung, sondern eine GEMESSENE Abwesenheit EINZELNER
+// der vier oben genannten Formen — keine der drei folgenden Proben deckt mehr
+// als eine Form, und fuer "zwei freistehende Backticks" gibt es hier gar
+// keine Probe: die Form ist per Konstruktion gerade-paarig und faellt aus
+// jeder Paritaets-Pruefung heraus.
 //
 //	T=.harness/baseline/v6.5.0/templates
-//	grep -rn '``' "$T" --include='*.md' | grep -e '<!--' -e '\-\->'          # leer
-//	grep -rn '``' internal/emit/templates/ | grep -e '<!--' -e '\-\->'       # leer
+//	grep -rn '``' "$T" --include='*.md' | grep -e '<!--' -e '\-\->'          # leer -- "Backtick-Lauf"
+//	grep -rn '``' internal/emit/templates/ | grep -e '<!--' -e '\-\->'       # leer -- dieselbe Form, zweiter Baum
 //	find "$T" -name '*.md' -print0 | xargs -0 awk \
-//	  '{ c=gsub(/`/,"`"); if (c%2==1 && ($0 ~ /<!--/ || $0 ~ /-->/)) print FILENAME":"FNR }'  # leer
+//	  '{ c=gsub(/`/,"`"); if (c%2==1 && ($0 ~ /<!--/ || $0 ~ /-->/)) print FILENAME":"FNR }'  # leer -- "zeilenuebergreifendes Zitat", nur auf Zeilen mit ungerader Backtick-Zahl
 //
 // Kein Erwartungswert — jede Zeile wandert mit dem Vorlagen-Satz; tragend ist
-// allein, dass sie heute leer sind. **Diese Probe gilt fuer den Satz, gegen
-// den sie gefahren wurde, und fuer keinen anderen: JEDER Re-Baseline
-// (MR-008 tauscht `$T` vollstaendig gegen einen fremden Text) muss sie gegen
-// den NEUEN Satz erneut fahren, bevor diese Regel dem neuen Satz gegenueber
-// als sicher gilt.** Ein nicht-leeres Ergebnis heisst nicht zwingend
-// Datenverlust — es heisst, dass eine der oben genannten Formen jetzt
-// vorkommt und von Hand geprueft werden muss.
+// allein, dass sie heute leer sind. "Fence-Blindheit" hat KEINE eigene
+// leer-Probe in diesem Block — nur die Oeffner-/Schliesser-Zaehlung im
+// zugehoerigen Aufzaehlungspunkt oben, von Hand gegen die Fence-Position zu
+// halten. **Diese drei Proben gelten fuer den Satz, gegen den sie gefahren
+// wurden, und fuer keinen anderen: JEDER Re-Baseline (MR-008 tauscht `$T`
+// vollstaendig gegen einen fremden Text) muss sie gegen den NEUEN Satz
+// erneut fahren — sie sind eine NOTWENDIGE, keine hinreichende Bedingung
+// dafuer, dass die Regel dem neuen Satz gegenueber sicher ist.** Ein
+// nicht-leeres Ergebnis heisst nicht zwingend Datenverlust — es heisst, dass
+// eine der oben genannten Formen jetzt vorkommt und von Hand geprueft werden
+// muss.
 //
 // Rot faerbt eine verlorene Wirkung TestStripCommentHints (die pure Funktion,
-// inklusive beider Ausnahmen und der oben genannten Beispiel-Faelle) und
+// inklusive beider Ausnahmen) und
 // TestTemplates_KeineKommentarHilfenImEmittiertenSatz (die Verdrahtung in
 // planTemplates UND RootReadme, gegen die courseSet()-Fixture — der reale
 // vendored Satz liegt unter .harness/, das der Docker-Build-Kontext
