@@ -238,7 +238,7 @@ Closure-Notiz mit Steering-Loop-Eintrag.
   ausgenommenen Klasse ist ungebunden, eine neue Pfad-Klasse dagegen gebunden. Die Kante ist
   benannt, nicht geschlossen.
 - **Abgrenzung zu [slice-072](slice-072-adr-verweist-nicht-auf-lifecycle.md) und
-  [slice-073](../next/slice-073-emittierte-doc-gate-module.md).** Alle drei fassen dieselbe Datei an, und
+  [slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md).** Alle drei fassen dieselbe Datei an, und
   das allein wäre ein schlechter Grund für drei Schnitte. Die Trennung ist inhaltlich: slice-072
   setzt eine **`matrix`**-Regel (Verweis **verboten**, Richtung ADR → Lifecycle) und baut den
   `docs-check`-Modus des Mutations-Treibers; dieser Slice setzt eine **`ids`**-Klasse (Verweis

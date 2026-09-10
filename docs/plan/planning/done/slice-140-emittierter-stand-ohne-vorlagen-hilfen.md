@@ -236,7 +236,7 @@ liegt in `done/`. Der Grund ist **tragend, nicht ordnend**: jener Slice entschei
 davor, misst dieser Slice über einem Satz, den der andere noch verändert.
 
 **Reihenfolge innerhalb von `next/`: vor
-[slice-073](../next/slice-073-emittierte-doc-gate-module.md) — Ökonomie, kein Zwang.** Dieser Slice
+[slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md) — Ökonomie, kein Zwang.** Dieser Slice
 entfernt die Kommentar-Hilfen des vendored Satzes auch aus der emittierten AGENTS- und
 Konventions-Datei; genau deren Prosa trägt die zwei `codepath-missing`-Befunde, an denen jener
 Slice `codepaths` heute als nicht emittierbar führt. Läuft dieser zuerst, misst jener einmal statt

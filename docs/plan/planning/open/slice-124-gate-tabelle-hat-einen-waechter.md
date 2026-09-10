@@ -12,7 +12,7 @@ wechselt nur durch `git mv`, siehe
 emittierte Starter-Config bleibt `modules: [links, anchors]`
 ([`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed));
 ob ein Ziel-Repo `targets` bekommt, entscheidet
-[slice-073](../next/slice-073-emittierte-doc-gate-module.md) — dort ist die Frage gestellt, und sie ist
+[slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md) — dort ist die Frage gestellt, und sie ist
 dort eine andere, weil ein frisch gebootstrapptes Ziel andere Utility-Targets hat als wir.
 
 **Bezug:**
@@ -192,7 +192,7 @@ Steering-Loop-Lerneintrag.
 | [`harness/README.md`](../../../../harness/README.md) | update | zweite `doc-tables`-Quelle; hier steht, was **außerhalb** von `make gates` läuft — genau die Unterscheidung, die `exempt-targets` mechanisch macht |
 | `test/` | neu | der Fall, der die Zusage aus DoD (1) rot färbt, plus sein `test/mutations/`-Zahn |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | **nicht durch diesen Slice** | [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) (Modul-Liste) und [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert) Setzung 2 (Grenzziehung) sind nachzuziehen — **Übergabe** an den Architect, DoD (3) |
-| [`internal/emit/`](../../../../internal/emit) | **unverändert** | Ebene Dogfood (Kopfzeile); die emittierte Modul-Liste entscheidet [slice-073](../next/slice-073-emittierte-doc-gate-module.md) |
+| [`internal/emit/`](../../../../internal/emit) | **unverändert** | Ebene Dogfood (Kopfzeile); die emittierte Modul-Liste entscheidet [slice-073](../in-progress/slice-073-emittierte-doc-gate-module.md) |
 
 ## 4. Trigger
 
