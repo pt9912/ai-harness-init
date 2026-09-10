@@ -4,9 +4,11 @@
 // `.mk`-Fragment aus `--print-mk`.
 //
 // Zwei Artefakte mit bewusst verschiedener Herkunft:
-//   - .d-check.yml — vom Tool AUTORIERTE minimale Config (nur links/anchors;
-//     ids/codepaths auskommentiert). Ihre Minimalitaet ist die LH-QA-01-Garantie
-//     (kein Modul aktiv, das im frischen Repo brechen wuerde), darum eingebettet.
+//   - .d-check.yml — vom Tool AUTORIERTE Config; welche Module aktiv sind, steht
+//     in internal/emit/templates/d-check.yml selbst (DCheckConfig()). Die
+//     LH-QA-01-Garantie traegt nicht Minimalitaet, sondern die Zahn-Paarung je
+//     Modul: gruen gegen ein frisch gebootstrapptes Ziel UND rot gegen sein
+//     eigenes Gegenbeispiel (harness/tools/full-smoke.sh).
 //   - d-check.mk   — zur BOOTSTRAP-Zeit erzeugt via `docker run <d-check> --print-mk`
 //     (Docker ist die geforderte Bootstrap-Abhaengigkeit, LH-QA-03) und mechanisch
 //     adaptiert (AdaptMK). So traegt das Tool kein driftendes Fragment, nur den Pin

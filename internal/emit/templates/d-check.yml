@@ -28,10 +28,13 @@ ids:
 # token: 'welle-\d{2}' und die Regel {from: adr, to: welle} decken ein
 # drittes Lifecycle-Artefakt neben adr und slice, das die Vorlage noch nicht
 # fuehrt; exclude-sections setzt den Schluessel, den die Vorlage bewusst
-# wegliess, weil die ADR-/Slice-Vorlagen einen Geschichte-/Historie-Abschnitt
-# fuehren, in dem eine legitime rueckwaertige Erwaehnung sonst faelschlich
-# als Verstoss zaehlte. Eine Position bleibt bewusst hinter der Vorlage
-# zurueck: token: 'ADR-\d{4}' auf der adr-Klasse geht NICHT mit — das
+# wegliess. Er schuetzt die spec-straten-Klasse: lastenheft.md und
+# spezifikation.md fuehren (aus ihrer Vorlage) einen "## 7. Historie"-Abschnitt,
+# in dem eine angenommene Vertragsaenderung genau dort eine ADR-/Slice-Kennung
+# nennt ("eine Zeile hier, mit dem CR"), und {from: spec-straten, to: adr/slice}
+# verbietet diese Richtung sonst auch dort.
+# Eine Position bleibt bewusst hinter der Vorlage zurueck:
+# token: 'ADR-\d{4}' auf der adr-Klasse geht NICHT mit — das
 # ids-Modul deckt die blosse Kennung bereits ueber link-policy: always ab
 # (id-unlinked), ein zweiter Fang ueber matrix waere redundant; fuer slice
 # gibt es keine solche ids-Regel, darum bleibt dessen token: aktiv.
