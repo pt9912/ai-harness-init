@@ -933,10 +933,7 @@ func unmaskQuotedCommentSyntax(s string, placeholders map[string]string) string 
 //   - ein Kommentar VOR einem Mermaid-Pfeil (derselben Zeichenfolge `-->`)
 //     innerhalb eines mehrzeiligen Code-Blocks (dreifacher Backtick, von
 //     backtickSpanPattern nicht erfasst) kann den non-greedy Abschluss
-//     vorzeitig binden ("Fence-Blindheit"). Im heutigen Vorlagen-Satz
-//     schliesst jeder Kommentar vor dem naechsten Pfeil (je Vorlage gemessen
-//     per `grep -o '<!--' <datei> | wc -l` gegen `grep -o -- '-->' <datei> | wc -l`);
-//     das ist eine Eigenschaft des heutigen Textes, keine des Emitters;
+//     vorzeitig binden ("Fence-Blindheit");
 //   - ein Zitat der Kommentar-Syntax, dessen Backtick-Paar einen
 //     Zeilenumbruch ueberschreitet ("zeilenuebergreifendes Zitat"), bleibt
 //     unmaskiert und die Regel kann bis zum naechsten echten Gegenstueck
@@ -968,14 +965,14 @@ func unmaskQuotedCommentSyntax(s string, placeholders map[string]string) string 
 //	  '{ c=gsub(/`/,"`"); if (c%2==1 && ($0 ~ /<!--/ || $0 ~ /-->/)) print FILENAME":"FNR }'  # leer -- "zeilenuebergreifendes Zitat", nur auf Zeilen mit ungerader Backtick-Zahl
 //
 // Kein Erwartungswert — jede Zeile wandert mit dem Vorlagen-Satz; tragend ist
-// allein, dass sie heute leer sind. "Fence-Blindheit" hat KEINE eigene
-// leer-Probe in diesem Block — nur die Oeffner-/Schliesser-Zaehlung im
-// zugehoerigen Aufzaehlungspunkt oben, von Hand gegen die Fence-Position zu
-// halten. **Diese drei Proben gelten fuer den Satz, gegen den sie gefahren
-// wurden, und fuer keinen anderen: JEDER Re-Baseline (MR-008 tauscht `$T`
-// vollstaendig gegen einen fremden Text) muss sie gegen den NEUEN Satz
-// erneut fahren — sie sind eine NOTWENDIGE, keine hinreichende Bedingung
-// dafuer, dass die Regel dem neuen Satz gegenueber sicher ist.** Ein
+// allein, dass sie heute leer sind. Fuer "Fence-Blindheit" gibt es in diesem
+// Block KEINE Probe — die Eigenschaft haengt heute an einer von Hand
+// geprueften Reihenfolge, nicht an einem Kommando. **Diese drei Proben gelten
+// fuer den Satz, gegen den sie gefahren wurden, und fuer keinen anderen: JEDER
+// Re-Baseline (MR-008 tauscht `$T` vollstaendig gegen einen fremden Text) muss
+// sie gegen den NEUEN Satz erneut fahren — sie sind eine NOTWENDIGE, keine
+// hinreichende Bedingung dafuer, dass die Regel dem neuen Satz gegenueber
+// sicher ist.** Ein
 // nicht-leeres Ergebnis heisst nicht zwingend Datenverlust — es heisst, dass
 // eine der oben genannten Formen jetzt vorkommt und von Hand geprueft werden
 // muss.
