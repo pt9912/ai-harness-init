@@ -20,7 +20,8 @@ import (
 // das Praefix gehoert dem Adopter und ist in einem frischen Ziel nicht bekannt. Die
 // spec-straten-Klasse traegt order:/direction: no-downward: die Baseline-Vorlage fuehrt
 // beide im auskommentierten matrix-Block, und die Entscheidungsregel fuer emittierte
-// Module bindet auf Modul-, nicht auf Positions-Ebene.
+// Module bindet auf Modul-, nicht auf Positions-Ebene. exclude-sections traegt genau
+// [Geschichte], nicht die weitere Dogfood-Liste und nicht leer.
 func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	yml := emit.DCheckConfig()
 	if !strings.Contains(yml, "modules: [links, anchors, ids, matrix, spans]") {
@@ -50,6 +51,14 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	}
 	if !strings.Contains(yml, "order: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md]") || !strings.Contains(yml, "direction: no-downward") {
 		t.Errorf("die Richtungspruefung (order:/direction: no-downward) auf spec-straten fehlt:\n%s", yml)
+	}
+	// exclude-sections traegt exakt [Geschichte] — weder leer (dann faengt
+	// {from: adr, to: slice} auch die legitime, im Zeilen-Marker deklarierte
+	// Provenance-Zeile der ADR-Geschichte-Tabelle) noch die weitere Dogfood-Liste
+	// [Historie, "7. Historie", Geschichte] (die Spec-Straten-Vorlagen fuehren dort keine
+	// Ausnahme, s. internal/emit/templates/d-check.yml Kopfkommentar).
+	if !strings.Contains(yml, "exclude-sections: [Geschichte]") {
+		t.Errorf("exclude-sections traegt nicht genau [Geschichte]:\n%s", yml)
 	}
 }
 

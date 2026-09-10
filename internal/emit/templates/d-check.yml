@@ -51,8 +51,8 @@ matrix:
     - {from: spec-straten, to: slice, allow: false}
     # Eine Accepted-ADR nennt eine Slice-/Welle-Kennung nur als deklarierte Provenance
     # (Baseline-Regelwerk grundlagen-referenz-richtung.md §Referenz-Richtung): der
-    # Zeilen-Marker <!-- d-check:status-provenance --> nimmt die Zeile aus. Er ist im
-    # frischen Ziel der einzige Ausweg.
+    # Zeilen-Marker <!-- d-check:status-provenance --> nimmt die Zeile aus. Er ist der
+    # vorgesehene Ausweg.
     - {from: adr, to: slice, allow: false}
     - {from: adr, to: welle, allow: false}
   status: {forbidden: [superseded, deprecated]}

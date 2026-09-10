@@ -10,7 +10,9 @@
 //     und spans haelt je ein benannter Gegenbeispiel-Zahn in
 //     harness/tools/full-smoke.sh (gruen gegen ein frisch gebootstrapptes Ziel,
 //     rot gegen sein eigenes Gegenbeispiel) — vier Befund-Arten fuer drei der
-//     fuenf aktiven Module.
+//     fuenf aktiven Module. links traegt seinen eigenen Zahn im selben Skript
+//     (Feldlisten-Zahn, slice-098, target-missing); anchors bleibt ohne
+//     Gegenbeispiel-Zahn.
 //   - d-check.mk   — zur BOOTSTRAP-Zeit erzeugt via `docker run <d-check> --print-mk`
 //     (Docker ist die geforderte Bootstrap-Abhaengigkeit, LH-QA-03) und mechanisch
 //     adaptiert (AdaptMK). So traegt das Tool kein driftendes Fragment, nur den Pin
