@@ -82,7 +82,10 @@ Erfassungsschicht Träger und Fähigkeit getrennt entschieden.
 Solange die Frage offen ist, sagt der emittierte Anweisungssatz für Schritt 4 *„Hat dein Repo das
 Werkzeug nicht, ist die Bedingung nicht eingetreten"*
 (`grep -c 'ist die Bedingung nicht eingetreten' internal/emit/templates/commands/close-welle.md`
-→ **1**) — und kein Ziel hat es.
+→ **1**) — und der Adopter trägt das als Feststellung ein, während der Träger danebenliegt: dessen
+Dispatch führt den Zweig (`grep -c 'case "archive-welle"' cmd/ai-harness-init/main.go` → **1**),
+und abgelegt wird die Selbst-Kopie des laufenden Bildes. Was dem Ziel fehlt, ist nicht die
+Fähigkeit, sondern ihre **Adresse**; Festlegung 4 stellt sie her.
 
 **Das Nachbar-Repo steht in keinem Rang der Source Precedence.** Es trägt hier als **gemessenes
 Vorbild** und als Beleg dafür, dass ein Weg gangbar ist — nicht als Begründung. Jede Aussage über
@@ -157,11 +160,12 @@ führt die Achse, an der die Kopplung zu Festlegung 4 hängt: **wie ein Ziel den
 
 ### Was heute gemessen ist
 
-**Zwei Mess-Stände stehen hier, und beide sind genannt.** Die ersten zwei Punkte messen den
-Zustand, den diese Entscheidung **vorfand** — Mess-Basis `e28b887e`; ihr Gegenstand ist der
-Shell-Weg, den Festlegung 2 ablöst, und wer ihre Kommandos heute fährt, misst dessen Nachfolger.
-Die übrigen drei messen einen Gegenstand, den diese Entscheidung nicht bewegt, und stehen am
-heutigen Baum. Keine Zahl ist ein Erwartungswert.
+**Zwei Mess-Stände stehen hier, und jedes Kommando nennt seinen eigenen.** Was den Zustand misst,
+den diese Entscheidung **vorfand**, ist auf die Mess-Basis `e28b887e` gepinnt und liefert darum
+heute wie an jedem Tag dieselbe Zahl; was den heutigen Baum misst, steht ungepinnt daneben. Die
+Trennung läuft **je Kommando, nicht je Punkt**: Der erste Punkt trägt beide, weil sein Gegenstand
+über den Trägerwechsel hinweg zwei verschiedene Bezugsmengen hat — die des Shell-Wegs und die der
+Go-Fassung, die Festlegung 2 an seine Stelle setzt. Keine Zahl ist ein Erwartungswert.
 
 - **Der Shell-Weg war an seiner tragenden Stelle unbewacht.** Sein Hauptpfad — Einsammeln, Move,
   Commit — braucht `git` und `docker`; das gepinnte bats-Bild führt beides nicht
@@ -234,9 +238,13 @@ diesen Einstiegspunkt.
 - **Der Prüfbereich wächst.** Die vier Gegenstände der Operation — Einsammeln, Verweis-Nachzug,
   Stub, Zip — werden in Go über synthetischen Bäumen prüfbar, im selben gepinnten Bild und mit
   denselben Zielen, die das Repo ohnehin fährt (`make test`, `make lint`, `make mutate`); das
-  gemessene Vorbild belegt, dass genau diese Zerlegung Tests trägt. **Was dabei nicht wandert,
-  gehört genannt:** der `git`-berührende Teil bleibt außerhalb des Test-Bildes, wie er es beim
-  Shell-Weg war. Der Zugewinn ist die gedeckte Fläche, nicht ihre Vollständigkeit.
+  gemessene Vorbild belegt, dass genau diese Zerlegung Tests trägt. **Und der `git`-berührende
+  Teil wandert mit, statt wie beim Shell-Weg draußen zu bleiben:** seine Verdrahtung in den Lauf
+  wird gegen ein echtes Scratch-Repo gemessen, im selben `./...` der Test-Stufe, ohne Build-Tag
+  und ohne Skip-Guard (`grep -c '^func Test' cmd/ai-harness-init/archive_welle_echt_test.go`
+  → **3**, `grep -c 't.Skip' cmd/ai-harness-init/archive_welle_echt_test.go` → **0**). **Was
+  danach offen bleibt, ist die Körnung und nicht das Bild** — §Konsequenzen benennt sie. Der
+  Zugewinn ist die gedeckte Fläche, nicht ihre Vollständigkeit.
 - **Ein gepinntes Bild entfällt.** Das Zip kommt aus der Standardbibliothek; der vierte Digest im
   Makefile verliert seinen Gegenstand. Jede Re-Baseline und jede Freshness-Achse hat danach einen
   Pin weniger zu bewegen ([`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
@@ -422,7 +430,7 @@ das ist keine Ausweitung jener Festlegungen**, sondern dieselbe Form, zweimal me
 
 | Option | Pro | Contra |
 | --- | --- | --- |
-| **A — Unterkommando des Produkt-Binärs (gewählt)** | die vier Gegenstände werden in den Zielen prüfbar, die das Repo ohnehin fährt; ein gepinntes Bild entfällt; die Reichweite ins Ziel kostet das Textfragment aus Festlegung 4 in einer Artefakt-Klasse, die das Ziel schon führt — keinen Kanal, keinen Bauschritt, keine zweite Plattform-Matrix; ein Einstiegspunkt, eine Lint-Config, ein Test-Runner; die Präzedenz aus [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 2 ist erprobt (`grep -c 'case "span-' cmd/ai-harness-init/main.go` → **2**) | der abgelegte Träger bekommt ein Kommando, das den **versionierten** Baum eines fremden Repos umschreibt und darin löscht — eine größere Fähigkeitsfläche als der gitignorierte Schreiber von [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md); der `git`-berührende Teil bleibt außerhalb des Test-Bildes; zwei Review-Runden, ein bats-Satz und sieben Mutations-Fälle des Shell-Wegs werden retiriert |
+| **A — Unterkommando des Produkt-Binärs (gewählt)** | die vier Gegenstände werden in den Zielen prüfbar, die das Repo ohnehin fährt; ein gepinntes Bild entfällt; die Reichweite ins Ziel kostet das Textfragment aus Festlegung 4 in einer Artefakt-Klasse, die das Ziel schon führt — keinen Kanal, keinen Bauschritt, keine zweite Plattform-Matrix; ein Einstiegspunkt, eine Lint-Config, ein Test-Runner; die Präzedenz aus [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 2 ist erprobt (`grep -c 'case "span-' cmd/ai-harness-init/main.go` → **2**) | der abgelegte Träger bekommt ein Kommando, das den **versionierten** Baum eines fremden Repos umschreibt und darin löscht — eine größere Fähigkeitsfläche als der gitignorierte Schreiber von [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md); zwei Review-Runden, ein bats-Satz und sieben Mutations-Fälle des Shell-Wegs werden retiriert |
 | **B — Shell-Helfer je Dogfood-Repo (der Stand an der Mess-Basis)** | existierte, war zweimal reviewt und trug sieben Mutations-Fälle (Mess-Basis `e28b887e`; die Nachfolge-Menge der Go-Fassung, die Festlegung 2 an seine Stelle setzt, zählt anders und wird über die Namen gezogen — §Was heute gemessen ist); als **Text** emittierbar, und `bash` steht in [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten); kein Wachstum des Produkt-Binärs | seine tragende Hälfte war ungetestet — der Hauptpfad braucht `git` und `docker`, die das gepinnte bats-Bild nicht führt; er verlangt einen **eigenen** gepinnten Bild-Digest, der im Ziel unser Pin im fremden Repo wäre; auf der `windows`-Hälfte von [`LH-QA-04`](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) braucht er eine Shell, die *„ohne WSL2-Zwang"* nicht zugesagt ist |
 | B′ — Skript in `python`/`node`/`perl` | mächtiger als `bash`, ohne Kompilat | verlangt eine Laufzeit, die [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) dem Ziel nicht zusagt — dieselbe Grenze, an der [ADR-0004](0004-durchsetzungs-emission.md) den Guard in bash/awk hält |
 | **C — zweites Binär im selben Go-Modul** | dieselben Prüf- und Pin-Eigenschaften wie A; der Träger könnte **konstruktiv** kein Repo bootstrappen und keine Spans schreiben — die kleinste Fähigkeitsfläche | ein zweites Release-Artefakt mit eigenem Start-Smoke je Plattform ([`LH-QA-04`](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)); ins Ziel käme es nur über eine zweite Selbst-Kopie oder einen zweiten Kanal, also über genau die Wege, die [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) für ihre Alternativen D und E verworfen hat. Gleiche Eigenschaften, höherer Preis |
@@ -450,8 +458,11 @@ das ist keine Ausweitung jener Festlegungen**, sondern dieselbe Form, zweimal me
   Entscheidung, sondern die von
   [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 5(b), die hier
   weitergilt.
-- **Grenze:** der `git`-berührende Teil der Operation bleibt außerhalb des Test-Bildes. Der
-  Prüfbereich wächst um die vier reinen Gegenstände; er wird nicht vollständig.
+- **Grenze:** der Prüfbereich wächst, aber nicht auf Vollständigkeit. Der `git`-berührende Teil
+  liegt **im** Test-Bild — er steht in einer Datei (`cmd/ai-harness-init/archive_welle.go`), und
+  seine Verdrahtung in den Lauf wird gegen ein echtes Scratch-Repo gemessen. Von den vier
+  schreibenden `git`-Aufrufen trägt aber nur der erste einen eigenen Fall; für die übrigen drei
+  misst der Lauf allein ihr Zusammenspiel.
 - **Folgepflicht 1 — der Port liefert die drei Abnahme-Kriterien mit ihrem roten Gegenbeispiel.**
   Ohne sie ist der Träger gewechselt und die Zusage nicht.
 - **Folgepflicht 2 — die Mutations-Fälle des Shell-Wegs wandern mit oder werden beim Entfernen
@@ -480,13 +491,19 @@ das ist keine Ausweitung jener Festlegungen**, sondern dieselbe Form, zweimal me
 - **Folgepflicht 8 — `make full-smoke` fährt die Strecke, die Festlegung 4 zusagt.** Der Lauf nennt
   die Archivierung heute nicht (`grep -c 'archive' harness/tools/full-smoke.sh` → **0**); solange
   das so ist, ist die einzige Zusage dieser Entscheidung über die **emittierte** Ebene unbelegt.
-- **Folgepflicht 9 — die Referenz-Ausnahme des Shell-Wegs verlässt die Gate-Config mit ihm.** Die
-  `codepaths.ignore-refs`-Liste in [`.d-check.yml`](../../../.d-check.yml) führt den Pfad des
-  entfallenen Shell-Helfers; die Ausnahme hat keinen Gegenstand mehr
-  (`ls harness/tools/ | grep -c 'archive'` → **0**). Sie zu streichen ist eine **Verschärfung** und
-  darum kein ADR nach [`AGENTS.md`](../../../AGENTS.md) §3.5 — aber Festlegung 2 sagt den
-  vollständigen Rückbau zu, und solange die Zeile steht, ist er es nicht. Auch das ist
-  **Implementer**-Arbeit: die Gate-Config gehört nicht zu den Artefakten, die diese Rolle schreibt.
+- **Folgepflicht 9 — die Referenz-Ausnahme des Shell-Wegs bleibt stehen; wer sie streicht, färbt
+  `docs-check` rot.** Die `codepaths.ignore-refs`-Liste in
+  [`.d-check.yml`](../../../.d-check.yml) führt den Pfad des entfallenen Shell-Helfers. Ihr
+  Gegenstand ist nicht die gelöschte Datei, sondern die Referenz auf sie: `codepaths` prüft
+  Inline-Code-Pfade, und drei nach [`AGENTS.md`](../../../AGENTS.md) §3.4 eingefrorene
+  Zeitdokumente unter `docs/plan/planning/done/` nennen ihn weiter — ohne die Zeile meldet
+  `docs-check` **7** `codepath-missing` und sonst nichts (`git archive HEAD`-Kopie außerhalb des
+  Repos, netzlos, Mount `:ro`, gegen den in [`d-check.mk`](../../../d-check.mk) gepinnten Digest,
+  diese Zeile als einziger Unterschied). Ein Tombstone eines bewusst entfernten Artefakts ist der
+  Fall, für den
+  [`MR-009`](../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)
+  diese Liste führt; Festlegung 2 sagt den Rückbau der **Operation** zu, nicht den einer Ausnahme,
+  die ihren Gegenstand erst durch ihn bekommt.
 
 ## Fitness Function (falls maschinell prüfbar)
 
@@ -536,6 +553,7 @@ sed -n 's/^# expect: //p' test/mutations/*archive-welle*.sh test/mutations/*arch
 | 2026-09-03 | **Proposed** | Architect-Lauf zu `slice-172`. Der Träger der Wellen-Archivierung war offen, während zwei Antworten nebeneinander liefen. Die Entscheidung prüft die Berufung auf [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) in drei Teilen statt sie zu übernehmen — zwei tragen, der dritte wird ortsgebunden korrigiert —, führt eine **eigene** Abzählung über die Herkunft des ausführenden Artefakts und wählt den Träger über den **Preis**, nicht über einen Beweis. Der Acceptance-Trigger steht in §Der Acceptance-Trigger |
 | 2026-09-09 | Überarbeitet, weiter **Proposed** | Reviewer-Runde `2026-09-09-adr-0033-konsistenz-review.md`, Verdikt *blockierender Befund*, Statuswechsel blockiert; alle sechs Befunde im `Proposed`-Fenster behoben. **HIGH-1:** Der Beleg der Stub-Vorlagen trug den lokalen Vendoring-Präfix samt Tag und zeigte nach dem Sprung auf `v6.5.0` ins Leere — die Form, die [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) Festlegung 2 ausschließt und deren Träger 3(a) vor genau diesem Übergang greift. Er stützt sich jetzt auf ein tag-genanntes Baseline-Zitat und holt den Tag seiner Zählung aus dem kanonischen Makefile-Pin; §Was diese Entscheidung an sich selbst anwendet zählt den Bestand ab, statt ihn zu behaupten. **MEDIUM-1:** Der Beleg des Acceptance-Triggers nennt den Tag. **MEDIUM-2:** Festlegung 4 schloss den Emissions-Schritt mit einem Argument aus, das einen schweigenden Hook-Wrapper und einen Anwesenheits-Wächter widerlegte — keine der beiden Konstruktionen stand zur Wahl; die Festlegung sieht jetzt das Nicht-Gate-Fragment vor, das die Erfassungsschicht bereits emittiert, und die Kosten-Begründung der gewählten Alternative trägt es. **MEDIUM-3:** Festlegung 5 ist neu — der Preis steht als geschriebener Satz im Ziel, wie [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 6 ihn dort für dieselbe Lage verlangt. Dazu **LOW-1** (die Fitness-Tabelle trägt den gemessenen Stand statt sechsmal *geschuldet*), **LOW-2** (vier Messwerte neu erhoben, zwei davon mit ihrer Mess-Basis) und **INFO-2** (die verwaiste Referenz-Ausnahme des Shell-Wegs als Folgepflicht 9 an den Implementer). Der Beleg für den Accept-Übergang bleibt aus: Nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 trägt ihn eine **erneute** Runde derselben prüfenden Rolle, nicht dieser Lauf |
 | 2026-09-10 | Überarbeitet, weiter **Proposed** | Reviewer-Runde `2026-09-10-adr-0033-konsistenz-review-runde-2.md`, Verdikt *blockierender Befund*; die drei Befunde im `Proposed`-Fenster behoben, jeder über seine **gemessene** Fundmenge — bei zweien war sie größer als die im Report genannten Zeilen. **HIGH-1:** Der dritte Preis-Grund und die Pro-Zelle der gewählten Alternative verneinten den Emissions-Schritt, den Folgepflicht 6 baut; beide nennen jetzt den Preis, den Festlegung 4 und §Konsequenzen schon nennen — ein Textfragment in einer Artefakt-Klasse, die das Ziel führt, und weiter kein Kanal, kein Bauschritt, keine zweite Plattform-Matrix. **MEDIUM-1:** Die Sieben steht bei ihrer Mess-Basis; die Bezugsmenge der Go-Fassung ist die der §Fitness Function und wird über die Namen gezogen, weil ein Inhalts-`grep` sie in beide Richtungen verfehlt. **MEDIUM-2:** Der Shell-Weg steht an allen fünf Stellen im Präteritum oder bei der Mess-Basis; dass dasselbe Target seither auf den Träger zeigt, steht mit seinem Kommando daneben. **INFO-1** und **INFO-2** unverändert, vom Report als kein Verstoß ausgewiesen. Den Accept-Übergang trägt nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 eine **dritte** Runde derselben prüfenden Rolle |
+| 2026-09-10 | Überarbeitet, weiter **Proposed** | Reviewer-Runde `2026-09-10-adr-0033-konsistenz-review-runde-3.md`, Verdikt *blockierender Befund*. Gefegt ist die **Klasse** statt der drei Fundorte: jeder Satz dieser Datei, der eine Aussage über den heutigen Zustand von Repo, Bau oder Werkzeug trifft, ist einzeln gegen den Baum gemessen — vier hielten nicht. **HIGH-1:** Der `git`-berührende Teil liegt **im** Test-Bild; seine Verdrahtung wird gegen ein echtes Scratch-Repo gemessen. Preis-Grund 1 führt das als Zugewinn, die Contra-Zelle der gewählten Alternative führt es nicht mehr, und die verbliebene Grenze liegt in der **Körnung** — nur der erste der vier schreibenden `git`-Aufrufe hat einen eigenen Fall. **MEDIUM-1:** Der Kopf von §Was heute gemessen ist trennt **je Kommando** statt je Punkt und widerspricht seinem eigenen Abschnitt nicht mehr. **MEDIUM-2:** Dem Ziel fehlt die **Adresse**, nicht die Fähigkeit — der Dispatch führt den Zweig. **Nicht aus dem Report:** Folgepflicht 9 verlangte, die Referenz-Ausnahme des Shell-Wegs zu streichen; gemessen färbt genau das `docs-check` mit **7** `codepath-missing` in drei eingefrorenen Zeitdokumenten rot. Sie ist ein Tombstone nach [`MR-009`](../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile) und bleibt stehen. Die drei INFO weist der Report als kein Verstoß aus; sie sind nicht nachgezogen. Den Accept-Übergang trägt nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 eine **vierte** Runde derselben prüfenden Rolle |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
