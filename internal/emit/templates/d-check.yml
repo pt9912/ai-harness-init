@@ -27,12 +27,14 @@ ids:
 # gehen mit. Zwei Positionen gehen darueber hinaus: die welle-Klasse samt
 # token: 'welle-\d{2}' und die Regel {from: adr, to: welle} decken ein
 # drittes Lifecycle-Artefakt neben adr und slice, das die Vorlage noch nicht
-# fuehrt; exclude-sections setzt den Schluessel, den die Vorlage bewusst
-# wegliess. Er schuetzt die spec-straten-Klasse: lastenheft.md und
-# spezifikation.md fuehren (aus ihrer Vorlage) einen "## 7. Historie"-Abschnitt,
-# in dem eine angenommene Vertragsaenderung genau dort eine ADR-/Slice-Kennung
-# nennt ("eine Zeile hier, mit dem CR"), und {from: spec-straten, to: adr/slice}
-# verbietet diese Richtung sonst auch dort.
+# fuehrt; exclude-sections traegt dafuer nur Geschichte, nicht Historie/
+# "7. Historie": Die ADR-Vorlage fuehrt in ihrem Geschichte-Abschnitt eine
+# Verweis-Spalte, deren erste Zeile eine Slice-Datei nennt — legitime
+# rueckwaertige Provenance, die {from: adr, to: slice} sonst faelschlich
+# faengt. Die Historie-Abschnitte der Spec-Straten-Vorlagen tragen keine
+# solche Ausnahme: ihre eigene Decken-Regel verbietet dort jeden ADR-/
+# Slice-Verweis ebenso wie ausserhalb der Historie, die Spalte "Verweis"
+# fuehrt nur den externen Change Request.
 # Eine Position bleibt bewusst hinter der Vorlage zurueck:
 # token: 'ADR-\d{4}' auf der adr-Klasse geht NICHT mit — das
 # ids-Modul deckt die blosse Kennung bereits ueber link-policy: always ab
@@ -54,4 +56,4 @@ matrix:
     - {from: adr, to: slice, allow: false}
     - {from: adr, to: welle, allow: false}
   status: {forbidden: [superseded, deprecated]}
-  exclude-sections: [Historie, "7. Historie", Geschichte]
+  exclude-sections: [Geschichte]
