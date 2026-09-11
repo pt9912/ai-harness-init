@@ -68,8 +68,10 @@ Aussage darüber wird über einem nachweislich **nicht-leeren** Bestand gemessen
 
 Die Eigenschaft, über die gezählt wird: *eine Zeile im Produktionsbestand, die die sechs Namen als
 Literale nebeneinander schreibt.* Kommando und Stand:
-`grep -rn 'planner.*architect.*implementer' --include='*.go' --include='*.sh' . | grep -v '_test.go' | cut -d: -f1 | sort | uniq -c`
-→ **4** Dateien, mitwandernd:
+`grep -rn 'planner.*architect.*implementer' --include='*.go' --include='*.sh' . | grep -v '_test.go' | sed 's|^\./||' | grep -v '^test/' | cut -d: -f1 | sort | uniq -c`
+→ **4** Dateien, mitwandernd. **`test/` fällt heraus, weil der Prüfbereich der
+Produktionsbestand ist:** Ein `test/mutations/`-Fall, der eine dieser Listen kürzt, muss sie in
+seinem `sed`-Muster zitieren — er ist Wächter über dem Fundort, nicht selbst einer.
 
 | Fundort | Rolle der Zeile |
 |---|---|
@@ -154,24 +156,30 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
 [`AGENTS.md`](../../../../AGENTS.md) §3.6). Sie folgen den drei Klauseln aus §1, in der Reihenfolge,
 in der sie tragen.
 
-- [ ] **(1) Die Namen stehen einmal; die Abbildung des Trägers leitet ab (Klausel ii).** Nach dem
+- [x] **(1) Die Namen stehen einmal; die Abbildung des Trägers leitet ab (Klausel ii).** Nach dem
       Lauf schreibt genau **ein** Ort des Produktionsbestands die sechs Literale; die Zahl aus §1
       steht dann auf **1**, gemessen mit demselben Kommando. Ein Wächter verlangt für **jeden** Namen
       der Quelle ein nicht-leeres Rollen-Feld und für einen Namen daneben ein leeres — beide
       Richtungen, sonst prüft er eine Teilmenge.
       **Rot:** `make test` — dazu ein `test/mutations/`-Fall, der die Quelle um eine Rolle kürzt,
       und einer, der die Abbildung um denselben Namen kürzt; unter jedem muss der Wächter fallen.
-- [ ] **(2) Der Bestand, über dem gemessen wird, ist nachweislich nicht leer — die Verdrahtung hat
+- [x] **(2) Der Bestand, über dem gemessen wird, ist nachweislich nicht leer — die Verdrahtung hat
       ihren eigenen Zahn (Klausel i).** Heute deckt sie kein `test/mutations/`-Fall, und `make test`
       bleibt grün, wenn `emit.Agents(targetDir)` aus `emitAll` fällt (§1, fremdbelegt).
       **Rot:** `make full-smoke` — plus ein `test/mutations/`-Fall mit `# verify: full-smoke`, der
       genau diesen Aufruf entfernt. **Die Stufe ist nicht frei wählbar:** ein Go-Test im Paket
       [`internal/emit`](../../../../internal/emit) sieht den Aufruf in
       [`cmd/ai-harness-init/main.go`](../../../../cmd/ai-harness-init/main.go) nicht.
-- [ ] **(3) Der Voll-E2E-Sensor führt keine eigene Namensliste und hat erstmals einen Fall über
+- [x] **(3) Der Voll-E2E-Sensor führt keine eigene Namensliste und hat erstmals einen Fall über
       sich (Klausel iii).** Nach dem Lauf liefert
-      `grep -l '^# files:.*full-smoke' test/mutations/*.sh` mindestens **einen** Treffer — heute
-      **leer**.
+      `grep -l '^# verify: full-smoke' test/mutations/*.sh | xargs -r grep -l '^# expect:.*Rollen-Typ'`
+      mindestens **einen** Treffer — heute **leer**. **Zwei Achsen, und beide tragen:** `# verify:`
+      nennt den Sensor, dessen Rot erwartet wird, `# expect:` das Rot selbst — und der Wortlaut
+      `Rollen-Typ` ist der der Schleife
+      (`grep -c 'FEHLER — Rollen-Typ' harness/tools/full-smoke.sh` → **2**, beide Zweige von
+      `rollen_typen_im_ziel`). Die Zeile `# files:` taugt dafür nicht: sie nennt die Datei, die der
+      Fall **patcht**, nicht den Sensor, der rot wird — ein Fall über dieser Schleife patcht
+      [`internal/span`](../../../../internal/span), nicht den Sensor.
       **Rot:** `make full-smoke` — ein Fall, der der abgeleiteten Liste ihre Ableitung nimmt (eine
       Rolle im Ziel fehlt, ohne dass der Sensor sie vermisst), muss rot werden. **Was dieser Punkt
       ausdrücklich nicht verlangt:** dass der Sensor seine Liste aus dem **Ziel** liest — das wäre
@@ -186,10 +194,10 @@ Steering-Loop-Lerneintrag.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | [`internal/emit/agents.go`](../../../../internal/emit/agents.go) | update | die eine Quelle. **Hier bekommt `AgentFile()` seinen Aufrufer oder fällt:** `grep -rn 'AgentFile' --include=*.go . \| wc -l` → **1**, die Definition selbst; ihr Doc-Kommentar nennt eine Nutzung *„(fuer Tests/Inspektion)"*, die es nicht gibt ([`AGENTS.md`](../../../../AGENTS.md) §3.7). Der Bestands-Nachweis aus DoD (1) braucht genau diesen Zugriff — die Zeile steht hier und nicht in §6, weil ein Posten ohne Ort in der Plan-Tabelle in diesem Repo gemessen wirkungslos bleibt |
-| [`internal/span/emit.go`](../../../../internal/span/emit.go) | update | `roleFromAgentType` leitet ab statt zu wiederholen. **Kein Import-Zyklus im Weg:** `grep -rn 'ai-harness-init/internal/span' internal/emit/*.go \| wc -l` → **0** und `grep -rn 'ai-harness-init/internal/emit' internal/span/*.go \| wc -l` → **0**; heute kennt keines der zwei Pakete das andere, beide Richtungen sind offen. Welche gewählt wird, ist Frage A |
+| [`internal/span/emit.go`](../../../../internal/span/emit.go) | update | `roleFromAgentType` leitet ab statt zu wiederholen. **Nur eine Richtung ist zyklenfrei:** `grep -rn 'ai-harness-init/internal/span' internal/emit/*.go \| wc -l` → **2** und `grep -rn 'ai-harness-init/internal/emit' internal/span/*.go \| wc -l` → **0** (keine Erwartungswerte); die Kante `emit → span` besteht, die Gegenrichtung wäre ein Zyklus. Frage A ist damit an der Messung entschieden, nicht an der Abwägung — der Antwortblock unter dieser Tabelle führt sie aus |
 | [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | update | der Voll-E2E-Sensor verliert seine eigene Liste (Klausel iii) |
 | [`internal/span/fieldlist.go`](../../../../internal/span/fieldlist.go), der Grenz-Satz `limitAgentGuard` | update | der vierte Fundort (§1) — er schreibt die sechs Literale in einen Text, der **im Zielrepo** steht, und ist an nichts gebunden (`grep -c "planner" internal/span/fieldlist_test.go internal/emit/fieldlist_test.go` → **0** und **0**). Die Form seiner Ableitung ist Frage C, weil sie die Bytes einer Adopter-Datei berührt |
-| [`internal/emit/agents_test.go`](../../../../internal/emit/agents_test.go) | update | zwei Ein-Zeilen-Korrekturen aus der Closure von [slice-097](../done/slice-097-rollen-typen-gehen-mit.md): der Klassen-Kommentar beziffert die Emissions-Menge unter `docs/plan/` mit *zwei* (gemessen **6**), und das `richtung`-Feld derselben Klasse sagt *„unter `docs/plan/`"*, während sein Muster nur `planning\|adr` deckt. Die Datei wird für DoD (1) ohnehin angefasst |
+| [`internal/emit/agents_test.go`](../../../../internal/emit/agents_test.go) | update | zwei Ein-Zeilen-Korrekturen aus der Closure von [slice-097](../done/slice-097-rollen-typen-gehen-mit.md): der Klassen-Kommentar beziffert die Emissions-Menge unter `docs/plan/` mit *zwei* (gemessen **3** Inhaltsdateien — `find .harness/baseline/v6.5.0/templates/docs/plan -type f` gegen `sed -n '/^func isRecurring/,/^}/p' internal/emit/templates.go`, die vier `.gitkeep` daneben nennt der Kommentar nicht), und das `richtung`-Feld derselben Klasse sagt *„unter `docs/plan/`"*, während sein Muster nur `planning\|adr` deckt. Die Datei wird für DoD (1) ohnehin angefasst |
 | `test/mutations/` <!-- d-check:ignore (geplante Dateien) --> | neu | die Zähne aus DoD (1)–(3); Nummern im Anschluss an die höchste vergebene (`ls -1 test/mutations/*.sh \| wc -l` → **165**, beim Anlegen neu auszuzählen) |
 | [`internal/span/response_test.go`](../../../../internal/span/response_test.go) | **unverändert** | §Die Grenze: die Tabelle hält den Vertrag samt seiner zehn Verneinungen und leitet nichts ab |
 | [`docs/plan/adr`](../../adr) | **unverändert** | [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 3 lässt die Kopplung *benannt, nicht geschlossen*; sie auszuführen ist keine neue Entscheidung, und eine *Accepted*-ADR wird nicht nachgetragen ([`AGENTS.md`](../../../../AGENTS.md) §3.4) |
@@ -296,9 +304,211 @@ benannte Spec-Lücke).
   Slice nur `make gates` fährt, sieht die Verdrahtung weiterhin nicht — das ist eine Eigenschaft der
   Stufe, keine Lücke des Schnitts, und sie gehört in die Closure-Notiz statt in eine Zusage.
 
+### Ausgänge (einer je Risiko, Modul 5 §Offene Risiken werden bei Closure aufgelöst)
+
+1. **Zirkularität der Klausel (i) — entfallen.** Der Vergleich hängt an zwei verschiedenen Bäumen:
+   die Erwartung kommt aus `internal/emit/templates/agents/*.md` im Quell-Baum, der Ist-Bestand aus
+   `.claude/agents/*.md` des gebootstrappten Ziels. `test/mutations/305` trennt beide nachweisbar —
+   es kürzt `CanonicalRoles()`, lässt die Vorlagen-Dateien unangetastet, und der Sensor vermisst die
+   Rolle trotzdem. Eine aus dem Ziel gelesene Erwartung könnte das nicht.
+2. **Klausel (iii) verkleinert die Sensor-Aussage — entfallen.** Frage B ist zugunsten der Quelle
+   entschieden, nicht zugunsten des Ziels; derselbe Fall `305` ist der Beleg, dass der Sensor eine
+   Abweichung zwischen beiden Bäumen sieht statt sie wegzudefinieren.
+3. **Zwei Zähne kosten `full-smoke`-Laufzeit — eingetreten.** Der Modus trägt jetzt mehr Fälle
+   (`grep -l '^# verify: full-smoke' test/mutations/*.sh | wc -l`, kein Erwartungswert). Ein
+   Folge-Slice ist dafür nicht geschuldet, weil der Auffang vor dem Eintritt stand und gemessen ist:
+   die Worker-Verteilung aus [slice-105](../done/slice-105-mutate-messen-dann-teilen.md) und der
+   Beleg-Mechanismus aus
+   [`ADR-0035`](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md), der einen
+   Lauf über unverändertem Prüfgegenstand ganz ausfallen lässt.
+4. **Verbreiterung der Rollen-Achse — entfallen.** Die Grenze ist unberührt: der Slice ändert
+   [`spec/lastenheft.md`](../../../../spec/lastenheft.md) nicht, und
+   [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) §Benannte
+   Grenze steht unverändert. Ein Wächter über einem fremden Vertrag ist nicht entstanden.
+5. **`make gates` deckt Klausel (i) nicht — entfallen als Risiko, bestehen als benannte Grenze.**
+   Was die Formulierung befürchtete — dass die Deckung an der Erinnerung einzelner Läufe hängt —
+   tritt nicht ein: `.github/workflows/ci.yml` fährt `make full-smoke` **und** `make mutate` bei
+   jedem `push` und `pull_request` (`grep -nE 'make (mutate|full-smoke)' .github/workflows/ci.yml`).
+   Der Träger ist mechanisch, nicht disziplinarisch. Die Grenze selbst bleibt wahr und steht in §7.
+
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Rolle:** Planner (frischer Kontext, [`AGENTS.md`](../../../../AGENTS.md) §3.10) · **Datum:** 2026-09-11
+
+### Geliefert
+
+Der Satz der sechs kanonischen Rollen-Namen steht im Produktionsbestand an **einer** Stelle —
+`span.CanonicalRoles()`. Die Abbildung des Trägers, die Emissions-Quelle und der Grenz-Satz, dessen
+Text ins Zielrepo geht, lesen sie; der Voll-E2E-Sensor gewinnt seine Erwartung aus einem **zweiten**
+Baum, den Typ-Vorlagen, und vergleicht damit zwei Artefakte statt eines mit sich selbst. Die Bytes
+der Adopter-Datei sind dabei unverändert geblieben: die Aufzählung entsteht jetzt aus derselben
+Liste, in derselben Form.
+
+### Was funktionierte
+
+**Die Ableitungs-Richtung war keine Abwägung, sondern eine Messung.** Eine der zwei Richtungen ist
+ein Import-Zyklus und übersetzt nicht; damit blieb genau eine übrig, und die Frage, die der Plan als
+offen führte, war es bei Arbeitsbeginn nicht mehr. Wer sie als Abwägung geführt hätte, hätte eine
+Entscheidung begründet, die der Compiler ohnehin trifft.
+
+**Der Sensor liest die Quelle, nicht das Ziel, und ist gegen den Nulldurchlauf abgesichert.** Ohne
+den `n=0`-Zähler wäre die Schleife über einem leeren Glob still grün — dieselbe Falle, die
+[`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) für Gates
+über leerem Prüfbereich benennt und die Klausel (i) mit dem Wort *nicht leer* adressiert.
+
+### Was anders lief
+
+**Zwei der drei Abnahme-Kommandos maßen eine andere Menge als die Eigenschaft, die sie zusagten.**
+Beide sind nachgezogen, und beide Korrekturen sind gegen den Baum **vor** der Arbeit gehalten, statt
+gegen den danach — eine Messmethode, die erst nach getaner Arbeit grün wird, ist keine Senkung; eine,
+die schon vorher grün war, wäre eine. Der Abschnitt *Der Abnahmemaßstab* unten führt beide aus.
+
+**Fünf Mutations-Fälle haben ihre Zähne an einer berechtigten Umbenennung verloren**, und sie
+verloren sie auf **zwei** verschiedenen Wegen. Ein Anker, der das alte Symbol sucht, greift nicht
+mehr und mutiert nichts. Ein Fall, der Code mit dem alten Symbol **einfügt**, mutiert sehr wohl —
+aber der so entstandene Baum übersetzt nicht, und der erwartete Test fällt aus einem anderen Grund.
+Nur der erste Weg fällt bei einer No-Op-Prüfung auf.
+
+### Der Abnahmemaßstab: zwei Entscheidungen, beide gegen den Vor-Baum gemessen
+
+**DoD (1) — das Kommando ist nachgezogen, die Eigenschaft unverändert.** Das ursprüngliche Kommando
+nahm `_test.go` aus, nicht `test/`. Sein Prüfbereich enthält damit die Mutations-Fälle, die den
+Punkt erfüllen — und die müssen die Liste zitieren, sonst könnten sie sie nicht kürzen. Der Maßstab
+war dadurch **strukturell unerreichbar**: Jeder Wächter, der DoD (1) einlöst, hebt seine Zahl. Mit
+der Verengung auf den Produktionsbestand liefert dasselbe Kommando über dem Baum vor der Arbeit
+**4** und heute **1** — es reproduziert also exakt die Ausgangszahl aus §1 und ist damit nicht
+weicher geworden, sondern trifft erst jetzt seinen erklärten Gegenstand.
+
+**DoD (3) — das Kommando ist ersetzt, weil es die falsche Achse maß.** `# files:` nennt die Datei,
+die ein Fall **patcht**; ein Fall über der Rollen-Schleife patcht
+[`internal/span`](../../../../internal/span), nicht den Sensor. Das alte Kommando war deshalb schon
+vor Arbeitsbeginn nicht leer und band den gelieferten Fall nicht. Der Vorschlag, allein auf
+`# expect:` zu suchen, ist **nicht übernommen**: Er bindet eine Kommentarzeile, nicht den Sensor.
+Das nachgezogene Kommando verlangt beide Achsen — `# verify:` nennt den Sensor, dessen Rot erwartet
+wird, `# expect:` das Rot der Schleife selbst. Über dem Baum vor der Arbeit ist es **leer**, heute
+nennt es zwei Fälle; die Zusage *„heute leer"* wird damit erstmals wahr.
+
+### Steering-Loop-Einträge
+
+1. **Geschärfte Regel — ein Abnahme-Kommando wird gegen den Baum *vor* der Arbeit gehalten.** Ein
+   Kriterium, das schon vorher grün ist, misst nicht die Lieferung; eines, dessen Prüfbereich die
+   Artefakte enthält, die es erfüllen, ist unerreichbar. Beide Fehlformen fallen auf, sobald dasselbe
+   Kommando einmal über dem Eltern-Stand läuft — das kostet einen `git archive` und trennt
+   *Messmethode nachziehen* von *Maßstab senken*. Die Regel steht hier als Lerneintrag und noch
+   nicht als Norm: ihre zwei Beobachtungen sind unter der Schwelle.
+2. **Neuer Sensor — der Voll-E2E-Sensor hat erstmals einen Fall über seiner Rollen-Schleife.** Rot
+   gesehen unter `make mutate` sind beide Achsen, die er trägt: eine Rolle verliert sich auf dem Weg
+   ins Ziel (`305`), und die Verdrahtung fällt ganz aus (`306`).
+3. **Benannte Grenze — Klausel (i) hängt an einer Stufe außerhalb von `make gates`.** Die Stufe ist
+   erzwungen, nicht gewählt: ein Go-Test in [`internal/emit`](../../../../internal/emit) sieht den
+   Aufruf in [`cmd/ai-harness-init/main.go`](../../../../cmd/ai-harness-init/main.go) nicht. Wer nur
+   `make gates` fährt, hat für diese Klausel keinen Beleg; wer pusht, hat einen, weil CI
+   `make full-smoke` und `make mutate` mitführt.
+
+### Beobachtungs-Register
+
+- **Beleg ergänzt:**
+  [`mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`](../observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/observation.md)
+  — fünf Fälle in **einem** Vorgang, darum ein Beleg. Der Eintrag erreicht damit seinen dritten
+  Vorgang. Seine `state.md` ist um die zweite Bruchform erweitert: Der billige Vorab-Vergleich, den
+  sie als Ausweg nennt, trennt *stumpf* von *scharf* nur für den Anker — ein Fall, der das alte
+  Symbol **einfügt**, verändert die Datei und fällt durch diesen Vergleich hindurch.
+- **Beleg ergänzt:**
+  [`mess-zusage-trifft-das-eigene-zitat`](../observations/BEO-ALL/mess-zusage-trifft-das-eigene-zitat/observation.md)
+  — dieselbe Mechanik mit anderem Träger: nicht der Plan liegt in der Bezugsmenge seines eigenen
+  Such-Kommandos, sondern der gelieferte Wächter.
+- **Beleg ergänzt:**
+  [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
+  — die Unterklasse *Prosa-Zahl*, die seine `state.md` als offen führt: zwei Messungen desselben
+  Kommandos standen in §3 nebeneinander, die überholte und ihre Korrektur. Beide Zahlen sind auf den
+  Ist-Stand gezogen.
+- **Neu angelegt:**
+  [`abnahme-kriterium-bindet-das-gelieferte-artefakt-nicht`](../observations/BEO-ALL/abnahme-kriterium-bindet-das-gelieferte-artefakt-nicht/observation.md)
+  — ein Beleg. Die Nachbarklasse *Mess-Zusage trifft das eigene Zitat* deckt sie nicht: dort ist der
+  Zielwert unerreichbar, hier ist er **schon vor der Arbeit erreicht**.
+- **Neu angelegt:**
+  [`gepinnter-werkzeug-weg-umgangen-ohne-guard-treffer`](../observations/BEO-ALL/gepinnter-werkzeug-weg-umgangen-ohne-guard-treffer/observation.md)
+  — ein Beleg, selbst gemeldet und ohne Code-Folge. Er steht im Register und nicht nur in dieser
+  Notiz, weil der Wächter dafür **existiert** und nicht gegriffen hat: Der Guard prüft die
+  Befehlsposition, und die trug ein erlaubtes `docker`.
+- **Kein Beleg für**
+  [`neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md):
+  Der neue Wächter ist gelistet — `test/mutations/303` und `304` nennen ihn in ihrer `# expect:`-Zeile
+  und kürzen die zwei Seiten der Ableitung einzeln.
+
+### Der Lese-Schritt, und warum er hier nicht liegt
+
+Dieses Repo führt Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l`, kein Erwartungswert),
+und die Welle-Closure liest alles, was seit der letzten Closure in `done/` liegt — **auch Slices
+ohne Wellen-Zugehörigkeit** (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle
+braucht). Der Lese-Schritt — welcher Eintrag **3×** erreicht hat und welchen Ausgang er bekommt —
+gehört damit der Welle-Closure, und der Herkunfts-Anker einer daraus verkörperten Regel lautet
+`seit welle-<NN>`.
+
+**Ein Eintrag tritt mit dieser Closure über die Schwelle** und steht bis dahin `offen` — zulässig
+und vorübergehend (`modul-06-roadmap.md` §Das Beobachtungs-Register): die Anker-Klasse oben. Ihr
+Material für den Lese-Schritt liegt im Eintrag selbst und nicht in dieser Notiz, denn der
+Lese-Schritt liest das Register.
+
+**Der stehende Rückstand ist damit nicht aufgelöst und gehört benannt.** Einträge bei ≥ 3× mit Stand
+`offen`:
+
+```sh
+for d in docs/plan/planning/observations/BEO-ALL/*/; do
+  n=$(ls "$d/evidence"/*.md 2>/dev/null | wc -l); s=$(head -1 "$d/state.md")
+  [ "$n" -ge 3 ] && [ "$s" = "**Stand:** offen" ] && echo "$(basename $d) $n"
+done | sort -k2 -rn
+```
+
+**Kein Erwartungswert.** Zwei davon berührt dieser Slice — die Anker-Klasse, die er über die
+Schwelle hebt, und den Verweis-Nachzug unten; ihre Zahlen steigen, ihr Zustand nicht.
+
+### Die §3.11-Vormessung, über beide Adress-Formen
+
+Vor dem `git mv` ist gemessen worden, welches eingefrorene Artefakt den wandernden Plan-Pfad als
+**Pfad** nennt — Markdown-Link und Code-Span getrennt, weil sie auf verschiedene Module des
+Doku-Gates fallen:
+
+```sh
+F=slice-104-rollen-namen-haben-eine-quelle.md
+git grep -lE "\]\([^)]*$F\)"        -- 'docs/plan/planning/done/**' 'docs/reviews/**' 'docs/plan/adr/**'   # 3
+git grep -lE "\`[^\`[:space:]]*$F\`" -- 'docs/plan/planning/done/**' 'docs/reviews/**' 'docs/plan/adr/**'  # 1
+```
+
+**Keine Erwartungswerte.** Die Link-Form trifft drei eingefrorene Closure-Notizen; die Code-Span-Form
+trifft einen **Rollen-Report**, den eine Messung über die Link-Form allein nicht sieht — genau der
+Grund, aus dem §3.11 beide verlangt. Entschieden **vor** dem Move, wie die Sektion es vorschreibt:
+Der Move wird ausgeführt. Träger dieser Entscheidung ist nach der `state.md` von
+[`verweis-nachzug-schreibt-in-eingefrorenes-artefakt`](../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/observation.md)
+der Lauf, der den Move plant, solange die Norm-Frage beim Architect liegt; der Vorgang bekommt dort
+seinen Beleg.
+
+### Zwei Rückführungen, keine gezogen
+
+§4 nennt für `in-progress → next` das **dritte, gemeinsame Paket** als Bedingung. Es ist nicht
+entstanden: Die gewählte Richtung nutzt eine Kante, die schon vor der Arbeit bestand
+(`grep -c 'ai-harness-init/internal/span' internal/emit/fieldlist.go`), und legt kein Paket an
+(`ls -d internal/*/ | wc -l`, kein Erwartungswert, unverändert gegenüber dem Eltern-Stand). Für
+`in-progress → open` nennt §4 eine berührte Aussage von
+[`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md): Festlegung 5(a)
+betrifft allein die verworfene Gegenrichtung, `Agents()` schreibt weiterhin unbedingt, und der neue
+Import ist ein Kompilierzeit-Bezug auf eine Konstanten-Liste. Beide Bedingungen sind geprüft und
+nicht eingetreten.
+
+### Verifikation
+
+- **`make gates`** grün, vom Verifier selbst gefahren; `docs-check` meldete dabei `0 Befund(e)` über
+  seinem vollen Prüfbereich (`make docs-check`, die Datei-Zahl wandert mit dem Bestand).
+- **`make full-smoke`** vollständig durchgelaufen, ohne `FEHLER`-Zeile — die Stufe, an der Klausel (i)
+  und (iii) hängen, ist real gefahren und nicht nur zitiert.
+- **`make mutate`** ohne Befund über allen Fällen (`ls test/mutations/*.sh | wc -l`, kein
+  Erwartungswert); der Beleg ist an den Prüfgegenstand gebunden, und die neun tragenden Fälle sind
+  einzeln per Anker-Diff gegen den echten Quellcode nachgerechnet worden, statt aus der
+  Gesamtmeldung geschlossen zu werden.
+- **Review** nach Modul 10 in einer abgelegten Runde; die drei HIGH sind aufgelöst. **Verifikation**
+  nach Modul 11 mit eigenständiger Nachmessung beider Abnahme-Kommandos — sie hat die zwei
+  Abweichungen benannt und die Entscheidung darüber ausdrücklich dem Planner überlassen
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
 
 ## 8. Sub-Area-Modus-Begründung
 
