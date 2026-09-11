@@ -4,7 +4,7 @@
 - **Eingang:** DoD-Bestätigung des Implementers (Commits `19bfcc1f`, `2200a822`, `02098fc4`) plus
   zwei Review-Runden (`docs/reviews/2026-09-11-slice-194-bootstrap-legt-den-register-ort-an.md`,
   `…-runde-2.md`, beide Verdikt „keine dritte Runde nötig").
-- **Prüfgegenstand:** `docs/plan/planning/in-progress/slice-194-bootstrap-legt-den-register-ort-an.md`
+- **Prüfgegenstand:** `docs/plan/planning/done/slice-194-bootstrap-legt-den-register-ort-an.md`
   gegen den Baum bei `HEAD=5516daa5`. Baum sauber (`git status --porcelain` leer), kein anderer
   `make`-Lauf hielt Docker (`pgrep -af 'make '` zeigte nur fremde Prozesse in einem Nachbar-Repo).
 - **Frage dieser Rolle:** Bauen wir es richtig — gegen Plan und DoD. Nicht Gegenstand: ob der

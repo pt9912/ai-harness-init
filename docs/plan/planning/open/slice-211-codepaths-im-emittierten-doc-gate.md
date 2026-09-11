@@ -57,7 +57,7 @@ fehlenden dritten Kriterium als Arbeit, nicht als Vorbehalt.
 [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
 Setzung 3 hält `codepaths` mit dem Trigger *„die emittierte Prosa nennt keinen Ort mehr, den ein
 frisches Ziel nicht trägt"* zurück. Der Ort wird emittiert
-([slice-194](../in-progress/slice-194-bootstrap-legt-den-register-ort-an.md)), und die Kopf-Marke des
+([slice-194](../done/slice-194-bootstrap-legt-den-register-ort-an.md)), und die Kopf-Marke des
 Eintrags führt den Trigger als eingetreten. Was die drei Kriterien heute tragen, ist in drei
 Kommandos abzulesen:
 
