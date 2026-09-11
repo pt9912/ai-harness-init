@@ -2,8 +2,8 @@
 # files: .claude/hooks/pretooluse-commit-msg-guard.sh
 # expect: match: --file=<pfad> -> Datei auf stdout
 #
-# Verengt den Flag-Teil der Match-Regex von `(-[a-zA-Z]*F|--file)` zurueck auf
-# die schmale, alte Form `-F` — kombinierte Kurz-Flags (`-qF`) und die
+# Verengt den Flag-Teil der Match-Regex von `(-[a-zA-Z]*F|--file)` auf die
+# schmale Form `-F` — kombinierte Kurz-Flags (`-qF`) und die
 # Lang-Form `--file`/`--file=` werden dadurch nicht mehr erkannt, waehrend
 # der reine `-F <pfad>`-Fall unveraendert matcht. Die Argument-Formen
 # (unquotiert, einfache/doppelte Anfuehrungszeichen) bleiben von dieser

@@ -19,9 +19,13 @@
 # Anfuehrungszeichen gesetzter Pfad, der eine Shell-Variable enthaelt, bleibt
 # unexpandiert — wie im unquotierten Fall auch; die Existenz-Pruefung weiter
 # unten greift dann nicht, kein Rateversuch. Kein Anspruch auf
-# Vollstaendigkeit: `git commit -m "…"` und `-F -` (stdin) entkommen bewusst
-# — derselbe Stolperdraht-Charakter wie beim Command-Guard: kein
-# Sandbox-Anspruch, ADR-0004.
+# Vollstaendigkeit: `-F -` (stdin) entkommt bewusst. `git commit -m "…"`
+# entkommt NICHT garantiert: der Matcher liest die Befehlszeile flach, ohne
+# Quotierungs-Kontext — traegt der -m-Text selbst eine der obigen Flag-Formen
+# gefolgt von einem existierenden Pfad, greift der Hook trotzdem und prueft
+# diesen Pfad wie eine Message-Datei (derselbe Stolperdraht-Charakter wie
+# beim Command-Guard: kein Sandbox-Anspruch, ADR-0004; im gelebten Bestand
+# ohne Treffer, siehe harness/README.md).
 #
 # Reagiert dieser Hook (Muster erkannt, Datei existiert), gilt SEIN Urteil:
 # `make commit-msg-check` selbst prueft nur die ANWESENHEIT einer Kennung,
