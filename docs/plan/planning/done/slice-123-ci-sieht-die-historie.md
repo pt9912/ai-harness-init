@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
 **Welle:** [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) — der **erste** Slice und die
-harte Kante zu [slice-126](../next/slice-126-commit-message-traegt-eine-kennung.md) und
+harte Kante zu [slice-126](../in-progress/slice-126-commit-message-traegt-eine-kennung.md) und
 [slice-127](../done/slice-127-adr-immutabilitaet-hat-einen-sensor.md).
 
 **Ebene: Dogfood, nicht emittiert.** Gegenstand sind die Workflows **dieses** Repos
@@ -71,13 +71,13 @@ darum die Range, nicht die Klon-Tiefe:** eine Tiefen-Prüfung ließe den leeren 
 die Historie fehlt, muss **fallen**. Ohne diese Hälfte ist die Zeile eine Zusage ohne
 Gegenbeispiel — sie hält, solange niemand sie entfernt, und bricht still, sobald jemand es tut.
 Diese Hälfte gehört genau **einmal** ins Repo und nicht zweimal in
-[slice-126](../next/slice-126-commit-message-traegt-eine-kennung.md) und
+[slice-126](../in-progress/slice-126-commit-message-traegt-eine-kennung.md) und
 [slice-127](../done/slice-127-adr-immutabilitaet-hat-einen-sensor.md); läge sie in 126, hinge 127 an 126,
 obwohl die zwei fachlich nichts miteinander zu tun haben.
 
 **Und der Prüfbereich ist enger als „alle sieben Checkouts".** Volle Historie kostet Zeit; sie
 gehört an die Jobs, deren Schritte Historie **lesen**, nicht an jeden Checkout des Repos. Welche
-das sind, ist nach [slice-126](../next/slice-126-commit-message-traegt-eine-kennung.md) und
+das sind, ist nach [slice-126](../in-progress/slice-126-commit-message-traegt-eine-kennung.md) und
 [slice-127](../done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) bekannt — vor ihnen ist es eine
 Entscheidung, und sie ist DoD (2).
 
@@ -148,7 +148,7 @@ ist dieser Slice der erste; er wartet auf keinen anderen.
 
 - `in-progress` → `next`: DoD (2) lässt sich nicht entscheiden, weil noch kein history-lesender
   Schritt existiert — dann wird der Slice zu einer Entscheidung ohne Gegenstand. Er geht zurück und
-  **hinter** [slice-126](../next/slice-126-commit-message-traegt-eine-kennung.md); die Kante dreht sich um.
+  **hinter** [slice-126](../in-progress/slice-126-commit-message-traegt-eine-kennung.md); die Kante dreht sich um.
   **Das ist der wahrscheinlichste Rückweg dieses Slice**, und er ist kein Fehler, sondern die
   Alternative, gegen die hier entschieden wurde.
 - `in-progress` → `open`: `fetch-depth: 0` treibt die CI-Laufzeit über eine Grenze, die dieses Repo
@@ -165,13 +165,13 @@ Befund, Closure-Notiz in §7 mit Steering-Loop-Eintrag.
 ## 6. Risiken und offene Punkte
 
 - **Der Wächter kann sich selbst nicht beweisen, solange er allein steht.** Vor
-  [slice-126](../next/slice-126-commit-message-traegt-eine-kennung.md) und
+  [slice-126](../in-progress/slice-126-commit-message-traegt-eine-kennung.md) und
   [slice-127](../done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) gibt es keinen produktiven Schritt,
   der Historie liest — sein Gegenbeispiel ist dann ein **konstruierter** flacher Klon und nicht ein
   echter CI-Lauf. Das ist zulässig (DoD (1) nennt genau diesen Lauf), aber es ist eine schwächere
   Deckung, und sie gehört in die Closure-Notiz statt in eine Erfolgsmeldung.
   **Ausgang: eingetreten → [slice-127](../done/slice-127-adr-immutabilitaet-hat-einen-sensor.md)**
-  (nachrangig [slice-126](../next/slice-126-commit-message-traegt-eine-kennung.md)). Der Wächter
+  (nachrangig [slice-126](../in-progress/slice-126-commit-message-traegt-eine-kennung.md)). Der Wächter
   steht ohne Aufrufer — `grep -rn 'history-range-guard' .github/workflows/ | wc -l` → **1**, und
   der eine Treffer ist die Kommentarzeile
   [`.github/workflows/ci.yml`](../../../../.github/workflows/ci.yml)`:27`, kein `run:`-Schritt
@@ -188,7 +188,7 @@ Befund, Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   gemessene Zahl über einer nicht getroffenen Entscheidung wäre eine Zahl ohne Gegenstand. Die
   Kosten-Frage entsteht mit dem ersten Checkout, der volle Tiefe bekommt; sie liegt dann bei dem
   Slice, der ihn setzt — DoD (2) von
-  [slice-126](../next/slice-126-commit-message-traegt-eine-kennung.md) entscheidet ausdrücklich,
+  [slice-126](../in-progress/slice-126-commit-message-traegt-eine-kennung.md) entscheidet ausdrücklich,
   „ob neben dem Vor-Commit-Lauf eine Range in CI läuft".
 - **Der Guard-Präzedenzfall warnt vor Selbstüberschätzung.** Der PreToolUse-Guard benennt seine
   eigene Grenze (*„ein Stolperdraht, KEINE Sandbox"*); ein Tiefen-Wächter, der *„CI sieht die
@@ -232,10 +232,10 @@ Befund, Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   anderen bleiben bei Tiefe 1" hält, ohne je rot werden zu können. Ihr Beleg ist die **Begründung**
   im Kopf von [`.github/workflows/ci.yml`](../../../../.github/workflows/ci.yml); ein Sensor, der
   die zwei Mengen gegeneinander hält, existiert nicht. Der Punkt bleibt offen, bis
-  [slice-126](../next/slice-126-commit-message-traegt-eine-kennung.md) oder
+  [slice-126](../in-progress/slice-126-commit-message-traegt-eine-kennung.md) oder
   [slice-127](../done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) den ersten history-lesenden
   Schritt liefert, und braucht bei der Closure einen der drei Ausgänge.
-  **Ausgang: eingetreten → [slice-126](../next/slice-126-commit-message-traegt-eine-kennung.md)**
+  **Ausgang: eingetreten → [slice-126](../in-progress/slice-126-commit-message-traegt-eine-kennung.md)**
   (nachrangig [slice-127](../done/slice-127-adr-immutabilitaet-hat-einen-sensor.md)). Beide Mengen
   stehen bei Closure unverändert auf null
   (`grep -rnE 'doc-immutable|doc-commits' .github/workflows/ | grep -v ':[0-9]*:#' | wc -l` → **0**
@@ -380,7 +380,7 @@ wandern mit dem Bestand.
   mechanische Adress-Ersetzung eine *Berührung* im Sinne des Einfrierens ist, sagt keine Quelle
   über Rang 9 — [`harness/README.md`](../../../../harness/README.md) trägt heute die einzige
   Begründung. **Das ist eine Übergabe an den Architect**, nicht ein Urteil dieser Closure.
-- **Folge-Slices:** [slice-126](../next/slice-126-commit-message-traegt-eine-kennung.md) und
+- **Folge-Slices:** [slice-126](../in-progress/slice-126-commit-message-traegt-eine-kennung.md) und
   [slice-127](../done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) — beide sind Dateien in
   `open/` und Mitglieder derselben Welle. Neu geschnitten wurde **keiner**: die zwei Risiken mit
   dem Ausgang *eingetreten* fallen auf DoD-Punkte, die diese zwei bereits führen (slice-127
