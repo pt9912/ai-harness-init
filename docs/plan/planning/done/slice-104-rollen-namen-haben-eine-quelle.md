@@ -500,6 +500,21 @@ betrifft allein die verworfene Gegenrichtung, `Agents()` schreibt weiterhin unbe
 Import ist ein Kompilierzeit-Bezug auf eine Konstanten-Liste. Beide Bedingungen sind geprüft und
 nicht eingetreten.
 
+### Die drei Paarungen, nach dem Move gefahren
+
+- **(a) Anker-Paarung — kein Gegenstand.** Kein Steering-Loop-Eintrag oben trägt das Pflichtfeld
+  `liegt in <Zielort>`; alle drei sind *gezählt, nicht verkörpert* und lösen die Paarung nicht aus.
+- **(b) Folge-Slice-Paarung — hält.** Jede in dieser Notiz genannte Slice-Kennung existiert als
+  Datei im Planning-Lifecycle (`for s in $(grep -ohE 'slice-[0-9]{3}' <diese Datei> | sort -u); do
+  ls docs/plan/planning/{open,next,in-progress,done}/$s-*.md; done`) — je genau eine.
+- **(c) Register-Paarung — erste Hälfte hält, zweite meldet.** Jede hier zitierte Beobachtung
+  existiert als Verzeichnis. Die zweite Hälfte findet **ein** Verzeichnis mit leerem `evidence/`,
+  und es ist keines dieses Slice: Es entstand aus einer Koordinations-Sitzung und weist sein
+  Vorkommen selbst als *benannt, nicht gezählt* aus — also als eines, für das die Beleg-Regel gar
+  keine Datei vorsieht. Der Fund ist als
+  [`unbelegter-register-eintrag-faellt-durch-die-paarung`](../observations/BEO-ALL/unbelegter-register-eintrag-faellt-durch-die-paarung/observation.md)
+  registriert statt als grün gezählt; welche der zwei Lesarten trägt, ist Norm-Arbeit.
+
 ### Verifikation
 
 - **`make gates`** grün, vom Verifier selbst gefahren; `docs-check` meldete dabei `0 Befund(e)` über
