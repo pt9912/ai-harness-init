@@ -33,7 +33,7 @@ BASELINE_TAG ?= v6.5.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 80684c17b958d2bc0c25eef1bdff25342b9c7b90254431ade9c29ee2add18865
 
-.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims history-range-guard adr-immutable host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle vendor-baseline
+.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -173,6 +173,22 @@ history-range-guard: ## Historie-Vorlauf-Waechter: RANGE muss aufloesbar UND nic
 # hermetischer Pruefbereich (LH-QA-01) — Aufrufer ist der Job `adr-immutable`
 # in .github/workflows/ci.yml.
 adr-immutable: history-range-guard doc-immutable ## ADR-Kern ueber RANGE=<base>..<head> (oder STAGED=1) unveraendert seit Accepted — NICHT in gates
+
+# Commit-Message-Traceability VOR dem Commit (AGENTS.md 5, harness/README.md
+# §Traceability, AGENTS.md 3.6): prueft eine Message-DATEI (MSG=<datei>) gegen
+# das commits:-Modul aus .d-check.yml via --commit-msg — dieselben
+# id-patterns/exempt-pattern, die eine Range-Pruefung laesen wuerde, kein
+# zweiter Regelsatz. Traeger ist der PreToolUse-Hook
+# .claude/hooks/pretooluse-commit-msg-guard.sh, der jeden `git commit -F
+# <datei>`-Aufruf hierher spiegelt, bevor der Commit steht (Repo-Konvention
+# "Commit via Message-Datei"). Geprueft wird NUR die ANWESENHEIT einer
+# Kennung (ADR-/LH-/MR-/slice-), nicht ihre Wahrheit (harness/README.md).
+# NICHT in gates: MSG variiert pro Aufruf und ist damit kein hermetischer
+# Pruefbereich (LH-QA-01).
+commit-msg-check: ## Commit-Message-Datei gegen Traceability-Kennung pruefen (MSG=<datei>) — NICHT in gates
+	@test -n "$(MSG)" || { echo "commit-msg-check: MSG=<datei> fehlt" >&2; exit 2; }
+	@test -f "$(MSG)" || { echo "commit-msg-check: MSG=$(MSG) ist keine Datei" >&2; exit 2; }
+	docker run --rm --network none -v "$(CURDIR):/repo:ro" -v "$(abspath $(MSG)):/commit-msg.txt:ro" $(DCHECK_REF) --enable commits --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable planning --disable tracked --disable targets --disable citations --disable sources --disable structure --disable workflows --disable reviews --commit-msg /commit-msg.txt
 
 # Verifiziert die vendored Baseline netzlos, in zwei Schritten: `sha256sum -c`
 # über SHA256SUMS fängt geänderte und gelöschte Dateien, ein Vollständigkeits-

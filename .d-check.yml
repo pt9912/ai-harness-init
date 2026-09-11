@@ -68,12 +68,13 @@ planning:
 # exempt-targets ist EXAKT (kein Glob) und in zwei Gruppen kuratiert:
 #
 # (a) Nicht-Gate-Verifies und Maintenance/CI-Sensoren — kein Gate-Versprechen (wie (b)),
-# jedes Rezept zusaetzlich in harness/README.md namentlich genannt (12 von 16 ueber einen
+# jedes Rezept zusaetzlich in harness/README.md namentlich genannt (13 von 17 ueber einen
 # eigenen `## `-Hilfetext mit der Angabe "NICHT in gates"; span-clean, doc-immutable,
 # doc-commits und record-gates tragen diesen Hilfetext nicht, stehen aber ebenfalls im
 # Fliesstext): smoke, full-smoke, mutate, span-clean, span-report, hook-overhead, slice-mv,
 # archive-welle, vendor-baseline, regelwerk-check, baseline-freshness,
-# history-range-guard, adr-immutable, doc-immutable, doc-commits, record-gates.
+# history-range-guard, adr-immutable, doc-immutable, doc-commits, record-gates,
+# commit-msg-check.
 #
 # (b) reine Utility-/Advisory-Ziele ohne Prosa-Erwaehnung — jedes traegt seinen
 # eigenen `## `-Hilfetext, sichtbar ueber `make help` bzw. `make doc-help`, und
@@ -102,6 +103,7 @@ targets:
     - doc-immutable
     - doc-commits
     - record-gates
+    - commit-msg-check
     - help
     - test-bats
     - test-go
@@ -344,6 +346,30 @@ vcs:
   exclude-sections: [Geschichte]
   status-line: '^\*\*Status:\*\*'
   head-allow: '^\*\*Status:\*\* (Accepted|Deprecated|Superseded by \[ADR-[0-9]{4}\]\([0-9]{4}-[^)]+\))$'
+# commits (git-basiert, braucht .git + eine Range ODER eine Message-Datei —
+# strikt opt-in, NICHT in modules: oben: ein hermetischer docs-check-Lauf ohne
+# Range/--commit-msg liefe damit ins Leere, LH-QA-01). id-patterns ist DIESELBE
+# Kennungs-Menge wie ids.patterns oben (ADR-/LH-/MR-/slice-), auf die vier
+# regex-Formen des commits-Moduls uebertragen; exempt-pattern laesst Merge-/
+# Revert-Betreffs kennungsfrei (Vorschlag aus d-check --print-config).
+# Traeger dieses Blocks ist AUSSCHLIESSLICH der PreToolUse-Hook
+# .claude/hooks/pretooluse-commit-msg-guard.sh (ueber `make commit-msg-check
+# MSG=<datei>`, --commit-msg) — NICHT `make doc-commits` (d-check.mk, --range):
+# gemessen bricht der gepinnte v0.74.1 mit "Range-Basis-Vorfahren nicht
+# lesbar: object not found" ab, sobald `commits.id-patterns` eine EIGENE
+# (von den drei eingebauten Vorschlaegen abweichende) Liste traegt UND
+# gleichzeitig --range laeuft — reproduziert unabhaengig von Range-Tiefe,
+# expliziten Commit-Hashes und den --disable-Flags, verschwindet mit einer
+# LEEREN id-patterns-Liste und mit --commit-msg statt --range. `doc-commits`
+# bleibt darum ungenutzt advisory stehen (Beleg und Traeger-Entscheidung in
+# harness/README.md).
+commits:
+  id-patterns:
+    - 'ADR-\d{4}'
+    - 'LH-[A-Z]{2}-\d{2}'
+    - 'MR-\d{3}'
+    - 'slice-\d+'
+  exempt-pattern: '^(Merge |Revert )'
 # sources (opt-in, NETZ, seit d-check v0.51.0): Content-Pin des Baseline-Assets gegen
 # Upstream-Drift (MR-013) — der tool-gelieferte Ersatz fuer den Eigenbau (curl+sha256sum)
 # im Target `make regelwerk-check`. BEWUSST NICHT in `modules:` oben: sources ist Netz und
