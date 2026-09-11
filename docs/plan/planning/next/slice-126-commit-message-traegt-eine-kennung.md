@@ -12,7 +12,7 @@ wechselt nur durch `git mv`, siehe
 **Ebene: Dogfood, nicht emittiert.** Gegenstand sind die Commit-Messages **dieses** Repos. Im
 Emissions-Baum kommt der Gegenstand nicht vor
 (`git grep -lni 'commit-msg\|COMMIT_EDITMSG' -- internal/emit/templates/ | wc -l` → **0**, gemessen
-für [slice-121](slice-121-commit-message-nennt-was-es-gibt.md) und hier übernommen).
+für [slice-121](../open/slice-121-commit-message-nennt-was-es-gibt.md) und hier übernommen).
 
 **Bezug:**
 [`AGENTS.md`](../../../../AGENTS.md) §5 (*„Requirement- und ADR-IDs in PRs/Commits referenzieren"* —
@@ -70,19 +70,19 @@ Flags aus [`d-check.mk`](../../../../d-check.mk):
    Message, die den nicht auflösbaren Hash `0f8d1a1` **und** eine gültige Kennung trägt, geht mit
    **Exit 0** durch — gemessen mit derselben `--commit-msg`-Form.
 
-### Warum das [slice-121](slice-121-commit-message-nennt-was-es-gibt.md) nicht ersetzt, aber trägt
+### Warum das [slice-121](../open/slice-121-commit-message-nennt-was-es-gibt.md) nicht ersetzt, aber trägt
 
 Die zwei Slices prüfen **verschiedene Eigenschaften** derselben Zeichenkette:
 `commits` fragt *„steht hier eine Kennung?"*,
-[slice-121](slice-121-commit-message-nennt-was-es-gibt.md) fragt *„bezeichnet dieses Hex-Token ein
+[slice-121](../open/slice-121-commit-message-nennt-was-es-gibt.md) fragt *„bezeichnet dieses Hex-Token ein
 Objekt dieses Repos?"*. Messung 3 ist der Beleg, dass die eine die andere nicht abdeckt: der tote
 Hash passiert `commits` ungehindert.
 
 **Gemeinsam ist ihnen der Träger**, und der ist die teure Hälfte.
-[slice-121](slice-121-commit-message-nennt-was-es-gibt.md) §6 hält fest, ein Vor-Commit-Sensor habe
+[slice-121](../open/slice-121-commit-message-nennt-was-es-gibt.md) §6 hält fest, ein Vor-Commit-Sensor habe
 *„in diesem Repo keinen Präzedenzfall"*, und §3 führt den Ort als **offen**. Nach diesem Slice ist
 er es nicht mehr. Daraus folgt die Arbeitsteilung: **dieser Slice entscheidet und baut den Ort**,
-[slice-121](slice-121-commit-message-nennt-was-es-gibt.md) hängt seine Eigenschaft dort an, statt
+[slice-121](../open/slice-121-commit-message-nennt-was-es-gibt.md) hängt seine Eigenschaft dort an, statt
 einen zweiten Ort zu erfinden. Zusammenlegen wäre falsch — sechs slice-eigene DoD-Punkte, und Modul 5
 §Ziel-Form nennt das nicht *„eine längere DoD"*, sondern *„der Schnitt ist falsch"*.
 
@@ -128,7 +128,7 @@ Steering-Loop-Lerneintrag.
 | [`.github/workflows/ci.yml`](../../../../.github/workflows/ci.yml) | update | nur falls DoD (2) eine Range in CI entscheidet — dann ist [slice-123](../done/slice-123-ci-sieht-die-historie.md) **Voraussetzung**, sonst ist der Lauf dort blind und grün |
 | `test/` | neu | der bats-Fall, den DoD (3) mit einem `test/mutations/`-Fall belegt |
 | [`harness/README.md`](../../../../harness/README.md) | update | der Träger und seine Grenze (DoD (3)) |
-| [`slice-121`](slice-121-commit-message-nennt-was-es-gibt.md) | **nicht durch diesen Slice** | dessen §3/§4/§6 sind mit der Träger-Messung nachgezogen; die **Eigenschaft** bleibt seine |
+| [`slice-121`](../open/slice-121-commit-message-nennt-was-es-gibt.md) | **nicht durch diesen Slice** | dessen §3/§4/§6 sind mit der Träger-Messung nachgezogen; die **Eigenschaft** bleibt seine |
 | [`AGENTS.md`](../../../../AGENTS.md) §3, [`harness/conventions.md`](../../../../harness/conventions.md) | **nicht durch diesen Slice** | Architect-Eigentum ([`AGENTS.md`](../../../../AGENTS.md) §3.8); §4 darf der Slice anfassen, §3 nicht |
 
 ## 4. Trigger
@@ -148,7 +148,7 @@ Entscheidung aber **Teil** der DoD ist und nicht vor ihr steht, wartet der Slice
   Hook, den nur **ein** Klient fährt ([`.codex/hooks.json`](../../../../.codex/hooks.json) führt
   allein den SessionStart-Injektor). Dann ist der Sensor ein Stolperdraht für einen Klienten und
   keine Repo-Zusage; die Lage gehört als Carveout nach Modul 7 aufgeschrieben. **Dieselbe
-  Rückführung steht in [slice-121](slice-121-commit-message-nennt-was-es-gibt.md) §4** — sie
+  Rückführung steht in [slice-121](../open/slice-121-commit-message-nennt-was-es-gibt.md) §4** — sie
   betrifft den Träger, und der ist geteilt.
 
 ## 5. Closure-Trigger
@@ -156,7 +156,7 @@ Entscheidung aber **Teil** der DoD ist und nicht vor ihr steht, wartet der Slice
 DoD (1) bis (3) erfüllt mit gefahrenen Kommandos, `make gates` grün, `make mutate` ohne Befund,
 Review nach Modul 10 und Verifikation nach Modul 11 ohne blockierenden Befund, Closure-Notiz in §7
 mit Steering-Loop-Eintrag **und** der ausdrücklichen Feststellung, ob
-[slice-121](slice-121-commit-message-nennt-was-es-gibt.md) den Träger nun übernehmen kann.
+[slice-121](../open/slice-121-commit-message-nennt-was-es-gibt.md) den Träger nun übernehmen kann.
 
 ## 6. Risiken und offene Punkte
 
@@ -164,7 +164,7 @@ mit Steering-Loop-Eintrag **und** der ausdrücklichen Feststellung, ob
   [`d-check.mk`](../../../../d-check.mk) *„Commit-Message-Traceability"*; geprüft wird die
   **Anwesenheit** eines Kennungs-Musters. Ein Ziel, das *„Commit-Message geprüft"* ausgibt,
   behauptet mehr als es misst — dieselbe Falle, die
-  [slice-121](slice-121-commit-message-nennt-was-es-gibt.md) §6 für seinen eigenen Sensor benennt.
+  [slice-121](../open/slice-121-commit-message-nennt-was-es-gibt.md) §6 für seinen eigenen Sensor benennt.
   Die Meldung muss die Eigenschaft nennen, nicht den Gegenstand.
 - **Ein Vor-Commit-Sensor kann umgangen werden, und das ist keine Ausrede, sondern eine Grenze.**
   Wer ohne den Hook committet, wird nicht gesehen. Was der Sensor deckt, hängt am Klienten; was er

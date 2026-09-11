@@ -307,7 +307,7 @@ Wahrheits-Achse. Zwei benachbarte Schnitte decken je eine andere Achse derselben
 [slice-121](../open/slice-121-commit-message-nennt-was-es-gibt.md) §1 prüft, ob ein Hex-Token ein
 Objekt dieses Repos bezeichnet, und sagt über den Rest *„nicht mechanisierbar … Die restliche
 Klasse trägt kein Sensor, sondern die Norm"*;
-[slice-126](../open/slice-126-commit-message-traegt-eine-kennung.md) DoD (3) verlangt vom Träger
+[slice-126](../next/slice-126-commit-message-traegt-eine-kennung.md) DoD (3) verlangt vom Träger
 die Aussage, er prüfe *„nicht die Wahrheit der Aussagen, nur die Anwesenheit einer Kennung"*.
 **Beide falschen Zeilen aus `3ce4ea3` tragen weder einen Hash noch eine fehlende Kennung** — sie
 sind inhaltlich falsch und passierten beide Nachbarn ungehindert.
