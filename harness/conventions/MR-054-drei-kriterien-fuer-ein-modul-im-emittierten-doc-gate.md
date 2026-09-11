@@ -1,5 +1,7 @@
 # MR-054 — Ein Modul geht ins emittierte Doc-Gate nur mit Erprobung, grünem Start und rotem Gegenbeispiel
 
+> **ÜBERHOLT: die drei Folgerungen, die dieser Eintrag aus einer Messung an einer benannten Stelle zieht — die zwei in Setzung 3 und die eine im Feld `Ersetzt-Baseline-Regel` → [`MR-055`](../conventions.md#mr-055--eine-stellen-messung-trägt-keine-folgerung-über-eine-eigenschaft).** Die fünf Setzungen, die drei Kriterien und das Fork-Verdikt binden fort; der Auflösungs-Trigger der Position `codepaths` ist eingetreten.
+
 - **Datum:** 2026-09-10
 - **Wirksamkeits-Anlass:** slice-073.
 - **Geltungsbereich:** die **Modul-Zusammensetzung** der Doc-Gate-Startkonfiguration, die das
