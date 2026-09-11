@@ -181,17 +181,18 @@ Prüfbereichs — dieselbe Lücke, die
 Jedes Rezept aus `makefiles`, das keine `make X`-Zeile in der `authority`-Datei trägt, steht
 entweder dort **oder** kuratiert (exakte Namen, kein Glob) in `exempt-targets` — heute **36**
 (`sed -n '/^targets:/,/^ignore-refs:/p' .d-check.yml | grep -c '^    - '`), in zwei Gruppen:
-Nicht-Gate-Verifies und Maintenance/CI-Sensoren, die in diesem Dokument in Prosa beschrieben
-sind (`smoke`, `full-smoke`, `mutate`, `span-clean`, `span-report`, `hook-overhead`, `slice-mv`,
-`archive-welle`, `vendor-baseline`, `regelwerk-check`, `baseline-freshness`,
-`history-range-guard`, `adr-immutable`, `doc-immutable`, `doc-commits`, `record-gates`) — und
-reine Utility-/Advisory-Ziele ohne Prosa-Erwähnung, deren einzige Dokumentation ihr eigener
-`## `-Hilfetext ist (`help`, `test-bats`, `test-go`, `artifact`, `release-artifacts`, `compile`,
-`freshness-golangci`, `freshness-dcheck`, `freshness-go`, `freshness-cpp`, `doc-trace`,
-`doc-complete`, `doc-doctor`, `doc-repair`, `doc-planning`, `doc-tracked`, `doc-targets`,
-`doc-structure`, `doc-usage`, `doc-help`). Beide Gruppen sind dokumentiert — die
-`exempt-targets`-Zeile sagt nur, dass keine dieser Dokumentationen eine `make X`-Tabellenzeile
-in der `authority`-Datei ist.
+Nicht-Gate-Verifies und Maintenance/CI-Sensoren — kein Gate-Versprechen (wie die zweite
+Gruppe), zusätzlich in diesem Dokument namentlich genannt (`smoke`, `full-smoke`, `mutate`,
+`span-clean`, `span-report`, `hook-overhead`, `slice-mv`, `archive-welle`, `vendor-baseline`,
+`regelwerk-check`, `baseline-freshness`, `history-range-guard`, `adr-immutable`,
+`doc-immutable`, `doc-commits`, `record-gates`) — und reine Utility-/Advisory-Ziele ohne
+Prosa-Erwähnung, deren einzige Dokumentation ihr eigener `## `-Hilfetext ist (`help`,
+`test-bats`, `test-go`, `artifact`, `release-artifacts`, `compile`, `freshness-golangci`,
+`freshness-dcheck`, `freshness-go`, `freshness-cpp`, `doc-trace`, `doc-complete`, `doc-doctor`,
+`doc-repair`, `doc-planning`, `doc-tracked`, `doc-targets`, `doc-structure`, `doc-usage`,
+`doc-help`). Kein Gate-Versprechen ist der gemeinsame Grund für beide Gruppen — die
+`exempt-targets`-Zeile sagt nur, dass keins dieser Rezepte eine `make X`-Tabellenzeile
+in der `authority`-Datei braucht.
 
 **Was `codepaths` an toten Pfaden in den vendored Baum nicht sieht**
 ([slice-201](../docs/plan/planning/done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)):

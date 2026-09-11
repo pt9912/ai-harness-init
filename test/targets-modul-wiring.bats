@@ -3,12 +3,16 @@
 # `exempt-targets`-Liste exakt gegen die `.PHONY`-Deklarationen aus Makefile/d-check.mk: jeder
 # dort genannte Name steht entweder als `make X`-Tabellenzeile in der `authority`-Datei
 # (AGENTS.md §4) oder in `exempt-targets` — nie in beiden, nie in keinem. `docs-check` selbst
-# haelt eine ANDERE, weitere Menge gegen dieselbe Autoritaets-Tabelle — jede Makefile-**Regel**
-# (Target-Zeile), nicht nur die per `.PHONY` deklarierten; heute fallen beide Mengen zusammen
-# (47 von 47), aber eine Regel ohne `.PHONY`-Eintrag saehe dieser Waechter nicht, faerbte
-# `docs-check` aber rot (Grund-Code gate-undocumented). Dieser Waechter prueft seine engere,
-# `.PHONY`-gebundene Menge hermetisch, ohne Docker, und faellt darum auch dann, wenn ein neues
-# `.PHONY`-Target committet wird, bevor der naechste `make docs-check`-Lauf es sieht.
+# haelt eine ANDERE Menge gegen dieselbe Autoritaets-Tabelle — jede Makefile-**Regel**
+# (Target-Zeile), nicht nur die per `.PHONY` deklarierten; die zwei Mengen koennen in beide
+# Richtungen auseinanderlaufen (ein `.PHONY`-Name ohne Regel vs. eine Regel ohne `.PHONY`-Eintrag).
+# Heute sind sie gleich, beide 47:
+#   grep -h '^\.PHONY:' Makefile d-check.mk | sed -E 's/^\.PHONY:[[:space:]]*//' | tr ' ' '\n' | grep -v '^$' | sort -u | wc -l
+#   grep -hE '^[a-zA-Z][a-zA-Z0-9._-]*:' Makefile d-check.mk | sed -E 's/:.*//' | sort -u | wc -l
+# aber eine Regel ohne `.PHONY`-Eintrag saehe dieser Waechter nicht, faerbte `docs-check` aber
+# rot (Grund-Code gate-undocumented). Dieser Waechter prueft seine engere, `.PHONY`-gebundene
+# Menge hermetisch, ohne Docker, und faellt darum auch dann, wenn ein neues `.PHONY`-Target
+# committet wird, bevor der naechste `make docs-check`-Lauf es sieht.
 #
 # NETZLOS (nur Datei-Lesen), laeuft in `make gates` ueber `make test` -> `test-bats`.
 
