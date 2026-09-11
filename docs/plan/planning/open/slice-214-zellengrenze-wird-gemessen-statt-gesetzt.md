@@ -78,7 +78,8 @@ Zahl im Trigger.
   dieser Slice misst über ihr und ändert sie nicht. *(Klasse: Schicht-Abgrenzung, andere Rolle.)*
 - **Keine Grenze auf einer Spalte, die eine Konstante trägt.** Die Negativbefund-Tabelle führt in
   `Ergebnis` das feste Literal *„geprüft, ohne Befund"* — eine Grenze darüber misst eine Konstante.
-  Wenn dort überhaupt eine steht, dann auf `Bereich`; **ob** sie dort hingehört, ist §3a Wahl 2.
+  Wenn dort überhaupt eine steht, dann auf `Bereich`; **ob** sie dort hingehört, entscheidet die
+  Messung aus DoD (1) und nicht dieser Plan — als offener Punkt in §6 geführt.
   *(Klasse: Bestand bleibt bewusst stehen — die Form komprimiert bei zwei Spalten schon von
   selbst.)*
 - **Keine Nachbesserung des Cutoffs.** Der `exempt-paths`-Block aus slice-213 nimmt den Bestand in
@@ -125,69 +126,10 @@ Standard-Punkte der Vorlage (nicht slice-eigen, zählen nicht zur Zwei):
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| [`.d-check.yml`](../../../../.d-check.yml) | update | DoD (2): `cell-max-chars` je geprüfter Spalte |
+| [`.d-check.yml`](../../../../.d-check.yml) | update | DoD (2): `cell-max-chars` je geprüfter Spalte — `Befund` **und** `Klasse` mit je eigenem Wert, weil die Ziel-Form beide nennt und `Klasse` als stabile Kurz-Bezeichnung eine viel engere Grenze trägt als der Befundtext |
 | `test/mutations/` | update **oder** neu | DoD (2): der Zahn über dem Grenzwert |
 | [`harness/README.md`](../../../../harness/README.md) | update | die Grenzen-Aussage aus slice-213 wird abgelöst |
 | [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md) | **unverändert** | Reviewer-Eigentum, und die Form steht bereits (§1 Abgrenzung) |
-
-## 3a. Umsetzungsplan
-
-> Wie in [slice-213](../open/slice-213-review-report-laeuft-in-der-tabellen-form.md) §3a: ein
-> Abschnitt außerhalb der Vorlage, angeordnet am 2026-09-11. Die Schwelle dieses Repos für eine Norm
-> liegt bei 3×.
-
-### Offene Wahlen
-
-**Wahl 1 — welche Spalte(n) der Findings-Tabelle bekommen eine Grenze?** Die Ziel-Form nennt
-`Befund`/`Klasse`.
-
-- **Nur `Befund`.** *Erreicht:* die Spalte, die das Volumen trägt. *Sieht nicht:* eine `Klasse`, die
-  statt einer Kurz-Bezeichnung einen Absatz trägt — die Ziel-Form nennt sie ausdrücklich mit.
-- **`Befund` und `Klasse`.** *Erreicht:* beide Spalten, die die Ziel-Form benennt, mit je eigenem,
-  gemessenem Wert — `Klasse` ist eine *stabile Kurz-Bezeichnung* und trägt naturgemäß eine viel
-  engere Grenze. *Sieht nicht:* zwei Werte statt einem, beide zu pflegen.
-
-**Entscheidung: `Befund` und `Klasse`, je mit eigenem Wert.** Die Ziel-Form nennt beide; einen
-davon wegzulassen wäre eine Abweichung von ihr ohne Begründung, und der Messaufwand ist derselbe
-Lauf.
-
-**Wahl 2 — bekommt die Negativbefund-Tabelle eine Grenze?**
-
-- **Ja, auf `Bereich`.** *Erreicht:* auch dort kann keine Zelle zum Absatz werden. *Sieht nicht:*
-  eine Bereichs-Angabe ist ein Pfad oder ein Name — die Kompression kommt bei zwei Spalten schon aus
-  der Form, und die Bezugsmenge wäre klein.
-- **Nein.** *Erreicht:* keine Grenze ohne Not; `Ergebnis` ist ohnehin eine Konstante. *Sieht nicht:*
-  ein `Bereich`, der die Begründung mitträgt, statt den Bereich zu nennen.
-
-**Entscheidung: bleibt offen, bis die Messung aus DoD (1) vorliegt.** Sie ist die einzige
-Entscheidungsgrundlage, die dieser Slice anerkennt — genau die Zurückhaltung, die die Ziel-Form für
-die Findings-Spalten verlangt, gilt hier auch. Zeigt die Messung eine Spreizung in `Bereich`,
-bekommt sie eine Grenze; zeigt sie keine, steht die Begründung im Closure-Eintrag. **Das ist eine
-Wahl mit Entscheidungszeitpunkt, kein Vorsatz:** DoD (1) liefert den Befund, und §6 trägt den
-Ausgang.
-
-**Wahl 3 — wie wird der Wert aus der Verteilung gewonnen?**
-
-- **Maximum plus Reserve.** *Erreicht:* kein Report der gelebten Praxis bricht am Tag des Setzens.
-  *Sieht nicht:* der Ausreißer definiert die Grenze — wenn genau die zu lange Zelle den Anlass gab,
-  schreibt sie sich selbst fest.
-- **Ein Quantil unterhalb des Maximums.** *Erreicht:* die Grenze trifft die Ausreißer, die gemeint
-  sind. *Sieht nicht:* sie färbt beim Setzen rot, und der Bestand ist ein Zeitdokument, das niemand
-  nachzieht — jeder Befund wäre unbehebbar.
-
-**Entscheidung: Maximum plus Reserve.** Ein Gate, das beim Einschalten über einem unveränderlichen
-Bestand rot ist, erzieht dazu, Rot zu überlesen — dieselbe Begründung, die in slice-213 den Cutoff
-trägt. Dass der Wert damit der Praxis folgt statt sie zu formen, ist die Absicht der Ziel-Form
-(*„welche Grenze die gelebte Praxis trägt"*) und keine Schwäche.
-
-### Was ausdrücklich keine Wahl ist
-
-- **Dass gemessen und nicht gesetzt wird.** Das ist die Aussage der Ziel-Form und der Grund für die
-  Existenz dieses Slice.
-- **Kein ADR für diese Anhebung** — [`AGENTS.md`](../../../../AGENTS.md) §3.5 bindet Senkungen;
-  [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
-  führt *„Gate-Anheben → Steering-Loop"*.
-- **Die Spalten selbst.** Sie stehen im Anweisungssatz; dieser Slice misst über ihnen.
 
 ## 4. Trigger
 
@@ -239,9 +181,15 @@ Zwei beobachtbare Kriterien und ein Lerneintrag:
   die [`MR-055`](../../../../harness/conventions.md#mr-055--eine-stellen-messung-trägt-keine-folgerung-über-eine-eigenschaft)
   benennt. Die Messung aus DoD (1) muss ihre Bezugsmenge deshalb nennen, nicht nur ihre Zahl.
   — **Ausgang:** <…>
-- **Maximum plus Reserve schreibt den Ausreißer fest.** Die Entscheidung aus §3a Wahl 3 kauft den
-  grünen Start damit, dass der längste bestehende Befund die Grenze mitdefiniert.
+- **Maximum plus Reserve schreibt den Ausreißer fest.** DoD (1) kauft den grünen Start damit, dass
+  der längste bestehende Befund die Grenze mitdefiniert.
   — **Ausgang:** <…>
+- **Offen: bekommt die Negativbefund-Tabelle eine Grenze auf `Bereich`?** `Ergebnis` trägt eine
+  Konstante und scheidet aus (§1); ob `Bereich` streut, sagt erst die Verteilung aus DoD (1).
+  Entschieden wird es dort, nicht in diesem Plan — eine Grenze ohne Bezugsmenge wäre genau das, was
+  dieser Slice abstellt.
+  — **Ausgang:** <eingetreten: Grenze gesetzt | entfallen: keine Spreizung, Begründung in §7 |
+  weiter offen: Register>
 - **Die Grenze trifft die Zelle, nicht den Report.** Auch mit gesetztem Wert bleibt Prosa um die
   Tabellen herum ungeregelt — die Grenze aus slice-213 §6 bleibt bestehen, sie wird nur kleiner.
   — **Ausgang:** <…>

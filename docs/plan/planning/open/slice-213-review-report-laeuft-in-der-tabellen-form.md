@@ -200,6 +200,11 @@ welches Muster trägt und welcher Cutoff dahinter bleibt. Das ist DoD (2), keine
   [slice-214](../open/slice-214-zellengrenze-wird-gemessen-statt-gesetzt.md), **nachdem** Reports in
   der neuen Form existieren — die Adresse nimmt die Sendung an: Sie trägt genau diesen Punkt als ihr
   Ziel und startet erst nach diesem Slice. *(Klasse: Folge-Slice mit Kennung.)*
+- **Keine Nicht-Leere-Bedingung** (`non-empty`, `cell-min-chars` o. ä.) neben den Spalten. Sie wäre
+  eine zweite Schärfe in demselben Schritt, und ob das Modul sie in dieser Form führt, ist nicht
+  gemessen; ein Abschnitt mit Tabellenkopf und ohne Zeile bleibt damit still. Wer sie will, misst
+  sie zuerst — über der Form, die dieser Slice erst herstellt. *(Klasse: es wäre ein anderer
+  Vorgang.)*
 - **Der Spaltenschnitt beider Tabellen wird hier nicht festgelegt** — und mit ihm nicht die
   Abweichung, die die Vorlage selbst trägt: Sie führt sieben Spalten samt `ID`, das
   `## Output-Schema (pro Finding)` des Skills führt sechs Felder ohne `ID`, und die Vorlage sagt von
@@ -286,120 +291,13 @@ Standard-Punkte der Vorlage (nicht slice-eigen, zählen nicht zur Drei):
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md) | update — **Reviewer-Rolle**, eigener Commit | DoD (1): `## Output-Schema (pro Finding)` und `## Negativbefunde (Pflicht)` in Tabellenform; `## Ablage` zieht mit |
-| [`.d-check.yml`](../../../../.d-check.yml) | update | DoD (2): `structure:`-Block mit zwei **Form**-Regeln, `structure` in `modules:` |
+| [`.d-check.yml`](../../../../.d-check.yml) | update | DoD (2): `structure:`-Block mit zwei **Form**-Regeln, `structure` in `modules:` — am geteilten Durchsetzungspunkt statt am advisory `doc-structure`, das niemand fährt; der Spaltenschnitt kommt aus DoD (1), weil `structure` eine Spalte über ihren Kopfzeilen-Namen adressiert und die Konfiguration damit dem Anweisungssatz folgt, nie umgekehrt |
 | `test/` (Verdrahtungs-Fall) | neu | DoD (3): die Felder beider Regeln gegen Regression, ohne Docker-Lauf |
 | `test/mutations/` | neu | DoD (3): der Zahn — Antwort auf [`neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md) |
 | [`harness/README.md`](../../../../harness/README.md) | update | Deckungs-Absatz des neuen Moduls samt seiner Grenzen |
 | `.harness/baseline/` | **unverändert** | committet vendored Fremd-Blob; eine Vorlagen-Adoption ist ein eigener Vorgang (§1 Abgrenzung) |
 | [`harness/conventions.md`](../../../../harness/conventions.md) und [`harness/conventions/`](../../../../harness/conventions/) | **unverändert** | Architect-Artefakte (§1 Abgrenzung, [`AGENTS.md`](../../../../AGENTS.md) §3.8) |
 | `internal/emit/templates/d-check.yml` | **unverändert** | Ebene emittiert (§1 Abgrenzung, [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)) |
-
-## 3a. Umsetzungsplan
-
-> Dieser Abschnitt steht **nicht** in der Vorlage. Er ist der **zweite** Durchlauf eines Versuchs,
-> den der Auftraggeber am 2026-09-11 angeordnet hat (erster:
-> [slice-071](../next/slice-071-bilanz-nennt-ihren-bestand.md) §3a); die Schwelle dieses Repos für
-> eine Norm liegt bei 3×.
-
-### Offene Wahlen
-
-**Wahl 1 — ein Slice mit zwei Stufen, oder zwei Slices?** Form und Grenzwert lassen sich nicht
-gleichzeitig liefern: Der Grenzwert braucht Reports, die es erst gibt, nachdem die Form gilt.
-
-- **Ein Slice, zwei Stufen.** *Erreicht:* der Gegenstand bleibt zusammen, ein Plan, eine
-  Closure-Notiz. *Sieht nicht:* Stufe 2 wartet auf eine Anhäufung, die außerhalb des Laufs
-  entsteht — der Slice bliebe in `in-progress/` liegen, während das WIP-Limit des Rolleninhabers
-  besetzt ist. Ein Slice ist klein, wenn ein Agent ihn in *einem* Lauf abschließen kann; einer, der
-  auf äußeres Wachstum wartet, ist der Zombie-Fall, den Modul 5 beim Namen nennt.
-- **Zwei Slices.** *Erreicht:* jeder ist einzeln lieferbar und in einem Lauf abschließbar; die
-  Stufen-Grenze wird ein **beobachtbarer Start-Trigger** statt einer internen Notiz. *Sieht nicht:*
-  zwei Pläne, zwei Closures, und der zweite kann liegen bleiben, wenn sein Trigger nie feuert — das
-  ist dann aber sichtbar in `open/` und nicht versteckt in einem halbfertigen Slice.
-
-**Entscheidung: zwei Slices.** Der zweite ist
-[slice-214](../open/slice-214-zellengrenze-wird-gemessen-statt-gesetzt.md), angelegt mit diesem
-Schnitt — eine Folge-Slice-Kennung ohne Datei wäre keine Adresse (Modul 5 §1, Klasse 1; die
-Folge-Slice-Paarung der Closure prüft genau das).
-
-**Wahl 2 — läuft die Regel am geteilten Durchsetzungspunkt oder am advisory Target?**
-`d-check.mk` führt bereits `doc-structure` als Ziel ohne Gate-Versprechen (gelistet in
-`targets.exempt-targets`); die Alternative ist die Aufnahme in `modules:` und damit in `make gates`.
-
-- **Advisory `doc-structure`.** *Erreicht:* kein Fehlalarm blockiert `make gates`; der Cutoff darf
-  nachreifen. *Sieht nicht:* niemand fährt sie. Ein Sensor ohne Durchsetzungspunkt ist Feedforward —
-  genau der Zustand, den dieser Slice ablöst, nur mit einem anderen Namen als *Auftragstext*.
-- **Aufnahme in `modules:`.** *Erreicht:* jeder Lauf trägt die Form-Regel; ein Report, der sie
-  bricht, färbt rot, und der Review dieses Slice ist bereits sein erster Testfall. *Sieht nicht:*
-  jeder `docs-check`-Lauf öffnet fortan auch jede Report-Datei — dieselbe Kosten-Aussage, die
-  [`harness/README.md`](../../../../harness/README.md) für `closure` bereits führt.
-
-**Entscheidung: Aufnahme in `modules:`.** Der Auftrag ist ausdrücklich *ein Träger statt eines
-Auftragstexts*. Dieses Repo hat **einen** Durchsetzungspunkt; ein zweites Profil wäre ein zweiter
-Ort, an dem dieselbe Modul-Config driften kann.
-
-**Wahl 3 — nennt die Form-Regel alle Spalten oder nur die tragenden?**
-
-- **Nur die tragenden** (`Befund`, ggf. `Klasse`). *Erreicht:* eine schmale Regel, die genau das
-  hält, worum es beim Volumen geht. *Sieht nicht:* eine Tabelle mit zwei richtigen und fünf
-  fehlenden Spalten wäre still — die Regel hielte dann nicht die **Form**, sondern eine Auswahl
-  daraus, und behauptete im Namen mehr.
-- **Den vollen Spaltenschnitt.** *Erreicht:* `section-column-missing` feuert, sobald irgendeine
-  vorgeschriebene Spalte fehlt; die Regel deckt, was ihr Name sagt. *Sieht nicht:* jede
-  Spalten-Änderung im Anweisungssatz muss in der Konfiguration nachgezogen werden — eine Kopplung
-  ohne Wächter über ihre Gleichheit.
-
-**Entscheidung: der volle Spaltenschnitt**, und zwar **so, wie DoD (1) ihn festlegt** — die
-Konfiguration bildet den Schnitt vollständig ab, statt eine Auswahl daraus. Die Kopplung ohne
-Wächter steht als Risiko in §6.
-
-**Wahl 4 — trägt die Form-Regel eine Nicht-Leere-Bedingung (`non-empty`, `cell-min-chars`)?**
-
-- **Ja.** *Erreicht:* ein Abschnitt mit Tabellenkopf und ohne Zeile, und eine leere Zelle in einer
-  vorhandenen Zeile fallen auf. *Sieht nicht:* nichts Gemessenes spricht dagegen — aber es ist eine
-  zweite Schärfe in demselben Schritt, und sie kann am Bestand anders anschlagen als erwartet.
-- **Nein.** *Erreicht:* die Regel hält genau eine Aussage — die Spalten sind da. *Sieht nicht:* ein
-  formal korrekter, inhaltlich leerer Abschnitt.
-
-**Entscheidung: ja, aber sie ist keine Volumen-Grenze und wird als solche nicht ausgegeben.**
-Nicht-Leere ist eine **Form**-Aussage wie die Spalten selbst und braucht keine Bezugsmenge aus
-gelebten Reports; `cell-max-chars` braucht eine und bleibt deshalb draußen. Schlägt die Bedingung am
-Bestand an, fängt sie derselbe Cutoff — das ist Teil des grünen Starts in DoD (2).
-
-**Wahl 5 — wie wird das Gegenbeispiel im Repo haltbar?**
-
-- **Fixture-Report im Prüfbereich.** *Erreicht:* echtes Rot in einem echten Gate-Lauf, jederzeit
-  nachvollziehbar. *Sieht nicht:* ein absichtlich roter Report unter `docs/reviews/` hielte
-  `make gates` **dauerhaft** rot — dieselbe Fehlform, die der `scan.ignore`-Kommentar als
-  *„erzieht dazu, Rot zu überlesen"* benennt. Ein Ausnahme-Eintrag dafür wäre eine Senkung nach
-  [`AGENTS.md`](../../../../AGENTS.md) §3.5 mit eigener ADR.
-- **Verdrahtungs-Fall plus `test/mutations/`-Zahn.** *Erreicht:* die Felder beider Regeln sind gegen
-  Regression gehalten, hermetisch und ohne Docker-Lauf, und `make mutate` meldet, wenn der Wächter
-  seine Zähne verliert. *Sieht nicht:* er prüft die **Konfiguration**, nicht dass d-check über ihr
-  rot wird — das Rot selbst bleibt ein Lauf, den der Umsetzungs-Commit protokolliert.
-
-**Entscheidung: beides, keines ersetzt das andere.** DoD (3) verlangt das einmalige Rot im
-Arbeitsbaum dieses Repos **und** die dauerhafte Listung im Mutations-Satz.
-
-### Was ausdrücklich keine Wahl ist
-
-- **Der Grenzwert.** Er fällt aus diesem Slice, nicht weil er strittig wäre, sondern weil seine
-  Bezugsmenge leer ist (§1). Ihn hier zu setzen wäre eine Zahl ohne Kommando.
-- **Wer [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md) schreibt.**
-  [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) ist angenommen und
-  damit nach [`AGENTS.md`](../../../../AGENTS.md) §3.4 bindend: die **Reviewer**-Rolle, in einem
-  eigenen Commit. Ein Implementations-Lauf, der die Datei mitnimmt, ist der Fall, den
-  [`fremdes-rollen-artefakt-im-implementations-kontext`](../observations/BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext/observation.md)
-  als verkörperte Regel führt.
-- **Dass DoD (1) vor DoD (2) liegt.** `structure` adressiert eine Spalte über ihren
-  **Kopfzeilen-Namen**; der Name entsteht im Anweisungssatz. Die Konfiguration folgt der Skill-Datei,
-  nie umgekehrt — sonst schriebe die Gate-Config das Urteil einer fremden Rolle vor.
-- **Kein ADR für diese Anhebung.** [`AGENTS.md`](../../../../AGENTS.md) §3.5 bindet **Senkungen**;
-  [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
-  führt *„Gate-Anheben → Steering-Loop"*. Der Weg ist der Lerneintrag der Closure.
-- **Die Negativbefund-Pflicht selbst.** Sie bleibt — entschieden vom Auftraggeber am 2026-09-11.
-  Offen ist allein ihre Spaltenform, und die gehört der Reviewer-Rolle (§1 Abgrenzung).
-- **Die Ablage-Form der Reports** (`docs/reviews/<YYYY-MM-DD>-<gegenstand>.md`) bleibt unberührt;
-  der Cutoff nimmt den Bestand auf, statt ihn zu bewegen.
 
 ## 4. Trigger
 
@@ -534,10 +432,11 @@ je Eintrag:
   Träger-Artefakt** — eine Datei in `open/`, kein Satz in einer Closure-Notiz, die mit dem `git mv`
   Chronik wird —, und die Vorgriffs-Frage ist zusätzlich als **Start-Trigger** verdrahtet (§4), also
   beobachtbar statt bloß benannt.
-- **`slice-plan-umfang-waechst-ueber-umsetzung-hinaus` (2×, Stand `offen`).** Unter der Schwelle, und
-  §3a ist die Stelle, an der sie eintreten kann. Konsequenz: §3a trägt fünf Wahlen und keine
-  Wiederholung der DoD; die Grenzen stehen in §6, nicht doppelt in §3a. Die Teilung in zwei Slices
-  (Wahl 1) wirkt in dieselbe Richtung.
+- **`slice-plan-umfang-waechst-ueber-umsetzung-hinaus` (2×, Stand `offen`).** Unter der Schwelle,
+  und dieser Plan ist die Stelle, an der sie eintreten kann. Konsequenz: Der Plan führt **keinen**
+  Abschnitt neben §3, der die Umsetzung ein zweites Mal beschreibt — was eine Datei-Zeile trägt,
+  steht in ihrer Begründungs-Spalte, was ausgeschlossen ist in §1, und jede Grenze in §6. Die
+  Teilung in zwei Slices wirkt in dieselbe Richtung.
 - **`rollen-report-namensformen-nicht-disjunkt` (1×, Stand `offen`).** Unter der Schwelle; der vierte
   Cutoff-Glob ist ihr Berührungspunkt — der Cutoff nimmt den Bestand auf, statt die Namensform zu
   reparieren.

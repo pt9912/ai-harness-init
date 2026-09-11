@@ -64,9 +64,9 @@ gemeldeten Zustand zutrifft, und ihre Bestandszeile benennt die Menge, die sie z
   selbst mountet, und maskiert den Fall dort.
 - Dieselbe Ausgabe schreibt `Bestand: %d Sitzung(en), %s bis %s`
   (`grep -c 'Bestand: %d Sitzung' internal/report/report.go` → **1**). Gezählt werden die
-  **Sitzungs-Ströme des Ablageorts** — eine Menge über den Span-Feldern, nicht über der Summe. Wie
-  sich die Summe über diese Ströme verteilt, sagt die Zeile nicht, und beide Größen fallen
-  auseinander, sobald ein Strom keine Zähler trägt oder einer die Summe dominiert.
+  verschiedenen `session`-Werte der **lesbaren** Zeilen — eine Menge über den Span-Feldern, nicht
+  über der Summe. Wie sich die Summe über diese Ströme verteilt, sagt die Zeile nicht, und beide
+  Größen fallen auseinander, sobald ein Strom keine Zähler trägt oder einer die Summe dominiert.
 
 **Beide Angaben sind dieselbe Frage an dieselbe Ausgabe: worüber wurde gerechnet?** Der **Nenner**
 steht in der ersten Zeile und beantwortet sie für die Grundmenge — gerechnet wird über
@@ -133,21 +133,33 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       nichts von einem Subagenten stammt, bekommt eine Meldung, die das sagt — statt der Mechanik
       des Agenten-Werkzeugs die Schuld an einer Leere zu geben, die sie nicht verursacht hat. Der
       Grund-Satz zur Mechanik bleibt, wo er trägt: über einem Bestand **mit** Agent-Läufen und ohne
-      Zähler.
+      Zähler — **und er behält einen Ort, an dem er gemessen wird.** `harness/tools/full-smoke.sh`
+      prüft ihn in Schritt (b) über einem Bestand, den derselbe Lauf aus einer einzigen
+      `"tool_name":"Bash"`-Zeile erzeugt — also über genau der Lage, die dieser Punkt abtrennt; und
+      `test/mutations/176-leser-grund-satz-weg.sh` führt diesen Lauf als **einzigen** Verify-Pfad
+      (`verify: full-smoke`). Beide ziehen mit (§3): ohne das nimmt dieser Punkt einem fremden
+      Wächter die Zähne, statt eine Lage zu trennen.
       **Rot:** ein Go-Test über `report.Schreibe` mit einem Bestand aus reinen Werkzeug-Zeilen —
       er fällt, sobald die Ausgabe wieder den Mechanik-Satz trägt; dazu ein `test/mutations/`-Fall,
-      der die Lagen zusammenlegt.
+      der die Lagen zusammenlegt, und `test/mutations/176` fällt weiterhin über seinem eigenen
+      Verify-Pfad.
       **Warum das kein vierter Punkt ist:** die Lage sitzt in derselben Verzweigung wie (1) und
       wird mit ihr entschieden; sie steht getrennt, weil ihr Gegenbeispiel ein anderer Bestand ist,
       nicht ein anderer Pfad.
-- [ ] **(3) Die Bestandszeile nennt die Menge, die sie zählt.** `Bestand: <n> Sitzung(en)` sagt,
-      dass die Zahl die **Sitzungs-Ströme des Ablageorts** zählt — die Angabe steht neben der Zahl,
-      nicht in einer Fußnote und nicht im Kopf-Kommentar der Funktion.
+- [ ] **(3) Die Bestandszeile nennt die Menge, die sie zählt — und die genannte ist die gezählte.**
+      Die Angabe steht neben der Zahl, nicht in einer Fußnote und nicht im Kopf-Kommentar der
+      Funktion. **Der Wortlaut ist damit nicht mitentschieden, seine Wahrheitsbedingung schon:**
+      gezählt werden die verschiedenen `session`-Werte der Zeilen, die sich parsen lassen
+      (`b.Sitzungen = len(sitzungen)`, gefüllt nur bei nicht-leerem `s.Session`; eine nicht
+      parsende Zeile erreicht die Stelle nicht, und bei `Sitzungen == 0` wird die Zeile gar nicht
+      gedruckt). Eine Angabe wie *„die Sitzungs-Ströme des Ablageorts"* greift darüber hinaus und
+      wäre selbst die Klasse, die dieser Slice behebt.
       **Was nicht dazukommt, ist eine zweite Zahl:** die Streuung der Summe über diese Ströme ist
       eine eigene Größe mit eigenem Zahn; sie hier mitzudrucken legte zwei Größen in eine Angabe
       zusammen (§6).
       **Rot:** ein Go-Test auf die erzeugte Zeile, der fällt, sobald die Bezugsmenge aus ihr
-      verschwindet; dazu ein `test/mutations/`-Fall, der sie entfernt.
+      verschwindet **oder** über die gezählte Menge hinausgreift; dazu ein `test/mutations/`-Fall,
+      der sie entfernt.
 - [ ] `make gates` grün, `make mutate` ohne Befund.
 - [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -191,66 +203,10 @@ und ein Bericht, der nichts prüft, wird durch eine ehrlichere Ausgabe kein Wäc
 | `cmd/ai-harness-init/span_report.go` | update | der Ablageort kommt hier als Argument herein; ob die Unterscheidung dort oder im Paket ausgesprochen wird, entscheidet der Zuschnitt (oben) |
 | `internal/report/report_test.go`, `cmd/ai-harness-init/span_report_test.go` | update | die Zähne aus §2, je einer je Angabe |
 | `test/mutations/` | neu | zwei Fälle, je einer je Angabe — ohne sie wären beide Punkte eine Absicht ([`AGENTS.md`](../../../../AGENTS.md) §3.6) |
+| [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | update | Schritt (b) misst den Grund-Satz aus DoD (2) über einem Bestand ohne Agent-Lauf, Schritt (d) die Leere-Meldung aus DoD (1) über das `grep`-Literal `Kein Bestand:` — und zwar über dem Zustand nach `span-clean`, also über dem **fehlenden** Ablageort. Beide Prüfungen ziehen mit, sonst misst der Lauf Lagen, die es nicht mehr gibt |
+| `test/mutations/176-leser-grund-satz-weg.sh` | update | sein einziger Verify-Pfad ist dieser Lauf (`verify: full-smoke`) — ohne Nachzug verliert der Fall seinen Gegenstand |
 | [`Makefile`](../../../../Makefile) | **unverändert** | das `mkdir -p` bleibt: es legt den Pfad an, den das Ziel gleich darauf als Volume mountet. Es zu entfernen bräche den Mount, statt den Fall sichtbar zu machen — der Fall entsteht am **Argument**, nicht an diesem einen Pfad (§1) |
 | [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) | **unverändert** | Begründung oben |
-
-## 3a. Umsetzungsplan
-
-### Offene Wahlen
-
-**Wahl 1 — wird die Unterscheidung „Ablageort existiert nicht" von „Ablageort existiert und ist
-leer" im Paket ausgesprochen oder im Aufrufer?** `Aggregiere` liest heute mit `filepath.Glob`; über
-einem fehlenden und über einem leeren Verzeichnis liefert der Aufruf dieselbe leere Trefferliste,
-`b.Zeilen` bleibt in beiden Fällen 0. Die Unterscheidung entsteht erst, wenn eine Stelle vorher
-prüft, ob der Pfad überhaupt existiert.
-
-- **Im Aufrufer** (`cmd/ai-harness-init/span_report.go`, `spanDir`/`spanReport`): ein `os.Stat(dir)`
-  vor dem Aufruf von `Aggregiere`, die Meldung wird dort direkt geschrieben. Erreicht: liegt neben
-  der schon vorhandenen cmd-seitigen Fehlerbehandlung — `spanDir` meldet auf derselben Ebene bereits
-  „keine Repo-Wurzel"; kein neues `Bilanz`-Feld. Sieht nicht: jeder weitere Aufrufer von
-  `report.Aggregiere`/`report.Schreibe` müsste dieselbe Existenzprüfung eigenständig nachbauen, sonst
-  fällt er zurück auf die alte, nicht unterscheidende Leere-Meldung.
-- **Im Paket** (`internal/report`): `Aggregiere` prüft den Pfad selbst und trägt das Ergebnis als
-  Feld in `Bilanz`, `Schreibe` bekommt einen dritten Zweig in seinem bestehenden Switch. Erreicht:
-  denselben Mechanismus, den `Zeilen` bereits für die andere Leeren-Unterscheidung trägt (eigener
-  Kommentar dort: „Sie unterscheidet zwei Leeren, die sonst gleich aussehen") — ein dritter Fall
-  reiht sich in dieselbe Familie, `Schreibe` bleibt die einzige textschreibende Stelle. Sieht nicht:
-  das Paket bekommt eine Dateisystem-Prüfung zusätzlich zum Lesen der Spans, dessen Kopfkommentar den
-  Gegenstand heute als „NUR der Bestand unter dem Ablageort" nennt.
-
-**Entscheidung: im Paket.** `Schreibe` ist laut eigenem Kommentar die einzige Stelle, die die
-Lagen in Text übersetzt; eine vierte Lage im Aufrufer wäre eine zweite textschreibende Stelle neben
-dieser einen. `Zeilen` trägt exakt diese Art Unterscheidung schon.
-
-**Wahl 2 — trägt die neue Meldung eine eigene Ursache, oder bleibt sie ursachenlos?** Die heutige
-Meldung für `Zeilen == 0` nennt zwei Ursachen („ein frischer Klon hat es nicht", „ein Aufraeum-Lauf
-nimmt es weg"), die laut DoD (1) eine Ebene höher gehören. Offen bleibt, ob die engere Meldung für
-„Ablageort existiert nicht" eine eigene, speziellere Ursache bekommt.
-
-- **Mit eigener Ursache** (z. B. „unter diesem Pfad wurde nie geschrieben"): Erreicht: bleibt für
-  den Leser hilfreich. Sieht nicht: trifft nicht zu, wenn der Pfad schlicht falsch angegeben ist —
-  dieselbe Fehlerklasse, die DoD (1) gerade abstellt, nur mit neuer Formulierung.
-- **Ursachenlos** (nur die Feststellung, der Pfad existiert nicht): Erreicht: kann unter keinem
-  Zustand, in dem sie erscheint, falsch sein. Sieht nicht: liefert keinen Hinweis auf den nächsten
-  Schritt.
-
-**Entscheidung: ursachenlos.** Eine genannte Ursache ist laut §1 „eine Zusage, die geprüft werden
-kann" — eine, die nicht in jedem Fall zutrifft, ist der Fehler, den dieser Slice behebt. Ein Hinweis
-ohne Ursachenbehauptung (den Pfad zu prüfen) bleibt zulässig, weil er keinen Grund nennt, nur einen
-nächsten Schritt.
-
-### Was keine Wahl ist
-
-- **Die Lage aus DoD (2)** (`Zeilen > 0 ∧ AgentLaeufe == 0`) reiht sich in denselben Switch in
-  `Schreibe`, der die anderen Lagen schon unterscheidet — mit den vorhandenen Feldern `Zeilen` und
-  `AgentLaeufe`. Es gibt keinen zweiten Ort, an dem dieser Switch geführt wird.
-- **Die Bezugsmenge aus DoD (3)** steht laut DoD-Text ausdrücklich „neben der Zahl, nicht in einer
-  Fußnote und nicht im Kopf-Kommentar" — die Alternativen sind damit von der DoD selbst
-  ausgeschlossen, es bleibt die eine Stelle: der `Fprintf`-Aufruf in `Schreibe`, der die Zeile heute
-  schon schreibt.
-- **Der Exit-Code** bleibt unberührt (§2, §3) — bereits als Setzung entschieden, kein Gegenstand
-  dieses Slice.
-- **`Makefile` und `spec/spezifikation.md`** bleiben unverändert — begründet in der Tabelle oben.
 
 ## 4. Trigger
 
