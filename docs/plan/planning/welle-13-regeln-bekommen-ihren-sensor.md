@@ -208,7 +208,7 @@ Verzeichnisse (dieselbe zweite Wahrheit, die beim Slice retired wurde). -->
 | Slice | Titel | Bezug |
 |---|---|---|
 | [slice-123](done/slice-123-ci-sieht-die-historie.md) | CI sieht die Historie — oder der Lauf fällt, statt grün zu melden | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
-| [slice-124](in-progress/slice-124-gate-tabelle-hat-einen-waechter.md) | Die Gate-Tabellen werden gegen das Makefile gehalten (Modul `targets`, Achse 1) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-124](done/slice-124-gate-tabelle-hat-einen-waechter.md) | Die Gate-Tabellen werden gegen das Makefile gehalten (Modul `targets`, Achse 1) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) | Roadmap und Lifecycle-Verzeichnis widersprechen sich nicht mehr still (Modul `planning`, Achse 4) | [`MR-016`](../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) |
 | [slice-126](next/slice-126-commit-message-traegt-eine-kennung.md) | Eine Commit-Message ohne Kennung wird rot, und zwar vor dem Commit (Modul `commits`, Achse 3) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-127](done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) | Hard Rule 3.4 bekommt ihren Sensor (Modul `vcs`, Achse 2) | [`AGENTS.md`](../../../AGENTS.md) §3.4 |
@@ -219,7 +219,7 @@ Verzeichnisse (dieselbe zweite Wahrheit, die beim Slice retired wurde). -->
 und [slice-127](done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) voraus**: beide lesen
 Historie, und ohne die Range-Entscheidung aus 123 wären sie in CI blind und grün — ein fail-open
 Sensor ist schlechter als keiner, weil er eine Zusage trägt. Die drei hermetischen
-([slice-124](in-progress/slice-124-gate-tabelle-hat-einen-waechter.md),
+([slice-124](done/slice-124-gate-tabelle-hat-einen-waechter.md),
 [slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md),
 [slice-129](done/slice-129-closure-notiz-hat-einen-sensor.md)) hängen an nichts und können zuerst
 laufen. **Nicht gleichzeitig laufen dürfen 125 und 129:** beide konfigurieren dasselbe Modul in

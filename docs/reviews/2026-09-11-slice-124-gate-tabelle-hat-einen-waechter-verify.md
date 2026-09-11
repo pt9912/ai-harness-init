@@ -4,7 +4,7 @@
 
 ## Eingang
 
-- **Slice-Plan:** [`docs/plan/planning/in-progress/slice-124-gate-tabelle-hat-einen-waechter.md`](../plan/planning/in-progress/slice-124-gate-tabelle-hat-einen-waechter.md)
+- **Slice-Plan:** [`docs/plan/planning/done/slice-124-gate-tabelle-hat-einen-waechter.md`](../plan/planning/done/slice-124-gate-tabelle-hat-einen-waechter.md)
   — alle drei DoD-Häkchen `[ ]` (korrekt, [`AGENTS.md`](../../AGENTS.md) §3.10: Closure ist Planner-Arbeit).
 - **Zwei Review-Runden:** [Runde 1](2026-09-11-slice-124-gate-tabelle-hat-einen-waechter.md)
   (1 HIGH/3 MEDIUM/2 LOW/1 INFO, blockierend) · [Runde 3](2026-09-11-slice-124-runde-3-anker-und-formulierungen.md)
@@ -104,7 +104,7 @@ ausdrücklich entschieden.**
 ## 2. Plan-vs-Code-Diff
 
 Grundlinie: `6f454e15^` (Stand vor dem ersten Implementer-Commit) gegen `HEAD` = `d55fd1d9`. Der Slice-Plan
-selbst ist über die gesamte Kette unverändert (`git diff 6f454e15^..HEAD -- docs/plan/planning/in-progress/slice-124-gate-tabelle-hat-einen-waechter.md`
+selbst ist über die gesamte Kette unverändert (`git diff 6f454e15^..HEAD -- docs/plan/planning/done/slice-124-gate-tabelle-hat-einen-waechter.md`
 → leer) — die Grundlinie ist damit stabil, keine nachträgliche Plan-Anpassung an den Code.
 
 `git diff 6f454e15^..HEAD --stat`:

@@ -10,7 +10,7 @@ erneut Gegenstand.
 
 **Baum beim Eintritt:** `git status --porcelain` leer, `HEAD` = `5d3f13b3`.
 
-**Plan:** [`slice-124`](../plan/planning/in-progress/slice-124-gate-tabelle-hat-einen-waechter.md)
+**Plan:** [`slice-124`](../plan/planning/done/slice-124-gate-tabelle-hat-einen-waechter.md)
 · **Quellen:** [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6),
 [`AGENTS.md`](../../AGENTS.md) §3.6 · §3.7 · §3.8 · §3.10,
 [`MR-001`](../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids),
