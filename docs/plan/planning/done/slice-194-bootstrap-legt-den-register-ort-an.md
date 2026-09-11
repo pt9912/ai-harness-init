@@ -296,10 +296,12 @@ ein drittes Mal abgelesen.
   [`gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse`](../observations/BEO-ALL/gate-sicherer-ausgang-nimmt-die-aufloesbare-adresse/observation.md)
   erreicht mit seinem Beleg **3×**. Sein Ausgang wäre ein Kriterium, wann die Auskunft schwerer
   wiegt als der kürzere Weg; das ist Norm-Text, und der gehört dem Architect
-  ([`AGENTS.md`](../../../../AGENTS.md) §3.8). **Einen zweiten belegt er, ohne ihn zu heben** —
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8). **Zwei weitere belegt er, ohne sie zu heben** —
   [`lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md)
-  stand schon darüber. Die **acht übrigen** liegen thematisch außerhalb dieses Slice — über sie zu
-  urteilen hieße, über fremde Gegenstände zu entscheiden. Alle zehn gehören damit an den
+  und
+  [`verweis-nachzug-schreibt-in-eingefrorenes-artefakt`](../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/observation.md)
+  standen schon darüber. Die **sieben übrigen** liegen thematisch außerhalb dieses Slice — über sie
+  zu urteilen hieße, über fremde Gegenstände zu entscheiden. Alle zehn gehören damit an den
   Lese-Schritt der nächsten Welle-Closure, und sie sind hier benannt, damit er sie nicht suchen
   muss.
 - **Steering-Loop-Eintrag — geschärfte Regel, gezählt:** *Ein Anker, der auf eine Ableitung zeigt,
@@ -327,7 +329,7 @@ ein drittes Mal abgelesen.
   beschreibt genau diesen Schaden, aber er ist nicht eingetreten — die Prüfung lief vor dem
   Eintragen, und der Zähler misst, was eingetreten ist. *Gezählt, nicht verkörpert*, aus demselben
   Grund wie oben.
-- **Beobachtungs-Register (`../observations/`):** **vier** Belege, **kein** neues Verzeichnis. Jeder
+- **Beobachtungs-Register (`../observations/`):** **fünf** Belege, **kein** neues Verzeichnis. Jeder
   Zähler ist die Zahl der Dateien unter `evidence/`
   (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l`) — keine Erwartungswerte,
   sie wandern mit dem Register:
@@ -340,7 +342,12 @@ ein drittes Mal abgelesen.
   **3×** — Schwelle erreicht, Ausgang beim Lese-Schritt oben ·
   [`lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md)
   **10×** — der Closure-Move macht den Ruhe-Marker der Roadmap falsch, und `make slice-mv` trägt
-  ihn nicht nach; der Ausgleich ist ein eigener Commit, und zwischen beiden ist `docs-check` rot.
+  ihn nicht nach; der Ausgleich ist ein eigener Commit, und zwischen beiden ist `docs-check` rot ·
+  [`verweis-nachzug-schreibt-in-eingefrorenes-artefakt`](../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/observation.md)
+  **9×** — derselbe Move schreibt beim Verweis-Nachzug drei eingefrorene Artefakte, darunter den
+  Verifikations-Report dieses Slice. Dieser Beleg und der vorige entstehen **mit** dem Move und
+  darum nach dem übrigen Inhalt dieser Sektion; sie sind der eine Fall, den die Reihenfolge der
+  Closure nicht vorher sehen kann.
   **Ein Stand ist fortgeschrieben, und kein Beleg gehört dazu:**
   [`emittierte-vorlagen-klassifikation-ohne-traeger`](../observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/observation.md)
   bleibt bei **3×** — dieser Slice ist seine Auflösung, kein Auftreten —, behält den Ausgang
