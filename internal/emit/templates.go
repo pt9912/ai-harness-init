@@ -1,6 +1,7 @@
 package emit
 
 import (
+	_ "embed" // fuer //go:embed templates/observations/README.md (observationsReadme)
 	"errors"
 	"fmt"
 	"io/fs"
@@ -399,6 +400,11 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 	for _, k := range structureGitkeeps() {
 		out[k] = []byte{}
 	}
+	// Der Register-Ort (ADR-0037 Festlegung 2, ADR-0034 Festlegung 1): anders als die
+	// .gitkeeps oben eine Datei MIT Inhalt, tool-autoriert ohne Baseline-Vorlage
+	// (ADR-0006) — drei mitemittierte Workflow-Commands nennen den Ort bereits als
+	// vorhanden.
+	out[observationsReadmeTarget] = observationsReadme
 	return out, nil
 }
 
@@ -443,6 +449,19 @@ func structureGitkeeps() []string {
 	}
 	return out
 }
+
+// observationsReadme traegt den Register-Ort tool-autoriert (ADR-0006): anders als die
+// uebrigen Singletons kommt dieser Text nicht aus dem gefetchten Kurs-Satz (src in
+// planTemplates), sondern liegt eingebettet neben dem Emitter selbst — der vendored
+// Baum fuehrt fuer die Register-README keine Vorlage. Der Inhalt ist generisch (Form,
+// Schreib-/Lese-Rollen, Beleg-Form, die drei Ausgaenge), nicht die Fassung dieses Repos.
+//
+//go:embed templates/observations/README.md
+var observationsReadme []byte
+
+// observationsReadmeTarget ist der Ziel-Relpfad des Registers (ADR-0037 Festlegung 2,
+// ADR-0034 Festlegung 1).
+const observationsReadmeTarget = "docs/plan/planning/observations/README.md"
 
 // roadmapTemplate ist der Quell-Relpfad der Roadmap-Vorlage (templates/-gewurzelt).
 const roadmapTemplate = "docs/plan/planning/roadmap.template.md"

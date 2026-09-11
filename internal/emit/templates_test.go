@@ -299,6 +299,8 @@ func TestTemplates_EmittierterBestandVollstaendig(t *testing.T) {
 		"docs/plan/planning/open/.gitkeep",
 		"docs/reviews/.gitkeep",
 		"harness/conventions/.gitkeep",
+		// Register-Ort: Datei mit Inhalt statt .gitkeep, tool-autoriert ohne Vorlage
+		"docs/plan/planning/observations/README.md",
 	}
 	sort.Strings(want)
 	got := emittedTree(t, dir)
@@ -451,12 +453,14 @@ func TestTemplates_MinimalQuelle(t *testing.T) {
 		t.Fatalf("minimale gueltige Quelle sollte emittieren: %v", err)
 	}
 	// Emittiert: die zwei Singletons der Quelle PLUS die tool-definierten .gitkeep der
-	// Struktur-Verzeichnisse (quell-unabhaengig, LH-FA-02 0.8.0).
+	// Struktur-Verzeichnisse PLUS der Register-Ort (beide quell-unabhaengig,
+	// LH-FA-02 0.8.0 bzw. ADR-0037 Festlegung 2).
 	want := []string{
 		"AGENTS.md", "spec/lastenheft.md",
 		"docs/plan/adr/.gitkeep", "docs/plan/carveouts/.gitkeep", "docs/reviews/.gitkeep",
 		"docs/plan/planning/open/.gitkeep", "docs/plan/planning/next/.gitkeep", "docs/plan/planning/done/.gitkeep",
 		"harness/conventions/.gitkeep",
+		"docs/plan/planning/observations/README.md",
 	}
 	sort.Strings(want)
 	if got := emittedTree(t, dir); strings.Join(got, "\n") != strings.Join(want, "\n") {
