@@ -256,7 +256,7 @@ Kommando, sonst wandert die Zahl mit jedem weiteren. Die Sache selbst liegt in *
 `9bed2d7` (`git show --stat 9bed2d7` → `21 files changed, 354 insertions(+), 218 deletions(-)`).
 `851b1ee`, `957c209` sind reine Lifecycle-Moves, `44e164a` und `d686787` die Link-Züge danach,
 `ac5d7ef` und `cc2ba89` die Verdikte, `cf2e5ca` die Re-Verankerung von
-[slice-071](../open/slice-071-bilanz-nennt-ihren-bestand.md).
+[slice-071](../next/slice-071-bilanz-nennt-ihren-bestand.md).
 
 **Die Herkunft von `cmd/ai-harness-init/span_report.go` ist über den neuen Pfad nicht mehr
 auffindbar, und deshalb steht sie hier.** Umzug und Umschreiben liegen in demselben Commit; die

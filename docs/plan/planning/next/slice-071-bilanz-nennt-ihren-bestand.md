@@ -120,7 +120,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       Träger-Meldung eine Ebene höher, nicht in die des leeren Bestands.
       **Nicht im Exit-Code, und das ist eine Setzung:** welche Zahl welche Bedeutung
       trägt, ist der Gegenstand von
-      [slice-079](slice-079-exit-code-vertrag.md); eine zweite Festlegung daneben driftete von ihr
+      [slice-079](../open/slice-079-exit-code-vertrag.md); eine zweite Festlegung daneben driftete von ihr
       weg, noch bevor die erste steht.
       **Rot:** ein Go-Test über [`internal/report`](../../../../internal/report/report.go) und
       `cmd/ai-harness-init/span_report.go` mit einem Pfad, den es nicht gibt —
@@ -206,7 +206,7 @@ Rückführungen:
 - `in-progress` → `next`: falls die zwei Angaben zusammen nicht in **einer** Review-Sitzung
   prüfbar sind. Sie berühren dieselbe Ausgabe und denselben Aufrufweg; fällt das auseinander,
   werden sie einzeln geschnitten — jede trägt ihren Zahn schon getrennt.
-- `in-progress` → `open`: falls [slice-079](slice-079-exit-code-vertrag.md) den Exit-Code-Vertrag
+- `in-progress` → `open`: falls [slice-079](../open/slice-079-exit-code-vertrag.md) den Exit-Code-Vertrag
   vorher setzt **und** darin die Lage *„Ablageort fehlt"* einem Code zuweist. Dann ist DoD (1) an
   zwei Orten festgelegt, und zuerst ist zu entscheiden, welcher der bindende ist; dieser Slice
   trägt bis dahin nur noch (2).
@@ -231,8 +231,8 @@ eingehende Links im Zug danach); Closure-Notiz mit Steering-Loop-Eintrag.
 - **Nicht in diesem Slice:** die **Cache-Rechnung** — sie hat nach
   [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) dauerhaft keinen Eingang
   und keinen Auflösungs-Trigger (§1); der **verlorene Lauf ohne Span**, den die Abdeckungszahl
-  nicht sehen kann ([slice-077](slice-077-verlorener-lauf-sichtbar.md)); die Bedeutung der
-  **Exit-Codes** ([slice-079](slice-079-exit-code-vertrag.md)); jede Emission ins Ziel und jede
+  nicht sehen kann ([slice-077](../open/slice-077-verlorener-lauf-sichtbar.md)); die Bedeutung der
+  **Exit-Codes** ([slice-079](../open/slice-079-exit-code-vertrag.md)); jede Emission ins Ziel und jede
   Ausweitung des Span-Schemas.
 
 ## 7. Closure-Notiz (nach `done/`)
