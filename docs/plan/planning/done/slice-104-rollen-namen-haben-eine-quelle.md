@@ -431,6 +431,11 @@ nennt es zwei Fälle; die Zusage *„heute leer"* wird damit erstmals wahr.
   — ein Beleg, selbst gemeldet und ohne Code-Folge. Er steht im Register und nicht nur in dieser
   Notiz, weil der Wächter dafür **existiert** und nicht gegriffen hat: Der Guard prüft die
   Befehlsposition, und die trug ein erlaubtes `docker`.
+- **Zwei Belege entstehen erst durch den Move** und stehen darum neben ihm statt in dieser Liste
+  oben: [`verweis-nachzug-schreibt-in-eingefrorenes-artefakt`](../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/observation.md)
+  (vier eingefrorene Artefakte, beide Adress-Formen — s. u.) und
+  [`lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md)
+  (der Ruhe-Marker der Roadmap, laut geworden mit Grund-Code `planning-drift`).
 - **Kein Beleg für**
   [`neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md):
   Der neue Wächter ist gelistet — `test/mutations/303` und `304` nennen ihn in ihrer `# expect:`-Zeile
