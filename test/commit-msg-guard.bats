@@ -9,11 +9,10 @@
 # das gepinnte bats-Image faehrt ohne Docker und ohne `git`
 # (test/history-range-guard.bats-Nachbarschaft, harness/tools/slice-mv.sh
 # Kopf, Abschnitt ZUSAGE). Ersetzt wird die Pruef-Instanz ueber
-# PRETOOLUSE_COMMIT_MSG_CHECKER (Skript-eigener Ausbruchspunkt, s. Skriptkopf)
-# — der reale docker-Lauf gegen `make commit-msg-check MSG=<datei>` ist am
-# echten Repo demonstriert (Skriptkopf-BELEG unten in dieser Datei? nein:
-# harness/README.md dokumentiert den Traeger; ein realer Docker-Lauf gehoert
-# nicht in einen hermetischen bats-Fall).
+# PRETOOLUSE_COMMIT_MSG_CHECKER (Skript-eigener Ausbruchspunkt, s. Skriptkopf).
+# Der reale docker-Lauf gegen `make commit-msg-check MSG=<datei>` steht in
+# harness/README.md — ein realer Docker-Lauf gehoert nicht in einen
+# hermetischen bats-Fall.
 #
 # Die Match-Extraktion (`--match`) ist der git-/docker-unabhaengige Teil und
 # wird direkt geprueft; der volle Hook-Pfad (stdin-JSON -> Match -> Datei
@@ -83,6 +82,36 @@ assert_passed() {
 @test "match: git commit ohne -F -> kein Treffer" {
   run match 'git commit'
   [ "$status" -eq 1 ]
+}
+
+@test "match: -F \"<pfad-mit-variable>\" (doppelte Anfuehrungszeichen) -> Inhalt unexpandiert" {
+  run match 'git commit -F "$msgfile"'
+  [ "$status" -eq 0 ]
+  [ "$output" = '$msgfile' ]
+}
+
+@test "match: -F '<pfad-mit-leerzeichen>' (einfache Anfuehrungszeichen) -> Inhalt inkl. Leerzeichen" {
+  run match "git commit -F '/tmp/a b.txt'"
+  [ "$status" -eq 0 ]
+  [ "$output" = "/tmp/a b.txt" ]
+}
+
+@test "match: --file=<pfad> -> Datei auf stdout" {
+  run match 'git commit --file=.git/MSG'
+  [ "$status" -eq 0 ]
+  [ "$output" = ".git/MSG" ]
+}
+
+@test "match: --file <pfad> (mit Leerzeichen statt =) -> Datei auf stdout" {
+  run match 'git commit --file .git/MSG'
+  [ "$status" -eq 0 ]
+  [ "$output" = ".git/MSG" ]
+}
+
+@test "match: -qF <pfad> (kombiniertes Kurz-Flag, F am Ende) -> Datei auf stdout" {
+  run match 'git commit -qF .git/MSG'
+  [ "$status" -eq 0 ]
+  [ "$output" = ".git/MSG" ]
 }
 
 # ---------- voller Hook-Pfad: Datei-Existenz vor der Pruef-Instanz ----------

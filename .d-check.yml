@@ -356,13 +356,15 @@ vcs:
 # .claude/hooks/pretooluse-commit-msg-guard.sh (ueber `make commit-msg-check
 # MSG=<datei>`, --commit-msg) — NICHT `make doc-commits` (d-check.mk, --range):
 # gemessen bricht der gepinnte v0.74.1 mit "Range-Basis-Vorfahren nicht
-# lesbar: object not found" ab, sobald `commits.id-patterns` eine EIGENE
-# (von den drei eingebauten Vorschlaegen abweichende) Liste traegt UND
-# gleichzeitig --range laeuft — reproduziert unabhaengig von Range-Tiefe,
-# expliziten Commit-Hashes und den --disable-Flags, verschwindet mit einer
-# LEEREN id-patterns-Liste und mit --commit-msg statt --range. `doc-commits`
-# bleibt darum ungenutzt advisory stehen (Beleg und Traeger-Entscheidung in
-# harness/README.md).
+# lesbar: object not found" ab, sobald `commits.id-patterns` IRGENDEINE
+# nicht-leere Liste traegt UND gleichzeitig --range laeuft — auch die drei
+# eingebauten Muster VERBATIM brechen ab; nicht die Abweichung von den
+# Vorschlaegen ist die unterscheidende Variable, sondern die blosse
+# Anwesenheit einer expliziten Liste. Reproduziert unabhaengig von
+# Range-Tiefe, expliziten Commit-Hashes und den --disable-Flags, verschwindet
+# nur mit LEERER oder GANZ WEGGELASSENER id-patterns-Liste und mit
+# --commit-msg statt --range. `doc-commits` bleibt darum ungenutzt advisory
+# stehen (Beleg und Traeger-Entscheidung in harness/README.md).
 commits:
   id-patterns:
     - 'ADR-\d{4}'

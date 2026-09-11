@@ -12,10 +12,15 @@
 # Zusatz-Hook nichts aus (der Command-Guard entscheidet fail-closed bereits
 # selbst, ein zweiter Block waere doppelte Meldung fuer denselben Befund).
 #
-# Erkannt wird NUR die dokumentierte Aufrufform `git commit ... -F <datei>
-# ...` (kein Trenner-Zeichen zwischen `commit` und `-F`, kein Anspruch auf
-# Vollstaendigkeit). `git commit -m "…"` oder `-F -` (stdin) entkommen dieser
-# Pruefung — derselbe Stolperdraht-Charakter wie beim Command-Guard: kein
+# Erkannt wird ein `git commit`-Aufruf, der eine Message-Datei per `-F`,
+# `--file` oder `--file=` uebergibt — unquotiert, in einfachen oder doppelten
+# Anfuehrungszeichen (Inhalt darf Whitespace enthalten), sowie mit `-F` als
+# letztem Zeichen eines kombinierten Kurz-Flags (z. B. `-qF`). Ein in
+# Anfuehrungszeichen gesetzter Pfad, der eine Shell-Variable enthaelt, bleibt
+# unexpandiert — wie im unquotierten Fall auch; die Existenz-Pruefung weiter
+# unten greift dann nicht, kein Rateversuch. Kein Anspruch auf
+# Vollstaendigkeit: `git commit -m "…"` und `-F -` (stdin) entkommen bewusst
+# — derselbe Stolperdraht-Charakter wie beim Command-Guard: kein
 # Sandbox-Anspruch, ADR-0004.
 #
 # Reagiert dieser Hook (Muster erkannt, Datei existiert), gilt SEIN Urteil:
@@ -40,12 +45,20 @@ here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 extractor="$here/../../harness/tools/extract-command.awk"
 repo_root="$(cd "$here/../.." && pwd)"
 
-# git commit … -F <datei> -> Datei auf stdout, exit 0; sonst exit 1 (kein Output).
+# git commit … (-F|--file|--file=) <datei> -> Datei auf stdout, exit 0;
+# sonst exit 1 (kein Output). <datei> unquotiert, oder in '...'/"..." (dann
+# darf der Inhalt Whitespace enthalten). Der Flag-Teil deckt `-F`, `--file`
+# und kombinierte Kurz-Flags, deren letztes Zeichen `F` ist (z. B. `-qF`).
 match_msgfile() {
-  local cmd=$1 re
-  re='git[[:space:]]+commit[^;&|]*[[:space:]]-F[[:space:]]+([^[:space:]"'"'"']+)'
+  local cmd=$1 re whole
+  re='git[[:space:]]+commit[^;&|]*[[:space:]](-[a-zA-Z]*F|--file)(=|[[:space:]]+)("([^"]*)"|'"'"'([^'"'"']*)'"'"'|([^[:space:]"'"'"']+))'
   [[ "$cmd" =~ $re ]] || return 1
-  printf '%s' "${BASH_REMATCH[1]}"
+  whole="${BASH_REMATCH[3]}"
+  case "$whole" in
+    \"*) printf '%s' "${BASH_REMATCH[4]}" ;;
+    \'*) printf '%s' "${BASH_REMATCH[5]}" ;;
+    *) printf '%s' "${BASH_REMATCH[6]}" ;;
+  esac
 }
 
 if [ "${1:-}" = "--match" ]; then
@@ -84,7 +97,7 @@ else
 fi
 
 if [ "$check_rc" -ne 0 ]; then
-  reason="Commit-Message-Datei ${msgfile} traegt keine Traceability-Kennung (ADR-/LH-/MR-/slice-) -- siehe: make commit-msg-check MSG=${msgfile}"
+  reason="Commit-Message-Datei ${msgfile} wurde ABGELEHNT (Pruef-Instanz Exit ${check_rc}): entweder traegt sie keine Traceability-Kennung (ADR-/LH-/MR-/slice-), oder die Pruef-Instanz selbst ist gescheitert (Docker/Netz/Image) -- Diagnose: make commit-msg-check MSG=${msgfile}"
   reason="${reason//\\/\\\\}"; reason="${reason//\"/\\\"}"
   emit_block "$reason"
 fi
