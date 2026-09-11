@@ -41,13 +41,17 @@ phony_targets() {
 }
 
 authority_table_targets() {
-  grep -E '^\| `make [a-z][a-z0-9-]*` \|' "$AGENTS" | grep -oE 'make [a-z][a-z0-9-]*' \
-    | sed 's/^make //' | sort -u
+  grep -E '^\|.*`make [a-z][a-z0-9-]*`.*\|$' "$AGENTS" | grep -oE '`make [a-z][a-z0-9-]*`' \
+    | tr -d '`' | sed 's/^make //' | sort -u
 }
 
 exempt_targets() {
   block | grep -E '^  exempt-targets:[[:space:]]*$' >/dev/null
-  block | grep '^    - ' | sed -E 's/^[[:space:]]*-[[:space:]]*//' | sort -u
+  block | awk '
+    /^  exempt-targets:[[:space:]]*$/ { inlist = 1; next }
+    inlist && /^    - /                { print; next }
+    inlist                             { inlist = 0 }
+  ' | sed -E 's/^[[:space:]]*-[[:space:]]*//' | sort -u
 }
 
 @test "targets ist in modules: aktiviert" {

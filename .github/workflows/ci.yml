@@ -18,7 +18,7 @@
 # CHECKOUT-TIEFE: vier der fuenf `actions/checkout` unten bleiben bei der
 # Default-Tiefe 1 — `make gates`/`smoke`/`full-smoke`/`mutate` loesen keinen
 # history-lesenden d-check-Modul-Lauf aus (`.d-check.yml` aktiviert fuer
-# `docs-check` nur `links, anchors, ids, matrix, codepaths, spans, planning`,
+# `docs-check` nur `links, anchors, ids, matrix, codepaths, spans, planning, targets`,
 # keines davon liest `git`-Historie). Der fuenfte Job (`adr-immutable`) liest
 # die Range ueber das `vcs`-Modul (Target `doc-immutable`/`adr-immutable` in
 # d-check.mk/Makefile) und traegt darum `fetch-depth: 0` UND einen
