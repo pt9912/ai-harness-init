@@ -4,7 +4,7 @@
 **Gegenstand:** `9fa172a7` (Stand nach Review-Runde 1, HIGH-1/2/3 behoben) · Baseline für den
 Plan-vs-Code-Diff: `c4182efb` (letzter Stand vor dem ersten Implementer-Code-Commit `61c45ba7`;
 `e5afeb36` davor ist reiner Ruhe-Marker-Nachzug nach `slice-mv`).
-**Plan:** `docs/plan/planning/in-progress/slice-104-rollen-namen-haben-eine-quelle.md` ·
+**Plan:** `docs/plan/planning/done/slice-104-rollen-namen-haben-eine-quelle.md` ·
 **Review:** `docs/reviews/2026-09-11-slice-104-rollen-namen-haben-eine-quelle.md` (3 HIGH · 2 MEDIUM
 · 1 LOW · 1 INFO, HIGH in `9fa172a7` behoben) · **Bezug:**
 [`LH-FA-10`](../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren),

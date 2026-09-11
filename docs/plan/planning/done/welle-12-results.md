@@ -188,7 +188,7 @@ einem bestehenden erzeugt. Was offen bleibt, in Klassen statt als Liste:
   → **8** Nennungen an einen einzigen Träger reicht. Nach
   [`AGENTS.md`](../../../../AGENTS.md) §3.6 gilt: wer keinen Fall hat, ist unbewacht. Träger:
   [slice-103](../open/slice-103-traeger-waechter-decken-was-sie-sagen.md),
-  [slice-104](../in-progress/slice-104-rollen-namen-haben-eine-quelle.md),
+  [slice-104](../done/slice-104-rollen-namen-haben-eine-quelle.md),
   [slice-108](../open/slice-108-feldlisten-waechter-tragen-ihren-fall.md),
   [slice-110](../open/slice-110-erfassungs-waechter-fall-meldung-grenze.md).
 - **Texte, die mehr sagen als sie halten — im emittierten Produkt.** Die Feldliste behauptet
@@ -207,7 +207,7 @@ einem bestehenden erzeugt. Was offen bleibt, in Klassen statt als Liste:
 - **Vier Produktions-Fundorte für sechs Rollen-Namen, und der vierte geht als erster ins Ziel.**
   Die Kopplung, die [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
   Festlegung 3 *„benannt, nicht geschlossen"* lässt, ist von dieser Welle **vergrößert** worden,
-  nicht geschlossen. Träger: [slice-104](../in-progress/slice-104-rollen-namen-haben-eine-quelle.md).
+  nicht geschlossen. Träger: [slice-104](../done/slice-104-rollen-namen-haben-eine-quelle.md).
 - **Der eigene Messwert der Welle nennt seine Grenzen nur zur Hälfte.** Der Kopf des Mess-Skripts
   führt zwei von drei Grenzen, seine Median-Spanne ist enger als seine eigenen Bedingungen
   hergeben, und kein Artefakt nennt einen Anlass, die Messung erneut zu fahren. Träger:
@@ -358,7 +358,7 @@ Setzung 1 und darum **nicht** in der Roadmap (Setzung 2):
 | [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) | die offenen Norm-Postens bekommen einen Termin — fünf der neun kommen aus dieser Welle |
 | [slice-102](../open/slice-102-messung-nennt-grenzen-und-anlass.md) | die Messung nennt ihre Grenzen und ihren Anlass |
 | [slice-103](../open/slice-103-traeger-waechter-decken-was-sie-sagen.md) | die Träger-Wächter decken, was sie sagen |
-| [slice-104](../in-progress/slice-104-rollen-namen-haben-eine-quelle.md) | die Rollen-Namen haben eine Quelle statt vier Fundorte |
+| [slice-104](../done/slice-104-rollen-namen-haben-eine-quelle.md) | die Rollen-Namen haben eine Quelle statt vier Fundorte |
 | [slice-105](../done/slice-105-mutate-messen-dann-teilen.md) | `make mutate` wird erst gemessen, dann geteilt |
 | [slice-106](../done/slice-106-rotes-ci-traegt-seinen-ausgang.md) | jedes Rot der CI trägt einen Ausgang |
 | [slice-107](../open/slice-107-inhalts-hash-traegt-eine-entscheidung.md) | der Inhalts-Hash bekommt seine Entscheidung |
