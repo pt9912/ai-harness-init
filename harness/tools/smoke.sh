@@ -58,10 +58,12 @@ fi
 # am DocGate, also VOR dem Templates-Schritt. Hier ist die einzige Stelle, an der
 # die volle Kette real laeuft — also gehoert die Beobachtung hierher, auf
 # Tier 2 (DoD-Verify/CI), nicht in `make gates`.
-# LH-FA-02 0.8.0: emittiert werden Singletons (-> .md) und die Struktur-.gitkeep;
+# LH-FA-02 0.8.0: emittiert werden Singletons (-> .md), die Struktur-.gitkeep
+# und der tool-autorierte Register-Ort ohne Baseline-Vorlage (ADR-0006/ADR-0037);
 # wiederkehrende Vorlagen und derivative Indexe NICHT (referenziert aus vendored
-# bzw. Fuelle-wenn-Inhalt-da). Je ein positiver Vertreter beider Klassen:
-for rel in AGENTS.md docs/plan/adr/.gitkeep docs/plan/planning/in-progress/roadmap.md .harness/skills/reviewer.md; do
+# bzw. Fuelle-wenn-Inhalt-da). Je ein positiver Vertreter aller drei Klassen:
+for rel in AGENTS.md docs/plan/adr/.gitkeep docs/plan/planning/in-progress/roadmap.md \
+	.harness/skills/reviewer.md docs/plan/planning/observations/README.md; do
 	if [ ! -f "$tmprepo/$rel" ]; then
 		echo "smoke: FEHLER — Template-Schicht unvollstaendig: $rel fehlt" >&2
 		exit 1

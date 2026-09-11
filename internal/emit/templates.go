@@ -1,6 +1,7 @@
 package emit
 
 import (
+	"bytes"
 	_ "embed" // fuer //go:embed templates/observations/README.md (observationsReadme)
 	"errors"
 	"fmt"
@@ -403,8 +404,9 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 	// Der Register-Ort (ADR-0037 Festlegung 2, ADR-0034 Festlegung 1): anders als die
 	// .gitkeeps oben eine Datei MIT Inhalt, tool-autoriert ohne Baseline-Vorlage
 	// (ADR-0006) — drei mitemittierte Workflow-Commands nennen den Ort bereits als
-	// vorhanden.
-	out[observationsReadmeTarget] = observationsReadme
+	// vorhanden. Kopiert statt aliasiert: der Plan-Wert ist eigenstaendig und
+	// teilt sich das Backing-Array nicht mit dem eingebetteten Paket-Global.
+	out[observationsReadmeTarget] = bytes.Clone(observationsReadme)
 	return out, nil
 }
 

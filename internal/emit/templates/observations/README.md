@@ -15,9 +15,12 @@ BEO-<KUERZEL>/<slug>/
 ```
 
 `<KUERZEL>` wird nachgeschlagen, nicht erfunden: es ist das Sub-Area-Kürzel
-aus der Modus-Deklaration in `harness/conventions.md`. `<slug>` ist
-lowercase Kebab-Case. Die Kennung der Beobachtung ist der Pfad
-`BEO-<KUERZEL>/<slug>` selbst.
+aus der Modus-Deklaration in `harness/conventions.md`. Diese Spalte trägt
+jedes Repo für diesen Zweck — unabhängig davon, ob seine ADR- oder
+Slice-Kennungen selbst ein Bereichssegment führen: die Kennung einer
+Beobachtung braucht das Kürzel so oder so. `<slug>` ist lowercase
+Kebab-Case. Die Kennung der Beobachtung ist der Pfad `BEO-<KUERZEL>/<slug>`
+selbst.
 
 ## Wer schreibt
 
@@ -39,7 +42,7 @@ Schritt selbst aus. Die Slice-Planung liest, was darunter liegt
 abgeschlossenen Vorgangs (Regelfall: eine Slice-ID), kein Freitext. Ein
 Vorgang zählt einmal; das erzwingt das Dateisystem, nicht die Disziplin.
 
-## Die drei Ausgänge ab 3×
+## Die drei Ausgänge
 
 | Ausgang | Was dazugehört |
 |---|---|
@@ -47,9 +50,12 @@ Vorgang zählt einmal; das erzwingt das Dateisystem, nicht die Disziplin.
 | `geplant` | Kennung des Slice oder der Welle, die die Regel schreibt |
 | `gestrichen` | die Begründung, warum die Beobachtung nicht mehr auftreten kann |
 
-Unterhalb der Schwelle ist `offen` der Normalzustand, kein Ausgang.
-`gestrichen` heißt nicht gelöscht: das Verzeichnis bleibt liegen, mit der
-Begründung in seinem `state.md`.
+`verkörpert` und `geplant` werden ab 3× zugewiesen. `gestrichen` ist an
+diese Schwelle nicht gebunden: fällt die Ursache vorher weg, wandert die
+Zeile mit Begründung dorthin, unabhängig vom Zähler. Unterhalb der Schwelle
+ist `offen` der Normalzustand, kein Ausgang. `gestrichen` heißt nicht
+gelöscht: das Verzeichnis bleibt liegen, mit der Begründung in seinem
+`state.md`.
 
 ## Eine leere Ablage
 

@@ -14,10 +14,9 @@ import (
 // "mindestens zwei Module". Jedes der drei neu aktivierten ist im frischen Ziel gemessen gruen UND
 // faengt sein Gegenbeispiel (harness/tools/full-smoke.sh); dieser Test bindet nur die
 // LISTE, nicht das Verhalten (das braucht Docker und liegt in full-smoke). codepaths
-// bleibt aus: im frischen Ziel fehlt docs/plan/planning/observations/README.md, und drei
-// mitemittierte Workflow-Commands referenzieren den Ort per Inline-Code — aktiv waere es
-// ein brechendes Gate (LH-QA-01). Das Requirement-Muster von ids bleibt auskommentiert:
-// das Praefix gehoert dem Adopter und ist in einem frischen Ziel nicht bekannt. Die
+// bleibt aus — ihre Aktivierung ist eine eigene Entscheidung. Das Requirement-Muster
+// von ids bleibt auskommentiert: das Praefix gehoert dem Adopter und ist in einem
+// frischen Ziel nicht bekannt. Die
 // spec-straten-Klasse traegt order:/direction: no-downward: die Baseline-Vorlage fuehrt
 // beide im auskommentierten matrix-Block, und die Entscheidungsregel fuer emittierte
 // Module bindet auf Modul-, nicht auf Positions-Ebene. exclude-sections traegt genau

@@ -50,7 +50,8 @@ führt. Die zwei anderen sind erledigt: `harness/conventions/` legt
 dort einen Ausgang statt einer Anlage bekommen.
 
 **Der Träger ist eine Datei mit Inhalt, keine `.gitkeep`** — Festlegung 2 entscheidet das eigens,
-weil drei mitemittierte Anweisungssätze namentlich auf `observations/README.md` zeigen und weil
+weil drei mitemittierte Anweisungssätze namentlich auf den Ort zeigen — zwei davon auf
+`observations/README.md`, einer auf das Verzeichnis — und weil
 die Datei die Unterscheidung *nichts beobachtet* gegen *nie geführt* trägt, die ein `.gitkeep`
 nicht tragen kann. Sie ist damit **nicht** template-abgeleitet: Der vendored Baum führt für sie
 keine Vorlage, ihre Herkunfts-Klasse ist die tool-autorierte
@@ -101,8 +102,12 @@ Aussagen-Berührung steht hier gar nicht.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `internal/emit/templates.go` | update | die tool-autorierte `README.md` als neuer Emissions-Eintrag; **nicht** `structureGitkeeps()` — deren Träger ist ein leeres `.gitkeep`, und Festlegung 2 entscheidet gegen diesen Träger |
-| `internal/emit/templates_test.go` (`want`-Listen) | update | der Mengen-Vergleich ist der Zahn; er wird nachgezogen, nicht aufgeweicht |
-| `internal/emit/templates/d-check.yml` | **unverändert** | welche Module ein Ziel bekommt, entscheidet [slice-073](../done/slice-073-emittierte-doc-gate-module.md) — dieser Slice räumt dessen Vorbedingung, er trifft die Entscheidung nicht |
+| `internal/emit/templates_test.go` (`want`-Listen, eigener Skip-if-present-Zahn für den Register-Ort) | update | der Mengen-Vergleich ist der Zahn; er wird nachgezogen, nicht aufgeweicht. `TestTemplates_SkipIfPresent` deckt nur `spec/lastenheft.md` — der Register-Ort bekommt einen eigenen Zahn |
+| `internal/emit/templates/observations/README.md` | update | zwei Textstellen gegen `modul-06-roadmap.md` §Das Beobachtungs-Register nachgezogen: der Ausgang `gestrichen` ist an die 3×-Schwelle nicht gebunden; die Kürzel-Spalte gilt unabhängig davon, ob der Adopter seine ADR-/Slice-Kennungen segmentiert |
+| `internal/emit/templates/d-check.yml` | update, Modul-Liste **unverändert** | welche Module ein Ziel bekommt, entscheidet weiterhin [slice-073](../done/slice-073-emittierte-doc-gate-module.md) — dieser Slice räumt dessen Vorbedingung, er trifft die Entscheidung nicht. Die Begründung des abgeschalteten Moduls hatte die eigene Anlage der Datei nicht mehr getragen und ist gestrichen |
+| `internal/emit/emit_test.go` | update | derselbe Kommentar trug dieselbe Begründung ein zweites Mal und ist gleich gestrichen |
+| `harness/tools/smoke.sh` | update | die Stichprobe bekommt einen dritten Klassen-Vertreter (tool-autorierte Datei mit Inhalt, keine Baseline-Vorlage) neben Singleton und Struktur-`.gitkeep` |
+| `test/mutations/299-observations-readme-fehlt.sh`, `test/mutations/300-observations-readme-clobbert.sh` | neu | rot färbende Mutationen für die Vollständigkeits- bzw. die Skip-if-present-Zusage |
 | die Register-Ablage **dieses** Repos | **unverändert** | Dogfood-Ebene, anderer Vertrag |
 
 ## 4. Trigger

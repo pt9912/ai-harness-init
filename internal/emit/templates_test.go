@@ -512,6 +512,33 @@ func TestTemplates_SkipIfPresent(t *testing.T) {
 	}
 }
 
+// TestTemplates_ObservationsReadmeSkipIfPresent (slice-194, Review-MEDIUM-2-Auflösung):
+// TestTemplates_SkipIfPresent haelt die Zusage nur an spec/lastenheft.md fest — der
+// Register-Ort (ADR-0037 Festlegung 3, skip-if-present) hatte darin keinen eigenen Zahn.
+// Ein adopter-gefuelltes docs/plan/planning/observations/README.md ueberlebt einen
+// Re-Lauf UNBERUEHRT.
+func TestTemplates_ObservationsReadmeSkipIfPresent(t *testing.T) {
+	dir := t.TempDir()
+	target := filepath.Join(dir, filepath.FromSlash("docs/plan/planning/observations/README.md"))
+	if err := os.MkdirAll(filepath.Dir(target), 0o755); err != nil {
+		t.Fatalf("Setup: %v", err)
+	}
+	const sentinel = "# adopter-gefuellt\n"
+	if err := os.WriteFile(target, []byte(sentinel), 0o644); err != nil {
+		t.Fatalf("Setup: %v", err)
+	}
+	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
+		t.Fatalf("Templates (skip-if-present darf nicht fehlschlagen): %v", err)
+	}
+	after, err := os.ReadFile(target)
+	if err != nil {
+		t.Fatalf("lesen: %v", err)
+	}
+	if string(after) != sentinel {
+		t.Errorf("vorhandenes docs/plan/planning/observations/README.md clobbert (skip-if-present verletzt): %q", string(after))
+	}
+}
+
 // TestTemplates_SkillsConvergent (slice-038, Review-MEDIUM-Auflösung): .harness/skills/* ist
 // tool-eigene Infrastruktur (ADR-0007 Z.100 KONVERGENT), NICHT skip-if-present wie der uebrige
 // Templates-Satz. Ein Re-Lauf ueber ein modifiziertes Skill heilt es kanonisch — waehrend ein
