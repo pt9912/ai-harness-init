@@ -166,6 +166,33 @@ und die Stubs tragen nach der Ziel-Form ohnehin kein volles §7 mehr, sind also 
 sinnvoller Kandidat. Wer `archive-welle` produktiv nimmt, zieht den Geltungsbereich hier nach
 oder benennt an dieser Stelle, dass die Zusage ab dann nur für den flachen Bestand gilt.
 
+**Was das Modul `targets` in `docs-check` deckt, und was nicht:** `.d-check.yml` hält zwei
+Richtungen zwischen den Makefile-Rezepten (`makefiles: [Makefile, d-check.mk]`) und den
+Gate-Tabellen der Doku. **Vollständigkeit** (`gate-undocumented`) prüft gegen genau **eine**
+`authority`-Datei — `AGENTS.md` §4 —, weil das Schema des Moduls keine Liste zulässt (eine
+zweite Datei in `authority` bricht mit einem Typfehler). **Phantom** (`gate-phantom`) prüft
+beide `doc-tables`-Dateien (`AGENTS.md`, `harness/README.md`) in die Gegenrichtung: eine
+`make X`-**Tabellenzeile** ohne passendes Rezept färbt rot. Beide Richtungen greifen nur an
+**Tabellenzeilen** — eine Erwähnung in Fließtext, Aufzählung oder Code-Block bleibt für das
+Modul unsichtbar. Ein halluziniertes Ziel in Prosa bleibt damit außerhalb dieses
+Prüfbereichs — dieselbe Lücke, die
+[`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) offen lässt.
+
+Jedes Rezept aus `makefiles`, das keine `make X`-Zeile in der `authority`-Datei trägt, steht
+entweder dort **oder** kuratiert (exakte Namen, kein Glob) in `exempt-targets` — heute **36**
+(`sed -n '/^targets:/,/^ignore-refs:/p' .d-check.yml | grep -c '^    - '`), in zwei Gruppen:
+Nicht-Gate-Verifies und Maintenance/CI-Sensoren, die in diesem Dokument in Prosa beschrieben
+sind (`smoke`, `full-smoke`, `mutate`, `span-clean`, `span-report`, `hook-overhead`, `slice-mv`,
+`archive-welle`, `vendor-baseline`, `regelwerk-check`, `baseline-freshness`,
+`history-range-guard`, `adr-immutable`, `doc-immutable`, `doc-commits`, `record-gates`) — und
+reine Utility-/Advisory-Ziele ohne Prosa-Erwähnung, deren einzige Dokumentation ihr eigener
+`## `-Hilfetext ist (`help`, `test-bats`, `test-go`, `artifact`, `release-artifacts`, `compile`,
+`freshness-golangci`, `freshness-dcheck`, `freshness-go`, `freshness-cpp`, `doc-trace`,
+`doc-complete`, `doc-doctor`, `doc-repair`, `doc-planning`, `doc-tracked`, `doc-targets`,
+`doc-structure`, `doc-usage`, `doc-help`). Beide Gruppen sind dokumentiert — die
+`exempt-targets`-Zeile sagt nur, dass keine dieser Dokumentationen eine `make X`-Tabellenzeile
+in der `authority`-Datei ist.
+
 **Was `codepaths` an toten Pfaden in den vendored Baum nicht sieht**
 ([slice-201](../docs/plan/planning/done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)):
 `codepaths.roots: [spec, docs, harness]` ist eine Liste von Wurzel-**Präfixen** — ein
