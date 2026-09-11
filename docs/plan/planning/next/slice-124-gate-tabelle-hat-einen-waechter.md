@@ -31,6 +31,8 @@ Maßstab für die 19 Ausnahmen, die dieser Slice setzen muss),
 advisory-Ziel einen behaupteten Gate und muss die Aufzählung nachziehen),
 [`AGENTS.md`](../../../../AGENTS.md) §3.6 (keine Zusage ohne rot gesehenes Gegenbeispiel).
 
+**Verantwortlich:** Implementer (pt9912).
+
 **Autor:** Planner. **Datum:** 2026-08-28.
 
 ---

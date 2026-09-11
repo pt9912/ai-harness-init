@@ -30,6 +30,8 @@ Hook- und Nachweis-Mechanik dieses Repos — sie entscheidet, wo ein Vor-Commit-
 [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)
 (`doc-commits` ist eines der elf advisory-Ziele; wird es behauptet, zieht Setzung 2 mit).
 
+**Verantwortlich:** Implementer (pt9912).
+
 **Autor:** Planner. **Datum:** 2026-08-28.
 
 ---

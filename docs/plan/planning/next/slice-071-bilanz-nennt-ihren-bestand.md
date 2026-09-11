@@ -37,6 +37,8 @@ Ausgabe eines Adopters — die `requirement`-Achse ist damit **besetzt**, nicht 
 unverändert gilt:** eine Kennung, die nicht trägt, füllt die Achse falsch, und leer schlägt
 gefüllt und falsch. Geändert hat sich der Bestand, nicht die Regel.
 
+**Verantwortlich:** Implementer (pt9912).
+
 **Autor:** Planner. **Datum:** 2026-08-25.
 
 ---

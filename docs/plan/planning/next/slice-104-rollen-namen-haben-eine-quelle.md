@@ -52,6 +52,8 @@ unbewacht* — der Voll-E2E-Sensor hat keinen, gemessen in §1),
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 (Verortung).
 
+**Verantwortlich:** Implementer (pt9912).
+
 **Autor:** Planner. **Datum:** 2026-08-25.
 
 ---
