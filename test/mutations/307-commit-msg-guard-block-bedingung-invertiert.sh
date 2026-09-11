@@ -8,5 +8,8 @@
 # deren Message-Datei EINE Kennung traegt, und laesst kennungslose durch —
 # die Kennungs-Pruefung ist damit wirkungslos entfernt, ohne dass der Aufruf
 # selbst (Match, Datei-Existenz, Checker-Aufruf) sich aendert.
+# Anker in DOPPELTEN Anfuehrungszeichen (SC2016, wie test/mutations/139): der
+# Vergleich soll das LITERALE "$check_rc" treffen, keine Kommando-Substitution
+# — eine Inline-Suppression verbietet AGENTS.md §3.2.
 set -euo pipefail
-sed -i 's/if \[ "\$check_rc" -ne 0 \]; then/if [ "$check_rc" -eq 0 ]; then/' .claude/hooks/pretooluse-commit-msg-guard.sh
+sed -i "s@if \[ \"\$check_rc\" -ne 0 \]; then@if [ \"\$check_rc\" -eq 0 ]; then@" .claude/hooks/pretooluse-commit-msg-guard.sh
