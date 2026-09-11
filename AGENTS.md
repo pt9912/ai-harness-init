@@ -460,6 +460,94 @@ und die Reihenfolge zweier Commits liest keines — beide Lücken benennt
 für ihre eigenen Festlegungen. Träger ist der Accept-Übergang und der Lauf, der den Move plant
 · seit welle-15.
 
+### 3.12 Eine Träger-Wahl, deren Alternativen verschieden weit reichen, fällt vor `in-progress/`
+
+Stehen für einen Slice zwei **Träger** zur Wahl und unterscheiden sie sich darin, **wie weit das
+Ergebnis reicht** — was es beobachten, abdecken oder durchsetzen kann —, dann ist diese Wahl eine
+Architektur-Entscheidung und keine Umsetzungs-Frage. Sie fällt **vor** dem Übergang
+`next → in-progress` und in der **Architect**-Rolle. Solange sie offen steht, ist der Slice nicht
+übernahmefähig: Er bleibt in `next/`. Fällt sie erst im Implementations-Lauf auf, ist sie kein
+Umsetzungs-Detail, sondern eine **Plan-Änderung** und geht zurück, statt im Bericht danach zu
+stehen.
+
+**Die Abgrenzung trägt eine Frage, keine Aufzählung.** *Deckt die eine Alternative einen Fall ab,
+den die andere strukturell nicht sieht?* Ja — die Wahl ist gebunden. Nein — sie ist es nicht und
+bleibt beim Implementer und bei Schritt 4 seines Workflows
+(`grep -c 'Kleinste sinnvolle Änderung planen' .harness/baseline/v6.5.0/regelwerk/modul-09-implementierung.md`
+→ **1**); Benennung, Schnitt und Dateiaufteilung sind **Form** und bleiben seine. Diese Sektion
+nimmt ihm davon nichts weg.
+
+**Falsch:** die Wahl im Plan als `offen` markieren, den Slice nach `in-progress/` bewegen und sie
+im Implementations-Lauf entscheiden — das Review sieht danach den Träger, nicht die Wahl.
+**Richtig:** die Wahl fällt vor der Übernahme; was der Lauf vorfindet, ist ein entschiedener
+Träger.
+
+**Falsch:** aus der Bindung folgern, jeder Slice-Plan brauche einen Abschnitt für seinen
+Lösungsweg.
+**Richtig:** die Sektion schafft **keinen Ort**. Sie benennt Zeitpunkt und Rolle; den Ort hat die
+Entscheidung schon — die ADR, wo die Wahl ADR-würdig ist (§3.4, §3.5), sonst die Zeile in §3 des
+Slice-Plans, die den Träger ohnehin nennt.
+
+**Was sie nicht erweitert.** Die Slice-Vorlage. Deren acht Abschnitte
+(`grep -cE '^## [0-9]' .harness/baseline/v6.5.0/templates/docs/plan/planning/slice.template.md`
+→ **8**) bleiben unberührt, und §3 bleibt die Liste, die ihr Bedienhinweis beschreibt
+(`grep -c 'Datei- oder Komponenten-Ebene reicht' .harness/baseline/v6.5.0/templates/docs/plan/planning/slice.template.md`
+→ **1**). Ein neunter, repo-lokaler Abschnitt wäre ein Fork der vendored Vorlage und erzeugte in
+jedem Slice ohne solche Wahl Pflichterfüllung — die Falle, vor der
+`modul-05-planning-harness.md` §Ziel-Form: Slice bei der Out-of-Scope-Disziplin ausdrücklich warnt
+(*„ein Pflichtfeld erzeugt Pflichterfüllung"*).
+
+**Warum der Architect und warum dieser Zeitpunkt — beides steht bereits in der Baseline.** Die
+Rollen-Sequenz für einen Slice legt die Architect-Antwort **vor** die Übernahme:
+`A-->>P: ADR-Bezüge bestätigt (oder Folge-ADR)` steht dort unmittelbar über
+`P->>I: Slice in in-progress/`
+(`grep -n 'A-->>P: ADR-Bezüge bestätigt (oder Folge-ADR)' .harness/baseline/v6.5.0/regelwerk/modul-08-agentenrollen.md`
+→ **23**, dieselbe Datei `grep -n 'P->>I: Slice in in-progress/'` → **24**). Die Begründung der
+Lösung ist Gegenstand der ADR (`modul-04-adrs.md`: *„ADRs begründen die *Lösung*"*), und die
+schreibt der Architect (`modul-08-agentenrollen.md` §Rollen-Regeln: *„ADR-Änderung: Architect
+schreibt"*). **Neu ist allein**, dass eine offen stehende Träger-Wahl die Architect-Antwort
+**unvollständig** macht und damit in die Bedingung *„Abhängigkeiten gelöst"* des Übergangs fällt
+(`modul-05-planning-harness.md` §Trigger je Lifecycle-Übergang). Die Sektion füllt damit eine
+Lücke, statt von der Baseline abzuweichen; deshalb steht zu ihr **kein** Eintrag im
+Adaptions-Block ([`MR-000`](harness/conventions.md#mr-000--baseline-aussage)).
+
+**Dieselbe Linie zieht die Baseline für die andere Hälfte derselben Plan-Ausgabe** — Out-of-Scope
+gehört als Plan-Änderung *„vor den Code, nicht in den Bericht danach"*
+(`modul-09-implementierung.md`). **Kein geführtes Muster, auf das eine zweite Anwendung sich
+berufen könnte:** Das Begriffspaar, mit dem sie es dort ausdrückt, steht genau **einmal** im
+vendored Baum
+(`grep -rn 'Schritt-Hälfte\|Dokument-Hälfte' .harness/baseline/v6.5.0/ | wc -l` → **1**). Tragend
+ist deshalb die Rollen-Sequenz oben, nicht diese Parallele.
+
+**Begründung (gemessen, nicht postuliert):** Die offene Wahl **wird** im Bestand notiert — in zwei
+Schreibweisen, die einander nicht kennen, und keine bindet den Übergang:
+
+```sh
+F=$(ls docs/plan/planning/{open,next,in-progress}/slice-*.md)
+echo "$F" | wc -l                                          # 66 lebende Slice-Pläne
+for f in $F; do awk -F'|' '/^## 3\. Plan/{i=1;next} /^## 4\./{i=0}
+  i && /^\|/ && $3 ~ /(^|[^[:alnum:]])[Oo]ffen([^[:alnum:]]|$)/ {print FILENAME; exit}' "$f"; done | wc -l   # 2
+grep -lF 'Offen, vor dem Code zu entscheiden' $F | wc -l    # 3
+```
+
+**Keine Erwartungswerte** ([`MR-025`](harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2) — die Zahlen wandern mit dem Bestand. **Eine dritte Schreibweise ist nicht beziffert:**
+dieselbe Frage steht auch als Fließtext in der Begründungs-Spalte (*„Ort offen", „Form offen"*).
+Ob eine solche Zelle eine Träger-Wahl offen hält oder etwas anderes, ist ein **Urteil** und kein
+Muster — ein `grep` zählte Zellen, nicht Fälle, und gäbe damit ein Muster als Kriterium aus, das
+keines ist (§3.6). Tragend ist ohnehin nicht die Stückzahl, sondern dass **keine** der
+Schreibweisen den Übergang nach `in-progress/` anhält.
+
+**Cutoff — ab dieser Sektion, kein Nachrüsten.** Gebunden ist die Wahl, die ansteht; der Bestand
+ist kein Arbeitsauftrag, und ein Maßstab über ihn wäre dauerhaft rot.
+**Geltungsbereich: dieses Repo.** Was ein emittiertes Repo an Lifecycle-Bedingungen bekommt,
+entscheidet der Slice, der die Tool-Ebene entscheidet.
+
+**Ein Wächter existiert nicht**, und er wäre auch keiner: Ob zwei Alternativen verschieden weit
+reichen, ist ein Urteil; die drei Schreibweisen oben sind nicht vereinheitlicht, und ein Sensor
+auf eine von ihnen prüfte die Notation statt der Sache — er bliebe still, wo die Wahl gar nicht
+erst notiert wurde. Träger ist die Architect-Antwort vor dem Übergang, nicht ein Gate danach.
+
 ## 4. Quality Gates
 
 | Target | Zweck |
