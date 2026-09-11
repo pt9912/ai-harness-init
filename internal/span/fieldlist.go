@@ -128,9 +128,8 @@ func limitAgentGuard() string {
 		"Rollen-Achse ruht hier auf Disziplin.\n"
 }
 
-// backtickJoin haengt jeden Namen in Backticks und trennt mit Komma+Leerzeichen — die
-// Darstellungsform, die limitAgentGuard bisher als Literal trug. Die Liste selbst kommt
-// aus CanonicalRoles, nicht aus einer zweiten Aufzaehlung hier.
+// backtickJoin haengt jeden Namen in Backticks und trennt mit Komma+Leerzeichen. Die
+// Liste selbst kommt aus CanonicalRoles, nicht aus einer zweiten Aufzaehlung hier.
 func backtickJoin(names []string) string {
 	quoted := make([]string, len(names))
 	for i, n := range names {

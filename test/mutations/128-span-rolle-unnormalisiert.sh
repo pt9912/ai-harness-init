@@ -15,7 +15,7 @@
 # ohne dass `make mutate` es meldet. Dieser Fall loest beides: der Beleg ist der Lauf,
 # und er wiederholt sich bei jedem `make mutate`.
 #
-# GEMESSEN WIRD DIE WIEDERVERWENDUNG, nicht eine zweite Abbildung: `roleFromAgentType`
+# GEMESSEN WIRD DIE WIEDERVERWENDUNG, nicht eine zweite Abbildung: `RoleFromAgentType`
 # lebt in internal/span/emit.go und fuellt dort `agent_role`. Wer daneben eine eigene
 # Abbildung fuer `spawned_role` baut, faellt hier ebenso — der Rohwert ist nur der
 # einfachste Weg dorthin.
@@ -24,4 +24,4 @@
 # `verifier` durch, also Werte, die die Normalisierung unveraendert laesst. Damit ist
 # „128 rot" gleichbedeutend mit „die Normalisierung greift" (Bedingung 4 des Treibers).
 set -euo pipefail
-sed -i 's@roleFromAgentType(text(v))@text(v)@' internal/span/response.go
+sed -i 's@RoleFromAgentType(text(v))@text(v)@' internal/span/response.go

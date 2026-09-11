@@ -9,7 +9,7 @@
 # WARUM DIE VOLLE STUFE UND KEIN GO-TEST IM PAKET internal/emit: ein Test dort sieht den
 # Aufruf in cmd/ai-harness-init/main.go nicht — emit.Agents bleibt fuer sich genommen
 # korrekt, nur ruft sie niemand mehr. Erst ein echter Bootstrap-Lauf zeigt den leeren
-# Zielordner. Vor diesem Fall deckte kein test/mutations/-Fall diese Verdrahtung — make
-# test blieb unter genau dieser Mutation gruen.
+# Zielordner. Dieser Fall ist der einzige Zahn ueber dieser Verdrahtung; ohne ihn bleibt
+# make test unter dieser Mutation gruen.
 set -euo pipefail
 sed -i '/if err := emit.Agents(targetDir); err != nil {/,+2d' cmd/ai-harness-init/main.go

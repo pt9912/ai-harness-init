@@ -12,7 +12,6 @@
 # (harness/tools/full-smoke.sh, rollen_typen_im_ziel) leitet seine erwartete Liste aus
 # GENAU dieser Quelle ab, statt sie selbst zu fuehren oder aus dem bootstrappten Ziel zu
 # lesen (letzteres waere zirkulaer und saehe eine fehlende Rolle nie). Dieser Fall ist
-# der erste Zahn ueber dieser Schleife ueberhaupt — bis hierher deckte sie kein
-# test/mutations/-Fall.
+# der Zahn ueber dieser Schleife — kein anderer test/mutations/-Fall deckt sie.
 set -euo pipefail
 sed -i 's@return \[\]string{"planner", "architect", "implementer", "reviewer", "verifier", "validator"}@return []string{"planner", "architect", "implementer", "reviewer", "verifier"}@' internal/span/emit.go

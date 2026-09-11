@@ -34,7 +34,7 @@
 # bekommen ihre Rolle schon aus dem Ergebnis, sodass der Rueckfall nicht greift
 # (TestNoResponseFreetextReachesSpan).
 #
-# WARUM DIE MUTATION NORMALISIERT statt den Rohwert zu nehmen: mit `roleFromAgentType`
+# WARUM DIE MUTATION NORMALISIERT statt den Rohwert zu nehmen: mit `RoleFromAgentType`
 # ergibt der Fehlschlag-Waechter TestFailedAgentCallCapturesNothing (`subagent_type:
 # "nope"`) weiterhin ein leeres Feld und bleibt gruen. Ein roher Rueckfall faerbte ihn
 # mit — und „132 rot" hiesse dann nicht mehr eindeutig „B1 greift in DIESEM Waechter"
@@ -50,4 +50,4 @@
 # einzige Wirkung dieses Falls, und Bedingung 2 des Treibers meldet eine Mutation, die
 # die Datei nicht veraendert.
 set -euo pipefail
-sed -i 's@^\tp.Failed = failed(raw, p.Event)$@\tif in, ok := raw["tool_input"]; ok \&\& p.Spawned.SpawnedRole == "" {\n\t\tvar arg map[string]json.RawMessage\n\t\tif json.Unmarshal(in, \&arg) == nil {\n\t\t\tp.Spawned.SpawnedRole = roleFromAgentType(text(arg["subagent_type"]))\n\t\t}\n\t}\n\tp.Failed = failed(raw, p.Event)@' internal/span/span.go
+sed -i 's@^\tp.Failed = failed(raw, p.Event)$@\tif in, ok := raw["tool_input"]; ok \&\& p.Spawned.SpawnedRole == "" {\n\t\tvar arg map[string]json.RawMessage\n\t\tif json.Unmarshal(in, \&arg) == nil {\n\t\t\tp.Spawned.SpawnedRole = RoleFromAgentType(text(arg["subagent_type"]))\n\t\t}\n\t}\n\tp.Failed = failed(raw, p.Event)@' internal/span/span.go
