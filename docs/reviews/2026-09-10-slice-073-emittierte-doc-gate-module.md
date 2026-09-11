@@ -316,7 +316,7 @@ den sie zusagen, hält (Negativbefund N-3). Es ist der Nachsatz, der falsch ist.
   Inline-Code (`grep -rn 'observations' internal/emit/templates/` → `plan-welle.md:46`,
   `implement-slice.md:153`, `close-welle.md:60`). Die Begründung ist damit eine andere als die des
   Plans von 2026-07-31 — genau die Nachmessung, die §3 verlangt. Sie hat eine Adresse:
-  [slice-194](../plan/planning/next/slice-194-bootstrap-legt-den-register-ort-an.md).
+  [slice-194](../plan/planning/in-progress/slice-194-bootstrap-legt-den-register-ort-an.md).
 - **N-10 — Die Nicht-Emission von `planning` trägt, und sie war im Plan angelegt.** Die
   Roadmap-Vorlage trägt den Ruhe-Marker für den leeren Zustand bewusst nicht, mit
   ausgeschriebener Begründung im Bedienhinweis (*„Ein Doku-Sensor matcht den Marker als Substring
