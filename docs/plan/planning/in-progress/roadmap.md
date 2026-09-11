@@ -17,14 +17,16 @@ Welle-Dateien; woran gearbeitet wird, sagt das `Welle:`-Feld der Slices in
 nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
+- [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
 - [welle-13 — Regeln bekommen ihren Sensor](../welle-13-regeln-bekommen-ihren-sensor.md)
 
 **Eine Position der Ziel-Form ist nicht übernommen, und hier steht der Grund**
 ([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage): eine unerklärte Abweichung
 ist ein Fork, keine Adaption). Die Ziel-Form setzt *flache Welle-Datei* mit *offene Welle* gleich —
 ihre Liste ist eine Bijektion in beide Richtungen. Dieses Repo schneidet die Welle-Datei, **bevor**
-der Start-Trigger eintritt; `ls docs/plan/planning/welle-*.md` führt darum mehr Dateien, als hier
-Zeiger stehen. Die Differenz steht vollständig unter *Nächste Wellen*, je mit ihrem Trigger. Der
+der Start-Trigger eintritt; `ls docs/plan/planning/welle-*.md` führt darum **mindestens so viele**
+Dateien, wie hier Zeiger stehen. Was an Differenz bleibt, steht unter *Nächste Wellen*, je mit
+ihrem Trigger — ist sie leer, hat jede geschnittene Welle ihre Beginn-Bedingung erfüllt. Der
 Zeiger folgt dem **eingetretenen** Start-Trigger, nicht dem Schnitt: eine Welle ohne eingetretene
 Beginn-Bedingung zu eröffnen, hebt die Trigger-Disziplin auf, die dieselbe Roadmap einfordert.
 
@@ -52,7 +54,6 @@ unverlinkter ist ein Kandidat ohne Datei und ohne geschnittene Slices.
 
 | Welle | Trigger (beobachtbar) | Wichtigste Slices | Aufwand |
 |---|---|---|---|
-| [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md) | welle-14 liegt in `done/` — tragend, weil jede Messung dieser Welle über den vendored Baum läuft, den welle-14 tauscht (§2 der Plan-Datei) | `slice-090`–`slice-092` | M |
 | Doc-Gate-Härtung | erneut beobachtete Befund-Klasse (Muster `slice-026`: neun Instanzen → Sensor) | `test` in `codepaths.roots` aufnehmen — Gate-*Anheben* nach dem [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)-Muster mit Trockenlauf vor dem Pin ([`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)/[`MR-011`](../../../../harness/conventions.md#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines)); die Messung dazu führt [`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben) · Anker-Fragment-Sensor · Prosa-Zahlen-Provenienz · `citations` · die zwei Module `hostpaths` und `diagrams`, ausgeschrieben in [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §6. **Nicht dasselbe wie** [slice-069](../open/slice-069-zahn-bindet-zusicherung.md) oder [slice-070](../open/slice-070-comment-claims-pruefbereich.md) — hier zählt die bloße **Existenz** des genannten Pfades | S |
 | Vollständigkeits-Wächter für kuratierte Listen | am 2026-07-25 fand ein **Nutzer** den veralteten bats-Pin von Hand; für bats, shellcheck und actionlint gibt es keinen Freshness-Sensor | Beide kuratierten Listen prüfen ihre **Einträge**, nie ihre **Vollständigkeit** — `upstream-drift` jeden gelisteten Pin, `make mutate` jeden gelisteten Wächter. Ein Bauplan deckt beide: Inventar einsammeln, gegen die Abdeckungs-Menge halten, Differenz melden. Die drei Images sind nur per Digest gepinnt und tragen keinen Versions-String — die Version aus dem gepinnten Image selbst lesen (`bats --version`), sonst entsteht eine zweite Quelle, die driftet. Schließt Achse (5) der Doku- und Sensor-Wartung mit ein | M |
 | Regeln ohne Feedback-Quadrant schließen — Rest-Achsen | die Klasse ist am 2026-07-26 sechsfach gemessen (Drift-Log unten) | Achse (1) ist in [welle-09](../welle-09-modul-15-konformitaet.md) eingefaltet, die Achsen (1)–(4) und die Sensor-Hälfte von (6) sind als [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) geschnitten. Hier bleiben: **(5)** Co-Change um [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 2 — Eigenbau mit Cutoff ab dem einführenden Commit (rückwirkend wäre er dauerhaft rot) und fail-closed bei Shallow Clone · **(6, Skill-Hälfte)** `.harness/skills/closure-note-reviewer.md` fehlt (`ls .harness/skills/ \| wc -l` → **1**), obwohl das Werkzeug sie in jedes Ziel emittiert · **(7)** veröffentlichte Artefakte außerhalb von `git`: der Release-Text von `v0.1.0` wurde viermal korrigiert, kein Gate erreicht ihn ([slice-050](../done/slice-050-doku-nachzug-release.md) §7) · **(8)** der Liefer-Punkte-Zähler; die Ist-Messung über neun Slices führt [slice-053](../done/slice-053-cpp-hexslice-renderer.md) · **(9)** die Quellen-Klausel [`AGENTS.md`](../../../../AGENTS.md) §3.7 — sie nennt sich selbst wächterlos, Träger-Kandidat ist `make comment-claims` statt d-check; gefordert ist ein **Cutoff-Mechanismus** über den geänderten Zeilen, keine Räumung des Bestands | L |
@@ -135,7 +136,7 @@ Ergebnis-Notiz, keine Nummernfolge.
 
 Die Tabelle ist nach Wellen-Nummer sortiert, nicht nach Abschluss-Datum; `welle-10` schloss nach
 `welle-12`. Die Lücken sind keine Auslassung: `welle-09`, `welle-11` und `welle-13` sind
-geschnitten und nicht geschlossen — ihr Zustand steht oben bzw. unter *Nächste Wellen*.
+geschnitten und nicht geschlossen — ihr Zustand steht oben unter *Offene Wellen*.
 
 ## Historische Trigger-Verschiebungen
 
