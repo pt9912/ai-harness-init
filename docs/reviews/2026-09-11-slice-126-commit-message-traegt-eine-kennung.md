@@ -160,6 +160,19 @@ done
 # NICHT erkannt (rc=1): -F "$msgfile" · -F '/tmp/a b.txt' · --file=… · --file … · -qF …
 ```
 
+**Der Beleg ist dieser Review-Lauf selbst.** Der Commit, der diesen Report ablegt, wurde in
+der dokumentierten Konvention gesetzt — `git commit -F <datei>` — und der Hook hat ihn
+**nicht gesehen**, weil der Pfad aus einer Variablen kam und deshalb in Anführungszeichen
+stand. Der Wächter greift damit ausgerechnet dort nicht, wo ein Lauf den Pfad
+programmatisch bildet, also im Regelfall:
+
+```sh
+bash .claude/hooks/pretooluse-commit-msg-guard.sh --match 'git commit -F "$SCR/commitmsg.txt" -q'
+#   -> exit 1, keine Ausgabe (nicht erkannt)
+bash .claude/hooks/pretooluse-commit-msg-guard.sh --match 'git commit -F /tmp/x/commitmsg.txt -q'
+#   -> /tmp/x/commitmsg.txt, exit 0 (erkannt)
+```
+
 **Vorschlag zur Formulierung** (Über-Zusage streichen): `jeden` → die Form ohne
 Anführungszeichen benennen, und die Aufzählung als Beispiele kennzeichnen statt als Liste.
 
