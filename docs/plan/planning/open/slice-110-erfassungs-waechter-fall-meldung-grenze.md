@@ -64,7 +64,7 @@ Feldliste); dies ist die dritte Ausfertigung, für Leser und Aufräum-Fragment.
 
 **Was dieser Slice nicht ist: eine Korrektur der Leser-Ausgabe.** Dass der Leser seine Lagen
 mit zutreffenden Ursachen begründet, ist ein anderer Gegenstand — er liegt in
-[slice-071](slice-071-bilanz-nennt-ihren-bestand.md), weil er dieselbe Ausgabe und dieselbe
+[slice-071](../next/slice-071-bilanz-nennt-ihren-bestand.md), weil er dieselbe Ausgabe und dieselbe
 Lagen-Trennung betrifft. Hier geht es um die **Wächter**, dort um das **Produkt**.
 
 ## 2. Definition of Done
