@@ -214,7 +214,7 @@ Baum, und die Messung in §1 gilt über ihm.
 dritter Fundort, unbewachte Verdrahtung, aufruferloses `AgentFile()` — sind in einer Closure
 gemessen und benannt worden. Ein Träger ohne Termin ist in diesem Repo dreimal vergeben und
 nullmal eingelöst worden
-([slice-101](slice-101-norm-postens-bekommen-einen-termin.md) §1, dort mit Kommando); der Termin ist
+([slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) §1, dort mit Kommando); der Termin ist
 dieser Schnitt.
 
 Die zwei Rückführungen, vorab benannt:
