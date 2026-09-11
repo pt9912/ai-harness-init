@@ -11,4 +11,4 @@
 # einem Bericht meldet einen ZUSTAND und laesst offen, ob er morgen anders ist; erst
 # dieser Satz nennt die GRENZE — und er gilt auch dann, wenn niemand einen Bericht ruft.
 set -euo pipefail
-sed -i 's@return \[\]string{limitAgentGuard, limitCounters, limitStore}@return []string{limitAgentGuard, limitStore}@' internal/span/fieldlist.go
+sed -i 's@return \[\]string{limitAgentGuard(), limitCounters, limitStore}@return []string{limitAgentGuard(), limitStore}@' internal/span/fieldlist.go

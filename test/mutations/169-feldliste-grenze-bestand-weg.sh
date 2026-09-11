@@ -12,4 +12,4 @@
 # nennt ihm keine der beiden Quellen. Dieser Fall haelt fest, dass der gewaehlte Ort ihn
 # auch traegt.
 set -euo pipefail
-sed -i 's@return \[\]string{limitAgentGuard, limitCounters, limitStore}@return []string{limitAgentGuard, limitCounters}@' internal/span/fieldlist.go
+sed -i 's@return \[\]string{limitAgentGuard(), limitCounters, limitStore}@return []string{limitAgentGuard(), limitCounters}@' internal/span/fieldlist.go

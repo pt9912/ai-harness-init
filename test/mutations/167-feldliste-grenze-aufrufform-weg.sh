@@ -10,4 +10,4 @@
 # und ein einziger Fall belegte nur eine davon. Ohne diesen Satz liest ein Adopter eine
 # besetzte Rollen-Achse als zugesagt, waehrend sie auf seiner Disziplin ruht.
 set -euo pipefail
-sed -i 's@return \[\]string{limitAgentGuard, limitCounters, limitStore}@return []string{limitCounters, limitStore}@' internal/span/fieldlist.go
+sed -i 's@return \[\]string{limitAgentGuard(), limitCounters, limitStore}@return []string{limitCounters, limitStore}@' internal/span/fieldlist.go
