@@ -144,7 +144,7 @@ hat.
 
 Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 5 §Ziel-Form: ≤ 3).
 
-- [ ] **(1) `targets` ist in [`.d-check.yml`](../../../../.d-check.yml) aktiviert und läuft in
+- [x] **(1) `targets` ist in [`.d-check.yml`](../../../../.d-check.yml) aktiviert und läuft in
       `make gates`.** Aufnahme in `modules:` — nicht als zweites Ziel daneben, sonst entsteht ein
       Gate-Name, den [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
       erst wieder einlösen müsste.
@@ -152,7 +152,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       [`AGENTS.md`](../../../../AGENTS.md) → `make docs-check` fällt und nennt Datei, Zeile und
       `gate-phantom`. Der Lauf **ohne** die Zeile bleibt grün. Beide gehören in den
       Umsetzungs-Commit.
-- [ ] **(2) Jeder Befund des gewählten Config-Blocks ist aufgelöst — als Doku-Nachzug oder als
+- [x] **(2) Jeder Befund des gewählten Config-Blocks ist aufgelöst — als Doku-Nachzug oder als
       begründete Ausnahme, keiner als stille Liste; und die sechs in Prosa dokumentierten Ziele
       sind ausdrücklich entschieden.** Für jede `exempt-targets`-Zeile steht neben ihr, **warum**
       das Target keine Doku-Pflicht hat; für `docs-check` ist die `makefiles`-Quelle korrigiert
@@ -171,7 +171,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       [`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)
       §Kein Rückfall auf stilles Grün. Mechanisch rot wird der Punkt, wenn nach der Kuratierung ein
       **neues** undokumentiertes Target hinzukommt und `make docs-check` es **nicht** meldet.
-- [ ] **(3) Die Grenzziehung in
+- [x] **(3) Die Grenzziehung in
       [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)
       Setzung 2 ist nachgezogen — als Übergabe, nicht als Eigenmacht.** Sie zählt heute `docs-check`
       als **einziges** behauptetes Ziel und die übrigen elf als advisory; nach diesem Slice stimmt
@@ -222,21 +222,60 @@ aus DoD (3).
 
 ## 6. Risiken und offene Punkte
 
+Jedes Risiko trägt bei Closure genau einen der drei Ausgänge (Modul 5 §Offene Risiken werden bei
+Closure aufgelöst): *eingetreten* → Carveout oder Folge-Slice mit Kennung · *entfallen* →
+gestrichen mit Begründung · *weiter offen* → Beobachtungs-Register.
+
 - **Die 19 Ausnahmen sind die Stelle, an der dieser Slice scheitern kann.** Ein Gate, dessen
   Ausnahme-Liste die Hälfte des [`Makefile`](../../../../Makefile) umfasst, prüft die andere Hälfte
   — das ist zulässig, aber es ist **nicht**, was die Zusage sagt. Die Meldung und
   [`harness/README.md`](../../../../harness/README.md) müssen den Ausschnitt benennen, so wie
   `make comment-claims` seine „N Datei(en) geprueft"-Zeile führt.
+
+  **Ausgang: entfallen.** Die Bedingung trat ein — die Liste deckt mehr als die Hälfte —, die
+  Benennung auch. Gemessen, ohne Erwartungswerte
+  ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2):
+
+  ```sh
+  sed -n '/^targets:/,/^ignore-refs:/p' .d-check.yml | grep -c '^    - '                 # 36 ausgenommen
+  grep -h '^\.PHONY:' Makefile d-check.mk | sed -E 's/^\.PHONY:[[:space:]]*//' \
+    | tr ' ' '\n' | grep -v '^$' | sort -u | wc -l                                       # 47 Rezepte
+  grep -E '^\|.*`make [a-z][a-z0-9-]*`.*\|$' AGENTS.md \
+    | grep -oE '`make [a-z][a-z0-9-]*`' | tr -d '`' | sed 's/^make //' | sort -u | wc -l  # 11 in der Autoritäts-Tabelle
+  ```
+
+  36 und 11 ergeben 47: Der Prüfbereich ist lückenlos in zwei Teile zerlegt, und beide Teile stehen
+  namentlich in [`harness/README.md`](../../../../harness/README.md) — die Zahl neben dem Kommando,
+  das sie liefert, beide Ausnahme-Gruppen mit ihrem Grund und alle 36 Namen.
+  **Die zweite Hälfte der Forderung ist nicht eingelöst und das bleibt benannt statt zugesagt:** Die
+  *Meldung* stammt aus dem vendored d-check und nennt nur Datei- und Befundzahl; anders als bei
+  `make comment-claims`, dessen Zeile ein repo-eigenes Skript druckt, ist sie hier nicht
+  erreichbar. Den Ausschnitt trägt allein [`harness/README.md`](../../../../harness/README.md).
 - **`authority: AGENTS.md` macht eine Datei zur Vollständigkeits-Quelle, die zwei Rollen gehört.**
   §3 schreibt der Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8), §4 wächst mit den
   Artefakten. Dieser Slice fasst nur §4 an — und das ist eine Grenze, die niemand mechanisch prüft
   (kein Modul des Doku-Gates liest Commits oder Abschnitts-Eigentum). Sie hängt am Rollen-Wechsel,
   nicht an einem Sensor.
+
+  **Ausgang: entfallen.** Der Slice fasst auch §4 nicht an — die Datei ist über die ganze
+  Umsetzungs-Kette unverändert (`git diff 6f454e15^..94635d8d --stat -- AGENTS.md` → leer). Die
+  Grenze, um die es geht, ist als Regel bereits verkörpert
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8), und ihr Register-Eintrag
+  [`fremdes-rollen-artefakt-im-implementations-kontext`](../observations/BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext/observation.md)
+  trägt den Stand `verkörpert`. Ein Träger fehlt der Grenze also nicht; was fehlte, wäre ein Sensor,
+  und dass es keinen gibt, sagt jene Hard Rule selbst.
 - **Ein zweiter, stiller Prüfbereich entsteht mit `doc-tables` — und er ist nicht wählbar, sondern
   erzwungen.** `authority` nimmt genau **eine** Datei (§1: die Listenform bricht mit Exit 2). Die
   zweite `doc-tables`-Datei wird damit in **eine** Richtung geprüft (Phantom), nicht in beide. Was
   das bedeutet, gehört aufgeschrieben, sonst liest die nächste Runde „die Tabellen sind bewacht"
   und meint beide.
+
+  **Ausgang: entfallen.** Die Asymmetrie steht in
+  [`harness/README.md`](../../../../harness/README.md) ausgeschrieben: *Vollständigkeit* prüft gegen
+  genau eine `authority`-Datei, weil das Schema des Moduls keine Liste zulässt, *Phantom* prüft
+  beide `doc-tables`-Dateien in die Gegenrichtung. Damit ist die Richtung je Datei benannt, und die
+  Formulierung „die Tabellen sind bewacht" hat dort keinen Ort mehr.
 - **Die größere Blindstelle ist die Prosa, und sie bleibt nach diesem Slice bestehen.** Ein
   halluziniertes Ziel in einem Fließtext-Satz oder in einer Aufzählung ist für das Modul unsichtbar
   (§1, vier Sonden). Der Slice kann sie nicht schließen — er kann sie nur **benennen**, so wie
@@ -245,16 +284,164 @@ aus DoD (3).
   Tabellenzeilen** sind bewacht". Ohne diesen Zusatz schließt der Slice die halluzinierten Gates in
   der Tabelle und lässt sie in der Prosa offen — dieselbe Klasse, gegen die er antritt
   ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+
+  **Ausgang: entfallen.** Die Einschränkung, die das Risiko verlangt, steht im selben Absatz wie die
+  Zusage: *„Beide Richtungen greifen nur an **Tabellenzeilen** — eine Erwähnung in Fließtext,
+  Aufzählung oder Code-Block bleibt für das Modul unsichtbar"*, samt dem Satz, dass ein
+  halluziniertes Ziel in Prosa außerhalb dieses Prüfbereichs bleibt. Die Blindstelle besteht fort;
+  sie ist damit deklariert statt zugesagt, und genau das war die Bedingung.
 - **Der Befund `gate-phantom` auf `docs-check` ist ein Warnschuss für die ganze Welle.** Er kam aus
   einer Config, die eine plausible Annahme traf (`makefiles: [Makefile]`) und damit an einem
   **richtigen** Doku-Eintrag rot wurde. Eine Adoption, die solche Befunde durch Ausnahmen statt
   durch Config-Korrektur beseitigt, baut sich ein stilles Grün ein — dieselbe Klasse, die der Slice
   schließen soll.
 
+  **Ausgang: entfallen.** Der Befund ist durch die Config-Korrektur verschwunden, nicht durch eine
+  Ausnahme: `makefiles` führt beide Rezept-Dateien, und `docs-check` steht in keiner Ausnahme-Zeile
+  (`sed -n '/^targets:/,/^ignore-refs:/p' .d-check.yml | grep -c '^    - docs-check$'` → **0**).
+  Keiner der 36 Namen ist zugleich eine Tabellenzeile der Autoritäts-Datei — die zwei bats-Fälle in
+  `test/targets-modul-wiring.bats` halten beide Richtungen dieser Trennung laufend, nicht nur zum
+  Zeitpunkt der Kuratierung.
+
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Rolle:** Planner (frischer Kontext, [`AGENTS.md`](../../../../AGENTS.md) §3.10) · **Datum:** 2026-09-11
 
+### Geliefert
+
+Das Modul `targets` steht in der Modul-Liste der [`.d-check.yml`](../../../../.d-check.yml) und
+läuft damit in jedem `make docs-check` und `make gates` — kein zweites Gate-Ziel daneben, das
+[`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) erst
+wieder einlösen müsste. Der Config-Block trennt den Prüfbereich lückenlos in 36 kuratierte
+Ausnahmen und 11 Zeilen der Autoritäts-Tabelle, und `test/targets-modul-wiring.bats` hält beide
+Richtungen dieser Trennung laufend statt nur zum Zeitpunkt der Kuratierung.
+
+### Was funktionierte
+
+**Die Probe, die sich selbst widerlegte, war der wertvollste Beleg des Slice.** Die zwei
+`gate-phantom`-Befunde auf `docs-check` kamen aus einer plausiblen Annahme (`makefiles: [Makefile]`)
+und zeigten an einem *richtigen* Doku-Eintrag rot. Die Antwort war die Config-Korrektur, nicht die
+Ausnahme — und sie verschob die Arbeit von 19 auf 30 Entscheidungen, bevor irgendetwas geschrieben
+war. Hätte der Slice statt dessen zwei Ausnahmen gesetzt, wäre der Gate grün gewesen und hätte elf
+Rezepte aus [`d-check.mk`](../../../../d-check.mk) nie gesehen.
+
+**Das stille Grün ist unabhängig reproduziert worden**, am Elternstand vor dem ersten
+Umsetzungs-Commit: dieselben Flags, die das advisory-Ziel fährt, gegen einen Baum ohne
+`targets:`-Block — `1098 Datei(en) geprüft, 0 Befund(e)`, Exit 0. Ein Ziel, das läuft, grün meldet
+und nichts prüft, ist keine *verfügbare, nur nicht behauptete* Fähigkeit.
+
+### Was anders lief
+
+**Die Ausnahme-Begründung hat drei Anläufe gebraucht, und die dritte Fassung entstand durch
+Streichen.** Zwei frühere Formulierungen behaupteten je ein Konjunkt, das ein Teil der 16 Namen
+nicht trug; erst die Fassung, die gegen den **vollständigen** Bestand der Gruppe falsifizierbar ist,
+hält. Das ist [`AGENTS.md`](../../../../AGENTS.md) §3.6 in der Ausnahme-Liste statt im Test: Eine
+Begründung, die nur für die Mehrheit ihrer Zeilen gilt, ist ein stilles Grün über dem Rest.
+
+**Zwei Mutations-Fälle sind stumpf geworden, ohne dass an ihnen etwas falsch war.** Die Aufnahme von
+`targets` in die `modules:`-Zeile verschob den Wortlaut, auf den `test/mutations/269` und
+`test/mutations/279` mit dem vollen Listen-Literal ankerten; beide Patches wurden zu No-Ops. Hier
+fiel es im Review als Vorhersage auf, vor dem Lauf, der es gemeldet hätte.
+
+### Steering-Loop-Einträge
+
+1. **Neuer Sensor — geliefert.** Die Gate-Tabellen dieses Repos werden gegen die Rezepte gehalten.
+   Beide Grund-Codes sind rot gesehen: eine erfundene Tabellenzeile in
+   [`AGENTS.md`](../../../../AGENTS.md) färbt `gate-phantom`, ein `.PHONY`-Rezept ohne Tabellenzeile
+   färbt `gate-undocumented`, und der unveränderte Baum bleibt grün.
+2. **Benannte Spec-Lücke.**
+   [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
+   verlangt, dass *jeder* genannte Gate läuft. Bewacht ist nach diesem Slice die **Tabellenzeile**;
+   ein halluziniertes Ziel in Fließtext, Aufzählung oder Code-Block bleibt unsichtbar. Die Lücke
+   steht in [`harness/README.md`](../../../../harness/README.md) deklariert — die Zusage lautet dort
+   *„die Gate-Nennungen in Tabellenzeilen sind bewacht"*, nicht *„die Gate-Nennungen sind bewacht"*.
+3. **Geschärfte Regel, noch unter der Schwelle.** Ein `sed`-Anker in `test/mutations/` zitiert das
+   **Token**, nicht die volle Zeile. Die drei in diesem Slice angefassten Fälle tragen die Form, und
+   `test/mutations/301` nennt sie in seinem eigenen Kopf. Repo-weit gilt sie nicht: Sie ist als
+   Beobachtung gebucht und wartet auf ihren dritten Beleg.
+
+### Beobachtungs-Register
+
+- **Neu angelegt:**
+  [`mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`](../observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/observation.md)
+  — zwei Belege, Stand `offen`. Der eine ist dieser Slice (zwei Fälle in einem Vorgang zählen
+  einmal), der andere der Vorgang, dessen Closure die Form als Unterklasse benannte, die ihr
+  damaliger Ausgang nicht erreicht. Zwei Nachbarklassen decken sie nicht: die eine bricht an der
+  `# files:`-Zeile, die andere an der `# expect:`-Zeile, diese am `sed`-Muster dazwischen. Der
+  Bestandsfall `test/mutations/278` trägt dieselbe Anker-Form und gehört zu keinem abgeschlossenen
+  Vorgang — er steht dort als *benannt, nicht gezählt* und bewegt den Zähler nicht.
+- **Beleg ergänzt:**
+  [`neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md)
+  — `test/targets-modul-wiring.bats` ist ein neuer Wächter, den kein Fall in `test/mutations/` in
+  seiner `# files:`-Zeile nennt. Der Eintrag stand vor diesem Slice bereits über der Schwelle; sein
+  Ausgang gehört damit dem Lese-Schritt, nicht dieser Closure.
+- **Kein Beleg für**
+  [`ausnahmeliste-nur-auf-form-geprueft`](../observations/BEO-ALL/ausnahmeliste-nur-auf-form-geprueft/observation.md):
+  Die Klasse beschreibt einen *unbegründeten* Eintrag, der unsichtbar bliebe. Hier trägt jede der 36
+  Zeilen ihren Grund, und beide Hälften der Begründung sind gegen den vollständigen Bestand der
+  Gruppe nachgemessen. Die Klasse bleibt wahr — geprüft wird die Bijektion, nicht die Berechtigung —,
+  aber sie ist in diesem Vorgang nicht aufgetreten.
+
+### Der Lese-Schritt, und warum er hier nicht liegt
+
+Dieses Repo führt Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l`, kein
+Erwartungswert), und dieser Slice ist Mitglied von
+[welle-13](../welle-13-regeln-bekommen-ihren-sensor.md). Der Lese-Schritt — welcher Eintrag **3×**
+erreicht hat und welchen Ausgang er bekommt — gehört damit der Welle-Closure, und der
+Herkunfts-Anker einer daraus verkörperten Regel lautet `seit welle-13`, nicht `seit slice-124`.
+Die eine Ausnahme greift hier nicht: Kein Eintrag wird von **dieser** Closure über die Schwelle
+gehoben. Der neu angelegte steht bei zwei, der ergänzte stand bereits bei drei.
+
+**Der stehende Rückstand ist damit nicht aufgelöst und gehört benannt.** Einträge bei ≥ 3× mit
+Stand `offen`:
+
+```sh
+for d in docs/plan/planning/observations/BEO-ALL/*/; do
+  n=$(ls "$d/evidence"/*.md 2>/dev/null | wc -l); s=$(head -1 "$d/state.md")
+  [ "$n" -ge 3 ] && [ "$s" = "**Stand:** offen" ] && echo "$(basename $d) $n"
+done | sort -k2 -rn
+```
+
+**Kein Erwartungswert.** Einen davon berührt dieser Slice — den ergänzten oben; seine Zahl steigt,
+sein Zustand nicht. Ihre Ausgänge sind fast durchweg Norm-Text und damit Architect-Arbeit im
+Rahmen der Welle-Closure ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
+
+### Übergabe an den Architect
+
+Der Adaptions-Block trägt keinen Ort, an dem steht, dass dieses Repo `planning` und `targets` im
+Doc-Gate fährt. Die Übergabe hat einen Träger bekommen statt nur einen Satz in dieser Notiz:
+[slice-212](../open/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md) in `open/`. Der
+zuerst gemeldete Posten an
+[`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)
+Setzung 2 ist entkräftet und wird **nicht** weitergereicht: Aktiviert wurde ein Modul *innerhalb*
+von `docs-check`, kein zweites Gate-Ziel — `make doc-targets` bleibt advisory und steht in keiner
+Prerequisite-Kette.
+
+### Zwei Übergaben aus dem Review, je mit Ausgang
+
+- **Die zwei gehärteten Extraktionen ohne eigenen Wächter** gehen ins Register (Beleg oben). Ein
+  Rückbau bliebe heute unsichtbar, weil beide Fassungen über dem heutigen Baum dieselben Mengen
+  liefern; das ist die Eigenschaft, die der Eintrag zählt, und kein Defekt dieses Slice.
+- **Die Anker-Form in `test/mutations/278`** ist Bestand und wurde von diesem Diff nicht erzeugt.
+  Sie steht im neuen Eintrag unter *benannt, nicht gezählt*. Ein eigener Schnitt dafür wäre heute
+  verfrüht: Der Fall ist nicht gefallen, und die Klasse hat ihren dritten Beleg noch nicht.
+
+### Verifikation
+
+- **`make gates`** deckt den Abschlussstand des Slice: `.harness/state/gates-passed.diffsha` und
+  `bash harness/tools/working-tree-hash.sh` liefern denselben Wert über dem sauberen Baum.
+- **`make mutate`** ist über **288** Fällen vollständig grün gelaufen
+  (`ls test/mutations/*.sh | wc -l`, kein Erwartungswert). Der Beleg ist nicht nur berichtet,
+  sondern am Mechanismus nachgeprüft: `.harness/state/mutate-passed.key` entsteht ausschließlich
+  bei `fail_count == 0` (`finalize_belief` in `harness/tools/mutate.sh`), und der gespeicherte
+  Schlüssel ist reproduziert worden — er trifft den heutigen Baum **ohne** die Report-Datei des
+  Verifiers, also genau den Stand, über dem der Lauf startete. Diese eine Datei liegt unter
+  `docs/reviews/`, und kein Mutations-Fall nennt einen Pfad dort
+  (`sed -n 's/^# files: //p' test/mutations/*.sh | tr ' ' '\n' | sort -u | grep -c 'docs/reviews'` →
+  **0**). Der Prüfgegenstand des Laufs und der Abschlussstand unterscheiden sich damit um nichts,
+  worüber der Sensor urteilt.
+- **Review** nach Modul 10 in zwei abgelegten Runden, beide aufgelöst; **Verifikation** nach
+  Modul 11 mit eigenständiger Nachmessung beider Grund-Codes und des stillen Grüns am Elternstand.
 ## 8. Sub-Area-Modus-Begründung
 
 Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example). Ein Begründungsblock
