@@ -203,6 +203,33 @@ Steering-Loop-Lerneintrag.
 | B | **Woraus leitet der Voll-E2E-Sensor seine Liste ab?** | Aus dem **Ziel** wäre zirkulär (§Die Grenze). Aus `internal/emit/templates/agents/` ist ein Vergleich zweier verschiedener Bäume und damit eine echte Aussage. Aus einem Unterkommando des Trägers wäre die stärkste Fassung — sie kostet aber ein neues Stück öffentlicher Oberfläche, und die gehört begründet, nicht nebenbei |
 | C | **In welcher Form leitet der emittierte Grenz-Satz seine Namensliste ab?** | Er ist der einzige Fundort, dessen Text **ins Zielrepo geht**: `grep -n 'planner' internal/span/fieldlist.go` → Zeile **120**, dieselbe Liste im gebootstrappten Ziel → Zeile **74** (Kommando in §Ebene). Eine Ableitung, die anders formatiert — andere Reihenfolge, andere Trenner, andere Auszeichnung —, ändert die **Bytes einer Adopter-Datei**; die ist konvergent, ein Re-Lauf zieht sie nach, und `TestFeldliste_LiegtVerbatimImZiel` hält Ausdruck und Datei zusammen. Die Frage ist damit nicht, **ob** er ableitet (DoD (1) verlangt es), sondern ob der Satz danach noch derselbe Satz ist — und das ist eine Leser-Entscheidung, keine Formatierungsfrage |
 
+**Entschieden, vor dem Code — Frage A drift-korrigiert, B und C wie oben:**
+
+- **Frage A war bei Implementierungsbeginn bereits durch die Messung selbst entschieden, nicht mehr
+  offen.** Die Prämisse *„beide Richtungen sind heute frei"* stimmte zum Plan-Zeitpunkt nicht mehr:
+  `grep -n 'internal/span"' internal/emit/fieldlist.go` → Zeile **4** — `internal/emit` importiert
+  `internal/span` bereits (für `FieldList()`, die Feldlisten-Emission, unabhängig von diesem Slice).
+  Ein zweiter Import in der Gegenrichtung (`internal/span` → `internal/emit`) wäre ein Zyklus und
+  compiliert nicht. Damit bleibt genau **eine** Richtung technisch möglich: *Träger → Emitter* —
+  `span.CanonicalRoles()` ist die eine Quelle, `emit.canonicalRoles()` liest sie
+  (`internal/emit/agents.go`). Die in Frage A notierte Sorge zu *Emitter → Träger* (Laufzeit-Kopplung
+  nach [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 5(a)) betrifft ohnehin nur diese verworfene Richtung; die gewählte
+  Richtung berührt Festlegung 5(a) nicht — `Agents()` schreibt weiterhin unbedingt, unabhängig vom
+  Erfolg der Erfassungsschicht, und der Import ist ein reiner Kompilierzeit-Bezug auf eine
+  Konstanten-Liste, kein Laufzeit-Ausgang.
+- **Frage B: aus `internal/emit/templates/agents/*.md`.** `harness/tools/full-smoke.sh` leitet die
+  erwartete Rollen-Liste aus dieser Quelle ab (Glob über den Dateinamen ohne `.md`-Endung), mit
+  explizitem `nullglob` + Nicht-leer-Prüfung gegen einen stillen Nulldurchlauf. Rot gesehen:
+  `test/mutations/305-rollenachse-ziel-verliert-rolle-fullsmoke.sh` (eine Rolle verschwindet auf dem
+  Weg zum Ziel, die Quelle bleibt unverändert — der Sensor findet sie trotzdem, weil er nicht aus dem
+  Ziel selbst liest).
+- **Frage C: `backtickJoin(span.CanonicalRoles())`.** Der Grenz-Satz baut die Aufzählung
+  `` `planner`, `architect`, … `` aus derselben Liste; die Zielform (Backtick + Komma, keine
+  Konjunktion vor dem letzten Element) ist unverändert, `TestFeldliste_LiegtVerbatimImZiel` bleibt
+  grün ohne Anpassung. Da die Zusammensetzung eine Funktion braucht (kein Konstantenausdruck),
+  wandert `limitAgentGuard` von `const` zu `func` — `golangci-lint`s `gochecknoglobals` verbietet den
+  naheliegenden Zwischenschritt (package-level `var`), rot gesehen unter `make lint`.
+
 ## 4. Trigger
 
 **Beginn (`open` → `next` → `in-progress`): nichts blockiert ihn außer dem WIP-Limit — und das ist

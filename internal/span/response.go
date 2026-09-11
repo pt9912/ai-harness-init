@@ -90,7 +90,7 @@ func intoTotalToolUse(r *AgentResult, v json.RawMessage)  { r.TotalToolUseCount 
 // `agent_type`/`agent_role` schon mit anderer Bedeutung (der Typ des LAUFENDEN Agenten),
 // deshalb der eigene Feldname.
 //
-// roleFromAgentType wird WIEDERVERWENDET, nicht kopiert: ein unbekannter Wert — heute
+// RoleFromAgentType wird WIEDERVERWENDET, nicht kopiert: ein unbekannter Wert — heute
 // durchweg `general-purpose` — ergibt ein LEERES Feld. `general-purpose` ist keine
 // Rolle, und eine Ergebniszeile `general-purpose: 62 %` waere genau das, was die
 // Lesevorschrift in spec/spezifikation.md §5 verbietet.
@@ -110,7 +110,7 @@ func intoTotalToolUse(r *AgentResult, v json.RawMessage)  { r.TotalToolUseCount 
 //
 // HERKUNFT (Rueckfall auf `tool_input.subagent_type`):
 // test/mutations/132-span-rolle-aus-argument.sh faerbt NUR den ersten. Der zweite fuehrt
-// `subagent_type: "nope"`, das roleFromAgentType zu leer normalisiert, und bleibt unter
+// `subagent_type: "nope"`, das RoleFromAgentType zu leer normalisiert, und bleibt unter
 // 132 absichtlich gruen — seine Herkunfts-Achse hat damit keinen Zahn, und das ist
 // Absicht: ein ROHER Rueckfall faerbte ihn mit, und "132 rot" hiesse dann nicht mehr
 // eindeutig "die Herkunft greift im ERSTEN Waechter".
@@ -123,7 +123,7 @@ func intoTotalToolUse(r *AgentResult, v json.RawMessage)  { r.TotalToolUseCount 
 // Ein Fall bindet nur EINEN von beiden, weil der Treiber je Fall genau einen Namen in
 // der Fehlschlag-Ausgabe sucht.
 func intoSpawnedRole(r *AgentResult, v json.RawMessage) {
-	r.SpawnedRole = roleFromAgentType(text(v))
+	r.SpawnedRole = RoleFromAgentType(text(v))
 }
 
 func intoModelVersion(r *AgentResult, v json.RawMessage) {

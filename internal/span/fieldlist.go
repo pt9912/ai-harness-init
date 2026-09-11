@@ -115,12 +115,29 @@ func SchemaNotes() []Note {
 // EINZELN und nicht als ein Block: jeder Satz ist eine eigene Zusage mit eigener Richtung,
 // und die drei Waechter in internal/emit/fieldlist_test.go treffen je einen. Ein Block
 // haette einen Zahn fuer drei Aussagen.
-const limitAgentGuard = "**Über die Aufrufform des Agenten-Werkzeugs führt diese Ebene keinen Wächter.**\n" +
-	"Das Feld `agent_role` besetzt sich genau dann, wenn der Agenten-Typ eine der sechs kanonischen\n" +
-	"Rollen nennt — `planner`, `architect`, `implementer`, `reviewer`, `verifier`, `validator`. Wer\n" +
-	"seine Typen umbenennt, bekommt ein leeres Feld, und **leer heißt unbekannt, nie rollenlos**.\n" +
-	"Kein Gate und kein Hook erzwingt, dass Rollen-Arbeit unter ihrem Rollen-Typ läuft; die\n" +
-	"Rollen-Achse ruht hier auf Disziplin.\n"
+//
+// FUNKTION STATT KONSTANTE: der Satz baut die Rollen-Liste aus CanonicalRoles, und ein
+// package-level var mit Funktionsaufruf ist gegen die Lint-Config verboten
+// (gochecknoglobals) — AGENTS.md §3.2 laesst dafuer keine Inline-Suppression zu.
+func limitAgentGuard() string {
+	return "**Über die Aufrufform des Agenten-Werkzeugs führt diese Ebene keinen Wächter.**\n" +
+		"Das Feld `agent_role` besetzt sich genau dann, wenn der Agenten-Typ eine der sechs kanonischen\n" +
+		"Rollen nennt — " + backtickJoin(CanonicalRoles()) + ". Wer\n" +
+		"seine Typen umbenennt, bekommt ein leeres Feld, und **leer heißt unbekannt, nie rollenlos**.\n" +
+		"Kein Gate und kein Hook erzwingt, dass Rollen-Arbeit unter ihrem Rollen-Typ läuft; die\n" +
+		"Rollen-Achse ruht hier auf Disziplin.\n"
+}
+
+// backtickJoin haengt jeden Namen in Backticks und trennt mit Komma+Leerzeichen — die
+// Darstellungsform, die limitAgentGuard bisher als Literal trug. Die Liste selbst kommt
+// aus CanonicalRoles, nicht aus einer zweiten Aufzaehlung hier.
+func backtickJoin(names []string) string {
+	quoted := make([]string, len(names))
+	for i, n := range names {
+		quoted[i] = "`" + n + "`"
+	}
+	return strings.Join(quoted, ", ")
+}
 
 const limitCounters = "**Die Verbrauchs-Zähler kommen aus der Mechanik des Agenten-Werkzeugs nicht.**\n" +
 	"Die Token- und Cache-Zähler erreichen eine Zeile nur, wenn das Werkzeug sie im Ergebnis eines\n" +
@@ -135,7 +152,7 @@ const limitStore = "**Über den Bestand ist nichts zugesagt.** Er ist **gitignor
 	"weitergibt, gibt beides weiter.\n"
 
 // limits liefert die drei Grenz-Saetze in ihrer Reihenfolge im Dokument.
-func limits() []string { return []string{limitAgentGuard, limitCounters, limitStore} }
+func limits() []string { return []string{limitAgentGuard(), limitCounters, limitStore} }
 
 // fieldListHead ist der Kopf des Dokuments: was es ist, woher es kommt, und was das
 // geschlossene Schema bedeutet. Er nennt KEIN `make`-Ziel und traegt KEINEN Markdown-Link

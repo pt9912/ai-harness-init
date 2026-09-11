@@ -99,7 +99,7 @@ func Build(p Payload, root string, now time.Time) Span {
 		Session:        p.Session,
 		Agent:          p.Agent,
 		AgentType:      p.AgentType,
-		AgentRole:      roleFromAgentType(p.AgentType),
+		AgentRole:      RoleFromAgentType(p.AgentType),
 		Slice:          slices,
 		Requirement:    reqs,
 		Adr:            adrs,
@@ -163,7 +163,16 @@ func fingerprint(s *Span, path string) {
 	s.Sha256Prefix = hex.EncodeToString(h.Sum(nil))[:16]
 }
 
-// roleFromAgentType fuellt die Rollen-Achse aus Modul 15, SOWEIT sie erreichbar ist.
+// CanonicalRoles sind die sechs Rollen der Rollen-Sequenz (Modul 8: Planner → Architect
+// → Implementer → Reviewer → Verifier → Validator) in ihrer Reihenfolge — die EINE
+// Quelle dieses Namens-Vertrags im Produktionsbestand. RoleFromAgentType normalisiert
+// gegen genau diese Liste; der Emitter, der die Rollen-Typen ins Ziel schreibt
+// (internal/emit.canonicalRoles), liest sie von hier, statt sie zu wiederholen.
+func CanonicalRoles() []string {
+	return []string{"planner", "architect", "implementer", "reviewer", "verifier", "validator"}
+}
+
+// RoleFromAgentType fuellt die Rollen-Achse aus Modul 15, SOWEIT sie erreichbar ist.
 // LEER HEISST UNBEKANNT, nicht "rollenlos": eine Rolle gibt es immer, wir kennen sie
 // nur nicht. Die Lesevorschrift dazu steht in spec/spezifikation.md §5 — eine Auswertung, die die leeren
 // Spans als eigene Kostenstelle aufsummiert, erfindet eine, die es nicht gibt.
@@ -177,15 +186,15 @@ func fingerprint(s *Span, path string) {
 // leer in die Zeile, sonst kann ein Auswerter "unbekannt" nicht von "nicht vorhanden"
 // unterscheiden. Die frueher hier fehlende Achse machte die Luecke nur in MR-018
 // sichtbar — jetzt steht sie in JEDEM Span. Und sie fuellt sich ohne
-// Erfassungs-Aenderung, sobald rollen-benannte Agenten-Typen existieren (slice-060).
+// Erfassungs-Aenderung, sobald rollen-benannte Agenten-Typen existieren.
 // Bewacht von TestAgentRoleFromKnownTypes.
-func roleFromAgentType(agentType string) string {
-	switch agentType {
-	case "planner", "architect", "implementer", "reviewer", "verifier", "validator":
-		return agentType
-	default:
-		return ""
+func RoleFromAgentType(agentType string) string {
+	for _, role := range CanonicalRoles() {
+		if agentType == role {
+			return role
+		}
 	}
+	return ""
 }
 
 // StreamName bildet den Strom (Sitzung, Agent) aus ADR-0011 Festlegung 3. Zwei Dinge
@@ -378,7 +387,7 @@ func writeOwnerOnly(file string, data []byte) error {
 // Abweichung zu erklaeren waere gegen ADR-0011 Festlegung 1.4 gewesen ("Ableiten
 // schlaegt deklarieren"). Die vierte Achse, agent.role, wird NICHT hier abgeleitet:
 // sie haengt am LAUF, nicht am Repo-Zustand, und kommt aus dem Agenten-Typ
-// (roleFromAgentType).
+// (RoleFromAgentType).
 func correlation(root string) (slices, reqs, adrs []string) {
 	slices, reqs, adrs = []string{}, []string{}, []string{}
 	matches, err := filepath.Glob(filepath.Join(root, "docs/plan/planning/in-progress/slice-*.md"))

@@ -133,15 +133,16 @@ func bezugsKlassen() []bezugsKlasse {
 		},
 		{
 			// STRENGER ALS DIE ABWESENHEITS-MENGE, und das ist die fail-closed-Richtung:
-			// der Bootstrap schreibt dem Ziel unter diesen Verzeichnissen ZWEI Dateien
-			// (docs/plan/planning/README.md und docs/plan/planning/in-progress/roadmap.md,
-			// aus dem Vorlagen-Emit in templates.go) — das Muster verbietet auch sie.
-			// Der Preis: aus einem Rollen-Typ heraus laesst sich nicht auf die Roadmap
-			// des Ziels zeigen. Er ist bezahlbar, weil ein Rollen-Typ einen
-			// Kontext-Zuschnitt traegt und dafuer keinen Datei-Pfad braucht; die
-			// engere Fassung muesste die Emit-Menge nachbilden und driftete mit ihr.
+			// der Bootstrap schreibt dem Ziel unter diesen Verzeichnissen DREI Dateien
+			// (docs/plan/planning/README.md, docs/plan/planning/in-progress/roadmap.md und
+			// docs/plan/planning/observations/README.md, aus dem Vorlagen-Emit in
+			// templates.go) — das Muster verbietet auch sie. Der Preis: aus einem
+			// Rollen-Typ heraus laesst sich nicht auf die Roadmap des Ziels zeigen. Er ist
+			// bezahlbar, weil ein Rollen-Typ einen Kontext-Zuschnitt traegt und dafuer
+			// keinen Datei-Pfad braucht; die engere Fassung muesste die Emit-Menge
+			// nachbilden und driftete mit ihr.
 			name:     "Dogfood-Pfad",
-			richtung: "ein Rollen-Typ nennt keinen Datei-Pfad unter docs/plan/ — er traegt einen Kontext-Zuschnitt; die Verzeichnisse darf er nennen",
+			richtung: "ein Rollen-Typ nennt keinen Datei-Pfad unter docs/plan/planning/ oder docs/plan/adr/ — er traegt einen Kontext-Zuschnitt; die Verzeichnisse darf er nennen",
 			probe:    "siehe docs/plan/adr/0011-telemetrie-erfassung-policy.md",
 			finde:    musterFinder(regexp.MustCompile(`docs/plan/(?:planning|adr)/[A-Za-z0-9_<>./-]*\.[A-Za-z0-9]+`)),
 		},

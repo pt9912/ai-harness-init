@@ -3,6 +3,8 @@ package emit
 import (
 	"embed"
 	"fmt"
+
+	"github.com/pt9912/ai-harness-init/internal/span"
 )
 
 // agentsFS traegt die tool-AUTORIERTEN Rollen-Typen (LH-FA-10, ADR-0022 Festlegung 3):
@@ -20,14 +22,14 @@ import (
 //go:embed all:templates/agents
 var agentsFS embed.FS
 
-// canonicalRoles sind die sechs Rollen der Rollen-Sequenz (Modul 8: Planner →
-// Architect → Implementation → Reviewer → Verifier → Validator) in ihrer Reihenfolge.
-// Der Name IST der Vertrag: die Erfassungsschicht fuellt die Rollen-Achse eines Laufs
-// aus dem Agenten-Typ, und nur diese sechs Werte ergeben ein besetztes Feld (ADR-0022
-// Festlegung 3). Ein Typ unter anderem Namen laeuft, traegt aber ein leeres Feld —
-// leer heisst unbekannt, nie rollenlos.
+// canonicalRoles liest die sechs Rollen-Namen aus internal/span — der EINEN Quelle
+// dieses Namens-Vertrags im Produktionsbestand (span.CanonicalRoles). Die
+// Erfassungsschicht normalisiert den Agenten-Typ eines Laufs gegen dieselbe Liste
+// (span.RoleFromAgentType, ADR-0022 Festlegung 3): nur diese sechs Werte ergeben ein
+// besetztes Rollen-Feld. Ein Typ unter anderem Namen laeuft, traegt aber ein leeres
+// Feld — leer heisst unbekannt, nie rollenlos.
 func canonicalRoles() []string {
-	return []string{"planner", "architect", "implementer", "reviewer", "verifier", "validator"}
+	return span.CanonicalRoles()
 }
 
 // CanonicalRoles liefert die sechs Rollen-Namen in der Reihenfolge der Rollen-Sequenz

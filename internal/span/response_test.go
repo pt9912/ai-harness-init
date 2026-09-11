@@ -230,7 +230,7 @@ func TestAgentGetsNoArgumentFields(t *testing.T) {
 // Rolle — eine Ergebniszeile `general-purpose: 62 %` waere genau die erfundene
 // Kostenstelle, die die Lesevorschrift in spec/spezifikation.md §5 verbietet.
 //
-// Geprueft wird der Weg ueber `tool_response.agentType` (nicht roleFromAgentType
+// Geprueft wird der Weg ueber `tool_response.agentType` (nicht RoleFromAgentType
 // selbst — das deckt TestAgentRoleFromKnownTypes): die WIEDERVERWENDUNG ist die
 // Zusage, die hier faellt, wenn jemand daneben eine zweite Abbildung baut.
 func TestSpawnedRoleIsNormalised(t *testing.T) {

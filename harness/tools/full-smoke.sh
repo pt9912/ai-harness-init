@@ -74,11 +74,10 @@ chmod 755 "$tmprepo_cpphex"
 # 0700-Mount nicht traversieren. Ein echtes Adopter-Git-Repo hat 0755.
 chmod 755 "$tmprepo"
 
-# slice-097 (LH-FA-10 / ADR-0022 Festlegung 3): DIE ROLLEN-TYPEN LIEGEN IM ZIEL.
-# Sechs Dateien unter .claude/agents/, je eine kanonische Rolle, und jede fuehrt ihren
-# Rollen-Namen im Frontmatter — dieser Name ist der Vertrag zur Rollen-Achse: die
-# Erfassung besetzt sie nur bei einer der sechs, jeder andere Wert ergibt ein leeres
-# Feld.
+# DIE ROLLEN-TYPEN LIEGEN IM ZIEL (LH-FA-10 / ADR-0022 Festlegung 3). Sechs Dateien
+# unter .claude/agents/, je eine kanonische Rolle, und jede fuehrt ihren Rollen-Namen im
+# Frontmatter — dieser Name ist der Vertrag zur Rollen-Achse: die Erfassung besetzt sie
+# nur bei einer der sechs, jeder andere Wert ergibt ein leeres Feld.
 #
 # WOZU DIESE PRUEFUNG NEBEN DEM `make gates` DES ZIELS: jener Lauf scannt die Typ-Dateien
 # mit (die emittierte .d-check.yml faehrt links/anchors ueber roots: ["."]) und faellt
@@ -86,22 +85,38 @@ chmod 755 "$tmprepo"
 # nicht — er bliebe gruen und pruefte nichts. Erst die Anwesenheit macht sein Gruen zur
 # Aussage ueber die Typ-Dateien.
 #
+# KEINE EIGENE NAMENSLISTE: die erwarteten Rollen kommen aus der QUELLE dieses Repos
+# (internal/emit/templates/agents/*.md), nicht aus einem hier gepflegten Literal. Ein
+# Uebertragungsfehler, der eine Rolle auf dem Weg zum Ziel verliert, faellt damit auf —
+# die Quelle fuehrt sie weiterhin, das Ziel nicht mehr. Ein leerer Fund unter der Quelle
+# selbst (falscher Pfad, verschobenes Verzeichnis) ist ein eigener Fehler und kein
+# stilles Durchlaufen ueber null Rollen.
+#
 # Aufgerufen fuer BEIDE Bootstrap-Varianten: die Rollen-Sequenz ist sprach-agnostisch,
 # und ein Zahn in nur einer Variante belegte das nicht.
 rollen_typen_im_ziel() {
-	local repo="$1" label="$2" role f
-	for role in planner architect implementer reviewer verifier validator; do
+	local repo="$1" label="$2" quelle role f n=0
+	quelle="$HIER/../../internal/emit/templates/agents"
+	shopt -s nullglob
+	for f in "$quelle"/*.md; do
+		role="$(basename "$f" .md)"
+		n=$((n + 1))
 		f="$repo/.claude/agents/$role.md"
 		if [ ! -f "$f" ]; then
-			echo "full-smoke: FEHLER — Rollen-Typ fehlt ($label): .claude/agents/$role.md (slice-097)" >&2
+			echo "full-smoke: FEHLER — Rollen-Typ fehlt ($label): .claude/agents/$role.md" >&2
 			exit 1
 		fi
 		if ! grep -qxF "name: $role" "$f"; then
-			echo "full-smoke: FEHLER — Rollen-Typ ($label) ohne 'name: $role' im Frontmatter — die Rollen-Achse bliebe leer (slice-097)" >&2
+			echo "full-smoke: FEHLER — Rollen-Typ ($label) ohne 'name: $role' im Frontmatter — die Rollen-Achse bliebe leer" >&2
 			exit 1
 		fi
 	done
-	echo "full-smoke: Rollen-Typen im Ziel ($label): 6 kanonische Typen unter .claude/agents/, je mit ihrem Namen im Kopf."
+	shopt -u nullglob
+	if [ "$n" -eq 0 ]; then
+		echo "full-smoke: FEHLER — keine Rollen-Typ-Quellen unter $quelle gefunden (leerer Pruefbereich)" >&2
+		exit 1
+	fi
+	echo "full-smoke: Rollen-Typen im Ziel ($label): $n kanonische Typen unter .claude/agents/, je mit ihrem Namen im Kopf."
 }
 
 # slice-098 (LH-FA-10 / ADR-0022 Festlegung 7 und 5(a)): DIE FELDLISTE LIEGT IM GEPRUEFTEN
