@@ -6,5 +6,8 @@
 # hermetischer `docs-check`-Lauf ohne Range liefe damit ins Leere oder bricht ab, statt den
 # ADR-Bestand netzlos zu pruefen (LH-QA-01: keine halluzinierten Gates). Aktiviert wird `vcs`
 # ausschliesslich ueber `make adr-immutable`/`make doc-immutable` mit einer expliziten RANGE.
+#
+# Das Muster ankert auf der schliessenden Klammer der `modules:`-Zeile, nicht auf ihrem vollen
+# Inhalt -- ein weiteres, vor `vcs` aktiviertes Modul zieht dem Zahn nicht die Zaehne.
 set -euo pipefail
-sed -i 's/^modules: \[links, anchors, ids, matrix, codepaths, spans, planning\]$/modules: [links, anchors, ids, matrix, codepaths, spans, planning, vcs]/' .d-check.yml
+sed -i '/^modules: \[/ s/\]$/, vcs]/' .d-check.yml

@@ -1,11 +1,14 @@
 #!/usr/bin/env bats
 # targets-modul-wiring.bats — haelt das d-check-Modul `targets` (DC-FA-TGT-001) aktiv und seine
-# `exempt-targets`-Liste exakt gegen den Bestand: jedes .PHONY-Rezept aus Makefile/d-check.mk
-# steht entweder als `make X`-Tabellenzeile in der `authority`-Datei (AGENTS.md §4) oder in
-# `exempt-targets` — nie in beiden, nie in keinem. `docs-check` selbst haelt dieselbe Bijektion
-# ueber einen Docker-Lauf (Grund-Codes gate-undocumented/gate-phantom); dieser Waechter prueft
-# sie hermetisch, ohne Docker, und faellt darum auch dann, wenn ein neues .PHONY-Target committet
-# wird, bevor der naechste `make docs-check`-Lauf es sieht.
+# `exempt-targets`-Liste exakt gegen die `.PHONY`-Deklarationen aus Makefile/d-check.mk: jeder
+# dort genannte Name steht entweder als `make X`-Tabellenzeile in der `authority`-Datei
+# (AGENTS.md §4) oder in `exempt-targets` — nie in beiden, nie in keinem. `docs-check` selbst
+# haelt eine ANDERE, weitere Menge gegen dieselbe Autoritaets-Tabelle — jede Makefile-**Regel**
+# (Target-Zeile), nicht nur die per `.PHONY` deklarierten; heute fallen beide Mengen zusammen
+# (47 von 47), aber eine Regel ohne `.PHONY`-Eintrag saehe dieser Waechter nicht, faerbte
+# `docs-check` aber rot (Grund-Code gate-undocumented). Dieser Waechter prueft seine engere,
+# `.PHONY`-gebundene Menge hermetisch, ohne Docker, und faellt darum auch dann, wenn ein neues
+# `.PHONY`-Target committet wird, bevor der naechste `make docs-check`-Lauf es sieht.
 #
 # NETZLOS (nur Datei-Lesen), laeuft in `make gates` ueber `make test` -> `test-bats`.
 

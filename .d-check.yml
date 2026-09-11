@@ -67,10 +67,11 @@ planning:
 #
 # exempt-targets ist EXAKT (kein Glob) und in zwei Gruppen kuratiert:
 #
-# (a) Nicht-Gate-Verifies und Maintenance/CI-Sensoren — jedes Rezept traegt einen
-# eigenen `## `-Hilfetext mit der Angabe "NICHT in gates" und ist in
-# harness/README.md in Prosa erklaert, was es prueft und was nicht: smoke,
-# full-smoke, mutate, span-clean, span-report, hook-overhead, slice-mv,
+# (a) Nicht-Gate-Verifies und Maintenance/CI-Sensoren — jedes Rezept ist in
+# harness/README.md in Prosa erklaert, was es prueft und was nicht (12 von 16 zusaetzlich ueber
+# einen eigenen `## `-Hilfetext mit der Angabe "NICHT in gates"; span-clean, doc-immutable,
+# doc-commits und record-gates tragen diesen Hilfetext nicht, sind aber ebenso in Prosa
+# gedeckt): smoke, full-smoke, mutate, span-clean, span-report, hook-overhead, slice-mv,
 # archive-welle, vendor-baseline, regelwerk-check, baseline-freshness,
 # history-range-guard, adr-immutable, doc-immutable, doc-commits, record-gates.
 #

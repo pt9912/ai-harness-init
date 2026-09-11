@@ -6,5 +6,9 @@
 # aber nicht mehr. `docs-check` bleibt dadurch blind gegen ein .PHONY-Rezept ohne Tabellenzeile in
 # AGENTS.md und gegen eine `make X`-Tabellenzeile ohne passendes Rezept (0 Befund(e), obwohl der
 # Bestand driftet).
+#
+# Das Muster ankert auf dem TOKEN `, targets` innerhalb der `modules:`-Zeile, nicht auf der
+# vollen Liste samt Nachbarn -- dieselbe Anker-Form wie 269/279, verhindert dieselbe Klasse von
+# NO-OP nach der naechsten Modul-Aenderung.
 set -euo pipefail
-sed -i 's/^modules: \[links, anchors, ids, matrix, codepaths, spans, planning, targets\]$/modules: [links, anchors, ids, matrix, codepaths, spans, planning]/' .d-check.yml
+sed -i '/^modules: \[/ s/, targets\b//' .d-check.yml

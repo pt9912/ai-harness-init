@@ -6,5 +6,9 @@
 # aber nicht mehr (LH-QA-01: 0 Befund(e), weil nichts geprueft wird). Ein Widerspruch zwischen der
 # Roadmap-Sektion "## Offene Wellen" und docs/plan/planning/in-progress/ faerbt danach
 # `make docs-check` nicht mehr rot.
+#
+# Das Muster ankert auf dem TOKEN `, planning` innerhalb der `modules:`-Zeile, nicht auf der
+# vollen Liste samt Nachbarn -- ein weiteres, vor oder nach `planning` aktiviertes Modul zieht
+# dem Zahn nicht die Zaehne.
 set -euo pipefail
-sed -i 's/^modules: \[links, anchors, ids, matrix, codepaths, spans, planning\]$/modules: [links, anchors, ids, matrix, codepaths, spans]/' .d-check.yml
+sed -i '/^modules: \[/ s/, planning\b//' .d-check.yml
