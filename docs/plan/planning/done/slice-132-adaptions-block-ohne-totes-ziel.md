@@ -233,7 +233,7 @@ das ist ein Schnitt und kein Vollzug.**
 
 **Eine Vorfrage, die bisher als ungeprüft galt, ist beantwortet.** Ob der Pin einen expliziten
 HTML-Anker als Link-Ziel auflöst, hat
-[slice-114](../open/slice-114-jede-aussage-hat-einen-abschnitt.md) §1 als offen benannt. Sonde in
+[slice-114](../next/slice-114-jede-aussage-hat-einen-abschnitt.md) §1 als offen benannt. Sonde in
 einer eigenen Plandatei, danach zurückgenommen: ein Link auf ein `<a id="…"></a>` mit abweichendem
 Überschriften-Text meldet **nichts**, ein erfundener Anker in derselben Datei meldet
 `anchor-missing`. Der Anker-Mechanismus, mit dem das Nachbar-Repo seine Index-Zeilen adressierbar
