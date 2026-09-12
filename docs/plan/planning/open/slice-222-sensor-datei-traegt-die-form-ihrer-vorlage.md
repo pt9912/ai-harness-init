@@ -94,7 +94,7 @@ den Zeiger verlangen.
   ([`AGENTS.md`](../../../../AGENTS.md) §3.8); sie verlassen den Slice als Übergabe-Artefakt (§7),
   nicht als Norm-Text. *(Schicht-Abgrenzung.)*
 - **Keine Prosa zurück in den Einstieg.** Was
-  [slice-114](../in-progress/slice-114-jede-aussage-hat-einen-abschnitt.md) aus
+  [slice-114](../next/slice-114-jede-aussage-hat-einen-abschnitt.md) aus
   [`harness/README.md`](../../../../harness/README.md) gezogen hat, kommt nicht zurück; die Datei
   bekommt genau den einen Satz aus DoD (2) und sonst kein Byte. *(Bestand bleibt bewusst stehen.)*
 - **Keine Aussage über die emittierte Ebene.** Ob ein gebootstrapptes Zielrepo einen
@@ -165,7 +165,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-114](../in-progress/slice-114-jede-aussage-hat-einen-abschnitt.md) liegt in `done/`.
+[slice-114](../next/slice-114-jede-aussage-hat-einen-abschnitt.md) liegt in `done/`.
 Beobachtbar ohne Rückfrage (`ls docs/plan/planning/done/`) und **kein Ergebnis dieses Slice**. Die
 Bedingung ist keine Vorsicht, sondern eine gemessene Kollision: Beide Slices schreiben an
 [`harness/README.md`](../../../../harness/README.md), und der Index, den DoD (1) gegen den Baum

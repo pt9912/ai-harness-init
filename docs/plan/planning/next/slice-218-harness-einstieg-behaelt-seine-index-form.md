@@ -170,7 +170,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 **Start** (`next` → `in-progress`):
 [slice-217](../done/slice-217-doc-ziel-nennt-seinen-pruefbereich.md) **und**
-[slice-114](../in-progress/slice-114-jede-aussage-hat-einen-abschnitt.md) liegen in `done/`.
+[slice-114](../next/slice-114-jede-aussage-hat-einen-abschnitt.md) liegen in `done/`.
 Beobachtbar ohne Rückfrage (`ls docs/plan/planning/done/`) und **kein Ergebnis dieses Slice**.
 Beide sind harte Kanten: 217 baut die C-Klassen-Ableitung, die DoD (3) benutzt und verkleinert —
 parallel geführt schreiben beide dasselbe Rezept und denselben Wächter; 114 stellt die Bezugsmenge

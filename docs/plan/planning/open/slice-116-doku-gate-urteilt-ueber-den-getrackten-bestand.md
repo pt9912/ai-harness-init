@@ -166,7 +166,7 @@ Steering-Loop-Lerneintrag.
 | [`.d-check.yml`](../../../../.d-check.yml) | update, **nur falls Weg (B) trägt** | dann entfällt der eigene Prüfer, und die Zeile hier ist die ganze Änderung |
 | `test/` <!-- d-check:ignore (geplante Dateien) --> | neu | die Zähne zu DoD (1) und (2): beide Richtungen — ein ignoriertes Ziel fällt, ein normales nicht; die leere Menge fällt |
 | `test/mutations/` <!-- d-check:ignore (geplante Dateien) --> | neu | der Haltbarkeits-Zahn. Nummern im Anschluss an die höchste **vergebene**, nicht an die Anzahl: `ls -1 test/mutations/*.sh \| sed -n 's#.*/\([0-9]*\)-.*#\1#p' \| sort -n \| tail -1` → **190** bei `ls -1 test/mutations/*.sh \| wc -l` → **183** (2026-08-27) |
-| [`AGENTS.md`](../../../../AGENTS.md) und [`harness/README.md`](../../../../harness/README.md) | update, **soweit ein Ziel entsteht** | ein neues `make`-Ziel gehört in beide Sensor-Tabellen; ein Ziel, das nur im Makefile steht, ist ein Gate, das die Doku nicht kennt. **Abhängigkeit:** [slice-114](../in-progress/slice-114-jede-aussage-hat-einen-abschnitt.md) fasst dieselbe Datei an ihrer Gliederung an |
+| [`AGENTS.md`](../../../../AGENTS.md) und [`harness/README.md`](../../../../harness/README.md) | update, **soweit ein Ziel entsteht** | ein neues `make`-Ziel gehört in beide Sensor-Tabellen; ein Ziel, das nur im Makefile steht, ist ein Gate, das die Doku nicht kennt. **Abhängigkeit:** [slice-114](../next/slice-114-jede-aussage-hat-einen-abschnitt.md) fasst dieselbe Datei an ihrer Gliederung an |
 | [`docs/plan/planning/done/`](../done) | **unverändert** | Zeitdokumente ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) §Geltungsbereich). Der eine reale Fall ist bereits behoben; der Rot-Beleg entsteht auf einer isolierten Kopie |
 | [`internal/`](../../../../internal) und die emittierte Ebene | **unverändert** | ein Adopter hat andere ignorierte Pfade (Kopfzeile *Ebene*) |
 | [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** | wellenlose Arbeit wird dort nicht geführt ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) Setzung 2/3) |
@@ -186,7 +186,7 @@ Gegenstand liegt vollständig in diesem Repo und hängt an keiner Welle. Die Mes
 gefahren.
 
 **Eine Beobachtung zur Reihenfolge, kein Zuständiger.** Entsteht ein neues `make`-Ziel, berührt es
-dieselben zwei Sensor-Tabellen, die [slice-114](../in-progress/slice-114-jede-aussage-hat-einen-abschnitt.md) an
+dieselben zwei Sensor-Tabellen, die [slice-114](../next/slice-114-jede-aussage-hat-einen-abschnitt.md) an
 ihrer Gliederung anfasst. Keiner ist Vorbedingung des anderen; wer zweiter läuft, misst gegen den
 Stand, den der erste hinterlässt.
 

@@ -174,7 +174,7 @@ drei Ausgänge:
 |---|---|---|
 | **nachgemessen** — Pfad gezogen, Kommando neu gefahren | 37 | `close-welle.md` (2) · `reviewer.md` Kopf (1) · `slice-090` (1) · `slice-091` (3) · `slice-101` (2) · `slice-112` (2) · `slice-114` (8) · `slice-134` (4) · `slice-140` (2) · `slice-151` (1) · `welle-09` (1) · `welle-11` (7) · `benutzerhandbuch.md` §Beispielablauf (1) · `spezifikation.md` §Aufnahme-Regel (1) · `internal/emit/templates.go` (1) |
 | **Tree-Operand** — spricht über die Vor-Tausch-Seite, bleibt stehen | 11 | `reviewer.md` Versions-Log 1.5.0 (2) · `CO-005` (1, datierter Gate-Lauf) · diese Datei, Titel (1) · [welle-14](welle-14-re-baseline.md) (3: Start-Trigger, Sprung-Ausgang, Versions-Range) · `benutzerhandbuch.md` Historie 1.11 (1) · `templates.go`/`templates_test.go` Herkunfts-Marken (2) · `spezifikation.md` Historie 2026-08-28 (1) |
-| **entfallen** — Gegenstand verloren, mit Begründung aufgehoben | 0 als Tag-Nennung | Der Ausgang traf **eine Aussage**, nicht eine Nennung: [slice-114](../in-progress/slice-114-jede-aussage-hat-einen-abschnitt.md) §1 las *„`## Leseordnung` fehlt"*, der Abschnitt steht in der Datei. Ihre Nennung selbst lief unter *nachgemessen* — die Adresse blieb gebraucht |
+| **entfallen** — Gegenstand verloren, mit Begründung aufgehoben | 0 als Tag-Nennung | Der Ausgang traf **eine Aussage**, nicht eine Nennung: [slice-114](../next/slice-114-jede-aussage-hat-einen-abschnitt.md) §1 las *„`## Leseordnung` fehlt"*, der Abschnitt steht in der Datei. Ihre Nennung selbst lief unter *nachgemessen* — die Adresse blieb gebraucht |
 
 **Die vier verbleibenden Treffer sind gemessen, aber nicht geschrieben:** sie liegen in
 [`AGENTS.md`](../../../../AGENTS.md) §3.7, und §3 dieser Datei ist Hard Rule und damit

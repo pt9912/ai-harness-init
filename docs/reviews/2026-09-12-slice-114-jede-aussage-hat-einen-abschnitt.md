@@ -1,7 +1,7 @@
 # Review slice-114 — Harness-Einstieg auf die Ziel-Form, 14 Sensor-Dateien
 
 **Rolle:** Reviewer · **Datum:** 2026-09-12 · **Commit:** `9a57f2b3` (15 Dateien, +782/−471) ·
-**Plan:** [`slice-114`](../plan/planning/in-progress/slice-114-jede-aussage-hat-einen-abschnitt.md) ·
+**Plan:** [`slice-114`](../plan/planning/next/slice-114-jede-aussage-hat-einen-abschnitt.md) ·
 **Ziel-Form:** `.harness/baseline/v6.5.0/regelwerk/grundlagen-harness-dateien.md` §harness/README.md und die Vorlage `.harness/baseline/v6.5.0/templates/harness/sensors/gate.template.md` ·
 **Hard Rules:** [`AGENTS.md`](../../AGENTS.md) §3.6/§3.7/§3.11 · **MR:** `MR-008`, `MR-025`, `MR-045` ·
 **Vorlauf:** [`slice-217`](2026-09-12-slice-217-doc-ziel-nennt-seinen-pruefbereich.md) MEDIUM-4
