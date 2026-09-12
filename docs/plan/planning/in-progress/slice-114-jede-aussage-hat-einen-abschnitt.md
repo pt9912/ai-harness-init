@@ -490,6 +490,73 @@ Die zwei Rückführungen, vorab benannt:
   Werkzeug, nicht am Text, und der Slice wartet auf dessen eigenen Schnitt, statt die Aussage
   abzuschwächen, damit sie an ihr neues Ziel passt.
 
+### Die erste Rückführung ist eingetreten — der Grund, beim Übergang nachgetragen
+
+Die Bedingung oben ist **eingetreten**; der Grund steht hier, weil der Übergang ihn verlangt
+(Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine: vorab die
+Bedingung, im Nachhinein der Grund).
+
+**Der Zustand.** Die Sätze über die Werkzeuge liegen nicht in Skript-Köpfen, sondern in einem
+eigenen Baum: [`harness/sensors/`](../../../../harness/sensors) trägt **15** Dateien mit
+**62 514** Bytes, wo vorher keine Datei lag. In den Skript-Kopf ist `mutate` gegangen, sonst
+keiner.
+
+```sh
+git ls-tree --name-only '9a57f2b3^' harness/sensors/ | wc -l                                #     0
+git ls-tree --name-only  d1e004fc   harness/sensors/ | wc -l                                #    15
+git ls-tree -r -l        d1e004fc   harness/sensors/ | awk '{s+=$4} END{print s}'           # 62514
+git show --numstat --format='' 9a57f2b3 d1e004fc -- harness/sensors/  | awk '{a+=$1;d+=$2} END{print a,d}'   # 983 42
+git show --numstat --format='' 9a57f2b3 d1e004fc -- harness/README.md | awk '{a+=$1;d+=$2} END{print a,d}'   #  59 474
+```
+
+**Keine Erwartungswerte** ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2) — die Zahlen wandern mit dem Baum; tragend ist der Abstand zwischen der ersten und der
+zweiten Zeile.
+
+**Warum das die benannte Bedingung ist, und nicht etwas anderes.** Sie hat zwei Hälften, beide
+gemessen: Die Sätze sind **nicht** in die Skript-Köpfe gegangen, und sie tragen eine **eigene
+Ziel-Form** — fünf Abschnitte, eine Filter-Regel gegen den Deckungsnachweis, eine
+Adressierungs-Regel und das Verbot eines Lifecycle-Verzeichnisses, ausgeschrieben im vendored
+Regelwerk (`grundlagen-harness-dateien.md` §harness/README.md als Einstiegspunkt) und als
+Ausfüll-Vorlage unter `.harness/baseline/v6.5.0/templates/harness/sensors/`. Die drei Ablageorte,
+die §3 vor dem Verschieben zur Wahl stellt — Skript-Kopf · Tabellenzeile · Safety-Abschnitt —,
+enthalten diesen nicht.
+
+**Die Klammer im Bedingungssatz nennt einen Ort, kein Merkmal.** *„Eine Werkzeug-Seite unter
+`docs/`"* ist der einzige Ort, den der Stand kennt, gegen den dieser Plan geschrieben ist: dort
+kommt der Name des Baums nicht vor, im heutigen in sechs Dateien.
+
+```sh
+git grep -l 'harness/sensors' db83415 -- .harness/baseline/v5.18.0/ ; echo "exit=$?"   # exit=1
+git grep -l 'harness/sensors' HEAD    -- .harness/baseline/v6.5.0/  | wc -l            # 6
+```
+
+Gebunden ist deshalb die Substanz der Bedingung — ein eigener Behälter für Sätze, die kein
+vorhandener Träger hielt —, nicht der Baum, in dem er liegt.
+
+**Die Gegenlesart, und warum sie nicht bindet.** Sie lautet: Die Form musste nicht erfunden werden,
+sie liegt vendored — also braucht es keinen zweiten Slice. Dagegen steht dieser Plan selbst. §1
+*Was dieser Slice abgibt* misst denselben Fall für den Adaptions-Block — die Vorlage liegt
+vendored, ein `cp` je Eintrag ist regelkonform — und schließt dort umgekehrt: *„eine eigene Sitzung
+mit eigenem Gegenstand, nicht ein Nebenprodukt dieses Slice"*, weil der **Umfang** bleibt. Der
+Behälter hier hat dieselbe Bauart: Index plus eine Datei je Einheit, eine Vorlage je Datei — und
+die Bedingung oben sagt über ihren zweiten Slice genau das (*„derselbe Gegenstand wie die abgegebene
+Verzeichnis-Frage, nur für ein anderes Artefakt"*). Dazu kommt eine Entscheidung, die keine
+Ausführung ist: Die Ziel-Form setzt die **Tabellenzeile** als Default und die Datei als Ausnahme,
+*sobald ein Vertrag mehr braucht als einen Satz*. Von den Zielen der zwei Tabellen trägt heute gut
+die Hälfte eine Datei, und das Kriterium dieser Auswahl steht in keinem lebenden Artefakt:
+
+```sh
+grep -cE '^\| \[?`make ' harness/README.md   # 28  Ziele in beiden Tabellen
+grep -cE '^\| \[`make '  harness/README.md   # 15  davon mit Sensor-Datei (Target-Zelle als Link)
+```
+
+**Der Schnitt.** slice-114 behält die Gliederungs-Hälfte — seine drei DoD-Punkte messen den
+Einstieg, nicht den Behälter. Der Behälter ist Gegenstand von
+[slice-222](../open/slice-222-sensor-datei-traegt-die-form-ihrer-vorlage.md): Existenz je Ziel,
+Form je Datei, Zeiger auf die Vorlage. Was von dieser Hälfte an eine andere schreibende Rolle geht,
+führt jener Plan als Übergabe ([`AGENTS.md`](../../../../AGENTS.md) §3.8) — er entscheidet es nicht.
+
 ## 5. Closure-Trigger
 
 DoD (1)–(3) erfüllt; die Zuordnungs-Liste aus §3 vollständig abgearbeitet, jeder Satz mit seinem
