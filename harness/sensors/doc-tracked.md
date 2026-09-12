@@ -50,15 +50,40 @@ eines Blocks allein. Gemessen an einer Kopie außerhalb des Repos, netzlos, Moun
 *`doc-tracked` — nicht inert.* Ein Markdown-Link auf eine Datei, die auf der Platte liegt, aber
 nicht im git-Index steht (exakt das, was das Modul laut `--print-config` sucht: „fehlt auf jedem
 frischen Klon"), wird gemeldet — **mit und ohne** `tracked:`-Block byte-gleich, weil der
-eingebaute Default (`exempt-targets: []`) schon ohne Block gilt:
+**Tool-eigene** Default des `tracked`-Moduls selbst (`exempt-targets: []`, laut
+`d-check --print-config`) schon ohne eigenen Block gilt. **Das ist nicht derselbe Schlüssel wie
+in „Bindung" unten:** [`.d-check.yml`](../../.d-check.yml) trägt kein `tracked:`, nur ein
+`targets:` mit eigenem `exempt-targets` (`grep -nE '^[a-z-]+:' .d-check.yml` → u. a. `targets:`,
+darunter `exempt-targets:`) — gleicher Schlüsselname, andere Bedeutung (kuratierte Rezept-Namen
+statt aufgelöster Ziel-Pfad-Globs), anderes Modul. Gegenprobe gegen eine Kopie außerhalb des
+Repos, netzlos, Mount `:ro`, mit `.git` (das Modul braucht es im Mount):
 
 ```sh
-echo "Sonde" > docs/probe-untracked-ziel.md
-printf '\n[Sonde](docs/probe-untracked-ziel.md)\n' >> README.md
-docker run --rm --network none -v "$PWD":/repo:ro "$DCHECK_REF" --enable tracked --disable …
-# ohne tracked:-Block:  README.md:101 … target-untracked …  ->  1145 Datei(en) geprüft, 1 Befund(e)
-# mit `tracked: {exempt-targets: []}` ergänzt:  dieselbe Zeile  ->  1145 Datei(en) geprüft, 1 Befund(e)
+DIGEST=$(grep -oE 'DCHECK_DIGEST \?= sha256:[0-9a-f]+' d-check.mk | cut -d' ' -f3)
+git archive HEAD | tar -x -C <kopie>
+git -C <kopie> init -q && git -C <kopie> add -A
+git -C <kopie> -c user.email=probe@example.invalid -c user.name=probe commit -qm probe
+echo "Sonde" > <kopie>/docs/probe-untracked-ziel.md
+printf '\n[Sonde](docs/probe-untracked-ziel.md)\n' >> <kopie>/README.md
+docker run --rm --network none -v <kopie>:/repo:ro "ghcr.io/pt9912/d-check@$DIGEST" \
+  --enable tracked --disable links --disable anchors --disable ids --disable matrix \
+  --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams \
+  --disable versions --disable pins --disable immutable --disable vcs --disable commits \
+  --disable planning --disable targets --disable citations --disable sources --disable structure \
+  --disable workflows --disable reviews
+# ohne tracked:-Block:  README.md:101  …  target-untracked  …  ->  1164 Datei(en) geprüft, 1 Befund(e)
+printf '\ntracked:\n  exempt-targets: []\n' >> <kopie>/.d-check.yml
+docker run --rm --network none -v <kopie>:/repo:ro "ghcr.io/pt9912/d-check@$DIGEST" \
+  --enable tracked --disable links --disable anchors --disable ids --disable matrix \
+  --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams \
+  --disable versions --disable pins --disable immutable --disable vcs --disable commits \
+  --disable planning --disable targets --disable citations --disable sources --disable structure \
+  --disable workflows --disable reviews --config /repo/.d-check.yml
+# mit tracked:-Block:   dieselbe Zeile  ->  1164 Datei(en) geprüft, 1 Befund(e)
 ```
+
+Beide Zahlen sind **kein Erwartungswert** — sie wandern mit dem Datei-Bestand des Repos; tragend
+ist die Byte-Gleichheit zwischen den zwei Läufen, nicht die konkrete Zahl.
 
 **Die C-Klasse ist für `doc-tracked` eine rein syntaktische Aussage** (kein `tracked:`-Schlüssel in
 [`.d-check.yml`](../../.d-check.yml)) — sie behauptet keinen fehlenden Prüfbereich: Das Modul braucht

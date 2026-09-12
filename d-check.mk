@@ -46,11 +46,15 @@
 # liest, bekommt ab diesem Pin den Klartext statt des Codes — kein Skript dieses Repos
 # tut das heute.
 # Einbinden: `include d-check.mk`; eine eigene .d-check.yml danebenlegen.
-# NEU-ERZEUGUNG: FUENF Handgriffe. Abzaehlbar — der Digest steht literal, weil `$(DCHECK_REF)`
-# in einem Kommentar keine Shell-Variable ist und wortwoertlich gefahren still `1` liefert:
+# NEU-ERZEUGUNG: FUENF Handgriffe, ACHT Diff-Hunks — das Kommando zaehlt HUNKS, nicht
+# Handgriffe: Handgriff 5 aendert ZWEI nicht benachbarte Ziele, und je Ziel trennt die
+# unveraenderte `docker run`-Zeile die geaenderte Ziel-/Hilfetext-Zeile von der angehaengten
+# `@echo`-Zeile -- macht 4 Hunks statt 1 (die Handgriffe 1-4 liefern je einen, zusammen 8).
+# Der Digest steht literal, weil `$(DCHECK_REF)` in einem Kommentar keine Shell-Variable ist
+# und wortwoertlich gefahren still `1` liefert:
 #   diff <(docker run --rm --network none \
 #     ghcr.io/pt9912/d-check@sha256:e31a372b66dbde26305982424854cfce7c9ab7ce555a94debeee7ee26e6d4641 \
-#     --print-mk) d-check.mk | grep -c '^[0-9]'
+#     --print-mk) d-check.mk | grep -c '^[0-9]'                                    # 8
 #   1. dieser Adopter-Kopf (das Tool liefert ihn nicht),
 #   2. DCHECK_DIGEST pinnen (das Tool liefert es leer),
 #   3. `.PHONY`- und Target-Zeile `doc-check` -> `docs-check`, Hilfetext erweitert,
