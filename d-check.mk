@@ -46,7 +46,7 @@
 # liest, bekommt ab diesem Pin den Klartext statt des Codes — kein Skript dieses Repos
 # tut das heute.
 # Einbinden: `include d-check.mk`; eine eigene .d-check.yml danebenlegen.
-# NEU-ERZEUGUNG: VIER Handgriffe. Abzaehlbar — der Digest steht literal, weil `$(DCHECK_REF)`
+# NEU-ERZEUGUNG: FUENF Handgriffe. Abzaehlbar — der Digest steht literal, weil `$(DCHECK_REF)`
 # in einem Kommentar keine Shell-Variable ist und wortwoertlich gefahren still `1` liefert:
 #   diff <(docker run --rm --network none \
 #     ghcr.io/pt9912/d-check@sha256:e31a372b66dbde26305982424854cfce7c9ab7ce555a94debeee7ee26e6d4641 \
@@ -54,7 +54,10 @@
 #   1. dieser Adopter-Kopf (das Tool liefert ihn nicht),
 #   2. DCHECK_DIGEST pinnen (das Tool liefert es leer),
 #   3. `.PHONY`- und Target-Zeile `doc-check` -> `docs-check`, Hilfetext erweitert,
-#   4. `doc-help` zieht mit (`^docs?-` statt `^doc-`, sonst faellt docs-check aus der Liste).
+#   4. `doc-help` zieht mit (`^docs?-` statt `^doc-`, sonst faellt docs-check aus der Liste),
+#   5. die Marke bei `doc-tracked`/`doc-structure` (Hilfetext-Anhang UND Ausgabe-Zeile
+#      `.d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, …` — der Generator liefert
+#      keins von beidem).
 DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.74.1
 DCHECK_DIGEST ?= sha256:e31a372b66dbde26305982424854cfce7c9ab7ce555a94debeee7ee26e6d4641
 # TRACE_FLAGS: optionale Flags für die RTM-Targets (z. B. --json).
@@ -100,16 +103,18 @@ doc-planning: ## Planning-Lifecycle-Konsistenz (Roadmap <-> in-progress) via Mod
 	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable planning --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable tracked --disable targets --disable citations --disable sources --disable structure --disable workflows --disable reviews
 
 .PHONY: doc-tracked
-doc-tracked: ## Getrackt-Status aufloesbarer Referenz-Ziele via Modul tracked; braucht .git im Mount, ohne Range (DC-FA-TRK-001)
+doc-tracked: ## Getrackt-Status aufloesbarer Referenz-Ziele via Modul tracked; braucht .git im Mount, ohne Range (DC-FA-TRK-001) -- .d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/README.md Abschnitt zu doc-tracked/doc-structure
 	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable tracked --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable targets --disable citations --disable sources --disable structure --disable workflows --disable reviews
+	@echo '.d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/README.md Abschnitt zu doc-tracked/doc-structure'
 
 .PHONY: doc-targets
 doc-targets: ## Deklarations-Konsistenz Doku<->Build-Targets via Modul targets; hermetisch, ohne Range (DC-FA-TGT-001)
 	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable targets --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable tracked --disable citations --disable sources --disable structure --disable workflows --disable reviews
 
 .PHONY: doc-structure
-doc-structure: ## Struktur-Invarianten innerhalb der Dokumente via Modul structure; hermetisch, ohne Range (DC-FA-STRUCT-001)
+doc-structure: ## Struktur-Invarianten innerhalb der Dokumente via Modul structure; hermetisch, ohne Range (DC-FA-STRUCT-001) -- .d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/README.md Abschnitt zu doc-tracked/doc-structure
 	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable structure --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable tracked --disable targets --disable citations --disable sources --disable workflows --disable reviews
+	@echo '.d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/README.md Abschnitt zu doc-tracked/doc-structure'
 
 .PHONY: doc-usage
 doc-usage: ## Aufruf und Optionen von d-check selbst (--help)
