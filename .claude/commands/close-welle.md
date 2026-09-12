@@ -55,7 +55,7 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
    **Der Lese-Schritt des Beobachtungs-Registers gehört hierher** (`docs/plan/planning/observations/README.md`,
    Modul 6): jeder Eintrag, dessen `evidence/` **≥ 3** Dateien führt, wandert in die
    Steering-Loop-Einträge und wird zur **verkörperten Regel** mit Herkunfts-Anker
-   (`seit welle-<NN>`). Der Ausgang steht danach in seiner `state.md`, das **Verzeichnis bleibt
+   (`seit welle-<Kennung>`). Der Ausgang steht danach in seiner `state.md`, das **Verzeichnis bleibt
    liegen**; still löschen macht die Beobachtung ununterscheidbar von einer, die es nie gab —
    *gestrichen* trägt dieselbe `state.md`, mit der Begründung, warum die Beobachtung nicht mehr
    auftreten kann. **Erreicht kein Eintrag 3×**, ist *„kein Eintrag über der Schwelle"* die

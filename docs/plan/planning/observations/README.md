@@ -23,7 +23,7 @@ und ein wellen-getragener Zähler hätte für die zweite Hälfte keinen Träger.
 wieder an.
 
 **Belege sind formgebunden:** der Dateiname unter `evidence/` **ist** die Kennung eines
-abgeschlossenen Vorgangs, kein Freitext-Feld. Regelfall ist der Slice (`slice-<NNN>.md`); auch eine
+abgeschlossenen Vorgangs, kein Freitext-Feld. Regelfall ist der Slice (`slice-<Kennung>.md`); auch eine
 Welle und ein Review-Report sind abgeschlossene Vorgänge und taugen als Beleg — die Lage ist dann
 der Ort, an dem ihre Klasse abschließt.
 
@@ -38,7 +38,7 @@ Freitext:
 
 | Ausgang | Wann | Wohin |
 |---|---|---|
-| **verkörpert** | die Regel steht | Zielort **und** Herkunfts-Anker (`seit welle-<NN>` bzw. `seit slice-<NNN>`) |
+| **verkörpert** | die Regel steht | Zielort **und** Herkunfts-Anker (`seit welle-<Kennung>` bzw. `seit slice-<Kennung>`) |
 | **geplant** | die Regel ist beschlossen, aber noch nicht geschrieben | Kennung des Slice oder der Welle, die sie schreibt |
 | **gestrichen** | die Beobachtung kann nicht mehr auftreten | die Begründung, warum sie nicht mehr auftreten kann |
 

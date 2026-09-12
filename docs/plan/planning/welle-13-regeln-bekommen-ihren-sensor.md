@@ -2,7 +2,7 @@
 
 **Lifecycle:** Die aktive Welle liegt flach unter `docs/plan/planning/`; bei
 Closure wandert diese Datei per `git mv` nach `done/` (neben ihre
-`welle-<NN>-results.md`). Der Zustand ist die Verzeichnis-Position — kein
+`welle-<Kennung>-results.md`). Der Zustand ist die Verzeichnis-Position — kein
 Status-Feld. Ob eine flache Welle *aktuell* oder *geplant* ist, sagt die Roadmap.
 
 **Zielmeilenstein:** kein Meilenstein-Bezug. Die sechs bestehenden Meilensteine sind erreicht, und
@@ -338,7 +338,7 @@ ist falsch"*, nicht *„die DoD ist länger"*.
     — der Bestand ist gepinnt. **S-Kandidat**, kein Wellen-Mitglied: keine der gemessenen Achsen,
     keine Adoptions-Schuld, und die Welle-Identität sind die Achsen des Kandidaten.
   - **`reviews`** (22., seit `[0.73.0]`) prüft die Kante *Code → Review*: ein DoD-Haken, dessen
-    Zeile „Review" nennt, verlangt einen Report unter `reviews-dir` mit derselben `slice-<NNN>`-
+    Zeile „Review" nennt, verlangt einen Report unter `reviews-dir` mit derselben `slice-<Kennung>`-
     Kennung. Mit `done-dir`/`reviews-dir` gesetzt: **0 Befund(e)**, Exit 0. **Diese Null ist
     ausdrücklich nicht verifiziert, und das ist der Befund.** Zwei Gegenproben blieben grün: ein
     erfundener `done/`-Slice mit angehängtem Review-Haken und ohne Report, und — schärfer — der

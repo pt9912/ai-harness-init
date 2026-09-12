@@ -187,7 +187,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
 
-- [ ] **1 — Der Delta-Nachweis liegt vor und ist vollständig.** Alle **42** Posten des Deltas
+- [x] **1 — Der Delta-Nachweis liegt vor und ist vollständig.** Alle **42** Posten des Deltas
       `v6.0.0..v6.7.2` (Pathspec `lab/regelwerk/ lab/templates/`, Kommando in §1) tragen je eine
       der zwei Antworten — *übernommen* oder *schon erfüllt* — mit Beleg. **Vollständig heißt: die
       Zahl der beurteilten Posten ist die Zahl, die `git diff --name-only` ausgibt**, gemessen im
@@ -198,7 +198,7 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       [slice-225](../open/slice-225-gate-index-steht-einmal.md), oder in einem der in §1
       ausgeschlossenen Bereiche mit dessen Kennung. Er ist der Wert **beider** offenen
       Nachweis-Felder der §Baseline-Buchung (`v6.5.0` und `v6.7.2`).
-- [ ] **2 — Die lebenden Planungs-Artefakte tragen die neue Ziel-Form.** Prüfbereich ist der
+- [x] **2 — Die lebenden Planungs-Artefakte tragen die neue Ziel-Form.** Prüfbereich ist der
       Bestand, den dieser Slice besitzt: [`docs/plan/planning/README.md`](../README.md),
       [`docs/plan/planning/observations/README.md`](../observations/README.md),
       [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md), die flachen
@@ -215,7 +215,7 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       ```
 
       nur noch Treffer in `implement-slice.md`, das §1 an die Implementer-Rolle übergibt.
-- [ ] **3 — Jede Sendung an eine andere Rolle liegt als Übergabe-Artefakt vor.** Für jeden Posten,
+- [x] **3 — Jede Sendung an eine andere Rolle liegt als Übergabe-Artefakt vor.** Für jeden Posten,
       den §1 ausschließt, nennt der Nachweis den Empfänger und das, was er bekommt: die
       Norm-/Gate-Posten an [slice-225](../open/slice-225-gate-index-steht-einmal.md), die
       Anweisungssätze `implement-slice.md` und `.harness/skills/reviewer.md` an Implementer bzw.
@@ -226,15 +226,15 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       [slice-212](../open/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md). **Ein
       Rollenwechsel ohne Artefakt ist keiner** (`v6.5.0` · `regelwerk/modul-08-agentenrollen.md`
       §Die neun Übergaben und ihre Artefakte); eine Sendung ohne Empfänger ist der Befund.
-- [ ] `make gates` grün.
+- [x] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: kein öffentlicher Vertrag berührt — die Buchung der Nachweis-Kennung in
+- [x] Doku-Update: kein öffentlicher Vertrag berührt — die Buchung der Nachweis-Kennung in
       §Baseline von [`harness/conventions.md`](../../../../harness/conventions.md) ist
       Architect-Arbeit und liegt als Übergabe-Artefakt aus Liefer-Punkt 3 vor.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
 - [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
@@ -449,6 +449,51 @@ dieser Planung. Die Form ist die von
 der zwei Antworten mit Beleg und dem Ort, an dem er landet. Die Zahl der Zeilen ist die Zahl, die
 `git diff --name-only v6.0.0..v6.7.2 -- lab/regelwerk/ lab/templates/` im Lauf ausgibt.
 
+Gemessen im Lauf: `cd /Development/KI/ai-harness-course && git diff --name-only v6.0.0..v6.7.2 -- lab/regelwerk/ lab/templates/ | wc -l` → **42**. Die Tabelle hat **42** Zeilen, eine je Datei, in derselben Reihenfolge.
+
+Zwei Antworten, gelesen gegen unseren Bestand: **schon erfüllt** heißt, unser Bestand erfüllt die Regel bereits (kein Handlungsbedarf, an niemanden). **übernommen** heißt, eine Adoptions-Handlung ist nötig — `landet in` sagt, wer sie trägt: `slice-224` (hier vollzogen), `slice-225`/`Implementer`/`Reviewer` (Übergabe, hier nur benannt) oder eine der in §1 ausgeschlossenen Kennungen (slice-210/211/212/213/214, emittierte Ebene).
+
 | Posten (Datei im Kurs-Klon) | Kurs-Welle | Antwort | Beleg | landet in |
 |---|---|---|---|---|
-| <…> | <…> | übernommen \| schon erfüllt | <…> | slice-224 \| slice-225 \| <Kennung des in §1 ausgeschlossenen Bereichs> |
+| `lab/regelwerk/README.md` | 134 | schon erfüllt | reine `Stand:`-Zeilen-Aktualisierung (Kurs-Welle 116→134); vendored bereits über den Baum-Tausch ([slice-223](../done/slice-223-baum-tausch-v672-pins-ziehen.md)), und `harness/conventions.md` §Baseline nennt bereits „Kurs-Welle 134 · 2026-09-12" (`grep -n 'Kurs-Welle' harness/conventions.md`) | slice-224 |
+| `lab/regelwerk/grundlagen-begriffe.md` | 132 | schon erfüllt | ausschließlich Markdown-Tabellen-Reformatierung (Spaltenbreiten), keine Inhaltsänderung (`git diff v6.0.0..v6.7.2 -- lab/regelwerk/grundlagen-begriffe.md \| grep -E '^[+-][^+-]' \| grep -vE '^[+-]\|'` im Kurs-Klon → leer) | slice-224 |
+| `lab/regelwerk/grundlagen-bootstrap.md` | 125-128 | schon erfüllt | ausschließlich Tabellen-Reformatierung, keine Inhaltsänderung (dieselbe Prüfung wie oben, gegen diese Datei → leer) | slice-224 |
+| `lab/regelwerk/grundlagen-durchsetzungsschicht.md` | 125-128 | schon erfüllt | 1 Zeile Formatierung, keine Inhaltsänderung | slice-224 |
+| `lab/regelwerk/grundlagen-harness-dateien.md` | 134 | übernommen (teilweise) | Muster `harness/sensors/<target>.md` bereits im Bestand (`ls harness/sensors/*.md \| wc -l` → **15**); `AGENTS.md` §3.11 trägt bereits „Kennung statt Adresse" für einfrierende Artefakte. Offen: die „Gate-Index steht einmal"-Konsequenz (`AGENTS.md` trägt Regel+Zeiger, nicht die Liste — `AGENTS.md` §4 führt die Liste heute noch selbst) | slice-225 |
+| `lab/regelwerk/grundlagen-klassifikation.md` | 125-128 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
+| `lab/regelwerk/grundlagen-referenz-richtung.md` | 130-131 | schon erfüllt | Tabellen-Reformatierung + ein Beispiel-Platzhalter (`slice-NNN` → `slice-tie-break-determinismus`), keine neue Pflicht | slice-224 |
+| `lab/regelwerk/grundlagen-source-precedence.md` | 130-131 | schon erfüllt | §Vergabe erlaubt Namen **oder** Nummern als Kennung und verlangt nur eine **Deklaration** im Repo („Welche Form gilt, deklariert das Repo — in `harness/conventions.md`"); unser [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) hält bereits an dichten Nummern ohne Bereichssegment fest — das bleibt eine gültige, bereits getroffene Wahl | slice-224 |
+| `lab/regelwerk/grundlagen-traceability.md` | 130-131 | übernommen | Herkunfts-Anker-Notation `seit welle-<Kennung>`/`seit slice-<Kennung>` trug in [`observations/README.md`](../observations/README.md) und [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) noch die alte Form — in diesem Lauf behoben (`git grep -nE 'slice-<NNN>\|welle-<NN>' -- docs/plan/planning .claude/commands ':!docs/plan/planning/done'` zeigt beide Dateien danach nicht mehr) | slice-224 |
+| `lab/regelwerk/modul-02-harness-bootstrap.md` | 130-131 | schon erfüllt | reine Anker-Umbenennung eines Querverweises, keine Inhaltsänderung | slice-224 |
+| `lab/regelwerk/modul-04-adrs.md` | 125-128 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
+| `lab/regelwerk/modul-05-planning-harness.md` | 130-131 | schon erfüllt | §1 „Ziel und Abgrenzung" (vier Ausschluss-Klassen) und §8 „Sub-Area-Prüfungen und Modus-Begründung" sind in **diesem eigenen Slice-Plan** bereits verkörpert (§1/§8 dieser Datei); die Archiv-Notation `slice-<Kennung>-archiv.zip` trifft auf keinen Bestand (kein archivierter Slice, `ls docs/plan/planning/done/*/archiv.zip 2>/dev/null \| wc -l` → **0**) | slice-224 |
+| `lab/regelwerk/modul-06-roadmap.md` | 133 | übernommen | dieselbe Herkunfts-Anker-Notation wie `grundlagen-traceability.md`; mit derselben Behebung gedeckt (`observations/README.md`, `close-welle.md`) | slice-224 |
+| `lab/regelwerk/modul-07-carveouts.md` | 130-131 | schon erfüllt | neue Regel „Auflösung setzt die Bindung-Spalte in `harness/README.md` §Sensors zurück" betrifft aktuell keinen Carveout — kein `CO-<NNN>` in der Sensors-Tabelle (`grep -n 'CO-[0-9]' harness/README.md` → leer) | slice-224 |
+| `lab/regelwerk/modul-08-agentenrollen.md` | 130-131 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
+| `lab/regelwerk/modul-09-implementierung.md` | 132 | übernommen (Übergabe) | Plan-vor-Code-Disziplin (Tests-Zeile bindet an Akzeptanzkriterien-ID, Out-of-Scope-Nennung in Schritt 4, Zeiger auf den Gate-Index statt Listen-Wiederholung) betrifft ausschließlich `.claude/commands/implement-slice.md` — Rollen-Anweisungssatz der Implementer-Rolle ([ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)), von diesem Slice laut §1 nicht beschreibbar | Implementer (Übergabe) |
+| `lab/regelwerk/modul-10-review-harness.md` | 130-131 | schon erfüllt | Notation + eine Klarstellung zur Deckungs-Prüfung des d-check-Moduls `reviews`; das Modul selbst ist Gegenstand der `.d-check.yml`-Zeile unten, keine zusätzliche Pflicht hier | slice-224 |
+| `lab/regelwerk/modul-11-verification.md` | 125-128 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
+| `lab/regelwerk/modul-12-replay-evaluierung.md` | 125-128 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
+| `lab/regelwerk/modul-13-quality-gates.md` | 130-131 | übernommen | „Gate-Index steht einmal"-Konzept (Deklarations-Sensor, `kein Gate`-Markierung in der Zeile selbst, Grenzen-Pflicht je Gate) — deckungsgleich mit dem Titel von [slice-225](../open/slice-225-gate-index-steht-einmal.md) | slice-225 |
+| `lab/regelwerk/modul-14-docker-harness.md` | 125-128 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
+| `lab/regelwerk/modul-15-observability.md` | 129 | schon erfüllt | Wortlaut-Präzisierung eines illustrativen „Doku-Konsistenz-Agent"-Konzepts, keine neue Pflicht | slice-224 |
+| `lab/regelwerk/modul-16-produktiver-betrieb.md` | 130-131 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
+| `lab/templates/.d-check.yml` | 129 | übernommen | Doku-Kommentare zu den Modulen `targets` (bei uns bereits aktiv, `grep -n '^modules:' .d-check.yml`) und `reviews` (bei uns noch **nicht** aktiviert); Aktivierungsentscheidung liegt in `.d-check.yml`, Architect-Eigentum | slice-225 |
+| `lab/templates/AGENTS.template.md` | 130-131 | übernommen | dieselbe „Gate-Index steht einmal"-Konsequenz für `AGENTS.md` §4 (Liste → Zeiger auf `harness/README.md` §Sensors) | slice-225 |
+| `lab/templates/Makefile` | 129 | schon erfüllt | Kommentar-Vorlage für ein bootstrap-Repo; unser Root-`Makefile` ist keine Kopie dieser Vorlage (`grep -n 'Targets in AGENTS.md' Makefile` → leer) — kein eigener Bestand betroffen | slice-224 |
+| `lab/templates/README.md` | 124 | schon erfüllt | Index-Zeile für `.harness/baseline/v6.7.2/templates/harness/sensors/gate.template.md` plus zwei Hinweiszeilen zu §1/§8 des Slice-Plans — Kurs-Dokumentation für Adopter, kein eigenes Artefakt dieses Repos | slice-224 |
+| `lab/templates/docs/plan/carveouts/README.template.md` | 130-131 | schon erfüllt | Notation; unser [`docs/plan/carveouts/README.md`](../../carveouts/README.md) trägt keine Platzhalter-Form (`grep -n 'slice-<' docs/plan/carveouts/README.md` → leer) | slice-224 |
+| `lab/templates/docs/plan/carveouts/carveout.template.md` | 130-131 | schon erfüllt | Notation; unsere zwei aktiven Carveouts tragen bereits konkrete Slice-Namen statt Platzhalter (`grep -n 'Folge-Slice' docs/plan/carveouts/CO-*.md`) | slice-224 |
+| `lab/templates/docs/plan/planning/README.template.md` | 130-131 | schon erfüllt | zwei Stellen `welle-<NN>-results.md` → `welle-<Kennung>-results.md`; unser [`docs/plan/planning/README.md`](../README.md) nutzt an beiden Stellen bereits das generische `<welle-id>-results.md` (kein Platzhalter mit `NN`) | slice-224 |
+| `lab/templates/docs/plan/planning/archiv-stub-slice.template.md` | 130-131 | schon erfüllt | Notation + neuer „Zitier-Form"-Normblock; kein archivierter Slice-Stub im Bestand (`ls docs/plan/planning/done/*/ 2>/dev/null` → keiner) | slice-224 |
+| `lab/templates/docs/plan/planning/archiv-stub-welle.template.md` | 130-131 | schon erfüllt | dieselbe Begründung wie beim Slice-Stub-Template | slice-224 |
+| `lab/templates/docs/plan/planning/observation.template.md` | 130-131 | übernommen | zwei Stellen der Notation trugen in [`observations/README.md`](../observations/README.md) noch die alte Form (`slice-<NNN>.md`, `seit welle-<NN>`/`seit slice-<NNN>`) — in diesem Lauf behoben | slice-224 |
+| `lab/templates/docs/plan/planning/reconciliation.template.md` | 130-131 | schon erfüllt | Greenfield-Repo, Datei existiert nicht (`ls docs/plan/planning/reconciliation.md` → Fehler); kein Bestand betroffen | slice-224 |
+| `lab/templates/docs/plan/planning/roadmap.template.md` | 130-131 | schon erfüllt | Platzhalter `welle-N+1`/`welle-NN` → konkrete Namen; unsere [`in-progress/roadmap.md`](../in-progress/roadmap.md) führt durchweg konkrete Welle-/Slice-Namen, keine Platzhalter-Reste (`git grep -nE 'slice-<NNN>\|welle-<NN>' -- docs/plan/planning/in-progress/roadmap.md` → leer) | slice-224 |
+| `lab/templates/docs/plan/planning/slice.template.md` | 132 | schon erfüllt | §1 „Ziel und Abgrenzung" / §8 „Sub-Area-Prüfungen und Modus-Begründung" bereits in diesem eigenen Slice-Plan verkörpert (referenziert, nicht kopiert — [`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)) | slice-224 |
+| `lab/templates/docs/plan/planning/welle-results.template.md` | 130-131 | schon erfüllt | „Zitier-Form"-Normblock + Notation; kein offenes `welle-*-results.md` im Bestand (alle drei offenen Wellen — `welle-09`, `welle-11`, `welle-13` — sind ungeschlossen, `ls docs/plan/planning/welle-*.md`) | slice-224 |
+| `lab/templates/docs/plan/planning/welle.template.md` | 130-131 | übernommen | `welle-<NN>-results.md` trug in [`welle-13-regeln-bekommen-ihren-sensor.md`](../welle-13-regeln-bekommen-ihren-sensor.md) noch die alte Form — in diesem Lauf behoben | slice-224 |
+| `lab/templates/docs/reviews/review-report.template.md` | 130-131 | übernommen | Zitier-Form-Norm + Notation der Kopfzeile; Formänderung des Review-Report-Bestands ist ausdrücklich Gegenstand von [slice-213](../open/slice-213-review-report-laeuft-in-der-tabellen-form.md)/[slice-214](../open/slice-214-zellengrenze-wird-gemessen-statt-gesetzt.md) | slice-213/slice-214 |
+| `lab/templates/harness/README.template.md` | 134 | übernommen | „Gate-Index steht einmal"-Konsequenz; unser `harness/README.md` trägt bereits den Abschnitt „Werkzeuge (kein Gate)" und `harness/sensors/<target>.md`-Links, aber `AGENTS.md` §4 dupliziert die Gate-Liste noch statt nur auf `harness/README.md` §Sensors zu zeigen | slice-225 |
+| `lab/templates/harness/conventions.template.md` | 130-131 | übernommen | Notation in der ID-Schema-Zeile der Adaptions-Vorlage (`slice-<NNN>` → `slice-<Kennung>`); `harness/conventions.md` ist Architect-Eigentum | slice-225 |
+| `lab/templates/harness/sensors/gate.template.md` | 120 | schon erfüllt | Muster bereits vollständig im Bestand umgesetzt (`ls harness/sensors/*.md \| wc -l` → **15** Dateien, je mit Index-Zeile in `harness/README.md`) | slice-224 |
