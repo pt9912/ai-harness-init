@@ -1,6 +1,6 @@
 # ADR-0044: Die Ziel-Fassung regiert auch den Sprung `v6.5.0` → `v6.7.2` — der bewegte Zielstand löst die Sprung-Festlegung ihres Vorgängers ab, samt dem Auftrag, der sie vollzieht
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-12
 
@@ -35,9 +35,11 @@ verlangt für diesen Sprung Achse, beide Stufen und das Delegat-Delta netto je S
 Re-Evaluierungs-Trigger fragt nach einer dritten Rauschklasse),
 [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) (die Netto-Frage und die
 Herkunfts-Kommentar-Rauschklasse stammen von dort),
-[ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) (deren Festlegung 2 — Ort und
-geschlossene Drei-Teil-Form einer Zielstand-Setzung — bleibt unberührt und bindet die Buchung, die
-mit dieser Entscheidung und später mit dem Vollzug entsteht),
+[ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) (**`Proposed`**, und sie führt
+keinen Acceptance-Trigger; deren Festlegung 2 — Ort und geschlossene Drei-Teil-Form einer
+Zielstand-Setzung — bleibt unberührt und bindet die Buchung, die mit dieser Entscheidung und später
+mit dem Vollzug entsteht. Ob eine nicht angenommene Entscheidung so zitiert werden darf, ist hier
+nicht entschieden und steht als eigener Vorgang in §Konsequenzen),
 [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) (der Accept-Übergang dieser
 Datei nennt den Beleg, den ihr Acceptance-Trigger verlangt; deren Festlegung 2 schließt die
 Nachmessung desselben Kontexts als Beleg aus, deren Festlegung 3 bindet eine Trigger-Änderung an
@@ -67,7 +69,8 @@ und stellt die **Basis seiner Messung** fest, nicht den Inhalt eines Spec-Dokume
 **Kopplung:** §Baseline von `harness/conventions.md` — dort ist die Zielstand-Setzung auf `v6.7.2`
 verbucht, und dort steht der Zeiger auf diese Entscheidung als regierende Fassung des Sprungs. Der
 **Ort** ist der von [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
-Festlegung 2; deren geschlossene Drei-Teil-Form gilt der Buchung des **Vollzugs**, und die entsteht
+Festlegung 2 (`Proposed`, siehe Bezug-Feld); deren geschlossene Drei-Teil-Form gilt der Buchung des
+**Vollzugs**, und die entsteht
 mit dem Baum-Tausch, nicht hier — ihr zweiter Teil, der Slice mit dem Delta-Nachweis, existiert
 noch nicht. Die Datei ist Architect-Eigentum ([`AGENTS.md`](../../../AGENTS.md) §3.8).
 
@@ -400,13 +403,21 @@ ein Feld: den letzten Stand, für den §Baseline von `harness/conventions.md` ei
 Delta-Nachweis ausweist. Das Feld sagt heute:
 
 ```sh
-grep -n 'Delta-Nachweis' harness/conventions.md
-# -> …  **auf `v5.18.0`:** 2026-09-03, Delta-Nachweis in slice-155;
-#    …  **auf `v6.0.0`:**  2026-09-04, Delta-Nachweis in slice-176;
-#    …  **auf `v6.5.0`:**  2026-09-07, Delta-Nachweis steht aus.
+grep -c 'Delta-Nachweis' harness/conventions.md                        # -> 5
+grep -o '\*\*auf `v[0-9.]*`:\*\* [0-9-]*, Delta-Nachweis[^.;]*' harness/conventions.md
+# -> **auf `v5.18.0`:** 2026-09-03, Delta-Nachweis in slice-155
+#    **auf `v6.0.0`:** 2026-09-04, Delta-Nachweis in slice-176
+#    **auf `v6.5.0`:** 2026-09-07, Delta-Nachweis steht aus
 grep -rln 'Adaptions-Durchgang' docs/plan/planning/open docs/plan/planning/next \
-  docs/plan/planning/in-progress   # -> kein Durchgangs-Slice
+  docs/plan/planning/in-progress | wc -l                               # -> 3
 ```
+
+Die drei Treffer des letzten Kommandos sind `slice-092`, `slice-222` und die Roadmap — **kein
+Durchgangs-Slice**. **Keine Erwartungswerte**
+([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2): Die `5` wandert mit §Baseline, die `3` mit dem Planungs-Baum. Tragend ist, dass unter
+den Treffern am 2026-09-12 kein Durchgang steht; geschnitten wird er von der Folgepflicht (Planner)
+unten.
 
 Der letzte gefüllte Nachweis steht bei `v6.0.0`. Der Aufpreis, den das kostet, ist der Unterschied
 zweier Diffs:
@@ -525,13 +536,14 @@ Entscheidung eingelöst statt beseitigt: der erste (Achse, beide Stufen, Netto j
 dritte (das Delegat-Delta liegt in einer Sektion, in die delegiert wird) und der vierte (die Basis
 ist erreicht, das Nachweis-Feld der `v6.5.0`-Zeile ist leer).
 
-**Zwei Präsens-Aussagen jener Datei über §Baseline sind durch den bewegten Zielstand falsch
-geworden — abgelöst sind sie nicht, benannt schon.** Das Kopffeld `Kopplung:` sagt *„dort ist die
-Zielstand-Setzung auf `v6.7.1` verbucht"*, und der Punkt *„Folgepflicht (Architect), im selben
-Commit eingelöst"* sagt, §Baseline *„trägt die Zielstand-**Setzung** auf `v6.7.1`"*. Beide waren
-für ihren Stand richtig und beschreiben einen abgeschlossenen Akt; keine von beiden ordnet etwas
-an, und eine Ablösung hätte hier kein Objekt — es gäbe keine Entscheidung, die an ihre Stelle
-träte. Sie bleiben stehen und sind in jener Datei nicht korrigierbar
+**Drei Präsens-Aussagen jener Datei sind durch den bewegten Zielstand falsch geworden — abgelöst
+sind sie nicht, benannt schon.** Zwei davon sprechen über §Baseline: Das Kopffeld `Kopplung:` sagt
+*„dort ist die Zielstand-Setzung auf `v6.7.1` verbucht"*, und der Punkt *„Folgepflicht (Architect),
+im selben Commit eingelöst"* sagt, §Baseline *„trägt die Zielstand-**Setzung** auf `v6.7.1`"*;
+beide waren für ihren Stand richtig und beschreiben einen abgeschlossenen Akt. Die dritte steht in
+§Kontext und beschreibt einen Zustand: *„Der gesetzte Zielstand ist `v6.7.1`."* Keine der drei
+ordnet etwas an, und eine Ablösung hätte hier kein Objekt — es gäbe keine Entscheidung, die an ihre
+Stelle träte. Sie bleiben stehen und sind in jener Datei nicht korrigierbar
 ([`AGENTS.md`](../../../AGENTS.md) §3.4); der geltende Zustand steht in §Baseline von
 [`harness/conventions.md`](../../../harness/conventions.md) selbst.
 
@@ -577,10 +589,11 @@ den Umfang — §Entscheidung Festlegung 1 **und** den sie vollziehenden Baum-Ta
   [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 4.
 - **Sie inventarisiert das Delta nicht.** Welche Regel des Sprungs welchen Eintrag, welches
   Artefakt und welchen Sensor dieses Repos trifft, ist Gegenstand des Durchgangs.
-- **Sie entscheidet die `authority`-Frage nicht.** Ob `targets.authority` auf den Einstiegspunkt
-  wandert, ob die Gate-Tabelle in `AGENTS.md` §4 einem Zeiger weicht und ob das eine Senkung nach
-  [`AGENTS.md`](../../../AGENTS.md) §3.5 ist, entscheidet der Durchgang bzw. die ADR, die er
-  auslöst.
+- **Sie entscheidet die `authority`-Frage nicht.** **Dass** die Pflichtgliederung der Ziel-Fassung
+  übernommen wird, steht als Vorgabe des Auftraggebers in §Konsequenzen und nicht in dieser
+  Festlegung; **wie** `targets.authority` und die Gate-Tabelle in `AGENTS.md` §4 nachgezogen werden
+  und ob das eine Senkung nach [`AGENTS.md`](../../../AGENTS.md) §3.5 ist, entscheidet der
+  Durchgang bzw. die ADR, die er auslöst.
 - **Sie entscheidet die Form der Sensor-Dateien nicht.** Dass die Ziel-Fassung ihre Vorlage
   benennt, ist hier gemessen; welche Datei dieses Repos den Zeiger darauf trägt und für welches
   Ziel überhaupt eine Datei entsteht, ist Planungs- und Durchgangs-Arbeit.
@@ -645,12 +658,13 @@ Tausch-Slice und der des Durchgangs als Constraint lesen; sie ist nicht eingefro
   eine Festlegung 1, deren Sprung nicht mehr stattfindet, und darunter einen Baum-Tausch-Auftrag
   auf einen Tag, den kein Pin trägt — ohne dass die Datei es sagt. Das ist der Preis von
   [`AGENTS.md`](../../../AGENTS.md) §3.4 und wird hier nicht geheilt.
-- **Negativ:** Zwei weitere Stellen jener Datei sind durch den bewegten Zielstand falsch geworden,
+- **Negativ:** Drei weitere Stellen jener Datei sind durch den bewegten Zielstand falsch geworden,
   ohne abgelöst zu sein: das Kopffeld `Kopplung:` und der Punkt *„Folgepflicht (Architect), im
-  selben Commit eingelöst"*, die beide §Baseline im Präsens die Setzung auf `v6.7.1` zuschreiben.
-  Sie ordnen nichts an und haben damit kein Objekt für eine Ablösung; diese Entscheidung benennt
-  sie (§Was der Teil-Supersede umfasst) und korrigiert sie nicht. Der geltende Zustand steht in
-  §Baseline von [`harness/conventions.md`](../../../harness/conventions.md).
+  selben Commit eingelöst"*, die beide §Baseline im Präsens die Setzung auf `v6.7.1` zuschreiben,
+  und in §Kontext der Satz *„Der gesetzte Zielstand ist `v6.7.1`."* Sie ordnen nichts an und haben
+  damit kein Objekt für eine Ablösung; diese Entscheidung benennt sie (§Was der Teil-Supersede
+  umfasst) und korrigiert sie nicht. Der geltende Zustand steht in §Baseline von
+  [`harness/conventions.md`](../../../harness/conventions.md).
 - **Negativ:** Bis zum Tausch ist die regierende Fassung nicht im Arbeitsbaum, und auch die
   **gepinnte** Seite der Messung ist nur über den Klon exakt reproduzierbar (§Die Achse). Ein
   netzloser Lauf ist auf diese ADR angewiesen.
@@ -665,7 +679,8 @@ Tausch-Slice und der des Durchgangs als Constraint lesen; sie ist nicht eingefro
   trägt die Zielstand-**Setzung** auf `v6.7.2` und den Zeiger auf diese Entscheidung als regierende
   Fassung; der ADR-Index bekommt die Zeile dieser Datei. Den **Vollzug** bucht der Lauf, der ihn
   ausführt, in der Drei-Teil-Form von
-  [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2.
+  [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2 (`Proposed`,
+  siehe Bezug-Feld).
 - **Folgepflicht (Architect), fällig nach dieser Entscheidung:** die Reviewer-Runde, die der
   Acceptance-Trigger verlangt, und der Accept-Übergang, der ihren Report namentlich nennt. **Mit
   ihm, nicht davor**, bekommt die Status-Zelle von
@@ -675,21 +690,37 @@ Tausch-Slice und der des Durchgangs als Constraint lesen; sie ist nicht eingefro
   **Baum-Tausch** samt Nachzug der fünf Pins auf `v6.7.2` und den am Asset gemessenen sha256
   (kanonisch ist das Makefile-Paar; die vier übrigen sind fail-closed daran gekoppelt), und der
   **Adaptions-Durchgang** mit Delta-Basis `v6.0.0`; weil er den `v6.5.0`-Nachweis einschließt, ist
-  seine Kennung der Wert **beider** offenen Nachweis-Felder der Buchung. **Die erste Hälfte tritt
+  seine Kennung der Wert **beider** offenen Nachweis-Felder der Buchung — das der `v6.5.0`-Zeile
+  und das der Zeile, die der Vollzug anlegt. **Die erste Hälfte tritt
   an die Stelle der ersten Hälfte des gleichnamigen Punktes in
   [ADR-0043](0043-ziel-fassung-regiert-den-sprung-v671.md) §Konsequenzen, die mit dieser
   Entscheidung abgelöst ist** (§Was der Teil-Supersede umfasst); **die zweite gilt dort fort** und
   steht hier wiederholt, damit der Auftrag an einer Stelle als Ganzes lesbar bleibt — sie sagt
   dasselbe, und eine Abweichung zwischen beiden wäre ein Defekt dieser Datei, nicht jener.
-  **Eingetragen werden sie nicht in diesem Punkt:** §Baseline von `harness/conventions.md` ist
+  **Eingetragen wird er nicht in diesem Punkt:** §Baseline von `harness/conventions.md` ist
   Architect-Eigentum ([`AGENTS.md`](../../../AGENTS.md) §3.8), und die Buchung steht in der
   Architect-Folgepflicht darüber. Der Wortlaut beider Pläne ist Planner-Eigentum
   ([ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md)); diese Entscheidung ist das
   Übergabe-Artefakt, nicht der Text.
+- **Vorgabe des Auftraggebers für den Durchgang — hier verbucht, nicht abgewogen:** Der
+  Adaptions-Durchgang übernimmt die Ziel-Fassung **vollständig**; eine Abweichung wird nicht
+  gesetzt. Das trifft genau **einen** der fünf Ausgänge der gewählten Prozedur — *widerspricht*,
+  den einzigen, *„an dem das Delta die Antwort **nicht** vorgibt"*, weil dort *„das Repo eine
+  Wahl"* hat: *„Entweder die Adaption gilt in ihrem Geltungsbereich weiter … oder das Repo
+  **übernimmt** die neue Regel"* (`v6.5.0`, byte-gleich in `v6.7.2` — §Stufe (b) —,
+  `modul-02-harness-bootstrap.md`, §Freshness-Audit der vendored Baseline (Schritt 2)). Diese Wahl
+  ist damit für diesen Durchgang getroffen, bevor er läuft, und sie ist die des Auftraggebers: Der
+  Architect schreibt den Norm-Text, er wägt den Ausgang nicht ab. **Unberührt bleibt alles
+  andere** — der Befund je Eintrag mit eigenem Beleg
+  ([ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 4), die vier Ausgänge, deren
+  Antwort das Delta ohnehin vorgibt, und der Fall *übernehmen wollen und noch nicht können*, den
+  dieselbe Stelle als **Carveout** mit Auflösungs-Trigger führt und nicht als Adaption. **Eine
+  allgemeine Regel darüber, wer diese Wahl trifft, entsteht hier nicht.**
 - **Folgepflicht (Architect), fällig im Durchgang, nicht hier:** die Entscheidung über
   `targets.authority` und die Gate-Tabelle in `AGENTS.md` §4 — beide Dateien sind
-  Architect-Eigentum ([`AGENTS.md`](../../../AGENTS.md) §3.8), und ob der Nachzug eine Senkung nach
-  §3.5 ist, gehört in jene Abwägung.
+  Architect-Eigentum ([`AGENTS.md`](../../../AGENTS.md) §3.8). **Dass** übernommen wird, steht mit
+  der Vorgabe oben fest; offen sind die **Form** des Nachzugs und die Frage, ob er eine Senkung
+  nach §3.5 ist — beides gehört in jene Abwägung.
 - **Folgepflicht (Architect), eigener Vorgang, nicht hier — und bis dahin eine benannte Lücke:**
   Die Sichtbarkeit dieser Teil-Ablösung hängt allein an der Status-Zelle des ADR-Index. Der
   Fundweg, den [`docs/plan/adr/README.md`](README.md) §Konventionen für angeordnete Zusätze
@@ -703,6 +734,19 @@ Tausch-Slice und der des Durchgangs als Constraint lesen; sie ist nicht eingefro
   schreibt neben dem Fundweg auch die Aufzählung darunter fort, und dafür ist je getragener Zelle
   die anordnende Stelle zu bestimmen — eine eigene Messung, die dieser Lauf nicht gefahren hat.
   Diese ADR behauptet dafür keine Deckung
+  ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+- **Folgepflicht (Architect), eigener Vorgang, nicht hier — die zweite benannte Lücke:** Diese
+  Entscheidung zitiert [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
+  Festlegung 2 an drei Stellen als bindend — im Bezug-Feld, in `Kopplung:` und in der
+  Architect-Folgepflicht oben —, und jene Datei steht auf `Proposed` und führt keinen
+  Acceptance-Trigger:
+  `grep -m1 '^\*\*Status:\*\*' docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md`.
+  Der Status ist an allen drei Stellen genannt. **Ob** eine nicht angenommene Entscheidung so
+  zitiert werden darf, und was jene Datei braucht — einen nachgereichten Trigger, einen
+  Accept-Übergang oder eine Folge-ADR —, ist hier **nicht** entschieden. Die Frage ist älter als
+  diese Datei: Die bereits angenommene
+  [ADR-0043](0043-ziel-fassung-regiert-den-sprung-v671.md) trägt dieselbe Bezugnahme und ist
+  eingefroren ([`AGENTS.md`](../../../AGENTS.md) §3.4). Diese ADR behauptet dafür keine Deckung
   ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 - **Darüber hinaus ändert diese ADR keine Datei außer sich selbst, dem ADR-Index und §Baseline von
   `harness/conventions.md`.**
@@ -770,6 +814,7 @@ Gewohnheit ist und keine Regel. Ihn hier als vorhanden auszugeben wäre
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-12 | **Proposed** | Architect-Lauf auf die Zielstand-Setzung des Auftraggebers vom selben Tag. Anlass sind der fünfte Eintritt des zweiten Falls aus [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 und der erste Re-Evaluierungs-Trigger von [ADR-0043](0043-ziel-fassung-regiert-den-sprung-v671.md), dessen Sprung-Ziel die Setzung überholt hat |
+| 2026-09-12 | **Accepted** | **Angenommen auf Weisung des Auftraggebers vom 2026-09-12, vollzogen in der Architect-Rolle.** **Der Acceptance-Trigger ist eingelöst**, und der Beleg, den er verlangt, ist die **Reviewer-Bestätigungsrunde vom 2026-09-12 zu ADR-0044, Runde 2** — Kennung `2026-09-12-adr-0044-ziel-fassung-v672-r2` ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1: Kennung, kein Pfad-Link) —, gefahren in frischem Kontext gegen [ADR-0018](0018-ziel-fassung-regiert-die-migration.md), [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md), [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) und die teilweise abgelöste [ADR-0043](0043-ziel-fassung-regiert-den-sprung-v671.md); ihre Kategorie-Summary nennt **kein HIGH und kein MEDIUM**, ihr Report liegt damit ohne blockierenden Befund in `docs/reviews/`. Den eigens benannten Prüfgegenstand — den Schnitt der Teil-Ablösung — prüft sie in **beide** Richtungen und findet ihn in beiden richtig. Dass es die **zweite** Runde ist, fordert [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2: Runde 1 meldete einen blockierenden Befund, Beleg ist darum eine erneute Runde derselben prüfenden Rolle und nicht die Nachmessung des Kontexts, der ihn auflöste. **Die vier LOW dieser Runde sind vor diesem Umschlag behoben** — die Zählung der falsch gewordenen Präsens-Stellen, das verbatim nachgezogene Zitat der fortgeltenden Hälfte, die Ausgabe-Position der zwei Kommandos über §Baseline und der `Proposed`-Status der zitierten [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md); Festlegung 2 deckt das, denn sie verlangt eine weitere Runde nur nach einem **blockierenden** Befund. **Mit diesem Übergang, nicht davor,** bekommt die Status-Zelle von [ADR-0043](0043-ziel-fassung-regiert-den-sprung-v671.md) im ADR-Index ihren Zusatz, und der Zeiger in §Baseline von `harness/conventions.md` nennt den neuen Statuswert. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit

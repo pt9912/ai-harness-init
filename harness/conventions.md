@@ -48,7 +48,8 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   bewegt ihm vorbehält; den Vollzug bucht der Lauf, der ihn ausführt. **Die Prozedur dieses
   Sprungs stellt die Ziel-Fassung** —
   [`ADR-0044`](../docs/plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md) Festlegung 1,
-  `Proposed`; die Delta-Basis des Adaptions-Durchgangs liest
+  `Accepted`; sie bindet damit nach [`AGENTS.md`](../AGENTS.md) §3.4, Korrekturen entstehen
+  als Folge-ADR mit `Supersedes`. Die Delta-Basis des Adaptions-Durchgangs liest
   [`ADR-0043`](../docs/plan/adr/0043-ziel-fassung-regiert-den-sprung-v671.md) Festlegung 2,
   `Accepted`, aus der Aufzählung oben. Festlegung 1 von
   [`ADR-0031`](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) bindet
