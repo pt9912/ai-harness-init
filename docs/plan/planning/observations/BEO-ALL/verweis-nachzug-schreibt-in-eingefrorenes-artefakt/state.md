@@ -1,13 +1,16 @@
-**Stand:** offen
+**Stand:** verkörpert
 
-Ein Wächter besteht an beiden Enden nicht: Kein Modul aus `modules:` der
-[`.d-check.yml`](../../../../../../.d-check.yml) hält den Status eines Artefakts gegen die Form
-seiner Adressen, und die Reihenfolge zweier Commits liest keines — dieselbe Lücke, die
-[`AGENTS.md`](../../../../../../AGENTS.md) §3.11 für sich selbst feststellt.
+Zielort:
+[`ADR-0042`](../../../../../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) —
+der Verweis-Nachzug ersetzt im Zeitdokument die Adresse und in der `Accepted`-ADR nichts;
+Festlegung 2 trägt das Kriterium, Festlegung 5 die Sperre des ersten Archiv-Moves. Den Ausschluss
+führen seit `slice-221` beide Träger (`make slice-mv` und `archive-welle`). Ein zweiter
+Herkunfts-Anker steht nicht: Was aus einer ADR folgt, trägt bereits eine ID (Baseline-Regelwerk
+`grundlagen-traceability.md` §Herkunfts-Anker, Geltungsbereich).
 
-Die Auflösung ist eine Norm-Frage und gehört dem **Architect**
-([`AGENTS.md`](../../../../../../AGENTS.md) §3.8): ob die Ausnahmeliste von `make slice-mv` die
-einfrierenden Bäume aufnimmt, ob ein Referenz-Ventil sie trägt — jede Verbreiterung eines Ventils
-auf ein Verzeichnis ist eine Senkung nach §3.5 mit eigener ADR —, oder ob der Nachzug in diesen
-Bäumen richtig ist und die §3.11-Vorab-Messung genau das feststellt. Träger bis dahin ist der Lauf,
-der den Move plant.
+**Grenze der Verkörperung, benannt.** Entschieden ist das Kriterium *ändert sich die Aussage?* und
+nicht eine Aufzählung von Bäumen: `docs/plan/adr/**` ist aus beiden Nachzug-Trägern ausgenommen,
+`docs/reviews/**` und `docs/plan/planning/done/**` bleiben darin — dort ist der Nachzug die
+richtige Antwort. Drei Gegenformen, in denen die Adresse die Aussage trägt, bleiben nach
+Festlegung 4 unrepariert; für sie besteht an beiden Enden kein Wächter, und Träger bleibt der
+Lauf, der den Move plant.
