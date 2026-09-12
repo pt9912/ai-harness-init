@@ -42,13 +42,16 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   Prozedur dieses Sprungs stellt die Ziel-Fassung** —
   [`ADR-0038`](../docs/plan/adr/0038-ziel-fassung-regiert-den-sprung-v650.md), einzige Festlegung,
   `Accepted`; sie bindet damit nach
-  [`AGENTS.md`](../AGENTS.md) §3.4. **Der Zielstand ist am 2026-09-12 auf `v6.7.1` gesetzt; sein
+  [`AGENTS.md`](../AGENTS.md) §3.4. **Der Zielstand ist am 2026-09-12 auf `v6.7.2` gesetzt; sein
   Vollzug steht aus** — die Setzung ist die des Auftraggebers, die
   [`ADR-0018`](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md) §Wer den Zielstand
   bewegt ihm vorbehält; den Vollzug bucht der Lauf, der ihn ausführt. **Die Prozedur dieses
   Sprungs stellt die Ziel-Fassung** —
-  [`ADR-0043`](../docs/plan/adr/0043-ziel-fassung-regiert-den-sprung-v671.md) Festlegung 1,
-  `Proposed`; die Delta-Basis des Adaptions-Durchgangs setzt ihre Festlegung 2. Festlegung 1 von
+  [`ADR-0044`](../docs/plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md) Festlegung 1,
+  `Proposed`; die Delta-Basis des Adaptions-Durchgangs liest
+  [`ADR-0043`](../docs/plan/adr/0043-ziel-fassung-regiert-den-sprung-v671.md) Festlegung 2,
+  `Accepted`, aus der Aufzählung oben — der Durchgang schließt damit den ausstehenden
+  `v6.5.0`-Nachweis ein. Festlegung 1 von
   [`ADR-0031`](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) bindet
   allein den Sprung auf `v5.18.0`; die eigene Messung, die ihr erster Re-Evaluierungs-Trigger für
   jeden weiteren verlangt, ist in slice-176 gefahren und in slice-178 entschieden. Die
