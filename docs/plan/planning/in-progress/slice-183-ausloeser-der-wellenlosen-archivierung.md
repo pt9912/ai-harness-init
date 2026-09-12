@@ -161,7 +161,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Die ADR liegt und entscheidet die Zuordnung** — ob der wellenlose Altbestand (57, §1)
+- [x] **Die ADR liegt und entscheidet die Zuordnung** — ob der wellenlose Altbestand (57, §1)
       archiviert wird und, wenn ja, welche Welle ihn einsammelt: die chronologisch nächste
       geschlossene Welle oder ein einzelnes Sammel-Archiv, die zwei Formen, die die Ziel-Fassung
       selbst nennt. Die Freistellung *„Kein Zwang zum Nachrüsten — und kein Verbot"* spricht von
@@ -169,7 +169,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       sie nicht — genau diese Lücke ist zu schließen. Die Entscheidung nennt ihren `Status`; bei
       `Proposed` steht der Acceptance-Trigger daneben (Präzedenz
       [slice-171](../open/slice-171-adr-0031-acceptance-trigger.md)).
-- [ ] **Das Verhältnis zu [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md)
+- [x] **Das Verhältnis zu [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md)
       ist ausgesprochen:** kein `Supersedes` — deren Festlegung 1 (Träger = Produkt-Binär) bleibt
       unberührt, und **keiner** ihrer fünf Re-Evaluierungs-Trigger ist gefeuert. Die neue
       Entscheidung steht **daneben**: Sie beantwortet eine Frage, die jene sich ausdrücklich nicht
@@ -177,28 +177,28 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Trigger, die in die Nähe kommen, trägt sie einzeln gemessen (§1), die übrigen drei mit ihrem
       Grund. Jene ist seit dem 2026-09-10 `Accepted` und wird dafür nicht angefasst
       ([`AGENTS.md`](../../../../AGENTS.md) §3.4).
-- [ ] **Der Sensor-Stand ist benannt statt behauptet.** Kein Gate dieses Repos meldet einen
+- [x] **Der Sensor-Stand ist benannt statt behauptet.** Kein Gate dieses Repos meldet einen
       geschlossenen Slice ohne Archiv; was es gibt, ist die `untergrenze`-Sperre der Vorschau, und
       die ist kein Gate und steht in keiner Prerequisite-Kette. Welche Kandidaten es sonst gibt und
       warum sie nicht messen, steht in der Fitness-Function-Sektion der ADR — ein Sensor, der dort
       als vorhanden ausgegeben würde, wäre [`AGENTS.md`](../../../../AGENTS.md) §3.1 eine Ebene
       tiefer.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8); er ist zugleich der Beleg, den
       [`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2
       für einen Accept-Übergang verlangt.
-- [ ] Doku-Update: der ADR-Index ([`docs/plan/adr/README.md`](../../adr/README.md)) trägt die neue
+- [x] Doku-Update: der ADR-Index ([`docs/plan/adr/README.md`](../../adr/README.md)) trägt die neue
       Zeile ([`AGENTS.md`](../../../../AGENTS.md) §5). Ein öffentlicher Vertrag ist nicht berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register fortgeschrieben — neuer Eintrag oder ein weiterer Beleg; keine
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register fortgeschrieben — neuer Eintrag oder ein weiterer Beleg; keine
       Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. **Ein Beleg steht
       schon aus:** Die Rückführung dieses Slice nach `next/` ist ein benanntes, noch nicht
       gezähltes Auftreten von
       [`BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md)
       (§6) — mit der Closure dieses Slice wird daraus `evidence/slice-183.md`.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -280,7 +280,17 @@ dasteht.
   Stand `offen` — *ein lebendes Plan-Artefakt fasst eine Entscheidung stärker zusammen als die
   Quelle*). Der freistellende Satz spricht von *„Wellen, die vor der Einführung schlossen"*; für
   den wellenlosen Fall gab es vor `v6.0.0` gar keine Regel, von der man freigestellt sein könnte.
-  Die Analogie ist zu **prüfen**, nicht zu unterstellen. — **Ausgang:** <…>
+  Die Analogie ist zu **prüfen**, nicht zu unterstellen. — **Ausgang: weiter offen →
+  Beobachtungs-Register, `BEO-ALL/zusammenfassung-staerker-als-ihre-quelle` (jetzt **6×**,
+  `evidence/slice-183.md`).** Die *benannte* Form ist nicht eingetreten:
+  [`ADR-0041`](../../adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) Festlegung 1
+  nimmt die Freistellung weder in Anspruch noch legt sie sie aus — sie archiviert statt
+  freizustellen und braucht die Analogie darum nicht. Die **Klasse** ist in diesem Slice trotzdem
+  zweimal aufgetreten, an anderen Aussagen: Der Plan behauptete, [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) habe zwei
+  Re-Evaluierungs-Trigger und einer sei gefeuert (gemessen fünf, keiner — drei Stellen, gezogen von
+  `06d64897`), und die Contra-Zelle der Option E behauptete eine Kosten-Obermenge über B, die ihre
+  eigene Folgepflicht 1 widerlegt (Review-Runde 2, MEDIUM-2). Ein Vorgang zählt einmal; beide Funde
+  stehen in dem einen Beleg.
 - **Die Archivierung nimmt einem vorhandenen Sensor seinen Geltungsbereich, ohne dass er rot wird**
   ([`BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md),
   Stand `geplant`). Die Ziel-Fassung sagt das selbst: *„Ein Sensor, der auf `done/*.md` keilt, sieht
@@ -288,20 +298,46 @@ dasteht.
   prüfen."* Mit dem Befund in §1 trifft das hier **zu** statt daneben: Das Archiv liegt unter
   `done/<welle-id>/`, nicht flach — [`harness/README.md`](../../../../harness/README.md) führt die
   Grenze für die `closure`-Fähigkeit bereits und verlangt, sie vor der ersten Archivierung
-  nachzuziehen oder zu benennen. — **Ausgang:** <…>
+  nachzuziehen oder zu benennen. — **Ausgang: entfallen.** Dieser Slice archiviert nichts; er
+  liefert eine Entscheidung, und ein Sensor-Geltungsbereich kann durch sie nicht kippen. Die Sorge
+  ist damit nicht vergessen, sondern umgehängt: Sie steht als **Folgepflicht 3** in der angenommenen
+  [`ADR-0041`](../../adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) — *„Vor dem
+  ersten schreibenden Lauf wird der Prüfbereich der `closure`-Fähigkeit nachgezogen oder seine
+  Grenze an der Stelle benannt, an der die Zusage heute steht"* — und daneben als
+  §Konsequenzen-Negativ derselben Datei; Träger ist der Vorgang, der archiviert. Der
+  Register-Eintrag bleibt unberührt bei **12×**, `geplant`: Ein Beleg für ein Auftreten, das es
+  hier nicht gab, wäre eine falsche Erhöhung.
 - **Der Verweis-Nachzug der Archivierung schreibt in eingefrorene Artefakte**
   ([`BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt`](../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/observation.md),
   Stand `offen` — die Auflösung ist eine Norm-Frage des Architect). Der Lauf aus §1 misst den
   Blast-Radius: **193** Dateien, darunter eine `Accepted`-ADR, zwei aufgelöste Carveouts und zwei
   Evidence-Dateien genau dieser Beobachtung. Der Slice entscheidet das nicht (§1, Abgrenzung); er
-  darf die Frage aber nicht als geklärt ausgeben. — **Ausgang:** <…>
+  darf die Frage aber nicht als geklärt ausgeben. — **Ausgang: weiter offen →
+  Beobachtungs-Register, `BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt` (jetzt
+  **13×**, `evidence/slice-183.md`).** Eingetreten ist die Klasse in dieser Closure selbst, nicht
+  erst bei der Archivierung: Der Verweis-Nachzug des `git mv` nach `done/` schreibt in **vier**
+  eingefrorene Zeitdokumente unter `done/` (13 Fundstellen) und in **zwei** Rollen-Reports unter
+  `docs/reviews/`; die Kommandos stehen im Beleg. **Eine Adresse hat der Eintrag nicht** —
+  [slice-216](../open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md) schließt
+  diese Norm-Frage in seinem §1 ausdrücklich aus, und einen Ausgang zuzuweisen ist der
+  **Lese-Schritt**, der in diesem Repo der Welle-Closure gehört (§7).
 - **Die neue ADR steht auf `Proposed` und bindet keinen Durchgang.** Zwei Slice-Kennungen in
   `open/` tragen diese Restpflicht für ältere Entscheidungen
   ([slice-171](../open/slice-171-adr-0031-acceptance-trigger.md),
   [slice-152](../open/slice-152-adr-0029-acceptance-trigger.md));
   [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) hat ihren Übergang
   inzwischen vollzogen und ist seit dem 2026-09-10 `Accepted`. Der Acceptance-Trigger gehört darum
-  in die neue ADR selbst. — **Ausgang:** <…>
+  in die neue ADR selbst. — **Ausgang: entfallen.**
+  [`ADR-0041`](../../adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) trägt seit dem
+  2026-09-12 `Status: Accepted`. Der Acceptance-Trigger stand in der Datei, und der Beleg, den er
+  verlangt, ist die dritte Reviewer-Runde ohne blockierenden Befund
+  (`docs/reviews/2026-09-12-adr-0041-wellenloser-altbestand-r3.md`, Kategorie-Summary 0 HIGH ·
+  0 MEDIUM) — eine **erneute** Runde derselben prüfenden Rolle, wie
+  [`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 sie
+  nach einem blockierenden Befund verlangt. Die Restpflicht, die
+  [slice-171](../open/slice-171-adr-0031-acceptance-trigger.md) und
+  [slice-152](../open/slice-152-adr-0029-acceptance-trigger.md) für ältere Entscheidungen tragen,
+  hat hier keinen Gegenstand.
 - **Der Beleg für die eigene Rückführung steht aus.** Der Lifecycle-Move dieses Slice nach
   `in-progress/` hat den Ruhe-Marker der Roadmap gegen den Inhalt von `in-progress/` gestellt
   (`docs-check`, Grund-Code `planning-drift`); die Rückführung nach `next/` hebt ihn wieder auf.
@@ -310,7 +346,13 @@ dasteht.
   und steht dort **benannt und nicht gezählt**, weil der Vorgang, der es trägt, nicht abgeschlossen
   ist (Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register: *„Ein Vorkommen ohne
   abgeschlossenen Vorgang bekommt keinen Beleg und bewegt den Zähler nicht; es gehört trotzdem in
-  den Eintrag"*). — **Ausgang:** <…>
+  den Eintrag"*). — **Ausgang: weiter offen → Beobachtungs-Register,
+  `BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch` (jetzt **13×**,
+  `evidence/slice-183.md`).** Mit dieser Closure ist der Vorgang abgeschlossen, der Beleg damit
+  fällig und geschrieben; der Vermerk *Benannt, nicht gezählt* in der `state.md` jenes Eintrags ist
+  mit ihm entfallen. Der Beleg trägt **beide** Moves: die Rückführung, die den Ruhe-Marker wieder
+  richtig stellte, und den Closure-Move, dessen präfixlose Referenz in der Roadmap `make slice-mv`
+  nach eigener, gemessener Grenze nicht erreicht — sie ist in einem eigenen Commit nachgezogen.
 
 ## 7. Closure-Notiz
 
@@ -322,12 +364,98 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register:** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
+- **Was hat funktioniert:** Die **Messung vor dem Zug**, zweimal und beide Male mit anderem
+  Ergebnis als der Befund es nannte. Review-Runde 1 meldete fünf Fundorte für die fehlende
+  Zitierform; `379def11` maß die Fundmenge und zog neun. Die Plan-Korrektur `06d64897` bekam zwei
+  gemeldete Zeilen und zog drei, dazu eine vierte anderer Klasse. Beide Kommandos stehen in den
+  Commit-Messages, nicht nur die Zahlen — das ist genau die Regel, die
+  `BEO-ALL/korrektur-trifft-den-fundort-statt-die-gemessene-fundmenge` (4×, `geplant`,
+  [slice-209](../open/slice-209-report-trennt-fundort-von-fundmenge.md)) noch schreiben soll, hier
+  schon praktiziert. Sie hat die Schleife nicht verlängert, sondern beendet: Runde 3 fand über die
+  gezogenen Stellen keinen überlebenden Rest. **Und der Konflikt-Pfad hat getragen:** Als ADR und
+  Slice-Plan einander widersprachen, entstand Verdikt 1 mit dem Plan-Diff als Übergabe-Artefakt
+  (Baseline-Regelwerk `v6.5.0`, `modul-08-agentenrollen.md` §Konflikt-Pfad als Rollen-Sequenz)
+  statt einer stillen Angleichung.
+- **Was ging anders als geplant:** Der Slice hieß *Auslöser der wellenlosen Archivierung* und hat
+  über den Auslöser nichts entschieden. Die Messung in §1 hat seiner ersten Hälfte den Gegenstand
+  genommen — *wellenlos* ist eine Eigenschaft des **Repos**, dieses fährt Wellen, und die
+  Welle-Closure sammelt die wellenlosen Slices bereits ein —, und die verbliebene Hälfte saß auf
+  einer Vorbedingung mit eigener Alternativen-Menge. Das kostete eine Rückführung nach `next/` und
+  einen neuen Schnitt (§4). Zweitens trug der Plan eine **falsche Prämisse über eine fremde,
+  eingefrorene Quelle** an drei Stellen, bis in DoD 2 hinein: [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) habe zwei
+  Re-Evaluierungs-Trigger und einer sei gefeuert. Gemessen sind es fünf, gefeuert keiner. Die
+  Prämisse wanderte in den ADR-Erstentwurf und wurde dort zur tragenden Begründung des
+  *Kein-`Supersedes`*; gefallen ist sie erst in Review-Runde 1. Drittens: Der Dateiname dieses
+  Plans passt nicht mehr zum Titel und bleibt trotzdem stehen — ihn zu ziehen hieße, in vier
+  eingefrorene Zeitdokumente zu schreiben (§1).
+- **Steering-Loop-Eintrag:** Regel geschärft (Kandidat, **nicht** verkörpert): **Eine Prämisse
+  über eine fremde, eingefrorene Quelle, auf die ein Slice-Plan die ausführende Rolle festlegt, ist
+  vor dem Übergang `open → next` zu messen — mit Kommando und Zahl im Plan.** Die bestehenden
+  Regeln decken Nachbarfelder, nicht diesen Fall:
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  bindet **Zahlen** in lebenden Artefakten,
+  [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) die **Zitierform** einer
+  Regelwerks-Aussage — eine Behauptung über die Festlegungen und Trigger einer **ADR dieses Repos**
+  trifft keine von beiden. Der Preis war hier zwei Review-Runden, ein Konflikt-Pfad-Verdikt und ein
+  DoD-Punkt, der gegen den angenommenen Text wörtlich unerfüllbar geworden wäre. Auslöser:
+  `BEO-ALL/zusammenfassung-staerker-als-ihre-quelle` (6×) und `BEO-ALL/baseline-aussage-ohne-mess-tag`
+  (2×). Verkörpern ist Architect-Arbeit ([`AGENTS.md`](../../../../AGENTS.md) §3.8) und gehört an
+  den Lese-Schritt der nächsten Welle-Closure; dieser Eintrag ist damit **gezählt, nicht
+  verkörpert**, und trägt darum kein Feld `liegt in`.
+- **Beobachtungs-Register (`../observations/`):** vier `evidence/slice-183.md` ergänzt, jeder
+  Zähler als Dateizahl abgelesen
+  (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`, keine
+  Erwartungswerte) — `zusammenfassung-staerker-als-ihre-quelle` **6×** ·
+  `baseline-aussage-ohne-mess-tag` **2×** ·
+  `verweis-nachzug-schreibt-in-eingefrorenes-artefakt` **13×** ·
+  `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch` **13×**. Die `state.md` des letzten
+  Eintrags hat ihren Vermerk *Benannt, nicht gezählt* verloren: Er sagte, der Beleg entstehe mit
+  dieser Closure, und das ist geschehen. **Neu angelegt wurde kein Verzeichnis** — die
+  wiederkehrende Finding-Klasse der drei Runden, die der Report als *„Beleg-Block trägt die
+  Aussage nicht, die auf ihn zeigt"* benennt, hat ihre zwei Mitglieder in den zwei ersten Einträgen
+  oben: Runde 1 HIGH-1 die **Form** der Berufung, Runde 2 MEDIUM-2 ihre **Substanz**. Ein
+  Dach-Eintrag darüber zählte dieselben Funde ein zweites Mal und schluckte vier bestehende, engere
+  Klassen. **Eine Klasse ist ausdrücklich nicht angefallen:**
+  `korrektur-trifft-den-fundort-statt-die-gemessene-fundmenge` bleibt bei **4×** — beide
+  Behebungs-Läufe haben die Fundmenge gemessen statt das Wortmuster des Befundes zu ziehen.
+  **Zwei der vier Einträge stehen weit über der Schwelle und ohne Ausgang** — der Lese-Schritt
+  gehört im Wellen-Betrieb der Welle-Closure, auch für Slices ohne Wellen-Zugehörigkeit
+  (Baseline-Regelwerk `v6.5.0`, `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht); **diese
+  Closure zählt, sie entscheidet nicht.** Für
+  `verweis-nachzug-schreibt-in-eingefrorenes-artefakt` (13×) ist das keine Formalie: Die
+  `state.md` weist die Frage dem **Architect** zu,
+  [`ADR-0041`](../../adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) Festlegung 4
+  bindet den Vollzug der Archivierung daran, und
+  [slice-216](../open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md) **trägt sie
+  nicht** — sein §1 schließt sie ausdrücklich aus. Der Eintrag braucht eine eigene Adresse; sie zu
+  vergeben ist Lese-Schritt und nicht Sache dieser Closure.
+- **Trigger-Audit:** Drei Artefaktklassen, alle drei geprüft. **Carveout** — zwei liegen aktiv
+  (`ls docs/plan/carveouts/CO-*.md`): `CO-001` trägt einen eingetretenen Trigger mit
+  [slice-113](../open/slice-113-co-001-ist-faellig.md) als Adresse, `CO-002` ist `permanent` und in
+  [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) übergeführt; dieser Slice
+  berührt weder `shell-lint` noch `make span-report` und bewegt keinen von beiden.
+  **Bootstrap-aware Gate** — keines besteht: Die Modul-Liste in
+  [`.d-check.yml`](../../../../.d-check.yml) (`grep -n '^modules:' .d-check.yml`) kennt keine
+  Stufen, und kein Gate-Ziel dieses Repos deklariert eine Reifestufe. Wer das mit
+  `git grep -l 'Hochschalt-Trigger' -- ':!.harness/baseline'` nachzählt, bekommt eine Trefferliste
+  aus Zeitdokumenten, einem offenen Plan und **dieser Datei** — das Wort steht in Plänen über das
+  Konzept, nicht in einer Gate-Konfiguration; die Frage beantwortet die Modul-Liste, nicht der
+  `grep`. **ADR** — die fünf
+  Re-Evaluierungs-Trigger von
+  [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) sind einzeln gemessen und
+  keiner ist gefeuert (§1); die fünf der neuen
+  [`ADR-0041`](../../adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) sind mit ihrer
+  Annahme entstanden, und ihr feedback-Trigger *„wenn das Sammel-Archiv liegt"* ist am Baum
+  ablesbar unerfüllt (`ls -d docs/plan/planning/done/*/ 2>/dev/null | wc -l` → 0).
+- **Folge-Slices:**
+  [slice-219](../open/slice-219-archivierung-nimmt-einen-schluessel-ohne-welle.md) (Die
+  Archivierung nimmt einen Schlüssel, der keine Welle ist) — ist eine Datei in `open/`; er löst
+  Folgepflicht 1 der
+  [`ADR-0041`](../../adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) ein und ist
+  dort über seine **Eigenschaft** beschrieben statt über eine Kennung, die ein Re-Schnitt bewegt
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.11).
+- **Risiken aus §6:** fünf Risiken, fünf Ausgänge — zwei *entfallen* mit Begründung, drei *weiter
+  offen* mit Beleg im Register; siehe §6.
 - **Drei Paarungen:** dieses **Repo** fährt Wellen (§1) — Anker, Folge-Slice und Register prüft die
   nächste Welle-Closure, auch für diesen Slice ohne Wellen-Zugehörigkeit. Dass sein Kopf-Feld
   `**Welle:** ohne Welle` trägt, verschiebt die Achse nicht.
