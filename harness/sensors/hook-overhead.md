@@ -6,9 +6,9 @@ Misst den Aufschlag je Tool-Call — die Wanduhr-Zeit **eines** Träger-Aufrufs,
 Tool-Calls, den er beobachtet — und hält ihn gegen die Schwelle aus
 [`ADR-0011`](../../docs/plan/adr/0011-telemetrie-erfassung-policy.md) (*50 ms im Median*);
 geschuldet von [`ADR-0022`](../../docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
-Folgepflicht 9. Eine Messung, kein Gate — in keiner Tabelle oben und in keiner
-Prerequisite-Kette: ein Latenz-Gate wäre auf einem geteilten Runner rot ohne Befund und grün
-ohne Deckung ([`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+Folgepflicht 9. Eine Messung, kein Gate — in keiner Prerequisite-Kette: ein Latenz-Gate wäre auf
+einem geteilten Runner rot ohne Befund und grün ohne Deckung
+([`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 
 ## Grenze — was das Grün nicht abdeckt
 

@@ -8,6 +8,8 @@ Baum. Prüft gegen eine konfigurierte Section-Erwartung; ohne eigenen `structure
 („Leere Liste ⇒ Modul inert") — anders als bei `doc-tracked`, dessen Kernfrage keinen
 Konfigurations-Block braucht.
 
+## Grenze — was das Grün nicht abdeckt
+
 *`doc-structure` — inert.* Dieselbe Methode an einer bewusst kaputten Section-Überschrift
 (`## 7. Closure-Notiz` → `## 7. Sonstiges` in einer `done/`-Slice-Datei):
 
@@ -31,10 +33,7 @@ produktiv gewählten Block — den entwirft
 als letzte Zeile ihrer eigenen Ausgabe — **behauptet keines dieser beiden Ergebnisse.** Sie nennt
 nur die ableitbare Tatsache (`.d-check.yml` führt für dieses Modul keinen eigenen Block) und zeigt
 hierher; ob das im Einzelfall Inertheit bedeutet, steht in diesem Absatz, nicht in der Marke — eine
-Marke, die *„nichts geprüft"* behauptete, wäre für `doc-tracked` schlicht falsch. Ein hermetischer
-Wächter (`test/doc-block-marke-wiring.bats`, in `make gates` über `make test-bats`) hält die
-Bijektion `{C-Ziele} == {Ziele mit Hilfetext-Marke} == {Ziele mit Ausgabe-Marke}` — abgeleitet aus
-[`d-check.mk`](../../d-check.mk) und [`.d-check.yml`](../../.d-check.yml), ohne Docker-Lauf.
+Marke, die *„nichts geprüft"* behauptete, wäre für `doc-tracked` schlicht falsch.
 
 ## Bindung
 

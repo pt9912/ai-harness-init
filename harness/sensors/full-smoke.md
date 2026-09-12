@@ -27,8 +27,7 @@ Fundstellen-Liste; die mechanische Abgrenzung, ihre Gleichung und die drei Forme
 nachprüfbar **kein** Bild anfordern (Trockenlauf, `make span-clean`, der Hook-Wrapper) stehen
 im Kopf von `harness/tools/full-smoke.sh`. Die Ausgangs-Muster, ihre Messung und ihre weiteren
 Grenzen (Paketquellen der C++-Kette fallen in den Baum-Fall) stehen im Kopf von
-`harness/tools/full-smoke-ausgang.sh`; `test/full-smoke-ausgang.bats` fährt beide Richtungen
-über Ausschnitten echter Läufe.
+`harness/tools/full-smoke-ausgang.sh`.
 
 ## Bindung
 

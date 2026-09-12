@@ -16,4 +16,4 @@ Details, Schritte und Belege stehen im Kopf von `harness/tools/smoke.sh`.
 
 ## Bindung
 
-Kein Gate-Versprechen; slice-002.
+Kein Gate-Versprechen.

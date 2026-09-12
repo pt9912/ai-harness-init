@@ -69,7 +69,7 @@ git show 9a57f2b3^:harness/README.md | awk -F'|' '/^\|/ && NF>2 && $0 !~ /^\|[- 
 Das Fenster ist `[146, 180]`; gewählt ist **180**, sein oberes Ende — maximale Luft für legitimes
 Wachstum, ohne die Eigenschaft zu verlieren. Der Fall am oberen Ende ist kein konstruierter: Es ist
 genau die `make docs-check`-Zelle, die slice-114 von 181 auf 145 kürzen musste, indem er ihre Prosa
-nach `harness/sensors/doc-check.md` gab. **180 ist eine Setzung innerhalb eines gemessenen
+nach `harness/sensors/doc-check.md` <!-- d-check:ignore (Pfad zum zitierten Commit-Stand, die Datei heißt inzwischen anders) --> gab. **180 ist eine Setzung innerhalb eines gemessenen
 Fensters**, nicht die Messung selbst; wandert das Fenster, ist das eine Änderung an diesem Plan.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:

@@ -25,6 +25,12 @@ Lock-Verzeichnis liegen (bewusst fail-closed). Isolation, Beleg-Mechanik, Bezugs
 Schlüssels (`isolation_key_files`, **nicht** `harness/tools/working-tree-hash.sh`) und jede
 weitere Bedingung stehen im Kopf von `harness/tools/mutate.sh`.
 
+## Sperren
+
+- Stille über `MUTATE_STALL_SECONDS` hinweg (kein Worker zieht oder schließt einen Fall ab) → Lauf
+  bricht selbst ab und wird rot; ein hängender Sensor ist sonst von einem langsamen nicht zu
+  unterscheiden.
+
 ## Bindung
 
 [`AGENTS.md`](../../AGENTS.md) §3.6; slice-026; kein Gate-Versprechen, aber mechanischer

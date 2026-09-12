@@ -37,9 +37,8 @@ an dieser Stelle die **einzige** Durchsetzung der im Bestand gelebten Link-Form,
 zweiter Schutz.
 `status-line` markiert, welche Zeile diesem `head-allow` statt der vollen
 Kern-Unveränderlichkeit unterliegt; ohne sie fällt die Statuszeile in den Kern und jeder erlaubte
-Übergang färbt rot. `test/vcs-modul-wiring.bats` hält alle vier Felder gegen Regression, ohne
-selbst einen Docker-Lauf zu fahren; was `vcs` **kann**, bleibt eine gemessene Eigenschaft des
-vendored Werkzeugs und keine dieses Repos.
+Übergang färbt rot. Was `vcs` **kann**, bleibt eine gemessene Eigenschaft des vendored Werkzeugs
+und keine dieses Repos.
 
 **Ein Aufrufer existiert:** der Job `adr-immutable` in `.github/workflows/ci.yml` bestimmt die
 Range ereignisabhängig — bei `pull_request` Base gegen Head, bei `push` den vorherigen

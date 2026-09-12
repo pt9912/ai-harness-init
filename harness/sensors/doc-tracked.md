@@ -6,6 +6,8 @@ Advisory-Ziel (nicht in `make gates`), fährt d-check mit `--enable tracked` üb
 Baum. Prüft, ob ein Markdown-Link auf eine Datei zeigt, die auf der Platte liegt, aber nicht im
 git-Index steht — genau das, was auf einem frischen Klon fehlen würde.
 
+## Grenze — was das Grün nicht abdeckt
+
 **Was `doc-tracked` und `doc-structure` ohne eigenen `.d-check.yml`-Block wirklich prüfen**
 (slice-217, Antwort auf [`welle-13`](../../docs/plan/planning/welle-13-regeln-bekommen-ihren-sensor.md)
 §3): Jedes `docs?-*`-Ziel in [`d-check.mk`](../../d-check.mk) fällt in eine von vier Klassen,

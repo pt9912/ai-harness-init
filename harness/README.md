@@ -45,7 +45,7 @@ wird dann zum Link auf die Datei.
 | Target | Vertrag | Bindung |
 |---|---|---|
 | `make baseline-verify` | Vendored Baseline unverändert: Integrität **und** Vollständigkeit, netzlos | [`MR-007`](conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
-| [`make docs-check`](sensors/doc-check.md) | Doku-Referenzen grün (links/anchors/ids/matrix/codepaths/spans/planning/targets), netzlos (`--network none`) — im Prüfbereich seiner Module | [`MR-010`](conventions.md#mr-010--d-check-gate-fragment-tool-generiert) |
+| [`make docs-check`](sensors/docs-check.md) | Doku-Referenzen grün (links/anchors/ids/matrix/codepaths/spans/planning/targets), netzlos (`--network none`) — im Prüfbereich seiner Module | [`MR-010`](conventions.md#mr-010--d-check-gate-fragment-tool-generiert) |
 | `make test` | Command-Guard-Tests (bats) + Go-Unit-Tests (Dockerfile-`test`-Stage) grün | [`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md), [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
 | `make lint` | Go-Lint (golangci-lint, Dockerfile-`lint`-Stage) grün | [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
 | `make build` | Go-Binary cross-compiliert (Dockerfile-`build`-Stage) | [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
@@ -66,10 +66,10 @@ ist (`make help` listet sie).
 
 | Target | Tut was | Bindung |
 |---|---|---|
-| [`make smoke`](sensors/smoke.md) | Tier-2-Emit-Smoke: emittiertes `docs-check` real gegen ein tmp-Repo | kein Gate · slice-002 |
+| [`make smoke`](sensors/smoke.md) | Tier-2-Emit-Smoke: emittiertes `docs-check` real gegen ein tmp-Repo | kein Gate |
 | [`make full-smoke`](sensors/full-smoke.md) | Voll-E2E: Bootstrap in tmp-Repo → dort `make gates` out-of-the-box grün | kein Gate · [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
 | [`make mutate`](sensors/mutate.md) | Mutations-Sensor: färbt jede kuratierte Mutation ihren Wächter rot? | kein Gate · [`AGENTS.md`](../AGENTS.md) §3.6 |
-| `make span-report` | Token-Bilanz je Rolle aus dem Span-Bestand, read-only und netzlos | kein Gate — Bericht |
+| [`make span-report`](sensors/span-report.md) | Token-Bilanz je Rolle aus dem Span-Bestand, read-only und netzlos | kein Gate — Bericht |
 | `make span-clean` | räumt den lokalen Span-Bestand weg (ausdrücklich, kein Automatismus) | kein Gate |
 | [`make hook-overhead`](sensors/hook-overhead.md) | misst den Aufschlag je Tool-Call (Median) | kein Gate · [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) |
 | [`make slice-mv`](sensors/slice-mv.md) | Lifecycle-Wechsel eines Slice inklusive seiner Verweise | kein Gate · [`AGENTS.md`](../AGENTS.md) §3.3 |

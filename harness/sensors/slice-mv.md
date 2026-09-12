@@ -25,10 +25,7 @@ Zustandssätze; Welle-Plan-Dateien (Tiefenwechsel beim Closure-Move) bleiben au�
 eine präfixlose Referenz **auf** die bewegte Datei aus einer *anderen*, unbewegten Datei
 erkennt es nicht — ihr fehlt das Verzeichnis-Literal, an dem die Ersetzung ankert.
 
-`test/slice-mv.bats` deckt die Ersetzungs-Funktionen ohne ein Repo zu bewegen; der Beleg für
-die Eingehend-Ausnahmeliste selbst braucht ein echtes `git`-Repo (das gepinnte `BATS_IMAGE`
-führt kein `git`) und steht darum dauerhaft im Skriptkopf (`harness/tools/slice-mv.sh`,
-Abschnitt BELEG) als Vor/Nach-`docs-check`-Paar an einem echten Move, nicht als bats-Fall.
+Details und Beleg stehen im Kopf von `harness/tools/slice-mv.sh`, Abschnitt BELEG.
 
 ## Bindung
 
