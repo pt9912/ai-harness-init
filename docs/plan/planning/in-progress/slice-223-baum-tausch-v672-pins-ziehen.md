@@ -49,7 +49,7 @@ die Drei-Teil-Form, in der der Vollzug gebucht wird),
 **Berührte Spec-Stellen:** — (der Slice berührt keine Spec-Stelle; Gegenstand sind ein vendored
 Fremd-Blob, fünf Pin-Werte und Adressen in lebenden Artefakten).
 
-**Verantwortlich:** — (bis zur Priorisierung).
+**Verantwortlich:** Implementer-Rolleninhaber dieses Laufs.
 
 **Autor:** Planner. **Datum:** 2026-09-12.
 
