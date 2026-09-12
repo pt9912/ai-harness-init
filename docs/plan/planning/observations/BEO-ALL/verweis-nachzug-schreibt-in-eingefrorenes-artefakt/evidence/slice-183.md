@@ -3,9 +3,9 @@
 eingefrorene Zeitdokumente. Gemessen vor dem Move, über der Präfix-Form, die das Werkzeug ersetzt:
 
 ```sh
-git grep -l -- '../in-progress/slice-183-ausloeser-der-wellenlosen-archivierung.md' \
+git grep -l -- '../done/slice-183-ausloeser-der-wellenlosen-archivierung.md' \
   -- 'docs/plan/planning/done' | wc -l                                                    # 4
-git grep -c -- '../in-progress/slice-183-ausloeser-der-wellenlosen-archivierung.md' \
+git grep -c -- '../done/slice-183-ausloeser-der-wellenlosen-archivierung.md' \
   -- 'docs/plan/planning/done' | awk -F: '{s+=$NF} END{print s}'                          # 13
 git grep -l 'docs/plan/planning/in-progress/slice-183-ausloeser-der-wellenlosen-archivierung' \
   -- 'docs/reviews' | wc -l                                                               # 2

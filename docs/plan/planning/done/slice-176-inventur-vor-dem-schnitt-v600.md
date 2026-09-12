@@ -235,7 +235,7 @@ Backticks).
 - **Folge-Slices:** [slice-182](../done/slice-182-baum-tausch-v600-pins-ziehen.md),
   [slice-184](../done/slice-184-register-form-im-bestand-nachziehen.md) und
   [slice-185](../done/slice-185-adaptions-durchgang-gegen-v600.md) — Mitglieder von
-  [welle-15](welle-15-re-baseline.md); [slice-183](../in-progress/slice-183-ausloeser-der-wellenlosen-archivierung.md)
+  [welle-15](welle-15-re-baseline.md); [slice-183](../done/slice-183-ausloeser-der-wellenlosen-archivierung.md)
   — ausdrücklich **kein** Mitglied, Grund in jener §4 (`BEO-018`). Alle vier sind Dateien im
   Planning-Lifecycle.
 - **Risiken aus §6:** jedes mit genau einem Ausgang — zwei *eingetreten* (`BEO-016`, `BEO-023`),
@@ -330,7 +330,7 @@ Ebene* · **—** *ohne Gegenstand hier*.
 | P-03 | `grundlagen-harness-dateien.md` H1 | Planning-Layout: `observations.md` → `observations/` | RE | [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) |
 | P-04 | `grundlagen-harness-dateien.md` H2 | **„Die Spalte ist nicht bedingt."** Die Kürzel-Spalte der Modus-Deklaration ist unbedingt Pflicht, weil `BEO-<KUERZEL>/<slug>` jedem Repo mindestens **eine** Kennungsklasse mit Segment gibt | RE | [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) Folgepflicht 2 (Architect-Commit) — **kein neuer Slice**; s. *Eine Verschärfung* unten |
 | P-05 | `grundlagen-traceability.md` ×1 (+45) | neu **§Der Fluss**: Diagramm des Steering Loops, die zwei Schleifen, und die Begründung, warum der Volltext eines geschlossenen Slice ins Archiv darf | — | keiner. Kein lebendes Artefakt dieses Repos bildet den Fluss ab (`git grep -ln 'flowchart\|stateDiagram' -- '*.md' ':!.harness/baseline' ':!docs/plan/planning/done' ':!docs/reviews'` → `roadmap.md`, `spec/architecture.md`; beide zeigen etwas anderes). Der Abschnitt ist die **Begründung** zu P-06, nicht eine zweite Pflicht |
-| P-06 | `modul-05` H1 · `modul-06` H2 · `modul-10` ×1 | **Die Zeitdokumente-Archivierung bekommt für den wellenlosen Betrieb einen Träger** — die Slice-Closure selbst, nach den Paarungen, Schlüssel `done/slice-<NNN>-archiv.zip` **flach** neben dem Stub; der Review-Report wandert mit | RE | **neu:** [slice-183](../in-progress/slice-183-ausloeser-der-wellenlosen-archivierung.md) (Architect). Gemessen: **47** geschlossene Slices tragen `**Welle:** ohne Welle`, **0** sind archiviert |
+| P-06 | `modul-05` H1 · `modul-06` H2 · `modul-10` ×1 | **Die Zeitdokumente-Archivierung bekommt für den wellenlosen Betrieb einen Träger** — die Slice-Closure selbst, nach den Paarungen, Schlüssel `done/slice-<NNN>-archiv.zip` **flach** neben dem Stub; der Review-Report wandert mit | RE | **neu:** [slice-183](../done/slice-183-ausloeser-der-wellenlosen-archivierung.md) (Architect). Gemessen: **47** geschlossene Slices tragen `**Welle:** ohne Welle`, **0** sind archiviert |
 | P-07 | `modul-06` H1a | Carveout-Frist misst in Wellen — Zusatz: *„das bleibt eine benannte Lücke, keine Pflicht, und ein Repo bleibt ohne sie konform"* | — | keiner: **Entlastung**, keine neue Pflicht. Der Bestand ist trotzdem benannt — [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) führt seine Prüfungen seit `welle-03` in Wellen und hat wellenlose Neuzugänge nachweislich übersehen; die Ziel-Fassung erklärt das ausdrücklich für konform |
 | P-08 | `modul-06` H1b | neuer Absatz *„Warum das Archivieren nicht hier steht"* | — | keiner: erläutert die Trägerschaft aus P-06, stellt keine eigene Pflicht |
 | P-09 | `modul-06` H3 | **§Das Beobachtungs-Register vollständig neu**: Verzeichnis statt Tabelle · drei Dateien mit drei Lebensdauern · **Zähler abgeleitet statt geführt** · Kennung **ist** der Pfad · leere Ablage = nur `README.md` · *gestrichen* wird Verzeichnis-Vermerk statt zweiter Sektion · die Beleg-Prüfungen fallen von **drei** auf **zwei** (die *Anzahl*-Prüfung hat kein Objekt mehr) | RE | [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md) + [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) — **kein neuer Slice** |
@@ -455,7 +455,7 @@ zwei Stränge, die hier P-06 und P-02/P-09/P-13/P-14 sind, und trennt ebenso Pin
 Register-Architektur · Register-Migration. Die Abweichung ist der **Zuschnitt**, nicht die
 Zuordnung: d-check adoptiert P-06 auf Regelwerks-Ebene **im Bump-Slice** und schiebt die
 Werkzeug-Umsetzung als unverbindlichen Folge-Slice; hier bekommt P-06 mit
-[slice-183](../in-progress/slice-183-ausloeser-der-wellenlosen-archivierung.md) einen **eigenen
+[slice-183](../done/slice-183-ausloeser-der-wellenlosen-archivierung.md) einen **eigenen
 Architect-Slice**, weil zwei Re-Evaluierungs-Trigger von
 [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) feuern und eine gefeuerte
 Trigger-Bedingung eine Entscheidung verlangt, keine Übernahme. Der Grund ist repo-eigen: d-check

@@ -11,8 +11,8 @@ Rückführung nach `next/` hob ihn wieder auf. Der Closure-Move trifft die ander
 git grep -o -n '[^ (]*slice-183-ausloeser-der-wellenlosen-archivierung[^) ]*' \
   -- docs/plan/planning/in-progress/roadmap.md
 # :23  slice-183-ausloeser-der-wellenlosen-archivierung.md          praefixlos
-# :155 ../in-progress/slice-183-ausloeser-der-wellenlosen-archivierung.md
-# :156 ../in-progress/slice-183-ausloeser-der-wellenlosen-archivierung.md
+# :155 ../done/slice-183-ausloeser-der-wellenlosen-archivierung.md
+# :156 ../done/slice-183-ausloeser-der-wellenlosen-archivierung.md
 ```
 
 Das ist die dritte der drei gemessenen Grenzen von `make slice-mv`

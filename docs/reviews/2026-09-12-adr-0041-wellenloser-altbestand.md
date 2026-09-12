@@ -2,7 +2,7 @@
 
 **Rolle:** Reviewer · **Datum:** 2026-09-12 · **Skill:** `.harness/skills/reviewer.md` v1.7.0
 **Gegenstand:** Commit `5969a86b` — `docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md` (`Proposed`) + `docs/plan/adr/README.md`
-**Plan:** `docs/plan/planning/in-progress/slice-183-ausloeser-der-wellenlosen-archivierung.md` · **Baum:** sauber (`git status --porcelain` leer)
+**Plan:** `docs/plan/planning/done/slice-183-ausloeser-der-wellenlosen-archivierung.md` · **Baum:** sauber (`git status --porcelain` leer)
 
 ## Findings
 
