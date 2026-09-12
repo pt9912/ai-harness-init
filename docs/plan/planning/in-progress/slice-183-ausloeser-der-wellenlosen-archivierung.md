@@ -16,8 +16,8 @@ stillschweigend weggelassen
 [welle-15](../done/welle-15-re-baseline.md) §4).
 
 **Bezug:**
-[`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) (von ihren
-Re-Evaluierungs-Triggern feuert **einer**; der zweite trifft dieses Repo nicht — §1),
+[`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) (**keiner** ihrer fünf
+Re-Evaluierungs-Trigger ist gefeuert; diese Entscheidung steht **daneben** — §1),
 [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (die Pflicht kommt aus
 dem auf einen Tag gepinnten Baum),
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (kein
@@ -67,14 +67,54 @@ sammelt Mitglieder **und** Wellenlose in dasselbe Wellen-Archiv. Ein Lauf sagt d
 #   wellenlos (seit der letzten Closure): 57
 ```
 
-**Von den zwei Re-Evaluierungs-Triggern der
-[`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) feuert darum einer, nicht
-zwei.** Der erste (*„wenn die Baseline … ihren Träger selbst benennt"*) trägt: `v6.0.0` gibt dem
-Fall eine sechste Zeile in jener Träger-Tabelle (Position **P-06** des Katalogs in
-[slice-176](../done/slice-176-inventur-vor-dem-schnitt-v600.md) §9). Der zweite (*„wenn ein Repo
-ohne Wellen-Betrieb die Archivierung braucht"*) trifft dieses Repo **nicht** — seine Bedingung ist
-oben widerlegt. Der Träger bleibt in beiden Fällen das Produkt-Binär (jene Festlegung 1 ist
+**Von den Re-Evaluierungs-Triggern der
+[`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) ist keiner gefeuert, und es
+sind fünf, nicht zwei:**
+
+```sh
+awk '/^## Re-Evaluierungs-Trigger/{f=1;next} /^## /{f=0} f' \
+  docs/plan/adr/0033-wellen-archivierung-als-unterkommando.md | grep -c '^- \*\*Wenn'   # 5
+```
+
+Zwei kommen in die Nähe und sind einzeln gemessen:
+
+- **Trigger 1** — *„wenn die Baseline die Archivierung aus der Wellen-Closure entfernt oder ihren
+  Träger selbst benennt"*, feedforward auf eine Baseline-**Änderung**. **Nicht gefeuert**, aus zwei
+  voneinander unabhängigen Gründen. Erstens trägt *Träger* an den zwei Stellen verschiedene
+  Bedeutungen: Die Spalte der Tabelle oben führt durchgängig **Prozess-Momente**
+  (`Slice-Closure §7`, `Slice-Planung, §8`), während jene Festlegung 1 *Träger* das
+  **Produkt-Binär** nennt; über das ausführende Artefakt sagt dieselbe Quelle in
+  §Wellen-Closure-Prozedur Schritt 4 nur *„deshalb gehört die Operation in ein Werkzeug und nicht
+  in Handarbeit"* — ein Werkzeug verlangt, keines benannt. Wer
+  die zwei gleichsetzt, feuert einen Trigger, den die Quelle nicht gefeuert hat. Zweitens stand
+  die sechste Zeile, die `v6.0.0` jener Tabelle hinzufügt (Position **P-06** des Katalogs in
+  [slice-176](../done/slice-176-inventur-vor-dem-schnitt-v600.md) §9), im vendored Baum bereits,
+  als jene Entscheidung `Accepted` wurde — eine Zeile, die beim Accept dasteht, ist danach keine
+  Baseline-Änderung mehr:
+
+  ```sh
+  git log --format=%h -S'| 2026-09-10 | **Accepted** |' \
+    -- docs/plan/adr/0033-wellen-archivierung-als-unterkommando.md   # a6c5f22c
+  git show a6c5f22c:.harness/baseline/v6.5.0/regelwerk/modul-06-roadmap.md \
+    | grep -c 'Zeitdokumente archivieren'                            # 1
+  ```
+
+- **Trigger 2** — *„wenn ein Repo ohne Wellen-Betrieb die Archivierung braucht"*. **Nicht
+  gefeuert**: Dieses Repo fährt Wellen, die Bedingung ist oben widerlegt. Sein Nachsatz benennt
+  trotzdem die Lücke, in der dieser Slice steht — *„der **Auslöser** ist neu zu entscheiden, nicht
+  der Träger. Diese Entscheidung sagt über ihn nichts."*
+
+Die übrigen drei — Ausführbarkeit des Trägers am Ort der Archivierung, ein Ziel ohne vendored
+Baseline-Baum, die Fähigkeitsfläche des Trägers als Befund — berühren weder Gegenstand noch
+Annahmen dieses Slice. Der Träger bleibt in jedem Fall das Produkt-Binär (jene Festlegung 1 ist
 unberührt).
+
+**Fällig ist die Frage ohne jeden Trigger, denn die Baseline stellt sie diesem Repo selbst.**
+`modul-06-roadmap.md` §Wellen-Closure-Prozedur Schritt 4 überlässt die Zuordnung ausdrücklich dem
+Adopter: *„Sie braucht dafür eine Entscheidung, die die laufende Regel nicht liefert: welche Welle
+die Slices einsammelt, die keiner angehören. Das Repo benennt die Zuordnung — die chronologisch
+nächste geschlossene Welle oder ein einzelnes Sammel-Archiv für den Bestand vor der Einführung."*
+Dieses Repo hat sie nicht benannt.
 
 **Was bleibt, ist der Altbestand, und er ist gemessen:** 57 der 148 geschlossenen Slices tragen
 `**Welle:** ohne Welle`, archiviert ist keiner, und der Lauf oben bricht genau daran ab —
@@ -131,10 +171,12 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       [slice-171](../open/slice-171-adr-0031-acceptance-trigger.md)).
 - [ ] **Das Verhältnis zu [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md)
       ist ausgesprochen:** kein `Supersedes` — deren Festlegung 1 (Träger = Produkt-Binär) bleibt
-      unberührt, gefeuert ist **einer** ihrer Trigger, und ein gefeuerter Trigger ändert die
-      Entscheidung nicht, sondern verlangt eine daneben. Dass ihr zweiter Trigger dieses Repo
-      nicht trifft, gehört in die neue Entscheidung: Jene ist seit dem 2026-09-10 `Accepted` und
-      wird dafür nicht angefasst ([`AGENTS.md`](../../../../AGENTS.md) §3.4).
+      unberührt, und **keiner** ihrer fünf Re-Evaluierungs-Trigger ist gefeuert. Die neue
+      Entscheidung steht **daneben**: Sie beantwortet eine Frage, die jene sich ausdrücklich nicht
+      gestellt hat, und genau das verlangt keine Änderung an der eingefrorenen Datei. Die zwei
+      Trigger, die in die Nähe kommen, trägt sie einzeln gemessen (§1), die übrigen drei mit ihrem
+      Grund. Jene ist seit dem 2026-09-10 `Accepted` und wird dafür nicht angefasst
+      ([`AGENTS.md`](../../../../AGENTS.md) §3.4).
 - [ ] **Der Sensor-Stand ist benannt statt behauptet.** Kein Gate dieses Repos meldet einen
       geschlossenen Slice ohne Archiv; was es gibt, ist die `untergrenze`-Sperre der Vorschau, und
       die ist kein Gate und steht in keiner Prerequisite-Kette. Welche Kandidaten es sonst gibt und
@@ -310,7 +352,7 @@ die die Modus-Deklaration in
 [`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area) für
 Norm-Artefakte führt. `harness/tools/` ist **nicht** berührt: Der Träger ist das Produkt-Binär
 ([`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) Festlegung 1), und dieser
-Slice entscheidet ohnehin nur den Auslöser.
+Slice entscheidet die Zuordnung, keine Werkzeug-Fähigkeit (§3).
 
 **Vorgelagert — offene Beobachtungen sichten:** Das [Register](../observations/README.md) ist
 vollständig durchgegangen. **Jede** Beobachtung trägt `*` (gesamtes Repo) — das Segment
