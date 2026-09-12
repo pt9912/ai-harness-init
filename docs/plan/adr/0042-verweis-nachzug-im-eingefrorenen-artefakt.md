@@ -1,6 +1,6 @@
 # ADR-0042: Der Verweis-Nachzug ersetzt im Zeitdokument die Adresse und in der `Accepted`-ADR nichts
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-12
 
@@ -515,6 +515,7 @@ prüfbarer Zustand. Träger bleiben der Accept-Übergang und der Lauf, der den M
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-12 | **Proposed** | Architect-Lauf zur offenen Norm-Frage aus `BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt` (13 Belege, Stand `offen`). Fällig geworden mit [ADR-0041](0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) Festlegung 4, die den Vollzug der ersten Archivierung an den Ausgang dieser Frage bindet; der Acceptance-Trigger steht in §Der Acceptance-Trigger |
+| 2026-09-12 | **Accepted** | **Entscheidung des Auftraggebers vom 2026-09-12, vollzogen in der Architect-Rolle.** Beleg sind die drei Reviewer-Runden vom 2026-09-12 zu dieser Entscheidung; die dritte prüft die fünf Festlegungen, die Nicht-Regression und die Gate-Wirkung je ohne Befund. Sie verdiktiert dennoch **blockierend**, wegen eines Befundes **außerhalb** dieser Datei — in `harness/sensors/archive-welle.md`, behoben in `5a3cdc05`; **die behobene Fassung hat keine Runde bestätigt.** Der Acceptance-Trigger ist darum vor diesem Umschlag enger gefasst worden, solange die Datei `Proposed` war ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 3); die Bestätigungsrunde, die dessen Festlegung 2 nach einem blockierenden Befund verlangt, ist **nicht gefahren**. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
