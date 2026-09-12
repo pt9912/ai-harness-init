@@ -103,7 +103,7 @@ Liste oben aus einem `git grep` kommt und nicht aus einem Gate-Lauf.
 
 - **Kein Delta-Urteil über den neuen Stand.** Welche Regel der Fassung `v6.7.2` welches Artefakt
   dieses Repos trifft, ist Gegenstand von
-  [slice-224](../next/slice-224-delta-nachweis-und-planungs-nachzug.md) (Nachweis und
+  [slice-224](../in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md) (Nachweis und
   Planungs-Ebene) und [slice-225](../open/slice-225-gate-index-steht-einmal.md) (Norm- und
   Gate-Ebene). Dieser Slice bewegt Bytes und Adressen, er fällt kein Urteil — *Folge-Slice
   übernimmt es*, und beide nehmen die Sendung an (ihr §1 nennt genau diesen Gegenstand).
@@ -430,7 +430,7 @@ Backticks).
   Zitate nennen ihren Tag ausdrücklich; `verweis-nachzug-bricht-tree-operand` trifft die Ersetzung
   eines `<sha>:<pfad>`-Operanden beim Lifecycle-Move — hier **fehlt** die Tree-Operand-Form, statt
   zerstört zu werden. Eine Klasse in einen unpassenden Namen zu drücken teilt sie still.
-- **Folge-Slices:** [slice-224](../next/slice-224-delta-nachweis-und-planungs-nachzug.md)
+- **Folge-Slices:** [slice-224](../in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md)
   (Delta-Nachweis und Planungs-Nachzug) und
   [slice-225](../open/slice-225-gate-index-steht-einmal.md) (Norm- und Gate-Ebene) — beide Dateien
   in `open/`. **Ein Posten des Architect ist geprüft:** Die Setzung in
