@@ -87,9 +87,9 @@ genau einen Lauf.
    ([slice-216](../../docs/plan/planning/open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)).
    Die normative Sperre aus
    [`ADR-0042`](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 5
-   band den ersten Archiv-Move zusätzlich daran, dass beide Träger `docs/plan/adr/` ausnehmen
-   (Folgepflicht 1); mit dem Ausschluss in beiden Trägern (§Grenze Punkt 3, `slice-mv`-Sensor) ist
-   diese Bedingung erfüllt — `haenger` bleibt die verbleibende, eigenständige Frage.
+   bindet den ersten Archiv-Move zusätzlich daran, dass beide Träger `docs/plan/adr/` ausnehmen
+   (Folgepflicht 1); beide Träger führen den Ausschluss (§Grenze Punkt 3, `slice-mv`-Sensor), diese
+   Bedingung ist damit erfüllt — `haenger` bleibt die verbleibende, eigenständige Frage.
 7. **Und selbst ohne `haenger` trägt der schreibende Pfad diesen Schlüssel heute nicht.**
    `internal/archive/anwenden.go` verlangt unverändert genau einen Welle-Plan
    (`len(b.Plaene) != 1`); `Einsammeln` liefert für `altbestand` null Pläne. Meldet die Vorprüfung

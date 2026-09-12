@@ -59,6 +59,20 @@
 #   Erwartungswert (MR-025 Setzung 2) — die Befundklasse (praefixlos, unter der
 #   ausgeschlossenen Grenze 3) bleibt es, solange Grenze 3 offen ist.
 #
+# ZWEITE MESSUNG (ADR-0042 Festlegung 2: `docs/plan/adr` zusätzlich zu
+# `.harness/baseline` in eingehend_ausgenommene_pfade — die erste Messung oben
+# deckt nur die Baseline-Ausnahme, diese hier den Nachtrag). Eigener
+# Scratch-Clone außerhalb dieses Repos, eine ADR unter `docs/plan/adr/` und ein
+# Review-Report verlinken per Präfix-Form dieselbe zu bewegende Slice-Datei:
+#   echt:        `make slice-mv SLICE=<probe> TO=next` → "eingehend: 1
+#                Datei(en)" — der Review-Report ist nachgezogen, die ADR trägt
+#                unverändert ihren alten Pfad.
+#   rot gesehen: dieselbe Fixture, die Pathspec-Übergabe im `git grep`-Aufruf
+#                unten entfernt (`-- "${in_pathspec[@]}"` weggelassen) →
+#                "eingehend: 2 Datei(en)", die ADR trägt danach den neuen Pfad.
+#   Die Zahlen sind kein Erwartungswert (MR-025 Setzung 2); tragend ist die
+#   Trennung — ADR unverändert, Report nachgezogen —, nicht die Zahl 1 oder 2.
+#
 # GRENZEN (gemessen, nicht vermutet — drei Stück):
 # (1) Das Werkzeug zieht PFADE nach, keine ZUSTANDSSÄTZE. Eine Zeile "In
 #     Arbeit: <slice>" bleibt nach dem Wechsel stehen; ihr Verweis wird

@@ -132,6 +132,64 @@ func TestHaengerUebergehtVerschwindende(t *testing.T) {
 	}
 }
 
+// baumMitADRUndReport legt eine Accepted-ADR und einen Review-Report an, die
+// beide dieselbe archivierte Slice-Datei per Praefix-Form verlinken
+// ("done/<base>") — die Fixture, an der Haenger und VerweisFund/Nachziehen
+// unterschiedlich urteilen muessen: ADR-0042 Festlegung 2 nimmt die ADR aus
+// dem NACHZUG-Suchraum, nicht aus dem vollen.
+func baumMitADRUndReport(t *testing.T) (root, adr, report, ziel string) {
+	t.Helper()
+	root = t.TempDir()
+	adr = "docs/plan/adr/0033-x.md"
+	report = "docs/reviews/2026-09-01-slice-100-r1.md"
+	ziel = "docs/plan/planning/done/slice-100-a.md"
+	schreibe(t, filepath.Join(root, filepath.FromSlash(adr)),
+		"Siehe [slice-100](done/slice-100-a.md).\n")
+	schreibe(t, filepath.Join(root, filepath.FromSlash(report)),
+		"Siehe [slice-100](done/slice-100-a.md).\n")
+	return root, adr, report, ziel
+}
+
+// TestHaengerFindetVerweisAusADRTrotzNachzugAusnahme haelt die Trennung, fuer
+// die dieser Slice existiert: Haenger fragt scan.go den VOLLEN Suchraum
+// (Suchraum), nicht SuchraumNachzug — eine Accepted-ADR bleibt in seinem
+// Suchraum, obwohl VerweisFund/Nachziehen sie ueber AusgenommenePfadeNachzug
+// uebergehen (ADR-0042 Festlegung 2,
+// TestVerweisFundUndNachziehenUebergehenAcceptedADR). Beide Eigenschaften an
+// DERSELBEN Fixture: eine ADR, die eine archivierte Slice-Datei verlinkt, muss
+// Haenger treffen, darf aber von VerweisFund unangetastet bleiben.
+// Gegenbeispiel: test/mutations/314-archive-welle-go-haenger-nachzug-suchraum.sh
+// (Haenger auf SuchraumNachzug verengt) nimmt die erste Haelfte weg.
+func TestHaengerFindetVerweisAusADRTrotzNachzugAusnahme(t *testing.T) {
+	root, adr, report, ziel := baumMitADRUndReport(t)
+	dateien := []string{adr, report}
+
+	got, err := archive.Haenger(root, dateien, []string{ziel}, []string{ziel})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 2 {
+		t.Fatalf("Haenger = %v, want je einen Treffer aus ADR und Report", got)
+	}
+	fund := strings.Join(got, "\n")
+	if !strings.Contains(fund, adr) {
+		t.Errorf("Haenger uebergeht die ADR, obwohl sie einen lebenden Verweis traegt: %v", got)
+	}
+	if !strings.Contains(fund, report) {
+		t.Errorf("Haenger uebergeht den Report: %v", got)
+	}
+
+	funde, err := archive.VerweisFund(root, dateien, []string{"slice-100-a.md"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, f := range funde {
+		if f.Datei == adr {
+			t.Fatalf("VerweisFund zaehlt in derselben ADR, die Haenger oben fand: %+v", f)
+		}
+	}
+}
+
 // TestHaengerUebergehtFehlendeDatei: ein Pfad, den der Index fuehrt und der
 // Arbeitsbaum nicht, ist kein Lesefehler, sondern uebersprungen.
 func TestHaengerUebergehtFehlendeDatei(t *testing.T) {

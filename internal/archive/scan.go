@@ -86,7 +86,12 @@ func Suchraum(dateien []string) []string {
 // Zweig darf eine Accepted-ADR nicht anfassen.
 // TestHaengerFindetVerweisAusReviewReport und
 // test/mutations/233-archive-welle-go-haenger-suchraum.sh bleiben unveraendert
-// wirksam, weil sie ausschliesslich AusgenommenePfade() pruefen.
+// wirksam, weil sie ausschliesslich AusgenommenePfade() pruefen. Die TRENNUNG
+// der beiden Suchraeume selbst — dass `Haenger` (unten) Suchraum() fragt und
+// NICHT diese Funktion — haelt
+// TestHaengerFindetVerweisAusADRTrotzNachzugAusnahme an derselben Fixture wie
+// VerweisFund/Nachziehen; test/mutations/314-archive-welle-go-haenger-nachzug-suchraum.sh
+// nimmt sie weg.
 func AusgenommenePfadeNachzug() []string {
 	return append(AusgenommenePfade(), "docs/plan/adr")
 }
@@ -159,6 +164,13 @@ func lies(root, rel string) (string, bool, error) {
 // Link. Das ist die Form, in der ein Markdown-Verweis auf ein Zeitdokument im
 // Bestand steht; ein gleichlautender Name im Fliesstext zaehlt mit, und diese
 // Richtung ist die fail-closed-sichere.
+//
+// SUCHRAUM: hier steht Suchraum(dateien), NICHT SuchraumNachzug(dateien) —
+// eine Accepted-ADR bleibt in diesem Suchraum, waehrend VerweisFund/Nachziehen
+// sie ueber AusgenommenePfadeNachzug uebergehen (s. dort). Gehalten von
+// TestHaengerFindetVerweisAusADRTrotzNachzugAusnahme,
+// test/mutations/314-archive-welle-go-haenger-nachzug-suchraum.sh nimmt es
+// weg.
 func Haenger(root string, dateien, ziele, verschwindend []string) ([]string, error) {
 	weg := make(map[string]bool, len(verschwindend))
 	for _, v := range verschwindend {
