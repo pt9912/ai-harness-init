@@ -87,7 +87,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Nachrüsten — und kein Verbot"*, zwischen den Tags byte-gleich); ob dieselbe Freistellung den
       **wellenlosen** Altbestand trägt, sagt sie nicht — genau diese Lücke ist zu schließen. Die
       Entscheidung nennt ihren `Status`; bei `Proposed` steht der Acceptance-Trigger daneben
-      (Präzedenz [slice-171](slice-171-adr-0031-acceptance-trigger.md)).
+      (Präzedenz [slice-171](../open/slice-171-adr-0031-acceptance-trigger.md)).
 - [ ] **Das Verhältnis zu [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md)
       ist ausgesprochen:** kein `Supersedes` — deren Festlegung 1 (Träger = Produkt-Binär) bleibt
       unberührt, gefeuert sind zwei ihrer Trigger, und ein gefeuerter Trigger ändert die
@@ -175,8 +175,8 @@ dasteht.
   **Ausgang:** <…>
 - **Die ADR steht auf `Proposed` und bindet keinen Durchgang.** Drei Slice-Kennungen in `open/`
   tragen heute diese Restpflicht für ältere Entscheidungen
-  ([slice-171](slice-171-adr-0031-acceptance-trigger.md),
-  [slice-152](slice-152-adr-0029-acceptance-trigger.md) — und
+  ([slice-171](../open/slice-171-adr-0031-acceptance-trigger.md),
+  [slice-152](../open/slice-152-adr-0029-acceptance-trigger.md) — und
   [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) selbst steht auf
   `Proposed`). Der Acceptance-Trigger gehört darum in die ADR selbst. — **Ausgang:** <…>
 

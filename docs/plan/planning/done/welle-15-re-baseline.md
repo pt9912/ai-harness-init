@@ -119,7 +119,7 @@ führt.
 **Mitglied aus Gleichzeitigkeit, wie Zeile 6.** Die toten Zitate sind mit dem Umzugs-Commit dieser
 Welle entstanden; ein Ausgang in `open/` wäre hier kein **verbuchter** Ausgang, sondern der
 Nachzügler, gegen den das Welle-Ziel steht. Das unterscheidet Zeile 8 von
-[slice-183](../open/slice-183-ausloeser-der-wellenlosen-archivierung.md), der aus demselben Katalog
+[slice-183](../next/slice-183-ausloeser-der-wellenlosen-archivierung.md), der aus demselben Katalog
 kommt und **draußen** bleibt: Dort entscheidet der Slice eine offene Frage, und nichts im Baum ist
 gebrochen, solange er wartet.
 
@@ -146,7 +146,7 @@ byte-gleich führen und er eine ihrer sieben Eigenschaften ist — Präzedenz
 
 **Ein Katalog-Slice ist ausdrücklich kein Mitglied**, und der Grund gehört hierher statt in ein
 stilles Weglassen (`BEO-ALL/out-of-scope-und-doku-dod-widersprechen-sich`):
-[slice-183](../open/slice-183-ausloeser-der-wellenlosen-archivierung.md) — *Der Auslöser der
+[slice-183](../next/slice-183-ausloeser-der-wellenlosen-archivierung.md) — *Der Auslöser der
 Zeitdokumente-Archivierung im wellenlosen Betrieb wird entschieden* (Architect). Der
 Closure-Trigger dieser Welle (§3) nennt ihn in keiner seiner fünf Bedingungen, und das Welle-Ziel
 verlangt einen **verbuchten Ausgang**, keinen Vollzug — die Datei in `open/` ist er. Position
@@ -221,7 +221,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   der eines fällt.
 - **Eine dritte Übergabe ist mit dem Katalog entstanden und liegt außerhalb dieser Welle:** der
   **Auslöser der wellenlosen Zeitdokumente-Archivierung**
-  ([slice-183](../open/slice-183-ausloeser-der-wellenlosen-archivierung.md), Position P-06). Zwei
+  ([slice-183](../next/slice-183-ausloeser-der-wellenlosen-archivierung.md), Position P-06). Zwei
   Re-Evaluierungs-Trigger von
   [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) sind mit diesem Sprung
   gefeuert; der Träger bleibt entschieden, der Auslöser nicht.
@@ -273,7 +273,7 @@ der Closure-Trigger unerreichbar wird.
   Fall (Position P-06) — und für den gab es vorher keine Regel, von der man freigestellt sein
   könnte. Diese Welle schließt beides aus; **ob** die Freistellung sich auf den wellenlosen
   Altbestand überträgt, entscheidet
-  [slice-183](../open/slice-183-ausloeser-der-wellenlosen-archivierung.md) und nicht diese Zeile.
+  [slice-183](../next/slice-183-ausloeser-der-wellenlosen-archivierung.md) und nicht diese Zeile.
 - **Der d-check-Pin** ([slice-135](../open/slice-135-d-check-pin-v0661.md)) — eigene Linie, eigener
   Trigger; er hängt an keiner Baseline-Version.
 - **Jede Senkung einer bestehenden Schwelle.** Wird ein Gate nur durch eine Lockerung grün, ist das
@@ -293,5 +293,5 @@ darüber. Beide Zeiger stehen so, wie sie vom Ruheort `done/` auflösen.
 Diese Welle schloss **ohne Schritt 4** (Zeitdokumente archivieren): Der schreibende Lauf ist
 gefahren und an zwei Sperren fail-closed ausgestiegen, ohne zu schreiben — die fehlende
 Untergrenze für *wellenlos seit der letzten Closure* (Entscheidung bei
-[slice-183](../open/slice-183-ausloeser-der-wellenlosen-archivierung.md)) und Verweise auf
+[slice-183](../next/slice-183-ausloeser-der-wellenlosen-archivierung.md)) und Verweise auf
 Review-Reports, die verschwinden sollen. Die Ausgabe steht in der Ergebnis-Notiz.

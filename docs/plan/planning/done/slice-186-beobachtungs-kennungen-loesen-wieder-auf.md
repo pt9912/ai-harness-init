@@ -12,7 +12,7 @@ fortlaufende Nummer abgeschafft; seither zitieren **23** lebende Dateien eine Ke
 nirgends mehr auflöst (§1, mit Kommando). Ein Ausgang in `open/` wäre hier gerade **kein**
 verbuchter Ausgang im Sinne des Welle-Ziels *„statt einzeln als Nachzügler zurückzukommen"* — der
 Nachzügler wäre mit dem Umzug schon da. **Der Unterschied zu
-[slice-183](../open/slice-183-ausloeser-der-wellenlosen-archivierung.md)**, der aus demselben Katalog kommt
+[slice-183](../next/slice-183-ausloeser-der-wellenlosen-archivierung.md)**, der aus demselben Katalog kommt
 und ausdrücklich **draußen** bleibt: Dort ist nichts gebrochen, dort wird eine offene Frage
 entschieden, und die Datei in `open/` ist der verbuchte Ausgang.
 
