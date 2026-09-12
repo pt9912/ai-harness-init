@@ -11,5 +11,11 @@
 #
 # TestVerweisFundUndNachziehenUebergehenAcceptedADR bleibt unveraendert
 # wirksam — sie prueft ausschliesslich VerweisFund/Nachziehen, nicht Haenger.
+#
+# Anker ist das Muster "range Suchraum(dateien)", nicht eine Zeilennummer: ein
+# Zeilen-Anker wandert mit jeder vorangestellten Kommentarzeile und kann eine
+# zufaellig passende Verschiebung auf die SUCHRAUM-Kommentarzeile in Haenger
+# statt auf den Code lenken. Das Muster ist eindeutig
+# (grep -c 'range Suchraum(dateien)' internal/archive/scan.go -> 1).
 set -euo pipefail
-sed -i '180s/Suchraum(/SuchraumNachzug(/' internal/archive/scan.go
+sed -i 's/range Suchraum(dateien)/range SuchraumNachzug(dateien)/' internal/archive/scan.go

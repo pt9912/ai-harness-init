@@ -61,17 +61,19 @@
 #
 # ZWEITE MESSUNG (ADR-0042 Festlegung 2: `docs/plan/adr` zusätzlich zu
 # `.harness/baseline` in eingehend_ausgenommene_pfade — die erste Messung oben
-# deckt nur die Baseline-Ausnahme, diese hier den Nachtrag). Eigener
-# Scratch-Clone außerhalb dieses Repos, eine ADR unter `docs/plan/adr/` und ein
-# Review-Report verlinken per Präfix-Form dieselbe zu bewegende Slice-Datei:
-#   echt:        `make slice-mv SLICE=<probe> TO=next` → "eingehend: 1
-#                Datei(en)" — der Review-Report ist nachgezogen, die ADR trägt
-#                unverändert ihren alten Pfad.
-#   rot gesehen: dieselbe Fixture, die Pathspec-Übergabe im `git grep`-Aufruf
-#                unten entfernt (`-- "${in_pathspec[@]}"` weggelassen) →
-#                "eingehend: 2 Datei(en)", die ADR trägt danach den neuen Pfad.
-#   Die Zahlen sind kein Erwartungswert (MR-025 Setzung 2); tragend ist die
-#   Trennung — ADR unverändert, Report nachgezogen —, nicht die Zahl 1 oder 2.
+# deckt nur die Baseline-Ausnahme, diese hier den Nachtrag). Der Nachtrag ist
+# in main() SELBST gedeckt, nicht nur in eingehend_ausgenommene_pfade() als
+# reiner Funktion (die bats-Faelle in test/slice-mv.bats pruefen nur die
+# Liste, nie main()s Gebrauch davon):
+# TestSliceMvEchtUebergehtAcceptedADRBeimNachzug
+# (cmd/ai-harness-init/slice_mv_echt_test.go, Teil von `make test-go`) kopiert
+# dieses Skript in ein echtes Scratch-Repo mit einer ADR und einem
+# Review-Report, die beide per Praefix-Form dieselbe Slice-Datei verlinken,
+# und fuehrt main() als echten Prozess aus: der Report wird nachgezogen, die
+# ADR bleibt unveraendert.
+# test/mutations/315-slice-mv-main-verliert-ausnahmeliste.sh nimmt main() die
+# Verbindung zur Liste weg (Pathspec-Uebergabe im `git grep`-Aufruf unten
+# entfernt) und faerbt genau diesen Test rot.
 #
 # GRENZEN (gemessen, nicht vermutet — drei Stück):
 # (1) Das Werkzeug zieht PFADE nach, keine ZUSTANDSSÄTZE. Eine Zeile "In

@@ -150,9 +150,9 @@ func baumMitADRUndReport(t *testing.T) (root, adr, report, ziel string) {
 	return root, adr, report, ziel
 }
 
-// TestHaengerFindetVerweisAusADRTrotzNachzugAusnahme haelt die Trennung, fuer
-// die dieser Slice existiert: Haenger fragt scan.go den VOLLEN Suchraum
-// (Suchraum), nicht SuchraumNachzug — eine Accepted-ADR bleibt in seinem
+// TestHaengerFindetVerweisAusADRTrotzNachzugAusnahme haelt die Trennung der
+// zwei Suchraeume: Haenger fragt scan.go den VOLLEN Suchraum (Suchraum),
+// nicht SuchraumNachzug — eine Accepted-ADR bleibt in seinem
 // Suchraum, obwohl VerweisFund/Nachziehen sie ueber AusgenommenePfadeNachzug
 // uebergehen (ADR-0042 Festlegung 2,
 // TestVerweisFundUndNachziehenUebergehenAcceptedADR). Beide Eigenschaften an
