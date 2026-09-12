@@ -77,10 +77,13 @@ genau einen Lauf.
    dieser Schlüssel weder einen Welle-Plan noch eine Ergebnisnotiz in `done/` hat und mit seinem
    eigenen Archiv selbst die Untergrenze setzt. **`haenger` bleibt davon unberührt:** Er trägt
    [`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)
-   Festlegung 4 und darf nicht mit aufgehoben werden — der schreibende Lauf über `altbestand` bleibt
-   so lange gesperrt, bis die Norm-Frage über Verweis-Nachzug in eingefrorene Artefakte entschieden
-   ist (`BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt`,
-   [slice-216](../../docs/plan/planning/open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)).
+   Festlegung 4 und darf nicht mit aufgehoben werden. Der schreibende Lauf über `altbestand` bleibt
+   gesperrt, und zwar durch mehr als diesen einen Ausgang: `haenger` hält, bis die Verweise auf
+   verschwindende Review-Reports ihren Ausgang haben
+   ([slice-216](../../docs/plan/planning/open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)),
+   und [`ADR-0042`](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md)
+   Festlegung 5 sperrt den ersten Archiv-Move normativ, bis ihre Folgepflicht 1 steht — bis beide
+   Träger `docs/plan/adr/` ausnehmen. Die Entscheidung der Norm-Frage allein hebt die Sperre nicht auf.
 7. **Und selbst ohne `haenger` trägt der schreibende Pfad diesen Schlüssel heute nicht.**
    `internal/archive/anwenden.go` verlangt unverändert genau einen Welle-Plan
    (`len(b.Plaene) != 1`); `Einsammeln` liefert für `altbestand` null Pläne. Meldet die Vorprüfung
