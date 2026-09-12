@@ -5,7 +5,7 @@
   `67a1784b` (Nacharbeit R1), `a42b16b8` (Nacharbeit R2) plus zwei Review-Runden
   (`docs/reviews/2026-09-12-slice-221-nachzug-laesst-die-adr-unberuehrt.md`, 1 HIGH/1 MEDIUM/1 LOW;
   `…-r2.md`, 0 HIGH/1 MEDIUM/3 LOW, Verdikt „Sperre aus Runde 1 ist gehoben").
-- **Prüfgegenstand:** `docs/plan/planning/in-progress/slice-221-nachzug-laesst-die-adr-unberuehrt.md`
+- **Prüfgegenstand:** `docs/plan/planning/done/slice-221-nachzug-laesst-die-adr-unberuehrt.md`
   gegen den Baum bei `HEAD=9652c5d7` (letzter für diesen Slice relevanter Commit `a42b16b8`; die
   zwei Commits danach — `8031de35`, `cb702147`, `9652c5d7` — gehören zu `slice-222` und
   `ADR-0044` und berühren keine Datei mit Bezug zu `slice-221`,

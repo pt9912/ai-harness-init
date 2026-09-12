@@ -1,6 +1,6 @@
 # Review slice-221 — Der Verweis-Nachzug lässt die `Accepted`-ADR unberührt
 
-**Rolle:** Reviewer · **Datum:** 2026-09-12 · **Commit:** `3fb64279` (11 Dateien, +227/−59) · **Plan:** [`slice-221`](../plan/planning/in-progress/slice-221-nachzug-laesst-die-adr-unberuehrt.md) · **Constraint:** [`ADR-0042`](../plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 2/5, Folgepflicht 1 · **Hard Rules:** [`AGENTS.md`](../../AGENTS.md) §3.6, §3.7 · [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
+**Rolle:** Reviewer · **Datum:** 2026-09-12 · **Commit:** `3fb64279` (11 Dateien, +227/−59) · **Plan:** [`slice-221`](../plan/planning/done/slice-221-nachzug-laesst-die-adr-unberuehrt.md) · **Constraint:** [`ADR-0042`](../plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 2/5, Folgepflicht 1 · **Hard Rules:** [`AGENTS.md`](../../AGENTS.md) §3.6, §3.7 · [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
 
 ## Findings
 
