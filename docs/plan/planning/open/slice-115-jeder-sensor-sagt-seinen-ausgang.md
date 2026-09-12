@@ -210,7 +210,7 @@ Steering-Loop-Lerneintrag.
 | [`harness/tools/full-smoke-ausgang.sh`](../../../../harness/tools/full-smoke-ausgang.sh) | update | Träger von DoD (3) und Mit-Träger von DoD (1): der Kopf spricht heute von **einem** Aufrufer und von **einem** der zwei Ausgänge; beides wird **gezogen**, nicht danebengestellt |
 | `test/full-smoke-ausgang.bats` | update | Träger von DoD (2): die Identitäts-Prüfung tritt an die Stelle der Anwesenheits-Prüfung. Der Ausdruck, der die Abschnitte aufzählt, steht bereits an drei Orten identisch — ein vierter wäre die Drift |
 | `test/mutations/` <!-- d-check:ignore (geplante Dateien) --> | neu | die Zähne zu DoD (1) und (2). Nummern im Anschluss an die höchste **vergebene**, nicht an die Anzahl — beide gehen auseinander: `ls -1 test/mutations/*.sh \| sed -n 's#.*/\([0-9]*\)-.*#\1#p' \| sort -n \| tail -1` → **190** bei `ls -1 test/mutations/*.sh \| wc -l` → **183** (2026-08-27). Beim Anlegen neu zu erheben |
-| [`harness/README.md`](../../../../harness/README.md) | update | dort steht, was `make mutate` und `make full-smoke` aussagen. Nach DoD (1) sagt `make mutate` etwas Zusätzliches, und der bestehende Satz wird **gezogen**. **Abhängigkeit:** [slice-114](slice-114-jede-aussage-hat-einen-abschnitt.md) fasst dieselbe Datei an ihrer Gliederung an — wer zuerst läuft, hinterlässt dem anderen den Stand, gegen den er misst |
+| [`harness/README.md`](../../../../harness/README.md) | update | dort steht, was `make mutate` und `make full-smoke` aussagen. Nach DoD (1) sagt `make mutate` etwas Zusätzliches, und der bestehende Satz wird **gezogen**. **Abhängigkeit:** [slice-114](../in-progress/slice-114-jede-aussage-hat-einen-abschnitt.md) fasst dieselbe Datei an ihrer Gliederung an — wer zuerst läuft, hinterlässt dem anderen den Stand, gegen den er misst |
 | [`AGENTS.md`](../../../../AGENTS.md) | **unverändert** | §3.5 entscheidet über den Exit-Code, §3.6 über den Rot-Beleg, §3.7 über die Kommentar-Klasse *Grenze* — alle drei gehören dem Architect ([`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1). Berührt wäre höchstens §4, und ob sie es ist, entscheidet die Ausgabe |
 | [`.github/workflows/ci.yml`](../../../../.github/workflows/ci.yml) | **unverändert** | die CI ruft ausschließlich `make`-Targets ([`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)) |
 | [`internal/`](../../../../internal) und die emittierte Ebene | **unverändert** | die Unterscheidung wandert nicht mit (Kopfzeile *Ebene*) |
@@ -233,7 +233,7 @@ keiner Welle. Die Messungen aus §1 sind gefahren.
 
 **Eine Beobachtung zur Reihenfolge, kein Zuständiger.**
 [slice-105](../done/slice-105-mutate-messen-dann-teilen.md) fasst dasselbe Skript an, und
-[slice-114](slice-114-jede-aussage-hat-einen-abschnitt.md) dieselbe
+[slice-114](../in-progress/slice-114-jede-aussage-hat-einen-abschnitt.md) dieselbe
 [`harness/README.md`](../../../../harness/README.md). Keiner der drei ist Vorbedingung des anderen —
 wer zweiter läuft, misst gegen den Stand, den der erste hinterlässt, und das ist eine Tatsache über
 den Baum, keine Freigabe.
