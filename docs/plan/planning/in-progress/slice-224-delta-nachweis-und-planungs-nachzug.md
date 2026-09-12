@@ -66,7 +66,7 @@ Vorlagen-Delta mit dem Baum ankommt und dieser Slice nur den **Bestand** nachzie
 **Berührte Spec-Stellen:** — (der Slice berührt keine Spec-Stelle; Gegenstand sind ein Nachweis
 und Planungs-Artefakte).
 
-**Verantwortlich:** — (bis zur Priorisierung).
+**Verantwortlich:** Implementer-Rolleninhaber dieses Laufs.
 
 **Autor:** Planner. **Datum:** 2026-09-12.
 
