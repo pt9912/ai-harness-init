@@ -454,7 +454,7 @@ Backticks).
   Annahme entstanden, und ihr feedback-Trigger *„wenn das Sammel-Archiv liegt"* ist am Baum
   ablesbar unerfüllt (`ls -d docs/plan/planning/done/*/ 2>/dev/null | wc -l` → 0).
 - **Folge-Slices:**
-  [slice-219](../next/slice-219-archivierung-nimmt-einen-schluessel-ohne-welle.md) (Die
+  [slice-219](../in-progress/slice-219-archivierung-nimmt-einen-schluessel-ohne-welle.md) (Die
   Archivierung nimmt einen Schlüssel, der keine Welle ist) — ist eine Datei in `open/`; er löst
   Folgepflicht 1 der
   [`ADR-0041`](../../adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) ein und ist
