@@ -412,8 +412,8 @@ verteidigbar (Baseline-Regelwerk `modul-04-adrs.md` §Ziel-Form: ADR (MADR)).
   Der bewegende Lauf misst weiterhin nach §3.11, aber er misst jetzt gegen ein Kriterium statt
   gegen eine offene Frage — und sein Beleg im Register wird zur Notiz statt zur Wiedervorlage.
 - **Positiv:** [ADR-0041](0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) Festlegung 4
-  hat ihren Ausgang. Was danach noch sperrt, ist `[haenger]` — eine Frage mit eigenem Gegenstand
-  und eigenem Slice.
+  hat ihren Ausgang. Der Move bleibt danach gesperrt — normativ durch Festlegung 5, bis
+  Folgepflicht 1 steht, und im Träger durch `[haenger]`, eine Frage mit eigenem Slice.
 - **Positiv:** Das Kriterium ist übertragbar. Es hängt an *ändert sich die Aussage?* und nicht an
   einer Liste von Bäumen — ein fünfter einfrierender Baum kostet damit keine eigene Runde, solange
   er ein Zeitdokument ist.
