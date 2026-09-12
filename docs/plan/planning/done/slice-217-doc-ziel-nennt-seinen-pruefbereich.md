@@ -253,7 +253,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       (Gegenprobe `doc-structure`, Marken-Semantik, Ausgabe-Grenze);
       [`harness/README.md`](../../../../harness/README.md) §Sensors führt beide als Tabellenzeile.
       Die Verlagerung ist die Ziel-Form, die
-      [slice-114](slice-114-jede-aussage-hat-einen-abschnitt.md) hergestellt hat, während dieser
+      [slice-114](../in-progress/slice-114-jede-aussage-hat-einen-abschnitt.md) hergestellt hat, während dieser
       Slice lief — der Inhalt der Zusage ist unverändert, nur ihre Datei. Beide Gegenproben sind
       am eingesetzten Defekt gefahren und verbatim abgedruckt: `doc-tracked` **nicht inert**
       (`target-untracked` mit **und** ohne Block, byte-gleich), `doc-structure` **inert**
@@ -558,7 +558,7 @@ Backticks).
 - **Was ging anders als geplant:** Drei Dinge. **Erstens** hat ein gleichzeitig laufender Slice der
   Marke die Adresse weggezogen: Der Umsetzungs-Commit legte den Deckungs-Absatz in
   [`harness/README.md`](../../../../harness/README.md) an und zeigte darauf; sechs Commits später
-  brachte [slice-114](slice-114-jede-aussage-hat-einen-abschnitt.md) dieselbe Datei auf die
+  brachte [slice-114](../in-progress/slice-114-jede-aussage-hat-einen-abschnitt.md) dieselbe Datei auf die
   Ziel-Form und lagerte die Sensor-Prosa nach `harness/sensors/` aus. Kein Gate sprach davon — die
   Adresse ist Prosa in einem Makefile-Fragment —, gefunden hat es die zweite Review-Runde. Der
   Deckungs-Absatz aus DoD (1) liegt seither dort, wo die Ziel-Form ihn haben will, und die Marke

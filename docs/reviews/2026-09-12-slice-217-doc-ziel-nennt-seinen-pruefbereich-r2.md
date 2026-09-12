@@ -1,6 +1,6 @@
 # Review R2 — slice-217: `doc-*`-Ziel nennt seinen Prüfbereich (Nacharbeit)
 **Rolle:** Reviewer · **Datum:** 2026-09-12 · **Skill:** `.harness/skills/reviewer.md` 1.7.0 · **Gegenstand:** `0dc740e8` — `d-check.mk`, `harness/sensors/doc-tracked.md`, `harness/sensors/doc-structure.md`, `test/doc-block-marke-wiring.bats` (+102/−28)
-**Plan:** [`slice-217`](../plan/planning/in-progress/slice-217-doc-ziel-nennt-seinen-pruefbereich.md) · **Runde 1:** [Report](2026-09-12-slice-217-doc-ziel-nennt-seinen-pruefbereich.md) (0 HIGH / 4 MEDIUM / 1 LOW; MEDIUM-4 laut Auftrag durch slice-114 erledigt, nicht Gegenstand)
+**Plan:** [`slice-217`](../plan/planning/done/slice-217-doc-ziel-nennt-seinen-pruefbereich.md) · **Runde 1:** [Report](2026-09-12-slice-217-doc-ziel-nennt-seinen-pruefbereich.md) (0 HIGH / 4 MEDIUM / 1 LOW; MEDIUM-4 laut Auftrag durch slice-114 erledigt, nicht Gegenstand)
 **Quellen:** [`AGENTS.md`](../../AGENTS.md) §3.6/§3.7, [`MR-010`](../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert), [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert), [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) · alle Läufe netzlos über dem Digest aus [`d-check.mk`](../../d-check.mk), Mount `:ro`, kein Build
 
 ## Findings

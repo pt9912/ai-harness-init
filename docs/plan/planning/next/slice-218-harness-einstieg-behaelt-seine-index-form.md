@@ -104,7 +104,7 @@ Drei slice-eigene Punkte. Der dritte ist keine Zugabe, sondern die mechanische F
 `test/doc-block-marke-wiring.bats` (in `make gates`) leitet ab, welche `doc-*`-Ziele ein Modul
 zuschalten, für das [`.d-check.yml`](../../../../.d-check.yml) **keinen** eigenen Block führt —
 mit dem Block fällt `doc-structure` aus dieser Menge, und die Marke muss weg, sonst ist der Gate
-rot. [slice-217](../in-progress/slice-217-doc-ziel-nennt-seinen-pruefbereich.md) §6 führt genau
+rot. [slice-217](../done/slice-217-doc-ziel-nennt-seinen-pruefbereich.md) §6 führt genau
 diesen Fall bereits als Risiko.
 
 - [ ] **(1) Die Grenze steht, grüner Start und rotes Gegenbeispiel im Repo.** `structure` in
@@ -169,7 +169,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-217](../in-progress/slice-217-doc-ziel-nennt-seinen-pruefbereich.md) **und**
+[slice-217](../done/slice-217-doc-ziel-nennt-seinen-pruefbereich.md) **und**
 [slice-114](../in-progress/slice-114-jede-aussage-hat-einen-abschnitt.md) liegen in `done/`.
 Beobachtbar ohne Rückfrage (`ls docs/plan/planning/done/`) und **kein Ergebnis dieses Slice**.
 Beide sind harte Kanten: 217 baut die C-Klassen-Ableitung, die DoD (3) benutzt und verkleinert —

@@ -2,7 +2,7 @@
 
 **Rolle:** Reviewer · **Datum:** 2026-09-12 · **Skill:** `.harness/skills/reviewer.md` 1.7.0
 **Gegenstand:** `497564d7` — `d-check.mk` (+13/−4), `harness/README.md` (+85), `test/doc-block-marke-wiring.bats` (neu), `test/mutations/309-drittes-c-ziel-ohne-marke.sh` (neu)
-**Plan:** `docs/plan/planning/in-progress/slice-217-doc-ziel-nennt-seinen-pruefbereich.md`
+**Plan:** `docs/plan/planning/done/slice-217-doc-ziel-nennt-seinen-pruefbereich.md`
 **Quellen:** [`AGENTS.md`](../../AGENTS.md) §3.6/§3.7, [`MR-010`](../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert), [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert), [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), `grundlagen-harness-dateien.md` §harness/README.md
 **Vorlauf:** `docs/reviews/2026-09-11-slice-124-*` (dieselbe Gate-Tabellen-Fläche). Kein Docker-Ziel gefahren.
 
