@@ -1,6 +1,6 @@
 # ADR-0043: Die Ziel-Fassung regiert auch den Sprung `v6.5.0` → `v6.7.1`, und der Durchgang misst ab dem Stand, gegen den zuletzt einer lief
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-12
 
@@ -525,8 +525,11 @@ Tausch-Slice und der des Durchgangs als Constraint lesen; sie ist nicht eingefro
   `5d3dba9c8dc2df25d5b7dc0bd9b6f5aa123b0ef876dcd9330fe1254898ec72ac` des Assets `lab-regelwerk.zip`
   (kanonisch ist das Makefile-Paar; die vier übrigen sind fail-closed daran gekoppelt), und der
   **Adaptions-Durchgang** mit Delta-Basis `v6.0.0`; weil er den `v6.5.0`-Nachweis einschließt,
-  füllt seine Kennung **beide** offenen Nachweis-Felder der Buchung — das der `v6.5.0`-Zeile und
-  das der Zeile, die der Vollzug anlegt. Der Wortlaut beider Pläne ist Planner-Eigentum
+  ist seine Kennung der Wert **beider** offenen Nachweis-Felder der Buchung — das der
+  `v6.5.0`-Zeile und das der Zeile, die der Vollzug anlegt. **Eingetragen wird er nicht in diesem
+  Punkt:** §Baseline von `harness/conventions.md` ist Architect-Eigentum
+  ([`AGENTS.md`](../../../AGENTS.md) §3.8), und die Buchung steht in der Architect-Folgepflicht
+  darüber. Der Wortlaut beider Pläne ist Planner-Eigentum
   ([ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md)); diese Entscheidung ist das
   Übergabe-Artefakt, nicht der Text.
 - **Folgepflicht (Architect), fällig im Durchgang, nicht hier:** die Entscheidung über
@@ -592,6 +595,7 @@ voraus, das jener Slice heute nicht führt. Ihn hier als vorhanden auszugeben w�
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-12 | **Proposed** | Architect-Lauf auf die Zielstand-Setzung des Auftraggebers vom selben Tag. Anlass sind der vierte Eintritt des zweiten Falls aus [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 3, der erste und der vierte Re-Evaluierungs-Trigger von [ADR-0038](0038-ziel-fassung-regiert-den-sprung-v650.md) und die in §Baseline von `harness/conventions.md` als *steht aus* gebuchte Lücke des `v6.5.0`-Durchgangs |
+| 2026-09-12 | **Accepted** | Vollzogen in der Architect-Rolle. **Der Acceptance-Trigger ist eingelöst**, und der Beleg, den er verlangt, ist die **Reviewer-Bestätigungsrunde vom 2026-09-12 zu ADR-0043, Runde 2** — gefahren in frischem Kontext gegen [ADR-0018](0018-ziel-fassung-regiert-die-migration.md), [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md), [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) und [ADR-0038](0038-ziel-fassung-regiert-den-sprung-v650.md); ihre Kategorie-Summary nennt **kein HIGH, kein MEDIUM und kein LOW**, ihr Report liegt damit ohne blockierenden Befund in `docs/reviews/`. Dass es die **zweite** Runde ist, fordert [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2: Runde 1 meldete mit MEDIUM-1 einen blockierenden Befund, Beleg ist darum eine erneute Runde derselben prüfenden Rolle und nicht die Nachmessung des Kontexts, der ihn auflöste. **Der eine INFO jener Runde ist vor diesem Umschlag behoben** — die Aussage über die zwei offenen Nachweis-Felder nennt jetzt den Architect-Ort ihrer Buchung, statt im Planner-Punkt als Schreibauftrag zu stehen; Festlegung 2 deckt das, denn sie verlangt eine weitere Runde nur nach einem **blockierenden** Befund. Wer eine ADR annimmt, sagt keine Quelle dieses Repos — gemessen in [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) §Geschichte, hier nicht gedoppelt. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
