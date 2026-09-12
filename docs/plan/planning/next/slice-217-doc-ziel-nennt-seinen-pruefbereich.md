@@ -184,11 +184,11 @@ hinzukommt — und genau dort schlägt der Wächter in seiner zweiten Richtung a
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Kein Ziel bekommt einen Prüfbereich.** Für `structure` übernimmt es
-  [slice-213](slice-213-review-report-laeuft-in-der-tabellen-form.md): dessen DoD (2)
+  [slice-213](../open/slice-213-review-report-laeuft-in-der-tabellen-form.md): dessen DoD (2)
   schreibt einen `structure:`-Block mit zwei Form-Regeln und nimmt `structure` in `modules:` auf —
   eine Adresse, die die Sendung annimmt. *(Folge-Slice mit Kennung.)*
 - **`tracked` bekommt hier keinen Block und keine Folge-Kennung.** Eine Adresse steht dafür nicht
-  zur Verfügung: [slice-116](slice-116-doku-gate-urteilt-ueber-den-getrackten-bestand.md)
+  zur Verfügung: [slice-116](../open/slice-116-doku-gate-urteilt-ueber-den-getrackten-bestand.md)
   ist der Slice, den [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §6 als Berührung
   nennt, aber sein Text führt das Modul nicht — `grep -c 'tracked'` über seine Datei liefert
   **0**. Ihm hier eine Pflicht zuzuschreiben, die er nicht trägt, wäre eine Adresse, die die
@@ -283,7 +283,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       bestehenden C-Ziel entfernt · *(c)* ein `structure:`-Block in
       [`.d-check.yml`](../../../../.d-check.yml) ergänzt, während die Marke stehen bleibt — die
       Gegenrichtung, und genau die Lage, die
-      [slice-213](slice-213-review-report-laeuft-in-der-tabellen-form.md) herstellt.
+      [slice-213](../open/slice-213-review-report-laeuft-in-der-tabellen-form.md) herstellt.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -376,7 +376,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 `ls docs/plan/planning/in-progress/slice-*.md` findet nichts. Eine inhaltliche Vorbedingung
 besteht **nicht**: Der Slice hängt an keinem anderen, weil er die Menge der C-Ziele **ableitet**
 statt sie vorauszusetzen — er läuft vor wie nach
-[slice-213](slice-213-review-report-laeuft-in-der-tabellen-form.md), nur mit anderem
+[slice-213](../open/slice-213-review-report-laeuft-in-der-tabellen-form.md), nur mit anderem
 Ergebnis (§6).
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
@@ -419,7 +419,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Die C-Menge schrumpft während der Umsetzung.** Landet
-  [slice-213](slice-213-review-report-laeuft-in-der-tabellen-form.md) vorher, trägt
+  [slice-213](../open/slice-213-review-report-laeuft-in-der-tabellen-form.md) vorher, trägt
   [`.d-check.yml`](../../../../.d-check.yml) einen `structure:`-Block, und `doc-structure` fällt
   aus der C-Menge. Der Wächter trägt das, weil er ableitet; **der Deckungs-Absatz und die Marke
   tun es nicht** — beide müssten dann für ein Ziel weniger geschrieben werden. Bleibt nur
