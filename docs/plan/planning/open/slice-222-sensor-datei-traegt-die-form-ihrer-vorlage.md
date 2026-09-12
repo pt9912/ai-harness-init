@@ -101,6 +101,14 @@ den Zeiger verlangen.
   `harness/sensors/`-Baum bekommt und mit welchem Inhalt, hängt am Vorlagensatz des Werkzeugs und
   ist ein eigener Schnitt mit eigener Abwägung. Gegenstand hier ist der Dogfood.
   *(Schicht-Abgrenzung, Dogfood gegen emittiert.)*
+- **Kein Baseline-Sprung und keine Zielstand-Setzung.** Die zweite Start-Bedingung (§4) wartet auf
+  einen adoptierten Stand; herbeiführen darf dieser Slice ihn nicht. Welchen Stand das Repo
+  adoptiert, ist eine Setzung des Auftraggebers
+  ([`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) §Wer den Zielstand bewegt);
+  Baum-Tausch und Adaptions-Durchgang führt
+  [`ADR-0043`](../../adr/0043-ziel-fassung-regiert-den-sprung-v671.md) als Folgepflicht des
+  Planners — heute ohne Slice-Kennung, deshalb steht hier keine Adresse, sondern die Abgrenzung.
+  *(Es wäre ein anderer Vorgang.)*
 
 ## 2. Definition of Done
 
@@ -164,12 +172,75 @@ Aussagen-Berührung steht hier gar nicht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`):
-[slice-114](../next/slice-114-jede-aussage-hat-einen-abschnitt.md) liegt in `done/`.
-Beobachtbar ohne Rückfrage (`ls docs/plan/planning/done/`) und **kein Ergebnis dieses Slice**. Die
-Bedingung ist keine Vorsicht, sondern eine gemessene Kollision: Beide Slices schreiben an
-[`harness/README.md`](../../../../harness/README.md), und der Index, den DoD (1) gegen den Baum
-hält, ist dort das Ergebnis von slice-114.
+**Start** (`next` → `in-progress`) — **zwei Bedingungen, beide erfüllt.** Jede ist ohne Rückfrage
+beobachtbar, und keine ist ein Ergebnis dieses Slice.
+
+1. [slice-114](../next/slice-114-jede-aussage-hat-einen-abschnitt.md) liegt in `done/`
+   (`ls docs/plan/planning/done/`). Die Bedingung ist keine Vorsicht, sondern eine gemessene
+   Kollision: Beide Slices schreiben an [`harness/README.md`](../../../../harness/README.md), und
+   der Index, den DoD (1) gegen den Baum hält, ist dort das Ergebnis von slice-114.
+2. Der vendored Baum des adoptierten Stands nennt die Ziel-Form der Sensor-Datei — in der Regel,
+   die sie verlangt, oder in der Vorlage des Einstiegs:
+
+   ```sh
+   grep -rl 'sensors/gate.template' .harness/baseline/*/regelwerk/ \
+        .harness/baseline/*/templates/harness/README.template.md
+   ```
+
+   Heute ohne Treffer, Exit 1 — der adoptierte Stand nennt sie an keiner der beiden Stellen.
+   Eingetreten ist die Bedingung, sobald das Kommando eine Zeile ausgibt. Der Glob trifft genau
+   einen Baum (`ls .harness/baseline/`); **welcher** Stand das ist, sagt
+   [`harness/conventions.md`](../../../../harness/conventions.md) §Baseline im Feld `Stand:`.
+
+**Warum am Baum und nicht am Versions-Feld.** Drei Formen stehen zur Wahl, zwei tragen nicht:
+
+- Der **Wert** des Felds `Stand:` misst die Version, nicht die Aussage. Er wechselt bei jedem
+  Sprung, auch bei einem, der diese Stelle unberührt lässt — die Bedingung fiele, ohne dass der
+  Gegenstand sich bewegt hat, und der Lauf danach baute wieder gegen eine Fassung, die ihre
+  Fortschreibung noch vor sich hat.
+- Eine Bedingung an einer **Setzung des Auftraggebers** gilt bereits: Der Zielstand ist gesetzt
+  und sein Vollzug steht aus
+  ([`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) §Wer den Zielstand bewegt,
+  [`ADR-0043`](../../adr/0043-ziel-fassung-regiert-den-sprung-v671.md) Festlegung 1). Was schon
+  gilt, schaltet nichts.
+- Der vendored Baum ist die präsente, netzlose Fassung des adoptierten Stands
+  ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache))
+  und trägt die Aussage selbst. Das Feld `Stand:` steht daneben und bleibt nötig: Es sagt, welcher
+  Stand der adoptierte ist; das Kommando sagt, ob er die Aussage führt.
+
+**Was die zweite Bedingung bindet — und was nicht.**
+
+- Gebunden ist **Liefer-Punkt (2)**. Was er schließt, ist eine Auffindbarkeits-Lücke: §1 misst,
+  dass kein lebendes Artefakt dieses Repos die Vorlage nennt. Ob diese Lücke einen Zeiger im Repo
+  verlangt und welchen, hängt daran, ob die Regel des adoptierten Stands die Ziel-Form selbst
+  führt — und genau das misst die Bedingung.
+- **Nicht gebunden ist Liefer-Punkt (1).** Das Auswahl-Kriterium — *„sobald ein Vertrag mehr
+  braucht als einen Satz"* — steht im adoptierten Stand, und welches Ziel dieses Repo als Datei
+  und welches als Zeile führt, ist seine eigene Frage. Ebenso (3): eine Rollen-Grenze, die an
+  keiner Baseline-Aussage hängt.
+- **Solange dieser Schnitt steht, bindet sie trotzdem den ganzen Slice.** Ein Trigger schaltet die
+  Datei, nicht den einzelnen Punkt — der Zustand ist die Verzeichnis-Position (Baseline-Regelwerk
+  `modul-05-planning-harness.md` §Lifecycle als State Machine). Dass zwei lieferbare Punkte auf
+  eine Bedingung warten, die nur einen betrifft, ist ein **Schnitt-Befund**: Seine Auflösung —
+  Liefer-Punkt (2) als eigener Slice — ist ein eigener Schnitt und findet in diesem Plan nicht
+  statt.
+
+**Warum warten und nicht vorgreifen.** Eine Aussage der Baseline vorwegzunehmen, hält bis zu dem
+Sprung, der sie einholt, und kostet dann zweimal:
+[`MR-022`](../../../../harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)
+trug eine Regel als Vorgriff auf eine neuere Baseline; eingeholt hat ihn
+[`MR-031`](../../../../harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline),
+und **zwei** Einträge wanderten dabei nach
+[`harness/conventions/done/`](../../../../harness/conventions/done):
+
+```sh
+sed -n '/^### Aufgelöste Adaptionen/,$p' harness/conventions.md \
+  | grep -c 'mr-031--die-kommentar-regel'                            # 2
+```
+
+**Kein Erwartungswert**
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2) — die Zahl wandert mit dem Block.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
