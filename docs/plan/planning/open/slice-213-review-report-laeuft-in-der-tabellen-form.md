@@ -65,14 +65,14 @@ nicht aus einem gesetzten Wert (§1 *Warum hier kein Grenzwert steht*).
 Der vendored Baum trägt die Vorlage bereits:
 
 ```sh
-ls .harness/baseline/v6.5.0/templates/docs/reviews/review-report.template.md
+ls .harness/baseline/v6.7.2/templates/docs/reviews/review-report.template.md
 ```
 
 Die **neue** Fassung liegt heute nur im Lab des Kurses und ist **nicht adoptiert**. Der Unterschied
 ist gemessen, nicht abgeschrieben:
 
 ```sh
-diff -u .harness/baseline/v6.5.0/templates/docs/reviews/review-report.template.md \
+diff -u .harness/baseline/v6.7.2/templates/docs/reviews/review-report.template.md \
         /Development/KI/ai-harness-course/lab/templates/docs/reviews/review-report.template.md
 ```
 
@@ -92,7 +92,7 @@ Er ist **vierteilig**:
 Skill-Vorlage sind byte-gleich:
 
 ```sh
-cmp .harness/baseline/v6.5.0/templates/.harness/skills/reviewer.template.md \
+cmp .harness/baseline/v6.7.2/templates/.harness/skills/reviewer.template.md \
     /Development/KI/ai-harness-course/lab/templates/.harness/skills/reviewer.template.md \
   && echo byte-gleich          # byte-gleich
 ```
@@ -387,7 +387,7 @@ Zwei beobachtbare Kriterien und ein Lerneintrag:
 [`harness/conventions.md`](../../../../harness/conventions.md) führt drei Sub-Areas — `*` (`ALL`),
 `harness/tools/` (`TOOLS`) und `.codex/` (`CODEX`); keiner der berührten Pfade liegt in den zwei
 engeren. Die Berührung ist damit `*` (`ALL`), und sie hält die Schwelle ≥ 2 von 3
-([`grundlagen-bootstrap.md`](../../../../.harness/baseline/v6.5.0/regelwerk/grundlagen-bootstrap.md#was-ist-eine-sub-area)):
+([`grundlagen-bootstrap.md`](../../../../.harness/baseline/v6.7.2/regelwerk/grundlagen-bootstrap.md#was-ist-eine-sub-area)):
 Achse 1 (Konventions-Härte) — der Block trägt repo-weite Einträge; Achse 2 (Inventur-Linie) — Gate-
 und Doku-Aussage sind als Paar abgleichbar; Achse 3 (Struktureller Cluster) trägt für `*`
 naturgemäß nicht. **Eine feinere Ausdifferenzierung wird hier nicht vorgenommen** — sie wäre eine

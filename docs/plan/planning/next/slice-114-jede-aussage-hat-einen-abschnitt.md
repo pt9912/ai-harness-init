@@ -116,7 +116,7 @@ nicht.
 ### Die fehlende Sektion ist kein zweiter Befund, sondern derselbe
 
 Die Pflichtgliederung des Einstiegs steht im vendored Regelwerk und nennt **acht** Abschnitte
-([`grundlagen-harness-dateien.md` §harness/README.md als Einstiegspunkt](../../../../.harness/baseline/v6.5.0/regelwerk/grundlagen-harness-dateien.md#harnessreadmemd-als-einstiegspunkt)).
+([`grundlagen-harness-dateien.md` §harness/README.md als Einstiegspunkt](../../../../.harness/baseline/v6.7.2/regelwerk/grundlagen-harness-dateien.md#harnessreadmemd-als-einstiegspunkt)).
 Unsere Datei führt **sieben** (`grep -c '^## ' harness/README.md`); **einer** fehlt:
 `## Safety and scope boundaries`, ein **Ort für vorhandene Sätze**. `## Leseordnung` — die
 **Menschen-Hälfte des Einstiegs**, von der Baseline bei *„drei bis fünf geordnete Zeiger"*
@@ -305,7 +305,7 @@ Setzung 2) — die Bezugsmenge dieser Abgabe ist der Eintrags-Zähler, nicht sei
 Ihre Masse ist **nicht** ein Absatz, sondern eine
 Eintrags-Zahl — und dafür gibt es eine Form, die nicht erfunden werden muss: das Regelwerk stellt
 sie ausdrücklich frei (*„ihre Form (Einzeldatei vs. Verzeichnis, ADR-artig vs. Prosa) ist Wahl"*,
-[`grundlagen-harness-dateien.md` §harness/conventions.md als Konventionsspeicher](../../../../.harness/baseline/v6.5.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)),
+[`grundlagen-harness-dateien.md` §harness/conventions.md als Konventionsspeicher](../../../../.harness/baseline/v6.7.2/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)),
 **nennt aber am gepinnten Stand die Verzeichnis-Form als Default** — *„Ein Eintrag je Datei …
 Der **Default** ist die Verzeichnis-Form, weil sie mit der Adaptions-Zahl nicht mitwächst"*,
 mit `harness/conventions/MR-<NNN>-<titel>.md` als Ort und `conventions/done/` als Ziel der
@@ -395,7 +395,7 @@ Abschnitt, deren Vorlage vendored vorliegt.
 ## 2. Definition of Done
 
 Drei Liefer-Punkte
-([`modul-05-planning-harness.md` §Ziel-Form: Slice](../../../../.harness/baseline/v6.5.0/regelwerk/modul-05-planning-harness.md#ziel-form-slice):
+([`modul-05-planning-harness.md` §Ziel-Form: Slice](../../../../.harness/baseline/v6.7.2/regelwerk/modul-05-planning-harness.md#ziel-form-slice):
 *„≤ 3 Liefer-Punkte"*). Der gepinnte Stand zählt sie selbst ab — *„gezählt wird nur, was mit dem
 Umfang wächst … Nicht gezählt: Gate-Läufe, Closure-Notiz, Register, Risiko-Ausgänge"* —, und damit
 ist die Trennung, die dieser Plan unten als *Standard-Punkte der Vorlage* führt, die Regel selbst
@@ -518,7 +518,7 @@ gemessen: Die Sätze sind **nicht** in die Skript-Köpfe gegangen, und sie trage
 Ziel-Form** — fünf Abschnitte, eine Filter-Regel gegen den Deckungsnachweis, eine
 Adressierungs-Regel und das Verbot eines Lifecycle-Verzeichnisses, ausgeschrieben im vendored
 Regelwerk (`grundlagen-harness-dateien.md` §harness/README.md als Einstiegspunkt) und als
-Ausfüll-Vorlage unter `.harness/baseline/v6.5.0/templates/harness/sensors/`. Die drei Ablageorte,
+Ausfüll-Vorlage unter `.harness/baseline/v6.7.2/templates/harness/sensors/`. Die drei Ablageorte,
 die §3 vor dem Verschieben zur Wahl stellt — Skript-Kopf · Tabellenzeile · Safety-Abschnitt —,
 enthalten diesen nicht.
 
@@ -528,7 +528,7 @@ kommt der Name des Baums nicht vor, im heutigen in sechs Dateien.
 
 ```sh
 git grep -l 'harness/sensors' db83415 -- .harness/baseline/v5.18.0/ ; echo "exit=$?"   # exit=1
-git grep -l 'harness/sensors' HEAD    -- .harness/baseline/v6.5.0/  | wc -l            # 6
+git grep -l 'harness/sensors' HEAD    -- .harness/baseline/v6.7.2/  | wc -l            # 6
 ```
 
 Gebunden ist deshalb die Substanz der Bedingung — ein eigener Behälter für Sätze, die kein

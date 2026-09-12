@@ -65,7 +65,7 @@ Deckungsgrenze, Ausgabe-Bedeutung, Exit-Codes, Sperren (Baseline-Regelwerk
 `grundlagen-harness-dateien.md` §harness/README.md als Einstiegspunkt).
 
 **Die Vorlage ist in diesem Repo unbenannt.** Sie liegt vendored unter
-`.harness/baseline/v6.5.0/templates/harness/sensors/`; genannt wird sie außerhalb der Baseline nur
+`.harness/baseline/v6.7.2/templates/harness/sensors/`; genannt wird sie außerhalb der Baseline nur
 dort, wo der **emittierte** Vorlagensatz geprüft wird, und in einem Zeitdokument:
 
 ```sh

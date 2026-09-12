@@ -72,7 +72,7 @@ docs/plan/planning/done/welle-*-results.md | wc -l` → **8**. Die übrigen vier
 (`welle-06`, `welle-07`, `welle-08`, `welle-12`) tragen als H1 *„… — Results-Notiz"* und führen das
 Wort *Closure* in **keiner** Überschriften-Ebene (`grep -cE '^#{1,6} .*[Cc]losure'` → 0 je Datei) —
 sie weichen damit auch von der vendored Ziel-Form ab
-(`.harness/baseline/v6.5.0/templates/docs/plan/planning/welle-results.template.md:1`) und bleiben
+(`.harness/baseline/v6.7.2/templates/docs/plan/planning/welle-results.template.md:1`) und bleiben
 eine benannte, nicht nachgezogene Abweichung, kein zweiter Grund für den engen Filter. Gegen eine
 Kopie außerhalb des Repos, netzlos, mit `closure.glob: '*.md'`
 probeweise geweitet
@@ -112,7 +112,7 @@ Notiz in einem Unterverzeichnis erzeugt **keinen** Fund — gemessen an einem So
 `done/welle-99/`): flach `closure-note-thin`, tief **0** Treffer, in derselben Kopie außerhalb des
 Repos. `done/` trägt heute keine Unterverzeichnisse (`find docs/plan/planning/done -mindepth 1
 -maxdepth 1 -type d | wc -l` → 0), die Zusage ist also **heute** vollständig — die vom
-Regelwerk (`.harness/baseline/v6.5.0/regelwerk/modul-06-roadmap.md` §Wellen-Closure-Prozedur
+Regelwerk (`.harness/baseline/v6.7.2/regelwerk/modul-06-roadmap.md` §Wellen-Closure-Prozedur
 Schritt 4) **vor der ersten Archivierung** verlangte Geltungsbereichs-Prüfung gilt für diesen
 Sensor als hiermit durchgeführt
 und mit **benannter Grenze** beantwortet, statt stillschweigend zu bestehen: sobald ein

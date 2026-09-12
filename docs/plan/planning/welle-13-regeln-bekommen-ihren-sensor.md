@@ -118,7 +118,7 @@ Register `docs/plan/planning/observations/` wird vor dem Schnitt durchgegangen; 
 Eintrag die Sub-Areas dieser Welle, gehört er in die Slice-Planung, und bei **3×** als eigener
 Slice. **Keine Treffer sind ebenfalls eine Antwort und werden notiert.** Der Block steht hier und
 nicht als eigener `## 8`-Abschnitt: Die Ziel-Form
-[`welle.template.md`](../../../.harness/baseline/v6.5.0/templates/docs/plan/planning/welle.template.md)
+[`welle.template.md`](../../../.harness/baseline/v6.7.2/templates/docs/plan/planning/welle.template.md)
 führt **sieben** Abschnitte, und ein achter wäre eine Abweichung, die einen Eintrag im
 Adaptions-Block bräuchte
 ([`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage)) — den schreibt der Architect,

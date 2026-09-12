@@ -900,7 +900,7 @@ func maskQuotedCommentSyntax(s string) (string, map[string]string) {
 // Traegt der zu emittierende Quelltext dieselbe Byte-Folge bereits (die
 // Platzhalter beginnen mit dem Steuerzeichen-Paar \x00\x01), ueberschreibt
 // die Rueckuebersetzung diese fremde Stelle mit dem Inhalt einer anderen
-// Spanne. Weder der vendored `v6.5.0`- noch der emittierte Vorlagen-Satz
+// Spanne. Weder der vendored `v6.7.2`- noch der emittierte Vorlagen-Satz
 // traegt ein NUL-Byte (`grep -rlP '\x00' .harness/baseline/v6.7.2/templates
 // internal/emit/templates` — leer, kein Erwartungswert, gilt fuer den
 // jeweils aktuellen Satz), die Grenze ist heute nicht ausloesbar.

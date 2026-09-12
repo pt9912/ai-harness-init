@@ -209,7 +209,7 @@ Aussagen-Berührung steht hier gar nicht.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `.harness/baseline/v6.7.2/{regelwerk,templates}/` + `SHA256SUMS` | neu | der vendored Baum aus dem verifizierten Release-Asset |
-| `.harness/baseline/v6.5.0/` | entfällt | `make vendor-baseline` bricht bei einem **anderen** vorliegenden Tag vor jedem Zugriff ab (§6); der alte Baum weicht vorher |
+| `.harness/baseline/` (der zuvor darin liegende Tag-Ordner) | entfällt | `make vendor-baseline` bricht bei einem **anderen** vorliegenden Tag vor jedem Zugriff ab (§6); der alte Baum weicht vorher |
 | `Makefile` (`BASELINE_TAG`, `BASELINE_ZIP_SHA256`) | update | kanonisches Pin-Paar |
 | [`.d-check.yml`](../../../../.d-check.yml) (`sources`-`url`/`sha256`) | update | fail-closed an das Makefile-Paar gekoppelt (`test/sources-pin.bats`) |
 | `internal/fetch/baseline.go` (`DefaultTag`, `DefaultBaselineSHA256`) | update | dasselbe Asset wandert ins Zielrepo ([`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)) |

@@ -218,7 +218,7 @@ Zwei beobachtbare Kriterien und ein Lerneintrag:
 Berührung ist `*` (`ALL`), Schwelle ≥ 2 von 3 gehalten wie in
 [slice-213](../open/slice-213-review-report-laeuft-in-der-tabellen-form.md) §8 — Achse 1 und 2
 tragen, Achse 3 für `*` naturgemäß nicht
-([`grundlagen-bootstrap.md`](../../../../.harness/baseline/v6.5.0/regelwerk/grundlagen-bootstrap.md#was-ist-eine-sub-area)).
+([`grundlagen-bootstrap.md`](../../../../.harness/baseline/v6.7.2/regelwerk/grundlagen-bootstrap.md#was-ist-eine-sub-area)).
 
 **Vorgelagert — offene Beobachtungen sichten.** Das Register führt
 

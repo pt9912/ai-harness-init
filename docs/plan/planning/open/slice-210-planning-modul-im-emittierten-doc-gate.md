@@ -75,7 +75,7 @@ Roadmap entsteht, trägt die Überschrift, auf die das Modul bindet, aber **kein
 Ruhe-Marker-Literal:
 
 ```sh
-T=.harness/baseline/v6.5.0/templates/docs/plan/planning/roadmap.template.md
+T=.harness/baseline/v6.7.2/templates/docs/plan/planning/roadmap.template.md
 grep -nE '^## Offene Wellen' "$T"     # die Ueberschrift steht
 grep -c 'Nichts in Arbeit' "$T"       # 0 -- der Marker steht nicht
 ```

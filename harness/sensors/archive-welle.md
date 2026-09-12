@@ -142,4 +142,4 @@ Commits ab und nennt den Rückweg (`git reset --hard HEAD~1 && git clean -fd`).
 
 [`ADR-0033`](../../docs/plan/adr/0033-wellen-archivierung-als-unterkommando.md); kein
 Gate-Versprechen; Schritt 4 der Wellen-Closure
-([Modul 6](../../.harness/baseline/v6.5.0/regelwerk/modul-06-roadmap.md#wellen-closure-prozedur-modul-6)).
+([Modul 6](../../.harness/baseline/v6.7.2/regelwerk/modul-06-roadmap.md#wellen-closure-prozedur-modul-6)).
