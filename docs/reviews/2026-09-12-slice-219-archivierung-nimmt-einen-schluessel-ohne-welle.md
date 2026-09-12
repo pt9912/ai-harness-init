@@ -1,6 +1,6 @@
 # Review slice-219 — Die Archivierung nimmt einen Schlüssel, der keine Welle ist
 
-**Rolle:** Reviewer · **Datum:** 2026-09-12 · **Gegenstand:** `f9ef00e2` (5 Dateien, +173/−15) · **Plan:** [`slice-219`](../plan/planning/in-progress/slice-219-archivierung-nimmt-einen-schluessel-ohne-welle.md)
+**Rolle:** Reviewer · **Datum:** 2026-09-12 · **Gegenstand:** `f9ef00e2` (5 Dateien, +173/−15) · **Plan:** [`slice-219`](../plan/planning/done/slice-219-archivierung-nimmt-einen-schluessel-ohne-welle.md)
 **Constraint:** [`ADR-0041`](../plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) (Accepted), [`ADR-0033`](../plan/adr/0033-wellen-archivierung-als-unterkommando.md) · **Hard Rules:** [`AGENTS.md`](../../AGENTS.md) §3.6, §3.7 · **Vorrunden:** `2026-09-12-adr-0041-*` (r1–r3)
 **Gefahren:** `make test-go` (Basis grün), vier Mutationen einzeln angewandt und zurückgesetzt, `make comment-claims`, `make host-bin` + `--vorschau altbestand`
 
