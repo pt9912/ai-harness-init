@@ -62,18 +62,22 @@ nicht aus einem gesetzten Wert (§1 *Warum hier kein Grenzwert steht*).
 
 ### Die Ziel-Form steht in der Baseline-Vorlage, nicht in diesem Plan
 
-Der vendored Baum trägt die Vorlage bereits:
+Der vendored Baum trägt die Vorlage, und seit dem Baum-Tausch ist es die **neue** Fassung:
 
 ```sh
 ls .harness/baseline/v6.7.2/templates/docs/reviews/review-report.template.md
 ```
 
-Die **neue** Fassung liegt heute nur im Lab des Kurses und ist **nicht adoptiert**. Der Unterschied
-ist gemessen, nicht abgeschrieben:
+Die Ziel-Form ist damit **adoptiert**; ein Vorgriff auf eine Lab-Fassung steht nicht mehr zur
+Frage. Zu tun bleibt der **Bestand** — die Reports, die gegen die abgelöste Fassung geschrieben
+sind. Der Unterschied ist gemessen, nicht abgeschrieben; die abgelöste Seite steht als
+Tree-Operand, weil der vendored Baum sie nicht mehr führt
+([`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
+Ausgang 2):
 
 ```sh
-diff -u .harness/baseline/v6.7.2/templates/docs/reviews/review-report.template.md \
-        /Development/KI/ai-harness-course/lab/templates/docs/reviews/review-report.template.md
+diff -u <(git show e488119c^:.harness/baseline/v6.5.0/templates/docs/reviews/review-report.template.md) \
+        .harness/baseline/v6.7.2/templates/docs/reviews/review-report.template.md
 ```
 
 Er ist **vierteilig**:
@@ -85,16 +89,17 @@ Er ist **vierteilig**:
    trägt das feste Literal *„geprüft, ohne Befund"*.
 3. Ein neuer Kommentar im Findings-Abschnitt spricht die Grenzwert-Frage direkt an (unten zitiert).
 4. Kopfzeile und Zitier-Form wechseln von `slice-NN`/`slice-NNN` auf `slice-<Kennung>`. **Dieser
-   vierte Teil berührt weder Tabelle noch Grenze** und reist mit der Adoption der Vorlage, nicht mit
-   diesem Slice.
+   vierte Teil berührt weder Tabelle noch Grenze**; er kam mit der Adoption der Vorlage und liegt
+   als Bestands-Nachzug bei [slice-224](../open/slice-224-delta-nachweis-und-planungs-nachzug.md),
+   nicht bei diesem Slice.
 
-**Am Reviewer-Skill selbst hat sich upstream nichts geändert** — die zwei Fassungen der
-Skill-Vorlage sind byte-gleich:
+**Am Reviewer-Skill selbst hat der Sprung nichts geändert** — die abgelöste und die adoptierte
+Fassung der Skill-Vorlage sind byte-gleich:
 
 ```sh
-cmp .harness/baseline/v6.7.2/templates/.harness/skills/reviewer.template.md \
-    /Development/KI/ai-harness-course/lab/templates/.harness/skills/reviewer.template.md \
-  && echo byte-gleich          # byte-gleich
+diff <(git show e488119c^:.harness/baseline/v6.5.0/templates/.harness/skills/reviewer.template.md) \
+     .harness/baseline/v6.7.2/templates/.harness/skills/reviewer.template.md \
+  && echo byte-gleich          # byte-gleich, EXIT 0
 ```
 
 ### Warum hier kein Grenzwert steht
@@ -212,15 +217,6 @@ welches Muster trägt und welcher Cutoff dahinter bleibt. Das ist DoD (2), keine
   **Befund an die Reviewer-Rolle** ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)),
   kein Gegenstand dieses Plans; dieser Plan ist das **Übergabe-Artefakt**, und DoD (1) benennt die
   Entscheidung. *(Klasse: andere Rolle — es wäre ein anderer Vorgang.)*
-- **Keine Entscheidung über den Vorgriff auf die nicht adoptierte Vorlage.** Ob dieses Repo einer
-  Lab-Fassung vorgreifen darf und ob der Vorgriff einen Adaptions-Eintrag trägt, der bei der
-  Adoption retiriert wird, ist eine **Architect**-Frage ([`AGENTS.md`](../../../../AGENTS.md) §3.8,
-  [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1) mit Präzedenz in
-  diesem Repo: [`MR-022`](../../../../harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)
-  war genau ein solcher Vorgriff und liegt heute in
-  [`conventions/done/`](../../../../harness/conventions/done/). Der Plan **benennt** sie und macht
-  ihr Verdikt zum Start-Trigger (§4); er entscheidet sie nicht.
-  *(Klasse: anderer Vorgang, andere Rolle.)*
 - **Kein Adaptions-Eintrag für die Aktivierung von `structure`.** Denselben Block schreibt derselbe
   Architect; die **Form** dieser Buchung entscheidet
   [slice-212](../open/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md). **Die Adresse
@@ -302,11 +298,12 @@ Standard-Punkte der Vorlage (nicht slice-eigen, zählen nicht zur Drei):
 ## 4. Trigger
 
 **Start** (`next` → `in-progress`): Der Slice ist priorisiert (`open → next` vollzogen,
-`Verantwortlich:` gesetzt), das WIP-Limit des Rolleninhabers ist frei, **und das Architect-Verdikt
-zur Vorgriffs-Frage aus §1 liegt vor** — entweder als Entscheidung, der nicht adoptierten Vorlage
-vorzugreifen (mit oder ohne Adaptions-Eintrag), oder dadurch, dass die neue Vorlage mit einer
-Re-Baseline adoptiert ist. In beiden Fällen ist die Form gedeckt; ohne eines von beiden schriebe
-DoD (1) eine Form, für die keine Quelle steht.
+`Verantwortlich:` gesetzt), das WIP-Limit des Rolleninhabers ist frei, **und die Ziel-Form ist
+adoptiert** — der vendored Baum führt die Vorlage in der neuen Fassung
+(`ls .harness/baseline/v6.7.2/templates/docs/reviews/review-report.template.md`, §1). Damit ist die
+Form gedeckt; ohne sie schriebe DoD (1) eine Form, für die keine Quelle steht. Beobachtbar ohne
+Rückfrage, und **kein Ergebnis dieses Slice**: Den Baum tauschte
+[slice-223](../in-progress/slice-223-baum-tausch-v672-pins-ziehen.md).
 
 **Rückführungen — vorab benannt:**
 
@@ -355,10 +352,6 @@ Zwei beobachtbare Kriterien und ein Lerneintrag:
   [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   in der Zellen-Form einlösbar bleibt, ist eine Form-Entscheidung der Reviewer-Rolle und liegt in
   DoD (1). — **Ausgang:** <…>
-- **Der Vorgriff auf eine nicht adoptierte Vorlage kann bei der Adoption auseinanderlaufen.** Ändert
-  sich die Lab-Fassung zwischen diesem Slice und ihrer Adoption weiter, trägt das Repo eine Form,
-  die die dann vendored Vorlage nicht führt. Der vierte Diff-Teil (§1) zeigt, dass die Fassung
-  ohnehin noch bewegt wird. — **Ausgang:** <…>
 - **Die Aktivierung vergrößert die in [slice-212](../open/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md)
   gemessene Differenz.** Schließt slice-212 vor diesem Slice, hat die dritte Aktivierung keinen
   Adress-Träger im Adaptions-Block — der Fall, den
@@ -427,11 +420,9 @@ je Eintrag:
 - **`neuer-waechter-ohne-mutations-fall` (4×, Stand `offen`).** Über der Schwelle, ohne Sensor —
   Träger ist das Review. Konsequenz: DoD (3) verlangt den `test/mutations/`-Fall als **Bedingung**.
 - **`uebergabe-an-andere-rolle-ohne-traeger-artefakt` (2×, Stand `offen`).** Unter der Schwelle, und
-  dieser Slice erklärt **drei** Gegenstände zur Übergabe (Spaltenschnitt und `ID`-Abweichung →
-  Reviewer; Vorgriffs-Frage und Adaptions-Buchung → Architect). Konsequenz: **dieser Plan ist das
-  Träger-Artefakt** — eine Datei in `open/`, kein Satz in einer Closure-Notiz, die mit dem `git mv`
-  Chronik wird —, und die Vorgriffs-Frage ist zusätzlich als **Start-Trigger** verdrahtet (§4), also
-  beobachtbar statt bloß benannt.
+  dieser Slice erklärt **zwei** Gegenstände zur Übergabe (Spaltenschnitt und `ID`-Abweichung →
+  Reviewer; Adaptions-Buchung → Architect). Konsequenz: **dieser Plan ist das Träger-Artefakt** —
+  eine Datei in `open/`, kein Satz in einer Closure-Notiz, die mit dem `git mv` Chronik wird.
 - **`slice-plan-umfang-waechst-ueber-umsetzung-hinaus` (2×, Stand `offen`).** Unter der Schwelle,
   und dieser Plan ist die Stelle, an der sie eintreten kann. Konsequenz: Der Plan führt **keinen**
   Abschnitt neben §3, der die Umsetzung ein zweites Mal beschreibt — was eine Datei-Zeile trägt,
