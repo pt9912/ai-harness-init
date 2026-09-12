@@ -16,9 +16,9 @@
   [`MR-027`](../conventions.md#mr-027--d-check-pin-v0650-ignore-marker-in-zwei-achsen-verengt): ein
   Pin-Sprung, der Module **verfügbar** macht, ohne eines zu aktivieren, tritt an keine Stelle. Er
   ist der bewusste Digest-Commit aus
-  [`modul-14-docker-harness.md`](../../.harness/baseline/v6.5.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)
+  [`modul-14-docker-harness.md`](../../.harness/baseline/v6.7.2/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)
   und die Neu-Erzeugung des Fragments aus
-  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.5.0/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
+  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.7.2/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
   §Gate-Fragment `d-check.mk`. Auch die Strenge-Bilanz ersetzt nichts: sie beantwortet die
   §3.5-Frage von [`AGENTS.md`](../../AGENTS.md) an der Quell-Differenz.
 - **Adaption:** Das gepinnte d-check-Image springt **v0.65.0 → v0.74.1**. Digest

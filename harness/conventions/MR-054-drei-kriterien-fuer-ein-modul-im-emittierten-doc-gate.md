@@ -30,7 +30,7 @@
   Die Ziel-Form der Startkonfiguration trägt ihre eigene Wachstums-Regel
   (`grep -c 'Wächst mit den Artefakten' .harness/baseline/v6.5.0/templates/.d-check.yml` → **1**),
   und die Grenz-Pflicht aus Setzung 4 ist
-  [`modul-13-quality-gates.md`](../../.harness/baseline/v6.5.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin)
+  [`modul-13-quality-gates.md`](../../.harness/baseline/v6.7.2/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin)
   §Hard Rule (Doku-Disziplin).
 - **Setzung 1 — drei Kriterien, alle drei, und das erste bindet auf Modul-Ebene.** Ein Modul geht
   in die emittierte Startkonfiguration, wenn gilt:

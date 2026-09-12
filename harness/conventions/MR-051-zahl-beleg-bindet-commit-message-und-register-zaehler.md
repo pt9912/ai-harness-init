@@ -18,7 +18,7 @@
   und die Messung ist am adoptierten Stand `v6.0.0` wiederholt: das Regelwerk führt keine Regel
   über den Beleg einer Zahl in Prosa (`grep -rl 'Erwartungswert' .harness/baseline/v6.0.0/regelwerk/`
   ist leer, Exit 1). Die Klasse kennt es dem Begriff nach als **Harness-Lüge**
-  ([`grundlagen-begriffe.md`](../../.harness/baseline/v6.5.0/regelwerk/grundlagen-begriffe.md#kernbegriffe));
+  ([`grundlagen-begriffe.md`](../../.harness/baseline/v6.7.2/regelwerk/grundlagen-begriffe.md#kernbegriffe));
   das ist die Umgebung dieser Setzungen, nicht die Regel, an deren Stelle sie träten.
 - **Setzung 1 — die Commit-Message steht im Geltungsbereich.** Eine Zahl in einer Commit-Message
   dieses Repos, die als **Messwert** auftritt, bindet
@@ -41,7 +41,7 @@
   ist der Regelfall —, führt das Kommando, das ihn **ableitet**, kennzeichnet den Wert als
   **keinen** Erwartungswert und zieht die Schwellen-Folgerung aus dem Lauf statt aus dem
   Gedächtnis. Bezugsstand ist der **gemergte** — Baseline-Regelwerk
-  [`modul-05-planning-harness.md`](../../.harness/baseline/v6.5.0/regelwerk/modul-05-planning-harness.md#zwei-schritte-vor-der-modus-begründung)
+  [`modul-05-planning-harness.md`](../../.harness/baseline/v6.7.2/regelwerk/modul-05-planning-harness.md#zwei-schritte-vor-der-modus-begründung)
   §Zwei Schritte vor der Modus-Begründung: *„Gelesen wird der **gemergte** Stand: Das Register ist
   beim Lesen so alt wie der letzte Merge"*.
 
@@ -50,7 +50,7 @@
   Setzung 2 nennt die Klasse — eine Zahl, die mit dem Artefakt mitwandert, taugt nicht als
   Erwartungswert. Der Register-Zähler ist ihr reinster Fall, denn er wird abgeleitet und nicht
   geführt: Baseline-Regelwerk
-  [`modul-06-roadmap.md`](../../.harness/baseline/v6.5.0/regelwerk/modul-06-roadmap.md#das-beobachtungs-register-modul-6)
+  [`modul-06-roadmap.md`](../../.harness/baseline/v6.7.2/regelwerk/modul-06-roadmap.md#das-beobachtungs-register-modul-6)
   §Das Beobachtungs-Register — *„Es gibt kein Feld, in das man ihn schreibt, und deshalb keines,
   das falsch stehen kann."* Eine Zahl im §8-Block **ist** dieses Feld, nur außerhalb des
   Registers. Dieser Eintrag benennt den Ort; er stellt keine zweite Regel daneben.
