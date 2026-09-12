@@ -18,7 +18,7 @@ Die nächste Welle-Closure fährt `cp` ins Leere, und der dokumentierte Ausweich
 den slice-083 mit der `cp`-Pflicht ausgeschlossen hat — eine hand-geschriebene Notiz statt der
 Vorlage. Kein Gate sieht es (`codepaths.roots: [spec, docs, harness]` erreicht weder `.harness`
 noch `.claude`), und kein lebender Plan nennt den Posten:
-[slice-224](../plan/planning/open/slice-224-delta-nachweis-und-planungs-nachzug.md) nimmt die Datei
+[slice-224](../plan/planning/next/slice-224-delta-nachweis-und-planungs-nachzug.md) nimmt die Datei
 für die **Kennungs-Notation**, [slice-153](../plan/planning/open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md)
 für die **Roadmap-Abschnitte**; das Tag-Segment steht in keinem von beiden. Die
 Auslassungs-Begründung des Implementer-Commits — *„Inline-Code ohne Markdown-Link, damit für
@@ -104,7 +104,7 @@ auslösbar.
 `v6.5.0 → v6.7.2` real bewegt (Herkunfts-Anker `(seit welle-<NN>)` → `(seit welle-<Kennung>)`), und
 ein Kopf-Bump ohne diesen Nachzug wäre eine Behauptung ohne Messung. Die Ziel-Form-Vorlage ist über
 denselben Tausch byte-gleich. Der Posten liegt bei
-[slice-224](../plan/planning/open/slice-224-delta-nachweis-und-planungs-nachzug.md), das den
+[slice-224](../plan/planning/next/slice-224-delta-nachweis-und-planungs-nachzug.md), das den
 Kennungs-Notations-Nachzug und diese Datei ausdrücklich führt.
 
 ### INFO-3 — Der Reviewer-Anweisungssatz liegt im Prüfgegenstand des Reviewers
@@ -142,7 +142,7 @@ keinen fremden Prüfer. Kein Befund am Diff, eine benannte Eigenschaft der Zuord
 - **Die DoD-Abhakung** — Verifier-Rolle, anderes Prüf-Artefakt. Ein Posten gehört dorthin und ist hier nur als Zahl notiert: DoD 3 sagt *„0 Treffer"* für die drei §1-Kommandos; gemessen sind **0 · 0 · 12**.
 - **`make gates`** — fährt der Auftraggeber; Stempel liegt über `38174544`.
 - **`make mutate`, `make smoke`, `make full-smoke`** — nicht gefahren. Die fünf berührten Mutations-Fälle sind gelesen, nicht ausgeführt.
-- **Das inhaltliche Delta von `v6.7.2`** — welche Regel welches Artefakt trifft, ist ausdrücklich Gegenstand von [slice-224](../plan/planning/open/slice-224-delta-nachweis-und-planungs-nachzug.md) und [slice-225](../plan/planning/open/slice-225-gate-index-steht-einmal.md). Geprüft ist hier nur, **dass** der Baum dem Kurs-Tag entspricht, nicht, **was** er sagt.
+- **Das inhaltliche Delta von `v6.7.2`** — welche Regel welches Artefakt trifft, ist ausdrücklich Gegenstand von [slice-224](../plan/planning/next/slice-224-delta-nachweis-und-planungs-nachzug.md) und [slice-225](../plan/planning/open/slice-225-gate-index-steht-einmal.md). Geprüft ist hier nur, **dass** der Baum dem Kurs-Tag entspricht, nicht, **was** er sagt.
 - **Die emittierte Inhalts-Ebene** (`internal/emit/templates/`) — eigener Prüfbereich, eigener Beleg (`make full-smoke`).
 - **Die Prozedur, mit der der Baum entstand** — ob `make vendor-baseline` gefahren wurde, ist an git nicht ablesbar. Geprüft ist das **Ergebnis** (identisch zum Kurs-Tag, Pin am Asset verifiziert).
 - **Kontext-Trennung zwischen den vier Läufen** — aus `git` nicht beobachtbar; die Rollen-Labels und der Commit-Zuschnitt sind es, und beide stimmen.
