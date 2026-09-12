@@ -18,20 +18,22 @@ Netz. Der Baum ist eine **derivative Sicht** auf den Kurs; bei Konflikt gilt die
 kanonische Quelle (§2 und der Kurs selbst, den `regelwerk/README.md` nennt).
 **Lektüre vor dem Workflow (§6): der Index** (`.harness/baseline/<tag>/regelwerk/README.md`)
 **+ das relevante Modul on-demand**, **nicht** der Volltext am Stück — der `regelwerk/`-Baum
-misst am adoptierten Stand `v6.0.0` mehr als das Doppelte von Claudes
-150k-Zeichen-Memory-Limit (`cat .harness/baseline/v6.0.0/regelwerk/*.md | wc -c` → **351125**;
+misst am adoptierten Stand `v6.7.2` mehr als das Doppelte von Claudes
+150k-Zeichen-Memory-Limit (`cat .harness/baseline/v6.7.2/regelwerk/*.md | wc -c` → **352247**;
 **kein Erwartungswert**, die Zahl wandert mit dem Tag. Das Limit selbst ist eine
 Werkzeug-Eigenschaft und hier nicht messbar — erhoben in
 [`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor)).
 
-**Zugriff (pro Agent verschieden) — und vier Module sind davon ausgenommen.** **Codex**
+**Zugriff (pro Agent verschieden) — und fünf Module sind davon ausgenommen.** **Codex**
 injiziert via SessionStart-Hook nur den **Index** (`.codex/hooks.json` →
 `harness/tools/sessionstart-inject-regelwerk.sh`) und liest jedes Modul **on-demand**.
 **Claude** liest ebenso on-demand (Pointer: `CLAUDE.md`-Direktive + Source Precedence) —
 **außer** den Modulen unter `.claude/rules/`, die als Symlink in den vendored Baum zeigen
 und dadurch in **jedem** Claude-Lauf im Kontext stehen, ohne gelesen worden zu sein
-(`ls .claude/rules/*.md | wc -l` → **4** von **26**,
-`ls .harness/baseline/v6.0.0/regelwerk/*.md | wc -l`; beide **keine Erwartungswerte**).
+(`readlink .claude/rules/*.md | grep -c '\.harness/baseline/'` → **5** von **26**,
+`ls .harness/baseline/v6.7.2/regelwerk/*.md | wc -l`; beide **keine Erwartungswerte**).
+Gezählt sind die Zeiger **in den vendored Baum**; daneben trägt das Verzeichnis
+Zeiger auf repo-eigene Quellen, die keine Baseline-Module sind.
 Ein `@`-Auto-Import besteht nicht — Träger ist das Verzeichnis. Die Menge ist
 **geschlossen**, ihre Präsenz **erzwingt nichts**, und für jedes übrige Modul gilt die
 On-demand-Pflicht unverändert:
@@ -226,22 +228,29 @@ ob eine Zelle Chronik trägt, ist wie die zwei Urteils-Klassen oben ein Urteil u
 kein Muster — ein `grep` zählte Zellen, nicht Verstöße, und gäbe damit ein Muster
 als Kriterium aus, das keines ist (§3.6).
 
-**Herkunft, mit Mess-Stand:** die adoptierte Baseline `v6.5.0` **führt** diese
+**Herkunft, mit Mess-Stand:** die adoptierte Baseline `v6.7.2` **führt** diese
 Regel — als Hard Rule mit derselben Nummer und demselben Titel im Hard-Rules-Block
 der AGENTS-Vorlage
-(`grep -c '^### 3\.7 Ein Kommentar beschreibt, was da ist$' .harness/baseline/v6.5.0/templates/AGENTS.template.md` → **1**)
+(`grep -c '^### 3\.7 Ein Kommentar beschreibt, was da ist$' .harness/baseline/v6.7.2/templates/AGENTS.template.md` → **1**)
 und ausgeschrieben in
-`grep -c '^### Was ein Kommentar trägt — Code, Konfiguration, Skripte$' .harness/baseline/v6.5.0/regelwerk/grundlagen-harness-dateien.md` → **1**.
+`grep -c '^### Was ein Kommentar trägt — Code, Konfiguration, Skripte$' .harness/baseline/v6.7.2/regelwerk/grundlagen-harness-dateien.md` → **1**.
 Was hier über die Vorlage hinaus steht — Geltungsbereich, Cutoff, Quellen-Klausel
 und die Wächter-Aussage —, ergänzt sie, ohne sie einzuschränken. Die
 Quellen-Klausel ist die **Anwendung** der Baseline-Hard-Rule *„Wer Herkunft nennt,
 nennt sie als **ein** auflösbares Feld … und nie als Absatz"*
-(`grep -c 'nennt sie als \*\*ein\*\* auflösbares Feld' .harness/baseline/v6.5.0/regelwerk/grundlagen-harness-dateien.md` → **1**):
-Sie nimmt keine der fünf Klassen weg und keine der dort genannten Anker-Formen —
-`· seit slice-<NNN>` steht in der Begründung ausdrücklich, weil
-`grundlagen-traceability.md` §Herkunfts-Anker ihn für wellenlos verkörperte Regeln
-verlangt. Die Deckung ist gegen den adoptierten Stand gehalten und in
-[`MR-031`](harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline) protokolliert.
+(`grep -c 'nennt sie als \*\*ein\*\* auflösbares Feld' .harness/baseline/v6.7.2/regelwerk/grundlagen-harness-dateien.md` → **1**):
+Sie nimmt keine der fünf Klassen weg und keine der dort genannten Anker-Formen.
+**Eine Anker-Form steht im adoptierten Stand anders als in der Begründung oben:**
+Er schreibt die Slice-Kennung als Namen —
+`grep -c 'seit slice-<NNN>' .harness/baseline/v6.7.2/regelwerk/grundlagen-traceability.md` → **0**,
+`grep -c 'seit slice-<Kennung>' .harness/baseline/v6.7.2/regelwerk/grundlagen-traceability.md` → **3**;
+**keine Erwartungswerte**, beide wandern mit dem Stand. Die Divergenz ist damit
+benannt und nicht entschieden: Welche Form dieses Repo führt, setzt der
+Adaptions-Durchgang gegen `v6.7.2` — [`harness/conventions.md`](harness/conventions.md)
+§Baseline führt ihn als `slice-224`, ausstehend. Die Deckung ist gegen den
+adoptierten Stand gehalten und in
+[`MR-031`](harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline)
+protokolliert — dort als datierte Messung an dem Stand, der sie auslöste.
 **Ein Wächter existiert nicht:** `make comment-claims` prüft, ob ein genannter
 Sensor existiert, nicht, worüber ein Kommentar spricht — und keine Markdown-Datei
 liegt in seinem Prüfbereich, also auch kein Zustandsfeld. Für die zwei zählbaren
@@ -379,7 +388,7 @@ Kontext schreiben.
 **Warum der Planner — und was diese Sektion hinzufügt.** Die Zuweisung ist nicht neu: die
 adoptierte Baseline führt den Schritt in der Rollen-Sequenz für einen Slice als
 `P->>P: Closure in done/ + Lerneintrag`
-(`grep -c 'P->>P: Closure in done/ + Lerneintrag' .harness/baseline/v6.5.0/regelwerk/modul-08-agentenrollen.md`
+(`grep -c 'P->>P: Closure in done/ + Lerneintrag' .harness/baseline/v6.7.2/regelwerk/modul-08-agentenrollen.md`
 → **1**). Neu ist der **Commit-Zuschnitt**, den §3.8 für die zwei Architect-Artefakte führt und
 den für den Abschluss keine Quelle führt — ohne ihn ist die Rollen-Grenze im Nachhinein an nichts
 ablesbar. Die Sektion füllt damit eine Lücke, statt von der Baseline abzuweichen; deshalb steht zu
