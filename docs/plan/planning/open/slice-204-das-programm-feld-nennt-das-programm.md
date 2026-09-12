@@ -203,12 +203,10 @@ Fall abgelegt, `make gates` ist grün. **(2)** Ein Lauf über einem frischen Str
 Dazu der Lerneintrag in einer der drei Formen (geschärfte Regel · neuer Sensor · benannte
 Spec-Lücke).
 
-**Verhältnis zu [slice-203](slice-203-der-laufende-agent-wird-sichtbar-waehrend-er-laeuft.md):**
-203 baut die Sicht, dieser Slice macht sie aussagekräftig — eine Live-Sicht, die bei 38 % der
-Aufrufe „cd" anzeigt, sagt dem Beobachter nichts. **Die Abhängigkeit ist eingetragen, aber sie
-hängt nicht:** 203 ist auch mit dem heutigen Wert nützlich, nur ärmer, und dieser Slice ist ohne
-203 ebenso lieferbar. Keiner der beiden wartet auf den anderen — sonst wären es zwei
-Zombie-Slices (Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Slice).
+**Kein Konsument wartet auf diesen Wert.** Eine Live-Sicht über demselben Strom ist in diesem
+Repo nicht geschnitten; der Wert trägt für jeden Leser des Stroms, und dieser Slice ist ohne
+einen benannten Konsumenten lieferbar — sonst wäre er ein Zombie-Slice (Baseline-Regelwerk
+`modul-05-planning-harness.md` §Ziel-Form: Slice).
 
 ## 6. Risiken und offene Punkte
 

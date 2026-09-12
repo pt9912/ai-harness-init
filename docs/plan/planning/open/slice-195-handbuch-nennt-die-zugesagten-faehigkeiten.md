@@ -277,7 +277,8 @@ Handbuch bildet den Ist-Zustand ab und trägt keine Vorschau.
 [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) sagt
 *„`cpp` … **folgt**"* — eine **Liefer-Aussage** in einem Soll-Dokument, also Plan am falschen Ort;
 dass sie zusätzlich nicht mehr stimmt, ist die Folge und nicht der Grund. Sie ist gemessen und hat
-einen Träger: [slice-196](slice-196-spec-traegt-keine-liefer-aussage.md). Dieser Slice fasst
+keinen eigenen Träger: Der Plan, der sie trug, ist als eigener Vorgang verworfen — die Korrektur
+ist ein Satz und fährt mit dem nächsten Lauf mit, der `spec/` anfasst. Dieser Slice fasst
 `spec/` nicht an (§3).
 
 ## 7. Closure-Notiz

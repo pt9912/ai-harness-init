@@ -130,8 +130,8 @@ nicht dieser Plan.
   gemessene Bedeutung; was ein Beobachter daraus schließen darf, folgt erst daraus —
   **Bestand bleibt bewusst stehen**, und die Grenze gehört benannt statt überschrieben.
 - **Keine Auswertung und keine Sicht.** Wer das neue Ereignis liest und was er daraus schließt,
-  ist [slice-203](slice-203-der-laufende-agent-wird-sichtbar-waehrend-er-laeuft.md) —
-  **anderer Vorgang**, andere Schicht. Dieser Slice schreibt nur, was im Strom steht.
+  ist **ein anderer Vorgang** auf einer anderen Schicht und in diesem Repo nicht geschnitten.
+  Dieser Slice schreibt nur, was im Strom steht.
 - **Kein zweiter Hook und kein `Stop`/`SessionEnd`.** Der Haupt-Kontext hat sein eigenes
   Ende-Ereignis, und `Stop` ist in diesem Repo bereits mit dem Gate-Wächter belegt. Es
   daneben auch noch erfassen zu lassen, ist eine eigene Abwägung — **ein anderer Vorgang**.
@@ -239,13 +239,10 @@ Ereignisses ist an einem realen Ablauf gemessen und in der Spec-Zeile festgeschr
 Grenze, die die Messung ergibt. Dazu der Lerneintrag in einer der drei Formen (geschärfte Regel ·
 neuer Sensor · benannte Spec-Lücke).
 
-**Verhältnis zu [slice-203](slice-203-der-laufende-agent-wird-sichtbar-waehrend-er-laeuft.md):**
-203 liest, dieser Slice schreibt. **Die Abhängigkeit ist eingetragen, aber sie hängt nicht** —
-203 trägt den Zustand POLLING ohne dieses Ereignis vollständig; nur STILL bleibt ohne es
-Rauschen, und 203 benennt das als seine Grenze, statt darauf zu warten. Umgekehrt ist dieser
-Slice ohne 203 lieferbar: ein Strom, der sein Ende-Ereignis führt, ist auch ohne Live-Sicht
-auswertbar. Keiner wartet auf den anderen — sonst wären es zwei Zombie-Slices (Baseline-Regelwerk
-`modul-05-planning-harness.md` §Ziel-Form: Slice).
+**Kein Leser wartet auf dieses Ereignis.** Dieser Slice schreibt; wer den Strom liest, ist in
+diesem Repo nicht geschnitten. Ein Strom, der sein Ende-Ereignis führt, ist auch ohne benannten
+Leser auswertbar — der Slice ist damit einzeln lieferbar und kein Zombie-Slice
+(Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Slice).
 
 ## 6. Risiken und offene Punkte
 
