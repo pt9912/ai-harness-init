@@ -402,15 +402,20 @@ Backticks).
   (2×). Verkörpern ist Architect-Arbeit ([`AGENTS.md`](../../../../AGENTS.md) §3.8) und gehört an
   den Lese-Schritt der nächsten Welle-Closure; dieser Eintrag ist damit **gezählt, nicht
   verkörpert**, und trägt darum kein Feld `liegt in`.
-- **Beobachtungs-Register (`../observations/`):** vier `evidence/slice-183.md` ergänzt, jeder
+- **Beobachtungs-Register (`../observations/`):** fünf `evidence/slice-183.md` ergänzt, jeder
   Zähler als Dateizahl abgelesen
   (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`, keine
   Erwartungswerte) — `zusammenfassung-staerker-als-ihre-quelle` **6×** ·
   `baseline-aussage-ohne-mess-tag` **2×** ·
   `verweis-nachzug-schreibt-in-eingefrorenes-artefakt` **13×** ·
-  `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch` **13×**. Die `state.md` des letzten
-  Eintrags hat ihren Vermerk *Benannt, nicht gezählt* verloren: Er sagte, der Beleg entstehe mit
-  dieser Closure, und das ist geschehen. **Neu angelegt wurde kein Verzeichnis** — die
+  `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch` **13×** ·
+  `verweis-nachzug-ersetzt-eine-historisch-richtige-adresse` **2×**. Der letzte ist **nach** dem
+  `git mv` entstanden und konnte es nicht früher: Der Nachzug schrieb die `git grep`-Operanden in
+  zwei der vier zuerst geschriebenen Belege um, eine Zeile lieferte danach `0` statt `2`. Beide
+  messen seither über den Commit-Operanden `bf842e61`, den der Nachzug nicht bewegen kann. Die
+  `state.md` von `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch` hat ihren Vermerk
+  *Benannt, nicht gezählt* verloren: Er sagte, der Beleg entstehe mit dieser Closure, und das ist
+  geschehen. **Neu angelegt wurde kein Verzeichnis** — die
   wiederkehrende Finding-Klasse der drei Runden, die der Report als *„Beleg-Block trägt die
   Aussage nicht, die auf ihn zeigt"* benennt, hat ihre zwei Mitglieder in den zwei ersten Einträgen
   oben: Runde 1 HIGH-1 die **Form** der Berufung, Runde 2 MEDIUM-2 ihre **Substanz**. Ein
@@ -418,7 +423,8 @@ Backticks).
   Klassen. **Eine Klasse ist ausdrücklich nicht angefallen:**
   `korrektur-trifft-den-fundort-statt-die-gemessene-fundmenge` bleibt bei **4×** — beide
   Behebungs-Läufe haben die Fundmenge gemessen statt das Wortmuster des Befundes zu ziehen.
-  **Zwei der vier Einträge stehen weit über der Schwelle und ohne Ausgang** — der Lese-Schritt
+  **Drei der fünf Einträge stehen über der Schwelle, und alle drei tragen `Stand: offen`** — der
+  Lese-Schritt
   gehört im Wellen-Betrieb der Welle-Closure, auch für Slices ohne Wellen-Zugehörigkeit
   (Baseline-Regelwerk `v6.5.0`, `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht); **diese
   Closure zählt, sie entscheidet nicht.** Für
