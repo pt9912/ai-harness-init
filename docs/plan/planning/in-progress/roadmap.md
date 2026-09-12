@@ -20,7 +20,7 @@ nicht hier.
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
 - [welle-13 — Regeln bekommen ihren Sensor](../welle-13-regeln-bekommen-ihren-sensor.md)
 
-Nichts in Arbeit.
+In Arbeit: [slice-217 — Ein `doc-*`-Ziel nennt seinen Prüfbereich](slice-217-doc-ziel-nennt-seinen-pruefbereich.md) (welle-13).
 
 **Eine Position der Ziel-Form ist nicht übernommen, und hier steht der Grund**
 ([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage): eine unerklärte Abweichung
