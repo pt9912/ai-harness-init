@@ -152,8 +152,8 @@ func TestVorschauSperrtOhnePlanUndOhneErgebnisnotiz(t *testing.T) {
 
 // TestAltbestandSchluesselTraegtDenWertAusADR0041 haelt den Literal-Wert selbst
 // fest: ADR-0041 Festlegung 2 setzt "altbestand", kein selbst gewaehlter Name.
-// Ein Test, der stattdessen archive.AltbestandSchluessel an beiden Enden
-// verglichen haette, waere gegen eine Aenderung des Werts blind.
+// Verglichen wird gegen das Literal "altbestand", nicht gegen die Konstante
+// archive.AltbestandSchluessel selbst.
 func TestAltbestandSchluesselTraegtDenWertAusADR0041(t *testing.T) {
 	if archive.AltbestandSchluessel != "altbestand" {
 		t.Fatalf("AltbestandSchluessel = %q, ADR-0041 Festlegung 2 setzt %q", archive.AltbestandSchluessel, "altbestand")
@@ -167,7 +167,8 @@ func TestAltbestandSchluesselTraegtDenWertAusADR0041(t *testing.T) {
 func TestAltbestandHebtWelleUndUntergrenzeSperrenAuf(t *testing.T) {
 	root := t.TempDir()
 	done := filepath.Join(root, "docs", "plan", "planning", "done")
-	// zwei Plan-Kandidaten -- unter einer Welle-Kennung waere das "mehrdeutiger-plan".
+	// zwei Dateien mit dem Praefix "altbestand" -- planSperre() zaehlt sie als
+	// "mehrdeutiger-plan", wenn welleGebunden gilt.
 	schreibe(t, filepath.Join(done, "altbestand-a.md"), "# A\n")
 	schreibe(t, filepath.Join(done, "altbestand-b.md"), "# B\n")
 	schreibe(t, filepath.Join(done, "slice-100-a.md"), "# Slice slice-100: A\n\n**Welle:** ohne Welle.\n")

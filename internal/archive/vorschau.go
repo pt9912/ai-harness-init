@@ -57,7 +57,12 @@ func Vorschau(root, welleID, porcelain string, dateien []string) (Bericht, error
 //
 // ABGRENZUNG: das sind die am RUHENDEN Baum beobachtbaren. Der Ausgang ueber eine
 // verletzte Stub-Form entsteht erst zwischen den zwei Commits und steht in keiner
-// Vorschau; das fehlende Wellen-Argument faengt der Aufrufer vor dem Lauf ab.
+// Vorschau; das fehlende Wellen-Argument faengt der Aufrufer vor dem Lauf ab. Fuer
+// AltbestandSchluessel gilt ein dritter Fall: Anwenden verlangt weiterhin genau
+// einen Welle-Plan (len(b.Plaene) != 1) und traegt den Fall von keinem Plan nicht.
+// "Sperren: keine" sagt fuer diesen Schluessel darum nicht, dass der schreibende
+// Lauf durchlaeuft — ADR-0041 Folgepflicht 1 hebt fuer ihn nur die vier Ausgaenge
+// dieser Funktion auf, nicht die Plan-Pruefung in Anwenden.
 //
 // BETRIEBSART: traegt der Schluessel AltbestandSchluessel (ADR-0041
 // Festlegung 2), hebt diese Funktion vier welle- bzw. untergrenzen-gebundene

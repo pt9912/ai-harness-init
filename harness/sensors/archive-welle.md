@@ -32,25 +32,13 @@ dabei nichts: der Schalter hält den Aufruf nach der Vorprüfung an. Erreicht wi
 Träger, `.harness/state/bin/ai-harness-init archive-welle --vorschau <welle-id>`; ein eigenes
 `make`-Ziel hat er nicht. Er ist keine zweite Fassung der Operation, sondern derselbe Code: die
 Vorschau ist die Vorprüfung des schreibenden Laufs, und was sie an Sperren nennt, sind genau die
-Ausgänge, an denen er abbricht.
-
-## Ein Schlüssel ohne Welle
+Ausgänge, an denen er abbricht — mit der in §Grenze Punkt 7 benannten Ausnahme.
 
 `<welle-id>` kann auch der Schlüssel `altbestand` sein
 ([`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)
 Festlegung 2): das einzelne Sammel-Archiv für den wellenlosen Bestand, der nie eine Welle-Closure
 hatte, die ihn hätte einsammeln können. Der Schlüssel ist keine Welle-Kennung, ortsfest und trägt
-genau einen Lauf. Für ihn hebt die Vorprüfung genau vier welle- bzw. untergrenzen-gebundene
-Ausgänge auf — `ergebnisnotiz`, `kein-plan`, `mehrdeutiger-plan` und `untergrenze` —, weil ein
-Schlüssel ohne Welle weder einen Welle-Plan noch eine Ergebnisnotiz in `done/` hat und mit seinem
-eigenen Archiv selbst die Untergrenze setzt, die die laufende Regel danach braucht. **Alle übrigen
-Ausgänge bleiben unverändert, einschließlich `haenger`:** Er trägt
-[`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)
-Festlegung 4 und darf nicht mit aufgehoben werden — der schreibende Lauf über `altbestand` bleibt
-so lange gesperrt, bis die Norm-Frage über Verweis-Nachzug in eingefrorene Artefakte entschieden ist
-(`BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt`,
-[slice-216](../../docs/plan/planning/open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)).
-Diese Datei baut die Betriebsart, sie vollzieht sie nicht.
+genau einen Lauf.
 
 ## Grenze — was das Grün nicht abdeckt
 
@@ -74,9 +62,9 @@ Diese Datei baut die Betriebsart, sie vollzieht sie nicht.
    [`AGENTS.md`](../../AGENTS.md) §3.4 eingefrorenen ADRs und aus anderen Review-Reports, die
    einander quer über Wellen-Grenzen verlinken. Beides sind eigene Vorgänge, die vor der ersten
    Archivierung liegen — permanent, bis sie einzeln aufgelöst sind. Der Schlüssel `altbestand`
-   (§Ein Schlüssel ohne Welle) nimmt der Untergrenzen-Hälfte ihren Gegenstand — für ihn gibt es
-   keine Welle-Form, an der `untergrenze` hängen könnte —, ändert an der zweiten Hälfte aber nichts:
-   `haenger` bleibt auch unter diesem Schlüssel stehen.
+   (§Vertrag) nimmt der Untergrenzen-Hälfte ihren Gegenstand — für ihn gibt es keine Welle-Form, an
+   der `untergrenze` hängen könnte —, ändert an der zweiten Hälfte aber nichts: `haenger` bleibt
+   auch unter diesem Schlüssel stehen.
 5. **Vier Grenzen bleiben unabhängig vom Bestand, alle permanent:** der Nachzug hängt Pfade um,
    keine Zustandssätze (ein Satz „liegt in `done/`" wird richtig verlinkt und bleibt ungenau); ein
    eingehender Verweis in Inline-Code ohne Verzeichnis-Segment trägt keine Link-Klammer und wird
@@ -84,6 +72,23 @@ Diese Datei baut die Betriebsart, sie vollzieht sie nicht.
    das Datum aus der `**Rolle:** … **Datum:**`-Zeile der Closure-Notiz und sonst das
    Abschluss-Datum der Welle; und ein Review-Report über mehrere Slices trägt die Plural-Form im
    Namen („…-slices-011-014-…"), fällt damit durch die Einsammel-Regel und bleibt flach liegen.
+6. **Unter `altbestand` hebt die Vorprüfung genau vier welle- bzw. untergrenzen-gebundene Ausgänge
+   auf** — `ergebnisnotiz`, `kein-plan`, `mehrdeutiger-plan` und `untergrenze` (§Sperren) —, weil
+   dieser Schlüssel weder einen Welle-Plan noch eine Ergebnisnotiz in `done/` hat und mit seinem
+   eigenen Archiv selbst die Untergrenze setzt. **`haenger` bleibt davon unberührt:** Er trägt
+   [`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)
+   Festlegung 4 und darf nicht mit aufgehoben werden — der schreibende Lauf über `altbestand` bleibt
+   so lange gesperrt, bis die Norm-Frage über Verweis-Nachzug in eingefrorene Artefakte entschieden
+   ist (`BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt`,
+   [slice-216](../../docs/plan/planning/open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)).
+7. **Und selbst ohne `haenger` trägt der schreibende Pfad diesen Schlüssel heute nicht.**
+   `internal/archive/anwenden.go` verlangt unverändert genau einen Welle-Plan
+   (`len(b.Plaene) != 1`); `Einsammeln` liefert für `altbestand` null Pläne. Meldet die Vorprüfung
+   „Sperren: keine", bricht ein schreibender Lauf über diesen Schlüssel trotzdem mit einem
+   Laufzeit-Fehler ab — die Betriebsart aus Punkt 6 hebt die vier Ausgänge dieser Vorprüfung auf
+   ([`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)
+   Folgepflicht 1), die Plan-Prüfung in `Anwenden` gehört nicht dazu. Diese Datei baut die
+   Betriebsart, sie vollzieht sie nicht.
 
 ## Ausgabe und Ausgänge
 
@@ -103,20 +108,22 @@ die vier Einsammel-Zahlen (Mitglieder · wellenlos · fremd · Review-Reports), 
 
 Fail-closed, geprüft **bevor** der Lauf etwas anfasst — dieselbe Vorprüfung, die `--vorschau`
 ausgibt. Am ruhenden Baum sind es acht (`grep -c 'Kennung: "' internal/archive/vorschau.go`, kein
-Erwartungswert). Unter dem Schlüssel `altbestand` (§Ein Schlüssel ohne Welle) fehlen die vier mit
-`†` markierten — die übrigen vier, `haenger` eingeschlossen, stehen unverändert:
+Erwartungswert). Unter dem Schlüssel `altbestand` (§Vertrag) fehlen die vier mit `†` markierten —
+die übrigen vier, `haenger` eingeschlossen, stehen unverändert. Jede Zeile nennt die Kennung, wie
+sie die Abbruch-Meldung führt:
 
+- `unsauber` — `git status --porcelain` meldet Änderungen → committen oder verwerfen
+- `archiviert` — `done/<welle-id>/archiv.zip` existiert bereits → keine zweite Archivierung
+- `ergebnisnotiz` **†** — `done/<welle-id>-results.md` fehlt → Closure-Notiz zuerst schreiben
+- `kein-plan` **†** — keine passende `<welle-id>.md` in `done/` → genau eine flache Datei
+  bereitstellen
+- `mehrdeutiger-plan` **†** — mehr als eine passende Datei → auf eine reduzieren
+- `kein-slice` — weder wellengebundene noch wellenlose Kandidaten gefunden → `WELLE=` prüfen oder
+  die Closure-Zuordnung der Slices
 - `untergrenze` **†** — kein `done/*/archiv.zip` im wellenlosen Bestand → Altbestand als eigenen
   Vorgang archivieren, bevor die erste Welle läuft
 - `haenger` — ein noch referenziertes Zeitdokument würde bewegt oder gelöscht → den Verweis lösen
   oder den betroffenen Vorgang aus dieser Welle herausnehmen
-- „schon archiviert" — `done/<welle-id>/archiv.zip` existiert bereits → keine zweite Archivierung
-- „unsauberer Baum" — `git status --porcelain` meldet Änderungen → committen oder verwerfen
-- fehlende Ergebnisnotiz **†** — `done/<welle-id>-results.md` fehlt → Closure-Notiz zuerst schreiben
-- fehlender Welle-Plan **†** → genau eine flache `<welle-id>.md` bereitstellen
-- mehrdeutiger Welle-Plan **†** (mehr als eine passende Datei) → auf eine reduzieren
-- „kein Slice eingesammelt" — weder wellengebundene noch wellenlose Kandidaten gefunden → `WELLE=`
-  prüfen oder die Closure-Zuordnung der Slices
 
 Zwei Ausgänge stehen daneben, weil sie am ruhenden Baum nicht beobachtbar sind: das fehlende
 `WELLE=` fängt der Aufrufer vorher ab, und eine verletzte Stub-Form bricht **zwischen** den zwei
