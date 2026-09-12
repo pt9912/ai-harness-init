@@ -123,10 +123,7 @@ git -C "$K" log --oneline --decorate v6.5.0..v6.7.1
 
 **Vier Wellen-Commits tragen fünf Wellen** — 129, das Paar 130–131 in *einem* Commit, 132 und 133
 —, und sie verteilen sich auf drei Releases. **`v6.6.0` und `v6.7.0` werden übersprungen**, nicht
-eines: Der gesetzte Zielstand ist `v6.7.1`. Das ist die Klasse, deren Preis dieses Repo gemessen
-kennt — die Kostenreihe der fünf bisherigen Re-Baselines lautet 2, 1, 1, 1, 13 Slices, und der
-teure Posten war der mit zwei übersprungenen Fassungen. Der Umfang des Sprungs selbst ist dagegen
-klein:
+eines: Der gesetzte Zielstand ist `v6.7.1`. Der Umfang des Sprungs selbst ist dagegen klein:
 
 ```sh
 git -C "$K" diff --numstat v6.5.0 v6.7.1 -- lab/regelwerk lab/templates \
@@ -226,7 +223,7 @@ entscheidet nicht die Feldzahl im Template, sondern die Pflichtgliederung im ven
 für `harness/conventions.md` in §Konventionsspeicher, für `harness/README.md` in
 §Einstiegspunkt"* (`v6.5.0`, `modul-02-harness-bootstrap.md`, §Freshness-Audit der vendored
 Baseline (Schritt 2), byte-gleich in `v6.7.1`). Genau diese Sektion trägt in der Ziel-Fassung
-siebzehn neue Zeilen, die den Gate-Index an **einen** Ort binden (`v6.7.1`,
+eine neue Setzung, die den Gate-Index an **einen** Ort bindet (`v6.7.1`,
 `lab/regelwerk/grundlagen-harness-dateien.md`, §harness/README.md als Einstiegspunkt):
 
 > **Der Gate-Index steht einmal, und zwar hier.** `AGENTS.md` trägt die *Regel*
@@ -341,7 +338,7 @@ grep -rln 'Adaptions-Durchgang' docs/plan/planning/open docs/plan/planning/next 
 ```
 
 Der Vollzug liegt fünf Tage zurück, der Nachweis fehlt, und die Fläche, die er hätte abschreiten
-müssen, ist größer als dieser Sprung:
+müssen, bewegt mehr Zeilen als dieser Sprung:
 
 ```sh
 git -C "$K" diff --numstat v6.0.0 v6.5.0 -- lab/regelwerk lab/templates \
@@ -413,7 +410,7 @@ Zwei Gründe, beide oben gemessen:
 1. **Ohne diese Setzung verschwindet der Anteil still.** Der `v6.0.0`→`v6.5.0`-Diff wäre in keinem
    künftigen Delta mehr enthalten und in keiner Komplementärmenge der Stichprobe; die Buchung, die
    ihn heute als *steht aus* führt, bekommt beim Vollzug eine neue Zeile darunter und behält ihre
-   alte unverändert — sie meldet nichts. Der Anteil ist mit 32 Dateien und +624/−153 größer als der
+   alte unverändert — sie meldet nichts. Der Anteil bewegt mit +624/−153 mehr Zeilen als der
    Sprung, der ihn überholen würde.
 2. **Der Aufpreis ist der Unterschied zweier Diffs, nicht zweier Durchgänge.** Ein Durchgang gegen
    `v6.7.1` ab `v6.0.0` sieht 42 statt 33 Dateien. Er ist ein Vorgang, keine zwei, und beantwortet
@@ -481,7 +478,7 @@ Tausch-Slice und der des Durchgangs als Constraint lesen; sie ist nicht eingefro
 | C — allgemeine Regel *„stets die Ziel-Fassung"*, in Ablösung von [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 | jeder künftige Sprung startet ohne Vorlauf; die Messung entfiele | dort verworfen und hier unverändert gültig: sie bände Prozeduren, deren Wortlaut niemand kennt, und wäre der stille Auto-Bump eine Ebene höher — den **beide** Fassungen wortgleich verbieten. Dieser Sprung ist ihr Gegenbeispiel gleich zweimal: Die Achse hat sich geändert, und die Basis-Frage entsteht überhaupt erst aus einem ausgefallenen Durchgang — beides hätte eine Blankett-Regel nie bemerkt. Sie verlangte zudem ein `Supersedes` auf eine ADR, auf die viele Verweis-Vorkommen aus vielen lebenden Dateien zeigen (`git grep -oE '\]\([^)]*0018-ziel-fassung-regiert-die-migration\.md[^)]*\)' -- ':!docs/reviews' ':!docs/plan/planning/done' \| wc -l`, dazu dieselbe Abfrage mit `-l`; beide wandern, [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2), und `matrix.status` in [`.d-check.yml`](../../../.d-check.yml) verbietet Verweise auf superseded ADRs |
 | D — die Prozedur aus der Ziel-Fassung, die Delegate aus der gepinnten | nähme den Text, der die Frage stellt, und ließe die Antworten in dem Baum, der netzlos vorliegt | der Abschnitt adressiert seine Delegate **relativ im eigenen Baum**; die Aufteilung stünde in keiner Fassung und wäre eine Erfindung dieses Repos — derselbe Fehler wie Option D in [ADR-0018](0018-ziel-fassung-regiert-die-migration.md). Und sie hätte genau die Wirkung von B, denn das gesamte tragende Delta liegt in einem Delegaten |
 | E — Ziel-Fassung, aber Delta-Basis `v6.5.0`; der ausstehende Nachweis läuft **daneben** als eigener Slice | trennt zwei Sprünge sauber; jeder Durchgang bleibt klein und einzeln prüfbar | er läuft gegen eine Fassung, die dann nicht mehr im Baum liegt — dieselbe Lage, die [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) als Contra von Option B führt, nur eine Runde später. Zwei Durchgänge über überlappende Deltas fällen zu denselben `MR`-Einträgen zwei Urteile gegen **verschiedene** Fassungen; wo sie sich widersprechen, entscheidet nichts. Und die Reihenfolge ist nicht frei: Läuft der `v6.5.0`-Durchgang nach dem Tausch, misst er gegen einen Text, den ein netzloser Lauf nicht öffnet |
-| F — Ziel-Fassung, Delta-Basis `v6.5.0`; der ausstehende Nachweis **entfällt** | der billigste Weg; die Buchung *steht aus* verschwindet unter einer neuen Zeile | er streicht 32 Dateien und +624/−153 Zeilen Prüffläche, ohne dass jemand sie gesehen hat — mehr, als dieser Sprung selbst mitbringt. Genau so entsteht die Lage, die dieses Repo mit 13 Slices bezahlt hat: zwei ungeprüfte Deltas übereinander. Und das Feld *„Slice mit dem Delta-Nachweis"* der Buchung bliebe für `v6.5.0` dauerhaft leer — eine Lücke, die die Drei-Teil-Form sichtbar macht und niemand schließt |
+| F — Ziel-Fassung, Delta-Basis `v6.5.0`; der ausstehende Nachweis **entfällt** | der billigste Weg; die Buchung *steht aus* verschwindet unter einer neuen Zeile | er streicht 32 Dateien und +624/−153 Zeilen Prüffläche, ohne dass jemand sie gesehen hat — mehr bewegte Zeilen, als dieser Sprung selbst mitbringt. Und das Feld *„Slice mit dem Delta-Nachweis"* der Buchung bliebe für `v6.5.0` dauerhaft leer — eine Lücke, die die Drei-Teil-Form sichtbar macht und niemand schließt |
 | **G — gewählt: Ziel-Fassung für diesen Sprung, Delta-Basis `v6.0.0`** | entscheidet den anstehenden Fall auf Gründen, die hier gemessen sind — korrigierte Achse, beide Stufen, Netto je Sektion, die Gate-Config als ablesbare Wirkung — und schließt den ausgefallenen Durchgang ein, statt ihn zu verlieren; die Basis wird aus einem Feld gelesen, das §Baseline ohnehin führt, statt neu erfunden zu werden; das Kriterium aus [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) bleibt für den nächsten Sprung unangetastet | der Durchgang wird größer (42 statt 33 Dateien) und ist damit schwerer in *einer* Review-Sitzung zu prüfen — das kann ihn in zwei Slices zwingen; der nächste Sprung erbt die Messpflicht ein fünftes Mal; und beide Seiten der Messung liegen bis zum Tausch nur im Kurs-Klon |
 
 ## Konsequenzen
@@ -527,7 +524,9 @@ Tausch-Slice und der des Durchgangs als Constraint lesen; sie ist nicht eingefro
   **Baum-Tausch** samt Nachzug der fünf Pins auf `v6.7.1` und den sha256
   `5d3dba9c8dc2df25d5b7dc0bd9b6f5aa123b0ef876dcd9330fe1254898ec72ac` des Assets `lab-regelwerk.zip`
   (kanonisch ist das Makefile-Paar; die vier übrigen sind fail-closed daran gekoppelt), und der
-  **Adaptions-Durchgang** mit Delta-Basis `v6.0.0`. Der Wortlaut beider Pläne ist Planner-Eigentum
+  **Adaptions-Durchgang** mit Delta-Basis `v6.0.0`; weil er den `v6.5.0`-Nachweis einschließt,
+  füllt seine Kennung **beide** offenen Nachweis-Felder der Buchung — das der `v6.5.0`-Zeile und
+  das der Zeile, die der Vollzug anlegt. Der Wortlaut beider Pläne ist Planner-Eigentum
   ([ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md)); diese Entscheidung ist das
   Übergabe-Artefakt, nicht der Text.
 - **Folgepflicht (Architect), fällig im Durchgang, nicht hier:** die Entscheidung über
