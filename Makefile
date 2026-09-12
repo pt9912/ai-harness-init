@@ -22,7 +22,7 @@ GOLANGCI_LINT_VERSION ?= v2.13.1
 # Injektor und baseline-verify ENTDECKEN das Verzeichnis (Setzung: ein Tag zur
 # Zeit), .d-check.yml nutzt einen Glob. Ein Tag-Bump ändert damit diese Zeile,
 # BASELINE_ZIP_SHA256 und den Baum — keinen repo-weiten Grep (LH-QA-02).
-BASELINE_TAG ?= v6.5.0
+BASELINE_TAG ?= v6.7.2
 # Kein BASELINE_DIR: baseline-verify und der Injektor ENTDECKEN das <tag>-
 # Verzeichnis per Glob (Setzung "ein Tag zur Zeit"), lesen es also nicht aus
 # einer Variablen — ein solcher Pfad-Override wäre stiller No-op.
@@ -31,7 +31,7 @@ BASELINE_TAG ?= v6.5.0
 # erzeugt und beweist die Herkunft NICHT; diese Kette hängt allein hier.
 # regelwerk-check vergleicht Upstream gegen diesen Pin (MR-007).
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
-BASELINE_ZIP_SHA256 ?= 80684c17b958d2bc0c25eef1bdff25342b9c7b90254431ade9c29ee2add18865
+BASELINE_ZIP_SHA256 ?= ff1f7a58596a7a2b5e406442975825692fbc0e78e56715545267d0c3c8944978
 
 .PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle vendor-baseline
 

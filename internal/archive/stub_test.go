@@ -16,7 +16,7 @@ const pruefTag = "v9.99.0"
 // Stub, der ihn traegt, kann seine Form nicht aus dem Code haben.
 const vorlagenMarker = "PRUEFBAUM-MARKER"
 
-const vorlageSlice = `# slice-<NNN> — <Titel>
+const vorlageSlice = `# slice-<Kennung> — <Titel>
 
 > **Template-Hinweis.** ` + vorlagenMarker + ` — dieser Absatz faellt beim Kuerzen weg.
 
@@ -111,7 +111,7 @@ func TestAusVorlageFaelltOhneVorlageAus(t *testing.T) {
 // Alles dazwischen schreibt an den Kopierenden und faellt weg.
 func TestKuerzeLaesstNurH1ZeigerUndFeldblock(t *testing.T) {
 	got := archive.Kuerze(vorlageSlice)
-	want := "# slice-<NNN> — <Titel>\n" +
+	want := "# slice-<Kennung> — <Titel>\n" +
 		"\n" +
 		"> **ARCHIVIERT** — Volltext:\n" +
 		"> `unzip -p done/<welle-id>/archiv.zip <pfad-im-archiv>`\n" +

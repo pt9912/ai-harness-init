@@ -248,7 +248,7 @@ func sliceStub(root, vorlagen string, b Bestand, planBase, wDatum, zipRel, neu, 
 		welleFeld = "[" + b.Welle + "](" + planBase + ")"
 	}
 	return AusVorlage(filepath.Join(vorlagen, stubVorlageSlice), []Ersetzung{
-		{"<NNN>", nummer},
+		{"<Kennung>", nummer},
 		{"<Titel>", TitelVon(Kopfzeile(inhalt))},
 		{"<welle-id | ohne Welle>", welleFeld},
 		{"<JJJJ-MM-TT>", GeschlossenDatum(inhalt, wDatum)},

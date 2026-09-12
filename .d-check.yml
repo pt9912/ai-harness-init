@@ -380,6 +380,6 @@ commits:
 # Makefile-BASELINE_ZIP_SHA256 (MR-007; gemessen 0 Drift). test/sources-pin.bats koppelt beide
 # fail-closed (in gates) — Re-Baseline muss beide Pins bewegen.
 sources:
-  - url: https://github.com/pt9912/ai-harness-course/releases/download/v6.5.0/lab-regelwerk.zip
-    sha256: 80684c17b958d2bc0c25eef1bdff25342b9c7b90254431ade9c29ee2add18865
+  - url: https://github.com/pt9912/ai-harness-course/releases/download/v6.7.2/lab-regelwerk.zip
+    sha256: ff1f7a58596a7a2b5e406442975825692fbc0e78e56715545267d0c3c8944978
     unpack: none

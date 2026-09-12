@@ -901,7 +901,7 @@ func maskQuotedCommentSyntax(s string) (string, map[string]string) {
 // Platzhalter beginnen mit dem Steuerzeichen-Paar \x00\x01), ueberschreibt
 // die Rueckuebersetzung diese fremde Stelle mit dem Inhalt einer anderen
 // Spanne. Weder der vendored `v6.5.0`- noch der emittierte Vorlagen-Satz
-// traegt ein NUL-Byte (`grep -rlP '\x00' .harness/baseline/v6.5.0/templates
+// traegt ein NUL-Byte (`grep -rlP '\x00' .harness/baseline/v6.7.2/templates
 // internal/emit/templates` — leer, kein Erwartungswert, gilt fuer den
 // jeweils aktuellen Satz), die Grenze ist heute nicht ausloesbar.
 func unmaskQuotedCommentSyntax(s string, placeholders map[string]string) string {
@@ -979,7 +979,7 @@ func unmaskQuotedCommentSyntax(s string, placeholders map[string]string) string 
 // keine Probe: die Form ist per Konstruktion gerade-paarig und faellt aus
 // jeder Paritaets-Pruefung heraus.
 //
-//	T=.harness/baseline/v6.5.0/templates
+//	T=.harness/baseline/v6.7.2/templates
 //	grep -rn '``' "$T" --include='*.md' | grep -e '<!--' -e '\-\->'          # leer -- "Backtick-Lauf"
 //	grep -rn '``' internal/emit/templates/ | grep -e '<!--' -e '\-\->'       # leer -- dieselbe Form, zweiter Baum
 //	find "$T" -name '*.md' -print0 | xargs -0 awk \

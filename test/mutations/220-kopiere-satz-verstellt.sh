@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# files: .harness/baseline/v6.5.0/templates/AGENTS.template.md
+# files: .harness/baseline/v6.7.2/templates/AGENTS.template.md
 # expect: emit.isRecurring fuehrt genau die Vorlagen mit Platzhalter im Ziel-Pfad
 #
 # Die Gegenrichtung zu 219: dort driftet der ZIEL-PFAD, hier die WORTSTELLUNG des
@@ -43,4 +43,4 @@
 set -euo pipefail
 bt="$(printf '\140')"
 sed -i "s|Kopiere nach |Kopiere per ${bt}git mv${bt} nach |" \
-	.harness/baseline/v6.5.0/templates/AGENTS.template.md
+	.harness/baseline/v6.7.2/templates/AGENTS.template.md

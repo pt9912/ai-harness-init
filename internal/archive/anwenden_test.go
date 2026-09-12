@@ -423,7 +423,7 @@ func TestAnwendenOhneVorlageNenntDenRueckweg(t *testing.T) {
 // vorlageSliceOhneZeiger ist die Slice-Vorlage ohne ihren Archiv-Zeiger-Block.
 // Der Stub, der daraus entsteht, ist form-widrig — genau der Zustand, gegen den
 // FormOK im Lauf steht.
-const vorlageSliceOhneZeiger = `# slice-<NNN> — <Titel>
+const vorlageSliceOhneZeiger = `# slice-<Kennung> — <Titel>
 
 > **Template-Hinweis.** ` + vorlagenMarker + ` — dieser Absatz faellt beim Kuerzen weg.
 
