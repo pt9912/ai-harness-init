@@ -233,7 +233,7 @@ Backticks).
   Go-Träger drei Leser, und nur zwei davon dürfen den neuen Pfad sehen. Daraus folgte der zweite
   Suchraum statt eines Eintrags in der geteilten Liste; die Probe des Reviewers, die genau diese
   Alternative einsetzt, färbt heute rot. Ebenso getragen hat die Entscheidung, `docs/reviews/**`
-  ausdrücklich **drin** zu lassen: Der Pfad liegt in beiden Suchräumen und ist damit der eine Ort,
+  ausdrücklich **drin** zu lassen: Der Pfad gehört beiden Suchräumen an und ist damit der eine Ort,
   an dem die Trennung **nicht** messbar ist — wer ihn für den Beleg genommen hätte, hätte einen
   Wächter gebaut, der unter keiner Mutation rot wird.
 - **Was ging anders als geplant:** Zwei Zusagen des Plans waren falsch, beide in derselben
@@ -306,9 +306,18 @@ Backticks).
   ist nicht übersehen, sondern über die Schreib-Seite gesucht und nicht vorhanden.
 - **Drei Paarungen:** Dieses **Repo** fährt Wellen (`ls docs/plan/planning/welle-*.md | wc -l` →
   **3**, kein Erwartungswert) — zuständig ist die nächste Welle-Closure, auch für diesen Slice
-  ohne Wellen-Zugehörigkeit. Nachgesehen hat diese Closure trotzdem, nach dem `git mv`: Jeder hier
-  genannte Register-Pfad existiert als Verzeichnis mit nicht leerem `evidence/`, die zwei
-  genannten Folge-Slices liegen im Lifecycle, und ein `liegt in`-Feld trägt diese Notiz nicht.
+  ohne Wellen-Zugehörigkeit. Nachgesehen hat diese Closure trotzdem, nach dem `git mv`: Ein
+  `liegt in`-Feld trägt diese Notiz nicht, also hat die **Anker**-Paarung hier kein Objekt; die
+  zwei genannten **Folge-Slices** liegen als Datei im Lifecycle; jeder genannte **Register**-Pfad
+  existiert als Verzeichnis mit nicht leerem `evidence/`. **Ein Befund steht daneben und gehört
+  nicht diesem Slice:** Die zweite Hälfte der Register-Paarung — *jedes* Verzeichnis trägt
+  mindestens einen Beleg — ist über dem ganzen Register rot, an genau einem Eintrag
+  ([`BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`](../observations/BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab/observation.md)
+  führt kein `evidence/`). Das ist der bereits gebuchte Konflikt zweier Regeln desselben Moduls
+  ([`BEO-ALL/unbelegter-register-eintrag-faellt-durch-die-paarung`](../observations/BEO-ALL/unbelegter-register-eintrag-faellt-durch-die-paarung/observation.md)),
+  dessen Lesart-Frage offen ist — kein Gate liest ihn (`modules:` der
+  [`.d-check.yml`](../../../../.d-check.yml) führt keine Register-Paarung), und dieser Slice hat
+  ihn weder verursacht noch bewegt.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
