@@ -23,7 +23,7 @@ fail-closed-Sperre).
 **Berührte Spec-Stellen:** `—`. Der Slice baut eine Werkzeug-Fähigkeit; er schreibt keine
 Spec-Stelle.
 
-**Verantwortlich:** `—`
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-09-12.
 
