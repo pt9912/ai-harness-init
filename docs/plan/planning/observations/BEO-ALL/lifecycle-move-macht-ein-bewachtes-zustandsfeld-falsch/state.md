@@ -7,7 +7,7 @@ Werkzeug dieses Repos nennt ihn. Für jedes andere Zustandsfeld derselben Klasse
 Sensor nicht. Träger ist der Lauf, der den Move plant.
 
 **Benannt, nicht gezählt.** Der Lifecycle-Move von
-[slice-183](../../../in-progress/slice-183-ausloeser-der-wellenlosen-archivierung.md) stellte den
+[slice-183](../../../next/slice-183-ausloeser-der-wellenlosen-archivierung.md) stellte den
 Ruhe-Marker der Roadmap gegen den Inhalt von `in-progress/` — `make docs-check` meldete den
 Grund-Code `planning-drift`; die Rückführung nach `next/` hebt den Widerspruch auf, weil das
 Verzeichnis danach wieder leer ist. Eine Datei unter `evidence/` steht dafür nicht: Der Vorgang,
