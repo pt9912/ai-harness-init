@@ -68,7 +68,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
       Setzung 2). **Gezogen ist die Menge außerhalb dieser zwei:** 12 Links in
       [`spec/spezifikation.md`](../../../../spec/spezifikation.md), 3 in
-      [slice-114](../next/slice-114-jede-aussage-hat-einen-abschnitt.md), 1 in
+      [slice-114](../in-progress/slice-114-jede-aussage-hat-einen-abschnitt.md), 1 in
       [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md) — jeder Anker
       einzeln gegen die Zieldatei geprüft, dazu die Substanz der zitierten Aussage; **5** Adressen
       in zwei Zeitdokumenten sind entfallen, während ihr sichtbarer Text Zeichen für Zeichen steht
