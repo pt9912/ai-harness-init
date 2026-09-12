@@ -450,7 +450,7 @@ dasteht.
   Bezugsmenge, ohne dass ein Lauf davon spricht. Der Wächter wäre dann grün über einer Menge, die
   den Fall nicht enthält. — **Ausgang: weiter offen → Beobachtungs-Register,
   [`BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
-  (jetzt **13×**, `evidence/slice-217.md`).** Die Zusage nennt die Menge *„die C-Klasse"* und
+  (Stand am 2026-09-12 **13×**, `evidence/slice-217.md`; kein Erwartungswert, das Kommando steht in §7).** Die Zusage nennt die Menge *„die C-Klasse"* und
   definiert sie als *Modul zugeschaltet, kein Block dafür*; gemessen wird der engere Ausschnitt
   *per `--enable` zugeschaltet*. Heute ist die Verengung folgenlos — jedes der **13** Ziele
   (`grep -cE '^docs?-[a-z-]+:.*## ' d-check.mk`) schaltet sein Modul per `--enable` zu —, und
@@ -499,7 +499,7 @@ dasteht.
   gedeckt, nur spät: Wer die Liste nicht abarbeitet, verliert die Marke, und der Wächter aus
   DoD (3) färbt beim nächsten `make gates` rot. Das Auftreten ist als
   [`BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht`](../observations/BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht/observation.md)
-  gezählt (jetzt **6×**, `evidence/slice-217.md`)
+  gezählt (Stand am 2026-09-12 **6×**, `evidence/slice-217.md`; kein Erwartungswert, das Kommando steht in §7)
 - **Die Abhilfe liegt upstream und ist hier nur benannt.** Dass `--print-mk` die Konfiguration
   nicht liest, ist keine feste Werkzeug-Grenze: `d-check` ist ein Nachbar-Repo desselben Nutzers
   (`/Development/d-check`), und eine hier gemessene Generator-Lücke ist dort eine **Anforderung**.
@@ -582,13 +582,27 @@ Backticks).
 - **Beobachtungs-Register (`../observations/`):** Vier Belege, zwei davon in neuen Verzeichnissen —
   kein Zähler ist gesetzt, er folgt aus den Dateien.
   [`zahl-ohne-kommando-trifft-ihren-gegenstand-nicht`](../observations/BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht/observation.md)
-  (jetzt **6×**) ·
+  (**6×**) ·
   [`zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
-  (jetzt **13×**, drei Funde in einem Beleg — ein Vorgang zählt einmal) ·
+  (**13×**, drei Funde in einem Beleg — ein Vorgang zählt einmal) ·
   [`gleichzeitig-laufender-slice-macht-adresse-tot`](../observations/BEO-ALL/gleichzeitig-laufender-slice-macht-adresse-tot/observation.md)
   (neu, **1×**) ·
   [`werkzeug-luecke-im-nachbar-repo-ohne-adresse`](../observations/BEO-ALL/werkzeug-luecke-im-nachbar-repo-ohne-adresse/observation.md)
-  (neu, **1×**). **Der Lese-Schritt gehört nicht hierher:** Dieses Repo fährt Wellen-Betrieb
+  (neu, **1×**). Die vier Stände sind **datierte Messungen, keine Erwartungswerte**
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
+  Setzung 2) — abgeleitet am 2026-09-12 über dem gemergten Stand dieser Closure, und jeder wandert
+  mit der nächsten:
+
+  ```sh
+  cd docs/plan/planning/observations/BEO-ALL
+  for d in zahl-ohne-kommando-trifft-ihren-gegenstand-nicht \
+           zusage-nennt-sensor-der-form-nicht-sieht \
+           gleichzeitig-laufender-slice-macht-adresse-tot \
+           werkzeug-luecke-im-nachbar-repo-ohne-adresse; do
+    printf '%2s  %s\n' "$(ls $d/evidence/*.md | wc -l)" "$d"; done
+  ```
+
+  **Der Lese-Schritt gehört nicht hierher:** Dieses Repo fährt Wellen-Betrieb
   (`ls docs/plan/planning/welle-*.md | wc -l` → **3**, kein Erwartungswert), und *wellenlos* ist
   nach Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht eine Eigenschaft
   des **Repos**, nicht des einzelnen Slice. Diese Closure hat darum **gezählt und eingetragen und
