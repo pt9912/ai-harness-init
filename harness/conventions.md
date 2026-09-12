@@ -50,8 +50,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   [`ADR-0044`](../docs/plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md) Festlegung 1,
   `Proposed`; die Delta-Basis des Adaptions-Durchgangs liest
   [`ADR-0043`](../docs/plan/adr/0043-ziel-fassung-regiert-den-sprung-v671.md) Festlegung 2,
-  `Accepted`, aus der Aufzählung oben — der Durchgang schließt damit den ausstehenden
-  `v6.5.0`-Nachweis ein. Festlegung 1 von
+  `Accepted`, aus der Aufzählung oben. Festlegung 1 von
   [`ADR-0031`](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) bindet
   allein den Sprung auf `v5.18.0`; die eigene Messung, die ihr erster Re-Evaluierungs-Trigger für
   jeden weiteren verlangt, ist in slice-176 gefahren und in slice-178 entschieden. Die
