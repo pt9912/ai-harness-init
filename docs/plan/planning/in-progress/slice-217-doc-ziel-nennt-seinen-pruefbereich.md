@@ -245,8 +245,21 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **(1) Jedes `docs?-*`-Ziel ist klassifiziert, und die C-Klasse ist an einem eingesetzten
-      Defekt gemessen.** Ein Deckungs-Absatz in
+- [x] **(1) Jedes `docs?-*`-Ziel ist klassifiziert, und die C-Klasse ist an einem eingesetzten
+      Defekt gemessen.** **Der Ort ist ein anderer als hier vorgeschrieben:** Der Deckungs-Absatz
+      liegt in [`harness/sensors/doc-tracked.md`](../../../../harness/sensors/doc-tracked.md)
+      (vier Klassen, Ableitungs-Regel, `doc-commits`-Zeiger, Gegenprobe `doc-tracked`) und in
+      [`harness/sensors/doc-structure.md`](../../../../harness/sensors/doc-structure.md)
+      (Gegenprobe `doc-structure`, Marken-Semantik, Ausgabe-Grenze);
+      [`harness/README.md`](../../../../harness/README.md) §Sensors führt beide als Tabellenzeile.
+      Die Verlagerung ist die Ziel-Form, die
+      [slice-114](slice-114-jede-aussage-hat-einen-abschnitt.md) hergestellt hat, während dieser
+      Slice lief — der Inhalt der Zusage ist unverändert, nur ihre Datei. Beide Gegenproben sind
+      am eingesetzten Defekt gefahren und verbatim abgedruckt: `doc-tracked` **nicht inert**
+      (`target-untracked` mit **und** ohne Block, byte-gleich), `doc-structure` **inert**
+      (0 Befunde ohne, 100 mit Block). Der dritte Ausgang *„Kandidaten-Regel unverstanden"* war
+      für kein C-Ziel nötig. Der ursprüngliche Wortlaut folgt.
+      Ein Deckungs-Absatz in
       [`harness/README.md`](../../../../harness/README.md) §Sensors — in der Form der dortigen
       *„Was … deckt, und was nicht"*-Absätze — führt alle vier Klassen aus §1 samt der
       Ableitungs-Regel und ordnet **jedes** Ziel ein, die D-Klasse ausdrücklich als *„die Frage
@@ -255,7 +268,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Kommando und Ausgabe beider Läufe im Umsetzungs-Commit. Lässt sich für ein C-Ziel kein
       Defekt konstruieren, steht dort *„Kandidaten-Regel unverstanden"* statt *„ohne
       Prüfbereich"* (§1). `doc-commits` wird **verwiesen**, nicht abgeschrieben.
-- [ ] **(2) Jedes C-Ziel trägt die Marke — im Hilfetext und in seiner eigenen Ausgabe.** Die Marke
+- [x] **(2) Jedes C-Ziel trägt die Marke — im Hilfetext und in seiner eigenen Ausgabe.** Die Marke
       ist **ein** deklariertes Literal, es steht im `##`-Hilfetext des Rezepts in
       [`d-check.mk`](../../../../d-check.mk) (und damit in `make doc-help`) **und** als letzte
       Zeile, die der Lauf selbst ausgibt — nach der `0 Befund(e)`-Zeile, damit sie die letzte
@@ -268,7 +281,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       mitgezogen, und die Hunk-Zahl daneben ist mit dem dort stehenden `diff`-Kommando **neu
       gemessen**. Ohne diesen Eintrag nähme die nächste Regenerierung die Marke stillschweigend
       mit (§3, §6).
-- [ ] **(3) Ein Wächter hält die Bijektion, abgeleitet, in beiden Richtungen — und ein
+- [x] **(3) Ein Wächter hält die Bijektion, abgeleitet, in beiden Richtungen — und ein
       Mutations-Fall nimmt ihm die Zähne.** Eine neue `test/*.bats`-Datei bildet die Menge der
       C-Ziele aus [`d-check.mk`](../../../../d-check.mk) und
       [`.d-check.yml`](../../../../.d-check.yml) **ab** (kein aufgezähltes Ziel im Testtext) und
@@ -284,19 +297,19 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       [`.d-check.yml`](../../../../.d-check.yml) ergänzt, während die Marke stehen bleibt — die
       Gegenrichtung, und genau die Lage, die
       [slice-213](../open/slice-213-review-report-laeuft-in-der-tabellen-form.md) herstellt.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow ([`AGENTS.md`](../../../../AGENTS.md) §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: der Deckungs-Absatz aus (1) **ist** das Doku-Update; ein öffentlicher Vertrag
+- [x] Doku-Update: der Deckungs-Absatz aus (1) **ist** das Doku-Update; ein öffentlicher Vertrag
       ist nicht berührt. Keine neue `make`-Tabellenzeile fällt an — der Slice legt kein
       `make`-Ziel an, und `doc-tracked`/`doc-structure` stehen bereits in `targets.exempt-targets`
       (`sed -n '/^targets:/,/^ignore-refs:/p' .d-check.yml | grep -cE '^    - doc-(tracked|structure)$'`
       → **2**).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -424,24 +437,48 @@ dasteht.
   aus der C-Menge. Der Wächter trägt das, weil er ableitet; **der Deckungs-Absatz und die Marke
   tun es nicht** — beide müssten dann für ein Ziel weniger geschrieben werden. Bleibt nur
   `doc-tracked` übrig, ist der Prüfbereich einelementig, aber nicht leer; wird er leer, greift die
-  Rückführung aus §4. — **Ausgang:** <eingetreten: … | entfallen: Grund | weiter offen: → Eintrag
-  im Register>
+  Rückführung aus §4. — **Ausgang: entfallen.**
+  [slice-213](../open/slice-213-review-report-laeuft-in-der-tabellen-form.md) liegt beim Abschluss
+  weiter in `open/`, und [`.d-check.yml`](../../../../.d-check.yml) führt keinen `structure:`-Block
+  (`grep -nE '^structure:' .d-check.yml` → Exit 1). Die C-Menge ist zweielementig geblieben —
+  `doc-tracked`, `doc-structure` —, Deckungs-Absatz und Marke sind für beide geschrieben. Mit
+  diesem Abschluss ist das Umsetzungs-Fenster zu, in dem das Risiko eintreten konnte. Der Fall
+  **nach** slice-213 ist nicht offen, sondern bewacht: Lage *(c)* der Rot-Sätze setzt genau ihn und
+  färbt rot, damit die dann falsche Marke nicht stehen bleibt
 - **Die Ableitung sieht nur `--enable`.** Ein künftiges Ziel, das ein Modul auf anderem Weg
   zuschaltet — eigene `--config`-Datei, ein per Vorgabe aktives Modul —, fällt aus der
   Bezugsmenge, ohne dass ein Lauf davon spricht. Der Wächter wäre dann grün über einer Menge, die
-  den Fall nicht enthält. — **Ausgang:** <eingetreten: … | entfallen: Grund | weiter offen: →
-  Eintrag im Register>
+  den Fall nicht enthält. — **Ausgang: weiter offen → Beobachtungs-Register,
+  [`BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
+  (jetzt **13×**, `evidence/slice-217.md`).** Die Zusage nennt die Menge *„die C-Klasse"* und
+  definiert sie als *Modul zugeschaltet, kein Block dafür*; gemessen wird der engere Ausschnitt
+  *per `--enable` zugeschaltet*. Heute ist die Verengung folgenlos — jedes der **13** Ziele
+  (`grep -cE '^docs?-[a-z-]+:.*## ' d-check.mk`) schaltet sein Modul per `--enable` zu —, und
+  **benannt ist sie nirgends**: weder im Kopf des Wächters noch neben der Zusage. Sie geht darum
+  als Fund in denselben Beleg wie die zwei Ausgabe-Funde; ein Vorgang zählt einmal
 - **Die Block-Frage misst Anwesenheit, nicht Wirksamkeit.** `grep -qE "^<modul>:"` sagt, dass ein
   Schlüssel dasteht — nicht, dass er das Modul aktiviert. Ein Block, dem der
   Aktivierungs-Schlüssel fehlt, gälte als Prüfbereich. Dieselbe Grenze trägt heute schon
   `test/mutations/285-closure-dir-entfernt.sh` für `closure.dir`, und sie ist dort mit einem
-  eigenen Fall bewacht statt in die Ableitung gezogen. — **Ausgang:** <eingetreten: … | entfallen:
-  Grund | weiter offen: → Eintrag im Register>
+  eigenen Fall bewacht statt in die Ableitung gezogen. — **Ausgang: weiter offen →
+  Beobachtungs-Register,
+  [`BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
+  (derselbe Beleg `evidence/slice-217.md`, kein zweiter — zwei Funde im selben Vorgang sind eine
+  Gelegenheit).** Es ist dieselbe Klasse wie das Risiko darüber, an der anderen Hälfte derselben
+  Ableitung: Die Zusage sagt *Prüfbereich*, gemessen wird *Schlüssel vorhanden*. Heute folgenlos —
+  jeder Top-Level-Block in [`.d-check.yml`](../../../../.d-check.yml) trägt seinen
+  Aktivierungs-Schlüssel —, und ebenfalls nirgends benannt
 - **Die Ausgabe-Hälfte hängt am Exit-Code.** Steht die Hinweis-Zeile hinter dem `docker run`,
   läuft sie bei einem Abbruch nicht — und ein Abbruch ist genau der Fall, in dem das Ziel etwas zu
   melden hatte. Das ist verträglich (wer abbricht, meldet kein stilles Grün), aber es ist eine
-  Grenze und gehört benannt statt verschwiegen. — **Ausgang:** <eingetreten: … | entfallen: Grund
-  | weiter offen: → Eintrag im Register>
+  Grenze und gehört benannt statt verschwiegen. — **Ausgang: entfallen.** Die Grenze steht an
+  **beiden** Trägern und im Indikativ: in
+  [`harness/sensors/doc-structure.md`](../../../../harness/sensors/doc-structure.md) unmittelbar
+  unter der Zusage, die sie einschränkt (*„Die Ausgabe-Hälfte gilt nur für einen Lauf ohne
+  Befund"*, mit `doc-tracked` als dem erreichbaren Fall), und im Kopf von
+  [`test/doc-block-marke-wiring.bats`](../../../../test/doc-block-marke-wiring.bats)
+  (*„Was dieser Waechter NICHT erreicht"*). Das Risiko lautete auf *verschwiegen*, nicht auf
+  *vorhanden*; verschwiegen ist sie nicht mehr
 - **Die Regenerierungs-Falle.** [`d-check.mk`](../../../../d-check.mk) ist ein Generat, und der
   Generator ist config-blind (§1) — eine Neu-Erzeugung schreibt beide Hälften der Marke weg. Der
   Schutz ist der nummerierte Handgriff im Adopter-Kopf, und er ist **eine Leseanweisung, kein
@@ -452,7 +489,17 @@ dasteht.
   [`BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht`](../observations/BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht/observation.md)
   führt (Stand beim Schnitt: **5×**,
   `ls docs/plan/planning/observations/BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht/evidence/*.md | wc -l`).
-  — **Ausgang:** <eingetreten: … | entfallen: Grund | weiter offen: → Eintrag im Register>
+  — **Ausgang: eingetreten.** Die Zahlen-Hälfte trat im Umsetzungs-Commit ein: Der Kopf schrieb
+  *„FUENF Handgriffe"* fort, das danebenstehende `diff … | grep -c '^[0-9]'` liefert **8** — Zahl
+  und Kommando zählten zwei Gegenstände (Handgriffe gegen Hunks). Aufgelöst in der Nacharbeit; der
+  Kopf nennt jetzt beide Zahlen mit ihrem Bezug, und der Abschluss hat den Wert unabhängig
+  nachgefahren (**8**, Hunk-Köpfe `1,13c1,64 · 15c66 · 26,27c77,78 · 59c110 · 60a112 · 67c119 ·
+  68a121 · 75,76c128,129`). **Kein Folge-Slice und kein Carveout:** Der Rest, den die eingetretene
+  Hälfte hinterließe, ist keiner — die Zahl ist heute richtig, und die Regenerierungs-Hälfte ist
+  gedeckt, nur spät: Wer die Liste nicht abarbeitet, verliert die Marke, und der Wächter aus
+  DoD (3) färbt beim nächsten `make gates` rot. Das Auftreten ist als
+  [`BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht`](../observations/BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht/observation.md)
+  gezählt (jetzt **6×**, `evidence/slice-217.md`)
 - **Die Abhilfe liegt upstream und ist hier nur benannt.** Dass `--print-mk` die Konfiguration
   nicht liest, ist keine feste Werkzeug-Grenze: `d-check` ist ein Nachbar-Repo desselben Nutzers
   (`/Development/d-check`), und eine hier gemessene Generator-Lücke ist dort eine **Anforderung**.
@@ -461,8 +508,15 @@ dasteht.
   steht als Lücke im Plan und **nicht** als Kennung: Eine Slice-Kennung dieses Repos behauptete
   eine Datei, die es nicht gibt
   ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)),
-  und über das Nachbar-Repo entscheidet dieser Slice nicht. — **Ausgang:** <eingetreten: … |
-  entfallen: Grund | weiter offen: → Eintrag im Register>
+  und über das Nachbar-Repo entscheidet dieser Slice nicht. — **Ausgang: weiter offen →
+  Beobachtungs-Register,
+  [`BEO-ALL/werkzeug-luecke-im-nachbar-repo-ohne-adresse`](../observations/BEO-ALL/werkzeug-luecke-im-nachbar-repo-ohne-adresse/observation.md)
+  (neu, **1×**, `evidence/slice-217.md`).** Die drei Ausgänge sind eine geschlossene Menge, und
+  *eingetreten* wie *entfallen* sind hier beide falsch: Die Lücke ist am Abschluss-Tag erneut
+  gemessen (13 Ziele mit wie ohne `--config`, Ausgabe byte-gleich) und besteht fort; die lokale
+  Folge ist getragen, die Ursache nicht. Der Eintrag hängt sie an den Zähler, statt einen zweiten
+  Mechanismus zu erfinden — er führt daneben den zweiten gemessenen Fall derselben Klasse, das am
+  gepinnten Stand unbedienbare `make doc-commits`, als *benannt, nicht gezählt*
 - **Der neue Wächter kann von einer berechtigten Änderung entwaffnet werden.** Nimmt ein späterer
   Slice die Marke aus einem Rezept, weil das Ziel einen Block bekommen hat, bleibt der
   Mutations-Fall aus DoD (3) formal grün — er setzt ein *drittes* Ziel ein und hängt nicht an den
@@ -470,8 +524,16 @@ dasteht.
   [`BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`](../observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/observation.md)
   (Stand beim Schnitt: **3×**,
   `ls docs/plan/planning/observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/evidence/*.md | wc -l`)
-  ist genau hier zu prüfen. — **Ausgang:** <eingetreten: … | entfallen: Grund | weiter offen: →
-  Eintrag im Register>
+  ist genau hier zu prüfen. — **Ausgang: entfallen**, und zwar gemessen statt begründet. Der
+  Abschluss hat die Welt **nach**
+  [slice-213](../open/slice-213-review-report-laeuft-in-der-tabellen-form.md) an einer Kopie
+  außerhalb des Repos hergestellt — `structure:`-Block in
+  [`.d-check.yml`](../../../../.d-check.yml) ergänzt, Marke bei `doc-structure` in Hilfetext und
+  Ausgabe entfernt — und darüber zweimal gefahren: ohne Mutation grün, mit
+  `test/mutations/309-drittes-c-ziel-ohne-marke.sh` rot. Die berechtigte Änderung entwaffnet den
+  Fall also nicht; er hängt an einem selbst eingesetzten dritten Ziel und nicht an den heutigen
+  zwei. Der Register-Eintrag bleibt bei **3×** unberührt — ein Beleg für ein Auftreten, das es hier
+  nicht gab, wäre eine falsche Erhöhung
 
 ## 7. Closure-Notiz
 
@@ -483,15 +545,88 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
+- **Was hat funktioniert:** Die **Ableitung statt Aufzählung**. Der Wächter zählt keinen Zielnamen
+  auf, und das ist nicht bloß sauber, sondern gemessen tragend: `test/mutations/309` setzt ein
+  *drittes* C-Ziel ein und färbt ihn rot, und derselbe Fall beißt auch über einer Kopie, in der
+  [slice-213](../open/slice-213-review-report-laeuft-in-der-tabellen-form.md) bereits stattgefunden
+  hat (§6 Risiko 7). Ebenso getragen hat die Auflage aus §1, die **Null gegenzuprüfen** statt sie
+  zu deuten: Die zwei C-Ziele fielen verschieden aus — `doc-structure` ist am eingesetzten Defekt
+  inert, `doc-tracked` **nicht** —, und ohne die Gegenprobe hätte der Deckungs-Absatz für beide
+  dasselbe behauptet. Die Marke trägt darum die ableitbare **Tatsache** und nicht das Verhalten;
+  so kann sie nur an der einen Stelle falsch werden, an der der Wächter in seiner zweiten Richtung
+  anschlägt.
+- **Was ging anders als geplant:** Drei Dinge. **Erstens** hat ein gleichzeitig laufender Slice der
+  Marke die Adresse weggezogen: Der Umsetzungs-Commit legte den Deckungs-Absatz in
+  [`harness/README.md`](../../../../harness/README.md) an und zeigte darauf; sechs Commits später
+  brachte [slice-114](slice-114-jede-aussage-hat-einen-abschnitt.md) dieselbe Datei auf die
+  Ziel-Form und lagerte die Sensor-Prosa nach `harness/sensors/` aus. Kein Gate sprach davon — die
+  Adresse ist Prosa in einem Makefile-Fragment —, gefunden hat es die zweite Review-Runde. Der
+  Deckungs-Absatz aus DoD (1) liegt seither dort, wo die Ziel-Form ihn haben will, und die Marke
+  zeigt auf die zwei Sensor-Dateien. **Zweitens** brauchte die Ausgabe-Hälfte zwei Runden, weil der
+  Wächter zweimal hintereinander eine schwächere Eigenschaft maß als die Zusage daneben: erst
+  Anwesenheit statt Position, dann Position ohne Form. **Drittens** trägt
+  [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §3 über die C-Ziele eine Aussage, die die
+  Messung dieses Slice widerlegt — *„Heute melden sie ‚0 Befund(e)' und meinen ‚nichts geprüft'"*
+  gilt für `doc-structure`, nicht für `doc-tracked`. Das ist ein Übergabe-Artefakt an den
+  Closure-Lauf der Welle, kein Closure-Schritt dieses Slice
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+- **Steering-Loop-Eintrag:** *neuer Sensor.*
+  [`test/doc-block-marke-wiring.bats`](../../../../test/doc-block-marke-wiring.bats) hält
+  `{C-Ziele} == {Hilfetext-Marke} == {Ausgabe-Marke}` in beiden Richtungen, hermetisch (kein
+  Docker, kein Netz) und über `make test-bats` in `make gates`; die C-Menge leitet er aus
+  [`d-check.mk`](../../../../d-check.mk) und [`.d-check.yml`](../../../../.d-check.yml) ab.
+  `test/mutations/309-drittes-c-ziel-ohne-marke.sh` nimmt ihm die Zähne. Ein Feld `liegt in` steht
+  hier **nicht**: Verkörpert ist ein Sensor, keine Regel an einem Zielort, und der Herkunfts-Anker
+  für eine über die Schwelle getretene Beobachtung wird von der Welle-Closure vergeben, nicht hier
+  (Lese-Schritt, s. u.).
+- **Beobachtungs-Register (`../observations/`):** Vier Belege, zwei davon in neuen Verzeichnissen —
+  kein Zähler ist gesetzt, er folgt aus den Dateien.
+  [`zahl-ohne-kommando-trifft-ihren-gegenstand-nicht`](../observations/BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht/observation.md)
+  (jetzt **6×**) ·
+  [`zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
+  (jetzt **13×**, drei Funde in einem Beleg — ein Vorgang zählt einmal) ·
+  [`gleichzeitig-laufender-slice-macht-adresse-tot`](../observations/BEO-ALL/gleichzeitig-laufender-slice-macht-adresse-tot/observation.md)
+  (neu, **1×**) ·
+  [`werkzeug-luecke-im-nachbar-repo-ohne-adresse`](../observations/BEO-ALL/werkzeug-luecke-im-nachbar-repo-ohne-adresse/observation.md)
+  (neu, **1×**). **Der Lese-Schritt gehört nicht hierher:** Dieses Repo fährt Wellen-Betrieb
+  (`ls docs/plan/planning/welle-*.md | wc -l` → **3**, kein Erwartungswert), und *wellenlos* ist
+  nach Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht eine Eigenschaft
+  des **Repos**, nicht des einzelnen Slice. Diese Closure hat darum **gezählt und eingetragen und
+  keinem Eintrag einen Ausgang zugewiesen**. Gemessen ist dabei: **kein** Eintrag tritt durch
+  diesen Slice über die Schwelle — die drei, die §8 bei 2× als Kandidaten führte
+  (`gruen-aussage-ohne-herkunft`, `vollstaendigkeits-zusage-misst-falsche-ebene`,
+  `zusage-ohne-herstellbares-gegenbeispiel`), haben von hier keinen Beleg bekommen, weil keine der
+  drei Klassen auftrat. Ein Folge-Slice aus einem 3×-Übertritt fällt damit nicht an.
+- **Folge-Slices:** keiner geschnitten, und je Kandidat steht der Grund. Die Marke bei
+  `doc-structure` wird fällig, sobald
+  [slice-213](../open/slice-213-review-report-laeuft-in-der-tabellen-form.md) den `structure:`-Block
+  schreibt — das braucht keinen eigenen Slice, weil der Wächter dann rot färbt und die Arbeit dort
+  anfällt, wo sie entsteht. **`tracked` bekommt weiterhin keine Adresse, und das bleibt so:** Die
+  Gegenprobe hat gezeigt, dass das Modul für seine Kernfrage keinen Block braucht — ein Slice, der
+  ihm einen gäbe, hätte keinen gemessenen Anlass, und
+  [slice-116](../open/slice-116-doku-gate-urteilt-ueber-den-getrackten-bestand.md) führt das Modul
+  nicht (`grep -c 'tracked'` über seine Datei → **0**). Was aussteht, ist die **Aktivierung** von
+  `tracked` in `modules:`, und die ist eine Gate-Bewegung mit eigener Messung
+  ([`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)),
+  kein Nachtrag zu diesem Slice. Die Generator-Lücke im Nachbar-Repo bekommt aus demselben Grund
+  keine Kennung und stattdessen einen Register-Eintrag (§6).
+- **Risiken aus §6:** alle sieben mit genau einem Ausgang — dreimal *entfallen* (C-Menge
+  geschrumpft · Exit-Code-Grenze verschwiegen · Mutations-Fall entwaffnet), dreimal *weiter offen →
+  Register* (nur `--enable` · Block-Anwesenheit statt -Wirksamkeit · Abhilfe upstream), einmal
+  *eingetreten* (die Kopf-Zahl des Adopter-Kopfs, in der Nacharbeit aufgelöst).
 - **Drei Paarungen:** dieses **Repo** fährt Wellen, und dieser Slice gehört zu
   [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) — Anker, Folge-Slice und Register prüft
-  deren Closure.
+  deren Closure. Die mechanisch entscheidbaren Hälften sind hier trotzdem gefahren, damit die
+  Welle-Closure keinen Rest vorfindet, den dieser Slice hinterlassen hat: **(a) Anker** — kein
+  Eintrag dieser Notiz trägt das Feld `liegt in`, die Paarung hat für diesen Slice keinen
+  Gegenstand; **(b) Folge-Slice** — keiner genannt, der eine Datei behaupten könnte, außer den
+  bestehenden Kennungen `slice-213` und `slice-116`, die beide in `open/` liegen; **(c) Register**
+  — die vier zitierten Beobachtungs-Pfade lösen auf, und jedes der vier Verzeichnisse trägt
+  mindestens eine Datei unter `evidence/`. **Ein Rest bleibt und gehört nicht diesem Slice:** Das
+  Register führt ein Verzeichnis mit leerem `evidence/`
+  ([`einstiegs-datei-weicht-von-der-pflichtgliederung-ab`](../observations/BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab/observation.md)),
+  das die zweite Hälfte von (c) verletzt; es stammt aus einem anderen Lauf und ist damit ein
+  Übergabe-Artefakt an die Welle-Closure.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
