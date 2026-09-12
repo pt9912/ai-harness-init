@@ -70,17 +70,15 @@ Warteschlange.
 
 [ADR-0041](0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) Festlegung 4 bindet den
 Vollzug der ersten Archivierung an den Ausgang genau dieser Frage. Der Träger ist gebaut, die
-Betriebsart steht: Die Vorschau des Sammel-Archivs meldet heute **eine** inhaltliche Sperre, und
-sie ist **nicht** diese Frage —
+Betriebsart steht: Die Vorschau des Sammel-Archivs meldet über sauberem Arbeitsbaum **eine**
+Sperre, und sie ist **nicht** diese Frage —
 
 ```sh
-.harness/state/bin/ai-harness-init archive-welle --vorschau altbestand | sed -n '/^  Sperren:/,$p' | grep -c '^    \['   # 2
+.harness/state/bin/ai-harness-init archive-welle --vorschau altbestand | sed -n '/^  Sperren:/,$p' | grep -c '^    \['   # 1
 ```
 
-zwei Sperren am unsauberen Arbeitsbaum dieses Laufs, davon `[unsauber]` eine Eigenschaft des
-Moments und `[haenger]` die eigenständige Frage, die
-`slice-216`
-entscheidet. **Keine Erwartungswerte** — beide Zahlen wandern mit dem Baum.
+`[haenger]`, die eigenständige Frage, die `slice-216` entscheidet. **Kein Erwartungswert** — die
+Zahl wandert mit dem Baum, und ein unsauberer Baum trägt `[unsauber]` daneben.
 
 ### Was die adoptierte Baseline sagt
 
@@ -202,9 +200,10 @@ done | sort | uniq -c        # 5 code · 1635 prosa
 eigenen Registereintrag mit eigenem Träger; diese Entscheidung nimmt ihn ihr nicht ab.
 
 **6. Der Nachbar hat dieselbe Frage beantwortet, mit demselben Kriterium und ohne unsere
-Gegenfälle.** Ein Nachbar-Repo desselben Nutzers fährt dieselbe Kurs-Baseline und hat seinen
-Altbestand längst archiviert; sein Verweis-Nachzug läuft repo-weit und nimmt die einfrierenden
-Bäume **nicht** aus. Sein Konventions-Eintrag zur Massen-Ersetzung formuliert das Kriterium
+Gegenfälle.** Das Nachbar-Repo `d-check` desselben Nutzers fährt denselben Kurs — dort am Tag
+`v6.6.0`, hier `v6.5.0` — und hat seinen Altbestand archiviert; sein Verweis-Nachzug läuft repo-weit
+und nimmt die einfrierenden Bäume **nicht** aus. Sein Adaptions-Eintrag *„Wer mechanisch über den
+Baum ersetzt, listet die Frozen-Klassen vorher auf"* (`Accepted`, 2026-09-07) formuliert das Kriterium
 ausdrücklich — *„Die Unterscheidung ist nicht **ob** geschrieben wird, sondern **ob die Aussage
 danach noch dieselbe ist**"* — und nimmt den Pfad-Nachzug eines Lifecycle-Moves aus seiner
 Ausschluss-Menge heraus, weil *„es nannte einen Slice, und es nennt ihn weiter — nur an seinem
@@ -237,12 +236,14 @@ und werden unten einzeln beantwortet.
 Zeitdokument darf er das, in einer `Accepted`-ADR nichts. Fünf Festlegungen.**
 
 **1. Der Verweis-Nachzug eines vom Prozess vorgeschriebenen Ortswechsels ersetzt die Pfad-Adresse
-in einem Zeitdokument. Das ist entschieden, nicht geduldet.** Gebunden sind
-[`docs/plan/planning/done/`](../planning/done),
-[`docs/reviews/`](../../reviews),
-[`docs/plan/carveouts/done/`](../carveouts/done) und
-[`docs/plan/planning/observations/`](../planning/observations) — die vier Bäume, die
-die Vorschau oben als eingefroren ausweist. Beide Träger behalten dafür ihre heutige
+in einem Zeitdokument. Das ist entschieden, nicht geduldet.** Gebunden sind die vier Bäume, die
+Messung 2 neben `docs/plan/adr/` als eingefroren ausweist:
+[`docs/plan/planning/done/`](../planning/done), [`docs/reviews/`](../../reviews),
+[`docs/plan/carveouts/done/`](../carveouts/done) und, vom Beobachtungs-Register
+[`docs/plan/planning/observations/`](../planning/observations), dessen eingefrorenes Glied
+`evidence/<vorgangs-id>.md` — die `state.md` daneben nennt die adoptierte Baseline `v6.5.0`
+(`modul-06-roadmap.md` §Das Beobachtungs-Register) *„der veränderliche Stand"*, und in einem
+lebenden Artefakt bleibt der Pfad der richtige Zeiger. Beide Träger behalten ihre heutige
 Ausnahmeliste; **keiner bekommt einen weiteren ausgenommenen Baum.**
 
 Der Grund ist das Kriterium und nicht die Bequemlichkeit: Ein Zeitdokument hält eine **Messung
@@ -325,11 +326,11 @@ sind gemessen, alle drei bleiben:
   `slice-183` §6"* auf einen Stub ohne §6: der Link grün, die Aussage falsch. Die maschinell
   sichtbare Hälfte — der Anker-Link — ist heute leer (Messung 4); die Prosa-Hälfte ist ein Urteil.
 
-**Warum nicht repariert wird:** Jede Reparatur — die Adresse auf eine pfadlose Kennung ziehen, den
-Satz umschreiben — ändert **dieselben Bytes stärker** als der Nachzug und setzt obendrein ein
-Urteil je Fundstelle über 402 Stellen in 146 Artefakten. Sie machte aus einem Zeitdokument eine
-redigierte Fassung, also genau das, was der Preis-Satz der Quelle mit *„dann ist es kein
-Zeitdokument mehr"* meint.
+**Warum nicht repariert wird — und warum der Preis-Satz der Quelle das nicht entscheidet:** Er steht
+unter *„die Reparatur ist teurer als die Vermeidung"* und stellt **beide** Wege nebeneinander; auch
+der hier gewählte geht Weg 1. Getrennt werden sie vom Kriterium dieser Entscheidung: Der Nachzug
+lässt die Aussage stehen, die Reparatur schreibt sie um — aus einem Zeiger wird Text — und setzt
+dafür ein **Urteil je Fundstelle** über 402 Stellen in 146 Artefakten, das kein Match liefert.
 
 **Träger der Vermeidung ist der Schreiber vor dem Einfrieren, nicht der Beweger danach.** Das ist
 [ADR-0027](0027-tote-adresse-in-eingefrorener-adr.md)/[ADR-0030](0030-eingefrorene-adresse-auf-den-planning-lifecycle.md)
@@ -340,8 +341,13 @@ ausdrücklich kein Arbeitsauftrag.
 **5. Die Vorab-Messung aus [`AGENTS.md`](../../../AGENTS.md) §3.11 behält ihren Zweck, und der ist
 nicht mehr die Erlaubnis.** Sie hält den Move **nicht** an, wo sie ein Zeitdokument findet — dort
 ist der Nachzug ab hier beschlossen, und der bewegende Lauf nennt in seinem Beleg, was er anfasst.
-Sie hält ihn an, wo sie eine `Accepted`-ADR findet: dort ist die Entscheidung vor dem Move eine
-Ventil-Entscheidung nach §3.5, und ohne sie darf der Move nicht laufen.
+Sie hält ihn an, wo sie eine `Accepted`-ADR findet, und dort an **zwei** Bedingungen: Der Move läuft
+erst, wenn **beide Träger** die Ausnahme aus Festlegung 2 führen (Folgepflicht 1) **und** jede
+gefundene Adresse ihr Ventil hat. Die zweite ist mit Festlegung 3 erfüllt, die erste **nicht** — bis
+dahin ist der erste Archiv-Move gesperrt, gleich was die Vorschau sonst meldet. Ohne sie erlaubte
+diese Entscheidung ihren eigenen Bruch: Beide Träger nehmen heute allein den vendored Baum aus, und
+die Vorschau führt [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) mit zwei Fundstellen als zu
+schreibende Datei. Eine dritte Adresse wäre eine neue Senkung nach §3.5 mit eigener Entscheidung.
 
 Damit bekommt der Absatz, an dem dreizehn Läufe gemessen und dann doch entschieden haben, eine
 Antwort statt einer Warteschlange — und behält seine Sperrwirkung genau dort, wo sie
@@ -396,7 +402,7 @@ verteidigbar (Baseline-Regelwerk `modul-04-adrs.md` §Ziel-Form: ADR (MADR)).
 |---|---|---|
 | A — Nichts tun: der Nachzug läuft weiter wie heute, unentschieden | Kostet keine Zeile. Der Bestand bleibt, wie er ist, und die Träger bleiben unverändert | **Entscheidet nichts und blockiert zwei Vorgänge.** [ADR-0041](0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) Festlegung 4 wartet ausdrücklich auf diesen Ausgang, und der Registereintrag steht bei 13 Belegen ohne Träger. Jeder weitere Lauf misst erneut, schreibt dieselbe Notiz und fährt trotzdem — der Zähler wüchse ohne Erkenntnisgewinn. Und die Ungleichbehandlung bliebe: Was ein Nachzug anfasst, entschiede weiter die **Sichtbarkeit für das Gate** statt die Eigenschaft des Artefakts |
 | B — Die einfrierenden Bäume aus dem Nachzug herausnehmen | Nimmt den Wortlaut der Quelle beim Wort (*„werden nicht nachgezogen"*). Kein Byte in einem Zeitdokument | **Tauscht Schreiben gegen Blindheit, und zwar baum-weit.** Nach der ersten Archivierung stünden **402** tote Adressen in **146** Artefakten, die niemand reparieren darf. Sie stumm zu schalten ginge nur über vier Glob-Paare der Form `in: <einfrierender Baum>/**` gegen `refs: docs/plan/planning/done/**` — das nähme die **gesamte** Lifecycle-Achse dieser Bäume dauerhaft aus der Prüfung und träfe damit auch jeden künftigen, richtigen Verweis. Der Breiten-Wächter aus [ADR-0039](0039-eingefrorene-adresse-in-den-vendored-baum.md) Festlegung 2 müsste dafür eine Zahl deklarieren, die jeder Archiv-Lauf verschiebt. Und sie löste die Frage nicht, sondern verschöbe sie: Eine tote Adresse in einem Zeitdokument ist genau der Befund, den [ADR-0027](0027-tote-adresse-in-eingefrorener-adr.md) und [ADR-0030](0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) je einmal mit einer eigenen Entscheidung auffangen mussten |
-| C — Die Adresse im eingefrorenen Artefakt auf eine pfadlose Kennung ziehen | Erfüllt die Adress-Form-Regel der Quelle auch im Bestand, nicht nur vorwärts. Danach gibt es nichts mehr nachzuziehen | **Ändert dieselben Bytes stärker als der Nachzug** — aus einem Zeiger wird Text, aus einem Zeitdokument eine redigierte Fassung. Und es ist ein **Urteil je Fundstelle** über 402 Stellen in 146 Artefakten: Ob ein Link entbehrlich ist, sieht kein Match. §3.11 führt den Bestand ausdrücklich als *kein Arbeitsauftrag*; diese Option macht ihn zu einem |
+| C — Die Adresse im eingefrorenen Artefakt auf eine pfadlose Kennung ziehen | Erfüllt die Adress-Form-Regel der Quelle auch im Bestand, nicht nur vorwärts. Danach gibt es nichts mehr nachzuziehen | **Ändert nicht nur dieselben Bytes stärker als der Nachzug, sondern die Aussage** — aus einem Zeiger wird Text. Beide Optionen gehen Weg 1 der Quelle und zahlen denselben Preis; getrennt werden sie vom Kriterium, nicht vom Preis-Satz. Und es ist ein **Urteil je Fundstelle** über 402 Stellen in 146 Artefakten: Ob ein Link entbehrlich ist, sieht kein Match. §3.11 führt den Bestand ausdrücklich als *kein Arbeitsauftrag*; diese Option macht ihn zu einem |
 | **D — Der Nachzug ersetzt die Adresse im Zeitdokument und nichts in der `Accepted`-ADR (gewählt)** | Zieht die Linie dort, wo die Quellen dieses Repos sie schon ziehen: §3.4 nennt ADRs beim Namen, [ADR-0030](0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Festlegung 1 sagt für eine ADR *„kein Byte"*, [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) §Kontext hat das Zeitdokument als *„von §3.4 nicht geschützt"* gemessen. Das Kriterium ist die **Aussage**, nicht die Gate-Sichtbarkeit — genau der Punkt, an dem die bisherige Praxis auffiel. Der Preis ist beziffert und klein: **1** Datei, **2** Adressen, **2** namentlich geschnittene Ventile. Beide Träger bleiben unverändert bis auf **einen** zusätzlich ausgenommenen Pfad, und der erste Archivierungs-Lauf wird ausführbar | Schreibt weiterhin in **402** Fundstellen eingefrorener Artefakte, und drei gemessene Gegenformen bleiben ungelöst (Festlegung 4) — sie sind benannt, nicht geschlossen. Der Pfad-Schnitt in Festlegung 2 ist gröber als der Norm-Gegenstand: eine `Proposed`-ADR wird mit ausgenommen, obwohl sie lebt (heute leer, künftig Handarbeit). Und die zwei Ventile sind eine Senkung, die vorher keine war |
 | E — Der Nachzug unterscheidet selbst: Adresse ja, aussagetragende Adresse nein | Träfe genau das Kriterium und löste alle drei Gegenformen aus Festlegung 4 an der Wurzel | **Verlangt ein Urteil vom Werkzeug, das ein Urteil ist.** Ein Zustandssatz neben einer Adresse ist kein Muster; die einzige mechanisch trennbare Form ist der Code-Block, und die zählt **5** von **1640** (Messung 5). Für diese fünf gibt es bereits einen Registereintrag mit eigenem Träger beim **Schreiber** der Mess-Aussage — dort ist sie billig und sicher, im Werkzeug teuer und unvollständig. Eine Fähigkeit, die 5 Fälle trifft und 402 unberührt lässt, beantwortet die Frage nicht, sondern verdeckt sie |
 
@@ -416,12 +422,13 @@ verteidigbar (Baseline-Regelwerk `modul-04-adrs.md` §Ziel-Form: ADR (MADR)).
   verantwortet.
 - **Negativ:** Drei Gegenformen bleiben offen (Festlegung 4). Zwei davon sind Urteile ohne Sensor;
   die dritte hat einen eigenen Registereintrag, dessen Zähler weiterläuft.
-- **Negativ:** Zwei neue `ignore-refs`-Paare sind zwei neue blinde Referenzen. Sie sind namentlich
-  geschnitten, aber sie sind eine Senkung.
+- **Negativ:** Zwei neue `ignore-refs`-Paare sind zwei neue blinde Referenzen — namentlich
+  geschnitten und trotzdem eine Senkung. Beide sind Code-Spans; ihre **Restbreite** misst kein
+  Sensor (§Fitness Function).
 - **Folgepflicht 1 — die zwei Träger bekommen ihren zusätzlich ausgenommenen Pfad.** `slice-mv`
   nimmt heute allein den vendored Baum aus, der Archiv-Nachzug ebenso; beide brauchen
   `docs/plan/adr/` daneben, samt Test. Das ist Implementer-Arbeit und ein eigener Slice; ohne sie
-  ist Festlegung 2 eine Zusage ohne Träger.
+  ist Festlegung 2 eine Zusage ohne Träger und der erste Archiv-Move nach Festlegung 5 gesperrt.
 - **Folgepflicht 2 — der Lauf, der den ersten Archiv-Move vollzieht, trägt die zwei
   `ignore-refs`-Paare ein**, im selben Commit wie den Move, mit je neu gemessener
   `# Deckung:`-Deklaration.
@@ -440,11 +447,26 @@ verteidigbar (Baseline-Regelwerk `modul-04-adrs.md` §Ziel-Form: ADR (MADR)).
 
 | Tooling | Regel | Make-Target |
 |---|---|---|
-| bats (`test/ignore-refs-restbreite.bats`) | Jedes `ignore-refs`-Paar deklariert seine Deckung und deckt genau so viele Markdown-Links — die zwei Paare aus Festlegung 3 fallen vom ersten Lauf an darunter | `make test` |
+| bats (`test/ignore-refs-restbreite.bats`) | Jedes `ignore-refs`-Paar wird in bekannter Form gelesen und deckt genau so viele **Markdown-Links**, wie es deklariert — die zwei Paare aus Festlegung 3 fallen vom ersten Lauf an unter beide Prüfungen | `make test` |
 | d-check (`links`, `codepaths`) | Nach dem Move löst jede nachgezogene Adresse auf; eine unterbliebene Ersetzung färbt rot | `make docs-check` |
-| — | **Festlegung 1, 2, 4 und 5 haben keinen Sensor** | — |
+| — | **Festlegung 1, 2, 4 und 5 haben keinen Sensor — und die *Restbreite* der zwei Paare aus Festlegung 3 ebenso wenig** | — |
 
-**Die dritte Zeile ist die tragende.** Kein Modul der [`.d-check.yml`](../../../.d-check.yml) hält
+**Die erste Zeile deckt weniger, als ihr Name nahelegt.** Beide Adressen aus Festlegung 3 stehen in
+ihrer Quelldatei als **Code-Span** (Messung 3), und der Wächter liest die Inline-Markdown-Form
+`](ziel)`: Er hält für diese zwei Paare **Form** und **Deklaration**, nicht die **Restbreite** — ein
+zweiter Code-Span derselben Quelldatei ließe ihn grün. Das ist wörtlich die Lage des dritten Paares,
+die [ADR-0030](0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Folgepflicht 2 und
+[ADR-0039](0039-eingefrorene-adresse-in-den-vendored-baum.md) §Fitness Function als **benannte
+Lücke** führen; diese Entscheidung behauptet den Wächter dafür **nicht**
+([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Sie hebt
+die Zahl der Paare, deren Deklaration `0` lautet, weil ihre reale Referenz ein Code-Span ist, von
+**1** auf **3**:
+
+```sh
+grep -c '^  # Deckung: 0$' .d-check.yml   # 1 — kein Erwartungswert; die zwei Paare aus Festlegung 3 treten hinzu
+```
+
+**Die dritte Zeile trägt den Rest.** Kein Modul der [`.d-check.yml`](../../../.d-check.yml) hält
 den Status eines Artefakts gegen die Form seiner Adressen, und keines liest Commits — dieselbe
 Lücke, die [`AGENTS.md`](../../../AGENTS.md) §3.11 und
 [ADR-0030](0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) §Fitness Function für sich
