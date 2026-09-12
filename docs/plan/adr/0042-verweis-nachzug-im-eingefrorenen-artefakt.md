@@ -385,12 +385,32 @@ Diese Entscheidung steht auf `Proposed`. Sie wird `Accepted`, **wenn eine Review
 [ADR-0030](0030-eingefrorene-adresse-auf-den-planning-lifecycle.md),
 [ADR-0039](0039-eingefrorene-adresse-in-den-vendored-baum.md),
 [ADR-0041](0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) und die zitierten Stellen der
-adoptierten Baseline `v6.5.0` auf Konsistenz geprüft hat und ihr Report ohne blockierenden Befund
-in [`docs/reviews/`](../../reviews) liegt.** Meldet eine Runde einen blockierenden Befund, ist der
-Beleg nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 eine
-**erneute** Runde derselben prüfenden Rolle; die Nachmessung durch den Kontext, der den Befund
-auflöste, ist keiner. Die Accept-Zeile der §Geschichte nennt diesen Beleg als Kennung
+adoptierten Baseline `v6.5.0` auf Konsistenz geprüft hat und ihr Report gegen den Gegenstand
+dieser Entscheidung selbst keinen blockierenden Befund führt.** Die Accept-Zeile der §Geschichte
+nennt den Beleg als Kennung
 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1).
+
+**Was diese Bedingung nicht verlangt — und der Verzicht ist entschieden, nicht übersehen.** Sie
+verlangt keine Runde ohne blockierendes Verdikt und damit auch nicht die **erneute** Runde
+derselben prüfenden Rolle, die
+[ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 nach einem
+blockierenden Befund zum Beleg macht. Der Anlass ist die dritte Reviewer-Runde vom 2026-09-12 zu
+dieser Entscheidung: Sie prüft die fünf Festlegungen, die Nicht-Regression und die Gate-Wirkung je
+ohne Befund und verdiktiert dennoch blockierend, weil ihr einziger Befund **außerhalb** dieser
+Datei liegt — in [`harness/sensors/archive-welle.md`](../../../harness/sensors/archive-welle.md),
+einem lebenden Artefakt, das die Sperre des ersten Archiv-Moves allein an die Norm-Frage hängte.
+Er ist in `5a3cdc05` behoben; **die behobene Fassung hat keine Runde bestätigt.** Die Bedingung
+bindet den Trigger darum an den Gegenstand der Entscheidung und überlässt die Wirkung auf fremde
+Artefakte deren eigenen Trägern.
+
+**Der Weg dahin ist [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)
+Festlegung 3, und er ist der einzige.** Soll ein anderer Beleg genügen als der, den der Trigger
+nennt, wird der Trigger geändert — **solange die Datei `Proposed` ist**; danach frieren
+Statuszeile und Trigger-Abschnitt gemeinsam ein. Die Setzung ist die des Auftraggebers vom
+2026-09-12. **Was offen bleibt, bleibt benannt:** Jene Festlegung 2 spricht über jede prüfende
+Runde, die blockierend gemeldet hat, nicht allein über den Wortlaut des Triggers; ob die engere
+Fassung sie erfüllt oder verdrängt, entscheidet diese Datei nicht. Sie sagt, was zählt, und sagt
+daneben, was fehlt.
 
 ## Verglichene Alternativen
 
