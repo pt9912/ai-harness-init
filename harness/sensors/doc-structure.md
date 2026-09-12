@@ -64,9 +64,10 @@ vor dem `@echo` durch, ohne `-` davorzustellen; meldet der Lauf einen Befund, en
 Exit-Code ungleich null, und `make` bricht das Rezept an dieser Stelle ab — die Marke wird dann
 **nicht** ausgegeben. Für [`doc-tracked`](doc-tracked.md), das laut dortiger Gegenprobe *nicht*
 inert ist, ist das ein erreichbarer Zustand: ein echter `target-untracked`-Fund unterdrückt die
-Marke in genau dem Lauf, der sie am nötigsten hätte. Der Wächter aus DoD (3) prüft die
-**Textform** des Rezepts (die Marke steht als letzte Rezept-Zeile) und damit, ob sie *erscheinen
-würde* — nicht, ob sie in jedem realen Lauf tatsächlich erscheint; Letzteres bräuchte einen
+Marke in genau dem Lauf, der sie am nötigsten hätte. [`test/doc-block-marke-wiring.bats`](../../test/doc-block-marke-wiring.bats)
+prüft die **Textform** des Rezepts — die letzte Rezept-Zeile ist ein `@echo`, das die Marke
+ausgibt, kein No-op und kein Kommentar auf einer anderen Zeile — und damit, ob sie *erscheinen
+würde*, nicht, ob sie in jedem realen Lauf tatsächlich erscheint; Letzteres bräuchte einen
 laufenden Docker-Aufruf und ist kein hermetischer, netzloser Test.
 
 ## Bindung

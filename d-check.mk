@@ -107,18 +107,18 @@ doc-planning: ## Planning-Lifecycle-Konsistenz (Roadmap <-> in-progress) via Mod
 	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable planning --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable tracked --disable targets --disable citations --disable sources --disable structure --disable workflows --disable reviews
 
 .PHONY: doc-tracked
-doc-tracked: ## Getrackt-Status aufloesbarer Referenz-Ziele via Modul tracked; braucht .git im Mount, ohne Range (DC-FA-TRK-001) -- .d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/README.md Abschnitt zu doc-tracked/doc-structure
+doc-tracked: ## Getrackt-Status aufloesbarer Referenz-Ziele via Modul tracked; braucht .git im Mount, ohne Range (DC-FA-TRK-001) -- .d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/sensors/doc-tracked.md bzw. harness/sensors/doc-structure.md
 	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable tracked --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable targets --disable citations --disable sources --disable structure --disable workflows --disable reviews
-	@echo '.d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/README.md Abschnitt zu doc-tracked/doc-structure'
+	@echo '.d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/sensors/doc-tracked.md bzw. harness/sensors/doc-structure.md'
 
 .PHONY: doc-targets
 doc-targets: ## Deklarations-Konsistenz Doku<->Build-Targets via Modul targets; hermetisch, ohne Range (DC-FA-TGT-001)
 	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable targets --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable tracked --disable citations --disable sources --disable structure --disable workflows --disable reviews
 
 .PHONY: doc-structure
-doc-structure: ## Struktur-Invarianten innerhalb der Dokumente via Modul structure; hermetisch, ohne Range (DC-FA-STRUCT-001) -- .d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/README.md Abschnitt zu doc-tracked/doc-structure
+doc-structure: ## Struktur-Invarianten innerhalb der Dokumente via Modul structure; hermetisch, ohne Range (DC-FA-STRUCT-001) -- .d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/sensors/doc-tracked.md bzw. harness/sensors/doc-structure.md
 	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable structure --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable tracked --disable targets --disable citations --disable sources --disable workflows --disable reviews
-	@echo '.d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/README.md Abschnitt zu doc-tracked/doc-structure'
+	@echo '.d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/sensors/doc-tracked.md bzw. harness/sensors/doc-structure.md'
 
 .PHONY: doc-usage
 doc-usage: ## Aufruf und Optionen von d-check selbst (--help)
