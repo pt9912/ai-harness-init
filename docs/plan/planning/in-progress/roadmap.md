@@ -20,7 +20,7 @@ nicht hier.
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
 - [welle-13 — Regeln bekommen ihren Sensor](../welle-13-regeln-bekommen-ihren-sensor.md)
 
-In Arbeit: [slice-114 — Jede Aussage des Harness-Einstiegs hat einen Abschnitt](slice-114-jede-aussage-hat-einen-abschnitt.md) (ohne Welle).
+In Arbeit: [slice-221 — Der Verweis-Nachzug lässt die Accepted-ADR unberührt](slice-221-nachzug-laesst-die-adr-unberuehrt.md) (ohne Welle).
 
 **Eine Position der Ziel-Form ist nicht übernommen, und hier steht der Grund**
 ([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage): eine unerklärte Abweichung
