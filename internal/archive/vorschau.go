@@ -6,6 +6,12 @@ import (
 	"strings"
 )
 
+// AltbestandSchluessel ist der Schluessel aus ADR-0041 Festlegung 2: ein
+// einzelnes Sammel-Archiv fuer den wellenlosen Bestand ohne Adressaten, keine
+// Welle-Kennung. Er ist ortsfest und traegt genau einen Lauf; `sperren` hebt
+// fuer ihn die vier welle- bzw. untergrenzen-gebundenen Ausgaenge auf.
+const AltbestandSchluessel = "altbestand"
+
 // Sperre ist ein fail-closed-Ausgang, an dem der SCHREIBENDE Lauf abbraeche.
 // Die Vorschau nimmt ihn nicht — sie nennt ihn.
 type Sperre struct {
@@ -52,6 +58,15 @@ func Vorschau(root, welleID, porcelain string, dateien []string) (Bericht, error
 // ABGRENZUNG: das sind die am RUHENDEN Baum beobachtbaren. Der Ausgang ueber eine
 // verletzte Stub-Form entsteht erst zwischen den zwei Commits und steht in keiner
 // Vorschau; das fehlende Wellen-Argument faengt der Aufrufer vor dem Lauf ab.
+//
+// BETRIEBSART: traegt der Schluessel AltbestandSchluessel (ADR-0041
+// Festlegung 2), hebt diese Funktion vier welle- bzw. untergrenzen-gebundene
+// Ausgaenge auf — ergebnisnotiz, kein-plan, mehrdeutiger-plan (alle drei aus
+// planSperre) und untergrenze — weil ein Schluessel ohne Welle weder einen
+// Welle-Plan noch eine Ergebnisnotiz in done/ hat und selbst die Untergrenze
+// setzt, die die laufende Regel danach braucht. unsauber, archiviert,
+// kein-slice und haenger bleiben unveraendert: haenger traegt ADR-0041
+// Festlegung 4 und darf nicht mit aufgehen.
 func sperren(b Bestand, porcelain string, haenger []string) []Sperre {
 	var out []Sperre
 	if grund := UnsauberGrund(porcelain); grund != "" {
@@ -67,21 +82,26 @@ func sperren(b Bestand, porcelain string, haenger []string) []Sperre {
 			Grund:   doneDir + "/" + b.Welle + " gibt es schon — diese Welle ist archiviert",
 		})
 	}
-	if b.Ergebnis == "" {
-		out = append(out, Sperre{
-			Kennung: "ergebnisnotiz",
-			Grund:   doneDir + "/" + b.Welle + "-results.md fehlt",
-			Zeilen:  []string{"Schritt 4 folgt auf Schritt 3 — die Ergebnisnotiz ist seine Vorbedingung"},
-		})
+	welleGebunden := b.Welle != AltbestandSchluessel
+	if welleGebunden {
+		if b.Ergebnis == "" {
+			out = append(out, Sperre{
+				Kennung: "ergebnisnotiz",
+				Grund:   doneDir + "/" + b.Welle + "-results.md fehlt",
+				Zeilen:  []string{"Schritt 4 folgt auf Schritt 3 — die Ergebnisnotiz ist seine Vorbedingung"},
+			})
+		}
+		out = append(out, planSperre(b)...)
 	}
-	out = append(out, planSperre(b)...)
 	if len(b.Slices()) == 0 {
 		out = append(out, Sperre{
 			Kennung: "kein-slice",
 			Grund:   "kein Slice fuer " + b.Welle + " eingesammelt — nichts zu archivieren",
 		})
 	}
-	out = append(out, untergrenzeSperre(b)...)
+	if welleGebunden {
+		out = append(out, untergrenzeSperre(b)...)
+	}
 	if len(haenger) > 0 {
 		out = append(out, Sperre{
 			Kennung: "haenger",

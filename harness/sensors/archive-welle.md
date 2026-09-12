@@ -34,6 +34,24 @@ Träger, `.harness/state/bin/ai-harness-init archive-welle --vorschau <welle-id>
 Vorschau ist die Vorprüfung des schreibenden Laufs, und was sie an Sperren nennt, sind genau die
 Ausgänge, an denen er abbricht.
 
+## Ein Schlüssel ohne Welle
+
+`<welle-id>` kann auch der Schlüssel `altbestand` sein
+([`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)
+Festlegung 2): das einzelne Sammel-Archiv für den wellenlosen Bestand, der nie eine Welle-Closure
+hatte, die ihn hätte einsammeln können. Der Schlüssel ist keine Welle-Kennung, ortsfest und trägt
+genau einen Lauf. Für ihn hebt die Vorprüfung genau vier welle- bzw. untergrenzen-gebundene
+Ausgänge auf — `ergebnisnotiz`, `kein-plan`, `mehrdeutiger-plan` und `untergrenze` —, weil ein
+Schlüssel ohne Welle weder einen Welle-Plan noch eine Ergebnisnotiz in `done/` hat und mit seinem
+eigenen Archiv selbst die Untergrenze setzt, die die laufende Regel danach braucht. **Alle übrigen
+Ausgänge bleiben unverändert, einschließlich `haenger`:** Er trägt
+[`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)
+Festlegung 4 und darf nicht mit aufgehoben werden — der schreibende Lauf über `altbestand` bleibt
+so lange gesperrt, bis die Norm-Frage über Verweis-Nachzug in eingefrorene Artefakte entschieden ist
+(`BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt`,
+[slice-216](../../docs/plan/planning/open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)).
+Diese Datei baut die Betriebsart, sie vollzieht sie nicht.
+
 ## Grenze — was das Grün nicht abdeckt
 
 1. **Der Unterkommando-Name in der Rezept-Zeile ist ein zweites Vorkommen desselben Literals** —
@@ -55,7 +73,10 @@ Ausgänge, an denen er abbricht.
    [`spec/lastenheft.md`](../../spec/lastenheft.md), aus `docs/plan/carveouts/done/`, aus nach
    [`AGENTS.md`](../../AGENTS.md) §3.4 eingefrorenen ADRs und aus anderen Review-Reports, die
    einander quer über Wellen-Grenzen verlinken. Beides sind eigene Vorgänge, die vor der ersten
-   Archivierung liegen — permanent, bis sie einzeln aufgelöst sind.
+   Archivierung liegen — permanent, bis sie einzeln aufgelöst sind. Der Schlüssel `altbestand`
+   (§Ein Schlüssel ohne Welle) nimmt der Untergrenzen-Hälfte ihren Gegenstand — für ihn gibt es
+   keine Welle-Form, an der `untergrenze` hängen könnte —, ändert an der zweiten Hälfte aber nichts:
+   `haenger` bleibt auch unter diesem Schlüssel stehen.
 5. **Vier Grenzen bleiben unabhängig vom Bestand, alle permanent:** der Nachzug hängt Pfade um,
    keine Zustandssätze (ein Satz „liegt in `done/`" wird richtig verlinkt und bleibt ungenau); ein
    eingehender Verweis in Inline-Code ohne Verzeichnis-Segment trägt keine Link-Klammer und wird
@@ -82,17 +103,18 @@ die vier Einsammel-Zahlen (Mitglieder · wellenlos · fremd · Review-Reports), 
 
 Fail-closed, geprüft **bevor** der Lauf etwas anfasst — dieselbe Vorprüfung, die `--vorschau`
 ausgibt. Am ruhenden Baum sind es acht (`grep -c 'Kennung: "' internal/archive/vorschau.go`, kein
-Erwartungswert):
+Erwartungswert). Unter dem Schlüssel `altbestand` (§Ein Schlüssel ohne Welle) fehlen die vier mit
+`†` markierten — die übrigen vier, `haenger` eingeschlossen, stehen unverändert:
 
-- `untergrenze` — kein `done/*/archiv.zip` im wellenlosen Bestand → Altbestand als eigenen Vorgang
-  archivieren, bevor die erste Welle läuft
+- `untergrenze` **†** — kein `done/*/archiv.zip` im wellenlosen Bestand → Altbestand als eigenen
+  Vorgang archivieren, bevor die erste Welle läuft
 - `haenger` — ein noch referenziertes Zeitdokument würde bewegt oder gelöscht → den Verweis lösen
   oder den betroffenen Vorgang aus dieser Welle herausnehmen
 - „schon archiviert" — `done/<welle-id>/archiv.zip` existiert bereits → keine zweite Archivierung
 - „unsauberer Baum" — `git status --porcelain` meldet Änderungen → committen oder verwerfen
-- fehlende Ergebnisnotiz — `done/<welle-id>-results.md` fehlt → Closure-Notiz zuerst schreiben
-- fehlender Welle-Plan → genau eine flache `<welle-id>.md` bereitstellen
-- mehrdeutiger Welle-Plan (mehr als eine passende Datei) → auf eine reduzieren
+- fehlende Ergebnisnotiz **†** — `done/<welle-id>-results.md` fehlt → Closure-Notiz zuerst schreiben
+- fehlender Welle-Plan **†** → genau eine flache `<welle-id>.md` bereitstellen
+- mehrdeutiger Welle-Plan **†** (mehr als eine passende Datei) → auf eine reduzieren
 - „kein Slice eingesammelt" — weder wellengebundene noch wellenlose Kandidaten gefunden → `WELLE=`
   prüfen oder die Closure-Zuordnung der Slices
 

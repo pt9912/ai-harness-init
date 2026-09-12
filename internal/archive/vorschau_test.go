@@ -150,6 +150,91 @@ func TestVorschauSperrtOhnePlanUndOhneErgebnisnotiz(t *testing.T) {
 	}
 }
 
+// TestAltbestandSchluesselTraegtDenWertAusADR0041 haelt den Literal-Wert selbst
+// fest: ADR-0041 Festlegung 2 setzt "altbestand", kein selbst gewaehlter Name.
+// Ein Test, der stattdessen archive.AltbestandSchluessel an beiden Enden
+// verglichen haette, waere gegen eine Aenderung des Werts blind.
+func TestAltbestandSchluesselTraegtDenWertAusADR0041(t *testing.T) {
+	if archive.AltbestandSchluessel != "altbestand" {
+		t.Fatalf("AltbestandSchluessel = %q, ADR-0041 Festlegung 2 setzt %q", archive.AltbestandSchluessel, "altbestand")
+	}
+}
+
+// TestAltbestandHebtWelleUndUntergrenzeSperrenAuf: derselbe Baum, der unter
+// einer Welle-Kennung "kein-plan" (bzw. bei zwei Kandidaten
+// "mehrdeutiger-plan"), "ergebnisnotiz" und "untergrenze" traegt, sperrt unter
+// dem Schluessel aus ADR-0041 Festlegung 2 an keiner der vier Stellen mehr.
+func TestAltbestandHebtWelleUndUntergrenzeSperrenAuf(t *testing.T) {
+	root := t.TempDir()
+	done := filepath.Join(root, "docs", "plan", "planning", "done")
+	// zwei Plan-Kandidaten -- unter einer Welle-Kennung waere das "mehrdeutiger-plan".
+	schreibe(t, filepath.Join(done, "altbestand-a.md"), "# A\n")
+	schreibe(t, filepath.Join(done, "altbestand-b.md"), "# B\n")
+	schreibe(t, filepath.Join(done, "slice-100-a.md"), "# Slice slice-100: A\n\n**Welle:** ohne Welle.\n")
+
+	b := vorschauVon(t, root, "altbestand", "")
+	for _, k := range []string{"ergebnisnotiz", "kein-plan", "mehrdeutiger-plan", "untergrenze"} {
+		if hatSperre(b, k) {
+			t.Errorf("Sperre %q steht unter dem Schluessel 'altbestand', sie muss aufgehoben sein: %v", k, kennungen(b))
+		}
+	}
+}
+
+// TestAltbestandBehaeltHaengerSperre ist der Gegenstand von ADR-0041
+// Festlegung 4: die Betriebsart darf die Verweis-Sperre nicht mit aufheben.
+func TestAltbestandBehaeltHaengerSperre(t *testing.T) {
+	root := t.TempDir()
+	done := filepath.Join(root, "docs", "plan", "planning", "done")
+	schreibe(t, filepath.Join(done, "slice-100-a.md"), "# Slice slice-100: A\n\n**Welle:** ohne Welle.\n")
+	schreibe(t, filepath.Join(root, "docs", "reviews", "2026-09-01-slice-100-r1.md"), "# Runde 1\n")
+	schreibe(t, filepath.Join(root, "docs", "reviews", "2026-09-02-slice-900-r1.md"),
+		"# Fremder Report\n\nSiehe [Vorrunde](2026-09-01-slice-100-r1.md).\n")
+
+	b := vorschauVon(t, root, "altbestand", "")
+	if !hatSperre(b, "haenger") {
+		t.Fatalf("Sperre 'haenger' fehlt unter dem Schluessel 'altbestand' — sie darf nicht mit aufgehoben werden: %v", kennungen(b))
+	}
+}
+
+// TestAltbestandSperrtBeiUnsauberemBaum, TestAltbestandSperrtBeiKeinSlice und
+// TestAltbestandSperrtBeiBereitsArchiviert sind die Kalibrierung der
+// aufgehobenen Menge: unsauber, kein-slice und archiviert bleiben unter dem
+// Schluessel aus ADR-0041 Festlegung 2 unveraendert stehen.
+func TestAltbestandSperrtBeiUnsauberemBaum(t *testing.T) {
+	root := t.TempDir()
+	done := filepath.Join(root, "docs", "plan", "planning", "done")
+	schreibe(t, filepath.Join(done, "slice-100-a.md"), "# Slice slice-100: A\n\n**Welle:** ohne Welle.\n")
+
+	b := vorschauVon(t, root, "altbestand", "?? scratch.txt\n")
+	if !hatSperre(b, "unsauber") {
+		t.Fatalf("Sperre 'unsauber' fehlt unter dem Schluessel 'altbestand': %v", kennungen(b))
+	}
+}
+
+func TestAltbestandSperrtBeiKeinSlice(t *testing.T) {
+	root := t.TempDir()
+	done := filepath.Join(root, "docs", "plan", "planning", "done")
+	if err := os.MkdirAll(done, 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	b := vorschauVon(t, root, "altbestand", "")
+	if !hatSperre(b, "kein-slice") {
+		t.Fatalf("Sperre 'kein-slice' fehlt unter dem Schluessel 'altbestand': %v", kennungen(b))
+	}
+}
+
+func TestAltbestandSperrtBeiBereitsArchiviert(t *testing.T) {
+	root := t.TempDir()
+	done := filepath.Join(root, "docs", "plan", "planning", "done")
+	schreibe(t, filepath.Join(done, "altbestand", "archiv.zip"), "PK\n")
+
+	b := vorschauVon(t, root, "altbestand", "")
+	if !hatSperre(b, "archiviert") {
+		t.Fatalf("Sperre 'archiviert' fehlt unter dem Schluessel 'altbestand': %v", kennungen(b))
+	}
+}
+
 // TestSchreibeNenntDieVierZahlenUndDieSperren: die Ausgabe traegt die vier
 // Einsammel-Zahlen — Mitglieder, wellenlos, fremd, Review-Reports — und nennt
 // jede Sperre mit ihrer Kennung.
