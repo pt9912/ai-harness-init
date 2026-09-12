@@ -4,7 +4,7 @@
 - **Prüfgegenstand:** `b8a20306..bd79e689` (die zwei Implementierungs-Commits nach dem
   `slice-mv` nach `in-progress/`) — 7 Dateien, 285 hinzugefügte Zeilen
   (`git diff b8a20306..HEAD --stat`, `git diff b8a20306..HEAD | grep -c '^+[^+]'`).
-- **Plan:** [`slice-126`](../plan/planning/in-progress/slice-126-commit-message-traegt-eine-kennung.md)
+- **Plan:** [`slice-126`](../plan/planning/done/slice-126-commit-message-traegt-eine-kennung.md)
 - **Baum bei Review-Beginn:** `git status --porcelain` leer, HEAD `bd79e689`.
 - **Kanonische Bezüge:**
   [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6),

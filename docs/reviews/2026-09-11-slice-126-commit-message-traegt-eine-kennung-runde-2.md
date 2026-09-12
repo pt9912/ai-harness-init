@@ -3,7 +3,7 @@
 - **Rolle:** Reviewer · **Datum:** 2026-09-11 · **Runde:** 2
 - **Prüfgegenstand:** `2c766a7b..1e5b6ad2` — 5 Dateien, 85 hinzugefügte Zeilen
   (`git diff --stat 2c766a7b..1e5b6ad2`). **Nicht** der ganze Slice; Runde 1 deckt ihn.
-- **Plan:** [`slice-126`](../plan/planning/in-progress/slice-126-commit-message-traegt-eine-kennung.md)
+- **Plan:** [`slice-126`](../plan/planning/done/slice-126-commit-message-traegt-eine-kennung.md)
 - **Vorrunde:** [`2026-09-11-…-kennung.md`](2026-09-11-slice-126-commit-message-traegt-eine-kennung.md)
   — 1 HIGH · 5 MEDIUM · 1 LOW · 1 INFO, dazu zehn tragende Negativbefunde. Die zehn sind
   hier nicht erneut geprüft.

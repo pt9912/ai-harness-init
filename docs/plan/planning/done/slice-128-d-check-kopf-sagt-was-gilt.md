@@ -328,7 +328,7 @@ einer repo-eigenen Nicht-Markdown-Datei, die ein Kommando führt* — ist eine *
 **Warum hier auch kein vierter Slice steht.** Drei benachbarte Schnitte decken je eine andere
 Achse und **keiner** diese: [slice-121](../open/slice-121-commit-message-nennt-was-es-gibt.md)
 prüft die Auflösbarkeit eines Hex-Tokens in einer Commit-Message,
-[slice-126](../in-progress/slice-126-commit-message-traegt-eine-kennung.md) die Anwesenheit einer
+[slice-126](../done/slice-126-commit-message-traegt-eine-kennung.md) die Anwesenheit einer
 Kennung, [slice-070](../open/slice-070-comment-claims-pruefbereich.md) den **Prüfbereich** von
 `make comment-claims` — welche Dateien gelesen werden, nicht ob ein genanntes Kommando läuft. Ein
 vierter Schnitt daneben wäre eine zweite Fassung derselben Frage, die driftet, und er lieferte

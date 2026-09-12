@@ -50,7 +50,7 @@ erreicht.**
 
 ### Der Anlass: eine gemessene Reichweiten-Grenze, zweimal dieselbe Ursache
 
-[slice-126](../in-progress/slice-126-commit-message-traegt-eine-kennung.md) hat den Vor-Commit-Sensor
+[slice-126](../done/slice-126-commit-message-traegt-eine-kennung.md) hat den Vor-Commit-Sensor
 gebaut und ihn an den PreToolUse-Kanal des Agenten gehängt. Der Kanal sieht nur, was als
 Bash-Kommando **wörtlich** `git commit …` enthält. Daraus folgen zwei Lücken mit **einer** Ursache
 — der Träger sitzt am Agenten, nicht am Commit:
@@ -256,5 +256,5 @@ statt formuliert.
 **Modus-Begründungsblock — Umfang.** Alle berührten Sub-Areas GF; ein Begründungsblock entfällt.
 Der Slice legt keine neue Sub-Area an und berührt keine in BF oder Hybrid. Präzedenzfall für einen
 hermetischen Wächter mit `make`-Ziel, bats-Fall und `test/mutations/`-Zahn ist
-[slice-126](../in-progress/slice-126-commit-message-traegt-eine-kennung.md); für den Hook-Ort ist es
+[slice-126](../done/slice-126-commit-message-traegt-eine-kennung.md); für den Hook-Ort ist es
 [`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks).
