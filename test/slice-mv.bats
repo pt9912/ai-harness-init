@@ -6,10 +6,11 @@
 # rewrite_incoming_in_file/rewrite_outgoing_bare_in_file direkt auf Proben —
 # sonst misst der Selbsttest sich selbst statt der Ersetzung (Slice-Plan §6).
 # Diese Datei fuehrt ALLE ihre Faelle so, ohne Ausnahme — main()s
-# Ausschluss-Pfadspec selbst (Zwei-Commit-Sequenz, docs/reviews-Behandlung)
-# braucht ein echtes `git`-Repo und ist darum NICHT hier, sondern im
-# Skriptkopf (harness/tools/slice-mv.sh, Abschnitt BELEG) belegt — siehe
-# Dateiende.
+# EINGEHEND-Ausnahmeliste selbst (eingehend_ausgenommene_pfade) ist eine reine
+# Funktion und darum bats-gedeckt (Dateiende); was main() daraus MACHT
+# (Zwei-Commit-Sequenz, realer `git grep`-Aufruf) braucht ein echtes
+# `git`-Repo und ist darum NICHT hier, sondern im Skriptkopf
+# (harness/tools/slice-mv.sh, Abschnitt BELEG) belegt.
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
@@ -112,11 +113,19 @@ EOF
   grep -qF '[a](slice-nicht-vorhanden.md)' moved.md
 }
 
-# main()s Ausschluss-Pfadspec selbst (nur .harness/baseline/** eingefroren;
-# docs/reviews/** und docs/plan/planning/done/** NICHT — beide traegt
-# links/anchors mit realen Markdown-Links, siehe Skriptkopf EINGEHEND)
-# braeuchte fuer einen bats-Fall ein echtes `git`-Repo — main() ruft
-# `git mv`/`git grep`, und das gepinnte BATS_IMAGE fuehrt kein `git`-Binary
-# mit. Der Beleg dafuer steht darum NICHT hier, sondern dauerhaft im
-# Skriptkopf (harness/tools/slice-mv.sh, Abschnitt BELEG) — ein
-# Vor/Nach-`make docs-check`-Paar an einem echten Move, nicht als bats-Fall.
+@test "eingehend_ausgenommene_pfade: .harness/baseline und docs/plan/adr drin, docs/reviews NICHT (ADR-0042 Festlegung 2, ADR-0033 Abnahme-Kriterium 1)" {
+  load_functions
+  run eingehend_ausgenommene_pfade
+  [ "$status" -eq 0 ]
+  printf '%s\n' "$output" | grep -qF ':!.harness/baseline'
+  printf '%s\n' "$output" | grep -qF ':!docs/plan/adr'
+  ! printf '%s\n' "$output" | grep -q 'docs/reviews'
+}
+
+# Die LISTE selbst ist damit bats-gedeckt (oben). Was main() daraus MACHT — sie
+# an `git grep` uebergeben, im Zwei-Commit-Ablauf, docs/reviews/** real
+# nachziehen — braucht ein echtes `git`-Repo: main() ruft `git mv`/`git grep`,
+# und das gepinnte BATS_IMAGE fuehrt kein `git`-Binary mit. Der Beleg dafuer
+# steht darum NICHT hier, sondern dauerhaft im Skriptkopf
+# (harness/tools/slice-mv.sh, Abschnitt BELEG) — ein Vor/Nach-`make
+# docs-check`-Paar an einem echten Move, nicht als bats-Fall.

@@ -104,6 +104,21 @@ re_escape() {
   printf '%s' "$1" | sed -e 's/[][\.^$*+?(){}|\\]/\\&/g'
 }
 
+# EINGEHEND-Ausnahmeliste: `git grep`-Pathspecs, die der eingehende
+# Verweis-Nachzug NICHT durchsucht — eine Zeile je Eintrag. `main()` liest sie
+# hier aus, test/slice-mv.bats ebenso (Mitgliedschaft UND Nicht-Mitgliedschaft),
+# damit beide dieselbe Liste pruefen statt zwei Fassungen zu pflegen.
+#
+# `.harness/baseline` ist unveraenderter Fremdtext. `docs/plan/adr` ist
+# ADR-0042 Festlegung 2: eine Accepted-ADR bekommt keinen Byte-Nachzug — der
+# Go-Traeger zieht dieselbe Grenze in internal/archive/scan.go
+# (AusgenommenePfadeNachzug). `docs/reviews` steht ABSICHTLICH NICHT darin
+# (ADR-0033 Abnahme-Kriterium 1): Review-Reports sind reale, von `docs-check`
+# gepruefte Verweisziele.
+eingehend_ausgenommene_pfade() {
+  printf '%s\n' ':!.harness/baseline' ':!docs/plan/adr'
+}
+
 # EINGEHEND: jedes Vorkommen von "$from/$base" in $file wird zu "$to/$base" —
 # an einer Wortgrenze (Zeilenanfang oder ein Zeichen davor, das kein
 # Bestandteil eines Wortes/Verzeichnisnamens ist — Buchstabe, Ziffer,
@@ -192,16 +207,18 @@ main() {
   # Aenderung, also committet dieser Aufruf genau sie.
   git commit -q -m "slice-mv: $base  $from/ -> $TO/ (reiner Move)"
 
-  # EINGEHEND, repo-weit — außer der vendored Baseline (unveränderter
-  # Fremdtext, .harness/baseline/**, in .d-check.yml scan.ignore und darum
-  # vom Doku-Gate nie gelesen). docs/reviews/** ist NICHT ausgenommen: dort
-  # steht zwar in .d-check.yml codepaths.exempt-paths und ids.*.exempt-paths
-  # (die Zeitdokumente sind von der Inline-Code-Pfadpflicht und der
-  # ID-Linkpflicht befreit) — aber links/anchors tragen keine solche
+  # EINGEHEND, repo-weit — außer der Liste aus eingehend_ausgenommene_pfade()
+  # (vendored Baseline, Accepted-ADRs). docs/reviews/** ist NICHT ausgenommen:
+  # dort steht zwar in .d-check.yml codepaths.exempt-paths und
+  # ids.*.exempt-paths (die Zeitdokumente sind von der Inline-Code-Pfadpflicht
+  # und der ID-Linkpflicht befreit) — aber links/anchors tragen keine solche
   # Ausnahme und prüfen jeden echten Markdown-Link dort wie überall sonst.
   # Ein Verweis auf die bewegte Datei bricht dort also genauso wie in
   # docs/plan/planning/done/**, und beide werden darum mitgezogen; nur der
   # Pfad ändert sich, die umgebende Aussage bleibt Zeitdokument (Grenze 1).
+  local -a in_pathspec=()
+  while IFS= read -r p; do in_pathspec+=("$p"); done < <(eingehend_ausgenommene_pfade)
+
   local in_count=0 rf
   local -a touched=()
   while IFS= read -r rf; do
@@ -209,9 +226,7 @@ main() {
     rewrite_incoming_in_file "$rf" "$base" "$from" "$TO"
     touched+=("$rf")
     in_count=$((in_count + 1))
-  done < <(git grep -l -F -e "$from/$base" -- \
-             ':!.harness/baseline' \
-             2>/dev/null || true)
+  done < <(git grep -l -F -e "$from/$base" -- "${in_pathspec[@]}" 2>/dev/null || true)
 
   # AUSGEHEND — nur in der bewegten Datei selbst, an ihrem NEUEN Ort.
   local out_count

@@ -48,13 +48,18 @@ genau einen Lauf.
    fehlender Dateipfad — heilbar durch Namensgleichheit, sonst dauerhaft stumm bis zum Aufruf.
 2. **Zwei Aufrufer liegen im Prüfbereich** — `Makefile` und `.claude/settings.json`, dessen Hooks
    den Träger direkt rufen, ohne das Wrapper-Skript, das ein emittiertes Repo bekommt.
-3. **Der Suchraum der Verweis-Vorprüfung nimmt allein `.git` und `.harness/baseline/**` aus** —
-   `docs/reviews/**` steht darin, denn `links`/`anchors` prüfen die Zeitdokumente wie jede andere
-   Datei, und Reports verlinken einander quer über Wellen-Grenzen. Verweise auf ein
-   verschwindendes Zeitdokument können auch außerhalb von Markdown stehen (Shell-Skripte,
-   Go-Kommentare, Test-Fixtures) — permanent begrenzt sind nur die zwei **relativen**
-   Verweis-Formen auf `.md`, weil sie Markdown-Link-Ziele sind und außerhalb einer Markdown-Datei
-   gegen nichts auflösen.
+3. **Der Suchraum der Verweis-Vorprüfung (`Haenger`) nimmt allein `.git` und
+   `.harness/baseline/**` aus** — `docs/reviews/**` **und** `docs/plan/adr/**` stehen darin, denn
+   `links`/`anchors` prüfen die Zeitdokumente wie jede andere Datei, und Reports verlinken
+   einander quer über Wellen-Grenzen. Verweise auf ein verschwindendes Zeitdokument können auch
+   außerhalb von Markdown stehen (Shell-Skripte, Go-Kommentare, Test-Fixtures) — permanent
+   begrenzt sind nur die zwei **relativen** Verweis-Formen auf `.md`, weil sie Markdown-Link-Ziele
+   sind und außerhalb einer Markdown-Datei gegen nichts auflösen. **Der schreibende Zweig
+   (`VerweisFund`/`Nachziehen`) nimmt zusätzlich `docs/plan/adr/**` aus** — eine `Accepted`-ADR
+   bekommt keinen Byte-Nachzug
+   ([`ADR-0042`](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md)
+   Festlegung 2); die Vorprüfung selbst findet einen Verweis dort trotzdem, weil sie den vollen
+   Suchraum behält.
 4. **Auf eine Welle dieses Repos ist das Werkzeug noch nicht anwendbar**, und das ist eine
    Messung, keine Vorsicht: der Altbestand hat keine Untergrenze (kein `done/*/archiv.zip`), und
    die Review-Reports der einzusammelnden Slices tragen lebende Verweise aus
@@ -78,12 +83,13 @@ genau einen Lauf.
    eigenen Archiv selbst die Untergrenze setzt. **`haenger` bleibt davon unberührt:** Er trägt
    [`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)
    Festlegung 4 und darf nicht mit aufgehoben werden. Der schreibende Lauf über `altbestand` bleibt
-   gesperrt, und zwar durch mehr als diesen einen Ausgang: `haenger` hält, bis die Verweise auf
-   verschwindende Review-Reports ihren Ausgang haben
-   ([slice-216](../../docs/plan/planning/open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)),
-   und [`ADR-0042`](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md)
-   Festlegung 5 sperrt den ersten Archiv-Move normativ, bis ihre Folgepflicht 1 steht — bis beide
-   Träger `docs/plan/adr/` ausnehmen. Die Entscheidung der Norm-Frage allein hebt die Sperre nicht auf.
+   gesperrt: `haenger` hält, bis die Verweise auf verschwindende Review-Reports ihren Ausgang haben
+   ([slice-216](../../docs/plan/planning/open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)).
+   Die normative Sperre aus
+   [`ADR-0042`](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 5
+   band den ersten Archiv-Move zusätzlich daran, dass beide Träger `docs/plan/adr/` ausnehmen
+   (Folgepflicht 1); mit dem Ausschluss in beiden Trägern (§Grenze Punkt 3, `slice-mv`-Sensor) ist
+   diese Bedingung erfüllt — `haenger` bleibt die verbleibende, eigenständige Frage.
 7. **Und selbst ohne `haenger` trägt der schreibende Pfad diesen Schlüssel heute nicht.**
    `internal/archive/anwenden.go` verlangt unverändert genau einen Welle-Plan
    (`len(b.Plaene) != 1`); `Einsammeln` liefert für `altbestand` null Pläne. Meldet die Vorprüfung

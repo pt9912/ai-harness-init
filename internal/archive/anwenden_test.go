@@ -214,7 +214,9 @@ func TestAnwendenTrenntMoveVonInhalt(t *testing.T) {
 // TestZuStagenNenntNurArchivStubsUndNachgezogene ist ADR-0033 Abnahme-Kriterium 2
 // in seiner schreibenden Haelfte: der Inhalts-Commit stagt eine AUFGEZAEHLTE
 // Liste — Archiv, Stubs, nachgezogene Dateien — und nichts sonst. Der untrackte
-// Fremdbestand liegt im Baum und steht in keiner davon.
+// Fremdbestand liegt im Baum und steht in keiner davon; die ADR aus baueBaum
+// ebenfalls nicht, seit ADR-0042 Festlegung 2 sie von der Ersetzung ausnimmt
+// (SuchraumNachzug) — dieselbe Datei bleibt darum ungestaged.
 // Gegenbeispiel: test/mutations/241-archive-welle-go-staging-explizit.sh.
 func TestZuStagenNenntNurArchivStubsUndNachgezogene(t *testing.T) {
 	root := baueBaum(t)
@@ -229,7 +231,6 @@ func TestZuStagenNenntNurArchivStubsUndNachgezogene(t *testing.T) {
 	got := append([]string{}, g.addPfade...)
 	sort.Strings(got)
 	want := []string{
-		"docs/plan/adr/0033-x.md",
 		"docs/plan/planning/done/welle-10-results.md",
 		"docs/plan/planning/done/welle-10/archiv.zip",
 		"docs/plan/planning/done/welle-10/slice-100-a.md",

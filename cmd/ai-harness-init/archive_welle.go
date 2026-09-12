@@ -276,12 +276,13 @@ func gitStatusPorcelain(root string) (string, error) {
 	return string(b), nil
 }
 
-// gitLsFiles liefert den Suchraum beider Zweige: jeden Pfad, den der Index
-// fuehrt, ohne Dateityp-Einschraenkung. Der zaehlende und der schreibende Zweig
-// bekommen dieselbe Liste — die Vorschau sieht damit denselben Verweis, den der
-// Lauf umhaengt. Ausgenommen wird nichts an dieser Stelle: die
-// Ausnahme-Menge steht in archive.AusgenommenePfade und gilt dort fuer jeden
-// Eingang. -z, weil ein Dateiname ein Zeilenende tragen darf.
+// gitLsFiles liefert den rohen Suchraum-Eingang fuer alle drei Leser: jeden
+// Pfad, den der Index fuehrt, ohne Dateityp-Einschraenkung. Alle drei bekommen
+// dieselbe Liste — die Vorschau sieht damit denselben Verweis, den der Lauf
+// umhaengt. Ausgenommen wird nichts an dieser Stelle: `Haenger` filtert sie
+// ueber archive.AusgenommenePfade, `VerweisFund`/`Nachziehen` zusaetzlich
+// ueber archive.AusgenommenePfadeNachzug (docs/plan/adr, ADR-0042
+// Festlegung 2). -z, weil ein Dateiname ein Zeilenende tragen darf.
 func gitLsFiles(root string) ([]string, error) {
 	b, err := gitLesend(root, "ls-files", "-z")
 	if err != nil {

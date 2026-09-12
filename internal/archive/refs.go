@@ -61,7 +61,9 @@ func ZaehleAufsteigend(inhalt, base string) int {
 // VerweisFund nennt jede Datei des Suchraums, die einen Verweis auf eine der
 // bewegten Dateien traegt, mit der Zahl je Form — sortiert nach Dateiname.
 // `dateien` ist der rohe Suchraum-Eingang des Aufrufers, `bewegte` sind
-// Basenamen (Bestand.Bewegte).
+// Basenamen (Bestand.Bewegte). Der Suchraum ist SuchraumNachzug, nicht
+// Suchraum: eine Accepted-ADR unter `docs/plan/adr` traegt hier keinen Fund
+// (ADR-0042 Festlegung 2) — `docs/reviews/**` bleibt darin, s. Haenger.
 //
 // DIE DREI FORMEN HABEN VERSCHIEDENE SUCHRAEUME, und das ist keine Sparsamkeit,
 // sondern die Aufloesungs-Regel von Markdown: die Praefix-Form ankert am Literal
@@ -87,7 +89,7 @@ func VerweisFund(root string, dateien, bewegte []string) ([]Fund, error) {
 		zieht[b] = true
 	}
 	var out []Fund
-	for _, datei := range Suchraum(dateien) {
+	for _, datei := range SuchraumNachzug(dateien) {
 		inhalt, ok, err := lies(root, datei)
 		if err != nil {
 			return nil, err
@@ -211,7 +213,9 @@ func ersetzeIn(inhalt, datei, welleID string, bewegte []string, zieht map[string
 // Nachziehen SCHREIBT den Verweis-Nachzug: jede Datei des Suchraums, die einen
 // Verweis auf eine bewegte Datei traegt, bekommt ihn auf die neue Adresse
 // umgehaengt. Liefert die geaenderten Dateien mit ihrer Zahl je Form — dieselbe
-// Struktur, die die Vorschau ausgibt, damit beide Seiten dasselbe zaehlen.
+// Struktur, die die Vorschau ausgibt, damit beide Seiten dasselbe zaehlen. Der
+// Suchraum ist SuchraumNachzug: eine Accepted-ADR unter `docs/plan/adr` bleibt
+// unangetastet (ADR-0042 Festlegung 2).
 //
 // GRENZEN, wie beim zaehlenden Zwilling: es haengt PFADE um, keine
 // Zustandssaetze; und ein eingehender Verweis in Inline-Code ohne
@@ -223,7 +227,7 @@ func Nachziehen(root string, dateien, bewegte []string, welleID string) ([]Fund,
 		zieht[b] = true
 	}
 	var out []Fund
-	for _, datei := range Suchraum(dateien) {
+	for _, datei := range SuchraumNachzug(dateien) {
 		inhalt, ok, err := lies(root, datei)
 		if err != nil {
 			return nil, err

@@ -44,7 +44,10 @@ func TestZaehleGeschwisterUndAufsteigendSindDisjunkt(t *testing.T) {
 func TestVerweisFundDreiFormenInIhremSuchraum(t *testing.T) {
 	root := t.TempDir()
 	done := filepath.Join(root, "docs", "plan", "planning", "done")
-	schreibe(t, filepath.Join(root, "docs", "plan", "adr", "0033-x.md"),
+	// docs/reviews steht fuer "ueberall, auch weit ausserhalb von done/" —
+	// ADR-0033 Abnahme-Kriterium 1 haelt diesen Baum ausdruecklich IM Suchraum
+	// (anders als docs/plan/adr, s. TestVerweisFundUndNachziehenUebergehenAcceptedADR).
+	schreibe(t, filepath.Join(root, "docs", "reviews", "2026-09-01-x.md"),
 		"Siehe [slice-100](../planning/done/slice-100-a.md).\n")
 	schreibe(t, filepath.Join(done, "welle-10-results.md"),
 		"Geliefert: [slice-100](slice-100-a.md).\n")
@@ -62,7 +65,7 @@ func TestVerweisFundDreiFormenInIhremSuchraum(t *testing.T) {
 		"Kein Markdown: [x](../slice-100-a.md).\n")
 
 	funde, err := archive.VerweisFund(root, []string{
-		"docs/plan/adr/0033-x.md",
+		"docs/reviews/2026-09-01-x.md",
 		"docs/plan/planning/done/welle-10-results.md",
 		"docs/plan/planning/done/welle-09/slice-090-x.md",
 		"docs/plan/planning/next/slice-900-y.md",
@@ -76,8 +79,8 @@ func TestVerweisFundDreiFormenInIhremSuchraum(t *testing.T) {
 	for _, f := range funde {
 		got[f.Datei] = f
 	}
-	if f := got["docs/plan/adr/0033-x.md"]; f.Praefix != 1 || f.Summe() != 1 {
-		t.Errorf("ADR: %+v, want genau 1 Praefix-Treffer", f)
+	if f := got["docs/reviews/2026-09-01-x.md"]; f.Praefix != 1 || f.Summe() != 1 {
+		t.Errorf("Review-Report: %+v, want genau 1 Praefix-Treffer", f)
 	}
 	if f := got["docs/plan/planning/done/welle-10-results.md"]; f.Geschwister != 1 || f.Summe() != 1 {
 		t.Errorf("Ergebnisnotiz: %+v, want genau 1 geschwister-relativen Treffer", f)
@@ -174,7 +177,7 @@ func TestNachziehenSchreibtGenauDortWoVerweisFundZaehlt(t *testing.T) {
 	baum := func() (string, []string) {
 		root := t.TempDir()
 		done := filepath.Join(root, "docs", "plan", "planning", "done")
-		schreibe(t, filepath.Join(root, "docs", "plan", "adr", "0033-x.md"),
+		schreibe(t, filepath.Join(root, "docs", "reviews", "2026-09-01-x.md"),
 			"Siehe [slice-100](../planning/done/slice-100-a.md).\n")
 		schreibe(t, filepath.Join(done, "welle-10-results.md"),
 			"Geliefert: [slice-100](slice-100-a.md).\n")
@@ -184,7 +187,7 @@ func TestNachziehenSchreibtGenauDortWoVerweisFundZaehlt(t *testing.T) {
 			"Geschwister im eigenen Verzeichnis: [x](slice-100-a.md).\n")
 		schreibe(t, filepath.Join(done, "slice-100-a.md"), "# Slice slice-100: A\n")
 		return root, []string{
-			"docs/plan/adr/0033-x.md",
+			"docs/reviews/2026-09-01-x.md",
 			"docs/plan/planning/done/welle-10-results.md",
 			"docs/plan/planning/done/welle-09/slice-090-x.md",
 			"docs/plan/planning/next/slice-900-y.md",
@@ -211,7 +214,7 @@ func TestNachziehenSchreibtGenauDortWoVerweisFundZaehlt(t *testing.T) {
 	}
 
 	inhalte := map[string]string{
-		"docs/plan/adr/0033-x.md":                         "](../planning/done/welle-10/slice-100-a.md)",
+		"docs/reviews/2026-09-01-x.md":                    "](../planning/done/welle-10/slice-100-a.md)",
 		"docs/plan/planning/done/welle-10-results.md":     "](welle-10/slice-100-a.md)",
 		"docs/plan/planning/done/welle-09/slice-090-x.md": "](../welle-10/slice-100-a.md)",
 		"docs/plan/planning/next/slice-900-y.md":          "](slice-100-a.md)",
@@ -224,5 +227,61 @@ func TestNachziehenSchreibtGenauDortWoVerweisFundZaehlt(t *testing.T) {
 		if !strings.Contains(string(b), want) {
 			t.Errorf("%s traegt %q nicht:\n%s", datei, want, b)
 		}
+	}
+}
+
+// TestVerweisFundUndNachziehenUebergehenAcceptedADR ist ADR-0042 Festlegung 2:
+// eine Accepted-ADR unter docs/plan/adr traegt nach dem Nachzug denselben
+// Inhalt, obwohl sie denselben Praefix-Verweis traegt wie ein gleichzeitig
+// vorhandener Review-Report, der weiterhin gezaehlt und umgehaengt wird
+// (ADR-0033 Abnahme-Kriterium 1: docs/reviews/** bleibt drin).
+func TestVerweisFundUndNachziehenUebergehenAcceptedADR(t *testing.T) {
+	root := t.TempDir()
+	adr := "docs/plan/adr/0033-x.md"
+	report := "docs/reviews/2026-09-01-slice-100-r1.md"
+	schreibe(t, filepath.Join(root, filepath.FromSlash(adr)),
+		"Siehe [slice-100](done/slice-100-a.md).\n")
+	schreibe(t, filepath.Join(root, filepath.FromSlash(report)),
+		"Siehe [slice-100](done/slice-100-a.md).\n")
+
+	dateien := []string{adr, report}
+	funde, err := archive.VerweisFund(root, dateien, []string{"slice-100-a.md"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := map[string]archive.Fund{}
+	for _, f := range funde {
+		got[f.Datei] = f
+	}
+	if f, drin := got[adr]; drin {
+		t.Errorf("VerweisFund zaehlt in der ADR: %+v, want keinen Fund", f)
+	}
+	if f := got[report]; f.Praefix != 1 {
+		t.Errorf("VerweisFund uebergeht den Review-Report: %+v, want genau 1 Praefix-Treffer", f)
+	}
+
+	geschrieben, err := archive.Nachziehen(root, dateien, []string{"slice-100-a.md"}, "welle-10")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, f := range geschrieben {
+		if f.Datei == adr {
+			t.Fatalf("Nachziehen schreibt in die ADR: %+v", f)
+		}
+	}
+
+	adrInhalt, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(adr)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(adrInhalt), "](done/slice-100-a.md)") {
+		t.Fatalf("ADR-Inhalt veraendert: %s", adrInhalt)
+	}
+	reportInhalt, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(report)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(reportInhalt), "](done/welle-10/slice-100-a.md)") {
+		t.Fatalf("Review-Report nicht nachgezogen: %s", reportInhalt)
 	}
 }

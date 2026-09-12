@@ -13,7 +13,9 @@ import (
 // AusgenommenePfade nennt die repo-relativen Praefixe AUSSERHALB des Suchraums,
 // in dem dieses Paket nach Verweisen sucht. Die Menge ist geschlossen und steht
 // an dieser einen Stelle; wer sie erweitert, verengt alle drei Leser zugleich —
-// die Haenger-Vorpruefung, den Verweis-Fund und den Verweis-Nachzug.
+// die Haenger-Vorpruefung direkt (ueber Suchraum), den Verweis-Fund und den
+// Verweis-Nachzug mittelbar ueber AusgenommenePfadeNachzug (s. u.), die
+// zusaetzlich `docs/plan/adr` ausnimmt.
 //
 // Sie ist die EINZIGE Achse, an der der Suchraum verengt ist. Eine Dateityp-Achse
 // gibt es nicht: gesucht wird in jeder uebergebenen Datei, `.md` oder nicht. Ein
@@ -50,10 +52,10 @@ func Ausgenommen(rel string) bool {
 	return false
 }
 
-// Suchraum ist die Menge der Dateien, in denen dieses Paket nach Verweisen sucht:
-// die uebergebenen repo-relativen Pfade ohne die ausgenommenen Praefixe,
-// sortiert und ohne Doppel. Jeder Leser dieses Pakets fuehrt jede Liste durch
-// diese Funktion, damit die Ausnahme-Menge oben fuer jeden Eingang gilt.
+// Suchraum ist die Menge der Dateien, in denen `Haenger` nach Verweisen sucht:
+// die uebergebenen repo-relativen Pfade ohne die AusgenommenePfade()-Praefixe,
+// sortiert und ohne Doppel. VerweisFund und Nachziehen fragen stattdessen
+// SuchraumNachzug (s. u.).
 //
 // KOPPLUNG: die Liste liefert der Aufrufer aus dem GIT-INDEX (`git ls-files`) —
 // eine Menge, die der zaehlende und der schreibende Zweig gemeinsam bekommen.
@@ -66,6 +68,51 @@ func Suchraum(dateien []string) []string {
 	for _, d := range dateien {
 		rel := filepath.ToSlash(strings.TrimSpace(d))
 		if rel == "" || gesehen[rel] || Ausgenommen(rel) {
+			continue
+		}
+		gesehen[rel] = true
+		out = append(out, rel)
+	}
+	sort.Strings(out)
+	return out
+}
+
+// AusgenommenePfadeNachzug erweitert AusgenommenePfade() um `docs/plan/adr`:
+// die zwei NACHZUG-Leser (VerweisFund, Nachziehen) duerfen keine Accepted-ADR
+// aendern — ADR-0042 Festlegung 2 nimmt sie zusaetzlich zum vendored Baum aus
+// ihrer Ersetzung aus. `Haenger` bleibt bei AusgenommenePfade() und behaelt
+// seinen vollen Suchraum: die Vorpruefung deckt weiterhin jeden Verweis auf ein
+// verschwindendes Zeitdokument, auch einen aus einer ADR — nur der SCHREIBENDE
+// Zweig darf eine Accepted-ADR nicht anfassen.
+// TestHaengerFindetVerweisAusReviewReport und
+// test/mutations/233-archive-welle-go-haenger-suchraum.sh bleiben unveraendert
+// wirksam, weil sie ausschliesslich AusgenommenePfade() pruefen.
+func AusgenommenePfadeNachzug() []string {
+	return append(AusgenommenePfade(), "docs/plan/adr")
+}
+
+// AusgenommenNachzug sagt, ob ein repo-relativer Pfad ausserhalb des
+// Nachzug-Suchraums liegt (s. AusgenommenePfadeNachzug).
+func AusgenommenNachzug(rel string) bool {
+	rel = filepath.ToSlash(rel)
+	for _, p := range AusgenommenePfadeNachzug() {
+		if rel == p || strings.HasPrefix(rel, p+"/") {
+			return true
+		}
+	}
+	return false
+}
+
+// SuchraumNachzug ist der Suchraum der zwei Nachzug-Leser VerweisFund und
+// Nachziehen: dieselbe Regel wie Suchraum, aber zusaetzlich ohne
+// `docs/plan/adr` (s. AusgenommenePfadeNachzug). `Haenger` fragt weiterhin
+// Suchraum(), nicht diese Funktion.
+func SuchraumNachzug(dateien []string) []string {
+	out := make([]string, 0, len(dateien))
+	gesehen := make(map[string]bool, len(dateien))
+	for _, d := range dateien {
+		rel := filepath.ToSlash(strings.TrimSpace(d))
+		if rel == "" || gesehen[rel] || AusgenommenNachzug(rel) {
 			continue
 		}
 		gesehen[rel] = true

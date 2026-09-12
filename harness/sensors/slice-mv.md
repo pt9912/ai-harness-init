@@ -14,7 +14,9 @@ zweiter Commit.
 ## Grenze — was das Grün nicht abdeckt
 
 Zwei Richtungen: **eingehend** ersetzt jede Präfix-Form eines Verweises **auf** die bewegte
-Datei, repo-weit außer `.harness/baseline/**` (unveränderter Fremdtext) —
+Datei, repo-weit außer `.harness/baseline/**` (unveränderter Fremdtext) und `docs/plan/adr/**`
+(eine `Accepted`-ADR bekommt keinen Byte-Nachzug —
+[`ADR-0042`](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 2) —
 `docs/plan/planning/done/**` **und** `docs/reviews/**` sind **nicht** ausgenommen, ihre
 Verweise sind reale, von `docs-check` geprüfte Links. **Ausgehend** hängt präfixlosen Zielen
 **innerhalb** der bewegten Datei, die einen im alten Verzeichnis verbliebenen
