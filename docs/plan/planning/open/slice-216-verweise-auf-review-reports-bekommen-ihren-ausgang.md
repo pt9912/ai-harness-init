@@ -84,7 +84,7 @@ gilt, entscheidet dieser Slice.
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Der wellenlose Altbestand und seine Zuordnung** — das ist
-  [slice-183](../next/slice-183-ausloeser-der-wellenlosen-archivierung.md), eine eigene
+  [slice-183](../in-progress/slice-183-ausloeser-der-wellenlosen-archivierung.md), eine eigene
   Frage mit eigener Alternativen-Menge (nächste geschlossene Welle oder Sammel-Archiv). Beide sind
   Vorbedingung derselben ersten Archivierung und in beliebiger Reihenfolge lieferbar.
 - **Das Umschreiben der 144 Verweise** — es wäre ein anderer Vorgang und hängt am Ausgang: Nur
@@ -169,7 +169,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 vollständig im Baum, und dass er es tut, ist beobachtbar: `make host-bin`, dann
 `.harness/state/bin/ai-harness-init archive-welle --vorschau welle-13` meldet die Sperre
 `[haenger]`. Die Entscheidung braucht weder einen Pin-Sprung noch einen Vorgänger-Slice —
-[slice-183](../next/slice-183-ausloeser-der-wellenlosen-archivierung.md) entscheidet eine
+[slice-183](../in-progress/slice-183-ausloeser-der-wellenlosen-archivierung.md) entscheidet eine
 andere Frage und darf vorher oder nachher liegen.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**

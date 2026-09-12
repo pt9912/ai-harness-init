@@ -150,7 +150,7 @@ die daraus schon gezogen wurde (Folge-Slice, Spec-Version).
 - **Zwei Re-Evaluierungs-Trigger von**
   [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) **sind
   mit diesem Sprung gefeuert**, und der Ausgang liegt außerhalb dieser Welle:
-  [slice-183](../next/slice-183-ausloeser-der-wellenlosen-archivierung.md)
+  [slice-183](../in-progress/slice-183-ausloeser-der-wellenlosen-archivierung.md)
   entscheidet den Auslöser der Zeitdokumente-Archivierung im wellenlosen
   Betrieb. Der Träger der Operation bleibt entschieden, der Auslöser nicht.
 - **Der Register-Umzug hat mehr Zitate gebrochen, als der Katalog kannte**, und
@@ -283,7 +283,7 @@ das Original ist die Slice-Datei. Jeder genannte Folge-Slice muss als Datei im
 Planning-Lifecycle existieren; genannt ohne angelegt ist dieselbe Klasse wie
 ein halluziniertes Gate.
 
-- [slice-183](../next/slice-183-ausloeser-der-wellenlosen-archivierung.md) — der
+- [slice-183](../in-progress/slice-183-ausloeser-der-wellenlosen-archivierung.md) — der
   Auslöser der Zeitdokumente-Archivierung im wellenlosen Betrieb (Architect).
   Position **P-06** des Katalogs, von §6 dieser Welle ausdrücklich außerhalb
   gehalten.
@@ -384,7 +384,7 @@ Das ist das Übergabe-Artefakt *Verifier → Planner* aus
   (`git log --oneline --since=2026-09-04 -- harness/tools/mutate.sh` ist leer).
   Die zwei gefeuerten Trigger von
   [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) tragen
-  [slice-183](../next/slice-183-ausloeser-der-wellenlosen-archivierung.md).
+  [slice-183](../in-progress/slice-183-ausloeser-der-wellenlosen-archivierung.md).
 
 **Schritt 4 — Archivierung: gefahren, fail-closed an zwei Sperren abgebrochen.**
 Träger ist `make archive-welle WELLE=welle-15`
@@ -415,7 +415,7 @@ Setzung 2). Beide Sperren sind unabhängig von dieser Welle:
   *wellenlos seit der letzten Closure* keine beobachtbare Untergrenze; die Klasse
   umfasste den gesamten Altbestand, und der Lauf rät nicht. Die Archivierung des
   Altbestands ist ein eigener Vorgang und braucht die Entscheidung, die
-  [slice-183](../next/slice-183-ausloeser-der-wellenlosen-archivierung.md)
+  [slice-183](../in-progress/slice-183-ausloeser-der-wellenlosen-archivierung.md)
   trägt — §6 dieser Welle hält beides ausdrücklich außerhalb.
 - `[haenger]` — Review-Reports sollen ins Archiv, auf die noch verwiesen wird;
   der Lauf listet **42** Verweis-Paare auf (`… -> docs/reviews/…`-Zeilen der
