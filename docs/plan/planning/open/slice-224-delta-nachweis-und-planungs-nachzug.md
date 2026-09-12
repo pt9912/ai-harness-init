@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Welle:** ohne Welle — aus demselben Grund und mit derselben Prüfung wie
-[slice-223](../in-progress/slice-223-baum-tausch-v672-pins-ziehen.md): Es gibt keine Closure-Bedingung,
+[slice-223](../done/slice-223-baum-tausch-v672-pins-ziehen.md): Es gibt keine Closure-Bedingung,
 die mehr beobachtet als die DoD dieses Slice, und
 [`ADR-0044`](../../adr/0044-ziel-fassung-regiert-den-sprung-v672.md) §Konsequenzen ordnet für den
 Vollzug **Slices** an, kein Bündel. Nach
@@ -257,7 +257,7 @@ Aussagen-Berührung steht hier gar nicht.
 | Übergabe-Artefakte an slice-225, Implementer, Reviewer, emittierte Ebene | neu | Liefer-Punkt 3 |
 
 **Was hier bewusst fehlt:** eine Zeile für `.harness/baseline/**`. Der Baum wird von
-[slice-223](../in-progress/slice-223-baum-tausch-v672-pins-ziehen.md) getauscht und ist hier
+[slice-223](../done/slice-223-baum-tausch-v672-pins-ziehen.md) getauscht und ist hier
 **Mess-Grundlage**, nicht Gegenstand.
 
 ## 4. Trigger
@@ -266,7 +266,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-223](../in-progress/slice-223-baum-tausch-v672-pins-ziehen.md) liegt in `done/` — ablesbar an
+[slice-223](../done/slice-223-baum-tausch-v672-pins-ziehen.md) liegt in `done/` — ablesbar an
 `ls docs/plan/planning/done/slice-223-*.md` auf dem Hauptzweig. Beobachtbar ohne Rückfrage, und
 **kein Ergebnis dieses Slice**: Baum und Pins stehen in keiner DoD-Zeile von §2. Der Trigger ist
 inhaltlich nötig, nicht nur sequenziell — die regierende Fassung `v6.7.2` muss im Baum liegen,
@@ -379,7 +379,7 @@ Konventions-Bestand (der Adaptions-Block als Abweichungs-Register), eigener Prü
 (`make docs-check` über den Planungs-Baum) und eigene Fehlermodi (Ziel-Form driftet gegen
 Bestand). **`TOOLS` ist nicht berührt** — kein Posten des Deltas bewegt eine Aussage über
 `harness/tools/`; **`CODEX` ebenso wenig** — der SessionStart-Injektor liest den Index des Baums,
-und dessen Pfad bewegt [slice-223](../in-progress/slice-223-baum-tausch-v672-pins-ziehen.md), nicht dieser
+und dessen Pfad bewegt [slice-223](../done/slice-223-baum-tausch-v672-pins-ziehen.md), nicht dieser
 Slice. Pfad-Berührung allein genügt nicht.
 
 **Vorgelagert — offene Beobachtungen sichten:** Das Register ist am gemergten Stand durchgegangen

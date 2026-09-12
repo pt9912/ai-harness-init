@@ -303,7 +303,7 @@ adoptiert** — der vendored Baum führt die Vorlage in der neuen Fassung
 (`ls .harness/baseline/v6.7.2/templates/docs/reviews/review-report.template.md`, §1). Damit ist die
 Form gedeckt; ohne sie schriebe DoD (1) eine Form, für die keine Quelle steht. Beobachtbar ohne
 Rückfrage, und **kein Ergebnis dieses Slice**: Den Baum tauschte
-[slice-223](../in-progress/slice-223-baum-tausch-v672-pins-ziehen.md).
+[slice-223](../done/slice-223-baum-tausch-v672-pins-ziehen.md).
 
 **Rückführungen — vorab benannt:**
 

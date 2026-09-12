@@ -6,7 +6,7 @@
   `38174544` (Architect: Adaptions-Block + Buchung), plus den Review-Report
   `docs/reviews/2026-09-12-slice-223-baum-tausch-v672-pins-ziehen.md` (0 HIGH · 2 MEDIUM · 1 LOW ·
   3 INFO, „nicht blockierend", zwei Auflagen an den Planner).
-- **Prüfgegenstand:** `docs/plan/planning/in-progress/slice-223-baum-tausch-v672-pins-ziehen.md`
+- **Prüfgegenstand:** `docs/plan/planning/done/slice-223-baum-tausch-v672-pins-ziehen.md`
   gegen `HEAD=f85b20dc` (Arbeitsbaum sauber, `git status --porcelain` leer).
 - **Frage dieser Rolle:** Bauen wir es richtig — gegen DoD und Spec (und die dort referenzierten
   ADRs). Nicht Gegenstand: ob der Diff dem Plan/den Hard Rules folgt (Reviewer, bereits gelaufen).

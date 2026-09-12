@@ -6,7 +6,7 @@ wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Welle:** ohne Welle — aus demselben Grund und mit derselben Prüfung wie
-[slice-223](../in-progress/slice-223-baum-tausch-v672-pins-ziehen.md) und
+[slice-223](../done/slice-223-baum-tausch-v672-pins-ziehen.md) und
 [slice-224](../open/slice-224-delta-nachweis-und-planungs-nachzug.md). Nach
 [`MR-037`](../../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst)
 steht wellenlose Arbeit nicht in der Roadmap; ihr Zustand ist das Verzeichnis.

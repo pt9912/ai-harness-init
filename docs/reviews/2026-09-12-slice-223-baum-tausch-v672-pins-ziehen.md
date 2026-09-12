@@ -1,6 +1,6 @@
 # Review slice-223 — Der vendored Baum steht auf `v6.7.2`, die fünf Pins ziehen mit
 
-**Rolle:** Reviewer · **Datum:** 2026-09-12 · **Commits:** `e488119c` · `f603136b` · `30508fc1` · `38174544` (79 Dateien außerhalb von `.harness/baseline/`) · **Plan:** [`slice-223`](../plan/planning/in-progress/slice-223-baum-tausch-v672-pins-ziehen.md) · **Constraints:** [`ADR-0044`](../plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md) · [`ADR-0031`](../plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2 · [`ADR-0039`](../plan/adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) · [`ADR-0042`](../plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) · [`ADR-0028`](../plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) · **Hard Rules:** [`AGENTS.md`](../../AGENTS.md) §3.4 · §3.5 · §3.7 · §3.8 · §3.11 · **Bezug:** [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) · [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) · [`MR-033`](../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist) · [`MR-040`](../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
+**Rolle:** Reviewer · **Datum:** 2026-09-12 · **Commits:** `e488119c` · `f603136b` · `30508fc1` · `38174544` (79 Dateien außerhalb von `.harness/baseline/`) · **Plan:** [`slice-223`](../plan/planning/done/slice-223-baum-tausch-v672-pins-ziehen.md) · **Constraints:** [`ADR-0044`](../plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md) · [`ADR-0031`](../plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2 · [`ADR-0039`](../plan/adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) · [`ADR-0042`](../plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) · [`ADR-0028`](../plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) · **Hard Rules:** [`AGENTS.md`](../../AGENTS.md) §3.4 · §3.5 · §3.7 · §3.8 · §3.11 · **Bezug:** [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) · [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) · [`MR-033`](../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist) · [`MR-040`](../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
 
 Alle Zahlen unten stehen neben dem Kommando, das sie liefert, und sind über dem Stand `38174544`
 gefahren; sie wandern mit dem Baum und sind **keine Erwartungswerte**.
@@ -9,7 +9,7 @@ gefahren; sie wandern mit dem Baum und sind **keine Erwartungswerte**.
 
 ### MEDIUM-1 — Zwei ausführbare Vorlagen-Adressen im Planner-Anweisungssatz sind tot, und kein Slice nimmt sie an
 
-`quelle` [`slice-223`](../plan/planning/in-progress/slice-223-baum-tausch-v672-pins-ziehen.md) §3 (Zeile *„24 Inline-Code-Pfade in lebenden Artefakten | update"*), Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Slice (*„Die Adresse muss die Sendung annehmen"*) · `pfad` `.claude/commands/close-welle.md:25`, `.claude/commands/close-welle.md:46` · `verifizierbar` nein durch ein Gate, ja durch `git grep` · `klasse` Ausführbare Adresse im Anweisungssatz stirbt beim Tag-Wechsel ohne Adressaten
+`quelle` [`slice-223`](../plan/planning/done/slice-223-baum-tausch-v672-pins-ziehen.md) §3 (Zeile *„24 Inline-Code-Pfade in lebenden Artefakten | update"*), Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Slice (*„Die Adresse muss die Sendung annehmen"*) · `pfad` `.claude/commands/close-welle.md:25`, `.claude/commands/close-welle.md:46` · `verifizierbar` nein durch ein Gate, ja durch `git grep` · `klasse` Ausführbare Adresse im Anweisungssatz stirbt beim Tag-Wechsel ohne Adressaten
 
 `befund` Beide Zeilen weisen den Planner an, die Ergebnisnotiz per `cp` aus
 `.harness/baseline/v6.5.0/templates/docs/plan/planning/welle-results.template.md` zu erzeugen. Das
@@ -74,7 +74,7 @@ Reparatur-Auflage an diesen Lauf allein.
 
 ### LOW-1 — Das Inventur-Instrument des Plans sucht den abgehenden Tag, nicht den Baum
 
-`quelle` [`slice-223`](../plan/planning/in-progress/slice-223-baum-tausch-v672-pins-ziehen.md) §1 · `pfad` `docs/plan/planning/in-progress/slice-223-baum-tausch-v672-pins-ziehen.md:84–86` · `verifizierbar` nein · `klasse` Sprung-Inventur keilt auf den abgehenden Tag statt auf das Baseline-Präfix
+`quelle` [`slice-223`](../plan/planning/done/slice-223-baum-tausch-v672-pins-ziehen.md) §1 · `pfad` `docs/plan/planning/done/slice-223-baum-tausch-v672-pins-ziehen.md:84–86` · `verifizierbar` nein · `klasse` Sprung-Inventur keilt auf den abgehenden Tag statt auf das Baseline-Präfix
 
 `befund` Alle drei Erhebungs-Kommandos des Plans filtern auf `v6\.5\.0`. Adressen, die schon vor
 diesem Sprung tot waren, sind für das Instrument unsichtbar — **43** Stück allein auf `v5.18.0` und
