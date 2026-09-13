@@ -213,7 +213,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
 
-- [ ] **1 — Der Gate-Index steht einmal, und die Messung liegt daneben.**
+- [x] **1 — Der Gate-Index steht einmal, und die Messung liegt daneben.**
       `targets.authority` in [`.d-check.yml`](../../../../.d-check.yml) nennt
       `harness/README.md`, die Gate-Tabelle in [`AGENTS.md`](../../../../AGENTS.md) §4 ist durch
       Regel und Zeiger ersetzt, und ``grep -cE '^\| `make ' AGENTS.md`` liefert **0**. `make gates`
@@ -222,7 +222,24 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       aus §1 ist im Lauf neu gefahren, ihr Ergebnis steht in der Closure-Notiz, und ist sie
       **nicht** leer, ist das der Befund und geht als Meldung an den Auftraggeber (Kopf) — nicht
       in einen Eintrag.
-- [ ] **2 — Die Norm-Ebene trägt die übrigen Posten, die
+
+      **Ausgang bei Closure:** erfüllt, und die Senkungs-Frage ist **anders** beantwortet worden,
+      als der Punkt sie stellte. Die drei Messungen sind am Abschluss neu gefahren:
+
+      ```sh
+      grep -n 'authority:' .d-check.yml                 # authority: harness/README.md
+      grep -cE '^\| `make ' AGENTS.md                   # 0 — keine Gate-Tabelle mehr in AGENTS.md
+      comm -23 <(git show 99bfd1c5^:AGENTS.md | grep -oE '^\| `make [a-z0-9-]+`' | sed 's/^| `make //;s/`$//' | sort -u) \
+               <(grep -oE '`make [a-z0-9-]+`' harness/README.md | sed 's/`make //;s/`$//' | sort -u) | wc -l   # 0
+      ```
+
+      Die Mengen-Differenz ist leer. Eine
+      Senkung gibt es trotzdem — in der Richtung, die diese Messung nicht erfasst; sie ist über
+      [`ADR-0045`](../../adr/0045-authority-wechsel-senkt-eine-richtung.md) (`Accepted`) gebucht
+      und über den §Sensors-Scope von `authority_table_targets()` kompensiert. Das ist der Weg aus
+      [`AGENTS.md`](../../../../AGENTS.md) §3.5 und schärfer als die Meldung, die der Plan-Kopf als
+      Alternative vorsah.
+- [x] **2 — Die Norm-Ebene trägt die übrigen Posten, die
       [slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md) §9 ihr zuweist.**
       Der Umfang steht dort, nicht hier — dieser Punkt ist erfüllt, wenn **jede** Zeile des
       Nachweises mit Ziel `slice-225` einen Beleg im Diff hat. Nach heutigem Stand fallen darunter
@@ -240,7 +257,43 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       **Die Liste in diesem Plan ist nicht die Grenze** — die Grenze ist §9 von slice-224; steht
       dort ein Posten, den dieser Plan nicht kennt, gehört er trotzdem hierher, und wächst die
       Menge über *einen* Review-Sitzung hinaus, greift die Rückführung in §4.
-- [ ] **3 — Was der Stand `v6.7.2` auflöst, hat den Adaptions-Block verlassen.** Jeder aktive
+
+      **Ausgang bei Closure:** erfüllt, und **zwei** der sieben Zeilen bekommen ihn hier statt im
+      Diff. Die Zeilen sind ausgezählt, nicht geschätzt:
+
+      ```sh
+      awk -F'|' '{n=NF; gsub(/^[ \t]+|[ \t]+$/,"",$n); if ($n=="slice-225") print NR}' \
+        docs/plan/planning/done/slice-224-delta-nachweis-und-planungs-nachzug.md   # 7 Zeilen
+      ```
+
+      Fünf sind im Diff belegt (`grundlagen-harness-dateien.md`, `grundlagen-source-precedence.md`,
+      `AGENTS.template.md`, `harness/README.template.md`, `harness/conventions.template.md`). Die
+      zwei übrigen:
+
+      - `lab/regelwerk/modul-13-quality-gates.md` — **erfüllt, Beleg hier nachgetragen.** Der
+        Posten trägt drei Teile, und alle drei stehen:
+
+        ```sh
+        grep -c 'targets' <(grep '^modules:' .d-check.yml)                  # 1  Deklarations-Sensor aktiv
+        grep -cE '^\|.*\| *kein Gate' harness/README.md                     # 17 Zeilen mit der Markierung
+        ls harness/sensors/*.md | wc -l                                     # 15 Sensor-Dateien
+        grep -lE '^#+ .*Grenze' harness/sensors/*.md | wc -l                # 15 davon mit Grenzen-Abschnitt
+        ```
+
+        **Keine Erwartungswerte.** Teil 1 ist der `authority`-Wechsel dieses Slice; Teil 2 und 3
+        standen vorher schon (`git show 99bfd1c5^:harness/README.md | grep -cE '^\|.*\| *kein Gate'`
+        → 17). Der Posten verlangt keine Arbeit, die nicht getan ist — er verlangte den Beleg, und
+        der fehlte.
+      - `lab/templates/.d-check.yml` — **eingetreten → Folge-Slice mit Kennung**
+        [slice-emittierte-gate-vorlage-traegt-targets-und-reviews](../open/slice-emittierte-gate-vorlage-traegt-targets-und-reviews.md).
+        Die Zeile hat zwei Hälften: die emittierte Vorlage (von §1 dieses Plans ausgeschlossen) und
+        die Aktivierungsfrage des Moduls `reviews` in der `.d-check.yml` dieses Repos (bei
+        [slice-213](../open/slice-213-review-report-laeuft-in-der-tabellen-form.md)). Für die erste
+        nahm keine der vier in §1 genannten Adressen die Sendung an; der neue Slice nennt sie in
+        seinem §1 als Gegenstand. Keine Ablehnung — die Lücke ist gemessen
+        (`grep -cE '^# (targets|reviews):' .harness/baseline/v6.7.2/templates/.d-check.yml` → 2
+        gegen `internal/emit/templates/d-check.yml` → 0).
+- [x] **3 — Was der Stand `v6.7.2` auflöst, hat den Adaptions-Block verlassen.** Jeder aktive
       Eintrag, dessen Auflösungs-Trigger einen Baseline-/Regelwerks-Stand nennt, ist gegen
       `v6.7.2` geprüft; die **Kandidatenmenge ist 21 von 52** — gemessen, nicht geschätzt:
 
@@ -261,19 +314,42 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       ([`MR-038`](../../../../harness/conventions.md#mr-038--ein-retirierender-eintrag-nennt-den-baseline-stand-der-seinen-trigger-feuerte)),
       und seine Zeile wandert samt beider Anker in die Tabelle *Aufgelöste Adaptionen*. **Feuert
       keiner, ist das ebenfalls ein Ergebnis** und wird mit der geprüften Kandidatenzahl notiert.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+
+      **Ausgang bei Closure: keiner feuert, und die Kandidatenzahl ist am Abschluss genommen** —
+      **24 von 55**, nicht die 21 des Plans. Der Slice erzeugt mit `MR-057` und `MR-058` zwei
+      seiner eigenen Kandidaten und bewegt damit seine Bezugsmenge; genau dafür verlangt
+      [`MR-058`](../../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)
+      Setzung 2 die Messung **nach** dem Vorgang:
+
+      ```sh
+      ls harness/conventions/MR-*.md | wc -l              # 55 aktive Eintraege
+      for f in harness/conventions/MR-*.md; do
+        awk '/^- \*\*Auflösungs-Trigger:\*\*/{p=1} p{print} p&&/^- \*\*(Datum|Wirksamkeits-Anlass|Geltungsbereich|Ersetzt)/&&!/Auflösungs/{exit}' "$f" \
+          | grep -qiE 'baseline|regelwerk|kurs-|upstream|adoptiert|Ziel-Fassung' && basename "$f"
+      done | wc -l                                        # 24 Kandidaten
+      git diff --name-status 99bfd1c5^..HEAD -- harness/conventions/ | grep -c '^R'   # 0 Umzuege nach done/
+      ```
+
+      **Keine Erwartungswerte.** Unabhängig nachgeprüft sind **11** der 24 — 2 Grenzfälle im
+      Review, 9 in der benannten Stichprobe des Verifiers; für die übrigen 13 trägt die Messung des
+      umsetzenden Laufs. Eine Vollständigkeitsaussage einer prüfenden Rolle über alle 24 steht
+      damit **nicht** da, und das gehört benannt statt vorausgesetzt.
+- [x] `make gates` grün — EXIT 0 über `05672bfc` laut Auftrag, nicht in diesem Lauf gemessen; nach
+      den Closure-Commits fährt ihn der Orchestrator erneut.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
-      Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: [`harness/README.md`](../../../../harness/README.md) §Sensors ist die alleinige
+      Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8). **Drei Reports, zwei
+      Rollen, kein Self-Review:** Runde 1 (blockierend), die Verifikation, und Runde 2 derselben
+      Reviewer-Rolle — *nicht mehr blockierend*.
+- [x] Doku-Update: [`harness/README.md`](../../../../harness/README.md) §Sensors ist die alleinige
       Gate-Index-Autorität, [`AGENTS.md`](../../../../AGENTS.md) §4 trägt Regel und Zeiger dorthin
       — ein öffentlicher Vertrag im Sinne des Minimal Agent Workflow, und beide Dateien sind
       Gegenstand von Liefer-Punkt 1 und 2.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
 
 ## 3. Plan (vor Code)
 
@@ -341,30 +417,61 @@ dasteht.
   sie ist am **heutigen** Bestand gemessen, und zwischen dieser Planung und dem Lauf können
   Rezepte hinzukommen. Das ist der erste der zwei Orte, an denen dieser Plan ein rotes Gate für
   möglich hält — **die Antwort ist eine Meldung an den Auftraggeber, keine Ausnahme** (Kopf, §4).
-  — **Ausgang:** offen bis zur Closure.
+  — **Ausgang: entfallen.** Kein Gate ist rot geworden, und zwischen Planung und Lauf kam kein
+  Rezept hinzu: Die Mengen-Differenz ist am Abschluss neu gefahren und leer (DoD-Punkt 1). Das
+  Risiko in der Form, in der es hier steht, kann nicht mehr eintreten — der Wechsel ist vollzogen.
+  **Was stattdessen eintrat, gehört in dieselbe Zeile, weil es sonst als „nichts passiert" gelesen
+  wird:** Eine Senkung gibt es, und sie war für beide hier genannten Wächter unsichtbar — für das
+  rote Gate wie für die Mengen-Differenz. Gefunden hat sie der Review mit einer Sonde, entschieden
+  ist sie in [`ADR-0045`](../../adr/0045-authority-wechsel-senkt-eine-richtung.md). Die **Klasse**
+  dahinter ist gebucht: `BEO-ALL/senkungs-pruefung-misst-die-menge-statt-des-gate-verhaltens`.
 - **Die Ausnahmeliste wird nach dem Wechsel nur auf Form geprüft.** 17 der 37 `exempt-targets`
   stehen künftig als Zeile im Index und brauchen die Ausnahme nicht mehr; sie stehen zu lassen ist
   still grün und macht die Liste zu einer, die nichts mehr sagt. Register-Stand der Klasse
   `ausnahmeliste-nur-auf-form-geprueft`: **2×**
   (`ls docs/plan/planning/observations/BEO-ALL/ausnahmeliste-nur-auf-form-geprueft/evidence/*.md | wc -l`).
-  — **Ausgang:** offen bis zur Closure.
+  — **Ausgang: weiter offen → Beobachtungs-Register.** Es ist eingetreten und in **einer**
+  Richtung kompensiert: 17 der 37 Einträge stehen seit dem Wechsel als Zeile im Index **und** in
+  der Ausnahmeliste, und ein bats-Wächter hält seitdem, dass kein Eintrag zugleich eine
+  Sensors-Tabellenzeile ist ([`ADR-0045`](../../adr/0045-authority-wechsel-senkt-eine-richtung.md)
+  Festlegung 2). Was der Wächter **nicht** prüft, ist die inhaltliche Berechtigung eines Eintrags —
+  genau die Klasse. Sie wandert darum an den Zähler statt in einen zweiten Mechanismus:
+  `BEO-ALL/ausnahmeliste-nur-auf-form-geprueft`, mit diesem Beleg bei **3×**.
 - **Der `git mv` eines Adaptions-Eintrags macht eine bewachte Adresse falsch.** Wandert ein
   Eintrag nach `conventions/done/`, ändern sich seine eigenen relativen Pfade **und** jede Adresse,
   die auf ihn zeigt; die Anker-Mitnahme in der Index-Tabelle ist der Grund, warum die Kennungs-Links
   nicht brechen, aber `../`-Tiefen im Rumpf brechen sehr wohl. Register-Stand der Klasse
   `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`: **13×**
   (`ls docs/plan/planning/observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/evidence/*.md | wc -l`)
-  — mit Abstand der größte Zähler des Registers. — **Ausgang:** offen bis zur Closure.
+  — mit Abstand der größte Zähler des Registers. — **Ausgang: entfallen.** Kein Eintrag ist
+  gefeuert, also hat kein `git mv` in
+  [`harness/conventions/`](../../../../harness/conventions/) stattgefunden
+  (`git diff --name-status 99bfd1c5^..HEAD -- harness/conventions/ | grep -c '^R'` → **0**); die
+  Bedingung des Risikos ist nicht eingetreten und kann es in diesem Slice nicht mehr. **Der
+  Registereintrag bleibt davon unberührt und hat trotzdem einen Beleg aus diesem Vorgang** — aus
+  einer anderen Fundstelle: Der Closure-Move von `slice-224` hatte eine Stand-Zelle in
+  [`harness/conventions.md`](../../../../harness/conventions.md) §Baseline falsch stehen lassen
+  (Review MEDIUM-3). Zwei verschiedene Aussagen, und beide sind wahr.
 - **Der zweite mögliche Rot-Fall liegt bei einem Modul, das dieser Slice nicht aktiviert.** Eine
   Aktivierung von `reviews` über `done/`-Slices mit Review-DoD-Zeile ohne Report unter
   `docs/reviews/` wäre rot; §1 schließt sie mit Adresse aus, und sie ist hier als **benannte
-  Möglichkeit** notiert, damit der Lauf sie nicht als Versäumnis liest. — **Ausgang:** offen bis
-  zur Closure.
+  Möglichkeit** notiert, damit der Lauf sie nicht als Versäumnis liest. — **Ausgang: entfallen.**
+  Das Modul ist nicht aktiviert; die `modules:`-Liste der
+  [`.d-check.yml`](../../../../.d-check.yml) führt es weder vor noch nach diesem Slice
+  (`grep '^modules:' .d-check.yml`), und der Diff berührt die Zeile nicht. Ohne Aktivierung gibt es
+  den Rot-Fall nicht.
 - **Der Umfang von Liefer-Punkt 2 steht in einem anderen Plan.** Er ist damit erst bei Start des
   Slice bekannt; die Rückführung in §4 ist die vorab benannte Antwort, und Register-Stand der
   Klasse `slice-plan-umfang-waechst-ueber-umsetzung-hinaus`: **2×**
   (`ls docs/plan/planning/observations/BEO-ALL/slice-plan-umfang-waechst-ueber-umsetzung-hinaus/evidence/*.md | wc -l`).
-  — **Ausgang:** offen bis zur Closure.
+  — **Ausgang: eingetreten → Folge-Slice mit Kennung**
+  [slice-emittierte-gate-vorlage-traegt-targets-und-reviews](../open/slice-emittierte-gate-vorlage-traegt-targets-und-reviews.md).
+  Zwei der sieben Zeilen standen bei der Verifikation ohne Beleg da (DoD-Punkt 2), und eine davon
+  hatte **keinen** Empfänger: §9 adressierte sie an diesen Slice, dessen §1 sie ausschloss und vier
+  Adressen nannte, von denen keine sie annahm. Die Rückführung aus §4 war **nicht** der richtige
+  Zug — der Umfang wuchs nicht über eine Review-Sitzung hinaus, er hatte eine Lücke. Nicht der
+  Zuschnitt war falsch, sondern die Annahmebereitschaft einer Adresse; gebucht als
+  `BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt`.
 
 ## 7. Closure-Notiz
 
@@ -376,16 +483,124 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<…>`. Auslöser: `<BEO-ALL/<slug>>`.
-  *(Wurde mit diesem Slice nichts verkörpert, entfällt die Teil-Zeile `— liegt in …` ersatzlos.)*
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
-  für diesen Slice ohne Wellen-Zugehörigkeit>
+**Rolle:** Planner · **Datum:** 2026-09-13.
+
+- **Was hat funktioniert:** Die **Sonde statt der Zahl**. Der Gate-Index-Wechsel ist der einzige
+  Posten dieses Slice, dessen Wirkung keine Textmessung zeigt, und er ist der einzige, bei dem eine
+  prüfende Rolle den konstruierten Zustand über **beiden** Ständen gefahren hat — Nicht-Gate-Rezept
+  mit bloßer Werkzeuge-Zeile, über dem alten Baum zurückgewiesen, über dem neuen durchgelassen. Das
+  hat aus einer Formulierungsfrage eine Entscheidung gemacht
+  ([`ADR-0045`](../../adr/0045-authority-wechsel-senkt-eine-richtung.md)) und eine Kompensation,
+  die man rot sehen kann. Getragen hat ebenso der **Rollen-Wechsel vor dem Norm-Text**
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8): Die drei Architect-Commits berühren ausschließlich
+  Architect-Artefakte, und dass der Implementer-Lauf `MR-057` nicht selbst schrieb, ist der Grund,
+  warum die Zahl darin überhaupt einer zweiten Rolle auffiel. Und die **vorab benannten Risiken**
+  in §6 haben getragen: Von fünf sind vier in einer Form entschieden worden, die der Plan
+  beschrieben hatte.
+- **Was ging anders als geplant:** Vier Dinge.
+  1. **Der Plan hielt die Senkungs-Frage für beantwortet, und sie war es nicht.** §1 setzt die
+     leere Mengen-Differenz als Beleg *„kein §3.5-Fall, sondern der Steering-Loop-Weg
+     Gate-Anheben"*; die Messung ist richtig und spricht über Namenslisten, die Folgerung über
+     Annahme-Verhalten. Zwei Läufe haben sie nacheinander nachgefahren, weil sie reproduzierbar und
+     grün war. Das ist der Lerneintrag unten.
+  2. **Die Kandidatenzahl des Retirements hatte drei Werte, und alle drei waren richtig.** 21 im
+     Plan, 23 im Review, 24 beim Verifier — der Slice erzeugt mit `MR-057`/`MR-058` zwei seiner
+     eigenen Kandidaten. Der Widerspruch war keiner, sondern eine Messung, die ihr eigener Vorgang
+     bewegt; die Form dafür steht seitdem als
+     [`MR-058`](../../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)
+     Setzung 2 da, und die Zahl in DoD-Punkt 3 ist danach genommen.
+  3. **Der Plan-Kopf sah für einen gemessenen Gate-Befund nur einen Weg vor** — *„eine Meldung an
+     den Auftraggeber, nicht in einen Eintrag und nicht in eine Ausnahme"*. Gegangen wurde der
+     zweite, den [`AGENTS.md`](../../../../AGENTS.md) §3.5 kennt: eine ADR. Das ist keine Abweichung
+     vom Plan, sondern die schärfere seiner zwei zulässigen Antworten — der Befund ist gebucht
+     **und** kompensiert statt nur gemeldet.
+  4. **Eine Nachweis-Zeile hatte zwei Absender-Aussagen und keinen Empfänger.** `slice-224` §9
+     schickte `lab/templates/.d-check.yml` hierher, §1 dieses Plans schloss die emittierte Ebene
+     aus und nannte vier Adressen, von denen keine sie annahm. Aufgefallen ist das der Verifikation,
+     nicht dem Schnitt; die Adresse steht jetzt.
+- **Steering-Loop-Eintrag — geschärfte Regel, gezählt und nicht verkörpert:** *Die Frage „ist das
+  eine Senkung?" ist eine Frage über **Verhalten**, nicht über **Mengen**. Eine Differenz über den
+  Inhalts-Listen zweier Konfigurations-Stände — welche Namen vorher und nachher dokumentiert sind —
+  kann leer sein, während das Gate einen Zustand durchlässt, den es vorher zurückwies. Wer sie
+  beantworten will, baut die **Sonde**: derselbe konstruierte Zustand über beiden Ständen, einmal
+  rot und einmal grün gesehen. Eine zweite Mengen-Messung liefert denselben leeren Rest.* Auslöser:
+  `BEO-ALL/senkungs-pruefung-misst-die-menge-statt-des-gate-verhaltens` (neu, 1×). **Die Teil-Zeile
+  `— liegt in …` entfällt**, weil mit diesem Slice keine Regel dieser Klasse verkörpert wurde: Der
+  Eintrag steht bei 1×, und den Ausgang weist der Lese-Schritt der nächsten Welle-Closure zu. Was
+  entschieden ist, ist der **Einzelfall** — und das trägt bereits eine ID
+  ([`ADR-0045`](../../adr/0045-authority-wechsel-senkt-eine-richtung.md)), braucht also nach
+  Baseline-Regelwerk `grundlagen-traceability.md` §Herkunfts-Anker keinen zweiten.
+- **Beobachtungs-Register (`../observations/`):** **Sechs** Belege geschrieben, **ein** Verzeichnis
+  neu angelegt (`senkungs-pruefung-misst-die-menge-statt-des-gate-verhaltens`); der Zähler folgt den
+  Dateien und wird nirgends gesetzt (keine Erwartungswerte):
+
+  ```sh
+  for s in senkungs-pruefung-misst-die-menge-statt-des-gate-verhaltens \
+           mess-zusage-trifft-das-eigene-zitat \
+           uebergabe-an-andere-rolle-ohne-traeger-artefakt \
+           ausnahmeliste-nur-auf-form-geprueft \
+           lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch \
+           verweis-nachzug-ersetzt-eine-historisch-richtige-adresse; do
+    printf '%s %s\n' "$(ls docs/plan/planning/observations/BEO-ALL/$s/evidence/*.md | wc -l)" "$s"
+  done   # 1 · 4 · 4 · 3 · 14 · 3
+  ```
+
+  **Eine neue Klasse, und die Prüfung davor ist protokolliert:** Fünf vorhandene Einträge sind als
+  Kandidat gelesen und keiner deckt den Fall.
+  `vollstaendigkeits-zusage-misst-falsche-ebene` trifft die **Granularität** derselben Messung
+  (Datei statt Hunk) — hier ist die Granularität richtig und der **Gegenstand** falsch;
+  `byte-gleichheit-als-aussage-ueber-die-regel-gelesen` setzt eine Messung voraus, die etwas
+  **übersieht** — diese übersieht nichts und beantwortet vollständig eine andere Frage;
+  `zusage-nennt-sensor-der-form-nicht-sieht` bindet Skript- und Funktionsköpfe, nicht eine
+  Plan-Begründung; `zusicherung-ueber-der-leeren-menge-wahr` setzt eine Negation über einer
+  weggefallenen Menge voraus — die Menge hier ist da und wird richtig gezählt;
+  `zusammenfassung-staerker-als-ihre-quelle` setzt eine Quelle voraus, die weniger sagt — hier sagt
+  die Quelle genau so viel, nur über etwas anderes. Eine Klasse in einen unpassenden Namen zu
+  drücken teilt sie still.
+  **Kein Eintrag hat in dieser Closure einen Ausgang bekommen:** Vier der sechs stehen über der
+  Schwelle, und der Lese-Schritt gehört in einem Repo mit Wellen-Betrieb der Welle-Closure
+  (`ls docs/plan/planning/welle-*.md` → drei offene Wellen).
+- **Folge-Slices:**
+  [slice-werkzeug-erkennt-die-benannte-kennung](../open/slice-werkzeug-erkennt-die-benannte-kennung.md)
+  (Verweis-Nachzug und Archiv-Stub erkennen eine benannte Slice-Kennung) und
+  [slice-emittierte-gate-vorlage-traegt-targets-und-reviews](../open/slice-emittierte-gate-vorlage-traegt-targets-und-reviews.md)
+  (Die emittierte Doc-Gate-Vorlage nennt die zwei Module, die sie heute verschweigt) — beide Dateien
+  in `open/`, beide neu geschnitten. **Es sind die ersten zwei Kennungen dieses Repos ohne Nummer**
+  ([`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+  Setzung 1 bindet ab `3c2b4d82`; `slice-226`/`slice-227` fielen einen Tag davor und behalten ihre
+  Nummer nach Setzung 2). Der erste nimmt damit die Sendung an, die seine eigene Kennung fällig
+  gemacht hat.
+- **Risiken aus §6:** fünf, jedes mit genau einem Ausgang — dreimal *entfallen* mit Begründung
+  (kein rotes Gate aus einem neuen Rezept · kein `git mv` in `harness/conventions/`, weil kein
+  Trigger feuerte · das Modul `reviews` ist nicht aktiviert), einmal *weiter offen →
+  Beobachtungs-Register* (`ausnahmeliste-nur-auf-form-geprueft`, **3×**), einmal *eingetreten →
+  Folge-Slice mit Kennung* (`slice-emittierte-gate-vorlage-traegt-targets-und-reviews`).
+- **Vor dem `git mv` gemessen** ([`AGENTS.md`](../../../../AGENTS.md) §3.11, und
+  [`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 5 verlangt,
+  dass der bewegende Lauf nennt, was er anfasst):
+
+  ```sh
+  git grep -ncE 'in-progress/slice-225-gate-index-steht-einmal\.md' -- 'docs/plan/adr/*.md'   # leer
+  git grep -cE  'in-progress/slice-225-gate-index-steht-einmal\.md' -- \
+    'docs/plan/planning/done/*.md' 'docs/reviews/*.md' 'docs/plan/carveouts/done/*.md' \
+    'docs/plan/planning/observations/**/evidence/*.md' | wc -l                                 # 9 Dateien
+  ```
+
+  **Keine `Accepted`-ADR** nennt diese Datei als Pfad — der Move ist nicht gesperrt. Angefasst
+  werden **9** eingefrorene Dateien mit **23** Fundstellen in den vier Bäumen, die
+  [`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 1 bindet;
+  dort ist der Nachzug beschlossen, weil er die Adresse ersetzt und die Aussage stehen lässt. **Eine
+  Fundstelle ist die Ausnahme davon** und bleibt nach Festlegung 4 unrepariert:
+  `observations/BEO-ALL/mess-zusage-trifft-das-eigene-zitat/evidence/slice-224.md` zitiert eine
+  `git grep -c`-Ausgabe unter einem Pathspec, der `done/` ausnimmt — nach der Ersetzung behauptet
+  sie einen Treffer, den dasselbe Kommando nie liefert. Gebucht als
+  `BEO-ALL/verweis-nachzug-ersetzt-eine-historisch-richtige-adresse` (**3×**).
+- **Drei Paarungen:** Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
+  für diesen Slice ohne Wellen-Zugehörigkeit. Die **Anker**-Paarung hat hier kein Objekt: Der
+  Steering-Loop-Eintrag oben trägt kein Feld `liegt in`, ist also gezählt und nicht verkörpert. Die
+  **Folge-Slice**- und die **Register**-Paarung haben je zwei bzw. sechs Objekte, und alle liegen
+  vor — die zwei genannten Slices sind Dateien im Planning-Lifecycle, jede genannte Beobachtung ist
+  ein Verzeichnis mit nicht leerem `evidence/`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
