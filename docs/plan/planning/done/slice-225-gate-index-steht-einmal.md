@@ -267,7 +267,7 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       ```
 
       Fünf sind im Diff belegt (`grundlagen-harness-dateien.md`, `grundlagen-source-precedence.md`,
-      `AGENTS.template.md`, `harness/README.template.md`, `harness/conventions.template.md`). Die
+      `AGENTS.template.md`, `lab/templates/harness/README.template.md`, `lab/templates/harness/conventions.template.md`). Die
       zwei übrigen:
 
       - `lab/regelwerk/modul-13-quality-gates.md` — **erfüllt, Beleg hier nachgetragen.** Der
@@ -316,7 +316,7 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       keiner, ist das ebenfalls ein Ergebnis** und wird mit der geprüften Kandidatenzahl notiert.
 
       **Ausgang bei Closure: keiner feuert, und die Kandidatenzahl ist am Abschluss genommen** —
-      **24 von 55**, nicht die 21 des Plans. Der Slice erzeugt mit `MR-057` und `MR-058` zwei
+      **24 von 55**, nicht die 21 des Plans. Der Slice erzeugt mit [`MR-057`](../../../../harness/conventions.md#mr-057) und [`MR-058`](../../../../harness/conventions.md#mr-058) zwei
       seiner eigenen Kandidaten und bewegt damit seine Bezugsmenge; genau dafür verlangt
       [`MR-058`](../../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)
       Setzung 2 die Messung **nach** dem Vorgang:
@@ -493,7 +493,7 @@ Backticks).
   ([`ADR-0045`](../../adr/0045-authority-wechsel-senkt-eine-richtung.md)) und eine Kompensation,
   die man rot sehen kann. Getragen hat ebenso der **Rollen-Wechsel vor dem Norm-Text**
   ([`AGENTS.md`](../../../../AGENTS.md) §3.8): Die drei Architect-Commits berühren ausschließlich
-  Architect-Artefakte, und dass der Implementer-Lauf `MR-057` nicht selbst schrieb, ist der Grund,
+  Architect-Artefakte, und dass der Implementer-Lauf [`MR-057`](../../../../harness/conventions.md#mr-057) nicht selbst schrieb, ist der Grund,
   warum die Zahl darin überhaupt einer zweiten Rolle auffiel. Und die **vorab benannten Risiken**
   in §6 haben getragen: Von fünf sind vier in einer Form entschieden worden, die der Plan
   beschrieben hatte.
@@ -504,7 +504,7 @@ Backticks).
      Annahme-Verhalten. Zwei Läufe haben sie nacheinander nachgefahren, weil sie reproduzierbar und
      grün war. Das ist der Lerneintrag unten.
   2. **Die Kandidatenzahl des Retirements hatte drei Werte, und alle drei waren richtig.** 21 im
-     Plan, 23 im Review, 24 beim Verifier — der Slice erzeugt mit `MR-057`/`MR-058` zwei seiner
+     Plan, 23 im Review, 24 beim Verifier — der Slice erzeugt mit [`MR-057`](../../../../harness/conventions.md#mr-057)/[`MR-058`](../../../../harness/conventions.md#mr-058) zwei seiner
      eigenen Kandidaten. Der Widerspruch war keiner, sondern eine Messung, die ihr eigener Vorgang
      bewegt; die Form dafür steht seitdem als
      [`MR-058`](../../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)

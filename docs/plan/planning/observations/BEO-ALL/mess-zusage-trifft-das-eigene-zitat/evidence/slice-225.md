@@ -2,7 +2,7 @@
 **Fund:** Zwei Messungen dieses Slice bewegten ihre eigene Bezugsmenge, und beide standen im
 Moment ihres Schreibens falsch da.
 
-**Erstens im Adaptions-Block.** `MR-057` beziffert im Feld `Löst auf`, wie oft das abgelöste Token
+**Erstens im Adaptions-Block.** [`MR-057`](../../../../../../../harness/conventions.md#mr-057) beziffert im Feld `Löst auf`, wie oft das abgelöste Token
 in seinem Vorgänger vorkommt:
 
 ```sh
@@ -11,12 +11,12 @@ git show 3c2b4d82^:harness/conventions/MR-000-baseline-aussage.md | grep -c 'sli
 ```
 
 Der geschriebene Betrag `1` galt für den Stand **vor** dem Commit. Derselbe Commit setzte die
-Kopf-Marke auf `MR-000`, und die zitiert das gesuchte Token in ihrer eigenen Reichweiten-Angabe —
+Kopf-Marke auf [`MR-000`](../../../../../../../harness/conventions.md#mr-000), und die zitiert das gesuchte Token in ihrer eigenen Reichweiten-Angabe —
 der Betrag war in keinem Moment nach seinem Schreiben richtig.
 
 **Zweitens in der Retirement-Kandidatenmenge.** Sie stand im Plan bei 21, im Review bei 23, beim
-Verifier bei 24; alle drei waren zu ihrem Zeitpunkt richtig. Der Slice erzeugt mit `MR-057` und
-`MR-058` **zwei seiner eigenen Kandidaten** — die Bezugsmenge wächst, während die Zahl über sie
+Verifier bei 24; alle drei waren zu ihrem Zeitpunkt richtig. Der Slice erzeugt mit [`MR-057`](../../../../../../../harness/conventions.md#mr-057) und
+[`MR-058`](../../../../../../../harness/conventions.md#mr-058) **zwei seiner eigenen Kandidaten** — die Bezugsmenge wächst, während die Zahl über sie
 geschrieben wird.
 
 Die Klasse ist damit nicht mehr auf Slice-Pläne beschränkt: Die drei früher gebuchten Belege

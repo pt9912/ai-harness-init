@@ -2,7 +2,7 @@
 **Fund:** Zwei Sendungen dieses Slice hatten keinen annehmenden Träger — dieselben zwei Formen wie
 bei `slice-224`, nur diesmal in umgekehrter Richtung erzeugt.
 
-**Kein Empfänger.** `MR-057` benennt in seinem Abschnitt *Grenze* zwei Dogfood-Stellen, die eine
+**Kein Empfänger.** [`MR-057`](../../../../../../../harness/conventions.md#mr-057) benennt in seinem Abschnitt *Grenze* zwei Dogfood-Stellen, die eine
 Slice-Kennung an Ziffern binden, erklärt den Nachzug zur **Implementer**-Arbeit und datiert ihn
 *„fällig, bevor die erste benannte Kennung vergeben wird"*. Eine Adresse dafür existierte nicht:
 
