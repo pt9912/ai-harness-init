@@ -645,8 +645,8 @@ Backticks).
   ```
 
   Das Release-Verfahren stempelt einen Beispiel-Link mit dem Release-Tag; der vendorte Baum trägt
-  damit Bytes, die der `git`-Baum nicht hat — bei `AGENTS.template.md` und
-  `harness/conventions.template.md` je **eine** Zeile, kein Inhalts- und kein Struktur-Delta.
+  damit Bytes, die der `git`-Baum nicht hat — bei `.harness/baseline/v6.8.0/templates/AGENTS.template.md` und
+  `.harness/baseline/v6.8.0/templates/harness/conventions.template.md` je **eine** Zeile, kein Inhalts- und kein Struktur-Delta.
   **Die Lücke:** Keine Quelle dieses Repos sagt, gegen **welchen der beiden** ein Vorlagen-Delta zu
   messen ist. [`harness/migration.md`](../../../../harness/migration.md) §5 gibt die Report-**Form**
   und nennt den Mess-Gegenstand nicht;
