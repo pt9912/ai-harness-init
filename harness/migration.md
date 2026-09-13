@@ -44,17 +44,21 @@ Spalte), alle anderen bleiben unangetastet:
 | `v6.0.0` → `v6.5.0` | Ziel-Fassung `v6.5.0` | [ADR-0038](../docs/plan/adr/0038-ziel-fassung-regiert-den-sprung-v650.md) |
 | `v6.5.0` → `v6.7.1` (Ziel unerreichbar geworden, bevor ein Pin es trug) | Ziel-Fassung `v6.7.1` | [ADR-0043](../docs/plan/adr/0043-ziel-fassung-regiert-den-sprung-v671.md) Festlegung 1, teilweise abgelöst durch [ADR-0044](../docs/plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md) |
 | `v6.5.0` → `v6.7.2` (vollzogen) | Ziel-Fassung `v6.7.2` | [ADR-0044](../docs/plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md) Festlegung 1 |
+| `v6.7.2` → `v6.8.0` (Vollzug steht aus) | Ziel-Fassung `v6.8.0` | [ADR-0047](../docs/plan/adr/0047-ziel-fassung-regiert-den-sprung-v680.md) Festlegung 1 |
 
 Die Zeile zu `v5.12.0` → `v5.18.0` zitiert
 [ADR-0031](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 1;
 die ADR steht auf **`Proposed`** (ihre eigene §Geschichte) und ist damit nach
 [`AGENTS.md`](../AGENTS.md) §3.4 noch nicht eingefroren — die Zeile hält fest, was sie **heute**
-vorschlägt, nicht, dass die Entscheidung feststeht.
+vorschlägt, nicht, dass die Entscheidung feststeht. Für die Zeile zu `v6.7.2` → `v6.8.0` gilt
+dieselbe Lesart: Auch [ADR-0047](../docs/plan/adr/0047-ziel-fassung-regiert-den-sprung-v680.md)
+steht auf **`Proposed`**.
 
 Der aktuell vendored Stand ist `v6.7.2`
 (`ls -1 .harness/baseline/` — kein Erwartungswert, wandert mit jedem Tausch); die
-Zwei-Fassungen-Phase des letzten Sprungs ist geschlossen, und **kein** Ziel für einen siebten Sprung
-ist gesetzt.
+Zwei-Fassungen-Phase des vorigen Sprungs ist geschlossen. Der Zielstand steht auf `v6.8.0`
+(§Baseline von [`conventions.md`](conventions.md)); der Tausch steht aus, und damit läuft die
+Zwei-Fassungen-Phase des siebten Sprungs.
 
 ## 2. Ort und Form der Zielstand-Setzung
 
