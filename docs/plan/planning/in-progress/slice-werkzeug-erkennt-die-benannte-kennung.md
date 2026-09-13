@@ -38,7 +38,7 @@ schließt),
 **Berührte Spec-Stellen:** — (der Slice berührt keine Spec-Stelle; Gegenstand sind ein
 Harness-Werkzeug und eine interne Go-Funktion).
 
-**Verantwortlich:** — (bis zur Priorisierung).
+**Verantwortlich:** Implementer-Rolleninhaber dieses Laufs.
 
 **Autor:** Planner. **Datum:** 2026-09-13.
 
