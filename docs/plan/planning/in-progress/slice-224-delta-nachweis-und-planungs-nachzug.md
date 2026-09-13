@@ -209,15 +209,33 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       [`.claude/commands/plan-welle.md`](../../../../.claude/commands/plan-welle.md) und
       [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md).
       Der Nachzug der Kennungs-Notation (`slice-<NNN>` → `slice-<Kennung>`,
-      `· seit welle-<NN>` → `· seit welle-<Kennung>`) ist in diesem Bereich vollständig; nach dem
-      Lauf liefert
+      `· seit welle-<NN>` → `· seit welle-<Kennung>`) ist **in genau diesem Bereich** vollständig;
+      nach dem Lauf endet
 
       ```sh
-      git grep -nE 'slice-<NNN>|welle-<NN>' -- docs/plan/planning .claude/commands \
-        ':!docs/plan/planning/done'
+      git grep -cE 'slice-<NNN>|welle-<NN>' -- \
+        docs/plan/planning/README.md docs/plan/planning/observations/README.md \
+        docs/plan/planning/in-progress/roadmap.md 'docs/plan/planning/welle-*.md' \
+        .claude/commands/plan-welle.md .claude/commands/close-welle.md
       ```
 
-      nur noch Treffer in `implement-slice.md`, das §1 an die Implementer-Rolle übergibt.
+      ohne Treffer (EXIT 1). **Ein einziger Treffer bricht die Zusage** — das ist ihr
+      Gegenbeispiel, und es ist herstellbar, indem eine der sechs Dateien die alte Form
+      zurückbekommt.
+
+      **Die Zusage gilt der Verwendung, nicht dem Zitat, und ihr Prüfbereich ist der Bestand
+      oben — nicht der Planungs-Baum.** Ein Plan, der die Umstellung *beschreibt*, muss beide
+      Formen nennen, um sie zu unterscheiden; er liegt damit im Baum, aber nicht in diesem
+      Bestand. Wer den Baum als Prüfbereich liest, kann die Zusage nur erfüllen, indem er die
+      Begründung tilgt. Außerhalb des Bestands steht die alte Form daher weiter, und zwar in zwei
+      Klassen, die beide benannt sind: **verwendet** in
+      [`.claude/commands/implement-slice.md`](../../../../.claude/commands/implement-slice.md),
+      das §1 an die Implementer-Rolle übergibt und das
+      [slice-226](../open/slice-226-implementer-anweisungssatz-zieht-nach.md) aufnimmt — und
+      **zitiert** in den Plandateien, die den Wechsel selbst zum Gegenstand haben. Welche das im
+      Planungs-Baum sind, sagt `git grep -lE 'slice-<NNN>|welle-<NN>' -- docs/plan/planning
+      .claude/commands ':!docs/plan/planning/done'`; die Menge wächst mit jedem weiteren Plan,
+      der den Wechsel beschreibt, und ist deshalb kein Zielwert.
 - [x] **3 — Jede Sendung an eine andere Rolle liegt als Übergabe-Artefakt vor.** Für jeden Posten,
       den §1 ausschließt, nennt der Nachweis den Empfänger und das, was er bekommt: die
       Norm-/Gate-Posten an [slice-225](../open/slice-225-gate-index-steht-einmal.md), die
@@ -230,17 +248,17 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       Rollenwechsel ohne Artefakt ist keiner** (`v6.5.0` · `regelwerk/modul-08-agentenrollen.md`
       §Die neun Übergaben und ihre Artefakte); eine Sendung ohne Empfänger ist der Befund.
 - [x] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
 - [x] Doku-Update: kein öffentlicher Vertrag berührt — die Buchung der Nachweis-Kennung in
       §Baseline von [`harness/conventions.md`](../../../../harness/conventions.md) ist
       Architect-Arbeit und liegt als Übergabe-Artefakt aus Liefer-Punkt 3 vor.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
 
 ## 3. Plan (vor Code)
 
@@ -310,35 +328,59 @@ dasteht.
   *einer* Review-Sitzung geprüft werden muss; Register-Stand der Klasse
   `slice-plan-umfang-waechst-ueber-umsetzung-hinaus`: **2×**
   (`ls docs/plan/planning/observations/BEO-ALL/slice-plan-umfang-waechst-ueber-umsetzung-hinaus/evidence/*.md | wc -l`).
-  Die Rückführung `in-progress → next` in §4 ist die vorab benannte Antwort. — **Ausgang:** offen
-  bis zur Closure.
+  Die Rückführung `in-progress → next` in §4 ist die vorab benannte Antwort. — **Ausgang:** weiter
+  offen → Beobachtungs-Register, `BEO-ALL/slice-plan-umfang-waechst-ueber-umsetzung-hinaus`, Beleg
+  `evidence/slice-224.md` (Zähler damit **3×**, dasselbe Kommando). Die Rückführung wurde nicht
+  gezogen und der Slice ist geliefert; gezeigt hat sich das Wachstum an den **prüfenden** Rollen —
+  der zweite Review-Durchgang schnitt sich ausdrücklich eng, und die Verifikation nennt ihre
+  Stichprobe selbst: 33 der 42 Posten sind nicht einzeln gegen den Kurs-Diff gelesen worden.
 - **Ein Posten färbt beim Übernehmen ein Gate rot.** Zwei Stellen halte ich dafür für möglich, und
   beide liegen in [slice-225](../open/slice-225-gate-index-steht-einmal.md), nicht hier: der
   `authority`-Wechsel des `targets`-Moduls und eine Aktivierung des `reviews`-Moduls über
   `done/`-Slices, die eine Review-DoD-Zeile tragen, aber keinen Report unter `docs/reviews/`. Wird
   ein solcher Fall **hier** sichtbar, geht er als Messung an den Auftraggeber (Kopf) und nicht in
-  einen Eintrag. — **Ausgang:** offen bis zur Closure.
+  einen Eintrag. — **Ausgang:** entfallen. Kein Posten dieses Slice hat ein Gate rot gefärbt:
+  `make gates` steht grün über dem Arbeitsstand der Lieferung, und keiner der 42 Posten hat eine
+  Gate-Konfiguration berührt — §1 schließt sie aus. Die zwei für möglich gehaltenen Stellen liegen
+  unverändert in [slice-225](../open/slice-225-gate-index-steht-einmal.md) und sind dort §6; sie
+  können in **diesem** Slice nicht mehr eintreten, weil er geschlossen ist.
 - **„Byte-gleich" wird als Antwort auf die Regel-Frage gelesen.** Ein Posten, dessen Datei sich
   nicht geändert hat, ist damit noch nicht *schon erfüllt*: Die Frage ist, ob **unser Bestand** die
   Regel trägt, nicht, ob die Vorlage sich bewegt hat. Register-Stand der Klasse
   `byte-gleichheit-als-aussage-ueber-die-regel-gelesen`: **2×**
   (`ls docs/plan/planning/observations/BEO-ALL/byte-gleichheit-als-aussage-ueber-die-regel-gelesen/evidence/*.md | wc -l`);
   [`ADR-0044`](../../adr/0044-ziel-fassung-regiert-den-sprung-v672.md) führt dieselbe Entkräftung
-  als eigenen Punkt. — **Ausgang:** offen bis zur Closure.
+  als eigenen Punkt. — **Ausgang:** entfallen. Das Risiko setzt einen Posten voraus, dessen Datei
+  sich nicht bewegt hat; einen solchen gibt es in diesem Durchgang nicht — die Bezugsmenge sind
+  **genau die geänderten** Dateien (`git diff --name-only`, §1), und keine Zelle stützt ihre Antwort
+  auf Byte-Gleichheit. Der verwandte Fehlschluss, der **eintrat**, ist ein anderer: ein
+  Beleg-Kommando, das eine Änderung nicht *sieht*. Er hat seine eigene Klasse und seinen eigenen
+  Beleg (§7).
 - **Ein offener Plan in `open/`/`next/` verpflichtet nach dem Sprung anders, und dieser Slice
   sieht ihn nicht.** Der Nachweis prüft das Delta gegen den Bestand, nicht gegen die **Pläne**;
   `open/` und `next/` führen zusammen **70** Slice-Pläne
   (`ls docs/plan/planning/open docs/plan/planning/next | grep -c '^slice-'`, kein
   Erwartungswert). Register-Stand der
-  Klasse `folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht`: **3×** — die Schwelle ist
-  erreicht, und der Lese-Schritt gehört in die Closure. — **Ausgang:** offen bis zur Closure.
+  Klasse `folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht`: **5×**
+  (`ls docs/plan/planning/observations/BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht/evidence/*.md | wc -l`)
+  — die Schwelle ist erreicht, und der Lese-Schritt liegt bei der nächsten Welle-Closure.
+  — **Ausgang:** eingetreten → Folge-Slice
+  [slice-225](../open/slice-225-gate-index-steht-einmal.md). Der Fall ist genau der beschriebene,
+  nur früher: Sein §1 schloss einen Eintrag aus, den die regierende Fassung an derselben Stelle
+  verlangt — die Prämisse *„es gibt keine gewollte Abweichung"* trifft den **Deklarations**-Eintrag
+  nicht, den `grundlagen-source-precedence.md` §Vergabe dem Repo selbst zuweist. Berichtigt ist der
+  Ausschluss in dieser Closure; der Beleg `evidence/slice-224.md` steht im Register.
 - **Der Zuschnitt zwischen diesem Slice und slice-225 ist eine Vorab-Zuordnung.** Er ist nach dem
   **Beleg** geschnitten (Form-Vergleich gegen Gate-Lauf), und der Nachweis kann ergeben, dass ein
   Posten auf der falschen Seite liegt. Register-Stand der Klasse
   `uebergabe-an-andere-rolle-ohne-traeger-artefakt`: **2×**
   (`ls docs/plan/planning/observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/evidence/*.md | wc -l`)
-  — deshalb verlangt Liefer-Punkt 3 je Sendung ein benanntes Artefakt. — **Ausgang:** offen bis zur
-  Closure.
+  — deshalb verlangt Liefer-Punkt 3 je Sendung ein benanntes Artefakt. — **Ausgang:** eingetreten →
+  Folge-Slice [slice-225](../open/slice-225-gate-index-steht-einmal.md). Ein Posten lag tatsächlich
+  auf der falschen Seite, nur anders als vermutet: nicht der Zuschnitt war falsch, sondern die
+  **Annahmebereitschaft** der Adresse — slice-225 §1 schloss aus, was seine eigene DoD-2 über §9
+  bindet. Die Closure hat den Ausschluss berichtigt und die Deklaration in DoD-2 namentlich
+  aufgenommen; der Zuschnitt selbst bleibt, wie er war.
 - **Zwei Sendungen aus Liefer-Punkt 3 haben keinen terminierten Träger** (Review slice-224
   MEDIUM-5, dieselbe Register-Klasse `uebergabe-an-andere-rolle-ohne-traeger-artefakt` wie oben, ein
   dritter, hier neu beobachteter Fall). Für `implement-slice.md` (Zeile zu `modul-09-implementierung.md`)
@@ -349,8 +391,15 @@ dasteht.
   ihr Kopf trägt weiter `Baseline: … v6.0.0`, während `.harness/baseline/` nur `v6.7.2` führt. Für
   den Architect wurde mit demselben Sprung ein Träger geschnitten ([slice-225](../open/slice-225-gate-index-steht-einmal.md));
   für Implementer und Reviewer nicht. Einen neuen Slice dafür zu schneiden ist Planner-Arbeit
-  ([`AGENTS.md`](../../../../AGENTS.md) §3.10) und liegt außerhalb dieses Laufs. — **Ausgang:** offen
-  bis zur Closure.
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.10) und liegt außerhalb dieses Laufs. — **Ausgang:**
+  eingetreten → zwei Folge-Slices, je einer pro Empfänger-Rolle, weil ein Lauf nicht zwei Rollen
+  füllt ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
+  Festlegung 1): [slice-226](../open/slice-226-implementer-anweisungssatz-zieht-nach.md) für den
+  Implementer-Anweisungssatz und
+  [slice-227](../open/slice-227-reviewer-skill-nennt-den-vorhandenen-stand.md) für den
+  Reviewer-Skill. Beide sind Dateien in `open/`, beide tragen den Start-Trigger *„slice-224 liegt
+  in `done/`"*, und beide nennen ihren Gegenstand gemessen statt verwiesen — der Volltext dieses
+  Plans wird danach von keinem lesenden Knoten mehr gebraucht.
 
 ## 7. Closure-Notiz
 
@@ -362,16 +411,104 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<…>`. Auslöser: `<BEO-ALL/<slug>>`.
-  *(Wurde mit diesem Slice nichts verkörpert, entfällt die Teil-Zeile `— liegt in …` ersatzlos.)*
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <slice-225 (Der Gate-Index steht einmal) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
-  für diesen Slice ohne Wellen-Zugehörigkeit>
+**Rolle:** Planner · **Datum:** 2026-09-13.
+
+- **Was hat funktioniert:** Die **geschlossene Zwei-Antworten-Menge** mit einem Feld `landet in` je
+  Posten. Sie macht aus einem Nachweis eine Adressliste: Neun der 42 Zeilen nennen einen anderen
+  Träger als diesen Slice, und genau aus ihnen sind die Sendungen ablesbar, die einen Empfänger
+  brauchen — ohne dieses Feld wäre *„betrifft eine andere Rolle"* im Fließtext verschwunden.
+  Getragen hat ebenso die **Referenz-statt-Kopie-Setzung**
+  ([`MR-008`](../../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert),
+  [`MR-041`](../../../../harness/conventions.md#mr-041--die-referenz-statt-kopie-setzung-für-ausfüll-templates-steht-jetzt-in-der-adoptierten-baseline)):
+  Ein Vorlagen-Delta kommt mit dem Baum-Tausch an, zu tun bleibt allein der Bestand — das ist der
+  Grund, warum 29 der 42 Posten ohne Arbeit *schon erfüllt* sind und der Durchgang trotzdem
+  vollständig ist. Und die **vorab benannten Risiken** in §6 haben getragen: Von sechs sind vier
+  in einer Form eingetreten oder entfallen, die der Plan beschrieben hatte; kein Ausgang musste
+  eine Klasse erfinden.
+- **Was ging anders als geplant:** Vier Dinge, und drei davon betreffen nicht die Sache, sondern
+  ihren **Beleg**.
+  1. **Das Beleg-Kommando war strukturell blind.** Der Filter über dem Diff nahm Markdown-Tabellen-
+     und Listenzeilen mit — genau die zwei Formen, in denen ein Regelwerks-Modul seine Pflichten
+     führt. Fünf Zellen stützten sich darauf; drei hat die Nacharbeit berichtigt, zwei waren mit
+     dem reparierten Verfahren nicht neu gefahren und sind es in dieser Closure. Die **Antworten**
+     hielten in allen fünf Fällen — falsch war jedes Mal der Beleg. Das ist der Lerneintrag unten.
+  2. **DoD-2 sagte mehr zu, als ihr Prüfbereich trägt.** Der aufgezählte Bestand sind sechs
+     Artefakte, das Kommando lief über den ganzen Planungs-Baum, und in dem liegen die Pläne, die
+     die Umstellung *beschreiben* und dafür beide Notationen nennen müssen. Zwei Rollen haben den
+     Satz beanstandet, keine hat ihn geändert — das ist der richtige Zug
+     ([`AGENTS.md`](../../../../AGENTS.md) §3.10: die ausführende Rolle schreibt ihr eigenes
+     Abnahmekriterium nicht um). Diese Closure hat die Zusage **präzisiert, nicht abgehakt**: Sie
+     bindet jetzt den Bestand, den sie aufzählt, trennt *verwendet* von *zitiert* und nennt ihr
+     Gegenbeispiel.
+  3. **§8 wies den Lese-Schritt dieser Closure zu.** Das ist falsch: Dieses Repo fährt Wellen
+     (`ls docs/plan/planning/welle-*.md` → drei Dateien), und dort liest die **Welle-Closure**, was
+     3× erreicht hat — ausdrücklich auch für Slices ohne Wellen-Zugehörigkeit. Die DoD-Zeile zu den
+     drei Paarungen sagt es im selben Plan richtig. Der Satz in §8 ist berichtigt; diese Closure
+     schreibt Belege und weist keinem Register-Eintrag einen Ausgang zu.
+  4. **Ein Sichtungs-Zähler wurde zwischen Schnitt und Closure überholt.** Die Zahl war beim
+     Schreiben richtig; das Register zählt weiter, und zwischen den beiden Ständen lag eine
+     fremde Slice-Closure. §8 trägt jetzt beide Werte, je neben dem Kommando, das ihn liefert.
+- **Steering-Loop-Eintrag — geschärfte Regel, gezählt und nicht verkörpert:** *Ein Beleg über
+  einem Diff läuft ohne Zeilenklassen-Filter. Verglichen werden die whitespace-normalisierten
+  **Volltexte** beider Stände; wer stattdessen Rauschen aus dem Diff filtert, entscheidet über
+  Zeilenklassen und nicht über Inhalt — und Markdown trägt seine Pflichten in Tabellen- und
+  Listenzeilen, also genau in dem, was ein solcher Filter wegnimmt.* Auslöser:
+  `BEO-ALL/beleg-filter-entfernt-die-zeilenklasse-die-den-beleg-traegt` (neu) und
+  `BEO-ALL/vollstaendigkeits-zusage-misst-falsche-ebene`. **Die Teil-Zeile `— liegt in …`
+  entfällt**, weil mit diesem Slice nichts verkörpert wurde: Ein Zielort für diese Regel wäre ein
+  Rollen-Anweisungssatz oder ein Sensor, beides liegt außerhalb dieser Rolle. Den nächstliegenden
+  Träger hat die Closure geschnitten, aber nur für seinen eigenen Gegenstand — DoD-2 von
+  [slice-227](../open/slice-227-reviewer-skill-nennt-den-vorhandenen-stand.md) bindet den
+  filterlosen Vergleich für den dortigen Delta-Abgleich, nicht repo-weit. Den Ausgang weist der
+  Lese-Schritt der nächsten Welle-Closure zu.
+- **Beobachtungs-Register (`../observations/`):** **Sieben** Belege geschrieben, **ein** Verzeichnis
+  neu angelegt (`beleg-filter-entfernt-die-zeilenklasse-die-den-beleg-traegt`); der Zähler folgt den
+  Dateien und wird nirgends gesetzt (keine Erwartungswerte):
+
+  ```sh
+  for s in mess-zusage-trifft-das-eigene-zitat \
+           vollstaendigkeits-zusage-misst-falsche-ebene \
+           uebergabe-an-andere-rolle-ohne-traeger-artefakt \
+           zahl-ohne-kommando-trifft-ihren-gegenstand-nicht \
+           folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht \
+           slice-plan-umfang-waechst-ueber-umsetzung-hinaus \
+           beleg-filter-entfernt-die-zeilenklasse-die-den-beleg-traegt; do
+    printf '%s %s\n' "$(ls docs/plan/planning/observations/BEO-ALL/$s/evidence/*.md | wc -l)" "$s"
+  done   # 3 · 3 · 3 · 9 · 5 · 3 · 1
+  ```
+
+  **Eine neue Klasse, und die Prüfung davor ist protokolliert:** Sechs vorhandene Einträge sind als
+  Kandidat gelesen und keiner deckt den Fall.
+  `zitat-grep-uebersieht-zeilenumbruch-und-markup` setzt ein Muster voraus, das an Zeilenumbruch
+  oder Markup *zerbricht* — hier ist das Muster intakt und die geprüfte **Menge** beschnitten;
+  `zahl-neben-nie-gefahrenem-kommando` setzt ein Kommando voraus, das nie lief — dieses lief;
+  `zusage-nennt-sensor-der-form-nicht-sieht` bindet den Skript- und Funktionskopf, nicht ein
+  Beleg-Kommando in Prosa; `vollstaendigkeits-zusage-misst-falsche-ebene` trifft die **Granularität**
+  der Zusage und ist deshalb daneben belegt, nicht statt dessen — ein Nachweis auf Hunk-Ebene wäre
+  mit demselben Filter blind geblieben. **Zwei Kandidaten sind ausdrücklich nicht genommen:**
+  `byte-gleichheit-als-aussage-ueber-die-regel-gelesen` setzt eine Byte-Gleichheits-Messung voraus,
+  und keine der 42 Zellen stützt sich auf eine — alle 42 Dateien haben sich geändert;
+  `baseline-aussage-ohne-mess-tag` setzt eine Aussage **ohne** Mess-Tag voraus, und der Nachweis
+  nennt beide Tags in jeder Messung. Eine Klasse in einen unpassenden Namen zu drücken teilt sie
+  still.
+- **Folge-Slices:** [slice-225](../open/slice-225-gate-index-steht-einmal.md) (Der Gate-Index steht
+  einmal) — Datei in `open/`, sein §1 nimmt die Deklaration der Kennungs-Form jetzt an und seine
+  DoD-2 nennt sie; [slice-226](../open/slice-226-implementer-anweisungssatz-zieht-nach.md) (Der
+  Implementer-Anweisungssatz trägt die Plan-vor-Code-Disziplin) und
+  [slice-227](../open/slice-227-reviewer-skill-nennt-den-vorhandenen-stand.md) (Der Reviewer-Skill
+  nennt den Baseline-Stand, der im Baum liegt) — beide Dateien in `open/`, beide neu geschnitten,
+  **je einer pro Empfänger-Rolle**, weil ein Lauf nicht zwei Rollen füllt
+  ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) Festlegung 1).
+- **Risiken aus §6:** sechs, jedes mit genau einem Ausgang — zweimal *entfallen* (kein Posten
+  färbte ein Gate rot · keine Zelle stützt sich auf Byte-Gleichheit), dreimal *eingetreten →
+  Folge-Slice mit ID* (`slice-225` zweimal, `slice-226`/`slice-227` einmal), einmal *weiter offen →
+  Beobachtungs-Register* (der Umfang des Nachweises).
+- **Drei Paarungen:** Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
+  für diesen Slice ohne Wellen-Zugehörigkeit. Die **Anker**-Paarung hat hier kein Objekt: Der
+  Steering-Loop-Eintrag oben trägt kein Feld `liegt in`, ist also gezählt und nicht verkörpert. Die
+  **Folge-Slice**- und die **Register**-Paarung haben je drei bzw. sieben Objekte, und alle liegen
+  vor — die drei genannten Slices sind Dateien im Planning-Lifecycle, jede genannte Beobachtung ist
+  ein Verzeichnis mit nicht leerem `evidence/`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
@@ -398,17 +535,17 @@ und dessen Pfad bewegt [slice-223](../done/slice-223-baum-tausch-v672-pins-ziehe
 Slice. Pfad-Berührung allein genügt nicht.
 
 **Vorgelagert — offene Beobachtungen sichten:** Das Register ist am gemergten Stand durchgegangen
-— **98** Verzeichnisse (`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l`, **kein
+— **99** Verzeichnisse (`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l`, **kein
 Erwartungswert**); alle führen dieselbe Sub-Area `*`, die Sichtung ist damit vollständig. **Sechs
 Treffer** berühren diesen Slice:
 
 | Beobachtung (`BEO-ALL/<slug>`) | Zähler | Stand |
 |---|---|---|
-| `folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht` | 3× | offen |
+| `folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht` | 5× | offen |
 | `re-baseline-ohne-inventur-slice` | 2× | offen |
 | `byte-gleichheit-als-aussage-ueber-die-regel-gelesen` | 2× | offen |
-| `slice-plan-umfang-waechst-ueber-umsetzung-hinaus` | 2× | offen |
-| `uebergabe-an-andere-rolle-ohne-traeger-artefakt` | 2× | offen |
+| `slice-plan-umfang-waechst-ueber-umsetzung-hinaus` | 3× | offen |
+| `uebergabe-an-andere-rolle-ohne-traeger-artefakt` | 3× | offen |
 | `baseline-aussage-ohne-mess-tag` | 2× | offen |
 
 ```sh
@@ -420,12 +557,30 @@ for s in folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht re-baseline-ohn
 done
 ```
 
+**Tabelle und Kommando tragen den Stand dieser Closure, nicht den der Sichtung** — drei der sechs
+Zähler hat dieser Slice selbst erhöht. Was die Sichtung sah, sagt derselbe Zähler über dem Baum
+des Schnitt-Commits, und beide Werte stehen je neben ihrem Kommando
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 1):
+
+```sh
+for s in folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht re-baseline-ohne-inventur-slice \
+         byte-gleichheit-als-aussage-ueber-die-regel-gelesen \
+         slice-plan-umfang-waechst-ueber-umsetzung-hinaus \
+         uebergabe-an-andere-rolle-ohne-traeger-artefakt baseline-aussage-ohne-mess-tag; do
+  printf '%s %s\n' "$(git ls-tree --name-only 3270d806 \
+    -- docs/plan/planning/observations/BEO-ALL/$s/evidence/ | wc -l)" "$s"
+done   # 3 · 2 · 2 · 2 · 2 · 2
+```
+
 **`re-baseline-ohne-inventur-slice` ist der Eintrag, den dieser Slice beantwortet**, nicht der, den
 er auslöst: Er sagt, dass die Form-Pflichten einer neuen Fassung einzeln als Nachzügler
 zurückkommen, wenn kein Inventur-Slice vorangeht — dieser Slice **ist** der Inventur-Slice, und
 sein Liefer-Punkt 1 ist genau die gebündelte Antwort. **`folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht`
-steht bei 3×**, also über der Schwelle, und zwar **vor** diesem Slice; der Lese-Schritt, der ihm
-seinen Ausgang zuweist, gehört in die Closure und nicht in diese Planung.
+steht bei 5×**, also über der Schwelle, und zwar **vor** diesem Slice; der Lese-Schritt, der ihm
+seinen Ausgang zuweist, gehört nicht in diese Planung — dieses Repo fährt Wellen
+(`ls docs/plan/planning/welle-*.md`), und dort liest ihn die **Welle-Closure**, ausdrücklich auch
+für Slices ohne Wellen-Zugehörigkeit.
 
 **Modus-Begründungsblock — Umfang.** Alle berührten Sub-Areas sind Greenfield; der Block trägt
 eine Sub-Area.
@@ -484,9 +639,19 @@ Whitespace- und Spaltenbreiten-neutral, ohne die zwei Blindstellen des ersten Ko
 keine Zeilenklasse heraus, sondern zeigt jede tatsächlich geänderte Zeile. Ergebnis über die
 betroffenen Posten: `grundlagen-begriffe.md` **3** Zeilen (nicht 0 — die Zelle unten ist korrigiert),
 `grundlagen-bootstrap.md`/`grundlagen-klassifikation.md`/`modul-04-adrs.md`/
-`modul-11-verification.md`/`modul-12-replay-evaluierung.md`/`modul-14-docker-harness.md` je **0**
+`modul-11-verification.md`/`modul-12-replay-evaluierung.md`/`modul-14-docker-harness.md`/
+`grundlagen-durchsetzungsschicht.md` je **0**
 (die Behauptung „ausschließlich Tabellen-Reformatierung" hält), `modul-08-agentenrollen.md` **4**
 und `modul-16-produktiver-betrieb.md` **2** (beide nicht 0 — die Zellen unten sind korrigiert).
+
+**Zwei Posten waren beim ersten Nachfahren übersprungen und sind nachgeholt** (Review slice-224
+Runde 2): `modul-02-harness-bootstrap.md` **6** und `grundlagen-referenz-richtung.md` **14**.
+Beide Zellen behaupteten *keine Inhaltsänderung* bzw. *Tabellen-Reformatierung*, beide Antworten
+halten — bei `modul-02-harness-bootstrap.md` fiel der **Beleg** und ist unten ersetzt; bei
+`grundlagen-referenz-richtung.md` ist die Änderung eine **Streichung** duplizierter Norm zugunsten
+eines Zeigers auf §ID-Schema, und *„keine neue Pflicht"* trägt weiter. **Keine Erwartungswerte**
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2) — alle zwölf Werte wandern mit dem Klon-Stand und stehen neben dem Kommando darüber.
 
 **Verteilung, gemessen über die fertige Tabelle** (Review slice-224 LOW-1; die dem Reviewer
 zuvor genannte Verteilung *32 × schon erfüllt / 10 × übernommen, sechs Übergaben* traf nicht zu):
@@ -517,7 +682,7 @@ wandern mit jeder weiteren Änderung an ihr.
 | `lab/regelwerk/grundlagen-referenz-richtung.md` | 130-131 | schon erfüllt | Tabellen-Reformatierung + ein Beispiel-Platzhalter (`slice-NNN` → `slice-tie-break-determinismus`), keine neue Pflicht | slice-224 |
 | `lab/regelwerk/grundlagen-source-precedence.md` | 130-131 | übernommen | **korrigiert (Review slice-224 HIGH-1):** §Vergabe sagt seit diesem Stand ausdrücklich „**Welle- und Slice-Kennungen sind Namen, nicht Nummern — unabhängig von der Schreiberzahl**" (`.harness/baseline/v6.7.2/regelwerk/grundlagen-source-precedence.md:360`) und hat den Absatz gestrichen, der in `v6.0.0` dichte Nummern für Ein-Schreiber-Repos ausdrücklich lizenzierte. Das trägt unser [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) (`slice-NNN`/`welle-NN`) nicht mehr — das war die Antwort *schon erfüllt* zu Unrecht. **Entscheidung des Auftraggebers, empfangen am 2026-09-12:** ab jetzt Namen für neue Welle-/Slice-Kennungen, kein Nachrüsten des Bestands — bestehende `slice-<NNN>`/`welle-<NN>` behalten ihre Nummer. Das ist der Ausgang **übernommen** im Sinne des Plan-Kopfs, keine Feststellung: [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) bleibt nach [`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger) inhaltlich unverändert und bekommt eine Kopf-Marke auf einen neuen Eintrag, der diese Cutoff-Setzung trägt — Architect-Arbeit am Adaptions-Block ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Nicht behauptet: dass dieser Slice oder sein Nachfolger den Bestand umbenennt | slice-225 |
 | `lab/regelwerk/grundlagen-traceability.md` | 130-131 | übernommen | Herkunfts-Anker-Notation `seit welle-<Kennung>`/`seit slice-<Kennung>` trug in [`observations/README.md`](../observations/README.md) und [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) noch die alte Form — in diesem Lauf behoben (`git grep -nE 'slice-<NNN>\|welle-<NN>' -- docs/plan/planning .claude/commands ':!docs/plan/planning/done'` zeigt beide Dateien danach nicht mehr). **Ergänzt (Review slice-224 MEDIUM-2):** der Posten trägt daneben **62** Plus-Zeilen (`git diff v6.0.0..v6.7.2 -- lab/regelwerk/grundlagen-traceability.md \| grep -cE '^\+'`), mehrheitlich die neue Sektion §Die zweite Richtung: Anforderung → Beleg (RTM — derselbe Gegenstand wie der Glossar-Eintrag `RTM` in `grundlagen-begriffe.md`, Zeile oben). Ihre Setzungspflicht bindet nur ein Repo, das von der **Default-Antwort** — der Slice entlastet eine Anforderung — abweicht, etwa mit einer kuratierten Nachweis-Datei; dieses Repo tut das nicht: Anforderungen schließen über Slice-DoDs, eine zweite RTM-Ablage existiert nicht (`ls docs/plan/planning/reconciliation.md` als Vergleichsfall: Datei fehlt, kein Analogon vorhanden). Keine Deklaration nötig, kein eigener `MR`-Eintrag | slice-224 |
-| `lab/regelwerk/modul-02-harness-bootstrap.md` | 130-131 | schon erfüllt | reine Anker-Umbenennung eines Querverweises, keine Inhaltsänderung | slice-224 |
+| `lab/regelwerk/modul-02-harness-bootstrap.md` | 130-131 | schon erfüllt | **korrigiert (Review slice-224 Runde 2):** nicht eine Änderung, sondern **drei** — der robustere Vergleich (§9-Intro) zeigt sie in den Zeilen 148, 156 und 397. Zeile 397 ist die Anker-Umbenennung des `§Vergabe`-Querverweises und bewegt keine Pflicht; die Zeilen 148 und 156 tragen **dieselbe** Gate-Index-Konsequenz — eine Tabellenzelle gewinnt `` `AGENTS.md` 1 → 2 (Source Precedence + Hard Rules) ``, eine andere verliert `` `AGENTS.md` §4 Sub-1 → Sub-2 `` aus dem Sensors-Roster. Diese Konsequenz ist über die Zeilen zu `grundlagen-harness-dateien.md`, `modul-13-quality-gates.md`, `AGENTS.template.md` und `harness/README.template.md` bereits an [slice-225](../open/slice-225-gate-index-steht-einmal.md) adressiert. **schon erfüllt** bleibt richtig, weil dieser Posten keine Pflicht trägt, die jene vier nicht schon schicken — nicht, weil sich nichts geändert hätte | slice-224 |
 | `lab/regelwerk/modul-04-adrs.md` | 125-128 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
 | `lab/regelwerk/modul-05-planning-harness.md` | 130-131 | schon erfüllt | §1 „Ziel und Abgrenzung" (vier Ausschluss-Klassen) und §8 „Sub-Area-Prüfungen und Modus-Begründung" sind in **diesem eigenen Slice-Plan** bereits verkörpert (§1/§8 dieser Datei); die Archiv-Notation `slice-<Kennung>-archiv.zip` trifft auf keinen Bestand (kein archivierter Slice, `ls docs/plan/planning/done/*/archiv.zip 2>/dev/null \| wc -l` → **0**) | slice-224 |
 | `lab/regelwerk/modul-06-roadmap.md` | 133 | übernommen | dieselbe Herkunfts-Anker-Notation wie `grundlagen-traceability.md`; mit derselben Behebung gedeckt (`observations/README.md`, `close-welle.md`) | slice-224 |
