@@ -79,7 +79,7 @@ für den der Auftraggeber vorab entschieden hat, und zwar auf **übernehmen**; d
 wollen und noch nicht können* ist dort ausdrücklich ein **Carveout mit Auflösungs-Trigger**, keine
 Adaption. Als *schon erfüllt* gebucht, fällt der Posten durch beide Netze: Er ist nicht hier
 vollzogen, er ist an niemanden übergeben, und er ist auch in
-[slice-225](../plan/planning/open/slice-225-gate-index-steht-einmal.md) nicht erreichbar — dessen
+[slice-225](../plan/planning/next/slice-225-gate-index-steht-einmal.md) nicht erreichbar — dessen
 Liefer-Punkt 3 filtert die Adaptions-Einträge nach ihrem Auflösungs-Trigger, und `MR-000` trägt
 `permanent`:
 
@@ -322,7 +322,7 @@ Aufzählung ohne eigene Antwort daneben. (Die dem Reviewer genannte Verteilung *
 
 `quelle` Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Slice · `pfad`
 `docs/plan/planning/in-progress/slice-224-…md:477` gegen
-`docs/plan/planning/open/slice-225-gate-index-steht-einmal.md` §1 · `verifizierbar` nein ·
+`docs/plan/planning/next/slice-225-gate-index-steht-einmal.md` §1 · `verifizierbar` nein ·
 `klasse` Adresse nimmt an einer Stelle an und schließt an einer anderen aus
 
 `befund` Die §9-Zeile zu `modul-13-quality-gates.md` nennt als Inhalt der Sendung unter anderem die

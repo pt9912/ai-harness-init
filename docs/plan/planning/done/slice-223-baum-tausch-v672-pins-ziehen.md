@@ -104,7 +104,7 @@ Liste oben aus einem `git grep` kommt und nicht aus einem Gate-Lauf.
 - **Kein Delta-Urteil über den neuen Stand.** Welche Regel der Fassung `v6.7.2` welches Artefakt
   dieses Repos trifft, ist Gegenstand von
   [slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md) (Nachweis und
-  Planungs-Ebene) und [slice-225](../open/slice-225-gate-index-steht-einmal.md) (Norm- und
+  Planungs-Ebene) und [slice-225](../next/slice-225-gate-index-steht-einmal.md) (Norm- und
   Gate-Ebene). Dieser Slice bewegt Bytes und Adressen, er fällt kein Urteil — *Folge-Slice
   übernimmt es*, und beide nehmen die Sendung an (ihr §1 nennt genau diesen Gegenstand).
 - **Keine eingefrorene Adresse wird berührt.** Was in `docs/reviews/**`,
@@ -432,7 +432,7 @@ Backticks).
   zerstört zu werden. Eine Klasse in einen unpassenden Namen zu drücken teilt sie still.
 - **Folge-Slices:** [slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md)
   (Delta-Nachweis und Planungs-Nachzug) und
-  [slice-225](../open/slice-225-gate-index-steht-einmal.md) (Norm- und Gate-Ebene) — beide Dateien
+  [slice-225](../next/slice-225-gate-index-steht-einmal.md) (Norm- und Gate-Ebene) — beide Dateien
   in `open/`. **Ein Posten des Architect ist geprüft:** Die Setzung in
   [`MR-031`](../../../../harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline),
   `· seit welle-<NN>` und `· seit slice-<NNN>` blieben zulässig, misst nicht mehr gegen `v6.7.2`

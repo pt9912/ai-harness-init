@@ -31,7 +31,7 @@ ist Randbedingung, keine Setzung dieses Plans:
    Auflösungs-Trigger der neue Stand feuert, wandert nach `harness/conventions/done/`
    ([`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf),
    [`MR-038`](../../../../harness/conventions.md#mr-038--ein-retirierender-eintrag-nennt-den-baseline-stand-der-seinen-trigger-feuerte))
-   — das liegt bei [slice-225](../open/slice-225-gate-index-steht-einmal.md), weil der
+   — das liegt bei [slice-225](../next/slice-225-gate-index-steht-einmal.md), weil der
    Adaptions-Block Architect-Eigentum ist.
 
 **Färbt ein Posten beim Übernehmen ein Gate rot, ist das eine Messung und geht als Meldung zurück
@@ -141,7 +141,7 @@ durch Arbeit.
 
 - **Kein Posten, der in `AGENTS.md`, `harness/README.md`, [`.d-check.yml`](../../../../.d-check.yml)
   oder [`harness/conventions/`](../../../../harness/conventions/) landet.**
-  [slice-225](../open/slice-225-gate-index-steht-einmal.md) übernimmt sie; dieser Slice **benennt**
+  [slice-225](../next/slice-225-gate-index-steht-einmal.md) übernimmt sie; dieser Slice **benennt**
   sie im Nachweis und vollzieht sie nicht. Der Grund ist der Beleg: Jene Posten schließt ein
   Gate-Lauf, diese ein Form-Vergleich gegen den vendored Baum — wer beides in einen Slice legt,
   lässt ein grünes `make gates` als Deckung für eine Hälfte lesen, die es nie berührt hat
@@ -198,7 +198,7 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       Auslassung. Der Nachweis nennt den **Mess-Tag beider Seiten**
       ([`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist))
       und je Posten den Ort, an dem er landet — in diesem Slice, in
-      [slice-225](../open/slice-225-gate-index-steht-einmal.md), oder in einem der in §1
+      [slice-225](../next/slice-225-gate-index-steht-einmal.md), oder in einem der in §1
       ausgeschlossenen Bereiche mit dessen Kennung. Er ist der Wert **beider** offenen
       Nachweis-Felder der §Baseline-Buchung (`v6.5.0` und `v6.7.2`).
 - [x] **2 — Die lebenden Planungs-Artefakte tragen die neue Ziel-Form.** Prüfbereich ist der
@@ -238,7 +238,7 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       der den Wechsel beschreibt, und ist deshalb kein Zielwert.
 - [x] **3 — Jede Sendung an eine andere Rolle liegt als Übergabe-Artefakt vor.** Für jeden Posten,
       den §1 ausschließt, nennt der Nachweis den Empfänger und das, was er bekommt: die
-      Norm-/Gate-Posten an [slice-225](../open/slice-225-gate-index-steht-einmal.md), die
+      Norm-/Gate-Posten an [slice-225](../next/slice-225-gate-index-steht-einmal.md), die
       Anweisungssätze `implement-slice.md` und `.harness/skills/reviewer.md` an Implementer bzw.
       Reviewer ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)),
       die emittierte Ebene an
@@ -335,14 +335,14 @@ dasteht.
   der zweite Review-Durchgang schnitt sich ausdrücklich eng, und die Verifikation nennt ihre
   Stichprobe selbst: 33 der 42 Posten sind nicht einzeln gegen den Kurs-Diff gelesen worden.
 - **Ein Posten färbt beim Übernehmen ein Gate rot.** Zwei Stellen halte ich dafür für möglich, und
-  beide liegen in [slice-225](../open/slice-225-gate-index-steht-einmal.md), nicht hier: der
+  beide liegen in [slice-225](../next/slice-225-gate-index-steht-einmal.md), nicht hier: der
   `authority`-Wechsel des `targets`-Moduls und eine Aktivierung des `reviews`-Moduls über
   `done/`-Slices, die eine Review-DoD-Zeile tragen, aber keinen Report unter `docs/reviews/`. Wird
   ein solcher Fall **hier** sichtbar, geht er als Messung an den Auftraggeber (Kopf) und nicht in
   einen Eintrag. — **Ausgang:** entfallen. Kein Posten dieses Slice hat ein Gate rot gefärbt:
   `make gates` steht grün über dem Arbeitsstand der Lieferung, und keiner der 42 Posten hat eine
   Gate-Konfiguration berührt — §1 schließt sie aus. Die zwei für möglich gehaltenen Stellen liegen
-  unverändert in [slice-225](../open/slice-225-gate-index-steht-einmal.md) und sind dort §6; sie
+  unverändert in [slice-225](../next/slice-225-gate-index-steht-einmal.md) und sind dort §6; sie
   können in **diesem** Slice nicht mehr eintreten, weil er geschlossen ist.
 - **„Byte-gleich" wird als Antwort auf die Regel-Frage gelesen.** Ein Posten, dessen Datei sich
   nicht geändert hat, ist damit noch nicht *schon erfüllt*: Die Frage ist, ob **unser Bestand** die
@@ -365,7 +365,7 @@ dasteht.
   (`ls docs/plan/planning/observations/BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht/evidence/*.md | wc -l`)
   — die Schwelle ist erreicht, und der Lese-Schritt liegt bei der nächsten Welle-Closure.
   — **Ausgang:** eingetreten → Folge-Slice
-  [slice-225](../open/slice-225-gate-index-steht-einmal.md). Der Fall ist genau der beschriebene,
+  [slice-225](../next/slice-225-gate-index-steht-einmal.md). Der Fall ist genau der beschriebene,
   nur früher: Sein §1 schloss einen Eintrag aus, den die regierende Fassung an derselben Stelle
   verlangt — die Prämisse *„es gibt keine gewollte Abweichung"* trifft den **Deklarations**-Eintrag
   nicht, den `grundlagen-source-precedence.md` §Vergabe dem Repo selbst zuweist. Berichtigt ist der
@@ -376,7 +376,7 @@ dasteht.
   `uebergabe-an-andere-rolle-ohne-traeger-artefakt`: **2×**
   (`ls docs/plan/planning/observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/evidence/*.md | wc -l`)
   — deshalb verlangt Liefer-Punkt 3 je Sendung ein benanntes Artefakt. — **Ausgang:** eingetreten →
-  Folge-Slice [slice-225](../open/slice-225-gate-index-steht-einmal.md). Ein Posten lag tatsächlich
+  Folge-Slice [slice-225](../next/slice-225-gate-index-steht-einmal.md). Ein Posten lag tatsächlich
   auf der falschen Seite, nur anders als vermutet: nicht der Zuschnitt war falsch, sondern die
   **Annahmebereitschaft** der Adresse — slice-225 §1 schloss aus, was seine eigene DoD-2 über §9
   bindet. Die Closure hat den Ausschluss berichtigt und die Deklaration in DoD-2 namentlich
@@ -389,7 +389,7 @@ dasteht.
   Slice in keinem lesenden Knoten mehr vor. Für `.harness/skills/reviewer.md` erzeugt §9 gar keine
   Zeile — keiner der 42 Posten ist diese Datei —, während Liefer-Punkt 3 die Sendung dennoch nennt;
   ihr Kopf trägt weiter `Baseline: … v6.0.0`, während `.harness/baseline/` nur `v6.7.2` führt. Für
-  den Architect wurde mit demselben Sprung ein Träger geschnitten ([slice-225](../open/slice-225-gate-index-steht-einmal.md));
+  den Architect wurde mit demselben Sprung ein Träger geschnitten ([slice-225](../next/slice-225-gate-index-steht-einmal.md));
   für Implementer und Reviewer nicht. Einen neuen Slice dafür zu schneiden ist Planner-Arbeit
   ([`AGENTS.md`](../../../../AGENTS.md) §3.10) und liegt außerhalb dieses Laufs. — **Ausgang:**
   eingetreten → zwei Folge-Slices, je einer pro Empfänger-Rolle, weil ein Lauf nicht zwei Rollen
@@ -491,7 +491,7 @@ Backticks).
   `baseline-aussage-ohne-mess-tag` setzt eine Aussage **ohne** Mess-Tag voraus, und der Nachweis
   nennt beide Tags in jeder Messung. Eine Klasse in einen unpassenden Namen zu drücken teilt sie
   still.
-- **Folge-Slices:** [slice-225](../open/slice-225-gate-index-steht-einmal.md) (Der Gate-Index steht
+- **Folge-Slices:** [slice-225](../next/slice-225-gate-index-steht-einmal.md) (Der Gate-Index steht
   einmal) — Datei in `open/`, sein §1 nimmt die Deklaration der Kennungs-Form jetzt an und seine
   DoD-2 nennt sie; [slice-226](../open/slice-226-implementer-anweisungssatz-zieht-nach.md) (Der
   Implementer-Anweisungssatz trägt die Plan-vor-Code-Disziplin) und
@@ -682,7 +682,7 @@ wandern mit jeder weiteren Änderung an ihr.
 | `lab/regelwerk/grundlagen-referenz-richtung.md` | 130-131 | schon erfüllt | Tabellen-Reformatierung + ein Beispiel-Platzhalter (`slice-NNN` → `slice-tie-break-determinismus`), keine neue Pflicht | slice-224 |
 | `lab/regelwerk/grundlagen-source-precedence.md` | 130-131 | übernommen | **korrigiert (Review slice-224 HIGH-1):** §Vergabe sagt seit diesem Stand ausdrücklich „**Welle- und Slice-Kennungen sind Namen, nicht Nummern — unabhängig von der Schreiberzahl**" (`.harness/baseline/v6.7.2/regelwerk/grundlagen-source-precedence.md:360`) und hat den Absatz gestrichen, der in `v6.0.0` dichte Nummern für Ein-Schreiber-Repos ausdrücklich lizenzierte. Das trägt unser [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) (`slice-NNN`/`welle-NN`) nicht mehr — das war die Antwort *schon erfüllt* zu Unrecht. **Entscheidung des Auftraggebers, empfangen am 2026-09-12:** ab jetzt Namen für neue Welle-/Slice-Kennungen, kein Nachrüsten des Bestands — bestehende `slice-<NNN>`/`welle-<NN>` behalten ihre Nummer. Das ist der Ausgang **übernommen** im Sinne des Plan-Kopfs, keine Feststellung: [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) bleibt nach [`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger) inhaltlich unverändert und bekommt eine Kopf-Marke auf einen neuen Eintrag, der diese Cutoff-Setzung trägt — Architect-Arbeit am Adaptions-Block ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Nicht behauptet: dass dieser Slice oder sein Nachfolger den Bestand umbenennt | slice-225 |
 | `lab/regelwerk/grundlagen-traceability.md` | 130-131 | übernommen | Herkunfts-Anker-Notation `seit welle-<Kennung>`/`seit slice-<Kennung>` trug in [`observations/README.md`](../observations/README.md) und [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) noch die alte Form — in diesem Lauf behoben (`git grep -nE 'slice-<NNN>\|welle-<NN>' -- docs/plan/planning .claude/commands ':!docs/plan/planning/done'` zeigt beide Dateien danach nicht mehr). **Ergänzt (Review slice-224 MEDIUM-2):** der Posten trägt daneben **62** Plus-Zeilen (`git diff v6.0.0..v6.7.2 -- lab/regelwerk/grundlagen-traceability.md \| grep -cE '^\+'`), mehrheitlich die neue Sektion §Die zweite Richtung: Anforderung → Beleg (RTM — derselbe Gegenstand wie der Glossar-Eintrag `RTM` in `grundlagen-begriffe.md`, Zeile oben). Ihre Setzungspflicht bindet nur ein Repo, das von der **Default-Antwort** — der Slice entlastet eine Anforderung — abweicht, etwa mit einer kuratierten Nachweis-Datei; dieses Repo tut das nicht: Anforderungen schließen über Slice-DoDs, eine zweite RTM-Ablage existiert nicht (`ls docs/plan/planning/reconciliation.md` als Vergleichsfall: Datei fehlt, kein Analogon vorhanden). Keine Deklaration nötig, kein eigener `MR`-Eintrag | slice-224 |
-| `lab/regelwerk/modul-02-harness-bootstrap.md` | 130-131 | schon erfüllt | **korrigiert (Review slice-224 Runde 2):** nicht eine Änderung, sondern **drei** — der robustere Vergleich (§9-Intro) zeigt sie in den Zeilen 148, 156 und 397. Zeile 397 ist die Anker-Umbenennung des `§Vergabe`-Querverweises und bewegt keine Pflicht; die Zeilen 148 und 156 tragen **dieselbe** Gate-Index-Konsequenz — eine Tabellenzelle gewinnt `` `AGENTS.md` 1 → 2 (Source Precedence + Hard Rules) ``, eine andere verliert `` `AGENTS.md` §4 Sub-1 → Sub-2 `` aus dem Sensors-Roster. Diese Konsequenz ist über die Zeilen zu `grundlagen-harness-dateien.md`, `modul-13-quality-gates.md`, `AGENTS.template.md` und `lab/templates/harness/README.template.md` bereits an [slice-225](../open/slice-225-gate-index-steht-einmal.md) adressiert. **schon erfüllt** bleibt richtig, weil dieser Posten keine Pflicht trägt, die jene vier nicht schon schicken — nicht, weil sich nichts geändert hätte | slice-224 |
+| `lab/regelwerk/modul-02-harness-bootstrap.md` | 130-131 | schon erfüllt | **korrigiert (Review slice-224 Runde 2):** nicht eine Änderung, sondern **drei** — der robustere Vergleich (§9-Intro) zeigt sie in den Zeilen 148, 156 und 397. Zeile 397 ist die Anker-Umbenennung des `§Vergabe`-Querverweises und bewegt keine Pflicht; die Zeilen 148 und 156 tragen **dieselbe** Gate-Index-Konsequenz — eine Tabellenzelle gewinnt `` `AGENTS.md` 1 → 2 (Source Precedence + Hard Rules) ``, eine andere verliert `` `AGENTS.md` §4 Sub-1 → Sub-2 `` aus dem Sensors-Roster. Diese Konsequenz ist über die Zeilen zu `grundlagen-harness-dateien.md`, `modul-13-quality-gates.md`, `AGENTS.template.md` und `lab/templates/harness/README.template.md` bereits an [slice-225](../next/slice-225-gate-index-steht-einmal.md) adressiert. **schon erfüllt** bleibt richtig, weil dieser Posten keine Pflicht trägt, die jene vier nicht schon schicken — nicht, weil sich nichts geändert hätte | slice-224 |
 | `lab/regelwerk/modul-04-adrs.md` | 125-128 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
 | `lab/regelwerk/modul-05-planning-harness.md` | 130-131 | schon erfüllt | §1 „Ziel und Abgrenzung" (vier Ausschluss-Klassen) und §8 „Sub-Area-Prüfungen und Modus-Begründung" sind in **diesem eigenen Slice-Plan** bereits verkörpert (§1/§8 dieser Datei); die Archiv-Notation `slice-<Kennung>-archiv.zip` trifft auf keinen Bestand (kein archivierter Slice, `ls docs/plan/planning/done/*/archiv.zip 2>/dev/null \| wc -l` → **0**) | slice-224 |
 | `lab/regelwerk/modul-06-roadmap.md` | 133 | übernommen | dieselbe Herkunfts-Anker-Notation wie `grundlagen-traceability.md`; mit derselben Behebung gedeckt (`observations/README.md`, `close-welle.md`) | slice-224 |
@@ -692,7 +692,7 @@ wandern mit jeder weiteren Änderung an ihr.
 | `lab/regelwerk/modul-10-review-harness.md` | 130-131 | schon erfüllt | Notation + eine Klarstellung zur Deckungs-Prüfung des d-check-Moduls `reviews`; das Modul selbst ist Gegenstand der `.d-check.yml`-Zeile unten, keine zusätzliche Pflicht hier | slice-224 |
 | `lab/regelwerk/modul-11-verification.md` | 125-128 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
 | `lab/regelwerk/modul-12-replay-evaluierung.md` | 125-128 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
-| `lab/regelwerk/modul-13-quality-gates.md` | 130-131 | übernommen | „Gate-Index steht einmal"-Konzept (Deklarations-Sensor, `kein Gate`-Markierung in der Zeile selbst, Grenzen-Pflicht je Gate) — deckungsgleich mit dem Titel von [slice-225](../open/slice-225-gate-index-steht-einmal.md) | slice-225 |
+| `lab/regelwerk/modul-13-quality-gates.md` | 130-131 | übernommen | „Gate-Index steht einmal"-Konzept (Deklarations-Sensor, `kein Gate`-Markierung in der Zeile selbst, Grenzen-Pflicht je Gate) — deckungsgleich mit dem Titel von [slice-225](../next/slice-225-gate-index-steht-einmal.md) | slice-225 |
 | `lab/regelwerk/modul-14-docker-harness.md` | 125-128 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
 | `lab/regelwerk/modul-15-observability.md` | 129 | schon erfüllt | Wortlaut-Präzisierung eines illustrativen „Doku-Konsistenz-Agent"-Konzepts, keine neue Pflicht | slice-224 |
 | `lab/regelwerk/modul-16-produktiver-betrieb.md` | 130-131 | schon erfüllt | **korrigiert (Review slice-224 MEDIUM-1):** keine Tabellen-Reformatierung — eine **Listenzeile** trägt die Kennungs-Notation (`done/welle-NN-closure.md`→`done/welle-<Kennung>-closure.md`). Das Pfadmuster `…-closure.md` hat in unserem Bestand kein Gegenstück: Wir führen `welle-<id>-results.md`, keine `-closure.md`-Datei (`grep -rn 'welle-.*-closure' --include='*.md' docs/plan/planning` → leer). **schon erfüllt** bleibt richtig, aus dem richtigen Grund: kein Bestand, den die Notation träfe | slice-224 |
