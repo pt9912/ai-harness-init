@@ -164,14 +164,17 @@ durch Arbeit.
   Prüfbereich und einen eigenen Beleg — `make full-smoke`, nicht `make gates` — und ihre
   Zusammensetzung entscheiden
   [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
-  und [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed);
-  [slice-210](../open/slice-210-planning-modul-im-emittierten-doc-gate.md),
-  [slice-211](../open/slice-211-codepaths-im-emittierten-doc-gate.md) und
-  [slice-212](../open/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md) liegen dafür in
-  `open/`. **Gemessen, nicht vermutet:** `internal/emit/templates/commands/` trägt 6 der 25
+  und [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)
+  — eine eigene Gate-Aktivierung mit eigener Erprobung und eigenem rotem Gegenbeispiel, kein Nachzug
+  dieses Slice. **Korrigiert (Review slice-224 MEDIUM-4):** keiner der drei zuvor hier genannten
+  Slices trägt diesen Gegenstand — [slice-210](../open/slice-210-planning-modul-im-emittierten-doc-gate.md)
+  und [slice-211](../open/slice-211-codepaths-im-emittierten-doc-gate.md) entscheiden über die
+  Modul-Zusammensetzung des emittierten Doc-Gates, [slice-212](../open/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md)
+  schließt die Kennungs-Notation wörtlich aus; die Ausschluss-Klasse *Schicht-Abgrenzung* trägt hier
+  ohne Adresse. **Gemessen, nicht vermutet:** `internal/emit/templates/commands/` trägt 6 der 25
   lebenden Vorkommen der alten Kennungs-Notation
-  (`git grep -cE 'slice-<NNN>|welle-<NN>' -- internal/emit/templates`) — sie bleiben hier liegen.
-  *Schicht-Abgrenzung.*
+  (`git grep -cE 'slice-<NNN>|welle-<NN>' -- internal/emit/templates`) — sie bleiben hier liegen,
+  ohne benannten Folge-Träger. *Schicht-Abgrenzung.*
 - **Kein Schreibzugriff auf `.claude/commands/implement-slice.md` und
   `.harness/skills/reviewer.md`.** Beide sind Rollen-Anweisungssätze und gehören der Rolle, die sie
   **ausführt** ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md));
@@ -336,6 +339,18 @@ dasteht.
   (`ls docs/plan/planning/observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/evidence/*.md | wc -l`)
   — deshalb verlangt Liefer-Punkt 3 je Sendung ein benanntes Artefakt. — **Ausgang:** offen bis zur
   Closure.
+- **Zwei Sendungen aus Liefer-Punkt 3 haben keinen terminierten Träger** (Review slice-224
+  MEDIUM-5, dieselbe Register-Klasse `uebergabe-an-andere-rolle-ohne-traeger-artefakt` wie oben, ein
+  dritter, hier neu beobachteter Fall). Für `implement-slice.md` (Zeile zu `modul-09-implementierung.md`)
+  endet die Sendung mit der Closure dieses Plans, ohne dass ein künftiger Implementer-Lauf sie
+  aufnimmt — nach `grundlagen-traceability.md` §Der Fluss kommt der Volltext eines geschlossenen
+  Slice in keinem lesenden Knoten mehr vor. Für `.harness/skills/reviewer.md` erzeugt §9 gar keine
+  Zeile — keiner der 42 Posten ist diese Datei —, während Liefer-Punkt 3 die Sendung dennoch nennt;
+  ihr Kopf trägt weiter `Baseline: … v6.0.0`, während `.harness/baseline/` nur `v6.7.2` führt. Für
+  den Architect wurde mit demselben Sprung ein Träger geschnitten ([slice-225](../open/slice-225-gate-index-steht-einmal.md));
+  für Implementer und Reviewer nicht. Einen neuen Slice dafür zu schneiden ist Planner-Arbeit
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.10) und liegt außerhalb dieses Laufs. — **Ausgang:** offen
+  bis zur Closure.
 
 ## 7. Closure-Notiz
 
@@ -451,25 +466,63 @@ der zwei Antworten mit Beleg und dem Ort, an dem er landet. Die Zahl der Zeilen 
 
 Gemessen im Lauf: `cd /Development/KI/ai-harness-course && git diff --name-only v6.0.0..v6.7.2 -- lab/regelwerk/ lab/templates/ | wc -l` → **42**. Die Tabelle hat **42** Zeilen, eine je Datei, in derselben Reihenfolge.
 
-Zwei Antworten, gelesen gegen unseren Bestand: **schon erfüllt** heißt, unser Bestand erfüllt die Regel bereits (kein Handlungsbedarf, an niemanden). **übernommen** heißt, eine Adoptions-Handlung ist nötig — `landet in` sagt, wer sie trägt: `slice-224` (hier vollzogen), `slice-225`/`Implementer`/`Reviewer` (Übergabe, hier nur benannt) oder eine der in §1 ausgeschlossenen Kennungen (slice-210/211/212/213/214, emittierte Ebene).
+Zwei Antworten, gelesen gegen unseren Bestand: **schon erfüllt** heißt, unser Bestand erfüllt die Regel bereits (kein Handlungsbedarf, an niemanden). **übernommen** heißt, eine Adoptions-Handlung ist nötig — `landet in` sagt, wer sie trägt: `slice-224` (hier vollzogen), `slice-225`/`Implementer` (Übergabe, hier nur benannt) oder eine der in §1 ausgeschlossenen Kennungen (slice-210/211/212/213/214, emittierte Ebene). **Korrigiert (Review slice-224 MEDIUM-5):** `Reviewer` steht hier nicht mehr als Ziel — keine Zeile der Tabelle trägt diesen Wert, obwohl §1/§3 die Sendung an `.harness/skills/reviewer.md` benennen; der fehlende Träger für diese Sendung und für `Implementer` ist als offenes Risiko in §6 geführt. Die Klammerzusätze `(teilweise)` und `(Übergabe)` verfeinern **übernommen**, sie eröffnen keine dritte oder vierte Antwort — die Menge bleibt zwei (Review slice-224 LOW-1).
+
+**Das erste Beleg-Kommando dieser Tabelle war blind für zwei Änderungsarten** (Review slice-224
+MEDIUM-1): `grep -E '^[+-][^+-]'` trifft keine Markdown-Listenzeile (ihr zweites Zeichen ist wieder
+`-`), und der nachgeschaltete `grep -vE '^[+-]\|'` filtert jede Tabellenzeile weg, auch neue. Jede
+Zeile, die sich unten auf „ausschließlich Tabellen-Reformatierung"/„keine Inhaltsänderung" stützt,
+ist mit dem robusteren Vergleich neu gefahren:
+
+```sh
+cd /Development/KI/ai-harness-course
+diff <(git show v6.0.0:<datei> | sed 's/[[:space:]]\+/ /g; s/ *| */|/g') \
+     <(git show v6.7.2:<datei> | sed 's/[[:space:]]\+/ /g; s/ *| */|/g')
+```
+
+Whitespace- und Spaltenbreiten-neutral, ohne die zwei Blindstellen des ersten Kommandos: Es filtert
+keine Zeilenklasse heraus, sondern zeigt jede tatsächlich geänderte Zeile. Ergebnis über die
+betroffenen Posten: `grundlagen-begriffe.md` **3** Zeilen (nicht 0 — die Zelle unten ist korrigiert),
+`grundlagen-bootstrap.md`/`grundlagen-klassifikation.md`/`modul-04-adrs.md`/
+`modul-11-verification.md`/`modul-12-replay-evaluierung.md`/`modul-14-docker-harness.md` je **0**
+(die Behauptung „ausschließlich Tabellen-Reformatierung" hält), `modul-08-agentenrollen.md` **4**
+und `modul-16-produktiver-betrieb.md` **2** (beide nicht 0 — die Zellen unten sind korrigiert).
+
+**Verteilung, gemessen über die fertige Tabelle** (Review slice-224 LOW-1; die dem Reviewer
+zuvor genannte Verteilung *32 × schon erfüllt / 10 × übernommen, sechs Übergaben* traf nicht zu):
+
+```sh
+F=docs/plan/planning/in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md
+sed -n '/^| Posten (Datei im Kurs-Klon)/,$p' "$F" | grep -E '^\| `lab/' \
+  | awk -F'|' '{print $4}' | sed 's/^ *//;s/ *$//' | sort | uniq -c
+#  29 schon erfüllt · 11 übernommen · 1 übernommen (teilweise) · 1 übernommen (Übergabe)  →  29/13, Summe 42
+sed -n '/^| Posten (Datei im Kurs-Klon)/,$p' "$F" | grep -E '^\| `lab/' \
+  | grep -ocE '\| (slice-225|slice-213/slice-214|Implementer \(Übergabe\)) \|$'
+#  9 — Zeilen, deren `landet in` eine andere Rolle/einen anderen Slice nennt (Übergaben), nicht 6
+```
+
+Keine Erwartungswerte
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2) — beide Zahlen gelten für den Stand dieser Tabelle nach den Review-Korrekturen und
+wandern mit jeder weiteren Änderung an ihr.
 
 | Posten (Datei im Kurs-Klon) | Kurs-Welle | Antwort | Beleg | landet in |
 |---|---|---|---|---|
 | `lab/regelwerk/README.md` | 134 | schon erfüllt | reine `Stand:`-Zeilen-Aktualisierung (Kurs-Welle 116→134); vendored bereits über den Baum-Tausch ([slice-223](../done/slice-223-baum-tausch-v672-pins-ziehen.md)), und `harness/conventions.md` §Baseline nennt bereits „Kurs-Welle 134 · 2026-09-12" (`grep -n 'Kurs-Welle' harness/conventions.md`) | slice-224 |
-| `lab/regelwerk/grundlagen-begriffe.md` | 132 | schon erfüllt | ausschließlich Markdown-Tabellen-Reformatierung (Spaltenbreiten), keine Inhaltsänderung (`git diff v6.0.0..v6.7.2 -- lab/regelwerk/grundlagen-begriffe.md \| grep -E '^[+-][^+-]' \| grep -vE '^[+-]\|'` im Kurs-Klon → leer) | slice-224 |
+| `lab/regelwerk/grundlagen-begriffe.md` | 132 | schon erfüllt | **korrigiert (Review slice-224 MEDIUM-1):** das ursprüngliche Beleg-Kommando filtert Tabellenzeilen heraus und sieht sie nicht; der robustere Vergleich (§9-Intro) zeigt **3** neue Glossar-Einträge: `Plan (vor Code)`, `RTM`, `harness/sensors/<target>.md`. Keiner begründet eine eigene Pflicht neben dem, was andere Zeilen dieser Tabelle schon tragen: `Plan (vor Code)` beschreibt §3 dieses Plans (Datei-Tabelle vor Code, hier bereits geführt); `RTM` beschreibt die neue Sektion in `grundlagen-traceability.md` (Zeile unten, eigener Beleg); `harness/sensors/<target>.md` beschreibt das Muster, das `gate.template.md` (Zeile unten, 15 Dateien) schon vollständig trägt. **schon erfüllt** bleibt richtig, aus dem richtigen Grund | slice-224 |
 | `lab/regelwerk/grundlagen-bootstrap.md` | 125-128 | schon erfüllt | ausschließlich Tabellen-Reformatierung, keine Inhaltsänderung (dieselbe Prüfung wie oben, gegen diese Datei → leer) | slice-224 |
 | `lab/regelwerk/grundlagen-durchsetzungsschicht.md` | 125-128 | schon erfüllt | 1 Zeile Formatierung, keine Inhaltsänderung | slice-224 |
 | `lab/regelwerk/grundlagen-harness-dateien.md` | 134 | übernommen (teilweise) | Muster `harness/sensors/<target>.md` bereits im Bestand (`ls harness/sensors/*.md \| wc -l` → **15**); `AGENTS.md` §3.11 trägt bereits „Kennung statt Adresse" für einfrierende Artefakte. Offen: die „Gate-Index steht einmal"-Konsequenz (`AGENTS.md` trägt Regel+Zeiger, nicht die Liste — `AGENTS.md` §4 führt die Liste heute noch selbst) | slice-225 |
 | `lab/regelwerk/grundlagen-klassifikation.md` | 125-128 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
 | `lab/regelwerk/grundlagen-referenz-richtung.md` | 130-131 | schon erfüllt | Tabellen-Reformatierung + ein Beispiel-Platzhalter (`slice-NNN` → `slice-tie-break-determinismus`), keine neue Pflicht | slice-224 |
-| `lab/regelwerk/grundlagen-source-precedence.md` | 130-131 | schon erfüllt | §Vergabe erlaubt Namen **oder** Nummern als Kennung und verlangt nur eine **Deklaration** im Repo („Welche Form gilt, deklariert das Repo — in `harness/conventions.md`"); unser [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) hält bereits an dichten Nummern ohne Bereichssegment fest — das bleibt eine gültige, bereits getroffene Wahl | slice-224 |
-| `lab/regelwerk/grundlagen-traceability.md` | 130-131 | übernommen | Herkunfts-Anker-Notation `seit welle-<Kennung>`/`seit slice-<Kennung>` trug in [`observations/README.md`](../observations/README.md) und [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) noch die alte Form — in diesem Lauf behoben (`git grep -nE 'slice-<NNN>\|welle-<NN>' -- docs/plan/planning .claude/commands ':!docs/plan/planning/done'` zeigt beide Dateien danach nicht mehr) | slice-224 |
+| `lab/regelwerk/grundlagen-source-precedence.md` | 130-131 | übernommen | **korrigiert (Review slice-224 HIGH-1):** §Vergabe sagt seit diesem Stand ausdrücklich „**Welle- und Slice-Kennungen sind Namen, nicht Nummern — unabhängig von der Schreiberzahl**" (`.harness/baseline/v6.7.2/regelwerk/grundlagen-source-precedence.md:360`) und hat den Absatz gestrichen, der in `v6.0.0` dichte Nummern für Ein-Schreiber-Repos ausdrücklich lizenzierte. Das trägt unser [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) (`slice-NNN`/`welle-NN`) nicht mehr — das war die Antwort *schon erfüllt* zu Unrecht. **Entscheidung des Auftraggebers, empfangen am 2026-09-12:** ab jetzt Namen für neue Welle-/Slice-Kennungen, kein Nachrüsten des Bestands — bestehende `slice-<NNN>`/`welle-<NN>` behalten ihre Nummer. Das ist der Ausgang **übernommen** im Sinne des Plan-Kopfs, keine Feststellung: [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) bleibt nach [`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger) inhaltlich unverändert und bekommt eine Kopf-Marke auf einen neuen Eintrag, der diese Cutoff-Setzung trägt — Architect-Arbeit am Adaptions-Block ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Nicht behauptet: dass dieser Slice oder sein Nachfolger den Bestand umbenennt | slice-225 |
+| `lab/regelwerk/grundlagen-traceability.md` | 130-131 | übernommen | Herkunfts-Anker-Notation `seit welle-<Kennung>`/`seit slice-<Kennung>` trug in [`observations/README.md`](../observations/README.md) und [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) noch die alte Form — in diesem Lauf behoben (`git grep -nE 'slice-<NNN>\|welle-<NN>' -- docs/plan/planning .claude/commands ':!docs/plan/planning/done'` zeigt beide Dateien danach nicht mehr). **Ergänzt (Review slice-224 MEDIUM-2):** der Posten trägt daneben **62** Plus-Zeilen (`git diff v6.0.0..v6.7.2 -- lab/regelwerk/grundlagen-traceability.md \| grep -cE '^\+'`), mehrheitlich die neue Sektion §Die zweite Richtung: Anforderung → Beleg (RTM — derselbe Gegenstand wie der Glossar-Eintrag `RTM` in `grundlagen-begriffe.md`, Zeile oben). Ihre Setzungspflicht bindet nur ein Repo, das von der **Default-Antwort** — der Slice entlastet eine Anforderung — abweicht, etwa mit einer kuratierten Nachweis-Datei; dieses Repo tut das nicht: Anforderungen schließen über Slice-DoDs, eine zweite RTM-Ablage existiert nicht (`ls docs/plan/planning/reconciliation.md` als Vergleichsfall: Datei fehlt, kein Analogon vorhanden). Keine Deklaration nötig, kein eigener `MR`-Eintrag | slice-224 |
 | `lab/regelwerk/modul-02-harness-bootstrap.md` | 130-131 | schon erfüllt | reine Anker-Umbenennung eines Querverweises, keine Inhaltsänderung | slice-224 |
 | `lab/regelwerk/modul-04-adrs.md` | 125-128 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
 | `lab/regelwerk/modul-05-planning-harness.md` | 130-131 | schon erfüllt | §1 „Ziel und Abgrenzung" (vier Ausschluss-Klassen) und §8 „Sub-Area-Prüfungen und Modus-Begründung" sind in **diesem eigenen Slice-Plan** bereits verkörpert (§1/§8 dieser Datei); die Archiv-Notation `slice-<Kennung>-archiv.zip` trifft auf keinen Bestand (kein archivierter Slice, `ls docs/plan/planning/done/*/archiv.zip 2>/dev/null \| wc -l` → **0**) | slice-224 |
 | `lab/regelwerk/modul-06-roadmap.md` | 133 | übernommen | dieselbe Herkunfts-Anker-Notation wie `grundlagen-traceability.md`; mit derselben Behebung gedeckt (`observations/README.md`, `close-welle.md`) | slice-224 |
 | `lab/regelwerk/modul-07-carveouts.md` | 130-131 | schon erfüllt | neue Regel „Auflösung setzt die Bindung-Spalte in `harness/README.md` §Sensors zurück" betrifft aktuell keinen Carveout — kein `CO-<NNN>` in der Sensors-Tabelle (`grep -n 'CO-[0-9]' harness/README.md` → leer) | slice-224 |
-| `lab/regelwerk/modul-08-agentenrollen.md` | 130-131 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
+| `lab/regelwerk/modul-08-agentenrollen.md` | 130-131 | schon erfüllt | **korrigiert (Review slice-224 MEDIUM-1):** keine Tabellen-Reformatierung — zwei Tabellenzellen tragen die Kennungs-Notation (`welle-<NN>-results.md`→`welle-<Kennung>-results.md`, `seit slice-<NNN>`/`seit welle-<NN>`→`seit slice-<Kennung>`/`seit welle-<Kennung>`) als Beispieltext über den wellenlosen Betrieb. Kein eigener Bestand trägt diese Beispielform separat: Dieselbe Notations-Regel ist über die Zeilen zu `grundlagen-traceability.md`/`modul-06-roadmap.md` oben bereits repo-weit behoben — `git grep -nE 'slice-<NNN>\|welle-<NN>' -- docs/plan/planning .claude/commands ':!docs/plan/planning/done'` zeigt außer `implement-slice.md` nichts mehr. **schon erfüllt** bleibt richtig, weil dieselbe Regel schon an anderer Stelle vollzogen ist — nicht, weil sich nichts geändert hätte | slice-224 |
 | `lab/regelwerk/modul-09-implementierung.md` | 132 | übernommen (Übergabe) | Plan-vor-Code-Disziplin (Tests-Zeile bindet an Akzeptanzkriterien-ID, Out-of-Scope-Nennung in Schritt 4, Zeiger auf den Gate-Index statt Listen-Wiederholung) betrifft ausschließlich `.claude/commands/implement-slice.md` — Rollen-Anweisungssatz der Implementer-Rolle ([ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)), von diesem Slice laut §1 nicht beschreibbar | Implementer (Übergabe) |
 | `lab/regelwerk/modul-10-review-harness.md` | 130-131 | schon erfüllt | Notation + eine Klarstellung zur Deckungs-Prüfung des d-check-Moduls `reviews`; das Modul selbst ist Gegenstand der `.d-check.yml`-Zeile unten, keine zusätzliche Pflicht hier | slice-224 |
 | `lab/regelwerk/modul-11-verification.md` | 125-128 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
@@ -477,7 +530,7 @@ Zwei Antworten, gelesen gegen unseren Bestand: **schon erfüllt** heißt, unser 
 | `lab/regelwerk/modul-13-quality-gates.md` | 130-131 | übernommen | „Gate-Index steht einmal"-Konzept (Deklarations-Sensor, `kein Gate`-Markierung in der Zeile selbst, Grenzen-Pflicht je Gate) — deckungsgleich mit dem Titel von [slice-225](../open/slice-225-gate-index-steht-einmal.md) | slice-225 |
 | `lab/regelwerk/modul-14-docker-harness.md` | 125-128 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
 | `lab/regelwerk/modul-15-observability.md` | 129 | schon erfüllt | Wortlaut-Präzisierung eines illustrativen „Doku-Konsistenz-Agent"-Konzepts, keine neue Pflicht | slice-224 |
-| `lab/regelwerk/modul-16-produktiver-betrieb.md` | 130-131 | schon erfüllt | ausschließlich Tabellen-Reformatierung | slice-224 |
+| `lab/regelwerk/modul-16-produktiver-betrieb.md` | 130-131 | schon erfüllt | **korrigiert (Review slice-224 MEDIUM-1):** keine Tabellen-Reformatierung — eine **Listenzeile** trägt die Kennungs-Notation (`done/welle-NN-closure.md`→`done/welle-<Kennung>-closure.md`). Das Pfadmuster `…-closure.md` hat in unserem Bestand kein Gegenstück: Wir führen `welle-<id>-results.md`, keine `-closure.md`-Datei (`grep -rn 'welle-.*-closure' --include='*.md' docs/plan/planning` → leer). **schon erfüllt** bleibt richtig, aus dem richtigen Grund: kein Bestand, den die Notation träfe | slice-224 |
 | `lab/templates/.d-check.yml` | 129 | übernommen | Doku-Kommentare zu den Modulen `targets` (bei uns bereits aktiv, `grep -n '^modules:' .d-check.yml`) und `reviews` (bei uns noch **nicht** aktiviert); Aktivierungsentscheidung liegt in `.d-check.yml`, Architect-Eigentum | slice-225 |
 | `lab/templates/AGENTS.template.md` | 130-131 | übernommen | dieselbe „Gate-Index steht einmal"-Konsequenz für `AGENTS.md` §4 (Liste → Zeiger auf `harness/README.md` §Sensors) | slice-225 |
 | `lab/templates/Makefile` | 129 | schon erfüllt | Kommentar-Vorlage für ein bootstrap-Repo; unser Root-`Makefile` ist keine Kopie dieser Vorlage (`grep -n 'Targets in AGENTS.md' Makefile` → leer) — kein eigener Bestand betroffen | slice-224 |
