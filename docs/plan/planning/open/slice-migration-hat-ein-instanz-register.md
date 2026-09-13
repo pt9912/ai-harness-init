@@ -41,7 +41,7 @@ kommt aus einem Kommando über dem gepinnten Baum, nicht aus dem Text),
 **Berührte Spec-Stellen:** — (der Slice berührt keine Spec-Stelle; Gegenstand ist eine
 Verfahrens-Ablage im Harness-Baum).
 
-**Verantwortlich:** `—` bis zur Priorisierung.
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-13.
 
