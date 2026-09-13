@@ -5,7 +5,8 @@
 Dieses Dokument leitet ab, es setzt nicht. Es hält zwei Dinge bereit: ein **Instanz-Register** —
 je vendored Vorlage genau eine Zeile, welches Artefakt dieses Repos ihre Instanz ist, oder *keine
 Instanz* mit Begründung — und die **Report-Form** für künftige `docs/migrations/<tag>.md`-Berichte <!-- d-check:ignore (geplante Ablage) -->
-mit vier Ausgängen je Vorlage. Ein Report entsteht mit diesem Dokument nicht.
+: vier Ausgänge für die **einmaligen** Vorlagen dieses Registers, eine Append-only-Antwort für die
+**wiederkehrenden** (§5). Ein Report entsteht mit diesem Dokument nicht.
 
 Jeder normative Punkt unten trägt die ADR, an der er belegt ist —
 [ADR-0018](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md),
@@ -31,8 +32,9 @@ nicht.
 vendored Baum getauscht ist, bleibt die gepinnte Fassung für **jede Konformitäts-Frage**
 maßgeblich, unabhängig davon, welche Fassung die Prozedur des laufenden Sprungs stellt.
 
-**Bisherige Anwendungen** — jede Zeile ist eine für ihren Sprung geschlossene Entscheidung, keine
-löst die vorige ab:
+**Bisherige Anwendungen** — jede Zeile ist eine für ihren Sprung geschlossene Entscheidung; nur
+eine wird von der Zeile darunter teilweise abgelöst (`v6.5.0` → `v6.7.1`, siehe deren dritte
+Spalte), alle anderen bleiben unangetastet:
 
 | Sprung | Regierende Fassung | ADR |
 |---|---|---|
@@ -43,6 +45,12 @@ löst die vorige ab:
 | `v6.5.0` → `v6.7.1` (Ziel unerreichbar geworden, bevor ein Pin es trug) | Ziel-Fassung `v6.7.1` | [ADR-0043](../docs/plan/adr/0043-ziel-fassung-regiert-den-sprung-v671.md) Festlegung 1, teilweise abgelöst durch [ADR-0044](../docs/plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md) |
 | `v6.5.0` → `v6.7.2` (vollzogen) | Ziel-Fassung `v6.7.2` | [ADR-0044](../docs/plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md) Festlegung 1 |
 
+Die Zeile zu `v5.12.0` → `v5.18.0` zitiert
+[ADR-0031](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 1;
+die ADR steht auf **`Proposed`** (ihre eigene §Geschichte) und ist damit nach
+[`AGENTS.md`](../AGENTS.md) §3.4 noch nicht eingefroren — die Zeile hält fest, was sie **heute**
+vorschlägt, nicht, dass die Entscheidung feststeht.
+
 Der aktuell vendored Stand ist `v6.7.2`
 (`ls -1 .harness/baseline/` — kein Erwartungswert, wandert mit jedem Tausch); die
 Zwei-Fassungen-Phase des letzten Sprungs ist geschlossen, und **kein** Ziel für einen siebten Sprung
@@ -50,7 +58,11 @@ ist gesetzt.
 
 ## 2. Ort und Form der Zielstand-Setzung
 
-[ADR-0031](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2:
+[ADR-0031](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) steht auf
+**`Proposed`** (ihre eigene §Geschichte) und ist damit nach [`AGENTS.md`](../AGENTS.md) §3.4 noch
+nicht eingefroren; ihre eigene Konsistenzrunde ist offen. Was folgt, ist ihre **derzeit
+vorgeschlagene** Festlegung 2, wiedergegeben als solche, nicht als eingefrorene Entscheidung:
+
 Eine Zielstand-Setzung wird in [`harness/conventions.md`](conventions.md) §Baseline verbucht, in
 der Re-Baseline-Aufzählung, mit einem geschlossenen Mindestumfang von **drei Teilen**, kein
 vierter:
@@ -72,8 +84,9 @@ angewendet durch
 Delta-Basis der fünf Ausgänge des Adaptions-Durchgangs und der Stichproben-Komplementärmenge ist
 **nicht** der zuletzt vendorte Stand, sondern der letzte Stand, für den
 [`harness/conventions.md`](conventions.md) §Baseline einen Slice mit **gefülltem**
-Delta-Nachweis-Feld ausweist. Fällt ein Durchgang aus, wächst die Basis weiter — die Regel
-verhindert den Ausfall nicht, sie hält ihn nur sichtbar.
+Delta-Nachweis-Feld ausweist. Die Festlegung erlaubt **nicht**, einen Durchgang auszulassen: Fällt
+einer dennoch aus, wächst die Basis weiter, und die Kosten wachsen mit — wörtlich aus der Quelle,
+nicht als Beschreibung abgeschwächt.
 
 Gemessen am Stand dieses Dokuments trägt die letzte Zeile mit gefülltem Nachweis-Feld `v6.7.2`
 (`grep -o '\*\*auf \`v[0-9.]*\`:\*\* [0-9-]*, Delta-Nachweis[^.;]*' harness/conventions.md` — die
@@ -104,12 +117,12 @@ Zuordnung Vorlage → Instanz (dazu [§6](#6-offene-fragen)).
 | `.harness/baseline/v6.7.2/templates/docs/plan/planning/slice.template.md` | `docs/plan/planning/{open,next,in-progress,done}/slice-*.md` | 229 Instanzen (`find docs/plan/planning/open docs/plan/planning/next docs/plan/planning/in-progress docs/plan/planning/done -maxdepth 1 -iname 'slice-*.md' \| wc -l`, kein Erwartungswert) |
 | `.harness/baseline/v6.7.2/templates/docs/plan/planning/welle-results.template.md` | `docs/plan/planning/done/welle-*-results.md` | 12 Instanzen (`find docs/plan/planning/done -maxdepth 1 -iname 'welle-*-results.md' \| wc -l`, kein Erwartungswert) |
 | `.harness/baseline/v6.7.2/templates/docs/plan/planning/welle.template.md` | `docs/plan/planning/welle-*.md` (offen) und `docs/plan/planning/done/welle-*.md` ohne `-results` | 15 Instanzen (3 offen + 12 in `done/`, `find docs/plan/planning -maxdepth 1 -iname 'welle-*.md' \| wc -l` und `find docs/plan/planning/done -maxdepth 1 -iname 'welle-*.md' ! -iname '*-results.md' \| wc -l`, kein Erwartungswert) |
-| `.harness/baseline/v6.7.2/templates/docs/reviews/review-report.template.md` | `docs/reviews/*.md` | 377 Instanzen (`ls docs/reviews/*.md \| wc -l`, kein Erwartungswert) |
+| `.harness/baseline/v6.7.2/templates/docs/reviews/review-report.template.md` | `docs/reviews/*.md` | 378 Instanzen (`ls docs/reviews/*.md \| wc -l`, kein Erwartungswert — Stand nach dem Review-Report zu diesem Register, [`MR-058`](conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)) |
 | `.harness/baseline/v6.7.2/templates/harness/conventions/MR-NNN-titel.template.md` | `harness/conventions/MR-*.md` (aktiv und `done/`) | 59 Instanzen (55 aktiv + 4 `done/`, `ls harness/conventions/*.md \| wc -l` und `ls harness/conventions/done/*.md \| wc -l`, kein Erwartungswert) |
 | `.harness/baseline/v6.7.2/templates/harness/conventions.template.md` | [`harness/conventions.md`](conventions.md) | eine Instanz, Index des Adaptions-Blocks |
 | `.harness/baseline/v6.7.2/templates/harness/README.template.md` | [`harness/README.md`](README.md) | eine Instanz |
 | `.harness/baseline/v6.7.2/templates/harness/sensors/gate.template.md` | `harness/sensors/*.md` | 15 Instanzen (`ls harness/sensors/*.md \| wc -l`, kein Erwartungswert) |
-| `.harness/baseline/v6.7.2/templates/.harness/skills/closure-note-reviewer.template.md` | keine Instanz | dieses Repo führt bislang nur eine Skill-Datei (`ls .harness/skills/*.md \| wc -l` → **1**, kein Erwartungswert); Baseline-Regelwerk `modul-08-agentenrollen.md` §Welche Rolle braucht welche Artefaktklasse verlangt diese Skill nur, wenn das Urteil inferential **und** aus keinem Artefakt ableitbar ist — bislang nicht eingetreten |
+| `.harness/baseline/v6.7.2/templates/.harness/skills/closure-note-reviewer.template.md` | keine Instanz | dieses Repo führt bislang nur eine Skill-Datei (`ls .harness/skills/*.md \| wc -l` → **1**, kein Erwartungswert); `v6.7.2` · `regelwerk/modul-08-agentenrollen.md` §Welche Rolle braucht welche Artefaktklasse verlangt diese Skill nur, wenn das Urteil inferential **und** aus keinem Artefakt ableitbar ist — bislang nicht eingetreten |
 | `.harness/baseline/v6.7.2/templates/.harness/skills/reviewer.template.md` | [`.harness/skills/reviewer.md`](../.harness/skills/reviewer.md) | eine Instanz |
 | `.harness/baseline/v6.7.2/templates/project-readme.template.md` | [`README.md`](../README.md) | eine Instanz, Repo-Wurzel |
 | `.harness/baseline/v6.7.2/templates/spec/architecture.template.md` | [`spec/architecture.md`](../spec/architecture.md) | eine Instanz |
@@ -123,16 +136,46 @@ Zuordnung Vorlage → Instanz (dazu [§6](#6-offene-fragen)).
 Setzung 2, [`MR-033`](conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)).
 Eine Vorlage ohne Zeile ist der Befund, keine Auslassung.
 
+**Sechs dieser Zeilen sind wiederkehrend und tragen in §5 keinen der dortigen vier Ausgänge.**
+Modul 2 §Freshness-Audit der vendored Baseline (Schritt 2), Eigenschaft *Der Review vergleicht auch
+die Form*, nennt die Menge ohne Fortsetzungspunkte — anders als die Singleton-Aufzählung direkt
+davor in derselben Quelle — und damit abschließend (`v6.7.2` ·
+`regelwerk/modul-02-harness-bootstrap.md`; dieselbe Klausel wörtlich zitiert in
+[ADR-0018](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md) §Entscheidung
+Festlegung 4): *„Für wiederkehrende Templates (ADR, Slice, Welle, Carveout, Review-Report) gilt
+die Append-only-Logik: Neue Instanzen folgen der neuen Form, bestehende werden nicht rückwirkend
+umgeschrieben."* Auf dieses Register abgebildet sind es sechs Zeilen, keine mehr — die
+Welle-Familie führt zwei Vorlagen —, mit den Vorlagen
+`.harness/baseline/v6.7.2/templates/docs/plan/adr/NNNN-titel.template.md` (ADR),
+`.harness/baseline/v6.7.2/templates/docs/plan/planning/slice.template.md` (Slice),
+`.harness/baseline/v6.7.2/templates/docs/plan/planning/welle.template.md` **und**
+`.harness/baseline/v6.7.2/templates/docs/plan/planning/welle-results.template.md` (Welle),
+`.harness/baseline/v6.7.2/templates/docs/plan/carveouts/carveout.template.md` (Carveout),
+`.harness/baseline/v6.7.2/templates/docs/reviews/review-report.template.md` (Review-Report). Für
+sie gilt unten §5 Buchstabe b statt Buchstabe a.
+
+Die übrigen mehrinstanzigen Zeilen dieses Registers —
+`.harness/baseline/v6.7.2/templates/docs/plan/planning/observation.template.md` (104 Instanzen),
+`.harness/baseline/v6.7.2/templates/harness/conventions/MR-NNN-titel.template.md` (59) und
+`.harness/baseline/v6.7.2/templates/harness/sensors/gate.template.md` (15) — nennt dieselbe Stelle
+**nicht**. Ob sie strukturell dieselbe Append-only-Logik tragen, misst dieses Dokument nicht und
+behauptet es deshalb auch nicht ([§6](#6-offene-fragen)); sie bleiben unten unter §5 Buchstabe a.
+
 ## 5. Report-Form für `docs/migrations/<tag>.md`
 
-<!-- d-check:ignore (geplante Ablage) -->
-Ein künftiger Migrations-Report führt je Vorlage genau einen von **vier** Ausgängen — eine
-geschlossene Menge, kein Freitext:
+Wie §4 ist auch dieser Abschnitt eine Formvorgabe für einen künftigen Bericht, keine ADR-Aussage —
+dazu [§6](#6-offene-fragen). Er unterscheidet zwei Fälle, je nachdem, ob §4 die betroffene Vorlage
+als wiederkehrend ausweist.
+
+### a) Einmalige Vorlagen — vier Ausgänge
+
+Für jede Vorlage, die §4 **nicht** als wiederkehrend ausweist, führt ein künftiger
+Migrations-Report genau einen von **vier** Ausgängen — eine geschlossene Menge, kein Freitext:
 
 | Ausgang | Bedingung | Beleg-Art |
 |---|---|---|
 | **übernommen** | die neue Fassung der Vorlage ist in die Instanz(en) dieses Repos eingearbeitet | Commit-Hash |
-| **schon erfüllt** | die Instanz(en) erfüllen die neue Fassung bereits, ohne Änderung | `diff`-Fundstelle (zeigt die Übereinstimmung) |
+| **schon erfüllt** | die Instanz(en) erfüllen die neue Fassung bereits, ohne Änderung | Fundstelle der übereinstimmenden Stelle (kein `diff`-Fund, weil kein Unterschied besteht) |
 | **bewusst abweichend** | dieses Repo weicht von der neuen Fassung ab | `MR`-Kennung des tragenden Adaptions-Eintrags |
 | **keine Instanz** | die Vorlage hat in diesem Repo keine Instanz (§4) | Begründung |
 
@@ -140,14 +183,36 @@ Report-Skelett je Vorlage:
 
 | Vorlage | Instanz(en) | Ausgang | Beleg |
 |---|---|---|---|
-| `<Vorlagen-Pfad>` | `<Instanz-Pfad oder „—">` | übernommen / schon erfüllt / bewusst abweichend / keine Instanz | `<Commit-Hash / diff-Fundstelle / MR-Kennung / Begründung>` |
+| `<Vorlagen-Pfad>` | `<Instanz-Pfad oder „—">` | übernommen / schon erfüllt / bewusst abweichend / keine Instanz | `<Commit-Hash / Fundstelle / MR-Kennung / Begründung>` |
 
-**Diese vier Ausgänge sind nicht die fünf Ausgänge des Adaptions-Durchgangs.** Der Freshness-Audit
-der Baseline führt für den **Adaptions-Eintrag** (`MR-<NNN>`) fünf Ausgänge — *gegenstandslos ·
-bleibt gültig · teilweise überholt · Bezug ist entfallen · widerspricht*
-(zitiert in [ADR-0018](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md) §Kontext). Die
-vier hier gelten der **Vorlage** dieses Registers — zwei verschiedene Achsen, die nicht
-ineinander übersetzt werden: dazu [§6](#6-offene-fragen).
+### b) Wiederkehrende Vorlagen — Append-only
+
+Für die sechs in §4 genannten Zeilen (ADR, Slice, Welle, Welle-Results, Carveout, Review-Report)
+trägt ein künftiger Migrations-Report **keinen** der vier Ausgänge aus Buchstabe a: *übernommen*
+verlangt genau das rückwirkende Umschreiben bestehender Instanzen, das die Baseline für diese
+Vorlagen ausdrücklich untersagt, und *schon erfüllt* / *bewusst abweichend* / *keine Instanz*
+passen nicht auf eine wachsende Menge von Alt-Instanzen, von denen die meisten der alten Form
+folgen und das bleiben dürfen. Der Report notiert stattdessen einmal je Vorlage:
+
+| Ausgang | Bedingung | Beleg-Art |
+|---|---|---|
+| **append-only** | die Vorlage ist wiederkehrend (§4); neue Instanzen folgen ab dem Sprung-Datum der neuen Form, bestehende Instanzen bleiben unverändert | das Sprung-Datum, ab dem neue Instanzen die neue Form tragen |
+
+Buchstabe a bleibt für seine Vorlagen eine geschlossene Vier-Menge; Buchstabe b ist keine fünfte
+Ergänzung dieser Menge, sondern eine eigene, disjunkte Antwort für eine andere Vorlagen-Klasse
+([`AGENTS.md`](../AGENTS.md) §3.6;
+[ADR-0018](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md) §Entscheidung
+Festlegung 4).
+
+**Diese Ausgänge (vier aus Buchstabe a, einer aus Buchstabe b) sind nicht die fünf Ausgänge des
+Adaptions-Durchgangs.** `v6.7.2` · `regelwerk/modul-02-harness-bootstrap.md` §Freshness-Audit der
+vendored Baseline (Schritt 2) führt für den **Adaptions-Eintrag** (`MR-<NNN>`) fünf eigene
+Ausgänge — *gegenstandslos · bleibt gültig · teilweise überholt · Bezug ist entfallen ·
+widerspricht* —, benannt in
+[ADR-0018](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md) §Entscheidung Festlegung 4
+(§Kontext derselben ADR nennt an der zitierten Stelle nur die Zahl *fünf Ausgängen*, nicht die
+Namen). Die Ausgänge dieses Abschnitts gelten der **Vorlage** dieses Registers — zwei verschiedene
+Achsen, die nicht ineinander übersetzt werden: dazu [§6](#6-offene-fragen).
 
 ## 6. Offene Fragen
 
