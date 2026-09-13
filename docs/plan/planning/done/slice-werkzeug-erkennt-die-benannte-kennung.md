@@ -356,8 +356,9 @@ Backticks).
   Go-`regexp` leftmost-first auflöst. Vorher sah **kein** Wächter dieses Repos eine benannte
   Kennung. Ein `liegt in`-Feld steht hier nicht: Verkörpert wird beim Lese-Schritt, und dieses
   Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`) — er gehört der Welle-Closure.
-- **Beobachtungs-Register (`../observations/`):** fünf Belege, je einer je Klasse; ein Vorgang
-  zählt je Klasse einmal.
+- **Beobachtungs-Register (`../observations/`):** sechs Belege, je einer je Klasse; ein Vorgang
+  zählt je Klasse einmal. Der letzte entsteht **nach** dieser Notiz — er ist ein Befund des
+  Lifecycle-Move, und der läuft erst, wenn die Notiz steht.
 
   | Beobachtung (`BEO-ALL/<slug>`) | was dieser Vorgang beisteuert |
   |---|---|
@@ -366,6 +367,7 @@ Backticks).
   | [`uebergabe-an-andere-rolle-ohne-traeger-artefakt`](../observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/observation.md) | drei Übergaben an andere Rollen ohne angelegtes Träger-Artefakt |
   | [`korrektur-trifft-den-fundort-statt-die-gemessene-fundmenge`](../observations/BEO-ALL/korrektur-trifft-den-fundort-statt-die-gemessene-fundmenge/observation.md) | die `slice-NNN`-Notation, dreimal gezogen, an zwei weiteren Stellen stehen geblieben |
   | [`rueckfuehrungs-schwelle-misst-nicht-die-eigenschaft-die-sie-bewacht`](../observations/BEO-ALL/rueckfuehrungs-schwelle-misst-nicht-die-eigenschaft-die-sie-bewacht/observation.md) | **neu angelegt** — die Schwelle aus §4 zählte Funktionen in einem Diff statt der drei Größen-Kriterien |
+  | [`verweis-nachzug-ersetzt-eine-historisch-richtige-adresse`](../observations/BEO-ALL/verweis-nachzug-ersetzt-eine-historisch-richtige-adresse/observation.md) | drei Pfadangaben in den Review-Reports, darunter ein zitierter Messwert, vom Nachzug des Move ersetzt |
 
   ```sh
   ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l   # 101 nach dieser Closure
@@ -392,6 +394,14 @@ Backticks).
   ':!internal/emit'`, EXIT 1); zwei Review-Reports unter `docs/reviews/`, der zweite ohne
   blockierenden Sach-Befund. **Nicht** in diesem Kontext gefahren: der volle `make mutate`-Lauf —
   gemessen sind die drei neuen Fälle einzeln, nicht das kuratierte Set als Ganzes.
+- **Der Move dieses Slice ist die erste Probe am eigenen Werk** — die erste benannte Kennung, die
+  den Lifecycle mit `make slice-mv` verlässt. Gemeldet: `eingehend: 3 Datei(en) mit Verweisen
+  nachgezogen · ausgehend: 0`, zwei Commits, EXIT 0. Die **0** ist richtig und nicht stumm: Die
+  bewegte Datei trägt kein präfixloses Geschwister-Ziel — ihr einziger Slice-Verweis nennt
+  `../open/` mit Präfix. Der Inhalts-Commit ändert fünf Zeilen in drei Dateien
+  (`git show --stat 25d739b3`): **zwei** tragen einen Link, der auflösen muss, **drei** eine
+  Pfadangabe über einen vergangenen Aufenthalt (Register-Zeile oben). Der präfixlose Verweis der
+  Roadmap bleibt unberührt — Grenze 3 des Skriptkopfs, gemessen statt vermutet.
 - **Drei Paarungen:** Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
   für diesen Slice ohne Wellen-Zugehörigkeit.
 
