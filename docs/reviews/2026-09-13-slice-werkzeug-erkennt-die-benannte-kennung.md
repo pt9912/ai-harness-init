@@ -2,7 +2,7 @@
 
 **Rolle:** Reviewer (`.harness/skills/reviewer.md`, v1.7.0) · **Datum:** 2026-09-13
 **Gegenstand:** Commit `6c3ea3a9` gegen
-[`docs/plan/planning/in-progress/slice-werkzeug-erkennt-die-benannte-kennung.md`](../plan/planning/in-progress/slice-werkzeug-erkennt-die-benannte-kennung.md)
+[`docs/plan/planning/done/slice-werkzeug-erkennt-die-benannte-kennung.md`](../plan/planning/done/slice-werkzeug-erkennt-die-benannte-kennung.md)
 **Geprüft gegen:** Slice-Plan · [`ADR-0033`](../plan/adr/0033-wellen-archivierung-als-unterkommando.md) ·
 [`ADR-0042`](../plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) ·
 [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) ·
@@ -24,7 +24,7 @@ nach dem Lauf sauber (`git status --porcelain` leer).
   `SlicePfadRelativ(root, strings.TrimPrefix(id, "slice-"), welleID)` weiter. Deren Globs lauten
   durchweg `"slice-"+nummer+"-*.md"` und verlangen damit einen **Titel-Suffix hinter der
   Kennung** — die Dateiform einer benannten Kennung ist aber `slice-<slug>.md` ohne Suffix
-  (`docs/plan/planning/in-progress/slice-werkzeug-erkennt-die-benannte-kennung.md`). Gemessen
+  (`docs/plan/planning/done/slice-werkzeug-erkennt-die-benannte-kennung.md`). Gemessen
   gegen den **lebenden** Baum dieses Repos:
 
   ```text

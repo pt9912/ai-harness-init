@@ -17,7 +17,7 @@ Drei Messungen, alle gegen den **lebenden** Baum bzw. das gepinnte Image:
 
 1. *Die benannte Kennung löst auf.* Sonde `SlicePfadRelativ(root="/src", …)` über eine
    HEAD-Kopie: `werkzeug-erkennt-die-benannte-kennung` →
-   `"../../in-progress/slice-werkzeug-erkennt-die-benannte-kennung.md"` (Runde 1: `""`).
+   `"../../done/slice-werkzeug-erkennt-die-benannte-kennung.md"` (Runde 1: `""`).
 2. *Die nummerierte Form ist unverändert.* Dieselbe Sonde: `188` und `176` liefern exakt die
    Werte aus Runde 1. Über den **ganzen** Bestand gemessen — `Hervorgegangen()` über alle 83
    `- **Folge-Slices`-Zeilen des Planning-Baums, einmal mit dem Code aus `6c3ea3a9^`
@@ -127,7 +127,7 @@ führt die Korrektur als erledigt.
 
 - **kategorie:** HIGH
 - **quelle:** [`AGENTS.md`](../../AGENTS.md) §3.10 (Hard Rule)
-- **pfad:** `docs/plan/planning/in-progress/slice-werkzeug-erkennt-die-benannte-kennung.md:134-143` (in `004335cc`)
+- **pfad:** `docs/plan/planning/done/slice-werkzeug-erkennt-die-benannte-kennung.md:134-143` (in `004335cc`)
 - **befund:** Der Commit fügt §1 *Ziel und Abgrenzung* einen vierten Out-of-Scope-Punkt hinzu.
   [`AGENTS.md`](../../AGENTS.md) §3.10 nennt *„eine Out-of-Scope-Grenze"* wörtlich als Änderung,
   die *„die Abnahme selbst verschiebt"* und deshalb **Übergabe-Artefakt an den Planner** ist:
