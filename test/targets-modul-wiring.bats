@@ -1,18 +1,20 @@
 #!/usr/bin/env bats
 # targets-modul-wiring.bats — haelt das d-check-Modul `targets` (DC-FA-TGT-001) aktiv und seine
-# `exempt-targets`-Liste exakt gegen die `.PHONY`-Deklarationen aus Makefile/d-check.mk: jeder
-# dort genannte Name steht entweder als `make X`-Tabellenzeile in der `authority`-Datei
-# (harness/README.md §Sensors) oder in `exempt-targets` — nie in beiden, nie in keinem. `docs-check` selbst
-# haelt eine ANDERE Menge gegen dieselbe Autoritaets-Tabelle — jede Makefile-**Regel**
-# (Target-Zeile), nicht nur die per `.PHONY` deklarierten; die zwei Mengen koennen in beide
-# Richtungen auseinanderlaufen (ein `.PHONY`-Name ohne Regel vs. eine Regel ohne `.PHONY`-Eintrag).
-# Heute sind sie gleich, beide 47:
-#   grep -h '^\.PHONY:' Makefile d-check.mk | sed -E 's/^\.PHONY:[[:space:]]*//' | tr ' ' '\n' | grep -v '^$' | sort -u | wc -l
+# `exempt-targets`-Liste exakt gegen die Makefile-**Regel**-Namen aus Makefile/d-check.mk: jeder
+# dort genannte Name steht entweder als `make X`-Tabellenzeile im **Sensors-Abschnitt** der
+# `authority`-Datei (harness/README.md, siehe `authority_table_targets()` unten — enger als das
+# Modul selbst liest, das die ganze Datei scannt) oder in `exempt-targets` — nie in beiden, nie in
+# keinem. Die Regel-Namen-Bindung ist dieselbe Menge, die `docs-check` selbst gegen dieselbe
+# Autoritaets-Datei haelt (gate-undocumented haelt jede Makefile-Regel, nicht nur die per
+# `.PHONY` deklarierten) — ADR-0045 Festlegung 3. Heute sind Regel-Menge und `.PHONY`-Menge
+# gleich, beide 48:
 #   grep -hE '^[a-zA-Z][a-zA-Z0-9._-]*:' Makefile d-check.mk | sed -E 's/:.*//' | sort -u | wc -l
-# aber eine Regel ohne `.PHONY`-Eintrag saehe dieser Waechter nicht, faerbte `docs-check` aber
-# rot (Grund-Code gate-undocumented). Dieser Waechter prueft seine engere, `.PHONY`-gebundene
-# Menge hermetisch, ohne Docker, und faellt darum auch dann, wenn ein neues `.PHONY`-Target
-# committet wird, bevor der naechste `make docs-check`-Lauf es sieht.
+#   grep -h '^\.PHONY:' Makefile d-check.mk | sed -E 's/^\.PHONY:[[:space:]]*//' | tr ' ' '\n' | grep -v '^$' | sort -u | wc -l
+# eine Regel ohne `.PHONY`-Eintrag saehe ein auf die `.PHONY`-Menge gebundener Waechter nicht,
+# faerbte `docs-check` aber rot (Grund-Code gate-undocumented) — dieser Waechter bindet darum an
+# die Regel-Namen, nicht an `.PHONY`, und prueft diese Menge hermetisch, ohne Docker. Er faellt
+# darum auch dann, wenn eine neue Regel committet wird, bevor der naechste `make docs-check`-Lauf
+# sie sieht.
 #
 # NETZLOS (nur Datei-Lesen), laeuft in `make gates` ueber `make test` -> `test-bats`.
 
@@ -40,9 +42,8 @@ field() {
     | sed -E "s/^  $1:[[:space:]]*//"
 }
 
-phony_targets() {
-  grep -h '^\.PHONY:' "$MAKEFILE" "$DCHECK_MK" | sed -E 's/^\.PHONY:[[:space:]]*//' \
-    | tr ' ' '\n' | grep -v '^$' | sort -u
+makefile_rule_targets() {
+  grep -hE '^[a-zA-Z][a-zA-Z0-9._-]*:' "$MAKEFILE" "$DCHECK_MK" | sed -E 's/:.*//' | sort -u
 }
 
 # Scope: nur der Abschnitt "## Sensors (Feedback-Gates)" bis zur naechsten "## "-Ueberschrift.
@@ -86,11 +87,11 @@ exempt_targets() {
   ! exempt_targets | grep -qE '[*?\[]'
 }
 
-@test "jedes .PHONY-Target ohne Tabellenzeile im Sensors-Abschnitt steht genau einmal in exempt-targets" {
-  local phony authdoc undocumented exempt
-  phony="$(phony_targets)"
+@test "jede Makefile-Regel ohne Tabellenzeile im Sensors-Abschnitt steht genau einmal in exempt-targets" {
+  local rules authdoc undocumented exempt
+  rules="$(makefile_rule_targets)"
   authdoc="$(authority_table_targets)"
-  undocumented="$(comm -23 <(echo "$phony") <(echo "$authdoc"))"
+  undocumented="$(comm -23 <(echo "$rules") <(echo "$authdoc"))"
   exempt="$(exempt_targets)"
   diff <(echo "$undocumented") <(echo "$exempt")
 }

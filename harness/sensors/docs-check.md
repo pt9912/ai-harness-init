@@ -127,10 +127,17 @@ oder benennt an dieser Stelle, dass die Zusage ab dann nur für den flachen Best
 **Was das Modul `targets` in `docs-check` deckt, und was nicht:** `.d-check.yml` hält zwei
 Richtungen zwischen den Makefile-Rezepten (`makefiles: [Makefile, d-check.mk]`) und den
 Gate-Tabellen der Doku. **Vollständigkeit** (`gate-undocumented`) prüft gegen genau **eine**
-`authority`-Datei — `harness/README.md` §Sensors —, weil das Schema des Moduls keine Liste
-zulässt (eine zweite Datei in `authority` bricht mit einem Typfehler); `AGENTS.md` §4 trägt dazu
-Regel und Zeiger, keine eigene Tabelle
-(``grep -cE '^\| `make ' ../../AGENTS.md`` → **0**). **Phantom** (`gate-phantom`) prüft
+`authority`-Datei — `harness/README.md` als **Ganzes**, nicht nur ihren §Sensors-Abschnitt: das
+Schema des Moduls kennt kein Heading-Scoping (`d-check --print-config` zeigt im `targets`-Block
+keinen Abschnitts-Schlüssel) und keine Liste (eine zweite Datei in `authority` bricht mit einem
+Typfehler); `AGENTS.md` §4 trägt dazu Regel und Zeiger, keine eigene Tabelle
+(``grep -cE '^\| `make ' ../../AGENTS.md`` → **0**). Eine `make X`-Tabellenzeile in der
+„Werkzeuge (kein Gate)"-Tabelle deckt die Vollständigkeits-Richtung damit ebenso wie eine
+Sensors-Tabellenzeile — den engeren §Sensors-Scope hält allein der repo-lokale Wächter
+`test/targets-modul-wiring.bats`, nicht dieses Modul; die daraus folgende Senkung und ihre
+Kompensation stehen in
+[`ADR-0045`](../../docs/plan/adr/0045-authority-wechsel-senkt-eine-richtung.md) Festlegung 1/2.
+**Phantom** (`gate-phantom`) prüft
 beide `doc-tables`-Dateien (`AGENTS.md`, `harness/README.md`) in die Gegenrichtung: eine
 `make X`-**Tabellenzeile** ohne passendes Rezept färbt rot. Beide Richtungen greifen nur an
 **Tabellenzeilen** — eine Erwähnung in Fließtext, Aufzählung oder Code-Block bleibt für das

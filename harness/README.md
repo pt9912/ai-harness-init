@@ -59,8 +59,8 @@ wird dann zum Link auf die Datei.
 
 ### Werkzeuge (kein Gate)
 
-Genannt, weil ein Lauf sie braucht — kein Gate-Versprechen, darum keine `make X`-Zeile in
-dieser Tabelle nötig (kuratiert in `targets.exempt-targets`,
+Genannt, weil ein Lauf sie braucht — kein Gate-Versprechen, darum keine `make X`-Zeile in der
+Sensors-Tabelle oben nötig (kuratiert in `targets.exempt-targets`,
 [`.d-check.yml`](../.d-check.yml)). Die übrigen `exempt-targets` sind reine Utility-/
 Advisory-Ziele ohne Prosa-Erwähnung, deren einzige Dokumentation ihr eigener `## `-Hilfetext
 ist (`make help` listet sie).
