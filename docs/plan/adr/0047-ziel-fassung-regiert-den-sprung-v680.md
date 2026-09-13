@@ -1,6 +1,6 @@
 # ADR-0047: Die Ziel-Fassung regiert auch den Sprung `v6.7.2` → `v6.8.0` — Prozedur und Delegate sind unverändert, tragend ist deshalb die Tag-Klammer, und ohne Vorlagen-Delta bleibt allein die Freshness-Review des Adaptions-Blocks
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-13
 
@@ -299,7 +299,7 @@ frischem Kontext sie gegen [ADR-0018](0018-ziel-fassung-regiert-die-migration.md
 [ADR-0044](0044-ziel-fassung-regiert-den-sprung-v672.md) und
 [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) auf Konsistenz geprüft hat
 und ihr Report ohne blockierenden Befund in `docs/reviews/` liegt** — die Aufteilung, die das
-Baseline-Regelwerk `modul-08-agentenrollen.md` §Rollen-Regeln verbatim vorschreibt:
+Baseline-Regelwerk `v6.7.2`, `modul-08-agentenrollen.md` §Rollen-Regeln verbatim vorschreibt:
 *„ADR-Änderung: Architect schreibt; Reviewer prüft auf Konsistenz; Implementer liest als
 Constraint"*. **Der Accept-Übergang nennt diesen Report namentlich**, und eine Nachmessung durch
 denselben Kontext, der einen Befund auflöste, ist kein Beleg
@@ -432,6 +432,7 @@ Vorgänger benennt.
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-13 | **Proposed** | Architect-Lauf auf die Zielstand-Setzung des Auftraggebers vom selben Tag. Anlass sind der sechste Eintritt des zweiten Falls aus [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 und der erste Re-Evaluierungs-Trigger von [ADR-0044](0044-ziel-fassung-regiert-den-sprung-v672.md) |
+| 2026-09-13 | **Accepted** | **Angenommen auf Weisung des Auftraggebers vom 2026-09-13, vollzogen in der Architect-Rolle.** **Der Acceptance-Trigger ist eingelöst**, und der Beleg, den er verlangt, ist die **Reviewer-Konsistenzrunde vom 2026-09-13 zu ADR-0047** — Kennung `2026-09-13-adr-0047-konsistenzrunde` ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1: Kennung, kein Pfad-Link) —, gefahren in frischem Kontext gegen [ADR-0018](0018-ziel-fassung-regiert-die-migration.md), [ADR-0043](0043-ziel-fassung-regiert-den-sprung-v671.md), [ADR-0044](0044-ziel-fassung-regiert-den-sprung-v672.md) und [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md). Ihre Summary nennt **kein HIGH**, ihr Verdikt lautet *nicht merge-blockierend*, ihr Report liegt damit ohne blockierenden Befund in `docs/reviews/`; [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 verlangt eine weitere Runde nur nach einem **blockierenden** Befund und ist hier nicht ausgelöst. Den eigens benannten Prüfgegenstand — trägt der zweite Grund, wo der erste nur entlastet — prüft sie in **beide** Richtungen und bejaht ihn in beiden. **Ihr MEDIUM und ihr LOW sind vor diesem Umschlag behoben, solange die Datei `Proposed` war:** der Beleg im Acceptance-Trigger trägt jetzt seinen Mess-Tag, wie [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) Festlegung 3 (a) es für genau diesen Übergang verlangt, und die zwei derivativen Register nennen diese Datei in der Form, die sie für eine einzige Festlegung führen. **Benannte Grenze:** Behoben hat beides derselbe Lauf, der sie fand — die reparierte Fassung hat keine Runde bestätigt; Festlegung 2 fordert das nur nach einem blockierenden Befund. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
