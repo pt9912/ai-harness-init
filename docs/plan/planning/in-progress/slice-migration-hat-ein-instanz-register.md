@@ -59,7 +59,8 @@ zusammen mit der Begründungs-Pflicht je Punkt.
 **Ziel:** Vor dem nächsten Baseline-Sprung steht ein **stehendes** Dokument
 `harness/migration.md` — neben [`conventions.md`](../../../../harness/conventions.md) —, das zwei <!-- d-check:ignore (geplante Datei) -->
 Dinge trägt: ein **Instanz-Register** (welches Artefakt dieses Repos ist Instanz welcher vendored
-Vorlage) und eine **Report-Form** für `docs/migrations/<tag>.md` mit vier Ausgängen je Vorlage. <!-- d-check:ignore (geplante Ablage) -->
+Vorlage) und eine **Report-Form** für `docs/migrations/<tag>.md` mit genau einem Ausgang je <!-- d-check:ignore (geplante Ablage) -->
+Vorlage.
 
 ### Was heute fehlt, und woran es sich zeigt
 
@@ -143,21 +144,25 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
 
 **Drei Liefer-Punkte, und der dritte ist die Auflage:**
 
-- [ ] **(1) `harness/migration.md` existiert und trägt das Instanz-Register.** Je vendored Vorlage <!-- d-check:ignore (geplante Datei) -->
+- [x] **(1) `harness/migration.md` existiert und trägt das Instanz-Register.** Je vendored Vorlage <!-- d-check:ignore (geplante Datei) -->
       **genau eine** Zeile; die Zeilenzahl stimmt mit der Ausgabe von
       `find .harness/baseline/<tag>/templates -name '*.template.md' | wc -l` überein, und `<tag>`
       ist der Wert aus `grep -m1 '^BASELINE_TAG' Makefile` statt eines Literals. Jede Zeile nennt
       **das** Artefakt dieses Repos, das Instanz dieser Vorlage ist — oder *keine Instanz* **mit
       Begründung**. Eine Vorlage ohne Zeile ist der Befund, keine Auslassung.
       ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit))
-- [ ] **(2) Dasselbe Dokument trägt die Report-Form für `docs/migrations/<tag>.md`** — je Vorlage <!-- d-check:ignore (geplante Ablage) -->
-      genau einer von **vier** Ausgängen, und je Ausgang seine **Beleg-Art**: *übernommen* (Commit)
-      · *schon erfüllt* (`diff`) · *bewusst abweichend* (`MR`-Kennung) · *keine Instanz*
-      (Begründung). Die vier sind eine **geschlossene Menge**, kein Freitext — dieselbe Disziplin,
-      die Baseline-Regelwerk `modul-05-planning-harness.md` §Offene Risiken werden bei Closure
-      aufgelöst für die drei Risiko-Ausgänge setzt. Ein Report entsteht mit diesem Slice **nicht**
-      (§1).
-- [ ] **(3) Jeder normative Punkt des Dokuments nennt den Sprung-ADR, an dem er belegt ist** — aus
+- [x] **(2) Dasselbe Dokument trägt die Report-Form für `docs/migrations/<tag>.md`** — **drei** <!-- d-check:ignore (geplante Ablage) -->
+      Fälle, und je Vorlage genau einer: für jede **nicht-wiederkehrende** Vorlage einen von
+      **vier** Ausgängen mit seiner **Beleg-Art** — *übernommen* (Commit) · *schon erfüllt*
+      (Fundstelle) · *bewusst abweichend* (`MR`-Kennung) · *keine Instanz* (Begründung); für jede
+      **wiederkehrende** Vorlage den Ausgang *append-only* (Beleg: das Sprung-Datum); für jede noch
+      **nicht zugeordnete** Vorlage eine **offene Frage** im Abschnitt *Offene Fragen* statt einer
+      Regel. Die vier des ersten Falls bleiben eine **geschlossene Menge**, kein Freitext —
+      dieselbe Disziplin, die Baseline-Regelwerk `modul-05-planning-harness.md` §Offene Risiken
+      werden bei Closure aufgelöst für die drei Risiko-Ausgänge setzt; *append-only* ist keine
+      fünfte Ergänzung dieser Menge, sondern die disjunkte Antwort für eine andere
+      Vorlagen-Klasse. Ein Report entsteht mit diesem Slice **nicht** (§1).
+- [x] **(3) Jeder normative Punkt des Dokuments nennt den Sprung-ADR, an dem er belegt ist** — aus
       [ADR-0018](../../adr/0018-ziel-fassung-regiert-die-migration.md),
       [ADR-0031](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md),
       [ADR-0036](../../adr/0036-ziel-fassung-regiert-den-sprung-v600.md),
@@ -166,17 +171,17 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
       [ADR-0044](../../adr/0044-ziel-fassung-regiert-den-sprung-v672.md). **Was sich dort nicht
       belegen lässt, steht in einem eigenen Abschnitt als offene Frage** — benannt, nicht als Regel
       getarnt. Der Abschnitt ist nicht leer zu schreiben: Ist er leer, ist **das** zu belegen.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: Liefer-Punkt (1) **ist** dieses Item — `harness/migration.md` ist ein neuer <!-- d-check:ignore (geplante Datei) -->
+- [x] Doku-Update: Liefer-Punkt (1) **ist** dieses Item — `harness/migration.md` ist ein neuer <!-- d-check:ignore (geplante Datei) -->
       Einstieg neben [`conventions.md`](../../../../harness/conventions.md) und gehört in die
       Guides-Tabelle von [`harness/README.md`](../../../../harness/README.md).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — **hier nicht**: Dieses
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — **hier nicht**: Dieses
       Repo fährt Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l` → **3**, kein
       Erwartungswert), also prüft sie die nächste Welle-Closure, auch für diesen Slice ohne
       Wellen-Zugehörigkeit.
@@ -280,14 +285,27 @@ dasteht.
   abzuleiten wäre — anders als bei der RTM, deren Quellen die Anker sind, die der
   Traceability-Constraint ohnehin erzwingt. Zeigt sich beim Bauen, dass die Zuordnung aus einem
   vorhandenen Feld ableitbar ist, ist das Dokument falsch und die Rückführung greift.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang:** **entfallen.** Die Prüfung, die das Risiko selbst vorschreibt, ist beim Bauen
+  gefahren und fällt negativ aus: Die Zuordnung ist aus keinem vorhandenen Feld ableitbar. **21**
+  der **25** Zeilen verlangten ein Urteil, **4** ließen sich gar nicht entscheiden und stehen als
+  offene Frage in §6 des Dokuments — eine Ableitung hätte für alle 25 einen Anker geliefert. Das
+  Register ist damit keine Kopie, sondern die einzige Fassung. **Der Rest-Einwand steht und ist
+  nicht vergessen:** Zieht ein Artefakt um, altert seine Zeile still, weil kein Sensor sie hält —
+  das ist der in §1 **entschiedene** Ausschluss (*„Kein Sensor auf das Register"*), keine
+  übersehene Lücke.
 - **(2) Die vier Ausgänge sind eine Setzung des Auftraggebers, die Baseline führt an derselben
   Stelle fünf.** Der Freshness-Audit kennt **fünf** Ausgänge — *gegenstandslos · bleibt gültig ·
   teilweise überholt · Bezug ist entfallen · widerspricht* —, und sie gelten für den
   **Adaptions-Eintrag**, nicht für die **Vorlage**. Zwei Achsen, zwei Mengen. Wer sie zusammenzieht,
   misst eine Achse mit dem Maßstab der anderen; wer sie nebeneinanderstellt, ohne den Unterschied
   zu nennen, erzeugt beim nächsten Durchgang zwei Lesarten.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang:** **entfallen.** Das Dokument stellt die zwei Achsen nicht nur nebeneinander, es
+  nennt den Unterschied: §5 schließt mit dem Absatz *„Diese Ausgänge … sind nicht die fünf
+  Ausgänge des Adaptions-Durchgangs"* und benennt beide Bezugsgegenstände — **Vorlage** hier,
+  **Adaptions-Eintrag** dort. Zwei Review-Befunde trafen genau diese Passage (Runde 1, F-5 fehlender
+  Mess-Tag, F-6 Beleg-Zeiger auf den falschen Abschnitt von
+  [ADR-0018](../../adr/0018-ziel-fassung-regiert-die-migration.md)); beide betrafen die **Form**
+  des Belegs, nicht die Vermischung, und beide sind behoben.
 - **(3) Die Vollständigkeits-Zahl wandert mit dem Tag, und genau sie ist das Abnahmekriterium.**
   **25** gilt für `v6.7.2`; der nächste Tag kann mehr oder weniger Vorlagen führen. Ein
   eingefrorenes Literal im Dokument wäre ein Erwartungswert
@@ -295,7 +313,12 @@ dasteht.
   Setzung 2) und machte das Register beim ersten Sprung falsch — an genau der Stelle, an der es
   gebraucht wird. **Gegenmittel im Plan:** Liefer-Punkt (1) definiert Vollständigkeit als Abzählung
   gegen das Kommando und liest `<tag>` aus `BASELINE_TAG`.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang:** **entfallen.** Das Gegenmittel ist im gelieferten Dokument verkörpert: Die
+  Vollständigkeit steht als Abzählung gegen `find … | wc -l` neben ihrem Kommando, der Tag kommt
+  aus `grep -m1 '^BASELINE_TAG' Makefile`, und kein Literal trägt das Kriterium. Die **25** steht
+  als datierte Messung neben ihrem Kommando, nicht als Erwartungswert
+  ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2) — was der nächste Tag an ihr bewegt, bewegt er am Kommando mit.
 - **(4) Die Auflage kann das Dokument leerlaufen lassen.** Die sechs Sprung-ADRs entscheiden über
   die **regierende Fassung** eines Sprungs; ob sie auch über die Zuordnung *Vorlage → Instanz*
   etwas sagen, ist gemessen offen — sie nennen `templates` zwischen **0** und **16** Mal
@@ -303,12 +326,22 @@ dasteht.
   Erwartungswert), und eine Nennung ist kein Beleg. Bleibt am Ende mehr in *Offene Fragen* als im
   normativen Teil, ist das Ergebnis ehrlich und trotzdem nicht das bestellte Dokument; die
   Rückführung `in-progress` → `open` ist dafür vorab benannt (§4).
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang:** **entfallen.** Die Schwelle, die das Risiko selbst setzt — *mehr in „Offene
+  Fragen" als im normativen Teil* —, ist nicht erreicht: §4 trägt **25** Zuordnungs-Zeilen, §5
+  zwei Fälle, und **4** Zeilen plus die Grundfrage stehen in §6. Die Rückführung hat nicht
+  gefeuert. **Eingetreten ist die Gegenrichtung**, und sie ist gemessen: In Runde 2 und 3 erzwang
+  der Review-Druck eine **Zuordnung** für Zeilen, für die die Auflage die offene Frage vorgesehen
+  hätte — Runde 4 hat das als N-14/N-15/N-18 benannt. Das ist nicht dieses Risiko, sondern eine
+  eigene Klasse; sie geht als Beobachtung ins Register (§7).
 - **(5) Ein neues stehendes Dokument im Harness-Baum hat keinen Konsumenten, bis einer es liest.**
   [`harness/README.md`](../../../../harness/README.md) §Guides ist der einzige Ort, an dem ein Lauf
   es findet; steht es dort nicht, ist es eine Datei, die niemand öffnet. **Gegenmittel im Plan:**
   Das Doku-Item in §2 ist genau dieser Eintrag und keine Formalie.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang:** **entfallen.** Der Eintrag steht in der Guides-Tabelle von
+  [`harness/README.md`](../../../../harness/README.md)
+  (`grep -c '(migration.md)' harness/README.md` → **1**, kein Erwartungswert). Damit findet das
+  Dokument denselben Lesepfad wie [`conventions.md`](../../../../harness/conventions.md); der
+  **erste** Konsument ist der Durchgang des nächsten Sprungs, und den adressiert §1.
 
 ## 7. Closure-Notiz
 
@@ -320,14 +353,81 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes der fünf mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
-  für diesen Slice ohne Wellen-Zugehörigkeit>
+- **Was hat funktioniert:** **Die Reihenfolge aus §3 — erst die Bezugsmenge, dann die Zuordnung,
+  und der ADR-Beleg vor der Formulierung.** Die Vollständigkeit ist nie eine Behauptung geworden:
+  Sie steht als Abzählung gegen `find … | wc -l` (**25**, deckungsgleich mit den Registerzeilen)
+  und liest den Tag aus `BASELINE_TAG` statt aus einem Literal. Und die **Auflage** hat getan, wofür
+  sie da war: **4** der **25** Zeilen ließen sich an keinem der sechs Sprung-ADRs belegen und stehen
+  als offene Frage in §6 des Dokuments, statt als Regel getarnt zu sein.
+- **Was ging anders als geplant:** **Zweierlei.** (a) **DoD-Punkt (2) hat die Arbeit nicht
+  überlebt.** Er setzte *„je Vorlage genau einer von vier Ausgängen"* als Tatsache; Review-Runde 1
+  (F-1) hat gemessen, dass die Vier-Menge die **wiederkehrenden** Vorlagen nicht trägt, und das
+  Dokument trägt seither drei Fälle — vier Ausgänge für einmalige, *append-only* für
+  wiederkehrende, offene Frage in §6 für unentschiedene. Korrigieren durfte den Punkt weder
+  Implementer noch Reviewer ([`AGENTS.md`](../../../../AGENTS.md) §3.10); er hat vier Runden und
+  zwei Verifikationen überstanden und steht mit dieser Closure. (b) **Der Lerneintrag hat die Form
+  gewechselt** — §5 plante die *benannte Spec-Lücke* und überließ die Entscheidung ausdrücklich
+  dieser Closure. Sie fällt auf **geschärfte Regel**, und der Gegenstand ist nicht der Sprung,
+  sondern der Prüf-Rhythmus (unten).
+- **Steering-Loop-Eintrag — geschärfte Regel (Vorschlag, nicht verkörpert):** **Die Prüftiefe
+  folgt der Artefakt-Klasse, nicht dem Rhythmus.** Für ein Artefakt **ohne normative Bindung** —
+  kein Gate-Vertrag, keine ADR, kein Hard-Rule-Text, keine emittierte Vorlage; hier ein
+  vorbereitendes **Nachschlage-Dokument** — ist eine Review-Runde **hinreichend, sobald sie kein
+  HIGH mehr findet**. MEDIUM-Funde, die eine **offene Frage statt einer Antwort** nach sich ziehen,
+  lösen dann keine weitere Runde aus: Sie gehen als Befund in die Closure und, wo sie eine Klasse
+  treffen, ins Beobachtungs-Register. **Zielort wäre
+  [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md)** und nicht das
+  Regelwerks-Modul: `modul-10-review-harness.md` liegt unter `.harness/baseline/` und ist committet
+  vendorter Fremdtext, den dieses Repo nicht schreibt — eine Abweichung dort wäre ein Eintrag im
+  Adaptions-Block und damit Architect-Arbeit
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Die Skill-Datei ist der Ort, an dem die
+  **nicht-ableitbare** Urteilsgrundlage des Reviewers steht (Baseline-Regelwerk
+  `modul-08-agentenrollen.md` §Welche Rolle braucht welche Artefaktklasse) — und *wann eine Runde
+  genug ist* ist genau das.
+  *(Kein `liegt in`-Feld — der Eintrag ist **gezählt, nicht verkörpert**, aus zwei unabhängigen
+  Gründen. **Erstens die Schwelle:** die Beobachtung steht nach diesem Slice bei **1×**; Baseline-
+  Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register bindet *verkörpert* und *geplant* an
+  den 3×-Übertritt, darunter ist `offen` der Normalzustand. Eine Regel aus einer einzigen
+  Beobachtung wäre genau die Verallgemeinerung, vor der die Schwelle schützt. **Zweitens das
+  Eigentum:** Ein Rollen-Anweisungssatz gehört der Rolle, die ihn **ausführt**
+  ([ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)) — die
+  Reviewer-Skill schreibt der Reviewer, nicht der Planner. Auch beim Übertritt ist das eine
+  **Übergabe**, kein Closure-Schritt.)*
+- **Beobachtungs-Register (`../observations/`):** **drei Belege.** Neu angelegt:
+  [`BEO-ALL/pruef-tiefe-folgt-nicht-der-artefakt-klasse`](../observations/BEO-ALL/pruef-tiefe-folgt-nicht-der-artefakt-klasse/observation.md)
+  (**1×**) — der Gegenstand des Lerneintrags oben. Ergänzt:
+  [`BEO-ALL/abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt`](../observations/BEO-ALL/abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt/observation.md)
+  (**2×**) für DoD-Punkt (2) und — **strukturell erst nach dem `git mv`, weil er ein Befund des
+  Move ist** —
+  [`BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md)
+  (**17×**): Der Closure-Move macht die Zeile *„In Arbeit: …"* der Roadmap falsch, und
+  [`make slice-mv`](../../../../harness/sensors/slice-mv.md) zieht Pfade nach, keine Zustandssätze.
+  **Die zwei aus der Sichtung (§8) sind nicht erhöht**, und das ist der Befund, nicht eine
+  Auslassung: `re-baseline-ohne-inventur-slice` steht bei **2×**, weil dieser Slice die Klasse nicht
+  erneut auslöst, sondern **beantwortet**; `baseline-aussage-ohne-mess-tag` steht bei **2×**, weil
+  der einzige Treffer dieser Art (Runde 1, F-5) **innerhalb** desselben Vorgangs behoben wurde und
+  ein Vorgang einmal zählt. **Der Lese-Schritt ist nicht meine Sache:** Dieses Repo fährt
+  Wellen-Betrieb, der 3×-Übertritt gehört der nächsten Welle-Closure.
+- **Folge-Slices:** **keiner.** Kein Risiko aus §6 ist eingetreten, und die offenen Fragen in §6 des
+  Dokuments haben ihre Adresse bereits: Der Durchgang des nächsten Sprungs ist nach
+  [ADR-0044](../../adr/0044-ziel-fassung-regiert-den-sprung-v672.md) §Konsequenzen ein eigener
+  Planner-Auftrag — er wird geschnitten, wenn der Zielstand gesetzt ist (§1). Ein Slice dafür jetzt
+  zu schneiden hieße, auf einen Tag zu planen, den niemand gesetzt hat.
+- **Risiken aus §6:** fünf Risiken, fünf Ausgänge — **fünfmal *entfallen*, jedes mit Messung**;
+  keines *eingetreten*, keines *weiter offen*. Kein Risiko ohne Ausgang; die Einzelheiten stehen in
+  §6. Bei Risiko 1 und 4 steht der **Rest** ausdrücklich daneben: der ungewächtert alternde
+  Registereintrag (in §1 entschieden ausgeschlossen) und die Gegenrichtung der Auflage (oben als
+  Beobachtung gebucht).
+- **Verhältnismäßigkeit, als Feststellung des Auftraggebers:** **vier** Review-Runden und **sechs**
+  Implementer-Commits (`ls docs/reviews/*slice-migration-hat-ein-instanz-register*.md | grep -vc verify`
+  → 4, `git log --format='%s' f0d58786^..369e6e99 | grep -cE '^Rolle Implement'` → 6; keine
+  Erwartungswerte) für ein Dokument mit **25** Registerzeilen, von denen **4** als offene Frage
+  enden. Den Gegenstand des kommenden `v6.8.0`-Sprungs — vier Dateien, +36/−4 Zeilen im vendored
+  Baum — hat der Auftraggeber beziffert; **hier ist er nicht messbar** (`ls .harness/baseline/` →
+  `v6.7.2`), und die Zahl steht darum als seine Feststellung und nicht als eigene Messung.
+- **Drei Paarungen:** Repo **mit** Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l` →
+  **3**, kein Erwartungswert) — geprüft von der nächsten Welle-Closure, auch für diesen Slice ohne
+  Wellen-Zugehörigkeit.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
