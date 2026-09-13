@@ -561,7 +561,7 @@ Backticks).
   Schwelle, und der Lese-Schritt gehört in einem Repo mit Wellen-Betrieb der Welle-Closure
   (`ls docs/plan/planning/welle-*.md` → drei offene Wellen).
 - **Folge-Slices:**
-  [slice-werkzeug-erkennt-die-benannte-kennung](../next/slice-werkzeug-erkennt-die-benannte-kennung.md)
+  [slice-werkzeug-erkennt-die-benannte-kennung](../in-progress/slice-werkzeug-erkennt-die-benannte-kennung.md)
   (Verweis-Nachzug und Archiv-Stub erkennen eine benannte Slice-Kennung) und
   [slice-emittierte-gate-vorlage-traegt-targets-und-reviews](../open/slice-emittierte-gate-vorlage-traegt-targets-und-reviews.md)
   (Die emittierte Doc-Gate-Vorlage nennt die zwei Module, die sie heute verschweigt) — beide Dateien
