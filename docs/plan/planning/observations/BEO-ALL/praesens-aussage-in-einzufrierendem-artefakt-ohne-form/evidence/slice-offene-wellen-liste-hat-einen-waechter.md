@@ -1,0 +1,2 @@
+**Vorgang:** slice-offene-wellen-liste-hat-einen-waechter
+**Fund:** [ADR-0046](../../../../../../../docs/plan/adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) §Konsequenzen sagt im Präsens, `harness/sensors/docs-check.md` führe die Norm-Frage als offen; derselbe Slice hat den Absatz ersetzt, die ADR steht seither auf `Accepted` und führt ihre Folgepflicht auf Dauer als fällig, ohne dass jemand sie berichtigen darf.

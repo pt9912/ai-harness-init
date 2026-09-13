@@ -1,0 +1,2 @@
+**Vorgang:** slice-offene-wellen-liste-hat-einen-waechter
+**Fund:** Der Slice übergab die Abweichungs-Frage (*entfällt sie mit der Aktivierung oder braucht sie einen Adaptions-Eintrag?*) ausdrücklich an den Architect, während seine eigene `waves`-Verdrahtung den Zustand *Welle-Datei vor dem Start-Trigger* im selben Commit gate-rot machte — das Übergabe-Artefakt trug die gegenteilige Tatsachenbehauptung.

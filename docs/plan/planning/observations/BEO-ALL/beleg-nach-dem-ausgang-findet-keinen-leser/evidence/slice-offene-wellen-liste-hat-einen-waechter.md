@@ -1,0 +1,2 @@
+**Vorgang:** slice-offene-wellen-liste-hat-einen-waechter
+**Fund:** Der Beleg dieses Vorgangs in `zusage-neben-geaenderter-ableitung-bleibt-stehen` trifft eine Unterklasse, die der zugewiesene Ausgang `geplant` (`slice-153`, Anker-Zusagen) ausdrücklich offenlässt — Prosa statt Anker; beide Leser des Registers sehen den Beleg nicht an, weil der Eintrag oberhalb der Schwelle steht und bereits einen Ausgang trägt.

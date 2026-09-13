@@ -164,7 +164,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 **Drei Liefer-Punkte, und der zweite ist das Rot:**
 
-- [ ] **(1) Die Fähigkeit ist verdrahtet und der Bestand bleibt grün.**
+- [x] **(1) Die Fähigkeit ist verdrahtet und der Bestand bleibt grün.**
       [`.d-check.yml`](../../../../.d-check.yml) trägt unter `planning:` einen `waves:`-Block mit
       `dir` **und** `mode: many`; `make docs-check` meldet über dem unveränderten Bestand
       `0 Befund(e)`, Exit 0. Der Kommentar über dem Block beschreibt, **was die Fähigkeit prüft**,
@@ -172,31 +172,33 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Träger [`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md) statt
       `harness/README.md`.
       ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6))
-- [ ] **(2) Richtung A ist einmal rot gesehen** — eine flache Welle-Datei ohne Zeiger unter
+- [x] **(2) Richtung A ist einmal rot gesehen** — eine flache Welle-Datei ohne Zeiger unter
       *Offene Wellen* färbt den Lauf rot. Der Umsetzungs-Commit trägt das Kommando, das es rot
       färbt, den Grund-Code und die Ausgabe; gefahren gegen eine Kopie **außerhalb** des Repos
       (`git archive HEAD | tar -x`), netzlos (`--network none`), Mount `:ro`, mit dem Digest aus
       [`d-check.mk`](../../../../d-check.mk). **Ohne dieses Rot wird nicht verdrahtet** —
       [`AGENTS.md`](../../../../AGENTS.md) §3.6.
       ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit))
-- [ ] **(3) Die Sensor-Prosa beschreibt die Deckung statt ihres Ausbleibens.**
+- [x] **(3) Die Sensor-Prosa beschreibt die Deckung statt ihres Ausbleibens.**
       [`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md) §Modul
-      `planning` sagt, was `waves` hält, **und nennt die Grenze**: Richtung B — ein Zeiger ohne
-      Datei — fällt über das Modul `links` (`target-missing`), nicht über `waves`. Die Zusage
+      `planning` sagt, was `waves` hält — **beide** Richtungen der Bijektion unter *Offene Wellen*,
+      Datei ohne Zeiger **und** Zeiger ohne Datei, unter dem Grund-Code `wave-drift` — **und nennt
+      die Grenze**: Ein toter Zeiger in der **Vorschau**-Tabelle *Nächste Wellen* fällt
+      ausschließlich über das Modul `links` (`target-missing`), nicht über `waves`. Die Zusage
       nennt damit genau die Kante, die das Modul trägt, und keine zweite.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: Liefer-Punkt (3) **ist** dieses Item — der Gate-Vertrag ist ein öffentlicher
+- [x] Doku-Update: Liefer-Punkt (3) **ist** dieses Item — der Gate-Vertrag ist ein öffentlicher
       Vertrag, und seine Prosa liegt in
       [`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag in der Form **neuer Sensor** — der Weg, den
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag in der Form **neuer Sensor** — der Weg, den
       [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
       §Begründung für ein Gate-*Anheben* vorsieht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — **hier nicht**: Dieses
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — **hier nicht**: Dieses
       Repo fährt Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l` → **3**, kein
       Erwartungswert), also prüft sie die nächste Welle-Closure, auch für diesen Slice ohne
       Wellen-Zugehörigkeit.
@@ -321,7 +323,15 @@ dasteht.
   **Gegenmittel im Plan:** Liefer-Punkt (2) macht das Rot zur **Bedingung** der Verdrahtung, nicht
   zur Beigabe; eine Null aus einem Lauf ohne `dir` belegt nichts. Wer die Null ohne das Rot
   berichtet, hat den Prüfbereich nicht gemessen, sondern die Abwesenheit eines Prüfbereichs.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang: weiter offen → Beobachtungs-Register**
+  ([`BEO-ALL/zusicherung-ueber-der-leeren-menge-wahr`](../observations/BEO-ALL/zusicherung-ueber-der-leeren-menge-wahr/observation.md),
+  Zähler damit **2×**). Auf **seiner** Achse hat das Gegenmittel getragen: Der Trockenlauf lief mit
+  gesetztem `dir`, Richtung A ist real rot, und die Inertheit ohne `dir` ist eigens gemessen
+  (`1260 Datei(en) geprüft, 0 Befund(e)`, Review-Runde 1, Negativbefund N-5). Eingetreten ist die
+  Klasse auf einer **zweiten** Achse, die dieser Plan nicht benannt hatte: Beide Deckungs-Träger
+  sagten zu, `waves` lese die Vorschau-Tabelle *Nächste Wellen* nicht — wahr allein deshalb, weil
+  in deren Spalte 1 derzeit kein Name mit vorhandener Datei steht. Für diese Achse besteht kein
+  Träger; der Zähler trägt sie.
 - **(2) Die heutige Null hängt an der Form der Tabelle *Nächste Wellen*, nicht nur an der
   Zeiger-Liste.** Die Fähigkeit kennt neben `wave-drift` den Grund-Code `wave-preview-exists` —
   belegt in [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §1, dessen Messung **2 ×** je
@@ -336,7 +346,13 @@ dasteht.
   geschnitten wird, bevor ihr Start-Trigger eintritt, färbt den Gate ab dann rot. Das ist die
   gewollte Wirkung und keine Panne — aber sie trifft den nächsten Wellen-Schnitt, nicht diesen
   Slice, und sie gehört benannt, bevor sie jemanden überrascht.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang: eingetreten → Folge-Slice `slice-wellen-schnitt-folgt-der-eroeffnungs-regel`.**
+  Und schärfer als vorhergesagt: Getroffen ist nicht erst der nächste Wellen-Schnitt, sondern die
+  Arbeitsweise selbst — [ADR-0046](../../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md)
+  Festlegung 1 beendet den frühen Schnitt, und `wave-preview-exists` färbt ihn ab sofort rot. Drei
+  lebende Träger lehren ihn weiterhin (`welle-13` §1, `roadmap.md` §Nächste Wellen,
+  [`plan-welle.md`](../../../../.claude/commands/plan-welle.md)); der Folge-Slice liegt in `open/`
+  und nimmt sie in einem Schnitt.
 - **(3) Die Abweichungs-Frage ist nicht entschieden, und dieser Slice darf sie nicht
   entscheiden.** Entfällt die Abweichung mit der Aktivierung — dann ist kein Eintrag nötig —, oder
   besteht sie bis zu einem Eintrag fort? Beides ist Architect-Arbeit
@@ -344,7 +360,13 @@ dasteht.
   unerklärte Abweichung sonst zum Fork wird
   ([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)). **Übergabe-Artefakt
   ist dieser Plan**; die Antwort steuert die Rückführung `in-progress` → `open` in §4.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang: entfallen.** Der Architect hat sie beantwortet:
+  [ADR-0046](../../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) Festlegung 2 stellt fest,
+  dass die Abweichung nicht besteht und nie gebucht war — ein Eintrag entsteht nicht. Die Antwort
+  lautete damit *entfällt* und nicht *braucht vorher einen Eintrag*; die Rückführung aus §4 ist
+  nicht eingetreten. Wieder auftreten kann die Frage nicht: Die Entscheidung steht auf `Accepted`
+  und ist nach [`AGENTS.md`](../../../../AGENTS.md) §3.4 eingefroren, ein Widerspruch geht den
+  Folge-ADR-Weg mit neuer Evidenz.
 - **(4) Die Zusage kann mehr behaupten, als die Fähigkeit hält.** Von den zwei Richtungen der
   Bijektion trägt `waves` nur eine: Ein **Zeiger ohne Datei** fällt über das Modul `links`
   (`target-missing`), nicht über `waves`. Wer nach der Aktivierung schreibt *„die Bijektion ist
@@ -354,7 +376,19 @@ dasteht.
   [`BEO-ALL/vollstaendigkeits-zusage-misst-falsche-ebene`](../observations/BEO-ALL/vollstaendigkeits-zusage-misst-falsche-ebene/observation.md)
   (**3×**, `offen`). **Gegenmittel im Plan:** Liefer-Punkt (3) verlangt die Grenze ausdrücklich im
   Text, nicht als Fußnote.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang: weiter offen → Beobachtungs-Register**
+  ([`BEO-ALL/zusammenfassung-staerker-als-ihre-quelle`](../observations/BEO-ALL/zusammenfassung-staerker-als-ihre-quelle/observation.md),
+  **7×**, und
+  [`BEO-ALL/zusage-nennt-zwei-kanten-der-sensor-deckt-eine`](../observations/BEO-ALL/zusage-nennt-zwei-kanten-der-sensor-deckt-eine/observation.md),
+  **2×**). Eingetreten ist es dreimal in zwei Runden, und jedes Mal an einer **anderen** Kante als
+  der hier benannten: die Vorschau-Tabelle, über die beide Träger zu wenig zusagten (Runde 1,
+  HIGH-1); der zusammenfassende Satz unter der Fünf-Lagen-Tabelle, der breiter stand als die
+  Tabelle, die er zusammenfasst (Runde 2, MEDIUM-1); und *„`waves` hält **genau das** durch"* für
+  eine Festlegung, von der die zitierte ADR ein Drittel als unbewacht führt (Runde 2, LOW-1). Das
+  Gegenmittel hat die **eine** benannte Kante gehalten — die Grenze steht im Text — und über die
+  Zusage als Ganzes nichts gesagt. **Und die Prämisse dieses Risikos ist selbst widerlegt:**
+  `waves` trägt **beide** Richtungen der Bijektion; der Satz oben ist die Annahme, gegen die der
+  Trockenlauf maß, und sein Ausgang steht in Risiko 5.
 - **(5) Die Aussagen dieses Plans tragen zwei verschiedene Beleg-Grade, und der Unterschied steht
   hier statt im Fließtext.** **Belegt** sind alle repo-lokalen `grep`/`ls`/`sed`-Zahlen — jede
   steht neben dem Kommando, das genau sie ausgibt. **Angenommen** sind die drei d-check-Ergebnisse
@@ -364,7 +398,17 @@ dasteht.
   [`BEO-ALL/gruen-aussage-ohne-herkunft`](../observations/BEO-ALL/gruen-aussage-ohne-herkunft/observation.md)
   (**2×**, `offen`) — dieselbe Unterscheidung *gemessen* gegen *belegt*. §3 macht ihr Nachfahren
   zum ersten Schritt der Umsetzung; kippt eines davon, greift eine der zwei Rückführungen in §4.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang: weiter offen → Beobachtungs-Register**
+  ([`BEO-ALL/abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt`](../observations/BEO-ALL/abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt/observation.md),
+  neu angelegt, **1×**). Eingetreten ist es: Von den drei angenommenen d-check-Ergebnissen ist
+  eines gekippt — Richtung B fällt über `waves` und nicht über `links`. Die hier angekündigte Folge
+  ist **nicht** gefolgt, und zu Recht: Die zwei Rückführungen in §4 messen Größe und Blockade, und
+  eine gekippte Annahme bewegt weder Liefer-Punkte noch Schichten. Gekostet hat sie trotzdem, weil
+  sie nicht nur hier stand, sondern in **DoD (3)** — dort hat sie zwei Review-Runden und alle vier
+  Commits überlebt, weil ihre Korrektur in keinen der drei ausführenden Kontexte gehört
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.10). Der Planner hat den Punkt mit dieser Closure auf
+  die gemessene Grenze berichtigt; ein Träger, der die Annahmen eines Plans **vor** dem Abhaken
+  gegen die Messungen desselben Vorgangs hält, besteht nicht.
 
 ## 7. Closure-Notiz
 
@@ -376,14 +420,94 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes der fünf mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
-  für diesen Slice ohne Wellen-Zugehörigkeit>
+- **Was hat funktioniert:** **Die Reihenfolge aus §3 — erst der Trockenlauf, dann die Config.** Sie
+  hat die falsche Plan-Annahme zu Richtung B gefunden, **bevor** verdrahtet wurde, und die
+  Sensor-Prosa ist gegen die Messung geschrieben statt gegen den Plan. Zweitens die Kopplung
+  *Rot ist Bedingung, nicht Beigabe*: `dir` ist der Aktivierungs-Schalter, und ein Lauf ohne ihn
+  meldet in beiden Richtungen null — ohne den roten Gegenlauf wäre die Aktivierung an einer
+  Zusicherung über der leeren Menge vorbeigegangen.
+- **Was ging anders als geplant:** **Dreierlei.** (a) Die Fähigkeit deckt **mehr**, als der Plan
+  annahm — `wave-drift` trägt beide Richtungen unter *Offene Wellen*, und als Folge derselben
+  Aktivierung hält sie zusätzlich *Abgeschlossene Wellen* gegen die Ergebnisnotizen
+  (`wave-unregistered`/`wave-results-missing`) und liest Spalte 1 der Vorschau
+  (`wave-preview-exists`). Vier Grund-Codes statt des einen, den der Plan kannte. (b) Die
+  Abweichungs-Frage, die §6 Risiko 3 an den Architect übergab, war zum Zeitpunkt der Übergabe
+  faktisch schon entschieden: Die Verdrahtung färbt den abweichenden Zustand rot. (c) Die
+  Plan-Annahme zu Richtung B stand nicht nur in §6, sondern in **DoD (3)**, und dort hat sie alles
+  überlebt — die Korrektur des Abnahmekriteriums gehört dem Planner
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.10), und keine der ausführenden Rollen durfte sie
+  vornehmen. Sie steht mit dieser Closure.
+- **Steering-Loop-Eintrag:** **Neuer Sensor** — die **Listen-Hälfte** des Abschnitts *Offene
+  Wellen* ist bewacht: `planning.waves` (`dir` + `mode: many`) hält die Bijektion zwischen den
+  Zeigern dort und den flachen Welle-Dateien in **beiden** Richtungen (`wave-drift`), dazu
+  *Abgeschlossene Wellen* gegen die Ergebnisnotizen und Spalte 1 der Vorschau. Was er **nicht**
+  sieht, steht daneben: eine Nennung in Spalte 3 und ein toter Vorschau-Zeiger ohne Datei — der
+  fällt über `links`. Das ist der Weg, den
+  [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
+  §Begründung einem Gate-*Anheben* zuweist.
+  *(Kein `liegt in`-Feld: Mit diesem Slice ist keine Regel aus einem 3×-Übertritt **verkörpert**
+  worden. Der Sensor folgt aus
+  [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) und
+  [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
+  und trägt damit bereits eine ID — Baseline-Regelwerk `grundlagen-traceability.md`
+  §Herkunfts-Anker, Geltungsbereich. Der Eintrag ist gezählt, nicht verkörpert.)*
+- **Beobachtungs-Register (`../observations/`):** **zehn Belege, je einer je Klasse** — drei
+  Verzeichnisse neu angelegt, sieben `evidence/slice-offene-wellen-liste-hat-einen-waechter.md`
+  ergänzt. Neu: `abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt` (1×, aus der
+  Verifikation), `aktivierung-entscheidet-die-als-offen-uebergebene-frage` (1×, aus Runde 1 HIGH-2
+  — und die Kennungs-Entscheidung, die
+  [ADR-0046](../../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) §Konsequenzen dieser
+  Closure ausdrücklich überlässt), `naechste-rolle-uebernimmt-vor-dem-schluss-der-vorigen-runde`
+  (1×, aus der Verifikation). Ergänzt: `zusicherung-ueber-der-leeren-menge-wahr` (2×),
+  `mutations-fall-ueberlebt-die-umbenennung-seines-waechters` (2×),
+  `zusammenfassung-staerker-als-ihre-quelle` (7×), `zusage-nennt-zwei-kanten-der-sensor-deckt-eine`
+  (2×), `praesens-aussage-in-einzufrierendem-artefakt-ohne-form` (2×),
+  `zusage-neben-geaenderter-ableitung-bleibt-stehen` (24×),
+  `beleg-nach-dem-ausgang-findet-keinen-leser` (2×).
+  **Zwei Einordnungen weichen von der Empfehlung des Reports ab**, und der Grund steht hier:
+  Runde-2-INFO-1 ist **nicht** unter `benannte-luecke-ohne-ausgang` gebucht — jene Klasse handelt
+  von einer Grenz-Beschreibung in lebender Prosa, hier altert eine **Präsens-Aussage in einem
+  einfrierenden Artefakt**, was genau die andere Klasse trifft. Runde-2-INFO-2 ist **nicht** unter
+  `ueberholter-offener-plan-ohne-genormten-ausgang` gebucht: Jene Klasse handelt vom **Ausscheiden**
+  eines Plans, für das keine Quelle einen Weg nennt;
+  [slice-210](../open/slice-210-planning-modul-im-emittierten-doc-gate.md) scheidet nicht aus, sein
+  Gegenstand steht — nur eine Begründung daneben ist falsch geworden, und dafür gibt es einen
+  Ausgang, den diese Closure geht.
+  **Kein Eintrag erreicht mit diesem Slice 3×**; drei standen schon davor darüber. Den Lese-Schritt
+  trägt in diesem Repo die Welle-Closure.
+- **Folge-Slices:** zwei, beide als Datei in `open/`.
+  [`slice-wellen-schnitt-folgt-der-eroeffnungs-regel`](../open/slice-wellen-schnitt-folgt-der-eroeffnungs-regel.md)
+  — die drei Planner-Folgepflichten aus
+  [ADR-0046](../../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) §Konsequenzen in einem
+  Schnitt (§6 Risiko 2). Und
+  [`slice-migration-hat-ein-instanz-register`](../open/slice-migration-hat-ein-instanz-register.md)
+  — das vom Auftraggeber bestellte stehende `harness/migration.md`, dem nächsten Baseline-Sprung <!-- d-check:ignore (geplante Datei) -->
+  vorgelagert; er hängt an diesem Slice nicht und steht hier, weil diese Closure ihn geschnitten
+  hat.
+- **Zwei Übergaben ohne eigenen Folge-Slice, beide hier abgetragen:** (a) Die
+  Folgepflicht aus [ADR-0046](../../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md)
+  §Konsequenzen **ohne Rollen-Adresse** — der Absatz in
+  [`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md), der die Norm-Frage
+  als offen führte — ist mit Commit `87557369` **eingelöst**: Der Absatz ist ersetzt und zeigt auf
+  die Entscheidung (`grep -rl 'offene Norm-Frage' harness/ | wc -l` → **0**, kein
+  Erwartungswert). Die ADR steht auf `Accepted` und wird die Pflicht weiter als fällig führen; das
+  ist der Preis von [`AGENTS.md`](../../../../AGENTS.md) §3.4 und wird nicht geheilt, sondern hier
+  vermerkt. **Nicht** eingelöst sind die drei übrigen — sie sind der Folge-Slice oben. (b) Der
+  überholte Ausschluss-Punkt in
+  [slice-210](../open/slice-210-planning-modul-im-emittierten-doc-gate.md) §1 ist nachgezogen; der
+  Ausschluss selbst bleibt, seine Begründung nennt jetzt die drei Kriterien von
+  [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
+  statt einer Abweichung, die es nicht gibt.
+- **Prozess-Hinweis aus der Verifikation (V-4), ohne Diff-Folge:** Review-Runde 2 endete
+  `BLOCKIERT`, und eine dritte Runde, die die Nacharbeit freigibt, hat nicht stattgefunden — die
+  Verifikation hat sie selbst am Diff nachvollzogen. Kein DoD-Punkt verlangt eine Freigabe-Runde
+  wörtlich; die Beobachtung ist als eigene Kennung im Register und nicht als Nacharbeit gebucht.
+- **Risiken aus §6:** fünf Risiken, fünf Ausgänge — einmal *eingetreten* (Risiko 2 → Folge-Slice),
+  einmal *entfallen* mit Begründung (Risiko 3), dreimal *weiter offen* ins Beobachtungs-Register
+  (Risiken 1, 4, 5). Kein Risiko ohne Ausgang; die Einzelheiten stehen in §6.
+- **Drei Paarungen:** Repo **mit** Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l` →
+  **3**, kein Erwartungswert) — geprüft von der nächsten Welle-Closure, auch für diesen Slice ohne
+  Wellen-Zugehörigkeit.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
