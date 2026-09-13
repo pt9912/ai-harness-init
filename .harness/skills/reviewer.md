@@ -51,7 +51,7 @@ bewusst kurz (Ergänzungs-Kanal, nicht Hauptkanal).
 - **Norm nur im Template-Kommentar** — eine Regel steht im `<!-- -->`-Block eines
   `.template.md` und nirgends sonst. Sie ist beim Adopter weg, sobald er die
   Kommentare entfernt. Kein Gate fängt das (Baseline-Regelwerk
-  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.7.2/regelwerk/grundlagen-harness-dateien.md)
+  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.8.0/regelwerk/grundlagen-harness-dateien.md)
   §Template-Schichtung)
 - **Kommentar trägt keine der Kommentar-Klassen** — ein Kommentar in Code, Config
   oder Skript beschreibt die verworfene Alternative („Ohne X wäre …"), einen
@@ -123,7 +123,7 @@ Jedes Finding:
 Zusätzlich am Ende: eine Zeile „geprüft, ohne Befund" pro betrachtetem Bereich
 (Negativbefund-Zeile — sonst ist „keine Findings" nicht von „nicht geprüft"
 unterscheidbar). Report-Gerüst für den ganzen Lauf ist
-[`review-report.template.md`](../../.harness/baseline/v6.7.2/templates/docs/reviews/review-report.template.md);
+[`review-report.template.md`](../../.harness/baseline/v6.8.0/templates/docs/reviews/review-report.template.md);
 eine eigene Kopie unter `docs/reviews/` hält dieses Repo nicht
 ([`MR-041`](../../harness/conventions.md#mr-041--die-referenz-statt-kopie-setzung-für-ausfüll-templates-steht-jetzt-in-der-adoptierten-baseline)).
 Ein Report pro Lauf unter `docs/reviews/<YYYY-MM-DD>-<gegenstand>.md`, Folgeläufe
