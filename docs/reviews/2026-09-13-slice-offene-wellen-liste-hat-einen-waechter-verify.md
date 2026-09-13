@@ -17,7 +17,7 @@ Ziel-Form — eigener Vorgang).
 
 **Eingangs-Kontext:**
 
-- [`docs/plan/planning/in-progress/slice-offene-wellen-liste-hat-einen-waechter.md`](../plan/planning/in-progress/slice-offene-wellen-liste-hat-einen-waechter.md)
+- [`docs/plan/planning/done/slice-offene-wellen-liste-hat-einen-waechter.md`](../plan/planning/done/slice-offene-wellen-liste-hat-einen-waechter.md)
   (DoD §2, Trigger §4/§5, Risiken §6)
 - [ADR-0044](../plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md) (Anlass),
   [ADR-0046](../plan/adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) (`Accepted`, von diesem

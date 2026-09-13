@@ -10,7 +10,7 @@
 | **Gegenstand** | Commit `87557369` — *„… DoD (3), Sensor-Prosa zeigt auf ADR-0046 statt offene Norm-Frage zu behaupten"* (1 Datei, +4/−6) |
 | **Mitgeprüft** | der **Schluss der ersten Runde**: Nacharbeit `ca135c49` zu HIGH-1, HIGH-3, MEDIUM-2 |
 | **Diff/Range** | `git show 87557369`, `git show ca135c49` |
-| **Slice-Plan** | [`docs/plan/planning/in-progress/slice-offene-wellen-liste-hat-einen-waechter.md`](../plan/planning/in-progress/slice-offene-wellen-liste-hat-einen-waechter.md) |
+| **Slice-Plan** | [`docs/plan/planning/done/slice-offene-wellen-liste-hat-einen-waechter.md`](../plan/planning/done/slice-offene-wellen-liste-hat-einen-waechter.md) |
 | **`LH-*`** | [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | **Aktive ADRs im Bezug** | [ADR-0046](../plan/adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) (`Accepted` seit `7cfd8283`, hier **nur als zitierte Quelle** geprüft), [ADR-0044](../plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md) |
 | **`MR-*`** | [`MR-001`](../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids), [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert), [`MR-033`](../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist), [`MR-051`](../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung) |

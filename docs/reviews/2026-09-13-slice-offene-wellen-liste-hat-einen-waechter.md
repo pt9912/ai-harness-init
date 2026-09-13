@@ -9,7 +9,7 @@
 |---|---|
 | **Gegenstand** | Commit `ba8698fc` — *„Rolle Implementer: … waves aktiviert, Listen-Haelfte von ‚Offene Wellen' bewacht"* |
 | **Diff/Range** | `git show ba8698fc` (7 Dateien, +150/−35) |
-| **Slice-Plan** | [`docs/plan/planning/in-progress/slice-offene-wellen-liste-hat-einen-waechter.md`](../plan/planning/in-progress/slice-offene-wellen-liste-hat-einen-waechter.md) |
+| **Slice-Plan** | [`docs/plan/planning/done/slice-offene-wellen-liste-hat-einen-waechter.md`](../plan/planning/done/slice-offene-wellen-liste-hat-einen-waechter.md) |
 | **`LH-*`** | [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | **Aktive ADRs im Bezug** | [ADR-0044](../plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md) (§Konsequenzen — Anlass), [`MR-001`](../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) (Gate-*Anheben* über den Steering-Loop) |
 | **Hard Rules** | [`AGENTS.md`](../../AGENTS.md) §3.5 (keine Senkung ohne ADR), §3.6 (kein Zusage ohne rot gesehenes Gegenbeispiel), §3.7 (ein Kommentar beschreibt, was da ist), §3.8 (Architect-Eigentum), §3.9 (Docker-only) |
