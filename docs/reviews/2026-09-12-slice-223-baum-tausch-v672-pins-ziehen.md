@@ -142,7 +142,7 @@ keinen fremden Prüfer. Kein Befund am Diff, eine benannte Eigenschaft der Zuord
 - **Die DoD-Abhakung** — Verifier-Rolle, anderes Prüf-Artefakt. Ein Posten gehört dorthin und ist hier nur als Zahl notiert: DoD 3 sagt *„0 Treffer"* für die drei §1-Kommandos; gemessen sind **0 · 0 · 12**.
 - **`make gates`** — fährt der Auftraggeber; Stempel liegt über `38174544`.
 - **`make mutate`, `make smoke`, `make full-smoke`** — nicht gefahren. Die fünf berührten Mutations-Fälle sind gelesen, nicht ausgeführt.
-- **Das inhaltliche Delta von `v6.7.2`** — welche Regel welches Artefakt trifft, ist ausdrücklich Gegenstand von [slice-224](../plan/planning/done/slice-224-delta-nachweis-und-planungs-nachzug.md) und [slice-225](../plan/planning/next/slice-225-gate-index-steht-einmal.md). Geprüft ist hier nur, **dass** der Baum dem Kurs-Tag entspricht, nicht, **was** er sagt.
+- **Das inhaltliche Delta von `v6.7.2`** — welche Regel welches Artefakt trifft, ist ausdrücklich Gegenstand von [slice-224](../plan/planning/done/slice-224-delta-nachweis-und-planungs-nachzug.md) und [slice-225](../plan/planning/in-progress/slice-225-gate-index-steht-einmal.md). Geprüft ist hier nur, **dass** der Baum dem Kurs-Tag entspricht, nicht, **was** er sagt.
 - **Die emittierte Inhalts-Ebene** (`internal/emit/templates/`) — eigener Prüfbereich, eigener Beleg (`make full-smoke`).
 - **Die Prozedur, mit der der Baum entstand** — ob `make vendor-baseline` gefahren wurde, ist an git nicht ablesbar. Geprüft ist das **Ergebnis** (identisch zum Kurs-Tag, Pin am Asset verifiziert).
 - **Kontext-Trennung zwischen den vier Läufen** — aus `git` nicht beobachtbar; die Rollen-Labels und der Commit-Zuschnitt sind es, und beide stimmen.

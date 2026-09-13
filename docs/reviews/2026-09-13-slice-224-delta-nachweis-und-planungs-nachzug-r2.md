@@ -40,9 +40,9 @@ Entscheidung hat einen Inhalt (Namen ab jetzt, kein Nachrüsten des Bestands) un
 
 ```sh
 cd /Development/KI/ai-harness-init
-grep -n 'Kein neuer `MR`-Eintrag' docs/plan/planning/next/slice-225-gate-index-steht-einmal.md
+grep -n 'Kein neuer `MR`-Eintrag' docs/plan/planning/in-progress/slice-225-gate-index-steht-einmal.md
 # -> 143:- **Kein neuer `MR`-Eintrag.** … *Bestand bleibt bewusst stehen* — die 52 aktiven Einträge werden geprüft, nicht vermehrt.
-grep -n 'kein neuer `MR`-Eintrag' docs/plan/planning/next/slice-225-gate-index-steht-einmal.md
+grep -n 'kein neuer `MR`-Eintrag' docs/plan/planning/in-progress/slice-225-gate-index-steht-einmal.md
 # -> 34:**kein neuer `MR`-Eintrag** — ein Eintrag bucht eine *gewollte* Abweichung   (Kopf)
 ```
 
