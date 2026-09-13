@@ -22,28 +22,6 @@ nicht hier.
 
 Nichts in Arbeit.
 
-**Eine Position der Ziel-Form ist nicht übernommen, und hier steht der Grund**
-([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage): eine unerklärte Abweichung
-ist ein Fork, keine Adaption). Die Ziel-Form setzt *flache Welle-Datei* mit *offene Welle* gleich —
-ihre Liste ist eine Bijektion in beide Richtungen. Dieses Repo schneidet die Welle-Datei, **bevor**
-der Start-Trigger eintritt; `ls docs/plan/planning/welle-*.md` führt darum **mindestens so viele**
-Dateien, wie hier Zeiger stehen. Was an Differenz bleibt, steht unter *Nächste Wellen*, je mit
-ihrem Trigger — ist sie leer, hat jede geschnittene Welle ihre Beginn-Bedingung erfüllt. Der
-Zeiger folgt dem **eingetretenen** Start-Trigger, nicht dem Schnitt: eine Welle ohne eingetretene
-Beginn-Bedingung zu eröffnen, hebt die Trigger-Disziplin auf, die dieselbe Roadmap einfordert.
-
-**Von den zwei Aussagen dieses Blocks trägt eine ein Modul, die andere nicht — benannt statt
-verschwiegen** ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-Die **Marker-Hälfte** (Ruhe-Marker genau dann, wenn `in-progress/` keinen Slice trägt) hält das Modul
-`planning` (`grep -n '^modules:' .d-check.yml` führt es; `.d-check.yml` bindet `heading`/`marker` auf
-diesen Abschnitt) — ein Widerspruch zwischen dieser Sektion und `in-progress/` färbt `docs-check`
-rot. Die **Listen-Hälfte** (Bijektion Zeiger ↔ flache Welle-Dateien) bleibt unbewacht: Die
-`waves`-Fähigkeit desselben Moduls verlangt unter `waves.mode: many` genau diese Bijektion (Default
-ist `one`, ein Singleton-Prädikat) und kennt in beiden Modi die Abweichung oben nicht — sie meldete
-die Differenz zwischen Zeigern und flachen Dateien als Drift, obwohl sie hier die gewollte Form
-ist. Was das kostet und was daran offen bleibt, steht in
-[`harness/README.md`](../../../../harness/README.md) neben dem, was `docs-check` prüft.
-
 ## Nächste Wellen
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
