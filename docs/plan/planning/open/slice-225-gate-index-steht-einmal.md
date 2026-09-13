@@ -31,9 +31,10 @@ Rolle in seiner Message nennt.
 **Vorgabe des Auftraggebers, empfangen am 2026-09-12:** *auf das neueste Regelwerk umstellen*, und
 zur Entscheidungsfrage: *„Nein, der Architekt wird das nicht entscheiden — wir geben es vor."*
 **Der Architect schreibt den Norm-Text; er wägt nicht mehr ab.** Für diesen Slice folgt daraus:
-**kein neuer `MR`-Eintrag** — ein Eintrag bucht eine *gewollte* Abweichung
-([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)), und die gibt es nicht.
-Die Gegenrichtung bleibt Liefer-Punkt 3. **Färbt ein Posten beim Übernehmen ein Gate rot, ist das
+**kein neuer `MR`-Eintrag, der eine Abweichung bucht** — ein solcher Eintrag setzt eine *gewollte*
+Abweichung voraus ([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)), und
+die gibt es nicht. **Ein Eintrag, den die Ziel-Fassung selbst verlangt, ist davon nicht
+betroffen** — §1 trennt die zwei Gegenstände. Die Gegenrichtung bleibt Liefer-Punkt 3. **Färbt ein Posten beim Übernehmen ein Gate rot, ist das
 eine Messung und geht als Meldung zurück an den Auftraggeber**, nicht in einen Eintrag und nicht in
 eine Ausnahme; §6 nennt, wo dieser Plan so einen Fall für möglich hält.
 
@@ -140,10 +141,33 @@ nimmt sie als **Ausgangslage**, nicht als Ergebnis.
   alle 42 Posten und die Planungs-Ebene; dieser Slice vollzieht die Teilmenge, die dort benannt
   ist. *Folge-Slice übernimmt es* — und slice-224 nimmt die Sendung an, weil sein Liefer-Punkt 3
   genau diese Zuweisung verlangt.
-- **Kein neuer `MR`-Eintrag.** Die Vorgabe des Auftraggebers schließt gewollte Abweichungen aus
-  (Kopf), und ein Eintrag ohne Abweichung wäre Buchführung über nichts
-  ([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)). *Bestand bleibt
-  bewusst stehen* — die 52 aktiven Einträge werden geprüft, nicht vermehrt.
+- **Kein neuer `MR`-Eintrag, der eine Abweichung bucht.** Die Vorgabe des Auftraggebers schließt
+  gewollte Abweichungen aus (Kopf), und ein Abweichungs-Eintrag ohne Abweichung wäre Buchführung
+  über nichts ([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)). *Bestand
+  bleibt bewusst stehen* — die 52 aktiven Einträge werden um keinen solchen vermehrt.
+
+  **Ein Deklarations-Eintrag ist ein anderer Gegenstand und fällt nicht unter diesen Ausschluss.**
+  Der Adaptions-Block trägt neben den Abweichungen die Setzungen, die die Baseline dem Repo
+  ausdrücklich zuweist; `grundlagen-source-precedence.md` §Vergabe verlangt seit der regierenden
+  Fassung genau eine davon — *„Welche Form gilt, deklariert das Repo — in
+  `harness/conventions.md`"* —, nachdem derselbe Abschnitt den Satz gestrichen hat, der bis
+  `v6.0.0` dichte Nummern für Ein-Schreiber-Repos lizenzierte
+  (`grep -c 'dichte Nummern' .harness/baseline/v6.7.2/regelwerk/grundlagen-source-precedence.md`
+  → **0**, kein Erwartungswert). Die Kennungs-Form ist damit deklarationspflichtig statt
+  voreingestellt, und die geltende Deklaration steht heute im **permanenten**
+  [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) (`ID-Schema: … slice-NNN`),
+  an dem nach [`AGENTS.md`](../../../../AGENTS.md) §3.4 und
+  [`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
+  inhaltlich nichts geändert wird. Die Form ist deshalb vorgezeichnet und nicht zu erfinden: **ein
+  neuer Eintrag trägt die Setzung, der bestehende bekommt eine Kopf-Marke auf ihn.** Der Inhalt der
+  Setzung ist die Entscheidung des Auftraggebers, die
+  [slice-224](../in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md) §9 in der Zeile zu
+  `lab/regelwerk/grundlagen-source-precedence.md` festhält — Namen für neue Welle- und
+  Slice-Kennungen, **kein Nachrüsten des Bestands**; bestehende `slice-<NNN>`/`welle-<NN>` behalten
+  ihre Nummer. **Die Cutoff-Setzung beginnt mit diesem Eintrag:** Kennungen, die vor ihm vergeben
+  werden, folgen der heute deklarierten Form, und daraus entsteht kein Nachrüstungs-Auftrag. Dieser
+  Punkt schließt den Eintrag nicht aus, er ordnet ihn ein; geliefert wird er über Liefer-Punkt 2,
+  der jede Zeile des Nachweises mit Ziel `slice-225` bindet.
 - **Keine inhaltliche Änderung an einem angenommenen `MR`-Eintrag und an keiner
   `Accepted`-ADR.** [`AGENTS.md`](../../../../AGENTS.md) §3.4,
   [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
@@ -206,6 +230,13 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       und in [`harness/README.md`](../../../../harness/README.md) §Minimal agent workflow, die
       Zeile auf `.harness/skills/reviewer.md` in §Guides, und die Kennungs-Notation an den **2**
       Stellen in [`AGENTS.md`](../../../../AGENTS.md) (`git grep -cE 'slice-<NNN>|welle-<NN>' -- AGENTS.md`).
+      **Und die Deklaration der Kennungs-Form**, die §1 als eigenen Gegenstand einordnet: ein neuer
+      Eintrag unter [`harness/conventions/`](../../../../harness/conventions/) trägt die
+      Cutoff-Setzung, [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)
+      bekommt eine Kopf-Marke auf ihn, und die Index-Zeile in
+      [`harness/conventions.md`](../../../../harness/conventions.md) reist mit. Ohne sie bleibt die
+      Zeile des Nachweises zu `lab/regelwerk/grundlagen-source-precedence.md` ohne Beleg im Diff,
+      und dieser Punkt ist nicht erfüllt.
       **Die Liste in diesem Plan ist nicht die Grenze** — die Grenze ist §9 von slice-224; steht
       dort ein Posten, den dieser Plan nicht kennt, gehört er trotzdem hierher, und wächst die
       Menge über *einen* Review-Sitzung hinaus, greift die Rückführung in §4.
