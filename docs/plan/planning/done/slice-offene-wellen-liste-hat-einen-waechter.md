@@ -490,7 +490,7 @@ Backticks).
   — die drei Planner-Folgepflichten aus
   [ADR-0046](../../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) §Konsequenzen in einem
   Schnitt (§6 Risiko 2). Und
-  [`slice-migration-hat-ein-instanz-register`](../open/slice-migration-hat-ein-instanz-register.md)
+  [`slice-migration-hat-ein-instanz-register`](../next/slice-migration-hat-ein-instanz-register.md)
   — das vom Auftraggeber bestellte stehende `harness/migration.md`, dem nächsten Baseline-Sprung <!-- d-check:ignore (geplante Datei) -->
   vorgelagert; er hängt an diesem Slice nicht und steht hier, weil diese Closure ihn geschnitten
   hat.
