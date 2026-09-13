@@ -1,18 +1,18 @@
 # ADR-0045: Der `authority`-Wechsel auf den Einstiegspunkt senkt die Strenge in genau einer Richtung — die Senkung wird gebucht, ihr Träger ist der vorhandene repo-eigene Wächter, und dessen gemessener Rest wird geschlossen
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-13
 
 **Autor:** Architect (ai-harness-init-Team, pt9912)
 
 **Bezug:**
-[ADR-0043](0043-ziel-fassung-regiert-den-sprung-v671.md) (§Was diese Entscheidung nicht tut stellt
+[ADR-0043](0043-ziel-fassung-regiert-den-sprung-v671.md) (§Was beide Festlegungen nicht tun stellt
 genau die Frage zurück, die hier beantwortet wird — *„Ob `targets.authority` auf den Einstiegspunkt
 wandert, … und ob das eine Senkung nach `AGENTS.md` §3.5 ist, entscheidet der Durchgang bzw. die
 ADR, die er auslöst"*; dies ist diese ADR),
 [ADR-0044](0044-ziel-fassung-regiert-den-sprung-v672.md) (setzt die regierende Fassung `v6.7.2`,
-deren Ziel-Form den Wechsel fordert — unberührt),
+deren Vorlage der Gate-Konfiguration den Wert auskommentiert empfiehlt — unberührt),
 [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) (Festlegung 2, Form der
 Buchung in §Baseline — unberührt; die Korrektur eines Zustandsfelds dort ist Folgepflicht, keine
 Festlegung),
@@ -158,28 +158,26 @@ eigene Entscheidung mit eigenem Auslöser und steht unten unter §Was diese Ents
 
 ### Der Träger existiert bereits — und niemand hat ihm die Last zugewiesen
 
-`test/targets-modul-wiring.bats` hält ein **stärkeres** Invariant als das Modul: Der Test *„jedes
-.PHONY-Target ohne Tabellenzeile im Sensors-Abschnitt steht genau einmal in exempt-targets"* rechnet
-`authority_table_targets()` **am Heading ab** — nur §Sensors, ohne den Unterabschnitt §Werkzeuge.
-Er läuft in `make gates` über `make test` → `test-bats`, hermetisch, ohne Docker-Bild für die
-Prüfung selbst.
+`test/targets-modul-wiring.bats` hält ein **stärkeres** Invariant als das Modul: Der Test über
+`authority_table_targets()` rechnet seine Zielmenge **am Heading ab** — nur §Sensors, ohne den
+Unterabschnitt §Werkzeuge. Er läuft in `make gates` über `make test` → `test-bats`, hermetisch,
+ohne Docker-Bild für die Prüfung selbst.
 
-**Rot gesehen, in beiden Ausprägungen** (dieselbe Kopie, dasselbe Rezept, dieselbe Werkzeuge-Zeile,
-kein `exempt-targets`-Eintrag):
+**In beiden Ausprägungen gefahren** (dieselbe Kopie, dasselbe Rezept, dieselbe Werkzeuge-Zeile,
+kein `exempt-targets`-Eintrag) — gemessen an der Fassung, deren Zielmenge an der
+`.PHONY`-Deklaration hing:
 
 ```sh
 make -C <kopie> test-bats
-# probe-tool AUCH in .PHONY:
-#   not ok  jedes .PHONY-Target ohne Tabellenzeile im Sensors-Abschnitt steht genau einmal in exempt-targets
-# probe-tool OHNE .PHONY, sonst gleich:
-#   ok      (derselbe Test — der Wächter sieht die Regel nicht)
+# probe-tool AUCH in .PHONY:   not ok  — der Wächter greift
+# probe-tool OHNE .PHONY:      ok      — derselbe Test, der Wächter sieht die Regel nicht
 ```
 
-Der Wächter trägt die aufgegebene Strenge also bereits, und zwar für die `.PHONY`-deklarierte
-Teilmenge. **Sein Scope steht heute aber aus einem anderen Grund da:** Der Kommentar über
-`authority_table_targets()` begründet ihn damit, dass der Test sonst gegen die eigene
-Werkzeuge-Tabelle liefe. Dass er daneben die Senkung des Moduls auffängt, sagt keine Stelle — und
-wer den Scope entfernte, machte eine zweite Senkung, die in `make gates` grün bliebe.
+Das Rot ist der Beleg, dass der Wächter die aufgegebene Strenge bereits trägt; das Grün ist der
+Rest, den Festlegung 3 unten schließt. **Sein Scope steht heute aber aus einem anderen Grund da:**
+Der Kommentar über `authority_table_targets()` begründet ihn damit, dass der Test sonst gegen die
+eigene Werkzeuge-Tabelle liefe. Dass er daneben die Senkung des Moduls auffängt, sagt keine Stelle
+— und wer den Scope entfernte, machte eine zweite Senkung, die in `make gates` grün bliebe.
 
 ### Der Rest ist benennbar und heute leer
 
@@ -269,16 +267,25 @@ zurücklässt.
 ### Der Acceptance-Trigger
 
 Diese Entscheidung steht auf `Proposed`. Sie wird `Accepted`, **wenn eine Reviewer-Runde sie gegen
-[ADR-0043](0043-ziel-fassung-regiert-den-sprung-v671.md) §Was diese Entscheidung nicht tut,
+[ADR-0043](0043-ziel-fassung-regiert-den-sprung-v671.md) §Was beide Festlegungen nicht tun,
 [ADR-0044](0044-ziel-fassung-regiert-den-sprung-v672.md) und
-[`AGENTS.md`](../../../AGENTS.md) §3.5 auf Konsistenz geprüft hat und ihr Report ohne blockierenden
-Befund in `docs/reviews/` liegt** — und **wenn diese Runde die drei Sonden selbst gefahren hat**:
-die Werkzeuge-Zeilen-Sonde über beiden Bäumen, die Gate-Tabellen-Sonde über dem alten Baum, und den
-`test-bats`-Lauf in beiden `.PHONY`-Ausprägungen. Der auslösende Report vom 2026-09-13 ist der
-Beleg **nicht**: Er hat blockiert, und nach
-[ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 ist der Beleg
-dann die nächste Runde derselben Rolle — die Nachmessung des Kontexts, der den Befund auflöst, ist
-keiner. Dieser Lauf ist jener Kontext; ein Selbst-Accept ist damit ausgeschlossen.
+[`AGENTS.md`](../../../AGENTS.md) §3.5 auf Konsistenz geprüft hat, ihr Report in `docs/reviews/`
+liegt und er keinen Befund gegen die **Substanz** der drei Festlegungen führt** — und **wenn diese
+Runde die drei Sonden selbst gefahren hat**: die Werkzeuge-Zeilen-Sonde über beiden Bäumen, die
+Gate-Tabellen-Sonde über dem alten Baum, und den `test-bats`-Lauf in beiden `.PHONY`-Ausprägungen.
+
+**Befunde, die allein die Darstellung dieser Datei treffen** — eine Sektions-Adresse, ein Testname,
+das Observable eines Re-Evaluierungs-Triggers — **hindern den Übergang nicht, sobald sie behoben
+sind; eine Bestätigungsrunde über der behobenen Fassung verlangt dieser Trigger nicht.** Das ist
+die engere Fassung nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)
+Festlegung 3, gesetzt solange die Datei `Proposed` ist, und sie gibt etwas auf: Die korrigierten
+Stellen selbst hat keine prüfende Rolle gesehen. Was sie **nicht** aufgibt, ist die Substanz — für
+einen Befund an einer der drei Festlegungen bleibt der Beleg eine erneute Runde derselben Rolle
+([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2).
+
+Der auslösende Report vom 2026-09-13 zu `slice-225` ist der Beleg **nicht**: Er hat blockiert, und
+die Nachmessung durch den Kontext, der den Befund auflöst, ist keiner. Dieser Lauf ist jener
+Kontext; ein Selbst-Accept ist damit ausgeschlossen.
 
 ## Verglichene Alternativen
 
@@ -307,17 +314,23 @@ keiner. Dieser Lauf ist jener Kontext; ein Selbst-Accept ist damit ausgeschlosse
 - **Negativ:** Zwei Stellen beschreiben jetzt denselben Prüfbereich — der Scope im Wächter und diese
   Entscheidung. Das ist der Preis dafür, dass ein Kommentar die Norm nicht trägt; bei Konflikt gilt
   diese Datei (Source Precedence).
-- **Negativ:** Bis Festlegung 3 landet, bleibt der `.PHONY`-Rest offen. Er ist heute leer und morgen
-  nicht garantiert leer.
+- **Negativ, solange Festlegung 3 nicht ausgeführt ist:** Der `.PHONY`-Rest bleibt offen; er ist
+  bei dieser Entscheidung leer und für morgen nicht garantiert leer. Ihr Ausführungsstand steht in
+  §Geschichte.
 - **Negativ /
   [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6):** Für
   Festlegung 2 selbst gibt es **keinen** Sensor — kein Modul und kein `make`-Ziel liest den Scope
   eines bats-Tests. Sie liegt im Feedforward-Quadranten.
 - **Folgepflicht (Implementer), fällig mit dem nächsten Anfassen von
-  `test/targets-modul-wiring.bats`, spätestens vor der nächsten Makefile-Regel ohne `.PHONY`:**
-  Festlegung 3 ausführen — Zielmenge auf Makefile-Regelnamen, Dateikopf und Funktionskommentar
-  ziehen nach. Die Zahlen im Dateikopf (`47`) sind am heutigen Stand `48` (`| wc -l` auf dieselben
-  zwei Pipelines) und gehören mitgezogen.
+  `test/targets-modul-wiring.bats`:** Festlegung 3 ausführen — Zielmenge auf die
+  Makefile-Regel-Namen, Dateikopf und Funktionskommentar ziehen nach; die Zahlen im Dateikopf
+  gehören mit (`| wc -l` auf dieselben zwei Pipelines). **Zum Funktionskommentar gehört die Last
+  aus Festlegung 2:** Der Kommentar über `authority_table_targets()` begründet den §Sensors-Scope
+  allein damit, dass der Test sonst gegen die eigene Werkzeuge-Tabelle liefe; dass dieser Scope die
+  Senkung des Moduls auffängt, steht dort nicht, und wer die Stelle ändert, liest keinen Zeiger auf
+  diese Entscheidung. Er gehört dorthin als Rang-Zeiger
+  ([`AGENTS.md`](../../../AGENTS.md) §3.7) — das ist die Adresse für den Posten darüber, und bis er
+  steht, ist die Lücke **benannt, nicht geschlossen**.
 - **Folgepflicht (Implementer), fällig unabhängig von dieser Entscheidung:** Der Sensor-Vertrag in
   `harness/sensors/docs-check.md` sagt *„prüft gegen genau eine `authority`-Datei —
   `harness/README.md` §Sensors"* zu. Das Modul liest die **Datei**. Der Vertrag gehört auf das
@@ -327,7 +340,10 @@ keiner. Dieser Lauf ist jener Kontext; ein Selbst-Accept ist damit ausgeschlosse
   Beleg ins Beobachtungs-Register oder als ausdrückliche Ablehnung dort — das Register ist
   Planner-Eigentum ([ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md))
   und wird von dieser Entscheidung nicht angefasst.
-- **Darüber hinaus ändert diese ADR keine Datei außer sich selbst und dem ADR-Index.**
+- **Darüber hinaus ändert diese ADR keine Datei außer sich selbst, dem ADR-Index und §Baseline von
+  `harness/conventions.md`** — dort ist die Korrektur des Zustandsfelds Folgepflicht aus
+  [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 2, keine
+  Festlegung dieser Datei.
 
 ## Fitness Function (falls maschinell prüfbar)
 
@@ -335,7 +351,7 @@ keiner. Dieser Lauf ist jener Kontext; ein Selbst-Accept ist damit ausgeschlosse
 
 | Tooling | Regel | Make-Target |
 |---|---|---|
-| `test/targets-modul-wiring.bats` | *„jedes .PHONY-Target ohne Tabellenzeile im Sensors-Abschnitt steht genau einmal in exempt-targets"* — hält die aufgegebene Strenge für die `.PHONY`-Menge; rot gesehen mit `probe-tool` | `make test` (in `make gates`) |
+| `test/targets-modul-wiring.bats` | *„jede Makefile-Regel ohne Tabellenzeile im Sensors-Abschnitt steht genau einmal in exempt-targets"* — hält die aufgegebene Strenge; die Zielmenge ist nach Festlegung 3 die Makefile-Regel-Menge und damit dieselbe, die das Modul liest. Rot gesehen mit einem Sonden-Rezept, in beiden `.PHONY`-Ausprägungen | `make test` (in `make gates`) |
 | `test/targets-modul-wiring.bats` | *„kein exempt-targets-Eintrag ist zugleich eine Sensors-Tabellenzeile"* — hält die Disjunktheit, die das Modul nie hielt | `make test` (in `make gates`) |
 
 **Nicht gebaut, und die Kandidaten sind einzeln geprüft:**
@@ -357,9 +373,16 @@ Entscheidung ersetzen, *ob* kompensiert wird.
   `authority-section` im `targets`-Block von `d-check --print-config` unter einem neuen Pin)*: Die
   Senkung ist an der Wurzel weg, Festlegung 2 verliert ihren Gegenstand, und Option G ist die
   bessere Lösung. Diese Entscheidung ist dann gegen sie zu halten.
-- **Wenn `harness/README.md` nur noch eine `make X`-Tabelle trägt** *(beobachtbar daran, dass die
-  §Sensors-Zeilenzahl und die Datei-Zeilenzahl der beiden `grep -c`-Kommandos oben gleich sind)*:
-  Dieselbe Lage — die Senkung wäre weg, Option D faktisch eingetreten.
+- **Wenn `harness/README.md` keine Nicht-Gate-Zeile mehr trägt** *(beobachtbar daran, dass der
+  `comm -12`-Schnitt aus §Kontext zwischen `exempt-targets` und den `make X`-Namen der **ganzen**
+  Datei leer wird; er zählt bei dieser Entscheidung **17**)*: Dieselbe Lage — die Senkung wäre weg,
+  Option D faktisch eingetreten. **Die Gleichheit der beiden `grep -c`-Zahlen trennt die zwei
+  Zustände nicht** und taugt darum als Observable nicht: Sie tritt auch dann ein, wenn die
+  Werkzeuge-Tabelle allein ihre `###`-Überschrift verliert und in der Datei stehen bleibt — die
+  Gestalt, die die Ziel-Form `v6.7.2` führt (zwischen §Sensors und §Traceability rules steht dort
+  keine Überschrift, Messung in §Kontext). Der Abschnitts-Scope des Wächters endet an der nächsten
+  Überschrift; ohne sie zählt er die Werkzeuge-Zeilen mit, beide Zahlen werden gleich, und die
+  Senkung besteht unkompensiert fort. Still ist dieser Zustand nicht — der Wächter färbt in ihm rot.
 - **Wenn `authority` mehr als eine Datei nimmt** *(beobachtbar am Schema oben)*: Der Grund, der den
   Wechsel alternativlos machte, ist weg, und die Wahl der Autoritäts-Datei ist neu zu halten.
 - **Wenn eine Makefile-Regel ohne `.PHONY`-Eintrag entsteht, solange Festlegung 3 offen ist**
@@ -376,7 +399,8 @@ Entscheidung ersetzen, *ob* kompensiert wird.
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-09-13 | **Proposed** | Architect-Lauf; Anlass ist HIGH-1 des Review-Reports zu `slice-225`. Die zurückgestellte Frage aus [ADR-0043](0043-ziel-fassung-regiert-den-sprung-v671.md) §Was diese Entscheidung nicht tut ist damit beantwortet. |
+| 2026-09-13 | **Proposed** | Architect-Lauf; Anlass ist HIGH-1 des Review-Reports zu `slice-225`. Die zurückgestellte Frage aus [ADR-0043](0043-ziel-fassung-regiert-den-sprung-v671.md) §Was beide Festlegungen nicht tun ist damit beantwortet. |
+| 2026-09-13 | **Accepted** | **Angenommen auf Weisung des Auftraggebers vom 2026-09-13, vollzogen in der Architect-Rolle.** **Der Acceptance-Trigger ist eingelöst**, und der Beleg, den er verlangt, ist die **Reviewer-Konsistenzrunde vom 2026-09-13 zu ADR-0045** — Kennung `2026-09-13-adr-0045-konsistenzrunde` ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1: Kennung, kein Pfad-Link). Sie hat die drei Sonden **selbst gefahren** — die Werkzeuge-Zeilen-Sonde über beiden Bäumen, die Gate-Tabellen-Sonde über dem alten Baum und den `test-bats`-Lauf in beiden `.PHONY`-Ausprägungen — und bestätigt die Substanz aller drei Festlegungen ohne Befund: zu [ADR-0043](0043-ziel-fassung-regiert-den-sprung-v671.md), [ADR-0044](0044-ziel-fassung-regiert-den-sprung-v672.md) und [`AGENTS.md`](../../../AGENTS.md) §3.5 findet sie keinen Widerspruch, keiner der sechs Re-Evaluierungs-Trigger ist eingetreten, und die vier Abgrenzungen liefern nichts verdeckt. **Ihre drei blockierenden Befunde treffen die Darstellung und sind vor diesem Umschlag behoben:** die Sektions-Adresse auf [ADR-0043](0043-ziel-fassung-regiert-den-sprung-v671.md), die dreimal einen Abschnitt nannte, den jene Datei nie führte — darunter im Acceptance-Trigger selbst; der Testname in §Fitness Function und §Kontext, den Festlegung 3 abgelöst hat; und das Observable von Re-Evaluierungs-Trigger 2, das den Gegenzustand mitdeckte. Dazu die drei LOW derselben Runde. **Der Acceptance-Trigger ist dafür enger gefasst worden, solange die Datei `Proposed` war** ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 3): Er unterscheidet jetzt einen Befund an der Substanz von einem an der Darstellung. **Eine Bestätigungsrunde über der korrigierten Fassung ist nicht gefahren** — der Auftraggeber hat keine weitere angeordnet; was das aufgibt, steht im Trigger. **MEDIUM-4 jener Runde bleibt offen:** Der §Sensors-Scope trägt die Last aus Festlegung 2, ohne sie an seiner eigenen Stelle zu nennen; die Lücke ist in §Konsequenzen benannt und hat dort ihre Adresse als Implementer-Folgepflicht. **Festlegung 3 ist mit `f9b3c60f` ausgeführt** — die Zielmenge des Wächters ist die Makefile-Regel-Menge, der benannte `.PHONY`-Rest damit geschlossen; der Funktionskommentar steht aus. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
