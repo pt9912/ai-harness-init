@@ -218,6 +218,37 @@ func TestHervorgegangenBautAnkerLinks(t *testing.T) {
 	}
 }
 
+// TestHervorgegangenUebernimmtBenannteSliceKennung: eine Folge-Slice-Kennung
+// ohne Ziffern-Praefix (lowercase Kebab-Case) wird ERKANNT statt beim
+// Regex-Vergleich spurlos zu verschwinden — sie erscheint im Feld, auch ohne
+// eine unter dem heutigen Glob-Muster aufloesbare Datei.
+func TestHervorgegangenUebernimmtBenannteSliceKennung(t *testing.T) {
+	root := t.TempDir()
+	inhalt := "## 7. Closure-Notiz\n- **Folge-Slices:** slice-benannter-slug (Titel) — liegt in `open/`\n"
+
+	got := archive.Hervorgegangen(root, inhalt, "welle-10")
+	want := "slice-benannter-slug"
+	if got != want {
+		t.Fatalf("Hervorgegangen = %q, want %q (bare Kennung ohne aufloesbaren Pfad)", got, want)
+	}
+}
+
+// TestHervorgegangenMischtBenannteUndNummerierteSliceKennung: eine Zeile mit
+// beiden Formen liefert fuer die nummerierte den Anker-Link (Datei existiert)
+// und fuer die benannte die bare Kennung (Datei existiert nicht unter dem
+// Glob-Muster) — Boundary-Fall fuer die erweiterte Erkennung.
+func TestHervorgegangenMischtBenannteUndNummerierteSliceKennung(t *testing.T) {
+	root := t.TempDir()
+	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "open", "slice-176-folge.md"), "# x\n")
+	inhalt := "## 7\n- **Folge-Slices:** slice-176 (A) und slice-benannter-slug (B) — liegt in `open/`\n"
+
+	got := archive.Hervorgegangen(root, inhalt, "welle-10")
+	want := "[slice-176](../../open/slice-176-folge.md) · slice-benannter-slug"
+	if got != want {
+		t.Fatalf("Hervorgegangen =\n%q\nwant\n%q", got, want)
+	}
+}
+
 // TestSlicePfadRelativLiefertDieAufsteigendeForm: ein Folge-Slice, der noch flach
 // in done/ liegt, wird vom Stub aus mit `../<datei>.md` adressiert. Genau diese
 // Form schreibt das Werkzeug damit selbst in den Bestand — sie ist der Grund, aus

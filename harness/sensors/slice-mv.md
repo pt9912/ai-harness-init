@@ -20,7 +20,9 @@ Datei, repo-weit außer `.harness/baseline/**` (unveränderter Fremdtext) und `d
 `docs/plan/planning/done/**` **und** `docs/reviews/**` sind **nicht** ausgenommen, ihre
 Verweise sind reale, von `docs-check` geprüfte Links. **Ausgehend** hängt präfixlosen Zielen
 **innerhalb** der bewegten Datei, die einen im alten Verzeichnis verbliebenen
-Geschwister-Slice referenzieren, `../<altes-verzeichnis>/` an.
+Geschwister-Slice referenzieren, `../<altes-verzeichnis>/` an — eine nummerierte Kennung
+(`slice-NNN…`) trifft das Fundmuster ebenso wie eine benannte (`slice-<slug>`, lowercase
+Kebab-Case ohne Ziffern-Präfix).
 
 Drei gemessene Grenzen (Skriptkopf `harness/tools/slice-mv.sh`): es zieht Pfade nach, keine
 Zustandssätze; Welle-Plan-Dateien (Tiefenwechsel beim Closure-Move) bleiben außen vor; und

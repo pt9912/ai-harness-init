@@ -90,6 +90,35 @@ EOF
   grep -qF '[a](../open/slice-998-sibling.md)' moved.md
 }
 
+@test "ausgehend: benannte Slice-Kennung ohne Ziffern-Praefix bekommt ../from/ ebenso wie eine nummerierte" {
+  load_functions
+  mkdir -p "$TMP/docs/plan/planning/open"
+  : > "$TMP/docs/plan/planning/open/slice-woertlich-benannt.md"
+  cd "$TMP"
+  printf '[a](slice-woertlich-benannt.md)\n' > moved.md
+  run rewrite_outgoing_bare_in_file moved.md open
+  [ "$status" -eq 0 ]
+  [ "$output" = "1" ]
+  grep -qF '[a](../open/slice-woertlich-benannt.md)' moved.md
+}
+
+@test "ausgehend: zwei benannte Kennungen mit gemeinsamem Praefix bleiben getrennt (kein Teilstring-Uebergriff)" {
+  load_functions
+  mkdir -p "$TMP/docs/plan/planning/open"
+  : > "$TMP/docs/plan/planning/open/slice-abc.md"
+  : > "$TMP/docs/plan/planning/open/slice-abc-erweitert.md"
+  cd "$TMP"
+  cat > moved.md <<'EOF'
+[a](slice-abc.md)
+[b](slice-abc-erweitert.md)
+EOF
+  run rewrite_outgoing_bare_in_file moved.md open
+  [ "$status" -eq 0 ]
+  [ "$output" = "2" ]
+  grep -qF '[a](../open/slice-abc.md)' moved.md
+  grep -qF '[b](../open/slice-abc-erweitert.md)' moved.md
+}
+
 @test "ausgehend: welle-Ziel bleibt unberuehrt (Grenze 2 — nur slice-Dateien)" {
   load_functions
   mkdir -p "$TMP/docs/plan/planning/open"

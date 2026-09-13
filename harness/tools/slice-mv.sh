@@ -21,17 +21,18 @@
 # Rename-Erkennung greift). Danach zieht es reale Verweise nach — EINGEHEND
 # (jede Praefix-Form auf die bewegte Datei, repo-weit) UND AUSGEHEND
 # (praefixlose Ziele INNERHALB der bewegten Datei, die nach dem Wechsel ins
-# falsche Verzeichnis zeigen) — und committet diese Inhaltsaenderung, falls
-# welche anfielen, als ZWEITEN, vom Move getrennten Commit; fiel keine an,
-# bleibt es beim einen Move-Commit. test/slice-mv.bats deckt beide
-# Ersetzungsrichtungen und die Teilstring-Falle (slice-13 steckt in
-# slice-130), ohne ein Repo zu bewegen — es ruft die Ersetzungs-Funktionen
-# direkt auf (Quelle: dieses Skript, per BASH_SOURCE-Waechter ohne
-# Nebenwirkung ladbar). Die Zwei-Commit-Sequenz selbst ist NICHT per bats
-# gedeckt — main() braucht ein echtes `git`-Repo, das gepinnte bats-Image
-# fuehrt kein `git`-Binaer (wie test/slice-mv.bats am Dateiende selbst
-# festhaelt); Beleg ist ein manueller `git show --stat`-Lauf auf den
-# Move-Commit.
+# falsche Verzeichnis zeigen; getroffen wird eine nummerierte wie eine
+# benannte Slice-Kennung gleichermassen) — und committet diese
+# Inhaltsaenderung, falls welche anfielen, als ZWEITEN, vom Move getrennten
+# Commit; fiel keine an, bleibt es beim einen Move-Commit. test/slice-mv.bats
+# deckt beide Ersetzungsrichtungen und die Teilstring-Falle (slice-13 steckt
+# in slice-130 bzw. slice-abc in slice-abc-erweitert), ohne ein Repo zu
+# bewegen — es ruft die Ersetzungs-Funktionen direkt auf (Quelle: dieses
+# Skript, per BASH_SOURCE-Waechter ohne Nebenwirkung ladbar). Die
+# Zwei-Commit-Sequenz selbst ist NICHT per bats gedeckt — main() braucht ein
+# echtes `git`-Repo, das gepinnte bats-Image fuehrt kein `git`-Binaer (wie
+# test/slice-mv.bats am Dateiende selbst festhaelt); Beleg ist ein manueller
+# `git show --stat`-Lauf auf den Move-Commit.
 #
 # VORAUSSETZUNG. Weil das Skript selbst committet, verlangt es einen sauberen
 # Arbeitsbaum (keine gestagten oder ungestagten Aenderungen an getrackten
@@ -158,6 +159,8 @@ rewrite_incoming_in_file() {  # $1=datei $2=base $3=from $4=to
 # sonst zeigt der Verweis nach dem Wechsel ins neue (falsche) Verzeichnis.
 # Nur "slice-"-Ziele (Grenze 2 im Skriptkopf); ein Ziel, das nicht (mehr) unter
 # $from liegt, bleibt unberührt (kein Rateversuch, welches Verzeichnis stimmt).
+# Das Fundmuster trifft eine nummerierte Kennung (slice-NNN…) ebenso wie eine
+# benannte (slice-<slug>, lowercase Kebab-Case ohne Ziffern-Praefix).
 # Gibt die Anzahl umgehängter Ziele auf stdout aus — main() liest sie per
 # Kommando-Substitution, statt Vorher/Nachher getrennt zu zählen.
 rewrite_outgoing_bare_in_file() {  # $1=datei $2=from
@@ -168,7 +171,7 @@ rewrite_outgoing_bare_in_file() {  # $1=datei $2=from
     esc_t="$(re_escape "$t")"
     sed -i -E "s#\\]\\($esc_t\\)#](../$from/$t)#g" "$file"
     count=$((count + 1))
-  done < <(grep -ohE '\]\(slice-[0-9][^)/]*\)' "$file" 2>/dev/null \
+  done < <(grep -ohE '\]\(slice-[0-9a-z][^)/]*\)' "$file" 2>/dev/null \
              | sed -E 's/^\]\(//; s/\)$//' | sort -u)
   printf '%d\n' "$count"
 }

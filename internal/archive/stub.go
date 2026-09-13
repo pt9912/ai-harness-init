@@ -200,7 +200,11 @@ func WelleDatum(inhalt string) string {
 
 var beoRE = regexp.MustCompile(`BEO-[0-9]{3}`)
 var adrRE = regexp.MustCompile(`ADR-[0-9]{4}`)
-var sliceRE = regexp.MustCompile(`slice-[0-9]{3}`)
+
+// sliceRE trifft eine nummerierte Slice-Kennung (slice-NNN) oder eine
+// benannte (ein Slug in lowercase Kebab-Case ohne Ziffern-Praefix, etwa
+// slice-welle-10-aspekt).
+var sliceRE = regexp.MustCompile(`slice-(?:[0-9]{3}|[a-z0-9]+(?:-[a-z0-9]+)*)`)
 var ausgangsZeileRE = regexp.MustCompile(`(?m)^- \*\*(?:Beobachtungs-Register|Folge-Slices)`)
 
 // Hervorgegangen liefert den Wert des Stub-Felds `Hervorgegangen:` — die
