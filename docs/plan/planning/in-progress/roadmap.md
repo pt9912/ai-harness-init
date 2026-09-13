@@ -20,7 +20,7 @@ nicht hier.
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
 - [welle-13 — Regeln bekommen ihren Sensor](../welle-13-regeln-bekommen-ihren-sensor.md)
 
-Nichts in Arbeit.
+In Arbeit: [slice-sprung-auf-v680-wird-vollzogen](slice-sprung-auf-v680-wird-vollzogen.md) (wellenlos).
 
 ## Nächste Wellen
 
