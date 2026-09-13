@@ -214,7 +214,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 Drei slice-eigene Punkte, einer je Achse aus §1. Gezählt ist nur, was mit dem Umfang wächst.
 
-- [ ] **1 — Jeder Träger des Tags steht auf `v6.8.0`, und keine lebende Adresse bleibt auf dem
+- [x] **1 — Jeder Träger des Tags steht auf `v6.8.0`, und keine lebende Adresse bleibt auf dem
       abgelösten Tag.** Fünf Träger-Klassen, eine Eigenschaft: Sie alle existieren nur, weil der
       Tag sich bewegt, und keine ist ohne die anderen lieferbar — ein halb getauschtes Repo ist rot.
 
@@ -291,7 +291,7 @@ Drei slice-eigene Punkte, einer je Achse aus §1. Gezählt ist nur, was mit dem 
       **Architect**-Lauf; [`.claude/commands/`](../../../../.claude/commands/) und
       [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md) bei der Rolle, die
       sie ausführt ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)).
-- [ ] **2 — Die Freshness-Review des Adaptions-Blocks ist über alle 55 aktiven Einträge gefahren,
+- [x] **2 — Die Freshness-Review des Adaptions-Blocks ist über alle 55 aktiven Einträge gefahren,
       und jeder betroffene trägt einen der fünf Ausgänge.** Die Frage je Eintrag lautet: Regelt
       eine der vier im Sprung geänderten Regelwerks-Dateien — `README.md`,
       `modul-05-planning-harness.md`, `modul-11-verification.md`, `modul-13-quality-gates.md` —
@@ -350,7 +350,7 @@ Drei slice-eigene Punkte, einer je Achse aus §1. Gezählt ist nur, was mit dem 
       [`harness/conventions.md`](../../../../harness/conventions.md) in der Drei-Teil-Form von
       [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
       Festlegung 2. Geschrieben werden Ausgänge **und** Buchung im Architect-Lauf, nicht hier.
-- [ ] **3 — `docs/migrations/v6.8.0.md` liegt vor, nach der Report-Form aus <!-- d-check:ignore (geplante Ablage) -->
+- [x] **3 — `docs/migrations/v6.8.0.md` liegt vor, nach der Report-Form aus <!-- d-check:ignore (geplante Ablage) -->
       `harness/migration.md` §5.** Je Vorlage des Registers eine Zeile
       (`find .harness/baseline/v6.8.0/templates -name '*.template.md' | wc -l` → die Zeilenzahl des
       Reports; kein Erwartungswert, die Zahl wandert mit dem Tag). Der Ausgang folgt der Klasse,
@@ -373,22 +373,29 @@ Drei slice-eigene Punkte, einer je Achse aus §1. Gezählt ist nur, was mit dem 
       [`.d-check.yml`](../../../../.d-check.yml)) — jede `LH-`/`ADR-`/`MR-`-Kennung darin ist ein
       Anker-Link, sonst bricht `ids`
       ([`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)).
-- [ ] `make gates` grün über dem Liefer-Stand — real gefahren und durch den Stempel
+- [x] `make gates` grün über dem Liefer-Stand — real gefahren und durch den Stempel
       `.harness/state/gates-passed.diffsha` gedeckt, den die Verifikation byte-identisch gegen
       `bash harness/tools/working-tree-hash.sh` über dem sauberen Arbeitsbaum hält. **Was der
       Stempel nicht deckt, steht hier:** den Architect-Commit danach und die Commits dieser
       Closure.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: [`harness/conventions.md`](../../../../harness/conventions.md) §Baseline und
+      **Verkürzt, als Feststellung des Auftraggebers:** eine volle Runde ist für diesen Umfang
+      nicht gefahren, ein Review-Report **zu diesem Slice** liegt damit nicht vor. Getragen hat die
+      prüfende Seite die Konsistenzrunde zu
+      [`ADR-0047`](../../adr/0047-ziel-fassung-regiert-den-sprung-v680.md) vor dem Slice, der
+      Reviewer-Commit in eigener Sache
+      ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)) und die
+      Verifikation; keiner der drei Läufe hat an dem geschrieben, was er prüfte (§7).
+- [x] Doku-Update: [`harness/conventions.md`](../../../../harness/conventions.md) §Baseline und
       §Adoptierte Konventions-Quellen tragen den neuen Stand — **als Architect-Commit**, aus dem
       Übergabe-Artefakt aus Liefer-Punkt 2.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
 
 ## 3. Plan (vor Code)
 
@@ -498,59 +505,187 @@ dasteht.
   **Vorzustand** und führen den abgelösten Tag als Literal — sie gehören zur Mess-Klasse und
   bleiben stehen, obwohl der Plan während der Arbeit in `in-progress/` und damit im Prüfbereich
   des Nachzugs liegt. Die Zusagen in §2 und §5 sind deshalb über den **neuen** Tag formuliert.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen>
+  — **Ausgang: entfallen.** Zwei Rollen haben je Vorkommen geurteilt statt pauschal ersetzt: Der
+  Architect-Lauf nennt vier bewegte Mess-Ergebnisse und daneben namentlich die bewusst stehen
+  gelassenen, die Verifikation hat die Reste einzeln gegengelesen. Über dem Liefer-Stand bleiben **null** Links und
+  **drei** Inline-Nennungen des abgelösten Tags (Kommandos in §1); zwei davon sind Mess-Aussagen
+  und bleiben zu Recht stehen — diese Datei §1 und
+  [`ADR-0045`](../../adr/0045-authority-wechsel-senkt-eine-richtung.md), `Accepted` und damit
+  ohnehin gesperrt ([`AGENTS.md`](../../../../AGENTS.md) §3.4). Die dritte ist keine; sie steht
+  beim Risiko unten.
 - **Kein Sensor deckt die Kopplung Baum ↔ Pin, und keiner den Vorgang selbst.**
   `baseline-verify` entdeckt das `<tag>`-Verzeichnis, `sources-pin.bats` koppelt die fünf Pins nur
   untereinander; beide melden grün, während Baum und Pins verschiedene Tags tragen. Für die Frage,
   *nach welcher Fassung* ein Durchgang lief, existiert überhaupt kein Gate
   ([`ADR-0047`](../../adr/0047-ziel-fassung-regiert-den-sprung-v680.md) §Fitness Function).
-  — **Ausgang:** <eingetreten / entfallen / weiter offen>
+  — **Ausgang: entfallen.** Baum und alle fünf Pin-Stellen tragen denselben Tag —
+  `make baseline-verify` meldet `v6.8.0 OK`, und die drei Pin-Wächter liefen grün im
+  `make gates`-Lauf über dem Liefer-Stand. Die Werkzeug-Eigenschaft bleibt und ist an ihrem Ort
+  benannt ([`ADR-0047`](../../adr/0047-ziel-fassung-regiert-den-sprung-v680.md) §Fitness Function,
+  [slice-223](../done/slice-223-baum-tausch-v672-pins-ziehen.md) DoD 2), also kein stilles
+  Vergessen; für **diesen** Slice hat sie keinen Gegenstand mehr.
 - **`make vendor-baseline` bricht ab, wenn ein anderer Tag im Baum liegt** — die Sperre ist
   gewollt ([`harness/sensors/vendor-baseline.md`](../../../../harness/sensors/vendor-baseline.md)
   §Grenze), aber sie macht den Tausch zu einer Zwei-Schritt-Operation, deren erster Schritt
   (`git rm -r` des alten Baums) das Repo für die Dauer eines Commits ohne Baseline lässt.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen>
+  — **Ausgang: entfallen.** Der Tausch lief als **reiner Rename ohne Rest**, das Repo war zu
+  keinem Zeitpunkt ohne Baseline:
+
+  ```sh
+  git show f8e602b7 --name-status --format= | grep -c '^R'        # 55 Umbenennungen
+  git show f8e602b7 --name-status --format= | grep -cvE '^R|^$'   # 0 sonstige Eintraege
+  ```
+
+  Und der rote Zwischenstand zwischen Tausch und Nachzug wurde nie die Spitze eines Push:
+  `git reflog show origin/main` führt den Sprung `6ac35576` → `0565f274`, die sieben Arbeits-Commits
+  reisten in **einem** Push (Baseline-Regelwerk `grundlagen-traceability.md` §Herkunfts-Anker).
 - **Die Provenienz-Hälfte Asset → vendored Baum hält nichts.** `regelwerk-check` hasht die
   Roh-Bytes des ZIP, `baseline-verify` hält den Baum gegen ein selbst erzeugtes `SHA256SUMS` —
   dass der Baum *aus diesem Asset* stammt, bezeugt allein der Vendoring-Vorgang
   ([`harness/conventions.md`](../../../../harness/conventions.md) §Adoptierte
-  Konventions-Quellen). — **Ausgang:** <eingetreten / entfallen / weiter offen>
+  Konventions-Quellen). — **Ausgang: weiter offen → Beobachtungs-Register.** Die Klasse steht als
+  [`BEO-ALL/vendored-baum-entsteht-aus-anderer-quelle-als-sein-pin`](../observations/BEO-ALL/vendored-baum-entsteht-aus-anderer-quelle-als-sein-pin/observation.md)
+  bei **1×** und ist **nicht erhöht**: Der Baum entstand über `make vendor-baseline` aus dem
+  verifizierten Asset, die dort beschriebene Hand-Kopie aus dem `git`-Baum trat nicht auf. Was
+  **doch** eintrat, ist die Messseite derselben Ursache und steht als eigener Eintrag in §7.
 - **[`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) steht auf
   `Proposed`**, und ihre Festlegung 2 bindet trotzdem die Form der Buchung aus Liefer-Punkt 2. Ob
   eine nicht angenommene Entscheidung so zitiert werden darf, führt
   [`ADR-0044`](../../adr/0044-ziel-fassung-regiert-den-sprung-v672.md) §Konsequenzen als benannte
   Lücke; dieser Slice folgt der Form und entscheidet die Frage nicht.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen>
+  — **Ausgang: entfallen.** Die Buchung steht in der Drei-Teil-Form (Architect-Commit
+  `355172da`), und die Frage ist nicht gestellt worden — für **diesen** Slice hat das Risiko damit
+  keinen Gegenstand mehr. Die Frage selbst behält ihre Adresse in
+  [`ADR-0044`](../../adr/0044-ziel-fassung-regiert-den-sprung-v672.md) §Konsequenzen; sie zu
+  beantworten wäre eine Entscheidung und damit Architect-Arbeit
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
 - **Der Bestand offener Slice-Pläne wird gegen den neuen Stand nicht gehalten.** 65 Dateien liegen
   in `open/` (`ls docs/plan/planning/open/*.md | wc -l`, kein Erwartungswert); der Sprung kann die
   Pflicht verschieben, die einer von ihnen halten soll — genau die Klasse, die das Register als
   *Folge-Slice überlebt Baseline-Sprung mit alter Pflicht* führt (§8). Dieser Slice prüft sie
-  nicht. — **Ausgang:** <eingetreten / entfallen / weiter offen>
+  nicht. — **Ausgang: weiter offen → Beobachtungs-Register.** Der Bestand ist weiterhin
+  ungeprüft; der Closure-Zug hat auf **einer** schmalen Achse nachgesehen — der toten Tag-Adresse —
+  und dort einen Treffer: Der Start-Trigger von
+  [slice-213](../open/slice-213-review-report-laeuft-in-der-tabellen-form.md) §4 belegt die Zusage
+  *„der vendored Baum führt die Vorlage in der neuen Fassung"* mit einem `ls` auf das abgelöste
+  Tag-Segment; das Kommando meldet heute Exit 2, und der Trigger liest sich damit als *nicht
+  erfüllt*, obwohl er es ist. Der Beleg ist geschrieben
+  ([`BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht`](../observations/BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht/observation.md),
+  jetzt **6×**); **die Berichtigung selbst ist kein Closure-Schritt** und steht als Übergabe in §7.
 
 ## 7. Closure-Notiz
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
-§Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
+§Das Beobachtungs-Register (vorhandene `BEO-<KUERZEL>/<slug>` **zitieren** statt neu
 formulieren — sonst zählt das Register zwei Namen getrennt) ·
 `grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
 Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-  *(Die Form — geschärfte Regel · neuer Sensor · benannte Spec-Lücke — ist in §5
-  ausdrücklich offen gelassen; sie folgt aus dem Durchgang. Wurde mit diesem Slice nichts
-  verkörpert, entfällt die Teil-Zeile `— liegt in …` ersatzlos; der Eintrag ist dann
-  gezählt, nicht verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <…>
-  *(Drei Kandidaten stehen in §8 mit Zähler-Stand benannt; welcher einen Beleg bekommt, entscheidet
-  der Durchgang, nicht dieser Plan. Keine Beobachtung angefallen ist ebenfalls eine Antwort.)*
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** entfällt hier — dieses Repo fährt Wellen; sie werden von der nächsten
-  Welle-Closure geprüft (§2).
+- **Was hat funktioniert:** **Der Commit-Zuschnitt je Eigentümer und die Reihenfolge aus §3.**
+  Sieben Arbeits-Commits, jeder mit genau einer Rolle in seiner Message; die Verifikation hat den
+  Zuschnitt über alle sieben gegengelesen und keine Vermischung gefunden. Der Tausch selbst war ein
+  reiner Rename (§6), der sha256 stammt aus einem bewusst rot gefahrenen Fehlversuch statt aus
+  einer Erwartung, und die **Zusage über den neuen Tag** statt über den abgelösten hat getragen:
+  Sie blieb messbar, während die Mess-Kommandos in §1 den alten Tag als Literal behielten.
+- **Was ging anders als geplant:** **Der Vorlagen-Report hat seine eigene Prämisse nicht
+  gehalten.** §2 Liefer-Punkt 3 setzte den Beleg als *„Byte-Gleichheit der Vorlage über die zwei
+  Tags"*; die Verifikation hat sie gegen die zwei **vendorten** Bäume nachgemessen und für **2**
+  von **25** Vorlagen widerlegt. Der Ausgang *schon erfüllt* blieb richtig, der Beleg-Satz nicht —
+  er ist in `c9e23496` auf die präzise Aussage gezogen. Das ist zugleich der Lerneintrag unten.
+- **Freshness-Durchgang über den Adaptions-Block (Liefer-Punkt 2) — der Bericht.** Der
+  Architect-Lauf hat ihn gefahren und **bewusst kein Artefakt hinterlassen**: Für den Ausgang
+  *bleibt gültig* sieht die Baseline keinen Vermerk vor (`v6.8.0` ·
+  `regelwerk/modul-02-harness-bootstrap.md` §Freshness-Audit der vendored Baseline — *„stehen
+  lassen; Normalfall"*), und eine nachträgliche Inhalts-Änderung an einem angenommenen Eintrag
+  verbietet
+  [`MR-045`](../../../../harness/conventions.md#mr-045--der-adaptions-block-läuft-in-der-verzeichnis-form)
+  ohnehin. **Diese Stelle ist damit die einzige, an der der Durchgang festgehalten ist.**
+  - **Grundgesamtheit:** alle **55** aktiven Einträge (`ls harness/conventions/*.md | wc -l` →
+    **55**, kein Erwartungswert), nicht eine Vorsichtung.
+  - **Einzeln geprüft:** die **zehn** aus Suchhilfe 1 — `MR-002 MR-003 MR-010 MR-011 MR-014
+    MR-024 MR-035 MR-051 MR-054 MR-056`, Kommando in §2 —, darunter die zwei aus Suchhilfe 2, plus
+    den **dritten Kandidaten** aus Suchhilfe 3, den die Entscheidung nicht nennt.
+  - **Ergebnis: ein Ausgang ist vergeben** — *bleibt gültig* für
+    [`MR-056`](../../../../harness/conventions.md#mr-056--die-auswahl-im-auto-kontext-hängt-an-der-lauf-berührung-nicht-am-prozess-modul-begriff):
+    Der Sprung bewegt den **Inhalt** der zwei namentlich geführten Module, nicht den
+    Auswahl-Maßstab, den der Eintrag setzt; seine Zahlen sind gegen den neuen Baum nachgemessen.
+    Für alle übrigen hat das Delta **keinen Gegenstand** — keine der vier im Sprung geänderten
+    Regelwerks-Dateien regelt das, wofür der Eintrag angelegt wurde. Kein Rückbau, keine engere
+    Nachfolgerin, kein *Bezug ist entfallen*, und **kein `widerspricht`** — der einzige der fünf
+    Ausgänge, an dem das Delta die Antwort nicht vorgibt und der nach §4 die Rückführung nach
+    `open/` ausgelöst hätte.
+  - **Der dritte Kandidat ist eigens entschieden** und trägt als einziger einen sichtbaren Beleg
+    (Architect-Commit `47c4cb3b`): Die neue Sektion `modul-11-verification.md` §Bewusstes Brechen
+    für DoD-Testbehauptungen regelt denselben Gegenstand wie
+    [`AGENTS.md`](../../../../AGENTS.md) §3.6, aber enger und nur für **eine** der dort geführten
+    Zusage-Klassen. Eine Ergänzung ohne Einschränkung ist keine Adaption — **kein neuer Eintrag**;
+    §3.6 bekam stattdessen den Verweis-Nachtrag mit Mess-Stand.
+  - **Was der Durchgang nicht belegt:** *bleibt gültig* heißt wörtlich „stehen lassen" und
+    hinterlässt keine Spur im Eintrag; *geprüft und bleibt gültig* ist damit von *nicht geprüft*
+    nicht zu unterscheiden. Die Verifikation stellt genau das fest und konnte die zehn nicht
+    unabhängig bestätigen. Dieser Absatz ist die Bestätigung, die sie erbeten hat — sein Träger ist
+    der Bericht des ausführenden Laufs, nicht ein Sensor.
+- **Steering-Loop-Eintrag — benannte Spec-Lücke: Ein Vorlagen-Delta gegen den
+  Upstream-Quelltext ist nicht dasselbe wie eines gegen den tatsächlich vendorten Baum.** Beide
+  Messungen beantworten dieselbe Frage und liefern verschiedene Antworten:
+
+  ```sh
+  # (a) Upstream-Quelltext, Kurs-Klon $K — so gemessen in ADR-0047 §Kein Vorlagen-Delta:
+  git -C "$K" diff --name-only v6.7.2..v6.8.0 -- lab/templates | wc -l                  # 0
+
+  # (b) die zwei vendorten Baeume dieses Repos, f8e602b7 ist der Tausch-Commit:
+  for rel in $(git ls-tree -r --name-only f8e602b7 -- .harness/baseline/v6.8.0/templates \
+               | sed 's#^\.harness/baseline/v6\.8\.0/templates/##'); do
+    a=$(git show "f8e602b7^:.harness/baseline/v6.7.2/templates/$rel" | sha256sum)
+    b=$(git show "f8e602b7:.harness/baseline/v6.8.0/templates/$rel"  | sha256sum)
+    [ "$a" = "$b" ] || echo "$rel"
+  done | wc -l                                                                          # 2
+  ```
+
+  Das Release-Verfahren stempelt einen Beispiel-Link mit dem Release-Tag; der vendorte Baum trägt
+  damit Bytes, die der `git`-Baum nicht hat — bei `AGENTS.template.md` und
+  `harness/conventions.template.md` je **eine** Zeile, kein Inhalts- und kein Struktur-Delta.
+  **Die Lücke:** Keine Quelle dieses Repos sagt, gegen **welchen der beiden** ein Vorlagen-Delta zu
+  messen ist. [`harness/migration.md`](../../../../harness/migration.md) §5 gibt die Report-**Form**
+  und nennt den Mess-Gegenstand nicht;
+  [`ADR-0047`](../../adr/0047-ziel-fassung-regiert-den-sprung-v680.md) §Kein Vorlagen-Delta misst
+  gegen den Klon und trägt die Folgerung auf den vendorten Baum. Gegenstück ist
+  [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit): Reproduzierbar ist,
+  was im Repo liegt — eine Delta-Aussage über den vendorten Baum gehört an **ihm** gemessen.
+  *(Kein `liegt in`-Feld — der Eintrag ist **gezählt, nicht verkörpert**, aus zwei unabhängigen
+  Gründen. **Schwelle:** die Beobachtung steht nach diesem Slice bei **1×**; unterhalb von 3× ist
+  `offen` der Normalzustand. **Eigentum:** Der Ort, an dem die Regel stünde — `harness/migration.md`
+  §5 oder §6 —, ist ein derivatives Register und gehört dem **Architect**
+  ([`ADR-0024`](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md),
+  [`ADR-0047`](../../adr/0047-ziel-fassung-regiert-den-sprung-v680.md) §Bezug); die Formulierung in
+  [`ADR-0047`](../../adr/0047-ziel-fassung-regiert-den-sprung-v680.md) selbst ist `Accepted` und ab
+  da immutabel ([`AGENTS.md`](../../../../AGENTS.md) §3.4). Auch beim Übertritt ist das eine
+  **Übergabe**, kein Closure-Schritt.)*
+- **Beobachtungs-Register (`../observations/`):** **zwei Belege.** Neu angelegt:
+  [`BEO-ALL/delta-messung-trifft-den-quelltext-statt-den-vendorten-baum`](../observations/BEO-ALL/delta-messung-trifft-den-quelltext-statt-den-vendorten-baum/observation.md)
+  (**1×**) — der Gegenstand des Lerneintrags oben. Ergänzt:
+  [`BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht`](../observations/BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht/observation.md)
+  (**6×**) für den toten Start-Trigger in `slice-213` (§6). **Die zwei aus der Sichtung (§8) sind
+  nicht erhöht, und das ist der Befund:** `gate-modul-erreicht-den-vendored-baum-nicht` (**3×**)
+  und `verweis-nachzug-ersetzt-eine-historisch-richtige-adresse` (**4×**) beschreiben, was der
+  Nachzug *falsch* macht — hier hat er es nicht getan (§6, Risiko 1). Beide stehen **über** der
+  Schwelle und trotzdem auf `offen`; das ist **vorgefundener Bestand**, den §8 benennt und den
+  dieser Slice nicht verursacht hat. Ihr Ausgang gehört dem **Lese-Schritt**, und der ist in einem
+  Repo mit Wellen-Betrieb Sache der nächsten Welle-Closure.
+- **Folge-Slices:** **keiner.** Kein Risiko aus §6 ist *eingetreten*; die zwei *weiter offen* haben
+  ihren Platz im Register. **Zwei Übergaben statt eines Slice:** (a) an den **Architect** — ob
+  `harness/migration.md` §5 den Mess-Gegenstand eines Vorlagen-Delta benennt oder ihn in §6 als
+  offene Frage führt; (b) an den **Planner-Lauf, der `slice-213` als Nächstes anfasst** — der tote
+  `ls` in dessen §4 Start-Trigger. Beide sind eine Zeile Arbeit und kein Schnitt; sie jetzt als
+  Slice zu schneiden hieße, für eine Zeile einen Plan zu schreiben.
+- **Risiken aus §6:** sechs Risiken, sechs Ausgänge — **viermal *entfallen*, zweimal *weiter offen*
+  → Beobachtungs-Register**, keines *eingetreten*. Kein Risiko ohne Ausgang; die Einzelheiten und
+  ihre Messungen stehen in §6.
+- **Drei Paarungen:** entfällt hier — dieses Repo fährt Wellen
+  (`ls docs/plan/planning/welle-*.md | wc -l` → **3**, kein Erwartungswert); sie werden von der
+  nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit (§2).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
