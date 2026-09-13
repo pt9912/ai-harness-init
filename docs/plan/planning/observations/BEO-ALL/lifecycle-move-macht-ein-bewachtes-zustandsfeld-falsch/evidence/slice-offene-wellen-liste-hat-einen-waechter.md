@@ -1,0 +1,2 @@
+**Vorgang:** slice-offene-wellen-liste-hat-einen-waechter
+**Fund:** Der Closure-Move nach `done/` macht die Zeile *„In Arbeit: …"* unter *Offene Wellen* falsch — das Feld, das das Modul `planning` gegen den Inhalt von `docs/plan/planning/in-progress/` hält; `make slice-mv` zieht nach eigener Zusage Pfade nach und keine Zustandssätze (Grenze 1), und der präfixlose Verweis derselben Zeile fällt zusätzlich unter Grenze 3.

@@ -451,8 +451,8 @@ Backticks).
   [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
   und trägt damit bereits eine ID — Baseline-Regelwerk `grundlagen-traceability.md`
   §Herkunfts-Anker, Geltungsbereich. Der Eintrag ist gezählt, nicht verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** **zehn Belege, je einer je Klasse** — drei
-  Verzeichnisse neu angelegt, sieben `evidence/slice-offene-wellen-liste-hat-einen-waechter.md`
+- **Beobachtungs-Register (`../observations/`):** **elf Belege, je einer je Klasse** — drei
+  Verzeichnisse neu angelegt, acht `evidence/slice-offene-wellen-liste-hat-einen-waechter.md`
   ergänzt. Neu: `abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt` (1×, aus der
   Verifikation), `aktivierung-entscheidet-die-als-offen-uebergebene-frage` (1×, aus Runde 1 HIGH-2
   — und die Kennungs-Entscheidung, die
@@ -463,7 +463,17 @@ Backticks).
   `zusammenfassung-staerker-als-ihre-quelle` (7×), `zusage-nennt-zwei-kanten-der-sensor-deckt-eine`
   (2×), `praesens-aussage-in-einzufrierendem-artefakt-ohne-form` (2×),
   `zusage-neben-geaenderter-ableitung-bleibt-stehen` (24×),
-  `beleg-nach-dem-ausgang-findet-keinen-leser` (2×).
+  `beleg-nach-dem-ausgang-findet-keinen-leser` (2×) und —
+  **strukturell erst nach dem `git mv`, weil er ein Befund des Move ist** —
+  `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch` (16×): Der Closure-Move macht die Zeile
+  *„In Arbeit: …"* der Roadmap falsch, und [`make slice-mv`](../../../../harness/sensors/slice-mv.md)
+  zieht Pfade nach, keine Zustandssätze.
+  **Nicht gebucht ist `verweis-nachzug-ersetzt-eine-historisch-richtige-adresse`**, und das ist
+  gemessen: Der Nachzug hat in den drei Review-Reports je **eine** Zeile ersetzt, und alle drei
+  sind Metadaten-Zeiger (*Slice-Plan* / *Eingangs-Kontext*), keine Mess-Aussage über die
+  Vergangenheit — genau der Fall, für den
+  [ADR-0042](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 1 die
+  Ersetzung als richtig setzt.
   **Zwei Einordnungen weichen von der Empfehlung des Reports ab**, und der Grund steht hier:
   Runde-2-INFO-1 ist **nicht** unter `benannte-luecke-ohne-ausgang` gebucht — jene Klasse handelt
   von einer Grenz-Beschreibung in lebender Prosa, hier altert eine **Präsens-Aussage in einem
