@@ -35,6 +35,7 @@ eine Datei unter [`conventions/`](conventions/), und `conventions.md` ist ihr In
 | [`AGENTS.md`](../AGENTS.md) | Hard Rules, Source Precedence |
 | [`conventions.md`](conventions.md) | Strukturregeln, Index des MR-Blocks, Modus |
 | [`conventions/`](conventions/) | die MR-Einträge selbst, eine Datei je Eintrag |
+| [`migration.md`](migration.md) | Instanz-Register (Vorlage → Artefakt dieses Repos) und Report-Form für einen künftigen Baseline-Sprung |
 | `.harness/skills/reviewer.md` | Reviewer-Skill: HIGH-Liste, Kategorien-Regeln, Negativbefund-Pflicht, Output-Schema (Modul 10) — nächste Rolle nach Schritt 8 des Minimal Agent Workflow, nicht Teil der Implementer-Eingabe |
 
 ## Sensors (Feedback-Gates)
