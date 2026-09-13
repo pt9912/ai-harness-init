@@ -49,12 +49,10 @@ Nur die letzten beiden Lagen bleiben `waves` unsichtbar: Eine Nennung in Spalte 
 Fähigkeit des Moduls, und ein toter Zeiger ohne Datei fällt ausschließlich über das Modul `links`
 (`target-missing`). Eine geschnittene Welle-Datei, die nur in der Vorschau-Tabelle verlinkt steht
 und (noch) nicht unter „Offene Wellen", ist **kein** blinder Fleck: Sie ist Lage 1 der Tabelle oben
-und meldet zwei Befunde. Ob dieser Zustand mit dieser Aktivierung eine verbotene Abweichung geworden
-ist oder ob die Lesart aus
-[`roadmap.md`](../../docs/plan/planning/in-progress/roadmap.md) §Nächste Wellen („Ein verlinkter
-Name hat eine flache Plan-Datei … Start-Trigger nicht eingetreten") unberührt fortbesteht, ist eine
-offene Norm-Frage und nicht Gegenstand dieses Sensor-Textes — der hier nur beschreibt, was das
-Modul liest. Die zweite
+und meldet zwei Befunde. Das ist eine verbotene Abweichung:
+[ADR-0046](../../docs/plan/adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) legt fest, dass die
+flache Datei mit der Eröffnung der Welle entsteht, nicht davor, und `waves` hält genau das mit
+`wave-drift`/`wave-preview-exists` durch. Die zweite
 Fähigkeit desselben Moduls (`closure`, Struktur der Closure-Notizen) ist seit slice-129 aktiviert —
 was sie deckt und was nicht, steht im eigenen Absatz unten. Eine **vierte** Fähigkeit desselben
 Moduls (`observations`, Deckung zwischen zitierten Beobachtungs-Kennungen und ihrem Nachweis im
