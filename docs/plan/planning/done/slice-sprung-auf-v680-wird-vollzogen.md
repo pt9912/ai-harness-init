@@ -663,11 +663,15 @@ Backticks).
   [`ADR-0047`](../../adr/0047-ziel-fassung-regiert-den-sprung-v680.md) selbst ist `Accepted` und ab
   da immutabel ([`AGENTS.md`](../../../../AGENTS.md) §3.4). Auch beim Übertritt ist das eine
   **Übergabe**, kein Closure-Schritt.)*
-- **Beobachtungs-Register (`../observations/`):** **zwei Belege.** Neu angelegt:
+- **Beobachtungs-Register (`../observations/`):** **drei Belege.** Neu angelegt:
   [`BEO-ALL/delta-messung-trifft-den-quelltext-statt-den-vendorten-baum`](../observations/BEO-ALL/delta-messung-trifft-den-quelltext-statt-den-vendorten-baum/observation.md)
   (**1×**) — der Gegenstand des Lerneintrags oben. Ergänzt:
   [`BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht`](../observations/BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht/observation.md)
-  (**6×**) für den toten Start-Trigger in `slice-213` (§6). **Die zwei aus der Sichtung (§8) sind
+  (**6×**) für den toten Start-Trigger in `slice-213` (§6) und — **strukturell erst nach dem
+  `git mv`, weil er ein Befund des Move ist** —
+  [`BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md)
+  (**18×**): Der Move macht den Ruhe-Marker der Roadmap falsch, und `make slice-mv` zieht Pfade
+  nach, keine Zustandssätze. **Die zwei aus der Sichtung (§8) sind
   nicht erhöht, und das ist der Befund:** `gate-modul-erreicht-den-vendored-baum-nicht` (**3×**)
   und `verweis-nachzug-ersetzt-eine-historisch-richtige-adresse` (**4×**) beschreiben, was der
   Nachzug *falsch* macht — hier hat er es nicht getan (§6, Risiko 1). Beide stehen **über** der
