@@ -203,7 +203,7 @@ Runde aus, die bereits gelaufen ist — oder deckt umgekehrt, dass der Nachweis 
 - **pfad:** `harness/README.md:62-63`
 - **klasse:** Referent einer Deixis zeigt auf das Gegenteil des Gemeinten
 
-`99bfd1c5` ersetzt „keine `make X`-Zeile in [`AGENTS.md`](../AGENTS.md) §4 nötig" durch „keine
+`99bfd1c5` ersetzt „keine `make X`-Zeile in [`AGENTS.md`](../../AGENTS.md) §4 nötig" durch „keine
 `make X`-Zeile in **dieser Tabelle** nötig". Der Satz steht unter `### Werkzeuge (kein Gate)`,
 unmittelbar **vor** der Werkzeuge-Tabelle, deren 17 Zeilen sämtlich `make X`-Zeilen sind. Gemeint
 ist die Sensors-Tabelle darüber; gelesen wird die darunter. Zusätzlich beschreibt der Satz seit dem
