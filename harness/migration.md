@@ -224,6 +224,33 @@ Achsen, die nicht ineinander übersetzt werden: dazu [§6](#6-offene-fragen).
   Erwartungswert), und eine bloße Nennung ist kein Beleg. §4 und §5 dieses Dokuments sind darum
   **keine** aus den sechs ADRs abgeleiteten Normen, sondern eine am Bestand gemessene Beobachtung
   bzw. eine Formvorgabe für einen künftigen Bericht.
+- **`.harness/baseline/v6.7.2/templates/docs/plan/planning/observation.template.md` — 104
+  Instanzen (`find docs/plan/planning/observations -mindepth 2 -maxdepth 2 -type d | wc -l`, kein
+  Erwartungswert): append-only wie die sechs Zeilen aus §5 Buchstabe b, oder Buchstabe a (vier
+  Ausgänge)? Keine der sechs Sprung-ADRs entscheidet es. `v6.7.2` ·
+  `regelwerk/modul-06-roadmap.md` §Das Beobachtungs-Register führt `observation.md` und
+  `evidence/*.md` zwar als „unveränderlich ab Anlage" bzw. „unveränderlich ab Merge" — das
+  beschreibt die Lebensdauer einer einzelnen Beobachtung innerhalb des Registers, nicht, ob eine
+  geänderte Template-**Form** rückwirkend auf bestehende Instanzen angewendet würde. Bleibt unten
+  unter Buchstabe a, bis das entschieden ist.
+- **`.harness/baseline/v6.7.2/templates/harness/conventions/MR-NNN-titel.template.md` — 59
+  Instanzen (55 aktiv + 4 `done/`, `ls harness/conventions/*.md | wc -l` und
+  `ls harness/conventions/done/*.md | wc -l`, kein Erwartungswert): append-only oder Buchstabe a?
+  `v6.7.2` · `regelwerk/modul-02-harness-bootstrap.md` §Freshness-Audit der vendored Baseline
+  (Schritt 2) nennt an einer **anderen** Stelle als der in §4 zitierten Formulierung: *„Rückbau ist
+  ein neuer Eintrag, kein Edit — eine aufgelöste `MR-<NNN>` wird nicht überschrieben, sondern
+  bekommt einen Nachfolger"*, mit dem Zusatz *„Append-only-Disziplin wie bei ADRs"*. Das beschreibt
+  die Auflösung eines einzelnen Adaptions-Eintrags (Nachfolge-Eintrag statt Edit), nicht, ob eine
+  geänderte
+  Template-**Form** rückwirkend auf bestehende `MR-<NNN>.md` angewendet würde — ob beides dieselbe
+  Frage ist, misst dieses Dokument nicht. Bleibt unten unter Buchstabe a, bis das entschieden ist.
+- **`.harness/baseline/v6.7.2/templates/harness/sensors/gate.template.md` — 15 Instanzen
+  (`ls harness/sensors/*.md | wc -l`, kein Erwartungswert): append-only oder Buchstabe a? `v6.7.2` ·
+  `regelwerk/grundlagen-begriffe.md` nennt für `harness/sensors/<target>.md`: *„kein
+  Lifecycle-Verzeichnis, ein retiriertes Gate verschwindet."* Das spricht gegen eine
+  Bestandsschutz-Logik für die einzelne Sensor-Datei, entscheidet aber nicht, ob eine geänderte
+  Template-**Form** rückwirkend auf bestehende Instanzen angewendet würde. Bleibt unten unter
+  Buchstabe a, bis das entschieden ist.
 - **Das Verhältnis der vier Report-Ausgänge zu den fünf Baseline-Ausgängen bleibt uneindeutig,
   solange niemand einen Durchgang gegen beide Mengen gleichzeitig fährt.** Sie messen
   unterschiedliche Gegenstände (Vorlage gegen Adaptions-Eintrag); ob ein künftiger Durchgang beide
