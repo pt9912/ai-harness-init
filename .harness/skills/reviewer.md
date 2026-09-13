@@ -1,123 +1,145 @@
 # Reviewer-Skill — ai-harness-init
 
-**Version:** 1.7.0 · **Datum:** 2026-09-05 ·
-**Baseline:** Agents-Regelwerk v6.0.0 (Kurs-Welle 116), Modul 10 §Ziel-Form: Reviewer-Skill
-(Output-Schema, Kategorien-Semantik, Report-Pflicht, Pflicht-Kontext-Eingang).
+**Version:** 2.0.0 · **Datum:** 2026-09-13 ·
+**Baseline:** Agents-Regelwerk v6.7.2 (Kurs-Welle 134), Modul 10 §Ziel-Form: Reviewer-Skill
+(Kontext-Eingang · Klassifikation · „Was dieser Skill NICHT macht" · Output-Schema mit
+Negativbefund-Pflicht · Pflege).
 
-<!-- Versionierung (Modul 10): Änderungen werden versioniert, nicht überschrieben;
-die alte Fassung liegt in der git-Historie. 1.1.0 (slice-014): „vorherige Findings
-am gleichen Modul" als fünften v3.1.0-Pflicht-Kontext-Punkt ergänzt. Der Slice-Plan
-(Repo-Ergänzung aus 1.0.0) BLEIBT erhalten — die Änderung ist rein additiv, nichts
-entfernt. 1.2.0 (slice-019): Baseline-Re-Pin v3.1.0→v3.5.0 (Welle 26→32); Modul 10
-§Ziel-Form substanziell unverändert (Überschriften identisch, nur ein Link-Label bekam
-ein `templates/`-Präfix) — reines Label-/Metadaten-Update, keine Änderung an den fünf
-Punkten / Output-Schema / Kategorien. 1.3.0 (slice-043): Baseline-Re-Pin v3.5.0→v3.5.1
-(Welle 32→33); die fünf Pflicht-Punkte / Output-Schema / Kategorien sind repo-gepflegt und
-unverändert übernommen — reines Baseline-Label-Update. 1.4.0 (slice-049): Baseline-Re-Pin
-v3.5.1→v3.5.2 (Welle 33→34); `modul-10-review-harness.md` änderte im Re-Vendor real **nur** seine
-eingebettete Quell-URL (`/v3.5.1/`→`/v3.5.2/`) — gemessen, nicht angenommen: nach Normalisierung
-der Versions-Strings ist der Diff leer. Wieder reines Baseline-Label-Update. 1.5.0 (slice-083):
-Baseline-Re-Pin v3.5.2→v5.12.0 (Welle 34→98); zwei materielle Deltas aus
-`modul-10-review-harness.md` §Ziel-Form: Reviewer-Skill adoptiert — das Output-Schema führt
-jetzt ein sechstes Feld `klasse` (stabile Kurz-Bezeichnung des Fehlermusters, speist den
-Steering-Loop-Zähler über die Slice-Closure ins Beobachtungs-Register), und die HIGH-Liste
-gewinnt drei baseline-neue Einträge (Norm nur im Template-Kommentar · Kommentar trägt keine
-der fünf Kommentar-Klassen · Zustandsfeld trägt Chronik), verbatim aus
-`.harness/skills/reviewer.template.md`, `v5.12.0`. Die fünf Pflicht-Kontext-Punkte sind
-unverändert. 1.6.0 (slice-165): Baseline-Re-Pin v5.12.0→v5.18.0 (Welle 98→111); reines
-Baseline-Label-Update, gemessen statt angenommen: §Ziel-Form: Reviewer-Skill und die Ziel-Form-
-Vorlage sind über den Tausch **byte-gleich**, beide `diff` leer bei Exit 0 —
-`diff <(git show db83415^:.harness/baseline/v5.12.0/regelwerk/modul-10-review-harness.md | sed -n '44,92p') <(sed -n '44,92p' .harness/baseline/v5.18.0/regelwerk/modul-10-review-harness.md)`
-und `diff <(git show db83415^:.harness/baseline/v5.12.0/templates/.harness/skills/reviewer.template.md) .harness/baseline/v5.18.0/templates/.harness/skills/reviewer.template.md`.
-Das einzige Delta des Moduls liegt in §Reviewer berichtet auch, was er nicht gefunden hat und
-berührt weder Output-Schema noch Kategorien noch die fünf Pflicht-Kontext-Punkte. 1.7.0
-(slice-182): Baseline-Re-Pin v5.18.0→v6.0.0 (Kurs-Welle 111→116); reines Baseline-Label-Update,
-gemessen statt angenommen: §Ziel-Form: Reviewer-Skill und die Ziel-Form-Vorlage sind über den
-Tausch **byte-gleich**, beide `diff` leer bei Exit 0 —
-`diff <(git show d75cd8c^:.harness/baseline/v5.18.0/regelwerk/modul-10-review-harness.md | sed -n '44,92p') <(sed -n '44,92p' .harness/baseline/v6.0.0/regelwerk/modul-10-review-harness.md)`
-und
-`diff <(git show d75cd8c^:.harness/baseline/v5.18.0/templates/.harness/skills/reviewer.template.md) .harness/baseline/v6.0.0/templates/.harness/skills/reviewer.template.md`.
-Das einzige Delta des Moduls liegt in §Ein Rang-Dokument, das einen einzelnen Slice bewacht
-(Ergänzung um den wellenlosen Archivierungs-Pfad) und berührt weder Output-Schema noch
-Kategorien noch die fünf Pflicht-Kontext-Punkte. -->
+* Status: Accepted
+* Bezug: [`ADR-0028`](../../docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
+  (ein Rollen-Anweisungssatz gehört der Rolle, die ihn ausführt) ·
+  [`AGENTS.md`](../../AGENTS.md) §3 (Hard Rules)
+* Gilt für: jeden Lauf unter dem Agenten-Typ `reviewer`
+  ([`.claude/agents/reviewer.md`](../../.claude/agents/reviewer.md))
 
-## Eingangs-Kontext (Pflicht — sonst nicht reproduzierbar)
+## Kontext-Eingang (Pflicht)
 
-Der Reviewer erhält die **fünf Pflicht-Punkte** (Modul 10): den
-**Diff/Commit-Range**, die betroffenen `LH-*`-Anforderungen (in
-[`spec/lastenheft.md`](../../spec/lastenheft.md)), die **referenzierten aktiven ADRs**
-(deren ID im PR/Commit vorkommt), die **Hard Rules** ([`AGENTS.md`](../../AGENTS.md) §3)
-und **vorherige Findings am gleichen Modul** (damit wiederkehrende Muster erkennbar sind
-und nicht jede Sitzung bei null beginnt) — **plus** den **Slice-Plan** (Repo-Ergänzung
-über die Baseline-Fünf hinaus: der Review prüft den Diff *gegen* den Plan). Ohne diesen
-Block sieht der Reviewer Code, aber nicht die Verträge, gegen die er prüft. **Nicht**
-erhalten: die DoD-Abhakung — Plan-/DoD-Konformität prüft die Verifikation (getrennter
-Kontext, anderes Prüf-Artefakt).
+Was der Reviewer *immer* mitbringt, bevor er den Diff liest:
 
-## Repo-spezifische Anker pro Kategorie
+- Diff bzw. Commit-Range
+- [`spec/lastenheft.md`](../../spec/lastenheft.md) (für referenzierte `LH-*`-IDs)
+- die **aktiven** ADRs, deren ID im PR oder in der Commit-Message vorkommt
+- [`AGENTS.md`](../../AGENTS.md) §3 (Hard Rules)
+- vorherige Findings am gleichen Modul (letzte ~5 PRs) — damit wiederkehrende
+  Muster erkennbar sind und nicht jede Sitzung bei null beginnt
+- **der Slice-Plan** — Repo-Ergänzung über die Baseline-Fünf hinaus: der Review
+  prüft den Diff *gegen* den Plan
 
-- **HIGH** (blockiert Merge): Stilles-Grün-Pfad in einem Gate oder
-  Gate-Skript (Harness-Lüge); halluziniertes Gate
-  ([`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6));
-  Verstoß gegen eine **aktive** ADR oder gegen eine Hard Rule; Gate-Lockerung
-  ohne ADR; Slice referenziert eine superseded ADR (nur aktive sind normativ);
-  **Norm nur im Template-Kommentar** — eine Regel steht im `<!-- -->`-Block eines
-  `.template.md` und nirgends sonst, ist beim Adopter also weg, sobald er die
-  Kommentare entfernt (kein Gate fängt das,
+Ohne diesen Block sieht der Reviewer den Code, aber nicht *die Verträge, gegen
+die er prüft*.
+
+**Nicht** erhalten: die DoD-Abhakung. Plan-/DoD-Konformität prüft die
+Verifikation — getrennter Kontext, anderes Prüf-Artefakt.
+
+## Klassifikation
+
+Jeder Anker HIGH/MEDIUM/LOW hat eine *konkrete* Liste — nicht generisch. INFO ist
+bewusst kurz (Ergänzungs-Kanal, nicht Hauptkanal).
+
+**HIGH** (blockiert Merge) — eines der folgenden:
+
+- **Verstoß gegen eine aktive ADR oder gegen eine Hard Rule**
+  ([`AGENTS.md`](../../AGENTS.md) §3)
+- **Gate-Lockerung ohne ADR** — Schwellen-Senkung, Modul-Abschaltung, gelockerte
+  Strenge
+- **Stilles-Grün-Pfad in einem Gate oder Gate-Skript** — der Lauf meldet grün über
+  einem Ausschnitt, den er nicht geprüft hat (Harness-Lüge)
+- **Halluziniertes Gate** — ein Target, das die Doku behauptet und das Makefile
+  nicht führt
+  ([`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6))
+- **Slice referenziert eine superseded ADR** — nur aktive sind normativ
+- **Norm nur im Template-Kommentar** — eine Regel steht im `<!-- -->`-Block eines
+  `.template.md` und nirgends sonst. Sie ist beim Adopter weg, sobald er die
+  Kommentare entfernt. Kein Gate fängt das (Baseline-Regelwerk
   [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.7.2/regelwerk/grundlagen-harness-dateien.md)
-  §Template-Schichtung); **Kommentar trägt keine der fünf Kommentar-Klassen** — ein
-  Kommentar in Code, Config oder Skript beschreibt die verworfene Alternative
-  („Ohne X wäre …"), einen abwesenden Text („früher stand hier …") oder bricht mitten
-  im Satz ab, weil eine Teilersetzung den Rest stehen ließ (kein Gate fängt das,
-  [`AGENTS.md`](../../AGENTS.md) §3.7); **Zustandsfeld trägt Chronik** — eine
-  `Stand`-/`Status`-Zelle (Roadmap, Beobachtungs-Register, Meilenstein) erzählt, wie der
-  Zustand entstand, statt Zustand und Beleg als Anker zu nennen, oder ein Drift-Log
-  protokolliert Schließungen und erreichte Meilensteine (kein Gate fängt das,
-  [`AGENTS.md`](../../AGENTS.md) §3.7, *Dieselbe Regel für Zustandsfelder*).
-- **MEDIUM** (vor Merge zu klären): Spec-Treue-Lücke einer Messmethode;
-  Bezug-/Abdeckungslücke einer Akzeptanzanforderung; fehlende Negativtests
-  bei neuem öffentlichen Vertrag; Reproduzierbarkeits-Risiko
-  ([`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
-- **LOW** (nice-to-fix): Doku-Drift (Prosa-Listen, veraltete Beispiele);
-  latente Wartungsfalle (hart verdrahteter Wert); Ketten-Duplikate in Make-Targets.
-- **INFO**: dokumentationswürdige, aber undokumentierte Annahme; bewusste
-  Won't-Fix-Designnotiz.
+  §Template-Schichtung)
+- **Kommentar trägt keine der Kommentar-Klassen** — ein Kommentar in Code, Config
+  oder Skript beschreibt die verworfene Alternative („Ohne X wäre …"), einen
+  abwesenden Text („früher stand hier …") oder bricht mitten im Satz ab, weil eine
+  Teilersetzung den Rest stehen ließ. Kein Gate fängt das
+  ([`AGENTS.md`](../../AGENTS.md) §3.7; Baseline-Regelwerk
+  `grundlagen-harness-dateien.md` §Was ein Kommentar trägt)
+- **Zustandsfeld trägt Chronik** — eine `Stand`-/`Status`-Zelle (Roadmap,
+  Beobachtungs-Register, Meilenstein) erzählt, wie der Zustand entstand, statt
+  Zustand und Beleg als Anker zu nennen; oder ein Drift-Log protokolliert
+  Schließungen und erreichte Meilensteine. Kein Gate fängt das
+  ([`AGENTS.md`](../../AGENTS.md) §3.7, *Dieselbe Regel für Zustandsfelder*)
 
-**Kontext-Eskalation:** dieselbe Beobachtung im Gate-/Sicherheitspfad steigt
-eine Stufe; die dritte Wiederholung derselben Klasse in einer Sitzung ist ein
-Steering-Loop-Signal (Guide/Sensor nachziehen statt nur melden). Streit über
-eine Kategorisierung ⇒ Regel hier schärfen.
+> **Pflicht (Modul 10 §Ziel-Form: Reviewer-Skill):** Die HIGH-Liste muss mindestens
+> *zwei* repo-spezifische Regeln nennen, die ein generischer Skill nicht abdeckt.
+> Ist der Skill ohne sie, kommt bei einem Lauf auf einem realen Diff keines der
+> Repo-HIGHs zur Anwendung.
 
-## Anti-Pattern — was du nicht bist
+**MEDIUM** (vor Merge zu klären) — eines der folgenden:
 
-- **Kein Stil-Polizist:** Formatierung/Benennung ohne Konventions-Anker ist kein Finding.
-- **Kein Verifier:** DoD-Abhaken und Gate-Lauf-Bestätigung sind nicht deine Rolle.
+- Spec-Treue-Lücke einer Messmethode
+- Bezug-/Abdeckungslücke einer Akzeptanzanforderung
+- fehlende Negativtests bei neuem öffentlichen Vertrag
+- Reproduzierbarkeits-Risiko
+  ([`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit))
+- Wiederholung eines Musters, das schon zweimal LOW war
+
+**LOW** (nice-to-fix) — Doku-Drift (Prosa-Listen, veraltete Beispiele); latente
+Wartungsfalle (hart verdrahteter Wert); Ketten-Duplikate in Make-Targets.
+
+**INFO** — dokumentationswürdige, aber undokumentierte Annahme; bewusste
+Won't-Fix-Designnotiz.
+
+**Kontext-Eskalation:** dieselbe Beobachtung im Gate-/Sicherheitspfad steigt eine
+Stufe. Streit über eine Kategorisierung ⇒ Regel hier schärfen (§Pflege).
+
+## Was dieser Skill NICHT macht
+
+- Keine Lösungsvorschläge („schreib das so") — Reviewer kategorisiert,
+  Implementer entscheidet.
+- Kein Refactoring-Vorschlag, der über den Diff hinausgeht.
+- Keine Verifikation gegen DoD — das ist Verifier-Aufgabe (Modul 11).
+- Keine Validation gegen reale Bedürfnisse — das ist Validator-Aufgabe.
+- **Kein Stil-Polizist:** Formatierung oder Benennung ohne Konventions-Anker ist
+  kein Finding.
 - **Kein Finding ohne Failure-Szenario:** was sich nicht als konkretes Versagen
   erzählen lässt, wird nicht gemeldet.
-- **Kein Lösungsvorschlag im Befund:** Lösungen gehören in die Übergabe an die
-  Implementation, nicht ins Finding-Feld.
 - **REFUTED nur mit Beleg:** verworfen wird ausschließlich mit Code-/Spec-Zitat,
   nie wegen „spekulativ".
 
-## Output-Schema (pro Finding)
+Wenn etwas auffällt, das in diese Kategorien gehört: ein INFO-Finding mit Verweis
+auf die zuständige Rolle.
 
-`kategorie` (HIGH/MEDIUM/LOW/INFO) · `quelle` (`LH-*`-ID, ADR-ID, `MR-*`-ID,
-Hard-Rule-Name oder „Maintainability") · `pfad` (`Datei:Zeile`) · `befund`
-(1–2 Sätze, beobachtbar, ohne Lösungsvorschlag) · `verifizierbar` (ja/nein —
-welcher Gate-Lauf würde den Befund bestätigen?) · `klasse` (stabile
-Kurz-Bezeichnung des Fehlermusters, z. B. „Tie-Break in sortierender Operation
-nicht dokumentiert" — speist den Steering-Loop-Zähler über die Slice-Closure §7
-ins Beobachtungs-Register,
-[`docs/plan/planning/observations/README.md`](../../docs/plan/planning/observations/README.md)).
+## Output-Schema
 
-## Negativbefunde (Pflicht)
+Jedes Finding:
 
-Eine „geprüft, ohne Befund"-Zeile pro betrachtetem Bereich — sonst ist
-„keine Findings" nicht von „nicht geprüft" unterscheidbar.
+- `kategorie`: HIGH | MEDIUM | LOW | INFO
+- `quelle`: ADR-ID, `LH-*`-ID, `MR-*`-ID, Hard-Rule-Name oder „Maintainability"
+- `pfad`: Datei:Zeile
+- `befund`: 1–2 Sätze, beobachtbar, ohne Lösungsvorschlag
+- `verifizierbar`: ja/nein — gibt es einen Gate-Lauf, der es bestätigen würde?
+- `klasse`: stabile Kurz-Bezeichnung des Fehlermusters, z. B. „Tie-Break in
+  sortierender Operation nicht dokumentiert" — speist den Steering-Loop-Zähler
+  über die Slice-Closure §7 ins
+  [Beobachtungs-Register](../../docs/plan/planning/observations/README.md)
+  (siehe §Pflege)
 
-## Ablage
+Zusätzlich am Ende: eine Zeile „geprüft, ohne Befund" pro betrachtetem Bereich
+(Negativbefund-Zeile — sonst ist „keine Findings" nicht von „nicht geprüft"
+unterscheidbar). Report-Gerüst für den ganzen Lauf ist
+[`review-report.template.md`](../../.harness/baseline/v6.7.2/templates/docs/reviews/review-report.template.md);
+eine eigene Kopie unter `docs/reviews/` hält dieses Repo nicht
+([`MR-041`](../../harness/conventions.md#mr-041--die-referenz-statt-kopie-setzung-für-ausfüll-templates-steht-jetzt-in-der-adoptierten-baseline)).
+Ein Report pro Lauf unter `docs/reviews/<YYYY-MM-DD>-<gegenstand>.md`, Folgeläufe
+als neue Datei statt Überschreibung.
 
-Ein Report pro Lauf unter `docs/reviews/<YYYY-MM-DD>-<gegenstand>.md`
-(Struktur: Kopf-Metadaten · Findings · Negativbefunde · Kategorie-Summary ·
-Verdikt). Nie überschreiben — Folgeläufe bekommen eine neue Datei. Verdikt:
-HIGH und MEDIUM blockieren typischerweise; Abweichungen werden im Report begründet.
+## Pflege (Steering-Loop)
+
+Das „dreimal" zählt dieser Skill nicht selbst — jeder Lauf steht für sich. Gezählt
+wird über die Finding-`klasse` → Slice-Closure §7 → Beobachtungs-Register.
+
+Bei dreimaligem Auftreten desselben Findings:
+
+- ist die Kategorie noch richtig? → Klassifikation schärfen
+- gibt es einen ADR-/`AGENTS.md`-Eintrag, der das verhindert hätte?
+  → Folge-ADR oder `AGENTS.md`-Update
+- gibt es eine Fitness Function, die das prüfen würde? → Modul 13, Gate hinzufügen
+
+Diese Skill-Datei wird **nicht** überschrieben, sondern versioniert
+(ADR-Hard-Rule, Modul 4).
