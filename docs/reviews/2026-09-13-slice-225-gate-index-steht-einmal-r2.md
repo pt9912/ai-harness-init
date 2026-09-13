@@ -4,7 +4,7 @@
 **Range:** `fae7b7d1..86e00b97` — `ede6b7fb` (Architect) · `f9b3c60f` (Implementer) ·
 `db455d62` (Reviewer, ADR-Konsistenzrunde) · `4fb6ad56` (Architect, Accept) ·
 **Runde 1:** [`2026-09-13-slice-225-gate-index-steht-einmal.md`](2026-09-13-slice-225-gate-index-steht-einmal.md) (unangetastet) ·
-**Plan:** [`slice-225`](../plan/planning/in-progress/slice-225-gate-index-steht-einmal.md) ·
+**Plan:** [`slice-225`](../plan/planning/done/slice-225-gate-index-steht-einmal.md) ·
 **Constraints:** [`AGENTS.md`](../../AGENTS.md) §3.4 · §3.5 · §3.6 · §3.7 · §3.8 · §3.10 ·
 [`ADR-0045`](../plan/adr/0045-authority-wechsel-senkt-eine-richtung.md) ·
 [`ADR-0040`](../plan/adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) ·

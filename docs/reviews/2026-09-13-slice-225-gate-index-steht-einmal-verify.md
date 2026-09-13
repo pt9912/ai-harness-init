@@ -2,7 +2,7 @@
 
 **Rolle:** Verifier · **Datum:** 2026-09-13 · **Geprüfter Stand:** `4fb6ad56` (HEAD, `main`),
 `git status --porcelain` leer · **Plan:**
-[`slice-225`](../plan/planning/in-progress/slice-225-gate-index-steht-einmal.md) (weiterhin
+[`slice-225`](../plan/planning/done/slice-225-gate-index-steht-einmal.md) (weiterhin
 `in-progress/`, kein DoD-Häkchen gesetzt, §7 Platzhalter — konsistent mit `AGENTS.md` §3.10:
 Closure ist Planner-Arbeit, nicht Teil dieses Laufs) · **Reviews:**
 [`2026-09-13-slice-225-…`](2026-09-13-slice-225-gate-index-steht-einmal.md) (1 HIGH · 3 MEDIUM ·

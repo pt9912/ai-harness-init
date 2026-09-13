@@ -3,7 +3,7 @@
 **Rolle:** Reviewer · **Datum:** 2026-09-13 ·
 **Range:** `99bfd1c5^..fae7b7d1` (8 Dateien) — `99bfd1c5` (Implementer) · `3c2b4d82` (Architect) ·
 `fae7b7d1` (Implementer) ·
-**Plan:** [`slice-225`](../plan/planning/in-progress/slice-225-gate-index-steht-einmal.md) ·
+**Plan:** [`slice-225`](../plan/planning/done/slice-225-gate-index-steht-einmal.md) ·
 **Constraints:** [`AGENTS.md`](../../AGENTS.md) §3.4 · §3.5 · §3.6 · §3.7 · §3.8 · §3.11 ·
 [`ADR-0044`](../plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md) ·
 [`ADR-0024`](../plan/adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md) ·
