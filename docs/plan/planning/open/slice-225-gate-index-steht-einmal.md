@@ -216,7 +216,7 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
 - [ ] **1 — Der Gate-Index steht einmal, und die Messung liegt daneben.**
       `targets.authority` in [`.d-check.yml`](../../../../.d-check.yml) nennt
       `harness/README.md`, die Gate-Tabelle in [`AGENTS.md`](../../../../AGENTS.md) §4 ist durch
-      Regel und Zeiger ersetzt, und `grep -cE '^\| `make ' AGENTS.md` liefert **0**. `make gates`
+      Regel und Zeiger ersetzt, und ``grep -cE '^\| `make ' AGENTS.md`` liefert **0**. `make gates`
       ist grün — insbesondere meldet das `targets`-Modul weder `gate-undocumented` noch
       `gate-phantom`. Die Senkungs-Frage ist **beantwortet, nicht erwogen**: Die Mengen-Differenz
       aus §1 ist im Lauf neu gefahren, ihr Ergebnis steht in der Closure-Notiz, und ist sie
