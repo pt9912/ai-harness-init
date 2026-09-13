@@ -24,13 +24,13 @@ misst am adoptierten Stand `v6.7.2` mehr als das Doppelte von Claudes
 Werkzeug-Eigenschaft und hier nicht messbar — erhoben in
 [`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor)).
 
-**Zugriff (pro Agent verschieden) — und fünf Module sind davon ausgenommen.** **Codex**
+**Zugriff (pro Agent verschieden) — und sieben Module sind davon ausgenommen.** **Codex**
 injiziert via SessionStart-Hook nur den **Index** (`.codex/hooks.json` →
 `harness/tools/sessionstart-inject-regelwerk.sh`) und liest jedes Modul **on-demand**.
 **Claude** liest ebenso on-demand (Pointer: `CLAUDE.md`-Direktive + Source Precedence) —
 **außer** den Modulen unter `.claude/rules/`, die als Symlink in den vendored Baum zeigen
 und dadurch in **jedem** Claude-Lauf im Kontext stehen, ohne gelesen worden zu sein
-(`readlink .claude/rules/*.md | grep -c '\.harness/baseline/'` → **5** von **26**,
+(`readlink .claude/rules/*.md | grep -c '\.harness/baseline/'` → **7** von **26**,
 `ls .harness/baseline/v6.7.2/regelwerk/*.md | wc -l`; beide **keine Erwartungswerte**).
 Gezählt sind die Zeiger **in den vendored Baum**; daneben trägt das Verzeichnis
 Zeiger auf repo-eigene Quellen, die keine Baseline-Module sind.

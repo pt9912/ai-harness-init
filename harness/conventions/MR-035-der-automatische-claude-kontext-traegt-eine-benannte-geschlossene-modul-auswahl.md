@@ -1,5 +1,7 @@
 # MR-035 — Der automatische Claude-Kontext trägt eine benannte, geschlossene Modul-Auswahl
 
+> **ÜBERHOLT: der Auswahl-Maßstab in der Begründung dieses Eintrags — die Menge als „die vier Prozess-Module" → [`MR-056`](../conventions.md#mr-056--die-auswahl-im-auto-kontext-hängt-an-der-lauf-berührung-nicht-am-prozess-modul-begriff).** Die fünf Setzungen binden fort, namentlich Setzung 2 (die Menge ist geschlossen, ihre Quelle ist das Verzeichnis) und Setzung 3 (Präsenz ist keine Durchsetzung). Fort gilt ebenso der Ausschluss des Review-Moduls und die Lesart der Beträge in Setzung 1 als datierte Momentaufnahme, deren lebender Wert das Verzeichnis ist.
+
 - **Datum:** 2026-08-31
 - **Wirksamkeits-Anlass:** kein Slice — die Ablage entstand außerhalb des Slice-Betriebs. Wirksam
   wurde sie mit dem Commit, der `.claude/rules/` in den Index nahm
