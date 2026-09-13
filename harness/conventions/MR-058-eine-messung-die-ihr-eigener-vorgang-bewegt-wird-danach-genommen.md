@@ -15,8 +15,8 @@
 - **Ersetzt-Baseline-Regel:** keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**,
   der nach
   [`MR-039`](../conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
-  Setzung 3 hier steht und sein Verdikt im Feld trägt. Am adoptierten Stand `v6.7.2` führt das
-  Regelwerk den Gegenstand nicht: `grep -rl 'Bezugsmenge' .harness/baseline/v6.7.2/regelwerk/` ist
+  Setzung 3 hier steht und sein Verdikt im Feld trägt. Am adoptierten Stand `v6.8.0` führt das
+  Regelwerk den Gegenstand nicht: `grep -rl 'Bezugsmenge' .harness/baseline/v6.8.0/regelwerk/` ist
   leer (Exit 1). **Welche Wörter die Eigenschaft decken, sagt kein `grep`** — dass die Baseline
   keine Regel über den Zeitpunkt einer Messung führt, bleibt ein Urteil
   ([`AGENTS.md`](../../AGENTS.md) §3.6), und dieser Eintrag ist auf sich selbst angewandt: Das
