@@ -6,8 +6,8 @@
 # existiert, aber nie den Ruhe-Marker traegt und die Invariante darum trivial machen wuerde, bleibt
 # fuer `docs-check` unsichtbar; dieser Waechter faengt sie ueber den exakten heading-Wert ab
 # (Zusicherung unten, gepinnt von test/mutations/272-planning-heading-auf-marker-lose-sektion.sh).
-# Was das Modul damit deckt und was nicht (die `waves`-Faehigkeit bleibt aus), steht in
-# harness/README.md.
+# Was das Modul damit deckt und was nicht — inklusive der `waves`-Faehigkeit (eigener Waechter
+# in test/waves-modul-wiring.bats) — steht in harness/sensors/docs-check.md.
 #
 # NETZLOS (nur Datei-Lesen), laeuft in `make gates` ueber `make test` -> `test-bats`.
 
@@ -54,23 +54,12 @@ field() {
   local h
   h="$(field heading)"
   # Ein leerer planning:-Block macht "$h" zum leeren String, und grep -qxF ""
-  # traefe dann jede Leerzeile der Roadmap — dieselbe Vakuitaet wie im
-  # waves-Test unten. Diese Pruefung faengt den leeren Fall vor dem grep ab.
+  # traefe dann jede Leerzeile der Roadmap — dieselbe Vakuitaet wie in den
+  # waves_field-Pruefungen in test/waves-modul-wiring.bats. Diese Pruefung
+  # faengt den leeren Fall vor dem grep ab.
   [ -n "$h" ] || {
     echo "planning:-Block ist leer — heading-Zusicherung liefe ins Leere" >&2
     false
   }
   grep -qxF "$h" "$ROADMAP"
-}
-
-@test "planning: waves bleibt aus (Entscheidung dokumentiert in harness/README.md)" {
-  content="$(block)"
-  # Ein leerer planning:-Block macht die Negation darunter ueber der leeren Menge wahr, ohne
-  # dass die Faehigkeit gemessen wurde; diese Pruefung faengt genau diesen Fall vor der
-  # Negation ab.
-  [ -n "$content" ] || {
-    echo "planning:-Block ist leer — die Zusicherung liefe ins Leere" >&2
-    false
-  }
-  ! printf '%s\n' "$content" | grep -qE '^[[:space:]]+waves:'
 }

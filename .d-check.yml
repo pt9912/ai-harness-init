@@ -33,10 +33,15 @@ modules: [links, anchors, ids, matrix, codepaths, spans, planning, targets]
 # planning-drift). heading/marker zeigen auf DIESEN Abschnitt, nicht auf den
 # Modul-Default "## Aktuelle Welle"/"Keine aktive Welle": er traegt die Zeiger-Liste
 # und den Ruhe-Marker als zwei getrennte Aussagen, ueber denen die Invariante pruefbar
-# ist. Die `waves`-Faehigkeit desselben Moduls bleibt aus — unter `waves.mode: many` verlangt sie
-# eine Bijektion Zeiger <-> flache Welle-Dateien (Default ist `one`, ein Singleton-Praedikat), und
-# in beiden Modi kennt sie die in der Roadmap selbst dokumentierte Abweichung dieses Repos
-# (Welle-Datei geschnitten vor Eintritt des Start-Triggers) nicht; Begruendung in harness/README.md.
+# ist. Die `waves`-Faehigkeit desselben Moduls (dir + mode: many) haelt zusaetzlich die
+# Bijektion zwischen den Zeigern unter "## Offene Wellen" und den flachen Welle-Dateien in
+# `dir` — in BEIDEN Richtungen unter dem Grund-Code wave-drift (Datei ohne Zeiger UND Zeiger
+# ohne Datei) — und, als Folge derselben Aktivierung, dieselbe Bijektion fuer "## Abgeschlossene
+# Wellen" gegen die Ergebnisnotizen im Ruheort (wave-unregistered/wave-results-missing).
+# Ausserhalb dieser beiden Abschnitte — etwa in der Vorschau-Tabelle "## Naechste Wellen", wo ein
+# verlinkter Name bereits eine geschnittene, aber noch nicht gestartete Welle sein darf — bleibt
+# `waves` blind; ein dort toter Verweis faellt allein ueber `links` (target-missing). Details und
+# Beleg in harness/sensors/docs-check.md.
 # closure (zweite Faehigkeit desselben Moduls, opt-in im opt-in): haelt die
 # Struktur der Closure-Notiz (Abschnitt 7) ueber jedem Kandidaten FLACH in `dir`
 # (nicht rekursiv — Begruendung und Sonden-Beleg in harness/README.md). Der
@@ -53,6 +58,9 @@ planning:
   marker: "Nichts in Arbeit."
   closure:
     dir: docs/plan/planning/done
+  waves:
+    dir: docs/plan/planning
+    mode: many
 # targets (hermetisch, kein git, kein Netz): haelt zwei Richtungen zwischen den
 # Makefile-Rezepten und den Gate-Tabellen der Doku. Richtung 1 (gate-undocumented):
 # jedes .PHONY-Rezept aus makefiles steht entweder in einer `make X`-Tabellenzeile

@@ -12,25 +12,41 @@ Historie. Grün heißt: im Prüfbereich **dieser** Module ist kein Befund offen,
 
 ### Modul `planning`
 
-**Was das Modul `planning` in `docs-check` deckt, und was nicht** (slice-125): `.d-check.yml`
-bindet `heading`/`marker` auf den Abschnitt „## Offene Wellen" der Roadmap
+**Was das Modul `planning` in `docs-check` deckt, und was nicht** (slice-125,
+slice-offene-wellen-liste-hat-einen-waechter): `.d-check.yml` bindet `heading`/`marker` auf den
+Abschnitt „## Offene Wellen" der Roadmap
 ([`docs/plan/planning/in-progress/roadmap.md`](../../docs/plan/planning/in-progress/roadmap.md)) und
 hält damit die **Marker-Hälfte** — der Ruhe-Marker „Nichts in Arbeit." steht dort genau dann, wenn
 [`docs/plan/planning/in-progress/`](../../docs/plan/planning/in-progress) keinen `slice-*.md` trägt;
 ein Widerspruch färbt `docs-check` rot (Grund-Code `planning-drift`). Die **Listen-Hälfte** — die
-Bijektion zwischen den Zeigern unter „Offene Wellen" und den flachen Welle-Dateien — bleibt
-unbewacht: Die `waves`-Fähigkeit desselben Moduls verlangt unter `waves.mode: many` genau diese
-Bijektion (Default ist `one`, ein Singleton-Prädikat) und kennt in beiden Modi die in der Roadmap
-selbst dokumentierte Abweichung dieses Repos nicht — eine Welle-Datei wird hier geschnitten,
-**bevor** ihr Start-Trigger eintritt, und `waves` meldete das als `wave-drift`/
-`wave-preview-exists`, obwohl es hier die gewollte Form ist. `waves` bleibt deshalb aus; die
-Fähigkeit dazuzuschalten setzt voraus, dass diese Abweichung selbst aufgelöst wird (Ziel-Form statt
-Repo-Konvention), was dieser Slice nicht entscheidet. Die zweite Fähigkeit desselben Moduls
-(`closure`, Struktur der Closure-Notizen) ist seit slice-129 aktiviert — was sie deckt und was
-nicht, steht im eigenen Absatz unten. Eine **vierte** Fähigkeit desselben Moduls (`observations`,
-Deckung zwischen zitierten Beobachtungs-Kennungen und ihrem Nachweis im Register — additiv eine
-fünfte für den Verzeichnis-Modus dieser Ablage) ist ebenfalls verfügbar und nicht aktiviert; anders
-als `closure` trägt sie — wie `waves` selbst — noch keinen eigenen Slice —
+Bijektion zwischen den Zeigern unter „Offene Wellen" und den flachen Welle-Dateien — hält seitdem
+die `waves`-Fähigkeit desselben Moduls (`waves.dir: docs/plan/planning`, `waves.mode: many`; ohne
+gesetztes `dir` bleibt die Fähigkeit inert und meldet in **beiden** Richtungen `0 Befund(e)`, ohne
+etwas zu prüfen). Real gemessen (Docker-Trockenlauf gegen eine Kopie außerhalb des Repos, netzlos,
+`-disable links` zur Isolation) deckt `wave-drift` **beide** Richtungen dieser Bijektion: ein
+flaches Wellendokument ohne Zeiger *und* ein Zeiger ohne passendes flaches Dokument — Letzteres
+unabhängig davon, ob der Link selbst auflöst (ein Zeiger auf eine tatsächlich existierende, aber
+bereits geschlossene Datei unter `done/` färbt genauso `wave-drift`). Als Folge derselben
+Aktivierung hält dieselbe Bijektion auch für „## Abgeschlossene Wellen" gegen die Ergebnisnotizen
+im Ruheort `docs/plan/planning/done/` (`wave-unregistered`: Ergebnisnotiz ohne Registerzeile;
+`wave-results-missing`: Registerzeile ohne Ergebnisnotiz). **Die reale Grenze liegt am Ort, nicht am
+Linkziel:** Außerhalb der beiden Abschnitte — namentlich in der Vorschau-Tabelle „## Nächste
+Wellen", wo ein verlinkter Name bereits eine geschnittene, aber noch nicht gestartete Welle sein
+darf (die Sektion selbst nennt genau diese Lesart:
+[`roadmap.md`](../../docs/plan/planning/in-progress/roadmap.md) §Nächste Wellen, „Ein verlinkter
+Name hat eine flache Plan-Datei … ein unverlinkter ist ein Kandidat ohne Datei") — liest `waves`
+nichts; ein dort toter Verweis fällt ausschließlich über das Modul
+`links` (`target-missing`), gemessen mit einem erfundenen `welle-88`-Zeiger, der bei `-disable
+links` `0 Befund(e)` bleibt. Offen bleibt der Fall, dass eine Welle-Datei geschnitten wird, aber
+**nur** in der Vorschau-Tabelle verlinkt steht und (noch) nicht unter „Offene Wellen" — der einzige
+gefahrene Reproduktionsversuch deckte den korrekt an beiden Stellen verlinkten Zustand ab und blieb
+grün, das eigentliche Risiko-Szenario deckt er nicht; das bleibt eine offene Beobachtung für den
+nächsten Wellen-Schnitt, nicht für diesen Befund. Die zweite
+Fähigkeit desselben Moduls (`closure`, Struktur der Closure-Notizen) ist seit slice-129 aktiviert —
+was sie deckt und was nicht, steht im eigenen Absatz unten. Eine **vierte** Fähigkeit desselben
+Moduls (`observations`, Deckung zwischen zitierten Beobachtungs-Kennungen und ihrem Nachweis im
+Register — additiv eine fünfte für den Verzeichnis-Modus dieser Ablage) ist ebenfalls verfügbar und
+nicht aktiviert; anders als `closure` und `waves` trägt sie noch keinen eigenen Slice —
 [`BEO-ALL/register-paarung-ohne-gate-modul`](../../docs/plan/planning/observations/BEO-ALL/register-paarung-ohne-gate-modul/observation.md)
 führt die Lücke als offene Beobachtung, mit einer Drift-Log-Zeile in
 [`roadmap.md`](../../docs/plan/planning/in-progress/roadmap.md) daneben.
