@@ -1,5 +1,7 @@
 # MR-057 — Die Kennungs-Form für neue Slices und Wellen ist der Name, nicht die Nummer
 
+> **ÜBERHOLT: die Zahl neben dem `grep -c 'slice-NNN'`-Kommando im Feld `Löst auf` → [`MR-058`](../conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen).** Das Kommando, die Aussage daneben und alle drei Setzungen dieses Eintrags gelten fort; gestrichen ist allein der Betrag.
+
 - **Datum:** 2026-09-13
 - **Wirksamkeits-Anlass:** slice-225 — der Architect-Teil. Wirksam wird die Deklaration mit dem
   Commit, der diesen Eintrag und seine Index-Zeile aufnimmt.

@@ -27,8 +27,8 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   **auf `v5.12.0`:** 2026-08-28 (slice-081, Normativ-Delta in slice-082 entschieden);
   **auf `v5.18.0`:** 2026-09-03, Delta-Nachweis in slice-155;
   **auf `v6.0.0`:** 2026-09-04, Delta-Nachweis in slice-176;
-  **auf `v6.5.0`:** 2026-09-07, Delta-Nachweis in slice-224, ausstehend;
-  **auf `v6.7.2`:** 2026-09-12, Delta-Nachweis in slice-224, ausstehend.
+  **auf `v6.5.0`:** 2026-09-07, Delta-Nachweis in slice-224;
+  **auf `v6.7.2`:** 2026-09-12, Delta-Nachweis in slice-224.
   Die Form dieser Zeile — Ziel-Tag, Datum, der Slice mit dem Delta-Nachweis, sonst nichts — und
   der Ort einer Zielstand-Setzung stehen in
   [`ADR-0031`](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
@@ -197,6 +197,7 @@ Eine Zeile je Datei in [`conventions/`](conventions/).
 | [MR-055](conventions/MR-055-eine-stellen-messung-traegt-keine-folgerung-ueber-eine-eigenschaft.md) <a id="mr-055"></a><a id="mr-055--eine-stellen-messung-trägt-keine-folgerung-über-eine-eigenschaft"></a> | Eine Stellen-Messung trägt keine Folgerung über eine Eigenschaft | die drei Folgerungen, die [`MR-054`](#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel) aus einer Messung an einer **benannten Stelle** zieht, … | keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**, der nach … |
 | [MR-056](conventions/MR-056-die-auswahl-im-auto-kontext-haengt-an-der-lauf-beruehrung.md) <a id="mr-056"></a><a id="mr-056--die-auswahl-im-auto-kontext-hängt-an-der-lauf-berührung-nicht-am-prozess-modul-begriff"></a> | Die Auswahl im Auto-Kontext hängt an der Lauf-Berührung, nicht am Prozess-Modul-Begriff | der **Auswahl-Maßstab** für `.claude/rules/` und die zwei Zahlen im Zugriffs-Absatz in … | keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**, aus demselben Grund wie bei … |
 | [MR-057](conventions/MR-057-kennungs-form-fuer-neue-slices-und-wellen-ist-der-name.md) <a id="mr-057"></a><a id="mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer"></a> | Die Kennungs-Form für neue Slices und Wellen ist der Name, nicht die Nummer | die **Form** jeder ab diesem Eintrag **neu vergebenen** Slice- und Welle-Kennung dieses Repos, und die Platzhalter-Notation dort, wo eine lebende Regel diese Form … | keine — und nach dem Wortlaut der Eintrags-Vorlage trotzdem **kein Fork**, aus demselben Grund wie bei … |
+| [MR-058](conventions/MR-058-eine-messung-die-ihr-eigener-vorgang-bewegt-wird-danach-genommen.md) <a id="mr-058"></a><a id="mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen"></a> | Eine Messung, die ihr eigener Vorgang bewegt, wird nach dem Vorgang genommen | die Zahl neben dem `grep -c 'slice-NNN'`-Kommando im Feld `Löst auf` von [`MR-057`](#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer), und die **Form** jeder Messung in einem lebenden, repo-eigenen Markdown-Artefakt, deren … | keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**, der nach … |
 
 ### Aufgelöste Adaptionen
 
