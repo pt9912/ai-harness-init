@@ -2,7 +2,7 @@
 
 **Rolle:** Verifier · **Datum:** 2026-09-13 · **Geprüfte Commits:** `f0d58786` (Lieferung),
 `93c54d1b` (Reviewer, blockierend, 1 HIGH / 6 MEDIUM), `6fedb06b` (Nacharbeit) · **Plan:**
-[`slice-migration-hat-ein-instanz-register`](../plan/planning/in-progress/slice-migration-hat-ein-instanz-register.md)
+[`slice-migration-hat-ein-instanz-register`](../plan/planning/done/slice-migration-hat-ein-instanz-register.md)
 · **Review:**
 [`2026-09-13-slice-migration-hat-ein-instanz-register`](2026-09-13-slice-migration-hat-ein-instanz-register.md)
 (1 HIGH · 6 MEDIUM · 4 LOW · 2 INFO, Verdikt **Blockierend**) · **Prüfgegenstand:** DoD und Spec
