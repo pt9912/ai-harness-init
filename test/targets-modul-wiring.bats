@@ -2,7 +2,7 @@
 # targets-modul-wiring.bats — haelt das d-check-Modul `targets` (DC-FA-TGT-001) aktiv und seine
 # `exempt-targets`-Liste exakt gegen die `.PHONY`-Deklarationen aus Makefile/d-check.mk: jeder
 # dort genannte Name steht entweder als `make X`-Tabellenzeile in der `authority`-Datei
-# (AGENTS.md §4) oder in `exempt-targets` — nie in beiden, nie in keinem. `docs-check` selbst
+# (harness/README.md §Sensors) oder in `exempt-targets` — nie in beiden, nie in keinem. `docs-check` selbst
 # haelt eine ANDERE Menge gegen dieselbe Autoritaets-Tabelle — jede Makefile-**Regel**
 # (Target-Zeile), nicht nur die per `.PHONY` deklarierten; die zwei Mengen koennen in beide
 # Richtungen auseinanderlaufen (ein `.PHONY`-Name ohne Regel vs. eine Regel ohne `.PHONY`-Eintrag).
@@ -22,6 +22,7 @@ setup() {
   MAKEFILE="$REPO/Makefile"
   DCHECK_MK="$REPO/d-check.mk"
   AGENTS="$REPO/AGENTS.md"
+  README="$REPO/harness/README.md"
 }
 
 # block gibt die Zeilen des TOP-LEVEL-targets:-Blocks aus (Schluessel in Spalte 0) — dieselbe
@@ -44,8 +45,15 @@ phony_targets() {
     | tr ' ' '\n' | grep -v '^$' | sort -u
 }
 
+# Scope: nur der Abschnitt "## Sensors (Feedback-Gates)" bis zur naechsten "## "-Ueberschrift.
+# Die eigentliche d-check-Autoritaetspruefung (gate-undocumented) scannt die GANZE Datei — sie
+# kennt kein Heading-Scoping fuer das Modul `targets` (`d-check --print-config`). Diese engere,
+# repo-lokale Pruefung haelt dagegen ein staerkeres Invariant: Sensors-Tabellenzeile und
+# `exempt-targets` sind disjunkt. Ohne den Scope liefe sie gegen die eigene "Werkzeuge (kein
+# Gate)"-Tabelle in derselben Datei, die dieselben Namen ABSICHTLICH mit Beschreibung fuehrt.
 authority_table_targets() {
-  grep -E '^\|.*`make [a-z][a-z0-9-]*`.*\|$' "$AGENTS" | grep -oE '`make [a-z][a-z0-9-]*`' \
+  awk '/^## Sensors \(Feedback-Gates\)/{p=1;next} p&&/^#/{exit} p' "$README" \
+    | grep -E '^\|.*`make [a-z][a-z0-9-]*`.*\|$' | grep -oE '`make [a-z][a-z0-9-]*`' \
     | tr -d '`' | sed 's/^make //' | sort -u
 }
 
@@ -70,15 +78,15 @@ exempt_targets() {
   [ "$(field doc-tables)" = "[AGENTS.md, harness/README.md]" ]
 }
 
-@test "targets: authority ist AGENTS.md (Vollstaendigkeits-Quelle ist eine einzige Datei)" {
-  [ "$(field authority)" = "AGENTS.md" ]
+@test "targets: authority ist harness/README.md (Vollstaendigkeits-Quelle ist eine einzige Datei)" {
+  [ "$(field authority)" = "harness/README.md" ]
 }
 
 @test "exempt-targets ist exakt — kein Glob-Zeichen in irgendeinem Namen" {
   ! exempt_targets | grep -qE '[*?\[]'
 }
 
-@test "jedes .PHONY-Target ohne Tabellenzeile in AGENTS.md steht genau einmal in exempt-targets" {
+@test "jedes .PHONY-Target ohne Tabellenzeile im Sensors-Abschnitt steht genau einmal in exempt-targets" {
   local phony authdoc undocumented exempt
   phony="$(phony_targets)"
   authdoc="$(authority_table_targets)"
@@ -87,7 +95,7 @@ exempt_targets() {
   diff <(echo "$undocumented") <(echo "$exempt")
 }
 
-@test "kein exempt-targets-Eintrag ist zugleich eine AGENTS.md-Tabellenzeile" {
+@test "kein exempt-targets-Eintrag ist zugleich eine Sensors-Tabellenzeile" {
   local exempt authdoc
   exempt="$(exempt_targets)"
   authdoc="$(authority_table_targets)"

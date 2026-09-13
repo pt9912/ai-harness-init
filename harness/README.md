@@ -35,6 +35,7 @@ eine Datei unter [`conventions/`](conventions/), und `conventions.md` ist ihr In
 | [`AGENTS.md`](../AGENTS.md) | Hard Rules, Source Precedence |
 | [`conventions.md`](conventions.md) | Strukturregeln, Index des MR-Blocks, Modus |
 | [`conventions/`](conventions/) | die MR-Einträge selbst, eine Datei je Eintrag |
+| `.harness/skills/reviewer.md` | Reviewer-Skill: HIGH-Liste, Kategorien-Regeln, Negativbefund-Pflicht, Output-Schema (Modul 10) — nächste Rolle nach Schritt 8 des Minimal Agent Workflow, nicht Teil der Implementer-Eingabe |
 
 ## Sensors (Feedback-Gates)
 
@@ -59,7 +60,7 @@ wird dann zum Link auf die Datei.
 ### Werkzeuge (kein Gate)
 
 Genannt, weil ein Lauf sie braucht — kein Gate-Versprechen, darum keine `make X`-Zeile in
-[`AGENTS.md`](../AGENTS.md) §4 nötig (kuratiert in `targets.exempt-targets`,
+dieser Tabelle nötig (kuratiert in `targets.exempt-targets`,
 [`.d-check.yml`](../.d-check.yml)). Die übrigen `exempt-targets` sind reine Utility-/
 Advisory-Ziele ohne Prosa-Erwähnung, deren einzige Dokumentation ihr eigener `## `-Hilfetext
 ist (`make help` listet sie).
@@ -123,6 +124,14 @@ ein grüner CI-Lauf ist keine Aussage über ungetestete Flächen.
 4. Kleinste sinnvolle Änderung planen.
 5. Engsten nützlichen Sensor laufen lassen.
 6. Repo-weiten Gate-Lauf vor Handoff (`make gates`).
+7. Doku/Indizes aktualisieren, falls ein öffentlicher Vertrag berührt.
+8. Ausgeführte Sensors und verbleibende Risiken berichten.
+
+Dieser Workflow deckt ausschließlich die Implementer-Rolle ab. Schritt 8
+ist der Rollenwechsel, kein Abschluss: Bericht → Handoff an Reviewer
+(`.harness/skills/reviewer.md`, siehe §Guides) → Verifier. Kein
+Self-Review — anderer Kontext findet andere Findings, derselbe Kontext
+dieselben blinden Flecken (Baseline-Regelwerk `modul-08-agentenrollen.md`).
 
 ## Leseordnung
 
