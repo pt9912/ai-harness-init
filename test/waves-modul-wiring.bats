@@ -7,8 +7,9 @@
 # wave-drift), sowie bei einer entsprechenden Abweichung zwischen "## Abgeschlossene Wellen" und
 # den Ergebnisnotizen im Ruheort (wave-unregistered/wave-results-missing) — dieser Waechter haelt
 # die Kopplung an die getroffene Config-Entscheidung ohne einen Docker-Lauf. Was die Faehigkeit
-# deckt, was ausserhalb ihres Zugriffs bleibt (die Vorschau-Tabelle "## Naechste Wellen") und der
-# reale Docker-Beleg stehen in harness/sensors/docs-check.md.
+# darueber hinaus deckt (auch Spalte 1 der Vorschau-Tabelle "## Naechste Wellen", Grund-Code
+# wave-preview-exists), was ausserhalb ihres Zugriffs bleibt und der reale Docker-Beleg stehen in
+# harness/sensors/docs-check.md.
 #
 # NETZLOS (nur Datei-Lesen), laeuft in `make gates` ueber `make test` -> `test-bats`.
 

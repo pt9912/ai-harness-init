@@ -38,10 +38,13 @@ modules: [links, anchors, ids, matrix, codepaths, spans, planning, targets]
 # `dir` — in BEIDEN Richtungen unter dem Grund-Code wave-drift (Datei ohne Zeiger UND Zeiger
 # ohne Datei) — und, als Folge derselben Aktivierung, dieselbe Bijektion fuer "## Abgeschlossene
 # Wellen" gegen die Ergebnisnotizen im Ruheort (wave-unregistered/wave-results-missing).
-# Ausserhalb dieser beiden Abschnitte — etwa in der Vorschau-Tabelle "## Naechste Wellen", wo ein
-# verlinkter Name bereits eine geschnittene, aber noch nicht gestartete Welle sein darf — bleibt
-# `waves` blind; ein dort toter Verweis faellt allein ueber `links` (target-missing). Details und
-# Beleg in harness/sensors/docs-check.md.
+# Ausserhalb dieser beiden Abschnitte liest `waves` zusaetzlich die ERSTE Spalte der
+# Vorschau-Tabelle "## Naechste Wellen": nennt sie eine Kennung, zu der bereits eine flache Datei
+# existiert — verlinkt wie unverlinkt —, meldet es wave-preview-exists (vierter Grund-Code neben
+# wave-drift/wave-unregistered/wave-results-missing). Blind bleibt `waves` nur fuer eine Nennung in
+# Spalte 3 ("Wichtigste Slices") und fuer einen toten Vorschau-Zeiger OHNE jede Datei — Letzterer
+# faellt allein ueber `links` (target-missing). Fuenf gemessene Lagen und Beleg in
+# harness/sensors/docs-check.md.
 # closure (zweite Faehigkeit desselben Moduls, opt-in im opt-in): haelt die
 # Struktur der Closure-Notiz (Abschnitt 7) ueber jedem Kandidaten FLACH in `dir`
 # (nicht rekursiv — Begruendung und Sonden-Beleg in harness/README.md). Der

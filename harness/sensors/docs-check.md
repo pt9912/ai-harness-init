@@ -29,19 +29,32 @@ unabhängig davon, ob der Link selbst auflöst (ein Zeiger auf eine tatsächlich
 bereits geschlossene Datei unter `done/` färbt genauso `wave-drift`). Als Folge derselben
 Aktivierung hält dieselbe Bijektion auch für „## Abgeschlossene Wellen" gegen die Ergebnisnotizen
 im Ruheort `docs/plan/planning/done/` (`wave-unregistered`: Ergebnisnotiz ohne Registerzeile;
-`wave-results-missing`: Registerzeile ohne Ergebnisnotiz). **Die reale Grenze liegt am Ort, nicht am
-Linkziel:** Außerhalb der beiden Abschnitte — namentlich in der Vorschau-Tabelle „## Nächste
-Wellen", wo ein verlinkter Name bereits eine geschnittene, aber noch nicht gestartete Welle sein
-darf (die Sektion selbst nennt genau diese Lesart:
-[`roadmap.md`](../../docs/plan/planning/in-progress/roadmap.md) §Nächste Wellen, „Ein verlinkter
-Name hat eine flache Plan-Datei … ein unverlinkter ist ein Kandidat ohne Datei") — liest `waves`
-nichts; ein dort toter Verweis fällt ausschließlich über das Modul
-`links` (`target-missing`), gemessen mit einem erfundenen `welle-88`-Zeiger, der bei `-disable
-links` `0 Befund(e)` bleibt. Offen bleibt der Fall, dass eine Welle-Datei geschnitten wird, aber
-**nur** in der Vorschau-Tabelle verlinkt steht und (noch) nicht unter „Offene Wellen" — der einzige
-gefahrene Reproduktionsversuch deckte den korrekt an beiden Stellen verlinkten Zustand ab und blieb
-grün, das eigentliche Risiko-Szenario deckt er nicht; das bleibt eine offene Beobachtung für den
-nächsten Wellen-Schnitt, nicht für diesen Befund. Die zweite
+`wave-results-missing`: Registerzeile ohne Ergebnisnotiz). **Die reale Grenze liegt an der Spalte,
+nicht am Abschnitt:** `waves` liest zusätzlich die **erste Spalte** der Vorschau-Tabelle „## Nächste
+Wellen" — nennt sie eine Kennung, zu der bereits eine flache Datei existiert, meldet es
+`wave-preview-exists` (vierter Grund-Code neben `wave-drift`/`wave-unregistered`/
+`wave-results-missing`), **unabhängig davon, ob der Name dort verlinkt ist**. Fünf Lagen, real
+gemessen (Docker-Trockenlauf gegen eine Kopie außerhalb des Repos, netzlos, `-disable links` zur
+Isolation, derselbe Digest wie oben):
+
+| Lage | Ergebnis |
+|---|---|
+| flache Datei + nur in Spalte 1 der Vorschau (kein Zeiger unter „Offene Wellen") | 2 Befunde (`wave-drift` + `wave-preview-exists`) |
+| flache Datei + Zeiger unter „Offene Wellen" **und** verlinkt in Spalte 1 der Vorschau | 1 Befund (`wave-preview-exists`) |
+| flache Datei + Zeiger unter „Offene Wellen" + **unverlinkter** Name in Spalte 1 | 1 Befund (`wave-preview-exists`) |
+| flache Datei + Zeiger unter „Offene Wellen" + Nennung nur in Spalte 3 („Wichtigste Slices") | 0 Befunde |
+| toter Vorschau-Zeiger `welle-88` ohne jede Datei | 0 Befunde |
+
+Nur die letzten beiden Lagen bleiben `waves` unsichtbar: Eine Nennung in Spalte 3 liest keine
+Fähigkeit des Moduls, und ein toter Zeiger ohne Datei fällt ausschließlich über das Modul `links`
+(`target-missing`). Eine geschnittene Welle-Datei, die nur in der Vorschau-Tabelle verlinkt steht
+und (noch) nicht unter „Offene Wellen", ist **kein** blinder Fleck: Sie ist Lage 1 der Tabelle oben
+und meldet zwei Befunde. Ob dieser Zustand mit dieser Aktivierung eine verbotene Abweichung geworden
+ist oder ob die Lesart aus
+[`roadmap.md`](../../docs/plan/planning/in-progress/roadmap.md) §Nächste Wellen („Ein verlinkter
+Name hat eine flache Plan-Datei … Start-Trigger nicht eingetreten") unberührt fortbesteht, ist eine
+offene Norm-Frage und nicht Gegenstand dieses Sensor-Textes — der hier nur beschreibt, was das
+Modul liest. Die zweite
 Fähigkeit desselben Moduls (`closure`, Struktur der Closure-Notizen) ist seit slice-129 aktiviert —
 was sie deckt und was nicht, steht im eigenen Absatz unten. Eine **vierte** Fähigkeit desselben
 Moduls (`observations`, Deckung zwischen zitierten Beobachtungs-Kennungen und ihrem Nachweis im
