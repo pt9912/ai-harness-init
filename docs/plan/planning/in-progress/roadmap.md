@@ -20,7 +20,7 @@ nicht hier.
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
 - [welle-13 — Regeln bekommen ihren Sensor](../welle-13-regeln-bekommen-ihren-sensor.md)
 
-In Arbeit: [slice-224 — Delta-Nachweis gegen `v6.0.0` und Planungs-Nachzug](slice-224-delta-nachweis-und-planungs-nachzug.md) (wellenlos).
+Nichts in Arbeit.
 
 **Eine Position der Ziel-Form ist nicht übernommen, und hier steht der Grund**
 ([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage): eine unerklärte Abweichung
