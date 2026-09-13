@@ -114,7 +114,8 @@ und die Regel einmal aufheben, bis der Test fällt.
 unverändert" zusagt, während ein `MkdirAll` davor läuft.
 **Richtig:** die Zusage auf das einschränken, was der Code hält.
 
-**Feedback:** `make mutate` (Nicht-Gate-Verify, §4) fährt ein kuratiertes Set aus
+**Feedback:** `make mutate` (kein Gate; geführt in
+[`harness/README.md`](harness/README.md) §Werkzeuge) fährt ein kuratiertes Set aus
 *(Mutation → erwartet rot färbender Test)* und meldet jeden **gelisteten** Wächter,
 der seine Zähne verloren hat — gelistet heißt: wer keinen Fall in `test/mutations/`
 hat, ist unbewacht. Es prüft die **Haltbarkeit** vorhandener Zähne, nicht die
@@ -178,7 +179,7 @@ zwei Logs derselben Sache driften.
 
 **Begründung:** Die Abwägung gehört in die ADR, die Historie in `git`, die
 Herkunft in **ein** auflösbares Feld ([`LH-*`](spec/lastenheft.md),
-[`ADR-*`](docs/plan/adr/), `· seit welle-<NN>`, wellenlos `· seit slice-<NNN>`).
+[`ADR-*`](docs/plan/adr/), `· seit welle-<Kennung>`, wellenlos `· seit slice-<Kennung>`).
 Was daneben steht, liest jeder Lauf mit und bezahlt es zweifach: mit Kontext, und
 mit dem Risiko, als Quelle gelesen zu werden, die in keinem Rang steht.
 
@@ -240,14 +241,17 @@ Quellen-Klausel ist die **Anwendung** der Baseline-Hard-Rule *„Wer Herkunft ne
 nennt sie als **ein** auflösbares Feld … und nie als Absatz"*
 (`grep -c 'nennt sie als \*\*ein\*\* auflösbares Feld' .harness/baseline/v6.7.2/regelwerk/grundlagen-harness-dateien.md` → **1**):
 Sie nimmt keine der fünf Klassen weg und keine der dort genannten Anker-Formen.
-**Eine Anker-Form steht im adoptierten Stand anders als in der Begründung oben:**
-Er schreibt die Slice-Kennung als Namen —
+**Die Anker-Form der Begründung oben ist die des adoptierten Stands** — er
+schreibt die Slice-Kennung als Namen:
 `grep -c 'seit slice-<NNN>' .harness/baseline/v6.7.2/regelwerk/grundlagen-traceability.md` → **0**,
 `grep -c 'seit slice-<Kennung>' .harness/baseline/v6.7.2/regelwerk/grundlagen-traceability.md` → **3**;
-**keine Erwartungswerte**, beide wandern mit dem Stand. Die Divergenz ist damit
-benannt und nicht entschieden: Welche Form dieses Repo führt, setzt der
-Adaptions-Durchgang gegen `v6.7.2` — [`harness/conventions.md`](harness/conventions.md)
-§Baseline führt ihn als `slice-224`, ausstehend. Die Deckung ist gegen den
+**keine Erwartungswerte**, beide wandern mit dem Stand. **Welche Form dieses Repo
+führt, deklariert** [`MR-057`](harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer):
+Namens-Form für jede neu vergebene Slice- und Welle-Kennung, der Bestand behält
+seine Nummer. Der Platzhalter `<Kennung>` oben trägt beides — eine Nummer ist
+eine Kennung. Die zwei Kommandos dieses Absatzes zitieren dagegen ein
+**Suchmuster** und bleiben wörtlich stehen: Ein geändertes Muster liefert eine
+andere Zahl. Die Deckung ist gegen den
 adoptierten Stand gehalten und in
 [`MR-031`](harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline)
 protokolliert — dort als datierte Messung an dem Stand, der sie auslöste.
@@ -471,24 +475,23 @@ für ihre eigenen Festlegungen. Träger ist der Accept-Übergang und der Lauf, d
 
 ## 4. Quality Gates
 
-| Target | Zweck |
-|---|---|
-| `make baseline-verify` | Vendored Baseline netzlos verifizieren (Integrität + Vollständigkeit, [`MR-007`](harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) |
-| `make docs-check` | Doku-Referenzen (links/anchors/ids/codepaths) via d-check |
-| `make test` | Command-Guard-Tests (bats) + Go-Unit-Tests (Dockerfile-`test`-Stage) im gepinnten Image; die Stage erbt von einer **Vorwärm-Stufe** (vorübersetzte Standardbibliothek) und erzwingt die Test-Ausführung mit `-count=1` (slice-057) |
-| `make lint` | Go-Lint (golangci-lint, Dockerfile-`lint`-Stage) im gepinnten Image |
-| `make build` | Go-Binary cross-compilieren (Dockerfile-`build`-Stage) im gepinnten Image |
-| `make shell-lint` | Shell-Hooks/-Helfer lint-clean (shellcheck) im gepinnten Image |
-| `make ci-lint` | GitHub-Actions-Workflows syntax-clean (actionlint) im gepinnten Image (slice-027) |
-| `make comment-claims` | Kommentar-Behauptungen nennen ihren Sensor, und der genannte Test existiert (§3.6, hermetisch: bash+awk). **Prüfbereich = vier Pfad-Muster** (`internal/**/*.go`, `cmd/**/*.go`, `harness/tools/*.sh`, `.claude/hooks/*.sh`) **im Index, ohne `_test.go`** — damit in **drei** Achsen enger als der Gate-Stempel, nicht in einer: (1) untrackt zählt nicht (heilt beim ersten `git add`), (2) `Makefile`, `harness/tools/*.awk`, `internal/emit/templates/`, `test/` und jede Markdown-Datei liegen **dauerhaft** außerhalb, (3) Test-Dateien sind ausgenommen. Wie groß der Ausschnitt ist, sagt die „N Datei(en) geprueft"-Zeile selbst (2026-07-30: 38) — Details in [`harness/README.md`](harness/README.md) |
-| `make host-bin` | Den **Träger** — das Produkt-Binär — für die **Host**-Plattform bauen und in den gitignorierten Zustands-Bereich legen; der Hook ruft ihn dort als `ai-harness-init span-emit` ([`ADR-0022`](docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 2) |
-| `make span-check` | Der Träger ist vorhanden **und** sein Unterkommando `span-emit` erzeugt für eine synthetische Payload einen Span, dessen Ablageort `git check-ignore` bestätigt (Schema: [`spec/spezifikation.md`](spec/spezifikation.md#5-metriken-und-tracing-felder) §5) |
-| `make gates` | alle aktuell lauffähigen Gates |
+Regeln dieser Sektion: Baseline-Regelwerk `grundlagen-harness-dateien.md`
+§harness/README.md als Einstiegspunkt.
 
-Die Beschreibung dieser Ziele — was jedes prüft, was es **nicht** prüft, und welche
-außerhalb von `make gates` stehen (`smoke`, `full-smoke`, `mutate`, `span-report`,
-`hook-overhead`) — steht in [`harness/README.md`](harness/README.md), dem Harness-Einstieg
-(Source Precedence §2, Rang 8). Sie steht dort und nicht hier: Eine Aussage hat einen Ort.
+Der Gate-Index steht **einmal**, in [`harness/README.md`](harness/README.md)
+§Sensors — dort steht auch die *Bindung* jedes Targets. Diese Datei führt die
+Liste nicht.
+
+Kein Target nennen, das im Makefile nicht existiert — auch nicht in Prosa.
+
+**Was daran maschinell hängt, und wo es endet.** Das Modul `targets` des
+Doku-Gates (`grep -n '^modules:' .d-check.yml`) hält beide Richtungen: seine
+`authority` nennt `harness/README.md` als die **eine** Datei, gegen die
+Vollständigkeit misst, und seine `doc-tables` führen diese Datei daneben, damit
+eine `make X`-Zeile ohne Rezept auch hier rot färbt. Beide Richtungen greifen
+nur an **Tabellenzeilen**; die Prosa-Hälfte des Satzes darüber trägt kein Gate
+([`harness/sensors/docs-check.md`](harness/sensors/docs-check.md), Abschnitt zum
+Modul `targets`).
 
 ## 5. Dokumentations-Regeln
 
@@ -506,3 +509,10 @@ außerhalb von `make gates` stehen (`smoke`, `full-smoke`, `mutate`, `span-repor
 6. Repo-weiten Gate-Lauf vor Handoff (`make gates`).
 7. Doku/Indizes aktualisieren, falls ein öffentlicher Vertrag berührt.
 8. Ausgeführte Sensors und Risiken berichten — keine Erfolgsmeldung ohne Gate-Lauf.
+
+Dieser Workflow deckt ausschließlich die Implementer-Rolle ab. Schritt 8
+ist der Rollenwechsel, kein Abschluss: Bericht → Handoff an Reviewer
+(`.harness/skills/reviewer.md`, siehe [`harness/README.md`](harness/README.md)
+§Guides) → Verifier. Kein Self-Review — anderer Kontext findet andere
+Findings, derselbe Kontext dieselben blinden Flecken (Baseline-Regelwerk
+`modul-08-agentenrollen.md`).

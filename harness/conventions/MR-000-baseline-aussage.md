@@ -3,6 +3,8 @@
 > **ÜBERHOLT: die 2-Strata-Klausel → [`MR-019`](../conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence).** Die übrigen Setzungen dieses Eintrags gelten fort.
 >
 > **ÜBERHOLT: die Blankett-Klausel „keine inhaltlichen Adaptionen ggü. Baseline-Default", punktweise → `grep -n Blankett-Klausel harness/conventions.md`.** Die Ausnahmen sind eine **offene Menge** — jeder spätere Eintrag kann eine hinzufügen —, darum steht hier das Kommando, das sie ausgibt, und kein Link auf einen von mehreren. Wo kein Eintrag sie ausnimmt, gilt die Klausel fort; das ID-Schema und die Verzeichniskonvention dieses Eintrags sind unberührt.
+>
+> **ÜBERHOLT: das Token `slice-NNN` in der ID-Schema-Zeile → [`MR-057`](../conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer).** Für ab dort neu vergebene Slice- und Welle-Kennungen gilt die Namens-Form; der Bestand behält seine Nummer, und die übrigen Kennungsklassen wie alle weiteren Setzungen dieses Eintrags gelten fort.
 
 - **Datum:** 2026-06-13
 - **Geltungsbereich:** gesamtes Repo
