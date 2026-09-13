@@ -127,8 +127,10 @@ oder benennt an dieser Stelle, dass die Zusage ab dann nur für den flachen Best
 **Was das Modul `targets` in `docs-check` deckt, und was nicht:** `.d-check.yml` hält zwei
 Richtungen zwischen den Makefile-Rezepten (`makefiles: [Makefile, d-check.mk]`) und den
 Gate-Tabellen der Doku. **Vollständigkeit** (`gate-undocumented`) prüft gegen genau **eine**
-`authority`-Datei — `AGENTS.md` §4 —, weil das Schema des Moduls keine Liste zulässt (eine
-zweite Datei in `authority` bricht mit einem Typfehler). **Phantom** (`gate-phantom`) prüft
+`authority`-Datei — `harness/README.md` §Sensors —, weil das Schema des Moduls keine Liste
+zulässt (eine zweite Datei in `authority` bricht mit einem Typfehler); `AGENTS.md` §4 trägt dazu
+Regel und Zeiger, keine eigene Tabelle
+(``grep -cE '^\| `make ' ../../AGENTS.md`` → **0**). **Phantom** (`gate-phantom`) prüft
 beide `doc-tables`-Dateien (`AGENTS.md`, `harness/README.md`) in die Gegenrichtung: eine
 `make X`-**Tabellenzeile** ohne passendes Rezept färbt rot. Beide Richtungen greifen nur an
 **Tabellenzeilen** — eine Erwähnung in Fließtext, Aufzählung oder Code-Block bleibt für das
