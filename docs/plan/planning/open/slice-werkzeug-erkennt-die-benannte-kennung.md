@@ -1,0 +1,368 @@
+# Slice slice-werkzeug-erkennt-die-benannte-kennung: Verweis-Nachzug und Archiv-Stub erkennen eine benannte Slice-Kennung
+
+**Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
+Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
+wechselt nur durch `git mv`, siehe
+Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
+
+**Kennung:** Dieser Slice trägt die erste nach
+[`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+Setzung 1 vergebene **benannte** Kennung dieses Repos — ein freier Slug in lowercase-Kebab-Case,
+ohne Nummer. Das ist keine Nebenbemerkung, sondern der Gegenstand: Er ist zugleich der erste Fall,
+auf den die Grenze unten zutrifft.
+
+**Welle:** ohne Welle. Sein Closure-Trigger würde die eigene DoD abschreiben; eine
+Closure-Bedingung, die mehr beobachtet als die DoD-Punkte unten, gibt es nicht
+(Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht). Nach
+[`MR-037`](../../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst)
+steht wellenlose Arbeit nicht in der Roadmap; ihr Zustand ist das Verzeichnis.
+
+**Ebene: Dogfood, nicht emittiert.** Gegenstand sind das Harness-Werkzeug und der Produkt-Code
+**dieses** Repos. Die emittierte Ebene trägt dasselbe Muster als Vorlage und bleibt unberührt
+(§1).
+
+**Bezug:**
+[`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) (der Träger, dessen
+Stub-Erzeugung die Kennung liest — Festlegung 3 bindet die Stub-Form an die vendored Vorlagen),
+[`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) (die geltende Regel des
+Verweis-Nachzugs; dieser Slice ändert **keine** ihrer fünf Festlegungen und keine Ausnahmeliste),
+[`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (ein
+Werkzeug, das für eine Kennungsklasse stumm durchläuft, meldet Erfolg über einer Menge, die es
+nicht gesehen hat),
+[`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+(die Deklaration, deren Abschnitt *Grenze* diese Arbeit benennt und ausdrücklich **nicht**
+schließt),
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+(jede Zahl unten steht neben ihrem Kommando).
+
+**Berührte Spec-Stellen:** — (der Slice berührt keine Spec-Stelle; Gegenstand sind ein
+Harness-Werkzeug und eine interne Go-Funktion).
+
+**Verantwortlich:** — (bis zur Priorisierung).
+
+**Autor:** Planner. **Datum:** 2026-09-13.
+
+---
+
+## 1. Ziel und Abgrenzung
+
+Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
+§Ziel-Form: Slice — Schnitt nach Lieferwert, nicht nach Schichten; jeder Slice
+ist einzeln lieferbar. **§1 nennt Ziel und Abgrenzung** (Out-of-Scope-Disziplin
+des Lastenhefts, auf den Slice-Plan angewandt); die vier Klassen des
+Ausschlusses stehen in **eben diesem Abschnitt** des Baseline-Regelwerks,
+zusammen mit der Begründungs-Pflicht je Punkt.
+
+**Ziel:** Ein Slice mit **benannter** Kennung durchläuft den Lifecycle und die Archivierung, ohne
+dass eine Ziffern-Bindung ihn übersieht — **genau zwei Stellen** tragen sie heute, und dieser
+Slice nimmt beide:
+
+| Stelle | heutige Bindung | was sie dadurch nicht sieht |
+|---|---|---|
+| [`harness/tools/slice-mv.sh`](../../../../harness/tools/slice-mv.sh), `rewrite_outgoing_bare_in_file()` | ein `grep -ohE`-Muster, dessen Kennungs-Teil `slice-[0-9]` lautet | die **ausgehenden**, präfixlosen Geschwister-Ziele *innerhalb* einer bewegten Datei, wenn das Ziel einen Namen statt einer Nummer trägt |
+| [`internal/archive/stub.go`](../../../../internal/archive/stub.go), `Hervorgegangen()` | `sliceRE`, ein `regexp.MustCompile` über `slice-[0-9]{3}` | eine benannte Folge-Slice-Kennung in der Closure-Notiz; der Archiv-Stub übernimmt sie nicht |
+
+```sh
+git grep -nE 'slice-\[0-9\]' -- harness/tools internal cmd Makefile d-check.mk ':!internal/emit'
+```
+
+**Keine Erwartungswerte** ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2) — die Menge wandert mit dem Code.
+
+**Dieser Slice nimmt die Sendung an.** Er ist die Adresse für die Grenze, die
+[`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+als *„benannt, nicht geschlossen"* führt und deren Nachzug jener Eintrag ausdrücklich der
+Implementer-Rolle und keinem Adaptions-Eintrag zuweist. Zwei Slices, die dieselben Dateien
+berühren, nehmen sie **nicht** an und werden hier ausgeschlossen statt stillschweigend
+vorausgesetzt (unten, Klasse *anderer Vorgang*).
+
+### Der Umfang der Grenze ist gemessen und kleiner, als ihr Wortlaut nahelegt
+
+[`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+sagt, `make slice-mv` finde *„die Verweise auf einen benannten Slice nicht"*. Das trifft **eine**
+der beiden Richtungen des Werkzeugs. Die **eingehende** Ersetzung ankert nicht an einer Ziffer,
+sondern am Verzeichnis-Literal an einer Wortgrenze, und die **Quellen-Auflösung** in `main()` ist
+ein Glob über den Lifecycle-Verzeichnissen:
+
+```sh
+sed -n '150,154p' harness/tools/slice-mv.sh    # rewrite_incoming_in_file: "$from/$esc_base", keine Ziffer
+sed -n '197,200p' harness/tools/slice-mv.sh    # main(): "$PLANNING/$d/${SLICE%.md}"*.md, keine Ziffer
+```
+
+Ein benannter Slice lässt sich also **bewegen**, und die eingehenden Verweise auf ihn werden
+nachgezogen; was ausfällt, ist die **ausgehende** Richtung und der Stub. Diese Präzisierung ist
+Arbeit dieses Slice und gehört in seine Closure-Notiz: Eine Grenze, die breiter beschrieben ist,
+als sie misst, lädt dazu ein, die Fähigkeit daneben ebenfalls für abwesend zu halten.
+
+**Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
+
+- **Keine Änderung an [`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+  und an keinem anderen angenommenen Adaptions-Eintrag.**
+  [`AGENTS.md`](../../../../AGENTS.md) §3.4, §3.8,
+  [`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
+  und [`MR-020`](../../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)
+  sperren das, und der Adaptions-Block gehört dem Architect. Ergibt die Messung oben, dass die
+  Grenzen-Formulierung jenes Eintrags zu breit steht, ist das ein **Übergabe-Artefakt** an den
+  Architect und kein Nachzug in diesem Diff. *Es wäre ein anderer Vorgang.*
+- **Keine Umbenennung bestehender `slice-<NNN>`/`welle-<NN>`-Kennungen.**
+  [`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+  Setzung 2 setzt den Cutoff und schließt einen Nachrüst-Auftrag aus; der Bestand steht in
+  Commit-Messages, in Beleg-Dateien des Beobachtungs-Registers und in `Accepted`-ADRs, für die es
+  keine Antwort gäbe ([`AGENTS.md`](../../../../AGENTS.md) §3.4, §3.11). *Bestand bleibt bewusst
+  stehen.*
+- **Keine Änderung an der emittierten Ebene.** Dasselbe Ziffern-Muster steht als Vorlage unter
+  `internal/emit/` (`git grep -lE 'slice-(\[0-9\]|\\d)' -- internal/emit | wc -l`), und wer es
+  bewegt, ändert einen Vertrag gegenüber Zielrepos. Was ein Zielrepo an Kennungs-Form bekommt,
+  entscheidet der Slice, der die Tool-Ebene entscheidet. *Schicht-Abgrenzung* — beim Review sofort
+  prüfbar am Pathspec des Diffs.
+- **Keine Änderung an der `BEO-`-Kennungs-Erkennung im Stub.** `beoRE` in derselben Datei bindet
+  `BEO-[0-9]{3}` und ist die abgeschaffte Register-Kennungsform; sie übernimmt
+  [slice-188](../open/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md). Dieser Slice
+  fasst **nur** `sliceRE` an, damit beide Diffs disjunkt bleiben. *Folge-Slice übernimmt es* —
+  und `slice-188` nimmt die Sendung an, weil sein Gegenstand genau diese Kennungsklasse ist.
+- **Keine Erweiterung der Ausnahmeliste des Verweis-Nachzugs.**
+  [`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 1 sagt
+  *„keiner bekommt einen weiteren ausgenommenen Baum"*; eine dritte Adresse wäre eine Senkung nach
+  [`AGENTS.md`](../../../../AGENTS.md) §3.5 mit eigener Entscheidung. *Bestand bleibt bewusst
+  stehen.*
+- **Kein Wächter über die Kennungs-Form selbst.**
+  [`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+  stellt fest, dass kein Modul der [`.d-check.yml`](../../../../.d-check.yml) eine Slice-Kennung
+  führt und ein Verstoß gegen Setzung 1 nichts rot färbt. Dieser Slice macht das Werkzeug
+  **tolerant**, er macht die Form nicht **erzwungen**; ein solcher Sensor wäre eine
+  Gate-Erweiterung mit eigener Erprobung. *Es wäre ein anderer Vorgang.*
+
+## 2. Definition of Done
+
+Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
+§Ziel-Form: Slice — **≤ 3 Liefer-Punkte**; mehr heißt: der Slice ist zu groß und
+gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
+Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
+
+Drei slice-eigene Punkte.
+
+- [ ] **1 — `rewrite_outgoing_bare_in_file()` sieht die benannte Kennung.** Das Muster in
+      [`harness/tools/slice-mv.sh`](../../../../harness/tools/slice-mv.sh) trifft ein
+      präfixloses `](slice-<name>.md)` ebenso wie `](slice-<NNN>-….md)`, ohne die Teilstring-Falle
+      aufzureißen, die `test/slice-mv.bats` heute deckt (`slice-13` steckt in `slice-130`). **Rot
+      gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): ein bats-Fall, der über dem heutigen
+      Muster fällt und über dem neuen grün wird — die Zusage ist erst fertig, wenn benannt ist,
+      was passieren müsste, damit sie bricht.
+- [ ] **2 — `Hervorgegangen()` übernimmt die benannte Kennung in den Archiv-Stub.** `sliceRE` in
+      [`internal/archive/stub.go`](../../../../internal/archive/stub.go) trifft sie, der Stub baut
+      ihren Anker-Link wie für eine nummerierte (`TestHervorgegangenBautAnkerLinks` bleibt grün),
+      und ein Go-Test deckt den benannten Fall. **Rot gesehen** wie oben.
+- [ ] **3 — Je ein Fall in [`test/mutations/`](../../../../test/mutations/).** Beide Wächter aus
+      Punkt 1 und 2 haben einen kuratierten *(Mutation → erwartet rot färbender Test)*-Fall, und
+      `make mutate` meldet für keinen von beiden einen BEFUND. Ohne ihn ist der neue Wächter
+      **ungelistet** und damit unbewacht — Register-Stand der Klasse
+      `neuer-waechter-ohne-mutations-fall`: **5×**
+      (`ls docs/plan/planning/observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/evidence/*.md | wc -l`,
+      kein Erwartungswert).
+- [ ] `make gates` grün.
+- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+      (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
+      Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
+- [ ] Doku-Update: der Skriptkopf von
+      [`harness/tools/slice-mv.sh`](../../../../harness/tools/slice-mv.sh) §GRENZEN und die Zeile
+      zu [`make slice-mv`](../../../../harness/sensors/slice-mv.md) in
+      [`harness/README.md`](../../../../harness/README.md) sagen, was das Werkzeug nach diesem
+      Slice trägt — ein öffentlicher Vertrag im Sinne des Minimal Agent Workflow.
+- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
+- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
+
+## 3. Plan (vor Code)
+
+Regeln dieser Sektion: Baseline-Regelwerk `grundlagen-bootstrap.md`
+§Was ist eine Sub-Area? — diese Liste liefert die **Pfad-Kandidaten** für §8,
+nicht die Antwort: Pfad-Berührung ist nicht hinreichend, und eine
+Aussagen-Berührung steht hier gar nicht.
+
+| Datei / Komponente | Änderungs-Art | Begründung |
+|---|---|---|
+| [`harness/tools/slice-mv.sh`](../../../../harness/tools/slice-mv.sh) | update | `rewrite_outgoing_bare_in_file()` — Muster und Skriptkopf §GRENZEN |
+| [`internal/archive/stub.go`](../../../../internal/archive/stub.go) | update | `sliceRE` in `Hervorgegangen()`; `beoRE` bleibt unberührt (§1) |
+| [`test/slice-mv.bats`](../../../../test/slice-mv.bats) | update | Happy (benannt) · Boundary (Teilstring `slice-13`/`slice-130`) · Negative (kein `slice-`-Ziel) — nach DoD-Punkt 1 |
+| `internal/archive/stub_test.go` | update | Happy (benannte Folge-Slice-Kennung) · Boundary (gemischte Liste benannt + nummeriert) — nach DoD-Punkt 2 |
+| [`test/mutations/`](../../../../test/mutations/) | neu | je ein Fall pro Wächter — nach DoD-Punkt 3 |
+| [`harness/README.md`](../../../../harness/README.md), [`harness/sensors/slice-mv.md`](../../../../harness/sensors/slice-mv.md) | update | der Vertrag des Werkzeugs sagt, was es nach diesem Slice sieht |
+
+**Was hier bewusst fehlt:** eine Zeile für `internal/emit/` und für
+[`harness/conventions/`](../../../../harness/conventions/) — beide sind in §1 mit Begründung
+ausgeschlossen.
+
+## 4. Trigger
+
+Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
+§Trigger je Lifecycle-Übergang und WIP-Limit.
+
+**Start** (`next` → `in-progress`): Die Arbeit ist **fällig, seit die erste benannte Kennung
+vergeben ist** — und das ist die dieses Slice selbst. Beobachtbar ohne Rückfrage:
+
+```sh
+ls docs/plan/planning/*/slice-[a-z]*.md | wc -l   # > 0 heisst: eine benannte Kennung ist im Lifecycle
+```
+
+**Kein Erwartungswert**, und **kein Ergebnis dieses Slice** im Sinne der Trigger-Disziplin: Die
+Zahl steht in keiner DoD-Zeile von §2, und sie war schon > 0, bevor dieser Slice begann — die
+Datei, die du liest, hat sie dorthin gebracht. Dass ein Slice seine eigene Fälligkeit belegt, ist
+hier kein Zirkel, sondern der Befund: Der Nachzug war **vor** der ersten benannten Kennung fällig
+und ist es nicht geworden.
+
+**Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
+
+- `in-progress` → `next` (zu groß, zurück zur Zerlegung): Wenn die Muster-Änderung in
+  `internal/archive/stub.go` weitere Aufrufer sichtbar macht, die dieselbe Kennung lesen — dann
+  wird der Go-Teil ein eigener Slice und dieser behält das Skript. Konkrete Schwelle: mehr als die
+  eine Funktion `Hervorgegangen()` im Diff.
+- `in-progress` → `open` (blockiert — Carveout?): Wenn ein toleranteres Muster einen bestehenden
+  Wächter rot färbt, dessen rote Stelle außerhalb dieses Slice liegt — etwa die Teilstring-Fälle in
+  [`test/slice-mv.bats`](../../../../test/slice-mv.bats) oder ein Mutations-Fall, der über das
+  gelockerte Muster nicht mehr rot wird. Eine Lockerung, die einen vorhandenen Zahn entwaffnet,
+  ist keine Lösung, sondern die Klasse
+  `mutations-fall-wird-von-berechtigter-aenderung-entwaffnet` (Register-Stand **3×**,
+  `ls docs/plan/planning/observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/evidence/*.md | wc -l`).
+
+## 5. Closure-Trigger
+
+Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
+§Closure- und Lerneintrag-Regeln — zwei beobachtbare Kriterien **und** ein
+Lerneintrag; ohne ihn ist der Slice nur abgelegt.
+
+Zwei beobachtbare Kriterien: (1) `git grep -nE 'slice-\[0-9\]' -- harness/tools internal cmd
+Makefile d-check.mk ':!internal/emit'` liefert keine Zeile mehr, `make gates` und `make mutate`
+sind grün. (2) Der Review-Report zu diesem Slice liegt unter `docs/reviews/` und trägt keinen
+blockierenden Befund. Dazu der Lerneintrag in §7 und für jedes Risiko aus §6 ein Ausgang.
+
+## 6. Risiken und offene Punkte
+
+Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
+§Offene Risiken werden bei Closure aufgelöst — **jedes** Risiko bekommt genau
+**einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
+dasteht.
+
+- **Ein toleranteres Muster trifft mehr, als es soll.** `slice-[0-9]` ist eng, `slice-[a-z0-9-]`
+  ist es nicht: Ein präfixloses `](slice-mv.sh)` oder ein Fließtext-`slice-mv` fiele darunter. Die
+  Boundary-Fälle in §3 sind die vorab benannte Antwort. — **Ausgang:** offen bis zur Closure.
+- **Der Lifecycle-Move dieses Slice bewegt Adressen, die anderswo bewacht sind.** Register-Stand
+  der Klasse `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`: **14×**
+  (`ls docs/plan/planning/observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/evidence/*.md | wc -l`)
+  — der größte Zähler des Registers, und dieser Slice ist der erste, dessen eigene Kennung das
+  Werkzeug in der ausgehenden Richtung nicht sieht. — **Ausgang:** offen bis zur Closure.
+- **Die Grenzen-Formulierung in
+  [`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+  steht breiter, als die Messung in §1 trägt.** Sie zu berichtigen ist Architect-Arbeit und in §1
+  ausgeschlossen; bleibt sie stehen, liest der nächste Lauf eine abwesende Fähigkeit, die es gibt.
+  Das ist ein Übergabe-Artefakt, kein Diff-Posten. — **Ausgang:** offen bis zur Closure.
+- **`make mutate` läuft lange.** Der Lauf über das kuratierte Set ist der teuerste Sensor dieses
+  Repos; DoD-Punkt 3 hängt an ihm. — **Ausgang:** offen bis zur Closure.
+
+## 7. Closure-Notiz
+
+Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
+§Das Beobachtungs-Register (vorhandene `BEO-<KUERZEL>/<slug>` **zitieren** statt neu
+formulieren — sonst zählt das Register zwei Namen getrennt) ·
+`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
+Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
+wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
+Backticks).
+
+- **Was hat funktioniert:** <…>
+- **Was ging anders als geplant:** <…>
+- **Steering-Loop-Eintrag:** <…>
+- **Beobachtungs-Register (`../observations/`):** <…>
+- **Folge-Slices:** <…>
+- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
+- **Drei Paarungen:** <Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
+  für diesen Slice ohne Wellen-Zugehörigkeit>
+
+## 8. Sub-Area-Prüfungen und Modus-Begründung
+
+Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
+§Ziel-Form: Sub-Area-Modus-Begründung — dort die **zwei vorgelagerten
+Schritte** (sie stehen in jedem Slice-Plan, unabhängig von Modus und
+Slice-Typ) und die **vier Pflichtkriterien** (Konventionen-Dichte ·
+Phase-Reife · Evidenz-/Diskrepanz-Risiko · Reconciliation-Aufwand), vier und
+nicht mehr.
+
+**Der Abschnitt selbst entfällt nie.** Die zwei vorgelagerten Prüfungen laufen
+in **jedem** Slice-Plan — sie hängen weder am Modus noch am Slice-Typ. Bedingt
+ist allein der Modus-Begründungsblock am Ende; deshalb nennt der Titel beide
+Hälften.
+
+**Vorgelagert — Sub-Area-Wahl prüfen:** Berührt sind **zwei** Sub-Areas, beide deklariert in
+[`harness/conventions.md`](../../../../harness/conventions.md) §Modus-Deklaration pro Sub-Area:
+`harness/tools/` (Kürzel `TOOLS`) und `*` (gesamtes Repo, Kürzel `ALL`, für den Go-Anteil unter
+`internal/`). `TOOLS` erfüllt die Schwelle ≥ 2 von 3 Achsen: eigener Prüfbereich (`shell-lint`,
+`comment-claims`, `test/slice-mv.bats`) und eigene Fehlermodi (stiller Nicht-Nachzug). `CODEX` ist
+geprüft und **nicht** berührt — keine Aussage über `.codex/` ändert sich.
+
+**Vorgelagert — offene Beobachtungen sichten:** Das Register ist am gemergten Stand durchgegangen
+— **100** Verzeichnisse (`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l`, **kein
+Erwartungswert**); alle führen dieselbe Sub-Area `*`, die Sichtung ist damit vollständig. **Fünf
+Treffer** berühren diesen Slice:
+
+| Beobachtung (`BEO-ALL/<slug>`) | Zähler | Stand |
+|---|---|---|
+| `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch` | 14× | offen |
+| `neuer-waechter-ohne-mutations-fall` | 5× | offen |
+| `uebergabe-an-andere-rolle-ohne-traeger-artefakt` | 4× | offen |
+| `mutations-fall-wird-von-berechtigter-aenderung-entwaffnet` | 3× | offen |
+| `zusage-nennt-sensor-der-form-nicht-sieht` | 14× | geplant |
+
+```sh
+for s in lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch neuer-waechter-ohne-mutations-fall \
+         uebergabe-an-andere-rolle-ohne-traeger-artefakt \
+         mutations-fall-wird-von-berechtigter-aenderung-entwaffnet \
+         zusage-nennt-sensor-der-form-nicht-sieht; do
+  printf '%s %s\n' "$(ls docs/plan/planning/observations/BEO-ALL/$s/evidence/*.md | wc -l)" "$s"
+done
+```
+
+**Vier stehen über der Schwelle**, alle **vor** diesem Slice und nicht durch ihn; der Lese-Schritt,
+der ihnen einen Ausgang zuweist, gehört der Welle-Closure und nicht dieser Planung. Der vierte
+trifft diesen Schnitt unmittelbar: `uebergabe-an-andere-rolle-ohne-traeger-artefakt` ist die
+Klasse, deren vierter Beleg **diese** Arbeit ohne Adresse war — dieser Slice ist die Adresse.
+
+**Modus-Begründungsblock — Umfang.** Alle berührten Sub-Areas sind Greenfield; der Block trägt
+zwei Sub-Areas.
+
+### Sub-Area: `harness/tools/` (Kürzel `TOOLS`)
+
+- **Modus:** GF
+- **Konventionen-Dichte:** hoch — der Ort ist in
+  [`MR-005`](../../../../harness/conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption)
+  und [`MR-047`](../../../../harness/conventions.md#mr-047--der-ort-der-ausführbaren-harness-tools-ist-keine-abweichung-mehr)
+  geregelt, der Vertrag des Werkzeugs steht in
+  [`harness/sensors/slice-mv.md`](../../../../harness/sensors/slice-mv.md), und der Skriptkopf
+  führt seine drei Grenzen selbst auf.
+- **Phase-Reife:** Phase 4 — das Skript ist getestet (`test/slice-mv.bats`, ein Go-Test über einen
+  echten Scratch-Klon) und hat einen Mutations-Fall
+  (`test/mutations/315-slice-mv-main-verliert-ausnahmeliste.sh`); was fehlt, ist die Deckung genau
+  der Richtung, die dieser Slice anfasst.
+- **Evidenz-/Diskrepanz-Risiko:** mittel — die tragende Diskrepanz ist **Vertrag gegen Verhalten**:
+  Der Skriptkopf zählt drei Grenzen auf, und
+  [`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+  beschreibt eine vierte breiter, als sie misst (§1). `zusage-nennt-sensor-der-form-nicht-sieht`
+  (14×) ist genau diese Klasse.
+- **Reconciliation-Aufwand:** keiner — GF, kein Inventur-Fund. Graduation entfällt (n/a bei GF).
+
+### Sub-Area: `*` (gesamtes Repo, Kürzel `ALL`)
+
+- **Modus:** GF
+- **Konventionen-Dichte:** sehr hoch — 55 aktive Einträge
+  (`ls harness/conventions/MR-*.md | wc -l`, kein Erwartungswert) plus die Hard Rules in
+  [`AGENTS.md`](../../../../AGENTS.md) §3; für den Go-Anteil binden
+  [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) und
+  [`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md).
+- **Phase-Reife:** Phase 5 — `internal/archive/` läuft in `make test`, `make lint` und `make mutate`
+  und hat einen dokumentierten Vertrag in
+  [`harness/sensors/archive-welle.md`](../../../../harness/sensors/archive-welle.md).
+- **Evidenz-/Diskrepanz-Risiko:** mittel — der Stub ist noch **nie** über einem echten Archiv
+  gelaufen (`ls docs/plan/planning/done/*/archiv.zip 2>/dev/null | wc -l` → 0, kein
+  Erwartungswert); geprüft ist er über Tests, nicht über Bestand. Eine Kennungs-Erkennung, die
+  eine Klasse übersieht, fiele erst beim ersten Archivierungs-Lauf auf.
+- **Reconciliation-Aufwand:** keiner — GF, kein Inventur-Fund. Graduation entfällt (n/a bei GF).
