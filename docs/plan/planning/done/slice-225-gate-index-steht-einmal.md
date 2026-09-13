@@ -579,11 +579,21 @@ Backticks).
   [`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 5 verlangt,
   dass der bewegende Lauf nennt, was er anfasst):
 
+  Der Stand vor dem Move steht als Commit-Operand in beiden Kommandos, nicht als Pfad-Literal:
+  Über dem Arbeitsbaum liefern sie nach dem Move nichts mehr — die Adressen sind nachgezogen —,
+  und eine Zahl, die ihr eigener Vorgang bewegt, wird nach ihm genommen oder an einem festen
+  Stand ([`MR-058`](../../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)
+  Setzung 2). Reproduzierbar auf jedem Checkout:
+
   ```sh
-  git grep -ncE 'in-progress/slice-225-gate-index-steht-einmal\.md' -- 'docs/plan/adr/*.md'   # leer
-  git grep -cE  'in-progress/slice-225-gate-index-steht-einmal\.md' -- \
+  M=380820b5   # der Closure-Commit, letzter Stand vor dem git mv
+  git grep -cE 'in-progress/slice-225-gate-index-steht-einmal\.md' $M -- 'docs/plan/adr/*.md'
+  # keine Zeile, Exit 1 — keine ADR nennt die Datei als Pfad
+
+  git grep -cE 'in-progress/slice-225-gate-index-steht-einmal\.md' $M -- \
     'docs/plan/planning/done/*.md' 'docs/reviews/*.md' 'docs/plan/carveouts/done/*.md' \
-    'docs/plan/planning/observations/**/evidence/*.md' | wc -l                                 # 9 Dateien
+    'docs/plan/planning/observations/**/evidence/*.md' | wc -l                        # 9 Dateien
+  # dieselbe Zeile, statt `wc -l`:  | awk -F: '{s+=$NF} END{print s}'                 # 23 Fundstellen
   ```
 
   **Keine `Accepted`-ADR** nennt diese Datei als Pfad — der Move ist nicht gesperrt. Angefasst
