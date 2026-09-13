@@ -40,7 +40,7 @@ Auftraggeber-Vorgabe, die der Anlass dieses Slice ist).
 **Berührte Spec-Stellen:** — (der Slice berührt keine Spec-Stelle; Gegenstand sind eine
 Gate-Konfiguration und ihre Sensor-Prosa).
 
-**Verantwortlich:** — (bis zur Priorisierung).
+**Verantwortlich:** Implementer-Rolleninhaber dieses Laufs.
 
 **Autor:** Planner. **Datum:** 2026-09-13.
 
