@@ -67,7 +67,7 @@ vorliegt),
 **Berührte Spec-Stellen:** — (der Slice berührt keine Spec-Stelle; Gegenstand sind Norm-Artefakte
 und eine Gate-Konfiguration).
 
-**Verantwortlich:** — (bis zur Priorisierung).
+**Verantwortlich:** Implementer-Rolleninhaber dieses Laufs.
 
 **Autor:** Planner. **Datum:** 2026-09-12.
 
