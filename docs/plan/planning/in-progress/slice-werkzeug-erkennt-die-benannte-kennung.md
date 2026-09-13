@@ -151,38 +151,38 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 Drei slice-eigene Punkte.
 
-- [ ] **1 — `rewrite_outgoing_bare_in_file()` sieht die benannte Kennung.** Das Muster in
+- [x] **1 — `rewrite_outgoing_bare_in_file()` sieht die benannte Kennung.** Das Muster in
       [`harness/tools/slice-mv.sh`](../../../../harness/tools/slice-mv.sh) trifft ein
       präfixloses `](slice-<name>.md)` ebenso wie `](slice-<NNN>-….md)`, ohne die Teilstring-Falle
       aufzureißen, die `test/slice-mv.bats` heute deckt (`slice-13` steckt in `slice-130`). **Rot
       gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): ein bats-Fall, der über dem heutigen
       Muster fällt und über dem neuen grün wird — die Zusage ist erst fertig, wenn benannt ist,
       was passieren müsste, damit sie bricht.
-- [ ] **2 — `Hervorgegangen()` übernimmt die benannte Kennung in den Archiv-Stub.** `sliceRE` in
+- [x] **2 — `Hervorgegangen()` übernimmt die benannte Kennung in den Archiv-Stub.** `sliceRE` in
       [`internal/archive/stub.go`](../../../../internal/archive/stub.go) trifft sie, der Stub baut
       ihren Anker-Link wie für eine nummerierte (`TestHervorgegangenBautAnkerLinks` bleibt grün),
       und ein Go-Test deckt den benannten Fall. **Rot gesehen** wie oben.
-- [ ] **3 — Je ein Fall in [`test/mutations/`](../../../../test/mutations/).** Beide Wächter aus
+- [x] **3 — Je ein Fall in [`test/mutations/`](../../../../test/mutations/).** Beide Wächter aus
       Punkt 1 und 2 haben einen kuratierten *(Mutation → erwartet rot färbender Test)*-Fall, und
       `make mutate` meldet für keinen von beiden einen BEFUND. Ohne ihn ist der neue Wächter
       **ungelistet** und damit unbewacht — Register-Stand der Klasse
       `neuer-waechter-ohne-mutations-fall`: **5×**
       (`ls docs/plan/planning/observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/evidence/*.md | wc -l`,
       kein Erwartungswert).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: der Skriptkopf von
+- [x] Doku-Update: der Skriptkopf von
       [`harness/tools/slice-mv.sh`](../../../../harness/tools/slice-mv.sh) §GRENZEN und die Zeile
       zu [`make slice-mv`](../../../../harness/sensors/slice-mv.md) in
       [`harness/README.md`](../../../../harness/README.md) sagen, was das Werkzeug nach diesem
       Slice trägt — ein öffentlicher Vertrag im Sinne des Minimal Agent Workflow.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
 
 ## 3. Plan (vor Code)
 
@@ -236,6 +236,27 @@ und ist es nicht geworden.
   `mutations-fall-wird-von-berechtigter-aenderung-entwaffnet` (Register-Stand **3×**,
   `ls docs/plan/planning/observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/evidence/*.md | wc -l`).
 
+**Ausgang der ersten Rückführung — sie hat gefeuert, gezogen wird sie nicht.** Beide Hälften der
+Bedingung treffen zu: `SlicePfadRelativ()` ist ein zweiter Leser derselben Kennung, sichtbar
+geworden durch die Muster-Änderung, und der Diff trägt drei Funktionen neben `Hervorgegangen()`:
+
+```sh
+git diff 6c3ea3a9^..004335cc -- internal/archive/stub.go \
+  | grep -oE '^[+-]func [A-Za-z]+' | sed 's/^[+-]//' | sort -u | wc -l   # 3
+```
+
+Die Schwelle misst aber nicht die Eigenschaft, die sie bewacht. *Zu groß* ist im
+Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Slice über drei Kriterien
+bestimmt — mehr als drei Liefer-Punkte, mehr als zwei berührte Schichten, nicht in einer
+Review-Sitzung prüfbar —, und keines davon zählt Funktionen in einem Diff. Alle drei sind
+eingehalten: drei Liefer-Punkte (§2), zwei Schichten (§8), je eine Review-Sitzung pro Runde. Die
+drei Funktionen sind **ein** Leser (`SlicePfadRelativ`) und zwei aus ihm herausgezogene Hilfen;
+der Umfang des Slice ist durch sie nicht gewachsen, und ein Schnitt entlang Skript gegen Go wäre
+ein Schicht-Schnitt, den dieselbe Sektion untersagt.
+
+Der Wortlaut der Bedingung bleibt oben stehen — er ist der Maßstab, an dem diese Entscheidung
+prüfbar ist. Was aus der falschen Schwelle folgt, steht als Beobachtung im Register (§7).
+
 ## 5. Closure-Trigger
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
@@ -256,19 +277,43 @@ dasteht.
 
 - **Ein toleranteres Muster trifft mehr, als es soll.** `slice-[0-9]` ist eng, `slice-[a-z0-9-]`
   ist es nicht: Ein präfixloses `](slice-mv.sh)` oder ein Fließtext-`slice-mv` fiele darunter. Die
-  Boundary-Fälle in §3 sind die vorab benannte Antwort. — **Ausgang:** offen bis zur Closure.
+  Boundary-Fälle in §3 sind die vorab benannte Antwort. — **Ausgang: entfallen.** Die gefürchtete
+  Folge — ein Verweis wird falsch umgehängt, ein Stub trägt einen toten Link — kann in keinem der
+  beiden Träger eintreten, weil keiner am **Muster** entscheidet, sondern an der **Existenz eines
+  Ziels**: `rewrite_outgoing_bare_in_file()` hängt nur um, wenn die Datei im Herkunfts-Verzeichnis
+  liegt (`sed -n '177p' harness/tools/slice-mv.sh` → `[ -f "$PLANNING/$from/$t" ] || continue`),
+  und `Hervorgegangen()` schreibt einen **baren** Token statt eines Links, sobald
+  `SlicePfadRelativ()` leer liefert — dieser Zweig ist älter als der Slice
+  (`git show 6c3ea3a9^:internal/archive/stub.go | grep -c 'teile = append(teile, id)'` → 1). Die
+  Weitung ändert, welche Tokens an dieses Tor kommen, nicht, was es durchlässt. Was bleibt — ein
+  Fließtext-Token ist von einer echten Kennung ohne auflösbare Datei nicht zu unterscheiden —
+  steht als gemessene Grenze am Kopf von `Hervorgegangen()` und ist keine Folge der Weitung.
 - **Der Lifecycle-Move dieses Slice bewegt Adressen, die anderswo bewacht sind.** Register-Stand
   der Klasse `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`: **14×**
   (`ls docs/plan/planning/observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/evidence/*.md | wc -l`)
   — der größte Zähler des Registers, und dieser Slice ist der erste, dessen eigene Kennung das
-  Werkzeug in der ausgehenden Richtung nicht sieht. — **Ausgang:** offen bis zur Closure.
+  Werkzeug in der ausgehenden Richtung nicht sieht. — **Ausgang: weiter offen → Beobachtungs-Register**
+  ([`BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md)).
+  Eingetreten ist es: Der Zustandssatz *In Arbeit:* der Roadmap nennt diesen Slice, und
+  `make slice-mv` zieht nach eigener Zusage Pfade nach, keine Zustandssätze (Grenze 1 seines
+  Skriptkopfs); der Verweis derselben Zeile ist präfixlos und fällt zusätzlich unter Grenze 3.
+  Beides gleicht diese Closure von Hand aus, ein Träger dafür besteht weiterhin nicht.
 - **Die Grenzen-Formulierung in
   [`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
   steht breiter, als die Messung in §1 trägt.** Sie zu berichtigen ist Architect-Arbeit und in §1
   ausgeschlossen; bleibt sie stehen, liest der nächste Lauf eine abwesende Fähigkeit, die es gibt.
-  Das ist ein Übergabe-Artefakt, kein Diff-Posten. — **Ausgang:** offen bis zur Closure.
+  Das ist ein Übergabe-Artefakt, kein Diff-Posten. — **Ausgang: weiter offen → Beobachtungs-Register**
+  ([`BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt`](../observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/observation.md)).
+  Die Übergabe ist ausgesprochen und ohne Träger: Für den Weg zum Architect nennt
+  Baseline-Regelwerk `modul-08-agentenrollen.md` §Die neun Übergaben kein eigenes Artefakt, und
+  einen Folge-Slice schneidet diese Closure nicht. Der Zähler trägt sie.
 - **`make mutate` läuft lange.** Der Lauf über das kuratierte Set ist der teuerste Sensor dieses
-  Repos; DoD-Punkt 3 hängt an ihm. — **Ausgang:** offen bis zur Closure.
+  Repos; DoD-Punkt 3 hängt an ihm. — **Ausgang: entfallen.** DoD-Punkt 3 fragt, ob **diese** Fälle
+  ihren `expect:`-Test rot färben, und das ist je Fall einzeln entscheidbar: 316, 317 und 318 sind
+  einzeln angewandt und am genannten Wächter rot gesehen (Commit `004335cc`, nachgemessen in
+  Review-Runde 2). Der Punkt hängt damit nicht am vollen Lauf. Der volle Lauf bleibt
+  Closure-Kriterium (§5) und hat seinen Pro-Push-Auslöser in der CI
+  ([`harness/README.md`](../../../../harness/README.md) §Safety and scope boundaries).
 
 ## 7. Closure-Notiz
 
@@ -280,14 +325,75 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
-  für diesen Slice ohne Wellen-Zugehörigkeit>
+**Rolle:** Planner · **Datum:** 2026-09-13
+
+- **Was hat funktioniert:** Die **erste Hälfte** der Rückführungs-Bedingung aus §4 — *weitere
+  Leser derselben Kennung* — hat gearbeitet: Sie hat `SlicePfadRelativ()` sichtbar gemacht, und
+  daraus wurde HIGH-1 der ersten Review-Runde. Ohne sie wäre der Slice mit einer Funktion grün
+  geworden, die eine benannte Kennung an keiner ihrer vier Lagen auflöst. Der Schnitt selbst hat
+  gehalten: drei Liefer-Punkte, zwei Schichten, je eine Review-Sitzung pro Runde. Und für jeden
+  neuen Wächter steht ein kuratierter Mutations-Fall — die Klasse
+  [`BEO-ALL/neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md)
+  (**5×**, `ls docs/plan/planning/observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/evidence/*.md | wc -l`)
+  hat hier keinen Beleg bekommen.
+- **Was ging anders als geplant:** §1 zählte **zwei** Stellen mit Ziffern-Bindung; es waren drei.
+  `SlicePfadRelativ()` band die Kennungsform nicht über ein Muster, sondern über die **Dateiform**
+  — jede Kennung musste einen Titel-Suffix tragen, eine benannte trägt keinen, die Funktion lieferte
+  für sie `""`. Das Fundkommando in §1 konnte das nicht sehen: Es sucht die Zeichenfolge
+  `slice-[0-9]`, und ein Glob `slice-<x>-*.md` enthält sie nicht. Ein Muster-Fundkommando findet
+  Muster, keine Bindungen anderer Art — das ist die Grenze dieses Belegs, nicht sein Versagen.
+  Daneben zwei Rollen-Befunde, die beide der Planner entschieden hat: die Rückführung aus §4 (der
+  Ausgang steht dort) und ein vierter Out-of-Scope-Punkt, den der Implementations-Commit in §1
+  schrieb. Der Planner nimmt die Grenze **an**: Sie nimmt nichts weg, was §2 zusagt — die zweite
+  Namensform stand in keinem der drei Liefer-Punkte —, ihre Klassifikation (*es wäre ein anderer
+  Vorgang*) trägt, und sie ist an vier Stellen gemessen. Gegenstand ist nicht ihr Inhalt, sondern
+  die Rolle, die sie schrieb ([`AGENTS.md`](../../../../AGENTS.md) §3.10); der Beleg liegt im
+  Register.
+- **Steering-Loop-Eintrag:** *neuer Sensor.* Die Kennungs-Toleranz beider Träger ist ab jetzt
+  bewacht, und zwar in beide Richtungen: `test/mutations/316-slice-mv-ausgehend-verliert-benannte-kennung.sh`
+  (Skript), `317-stub-slicere-verliert-benannte-kennung.sh` (Stub) und
+  `318-stub-slicere-alternativen-reihenfolge.sh` für die tragende Alternativen-Reihenfolge, die
+  Go-`regexp` leftmost-first auflöst. Vorher sah **kein** Wächter dieses Repos eine benannte
+  Kennung. Ein `liegt in`-Feld steht hier nicht: Verkörpert wird beim Lese-Schritt, und dieses
+  Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`) — er gehört der Welle-Closure.
+- **Beobachtungs-Register (`../observations/`):** fünf Belege, je einer je Klasse; ein Vorgang
+  zählt je Klasse einmal.
+
+  | Beobachtung (`BEO-ALL/<slug>`) | was dieser Vorgang beisteuert |
+  |---|---|
+  | [`fremdes-rollen-artefakt-im-implementations-kontext`](../observations/BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext/observation.md) | der vierte Out-of-Scope-Punkt, geschrieben im Implementations-Commit |
+  | [`lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md) | der Zustandssatz *In Arbeit:* der Roadmap, den kein Werkzeug nachzieht |
+  | [`uebergabe-an-andere-rolle-ohne-traeger-artefakt`](../observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/observation.md) | drei Übergaben an andere Rollen ohne angelegtes Träger-Artefakt |
+  | [`korrektur-trifft-den-fundort-statt-die-gemessene-fundmenge`](../observations/BEO-ALL/korrektur-trifft-den-fundort-statt-die-gemessene-fundmenge/observation.md) | die `slice-NNN`-Notation, dreimal gezogen, an zwei weiteren Stellen stehen geblieben |
+  | [`rueckfuehrungs-schwelle-misst-nicht-die-eigenschaft-die-sie-bewacht`](../observations/BEO-ALL/rueckfuehrungs-schwelle-misst-nicht-die-eigenschaft-die-sie-bewacht/observation.md) | **neu angelegt** — die Schwelle aus §4 zählte Funktionen in einem Diff statt der drei Größen-Kriterien |
+
+  ```sh
+  ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l   # 101 nach dieser Closure
+  ```
+
+  **Kein Erwartungswert** ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2).
+- **Übergaben an andere Rollen — drei, keine mit eigenem Träger-Artefakt.** (1) An den
+  **Architect**: Die Grenzen-Formulierung in
+  [`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+  steht breiter, als §1 misst — die **eingehende** Richtung und die Quellen-Auflösung des
+  Werkzeugs arbeiten für eine benannte Kennung. (2) Dieselbe Notations-Aussage `SLICE=<slice-NNN>`
+  steht unverändert in `Makefile:340` (die `make help`-Zeile) und in
+  `harness/tools/slice-mv.sh:170`; beide sind in diesem Abschluss nicht berührt. (3) Ebenfalls in
+  `harness/tools/slice-mv.sh`: Grenze 3 seines Skriptkopfs nennt `BEO-003` — eine Kennungsform,
+  die das Register nicht mehr führt (`ls -d docs/plan/planning/observations/BEO-[0-9]* 2>/dev/null | wc -l`
+  → 0).
+- **Folge-Slices:** keine. Keiner der Ausgänge in §6 lautet *eingetreten*, und die drei Übergaben
+  oben tragen der Zähler und das Register, nicht ein geschnittener Slice.
+- **Risiken aus §6:** vier, jedes mit genau einem Ausgang — zweimal *entfallen* (mit Begründung),
+  zweimal *weiter offen → Beobachtungs-Register*. Kein Risiko steht ohne Ausgang.
+- **Gemessen, und was nicht:** `make gates` EXIT 0 auf `847c6566`; das Fundkommando aus §5 liefert
+  keine Zeile (`git grep -nE 'slice-\[0-9\]' -- harness/tools internal cmd Makefile d-check.mk
+  ':!internal/emit'`, EXIT 1); zwei Review-Reports unter `docs/reviews/`, der zweite ohne
+  blockierenden Sach-Befund. **Nicht** in diesem Kontext gefahren: der volle `make mutate`-Lauf —
+  gemessen sind die drei neuen Fälle einzeln, nicht das kuratierte Set als Ganzes.
+- **Drei Paarungen:** Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
+  für diesen Slice ohne Wellen-Zugehörigkeit.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
