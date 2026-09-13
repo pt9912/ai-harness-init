@@ -380,7 +380,7 @@ Zwei beobachtbare Kriterien und ein Lerneintrag:
 [`harness/conventions.md`](../../../../harness/conventions.md) führt drei Sub-Areas — `*` (`ALL`),
 `harness/tools/` (`TOOLS`) und `.codex/` (`CODEX`); keiner der berührten Pfade liegt in den zwei
 engeren. Die Berührung ist damit `*` (`ALL`), und sie hält die Schwelle ≥ 2 von 3
-([`grundlagen-bootstrap.md`](../../../../.harness/baseline/v6.7.2/regelwerk/grundlagen-bootstrap.md#was-ist-eine-sub-area)):
+([`grundlagen-bootstrap.md`](../../../../.harness/baseline/v6.8.0/regelwerk/grundlagen-bootstrap.md#was-ist-eine-sub-area)):
 Achse 1 (Konventions-Härte) — der Block trägt repo-weite Einträge; Achse 2 (Inventur-Linie) — Gate-
 und Doku-Aussage sind als Paar abgleichbar; Achse 3 (Struktureller Cluster) trägt für `*`
 naturgemäß nicht. **Eine feinere Ausdifferenzierung wird hier nicht vorgenommen** — sie wäre eine

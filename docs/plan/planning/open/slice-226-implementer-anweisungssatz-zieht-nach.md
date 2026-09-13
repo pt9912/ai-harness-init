@@ -140,7 +140,7 @@ Zwei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       Akzeptanzkriterien-Bindung steht bei der Testdatei-Zeile der Plan-Ausgabe, die
       Out-of-Scope-Nennung bei Schritt 4, die Ein-Begründung-je-Ursache-Regel daneben, und der Satz
       *der Plan lebt in §3* bei den Rücksprüngen. Der Beleg ist ein Form-Vergleich gegen
-      `.harness/baseline/v6.7.2/regelwerk/modul-09-implementierung.md` §Minimal Agent Workflow, je
+      `.harness/baseline/v6.8.0/regelwerk/modul-09-implementierung.md` §Minimal Agent Workflow, je
       Block eine benannte Fundstelle im Anweisungssatz; ein Block ohne Fundstelle ist der Befund,
       keine Auslassung.
 - [ ] **2 — Die Kennungs-Notation ist nachgezogen.** Nach dem Lauf liefert
