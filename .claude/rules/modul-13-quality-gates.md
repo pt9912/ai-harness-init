@@ -1,1 +1,1 @@
-../../.harness/baseline/v6.7.2/regelwerk/modul-13-quality-gates.md
+../../.harness/baseline/v6.8.0/regelwerk/modul-13-quality-gates.md
