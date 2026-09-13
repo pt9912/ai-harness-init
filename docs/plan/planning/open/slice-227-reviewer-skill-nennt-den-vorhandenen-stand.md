@@ -100,7 +100,7 @@ trägt, nicht ob die Vorlage sich bewegt hat (Register-Klasse
 - **Kein anderer Anweisungssatz.**
   [`.claude/commands/implement-slice.md`](../../../../.claude/commands/implement-slice.md) liegt bei
   [slice-226](slice-226-implementer-anweisungssatz-zieht-nach.md), die zwei Planner-Commands sind von
-  [slice-224](../in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md) nachgezogen. *Es wäre
+  [slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md) nachgezogen. *Es wäre
   ein anderer Vorgang einer anderen Rolle*
   ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)).
 - **Keine Aktivierung des d-check-Moduls `reviews`.** Der Absatz, den `modul-10-review-harness.md`
@@ -168,7 +168,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-224](../in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md) liegt in `done/` —
+[slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md) liegt in `done/` —
 ablesbar an `ls docs/plan/planning/done/slice-224-*.md` auf dem Hauptzweig. Beobachtbar ohne
 Rückfrage, und **kein Ergebnis dieses Slice**: Weder Kopf-Pin noch Delta-Antwort stehen in einer
 DoD-Zeile von §2 jenes Slice — sein §9 erzeugt für diese Datei ausdrücklich **keine** Zeile, und

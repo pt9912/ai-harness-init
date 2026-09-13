@@ -64,7 +64,7 @@ trägt die vier Plan-vor-Code-Blöcke, die `modul-09-implementierung.md` zwische
 ### Der Gegenstand ist gemessen, nicht vermutet
 
 Die Sendung stammt aus dem Delta-Nachweis von
-[slice-224](../in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md) §9, Zeile
+[slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md) §9, Zeile
 `lab/regelwerk/modul-09-implementierung.md` — Antwort *übernommen (Übergabe)*, Ziel `Implementer`.
 Was das Modul gewonnen hat, ist am lokalen Kurs-Klon gegen beide Tags zu lesen; die Zahlen wandern
 mit dem Klon-Stand und sind **keine Erwartungswerte**
@@ -100,7 +100,7 @@ git grep -cE 'slice-<NNN>|welle-<NN>' -- .claude/commands/implement-slice.md   #
 - **Kein anderer Anweisungssatz.**
   [`.claude/commands/plan-welle.md`](../../../../.claude/commands/plan-welle.md) und
   [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) gehören dem
-  Planner und sind von [slice-224](../in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md)
+  Planner und sind von [slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md)
   bereits nachgezogen; [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md)
   gehört dem Reviewer und liegt bei
   [slice-227](slice-227-reviewer-skill-nennt-den-vorhandenen-stand.md). *Es wäre ein anderer
@@ -185,7 +185,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-224](../in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md) liegt in `done/` —
+[slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md) liegt in `done/` —
 ablesbar an `ls docs/plan/planning/done/slice-224-*.md` auf dem Hauptzweig. Beobachtbar ohne
 Rückfrage, und **kein Ergebnis dieses Slice**: Der Nachweis steht in keiner DoD-Zeile von §2. Der
 Trigger ist inhaltlich nötig, nicht nur sequenziell — §9 jenes Slice ist die Quelle, die den

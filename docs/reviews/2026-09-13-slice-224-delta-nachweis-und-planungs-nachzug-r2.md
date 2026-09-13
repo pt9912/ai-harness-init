@@ -4,7 +4,7 @@
 **Runde 1:** [`2026-09-12-slice-224-…`](2026-09-12-slice-224-delta-nachweis-und-planungs-nachzug.md)
 (1 HIGH · 5 MEDIUM · 2 LOW · 1 INFO, Verdikt *blockierend*) ·
 **Verifikation:** [`2026-09-13-…-verify`](2026-09-13-slice-224-delta-nachweis-und-planungs-nachzug-verify.md) ·
-**Plan:** [`slice-224`](../plan/planning/in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md) ·
+**Plan:** [`slice-224`](../plan/planning/done/slice-224-delta-nachweis-und-planungs-nachzug.md) ·
 **Constraints:** [`ADR-0044`](../plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md) ·
 [`AGENTS.md`](../../AGENTS.md) §3.6 · §3.8 · §3.10 ·
 [`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
@@ -158,7 +158,7 @@ Scheinadresse, keine Selbst-Entlastung. Die Gegenprobe, dass der Wert `Reviewer`
 Ziel-Spalte verschwunden ist, statt nur aus der Legende:
 
 ```sh
-F=docs/plan/planning/in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md
+F=docs/plan/planning/done/slice-224-delta-nachweis-und-planungs-nachzug.md
 sed -n '/^| Posten (Datei im Kurs-Klon)/,$p' "$F" | grep -E '^\| `lab/' | sed -E 's/.*\| ([^|]*) \|$/\1/' | sort | uniq -c
 #  1 Implementer (Übergabe) · 1 slice-213/slice-214 · 33 slice-224 · 7 slice-225   — kein `Reviewer`
 ```
@@ -185,7 +185,7 @@ Posten sind damit nicht erledigt, sondern übergeben**, und ihr Empfänger ist d
 Unabhängig nachgefahren, nicht mit dem Kommando des Plans:
 
 ```sh
-F=docs/plan/planning/in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md
+F=docs/plan/planning/done/slice-224-delta-nachweis-und-planungs-nachzug.md
 sed -n '/^| Posten (Datei im Kurs-Klon)/,$p' "$F" | grep -E '^\| `lab/' | awk -F'|' '{print $4}' | sed 's/^ *//;s/ *$//' | sort | uniq -c
 #  29 schon erfüllt · 11 übernommen · 1 übernommen (teilweise) · 1 übernommen (Übergabe)   -> 29 / 13, Summe 42
 sed -n '/^| Posten (Datei im Kurs-Klon)/,$p' "$F" | grep -E '^\| `lab/' | grep -vcE '\| slice-224 \|$'

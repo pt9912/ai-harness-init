@@ -1,7 +1,7 @@
 # Review slice-224 — Der Delta-Nachweis `v6.0.0..v6.7.2` und der Planungs-Nachzug
 
 **Rolle:** Reviewer · **Datum:** 2026-09-12 · **Commit:** `92c3140b` (4 Dateien, +57/−12) ·
-**Plan:** [`slice-224`](../plan/planning/in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md) ·
+**Plan:** [`slice-224`](../plan/planning/done/slice-224-delta-nachweis-und-planungs-nachzug.md) ·
 **Constraints:** [`ADR-0044`](../plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md) (Festlegung 1 + §Konsequenzen, Vorgabe des Auftraggebers) ·
 [`ADR-0043`](../plan/adr/0043-ziel-fassung-regiert-den-sprung-v671.md) Festlegung 2 ·
 [`ADR-0018`](../plan/adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 4 ·
@@ -34,7 +34,7 @@ Vollständigkeit der Postenmenge ist dagegen **vollständig** geprüft, nicht st
 (*Vorgabe des Auftraggebers … trifft genau **einen** der fünf Ausgänge — „widerspricht"*),
 `v6.7.2` · `modul-02-harness-bootstrap.md` §Freshness-Audit (Schritt 2),
 [`MR-000`](../../harness/conventions.md#mr-000--baseline-aussage) ·
-`pfad` `docs/plan/planning/in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md:465` ·
+`pfad` `docs/plan/planning/done/slice-224-delta-nachweis-und-planungs-nachzug.md:465` ·
 `verifizierbar` nein — kein Gate liest den Nachweis; [`ADR-0044`](../plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md)
 §Fitness Function sagt das selbst (*„Gebaut: keine"*) ·
 `klasse` Beleg zitiert eine Stelle, die derselbe Delta-Posten entkräftet
@@ -162,7 +162,7 @@ Steering-Loop-Signal, nicht nur eine Meldung.
 
 ### MEDIUM-2 — Der größte Zuwachs des Postens `grundlagen-traceability.md` hat keinen Beleg, und der Glossar-Eintrag derselben Sache wird als „keine Inhaltsänderung" verneint
 
-`quelle` [`slice-224`](../plan/planning/in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md)
+`quelle` [`slice-224`](../plan/planning/done/slice-224-delta-nachweis-und-planungs-nachzug.md)
 §2 Liefer-Punkt 1 (*„tragen je eine der zwei Antworten … mit Beleg"*) ·
 `pfad` `docs/plan/planning/in-progress/slice-224-…md:466` und `:459` ·
 `verifizierbar` nein · `klasse` Datei-granulare Antwort verdeckt einen Teil-Posten
@@ -255,7 +255,7 @@ zurückgezogen hat.
 
 `quelle` Baseline-Regelwerk `modul-08-agentenrollen.md` §Die neun Übergaben und ihre Artefakte
 (*„Ohne jedes dieser Artefakte gibt es keinen Rollenwechsel"*),
-[`slice-224`](../plan/planning/in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md) §2
+[`slice-224`](../plan/planning/done/slice-224-delta-nachweis-und-planungs-nachzug.md) §2
 Liefer-Punkt 3 · `pfad` `docs/plan/planning/in-progress/slice-224-…md:218-228` gegen `:473`, `:474` ·
 `verifizierbar` nein · `klasse` Übergabe an eine Rolle ohne terminierten Träger
 
@@ -296,7 +296,7 @@ ohne einen der drei Ausgänge.
 
 ### LOW-1 — Der Kopf erklärt die Antwort-Menge für geschlossen, die Tabelle führt vier Werte
 
-`quelle` [`slice-224`](../plan/planning/in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md)
+`quelle` [`slice-224`](../plan/planning/done/slice-224-delta-nachweis-und-planungs-nachzug.md)
 Kopf (*„Je Delta-Posten gibt es faktisch **zwei** Antworten"*) · `pfad`
 `docs/plan/planning/in-progress/slice-224-…md:456-499` · `verifizierbar` ja · `klasse` geschlossene
 Menge im Kopf, offene Menge in der Tabelle

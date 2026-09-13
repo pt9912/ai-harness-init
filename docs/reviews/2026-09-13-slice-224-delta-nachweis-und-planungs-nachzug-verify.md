@@ -2,7 +2,7 @@
 
 **Rolle:** Verifier · **Datum:** 2026-09-13 · **Geprüfte Commits:** `92c3140b` (Lieferung),
 `4a957c0c` (Reviewer, blockierend), `6803ed31` (Review-Nacharbeit) · **Plan:**
-[`slice-224`](../plan/planning/in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md) ·
+[`slice-224`](../plan/planning/done/slice-224-delta-nachweis-und-planungs-nachzug.md) ·
 **Review:**
 [`2026-09-12-slice-224-…`](2026-09-12-slice-224-delta-nachweis-und-planungs-nachzug.md) (1 HIGH ·
 5 MEDIUM · 2 LOW · 1 INFO, Verdikt: blockierend wegen HIGH-1) · **Prüfgegenstand:** DoD und Spec

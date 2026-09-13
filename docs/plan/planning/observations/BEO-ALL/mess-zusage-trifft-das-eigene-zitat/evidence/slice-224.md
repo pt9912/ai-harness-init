@@ -6,7 +6,7 @@ Gefahren liefert es mehr, und der Grund ist der Plan selbst:
 git grep -cE 'slice-<NNN>|welle-<NN>' -- docs/plan/planning .claude/commands \
   ':!docs/plan/planning/done'
 # .claude/commands/implement-slice.md:3
-# docs/plan/planning/in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md:12
+# docs/plan/planning/done/slice-224-delta-nachweis-und-planungs-nachzug.md:12
 # docs/plan/planning/open/slice-225-gate-index-steht-einmal.md:2
 ```
 

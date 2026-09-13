@@ -90,7 +90,7 @@ Er ist **vierteilig**:
 3. Ein neuer Kommentar im Findings-Abschnitt spricht die Grenzwert-Frage direkt an (unten zitiert).
 4. Kopfzeile und Zitier-Form wechseln von `slice-NN`/`slice-NNN` auf `slice-<Kennung>`. **Dieser
    vierte Teil berührt weder Tabelle noch Grenze**; er kam mit der Adoption der Vorlage und liegt
-   als Bestands-Nachzug bei [slice-224](../in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md),
+   als Bestands-Nachzug bei [slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md),
    nicht bei diesem Slice.
 
 **Am Reviewer-Skill selbst hat der Sprung nichts geändert** — die abgelöste und die adoptierte

@@ -7,7 +7,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Welle:** ohne Welle — aus demselben Grund und mit derselben Prüfung wie
 [slice-223](../done/slice-223-baum-tausch-v672-pins-ziehen.md) und
-[slice-224](../in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md). Nach
+[slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md). Nach
 [`MR-037`](../../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst)
 steht wellenlose Arbeit nicht in der Roadmap; ihr Zustand ist das Verzeichnis.
 
@@ -137,7 +137,7 @@ nimmt sie als **Ausgangslage**, nicht als Ergebnis.
 - **Kein Delta-Posten, der außerhalb von [`AGENTS.md`](../../../../AGENTS.md),
   [`harness/README.md`](../../../../harness/README.md), [`.d-check.yml`](../../../../.d-check.yml)
   und [`harness/conventions/`](../../../../harness/conventions/) landet.**
-  [slice-224](../in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md) führt den Nachweis über
+  [slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md) führt den Nachweis über
   alle 42 Posten und die Planungs-Ebene; dieser Slice vollzieht die Teilmenge, die dort benannt
   ist. *Folge-Slice übernimmt es* — und slice-224 nimmt die Sendung an, weil sein Liefer-Punkt 3
   genau diese Zuweisung verlangt.
@@ -161,7 +161,7 @@ nimmt sie als **Ausgangslage**, nicht als Ergebnis.
   inhaltlich nichts geändert wird. Die Form ist deshalb vorgezeichnet und nicht zu erfinden: **ein
   neuer Eintrag trägt die Setzung, der bestehende bekommt eine Kopf-Marke auf ihn.** Der Inhalt der
   Setzung ist die Entscheidung des Auftraggebers, die
-  [slice-224](../in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md) §9 in der Zeile zu
+  [slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md) §9 in der Zeile zu
   `lab/regelwerk/grundlagen-source-precedence.md` festhält — Namen für neue Welle- und
   Slice-Kennungen, **kein Nachrüsten des Bestands**; bestehende `slice-<NNN>`/`welle-<NN>` behalten
   ihre Nummer. **Die Cutoff-Setzung beginnt mit diesem Eintrag:** Kennungen, die vor ihm vergeben
@@ -223,7 +223,7 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       **nicht** leer, ist das der Befund und geht als Meldung an den Auftraggeber (Kopf) — nicht
       in einen Eintrag.
 - [ ] **2 — Die Norm-Ebene trägt die übrigen Posten, die
-      [slice-224](../in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md) §9 ihr zuweist.**
+      [slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md) §9 ihr zuweist.**
       Der Umfang steht dort, nicht hier — dieser Punkt ist erfüllt, wenn **jede** Zeile des
       Nachweises mit Ziel `slice-225` einen Beleg im Diff hat. Nach heutigem Stand fallen darunter
       mindestens: der Rollenwechsel-Satz zu Schritt 8 in [`AGENTS.md`](../../../../AGENTS.md) §6
@@ -300,7 +300,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-224](../in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md) liegt in `done/` — ablesbar
+[slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md) liegt in `done/` — ablesbar
 an `ls docs/plan/planning/done/slice-224-*.md` auf dem Hauptzweig. Beobachtbar ohne Rückfrage, und
 **kein Ergebnis dieses Slice**: Der Nachweis steht in keiner DoD-Zeile von §2. Der Trigger ist
 inhaltlich nötig, nicht nur sequenziell — Liefer-Punkt 2 nimmt seinen Umfang aus §9 jenes Slice.

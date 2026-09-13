@@ -657,7 +657,7 @@ Setzung 2) — alle zwölf Werte wandern mit dem Klon-Stand und stehen neben dem
 zuvor genannte Verteilung *32 × schon erfüllt / 10 × übernommen, sechs Übergaben* traf nicht zu):
 
 ```sh
-F=docs/plan/planning/in-progress/slice-224-delta-nachweis-und-planungs-nachzug.md
+F=docs/plan/planning/done/slice-224-delta-nachweis-und-planungs-nachzug.md
 sed -n '/^| Posten (Datei im Kurs-Klon)/,$p' "$F" | grep -E '^\| `lab/' \
   | awk -F'|' '{print $4}' | sed 's/^ *//;s/ *$//' | sort | uniq -c
 #  29 schon erfüllt · 11 übernommen · 1 übernommen (teilweise) · 1 übernommen (Übergabe)  →  29/13, Summe 42
