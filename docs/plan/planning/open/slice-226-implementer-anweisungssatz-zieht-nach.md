@@ -109,7 +109,7 @@ git grep -cE 'slice-<NNN>|welle-<NN>' -- .claude/commands/implement-slice.md   #
   [`harness/README.md`](../../../../harness/README.md), [`.d-check.yml`](../../../../.d-check.yml)
   oder [`harness/conventions/`](../../../../harness/conventions/) landet.** Die
   Gate-Index-Konsequenz desselben Delta-Posten — *Regel und Zeiger statt der Liste* — betrifft die
-  Norm-Ebene und liegt bei [slice-225](slice-225-gate-index-steht-einmal.md), dessen §1 sie annimmt.
+  Norm-Ebene und liegt bei [slice-225](../in-progress/slice-225-gate-index-steht-einmal.md), dessen §1 sie annimmt.
   *Folge-Slice übernimmt es.*
 - **Nichts auf der emittierten Ebene** (`internal/emit/templates/commands/`). Sie hat einen eigenen
   Prüfbereich und einen eigenen Beleg — `make full-smoke`, nicht `make gates` —, und ihre

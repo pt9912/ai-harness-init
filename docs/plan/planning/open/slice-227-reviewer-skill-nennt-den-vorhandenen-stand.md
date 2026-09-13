@@ -108,7 +108,7 @@ trägt, nicht ob die Vorlage sich bewegt hat (Register-Klasse
   Pflicht; ob dieses Repo es einschaltet, ist eine Gate-Aktivierung mit eigener Erprobung und
   eigenem rotem Gegenbeispiel und liegt bei
   [slice-213](slice-213-review-report-laeuft-in-der-tabellen-form.md) und
-  [slice-225](slice-225-gate-index-steht-einmal.md). *Folge-Slice übernimmt es.*
+  [slice-225](../in-progress/slice-225-gate-index-steht-einmal.md). *Folge-Slice übernimmt es.*
 - **Keine Rückschrift der Versionierungs-Historie im Kopf-Kommentar.** Sie ist Chronik von Beruf
   und wird fortgeschrieben, nicht umgeschrieben — die Skill-Datei versioniert nach Modul 10, statt
   zu überschreiben. *Bestand bleibt bewusst stehen.*
