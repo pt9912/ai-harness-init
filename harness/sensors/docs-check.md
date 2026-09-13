@@ -46,13 +46,18 @@ Isolation, derselbe Digest wie oben):
 | toter Vorschau-Zeiger `welle-88` ohne jede Datei | 0 Befunde |
 
 Nur die letzten beiden Lagen bleiben `waves` unsichtbar: Eine Nennung in Spalte 3 liest keine
-Fähigkeit des Moduls, und ein toter Zeiger ohne Datei fällt ausschließlich über das Modul `links`
-(`target-missing`). Eine geschnittene Welle-Datei, die nur in der Vorschau-Tabelle verlinkt steht
-und (noch) nicht unter „Offene Wellen", ist **kein** blinder Fleck: Sie ist Lage 1 der Tabelle oben
-und meldet zwei Befunde. Das ist eine verbotene Abweichung:
-[ADR-0046](../../docs/plan/adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) legt fest, dass die
-flache Datei mit der Eröffnung der Welle entsteht, nicht davor, und `waves` hält genau das mit
-`wave-drift`/`wave-preview-exists` durch. Die zweite
+Fähigkeit des Moduls, und ein toter **Vorschau**-Zeiger ohne Datei fällt ausschließlich über das
+Modul `links` (`target-missing`) — ein toter Zeiger unter „Offene Wellen" ohne Datei liegt bereits
+in der oben beschriebenen Bijektion und fällt über `wave-drift`. Eine geschnittene Welle-Datei, die
+nur in der Vorschau-Tabelle verlinkt steht und (noch) nicht unter „Offene Wellen", ist **kein**
+blinder Fleck: Sie ist Lage 1 der Tabelle oben und meldet zwei Befunde. Das ist eine verbotene
+Abweichung: [ADR-0046](../../docs/plan/adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) legt
+fest, dass die flache Datei mit der Eröffnung der Welle entsteht, nicht davor, und `waves` hält die
+Kopplung *Datei ⟺ Zeiger* davon mit `wave-drift`/`wave-preview-exists` durch — dass die Kennung in
+der Vorschau bis zur Eröffnung unverlinkt bleibt, deckt dagegen kein Modul dieses Gates, solange ein
+gesetzter Link auflöst
+([ADR-0046](../../docs/plan/adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) §Fitness
+Function). Die zweite
 Fähigkeit desselben Moduls (`closure`, Struktur der Closure-Notizen) ist seit slice-129 aktiviert —
 was sie deckt und was nicht, steht im eigenen Absatz unten. Eine **vierte** Fähigkeit desselben
 Moduls (`observations`, Deckung zwischen zitierten Beobachtungs-Kennungen und ihrem Nachweis im
