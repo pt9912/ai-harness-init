@@ -129,6 +129,42 @@ prüft, ist ein stilles Grün im Gate — §3.1 eine Ebene tiefer. Die Regel ist
 **Verschärfung** und braucht darum kein ADR (§3.5 gilt für Senkungen; vgl.
 [`MR-001`](harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) „Gate-*Anheben* → Steering-Loop").
 
+**Herkunft, mit Mess-Stand:** die adoptierte Baseline `v6.8.0` deckt **eine** der
+Zusage-Klassen, die der erste Satz dieser Sektion aufzählt — den DoD-Punkt, der
+sich auf einen Test beruft. Ausgeschrieben steht sie im Regelwerk, nicht im
+Briefing:
+`grep -c '^### Bewusstes Brechen für DoD-Testbehauptungen (Modul 11)$' .harness/baseline/v6.8.0/regelwerk/modul-11-verification.md`
+→ **1**, mit Zeigern aus zwei weiteren Modulen
+(`grep -rl 'Bewusstes Brechen' .harness/baseline/v6.8.0/regelwerk/ | wc -l` → **3**),
+während die AGENTS-Vorlage desselben Stands dazu keine Hard Rule führt
+(`grep -c 'rot gesehen' .harness/baseline/v6.8.0/templates/AGENTS.template.md` →
+**0**, Exit 1) — die Nummer hier ist eine Adresse und keine Entsprechung
+([`MR-026`](harness/conventions.md#mr-026--die-hard-rule-nummer-ist-eine-adresse-keine-baseline-entsprechung)).
+**Keine Erwartungswerte**, alle drei wandern mit dem Stand
+([`MR-033`](harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)).
+
+**Die Deckung ist in beide Richtungen unvollständig, und beide Richtungen stehen
+hier.** Diese Sektion trägt darüber hinaus die drei übrigen Zusage-Klassen, die
+Pflicht **ohne** Kritikalitäts-Filter und beim Zusagenden statt beim Verifier,
+und die Sensor-Hälfte `make mutate`, die das Regelwerk nicht kennt
+(`grep -rl 'make mutate' .harness/baseline/v6.8.0/regelwerk/ | wc -l` → **0**).
+Die Baseline trägt umgekehrt zwei Dinge, die hier nicht stehen: Das Rot muss die
+**behauptete** Ursache tragen, nicht irgendeine; und fehlt der Rot-Beleg bei
+einem sicherheits- oder korrektheitskritischen DoD-Punkt, trägt ihn der
+**Verifier** nach, statt die grüne Suite ungeprüft zu übernehmen
+(`grep -c 'sicherheits- oder korrektheitskritischen' .harness/baseline/v6.8.0/regelwerk/modul-11-verification.md`
+→ **1**). Beides bindet über die Baseline und wird hier **nicht** abgeschrieben —
+zwei Fassungen derselben Regel driften.
+
+**Kein Eintrag im Adaptions-Block folgt daraus.** Eine Ergänzung ohne
+Einschränkung ist keine Adaption — dieselbe Einordnung, die
+[`MR-031`](harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline)
+für §3.7 ausspricht; und ein Rückbau wie dort hat hier kein Objekt, solange die
+Baseline die übrigen Zusage-Klassen nicht erreicht
+([`MR-000`](harness/conventions.md#mr-000--baseline-aussage)). Neu zu prüfen ist
+der Gegenstand, sobald ein künftiger Stand eine weitere Klasse aufnimmt oder den
+Kritikalitäts-Filter streicht.
+
 ### 3.7 Ein Kommentar beschreibt, was da ist
 
 Gilt für Code, Konfiguration und Skripte — und für **Zustandsfelder** (unten). Ein
