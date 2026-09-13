@@ -202,8 +202,26 @@ var beoRE = regexp.MustCompile(`BEO-[0-9]{3}`)
 var adrRE = regexp.MustCompile(`ADR-[0-9]{4}`)
 
 // sliceRE trifft eine nummerierte Slice-Kennung (slice-NNN) oder eine
-// benannte (ein Slug in lowercase Kebab-Case ohne Ziffern-Praefix, etwa
-// slice-welle-10-aspekt).
+// benannte (ein Slug aus Kleinbuchstaben, Ziffern und Bindestrich, MR-057
+// Setzung 1, etwa slice-welle-10-aspekt) — eine rein numerische Kebab-Kette
+// wie "slice-13" faellt unter die zweite Alternative; "ohne Ziffern" waere
+// enger, als die Zeichenklasse [a-z0-9] zulaesst.
+//
+// REIHENFOLGE IST TRAGEND: Go-`regexp` waehlt leftmost-first, nicht
+// leftmost-longest (anders als `MustCompilePOSIX`) — die Ziffernform steht
+// deshalb ZUERST. Stuende die Kebab-Alternative vorn, gewaenne sie bei
+// "slice-170-archivierungs-werkzeug" vor der Ziffernform und liefert die
+// GANZE Kette statt der Nummer allein. Gedeckt von
+// TestSliceKennungAusTitelSuffixBleibtDieNummer;
+// test/mutations/318-stub-slicere-alternativen-reihenfolge.sh vertauscht
+// genau diese Reihenfolge.
+//
+// GRENZE, gemessen (MR-057 Setzung 1, zweite Namensform): das Praefix eines
+// vorhandenen Ankers (`LH-*`, `ADR-*`, `CO-*`) ist in diesem Repo
+// grossgeschrieben (`.d-check.yml` ids-Muster `ADR-\d{4}`,
+// `LH-[A-Z]{2}-\d{2}`) und trifft die Zeichenklasse [a-z0-9] nicht — ein
+// Slice namens "slice-ADR-0042-nachzug" faellt aus dieser Erkennung heraus,
+// wie aus dem Fundmuster in harness/tools/slice-mv.sh (dieselbe Grenze dort).
 var sliceRE = regexp.MustCompile(`slice-(?:[0-9]{3}|[a-z0-9]+(?:-[a-z0-9]+)*)`)
 var ausgangsZeileRE = regexp.MustCompile(`(?m)^- \*\*(?:Beobachtungs-Register|Folge-Slices)`)
 
@@ -216,7 +234,17 @@ var ausgangsZeileRE = regexp.MustCompile(`(?m)^- \*\*(?:Beobachtungs-Register|Fo
 // Closure-Notiz gelten fuer die flache done/-Ebene, der Stub liegt eine Ebene
 // tiefer — und die ID-Link-Pflicht des Doku-Gates gilt im Stub wie ueberall.
 // Ein Folge-Slice, den der Lifecycle nicht mehr fuehrt, steht ohne Link da statt
-// mit einem toten. Gedeckt von TestHervorgegangenBautAnkerLinks.
+// mit einem toten (SlicePfadRelativ liefert dafuer "", nummeriert wie benannt).
+// Gedeckt von TestHervorgegangenBautAnkerLinks.
+//
+// GRENZE, gemessen: ein Fliesstext-Token "slice-<x>", das keine Datei im
+// Lifecycle referenziert (etwa ein Befehlsname wie "make slice-mv" statt
+// einer echten Folge-Slice-Kennung), ist von einer echten benannten Kennung
+// ohne (mehr) aufloesbare Datei nicht zu unterscheiden — beide erscheinen
+// bar. Einen Existenz-Guard wie rewrite_outgoing_bare_in_file() in
+// harness/tools/slice-mv.sh (dort geprueft gegen das $from-Verzeichnis der
+// bewegten Datei) gibt es hier nicht. Gedeckt von
+// TestHervorgegangenFliesstextTokenBleibtVonEchterKennungUnunterscheidbar.
 func Hervorgegangen(root, inhalt, welleID string) string {
 	zeilen := ausgangsZeilen(inhalt)
 	if len(zeilen) == 0 {
@@ -290,32 +318,59 @@ func adrDatei(root, id string) string {
 	return filepath.Base(treffer[0])
 }
 
+// sliceDateiMuster liefert die zwei Dateiform-Muster zu einer Kennung ohne
+// "slice-"-Praefix, in Suchreihenfolge: die BENANNTE Form ist die Datei
+// EXAKT — kein Titel-Suffix, `slice-<slug>.md`
+// (docs/plan/planning/slice.template.md, MR-057 Setzung 1) —, die
+// NUMMERIERTE verlangt einen Titel-Suffix hinter der Nummer,
+// `slice-<nummer>-*.md`. Beide Formen leben im selben Lifecycle nebeneinander;
+// eine Kennung ist immer nur unter einer der beiden Formen eine echte Datei.
+func sliceDateiMuster(kennungTeil string) []string {
+	return []string{
+		"slice-" + kennungTeil + ".md",
+		"slice-" + kennungTeil + "-*.md",
+	}
+}
+
 // SlicePfadRelativ liefert den Pfad von docs/plan/planning/done/<welle-id>/ zu
-// einer Slice-Datei, die noch irgendwo im Lifecycle liegt. Gesucht wird in vier
-// Lagen, in dieser Reihenfolge: im Ziel-Verzeichnis dieses Laufs · flach in done/
-// · in einem frueher archivierten Welle-Verzeichnis · in open/, next/ oder
-// in-progress/. Leer, wenn keine da ist.
+// einer Slice-Datei, die noch irgendwo im Lifecycle liegt — nummeriert wie
+// benannt (sliceDateiMuster). Gesucht wird in vier Lagen, in dieser
+// Reihenfolge: im Ziel-Verzeichnis dieses Laufs · flach in done/ · in einem
+// frueher archivierten Welle-Verzeichnis · in open/, next/ oder in-progress/.
+// Leer, wenn keine da ist.
 //
 // KOPPLUNG: die zweite Lage liefert die AUFSTEIGENDE Form `../<datei>.md`. Sie ist
 // der Grund, aus dem der Verweis-Nachzug eine dritte Ersetzungsrichtung fuehrt —
 // zieht diese Datei bei einem SPAETEREN Lauf eine Ebene tiefer, muss das
 // Welle-Segment dazwischen. Gedeckt von TestSlicePfadRelativLiefertDieAufsteigendeForm.
-func SlicePfadRelativ(root, nummer, welleID string) string {
-	kandidaten := []struct{ glob, form string }{
-		{filepath.Join(root, filepath.FromSlash(doneDir), welleID, "slice-"+nummer+"-*.md"), "%s"},
-		{filepath.Join(root, filepath.FromSlash(doneDir), "slice-"+nummer+"-*.md"), "../%s"},
+func SlicePfadRelativ(root, kennungTeil, welleID string) string {
+	muster := sliceDateiMuster(kennungTeil)
+
+	if b := ersterTrefferInDir(filepath.Join(root, filepath.FromSlash(doneDir), welleID), muster); b != "" {
+		return b
 	}
-	for _, k := range kandidaten {
-		if b := ersterTreffer(k.glob); b != "" {
-			return fmt.Sprintf(k.form, b)
+	if b := ersterTrefferInDir(filepath.Join(root, filepath.FromSlash(doneDir)), muster); b != "" {
+		return "../" + b
+	}
+	for _, m := range muster {
+		if t := ersteDatei(filepath.Join(root, filepath.FromSlash(doneDir), "*", m)); t != "" {
+			return "../" + filepath.Base(filepath.Dir(t)) + "/" + filepath.Base(t)
 		}
 	}
-	if t := ersteDatei(filepath.Join(root, filepath.FromSlash(doneDir), "*", "slice-"+nummer+"-*.md")); t != "" {
-		return "../" + filepath.Base(filepath.Dir(t)) + "/" + filepath.Base(t)
-	}
 	for _, d := range []string{"open", "next", "in-progress"} {
-		if b := ersterTreffer(filepath.Join(root, filepath.FromSlash(planningDir), d, "slice-"+nummer+"-*.md")); b != "" {
+		if b := ersterTrefferInDir(filepath.Join(root, filepath.FromSlash(planningDir), d), muster); b != "" {
 			return "../../" + d + "/" + b
+		}
+	}
+	return ""
+}
+
+// ersterTrefferInDir probiert beide Dateiform-Muster aus sliceDateiMuster()
+// in einem Verzeichnis, in ihrer Reihenfolge, und liefert den ersten Treffer.
+func ersterTrefferInDir(dir string, muster []string) string {
+	for _, m := range muster {
+		if b := ersterTreffer(filepath.Join(dir, m)); b != "" {
+			return b
 		}
 	}
 	return ""

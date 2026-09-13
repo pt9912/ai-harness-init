@@ -131,6 +131,16 @@ als sie misst, lädt dazu ein, die Fähigkeit daneben ebenfalls für abwesend zu
   führt und ein Verstoß gegen Setzung 1 nichts rot färbt. Dieser Slice macht das Werkzeug
   **tolerant**, er macht die Form nicht **erzwungen**; ein solcher Sensor wäre eine
   Gate-Erweiterung mit eigener Erprobung. *Es wäre ein anderer Vorgang.*
+- **Keine Erkennung der zweiten Namensform aus
+  [`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+  Setzung 1** — das Präfix eines vorhandenen Ankers (`LH-*`, `ADR-*`, `CO-*`); die Anker dieses
+  Repos sind großgeschrieben (`.d-check.yml` `ids`-Muster `ADR-\d{4}`, `LH-[A-Z]{2}-\d{2}`,
+  `MR-\d{3}`), und beide Fundmuster dieses Slice binden auf `[a-z0-9]`. Eine Erkennung dieser Form
+  müsste die Anker-Präfixe selbst kennen — sonst träfe sie beliebigen großgeschriebenen
+  Fließtext —, das ist ein Muster-Entwurf für sich und größer als die drei Liefer-Punkte in §2.
+  Die Lücke steht als vierte Grenze in `harness/tools/slice-mv.sh` §GRENZEN, in
+  [`harness/sensors/slice-mv.md`](../../../../harness/sensors/slice-mv.md) und am Funktionskopf
+  von `sliceRE` in `internal/archive/stub.go`. *Es wäre ein anderer Vorgang.*
 
 ## 2. Definition of Done
 

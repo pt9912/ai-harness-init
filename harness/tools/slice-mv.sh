@@ -15,7 +15,7 @@
 # nackten Verzeichnisnamen bis zum doppelten Aufstieg über
 # "docs/plan/planning/") mit einer Regel statt einer Liste, die driftet.
 #
-# ZUSAGE. `make slice-mv SLICE=<slice-NNN> TO=<open|next|in-progress|done>`
+# ZUSAGE. `make slice-mv SLICE=slice-<Kennung> TO=<open|next|in-progress|done>`
 # bewegt den Slice per `git mv` und committet den reinen Move SOFORT als
 # eigenen Commit (Hard Rule 3.3: kein Byte Inhalt veraendert, die
 # Rename-Erkennung greift). Danach zieht es reale Verweise nach — EINGEHEND
@@ -76,7 +76,7 @@
 # Verbindung zur Liste weg (Pathspec-Uebergabe im `git grep`-Aufruf unten
 # entfernt) und faerbt genau diesen Test rot.
 #
-# GRENZEN (gemessen, nicht vermutet — drei Stück):
+# GRENZEN (gemessen, nicht vermutet — vier Stück):
 # (1) Das Werkzeug zieht PFADE nach, keine ZUSTANDSSÄTZE. Eine Zeile "In
 #     Arbeit: <slice>" bleibt nach dem Wechsel stehen; ihr Verweis wird
 #     richtig, ihre Aussage falsch. Welcher Satz einen Zustand behauptet, ist
@@ -84,14 +84,21 @@
 # (2) WELLE-Plan-Dateien wechseln beim Closure-Move die Verzeichnis-TIEFE
 #     (flach -> done/), nicht nur das Verzeichnis — eine andere Ersetzung als
 #     der Tausch auf gleicher Ebene. Dieses Werkzeug bewegt nur SLICE-Dateien
-#     (SLICE=<slice-NNN>) und ersetzt in der Ausgehend-Richtung darum auch nur
-#     "slice-"-Ziele; ein präfixloses "welle-"-Ziel bleibt unberührt.
+#     (SLICE=slice-<Kennung>) und ersetzt in der Ausgehend-Richtung darum
+#     auch nur "slice-"-Ziele; ein präfixloses "welle-"-Ziel bleibt unberührt.
 # (3) Präfixlose EINGEHENDE Verweise — eine andere, im $from-Verzeichnis
 #     bleibende Datei referenziert die bewegte Datei ohne jedes
 #     Verzeichnis-Segment ("[x](slice-N….md)") — erkennt die
 #     Eingehend-Ersetzung NICHT: ihr fehlt das Verzeichnis-Literal, an dem die
 #     Wortgrenzen-Regel ankert. Gemessen (BEO-003 im Beobachtungs-Register),
 #     nicht geschlossen.
+# (4) Die AUSGEHEND-Ersetzung trifft nur die lowercase-Kebab-Form einer
+#     benannten Kennung (Zeichenklasse "[0-9a-z]"). Die zweite Namensform aus
+#     MR-057 Setzung 1 — das Präfix eines vorhandenen Ankers (LH-*, ADR-*,
+#     CO-*) — ist in diesem Repo großgeschrieben und trifft die Zeichenklasse
+#     nicht: ein Ziel "](slice-ADR-0042-nachzug.md)" bleibt unerkannt und
+#     zeigt nach dem Wechsel ins falsche Verzeichnis. Dieselbe Grenze steht in
+#     internal/archive/stub.go bei sliceRE.
 #
 # KOPPLUNG. Wer $LIFECYCLE erweitert (ein fünftes Verzeichnis), muss auch
 # harness/README.md §Sensors und diesen Kopf nachziehen — beide zählen die
@@ -103,7 +110,7 @@ LIFECYCLE="open next in-progress done"
 
 usage() {
   cat >&2 <<'USAGE'
-Aufruf: make slice-mv SLICE=<slice-NNN[-kurztitel[.md]]> TO=<open|next|in-progress|done>
+Aufruf: make slice-mv SLICE=slice-<Kennung>[-kurztitel[.md]] TO=<open|next|in-progress|done>
 
   Bewegt den Slice per `git mv`, committet den reinen Move sofort, und zieht
   danach die Verweise nach — repo-weit eingehend (jede gemessene Präfix-Form)

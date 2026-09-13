@@ -219,40 +219,99 @@ func TestHervorgegangenBautAnkerLinks(t *testing.T) {
 }
 
 // TestHervorgegangenUebernimmtBenannteSliceKennung: eine Folge-Slice-Kennung
-// ohne Ziffern-Praefix (lowercase Kebab-Case) wird ERKANNT statt beim
-// Regex-Vergleich spurlos zu verschwinden — sie erscheint im Feld, auch ohne
-// eine unter dem heutigen Glob-Muster aufloesbare Datei.
+// ohne Ziffern-Praefix (lowercase Kebab-Case) wird ERKANNT UND AUFGELOEST,
+// wenn ihre Datei noch im Lifecycle liegt — mit demselben Anker-Link, den
+// eine nummerierte Kennung bekaeme. Die Datei traegt hier KEINEN Titel-Suffix
+// (`slice-<slug>.md`, MR-057 Setzung 1) — anders als eine nummerierte, die
+// immer einen Titel-Suffix hinter der Nummer traegt.
 func TestHervorgegangenUebernimmtBenannteSliceKennung(t *testing.T) {
 	root := t.TempDir()
+	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "open", "slice-benannter-slug.md"), "# x\n")
 	inhalt := "## 7. Closure-Notiz\n- **Folge-Slices:** slice-benannter-slug (Titel) — liegt in `open/`\n"
 
 	got := archive.Hervorgegangen(root, inhalt, "welle-10")
-	want := "slice-benannter-slug"
+	want := "[slice-benannter-slug](../../open/slice-benannter-slug.md)"
 	if got != want {
-		t.Fatalf("Hervorgegangen = %q, want %q (bare Kennung ohne aufloesbaren Pfad)", got, want)
+		t.Fatalf("Hervorgegangen = %q, want %q", got, want)
+	}
+}
+
+// TestHervorgegangenBenannteKennungOhneDateiBleibtBar: eine benannte Kennung,
+// die der Lifecycle nicht mehr fuehrt (keine Datei unter irgendeiner der
+// beiden Formen aus sliceDateiMuster aufloesbar), steht bar da statt mit
+// einem toten Link — dieselbe Regel wie fuer eine nummerierte Kennung ohne
+// Datei (siehe TestSlicePfadRelativLiefertDieAufsteigendeForm, Fall "999").
+func TestHervorgegangenBenannteKennungOhneDateiBleibtBar(t *testing.T) {
+	root := t.TempDir()
+	inhalt := "## 7. Closure-Notiz\n- **Folge-Slices:** slice-nie-angelegter-slug (Titel) — liegt in `open/`\n"
+
+	got := archive.Hervorgegangen(root, inhalt, "welle-10")
+	want := "slice-nie-angelegter-slug"
+	if got != want {
+		t.Fatalf("Hervorgegangen = %q, want %q (kein Lifecycle-Treffer)", got, want)
 	}
 }
 
 // TestHervorgegangenMischtBenannteUndNummerierteSliceKennung: eine Zeile mit
-// beiden Formen liefert fuer die nummerierte den Anker-Link (Datei existiert)
-// und fuer die benannte die bare Kennung (Datei existiert nicht unter dem
-// Glob-Muster) — Boundary-Fall fuer die erweiterte Erkennung.
+// beiden Formen liefert fuer BEIDE den Anker-Link, wenn beide Dateien
+// existieren — Boundary-Fall fuer die erweiterte Erkennung ueber die
+// Ziffern-Grenze hinweg.
 func TestHervorgegangenMischtBenannteUndNummerierteSliceKennung(t *testing.T) {
 	root := t.TempDir()
 	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "open", "slice-176-folge.md"), "# x\n")
+	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "open", "slice-benannter-slug.md"), "# x\n")
 	inhalt := "## 7\n- **Folge-Slices:** slice-176 (A) und slice-benannter-slug (B) — liegt in `open/`\n"
 
 	got := archive.Hervorgegangen(root, inhalt, "welle-10")
-	want := "[slice-176](../../open/slice-176-folge.md) · slice-benannter-slug"
+	want := "[slice-176](../../open/slice-176-folge.md) · [slice-benannter-slug](../../open/slice-benannter-slug.md)"
 	if got != want {
 		t.Fatalf("Hervorgegangen =\n%q\nwant\n%q", got, want)
+	}
+}
+
+// TestSliceKennungAusTitelSuffixBleibtDieNummer: eine Folge-Slices-Zeile mit
+// dem VOLLEN Dateinamen (Titel-Suffix hinter der Nummer, wie ihn Autoren aus
+// einem Datei-Browser oder einer Dateiliste kopieren) liefert die
+// nummerierte Kennung ALLEIN — die Alternativen-Reihenfolge in sliceRE ist
+// dafuer tragend (Go waehlt leftmost-first, nicht leftmost-longest).
+// Gegenbeispiel: test/mutations/318-stub-slicere-alternativen-reihenfolge.sh.
+func TestSliceKennungAusTitelSuffixBleibtDieNummer(t *testing.T) {
+	inhalt := "## 7\n- **Folge-Slices:** slice-170-archivierungs-werkzeug — liegt in `open/`\n"
+
+	got := archive.Hervorgegangen(t.TempDir(), inhalt, "welle-10")
+	want := "slice-170"
+	if got != want {
+		t.Fatalf("Hervorgegangen = %q, want %q (Titel-Suffix darf nicht in die Kennung wandern)", got, want)
+	}
+}
+
+// TestHervorgegangenFliesstextTokenBleibtVonEchterKennungUnunterscheidbar
+// haelt eine GEMESSENE GRENZE fest, keine Zusage: ein Fliesstext-Token
+// "slice-mv" (aus einem Befehlsnamen wie "make slice-mv"), das keine Datei
+// im Lifecycle referenziert, erscheint bar — genau wie eine echte benannte
+// Kennung ohne (mehr) aufloesbare Datei (siehe
+// TestHervorgegangenBenannteKennungOhneDateiBleibtBar). Ein Existenz-Guard
+// wie in harness/tools/slice-mv.sh rewrite_outgoing_bare_in_file() gibt es
+// fuer die Go-Seite nicht (Grenze, dokumentiert am Funktionskopf von
+// Hervorgegangen()).
+func TestHervorgegangenFliesstextTokenBleibtVonEchterKennungUnunterscheidbar(t *testing.T) {
+	root := t.TempDir()
+	inhalt := "## 7\n- **Folge-Slices:** keine; der Nachzug via `make slice-mv` genuegt\n"
+
+	got := archive.Hervorgegangen(root, inhalt, "welle-10")
+	want := "slice-mv"
+	if got != want {
+		t.Fatalf("Hervorgegangen = %q, want %q (dokumentierte Grenze, kein Existenz-Guard)", got, want)
 	}
 }
 
 // TestSlicePfadRelativLiefertDieAufsteigendeForm: ein Folge-Slice, der noch flach
 // in done/ liegt, wird vom Stub aus mit `../<datei>.md` adressiert. Genau diese
 // Form schreibt das Werkzeug damit selbst in den Bestand — sie ist der Grund, aus
-// dem der Verweis-Nachzug eine dritte Ersetzungsrichtung fuehrt.
+// dem der Verweis-Nachzug eine dritte Ersetzungsrichtung fuehrt. Dieselben vier
+// Lagen tragen eine BENANNTE Kennung (Datei exakt, kein Titel-Suffix) ebenso wie
+// eine nummerierte (Titel-Suffix hinter der Nummer) — beide Formen aus
+// sliceDateiMuster nebeneinander im selben Fall-Katalog.
 func TestSlicePfadRelativLiefertDieAufsteigendeForm(t *testing.T) {
 	root := t.TempDir()
 	done := filepath.Join(root, "docs", "plan", "planning", "done")
@@ -260,17 +319,26 @@ func TestSlicePfadRelativLiefertDieAufsteigendeForm(t *testing.T) {
 	schreibe(t, filepath.Join(done, "welle-09", "slice-177-frueher.md"), "# x\n")
 	schreibe(t, filepath.Join(done, "welle-10", "slice-178-eigen.md"), "# x\n")
 	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "next", "slice-179-offen.md"), "# x\n")
+	schreibe(t, filepath.Join(done, "slice-flach-benannt.md"), "# x\n")
+	schreibe(t, filepath.Join(done, "welle-09", "slice-frueher-benannt.md"), "# x\n")
+	schreibe(t, filepath.Join(done, "welle-10", "slice-eigen-benannt.md"), "# x\n")
+	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "next", "slice-offen-benannt.md"), "# x\n")
 
-	faelle := []struct{ nummer, want string }{
+	faelle := []struct{ kennung, want string }{
 		{"178", "slice-178-eigen.md"},
 		{"176", "../slice-176-flach.md"},
 		{"177", "../welle-09/slice-177-frueher.md"},
 		{"179", "../../next/slice-179-offen.md"},
 		{"999", ""},
+		{"eigen-benannt", "slice-eigen-benannt.md"},
+		{"flach-benannt", "../slice-flach-benannt.md"},
+		{"frueher-benannt", "../welle-09/slice-frueher-benannt.md"},
+		{"offen-benannt", "../../next/slice-offen-benannt.md"},
+		{"nie-existierender-slug", ""},
 	}
 	for _, f := range faelle {
-		if got := archive.SlicePfadRelativ(root, f.nummer, "welle-10"); got != f.want {
-			t.Errorf("SlicePfadRelativ(%s) = %q, want %q", f.nummer, got, f.want)
+		if got := archive.SlicePfadRelativ(root, f.kennung, "welle-10"); got != f.want {
+			t.Errorf("SlicePfadRelativ(%s) = %q, want %q", f.kennung, got, f.want)
 		}
 	}
 }
