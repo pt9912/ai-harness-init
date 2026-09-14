@@ -233,7 +233,7 @@ und kein Slice geht nach `done/`, während eines ohne Ausgang dasteht.
   Wer ohne den Hook committet, wird nicht gesehen. Was der Sensor deckt, hängt am Klienten; was er
   nicht deckt, gehört in dieselbe Zeile wie das, was er deckt.
   — **Ausgang: eingetreten →
-  [slice-215](../open/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md).** Es ist
+  [slice-215](../next/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md).** Es ist
   nicht bei der Möglichkeit geblieben: Der Hook sieht nur, was als Bash-Kommando wörtlich
   `git commit …` enthält, und ein Commit aus einem Repo-Werkzeug heraus erreicht ihn strukturell nie
   (`git log --format='%s' | grep -c '^slice-mv:'` gegen `git log --format='%s' | wc -l`, beide keine
@@ -248,7 +248,7 @@ und kein Slice geht nach `done/`, während eines ohne Ausgang dasteht.
   nicht-leeren `id-patterns`-Liste ab und prüft ohne sie nichts. Ein Gegenstand, den nur ein Lauf
   liest, kann nicht zwischen zwei Läufen driften. Die Bedingung kehrt zurück, sobald ein zweiter
   Lauf entsteht; sie steht als Risiko im Plan von
-  [slice-215](../open/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md), statt hier
+  [slice-215](../next/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md), statt hier
   als erledigt zu verschwinden.
 - **Der Cutoff ist der Punkt, an dem dieser Slice sich selbst entwerten kann.** Die zwei
   `commit-untraceable`-Befunde aus §1 stammen aus `HEAD~20..HEAD` — also aus dem **jüngsten**
@@ -384,7 +384,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtun
   Konfiguration führe `PreToolUse` **zweimal**, hält weiter: Der neue Hook ist ein zweiter Eintrag
   im bestehenden `"Bash"`-Matcher, kein dritter Matcher-Block.
 - **Folge-Slices: einer.**
-  [slice-215](../open/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) — *Der
+  [slice-215](../next/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) — *Der
   Commit-Message-Wächter bekommt den Träger, der auch die Commits sieht, die kein Agent tippt*,
   angelegt als Datei in [`open/`](../open). Er fängt **zwei** Übergaben dieses Slice auf, die
   dieselbe Ursache haben: die strukturell unerreichbaren Werkzeug-Commits (Risiko 2) und die
@@ -397,7 +397,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtun
   `.claude/agents/*.md` ist das Eigentum selbst noch offen,
   [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) und `slice-152`).
   Sie ist darum im Register benannt und in
-  [slice-215](../open/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) §1
+  [slice-215](../next/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) §1
   ausdrücklich **ausgeschlossen**, statt dort mitgenommen zu werden.
   **Und [slice-121](../open/slice-121-commit-message-nennt-was-es-gibt.md) kann den Träger jetzt
   übernehmen** — das ist die ausdrückliche Feststellung, die §5 verlangt: Dessen §3 führte den Ort
@@ -407,7 +407,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtun
   erfinden. Sein Plan ist von dieser Closure **nicht** angefasst worden — er ist ein fremdes
   Plan-Artefakt, und die Feststellung gehört in diese Notiz, nicht in seine Datei.
 - **Risiken aus §6:** vier Risiken, vier Ausgänge — **eines *eingetreten*** (der umgehbare
-  Vor-Commit-Sensor → [slice-215](../open/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md))
+  Vor-Commit-Sensor → [slice-215](../next/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md))
   und **drei *entfallen* mit Begründung**; siehe §6. Dass drei entfallen, hat bei zweien dieselbe
   Ursache: Beide setzten einen **Range-Lauf** voraus, und DoD (2) hat ihn gemessen ausgeschlossen —
   ein Gegenstand, den nur ein Lauf liest, driftet nicht, und ein Träger ohne Bestand braucht kein
@@ -422,7 +422,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtun
 - **Drei Paarungen:** **nicht dieser Closure geschuldet** — im Repo **mit** Wellen-Betrieb trägt sie
   die nächste Welle-Closure. Als Übergabe dennoch gefahren, mit Ergebnis: **(a) Anker** — der
   Steering-Loop-Eintrag trägt kein Feld `liegt in`, die Paarung hat keinen Gegenstand.
-  **(b) Folge-Slice** — [slice-215](../open/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md)
+  **(b) Folge-Slice** — [slice-215](../next/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md)
   existiert als Datei im Planning-Lifecycle, in [`open/`](../open). **(c) Register** — jede hier
   zitierte Kennung löst als Verzeichnis auf; die zweite Hälfte *„jede Registerzeile trägt mindestens
   einen Beleg"* meldet unverändert **einen** Eintrag ohne `evidence/`,
