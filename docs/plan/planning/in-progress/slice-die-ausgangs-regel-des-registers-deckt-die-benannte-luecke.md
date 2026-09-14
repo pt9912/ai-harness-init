@@ -210,7 +210,7 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
 
 **Zwei Liefer-Punkte:**
 
-- [ ] **(1) Die Entscheidung steht und ist `Accepted`** — je eine Antwort auf die zwei offenen
+- [x] **(1) Die Entscheidung steht und ist `Accepted`** — je eine Antwort auf die zwei offenen
       Fragen, mit der **Gegenposition** in §Verglichene Alternativen:
       **(a)** welchen Ausgang trägt eine Beobachtung über der Schwelle, deren Inhalt eine benannte
       Lücke ohne Träger ist — einer der drei, ein vierter, oder keiner (mit der Folge, die dann
@@ -220,21 +220,21 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
       Änderung an einer geschlossenen Menge bzw. am Lese-Gegenstand und damit nach
       [`AGENTS.md`](../../../../AGENTS.md) §3.5 ADR-pflichtig — genau der Träger, den dieser
       Punkt verlangt.*
-- [ ] **(2) Die Regel steht an ihrem Ort und trägt ihren Herkunfts-Anker** — die Ausgangs-Tabelle
+- [x] **(2) Die Regel steht an ihrem Ort und trägt ihren Herkunfts-Anker** — die Ausgangs-Tabelle
       in [`observations/README.md`](../observations/README.md) (und, falls die Entscheidung dort
       sitzt, [`harness/conventions.md`](../../../../harness/conventions.md)) sagt, was gilt;
       der Anker ist `seit slice-<Kennung>` nach `grundlagen-traceability.md` §Herkunfts-Anker.
       **Zwei Ausgänge erfüllen den Punkt:** die nachgezogene Regel, oder — wenn die Entscheidung
       ergibt, daß der Wortlaut bereits trägt — ein Satz, der das **belegt** und den Befund als
       Vollzugs-Lücke benennt.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: Liefer-Punkt (2) **ist** dieses Item — der Träger ist die Register-Regel.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Doku-Update: Liefer-Punkt (2) **ist** dieses Item — der Träger ist die Register-Regel.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — **hier nicht**: Dieses
       Repo fährt Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l` → **3**, kein
       Erwartungswert), also prüft sie die nächste Welle-Closure, auch für diesen Slice ohne
@@ -326,19 +326,31 @@ dasteht.
   geschlossenen Menge bzw. des Prüfumfangs und nach
   [`AGENTS.md`](../../../../AGENTS.md) §3.5 ADR-pflichtig. **Gegenmittel im Plan:** Liefer-Punkt
   (1) verlangt die ADR für genau diese zwei Antworten ausdrücklich.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang:** **entfallen.** Die Antwort fiel **ohne** vierten Ausgang — kein Nachweis, der die
+  geschlossene Menge öffnet. Der eine Term, der über den Baseline-Wortlaut hinausgeht (die
+  *Baseline* als vierte Quelle der Ableitung), ist als **Auslegung** entschieden und von der
+  Reviewer-Runde so verdiktet
+  ([`2026-09-14-adr-0049-konsistenzrunde`](../../../reviews/2026-09-14-adr-0049-konsistenzrunde.md)) —
+  keine Senkung, kein Adaptions-Eintrag.
 - **(2) Die Entscheidung wird aus dem Wortlaut abgeleitet, statt am Befund gemessen.** Beide
   Antworten hängen an denselben 18 Einträgen und dem einen datierten Durchfall; wer die Zahlen
   nicht neu fährt, entscheidet über einen Bestand, den er nicht gesehen hat. **Gegenmittel im
   Plan:** Liefer-Punkt (1) verlangt die Messung am Befund, und beide Kommandos stehen in §1.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang:** **weiter offen → Register.** Die Klasse ist **eingetreten** — sie traf diesen Plan
+  selbst: zwei seiner Zahlen waren Behauptungen ohne Kommando, der Architect hat beide widerlegt
+  und sie sind durch gemessene ersetzt (`2d7ebb8e`). Sie ist mit
+  [`BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht`](../observations/BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht/observation.md)
+  bereits benannt, und dieser Slice zählt dort als Vorgang.
 - **(3) Die Nachbar-Repos haben die Frage bereits entschieden, und die Antwort fällt anders aus.**
   `/Development/d-check` und `/Development/a-check` fahren dieselbe Baseline und dieselbe
   Rollen-Sequenz; eine übernommene **Form** ohne eigene Messung wäre eine Zusammenfassung, die
   stärker ist als ihre Quelle — die gemessene Klasse
   [`BEO-ALL/zusammenfassung-staerker-als-ihre-quelle`](../observations/BEO-ALL/zusammenfassung-staerker-als-ihre-quelle/observation.md).
   **Gegenmittel im Plan:** §4 nennt den Fall als Rückführung `in-progress → open`.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang:** **entfallen.** Die Nachbar-Repos tragen dieselben **drei** Ausgänge — je am
+  `README` ihrer Register-Ablage gemessen —, ihre Antwort fällt damit **nicht** anders aus; und
+  übernommen wurde die **Form**, nicht das Ergebnis: die Entscheidung ist am eigenen Befund
+  gemessen.
 
 ## 7. Closure-Notiz
 
@@ -350,14 +362,50 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes der drei mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
-  für diesen Slice ohne Wellen-Zugehörigkeit>
+- **Was hat funktioniert:** Der Rollenwechsel hat getragen — und er hat **mehr gefunden als der
+  Plan**. Der Architect hat zwei Aussagen dieses Plans widerlegt: die Zahl „dreizehn" (nie
+  gemessen) und die Datums-Aussage zum Eintrag `kommentar-nennt-den-vorgang-…` (er entstand **nach**
+  jenem Lauf, nicht davor). Beide sind durch gemessene Aussagen ersetzt (`2d7ebb8e`), und die
+  zweite **drehte die Frage**: nicht Durchfall des Lese-Schritts, sondern **Zuwachs** danach. Der
+  Reviewer hat die tragende Frage entschieden und `Accepted` freigegeben (`fae11c44`), der Verifier
+  **keine DoD-Verletzung** gefunden (`a4386678`).
+- **Was ging anders als geplant:** Die Entscheidung fiel **ohne** vierten Ausgang — der Plan hielt
+  den ausdrücklich für den möglichen Zweig. `verkörpert` trägt die benannte Lücke, sobald Regel
+  **und** Lücken-Aussage an einem **Norm-Artefakt** stehen; *„Träger ist der Lauf …"* nennt keinen
+  Zielort und wandert in den Grenze-Abschnitt. Und: der Plan ist selbst in die Klasse gefallen, die
+  er entscheidet — zwei seiner Zahlen waren Behauptungen (§6 Risiko 2).
+- **Steering-Loop-Eintrag:** Die **Ausgangs-Regel** des Registers ist geschärft — `verkörpert`
+  trägt auch eine **benannte Lücke**, deren Aussage über die fehlende Bewachung am selben Ort steht;
+  ein Zielort ist ein **Norm-Artefakt**, ein Lauf keiner; und der **Lese-Schritt liest alle
+  Einträge über der Schwelle, zu seinem Zeitpunkt**
+  — liegt in `docs/plan/planning/observations/README.md` (Ausgangs-Tabelle und die zwei Sätze
+  darunter, je `· seit slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke`).
+  Auslöser ist **die Klasse** der über der Schwelle stehenden Einträge ohne Ausgang, nicht ein
+  einzelner Eintrag bei 3×: die nächstliegende Einzelbeobachtung
+  ([`BEO-ALL/benannte-luecke-ohne-ausgang`](../observations/BEO-ALL/benannte-luecke-ohne-ausgang/observation.md))
+  steht bei 1×. Der Herkunfts-Anker wird darum gesetzt, obwohl sein enger Geltungsbereich ihn nicht
+  verlangt; die Reviewer-Runde hat das als **Auslegung** verdiktet, nicht als Senkung
+  ([`2026-09-14-adr-0049-konsistenzrunde`](../../../reviews/2026-09-14-adr-0049-konsistenzrunde.md)).
+- **Beobachtungs-Register (`../observations/`):** drei Belege ergänzt, je eine Datei
+  `evidence/slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke.md`:
+  [`BEO-ALL/benannte-luecke-ohne-ausgang`](../observations/BEO-ALL/benannte-luecke-ohne-ausgang/observation.md)
+  (der Auslöser), [`BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht`](../observations/BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht/observation.md)
+  (Risiko 2 ist eingetreten, an diesem Plan) und
+  [`BEO-ALL/verweise-brechen-beim-ortswechsel`](../observations/BEO-ALL/verweise-brechen-beim-ortswechsel/observation.md)
+  (der Lifecycle-Übergang brach zwei Verweise in der präfixlosen Form, die `make slice-mv` nicht
+  als eingehend erkennt).
+- **Folge-Slices:** [`slice-register-ueber-der-schwelle-bekommt-seinen-waechter`](../next/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md)
+  (der Sensor und der Nachzug der Einträge) — ist eine Datei in `next/`.
+- **Risiken aus §6:** alle drei mit genau einem Ausgang — (1) **entfallen**, (2) **weiter offen**
+  → Register, (3) **entfallen**; die Begründungen stehen in §6.
+- **Drei Paarungen:** Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
+  für diesen Slice ohne Wellen-Zugehörigkeit.
+
+**Und die Prüfung, die dieser Slice selbst verlangt hat, ist an ihm nachgeholt worden:** Der
+Verifier hat über die zehn Kennungen der §8-Sichtung **5 / 3 / 2** gemessen, während §8 „vier /
+vier" sagte; der tragende Satz („keiner erreicht mit diesem Slice 3×") blieb richtig, die Zahl ist
+gezogen. Sein Bericht liegt unter
+[`docs/reviews/2026-09-14-slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke-verify.md`](../../../reviews/2026-09-14-slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke-verify.md).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
@@ -414,7 +462,7 @@ for s in benannte-luecke-ohne-ausgang schwellen-uebertritt-ohne-zustaendige-roll
 done
 ```
 
-**Keiner der zehn erreicht mit diesem Slice 3×** — vier stehen bei 1×, vier bei 2×, zwei bereits
+**Keiner der zehn erreicht mit diesem Slice 3×** — fünf stehen bei 1×, drei bei 2×, zwei bereits
 darüber. **Ein eigener Folge-Slice entsteht aus der Sichtung also nicht**; der eine Träger, den
 dieser Plan schneidet, ist der Folge-Slice der DoD, nicht der Sichtung.
 
