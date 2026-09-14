@@ -1,7 +1,10 @@
-**Stand:** offen
+**Stand:** geplant
 
-Seit `slice-125` hält das Modul `planning` **ein** solches Feld: den Ruhe-Marker unter
-*Offene Wellen* gegen den Inhalt von `docs/plan/planning/in-progress/`. Der Sensor macht den
-Fehlschlag laut, er schreibt den Ausgleichs-Schritt aber nicht vor; kein Anweisungssatz und kein
-Werkzeug dieses Repos nennt ihn. Für jedes andere Zustandsfeld derselben Klasse besteht auch der
-Sensor nicht. Träger ist der Lauf, der den Move plant.
+Kennung: `slice-ortswechsel-zieht-sein-zustandsfeld-nach` — er schreibt den Ausgleichs-Schritt, den
+kein Anweisungssatz und kein Werkzeug dieses Repos nennt: ein vom Prozess vorgeschriebener
+Ortswechsel zieht die Zustandsfelder nach, die er in einem anderen lebenden Artefakt falsch macht.
+
+Die zwei Nachbarn derselben Ursache tragen je einen Zielort — die **Verweise** in `make slice-mv`
+(`seit slice-144`), die **Adresse** in [`AGENTS.md`](../../../../../../AGENTS.md) §3.11
+(`seit welle-15`). Die **Zustandsfeld**-Hälfte hat keinen: Der Sensor aus `slice-125` macht den
+Fehlschlag laut, er schreibt den Ausgleichs-Schritt aber nicht vor.

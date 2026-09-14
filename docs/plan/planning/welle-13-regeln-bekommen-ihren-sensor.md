@@ -187,15 +187,20 @@ Bedingungen sind eingetreten**, und die Welle steht ab hier unter *Offene Wellen
 
 ## 3. Closure-Trigger (Welle schließt)
 
-- Alle sechs Slices liegen in `done/`.
+- Alle **sieben** Träger liegen in `done/` — gezählt wird über das `Welle:`-Feld, nicht über die
+  Tabelle:
+  `grep -lE '^\*\*Welle:\*\*.*welle-13' docs/plan/planning/done/*.md | wc -l` → **7** (die Zahl
+  wandert mit dem Bestand; tragend ist, dass §4 sie vollständig führt).
 - `make gates` grün — **mit** den neu aufgenommenen Modulen in der Modul-Liste, nicht daneben.
 - **Jedes neu verdrahtete Modul ist einmal rot gesehen worden**, mit dem Kommando, das es rot
   färbt, im jeweiligen Umsetzungs-Commit ([`AGENTS.md`](../../../AGENTS.md) §3.6). **Ein Modul, für
   das kein Rot herstellbar ist, wird nicht verdrahtet, sondern als Carveout geführt** (Modul 7) —
   die Welle darf mit einem dokumentierten Carveout schließen, nie mit einem still grünen Modul.
-- **Das welle-eigene Kriterium, das keine Slice-DoD abschreibt:** für **jedes** der zwölf
-  `docs?-*`-Ziele in [`d-check.mk`](../../../d-check.mk) ist entschieden und aufgeschrieben, ob es
-  einen Prüfbereich hat — und die Ziele, die weiterhin ohne Config-Block laufen, **sagen das in
+- **Das welle-eigene Kriterium, das keine Slice-DoD abschreibt:** für **jedes** der **dreizehn**
+  `docs?-*`-Ziele in [`d-check.mk`](../../../d-check.mk)
+  (`grep -cE '^docs?-[a-z-]+:.*## ' d-check.mk` → **13**; die Zahl wandert mit dem Werkzeug-Zweig,
+  tragend ist die Vollständigkeit über der gemessenen Menge) ist entschieden und aufgeschrieben, ob
+  es einen Prüfbereich hat — und die Ziele, die weiterhin ohne Config-Block laufen, **sagen das in
   ihrer eigenen Ausgabe oder ihrem Hilfetext**. Heute melden sie „0 Befund(e)" und meinen „nichts
   geprüft"; nach der Welle darf das nicht mehr vorkommen, ohne benannt zu sein
   ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
@@ -215,6 +220,13 @@ Verzeichnisse (dieselbe zweite Wahrheit, die beim Slice retired wurde). -->
 | [slice-126](done/slice-126-commit-message-traegt-eine-kennung.md) | Eine Commit-Message ohne Kennung wird rot, und zwar vor dem Commit (Modul `commits`, Achse 3) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-127](done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) | Hard Rule 3.4 bekommt ihren Sensor (Modul `vcs`, Achse 2) | [`AGENTS.md`](../../../AGENTS.md) §3.4 |
 | [slice-129](done/slice-129-closure-notiz-hat-einen-sensor.md) | Die Closure-Notiz-Pflicht bekommt ihren Sensor (Modul `planning`, zweite Fähigkeit, Achse 6) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-217](done/slice-217-doc-ziel-nennt-seinen-pruefbereich.md) | Ein `docs?-*`-Ziel ohne Config-Block sagt es in Ausgabe und Hilfetext | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+
+**Der siebte Träger kam über sein Kopf-Feld, nicht über diese Tabelle.** Mitglied ist, wer
+`**Welle:** welle-13` trägt; die Tabelle führt die Mitglieder nach, sie vergibt sie nicht.
+[slice-217](done/slice-217-doc-ziel-nennt-seinen-pruefbereich.md) ist der Träger des
+welle-eigenen Kriteriums aus §3 — er trug es, bevor §3 es nannte, und seine §1 hat die Korrektur
+dieser Tabelle ausdrücklich dem Closure-Lauf überlassen („Bestand bleibt bewusst stehen“).
 
 **Die Reihenfolge ist nicht beliebig, eine Kante ist hart und eine ist ein Ausschluss.**
 [slice-123](done/slice-123-ci-sieht-die-historie.md) geht **[slice-126](done/slice-126-commit-message-traegt-eine-kennung.md)
@@ -451,4 +463,8 @@ ist falsch"*, nicht *„die DoD ist länger"*.
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Welle-Abschluss füllen. Verweis auf done/welle-13-results.md. -->
+[`welle-13-results.md`](done/welle-13-results.md) — die Ergebnis-Notiz der Welle: geliefert · was
+funktionierte · was anders lief · Steering-Loop-Einträge · Zeiger aufs Beobachtungs-Register ·
+Folge-Slices · Verifikation.
+
+Der Zustand dieser Welle ist die Verzeichnis-Position, kein Status-Feld.
