@@ -134,35 +134,35 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
 
 **Drei Liefer-Punkte, einer je Träger:**
 
-- [ ] **(1) [`welle-13`](../welle-13-regeln-bekommen-ihren-sensor.md) §1 Punkt 2 trägt keine der
+- [x] **(1) [`welle-13`](../welle-13-regeln-bekommen-ihren-sensor.md) §1 Punkt 2 trägt keine der
       zwei überholten Aussagen mehr.** Weder die Ansage *„Ein Sensor nach `slice-125` muss diese
       Abweichung tragen"* — der Sensor **soll** sie nicht tragen — noch den Verweis, die vier
       `waves`-Befunde benennten die Abweichung, *„die die `roadmap.md` unter Offene Wellen
       erklärt"*, dessen Ziel-Erklärung seit `1be6be03` nicht mehr dasteht. Die daneben stehenden
       Messzahlen sind datierte Messungen und bleiben unangetastet
       ([ADR-0046](../../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) §Konsequenzen).
-- [ ] **(2) [`roadmap.md`](../in-progress/roadmap.md) §Nächste Wellen beschreibt die Vorschau-Zeile
+- [x] **(2) [`roadmap.md`](../in-progress/roadmap.md) §Nächste Wellen beschreibt die Vorschau-Zeile
       so, wie [ADR-0046](../../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) Festlegung 1
       sie setzt.** Der Satz *„Ein verlinkter Name hat eine flache Plan-Datei (geschnitten,
       Start-Trigger nicht eingetreten)"* ist ersetzt, nicht ergänzt
       ([`AGENTS.md`](../../../../AGENTS.md) §3.7): Eine Kennung in der Vorschau steht unverlinkt und
       ohne Datei, und ein Gegenbeispiel färbt `docs-check` rot (`wave-preview-exists`).
       ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6))
-- [ ] **(3) [`plan-welle.md`](../../../../.claude/commands/plan-welle.md) lehrt an **allen**
+- [x] **(3) [`plan-welle.md`](../../../../.claude/commands/plan-welle.md) lehrt an **allen**
       Fundstellen die geltende Arbeitsweise** — den zwei im Kopf, der Anweisung in Schritt 9 und
       der vierten im Commit-Schritt (§1). Der Nachzug ist an der gemessenen Fundmenge geprüft, nicht
       am Fundort: `grep -c 'geplant' .claude/commands/plan-welle.md` liefert danach nur noch
       Treffer, die mit der flachen Datei nichts gleichsetzen.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: Liefer-Punkte (2) und (3) **sind** dieses Item — die Roadmap ist Rang 5 der
+- [x] Doku-Update: Liefer-Punkte (2) und (3) **sind** dieses Item — die Roadmap ist Rang 5 der
       Source Precedence und der Anweisungssatz die Anleitung, nach der gearbeitet wird.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — **hier nicht**: Dieses
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — **hier nicht**: Dieses
       Repo fährt Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l` → **3**, kein
       Erwartungswert), also prüft sie die nächste Welle-Closure, auch für diesen Slice ohne
       Wellen-Zugehörigkeit.
@@ -262,7 +262,13 @@ dasteht.
   [`BEO-ALL/korrektur-trifft-den-fundort-statt-die-gemessene-fundmenge`](../observations/BEO-ALL/korrektur-trifft-den-fundort-statt-die-gemessene-fundmenge/observation.md).
   **Gegenmittel im Plan:** Liefer-Punkt (3) prüft gegen die Fundmenge, nicht gegen die
   Stellen-Aufzählung der ADR.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang: eingetreten** — nicht *innerhalb* der drei Träger, dort trug das Gegenmittel: DoD (3)
+  maß die Fundmenge und fand die vierte Stelle. Eingetreten ist es eine Ebene höher, am Ziel-Satz
+  §1, der über **alle** lebenden Artefakte spricht — vier Fundstellen außerhalb der drei Träger
+  stehen nach der Lieferung noch
+  (`git grep -l 'aktuell\* oder \*geplant\*' -- ':!docs/plan/planning/done' ':!docs/reviews' ':!.harness/baseline' | wc -l`
+  → **4**, kein Erwartungswert). Auffangender Folge-Slice:
+  `slice-flache-welle-ist-eroeffnet-nicht-geplant`, als Datei in `open/`.
 - **(2) Der Nachzug stellt die alte Arbeitsweise daneben, statt sie zu ersetzen.** Ein Absatz
   *„bis [ADR-0046](../../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) entstand die Datei
   früher …"* ist Chronik im lebenden Artefakt; jede weitere Runde verlängert ihn, und der nächste
@@ -273,14 +279,21 @@ dasteht.
   dauerhaft aus.
   **Gegenmittel im Plan:** §3 macht *ersetzen statt danebenstellen* zur Reihenfolge-Regel; ein
   Wächter steht dahinter nicht, und dieser Plan behauptet keinen.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang: entfallen** — es ist nicht eingetreten und kann für diesen Slice nicht mehr
+  eintreten: Der Review hat die hinzugefügten Zeilen aller drei Commits auf Chronik-Marker geprüft
+  (*früher · bisher · wäre · hätte · nicht mehr · seither*) und keinen gefunden; die einzige Stelle
+  mit *früher* ist futurisch. Die drei Nachzüge sind Ersetzungen.
 - **(3) [`welle-13`](../welle-13-regeln-bekommen-ihren-sensor.md) ist eine offene Welle-Datei, und
   ihr §1 trägt datierte Messungen neben der überholten Aussage.** Wer beim Nachziehen eine Messzahl
   mitkorrigiert, schreibt eine Messung um, die zu ihrem Datum richtig war
   ([`MR-053`](../../../../harness/conventions.md#mr-053--ein-eintrag-datiert-seine-werkzeug-aussage-statt-den-lebenden-pin-zu-führen)
   zieht dieselbe Linie für Werkzeug-Aussagen). Die ADR sagt es ausdrücklich: *„Die dort
   danebenstehenden Messzahlen sind datierte Messungen und kein Arbeitsauftrag."*
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang: entfallen** — es ist nicht eingetreten und kann für diesen Slice nicht mehr
+  eintreten: Der Zahlen-Diff über die **ganze** Datei zeigt allein Prosa-Token (`11`/`125`/`125` →
+  `0046`/`0046`/`1`), der Commit trägt genau einen Hunk mit 7/7 Zeilen strikt innerhalb §1 Punkt 2,
+  und jede Messzahl des Absatzes steht unverändert. Review und Verifikation haben den Diff
+  unabhängig voneinander gefahren.
 - **(4) Der Roadmap-Satz beschreibt einen Zustand, den der Bestand heute gar nicht zeigt.** Unter
   *Nächste Wellen* steht derzeit kein verlinkter Name
   (`sed -n '/^## Nächste Wellen/,/^## /p' docs/plan/planning/in-progress/roadmap.md | grep -c '^| \[welle-'`
@@ -288,7 +301,12 @@ dasteht.
   fährt, ist über der leeren Menge wahr — die Klasse
   [`BEO-ALL/zusicherung-ueber-der-leeren-menge-wahr`](../observations/BEO-ALL/zusicherung-ueber-der-leeren-menge-wahr/observation.md).
   **Gegenmittel im Plan:** Closure-Kriterium 2 verlangt das rot gesehene Gegenbeispiel.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang: entfallen** — es ist nicht eingetreten und kann für diesen Slice nicht mehr
+  eintreten: Das Gegenmittel ist eingelöst, und zwar zweifach. Zwei Lagen sind real rot gesehen —
+  Lage 1 (Vorschau-Zeile mit Datei und Zeiger) mit einem Befund `wave-preview-exists`, Lage 2
+  (Zeiger entfernt) mit `wave-drift` **und** `wave-preview-exists` —, je mit Kommando, Grund-Code,
+  Fundstelle und EXIT in der Commit-Message; der Review hat die Zeilenarithmetik gegengerechnet.
+  Die Zusage ist damit an einem nicht leeren Fall gemessen.
 
 ## 7. Closure-Notiz
 
@@ -300,14 +318,63 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes der vier mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
-  für diesen Slice ohne Wellen-Zugehörigkeit>
+- **Was hat funktioniert:** Die Trennung von Fundort und Fundmenge **innerhalb** jedes Trägers. §1
+  hat die Stellen-Aufzählung der ADR nicht abgeschrieben, sondern je Datei gemessen — und genau das
+  förderte die vierte Fundstelle im Anweisungssatz zutage, die keine Quelle nennt. Ebenso getragen
+  hat die Vorab-Bindung an ein rotes Gegenbeispiel (§5 Kriterium 2): Der Roadmap-Satz stünde sonst
+  über einer leeren Menge.
+- **Was ging anders als geplant:** Zweierlei. **(a)** Der Nachzug hat zwei **neue** Gate-Zusagen
+  erzeugt, die weiter reichen als der Prüfumfang des Moduls, das sie nennen — zwei MEDIUM,
+  merge-blockierend, behoben in `233e1385` durch das **Zitat** der Grenze aus
+  [ADR-0046](../../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) §Fitness Function statt
+  durch eine zweite Formulierung. Dieselbe Klasse, gegen die der Slice antritt, nur in die andere
+  Richtung. **(b)** Der Ziel-Satz §1 ist weiter als seine drei Träger: vier lebende Fundstellen
+  stehen noch (§6 Risiko 1).
+- **Welche Abnahme-Formulierung gilt (§5 gegen §2):** zugrunde gelegt ist **DoD (3)**. §5
+  Kriterium 1 verlangt von allen sieben §1-Kommandos `0`; das vierte ist aber kein Muster für eine
+  überholte Formulierung, sondern der Fundmengen-Zähler — hier selbst nachgemessen:
+  `grep -c 'geplant' .claude/commands/plan-welle.md` → **1** (kein Erwartungswert), und der einzige
+  Treffer steht in Zeile 6 (*„… das gemeinsam geplant und geschlossen wird"*) und setzt nichts mit
+  der flachen Datei gleich. §1 führt Kommando 4 selbst so; §5 ist die ungenauere Formulierung
+  derselben Zusage.
+- **Steering-Loop-Eintrag:** **benannte Spec-Lücke** — der Vertrag dieses Repos bindet die
+  **Existenz** eines Gates, nicht die **Deckungsgleichheit einer Zusage mit seinem Prüfumfang**.
+  [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
+  verlangt, dass jeder emittierte Gate-Target auf frischem Checkout läuft, und misst das per
+  Smoke-Test; kein `LH-*` erreicht den Satz, der ein **existierendes** Gate weiter verspricht, als
+  sein Modul prüft (`grep -c '^### LH-' spec/lastenheft.md` → **14**, kein Erwartungswert; alle
+  vierzehn gelesen). Die Regel selbst steht in der Baseline — `v6.8.0` ·
+  `regelwerk/modul-13-quality-gates.md` §Hard Rule (Doku-Disziplin), *„Ein Gate ohne seine Grenze
+  behauptet ebenfalls zu viel"* —, und sie hier als *geschärfte Regel* noch einmal zu schreiben
+  wäre eine zweite Fassung, keine Schärfung; deshalb diese Form. **Kein `liegt in`:** Mit diesem
+  Slice ist nichts verkörpert worden, die Lücke ist benannt und nicht geschlossen.
+  *Der zweite Kandidat wird kein zweiter Eintrag* — dass eine Ziel-Satz-Fundmenge größer sein kann
+  als die namentlich genannten Träger, ist als Klasse längst entschieden: Ihr Register-Eintrag
+  trägt den Ausgang *geplant* mit Kennung `slice-209`. Ein Lerneintrag daneben entschiede eine
+  entschiedene Sache ein zweites Mal; der Beleg gehört in den Zähler, und dorthin geht er.
+- **Beobachtungs-Register (`../observations/`):** zwei Belege, beide
+  `evidence/slice-wellen-schnitt-folgt-der-eroeffnungs-regel.md`, Zähler abgeleitet und nirgends
+  gesetzt (Stände als datierte Messung,
+  [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
+  Setzung 2; `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`).
+  **(a)** [`BEO-ALL/korrektur-trifft-den-fundort-statt-die-gemessene-fundmenge`](../observations/BEO-ALL/korrektur-trifft-den-fundort-statt-die-gemessene-fundmenge/observation.md)
+  ergänzt — Zähler **7×**, Stand unverändert *geplant*.
+  **(b)** [`BEO-ALL/gate-zusage-in-prosa-reicht-weiter-als-ihr-pruefumfang`](../observations/BEO-ALL/gate-zusage-in-prosa-reicht-weiter-als-ihr-pruefumfang/observation.md)
+  **neu angelegt** für die Finding-Klasse aus F-1/F-2 — Zähler **1×**, Stand *offen*; zwei Funde in
+  einem Vorgang sind eine Gelegenheit. Die zwei Nachbarklassen sind gelesen und decken den Fall
+  nicht: `zusage-nennt-sensor-der-form-nicht-sieht` setzt eine Zusage im **Skript- oder
+  Funktionskopf** voraus, deren Geltungsbereich der Code darunter nicht hält — hier steht kein Code
+  unter der Zusage; `zusage-nennt-zwei-kanten-der-sensor-deckt-eine` trifft die **Zeit**-Achse, hier
+  ist es der **Ausschnitt**. Die Abgrenzung steht in der `observation.md` selbst.
+- **Folge-Slices:** `slice-flache-welle-ist-eroeffnet-nicht-geplant` (*Die vier Rest-Träger der
+  Wellen-Ablage lehren die geltende Arbeitsweise*) — zwei Liefer-Punkte, als Datei in `open/`.
+- **Risiken aus §6:** vier Risiken, vier Ausgänge — (1) **eingetreten**, aufgefangen vom Folge-Slice
+  oben; (2), (3) und (4) **entfallen**, jedes mit Begründung, siehe §6.
+- **Drei Paarungen:** Repo **mit** Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l` →
+  **3**, kein Erwartungswert) — Anker, Folge-Slice und Register prüft die nächste Welle-Closure,
+  auch für diesen Slice ohne Wellen-Zugehörigkeit. Was sie vorfindet, steht: kein `liegt in`-Feld
+  (Anker), der Folge-Slice als Datei in `open/`, und zwei Register-Verzeichnisse mit je einem
+  weiteren Beleg.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
