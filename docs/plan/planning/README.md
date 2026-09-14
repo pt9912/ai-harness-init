@@ -20,11 +20,12 @@ Rule „git mv + Inhaltsänderung = zwei Commits" in
 - **Slices** tragen ihren Status über das **Verzeichnis** (open → … → done).
 - Eine **Welle** (Bündel von Slices) trägt ihren Status seit Regelwerk v3.5.0
   **ebenfalls über die Verzeichnis-Position, kein `Status:`-Feld** (Modul 6):
-  die **aktive** Welle liegt **flach** in `planning/` (z. B.
-  `welle-02-fetch-und-readme.md`), bei Closure wandert die Plan-Datei per
-  `git mv` nach `done/` — neben ihren Lerneintrag `done/<welle-id>-results.md`.
-  Ob eine flache Welle *aktuell* oder *geplant* ist, sagt die
-  [`in-progress/roadmap.md`](in-progress/roadmap.md) (Sequenzierungs-Autorität).
+  Die Plan-Datei entsteht bei der **Eröffnung** der Welle und liegt danach
+  **flach** in `planning/` (z. B. `welle-02-fetch-und-readme.md`); bei Closure
+  wandert sie per `git mv` nach `done/` — neben ihren Lerneintrag
+  `done/<welle-id>-results.md`. **Geplante Wellen bekommen noch keine Datei:**
+  Sie stehen in der [`in-progress/roadmap.md`](in-progress/roadmap.md) unter
+  *Nächste Wellen* und nirgends sonst — zwei Positionen, nicht drei.
 
 ## Beobachtungs-Register
 

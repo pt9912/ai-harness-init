@@ -1,9 +1,11 @@
 # Welle welle-09: Modul-15-Konformität — Regeln ohne Feedback-Quadrant schließen
 
-**Lifecycle:** Die aktive Welle liegt flach unter `docs/plan/planning/`; bei
-Closure wandert diese Datei per `git mv` nach `done/` (neben ihre
-`welle-09-results.md`). Der Zustand ist die Verzeichnis-Position — kein
-Status-Feld. Ob eine flache Welle *aktuell* oder *geplant* ist, sagt die Roadmap.
+**Lifecycle:** Diese Datei entsteht bei der **Eröffnung** der Welle und liegt
+flach unter `docs/plan/planning/`; bei Closure wandert sie per `git mv` nach
+`done/` (neben ihre `welle-09-results.md`). Der Zustand ist die
+Verzeichnis-Position — kein Status-Feld. **Geplante Wellen bekommen noch keine
+Datei:** Sie stehen in der Roadmap unter *Nächste Wellen* und nirgends sonst —
+zwei Positionen, nicht drei.
 
 **Zielmeilenstein:** kein Meilenstein-Bezug (Konformitäts-Welle, keine Nutzer-Fähigkeit).
 
