@@ -107,8 +107,9 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       gebootstrappten Ziel, nicht eine Zeile im Emit-Code.
 - [ ] **Der Fall aus [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
       Setzung 3 ist rot gesehen:** ein Klon der Tiefe 1 mit einer leeren Range meldet **nicht**
-      `0 Befund(e)`/Exit 0, sondern bricht mit einer Meldung ab; dieselbe Sonde auf einem
-      vollständigen Klon bleibt grün. Ausgabe und Exit-Code gelesen, nicht nur der Exit-Code.
+      `0 Befund(e)`/Exit 0, sondern bricht mit einer Meldung ab — dieselbe Sonde mit einer
+      **aufgelösten, nicht leeren** Range (`HEAD~1..HEAD`) auf einem vollständigen Klon bleibt grün.
+      Ausgabe und Exit-Code gelesen, nicht nur der Exit-Code.
 - [ ] **Keine neue Host-Abhängigkeit** und kein Image-Lauf vor dem Modul-Lauf: der Wächter läuft mit
       `bash + git` ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)),
       und der Fehlt-Fall sagt etwas, statt still zu bleiben.
