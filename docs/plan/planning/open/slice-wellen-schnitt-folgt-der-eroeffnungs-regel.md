@@ -34,7 +34,7 @@ Träger sagt, was gilt; eine Anleitung in ein rotes Gate sagt es nicht),
 **Berührte Spec-Stellen:** — (der Slice berührt keine Spec-Stelle; Gegenstand sind zwei
 Planungs-Artefakte und ein Rollen-Anweisungssatz).
 
-**Verantwortlich:** `—` bis zur Priorisierung. Der Liefergegenstand ist dreimal Planner-Eigentum:
+**Verantwortlich:** Planner (pt9912). Der Liefergegenstand ist dreimal Planner-Eigentum:
 Welle-Plan und Roadmap nach Baseline-Regelwerk `modul-08-agentenrollen.md` §Rollen-Sequenz für eine
 Welle, der Anweisungssatz nach
 [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) Festlegung 1.
