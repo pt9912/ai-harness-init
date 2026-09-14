@@ -2,7 +2,7 @@
 
 **Lifecycle:** Diese Datei entsteht bei der **Eröffnung** der Welle und liegt
 flach unter `docs/plan/planning/`; bei Closure wandert sie per `git mv` nach
-`done/` (neben ihre `welle-<Kennung>-results.md`). Der Zustand ist die
+`done/` (neben ihre `welle-13-results.md`). Der Zustand ist die
 Verzeichnis-Position — kein Status-Feld. **Geplante Wellen bekommen noch keine
 Datei:** Sie stehen in der Roadmap unter *Nächste Wellen* und nirgends sonst —
 zwei Positionen, nicht drei.

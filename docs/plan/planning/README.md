@@ -15,17 +15,29 @@ Rule „git mv + Inhaltsänderung = zwei Commits" in
 | `in-progress/` | Branch / PR existiert. |
 | `done/` | DoD erfüllt, gemerged, Closure-Notiz vorhanden. |
 
-## Slices vs. Wellen — beide über die Verzeichnis-Position
+## Slices vs. Wellen — zwei Ablagen, dieselbe Regel
 
-- **Slices** tragen ihren Status über das **Verzeichnis** (open → … → done).
-- Eine **Welle** (Bündel von Slices) trägt ihren Status seit Regelwerk v3.5.0
-  **ebenfalls über die Verzeichnis-Position, kein `Status:`-Feld** (Modul 6):
-  Die Plan-Datei entsteht bei der **Eröffnung** der Welle und liegt danach
-  **flach** in `planning/` (z. B. `welle-02-fetch-und-readme.md`); bei Closure
-  wandert sie per `git mv` nach `done/` — neben ihren Lerneintrag
-  `done/<welle-id>-results.md`. **Geplante Wellen bekommen noch keine Datei:**
-  Sie stehen in der [`in-progress/roadmap.md`](in-progress/roadmap.md) unter
-  *Nächste Wellen* und nirgends sonst — zwei Positionen, nicht drei.
+Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
+§Wann Arbeit eine Welle braucht.
+
+- **Slices** tragen ihren Zustand über das **Verzeichnis**
+  (`open/` → `next/` → `in-progress/` → `done/`).
+- Eine **Welle** (Bündel von Slices) ebenso: Der Zustand ist die
+  Verzeichnis-Position, kein `Status:`-Feld. Der Welle-Plan (`<welle-id>.md`)
+  liegt **flach** in `planning/`, solange die Welle läuft, und wandert bei
+  Closure per `git mv` nach `done/` — neben seine
+  `welle-<Kennung>-results.md`. Den aktiven Durchlauf `open/` → `next/` →
+  `in-progress/` durchläuft er nicht; `done/` ist sein einziges
+  Lifecycle-Verzeichnis. **Geplante** Wellen haben noch keine Datei — sie
+  stehen in der Roadmap, die auch Sequenzierungs-Autorität bleibt
+  ([`in-progress/roadmap.md`](in-progress/roadmap.md): Meilensteine, nächste
+  Wellen, Zeiger auf die offenen).
+- Der aktive Durchlauf `open/` → `next/` → `in-progress/` nimmt ausschließlich
+  **Slices** auf; `done/` archiviert **zusätzlich** abgeschlossene
+  **Nicht-Slice-Records** — Welle-Plan und Welle-Closure
+  `done/welle-<Kennung>-results.md`. Aufgelöste Carveouts wandern **nicht**
+  hierher, sondern in ihr eigenes `docs/plan/carveouts/done/` (Baseline-Regelwerk
+  `modul-07-carveouts.md`).
 
 ## Beobachtungs-Register
 
