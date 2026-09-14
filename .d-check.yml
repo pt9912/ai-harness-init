@@ -230,7 +230,7 @@ ignore-refs:
   # Deckung: 33
   - in: "docs/reviews/**"
     refs: [".harness/baseline/**"]
-  # Deckung: 3
+  # Deckung: 4
   - in: "docs/plan/planning/done/**"
     refs: [".harness/baseline/**"]
   # Deckung: 2
