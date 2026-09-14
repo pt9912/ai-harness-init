@@ -19,6 +19,14 @@
 #     ist teilweise bewacht (test/mutate-driver.bats + Fall 09 decken failure_form,
 #     nicht die uebrigen run_case-Zweige — Review-Befund NR-2, dieselbe
 #     kuratiert-ist-unvollstaendig-Grenze).
+#   - RICHTIGKEIT statt EXISTENZ/EINDEUTIGKEIT: eine `# files:`-Angabe wird ueber
+#     resolve_file_spec AUFGELOEST, nicht gelesen — ein Bash-Glob (z.B.
+#     `.harness/baseline/*/templates/…`) trifft gegen den EINEN vendored Baum,
+#     ohne dessen Tag im Fall zu nennen, und ein Baseline-Sprung zieht darum
+#     keinen Nachzug nach sich. Kein Treffer oder mehr als einer bricht den Lauf
+#     laut ab und nennt den Fall (mutation_targets bzw. run_case). Zeigt eine
+#     Angabe dagegen auf die FALSCHE, aber existierende Datei, bleibt sie still
+#     gruen — geprueft sind Existenz und Eindeutigkeit, nicht Richtigkeit.
 #
 # STALE LOCK (Review-Befund NR-1): der mkdir-Mutex traegt keine PID. Ein hart
 # abgebrochener Lauf (SIGKILL, Stromausfall — nicht INT/TERM, die raeumt der trap)
@@ -226,10 +234,47 @@ fingerprint_of_list() {
   ( cd "$dir" && LC_ALL=C sort -z | xargs -0 -r sha256sum ) | sha256sum | cut -d' ' -f1
 }
 
-# mutation_targets liefert die Vereinigung aller `# files:`-Ziele, zeilenweise und
-# sortiert. Genau diese Dateien koennte ein Isolations-Bruch im Host-Baum beschaedigen.
+# resolve_file_spec loest EINE `# files:`-Angabe (Bash-Glob oder literaler Pfad)
+# gegen root auf: `compgen -G` matcht das Muster relativ zu root und prueft damit
+# zugleich die EXISTENZ — ein Muster ohne Metazeichen trifft nur sich selbst, und
+# nur, wenn die Datei da ist. GENAU EIN Treffer -> der Pfad auf stdout, Exit 0.
+# Kein Treffer oder mehr als einer -> Exit 1, nichts auf stdout: eine mehrdeutige
+# oder ins Leere zeigende Angabe wird verworfen, nicht geraten.
+#
+# EINE Funktion fuer beide Leser der `# files:`-Zeile — mutation_targets (die
+# Vereinigung fuer target_fingerprint) und run_case (file_list fuer tar/
+# sha256sum) —, damit ein Tag-Sprung im vendored Baum (`.harness/baseline/<tag>/…`)
+# nicht an zwei Stellen getrennt nachgezogen werden muss: zwei getrennt gepflegte
+# Ausloesungen sind dieselbe Drift-Konstruktion, die dieses Repo an failure_form
+# schon einmal beseitigt hat.
+resolve_file_spec() {
+  local root="$1" spec="$2" matches n
+  matches="$(cd "$root" 2>/dev/null && compgen -G "$spec" 2>/dev/null)" || return 1
+  n="$(printf '%s\n' "$matches" | sed '/^$/d' | wc -l)"
+  [ "$n" -eq 1 ] || return 1
+  printf '%s' "$matches"
+}
+
+# mutation_targets loest jede `# files:`-Angabe unter cases_dir gegen root auf und
+# liefert die Vereinigung der Treffer, zeilenweise und sortiert — genau die
+# Dateien, die ein Isolations-Bruch im Host-Baum beschaedigen koennte. Iteriert
+# PRO Fall (nicht ueber der geflachten Zeilen-Menge alter Fassung), damit ein
+# Abbruch den FALL nennt, dessen Angabe nicht genau eine Datei trifft — sonst
+# schrumpfte die Ziel-Menge leiser, als LH-QA-01 zulaesst.
 mutation_targets() {
-  sed -n 's/^# files: //p' "$1"/*.sh | tr ' ' '\n' | sed '/^$/d' | LC_ALL=C sort -u
+  local cases_dir="$1" root="$2" case_file spec resolved
+  local -a resolved_all=()
+  for case_file in "$cases_dir"/*.sh; do
+    while IFS= read -r spec; do
+      [ -n "$spec" ] || continue
+      if ! resolved="$(resolve_file_spec "$root" "$spec")"; then
+        echo "mutate: ABBRUCH — $(basename "$case_file" .sh): '# files: $spec' loest gegen $root nicht auf genau eine Datei auf." >&2
+        return 1
+      fi
+      resolved_all+=("$resolved")
+    done < <(sed -n 's/^# files: //p' "$case_file" | tr ' ' '\n' | sed '/^$/d')
+  done
+  printf '%s\n' "${resolved_all[@]}" | LC_ALL=C sort -u
 }
 
 # target_fingerprint hasht diese Dateien im Baum root. Er ist der Beleg der Kern-Zusage
@@ -241,12 +286,12 @@ mutation_targets() {
 # in eine Host-Datei AUSSERHALB dieser Menge, faellt es hier nicht auf. Die Menge deckt
 # ab, was die Faelle anfassen; mehr behauptet dieser Waechter nicht.
 #
-# FAIL-CLOSED: leere Ziel-Liste oder fehlende Datei -> Exit != 0, kein Hash ueber die
-# leere Menge (zwei leere Hashes waeren gleich und meldeten „unveraendert", ohne je
-# gemessen zu haben).
+# FAIL-CLOSED: leere Ziel-Liste, nicht aufloesende Angabe oder fehlende Datei -> Exit
+# != 0, kein Hash ueber die leere Menge (zwei leere Hashes waeren gleich und meldeten
+# „unveraendert", ohne je gemessen zu haben).
 target_fingerprint() {
   local root="$1" cases="$2" targets
-  targets="$(mutation_targets "$cases")"
+  targets="$(mutation_targets "$cases" "$root")" || return 1
   [ -n "$targets" ] || return 1
   printf '%s\n' "$targets" | tr '\n' '\0' | fingerprint_of_list "$root"
 }
@@ -596,10 +641,20 @@ run_case() {
     report_fail "$name" "unbekanntes '# verify: $verify' — kein Fehlschlag-Muster definiert"
     return
   fi
-  # Als Array, damit mehrere Pfade sauber getrennt bleiben (statt ungequotetem
-  # Word-Splitting — Hard Rule 3.2 laesst keine Inline-Suppression zu).
-  local -a file_list
-  read -r -a file_list <<<"$files"
+  # Jede Angabe geht durch resolve_file_spec — dieselbe Funktion wie
+  # mutation_targets: eine Angabe, die gegen $WORK nicht auf genau eine Datei
+  # aufloest (kein Treffer, mehrere Treffer), ist ein Befund mit Fall-Namen,
+  # kein stilles Uebergehen (LH-QA-01, DoD dieses Slice).
+  local -a file_list=()
+  local spec resolved
+  while IFS= read -r spec; do
+    [ -n "$spec" ] || continue
+    if ! resolved="$(resolve_file_spec "$WORK" "$spec")"; then
+      report_fail "$name" "'# files: $spec' loest gegen \$WORK nicht auf genau eine Datei auf"
+      return
+    fi
+    file_list+=("$resolved")
+  done < <(printf '%s\n' "$files" | tr ' ' '\n' | sed '/^$/d')
 
   # Sichern (Bedingung 1-4 duerfen den Baum nie veraendert zuruecklassen).
   BACKUP="$(mktemp -d)"
@@ -1465,7 +1520,9 @@ main() {
   # HOST-Treffer und BRICHT AB") deckt nur die `# files:`-Zielpfade (`target_fingerprint`),
   # nicht die volle Schluessel-Bezugsmenge aus `isolation_key_files` — gemessen gegen
   # `sed -n 's/^# files: //p' test/mutations/*.sh | tr ' ' '\n' | sed '/^$/d' | LC_ALL=C sort -u | wc -l`
-  # (Zielpfade) vs. `bash -c "source harness/tools/mutate.sh 2>/dev/null||true; isolation_key_files | wc -l"`
+  # (Zahl der `# files:`-MUSTER, vor der Aufloesung durch resolve_file_spec — nicht die Zahl
+  # der Pfade, auf die sie am Ende treffen) vs.
+  # `bash -c "source harness/tools/mutate.sh 2>/dev/null||true; isolation_key_files | wc -l"`
   # (Schluessel-Menge); keine Erwartungswerte, beide Zahlen wandern mit dem Fall- bzw. Datei-Bestand.
   # Diese Luecke ist `BEO-025` (`docs/plan/planning/observations.md`), ihr Ausgang
   # ist geplant. Ein nicht berechenbarer Schluessel schaltet NUR den Uebersprung/den Beleg

@@ -25,6 +25,16 @@ Lock-Verzeichnis liegen (bewusst fail-closed). Isolation, Beleg-Mechanik, Bezugs
 Schlüssels (`isolation_key_files`, **nicht** `harness/tools/working-tree-hash.sh`) und jede
 weitere Bedingung stehen im Kopf von `harness/tools/mutate.sh`.
 
+**Eine `# files:`-Angabe wird aufgelöst, nicht gelesen** (`resolve_file_spec` in
+`harness/tools/mutate.sh`, benutzt sowohl von `mutation_targets`/`target_fingerprint` als auch
+von `run_case`): ein Bash-Glob wie `.harness/baseline/*/templates/…` trifft gegen den jeweils
+einen vendored Baum, ohne dessen Tag im Fall zu nennen — ein Baseline-Sprung zieht keinen
+Nachzug nach sich, solange die Vorlage im neuen Satz unter demselben relativen Pfad liegt. Löst
+die Angabe **nicht genau eine** Datei auf (kein Treffer, mehr als einer), bricht der Lauf laut ab
+und nennt den Fall. **Was die Auflösung nicht deckt:** eine Angabe, die auf die **falsche**,
+aber existierende Datei zeigt, bleibt still grün — Existenz und Eindeutigkeit sind geprüft,
+Richtigkeit ist es nicht.
+
 ## Sperren
 
 - Stille über `MUTATE_STALL_SECONDS` hinweg (kein Worker zieht oder schließt einen Fall ab) → Lauf

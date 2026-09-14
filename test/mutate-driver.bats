@@ -147,7 +147,7 @@ setup() {
 # Isolations-Bruch an einer Zieldatei unsichtbar).
 @test "driver: der Fingerabdruck deckt die Mutations-Ziele, nicht den ganzen Baum" {
   local ziele
-  ziele="$(bash -c "source '$DRIVER' 2>/dev/null || true; mutation_targets '$REPO/test/mutations'")"
+  ziele="$(bash -c "source '$DRIVER' 2>/dev/null || true; mutation_targets '$REPO/test/mutations' '$REPO'")"
   [ -n "$ziele" ]
   grep -q '^harness/tools/mutate.sh$' <<<"$ziele"
   # NICHT `grep -qv` fuer die ABWESENHEIT: `-q` und `-v` kombinieren sich je nach
@@ -184,6 +184,56 @@ setup() {
   rm -rf "$iso"
   [[ "$output" == *"Isolation gebrochen"* ]]
   [ "$status" -ne 0 ]
+}
+
+# --- Aufloesung der `# files:`-Angabe (slice-mutations-fall-entdeckt-den-vendored-tag) ---
+# resolve_file_spec traegt DoD 1: eine Angabe, die nicht auf genau eine Datei
+# trifft, ist ein Befund mit dem Namen des Falls — an BEIDEN Stellen, die sie
+# lesen (mutation_targets fuer target_fingerprint, run_case fuer file_list).
+
+@test "driver: run_case meldet eine '# files:'-Angabe OHNE Treffer mit dem Namen des Falls" {
+  local iso cases
+  iso="$(mktemp -d)"; cases="$iso/cases"
+  mkdir -p "$iso/kopie" "$cases"
+  printf '#!/usr/bin/env bash\n# files: nicht-vorhanden.txt\n# expect: egal\ntrue\n' \
+    >"$cases/01-kein-treffer.sh"
+  run bash -c "source '$DRIVER' 2>/dev/null || true
+    WORK='$iso/kopie'; REPO='$iso/kopie'; CASES_DIR='$cases'
+    run_case '$cases/01-kein-treffer.sh'"
+  rm -rf "$iso"
+  [[ "$output" == *"01-kein-treffer"* ]]
+  [[ "$output" == *"nicht-vorhanden.txt"* ]]
+}
+
+@test "driver: run_case meldet eine '# files:'-Angabe mit MEHR ALS EINEM Treffer mit dem Namen des Falls" {
+  local iso cases
+  iso="$(mktemp -d)"; cases="$iso/cases"
+  mkdir -p "$iso/kopie/a" "$iso/kopie/b" "$cases"
+  printf 'x\n' >"$iso/kopie/a/ziel.txt"
+  printf 'x\n' >"$iso/kopie/b/ziel.txt"
+  printf '#!/usr/bin/env bash\n# files: */ziel.txt\n# expect: egal\ntrue\n' \
+    >"$cases/02-zwei-treffer.sh"
+  run bash -c "source '$DRIVER' 2>/dev/null || true
+    WORK='$iso/kopie'; REPO='$iso/kopie'; CASES_DIR='$cases'
+    run_case '$cases/02-zwei-treffer.sh'"
+  rm -rf "$iso"
+  [[ "$output" == *"02-zwei-treffer"* ]]
+  [[ "$output" == *"ziel.txt"* ]]
+}
+
+# Derselbe Befund am ANDEREN Leser der `# files:`-Zeile: mutation_targets laeuft
+# VOR jeder Isolations-Kopie ueber ALLEN Faellen und muss darum ABBRECHEN
+# (nicht nur einen Fall als Befund zaehlen) — vorher blieb hier nur die
+# unadressierte Meldung "Fingerabdruck der Mutations-Ziele nicht berechenbar".
+@test "driver: mutation_targets BRICHT bei einer nicht aufloesenden Angabe MIT Fall-Namen ab" {
+  local cases
+  cases="$(mktemp -d)"
+  printf '#!/usr/bin/env bash\n# files: nicht-vorhanden.txt\n# expect: egal\n' \
+    >"$cases/03-fehlt.sh"
+  run bash -c "source '$DRIVER' 2>/dev/null || true; mutation_targets '$cases' '$REPO'"
+  rm -rf "$cases"
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"03-fehlt"* ]]
 }
 
 # --- Gruen-Vorlauf (slice-100) ------------------------------------------------

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# files: .harness/baseline/v6.7.2/templates/AGENTS.template.md
+# files: .harness/baseline/*/templates/AGENTS.template.md
 # expect: emit.isRecurring fuehrt genau die Vorlagen mit Platzhalter im Ziel-Pfad
 #
 # Die Gegenrichtung zu 219: dort driftet der ZIEL-PFAD, hier die WORTSTELLUNG des
@@ -31,11 +31,14 @@
 # "-OHNE-ZIEL:AGENTS.template.md" erscheint im diff, angewendet gegenueber
 # unangewendet).
 #
-# KOPPLUNG beim Baseline-Tausch: der Pfad im `# files:`-Kopf traegt den Tag. Nach
-# einem Bump zeigt er ins Leere — der Treiber sichert die gelisteten Dateien VOR
-# der Mutation mit tar und laeuft unter `set -euo pipefail`, der Fall endet also
-# dort und schreibt kein Ergebnis; daraus macht die Vollstaendigkeits-Schranke in
-# merge_report einen Befund. Laut, nicht still.
+# `# files:` NENNT DEN TAG NICHT MEHR: der Pfad wird ueber
+# `.harness/baseline/*/templates/...` gegen den EINEN vendored Baum ENTDECKT
+# (harness/tools/mutate.sh, resolve_file_spec) statt ihn zu nennen — ein
+# Baseline-Sprung aendert daran nichts, solange die Vorlage im neuen Satz
+# unter demselben relativen Pfad liegt. Loest die Angabe NICHT auf genau eine
+# Datei auf (kein Tag-Verzeichnis, mehr als eines), bricht der Treiber laut ab
+# und nennt diesen Fall — vor jedem Fall-Lauf in mutation_targets bzw.
+# target_fingerprint (harness/sensors/mutate.md §Grenze), wie in Fall 219.
 #
 # Der Backtick kommt aus printf statt als Literal: in einfachen Anfuehrungszeichen
 # liest shellcheck ihn als Kommando-Substitution (SC2016), und eine
@@ -43,4 +46,4 @@
 set -euo pipefail
 bt="$(printf '\140')"
 sed -i "s|Kopiere nach |Kopiere per ${bt}git mv${bt} nach |" \
-	.harness/baseline/v6.7.2/templates/AGENTS.template.md
+	.harness/baseline/*/templates/AGENTS.template.md
