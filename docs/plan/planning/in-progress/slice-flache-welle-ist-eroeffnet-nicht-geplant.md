@@ -133,7 +133,7 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
 
 **Zwei Liefer-Punkte, einer je Fassung des Satzes:**
 
-- [ ] **(1) Die `Lifecycle:`-Kopfnote der drei offenen Welle-Dateien (`welle-09`, `welle-11`,
+- [x] **(1) Die `Lifecycle:`-Kopfnote der drei offenen Welle-Dateien (`welle-09`, `welle-11`,
       `welle-13`) trägt die Gleichsetzung nicht mehr** — weder *„Die aktive Welle liegt flach"*
       noch *„Ob eine flache Welle aktuell oder geplant ist, sagt die Roadmap"*. Sie ist an die
       Kopfnote der vendored Vorlage angeglichen (§1), **ersetzt und nicht ergänzt**
@@ -144,7 +144,7 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
       Zeile ohnehin anfasst, zieht sie nach ([`AGENTS.md`](../../../../AGENTS.md) §3.7):
       `grep -c 'welle-<Kennung>-results\.md' docs/plan/planning/welle-*.md | grep -cv ':0$'`
       liefert danach `0` (kein Erwartungswert).
-- [ ] **(2) `docs/plan/planning/README.md` §Slices vs. Wellen ist an *seine eigene* Ziel-Form
+- [x] **(2) `docs/plan/planning/README.md` §Slices vs. Wellen ist an *seine eigene* Ziel-Form
       angeglichen** — `v6.8.0` · `templates/docs/plan/planning/README.template.md`
       §Slices vs. Wellen, die das Instanz-Register
       [`harness/migration.md`](../../../../harness/migration.md) für genau diese Datei führt; nicht
@@ -159,16 +159,16 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
       (`ls docs/plan/planning/reconciliation.md` → Exit 2, §8); und die eigene Sektion
       `## Beobachtungs-Register` daneben bleibt stehen, sie ist die repo-eigene Fassung desselben
       Gegenstands.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: Liefer-Punkte (1) und (2) **sind** dieses Item — beide Träger sind
+- [x] Doku-Update: Liefer-Punkte (1) und (2) **sind** dieses Item — beide Träger sind
       Planungs-Doku.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — **hier nicht**: Dieses
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — **hier nicht**: Dieses
       Repo fährt Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l` → **3**, kein
       Erwartungswert), also prüft sie die nächste Welle-Closure, auch für diesen Slice ohne
       Wellen-Zugehörigkeit.
@@ -255,7 +255,14 @@ dasteht.
   [`BEO-ALL/vendored-vorlage-nennt-pfad-den-das-adoptierende-repo-nicht-fuehrt`](../observations/BEO-ALL/vendored-vorlage-nennt-pfad-den-das-adoptierende-repo-nicht-fuehrt/observation.md).
   **Gegenmittel im Plan:** Liefer-Punkt (1) verlangt die Angleichung der **Aussage**, nicht die
   Byte-Übernahme des Absatzes.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang: eingetreten**, aufgefangen von `slice-planning-readme-beschreibt-die-eigenen-lifecycle-verzeichnisse`.
+  Dreimal gemessen, und das Gegenmittel hat zwei davon gehalten: den Platzhalter
+  `welle-<Kennung>-results.md` in der `welle-13`-Kopfnote und den Satz *„… und nirgends sonst"* im
+  README (Runde 1, F-3 und F-4). Den dritten hat es nicht gehalten — §Slices vs. Wellen trägt jetzt
+  *„Der aktive Durchlauf `open/` → `next/` → `in-progress/` nimmt ausschließlich **Slices** auf"*,
+  zwei Zeilen unter einem Link auf `in-progress/roadmap.md` (Runde 2, R2-1). Er entstand in dem
+  Nachzug, der die **richtige** Ziel-Form gelesen hatte: Das Gegenmittel adressiert die falsche
+  Vorlage, nicht den falschen Satz aus der richtigen.
 - **(2) Der Nachzug stellt die alte Arbeitsweise daneben, statt sie zu ersetzen.** Ein Absatz
   *„bis [ADR-0046](../../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) entstand die Datei
   früher …"* ist Chronik im lebenden Artefakt — die Klasse
@@ -264,12 +271,21 @@ dasteht.
   Geltungsbereich Code, Konfiguration, Skripte und die Zustandsfelder der lebenden Register —
   Markdown-Fließtext steht in keinem davon.
   **Gegenmittel im Plan:** §3 macht *ersetzen statt danebenstellen* zur Reihenfolge-Regel.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang: entfallen.** Beide Review-Runden haben es gemessen statt geglaubt: je Träger **ein**
+  Hunk, die alte Fassung steht in keiner der fünf berührten Dateien neben der neuen, und über
+  sämtliche hinzugefügten Zeilen trifft das Chronik-Muster (*früher · bisher · seither · nicht
+  mehr · wäre · hätte · Review-Befund · `slice-[0-9]` · vorher · zuvor*) **0**. Das Risiko kann für
+  diesen Slice nicht mehr eintreten, weil sein Gegenstand abgeschlossen ist; für den Folge-Slice
+  steht es dort neu.
 - **(3) Die drei Welle-Dateien sind offen, und ihr Rumpf trägt datierte Messungen.** Wer beim
   Nachziehen der Kopfnote eine Messzahl im Rumpf mitkorrigiert, schreibt eine Messung um, die zu
   ihrem Datum richtig war. **Gegenmittel im Plan:** Liefer-Punkt (1) nennt allein die Kopfnote;
   der Beleg ist ein Zahlen-Diff über die ganze Datei, wie ihn der Vorgänger-Slice gefahren hat.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang: entfallen.** Der Zahlen-Diff über alle vier Träger der ersten Runde lieferte **null**
+  Differenzen, und kein Hunk lag außerhalb des Kopfes; die zweite Runde bestätigte für den
+  Nachzug dasselbe — bewegt sind ausschließlich Token des ersetzten Absatzes und die Kennung `13`,
+  kein Rumpf und keine datierte Messung. Das Risiko kann für diesen Slice nicht mehr eintreten:
+  Seine drei Welle-Dateien sind nicht mehr im Zugriff dieses Vorgangs.
 
 ## 7. Closure-Notiz
 
@@ -281,14 +297,114 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes der drei mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
-  für diesen Slice ohne Wellen-Zugehörigkeit>
+- **Was hat funktioniert:** **Die gemessene Fundmenge.** §1 hat die vier Träger vor dem Schnitt
+  gezählt statt aufgezählt; beide Review-Runden sind die drei Kommandos neu gefahren und haben
+  keine fünfte lebende Stelle gefunden. Das war der Ausgang, den der Vorgänger-Slice offen ließ.
+  **Und die Ebenen-Trennung:** Die emittierte Vorlage trägt dieselbe Gleichsetzung unverändert
+  weiter, weil §1 sie als *anderen Vorgang* ausgeschlossen hat — beide Runden haben es geprüft.
+- **Was ging anders als geplant:** **Der Plan nannte eine Ziel-Form für vier Träger, und es waren
+  zwei.** Die vendored Welle-Vorlage deckt die drei `Lifecycle:`-Kopfnoten; für
+  `docs/plan/planning/README.md` führt das Instanz-Register eine eigene, und nur die trägt die
+  Zuschreibung *Sequenzierungs-Autorität* an die Roadmap. Der Umsetzungs-Lauf glich die Datei an
+  die Vorlage ihres Nachbarn an und verlor sie — merge-blockierendes MEDIUM, behoben im zweiten
+  Lauf, nachdem der Plan die Zuordnung nachgetragen hatte.
+  **Und der Schnitt hat eine Rollen-Grenze getroffen, die es nicht gab.** Das HIGH der ersten Runde
+  meldete einen Rollen-Widerspruch am Welle-Plan; keine Quelle trug ihn, und auch keine trug die
+  Gegenposition. Die Auflösung lief über den Konflikt-Pfad (Baseline-Regelwerk
+  `modul-08-agentenrollen.md` §Konflikt-Pfad als Rollen-Sequenz) und kostete ein Architect-Verdikt
+  und drei Konsistenzrunden.
+- **Steering-Loop-Eintrag — geschärfte Regel:** Die Rollen-Grenze am Welle-Plan ist geschrieben. Ein
+  **vorlagengebundener Nachzug** an einem bereits eröffneten Welle-Plan darf im
+  Implementations-Kontext laufen, wenn er vier Bedingungen zugleich erfüllt; jeder andere Vorgang an
+  dieser Datei bleibt Planner-Arbeit
+  ([ADR-0048](../../adr/0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md) Festlegung 1,
+  `Accepted`). **Kein Feld `liegt in`:** Die Regel trägt eine ADR-ID und stammt nicht aus der
+  3×-Schwelle — sie braucht keinen zweiten Anker (Baseline-Regelwerk `grundlagen-traceability.md`
+  §Herkunfts-Anker, Geltungsbereich). Ihre **Urteilsgrundlage** hat noch keinen Träger: Dass die
+  prüfende Rolle die Grenze liest, entscheidet der Reviewer, und der Vorgang dafür hat jetzt eine
+  Lifecycle-Adresse (Folge-Slices unten).
+  **Benannte Lücke, gezählt statt verkörpert:** Kein Modul des Doku-Gates hält eine **Instanz** gegen
+  die Vorlage, die das Instanz-Register [`harness/migration.md`](../../../../harness/migration.md)
+  ihr zuordnet. Genau daran ist das MEDIUM entstanden und unentdeckt durch ein grünes
+  `make docs-check` gegangen. Die Lücke steht als Registereintrag und wartet auf ihre Schwelle; ein
+  Sensor wird hier **nicht** behauptet
+  ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+- **Beobachtungs-Register (`../observations/`):** fortgeschrieben — **fünf** Verzeichnisse neu
+  angelegt, **dreizehn** Belege geschrieben, verteilt auf **zwei** Vorgänge. Der Zähler wird nicht
+  gesetzt; er folgt aus den Dateien
+  (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`, keine
+  Erwartungswerte).
+
+  **Zwei Vorgangs-Kennungen, nicht vier.** `slice-flache-welle-ist-eroeffnet-nicht-geplant` trägt,
+  was das Review dieses Slice fand; `2026-09-14-adr-0048-eigentum-haengt-am-vorgang` trägt, was die
+  drei Konsistenzrunden an der Entscheidung fanden. Die drei Runden sind **ein** Vorgang: Sie prüfen
+  dieselbe Arbeit an derselben Datei, und ein Vorgang zählt einmal — sonst misst der Zähler
+  Iterationstiefe statt Wiederholung. Die Form folgt dem Bestand, der eine ADR-Arbeit und eine
+  einzelne Konsistenzrunde bereits als Vorgangs-Kennung führt.
+
+  | Eintrag (`BEO-ALL/<slug>`) | Vorgang | Zähler danach |
+  |---|---|---|
+  | `vendored-vorlage-nennt-pfad-den-das-adoptierende-repo-nicht-fuehrt` | Slice | 2× |
+  | `baseline-aussage-ohne-mess-tag` | **beide** | 4× |
+  | `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch` | Slice | 20× |
+  | `instanz-und-ihre-ziel-form-fallen-auseinander` *(neu)* | Slice | 1× |
+  | `eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet` *(neu)* | Slice | 1× |
+  | `mess-zusage-trifft-das-eigene-zitat` | ADR-Vorgang | 5× |
+  | `zusammenfassung-staerker-als-ihre-quelle` | ADR-Vorgang | 8× |
+  | `zahl-ohne-kommando-trifft-ihren-gegenstand-nicht` | ADR-Vorgang | 10× |
+  | `uebergabe-an-andere-rolle-ohne-traeger-artefakt` | ADR-Vorgang | 6× |
+  | `festlegung-und-ihr-rumpf-nennen-verschiedene-reichweiten` *(neu)* | ADR-Vorgang | 1× |
+  | `probe-und-ihr-belegter-fall-fallen-auseinander` *(neu)* | ADR-Vorgang | 1× |
+  | `acceptance-trigger-ohne-fach-fuer-den-gemeldeten-befund` *(neu)* | ADR-Vorgang | 1× |
+
+  **Einer bekommt ausdrücklich keinen Beleg, und das ist gemessen.**
+  `BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext` verlangt nach seiner eigenen
+  `observation.md` ein Artefakt, *„dessen Eigentum **eine Quelle** einer anderen Rolle zuweist"*.
+  Für einen vorlagengebundenen Nachzug an einem laufenden Welle-Plan tut das keine — die Messung
+  aus [ADR-0048](../../adr/0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md) §Kontext ist in
+  dieser Closure unabhängig reproduziert (**3** im engen Prüfbereich, **4** in der breiteren
+  Gegenprobe, alle drei Stellen gelesen; keine Erwartungswerte), und die zweite Review-Runde kommt
+  für `docs/plan/planning/README.md` zum selben Ergebnis. Der Zähler bleibt bei **9**. Was
+  stattdessen zutrifft, steht in `eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`
+  — der Klasse, an deren Zähler
+  [ADR-0048](../../adr/0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md) ihren fünften
+  Re-Evaluierungs-Trigger hängt.
+
+  **Aufnahme-Maßstab, damit die nächste Runde ihn prüfen kann.** Eingetragen ist eine Finding-Klasse,
+  wenn ihr Verzeichnis schon besteht · **oder** sie in mindestens zwei der vier Reports auftrat ·
+  **oder** sie an eine repo-weite Praxis mit eigenem Register gebunden ist (das Instanz-Register).
+  **Nicht eingetragen, benannt statt gezählt:** *Stellen-Messung trägt die Folgerung über eine
+  Eigenschaft* — die Regel steht bereits verkörpert als
+  [`MR-055`](../../../../harness/conventions.md#mr-055--eine-stellen-messung-trägt-keine-folgerung-über-eine-eigenschaft),
+  und ihr Eintrag benennt selbst, wo die Rest-Unterklasse geführt wird; ein dritter Pfad teilte sie.
+  Dazu sechs Einmal-Labels, die Formulierungs-Entscheidungen **dieses einen Dokuments** beschreiben
+  (*Auslegungs-Ort nicht als Wahl benannt · Folgepflicht wartet auf einen blockierten
+  Statuswechsel · Acceptance-Trigger zwischen zwei Runden geändert · Begründungssatz widerspricht
+  einer Bedingung derselben Datei · Wiedergabe einer fremden Festlegung richtungsoffen formuliert ·
+  Vollständigkeits-Behauptung über die eigene Aufzählung*) sowie ein INFO ohne Defekt (*Maßstab
+  zwischen zwei Runden stabil*). Tritt eines davon erneut auf, vergibt die nächste Closure die
+  Kennung.
+
+  **Zwei Posten für den Lese-Schritt der nächsten Welle-Closure, damit sie nicht durchrutschen:**
+  `baseline-aussage-ohne-mess-tag` steht mit dieser Closure bei **4×** und trägt weiter `offen` —
+  den Ausgang weist der Lese-Schritt zu, nicht diese Slice-Closure (Wellen-Betrieb). Und der
+  **dritte** Re-Evaluierungs-Trigger von
+  [ADR-0048](../../adr/0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md) ist gefeuert: Dieser
+  Vorgang hat eine Eigentums-Frage an `docs/plan/planning/README.md` gestellt; das gehört ins
+  Trigger-Audit, Schritt 2.
+- **Folge-Slices:** zwei, beide als Datei im Planning-Lifecycle angelegt und als **Kennung** genannt
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.11 — der Lifecycle bewegt sie, diese Notiz friert ein):
+  `slice-die-vorgangs-grenze-erreicht-den-reviewer-skill` (in `next/`) ist die zweite Hälfte des
+  Übergabe-Artefakts zum Konflikt-Verdikt und gibt der einzigen Folgepflicht ohne eigenen Moment
+  eine Adresse; `slice-planning-readme-beschreibt-die-eigenen-lifecycle-verzeichnisse` (in `open/`)
+  ist der Ausgang von Risiko 1 und nimmt den INFO-Befund derselben Datei mit.
+- **Risiken aus §6:** alle drei mit genau einem Ausgang — (1) **eingetreten**, aufgefangen vom
+  Folge-Slice; (2) **entfallen**, mit Messung; (3) **entfallen**, mit Messung. Siehe §6.
+- **Drei Paarungen:** Repo **mit** Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l` → **3**,
+  kein Erwartungswert) — geprüft von der nächsten Welle-Closure, auch für diesen Slice ohne
+  Wellen-Zugehörigkeit. Beide Folge-Slices existieren als Datei, alle zitierten Beobachtungs-Pfade
+  als Verzeichnis mit nicht leerem `evidence/`, und ein Anker ist nicht fällig: Der
+  Steering-Loop-Eintrag oben trägt kein Feld `liegt in`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
