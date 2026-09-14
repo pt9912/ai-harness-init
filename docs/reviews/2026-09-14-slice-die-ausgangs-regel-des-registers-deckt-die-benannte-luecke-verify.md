@@ -158,7 +158,7 @@ Quelle dieses Abschnitts ist der **Diff der fünf Commits**, nicht der Bericht d
 for c in 7a2690a8 2d7ebb8e fae11c44 d16b2875 e763ed11; do git show --pretty=format: --name-only $c; done | sort -u
 # docs/plan/adr/0049-ausgang-traegt-die-benannte-luecke.md
 # docs/plan/adr/README.md
-# docs/plan/planning/in-progress/slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke.md
+# docs/plan/planning/done/slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke.md
 # docs/plan/planning/observations/README.md
 # docs/reviews/2026-09-14-adr-0049-konsistenzrunde.md
 ```

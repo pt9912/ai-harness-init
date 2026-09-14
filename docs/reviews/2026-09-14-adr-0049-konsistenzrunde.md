@@ -38,7 +38,7 @@ reproduzierbar):
 - Der Diff `7a2690a8` (die neue ADR, die Index-Zeile, `observations/README.md`) und seine
   Commit-Message
 - Der Slice-Plan
-  [`slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke`](../plan/planning/in-progress/slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke.md)
+  [`slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke`](../plan/planning/done/slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke.md)
   — §1 Abgrenzung, §2 DoD, §5 Closure-Trigger, §6 Risiken (und sein Nachtrag `2d7ebb8e`)
 - Die weiteren in der `Bezug:`-Zeile aktiven ADRs, soweit sie eine Aussage tragen:
   [ADR-0034](../plan/adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
