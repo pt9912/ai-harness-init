@@ -330,6 +330,31 @@ waechter_bricht_ab() {
 	echo "full-smoke: Waechter greift ($kennung): make $ziel RANGE=$range bricht ab, ohne ein Modul zu fahren."
 }
 
+# blind_gruen_ohne_waechter <repo> <ziel> <kennung> faehrt ein bewachtes Target OHNE das
+# Doc-Gate-Fragment — `-f d-check.mk` DIREKT, dieselbe Form wie `make smoke` — und erwartet
+# ueber der leeren Range die Klasse, gegen die der Waechter steht: "0 Befund(e)", Exit 0.
+# Gefahren werden BEIDE history-lesenden Targets; eine Haelfte ohne eigene Messung waere eine
+# verlinkte Behauptung (AGENTS.md §3.6).
+blind_gruen_ohne_waechter() {
+	local repo="$1" ziel="$2" kennung="$3"
+	local roh="" roh_rc=0 rohgrund="" rohflach=""
+	roh="$( make --no-print-directory -C "$repo" -f d-check.mk "$ziel" RANGE=HEAD..HEAD 2>&1 )" || roh_rc=$?
+	rohflach="$(tr -s '[:space:]' ' ' <<<"$roh")"
+	if [ "$roh_rc" -ne 0 ]; then
+		rohgrund="das Modul ohne den Waechter endet mit Exit $roh_rc statt mit 0"
+	elif ! grep -qF -- '0 Befund(e)' <<<"$rohflach"; then
+		rohgrund="das Modul meldet ueber der leeren Range nicht '0 Befund(e)' — der Anlass ist hier nicht reproduziert"
+	fi
+	if [ -n "$rohgrund" ]; then
+		echo "full-smoke: FEHLER — $kennung (d-check.mk direkt, $ziel): $rohgrund. Ausgabe:" >&2
+		printf '%s\n' "$roh" >&2
+		einordnen "make -f d-check.mk $ziel im flachen Klon ($kennung)" "$roh"
+		exit 1
+	fi
+	echo "full-smoke: OHNE den Waechter meldet dasselbe Modul ueber derselben leeren Range gruen ($ziel) — die Klasse 'blind und gruen', gegen die der Waechter steht:"
+	grep -F -- '0 Befund(e)' <<<"$roh" | sed -n '1p' | sed 's/^/full-smoke:   /'
+}
+
 vorlauf_waechter_im_ziel() {
 	local repo="$1" kennung="$2"
 	local klon="$tmpklon/flach" voll="$tmpklon/voll"
@@ -407,23 +432,10 @@ vorlauf_waechter_im_ziel() {
 
 	# (d) OHNE DEN WAECHTER ist dieselbe leere Range "0 Befund(e)", Exit 0 — genau die
 	# Klasse, gegen die er steht. Gefahren wird d-check.mk DIREKT: das Modul ohne das
-	# Doc-Gate-Fragment (dieselbe Form wie `make smoke`, `-f d-check.mk`).
-	local roh="" roh_rc=0 rohgrund="" rohflach=""
-	roh="$( make --no-print-directory -C "$klon" -f d-check.mk doc-immutable RANGE=HEAD..HEAD 2>&1 )" || roh_rc=$?
-	rohflach="$(tr -s '[:space:]' ' ' <<<"$roh")"
-	if [ "$roh_rc" -ne 0 ]; then
-		rohgrund="das Modul ohne den Waechter endet mit Exit $roh_rc statt mit 0"
-	elif ! grep -qF -- '0 Befund(e)' <<<"$rohflach"; then
-		rohgrund="das Modul meldet ueber der leeren Range nicht '0 Befund(e)' — der Anlass ist hier nicht reproduziert"
-	fi
-	if [ -n "$rohgrund" ]; then
-		echo "full-smoke: FEHLER — $kennung (d-check.mk direkt): $rohgrund. Ausgabe:" >&2
-		printf '%s\n' "$roh" >&2
-		einordnen "make -f d-check.mk doc-immutable im flachen Klon ($kennung)" "$roh"
-		exit 1
-	fi
-	echo "full-smoke: OHNE den Waechter meldet dasselbe Modul ueber derselben leeren Range gruen — die Klasse 'blind und gruen', gegen die der Waechter steht:"
-	grep -F -- '0 Befund(e)' <<<"$roh" | sed -n '1p' | sed 's/^/full-smoke:   /'
+	# Doc-Gate-Fragment (dieselbe Form wie `make smoke`, `-f d-check.mk`) — und zwar an
+	# beiden history-lesenden Targets, weil die Zusage des Fragments beide nennt.
+	blind_gruen_ohne_waechter "$klon" doc-immutable "$kennung"
+	blind_gruen_ohne_waechter "$klon" doc-commits "$kennung"
 
 	# (e) DIE GEGENPROBE: derselbe Aufruf auf einem VOLLSTAENDIGEN Klon derselben Quelle,
 	# mit der Range, die der flache Klon nicht aufloesen konnte. Er bleibt gruen — der

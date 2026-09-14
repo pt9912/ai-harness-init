@@ -207,6 +207,32 @@ func TestAdaptMK_MissingAnchor(t *testing.T) {
 	}
 }
 
+// TestAdaptMK_BrichtBeiFehlendemVorbindungsTarget: das Doc-Gate-Fragment haengt den
+// Vorlauf-Waechter als Vorbedingung vor `doc-immutable` und `doc-commits`. Fuehrt das
+// erzeugte d-check.mk eines der zwei Ziele nicht, hat die Vorbindungs-Zeile dort kein
+// Rezept — `make` meldet ueber dem Ziel dann Exit 0 und faehrt allein den Waechter, wo es
+// ohne die Zeile mit "Keine Regel" abbraeche (LH-QA-01, MR-017). Die Adaption bricht darum
+// ab, statt das Fragment ueber dieser Luecke zu schreiben.
+func TestAdaptMK_BrichtBeiFehlendemVorbindungsTarget(t *testing.T) {
+	raw, err := os.ReadFile(filepath.Join("testdata", "raw-print-mk.txt"))
+	if err != nil {
+		t.Fatalf("Fixture lesen: %v", err)
+	}
+	// Die unveraenderte --print-mk-Ausgabe traegt beide Ziele — die Adaption laeuft.
+	if _, err := emit.AdaptMK(raw, "sha256:deadbeef"); err != nil {
+		t.Fatalf("AdaptMK ueber der vollstaendigen Fixture: %v", err)
+	}
+	for _, ziel := range []string{"doc-immutable", "doc-commits"} {
+		ohne := strings.Replace(string(raw), "\n"+ziel+":", "\n"+ziel+"_entfernt:", 1)
+		if ohne == string(raw) {
+			t.Fatalf("die Fixture fuehrt das Target %q nicht — der Fall misst nichts", ziel)
+		}
+		if _, err := emit.AdaptMK([]byte(ohne), "sha256:deadbeef"); err == nil {
+			t.Errorf("AdaptMK ohne das Target %q: kein Fehler — die Vorbindung haette dort kein Rezept (LH-QA-01)", ziel)
+		}
+	}
+}
+
 // mkVar zieht den Wert einer `<name> ?= <wert>`-Zuweisung aus einem d-check.mk.
 func mkVar(t *testing.T, mkPath, name string) string {
 	t.Helper()

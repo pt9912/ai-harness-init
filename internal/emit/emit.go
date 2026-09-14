@@ -60,24 +60,26 @@ const DocGateMkPath = "harness/mk/doc-gate.mk"
 // `doc-immutable: history-range-guard` (und dieselbe fuer `doc-commits`) ergaenzt die
 // Targets aus d-check.mk, ohne ihr Rezept anzuruehren — die Datei schreibt das Werkzeug
 // bei jedem Bootstrap kanonisch neu, ein zweites Rezept hier waere beim naechsten Lauf weg.
-// Beide Targets stehen NICHT in GATE_CHECKS: ihre Range setzt der Aufrufer, ohne sie ist
-// der Pruefbereich nicht hermetisch.
+// Die Vorbindung ist nur zulaessig, solange d-check.mk die zwei Targets fuehrt
+// (requireVorbindungsTargets). Beide Targets stehen NICHT in GATE_CHECKS: ihre Range setzt
+// der Aufrufer, ohne sie ist der Pruefbereich nicht hermetisch.
 const docGateMk = `# harness/mk/doc-gate.mk — Doc-Gate-Fragment, emittiert von ai-harness-init.
 # Bindet das tool-generierte d-check.mk ein (Befund-Gate docs-check) und haengt
 # docs-check an GATE_CHECKS an; der Root-Aggregator faehrt es via make gates.
 include d-check.mk
 
 # VORLAUF-WAECHTER fuer die zwei history-lesenden Targets: ueber einer aufloesbaren,
-# aber LEEREN Commit-Range melden doc-immutable und doc-commits "0 Befund(e)",
-# Exit 0 — gruen ueber leerem Pruefbereich. Beide haengen darum an
-# history-range-guard, der VOR dem Modul-Lauf mit einer Meldung abbricht; das
-# Rezept der beiden Targets bleibt das aus d-check.mk.
+# aber LEEREN Commit-Range melden doc-immutable und doc-commits am emittierten
+# .d-check.yml "0 Befund(e)", Exit 0 — gruen ueber leerem Pruefbereich. Beide haengen
+# darum an history-range-guard, der VOR dem Modul-Lauf mit einer Meldung abbricht; das
+# Rezept der beiden Targets bleibt das aus d-check.mk, und die Emission prueft, dass
+# diese Datei die zwei Targets fuehrt.
 #
 # KEIN GATE: die Range setzt der Aufrufer, ohne sie ist der Pruefbereich nicht
 # hermetisch (LH-QA-01) — das Ziel steht darum nicht in GATE_CHECKS.
 .PHONY: history-range-guard
 
-history-range-guard: ## Vorlauf-Waechter: RANGE muss aufloesbar UND nicht leer sein (STAGED=1 prueft den Index)
+history-range-guard: ## Vorlauf-Waechter: RANGE muss aufloesbar UND nicht leer sein (STAGED=1 prueft den Index; den STAGED-Zweig fuehrt nur doc-immutable)
 	@bash tools/harness/history-range-guard.sh "$(if $(STAGED),--staged,$(RANGE))"
 
 doc-immutable: history-range-guard
@@ -90,6 +92,26 @@ GATE_CHECKS += docs-check
 // netzlose Waechter auf die docs-check-Verdrahtung, weil DocGate selbst Docker braucht
 // (--print-mk). Ohne ihn traege nur full-smoke die Zusage „docs-check haengt in gates".
 func DocGateMk() string { return docGateMk }
+
+// vorbindungsTargets sind die zwei history-lesenden Targets, an die das Doc-Gate-Fragment den
+// Vorlauf-Waechter als Vorbedingung haengt (s. docGateMk). Die Bindung setzt voraus, dass das
+// erzeugte d-check.mk sie fuehrt: eine Vorbindungs-Zeile ohne Rezept macht aus einem fehlenden
+// Target einen STILLEN Erfolg — `make doc-immutable` meldet dann Exit 0 und faehrt allein den
+// Waechter, wo es ohne die Zeile mit "Keine Regel" abbraeche (LH-QA-01, MR-017: fail-closed ist
+// der Default fuer emittierte Pruefbereiche).
+var vorbindungsTargets = []string{"doc-immutable", "doc-commits"}
+
+// requireVorbindungsTargets prueft die Target-Zeile im erzeugten d-check.mk, nicht ein
+// Vorkommen des Namens: `.PHONY: doc-immutable` allein traegt kein Rezept und liesse dieselbe
+// stille Luecke offen.
+func requireVorbindungsTargets(mk string) error {
+	for _, ziel := range vorbindungsTargets {
+		if !strings.Contains(mk, "\n"+ziel+":") {
+			return fmt.Errorf("--print-mk-Ausgabe fuehrt das Target %q nicht — die Vorbindung des Doc-Gate-Fragments haette dort kein Rezept (LH-QA-01)", ziel)
+		}
+	}
+	return nil
+}
 
 // Options steuert den Doc-Gate-Emit.
 type Options struct {
@@ -141,7 +163,9 @@ func DocGate(ctx context.Context, targetDir string, opts Options) error {
 // doc-check -> docs-check umbenannt (advisory doc-*-Targets bleiben), DCHECK_DIGEST
 // auf digest gepinnt und der doc-help-Grep auf docs?- erweitert (die MR-010-Handgriffe,
 // hier mechanisch). Bricht ab, wenn sich das --print-mk-Format so aendert, dass ein
-// Handgriff nicht greift — dann ist Tier-2 (echter Lauf) die Instanz, die es faengt.
+// Handgriff nicht greift, und wenn eines der zwei Targets fehlt, an die das Doc-Gate-
+// Fragment den Vorlauf-Waechter haengt (requireVorbindungsTargets) — dann ist Tier-2
+// (echter Lauf) die Instanz, die es faengt.
 func AdaptMK(raw []byte, digest string) ([]byte, error) {
 	const anchor = "DCHECK_IMAGE ?="
 	s := string(raw)
@@ -167,6 +191,11 @@ func AdaptMK(raw []byte, digest string) ([]byte, error) {
 		return nil, errors.New("weitung des doc-help-grep schlug fehl (--print-mk-format geaendert?)")
 	case digest != "" && !strings.Contains(body, "DCHECK_DIGEST ?= "+digest):
 		return nil, errors.New("pinnen von DCHECK_DIGEST fehlgeschlagen (--print-mk-format geaendert?)")
+	}
+	// Die zwei Vorbindungs-Zeilen des Doc-Gate-Fragments setzen diese Targets voraus — ohne
+	// die Pruefung waere ein fehlendes Rezept ein stiller Erfolg statt eines lauten Abbruchs.
+	if err := requireVorbindungsTargets(body); err != nil {
+		return nil, err
 	}
 	return []byte(adopterHeader + body), nil
 }

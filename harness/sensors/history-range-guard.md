@@ -24,11 +24,16 @@ Setzung 3). Geprüft wird darum die **Range** (`git rev-list --count`), nicht di
   explizit statt schweigend mit Exit 0 zu enden; findet sich mindestens eine, bleibt die Ausgabe
   leer — den Inhalt der gestagten Änderung prüft dann das d-check-Modul selbst, nicht dieser
   Wächter.
-- **`doc-commits` selbst ist heute unbedienbar**, unabhängig von der Range: der `commits:`-Block
+- **`doc-commits` im Dogfood ist unbedienbar**, unabhängig von der Range: der `commits:`-Block
   in [`.d-check.yml`](../../.d-check.yml) trägt eine nicht-leere `id-patterns`-Liste, und jeder
   `--range`-Lauf des `commits`-Moduls bricht darunter ab (Exit 2) — Einzelheiten im Sensor
-  [`commit-msg-check`](commit-msg-check.md). Der Wächter selbst bleibt für `doc-immutable`
-  unverändert wirksam; betroffen ist nur das zweite der beiden Ziele, die er vorschaltet.
+  [`commit-msg-check`](commit-msg-check.md). Das emittierte `.d-check.yml`
+  (`internal/emit/templates/d-check.yml`) führt keinen `commits:`-Block; das Ziel ist darum
+  bedienbar, und dort ist die Zusage messbar. Der Wächter bleibt für `doc-immutable`
+  unverändert wirksam.
+- **`STAGED=1` gehört zu `doc-immutable`.** Nur dessen Rezept in `d-check.mk` führt einen
+  `STAGED`-Zweig (`--staged`); `doc-commits` übergibt allein `--range $(RANGE)`. Ein Aufruf
+  `make doc-commits STAGED=1` prüft den Index also im Wächter, nicht im Modul.
 - `.d-check.yml` aktiviert für `docs-check` selbst nur `links, anchors, ids, matrix, codepaths,
   spans, planning, targets` — keines davon liest Historie. Ein history-lesender Job braucht
   `fetch-depth: 0` an seinem Checkout **und** diesen Wächter davor.
@@ -66,3 +71,14 @@ dieselbe Funktion. Rot gesehen wird die Ziel-Fassung in
 [`make full-smoke`](full-smoke.md): ein Klon der Tiefe 1 bricht über einer auflösbaren, aber
 leeren Range an beiden Targets mit der Meldung des Wächters ab, dieselbe Range auf einem
 vollständigen Klon bleibt grün.
+
+**Beide Hälften der Zusage sind an beiden Targets gemessen.** Der blinde Grün-Fall — dieselbe
+leere Range über `-f d-check.mk`, also ohne das Doc-Gate-Fragment — meldet für `doc-immutable`
+**und** `doc-commits` `0 Befund(e)` bei Exit 0; der Abbruch des Wächters ist für beide
+gefahren.
+
+**Die Emission prüft die Voraussetzung der Bindung.** Beim Bootstrap bricht `AdaptMK`
+(`internal/emit/emit.go`) ab, wenn das erzeugte `d-check.mk` eines der zwei Targets nicht
+führt: die Vorbindungs-Zeile hätte dort kein Rezept, und `make` endete über dem Ziel mit
+Erfolg, statt mit `Keine Regel` abzubrechen — fail-closed
+([`MR-017`](../conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)).

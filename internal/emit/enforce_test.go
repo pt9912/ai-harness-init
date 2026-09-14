@@ -220,6 +220,14 @@ func TestEnforce_GuardBashAwkOnly(t *testing.T) {
 // Vorlauf-Waechter entscheidet ueber die Commit-Zahl der angeforderten Range — der Wert,
 // an dem der Leerfall haengt — und ruft dazu `git`, kein Image.
 //
+// DIE ANKER SIND DIE AUFGERUFENEN FORMEN, NICHT IHRE STICHWORTE. Der Kopfkommentar des
+// Skripts nennt dieselben Kommandos und dieselben Zweige, die es ausfuehrt: ein Anker auf
+// ein Stichwort waere aus der Prosa erfuellbar und bliebe gruen, wenn die Ausfuehrung
+// selbst wegfaellt. Geprueft wird darum die Aufrufform samt Argument
+// (`git rev-list --count "$range"`), die Vergleichsform des `--staged`-Zweigs
+// (`[ "$range" = "--staged" ]`) und der Wortlaut der Leerfall-Meldung, den der Code nur
+// im Fehlerzweig ausgibt.
+//
 // DIE ABWESENHEIT WIRD HIER NICHT GEGREPT: „docker" steht im erklaerenden Kopfkommentar,
 // und ein String-Grep darauf waere bruechig (dieselbe Grenze, die
 // TestEnforce_GuardBashAwkOnly fuer „node/jq" benennt). Geprueft werden die positiven
@@ -231,18 +239,39 @@ func TestEnforce_HistoryRangeGuardZaehltDieRangeMitGit(t *testing.T) {
 	if guard == "" {
 		t.Fatal("tools/harness/history-range-guard.sh nicht emittiert (EnforceFile leer)")
 	}
-	for _, want := range []string{"git rev-list --count", "--staged", "set -euo pipefail"} {
+	for _, want := range []string{
+		`git rev-list --count "$range"`,
+		`[ "$range" = "--staged" ]`,
+		"set -euo pipefail",
+	} {
 		if !strings.Contains(guard, want) {
 			t.Errorf("der Vorlauf-Waechter traegt %q nicht:\n%s", want, guard)
 		}
 	}
 	// Der Leerfall ist der Fall, den er faengt — die Meldung ist Teil des Vertrags (ein
 	// Abbruch ohne Grund waere von einem Tippfehler nicht zu unterscheiden).
-	if !strings.Contains(guard, "LEER") {
+	if !strings.Contains(guard, "ist aufloesbar, aber LEER (0 Commits)") {
 		t.Errorf("der Waechter meldet den Leerfall nicht:\n%s", guard)
 	}
 	if strings.Contains(guard, "harness/tools/") {
 		t.Errorf("der Waechter nennt das lokale harness/tools/ (MR-005, emittiertes Layout ist tools/harness/):\n%s", guard)
+	}
+}
+
+// TestEnforce_ZielpfadeImEmittiertenLayout (MR-005): der Emit legt die Mechanik unter
+// tools/harness/ ab, nie unter dem lokal adaptierten harness/tools/. Geprueft wird die
+// GANZE emittierte Pfad-Menge, nicht der jeweils neue Eintrag: eine Pruefung je Eintrag
+// greift erst, wenn jemand ihren Check nachzieht, und ein Skript am lokalen Layout faellt
+// dann durch keine Stelle.
+//
+// GRENZE: geprueft ist der ZIELPFAD. Der INHALT eines Skripts darf das lokale Layout nennen
+// (span-emit.sh nennt den Repo-Pfad, den es beschreibt) — eine Inhalts-Allgemeinpruefung
+// waere darum keine Regel-Aussage.
+func TestEnforce_ZielpfadeImEmittiertenLayout(t *testing.T) {
+	for _, rel := range emit.EnforcePaths() {
+		if strings.Contains(rel, "harness/tools/") {
+			t.Errorf("emittierter Zielpfad %q liegt im lokalen harness/tools/ — emittiert ist tools/harness/ (MR-005)", rel)
+		}
 	}
 }
 
