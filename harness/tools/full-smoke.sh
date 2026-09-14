@@ -355,6 +355,52 @@ blind_gruen_ohne_waechter() {
 	grep -F -- '0 Befund(e)' <<<"$roh" | sed -n '1p' | sed 's/^/full-smoke:   /'
 }
 
+# f2_ohne_rezept_def <repo> <ziel> <kennung> erwartet den LAUTEN Abbruch ueber einem
+# d-check.mk, das das Ziel nicht DEFINIERT: Exit != 0, die Meldung des Fragments, kein
+# Modul-Lauf. Ein stiller Erfolg (Exit 0) ist der Fall, gegen den die fail-closed Zeile des
+# Fragments steht — vor ihr endete `make <ziel>` dort mit 0 und fuhr allein den Waechter.
+f2_ohne_rezept_def() {
+	local repo="$1" ziel="$2" kennung="$3"
+	local out="" rc=0 flach="" grund=""
+	out="$( make --no-print-directory -C "$repo" "$ziel" RANGE=HEAD~1..HEAD 2>&1 )" || rc=$?
+	flach="$(tr -s '[:space:]' ' ' <<<"$out")"
+	if [ "$rc" -eq 0 ]; then
+		grund="make $ziel blieb ueber einem d-check.mk OHNE die Ziel-Definition GRUEN (Exit 0) — die Vorbindung hat dort kein Rezept"
+	elif ! grep -qF -- "fuehrt '$ziel' nicht" <<<"$flach"; then
+		grund="der Abbruch nennt das fehlende Ziel nicht (rot aus falschem Grund?)"
+	elif grep -qF -- "Datei(en) geprüft" <<<"$flach"; then
+		grund="der Modul-Lauf fand trotzdem statt"
+	fi
+	if [ -n "$grund" ]; then
+		echo "full-smoke: FEHLER — $kennung (d-check.mk ohne Ziel-Definition, $ziel): $grund. Ausgabe:" >&2
+		printf '%s\n' "$out" >&2
+		einordnen "make $ziel ueber einem d-check.mk ohne Ziel-Definition ($kennung)" "$out"
+		exit 1
+	fi
+	echo "full-smoke: F-2-Fall ($kennung): make $ziel bricht ueber einem d-check.mk ohne Ziel-Definition LAUT ab, ohne ein Modul zu fahren."
+}
+
+# f2_mit_rezept_def <repo> <ziel> <kennung> ist die gruene Haelfte derselben Sonde: derselbe
+# Aufruf ueber dem UNVERFAELSCHTEN d-check.mk — Waechter greift, das Modul laeuft, Exit 0.
+f2_mit_rezept_def() {
+	local repo="$1" ziel="$2" kennung="$3"
+	local out="" rc=0 flach="" grund=""
+	out="$( make --no-print-directory -C "$repo" "$ziel" RANGE=HEAD~1..HEAD 2>&1 )" || rc=$?
+	flach="$(tr -s '[:space:]' ' ' <<<"$out")"
+	if [ "$rc" -ne 0 ]; then
+		grund="derselbe Aufruf endet ueber dem unverfaelschten d-check.mk mit Exit $rc statt mit 0"
+	elif ! grep -qF -- 'Datei(en) geprüft' <<<"$flach"; then
+		grund="der Modul-Lauf fand nicht statt — das Gruen waere dann keines des Moduls"
+	fi
+	if [ -n "$grund" ]; then
+		echo "full-smoke: FEHLER — $kennung (d-check.mk mit Ziel-Definition, $ziel): $grund. Ausgabe:" >&2
+		printf '%s\n' "$out" >&2
+		einordnen "make $ziel ueber dem unverfaelschten d-check.mk ($kennung)" "$out"
+		exit 1
+	fi
+	echo "full-smoke: F-2-Fall ($kennung): derselbe Aufruf ueber dem unverfaelschten d-check.mk bleibt gruen ($ziel), der Modul-Lauf fand statt."
+}
+
 vorlauf_waechter_im_ziel() {
 	local repo="$1" kennung="$2"
 	local klon="$tmpklon/flach" voll="$tmpklon/voll"
@@ -459,6 +505,22 @@ vorlauf_waechter_im_ziel() {
 	echo "full-smoke: Gegenprobe ($kennung): dieselbe Range auf dem vollstaendigen Klon bleibt gruen —"
 	grep -F -- 'aufgeloest, 1 Commit(s) — OK' <<<"$voll_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
 	grep -F -- 'Datei(en) geprüft' <<<"$voll_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
+
+	# (f) DER F-2-FALL am gebootstrappten Baum: die Vorbindungs-Zeile steht ueber einem
+	# Target, das das d-check.mk DEFINIEREN muss. Fuehrt es das Ziel nicht, hat sie dort kein
+	# Rezept — der Aufruf des Ziels endet dann mit Erfolg und faehrt allein den Waechter (der
+	# laute Fehlschlag davor war "Keine Regel"). Verfaelscht wird die DEFINITION: die
+	# Ziel-Zeile wird umbenannt, ihre Rezept-Zeilen bleiben an ihr, und die .PHONY-Marke des
+	# Ziels steht weiter da — geprueft ist also die Definition, nicht die Marke. Beide
+	# Richtungen ueber demselben Klon: mit verfaelschtem d-check.mk der laute Abbruch, ueber
+	# dem unverfaelschten das Gruen aus (e) fuer doc-immutable und der Modul-Lauf fuer
+	# doc-commits.
+	cp "$voll/d-check.mk" "$voll/d-check.mk.orig"
+	sed -i -E 's/^(doc-immutable|doc-commits):/doc-ohne-definition-\1:/' "$voll/d-check.mk"
+	f2_ohne_rezept_def "$voll" doc-immutable "$kennung"
+	f2_ohne_rezept_def "$voll" doc-commits "$kennung"
+	mv "$voll/d-check.mk.orig" "$voll/d-check.mk"
+	f2_mit_rezept_def "$voll" doc-commits "$kennung"
 }
 
 vorlauf_waechter_im_ziel "$tmprepo" "golang"

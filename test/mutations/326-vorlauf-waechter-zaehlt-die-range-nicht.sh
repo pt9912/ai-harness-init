@@ -13,6 +13,7 @@
 # DER OPERAND TRIFFT NUR DIE AUSFUEHRENDE ZEILE, nicht den Wortlaut im Kopfkommentar: der
 # Kommentar nennt `git rev-list --count` ohne Argument, der Aufruf traegt `"$range"`. Ein
 # Operand auf das blosse Kommando machte aus dem Fall eine Probe darauf, dass IRGENDWO im
-# Skript noch das Stichwort steht — die Prosa erfuellte sie mit.
+# Skript noch das Stichwort steht — die Prosa erfuellte sie mit. Der Dollar des Arguments
+# steht in einer Klammer-Klasse (`[$]`), sonst laese shellcheck ihn als Variable.
 set -euo pipefail
-sed -i 's/git rev-list --count "\$range"/git rev-list --max-count "\$range"/' internal/emit/templates/enforce/history-range-guard.sh
+sed -i 's/git rev-list --count "[$]range"/git rev-list --max-count "[$]range"/' internal/emit/templates/enforce/history-range-guard.sh

@@ -75,6 +75,12 @@ include d-check.mk
 # Rezept der beiden Targets bleibt das aus d-check.mk, und die Emission prueft, dass
 # diese Datei die zwei Targets fuehrt.
 #
+# FAIL-CLOSED, je Ziel: die Vorbindung setzt voraus, dass das eingebundene d-check.mk das
+# Ziel DEFINIERT. Fuehrt es das Ziel nicht, hat die Vorbindung dort kein Rezept — der Aufruf
+# des Ziels endet dann mit Erfolg (Exit 0), statt zu fallen. Die Bedingung liest dieselbe
+# Datei, die das include oben einbindet (grep, kein Bild, kein Netz), und bricht den Aufruf
+# des Ziels bei fehlender Definition mit Exit 2 ab.
+#
 # KEIN GATE: die Range setzt der Aufrufer, ohne sie ist der Pruefbereich nicht
 # hermetisch (LH-QA-01) — das Ziel steht darum nicht in GATE_CHECKS.
 .PHONY: history-range-guard
@@ -82,8 +88,21 @@ include d-check.mk
 history-range-guard: ## Vorlauf-Waechter: RANGE muss aufloesbar UND nicht leer sein (STAGED=1 prueft den Index; den STAGED-Zweig fuehrt nur doc-immutable)
 	@bash tools/harness/history-range-guard.sh "$(if $(STAGED),--staged,$(RANGE))"
 
+ifeq ($(shell grep -c '^doc-immutable:' d-check.mk 2>/dev/null || true),0)
+doc-immutable:
+	@echo "harness/mk/doc-gate.mk: d-check.mk fuehrt 'doc-immutable' nicht — die Vorbindung des Vorlauf-Waechters haette dort kein Rezept (LH-QA-01)." >&2
+	@exit 2
+else
 doc-immutable: history-range-guard
+endif
+
+ifeq ($(shell grep -c '^doc-commits:' d-check.mk 2>/dev/null || true),0)
+doc-commits:
+	@echo "harness/mk/doc-gate.mk: d-check.mk fuehrt 'doc-commits' nicht — die Vorbindung des Vorlauf-Waechters haette dort kein Rezept (LH-QA-01)." >&2
+	@exit 2
+else
 doc-commits: history-range-guard
+endif
 
 GATE_CHECKS += docs-check
 `
@@ -99,13 +118,15 @@ func DocGateMk() string { return docGateMk }
 // Target einen STILLEN Erfolg — `make doc-immutable` meldet dann Exit 0 und faehrt allein den
 // Waechter, wo es ohne die Zeile mit "Keine Regel" abbraeche (LH-QA-01, MR-017: fail-closed ist
 // der Default fuer emittierte Pruefbereiche).
-var vorbindungsTargets = []string{"doc-immutable", "doc-commits"}
+//
+// Als Funktion (nicht als Paket-Variable), gochecknoglobals-konform.
+func vorbindungsTargets() []string { return []string{"doc-immutable", "doc-commits"} }
 
 // requireVorbindungsTargets prueft die Target-Zeile im erzeugten d-check.mk, nicht ein
 // Vorkommen des Namens: `.PHONY: doc-immutable` allein traegt kein Rezept und liesse dieselbe
 // stille Luecke offen.
 func requireVorbindungsTargets(mk string) error {
-	for _, ziel := range vorbindungsTargets {
+	for _, ziel := range vorbindungsTargets() {
 		if !strings.Contains(mk, "\n"+ziel+":") {
 			return fmt.Errorf("--print-mk-Ausgabe fuehrt das Target %q nicht — die Vorbindung des Doc-Gate-Fragments haette dort kein Rezept (LH-QA-01)", ziel)
 		}

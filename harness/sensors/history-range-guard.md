@@ -70,12 +70,24 @@ Die emittierte Fassung unterscheidet sich in einem Punkt von
 dieselbe Funktion. Rot gesehen wird die Ziel-Fassung in
 [`make full-smoke`](full-smoke.md): ein Klon der Tiefe 1 bricht über einer auflösbaren, aber
 leeren Range an beiden Targets mit der Meldung des Wächters ab, dieselbe Range auf einem
-vollständigen Klon bleibt grün.
+vollständigen Klon bleibt grün. Dieselbe Stufe fährt die zwei Richtungen der Vorbindung
+selbst: über einem `d-check.mk` **ohne** die Ziel-Definition bricht `make doc-immutable` bzw.
+`make doc-commits` mit Exit 2 und der Meldung des Fragments ab, über dem **unverfälschten**
+d-check.mk greift der Wächter und das Modul läuft (Exit 0).
 
 **Beide Hälften der Zusage sind an beiden Targets gemessen.** Der blinde Grün-Fall — dieselbe
 leere Range über `-f d-check.mk`, also ohne das Doc-Gate-Fragment — meldet für `doc-immutable`
 **und** `doc-commits` `0 Befund(e)` bei Exit 0; der Abbruch des Wächters ist für beide
 gefahren.
+
+**Das Fragment ist selbst fail-closed, je Ziel.** Es prüft vor der Vorbindung, ob das
+eingebundene `d-check.mk` das Ziel definiert — dieselbe Datei, die sein `include` einbindet,
+mit `grep`, ohne Bild und ohne Netz. Fehlt die Definition, bricht `make doc-immutable` bzw.
+`make doc-commits` mit Exit 2 und einer Meldung ab; die Vorbindung hätte dort kein Rezept,
+und `make` endete sonst mit Erfolg (Exit 0), statt zu fallen. Die Bedingung liest die
+**Ziel-Zeile**, nicht die `.PHONY`-Marke: `make` führt `.PHONY` nicht als abfragbare Variable
+(`$(.PHONY)` expandiert leer, gemessen), und eine Datei ohne Ziel-Zeile bleibt ohne Rezept,
+auch wenn ihre `.PHONY`-Marke stehenbleibt.
 
 **Die Emission prüft die Voraussetzung der Bindung.** Beim Bootstrap bricht `AdaptMK`
 (`internal/emit/emit.go`) ab, wenn das erzeugte `d-check.mk` eines der zwei Targets nicht
