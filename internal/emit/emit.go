@@ -76,11 +76,12 @@ include d-check.mk
 # diese Datei die zwei Targets fuehrt.
 #
 # FAIL-CLOSED, je Ziel: die Vorbindung setzt voraus, dass das eingebundene d-check.mk das
-# Ziel MIT REZEPT fuehrt. Nur der belegte Ausgang waehlt die Bindung; jeder andere — kein
-# Treffer, eine Ziel-Zeile ohne Rezept, kein Probe-Werkzeug (awk) oder eine leere Ausgabe —
-# faellt in den Abbruch mit Exit 2. Sonst stuende die Vorbindung ueber einem Ziel ohne Rezept,
-# und der Aufruf endete mit Erfolg (Exit 0), statt zu fallen. Gelesen wird dieselbe Datei, die
-# das include oben einbindet (awk, kein Bild, kein Netz).
+# Ziel MIT REZEPT fuehrt. Die Probe steht EINMAL (DOC_GATE_ZIEL) und wird je Ziel mit seinem
+# Namen aufgerufen; nur der belegte Ausgang waehlt die Bindung, jeder andere — kein Treffer,
+# eine Ziel-Zeile ohne Rezept, kein Probe-Werkzeug (awk) oder eine leere Ausgabe — faellt in
+# den Abbruch mit Exit 2. Eine Vorbindung ueber einem Ziel ohne Rezept laesst make mit Exit 0
+# enden und den Waechter allein laufen; dagegen steht diese Bedingung. Gelesen wird dieselbe
+# Datei, die das include oben einbindet (awk, kein Bild, kein Netz).
 #
 # KEIN GATE: die Range setzt der Aufrufer, ohne sie ist der Pruefbereich nicht
 # hermetisch (LH-QA-01) — das Ziel steht darum nicht in GATE_CHECKS.
@@ -89,7 +90,13 @@ include d-check.mk
 history-range-guard: ## Vorlauf-Waechter: RANGE muss aufloesbar UND nicht leer sein (STAGED=1 prueft den Index; den STAGED-Zweig fuehrt nur doc-immutable)
 	@bash tools/harness/history-range-guard.sh "$(if $(STAGED),--staged,$(RANGE))"
 
-ifeq ($(shell awk '/^doc-immutable:/{f=1;next} f&&/^[[:space:]]*$$/{next} f{print (substr($$0,1,1)=="\t" ? "da" : "rezeptlos");exit}' d-check.mk 2>/dev/null),da)
+# DOC_GATE_ZIEL <ziel> — die EINE Probe: "da", wenn d-check.mk das Ziel mit einer
+# Rezept-Zeile fuehrt, "rezeptlos", wenn es die Ziel-Zeile ohne Rezept traegt. Kein Treffer,
+# ein fehlendes Probe-Werkzeug und jede leere Ausgabe lassen den Vergleich scheitern.
+# Rekursiv zugewiesen (nicht :=), sonst expandiert $(1) schon hier.
+DOC_GATE_ZIEL = $(shell awk '/^$(1):/{f=1;next} f&&/^[[:space:]]*$$/{next} f{print (substr($$0,1,1)=="\t" ? "da" : "rezeptlos");exit}' d-check.mk 2>/dev/null)
+
+ifeq ($(call DOC_GATE_ZIEL,doc-immutable),da)
 doc-immutable: history-range-guard
 else
 doc-immutable:
@@ -97,7 +104,7 @@ doc-immutable:
 	@exit 2
 endif
 
-ifeq ($(shell awk '/^doc-commits:/{f=1;next} f&&/^[[:space:]]*$$/{next} f{print (substr($$0,1,1)=="\t" ? "da" : "rezeptlos");exit}' d-check.mk 2>/dev/null),da)
+ifeq ($(call DOC_GATE_ZIEL,doc-commits),da)
 doc-commits: history-range-guard
 else
 doc-commits:

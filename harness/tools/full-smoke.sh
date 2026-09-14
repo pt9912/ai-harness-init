@@ -357,9 +357,9 @@ blind_gruen_ohne_waechter() {
 
 # vorbindung_ohne_zieldefinition <repo> <ziel> <kennung> erwartet den LAUTEN Abbruch ueber
 # einem d-check.mk, in dem die Ziel-Definition fehlt — die Ziel-Zeile selbst ODER ihr Rezept:
-# Exit != 0, die Meldung des Fragments, kein Modul-Lauf. Ein stiller Erfolg (Exit 0) ist der
-# Fall, gegen den die fail-closed Zeile des Fragments steht — vor ihr endete `make <ziel>`
-# dort mit 0 und fuhr allein den Waechter.
+# Exit != 0, die Meldung des Fragments, kein Modul-Lauf. Eine Vorbindung ueber einem Ziel
+# ohne Rezept laesst allein den Waechter laufen (Exit 0); dagegen steht die fail-closed Zeile
+# des Fragments.
 vorbindung_ohne_zieldefinition() {
 	local repo="$1" ziel="$2" kennung="$3"
 	local out="" rc=0 flach="" grund=""
@@ -535,22 +535,25 @@ vorlauf_waechter_im_ziel() {
 	grep -F -- 'Datei(en) geprüft' <<<"$voll_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
 
 	# (f) DIE VORBINDUNG UEBER EINEM d-check.mk OHNE ZIEL-DEFINITION, am gebootstrappten Baum:
-	# die Vorbindungs-Zeile setzt voraus, dass das Ziel dort MIT REZEPT definiert ist. Fehlt die
-	# Ziel-Zeile oder ihr Rezept, endet der Aufruf des Ziels sonst mit Erfolg und faehrt allein
-	# den Waechter (der laute Fehlschlag davor war "Keine Regel"). Verfaelscht wird die
-	# DEFINITION — die Ziel-Zeile umbenannt bzw. ihr Rezept entfernt, die .PHONY-Marke bleibt
-	# stehen: geprueft ist die Definition mit Rezept, nicht die Marke. Beide Richtungen ueber
-	# demselben Klon: mit verfaelschtem d-check.mk der laute Abbruch, ueber dem unverfaelschten
-	# das Gruen aus (e) fuer doc-immutable und der Modul-Lauf fuer doc-commits.
+	# die Vorbindungs-Zeile setzt voraus, dass das Ziel dort MIT REZEPT definiert ist. Die
+	# fail-closed Zeile des Fragments haelt den Fall auf, in dem make allein den Waechter faehrt
+	# und das Modul nicht (Exit 0). Verfaelscht wird die DEFINITION — die Ziel-Zeile umbenannt
+	# bzw. ihr Rezept entfernt, die .PHONY-Marke bleibt stehen: geprueft ist die Definition mit
+	# Rezept, nicht die Marke. Beide Richtungen ueber demselben Klon: mit verfaelschtem
+	# d-check.mk der laute Abbruch, ueber dem unverfaelschten das Gruen aus (e) fuer
+	# doc-immutable und der Modul-Lauf fuer doc-commits.
 	cp "$voll/d-check.mk" "$voll/d-check.mk.orig"
 	sed -i -E 's/^(doc-immutable|doc-commits):/doc-ohne-definition-\1:/' "$voll/d-check.mk"
 	vorbindung_ohne_zieldefinition "$voll" doc-immutable "$kennung"
 	vorbindung_ohne_zieldefinition "$voll" doc-commits "$kennung"
-	# Zweiter Auslöser derselben Klasse: die Ziel-Zeile bleibt, ihr Rezept geht. Beide
-	# Auslöser sind gemessen gegen dieselbe Erwartung gestellt.
+	# Zweiter Auslöser derselben Klasse: die Ziel-Zeile bleibt, ihr Rezept geht — an BEIDEN
+	# Zielen, denn die Probe ist EINE Quelle und beide Aufrufer lesen sie.
 	cp "$voll/d-check.mk.orig" "$voll/d-check.mk"
 	sed -i '/^doc-immutable:/{n;d}' "$voll/d-check.mk"
 	vorbindung_ohne_zieldefinition "$voll" doc-immutable "$kennung"
+	cp "$voll/d-check.mk.orig" "$voll/d-check.mk"
+	sed -i '/^doc-commits:/{n;d}' "$voll/d-check.mk"
+	vorbindung_ohne_zieldefinition "$voll" doc-commits "$kennung"
 	# Drittens die Randlage: dasselbe verfaelschte d-check.mk OHNE das Probe-Werkzeug im PATH.
 	# Ein unbekannter Ausgang darf nicht in den permissiven Zweig fallen.
 	cp "$voll/d-check.mk.orig" "$voll/d-check.mk"
