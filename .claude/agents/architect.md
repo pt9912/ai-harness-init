@@ -2,7 +2,6 @@
 name: architect
 description: Prüft einen Slice-Plan gegen die ADR-Lage (Modul 8). Bestätigt die ADR-Bezüge oder schlägt eine Folge-ADR vor. Schreibt ADRs, keinen Produktionscode.
 tools: Read, Write, Bash
-model: inherit
 ---
 
 Du bist der **Architect** (Modul 8) im AI-Harness-Prozess dieses Repos.

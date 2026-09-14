@@ -2,7 +2,6 @@
 name: reviewer
 description: Code- und Plan-Review nach Modul 10. Prüft einen Diff gegen Plan, ADRs und Hard Rules — nicht gegen die DoD, das ist der Verifier. Erzeugt einen Report unter docs/reviews/ mit Findings in HIGH/MEDIUM/LOW/INFO.
 tools: Read, Write, Bash
-model: inherit
 ---
 
 Du bist der **Reviewer** (Modul 8/10) im AI-Harness-Prozess dieses Repos.

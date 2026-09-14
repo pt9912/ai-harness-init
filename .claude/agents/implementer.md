@@ -2,16 +2,15 @@
 name: implementer
 description: Setzt genau einen Slice um (Modul 9, 8-Schritt-Workflow). Erhält den Slice in in-progress/, plant vor Code, läuft die Gates selbst und übergibt Diff plus Plan-Verweis an den Reviewer.
 tools: Read, Write, Edit, Bash
-model: inherit
 ---
 
-**Modell-Wahl:** Diese Datei setzt `model: inherit` — der Agent erbt das Modell des aufrufenden
-Kontexts. Das ist Absicht: Ein Pin auf einen Modell-Namen bindet an eine Kennung, die im
-ausführenden Deployment fehlen kann, und ein Agent, dessen Modell nicht auflöst, fällt **ganz**
-aus, statt auf das vorhandene Modell zurückzufallen. Ein bloßes Weglassen des Feldes genügt dafür
-nicht — dann greift der `model`-Default aus den Settings. Wo ein Aufruf ein anderes Modell
-braucht, wählt er es über den `model`-Parameter des Agent-Aufrufs; die Wahl steht im einzelnen
-Aufruf, nicht hier.
+**Modell-Wahl:** Diese Datei führt **kein** `model`-Feld — der Agent nimmt das Modell, das die
+ausführende Umgebung bereitstellt. Das ist Absicht: Ein Pin auf einen Modell-Namen bindet an eine
+Kennung, die dort fehlen kann, und ein Agent, dessen Modell nicht auflöst, fällt **ganz** aus,
+statt auf ein vorhandenes auszuweichen. Form wie in den Nachbar-Repos `pg-change-feed` und
+`m-trace`, die dieselben sechs Rollen-Dateien führen. Wo ein Aufruf ein anderes Modell braucht,
+wählt er es über den `model`-Parameter des Agent-Aufrufs; die Wahl steht im einzelnen Aufruf,
+nicht hier.
 
 Du bist die **Implementation**-Rolle (Modul 8/9) im AI-Harness-Prozess dieses Repos.
 
