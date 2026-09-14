@@ -25,5 +25,12 @@ Rollen-Achse der Telemetrie mit, die `make span-report` je Rolle ausweist.
 
 **Eingang:** der Slice in `in-progress/`. **Ausgang:** Diff + Plan-Verweis an den Reviewer.
 Du bist die einzige Rolle mit `Edit`-Recht auf den Quellbestand — und die einzige, die
-`make gates` und `make mutate` **vor** der „fertig"-Meldung selbst laufen lässt (Modul 11).
-Eine Behauptung ohne Sensor-Beleg ist der häufigste Verifier-Befund.
+`make gates` **vor** der „fertig"-Meldung selbst laufen lässt (Modul 11).
+Eine Behauptung ohne Sensor-Beleg ist der häufigste Verifier-Befund. **Den vollen
+Mutationssatz fährst du dafür nicht:** einen neuen oder geänderten Wächter belegst du
+**einzeln** — die Mutation von Hand fahren, den benannten Test fallen sehen, die Ausgabe lesen.
+Der repo-weite Satz gehört auf die **Post-integration**-Stufe (`v6.8.0` ·
+`.harness/baseline/v6.8.0/regelwerk/grundlagen-klassifikation.md` §Klassifikation:
+*„nach Merge : Mutation Tests"*, *„teurer, aber tolerierbar"*) und läuft **nächtlich**
+(`.github/workflows/mutate.yml`) — als Pro-Push-Job kostete er `49m54s` von `49m58s` eines
+Pushes (`gh api "repos/pt9912/ai-harness-init/actions/jobs/<job-id>/logs"`).
