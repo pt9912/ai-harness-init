@@ -14,9 +14,12 @@ Solange eine Welle in der Vorschau *Nächste Wellen* steht, trägt sie **keine**
 `docs/plan/planning/` und **keinen** Zeiger unter *Offene Wellen*; ihre Kennung steht dort
 **unverlinkt** ([ADR-0046](../../docs/plan/adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md)
 Festlegung 1). Ist der Trigger noch nicht eingetreten, endet die Arbeit bei dieser Vorschau-Zeile
-(Welle · Trigger · wichtigste Slices · Aufwand) — Schritt 7 und Schritt 9 laufen dann nicht. Wer
-die Datei früher anlegt, färbt `make docs-check` rot: `wave-preview-exists`, und ohne Zeiger unter
-*Offene Wellen* zusätzlich `wave-drift`.
+(Welle · Trigger · wichtigste Slices · Aufwand) — Schritt 7, Schritt 8 und Schritt 9 laufen dann
+nicht (Schritt 8 füllt die Datei, die erst Schritt 7 anlegt). Wer die Datei früher anlegt, färbt
+`make docs-check` rot: `wave-preview-exists`, und ohne Zeiger unter *Offene Wellen* zusätzlich
+`wave-drift` — geprüft ist dabei allein die Kopplung *Datei ⟺ Zeiger ⟺ nicht in der Vorschau*,
+nicht der Start-Trigger selbst: Träger dieser Folgepflicht ist der Rollen-Wechsel und kein Sensor
+([ADR-0046](../../docs/plan/adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) §Fitness Function).
 
 Kanonische Quellen (vendored Regelwerk, `.harness/baseline/<tag>/regelwerk/`): Modul 6 (Roadmap),
 Modul 5 (Planning-Lifecycle), Modul 7 (Carveouts). Bei Konflikt gilt der Kurs.
