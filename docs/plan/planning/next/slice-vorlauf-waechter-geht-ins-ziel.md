@@ -83,7 +83,7 @@ ohne ihn mit Exit 2 ab (*object not found*); was er fängt, ist die auflösbare,
   die Doppelführung, die das Register vermeidet.
 - **Das Modul `vcs`/`commits` selbst.** Ob `d-check` eine leere Range selbst von der leeren Menge
   unterscheidet, ist eine Anforderung an das Nachbar-Repo. Der
-  [slice-210](slice-210-planning-modul-im-emittierten-doc-gate.md) entscheidet die Modul-**Liste** —
+  [slice-210](../open/slice-210-planning-modul-im-emittierten-doc-gate.md) entscheidet die Modul-**Liste** —
   eine andere Fläche.
 - **Der Bestand.** Ziele, die vor dieser Emission entstanden, werden nicht nachgerüstet; gebunden ist
   die Vorlage, die geschrieben wird.
@@ -254,7 +254,7 @@ Setzung 1):
   ist die Stelle, an der sie auftritt. Steht als Risiko in §6. Der Zähler bewegt sich nur, wenn
   dieser Slice die Klasse **beobachtet** statt sie zu umgehen — er umgeht sie.
 - [`BEO-ALL/gate-modul-erreicht-den-vendored-baum-nicht`](../observations/BEO-ALL/gate-modul-erreicht-den-vendored-baum-nicht/observation.md)
-  — **3×, geplant** ([slice-202](slice-202-der-tote-inline-pfad-unter-harness-bekommt-seinen-pruefer.md)).
+  — **3×, geplant** ([slice-202](../open/slice-202-der-tote-inline-pfad-unter-harness-bekommt-seinen-pruefer.md)).
   Trägt seinen Ausgang bereits. Für diesen Slice heißt das: Baseline-Pfade stehen hier als
   **Markdown-Link** (dort prüft `links`), nicht als Inline-Code — die Verengung gilt auch hier.
 
