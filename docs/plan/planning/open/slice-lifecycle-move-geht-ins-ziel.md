@@ -16,7 +16,7 @@ Ziel einmal durch (`make full-smoke`) — einen Beleg, den kein Punkt dieser DoD
 
 **Ebene: emittiert, nicht Dogfood.** Gegenstand ist die Command-Vorlage, die das Werkzeug in ein
 fremdes Ziel schreibt. Der Anweisungssatz **dieses** Repos bleibt draußen und hat einen benannten
-Ausgang ([slice-226](slice-226-implementer-anweisungssatz-zieht-nach.md), §5 der Welle).
+Ausgang ([slice-226](../next/slice-226-implementer-anweisungssatz-zieht-nach.md), §5 der Welle).
 
 **Bezug:**
 [`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) (die
@@ -81,7 +81,7 @@ adaptierbarer Marker, kein hart verdrahteter Wert
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Der Anweisungssatz dieses Repos.** Gegenstand ist die **emittierte** Vorlage; die lokale Fassung
-  zieht über [slice-226](slice-226-implementer-anweisungssatz-zieht-nach.md) nach (Dogfood, eigener
+  zieht über [slice-226](../next/slice-226-implementer-anweisungssatz-zieht-nach.md) nach (Dogfood, eigener
   Ausgang). Beide in einem Slice hieße, zwei Verträge mit einem Diff zu bedienen.
 - **Die dritte Hälfte eines Ortswechsels.** Ein bewachtes **Zustandsfeld** nachzuziehen ist ein
   eigener Vorgang; er liegt bei
@@ -155,7 +155,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 **Start** (`next` → `in-progress`): Der Slice ist priorisiert (`Verantwortlich:` gesetzt) und das
 WIP-Limit frei. **Keine harte Bindung an den Dogfood-Zwilling:**
-[slice-226](slice-226-implementer-anweisungssatz-zieht-nach.md) zieht den lokalen Anweisungssatz auf
+[slice-226](../next/slice-226-implementer-anweisungssatz-zieht-nach.md) zieht den lokalen Anweisungssatz auf
 eine **andere** Ziel-Fassung nach; die zwei Ebenen dürfen auseinanderlaufen, solange die Richtung
 stimmt — erst die ausgeführte Fassung, dann die emittierte (Welle §5).
 
