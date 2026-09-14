@@ -1,7 +1,19 @@
 **Vorgang:** slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke
 
-**Fund:** Der Lifecycle-Übergang `next/` → `in-progress/` brach **zwei** Verweise, und das Werkzeug
-sah **keinen** davon:
+**Fund:** Der Slice ist **zweimal** gewandert — `next/` → `in-progress/` und
+`in-progress/` → `done/` —, und die präfixlose Form brach dabei **drei** Verweise, von denen das
+Werkzeug **keinen** sah. Jeder Übergang steht für sich, weil die Fundstelle jedes Mal eine andere
+ist:
+
+```sh
+make slice-mv … TO=in-progress      # eingehend: 0 — gebrochen: 2 (die Schwester unter next/, :43 und :99)
+make slice-mv … TO=done             # eingehend: 3 — gebrochen: 1 mehr, das die Suche nicht traf:
+                                    #   docs/plan/planning/in-progress/roadmap.md:23  target-missing
+```
+
+Der dritte ist der, der die Regel des Repos **selbst** trägt: die In-Arbeit-Zeile der Roadmap
+verweist auf ihren Slice als Geschwister — die Zeile entsteht mit dem `next → in-progress`-Übergang
+und fällt mit der Closure, und beide Male steht der Verweis präfixlos. Der erste Übergang:
 
 ```sh
 make slice-mv SLICE=slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke TO=in-progress
