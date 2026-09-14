@@ -103,7 +103,7 @@ git grep -cE 'slice-<NNN>|welle-<NN>' -- .claude/commands/implement-slice.md   #
   Planner und sind von [slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md)
   bereits nachgezogen; [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md)
   gehört dem Reviewer und liegt bei
-  [slice-227](slice-227-reviewer-skill-nennt-den-vorhandenen-stand.md). *Es wäre ein anderer
+  [slice-227](../open/slice-227-reviewer-skill-nennt-den-vorhandenen-stand.md). *Es wäre ein anderer
   Vorgang einer anderen Rolle* ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)).
 - **Kein Posten, der in [`AGENTS.md`](../../../../AGENTS.md),
   [`harness/README.md`](../../../../harness/README.md), [`.d-check.yml`](../../../../.d-check.yml)
