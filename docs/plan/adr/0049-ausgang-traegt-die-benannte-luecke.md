@@ -1,6 +1,6 @@
 # ADR-0049: Der Ausgang einer Register-Beobachtung trägt die benannte Lücke — und der Lese-Schritt liest alle Einträge über der Schwelle
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-14
 
@@ -12,10 +12,11 @@
 ist ortsfest und als Pfad zulässig),
 [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) (Festlegung 1 bindet die
 Accept-Zeile unten, Festlegung 2 die Runde nach einem blockierenden Befund),
-[`AGENTS.md`](../../../AGENTS.md) §3.6 (die fünf Absätze der Form *„Ein Wächter existiert nicht"*, an
-denen die Festlegung 1 ihre Form liest),
-[`AGENTS.md`](../../../AGENTS.md) §3.7 (der Zustands-Rahmen, in den beide Festlegungen fallen),
-[`AGENTS.md`](../../../AGENTS.md) §3.8 (der Architect schreibt die Norm),
+[`AGENTS.md`](../../../AGENTS.md) §3.7, §3.8, §3.10 und §3.11 (die vier Absätze der Form *„Ein
+Wächter existiert nicht"* — `grep -n 'Ein Wächter existiert nicht' AGENTS.md` —, an denen die
+Festlegung 1 ihre Form liest; §3.9 schließt dieselbe Form mit einem Grenzen-Absatz ohne diese
+Wendung. §3.7 trägt darunter den Zustands-Rahmen, in den beide Festlegungen fallen, §3.8 die Rolle,
+der die Hard Rules und der Adaptions-Block gehören),
 [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (eine
 benannte Lücke als Deckung auszugeben wäre die Lüge, die diese Entscheidung verbietet),
 [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
@@ -160,7 +161,9 @@ sogar in seiner High-Liste:
 ```sh
 grep -n 'Ausgängen\|Ausgänge' /Development/d-check/docs/plan/planning/observations/README.md \
   /Development/a-check/docs/plan/planning/observations/README.md
-# je eine Zeile: "einer von drei Ausgängen" / "einer der drei Ausgänge"
+# d-check :10  "… einer von drei Ausgängen"      (eine Zeile)
+# a-check :5   "welchen der drei Ausgänge ein Eintrag ab 3× trägt."
+# a-check :9   "… `offen` oder einer der drei Ausgänge"    (zwei Zeilen)
 grep -n 'keinen der drei Ausgänge' /Development/a-check/.harness/skills/reviewer.md
 # 45:  `Stand:`-Zeile bei 3× keinen der drei Ausgänge trägt.
 ```
@@ -194,6 +197,13 @@ stehen**. Der Zielort ist das **Norm-Artefakt**, an dem die Regel steht — eine
 ein Adaptions-Eintrag, eine Sensor-Datei, eine Entscheidung. Der Herkunfts-Anker steht daneben,
 **wo die Regel aus dem Steering Loop entstand**; folgt sie aus Lastenheft, Spezifikation, Baseline
 oder ADR, trägt der Zielort an dieser Stelle seine eigene Kennung.
+
+**Baseline ist der vierte Fall, und die Geltungsbereichs-Klausel, die ihn nicht aufzählt, deckt ihn
+mit ihrem eigenen Grund.** Sie nennt Lastenheft, Spezifikation und ADR und schließt mit *„trägt
+bereits eine ID"* — dasselbe trifft eine Regel zu, die aus dem adoptierten Stand folgt: ihr Träger
+nennt seine eigene Stelle. Ein zweiter Anker daneben wäre hier erfunden statt verlangt; die Folge
+*„kein Adaptions-Eintrag"* stützt sich damit auf den Geltungsbereich des Ankers und nicht auf einen
+vierten Quellentyp.
 
 **Ein Satz der Form *„Träger ist der Lauf, der X schreibt"* nennt keinen Zielort.** Er beschreibt,
 **wer** die Regel wirksam hält, und gehört in den Abschnitt *Grenze der Verkörperung, benannt*
@@ -298,6 +308,12 @@ stehenden Einträge die richtige ist (Festlegung 3) — beides bleibt Urteil.
 - **Wenn die Nachbar-Repos einen vierten Ausgang aufnehmen** *(beobachtbar an ihrem Register-Satz)*:
   Dann ist die Gegenposition aus §Kontext — *die Menge bleibt geschlossen* — mit neuer Evidenz
   erneut zu halten statt mit Verweis auf den heutigen Treffer.
+- **Wenn die Ausgangs-Tabelle in
+  [`docs/plan/planning/observations/README.md`](../planning/observations/README.md) sich ändert**
+  *(beobachtbar an einem Vorgang, der ihre Zeilen oder die zwei Absätze darunter anfasst)*: Diese
+  Datei ist der Regeltäger und fortschreibbar, die Entscheidung hier ab `Accepted` nicht — die
+  Änderung ist daraufhin zu prüfen, ob sie eine der drei Festlegungen berührt, und deren Fassung
+  dann als Folge-ADR mit `Supersedes` nachzuziehen.
 
 ### Der Acceptance-Trigger
 
@@ -305,11 +321,16 @@ Diese Entscheidung steht auf `Proposed`. Sie wird `Accepted`, **wenn eine Review
 die Ausgangs-Tabelle in
 [`docs/plan/planning/observations/README.md`](../planning/observations/README.md), das
 Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register und §Wellen-Closure-Prozedur
-(Stand `v6.8.0`) sowie [ADR-0034](0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
+sowie `grundlagen-traceability.md` §Herkunfts-Anker (Stand `v6.8.0`) und
+[ADR-0034](0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
 auf Konsistenz geprüft hat und ihr Report ohne blockierenden Befund in `docs/reviews/` liegt.**
 Meldet eine Runde einen blockierenden Befund, ist der Beleg nach
 [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 die **nächste**
 Runde derselben Rolle, nicht die Nachmessung des auflösenden Laufs.
+
+**Eingelöst ist er durch die Runde `2026-09-14-adr-0049-konsistenzrunde`** (in `docs/reviews/`):
+ihre Kategorie-Summary nennt **kein HIGH** (0 HIGH · 2 MEDIUM · 4 LOW · 2 INFO), und die zwei
+MEDIUM dieser Runde sind vor dem Umschlag eingearbeitet.
 
 **Und ihre Accept-Zeile nennt diesen Beleg** ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)
 Festlegung 1) — als Kennung, nicht als Pfad-Link.
@@ -318,7 +339,8 @@ Festlegung 1) — als Kennung, nicht als Pfad-Link.
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-09-14 | **Proposed** | Architect-Lauf auf den wellenlosen Slice `slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke` ([`MR-057`](../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer) Kennungs-Form). Anlass sind achtzehn Register-Einträge über der 3×-Schwelle ohne Ausgang und die zwei Fragen des Vorgangs: welchen Ausgang eine benannte Lücke trägt und was der Lese-Schritt liest. **Der Beleg, den der Acceptance-Trigger unten verlangt, steht aus** — eine Reviewer-Runde zu dieser Datei liegt nicht in `docs/reviews/`. Die drei Festlegungen gelten in `docs/plan/planning/observations/README.md` dennoch; ein blockierender Befund wird **vor** dem Umschlag eingearbeitet, wie [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 3 es für einen Trigger verlangt, der sich während `Proposed` noch ändern läßt. |
+| 2026-09-14 | **Proposed** | Architect-Lauf auf den wellenlosen Slice `slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke` ([`MR-057`](../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer) Kennungs-Form) |
+| 2026-09-14 | **Accepted** | Beleg ist die Runde `2026-09-14-adr-0049-konsistenzrunde` in `docs/reviews/` — sie verdiktiert nicht blockierend: ihre Kategorie-Summary nennt **kein HIGH** (0 HIGH · 2 MEDIUM · 4 LOW · 2 INFO). *Blockierend* ist an der Kategorie des Reviewer-Skills gelesen, die **HIGH** als die den Merge blockierende führt; die Praxis dieses Repos hält es ebenso (`git log --oneline --all | grep -i 'NICHT BLOCKIEREND'`). Die zwei MEDIUM und die vier LOW dieser Runde sind vor diesem Umschlag eingearbeitet, die zwei INFO entschieden; eine **weitere** Runde verlangt [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 nur nach einem blockierenden Befund. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes ADR-0049`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
