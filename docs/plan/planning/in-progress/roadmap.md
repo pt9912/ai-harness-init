@@ -29,8 +29,11 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 Welle, Trigger als beobachtbare Bedingung, wichtigste Slices und geschätzter Aufwand (S/M/L, kein
 Termin).
 
-Ein verlinkter Name hat eine flache Plan-Datei (geschnitten, Start-Trigger nicht eingetreten); ein
-unverlinkter ist ein Kandidat ohne Datei und ohne geschnittene Slices.
+Eine Kennung in Spalte 1 steht **unverlinkt** und trägt keine Datei: Die flache Plan-Datei entsteht
+mit der **Eröffnung** der Welle, und mit ihr verlässt die Zeile diesen Abschnitt
+([ADR-0046](../../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) Festlegung 1). Existiert zu
+einer hier genannten Kennung bereits eine flache Datei, meldet `make docs-check`
+`wave-preview-exists` — verlinkt wie unverlinkt.
 
 | Welle | Trigger (beobachtbar) | Wichtigste Slices | Aufwand |
 |---|---|---|---|
