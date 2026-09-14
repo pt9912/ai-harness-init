@@ -3,7 +3,7 @@
 **Rolle:** Verifier · **Datum:** 2026-09-14 · **Geprüfte Commits:** `a9138e86` (welle-13),
 `fdb5465a` (roadmap.md), `bf5e5bca` (plan-welle.md), `233e1385` (Review-Nachzug F-1/F-2/F-3) ·
 **Plan:**
-[`slice-wellen-schnitt-folgt-der-eroeffnungs-regel`](../plan/planning/in-progress/slice-wellen-schnitt-folgt-der-eroeffnungs-regel.md)
+[`slice-wellen-schnitt-folgt-der-eroeffnungs-regel`](../plan/planning/done/slice-wellen-schnitt-folgt-der-eroeffnungs-regel.md)
 · **Review:**
 [`2026-09-14-…`](2026-09-14-slice-wellen-schnitt-folgt-der-eroeffnungs-regel.md) (2 MEDIUM · 1 LOW
 · 2 INFO, Verdikt: blockierend wegen 2 MEDIUM — beide durch `233e1385` behoben) ·
