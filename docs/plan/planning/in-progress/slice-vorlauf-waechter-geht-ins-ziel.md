@@ -87,7 +87,10 @@ ohne ihn mit Exit 2 ab (*object not found*); was er fängt, ist die auflösbare,
   eine andere Fläche.
 - **Der Bestand.** Ziele, die vor dieser Emission entstanden, werden nicht nachgerüstet; gebunden ist
   die Vorlage, die geschrieben wird.
-- **Der Produkt-Code.** Diese Eröffnung schneidet; `internal/` wird von ihr nicht angefasst.
+- **Die Verarbeitungs-Logik des Werkzeugs.** Der Slice **emittiert** eine Vorlage und bindet sie ein;
+  was das Werkzeug sonst gegenüber einem Ziel tut — Skelett-Erzeugung, Init-Pfad — bleibt unberührt.
+  Angemerkt ist damit **nicht** `internal/` als Ganzes: `internal/emit/` ist die Emissions-Schicht
+  selbst, und §3 arbeitet dort. *Schicht-Abgrenzung.*
 
 **Keine Mindestzahl.** Ein Slice mit *einem* echten Ausschluss ist besser als
 einer mit vier erfundenen; die vier Klassen sind ein Suchraster, keine
