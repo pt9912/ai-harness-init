@@ -5,10 +5,10 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** ohne Welle — die Closure-Bedingung ist die DoD unten; ein repo-weiter Beleg darüber
-hinaus steht in keinem Kriterium (Baseline-Regelwerk `modul-06-roadmap.md`
-§Wann Arbeit eine Welle braucht,
-[`MR-037`](../../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst)).
+**Welle:** [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md). Die Welle trägt das
+*Mehr* über dieser DoD: ihr Closure-Trigger fährt die neu emittierten Werkzeuge im gebootstrappten
+Ziel einmal durch (`make full-smoke`) — einen Beleg, den kein Punkt dieser DoD führt
+(Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
 
 **Bezug:**
 [`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)
@@ -38,8 +38,8 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice — Schnitt nach Lieferwert, nicht nach Schichten; jeder Slice
 ist einzeln lieferbar.
 
-**Der emittierte Anweisungssatz nennt für Schritt 4 ein Kommando, das im Ziel läuft — statt der
-Feststellung, dass die Bedingung nicht eingetreten ist.**
+**Das gebootstrappte Ziel erreicht `archive-welle` — die Operation ist gezündet, nicht nur
+beschrieben.**
 
 Die Vorlagen für beide Stub-Arten liegen im Ziel bereits: der Bootstrap vendort den
 Baseline-Baum, und darin stehen `archiv-stub-slice.template.md` und
@@ -47,7 +47,22 @@ Baseline-Baum, und darin stehen `archiv-stub-slice.template.md` und
 (`ls .harness/baseline/v5.18.0/templates/docs/plan/planning/archiv-stub-*.template.md | wc -l`
 → **2**; kein Erwartungswert,
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2). Was fehlt, ist der **Ausführende**.
+Setzung 2). Was fehlt, ist der **Weg zum Ausführenden**.
+
+**Der Anweisungssatz ist selbstkonsistent — offen ist die Zündung.** Er verlangt ein Werkzeug für
+Schritt 4 *und* liefert den ehrlichen Ausgang mit: *„Hat dein Repo das Werkzeug nicht, ist die
+Bedingung nicht eingetreten; **das** gehört als Feststellung in die Results-Notiz, nicht in einen
+Handlauf."* An diesem Satz ist nichts zu reparieren. Was fehlt, ist die **Zündung**: der Träger führt
+`archive-welle` als Unterkommando, es gibt aber **kein Make-Ziel** im Ziel und der Anweisungssatz
+zeigt nicht auf den Träger.
+
+**Das fertige Muster steht im Baum.**
+[`internal/emit/templates/enforce/erfassung.mk`](../../../../internal/emit/templates/enforce/erfassung.mk)
+Ziel `span-report` zeigt, wie ein
+emittiertes Träger-Ziel aussieht: eine Variable auf den Trägerpfad, ein Versuch samt `.exe`-Endung
+(Windows) und eine **Meldung**, wenn der Träger fehlt. Für `archive-welle` heißt das: **kein**
+Prerequisite (`host-bin` hat im Ziel keinen Gegenstand — der Träger wird abgelegt, nicht gebaut),
+**keine** neue Logik, und die zwei Sperren des Unterkommandos kommen mit dem Aufruf mit.
 
 ## 2. Definition of Done
 
@@ -57,12 +72,25 @@ gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst —
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
 - [ ] **Ein frisch gebootstrapptes Ziel erreicht `archive-welle`** — auf dem Weg, den Festlegung
-      (d) aus [slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md) wählt. Der Weg ist in
-      `make full-smoke` **belegt**, nicht behauptet: derselbe Beleg-Typ, mit dem
+      (d) aus [slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md) wählt. Der Beleg
+      ist `make full-smoke` und **nur** er, nicht `make gates`: das Unterkommando ist bewusst kein
+      Gate, und kein Unit-Test des Repos fährt das Ziel. Derselbe Beleg-Typ, mit dem
       [ADR-0022](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) die
-      Erfassungsschicht im Ziel abgenommen hat.
-- [ ] **Der emittierte `close-welle.md` nennt für Schritt 4 das Kommando** statt des
-      Nicht-Eintritts, und die repo-spezifische Stelle bleibt ein **adaptierbarer** Marker
+      Erfassungsschicht im Ziel abgenommen hat. **Der Vorlauf ist reich, der E2E fehlt** — gemessen,
+      keine Erwartungswerte
+      ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+      Setzung 2):
+
+      ```sh
+      ls internal/archive/*_test.go | wc -l                                   #  7 Go-Testdateien
+      ls test/archiv-stub-vorlagen.bats test/unterkommando-kopplung.bats | wc -l  #  2 bats
+      grep -l 'archive' test/mutations/*.sh | wc -l                           # 30 kuratierte Faelle
+      grep -n 'archive' harness/tools/full-smoke.sh harness/tools/smoke.sh harness/tools/start-smoke.sh
+      # keine Ausgabe, Exit 1 — kein E2E nennt das Unterkommando
+      ```
+- [ ] **Der emittierte `close-welle.md` zeigt auf den Träger**, und der ehrliche Ausgang für ein
+      Repo ohne das Werkzeug bleibt **daneben** stehen. Die repo-spezifische Stelle bleibt ein
+      **adaptierbarer** Marker
       ([`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)) —
       der Adopter darf das Target anders nennen.
 - [ ] **Fehlt der Träger im Ziel, sagt das Kommando das und färbt nichts rot** — der Fall aus
@@ -102,11 +130,11 @@ Kommando, auf das der emittierte Anweisungssatz zeigen könnte, und ein Zeiger d
 die halluzinierte Zusage aus
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6).
 
-**Zweite Start-Bedingung:** [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md)
-steht auf `Proposed`; ihr Acceptance-Trigger verlangt eine Reviewer-Runde ohne blockierenden
-Befund. Bis dahin ist sie ein Architect-Verdikt und als Constraint lesbar, aber nicht eingefroren
-([`AGENTS.md`](../../../../AGENTS.md) §3.4 bindet ab `Accepted`) — ihre Festlegung 4 trägt den
-Gegenstand dieses Slice, und eine Runde, die sie bewegt, bewegt ihn mit.
+**Zweite Start-Bedingung — eingetreten:**
+[ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) trägt `Status: Accepted`
+(`grep -c '^\*\*Status:\*\* Accepted' docs/plan/adr/0033-wellen-archivierung-als-unterkommando.md`
+→ **1**); sie bindet damit nach [`AGENTS.md`](../../../../AGENTS.md) §3.4, und ihre Festlegung 4
+trägt den Gegenstand dieses Slice. Ihre Annahme war die Bedingung; sie ist eingelöst, nicht offen.
 
 **Reihenfolge innerhalb von `next/`:** keine Kopplung an
 [slice-073](../done/slice-073-emittierte-doc-gate-module.md) oder

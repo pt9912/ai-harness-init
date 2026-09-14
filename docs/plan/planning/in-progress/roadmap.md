@@ -18,6 +18,7 @@ nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
+- [welle-emittierte-werkzeuge — Jede vorgeschriebene Operation hat im Ziel ein Werkzeug](../welle-emittierte-werkzeuge.md)
 
 Nichts in Arbeit.
 
@@ -82,6 +83,7 @@ flowchart LR
     W13[welle-13<br/>Regeln bekommen ihren Sensor]
     W14[welle-14<br/>Re-Baseline]
     W15[welle-15<br/>Re-Baseline v6.0.0]
+    W16[welle-emittierte-werkzeuge<br/>Werkzeug je vorgeschriebener Operation]
     W1 --> W2 --> W3 --> W4 --> W5
     W5 -.-> W6
     W5 --> W7 --> W8
@@ -90,6 +92,7 @@ flowchart LR
     W14 --> W11
     W14 --> W13
     W14 --> W15
+    W13 --> W16
     S122([slice-122 done<br/>d-check-Pin v0.65.0]) --> W13
     S187([slice-187 done<br/>d-check-Pin v0.74.1]) --> W13
     A0022([ADR-0022 Accepted<br/>+ slice-093 done]) --> W12
