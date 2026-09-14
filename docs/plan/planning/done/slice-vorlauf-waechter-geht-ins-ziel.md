@@ -192,8 +192,9 @@ dasteht.
 
   ```sh
   make history-range-guard                                        # ohne RANGE
-  # ...: Zeile 147: 1: Usage: history-range-guard.sh <base>..<head> | --staged | --decide <range> <count> | --decide-staged <0|1>
-  # make: *** [Makefile:165: history-range-guard] Fehler 1        EXIT=2
+  # harness/tools/history-range-guard.sh: Zeile 147: 1: Usage: history-range-guard.sh <base>..<head> | --staged | --decide <range> <count> | --decide-staged <0|1>
+  # make: *** [Makefile:165: history-range-guard] Fehler 1
+  # EXIT=2
   ```
 
 - **Die Werkzeug-Lücke im Nachbar-Repo bleibt offen.** Der Wächter umgeht sie (er fängt vor dem
@@ -290,11 +291,11 @@ Backticks).
            zahl-ohne-kommando-trifft-ihren-gegenstand-nicht; do
     printf '%-60s %s\n' "$s" "$(ls docs/plan/planning/observations/BEO-ALL/$s/evidence/*.md | wc -l)"
   done
-  # zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor             1
-  # zusage-nennt-zwei-kanten-der-sensor-deckt-eine                        3
-  # abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt            3
-  # kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle       10
-  # zahl-ohne-kommando-trifft-ihren-gegenstand-nicht                     14
+  # zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor    1
+  # zusage-nennt-zwei-kanten-der-sensor-deckt-eine               3
+  # abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt   3
+  # kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle 10
+  # zahl-ohne-kommando-trifft-ihren-gegenstand-nicht             14
   ```
 
 - **Folge-Slices:** **keiner aus diesem Vorgang geschnitten.** Die eine offen gebliebene Lücke —
