@@ -44,5 +44,9 @@ bleibt still grün — Existenz und Eindeutigkeit sind geprüft, Richtigkeit ist
 
 ## Bindung
 
-[`AGENTS.md`](../../AGENTS.md) §3.6; slice-026; kein Gate-Versprechen, aber mechanischer
-Pro-Push-Auslöser in CI.
+[`AGENTS.md`](../../AGENTS.md) §3.6; slice-026; kein Gate-Versprechen. Mechanischer Auslöser
+ist der **Nacht-Job** `mutate.yml` (`schedule` + `workflow_dispatch`) — die Klassifikation des
+Regelwerks ordnet die Mutationstests der Stufe **Post-integration** zu
+(`grundlagen-klassifikation.md` §Klassifikation: *„nach Merge : Mutation Tests"*, *„teurer,
+aber tolerierbar"*), und der Lauf kostete `49m54s` von `49m58s` eines Pushes
+(`gh api "repos/pt9912/ai-harness-init/actions/jobs/<job-id>/logs"`).
